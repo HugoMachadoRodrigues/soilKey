@@ -1,0 +1,184 @@
+# Key to subgroups of Melanic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-zlme.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "EV":
+    - code: "EVMC"
+      name: Mottled-calcareous Vertic Melanic Soils
+      tests:
+        all_of:
+          - redox_subgroup_nzsc: {depth: 60}
+          - calcareous_subgroup_nzsc: {limit: within, depth: 90}
+      notes: "Redox segregations within 60 cm and a calcareous horizon within 90 cm of the mineral soil surface."
+
+    - code: "EVM"
+      name: Mottled Vertic Melanic Soils
+      tests:
+        all_of:
+          - redox_subgroup_nzsc: {depth: 60}
+      notes: "Redox segregations within 60 cm of the mineral soil surface."
+
+    - code: "EVC"
+      name: Calcareous Vertic Melanic Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {limit: within, depth: 90}
+      notes: "A calcareous horizon within 90 cm of the mineral soil surface."
+
+    - code: "EVT"
+      name: Typic Vertic Melanic Soils
+      tests:
+        default: true
+      notes: "Other Vertic Melanic Soils."
+
+  "EP":
+    - code: "EPV"
+      name: Vertic Perch-gley Melanic Soils
+      tests:
+        all_of:
+          - vertic_subgroup_nzsc: {}
+      notes: "Cracks 4 mm wide or more reaching 30 cm, or a COLE of 0.09 or more with moderate or strong blocky or prismatic peds in the major part of the B horizon."
+
+    - code: "EPJ"
+      name: Argillic Perch-gley Melanic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+      notes: "An argillic horizon."
+
+    - code: "EPT"
+      name: Typic Perch-gley Melanic Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Melanic Soils."
+
+  "ER":
+    - code: "ERO"
+      name: Peaty Rendzic Melanic Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface, buried: false}
+      notes: "A peaty topsoil."
+
+    - code: "ERM"
+      name: Mottled Rendzic Melanic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "ERJ"
+      name: Argillic Rendzic Melanic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+      notes: "An argillic horizon."
+
+    - code: "ERW"
+      name: Weathered Rendzic Melanic Soils
+      tests:
+        all_of:
+          - weathered_or_cutanic_nzsc: {min_cm: 10}
+      notes: "A weathered-B or cutanic horizon 10 cm or more thick."
+
+    - code: "ERT"
+      name: Typic Rendzic Melanic Soils
+      tests:
+        default: true
+      notes: "Other Rendzic Melanic Soils."
+
+  "EM":
+    - code: "EMG"
+      name: Magnesic Mafic Melanic Soils
+      tests:
+        all_of:
+          - magnesic_subgroup_nzsc: {bc: true}
+      notes: "In some part of the B or BC horizon to 60 cm, 5 % or more ultramafic coarse fragments, or exchangeable Ca:Mg 0.2 or less with Mg 1.5 cmol/kg or more."
+
+    - code: "EMM"
+      name: Mottled Mafic Melanic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "EML"
+      name: Allophanic Mafic Melanic Soils
+      tests:
+        all_of:
+          - allophanic_b_subgroup_nzsc: {depth: 90}
+      notes: "P retention 85 % or more, or a strong reactive-aluminium test, in some part of the B or BC horizon within 90 cm."
+
+    - code: "EMA"
+      name: Acidic Mafic Melanic Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60}
+      notes: "pH below 5.5 in some part of the B or BC horizon within 60 cm."
+
+    - code: "EMT"
+      name: Typic Mafic Melanic Soils
+      tests:
+        default: true
+      notes: "Other Mafic Melanic Soils."
+
+  "EO":
+    - code: "EOMC"
+      name: Mottled-calcareous Orthic Melanic Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {limit: at_or_less, depth: 90}
+          - mottled_subgroup_nzsc: {}
+      notes: "A calcareous horizon with its top at 90 cm or less, and a mottled profile form."
+
+    - code: "EOJC"
+      name: Argillic-calcareous Orthic Melanic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+          - calcareous_subgroup_nzsc: {limit: at_or_less, depth: 90}
+      notes: "An argillic horizon, and a calcareous horizon with its top at 90 cm or less."
+
+    - code: "EODC"
+      name: Pedal-calcareous Orthic Melanic Soils
+      tests:
+        all_of:
+          - pedal_weathered_b_nzsc: {}
+          - calcareous_subgroup_nzsc: {limit: at_or_less, depth: 90}
+      notes: "A moderately or strongly pedal weathered-B horizon 15 cm or more thick immediately beneath the A horizon, and a calcareous horizon with its top at 90 cm or less."
+
+    - code: "EOC"
+      name: Calcareous Orthic Melanic Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {limit: at_or_less, depth: 90}
+      notes: "A calcareous horizon with its top at 90 cm or less."
+
+    - code: "EOMJ"
+      name: Mottled-argillic Orthic Melanic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - argillic_subgroup_nzsc: {}
+      notes: "A mottled profile form and an argillic horizon."
+
+    - code: "EOM"
+      name: Mottled Orthic Melanic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "EOJ"
+      name: Argillic Orthic Melanic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+      notes: "An argillic horizon."
+
+    - code: "EOT"
+      name: Typic Orthic Melanic Soils
+      tests:
+        default: true
+      notes: "Other Orthic Melanic Soils."

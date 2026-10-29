@@ -211,7 +211,11 @@ horizon_column_spec <- function() {
     coatings_value_moist          = "numeric",   # moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils
     # ---- v0.9.299: the subgroups of the New Zealand Soil Classification ----
     sphagnum_fibres_pct           = "numeric",   # share of the organic fibres that are Sphagnum, %; NZSC Sphagnic Fibric Organic Soils (more than 70 %)
-    shelly_layer                  = "logical"    # a layer of shells (shell beds, shelly sand); NZSC Calcareous Recent Gley Soils
+    shelly_layer                  = "logical",   # a layer of shells (shell beds, shelly sand); NZSC Calcareous Recent Gley Soils
+    # ---- v0.9.300: the Podzol, Allophanic, Pumice and Melanic subgroups ----
+    pore_coatings_hue_moist       = "character", # moist Munsell hue of coatings on pores or gel-like masses; NZSC Acidic and Vitric-acidic Orthic Allophanic Soils
+    pore_coatings_value_moist     = "numeric",   # moist Munsell value of the same coatings
+    pore_coatings_chroma_moist    = "numeric"    # moist Munsell chroma of the same coatings
   )
 }
 

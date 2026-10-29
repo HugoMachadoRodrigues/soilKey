@@ -254,8 +254,9 @@
 # reactive-aluminium test, or a P retention of 85 % or more; and a dry bulk
 # density of the fine earth below 0.9 Mg/m3. A measured P retention decides
 # the first part (the field tests stand in for it only when it is not
-# measured: Hugo's decision, 2026-10-28).
-.nzsc_allophanic_rows <- function(x) {
+# measured: Hugo's decision, 2026-10-28). `density = FALSE` leaves the bulk
+# density out (the Pumice subgroups MOL and MOBL, v0.9.300).
+.nzsc_allophanic_rows <- function(x, density = TRUE) {
   h <- x$h; n <- x$n
   sens <- .nzsc_class_index(h$sensitivity_class %||% rep(NA, n), "sensitivity")
   str <- .nzsc_class_index(h$strength_moist %||% rep(NA, n), "strength")
@@ -266,7 +267,7 @@
   route_a <- .and3v(.and3v(ifelse(is.na(sens), NA, sens >= 3), ifelse(is.na(str), NA, str %in% c(1, 2))),
                     .and3v(ifelse(is.na(stk), NA, stk <= 1), ifelse(is.na(naf), NA, naf >= 3)))
   either <- ifelse(!is.na(pr), pr >= 85, route_a)
-  dens <- ifelse(is.na(bd), NA, bd < 0.9)
+  dens <- if (isTRUE(density)) ifelse(is.na(bd), NA, bd < 0.9) else rep(TRUE, n)
   ifelse(x$mineral, .and3v(either, dens), FALSE)
 }
 

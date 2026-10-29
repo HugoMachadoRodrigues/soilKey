@@ -1,0 +1,207 @@
+# Key to subgroups of Podzol Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-zlme.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "ZD":
+    - code: "ZDU"
+      name: Humus-pan Densipan Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: humus_pan, anywhere: true}
+      notes: "A humus-pan."
+
+    - code: "ZDJH"
+      name: Argillic-humose Densipan Podzol Soils
+      tests:
+        all_of:
+          - argillic_beneath_nzsc: {upper: bh}
+      notes: "An argillic horizon beneath a Bh horizon."
+
+    - code: "ZDYH"
+      name: Ultic-humose Densipan Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5, clayey_prismatic: true}
+      notes: "A Bh horizon more than 5 cm thick at the top of a B horizon that is clayey and prismatic as a whole."
+
+    - code: "ZDH"
+      name: Humose Densipan Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5, strict: false}
+      notes: "A Bh horizon 5 cm or more thick."
+
+    - code: "ZDQ"
+      name: Ortstein Densipan Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: ortstein, anywhere: true}
+      notes: "An ortstein-pan."
+
+    - code: "ZDT"
+      name: Typic Densipan Podzol Soils
+      tests:
+        default: true
+      notes: "Other Densipan Podzol Soils."
+
+  "ZP":
+    - code: "ZPF"
+      name: Fluid Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - fluid_above_podzolic_b_nzsc: {}
+      notes: "A moderately or very fluid horizon in some part above the podzolic-B horizon."
+
+    - code: "ZPOZ"
+      name: Peaty-silt-mantled Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - silt_mantled_podzol_nzsc: {}
+          - peaty_subgroup_nzsc: {from: soil_surface, buried: false}
+      notes: "A firm, massive or coarsely prismatic eluvial horizon in a silty layer 15 cm or more thick, and a peaty topsoil."
+
+    - code: "ZPZ"
+      name: Silt-mantled Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - silt_mantled_podzol_nzsc: {}
+      notes: "A firm, massive or coarsely prismatic eluvial horizon in a silty layer 15 cm or more thick."
+
+    - code: "ZPU"
+      name: Humus-pan Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: humus_pan, anywhere: true}
+      notes: "A humus-pan."
+
+    - code: "ZPHQ"
+      name: Humose-ortstein Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5}
+          - pan_subgroup_nzsc: {kind: ortstein, anywhere: true}
+      notes: "A Bh horizon more than 5 cm thick and an ortstein-pan."
+
+    - code: "ZPHP"
+      name: Humose-placic Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5}
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A Bh horizon more than 5 cm thick and a placic horizon."
+
+    - code: "ZPH"
+      name: Humose Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5}
+      notes: "A Bh horizon more than 5 cm thick."
+
+    - code: "ZPQ"
+      name: Ortstein Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: ortstein, anywhere: true}
+      notes: "An ortstein-pan."
+
+    - code: "ZPP"
+      name: Placic Perch-gley Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A placic horizon."
+
+    - code: "ZPT"
+      name: Typic Perch-gley Podzol Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Podzol Soils."
+
+  "ZG":
+    - code: "ZGH"
+      name: Humose Groundwater-gley Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5}
+      notes: "A Bh horizon more than 5 cm thick."
+
+    - code: "ZGT"
+      name: Typic Groundwater-gley Podzol Soils
+      tests:
+        default: true
+      notes: "Other Groundwater-gley Podzol Soils."
+
+  "ZX":
+    - code: "ZXU"
+      name: Humus-pan Pan Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: humus_pan, anywhere: true}
+      notes: "A humus-pan."
+
+    - code: "ZXJH"
+      name: Argillic-humose Pan Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 0}
+          - argillic_beneath_nzsc: {upper: ortstein_or_placic}
+      notes: "A Bh horizon, and an argillic horizon beneath the ortstein-pan or placic horizon."
+
+    - code: "ZXH"
+      name: Humose Pan Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 0}
+          - any_of:
+              - pan_subgroup_nzsc: {kind: ortstein, anywhere: true}
+              - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A Bh horizon, and an ortstein-pan or a placic horizon."
+
+    - code: "ZXX"
+      name: Fragic Pan Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: fragipan, anywhere: true}
+      notes: "A fragipan."
+
+    - code: "ZXQ"
+      name: Ortstein Pan Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: ortstein, anywhere: true}
+      notes: "An ortstein-pan."
+
+    - code: "ZXP"
+      name: Placic Pan Podzol Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A placic horizon."
+
+    - code: "ZXF"
+      name: Firm Pan Podzol Soils
+      tests:
+        default: true
+      notes: "Other Pan Podzol Soils."
+
+  "ZO":
+    - code: "ZOJH"
+      name: Argillic-humose Orthic Podzol Soils
+      tests:
+        all_of:
+          - argillic_beneath_nzsc: {upper: bh}
+      notes: "An argillic horizon beneath a Bh horizon."
+
+    - code: "ZOH"
+      name: Humose Orthic Podzol Soils
+      tests:
+        all_of:
+          - bh_subgroup_nzsc: {min_cm: 5}
+      notes: "A Bh horizon more than 5 cm thick."
+
+    - code: "ZOT"
+      name: Typic Orthic Podzol Soils
+      tests:
+        default: true
+      notes: "Other Orthic Podzol Soils."

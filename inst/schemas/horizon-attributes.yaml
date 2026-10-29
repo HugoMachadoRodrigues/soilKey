@@ -689,3 +689,21 @@ attributes:
     unit: "-"
     description: "TRUE for a layer of shells (shell beds, shelly sand); NZSC Calcareous Recent Gley Soils (a shelly layer within 60 cm). Recorded when met: not recorded reads as none."
     systems: [nzsc4]
+  - name: pore_coatings_hue_moist
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "Munsell"
+    description: "Moist Munsell hue of the coatings on pores (not root linings), or of the gel-like masses bridging sand grains or coating coarse fragments; NZSC Acidic and Vitric-acidic Orthic Allophanic Soils (hue 7.5YR or redder, value 5 or less, chroma 3 or more). Recorded when met: not recorded reads as none."
+    systems: [nzsc4]
+  - name: pore_coatings_value_moist
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "Munsell"
+    description: "Moist Munsell value of the coatings on pores or gel-like masses (see pore_coatings_hue_moist)."
+    systems: [nzsc4]
+    min: 0
+    max: 10
+  - name: pore_coatings_chroma_moist
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "Munsell"
+    description: "Moist Munsell chroma of the coatings on pores or gel-like masses (see pore_coatings_hue_moist)."
+    systems: [nzsc4]
+    min: 0
