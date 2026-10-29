@@ -123,10 +123,13 @@ weathered_fragments_nzsc <- function(pedon) {
 # Lithic or paralithic contact within `depth` cm of the mineral soil surface
 # (XNX, XOX): an R or CR horizon with its top less than `depth` cm down; a
 # description that ends above (not on rock) may meet one below.
-contact_subgroup_nzsc <- function(pedon, depth = 90) {
+contact_subgroup_nzsc <- function(pedon, depth = 90, from = c("mineral_surface", "soil_surface")) {
+  from <- match.arg(from)
   x <- .nzsc_horizons(pedon); h <- x$h
-  pre <- .nzsc_sub_ms_or_na(x, "contact_subgroup_nzsc", "rocky subgroups", "designation"); if (!is.null(pre)) return(pre)
-  zb <- x$ms + as.numeric(depth)
+  # `from: soil_surface` for the Rocky Truncated Anthropic Soils (v0.9.302)
+  z0 <- if (from == "soil_surface") x$soil_top else x$ms
+  if (is.na(z0)) return(.nzsc_subgroup("contact_subgroup_nzsc", NA, "rocky subgroups", missing = "designation"))
+  zb <- z0 + as.numeric(depth)
   rows <- .nzsc_rows(x)
   rock <- x$role %in% c("R", "CR")
   # a row of unknown role with no fine-earth record (texture, clay, pH,
@@ -234,7 +237,7 @@ lamellar_argillic_nzsc <- function(pedon) {
 # PPC: a horizon at least weakly indurated (a pan, m; a cementation class of
 # weakly cemented or more; a recorded pan) with its top less than `depth`
 # cm from the mineral soil surface, as the Impeded Allophanic Soils read it.
-cemented_subgroup_nzsc <- function(pedon, depth = 90) {
+cemented_subgroup_nzsc <- function(pedon, depth = 90, min_mm = 0, placic = TRUE) {
   x <- .nzsc_horizons(pedon); h <- x$h; n <- x$n
   pre <- .nzsc_sub_ms_or_na(x, "cemented_subgroup_nzsc", "P, PPC", c("cementation_class", "designation")); if (!is.null(pre)) return(pre)
   cem <- .nzsc_txt(h$cementation_class, n); pt <- .nzsc_txt(h$pan_type, n)
@@ -242,6 +245,12 @@ cemented_subgroup_nzsc <- function(pedon, depth = 90) {
   # (v0.9.301)
   ok <- x$des$m | grepl("weak|moder|strong|indurat", cem) |
         (!is.na(pt) & nzchar(pt) & !grepl("^none|fragipan|densipan", pt))
+  # `min_mm` (BAC, v0.9.302): more than that thick; a placic horizon is 10
+  # mm or less by definition and does not count
+  if (as.numeric(min_mm) > 0) ok <- ok & !.nzsc_pan_rows(x, "placic") & (is.na(x$thick) | x$thick > as.numeric(min_mm) / 10)
+  # `placic: false` (BFC, BFMC; Hugo's decision, 2026-10-29): a placic
+  # horizon is left to the Placic Firm Brown Soils, as in the Acid Brown key
+  if (!isTRUE(placic)) ok <- ok & !.nzsc_pan_rows(x, "placic")
   rows <- .nzsc_rows(x); rows <- rows[h$top_cm[rows] < x$ms + as.numeric(depth) - 0.5]
   .nzsc_subgroup("cemented_subgroup_nzsc", any(ok[rows]), "P, PPC", layers = rows[ok[rows]])
 }

@@ -563,11 +563,23 @@ pallic_soils_nzsc <- function(pedon) {
   low_pr <- if (is.na(up_b)) NA else if (is.na(pr[up_b])) NA else pr[up_b] < 30
   row_ok <- ifelse(is.na(cc), NA, ifelse(cc == "pale", TRUE, ifelse(cc == "intermediate", low_pr, FALSE)))
   c2a <- if (!length(win)) FALSE else .and3(row_ok[win])
-  # 2(b) a B or BC 10 cm or more thick with a fragipan, duripan or brittle-B;
-  # or a weathered-B with a moderately or strongly pedal blocky, polyhedral or
-  # prismatic subhorizon, slightly firm or stronger moist; or an argillic,
-  # calcareous or cutanic horizon with sodic features in or under it; or an
-  # eluvial horizon (skeletans are not recorded and are read as absent)
+  c2b <- .nzsc_pallic_2b(x)
+  passed <- .and3(c(c0, .any3(c(r1, .and3(c(c2a, c2b))))))
+  .nzsc_result("pallic_soils_nzsc", passed, win, list(fine_texture = c0, pan_route = r1, colour = c2a, b_horizon = c2b),
+               if (is.na(passed)) miss else character(0), "Key to Soil Orders, P")
+}
+
+# Part 2(b) of the Pallic Soils (also read by the Mottled-pallic Orthic
+# Recent Soils, v0.9.302): a B or BC 10 cm or more thick with a fragipan,
+# duripan or brittle-B; or a weathered-B with a moderately or strongly pedal
+# blocky, polyhedral or prismatic subhorizon, slightly firm or stronger
+# moist; or an argillic, calcareous or cutanic horizon with sodic features in
+# or under it; or an eluvial horizon (skeletans are not recorded and are read
+# as absent).
+.nzsc_pallic_2b <- function(x) {
+  h <- x$h; n <- x$n
+  frag <- .nzsc_pan_rows(x, "fragipan"); duri <- .nzsc_pan_rows(x, "duripan"); arg <- .nzsc_argillic_rows(x)
+  el <- .nzsc_eluvial_rows(x)
   bb <- which(.nzsc_is(x, c("B", "BC")) & !is.na(h$top_cm))
   bth <- if (length(bb)) sum(x$thick[bb], na.rm = TRUE) else 0
   bth_open <- length(bb) && anyNA(x$thick[bb])
@@ -587,11 +599,8 @@ pallic_soils_nzsc <- function(pedon) {
   per <- vapply(seq_len(n), function(i) .any3(c(sod[i], if (is.na(bel[i])) NA else sod[bel[i]])), NA)
   iii <- .nzsc_any(.and3v(hcut, per))
   iv <- .nzsc_any(el)
-  c2b <- if (bth < 10 && !bth_open) { if (!length(bb) && length(.nzsc_maybe_rows(x))) NA else FALSE }
-         else { v <- .any3(c(i, ii, iii, iv)); if (bth < 10 && isTRUE(v)) NA else v }
-  passed <- .and3(c(c0, .any3(c(r1, .and3(c(c2a, c2b))))))
-  .nzsc_result("pallic_soils_nzsc", passed, win, list(fine_texture = c0, pan_route = r1, colour = c2a, b_horizon = c2b),
-               if (is.na(passed)) miss else character(0), "Key to Soil Orders, P")
+  if (bth < 10 && !bth_open) { if (!length(bb) && length(.nzsc_maybe_rows(x))) NA else FALSE }
+  else { v <- .any3(c(i, ii, iii, iv)); if (bth < 10 && isTRUE(v)) NA else v }
 }
 
 # ---- B: Brown Soils ----------------------------------------------------------------------------

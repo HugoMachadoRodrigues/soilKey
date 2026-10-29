@@ -278,6 +278,19 @@ attributes:
     unit: "-"
     description: "A methane content that can be detected by odour. Read by the NZSC Refuse Anthropic Soils."
     systems: [nzsc4]
+  - name: mechanical_mixing_purpose
+    section: "Description & notation"
+    type: "character"
+    unit: "-"
+    description: "Why the original horizons were mechanically mixed: tephra flipping (a modified tephra stratigraphy), breaking impeding horizons (to break up drainage-impeding horizons such as placic horizons or pans, often with hump-and-hollow recontouring), or other. Read by the NZSC Inverted-tephric and Inverted-impeded Mixed Anthropic Soils; recorded when met."
+    systems: [nzsc4]
+    allowed: [tephra flipping, breaking impeding horizons, other]
+  - name: acid_neutralising_amendment
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "TRUE where acid-neutralising amendments (lime or similar) were added to the soil material. Read by the NZSC Treated-sulfidic Fill Anthropic Soils; recorded when met."
+    systems: [nzsc4]
   - name: overthickened_a
     section: "Description & notation"
     type: "logical"

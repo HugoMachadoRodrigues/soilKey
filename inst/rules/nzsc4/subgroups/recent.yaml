@@ -1,0 +1,242 @@
+# Key to subgroups of Recent Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-barw.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "RX":
+    - code: "RXOA"
+      name: Peaty-acidic Rocky Recent Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface, buried: false}
+          - acid_window_subgroup_nzsc: {from: 20}
+      notes: "A peaty topsoil and pH below 5.5 in some part below 20 cm."
+
+    - code: "RXM"
+      name: Mottled Rocky Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "RXA"
+      name: Acidic Rocky Recent Soils
+      tests:
+        all_of:
+          - acid_window_subgroup_nzsc: {from: 20}
+      notes: "pH below 5.5 in some part below 20 cm."
+
+    - code: "RXT"
+      name: Typic Rocky Recent Soils
+      tests:
+        default: true
+      notes: "Other Rocky Recent Soils."
+
+  "RS":
+    - code: "RSR"
+      name: Sulfuric Sandy Recent Soils
+      tests:
+        all_of:
+          - sulfuric_subgroup_nzsc: {}
+      notes: "Sulfuric soil material in some part within 90 cm."
+
+    - code: "RSU"
+      name: Sulfidic Sandy Recent Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm."
+
+    - code: "RSM"
+      name: Mottled Sandy Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "RSA"
+      name: Acidic Sandy Recent Soils
+      tests:
+        all_of:
+          - acid_window_subgroup_nzsc: {from: 20, to: 60}
+      notes: "pH below 5.5 in some part between 20 and 60 cm."
+
+    - code: "RSK"
+      name: Tephric Sandy Recent Soils
+      tests:
+        all_of:
+          - tephric_subgroup_nzsc: {from: mineral_surface}
+      notes: "Tephric soil material from the mineral soil surface to 30 cm or more."
+
+    - code: "RST"
+      name: Typic Sandy Recent Soils
+      tests:
+        default: true
+      notes: "Other Sandy Recent Soils."
+
+  "RF":
+    - code: "RFR"
+      name: Sulfuric Fluvial Recent Soils
+      tests:
+        all_of:
+          - sulfuric_subgroup_nzsc: {}
+      notes: "Sulfuric soil material in some part within 90 cm."
+
+    - code: "RFU"
+      name: Sulfidic Fluvial Recent Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm."
+
+    - code: "RFMA"
+      name: Mottled-acidic Fluvial Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - acidic_subgroup_nzsc: {}
+      notes: "A mottled profile form, and pH below 5.5 in some part from the base of the A to 60 cm."
+
+    - code: "RFMQ"
+      name: Mottled-saline Fluvial Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - saline_subgroup_nzsc: {}
+      notes: "A mottled profile form, and saline soil material within 60 cm."
+
+    - code: "RFQ"
+      name: Saline Fluvial Recent Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm."
+
+    - code: "RFMW"
+      name: Mottled-weathered Fluvial Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - weathered_b_deep_nzsc: {depth: 30}
+      notes: "A mottled profile form, and a weathered-B horizon reaching 30 cm or more."
+
+    - code: "RFM"
+      name: Mottled Fluvial Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "RFAW"
+      name: Acidic-weathered Fluvial Recent Soils
+      tests:
+        all_of:
+          - weathered_b_deep_nzsc: {depth: 30}
+          - acid_window_subgroup_nzsc: {to: 60, subsurface: true}
+      notes: "A weathered-B horizon reaching 30 cm or more, and pH below 5.5 in some part of the subsurface horizons within 60 cm."
+
+    - code: "RFW"
+      name: Weathered Fluvial Recent Soils
+      tests:
+        all_of:
+          - weathered_b_deep_nzsc: {depth: 30}
+      notes: "A weathered-B horizon reaching 30 cm or more."
+
+    - code: "RFA"
+      name: Acidic Fluvial Recent Soils
+      tests:
+        all_of:
+          - acid_window_subgroup_nzsc: {to: 60, subsurface: true}
+      notes: "pH below 5.5 in some part of the subsurface horizons within 60 cm."
+
+    - code: "RFT"
+      name: Typic Fluvial Recent Soils
+      tests:
+        default: true
+      notes: "Other Fluvial Recent Soils."
+
+  "RT":
+    - code: "RTM"
+      name: Mottled Tephric Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "RTS"
+      name: Scoriaceous Tephric Recent Soils
+      tests:
+        all_of:
+          - scoriaceous_pumice_nzsc: {depth: 60, reach: true}
+      notes: "Predominantly gravel-sized basaltic scoria from the mineral soil surface to 60 cm or more."
+
+    - code: "RTSP"
+      name: Scoriaceous-pumiceous Tephric Recent Soils
+      tests:
+        all_of:
+          - buried_soil_subgroup_nzsc: {material: vitric, scoria: true}
+      notes: "Basaltic scoria over a buried soil within 60 cm with a vitric B or BC."
+
+    - code: "RTBP"
+      name: Buried-pumice Tephric Recent Soils
+      tests:
+        all_of:
+          - buried_soil_subgroup_nzsc: {material: vitric}
+      notes: "A buried soil within 60 cm with a vitric B or BC."
+
+    - code: "RTBL"
+      name: Buried-allophanic Tephric Recent Soils
+      tests:
+        all_of:
+          - buried_soil_subgroup_nzsc: {material: allophanic}
+      notes: "A buried soil within 60 cm with an allophanic B or BC (the bulk density aside)."
+
+    - code: "RTT"
+      name: Typic Tephric Recent Soils
+      tests:
+        default: true
+      notes: "Other Tephric Recent Soils."
+
+  "RO":
+    - code: "ROMP"
+      name: Mottled-pallic Orthic Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - pallic_2b_subgroup_nzsc: {}
+      notes: "A mottled profile form, and part 2(b) of the Pallic Soils."
+
+    - code: "ROM"
+      name: Mottled Orthic Recent Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "ROAW"
+      name: Acidic-weathered Orthic Recent Soils
+      tests:
+        all_of:
+          - weathered_b_deep_nzsc: {depth: 30}
+          - acidic_subgroup_nzsc: {}
+      notes: "A weathered-B horizon reaching 30 cm or more, and pH below 5.5 in some part from the base of the A to 60 cm."
+
+    - code: "ROW"
+      name: Weathered Orthic Recent Soils
+      tests:
+        all_of:
+          - weathered_b_deep_nzsc: {depth: 30}
+      notes: "A weathered-B horizon reaching 30 cm or more."
+
+    - code: "ROA"
+      name: Acidic Orthic Recent Soils
+      tests:
+        all_of:
+          - acidic_subgroup_nzsc: {}
+      notes: "pH below 5.5 in some part from the base of the A to 60 cm."
+
+    - code: "ROT"
+      name: Typic Orthic Recent Soils
+      tests:
+        default: true
+      notes: "Other Orthic Recent Soils."

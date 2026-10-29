@@ -1,0 +1,359 @@
+# Key to subgroups of Brown Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-barw.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "BL":
+    - code: "BLM"
+      name: Mottled Allophanic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BLP"
+      name: Placic Allophanic Brown Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A placic horizon."
+
+    - code: "BLA"
+      name: Acidic Allophanic Brown Soils
+      tests:
+        all_of:
+          - earthy_b_subgroup_nzsc: {acid: true}
+      notes: "In some part of the B or BC to 60 cm, an earthy structure (or, weakly pedal or apedal, bulk density below 1.1) with pH below 5.5."
+
+    - code: "BLF"
+      name: Firm Allophanic Brown Soils
+      tests:
+        all_of:
+          - earthy_b_subgroup_nzsc: {roles: [B]}
+          - firm_beneath_subgroup_nzsc: {}
+      notes: "An earthy or light B in some part to 60 cm, over a fragipan or a firm apedal subhorizon with its top within 90 cm."
+
+    - code: "BLT"
+      name: Typic Allophanic Brown Soils
+      tests:
+        all_of:
+          - earthy_b_subgroup_nzsc: {}
+      notes: "In some part of the B or BC to 60 cm, an earthy structure, or, weakly pedal or apedal, bulk density below 1.1."
+
+    - code: "BLAD"
+      name: Acidic-pedal Allophanic Brown Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60}
+      notes: "pH below 5.5 in some part of the B or BC horizon at 60 cm or less."
+
+    - code: "BLD"
+      name: Pedal Allophanic Brown Soils
+      tests:
+        default: true
+      notes: "Other Allophanic Brown Soils."
+
+  "BS":
+    - code: "BSMP"
+      name: Mottled-placic Sandy Brown Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+          - mottled_subgroup_nzsc: {}
+      notes: "A placic horizon and a mottled profile form."
+
+    - code: "BSM"
+      name: Mottled Sandy Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BSA"
+      name: Acidic Sandy Brown Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60}
+      notes: "pH below 5.5 in some part of the B or BC horizon to its base or 60 cm."
+
+    - code: "BSP"
+      name: Pallic Sandy Brown Soils
+      tests:
+        all_of:
+          - pallic_sandy_brown_nzsc: {}
+      notes: "An argillic horizon of lamellae, or an eluvial horizon (skeletans are not recorded)."
+
+    - code: "BSX"
+      name: Pan Sandy Brown Soils
+      tests:
+        all_of:
+          - any_of:
+              - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+              - pan_subgroup_nzsc: {kind: ortstein, anywhere: true}
+      notes: "A placic horizon or an ortstein-pan."
+
+    - code: "BST"
+      name: Typic Sandy Brown Soils
+      tests:
+        default: true
+      notes: "Other Sandy Brown Soils."
+
+  "BX":
+    - code: "BXM"
+      name: Mottled Oxidic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BXT"
+      name: Typic Oxidic Brown Soils
+      tests:
+        default: true
+      notes: "Other Oxidic Brown Soils."
+
+  "BM":
+    - code: "BMMG"
+      name: Mottled-magnesic Mafic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - magnesic_brown_nzsc: {}
+      notes: "A mottled profile form, and ultramafic coarse fragments or exchangeable Ca:Mg 0.2 or less in some part of the B or BC to 60 cm."
+
+    - code: "BMG"
+      name: Magnesic Mafic Brown Soils
+      tests:
+        all_of:
+          - magnesic_brown_nzsc: {}
+      notes: "5 % or more ultramafic coarse fragments, or exchangeable Ca:Mg 0.2 or less in some part of the B or BC to 60 cm."
+
+    - code: "BMM"
+      name: Mottled Mafic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BMA"
+      name: Acidic Mafic Brown Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60}
+      notes: "pH below 5.5 in some part of the B or BC horizon to 60 cm."
+
+    - code: "BMT"
+      name: Typic Mafic Brown Soils
+      tests:
+        default: true
+      notes: "Other Mafic Brown Soils."
+
+  "BA":
+    - code: "BAO"
+      name: Peaty Acid Brown Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface, buried: false}
+      notes: "A peaty topsoil."
+
+    - code: "BAMP"
+      name: Mottled-impeded Acid Brown Soils
+      tests:
+        all_of:
+          - impeded_acid_brown_nzsc: {}
+      notes: "A placic horizon or ortstein-pan at 60 cm or less, and a mottled or gley profile form with perch-gley features."
+
+    - code: "BAM"
+      name: Mottled Acid Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BAC"
+      name: Cemented Acid Brown Soils
+      tests:
+        all_of:
+          - cemented_subgroup_nzsc: {depth: 90, min_mm: 10}
+      notes: "A horizon more than 10 mm thick, at least weakly indurated, within 90 cm."
+
+    - code: "BAP"
+      name: Placic Acid Brown Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A placic horizon."
+
+    - code: "BAT"
+      name: Typic Acid Brown Soils
+      tests:
+        default: true
+      notes: "Other Acid Brown Soils."
+
+  "BF":
+    - code: "BFMW"
+      name: Mottled-weathered Firm Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - weathered_fragments_nzsc: {}
+      notes: "A mottled profile form, and coarse rock fragments most of which break easily by hammer or spade."
+
+    - code: "BFMC"
+      name: Mottled-cemented Firm Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - cemented_subgroup_nzsc: {depth: 90, placic: false}
+      notes: "A mottled profile form, and a horizon at least weakly indurated within 90 cm (a placic horizon aside)."
+
+    - code: "BFMP"
+      name: Mottled-pallic Firm Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - pallic_colour_subgroup_nzsc: {depth: 90}
+      notes: "A mottled profile form, and pallic colours in some part of the B or BC to 90 cm."
+
+    - code: "BFMA"
+      name: Mottled-acidic Firm Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - acidic_subgroup_nzsc: {}
+      notes: "A mottled profile form, and pH below 5.5 in some part from the base of the A to 60 cm."
+
+    - code: "BFM"
+      name: Mottled Firm Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BFC"
+      name: Cemented Firm Brown Soils
+      tests:
+        all_of:
+          - cemented_subgroup_nzsc: {depth: 90, placic: false}
+      notes: "A horizon at least weakly indurated within 90 cm (a placic horizon aside)."
+
+    - code: "BFF"
+      name: Placic Firm Brown Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: placic, anywhere: true}
+      notes: "A placic horizon."
+
+    - code: "BFL"
+      name: Allophanic Firm Brown Soils
+      tests:
+        all_of:
+          - allophanic_b_subgroup_nzsc: {depth: 90}
+      notes: "P retention 85 % or more, or a strong reactive-aluminium test, in some part of the B or BC to 90 cm."
+
+    - code: "BFW"
+      name: Weathered Firm Brown Soils
+      tests:
+        all_of:
+          - weathered_fragments_nzsc: {}
+      notes: "Coarse rock fragments most of which break easily by hammer or spade."
+
+    - code: "BFP"
+      name: Pallic Firm Brown Soils
+      tests:
+        all_of:
+          - pallic_colour_subgroup_nzsc: {depth: 90}
+      notes: "Pallic colours in some part of the B or BC to 90 cm."
+
+    - code: "BFA"
+      name: Acidic Firm Brown Soils
+      tests:
+        all_of:
+          - firm_acid_brown_nzsc: {}
+      notes: "pH below 5.5, or dark humus coatings, in some part of the B or BC above the firm horizon."
+
+    - code: "BFT"
+      name: Typic Firm Brown Soils
+      tests:
+        default: true
+      notes: "Other Firm Brown Soils."
+
+  "BO":
+    - code: "BOMW"
+      name: Mottled-weathered Orthic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - weathered_fragments_nzsc: {}
+      notes: "A mottled profile form, and coarse rock fragments most of which break easily by hammer or spade."
+
+    - code: "BOMP"
+      name: Mottled-pallic Orthic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - pallic_colour_subgroup_nzsc: {depth: 90}
+      notes: "A mottled profile form, and pallic colours in some part of the B or BC to 90 cm."
+
+    - code: "BOMA"
+      name: Mottled-acidic Orthic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - acidic_subgroup_nzsc: {}
+      notes: "A mottled profile form, and pH below 5.5 in some part from the base of the A to 60 cm."
+
+    - code: "BOM"
+      name: Mottled Orthic Brown Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "BOH"
+      name: Humose Orthic Brown Soils
+      tests:
+        all_of:
+          - humose_brown_nzsc: {}
+      notes: "A dark B horizon in its greater part, and 10 % or less clay within 90 cm."
+
+    - code: "BOI"
+      name: Immature Orthic Brown Soils
+      tests:
+        all_of:
+          - immature_brown_nzsc: {}
+      notes: "A buried A horizon within 120 cm, or a thin, pale, apedal and weak weathered-B horizon."
+
+    - code: "BOW"
+      name: Weathered Orthic Brown Soils
+      tests:
+        all_of:
+          - weathered_fragments_nzsc: {}
+      notes: "Coarse rock fragments most of which break easily by hammer or spade."
+
+    - code: "BOP"
+      name: Pallic Orthic Brown Soils
+      tests:
+        all_of:
+          - pallic_colour_subgroup_nzsc: {depth: 90}
+      notes: "Pallic colours in some part of the B or BC within 90 cm."
+
+    - code: "BOA"
+      name: Acidic Orthic Brown Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60}
+      notes: "pH below 5.5 in some part of the B or BC horizon to 60 cm."
+
+    - code: "BOC"
+      name: Calcareous Orthic Brown Soils
+      tests:
+        all_of:
+          - calcareous_b_subgroup_nzsc: {depth: 60}
+      notes: "A calcareous horizon in part of the B or BC within 60 cm."
+
+    - code: "BOT"
+      name: Typic Orthic Brown Soils
+      tests:
+        default: true
+      notes: "Other Orthic Brown Soils."

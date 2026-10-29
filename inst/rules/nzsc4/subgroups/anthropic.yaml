@@ -1,0 +1,109 @@
+# Key to subgroups of Anthropic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-barw.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "AT":
+    - code: "ATX"
+      name: Rocky Truncated Anthropic Soils
+      tests:
+        all_of:
+          - contact_subgroup_nzsc: {depth: 60, from: soil_surface}
+      notes: "A lithic or paralithic contact within 60 cm of the soil surface."
+
+    - code: "ATT"
+      name: Typic Truncated Anthropic Soils
+      tests:
+        default: true
+      notes: "Other Truncated Anthropic Soils."
+
+  "AO":
+    - code: "AOA"
+      name: Artefact Māori Anthropic Soils
+      tests:
+        all_of:
+          - maori_subgroup_nzsc: {kind: artefact}
+      notes: "A Māori cultural layer with artefacts, or earthworks for construction."
+
+    - code: "AOO"
+      name: Organic Māori Anthropic Soils
+      tests:
+        all_of:
+          - maori_subgroup_nzsc: {kind: organic}
+      notes: "A Māori cultural layer with plant- or animal-derived additions."
+
+    - code: "AOF"
+      name: Fill Māori Anthropic Soils
+      tests:
+        default: true
+      notes: "Other Māori Anthropic Soils."
+
+  "AR":
+    - code: "ARB"
+      name: Buried Refuse Anthropic Soils
+      tests:
+        all_of:
+          - buried_refuse_nzsc: {}
+      notes: "Refuse under more than 60 cm of soil or rock."
+
+    - code: "ART"
+      name: Typic Refuse Anthropic Soils
+      tests:
+        default: true
+      notes: "Other Refuse Anthropic Soils."
+
+  "AM":
+    - code: "AMI"
+      name: Inverted-tephric Mixed Anthropic Soils
+      tests:
+        all_of:
+          - mixing_purpose_subgroup_nzsc: {purpose: tephra}
+      notes: "A tephra stratigraphy modified by mechanical flipping."
+
+    - code: "AMZ"
+      name: Inverted-impeded Mixed Anthropic Soils
+      tests:
+        all_of:
+          - mixing_purpose_subgroup_nzsc: {purpose: impeded}
+      notes: "Horizons mixed to break up drainage-impeding horizons."
+
+    - code: "AMT"
+      name: Typic Mixed Anthropic Soils
+      tests:
+        default: true
+      notes: "Other Mixed Anthropic Soils."
+
+  "AF":
+    - code: "AFU"
+      name: Treated-sulfidic Fill Anthropic Soils
+      tests:
+        all_of:
+          - treated_sulfidic_nzsc: {}
+      notes: "Sulfidic or sulfuric material in the major part to 90 cm, with acid-neutralising amendments."
+
+    - code: "AFC"
+      name: Compacted Fill Anthropic Soils
+      tests:
+        all_of:
+          - compacted_fill_nzsc: {}
+      notes: "A fill horizon of bulk density 1.5 or more."
+
+    - code: "AFW"
+      name: Wet Fill Anthropic Soils
+      tests:
+        all_of:
+          - wet_fill_nzsc: {}
+      notes: "Wet within 60 cm of the mineral soil surface at some time of the year."
+
+    - code: "AFX"
+      name: Coarse Fill Anthropic Soils
+      tests:
+        all_of:
+          - coarse_fill_nzsc: {}
+      notes: "A coarse layer of added material more than 30 cm thick, with little fine earth, its top within 60 cm."
+
+    - code: "AFT"
+      name: Typic Fill Anthropic Soils
+      tests:
+        default: true
+      notes: "Other Fill Anthropic Soils."
