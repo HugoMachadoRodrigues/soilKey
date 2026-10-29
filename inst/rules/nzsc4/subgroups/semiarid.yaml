@@ -1,0 +1,116 @@
+# Key to subgroups of Semiarid Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-sxnp.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "SA":
+    - code: "SAM"
+      name: Mottled Aged-argillic Semiarid Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "SAW"
+      name: Weathered Aged-argillic Semiarid Soils
+      tests:
+        all_of:
+          - weathered_fragments_nzsc: {}
+      notes: "The majority of the coarse rock fragments break easily by hammer or spade."
+
+    - code: "SAK"
+      name: Alkaline Aged-argillic Semiarid Soils
+      tests:
+        all_of:
+          - alkaline_subgroup_nzsc: {depth: 60}
+      notes: "pH 8.6 or more in some part within 60 cm of the mineral soil surface."
+
+    - code: "SAH"
+      name: Thick Aged-argillic Semiarid Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {min_cm: 30}
+      notes: "An argillic horizon 30 cm or more thick."
+
+    - code: "SAT"
+      name: Typic Aged-argillic Semiarid Soils
+      tests:
+        default: true
+      notes: "Other Aged-argillic Semiarid Soils."
+
+  "SZ":
+    - code: "SZQ"
+      name: Saline Solonetzic Semiarid Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm of the mineral soil surface."
+
+    - code: "SZT"
+      name: Typic Solonetzic Semiarid Soils
+      tests:
+        default: true
+      notes: "Other Solonetzic Semiarid Soils."
+
+  "SJ":
+    - code: "SJM"
+      name: Mottled Argillic Semiarid Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "SJQ"
+      name: Saline Argillic Semiarid Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm of the mineral soil surface."
+
+    - code: "SJK"
+      name: Alkaline Argillic Semiarid Soils
+      tests:
+        all_of:
+          - alkaline_subgroup_nzsc: {depth: 60}
+      notes: "pH 8.6 or more in some part within 60 cm of the mineral soil surface."
+
+    - code: "SJL"
+      name: Laminar Argillic Semiarid Soils
+      tests:
+        all_of:
+          - lamellar_argillic_nzsc: {}
+      notes: "An argillic horizon predominantly in the form of lamellae."
+
+    - code: "SJT"
+      name: Typic Argillic Semiarid Soils
+      tests:
+        default: true
+      notes: "Other Argillic Semiarid Soils."
+
+  "SI":
+    - code: "SIM"
+      name: Mottled Immature Semiarid Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "SIQ"
+      name: Saline Immature Semiarid Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {}
+      notes: "Saline soil material within 60 cm of the mineral soil surface."
+
+    - code: "SIK"
+      name: Alkaline Immature Semiarid Soils
+      tests:
+        all_of:
+          - alkaline_subgroup_nzsc: {depth: 60}
+      notes: "pH 8.6 or more in some part within 60 cm of the mineral soil surface."
+
+    - code: "SIT"
+      name: Typic Immature Semiarid Soils
+      tests:
+        default: true
+      notes: "Other Immature Semiarid Soils."

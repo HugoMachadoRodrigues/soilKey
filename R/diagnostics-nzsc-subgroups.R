@@ -329,10 +329,17 @@ concretionary_subgroup_nzsc <- function(pedon) {
 # or less (GOC, `limit: at_or_less`, a top at 60 cm included); `depth` 90
 # for the Melanic Soils (EVC within 90 cm; EOC with an upper surface at 90
 # cm or less; v0.9.300).
-calcareous_subgroup_nzsc <- function(pedon, shelly = FALSE, limit = c("within", "at_or_less"), depth = 60) {
+calcareous_subgroup_nzsc <- function(pedon, shelly = FALSE, limit = c("within", "at_or_less"), depth = 60,
+                                     anywhere = FALSE) {
   limit <- match.arg(limit)
   x <- .nzsc_horizons(pedon)
   miss <- c("effervescence_class", "caco3_pct", "ph_h2o")
+  # `anywhere` (PLC, PXJC; v0.9.301): a calcareous horizon at any depth
+  if (isTRUE(anywhere)) {
+    calc <- .nzsc_calcareous_rows(x); rows <- .nzsc_rows(x); rows <- rows[x$mineral[rows]]
+    return(.nzsc_subgroup("calcareous_subgroup_nzsc", .nzsc_any(calc[rows]), "calcareous subgroups",
+                          missing = miss, layers = which(calc %in% TRUE)))
+  }
   pre <- .nzsc_sub_ms_or_na(x, "calcareous_subgroup_nzsc", "calcareous subgroups", miss); if (!is.null(pre)) return(pre)
   d <- as.numeric(depth)
   rows <- .nzsc_rows_in(x, x$ms, x$ms + if (limit == "within") d else d + 1)
@@ -387,12 +394,14 @@ nodular_subgroup_nzsc <- function(pedon) {
                  "nodular subgroups", missing = c("designation", "ferric_nodules_pct"))
 }
 
-# Argillic subgroups (GOJ): an argillic horizon.
-argillic_subgroup_nzsc <- function(pedon) {
+# Argillic subgroups (GOJ): an argillic horizon; `min_cm` (SAH, v0.9.301):
+# adjacent argillic rows that thick or more.
+argillic_subgroup_nzsc <- function(pedon, min_cm = 0) {
   x <- .nzsc_horizons(pedon)
   # a pan (m) is not an argillic horizon
   a <- ifelse(x$des$m, FALSE, .nzsc_argillic_rows(x))
-  .nzsc_subgroup("argillic_subgroup_nzsc", .nzsc_any(a), "argillic subgroups",
+  v <- if (as.numeric(min_cm) > 0) .nzsc_run_any(x, a, as.numeric(min_cm), strict = FALSE) else .nzsc_any(a)
+  .nzsc_subgroup("argillic_subgroup_nzsc", v, "argillic subgroups", list(min_cm = min_cm),
                  missing = c("designation", "clay_pct", "clay_films_amount"), layers = which(a %in% TRUE))
 }
 
@@ -513,9 +522,10 @@ granular_acid_gley_nzsc <- function(pedon) {
   ebc <- .nzsc_is(x, c("E", "B", "BC"))
   cut <- .nzsc_cutanic_rows(x)
   # value 5 passes with chroma 3 or less, and the coatings chroma is not
-  # recorded (v0.9.300)
+  # recorded (v0.9.300); coatings recorded with no colour value may be dark
+  # (v0.9.301)
   ifelse(coated & !is.na(cv) & cv <= 4 & ebc, TRUE,
-         ifelse(coated & !is.na(cv) & cv > 4 & cv <= 5 & ebc & !(cut %in% TRUE), NA, cut))
+         ifelse(coated & ebc & !(cut %in% TRUE) & (is.na(cv) | (cv > 4 & cv <= 5)), NA, cut))
 }
 
 # A moderately or strongly pedal cutanic or argillic horizon with polyhedral
@@ -610,27 +620,18 @@ magnesic_subgroup_nzsc <- function(pedon, bc = FALSE) {
   where <- if (isTRUE(bc)) "E, EMG" else "U, UYG"
   miss <- c("ca_cmol", "mg_cmol", "rock_origin", "coarse_fragments_pct")
   pre <- .nzsc_sub_ms_or_na(x, nm, where, miss); if (!is.null(pre)) return(pre)
-  b <- if (isTRUE(bc)) .nzsc_b_bc_rows(x) else .nzsc_b_rows(x)
-  b <- b[h$top_cm[b] < x$ms + 60]
-  # v0.9.300: mineral rows of unknown role may be B (or BC) too
-  maybe <- .nzsc_maybe_rows(x); maybe <- maybe[h$top_cm[maybe] < x$ms + 60]
-  if (!length(b) && !length(maybe)) return(.nzsc_subgroup(nm, FALSE, where, missing = miss))
   pm <- tolower(as.character(.nzsc_site1(pedon, "parent_material")))
   ok <- rep(FALSE, x$n)
-  for (i in c(b, maybe)) {
+  for (i in which(x$mineral)) {
     cf <- h$coarse_fragments_pct[i]
     ro <- tolower(as.character(h$rock_origin[i] %||% NA)); if (is.na(ro) || !nzchar(ro)) ro <- pm
     um <- if (is.na(ro) || !nzchar(ro)) NA else grepl("ultramafic|serpentin|peridot|dunite|pyroxenit|harzburg|lherzol", ro)
     frag <- if (is.na(cf) || cf < 5) FALSE else um
     ok[i] <- .any3(c(frag, .nzsc_ca_mg(x, i)))
   }
-  part <- function(r, okv) if (!length(r)) FALSE else .nzsc_some_part_in(x, r, okv, min(h$top_cm[r]), x$ms + 60)
-  v1 <- part(b, ok)
-  if (length(maybe)) {
-    ok2 <- ok; ok2[maybe] <- ifelse(ok[maybe] %in% FALSE, FALSE, NA)
-    v2 <- part(sort(unique(c(b, maybe))), ok2)
-    v1 <- if (identical(v1, v2)) v1 else NA
-  }
+  # v0.9.300: mineral rows of unknown role may be B (or BC) too; v0.9.301:
+  # each choice of them is tried
+  v1 <- .nzsc_b_bc_some_part(x, ok, x$ms + 60, roles = if (isTRUE(bc)) c("B", "BC") else "B")
   .nzsc_subgroup(nm, v1, where, missing = miss)
 }
 

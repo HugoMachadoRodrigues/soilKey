@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.300)
+# soilKey -- recognised horizon attribute names (v0.9.301)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -295,6 +295,7 @@ and do not warn.
 | `pore_coatings_hue_moist` | Munsell | character | Moist Munsell hue of the coatings on pores (not root linings), or of the gel-like masses bridging sand grains or coating coarse fragments; NZSC Acidic and Vitric-acidic Orthic Allophanic Soils (hue 7.5YR or redder, value 5 or less, chroma 3 or more). Recorded when met: not recorded reads as none. | - |
 | `pore_coatings_value_moist` | Munsell | numeric | Moist Munsell value of the coatings on pores or gel-like masses (see pore_coatings_hue_moist). | - |
 | `pore_coatings_chroma_moist` | Munsell | numeric | Moist Munsell chroma of the coatings on pores or gel-like masses (see pore_coatings_hue_moist). | - |
+| `weathered_fragments_pct` | % | numeric | Share of the coarse rock fragments that are weathered enough to break easily by hammer or spade; NZSC Weathered Aged-argillic Semiarid, Weathered-argillic Perch-gley, Mottled-weathered and Weathered Argillic Pallic Soils (the majority, more than 50 %). Recorded when met: not recorded reads as none. | - |
 
 # Site properties
 
@@ -436,5 +437,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.300._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.301._
 

@@ -215,7 +215,9 @@ horizon_column_spec <- function() {
     # ---- v0.9.300: the Podzol, Allophanic, Pumice and Melanic subgroups ----
     pore_coatings_hue_moist       = "character", # moist Munsell hue of coatings on pores or gel-like masses; NZSC Acidic and Vitric-acidic Orthic Allophanic Soils
     pore_coatings_value_moist     = "numeric",   # moist Munsell value of the same coatings
-    pore_coatings_chroma_moist    = "numeric"    # moist Munsell chroma of the same coatings
+    pore_coatings_chroma_moist    = "numeric",   # moist Munsell chroma of the same coatings
+    # ---- v0.9.301: the Semiarid, Oxidic, Granular and Pallic subgroups ----
+    weathered_fragments_pct       = "numeric"    # share of the coarse rock fragments weathered enough to break easily by hammer or spade, %; NZSC Weathered subgroups
   )
 }
 

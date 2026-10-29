@@ -1,0 +1,118 @@
+# Key to subgroups of Granular Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-sxnp.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "NP":
+    - code: "NPX"
+      name: Oxidic Perch-gley Granular Soils
+      tests:
+        all_of:
+          - cutanoxidic_subgroup_nzsc: {}
+      notes: "A cutanoxidic horizon more than 30 cm thick with its upper boundary below 25 cm."
+
+    - code: "NPA"
+      name: Acidic Perch-gley Granular Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60, ph: 5.1, strict: false}
+      notes: "pH 5.1 or less in some part of the B or BC horizon to 60 cm."
+
+    - code: "NPT"
+      name: Typic Perch-gley Granular Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Granular Soils."
+
+  "NE":
+    - code: "NEM"
+      name: Mottled Melanic Granular Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "NEL"
+      name: Allophanic Melanic Granular Soils
+      tests:
+        all_of:
+          - allophanic_layer_subgroup_nzsc: {min_cm: 10, depth: 60}
+      notes: "A horizon 10 cm or more thick within 60 cm that meets allophanic soil material apart from the bulk density."
+
+    - code: "NET"
+      name: Typic Melanic Granular Soils
+      tests:
+        default: true
+      notes: "Other Melanic Granular Soils."
+
+  "NX":
+    - code: "NXMA"
+      name: Mottled-acidic Oxidic Granular Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - acidic_b_subgroup_nzsc: {depth: 60, ph: 5.1}
+      notes: "A mottled profile form, and pH below 5.1 in some part of the B or BC horizon to 60 cm."
+
+    - code: "NXM"
+      name: Mottled Oxidic Granular Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "NXL"
+      name: Allophanic Oxidic Granular Soils
+      tests:
+        all_of:
+          - allophanic_layer_subgroup_nzsc: {min_cm: 10, depth: 60}
+      notes: "A layer 10 cm or more thick within 60 cm that meets allophanic soil material apart from the bulk density."
+
+    - code: "NXA"
+      name: Acidic Oxidic Granular Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60, ph: 5.1}
+      notes: "pH below 5.1 in some part of the B or BC horizon to 60 cm."
+
+    - code: "NXT"
+      name: Typic Oxidic Granular Soils
+      tests:
+        default: true
+      notes: "Other Oxidic Granular Soils."
+
+  "NO":
+    - code: "NOMA"
+      name: Mottled-acidic Orthic Granular Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - acidic_b_subgroup_nzsc: {depth: 60, ph: 5.1}
+      notes: "A mottled profile form, and pH below 5.1 in some part of the B or BC horizon to 60 cm."
+
+    - code: "NOM"
+      name: Mottled Orthic Granular Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "NOL"
+      name: Allophanic Orthic Granular Soils
+      tests:
+        all_of:
+          - allophanic_layer_subgroup_nzsc: {min_cm: 10, depth: 60}
+      notes: "A layer 10 cm or more thick within 60 cm that meets allophanic soil material apart from the bulk density."
+
+    - code: "NOA"
+      name: Acidic Orthic Granular Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60, ph: 5.1, part: major}
+      notes: "pH below 5.1 in the major part of the B or BC horizon to 60 cm."
+
+    - code: "NOT"
+      name: Typic Orthic Granular Soils
+      tests:
+        default: true
+      notes: "Other Orthic Granular Soils."

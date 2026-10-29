@@ -1,0 +1,273 @@
+# Key to subgroups of Pallic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-sxnp.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "PP":
+    - code: "PPU"
+      name: Duric Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: duripan, anywhere: true}
+      notes: "A duripan."
+
+    - code: "PPJX"
+      name: Argillic-fragic Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+          - pan_subgroup_nzsc: {kind: fragipan, anywhere: true}
+      notes: "An argillic horizon and a fragipan."
+
+    - code: "PPX"
+      name: Fragic Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: fragipan, anywhere: true}
+      notes: "A fragipan."
+
+    - code: "PPWJ"
+      name: Weathered-argillic Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - weathered_fragments_nzsc: {}
+          - argillic_subgroup_nzsc: {}
+      notes: "The majority of the coarse rock fragments break easily by hammer or spade, and an argillic horizon."
+
+    - code: "PPJ"
+      name: Argillic Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+      notes: "An argillic horizon."
+
+    - code: "PPC"
+      name: Cemented Perch-gley Pallic Soils
+      tests:
+        all_of:
+          - cemented_subgroup_nzsc: {depth: 90}
+      notes: "A horizon at least weakly indurated within 90 cm of the mineral soil surface."
+
+    - code: "PPT"
+      name: Typic Perch-gley Pallic Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Pallic Soils."
+
+  "PU":
+    - code: "PUM"
+      name: Mottled Duric Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "PUJN"
+      name: Argillic-sodic Duric Pallic Soils
+      tests:
+        all_of:
+          - near_layer_subgroup_nzsc: {layer: argillic_or_cutanic, feature: sodic, side: beneath}
+      notes: "An argillic or cutanic horizon with sodic features within it or immediately beneath it."
+
+    - code: "PUJ"
+      name: Argillic Duric Pallic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+      notes: "An argillic horizon."
+
+    - code: "PUT"
+      name: Typic Duric Pallic Soils
+      tests:
+        default: true
+      notes: "Other Duric Pallic Soils."
+
+  "PX":
+    - code: "PXJN"
+      name: Argillic-sodic Fragic Pallic Soils
+      tests:
+        all_of:
+          - over_fragipan_subgroup_nzsc: {upper: argillic_or_cutanic}
+          - near_layer_subgroup_nzsc: {layer: fragipan, feature: sodic, side: above}
+      notes: "An argillic or cutanic horizon over the fragipan, and sodic features within or immediately above the fragipan."
+
+    - code: "PXMJ"
+      name: Argillic-mottled Fragic Pallic Soils
+      tests:
+        all_of:
+          - over_fragipan_subgroup_nzsc: {upper: argillic}
+          - mottled_subgroup_nzsc: {}
+      notes: "An argillic horizon over the fragipan, and a mottled profile form."
+
+    - code: "PXJC"
+      name: Argillic-calcareous Fragic Pallic Soils
+      tests:
+        all_of:
+          - argillic_subgroup_nzsc: {}
+          - calcareous_subgroup_nzsc: {anywhere: true}
+      notes: "An argillic horizon and a calcareous horizon."
+
+    - code: "PXJ"
+      name: Argillic Fragic Pallic Soils
+      tests:
+        all_of:
+          - over_fragipan_subgroup_nzsc: {upper: argillic}
+      notes: "An argillic horizon over the fragipan."
+
+    - code: "PXMC"
+      name: Mottled-calcareous Fragic Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - near_layer_subgroup_nzsc: {layer: fragipan, feature: calcareous, side: beneath}
+      notes: "A mottled profile form, and a calcareous horizon immediately beneath the fragipan or carbonate in its prism interiors."
+
+    - code: "PXM"
+      name: Mottled Fragic Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "PXCN"
+      name: Calcareous-sodic Fragic Pallic Soils
+      tests:
+        all_of:
+          - near_layer_subgroup_nzsc: {layer: fragipan, feature: calcareous, side: beneath}
+          - near_layer_subgroup_nzsc: {layer: fragipan, feature: sodic, side: beneath}
+      notes: "A calcareous horizon immediately beneath the fragipan or carbonate in its prism interiors, and sodic features within or immediately beneath the fragipan."
+
+    - code: "PXC"
+      name: Calcareous Fragic Pallic Soils
+      tests:
+        all_of:
+          - near_layer_subgroup_nzsc: {layer: fragipan, feature: calcareous, side: beneath}
+      notes: "A calcareous horizon immediately beneath the fragipan, or carbonate in its prism interiors."
+
+    - code: "PXT"
+      name: Typic Fragic Pallic Soils
+      tests:
+        default: true
+      notes: "Other Fragic Pallic Soils."
+
+  "PL":
+    - code: "PLM"
+      name: Mottled Laminar Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "PLC"
+      name: Calcareous Laminar Pallic Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {anywhere: true}
+      notes: "A calcareous horizon."
+
+    - code: "PLT"
+      name: Typic Laminar Pallic Soils
+      tests:
+        default: true
+      notes: "Other Laminar Pallic Soils."
+
+  "PJ":
+    - code: "PJMY"
+      name: Mottled-ultic Argillic Pallic Soils
+      tests:
+        all_of:
+          - argillic_part_subgroup_nzsc: {test: acid, eluvial: true}
+          - mottled_subgroup_nzsc: {}
+      notes: "An eluvial horizon and pH below 5.5 in some part of the argillic horizon, and a mottled profile form."
+
+    - code: "PJMW"
+      name: Mottled-weathered Argillic Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - weathered_fragments_nzsc: {}
+      notes: "A mottled profile form, and coarse rock fragments most of which break easily by hammer or spade."
+
+    - code: "PJM"
+      name: Mottled Argillic Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "PJA"
+      name: Aged Argillic Pallic Soils
+      tests:
+        all_of:
+          - argillic_part_subgroup_nzsc: {test: aged_colour}
+      notes: "Hue 7.5YR or redder, or 10YR with chroma 6 or more, in some part of the argillic horizon."
+
+    - code: "PJY"
+      name: Ultic Argillic Pallic Soils
+      tests:
+        all_of:
+          - argillic_part_subgroup_nzsc: {test: acid, eluvial: true}
+      notes: "An eluvial horizon and pH below 5.5 in some part of the argillic horizon."
+
+    - code: "PJN"
+      name: Sodic Argillic Pallic Soils
+      tests:
+        all_of:
+          - near_layer_subgroup_nzsc: {layer: argillic, feature: sodic, side: beneath}
+      notes: "Sodic features within or immediately beneath the argillic horizon."
+
+    - code: "PJW"
+      name: Weathered Argillic Pallic Soils
+      tests:
+        all_of:
+          - weathered_fragments_nzsc: {}
+      notes: "Coarse rock fragments most of which break easily by hammer or spade."
+
+    - code: "PJC"
+      name: Calcareous Argillic Pallic Soils
+      tests:
+        all_of:
+          - calcareous_argillic_nzsc: {}
+      notes: "A calcareous horizon with its top within 90 cm, or within or immediately below the argillic horizon."
+
+    - code: "PJT"
+      name: Typic Argillic Pallic Soils
+      tests:
+        default: true
+      notes: "Other Argillic Pallic Soils."
+
+  "PI":
+    - code: "PIMD"
+      name: Mottled-pedal Immature Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+          - pedal_b_subgroup_nzsc: {max_mm: 100}
+      notes: "A mottled profile form, and moderately or strongly pedal with peds of 100 mm or less in the major part of the B horizon to 60 cm."
+
+    - code: "PIM"
+      name: Mottled Immature Pallic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "PIC"
+      name: Calcareous Immature Pallic Soils
+      tests:
+        all_of:
+          - calcareous_subgroup_nzsc: {limit: within, depth: 90}
+      notes: "A calcareous horizon with its upper surface within 90 cm of the mineral soil surface."
+
+    - code: "PID"
+      name: Pedal Immature Pallic Soils
+      tests:
+        all_of:
+          - pedal_b_subgroup_nzsc: {max_mm: 100}
+      notes: "Moderately or strongly pedal with peds of 100 mm or less in the major part of the B horizon to 60 cm."
+
+    - code: "PIT"
+      name: Typic Immature Pallic Soils
+      tests:
+        default: true
+      notes: "Other Immature Pallic Soils."
