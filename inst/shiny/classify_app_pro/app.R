@@ -138,6 +138,10 @@ sk_page <- function() {
         tags$link(rel = "stylesheet", type = "text/css",
                   href = paste0("soilkey.css?v=",
                                 as.character(utils::packageVersion("soilKey")))),
+        # v0.9.303: uploads and downloads over the websocket, and the
+        # connection-lost notice (see R/utils_transfer.R)
+        tags$script(src = paste0("soilkey-transfer.js?v=",
+                                 as.character(utils::packageVersion("soilKey")))),
         # a11y: announce transient showNotification() toasts to screen readers
         # (the panel is created on demand, so tag it once it appears).
         tags$script(htmltools::HTML(
@@ -179,6 +183,19 @@ sk_page <- function() {
           "var t=document.querySelector('.navbar .navbar-nav a.nav-link[data-bs-toggle]');",
           "if(t)t.click();window.scrollTo({top:0,behavior:'smooth'});});")))
       ),
+      # v0.9.303: shown by www/soilkey-transfer.js when the websocket closes,
+      # so a page that lost its session says so instead of going quietly dead
+      tags$div(id = "sk_disconnected", class = "sk-disconnected", hidden = NA,
+               role = "alertdialog",
+               `aria-labelledby` = "sk_disconnected_title",
+               `aria-describedby` = "sk_disconnected_body",
+               tags$strong(id = "sk_disconnected_title",
+                           i18n("transfer.lost_title")),
+               tags$span(id = "sk_disconnected_body",
+                         i18n("transfer.lost_body")),
+               tags$button(id = "sk_disconnected_reload", type = "button",
+                           class = "btn btn-light btn-sm",
+                           i18n("transfer.reload"))),
       uiOutput("pedon_ribbon"),
       # ---- the Assistant: a floating button + a right-side slide-out drawer,
       # persistent across every tab (position:fixed, so outside the nav flow).

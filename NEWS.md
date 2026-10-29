@@ -1,3 +1,32 @@
+# soilKey 0.9.303 (2026-10-29)
+
+## Pro app: uploads and downloads over the websocket, and a notice when the connection is lost
+
+On soilkeypro.com some uploads and downloads failed with "Not Found". Shiny
+moves files by plain HTTP requests to `/session/<token>/upload/` and
+`/session/<token>/download/`, which only the R process holding the session
+can answer. Cloud Run keeps a visitor on one instance on a best-effort basis,
+so while a new instance was starting a request could reach another one. The
+websocket stays on the instance of the session, so the files now travel over
+it.
+
+* `sk_file_input()` replaces `shiny::fileInput()` (7 controls). It draws the
+  same box and button; `www/soilkey-transfer.js` sends the file in slices of
+  512 KB, each one acknowledged before the next, and the server rebuilds it.
+  `input$<id>` keeps the shape `fileInput()` gave (name, size, type,
+  datapath), so the tabs read it as before. The size limit is still
+  `shiny.maxRequestSize` (5 MB by default); drag and drop still works.
+* `sk_download_button()`, `sk_download_link()` and `sk_download()` replace
+  `downloadButton()`, `downloadLink()` and `downloadHandler()` (13
+  downloads). A click runs the same file name and content functions; the file
+  comes back in slices and the browser saves it under the same name. An error
+  shows its message as a notification.
+* When the connection to the server drops (the session ended, a phone put the
+  page to sleep, or the network failed), a bar at the top of the page says so
+  and offers a Reload button, in English or Portuguese, instead of a grey page
+  that no longer responds. A profile saved with "Save session" can be reopened
+  after the reload.
+
 # soilKey 0.9.302 (2026-10-29)
 
 ## New Zealand Soil Classification: the subgroups of the Brown, Anthropic, Recent and Raw Soils

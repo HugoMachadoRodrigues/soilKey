@@ -182,7 +182,7 @@ photo_ui <- function(id) {
         i18n("photo.step2_munsell"),
         icon = "eye-dropper",
         desc = i18n("photo.desc_munsell"),
-        shiny::fileInput(
+        sk_file_input(
           ns("profile_img"),
           sk_label(i18n("photo.profile_photograph"),
                    i18n("photo.help_profile_photo")),
@@ -202,7 +202,7 @@ photo_ui <- function(id) {
         i18n("photo.step3_site"),
         icon = "location-dot",
         desc = i18n("photo.desc_site"),
-        shiny::fileInput(
+        sk_file_input(
           ns("sheet_img"),
           sk_label(i18n("photo.field_sheet_image"),
                    i18n("photo.help_sheet")),
@@ -428,8 +428,9 @@ photo_server <- function(id, rv) {
     # ---- uploaded profile-photo thumbnail ---------------------------------
     # A small preview so the user can confirm the right image is queued before
     # spending a (potentially paid) VLM call on it. deleteFile = FALSE: the
-    # path is Shiny's own upload temp file (owned by the fileInput) or our
-    # cached transparent placeholder -- neither should be deleted after serving.
+    # path is the upload's temp file (owned by sk_file_input, R/utils_transfer.R)
+    # or our cached transparent placeholder; neither should be deleted after
+    # serving.
     output$profile_preview <- shiny::renderImage({
       f <- active_profile()
       if (is.null(f)) {

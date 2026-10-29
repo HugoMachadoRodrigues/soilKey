@@ -562,3 +562,16 @@ body.sk-assistant-open .sk-assistant-fab { display: none; }
 [data-bs-theme="dark"] .sk-data-source { background: rgba(255, 255, 255, 0.05); color: inherit; }
 [data-bs-theme="dark"] .sk-data-source a { color: #e0a370; }
 [data-bs-theme="dark"] .sk-data-source-nc { color: #fdba74; }
+
+/* ---- v0.9.303: connection-lost notice (www/soilkey-transfer.js) ---------
+   Sits above Shiny's grey disconnected overlay (z-index 99998). */
+.sk-disconnected {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100000;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 0.4rem 1rem; padding: 0.75rem 1rem;
+  background: var(--sk-espresso); color: #fff; font-size: 0.95rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+.sk-disconnected[hidden] { display: none !important; }
+.sk-disconnected strong { font-weight: 600; }
+.sk-disconnected span { max-width: 52rem; }
