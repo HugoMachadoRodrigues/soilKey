@@ -221,6 +221,25 @@
   site
 }
 
+# v0.9.307: the soil temperature regime (USDA), next to the moisture regime.
+# The Soil Taxonomy family reads it, and a regime warmer than gelic rules out
+# permafrost, so the Cryosols and Gelisols are decided. The older pergelic is
+# read as gelic.
+.sk_str_choices <- c("", "gelic", "cryic", "frigid", "isofrigid", "mesic",
+                     "isomesic", "thermic", "isothermic", "hyperthermic",
+                     "isohyperthermic")
+.sk_str_value <- function(v) {
+  v <- tolower(trimws(as.character(v %||% "")[1]))
+  if (is.na(v)) return("")
+  if (identical(v, "pergelic")) v <- "gelic"
+  if (v %in% .sk_str_choices) v else ""
+}
+.sk_site_with_str <- function(site, value) {
+  v <- .sk_str_value(value)
+  site$soil_temperature_regime <- if (nzchar(v)) v else NULL
+  site
+}
+
 # Loading a fixture used to bring in its horizons and silently drop its site
 # metadata, so the Site panel kept showing the previous profile's coordinates
 # (David Rossiter, pers. comm.). Only fields the source actually carries are
@@ -245,6 +264,7 @@
   # the regime of the profile just loaded, or unknown: a regime carried over
   # from the previous profile would change its USDA name silently
   shiny::updateSelectInput(session, "smr", selected = .sk_smr_value(site$soil_moisture_regime))
+  shiny::updateSelectInput(session, "str", selected = .sk_str_value(site$soil_temperature_regime))
   invisible(NULL)
 }
 
@@ -345,14 +365,24 @@ pedon_ui <- function(id) {
                      i18n("pedon.help_pm")),
             "gneiss"))
         ),
-        shiny::selectInput(
-          ns("smr"),
-          sk_label(i18n("pedon.moisture_regime"),
-                   i18n("pedon.help_moisture_regime")),
-          choices = stats::setNames(
-            .sk_smr_choices,
-            c(i18n("pedon.smr_unknown"), "aquic", "aridic (torric)", "udic", "perudic", "ustic", "xeric")),
-          selected = ""),
+        shiny::fluidRow(
+          shiny::column(6, shiny::selectInput(
+            ns("smr"),
+            sk_label(i18n("pedon.moisture_regime"),
+                     i18n("pedon.help_moisture_regime")),
+            choices = stats::setNames(
+              .sk_smr_choices,
+              c(i18n("pedon.smr_unknown"), "aquic", "aridic (torric)", "udic", "perudic", "ustic", "xeric")),
+            selected = "")),
+          shiny::column(6, shiny::selectInput(
+            ns("str"),
+            sk_label(i18n("pedon.temperature_regime"),
+                     i18n("pedon.help_temperature_regime")),
+            choices = stats::setNames(
+              .sk_str_choices,
+              c(i18n("pedon.str_unknown"), .sk_str_choices[-1])),
+            selected = ""))
+        ),
         # v0.9.190: site-level technic (anthropogenic) attributes. These are
         # facts about how the site was built, not per-layer lab values, so they
         # are asked once here and written onto the horizons at build time.
@@ -542,8 +572,8 @@ pedon_server <- function(id, rv) {
           payload$site <- c(payload$site,
                             extra[setdiff(names(extra), names(payload$site))])
         }
-        # v0.9.306: the soil moisture regime, when known
-        payload$site <- .sk_site_with_smr(payload$site, input$smr)
+        # v0.9.306 / v0.9.307: the soil moisture and temperature regimes, when known
+        payload$site <- .sk_site_with_str(.sk_site_with_smr(payload$site, input$smr), input$str)
         jsonlite::write_json(payload, file, pretty = TRUE, auto_unbox = TRUE,
                              null = "null", na = "null", digits = NA)
       }
@@ -604,6 +634,9 @@ pedon_server <- function(id, rv) {
       # v0.9.306: the soil moisture regime goes to its input, not to the extras
       shiny::updateSelectInput(session, "smr", selected = .sk_smr_value(site$soil_moisture_regime))
       site_extra$soil_moisture_regime <- NULL
+      # v0.9.307: and the temperature regime to its own
+      shiny::updateSelectInput(session, "str", selected = .sk_str_value(site$soil_temperature_regime))
+      site_extra$soil_temperature_regime <- NULL
       data_source(if (length(site_extra)) site_extra else NULL)
       notice <- .sk_unrecognised_notice(hzdf, site)
       hz(hzdf)
@@ -619,13 +652,13 @@ pedon_server <- function(id, rv) {
           site$geomembrane %||% "unknown", site$geomembrane_depth_cm)
         h_dt <- soilKey::ensure_horizon_schema(data.table::as.data.table(hz_built))
         .sk_new_pedon(
-          site = .sk_site_with_smr(c(list(
+          site = .sk_site_with_str(.sk_site_with_smr(c(list(
             id              = site$id %||% "pedon",
             lat             = site$lat,
             lon             = site$lon,
             country         = site$country,
             parent_material = site$parent_material),
-            site_extra), site$soil_moisture_regime),
+            site_extra), site$soil_moisture_regime), site$soil_temperature_regime),
           horizons = h_dt)
       }, error = function(e) NULL)
       if (!is.null(built)) {
@@ -977,8 +1010,8 @@ pedon_server <- function(id, rv) {
         # WoSIS data keeps its provenance: source, licence, date and citation
         # go into the pedon, and from there into the report.
         if (!is.null(data_source())) site <- utils::modifyList(site, data_source())
-        # v0.9.306: the soil moisture regime chosen in the editor
-        site <- .sk_site_with_smr(site, input$smr)
+        # v0.9.306 / v0.9.307: the soil moisture and temperature regimes chosen in the editor
+        site <- .sk_site_with_str(.sk_site_with_smr(site, input$smr), input$str)
         .sk_new_pedon(site = site, horizons = h_dt)
       }, error = function(e) e)
 
