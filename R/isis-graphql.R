@@ -16,23 +16,39 @@
 # acknowledgement. Check ISRIC's Data Hub for the current terms.
 #
 # WHAT THE TRANSLATION READS (Hugo, 2026-10-29):
-#   * Bulk density and water retention are often sampled at their own depths,
-#     in rows of their own that carry the layer number of the horizon above.
-#     Their values go to the horizon that holds the sample's mid-depth.
+#   * Laboratory samples in rows of their own (no layer name, no field
+#     description) go to the described horizon that holds their mid-depth, as
+#     a thickness-weighted mean filling only what the horizon lacks; a
+#     described horizon left with no laboratory value takes the samples that
+#     overlap it. ISIS keeps the description and the samples apart in more
+#     than half its profiles, so without this colour and analysis never meet.
 #   * Clay films are the FAO (1977) cutans of kind clay, clay and sesquioxides
 #     or clay and humus: patchy, broken and continuous are few, common and many;
 #     thin, moderately thick and thick are faint, distinct and prominent; clay
-#     cutans recorded with no abundance are few. Cutans of kind slickensides are
-#     the slickensides.
+#     cutans recorded with no abundance are few, and so are cutans of no kind in
+#     a horizon whose designation has t. Cutans of kind slickensides are the
+#     slickensides, common when patchy, broken or of no recorded abundance.
+#   * Cracks: the profile's cracking (large or small) or, without it, gilgai
+#     give cracks of 0.5 cm or more in the horizons starting above 100 cm.
 #   * Coarse fragments: cfvo when measured, else the middle of the FAO class of
 #     rocksArtefactAbundVol (V 1, F 3.5, C 10, M 27.5, A 60, D 90 %).
+#   * Inclusions: calcareous ones are secondary carbonates; hard Fe/Mn
+#     concretions and nodules over 2 mm are nodules; in a v horizon or an iron
+#     pan, mottles and soft Fe/Mn concretions are plinthite (middle of the FAO
+#     classes). Nothing is inferred where none is recorded.
+#   * EC 1:2.5 only where it decides the salic horizon: 15 dS/m or more is a
+#     lower bound of the paste EC; below that, x 12.5 is an upper bound
+#     (ec_max_dS_m), read only by the salic test.
+#   * Water-dispersible clay is a clay content.
 #   * absent_unless_recorded = TRUE (default): in a horizon with a field
 #     description, mottles, slickensides, plinthite, a duripan and artefacts
 #     that the description does not mention are absent. Rows with laboratory
 #     data only stay unknown, and so does anything a designation or a pan
-#     suggests (v for plinthite, qm for a duripan, u for artefacts).
+#     suggests (v for plinthite, qm for a duripan, u for artefacts), and the
+#     mottles of a g, l or r horizon with no mottle field.
 #   * Base saturation (100 x exchangeable bases / CEC at pH 7), the ECEC and
-#     the aluminium saturation are calculated when ISIS has the parts.
+#     the aluminium saturation are calculated when ISIS has the parts; silt is
+#     100 - sand - clay when only those two are given.
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"

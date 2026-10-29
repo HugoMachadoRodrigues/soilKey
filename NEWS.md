@@ -4,20 +4,25 @@
 
 Asked for by Jelle Janssen (ISRIC), who had matched the ISIS properties to soilKey's by hand.
 
-* `read_isis()` reads profiles live from ISRIC's ISIS GraphQL service by profile code (`read_isis(c("KE009", "ZW005"))`) or by country (`read_isis(country = "KE")`), and returns soilKey pedons ready for `classify_all()`. Nothing is written to disk.
+* `read_isis()` reads profiles live from ISRIC's ISIS GraphQL service, by profile code (`read_isis(c("KE009", "ZW005"))`) or by country (`read_isis(country = "KE")`). It returns soilKey pedons ready for `classify_all()`, and writes nothing to disk.
 * `isis_profile_to_pedon()` does the translation:
-  * Laboratory values go to soilKey units: organic carbon, nitrogen, CaCO3 and gypsum from g/kg; water at 1500 kPa from volume to mass.
-  * FAO field codes go to soilKey's words: structure, consistence, stickiness, plasticity, cutans, mottles, effervescence, cementation.
-  * Base saturation, ECEC and aluminium saturation are calculated from the exchangeable cations.
+  * Laboratory values go to soilKey units: organic carbon, nitrogen, CaCO3 and gypsum from g/kg; water at 1500 kPa from volume to mass; water-dispersible clay as a clay content.
+  * FAO field codes go to soilKey's words: structure, consistence, stickiness, plasticity, cutans, mottles, boundaries, effervescence, cementation and pans.
+  * Base saturation, ECEC, aluminium saturation and silt (100 - sand - clay) are calculated from the parts.
   * Every value names its ISIS field in the provenance.
-* Bulk density and water samples taken at their own depths, in rows of their own, go to the horizon that holds the sample.
-* The site carries the names ISRIC gives the profile: `reference_wrb`, the new `reference_wrb_full` and `reference_wrb_edition`, `reference_usda` and its subgroup with the new `reference_usda_edition`. It also carries the soil moisture and temperature regimes when ISIS records them (KE009: ustic, isohyperthermic), the licence and the citation (`isis_citation()`).
+* The site carries the names ISRIC gives the profile: `reference_wrb`, the new `reference_wrb_full` and `reference_wrb_edition`, `reference_usda` and its subgroup, and the new `reference_usda_edition`.
+* It also carries the soil moisture and temperature regimes when ISIS records them (KE009: ustic, isohyperthermic), gilgai, the licence and the citation (`isis_citation()`).
 * Readings decided by Hugo:
-  * Clay films are the FAO (1977) cutans of kind clay: patchy, broken and continuous become few, common and many; clay cutans with no abundance count as few.
-  * Cutans of kind slickensides are the slickensides.
+  * ISIS keeps the field description and the laboratory samples in separate rows in more than half its profiles. Each sample goes to the described horizon that holds its mid-depth, as a thickness-weighted mean that fills only what the horizon lacks. A described horizon left with no laboratory value takes the samples that overlap it.
+  * Clay films are the FAO (1977) cutans of kind clay: patchy, broken and continuous become few, common and many. Clay cutans with no abundance count as few, and so do cutans of no kind in a horizon whose designation has t.
+  * Cutans of kind slickensides are the slickensides, counted as common when patchy, broken or of no recorded abundance.
+  * The profile's cracking (large or small) or, without it, gilgai gives cracks of 0.5 cm or more in the horizons starting above 100 cm.
   * Coarse fragments come from the middle of the FAO class when cfvo is not measured.
-  * With `absent_unless_recorded = TRUE` (the default), mottles, slickensides, plinthite, a duripan and artefacts that a horizon's field description does not mention are absent in that horizon.
-* `benchmark_isis()` sets soilKey's WRB and USDA names beside ISRIC's. BENCH_SUMMARY
+  * Calcareous inclusions are secondary carbonates. Hard Fe/Mn concretions over 2 mm are nodules. In a v horizon or an iron pan, mottles and soft Fe/Mn concretions are plinthite.
+  * EC 1:2.5 is used only where it decides the salic horizon: 15 dS/m or more is a lower bound of the paste EC; below that, EC 1:2.5 x 12.5 is an upper bound. It goes into the new attribute `ec_max_dS_m`, which only the salic test reads, to rule a layer out.
+  * With `absent_unless_recorded = TRUE` (the default), mottles, slickensides, plinthite, a duripan and artefacts that a horizon's field description does not mention are absent in that horizon. Mottles stay unknown in a g, l or r horizon with no mottle field.
+* `benchmark_isis()` sets soilKey's WRB and USDA names beside ISRIC's. On the 481 profiles with an ISRIC WRB 2022 name, soilKey now gives the same Reference Soil Group for 221 (45.9%); with the first draft of the translation it was 149 (31.0%). The USDA order agrees for 354 of 748 (47.3%; ISRIC's USDA names are from the 1975 and 1999 editions). The median number of close calls per profile fell from 7 to 4.
+* The investigation behind these numbers also found deviations of soilKey's WRB 2022 diagnostics from the text, on the mollic, argic, redox, vertic, organic and weakly developed groups. They are fixed in the PRs that follow.
 
 # soilKey 0.9.307 (2026-10-29)
 
