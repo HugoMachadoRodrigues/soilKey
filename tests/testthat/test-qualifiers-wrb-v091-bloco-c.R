@@ -109,8 +109,10 @@ test_that("NT canonical fixture resolves to a Luvic Nitisol", {
   res <- resolve_wrb_qualifiers(pr, "NT")
   expect_true("Luvic"   %in% res$principal)
   # v0.9.217: Ferric is a supplementary qualifier of Nitisols in WRB 2022, and
-  # Chromic is not in their lists
-  expect_true("Ferric"  %in% res$supplementary)
+  # Chromic is not in their lists. v0.9.309: the ferric horizon is read from
+  # its criteria (nodules, coarse masses), not from Fe-dithionite; the fixture
+  # records no nodules, so it is not Ferric.
+  expect_false("Ferric"  %in% res$supplementary)
   expect_false("Chromic" %in% c(res$principal, res$supplementary))
   # NT fixture has CEC/clay ~ 32 cmol+/kg clay -> NOT Vetic (threshold 6).
   expect_false("Vetic" %in% res$principal)
@@ -127,7 +129,7 @@ test_that("FR canonical fixture resolves to a Geric Rhodic Ferralsol", {
   pr  <- make_ferralsol_canonical()
   res <- resolve_wrb_qualifiers(pr, "FR")
   expect_true("Geric"   %in% res$principal)
-  expect_true("Ferric"  %in% res$supplementary)   # v0.9.217: Ch 4 FR list
+  expect_false("Ferric"  %in% res$supplementary)  # v0.9.309: no nodules recorded (ferric horizon by its criteria)
   expect_true("Rhodic"  %in% res$principal)
   # WRB 2022: Chromic does NOT apply when the soil meets Rhodic (v0.9.131).
   expect_false("Chromic" %in% res$principal)

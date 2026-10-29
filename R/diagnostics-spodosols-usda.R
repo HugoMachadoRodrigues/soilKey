@@ -216,45 +216,113 @@ duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
 
 # ---- Kandic horizon helper ------------------------------------------
 
-#' Kandic horizon (USDA, KST 13ed Ch 3, p 45)
+#' Kandic horizon (USDA, KST 13ed Ch 3, pp. 26-27)
 #'
-#' Subsurface horizon with low-activity clays (CEC <= 16 cmol/kg
-#' clay, ECEC <= 12) and clay increase. Implementation:
-#' delegates to argic with additional CEC/clay check.
-#'
+#' v0.9.309: the criteria of Keys to Soil Taxonomy (13th ed., 2022). Until
+#' v0.9.308 soilKey took the WRB argic horizon plus a CEC of 16 or less per kg
+#' clay, which is not the kandic horizon of the text. The kandic horizon:
+#' \itemize{
+#'   \item has its upper boundary where the clay increases with depth within
+#'     15 cm by 3\% (absolute) or more if the overlying horizon has < 15\%
+#'     clay, 20\% (relative) if 15 to 40\%, 8\% (absolute) if > 40\%; at a
+#'     depth within 100 cm if the overlying horizon has 20\% clay or more,
+#'     within 125 cm otherwise, or between 100 and 200 cm if the upper 100 cm
+#'     is sandy throughout;
+#'   \item lies under a coarser surface horizon at least 18 cm thick (5 cm
+#'     if the transition is abrupt);
+#'   \item is 30 cm thick or more (15 cm over a densic, lithic, paralithic
+#'     or petroferric contact within 50 cm);
+#'   \item is loamy very fine sand or finer;
+#'   \item has an apparent CEC of 16 cmol(+) or less per kg clay (NH4OAc,
+#'     pH 7) in 50\% or more of its thickness between the clay increase and
+#'     100 cm below it; the clay is the measured clay or 2.5 x (water at 1500
+#'     kPa - organic carbon), whichever is higher, at most 100;
+#'   \item has no fine stratification (organic carbon decreasing regularly).
+#' }
+#' Clay films are not required.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 kandic_horizon_usda <- function(pedon) {
-  arg <- argic(pedon, lithic_discontinuity = FALSE)
-  if (!isTRUE(arg$passed)) {
-    return(DiagnosticResult$new(
-      name = "kandic_horizon_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "no argic / clay-increase horizon"),
-      missing = arg$missing,
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 45"
-    ))
-  }
+  ref <- "Soil Survey Staff (2022), KST 13ed, Ch. 3, kandic horizon (pp. 26-27)"
   h <- pedon$horizons
-  cand <- arg$layers
-  passing <- integer(0); miss <- character(0)
-  for (i in cand) {
-    cec <- h$cec_cmol[i]
-    clay <- h$clay_pct[i]
-    if (is.na(cec)) miss <- c(miss, "cec_cmol")
-    if (is.na(clay)) miss <- c(miss, "clay_pct")
-    if (!is.na(cec) && !is.na(clay) && clay > 0) {
-      cec_per_clay <- cec * 100 / clay
-      if (cec_per_clay <= 16) passing <- c(passing, i)
-    }
+  if (is.null(h) || nrow(h) < 2L)
+    return(DiagnosticResult$new(name = "kandic_horizon_usda", passed = FALSE,
+             layers = integer(0), evidence = list(reason = "fewer than two layers"),
+             missing = character(0), reference = ref))
+  h <- as.data.frame(h)
+  o <- order(h$top_cm); idx <- seq_len(nrow(h))[o]
+  top <- h$top_cm[o]; bot <- h$bottom_cm[o]; clay <- h$clay_pct[o]
+  ms <- .q_mineral_surface_cm(pedon$horizons); if (is.na(ms)) ms <- 0
+  w15 <- if (!is.null(h$water_content_1500kpa)) h$water_content_1500kpa[o] else rep(NA_real_, length(o))
+  oc <- if (!is.null(h$oc_pct)) h$oc_pct[o] else rep(NA_real_, length(o))
+  # the apparent clay of the CEC criterion
+  clay_app <- pmin(100, pmax(clay, 2.5 * (w15 - ifelse(is.na(oc), 0, oc)), na.rm = TRUE))
+  cec <- h$cec_cmol[o]
+  sand <- if (!is.null(h$sand_pct)) h$sand_pct[o] else rep(NA_real_, length(o))
+  sandy <- !is.na(sand) & !is.na(clay) & sand >= 70 & clay < 15        # loamy fine sand or coarser
+  # the contact that shortens the thickness and the CEC window
+  contact <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  upper100_sandy <- all(sandy[top < ms + 100]) && any(top < ms + 100)
+  miss <- character(0); cand_tops <- numeric(0)
+  bdist <- if (!is.null(h$boundary_distinctness)) tolower(as.character(h$boundary_distinctness[o])) else rep(NA_character_, length(o))
+  undecided <- function(at, what) { miss <<- c(miss, what); cand_tops <<- c(cand_tops, at) }
+  for (k in seq_along(o)[-1]) {
+    # the overlying horizon is mineral: a layer above the mineral soil surface
+    # (organic) is not compared with the first mineral layer; and no kandic
+    # horizon starts below 200 cm, so deeper layers decide nothing
+    if (is.na(top[k]) || top[k] < ms || is.na(top[k - 1]) || top[k - 1] < ms) next
+    if (top[k] > ms + 200) next
+    # the surface horizon above is at least 18 cm thick after mixing, or 5 cm
+    # if the transition is abrupt
+    abrupt <- !is.na(bdist[k - 1]) && grepl("abrupt", bdist[k - 1])
+    if (top[k] - ms < (if (abrupt) 5 else 18)) next
+    # the increase is reached within a vertical distance of 15 cm: not across
+    # a diffuse boundary (> 15 cm)
+    if (!is.na(bdist[k - 1]) && grepl("diffuse", bdist[k - 1])) next
+    if (is.na(clay[k]) || is.na(clay[k - 1])) { undecided(top[k], "clay_pct"); next }
+    over <- clay[k - 1]
+    inc <- if (over < 15) clay[k] - over >= 3 else if (over <= 40) clay[k] >= 1.2 * over
+           else clay[k] - over >= 8
+    if (!inc) next
+    depth_ok <- if (upper100_sandy) top[k] >= ms + 100 && top[k] <= ms + 200
+                else if (over >= 20) top[k] <= ms + 100 else top[k] <= ms + 125
+    if (!depth_ok) next
+    # the run of layers from k down that keep the increase (no drop below the overlying clay)
+    run <- k
+    j <- k + 1L
+    while (j <= length(o) && !is.na(clay[j]) && clay[j] >= over && !sandy[j] &&
+           !is.na(top[j]) && abs(top[j] - bot[run[length(run)]]) < 1e-6) { run <- c(run, j); j <- j + 1L }
+    thick <- sum(bot[run] - top[run])
+    min_thk <- if (!is.na(contact) && contact <= ms + 50) 15 else 30
+    if (thick < min_thk || any(sandy[run])) next
+    # CEC <= 16 per kg apparent clay in >= 50% of the thickness from the increase to 100 cm below
+    lo <- top[k]; hi <- top[k] + 100
+    if (!is.na(contact)) hi <- min(hi, contact)
+    ov <- pmax(0, pmin(bot, hi) - pmax(top, lo)); ov[is.na(ov)] <- 0
+    win <- which(ov > 0)
+    ratio <- 100 * cec[win] / clay_app[win]
+    ok_cm <- sum(ov[win][!is.na(ratio) & ratio <= 16]); bad_cm <- sum(ov[win][!is.na(ratio) & ratio > 16])
+    na_cm <- sum(ov[win][is.na(ratio)]) + max(0, (hi - lo) - sum(ov[win]))
+    half <- (hi - lo) / 2
+    cec_ok <- if (ok_cm >= half - 1e-6) TRUE else if (ok_cm + na_cm < half - 1e-6) FALSE else NA
+    if (is.na(cec_ok)) { undecided(top[k], "cec_cmol"); next }
+    if (!cec_ok) next
+    # no fine stratification: organic carbon does not rise again with depth
+    oc_run <- oc[seq_len(max(run))]
+    strat <- any(diff(oc_run[!is.na(oc_run)]) > 0.3)
+    if (isTRUE(strat)) next
+    return(DiagnosticResult$new(name = "kandic_horizon_usda", passed = TRUE,
+             layers = idx[run],
+             evidence = list(upper_boundary_cm = top[k], overlying_clay_pct = over,
+                             thickness_cm = thick, cec_low_cm = ok_cm, window = c(lo, hi)),
+             missing = character(0), reference = ref))
   }
-  passed <- length(passing) > 0L
-  DiagnosticResult$new(
-    name = "kandic_horizon_usda", passed = passed, layers = passing,
-    evidence = list(argic = arg),
-    missing = unique(miss),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 45"
-  )
+  passed <- if (length(miss)) NA else FALSE
+  DiagnosticResult$new(name = "kandic_horizon_usda", passed = passed,
+    layers = integer(0), evidence = list(reason = "no layer meets the kandic criteria",
+                                         candidate_tops_cm = unique(cand_tops)),
+    missing = unique(miss), reference = ref)
 }
 
 

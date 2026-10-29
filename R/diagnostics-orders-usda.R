@@ -176,54 +176,70 @@ andisol_usda <- function(pedon) {
 
 # ---- E. Oxisols already wired via oxic_usda() ------------------------------
 
-#' Oxisol (USDA Cap 13): oxic horizon, excluding profiles with an
-#' argillic horizon overlying the oxic.
+#' Oxisols (USDA, KST 13ed Ch 8, key to soil orders, item E, pp. 68-69)
 #'
-#' v0.9.17 fix: KST 13ed Ch 13 (p 295) excludes from Oxisols any
-#' profile whose argillic horizon's upper boundary lies within 100 cm
-#' of the surface AND whose argillic base lies within 30 cm of the
-#' upper boundary of the oxic. Operationally we use the simpler and
-#' more defensible "argillic above oxic" check: if argillic exists
-#' and starts strictly shallower than the oxic, the profile is NOT
-#' an Oxisol (route to Ultisols / Alfisols instead). The previous
-#' v0.8 implementation lacked this exclusion and was responsible for
-#' misclassifying 144 Embrapa FEBR Ultisols as Oxisols in the
-#' v0.9.16 benchmark.
-#'
+#' v0.9.309: the text of the key. "Other soils that have either: 1. an oxic
+#' horizon within 150 cm of the mineral soil surface and no kandic horizon
+#' within that depth; or 2. 40 percent or more (by weight) clay in the
+#' fine-earth fraction between the mineral soil surface and a depth of 18 cm
+#' (after mixing) and a kandic horizon that has the weatherable-mineral
+#' properties of an oxic horizon and has its upper boundary within 100 cm of
+#' the mineral soil surface." Since v0.9.17 soilKey had used instead "no
+#' argillic horizon starting above the oxic", which turned clayey Oxisols with
+#' a kandic horizon into Mollisols, Ultisols or Alfisols (ISRIC's KE009, a
+#' Rhodic Eutrustox, came out a Typic Paleustoll). soilKey does not record
+#' weatherable minerals, and its oxic horizon does not test them either; the
+#' kandic horizon of item 2 is read the same way.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 oxisol_usda <- function(pedon) {
-  ox <- oxic_usda(pedon)
+  h <- pedon$horizons
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
           isTRUE(spodosol_usda(pedon)$passed) ||
           isTRUE(andisol_usda(pedon)$passed)
-  passed <- isTRUE(ox$passed) && !ex
-
-  # v0.9.17 argillic-above-oxic exclusion.
-  argillic_above <- FALSE
-  if (passed) {
-    ar <- argillic_usda(pedon)
-    if (isTRUE(ar$passed) && length(ar$layers) > 0L &&
-          length(ox$layers) > 0L) {
-      h <- pedon$horizons
-      argillic_top <- min(h$top_cm[ar$layers], na.rm = TRUE)
-      oxic_top     <- min(h$top_cm[ox$layers], na.rm = TRUE)
-      if (!is.na(argillic_top) && !is.na(oxic_top) &&
-            argillic_top < oxic_top) {
-        argillic_above <- TRUE
-        passed <- FALSE
-      }
-    }
+  ox <- oxic_usda(pedon)
+  ka <- kandic_horizon_usda(pedon)
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  ox_top <- if (isTRUE(ox$passed) && length(ox$layers)) min(h$top_cm[ox$layers], na.rm = TRUE) else NA_real_
+  ka_top <- if (isTRUE(ka$passed) && length(ka$layers)) min(h$top_cm[ka$layers], na.rm = TRUE) else NA_real_
+  # The two items, for a kandic horizon present (starting at `kt`) or absent;
+  # an undecided kandic horizon decides nothing when both answers agree.
+  ox150 <- if (isTRUE(ox$passed)) !is.na(ox_top) && ox_top <= ms + 150 else if (is.na(ox$passed)) NA else FALSE
+  clay18 <- .q_weighted_mean(h$clay_pct, h$top_cm, h$bottom_cm, ms, ms + 18)
+  covered <- sum(pmax(0, pmin(h$bottom_cm, ms + 18) - pmax(h$top_cm, ms))[!is.na(h$clay_pct)], na.rm = TRUE)
+  clay_ok <- if (is.na(clay18) || covered < 18 - 1e-6) NA else clay18 >= 40
+  and3 <- function(a, b) if (isFALSE(a) || isFALSE(b)) FALSE else if (isTRUE(a) && isTRUE(b)) TRUE else NA
+  or3 <- function(a, b) if (isTRUE(a) || isTRUE(b)) TRUE else if (isFALSE(a) && isFALSE(b)) FALSE else NA
+  items <- function(has_kandic, kt) {
+    r1 <- and3(ox150, if (has_kandic) !(kt <= ms + 150) else TRUE)   # oxic, no kandic within 150 cm
+    r2 <- and3(clay_ok, if (has_kandic) kt <= ms + 100 else FALSE)   # clayey surface, kandic within 100 cm
+    list(r1 = r1, r2 = r2, any = or3(r1, r2))
   }
-
+  if (isTRUE(ka$passed)) {
+    it <- items(TRUE, ka_top); route <- it$any
+  } else if (isFALSE(ka$passed)) {
+    it <- items(FALSE, NA); route <- it$any
+  } else {
+    # undecided: a kandic horizon might start at any of the undecided
+    # boundaries, or be absent; decide when every case gives the same answer
+    kts <- ka$evidence$candidate_tops_cm %||% numeric(0)
+    cases <- c(list(items(FALSE, NA)), lapply(kts, function(kt) items(TRUE, kt)))
+    anys <- vapply(cases, function(x) if (is.na(x$any)) NA else x$any, NA)
+    route <- if (!length(kts)) NA else if (all(anys %in% TRUE)) TRUE
+             else if (all(anys %in% FALSE)) FALSE else NA
+    it <- list(r1 = NA, r2 = NA)
+  }
+  r1 <- it$r1; r2 <- it$r2
+  passed <- if (ex) FALSE else route
   DiagnosticResult$new(
     name = "oxisol_usda", passed = passed,
-    layers = ox$layers,
-    evidence = list(oxic = ox, prior_order = ex,
-                      argillic_above_oxic = argillic_above),
-    missing = ox$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 13 Oxisols (p 295)"
+    layers = if (isTRUE(r1)) ox$layers else if (isTRUE(r2)) ka$layers else integer(0),
+    evidence = list(oxic = ox, kandic = ka, prior_order = ex,
+                    item1_oxic_no_kandic = r1, item2_clayey_surface_kandic = r2,
+                    clay_0_18_pct = clay18),
+    missing = if (is.na(passed)) unique(c(ox$missing, ka$missing, if (is.na(clay_ok)) "clay_pct")) else character(0),
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 8, key to soil orders, E (pp. 68-69)"
   )
 }
 
