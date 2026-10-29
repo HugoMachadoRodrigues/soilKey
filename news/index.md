@@ -1,5 +1,70 @@
 # Changelog
 
+## soilKey 0.9.302 (2026-10-29)
+
+### New Zealand Soil Classification: the subgroups of the Brown, Anthropic, Recent and Raw Soils
+
+[`classify_nzsc4()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_nzsc4.md)
+now keys the 20 groups of the Brown, Anthropic, Recent and Raw Soils to
+their 109 subgroups, following the keys to subgroups of the New Zealand
+Soil Classification, 4th edition: from the Mottled Allophanic Brown
+Soils to the Typic Sandy Raw Soils. With this release every group of the
+15 orders is keyed to its subgroups (336 subgroups of 70 groups); the
+Hydrothermal Recent Soils and six groups of Raw Soils have none and keep
+the group name.
+
+- The keys live in `inst/rules/nzsc4/subgroups/`, one file per order, in
+  the book’s order. The last subgroup of each group is the default (in
+  the Allophanic Brown Soils the key gives the Typic subgroup criteria
+  and makes the Pedal one the last).
+- The gates are in `R/diagnostics-nzsc-subgroups-barw.R`: earthy or
+  light B horizons, firm horizons beneath them, pallic colours, magnesic
+  Brown criteria, impeded Acid Brown Soils, humose and immature Orthic
+  Brown Soils, the Maori, refuse, mixing and fill subgroups of the
+  Anthropic Soils, acidic windows, weathered-B horizons reaching 30 cm,
+  sulfuric soil material, tephric material, buried soils, and the sandy
+  Gley Raw Soils.
+- Part 2(b) of the Pallic Soils is now one helper that the order key and
+  the Mottled-pallic Orthic Recent Soils share.
+- Shared gates gained arguments: fluid and saline horizons within 30 cm,
+  scoria to 60 cm, contacts from the soil surface, and cemented horizons
+  of a least thickness.
+- New site fields: `mechanical_mixing_purpose` and
+  `acid_neutralising_amendment`.
+
+Hugo decided seven readings:
+
+- the Maori Anthropic subgroups read the existing fields (artefacts and
+  the layer origin);
+- the purpose of mechanical mixing is a new site field, absent when not
+  recorded;
+- a coarse fill layer has 80 % or more coarse fragments and artefacts;
+- acid-neutralising amendments are a new site field, absent when not
+  recorded;
+- the Humose Orthic Brown Soils have 10 % or less clay in every horizon
+  to 90 cm;
+- a compacted fill has one fill horizon of bulk density 1.5 or more;
+- a placic horizon is left to the Placic Firm Brown Soils, not counted
+  as the cemented horizon of the Cemented and Mottled-cemented Firm
+  Brown Soils, as the Acid Brown key does.
+
+The other readings are in `inst/rules/nzsc4/readings.yaml` (80 topics).
+
+Two independent reviews were made, and their findings are fixed. The
+review against the book confirmed every code, position and default, and
+found the Maori names without their macron, scoria that need not reach
+60 cm in the Scoriaceous Tephric Recent Soils, a coarse fill layer of
+natural gravel, and word lists that matched inside other words. The
+logic review ran 6,000 random profiles and refilled their missing
+values; it found no error and no change against 0.9.301, and verdicts
+decided where a horizon of unknown role leaves them open (the firm
+horizon and the B above it, the earthy B, the greater part of the B, the
+thin weathered-B, the subsurface horizons). The fill of the Compacted
+Fill Anthropic Soils is now the anthropic soil material the order key
+reads, and only the uppermost buried soil counts. Outside the four
+orders, rock (R, CR) with no pH is no longer read as possibly acid in
+the acidic subgroups of 0.9.299, which can only decide an open verdict.
+
 ## soilKey 0.9.301 (2026-10-29)
 
 ### New Zealand Soil Classification: the subgroups of the Semiarid, Oxidic, Granular and Pallic Soils
