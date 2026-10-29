@@ -24,7 +24,8 @@ classify_nzsc4(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"nzsc4"}, the deepest class in \code{name}, the order in
+  \code{"nzsc4"}, the deepest class in \code{name} (the subgroup, or the
+  group where no subgroup is keyed yet), the order in
   \code{rsg_or_order}, the classes of each level in \code{levels}, the key
   trace, and \code{provisional_because} (classes before the assigned one
   that could not be decided).
@@ -32,12 +33,14 @@ A \code{\link{ClassificationResult}} with \code{system_id}
 \description{
 Keys a \code{\link{PedonRecord}} through the New Zealand Soil
 Classification, 4th edition (Manaaki Whenua - Landcare Research 2026),
-following its Key to Soil Orders and keys to groups. \strong{Experimental}:
-this release keys the 15 orders (Organic, Gley, Ultic, Podzol, Allophanic,
-Pumice, Melanic, Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic,
-Recent, Raw Soils) and their 77 groups (since 0.9.298, e.g. Orthic Brown
-Soils, Perch-gley Pallic Soils); subgroups follow. The Cryic Soils of the
-appendix are not keyed.
+following its Key to Soil Orders and keys to groups and subgroups.
+\strong{Experimental}: this release keys the 15 orders (Organic, Gley,
+Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular,
+Pallic, Brown, Anthropic, Recent, Raw Soils), their 77 groups (since
+0.9.298, e.g. Orthic Brown Soils, Perch-gley Pallic Soils) and, since
+0.9.299, the 70 subgroups of the Organic, Gley and Ultic Soils (e.g.
+Peaty Orthic Gley Soils, Mottled Yellow Ultic Soils); the other subgroups
+follow. The Cryic Soils of the appendix are not keyed.
 }
 \details{
 The NZSC reads horizon notations and field tests. The diagnostics read
@@ -60,7 +63,11 @@ are (\code{redox_segregations_location}), sulfate S, roots, a Maori
 cultural layer (\code{maori_cultural_layer}) and the colour of coatings;
 and, on the site, \code{soil_temp_30cm_C}, \code{mean_annual_air_temp_C},
 \code{surface_water}, \code{methane_odour},
-\code{mechanical_mixing_depth_cm} and \code{artificially_drained}. Features
+\code{mechanical_mixing_depth_cm} and \code{artificially_drained}. The
+subgroups also read sulfidic S (\code{sulfidic_s_pct}), the EC of a 1:5
+extract (\code{ec_1to5_dS_m}), the share of Sphagnum in the fibres
+(\code{sphagnum_fibres_pct}), a shelly layer (\code{shelly_layer}),
+exchangeable Ca and Mg, and clay films. Features
 a describer records when met (stratification, nodules, cracks, refuse or
 cultural layers, permafrost, surface water) are absent when not recorded.
 The choices where the text is silent are listed in

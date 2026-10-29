@@ -208,7 +208,10 @@ horizon_column_spec <- function() {
     sulfate_s_pct                 = "numeric",   # sulfate sulfur, % (dry mass); NZSC sulfuric soil material (>= 0.05 %)
     roots_abundance               = "character", # roots: 'none' / 'very few' / 'few' / 'common' / 'many'; NZSC Impeded Pumice Soils (a compact layer with no roots)
     maori_cultural_layer          = "logical",   # a layer modified through Maori cultural practice (additions of rock, sand, shells, charcoal, ash, seaweed ...); NZSC Maori Anthropic Soils
-    coatings_value_moist          = "numeric"    # moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils
+    coatings_value_moist          = "numeric",   # moist Munsell value of the clay or clay-organic coatings on ped faces; NZSC Solonetzic Semiarid Soils
+    # ---- v0.9.299: the subgroups of the New Zealand Soil Classification ----
+    sphagnum_fibres_pct           = "numeric",   # share of the organic fibres that are Sphagnum, %; NZSC Sphagnic Fibric Organic Soils (more than 70 %)
+    shelly_layer                  = "logical"    # a layer of shells (shell beds, shelly sand); NZSC Calcareous Recent Gley Soils
   )
 }
 

@@ -162,18 +162,18 @@
 # reading organic matter as 1.72 times the carbon), or slightly peaty (17-30
 # % organic matter, 9.9-17.4 % carbon) with less than 18 % clay.
 .nzsc_peaty_topsoil <- function(pedon, x) {
-  h <- x$h; n <- x$n
   # the topsoil starts below any litter (L) at the surface
   start <- x$ord[!(x$role[x$ord] %in% "L")]
   if (!length(start)) return(FALSE)
-  i0 <- start[1L]; s0 <- h$top_cm[i0]
+  .nzsc_peaty_run(pedon, x, start[1L])
+}
+
+# A peaty topsoil from row i0 down (v0.9.299: also a buried one, for the
+# subgroups); `peat` from .nzsc_peat_rows() in R/diagnostics-nzsc-subgroups.R.
+.nzsc_peaty_run <- function(pedon, x, i0, peat = .nzsc_peat_rows(x)) {
+  h <- x$h; n <- x$n
+  s0 <- h$top_cm[i0]
   if (is.na(s0)) return(NA)
-  oc <- h$oc_pct; clay <- h$clay_pct; ft <- .nzsc_txt(h$field_texture, n)
-  peat <- ifelse(grepl("slightly peaty", ft), ifelse(is.na(clay), NA, clay < 18),
-          ifelse(grepl("peat", ft) | x$role %in% "O", TRUE,
-          ifelse(x$role %in% "L", FALSE,
-          ifelse(!is.na(oc), ifelse(oc >= 17.4, TRUE,
-                             ifelse(oc >= 9.9, ifelse(is.na(clay), NA, clay < 18), FALSE)), NA))))
   r <- .nzsc_run_down(x, peat, i0)
   thick <- if (r$sure >= 10) TRUE else if (r$poss >= 10) NA else FALSE
   if (isFALSE(thick)) return(FALSE)
@@ -657,10 +657,7 @@ recent_gley_nzsc <- function(pedon) {
   deep_b <- any(bbc & (is.na(h$bottom_cm) | h$bottom_cm > ms + 30))
   maybe_b <- any(x$unknown_role & x$mineral & (is.na(h$bottom_cm) | h$bottom_cm > ms + 30))
   pans <- any(.nzsc_pan_rows(x, "placic") | .nzsc_pan_rows(x, "ortstein"))
-  nod <- vapply(c("ferric_nodules_pct", "manganiferous_nodules_pct", "bauxitic_nodules_pct"),
-                function(k) { v <- h[[k]] %||% rep(NA_real_, n); ifelse(is.na(v), 0, v) }, numeric(n))
-  nod <- if (is.matrix(nod)) rowSums(nod) else sum(nod)
-  concr <- any((nod > 2 | x$des$i) & !is.na(h$top_cm) & h$top_cm < ms + 60)
+  concr <- any(.nzsc_concretion_rows(x) & !is.na(h$top_cm) & h$top_cm < ms + 60)
   c2 <- !buried_b && !deep_b && !pans && !concr
   passed <- if (!c1 || !c2) FALSE else if (maybe_b) NA else TRUE
   .nzsc_group("recent_gley_nzsc", passed, "G, GR", list(stratified_or_buried = c1), miss)

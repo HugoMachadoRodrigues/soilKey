@@ -1,0 +1,118 @@
+# Key to subgroups of Ultic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "UD":
+    - code: "UDP"
+      name: Perch-gleyed Densipan Ultic Soils
+      tests:
+        all_of:
+          - below_layer_subgroup_nzsc: {layer: densipan, feature: reductimorphic}
+      notes: "A reductimorphic horizon below the densipan."
+
+    - code: "UDM"
+      name: Mottled Densipan Ultic Soils
+      tests:
+        all_of:
+          - below_layer_subgroup_nzsc: {layer: densipan, feature: redox_mottled, immediately: true}
+      notes: "A redox-mottled horizon immediately under the densipan. The text gives no default subgroup."
+
+  "UE":
+    - code: "UEP"
+      name: Perch-gleyed Albic Ultic Soils
+      tests:
+        all_of:
+          - below_layer_subgroup_nzsc: {layer: eluvial, feature: reductimorphic}
+      notes: "A reductimorphic horizon below the eluvial horizon."
+
+    - code: "UEM"
+      name: Mottled Albic Ultic Soils
+      tests:
+        all_of:
+          - below_layer_subgroup_nzsc: {layer: eluvial, feature: redox_mottled}
+      notes: "A redox-mottled horizon below the eluvial horizon."
+
+    - code: "UEY"
+      name: Yellow Albic Ultic Soils
+      tests:
+        default: true
+      notes: "Other Albic Ultic Soils."
+
+  "UP":
+    - code: "UPS"
+      name: Sandy Perch-gley Ultic Soils
+      tests:
+        all_of:
+          - sandy_ultic_nzsc: {}
+      notes: "More than 60 % sand in the B horizon."
+
+    - code: "UPT"
+      name: Typic Perch-gley Ultic Soils
+      tests:
+        all_of:
+          - perch_gley_ultic_typic_nzsc: {}
+      notes: "A reductimorphic horizon with its top within 15 cm of the base of the A horizon or 30 cm of the mineral soil surface. The text gives no default subgroup."
+
+  "US":
+    - code: "USE"
+      name: Albic Sandy Ultic Soils
+      tests:
+        all_of:
+          - albic_sandy_ultic_nzsc: {}
+      notes: "An Ea or Er horizon."
+
+    - code: "USM"
+      name: Mottled Sandy Ultic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "UST"
+      name: Typic Sandy Ultic Soils
+      tests:
+        default: true
+      notes: "Other Sandy Ultic Soils."
+
+  "UY":
+    - code: "UYG"
+      name: Magnesic Yellow Ultic Soils
+      tests:
+        all_of:
+          - magnesic_yellow_ultic_nzsc: {}
+      notes: "In some part of the B horizon to 60 cm: 5 % or more ultramafic coarse rock fragments, or exchangeable Ca:Mg 0.2 or less with Mg 1.5 cmol/kg or more."
+
+    - code: "UYMZ"
+      name: Mottled-podzolic Yellow Ultic Soils
+      tests:
+        all_of:
+          - podzolic_yellow_ultic_nzsc: {mottled: true}
+      notes: "pH 4.8 or less in the eluvial horizon (or the uppermost B subhorizon) and 10 % or more humus or dark coatings in some part of the B horizon; and a mottled profile form."
+
+    - code: "UYM"
+      name: Mottled Yellow Ultic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "UYZ"
+      name: Podzolic Yellow Ultic Soils
+      tests:
+        all_of:
+          - podzolic_yellow_ultic_nzsc: {}
+      notes: "pH 4.8 or less in the eluvial horizon (or the uppermost B subhorizon) and 10 % or more humus or dark coatings in some part of the B horizon."
+
+    - code: "UYBG"
+      name: Buried-granular Yellow Ultic Soils
+      tests:
+        all_of:
+          - buried_granular_ultic_nzsc: {}
+      notes: "Silt loam or silty clay dominant from the surface to 35 cm or more, over a texture contrast to a clay horizon of moist value 4 or less."
+
+    - code: "UYT"
+      name: Typic Yellow Ultic Soils
+      tests:
+        default: true
+      notes: "Other Yellow Ultic Soils (the text writes Soil)."

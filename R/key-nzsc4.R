@@ -2,7 +2,9 @@
 # v0.9.293 -- the New Zealand Soil Classification, 4th edition (Manaaki
 # Whenua 2026; Quarto source of 7 October 2026), keyed to the 15 orders of
 # the Key to Soil Orders; v0.9.298 adds the 77 groups of the keys to groups
-# (R/diagnostics-nzsc-groups.R, inst/rules/nzsc4/groups/). Subgroups follow.
+# (R/diagnostics-nzsc-groups.R, inst/rules/nzsc4/groups/); v0.9.299 the
+# subgroups of the Organic, Gley and Ultic Soils (R/diagnostics-nzsc-subgroups.R,
+# inst/rules/nzsc4/subgroups/). The other subgroups follow.
 # Experimental and opt-in: classify_all() runs it only when asked. The Cryic
 # Soils of the appendix (Antarctic soils) are not keyed.
 # =============================================================================
@@ -11,12 +13,14 @@
 #'
 #' Keys a \code{\link{PedonRecord}} through the New Zealand Soil
 #' Classification, 4th edition (Manaaki Whenua - Landcare Research 2026),
-#' following its Key to Soil Orders and keys to groups. \strong{Experimental}:
-#' this release keys the 15 orders (Organic, Gley, Ultic, Podzol, Allophanic,
-#' Pumice, Melanic, Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic,
-#' Recent, Raw Soils) and their 77 groups (since 0.9.298, e.g. Orthic Brown
-#' Soils, Perch-gley Pallic Soils); subgroups follow. The Cryic Soils of the
-#' appendix are not keyed.
+#' following its Key to Soil Orders and keys to groups and subgroups.
+#' \strong{Experimental}: this release keys the 15 orders (Organic, Gley,
+#' Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular,
+#' Pallic, Brown, Anthropic, Recent, Raw Soils), their 77 groups (since
+#' 0.9.298, e.g. Orthic Brown Soils, Perch-gley Pallic Soils) and, since
+#' 0.9.299, the 70 subgroups of the Organic, Gley and Ultic Soils (e.g.
+#' Peaty Orthic Gley Soils, Mottled Yellow Ultic Soils); the other subgroups
+#' follow. The Cryic Soils of the appendix are not keyed.
 #'
 #' The NZSC reads horizon notations and field tests. The diagnostics read
 #' the New Zealand notation (Ah, E, Bw, Bt, Bg, Bh, Bs, Bo, Bx, Bw(g), Bhm,
@@ -38,7 +42,11 @@
 #' cultural layer (\code{maori_cultural_layer}) and the colour of coatings;
 #' and, on the site, \code{soil_temp_30cm_C}, \code{mean_annual_air_temp_C},
 #' \code{surface_water}, \code{methane_odour},
-#' \code{mechanical_mixing_depth_cm} and \code{artificially_drained}. Features
+#' \code{mechanical_mixing_depth_cm} and \code{artificially_drained}. The
+#' subgroups also read sulfidic S (\code{sulfidic_s_pct}), the EC of a 1:5
+#' extract (\code{ec_1to5_dS_m}), the share of Sphagnum in the fibres
+#' (\code{sphagnum_fibres_pct}), a shelly layer (\code{shelly_layer}),
+#' exchangeable Ca and Mg, and clay films. Features
 #' a describer records when met (stratification, nodules, cracks, refuse or
 #' cultural layers, permafrost, surface water) are absent when not recorded.
 #' The choices where the text is silent are listed in
@@ -51,7 +59,8 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"nzsc4"}, the deepest class in \code{name}, the order in
+#'   \code{"nzsc4"}, the deepest class in \code{name} (the subgroup, or the
+#'   group where no subgroup is keyed yet), the order in
 #'   \code{rsg_or_order}, the classes of each level in \code{levels}, the key
 #'   trace, and \code{provisional_because} (classes before the assigned one
 #'   that could not be decided).
@@ -94,8 +103,9 @@ classify_nzsc4 <- function(pedon, rules = NULL,
 #' Small, plausible profiles written for the tests and examples, one per
 #' order of the New Zealand Soil Classification, with designations in the
 #' New Zealand notation and the properties the order key reads. Most key to
-#' the last (Orthic or default) group of their order. They are not real
-#' profiles.
+#' the last (Orthic or default) group of their order. Their subgroup may be
+#' provisional where a measure the subgroups read is missing (sulfidic S,
+#' exchangeable Ca and Mg). They are not real profiles.
 #'
 #' @param order One of \code{"organic"}, \code{"gley"}, \code{"ultic"},
 #'   \code{"podzol"}, \code{"allophanic"}, \code{"pumice"},

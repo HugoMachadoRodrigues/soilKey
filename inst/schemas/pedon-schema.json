@@ -527,6 +527,12 @@
           },
           "coatings_value_moist": {
             "type": ["number", "null"]
+          },
+          "sphagnum_fibres_pct": {
+            "type": ["number", "null"]
+          },
+          "shelly_layer": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false
