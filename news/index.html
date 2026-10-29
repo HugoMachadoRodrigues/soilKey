@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.299</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.300</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,32 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.300" id="soilkey-09300-2026-10-28">soilKey 0.9.300 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09300-2026-10-28"></a></h2>
+<div class="section level3">
+<h3 id="new-zealand-soil-classification-the-subgroups-of-the-podzol-allophanic-pumice-and-melanic-soils-0-9-300">New Zealand Soil Classification: the subgroups of the Podzol, Allophanic, Pumice and Melanic Soils<a class="anchor" aria-label="anchor" href="#new-zealand-soil-classification-the-subgroups-of-the-podzol-allophanic-pumice-and-melanic-soils-0-9-300"></a></h3>
+<p><code><a href="../reference/classify_nzsc4.html">classify_nzsc4()</a></code> now keys the 17 groups of the Podzol, Allophanic, Pumice and Melanic Soils to their 79 subgroups, following the keys to subgroups of the New Zealand Soil Classification, 4th edition: from the Humus-pan Densipan Podzol Soils to the Typic Orthic Melanic Soils. With the Organic, Gley and Ultic Soils of 0.9.299, the subgroups of seven of the 15 orders are keyed (149 subgroups of 33 groups); the other eight orders follow.</p>
+<ul><li>The keys live in <code>inst/rules/nzsc4/subgroups/</code>, one file per order, in the book’s order. The last subgroup of each group is the default.</li>
+<li>The gates are in <code>R/diagnostics-nzsc-subgroups-zlme.R</code>: Bh horizons and their thickness, an argillic horizon beneath a Bh or a pan, fluid horizons above the podzolic-B, silt-mantled eluvial horizons, acidic and allophanic B or BC horizons, vitric allophanic material, buried granular B horizons, compacted ignimbrite, the Orthic Pumice subgroups (podzolic, allophanic, buried-allophanic, scoriaceous, immature), redox segregations within 60 cm, and pedal weathered-B horizons under the A.</li>
+<li>Shared gates gained arguments: pans at any depth (the Podzol subgroups name no depth) or with their top less than 90 cm down (the ironstone-pans and duripans “within 90 cm”), a calcareous horizon within or at 90 cm (Melanic Soils), a peaty topsoil at the surface only (where the text names no buried one), and the magnesic criteria in the B or BC horizon (Mafic Melanic Soils).</li>
+<li>New horizon attributes: <code>pore_coatings_hue_moist</code>, <code>pore_coatings_value_moist</code> and <code>pore_coatings_chroma_moist</code>, the colour of coatings on pores or gel-like masses (Acidic and Vitric-acidic Orthic Allophanic Soils).</li>
+</ul><p>Hugo decided seven readings:</p>
+<ul><li>the colour of coatings on pores is recorded in the three new attributes, and not recorded reads as none, so the pH decides alone;</li>
+<li>“hue 7.5YR or more” (Podzolic Orthic Pumice Soils) is 7.5YR or redder;</li>
+<li>a silty layer (Peaty-silt-mantled and Silt-mantled Perch-gley Podzol Soils) is one of the silt, silt loam, silty clay loam and silty clay classes;</li>
+<li>any ignimbrite counts as the Taupo ignimbrite of the Mottled-compacted and Compacted Impeded Pumice Soils;</li>
+<li>the Bh of the Ultic-humose Densipan Podzol Soils tops a B horizon that is clayey and prismatic as a whole;</li>
+<li>the layer of the Allophanic Orthic Pumice Soils is itself vitric and allophanic;</li>
+<li>a scoria of no named composition is basaltic (Scoriaceous Orthic Pumice Soils), and “predominantly” is read by the thickness-weighted gravel from the mineral soil surface to 25 cm.</li>
+</ul><p>The other readings are in <code>inst/rules/nzsc4/readings.yaml</code> (61 topics). The key gives the last Orthic Pumice subgroup (MOT) no name; the chapter’s summary table names it Typic Orthic Pumice Soils.</p>
+<p>Two independent reviews were made, and their findings are fixed. The review against the book confirmed every code, name and position, and found eight defects, among them a Bh read only under an eluvial horizon, “within 90 cm” read as “at 90 cm or less” for the ironstone-pans and duripans, and the buried B of the Buried-granular Orthic Allophanic Soils decided while its allophanic status was open. The logic review ran 6,000 random profiles and filled their missing values 185,000 times: it found two walks that never ended on a horizon of no thickness (in two new gates and in the acidic subgroups of 0.9.299), and eleven verdicts decided where the data leave them open, or open where they decide.</p>
+<p>Outside the four orders, four readings change; none of the 6,000 random profiles changes order, group, or subgroup of the Organic, Gley and Ultic Soils against 0.9.299:</p>
+<ul><li>the acidic subgroups of the Gley Soils no longer hang on a horizon of no thickness under the A;</li>
+<li>recorded coatings of moist value 5 may be cutanic (the Diagnostics admit value 5 with chroma 3 or less, and the coatings chroma is not recorded), so the Granular Acid Gley Soils leave such a B open;</li>
+<li>the Magnesic Yellow Ultic Soils read a mineral row of unknown role as a possible B;</li>
+<li>the vertic criteria of the Vertic Melanic Soils read a recorded grade below moderate, or a structure type other than blocky or prismatic, as ruling the pedality out on its own (it was undecided).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.299" id="soilkey-09299-2026-10-28">soilKey 0.9.299 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09299-2026-10-28"></a></h2>
 <div class="section level3">
