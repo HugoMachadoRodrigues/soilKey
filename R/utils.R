@@ -219,7 +219,9 @@ horizon_column_spec <- function() {
     # ---- v0.9.301: the Semiarid, Oxidic, Granular and Pallic subgroups ----
     weathered_fragments_pct       = "numeric",   # share of the coarse rock fragments weathered enough to break easily by hammer or spade, %; NZSC Weathered subgroups
     # ---- v0.9.305: the Hungarian diagnostic system (HSCS 2024) ----
-    soluble_salts_pct             = "numeric"    # total water-soluble salts, % by mass (Hungarian method, from the EC of the saturated paste); HSCS solonchak horizon
+    soluble_salts_pct             = "numeric",   # total water-soluble salts, % by mass (Hungarian method, from the EC of the saturated paste); HSCS solonchak horizon
+    # ---- v0.9.308: the ISIS reader ----
+    ec_max_dS_m                   = "numeric"    # upper bound of the saturated-paste EC (e.g. EC 1:2.5 x 12.5); read only by the salic test, to rule a layer out
   )
 }
 

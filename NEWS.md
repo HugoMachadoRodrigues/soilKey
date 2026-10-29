@@ -1,3 +1,24 @@
+# soilKey 0.9.308 (2026-10-29)
+
+## soilKey reads ISRIC's World Soil Reference Collection (ISIS)
+
+Asked for by Jelle Janssen (ISRIC), who had matched the ISIS properties to soilKey's by hand.
+
+* `read_isis()` reads profiles live from ISRIC's ISIS GraphQL service by profile code (`read_isis(c("KE009", "ZW005"))`) or by country (`read_isis(country = "KE")`), and returns soilKey pedons ready for `classify_all()`. Nothing is written to disk.
+* `isis_profile_to_pedon()` does the translation:
+  * Laboratory values go to soilKey units: organic carbon, nitrogen, CaCO3 and gypsum from g/kg; water at 1500 kPa from volume to mass.
+  * FAO field codes go to soilKey's words: structure, consistence, stickiness, plasticity, cutans, mottles, effervescence, cementation.
+  * Base saturation, ECEC and aluminium saturation are calculated from the exchangeable cations.
+  * Every value names its ISIS field in the provenance.
+* Bulk density and water samples taken at their own depths, in rows of their own, go to the horizon that holds the sample.
+* The site carries the names ISRIC gives the profile: `reference_wrb`, the new `reference_wrb_full` and `reference_wrb_edition`, `reference_usda` and its subgroup with the new `reference_usda_edition`. It also carries the soil moisture and temperature regimes when ISIS records them (KE009: ustic, isohyperthermic), the licence and the citation (`isis_citation()`).
+* Readings decided by Hugo:
+  * Clay films are the FAO (1977) cutans of kind clay: patchy, broken and continuous become few, common and many; clay cutans with no abundance count as few.
+  * Cutans of kind slickensides are the slickensides.
+  * Coarse fragments come from the middle of the FAO class when cfvo is not measured.
+  * With `absent_unless_recorded = TRUE` (the default), mottles, slickensides, plinthite, a duripan and artefacts that a horizon's field description does not mention are absent in that horizon.
+* `benchmark_isis()` sets soilKey's WRB and USDA names beside ISRIC's. BENCH_SUMMARY
+
 # soilKey 0.9.307 (2026-10-29)
 
 ## A soil temperature regime warmer than gelic rules out permafrost

@@ -73,10 +73,13 @@
 #' POST one GraphQL query to the WoSIS endpoint.
 #'
 #' Variables are passed separately from the query text, so user input (a country
-#' name, say) can never alter the query that is sent to ISRIC.
+#' name, say) can never alter the query that is sent to ISRIC. `endpoint` lets
+#' the ISIS reader (R/isis-graphql.R) use the same request on ISRIC's ISIS
+#' service.
 #' @return list(data = <parsed data or NULL>, error = <message or NULL>)
 #' @noRd
-.wosis_post <- function(query, variables = NULL, timeout = 30) {
+.wosis_post <- function(query, variables = NULL, timeout = 30,
+                        endpoint = .WOSIS_ENDPOINT) {
   if (!requireNamespace("httr", quietly = TRUE) ||
       !requireNamespace("jsonlite", quietly = TRUE))
     return(list(data = NULL, error = "httr and jsonlite are required"))
@@ -86,7 +89,7 @@
                 tryCatch(as.character(utils::packageVersion("soilKey")),
                          error = function(e) "dev"))
   resp <- tryCatch(
-    httr::POST(.WOSIS_ENDPOINT, body = body, encode = "json",
+    httr::POST(endpoint, body = body, encode = "json",
                httr::content_type_json(), httr::user_agent(ua),
                httr::timeout(timeout)),
     error = function(e) e)

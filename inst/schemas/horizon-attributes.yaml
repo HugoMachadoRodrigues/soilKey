@@ -721,3 +721,8 @@ attributes:
     systems: [hscs2024]
     min: 0
     max: 100
+  - name: ec_max_dS_m
+    section: "Salinity, redoximorphism, vertic"
+    unit: "dS/m"
+    description: "Upper bound of the electrical conductivity of the saturated paste, when only a more dilute extract was measured (ISIS: EC 1:2.5 x 12.5, for a saturation percentage of 20 % or more). Read only by the salic test, to rule a layer out; ec_dS_m wins when it is known."
+    min: 0

@@ -328,6 +328,21 @@ attributes:
     type: "character"
     unit: "-"
     description: "Published WRB class (a Reference Soil Group, or the name the dataset gives). Written by the LUCAS-ESDB, FEBR, BDsolos and AfSP (from WRB 2006) loaders and the spectral libraries, or copied from wosis_rsg or reference_wrb_from_usda; read by the benchmarks as the WRB reference."
+  - name: reference_wrb_full
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Full WRB name the data provider gives the profile, with its qualifiers. Written by isis_profile_to_pedon() (ISRIC's name); its edition is in reference_wrb_edition."
+  - name: reference_wrb_edition
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Edition (year) of the WRB name in reference_wrb and reference_wrb_full, e.g. '2022'. Written by isis_profile_to_pedon(); benchmark_isis() scores only the 2022 names."
+  - name: reference_usda_edition
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon()."
   - name: reference_wrb06_full
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
