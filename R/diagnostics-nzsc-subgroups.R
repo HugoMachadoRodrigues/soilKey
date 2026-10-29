@@ -229,25 +229,31 @@ sulfidic_subgroup_nzsc <- function(pedon, from = c("mineral_surface", "soil_surf
 
 # Saline subgroups (GSQ, GRQ, GOQ): saline soil material within 60 cm of
 # the mineral soil surface.
-saline_subgroup_nzsc <- function(pedon) {
+saline_subgroup_nzsc <- function(pedon, depth = 60) {
   x <- .nzsc_horizons(pedon)
   miss <- c("ec_1to5_dS_m", "designation")
   pre <- .nzsc_sub_ms_or_na(x, "saline_subgroup_nzsc", "saline subgroups", miss); if (!is.null(pre)) return(pre)
   s <- .nzsc_saline_rows(x)
-  .nzsc_subgroup("saline_subgroup_nzsc", .nzsc_open_below(.nzsc_any(s[.nzsc_rows_in(x, x$ms, x$ms + 60)]), x, x$ms + 60),
+  # `depth` 30 for the Gley Raw Soils (v0.9.302)
+  zb <- x$ms + as.numeric(depth)
+  .nzsc_subgroup("saline_subgroup_nzsc", .nzsc_open_below(.nzsc_any(s[.nzsc_rows_in(x, x$ms, zb)]), x, zb),
                  "saline subgroups", missing = miss, layers = which(s %in% TRUE))
 }
 
 # Fluid subgroups (GUF, GRF; GUFQ also saline): a moderately or very fluid
 # horizon within 60 cm of the mineral soil surface (and saline soil material
 # within 60 cm, not necessarily in the same horizon).
-fluid_subgroup_nzsc <- function(pedon, saline = FALSE) {
+fluid_subgroup_nzsc <- function(pedon, saline = FALSE, depth = 60, limit = c("within", "at_or_less")) {
+  limit <- match.arg(limit)
   x <- .nzsc_horizons(pedon)
   miss <- c("fluidity_class", if (isTRUE(saline)) c("ec_1to5_dS_m", "designation"))
   pre <- .nzsc_sub_ms_or_na(x, "fluid_subgroup_nzsc", "fluid subgroups", miss); if (!is.null(pre)) return(pre)
-  rows <- .nzsc_rows_in(x, x$ms, x$ms + 60)
+  # `depth` 30 for the Gley Raw Soils, "at a depth of 30 cm or less" (WGFU,
+  # `limit: at_or_less`) or "within 30 cm" (WGFQ, WGF; v0.9.302)
+  zb <- x$ms + as.numeric(depth)
+  rows <- .nzsc_rows_in(x, x$ms, if (limit == "within") zb else zb + 1)
   f <- .nzsc_any(.nzsc_fluid_rows(x)[rows])
-  s <- if (isTRUE(saline)) .nzsc_open_below(.nzsc_any(.nzsc_saline_rows(x)[rows]), x, x$ms + 60) else TRUE
+  s <- if (isTRUE(saline)) .nzsc_open_below(.nzsc_any(.nzsc_saline_rows(x)[rows]), x, zb) else TRUE
   .nzsc_subgroup("fluid_subgroup_nzsc", .and3(c(f, s)), "fluid subgroups",
                  list(fluid = f, saline = if (isTRUE(saline)) s else NULL), miss)
 }
@@ -301,7 +307,8 @@ acidic_subgroup_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h
   pre <- .nzsc_sub_ms_or_na(x, "acidic_subgroup_nzsc", "acidic subgroups", "ph_h2o"); if (!is.null(pre)) return(pre)
   zb <- x$ms + 60
-  acid <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5)
+  # rock (R, CR) is not read for pH (v0.9.302)
+  acid <- ifelse(x$role %in% c("R", "CR"), FALSE, ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5))
   at <- function(z) if (is.na(z)) NA else if (z >= zb - 0.5) FALSE else
     .nzsc_some_part_in(x, .nzsc_rows_in(x, z, zb), acid, z, zb)
   # mineral rows of unknown role directly under the A may be A too: the

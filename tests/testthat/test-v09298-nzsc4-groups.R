@@ -128,8 +128,8 @@ test_that("the group keys are registered and validate", {
   expect_identical(sum(lengths(r$groups)), 77L)
   expect_length(soilKey:::.validate_rules("nzsc4")$missing_predicates %||% character(0), 0L)
   res <- classify_nzsc4(make_nzsc4_example("brown"), on_missing = "silent")
-  expect_identical(res$levels$code, c("B", "BO"))
-  expect_identical(res$name, "Orthic Brown Soils")
+  expect_identical(res$levels$code[res$levels$level != "subgroups"], c("B", "BO"))
+  expect_identical(res$name, "Typic Orthic Brown Soils")   # with its subgroup since 0.9.302
 })
 
 test_that("hydrothermal: neither temperature reads as not; one alone is open", {

@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.301)
+# soilKey -- recognised horizon attribute names (v0.9.302)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -369,6 +369,8 @@ the last section are stored by the loaders and reports and read by no key.
 | `anthropic_truncation` | - | logical | The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material. | - | `nzsc4` |
 | `mechanical_mixing_depth_cm` | cm | numeric | Depth from the mineral soil surface to which people mechanically disturbed the original horizons (mixing, deep ripping, subsoil lifting). Read by the NZSC Mixed Anthropic Soils (more than 30 cm). | - | `nzsc4` |
 | `methane_odour` | - | logical | A methane content that can be detected by odour. Read by the NZSC Refuse Anthropic Soils. | - | `nzsc4` |
+| `mechanical_mixing_purpose` | - | character | Why the original horizons were mechanically mixed: tephra flipping (a modified tephra stratigraphy), breaking impeding horizons (to break up drainage-impeding horizons such as placic horizons or pans, often with hump-and-hollow recontouring), or other. Read by the NZSC Inverted-tephric and Inverted-impeded Mixed Anthropic Soils; recorded when met. | `tephra flipping`, `breaking impeding horizons`, `other` | `nzsc4` |
+| `acid_neutralising_amendment` | - | logical | TRUE where acid-neutralising amendments (lime or similar) were added to the soil material. Read by the NZSC Treated-sulfidic Fill Anthropic Soils; recorded when met. | - | `nzsc4` |
 | `overthickened_a` | - | logical | The surveyor recorded an overthickened A horizon (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC key: with its base at 45 cm or more, under 30 cm of anthropic material and no mottles within 30 cm, the soil enters the key at the Recent Soils. | - | `nzsc4` |
 
 ## Soil construction (soilKey Pro)
@@ -437,5 +439,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.301._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.302._
 

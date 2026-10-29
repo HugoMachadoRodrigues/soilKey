@@ -522,16 +522,27 @@ buried_allophanic_pumice_nzsc <- function(pedon) {
 # of another composition (Hugo's decision, 2026-10-28: a scoria of no named
 # composition is basaltic). A description ending above 25 cm (not on rock or
 # a hard layer) may hold more below.
-scoriaceous_pumice_nzsc <- function(pedon) {
+scoriaceous_pumice_nzsc <- function(pedon, depth = 25, reach = FALSE) {
   x <- .nzsc_horizons(pedon); h <- x$h; n <- x$n
   miss <- c("gravel_pct", "coarse_fragments_pct", "layer_origin", "rock_origin")
-  pre <- .nzsc_sub_ms_or_na(x, "scoriaceous_pumice_nzsc", "M, MOS", miss); if (!is.null(pre)) return(pre)
+  where <- if (isTRUE(reach)) "R, RTS" else "M, MOS"
+  pre <- .nzsc_sub_ms_or_na(x, "scoriaceous_pumice_nzsc", where, miss); if (!is.null(pre)) return(pre)
+  # `depth` 60 and `reach` for the Scoriaceous Tephric Recent Soils
+  # (v0.9.302): the scoria also extends to that depth
+  .nzsc_scoria_window(pedon, x, x$ms, x$ms + as.numeric(depth), where, reach = isTRUE(reach))
+}
+
+# Predominantly (more than 50 % by thickness-weighted average) gravel-sized
+# basaltic scoria over [zt, zb]: the verdict of MOS, RTS and RTSP.
+.nzsc_scoria_window <- function(pedon, x, zt, zb, where = "scoriaceous subgroups", reach = FALSE) {
+  h <- x$h; n <- x$n
+  miss <- c("gravel_pct", "coarse_fragments_pct", "layer_origin", "rock_origin")
   org <- .nzsc_origin_text(pedon, x)
   sc <- ifelse(grepl("scori", org), grepl("basalt", org) | !grepl("andesit|dacit|rhyolit", org),
                ifelse(grepl("[a-z]", org), FALSE, NA))
   gr <- h$gravel_pct %||% rep(NA_real_, n)
   fr <- ifelse(!is.na(gr), gr, h$coarse_fragments_pct); fr <- ifelse(is.na(fr), 0, fr)
-  zt <- x$ms; zb <- x$ms + 25
+  if (is.na(zt) || is.na(zb) || zb <= zt) return(.nzsc_subgroup("scoriaceous_pumice_nzsc", FALSE, where))
   rows <- .nzsc_rows_in(x, zt, zb)
   w <- .asc_overlap(h$top_cm[rows], ifelse(is.na(h$bottom_cm[rows]), zb, h$bottom_cm[rows]), zt, zb)
   gap <- max(0, (zb - zt) - sum(w))
@@ -539,7 +550,13 @@ scoriaceous_pumice_nzsc <- function(pedon) {
   lo <- sum(w * ifelse(sc[rows] %in% TRUE, fr[rows], 0)) / (zb - zt)
   hi <- (sum(w * ifelse(sc[rows] %in% FALSE, 0, fr[rows])) + 100 * gap_hi) / (zb - zt)
   v <- if (lo > 50) TRUE else if (hi <= 50) FALSE else NA
-  .nzsc_subgroup("scoriaceous_pumice_nzsc", v, "M, MOS", list(lo = lo, hi = hi), miss)
+  if (isTRUE(reach)) {
+    # the horizon at the base of the window is predominantly scoria too
+    at <- rows[h$top_cm[rows] < zb - 0.5 & (is.na(h$bottom_cm[rows]) | h$bottom_cm[rows] >= zb - 0.5)]
+    end <- if (!length(at)) { if (.nzsc_short_of(x, zb)) NA else FALSE } else .nzsc_any(.and3v(sc, fr > 50)[at])
+    v <- .and3(c(v, end))
+  }
+  .nzsc_subgroup("scoriaceous_pumice_nzsc", v, where, list(lo = lo, hi = hi), miss)
 }
 
 # MOI: a Bw horizon (adjacent Bw rows) 30 cm or less thick with hue 10YR or

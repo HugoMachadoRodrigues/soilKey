@@ -21,9 +21,8 @@ citation: >
   Classification. 4th edition. Landcare Research Science Series.
   https://doi.org/10.7931/dl1-lrss-4-2026
 version: "New Zealand Soil Classification, 4th edition (2026); source github.com/manaakiwhenua/nzsc_v4 at commit 4c559ca2 (2026-10-07)"
-implementation_status: "soilKey v0.9.301 -- 15/15 orders (Key to Soil Orders), 77/77 groups (keys to groups), and the subgroups of the Organic, Gley, Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular and Pallic Soils (227 of 50 groups); the other subgroups to follow; the Cryic Soils of the appendix are not keyed"
+implementation_status: "soilKey v0.9.302 -- 15/15 orders (Key to Soil Orders), 77/77 groups (keys to groups), and 336/336 subgroups (keys to subgroups; 70 groups, the other seven have none); the Cryic Soils of the appendix are not keyed"
 source: |
   Manaaki Whenua - Landcare Research (2026). New Zealand Soil Classification,
-  4th ed. Key to Soil Orders; keys to groups; keys to subgroups (Organic,
-  Gley, Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic,
-  Granular and Pallic Soils); Diagnostic horizons and other differentiae.
+  4th ed. Key to Soil Orders; keys to groups; keys to subgroups; Diagnostic
+  horizons and other differentiae.

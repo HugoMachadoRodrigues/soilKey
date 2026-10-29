@@ -1,0 +1,89 @@
+# Key to subgroups of Raw Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-barw.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "WW":
+    - code: "WWU"
+      name: Sulfidic Hydric Raw Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm."
+
+    - code: "WWT"
+      name: Typic Hydric Raw Soils
+      tests:
+        default: true
+      notes: "Other Hydric Raw Soils."
+
+  "WG":
+    - code: "WGR"
+      name: Sulfuric Gley Raw Soils
+      tests:
+        all_of:
+          - sulfuric_subgroup_nzsc: {}
+      notes: "Sulfuric soil material in some part within 90 cm."
+
+    - code: "WGFU"
+      name: Fluid-sulfidic Gley Raw Soils
+      tests:
+        all_of:
+          - fluid_subgroup_nzsc: {depth: 30, limit: at_or_less}
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "A fluid horizon at 30 cm or less, and sulfidic soil material in some part within 90 cm."
+
+    - code: "WGU"
+      name: Sulfidic Gley Raw Soils
+      tests:
+        all_of:
+          - sulfidic_subgroup_nzsc: {from: mineral_surface}
+      notes: "Sulfidic soil material in some part within 90 cm."
+
+    - code: "WGFQ"
+      name: Fluid-saline Gley Raw Soils
+      tests:
+        all_of:
+          - fluid_subgroup_nzsc: {depth: 30, saline: true}
+      notes: "A fluid horizon and saline soil material within 30 cm."
+
+    - code: "WGQ"
+      name: Saline Gley Raw Soils
+      tests:
+        all_of:
+          - saline_subgroup_nzsc: {depth: 30}
+      notes: "Saline soil material within 30 cm."
+
+    - code: "WGF"
+      name: Fluid Gley Raw Soils
+      tests:
+        all_of:
+          - fluid_subgroup_nzsc: {depth: 30}
+      notes: "A fluid horizon within 30 cm."
+
+    - code: "WGS"
+      name: Sandy Gley Raw Soils
+      tests:
+        all_of:
+          - sandy_subgroup_nzsc: {}
+      notes: "Sand or loamy sand with less than 35 % coarse fragments in all horizons from the soil surface to 60 cm or more."
+
+    - code: "WGT"
+      name: Typic Gley Raw Soils
+      tests:
+        default: true
+      notes: "Other Gley Raw Soils."
+
+  "WS":
+    - code: "WSK"
+      name: Tephric Sandy Raw Soils
+      tests:
+        all_of:
+          - tephric_subgroup_nzsc: {from: soil_surface}
+      notes: "Tephric soil material from the soil surface to 30 cm or more."
+
+    - code: "WST"
+      name: Typic Sandy Raw Soils
+      tests:
+        default: true
+      notes: "Other Sandy Raw Soils."
