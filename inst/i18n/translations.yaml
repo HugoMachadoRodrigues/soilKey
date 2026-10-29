@@ -748,6 +748,10 @@ en:
   "transfer.lost_title": "Connection to the server lost."
   "transfer.lost_body": "This page no longer reaches its session, so buttons and downloads will not respond. Reload to start a new session; a profile saved with \"Save session\" can be reopened afterwards."
   "transfer.reload": "Reload"
+  # v0.9.306 -- soil moisture regime (USDA)
+  "pedon.moisture_regime": "Soil moisture regime (USDA)"
+  "pedon.help_moisture_regime": "Read by the Soil Taxonomy key: ustic leads to the Ustolls and Ustalfs, xeric to the Xerolls, aridic to the Aridisols. Leave Unknown when it is not known; it is saved with the session."
+  "pedon.smr_unknown": "Unknown"
 
 pt:
   "pedon.geom_missing_depth": "Profundidade ausente ou não numérica na(s) linha(s) %s."
@@ -1494,3 +1498,7 @@ pt:
   "transfer.lost_title": "A conexão com o servidor caiu."
   "transfer.lost_body": "Esta página perdeu a sua sessão, então botões e downloads não vão responder. Recarregue para abrir uma nova sessão; um perfil salvo com \"Salvar sessão\" pode ser reaberto depois."
   "transfer.reload": "Recarregar"
+  # v0.9.306 -- regime de umidade do solo (USDA)
+  "pedon.moisture_regime": "Regime de umidade do solo (USDA)"
+  "pedon.help_moisture_regime": "Lido pela chave da Soil Taxonomy: ústico leva aos Ustolls e Ustalfs, xérico aos Xerolls, arídico aos Aridisols. Deixe Desconhecido quando não se sabe; ele é salvo com a sessão."
+  "pedon.smr_unknown": "Desconhecido"
