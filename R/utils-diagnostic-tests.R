@@ -1856,13 +1856,14 @@ test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
 
 #' Test that organic carbon is at or above a threshold
 #'
-#' Default 12\% (histic horizon, WRB 2022 Chapter 3).
+#' Default 20\% (organic material, WRB 2022 Ch 3.3.13; it was 12 until
+#' v0.9.312). Every caller passes its own threshold.
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
 #' @noRd
-test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
+test_oc_above <- function(h, min_pct = 20, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {

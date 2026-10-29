@@ -551,6 +551,9 @@
           },
           "ec_max_dS_m": {
             "type": ["number", "null"]
+          },
+          "ph_naf": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

@@ -113,19 +113,20 @@ cohesic <- function(pedon, max_oc = 0.5, min_clay = 15,
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_oc Minimum soil organic carbon (\%) for organic material,
-#'        default 12 (matching \code{\link{histic_horizon}}).
+#'        default 20 (WRB 2022 Ch 3.3.13; it was 12 until v0.9.312).
 #' @param max_saturation_days Maximum consecutive water-saturation days that
 #'        still count as well-aerated, default 30.
 #' @param min_thickness Minimum thickness in cm, default 10.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.12, Folic horizon.
 #' @export
-folic <- function(pedon, min_oc = 12, max_saturation_days = 30,
+folic <- function(pedon, min_oc = 20, max_saturation_days = 30,
                   min_thickness = 10) {
   h <- pedon$horizons
   tests <- list()
 
-  # (organic material) -- same OC proxy as the histic horizon.
+  # (organic material) -- v0.9.313: >= 20% soil organic carbon (WRB 2022 Ch
+  # 3.3.13, p 91), as for the histic horizon; it was 12.
   tests$organic <- test_oc_above(h, min_pct = min_oc)
 
   # (1) well-aerated: saturated < 30 consecutive days in most years, not drained.

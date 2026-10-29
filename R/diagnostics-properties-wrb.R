@@ -305,6 +305,18 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
 #' separate \code{\link{vitric_properties}} diagnostic; Andosols key
 #' on (andic OR vitric) at the RSG-gate level (\code{\link{andosol}}).
 #'
+#' @section v0.9.313:
+#' The answer is read layer by layer and is \code{NA} when a value it
+#' needs is not recorded (until v0.9.312 an undecided profile returned
+#' \code{FALSE}); \code{evidence$layer_status} holds the answer per layer.
+#' A layer fails when Al_ox + 0.5*Fe_ox < \code{min_alfe} or the bulk
+#' density > \code{max_bd} is measured (phosphate retention, an optional
+#' path, can still pass it). Where bulk density is not measured,
+#' Al_ox + 0.5*Fe_ox >= \code{min_alfe} together with a pH in NaF
+#' (\code{ph_naf}) >= 9.5 in a carbonate-free layer passes, read from the
+#' field test of WRB 2022 Ch 3.2.3; this is a proxy, named in
+#' \code{notes}, \code{reference} and \code{evidence$naf_field_test}.
+#'
 #' @section v0.9.80 OC + BD proxy (opt-in):
 #' Field-described volcanic-ash soils (e.g.\ AfSP, KSSL/NASIS, SOTER)
 #' routinely lack oxalate Al/Fe and phosphate retention measurements,
@@ -448,22 +460,92 @@ andic_properties <- function(pedon,
   }
   paths$oc_bd_proxy <- proxy_path
 
-  agg <- aggregate_alternatives(paths[c("alfe_lowbd", "phosphate_retention")])
-  inferred_passed <- isTRUE(proxy_path$passed)
-  passed <- isTRUE(agg$passed) || isTRUE(inferred_passed)
-  layers <- if (isTRUE(agg$passed)) agg$layers
-            else if (isTRUE(inferred_passed)) proxy_path$layers
+  # v0.9.313: the answer per layer (.andic_layer_status()), so that a value
+  # not recorded stays undecided. Until v0.9.312 `isTRUE(agg) || isTRUE(proxy)`
+  # turned every undecided profile into FALSE. Where bulk density is not
+  # measured, Alox + 1/2 Feox >= 2% with a pH NaF >= 9.5 is read as andic
+  # (WRB 2022 Ch 3.2.3, p 73, field identification; Hugo, N2): a proxy, named
+  # in `notes`, `reference` and `evidence$naf_field_test`.
+  st <- .andic_layer_status(h, min_alfe = min_alfe, max_bd = max_bd,
+                            min_p_retention = min_p_retention)
+  paths$naf_field_test <- list(
+    passed = length(st$naf) > 0L, layers = st$naf,
+    details = list(rule = "bulk density not measured; Alox + 1/2 Feox >= 2 and pH NaF >= 9.5, carbonate-free",
+                   proxy = TRUE))
+  canonical <- if (any(st$status %in% TRUE)) TRUE
+               else if (all(st$status %in% FALSE)) FALSE
+               else NA
+  inferred_passed <- !isTRUE(canonical) && isTRUE(proxy_path$passed)
+  passed <- if (isTRUE(canonical) || inferred_passed) TRUE else canonical
+  layers <- if (isTRUE(canonical)) which(st$status %in% TRUE)
+            else if (inferred_passed) proxy_path$layers
             else integer(0)
+  naf_used <- isTRUE(canonical) && length(st$naf) > 0L
+  evidence <- c(paths, list(layer_status = st$status))
 
   DiagnosticResult$new(
     name      = "andic_properties",
     passed    = passed,
     layers    = layers,
-    evidence  = paths,
-    missing   = agg$missing,
+    evidence  = evidence,
+    missing   = if (is.na(passed)) st$missing else character(0),
     reference = paste("IUSS Working Group WRB (2022), Chapter 3, Andic properties",
-                       if (inferred_passed) "[v0.9.80 OC+BD proxy]" else "")
+                       if (inferred_passed) "[v0.9.80 OC+BD proxy]"
+                       else if (naf_used) "[pH NaF field test where bulk density is not measured]"
+                       else ""),
+    notes     = if (naf_used)
+                  sprintf(paste("Andic properties in layer(s) %s read from Alox + 1/2 Feox",
+                                "and the NaF field test (pH NaF >= 9.5), bulk density not",
+                                "measured: a proxy (WRB 2022 Ch 3.2.3, field identification)."),
+                          paste(st$naf, collapse = ", "))
+                else NA_character_
   )
+}
+
+
+# Andic properties per layer (v0.9.313) as TRUE / FALSE / NA, on the paths
+# andic_properties() reads:
+#   (a) Alox + 1/2 Feox >= min_alfe and bulk density <= max_bd (WRB 2022 Ch
+#       3.2.3, p 73, criteria 1 and 2);
+#   (b) phosphate retention >= min_p_retention, the optional path soilKey has
+#       kept since v0.3.4 (Hugo: not a required criterion). It can pass a
+#       layer; where it is not measured the layer is decided by (a) and (c);
+#   (c) where bulk density is not measured, Alox + 1/2 Feox >= min_alfe with
+#       pH NaF >= min_ph_naf in a carbonate-free layer (the field test of Ch
+#       3.2.3, which "indicates allophane and/or organo-aluminium complexes in
+#       carbonate-free soils"; Hugo, N2). A pH NaF below 9.5 does not rule the
+#       layer out (the text: the test fails in layers very rich in organic
+#       matter), so it stays undecided.
+# A layer fails when (a) fails on a measured value: Alox + 1/2 Feox < 2%, or
+# bulk density > 0.9.
+.andic_layer_status <- function(h, min_alfe = 2.0, max_bd = 0.9,
+                                min_p_retention = 70, min_ph_naf = 9.5) {
+  n <- nrow(h)
+  col <- function(x) h[[x]] %||% rep(NA_real_, n)
+  al <- col("al_ox_pct"); fe <- col("fe_ox_pct")
+  bd <- col("bulk_density_g_cm3"); pr <- col("phosphate_retention_pct")
+  naf <- col("ph_naf"); caco3 <- col("caco3_pct")
+  alfe <- al + fe / 2
+  alfe_ok <- ifelse(!is.na(alfe), alfe >= min_alfe,
+                    ifelse(!is.na(al) & al >= min_alfe, TRUE, NA))
+  a <- alfe_ok & (bd <= max_bd)
+  p <- !is.na(pr) & pr >= min_p_retention
+  calcareous <- !is.na(caco3) & caco3 > 0
+  f <- is.na(bd) & alfe_ok %in% TRUE & !is.na(naf) & naf >= min_ph_naf &
+       !calcareous
+  status <- ifelse(a %in% TRUE | p | f, TRUE, ifelse(a %in% FALSE, FALSE, NA))
+  und <- which(is.na(status))
+  missing <- unique(c(
+    if (any(is.na(al[und]))) "al_ox_pct",
+    if (any(is.na(fe[und]) & !(alfe_ok[und] %in% TRUE))) "fe_ox_pct",
+    if (any(is.na(bd[und]))) "bulk_density_g_cm3",
+    if (any(is.na(bd[und]) & is.na(naf[und]))) "ph_naf",
+    if (any(is.na(pr[und]))) "phosphate_retention_pct"))
+  list(status = status,
+       alfe_lowbd = which(a %in% TRUE),
+       p_retention = which(p),
+       naf = which(f & !(a %in% TRUE) & !p),
+       missing = missing %||% character(0))
 }
 
 
@@ -666,6 +748,73 @@ cryic_conditions <- function(pedon, max_top_cm = 100, max_temp_C = 0) {
     evidence  = evidence,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 5, Cryosols"
+  )
+}
+
+
+#' Cryosols (WRB 2022 Ch 4, p 98)
+#'
+#' (1) A cryic horizon starting <= 100 cm, or (2) a cryic horizon starting
+#' <= 200 cm and evidence of cryogenic alteration in some layer within
+#' 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+cryosol <- function(pedon) {
+  # v0.9.313: WRB 2022 Ch 4, Cryosols (p 98). Item 1 is cryic_conditions()
+  # (cryic horizon starting <= 100 cm), the old gate. Item 2: "a cryic
+  # horizon starting <= 200 cm from the soil surface and evidence of
+  # cryogenic alteration (cryoturbation, frost heave, cryogenic sorting,
+  # thermal cracking, ice segregation, patterned ground, etc.) in some layer
+  # within 100 cm". Cryogenic alteration is read as the Gelic qualifier reads
+  # it (cryoturbation_usda(): jj or @ designations, broken or involuted
+  # boundaries), so that Gelic and this item stay complementary. Both items
+  # keep the v0.9.307 rule: no permafrost under a temperature regime warmer
+  # than gelic.
+  h <- pedon$horizons
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Cryosols (p. 98)"
+  c100 <- cryic_conditions(pedon)
+  if (isTRUE(c100$passed))
+    return(DiagnosticResult$new(
+      name = "cryosol", passed = TRUE, layers = c100$layers,
+      evidence = list(item1 = c100), missing = character(0), reference = ref))
+  c200 <- cryic_conditions(pedon, max_top_cm = 200)
+  top <- h$top_cm
+  # Where no soil temperature is recorded, horizons described without the
+  # frozen suffix, in a profile that uses it deeper down, count as not frozen
+  # (the reading of qual_gelic()).
+  frozen_des <- c200$evidence$designation$frozen_designation$layers %||% integer(0)
+  settle <- function(x, depth) {
+    if (!is.na(x)) return(x)
+    up <- which(!is.na(top) & top <= depth)
+    if (length(frozen_des) && all(!is.na(h$designation[up]))) FALSE else NA
+  }
+  item1 <- settle(c100$passed, 100)
+  cryic200 <- settle(c200$passed, 200)
+  ct <- cryoturbation_usda(pedon)
+  alt <- ct$layers[!is.na(top[ct$layers]) & top[ct$layers] < 100]
+  up <- which(!is.na(top) & top < 100)
+  seen <- any(!is.na(h$designation[up]) | !is.na(h$boundary_topography[up]))
+  altered <- if (length(alt)) TRUE else if (seen) FALSE else NA
+  item2 <- if (isFALSE(cryic200) || isFALSE(altered)) FALSE
+           else if (isTRUE(cryic200) && isTRUE(altered)) TRUE
+           else NA
+  passed <- if (isTRUE(item2)) TRUE
+            else if (isFALSE(item1) && isFALSE(item2)) FALSE
+            else NA
+  missing <- character(0)
+  if (is.na(passed)) {
+    missing <- c(if (is.na(item1)) c100$missing, if (is.na(cryic200)) c200$missing)
+    if (is.na(altered)) missing <- c(missing, "designation", "boundary_topography")
+  }
+  DiagnosticResult$new(
+    name      = "cryosol",
+    passed    = passed,
+    layers    = if (isTRUE(passed)) sort(union(c200$layers, alt)) else integer(0),
+    evidence  = list(item1 = item1, cryic_100cm = c100,
+                     item2 = list(passed = item2, cryic_200cm = c200,
+                                  cryogenic_alteration_layers = alt)),
+    missing   = unique(missing),
+    reference = ref
   )
 }
 

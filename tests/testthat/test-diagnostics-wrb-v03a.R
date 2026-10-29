@@ -13,20 +13,16 @@ test_that("histic_horizon fails on Ferralsol / mineral profiles", {
 
 test_that("histic_horizon respects min_thickness and min_oc", {
   pr <- make_histosol_canonical()
-  # v0.9.15: histic_horizon now offers an OR-alternative cumulative
-  # path (OC >= min_oc summing to >= 40 cm in upper 80 cm). To gate
-  # the contiguous path, also gate the cumulative path -- otherwise
-  # a canonical Histosol still qualifies via cumulative.
-  expect_false(isTRUE(histic_horizon(pr, min_thickness    = 200,
-                                          cumulative_min_cm = 1000)$passed))
+  # v0.9.313: one path (organic material from the surface, adjoining layers
+  # added up); the 40-cm cumulative path moved to the Histosols gate.
+  expect_false(isTRUE(histic_horizon(pr, min_thickness = 200)$passed))
   expect_false(isTRUE(histic_horizon(pr, min_oc = 50)$passed))
 })
 
-test_that("histic_horizon cumulative path catches folic / mossy variants (v0.9.15)", {
-  # Build a profile with multiple thin organic layers (each below the
-  # 10 cm contiguous threshold or interrupted by mineral lenses) that
-  # together cumulate >= 40 cm of OC >= 12 within the upper 80 cm --
-  # characteristic of folic / mossy Histosols on slopes.
+test_that("histic_horizon adds up the adjoining organic layers from the surface (v0.9.313)", {
+  # Thin organic layers from the surface (each < 10 cm) form one histic
+  # horizon; organic material is >= 20% SOC (WRB 2022 Ch 3.3.13), so the
+  # 18% layer ends it: 8 + 8 = 16 cm.
   hz <- data.table::data.table(
     top_cm    = c(0,   8,  16, 24,  32, 40, 48, 90),
     bottom_cm = c(8,  16,  24, 32,  40, 48, 90, 120),
@@ -39,8 +35,8 @@ test_that("histic_horizon cumulative path catches folic / mossy variants (v0.9.1
   )
   res <- histic_horizon(pr)
   expect_true(isTRUE(res$passed))
-  cum <- res$evidence$cumulative$cumulative_oc$details$cumulative_thickness_cm
-  expect_gte(cum, 40)
+  expect_equal(res$evidence$thickness_cm, 16)
+  expect_identical(res$layers, 1:2)
 })
 
 test_that("leptic_features passes on canonical Leptosol fixture", {

@@ -467,6 +467,24 @@ vitric_properties <- function(pedon, min_glass_pct = 5,
   )
 }
 
+# Vitric properties per layer (WRB 2022 Ch 3.2.16, p 83) as TRUE / FALSE /
+# NA: all three criteria (volcanic glass >= 5%, Alox + 1/2 Feox >= 0.4%,
+# phosphate retention >= 25%) met, one of them failed, or not known. Without
+# volcanic glass data the layer stays unknown (Hugo, N3: no proxy). Read by
+# andosol() to tell a missing value from an absent property.
+.vitric_layer_status <- function(h, min_glass_pct = 5, min_alfe = 0.4,
+                                 min_p_retention = 25) {
+  n <- nrow(h)
+  glass <- h$volcanic_glass_pct %||% rep(NA_real_, n)
+  al <- h$al_ox_pct %||% rep(NA_real_, n)
+  fe <- h$fe_ox_pct %||% rep(NA_real_, n)
+  pr <- h$phosphate_retention_pct %||% rep(NA_real_, n)
+  alfe <- al + fe / 2
+  alfe_ok <- ifelse(!is.na(alfe), alfe >= min_alfe,
+                    ifelse(!is.na(al) & al >= min_alfe, TRUE, NA))
+  (glass >= min_glass_pct) & alfe_ok & (pr >= min_p_retention)
+}
+
 
 #' Yermic properties (WRB 2022 Ch 3.2.17) -- per-pedon test wrapping
 #' \code{test_yermic_surface}.

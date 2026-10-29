@@ -85,7 +85,7 @@ isis_citation <- function(accessed = Sys.Date()) {
                "nitkjd", "cecph7", "ecec", "caExcph7", "mgExcph7", "kExcph7",
                "naExcph7", "exbas", "alExch", "esp", "tceq", "gypsumContent",
                "feExtdith", "feExtacox", "alExtox", "sietox", "bdfiod", "bdfiot",
-               "wv1500", "elcosp", "elco25", "clayWaterdispTotal")
+               "wv1500", "elcosp", "elco25", "clayWaterdispTotal", "phnf")
 .ISIS_MORPH <- c("colourMoistHue", "colourMoistValue", "colourMoistChroma",
                  "colourDryHue", "colourDryValue", "colourDryChroma",
                  "structureGrade1", "structureType", "structureSize",
@@ -340,7 +340,7 @@ isis_citation <- function(accessed = Sys.Date()) {
   setnum("water_dispersible_clay_pct", "clayWaterdispTotal", 1, "g/100g, a clay content")
   setnum("coarse_fragments_pct", "cfvo", 1, "cm3/100cm3")
   setnum("ph_h2o", "phaq", 1, "pH water"); setnum("ph_kcl", "phkc", 1, "pH KCl")
-  setnum("ph_cacl2", "phca", 1, "pH CaCl2")
+  setnum("ph_cacl2", "phca", 1, "pH CaCl2"); setnum("ph_naf", "phnf", 1, "pH NaF")
   setnum("oc_pct", "orgc", 0.1, "g/kg"); setnum("n_total_pct", "nitkjd", 0.1, "g/kg")
   setnum("cec_cmol", "cecph7", 1, "cmol(c)/kg, pH 7"); setnum("ecec_cmol", "ecec", 1, "cmol(c)/kg")
   setnum("ca_cmol", "caExcph7", 1, "cmol(c)/kg"); setnum("mg_cmol", "mgExcph7", 1, "cmol(c)/kg")

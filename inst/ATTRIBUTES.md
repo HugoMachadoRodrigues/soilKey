@@ -81,6 +81,7 @@ and do not warn.
 | `ph_h2o` | - | numeric | pH measured in water (1:2.5 or as reported). soilKey's default pH. | `ph`, `ph_h20`, `ph_water`, `phw` |
 | `ph_kcl` | - | numeric | pH measured in 1 M KCl. | - |
 | `ph_cacl2` | - | numeric | pH measured in 0.01 M CaCl2. | - |
+| `ph_naf` | - | numeric | pH in 1 M NaF (the sodium fluoride test of Fieldes and Perrott, 1966). WRB 2022 Ch 3.2.3: a pH in NaF of 9.5 or more indicates allophane or organo-aluminium complexes. andic_properties() reads Alox + 1/2 Feox >= 2 % with a pH NaF >= 9.5 as andic where bulk density is not measured (a proxy, recorded in the evidence). The USDA keys do not read it. | - |
 
 ## Organics
 

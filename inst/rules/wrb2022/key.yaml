@@ -57,7 +57,7 @@ rsgs:
     name: Histosols
     tests:
       all_of:
-        - histic_horizon: {}
+        - histosol: {}                  # v0.9.313: Ch 4 items 1-3 as worded (organic material >= 20% SOC)
 
   - code: AT
     name: Anthrosols
@@ -75,7 +75,7 @@ rsgs:
     name: Cryosols
     tests:
       all_of:
-        - cryic_conditions: {}
+        - cryosol: {}                   # v0.9.313: Ch 4 item 1 (cryic <= 100 cm) or item 2 (cryic <= 200 cm + cryogenic alteration <= 100 cm)
 
   - code: LP
     name: Leptosols

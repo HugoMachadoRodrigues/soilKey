@@ -185,6 +185,19 @@ vertisol <- function(pedon, strict = NULL) {
 #' \\>= 30 cm starting in the upper 25 cm AND (3) the negative-list
 #' exclusions on argic / ferralic / plinthic / spodic.
 #'
+#' @section v0.9.313 (WRB 2022 Ch 4, p 104, as worded):
+#' The combined thickness is that of every andic or vitric layer within
+#' 100 cm of the soil surface (clipped at 100 cm), provided the uppermost
+#' starts \\<= 25 cm; until v0.9.312 only layers starting \\<= 25 cm were
+#' added up. Item 1b applies: where a limiting layer starts \\> 25 and
+#' \\<= 50 cm, andic or vitric layers covering \\>= 60\% of the soil above
+#' it qualify. Petroplinthic and pisoplinthic horizons join the
+#' exclusions. An argic horizon read from a clay increase alone (no clay
+#' films recorded) whose layers all have andic properties does not
+#' exclude (Hugo, N4: the clay of andic material does not disperse fully).
+#' Layers whose andic or vitric status is not recorded leave the gate
+#' undecided (\code{NA}) where they could change it.
+#'
 #' @section v0.9.85 buried-exclusion fix:
 #' WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic /
 #' ferralic / petroplinthic / pisoplinthic / plinthic / spodic) as
@@ -219,42 +232,81 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
                        buried_below_cm = 50, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   if (strict) buried_below_cm <- Inf
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)"
   ap <- andic_properties(pedon)
   vp <- vitric_properties(pedon)
-  ap_layers <- ap$layers %||% integer(0)
-  vp_layers <- vp$layers %||% integer(0)
-  candidate <- union(ap_layers, vp_layers)
-  if (length(candidate) == 0L) {
+  h <- pedon$horizons
+  # Per layer: andic or vitric (TRUE), neither (FALSE), not known (NA). The
+  # layers andic_properties() and vitric_properties() pass are TRUE.
+  st_an <- ap$evidence$layer_status %||% rep(NA, nrow(h))
+  st_vi <- .vitric_layer_status(h)
+  status <- ifelse(st_an %in% TRUE | st_vi %in% TRUE, TRUE,
+                   ifelse(st_an %in% FALSE & st_vi %in% FALSE, FALSE, NA))
+  status[union(ap$layers %||% integer(0), vp$layers %||% integer(0))] <- TRUE
+  ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+  if (!any(status %in% TRUE) && all(status[ok] %in% FALSE)) {
     return(DiagnosticResult$new(
-      name = "andosol",
-      passed = if (is.na(ap$passed) && is.na(vp$passed)) NA else FALSE,
-      layers = integer(0),
+      name = "andosol", passed = FALSE, layers = integer(0),
       evidence = list(andic = ap, vitric = vp),
-      missing = unique(c(ap$missing, vp$missing)),
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)",
+      missing = character(0), reference = ref,
       notes = "No andic or vitric layers"
     ))
   }
-  h <- pedon$horizons
-  # Restrict to layers that start within the upper max_top_cm.
-  starts_ok <- candidate[!is.na(h$top_cm[candidate]) &
-                            h$top_cm[candidate] <= max_top_cm]
-  combined_thickness <- if (length(starts_ok) == 0L) 0 else
-    sum(h$bottom_cm[starts_ok] - h$top_cm[starts_ok], na.rm = TRUE)
-  thickness_ok <- combined_thickness >= min_thickness
 
-  # v0.9.85: exclusion-list refinement. The diagnostic is only
-  # disqualifying if it ALSO has at least one layer starting in
-  # the upper `buried_below_cm` (default 50 cm). When all of its
-  # passing layers lie deeper than 50 cm the diagnostic is
-  # treated as "buried" and does NOT exclude the Andosol, per
-  # WRB 2022 Ch 4 p 104.
+  # v0.9.313: WRB 2022 Ch 4, Andosols (p 104), item 1: "one or more layers
+  # with andic or vitric properties with a combined thickness of: a. >= 30 cm,
+  # within 100 cm of the soil surface and starting <= 25 cm from the soil
+  # surface; or b. >= 60% of the entire thickness of the soil, if a limiting
+  # layer starts > 25 and <= 50 cm from the soil surface". The thickness is
+  # summed over all such layers within 100 cm (until v0.9.312 only layers
+  # starting <= 25 cm were added up), clipped at 100 cm. The limiting layer
+  # (Ch 2.1, rule 8, p 23) is .barrier_top_cm(): continuous rock, a petric
+  # horizon or technic hard material.
+  surface <- if (any(ok)) min(h$top_cm[ok]) else 0
+  top <- h$top_cm - surface; bot <- h$bottom_cm - surface
+  thick_in <- function(sel, to) sum(pmax(0, pmin(bot[sel], to) - pmax(top[sel], 0)))
+  yes <- ok & status %in% TRUE
+  may <- ok & !(status %in% FALSE)
+  start_yes <- any(yes & top <= max_top_cm & top < 100)
+  start_may <- any(may & top <= max_top_cm & top < 100)
+  thk_yes <- thick_in(yes, 100); thk_may <- thick_in(may, 100)
+  item1a <- if (start_yes && thk_yes >= min_thickness) TRUE
+            else if (!start_may || thk_may < min_thickness) FALSE
+            else NA
+  lim <- .barrier_top_cm(pedon) - surface
+  item1b <- FALSE
+  if (!is.na(lim) && lim > 25 && lim <= 50) {
+    need <- 0.6 * lim
+    item1b <- if (thick_in(yes, lim) >= need) TRUE
+              else if (thick_in(may, lim) < need) FALSE else NA
+  }
+  thickness_ok <- if (isTRUE(item1a) || isTRUE(item1b)) TRUE
+                  else if (isFALSE(item1a) && isFALSE(item1b)) FALSE
+                  else NA
+  andic_layers <- which(yes & top < 100)
+
+  # Item 2: "no argic, ferralic, petroplinthic, pisoplinthic, plinthic or
+  # spodic horizon starting <= 100 cm of the soil surface, unless buried
+  # deeper than 50 cm from the mineral soil surface". v0.9.85: a diagnostic
+  # whose layers all start >= `buried_below_cm` is read as buried. v0.9.313:
+  # petroplinthic and pisoplinthic added; an argic horizon read from a clay
+  # increase alone (no clay films recorded) whose layers all have andic
+  # properties does not exclude (Hugo, N4).
   exclusions <- list(
-    argic        = argic(pedon),
-    ferralic     = ferralic(pedon),
-    plinthic     = plinthic(pedon),
-    spodic       = spodic(pedon)
+    argic         = argic(pedon),
+    ferralic      = ferralic(pedon),
+    petroplinthic = petroplinthic(pedon),
+    pisoplinthic  = pisoplinthic(pedon),
+    plinthic      = plinthic(pedon),
+    spodic        = spodic(pedon)
   )
+  argic_andic <- FALSE
+  arg <- exclusions$argic
+  if (isTRUE(arg$passed) && length(arg$layers)) {
+    films <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
+    no_films <- all(is.na(films[arg$layers]) | films[arg$layers] == 0L)
+    argic_andic <- no_films && all(st_an[arg$layers] %in% TRUE)
+  }
   exclusion_buried <- vapply(exclusions, function(d) {
     if (!isTRUE(d$passed) || length(d$layers) == 0L) return(FALSE)
     tops <- h$top_cm[d$layers]
@@ -264,23 +316,31 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
   }, logical(1))
   exclusion_active <- vapply(exclusions, function(d) isTRUE(d$passed),
                                 logical(1)) & !exclusion_buried
+  exclusion_active[["argic"]] <- exclusion_active[["argic"]] && !argic_andic
   any_excl <- any(exclusion_active)
-  passed <- isTRUE(thickness_ok) && !any_excl
+  passed <- if (any_excl) FALSE else thickness_ok
+  missing <- if (is.na(passed)) unique(c(ap$missing, vp$missing)) else character(0)
   DiagnosticResult$new(
     name = "andosol",
     passed = passed,
-    layers = starts_ok,
+    layers = andic_layers,
     evidence = list(
-      andic                = ap,
-      vitric               = vp,
-      combined_thickness_cm = combined_thickness,
-      strict_mode          = strict,
-      exclusion_failed     = exclusions,
-      exclusion_buried     = as.list(exclusion_buried),
-      exclusion_active     = as.list(exclusion_active)
+      andic                 = ap,
+      vitric                = vp,
+      layer_status          = status,
+      combined_thickness_cm = thk_yes,
+      possible_thickness_cm = thk_may,
+      item1a                = item1a,
+      item1b                = item1b,
+      limiting_layer_top_cm = if (is.na(lim)) NA_real_ else lim,
+      strict_mode           = strict,
+      exclusion_failed      = exclusions,
+      exclusion_buried      = as.list(exclusion_buried),
+      argic_of_andic_layers = argic_andic,
+      exclusion_active      = as.list(exclusion_active)
     ),
-    missing  = unique(c(ap$missing, vp$missing)),
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)"
+    missing  = missing,
+    reference = ref
   )
 }
 
