@@ -1192,9 +1192,10 @@ test_plinthite_concentration <- function(h, min_pct = 15,
     )
     if (val >= min_pct) passing <- c(passing, i)
   }
-  evaluated <- length(details)
+  # v0.9.312: a layer where plinthite is not recorded leaves the test
+  # undecided (NA), even when other layers record none.
   passed <- if (length(passing) > 0L) TRUE
-            else if (evaluated == 0L && length(missing) > 0L) NA
+            else if (length(missing) > 0L) NA
             else FALSE
   .subtest_result(passed = passed, layers = passing,
                    missing = missing, details = details)
@@ -1271,22 +1272,22 @@ test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
 }
 
 
-#' Gleyic Munsell hue patterns (WRB 2022, Ch 3.1.13 redoximorphic features)
+#' Gleyic Munsell hue patterns (WRB 2022, Ch 3.2.6 gleyic properties)
 #'
-#' Hues consistent with Fe reduction (gleyic / reductimorphic). Used by
-#' \code{test_gleyic_features} as a secondary evidence path when
-#' \code{redoximorphic_features_pct} is not reported (e.g. BDsolos
-#' perfis where the surveyor recorded Munsell colors but not mottle
-#' percent). Per WRB 2022 Ch 3.1.13: hues N (neutral), 10Y, 5GY, 10GY,
-#' 5G, 10G, 5BG, 10BG, 5B, 10B (any value, chroma <= 2 inferred).
+#' Hues of the reductimorphic colours of WRB 2022 3.2.6 criterion 1.a
+#' (p. 75): N, 10Y, GY, G, BG, B or PB (every step of those hue families,
+#' 2.5GY to 10GY and so on; since v0.9.312, before only the 5 and 10 steps).
+#' Criterion 1.b, a hue of 2.5Y or 5Y with a chroma of 2 or less, is
+#' \code{.GLEYIC_HUE_1B_REGEX} with \code{.reductimorphic_colour()}. Used by
+#' the redox reading of \code{gleyic_properties} and by
+#' \code{test_gleyic_features}.
 #'
 #' @keywords internal
 .GLEYIC_HUE_REGEX <- paste0(
   "^(",
-  "N|N\\s*[0-9]|",                # neutral (achromatic)
-  "10Y|5GY|10GY|5G|10G|",         # green / yellow-green
-  "5BG|10BG|5B|10B|",             # blue / blue-green
-  "10PB|5PB",                     # transitional purple-blue (rare but seen)
+  "N|N\\s*[0-9]|",                       # neutral (achromatic)
+  "10Y|[0-9.]*GY|[0-9.]*G|",             # yellow-green / green
+  "[0-9.]*BG|[0-9.]*B|[0-9.]*PB",        # blue-green / blue / purple-blue
   ")(\\s|$)"
 )
 

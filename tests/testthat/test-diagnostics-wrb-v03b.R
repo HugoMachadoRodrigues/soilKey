@@ -46,6 +46,9 @@ test_that("nitic_horizon needs Fe-ox, structure and shiny faces (v0.9.220)", {
   few <- pr$clone(deep = TRUE); few$horizons$clay_films_amount <- c(NA, "few", "few")
   expect_false(isTRUE(nitic_horizon(few)$passed))
   plin <- pr$clone(deep = TRUE); plin$horizons$plinthite_pct <- c(0, 30, 30)
+  # v0.9.312: a plinthic horizon has Feox/Fedith < 0.1 (WRB 2022 3.1.30,
+  # criterion 3); the fixture's Bt1 has 0.9 / 9 = 0.1
+  plin$horizons$fe_ox_pct <- c(0.8, 0.8, 0.9)
   expect_false(isTRUE(nitic_horizon(plin)$passed))        # part of a plinthic horizon
   # the legacy reading, opt-in
   withr::local_options(soilKey.morphological_inference = TRUE)

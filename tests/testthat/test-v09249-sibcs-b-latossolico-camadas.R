@@ -23,13 +23,16 @@
 
 test_that("mottles in a layer near the surface do not void the B latossolico", {
   skip_on_cran()
-  # 10% of mottles from the B1 down, in a red B: gleyic properties for WRB,
-  # no horizonte glei
+  # 10% of mottles from the B1 down, in a red B: no horizonte glei; for WRB
+  # gleyic properties where the site records groundwater within 150 cm
+  # (v0.9.312, Hugo's reading of 3.2.6), undecided where it does not
   p <- .lc(c("A", "Bw1", "Bw2", "Bw3"), c(0, 20, 60, 120), c(20, 60, 120, 200),
            cec = c(8, 4, 4, 4),
            munsell_hue_moist = "2.5YR", munsell_value_moist = 4, munsell_chroma_moist = 6,
            redoximorphic_features_pct = c(0, 10, 10, 10))
-  expect_true(isTRUE(gleyic_properties(p)$passed))
+  expect_true(is.na(gleyic_properties(p)$passed))
+  q <- p$clone(deep = TRUE); q$site$groundwater_kind <- "observed"; q$site$groundwater_depth_cm <- 100
+  expect_true(isTRUE(gleyic_properties(q)$passed))
   expect_false(isTRUE(horizonte_glei(p)$passed))
   r <- B_latossolico(p)
   expect_true(isTRUE(r$passed))

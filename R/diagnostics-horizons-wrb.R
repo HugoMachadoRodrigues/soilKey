@@ -863,10 +863,10 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 
 #' Plinthic horizon (WRB 2022)
 #'
-#' Tests whether any horizon meets the plinthic horizon criteria.
-#' Plinthite is Fe-rich material that hardens irreversibly on repeated
-#' wetting and drying; the plinthic horizon is the diagnostic of
-#' Plinthosols.
+#' Tests whether any horizon meets the plinthic horizon criteria (WRB 2022
+#' Ch 3.1.30, p. 62), the diagnostic of Plinthosols with the pisoplinthic
+#' and petroplinthic horizons. The depth limit belongs to the Plinthosols
+#' key (\code{plinthosol()}), not to the horizon.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 15).
@@ -874,18 +874,22 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
-#' Sub-tests:
+#' Criteria read (v0.9.312):
 #' \itemize{
-#'   \item \code{test_plinthite_concentration} -- plinthite
-#'         volume \% >= 15
-#'   \item \code{test_minimum_thickness} -- thickness >= 15 cm
+#'   \item 1: \code{plinthite_pct} \\>= 15 (the oximorphic features inside
+#'         former aggregates of criterion 1, as \code{plinthite_pct} records
+#'         them); a layer where it is not recorded is undecided;
+#'   \item 2: Fe-dithionite \\>= 2.5\% (2.a) when \code{fe_dcb_pct} is
+#'         measured; below it the layer is undecided, since 2.b (10\% Fe in
+#'         the oximorphic features) and 2.c (hardening after drying and
+#'         wetting) are not recorded; not measured, the recorded plinthite
+#'         is taken for 2.c;
+#'   \item 3: Feox/Fedith < 0.1 when both are measured;
+#'   \item 4: not part of a petroplinthic or pisoplinthic horizon;
+#'   \item 5: \\>= 15 cm thick; adjoining sublayers (Btv1 over Btv2) count
+#'         together.
 #' }
-#'
-#' v0.2 limitations: WRB 2022 also accepts profiles with >= 40\% red
-#' Fe-rich mottles as alternative criterion -- not yet wired. The
-#' "irreversibly hardens" criterion is conceptual and requires field
-#' observation; v0.2 takes \code{plinthite_pct} as already representing
-#' true plinthite (as opposed to soft mottles).
+#' The result is \code{NA} when undecided layers could make the horizon.
 #'
 #' @section v0.9.72 designation morphological inference (opt-in):
 #' Field-described Brazilian Plintossolos profiles (e.g.\ the Embrapa
@@ -906,19 +910,38 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #'
 #' Default is \code{FALSE} (canonical behaviour preserved).
 #'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic
+#'   horizon.
 #' @export
 plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
   h <- pedon$horizons
+  n <- nrow(h)
 
   tests <- list()
   tests$plinthite <- test_plinthite_concentration(h,
                                                     min_pct = min_plinthite_pct)
-  tests$thickness <- test_minimum_thickness(h,
-                                              min_cm           = min_thickness,
-                                              candidate_layers = tests$plinthite$layers)
-
-  agg <- aggregate_subtests(tests)
+  ok <- .subtest_by_layer(tests$plinthite, n)
+  # criteria 2 and 3 (p. 62), where the Fe is measured
+  fe_d  <- suppressWarnings(as.numeric(h$fe_dcb_pct %||% rep(NA_real_, n)))
+  fe_ox <- suppressWarnings(as.numeric(h$fe_ox_pct %||% rep(NA_real_, n)))
+  low_fe <- !is.na(fe_d) & fe_d < 2.5
+  ratio_high <- !is.na(fe_d) & !is.na(fe_ox) & fe_d > 0 & fe_ox / fe_d >= 0.1
+  ok[ok %in% TRUE & low_fe] <- NA
+  ok[ratio_high] <- FALSE
+  # criterion 4: not part of a petroplinthic or pisoplinthic horizon
+  part <- union(.petroplinthic_run(h)$layers_true, .pisoplinthic_run(h)$layers_true)
+  ok[part] <- FALSE
+  run <- .adjoining_runs(h, ok, min_cm = min_thickness)
+  tests$thickness <- list(passed = run$passed, layers = run$layers,
+                          min_cm = min_thickness, adjoining = TRUE)
+  tests$fe_criteria <- list(low_fe_dith = which(low_fe), feox_fedith_high = which(ratio_high),
+                            part_of_petro_or_pisoplinthic = part)
+  agg <- list(passed = run$passed,
+              layers = if (isTRUE(run$passed)) run$layers else integer(0),
+              missing = if (isTRUE(run$passed)) character(0)
+                        else unique(c(tests$plinthite$missing,
+                                      if (any(low_fe)) "fe_dcb_pct")))
+  tests$undecided_layers <- if (is.na(run$passed)) run$layers else integer(0)
 
   # v0.9.72 -- designation-suffix morphological inference
   designation_inference_enabled <- isTRUE(
@@ -975,7 +998,7 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
     layers    = final_layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon",
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic horizon (p. 62)",
                        if (length(inferred_layers) > 0L)
                          "[v0.9.72 designation-suffix inference]" else "")
   )

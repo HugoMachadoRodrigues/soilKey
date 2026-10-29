@@ -11,17 +11,19 @@
 #' Abrupt textural difference (WRB 2022 Ch 3.2.1)
 #'
 #' Sharp clay-content increase between two superimposed mineral layers
-#' meeting all of:
+#' meeting all of (WRB 2022 3.2.1, p. 72):
 #' \itemize{
 #'   \item underlying clay \\>= 15\% AND thickness \\>= 7.5 cm;
-#'   \item underlying starts \\>= 10 cm below mineral soil surface;
+#'   \item underlying starts \\>= 10 cm below the mineral soil surface;
 #'   \item underlying has, vs overlying: 2x clay if overlying < 20\%, OR
 #'         \\>= 20pp (absolute) more clay if overlying \\>= 20\%;
 #'   \item transitional layer, if any, \\<= 2 cm.
 #' }
-#' v0.3.3 enforces criteria 1, 2, 3. The transitional-layer check is
-#' deferred (the canonical horizon schema does not carry a "transitional"
-#' marker; it can be added later via boundary_distinctness inspection).
+#' Since v0.9.312 criterion 5 is read from the distinctness of the lower
+#' boundary of the overlying layer (\code{boundary_distinctness}): abrupt
+#' (2 cm or less) or very abrupt passes, clear, gradual or diffuse fails, and
+#' a boundary not recorded leaves the pair undecided (\code{NA}). Criterion 2
+#' is counted from the mineral soil surface (below organic layers).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
@@ -36,6 +38,10 @@ abrupt_textural_difference <- function(pedon) {
       notes = "Profile has fewer than 2 layers"
     ))
   }
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  bd <- as.character(h$boundary_distinctness %||% rep(NA_character_, nrow(h)))
+  undecided <- integer(0)
   for (i in seq.int(2L, nrow(h))) {
     above <- h$clay_pct[i - 1L]; here <- h$clay_pct[i]
     top   <- h$top_cm[i]
@@ -48,30 +54,41 @@ abrupt_textural_difference <- function(pedon) {
     }
     underlying_clay_ok <- here >= 15
     thickness_ok      <- (bot - top) >= 7.5
-    starts_below_10   <- top >= 10
+    starts_below_10   <- top - ms >= 10
     jump_ok <- if (above < 20) here >= 2 * above
                else here - above >= 20
-    layer_pass <- underlying_clay_ok && thickness_ok &&
-                    starts_below_10  && jump_ok
+    # criterion 5: the transition, the lower boundary of the overlying layer,
+    # is 2 cm or less (FAO abrupt, 0.5-2 cm; very abrupt, under 0.5 cm)
+    b <- tolower(trimws(bd[i - 1L]))
+    transition_ok <- if (is.na(b) || !nzchar(b)) NA
+                     else grepl("abrupt", b) || grepl("sharp", b)
+    geometry_ok <- underlying_clay_ok && thickness_ok && starts_below_10 && jump_ok
+    layer_pass <- if (!geometry_ok) FALSE else transition_ok
     details[[as.character(i)]] <- list(
       between = c(i - 1L, i),
       above_clay = above, here_clay = here,
       thickness_cm = bot - top, top_cm = top,
       jump_path = if (above < 20) "2x" else "+20pp",
+      geometry_ok = geometry_ok,
+      boundary_distinctness = bd[i - 1L], transition_ok = transition_ok,
       passed = layer_pass
     )
-    if (layer_pass) passing <- c(passing, i)
+    if (isTRUE(layer_pass)) passing <- c(passing, i)
+    if (is.na(layer_pass)) {
+      undecided <- c(undecided, i); missing <- c(missing, "boundary_distinctness")
+    }
   }
   passed <- if (length(passing) > 0L) TRUE
+            else if (length(undecided) > 0L) NA
             else if (length(details) == 0L && length(missing) > 0L) NA
             else FALSE
   DiagnosticResult$new(
     name      = "abrupt_textural_difference",
     passed    = passed,
     layers    = passing,
-    evidence  = list(layer_pairs = details),
-    missing   = unique(missing),
-    reference = "IUSS Working Group WRB (2022), Chapter 3.2.1"
+    evidence  = list(layer_pairs = details, undecided = undecided),
+    missing   = if (isTRUE(passed)) character(0) else unique(missing),
+    reference = "IUSS Working Group WRB (2022), Chapter 3.2.1 (p. 72)"
   )
 }
 

@@ -1772,6 +1772,9 @@ make_nitisol_canonical <- function() {
     # Nitisols, whose "active" Fe sets them apart from Ferralsols.
     fe_ox_pct                  = c(0.8,  0.9,  0.9),
     plinthite_pct              = c(0,    0,    0),
+    # v0.9.312: no Fe nodules, so no pisoplinthic horizon (WRB 2022
+    # 3.1.28), which the Ferritic qualifier must rule out
+    ferric_nodules_pct         = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),
     artefacts_pct              = c(0,    0,    0),
@@ -1815,7 +1818,10 @@ make_planosol_canonical <- function() {
     bottom_cm                  = c(15,   25,   70,   150),
     designation                = c("A",  "E",  "Btg","BC"),
     boundary_distinctness      = c("clear","abrupt","gradual","gradual"),
-    munsell_hue_moist          = c("10YR","10YR","2.5Y","10YR"),
+    # v0.9.312: the stagnic Btg keeps the matrix colour of its soil material
+    # (WRB 2022 3.2.14, criteria 1-2); a 2.5Y matrix of chroma 2 or less is
+    # reductimorphic (3.2.6, criterion 1.b), which makes the mottles gleyic
+    munsell_hue_moist          = c("10YR","10YR","10YR","10YR"),
     munsell_value_moist        = c(4,    6,    4,    5),
     munsell_chroma_moist       = c(3,    2,    2,    3),
     munsell_value_dry          = c(5,    7,    5,    6),
@@ -1863,7 +1869,10 @@ make_planosol_canonical <- function() {
       slope_pct       = 2,
       land_use        = "rotational rice / pasture",
       vegetation      = "Pampean grassland (grazed)",
-      drainage_class  = "imperfectly drained"
+      drainage_class  = "imperfectly drained",
+      # v0.9.312: the perched water table that tells stagnic from gleyic
+      # properties (WRB 2022 3.2.14; Hugo's reading of 3.2.6 against it)
+      groundwater_kind = "perched"
     ),
     horizons = hz
   )
@@ -1874,16 +1883,12 @@ make_planosol_canonical <- function() {
 #'
 #' Synthetic Stagnosol: redoximorphic features in a perched layer
 #' (Bg, 15-50 cm; redox 25\%) but the deeper subsoil is well-drained
-#' (BC redox 2\%, C redox 0). The decay-with-depth contrast is what
-#' distinguishes stagnic from gleyic. By construction
-#' \code{\link{stagnic_properties}} passes and
-#' \code{\link{gleyic_properties}} also passes (the surface redox
-#' qualifies for both); the WRB key tests Stagnosols (#16) and
-#' Gleysols (#9), so a real Stagnosol-typed fixture lands at
-#' Gleysols if both pass -- the criteria differ in depth pattern,
-#' which is enough for the diagnostic functions but not for key
-#' precedence in v0.3. This is documented in the test as known
-#' overlap; v0.4 will add a stronger discriminator.
+#' (BC redox 2\%, C redox 0). Since v0.9.312 what tells stagnic from
+#' gleyic is the recorded perched water table and the Bg's matrix, which
+#' has no reductimorphic colour (WRB 2022 3.2.6 and 3.2.14, as Hugo reads
+#' them): \code{\link{stagnic_properties}} passes,
+#' \code{\link{gleyic_properties}} does not, and the grey Bg covers more
+#' than one third of 0-60 cm (the Stagnosols key, Ch 4, p. 108).
 #'
 #' @return A \code{\link{PedonRecord}}.
 #' @export
@@ -1892,7 +1897,10 @@ make_stagnosol_canonical <- function() {
     top_cm                     = c(0,    15,   50,   100),
     bottom_cm                  = c(15,   50,   100,  150),
     designation                = c("Ah", "Bg", "BC", "C"),
-    munsell_hue_moist          = c("10YR","2.5Y","10YR","10YR"),
+    # v0.9.312: the stagnic Bg keeps the matrix colour of its soil material
+    # (WRB 2022 3.2.14, criteria 1-2); a 2.5Y matrix of chroma 2 or less is
+    # reductimorphic (3.2.6, criterion 1.b), which makes the mottles gleyic
+    munsell_hue_moist          = c("10YR","10YR","10YR","10YR"),
     munsell_value_moist        = c(3,    5,    5,    5),
     munsell_chroma_moist       = c(2,    1,    3,    3),
     munsell_value_dry          = c(4,    6,    6,    6),
@@ -1931,7 +1939,10 @@ make_stagnosol_canonical <- function() {
       slope_pct       = 4,
       land_use        = "winter wheat",
       vegetation      = "former mixed deciduous forest",
-      drainage_class  = "moderately well drained (perched)"
+      drainage_class  = "moderately well drained (perched)",
+      # v0.9.312: the perched water table that tells stagnic from gleyic
+      # properties (WRB 2022 3.2.14; Hugo's reading of 3.2.6 against it)
+      groundwater_kind = "perched"
     ),
     horizons = hz
   )
@@ -1945,7 +1956,9 @@ make_stagnosol_canonical <- function() {
 #' Bt. By construction \code{\link{retic_properties}} passes via
 #' the "glossic" designation pattern; \code{\link{argic}} also
 #' passes (this is correct -- Retisols are argic + retic features,
-#' and the WRB key tests RT before AC/LX/AL/LV).
+#' and the WRB key tests RT before AC/LX/AL/LV). The Bt is below
+#' 1.5 kg/dm3, so that the claric E has no stagnic properties (WRB 2022
+#' 3.2.14 criterion 4) and the profile does not key as a Stagnosol.
 #'
 #' @return A \code{\link{PedonRecord}}.
 #' @export
@@ -1985,7 +1998,11 @@ make_retisol_canonical <- function() {
     slickensides               = c("absent","absent","absent","absent"),
     artefacts_pct              = c(0,    0,    0,    0),
     duripan_pct                = c(0,    0,    0,    0),
-    bulk_density_g_cm3         = c(1.30, 1.50, 1.50, 1.55)
+    # v0.9.312: the Bt was 1.50 kg/dm3, and a claric Eg directly above a
+    # layer of 1.5 or more has stagnic properties (WRB 2022 3.2.14
+    # criterion 4): with the reducing conditions of its g, one third of
+    # 0-60 cm, which makes a Stagnosol (Ch 4, p. 108), not a Retisol
+    bulk_density_g_cm3         = c(1.30, 1.50, 1.45, 1.55)
   )
 
   hz <- ensure_horizon_schema(hz)

@@ -220,7 +220,50 @@ petrogypsic <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
   )
 }
 
-#' Petroplinthic horizon (WRB 2022): cemented plinthic.
+#' Per-layer reading of the petroplinthic horizon (WRB 2022 3.1.27, p. 59):
+#' Fe-cemented (criteria 1-3: an iron pan, pan_type ferricrete or ironpan,
+#' or plinthite \\>= \code{min_plinthite_pct}) and at least strongly cemented
+#' (criterion 4), \\>= \code{min_thickness} cm of adjoining layers
+#' (criterion 7). \code{layers_true} are the layers of a sure horizon.
+#' @noRd
+.petroplinthic_run <- function(h, min_thickness = 10, min_plinthite_pct = 15) {
+  n <- nrow(h)
+  pan <- tolower(as.character(h$pan_type %||% rep(NA_character_, n)))
+  pl  <- suppressWarnings(as.numeric(h$plinthite_pct %||% rep(NA_real_, n)))
+  cem <- tolower(as.character(h$cementation_class %||% rep(NA_character_, n)))
+  fe  <- ifelse(pan %in% c("ferricrete", "ironpan"), TRUE, pl >= min_plinthite_pct)
+  strong <- ifelse(is.na(cem), NA, cem %in% c("strongly", "indurated"))
+  ok <- .and3v(fe, strong)
+  run <- .adjoining_runs(h, ok, min_cm = min_thickness)
+  c(run, list(layers_true = if (isTRUE(run$passed)) run$layers else integer(0),
+              per_layer = ok))
+}
+
+#' Per-layer reading of the pisoplinthic horizon (WRB 2022 3.1.28, p. 60):
+#' \\>= \code{min_nodules_pct} \% of the volume Fe/Mn concretions or nodules
+#' over 2 mm and at least moderately cemented (\code{ferric_nodules_pct}),
+#' not part of a petroplinthic horizon, \\>= \code{min_thickness} cm of
+#' adjoining layers.
+#' @noRd
+.pisoplinthic_run <- function(h, min_thickness = 15, min_nodules_pct = 40) {
+  n <- nrow(h)
+  nod <- suppressWarnings(as.numeric(h$ferric_nodules_pct %||% rep(NA_real_, n)))
+  ok <- nod >= min_nodules_pct
+  ok[.petroplinthic_run(h)$layers_true] <- FALSE
+  run <- .adjoining_runs(h, ok, min_cm = min_thickness)
+  c(run, list(layers_true = if (isTRUE(run$passed)) run$layers else integer(0),
+              per_layer = ok))
+}
+
+#' Petroplinthic horizon (WRB 2022)
+#'
+#' Continuous or fractured layer cemented by Fe (WRB 2022 Ch 3.1.27, p. 59).
+#' Since v0.9.312 a layer qualifies when its Fe cement is recorded (an iron
+#' pan, \code{pan_type} ferricrete or ironpan, or plinthite \\>=
+#' \code{min_plinthite_pct}) and its cementation class is at least strongly
+#' cemented (criterion 4; until v0.9.311 moderately was enough), over
+#' \code{min_thickness} cm of adjoining layers (criterion 7). A layer whose
+#' Fe cement or cementation is not recorded is undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @param min_plinthite_pct Numeric threshold or option (see Details).
@@ -228,44 +271,50 @@ petrogypsic <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
 #' @export
 petroplinthic <- function(pedon, min_thickness = 10, min_plinthite_pct = 15) {
   h <- pedon$horizons
-  tests <- list()
-  tests$plinthite  <- test_plinthite_concentration(h, min_pct = min_plinthite_pct)
-  tests$cemented   <- test_cemented(h, min_class = "moderately",
-                                       candidate_layers = tests$plinthite$layers)
-  tests$thickness  <- test_minimum_thickness(h, min_cm = min_thickness,
-                                               candidate_layers = tests$cemented$layers)
-  agg <- aggregate_subtests(tests)
+  r <- .petroplinthic_run(h, min_thickness, min_plinthite_pct)
   DiagnosticResult$new(
-    name = "petroplinthic", passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Petroplinthic horizon"
+    name = "petroplinthic", passed = r$passed,
+    layers = if (isTRUE(r$passed)) r$layers else integer(0),
+    evidence = list(per_layer = r$per_layer,
+                    undecided_layers = if (is.na(r$passed)) r$layers else integer(0)),
+    missing = if (isTRUE(r$passed)) character(0)
+              else c("pan_type", "plinthite_pct", "cementation_class"),
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.27, Petroplinthic horizon (p. 59)"
   )
 }
 
-#' Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
-#' designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%
-#' AND structure_type containing 'pisol'.
+#' Pisoplinthic horizon (WRB 2022)
+#'
+#' WRB 2022 Ch 3.1.28 (p. 60): \\>= 40\% of the volume (whole soil)
+#' yellowish, reddish or blackish concretions or nodules over 2 mm, at least
+#' moderately cemented, not part of a petroplinthic horizon, \\>= 15 cm
+#' thick. Since v0.9.312 the concretions are read from
+#' \code{ferric_nodules_pct} (Fe/Mn nodules or concretions; the ISIS reader
+#' stores the hard ones over 2 mm), adjoining sublayers counting together; a
+#' layer where they are not recorded is undecided. Until v0.9.311 the test
+#' was plinthite \\>= 15\% with a "pisolitic" structure, which is not the
+#' WRB 2022 definition.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
-#' @param min_plinthite_pct Numeric threshold or option (see Details).
+#' @param min_plinthite_pct Not used since v0.9.312; kept so that existing
+#'        calls still work.
+#' @param min_nodules_pct Minimum volume \% of concretions and nodules
+#'        (default 40).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
-pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
+pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15,
+                         min_nodules_pct = 40) {
   h <- pedon$horizons
-  tests <- list()
-  tests$plinthite  <- test_plinthite_concentration(h, min_pct = min_plinthite_pct)
-  tests$pisolitic  <- test_pattern_match(h, "structure_type", "pisol",
-                                            candidate_layers = tests$plinthite$layers)
-  tests$thickness  <- test_minimum_thickness(h, min_cm = min_thickness,
-                                               candidate_layers = tests$pisolitic$layers)
-  agg <- aggregate_subtests(tests)
+  r <- .pisoplinthic_run(h, min_thickness, min_nodules_pct)
   DiagnosticResult$new(
-    name = "pisoplinthic", passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Pisoplinthic horizon"
+    name = "pisoplinthic", passed = r$passed,
+    layers = if (isTRUE(r$passed)) r$layers else integer(0),
+    evidence = list(per_layer = r$per_layer,
+                    undecided_layers = if (is.na(r$passed)) r$layers else integer(0)),
+    missing = if (isTRUE(r$passed)) character(0) else "ferric_nodules_pct",
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.28, Pisoplinthic horizon (p. 60)"
   )
 }
-
 
 # ---- vertic horizon (the horizon, not the property) -----------------------
 

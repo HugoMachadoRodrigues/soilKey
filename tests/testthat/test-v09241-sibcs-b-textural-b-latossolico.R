@@ -136,8 +136,9 @@ test_that("a jump of clay between two B horizons, or to a C, is no item (g)", {
   expect_false(isTRUE(r$passed))
   # the test of the WRB property compares every pair of adjoining layers;
   # since v0.9.244 the SiBCS attribute is the transition from the A or E to
-  # the B
-  expect_true(isTRUE(abrupt_textural_difference(p)$passed))
+  # the B (v0.9.312: with the abrupt transition of its criterion 5)
+  q <- p$clone(deep = TRUE); q$horizons$boundary_distinctness <- "abrupt"
+  expect_true(isTRUE(abrupt_textural_difference(q)$passed))
   expect_false(isTRUE(mudanca_textural_abrupta(p)$passed))
 })
 

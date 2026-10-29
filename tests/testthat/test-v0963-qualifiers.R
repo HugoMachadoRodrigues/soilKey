@@ -102,6 +102,8 @@ test_that("qual_ferritic: >= 10% Fe-dithionite in a >= 30 cm layer (v0.9.217)", 
   p <- .minimal_pedon()
   p$horizons$fe_dcb_pct <- c(12, 14)
   p$horizons$plinthite_pct <- c(0, 0)
+  # v0.9.312: no nodules, so no pisoplinthic horizon (WRB 2022 3.1.28)
+  p$horizons$ferric_nodules_pct <- c(0, 0)
   expect_true(isTRUE(qual_ferritic(p)$passed))
   p$horizons$fe_dcb_pct <- c(8, 9)
   expect_false(isTRUE(qual_ferritic(p)$passed))

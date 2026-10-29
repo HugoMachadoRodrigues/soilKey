@@ -220,6 +220,19 @@ attributes:
     unit: "-"
     description: "The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply."
     systems: [nzsc4]
+  - name: groundwater_kind
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon()."
+    allowed: ["none observed", "observed", "apparent", "perched", "flooded"]
+    systems: [wrb2022]
+  - name: groundwater_depth_cm
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "cm"
+    description: "Depth of the water table below the soil surface (0 at the surface). Read with groundwater_kind by the WRB gleyic and stagnic properties (within 150 cm, or deeper). Written by isis_profile_to_pedon() from depthGroundwater, or groundwaterTop where ISIS writes 0 for the depth."
+    systems: [wrb2022]
   - name: water_table_cm_above_surface
     section: "Water, climate & regimes"
     type: "numeric"

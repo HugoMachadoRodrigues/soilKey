@@ -359,9 +359,14 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 #'         conditions; OR
 #'   \item Permanent saturation by water \\<= 40 cm.
 #' }
-#' v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
-#' (W / saturated marker). Path 2 is deferred (requires a depth-of-
-#' saturation column that's not standard).
+#' Path 1 reads the layers of \code{\link{gleyic_properties}} (since
+#' v0.9.312: the matrix colour, the layer underneath and the site's
+#' groundwater, without the old decay-with-depth test) and of
+#' \code{\link{reducing_conditions}}; since v0.9.312 the 25 cm may be made
+#' of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
+#' surface, and a layer whose redox reading is undecided leaves the gate
+#' \code{NA} when it could complete the 25 cm. Path 3 is read from the
+#' designation (W / saturated marker). Path 2 is not implemented.
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' With \code{strict = TRUE} the path-1 gleyic+reducing layer must start
@@ -378,18 +383,21 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 gleysol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   path1_max_top <- if (strict) 25 else 40
-  gp <- gleyic_properties(pedon)
-  rc <- reducing_conditions(pedon)
   h <- pedon$horizons
-  shared <- intersect(gp$layers %||% integer(0),
-                       rc$layers %||% integer(0))
-  # Path 1: any qualifying layer >= 25 cm thick starting <= path1_max_top.
-  path1_layers <- shared[
-    !is.na(h$top_cm[shared]) & h$top_cm[shared] <= path1_max_top &
-    !is.na(h$bottom_cm[shared]) &
-    (h$bottom_cm[shared] - h$top_cm[shared]) >= 25
-  ]
-  path1_ok <- length(path1_layers) > 0L
+  gp <- gleyic_properties(pedon, max_top_cm = Inf)
+  rc <- reducing_conditions(pedon)
+  z  <- gp$evidence$redox_layers
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  # Path 1 (Ch 4, p. 103): one layer, >= 25 cm thick, starting <= 40 cm from
+  # the mineral soil surface, gleyic throughout with reducing conditions in
+  # every sublayer: adjoining sublayers count together (v0.9.312).
+  gl <- z$gleyic
+  gl[gp$layers] <- TRUE                  # opt-in designation inference
+  ok <- .and3v(gl, z$reducing)
+  run <- .adjoining_runs(h, ok, min_cm = 25, max_top_cm = ms + path1_max_top)
+  path1_ok <- run$passed
+  path1_layers <- if (isTRUE(path1_ok)) run$layers else integer(0)
   # Path 3: permanent saturation -- detect via designation 'W' or
   # rock_origin == 'fluviatile' on a layer starting <= 40 cm. Disabled
   # in strict mode (designation-only evidence is not accepted).
@@ -398,7 +406,8 @@ gleysol <- function(pedon, strict = NULL) {
                 any(grepl("^W|aquic|saturated",
                             h$designation[shallow] %||% rep(NA, length(shallow)),
                             ignore.case = TRUE))
-  passed <- isTRUE(path1_ok) || isTRUE(path3_ok)
+  passed <- if (isTRUE(path1_ok) || isTRUE(path3_ok)) TRUE
+            else if (is.na(path1_ok)) NA else FALSE
   DiagnosticResult$new(
     name = "gleysol",
     passed = passed,
@@ -407,85 +416,187 @@ gleysol <- function(pedon, strict = NULL) {
       gleyic_properties     = gp,
       reducing_conditions   = rc,
       path1_layers          = path1_layers,
+      path1_undecided       = if (is.na(path1_ok)) run$layers else integer(0),
       path1_ok              = path1_ok,
       path3_ok              = path3_ok,
       strict_mode           = strict
     ),
-    missing  = unique(c(gp$missing, rc$missing)),
+    missing  = if (isTRUE(passed)) character(0) else unique(c(gp$missing, rc$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 4, Gleysols (p. 103)"
+  )
+}
+
+
+#' Plinthosol RSG gate (WRB 2022 Ch 4, p 106)
+#'
+#' WRB 2022: a plinthic, pisoplinthic or petroplinthic horizon starting
+#' \\<= 100 cm from the mineral soil surface. The horizons are those of
+#' \code{\link{plinthic}}, \code{\link{pisoplinthic}} and
+#' \code{\link{petroplinthic}}; a horizon that cannot be decided and could
+#' start within 100 cm leaves the gate \code{NA}. Until v0.9.311 the gate
+#' was the plinthic horizon alone, at any depth.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+plinthosol <- function(pedon) {
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  d <- list(plinthic = plinthic(pedon), pisoplinthic = pisoplinthic(pedon),
+            petroplinthic = petroplinthic(pedon))
+  start <- function(r) {
+    lay <- if (isTRUE(r$passed)) r$layers else r$evidence$undecided_layers %||% integer(0)
+    if (length(lay)) min(h$top_cm[lay], na.rm = TRUE) else NA_real_
+  }
+  tops <- vapply(d, start, 0)
+  sure <- vapply(d, function(r) isTRUE(r$passed), NA) & !is.na(tops) & tops <= ms + 100
+  maybe <- vapply(d, function(r) is.na(r$passed), NA) &
+    (is.na(tops) | tops <= ms + 100)
+  passed <- if (any(sure)) TRUE else if (any(maybe)) NA else FALSE
+  DiagnosticResult$new(
+    name = "plinthosol",
+    passed = passed,
+    layers = if (isTRUE(passed)) sort(unique(unlist(lapply(d[sure], `[[`, "layers")))) else integer(0),
+    evidence = c(d, list(starts_cm = tops, mineral_surface_cm = ms)),
+    missing = if (isTRUE(passed)) character(0) else unique(unlist(lapply(d[maybe], `[[`, "missing"))),
+    reference = "IUSS Working Group WRB (2022), Chapter 4, Plinthosols (p. 106)"
   )
 }
 
 
 #' Planosol RSG gate (WRB 2022 Ch 4, p 107)
 #'
-#' WRB-canonical: abrupt textural difference \\<= 75 cm AND, in 5 cm
-#' directly above or below the abrupt textural difference, stagnic
-#' properties (>= 50\% redoximorphic features) AND reducing conditions.
+#' WRB 2022: an abrupt textural difference \\<= 75 cm from the mineral soil
+#' surface and, within 5 cm directly above or below it, (1) stagnic
+#' properties in which the area of reductimorphic plus oximorphic features
+#' is \\>= 50\% and (2) reducing conditions in some parts of the volume with
+#' the reductimorphic features.
 #'
-#' v0.3.4 enforces all three components. The 5-cm-window restriction is
-#' relaxed to "the layer immediately above or below the abrupt textural
-#' difference satisfies stagnic + reducing".
-#'
-#' @section Tier-3 strict mode (v0.9.98):
-#' With \code{strict = TRUE} the \code{planic_features} fallback path is
-#' disabled. Strict mode requires the canonical evidence -- an abrupt
-#' textural difference \emph{plus} measured stagnic and reducing
-#' conditions in the bracketing layer -- and will not accept the
-#' simpler clay-doubling proxy on its own.
+#' The two layers that meet at the abrupt textural difference stand for the
+#' 5 cm above and below it. Stagnic properties are those of
+#' \code{\link{stagnic_properties}}; a claric layer directly above the
+#' abrupt textural difference is stagnic (Ch 3.2.14, criterion 4) and its
+#' whole area counts as reductimorphic. Since v0.9.312 the abrupt textural
+#' difference has its transition criterion (\code{boundary_distinctness}),
+#' the depth limit of 75 cm is applied, and the v0.2 \code{planic_features}
+#' fallback (clay doubling at an abrupt boundary, with no redox evidence),
+#' which is not in WRB 2022, is gone.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
-#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
-#'        \code{TRUE} disables the planic-features fallback.
+#' @param strict Logical or \code{NULL}; recorded in the evidence. Since
+#'        v0.9.312 it changes nothing (the fallback it disabled is gone).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 planosol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)"
+  h <- pedon$horizons
   atd <- abrupt_textural_difference(pedon)
-  if (!isTRUE(atd$passed)) {
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  pairs <- Filter(function(p) !isFALSE(p$passed) && !is.na(p$top_cm) &&
+                    p$top_cm - ms <= 75,
+                  atd$evidence$layer_pairs %||% list())
+  if (!length(pairs)) {
     return(DiagnosticResult$new(
       name = "planosol",
       passed = if (is.na(atd$passed)) NA else FALSE,
       layers = integer(0),
-      evidence = list(abrupt_textural_difference = atd),
+      evidence = list(abrupt_textural_difference = atd, strict_mode = strict),
       missing = atd$missing %||% character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)",
-      notes = "No abrupt textural difference within profile"
+      reference = ref,
+      notes = "No abrupt textural difference within 75 cm of the mineral soil surface"
     ))
   }
-  h <- pedon$horizons
-  # The abrupt-textural-difference test returns the underlying layer index;
-  # check the layer above (immediately overlying the abrupt jump) and the
-  # underlying layer for stagnic + reducing.
-  windows <- unique(c(atd$layers - 1L, atd$layers))
-  windows <- windows[windows >= 1L & windows <= nrow(h)]
-  sp <- stagnic_properties(pedon)
-  rc <- reducing_conditions(pedon)
-  sp_layers <- sp$layers %||% integer(0)
-  rc_layers <- rc$layers %||% integer(0)
-  ok_layers <- intersect(intersect(windows, sp_layers), rc_layers)
-  # Path 3 fallback: many Planosol fixtures encode planic_features (the
-  # v0.2 simpler diagnostic) which already combines clay-doubling +
-  # abrupt boundary; allow it as a backup.
-  pf <- planic_features(pedon)
-  fallback_ok <- !strict && isTRUE(pf$passed)
-  passed <- length(ok_layers) > 0L || isTRUE(fallback_ok)
-  layers_out <- if (length(ok_layers) > 0L) ok_layers else (pf$layers %||% integer(0))
+  z <- .wrb_redox_layers(pedon)
+  # one of the two layers at the abrupt textural difference: stagnic, with
+  # >= 50% reductimorphic plus oximorphic features, and reducing conditions
+  side_ok <- function(k) .and3(z$stagnic[k], z$area[k] >= 50, z$reducing[k])
+  verdict <- vapply(pairs, function(p) {
+    sides <- vapply(p$between, side_ok, NA)
+    near <- if (any(sides %in% TRUE)) TRUE else if (any(is.na(sides))) NA else FALSE
+    .and3(p$passed, near)
+  }, NA)
+  hit <- which(verdict %in% TRUE)
+  passed <- if (length(hit)) TRUE else if (anyNA(verdict)) NA else FALSE
+  layers <- if (length(hit)) sort(unique(unlist(lapply(pairs[hit], `[[`, "between"))))
+            else integer(0)
   DiagnosticResult$new(
     name = "planosol",
     passed = passed,
-    layers = layers_out,
+    layers = layers,
     evidence = list(
       abrupt_textural_difference = atd,
-      stagnic_properties         = sp,
-      reducing_conditions        = rc,
-      planic_features_fallback   = pf,
-      fallback_used              = isTRUE(fallback_ok) && length(ok_layers) == 0L,
+      pairs_within_75_cm         = pairs,
+      redox_layers               = z,
       strict_mode                = strict
     ),
-    missing  = unique(c(atd$missing, sp$missing, rc$missing)),
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)"
+    missing  = if (isTRUE(passed)) character(0)
+               else unique(c(atd$missing, .redox_missing(z, unique(unlist(lapply(pairs, `[[`, "between")))))),
+    reference = ref
+  )
+}
+
+
+#' Stagnosol RSG gate (WRB 2022 Ch 4, p 108)
+#'
+#' WRB 2022: (1) stagnic properties in which the area of reductimorphic plus
+#' oximorphic features is \\>= one third (weighted average) of the area from
+#' the mineral soil surface to 60 cm or to continuous rock, whichever is
+#' shallower; and (2) reducing conditions for some time in some parts of the
+#' volume with the reductimorphic features within that depth.
+#'
+#' The layers and their areas are those of the redox reading behind
+#' \code{\link{stagnic_properties}}: a mottled stagnic layer counts with its
+#' mottles, or wholly when its matrix is grey (moist value 4 or more, chroma
+#' 2 or less), a claric layer of criteria 4-5 wholly. Undecided layers (and a
+#' part of the 60 cm not described) count towards what the area could be, so
+#' that the gate is \code{NA} when they could reach one third. Until v0.9.311
+#' the gate was \code{stagnic_properties()}: one layer with 5\% redox features
+#' that decayed with depth.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+stagnosol <- function(pedon) {
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Stagnosols (p. 108)"
+  h <- pedon$horizons
+  z <- .wrb_redox_layers(pedon)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  lim <- ms + 60
+  rock_top <- suppressWarnings(min(h$top_cm[z$rock], na.rm = TRUE))
+  if (is.finite(rock_top)) lim <- min(lim, rock_top)
+  span <- lim - ms
+  if (span <= 0) {
+    return(DiagnosticResult$new(name = "stagnosol", passed = FALSE,
+      layers = integer(0), evidence = list(redox_layers = z), missing = character(0),
+      reference = ref, notes = "Continuous rock at the mineral soil surface"))
+  }
+  w <- pmax(0, pmin(h$bottom_cm, lim) - pmax(h$top_cm, ms))
+  w[is.na(w)] <- 0
+  low  <- ifelse(z$stagnic %in% TRUE, z$area, 0)
+  high <- ifelse(z$stagnic %in% FALSE, 0, z$area)
+  uncovered <- max(0, span - sum(w))
+  denom <- max(span, sum(w))
+  frac_low  <- sum(w * low) / 100 / denom
+  frac_high <- (sum(w * high) / 100 + uncovered) / denom
+  area_ok <- if (frac_low >= 1/3) TRUE else if (frac_high >= 1/3) NA else FALSE
+  inside <- w > 0
+  red_ok <- .and3v(z$stagnic, z$reducing)[inside]
+  reducing_ok <- if (any(red_ok %in% TRUE)) TRUE
+                 else if (anyNA(red_ok) || uncovered > 0) NA else FALSE
+  passed <- .and3(area_ok, reducing_ok)
+  DiagnosticResult$new(
+    name = "stagnosol",
+    passed = passed,
+    layers = if (isTRUE(passed)) which(inside & z$stagnic %in% TRUE) else integer(0),
+    evidence = list(redox_layers = z, depth_cm = c(from = ms, to = lim),
+                    area_fraction = c(low = frac_low, high = frac_high),
+                    area_ok = area_ok, reducing_ok = reducing_ok),
+    missing = if (isTRUE(passed)) character(0) else .redox_missing(z, which(inside & is.na(z$stagnic))),
+    reference = ref
   )
 }
 

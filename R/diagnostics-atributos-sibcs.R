@@ -646,10 +646,20 @@ mudanca_textural_abrupta <- function(pedon) {
   d <- pedon$horizons$designation
   if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
     res <- abrupt_textural_difference(pedon)
+    # v0.9.312: the clay criteria of the WRB pairs only; the 2 cm transition
+    # that WRB 2022 3.2.1 adds is not the 7.5 cm of this system
+    pairs <- res$evidence$layer_pairs %||% list()
+    lay <- as.integer(unlist(lapply(pairs, function(x)
+      if (isTRUE(x$geometry_ok)) x$between[2] else NULL)))
+    miss <- setdiff(res$missing, "boundary_distinctness")
+    passed <- if (length(lay)) TRUE
+              else if (!length(pairs) && length(miss)) NA
+              else FALSE
     return(DiagnosticResult$new(
       name = "mudanca_textural_abrupta",
-      passed = res$passed, layers = res$layers,
-      evidence = list(abrupt = res), missing = res$missing,
+      passed = passed, layers = lay,
+      evidence = list(abrupt = res),
+      missing = if (isTRUE(passed)) character(0) else miss,
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30-31"
     ))
   }

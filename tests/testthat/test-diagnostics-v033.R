@@ -181,7 +181,10 @@ test_that("abrupt_textural_difference returns the abrupt-change layer", {
     bottom_cm = c(30,  50, 100),
     clay_pct  = c(15,  15,  45),   # 15 -> 45 = +30 absolute (>= 20pp)
     silt_pct  = c(40,  40,  35),
-    sand_pct  = c(45,  45,  20)
+    sand_pct  = c(45,  45,  20),
+    # v0.9.312: criterion 5, a transition of 2 cm or less, is read from the
+    # boundary (WRB 2022 3.2.1); without it the pair is undecided
+    boundary_distinctness = c("clear", "abrupt", NA)
   )
   res <- abrupt_textural_difference(pr)
   expect_true(isTRUE(res$passed))

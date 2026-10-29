@@ -49,6 +49,10 @@
 #   * Base saturation (100 x exchangeable bases / CEC at pH 7), the ECEC and
 #     the aluminium saturation are calculated when ISIS has the parts; silt is
 #     100 - sand - clay when only those two are given.
+#   * The groundwater of the site (groundwaterKind; depthGroundwater, or
+#     groundwaterTop where the depth is 0) becomes groundwater_kind and
+#     groundwater_depth_cm, which tell gleyic from stagnic properties in WRB
+#     2022 (v0.9.312).
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"
@@ -105,6 +109,7 @@ isis_citation <- function(accessed = Sys.Date()) {
   paste(
     "profileCode countryCode profileId geog { latitude longitude }",
     "moistureRegimeSoil temperatureRegimeSoil drainageClass siteElevation",
+    "depthGroundwater groundwaterTop groundwaterKind",
     "slopeGradientNumeric lithologyParmat cracking microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
@@ -300,6 +305,23 @@ isis_citation <- function(accessed = Sys.Date()) {
   if (is.na(r)) return(NULL)
   r <- tolower(trimws(r))
   if (identical(r, "torric")) "aridic" else r
+}
+
+# The groundwater of the site (FAO groundwaterKind): N none observed, W
+# observed, A apparent, P perched, F flooded. Its depth is depthGroundwater,
+# in cm; ISIS writes 0 there when it records the level in groundwaterTop
+# instead (the upper limit of the water table), which is then read. A depth
+# of 0 with neither stays unknown, unless the site is flooded; none is kept
+# when no water table was observed.
+.ISIS_GROUNDWATER <- c(N = "none observed", W = "observed", A = "apparent",
+                       P = "perched", F = "flooded")
+.isis_groundwater <- function(p) {
+  kind <- .isis_lookup(.ISIS_GROUNDWATER, .isis_code(p$groundwaterKind))
+  d <- .isis_num(p$depthGroundwater); t <- .isis_num(p$groundwaterTop)
+  depth <- if (is.finite(d) && d > 0) d else if (is.finite(t) && t > 0) t
+           else if (identical(kind, "flooded")) 0 else NA_real_
+  if (identical(kind, "none observed")) depth <- NA_real_
+  list(kind = kind, depth = depth)
 }
 
 .isis_layers_to_horizons <- function(layers, absent_unless_recorded = TRUE,
@@ -534,7 +556,9 @@ isis_citation <- function(accessed = Sys.Date()) {
 #' The site carries the WRB and USDA names ISRIC gives the profile
 #' (\code{reference_wrb}, \code{reference_wrb_full}, \code{reference_usda},
 #' \code{reference_usda_subgroup} and their editions), the soil moisture and
-#' temperature regimes when ISIS records them, the licence and the citation.
+#' temperature regimes and the groundwater (\code{groundwater_kind},
+#' \code{groundwater_depth_cm}) when ISIS records them, the licence and the
+#' citation.
 #'
 #' @param profile One ISIS profile, a list as parsed from the service's JSON.
 #' @param absent_unless_recorded If \code{TRUE} (default), mottles,
@@ -559,6 +583,9 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
   el <- .isis_num(profile$siteElevation); if (is.finite(el)) site$elevation_m <- el
   sl <- .isis_num(profile$slopeGradientNumeric); if (is.finite(sl)) site$slope_pct <- sl
   dr <- .isis_desc(profile$drainageClass); if (!is.na(dr)) site$drainage_class <- tolower(dr)
+  gw <- .isis_groundwater(profile)
+  if (!is.na(gw$kind)) site$groundwater_kind <- gw$kind
+  if (!is.na(gw$depth)) site$groundwater_depth_cm <- gw$depth
   pm <- .isis_desc(profile$lithologyParmat); if (!is.na(pm)) site$parent_material <- pm
   if (gil) site$gilgai_presence <- TRUE
   smr <- .isis_regime(profile, "moistureRegimeSoil", "moistureRegime")
