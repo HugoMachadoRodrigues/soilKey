@@ -615,7 +615,11 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
 #'         Used as a fallback when the temperature field is not in the
 #'         pedon (typical of legacy survey data).
 #' }
-#' Either path qualifies. Diagnostic of Cryosols.
+#' Either path qualifies. Diagnostic of Cryosols. When neither passes and
+#' the site has a soil temperature regime warmer than gelic (cryic, frigid,
+#' mesic, thermic, hyperthermic or an iso form;
+#' \code{site$soil_temperature_regime}), the answer is no: those regimes
+#' have no permafrost (KST 13, Ch. 3, p. 50).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum top depth (cm) (default 100).
@@ -643,12 +647,23 @@ cryic_conditions <- function(pedon, max_top_cm = 100, max_temp_C = 0) {
   )
 
   agg <- aggregate_alternatives(paths)
+  # No permafrost under a soil temperature regime warmer than gelic (see
+  # .str_rules_out_permafrost); a measured temperature or a frozen
+  # designation that passes is kept.
+  evidence <- paths
+  if (!isTRUE(agg$passed) && .str_rules_out_permafrost(pedon$site)) {
+    agg$passed  <- FALSE
+    agg$missing <- character(0)
+    evidence$temperature_regime <- list(
+      regime = as.character(pedon$site$soil_temperature_regime)[1L],
+      rules_out_permafrost = TRUE)
+  }
 
   DiagnosticResult$new(
     name      = "cryic_conditions",
     passed    = agg$passed,
     layers    = agg$layers,
-    evidence  = paths,
+    evidence  = evidence,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 5, Cryosols"
   )

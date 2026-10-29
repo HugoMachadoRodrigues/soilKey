@@ -1,3 +1,14 @@
+# soilKey 0.9.307 (2026-10-29)
+
+## A soil temperature regime warmer than gelic rules out permafrost
+
+Found on Jelle Janssen's profile KE009 (ISRIC, Kenya), which kept the Cryosols open for want of a permafrost temperature.
+
+* `cryic_conditions()` (WRB Cryosols, the cryic horizon and the Cryic qualifier) and the USDA permafrost test (Gelisols, the Histosols' exclusion, the Gelods) now read `site$soil_temperature_regime`. A regime warmer than gelic (cryic, frigid, mesic, thermic, hyperthermic and their iso forms) means no permafrost, so the answer is no instead of undecided. KST 13 (Ch. 3, p. 50) gives the cryic regime a mean annual soil temperature between 0 and 8 C and no permafrost; the others are warmer.
+* Gelic, the older pergelic, a missing regime or a word that is not a regime leave the question open. A measured `permafrost_temp_C` at or below 0 C, or a frozen designation, still wins.
+* The Pro app has a field "Soil temperature regime (USDA)" beside the moisture regime. It is saved with the session and restored when the session is opened again.
+* No name changes on the 44 canonical fixtures; profiles whose site states a warm regime lose the Cryosols (and Gelisols) from their close calls.
+
 # soilKey 0.9.306 (2026-10-29)
 
 ## Pro app: the close calls name their classes, and a field for the soil moisture regime

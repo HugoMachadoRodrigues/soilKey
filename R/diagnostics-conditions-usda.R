@@ -353,6 +353,21 @@ glacic_layer_usda <- function(pedon,
 
 # ---- Permafrost (KST 13ed, Ch 3, p 47) ------------------------------
 
+# A soil temperature regime warmer than gelic rules permafrost out. KST 13
+# (Ch. 3, p. 50) gives the cryic regime a mean annual soil temperature between
+# 0 and 8 C "but [soils that] do not have permafrost"; frigid, mesic, thermic,
+# hyperthermic and their iso forms are warmer still. Gelic (or the older
+# pergelic), a missing regime or a word not in this list leave the question
+# open. A measured permafrost temperature or a frozen designation still wins.
+.STR_WITHOUT_PERMAFROST <- c("cryic", "frigid", "isofrigid", "mesic", "isomesic",
+                             "thermic", "isothermic", "hyperthermic",
+                             "isohyperthermic")
+.str_rules_out_permafrost <- function(site) {
+  r <- tolower(trimws(as.character(site$soil_temperature_regime %||% NA)[1L]))
+  !is.na(r) && r %in% .STR_WITHOUT_PERMAFROST
+}
+
+
 #' Permafrost (USDA Soil Taxonomy, 13th edition)
 #'
 #' "Permafrost is defined as a thermal condition in which a material
@@ -366,7 +381,9 @@ glacic_layer_usda <- function(pedon,
 #' Implementation: Uses \code{permafrost_temp_C} from schema. A
 #' layer qualifies as permafrost when its \code{permafrost_temp_C}
 #' is <= 0 C. The function checks whether any qualifying layer
-#' occurs within \code{max_top_cm} of the surface.
+#' occurs within \code{max_top_cm} of the surface. With no layer
+#' temperature, a site soil temperature regime warmer than gelic
+#' (\code{.str_rules_out_permafrost}) decides it: no permafrost.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum depth where permafrost must occur
@@ -392,7 +409,8 @@ permafrost_within_usda <- function(pedon, max_top_cm = 100) {
   pf_in_des <- !is.na(h$designation[cand]) &
                   grepl("ff|^Wf", h$designation[cand])
   passing <- cand[pf_in_layer | pf_in_des]
-  if (all(is.na(h$permafrost_temp_C[cand])) && length(passing) == 0L) {
+  warm <- .str_rules_out_permafrost(pedon$site)
+  if (all(is.na(h$permafrost_temp_C[cand])) && length(passing) == 0L && !warm) {
     miss <- c(miss, "permafrost_temp_C")
   }
   passed <- length(passing) > 0L
@@ -402,7 +420,8 @@ permafrost_within_usda <- function(pedon, max_top_cm = 100) {
     evidence = list(candidate_layers = cand,
                       pf_in_layer = pf_in_layer,
                       pf_in_designation = pf_in_des,
-                      max_top_cm = max_top_cm),
+                      max_top_cm = max_top_cm,
+                      temperature_regime_rules_out = warm),
     missing = unique(miss),
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 47"
   )
