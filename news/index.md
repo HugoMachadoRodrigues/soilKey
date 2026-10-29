@@ -1,5 +1,63 @@
 # Changelog
 
+## soilKey 0.9.305 (2026-10-29)
+
+### The Hungarian diagnostic soil classification: the 15 soil types
+
+[`classify_hscs2024()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_hscs2024.md)
+keys a profile through the key to the soil types of the Hungarian
+diagnostic classification (Michéli et al. 2024, *A diagnosztikus
+szemléletű hazai talajosztályozási rendszer*, second approximation),
+from the Láptalaj (peat soil) to the Földeskopár (other soils).
+Experimental and opt-in, like the other national systems:
+`classify_all(p, systems = "hscs")`.
+
+- The key and its gates follow the text’s own order: the types after the
+  first are “other soils that …”, so each gate tests only its own
+  requirements (`inst/rules/hscs2024/key.yaml`,
+  `R/diagnostics-hscs-types.R`).
+- The diagnostic horizons, properties and materials of section 8 are in
+  `R/diagnostics-hscs.R`: organic, humic, clay accumulation, swelling,
+  cambic, solonetz and solonchak horizons; continuous hard rock,
+  reductive conditions and the groundwater gley colour pattern;
+  carbonate classes, artefacts and stratified material.
+- The horizon notation is the FAO (2006) one the text adopts
+  (`R/designation-hscs.R`): an l or r suffix shows reductive conditions,
+  i slickensides, k carbonates, n sodium, p ploughing, t clay
+  accumulation, u artefacts, w a cambic horizon.
+- The texture triangle the text prints (p. 36) is the USDA triangle with
+  Hungarian names, so Hungarian field textures (homok, vályogos homok,
+  homokos vályog …) are read on it, as are English names and lab
+  particle sizes.
+- Names are the Hungarian singular, as the text’s naming example writes
+  them; `levels$name_en` gives an English gloss. The codes (LAP … FOL)
+  are soilKey’s. The subtype and variety properties are not keyed yet.
+- New horizon attribute `soluble_salts_pct`: total water-soluble salts
+  as Hungarian laboratories report them (the solonchak horizon). The EC
+  is not converted, as the text advises.
+- [`make_hscs2024_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_hscs2024_example.md)
+  gives one example profile per type.
+- `classify_hierarchical()` adds a `name_en` column to `levels` when the
+  classes of a system carry an English gloss; the other systems keep
+  their three columns.
+
+Hugo decided seven readings (2026-10-29):
+
+- reductive conditions (Réti talajok) are shown by a dipyridyl test,
+  methane, iron sulfides, or an l or r suffix within 50 cm, and are
+  undecided when none is recorded;
+- the solonchak horizon reads the new `soluble_salts_pct` only;
+- the sodium shares of the solonetz horizon are of the CEC;
+- an organic horizon with no bulk density measured counts as 1 g/cm3 or
+  less;
+- slickensides common, many or continuous meet the 10 % of the swelling
+  horizon, and they stand for the cracks when none are recorded;
+- names in the Hungarian singular with an English gloss;
+- stratified material reads 10 points of USDA sand (2-0.05 mm).
+
+The other choices where the text is silent are in
+`inst/rules/hscs2024/readings.yaml` (17 topics).
+
 ## soilKey 0.9.304 (2026-10-29)
 
 ### New Zealand Soil Classification: rows of unknown role under the A horizon and in the B

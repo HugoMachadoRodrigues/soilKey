@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.304</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.305</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,32 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.305" id="soilkey-09305-2026-10-29">soilKey 0.9.305 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09305-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="the-hungarian-diagnostic-soil-classification-the-soil-types-0-9-305">The Hungarian diagnostic soil classification: the 15 soil types<a class="anchor" aria-label="anchor" href="#the-hungarian-diagnostic-soil-classification-the-soil-types-0-9-305"></a></h3>
+<p><code><a href="../reference/classify_hscs2024.html">classify_hscs2024()</a></code> keys a profile through the key to the soil types of the Hungarian diagnostic classification (Michéli et al. 2024, <em>A diagnosztikus szemléletű hazai talajosztályozási rendszer</em>, second approximation), from the Láptalaj (peat soil) to the Földeskopár (other soils). Experimental and opt-in, like the other national systems: <code>classify_all(p, systems = "hscs")</code>.</p>
+<ul><li>The key and its gates follow the text’s own order: the types after the first are “other soils that …”, so each gate tests only its own requirements (<code>inst/rules/hscs2024/key.yaml</code>, <code>R/diagnostics-hscs-types.R</code>).</li>
+<li>The diagnostic horizons, properties and materials of section 8 are in <code>R/diagnostics-hscs.R</code>: organic, humic, clay accumulation, swelling, cambic, solonetz and solonchak horizons; continuous hard rock, reductive conditions and the groundwater gley colour pattern; carbonate classes, artefacts and stratified material.</li>
+<li>The horizon notation is the FAO (2006) one the text adopts (<code>R/designation-hscs.R</code>): an l or r suffix shows reductive conditions, i slickensides, k carbonates, n sodium, p ploughing, t clay accumulation, u artefacts, w a cambic horizon.</li>
+<li>The texture triangle the text prints (p. 36) is the USDA triangle with Hungarian names, so Hungarian field textures (homok, vályogos homok, homokos vályog …) are read on it, as are English names and lab particle sizes.</li>
+<li>Names are the Hungarian singular, as the text’s naming example writes them; <code>levels$name_en</code> gives an English gloss. The codes (LAP … FOL) are soilKey’s. The subtype and variety properties are not keyed yet.</li>
+<li>New horizon attribute <code>soluble_salts_pct</code>: total water-soluble salts as Hungarian laboratories report them (the solonchak horizon). The EC is not converted, as the text advises.</li>
+<li>
+<code><a href="../reference/make_hscs2024_example.html">make_hscs2024_example()</a></code> gives one example profile per type.</li>
+<li>
+<code>classify_hierarchical()</code> adds a <code>name_en</code> column to <code>levels</code> when the classes of a system carry an English gloss; the other systems keep their three columns.</li>
+</ul><p>Hugo decided seven readings (2026-10-29):</p>
+<ul><li>reductive conditions (Réti talajok) are shown by a dipyridyl test, methane, iron sulfides, or an l or r suffix within 50 cm, and are undecided when none is recorded;</li>
+<li>the solonchak horizon reads the new <code>soluble_salts_pct</code> only;</li>
+<li>the sodium shares of the solonetz horizon are of the CEC;</li>
+<li>an organic horizon with no bulk density measured counts as 1 g/cm3 or less;</li>
+<li>slickensides common, many or continuous meet the 10 % of the swelling horizon, and they stand for the cracks when none are recorded;</li>
+<li>names in the Hungarian singular with an English gloss;</li>
+<li>stratified material reads 10 points of USDA sand (2-0.05 mm).</li>
+</ul><p>The other choices where the text is silent are in <code>inst/rules/hscs2024/readings.yaml</code> (17 topics).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.304" id="soilkey-09304-2026-10-29">soilKey 0.9.304 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09304-2026-10-29"></a></h2>
 <div class="section level3">

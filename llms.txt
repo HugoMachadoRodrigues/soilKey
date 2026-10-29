@@ -1071,6 +1071,19 @@ sensitivity, fluidity, stickiness, strength).
 - [`make_nzsc4_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nzsc4_example.md)
   : Example pedons for the New Zealand orders
 
+## Hungarian diagnostic soil classification (experimental)
+
+Experimental, opt-in: the 15 soil types of the key of Micheli et
+al. (2024, second approximation), named in Hungarian with an English
+gloss. Reads the FAO (2006) horizon notation, the Hungarian texture
+names of the USDA triangle, and the total water-soluble salts
+(`soluble_salts_pct`).
+
+- [`classify_hscs2024()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_hscs2024.md)
+  : Classify a pedon under the Hungarian diagnostic soil classification
+- [`make_hscs2024_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_hscs2024_example.md)
+  : Example pedons for the Hungarian soil types
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

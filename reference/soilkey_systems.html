@@ -15,7 +15,7 @@ classify_all accept; the aliases are accepted too."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.304</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.305</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,13 +91,22 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">soilkey_systems</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        id                                                name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 wrb2022                                            WRB 2022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  sibcs5                                  SiBCS, 5th edition</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    usda                                  USDA Soil Taxonomy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   cssc3 Canadian System of Soil Classification, 3rd edition</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    asc3         Australian Soil Classification, 3rd edition</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   nzsc4        New Zealand Soil Classification, 4th edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  wrb2022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   sibcs5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     usda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    cssc3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     asc3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    nzsc4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 hscs2024</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                    name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                              WRB 2022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                    SiBCS, 5th edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                    USDA Soil Taxonomy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                   Canadian System of Soil Classification, 3rd edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                           Australian Soil Classification, 3rd edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                          New Zealand Soil Classification, 4th edition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 Hungarian diagnostic soil classification (2024, second approximation)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                         edition       status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                                            4th edition (2022)       stable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                                            5th edition (2018)       stable</span>
@@ -105,13 +114,23 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4                                            3rd edition (1998) experimental</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 3rd edition (2021), online version with errata (25 June 2026) experimental</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6           4th edition (2026), Quarto source of 7 October 2026 experimental</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         classifier                                       levels aliases default</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 classify_wrb2022                                         rsgs     wrb    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   classify_sibcs ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    classify_usda   orders, suborders, great_groups, subgroups            TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   classify_cssc3              orders, great_groups, subgroups    cssc   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    classify_asc3   orders, suborders, great_groups, subgroups     asc   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   classify_nzsc4                    orders, groups, subgroups    nzsc   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                         Second approximation (Útmutató, 2024) experimental</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          classifier                                       levels       aliases</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  classify_wrb2022                                         rsgs           wrb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    classify_sibcs ordens, subordens, grandes_grupos, subgrupos         sibcs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     classify_usda   orders, suborders, great_groups, subgroups              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    classify_cssc3              orders, great_groups, subgroups          cssc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     classify_asc3   orders, suborders, great_groups, subgroups           asc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    classify_nzsc4                    orders, groups, subgroups          nzsc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 classify_hscs2024                                        types hscs, hungary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   default</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

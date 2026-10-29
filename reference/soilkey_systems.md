@@ -34,13 +34,22 @@ in that system), `levels` and `aliases` (both comma-separated), and
 
 ``` r
 soilkey_systems()
-#>        id                                                name
-#> 1 wrb2022                                            WRB 2022
-#> 2  sibcs5                                  SiBCS, 5th edition
-#> 3    usda                                  USDA Soil Taxonomy
-#> 4   cssc3 Canadian System of Soil Classification, 3rd edition
-#> 5    asc3         Australian Soil Classification, 3rd edition
-#> 6   nzsc4        New Zealand Soil Classification, 4th edition
+#>         id
+#> 1  wrb2022
+#> 2   sibcs5
+#> 3     usda
+#> 4    cssc3
+#> 5     asc3
+#> 6    nzsc4
+#> 7 hscs2024
+#>                                                                    name
+#> 1                                                              WRB 2022
+#> 2                                                    SiBCS, 5th edition
+#> 3                                                    USDA Soil Taxonomy
+#> 4                   Canadian System of Soil Classification, 3rd edition
+#> 5                           Australian Soil Classification, 3rd edition
+#> 6                          New Zealand Soil Classification, 4th edition
+#> 7 Hungarian diagnostic soil classification (2024, second approximation)
 #>                                                         edition       status
 #> 1                                            4th edition (2022)       stable
 #> 2                                            5th edition (2018)       stable
@@ -48,11 +57,21 @@ soilkey_systems()
 #> 4                                            3rd edition (1998) experimental
 #> 5 3rd edition (2021), online version with errata (25 June 2026) experimental
 #> 6           4th edition (2026), Quarto source of 7 October 2026 experimental
-#>         classifier                                       levels aliases default
-#> 1 classify_wrb2022                                         rsgs     wrb    TRUE
-#> 2   classify_sibcs ordens, subordens, grandes_grupos, subgrupos   sibcs    TRUE
-#> 3    classify_usda   orders, suborders, great_groups, subgroups            TRUE
-#> 4   classify_cssc3              orders, great_groups, subgroups    cssc   FALSE
-#> 5    classify_asc3   orders, suborders, great_groups, subgroups     asc   FALSE
-#> 6   classify_nzsc4                    orders, groups, subgroups    nzsc   FALSE
+#> 7                         Second approximation (Útmutató, 2024) experimental
+#>          classifier                                       levels       aliases
+#> 1  classify_wrb2022                                         rsgs           wrb
+#> 2    classify_sibcs ordens, subordens, grandes_grupos, subgrupos         sibcs
+#> 3     classify_usda   orders, suborders, great_groups, subgroups              
+#> 4    classify_cssc3              orders, great_groups, subgroups          cssc
+#> 5     classify_asc3   orders, suborders, great_groups, subgroups           asc
+#> 6    classify_nzsc4                    orders, groups, subgroups          nzsc
+#> 7 classify_hscs2024                                        types hscs, hungary
+#>   default
+#> 1    TRUE
+#> 2    TRUE
+#> 3    TRUE
+#> 4   FALSE
+#> 5   FALSE
+#> 6   FALSE
+#> 7   FALSE
 ```
