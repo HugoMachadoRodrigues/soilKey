@@ -1,5 +1,66 @@
 # Changelog
 
+## soilKey 0.9.301 (2026-10-29)
+
+### New Zealand Soil Classification: the subgroups of the Semiarid, Oxidic, Granular and Pallic Soils
+
+[`classify_nzsc4()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_nzsc4.md)
+now keys the 17 groups of the Semiarid, Oxidic, Granular and Pallic
+Soils to their 78 subgroups, following the keys to subgroups of the New
+Zealand Soil Classification, 4th edition: from the Mottled Aged-argillic
+Semiarid Soils to the Typic Immature Pallic Soils. Eleven of the 15
+orders now reach subgroup level (227 subgroups of 50 groups); the Brown,
+Anthropic, Recent and Raw Soils follow.
+
+- The keys live in `inst/rules/nzsc4/subgroups/`, one file per order, in
+  the book’s order. The last subgroup of each group is the default.
+- The gates are in `R/diagnostics-nzsc-subgroups-sxnp.R`: alkaline
+  horizons, weathered coarse fragments, lithic and paralithic contacts,
+  the clay decrease of the Brown Oxidic subgroups, cutanoxidic horizons
+  below 25 cm, allophanic layers apart from the bulk density, sodic
+  features or a calcareous horizon within or next to an argillic horizon
+  or a fragipan, argillic horizons over the fragipan, acid or reddish
+  parts of the argillic horizon, lamellae, cemented horizons and pedal B
+  horizons.
+- Shared gates gained arguments: the acidic B or BC subgroups read a pH
+  limit and the major part (Granular Soils), the argillic subgroups a
+  thickness, and the calcareous subgroups any depth.
+- New horizon attribute: `weathered_fragments_pct`, the share of the
+  coarse rock fragments weathered enough to break easily by hammer or
+  spade.
+
+Hugo decided two readings:
+
+- the weathered coarse fragments are recorded in the new attribute, and
+  not recorded reads as none;
+- sodic features that are not measured are absent from a designated
+  horizon without the n suffix, as the z suffix marks saline soil
+  material (the group key of the Argillic Pallic Soils keeps its
+  reading).
+
+The other readings are in `inst/rules/nzsc4/readings.yaml` (69 topics).
+
+Two independent reviews were made, and their findings are fixed. The
+review against the book confirmed every code, name and position. The
+logic review ran 6,000 random profiles and refilled their missing
+values; it found no error and no change against 0.9.300. The fixes:
+
+- a clay decrease of the Brown Oxidic subgroups is decided when the
+  missing clays cannot undo it;
+- the pedal B of the Immature Pallic subgroups and the major part of the
+  B or BC try each choice of the rows of unknown role (the topsoil
+  aside), as now also the B or BC of the acidic, allophanic and magnesic
+  subgroups of 0.9.300;
+- lamellae with no bottom are weighed both ways (also in the Laminar
+  Pallic group key);
+- fragipans and densipans recorded as a pan type are not cemented;
+- a fragipan or argillic horizon the description ends in leaves
+  “immediately beneath” open;
+- an undesignated row with no fine-earth record may be rock;
+- exchangeable Na below 0.7 with no CEC is not a measure of the ESP;
+- recorded coatings with no colour value may be dark, so the cutanic
+  horizon they mark stays open.
+
 ## soilKey 0.9.300 (2026-10-28)
 
 ### New Zealand Soil Classification: the subgroups of the Podzol, Allophanic, Pumice and Melanic Soils

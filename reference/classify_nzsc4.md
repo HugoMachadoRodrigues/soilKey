@@ -8,11 +8,13 @@ keys to groups and subgroups. **Experimental**: this release keys the 15
 orders (Organic, Gley, Ultic, Podzol, Allophanic, Pumice, Melanic,
 Semiarid, Oxidic, Granular, Pallic, Brown, Anthropic, Recent, Raw
 Soils), their 77 groups (since 0.9.298, e.g. Orthic Brown Soils,
-Perch-gley Pallic Soils) and the subgroups of seven orders: since
+Perch-gley Pallic Soils) and the subgroups of eleven orders: since
 0.9.299 the 70 of the Organic, Gley and Ultic Soils (e.g. Peaty Orthic
 Gley Soils, Mottled Yellow Ultic Soils), since 0.9.300 the 79 of the
 Podzol, Allophanic, Pumice and Melanic Soils (e.g. Humose Orthic Podzol
-Soils, Pedal-calcareous Orthic Melanic Soils); the other subgroups
+Soils, Pedal-calcareous Orthic Melanic Soils), since 0.9.301 the 78 of
+the Semiarid, Oxidic, Granular and Pallic Soils (e.g. Alkaline Immature
+Semiarid Soils, Mottled Fragic Pallic Soils); the other subgroups
 follow. The Cryic Soils of the appendix are not keyed.
 
 ## Usage
@@ -83,11 +85,11 @@ also read sulfidic S (`sulfidic_s_pct`), the EC of a 1:5 extract
 (`sphagnum_fibres_pct`), a shelly layer (`shelly_layer`), exchangeable
 Ca and Mg, clay films, the colour of coatings on pores
 (`pore_coatings_hue_moist`, `pore_coatings_value_moist`,
-`pore_coatings_chroma_moist`) and the weathering of rock fragments
-(`weathering_stage`). Features a describer records when met
-(stratification, nodules, cracks, refuse or cultural layers, permafrost,
-surface water) are absent when not recorded. The choices where the text
-is silent are listed in
+`pore_coatings_chroma_moist`), the weathering of rock fragments
+(`weathering_stage`, `weathered_fragments_pct`) and the cementation
+class. Features a describer records when met (stratification, nodules,
+cracks, refuse or cultural layers, permafrost, surface water) are absent
+when not recorded. The choices where the text is silent are listed in
 `system.file("rules", "nzsc4", "readings.yaml", package = "soilKey")`.
 
 ## References
