@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.302</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.303</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.303" id="soilkey-09303-2026-10-29">soilKey 0.9.303 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09303-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="pro-app-uploads-and-downloads-over-the-websocket-and-a-notice-when-the-connection-is-lost-0-9-303">Pro app: uploads and downloads over the websocket, and a notice when the connection is lost<a class="anchor" aria-label="anchor" href="#pro-app-uploads-and-downloads-over-the-websocket-and-a-notice-when-the-connection-is-lost-0-9-303"></a></h3>
+<p>On soilkeypro.com some uploads and downloads failed with “Not Found”. Shiny moves files by plain HTTP requests to <code>/session/&lt;token&gt;/upload/</code> and <code>/session/&lt;token&gt;/download/</code>, which only the R process holding the session can answer. Cloud Run keeps a visitor on one instance on a best-effort basis, so while a new instance was starting a request could reach another one. The websocket stays on the instance of the session, so the files now travel over it.</p>
+<ul><li>
+<code>sk_file_input()</code> replaces <code><a href="https://rdrr.io/pkg/shiny/man/fileInput.html" class="external-link">shiny::fileInput()</a></code> (7 controls). It draws the same box and button; <code>www/soilkey-transfer.js</code> sends the file in slices of 512 KB, each one acknowledged before the next, and the server rebuilds it. <code>input$&lt;id&gt;</code> keeps the shape <code>fileInput()</code> gave (name, size, type, datapath), so the tabs read it as before. The size limit is still <code>shiny.maxRequestSize</code> (5 MB by default); drag and drop still works.</li>
+<li>
+<code>sk_download_button()</code>, <code>sk_download_link()</code> and <code>sk_download()</code> replace <code>downloadButton()</code>, <code>downloadLink()</code> and <code>downloadHandler()</code> (13 downloads). A click runs the same file name and content functions; the file comes back in slices and the browser saves it under the same name. An error shows its message as a notification.</li>
+<li>When the connection to the server drops (the session ended, a phone put the page to sleep, or the network failed), a bar at the top of the page says so and offers a Reload button, in English or Portuguese, instead of a grey page that no longer responds. A profile saved with “Save session” can be reopened after the reload.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.302" id="soilkey-09302-2026-10-29">soilKey 0.9.302 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09302-2026-10-29"></a></h2>
 <div class="section level3">
