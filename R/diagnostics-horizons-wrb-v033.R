@@ -62,30 +62,85 @@ albic <- function(pedon, min_thickness = 1) {
 
 #' Ferric horizon (WRB 2022)
 #'
-#' A horizon of iron accumulation that does not reach the cementation /
-#' redness levels of plinthic. Diagnostic for the Ferric qualifier.
-#'
+#' v0.9.309: the criteria of WRB 2022 Ch 3.1.11 (p. 45). The horizon consists
+#' of mineral material, is >= 15 cm thick and is not part of a petroplinthic,
+#' pisoplinthic or plinthic horizon, and has, in one or more subhorizons,
+#' (a) >= 15\% of its area as coarse (> 20 mm) masses inside aggregates that
+#' are black or have a hue redder than 7.5YR and a chroma >= 5, moist, or
+#' (b) >= 5\% concretions or nodules, at least weakly cemented, reddish or
+#' blackish, > 2 mm (\code{ferric_nodules_pct}). Until v0.9.308 soilKey read
+#' it from Fe-dithionite >= 5\%, which is not a criterion of the text: a red
+#' Ferralsol with 6\% Fe-dithionite and no nodules became Ferric (ISRIC's
+#' KE009). soilKey records no size for mottles, so criterion (a) is met only
+#' by nodules; mottles of the right colours leave it undecided, and a layer
+#' with no mottles and no nodules recorded as such does not meet it.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness (cm; default 15).
-#' @param min_fe_dith_pct Minimum dithionite-extractable iron percent (default 5).
+#' @param min_nodules_pct Minimum nodules, \% (default 5).
 #' @return A \code{\link{DiagnosticResult}}.
-#'
-#' @references IUSS Working Group WRB (2022), Chapter 3.1, Ferric horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.11, Ferric horizon.
 #' @export
-ferric <- function(pedon, min_thickness = 15, min_fe_dith_pct = 5) {
+ferric <- function(pedon, min_thickness = 15, min_nodules_pct = 5) {
   h <- pedon$horizons
-  tests <- list()
-  tests$fe_dith <- test_numeric_above(h, "fe_dcb_pct", min_fe_dith_pct)
-  tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
-                                              candidate_layers = tests$fe_dith$layers)
-  agg <- aggregate_subtests(tests)
+  n <- if (is.null(h)) 0L else nrow(h)
+  col <- function(v, na) if (!is.null(h[[v]])) h[[v]] else rep(na, n)
+  nod <- col("ferric_nodules_pct", NA_real_)
+  mot <- col("redoximorphic_features_pct", NA_real_)
+  mcol <- col("mottle_colors", NA_character_)
+  oc <- col("oc_pct", NA_real_)
+  # a mottle colour that could be a ferric mass: black, or hue redder than
+  # 7.5YR (10R to 5YR, the R hues) with chroma >= 5
+  red_or_black <- function(x) {
+    if (is.na(x) || !nzchar(x)) return(NA)
+    parts <- trimws(strsplit(x, ";")[[1]])
+    any(vapply(parts, function(m) {
+      if (grepl("^N", m)) return(TRUE)
+      hue <- sub(" .*", "", m); vc <- sub("^[^ ]+ ", "", m)
+      chroma <- suppressWarnings(as.numeric(sub(".*/", "", vc)))
+      value <- suppressWarnings(as.numeric(sub("/.*", "", vc)))
+      if (!is.na(value) && value <= 2.5) return(TRUE)
+      redder <- grepl("R$", hue) || grepl("^(2\\.5|5)YR$", hue)
+      redder && !is.na(chroma) && chroma >= 5
+    }, NA))
+  }
+  status <- rep(NA, n)
+  for (i in seq_len(n)) {
+    if (!is.na(oc[i]) && oc[i] >= 20) { status[i] <- FALSE; next }   # not mineral material
+    if (!is.na(nod[i]) && nod[i] >= min_nodules_pct) { status[i] <- TRUE; next }
+    masses_possible <- if (is.na(mot[i])) NA
+                       else if (mot[i] <= 0) FALSE
+                       else { rb <- red_or_black(mcol[i]); if (isFALSE(rb)) FALSE else NA }
+    nod_no <- !is.na(nod[i]) && nod[i] < min_nodules_pct
+    status[i] <- if (nod_no && isFALSE(masses_possible)) FALSE else NA
+  }
+  # not part of a petroplinthic, pisoplinthic or plinthic horizon
+  pl <- unique(unlist(lapply(list(tryCatch(plinthic(pedon), error = function(e) NULL),
+                                  tryCatch(pisoplinthic(pedon), error = function(e) NULL),
+                                  tryCatch(petroplinthic(pedon), error = function(e) NULL)),
+                             function(d) if (!is.null(d) && isTRUE(d$passed)) d$layers else integer(0))))
+  status[pl] <- FALSE
+  yes <- which(status %in% TRUE); maybe <- which(is.na(status))
+  thick <- function(idx) {
+    if (!length(idx)) return(0)
+    idx <- idx[order(h$top_cm[idx])]; best <- 0; run <- 0; last <- NA_real_
+    for (i in idx) {
+      if (!is.na(last) && !is.na(h$top_cm[i]) && abs(h$top_cm[i] - last) < 1e-6) run <- run + (h$bottom_cm[i] - h$top_cm[i])
+      else run <- h$bottom_cm[i] - h$top_cm[i]
+      last <- h$bottom_cm[i]; best <- max(best, run, na.rm = TRUE)
+    }
+    best
+  }
+  t_yes <- thick(yes); t_any <- thick(sort(c(yes, maybe)))
+  passed <- if (t_yes >= min_thickness) TRUE else if (t_any >= min_thickness) NA else FALSE
+  miss <- if (is.na(passed)) c("ferric_nodules_pct", "redoximorphic_features_pct") else character(0)
   DiagnosticResult$new(
     name      = "ferric",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Ferric horizon"
+    passed    = passed,
+    layers    = if (isTRUE(passed)) yes else integer(0),
+    evidence  = list(layer_status = status, thickness_cm = t_yes,
+                     thickness_possible_cm = t_any),
+    missing   = miss,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.1.11, Ferric horizon (p. 45)"
   )
 }
 

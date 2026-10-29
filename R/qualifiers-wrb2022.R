@@ -379,6 +379,11 @@ qual_luvic <- function(pedon) {
         if (als > d_thr) status <- TRUE
         else if (als <= e_thr) status <- FALSE
         else status <- "mid"
+      } else {
+        # v0.9.309: no exchangeable cations: the pH, as WRB 2022 Ch 5 allows
+        # for these qualifiers ("If these data are not available, pH values
+        # may be used according to Annex 2 (Chapter 9.13)"), by Table 9.3.
+        status <- .wrb_ph_cation_status(h$ph_h2o[i], h$ph_kcl[i], oc, factor)
       }
     }
     if (isTRUE(status)) { d_thk <- d_thk + thk[i]; layers_d <- c(layers_d, i) }
@@ -389,6 +394,46 @@ qual_luvic <- function(pedon) {
   list(dystric = d_thk / total, eutric = e_thk / total, mid = mid_thk / total,
        na = na_thk / total, layers_d = layers_d, layers_e = layers_e,
        total = total)
+}
+
+# WRB 2022 Annex 2, Ch 9.13, Table 9.3 (p. 220): the pH that corresponds to
+# exchangeable (Ca+Mg+K+Na) = exchangeable Al, to bases >= 4 times the Al, and
+# to Al > 4 times the bases, for soil organic carbon < 2, 2 to < 7.5 and 7.5 to
+# < 20 %. With the carbon unknown, the pH decides only where the three carbon
+# classes agree.
+.WRB_TABLE_9_3 <- list(
+  eq    = list(water = c(4.6, 4.9, 5.4), kcl = c(3.8, 4.1, 4.6)),
+  base4 = list(water = c(5.5, 5.9, 6.3), kcl = c(4.7, 5.0, 5.5)),
+  al4   = list(water = c(3.9, 4.2, 4.5), kcl = c(3.2, 3.4, 3.7)))
+
+# TRUE (dystric side), FALSE (eutric side), "mid" or NA, from the pH; water
+# first, then KCl. factor 1 is Al > bases against bases >= Al; factor 4 is
+# Al > 4 x bases against bases >= 4 x Al, with "mid" between.
+.wrb_ph_cation_status <- function(ph_w, ph_k, oc, factor = 1) {
+  cls <- if (is.na(oc)) NA_integer_ else if (oc < 2) 1L else if (oc < 7.5) 2L
+         else if (oc < 20) 3L else NA_integer_
+  for (k in c("water", "kcl")) {
+    ph <- if (k == "water") ph_w else ph_k
+    if (is.null(ph) || is.na(ph)) next
+    if (factor < 4) {
+      lim <- .WRB_TABLE_9_3$eq[[k]]
+      if (!is.na(cls)) return(ph < lim[cls])
+      if (ph < min(lim)) return(TRUE)
+      if (ph >= max(lim)) return(FALSE)
+      return(NA)
+    }
+    hi <- .WRB_TABLE_9_3$base4[[k]]; lo <- .WRB_TABLE_9_3$al4[[k]]
+    if (!is.na(cls)) {
+      if (ph >= hi[cls]) return(FALSE)
+      if (ph < lo[cls]) return(TRUE)
+      return("mid")
+    }
+    if (ph >= max(hi)) return(FALSE)
+    if (ph < min(lo)) return(TRUE)
+    if (ph >= max(lo) && ph < min(hi)) return("mid")
+    return(NA)
+  }
+  NA
 }
 
 # Build the Dystric/Eutric result for a depth window from the fractions.
@@ -763,28 +808,42 @@ qual_skeletic <- function(pedon) {
 
 # ---------- ORGANIC / HUMUS QUALIFIERS --------------------------------------
 
-#' Humic qualifier (hu): >= 1\% SOC in upper 50 cm (weighted average).
+#' Humic qualifier (hu): >= 1\% SOC as a weighted average to 50 cm.
+#'
+#' v0.9.309: WRB 2022 Ch 5 (p. 136): "having >= 1% soil organic carbon as a
+#' weighted average to a depth of 50 cm from the mineral soil surface (if a
+#' limiting layer starts within the specified depth, the depth range below
+#' that contributes a 0 to the calculation of the weighted average)". Until
+#' v0.9.308 every layer starting above 50 cm was counted whole and the depth
+#' was taken from 0 cm: on ISRIC's KE009 that gave 0.83% instead of 1.15%.
+#' A part of the 50 cm with no carbon recorded leaves it undecided unless the
+#' recorded part alone reaches 1%.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_humic <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 50)
-  if (length(layers) == 0L)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
     return(DiagnosticResult$new(name = "Humic", passed = NA,
             layers = integer(0), evidence = list(),
             missing = "oc_pct", reference = "WRB (2022) Ch 5, Humic"))
-  oc <- h$oc_pct[layers]
-  thk <- h$bottom_cm[layers] - h$top_cm[layers]
-  if (all(is.na(oc)))
-    return(DiagnosticResult$new(name = "Humic", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = "oc_pct", reference = "WRB (2022) Ch 5, Humic"))
-  weighted <- sum(oc * thk, na.rm = TRUE) / sum(thk, na.rm = TRUE)
-  passed <- !is.na(weighted) && weighted >= 1
+  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  end <- ms + 50
+  if (!is.na(lim) && lim < end) end <- max(lim, ms)
+  ov <- pmax(0, pmin(h$bottom_cm, end) - pmax(h$top_cm, ms))
+  ov[is.na(ov)] <- 0
+  oc <- h$oc_pct
+  known <- sum((oc * ov)[!is.na(oc) & ov > 0])
+  unknown_cm <- sum(ov[is.na(oc) & ov > 0]) + max(0, (end - ms) - sum(ov))
+  wmean <- known / 50                    # the range below a limiting layer counts 0
+  passed <- if (wmean >= 1) TRUE else if (unknown_cm > 1e-6) NA else FALSE
+  layers <- which(ov > 0)
   DiagnosticResult$new(name = "Humic", passed = passed,
-    layers = if (passed) layers else integer(0),
-    evidence = list(oc_weighted = weighted),
-    missing = if (any(is.na(oc))) "oc_pct" else character(0),
+    layers = if (isTRUE(passed)) layers else integer(0),
+    evidence = list(oc_weighted = wmean, mineral_surface_cm = ms,
+                    window_bottom_cm = end, limiting_layer_top_cm = lim,
+                    unrecorded_cm = unknown_cm),
+    missing = if (is.na(passed)) "oc_pct" else character(0),
     reference = "WRB (2022) Ch 5, Humic")
 }
 
@@ -809,6 +868,11 @@ qual_ochric <- function(pedon) {
             reference = "WRB (2022) Ch 5, Ochric"))
   oc <- h$oc_pct[surface]
   passed <- any(!is.na(oc) & oc >= 0.2)
+  # v0.9.309: WRB 2022 Ch 5 (p. 141): "and not meeting the set of diagnostic
+  # criteria of the Humic qualifier"
+  hu <- qual_humic(pedon)$passed
+  if (isTRUE(hu)) passed <- FALSE
+  else if (is.na(hu) && passed) passed <- NA
   DiagnosticResult$new(name = "Ochric", passed = passed,
     layers = surface[which(!is.na(oc) & oc >= 0.2)],
     evidence = list(oc = oc),
