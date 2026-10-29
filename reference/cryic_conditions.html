@@ -10,7 +10,11 @@ Designation pattern: a layer at top_cm &amp;lt;=
         &quot;f&quot; (frozen) or matching &quot;^Cf&quot; / &quot;perma&quot;.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).
-Either path qualifies. Diagnostic of Cryosols."><meta property="og:description" content="Tests whether continuous frozen / permafrost material occurs within
+Either path qualifies. Diagnostic of Cryosols. When neither passes and
+the site has a soil temperature regime warmer than gelic (cryic, frigid,
+mesic, thermic, hyperthermic or an iso form;
+site$soil_temperature_regime), the answer is no: those regimes
+have no permafrost (KST 13, Ch. 3, p. 50)."><meta property="og:description" content="Tests whether continuous frozen / permafrost material occurs within
 the upper max_top_cm. Two alternative paths qualify per WRB
 2022:
 Permafrost temperature: a layer at top_cm &amp;lt;=
@@ -21,7 +25,11 @@ Designation pattern: a layer at top_cm &amp;lt;=
         &quot;f&quot; (frozen) or matching &quot;^Cf&quot; / &quot;perma&quot;.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).
-Either path qualifies. Diagnostic of Cryosols."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+Either path qualifies. Diagnostic of Cryosols. When neither passes and
+the site has a soil temperature regime warmer than gelic (cryic, frigid,
+mesic, thermic, hyperthermic or an iso form;
+site$soil_temperature_regime), the answer is no: those regimes
+have no permafrost (KST 13, Ch. 3, p. 50)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +37,7 @@ Either path qualifies. Diagnostic of Cryosols."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.305</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.307</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +94,11 @@ the upper <code>max_top_cm</code>. Two alternative paths qualify per WRB
         <code>"f"</code> (frozen) or matching <code>"^Cf"</code> / <code>"perma"</code>.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).</p></li>
-</ol><p>Either path qualifies. Diagnostic of Cryosols.</p>
+</ol><p>Either path qualifies. Diagnostic of Cryosols. When neither passes and
+the site has a soil temperature regime warmer than gelic (cryic, frigid,
+mesic, thermic, hyperthermic or an iso form;
+<code>site$soil_temperature_regime</code>), the answer is no: those regimes
+have no permafrost (KST 13, Ch. 3, p. 50).</p>
     </div>
 
     <div class="section level2">

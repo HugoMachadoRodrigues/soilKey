@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.305</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.307</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,27 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.307" id="soilkey-09307-2026-10-29">soilKey 0.9.307 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09307-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="a-soil-temperature-regime-warmer-than-gelic-rules-out-permafrost-0-9-307">A soil temperature regime warmer than gelic rules out permafrost<a class="anchor" aria-label="anchor" href="#a-soil-temperature-regime-warmer-than-gelic-rules-out-permafrost-0-9-307"></a></h3>
+<p>Found on Jelle Janssen’s profile KE009 (ISRIC, Kenya), which kept the Cryosols open for want of a permafrost temperature.</p>
+<ul><li>
+<code><a href="../reference/cryic_conditions.html">cryic_conditions()</a></code> (WRB Cryosols, the cryic horizon and the Cryic qualifier) and the USDA permafrost test (Gelisols, the Histosols’ exclusion, the Gelods) now read <code>site$soil_temperature_regime</code>. A regime warmer than gelic (cryic, frigid, mesic, thermic, hyperthermic and their iso forms) means no permafrost, so the answer is no instead of undecided. KST 13 (Ch. 3, p. 50) gives the cryic regime a mean annual soil temperature between 0 and 8 C and no permafrost; the others are warmer.</li>
+<li>Gelic, the older pergelic, a missing regime or a word that is not a regime leave the question open. A measured <code>permafrost_temp_C</code> at or below 0 C, or a frozen designation, still wins.</li>
+<li>The Pro app has a field “Soil temperature regime (USDA)” beside the moisture regime. It is saved with the session and restored when the session is opened again.</li>
+<li>No name changes on the 44 canonical fixtures; profiles whose site states a warm regime lose the Cryosols (and Gelisols) from their close calls.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.306" id="soilkey-09306-2026-10-29">soilKey 0.9.306 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09306-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="pro-app-the-close-calls-name-their-classes-and-a-field-for-the-soil-moisture-regime-0-9-306">Pro app: the close calls name their classes, and a field for the soil moisture regime<a class="anchor" aria-label="anchor" href="#pro-app-the-close-calls-name-their-classes-and-a-field-for-the-soil-moisture-regime-0-9-306"></a></h3>
+<p>Both reported by Jelle Janssen (ISRIC).</p>
+<ul><li>The Ambiguities tab of the Classify page showed “?” in place of each reference soil group that could not be ruled out. The panel read the fields <code>name</code> and <code>code</code>, while the results carry <code>rsg_name</code> and <code>rsg_code</code>. It now shows the group and its code, for example “Cryosols (CR): missing permafrost_temp_C”.</li>
+<li>The Pedon page has a “Soil moisture regime (USDA)” field in the site section (unknown, aquic, aridic (torric), udic, perudic, ustic, xeric). The Soil Taxonomy key reads it: ustic leads to the Ustolls and Ustalfs, xeric to the Xerolls. It is saved with the session and restored when the session is reopened. A profile loaded from a fixture or from WoSIS sets it from its own site data, or back to unknown, so a regime is never carried over from the previous profile.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.305" id="soilkey-09305-2026-10-29">soilKey 0.9.305 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09305-2026-10-29"></a></h2>
 <div class="section level3">
@@ -6662,7 +6683,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code>covr::package_coverage()</code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>

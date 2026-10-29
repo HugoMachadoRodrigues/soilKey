@@ -11,7 +11,11 @@ upper `max_top_cm`. Two alternative paths qualify per WRB 2022:
     `"perma"`. Used as a fallback when the temperature field is not in
     the pedon (typical of legacy survey data).
 
-Either path qualifies. Diagnostic of Cryosols.
+Either path qualifies. Diagnostic of Cryosols. When neither passes and
+the site has a soil temperature regime warmer than gelic (cryic, frigid,
+mesic, thermic, hyperthermic or an iso form;
+`site$soil_temperature_regime`), the answer is no: those regimes have no
+permafrost (KST 13, Ch. 3, p. 50).
 
 ## Usage
 

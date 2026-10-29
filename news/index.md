@@ -1,5 +1,49 @@
 # Changelog
 
+## soilKey 0.9.307 (2026-10-29)
+
+### A soil temperature regime warmer than gelic rules out permafrost
+
+Found on Jelle Janssen’s profile KE009 (ISRIC, Kenya), which kept the
+Cryosols open for want of a permafrost temperature.
+
+- [`cryic_conditions()`](https://hugomachadorodrigues.github.io/soilKey/reference/cryic_conditions.md)
+  (WRB Cryosols, the cryic horizon and the Cryic qualifier) and the USDA
+  permafrost test (Gelisols, the Histosols’ exclusion, the Gelods) now
+  read `site$soil_temperature_regime`. A regime warmer than gelic
+  (cryic, frigid, mesic, thermic, hyperthermic and their iso forms)
+  means no permafrost, so the answer is no instead of undecided. KST 13
+  (Ch. 3, p. 50) gives the cryic regime a mean annual soil temperature
+  between 0 and 8 C and no permafrost; the others are warmer.
+- Gelic, the older pergelic, a missing regime or a word that is not a
+  regime leave the question open. A measured `permafrost_temp_C` at or
+  below 0 C, or a frozen designation, still wins.
+- The Pro app has a field “Soil temperature regime (USDA)” beside the
+  moisture regime. It is saved with the session and restored when the
+  session is opened again.
+- No name changes on the 44 canonical fixtures; profiles whose site
+  states a warm regime lose the Cryosols (and Gelisols) from their close
+  calls.
+
+## soilKey 0.9.306 (2026-10-29)
+
+### Pro app: the close calls name their classes, and a field for the soil moisture regime
+
+Both reported by Jelle Janssen (ISRIC).
+
+- The Ambiguities tab of the Classify page showed “?” in place of each
+  reference soil group that could not be ruled out. The panel read the
+  fields `name` and `code`, while the results carry `rsg_name` and
+  `rsg_code`. It now shows the group and its code, for example “Cryosols
+  (CR): missing permafrost_temp_C”.
+- The Pedon page has a “Soil moisture regime (USDA)” field in the site
+  section (unknown, aquic, aridic (torric), udic, perudic, ustic,
+  xeric). The Soil Taxonomy key reads it: ustic leads to the Ustolls and
+  Ustalfs, xeric to the Xerolls. It is saved with the session and
+  restored when the session is reopened. A profile loaded from a fixture
+  or from WoSIS sets it from its own site data, or back to unknown, so a
+  regime is never carried over from the previous profile.
+
 ## soilKey 0.9.305 (2026-10-29)
 
 ### The Hungarian diagnostic soil classification: the 15 soil types
@@ -11301,10 +11345,8 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran
-[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
-locally against the v0.9.39 source tree. Result: **80.5 % statement
-coverage**.
+Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
+Result: **80.5 % statement coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a
