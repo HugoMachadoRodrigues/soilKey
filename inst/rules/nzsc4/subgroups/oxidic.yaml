@@ -1,0 +1,67 @@
+# Key to subgroups of Oxidic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-sxnp.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "XP":
+    - code: "XPN"
+      name: Nodular Perch-gley Oxidic Soils
+      tests:
+        all_of:
+          - nodular_subgroup_nzsc: {}
+      notes: "A nodular horizon with its upper boundary within 60 cm of the mineral soil surface."
+
+    - code: "XPT"
+      name: Typic Perch-gley Oxidic Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Oxidic Soils."
+
+  "XN":
+    - code: "XNX"
+      name: Rocky Nodular Oxidic Soils
+      tests:
+        all_of:
+          - contact_subgroup_nzsc: {depth: 90}
+      notes: "A lithic or paralithic contact within 90 cm of the mineral soil surface."
+
+    - code: "XNB"
+      name: Brown Nodular Oxidic Soils
+      tests:
+        all_of:
+          - brown_oxidic_nzsc: {}
+      notes: "Within 90 cm, a decrease in clay of more than 20 % below the clay maximum, or more than 5 % coarse rock fragments."
+
+    - code: "XNT"
+      name: Typic Nodular Oxidic Soils
+      tests:
+        default: true
+      notes: "Other Nodular Oxidic Soils."
+
+  "XO":
+    - code: "XOM"
+      name: Mottled Orthic Oxidic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "XOX"
+      name: Rocky Orthic Oxidic Soils
+      tests:
+        all_of:
+          - contact_subgroup_nzsc: {depth: 90}
+      notes: "A lithic or paralithic contact within 90 cm of the mineral soil surface."
+
+    - code: "XOB"
+      name: Brown Orthic Oxidic Soils
+      tests:
+        all_of:
+          - brown_oxidic_nzsc: {contact: true}
+      notes: "Within 90 cm, a decrease in clay of more than 20 % below the clay maximum, more than 5 % coarse rock fragments, or a lithic or paralithic contact."
+
+    - code: "XOT"
+      name: Typic Orthic Oxidic Soils
+      tests:
+        default: true
+      notes: "Other Orthic Oxidic Soils."

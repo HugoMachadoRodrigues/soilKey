@@ -542,6 +542,9 @@
           },
           "pore_coatings_chroma_moist": {
             "type": ["number", "null"]
+          },
+          "weathered_fragments_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

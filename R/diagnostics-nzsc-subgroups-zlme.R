@@ -128,22 +128,25 @@
   ifelse(rec, ok, FALSE)
 }
 
-# "In some part of the B or BC horizon" to `zb`: designated B and BC rows
-# (pans aside); mineral rows of unknown role may be either, so the verdict
-# holds only when it is the same with them read as B and read as not B (on
-# them a verdict that would pass stays open).
-.nzsc_b_bc_some_part <- function(x, ok, zb) {
+# Mineral rows of unknown role (the uppermost mineral row aside, which is the
+# topsoil) may be a B (or BC) horizon or not: `fun(rows)` is evaluated with
+# the designated rows of `roles` (pans aside) plus each choice of those rows
+# (up to eight; beyond, all of them and none), and the verdict holds only
+# when every choice gives it (v0.9.301).
+.nzsc_roles_eval <- function(x, roles, zb, fun) {
   h <- x$h
-  part <- function(rows, okv) {
-    rows <- rows[h$top_cm[rows] < zb - 0.5]
-    if (!length(rows)) FALSE else .nzsc_some_part_in(x, rows, okv, -1e6, zb)
-  }
-  b <- .nzsc_b_bc_rows(x); maybe <- .nzsc_maybe_rows(x)
-  v1 <- part(b, ok)
-  if (!length(maybe)) return(v1)
-  ok2 <- ok; ok2[maybe] <- ifelse(ok[maybe] %in% FALSE, FALSE, NA)
-  v2 <- part(sort(unique(c(b, maybe))), ok2)
+  b <- which(.nzsc_is(x, roles) & !x$des$m & !is.na(h$top_cm)); b <- b[h$top_cm[b] < zb - 0.5]
+  rows <- .nzsc_rows(x); first <- rows[x$mineral[rows]][1L]
+  maybe <- .nzsc_maybe_rows(x); maybe <- maybe[h$top_cm[maybe] < zb - 0.5 & !(maybe %in% first)]
+  k <- length(maybe)
+  if (k <= 8L) return(.nzsc_over_fillings(k, function(fill) fun(sort(c(b, maybe[fill])))))
+  v1 <- fun(b); v2 <- fun(sort(c(b, maybe)))
   if (identical(v1, v2)) v1 else NA
+}
+
+# "In some part of the B or BC horizon" (or of `roles`) to `zb`.
+.nzsc_b_bc_some_part <- function(x, ok, zb, roles = c("B", "BC")) {
+  .nzsc_roles_eval(x, roles, zb, function(rows) if (!length(rows)) FALSE else .nzsc_some_part_in(x, rows, ok, -1e6, zb))
 }
 
 # Hue on the Munsell circle and its two readings here: 7.5YR or redder (red
@@ -339,15 +342,33 @@ silt_mantled_podzol_nzsc <- function(pedon) {
 # Acidic subgroups read in some part of the B or BC horizon to `depth` cm
 # from the mineral soil surface: pH below 5.5 (EMA, `depth: 60`); LOA and
 # LOVA (`coatings`), or coatings on pores or gel-like masses of hue 7.5YR or
-# redder, value 5 or less and chroma 3 or more.
-acidic_b_subgroup_nzsc <- function(pedon, depth = 60, coatings = FALSE) {
+# redder, value 5 or less and chroma 3 or more. v0.9.301, the Granular
+# Soils: pH below `ph` 5.1 (NXA, NXMA, NOMA), 5.1 or less (NPA, `strict:
+# false`), or in the major part of the B or BC (NOA, `part: major`).
+acidic_b_subgroup_nzsc <- function(pedon, depth = 60, coatings = FALSE, ph = 5.5, strict = TRUE,
+                                   part = c("some", "major")) {
+  part <- match.arg(part)
   x <- .nzsc_horizons(pedon); h <- x$h
   miss <- c("ph_h2o", if (isTRUE(coatings)) c("pore_coatings_hue_moist", "pore_coatings_value_moist", "pore_coatings_chroma_moist"))
   pre <- .nzsc_sub_ms_or_na(x, "acidic_b_subgroup_nzsc", "acidic subgroups (B or BC)", miss); if (!is.null(pre)) return(pre)
-  ok <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5)
+  lim <- as.numeric(ph)
+  ok <- ifelse(is.na(h$ph_h2o), NA, if (isTRUE(strict)) h$ph_h2o < lim else h$ph_h2o <= lim)
   if (isTRUE(coatings)) ok <- .any3v(.nzsc_pore_coatings_acidic(x), ok)
-  .nzsc_subgroup("acidic_b_subgroup_nzsc", .nzsc_b_bc_some_part(x, ok, x$ms + as.numeric(depth)),
-                 "acidic subgroups (B or BC)", list(depth = depth, coatings = isTRUE(coatings)), miss)
+  zb <- x$ms + as.numeric(depth)
+  v <- if (part == "some") .nzsc_b_bc_some_part(x, ok, zb) else .nzsc_b_bc_major_part(x, ok, zb)
+  .nzsc_subgroup("acidic_b_subgroup_nzsc", v, "acidic subgroups (B or BC)",
+                 list(depth = depth, coatings = isTRUE(coatings), ph = lim, part = part), miss)
+}
+
+# "In the major part of the B or BC horizon" (or of `roles`) to `zb`, or to
+# its base when shallower.
+.nzsc_b_bc_major_part <- function(x, ok, zb, roles = c("B", "BC")) {
+  h <- x$h
+  .nzsc_roles_eval(x, roles, zb, function(rows) {
+    if (!length(rows)) return(FALSE)
+    base <- if (anyNA(h$bottom_cm[rows])) Inf else max(h$bottom_cm[rows])
+    .nzsc_major_part_b(x, rows, ok, zb = min(zb, base))
+  })
 }
 
 # LOV (and LOVA): the allophanic soil material is formed predominantly from

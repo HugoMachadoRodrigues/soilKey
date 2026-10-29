@@ -707,3 +707,10 @@ attributes:
     description: "Moist Munsell chroma of the coatings on pores or gel-like masses (see pore_coatings_hue_moist)."
     systems: [nzsc4]
     min: 0
+  - name: weathered_fragments_pct
+    section: "New Zealand system (NZSC 4th ed.)"
+    unit: "%"
+    description: "Share of the coarse rock fragments that are weathered enough to break easily by hammer or spade; NZSC Weathered Aged-argillic Semiarid, Weathered-argillic Perch-gley, Mottled-weathered and Weathered Argillic Pallic Soils (the majority, more than 50 %). Recorded when met: not recorded reads as none."
+    systems: [nzsc4]
+    min: 0
+    max: 100

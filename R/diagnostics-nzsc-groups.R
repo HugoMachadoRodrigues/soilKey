@@ -930,8 +930,10 @@ laminar_pallic_nzsc <- function(pedon) {
   brittle <- any(.nzsc_pan_rows(x, "brittle"))
   a <- .nzsc_argillic_rows(x)
   lam <- grepl("lamell", tolower(as.character(h$designation)))
-  th <- ifelse(is.na(x$thick), 0, x$thick)
-  passed <- if (!brittle || !any(a %in% TRUE)) FALSE else sum(th[a %in% TRUE & lam]) > sum(th[a %in% TRUE & !lam])
+  # v0.9.301: a row with no bottom weighs both lightly and heavily
+  share <- function(th) sum(th[a %in% TRUE & lam]) > sum(th[a %in% TRUE & !lam])
+  w0 <- ifelse(is.na(x$thick), 0, x$thick); w1 <- ifelse(is.na(x$thick), 1e6, x$thick)
+  passed <- if (!brittle || !any(a %in% TRUE)) FALSE else if (identical(share(w0), share(w1))) share(w0) else NA
   .nzsc_group("laminar_pallic_nzsc", passed, "P, PL", missing = "designation")
 }
 
