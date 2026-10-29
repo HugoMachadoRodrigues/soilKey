@@ -1,5 +1,69 @@
 # Changelog
 
+## soilKey 0.9.309 (2026-10-29)
+
+### ISRIC’s KE009: four WRB qualifiers and the key to the Oxisols by the texts
+
+Jelle Janssen’s profile KE009 (ISRIC, Kenya) is a Rhodic Ferralsol
+(Clayic, Epic, Eutric, Humic) and a Rhodic Eutrustox for ISRIC. soilKey
+gave Rhodic Ferralsol (Clayic, Epic, Ferric, Ochric) and Typic
+Paleustolls. Each difference was a soilKey reading that did not follow
+the text. KE009 now gets ISRIC’s names in both systems.
+
+- **Humic** (WRB 2022 Ch 5, p. 136): the weighted average of soil
+  organic carbon to 50 cm from the mineral soil surface, with the range
+  below a limiting layer counting 0. soilKey counted every layer that
+  starts above 50 cm whole, from 0 cm, so a deep layer with little
+  carbon pulled the average down (KE009: 0.83% for 1.15%).
+- **Ochric** (p. 141) also requires that the Humic criteria are not met.
+- **Eutric, Dystric and their subqualifiers** use the pH when the
+  exchangeable cations are not recorded. The text allows it (“pH values
+  may be used according to Annex 2 (Chapter 9.13)”), by Table 9.3:
+  exchangeable bases equal the Al at pH (water) 4.6, 4.9 or 5.4 for
+  organic carbon below 2, 2 to 7.5 and 7.5 to 20 %. With the carbon
+  unknown, the pH decides only where the three classes agree.
+- **The ferric horizon** (Ch 3.1.11, p. 45) is read from its criteria:
+  coarse red or black masses, or 5 % or more of nodules over 2 mm
+  (`ferric_nodules_pct`), in 15 cm or more, outside a plinthic,
+  pisoplinthic or petroplinthic horizon. soilKey had read it from
+  Fe-dithionite of 5 % or more, which is not a criterion, so red
+  Ferralsols with no nodules became Ferric. The argument
+  `min_fe_dith_pct` of
+  [`ferric()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferric.md)
+  becomes `min_nodules_pct`.
+- **The kandic horizon** follows Keys to Soil Taxonomy (13th ed.,
+  pp. 26-27):
+  - the clay increase within 15 cm: 3 % absolute, 20 % relative or 8 %
+    absolute, by the clay of the overlying horizon;
+  - the depth of its upper boundary;
+  - a thickness of 30 cm;
+  - a texture of loamy very fine sand or finer;
+  - an apparent CEC of 16 cmol(+) per kg clay or less in half of the 100
+    cm below the clay increase;
+  - no fine stratification.
+
+  soilKey had taken the WRB argic horizon with a low CEC.
+- **The key to the Oxisols** (KST 13, Ch 8, item E, pp. 68-69) reads
+  both of its items. One is an oxic horizon within 150 cm with no kandic
+  horizon within that depth. The other is 40 % or more clay in the upper
+  18 cm with a kandic horizon within 100 cm. Since v0.9.17 soilKey had
+  used “no argillic horizon above the oxic” instead, which made clayey
+  Oxisols with a kandic horizon into Mollisols, Ultisols or Alfisols.
+  soilKey records no weatherable minerals, and the kandic horizon of the
+  second item is read as its oxic horizon is.
+- **Fixtures:** 20 of the 44 canonical fixtures change qualifiers only.
+  - Humic for Ochric in seven of them, where the 50 cm average is 1 % or
+    more.
+  - Eutric added in six of them, from the pH.
+  - Ferric removed from four, which have no nodules.
+  - The Nitossolo fixture becomes a Rhodic Kandiudox (USDA), since it
+    has a kandic horizon.
+- Against 0.9.308, no WRB Reference Soil Group changes on any panel
+  (qualifiers only). The USDA order agrees with ISRIC for 47.5% of the
+  ISIS profiles (from 47.3%); KSSL is unchanged; FEBR goes from 44.8 to
+  44.5%, as Latosols with a textural gradient now have a kandic horizon
+  by KST 13 (their reference names predate the kandic horizon).
+
 ## soilKey 0.9.308 (2026-10-29)
 
 ### soilKey reads ISRIC’s World Soil Reference Collection (ISIS)

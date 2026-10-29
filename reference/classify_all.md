@@ -137,8 +137,8 @@ any side-channel state.
 pr <- make_ferralsol_canonical()
 all_three <- classify_all(pr)
 all_three$summary
-#>                                                            wrb
-#> 1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
+#>                                                    wrb
+#> 1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
 #>                                                                    sibcs
 #> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
 #>              usda
@@ -146,8 +146,6 @@ all_three$summary
 
 # WRB + USDA only (skip SiBCS):
 classify_all(pr, systems = c("wrb2022", "usda"))$summary
-#>                                                            wrb sibcs
-#> 1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)  <NA>
-#>              usda
-#> 1 Rhodic Hapludox
+#>                                                    wrb sibcs            usda
+#> 1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)  <NA> Rhodic Hapludox
 ```

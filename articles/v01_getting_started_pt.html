@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.308</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,7 @@ grade</em>.</p>
 <span></span>
 <span><span class="va">pedon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_ferralsol_canonical.html">make_ferralsol_canonical</a></span><span class="op">(</span><span class="op">)</span>   <span class="co"># Latossolo Vermelho canônico</span></span>
 <span><span class="fu"><a href="../reference/classify_wrb2022.html">classify_wrb2022</a></span><span class="op">(</span><span class="va">pedon</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"</span></span>
+<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"</span></span>
 <span><span class="fu"><a href="../reference/classify_sibcs.html">classify_sibcs</a></span><span class="op">(</span><span class="va">pedon</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Latossolos Vermelhos Distróficos típicos"</span></span>
 <span><span class="fu"><a href="../reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">pedon</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span>
@@ -230,7 +230,7 @@ tem</li>
 <span><span class="va">res_usda</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/classify_usda.html">classify_usda</a></span><span class="op">(</span><span class="va">meu_pedon</span>,  on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res_wrb</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Haplic Ferralsol (Clayic, Epic, Ochric)"</span></span>
+<span><span class="co">#&gt; [1] "Haplic Ferralsol (Clayic, Epic, Eutric, Humic)"</span></span>
 <span><span class="va">res_sibcs</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="co">#&gt; [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"</span></span>
 <span><span class="va">res_usda</span><span class="op">$</span><span class="va">name</span></span>
@@ -241,8 +241,8 @@ tem</li>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">todos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/classify_all.html">classify_all</a></span><span class="op">(</span><span class="va">meu_pedon</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span></span>
 <span><span class="va">todos</span><span class="op">$</span><span class="va">summary</span></span>
-<span><span class="co">#&gt;                                       wrb</span></span>
-<span><span class="co">#&gt; 1 Haplic Ferralsol (Clayic, Epic, Ochric)</span></span>
+<span><span class="co">#&gt;                                              wrb</span></span>
+<span><span class="co">#&gt; 1 Haplic Ferralsol (Clayic, Epic, Eutric, Humic)</span></span>
 <span><span class="co">#&gt;                                                                    sibcs</span></span>
 <span><span class="co">#&gt; 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado</span></span>
 <span><span class="co">#&gt;             usda</span></span>
@@ -1815,7 +1815,7 @@ seja idêntico</strong>.</p>
 <span><span class="co">#&gt; 2 SiBCS 5ª ed.</span></span>
 <span><span class="co">#&gt; 3   USDA ST 13</span></span>
 <span><span class="co">#&gt;                                                                     Nome</span></span>
-<span><span class="co">#&gt; 1                                Haplic Ferralsol (Clayic, Epic, Ochric)</span></span>
+<span><span class="co">#&gt; 1                         Haplic Ferralsol (Clayic, Epic, Eutric, Humic)</span></span>
 <span><span class="co">#&gt; 2 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado</span></span>
 <span><span class="co">#&gt; 3                                                         Typic Hapludox</span></span></code></pre></div>
 <p>Para um Latossolo Vermelho típico do Cerrado / Mata Atlântica

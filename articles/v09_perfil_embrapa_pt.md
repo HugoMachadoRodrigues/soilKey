@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x570def5921b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x62471b0cb1b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -234,16 +234,17 @@ print(res$wrb)
 #> Qualifiers: Rhodic, Ferralic, Clayic, Cutanic, Differentic, Epic, Geric,
 #> Ochric, Profondic, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, p_mehlich3_mg_kg,
 #> FALSE, FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct,
-#> TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, fe_dcb_pct, FALSE,
-#> coarse_fragments_pct, FALSE, TRUE, TRUE, FALSE, FALSE, al_ox_pct, fe_ox_pct,
-#> phosphate_retention_pct, volcanic_glass_pct, FALSE, FALSE, FALSE, NA,
-#> rupture_resistance, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, NA,
-#> gibbsite_clay_fraction_pct, FALSE, TRUE, FALSE, FALSE, FALSE, fe_dcb_pct,
-#> fe_ox_pct, FALSE, NA, water_saturation_days, redoximorphic_features_pct, FALSE,
-#> TRUE, NA, visible black carbon, % of exposed area (not in the schema), FALSE,
-#> NA, saprolite_pct, FALSE, FALSE, rock_origin, FALSE, FALSE, artefacts_pct,
-#> geomembrane_present, technic_hardmaterial_pct, NA, artefacts_pct, NA,
-#> contamination_type, NA, layer_origin, artefacts_pct, FALSE, volcanic_glass_pct
+#> TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, ferric_nodules_pct,
+#> redoximorphic_features_pct, FALSE, coarse_fragments_pct, FALSE, TRUE, TRUE,
+#> FALSE, FALSE, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
+#> volcanic_glass_pct, FALSE, FALSE, FALSE, NA, rupture_resistance, TRUE, FALSE,
+#> TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, NA, gibbsite_clay_fraction_pct, FALSE,
+#> TRUE, FALSE, FALSE, FALSE, fe_dcb_pct, fe_ox_pct, FALSE, NA,
+#> water_saturation_days, redoximorphic_features_pct, FALSE, TRUE, NA, visible
+#> black carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct,
+#> FALSE, FALSE, rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
+#> technic_hardmaterial_pct, NA, artefacts_pct, NA, contamination_type, NA,
+#> layer_origin, artefacts_pct, FALSE, volcanic_glass_pct
 #> Evidence grade: A
 #> 
 #> ── Ambiguities

@@ -394,7 +394,7 @@ knitr::kable(
 | PZ  | PZ      | Albic            |
 | PT  | PT      | Haplic           |
 | PL  | PL      | Eutric           |
-| ST  | ST      | Albic            |
+| ST  | ST      | Eutric           |
 | NT  | NT      | Eutric           |
 | FR  | FR      | Geric            |
 | CH  | CH      | Vermic           |
@@ -411,7 +411,7 @@ knitr::kable(
 | LV  | LV      | Haplic           |
 | CM  | CM      | Eutric           |
 | AR  | AR      | Eutric           |
-| FL  | FL      | Pantofluvic      |
+| FL  | FL      | Eutric           |
 
 Most-specific principal qualifier per canonical fixture. {.table}
 

@@ -183,7 +183,7 @@ cls_sibcs <- classify_sibcs(pedon, include_familia = TRUE)
 cls_usda  <- classify_usda(pedon)
 
 cls_wrb$name
-#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"
 cls_sibcs$name
 #> [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"
 cls_usda$name

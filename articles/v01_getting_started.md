@@ -37,7 +37,7 @@ library(soilKey)
 
 pedon <- make_ferralsol_canonical()      # canonical Latossolo Vermelho
 classify_wrb2022(pedon, on_missing = "silent")$name
-#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"
 classify_sibcs(pedon)$name
 #> [1] "Latossolos Vermelhos Distróficos típicos"
 classify_usda(pedon, on_missing = "silent")$name
@@ -241,22 +241,23 @@ classify_wrb2022(ferralsol)
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)
+#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Ferric, Humic, FALSE, NA,
+#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic, FALSE, NA,
 #> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, structure_type,
 #> structure_grade, clay_films_amount, fe_dcb_pct, fe_ox_pct, FALSE,
 #> p_mehlich3_mg_kg, FALSE, redoximorphic_features_pct, FALSE,
 #> redoximorphic_features_pct, FALSE, FALSE, top_cm, bottom_cm, FALSE, FALSE,
 #> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct,
 #> fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE, NA,
-#> rupture_resistance, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE,
-#> TRUE, TRUE, NA, bioturbation_density, bulk_density_g_cm3, particles_630um_pct,
-#> FALSE, FALSE, NA, water_saturation_days, redoximorphic_features_pct, FALSE, NA,
-#> visible black carbon, % of exposed area (not in the schema), FALSE, NA,
-#> saprolite_pct, FALSE, rock_origin, FALSE, FALSE, artefacts_pct,
-#> geomembrane_present, technic_hardmaterial_pct, NA, artefacts_pct, NA,
-#> contamination_type, NA, layer_origin, artefacts_pct
+#> rupture_resistance, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE,
+#> ferric_nodules_pct, redoximorphic_features_pct, FALSE, FALSE, TRUE, FALSE, NA,
+#> bioturbation_density, bulk_density_g_cm3, particles_630um_pct, FALSE, FALSE,
+#> NA, water_saturation_days, redoximorphic_features_pct, FALSE, NA, visible black
+#> carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,
+#> rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
+#> technic_hardmaterial_pct, NA, artefacts_pct, NA, contamination_type, NA,
+#> layer_origin, artefacts_pct
 #> Evidence grade: A
 #> 
 #> ── Ambiguities

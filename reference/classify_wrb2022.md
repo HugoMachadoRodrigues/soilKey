@@ -96,5 +96,5 @@ A
 pedon <- make_ferralsol_canonical()
 res <- classify_wrb2022(pedon)
 res$name
-#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Ferric, Humic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"
 ```
