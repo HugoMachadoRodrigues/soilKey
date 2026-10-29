@@ -2264,6 +2264,21 @@ Soil Groups (5 per RSG). The first WRB benchmark with profile depth
 - [`wosis_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/wosis_citation.md)
   : Citation for data read from WoSIS-latest
 
+## ISRIC World Soil Reference Collection (ISIS, v0.9.308)
+
+Profiles of ISRIC’s World Soil Reference Collection read live from the
+ISIS GraphQL service, translated to soilKey pedons with ISRIC’s own WRB
+and USDA names, and compared with soilKey’s.
+
+- [`read_isis()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_isis.md)
+  : Read profiles of the ISRIC World Soil Reference Collection (ISIS)
+- [`isis_profile_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/isis_profile_to_pedon.md)
+  : Turn one ISIS profile into a PedonRecord
+- [`isis_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/isis_citation.md)
+  : Citation for data read from ISIS
+- [`benchmark_isis()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_isis.md)
+  : Compare soilKey with ISRIC's names for ISIS profiles
+
 ## USDA Soil Taxonomy \<-\> WRB cross-walk (v0.9.74)
 
 KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6 USDA

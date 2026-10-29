@@ -1,5 +1,77 @@
 # Changelog
 
+## soilKey 0.9.308 (2026-10-29)
+
+### soilKey reads ISRIC’s World Soil Reference Collection (ISIS)
+
+Asked for by Jelle Janssen (ISRIC), who had matched the ISIS properties
+to soilKey’s by hand.
+
+- [`read_isis()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_isis.md)
+  reads profiles live from ISRIC’s ISIS GraphQL service, by profile code
+  (`read_isis(c("KE009", "ZW005"))`) or by country
+  (`read_isis(country = "KE")`). It returns soilKey pedons ready for
+  [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md),
+  and writes nothing to disk.
+- [`isis_profile_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/isis_profile_to_pedon.md)
+  does the translation:
+  - Laboratory values go to soilKey units: organic carbon, nitrogen,
+    CaCO3 and gypsum from g/kg; water at 1500 kPa from volume to mass;
+    water-dispersible clay as a clay content.
+  - FAO field codes go to soilKey’s words: structure, consistence,
+    stickiness, plasticity, cutans, mottles, boundaries, effervescence,
+    cementation and pans.
+  - Base saturation, ECEC, aluminium saturation and silt (100 - sand -
+    clay) are calculated from the parts.
+  - Every value names its ISIS field in the provenance.
+- The site carries the names ISRIC gives the profile: `reference_wrb`,
+  the new `reference_wrb_full` and `reference_wrb_edition`,
+  `reference_usda` and its subgroup, and the new
+  `reference_usda_edition`.
+- It also carries the soil moisture and temperature regimes when ISIS
+  records them (KE009: ustic, isohyperthermic), gilgai, the licence and
+  the citation
+  ([`isis_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/isis_citation.md)).
+- Readings decided by Hugo:
+  - ISIS keeps the field description and the laboratory samples in
+    separate rows in more than half its profiles. Each sample goes to
+    the described horizon that holds its mid-depth, as a
+    thickness-weighted mean that fills only what the horizon lacks. A
+    described horizon left with no laboratory value takes the samples
+    that overlap it.
+  - Clay films are the FAO (1977) cutans of kind clay: patchy, broken
+    and continuous become few, common and many. Clay cutans with no
+    abundance count as few, and so do cutans of no kind in a horizon
+    whose designation has t.
+  - Cutans of kind slickensides are the slickensides, counted as common
+    when patchy, broken or of no recorded abundance.
+  - The profile’s cracking (large or small) or, without it, gilgai gives
+    cracks of 0.5 cm or more in the horizons starting above 100 cm.
+  - Coarse fragments come from the middle of the FAO class when cfvo is
+    not measured.
+  - Calcareous inclusions are secondary carbonates. Hard Fe/Mn
+    concretions over 2 mm are nodules. In a v horizon or an iron pan,
+    mottles and soft Fe/Mn concretions are plinthite.
+  - EC 1:2.5 is used only where it decides the salic horizon: 15 dS/m or
+    more is a lower bound of the paste EC; below that, EC 1:2.5 x 12.5
+    is an upper bound. It goes into the new attribute `ec_max_dS_m`,
+    which only the salic test reads, to rule a layer out.
+  - With `absent_unless_recorded = TRUE` (the default), mottles,
+    slickensides, plinthite, a duripan and artefacts that a horizon’s
+    field description does not mention are absent in that horizon.
+    Mottles stay unknown in a g, l or r horizon with no mottle field.
+- [`benchmark_isis()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_isis.md)
+  sets soilKey’s WRB and USDA names beside ISRIC’s. On the 481 profiles
+  with an ISRIC WRB 2022 name, soilKey now gives the same Reference Soil
+  Group for 221 (45.9%); with the first draft of the translation it was
+  149 (31.0%). The USDA order agrees for 354 of 748 (47.3%; ISRIC’s USDA
+  names are from the 1975 and 1999 editions). The median number of close
+  calls per profile fell from 7 to 4.
+- The investigation behind these numbers also found deviations of
+  soilKey’s WRB 2022 diagnostics from the text, on the mollic, argic,
+  redox, vertic, organic and weakly developed groups. They are fixed in
+  the PRs that follow.
+
 ## soilKey 0.9.307 (2026-10-29)
 
 ### A soil temperature regime warmer than gelic rules out permafrost
@@ -11345,8 +11417,10 @@ renders without missing-topic warnings.
 
 ### D. Real coverage measurement (Item 8)
 
-Ran `covr::package_coverage()` locally against the v0.9.39 source tree.
-Result: **80.5 % statement coverage**.
+Ran
+[`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+locally against the v0.9.39 source tree. Result: **80.5 % statement
+coverage**.
 
 README badge updated from the unconfigured Codecov SVG (which rendered
 as “unknown” because no `CODECOV_TOKEN` secret was configured) to a

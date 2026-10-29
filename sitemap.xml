@@ -62,6 +62,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/batch_robustness.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_isis.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_npdb.html</loc></url>
@@ -184,6 +185,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/index.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/inspect_bdsolos_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/irragric.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/isis_citation.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/isis_profile_to_pedon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem_strict.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/key_trace_table.html</loc></url>
@@ -323,6 +326,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/protogypsic_properties.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/protovertic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_isis.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_pedon_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_spectral_library.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_layers_graphql.html</loc></url>
