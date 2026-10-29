@@ -13,7 +13,7 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 inceptisol_qualifying_usda <- function(pedon) {
-  cb <- cambic(pedon)
+  cb <- .cambic_impl(pedon)   # v0.9.310: argic and ferralic read as before (USDA)
   res <- DiagnosticResult$new(
     name = "inceptisol_qualifying_usda", passed = isTRUE(cb$passed),
     layers = cb$layers,

@@ -33,14 +33,14 @@ aridisol_qualifying_usda <- function(pedon) {
   }
   diag_present <-
     isTRUE(argillic_within_usda(pedon, max_top_cm = 200)$passed) ||
-    isTRUE(natric_horizon(pedon)$passed) ||
+    isTRUE(.natric_horizon_impl(pedon)$passed) ||   # v0.9.310: USDA reading
     isTRUE(kandic_horizon_usda(pedon)$passed) ||
     isTRUE(calcic_horizon_usda(pedon, max_top_cm = 200)$passed) ||
     isTRUE(gypsic_horizon_usda(pedon, max_top_cm = 200)$passed) ||
     isTRUE(salic_horizon_usda(pedon, max_top_cm = 200)$passed) ||
     isTRUE(duripan_usda(pedon, max_top_cm = 200)$passed) ||
     isTRUE(duric_horizon(pedon)$passed) ||  # broader cementation
-    isTRUE(cambic(pedon)$passed) ||
+    isTRUE(.cambic_impl(pedon)$passed) ||   # v0.9.310: USDA reading
     isTRUE(sulfuric_horizon_usda(pedon, max_top_cm = 200)$passed)
   passed <- isTRUE(smr_pass) && isTRUE(diag_present)
   DiagnosticResult$new(

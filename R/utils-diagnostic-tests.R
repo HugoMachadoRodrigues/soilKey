@@ -124,13 +124,27 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #' @param h Horizons data.table (canonical schema).
 #' @param system One of \code{"wrb2022"} (default) or \code{"usda"}.
 #'        Selects the threshold set.
+#' @param max_transition_cm v0.9.310. \code{NULL} (default): a layer is
+#'        compared with any coarser layer above it. A number (15 for the WRB
+#'        2022 argic): criterion 2.a.iii, "if the coarser-textured layer does
+#'        not directly overlie the argic horizon, the transitional horizon
+#'        between [them] has a thickness of <= 15 cm" (WRB 2022 Ch 3.1.3,
+#'        p. 36). A layer is then compared only with the layers above it whose
+#'        intervening layers add up to no more than this thickness, leaving out
+#'        the layers already accepted and those whose designation has the
+#'        suffix t (Bt, 2Btg): they are part of the argic horizon.
+#' @param exclude v0.9.310. Logical, one per layer: layers that cannot be part
+#'        of the horizon (the WRB argic is a subsurface horizon). They are still
+#'        read as coarser-textured or transitional layers.
 #' @return Sub-test result list.
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
-#'   horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
+#'   horizon, criteria 2.a.iii-vi (p. 36); Soil Survey Staff (2022),
 #'   Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
 #' @noRd
 test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
-                                     lithic_aware = FALSE) {
+                                     lithic_aware = FALSE,
+                                     max_transition_cm = NULL,
+                                     exclude = NULL) {
   system <- match.arg(system)
   # v0.9.220: with lithic_aware = TRUE (the WRB argic), a layer is not compared
   # with a coarser layer of another material (WRB 2022 Ch 3.1.3, criterion
@@ -149,6 +163,12 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
   candidates <- integer(0)
   details    <- list()
   missing    <- character(0)
+  if (is.null(exclude)) exclude <- rep(FALSE, nrow(h))
+  # v0.9.310: criterion 2.a.iii. A layer whose designation has the suffix t is
+  # part of the argic horizon, not a transitional horizon (Hugo's reading).
+  t_desg <- grepl("^[0-9]*[A-Z]+[a-z]*t",
+                  as.character(h$designation %||% rep(NA_character_, nrow(h))))
+  thick  <- pmax(h$bottom_cm - h$top_cm, 0)
 
   # v0.9.23: KST 13ed Ch 3 (argillic horizon, p 4) and WRB 2022
   # Ch 3.1.3 (argic horizon, p 36) define the clay-increase test
@@ -170,10 +190,19 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
       missing <- c(missing, "clay_pct")
       next
     }
+    if (isTRUE(exclude[i])) next
     above_idx_set <- seq.int(1L, i - 1L)
     if (!is.na(mat[i]))
       above_idx_set <- above_idx_set[is.na(mat[above_idx_set]) |
                                        mat[above_idx_set] == mat[i]]
+    if (!is.null(max_transition_cm) && length(above_idx_set)) {
+      in_argic <- union(candidates, which(t_desg))
+      gap <- vapply(above_idx_set, function(j) {
+        btw <- setdiff(seq_len(i - 1L)[seq_len(i - 1L) > j], in_argic)
+        sum(thick[btw], na.rm = TRUE)
+      }, numeric(1))
+      above_idx_set <- above_idx_set[gap <= max_transition_cm]
+    }
     if (!length(above_idx_set)) next
     above_clays   <- h$clay_pct[above_idx_set]
     has_clay      <- !is.na(above_clays)

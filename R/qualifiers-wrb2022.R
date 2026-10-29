@@ -325,52 +325,45 @@ qual_vitric      <- function(pedon) .q_presence("Vitric",      vitric_properties
 
 # ---------- CHEMISTRY-BASED PRINCIPAL QUALIFIERS ----------------------------
 
-#' Acric qualifier (ac): argic horizon + low CEC + high Al.
-#' v0.9: argic + CEC < 24 cmolc/kg clay + exch Al > Ca+Mg+K+Na.
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @noRd
-qual_acric <- function(pedon) {
-  arg <- argic(pedon)
-  if (!isTRUE(arg$passed))
-    return(DiagnosticResult$new(name = "Acric", passed = FALSE,
-            layers = integer(0), evidence = list(argic = arg),
-            missing = arg$missing, reference = "WRB (2022) Ch 5"))
-  ac <- acrisol(pedon)
-  passed <- isTRUE(ac$passed)
-  DiagnosticResult$new(name = "Acric", passed = passed,
-    layers = ac$layers, evidence = list(acrisol = ac),
-    missing = ac$missing, reference = "WRB (2022) Ch 5, Acric")
+# v0.9.310: the Acric, Alic, Lixic and Luvic qualifiers as WRB 2022 Ch 5
+# defines them (p. 127-128 and 139-140): an argic horizon starting <= 100 cm
+# from the mineral soil surface; a CEC of < 24 cmolc/kg clay in some
+# subhorizon within 150 cm (Acric, Lixic) or of >= 24 throughout within 150 cm
+# (Alic, Luvic); and exchangeable Al > exchangeable (Ca+Mg+K+Na) (Acric,
+# Alic) or Al <= the bases (Lixic, Luvic) in half or more of 50-100 cm or of
+# the lower half of the mineral soil above a limiting layer starting <= 100 cm.
+# Until v0.9.309 they called the RSG gates, which used the WRB 2014 tests.
+.qual_argic_family <- function(pedon, name, cec, al) {
+  r <- .argic_derived_gate(pedon, tolower(name), cec = cec, al = al,
+                           ref = paste0("WRB (2022) Ch 5, ", name))
+  DiagnosticResult$new(name = name, passed = r$passed, layers = r$layers,
+                       evidence = r$evidence, missing = r$missing,
+                       reference = r$reference, notes = r$notes)
 }
 
-#' Alic qualifier (al): argic + high CEC + high Al saturation.
+#' Acric qualifier (ac): argic <= 100 cm, CEC < 24 in some subhorizon within
+#' 150 cm, exchangeable Al > bases (WRB 2022 Ch 5, p. 127).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_alic <- function(pedon) {
-  al <- alisol(pedon)
-  DiagnosticResult$new(name = "Alic", passed = al$passed,
-    layers = al$layers, evidence = list(alisol = al),
-    missing = al$missing, reference = "WRB (2022) Ch 5, Alic")
-}
+qual_acric <- function(pedon) .qual_argic_family(pedon, "Acric", cec = "low", al = "gt")
 
-#' Lixic qualifier (lx): argic + low CEC, low Al.
+#' Alic qualifier (al): argic <= 100 cm, CEC >= 24 throughout within 150 cm,
+#' exchangeable Al > bases (WRB 2022 Ch 5, p. 128).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_lixic <- function(pedon) {
-  lx <- lixisol(pedon)
-  DiagnosticResult$new(name = "Lixic", passed = lx$passed,
-    layers = lx$layers, evidence = list(lixisol = lx),
-    missing = lx$missing, reference = "WRB (2022) Ch 5, Lixic")
-}
+qual_alic <- function(pedon) .qual_argic_family(pedon, "Alic", cec = "high", al = "gt")
 
-#' Luvic qualifier (lv): argic + high CEC, low Al saturation.
+#' Lixic qualifier (lx): argic <= 100 cm, CEC < 24 in some subhorizon within
+#' 150 cm, exchangeable Al <= bases (WRB 2022 Ch 5, p. 139).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_luvic <- function(pedon) {
-  lv <- luvisol(pedon)
-  DiagnosticResult$new(name = "Luvic", passed = lv$passed,
-    layers = lv$layers, evidence = list(luvisol = lv),
-    missing = lv$missing, reference = "WRB (2022) Ch 5, Luvic")
-}
+qual_lixic <- function(pedon) .qual_argic_family(pedon, "Lixic", cec = "low", al = "le")
+
+#' Luvic qualifier (lv): argic <= 100 cm, CEC >= 24 throughout within 150 cm,
+#' exchangeable Al <= bases (WRB 2022 Ch 5, p. 140).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", al = "le")
 
 #' WRB 2022 exchangeable-acidity status over a depth window.
 #'

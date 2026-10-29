@@ -95,7 +95,7 @@ horizon_column_spec <- function() {
     cementation_class             = "character", # 'none' / 'weakly' / 'moderately' / 'strongly' / 'indurated' (for petric variants)
     p_mehlich3_mg_kg              = "numeric",   # plant-available P (anthric / hortic / pretic / ornithogenic)
     worm_holes_pct                = "numeric",   # volume % of worm holes / casts / coprolites (chernic / vermic / arenicolic)
-    water_dispersible_clay_pct    = "numeric",   # WDC / total clay (Ferralsols 'activic' check)
+    water_dispersible_clay_pct    = "numeric",   # water-dispersible clay, % of the fine earth (a clay content, WRB 2022 Annex 2 Ch 9.4; not a share of the total clay); Ferralsols argic exception
     sulfidic_s_pct                = "numeric",   # inorganic sulfidic S (hypersulfidic / hyposulfidic / thionic)
     volcanic_glass_pct            = "numeric",   # % volcanic glass in 0.02-2 mm fraction (vitric / tephric)
     phosphate_retention_pct       = "numeric",   # P retention (vitric / andic threshold)

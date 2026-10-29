@@ -579,7 +579,7 @@ horizonte_A_moderado <- function(pedon) {
 B_textural <- function(pedon, ...) {
   d <- pedon$horizons$designation
   if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
-    res <- argic(pedon, lithic_discontinuity = FALSE, ...)
+    res <- .argic_impl(pedon, lithic_discontinuity = FALSE, ...)
     res$name      <- "B_textural"
     res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
     res$notes     <- paste0("no horizon designation: tested by the clay ",

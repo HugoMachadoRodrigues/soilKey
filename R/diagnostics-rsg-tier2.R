@@ -613,7 +613,15 @@ stagnosol <- function(pedon) {
 #' }
 #' v0.3.4 enforces all three exception paths. The DeltapH check uses
 #' \code{ph_kcl} and \code{ph_h2o}; the WDC check uses
-#' \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema).
+#' \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema), a clay
+#' content in \% of the fine earth.
+#'
+#' v0.9.310: the ferralic horizon must start <= 150 cm from the mineral soil
+#' surface; an argic horizon counts when it starts above or at the upper limit
+#' of the ferralic horizon (not only when it lies wholly above it); and an
+#' exception must hold throughout the upper 30 cm of the argic horizon (or all
+#' of it when it is thinner). Data that do not decide an exception leave the
+#' gate undecided (NA).
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' When an argic horizon sits above the ferralic, the default gate
@@ -643,6 +651,21 @@ ferralsol <- function(pedon, strict = NULL) {
       notes = "Failed/NA because ferralic horizon test did not pass"
     ))
   }
+  h <- pedon$horizons
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+  # v0.9.310: criterion 1, "a ferralic horizon starting <= 150 cm from the
+  # mineral soil surface" (p. 110), was not tested.
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  ferralic_top <- min(h$top_cm[fr$layers], na.rm = TRUE)
+  if (ferralic_top - ms > 150) {
+    return(DiagnosticResult$new(
+      name = "ferralsol", passed = FALSE, layers = integer(0),
+      evidence = list(ferralic = fr, ferralic_top_cm = ferralic_top,
+                      mineral_surface_cm = ms, strict_mode = strict),
+      missing = character(0), reference = ref,
+      notes = "The ferralic horizon starts > 150 cm from the mineral soil surface"))
+  }
   ar <- argic(pedon)
   if (!isTRUE(ar$passed)) {
     # No argic at all -- pass.
@@ -651,15 +674,16 @@ ferralsol <- function(pedon, strict = NULL) {
       layers = fr$layers,
       evidence = list(ferralic = fr, argic = ar, strict_mode = strict),
       missing = fr$missing,
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+      reference = ref
     ))
   }
-  # Argic present -- check its position vs ferralic.
-  h <- pedon$horizons
-  ferralic_top <- min(h$top_cm[fr$layers], na.rm = TRUE)
-  argic_above <- ar$layers[h$bottom_cm[ar$layers] <= ferralic_top]
-  if (length(argic_above) == 0L) {
-    # Argic only below or at-and-below ferralic -- still ferralsol.
+  # v0.9.310: criterion 2, "no argic horizon starting above or at the upper
+  # limit of the ferralic horizon" (p. 110). Until v0.9.309 only argic layers
+  # lying wholly above the ferralic horizon were read, so an argic horizon
+  # starting above it and reaching into it did not count.
+  argic_top <- min(h$top_cm[ar$layers], na.rm = TRUE)
+  if (argic_top > ferralic_top) {
+    # The argic horizon starts below the upper limit of the ferralic.
     return(DiagnosticResult$new(
       name = "ferralsol", passed = TRUE,
       layers = fr$layers,
@@ -667,44 +691,56 @@ ferralsol <- function(pedon, strict = NULL) {
                        argic_above_ferralic = "none",
                        strict_mode = strict),
       missing = fr$missing,
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+      reference = ref
     ))
   }
-  # Argic above ferralic -- evaluate the three exception paths in the
-  # upper 30 cm of the argic.
-  arg_layers <- argic_above
-  upper_30 <- arg_layers[h$top_cm[arg_layers] <
-                            min(h$top_cm[arg_layers], na.rm = TRUE) + 30]
+  # "... unless the argic horizon has, in its upper 30 cm or throughout,
+  # whichever is shallower, one or more of the following" (p. 110). Each
+  # exception must hold throughout that depth (Hugo's reading): in every layer
+  # of the argic horizon (its adjoining layers from its upper limit) that
+  # starts less than 30 cm below its upper limit.
+  run <- .nitic_runs(h, ar$layers)[[1]]$layers
+  upper_30 <- run[h$top_cm[run] < argic_top + 30]
+  throughout <- function(v) if (any(v %in% FALSE)) FALSE
+                            else if (length(v) && all(v %in% TRUE)) TRUE else NA
   paths <- list()
-  # Path 1: WDC < 10% in some upper layer.
+  # a. < 10% water-dispersible clay (a clay content, % of the fine earth;
+  #    WRB 2022 Annex 2, Ch 9.4).
   wdc_vals <- h$water_dispersible_clay_pct[upper_30]
-  paths$wdc_below_10 <- any(!is.na(wdc_vals) & wdc_vals < 10)
-  # Path 2: DeltapH = pH_KCl - pH_water >= 0.
+  paths$wdc_below_10 <- throughout(ifelse(is.na(wdc_vals), NA, wdc_vals < 10))
+  # b. Delta pH (pH KCl - pH water) >= 0.
   dpH <- h$ph_kcl[upper_30] - h$ph_h2o[upper_30]
-  paths$delta_pH_ge_0 <- any(!is.na(dpH) & dpH >= 0)
-  # Path 3: SOC >= 1.4%.
-  paths$oc_ge_1.4 <- any(!is.na(h$oc_pct[upper_30]) &
-                            h$oc_pct[upper_30] >= 1.4)
-  n_paths <- sum(unlist(paths))
+  paths$delta_pH_ge_0 <- throughout(ifelse(is.na(dpH), NA, dpH >= 0))
+  # c. >= 1.4% soil organic carbon.
+  oc <- h$oc_pct[upper_30]
+  paths$oc_ge_1.4 <- throughout(ifelse(is.na(oc), NA, oc >= 1.4))
+  ex <- unlist(paths)
+  n_paths <- sum(ex %in% TRUE)
   min_paths <- if (strict) 2L else 1L
-  exception_met <- n_paths >= min_paths
+  exception_met <- if (n_paths >= min_paths) TRUE
+                   else if (n_paths + sum(is.na(ex)) < min_paths) FALSE else NA
   passed <- exception_met
   DiagnosticResult$new(
     name = "ferralsol",
     passed = passed,
-    layers = fr$layers,
+    layers = if (isTRUE(passed)) fr$layers else integer(0),
     evidence = list(
       ferralic              = fr,
       argic                 = ar,
-      argic_above_ferralic  = arg_layers,
+      argic_upper_30_cm     = upper_30,
       exception_paths       = paths,
       exception_paths_met   = n_paths,
       exception_paths_required = min_paths,
       strict_mode           = strict,
       exception_met         = exception_met
     ),
-    missing  = fr$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+    missing  = if (is.na(passed))
+                 unlist(list(wdc_below_10 = "water_dispersible_clay_pct",
+                             delta_pH_ge_0 = c("ph_kcl", "ph_h2o"),
+                             oc_ge_1.4 = "oc_pct")[names(ex)[is.na(ex)]],
+                        use.names = FALSE)
+               else fr$missing,
+    reference = ref
   )
 }
 

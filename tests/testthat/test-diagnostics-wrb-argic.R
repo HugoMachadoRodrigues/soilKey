@@ -101,7 +101,11 @@ test_that("test_minimum_thickness honours candidate_layers", {
 test_that("argic returns DiagnosticResult with named sub-tests", {
   pr <- make_luvisol_canonical()
   res <- argic(pr)
-  expect_named(res$evidence, c("clay_increase", "thickness", "texture"))
+  # v0.9.310: 2.b.ii (illuvial_clay), criterion 2 as a whole and criterion 1
+  # (clay_min) in the WRB reading
+  expect_named(res$evidence, c("clay_increase", "illuvial_clay", "criterion_2",
+                               "clay_min", "thickness", "texture"))
+  expect_named(.argic_impl(pr)$evidence, c("clay_increase", "thickness", "texture"))
 })
 
 test_that("argic reference includes WRB 2022 chapter citation", {

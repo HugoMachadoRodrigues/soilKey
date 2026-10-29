@@ -410,7 +410,7 @@ spodic_andisol_usda <- function(pedon) {
   al <- albic_horizon_usda(pedon)
   passed <- isTRUE(sp$passed) ||
               (isTRUE(al$passed) &&
-                 isTRUE(cambic(pedon)$passed))
+                 isTRUE(.cambic_impl(pedon)$passed))   # v0.9.310: USDA reading
   DiagnosticResult$new(
     name = "spodic_andisol_usda", passed = passed,
     layers = c(sp$layers, al$layers),

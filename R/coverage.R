@@ -111,6 +111,11 @@
   if (grepl("\\.wrb_rsg_horizon_depth_qualifier\\s*\\(\\s*pedon", b) &&
         .body_is_real(".wrb_rsg_horizon_depth_qualifier"))
     return(TRUE)
+  # Acric, Alic, Lixic and Luvic (v0.9.310) delegate to the helper that runs
+  # the argic-family tests and assigns `passed` from them.
+  if (grepl("\\.qual_argic_family\\s*\\(\\s*pedon", b) &&
+        .body_is_real(".qual_argic_family"))
+    return(TRUE)
   FALSE
 }
 
@@ -178,9 +183,16 @@
 #' @noRd
 .diagnostic_body_is_real <- function(fn) {
   b <- paste(deparse(body(fn)), collapse = " ")
-  grepl("aggregate_subtests|aggregate_alternatives|\\.subtest_result|test_[a-z]|\\.q_presence",
-        b) ||
-    grepl("passed\\s*(<-|=)\\s*(?!NA[,)[:space:]])", b, perl = TRUE)
+  if (grepl("aggregate_subtests|aggregate_alternatives|\\.subtest_result|test_[a-z]|\\.q_presence",
+            b) ||
+      grepl("passed\\s*(<-|=)\\s*(?!NA[,)[:space:]])", b, perl = TRUE))
+    return(TRUE)
+  # v0.9.310: argic(), ferralic(), cambic() and natric_horizon() delegate to
+  # their .<name>_impl() helpers, which the USDA and SiBCS keys also call.
+  m <- regmatches(b, regexpr("\\.[a-z_]+_impl(?=\\s*\\(\\s*pedon)", b, perl = TRUE))
+  ns <- asNamespace("soilKey")
+  length(m) == 1L && exists(m, envir = ns, mode = "function", inherits = FALSE) &&
+    .diagnostic_body_is_real(get(m, envir = ns))
 }
 
 #' WRB 2022 diagnostic coverage (canonical vs genuinely-implemented functions).

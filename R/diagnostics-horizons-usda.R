@@ -45,7 +45,8 @@
 oxic_usda <- function(pedon, ...) {
   args <- list(...)
   if (is.null(args$cec_inclusive)) args$cec_inclusive <- TRUE
-  res <- do.call(ferralic, c(list(pedon), args))
+  # v0.9.310: the reading before the WRB ferralic took its sub-horizons together
+  res <- do.call(.ferralic_impl, c(list(pedon), args))
   res$name      <- "oxic_usda"
   res$reference <- paste0("Soil Survey Staff (2014), Keys to Soil Taxonomy, ",
                             "Ch. 3, oxic horizon -- delegating to WRB ",
@@ -92,7 +93,7 @@ argillic_usda <- function(pedon, ...) {
 
   has_clay_films_evidence <- argillic_clay_films_test(pedon)$passed
   used_system <- if (isTRUE(has_clay_films_evidence)) "usda" else "wrb2022"
-  res <- argic(pedon, system = used_system, ...)
+  res <- .argic_impl(pedon, system = used_system, ...)   # v0.9.310: without the WRB 2022 readings
 
   # v0.9.10: fluvic-pattern exclusion (depositional, not pedogenic).
   if (isTRUE(res$passed)) {

@@ -31,7 +31,8 @@ source: |
 #     fallback (^Cf, -f suffix, perma-).
 #   - Leptosols: leptic_features now offers (a) R / Cr designation
 #     within 25 cm AND (b) coarse_fragments_pct >= 90 within 25 cm.
-#   - Solonetz: natric_horizon = argic + ESP >= 15.
+#   - Solonetz: natric_horizon = argic + ESP >= 15 (v0.9.310: the gate is
+#     solonetz(), a natric horizon of WRB 2022 Ch 3.1.21 starting <= 100 cm).
 #   - Andosols: andic_properties now offers (a) (Al_ox + 0.5*Fe_ox)
 #     >= 2 AND BD <= 0.9 on the same layer, (b) phosphate retention
 #     >= 70%, OR (c) volcanic glass >= 30% in 0.02-2 mm sand fraction.
@@ -90,7 +91,7 @@ rsgs:
     name: Solonetz
     tests:
       all_of:
-        - natric_horizon: {}
+        - solonetz: {}                  # v0.9.310: Ch 4 p 100, natric horizon starting <= 100 cm
 
   - code: VR
     name: Vertisols

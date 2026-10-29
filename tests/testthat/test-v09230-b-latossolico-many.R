@@ -39,7 +39,9 @@ test_that("'many' is a strong amount of clay films, as 'common' and 'abundant' a
 test_that("clay films 'many' in the B textural exclude the B latossolico", {
   skip_on_cran()
   few <- .films_profile("few")
-  expect_true(isTRUE(argic(few, lithic_discontinuity = FALSE)$passed))
+  # the clay increase as the SiBCS B textural reads it (v0.9.310: the WRB argic
+  # asks for a transition of <= 15 cm, criterion 2.a.iii, and the AB is 20 cm)
+  expect_true(isTRUE(.argic_impl(few, lithic_discontinuity = FALSE)$passed))
   expect_false(isTRUE(argic_with_strong_clay_films(few)$passed))
   expect_true(isTRUE(B_latossolico(few)$passed))
   expect_equal(classify_sibcs(few, on_missing = "silent")$rsg_or_order, "Latossolos")

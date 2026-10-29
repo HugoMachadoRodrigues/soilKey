@@ -26,7 +26,7 @@
 # Bt or Bk and returns mean bs_pct (NA-safe).
 .argillic_bs_mean <- function(pedon) {
   h <- pedon$horizons
-  arg <- argic(pedon, lithic_discontinuity = FALSE)
+  arg <- .argic_impl(pedon, lithic_discontinuity = FALSE)
   layers <- arg$layers %||% integer(0)
   if (length(layers) == 0L) return(NA_real_)
   vals <- h$bs_pct[layers]
@@ -52,7 +52,7 @@
 # measurement is missing.
 .bs_low_inferred <- function(pedon, bs_threshold = 35) {
   h <- pedon$horizons
-  arg <- argic(pedon, lithic_discontinuity = FALSE)
+  arg <- .argic_impl(pedon, lithic_discontinuity = FALSE)
   layers <- arg$layers %||% integer(0)
   if (length(layers) == 0L)
     return(list(bs_low = FALSE, source = "no_argic"))
@@ -325,7 +325,7 @@ aridisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 ultisol_usda <- function(pedon) {
-  ar <- argic(pedon, lithic_discontinuity = FALSE)
+  ar <- .argic_impl(pedon, lithic_discontinuity = FALSE)
   # v0.9.21: NASIS tie-breaker for argic when canonical gate is NA.
   ar <- .apply_nasis_tiebreaker(ar, pedon,
                                  pattern       = "^Argillic horizon$|^Kandic horizon$",
@@ -442,7 +442,7 @@ alfisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 inceptisol_usda <- function(pedon) {
-  cb <- cambic(pedon)
+  cb <- .cambic_impl(pedon)   # v0.9.310: argic and ferralic read as before (USDA)
   # v0.9.21: NASIS tie-breaker -- cambic horizon surveyor
   # identification flips an NA cambic to TRUE.
   cb <- .apply_nasis_tiebreaker(cb, pedon,
