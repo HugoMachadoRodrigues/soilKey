@@ -1,0 +1,29 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: hscs2024
+order: 7
+aliases: [hscs, hungary]
+legacy: false
+default: false
+status: experimental
+namespace: hscs
+classifier: classify_hscs2024
+result_slot: hscs2024
+top_level: types
+levels: [types]
+display:
+  en: "Hungarian diagnostic soil classification (2024, second approximation)"
+  pt: "Classificação húngara de solos, diagnóstica (2024, segunda aproximação)"
+  native: "A diagnosztikus szemléletű hazai talajosztályozási rendszer (második közelítés)"
+  result: "HSCS 2024"
+edition: "Second approximation (Útmutató, 2024)"
+citation: >
+  Michéli E., Fuchs M., Láng V., Csorba Á., Dobos E., Szegi T., Kele G.
+  (2024). A diagnosztikus szemléletű hazai talajosztályozási rendszer.
+  Útmutató. Második közelítés. Magyar Agrár- és Élettudományi Egyetem,
+  Gödöllő.
+version: "Second approximation, Gödöllő 2024 (talaj.hu)"
+implementation_status: "soilKey v0.9.305 -- the 15 types of the key (section 7); the subtype and variety properties are not keyed yet"
+source: |
+  Michéli et al. (2024). A diagnosztikus szemléletű hazai talajosztályozási
+  rendszer. Útmutató, második közelítés. Section 7 (key to the types) and
+  section 8 (diagnostic horizons, properties and materials).

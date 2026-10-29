@@ -714,3 +714,10 @@ attributes:
     systems: [nzsc4]
     min: 0
     max: 100
+  - name: soluble_salts_pct
+    section: "Hungarian system (HSCS 2024)"
+    unit: "%"
+    description: "Total water-soluble salts, % by mass of the soil, as Hungarian laboratories report them (estimated from the electrical conductivity of the saturated paste, MSZ-08-0206-2:1978). HSCS 2024 solonchak horizon (0.15 % or more). Not converted from ec_dS_m: the text itself finds that conversion unreliable."
+    systems: [hscs2024]
+    min: 0
+    max: 100

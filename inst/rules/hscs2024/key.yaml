@@ -1,0 +1,145 @@
+# The key to the soil types of the Hungarian diagnostic classification
+# (Michéli et al. 2024, second approximation, section 7), in its own order.
+# Each type after the first is "other soils that ...", so a gate tests only
+# its own requirements: the key's order supplies the exclusions. The names
+# are the Hungarian singular, as the text's naming example writes them
+# ("... Agyagbemosódásos talaj"); name_plural is the heading of the key and
+# name_en an English gloss. The codes are soilKey's own (the text has none).
+# Criteria are summarised from the text; see R/diagnostics-hscs-types.R and
+# readings.yaml for the choices where the text is silent.
+
+types:
+
+  - code: "LAP"
+    name: Láptalaj
+    name_plural: Láptalajok
+    name_en: Peat soil
+    tests:
+      all_of:
+        - peat_type_hscs: {}
+    notes: "An organic horizon 40 cm or more thick, its top at the surface or within 40 cm, with a bulk density of 1 g/cm3 or less."
+
+  - code: "ANT"
+    name: Antropogén talaj
+    name_plural: Antropogén talajok
+    name_en: Anthropogenic soil
+    tests:
+      all_of:
+        - anthropogenic_type_hscs: {}
+    notes: "Ploughing or turning to 50 cm or more; or within 100 cm 20 % or more artefacts by volume (weighted average), a continuous artificial material that water does not pass, or 50 cm or more of anthropogenic horizon."
+
+  - code: "KOV"
+    name: Köves-sziklás váztalaj
+    name_plural: Köves-sziklás váztalajok
+    name_en: Rocky skeletal soil
+    tests:
+      all_of:
+        - rocky_skeletal_type_hscs: {}
+    notes: "A continuous soil cover not deeper than 10 cm over continuous hard rock (rock outcrops may break it)."
+
+  - code: "KOZ"
+    name: Kőzethatású talaj
+    name_plural: Kőzethatású talajok
+    name_en: Rock-influenced soil
+    tests:
+      all_of:
+        - rock_influenced_type_hscs: {}
+    notes: "Continuous hard rock within 25 cm; or, to 75 cm or to shallower hard rock, debris with less than 20 % fine earth by volume."
+
+  - code: "SZN"
+    name: Szolonyec talaj
+    name_plural: Szolonyec talajok
+    name_en: Solonetz soil
+    tests:
+      all_of:
+        - solonetz_type_hscs: {}
+    notes: "A solonetz horizon within 100 cm."
+
+  - code: "SZK"
+    name: Szoloncsák talaj
+    name_plural: Szoloncsák talajok
+    name_en: Solonchak soil
+    tests:
+      all_of:
+        - solonchak_type_hscs: {}
+    notes: "A solonchak horizon within 50 cm."
+
+  - code: "DUZ"
+    name: Duzzadó agyagtalaj
+    name_plural: Duzzadó agyagtalajok
+    name_en: Swelling clay soil
+    tests:
+      all_of:
+        - swelling_clay_type_hscs: {}
+    notes: "A swelling horizon within 100 cm, 30 % clay or more from the surface down to it, and cracks that open and close."
+
+  - code: "RET"
+    name: Réti talaj
+    name_plural: Réti talajok
+    name_en: Meadow soil
+    tests:
+      all_of:
+        - meadow_type_hscs: {}
+    notes: "Reductive conditions within 50 cm for part of the year, and a groundwater gley colour pattern in at least half of the matrix between 50 and 100 cm."
+
+  - code: "KAR"
+    name: Karbonát talaj
+    name_plural: Karbonát talajok
+    name_en: Carbonate soil
+    tests:
+      all_of:
+        - carbonate_type_hscs: {}
+    notes: "Within 50 cm, a horizon 15 cm or more thick with 25 % or more carbonate as CaCO3."
+
+  - code: "MEZ"
+    name: Mezőségi talaj
+    name_plural: Mezőségi talajok
+    name_en: Steppe soil (chernozem-like)
+    tests:
+      all_of:
+        - steppe_type_hscs: {}
+    notes: "A humic horizon with 1 % organic carbon or more, sandy loam or finer, at most 20 % coarse fragments; a layer 15 cm or more thick with secondary carbonates, at least weakly calcareous, within 100 cm; no clay accumulation horizon and no continuous hard rock within 100 cm; base saturation 50 % or more from the surface."
+
+  - code: "AGY"
+    name: Agyagbemosódásos talaj
+    name_plural: Agyagbemosódásos talajok
+    name_en: Clay-illuvial soil
+    tests:
+      all_of:
+        - clay_illuvial_type_hscs: {}
+    notes: "A clay accumulation horizon with its top within 100 cm."
+
+  - code: "HOM"
+    name: Homoktalaj
+    name_plural: Homoktalajok
+    name_en: Sandy soil
+    tests:
+      all_of:
+        - sandy_type_hscs: {}
+    notes: "Coarse sand, sand or loamy sand to 100 cm or to shallower hard rock or a cemented layer; finer layers 15 cm thick or less in all."
+
+  - code: "BAR"
+    name: Barnaföld
+    name_plural: Barnaföldek
+    name_en: Brown earth
+    tests:
+      all_of:
+        - brown_earth_type_hscs: {}
+    notes: "A cambic horizon within 100 cm."
+
+  - code: "HOR"
+    name: Hordaléktalaj
+    name_plural: Hordaléktalajok
+    name_en: Alluvial and colluvial soil
+    tests:
+      all_of:
+        - deposit_type_hscs: {}
+    notes: "Stratified material within 50 cm (or to shallower rock); or, within 100 cm, a layer with 0.2 % more organic carbon than the layer over it."
+
+  - code: "FOL"
+    name: Földeskopár
+    name_plural: Földeskopárok
+    name_en: Weakly developed soil
+    tests:
+      default: true
+    notes: "Other soils."
