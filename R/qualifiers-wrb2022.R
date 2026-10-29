@@ -603,37 +603,58 @@ qual_magnesic <- function(pedon) {
     reference = "WRB (2022) Ch 5, Magnesic")
 }
 
-#' Sodic qualifier (so): ESP >= 6\% (incl. SAR-derived).
+#' Sodic qualifier (so): a layer >= 20 cm thick, starting <= 100 cm, with
+#' >= 15\% Na plus Mg and >= 6\% Na on the exchange complex; no natric horizon.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 147), "having a layer, >= 20 cm thick and
+#' starting <= 100 cm from the mineral soil surface, that has >= 15% Na plus
+#' Mg and >= 6% Na on the exchange complex; and not having a natric horizon
+#' starting <= 100 cm from the soil surface". Before v0.9.316 any single
+#' horizon was enough (the 12 cm Ah1 of ISRIC's ID046) and a natric horizon
+#' did not rule it out. The layer is made of adjoining horizons that each meet
+#' the percentages (Ch 2.1, rule 7). Na is the share of the CEC
+#' (na_cmol / cec_cmol), else esp_pct; Na plus Mg adds mg_cmol / cec_cmol.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_sodic <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
-  if (length(layers) == 0L)
+  n <- nrow(h)
+  ref <- "WRB (2022) Ch 5, Sodic (p. 147)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
     return(DiagnosticResult$new(name = "Sodic", passed = NA,
             layers = integer(0), evidence = list(),
-            missing = "top_cm",
-            reference = "WRB (2022) Ch 5, Sodic"))
-  # WRB 2022 Ch 5 Sodic: >= 15% (Na+Mg) AND >= 6% Na on the exchange complex
-  # (the v0.9 code checked only the >= 6% Na clause).
-  na_pct <- vapply(layers, function(i) {
-    if (is.na(h$na_cmol[i]) || is.na(h$cec_cmol[i]) || h$cec_cmol[i] <= 0)
-      NA_real_
-    else h$na_cmol[i] / h$cec_cmol[i] * 100
-  }, numeric(1))
-  namg_pct <- vapply(layers, function(i) {
-    if (is.na(h$na_cmol[i]) || is.na(h$mg_cmol[i]) ||
-          is.na(h$cec_cmol[i]) || h$cec_cmol[i] <= 0) NA_real_
-    else (h$na_cmol[i] + h$mg_cmol[i]) / h$cec_cmol[i] * 100
-  }, numeric(1))
-  ok <- !is.na(na_pct) & na_pct >= 6 & !is.na(namg_pct) & namg_pct >= 15
-  passed <- any(ok)
+            missing = "top_cm", reference = ref))
+  cec <- h$cec_cmol; na <- h$na_cmol; mg <- h$mg_cmol
+  esp <- h$esp_pct %||% rep(NA_real_, n)
+  has_cec <- !is.na(cec) & cec > 0
+  na_pct <- ifelse(has_cec & !is.na(na), na / cec * 100, esp)
+  mg_pct <- ifelse(has_cec & !is.na(mg), mg / cec * 100, NA_real_)
+  # Na plus Mg: decided when both are known, or when Na alone reaches 15%
+  namg_ok <- ifelse(!is.na(na_pct) & !is.na(mg_pct), na_pct + mg_pct >= 15,
+                    ifelse(!is.na(na_pct) & na_pct >= 15, TRUE, NA))
+  na_ok <- ifelse(is.na(na_pct), NA, na_pct >= 6)
+  ok <- ifelse(na_ok %in% FALSE | namg_ok %in% FALSE, FALSE,
+               ifelse(na_ok %in% TRUE & namg_ok %in% TRUE, TRUE, NA))
+  run <- .q_run_tristate(h, ok, 20, from = ms, max_start = ms + 100)
+  nat <- tryCatch(natric_horizon(pedon), error = function(e) NULL)
+  surface <- suppressWarnings(min(h$top_cm, na.rm = TRUE))
+  nat_top <- if (!is.null(nat) && isTRUE(nat$passed) && length(nat$layers))
+               suppressWarnings(min(h$top_cm[nat$layers], na.rm = TRUE)) else Inf
+  nat_state <- if (is.finite(nat_top) && nat_top - surface <= 100) TRUE
+               else if (!is.null(nat) && isTRUE(nat$passed)) FALSE
+               else if (is.null(nat) || is.na(nat$passed)) NA else FALSE
+  passed <- if (isFALSE(run$passed) || isTRUE(nat_state)) FALSE
+            else if (isTRUE(run$passed) && isFALSE(nat_state)) TRUE else NA
   DiagnosticResult$new(name = "Sodic", passed = passed,
-    layers = layers[which(ok)],
-    evidence = list(esp = na_pct, na_mg_pct = namg_pct),
-    missing = if (any(is.na(na_pct)) || any(is.na(namg_pct)))
-                c("na_cmol", "mg_cmol", "cec_cmol") else character(0),
-    reference = "WRB (2022) Ch 5, Sodic")
+    layers = if (isTRUE(passed)) run$layers else integer(0),
+    evidence = list(na_pct = na_pct, mg_pct = mg_pct, layer_status = ok,
+                    sodic_layer_cm = run$thickness, natric = nat),
+    missing = if (is.na(passed))
+                c(if (is.na(run$passed)) c("na_cmol", "mg_cmol", "cec_cmol"),
+                  if (is.na(nat_state)) nat$missing %||% "natric_horizon")
+              else character(0),
+    reference = ref)
 }
 
 
@@ -799,58 +820,78 @@ qual_clayic <- function(pedon) {
     missing = character(0), reference = "WRB (2022) Ch 5, Clayic")
 }
 
-#' Loamic qualifier (lo): loam-class texture >= 30 cm in the upper 100 cm.
+#' Loamic qualifier (lo): loam, sandy loam, clay loam, sandy clay loam or
+#' silty clay loam, >= 30 cm combined within 100 cm.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 140) names the texture classes of the triangle
+#' (Annex 1, Table 8.39, p. 182), "single or in combination ... in one or more
+#' layers with a combined thickness of >= 30 cm, occurring within 100 cm of the
+#' mineral soil surface, or in the major part between the mineral soil surface
+#' and a limiting layer starting > 10 and < 60 cm". Before v0.9.316 it was clay
+#' 8 to < 40% with >= 15% silt, which took silt loam (ISRIC's CN012) and sandy
+#' clay for Loamic and left out sandy loam with < 8% clay; the depth was
+#' counted from 0 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_loamic <- function(pedon) {
-  h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100 &
-                    !is.na(h$clay_pct) & !is.na(h$silt_pct) & !is.na(h$sand_pct) &
-                    h$clay_pct >= 8 & h$clay_pct < 40 &
-                    h$silt_pct >= 15)
-  thickness <- if (length(layers) > 0L)
-    sum(h$bottom_cm[layers] - h$top_cm[layers], na.rm = TRUE) else 0
-  passed <- thickness >= 30
-  DiagnosticResult$new(name = "Loamic", passed = passed,
-    layers = layers, evidence = list(thickness_cm = thickness),
-    missing = character(0), reference = "WRB (2022) Ch 5, Loamic")
-}
+qual_loamic <- function(pedon)
+  .q_texture_qualifier(pedon, "Loamic", c("L", "SL", "CL", "SCL", "SICL"), 140)
 
-#' Siltic qualifier (sl): silt or silt-loam texture >= 30 cm in the upper
-#' 100 cm.
+#' Siltic qualifier (sl): silt or silt loam, >= 30 cm combined within 100 cm.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 146), the texture classes silt and silt loam of
+#' the triangle (Annex 1, Table 8.39, p. 182), with the thickness and depth
+#' rules of Loamic. Before v0.9.316 it was clay < 35% with >= 50% silt, which
+#' took silty clay loam (clay 27 to < 35%) for Siltic.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_siltic <- function(pedon) {
-  h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100 &
-                    !is.na(h$clay_pct) & !is.na(h$silt_pct) & !is.na(h$sand_pct) &
-                    h$clay_pct < 35 & h$silt_pct >= 50)
-  thickness <- if (length(layers) > 0L)
-    sum(h$bottom_cm[layers] - h$top_cm[layers], na.rm = TRUE) else 0
-  passed <- thickness >= 30
-  DiagnosticResult$new(name = "Siltic", passed = passed,
-    layers = layers, evidence = list(thickness_cm = thickness),
-    missing = character(0), reference = "WRB (2022) Ch 5, Siltic")
-}
+qual_siltic <- function(pedon)
+  .q_texture_qualifier(pedon, "Siltic", c("SI", "SIL"), 146)
 
 #' Skeletic qualifier (sk): coarse fragments >= 40\% averaged over 100 cm.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 146), "having >= 40% (by volume, related to the
+#' whole soil) coarse fragments averaged over a depth of 100 cm from the
+#' mineral soil surface or to a limiting layer, whichever is shallower". Before
+#' v0.9.316 one layer with >= 40% was enough (a 4 cm layer of ISRIC's CO013, a
+#' 2B of 85-105 cm in KE018). The average is weighted by thickness. A part of
+#' the depth with no coarse fragments recorded (or not described) may hold
+#' anything from 0 to 100%: TRUE when the recorded part already brings the
+#' average to 40%, FALSE when the average stays below 40% even at 100%,
+#' otherwise NA.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_skeletic <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
-  if (length(layers) == 0L)
+  ref <- "WRB (2022) Ch 5, Skeletic (p. 146)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
     return(DiagnosticResult$new(name = "Skeletic", passed = NA,
             layers = integer(0), evidence = list(),
-            missing = "coarse_fragments_pct",
-            reference = "WRB (2022) Ch 5, Skeletic"))
-  cf <- h$coarse_fragments_pct[layers]
-  passed <- any(!is.na(cf) & cf >= 40)
+            missing = "coarse_fragments_pct", reference = ref))
+  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  bot <- if (!is.na(lim) && lim < ms + 100) lim else ms + 100
+  if (bot <= ms)
+    return(DiagnosticResult$new(name = "Skeletic", passed = FALSE,
+            layers = integer(0),
+            evidence = list(reason = "limiting layer at the mineral soil surface",
+                            limiting_layer_cm = lim),
+            missing = character(0), reference = ref))
+  cf <- h$coarse_fragments_pct %||% rep(NA_real_, nrow(h))
+  ov <- pmax(0, pmin(h$bottom_cm, bot) - pmax(h$top_cm, ms))
+  ov[is.na(ov)] <- 0
+  # depths of the window covered by no described horizon count as unknown
+  depth <- bot - ms
+  known <- sum(ov[!is.na(cf)])
+  unknown <- max(0, depth - known)
+  lo <- sum((cf * ov)[!is.na(cf)]) / depth
+  hi <- lo + 100 * unknown / depth
+  passed <- if (lo >= 40) TRUE else if (hi < 40) FALSE else NA
   DiagnosticResult$new(name = "Skeletic", passed = passed,
-    layers = layers[which(!is.na(cf) & cf >= 40)],
-    evidence = list(coarse_fragments = cf),
-    missing = if (any(is.na(cf))) "coarse_fragments_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Skeletic")
+    layers = if (isTRUE(passed)) which(ov > 0 & !is.na(cf) & cf >= 40) else integer(0),
+    evidence = list(window_cm = c(ms, bot), mean_lower_bound_pct = lo,
+                    mean_upper_bound_pct = hi, limiting_layer_cm = lim),
+    missing = if (is.na(passed)) "coarse_fragments_pct" else character(0),
+    reference = ref)
 }
 
 

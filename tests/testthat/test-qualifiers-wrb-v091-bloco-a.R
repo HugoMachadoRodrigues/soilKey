@@ -93,7 +93,9 @@ test_that("qual_calcaric / qual_dolomitic / qual_gypsiric delegate cleanly", {
   hz <- data.table::data.table(
     top_cm = c(0, 30), bottom_cm = c(30, 100),
     designation = c("A", "Ck"),
-    caco3_pct  = c(0.5, 18),
+    # v0.9.316: below the 15% of a calcic horizon, which would rule out
+    # Calcaric (WRB 2022 Ch 5, p. 129)
+    caco3_pct  = c(0.5, 10),
     clay_pct   = c(20, 22), silt_pct = c(40, 38), sand_pct = c(40, 40)
   )
   pr <- PedonRecord$new(

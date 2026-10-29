@@ -23,10 +23,68 @@
 
 # ---------- MATERIAL-BASED PRINCIPAL QUALIFIERS -----------------------------
 
-#' Calcaric qualifier (cl): calcaric material >= 25 cm in upper 100 cm.
+#' Calcaric qualifier (ca): calcaric material in a layer >= 30 cm thick within
+#' 100 cm, or in the major part above a shallow limiting layer; no calcic or
+#' petrocalcic horizon.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 129), "having calcaric material in a layer,
+#' >= 30 cm thick and within 100 cm of the mineral soil surface, or in the
+#' major part between the mineral soil surface and a limiting layer starting
+#' < 60 cm from the mineral soil surface; and not having a calcic or a
+#' petrocalcic horizon starting <= 100 cm from the mineral soil surface".
+#' Before v0.9.316 any horizon with >= 2% CaCO3 starting <= 100 cm passed (the
+#' Bt2 of 88-107 cm of ISRIC's ZW005, of which 12 cm lie within 100 cm). The
+#' layer is made of adjoining horizons of calcaric material
+#' (.wrb_calcaric_status(): CaCO3, else the HCl reaction, Ch 3.3.3, p. 86);
+#' the 30 cm are counted within 100 cm of the mineral soil surface (deeper
+#' parts would make it Bathycalcaric, Ch 2.3.1, rule 6). An undecided calcic
+#' horizon leaves Calcaric undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_calcaric <- function(pedon) .q_presence("Calcaric", calcaric_material(pedon), 100, pedon)
+qual_calcaric <- function(pedon) {
+  h <- pedon$horizons
+  ref <- "WRB (2022) Ch 5, Calcaric (p. 129); calcaric material, Ch 3.3.3 (p. 86)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
+    return(DiagnosticResult$new(name = "Calcaric", passed = NA, layers = integer(0),
+                                evidence = list(), missing = "caco3_pct", reference = ref))
+  st <- .wrb_calcaric_status(h)
+  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  to <- if (!is.na(lim) && lim < ms + 100) max(lim, ms) else ms + 100
+  a <- if (to - ms >= 30) .q_run_tristate(h, st, 30, from = ms, to = to)
+       else list(passed = FALSE, layers = integer(0))
+  b <- if (is.na(lim) || lim - ms >= 60 || lim <= ms) FALSE else {
+    yes <- .q_layers_thickness(h, which(st %in% TRUE), ms, lim)
+    may <- .q_layers_thickness(h, which(!(st %in% FALSE)), ms, lim)
+    if (yes > (lim - ms) / 2) TRUE else if (may <= (lim - ms) / 2) FALSE else NA
+  }
+  x <- c(a$passed, b)
+  material <- if (any(x %in% TRUE)) TRUE else if (anyNA(x)) NA else FALSE
+  # not a calcic or petrocalcic horizon starting <= 100 cm
+  excl <- lapply(list(calcic = calcic, petrocalcic = petrocalcic),
+                 function(f) tryCatch(f(pedon), error = function(e) NULL))
+  ex_state <- vapply(excl, function(d) {
+    if (is.null(d) || is.na(d$passed)) return(NA)
+    if (!isTRUE(d$passed)) return(FALSE)
+    top <- suppressWarnings(min(h$top_cm[d$layers], na.rm = TRUE))
+    is.finite(top) && top - ms <= 100
+  }, logical(1))
+  excluded <- if (any(ex_state %in% TRUE)) TRUE else if (anyNA(ex_state)) NA else FALSE
+  passed <- if (isFALSE(material) || isTRUE(excluded)) FALSE
+            else if (isTRUE(material) && isFALSE(excluded)) TRUE else NA
+  win <- !is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > ms & h$top_cm < ms + 100
+  DiagnosticResult$new(
+    name = "Calcaric", passed = passed,
+    layers = if (isTRUE(passed)) which(st %in% TRUE & win) else integer(0),
+    evidence = list(calcaric_status = st, calcaric_layer_cm = a$thickness,
+                    limiting_layer_cm = lim, calcic = excl$calcic,
+                    petrocalcic = excl$petrocalcic),
+    missing = if (is.na(passed))
+                unique(c(if (is.na(material)) c("caco3_pct", "effervescence_class"),
+                         if (is.na(excluded)) unlist(lapply(excl, function(d) d$missing))))
+              else character(0),
+    reference = ref)
+}
 
 #' Dolomitic qualifier (do): dolomitic material in upper 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.

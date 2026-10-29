@@ -77,42 +77,77 @@ qual_glossic <- function(pedon) {
 }
 
 
-#' Brunic qualifier (br): \emph{incipient-only} subsurface alteration --
-#' cambic horizon within the upper 100 cm AND no argic, spodic,
-#' ferralic, or nitic horizon present. Used by WRB 2022 Ch 4 for
-#' Arenosols that have begun to develop a weak Bw without crossing
-#' into Cambisol / Acrisol / Lixisol / Ferralsol territory; in those
-#' RSGs the cambic alone is the gating diagnostic and Brunic would be
-#' redundant.
+#' Brunic qualifier (br): a layer that meets cambic criteria 3 and 4 but
+#' fails criterion 1, not of claric material.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 129), "having a layer, >= 15 cm thick and
+#' starting <= 50 cm from the mineral soil surface, that meets diagnostic
+#' criteria 3 and 4 of the cambic horizon but fails diagnostic criterion 1 and
+#' does not consist of claric material". Before v0.9.316 it asked for a whole
+#' cambic horizon, which meets criterion 1 (a texture of sandy loam or finer),
+#' so every Brunic it found was a layer the text rules out. Each layer is read
+#' against the cambic criteria of Ch 3.1.5 (p. 39-40):
+#' \itemize{
+#'   \item criterion 1 failed: sand or loamy sand, and not very fine sand or
+#'         loamy very fine sand (criterion 1.b). soilKey records no sand
+#'         fractions, so a sand or loamy sand layer is undecided (NA), as for
+#'         Neobrunic; a layer of sandy loam or finer is not Brunic;
+#'   \item criterion 3, evidence of soil formation, from the Munsell colours
+#'         (moist), clay, CaCO3 and Fe against the layers above and below
+#'         (test_cambic_soil_formation()); the cambic horizon itself does not
+#'         test it (Hugo, N9). Evidence found counts; none found leaves it
+#'         undecided, as criteria 3.c (gypsum) and 3.d (Fe) are seldom
+#'         recorded;
+#'   \item criterion 4: not part of a plough layer or of the horizons it
+#'         lists (.wrb_cambic_part_of_other());
+#'   \item not claric material (test_claric_munsell(), per layer).
+#' }
+#' The layer is made of adjoining horizons that each qualify. The result is
+#' therefore FALSE or NA until the very fine sand subclasses are recorded.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_brunic <- function(pedon) {
-  cm  <- cambic(pedon)
-  if (!isTRUE(cm$passed))
-    return(DiagnosticResult$new(name = "Brunic", passed = FALSE,
-            layers = integer(0), evidence = list(cambic = cm),
-            missing = cm$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Brunic"))
-  arg <- argic(pedon)
-  sp  <- spodic(pedon)
-  fr  <- ferralic(pedon)
-  nt  <- nitic_horizon(pedon)
-  has_other_b <- isTRUE(arg$passed) || isTRUE(sp$passed) ||
-                   isTRUE(fr$passed) || isTRUE(nt$passed)
-  # v0.9.314: "starting <= 50 cm from the mineral soil surface" (WRB 2022 Ch 5,
-  # Brunic); it was 100 cm. Since v0.9.314 cambic() finds a cambic horizon
-  # below a mollic or beside an argic horizon, which made Brunic of the deep
-  # Bw of a Phaeozem or a Chernozem.
-  ms <- .q_mineral_surface_cm(pedon$horizons)
-  in_upper <- intersect(cm$layers, .in_upper(pedon, (if (is.na(ms)) 0 else ms) + 50))
-  passed <- !has_other_b && length(in_upper) > 0L
+  h <- pedon$horizons
+  n <- nrow(h)
+  ref <- "WRB (2022) Ch 5, Brunic (p. 129); cambic criteria 1, 3 and 4, Ch 3.1.5 (p. 39-40)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms) || !n)
+    return(DiagnosticResult$new(name = "Brunic", passed = NA, layers = integer(0),
+                                evidence = list(), missing = "top_cm", reference = ref))
+  d <- as.character(h$designation %||% rep(NA_character_, n))
+  cand <- which(.wrb_mineral_layer(h) & !(!is.na(d) & grepl(.WRB_ROCK_DESIGNATION, d)) &
+                  !is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > ms)
+  st <- rep(FALSE, n)
+  # criterion 1 failed: sandy loam or finer meets it; sand or loamy sand may be
+  # very fine sand (criterion 1.b), which no column tells
+  fine <- .wrb_sandy_loam_or_finer(h, cand)
+  cand <- cand[!(fine %in% TRUE)]
+  if (length(cand)) {
+    c1_fail <- rep(NA, length(cand))
+    # criterion 3
+    sf <- test_cambic_soil_formation(h, candidate_layers = cand)
+    c3 <- ifelse(cand %in% sf$layers, TRUE, NA)
+    # criterion 4
+    part <- .wrb_cambic_part_of_other(pedon, cand)
+    c4 <- !(part$excluded[cand] | .wrb_plough_designation(d[cand]) %in% TRUE)
+    # not claric material
+    cl <- test_claric_munsell(h, candidate_layers = cand)
+    claric <- vapply(cand, function(i) cl$details[[as.character(i)]]$passed %||% NA, NA)
+    all4 <- cbind(c1_fail, c3, c4, !claric)
+    st[cand] <- ifelse(rowSums(!is.na(all4) & !all4) > 0, FALSE,
+                       ifelse(rowSums(is.na(all4)) == 0, TRUE, NA))
+  }
+  run <- .q_run_tristate(h, st, 15, from = ms, max_start = ms + 50)
   DiagnosticResult$new(
-    name = "Brunic", passed = passed,
-    layers = if (passed) in_upper else integer(0),
-    evidence = list(cambic = cm, argic = arg, spodic = sp,
-                    ferralic = fr, nitic = nt),
-    missing = cm$missing %||% character(0),
-    reference = "WRB (2022) Ch 5, Brunic"
+    name = "Brunic", passed = run$passed,
+    layers = if (isTRUE(run$passed)) run$layers else integer(0),
+    evidence = list(layer_status = st, candidate_layers = cand,
+                    mineral_surface_cm = ms),
+    missing = if (is.na(run$passed))
+                c("sand fractions (very fine sand, WRB Annex 1 Table 8.40)",
+                  "munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist")
+              else character(0),
+    reference = ref
   )
 }
 
