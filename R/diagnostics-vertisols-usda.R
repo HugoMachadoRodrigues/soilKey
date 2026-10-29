@@ -15,7 +15,8 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 vertisol_qualifying_usda <- function(pedon) {
-  res <- vertic_horizon(pedon)
+  # v0.9.311: the USDA reading, with the KST 13 LE path
+  res <- vertic_horizon(pedon, reading = "usda")
   res$name <- "vertisol_qualifying_usda"
   res
 }

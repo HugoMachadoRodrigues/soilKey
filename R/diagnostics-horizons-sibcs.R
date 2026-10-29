@@ -1869,9 +1869,13 @@ horizonte_vertico <- function(pedon, ...) {
     old <- options(soilKey.vertic_designation_inference = TRUE)
     on.exit(options(old), add = TRUE)
   }
-  res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0, ...)
-  # v0.9.245: the features of the book. vertic_horizon(), which serves WRB
-  # and USDA too, asks for slickensides and 20 cm of one layer; the book
+  # v0.9.311: the reading it was built on (reading = "usda": slickensides and
+  # cracks of one layer, or the COLE path of v0.7); vertic_horizon() itself
+  # now follows WRB 2022 Ch 3.1.40.
+  res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0,
+                        reading = "usda", ...)
+  # v0.9.245: the features of the book. That reading asks for slickensides
+  # and 20 cm of one layer; the book
   # (p. 73) gives "superficies de friccao (slickensides) em quantidade no
   # minimo comum, e/ou unidades estruturais cuneiformes e/ou
   # paralelepipedicas", and its 20 cm are those of the horizon.

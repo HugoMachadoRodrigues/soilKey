@@ -12,17 +12,28 @@
 
 #' Vertisol RSG gate (WRB 2022 Ch 4, p 101)
 #'
-#' WRB-canonical: vertic horizon \\<= 100 cm AND \\>= 30\% clay between
-#' the surface and the vertic horizon throughout AND shrink-swell cracks
-#' that start at the surface (or below a plough layer / below a self-
-#' mulching surface / below a surface crust) and extend to the vertic
-#' horizon.
-#'
-#' v0.3.4 enforces (1) vertic horizon, (2) all overlying layers \\>= 30\%
-#' clay, and (3) shrink-swell cracks that start within the upper 20 cm.
-#' "Cracks extending to the vertic horizon" is enforced indirectly by the
-#' test_shrink_swell_cracks test that already requires an explicit
-#' \code{cracks_width_cm} value.
+#' WRB 2022 Ch 4 (p. 101), Vertisols: other soils having
+#' \enumerate{
+#'   \item a vertic horizon starting \\<= 100 cm from the mineral soil
+#'         surface;
+#'   \item \\>= 30\% clay between the mineral soil surface and the vertic
+#'         horizon throughout;
+#'   \item shrink-swell cracks that start (a) at the mineral soil surface,
+#'         (b) at the base of a plough layer, (c) directly below a
+#'         self-mulching surface (a layer with strong granular, or strong
+#'         angular or subangular blocky, structure of aggregates \\<= 1 cm)
+#'         or (d) directly below a surface crust, and extend to the vertic
+#'         horizon.
+#' }
+#' Since v0.9.311 each item is TRUE, FALSE or NA (not recorded), and the gate
+#' is NA when an item is undecided and none fails. Only a vertic horizon that
+#' can start within 100 cm decides item 1, so unrecorded layers below it do
+#' not leave the gate undecided. Item 3 reads the cracks of each layer as
+#' \code{\link{vertic_horizon}} does (\code{cracks_width_cm}, or slickensides
+#' or an \code{ss} designation as evidence of them): every layer between the
+#' start and the vertic horizon must have them, and a layer whose cracks are
+#' not recorded leaves the item undecided. Until v0.9.310 item 3 asked for a
+#' layer with cracks starting within 20 cm and read missing cracks as absent.
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' With \code{strict = TRUE} the overlying-clay threshold is raised from
@@ -38,55 +49,126 @@
 vertisol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   min_clay <- if (strict) 35L else 30L
-  vh <- vertic_horizon(pedon)
-  if (!isTRUE(vh$passed)) {
-    return(DiagnosticResult$new(
-      name = "vertisol",
-      passed = if (is.na(vh$passed)) NA else FALSE,
-      layers = integer(0),
-      evidence = list(vertic_horizon = vh),
-      missing = vh$missing %||% character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)",
-      notes = "Failed/NA because vertic_horizon test did not pass"
-    ))
-  }
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)"
   h <- pedon$horizons
-  vertic_top <- min(h$top_cm[vh$layers], na.rm = TRUE)
-  # All layers strictly above the vertic horizon must have >= 30% clay.
-  above <- which(!is.na(h$top_cm) & h$bottom_cm <= vertic_top)
-  clay_throughout <- all(!is.na(h$clay_pct[above]) &
-                           h$clay_pct[above] >= min_clay)
-  cracks <- test_shrink_swell_cracks(h, min_width_cm = 0.5)
-  cracks_start_at_surface <- length(cracks$layers) > 0L &&
-                              any(h$top_cm[cracks$layers] <= 20, na.rm = TRUE)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
 
+  # 1. a vertic horizon starting <= 100 cm from the mineral soil surface
+  vh <- .vertic_horizon_wrb(pedon, max_top_cm = ms + 100)
+  c1 <- vh$passed
+  if (isFALSE(c1))
+    return(DiagnosticResult$new(
+      name = "vertisol", passed = FALSE, layers = integer(0),
+      evidence = list(vertic_horizon = vh, mineral_surface_cm = ms),
+      missing = character(0), reference = ref,
+      notes = "No vertic horizon starting <= 100 cm from the mineral soil surface"))
+  # the horizon's top; while it is undecided, the shallowest top it could
+  # have, where items 2 and 3 can still fail
+  top <- if (isTRUE(c1)) min(h$top_cm[vh$layers], na.rm = TRUE)
+         else vh$evidence$possible_top_cm
+
+  # 2. >= 30 % clay throughout between the mineral soil surface and the
+  # vertic horizon (35 % in strict mode)
+  ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+  above <- which(ok & h$top_cm < top & h$bottom_cm > ms)
+  c2 <- if (!length(above)) TRUE
+        else .and3(ifelse(is.na(h$clay_pct[above]), NA,
+                          h$clay_pct[above] >= min_clay))
+
+  # 3. shrink-swell cracks that start at the surface (or below a plough
+  # layer or a self-mulching surface) and extend to the vertic horizon
+  cracks <- .vertisol_cracks_start(h, ms = ms, top = top)
   # v0.9.77 -- when vertic_horizon fired via the v0.9.72 v-suffix
-  # designation inference OR the v0.9.76 chroma+clay inference, the
-  # cracks-at-surface gate is allowed to be missing because the
-  # inference paths themselves require strong morphological evidence
-  # (B subsoil + high clay + low chroma + designation marker).
+  # designation inference OR the v0.9.76 chroma+clay inference (both
+  # opt-in), the cracks item is allowed to be missing because the
+  # inference paths themselves require strong morphological evidence.
   inferred_path_fired <- isTRUE(vh$evidence$designation_inference$passed) ||
                             isTRUE(vh$evidence$chroma_clay_inference$passed)
-  cracks_gate <- isTRUE(cracks_start_at_surface) || isTRUE(inferred_path_fired)
+  c3 <- if (inferred_path_fired) TRUE else cracks$passed
 
-  passed <- isTRUE(vh$passed) && isTRUE(clay_throughout) &&
-              isTRUE(cracks_gate)
+  passed <- .and3(c1, c2, c3)
+  missing <- if (is.na(passed)) unique(c(
+    if (is.na(c1)) vh$missing,
+    if (is.na(c2)) "clay_pct",
+    if (is.na(c3)) "cracks_width_cm")) else character(0)
   DiagnosticResult$new(
     name = "vertisol",
     passed = passed,
-    layers = vh$layers,
+    layers = if (isTRUE(passed)) vh$layers else integer(0),
     evidence = list(
       vertic_horizon                = vh,
-      clay_above_30_throughout      = clay_throughout,
+      mineral_surface_cm            = ms,
+      vertic_top_cm                 = top,
+      clay_above_30_throughout      = c2,
       clay_threshold_pct            = min_clay,
       strict_mode                   = strict,
-      cracks_at_surface             = cracks_start_at_surface,
+      cracks_at_surface             = c3,
       cracks                        = cracks,
       morphological_inference_fired = inferred_path_fired
     ),
-    missing  = vh$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)"
+    missing  = missing,
+    reference = ref
   )
+}
+
+
+# Item 3 of the Vertisols key (WRB 2022 Ch 4, p. 101): shrink-swell cracks
+# that start (a) at the mineral soil surface, (b) at the base of a plough
+# layer, (c) directly below a self-mulching surface, or (d) directly below a
+# surface crust, and extend to the vertic horizon starting at `top`. A start
+# is met when every layer between it and the vertic horizon has cracks
+# (.vertic_crack_status()). A surface crust is a few cm at most, inside the
+# surface layer of a description, so (d) is read as (a). TRUE, FALSE or NA.
+.vertisol_cracks_start <- function(h, ms, top, min_width_cm = 0.5) {
+  cr <- .vertic_crack_status(h, min_width_cm = min_width_cm)
+  ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+  span <- function(from) {
+    idx <- which(ok & h$top_cm < top & h$bottom_cm > from)
+    if (!length(idx)) TRUE else .and3(cr[idx])
+  }
+  # the layers from the mineral soil surface downwards, in depth order
+  surf <- which(ok & h$bottom_cm > ms)
+  surf <- surf[order(h$top_cm[surf])]
+  # base of the run of surface layers where `cond` is TRUE (NA if none)
+  run_base <- function(cond) {
+    base <- NA_real_; edge <- ms
+    for (i in surf) {
+      if (h$top_cm[i] > edge || !isTRUE(cond[i])) break
+      edge <- max(edge, h$bottom_cm[i]); base <- edge
+    }
+    base
+  }
+  dsg <- as.character(h$designation)
+  # (b) a plough layer: Ap layers at the mineral soil surface
+  plough_base <- run_base(!is.na(dsg) & grepl("^[0-9]*A[a-z]*p", dsg))
+  at_plough <- if (is.na(plough_base)) FALSE else span(plough_base)
+  # (c) a self-mulching surface: strong granular structure, or strong angular
+  # or subangular blocky structure, of aggregates <= 1 cm. The size is read
+  # by the FAO classes of each type: granular up to coarse (5-10 mm), blocky
+  # up to fine (5-10 mm).
+  grade <- .field_grade_class(h$structure_grade)
+  stype <- .field_term(h$structure_type)
+  size  <- .structure_size_class(h$structure_size)
+  gran  <- !is.na(stype) & grepl("granul", stype)
+  blky  <- !is.na(stype) & grepl("blocky|blocos", stype)
+  small <- ifelse(is.na(stype) | (!gran & !blky), NA,
+                  ifelse(is.na(size), NA, ifelse(gran, size <= 4, size <= 2)))
+  mulch <- .and3v(.and3v(ifelse(is.na(grade), NA, grade >= 3),
+                         ifelse(is.na(stype), NA, gran | blky)), small)
+  mulch_base <- run_base(mulch)
+  below_mulch <- if (!is.na(mulch_base)) span(mulch_base)
+                 else if (length(surf) && is.na(mulch[surf[1L]]))
+                   .and3(NA, span(h$bottom_cm[surf[1L]]))
+                 else FALSE
+  # (a), and (d) read as (a)
+  at_surface <- span(ms)
+  list(passed = .any3(c(at_surface, at_plough, below_mulch)),
+       starts = list(mineral_surface = at_surface,
+                     plough_layer_base = at_plough,
+                     below_self_mulching_surface = below_mulch),
+       plough_base_cm = plough_base, self_mulching_base_cm = mulch_base,
+       crack_status = cr)
 }
 
 

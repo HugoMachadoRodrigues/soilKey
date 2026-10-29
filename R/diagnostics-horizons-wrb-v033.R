@@ -269,15 +269,37 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 
 # ---- vertic horizon (the horizon, not the property) -----------------------
 
-#' Vertic horizon (WRB 2022 Ch 3.1)
+#' Vertic horizon (WRB 2022 Ch 3.1.40)
 #'
-#' Stricter than the vertic *properties*: the vertic *horizon* requires
-#' \\>= 30\% clay throughout, slickensides at \\>= "common" level, AND
-#' shrink-swell cracks \\>= 0.5 cm wide. Used by Vertisols. v0.9.19
-#' adds an OR-alternative COLE-based linear-extensibility path:
-#' summed (\code{cole_value * thickness}) over the upper 100 cm
-#' \\>= 6 cm passes the diagnostic even when slickensides + cracks
-#' are not recorded (KST 13ed Ch 16 LE alternative, p 343).
+#' A clay-rich subsurface horizon with slickensides or wedge-shaped
+#' aggregates, formed by shrinking and swelling. Used by Vertisols.
+#'
+#' Since v0.9.311 the default reading (\code{reading = "wrb2022"}) follows
+#' the diagnostic criteria of WRB 2022 Ch 3.1.40 (p. 70). Mineral material
+#' with:
+#' \enumerate{
+#'   \item \\>= 30\% clay;
+#'   \item wedge-shaped aggregates (a \code{structure_type} that names them)
+#'         or slickensides on \\>= 10\% of the aggregate surfaces
+#'         (\code{slickensides} "common" or more);
+#'   \item shrink-swell cracks: \code{cracks_width_cm} \\>= 0.5, or, where
+#'         the width is not recorded, slickensides "common" or more or an
+#'         \code{ss} designation as evidence of them;
+#'   \item a thickness of \\>= 25 cm, of adjoining layers that meet 1 to 3
+#'         taken together.
+#' }
+#' Each criterion is read per layer as met, not met or unrecorded. The
+#' horizon is \code{NA} only when layers that might meet them (a criterion
+#' unrecorded) could make up the thickness. Organic layers and continuous
+#' rock are not part of it. WRB gives the COLE (\\>= 0.06) as additional
+#' information only, so this reading does not use \code{cole_value}.
+#'
+#' \code{reading = "usda"} keeps the reading that the USDA Vertisols and the
+#' SiBCS horizonte vertico are built on, as it was before v0.9.311:
+#' slickensides "common" or more and cracks \\>= \code{min_crack_width_cm}
+#' in one layer of \code{min_thickness}, OR the KST 13 linear-extensibility
+#' alternative: summed \code{cole_value * thickness} over the upper
+#' \code{le_max_depth_cm} \\>= \code{min_le_cm} (KST 13ed Ch 16, p. 343).
 #'
 #' @section v0.9.72 designation morphological inference (opt-in):
 #' Field-described Brazilian Vertissolos profiles (e.g.\ the Embrapa
@@ -287,31 +309,192 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' \code{slickensides} class or \code{shrink_swell_cracks_cm} as
 #' numeric inputs. With
 #' \code{options(soilKey.vertic_designation_inference = TRUE)} the
-#' function accepts a layer as vertic when the canonical and COLE
-#' paths both fail or are NA AND the layer has \code{clay_pct >=
+#' function accepts a layer as vertic when the criteria of the reading
+#' fail or are NA AND the layer has \code{clay_pct >=
 #' min_clay} AND its designation matches a \code{v} master-letter
 #' modifier. Default is \code{FALSE}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_clay Numeric threshold or option (see Details).
 #' @param min_thickness Numeric threshold or option (see Details).
-#' @param min_le_cm Minimum LE sum (cm) for the COLE-based path
-#'        (default 6, per KST 13ed Ch 16).
-#' @param le_max_depth_cm Depth window (cm) for the COLE-based path
-#'        (default 100).
-#' @param min_crack_width_cm Minimum shrink-swell crack width (cm) for the
-#'        field-crack path. Defaults to 0.5 (WRB/USDA); the SiBCS
+#' @param min_le_cm Minimum LE sum (cm) for the COLE-based path of
+#'        \code{reading = "usda"} (default 6, per KST 13ed Ch 16).
+#' @param le_max_depth_cm Depth window (cm) for the COLE-based path of
+#'        \code{reading = "usda"} (default 100).
+#' @param min_crack_width_cm Minimum shrink-swell crack width (cm).
+#'        Defaults to 0.5 (WRB/USDA); the SiBCS
 #'        \code{horizonte_vertico} wrapper passes 1.0 per Embrapa
 #'        (2018) Cap 2 p.73.
+#' @param reading \code{"wrb2022"} (default): the criteria of WRB 2022 Ch
+#'        3.1.40. \code{"usda"}: the reading of the USDA Vertisols and the
+#'        SiBCS horizonte vertico, with the KST 13 COLE path (see Details).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
                               min_le_cm = 6, le_max_depth_cm = 100,
-                              min_crack_width_cm = 0.5) {
+                              min_crack_width_cm = 0.5,
+                              reading = c("wrb2022", "usda")) {
+  reading <- match.arg(reading)
+  if (identical(reading, "usda"))
+    return(.vertic_horizon_usda(pedon, min_clay = min_clay,
+                                min_thickness = min_thickness,
+                                min_le_cm = min_le_cm,
+                                le_max_depth_cm = le_max_depth_cm,
+                                min_crack_width_cm = min_crack_width_cm))
+  .vertic_horizon_wrb(pedon, min_clay = min_clay,
+                      min_thickness = min_thickness,
+                      min_crack_width_cm = min_crack_width_cm)
+}
+
+
+#' The vertic horizon of WRB 2022 Ch 3.1.40 (p. 70); see vertic_horizon().
+#' `max_top_cm` keeps only a horizon that starts at or above that depth: the
+#' Vertisols gate asks for one starting <= 100 cm from the mineral soil
+#' surface (Ch 4, p. 101), so layers below it cannot leave the gate undecided.
+#' @noRd
+.vertic_horizon_wrb <- function(pedon, min_clay = 30, min_thickness = 25,
+                                min_crack_width_cm = 0.5, max_top_cm = Inf) {
+  h <- pedon$horizons
+  st <- .vertic_layer_status(h, min_clay = min_clay,
+                             min_crack_width_cm = min_crack_width_cm)
+  # Criterion 4: >= 25 cm, of the adjoining layers that meet 1 to 3 (a
+  # horizon is often described in sub-horizons). TRUE when the layers known
+  # to meet them reach it, NA when only the layers that might do so could.
+  yes <- .vertic_runs(h, which(st$status %in% TRUE), min_thickness, max_top_cm)
+  may <- .vertic_runs(h, which(!st$status %in% FALSE), min_thickness, max_top_cm)
+  canonical <- if (length(yes)) TRUE else if (length(may)) NA else FALSE
+  undecided <- intersect(as.integer(unlist(may)), which(is.na(st$status)))
+  missing <- if (is.na(canonical)) unique(c(
+    if (anyNA(st$clay[undecided])) "clay_pct",
+    if (anyNA(st$features[undecided])) c("slickensides", "structure_type"),
+    if (anyNA(st$cracks[undecided])) "cracks_width_cm")) else character(0)
+
+  inf <- .vertic_inference_paths(pedon, h, min_clay = min_clay,
+                                 min_thickness = min_thickness,
+                                 main_passed = isTRUE(canonical))
+  for (k in c("designation", "chroma_clay")) {
+    p <- inf[[k]]
+    if (isTRUE(p$passed) && is.finite(max_top_cm) &&
+          !any(h$top_cm[p$layers] <= max_top_cm, na.rm = TRUE))
+      inf[[k]]$passed <- FALSE
+  }
+
+  passed <- if (isTRUE(canonical) || isTRUE(inf$designation$passed) ||
+                  isTRUE(inf$chroma_clay$passed)) TRUE
+            else if (is.na(canonical)) NA else FALSE
+  layers <- if (isTRUE(canonical)) sort(as.integer(unlist(yes)))
+            else if (isTRUE(inf$designation$passed)) inf$designation$layers
+            else if (isTRUE(inf$chroma_clay$passed)) inf$chroma_clay$layers
+            else integer(0)
+  run_info <- function(r) list(layers = r, top = min(h$top_cm[r]),
+                               bottom = max(h$bottom_cm[r]),
+                               thickness = max(h$bottom_cm[r]) - min(h$top_cm[r]))
+  DiagnosticResult$new(
+    name     = "vertic_horizon",
+    passed   = passed,
+    layers   = layers,
+    evidence = list(
+      clay_pct          = st$clay,
+      slickensides      = st$slickensides,
+      wedge_shaped      = st$wedge,
+      cracks            = st$cracks,
+      layer_status      = st$status,
+      thickness         = list(runs = lapply(yes, run_info),
+                               possible_runs = lapply(may, run_info),
+                               min_thickness = min_thickness,
+                               max_top_cm = max_top_cm),
+      possible_top_cm   = if (length(may))
+                            min(h$top_cm[as.integer(unlist(may))]) else NA_real_,
+      designation_inference = inf$designation,
+      chroma_clay_inference = inf$chroma_clay),
+    missing  = missing,
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3.1.40, Vertic horizon (p. 70)",
+                      if (length(inf$inferred_layers) > 0L ||
+                            length(inf$chroma_inferred) > 0L)
+                        "[v0.9.72/76 morphological inference]" else "")
+  )
+}
+
+
+# Per layer, the criteria of the vertic horizon of WRB 2022 Ch 3.1.40 (p. 70),
+# each TRUE, FALSE or NA (unrecorded):
+#   1. >= 30 % clay;
+#   2. wedge-shaped aggregates or slickensides on >= 10 % of the aggregate
+#      surfaces ("common" or more). The 20 % by volume of the wedge-shaped
+#      aggregates is taken as met where they are the structure recorded;
+#   3. shrink-swell cracks (.vertic_crack_status()).
+# The horizon consists of mineral material: organic layers (SOC >= 20 %, an O
+# or H designation) and continuous rock are not part of it.
+.vertic_layer_status <- function(h, min_clay = 30, min_crack_width_cm = 0.5) {
+  col <- function(n, na) if (is.null(h[[n]])) rep(na, nrow(h)) else h[[n]]
+  dsg   <- as.character(col("designation", NA_character_))
+  clay  <- col("clay_pct", NA_real_)
+  sl    <- col("slickensides", NA_character_)
+  stype <- .field_term(col("structure_type", NA_character_))
+  oc    <- col("oc_pct", NA_real_)
+  clay_ok <- ifelse(is.na(clay), NA, clay >= min_clay)
+  slick   <- ifelse(is.na(sl), NA,
+                    .amount_at_least(sl, c("common", "many", "continuous")))
+  wedge   <- ifelse(is.na(stype), NA, grepl("wedge|cuneiform", stype))
+  features <- .any3v(wedge, slick)
+  cracks  <- .vertic_crack_status(h, min_width_cm = min_crack_width_cm)
+  status  <- .and3v(.and3v(clay_ok, features), cracks)
+  not_mineral <- (!is.na(oc) & oc >= 20) |
+                 (!is.na(dsg) & grepl("^[0-9]*[OH]", dsg)) |
+                 (!is.na(dsg) & grepl(.WRB_ROCK_DESIGNATION, dsg))
+  status[not_mineral] <- FALSE
+  list(status = as.logical(status), clay = as.logical(clay_ok),
+       slickensides = as.logical(slick), wedge = as.logical(wedge),
+       features = as.logical(features), cracks = as.logical(cracks))
+}
+
+
+# Shrink-swell cracks in a layer (WRB 2022 Ch 3.2.12, p. 80: >= 0.5 cm wide
+# when the soil is dry), as test_shrink_swell_cracks() reads them: TRUE or
+# FALSE by the recorded width; where it is not recorded, TRUE on slickensides
+# "common" or more or an ss designation, as evidence of them; NA otherwise.
+.vertic_crack_status <- function(h, min_width_cm = 0.5) {
+  col <- function(n, na) if (is.null(h[[n]])) rep(na, nrow(h)) else h[[n]]
+  w   <- col("cracks_width_cm", NA_real_)
+  dsg <- as.character(col("designation", NA_character_))
+  sl  <- col("slickensides", NA_character_)
+  proxy <- (!is.na(dsg) & grepl("ss|Vss", dsg)) |
+           .amount_at_least(sl, c("common", "many", "continuous"))
+  as.logical(ifelse(!is.na(w), w >= min_width_cm, ifelse(proxy, TRUE, NA)))
+}
+
+
+# Runs of depth-adjoining layers among `idx` (the top of one at or above the
+# deepest bottom of the run so far) that are >= `min_thickness` thick and
+# start at or above `max_top_cm`. A list of integer vectors.
+.vertic_runs <- function(h, idx, min_thickness, max_top_cm = Inf) {
+  idx <- idx[!is.na(h$top_cm[idx]) & !is.na(h$bottom_cm[idx])]
+  if (!length(idx)) return(list())
+  idx <- idx[order(h$top_cm[idx])]
+  runs <- list(); cur <- idx[1L]; end <- h$bottom_cm[idx[1L]]
+  for (i in idx[-1L]) {
+    if (h$top_cm[i] <= end) {
+      cur <- c(cur, i); end <- max(end, h$bottom_cm[i])
+    } else {
+      runs[[length(runs) + 1L]] <- cur; cur <- i; end <- h$bottom_cm[i]
+    }
+  }
+  runs[[length(runs) + 1L]] <- cur
+  Filter(function(r) max(h$bottom_cm[r]) - min(h$top_cm[r]) >= min_thickness &&
+                       min(h$top_cm[r]) <= max_top_cm, runs)
+}
+
+
+#' The vertic reading kept for the USDA Vertisols and the SiBCS horizonte
+#' vertico (vertic_horizon(reading = "usda")), as it was before v0.9.311.
+#' @noRd
+.vertic_horizon_usda <- function(pedon, min_clay = 30, min_thickness = 25,
+                                 min_le_cm = 6, le_max_depth_cm = 100,
+                                 min_crack_width_cm = 0.5) {
   h <- pedon$horizons
 
-  # Path 1 (canonical WRB 2022 + KST 13ed): clay >= min_clay +
-  # slickensides "common"+ + cracks >= min_crack_width_cm + thickness.
+  # Path 1: clay >= min_clay + slickensides "common"+ + cracks >=
+  # min_crack_width_cm + thickness, in one layer.
   # min_crack_width_cm defaults to 0.5 (WRB/USDA); the SiBCS vertico wrapper
   # (horizonte_vertico) passes 1.0, per Embrapa 2018 Cap 2 p.73 ("fendas ...
   # com pelo menos 1 cm de largura").
@@ -332,9 +515,8 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
   # linear extensibility (LE) sum >= 6 cm between the surface and
   # 100 cm as an alternative to slickensides + cracks. LE = sum of
   # (cole_value * thickness) over each layer in the upper 100 cm.
-  # Used by USDA Vertisols and by the WRB vertic-horizon definition
-  # for shrink-swell soils where field morphology was not recorded
-  # but COLE was measured (typical of KSSL profiles).
+  # Used by USDA Vertisols for shrink-swell soils where field morphology
+  # was not recorded but COLE was measured (typical of KSSL profiles).
   cole_path <- list()
   if ("cole_value" %in% names(h)) {
     cl <- which(!is.na(h$top_cm) & h$top_cm < le_max_depth_cm)
@@ -355,21 +537,64 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
     }
   }
 
+  inf <- .vertic_inference_paths(pedon, h, min_clay = min_clay,
+                                 min_thickness = min_thickness,
+                                 main_passed = isTRUE(agg_canonical$passed) ||
+                                                 isTRUE(cole_path$passed))
+  v_suffix_path    <- inf$designation
+  chroma_clay_path <- inf$chroma_clay
+
+  passed <- isTRUE(agg_canonical$passed) || isTRUE(cole_path$passed) ||
+              isTRUE(v_suffix_path$passed) || isTRUE(chroma_clay_path$passed)
+  layers <- if (isTRUE(agg_canonical$passed)) agg_canonical$layers
+            else if (isTRUE(cole_path$passed)) cole_path$layers
+            else if (isTRUE(v_suffix_path$passed)) v_suffix_path$layers
+            else if (isTRUE(chroma_clay_path$passed)) chroma_clay_path$layers
+            else integer(0)
+  missing <- unique(c(agg_canonical$missing,
+                       if (length(cole_path) == 0L) "cole_value"))
+  if (is.null(missing)) missing <- character(0)
+
+  DiagnosticResult$new(
+    name     = "vertic_horizon",
+    passed   = if (passed) TRUE
+                else if (is.na(agg_canonical$passed) ||
+                           (length(cole_path) > 0L && is.na(cole_path$passed))) NA
+                else FALSE,
+    layers   = layers,
+    evidence = c(tests, list(cole_le_path = cole_path,
+                                designation_inference = v_suffix_path,
+                                chroma_clay_inference = chroma_clay_path)),
+    missing  = missing,
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon;",
+                       "KST 13ed Ch 16 LE alternative",
+                       if (length(inf$inferred_layers) > 0L ||
+                             length(inf$chroma_inferred) > 0L)
+                         "[v0.9.72/76 morphological inference]" else "")
+  )
+}
+
+
+# The opt-in morphological inference paths of the vertic horizon (both
+# readings), tried when `main_passed`, the reading's own criteria, is not
+# TRUE. Returns list(designation, chroma_clay, inferred_layers,
+# chroma_inferred).
+.vertic_inference_paths <- function(pedon, h, min_clay, min_thickness,
+                                    main_passed) {
   # v0.9.72 -- designation morphological inference (opt-in).
   # Field-described Brazilian Vertissolos profiles (e.g. the Embrapa
   # Redape curated dataset) encode vertic morphology via a 'v' master-
   # letter modifier in the horizon designation (Bv, Bvk1, Cv, Cvz)
   # without recording slickensides_class or shrink_swell_cracks_cm.
   # This path passes when:
-  #   (1) canonical AND COLE paths both fail or are NA, AND
+  #   (1) the reading's own criteria fail or are NA, AND
   #   (2) at least one layer has clay >= min_clay AND its designation
   #       matches a 'v' master-letter modifier ([A-Z][A-Za-z]*v).
   designation_inference_enabled <- isTRUE(
     getOption("soilKey.vertic_designation_inference", default = FALSE))
   v_suffix_path <- list(passed = NA, layers = integer(0), source = "off")
   inferred_layers <- integer(0)
-  if (designation_inference_enabled && !isTRUE(agg_canonical$passed) &&
-        !isTRUE(cole_path$passed)) {
+  if (designation_inference_enabled && !isTRUE(main_passed)) {
     desig <- if (!is.null(h$designation)) as.character(h$designation)
               else rep(NA_character_, nrow(h))
     has_v_suffix <- !is.na(desig) & grepl("[A-Z][a-z0-9]*v", desig)
@@ -426,8 +651,8 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
   mollic_competing <- if (chroma_clay_enabled) {
     isTRUE(tryCatch(mollic(pedon)$passed, error = function(e) NULL))
   } else FALSE
-  if (chroma_clay_enabled && !isTRUE(agg_canonical$passed) &&
-        !isTRUE(cole_path$passed) && !isTRUE(v_suffix_path$passed) &&
+  if (chroma_clay_enabled && !isTRUE(main_passed) &&
+        !isTRUE(v_suffix_path$passed) &&
         !isTRUE(mollic_competing)) {
     chroma <- if (!is.null(h$munsell_chroma_moist)) h$munsell_chroma_moist
               else rep(NA_real_, nrow(h))
@@ -463,34 +688,8 @@ vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
       }
     }
   }
-
-  passed <- isTRUE(agg_canonical$passed) || isTRUE(cole_path$passed) ||
-              isTRUE(v_suffix_path$passed) || isTRUE(chroma_clay_path$passed)
-  layers <- if (isTRUE(agg_canonical$passed)) agg_canonical$layers
-            else if (isTRUE(cole_path$passed)) cole_path$layers
-            else if (isTRUE(v_suffix_path$passed)) v_suffix_path$layers
-            else if (isTRUE(chroma_clay_path$passed)) chroma_clay_path$layers
-            else integer(0)
-  missing <- unique(c(agg_canonical$missing,
-                       if (length(cole_path) == 0L) "cole_value"))
-  if (is.null(missing)) missing <- character(0)
-
-  DiagnosticResult$new(
-    name     = "vertic_horizon",
-    passed   = if (passed) TRUE
-                else if (is.na(agg_canonical$passed) ||
-                           (length(cole_path) > 0L && is.na(cole_path$passed))) NA
-                else FALSE,
-    layers   = layers,
-    evidence = c(tests, list(cole_le_path = cole_path,
-                                designation_inference = v_suffix_path,
-                                chroma_clay_inference = chroma_clay_path)),
-    missing  = missing,
-    reference = paste("IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon;",
-                       "KST 13ed Ch 16 LE alternative",
-                       if (length(inferred_layers) > 0L || length(chroma_inferred) > 0L)
-                         "[v0.9.72/76 morphological inference]" else "")
-  )
+  list(designation = v_suffix_path, chroma_clay = chroma_clay_path,
+       inferred_layers = inferred_layers, chroma_inferred = chroma_inferred)
 }
 
 

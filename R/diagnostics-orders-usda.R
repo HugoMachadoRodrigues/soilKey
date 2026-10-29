@@ -251,7 +251,9 @@ oxisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 vertisol_usda <- function(pedon) {
-  vh <- vertic_horizon(pedon)
+  # v0.9.311: the USDA reading (slickensides and cracks, or the KST 13 LE
+  # path); vertic_horizon() itself now follows WRB 2022 Ch 3.1.40.
+  vh <- vertic_horizon(pedon, reading = "usda")
   # v0.9.21: NASIS tie-breaker -- Slickensides surveyor
   # identification flips an NA vertic_horizon to TRUE (when no COLE
   # or cracks measurement is available).

@@ -183,10 +183,13 @@ test_that("it has 300 g/kg of clay or more, and cracks of 1 cm where their width
 })
 
 test_that("its 20 cm are those of the horizon, made of adjoining layers", {
-  # two layers of 12 cm: vertic_horizon() asks 20 cm of one layer
+  # two layers of 12 cm: the reading horizonte_vertico() builds on asks 20 cm
+  # of one layer (vertic_horizon(reading = "usda"); the WRB reading takes
+  # adjoining layers together since v0.9.311)
   p <- .vt(c("A", "C1", "C2", "C3"), c(0, 20, 32, 44), c(20, 32, 44, 90), c(40, 45, 45, 45),
            slickensides = c(NA, "Comum", "Comum", NA))
-  expect_false(isTRUE(vertic_horizon(p, min_thickness = 20, min_crack_width_cm = 1)$passed))
+  expect_false(isTRUE(vertic_horizon(p, min_thickness = 20, min_crack_width_cm = 1,
+                                     reading = "usda")$passed))
   r <- horizonte_vertico(p)
   expect_true(isTRUE(r$passed))
   expect_equal(r$layers, 2:3)
