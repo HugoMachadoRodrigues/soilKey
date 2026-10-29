@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.298</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.299</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,29 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.299" id="soilkey-09299-2026-10-28">soilKey 0.9.299 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09299-2026-10-28"></a></h2>
+<div class="section level3">
+<h3 id="new-zealand-soil-classification-the-subgroups-of-the-organic-gley-and-ultic-soils-0-9-299">New Zealand Soil Classification: the subgroups of the Organic, Gley and Ultic Soils<a class="anchor" aria-label="anchor" href="#new-zealand-soil-classification-the-subgroups-of-the-organic-gley-and-ultic-soils-0-9-299"></a></h3>
+<p><code><a href="../reference/classify_nzsc4.html">classify_nzsc4()</a></code> now keys the 16 groups of the Organic, Gley and Ultic Soils to their 70 subgroups, following the keys to subgroups of the New Zealand Soil Classification, 4th edition: from the Buried-podzol Litter Organic Soils to the Buried-granular and Typic Yellow Ultic Soils. The name of such a profile is now its subgroup (for example “Peaty Orthic Gley Soils”, “Mottled Yellow Ultic Soils”); the group and the order stay in <code>levels</code>. The subgroups of the other 12 orders follow.</p>
+<ul><li>The keys live in <code>inst/rules/nzsc4/subgroups/</code>, one file per order, in the book’s order. The last subgroup of each group is the default, except under the Densipan and Perch-gley Ultic Soils, which the text gives none.</li>
+<li>The gates are in <code>R/diagnostics-nzsc-subgroups.R</code>. Criteria the groups share use one gate with arguments: sulfidic, saline, fluid, peaty, acidic, concretionary, calcareous, pan, mottled, nodular, argillic, and the horizons below a densipan or an eluvial horizon.</li>
+<li>New diagnostics: sulfidic and saline soil material, the mottled profile form, buried peaty topsoils, coatings on 10 % or more of the ped faces and dark coatings.</li>
+<li>New horizon attributes: <code>sphagnum_fibres_pct</code> (the Sphagnic Fibric Organic Soils) and <code>shelly_layer</code> (the Calcareous Recent Gley Soils).</li>
+</ul><p>Hugo decided four readings:</p>
+<ul><li>sulfidic soil material that is not measured is absent when no horizon in the window can look sulfidic in the field (a reductimorphic horizon with a hue of 5Y or less red, or black), as the text describes it; otherwise it is undecided;</li>
+<li>saline soil material that is not measured is absent when the horizons are designated and none carries the z suffix; with no designations it is undecided;</li>
+<li>the Sphagnum share of the fibres and a shelly layer are recorded when met, so not recorded reads as none;</li>
+<li>a Densipan or Perch-gley Ultic Soil that passes no subgroup keeps the group name, with a warning.</li>
+</ul><p>The other readings are in <code>inst/rules/nzsc4/readings.yaml</code>. Two subgroup names follow their groups’ spelling: Typic Sulfuric Gley Soils (the text writes “Sulphuric”) and Typic Yellow Ultic Soils (the text writes “Soil”).</p>
+<p>Outside the subgroups, two readings change:</p>
+<ul><li>“in some part” now finds a run of 10 cm that passes when it lies directly below a horizon left undecided (it was read as undecided);</li>
+<li>the peaty topsoil reads a horizon with a recorded mineral field texture and no measured carbon as not peat (it was undecided), as the text defines it by peat or peaty textures.</li>
+</ul><p>Both can only turn an undecided order or group into a decided one.</p>
+<p>An independent review against the text of the book found six defects, all fixed: (f) horizons counted in the mottled profile form, which the 4th edition excludes; the window of the organic material measured from its top rather than from the soil surface; a buried podzol written with the buried prefix missed under litter; a B horizon ending above 60 cm left undecided in the Granular Acid Gley Soils; the peat reading above; and coatings of value 5 left open in the Podzolic Yellow Ultic Soils. Recorded dark coatings now make a cutanic horizon without the (h) notation in the Granular Acid Gley Soils.</p>
+<p>A second review checked the logic with 12,500 random profiles: no errors, no row-order effects, and every order or group that changes against 0.9.298 goes from undecided to decided through “in some part”. Its findings are fixed: a buried peat under a peaty horizon that is not a topsoil was missed; an undesignated row under the A, nothing described under litter, a window the description does not reach (for sulfidic and saline material), a gap above the clay of the Buried-granular Yellow Ultic Soils and a densipan with no depths were read as absent rather than undecided; one decisive lab value did not settle “less silt than clay”; and a pan could pass as the argillic horizon of the Argillic Orthic Gley Soils. The readings file now has 50 topics.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.298" id="soilkey-09298-2026-10-28">soilKey 0.9.298 (2026-10-28)<a class="anchor" aria-label="anchor" href="#soilkey-09298-2026-10-28"></a></h2>
 <div class="section level3">
