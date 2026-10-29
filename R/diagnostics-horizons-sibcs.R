@@ -1025,7 +1025,10 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   pet  <- petrocalcic(pedon)
   fra  <- fragic(pedon)
   pli  <- plinthic(pedon)
-  gle  <- gleyic_properties(pedon)
+  # v0.9.310: the glei horizon of this system, not the WRB 2022 gleyic
+  # properties, whose colour criterion 1b (2.5Y or 5Y with chroma <= 2) reads
+  # a dark Vertissolo matrix as reductimorphic
+  gle  <- horizonte_glei(pedon)
   excluded <- unique(c(if (isTRUE(fer$passed)) fer$layers else integer(0),
                         if (isTRUE(arg$passed)) arg$layers else integer(0),
                         esp$layers %||% integer(0),
@@ -1035,7 +1038,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
                         pet$layers %||% integer(0),
                         fra$layers %||% integer(0),
                         pli$layers %||% integer(0),
-                        gle$layers %||% integer(0)))
+                        if (isTRUE(gle$passed)) gle$layers else integer(0)))
   layers_ok <- setdiff(candidates, excluded)
   # v0.9.246: "deve ter no minimo 10 cm de espessura" is said of the horizon:
   # the thickness is that of its adjoining sub-horizons, as in the

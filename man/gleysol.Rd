@@ -29,9 +29,14 @@ WRB-canonical (multi-path):
         conditions; OR
   \item Permanent saturation by water \\<= 40 cm.
 }
-v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
-(W / saturated marker). Path 2 is deferred (requires a depth-of-
-saturation column that's not standard).
+Path 1 reads the layers of \code{\link{gleyic_properties}} (since
+v0.9.312: the matrix colour, the layer underneath and the site's
+groundwater, without the old decay-with-depth test) and of
+\code{\link{reducing_conditions}}; since v0.9.312 the 25 cm may be made
+of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
+surface, and a layer whose redox reading is undecided leaves the gate
+\code{NA} when it could complete the 25 cm. Path 3 is read from the
+designation (W / saturated marker). Path 2 is not implemented.
 }
 \section{Tier-3 strict mode (v0.9.98)}{
 

@@ -9,16 +9,16 @@ luvisol(pedon, min_cec = 24, max_al_sat = 50)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_cec}{Minimum CEC per kg clay (default 24).}
-
-\item{max_al_sat}{Maximum Al saturation \% (default 50).}
+\item{min_cec, max_al_sat}{Unused since v0.9.310, kept so that existing
+calls still run.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-argic + CEC >= 24 cmol_c/kg clay + Al saturation < 50\%.
+The Luvisols of the WRB 2022 key (Ch 4, p. 122): "Other soils having an
+argic horizon starting \eqn{\le} 100 cm from the mineral soil surface".
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 5, Luvisols.
+IUSS Working Group WRB (2022), Chapter 4, Luvisols (p. 122).
 }

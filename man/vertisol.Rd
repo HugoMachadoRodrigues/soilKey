@@ -17,18 +17,28 @@ resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-WRB-canonical: vertic horizon \\<= 100 cm AND \\>= 30\% clay between
-the surface and the vertic horizon throughout AND shrink-swell cracks
-that start at the surface (or below a plough layer / below a self-
-mulching surface / below a surface crust) and extend to the vertic
-horizon.
+WRB 2022 Ch 4 (p. 101), Vertisols: other soils having
+\enumerate{
+  \item a vertic horizon starting \\<= 100 cm from the mineral soil
+        surface;
+  \item \\>= 30\% clay between the mineral soil surface and the vertic
+        horizon throughout;
+  \item shrink-swell cracks that start (a) at the mineral soil surface,
+        (b) at the base of a plough layer, (c) directly below a
+        self-mulching surface (a layer with strong granular, or strong
+        angular or subangular blocky, structure of aggregates \\<= 1 cm)
+        or (d) directly below a surface crust, and extend to the vertic
+        horizon.
 }
-\details{
-v0.3.4 enforces (1) vertic horizon, (2) all overlying layers \\>= 30\%
-clay, and (3) shrink-swell cracks that start within the upper 20 cm.
-"Cracks extending to the vertic horizon" is enforced indirectly by the
-test_shrink_swell_cracks test that already requires an explicit
-\code{cracks_width_cm} value.
+Since v0.9.311 each item is TRUE, FALSE or NA (not recorded), and the gate
+is NA when an item is undecided and none fails. Only a vertic horizon that
+can start within 100 cm decides item 1, so unrecorded layers below it do
+not leave the gate undecided. Item 3 reads the cracks of each layer as
+\code{\link{vertic_horizon}} does (\code{cracks_width_cm}, or slickensides
+or an \code{ss} designation as evidence of them): every layer between the
+start and the vertic horizon must have them, and a layer whose cracks are
+not recorded leaves the item undecided. Until v0.9.310 item 3 asked for a
+layer with cracks starting within 20 cm and read missing cracks as absent.
 }
 \section{Tier-3 strict mode (v0.9.98)}{
 

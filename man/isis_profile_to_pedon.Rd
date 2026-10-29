@@ -33,5 +33,7 @@ soilKey's words, and each value records its ISIS field in the provenance.
 The site carries the WRB and USDA names ISRIC gives the profile
 (\code{reference_wrb}, \code{reference_wrb_full}, \code{reference_usda},
 \code{reference_usda_subgroup} and their editions), the soil moisture and
-temperature regimes when ISIS records them, the licence and the citation.
+temperature regimes and the groundwater (\code{groundwater_kind},
+\code{groundwater_depth_cm}) when ISIS records them, the licence and the
+citation.
 }

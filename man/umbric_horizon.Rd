@@ -22,8 +22,8 @@ umbric_horizon(
 \item{max_bs}{Maximum base saturation \% (default 50; profile must
 be BELOW this).}
 
-\item{surface_top_cm}{Maximum top_cm for surface-related layers
-(default 5).}
+\item{surface_top_cm}{Maximum depth (cm) below the mineral soil
+surface at which the stack may start (default 5).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
@@ -34,9 +34,12 @@ horizon like mollic, but with low base saturation (< 50\%).
 Diagnostic of Umbrisols.
 }
 \details{
-Implementation reuses every mollic sub-test except the BS test,
-which is inverted via \code{test_bs_below}.
+Implementation reuses the mollic sub-tests on the contiguous stack of
+dark layers from the mineral soil surface (organic layers on top are
+not part of it), and tests the weighted average base saturation of the
+stack against \code{max_bs} (WRB 2022 3.1.39, pp. 69-70).
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 3, Umbric horizon.
+IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric
+  horizon (pp. 69-70).
 }

@@ -241,7 +241,9 @@ test_that("qual_geoabruptic: an abrupt textural difference not at a horizon top"
     bottom_cm = c(20, 60, 100), clay_pct = c(10, 18, 45),
     silt_pct = c(20, 22, 30), sand_pct = c(70, 60, 25),
     na_cmol = c(0.1, 0.1, 0.1), cec_cmol = c(8, 10, 20),
-    al_ox_pct = c(0.1, 0.1, 0.1), fe_ox_pct = c(0.1, 0.1, 0.1))))
+    al_ox_pct = c(0.1, 0.1, 0.1), fe_ox_pct = c(0.1, 0.1, 0.1),
+    # v0.9.312: WRB 2022 3.2.1 criterion 5, a transition of <= 2 cm
+    boundary_distinctness = c("clear", "abrupt", NA))))
   expect_true(isTRUE(qual_geoabruptic(g)$passed))   # at 60 cm; argic from 20
 })
 

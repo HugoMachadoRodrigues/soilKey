@@ -9,9 +9,11 @@ chernozem_strict(pedon, min_bs = 50, max_top_cm = 50, strict = NULL)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_bs}{Numeric threshold or option (see Details).}
+\item{min_bs}{Minimum base saturation \% above the carbonate layer
+(default 50).}
 
-\item{max_top_cm}{Numeric threshold or option (see Details).}
+\item{max_top_cm}{Maximum depth of the carbonate layer below the lower
+limit of the mollic horizon, cm (default 50).}
 
 \item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
@@ -24,8 +26,11 @@ A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, th
 WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
 lower limit of the mollic horizon and (if a petrocalcic horizon is
 present) above it, a layer with protocalcic properties \\>= 5 cm thick
-OR a calcic horizon AND base saturation \\>= 50\% from the surface
-to the protocalcic / calcic layer throughout.
+OR a calcic horizon AND base saturation \\>= 50\% from the mineral
+soil surface to the protocalcic / calcic layer throughout. Protocalcic
+properties are visible secondary carbonates
+(\code{\link{protocalcic_properties}}); where BS is not recorded it is
+read from pH (WRB 2022 Annex 2, Table 9.2).
 }
 \details{
 v0.3.4 strengthens the previous v0.2 chernozem (which only required

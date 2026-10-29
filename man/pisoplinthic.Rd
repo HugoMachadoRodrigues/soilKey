@@ -2,24 +2,37 @@
 % Please edit documentation in R/diagnostics-horizons-wrb-v033.R
 \name{pisoplinthic}
 \alias{pisoplinthic}
-\title{Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
-designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%
-AND structure_type containing 'pisol'.}
+\title{Pisoplinthic horizon (WRB 2022)}
 \usage{
-pisoplinthic(pedon, min_thickness = 15, min_plinthite_pct = 15)
+pisoplinthic(
+  pedon,
+  min_thickness = 15,
+  min_plinthite_pct = 15,
+  min_nodules_pct = 40
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_thickness}{Numeric threshold or option (see Details).}
 
-\item{min_plinthite_pct}{Numeric threshold or option (see Details).}
+\item{min_plinthite_pct}{Not used since v0.9.312; kept so that existing
+calls still work.}
+
+\item{min_nodules_pct}{Minimum volume \% of concretions and nodules
+(default 40).}
 }
 \value{
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects via
-designation pattern \code{Bspl} / \code{Bvpi} or via plinthite \\>= 15\%
-AND structure_type containing 'pisol'.
+WRB 2022 Ch 3.1.28 (p. 60): \\>= 40\% of the volume (whole soil)
+yellowish, reddish or blackish concretions or nodules over 2 mm, at least
+moderately cemented, not part of a petroplinthic horizon, \\>= 15 cm
+thick. Since v0.9.312 the concretions are read from
+\code{ferric_nodules_pct} (Fe/Mn nodules or concretions; the ISIS reader
+stores the hard ones over 2 mm), adjoining sublayers counting together; a
+layer where they are not recorded is undecided. Until v0.9.311 the test
+was plinthite \\>= 15\% with a "pisolitic" structure, which is not the
+WRB 2022 definition.
 }

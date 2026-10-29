@@ -4,20 +4,30 @@
 \alias{protocalcic_properties}
 \title{Protocalcic properties (WRB 2022 Ch 3.2.8)}
 \usage{
-protocalcic_properties(pedon, min_caco3_pct = 0.5, max_caco3_pct = 15)
+protocalcic_properties(pedon, min_secondary_pct = 5)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_caco3_pct}{Numeric threshold or option (see Details).}
-
-\item{max_caco3_pct}{Numeric threshold or option (see Details).}
+\item{min_secondary_pct}{Minimum visible secondary carbonates, \% of the
+exposed area (default 5).}
 }
 \value{
-A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
+A \code{\link{DiagnosticResult}} recording whether the diagnostic
+  is present, the qualifying layers, and the supporting evidence; the
+  per-layer status (TRUE / FALSE / NA) is in \code{evidence$layer_status}.
 }
 \description{
-Visible secondary carbonate accumulations, less than the calcic gate.
-Detects via caco3_pct between 0.5 and the calcic threshold (15) AND
-designation effervescence pattern (\code{k}).
+Accumulations of secondary carbonates, visible when moist, that occupy
+\\>= 5\% of the exposed area with masses, nodules, concretions or
+filaments, or cover \\>= 10\% of the surfaces of aggregates, biopore
+walls or the undersides of coarse fragments (WRB 2022 3.2.8, p. 78).
+The test reads the recorded abundance of visible secondary carbonates,
+\code{secondary_carbonates_pct} (or the visual \code{carbonate_soft_pct}
+plus \code{carbonate_hard_pct}). Laboratory CaCO3 is not evidence of
+secondary carbonates: with no abundance recorded, a layer with no CaCO3
+(\code{caco3_pct} 0, or no effervescence) has no protocalcic properties
+and any other layer is undecided. A \code{k} suffix with no abundance is
+undecided too, unless \code{options(soilKey.morphological_inference =
+TRUE)}, where it is accepted as morphological evidence.
 }

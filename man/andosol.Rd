@@ -44,6 +44,21 @@ v0.3.4 enforces (1) andic OR vitric AND (2) combined thickness
 \\>= 30 cm starting in the upper 25 cm AND (3) the negative-list
 exclusions on argic / ferralic / plinthic / spodic.
 }
+\section{v0.9.313 (WRB 2022 Ch 4, p 104, as worded)}{
+
+The combined thickness is that of every andic or vitric layer within
+100 cm of the soil surface (clipped at 100 cm), provided the uppermost
+starts \\<= 25 cm; until v0.9.312 only layers starting \\<= 25 cm were
+added up. Item 1b applies: where a limiting layer starts \\> 25 and
+\\<= 50 cm, andic or vitric layers covering \\>= 60\% of the soil above
+it qualify. Petroplinthic and pisoplinthic horizons join the
+exclusions. An argic horizon read from a clay increase alone (no clay
+films recorded) whose layers all have andic properties does not
+exclude (Hugo, N4: the clay of andic material does not disperse fully).
+Layers whose andic or vitric status is not recorded leave the gate
+undecided (\code{NA}) where they could change it.
+}
+
 \section{v0.9.85 buried-exclusion fix}{
 
 WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic /

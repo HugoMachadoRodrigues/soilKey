@@ -17,6 +17,8 @@ secondary carbonates accumulating in the Bk. By construction:
 \itemize{
   \item \code{\link{mollic}}: PASSES.
   \item \code{\link{kastanozem}}: PASSES.
-  \item \code{\link{chernozem}}, \code{\link{phaeozem}}: FAIL.
+  \item \code{\link{chernozem}}: FAILS.
+  \item \code{\link{phaeozem}}: PASSES too (WRB 2022 Phaeozems allow
+        carbonates); the key reaches the Kastanozems first.
 }
 }

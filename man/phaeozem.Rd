@@ -13,10 +13,14 @@ phaeozem(pedon)
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests whether a profile satisfies the Phaeozem RSG criteria: a
-mollic horizon AND no secondary carbonate accumulation anywhere in
-the profile.
+Tests whether a profile satisfies the Phaeozem RSG criteria (WRB 2022
+Ch 4, p. 113): a mollic horizon AND a base saturation (1 M NH4OAc, pH 7)
+\\>= 50\% throughout to 100 cm from the mineral soil surface or to a
+limiting layer, whichever is shallower. Carbonates are allowed: the
+Chernozems and Kastanozems are keyed out before. Where BS is not
+recorded, pH is read as in WRB 2022 Annex 2, Table 9.2. A profile not
+described down to that depth is undecided.
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 5, Phaeozems.
+IUSS Working Group WRB (2022), Chapter 4, Phaeozems (p. 113).
 }

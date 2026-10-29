@@ -15,32 +15,40 @@ gleyic_properties(
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{max_top_cm}{Maximum top depth (cm) of a candidate layer
-(default 50, per WRB 2022).}
+(default 50).}
 
-\item{min_redox_pct}{Minimum \code{redoximorphic_features_pct}
-(default 5).}
+\item{min_redox_pct}{The oximorphic features of criterion 2 are more
+than this \% of the layer (default 5).}
 
-\item{stagnic_decay_factor}{Numeric threshold or option (see Details).}
+\item{stagnic_decay_factor}{Not used since v0.9.312 (the decay test was
+removed); kept so that existing calls still work.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests whether the profile shows gleyic properties -- evidence of
-prolonged saturation by groundwater -- within the upper 50 cm.
-Gleyic properties are diagnostic for Gleysols and qualify many other
-RSGs (Endogleyic, Epigleyic qualifiers).
+Tests whether the profile shows gleyic properties (WRB 2022 Ch 3.2.6,
+p. 75) in a layer starting within the upper \code{max_top_cm} (default
+50). Gleyic properties qualify the Gleysols and many other RSGs (Gleyic,
+Endogleyic, Epigleyic qualifiers).
 }
 \details{
-Sub-test: \code{test_gleyic_features} -- requires explicit
-\code{redoximorphic_features_pct} >= 5\% within the upper 50 cm.
-
-v0.2 deliberately does NOT use the Munsell-based shortcut (chroma <=
-2 + value >= 4) as a primary criterion: that pattern fits albic /
-bleached horizons of Podzols just as well as truly reduced gleyic
-horizons. v0.3 will add reductimorphic / oxidimorphic feature
-discrimination once we model field-described mottle properties.
-v0.9.72 adds the designation-suffix path (opt-in).
+Since v0.9.312 the layer reading follows the text and Hugo's reading of
+it for field descriptions that do not say where the mottles sit: a layer
+has gleyic properties when its matrix has a reductimorphic colour, moist
+(criterion 1: hue N, 10Y, GY, G, BG, B or PB, or hue 2.5Y or 5Y with a
+chroma of 2 or less; with more than 5\% oximorphic features these are read
+as the gleyic features of criterion 2 over a reduced matrix); when it has
+more than 5\% oximorphic features and lies directly on a layer with such a
+matrix (criterion 3); or when it has them and the site records
+groundwater within 150 cm that is not perched
+(\code{site$groundwater_kind}, \code{site$groundwater_depth_cm}). A
+mottled layer with none of these is \code{NA}, unless the site records no
+groundwater, a perched water table or a deeper one, or a claric layer
+lies directly above it: its features are then stagnic. Continuous rock
+has no gleyic properties. Until v0.9.311 the features also had to
+continue with depth (a "decay" test that is not in WRB 2022 and failed
+the textbook oximorphic-over-reductimorphic sequence).
 }
 \section{v0.9.72 designation morphological inference (opt-in)}{
 
@@ -49,30 +57,15 @@ Redape curated dataset) routinely encode gleyic properties via the
 designation suffix \code{g} (e.g.\ \code{Cg}, \code{Cg1}, \code{Cgn},
 \code{Apg}) plus low-chroma Munsell colours (chroma \\<= 2), without
 recording \code{redoximorphic_features_pct} as a numeric percent.
-The strict canonical test then returns \code{NA} on every horizon
-and Gleissolos cascade to other Orders.
 
 With \code{options(soilKey.gleyic_designation_inference = TRUE)} the
-function accepts a layer as gleyic when:
-\enumerate{
-  \item the canonical \code{redoximorphic_features_pct} test is
-        \code{NA} for that layer, AND
-  \item the designation matches \code{[A-Z]+g[0-9a-z]?} (a horizon
-        name with a \code{g} suffix in the master letter sequence,
-        e.g.\ \code{Cg}, \code{Bg2}, \code{Apg}, \code{Cgn}), AND
-  \item the layer has \code{munsell_chroma_moist <= 2} (low-chroma
-        reduced colour) when Munsell is recorded; if Munsell is
-        missing on the layer the suffix alone is sufficient
-        (designation suffix is the most direct signal of pedologist
-        field judgment).
-}
-
-This is conservative: the suffix \code{g} is a master-letter
-modifier in the FAO/Embrapa horizon nomenclature that explicitly
-means "gleyic-affected" -- the curator already made the call.
-Default is \code{FALSE} (canonical behaviour preserved).
+function accepts a layer as gleyic when the reading above does not pass,
+the designation matches \code{[A-Z][a-z0-9]*g} and
+\code{munsell_chroma_moist <= 2} (or no Munsell colour). Default is
+\code{FALSE}.
 }
 
 \references{
-IUSS Working Group WRB (2022), Chapter 3, Gleyic properties.
+IUSS Working Group WRB (2022), Chapter 3.2.6, Gleyic
+  properties.
 }

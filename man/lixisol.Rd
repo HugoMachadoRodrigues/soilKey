@@ -9,16 +9,20 @@ lixisol(pedon, max_cec = 24, min_bs = 50)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{max_cec}{Maximum CEC per kg clay (default 24).}
+\item{max_cec}{CEC per kg clay below which the clay is of low activity
+(default 24).}
 
-\item{min_bs}{Minimum base saturation \% (default 50).}
+\item{min_bs}{Unused since v0.9.310, kept so that existing calls still run.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-argic + CEC < 24 cmol_c/kg clay + BS >= 50\%.
+The Lixisols of the WRB 2022 key (Ch 4, p. 120): an argic horizon starting
+\eqn{\le} 100 cm from the mineral soil surface and a CEC of < 24 cmolc/kg
+clay in some subhorizon of the argic horizon within 150 cm. The key reaches
+them after the Acrisols.
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 5, Lixisols.
+IUSS Working Group WRB (2022), Chapter 4, Lixisols (p. 120).
 }
