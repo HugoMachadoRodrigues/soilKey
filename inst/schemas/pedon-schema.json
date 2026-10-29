@@ -545,6 +545,9 @@
           },
           "weathered_fragments_pct": {
             "type": ["number", "null"]
+          },
+          "soluble_salts_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

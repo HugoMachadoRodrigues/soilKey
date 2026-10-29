@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.302)
+# soilKey -- recognised horizon attribute names (v0.9.305)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -297,6 +297,12 @@ and do not warn.
 | `pore_coatings_chroma_moist` | Munsell | numeric | Moist Munsell chroma of the coatings on pores or gel-like masses (see pore_coatings_hue_moist). | - |
 | `weathered_fragments_pct` | % | numeric | Share of the coarse rock fragments that are weathered enough to break easily by hammer or spade; NZSC Weathered Aged-argillic Semiarid, Weathered-argillic Perch-gley, Mottled-weathered and Weathered Argillic Pallic Soils (the majority, more than 50 %). Recorded when met: not recorded reads as none. | - |
 
+## Hungarian system (HSCS 2024)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `soluble_salts_pct` | % | numeric | Total water-soluble salts, % by mass of the soil, as Hungarian laboratories report them (estimated from the electrical conductivity of the saturated paste, MSZ-08-0206-2:1978). HSCS 2024 solonchak horizon (0.15 % or more). Not converted from ec_dS_m: the text itself finds that conversion unreliable. | - |
+
 # Site properties
 
 The named elements of `PedonRecord$site` that soilKey recognises. Give them in
@@ -439,5 +445,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.302._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.305._
 
