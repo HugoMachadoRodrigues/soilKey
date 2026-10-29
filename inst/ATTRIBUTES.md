@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.305)
+# soilKey -- recognised horizon attribute names (v0.9.308)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -136,6 +136,7 @@ and do not warn.
 | `plinthite_pct` | % | numeric | volume % of plinthite (Fe-rich nodules / mottles) | - |
 | `redoximorphic_features_pct` | % | numeric | volume % of Fe/Mn redox features | - |
 | `slickensides` | - | character | absent / few / common / many / continuous | - |
+| `ec_max_dS_m` | dS/m | numeric | Upper bound of the electrical conductivity of the saturated paste, when only a more dilute extract was measured (ISIS: EC 1:2.5 x 12.5, for a saturation percentage of 20 % or more). Read only by the salic test, to rule a layer out; ec_dS_m wins when it is known. | - |
 
 ## Technic, duric
 
@@ -393,6 +394,9 @@ the last section are stored by the loaders and reports and read by no key.
 |----------|------|------|-------------|--------|---------|
 | `reference_source` | - | character | Name of the dataset the reference classes come from ('Embrapa BDsolos', 'KSSL / NCSS Lab Data Mart', ...). Written by the benchmark loaders. | - | - |
 | `reference_wrb` | - | character | Published WRB class (a Reference Soil Group, or the name the dataset gives). Written by the LUCAS-ESDB, FEBR, BDsolos and AfSP (from WRB 2006) loaders and the spectral libraries, or copied from wosis_rsg or reference_wrb_from_usda; read by the benchmarks as the WRB reference. | - | - |
+| `reference_wrb_full` | - | character | Full WRB name the data provider gives the profile, with its qualifiers. Written by isis_profile_to_pedon() (ISRIC's name); its edition is in reference_wrb_edition. | - | - |
+| `reference_wrb_edition` | - | character | Edition (year) of the WRB name in reference_wrb and reference_wrb_full, e.g. '2022'. Written by isis_profile_to_pedon(); benchmark_isis() scores only the 2022 names. | - | - |
+| `reference_usda_edition` | - | character | Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon(). | - | - |
 | `reference_wrb06_full` | - | character | Full WRB 2006 name of an AfSP profile. Written by load_afsp_pedons(). | - | - |
 | `reference_fao88` | - | character | FAO 1988 class of an AfSP profile. Written by load_afsp_pedons(). | - | - |
 | `reference_wrb_from_usda` | - | character | WRB Reference Soil Group derived from reference_usda and reference_usda_suborder by annotate_wrb_from_usda(); read by benchmark_wrb_vs_usda() and copied into reference_wrb when that is missing. | - | - |
@@ -445,5 +449,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.305._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.308._
 

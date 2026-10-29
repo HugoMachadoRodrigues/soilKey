@@ -578,6 +578,17 @@ reference:
       - wosis_profile_to_pedon
       - wosis_citation
 
+  - title: "ISRIC World Soil Reference Collection (ISIS, v0.9.308)"
+    desc: >
+      Profiles of ISRIC's World Soil Reference Collection read live from the
+      ISIS GraphQL service, translated to soilKey pedons with ISRIC's own WRB
+      and USDA names, and compared with soilKey's.
+    contents:
+      - read_isis
+      - isis_profile_to_pedon
+      - isis_citation
+      - benchmark_isis
+
   - title: "USDA Soil Taxonomy <-> WRB cross-walk (v0.9.74)"
     desc: >
       KSSL/NCSS Lab Data Mart benchmark via IUSS WRB 2022 Annex 6

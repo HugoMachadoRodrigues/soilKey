@@ -548,6 +548,9 @@
           },
           "soluble_salts_pct": {
             "type": ["number", "null"]
+          },
+          "ec_max_dS_m": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

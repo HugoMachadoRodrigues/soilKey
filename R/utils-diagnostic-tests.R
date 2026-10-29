@@ -1444,6 +1444,19 @@ test_ec_concentration <- function(h, min_dS_m = 15,
   for (i in cl) {
     val <- h$ec_dS_m[i]
     if (is.na(val)) {
+      # v0.9.308: an upper bound of the paste EC (ec_max_dS_m, e.g. from a
+      # 1:2.5 extract) rules the layer out when it is below the threshold that
+      # applies (the alkaline one when the pH is high or unknown).
+      mx <- if ("ec_max_dS_m" %in% names(h)) h$ec_max_dS_m[i] else NA_real_
+      ph <- if ("ph_h2o" %in% names(h)) h$ph_h2o[i] else NA_real_
+      lim <- if (alkaline_enabled && (is.na(ph) || ph >= alkaline_min_pH)) alkaline_min_dS_m else min_dS_m
+      if (is.finite(mx) && mx < lim) {
+        details[[as.character(i)]] <- list(
+          idx = i, ec_dS_m = NA_real_, ec_max_dS_m = mx, ph_h2o = ph,
+          threshold = min_dS_m, alkaline_threshold = alkaline_min_dS_m,
+          alkaline_min_pH = alkaline_min_pH, path = "upper bound", passed = FALSE)
+        next
+      }
       missing <- c(missing, "ec_dS_m")
       next
     }
