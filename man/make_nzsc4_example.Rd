@@ -25,7 +25,8 @@ order of the New Zealand Soil Classification, with designations in the
 New Zealand notation and the properties the order key reads. Most key to
 the last (Orthic or default) group of their order. Their subgroup may be
 provisional where a measure the subgroups read is missing (sulfidic S,
-exchangeable Ca and Mg). They are not real profiles.
+exchangeable Ca and Mg, the origin of the layers). They are not real
+profiles.
 }
 \examples{
 p <- make_nzsc4_example("pallic")

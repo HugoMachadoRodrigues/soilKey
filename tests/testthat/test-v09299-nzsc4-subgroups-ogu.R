@@ -136,13 +136,13 @@ test_that("every subgroup of the Organic, Gley and Ultic Soils is reached by its
 test_that("the subgroup keys are registered and validate", {
   skip_on_cran()
   r <- load_rules("nzsc4")
-  expect_setequal(names(r$subgroups), c("OL", "OF", "OM", "OH", "GU", "GT", "GS", "GX", "GR", "GA", "GO",
-                                        "UD", "UE", "UP", "US", "UY"))
-  expect_identical(sum(lengths(r$subgroups)), 70L)
+  ogu <- c("OL", "OF", "OM", "OH", "GU", "GT", "GS", "GX", "GR", "GA", "GO", "UD", "UE", "UP", "US", "UY")
+  expect_true(all(ogu %in% names(r$subgroups)))
+  expect_identical(sum(lengths(r$subgroups[ogu])), 70L)
   v <- soilKey:::.validate_rules("nzsc4")
   expect_true(all(lengths(v[c("missing", "mixed", "unsuffixed", "malformed", "codes")]) == 0L))
   # a default closes each list, except under UD and UP (the text gives none)
-  last_default <- vapply(r$subgroups, function(l) isTRUE(l[[length(l)]]$tests$default), NA)
+  last_default <- vapply(r$subgroups[ogu], function(l) isTRUE(l[[length(l)]]$tests$default), NA)
   expect_identical(names(last_default)[!last_default], c("UD", "UP"))
 })
 

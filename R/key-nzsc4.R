@@ -4,7 +4,9 @@
 # the Key to Soil Orders; v0.9.298 adds the 77 groups of the keys to groups
 # (R/diagnostics-nzsc-groups.R, inst/rules/nzsc4/groups/); v0.9.299 the
 # subgroups of the Organic, Gley and Ultic Soils (R/diagnostics-nzsc-subgroups.R,
-# inst/rules/nzsc4/subgroups/). The other subgroups follow.
+# inst/rules/nzsc4/subgroups/); v0.9.300 those of the Podzol, Allophanic,
+# Pumice and Melanic Soils (R/diagnostics-nzsc-subgroups-zlme.R). The other
+# subgroups follow.
 # Experimental and opt-in: classify_all() runs it only when asked. The Cryic
 # Soils of the appendix (Antarctic soils) are not keyed.
 # =============================================================================
@@ -17,10 +19,13 @@
 #' \strong{Experimental}: this release keys the 15 orders (Organic, Gley,
 #' Ultic, Podzol, Allophanic, Pumice, Melanic, Semiarid, Oxidic, Granular,
 #' Pallic, Brown, Anthropic, Recent, Raw Soils), their 77 groups (since
-#' 0.9.298, e.g. Orthic Brown Soils, Perch-gley Pallic Soils) and, since
-#' 0.9.299, the 70 subgroups of the Organic, Gley and Ultic Soils (e.g.
-#' Peaty Orthic Gley Soils, Mottled Yellow Ultic Soils); the other subgroups
-#' follow. The Cryic Soils of the appendix are not keyed.
+#' 0.9.298, e.g. Orthic Brown Soils, Perch-gley Pallic Soils) and the
+#' subgroups of seven orders: since 0.9.299 the 70 of the Organic, Gley and
+#' Ultic Soils (e.g. Peaty Orthic Gley Soils, Mottled Yellow Ultic Soils),
+#' since 0.9.300 the 79 of the Podzol, Allophanic, Pumice and Melanic Soils
+#' (e.g. Humose Orthic Podzol Soils, Pedal-calcareous Orthic Melanic Soils);
+#' the other subgroups follow. The Cryic Soils of the appendix are not
+#' keyed.
 #'
 #' The NZSC reads horizon notations and field tests. The diagnostics read
 #' the New Zealand notation (Ah, E, Bw, Bt, Bg, Bh, Bs, Bo, Bx, Bw(g), Bhm,
@@ -46,7 +51,10 @@
 #' subgroups also read sulfidic S (\code{sulfidic_s_pct}), the EC of a 1:5
 #' extract (\code{ec_1to5_dS_m}), the share of Sphagnum in the fibres
 #' (\code{sphagnum_fibres_pct}), a shelly layer (\code{shelly_layer}),
-#' exchangeable Ca and Mg, and clay films. Features
+#' exchangeable Ca and Mg, clay films, the colour of coatings on pores
+#' (\code{pore_coatings_hue_moist}, \code{pore_coatings_value_moist},
+#' \code{pore_coatings_chroma_moist}) and the weathering of rock fragments
+#' (\code{weathering_stage}). Features
 #' a describer records when met (stratification, nodules, cracks, refuse or
 #' cultural layers, permafrost, surface water) are absent when not recorded.
 #' The choices where the text is silent are listed in
@@ -105,7 +113,8 @@ classify_nzsc4 <- function(pedon, rules = NULL,
 #' New Zealand notation and the properties the order key reads. Most key to
 #' the last (Orthic or default) group of their order. Their subgroup may be
 #' provisional where a measure the subgroups read is missing (sulfidic S,
-#' exchangeable Ca and Mg). They are not real profiles.
+#' exchangeable Ca and Mg, the origin of the layers). They are not real
+#' profiles.
 #'
 #' @param order One of \code{"organic"}, \code{"gley"}, \code{"ultic"},
 #'   \code{"podzol"}, \code{"allophanic"}, \code{"pumice"},

@@ -788,19 +788,31 @@ vertic_melanic_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h; ms <- x$ms
   miss <- c("cracks_width_cm", "cracks_depth_cm", "cole_value", "structure_grade")
   pre <- .nzsc_ms_or_na(x, "vertic_melanic_nzsc", "E, EV", miss); if (!is.null(pre)) return(pre)
+  v <- .nzsc_vertic_cracks_cole(x)
+  rows <- .nzsc_rows(x); rows <- rows[h$top_cm[rows] < ms + 30 & x$mineral[rows]]
+  no_redox <- !.nzsc_any(.nzsc_redox_present(x)[rows])
+  .nzsc_group("vertic_melanic_nzsc", .and3(c(v$passed, no_redox)), "E, EV",
+              list(cracks = v$cracks, cole = v$cole), miss)
+}
+
+# The vertic criteria of EV and EPV: cracks 4 mm wide or more reaching 30 cm
+# (cracks_depth_cm), or a COLE of 0.09 or more with moderate or strong
+# blocky or prismatic peds, both in the major part of the B.
+.nzsc_vertic_cracks_cole <- function(x) {
+  h <- x$h
   cw <- h$cracks_width_cm; cd <- h$cracks_depth_cm
   cracks <- .nzsc_any(ifelse(!is.na(cw) & cw >= 0.4, ifelse(is.na(cd), NA, cd >= 30), FALSE))
   b <- .nzsc_b_rows(x)
   g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
+  # v0.9.300: a recorded grade below moderate, or a type other than blocky
+  # or prismatic, rules the pedality out on its own
   shape <- ifelse(grepl("moderate|strong", g) & grepl("block|prism", t), TRUE,
-           ifelse(is.na(h$structure_grade) | is.na(h$structure_type), NA, FALSE))
+           ifelse((!is.na(h$structure_grade) & !grepl("moderate|strong", g)) |
+                  (!is.na(h$structure_type) & !grepl("block|prism", t)), FALSE, NA))
   cole <- ifelse(is.na(h$cole_value), NA, h$cole_value >= 0.09)
   # the COLE and the pedality, both in the major part of the B
   cle <- if (!length(b)) FALSE else .nzsc_major_part_b(x, b, .and3v(cole, shape))
-  rows <- .nzsc_rows(x); rows <- rows[h$top_cm[rows] < ms + 30 & x$mineral[rows]]
-  no_redox <- !.nzsc_any(.nzsc_redox_present(x)[rows])
-  .nzsc_group("vertic_melanic_nzsc", .and3(c(.any3(c(cracks, cle)), no_redox)), "E, EV",
-              list(cracks = cracks, cole = cle), miss)
+  list(passed = .any3(c(cracks, cle)), cracks = cracks, cole = cle)
 }
 
 # ER: limestone or other calcareous parent material as a lithic or

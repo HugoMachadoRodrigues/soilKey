@@ -1,0 +1,96 @@
+# Key to subgroups of Pumice Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-zlme.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "MP":
+    - code: "MPU"
+      name: Duric Perch-gley Pumice Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: duripan, depth: 90, limit: within}
+      notes: "A duripan within 90 cm of the mineral soil surface."
+
+    - code: "MPT"
+      name: Typic Perch-gley Pumice Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Pumice Soils."
+
+  "MI":
+    - code: "MIMC"
+      name: Mottled-compacted Impeded Pumice Soils
+      tests:
+        all_of:
+          - compacted_ignimbrite_nzsc: {}
+          - mottled_subgroup_nzsc: {}
+      notes: "A compact, brittle ignimbrite layer with no roots, its top within 90 cm, and a mottled profile form."
+
+    - code: "MIC"
+      name: Compacted Impeded Pumice Soils
+      tests:
+        all_of:
+          - compacted_ignimbrite_nzsc: {}
+      notes: "A compact, brittle ignimbrite layer with no roots, its top within 90 cm of the mineral soil surface."
+
+    - code: "MIM"
+      name: Mottled Impeded Pumice Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "MIT"
+      name: Typic Impeded Pumice Soils
+      tests:
+        default: true
+      notes: "Other Impeded Pumice Soils."
+
+  "MO":
+    - code: "MOM"
+      name: Mottled Orthic Pumice Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "MOZ"
+      name: Podzolic Orthic Pumice Soils
+      tests:
+        all_of:
+          - podzolic_pumice_nzsc: {}
+      notes: "A B horizon or subhorizon more than 20 cm thick with hue 7.5YR or redder."
+
+    - code: "MOL"
+      name: Allophanic Orthic Pumice Soils
+      tests:
+        all_of:
+          - allophanic_in_vitric_nzsc: {}
+      notes: "A vitric layer that also meets allophanic soil material apart from the bulk density."
+
+    - code: "MOBL"
+      name: Buried-allophanic Orthic Pumice Soils
+      tests:
+        all_of:
+          - buried_allophanic_pumice_nzsc: {}
+      notes: "A vitric layer in the B or BC horizon with its base above 60 cm, over a layer that meets allophanic soil material apart from the bulk density."
+
+    - code: "MOS"
+      name: Scoriaceous Orthic Pumice Soils
+      tests:
+        all_of:
+          - scoriaceous_pumice_nzsc: {}
+      notes: "Predominantly gravel-sized basaltic scoria (by weighted average) from the mineral soil surface to 25 cm."
+
+    - code: "MOI"
+      name: Immature Orthic Pumice Soils
+      tests:
+        all_of:
+          - immature_pumice_nzsc: {}
+      notes: "A Bw horizon 30 cm or less thick with hue 10YR or yellower and chroma 4 or less."
+
+    - code: "MOT"
+      name: Typic Orthic Pumice Soils
+      tests:
+        default: true
+      notes: "Other Orthic Pumice Soils (the key gives no name; the chapter's summary table names it Typic)."

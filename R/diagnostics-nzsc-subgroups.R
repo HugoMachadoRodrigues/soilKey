@@ -256,12 +256,15 @@ fluid_subgroup_nzsc <- function(pedon, saline = FALSE) {
 # surface within 60 cm of the soil surface (GUO, GRO, GAO, GOO) or of the
 # mineral soil surface (GTO, GSO); `sulfidic`: and sulfidic soil material in
 # some part within 90 cm of the mineral soil surface (GSOU, GROU, GOOU).
-peaty_subgroup_nzsc <- function(pedon, from = c("soil_surface", "mineral_surface"), sulfidic = FALSE) {
+# `buried = FALSE`: a peaty topsoil at the surface only, where the text names
+# no buried one (LGO, ERO; v0.9.300).
+peaty_subgroup_nzsc <- function(pedon, from = c("soil_surface", "mineral_surface"), sulfidic = FALSE,
+                                buried = TRUE) {
   from <- match.arg(from)
   x <- .nzsc_horizons(pedon)
   miss <- c("oc_pct", "field_texture", "site$drainage_class", if (isTRUE(sulfidic)) "sulfidic_s_pct")
   z0 <- if (from == "soil_surface") x$soil_top else x$ms
-  p <- .nzsc_peaty_or_buried(pedon, x, z0)
+  p <- if (isTRUE(buried)) .nzsc_peaty_or_buried(pedon, x, z0) else .nzsc_peaty_topsoil(pedon, x)
   s <- if (!isTRUE(sulfidic)) TRUE else if (is.na(x$ms)) NA else {
     sr <- .nzsc_sulfidic_rows(x)
     .nzsc_open_below(.nzsc_some_part_in(x, .nzsc_rows_in(x, x$ms, x$ms + 90), sr, x$ms, x$ms + 90), x, x$ms + 90)
@@ -297,18 +300,14 @@ sandy_saline_nzsc <- function(pedon) {
 acidic_subgroup_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h
   pre <- .nzsc_sub_ms_or_na(x, "acidic_subgroup_nzsc", "acidic subgroups", "ph_h2o"); if (!is.null(pre)) return(pre)
-  zt <- .nzsc_a_base(x); zb <- x$ms + 60
+  zb <- x$ms + 60
   acid <- ifelse(is.na(h$ph_h2o), NA, h$ph_h2o < 5.5)
   at <- function(z) if (is.na(z)) NA else if (z >= zb - 0.5) FALSE else
     .nzsc_some_part_in(x, .nzsc_rows_in(x, z, zb), acid, z, zb)
   # mineral rows of unknown role directly under the A may be A too: the
-  # base may lie lower, and the verdict holds only when both agree
-  zt2 <- zt; rows <- .nzsc_rows(x)
-  while (!is.na(zt2) && is.finite(zt2)) {
-    j <- rows[abs(h$top_cm[rows] - zt2) <= 0.5 & x$unknown_role[rows] & x$mineral[rows]]
-    if (!length(j)) break
-    zt2 <- if (is.na(h$bottom_cm[j[1L]])) Inf else h$bottom_cm[j[1L]]
-  }
+  # base may lie lower, and the verdict holds only when both agree (v0.9.300:
+  # a row of no thickness no longer stops the walk forever)
+  zz <- .nzsc_a_bases(x); zt <- zz[1L]; zt2 <- zz[2L]
   v1 <- at(zt); v2 <- at(zt2)
   passed <- if (identical(v1, v2)) v1 else NA
   .nzsc_subgroup("acidic_subgroup_nzsc", passed, "acidic subgroups", list(from = zt, to = zb), "ph_h2o")
@@ -327,13 +326,16 @@ concretionary_subgroup_nzsc <- function(pedon) {
 
 # Calcareous subgroups: a calcareous horizon or a shelly layer within 60 cm
 # of the mineral soil surface (GRC, `shelly`); a calcareous horizon at 60 cm
-# or less (GOC, `limit: at_or_less`, a top at 60 cm included).
-calcareous_subgroup_nzsc <- function(pedon, shelly = FALSE, limit = c("within", "at_or_less")) {
+# or less (GOC, `limit: at_or_less`, a top at 60 cm included); `depth` 90
+# for the Melanic Soils (EVC within 90 cm; EOC with an upper surface at 90
+# cm or less; v0.9.300).
+calcareous_subgroup_nzsc <- function(pedon, shelly = FALSE, limit = c("within", "at_or_less"), depth = 60) {
   limit <- match.arg(limit)
   x <- .nzsc_horizons(pedon)
   miss <- c("effervescence_class", "caco3_pct", "ph_h2o")
   pre <- .nzsc_sub_ms_or_na(x, "calcareous_subgroup_nzsc", "calcareous subgroups", miss); if (!is.null(pre)) return(pre)
-  rows <- .nzsc_rows_in(x, x$ms, x$ms + if (limit == "within") 60 else 61)
+  d <- as.numeric(depth)
+  rows <- .nzsc_rows_in(x, x$ms, x$ms + if (limit == "within") d else d + 1)
   calc <- .nzsc_calcareous_rows(x)
   sh <- if (isTRUE(shelly)) any(.nzsc_shelly_rows(x)[rows]) else FALSE
   .nzsc_subgroup("calcareous_subgroup_nzsc", .any3(c(.nzsc_any(calc[rows]), sh)), "calcareous subgroups",
@@ -341,14 +343,20 @@ calcareous_subgroup_nzsc <- function(pedon, shelly = FALSE, limit = c("within", 
 }
 
 # Pan subgroups (GOI): a pan of the kind at `depth` cm or less from the
-# mineral soil surface.
+# mineral soil surface; `limit: within` (LPI, LIMI, MPU), with its top less
+# than `depth` cm down; `anywhere`: at any depth (the Podzol subgroups name
+# no depth; v0.9.300).
 pan_subgroup_nzsc <- function(pedon, kind = c("ironstone_pan", "placic", "humus_pan", "ortstein", "fragipan", "duripan"),
-                              depth = 90) {
-  kind <- match.arg(kind)
+                              depth = 90, anywhere = FALSE, limit = c("at_or_less", "within")) {
+  kind <- match.arg(kind); limit <- match.arg(limit)
   x <- .nzsc_horizons(pedon); h <- x$h
-  pre <- .nzsc_sub_ms_or_na(x, "pan_subgroup_nzsc", "pan subgroups", c("designation", "pan_type")); if (!is.null(pre)) return(pre)
   p <- .nzsc_pan_rows(x, kind)
-  rows <- .nzsc_rows(x); rows <- rows[h$top_cm[rows] <= x$ms + as.numeric(depth) + 0.5]
+  rows <- .nzsc_rows(x)
+  if (isTRUE(anywhere))
+    return(.nzsc_subgroup("pan_subgroup_nzsc", any(p[rows]), "pan subgroups", list(kind = kind), layers = which(p)))
+  pre <- .nzsc_sub_ms_or_na(x, "pan_subgroup_nzsc", "pan subgroups", c("designation", "pan_type")); if (!is.null(pre)) return(pre)
+  rows <- rows[if (limit == "within") h$top_cm[rows] < x$ms + as.numeric(depth) - 0.5
+                else h$top_cm[rows] <= x$ms + as.numeric(depth) + 0.5]
   .nzsc_subgroup("pan_subgroup_nzsc", any(p[rows]), "pan subgroups", list(kind = kind), layers = which(p))
 }
 
@@ -487,23 +495,39 @@ granular_acid_gley_nzsc <- function(pedon) {
   pre <- .nzsc_sub_ms_or_na(x, "granular_acid_gley_nzsc", "G, GAG", miss); if (!is.null(pre)) return(pre)
   b <- .nzsc_b_rows(x); b <- b[h$top_cm[b] < x$ms + 60]
   if (!length(b)) return(.nzsc_subgroup("granular_acid_gley_nzsc", .nzsc_none(x), "G, GAG", missing = miss))
+  clay <- ifelse(is.na(x$tex$group), NA, x$tex$group %in% "clayey")
+  ok <- .and3v(clay, .nzsc_polyhedral_cutanic(x))
+  base <- if (anyNA(h$bottom_cm[b])) Inf else max(h$bottom_cm[b])
+  .nzsc_subgroup("granular_acid_gley_nzsc", .nzsc_major_part_b(x, b, ok, zb = min(x$ms + 60, base)), "G, GAG",
+                 missing = miss)
+}
+
+# Cutanic horizon of each row: the (h) notation, or recorded dark coatings
+# (moist value 4 or less) on an E, B or BC horizon, as the Diagnostics
+# define it (only "usually" written (h)).
+.nzsc_cutanic_or_coated <- function(x) {
+  h <- x$h; n <- x$n
+  films <- .nzsc_txt(h$clay_films_amount, n)
+  coated <- !is.na(films) & nzchar(films) & !grepl("^none|^no|absent", films)
+  cv <- h$coatings_value_moist %||% rep(NA_real_, n)
+  ebc <- .nzsc_is(x, c("E", "B", "BC"))
+  cut <- .nzsc_cutanic_rows(x)
+  # value 5 passes with chroma 3 or less, and the coatings chroma is not
+  # recorded (v0.9.300)
+  ifelse(coated & !is.na(cv) & cv <= 4 & ebc, TRUE,
+         ifelse(coated & !is.na(cv) & cv > 4 & cv <= 5 & ebc & !(cut %in% TRUE), NA, cut))
+}
+
+# A moderately or strongly pedal cutanic or argillic horizon with polyhedral
+# peds of 20 mm or less (GAG; LOBG, v0.9.300).
+.nzsc_polyhedral_cutanic <- function(x) {
+  h <- x$h; n <- x$n
   g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
   size <- h$ped_size_max_mm %||% rep(NA_real_, n)
   grade <- ifelse(grepl("moderate|strong", g), TRUE, ifelse(is.na(h$structure_grade), NA, FALSE))
   poly <- ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
-  clay <- ifelse(is.na(x$tex$group), NA, x$tex$group %in% "clayey")
-  # cutanic: the (h) notation, or recorded dark coatings (moist value 4 or
-  # less) on a B horizon, as the Diagnostics define it (only "usually"
-  # written (h))
-  films <- .nzsc_txt(h$clay_films_amount, n)
-  coated <- !is.na(films) & nzchar(films) & !grepl("^none|^no|absent", films)
-  cv <- h$coatings_value_moist %||% rep(NA_real_, n)
-  cut <- ifelse(coated & !is.na(cv) & cv <= 4, TRUE, .nzsc_cutanic_rows(x))
-  ca <- .any3v(cut, .nzsc_argillic_rows(x))
-  ok <- .and3v(.and3v(.and3v(clay, grade), .and3v(ca, poly)), ifelse(is.na(size), NA, size <= 20))
-  base <- if (anyNA(h$bottom_cm[b])) Inf else max(h$bottom_cm[b])
-  .nzsc_subgroup("granular_acid_gley_nzsc", .nzsc_major_part_b(x, b, ok, zb = min(x$ms + 60, base)), "G, GAG",
-                 missing = miss)
+  ca <- .any3v(.nzsc_cutanic_or_coated(x), .nzsc_argillic_rows(x))
+  .and3v(.and3v(grade, ca), .and3v(poly, ifelse(is.na(size), NA, size <= 20)))
 }
 
 # GAY: in the major part of the B horizon, 10 % or more clay or humus
@@ -576,23 +600,38 @@ albic_sandy_ultic_nzsc <- function(pedon) {
 # 5 % or more coarse rock fragments mainly of ultramafic rocks (fragments
 # not recorded read as none), or exchangeable Ca:Mg 0.2 or less with Mg 1.5
 # cmol/kg or more.
-magnesic_yellow_ultic_nzsc <- function(pedon) {
+magnesic_yellow_ultic_nzsc <- function(pedon) magnesic_subgroup_nzsc(pedon)
+
+# Magnesic subgroups: UYG in the B horizon; EMG (`bc`) in the B or BC
+# horizon (v0.9.300), to 60 cm from the mineral soil surface.
+magnesic_subgroup_nzsc <- function(pedon, bc = FALSE) {
   x <- .nzsc_horizons(pedon); h <- x$h
+  nm <- if (isTRUE(bc)) "magnesic_subgroup_nzsc" else "magnesic_yellow_ultic_nzsc"
+  where <- if (isTRUE(bc)) "E, EMG" else "U, UYG"
   miss <- c("ca_cmol", "mg_cmol", "rock_origin", "coarse_fragments_pct")
-  pre <- .nzsc_sub_ms_or_na(x, "magnesic_yellow_ultic_nzsc", "U, UYG", miss); if (!is.null(pre)) return(pre)
-  b <- .nzsc_b_rows(x); b <- b[h$top_cm[b] < x$ms + 60]
-  if (!length(b)) return(.nzsc_subgroup("magnesic_yellow_ultic_nzsc", .nzsc_none(x), "U, UYG", missing = miss))
+  pre <- .nzsc_sub_ms_or_na(x, nm, where, miss); if (!is.null(pre)) return(pre)
+  b <- if (isTRUE(bc)) .nzsc_b_bc_rows(x) else .nzsc_b_rows(x)
+  b <- b[h$top_cm[b] < x$ms + 60]
+  # v0.9.300: mineral rows of unknown role may be B (or BC) too
+  maybe <- .nzsc_maybe_rows(x); maybe <- maybe[h$top_cm[maybe] < x$ms + 60]
+  if (!length(b) && !length(maybe)) return(.nzsc_subgroup(nm, FALSE, where, missing = miss))
   pm <- tolower(as.character(.nzsc_site1(pedon, "parent_material")))
   ok <- rep(FALSE, x$n)
-  for (i in b) {
+  for (i in c(b, maybe)) {
     cf <- h$coarse_fragments_pct[i]
     ro <- tolower(as.character(h$rock_origin[i] %||% NA)); if (is.na(ro) || !nzchar(ro)) ro <- pm
     um <- if (is.na(ro) || !nzchar(ro)) NA else grepl("ultramafic|serpentin|peridot|dunite|pyroxenit|harzburg|lherzol", ro)
     frag <- if (is.na(cf) || cf < 5) FALSE else um
     ok[i] <- .any3(c(frag, .nzsc_ca_mg(x, i)))
   }
-  .nzsc_subgroup("magnesic_yellow_ultic_nzsc", .nzsc_some_part_in(x, b, ok, min(h$top_cm[b]), x$ms + 60),
-                 "U, UYG", missing = miss)
+  part <- function(r, okv) if (!length(r)) FALSE else .nzsc_some_part_in(x, r, okv, min(h$top_cm[r]), x$ms + 60)
+  v1 <- part(b, ok)
+  if (length(maybe)) {
+    ok2 <- ok; ok2[maybe] <- ifelse(ok[maybe] %in% FALSE, FALSE, NA)
+    v2 <- part(sort(unique(c(b, maybe))), ok2)
+    v1 <- if (identical(v1, v2)) v1 else NA
+  }
+  .nzsc_subgroup(nm, v1, where, missing = miss)
 }
 
 # UYZ (UYMZ also a mottled profile form): pH 4.8 or less in the eluvial

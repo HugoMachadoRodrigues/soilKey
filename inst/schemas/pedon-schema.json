@@ -533,6 +533,15 @@
           },
           "shelly_layer": {
             "type": ["boolean", "null"]
+          },
+          "pore_coatings_hue_moist": {
+            "type": ["string", "null"]
+          },
+          "pore_coatings_value_moist": {
+            "type": ["number", "null"]
+          },
+          "pore_coatings_chroma_moist": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

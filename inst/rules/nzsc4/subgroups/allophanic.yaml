@@ -1,0 +1,97 @@
+# Key to subgroups of Allophanic Soils, New Zealand Soil Classification, 4th ed.
+# Criteria are summarised from the text; see R/diagnostics-nzsc-subgroups-zlme.R
+# and inst/rules/nzsc4/readings.yaml.
+
+subgroups:
+  "LP":
+    - code: "LPI"
+      name: Ironstone Perch-gley Allophanic Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: ironstone_pan, depth: 90, limit: within}
+      notes: "An ironstone-pan within 90 cm of the mineral soil surface."
+
+    - code: "LPT"
+      name: Typic Perch-gley Allophanic Soils
+      tests:
+        default: true
+      notes: "Other Perch-gley Allophanic Soils."
+
+  "LG":
+    - code: "LGO"
+      name: Peaty Gley Allophanic Soils
+      tests:
+        all_of:
+          - peaty_subgroup_nzsc: {from: soil_surface, buried: false}
+      notes: "A peaty topsoil."
+
+    - code: "LGT"
+      name: Typic Gley Allophanic Soils
+      tests:
+        default: true
+      notes: "Other Gley Allophanic Soils."
+
+  "LI":
+    - code: "LIMI"
+      name: Mottled-ironstone Impeded Allophanic Soils
+      tests:
+        all_of:
+          - pan_subgroup_nzsc: {kind: ironstone_pan, depth: 90, limit: within}
+          - mottled_subgroup_nzsc: {}
+      notes: "An ironstone-pan within 90 cm of the mineral soil surface and a mottled profile form."
+
+    - code: "LIM"
+      name: Mottled Impeded Allophanic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "LIT"
+      name: Typic Impeded Allophanic Soils
+      tests:
+        default: true
+      notes: "Other Impeded Allophanic Soils."
+
+  "LO":
+    - code: "LOM"
+      name: Mottled Orthic Allophanic Soils
+      tests:
+        all_of:
+          - mottled_subgroup_nzsc: {}
+      notes: "A mottled profile form."
+
+    - code: "LOVA"
+      name: Vitric-acidic Orthic Allophanic Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60, coatings: true}
+          - vitric_allophanic_nzsc: {}
+      notes: "Reddish coatings on pores or gel-like masses, or pH below 5.5, in some part of the B or BC horizon to 60 cm; and allophanic soil material formed predominantly from tephric soil material with 50 % or more sand."
+
+    - code: "LOV"
+      name: Vitric Orthic Allophanic Soils
+      tests:
+        all_of:
+          - vitric_allophanic_nzsc: {}
+      notes: "Allophanic soil material formed predominantly from tephric soil material with 50 % or more sand (weighted average)."
+
+    - code: "LOA"
+      name: Acidic Orthic Allophanic Soils
+      tests:
+        all_of:
+          - acidic_b_subgroup_nzsc: {depth: 60, coatings: true}
+      notes: "Reddish coatings on pores or gel-like masses, or pH below 5.5, in some part of the B or BC horizon to 60 cm."
+
+    - code: "LOBG"
+      name: Buried-granular Orthic Allophanic Soils
+      tests:
+        all_of:
+          - buried_granular_allophanic_nzsc: {}
+      notes: "Allophanic soil material over a clayey, non-allophanic B horizon that is cutanoxidic, or cutanic or argillic with fine polyhedral peds."
+
+    - code: "LOT"
+      name: Typic Orthic Allophanic Soils
+      tests:
+        default: true
+      notes: "Other Orthic Allophanic Soils."
