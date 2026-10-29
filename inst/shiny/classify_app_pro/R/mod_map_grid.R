@@ -387,8 +387,8 @@ map_grid_ui <- function(id) {
                               class = "btn-primary w-100"),
           "Predict the soil class for every grid cell and draw it as a raster on the map."),
         bslib::tooltip(
-          shiny::downloadButton(ns("export"), i18n("mgrid.export_geotiff"),
-                                class = "btn-outline-secondary w-100 mt-2"),
+          sk_download_button(ns("export"), i18n("mgrid.export_geotiff"),
+                             class = "btn-outline-secondary w-100 mt-2"),
           "Download the predicted class grid as a categorical GeoTIFF for use in GIS."),
         shiny::uiOutput(ns("method_help"))
       )
@@ -536,7 +536,7 @@ map_grid_server <- function(id, rv, settings) {
     })
 
     # ---- GeoTIFF export -----------------------------------------------------
-    output$export <- shiny::downloadHandler(
+    sk_download("export",
       filename = function() "soilkey_class_grid.tif",
       content = function(file) {
         rr <- grid_result()

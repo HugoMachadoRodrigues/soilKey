@@ -149,10 +149,10 @@ map_ui <- function(id) {
                                 12, min = 1, max = 60, step = 1)),
           shiny::conditionalPanel(
             sprintf("input['%s'] == 'upload'", ns("batch_source")),
-            shiny::fileInput(ns("batch_csv"), i18n("mbatch.long_csv"),
-                             accept = ".csv"),
-            shiny::downloadLink(ns("batch_template"),
-                                i18n("mbatch.download_template"))),
+            sk_file_input(ns("batch_csv"), i18n("mbatch.long_csv"),
+                          accept = ".csv"),
+            sk_download_link(ns("batch_template"),
+                             i18n("mbatch.download_template"))),
           shiny::selectInput(
             ns("batch_system"), i18n("mbatch.colour_by_system"),
             choices = c("WRB 2022" = "wrb", "SiBCS 5" = "sibcs",
@@ -164,13 +164,13 @@ map_ui <- function(id) {
                                      type = "primary", class = "w-100"),
             i18n("mbatch.tip_run")),
           bslib::tooltip(
-            shiny::downloadButton(ns("batch_export"), i18n("mbatch.export"),
-                                  class = "btn-outline-secondary w-100 mt-2"),
+            sk_download_button(ns("batch_export"), i18n("mbatch.export"),
+                               class = "btn-outline-secondary w-100 mt-2"),
             i18n("mbatch.tip_export")),
           bslib::tooltip(
-            shiny::downloadButton(ns("batch_report"), i18n("mbatch.report"),
-                                  icon = shiny::icon("file-lines"),
-                                  class = "btn-outline-secondary w-100 mt-2"),
+            sk_download_button(ns("batch_report"), i18n("mbatch.report"),
+                               icon = shiny::icon("file-lines"),
+                               class = "btn-outline-secondary w-100 mt-2"),
             i18n("mbatch.tip_report"))
         )),
 
@@ -204,8 +204,8 @@ map_ui <- function(id) {
                                      type = "primary", class = "w-100"),
             i18n("mgrid.tip_predict")),
           bslib::tooltip(
-            shiny::downloadButton(ns("grid_export"), i18n("mgrid.export_geotiff"),
-                                  class = "btn-outline-secondary w-100 mt-2"),
+            sk_download_button(ns("grid_export"), i18n("mgrid.export_geotiff"),
+                               class = "btn-outline-secondary w-100 mt-2"),
             i18n("mgrid.tip_export")),
           shiny::uiOutput(ns("grid_help"))
         ))
@@ -659,10 +659,10 @@ map_server <- function(id, rv, settings) {
           res$id, res$wrb_name, res$sibcs_name, res$usda_name)) |>
         leaflet::fitBounds(min(res$lon), min(res$lat), max(res$lon), max(res$lat))
     })
-    output$batch_template <- shiny::downloadHandler(
+    sk_download("batch_template",
       filename = function() "soilKey_batch_template.csv",
       content = function(file) writeLines(.batch_starter_csv, file))
-    output$batch_export <- shiny::downloadHandler(
+    sk_download("batch_export",
       filename = function() "soilkey_soil_map.gpkg",
       content = function(file) {
         res <- batch()
@@ -673,7 +673,7 @@ map_server <- function(id, rv, settings) {
                                   remove = FALSE), file, layer = "soil_points",
                      delete_dsn = TRUE, quiet = TRUE)
       })
-    output$batch_report <- shiny::downloadHandler(
+    sk_download("batch_report",
       filename = function() "soilkey_profiles_report.html",
       content = function(file) {
         peds <- batch_pedons()
@@ -744,7 +744,7 @@ map_server <- function(id, rv, settings) {
                            title = i18n("mgrid.predicted_class_raster"),
                            opacity = 0.9, layerId = "grid_legend")
     })
-    output$grid_export <- shiny::downloadHandler(
+    sk_download("grid_export",
       filename = function() "soilkey_grid_prediction.tif",
       content = function(file) {
         rr <- grid_result()

@@ -76,7 +76,7 @@ report_server <- function(id, rv, settings) {
       p
     }
 
-    output$html <- shiny::downloadHandler(
+    sk_download("html",
       filename = function() sprintf("soilKey_report_%s.html", safe_id()),
       content  = function(file) {
         shiny::req(rv$pedon)
@@ -90,7 +90,7 @@ report_server <- function(id, rv, settings) {
       }
     )
 
-    output$pdf <- shiny::downloadHandler(
+    sk_download("pdf",
       filename = function() {
         cf <- cfg()
         out <- tryCatch({
@@ -139,14 +139,14 @@ report_server <- function(id, rv, settings) {
           shiny::div(
             class = "d-flex flex-wrap gap-2 mb-2",
             bslib::tooltip(
-              shiny::downloadButton(ns("html"), i18n("report.download_html"),
-                                    icon = shiny::icon("file-code"),
-                                    class = "btn-primary"),
+              sk_download_button(ns("html"), i18n("report.download_html"),
+                                 icon = shiny::icon("file-code"),
+                                 class = "btn-primary"),
               i18n("report.tip_html")),
             if (pdf_ok) bslib::tooltip(
-              shiny::downloadButton(ns("pdf"), i18n("report.download_pdf"),
-                                    icon = shiny::icon("file-pdf"),
-                                    class = "btn-secondary"),
+              sk_download_button(ns("pdf"), i18n("report.download_pdf"),
+                                 icon = shiny::icon("file-pdf"),
+                                 class = "btn-secondary"),
               i18n("report.tip_pdf"))),
           if (!pdf_ok) shiny::helpText(shiny::icon("print"), " ",
                                        i18n("report.pdf_via_print")),
@@ -167,10 +167,9 @@ report_server <- function(id, rv, settings) {
       )
     })
 
-    # the buttons live in renderUI'd UI; keep their links bound even while
-    # the tab is hidden
-    shiny::outputOptions(output, "html", suspendWhenHidden = FALSE)
-    shiny::outputOptions(output, "pdf", suspendWhenHidden = FALSE)
+    # v0.9.303: the buttons live in renderUI'd UI. They are action buttons
+    # now (sk_download), whose observers run whether the tab is shown or not,
+    # so the outputOptions() that kept the old download links bound are gone.
 
     # Render one row per optional setting with a check/cross icon.
     output$opts <- shiny::renderUI({

@@ -70,7 +70,7 @@ spectra_ui <- function(id) {
         i18n("spectra.step1_attach"),
         icon = "wave-square",
         desc = i18n("spectra.desc_attach"),
-        shiny::fileInput(
+        sk_file_input(
           ns("vnir_csv"),
           sk_label(i18n("spectra.vnir_csv_label"),
                    i18n("spectra.help_csv")),

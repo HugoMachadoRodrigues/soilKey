@@ -740,6 +740,14 @@ en:
   "map.attr_soilgrids": "Soil classes: <a href=\"https://soilgrids.org\" target=\"_blank\" rel=\"noopener\">SoilGrids 2.0</a> &copy; ISRIC &ndash; World Soil Information, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>"
   "map.attr_demo": "Soil classes: synthetic demo raster, not SoilGrids"
   "mpoint.live_slow": "Live SoilGrids reads can take a minute; the rest of the app stays usable meanwhile."
+  # v0.9.303 -- uploads and downloads over the websocket; connection lost
+  "transfer.upload_complete": "Upload complete"
+  "transfer.too_large": "The file is larger than the %s MB limit."
+  "transfer.upload_failed": "The upload failed. Reload the page and try again."
+  "transfer.download_failed": "The file could not be prepared."
+  "transfer.lost_title": "Connection to the server lost."
+  "transfer.lost_body": "This page no longer reaches its session, so buttons and downloads will not respond. Reload to start a new session; a profile saved with \"Save session\" can be reopened afterwards."
+  "transfer.reload": "Reload"
 
 pt:
   "pedon.geom_missing_depth": "Profundidade ausente ou não numérica na(s) linha(s) %s."
@@ -1478,3 +1486,11 @@ pt:
   "map.attr_soilgrids": "Classes de solo: <a href=\"https://soilgrids.org\" target=\"_blank\" rel=\"noopener\">SoilGrids 2.0</a> &copy; ISRIC &ndash; World Soil Information, <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>"
   "map.attr_demo": "Classes de solo: raster de demonstração sintético, não é o SoilGrids"
   "mpoint.live_slow": "Leituras do SoilGrids ao vivo podem levar um minuto; o resto do app continua utilizável enquanto isso."
+  # v0.9.303 -- envios e downloads pelo websocket; conexão perdida
+  "transfer.upload_complete": "Envio concluído"
+  "transfer.too_large": "O arquivo passa do limite de %s MB."
+  "transfer.upload_failed": "O envio falhou. Recarregue a página e tente de novo."
+  "transfer.download_failed": "Não foi possível preparar o arquivo."
+  "transfer.lost_title": "A conexão com o servidor caiu."
+  "transfer.lost_body": "Esta página perdeu a sua sessão, então botões e downloads não vão responder. Recarregue para abrir uma nova sessão; um perfil salvo com \"Salvar sessão\" pode ser reaberto depois."
+  "transfer.reload": "Recarregar"

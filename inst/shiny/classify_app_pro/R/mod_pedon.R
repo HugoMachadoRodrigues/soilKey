@@ -279,11 +279,11 @@ pedon_ui <- function(id) {
         ),
         shiny::conditionalPanel(
           sprintf("input['%s'] == 'upload'", ns("source")),
-          shiny::fileInput(ns("csv"),
-                           sk_label(i18n("pedon.horizons_csv_tsv"),
-                                    i18n("pedon.help_csv")),
-                           accept = c(".csv", ".tsv", ".txt")),
-          shiny::downloadLink(ns("template"), i18n("pedon.download_starter_csv"))
+          sk_file_input(ns("csv"),
+                        sk_label(i18n("pedon.horizons_csv_tsv"),
+                                 i18n("pedon.help_csv")),
+                        accept = c(".csv", ".tsv", ".txt")),
+          sk_download_link(ns("template"), i18n("pedon.download_starter_csv"))
         ),
         bslib::tooltip(
           shiny::actionButton(ns("load"), i18n("pedon.load_horizons"),
@@ -374,12 +374,12 @@ pedon_ui <- function(id) {
         icon = "floppy-disk",
         desc = i18n("pedon.desc_session"),
         bslib::tooltip(
-          shiny::downloadButton(
+          sk_download_button(
             ns("save_session"), i18n("pedon.save_session"),
             icon = shiny::icon("download"),
             class = "btn-outline-secondary w-100"),
           i18n("pedon.tip_save_session")),
-        shiny::fileInput(
+        sk_file_input(
           ns("session_file"),
           sk_label(i18n("pedon.open_session"),
                    i18n("pedon.help_open_session")),
@@ -396,9 +396,9 @@ pedon_ui <- function(id) {
                      shiny::div(
                        class = "d-flex gap-2",
                        bslib::tooltip(
-                         shiny::downloadButton(ns("download_hz"), i18n("pedon.csv"),
-                                               icon = shiny::icon("download"),
-                                               class = "btn-sm btn-outline-secondary"),
+                         sk_download_button(ns("download_hz"), i18n("pedon.csv"),
+                                            icon = shiny::icon("download"),
+                                            class = "btn-sm btn-outline-secondary"),
                          i18n("pedon.tip_download_csv")),
                        bslib::tooltip(
                          shiny::actionButton(ns("add_row"), i18n("pedon.add_row"),
@@ -456,14 +456,14 @@ pedon_server <- function(id, rv) {
     hz        <- shiny::reactiveVal(NULL)  # editable horizon data.frame
     hz_reload <- shiny::reactiveVal(0L)    # bumps only on load/add -> re-render
 
-    output$template <- shiny::downloadHandler(
+    sk_download("template",
       filename = function() "soilKey_horizons_template.csv",
       content  = function(file) writeLines(.pedon_starter_csv, file)
     )
 
     # Download the current horizon table as CSV (edit in a spreadsheet, archive,
     # or re-upload later).
-    output$download_hz <- shiny::downloadHandler(
+    sk_download("download_hz",
       filename = function() sprintf("soilKey_horizons_%s.csv",
                                     input$site_id %||% "pedon"),
       content  = function(file) {
@@ -479,7 +479,7 @@ pedon_server <- function(id, rv) {
     # accepted by soilKey::validate_pedon_json(). Saving captures the live
     # editor state (site inputs + edited horizon table), so unsaved tweaks are
     # preserved; reopening repopulates every field and rebuilds rv$pedon.
-    output$save_session <- shiny::downloadHandler(
+    sk_download("save_session",
       filename = function()
         sprintf("soilKey_session_%s.json", input$site_id %||% "pedon"),
       content = function(file) {

@@ -170,7 +170,7 @@ map_batch_ui <- function(id) {
             12, min = 1, max = 60, step = 1)),
         shiny::conditionalPanel(
           sprintf("input['%s'] == 'upload'", ns("source")),
-          shiny::fileInput(
+          sk_file_input(
             ns("csv"),
             sk_label(
               i18n("mbatch.long_csv"),
@@ -178,7 +178,7 @@ map_batch_ui <- function(id) {
                     "lat/lon, and top_cm/bottom_cm plus horizon attributes.")),
             accept = ".csv"),
           shiny::helpText(i18n("mbatch.csv_help")),
-          shiny::downloadLink(ns("template"), i18n("mbatch.download_template")))
+          sk_download_link(ns("template"), i18n("mbatch.download_template")))
       ),
 
       # ---- 2. How to colour the map -----------------------------------------
@@ -210,12 +210,12 @@ map_batch_ui <- function(id) {
             class = "btn-primary w-100"),
           "Build one profile per point, classify each under all three systems, and plot them on the map."),
         bslib::tooltip(
-          shiny::downloadButton(
+          sk_download_button(
             ns("export"), i18n("mbatch.export"),
             class = "btn-outline-secondary w-100 mt-2"),
           "Save the classified points as a GeoPackage (.gpkg) you can open in QGIS or ArcGIS."),
         bslib::tooltip(
-          shiny::downloadButton(
+          sk_download_button(
             ns("report"), i18n("mbatch.report"),
             icon = shiny::icon("file-lines"),
             class = "btn-outline-secondary w-100 mt-2"),
@@ -360,13 +360,13 @@ map_batch_server <- function(id, rv, settings) {
     })
 
     # ---- long-format CSV template (self-documents the upload layout) --------
-    output$template <- shiny::downloadHandler(
+    sk_download("template",
       filename = function() "soilKey_batch_template.csv",
       content  = function(file) writeLines(.batch_starter_csv, file)
     )
 
     # ---- multi-profile HTML report ------------------------------------------
-    output$report <- shiny::downloadHandler(
+    sk_download("report",
       filename = function() "soilkey_profiles_report.html",
       content = function(file) {
         peds <- batch_pedons()
@@ -377,7 +377,7 @@ map_batch_server <- function(id, rv, settings) {
     )
 
     # ---- GeoPackage export --------------------------------------------------
-    output$export <- shiny::downloadHandler(
+    sk_download("export",
       filename = function() "soilkey_soil_map.gpkg",
       content = function(file) {
         res <- results()
