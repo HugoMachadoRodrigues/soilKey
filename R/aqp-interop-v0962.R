@@ -66,29 +66,38 @@ texture_class_from_pct <- function(clay, silt, sand) {
     # are written in terms of SILT + clay (not sand + clay):
     #   Sand        : silt + 1.5*clay <  15
     #   Loamy sand  : silt + 1.5*clay >= 15 AND silt + 2*clay < 30
+    # The other classes as in WRB 2022 Annex 1, Table 8.39 (p. 182, after
+    # Soil Science Division Staff 2017). v0.9.322 fixed four boundaries:
+    # sandy clay is "> 45" sand (sand 45 with clay >= 40 is clay), clay 35
+    # to < 40 with > 45 sand is sandy clay (was sandy clay loam), silt 50 to
+    # < 80 with clay < 12 is silt loam (was silt), and clay < 7, silt < 50,
+    # sand > 43 is sandy loam (was loam).
     if (si + 1.5 * cl < 15)                             { out[i] <- "S";  next }
     if (si + 2.0 * cl < 30)                             { out[i] <- "LS"; next }
-    # Clay corner.
+    # Clay corner, and sandy clay: clay >= 35 with > 45 sand.
     if (cl >= 40 && si >= 40)                           { out[i] <- "SIC"; next }
-    if (cl >= 40 && sa >= 45)                           { out[i] <- "SC";  next }
+    if (cl >= 35 && sa > 45)                            { out[i] <- "SC";  next }
     if (cl >= 40)                                       { out[i] <- "C";   next }
     # Clay-loam band (clay 27-40).
     if (cl >= 27 && cl < 40 && sa <= 20)                { out[i] <- "SICL"; next }
-    if (cl >= 27 && cl < 40 && sa > 45)                 { out[i] <- "SCL"; next }
+    if (cl >= 27 && cl < 35 && sa > 45)                 { out[i] <- "SCL"; next }
     if (cl >= 27 && cl < 40)                            { out[i] <- "CL";  next }
     # Sandy clay loam wedge (clay 20-35, silt < 28, sand > 45).
     if (cl >= 20 && cl < 35 && si < 28 && sa > 45)      { out[i] <- "SCL"; next }
-    # Silty band.
+    # Silty band: silt >= 80 with clay < 12 is silt; silt loam is silt 50
+    # to < 80 with clay < 12, or silt >= 50 with clay 12 to < 27.
     if (si >= 80 && cl < 12)                            { out[i] <- "SI";  next }
-    if (si >= 50 && cl < 12)                            { out[i] <- "SI";  next }
+    if (si >= 50 && cl < 12)                            { out[i] <- "SIL"; next }
     if (si >= 50 && cl >= 12 && cl < 27)                { out[i] <- "SIL"; next }
     # Loam interior.
     if (cl >= 7 && cl < 27 && si >= 28 && si < 50 && sa <= 52) {
       out[i] <- "L"; next
     }
-    # Sandy loam (residual).
+    # Sandy loam: clay 7 to < 20 with > 52 sand, or clay < 7, silt < 50
+    # and > 43 sand.
     if (cl < 20 && sa >= 52)                            { out[i] <- "SL";  next }
-    out[i] <- "L"  # fallback for triangle interior
+    if (cl < 7 && si < 50 && sa > 43)                   { out[i] <- "SL";  next }
+    out[i] <- "L"  # fallback, reached only when the fractions do not sum to 100
   }
   out
 }

@@ -83,3 +83,78 @@ test_that("v0.9.322 Alcalic reads the whole limiting layer, not only rock and te
   q$horizons$designation <- c("A", "Bk", "C")
   expect_equal(qual_alcalic(q)$evidence$window_cm, c(0, 50))
 })
+
+
+# ---- texture_class_from_pct() (WRB 2022 Annex 1, Table 8.39, p. 182) ------------
+
+test_that("v0.9.322 texture triangle: the four boundaries that were wrong", {
+  skip_on_cran()
+  tc <- function(clay, silt, sand) texture_class_from_pct(clay, silt, sand)
+  # sandy clay is > 45% sand: clay 40 with 45% sand is clay (was sandy clay)
+  expect_equal(tc(40, 15, 45), "C")
+  expect_equal(tc(40, 14, 46), "SC")
+  # clay 35 to < 40 with > 45% sand is sandy clay (was sandy clay loam)
+  expect_equal(tc(35, 19, 46), "SC")
+  expect_equal(tc(39, 10, 51), "SC")
+  expect_equal(tc(34.9, 19.1, 46), "SCL")
+  expect_equal(tc(35, 20, 45), "CL")
+  # silt 50 to < 80 with clay < 12 is silt loam (was silt)
+  expect_equal(tc(5, 60, 35), "SIL")
+  expect_equal(tc(11.9, 79.9, 8.2), "SIL")
+  expect_equal(tc(11.9, 80, 8.1), "SI")
+  expect_equal(tc(12, 80, 8), "SIL")
+  # clay < 7, silt < 50, sand > 43 is sandy loam (was loam)
+  expect_equal(tc(5, 45, 50), "SL")
+  expect_equal(tc(6.9, 49.9, 43.2), "SL")
+  expect_equal(tc(7, 49.9, 43.1), "L")
+})
+
+test_that("v0.9.322 texture triangle: the other boundaries stay where they were", {
+  skip_on_cran()
+  tc <- function(clay, silt, sand) texture_class_from_pct(clay, silt, sand)
+  expect_equal(tc(c(4, 4), c(8.9, 9), c(87.1, 87)), c("S", "LS"))        # silt + 1.5 clay = 15
+  expect_equal(tc(c(10, 10), c(9.9, 10), c(80.1, 80)), c("LS", "SL"))     # silt + 2 clay = 30
+  expect_equal(tc(c(15, 15), c(33, 32.9), c(52, 52.1)), c("L", "SL"))     # 52% sand
+  expect_equal(tc(c(20, 20), c(28, 27.9), c(52, 52.1)), c("L", "SCL"))    # 28% silt
+  expect_equal(tc(c(20, 20), c(49.9, 50), c(30.1, 30)), c("L", "SIL"))    # 50% silt
+  expect_equal(tc(c(26.9, 27), c(40, 40), c(33.1, 33)), c("L", "CL"))     # 27% clay
+  expect_equal(tc(c(26.9, 27), c(53.1, 53), c(20, 20)), c("SIL", "SICL")) # 27% clay, silty side
+  expect_equal(tc(c(30, 30), c(50, 49.9), c(20, 20.1)), c("SICL", "CL"))  # 20% sand
+  expect_equal(tc(c(39.9, 40), c(30, 30), c(30.1, 30)), c("CL", "C"))     # 40% clay
+  expect_equal(tc(c(40, 40), c(39.9, 40), c(20.1, 20)), c("C", "SIC"))    # 40% silt
+  expect_equal(tc(c(19.9, 20), c(25, 25), c(55.1, 55)), c("SL", "SCL"))   # 20% clay
+  expect_equal(tc(c(30, 30), c(25, 24.9), c(45, 45.1)), c("CL", "SCL"))   # 45% sand
+})
+
+test_that("v0.9.322 texture triangle: every point of a 1% grid as the Soil Survey Manual classes", {
+  skip_on_cran()
+  # the definitions of Table 8.39 (Soil Science Division Staff 2017), one by one
+  ssm <- function(cl, si, sa) {
+    if (si + 1.5 * cl < 15) return("S")
+    if (si + 2 * cl < 30) return("LS")
+    if (cl >= 40 && si >= 40) return("SIC")
+    if (cl >= 35 && sa > 45) return("SC")
+    if (cl >= 40) return("C")
+    if (cl >= 27 && sa <= 20) return("SICL")
+    if (cl >= 27 && sa <= 45) return("CL")
+    if (cl >= 20 && si < 28 && sa > 45) return("SCL")
+    if (si >= 80 && cl < 12) return("SI")
+    if (si >= 50) return("SIL")
+    if (cl >= 7 && si >= 28 && sa <= 52) return("L")
+    "SL"
+  }
+  g <- expand.grid(cl = 0:100, sa = 0:100)
+  g$si <- 100 - g$cl - g$sa
+  g <- g[g$si >= 0, ]
+  expect_identical(texture_class_from_pct(g$cl, g$si, g$sa),
+                   unname(mapply(ssm, g$cl, g$si, g$sa)))
+  skip_if_not_installed("aqp")
+  expect_identical(texture_class_from_pct(g$cl, g$si, g$sa),
+                   toupper(aqp::ssc_to_texcl(sand = g$sa, clay = g$cl, as.is = TRUE)))
+})
+
+test_that("v0.9.322 WRB texture classes: sandy clay without the old patch", {
+  skip_on_cran()
+  h <- data.frame(clay_pct = c(36, 36, 40), silt_pct = c(NA, 14, NA), sand_pct = c(50, NA, 45))
+  expect_equal(.wrb_texture_class(h), c("SC", "SC", "C"))
+})
