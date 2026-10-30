@@ -51,25 +51,20 @@ A
 
 ## Details
 
-Sub-tests called:
-
-- `test_mollic_color` – moist value \<= 3, moist chroma \<= 3, dry value
-  \<= 5.
-
-- `test_mollic_organic_carbon` – SOC \>= 0.6%.
-
-- `test_mollic_base_saturation` – BS (NH4OAc, pH 7) \>= 50%.
-
-- `test_mollic_thickness` – horizon thickness \>= 20 cm.
-
-- `test_mollic_structure` – not simultaneously massive AND very hard
-  when dry.
-
-v0.1 limitations: cumulative thickness across contiguous mollic-
-qualifying horizons is not yet supported – this matters for profiles
-where mollic criteria are met by an A1+A2 sequence but no single horizon
-is \>= 20 cm thick. Mixing of upper 20 cm before the test (per WRB) is
-also deferred to v0.2.
+Since v0.9.314 the criteria are read as WRB 2022 Ch 2.1 (p. 23) sets
+them for a horizon of several subhorizons: every criterion except the
+thickness in every layer, unless the text says otherwise. Criteria 1
+(structure; structure not recorded does not block it), 2 (\>= 0.6% SOC)
+and 3 (colour, items a-c; a plough layer takes the colour of the
+subhorizon below it) are read in each layer, and the horizon is the run
+of such layers from the mineral soil surface. Criterion 5, the base
+saturation, is the weighted average over the run (by pH where it is not
+recorded, Annex 2 Table 9.2), and criterion 6b its thickness (\>= 20
+cm). A moist value with no dry value recorded reads the dry value as the
+moist value + 1; a layer with no colour recorded at all and \>= 1.5% SOC
+is read as dark (Hugo, 2026-10-29). A dry colour alone leaves criterion
+3 undecided unless its value is above 5. The colour subtest records
+where each layer's reading came from.
 
 ## References
 

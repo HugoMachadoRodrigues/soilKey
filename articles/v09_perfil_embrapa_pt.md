@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5b9f61b6f1b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5701270391b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -262,8 +262,7 @@ print(res$wrb)
 #> - NT: Indeterminate -- missing 6 attribute(s): structure_type, structure_grade,
 #> structure_type_secondary, pressure_faces, fe_dcb_pct, fe_ox_pct
 #> - FR: Indeterminate -- missing 1 attribute(s): water_dispersible_clay_pct
-#> - UM: Indeterminate -- missing 3 attribute(s): top_cm, bottom_cm,
-#> p_mehlich3_mg_kg
+#> - UM: Indeterminate -- missing 1 attribute(s): p_mehlich3_mg_kg
 #> - DU: Indeterminate -- missing 1 attribute(s): duripan_pct
 #> - GY: Indeterminate -- missing 1 attribute(s): caso4_pct
 #> - CL: Indeterminate -- missing 1 attribute(s): caco3_pct
@@ -273,8 +272,8 @@ print(res$wrb)
 #> permafrost_temp_C, coarse_fragments_pct, ec_dS_m, redoximorphic_features_pct,
 #> al_ox_pct, fe_ox_pct, plinthite_pct, ferric_nodules_pct, pan_type,
 #> cementation_class, structure_type, structure_grade, structure_type_secondary,
-#> pressure_faces, fe_dcb_pct, water_dispersible_clay_pct, top_cm, bottom_cm,
-#> duripan_pct, caso4_pct, caco3_pct
+#> pressure_faces, fe_dcb_pct, water_dispersible_clay_pct, duripan_pct, caso4_pct,
+#> caco3_pct
 #> 
 #> ── Key trace
 #> (26 RSGs tested before assignment)
@@ -295,9 +294,9 @@ print(res$wrb)
 #> 15. NT Nitisols -- NA (6 attrs missing)
 #> 16. FR Ferralsols -- NA (1 attrs missing)
 #> 17. CH Chernozems -- failed
-#> 18. KS Kastanozems -- failed (2 attrs missing)
-#> 19. PH Phaeozems -- failed (2 attrs missing)
-#> 20. UM Umbrisols -- NA (3 attrs missing)
+#> 18. KS Kastanozems -- failed
+#> 19. PH Phaeozems -- failed
+#> 20. UM Umbrisols -- NA (1 attrs missing)
 #> 21. DU Durisols -- NA (1 attrs missing)
 #> 22. GY Gypsisols -- NA (1 attrs missing)
 #> 23. CL Calcisols -- NA (1 attrs missing)
