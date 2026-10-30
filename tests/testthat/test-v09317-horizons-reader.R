@@ -14,21 +14,17 @@
 
 # ---- lithic discontinuity (Ch 3.2.7) ------------------------------------------
 
-test_that("a lithic discontinuity is read from the ratio sand to silt (3.2.7, criterion 2.a.iv)", {
+test_that("the ratio sand to silt alone shows no lithic discontinuity (Hugo, 2026-10-29)", {
   skip_on_cran()
-  ld <- function(sand, silt, clay) soilKey:::.wrb_lithic_discontinuity_above(
+  ld <- function(sand, silt, clay, cf = c(NA, NA)) soilKey:::.wrb_lithic_discontinuity_above(
     .v09317_pedon(designation = c("A", "Bw"), top_cm = c(0, 20), bottom_cm = c(20, 60),
-                  clay_pct = clay, silt_pct = silt, sand_pct = sand)$horizons)$at
-  # 60/30 = 2.0 over 30/50 = 0.6: 70% apart, 30% less sand
-  expect_identical(ld(c(60, 30), c(30, 50), c(10, 20)), c(FALSE, TRUE))
-  # 60/30 over 53/27 (1.96): the clay increased, the ratio did not change
-  expect_identical(ld(c(60, 53), c(30, 27), c(10, 20)), c(FALSE, FALSE))
-  # 12/12 over 10/14: the ratio 29% apart, but sand and silt differ by < 5%
-  expect_identical(ld(c(12, 10), c(12, 14), c(76, 76)), c(FALSE, FALSE))
-  # < 10% silt in one layer: criterion 2.a.iv does not apply
-  expect_identical(ld(c(85, 60), c(5, 20), c(10, 20)), c(FALSE, FALSE))
-  # sand and silt not recorded: the data do not show one
-  expect_identical(ld(c(60, NA), c(30, NA), c(10, 20)), c(FALSE, FALSE))
+                  clay_pct = clay, silt_pct = silt, sand_pct = sand,
+                  coarse_fragments_pct = cf)$horizons)$at
+  # criterion 2 also needs 2.b (not the original variation of the parent
+  # material), which the data do not show: 60/30 over 30/50 is not read
+  expect_identical(ld(c(60, 30), c(30, 50), c(10, 20)), c(FALSE, FALSE))
+  # criterion 6: 10% (absolute) more coarse fragments in the overlying layer
+  expect_identical(ld(c(60, 30), c(30, 50), c(10, 20), cf = c(30, 5)), c(FALSE, TRUE))
 })
 
 test_that("a lithic discontinuity is read from the coarse fragments (3.2.7, criterion 6)", {
@@ -48,21 +44,19 @@ test_that("a lithic discontinuity is read from the coarse fragments (3.2.7, crit
 
 test_that("argic criterion 2.a.i: no clay increase across a lithic discontinuity read from the data", {
   skip_on_cran()
-  p <- function(sand, silt, films = NA_character_) .v09317_pedon(
+  p <- function(cf, films = NA_character_) .v09317_pedon(
     designation = c("A", "Bt"), top_cm = c(0, 20), bottom_cm = c(20, 60),
-    clay_pct = c(10, 20), sand_pct = c(60, sand), silt_pct = c(30, silt),
-    clay_films_amount = c(NA, films))
-  expect_true(isTRUE(argic(p(53, 27))$passed))           # one material
-  r <- argic(p(30, 50))                                  # sand to silt 2.0 over 0.6
+    clay_pct = c(10, 20), sand_pct = c(60, 30), silt_pct = c(30, 50),
+    coarse_fragments_pct = cf, clay_films_amount = c(NA, films))
+  # the ratio sand to silt alone is no discontinuity (Hugo, 2026-10-29)
+  expect_true(isTRUE(argic(p(c(5, 5)))$passed))
+  r <- argic(p(c(30, 5)))                                # criterion 6: coarse fragments
   expect_false(r$passed)
   expect_equal(r$evidence$clay_increase$lithic_discontinuities$above_layer, 2L)
   # illuvial clay is evidenced (2.b.ii): argic across the discontinuity
-  expect_true(isTRUE(argic(p(30, 50, "common"))$passed))
-  # silt not recorded above: no discontinuity is read
-  q <- p(30, 50); q$horizons$silt_pct[1] <- NA
-  expect_true(isTRUE(argic(q)$passed))
+  expect_true(isTRUE(argic(p(c(30, 5), "common"))$passed))
   # the USDA argillic and the SiBCS B textural keep their reading
-  expect_true(isTRUE(soilKey:::.argic_impl(p(30, 50))$passed))
+  expect_true(isTRUE(soilKey:::.argic_impl(p(c(30, 5)))$passed))
 })
 
 test_that("argic criterion 2.a.ii: no clay increase below a plough layer directly above", {
@@ -152,13 +146,13 @@ test_that("mollic criterion 1: aggregate structure <= 10 cm or cloddy in >= 50% 
   skip_on_cran()
   m <- function(...) mollic(.v09317_mollic(...))$passed
   expect_true(isTRUE(m()))
-  # structure not described: undecided, no longer a pass
+  # Hugo (2026-10-29): structure or size not recorded does not block
+  # criterion 1; it fails where the record shows otherwise
   r <- mollic(.v09317_mollic(type = NA_character_, size = NA_character_, grade = NA_character_))
-  expect_true(is.na(r$passed))
-  expect_true("structure_type" %in% r$missing)
+  expect_true(isTRUE(r$passed))
   expect_false(m(type = "massive", size = NA_character_, grade = "structureless"))
   expect_false(m(type = "single grain", size = NA_character_, grade = "structureless"))
-  expect_true(is.na(m(size = NA_character_)))                 # aggregate size not recorded
+  expect_true(isTRUE(m(size = NA_character_)))                # aggregate size not recorded
   expect_true(isTRUE(m(type = "prismatic", size = "coarse")))  # 50-100 mm
   expect_false(m(type = "prismatic", size = "very coarse"))    # > 100 mm (Table 8.45)
   expect_false(m(type = "subangular blocky", size = "extremely coarse"))
@@ -173,14 +167,14 @@ test_that("mollic criterion 1: aggregate structure <= 10 cm or cloddy in >= 50% 
   # the USDA mollic epipedon keeps its reading
   h <- .v09317_mollic(type = NA_character_, size = NA_character_, grade = NA_character_)$horizons
   expect_true(isTRUE(test_mollic_structure(h, candidate_layers = 1:2)$passed))
-  expect_true(is.na(test_mollic_structure(h, candidate_layers = 1:2, system = "wrb2022")$passed))
+  expect_true(isTRUE(test_mollic_structure(h, candidate_layers = 1:2, system = "wrb2022")$passed))
 })
 
 test_that("umbric criterion 1 reads the structure as the mollic one does", {
   skip_on_cran()
   u <- function(...) umbric_horizon(.v09317_mollic(bs = c(20, 20), ...))$passed
   expect_true(isTRUE(u()))
-  expect_true(is.na(u(type = NA_character_, size = NA_character_, grade = NA_character_)))
+  expect_true(isTRUE(u(type = NA_character_, size = NA_character_, grade = NA_character_)))
   expect_false(u(type = "massive", size = NA_character_, grade = "structureless"))
 })
 

@@ -61,17 +61,12 @@
   for (i in seq.int(2L, n)) {
     u <- i - 1L
     if (!mineral[u] || !mineral[i]) next
-    # criterion 2.a.iv, sand and silt
-    if (!anyNA(c(sand[c(u, i)], silt[c(u, i)])) &&
-        all(sand[c(u, i)] >= 10) && all(silt[c(u, i)] >= 10)) {
-      r <- sand[c(u, i)] / silt[c(u, i)]
-      if (abs(r[1] - r[2]) / max(r) * 100 >= 25 &&
-          (abs(sand[u] - sand[i]) >= 5 || abs(silt[u] - silt[i]) >= 5)) {
-        at[i] <- TRUE
-        crit[i] <- "3.2.7 criterion 2.a.iv (ratio sand to silt)"
-        next
-      }
-    }
+    # Criterion 2 (particle-size ratios, e.g. sand to silt) is not read
+    # (Hugo, 2026-10-29): it also needs 2.b, that the difference is not the
+    # original variation of the parent material in patches, which the data
+    # do not show; on its own it removed a quarter of the argic horizons of
+    # every panel. A discontinuity counts when the designation records it (a
+    # material number) or the coarse fragments show it.
     # criterion 6, more coarse fragments in the overlying layer
     if (!is.na(cf[u]) && !is.na(cf[i]) && cf[u] - cf[i] >= 10 &&
         !animal[u] && !animal[i]) {
@@ -193,6 +188,10 @@
   cl <- .candidate_layers(h, candidate_layers)
   if (!length(cl)) return(.subtest_result(passed = FALSE))
   st <- .wrb_aggregate_structure_le_10cm(h)[cl]
+  # Hugo (2026-10-29): structure or aggregate size not recorded does not
+  # block criterion 1; it fails where the record shows otherwise (massive,
+  # single grain, aggregates > 10 cm)
+  st[is.na(st)] <- TRUE
   passed <- .wrb_share_by_volume(h, cl, st, min_share)
   .subtest_result(
     passed  = passed,
