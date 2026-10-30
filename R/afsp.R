@@ -262,6 +262,12 @@ wrb06_code_to_rsg <- function(code) {
 #' WRB 2006 RSG code (i.e.\ classifiable; AfSP has ~7000 of these of
 #' the total 18,533).
 #'
+#' The structure type, grade and size are AfSP class codes (FAO-ISRIC 1990,
+#' FAO 2006). Since v0.9.312 they are read by the AfSP dictionary
+#' (\code{AfSP012Qry_DictioClassValues}) into soilKey's words: a range of grades
+#' by its lower end, a range of sizes with both ends, and a code the dictionary
+#' does not define as not recorded. Each code goes to the provenance.
+#'
 #' @param afsp_dir Directory containing the extracted AfSP DBase
 #'        tables (\code{AfSP012Qry_Profiles.dbf},
 #'        \code{AfSP012Qry_Layers.dbf}).
@@ -364,6 +370,10 @@ load_afsp_pedons <- function(afsp_dir,
 #' This is the African analogue of
 #' \code{\link{load_wosis_stratified_sample}} (global WoSIS) and
 #' \code{\link{load_kssl_nasis_sample}} (US KSSL+NASIS).
+#'
+#' The snapshot was built in v0.9.77 and holds the AfSP structure codes; since
+#' v0.9.312 they are read into words when it is loaded, as
+#' \code{\link{load_afsp_pedons}} reads them.
 #'
 #' @return A list with \code{pedons} (the \code{\link{PedonRecord}}
 #'   objects), \code{pulled_on}, \code{source}, \code{filter}.

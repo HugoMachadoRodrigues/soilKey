@@ -21,6 +21,10 @@ the African WRB benchmark offline without the 35 MB ZIP download.
 This is the African analogue of
 \code{\link{load_wosis_stratified_sample}} (global WoSIS) and
 \code{\link{load_kssl_nasis_sample}} (US KSSL+NASIS).
+
+The snapshot was built in v0.9.77 and holds the AfSP structure codes; since
+v0.9.312 they are read into words when it is loaded, as
+\code{\link{load_afsp_pedons}} reads them.
 }
 \section{Reference}{
 

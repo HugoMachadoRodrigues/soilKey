@@ -1,3 +1,18 @@
+# soilKey 0.9.312 (2026-10-29)
+
+## The AfSP reader reads its structure codes
+
+* AfSP keeps the structure type, grade and size as class codes of the FAO-ISRIC (1990) and FAO (2006) guidelines. The reader passed them on unread, and the diagnostic tests look for words. A massive "M" or a single-grain "N" read as structure not recorded, so since 0.9.311 it did not block the mollic and umbric horizons. In the 120 profiles of the AfSP sample, 190 layers in 50 profiles record a structure type and 59 layers in 23 profiles a massive, single-grain or rock structure.
+* The codes are now read by the AfSP dictionary (`AfSP012Qry_DictioClassValues`):
+  * a range of grades by its lower end, as the ISIS reader does ("weak to moderate" is weak);
+  * a range of sizes with both ends, since soilKey reads a size range by its upper end;
+  * a code the dictionary does not define as not recorded (in AfSP 1.2: grade V, A and R, in 83 of 74,961 layers, and size S, in 5).
+* Each code goes to the provenance. The bundled sample (`load_afsp_sample()`, built in 0.9.77) and profiles built before are read when they are loaded or benchmarked.
+* **AfSP WRB:** 33 of 120 profiles agree with the reference, as before, with 12 RSGs changed: 2 gained and 2 lost.
+  * Gained: a Solonetz whose Btn records columnar structure, and a Cambisol.
+  * Lost: an Umbrisol whose Ah over 116 cm of massive dark layers falls short of the structure criterion; a Regosol whose B records subangular blocky structure, a Cambisol now.
+  * The other panels do not read AfSP and are unchanged.
+
 # soilKey 0.9.311 (2026-10-29)
 
 ## WRB 2022 qualifiers, the argic, nitic, mollic and irragric horizons, and two ISIS reader guards by the text
