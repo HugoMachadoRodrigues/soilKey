@@ -564,6 +564,15 @@
           "coarse_fragments_shape": {
             "type": ["string", "null"]
           },
+          "soluble_salts_carbonate_pct": {
+            "type": ["number", "null"]
+          },
+          "secondary_carbonates_form": {
+            "type": ["string", "null"]
+          },
+          "mottle_size_class": {
+            "type": ["string", "null"]
+          },
           "ec_max_dS_m": {
             "type": ["number", "null"]
           },

@@ -113,6 +113,7 @@ and do not warn.
 | `caco3_pct` | % (mass) | numeric | Calcium carbonate equivalent. | `caco3`, `carbonate`, `carbonates` |
 | `secondary_carbonates_pct` | % | numeric | identifiable SECONDARY carbonates by volume (soft masses / pseudomycelia / pendents / nodules). The morphological OR-path of the calcic horizon: WRB 2022 3.1.4 protocalcic / USDA KST >= 5% by-volume secondary carbonates, beside the +5%-vs-underlying enrichment | - |
 | `caso4_pct` | % (mass) | numeric | Gypsum (calcium sulphate). | `caso4`, `gypsum` |
+| `secondary_carbonates_form` | - | character | Form of the secondary carbonates, FAO (2006): pseudomycelia, coatings (on ped faces), soft concretions, hard concretions, powdery, masses. HSCS 2024 subtype mészlepedékes (whitish coatings, pseudomycelia, on ped faces). | - |
 
 ## Iron / aluminum oxides
 
@@ -139,6 +140,7 @@ and do not warn.
 | `plinthite_pct` | % | numeric | volume % of plinthite (Fe-rich nodules / mottles) | - |
 | `redoximorphic_features_pct` | % | numeric | volume % of Fe/Mn redox features | - |
 | `slickensides` | - | character | absent / few / common / many / continuous | - |
+| `mottle_size_class` | - | character | Size class of the mottles, FAO (2006): very fine (< 2 mm), fine (2-6 mm), medium (6-20 mm), coarse (> 20 mm). HSCS 2024 iron accumulation horizon (vaskiválásos): large mottles over 20 mm. | - |
 | `ec_max_dS_m` | dS/m | numeric | Upper bound of the electrical conductivity of the saturated paste, when only a more dilute extract was measured (ISIS: EC 1:2.5 x 12.5, for a saturation percentage of 20 % or more). Read only by the salic test, to rule a layer out; ec_dS_m wins when it is known. | - |
 
 ## Technic, duric
@@ -311,6 +313,7 @@ and do not warn.
 | `p2o5_al_mg_kg` | mg/kg | numeric | P2O5 extracted by the ammonium-lactate (AL) method, mg/kg. HSCS 2024 hortikus (anthropogenic horizon and subtype): at least 500 mg/kg in the upper 20 cm. | - |
 | `digo_pct` | % | numeric | Visible traces of applied digó earth (a calcareous ameliorant), % of the soil matrix. HSCS 2024 variety digózott: at least 5 % within 50 cm. | - |
 | `coarse_fragments_shape` | - | character | Shape of the coarse fragments: rounded (gravel) or angular (rock debris). HSCS 2024 varieties kavicsos (rounded) and kőzettörmelékes (angular). | - |
+| `soluble_salts_carbonate_pct` | % | numeric | Carbonate and bicarbonate share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtypes karbonát-szulfátos and karbonát-kloridos: at least 20 % beside the sulphate or chloride share (Hugo's reading, 2026-10-30). | - |
 
 # Site properties
 
