@@ -179,11 +179,16 @@
   # (with up to 5% oximorphic features criterion 1 itself; with more, the
   # matrix of a gleyic criterion-2 layer), or oximorphic features directly
   # on a layer with such a matrix (criterion 3), or with groundwater
-  crit1 <- .and3v(red, !oxi)
+  # Hugo (2026-10-29): criterion 1 asks >= 95% reductimorphic features, so a
+  # layer with more than 5% oximorphic features does not meet it by its
+  # matrix; mottles not recorded do not rule it out (the matrix colour is
+  # then the colour of the layer). Criterion 3: oximorphic features on a
+  # layer that meets criterion 1.
+  crit1 <- .and3v(red, !(oxi %in% TRUE))
   red[rock] <- FALSE
   crit1[rock] <- FALSE
-  on_red <- at(red, below)
-  gleyic <- .any3v(red, .and3v(oxi, .any3v(on_red, water)))
+  on_red <- at(crit1, below)
+  gleyic <- .any3v(crit1, .and3v(oxi, .any3v(on_red, water)))
   gleyic[rock] <- FALSE
   stag_ox <- .and3v(oxi, !gleyic)
   stag_ox[rock] <- FALSE

@@ -74,14 +74,25 @@ test_that("oximorphic over reductimorphic is gleyic (no decay test)", {
   expect_false(isTRUE(gleyic_properties(r)$passed))
 })
 
-test_that("a reductimorphic matrix is gleyic with or without mottles", {
+test_that("criterion 1 needs >= 95% reductimorphic features: at most 5% mottles", {
   skip_on_cran()
+  # Hugo (2026-10-29): with 25% mottles the matrix cannot be >= 95%
+  # reductimorphic, so criterion 1 is not met and, with no evidence of the
+  # water, the mottles are undecided
   p <- .rx_pedon(top_cm = c(0, 20), bottom_cm = c(20, 70), designation = c("A", "Bg"),
                  munsell_hue_moist = c("10YR", "2.5Y"), munsell_value_moist = c(3, 5),
                  munsell_chroma_moist = c(2, 1), redoximorphic_features_pct = c(0, 25))
+  expect_false(isTRUE(gleyic_properties(p)$passed))
+  # the same matrix with no mottles (or none recorded) is criterion 1
+  p$horizons$redoximorphic_features_pct[2] <- 0
   expect_true(isTRUE(gleyic_properties(p)$passed))
-  p$horizons$munsell_chroma_moist[2] <- 3          # 2.5Y 5/3 is no 1.b colour
-  expect_true(is.na(gleyic_properties(p)$passed))   # mottles, no evidence
+  p$horizons$redoximorphic_features_pct[2] <- NA
+  expect_true(isTRUE(gleyic_properties(p)$passed))
+  # and the mottles of a layer on such a matrix are gleyic (criterion 3)
+  q <- .rx_pedon(top_cm = c(0, 20, 50), bottom_cm = c(20, 50, 90), designation = c("A", "Bg", "Cr"),
+                 munsell_hue_moist = c("10YR", "10YR", "5GY"), munsell_value_moist = c(3, 5, 5),
+                 munsell_chroma_moist = c(2, 4, 1), redoximorphic_features_pct = c(0, 25, 0))
+  expect_true(isTRUE(gleyic_properties(q)$passed))
 })
 
 test_that("mottles over a brown matrix: the groundwater decides, else undecided", {

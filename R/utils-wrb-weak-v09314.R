@@ -321,6 +321,10 @@ cambisol <- function(pedon) {
   c2b <- .wrb_caco3_2b(h, c1)
   c2 <- ifelse(c2a %in% TRUE | c2b %in% TRUE, TRUE,
                ifelse(c2a %in% FALSE & c2b %in% FALSE, FALSE, NA))
+  # Hugo (2026-10-29): with no secondary carbonates recorded, a layer with
+  # CaCO3 >= 15% keeps meeting criterion 2 by the laboratory, as before the
+  # 2022 reading; recorded secondary carbonates still decide it.
+  c2[is.na(c2) & is.na(sc[c1])] <- TRUE
   tests$secondary <- .subtest_result(
     passed  = if (any(c2 %in% TRUE)) TRUE else if (anyNA(c2)) NA else FALSE,
     layers  = c1[c2 %in% TRUE],
@@ -651,7 +655,9 @@ test_arenosol_texture <- function(h, max_depth_cm = 100) {
   stony <- w > 0 & !is.na(cf) & cf >= 40
   covered <- sum(vapply(.wrb_runs(h, which(w > 0)), function(r)
     max(0, min(r$bottom, hi) - max(r$top, lo)), 0))
-  undescribed <- max(0, (hi - lo) - covered)
+  # Hugo (2026-10-29): a profile described above 100 cm is decided on the part
+  # that is described; depths not described do not keep it undecided
+  undescribed <- 0
   unk_tex <- sum(w[w > 0 & is.na(s2c)]) + undescribed
   unk_cf  <- sum(w[w > 0 & is.na(cf)]) + undescribed
   if (!any(known))

@@ -129,12 +129,14 @@ test_that("v0.9.314 calcic: criterion 2.b from the laboratory CaCO3, whatever th
   expect_equal(calcic(p)$layers, 2L)
 })
 
-test_that("v0.9.314 calcic: undecided when neither 2.a nor 2.b can be told; decided by the secondary carbonates", {
+test_that("v0.9.314 calcic: kept by the laboratory with no secondary carbonates recorded; decided by them when recorded", {
   skip_on_cran()
   uni <- function(sc) .w14_ped(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 80),
                                designation = c("A", "C1", "C2"), caco3_pct = c(20, 20, 20),
                                secondary_carbonates_pct = sc)
-  expect_true(is.na(calcic(uni(c(NA, NA, NA)))$passed))
+  # Hugo (2026-10-29): CaCO3 >= 15% meets criterion 2 when no secondary
+  # carbonates are recorded
+  expect_true(isTRUE(calcic(uni(c(NA, NA, NA)))$passed))
   # recorded secondary carbonates < 5 %: the deepest layer has nothing below it
   # to compare with, so criterion 2.b is still undecided there
   expect_true(is.na(calcic(uni(c(2, 2, 2)))$passed))

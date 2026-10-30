@@ -145,8 +145,10 @@ phaeozem <- function(pedon) {
   win <- .wrb_window_layers(h, ms, bottom)
   bs <- .wrb_bs_throughout(h, win$layers, min_bs = 50)
   described <- win$covered_cm >= win$window_cm - 1e-6
+  # Hugo (2026-10-29): a profile described above 100 cm (or with gaps) is
+  # decided on the part that is described
   passed <- if (isFALSE(bs$passed)) FALSE
-            else if (isTRUE(bs$passed) && described) TRUE
+            else if (isTRUE(bs$passed) && length(win$layers)) TRUE
             else NA
 
   tests <- list(
@@ -155,7 +157,7 @@ phaeozem <- function(pedon) {
       passed = passed,
       layers = win$layers,
       missing = c(bs$missing,
-                  if (!described) "horizons down to 100 cm or a limiting layer"),
+                  character(0)),
       details = list(window_cm = c(ms, bottom), covered_cm = win$covered_cm,
                      limiting_layer_top_cm = lim, layers = bs$details)
     )

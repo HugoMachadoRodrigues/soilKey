@@ -667,7 +667,11 @@ make_gleysol_canonical <- function() {
       slope_pct       = 0,
       land_use        = "intensive grassland",
       vegetation      = "Lolium perenne / Trifolium",
-      drainage_class  = "poorly drained (high groundwater)"
+      drainage_class  = "poorly drained (high groundwater)",
+      # v0.9.310: the groundwater the drainage class names, as WRB 2022
+      # gleyic properties read it (3.2.6): the mottles of the Bg are gleyic
+      groundwater_kind     = "observed",
+      groundwater_depth_cm = 50
     ),
     horizons = hz
   )

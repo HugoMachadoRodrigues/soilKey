@@ -74,7 +74,7 @@ test_that("phaeozem reads pH where BS is missing, else is undecided", {
   expect_true("bs_pct" %in% phaeozem(p)$missing)
 })
 
-test_that("phaeozem stops at a limiting layer and needs the window described", {
+test_that("phaeozem stops at a limiting layer; a short description is decided on what is described", {
   skip_on_cran()
   p <- ph_pedon()
   h <- p$horizons
@@ -84,7 +84,8 @@ test_that("phaeozem stops at a limiting layer and needs the window described", {
   expect_true(isTRUE(phaeozem(p)$passed))           # continuous rock at 60 cm
   p <- ph_pedon()
   p$horizons <- p$horizons[1:2, ]                    # described to 60 cm only
-  expect_true(is.na(phaeozem(p)$passed))
+  # Hugo (2026-10-29): decided on the part that is described
+  expect_true(isTRUE(phaeozem(p)$passed))
 })
 
 
