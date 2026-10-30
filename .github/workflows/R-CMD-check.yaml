@@ -10,6 +10,12 @@ on:
 
 name: R-CMD-check
 
+# A newer push to the same pull request cancels the run still going for it
+# (2026-10-30); runs on main always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}

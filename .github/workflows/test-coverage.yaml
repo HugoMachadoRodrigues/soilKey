@@ -1,12 +1,19 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Reports test coverage to Codecov on every push/PR to main.
+# Reports test coverage to Codecov after each push to main. Since 2026-10-30
+# it no longer runs on pull requests: R CMD check on five systems runs the
+# tests there, and coverage (~40 min) was the slowest check before a merge.
 on:
   push:
     branches: [main, master]
-  pull_request:
   workflow_dispatch:
 
 name: test-coverage
+
+# A newer push to the same pull request cancels the run still going for it
+# (2026-10-30); runs on main always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test-coverage:
