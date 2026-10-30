@@ -39,7 +39,7 @@
   cemented <- ifelse(!is.na(cem) & nzchar(cem),
                      ifelse(cem %in% c("none", "weakly"), FALSE, NA),
                      ifelse(has_d, ifelse(grepl("^[A-Z]+[a-z]*m", master), NA, FALSE), NA))
-  frozen <- ifelse(has_d, ifelse(grepl("^[A-Z][a-z]*f($|[0-9])|^Cf|perma", master), NA, FALSE), NA)
+  frozen <- ifelse(has_d, ifelse(grepl(.frozen_designation_pattern(pedon$site), master), NA, FALSE), NA)
   per_layer <- function(fun, undecided) {
     r <- tryCatch(fun(pedon), error = function(e) NULL)
     if (is.null(r) || is.na(r$passed)) return(undecided)
