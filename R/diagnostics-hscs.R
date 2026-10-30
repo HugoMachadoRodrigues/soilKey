@@ -394,7 +394,8 @@
 # clay of the horizon above it (the horizon as a whole: a run of rows, each
 # read against the clay of the horizon directly above the run's top);
 # otherwise well-visible clay films (common or more; a t suffix when the
-# films are not recorded). The thickness (10 cm) is the run's.
+# films are not recorded). The thickness (10 cm) is the run's. A
+# transitional AB, BA, EB or BE with no clay recorded is passed over.
 .hscs_clay_accum_rows <- function(x) {
   h <- x$h; n <- x$n; r <- x$ord
   base <- .and3v(.and3v(.and3v(.hscs_clay_at_least(x, 8), .hscs_not_sand_rows(x)), x$mineral3), x$sub3)
@@ -413,10 +414,16 @@
   # lithologic change between a row and the horizon above it leaves the
   # ratio meaningless there: the clay films decide that row. A gap in the
   # description above a row may hold a horizon of any clay.
+  # Hugo's reading of 2026-10-30: a transitional horizon between the surface
+  # or eluvial horizon and the B (AB, BA, EB, BE) with no clay recorded
+  # (neither measured nor a texture class) is passed over, and the row is
+  # read against the horizon above it.
+  skip <- x$role %in% c("AB", "BA", "EB", "BE") & is.na(cr$lo) & is.na(cr$hi)
   sref <- rep(NA_real_, n); pref <- rep(NA_real_, n); ratio <- rep(FALSE, n)
   for (i in r) {
     if (base[i] %in% FALSE) next
     j <- ab[i]
+    while (!is.na(j) && skip[j]) j <- ab[j]
     if (is.na(j)) {
       if (!identical(i, first)) { ratio[i] <- NA; pref[i] <- 0 }
       next
