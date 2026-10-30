@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.316)
+# soilKey -- recognised horizon attribute names (v0.9.317)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -67,6 +67,7 @@ and do not warn.
 | `coarse_fragments_pct` | % (vol) | numeric | Coarse fragments (> 2 mm) by volume. | `cf`, `coarse_fragments`, `gravel`, `rock_fragments` |
 | `pressure_faces` | - | character | Abundance of pressure faces on the surfaces of the soil aggregates (none / few / common / many): shiny surfaces of aggregates pressed against each other, without the striations of slickensides and of the colour of the matrix (WRB 2022 Annex 1, Ch 8.4.14). The WRB 2022 nitic horizon (Ch 3.1.22) asks for pressure faces on 25 % or more of the aggregate surfaces, read as common or more. Clay coatings are recorded in clay_films_amount, not here. | - |
 | `structure_type_secondary` | - | character | Type of the second-level structure into which the first-level structural units break (e.g. angular blocky breaking into polyhedral or flat-edged elements). Read only by the WRB 2022 nitic horizon (Ch 3.1.22, criterion 2.a); structure_type is the first level. | - |
+| `structure_type_one_of` | - | character | The type of structure when the record names one of several, not known which, as words joined by 'or' (the older New Zealand term nut is granular or polyhedral, NZ Soil Description Handbook 2024, Note 12.1: 'granular or polyhedral'); structure_type is then left empty, so the keys that do not read this attribute read the type as not recorded. The NZSC key reads a criterion under each type: it holds when it holds for every one, fails when it fails for every one, and is undecided otherwise. | - |
 
 ## Texture
 
@@ -480,5 +481,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.316._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.317._
 

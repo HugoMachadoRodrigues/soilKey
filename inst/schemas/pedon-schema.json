@@ -584,6 +584,9 @@
           },
           "structure_type_secondary": {
             "type": ["string", "null"]
+          },
+          "structure_type_one_of": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

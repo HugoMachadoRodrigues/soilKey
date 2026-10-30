@@ -162,7 +162,9 @@ test_that("read_nsd_pedons() decodes the field description", {
   expect_identical(h$strength_moist, c("weak", NA, "loose"))      # moderately firm: not read
   expect_identical(h$consistence_moist, c(NA, "brittle", NA))
   expect_identical(h$stickiness, c("non-sticky", "slightly sticky", NA))
-  expect_identical(h$structure_type, c("crumb", "polyhedral", "single grain"))
+  # nut (an older term): granular or polyhedral, structure_type left empty
+  expect_identical(h$structure_type, c("crumb", NA, "single grain"))
+  expect_identical(h$structure_type_one_of, c(NA, "granular or polyhedral", NA))
   expect_identical(h$structure_grade, c("moderate", "weak", "structureless"))
   expect_identical(h$structure_type_secondary, c(NA, "granular", NA))
   expect_equal(h$ped_size_max_mm, c(10, 20, NA))
@@ -176,14 +178,14 @@ test_that("read_nsd_pedons() decodes the field description", {
   h2 <- as.data.frame(p$SB2$horizons)
   # depths shifted to start at 0; H read as O; old notation translated
   expect_equal(h2$top_cm, c(0, 10, 40, 41))
-  expect_identical(h2$designation, c("O", "Bg2", "Bfm", "G"))      # Bms 1 cm thick: placic
+  expect_identical(h2$designation, c("O", "Bg2", "Bfm", "Cg"))     # Bms 1 cm thick: placic; G at the bottom
   expect_equal(h2$redoximorphic_features_pct[2], 17.5 + 6)
   expect_identical(h2$mottle_contrast[2], "prominent")
   expect_identical(h2$field_texture[2], "peaty silt loam")
   expect_identical(h2$strength_moist[2], "firm")
   expect_equal(h2$coatings_value_moist[2], 3)
   expect_identical(h2$pan_type[3], "thin ironpan (placic)")
-  expect_true(is.na(h2$redoximorphic_features_pct[4]))           # a G horizon stays unknown
+  expect_true(is.na(h2$redoximorphic_features_pct[4]))           # a G (read as Cg) is gleyed: mottles not assumed absent
   expect_match(p$SB2$site$depth_note, "shifted by 10")
   # as recorded
   pa <- read_nsd_pedons(d, old_notation = "asis")
@@ -251,7 +253,7 @@ test_that("the older New Zealand notation is read as the key reads designations"
     orig = c("B2fe", "(B)g", "(B1g)", "B2G", "A12g", "C1ca", "Bms", "Bms", "A2", "G1", "Bw", "O-2"),
     fao = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, "2H", NA),
     thick = c(NA, NA, NA, NA, NA, NA, 0.5, 3, NA, NA, NA, NA))
-  expect_identical(d$designation, c("Bs2", "Bwg", "Bwg1", "Bg2", "Ag12", "Ck1", "Bfm", "Bsm", "A2", "G1", "2O", "O2"))
+  expect_identical(d$designation, c("Bs2", "Bwg", "Bwg1", "Bg2", "Ag12", "Ck1", "Bfm", "Bsm", "E", "Cg1", "2O", "O2"))
   expect_match(d$note[1], "older New Zealand notation")
   expect_match(d$note[8], "ortstein-pan")
   expect_match(d$note[11], "FAO H")
@@ -278,4 +280,123 @@ test_that("nsd_citation() names the NSD and its licence", {
   skip_on_cran()
   expect_match(nsd_citation(), "National Soils Database")
   expect_match(nsd_citation(as.Date("2026-10-30")), "2026-10-30")
+})
+
+# v0.9.3xx: Hugo's readings of 2026-10-30 -- nut is granular or polyhedral;
+# the strength words of the older scale stay unread; A2 is E, the old master G
+# is Bg over a B horizon and otherwise Cg, the old master D is C; the PARENT
+# ROCK note goes down to the layers whose origin is not recorded.
+
+# A second made-up survey: one profile in the older notation, with a parent
+# rock note; one profile with no note.
+.nsd_fake_survey_old <- function(dir) {
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  w <- function(name, d) utils::write.csv(d, file.path(dir, name), row.names = FALSE, na = "")
+  w("dm_surveydataset.csv", data.frame(id = "1042-y", name = "Older Survey", code = "OLD"))
+  w("sa_site.csv", data.frame(id = "1042-y", sa_site_id = c("55-x", "55-y"), identifier = c("OS1", "OS2")))
+  w("sd_soil.csv", data.frame(sa_site_id = c("55-x", "55-y"), sd_soil_id = c("47-x", "47-y"),
+                              classifier_nzsc = c("RFT [Typic Fluvial Recent Soil]", "GOT [Typic Orthic Gley Soil]"),
+                              classifier_usda = NA))
+  w("sd_soil_note.csv", data.frame(sd_soil_id = "47-x", sd_soil_note_id = "n1",
+                                   note = "PARENT ROCK: fine alluvium from greywacke"))
+  w("sd_horizon.csv", data.frame(
+    sd_soil_id = c(rep("47-x", 6), rep("47-y", 3)), sd_horizon_id = paste0("49-x", 1:9),
+    designation = c("A1", "A21", "G1", "(B)", "G2", "Dn", "A1", "A2g", "GC"),
+    horizondepth_minval = c(0, 10, 20, 40, 60, 80, 0, 15, 30),
+    horizondepth_maxval = c(10, 20, 40, 60, 80, 100, 15, 30, 60),
+    designation_fao = NA,
+    consistence_strength = c("moderately weak", "moderately firm", "moderately strong", "firm", NA, NA, NA, NA, NA)))
+  invisible(dir)
+}
+
+test_that("nut is granular or polyhedral: undecided where only polyhedral peds pass", {
+  skip_on_cran()
+  h <- data.frame(structure_type = c(NA, "polyhedral", "granular", NA, "blocky"),
+                  structure_type_one_of = c("granular or polyhedral", NA, NA, NA, NA),
+                  stringsAsFactors = FALSE)
+  poly <- function(t) ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(t), NA, FALSE))
+  either <- function(t) ifelse(grepl("granul|polyhed", t), TRUE, ifelse(is.na(t), NA, FALSE))
+  prism <- function(t) ifelse(grepl("prism", t), TRUE, ifelse(is.na(t), NA, FALSE))
+  expect_identical(soilKey:::.nzsc_by_shape(h, poly), c(NA, TRUE, FALSE, NA, FALSE))
+  expect_identical(soilKey:::.nzsc_by_shape(h, either), c(TRUE, TRUE, TRUE, NA, FALSE))
+  expect_identical(soilKey:::.nzsc_by_shape(h, prism), c(FALSE, FALSE, FALSE, NA, FALSE))
+  # the reader keeps nut apart from structure_type, with its provenance
+  d <- .nsd_fake_survey(file.path(tempdir(), "nsd_fake_nut"))
+  p <- read_nsd_pedons(d)$SB1
+  h1 <- as.data.frame(p$horizons)
+  expect_true(is.na(h1$structure_type[2]))
+  expect_identical(h1$structure_type_one_of[2], "granular or polyhedral")
+  pv <- as.data.frame(p$provenance)
+  expect_match(pv$notes[pv$attribute == "structure_type_one_of"], "nut \\(an older term\\): granular or polyhedral, Handbook 2024 Note 12.1")
+  # a key criterion that needs polyhedral peds (BX: in some part of the B
+  # within 60 cm, value 4 or less, friable and polyhedral peds of 10 mm or
+  # less) is undecided for a nut B; decided for the shapes it names
+  mk <- function(type, one_of) PedonRecord$new(
+    site = list(id = "nut", country = "NZ", designation_system = "nzsc"),
+    horizons = ensure_horizon_schema(data.table::data.table(
+      top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100), designation = c("Ah", "Bw", "C"),
+      munsell_value_moist = c(3, 4, 5), consistence_moist = c("friable", "friable", "friable"),
+      structure_grade = c("moderate", "moderate", NA), structure_type = c("granular", type, NA),
+      structure_type_one_of = c(NA, one_of, NA), ped_size_max_mm = c(5, 10, NA))))
+  expect_true(is.na(oxidic_brown_nzsc(mk(NA, "granular or polyhedral"))$passed))
+  expect_true(isTRUE(oxidic_brown_nzsc(mk("polyhedral", NA))$passed))
+  expect_true(isFALSE(oxidic_brown_nzsc(mk("granular", NA))$passed))
+  # the keys that do not read structure_type_one_of read the shape as not
+  # recorded, and run
+  pn <- mk(NA, "granular or polyhedral")
+  expect_true(is.na(soilKey:::.wrb_structure_kind(pn$horizons$structure_type[2], "moderate")))
+  expect_no_error(classify_wrb2022(pn, on_missing = "silent"))
+  expect_no_error(classify_usda(pn, on_missing = "silent"))
+})
+
+test_that("the older strength words stay unread", {
+  skip_on_cran()
+  d <- .nsd_fake_survey_old(file.path(tempdir(), "nsd_fake_old_1"))
+  h <- as.data.frame(read_nsd_pedons(d)$OS1$horizons)
+  expect_identical(h$strength_moist, c(NA, NA, NA, "firm", NA, NA))
+  expect_false(any(c("moderately weak", "moderately firm", "moderately strong") %in%
+                   names(soilKey:::.NSD_STRENGTH)))
+})
+
+test_that("A2 is E, the old G is Bg over a B horizon and Cg otherwise, D is C", {
+  skip_on_cran()
+  d <- .nsd_fake_survey_old(file.path(tempdir(), "nsd_fake_old_2"))
+  p <- read_nsd_pedons(d)
+  h <- as.data.frame(p$OS1$horizons)
+  # G1 lies above the (B): Bg1; G2 has only the D below it: Cg2
+  expect_identical(h$designation, c("A1", "E1", "Bg1", "Bw", "Cg2", "Cn"))
+  h2 <- as.data.frame(p$OS2$horizons)
+  expect_identical(h2$designation, c("A1", "Eg", "Cg"))           # GC at the bottom: Cg
+  pv <- as.data.frame(p$OS1$provenance)
+  pd <- pv$notes[pv$attribute == "designation"]
+  expect_match(pd[2], "A21 in the older New Zealand notation, read as E1 \\(the A2 is E\\)")
+  expect_match(pd[3], "G1 .* read as Bg1 .*a B horizon lies below it")
+  expect_match(pd[5], "G2 .* read as Cg2 .*no B horizon lies below it")
+  expect_match(pd[6], "Dn .* read as Cn .*the substratum, is C")
+  # as recorded
+  pa <- read_nsd_pedons(d, old_notation = "asis")
+  expect_identical(as.data.frame(pa$OS1$horizons)$designation, c("A1", "A21", "G1", "(B)", "G2", "Dn"))
+  # the NSD's own conversions are not touched
+  x <- soilKey:::.nsd_designation(orig = c("A2", "G", "D"), fao = c("AE", "Br", "2C"))
+  expect_identical(x$designation, c("AE", "Br", "2C"))
+  x <- soilKey:::.nsd_designation(orig = c("A2G", "(A2)", "A22x", "2G", "BD", "DG"),
+                                  fao = NA, soil = 1:6)
+  expect_identical(x$designation, c("Eg", "E", "Ex2", "2Cg", "BC", "Cg"))
+})
+
+test_that("the PARENT ROCK note goes down to the layers whose origin is not recorded", {
+  skip_on_cran()
+  lo <- soilKey:::.nsd_layer_origin(c(NA, "dune sand", "", NA), c("a", "a", "a", "b"),
+                                    c(a = "fine alluvium"))
+  expect_identical(lo$value, c("fine alluvium", "dune sand", "fine alluvium", NA))
+  expect_identical(lo$filled, c(TRUE, FALSE, TRUE, FALSE))
+  d <- .nsd_fake_survey_old(file.path(tempdir(), "nsd_fake_old_3"))
+  p <- read_nsd_pedons(d)
+  expect_identical(p$OS1$site$parent_material, "fine alluvium from greywacke")
+  expect_identical(as.data.frame(p$OS1$horizons)$layer_origin, rep("fine alluvium from greywacke", 6))
+  expect_true(all(is.na(as.data.frame(p$OS2$horizons)$layer_origin)))     # no note
+  pv <- as.data.frame(p$OS1$provenance)
+  expect_true(all(grepl("PARENT ROCK of the soil, taken down", pv$notes[pv$attribute == "layer_origin"])))
+  # the NZSC key reads it as fluvial material
+  expect_true(isTRUE(fluvial_group_nzsc(p$OS1)$passed))
 })

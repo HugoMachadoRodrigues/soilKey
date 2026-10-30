@@ -421,7 +421,7 @@ melanic_soils_nzsc <- function(pedon) {
   stk <- .nzsc_class_index(h$stickiness %||% rep(NA, n), "stickiness")
   sticky <- ifelse(is.na(stk), NA, stk >= 2)
   ms_ped <- ifelse(grepl("moderate|strong", g), TRUE, ifelse(grepl("weak|structureless", g), FALSE, NA))
-  poly <- ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
+  poly <- .nzsc_by_shape(h, function(t) ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   hi_ph <- .and3v(ms_ped, sticky)
   lo_ph <- .and3v(.and3v(ifelse(is.na(h$munsell_value_moist), NA, h$munsell_value_moist <= 4), .and3v(ms_ped, poly)), sticky)
   okb <- ifelse(is.na(h$ph_h2o), NA, ifelse(h$ph_h2o >= 5.9, hi_ph, lo_ph))
@@ -523,7 +523,7 @@ granular_soils_nzsc <- function(pedon) {
   # argillic horizon, with a reductimorphic horizon within 15 cm of the base
   # of the A (or 30 cm of the surface), or polyhedral peds of 20 mm or less in
   # most of the B within 60 cm
-  g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
+  g <- tolower(as.character(h$structure_grade))
   ms_ped <- ifelse(grepl("moderate|strong", g), TRUE, ifelse(grepl("weak|structureless", g), FALSE, NA))
   cut <- .any3v(.nzsc_cutanoxidic_rows(x), .and3v(.any3v(.nzsc_cutanic_rows(x), .nzsc_argillic_rows(x)), ms_ped))
   has_cut <- .nzsc_any(cut)
@@ -534,7 +534,8 @@ granular_soils_nzsc <- function(pedon) {
   })
   b <- .nzsc_b_rows(x); b <- b[h$top_cm[b] < ms + 60]
   size <- h$ped_size_max_mm %||% rep(NA_real_, n)
-  fine_poly <- ifelse(grepl("polyhed", t), ifelse(is.na(size), NA, size <= 20), ifelse(is.na(h$structure_type), NA, FALSE))
+  fine_poly <- .nzsc_by_shape(h, function(t) ifelse(grepl("polyhed", t), ifelse(is.na(size), NA, size <= 20),
+                                                    ifelse(is.na(t), NA, FALSE)))
   b2 <- if (!length(b)) .nzsc_none(x) else .asc_major_part(x, b, fine_poly, min(h$top_cm[b]),
                                                   min(ms + 60, .nzsc_max(h$bottom_cm[b]), na.rm = TRUE))
   passed <- .and3(c(c1, has_cut, .any3(c(a2, b2))))
@@ -620,10 +621,11 @@ pallic_soils_nzsc <- function(pedon) {
   b0 <- which(.nzsc_is(x, c("B", "BC")) & !is.na(h$top_cm))
   rows <- .nzsc_rows(x); first <- rows[x$mineral[rows]][1L]
   maybe <- .nzsc_maybe_rows(x); maybe <- maybe[!(maybe %in% c(first, b0))]
-  g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
+  g <- tolower(as.character(h$structure_grade))
   str <- .nzsc_class_index(h$strength_moist %||% rep(NA, n), "strength")
   ped_ok <- .and3v(ifelse(grepl("moderate|strong", g),
-                          ifelse(grepl("block|polyhed|prism", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE)),
+                          .nzsc_by_shape(h, function(t) ifelse(grepl("block|polyhed|prism", t), TRUE,
+                                                                ifelse(is.na(t), NA, FALSE))),
                           ifelse(grepl("weak|structureless", g), FALSE, NA)),
                    ifelse(is.na(str), NA, str >= 3))
   bw <- .nzsc_weathered_b_rows(x)

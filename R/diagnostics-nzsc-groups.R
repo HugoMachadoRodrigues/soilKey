@@ -541,10 +541,10 @@ mafic_group_nzsc <- function(pedon, colour = c("melanic", "brown")) {
   c1 <- if (colour == "melanic") {
     if (is.na(v) || is.na(ch)) NA else v <= 4 && ch >= 3
   } else {
-    g <- tolower(as.character(h$structure_grade[i])); t <- tolower(as.character(h$structure_type[i]))
-    sz <- (h$ped_size_max_mm %||% rep(NA_real_, x$n))[i]
-    ped <- if (grepl("moderate|strong", g) && grepl("polyhed", t)) { if (is.na(sz)) NA else sz <= 20 }
-           else if (is.na(g) || is.na(t)) NA else FALSE
+    g <- tolower(as.character(h$structure_grade)); sz <- h$ped_size_max_mm %||% rep(NA_real_, x$n)
+    ped <- .nzsc_by_shape(h, function(t) ifelse(grepl("moderate|strong", g) & grepl("polyhed", t),
+                                                ifelse(is.na(sz), NA, sz <= 20),
+                                                ifelse(is.na(g) | is.na(t), NA, FALSE)))[i]
     .and3(c(if (is.na(v)) NA else v <= 4, ped))
   }
   .nzsc_group("mafic_group_nzsc", .any3(c(c1, .nzsc_mafic_fragments(pedon, x, i), .nzsc_ca_mg(x, i))),
@@ -679,9 +679,9 @@ albic_ultic_nzsc <- function(pedon) {
   films <- .nzsc_txt(h$clay_films_amount, n)
   coat <- ifelse(x$des$t | x$des$h_weak | grepl("few|common|many|continuous", films), TRUE,
           ifelse(grepl("^none|^no", films), FALSE, NA))
-  t <- tolower(as.character(h$structure_type))
+  prism <- .nzsc_by_shape(h, function(t) ifelse(grepl("prism", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   ok <- .and3v(.and3v(ifelse(is.na(str), NA, str >= 4), ifelse(is.na(x$tex$group), NA, x$tex$group %in% "clayey")),
-               .and3v(ifelse(grepl("prism", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE)), coat))
+               .and3v(prism, coat))
   .nzsc_group("albic_ultic_nzsc", if (!length(b)) .nzsc_none(x) else .nzsc_some_part(x, b, ok), "U, UE", missing = miss)
 }
 
@@ -805,12 +805,12 @@ vertic_melanic_nzsc <- function(pedon) {
   cw <- h$cracks_width_cm; cd <- h$cracks_depth_cm
   cracks <- .nzsc_any(ifelse(!is.na(cw) & cw >= 0.4, ifelse(is.na(cd), NA, cd >= 30), FALSE))
   b <- .nzsc_b_rows(x)
-  g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
+  g <- tolower(as.character(h$structure_grade))
   # v0.9.300: a recorded grade below moderate, or a type other than blocky
   # or prismatic, rules the pedality out on its own
-  shape <- ifelse(grepl("moderate|strong", g) & grepl("block|prism", t), TRUE,
+  shape <- .nzsc_by_shape(h, function(t) ifelse(grepl("moderate|strong", g) & grepl("block|prism", t), TRUE,
            ifelse((!is.na(h$structure_grade) & !grepl("moderate|strong", g)) |
-                  (!is.na(h$structure_type) & !grepl("block|prism", t)), FALSE, NA))
+                  (!is.na(t) & !grepl("block|prism", t)), FALSE, NA)))
   cole <- ifelse(is.na(h$cole_value), NA, h$cole_value >= 0.09)
   # the COLE and the pedality, both in the major part of the B
   cle <- if (!length(b)) FALSE else .nzsc_major_part_b(x, b, .and3v(cole, shape))
@@ -862,8 +862,7 @@ aged_argillic_semiarid_nzsc <- function(pedon) {
 solonetzic_semiarid_nzsc <- function(pedon) {
   x <- .nzsc_horizons(pedon); h <- x$h; n <- x$n
   a <- .nzsc_argillic_rows(x)
-  t <- tolower(as.character(h$structure_type))
-  shape <- ifelse(grepl("block|prism|column", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
+  shape <- .nzsc_by_shape(h, function(t) ifelse(grepl("block|prism|column", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   films <- .nzsc_txt(h$clay_films_amount, n)
   # more than 10 % of ped faces: common or many coatings; few leaves it open
   much <- ifelse(grepl("common|many|continuous|abundant", films), TRUE,
@@ -981,8 +980,9 @@ oxidic_brown_nzsc <- function(pedon) {
   if (!length(b)) return(.nzsc_group("oxidic_brown_nzsc", .nzsc_none(x), "B, BX", missing = miss))
   cons <- .nzsc_txt(h$consistence_moist, n)
   friable <- ifelse(grepl("friable", cons) & !grepl("firm", cons), TRUE, ifelse(is.na(cons) | !nzchar(cons), NA, FALSE))
-  t <- tolower(as.character(h$structure_type)); sz <- h$ped_size_max_mm %||% rep(NA_real_, n)
-  poly <- ifelse(grepl("polyhed", t), ifelse(is.na(sz), NA, sz <= 10), ifelse(is.na(h$structure_type), NA, FALSE))
+  sz <- h$ped_size_max_mm %||% rep(NA_real_, n)
+  poly <- .nzsc_by_shape(h, function(t) ifelse(grepl("polyhed", t), ifelse(is.na(sz), NA, sz <= 10),
+                                               ifelse(is.na(t), NA, FALSE)))
   ok <- .and3v(.and3v(ifelse(is.na(h$munsell_value_moist), NA, h$munsell_value_moist <= 4), friable), poly)
   .nzsc_group("oxidic_brown_nzsc", .nzsc_some_part_in(x, b, ok, -Inf, x$ms + 60), "B, BX", missing = miss)
 }

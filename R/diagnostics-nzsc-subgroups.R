@@ -539,10 +539,10 @@ granular_acid_gley_nzsc <- function(pedon) {
 # peds of 20 mm or less (GAG; LOBG, v0.9.300).
 .nzsc_polyhedral_cutanic <- function(x) {
   h <- x$h; n <- x$n
-  g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
+  g <- tolower(as.character(h$structure_grade))
   size <- h$ped_size_max_mm %||% rep(NA_real_, n)
   grade <- ifelse(grepl("moderate|strong", g), TRUE, ifelse(is.na(h$structure_grade), NA, FALSE))
-  poly <- ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
+  poly <- .nzsc_by_shape(h, function(t) ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   ca <- .any3v(.nzsc_cutanic_or_coated(x), .nzsc_argillic_rows(x))
   .and3v(.and3v(grade, ca), .and3v(poly, ifelse(is.na(size), NA, size <= 20)))
 }

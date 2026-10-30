@@ -793,3 +793,8 @@ attributes:
     section: "Structure & consistence"
     unit: "-"
     description: "Type of the second-level structure into which the first-level structural units break (e.g. angular blocky breaking into polyhedral or flat-edged elements). Read only by the WRB 2022 nitic horizon (Ch 3.1.22, criterion 2.a); structure_type is the first level."
+  - name: structure_type_one_of
+    section: "Structure & consistence"
+    unit: "-"
+    description: "The type of structure when the record names one of several, not known which, as words joined by 'or' (the older New Zealand term nut is granular or polyhedral, NZ Soil Description Handbook 2024, Note 12.1: 'granular or polyhedral'); structure_type is then left empty, so the keys that do not read this attribute read the type as not recorded. The NZSC key reads a criterion under each type: it holds when it holds for every one, fails when it fails for every one, and is undecided otherwise."
+    systems: [nzsc4]
