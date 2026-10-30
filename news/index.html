@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.311</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.312</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,25 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.312" id="soilkey-09312-2026-10-29">soilKey 0.9.312 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09312-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="the-afsp-reader-reads-its-structure-codes-0-9-312">The AfSP reader reads its structure codes<a class="anchor" aria-label="anchor" href="#the-afsp-reader-reads-its-structure-codes-0-9-312"></a></h3>
+<ul><li>AfSP keeps the structure type, grade and size as class codes of the FAO-ISRIC (1990) and FAO (2006) guidelines. The reader passed them on unread, and the diagnostic tests look for words. A massive “M” or a single-grain “N” read as structure not recorded, so since 0.9.311 it did not block the mollic and umbric horizons. In the 120 profiles of the AfSP sample, 190 layers in 50 profiles record a structure type and 59 layers in 23 profiles a massive, single-grain or rock structure.</li>
+<li>The codes are now read by the AfSP dictionary (<code>AfSP012Qry_DictioClassValues</code>):
+<ul><li>a range of grades by its lower end, as the ISIS reader does (“weak to moderate” is weak);</li>
+<li>a range of sizes with both ends, since soilKey reads a size range by its upper end;</li>
+<li>a code the dictionary does not define as not recorded (in AfSP 1.2: grade V, A and R, in 83 of 74,961 layers, and size S, in 5).</li>
+</ul></li>
+<li>Each code goes to the provenance. The bundled sample (<code><a href="../reference/load_afsp_sample.html">load_afsp_sample()</a></code>, built in 0.9.77) and profiles built before are read when they are loaded or benchmarked.</li>
+<li>
+<strong>AfSP WRB:</strong> 33 of 120 profiles agree with the reference, as before, with 12 RSGs changed: 2 gained and 2 lost.
+<ul><li>Gained: a Solonetz whose Btn records columnar structure, and a Cambisol.</li>
+<li>Lost: an Umbrisol whose Ah over 116 cm of massive dark layers falls short of the structure criterion; a Regosol whose B records subangular blocky structure, a Cambisol now.</li>
+<li>The other panels do not read AfSP and are unchanged.</li>
+</ul></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.311" id="soilkey-09311-2026-10-29">soilKey 0.9.311 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09311-2026-10-29"></a></h2>
 <div class="section level3">

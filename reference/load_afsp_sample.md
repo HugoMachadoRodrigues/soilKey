@@ -26,6 +26,11 @@ This is the African analogue of
 [`load_kssl_nasis_sample`](https://hugomachadorodrigues.github.io/soilKey/reference/load_kssl_nasis_sample.md)
 (US KSSL+NASIS).
 
+The snapshot was built in v0.9.77 and holds the AfSP structure codes;
+since v0.9.312 they are read into words when it is loaded, as
+[`load_afsp_pedons`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+reads them.
+
 ## Reference
 
 Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.

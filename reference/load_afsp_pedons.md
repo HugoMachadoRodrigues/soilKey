@@ -51,6 +51,15 @@ A list of
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 objects.
 
+## Details
+
+The structure type, grade and size are AfSP class codes (FAO-ISRIC 1990,
+FAO 2006). Since v0.9.312 they are read by the AfSP dictionary
+(`AfSP012Qry_DictioClassValues`) into soilKey's words: a range of grades
+by its lower end, a range of sizes with both ends, and a code the
+dictionary does not define as not recorded. Each code goes to the
+provenance.
+
 ## References
 
 Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.
