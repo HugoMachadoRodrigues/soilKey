@@ -40,7 +40,9 @@
 #     with no mottle record in a survey that records mottles has none, unless
 #     its designation marks gleying.
 #   * Structure: the pedality degree and the shape of the first ped record;
-#     the NZ "nut" structure is polyhedral; the size class gives the largest
+#     the older NZ term "nut" (not a shape of Milne et al. 1995, Table 17;
+#     the 2024 handbook, Note 12.1, records it as granular or polyhedral) is
+#     read as polyhedral until Hugo decides; the size class gives the largest
 #     ped size (Milne et al. 1995: very fine 6, fine 10, medium 20, coarse 60,
 #     very coarse 100 mm).
 #   * Strength: the classes of Milne et al. (1995, p. 83) (codes 1 to 6 and
@@ -592,7 +594,7 @@ nsd_citation <- function(accessed = NULL) {
     H$structure_grade <- gr; H$structure_type <- shape
     note("structure_grade", !is.na(gr), "NSD em_ped legacy_grade (pedality degree)")
     note("structure_type", !is.na(shape), ifelse(tolower(p1$type[i]) %in% c("nut", "nutty", "nutty ?"),
-         "NSD em_ped type nut: polyhedral (Milne et al. 1995)", "NSD em_ped type"))
+         "NSD em_ped type nut (an older term): read as polyhedral", "NSD em_ped type"))
     sz <- dec("em_ped", "geometry_size", p1$geometry_size[i])
     H$structure_size <- .nsd_lookup(.NSD_PED_SIZE, p1$geometry_size[i])
     H$structure_size[is.na(H$structure_size)] <- .nsd_lookup(c(fine = "fine", medium = "medium", coarse = "coarse",

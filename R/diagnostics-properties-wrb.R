@@ -678,6 +678,21 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
 }
 
 
+# v0.9.317: the designations that show a frozen layer, by the notation the
+# site declares. The FAO and USDA notations write it f (and Cf); the
+# Canadian notation writes it z ("A frozen layer", CSSC Ch 2, p. 16), its f
+# being the illuvial Fe and Al of a podzolic B; the New Zealand and
+# Australian notations have no frozen suffix (their f is fibric peat and
+# faunal accumulation), so only a designation naming permafrost counts.
+.frozen_designation_pattern <- function(site) {
+  ds <- tolower(trimws(as.character((site %||% list())$designation_system %||% NA)[1L]))
+  if (is.na(ds) || !nzchar(ds)) return("^[A-Z][a-z]*f($|[0-9])|^Cf|perma")
+  if (ds %in% c("cssc", "cssc3", "canadian", "canada")) return("^[IVX]*[A-Z]+[a-z]*z|perma")
+  if (ds %in% c("nzsc", "nzsc4", "nz", "new zealand", "asc", "asc3", "australian",
+                "field handbook", "nchs", "australian field handbook")) return("perma")
+  "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
+}
+
 #' Cryic conditions (WRB 2022)
 #'
 #' Tests whether continuous frozen / permafrost material occurs within
@@ -710,21 +725,6 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references IUSS Working Group WRB (2022), Chapter 5, Cryosols.
 #' @export
-# v0.9.317: the designations that show a frozen layer, by the notation the
-# site declares. The FAO and USDA notations write it f (and Cf); the
-# Canadian notation writes it z ("A frozen layer", CSSC Ch 2, p. 16), its f
-# being the illuvial Fe and Al of a podzolic B; the New Zealand and
-# Australian notations have no frozen suffix (their f is fibric peat and
-# faunal accumulation), so only a designation naming permafrost counts.
-.frozen_designation_pattern <- function(site) {
-  ds <- tolower(trimws(as.character((site %||% list())$designation_system %||% NA)[1L]))
-  if (is.na(ds) || !nzchar(ds)) return("^[A-Z][a-z]*f($|[0-9])|^Cf|perma")
-  if (ds %in% c("cssc", "cssc3", "canadian", "canada")) return("^[IVX]*[A-Z]+[a-z]*z|perma")
-  if (ds %in% c("nzsc", "nzsc4", "nz", "new zealand", "asc", "asc3", "australian",
-                "field handbook", "nchs", "australian field handbook")) return("perma")
-  "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
-}
-
 cryic_conditions <- function(pedon, max_top_cm = 100, max_temp_C = 0) {
   h <- pedon$horizons
 
