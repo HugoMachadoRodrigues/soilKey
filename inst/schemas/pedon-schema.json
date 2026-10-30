@@ -549,6 +549,30 @@
           "soluble_salts_pct": {
             "type": ["number", "null"]
           },
+          "soluble_salts_sulfate_pct": {
+            "type": ["number", "null"]
+          },
+          "soluble_salts_chloride_pct": {
+            "type": ["number", "null"]
+          },
+          "p2o5_al_mg_kg": {
+            "type": ["number", "null"]
+          },
+          "digo_pct": {
+            "type": ["number", "null"]
+          },
+          "coarse_fragments_shape": {
+            "type": ["string", "null"]
+          },
+          "soluble_salts_carbonate_pct": {
+            "type": ["number", "null"]
+          },
+          "secondary_carbonates_form": {
+            "type": ["string", "null"]
+          },
+          "mottle_size_class": {
+            "type": ["string", "null"]
+          },
           "ec_max_dS_m": {
             "type": ["number", "null"]
           },

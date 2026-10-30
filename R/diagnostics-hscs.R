@@ -554,10 +554,29 @@
 
 # Rows of anthropogenic material: a layer origin naming fill or other
 # human-made or human-carried material, or a u suffix (FAO: artefacts).
+# v0.9.316: also the hortic route of the anthropogenic horizon (8.1, p. 24,
+# criterion 1): where the upper 20 cm hold P2O5 (AL method) of 500 mg/kg or
+# more on a thickness-weighted average (p2o5_al_mg_kg), the run of A rows from
+# the surface, not buried, is that horizon.
 .hscs_anthropic_rows <- function(x) {
   lo <- .hscs_txt(x$h$layer_origin, x$n)
-  (!is.na(lo) & grepl("fill|terric|anthrop|artefact|artifact|technic|urban|spoil|dredg|garden|hortic|made|refuse|waste|rubble",
-                      lo)) | x$des$u
+  out <- (!is.na(lo) & grepl("fill|terric|anthrop|artefact|artifact|technic|urban|spoil|dredg|garden|hortic|made|refuse|waste|rubble",
+                             lo)) | x$des$u
+  p <- x$h$p2o5_al_mg_kg
+  if (!is.null(p) && any(!is.na(p)) && !is.na(x$surface)) {
+    w <- .hscs_wmean(x, p, x$surface, x$surface + 20, vmin = 0, vmax = Inf)
+    if (is.finite(w[["lo"]]) && w[["lo"]] >= 500) {
+      prev <- NA
+      for (i in x$ord) {
+        if (!(x$role[i] %in% "A") || x$des$buried[i]) break
+        if (!is.na(prev) && abs(x$h$top_cm[i] - prev) > 0.5) break
+        out[i] <- TRUE
+        prev <- x$h$bottom_cm[i]
+        if (is.na(prev)) break
+      }
+    }
+  }
+  out
 }
 
 # Stratified material (retegzett talajanyag) within the window [zt, zb]:

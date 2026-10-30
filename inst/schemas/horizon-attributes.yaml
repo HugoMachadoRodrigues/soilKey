@@ -721,6 +721,58 @@ attributes:
     systems: [hscs2024]
     min: 0
     max: 100
+  - name: soluble_salts_sulfate_pct
+    section: "Hungarian system (HSCS 2024)"
+    unit: "%"
+    description: "Sulphate share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtype karbonát-szulfátos: at least 50 %."
+    systems: [hscs2024]
+    min: 0
+    max: 100
+  - name: soluble_salts_chloride_pct
+    section: "Hungarian system (HSCS 2024)"
+    unit: "%"
+    description: "Chloride share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtype karbonát-kloridos: at least 30 %."
+    systems: [hscs2024]
+    min: 0
+    max: 100
+  - name: p2o5_al_mg_kg
+    section: "Hungarian system (HSCS 2024)"
+    unit: "mg/kg"
+    description: "P2O5 extracted by the ammonium-lactate (AL) method, mg/kg. HSCS 2024 hortikus (anthropogenic horizon and subtype): at least 500 mg/kg in the upper 20 cm."
+    systems: [hscs2024]
+    min: 0
+  - name: digo_pct
+    section: "Hungarian system (HSCS 2024)"
+    unit: "%"
+    description: "Visible traces of applied digó earth (a calcareous ameliorant), % of the soil matrix. HSCS 2024 variety digózott: at least 5 % within 50 cm."
+    systems: [hscs2024]
+    min: 0
+    max: 100
+  - name: coarse_fragments_shape
+    section: "Hungarian system (HSCS 2024)"
+    unit: "-"
+    description: "Shape of the coarse fragments: rounded (gravel) or angular (rock debris). HSCS 2024 varieties kavicsos (rounded) and kőzettörmelékes (angular)."
+    systems: [hscs2024]
+    allowed: [rounded, angular, mixed]
+  - name: soluble_salts_carbonate_pct
+    section: "Hungarian system (HSCS 2024)"
+    unit: "%"
+    description: "Carbonate and bicarbonate share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtypes karbonát-szulfátos and karbonát-kloridos: at least 20 % beside the sulphate or chloride share (Hugo's reading, 2026-10-30)."
+    systems: [hscs2024]
+    min: 0
+    max: 100
+  - name: secondary_carbonates_form
+    section: "Carbonates / sulphates"
+    unit: "-"
+    description: "Form of the secondary carbonates, FAO (2006): pseudomycelia, coatings (on ped faces), soft concretions, hard concretions, powdery, masses. HSCS 2024 subtype mészlepedékes (whitish coatings, pseudomycelia, on ped faces)."
+    systems: [hscs2024]
+    allowed: [pseudomycelia, coatings, soft concretions, hard concretions, powdery, masses]
+  - name: mottle_size_class
+    section: "Salinity, redoximorphism, vertic"
+    unit: "-"
+    description: "Size class of the mottles, FAO (2006): very fine (< 2 mm), fine (2-6 mm), medium (6-20 mm), coarse (> 20 mm). HSCS 2024 iron accumulation horizon (vaskiválásos): large mottles over 20 mm."
+    systems: [hscs2024]
+    allowed: [very fine, fine, medium, coarse]
   - name: ec_max_dS_m
     section: "Salinity, redoximorphism, vertic"
     unit: "dS/m"

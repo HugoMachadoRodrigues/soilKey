@@ -220,6 +220,15 @@ horizon_column_spec <- function() {
     weathered_fragments_pct       = "numeric",   # share of the coarse rock fragments weathered enough to break easily by hammer or spade, %; NZSC Weathered subgroups
     # ---- v0.9.305: the Hungarian diagnostic system (HSCS 2024) ----
     soluble_salts_pct             = "numeric",   # total water-soluble salts, % by mass (Hungarian method, from the EC of the saturated paste); HSCS solonchak horizon
+    # ---- v0.9.316: the HSCS 2024 subtype and variety properties ----
+    soluble_salts_sulfate_pct     = "numeric",   # sulphate share of the total water-soluble salts, %; HSCS karbonat-szulfatos (>= 50)
+    soluble_salts_chloride_pct    = "numeric",   # chloride share of the total water-soluble salts, %; HSCS karbonat-kloridos (>= 30)
+    p2o5_al_mg_kg                 = "numeric",   # P2O5 by the ammonium-lactate (AL) method, mg/kg; HSCS hortikus (>= 500 in the upper 20 cm)
+    digo_pct                      = "numeric",   # visible digo earth (applied ameliorant), % of the soil matrix; HSCS digozott (>= 5 within 50 cm)
+    coarse_fragments_shape        = "character", # shape of the coarse fragments: rounded (gravel) or angular; HSCS kavicsos / kozettormelekes
+    soluble_salts_carbonate_pct   = "numeric",   # carbonate + bicarbonate share of the total water-soluble salts, %; HSCS karbonat-szulfatos / -kloridos (>= 20)
+    secondary_carbonates_form     = "character", # form of the secondary carbonates (FAO 2006): pseudomycelia, coatings, soft concretions, hard concretions, powdery, masses; HSCS meszlepedekes
+    mottle_size_class             = "character", # size class of the mottles (FAO 2006): very fine < 2 mm, fine 2-6, medium 6-20, coarse > 20; HSCS vaskivalasos (> 20 mm)
     # ---- v0.9.308: the ISIS reader ----
     ec_max_dS_m                   = "numeric",   # upper bound of the saturated-paste EC (e.g. EC 1:2.5 x 12.5); read only by the salic test, to rule a layer out
     # ---- WRB 2022 andic properties: the NaF field test as a number ----

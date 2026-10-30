@@ -601,3 +601,27 @@ attributes:
     type: "list"
     unit: "-"
     description: "A list of the ranges npdb_scenario() estimated (rows and error bands of the dry colours, the soil temperature range, the moisture subclasses between the two PET methods). Read by benchmark_npdb(), which classifies the pedon at every combination of their ends."
+  - name: contaminated
+    section: "Landscape & surface"
+    type: "logical"
+    unit: "-"
+    description: "A layer within 50 cm exceeds a contamination or toxicity limit of the soil regulation in force. HSCS 2024 subtype szennyezett (Anthropogenic soils)."
+    systems: [hscs2024]
+  - name: terraced
+    section: "Landscape & surface"
+    type: "logical"
+    unit: "-"
+    description: "The surface is an artificial terrace. HSCS 2024 variety teraszolt."
+    systems: [hscs2024]
+  - name: flood_irrigated
+    section: "Landscape & surface"
+    type: "logical"
+    unit: "-"
+    description: "The soil is under flood-irrigated cultivation (e.g. rice). HSCS 2024 variety árasztott."
+    systems: [hscs2024]
+  - name: wind_deflation
+    section: "Landscape & surface"
+    type: "logical"
+    unit: "-"
+    description: "The surface is bare, structureless single grains with marks of wind reworking (deflation). HSCS 2024 subtype futó (Sandy soils)."
+    systems: [hscs2024]
