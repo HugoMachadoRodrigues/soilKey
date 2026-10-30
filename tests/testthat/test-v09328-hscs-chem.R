@@ -42,36 +42,37 @@
 .ch_eros <- "er\u0151sen"; .ch_gyenge <- "gyeng\u00e9n"
 .ch_surface <- "felsz\u00ednt\u0151l"; .ch_shallow <- "sek\u00e9lyen"; .ch_middle <- "k\u00f6z\u00e9pm\u00e9lyen"
 
-test_that("the carbonatic materials of 8.4 per row: reaction and CaCO3", {
+test_that("the carbonatic materials of 8.4 per row: CaCO3 first, then the reaction", {
   skip_on_cran()
   p <- .ch_pedon(list(
-    designation = c(rep("C", 12), "Ck", "Bk", "C", "C"), top_cm = seq(0, 150, 10), bottom_cm = seq(10, 160, 10),
-    caco3_pct = c(1, 3, 3, 3, 20, 20, 1, 0, 8, NA, NA, NA, NA, NA, NA, 20),
+    designation = c(rep("C", 12), "Ck", "Bk", "C", "C", "C", "C"), top_cm = seq(0, 170, 10),
+    bottom_cm = seq(10, 180, 10),
+    caco3_pct = c(1, 3, 3, 3, 20, 20, 1, 0, 8, NA, NA, NA, NA, NA, NA, 20, 1, NA),
     effervescence_class = c("slight", "slight", "moderate", "strong", "very strong", "very strong",
-                            NA, NA, NA, "slight", "moderate", "strong", "very strong", NA, NA, NA),
-    secondary_carbonates_pct = c(0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-    carbonate_hard_pct = c(rep(NA, 15), 3)))
+                            NA, NA, NA, "slight", "moderate", "strong", "very strong", NA, NA, NA,
+                            "none", "very strong"),
+    secondary_carbonates_pct = c(0, 0, 0, 0, 2, rep(0, 13)), carbonate_hard_pct = c(rep(NA, 15), 3, NA, NA)))
   x <- .ch_x(p)
   m <- function(d) soilKey:::.hscs_carbonate_material_rows(x, d)
-  # both recorded: both hold; slight is the very weak or the weak reaction as the CaCO3 says
-  expect_identical(m("nyomokban")[1:2], c(TRUE, FALSE))
-  expect_identical(m("gyengen")[1:4], c(FALSE, TRUE, TRUE, FALSE))
-  expect_identical(m("kozepesen")[4:6], c(FALSE, FALSE, FALSE))
+  # a measured CaCO3 decides the band, whatever the reaction
+  expect_identical(m("nyomokban")[c(1, 2, 17)], c(TRUE, FALSE, TRUE))
+  expect_identical(m("gyengen")[1:4], c(FALSE, TRUE, TRUE, TRUE))       # a strong reaction with 3 %
+  expect_identical(m("kozepesen")[4:6], c(FALSE, FALSE, TRUE))          # 20 % without secondary carbonates
   expect_identical(m("eros")[5:6], c(TRUE, FALSE))
-  # only CaCO3: the band of each degree (0 % has no reaction)
-  expect_identical(m("nyomokban")[7:8], c(TRUE, FALSE))
+  expect_identical(m("nyomokban")[7:8], c(TRUE, FALSE))                 # 0 % has no carbonate
   expect_identical(c(m("gyengen")[9], m("kozepesen")[9]), c(FALSE, TRUE))
-  # only the reaction: slight leaves the very weak and the weak class open
+  # no CaCO3: the reaction; slight leaves the very weak and the weak class open
   expect_identical(c(m("nyomokban")[10], m("gyengen")[10], m("kozepesen")[10]), c(NA, NA, FALSE))
   expect_identical(m("gyengen")[11], TRUE)
   expect_identical(c(m("kozepesen")[12], m("eros")[12]), c(TRUE, FALSE))
-  expect_identical(c(m("kozepesen")[13], m("eros")[13]), c(TRUE, TRUE))   # the k shows secondary carbonates
+  expect_identical(c(m("kozepesen")[13], m("eros")[13]), c(FALSE, TRUE))  # the k shows secondary carbonates
+  expect_identical(c(m("kozepesen")[18], m("eros")[18]), c(TRUE, FALSE))  # +++ without them
   # neither: a k shows 2 % or more, not the degree
   expect_identical(c(m("nyomokban")[14], m("gyengen")[14], m("kozepesen")[14], m("eros")[14]),
                    c(FALSE, NA, NA, NA))
   expect_identical(c(m("gyengen")[15], m("eros")[15]), c(NA, FALSE))
   # hard secondary carbonates count for the strong degree
-  expect_identical(m("eros")[16], TRUE)
+  expect_identical(c(m("eros")[16], m("kozepesen")[16]), c(TRUE, FALSE))
 })
 
 test_that("the carbonate degrees: 15 cm within 100 cm, the strongest named, the depth modifier", {
@@ -120,8 +121,11 @@ test_that("erosen karbonatos needs secondary carbonates, recorded when met", {
   # carbonates, so the strong degree fails while the others stay open
   p3 <- .ch_pedon(list(designation = c("A", "C"), top_cm = c(0, 30), bottom_cm = c(30, 80), caco3_pct = c(3, 20)))
   expect_false(.ch_prop(p3, "eros_karbonatos")$passed)
-  expect_true(is.na(.ch_prop(p3, "kozepesen_karbonatos")$passed))
+  k3 <- .ch_prop(p3, "kozepesen_karbonatos")    # 20 % without secondary carbonates
+  expect_true(k3$passed); expect_identical(k3$top, 30)
   expect_true(.ch_prop(p3, "gyengen_karbonatos")$passed)
+  st3 <- .ch_status(p3, "BAR")
+  expect_identical(st3$id[st3$named & grepl("karbonatos", st3$id)], "kozepesen_karbonatos")
 })
 
 test_that("the base status: telitett, telitetlen in the major part of 20-100 cm", {
@@ -270,23 +274,25 @@ test_that("szolonyeces and its weak and strong forms", {
   expect_true(is.na(sn$passed)); expect_true("mg_cmol" %in% sn$missing); expect_match(sn$note, "holds")
 })
 
-test_that("karbonat-szulfatos and karbonat-kloridos: the share of the salts beside 20 % carbonate", {
+test_that("karbonat-szulfatos and karbonat-kloridos: shares of the salts beside 20 % carbonate", {
   skip_on_cran()
   # solonchak: Az 0-20, Cz 20-60, Czl 60-100
-  p <- .ch_mod("solonchak", list(caco3_pct = c(25, 15, 15), soluble_salts_sulfate_pct = c(60, NA, NA),
-                                 soluble_salts_chloride_pct = c(20, NA, NA)))
+  p <- .ch_mod("solonchak", list(soluble_salts_sulfate_pct = c(60, NA, NA), soluble_salts_chloride_pct = c(20, NA, NA),
+                                 soluble_salts_carbonate_pct = c(20, 10, 10)))
   expect_true(.ch_prop(p, "karbonat_szulfatos")$passed)
-  expect_false(.ch_prop(p, "karbonat_kloridos")$passed)   # 20 % chloride; the rest below 20 % carbonate
-  p2 <- .ch_mod("solonchak", list(caco3_pct = c(25, 15, 15), soluble_salts_chloride_pct = c(35, 35, 35)))
+  expect_false(.ch_prop(p, "karbonat_kloridos")$passed)   # 20 % chloride; below 20 % carbonate in the rest
+  p2 <- .ch_mod("solonchak", list(soluble_salts_chloride_pct = 35, soluble_salts_carbonate_pct = c(10, 25, 10)))
   expect_true(.ch_prop(p2, "karbonat_kloridos")$passed)
-  # less than 20 % carbonate
-  p3 <- .ch_mod("solonchak", list(soluble_salts_sulfate_pct = 60))
+  # less than 20 % carbonate in the salts; the CaCO3 of the soil does not count
+  p3 <- .ch_mod("solonchak", list(caco3_pct = 30, soluble_salts_sulfate_pct = 60, soluble_salts_carbonate_pct = 15))
   expect_false(.ch_prop(p3, "karbonat_szulfatos")$passed)
-  p4 <- .ch_mod("solonchak", list(caco3_pct = 25, soluble_salts_sulfate_pct = 40))
+  p4 <- .ch_mod("solonchak", list(soluble_salts_sulfate_pct = 40, soluble_salts_carbonate_pct = 30))
   expect_false(.ch_prop(p4, "karbonat_szulfatos")$passed)
-  pn <- .ch_mod("solonchak", list(caco3_pct = 25))
+  pn <- .ch_mod("solonchak", list(caco3_pct = 30, soluble_salts_sulfate_pct = 60))
   expect_true(is.na(.ch_prop(pn, "karbonat_szulfatos")$passed))
-  expect_true("soluble_salts_sulfate_pct" %in% .ch_prop(pn, "karbonat_szulfatos")$missing)
+  expect_true("soluble_salts_carbonate_pct" %in% .ch_prop(pn, "karbonat_szulfatos")$missing)
+  pn2 <- .ch_mod("solonchak", list(soluble_salts_carbonate_pct = 25))
+  expect_true("soluble_salts_sulfate_pct" %in% .ch_prop(pn2, "karbonat_szulfatos")$missing)
   expect_true(is.na(.ch_prop(p, "karbonat_szulfatos")$top))
 })
 
@@ -300,13 +306,22 @@ test_that("meszlepedekes: soft secondary carbonates on ped faces", {
   # secondary carbonates of unrecorded form: undecided
   pn <- make_hscs2024_example("steppe")
   expect_true(is.na(.ch_prop(pn, "meszlepedekes")$passed))
-  expect_identical(.ch_prop(pn, "meszlepedekes")$missing, "carbonate_soft_pct")
+  expect_identical(.ch_prop(pn, "meszlepedekes")$missing, c("secondary_carbonates_form", "carbonate_soft_pct"))
   # none recorded: absent
   p0 <- .ch_mod("steppe", list(designation = c("A", "AB", "B", "C"), secondary_carbonates_pct = 0))
   expect_false(.ch_prop(p0, "meszlepedekes")$passed)
   # no ped faces in a massive horizon
   pm <- .ch_mod("steppe", list(carbonate_soft_pct = c(0, 0, 0, 5)))
   expect_false(.ch_prop(pm, "meszlepedekes")$passed)
+  # the form of the secondary carbonates decides where it is recorded
+  pf <- .ch_mod("steppe", list(secondary_carbonates_form = c(NA, NA, "pseudomycelia", "masses")))
+  mf <- .ch_prop(pf, "meszlepedekes")
+  expect_true(mf$passed); expect_identical(mf$top, 60)
+  pc <- .ch_mod("steppe", list(secondary_carbonates_form = c(NA, NA, "hard concretions", "coatings")))
+  expect_identical(.ch_prop(pc, "meszlepedekes")$top, 90)
+  ph <- .ch_mod("steppe", list(secondary_carbonates_form = c(NA, NA, "hard concretions", "soft concretions"),
+                               carbonate_soft_pct = c(0, 0, 5, 5)))
+  expect_false(.ch_prop(ph, "meszlepedekes")$passed)     # another form recorded: no
 })
 
 test_that("szologyos: a leached horizon within 50 cm, pale when dry, pH 5 or less", {
@@ -348,10 +363,10 @@ test_that("full names of the types with the chemical properties", {
            "Szolonyec talaj",
            c(paste(.ch_shallow, kz), tt, paste(.ch_shallow, "magn\u00e9ziumos"), paste(.ch_shallow, "szologyos"),
              paste(.ch_shallow, "szoloncs\u00e1kos")))
-  .ch_name(.ch_mod("solonchak", list(caco3_pct = c(25, 15, 15), soluble_salts_sulfate_pct = c(60, NA, NA),
+  .ch_name(.ch_mod("solonchak", list(soluble_salts_sulfate_pct = c(60, NA, NA), soluble_salts_carbonate_pct = 20,
                                      na_cmol = c(3, 3, 0.2))),
            "Szoloncs\u00e1k talaj",
-           c(paste(.ch_shallow, kz), tt, "karbon\u00e1t-szulf\u00e1tos", paste(.ch_surface, .ch_eros, "szolonyeces")))
+           c(paste(.ch_surface, kz), tt, "karbon\u00e1t-szulf\u00e1tos", paste(.ch_surface, .ch_eros, "szolonyeces")))
   .ch_name(.ch_mod("swelling_clay", list(caco3_pct = c(0, 0, 8), bs_pct = 90, caso4_pct = c(0, 6, 0))),
            "Duzzad\u00f3 agyagtalaj", c(paste(.ch_middle, kz), tt, paste(.ch_shallow, "gipszes")))
   .ch_name(.ch_mod("meadow", list(caco3_pct = c(0, 0, 3), bs_pct = 70, soluble_salts_pct = c(0.02, 0.08, 0.02))),

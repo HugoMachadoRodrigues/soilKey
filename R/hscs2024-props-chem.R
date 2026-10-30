@@ -85,36 +85,33 @@
 #   kozepesen: a strong reaction (++; +++), CaCO3 5-15 %;
 #   eros: an explosive reaction (+++), CaCO3 15 % or more in the fine earth,
 #     part of it secondary carbonate shown in the field.
-# soilKey's classes are read as: slight = the very weak or the weak (+)
-# reaction (as readings.yaml reads slight: it may be the trace class);
-# moderate = weak (+); strong = ++; very strong = +++ (kozepesen or eros).
-# Both recorded: both must hold (a slight reaction is then the very weak or
-# the weak one as the CaCO3 says). Only CaCO3: it decides, with the reaction
-# that goes with it in 8.4 (below 2 % but above 0: very weak; 2-5 %: weak, as
-# 5 % or more goes with the strong reaction of kozepesen; 5-15 %: strong;
-# 15 % or more: explosive); 0 % has no reaction. Only the reaction: it
-# decides, with the CaCO3 that goes with it (slight leaves the very weak and
-# the weak class undecided). Neither: a k suffix shows 2 % or more
-# (readings.yaml), not which degree; otherwise undecided.
+# Hugo's decision (2026-10-30): a measured CaCO3 decides the band, the
+# reaction only where CaCO3 is not measured; each layer takes the strongest
+# degree whose other criteria it meets, so 15 % or more without secondary
+# carbonates is kozepesen and a strong reaction with 2-5 % is gyengen. Bands
+# of CaCO3: above 0 and below 2 % nyomokban (0 % has no carbonate); 2-5 %
+# gyengen; 5 % or more kozepesen; 15 % or more with secondary carbonates
+# eros. With no CaCO3, soilKey's reaction classes read: slight = the very
+# weak or the weak (+) reaction (as readings.yaml reads slight: it may be the
+# trace class), so it leaves both undecided; moderate = weak (+); strong =
+# ++, kozepesen; very strong = +++, eros with secondary carbonates, else
+# kozepesen. Neither: a k suffix shows 2 % or more (readings.yaml), not which
+# degree; otherwise undecided.
 .hscs_carbonate_material_rows <- function(x, degree = c("nyomokban", "gyengen", "kozepesen", "eros")) {
   degree <- match.arg(degree)
   h <- x$h; n <- x$n
   ca <- h$caco3_pct %||% rep(NA_real_, n)
   eff <- .hscs_effervescence(x)
-  react <- switch(degree, nyomokban = "slight", gyengen = c("slight", "moderate"),
-                  kozepesen = c("strong", "very strong"), eros = "very strong")
-  ca_both <- switch(degree, nyomokban = ca < 2, gyengen = ca >= 2,
-                    kozepesen = ca >= 5 & ca <= 15, eros = ca >= 15)
-  ca_only <- switch(degree, nyomokban = ca > 0 & ca < 2, gyengen = ca >= 2 & ca < 5,
-                    kozepesen = ca >= 5 & ca <= 15, eros = ca >= 15)
-  eff_only <- if (degree %in% c("nyomokban", "gyengen")) {
-    ifelse(eff %in% "slight", NA, eff %in% react)
-  } else eff %in% react
-  by_k <- if (degree == "nyomokban") ifelse(x$des$k, FALSE, NA) else rep(NA, n)
-  out <- ifelse(!is.na(ca) & !is.na(eff), ca_both & eff %in% react,
-         ifelse(!is.na(ca), ca_only,
-         ifelse(!is.na(eff), eff_only, by_k)))
-  if (degree == "eros") out <- .and3v(out, .hscs_secondary_carbonates_any(x))
+  sec <- .hscs_secondary_carbonates_any(x)
+  by_ca <- switch(degree, nyomokban = ca > 0 & ca < 2, gyengen = ca >= 2 & ca < 5,
+                  kozepesen = ca >= 5 & (ca < 15 | !sec), eros = ca >= 15 & sec)
+  by_eff <- switch(degree,
+    nyomokban = ifelse(eff %in% "slight", NA, FALSE),
+    gyengen = ifelse(eff %in% "slight", NA, eff %in% "moderate"),
+    kozepesen = eff %in% "strong" | (eff %in% "very strong" & !sec),
+    eros = eff %in% "very strong" & sec)
+  by_k <- switch(degree, nyomokban = ifelse(x$des$k, FALSE, NA), eros = ifelse(sec, NA, FALSE), rep(NA, n))
+  out <- ifelse(!is.na(ca), by_ca, ifelse(!is.na(eff), by_eff, by_k))
   out[x$rock] <- FALSE
   out
 }
@@ -288,20 +285,18 @@
 }
 
 # Karbonat-szulfatos / karbonat-kloridos (p. 30): "A vizben oldhato sok
-# legalabb 50%-a szulfat (30%-a klorid) a 20% karbonattartalom mellett". The
-# share of the anion in the water-soluble salts (soluble_salts_sulfate_pct,
-# soluble_salts_chloride_pct). The clause on carbonate is read as the text
-# uses "karbonattartalom" elsewhere (8.2, cambic horizon), the CaCO3 of the
-# soil: 20 % or more, in the same layer. No depth is given: any layer of the
-# description.
+# legalabb 50%-a szulfat (30%-a klorid) a 20% karbonattartalom mellett".
+# Hugo's reading (2026-10-30): shares of the water-soluble salts, the
+# sulphate 50 % or more (chloride 30 % or more) beside a carbonate
+# (carbonate + bicarbonate) share of 20 % or more (soluble_salts_*_pct), in
+# the same layer. No depth is given: any layer of the description.
 .hscs_salt_anion <- function(x, share, thr, attr) {
-  miss <- c(attr, "caco3_pct")
-  ca <- x$h$caco3_pct %||% rep(NA_real_, x$n)
-  ok <- .and3v(ifelse(is.na(share), NA, share >= thr), ifelse(is.na(ca), NA, ca >= 20))
+  miss <- c(attr, "soluble_salts_carbonate_pct")
+  co3 <- x$h$soluble_salts_carbonate_pct %||% rep(NA_real_, x$n)
+  ok <- .and3v(ifelse(is.na(share), NA, share >= thr), ifelse(is.na(co3), NA, co3 >= 20))
   r <- x$ord[!x$rock[x$ord]]
   v <- if (!length(r)) NA else .any3(ok[r])
-  .hscs_prop(v, layers = which(ok %in% TRUE), missing = if (is.na(v)) miss else character(0),
-             note = "the carbonate clause read as CaCO3 of 20 % or more in the same layer")
+  .hscs_prop(v, layers = which(ok %in% TRUE), missing = if (is.na(v)) miss else character(0))
 }
 .hscs_p_karbonat_szulfatos <- function(x)
   .hscs_salt_anion(x, x$h$soluble_salts_sulfate_pct %||% rep(NA_real_, x$n), 50, "soluble_salts_sulfate_pct")
@@ -312,28 +307,33 @@
 
 # Meszlepedekes (only Mezosegi talajok): secondary carbonates precipitated on
 # the faces of the structural elements as a whitish, mould-like coating
-# ("penesz-szeru bevonat", p. 31). soilKey records no form or place of
-# the secondary carbonates; carbonate_soft_pct (soft, finely divided
-# pedogenic carbonate) is the record closest to it and is read as it. A
-# recorded 0, or secondary carbonates recorded only as hard ones, or none
-# recorded (they are recorded when met), fails; secondary carbonates of
-# unrecorded form (secondary_carbonates_pct, a k suffix) leave it undecided.
-# A row recorded structureless (massive, single grain) has no ped faces. No
-# depth is given: any row of the description.
+# ("penesz-szeru bevonat", p. 31). Hugo's decision (2026-10-30): the form of
+# the secondary carbonates (secondary_carbonates_form, FAO 2006) decides
+# where it is recorded: pseudomycelia or coatings pass, another form fails.
+# Where it is not recorded, carbonate_soft_pct (soft, finely divided
+# pedogenic carbonate) stands for it: above 0 passes, a recorded 0 fails; with
+# neither, secondary carbonates of unrecorded form (secondary_carbonates_pct,
+# a k suffix) leave it undecided, and none recorded, or only hard ones,
+# fails (they are recorded when met). In that fallback a row recorded
+# structureless (massive, single grain) has no ped faces. No depth is given:
+# any row of the description.
 .hscs_p_meszlepedekes <- function(x) {
   h <- x$h; n <- x$n
+  form <- .hscs_txt(h$secondary_carbonates_form, n)
   soft <- h$carbonate_soft_pct %||% rep(NA_real_, n)
   sec <- h$secondary_carbonates_pct %||% rep(NA_real_, n)
   g <- .hscs_txt(h$structure_grade, n); t <- .hscs_txt(h$structure_type, n)
   apedal <- (!is.na(g) & grepl("structureless|apedal", g)) | (!is.na(t) & grepl("massive|single", t))
-  ok <- ifelse(!is.na(soft), soft > 0,
+  fb <- ifelse(!is.na(soft), soft > 0,
         ifelse((!is.na(sec) & sec > 0) | x$des$k, NA, FALSE))
-  ok[apedal | x$rock] <- FALSE
+  fb[apedal] <- FALSE
+  ok <- ifelse(!is.na(form), grepl("pseudomyc|mycel|coating", form), fb)
+  ok[x$rock] <- FALSE
   r <- x$ord
   v <- if (!length(r)) NA else .any3(ok[r])
   top <- if (isTRUE(v)) h$top_cm[r[ok[r] %in% TRUE][1L]] else NA_real_
   .hscs_prop(v, top = top, layers = which(ok %in% TRUE),
-             missing = if (is.na(v)) "carbonate_soft_pct" else character(0))
+             missing = if (is.na(v)) c("secondary_carbonates_form", "carbonate_soft_pct") else character(0))
 }
 
 # Szologyos (only Szolonyec and Szoloncsak talajok): a strongly leached
