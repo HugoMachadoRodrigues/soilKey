@@ -1,6 +1,7 @@
-# v0.9.323: WRB 2022 Ch 4 gates read as the key words them: path 2 of the
-# Gleysols (p. 103), a mollic or umbric horizon over a gleyic layer.
-# Made-up profiles.
+# v0.9.323: two WRB 2022 Ch 4 gates read as the key words them: path 2 of
+# the Gleysols (p. 103), a mollic or umbric horizon over a gleyic layer, and
+# the Retisols (p. 118), an argic horizon starting <= 100 cm from the mineral
+# soil surface with retic properties at its upper boundary. Made-up profiles.
 
 # A dark, carbon-rich topsoil over a grey reduced subsoil. With bs 80 the
 # topsoil is a mollic horizon, with bs 30 an umbric horizon.
@@ -101,4 +102,65 @@ test_that("Gleysols path 2: what is not recorded leaves it undecided", {
   expect_true(isTRUE(mollic(w)$passed))
   expect_equal(as.integer(mollic(w)$layers), 1L)
   expect_true(is.na(gleysol(w)$evidence$path2_ok))
+})
+
+
+# ---- Retisols -------------------------------------------------------------------
+
+test_that("Retisols: the argic horizon starts <= 100 cm from the mineral soil surface", {
+  skip_on_cran()
+  p <- make_retisol_canonical()
+  r <- retisol(p)
+  expect_true(isTRUE(r$passed))
+  expect_equal(r$evidence$argic_top_cm, 35)
+  expect_equal(classify_wrb2022(p, on_missing = "silent")$rsg_or_order, "Retisols")
+  # a deep E: the argic horizon with its tongues starts at 110 cm
+  d <- p$clone(deep = TRUE)
+  d$horizons$top_cm    <- c(0, 15, 110, 160)
+  d$horizons$bottom_cm <- c(15, 110, 160, 200)
+  expect_true(isTRUE(argic(d)$passed))
+  expect_true(isTRUE(retic_properties(d)$passed))   # the property itself, at any depth
+  expect_false(retisol(d)$passed)
+  expect_false(identical(classify_wrb2022(d, on_missing = "silent")$rsg_or_order, "Retisols"))
+  # under 15 cm of organic layers, an argic horizon at 110 cm starts 95 cm
+  # below the mineral soil surface
+  o <- d$clone(deep = TRUE)
+  o$horizons <- rbind(o$horizons[1, ], o$horizons)
+  o$horizons$designation[1] <- "Oa"
+  o$horizons$oc_pct[1] <- 35
+  o$horizons$top_cm    <- c(0, 15, 30, 110, 160)
+  o$horizons$bottom_cm <- c(15, 30, 110, 160, 200)
+  expect_equal(min(o$horizons$top_cm[argic(o)$layers]), 110)
+  ro <- retisol(o)
+  expect_equal(ro$evidence$mineral_surface_cm, 15)
+  expect_true(isTRUE(ro$passed))
+})
+
+test_that("Retisols: retic properties at the upper limit of an argic horizon", {
+  skip_on_cran()
+  p <- make_retisol_canonical()
+  # no interfingering recorded: no Retisol
+  n <- p$clone(deep = TRUE); n$horizons$designation <- c("A", "E", "Bt", "BC")
+  expect_false(retisol(n)$passed)
+  # no argic horizon: no Retisol, whatever the designations say
+  f <- p$clone(deep = TRUE); f$horizons$clay_pct <- c(22, 22, 22, 22)
+  f$horizons$clay_films_amount <- NA_character_
+  expect_false(isTRUE(argic(f)$passed))
+  expect_false(isTRUE(retisol(f)$passed))
+})
+
+test_that("Retisols: an undecided argic horizon leaves the gate undecided", {
+  skip_on_cran()
+  # no clay recorded: the argic horizon is undecided, the glossic tongues
+  # are recorded, so the gate is undecided and asks for the clay
+  u <- make_retisol_canonical()
+  u$horizons$clay_pct <- NA_real_
+  u$horizons$clay_films_amount <- NA_character_
+  expect_true(is.na(argic(u)$passed))
+  r <- retisol(u)
+  expect_true(is.na(r$passed))
+  expect_true("clay_pct" %in% r$missing)
+  # with no interfingering recorded the retic properties fail it anyway
+  n <- u$clone(deep = TRUE); n$horizons$designation <- c("A", "E", "Bt", "BC")
+  expect_false(retisol(n)$passed)
 })

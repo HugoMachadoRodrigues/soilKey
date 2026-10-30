@@ -524,6 +524,56 @@ gleysol <- function(pedon, strict = NULL) {
 }
 
 
+#' Retisols RSG gate (WRB 2022 Ch 4, p. 118)
+#'
+#' "Other soils having an argic horizon starting <= 100 cm from the mineral
+#' soil surface and having retic properties at its upper boundary." The
+#' argic horizon is that of \code{\link{argic}}, its upper limit the top of
+#' its shallowest layer, measured from the mineral soil surface as the
+#' Acrisols to Luvisols gates measure it; the retic properties are those of
+#' \code{\link{retic_properties}}, read at the upper limit of the argic
+#' horizon only (a natric horizon is not an argic horizon). \code{FALSE} with
+#' no argic horizon or one starting deeper than 100 cm; \code{NA} when the
+#' argic horizon or its retic properties cannot be decided and nothing
+#' fails. Until v0.9.323 the key asked for retic properties alone, at the
+#' upper limit of an argic or natric horizon at any depth.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+retisol <- function(pedon) {
+  h <- pedon$horizons
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Retisols (p. 118)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  arg <- argic(pedon)
+  # 1. "an argic horizon starting <= 100 cm from the mineral soil surface"
+  argic_top <- NA_real_
+  within <- if (isTRUE(arg$passed) && length(arg$layers)) {
+    tops <- h$top_cm[arg$layers]
+    if (all(is.na(tops))) NA else {
+      argic_top <- min(tops, na.rm = TRUE)
+      argic_top - ms <= 100
+    }
+  } else if (isTRUE(arg$passed)) NA else arg$passed
+  # 2. "having retic properties at its upper boundary"
+  rp <- if (isFALSE(within)) NULL
+        else .retic_properties_impl(pedon, natric = FALSE, arg = arg)
+  passed <- if (isFALSE(within)) FALSE else .and3(within, rp$passed)
+  DiagnosticResult$new(
+    name      = "retisol",
+    passed    = passed,
+    layers    = if (isTRUE(passed)) rp$layers else integer(0),
+    evidence  = list(argic = arg, mineral_surface_cm = ms, argic_top_cm = argic_top,
+                     argic_within_100 = within, retic_properties = rp),
+    missing   = if (!is.na(passed)) character(0)
+                else unique(c(if (is.na(within)) arg$missing,
+                              if (!is.null(rp) && is.na(rp$passed)) rp$missing)),
+    reference = ref
+  )
+}
+
+
 #' Plinthosol RSG gate (WRB 2022 Ch 4, p 106)
 #'
 #' WRB 2022: a plinthic, pisoplinthic or petroplinthic horizon starting
