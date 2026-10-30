@@ -65,6 +65,8 @@ classify_hscs2024 <- function(pedon, rules = NULL,
   rules <- rules %||% load_rules("hscs2024")
   res <- classify_hierarchical("hscs2024", pedon, rules = rules,
                                on_missing = on_missing, gapfill = gapfill)
+  # v0.9.316: the subtype and variety properties of the type (8.5-8.7)
+  res <- .hscs_add_properties(res, pedon)
   if (inherits(pedon, "PedonRecord") &&
       all(is.na(pedon$horizons$designation %||% NA) | !nzchar(trimws(pedon$horizons$designation %||% "")))) {
     res$warnings <- c(res$warnings, paste(

@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.309)
+# soilKey -- recognised horizon attribute names (v0.9.315)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -306,6 +306,11 @@ and do not warn.
 | Attribute | Unit | Type | Description | Accepted aliases |
 |-----------|------|------|-------------|------------------|
 | `soluble_salts_pct` | % | numeric | Total water-soluble salts, % by mass of the soil, as Hungarian laboratories report them (estimated from the electrical conductivity of the saturated paste, MSZ-08-0206-2:1978). HSCS 2024 solonchak horizon (0.15 % or more). Not converted from ec_dS_m: the text itself finds that conversion unreliable. | - |
+| `soluble_salts_sulfate_pct` | % | numeric | Sulphate share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtype karbonát-szulfátos: at least 50 %. | - |
+| `soluble_salts_chloride_pct` | % | numeric | Chloride share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtype karbonát-kloridos: at least 30 %. | - |
+| `p2o5_al_mg_kg` | mg/kg | numeric | P2O5 extracted by the ammonium-lactate (AL) method, mg/kg. HSCS 2024 hortikus (anthropogenic horizon and subtype): at least 500 mg/kg in the upper 20 cm. | - |
+| `digo_pct` | % | numeric | Visible traces of applied digó earth (a calcareous ameliorant), % of the soil matrix. HSCS 2024 variety digózott: at least 5 % within 50 cm. | - |
+| `coarse_fragments_shape` | - | character | Shape of the coarse fragments: rounded (gravel) or angular (rock debris). HSCS 2024 varieties kavicsos (rounded) and kőzettörmelékes (angular). | - |
 
 # Site properties
 
@@ -350,6 +355,10 @@ the last section are stored by the loaders and reports and read by no key.
 | `parent_material` | - | character | Parent material, as text. Read by the WRB Rendzic qualifier (limestone, chalk, dolomite, carbonate or marl) and the NZSC Melanic Soils (calcareous, mafic or ultramafic rock); also shown by print() and the reports. | - | `wrb2022`, `nzsc4` |
 | `land_use` | - | character | Land use, as text. Read by the WRB Drainic (artificial drainage), Tidalic (tidal, salt marsh, mangrove) and Escalic (built terraces) qualifiers. | - | `wrb2022` |
 | `vegetation` | - | character | Vegetation, as text. Written by the fixtures and the field-sheet extraction (VLM); no key reads it. | - | - |
+| `contaminated` | - | logical | A layer within 50 cm exceeds a contamination or toxicity limit of the soil regulation in force. HSCS 2024 subtype szennyezett (Anthropogenic soils). | - | `hscs2024` |
+| `terraced` | - | logical | The surface is an artificial terrace. HSCS 2024 variety teraszolt. | - | `hscs2024` |
+| `flood_irrigated` | - | logical | The soil is under flood-irrigated cultivation (e.g. rice). HSCS 2024 variety árasztott. | - | `hscs2024` |
+| `wind_deflation` | - | logical | The surface is bare, structureless single grains with marks of wind reworking (deflation). HSCS 2024 subtype futó (Sandy soils). | - | `hscs2024` |
 
 ## Water, climate & regimes
 
@@ -454,5 +463,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.309._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.315._
 

@@ -1,0 +1,181 @@
+# HSCS 2024 (Michéli et al. 2024, second approximation): the subtype
+# properties (altípus tulajdonságok, 8.5, p. 29-33) and variety properties
+# (változati tulajdonságok, 8.6, p. 34-36) that each type's table lists
+# (section 7, p. 8-22), read since soilKey v0.9.316.
+#
+# Naming (p. 7): the subtype properties are written before the type name,
+# only the first with a capital letter; the variety properties after it, in
+# parentheses; both in the order of the type's table, separated by commas.
+# Every property of the table whose definition the soil meets is named.
+# Hugo's decisions of 2026-10-30:
+#   * a table row that is a scale of degrees of one property (`one_of`) names
+#     only the strongest that holds, in the priority order written here;
+#     when a stronger degree is undecided, the row names none;
+#   * a property defined by a layer in a depth window (`kind: layer`) takes the
+#     depth modifier of 8.7 (p. 37) from where its layer starts: felszíntől
+#     (from the soil surface), sekélyen (within 50 cm), középmélyen (50-100 cm),
+#     mélyben (below 100 cm); surface, site and whole-soil properties take none;
+#   * the intensity words (erősen, gyengén) only where 8.5 and 8.6 define them.
+#
+# kind: layer | surface | soil | site. `only_in` is the "(csak ... talajokban)"
+# of a definition; `not_in` its "(Nem ... talajokban)".
+
+properties:
+  # ---- 8.5 subtype properties ----------------------------------------------
+  agyagbemosodasos:      {name: "agyagbemosódásos", en: "clay-illuvial", kind: layer, page: 29}
+  bolygatott:            {name: "bolygatott", en: "disturbed", kind: soil, page: 29, only_in: [ANT]}
+  eros_karbonatos:       {name: "erősen karbonátos", en: "strongly calcareous", kind: layer, page: 29}
+  kozepesen_karbonatos:  {name: "közepesen karbonátos", en: "moderately calcareous", kind: layer, page: 30}
+  gyengen_karbonatos:    {name: "gyengén karbonátos", en: "weakly calcareous", kind: layer, page: 29}
+  nyomokban_karbonatos:  {name: "nyomokban karbonátos", en: "slightly calcareous", kind: layer, page: 31}
+  erubaz:                {name: "erubáz", en: "on basic or neutral igneous rock", kind: soil, page: 29}
+  fako:                  {name: "fakó", en: "pale", kind: layer, page: 29}
+  fedett:                {name: "fedett", en: "sealed", kind: surface, page: 29, only_in: [ANT]}
+  fekete:                {name: "fekete", en: "black", kind: surface, page: 29}
+  futo:                  {name: "futó", en: "drifting", kind: surface, page: 29, only_in: [HOM]}
+  gipszes:               {name: "gipszes", en: "gypsiferous", kind: layer, page: 29, variants: [erősen]}
+  glejes:                {name: "glejes", en: "gleyic", kind: layer, page: 29}
+  hortikus:              {name: "hortikus", en: "hortic", kind: surface, page: 29, only_in: [ANT]}
+  humuszos:              {name: "humuszos", en: "humic", kind: surface, page: 30}
+  humuszgazdag:          {name: "humuszgazdag", en: "humus-rich", kind: surface, page: 30}
+  humuszszegeny:         {name: "humuszszegény", en: "humus-poor", kind: surface, page: 30}
+  igen_erosen_humuszos:  {name: "igen erősen humuszos", en: "very strongly humic", kind: surface, page: 30}
+  karbonat_szulfatos:    {name: "karbonát-szulfátos", en: "carbonate-sulphatic", kind: soil, page: 30, only_in: [SZN, SZK]}
+  karbonat_kloridos:     {name: "karbonát-kloridos", en: "carbonate-chloridic", kind: soil, page: 30, only_in: [SZN, SZK]}
+  kerges:                {name: "kérges", en: "crusted", kind: surface, page: 30, only_in: [SZN]}
+  kotus:                 {name: "kotús", en: "sapric (muck)", kind: soil, page: 30, only_in: [LAP]}
+  kovarvanyos:           {name: "kovárványos", en: "lamellic", kind: layer, page: 30}
+  lapfoldes:             {name: "lápföldes", en: "mucky", kind: surface, page: 30}
+  lecsapolt:             {name: "lecsapolt", en: "drained", kind: site, page: 30, only_in: [LAP]}
+  lejtohordalekos:       {name: "lejtőhordalékos", en: "colluvic", kind: layer, page: 30}
+  magneziumos:           {name: "magnéziumos", en: "magnesic", kind: layer, page: 30}
+  mely:                  {name: "mély", en: "deep", kind: soil, page: 30, only_in: [LAP]}
+  mely_humuszos_retegu:  {name: "mély humuszos rétegű", en: "with a deep humic layer", kind: surface, page: 30}
+  meszlepedekes:         {name: "mészlepedékes", en: "with carbonate pseudomycelia", kind: layer, page: 31, only_in: [MEZ]}
+  mohatozeges:           {name: "mohatőzeges", en: "sphagnic", kind: soil, page: 31, only_in: [LAP]}
+  mutermekes:            {name: "műtermékes", en: "with artefacts", kind: soil, page: 31, only_in: [ANT]}
+  nyers:                 {name: "nyers", en: "raw", kind: soil, page: 31}
+  pangovizes:            {name: "pangóvizes", en: "stagnic", kind: layer, page: 31}
+  podzolos:              {name: "podzolos", en: "podzolic", kind: layer, page: 31, only_in: [AGY, BAR]}
+  ranker:                {name: "ranker", en: "on hard-weathering siliceous rock", kind: soil, page: 31}
+  rendzina:              {name: "rendzina", en: "on calcareous rock", kind: soil, page: 31}
+  rostos_tozeges:        {name: "rostostőzeges", en: "fibric peat", kind: soil, page: 31, only_in: [LAP]}
+  rozsdabarna:           {name: "rozsdabarna", en: "rust-brown", kind: layer, page: 31}
+  savanyu:               {name: "savanyú", en: "acid", kind: soil, page: 32}
+  sekely:                {name: "sekély", en: "shallow", kind: soil, page: 32, only_in: [LAP]}
+  szaraztozeges:         {name: "száraztőzeges", en: "with a litter layer", kind: surface, page: 32, not_in: [LAP]}
+  szennyezett:           {name: "szennyezett", en: "contaminated", kind: layer, page: 32, only_in: [ANT]}
+  szologyos:             {name: "szologyos", en: "solodic", kind: layer, page: 32, only_in: [SZN, SZK]}
+  szoloncsakos:          {name: "szoloncsákos", en: "salic", kind: layer, page: 32, variants: [gyengén, erősen]}
+  szolonyeces:           {name: "szolonyeces", en: "sodic", kind: layer, page: 32, variants: [gyengén, erősen]}
+  telitetlen:            {name: "telítetlen", en: "unsaturated", kind: soil, page: 32}
+  telitett:              {name: "telített", en: "saturated", kind: soil, page: 32}
+  terrikus:              {name: "terrikus", en: "terric", kind: surface, page: 33, only_in: [ANT]}
+  tozeges:               {name: "tőzeges", en: "peaty", kind: surface, page: 33, not_in: [LAP]}
+  umbrikus:              {name: "umbrikus", en: "umbric", kind: surface, page: 33}
+  vaskivalasos:          {name: "vaskiválásos", en: "with iron accumulation", kind: layer, page: 33}
+  vegyes_tozeges:        {name: "vegyes tőzeges", en: "hemic peat", kind: soil, page: 33, only_in: [LAP]}
+  vizzaro:               {name: "vízzáró", en: "with an impermeable layer", kind: layer, page: 33, only_in: [ANT]}
+  # ---- 8.6 variety properties ----------------------------------------------
+  arasztott:             {name: "árasztott", en: "flood-irrigated", kind: site, page: 34}
+  cementalt:             {name: "cementált", en: "cemented", kind: layer, page: 34}
+  digozott:              {name: "digózott", en: "with digó earth", kind: layer, page: 34}
+  duzzado:               {name: "duzzadó", en: "swelling", kind: layer, page: 34}
+  eketalpas:             {name: "eketalpas", en: "with a plough pan", kind: layer, page: 34}
+  elporosodott:          {name: "elporosodott", en: "pulverised", kind: surface, page: 34}
+  eltemetett:            {name: "eltemetett", en: "buried", kind: soil, page: 34}
+  hantos:                {name: "hantos", en: "cloddy", kind: surface, page: 34}
+  kavicsos:              {name: "kavicsos", en: "gravelly", kind: layer, page: 34, variants: [erősen]}
+  kozethataros:          {name: "kőzethatáros", en: "with a rock contact", kind: layer, page: 34}
+  kozettormelekes:       {name: "kőzettörmelékes", en: "with rock fragments", kind: layer, page: 34, variants: [erősen]}
+  muvelt:                {name: "művelt", en: "cultivated", kind: surface, page: 35}
+  ontes:                 {name: "öntés", en: "fluvic", kind: layer, page: 35}
+  rigolozott:            {name: "rigolozott", en: "deep-ploughed", kind: surface, page: 35}
+  teraszolt:             {name: "teraszolt", en: "terraced", kind: site, page: 35}
+  tobbretegu:            {name: "többrétegű", en: "multi-layered", kind: layer, page: 35}
+  tomodott:              {name: "tömődött", en: "compacted", kind: layer, page: 35}
+  voros:                 {name: "vörös", en: "red", kind: layer, page: 35}
+  textura:               {name: "textúra", en: "texture class", kind: soil, page: 35}
+  textura_feku:          {name: "textúra (fekü)", en: "texture of the substratum", kind: soil, page: 35, only_in: [LAP]}
+
+# The degree rows (`one_of`), in priority order (strongest first).
+rows:
+  carbonate4: &carbonate4 {one_of: [eros_karbonatos, kozepesen_karbonatos, gyengen_karbonatos, nyomokban_karbonatos]}
+  carbonate3: &carbonate3 {one_of: [eros_karbonatos, kozepesen_karbonatos, gyengen_karbonatos]}
+  base3:      &base3      {one_of: [telitett, telitetlen, savanyu]}
+  humus5:     &humus5     {one_of: [igen_erosen_humuszos, humuszgazdag, humuszos, humuszszegeny, nyers]}
+  humus6:     &humus6     {one_of: [lapfoldes, igen_erosen_humuszos, humuszgazdag, humuszos, humuszszegeny, nyers]}
+  peat3:      &peat3      {one_of: [rostos_tozeges, vegyes_tozeges, kotus]}
+  peat_depth: &peat_depth {one_of: [mely, sekely]}
+  tillage:    &tillage    {one_of: [rigolozott, muvelt]}
+
+# Each type's table, row by row (p. 8-22). A row of kinds that are not degrees
+# of one property ("glejes / pangóvizes") is written as separate items.
+types:
+  LAP:   # Láptalajok, p. 8
+    subtypes:   [*peat3, mohatozeges, szaraztozeges, lapfoldes, lecsapolt, *peat_depth]
+    varieties:  [*carbonate3, *base3, szoloncsakos, szolonyeces, lejtohordalekos, ontes, textura_feku]
+  ANT:   # Antropogén talajok, p. 9
+    subtypes:   [*carbonate4, *base3, *humus6, umbrikus, glejes, pangovizes, szennyezett,
+                 mutermekes, fedett, vizzaro, hortikus, terrikus, bolygatott]
+    varieties:  [*tillage, teraszolt, arasztott, eketalpas, elporosodott, hantos, tomodott, tobbretegu,
+                 lejtohordalekos, ontes, kavicsos, kozettormelekes, textura, eltemetett]
+  KOV:   # Köves-sziklás váztalajok, p. 10
+    subtypes:   [*carbonate4, *base3, *humus5]
+    varieties:  [kavicsos, kozettormelekes, textura]
+  KOZ:   # Kőzethatású talajok, p. 11
+    subtypes:   [*carbonate4, *base3, *humus5, umbrikus, szaraztozeges, pangovizes, rendzina, ranker, erubaz]
+    varieties:  [muvelt, lejtohordalekos, tobbretegu, kavicsos, kozettormelekes, voros, textura, eltemetett]
+  SZN:   # Szolonyec talajok, p. 12
+    subtypes:   [*carbonate4, *base3, *humus5, glejes, pangovizes, karbonat_szulfatos, karbonat_kloridos,
+                 magneziumos, gipszes, fako, kerges, szologyos, szoloncsakos]
+    varieties:  [muvelt, digozott, arasztott, eketalpas, elporosodott, hantos, tomodott, duzzado, tobbretegu,
+                 lejtohordalekos, ontes, kavicsos, textura, eltemetett]
+  SZK:   # Szoloncsák talajok, p. 13
+    subtypes:   [*carbonate4, *base3, *humus5, glejes, pangovizes, karbonat_szulfatos, karbonat_kloridos,
+                 magneziumos, szolonyeces, gipszes, fako]
+    varieties:  [muvelt, eketalpas, elporosodott, tomodott, duzzado, tobbretegu, lejtohordalekos, ontes,
+                 kavicsos, textura, eltemetett]
+  DUZ:   # Duzzadó agyagtalajok, p. 14
+    subtypes:   [*carbonate4, *base3, *humus5, umbrikus, glejes, pangovizes, vaskivalasos, magneziumos,
+                 szoloncsakos, szolonyeces, gipszes, fekete]
+    varieties:  [muvelt, eketalpas, elporosodott, hantos, tomodott, tobbretegu, lejtohordalekos, ontes,
+                 kavicsos, kozettormelekes, kozethataros, voros, eltemetett]
+  RET:   # Réti talajok, p. 15
+    subtypes:   [*carbonate4, *base3, *humus6, umbrikus, vaskivalasos, szoloncsakos, magneziumos,
+                 szolonyeces, gipszes, fekete]
+    varieties:  [muvelt, arasztott, eketalpas, elporosodott, hantos, tomodott, duzzado, tobbretegu,
+                 lejtohordalekos, ontes, kavicsos, kozettormelekes, cementalt, textura, eltemetett]
+  KAR:   # Karbonát talajok, p. 16
+    subtypes:   [*humus5, glejes, pangovizes]
+    varieties:  [muvelt, eketalpas, elporosodott, tomodott, tobbretegu, lejtohordalekos, ontes, kavicsos,
+                 kozettormelekes, kozethataros, cementalt, textura, eltemetett]
+  MEZ:   # Mezőségi talajok, p. 17
+    subtypes:   [*carbonate3, telitetlen, mely_humuszos_retegu, {one_of: [igen_erosen_humuszos, humuszgazdag]},
+                 glejes, pangovizes, szolonyeces, magneziumos, szoloncsakos, meszlepedekes, fekete]
+    varieties:  [muvelt, eketalpas, elporosodott, hantos, tomodott, duzzado, tobbretegu, lejtohordalekos,
+                 ontes, kavicsos, kozettormelekes, kozethataros, textura, eltemetett]
+  AGY:   # Agyagbemosódásos talajok, p. 18
+    subtypes:   [*carbonate4, *base3, *humus5, umbrikus, szaraztozeges, kovarvanyos, podzolos, glejes,
+                 pangovizes, fako]
+    varieties:  [muvelt, eketalpas, elporosodott, hantos, tomodott, duzzado, lejtohordalekos, tobbretegu,
+                 kavicsos, kozettormelekes, kozethataros, cementalt, voros, textura, eltemetett]
+  HOM:   # Homoktalajok, p. 19
+    subtypes:   [*carbonate4, *base3, *humus5, szaraztozeges, kovarvanyos, glejes, pangovizes, szoloncsakos,
+                 szolonyeces, magneziumos, fako, rozsdabarna, futo]
+    varieties:  [muvelt, eketalpas, elporosodott, tomodott, tobbretegu, lejtohordalekos, ontes, kavicsos,
+                 kozettormelekes, kozethataros, cementalt, eltemetett]
+  BAR:   # Barnaföldek, p. 20
+    subtypes:   [*carbonate4, *base3, *humus5, umbrikus, szaraztozeges, glejes, pangovizes, rendzina, ranker, erubaz]
+    varieties:  [muvelt, teraszolt, eketalpas, elporosodott, hantos, tomodott, duzzado, tobbretegu,
+                 lejtohordalekos, ontes, kavicsos, kozettormelekes, kozethataros, cementalt, voros, textura,
+                 eltemetett]
+  HOR:   # Hordaléktalajok, p. 21
+    subtypes:   [*carbonate4, *base3, *humus6, umbrikus, tozeges, glejes, pangovizes, vaskivalasos,
+                 szoloncsakos, szolonyeces, magneziumos, ontes, lejtohordalekos]
+    varieties:  [muvelt, arasztott, eketalpas, elporosodott, hantos, tomodott, duzzado, kavicsos,
+                 kozettormelekes, kozethataros, cementalt, textura, eltemetett]
+  FOL:   # Földes kopárok, p. 22
+    subtypes:   [*carbonate4, *base3, {one_of: [humuszszegeny, nyers]}, glejes, pangovizes]
+    varieties:  [muvelt, eketalpas, elporosodott, hantos, tomodott, tobbretegu, lejtohordalekos, ontes,
+                 kavicsos, kozettormelekes, kozethataros, voros, textura, eltemetett]

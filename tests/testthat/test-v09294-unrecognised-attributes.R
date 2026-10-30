@@ -22,7 +22,7 @@ test_that("site_attribute_spec documents each site property once", {
                     "technic", "geomembrane", "reference_wrb") %in% s$name))
   sys <- unlist(strsplit(s$systems[nzchar(s$systems)], ", ", fixed = TRUE))
   expect_true(all(sys %in% c("wrb2022", "usda", "sibcs5", "cssc3", "asc3",
-                             "nzsc4")))
+                             "nzsc4", "hscs2024")))
 })
 
 test_that("every site property the code reads is documented", {
