@@ -581,6 +581,13 @@ isis_citation <- function(accessed = Sys.Date()) {
     if (length(v)) paste(v, collapse = "; ") else NA_character_ }, "")
   out$mottle_colors <- mc
   note("mottle_colors", which(!is.na(mc)), "ISIS mottlesColour")
+  # v0.9.316: the mottle size, FAO (2006) classes V, F, M and A (> 20 mm); the
+  # older coarse class C (> 15 mm) does not decide the 20 mm of the HSCS iron
+  # horizon, and H (heterogeneous) names no size, so neither is read
+  ms <- vapply(H, function(L) .isis_code(L$mottlesSizeclass), "")
+  sz <- unname(c(V = "very fine", F = "fine", M = "medium", A = "coarse")[ms])
+  out$mottle_size_class <- sz
+  note("mottle_size_class", which(!is.na(sz)), "ISIS mottlesSizeclass (V, F, M, A of FAO 2006; C and H not read)")
 
   # inclusions: calcareous ones are secondary carbonates; hard ferruginous or
   # manganiferous concretions and nodules over 2 mm are nodules; soft ones join
