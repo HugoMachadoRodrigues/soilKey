@@ -116,6 +116,11 @@
   if (grepl("\\.qual_argic_family\\s*\\(\\s*pedon", b) &&
         .body_is_real(".qual_argic_family"))
     return(TRUE)
+  # Loamic and Siltic (v0.9.311) delegate to the helper that reads the
+  # texture classes of the triangle and assigns `passed` from them.
+  if (grepl("\\.q_texture_qualifier\\s*\\(\\s*pedon", b) &&
+        .body_is_real(".q_texture_qualifier"))
+    return(TRUE)
   FALSE
 }
 

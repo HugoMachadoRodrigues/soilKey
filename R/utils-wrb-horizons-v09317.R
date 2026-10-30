@@ -9,14 +9,8 @@
 #     and 3.1.39; criterion 1 of the irragric horizon, 3.1.18).
 # =============================================================================
 
-# Whether each layer is mineral material: not an O or H layer and < 20% SOC
-# (WRB 2022 Ch 3.3.15 organic material, read as soilKey reads it elsewhere).
-.wrb_mineral_layer <- function(h) {
-  n <- nrow(h)
-  d <- as.character(h$designation %||% rep(NA_character_, n))
-  oc <- h$oc_pct %||% rep(NA_real_, n)
-  !(!is.na(oc) & oc >= 20) & !(!is.na(d) & grepl("^[0-9]*[OH]", d))
-}
+# Whether each layer is mineral material: .wrb_mineral_layer(), defined in
+# utils-wrb-weak-v09314.R (not an O or H layer and < 20% SOC).
 
 #' Lithic discontinuities read from the data (WRB 2022 Ch 3.2.7, p. 76-77)
 #'
