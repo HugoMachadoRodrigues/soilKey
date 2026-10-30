@@ -114,6 +114,67 @@ test_that("v0.9.321 Endocalcaric: the HCl reaction, depths from the mineral soil
 })
 
 
+# ---- texture qualifiers of one slash group (Ch 2.1, p. 24-25; Ch 2.3.1, p. 27) --
+
+.fu_tex <- function(top = c(0, 30, 60), bottom = c(30, 60, 110),
+                    clay = c(30, 30, 45), silt = c(55, 55, 45),
+                    desg = c("A", "E", "Bt")) {
+  .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, clay_pct = clay,
+          silt_pct = silt, sand_pct = 100 - clay - silt, oc_pct = 1)
+}
+
+test_that("v0.9.321 specifier of a layer qualifier (Ch 2.3.1 rule 2, p. 27)", {
+  skip_on_cran()
+  sp <- function(t, b, lim = NA_real_, ms = 0)
+    .wrb_layer_specifier(data.frame(top_cm = t, bottom_cm = b), seq_along(t), ms, lim)
+  expect_identical(sp(0, 40), "Epi")
+  expect_identical(sp(60, 100), "Endo")
+  expect_identical(sp(60, 150), "Endo")
+  expect_identical(sp(0, 60), "Ano")
+  expect_identical(sp(10, 70), "Amphi")
+  expect_identical(sp(10, 120), "Kato")
+  expect_identical(sp(0, 120), "Panto")
+  expect_identical(sp(0, 80, lim = 80), "Panto")          # down to a limiting layer
+  expect_identical(sp(c(0, 60), c(20, 90)), "Poly")
+  expect_true(is.na(sp(c(0, 30), c(20, 45))))             # Epi- or Poly-: not chosen
+  expect_identical(sp(20, 80, ms = 20), "Ano")            # from the mineral soil surface
+})
+
+test_that("v0.9.321 texture group: both qualifiers with specifiers, top to bottom (p. 26 example)", {
+  skip_on_cran()
+  p <- .fu_tex()                                   # silty clay loam 0-60, silty clay 60-110
+  expect_true(isTRUE(qual_loamic(p)$passed))
+  expect_true(isTRUE(qual_clayic(p)$passed))
+  on <- resolve_wrb_qualifiers(p, "LV", specifiers = TRUE)$supplementary
+  expect_identical(on[1:2], c("Anoloamic", "Endoclayic"))
+  expect_false(any(c("Clayic", "Loamic") %in% on))
+  # without specifiers only the first that applies in the list (Clayic)
+  off <- resolve_wrb_qualifiers(p, "LV", specifiers = FALSE)$supplementary
+  expect_true("Clayic" %in% off)
+  expect_false(any(grepl("oamic$", off)))
+})
+
+test_that("v0.9.321 texture group: only the first without a decided specifier", {
+  skip_on_cran()
+  grp <- function(p) .wrb_texture_group_specified(
+    p, c("Clayic", "Loamic"),
+    list(Clayic = qual_clayic(p)$layers, Loamic = qual_loamic(p)$layers))
+  expect_identical(unname(grp(.fu_tex())), c("Endoclayic", "Anoloamic"))
+  # a limiting layer starting < 60 cm: no subqualifier
+  rk <- .fu_tex(top = c(0, 25, 55), bottom = c(25, 55, 70), clay = c(30, 45, NA),
+                silt = c(55, 45, NA), desg = c("A", "Bt", "R"))
+  expect_null(grp(rk))
+  # a layer of unknown texture within 100 cm
+  unk <- .fu_tex(clay = c(30, NA, 45))
+  expect_null(grp(unk))
+  # the description stops above 100 cm
+  short <- .fu_tex(bottom = c(30, 60, 90))
+  expect_null(grp(short))
+  expect_identical(resolve_wrb_qualifiers(short, "LV", specifiers = TRUE)$supplementary[1],
+                   "Clayic")
+})
+
+
 # ---- Technosols lists (Ch 4, p. 97) ---------------------------------------------
 
 test_that("v0.9.321 Technosols: the lists of the text, two supplementary columns read in order", {

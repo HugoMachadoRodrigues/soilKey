@@ -1119,7 +1119,13 @@ qual_haplic <- function(pedon) {
 #' Chapter 4, in \code{inst/rules/wrb2022/qualifiers.yaml}) and tests each
 #' qualifier against the pedon, following the rules for naming soils of
 #' Chapter 2.2: in a slash group (\code{"Rhodic/Xanthic"}) only the first
-#' qualifier that applies is used; a qualifier made redundant by another is
+#' qualifier that applies is used ("If no specifier is used, only the first
+#' applicable qualifier can be used", Ch 2.1, p. 24-25); with
+#' \code{specifiers = TRUE} the texture qualifiers of the group
+#' (\code{"Arenic/Clayic/Loamic/Siltic"}) that apply at different depths are
+#' all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
+#' to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
+#' v0.9.321); a qualifier made redundant by another is
 #' left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
 #' where the RSG lists it and no other principal qualifier does.
 #'
@@ -1166,18 +1172,42 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   # ("Rhodic/Xanthic"): mutually exclusive, or the later ones redundant, so
   # only the first that applies is used (WRB 2022 Ch 2.2). Every alternative
   # is still evaluated, so the trace shows each one's result.
+  # v0.9.321: with specifiers, the texture qualifiers of one group that apply
+  # at different depths are all used, each with its specifier (Ch 2.1,
+  # p. 24-25: "they can be used both, each one with the respective specifier
+  # ... If no specifier is used, only the first applicable qualifier can be
+  # used"; .wrb_texture_group_specified()).
   walk <- function(entries) {
     trace <- list(); matched <- character(0); layers <- list()
     for (entry in entries) {
       taken <- FALSE
-      for (qname in strsplit(entry, "/", fixed = TRUE)[[1]]) {
+      alts <- strsplit(entry, "/", fixed = TRUE)[[1]]
+      passed_alts <- character(0); alt_layers <- list()
+      for (qname in alts) {
         if (identical(qname, "Haplic")) next
         ev <- .evaluate_qualifier(pedon, qname, rsg_code)
         trace[[qname]] <- ev$trace_entry
+        if (isTRUE(ev$passed)) {
+          passed_alts <- c(passed_alts, qname)
+          alt_layers[[qname]] <- ev$layers %||% integer(0)
+        }
         if (!taken && isTRUE(ev$passed)) {
           matched <- c(matched, qname)
           layers[[qname]] <- ev$layers %||% integer(0)
           taken <- TRUE
+        }
+      }
+      if (isTRUE(specifiers) && length(passed_alts) > 1L &&
+          all(alts %in% .WRB_TEXTURE_QUALIFIERS)) {
+        sp <- .wrb_texture_group_specified(pedon, passed_alts, alt_layers)
+        if (!is.null(sp)) {
+          first <- passed_alts[1L]
+          matched <- c(setdiff(matched, first), unname(sp))
+          layers[[first]] <- NULL
+          for (q in passed_alts) {
+            layers[[sp[[q]]]] <- alt_layers[[q]]
+            trace[[q]]$name_with_specifier <- sp[[q]]
+          }
         }
       }
     }
