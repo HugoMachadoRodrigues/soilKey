@@ -34,8 +34,10 @@ test_that("each example keys to its type, with every earlier type decided", {
     expect_false(is.na(r$levels$name_en[1]), info = t)
   }
   r <- classify_hscs2024(make_hscs2024_example("clay_illuvial"), on_missing = "silent")
-  expect_identical(r$name, "Agyagbemosódásos talaj")
-  expect_identical(r$levels$name_en, "Clay-illuvial soil")
+  # since 0.9.316 the name carries the subtype and variety properties too
+  expect_identical(r$levels$name[1], "Agyagbemosódásos talaj")
+  expect_true(grepl("Agyagbemosódásos talaj", r$name, fixed = TRUE))
+  expect_identical(r$levels$name_en[1], "Clay-illuvial soil")
 })
 
 test_that("the registry lists the HSCS as an opt-in system with valid rules", {
@@ -51,7 +53,7 @@ test_that("the registry lists the HSCS as an opt-in system with valid rules", {
   expect_length(k, 15L)
   expect_true(isTRUE(k[[15]]$tests$default))
   res <- classify_all(make_hscs2024_example("steppe"), systems = c("wrb", "hscs"), on_missing = "silent")
-  expect_identical(res$summary$hscs2024, "Mezőségi talaj")
+  expect_true(grepl("Mezőségi talaj", res$summary$hscs2024, fixed = TRUE))
   expect_length(yaml::read_yaml(system.file("rules", "hscs2024", "readings.yaml", package = "soilKey"))$readings, 17L)
   # the other hierarchical systems keep their three columns
   expect_identical(names(classify_nzsc4(make_nzsc4_example("brown"), on_missing = "silent")$levels),
