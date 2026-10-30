@@ -358,3 +358,26 @@ test_that("loading a national example ticks its system and keeps the site detail
     expect_identical(rv$classify_restore$n, n)
   })
 })
+
+test_that("a loaded example without coordinates clears those of the profile before it", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  sent <- list()
+  sess <- new.env()
+  sess$sendInputMessage <- function(id, msg) sent[[id]] <<- msg
+  sess$ns <- function(x) x
+  class(sess) <- "ShinySession"
+  # a Canadian example with coordinates, then a Hungarian one with none
+  env$.sk_fill_site_inputs(sess, make_cssc3_example("chernozemic")$site)
+  expect_false(is.na(as.numeric(sent$lat$value)))
+  env$.sk_fill_site_inputs(sess, make_hscs2024_example("peat")$site)
+  expect_identical(sent$lat$value, "NA")
+  expect_identical(sent$lon$value, "NA")
+  expect_identical(sent$pm$value, "")
+  expect_identical(sent$country$value, "HU")
+  # a WRB example keeps its own
+  env$.sk_fill_site_inputs(sess, make_ferralsol_canonical()$site)
+  expect_false(is.na(suppressWarnings(as.numeric(sent$lat$value))))
+  expect_true(nzchar(sent$pm$value))
+})

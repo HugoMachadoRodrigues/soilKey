@@ -242,25 +242,21 @@
 
 # Loading a fixture used to bring in its horizons and silently drop its site
 # metadata, so the Site panel kept showing the previous profile's coordinates
-# (David Rossiter, pers. comm.). Only fields the source actually carries are
-# written -- nothing is invented.
+# (David Rossiter, pers. comm.). Nothing is invented: the coordinates,
+# country and parent material are the loaded profile's, and blank where it has
+# none (v0.9.318: a Hungarian example used to keep the coordinates of the
+# Canadian example loaded before it, and coordinates feed the inferred
+# temperature regime).
 .sk_fill_site_inputs <- function(session, site) {
   if (is.null(site)) return(invisible(NULL))
-  num_ok <- function(v) !is.null(v) && length(v) && !all(is.na(v))
+  num1 <- function(v) if (is.null(v) || !length(v)) NA_real_ else suppressWarnings(as.numeric(v)[1])
+  chr1 <- function(v) if (is.null(v) || !length(v) || is.na(v[1])) "" else as.character(v)[1]
   if (!is.null(site$id))
     shiny::updateTextInput(session, "site_id", value = as.character(site$id)[1])
-  if (num_ok(site$lat))
-    shiny::updateNumericInput(session, "lat",
-                              value = suppressWarnings(as.numeric(site$lat)[1]))
-  if (num_ok(site$lon))
-    shiny::updateNumericInput(session, "lon",
-                              value = suppressWarnings(as.numeric(site$lon)[1]))
-  if (!is.null(site$country))
-    shiny::updateTextInput(session, "country",
-                           value = as.character(site$country)[1])
-  if (!is.null(site$parent_material))
-    shiny::updateTextInput(session, "pm",
-                           value = as.character(site$parent_material)[1])
+  shiny::updateNumericInput(session, "lat", value = num1(site$lat))
+  shiny::updateNumericInput(session, "lon", value = num1(site$lon))
+  shiny::updateTextInput(session, "country", value = chr1(site$country))
+  shiny::updateTextInput(session, "pm", value = chr1(site$parent_material))
   # the regime of the profile just loaded, or unknown: a regime carried over
   # from the previous profile would change its USDA name silently
   shiny::updateSelectInput(session, "smr", selected = .sk_smr_value(site$soil_moisture_regime))
