@@ -19,7 +19,23 @@
                   horizons = ensure_horizon_schema(data.table::as.data.table(hz)))
 }
 .hm_p <- function(id, p) get(paste0(".hscs_p_", id), envir = asNamespace("soilKey"))(soilKey:::.hscs_horizons(p))
-.hm_name <- function(p) classify_hscs2024(p, on_missing = "silent")$name
+# The properties of this group; on integration (v0.9.316) the other groups'
+# properties are stubbed to undecided inside .hm_name(), so the names here show
+# this group's properties only.
+.hm_mine <- c("agyagbemosodasos", "kovarvanyos", "podzolos", "vaskivalasos", "duzzado", "glejes",
+              "pangovizes", "fako", "rozsdabarna", "voros", "kerges", "rendzina", "ranker", "erubaz",
+              "kozethataros", "cementalt", "futo")
+.hm_name <- function(p) {
+  ns <- asNamespace("soilKey")
+  ids <- setdiff(names(soilKey:::.hscs_properties_rules()$properties), .hm_mine)
+  fns <- paste0(".hscs_p_", ids)
+  fns <- fns[vapply(fns, exists, NA, envir = ns, inherits = FALSE)]
+  stub <- function(x) soilKey:::.hscs_prop(NA, note = "stubbed")
+  if (length(fns))
+    do.call(testthat::local_mocked_bindings,
+            c(stats::setNames(rep(list(stub), length(fns)), fns), list(.package = "soilKey", .env = environment())))
+  classify_hscs2024(p, on_missing = "silent")$name
+}
 .hm_status <- function(p, id) {
   st <- classify_hscs2024(p, on_missing = "silent")$qualifiers$status
   st[st$id == id, , drop = FALSE]
