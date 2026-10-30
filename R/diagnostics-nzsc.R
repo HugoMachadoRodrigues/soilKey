@@ -183,6 +183,32 @@
   }, 0L)
 }
 
+# A criterion that reads the ped shape, row by row. `f(t)` reads it from the
+# lower-case structure types `t` (NA where none is recorded). A ped shape
+# recorded as one of several, not known which (structure_type_one_of, with
+# structure_type empty: "granular or polyhedral" for the older New Zealand
+# term nut, NZ Soil Description Handbook 2024, Note 12.1) is read under each
+# of its shapes: the criterion holds when it holds for every one, fails when
+# it fails for every one, and is undecided otherwise. A criterion that needs
+# polyhedral peds is thus undecided for a nut horizon, one that takes
+# granular or polyhedral peds holds. Every other row reads as f() reads it.
+.nzsc_by_shape <- function(h, f) {
+  t <- tolower(as.character(h$structure_type))
+  out <- f(t)
+  alt <- tolower(trimws(as.character(h$structure_type_one_of %||% rep(NA_character_, length(t)))))
+  rows <- which(is.na(t) & !is.na(alt) & nzchar(alt))
+  for (v in unique(alt[rows])) {
+    r <- rows[alt[rows] == v]
+    shapes <- trimws(strsplit(v, "\\s+or\\s+")[[1L]])
+    vals <- matrix(vapply(shapes, function(s) { t2 <- t; t2[r] <- s; as.logical(f(t2))[r] },
+                          logical(length(r))), nrow = length(r))
+    all_true <- apply(vals, 1L, function(z) all(z %in% TRUE))
+    all_false <- apply(vals, 1L, function(z) all(z %in% FALSE))
+    out[r] <- ifelse(all_true, TRUE, ifelse(all_false, FALSE, NA))
+  }
+  out
+}
+
 # Pedal (weak or stronger grade, not massive or single grain) of each row.
 .nzsc_pedal <- function(h) {
   g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
@@ -339,11 +365,12 @@
   e_above <- vapply(seq_len(n), function(i) any(x$role %in% "E" & !x$des$buried & !is.na(h$top_cm) &
                                                  !is.na(h$top_cm[i]) & h$top_cm < h$top_cm[i]), NA)
   naf <- .nzsc_class_index(h$naf_test %||% rep(NA, n), "naf")
-  g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
+  g <- tolower(as.character(h$structure_grade))
   str_m <- .nzsc_class_index(h$strength_moist %||% rep(NA, n), "strength")
   str_d <- .nzsc_class_index(h$strength_dry %||% rep(NA, n), "strength")
-  weakish <- grepl("earthy", t) | (grepl("weak", g) & !grepl("moderate|strong", g) & grepl("block|polyhed", t)) |
-             (!is.na(str_m) & str_m %in% c(1, 2)) | (!is.na(str_d) & str_d %in% c(1, 2))
+  weakish <- .nzsc_by_shape(h, function(t)
+    grepl("earthy", t) | (grepl("weak", g) & !grepl("moderate|strong", g) & grepl("block|polyhed", t)) |
+      (!is.na(str_m) & str_m %in% c(1, 2)) | (!is.na(str_d) & str_d %in% c(1, 2)))
   thick5 <- !is.na(x$thick) & x$thick >= 5
   props <- ifelse(is.na(naf), NA, ifelse(naf >= 3, ifelse(weakish, thick5, NA), FALSE))
   ifelse(b & des$h, TRUE,
@@ -389,8 +416,7 @@
   h <- x$h
   cut <- .nzsc_cutanic_rows(x)
   clay <- ifelse(is.na(x$tex$group), NA, x$tex$group %in% "clayey")
-  t <- tolower(as.character(h$structure_type))
-  poly <- ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
+  poly <- .nzsc_by_shape(h, function(t) ifelse(grepl("polyhed", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   size <- h$ped_size_max_mm %||% rep(NA_real_, x$n)
   stk <- .nzsc_class_index(h$stickiness %||% rep(NA, x$n), "stickiness")
   pl <- tolower(as.character(h$plasticity %||% rep(NA, x$n)))

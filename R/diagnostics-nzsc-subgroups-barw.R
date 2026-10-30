@@ -36,7 +36,7 @@
 .nzsc_earthy_or_light <- function(x) {
   h <- x$h
   g <- tolower(as.character(h$structure_grade)); t <- tolower(as.character(h$structure_type))
-  earthy <- ifelse(grepl("earthy", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
+  earthy <- .nzsc_by_shape(h, function(t) ifelse(grepl("earthy", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   weak <- ifelse(grepl("moderate|strong", g), FALSE,
           ifelse(grepl("weak|structureless|apedal|none", g) | grepl("massive|single", t), TRUE, NA))
   bd <- h$bulk_density_g_cm3

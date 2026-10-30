@@ -28,10 +28,19 @@
 #     old_notation = "translate" (default) reads (B) as Bw, the suffixes fe,
 #     ca and cs as s, k and y, an upper-case G suffix as g, and moves the
 #     digits written between the master and its suffixes to the end (B2g is
-#     Bg2). The masters G and D of that notation, and A2, are kept as written
-#     (see read_nsd_pedons()). A cemented sesquioxidic B written Bms is the
-#     Bfm of a placic horizon when 10 mm or less thick, else the Bsm of an
-#     ortstein-pan (NZSC Diagnostics).
+#     Bg2). Hugo's readings of 2026-10-30: A2 is E, with its subdivisions
+#     and suffixes (A21 E1, A2g Eg, A22x Ex2; (A2) also E); the old master
+#     G, a gley horizon, is Bg when a B horizon lies below it in the
+#     profile, otherwise Cg (the usual lowest gleyed horizon), GC likewise
+#     BCg or Cg; the old master D, the substratum, is C, its prefixes and
+#     suffixes kept (2D 2C, BD BC, DG Cg, Dh Ch) except its old suffixes r
+#     and n, which are not read (Hugo, 2026-10-30: the NSD's own conversions
+#     give Dr as Cu or C and Dn as Bt, 2Btb, Cm or Cu, so neither is the r
+#     or n of the current notations; Dr and Dn are C). The NSD's own conversions
+#     (designation_fao) are not touched; the provenance keeps the recorded
+#     designation and says what it was read as. A cemented sesquioxidic B
+#     written Bms is the Bfm of a placic horizon when 10 mm or less thick,
+#     else the Bsm of an ortstein-pan (NZSC Diagnostics).
 #   * Matrix colour: moist (the New Zealand convention); of co-dominant
 #     matrix colours the first recorded is read and the others noted.
 #   * Mottles: the abundance classes of Milne et al. (1995, p. 97), read at
@@ -40,16 +49,25 @@
 #     with no mottle record in a survey that records mottles has none, unless
 #     its designation marks gleying.
 #   * Structure: the pedality degree and the shape of the first ped record;
-#     the older NZ term "nut" (not a shape of Milne et al. 1995, Table 17;
-#     the 2024 handbook, Note 12.1, records it as granular or polyhedral) is
-#     read as polyhedral until Hugo decides; the size class gives the largest
-#     ped size (Milne et al. 1995: very fine 6, fine 10, medium 20, coarse 60,
-#     very coarse 100 mm).
+#     the size class gives the largest ped size (Milne et al. 1995: very
+#     fine 6, fine 10, medium 20, coarse 60, very coarse 100 mm). The older
+#     NZ term "nut" (and "nutty") is not a shape of Milne et al. (1995,
+#     Table 17); the 2024 handbook (Note 12.1) records nut as granular "or
+#     PR", most likely a slip for PH (polyhedral). Hugo's reading of
+#     2026-10-30: nut is granular or polyhedral, one of the two, not known
+#     which. It is kept in structure_type_one_of ("granular or polyhedral")
+#     with structure_type left empty: the NZSC key reads a criterion under
+#     each shape (one that needs polyhedral peds is undecided, one that takes
+#     granular or polyhedral peds holds), and the keys that do not read
+#     structure_type_one_of read the shape as not recorded. A second ped
+#     record of nut is not read (structure_type_secondary holds one shape).
 #   * Strength: the classes of Milne et al. (1995, p. 83) (codes 1 to 6 and
-#     their names), moist unless the horizon was described dry; the older
-#     terms moderately weak, moderately firm and moderately strong, which have
-#     no class there, are not read. Failure (brittle, friable, ...) is the
-#     moist consistence.
+#     their names), moist unless the horizon was described dry. The older
+#     words moderately weak, moderately firm and moderately strong (and mod
+#     weak, mod firm) belong to the scale of Taylor and Pohlen (1962), which
+#     soilKey does not have; they have no class in Milne et al. (1995) and
+#     stay unread (undecided), as Hugo decided on 2026-10-30. Failure
+#     (brittle, friable, ...) is the moist consistence.
 #   * Coatings: clay coats are clay films; the darkest coat is the colour of
 #     the coatings. Pans: an ironpan 10 mm or less thick is a placic horizon
 #     (a thin iron pan); a thicker one is an iron pan of no named kind.
@@ -61,6 +79,20 @@
 #     limit is 0). Clay is the fraction finer than 2 um (fe2); sand (2-0.06
 #     mm) and silt (0.06-0.002 mm) as the NSD calculates them; total carbon
 #     is organic carbon (it includes any carbonate carbon).
+#   * Parent material: the soil note PARENT ROCK is the site's
+#     parent_material; Hugo's reading of 2026-10-30 takes it down to each
+#     layer whose origin is not recorded (layer_origin, which the NZSC key
+#     reads for the fluvial features of the Fluvial Recent and Fluvial Raw
+#     Soils, and for pumice, fill and refuse), while a layer with its own
+#     recorded origin keeps it.
+#     The NSD exports have no origin field per horizon (only free-text
+#     horizon notes, which are not read). A note of one material goes to
+#     every layer. A note naming a sequence (X over, overlying or on Y; Y
+#     under or underlain by X; a slash is not read as a sequence) is split
+#     where its parts are as many as the profile's lithologic groups (the
+#     numbered breaks, 2C or IIC): the first part to the unnumbered layers,
+#     the next to the next group. Otherwise it stays the site's
+#     parent_material and goes to no layer (Hugo, 2026-10-30).
 #   * Depths start at the soil surface (organic horizons recorded above the
 #     mineral surface with negative depths are shifted down).
 # =============================================================================
@@ -250,8 +282,10 @@ nsd_citation <- function(accessed = NULL) {
 
 # The designation the NZSC key reads, and a note when it differs from the
 # record. `fao`: the NSD conversion (designation_fao), else NA; `thick`: the
-# horizon thickness in cm.
-.nsd_designation <- function(orig, fao, old_notation = "translate", thick = rep(NA_real_, length(orig))) {
+# horizon thickness in cm; `soil` and `top`: the profile and the top depth of
+# each horizon (the old master G is read by what lies below it).
+.nsd_designation <- function(orig, fao, old_notation = "translate", thick = rep(NA_real_, length(orig)),
+                             soil = rep("1", length(orig)), top = seq_along(orig)) {
   n <- length(orig)
   out <- rep(NA_character_, n); note <- rep(NA_character_, n)
   use_fao <- !is.na(fao) & nzchar(trimws(fao))
@@ -263,23 +297,63 @@ nsd_citation <- function(accessed = NULL) {
   note[use_fao] <- ifelse(h, sprintf("NSD designation_fao %s, its FAO H (peat) read as O; recorded %s", f, orig[use_fao]),
                           sprintf("NSD designation_fao (recorded %s)", ifelse(is.na(orig[use_fao]), "with none", orig[use_fao])))
   o <- !use_fao & !is.na(orig) & nzchar(trimws(orig))
-  d <- trimws(orig[o])
+  d <- trimws(orig[o]); d0 <- d
+  why <- rep(NA_character_, length(d))
+  pre <- "^(([0-9]+|[IVX]+)?[a-z]*)"                 # lithologic and lower-case prefixes
   if (identical(old_notation, "translate")) {
-    d0 <- d
     d <- sub("^(([0-9]+|[IVX]+)?[a-z]*)\\(B([0-9]*)\\)([a-z]*)$", "\\1Bw\\4\\3", d)     # (B)g1
     d <- sub("^(([0-9]+|[IVX]+)?[a-z]*)\\(B([0-9]*)([a-z]*)\\)$", "\\1Bw\\4\\3", d)     # (B1g)
     d <- sub("^([0-9]*[LOAEBC])-([0-9]+)$", "\\1\\2", d)                                 # O-2
     d <- gsub("fe", "s", d, fixed = TRUE)
     d <- gsub("ca", "k", d, fixed = TRUE)
     d <- gsub("cs", "y", d, fixed = TRUE)
+    # A2 is E, with its subdivisions and suffixes (A21 E1, A2g and A2G Eg,
+    # A22x Ex2); (A2), in the parentheses of the old notation, also E
+    a2 <- paste0(pre, "\\(?A2([0-9]*)([a-z]*)(G?)([0-9]*)\\)?$")
+    k <- grepl(a2, d) & (grepl("\\(A2", d) == grepl("\\)$", d))
+    d[k] <- sub("G", "g", sub(a2, "\\1E\\4\\5\\3\\6", d[k]), fixed = TRUE)
+    why[k] <- "the A2 is E"
+    # the old master D (the substratum) is C, its prefixes and suffixes kept
+    # (as a second master too: BD is BC); its r and n are dropped below
+    kd <- grepl(paste0(pre, "([AB]?)D"), d)
+    d[kd] <- sub(paste0(pre, "([AB]?)D"), "\\1\\3C", d[kd])
+    why[kd] <- "the old master D, the substratum, is C"
     d <- sub("^([0-9]*[a-z]*[ABC])([0-9]*)G([0-9]*)$", "\\1g\\2\\3", d)                   # B2G, BG
     d <- sub("^([0-9]*[a-z]*[LOAEBC]{1,2})([0-9]+)([a-z]+)$", "\\1\\3\\2", d)             # B2g -> Bg2
-    note[o] <- ifelse(d == d0, "NSD designation (surveyor)",
-                      sprintf("NSD designation %s in the older New Zealand notation, read as %s", d0, d))
-  } else {
-    note[o] <- "NSD designation (surveyor)"
+    # the old D's suffixes r and n are not read (Hugo, 2026-10-30): the
+    # NSD's own conversions give Dr as Cu or C and Dn as Bt, 2Btb, Cm or Cu,
+    # so neither is the r (reduced) or n (sodium) of the current notations;
+    # g and h stay (DG Cg, Dh Ch)
+    cpat <- paste0(pre, "([AB]?C)([A-Za-z]*)(.*)$")
+    if (any(kd)) {
+      dk <- d[kd]
+      d[kd] <- paste0(sub(cpat, "\\1\\3", dk), gsub("[rnN]", "", sub(cpat, "\\4", dk)), sub(cpat, "\\5", dk))
+      why[kd] <- ifelse(d[kd] == sub(cpat, "\\1\\3\\4\\5", dk), why[kd],
+                        "the old master D, the substratum, is C; its old suffixes r and n are not read")
+    }
   }
   out[o] <- d
+  # the old master G (a gley horizon; GC its transition to the C): Bg (BCg)
+  # when a B horizon lies below it in the profile, otherwise Cg, the usual
+  # lowest gleyed horizon; its subdivisions and suffixes kept (G1 Bg1, Gx Cgx)
+  if (identical(old_notation, "translate")) {
+    gpat <- paste0(pre, "G(C?)([0-9]*)([a-z]*)([0-9]*)$")
+    io <- which(o); out0 <- out
+    for (j in which(grepl(gpat, d))) {
+      i <- io[j]
+      below <- which(soil == soil[i] & !is.na(top) & !is.na(top[i]) & top > top[i])
+      b_below <- any(grepl(paste0(pre, "B"), out0[below]))
+      p <- regmatches(d[j], regexec(gpat, d[j]))[[1L]]
+      master <- if (b_below) { if (nzchar(p[4L])) "BC" else "B" } else "C"
+      d[j] <- paste0(p[2L], master, "g", gsub("g", "", p[6L], fixed = TRUE), p[5L], p[7L])
+      why[j] <- if (b_below) "the old master G, a gley horizon, is Bg: a B horizon lies below it"
+                else "the old master G, a gley horizon, is Cg: no B horizon lies below it"
+      out[i] <- d[j]
+    }
+  }
+  note[o] <- ifelse(d == d0, "NSD designation (surveyor)",
+                    sprintf("NSD designation %s in the older New Zealand notation, read as %s%s", d0, d,
+                            ifelse(is.na(why), "", paste0(" (", why, ")"))))
   # Bms (the NSD's order of the letters) for a cemented sesquioxidic B: the
   # New Zealand notation writes Bfm for a placic horizon (10 mm or less
   # thick) and Bsm for an ortstein-pan (thicker)
@@ -312,11 +386,20 @@ nsd_citation <- function(accessed = NULL) {
                 "strongly developed" = "strong", strongly = "strong", strong = "strong",
                 massive = "structureless", masive = "structureless",
                 "single grain" = "structureless")
-.NSD_SHAPE <- c(nut = "polyhedral", nutty = "polyhedral", "nutty ?" = "polyhedral",
-                polyhedra = "polyhedral", polyheda = "polyhedral", polyhedral = "polyhedral",
+.NSD_SHAPE <- c(polyhedra = "polyhedral", polyheda = "polyhedral", polyhedral = "polyhedral",
                 blocky = "blocky", crumb = "crumb", granular = "granular", prismatic = "prismatic",
                 platy = "platy", columnar = "columnar", spheroida = "spheroidal",
                 spheroidal = "spheroidal")
+# The older ped term nut: granular or polyhedral, one of the two, not known
+# which (Hugo, 2026-10-30; NZ Soil Description Handbook 2024, Note 12.1,
+# records nut as granular "or PR", most likely PH, polyhedral). Not a shape
+# of Milne et al. (1995, Table 17).
+.NSD_SHAPE_ONE_OF <- c(nut = "granular or polyhedral", nutty = "granular or polyhedral",
+                       "nutty ?" = "granular or polyhedral")
+# Strength classes of Milne et al. (1995, p. 83). The older words moderately
+# weak, moderately firm and moderately strong (mod weak, mod firm) are of the
+# Taylor and Pohlen (1962) scale, which soilKey does not have: they are left
+# out on purpose and stay unread (undecided), as Hugo decided (2026-10-30).
 .NSD_STRENGTH <- c("1" = "very weak", "2" = "weak", "3" = "slightly firm", "4" = "firm",
                    "5" = "very firm", "6" = "hard", loose = "loose", "very weak" = "very weak",
                    weak = "weak", "slightly firm" = "slightly firm", firm = "firm",
@@ -441,6 +524,81 @@ nsd_citation <- function(accessed = NULL) {
              stringsAsFactors = FALSE)
 }
 
+# The parts of a PARENT ROCK note that names a sequence of materials, top
+# first: "X over Y", "X overlying Y", "X on Y" (and "Y under X",
+# "Y underlying X", "Y underlain by X", read from the bottom). NULL for a
+# note of one material, and for a note that mixes the two directions. A
+# slash is not read as a sequence: the NSD also writes it in mixtures
+# (granite/limestone) and abbreviations (Taup/pum, G/W).
+.nsd_note_sequence <- function(note) {
+  if (is.na(note) || !nzchar(note)) return(NULL)
+  down <- "(?i)\\s+(over|overlying|overlies|on|upon)\\s+"
+  up <- "(?i)\\s+(under|underlying|underlies|underlain\\s+by)\\s+"
+  has_down <- grepl(down, note, perl = TRUE); has_up <- grepl(up, note, perl = TRUE)
+  if (has_down == has_up) return(NULL)
+  parts <- trimws(strsplit(note, if (has_down) down else up, perl = TRUE)[[1L]])
+  parts <- parts[nzchar(parts)]
+  if (length(parts) < 2L) return(NULL)
+  if (has_up) rev(parts) else parts
+}
+
+# The lithologic group of each designation (the numeral prefix, Arabic or
+# Roman; none is 1).
+.nsd_litho_number <- function(d) {
+  d <- trimws(as.character(d))
+  out <- rep(1L, length(d))
+  k <- !is.na(d) & grepl("^[0-9]+", d)
+  out[k] <- as.integer(sub("^([0-9]+).*", "\\1", d[k]))
+  r <- !is.na(d) & !k & grepl("^[IVX]+[A-Z]", d)
+  out[r] <- vapply(sub("^([IVX]+)[A-Z].*", "\\1", d[r]),
+                   function(x) as.integer(utils::as.roman(x)), integer(1))
+  out[is.na(d)] <- NA_integer_
+  out
+}
+
+# The soil's PARENT ROCK note (`pm`, named by soil) taken down to the layers
+# whose origin (`own`) is not recorded; a layer with its own recorded origin
+# keeps it (Hugo, 2026-10-30). A note of one material goes to every such
+# layer. A note naming a sequence ("loess over outwash gravels") is split
+# where its parts are as many as the profile's lithologic groups (the
+# numbered breaks of `designation`, 2C, IIC; groups taken in depth order by
+# `top`): the first part goes to the unnumbered layers, the second to the
+# layers of the next group, and so on. Otherwise a sequence goes to no layer
+# and stays the site's parent_material only (Hugo, 2026-10-30). `filled`: the
+# layers that took the note or a part of it; `how`: the provenance text.
+.nsd_layer_origin <- function(own, soil, pm, designation = rep(NA_character_, length(own)),
+                              top = seq_along(own)) {
+  own <- as.character(own)
+  n <- length(own)
+  free <- is.na(own) | !nzchar(trimws(own))
+  filled <- rep(FALSE, n); how <- rep(NA_character_, n)
+  num <- .nsd_litho_number(designation)
+  for (s in unique(as.character(soil))) {
+    note <- unname(pm[s])
+    if (is.null(note) || is.na(note) || !nzchar(note)) next
+    rows <- which(as.character(soil) == s)
+    seq_parts <- .nsd_note_sequence(note)
+    if (is.null(seq_parts)) {
+      r <- rows[free[rows]]
+      own[r] <- note; filled[r] <- TRUE
+      how[r] <- "NSD sd_soil_note PARENT ROCK of the soil, taken down to a layer whose origin is not recorded"
+      next
+    }
+    g <- num[rows]
+    if (anyNA(g)) next
+    first_top <- tapply(top[rows], g, min, na.rm = TRUE)
+    groups <- as.integer(names(sort(first_top)))
+    if (length(groups) != length(seq_parts)) next
+    for (k in seq_along(groups)) {
+      r <- rows[g == groups[k] & free[rows]]
+      own[r] <- seq_parts[k]; filled[r] <- TRUE
+      how[r] <- sprintf("NSD sd_soil_note PARENT ROCK of the soil (\"%s\"), part %d of %d, by the layer's lithologic group",
+                        note, k, length(groups))
+    }
+  }
+  list(value = own, filled = filled, how = how)
+}
+
 # ---- One survey ------------------------------------------------------------------
 
 .nsd_survey_pedons <- function(src, absent_unless_recorded = TRUE, old_notation = "translate",
@@ -475,7 +633,7 @@ nsd_citation <- function(accessed = NULL) {
 
   # designations
   ds <- .nsd_designation(col(hz, "designation"), col(hz, "designation_fao"), old_notation,
-                         thick = hz$bot - hz$top)
+                         thick = hz$bot - hz$top, soil = hz$sd_soil_id, top = hz$top)
   H$designation <- ds$designation
   note("designation", !is.na(ds$designation), ds$note)
 
@@ -591,10 +749,14 @@ nsd_citation <- function(accessed = NULL) {
     shape <- .nsd_lookup(.NSD_SHAPE, p1$type[i])
     shape <- ifelse(!is.na(gr_raw) & grepl("^mas+ive", gr_raw), "massive",
              ifelse(!is.na(gr_raw) & grepl("single grain", gr_raw), "single grain", shape))
-    H$structure_grade <- gr; H$structure_type <- shape
+    # nut: one of two shapes, not known which; structure_type stays empty
+    one_of <- .nsd_lookup(.NSD_SHAPE_ONE_OF, p1$type[i])
+    one_of[!is.na(shape)] <- NA_character_
+    H$structure_grade <- gr; H$structure_type <- shape; H$structure_type_one_of <- one_of
     note("structure_grade", !is.na(gr), "NSD em_ped legacy_grade (pedality degree)")
-    note("structure_type", !is.na(shape), ifelse(tolower(p1$type[i]) %in% c("nut", "nutty", "nutty ?"),
-         "NSD em_ped type nut (an older term): read as polyhedral", "NSD em_ped type"))
+    note("structure_type", !is.na(shape), "NSD em_ped type")
+    note("structure_type_one_of", !is.na(one_of),
+         "NSD em_ped type nut (an older term): granular or polyhedral, Handbook 2024 Note 12.1 (one of the two, not known which; structure_type left empty)")
     sz <- dec("em_ped", "geometry_size", p1$geometry_size[i])
     H$structure_size <- .nsd_lookup(.NSD_PED_SIZE, p1$geometry_size[i])
     H$structure_size[is.na(H$structure_size)] <- .nsd_lookup(c(fine = "fine", medium = "medium", coarse = "coarse",
@@ -606,7 +768,7 @@ nsd_citation <- function(accessed = NULL) {
     note("ped_size_max_mm", !is.na(H$ped_size_max_mm),
          "upper limit of the NSD em_ped size class (Milne et al. 1995: very fine 2-6, fine 6-10, medium 10-20, coarse 20-60 mm)")
     j <- match(hid, p2$sd_horizon_id)
-    s2 <- .nsd_lookup(.NSD_SHAPE, p2$type[j])
+    s2 <- .nsd_lookup(.NSD_SHAPE, p2$type[j])             # a nut is not one shape: not read
     H$structure_type_secondary <- s2
     note("structure_type_secondary", !is.na(s2), "NSD em_ped, the second ped record of the horizon")
   }
@@ -735,16 +897,25 @@ nsd_citation <- function(accessed = NULL) {
     note("al_sat_pct", is.finite(al), "calculated: 100 x KCl-extractable Al / ECEC (NSD)")
   }
 
-  prov <- if (length(prov)) do.call(rbind, prov) else NULL
-
-  # site tables
-  snote <- rd("sd_soil_note.csv"); land <- rd("lc_landscape.csv"); use <- rd("lc_landuse.csv")
-  clim <- rd("lc_climate.csv")
+  # the soil's PARENT ROCK note (the site's parent material), taken down to
+  # the layers whose origin is not recorded (the NSD exports record none per
+  # horizon); a sequence only where its parts match the lithologic groups
+  snote <- rd("sd_soil_note.csv")
   pm <- if (!is.null(snote)) {
     k <- grepl("^\\s*PARENT (ROCK|MATERIAL)\\s*:", snote$note, ignore.case = TRUE)
     stats::setNames(trimws(sub("^\\s*PARENT (ROCK|MATERIAL)\\s*:\\s*", "", snote$note[k], ignore.case = TRUE)),
                     snote$sd_soil_id[k])
   } else character(0)
+  lo <- .nsd_layer_origin(H$layer_origin %||% rep(NA_character_, n), H$sd_soil_id, pm,
+                          designation = H$designation, top = H$top_cm)
+  H$layer_origin <- lo$value
+  note("layer_origin", lo$filled, lo$how)
+
+  prov <- if (length(prov)) do.call(rbind, prov) else NULL
+
+  # site tables
+  land <- rd("lc_landscape.csv"); use <- rd("lc_landuse.csv")
+  clim <- rd("lc_climate.csv")
   by_soil <- split(seq_len(n), H$sd_soil_id)
   out <- list()
   for (r in seq_len(nrow(soil))) {
@@ -781,7 +952,7 @@ nsd_citation <- function(accessed = NULL) {
       t <- .nsd_num(cc$meantemperatureannual_val %||% NA)
       if (is.finite(t) && t > 0) site$mean_annual_air_temp_C <- t
     }
-    ref <- .nsd_nzsc_reference(so$classifier_nzsc)
+    ref <- .nsd_nzsc_reference(so$classifier_nzsc %||% NA)
     site$reference_nzsc <- ref$code
     site$reference_nzsc_name <- ref$name
     site$reference_nzsc_order <- ref$order
@@ -792,7 +963,7 @@ nsd_citation <- function(accessed = NULL) {
     if (!is.na(so$classifier_nzsc_alt %||% NA)) site$reference_nzsc_alt <- as.character(so$classifier_nzsc_alt)
     if (!is.na(so$classifier_nz_genetic %||% NA)) site$reference_nz_genetic <- as.character(so$classifier_nz_genetic)
     if (!is.na(so$classifier_nz_series %||% NA)) site$reference_nz_series <- as.character(so$classifier_nz_series)
-    us <- .nsd_usda_reference(so$classifier_usda)
+    us <- .nsd_usda_reference(so$classifier_usda %||% NA)
     site$reference_usda <- us$order
     site$reference_usda_grtgroup <- us$grtgroup
     site$reference_usda_subgroup <- us$subgroup
@@ -876,12 +1047,30 @@ nsd_citation <- function(accessed = NULL) {
 #' \code{old_notation = "translate"}, (B) is read as Bw, the suffixes fe, ca
 #' and cs as s, k and y, an upper-case G suffix as g, and digits written
 #' between the master and its suffixes are moved to the end (B2g as Bg2).
-#' The masters G (gley) and D of that notation, which the NZSC key does not
-#' read, stay as written: the key reads such a horizon as one of unknown
-#' kind. A2 (an eluvial horizon in the 1951 notation, but a lower A in some
-#' surveys) also stays as written. A cemented sesquioxidic B written Bms is
-#' read as Bfm (a placic horizon) when 10 mm or less thick and as Bsm (an
-#' ortstein-pan) when thicker, as the NZSC Diagnostics define them.
+#' A2 is read as E, with its subdivisions and suffixes (A21 as E1, A2g as
+#' Eg). The old master G (a gley horizon) is read as Bg when a B horizon
+#' lies below it in the profile, otherwise as Cg (GC as BCg or Cg); the old
+#' master D (the substratum) as C, its prefixes and suffixes kept (BD as BC,
+#' DG as Cg) except its old suffixes r and n, which are not read (Dr and Dn
+#' as C; the NSD's own conversions give them as Cu, C, Bt or Cm). A cemented sesquioxidic B written Bms is read as Bfm (a placic
+#' horizon) when 10 mm or less thick and as Bsm (an ortstein-pan) when
+#' thicker, as the NZSC Diagnostics define them. The provenance keeps the
+#' recorded designation and what it was read as.
+#'
+#' Structure: the older ped term nut (not a shape of Milne et al. 1995) is
+#' granular or polyhedral, one of the two (NZ Soil Description Handbook
+#' 2024, Note 12.1). It is kept in \code{structure_type_one_of} with
+#' \code{structure_type} empty: \code{\link{classify_nzsc4}} reads a
+#' criterion under each shape, and the other keys read the shape as not
+#' recorded. The older strength words moderately weak, moderately firm and
+#' moderately strong (of the Taylor and Pohlen 1962 scale) are not read.
+#'
+#' Parent material: the soil note PARENT ROCK is also the
+#' \code{layer_origin} of each horizon whose origin is not recorded (the
+#' NSD exports record none per horizon). A note naming a sequence of
+#' materials ("loess over outwash gravels") is split by the profile's
+#' lithologic groups (2C, IIC) when its parts are as many; otherwise it
+#' stays the site's \code{parent_material} only.
 #'
 #' The NSD records no field reactive-aluminium (NaF) test, Childs' test,
 #' sensitivity, fluidity, packing or Ksat, which the NZSC key reads; the

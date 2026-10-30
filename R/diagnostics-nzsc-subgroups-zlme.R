@@ -238,8 +238,7 @@ bh_subgroup_nzsc <- function(pedon, min_cm = 5, strict = TRUE, clayey_prismatic 
     v <- .nzsc_run_any(x, bh, min_cm, strict = isTRUE(strict))
     return(.nzsc_subgroup("bh_subgroup_nzsc", v, "Z, Bh subgroups", list(min_cm = min_cm), miss, which(bh %in% TRUE)))
   }
-  t <- tolower(as.character(h$structure_type))
-  prism <- ifelse(grepl("prism", t), TRUE, ifelse(is.na(h$structure_type), NA, FALSE))
+  prism <- .nzsc_by_shape(h, function(t) ifelse(grepl("prism", t), TRUE, ifelse(is.na(t), NA, FALSE)))
   clay <- ifelse(is.na(x$tex$group), NA, x$tex$group %in% "clayey")
   cp <- .and3v(prism, clay)
   isb <- ifelse(.nzsc_is(x, "B") & !x$des$m, TRUE, ifelse(x$unknown_role & x$mineral, NA, FALSE))
@@ -318,14 +317,13 @@ silt_mantled_podzol_nzsc <- function(pedon) {
   if (!length(cand)) return(.nzsc_subgroup("silt_mantled_podzol_nzsc", FALSE, "Z, ZPOZ/ZPZ"))
   str <- .nzsc_class_index(h$strength_moist %||% rep(NA, n), "strength")
   firm <- ifelse(is.na(str), NA, str >= 3)
-  t <- tolower(as.character(h$structure_type))
   pedal <- .nzsc_pedal(h)
   # structureless with no type recorded may be single grain
-  massive <- ifelse(grepl("massive", t), TRUE, ifelse(grepl("single", t) | pedal %in% TRUE, FALSE,
-             ifelse(pedal %in% FALSE & !is.na(h$structure_type), TRUE, NA)))
+  massive <- .nzsc_by_shape(h, function(t) ifelse(grepl("massive", t), TRUE, ifelse(grepl("single", t) | pedal %in% TRUE, FALSE,
+             ifelse(pedal %in% FALSE & !is.na(t), TRUE, NA))))
   size <- h$ped_size_max_mm %||% rep(NA_real_, n)
-  prism <- ifelse(grepl("prism", t), ifelse(is.na(size), NA, size >= 60 & size <= 200),
-                  ifelse(is.na(h$structure_type), NA, FALSE))
+  prism <- .nzsc_by_shape(h, function(t) ifelse(grepl("prism", t), ifelse(is.na(size), NA, size >= 60 & size <= 200),
+                                                ifelse(is.na(t), NA, FALSE)))
   silty <- .nzsc_silty_rows(x)
   layer <- vapply(seq_len(n), function(i) {
     if (!(i %in% cand) || silty[i] %in% FALSE) return(FALSE)

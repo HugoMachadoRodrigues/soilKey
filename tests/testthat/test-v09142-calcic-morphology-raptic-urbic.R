@@ -71,6 +71,15 @@ test_that("v0.9.142: Raptic excludes a fluvic/aeolic/tephric/solimovic discontin
   expect_true(is.na(qual_raptic(prh(rp))$passed))
   rp$layer_origin <- c("residual", "residual")
   expect_true(isTRUE(qual_raptic(prh(rp))$passed))   # non-excluded origin
+  # v0.9.318 (Hugo): loess is aeolic, volcanic ash and pumice tephric, river
+  # and estuarine deposits fluvic
+  for (o in c("loess", "wind-blown sands", "Hamilton Ash formation", "Taupo pumice", "gravels from Opawa River",
+              "estuarine muds", "quartzo-feldspathic aluvium")) {
+    rp$layer_origin <- c(o, "residual")
+    expect_false(isTRUE(qual_raptic(prh(rp))$passed), info = o)
+  }
+  rp$layer_origin <- c("greywacke", "basalt")
+  expect_true(isTRUE(qual_raptic(prh(rp))$passed))
 })
 
 

@@ -235,7 +235,9 @@ horizon_column_spec <- function() {
     ph_naf                        = "numeric",   # pH in 1 M NaF (Fieldes and Perrott test); WRB 2022 Ch 3.2.3 (p 73): >= 9.5 indicates allophane or Al-humus; read by andic_properties() where bulk density is not measured
     # ---- v0.9.317: the nitic horizon as WRB 2022 words it ----
     pressure_faces                = "character", # none / few / common / many: pressure faces (shiny aggregate surfaces, stress cutans that do not slide); WRB 2022 Ch 3.1.22 nitic horizon (>= 25% of the aggregate surfaces: common or more)
-    structure_type_secondary      = "character"  # type of the second-level structure the first-level units break into (e.g. blocky breaking into polyhedral); read by the WRB 2022 nitic horizon only
+    structure_type_secondary      = "character", # type of the second-level structure the first-level units break into (e.g. blocky breaking into polyhedral); read by the WRB 2022 nitic horizon only
+    # ---- a ped shape known only as one of several ----
+    structure_type_one_of         = "character"  # the ped shape when recorded as one of several, not known which, as words joined by "or" (the older New Zealand nut: "granular or polyhedral", NZ Soil Description Handbook 2024, Note 12.1); structure_type is then empty; read by the NZSC key, which reads a criterion under each shape
   )
 }
 
