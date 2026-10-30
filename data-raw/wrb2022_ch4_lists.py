@@ -15,6 +15,12 @@
 #
 # Used in v0.9.216 to find the ten qualifiers that do not exist in WRB 2022,
 # and to measure how far the lists are from Chapter 4.
+#
+# v0.9.315: the supplementary list of the Technosols (p. 97) is printed in two
+# columns. Read as one, they interleaved line by line, which gave the groups
+# "Arenic/Clayic/Sulfidic", "Anthraquic/Irragric/Transportic" and
+# "Hortic/Plaggic/Pretic/Vitric" and split "Arenic/Clayic/Loamic/Siltic" in
+# two; the second column is now read after the first.
 import re, json, sys
 txt = open(sys.argv[1], encoding="utf-8").read()
 pages = txt.split("\f")
@@ -30,9 +36,10 @@ for pg in pages:
     for l in lines[max(0, h - 2):h + 2]:
         m = l.find("Supplementary")
         if m >= 0: scol = m + len("Supplementary") / 2
-    name = None; prin = []; supp = []; pend = {"p": "", "s": ""}
+    name = None; prin = []; supp = []; supp2 = []; pend = {"p": "", "s": "", "s2": ""}
     for l in lines[h + 2:]:
         if "Overview of Key" in l: break
+        seen_s = False
         for m in re.finditer(r"\S+(?: \S+)*", l):
             tok, start = m.group(0), m.start()
             bare = re.sub(r"\d+$", "", tok)
@@ -46,9 +53,14 @@ for pg in pages:
             # qualifier tokens look like Capitalised words, optional "/Word", maybe a trailing "/"
             if not re.fullmatch(r"[A-Z][a-z]+(?:/[A-Z][a-z]+)*/?", q): continue
             col = "p" if dp < ds else "s"
+            # a second supplementary token on the same line is a second
+            # supplementary column (Technosols, p. 97), read after the first
+            if col == "s":
+                if seen_s: col = "s2"
+                seen_s = True
             q = pend[col] + q; pend[col] = ""
             if q.endswith("/"): pend[col] = q; continue
-            (prin if col == "p" else supp).append(q)
-    if name: out[name] = {"principal": prin, "supplementary": supp}
+            {"p": prin, "s": supp, "s2": supp2}[col].append(q)
+    if name: out[name] = {"principal": prin, "supplementary": supp + supp2}
 json.dump(out, open(sys.argv[2], "w"), indent=1)
 print(len(out), "RSGs parsed")

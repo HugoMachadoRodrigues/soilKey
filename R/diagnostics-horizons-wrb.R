@@ -525,8 +525,12 @@ ferralic <- function(pedon,
 #' read in each layer, and the horizon is the run of such layers from the
 #' mineral soil surface. Criterion 5, the base saturation, is the weighted
 #' average over the run (by pH where it is not recorded, Annex 2 Table 9.2),
-#' and criterion 6b its thickness (>= 20 cm). A moist value with no dry value
-#' recorded reads the dry value as the moist value + 1; a layer with no colour
+#' and criterion 6 its thickness: >= 20 cm (6b), or since v0.9.315 >= 10 cm
+#' directly over continuous rock, technic hard material or a cryic,
+#' petrocalcic, petroduric, petrogypsic or petroplinthic horizon (6a, p. 53;
+#' the umbric horizon names cryic, petroduric and petroplinthic, p. 70). A
+#' moist value with no dry value recorded reads the dry value as the moist
+#' value + 1; a layer with no colour
 #' recorded at all and >= 1.5\% SOC is read as dark (Hugo, 2026-10-29). A dry
 #' colour alone leaves criterion 3 undecided unless its value is above 5. The
 #' colour subtest records where each layer's reading came from.
@@ -566,17 +570,21 @@ mollic <- function(pedon,
     missing = bs$missing %||% character(0),
     details = list(weighted_average = bs$average, bounds = bs$bounds,
                    layers = bs$details))
-  # 6b. >= 20 cm, the layers of the run taken together; undecided where
-  # layers not yet decided could make it up
+  # 6. a. >= 10 cm "if directly overlying continuous rock, technic hard
+  # material or a cryic, petrocalcic, petroduric, petrogypsic or
+  # petroplinthic horizon"; b. >= 20 cm (p. 53); the layers of the run taken
+  # together, undecided where layers not yet decided could make it up.
+  # v0.9.315: item a is read (.wrb_mollic_criterion6()); before, only b.
+  six <- .wrb_mollic_criterion6(pedon, run, min_thickness = min_thickness)
   tests$thickness <- .subtest_result(
-    passed  = if (thk(L) >= min_thickness) TRUE
-              else if (thk(run$maybe) >= min_thickness) NA
-              else FALSE,
-    layers  = if (thk(L) >= min_thickness) L else integer(0),
-    missing = if (thk(L) < min_thickness && thk(run$maybe) >= min_thickness)
-                run$missing else character(0),
+    passed  = six$passed,
+    layers  = six$layers,
+    missing = if (is.na(six$passed))
+                unique(c(run$missing, "designation", "cementation_class"))
+              else character(0),
     details = list(cumulative_cm = thk(L), threshold = min_thickness, layers = L,
-                   undecided_below = setdiff(run$maybe, L)))
+                   criterion_6a = six$by_6a, layer_below = six$layer_below,
+                   undecided_below = six$undecided_below))
 
   # the order of the sub-tests before v0.9.314
   tests <- tests[c("color", "organic_carbon", "base_saturation", "thickness", "structure")]
@@ -1398,15 +1406,21 @@ umbric_horizon <- function(pedon,
     missing = bs$missing %||% character(0),
     details = list(weighted_average = bs$average, bounds = bs$bounds,
                    layers = bs$details))
-  # 6b. >= 20 cm; undecided where layers not yet decided could make it up
+  # 6. a. >= 10 cm "if directly overlying continuous rock, technic hard
+  # material or a cryic, petroduric or petroplinthic horizon"; b. >= 20 cm
+  # (p. 70); undecided where layers not yet decided could make it up.
+  # v0.9.315: item a is read (.wrb_mollic_criterion6()); before, only b.
+  six <- .wrb_mollic_criterion6(pedon, stack, min_thickness = min_thickness,
+                                umbric = TRUE)
   tests$thickness <- .subtest_result(
-    passed  = if (thk(L) >= min_thickness) TRUE
-              else if (thk(stack$maybe) >= min_thickness) NA
-              else FALSE,
-    layers  = if (thk(L) >= min_thickness) L else integer(0),
-    missing = if (thk(L) < min_thickness && thk(stack$maybe) >= min_thickness)
-                stack$missing else character(0),
-    details = list(cumulative_cm = thk(L), threshold = min_thickness))
+    passed  = six$passed,
+    layers  = six$layers,
+    missing = if (is.na(six$passed))
+                unique(c(stack$missing, "designation", "cementation_class"))
+              else character(0),
+    details = list(cumulative_cm = thk(L), threshold = min_thickness,
+                   criterion_6a = six$by_6a, layer_below = six$layer_below,
+                   undecided_below = six$undecided_below))
 
   agg <- aggregate_subtests(tests)
   # a criterion that fails decides, whatever is undecided (three-valued AND)

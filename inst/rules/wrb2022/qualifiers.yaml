@@ -50,19 +50,20 @@ rsg_qualifiers:
                     Technic/Kalaic, Toxic, Vertic, Vitric]
 
   TC:   # Technosols (WRB 2022 Ch 4, p. 97)
-    principal: [Ekranic/Thyric, Spolic, Garbic, Cryic, Isolatic, Leptic,
-                Subaquatic/Tidalic, Reductic, Coarsic, Gleyic, Stagnic, Andic]
-    supplementary: [Arenic/Clayic/Sulfidic, Loamic/Siltic, Tephric,
-                    Geoabruptic, Thionic, Alcalic/Dystric/Eutric, Toxic,
-                    Anthraquic/Irragric/Transportic,
-                    Hortic/Plaggic/Pretic/Vitric, Terric, Archaic, Calcic,
-                    Cambic, Carbonic, Chernic/Mollic/Umbric, Densic,
+    principal: [Ekranic/Thyric, Linic, Urbic, Spolic, Garbic, Cryic, Isolatic,
+                Leptic, Subaquatic/Tidalic, Reductic, Coarsic, Gleyic,
+                Stagnic, Andic]
+    supplementary: [Arenic/Clayic/Loamic/Siltic, Geoabruptic,
+                    Alcalic/Dystric/Eutric,
+                    Anthraquic/Irragric/Hortic/Plaggic/Pretic/Terric, Archaic,
+                    Calcic, Cambic, Carbonic, Chernic/Mollic/Umbric, Densic,
                     Dolomitic/Calcaric, Drainic, Ferritic, Fluvic,
                     Folic/Histic, Fractic, Gelic, Gypsic, Gypsiric,
                     Humic/Ochric, Hyperartefactic, Immissic, Laxic, Lignic,
                     Limnic, Magnesic, Mahic, Novic, Oxyaquic, Panpaic/Raptic,
                     Protic, Pyric, Relocatic, Salic, Sideralic, Skeletic,
-                    Sodic, Solimovic, Protospodic]
+                    Sodic, Solimovic, Protospodic, Sulfidic, Tephric, Thionic,
+                    Toxic, Transportic, Vitric]
 
   CR:   # Cryosols (WRB 2022 Ch 4, p. 98)
     principal: [Glacic, Turbic, Subaquatic/Tidalic/Reductaquic/Oxyaquic,

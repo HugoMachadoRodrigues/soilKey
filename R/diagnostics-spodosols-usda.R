@@ -261,9 +261,12 @@ kandic_horizon_usda <- function(pedon) {
   cec <- h$cec_cmol[o]
   sand <- if (!is.null(h$sand_pct)) h$sand_pct[o] else rep(NA_real_, length(o))
   sandy <- !is.na(sand) & !is.na(clay) & sand >= 70 & clay < 15        # loamy fine sand or coarser
-  # the contact that shortens the thickness and the CEC window
-  contact <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
-  upper100_sandy <- all(sandy[top < ms + 100]) && any(top < ms + 100)
+  # the contact that shortens the thickness and the CEC window (the reading
+  # before v0.9.315: the WRB cemented layers added then are not KST contacts)
+  contact <- tryCatch(.barrier_top_cm(pedon, other_cemented = FALSE),
+                      error = function(e) NA_real_)
+  u100 <- which(!is.na(top) & top < ms + 100)
+  upper100_sandy <- length(u100) > 0L && all(sandy[u100])
   miss <- character(0); cand_tops <- numeric(0)
   bdist <- if (!is.null(h$boundary_distinctness)) tolower(as.character(h$boundary_distinctness[o])) else rep(NA_character_, length(o))
   undecided <- function(at, what) { miss <<- c(miss, what); cand_tops <<- c(cand_tops, at) }
@@ -291,11 +294,24 @@ kandic_horizon_usda <- function(pedon) {
     # the run of layers from k down that keep the increase (no drop below the overlying clay)
     run <- k
     j <- k + 1L
+    # (a layer with no recorded lower boundary ends the run: what follows it
+    # cannot be shown to be contiguous)
     while (j <= length(o) && !is.na(clay[j]) && clay[j] >= over && !sandy[j] &&
-           !is.na(top[j]) && abs(top[j] - bot[run[length(run)]]) < 1e-6) { run <- c(run, j); j <- j + 1L }
-    thick <- sum(bot[run] - top[run])
+           !is.na(top[j]) && isTRUE(abs(top[j] - bot[run[length(run)]]) < 1e-6)) { run <- c(run, j); j <- j + 1L }
+    # KST 13 p 26, item 3: "Has a thickness of either: a. 30 cm or more; or
+    # b. 15 cm or more" over a contact within 50 cm. A layer of the run with
+    # no recorded lower boundary (an open bottom layer, as many KSSL records
+    # have) has an unknown thickness: the known layers can meet the minimum,
+    # otherwise the thickness is undecided. Until v0.9.314 the sum was NA
+    # and the test stopped with an error.
+    thk <- bot[run] - top[run]
+    thick <- sum(thk, na.rm = TRUE)
     min_thk <- if (!is.na(contact) && contact <= ms + 50) 15 else 30
-    if (thick < min_thk || any(sandy[run])) next
+    if (thick < min_thk) {
+      if (anyNA(thk)) undecided(top[k], "bottom_cm")
+      next
+    }
+    if (any(sandy[run])) next
     # CEC <= 16 per kg apparent clay in >= 50% of the thickness from the increase to 100 cm below
     lo <- top[k]; hi <- top[k] + 100
     if (!is.na(contact)) hi <- min(hi, contact)

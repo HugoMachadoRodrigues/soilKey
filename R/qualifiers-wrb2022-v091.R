@@ -551,30 +551,79 @@ qual_hyperskeletic <- function(pedon) {
   )
 }
 
-#' Rendzic qualifier (rz): mollic horizon directly over calcaric material
-#' (or limestone), shallow. Defined as Mollic + (Calcaric OR continuous
-#' rock with carbonate parent material).
+# Per layer: calcaric material or calcareous rock with >= 40% calcium
+# carbonate equivalent, TRUE / FALSE / NA (WRB 2022 Ch 5, Rendzic, p. 145).
+# The CaCO3 equivalent decides where it is recorded (caco3_pct >= 40). A layer
+# of fine earth without it is not calcaric material when its HCl reaction is
+# not visible (none or slight; .wrb_calcaric_status(), Ch 3.3.3, p. 86), and is
+# undecided otherwise: the reaction shows carbonates, not how much. A layer of
+# rock (an R designation, "consolidated rock", Annex 1, p. 225) without a
+# recorded CCE is read from the rock named in its rock_origin or layer_origin,
+# or in the site's parent_material: limestone, chalk, dolomite (dolostone) and
+# marble are carbonate rocks by their names; any other rock is undecided, and
+# a weak reaction of rock is not read as absence (dolomite hardly reacts with
+# cold 1 M HCl).
+.wrb_rendzic_cce40 <- function(pedon) {
+  h <- pedon$horizons
+  n <- nrow(h)
+  ca <- h$caco3_pct %||% rep(NA_real_, n)
+  calc <- .wrb_calcaric_status(h)
+  out <- ifelse(!is.na(ca), ca >= 40, ifelse(calc %in% FALSE, FALSE, NA))
+  d <- as.character(h$designation %||% rep(NA_character_, n))
+  rock <- !is.na(d) & grepl(.WRB_ROCK_DESIGNATION, d)
+  if (!any(rock)) return(out)
+  site_pm <- as.character(pedon$site$parent_material %||% NA_character_)[1L]
+  txt <- function(x) {
+    x <- as.character(x %||% rep(NA_character_, n))
+    ifelse(is.na(x), "", x)
+  }
+  lith <- .field_term(paste(txt(h$rock_origin), txt(h$layer_origin),
+                            if (is.na(site_pm)) "" else site_pm))
+  carb_rock <- grepl("limestone|chalk|dolomit|dolostone|marble|calcario|marmore", lith)
+  out[rock & is.na(ca)] <- ifelse(carb_rock[rock & is.na(ca)], TRUE, NA)
+  out
+}
+
+#' Rendzic qualifier (rz), WRB 2022 Ch 5 (p. 145).
+#'
+#' v0.9.315: "having a mollic horizon that contains or directly overlies
+#' calcaric material containing >= 40% calcium carbonate equivalent or that
+#' directly overlies calcareous rock containing >= 40% calcium carbonate
+#' equivalent". So a mollic horizon with a layer of >= 40% CaCO3 equivalent,
+#' or whose lower limit is the upper limit of such a layer or of such rock
+#' (.wrb_rendzic_cce40()). Before v0.9.315 any layer anywhere with >= 2% CaCO3
+#' (calcaric material, whatever its depth) or a carbonate word in the site's
+#' parent material made a mollic horizon Rendzic: the Phaeozems of ISRIC's
+#' KE037 (3% CaCO3) or CU016 (6.8% under the mollic horizon). Nothing described
+#' below the mollic horizon leaves "directly overlies" undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_rendzic <- function(pedon) {
+  h <- pedon$horizons
+  ref <- "WRB (2022) Ch 5, Rendzic (p. 145); calcaric material, Ch 3.3.3 (p. 86)"
   mo <- mollic(pedon)
-  if (!isTRUE(mo$passed))
-    return(DiagnosticResult$new(name = "Rendzic", passed = FALSE,
-            layers = integer(0), evidence = list(mollic = mo),
-            missing = mo$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Rendzic"))
-  ca <- calcaric_material(pedon)
-  parent <- pedon$site$parent_material %||% ""
-  carb_parent <- grepl("limestone|chalk|dolomit|carbonate|marl",
-                       parent, ignore.case = TRUE)
-  passed <- isTRUE(ca$passed) || carb_parent
-  DiagnosticResult$new(
-    name = "Rendzic", passed = passed,
-    layers = if (passed) mo$layers else integer(0),
-    evidence = list(mollic = mo, calcaric = ca, parent_material = parent),
-    missing = c(mo$missing, ca$missing) %||% character(0),
-    reference = "WRB (2022) Ch 5, Rendzic"
-  )
+  st <- .wrb_rendzic_cce40(pedon)
+  miss_carb <- c("caco3_pct", "effervescence_class")
+  out <- function(passed, layers = integer(0), missing = character(0), ...)
+    DiagnosticResult$new(name = "Rendzic", passed = passed,
+                         layers = if (isTRUE(passed)) layers else integer(0),
+                         evidence = list(mollic = mo, cce40_status = st, ...),
+                         missing = if (is.na(passed)) unique(missing) else character(0),
+                         reference = ref)
+  if (isFALSE(mo$passed)) return(out(FALSE))
+  if (is.na(mo$passed) || !length(mo$layers))
+    return(out(if (all(st %in% FALSE)) FALSE else NA,
+               missing = c(mo$missing %||% character(0), miss_carb)))
+  L <- mo$layers
+  bot <- max(h$bottom_cm[L], na.rm = TRUE)
+  contains <- .wrb_any3(st[L])
+  below <- which(!is.na(h$top_cm) & abs(h$top_cm - bot) < 1e-6)
+  overlies <- if (length(below)) .wrb_any3(st[below]) else NA
+  passed <- .wrb_any3(c(contains, overlies))
+  out(passed, layers = L,
+      missing = c(miss_carb, if (!length(below)) "horizons below the mollic horizon"),
+      contains = contains, directly_overlies = overlies,
+      layers_below = below)
 }
 
 #' Vermic qualifier (vm): >= 50\% bioturbation by worm casts / krotovinas

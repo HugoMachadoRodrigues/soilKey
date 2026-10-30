@@ -612,10 +612,24 @@ stagnic_properties <- function(pedon, max_top_cm = 100,
 #'   properties.
 #' @export
 retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
+  .retic_properties_impl(pedon, pattern = pattern)
+}
+
+#' Retic properties at the upper limit of an argic or natric horizon, or
+#' (\code{natric = FALSE}, v0.9.315) of an argic horizon alone, as the
+#' Retisols key reads them (Ch 4, p. 118). `arg` may carry an argic() result
+#' already computed.
+#' @noRd
+.retic_properties_impl <- function(pedon, pattern = "glossic|retic|albeluvic",
+                                   natric = TRUE, arg = NULL) {
   h <- pedon$horizons
   ref <- "IUSS Working Group WRB (2022), Chapter 3.2.11, Retic properties (p. 79)"
-  arg <- argic(pedon)
-  nat <- natric_horizon(pedon)
+  arg <- arg %||% argic(pedon)
+  nat <- if (natric) natric_horizon(pedon)
+         else DiagnosticResult$new(name = "natric_horizon", passed = FALSE,
+                                   layers = integer(0), evidence = list(),
+                                   missing = character(0),
+                                   reference = "not read: argic horizon only")
   hz  <- sort(union(if (isTRUE(arg$passed)) arg$layers,
                     if (isTRUE(nat$passed)) nat$layers))
   desg <- as.character(h$designation %||% rep(NA_character_, nrow(h)))

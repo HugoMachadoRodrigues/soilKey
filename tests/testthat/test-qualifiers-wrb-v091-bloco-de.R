@@ -361,9 +361,11 @@ test_that("v0.9.1 wires canonical Ch 4 principals for all 32 RSGs", {
   expect_equal(length(qrules$rsg_qualifiers), 32L)
 
   # Aggregate principal-qualifier count, alternatives counted one by one and
-  # Haplic (16 lists) left out: 643 in WRB 2022 Chapter 4 (v0.9.217).
+  # Haplic (16 lists) left out: 645 in WRB 2022 Chapter 4. v0.9.217 counted
+  # 643: Linic and Urbic, second and third in the Technosols list (p. 97),
+  # were lost when the lists were read off the text (until v0.9.314).
   total <- sum(vapply(qrules$rsg_qualifiers, function(x)
     length(setdiff(unlist(strsplit(unlist(x$principal), "/", fixed = TRUE)), "Haplic")),
     integer(1)))
-  expect_equal(total, 643L)
+  expect_equal(total, 645L)
 })

@@ -133,29 +133,50 @@ qual_hyposodic <- function(pedon) {
 
 # ---------- CARBONATES -----------------------------------------------------
 
-#' Hypercalcic qualifier (yc): calcic horizon AND CaCO3 >= 50\% in some
-#' calcic layer.
+#' Hypercalcic qualifier (jc), WRB 2022 Ch 5 (p. 129): "having a calcic
+#' horizon with a calcium carbonate equivalent of >= 50% and starting <= 100 cm
+#' from the mineral soil surface".
+#'
+#' v0.9.315: the CaCO3 equivalent in every layer of the calcic horizon, as WRB
+#' 2022 Ch 2.1 (p. 23) reads the criteria of a horizon of several subhorizons
+#' ("must be fulfilled in every subhorizon separately (averages are not
+#' calculated), unless stated otherwise"); the calcic horizon is a run of
+#' adjoining calcic layers (calcic()) starting <= 100 cm from the mineral soil
+#' surface. An undecided calcic horizon leaves it undecided unless no layer
+#' within reach has, or may have, >= 50%. Before v0.9.315 one calcic layer of
+#' >= 50% was enough, the 100 cm were counted from 0 cm, and an undecided
+#' calcic horizon gave FALSE.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_hypercalcic <- function(pedon) {
-  cc <- calcic(pedon)
-  if (!isTRUE(cc$passed))
-    return(DiagnosticResult$new(name = "Hypercalcic", passed = FALSE,
-            layers = integer(0), evidence = list(calcic = cc),
-            missing = cc$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Hypercalcic"))
   h <- pedon$horizons
-  ly <- intersect(cc$layers, .in_upper(pedon, 100))
-  ca <- h$caco3_pct[ly]
-  ok <- !is.na(ca) & ca >= 50
-  passed <- any(ok)
-  DiagnosticResult$new(
-    name = "Hypercalcic", passed = passed,
-    layers = ly[ok],
-    evidence = list(calcic = cc, caco3_pct = ca),
-    missing = if (all(is.na(ca))) "caco3_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Hypercalcic"
-  )
+  ref <- "WRB (2022) Ch 5, Hypercalcic (p. 129); every subhorizon, Ch 2.1 (p. 23)"
+  res <- function(passed, layers = integer(0), missing = character(0), ...)
+    DiagnosticResult$new(name = "Hypercalcic", passed = passed,
+                         layers = if (isTRUE(passed)) layers else integer(0),
+                         evidence = list(...),
+                         missing = if (is.na(passed)) missing else character(0),
+                         reference = ref)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) return(res(NA, missing = "top_cm"))
+  cc <- calcic(pedon)
+  ca <- h$caco3_pct %||% rep(NA_real_, nrow(h))
+  hi <- ifelse(is.na(ca), NA, ca >= 50)
+  runs <- if (isTRUE(cc$passed))
+            Filter(function(r) r$top - ms <= 100, .q_layer_runs(h, cc$layers))
+          else list()
+  hyper <- Filter(function(r) all(hi[r$layers] %in% TRUE), runs)
+  if (length(hyper))
+    return(res(TRUE, layers = unlist(lapply(hyper, `[[`, "layers")), calcic = cc,
+               caco3_pct = ca))
+  if (isFALSE(cc$passed)) return(res(FALSE, calcic = cc, caco3_pct = ca))
+  # another calcic horizon, not yet decided, might still have >= 50%
+  sure <- unlist(lapply(runs, `[[`, "layers"))
+  reach <- which(!is.na(h$top_cm) & h$top_cm - ms <= 100 & !(seq_len(nrow(h)) %in% sure))
+  if (any(!(hi[reach] %in% FALSE)))
+    return(res(NA, calcic = cc, caco3_pct = ca,
+               missing = unique(c(cc$missing %||% character(0), "caco3_pct"))))
+  res(FALSE, calcic = cc, caco3_pct = ca)
 }
 
 #' Hypocalcic qualifier (jc): CaCO3 >= 5\% AND < 15\% in some layer

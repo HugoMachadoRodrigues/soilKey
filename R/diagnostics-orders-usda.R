@@ -278,15 +278,17 @@ vertisol_usda <- function(pedon) {
 # ---- G. Aridisols (Cap 7, p 137) -------------------------------------------
 
 #' Aridisols (USDA Cap 7): aridic moisture regime + ochric/anthropic +
-#' subsurface diagnostic. v0.8 simplification: detected via aridity
-#' proxies (low EC OR salic OR caracter combinations) + non-mollic
-#' surface + low OC (no organic accumulation).
+#' subsurface diagnostic. The aridic regime is read from
+#' \code{site$soil_moisture_regime}; when it is not recorded the order
+#' is undecided (NA) and the key goes on (v0.9.315: no aridity proxy).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 aridisol_usda <- function(pedon) {
   # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
   # aridic SMR + a diagnostic subsurface horizon (KST 13ed Ch 7
-  # p 137). Fallback to aridity proxies when SMR not provided.
+  # p 137). v0.9.315: no fallback to aridity proxies when the regime
+  # is not recorded (KST 13 p 69, item G.1.a, needs the regime itself);
+  # the result is then NA, kept here instead of collapsed to FALSE.
   aq <- aridisol_qualifying_usda(pedon)
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
@@ -294,7 +296,7 @@ aridisol_usda <- function(pedon) {
           isTRUE(andisol_usda(pedon)$passed) ||
           isTRUE(oxisol_usda(pedon)$passed) ||
           isTRUE(vertisol_usda(pedon)$passed)
-  passed <- isTRUE(aq$passed) && !ex
+  passed <- if (ex) FALSE else aq$passed
   DiagnosticResult$new(
     name = "aridisol_usda", passed = passed,
     layers = aq$layers,

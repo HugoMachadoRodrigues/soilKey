@@ -29,18 +29,83 @@
 
 # ---- v0.9.3.A custom layer-filter helpers ---------------------------------
 
-# Layers above the deepest "barrier": continuous_rock, any petro-
-# cemented horizon, or technic_hard_material.
-.barrier_top_cm <- function(pedon) {
+# Upper limit (cm) of the shallowest limiting layer, NA when the data show
+# none. WRB 2022 Ch 2.1, rule 8 (p. 23): "The term limiting layer used in
+# definitions comprises continuous rock, technic hard material, petrocalcic,
+# petroduric, petrogypsic and petroplinthic horizons and other cemented
+# layers" that are at least moderately cemented and continuous. Until
+# v0.9.315 the other cemented layers (a cemented spodic Bsm, ortstein, a
+# cemented layer whose agent is not recorded) were left out; they are read
+# by .wrb_cemented_limiting(). .wrb_limiting_layers() gives the layers.
+# `other_cemented = FALSE` keeps the reading before v0.9.315, for the USDA
+# kandic horizon, which uses this as its contact and is not a WRB criterion.
+.barrier_top_cm <- function(pedon, other_cemented = TRUE) {
+  layers <- .wrb_limiting_layers(pedon, other_cemented = other_cemented)
+  if (length(layers) == 0L) return(NA_real_)
+  min(pedon$horizons$top_cm[layers])
+}
+
+# The layers that are a limiting layer (Ch 2.1, rule 8, p. 23), with a
+# recorded upper limit.
+.wrb_limiting_layers <- function(pedon, other_cemented = TRUE) {
   rk <- continuous_rock(pedon)
   pc <- petrocalcic(pedon); pd <- petroduric(pedon)
   pg <- petrogypsic(pedon); pp <- petroplinthic(pedon)
   th <- technic_hard_material(pedon)
-  layers <- unique(unlist(lapply(list(rk, pc, pd, pg, pp, th),
-                                  function(d) if (isTRUE(d$passed)) d$layers else integer(0))))
-  if (length(layers) == 0L) return(NA_real_)
   h <- pedon$horizons
-  min(h$top_cm[layers], na.rm = TRUE)
+  layers <- unique(c(unlist(lapply(list(rk, pc, pd, pg, pp, th),
+                                   function(d) if (isTRUE(d$passed)) d$layers else integer(0))),
+                     if (other_cemented) which(.wrb_cemented_limiting(h) %in% TRUE)))
+  sort(layers[!is.na(h$top_cm[layers])])
+}
+
+# The "other cemented layers" of the limiting layer (WRB 2022 Ch 2.1, rule 8,
+# p. 23), layer by layer: TRUE / FALSE / NA. The rule asks for both
+# "cementation with a class of at least moderately cemented and a
+# continuity" with vertical fractures, if present, >= 10 cm apart and < 20%
+# of the volume.
+#  * The class is read from cementation_class: moderately, strongly or
+#    indurated (and very / extremely strongly) is TRUE; none or a weakly
+#    class (very, extremely weakly) is FALSE.
+#  * Where no class is recorded, from the designation: the suffix m is
+#    "Pedogenic cementation in >= 50% of the volume ...; cementation class:
+#    at least moderately cemented" and is "only used if following another
+#    suffix (k, l, q, s, v, y, z) that indicates the cementing agent" (Annex
+#    3, Table 10.2, p. 227). So Bsm, Bhsm, Bkm, Bqm, Ckm, Bvm count; a bare m
+#    (Bm, Cm) does not, as Canadian Bm is a slightly altered B. Every part of
+#    an interfingered designation (Bsm/Btsm) must carry it, since a layer
+#    whose dominant part is not cemented (Bk/Bkm) is not continuous. A
+#    designation without such an m is FALSE.
+#  * soilKey has no field for the fractures, so continuity is read as met,
+#    as petrocalcic(), petroduric(), petrogypsic() and petroplinthic() read
+#    their own continuity criterion. A fragipan or densipan (pan_type) is not
+#    continuous by definition: "the soil material in between the soil
+#    aggregates and >= 50% of the volume of the aggregated soil are not
+#    cemented" (fragic horizon, Ch 3.1.13, p. 46), so it is FALSE whatever
+#    its class.
+.wrb_cemented_limiting <- function(h) {
+  n <- nrow(h)
+  if (!n) return(logical(0))
+  cc <- tolower(trimws(as.character(h$cementation_class %||% rep(NA_character_, n))))
+  cc[cc %in% ""] <- NA_character_
+  cc_no  <- !is.na(cc) & (grepl("weak", cc) |
+              grepl("^(none|no|non|not|un)", cc))
+  cc_yes <- !is.na(cc) & !cc_no & grepl("moderat|strong|indurat", cc)
+  by_class <- ifelse(cc_yes, TRUE, ifelse(cc_no, FALSE, NA))
+  d <- as.character(h$designation %||% rep(NA_character_, n))
+  d[!is.na(d) & !nzchar(trimws(d))] <- NA_character_
+  m_sfx <- vapply(d, function(x) {
+    if (is.na(x)) return(NA)
+    parts <- strsplit(x, "/", fixed = TRUE)[[1]]
+    parts <- .desg_master(trimws(parts))
+    parts <- parts[nzchar(parts)]
+    if (!length(parts)) return(NA)
+    all(grepl("^[A-Z]+[a-z0-9']*[klqsvyz]m", parts))
+  }, logical(1), USE.NAMES = FALSE)
+  out <- ifelse(!is.na(by_class), by_class, m_sfx)
+  pan <- tolower(trimws(as.character(h$pan_type %||% rep(NA_character_, n))))
+  out[!is.na(pan) & grepl("fragipan|densipan", pan)] <- FALSE
+  out
 }
 
 # Filter for Supra-: keep layers whose bottom_cm <= the shallowest
@@ -209,73 +274,99 @@
 # be attached automatically (opt-in via classify_wrb2022(specifiers = TRUE)).
 # ---------------------------------------------------------------------------
 
-# Qualifiers that take a depth specifier: the subsurface feature/horizon
-# qualifiers (those whose qual_*() uses .q_presence). Epipedons and
-# surface-by-definition qualifiers (Mollic, Umbric, Chernic, Histic, Hortic,
-# Plaggic, Pretic, Terric, Anthric, Anthraquic, Hydragric, Irragric, Mulmic,
-# Ornithic, Takyric, Yermic) and the thermal Cryic are EXCLUDED -- their depth
-# is definitional, so a specifier (e.g. "Epimollic") would be invalid.
+# Qualifiers that take a depth specifier, with the rule of Ch 2.3.1 their
+# Chapter 5 definition names: "If a subqualifier related to depth
+# requirements can be constructed by the user, the figure indicates, which
+# rule applies ... If no figure is indicated, these subqualifiers cannot be
+# constructed" (Ch 5, general rule 2, p. 127). v0.9.315: rule 1 for Abruptic
+# (p. 127) and Leptic ("1: Epi- and Endo- only", p. 139); rule 2 for the
+# others. Cambic (p. 129) and Retic (p. 145) have no figure and left the list;
+# Clayic, Loamic and Siltic, rule 2 like Arenic, joined it. Epipedons and
+# surface-by-definition qualifiers (Mollic, Umbric, Chernic, Histic, ...) and
+# the thermal Cryic stay out.
 .WRB_DEPTH_SPECIFIABLE <- c(
-  "Abruptic", "Albic", "Arenic", "Calcaric", "Calcic", "Cambic", "Dolomitic",
+  "Abruptic", "Albic", "Arenic", "Calcaric", "Calcic", "Clayic", "Dolomitic",
   "Duric", "Ferralic", "Ferric", "Fluvic", "Gleyic", "Gypsic", "Gypsiric",
-  "Leptic", "Natric", "Nitic", "Petrocalcic", "Petroduric", "Petrogypsic",
-  "Petroplinthic", "Pisoplinthic", "Plinthic", "Protocalcic", "Protogypsic",
-  "Retic", "Salic", "Spodic", "Stagnic", "Tephric", "Thionic", "Vertic",
-  "Vitric")
+  "Leptic", "Loamic", "Natric", "Nitic", "Petrocalcic", "Petroduric",
+  "Petrogypsic", "Petroplinthic", "Pisoplinthic", "Plinthic", "Protocalcic",
+  "Protogypsic", "Salic", "Siltic", "Spodic", "Stagnic", "Tephric", "Thionic",
+  "Vertic", "Vitric")
 
-# Do the merged depth intervals cover [min .. max] with no gap?
-.wrb_layers_contiguous <- function(tops, bots) {
-  o <- order(tops)
-  t <- tops[o]; b <- bots[o]
-  cur_end <- b[1L]
-  for (i in seq_along(t)[-1L]) {
-    if (t[i] > cur_end) return(FALSE)   # a gap between this layer and the run
-    cur_end <- max(cur_end, b[i])
-  }
-  TRUE
+# Rule 1 (a characteristic at a point of depth) for these; rule 2 (a layer)
+# for the rest of .WRB_DEPTH_SPECIFIABLE.
+.WRB_SPECIFIER_POINT <- c("Abruptic", "Leptic")
+# Specifiers a rule-1 qualifier admits, where Chapter 5 restricts them.
+.WRB_SPECIFIER_ONLY <- list(Leptic = c("Epi", "Endo"))
+# Depths counted from the soil surface (the others: the mineral soil surface).
+.WRB_SPECIFIER_SOIL_SURFACE <- c("Leptic", "Salic", "Tephric", "Thionic", "Vitric")
+# "(2; no subqualifier if a limiting layer starts < 60 cm from the mineral soil
+# surface)".
+.WRB_SPECIFIER_NOT_ON_SHALLOW_LIMIT <- c("Arenic", "Calcaric", "Clayic", "Dolomitic",
+                                         "Gypsiric", "Loamic", "Siltic")
+# Qualifiers that refer to a limiting layer (Ch 2.1 rule 8, p. 23).
+.WRB_SPECIFIER_LIMITING <- c("Leptic", "Petrocalcic", "Petroduric", "Petrogypsic",
+                             "Petroplinthic")
+
+# Rule 1 of Ch 2.3.1 (p. 27): a characteristic at points of depth `pts`
+# (counted from the surface). Epi-: present somewhere <= 50 cm and absent
+# > 50 and <= 100 cm; Endo-: present somewhere > 50 cm and absent <= 50 cm;
+# Amphi-: present <= 50 cm and > 50 and <= 100 cm. One that fits, or NA.
+.wrb_point_specifier <- function(pts, only = c("Epi", "Endo", "Amphi")) {
+  pts <- pts[!is.na(pts)]
+  if (!length(pts)) return(NA_character_)
+  up <- any(pts <= 50); mid <- any(pts > 50 & pts <= 100); deep <- any(pts > 50)
+  fits <- c(Epi = up && !mid, Endo = deep && !up, Amphi = up && mid)
+  fits <- fits[names(fits) %in% only]
+  if (sum(fits) == 1L) names(fits)[fits] else NA_character_
 }
 
-# Compute the depth specifier prefix for a feature occupying `layers`.
-# Returns "" when no specifier is warranted (the canonical, within-100 cm
-# contiguous case, or when depth is indeterminate).
-.compute_depth_specifier <- function(pedon, layers) {
+# The depth specifier of a qualifier whose feature occupies `layers`, by
+# Ch 2.3.1 (p. 27): rule 2 (.wrb_layer_specifier()) for a qualifier that
+# refers to a layer, rule 1 for one that refers to a point of depth (the upper
+# limits of the feature), from the soil or the mineral soil surface as its
+# definition says. A limiting layer starting <= 50 cm from the mineral soil
+# surface gives Epi- to the qualifier that refers to it and no specifier to
+# the others (rule 2, Epi-); the qualifiers marked "no subqualifier if a
+# limiting layer starts < 60 cm" get none then. "" when no specifier applies
+# or the text leaves the choice open. Without `qname`, a layer qualifier
+# counted from the mineral soil surface. Until v0.9.314 the bands were 0-50,
+# 50-100 and > 100 cm from 0 cm, with no Ano-, Amphi- for two bands with a gap
+# between (rule 2: Poly-), Kato- for 50-100 cm plus deeper (rule 2: Endo-, as
+# the layer starts >= 50 cm) and Bathy- for a feature below 100 cm.
+.compute_depth_specifier <- function(pedon, layers, qname = NULL) {
   if (length(layers) == 0L) return("")
-  h    <- pedon$horizons
-  tops <- suppressWarnings(as.numeric(h$top_cm[layers]))
-  bots <- suppressWarnings(as.numeric(h$bottom_cm[layers]))
-  ok   <- !is.na(tops) & !is.na(bots) & bots > tops
-  tops <- tops[ok]; bots <- bots[ok]
-  if (!length(tops)) return("")
-  overlaps <- function(lo, hi) any(tops < hi & bots > lo)
-  in_epi   <- overlaps(0,   50)
-  in_endo  <- overlaps(50,  100)
-  in_bathy <- overlaps(100, Inf)
-  bands <- sum(in_epi, in_endo, in_bathy)
-  if (bands == 0L) return("")
-  if (in_epi && in_endo && in_bathy) {
-    # Panto- ("throughout") only when the feature truly spans the whole
-    # profile -- from the surface (top <= 5 cm) down past 100 cm with no
-    # gap. A broad subsurface feature that merely overlaps all three bands
-    # is the canonical (bare-name) case, not Panto.
-    return(if (min(tops) <= 5 && .wrb_layers_contiguous(tops, bots))
-             "Panto" else "")
-  }
-  if (bands == 1L)
-    return(if (in_epi) "Epi" else if (in_endo) "Endo" else "Bathy")
-  # exactly two bands
-  if (in_epi && in_endo)
-    return(if (.wrb_layers_contiguous(tops, bots)) "" else "Amphi")
-  if (in_endo && in_bathy) return("Kato")   # lower part only
-  if (in_epi && in_bathy)  return("Amphi")  # split with a mid gap
-  ""
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) return("")
+  s <- if (!is.null(qname) && qname %in% .WRB_SPECIFIER_SOIL_SURFACE) 0 else ms
+  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  if (!is.na(lim) && lim - ms <= 50)
+    return(if (!is.null(qname) && qname %in% .WRB_SPECIFIER_LIMITING) "Epi" else "")
+  if (!is.na(lim) && lim - ms < 60 && !is.null(qname) &&
+      qname %in% .WRB_SPECIFIER_NOT_ON_SHALLOW_LIMIT) return("")
+  sp <- if (!is.null(qname) && qname %in% .WRB_SPECIFIER_POINT) {
+    pts <- vapply(.q_layer_runs(h, layers), function(r) r$top - s, numeric(1))
+    .wrb_point_specifier(pts, only = .WRB_SPECIFIER_ONLY[[qname]] %||% c("Epi", "Endo", "Amphi"))
+  } else .wrb_layer_specifier(h, layers, s, lim)
+  if (is.na(sp)) "" else sp
 }
 
 # Attach depth specifiers to a set of matched qualifier names, using a
 # name -> layers map. Only names in .WRB_DEPTH_SPECIFIABLE are touched.
+# v0.9.315: none when the soil is not described to 100 cm from the mineral
+# soil surface or to a limiting layer, whichever is shallower (Ch 2.3.1,
+# p. 26: depth subqualifiers "are only used if the relevant soil
+# characteristics are reported until >= 100 cm ...").
 .apply_depth_specifiers <- function(pedon, qnames, layers_map) {
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  to <- if (is.na(ms)) NA_real_ else ms + (if (is.na(lim)) 100 else max(0, min(100, lim - ms)))
+  reported <- !is.na(to) &&
+    isTRUE(suppressWarnings(max(h$bottom_cm, na.rm = TRUE)) >= to - 1e-6)
   vapply(qnames, function(qn) {
-    if (!(qn %in% .WRB_DEPTH_SPECIFIABLE)) return(qn)
-    sp <- .compute_depth_specifier(pedon, layers_map[[qn]] %||% integer(0))
+    if (!reported || !(qn %in% .WRB_DEPTH_SPECIFIABLE)) return(qn)
+    sp <- .compute_depth_specifier(pedon, layers_map[[qn]] %||% integer(0), qname = qn)
     if (!nzchar(sp)) return(qn)
     paste0(sp, tolower(substring(qn, 1, 1)), substring(qn, 2))
   }, character(1), USE.NAMES = FALSE)

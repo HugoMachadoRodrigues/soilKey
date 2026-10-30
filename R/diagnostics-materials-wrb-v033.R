@@ -63,21 +63,41 @@ artefacts <- function(pedon, min_pct = 1) {
 
 #' Calcaric material (WRB 2022 Ch 3.3.3): \\>= 2\% CaCO3 throughout the
 #' fine earth, primary carbonates from the parent material.
+#'
+#' v0.9.315: WRB 2022 Ch 3.3.3 (p. 86), the material "contains >= 2% calcium
+#' carbonate equivalent" and "shows visible effervescence with 1 M HCl
+#' throughout the fine earth". Each layer is read as the Calcaric qualifier
+#' reads it (since v0.9.311): the CaCO3 equivalent decides where it is
+#' recorded (\code{caco3_pct >= min_caco3_pct}), otherwise the field reaction
+#' (\code{effervescence_class}: moderate or stronger is visible effervescence,
+#' none and slight are not). Before v0.9.315 only \code{caco3_pct} was read,
+#' so a profile described with the HCl reaction alone was never calcaric.
+#' TRUE when some layer is calcaric material, FALSE when every layer is not,
+#' NA otherwise.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_caco3_pct Numeric threshold or option (see Details).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 calcaric_material <- function(pedon, min_caco3_pct = 2) {
   h <- pedon$horizons
-  tests <- list()
-  tests$caco3 <- test_caco3_concentration(h, min_pct = min_caco3_pct)
-  agg <- aggregate_subtests(tests)
+  n <- nrow(h)
+  st <- .wrb_calcaric_status(h)
+  ca <- h$caco3_pct %||% rep(NA_real_, n)
+  if (!isTRUE(all.equal(min_caco3_pct, 2)))
+    st <- ifelse(!is.na(ca), ca >= min_caco3_pct, st)
+  layers <- which(st %in% TRUE)
+  passed <- if (length(layers)) TRUE else if (n == 0L || anyNA(st)) NA else FALSE
+  tests <- list(calcaric = .subtest_result(
+    passed = passed, layers = layers,
+    missing = if (is.na(passed)) c("caco3_pct", "effervescence_class") else character(0),
+    details = list(layer_status = st, caco3_pct = ca,
+                   effervescence_class = h$effervescence_class %||% rep(NA_character_, n),
+                   threshold = min_caco3_pct)))
   DiagnosticResult$new(
     name = "calcaric_material",
-    passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.3.3",
-    notes = "v0.3.3: HCl effervescence proxy via caco3_pct"
+    passed = passed, layers = layers,
+    evidence = tests, missing = tests$calcaric$missing,
+    reference = "IUSS Working Group WRB (2022), Chapter 3.3.3 (p. 86)"
   )
 }
 

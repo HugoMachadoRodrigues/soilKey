@@ -49,21 +49,20 @@
 #' p. 182, Soil Science Division Staff 2017): the USDA classes of
 #' texture_class_from_pct() ("S", "LS", "SL", "L", "SIL", "SI", "SCL", "CL",
 #' "SICL", "SC", "SIC", "C"). Silt is taken as 100 - sand - clay when it is not
-#' recorded (and sand likewise). texture_class_from_pct() reads clay 35 to
-#' < 40% with > 45% sand as sandy clay loam; Table 8.39 makes it sandy clay
-#' (clay >= 35%, sand > 45%), so it is set to "SC" here. NA where clay and one
-#' of silt and sand are not recorded.
+#' recorded (and sand likewise). NA where clay and one of silt and sand are not
+#' recorded. Until v0.9.314 clay 35 to < 40% with > 45% sand was set to "SC"
+#' here, as texture_class_from_pct() read it as sandy clay loam; the function
+#' follows Table 8.39 at every boundary since v0.9.315.
 #' @noRd
 .wrb_texture_class <- function(h) {
   cl <- h$clay_pct; si <- h$silt_pct; sa <- h$sand_pct
   si <- ifelse(is.na(si) & !is.na(sa) & !is.na(cl), 100 - sa - cl, si)
   sa <- ifelse(is.na(sa) & !is.na(si) & !is.na(cl), 100 - si - cl, sa)
-  out <- texture_class_from_pct(cl, si, sa)
-  out[!is.na(out) & cl >= 35 & sa > 45] <- "SC"
-  out
+  texture_class_from_pct(cl, si, sa)
 }
 
-#' A texture qualifier of WRB 2022 Ch 5 (Loamic p. 140, Siltic p. 146): mineral
+#' A texture qualifier of WRB 2022 Ch 5 (Arenic p. 128, Clayic p. 130, Loamic
+#' p. 140, Siltic p. 146; the first two since v0.9.315): mineral
 #' material with, "single or in combination", a texture class of `classes`
 #' "in one or more layers with a combined thickness of >= 30 cm, occurring
 #' within 100 cm of the mineral soil surface, or in the major part between the
@@ -81,9 +80,15 @@
                                 evidence = list(), missing = "top_cm", reference = ref))
   tex <- .wrb_texture_class(h)
   st <- ifelse(is.na(tex), NA, tex %in% classes)
-  # clay >= 40 % is a clay class whatever the silt and sand
-  st[is.na(st) & !is.na(h$clay_pct) & h$clay_pct >= 40] <- FALSE
+  # clay >= 40 % is a clay class (clay, silty clay or sandy clay) whatever the
+  # silt and sand: Clayic for v0.9.315's qual_clayic(), no other class
+  st[is.na(st) & !is.na(h$clay_pct) & h$clay_pct >= 40] <- all(c("C", "SC", "SIC") %in% classes)
   st[!.wrb_mineral_layer(h)] <- FALSE
+  # v0.9.315: a limiting layer (continuous rock, technic hard material, a
+  # petric or other cemented layer) has no texture class of soil material, so
+  # it is none of these qualifiers; its missing particle size left the
+  # qualifiers of a shallow soil over rock undecided
+  st[tryCatch(.wrb_limiting_layers(pedon), error = function(e) integer(0))] <- FALSE
   a <- .q_thickness_rule(h, st, 30, win_top = ms, win_bot = ms + 100)
   lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
   b <- if (is.na(lim) || lim - ms <= 10 || lim - ms >= 60) FALSE else {

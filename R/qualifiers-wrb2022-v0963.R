@@ -830,35 +830,53 @@ qual_anthromollic <- function(pedon) {
 # 0-100 cm, starting >= 50 cm, and no such run starting above 50 cm. Horizons
 # whose `col` is missing may hide a shallower run (NA). `exclude` holds
 # diagnostics that must not start <= 100 cm (calcic, petrocalcic).
+# v0.9.315: `unknown` (row indices) names the horizons whose material is
+# undecided when it is not read from `col` alone (Endocalcaric reads the HCl
+# reaction too); `surface` is the depth the 50 and 100 cm are counted from
+# (the mineral soil surface for Endocalcaric and Endodolomitic). A deep layer
+# that only undecided horizons could make up is undecided (NA), not absent.
 .q_endo_material <- function(pedon, name, mat, col = "caco3_pct",
-                             exclude = list()) {
+                             exclude = list(), unknown = NULL, surface = 0,
+                             reference = paste0("WRB (2022) Ch 5, ", name)) {
   h <- pedon$horizons
-  ref <- paste0("WRB (2022) Ch 5, ", name)
+  ref <- reference
   res <- function(passed, layers = integer(0), missing = character(0), ...)
     DiagnosticResult$new(name = name, passed = passed, layers = layers,
                          evidence = list(material = mat, ...),
                          missing = missing, reference = ref)
   if (!isTRUE(mat$passed)) return(res(mat$passed, missing = mat$missing %||% character(0)))
+  s <- surface
   lim <- .barrier_top_cm(pedon)
-  if (!is.na(lim) && lim < 60) return(res(FALSE, limiting_layer_top_cm = lim))
-  thk100 <- function(r) min(r$bottom, 100) - r$top
+  if (!is.na(lim) && lim - s < 60) return(res(FALSE, limiting_layer_top_cm = lim))
+  thk100 <- function(r) min(r$bottom, s + 100) - r$top
   runs <- Filter(function(r) thk100(r) >= 30, .q_layer_runs(h, mat$layers))
-  shallow <- Filter(function(r) r$top < 50, runs)
-  deep <- Filter(function(r) r$top >= 50, runs)
-  if (length(shallow) || !length(deep)) return(res(FALSE, runs = runs))
-  unk <- which(is.na(h[[col]]))
-  maybe <- Filter(function(r) r$top < 50 && thk100(r) >= 30,
-                  .q_layer_runs(h, union(mat$layers, unk)))
+  shallow <- Filter(function(r) r$top - s < 50, runs)
+  deep <- Filter(function(r) r$top - s >= 50, runs)
+  if (length(shallow)) return(res(FALSE, runs = runs))
+  unk <- if (is.null(unknown)) which(is.na(h[[col[1L]]])) else unknown
+  cand <- union(mat$layers, unk)
+  if (!length(deep)) {
+    low <- cand[!is.na(h$top_cm[cand]) & h$top_cm[cand] - s >= 50]
+    maybe_deep <- Filter(function(r) thk100(r) >= 30, .q_layer_runs(h, low))
+    return(if (length(maybe_deep)) res(NA, missing = col, runs = runs)
+           else res(FALSE, runs = runs))
+  }
+  maybe <- Filter(function(r) r$top - s < 50 && thk100(r) >= 30,
+                  .q_layer_runs(h, cand))
   if (length(maybe)) return(res(NA, missing = col, runs = runs))
   for (d in exclude) {
     top <- if (isTRUE(d$passed)) suppressWarnings(min(h$top_cm[d$layers], na.rm = TRUE)) else Inf
-    if (is.finite(top) && top <= 100) return(res(FALSE, excluded_by = d$name))
+    if (is.finite(top) && top - s <= 100) return(res(FALSE, excluded_by = d$name))
   }
   for (d in exclude) {
     if (is.na(d$passed))
       return(res(NA, missing = if (length(d$missing)) d$missing else d$name))
   }
-  if (!.q_reported_to_100(pedon, lim))
+  reported <- if (s == 0) .q_reported_to_100(pedon, lim) else {
+    depth <- s + (if (is.na(lim)) 100 else min(100, lim - s))
+    isTRUE(suppressWarnings(max(h$bottom_cm, na.rm = TRUE)) >= depth)
+  }
+  if (!reported)
     return(res(NA, missing = "horizons to 100 cm", runs = deep))
   res(TRUE, layers = unlist(lapply(deep, `[[`, "layers")), runs = deep)
 }
@@ -877,8 +895,24 @@ qual_endocalcaric <- function(pedon) {
   # layer starts >= 50 cm ...; and no such layer occurs < 50 cm". The old code
   # passed on any horizon with >= 2% CaCO3 overlapping 50-200 cm, with no
   # thickness, no shallow-layer check and no calcic exclusion.
+  # v0.9.315: the layers are read as qual_calcaric() reads them (Ch 5, p. 129;
+  # calcaric material, Ch 3.3.3, p. 86): CaCO3 where it is measured, otherwise
+  # the HCl reaction (moderate or stronger is calcaric, none and slight are
+  # not), and the depths are counted from the mineral soil surface. Before
+  # v0.9.315 only caco3_pct was read and the depths were counted from 0 cm.
+  h <- pedon$horizons
+  ref <- paste("WRB (2022) Ch 5, Calcaric (p. 129) with the Endo- specifier",
+               "(Ch 2.3.1, p. 27); calcaric material, Ch 3.3.3 (p. 86)")
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
+    return(DiagnosticResult$new(name = "Endocalcaric", passed = NA,
+                                layers = integer(0), evidence = list(),
+                                missing = "top_cm", reference = ref))
+  st <- .wrb_calcaric_status(h)
   .q_endo_material(pedon, "Endocalcaric", calcaric_material(pedon),
-                   exclude = list(calcic(pedon), petrocalcic(pedon)))
+                   col = c("caco3_pct", "effervescence_class"),
+                   exclude = list(calcic(pedon), petrocalcic(pedon)),
+                   unknown = which(is.na(st)), surface = ms, reference = ref)
 }
 
 
@@ -894,7 +928,16 @@ qual_endodolomitic <- function(pedon) {
   # subqualifier if a limiting layer starts < 60 cm)"; Endo-: "the layer
   # starts >= 50 cm ...; and no such layer occurs < 50 cm". The old code
   # passed on any dolomitic horizon overlapping 50-200 cm.
-  .q_endo_material(pedon, "Endodolomitic", dolomitic_material(pedon))
+  # v0.9.315: the 50 and 100 cm, and the limiting layer, are counted from the
+  # mineral soil surface, as Dolomitic says (Ch 5, p. 131); from 0 cm before.
+  ms <- .q_mineral_surface_cm(pedon$horizons)
+  ref <- "WRB (2022) Ch 5, Dolomitic (p. 131) with the Endo- specifier (Ch 2.3.1, p. 27)"
+  if (is.na(ms))
+    return(DiagnosticResult$new(name = "Endodolomitic", passed = NA,
+                                layers = integer(0), evidence = list(),
+                                missing = "top_cm", reference = ref))
+  .q_endo_material(pedon, "Endodolomitic", dolomitic_material(pedon),
+                   surface = ms, reference = ref)
 }
 
 
