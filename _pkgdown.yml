@@ -565,6 +565,19 @@ reference:
       - load_natsoil_pedons
       - benchmark_natsoil
 
+  - title: "Queensland SALI benchmark (Australia, v0.9.320)"
+    desc: >
+      Queensland's Soil and Land Information system (SALI): the site layer,
+      the per-site report (a PDF, the only place its morphology is
+      published) and the soil chemistry API, read by the NatSoil
+      conventions, as a benchmark for classify_asc3(). The data are licensed
+      CC BY 4.0 (State of Queensland) and are not shipped.
+    contents:
+      - fetch_sali
+      - read_sali_pedons
+      - benchmark_sali
+      - sali_citation
+
   - title: "National Soils Database of New Zealand (NSD, v0.9.317)"
     desc: >
       The survey exports of Manaaki Whenua's National Soils Database read

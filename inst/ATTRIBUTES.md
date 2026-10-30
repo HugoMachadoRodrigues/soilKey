@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.317)
+# soilKey -- recognised horizon attribute names (v0.9.320)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -454,6 +454,18 @@ the last section are stored by the loaders and reports and read by no key.
 | `nsdr_identifier` | - | character | Identifier of the site in the National Soil Data Repository of New Zealand (nsdridentifier). Written by read_nsd_pedons(). | - | - |
 | `survey` | - | character | Name of the NSD soil survey the profile belongs to. Written by read_nsd_pedons(). | - | - |
 | `survey_code` | - | character | Code of the NSD soil survey the profile belongs to. Written by read_nsd_pedons(). | - | - |
+| `sali_asc_label` | - | character | Surveyors' ASC label of a Queensland SALI site as the site layer gives it (order, suborder, great group, subgroup names). Written by read_sali_pedons(); its codes are in reference_asc_order and the following fields. | - | - |
+| `sali_pdf_asc` | - | character | ASC name of a SALI site as its site report prints it (the book's order, with the family). Written by read_sali_pedons(). | - | - |
+| `sali_asc_edition` | - | character | Edition of the ASC technical reference the SALI site report cites, e.g. '3rd (2021)', '2nd (2016)', '1st (1996)'. Written by read_sali_pedons(); benchmark_sali() reports the agreement by edition. | - | - |
+| `sali_asc_confidence_text` | - | character | Confidence phrase of the SALI site report for its ASC class, as printed (reference_asc_confidence gives it as 1-4, or C). Written by read_sali_pedons(). | - | - |
+| `sali_unmapped` | - | character | Names of the SALI label that match no class of the ASC 3rd edition (left NA), separated by '; '. Written by read_sali_pedons(). | - | - |
+| `sali_observation_class` | - | character | Observation class of the SALI site (e.g. 'Class IIIb (core analytical suite)'). Written by read_sali_pedons(). | - | - |
+| `sali_observation_type` | - | character | Observation type of the SALI site (e.g. 'Soil pit', 'Hand auger boring'). Written by read_sali_pedons(). | - | - |
+| `sali_depth_to_free_water` | - | character | Depth to free water as the SALI site report records it (text). Written by read_sali_pedons(); not used. | - | - |
+| `sali_substrate` | - | character | Substrate as the SALI site report records it (text). Written by read_sali_pedons(); not used. | - | - |
+| `sali_n_lab_samples` | - | numeric | Number of laboratory samples of observation 1 read for the SALI site. Written by read_sali_pedons(). | - | - |
+| `sali_lab_source` | - | character | Where the laboratory values of the SALI site come from: 'api' (the SALI soil chemistry API), 'report table' (the site report's table, read only when the API holds no samples) or 'none'. Written by read_sali_pedons(). | - | - |
+| `sali_n_predicted` | - | numeric | Number of horizon values of the SALI site that are MIR predictions, used where nothing was measured (marked predicted_spectra in the provenance). Written by read_sali_pedons(). | - | - |
 | `curation_note` | - | character | Curation note of a Redape profile (CURADORIA). Written by load_redape_pedons(). | - | - |
 | `curation_authors` | - | character | Authors of the curation of a Redape profile (AUTOR_CURADORIA). Written by load_redape_pedons(). | - | - |
 | `source` | - | character | Provider of a profile read from a live service ('ISRIC WoSIS', 'NatSoil (CSIRO)'); soilKey Pro keeps it with the other provenance fields. | - | - |
@@ -481,5 +493,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.317._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.320._
 
