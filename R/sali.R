@@ -913,6 +913,12 @@ fetch_sali <- function(dir, sites = NULL, cap_bytes = 150e3, workers = 1L, pause
 # A MIR prediction: a method code ending in _MC2, _MC91, _MQ01, _MQ02 ...
 .SALI_MIR_RE <- "_M[CQ][0-9]*$"
 
+# MIR methods the NatSoil reader has no code for, read by the property the
+# method's name gives (Hugo, 2026-10-30): CEC (15C2_CEC, "Cation exchange
+# capacity - MIR QLD Calibration 1"), total organic C (6B4) and effective
+# CEC (15J2), filed under a code the reader takes for that property.
+.SALI_MIR_ALIAS <- c("15C2_CEC" = "15C1_CEC", "6B4" = "6B3", "15J2" = "15J1")
+
 # The samples of observation `obs` (the API's Samples, parsed) as the NatSoil
 # reader's samples (depths in metres), filed under the horizon holding their
 # middle (SALI does not link samples to horizons): `measured` holds the
@@ -938,6 +944,7 @@ fetch_sali <- function(dir, sites = NULL, cap_bytes = 150e3, workers = 1L, pause
       if (is.na(raw)) next
       is_mir <- grepl(.SALI_MIR_RE, raw)
       code <- .sali_lab_code(sub(.SALI_MIR_RE, "", raw))
+      if (is_mir && !is.na(code) && code %in% names(.SALI_MIR_ALIAS)) code <- .SALI_MIR_ALIAS[[code]]
       fv <- trimws(as.character(r$FormattedValue %||% ""))
       v <- suppressWarnings(as.numeric(sub("^[<>]", "", fv)))
       if (is.na(code) || is.na(v)) next
@@ -1203,9 +1210,13 @@ fetch_sali <- function(dir, sites = NULL, cap_bytes = 150e3, workers = 1L, pause
         h[[a]] <- hp[[a]]
         cd <- .sali_code_used(lab_p, a)
         mir <- .sali_mir_codes(S$predicted, k, top_m[k], bot_m[k], cd)
+        # the method the MIR predicts, as SALI names it (an alias is read
+        # by its property)
+        meth <- unique(.sali_lab_code(sub(.SALI_MIR_RE, "", mir)))
+        meth_txt <- if (all(meth == cd)) cd else sprintf("%s (read as %s)", paste(meth, collapse = ", "), a)
         add(k, a, "predicted_spectra",
             sprintf("predicted: MIR prediction %s (%s), for method %s; nothing measured for this attribute in this horizon",
-                    paste(mir, collapse = ", "), origin, cd))
+                    paste(mir, collapse = ", "), origin, meth_txt))
         n_pred <- n_pred + 1L
       }
     }
@@ -1329,7 +1340,10 @@ fetch_sali <- function(dir, sites = NULL, cap_bytes = 150e3, workers = 1L, pause
 #'     attribute in that horizon (a field pH the horizon reads counts as
 #'     measured), and the provenance marks them as predictions (source
 #'     \code{"predicted_spectra"}, a note naming the MIR codes; two
-#'     calibrations predicting the same method are averaged).
+#'     calibrations predicting the same method are averaged). MIR methods
+#'     the NatSoil reader has no code for are read by the property their
+#'     name gives: 15C2_CEC as the CEC, 6B4 as organic carbon and 15J2 as
+#'     the effective CEC.
 #'   \item The lab table printed in the report is used only when the API
 #'     holds no samples for the site's observation.
 #' }

@@ -100,7 +100,10 @@ And Hugo's decisions of 2026-10-30:
     attribute in that horizon (a field pH the horizon reads counts as
     measured), and the provenance marks them as predictions (source
     \code{"predicted_spectra"}, a note naming the MIR codes; two
-    calibrations predicting the same method are averaged).
+    calibrations predicting the same method are averaged). MIR methods
+    the NatSoil reader has no code for are read by the property their
+    name gives: 15C2_CEC as the CEC, 6B4 as organic carbon and 15J2 as
+    the effective CEC.
   \item The lab table printed in the report is used only when the API
     holds no samples for the site's observation.
 }

@@ -11,7 +11,7 @@ Queensland's Soil and Land Information system (SALI) publishes about 21,000 site
 ### Hugo's decisions
 
 * **Reports over 150 KB are not downloaded** (`cap_bytes = 150e3`): those with embedded site photographs are aborted at the cap, marked and not tried again.
-* **MIR predictions** (method codes ending in _MC2, _MC91, _MQ01, _MQ02 and the like) are used only where nothing was measured for that attribute in that horizon. The provenance marks them as predictions (source `predicted_spectra`, a note naming the MIR codes), and the evidence grade of such a pedon is B. The pilot left them out.
+* **MIR predictions** (method codes ending in _MC2, _MC91, _MQ01, _MQ02 and the like) are used only where nothing was measured for that attribute in that horizon. The provenance marks them as predictions (source `predicted_spectra`, a note naming the MIR codes), and the evidence grade of such a pedon is B. The pilot left them out. MIR methods the NatSoil reader has no code for are read by the property their name gives: 15C2_CEC ("Cation exchange capacity - MIR QLD Calibration 1") as the CEC, 6B4 (total organic carbon) as organic carbon and 15J2 as the effective CEC.
 * **The lab table printed in the report** is used only when the API holds no samples for the site's observation; the provenance says which of the two each value came from.
 
 ### The readings (the pilot's, kept)

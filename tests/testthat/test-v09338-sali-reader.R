@@ -234,6 +234,29 @@ test_that("MIR predictions fill only what nothing measured gives, marked as pred
   expect_identical(compute_evidence_grade(p), "B")
 })
 
+test_that("MIR methods with no NatSoil code are read by their property", {
+  skip_on_cran()
+  pw <- .sali_pdf_words(.sali_pages())
+  dict <- .sali_asc_dict(load_rules("asc3"))
+  js <- list(
+    .smp(1, 0, 0.1, list(.res("15C2_CEC_MQ01", "18"), .res("6B4b_MQ01", "1.2"), .res("15J2_MQ02", "9"))),
+    .smp(2, 0.2, 0.4, list(.res("15C1_CEC", "25"), .res("15C2_CEC_MQ01", "40"))))
+  p <- .sali_build_pedon(.sali_pdf_parse(pw), js, .sali_layer_row(), dict)
+  h <- as.data.frame(p$horizons); pv <- as.data.frame(p$provenance)
+  src <- function(k, a) pv$source[pv$horizon_idx == k & pv$attribute == a]
+  note <- function(k, a) pv$notes[pv$horizon_idx == k & pv$attribute == a]
+  expect_equal(h$cec_cmol[1], 18); expect_identical(src(1, "cec_cmol"), "predicted_spectra")
+  expect_match(note(1, "cec_cmol"), "15C2_CEC_MQ01 .*for method 15C2_CEC \\(read as cec_cmol\\)")
+  expect_equal(h$oc_pct[1], 1.2); expect_identical(src(1, "oc_pct"), "predicted_spectra")
+  expect_match(note(1, "oc_pct"), "6B4b_MQ01 .*for method 6B4 \\(read as oc_pct\\)")
+  expect_equal(h$ecec_cmol[1], 9); expect_match(note(1, "ecec_cmol"), "for method 15J2 \\(read as ecec_cmol\\)")
+  expect_equal(h$cec_cmol[2], 25); expect_identical(src(2, "cec_cmol"), "measured")     # measured wins
+  # only the MIR predictions are read so: a measured 15C2_CEC stays unread
+  js2 <- list(.smp(1, 0, 0.1, list(.res("15C2_CEC", "18"))))
+  p2 <- .sali_build_pedon(.sali_pdf_parse(pw), js2, .sali_layer_row(), dict)
+  expect_true(is.na(as.data.frame(p2$horizons)$cec_cmol[1]))
+})
+
 test_that("the report's lab table is read only when the API holds nothing", {
   skip_on_cran()
   pw <- .sali_pdf_words(.sali_pages())
