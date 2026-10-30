@@ -112,3 +112,20 @@ test_that("v0.9.321 Endocalcaric: the HCl reaction, depths from the mineral soil
             desg = c("Oa", "A", "C"), oc = c(30, 1, 1))
   expect_false(qual_endocalcaric(org)$passed)
 })
+
+
+# ---- Technosols lists (Ch 4, p. 97) ---------------------------------------------
+
+test_that("v0.9.321 Technosols: the lists of the text, two supplementary columns read in order", {
+  skip_on_cran()
+  q <- yaml::read_yaml(system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey"))
+  tc <- q$rsg_qualifiers$TC
+  expect_identical(tc$supplementary[1], "Arenic/Clayic/Loamic/Siltic")
+  expect_false(any(c("Arenic/Clayic/Sulfidic", "Loamic/Siltic",
+                     "Anthraquic/Irragric/Transportic", "Hortic/Plaggic/Pretic/Vitric")
+                   %in% tc$supplementary))
+  expect_true("Anthraquic/Irragric/Hortic/Plaggic/Pretic/Terric" %in% tc$supplementary)
+  expect_identical(utils::tail(tc$supplementary, 6),
+                   c("Sulfidic", "Tephric", "Thionic", "Toxic", "Transportic", "Vitric"))
+  expect_identical(tc$principal[1:3], c("Ekranic/Thyric", "Linic", "Urbic"))
+})
