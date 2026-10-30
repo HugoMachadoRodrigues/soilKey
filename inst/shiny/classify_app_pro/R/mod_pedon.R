@@ -723,7 +723,19 @@ pedon_server <- function(id, rv) {
             return(invisible())
           }
           loaded_site <- p$site
-          data_source(NULL)
+          # v0.9.317: a national example keeps the site details its key
+          # reads (the horizon notation, the drainage ...), as a reopened
+          # session does, and ticks its system on the Classify tab
+          nat <- pro_fixture_system(input$fixture)
+          if (is.na(nat)) data_source(NULL) else {
+            extra <- .sk_session_site_extra(p$site)
+            extra$soil_moisture_regime <- NULL
+            extra$soil_temperature_regime <- NULL
+            data_source(if (length(extra)) extra else NULL)
+            cur <- shiny::isolate(rv$classify_systems) %||% .SK_DEFAULT_SYSTEMS
+            prev <- tryCatch(shiny::isolate(rv$classify_restore$n), error = function(e) NULL) %||% 0L
+            rv$classify_restore <- list(systems = union(cur, nat), n = prev + 1L)
+          }
           as.data.frame(p$horizons)
         },
         wosis = {
@@ -872,7 +884,9 @@ pedon_server <- function(id, rv) {
 
     output$data_source_note <- shiny::renderUI({
       ds <- data_source()
-      if (is.null(ds)) return(NULL)
+      # only WoSIS data has a provider to name; the site details a session or
+      # a national example carries are not a data source
+      if (is.null(ds) || is.null(ds$wosis_profile_code %||% ds$wosis_profile_id)) return(NULL)
       lic <- ds$licence %||% ""
       url <- regmatches(lic, regexpr("https?://[^ ,;]+", lic))
       lic_label <- ds$licence_short %||% lic

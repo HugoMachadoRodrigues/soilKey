@@ -601,7 +601,7 @@ en:
   "dt.last": "Last"
   # v0.9.210 -- Pedon tab help texts (were English-only)
   "pedon.desc_seed": "Start from a reference profile, your own CSV, or a blank sheet."
-  "pedon.help_fixture": "A curated, textbook profile you can load and edit as a starting point."
+  "pedon.help_fixture": "A curated, textbook profile you can load and edit as a starting point. An example of a national system also ticks that system on the Classify tab."
   "pedon.help_wosis_country": "Country name as WoSIS spells it, e.g. Argentina. Leave blank for any."
   "pedon.help_wosis_permissive": "WoSIS is licensed per profile and about half of it is CC BY-NC, which forbids commercial use. On, only profiles free of that restriction are listed."
   "pedon.help_csv": "One row per horizon, with depth and lab columns. Download the starter file to see the expected layout."
@@ -1393,7 +1393,7 @@ pt:
   "dt.last": "Última"
   # v0.9.210 -- Pedon tab help texts (were English-only)
   "pedon.desc_seed": "Comece por um perfil de referência, pelo seu próprio CSV ou por uma planilha em branco."
-  "pedon.help_fixture": "Um perfil de referência, de livro-texto, que você pode carregar e editar como ponto de partida."
+  "pedon.help_fixture": "Um perfil de referência, de livro-texto, que você pode carregar e editar como ponto de partida. Um exemplo de um sistema nacional também marca esse sistema na aba Classificar."
   "pedon.help_wosis_country": "Nome do país como o WoSIS o escreve, em inglês, ex.: Argentina, Brazil. Deixe em branco para qualquer país."
   "pedon.help_wosis_permissive": "O WoSIS tem licença por perfil, e cerca de metade está sob CC BY-NC, que proíbe uso comercial. Ligado, só aparecem os perfis livres dessa restrição."
   "pedon.help_csv": "Uma linha por horizonte, com colunas de profundidade e de laboratório. Baixe o arquivo inicial para ver o formato esperado."

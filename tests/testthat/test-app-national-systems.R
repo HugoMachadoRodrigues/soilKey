@@ -311,3 +311,50 @@ test_that("the Report tab includes the national systems of the last run", {
     expect_match(output$national$html, "New Zealand (NZSC), Hungary (HSCS)", fixed = TRUE)
   })
 })
+
+# ---- the national examples on the Pedon tab (v0.9.317) -----------------------------
+
+test_that("the Pedon tab offers one example per class of each national system, each keying to it", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  cat <- env$pro_fixture_catalog()
+  fun <- c(cssc3 = "classify_cssc3", asc3 = "classify_asc3", nzsc4 = "classify_nzsc4",
+           hscs2024 = "classify_hscs2024")
+  for (id in names(fun)) {
+    grp <- cat[[env$.sk_system_label(id)]]
+    expect_true(length(grp) >= 10L, info = id)
+    for (k in seq_along(grp)) {
+      expect_identical(env$pro_fixture_system(grp[[k]]), id)
+      p <- env$pro_load_fixture(grp[[k]])
+      expect_true(inherits(p, "PedonRecord"))
+      r <- get(fun[[id]], asNamespace("soilKey"))(p, on_missing = "silent")
+      expect_identical(r$levels$name[1], names(grp)[k], info = grp[[k]])
+    }
+  }
+  # the WRB and SiBCS fixtures load as before and name no national system
+  expect_true(is.na(env$pro_fixture_system("make_ferralsol_canonical")))
+  expect_true(inherits(env$pro_load_fixture("make_ferralsol_canonical"), "PedonRecord"))
+})
+
+test_that("loading a national example ticks its system and keeps the site details its key reads", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  rv <- shiny::reactiveValues(pedon = NULL, example_request = 0L,
+                              classify_systems = c("wrb2022", "sibcs", "usda"))
+  shiny::testServer(env$pedon_server, args = list(rv = rv), {
+    session$setInputs(source = "fixture", fixture = "make_hscs2024_example:steppe")
+    session$setInputs(load = 1)
+    expect_identical(rv$classify_restore$systems, c("wrb2022", "sibcs", "usda", "hscs2024"))
+    expect_identical(data_source()$designation_system, "fao2006")
+    # no WoSIS line for site details
+    expect_null(output$data_source_note$html %||% NULL)
+    # a WRB fixture afterwards clears them and asks for no change of systems
+    n <- rv$classify_restore$n
+    session$setInputs(fixture = "make_ferralsol_canonical")
+    session$setInputs(load = 2)
+    expect_null(data_source())
+    expect_identical(rv$classify_restore$n, n)
+  })
+})
