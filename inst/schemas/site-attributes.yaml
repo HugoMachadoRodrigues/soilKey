@@ -355,7 +355,7 @@ attributes:
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
     unit: "-"
-    description: "Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon()."
+    description: "Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon(). read_nsd_pedons() writes 'before 1990 (Andepts)' for a great group of the Andepts, Inceptisols until Soil Taxonomy created the Andisols."
   - name: reference_wrb06_full
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
@@ -481,6 +481,76 @@ attributes:
     type: "character"
     unit: "-"
     description: "NPDB order, great group and subgroup as recorded, joined by ' | '. Written by load_npdb_pedons()."
+  - name: reference_nzsc
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NZSC code of an NSD profile as the surveyor recorded it (e.g. 'MOT'), recoded to the 4th edition where the 4th edition renamed the code (MIW as MIC). Written by read_nsd_pedons()."
+  - name: reference_nzsc_name
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NZSC class name of an NSD profile as recorded (e.g. 'Typic Orthic Pumice Soil'). Written by read_nsd_pedons()."
+  - name: reference_nzsc_order
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NZSC order code (one letter) of an NSD profile; NA for a subgroup the 4th edition withdrew and moved to other orders (BLAM). Read by benchmark_nsd()."
+  - name: reference_nzsc_group
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NZSC group code (two letters) of an NSD profile, when the record names a group. Read by benchmark_nsd()."
+  - name: reference_nzsc_subgroup
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NZSC subgroup code (three or four letters) of an NSD profile, when the record names a subgroup the 4th edition keeps. Read by benchmark_nsd()."
+  - name: reference_nzsc_raw
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NSD classifier_nzsc as recorded (code and name). Written by read_nsd_pedons()."
+  - name: reference_nzsc_note
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "How a 3rd-edition NZSC code of an NSD profile was read (recoded, or withdrawn in the 4th edition). Written by read_nsd_pedons()."
+  - name: reference_nzsc_alt
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NSD classifier_nzsc_alt: an alternative NZSC class the surveyor recorded. Written by read_nsd_pedons()."
+  - name: reference_nz_genetic
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "NZ Genetic Soil Classification class of an NSD profile (classifier_nz_genetic). Written by read_nsd_pedons()."
+  - name: reference_nz_series
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Soil series of an NSD profile (classifier_nz_series). Written by read_nsd_pedons()."
+  - name: reference_usda_raw
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Soil Taxonomy subgroup of an NSD profile as recorded (classifier_usda, e.g. 'TYPIC UDIVITRAND'). Written by read_nsd_pedons()."
+  - name: nsdr_identifier
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Identifier of the site in the National Soil Data Repository of New Zealand (nsdridentifier). Written by read_nsd_pedons()."
+  - name: survey
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Name of the NSD soil survey the profile belongs to. Written by read_nsd_pedons()."
+  - name: survey_code
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Code of the NSD soil survey the profile belongs to. Written by read_nsd_pedons()."
   - name: curation_note
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
@@ -570,7 +640,7 @@ attributes:
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
     unit: "-"
-    description: "Canadian province of an NPDB profile."
+    description: "Province or region of the profile: the Canadian province of an NPDB profile, the New Zealand region of an NSD profile."
   - name: altitude_m
     section: "Reference classes & provenance (stored, read by no key)"
     type: "numeric"
