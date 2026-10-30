@@ -413,7 +413,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `reference_wrb` | - | character | Published WRB class (a Reference Soil Group, or the name the dataset gives). Written by the LUCAS-ESDB, FEBR, BDsolos and AfSP (from WRB 2006) loaders and the spectral libraries, or copied from wosis_rsg or reference_wrb_from_usda; read by the benchmarks as the WRB reference. | - | - |
 | `reference_wrb_full` | - | character | Full WRB name the data provider gives the profile, with its qualifiers. Written by isis_profile_to_pedon() (ISRIC's name); its edition is in reference_wrb_edition. | - | - |
 | `reference_wrb_edition` | - | character | Edition (year) of the WRB name in reference_wrb and reference_wrb_full, e.g. '2022'. Written by isis_profile_to_pedon(); benchmark_isis() scores only the 2022 names. | - | - |
-| `reference_usda_edition` | - | character | Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon(). | - | - |
+| `reference_usda_edition` | - | character | Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon(). read_nsd_pedons() writes 'before 1990 (Andepts)' for a great group of the Andepts, Inceptisols until Soil Taxonomy created the Andisols. | - | - |
 | `reference_wrb06_full` | - | character | Full WRB 2006 name of an AfSP profile. Written by load_afsp_pedons(). | - | - |
 | `reference_fao88` | - | character | FAO 1988 class of an AfSP profile. Written by load_afsp_pedons(). | - | - |
 | `reference_wrb_from_usda` | - | character | WRB Reference Soil Group derived from reference_usda and reference_usda_suborder by annotate_wrb_from_usda(); read by benchmark_wrb_vs_usda() and copied into reference_wrb when that is missing. | - | - |
@@ -439,6 +439,20 @@ the last section are stored by the loaders and reports and read by no key.
 | `reference_cssc_great_group` | - | character | CSSC great group of an NPDB profile, matched to the classes of the key. Read by benchmark_npdb(). | - | - |
 | `reference_cssc_subgroup` | - | character | CSSC subgroup of an NPDB profile, matched to the classes of the key. Read by benchmark_npdb(). | - | - |
 | `reference_cssc_raw` | - | character | NPDB order, great group and subgroup as recorded, joined by ' \| '. Written by load_npdb_pedons(). | - | - |
+| `reference_nzsc` | - | character | NZSC code of an NSD profile as the surveyor recorded it (e.g. 'MOT'), recoded to the 4th edition where the 4th edition renamed the code (MIW as MIC). Written by read_nsd_pedons(). | - | - |
+| `reference_nzsc_name` | - | character | NZSC class name of an NSD profile as recorded (e.g. 'Typic Orthic Pumice Soil'). Written by read_nsd_pedons(). | - | - |
+| `reference_nzsc_order` | - | character | NZSC order code (one letter) of an NSD profile; NA for a subgroup the 4th edition withdrew and moved to other orders (BLAM). Read by benchmark_nsd(). | - | - |
+| `reference_nzsc_group` | - | character | NZSC group code (two letters) of an NSD profile, when the record names a group. Read by benchmark_nsd(). | - | - |
+| `reference_nzsc_subgroup` | - | character | NZSC subgroup code (three or four letters) of an NSD profile, when the record names a subgroup the 4th edition keeps. Read by benchmark_nsd(). | - | - |
+| `reference_nzsc_raw` | - | character | NSD classifier_nzsc as recorded (code and name). Written by read_nsd_pedons(). | - | - |
+| `reference_nzsc_note` | - | character | How a 3rd-edition NZSC code of an NSD profile was read (recoded, or withdrawn in the 4th edition). Written by read_nsd_pedons(). | - | - |
+| `reference_nzsc_alt` | - | character | NSD classifier_nzsc_alt: an alternative NZSC class the surveyor recorded. Written by read_nsd_pedons(). | - | - |
+| `reference_nz_genetic` | - | character | NZ Genetic Soil Classification class of an NSD profile (classifier_nz_genetic). Written by read_nsd_pedons(). | - | - |
+| `reference_nz_series` | - | character | Soil series of an NSD profile (classifier_nz_series). Written by read_nsd_pedons(). | - | - |
+| `reference_usda_raw` | - | character | Soil Taxonomy subgroup of an NSD profile as recorded (classifier_usda, e.g. 'TYPIC UDIVITRAND'). Written by read_nsd_pedons(). | - | - |
+| `nsdr_identifier` | - | character | Identifier of the site in the National Soil Data Repository of New Zealand (nsdridentifier). Written by read_nsd_pedons(). | - | - |
+| `survey` | - | character | Name of the NSD soil survey the profile belongs to. Written by read_nsd_pedons(). | - | - |
+| `survey_code` | - | character | Code of the NSD soil survey the profile belongs to. Written by read_nsd_pedons(). | - | - |
 | `curation_note` | - | character | Curation note of a Redape profile (CURADORIA). Written by load_redape_pedons(). | - | - |
 | `curation_authors` | - | character | Authors of the curation of a Redape profile (AUTOR_CURADORIA). Written by load_redape_pedons(). | - | - |
 | `source` | - | character | Provider of a profile read from a live service ('ISRIC WoSIS', 'NatSoil (CSIRO)'); soilKey Pro keeps it with the other provenance fields. | - | - |
@@ -456,7 +470,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `sampling_type` | - | character | Kind of BDsolos sampling point ('Tipo': Perfil completo, Perfil parcial or Amostra extra). The BDsolos benchmarks keep the complete profiles ('perfil completo') and the records that do not say. | - | - |
 | `state` | - | character | Brazilian state of the profile (FEBR estado_id, BDsolos UF). | - | - |
 | `municipality` | - | character | Municipality of a BDsolos profile. | - | - |
-| `province` | - | character | Canadian province of an NPDB profile. | - | - |
+| `province` | - | character | Province or region of the profile: the Canadian province of an NPDB profile, the New Zealand region of an NSD profile. | - | - |
 | `altitude_m` | m | numeric | Altitude of a BDsolos profile. The USDA family reads elevation_m, not this. | - | - |
 | `land_cover` | - | character | Land cover or vegetation, as text (BDsolos current use or vegetation column; LUCAS LC0_Desc). The WRB qualifiers read land_use, not this. | - | - |
 | `survey_date` | - | character | Survey date of a LUCAS 2018 point (SURVEY_DATE). The reports show date, not this. | - | - |

@@ -574,6 +574,10 @@ pedon_server <- function(id, rv) {
         }
         # v0.9.306 / v0.9.307: the soil moisture and temperature regimes, when known
         payload$site <- .sk_site_with_str(.sk_site_with_smr(payload$site, input$smr), input$str)
+        # the systems ticked on the Classify tab, national ones included (a
+        # top-level key: the pedon schema allows additional properties)
+        payload$classify <- .sk_session_classify(
+          tryCatch(rv$classify_systems, error = function(e) NULL))
         jsonlite::write_json(payload, file, pretty = TRUE, auto_unbox = TRUE,
                              null = "null", na = "null", digits = NA)
       }
@@ -638,6 +642,13 @@ pedon_server <- function(id, rv) {
       shiny::updateSelectInput(session, "str", selected = .sk_str_value(site$soil_temperature_regime))
       site_extra$soil_temperature_regime <- NULL
       data_source(if (length(site_extra)) site_extra else NULL)
+      # the systems the session was saved with go back to the Classify tab;
+      # a file without them (saved before) leaves the ticks as they are
+      saved_systems <- .sk_session_systems(parsed)
+      if (!is.null(saved_systems)) {
+        prev <- tryCatch(rv$classify_restore$n, error = function(e) NULL) %||% 0L
+        rv$classify_restore <- list(systems = saved_systems, n = prev + 1L)
+      }
       notice <- .sk_unrecognised_notice(hzdf, site)
       hz(hzdf)
       hz_reload(hz_reload() + 1L)
@@ -712,7 +723,19 @@ pedon_server <- function(id, rv) {
             return(invisible())
           }
           loaded_site <- p$site
-          data_source(NULL)
+          # v0.9.317: a national example keeps the site details its key
+          # reads (the horizon notation, the drainage ...), as a reopened
+          # session does, and ticks its system on the Classify tab
+          nat <- pro_fixture_system(input$fixture)
+          if (is.na(nat)) data_source(NULL) else {
+            extra <- .sk_session_site_extra(p$site)
+            extra$soil_moisture_regime <- NULL
+            extra$soil_temperature_regime <- NULL
+            data_source(if (length(extra)) extra else NULL)
+            cur <- shiny::isolate(rv$classify_systems) %||% .SK_DEFAULT_SYSTEMS
+            prev <- tryCatch(shiny::isolate(rv$classify_restore$n), error = function(e) NULL) %||% 0L
+            rv$classify_restore <- list(systems = union(cur, nat), n = prev + 1L)
+          }
           as.data.frame(p$horizons)
         },
         wosis = {
@@ -861,7 +884,9 @@ pedon_server <- function(id, rv) {
 
     output$data_source_note <- shiny::renderUI({
       ds <- data_source()
-      if (is.null(ds)) return(NULL)
+      # only WoSIS data has a provider to name; the site details a session or
+      # a national example carries are not a data source
+      if (is.null(ds) || is.null(ds$wosis_profile_code %||% ds$wosis_profile_id)) return(NULL)
       lic <- ds$licence %||% ""
       url <- regmatches(lic, regexpr("https?://[^ ,;]+", lic))
       lic_label <- ds$licence_short %||% lic

@@ -718,7 +718,11 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
                                 cracking = .isis_code(profile$cracking), gilgai = gil,
                                 cracks_surface = .isis_code(profile$cracksSurface),
                                 dry_at_surface = isTRUE(.isis_num(profile$dryfrom) == 0))
-  site <- list(id = code,
+  # v0.9.317: ISIS harmonises the horizon designations to the FAO guidelines,
+  # so the national keys that read their own notation (the Canadian z for a
+  # frozen layer, for instance, which is FAO z for salts) must not read them
+  # as theirs
+  site <- list(id = code, designation_system = "fao2006",
                lat = suppressWarnings(as.numeric(profile$geog$latitude %||% NA)),
                lon = suppressWarnings(as.numeric(profile$geog$longitude %||% NA)),
                country = as.character(profile$countryCode %||% NA))

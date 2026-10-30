@@ -60,14 +60,61 @@ pro_fixture_catalog <- function() {
   # the two descriptive labels, in the session's language
   names(cat$wrb)[cat$wrb == "make_andosol_canonical"] <- i18n("fixture.andosol")
   names(cat$wrb)[cat$wrb == "make_cryosol_canonical"] <- i18n("fixture.cryosol")
-  stats::setNames(cat, c(i18n("fixture.group_wrb"), i18n("fixture.group_sibcs")))
+  out <- stats::setNames(cat, c(i18n("fixture.group_wrb"), i18n("fixture.group_sibcs")))
+  # v0.9.317: one example per order (or type) of each national system, under
+  # the system's name; each keys to its own class
+  for (id in intersect(.sk_national_systems()$id, names(.PRO_NATIONAL_EXAMPLES))) {
+    ex <- .PRO_NATIONAL_EXAMPLES[[id]]
+    out[[.sk_system_label(id)]] <- stats::setNames(
+      paste0("make_", id, "_example:", unname(ex)), names(ex))
+  }
+  out
 }
 
-# Resolve a make_*_canonical() name to a PedonRecord. Works whether the
+# The national examples: label (the class the example keys to) -> the order
+# or type argument of make_<system>_example().
+.PRO_NATIONAL_EXAMPLES <- list(
+  cssc3 = c("Cryosolic" = "cryosolic", "Organic" = "organic", "Vertisolic" = "vertisolic",
+            "Podzolic" = "podzolic", "Gleysolic" = "gleysolic", "Solonetzic" = "solonetzic",
+            "Chernozemic" = "chernozemic", "Luvisolic" = "luvisolic",
+            "Brunisolic" = "brunisolic", "Regosolic" = "regosolic"),
+  asc3 = c("Anthroposol" = "anthroposols", "Organosol" = "organosols", "Podosol" = "podosols",
+           "Vertosol" = "vertosols", "Hydrosol" = "hydrosols", "Kurosol" = "kurosols",
+           "Sodosol" = "sodosols", "Chromosol" = "chromosols", "Calcarosol" = "calcarosols",
+           "Ferrosol" = "ferrosols", "Dermosol" = "dermosols", "Kandosol" = "kandosols",
+           "Arenosol" = "arenosols", "Rudosol" = "rudosols", "Tenosol" = "tenosols"),
+  nzsc4 = c("Organic Soils" = "organic", "Gley Soils" = "gley", "Ultic Soils" = "ultic",
+            "Podzol Soils" = "podzol", "Allophanic Soils" = "allophanic",
+            "Pumice Soils" = "pumice", "Melanic Soils" = "melanic",
+            "Semiarid Soils" = "semiarid", "Oxidic Soils" = "oxidic",
+            "Granular Soils" = "granular", "Pallic Soils" = "pallic",
+            "Brown Soils" = "brown", "Anthropic Soils" = "anthropic",
+            "Recent Soils" = "recent", "Raw Soils" = "raw"),
+  hscs2024 = stats::setNames(
+    c("peat", "anthropogenic", "rocky_skeletal", "rock_influenced", "solonetz", "solonchak",
+      "swelling_clay", "meadow", "carbonate", "steppe", "clay_illuvial", "sandy",
+      "brown_earth", "deposit", "weakly_developed"),
+    c("L\u00e1ptalaj", "Antropog\u00e9n talaj", "K\u00f6ves-szikl\u00e1s v\u00e1ztalaj",
+      "K\u0151zethat\u00e1s\u00fa talaj", "Szolonyec talaj", "Szoloncs\u00e1k talaj",
+      "Duzzad\u00f3 agyagtalaj", "R\u00e9ti talaj", "Karbon\u00e1t talaj",
+      "Mez\u0151s\u00e9gi talaj", "Agyagbemos\u00f3d\u00e1sos talaj", "Homoktalaj",
+      "Barnaf\u00f6ld", "Hordal\u00e9ktalaj", "F\u00f6ldeskop\u00e1r"))
+)
+
+# Resolve a make_*_canonical() name, or a national example written
+# "make_<system>_example:<order>", to a PedonRecord. Works whether the
 # fixture is exported or internal.
 pro_load_fixture <- function(fn_name) {
-  fn <- get(fn_name, envir = asNamespace("soilKey"))
-  fn()
+  parts <- strsplit(fn_name, ":", fixed = TRUE)[[1L]]
+  fn <- get(parts[1L], envir = asNamespace("soilKey"))
+  if (length(parts) > 1L) fn(parts[2L]) else fn()
+}
+
+# The national system of a national example ("make_cssc3_example:brunisolic"
+# -> "cssc3"); NA for any other fixture.
+pro_fixture_system <- function(fn_name) {
+  m <- regmatches(fn_name, regexec("^make_([a-z0-9]+)_example:", fn_name))[[1L]]
+  if (length(m)) m[2L] else NA_character_
 }
 
 # Numeric horizon columns surfaced in the editor / profile plot.

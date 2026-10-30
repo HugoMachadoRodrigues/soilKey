@@ -28,6 +28,10 @@ the upper \code{max_top_cm}. Two alternative paths qualify per WRB
   \item \strong{Designation pattern}: a layer at top_cm <=
         \code{max_top_cm} with designation containing suffix
         \code{"f"} (frozen) or matching \code{"^Cf"} / \code{"perma"}.
+        A site that declares the Canadian notation
+        (\code{site$designation_system = "cssc"}) writes a frozen layer
+        \code{z}; the New Zealand and Australian notations have no
+        frozen suffix, so there only \code{"perma"} counts.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).
 }

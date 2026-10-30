@@ -69,6 +69,14 @@
 #'             is already a (list of) \code{ClassificationResult}.
 #' @param lang Report language; \code{"en"} (default) or \code{"pt"}
 #'             (Brazilian Portuguese).
+#' @param systems When \code{x} is a \code{PedonRecord}, the systems to run:
+#'             any registered ids or aliases (see \code{\link{soilkey_systems}}).
+#'             The default runs WRB 2022, SiBCS and USDA, as reports always
+#'             have; add a national system (e.g. \code{"cssc3"}) to include
+#'             its result, with the class at each level, the classes left
+#'             undecided before the assigned one and, for Hungary, the subtype
+#'             and variety properties. Ignored when \code{x} is already a
+#'             (list of) \code{ClassificationResult}.
 #' @param ...  Passed to method-specific renderers.
 #' @return     The output path, invisibly.
 #' @examples
@@ -85,6 +93,7 @@ report <- function(x,
                    include_family = FALSE,
                    specifiers     = FALSE,
                    lang   = c("en", "pt"),
+                   systems = c("wrb2022", "sibcs", "usda"),
                    ...) {
   format <- match.arg(format)
   lang   <- match.arg(lang)
@@ -104,11 +113,13 @@ report <- function(x,
          "html" = report_html(x, file = file, pedon = pedon,
                                 title = title,
                                 include_family = include_family,
-                                specifiers = specifiers, lang = lang, ...),
+                                specifiers = specifiers, lang = lang,
+                                systems = systems, ...),
          "pdf"  = report_pdf( x, file = file, pedon = pedon,
                                 title = title,
                                 include_family = include_family,
-                                specifiers = specifiers, lang = lang, ...))
+                                specifiers = specifiers, lang = lang,
+                                systems = systems, ...))
 }
 
 
@@ -143,17 +154,29 @@ report <- function(x,
 
 #' @noRd
 .normalise_results <- function(x, pedon = NULL,
-                                 include_family = FALSE, specifiers = FALSE) {
+                                 include_family = FALSE, specifiers = FALSE,
+                                 systems = NULL) {
   if (inherits(x, "PedonRecord")) {
     if (is.null(pedon)) pedon <- x
+    # the systems asked for, in registry order; WRB, SiBCS and USDA are run
+    # exactly as they always were, any other system as classify_all() runs it
+    ids <- .report_system_ids(systems)
     out <- list()
-    out$wrb   <- tryCatch(classify_wrb2022(pedon, on_missing = "silent",
-                                             specifiers = specifiers),
-                            error = function(e) NULL)
-    out$sibcs <- tryCatch(classify_sibcs(pedon, include_familia = TRUE),
-                            error = function(e) NULL)
-    out$usda  <- tryCatch(classify_usda(pedon, include_family = include_family),
-                            error = function(e) NULL)
+    if ("wrb2022" %in% ids)
+      out$wrb   <- tryCatch(classify_wrb2022(pedon, on_missing = "silent",
+                                               specifiers = specifiers),
+                              error = function(e) NULL)
+    if ("sibcs5" %in% ids)
+      out$sibcs <- tryCatch(classify_sibcs(pedon, include_familia = TRUE),
+                              error = function(e) NULL)
+    if ("usda" %in% ids)
+      out$usda  <- tryCatch(classify_usda(pedon, include_family = include_family),
+                              error = function(e) NULL)
+    for (id in setdiff(ids, c("wrb2022", "sibcs5", "usda")))
+      out[[.system_get(id)$result_slot]] <- tryCatch(
+        .report_classify_other(id, pedon, include_family = include_family,
+                               specifiers = specifiers),
+        error = function(e) NULL)
     res <- Filter(Negate(is.null), out)
   } else if (inherits(x, "ClassificationResult")) {
     res <- list(x)
@@ -359,6 +382,9 @@ report <- function(x,
     if (length(qual_html) > 0)
       sprintf('<div class="qualifiers">%s</div>\n', paste(qual_html, collapse = "")),
     prior_html,
+    # the national systems' levels, provisional classes and Hungarian
+    # properties; "" for WRB, SiBCS and USDA (R/report-national.R)
+    .html_national_sections(res),
     sprintf('<h3>%s</h3>\n', .report_msg("report.key_trace")),
     sprintf(.report_msg("report.trace_table"),
               trace_rows),
@@ -562,14 +588,14 @@ report <- function(x,
 #' + summary table) followed by one page per profile.
 #' @noRd
 .report_html_multi <- function(pedons, file, title, include_family,
-                               specifiers) {
+                               specifiers, systems = NULL) {
   if (is.null(title))
     title <- sprintf(.report_msg("report.n_profiles_title"), length(pedons))
   logo    <- .report_logo_data_uri()
   map_uri <- .report_map_data_uri(pedons)
   per <- lapply(pedons, function(p)
     .normalise_results(p, pedon = p, include_family = include_family,
-                       specifiers = specifiers)$results)
+                       specifiers = specifiers, systems = systems)$results)
 
   pages <- vapply(seq_along(pedons), function(i) {
     p <- pedons[[i]]; res <- per[[i]]
@@ -623,6 +649,8 @@ report <- function(x,
 #'               \code{x} is a \code{PedonRecord}; see \code{\link{report}}.
 #' @param lang   Report language; \code{"en"} (default) or \code{"pt"}
 #'               (Brazilian Portuguese).
+#' @param systems The systems to run when \code{x} is a \code{PedonRecord};
+#'               see \code{\link{report}}.
 #' @param ...    Currently unused.
 #' @return       The output path, invisibly.
 #' @export
@@ -633,6 +661,7 @@ report_html <- function(x,
                         include_family = FALSE,
                         specifiers = FALSE,
                         lang = c("en", "pt"),
+                        systems = c("wrb2022", "sibcs", "usda"),
                         ...) {
   lang <- match.arg(lang)
   old_lang <- getOption("soilKey.report_lang")
@@ -642,10 +671,10 @@ report_html <- function(x,
   if (.report_multi_pedons(x))
     return(.report_html_multi(x, file = file, title = title,
                               include_family = include_family,
-                              specifiers = specifiers))
+                              specifiers = specifiers, systems = systems))
   norm <- .normalise_results(x, pedon = pedon,
                              include_family = include_family,
-                             specifiers = specifiers)
+                             specifiers = specifiers, systems = systems)
   results <- norm$results
   pedon   <- norm$pedon
 

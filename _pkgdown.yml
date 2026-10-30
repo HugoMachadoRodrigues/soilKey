@@ -565,6 +565,18 @@ reference:
       - load_natsoil_pedons
       - benchmark_natsoil
 
+  - title: "National Soils Database of New Zealand (NSD, v0.9.317)"
+    desc: >
+      The survey exports of Manaaki Whenua's National Soils Database read
+      into pedon records with the surveyor's NZSC class and Soil Taxonomy
+      name, as a benchmark for classify_nzsc4(). The data are licensed
+      CC BY-ND 4.0 and are not shipped: download the survey exports from
+      the NSDR.
+    contents:
+      - read_nsd_pedons
+      - benchmark_nsd
+      - nsd_citation
+
   - title: "WoSIS stratified WRB benchmark (v0.9.73)"
     desc: >
       ISRIC WoSIS bundled cache, 130 profiles balanced across 26

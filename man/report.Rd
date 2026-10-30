@@ -13,6 +13,7 @@ report(
   include_family = FALSE,
   specifiers = FALSE,
   lang = c("en", "pt"),
+  systems = c("wrb2022", "sibcs", "usda"),
   ...
 )
 }
@@ -46,6 +47,15 @@ is already a (list of) \code{ClassificationResult}.}
 
 \item{lang}{Report language; \code{"en"} (default) or \code{"pt"}
 (Brazilian Portuguese).}
+
+\item{systems}{When \code{x} is a \code{PedonRecord}, the systems to run:
+any registered ids or aliases (see \code{\link{soilkey_systems}}).
+The default runs WRB 2022, SiBCS and USDA, as reports always
+have; add a national system (e.g. \code{"cssc3"}) to include
+its result, with the class at each level, the classes left
+undecided before the assigned one and, for Hungary, the subtype
+and variety properties. Ignored when \code{x} is already a
+(list of) \code{ClassificationResult}.}
 
 \item{...}{Passed to method-specific renderers.}
 }

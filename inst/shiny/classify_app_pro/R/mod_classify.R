@@ -3,7 +3,9 @@
 #
 # Runs WRB 2022 / SiBCS 5 / USDA ST 13 on the shared pedon and shows the three
 # results side-by-side, the deterministic key trace per system, the close-call
-# ambiguities, and the measurements that would refine the result.
+# ambiguities, and the measurements that would refine the result. The national
+# systems (Canada, Australia, New Zealand, Hungary; R/utils_systems.R) are
+# offered beside them, unticked by default, and shown below the three when run.
 # =============================================================================
 
 # How much of a horizon attribute the pedon actually carries, as "5 / 7".
@@ -62,6 +64,9 @@ classify_ui <- function(id) {
                        "USDA ST 13" = "usda"),
           selected = c("wrb2022", "sibcs", "usda")
         ),
+        # The national systems, unticked: a visitor who ticks none sees the
+        # tab as it was. Experimental while the registry says so.
+        .classify_national_ui(ns),
         bslib::tooltip(
           bslib::input_task_button(ns("run"), i18n("classify.run"),
                                    icon = shiny::icon("play"),
@@ -125,6 +130,23 @@ classify_ui <- function(id) {
   )
 }
 
+# The national systems' checkboxes, under their own heading.
+.classify_national_ui <- function(ns) {
+  ch <- .sk_national_choices()
+  if (!length(ch$values)) return(NULL)
+  nat <- .sk_national_systems()
+  shiny::div(
+    class = "sk-national",
+    shiny::div(class = "sk-national-head",
+               shiny::span(i18n("classify.national_systems")),
+               if (any(nat$status == "experimental")) sk_experimental_badge(),
+               sk_tip(i18n("classify.help_national"))),
+    shiny::checkboxGroupInput(ns("national"), label = NULL,
+                              choiceNames = ch$names, choiceValues = ch$values,
+                              selected = character(0)),
+    shiny::helpText(class = "small", i18n("classify.national_note")))
+}
+
 # Where the Classify tab may fill missing attributes from. Spectra only when a
 # real OSSL reference library is configured (.spectra_gapfill_available()):
 # without one, fill_from_spectra() writes placeholder values, and a profile
@@ -146,15 +168,38 @@ classify_ui <- function(id) {
 # without it, and the reason rides along as attr(, "gapfill_error").
 .classify_job <- function(pedon, systems, on_missing, include_familia,
                           include_family, specifiers, gapfill_methods) {
-  run_all <- function(gapfill_arg) soilKey::classify_all(
-    pedon,
-    systems         = systems,
-    on_missing      = on_missing,
-    include_familia = include_familia,
-    include_family  = include_family,
-    specifiers      = specifiers,
-    gapfill         = gapfill_arg)
-  if (length(gapfill_methods) == 0L) return(run_all(FALSE))
+  # The result slot of each system asked for (the national systems' slot is
+  # their id), and why a key stopped: classify_all() turns an error into a
+  # warning and a missing slot, and the card says "no result" with the reason
+  # (attr(, "failures")), not "not run".
+  slot_of <- c(wrb2022 = "wrb", sibcs = "sibcs", usda = "usda")
+  keys <- ifelse(systems %in% names(slot_of), slot_of[systems], systems)
+  failed <- list()
+  run_all <- function(gapfill_arg) withCallingHandlers(
+    soilKey::classify_all(
+      pedon,
+      systems         = systems,
+      on_missing      = on_missing,
+      include_familia = include_familia,
+      include_family  = include_family,
+      specifiers      = specifiers,
+      gapfill         = gapfill_arg),
+    warning = function(w) {
+      m <- conditionMessage(w)
+      if (grepl("^classify_[a-z0-9]+ failed: ", m)) {
+        k <- sub("^classify_([a-z0-9]+) failed: .*$", "\\1", m)
+        if (k == "wrb2022") k <- "wrb"
+        failed[[k]] <<- sub("^classify_[a-z0-9]+ failed: ", "", m)
+      }
+    })
+  with_failures <- function(res) {
+    if (is.null(res)) return(res)
+    gone <- keys[vapply(keys, function(k) is.null(res[[k]]), logical(1))]
+    f <- failed[intersect(names(failed), gone)]
+    if (length(f)) attr(res, "failures") <- f
+    res
+  }
+  if (length(gapfill_methods) == 0L) return(with_failures(run_all(FALSE)))
   why <- character(0)
   res <- tryCatch(
     withCallingHandlers(
@@ -167,14 +212,15 @@ classify_ui <- function(id) {
         }
       }),
     error = function(e) { why <<- c(why, conditionMessage(e)); NULL })
-  keys <- c(wrb2022 = "wrb", sibcs = "sibcs", usda = "usda")[systems]
   lost <- if (is.null(res)) keys else keys[vapply(keys, function(k) is.null(res[[k]]),
                                                     logical(1))]
   if (!length(lost)) return(res)
+  failed <- list()        # the run without gap-fill says why a key stopped
   plain <- run_all(FALSE)
   if (is.null(res)) res <- plain
   for (k in lost) res[k] <- list(plain[[k]])
   res$summary <- plain$summary
+  res <- with_failures(res)
   attr(res, "gapfill_error") <- why[1] %||% "gap-fill failed"
   res
 }
@@ -217,9 +263,31 @@ classify_server <- function(id, rv, settings) {
     has_run <- shiny::reactiveVal(FALSE)
     stale   <- shiny::reactiveVal(FALSE)
     shiny::observeEvent(
-      list(input$systems, input$gapfill_methods, input$include_family,
-           input$specifiers, rv$pedon),
+      list(input$systems, input$national, input$gapfill_methods,
+           input$include_family, input$specifiers, rv$pedon),
       { if (has_run()) stale(TRUE) }, ignoreInit = TRUE)
+
+    # ---- the systems chosen, shared with the session file -------------------
+    # Every system ticked (the three and the national ones) goes to
+    # rv$classify_systems, which the Pedon tab saves with the session; a
+    # reopened session asks for its systems through rv$classify_restore (a
+    # request, not a mirror, so the two inputs never chase each other).
+    selected_systems <- shiny::reactive(
+      as.character(c(input$systems, input$national)))
+    shiny::observe({
+      sel <- selected_systems()
+      if (!identical(sel, shiny::isolate(rv$classify_systems)))
+        rv$classify_systems <- sel
+    })
+    shiny::observeEvent(rv$classify_restore, {
+      ids <- .sk_app_system_ids(rv$classify_restore$systems)
+      shiny::updateCheckboxGroupInput(
+        session, "systems", selected = intersect(.SK_DEFAULT_SYSTEMS, ids))
+      shiny::updateCheckboxGroupInput(
+        session, "national", selected = intersect(.sk_national_systems()$id, ids))
+    })
+    # the systems of the last run, for the result cards and the Report tab
+    run_systems <- shiny::reactiveVal(character(0))
 
     # The keys run in a background worker (utils_async.R): with SoilGrids
     # gap-fill a run reads the network for over a minute, and in this process it
@@ -231,14 +299,17 @@ classify_server <- function(id, rv, settings) {
     shiny::observeEvent(input$run, {
       shiny::req(rv$pedon)
       cfg <- settings()
-      if (length(input$systems) == 0L) {
+      sys <- selected_systems()
+      if (length(sys) == 0L) {
         shiny::showNotification(i18n("classify.pick_one_system"), type = "warning")
         return()
       }
       has_run(TRUE); stale(FALSE)
+      run_systems(sys)
+      rv$classified_systems <- sys
       classify_task$invoke(list(
         pedon           = rv$pedon,
-        systems         = input$systems,
+        systems         = sys,
         on_missing      = cfg$on_missing,
         include_familia = cfg$include_familia,
         include_family  = isTRUE(cfg$include_family),
@@ -285,6 +356,10 @@ classify_server <- function(id, rv, settings) {
                  shiny::icon("circle-check"), " ", i18n("classify.hint_current"))
     })
 
+    # the national systems of the last run, in registry order
+    national_run <- shiny::reactive(
+      intersect(.sk_national_systems()$id, run_systems()))
+
     output$body <- shiny::renderUI({
       ns <- session$ns
       if (is.null(rv$pedon)) return(pro_no_pedon_msg())
@@ -297,6 +372,9 @@ classify_server <- function(id, rv, settings) {
         return(shiny::div(class = "alert alert-danger m-3",
                           shiny::icon("triangle-exclamation"), " ",
                           conditionMessage(results())))
+      nat_ids <- national_run()
+      trace_choices <- c("WRB" = "wrb", "SiBCS" = "sibcs", "USDA" = "usda",
+                         stats::setNames(nat_ids, .sk_slot_labels(nat_ids)))
       shiny::tagList(
         if (isTRUE(stale())) shiny::div(
           class = "alert alert-warning py-2 px-3 small mb-2 d-flex align-items-center gap-2",
@@ -308,14 +386,15 @@ classify_server <- function(id, rv, settings) {
           pro_result_card(results()$sibcs, "SiBCS 5"),
           pro_result_card(results()$usda,  "USDA ST 13")
         ),
+        # the national systems run, below the three
+        if (length(nat_ids)) .classify_national_results(results(), nat_ids, ns),
         bslib::navset_card_tab(
           title = i18n("classify.decision_detail"),
           bslib::nav_panel(
             i18n("classify.key_trace"),
             shiny::helpText(i18n("classify.trace_intro")),
             shiny::selectInput(ns("trace_sys"), i18n("classify.system"),
-                               choices = c("WRB" = "wrb", "SiBCS" = "sibcs",
-                                           "USDA" = "usda"),
+                               choices = trace_choices,
                                selected = "wrb"),
             # v0.9.261: drawn at its own height, not the height left over in
             # the card. With a 790 px window and a taller footer nothing was
@@ -386,6 +465,27 @@ classify_server <- function(id, rv, settings) {
               "var(--sk-st-na)")))
     })
 
+    # the Hungarian subtype and variety properties (named and undecided)
+    output$hscs_props <- sk_renderDT({
+      res <- results()
+      shiny::req(res, !inherits(res, "error"))
+      d <- .sk_hscs_props_display(res$hscs2024)
+      shiny::req(d)
+      sk_datatable(d, rownames = FALSE,
+                   colnames = c(i18n("classify.col_phase"),
+                                i18n("classify.hscs_col_property"),
+                                i18n("classify.hscs_col_gloss"),
+                                i18n("classify.hscs_col_status"),
+                                i18n("classify.hscs_col_decide")),
+                   options = list(pageLength = 12, dom = "tip")) |>
+        DT::formatStyle(
+          "status",
+          whiteSpace = "nowrap",
+          backgroundColor = DT::styleEqual(
+            c(i18n("classify.prop_named"), i18n("classify.prop_undecided")),
+            c("var(--sk-st-sel)", "var(--sk-st-na)")))
+    })
+
     output$ambiguities <- shiny::renderUI({
       res <- results()
       shiny::req(res, !inherits(res, "error"))
@@ -411,15 +511,14 @@ classify_server <- function(id, rv, settings) {
       shiny::req(res, !inherits(res, "error"))
       # Per-system so the user sees which measurement each key still wants.
       blocks <- list()
-      for (nm in c("wrb", "sibcs", "usda")) {
+      for (nm in c("wrb", "sibcs", "usda", national_run())) {
         r <- res[[nm]]
         if (is.null(r) || inherits(r, "error")) next
         m <- sort(unique(r$missing_data %||% character(0)))
         if (!length(m)) next
         blocks[[length(blocks) + 1L]] <- shiny::div(
           class = "mb-3",
-          shiny::tags$strong(c(wrb = "WRB 2022", sibcs = "SiBCS 5",
-                               usda = "USDA ST 13")[[nm]]),
+          shiny::tags$strong(.sk_slot_labels(nm)),
           shiny::tags$ul(class = "sk-missing-list", lapply(m, function(a) {
             cov <- .classify_attr_coverage(a, rv$pedon)
             shiny::tags$li(
@@ -452,4 +551,31 @@ classify_server <- function(id, rv, settings) {
   cd <- a$rsg_code %||% a$code
   if (!is.null(nm) && !is.null(cd)) sprintf("%s (%s)", nm, cd)
   else as.character(nm %||% cd %||% "?")
+}
+
+# The national systems' result cards, and the Hungarian properties table when
+# HSCS was run. A key that stopped shows its reason (attr(, "failures")).
+.classify_national_results <- function(res, ids, ns) {
+  nat <- .sk_national_systems()
+  fails <- attr(res, "failures") %||% list()
+  cards <- lapply(ids, function(id) {
+    i <- match(id, nat$id)
+    r <- res[[id]] %||% (if (!is.null(fails[[id]])) simpleError(fails[[id]]))
+    pro_national_card(r, .sk_system_label(id, nat$name[i]),
+                      edition = .sk_system_edition(id, nat$edition[i]),
+                      experimental = identical(nat$status[i], "experimental"))
+  })
+  hscs <- "hscs2024" %in% ids && !is.null(.sk_hscs_props_display(res$hscs2024))
+  shiny::div(
+    class = "sk-national-results",
+    shiny::div(class = "sk-national-head mt-1 mb-2",
+               shiny::span(i18n("classify.national_results")),
+               if (any(nat$status[match(ids, nat$id)] == "experimental"))
+                 sk_experimental_badge()),
+    do.call(bslib::layout_column_wrap, c(list(width = 1 / 3), cards)),
+    if (hscs) bslib::card(
+      bslib::card_header(i18n("classify.hscs_props_title")),
+      bslib::card_body(
+        shiny::helpText(i18n("classify.hscs_props_intro")),
+        DT::DTOutput(ns("hscs_props"), fill = FALSE))))
 }

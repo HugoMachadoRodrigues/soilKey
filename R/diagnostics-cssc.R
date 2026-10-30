@@ -16,7 +16,9 @@
 #   * with neither, the result is NA.
 # Designations are read in the Canadian notation only when the pedon's
 # notation is Canadian (.cssc_notation(): declared, a Canadian site, or no
-# sign of the FAO/USDA notation); otherwise only properties are read.
+# sign of the FAO/USDA notation), or through their translation into it when
+# the pedon declares the FAO notation (.cssc_from_fao(), v0.9.317); otherwise
+# only properties are read.
 # Depths in the keys are measured from the mineral surface, which the book
 # uses without defining; it is read here as the top of the first mineral
 # horizon below any L, F, H or O horizons.
@@ -32,14 +34,26 @@
 .cssc_ref <- function(where) sprintf("%s %s", .CSSC_REF, where)
 
 # Parsed designations of a pedon, or nothing (as if none were recorded) when
-# they are not in the Canadian notation.
+# they are not in the Canadian notation; designations declared in the FAO
+# notation are read through their translation (.cssc_from_fao()).
 .cssc_parsed <- function(pedon) {
   h <- pedon$horizons
   d <- h$designation %||% rep(NA_character_, nrow(h))
   notation <- .cssc_notation(d, pedon$site)
-  parsed <- if (notation$ok) .parse_designation_cssc(d)
+  parsed <- if (isTRUE(notation$translated)) notation$comps
+            else if (notation$ok) .parse_designation_cssc(d)
             else rep(list(list()), nrow(h))
   list(parsed = parsed, notation = notation)
+}
+
+# Rows whose designations are read by their master letters only (another
+# notation): every row when the notation is not read, the rows a declared FAO
+# notation cannot translate, none otherwise. `notation` is the list
+# .cssc_notation() returns, or its $ok.
+.cssc_raw_rows <- function(notation, n) {
+  if (is.list(notation) && !is.null(notation$raw)) return(rep_len(as.logical(notation$raw), n))
+  ok <- if (is.list(notation)) notation$ok else notation
+  rep(!isTRUE(ok), n)
 }
 
 # Horizons of a pedon with their parsed designations and depths below the
@@ -55,7 +69,7 @@
   mineral <- .cssc_is_mineral(parsed)
   organic_by_oc <- !is.na(h$oc_pct) & h$oc_pct > 17
   other <- substr(.cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)),
-                                      pp$notation$ok), 1L, 1L)
+                                      pp$notation), 1L, 1L)
   mineral <- ifelse(!is.na(mineral), mineral,
              ifelse(other %in% c("W", "R"), FALSE,
              ifelse(other %in% c("O", "H") & is.na(h$oc_pct), FALSE, !organic_by_oc)))
@@ -471,7 +485,8 @@ solonetzic_b_cssc <- function(pedon) {
 #' common, many or continuous slickensides: more than two) whose top lies
 #' within \code{max_top_cm} of the mineral surface. Slickensides recorded as
 #' absent or few on every horizon within that depth rule the order out even
-#' without designations.
+#' without designations. The FAO notation has no letter for the vertic
+#' horizon, so a B or BC translated from it leaves the v open.
 #' @noRd
 vertisolic_cssc <- function(pedon, max_top_cm = 100) {
   x <- .cssc_horizons(pedon); h <- x$h
@@ -482,7 +497,10 @@ vertisolic_cssc <- function(pedon, max_top_cm = 100) {
   ss_prop <- ifelse(is.na(h$slickensides), NA, sl %in% c("common", "many", "continuous"))
   ss_here <- ifelse(ss_desig, TRUE, ss_prop)
   has_ss <- .any3(ss_here[in_depth])
-  has_v <- if (any(vert %in% TRUE)) TRUE else if (!any(x$desig_known)) NA else FALSE
+  # the FAO notation has no letter for the vertic horizon: a translated B or
+  # BC leaves it open (NA)
+  has_v <- if (any(vert %in% TRUE)) TRUE
+           else if (!any(x$desig_known) || anyNA(vert[x$desig_known])) NA else FALSE
   passed <- if (identical(has_ss, FALSE) || identical(has_v, FALSE)) FALSE
             else if (isTRUE(has_ss) && isTRUE(has_v)) TRUE else NA
   .cssc_result("vertisolic_cssc", passed,
@@ -700,13 +718,16 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
 .cssc_gley_rows <- function(pedon, max_top_cm = 50) {
   x <- .cssc_horizons(pedon); h <- x$h
   d <- trimws(as.character(h$designation %||% rep(NA_character_, nrow(h))))
-  other_full <- .cssc_other_masters(d, x$notation$ok)
+  other_full <- .cssc_other_masters(d, x$notation)
   other <- substr(other_full, 1L, 1L)
   other[nchar(other_full) > 1L] <- NA_character_   # transitions (AB, BC) are neither
   # buried horizons (b), in the Canadian notation or another one
   buried <- (.cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE) |
             (!is.na(other_full) & grepl("^[0-9]*[A-Z]+[a-z0-9]*b", .cssc_other_case(d)))
-  ahp <- (.cssc_is(x$parsed, "A", "h", "any") | .cssc_is(x$parsed, "A", "p", "any")) %in% TRUE
+  # an FAO A translated with its h open is an Ah or an Ap all the same (it is
+  # not an E)
+  ahp <- ((.cssc_is(x$parsed, "A", "h", "any") | .cssc_is(x$parsed, "A", "p", "any")) %in% TRUE) |
+         .cssc_a_h_open(x$parsed)
   ae  <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) | (other %in% "E")
   # an Ae (or an E) more than 20 cm thick reaching below 60 cm is tested
   deep_ae <- ae & !is.na(x$thick) & x$thick > 20 & !is.na(x$bottom_ms) & x$bottom_ms > 60
@@ -769,14 +790,15 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
   d
 }
 
-.cssc_other_masters <- function(designation, notation_ok) {
+.cssc_other_masters <- function(designation, notation) {
   n <- length(designation)
-  if (isTRUE(notation_ok)) return(rep(NA_character_, n))
+  raw <- .cssc_raw_rows(notation, n)
+  if (!any(raw)) return(rep(NA_character_, n))
   d <- .cssc_other_case(trimws(as.character(designation)))
   d <- sub("^[0-9]+", "", sub("/.*$", "", d))
   m <- regmatches(d, regexec("^([A-Z]+)", d))
   vapply(seq_len(n), function(i) {
-    if (is.na(d[i]) || length(m[[i]]) < 2L) NA_character_ else m[[i]][2L]
+    if (!raw[i] || is.na(d[i]) || length(m[[i]]) < 2L) NA_character_ else m[[i]][2L]
   }, character(1))
 }
 
@@ -793,7 +815,7 @@ gleying_cssc <- function(pedon, max_top_cm = 50) {
       all(strsplit(cmp$master, "")[[1]] %in% set), logical(1)))
   }, logical(1))
   other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)),
-                               pp$notation$ok)
+                               pp$notation)
   rock <- (master_in("R") %in% TRUE) | (other %in% "R")
   water <- (master_in("W") %in% TRUE) | (other %in% "W")
   o_desig <- master_in(c("O", "L", "F", "H"))
@@ -1174,7 +1196,10 @@ chernozemic_a_cssc <- function(pedon) {
 #' designations; in another notation an E (not a buried one) is read as an Ae
 #' of unknown strength under the A horizons above it: G.3 passes it, a dry
 #' value of 5 or more fails it (as an Ae or as an Aej), and anything else
-#' leaves it undecided.
+#' leaves it undecided. A declared FAO notation is translated: its E is an Ae
+#' (Table 6) whose strength the FAO notation cannot write, read in the same
+#' way, and an FAO A written without h or p, which may be an Ah, leaves G.3
+#' undecided where it would decide it.
 #' @noRd
 chernozemic_ae_cssc <- function(pedon) {
   x <- .cssc_horizons(pedon); h <- x$h
@@ -1199,22 +1224,26 @@ chernozemic_ae_cssc <- function(pedon) {
   } else {
     has_h <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE
     ae_any <- (.cssc_is(x$parsed, "A", "e", "any") %in% TRUE) & !has_h
-    ae_weak <- ae_any & (.cssc_is(x$parsed, "A", "e", "yes") %in% TRUE)
+    # NA: an E translated from the FAO notation, which may be an Aej
+    ae_weak <- ifelse(ae_any, .cssc_is(x$parsed, "A", "e", "yes"), FALSE)
     ahe <- .cssc_is(x$parsed, "A", c("h", "e"), "any") %in% TRUE
     ahp_plain <- (has_h | .cssc_is(x$parsed, "A", "p", "any") %in% TRUE) & !ahe
+    # an FAO A translated with its h open may be the Ah of G.3
+    a_open <- .cssc_a_h_open(x$parsed)
     ae_rows <- which(ae_any)
+    thinner <- function(i, rows) length(rows) > 0L && !is.na(thick[i]) &&
+                                 thick[i] < sum(thick[rows], na.rm = TRUE)
     each <- vapply(ae_rows, function(i) {
       above <- above_of(i)
-      a_above <- above[ahp_plain[above]]
-      g3 <- length(a_above) > 0L && !is.na(thick[i]) &&
-            thick[i] < sum(thick[a_above], na.rm = TRUE)
+      g3 <- thinner(i, above[ahp_plain[above]])
+      g3_maybe <- thinner(i, above[(ahp_plain | a_open)[above]])
       g4 <- any(ahe[above]) && !is.na(thick[i]) && thick[i] <= 5
       if (g3 || g4) return(TRUE)
-      if (ae_weak[i]) {
-        dv <- h$munsell_value_dry[i]
-        return(if (is.na(dv)) NA else dv < 5)
-      }
-      FALSE
+      dv <- h$munsell_value_dry[i]
+      res <- if (isTRUE(ae_weak[i])) { if (is.na(dv)) NA else dv < 5 }
+             else if (is.na(ae_weak[i])) { if (!is.na(dv) && dv >= 5) FALSE else NA }
+             else FALSE
+      if (identical(res, FALSE) && g3_maybe) NA else res
     }, logical(1))
   }
   passed <- if (length(ae_rows) == 0L) TRUE
@@ -1234,7 +1263,10 @@ chernozemic_ae_cssc <- function(pedon) {
 #'
 #' Bm, Btj or Bfj horizons at least 5 cm thick in all, or a Bf thinner than
 #' 10 cm; read from the designations (the book defines these horizons by
-#' alteration and weak illuviation, without measurable limits).
+#' alteration and weak illuviation, without measurable limits). A B
+#' translated from the FAO notation whose m is left open (a plain B, a Bk),
+#' or a Bt or Bs that may be the Btj or Bfj the FAO notation cannot write,
+#' leaves the test undecided when it could decide it.
 #' @noRd
 brunisolic_b_cssc <- function(pedon) {
   x <- .cssc_horizons(pedon)
@@ -1243,11 +1275,14 @@ brunisolic_b_cssc <- function(pedon) {
   bfj <- .cssc_is(x$parsed, "B", "f", "yes")
   bf  <- .cssc_is(x$parsed, "B", "f", "no")
   weak_b <- (bm %in% TRUE) | (btj %in% TRUE) | (bfj %in% TRUE)
+  # a designated B that may be a Bm: an FAO B translated with its m open
+  maybe_b <- x$desig_known & x$mineral & !weak_b & (is.na(bm) | is.na(btj) | is.na(bfj))
   # depth covered (overlapping rows once); the deepest horizon with no bottom
   # may go on
   cw <- .cssc_cover(x, which(weak_b)); cb <- .cssc_cover(x, which(bf %in% TRUE))
+  cm <- .cssc_cover(x, which(weak_b | maybe_b))
   t_weak <- cw$cm; t_bf <- cb$cm
-  open_weak <- cw$open; open_bf <- cb$open
+  open_weak <- cw$open || (any(maybe_b) && (cm$open || cm$cm >= 5)); open_bf <- cb$open
   passed <- if (t_weak >= 5 || (t_bf > 0 && t_bf < 10 && !open_bf)) TRUE
             else if (open_weak || (open_bf && t_bf < 10) || !any(x$desig_known)) NA else FALSE
   .cssc_result("brunisolic_b_cssc", passed, which(weak_b | (bf %in% TRUE)),

@@ -575,3 +575,33 @@ body.sk-assistant-open .sk-assistant-fab { display: none; }
 .sk-disconnected[hidden] { display: none !important; }
 .sk-disconnected strong { font-weight: 600; }
 .sk-disconnected span { max-width: 52rem; }
+
+/* ---- the national systems on the Classify tab (R/utils_systems.R) --------
+   A heading with an "experimental" pill over their checkboxes, the edition
+   under each label, and the same heading over their result cards. */
+.sk-national { margin-top: 0.35rem; padding-top: 0.55rem; border-top: 1px dashed var(--sk-line); }
+.sk-national-head {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem;
+  font-weight: 650; font-size: 0.92rem; color: var(--sk-ink); margin-bottom: 0.3rem;
+}
+.sk-exp-badge {
+  background: var(--sk-st-na); color: #6b4d00; border: 1px solid #e3c46a;
+  font-weight: 600; font-size: 0.7rem; letter-spacing: 0.02em;
+}
+/* the label and its edition beside the box, not wrapped under it */
+.sk-national .checkbox label { display: flex; align-items: flex-start; gap: 0.4rem; }
+.sk-national .checkbox input[type="checkbox"] { flex: none; margin-top: 0.3rem; }
+.sk-sys-choice { display: flex; flex-direction: column; line-height: 1.25; }
+.sk-sys-edition { font-size: 0.75rem; color: var(--sk-muted); }
+.sk-national-results { margin-bottom: 1rem; }
+.sk-sys-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+/* the provisional note: one line, opening to the undecided classes */
+.sk-provisional {
+  background: var(--sk-st-na); border: 1px solid #e3c46a; border-radius: 0.45rem;
+  padding: 0.35rem 0.6rem; color: var(--sk-ink);
+}
+.sk-provisional summary { cursor: pointer; }
+.sk-provisional ul { margin: 0.25rem 0 0; padding-left: 1.1rem; }
+.sk-provisional .sk-needs { color: var(--sk-muted); }
+[data-bs-theme="dark"] .sk-exp-badge { color: #f0d58a; border-color: #6b5420; }
+[data-bs-theme="dark"] .sk-provisional { border-color: #6b5420; }

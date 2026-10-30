@@ -16,12 +16,14 @@
 # in every notation, only the suffixes differ. NA where there is none, and
 # all NA when the designations are read as Canadian.
 .cssc_raw_master <- function(x) {
-  .cssc_other_masters(x$h$designation %||% rep(NA_character_, nrow(x$h)), x$notation$ok)
+  .cssc_other_masters(x$h$designation %||% rep(NA_character_, nrow(x$h)), x$notation)
 }
 
 # The surface A: the contiguous Ah, Ahe and Ap horizons from the mineral
 # surface (Ch 2, pp. 12-13). A horizon is read
-#   - from its designation in the Canadian notation;
+#   - from its designation in the Canadian notation (or translated into it
+#     from a declared FAO notation, where an A written without h or p is
+#     tested as an A in another notation is);
 #   - in another notation, from its master letter: an A (an Ap when it carries
 #     a p) is tested as below; B, C, E, O, H, L, M, R, W, a transition (AB,
 #     BC) or a buried A (b) ends the A; a letter those notations do not use
@@ -52,6 +54,9 @@
   buried <- .cssc_has_suffix(x$parsed, "b", weak = "any") %in% TRUE
   ah_d <- .cssc_is(x$parsed, "A", "h", "any") %in% TRUE & !buried
   ap_d <- .cssc_is(x$parsed, "A", "p", "any") %in% TRUE & !buried
+  # an FAO A translated with its h open is tested by the Ah definition, as an
+  # A in another notation is
+  ah_open <- .cssc_a_h_open(x$parsed) & !buried & !ap_d
   raw <- .cssc_raw_master(x)
   d_other <- .cssc_other_case(trimws(as.character(h$designation)))
   raw_p <- grepl("^[0-9]*A[a-z0-9]*p", d_other)
@@ -60,12 +65,13 @@
   deepest <- mins[length(mins)]
   status <- function(k) {
     i <- mins[k]
-    if (x$desig_known[i]) return(if (ap_d[i]) "ap" else if (ah_d[i]) "ah" else "no")
-    foreign <- !is.na(raw[i]) &&
+    if (x$desig_known[i] && !ah_open[i])
+      return(if (ap_d[i]) "ap" else if (ah_d[i]) "ah" else "no")
+    foreign <- ah_open[i] || (!is.na(raw[i]) &&
       (raw[i] == "A" || nchar(raw[i]) > 1L ||
-         raw[i] %in% c("B", "C", "E", "O", "H", "L", "M", "R", "W"))
-    if (foreign && (raw[i] != "A" || raw_b[i])) return("no")
-    if (foreign && raw_p[i]) return("ap")
+         raw[i] %in% c("B", "C", "E", "O", "H", "L", "M", "R", "W")))
+    if (!ah_open[i] && foreign && (raw[i] != "A" || raw_b[i])) return("no")
+    if (!ah_open[i] && foreign && raw_p[i]) return("ap")
     below <- if (k < length(mins)) mins[k + 1L] else NA_integer_
     darker <- if (is.na(below) || is.na(v[i]) || is.na(v[below])) NA
               else v[i] <= v[below] - 1
@@ -219,7 +225,7 @@
   }
   base <- walk(FALSE); base_max <- walk(TRUE)
   origin <- tolower(paste(as.character(h$layer_origin %||% NA), as.character(h$rock_origin %||% NA)))
-  other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)), pp$notation$ok)
+  other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)), pp$notation)
   limnic <- (.cssc_is(parsed, "O", "co", "any") %in% TRUE) | (other %in% "L") |
             (grepl("(^|[^a-z])(limnic|coprogenous|diatomaceous|diatomite|marl|gyttja)([^a-z]|$)", origin) &
                !lk$rock)

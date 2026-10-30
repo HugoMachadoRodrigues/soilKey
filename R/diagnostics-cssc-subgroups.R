@@ -183,7 +183,7 @@ organic_below_40_cssc <- function(pedon, material = c("fibric", "mesic", "humic"
 gleysolic_cryosol_cssc <- function(pedon) {
   gr <- .cssc_gley_rows(pedon, 50)
   x <- gr$x; h <- x$h
-  other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)), x$notation$ok)
+  other <- .cssc_other_masters(h$designation %||% rep(NA_character_, nrow(h)), x$notation)
   desig_a <- (.cssc_is(x$parsed, "A", weak = "any") %in% TRUE) | (other %in% c("A", "E"))
   undes <- !x$desig_known & is.na(other)
   win <- which(x$mineral & !is.na(x$top_ms) & x$top_ms >= -0.01 & x$top_ms <= 50)
@@ -590,9 +590,10 @@ organic_layer_cssc <- function(pedon, material = c("fibric", "mesic", "humic"),
   other <- setdiff(c("faint", "distinct", "prominent"), contrast)
   prop <- ifelse(ct %in% contrast, TRUE, ifelse(ct %in% other | absent, FALSE, NA))
   g_strong <- .cssc_has_suffix(x$parsed, "g", weak = "no") %in% TRUE
-  g_weak <- .cssc_has_suffix(x$parsed, "g", weak = "yes") %in% TRUE
-  des <- (g_strong & "prominent" %in% contrast) |
-         (g_weak & any(c("faint", "distinct") %in% contrast))
+  g_weak <- .cssc_has_suffix(x$parsed, "g", weak = "yes")
+  # a g translated from the FAO notation may be a gj (g_weak NA)
+  des <- .cssc_or3v(g_strong & "prominent" %in% contrast,
+                    if (any(c("faint", "distinct") %in% contrast)) g_weak else FALSE)
   row <- ifelse(!is.na(prop), prop, ifelse(x$desig_known, des, NA))
   passed <- if (any(win)) .any3(row[win]) else FALSE
   route <- if (isTRUE(passed)) {
@@ -627,10 +628,10 @@ vertisolic_mottles_cssc <- function(pedon, contrast = c("prominent", "faint_dist
 
 # Suffix letters of designations written in another notation (the lowercase
 # letters after the master), NA where there is none or the designations are
-# read as Canadian.
+# read as Canadian (or translated into the Canadian notation).
 .cssc_other_suffix <- function(x) {
   d <- .cssc_other_case(trimws(as.character(x$h$designation %||% rep(NA_character_, nrow(x$h)))))
-  if (isTRUE(x$notation$ok)) return(rep(NA_character_, length(d)))
+  if (!any(.cssc_raw_rows(x$notation, length(d)))) return(rep(NA_character_, length(d)))
   out <- gsub("[^a-z]", "", sub("^[0-9]*[A-Z]+", "", sub("/.*$", "", d)))
   out[is.na(d) | is.na(.cssc_raw_master(x))] <- NA_character_
   out
@@ -1268,7 +1269,8 @@ alkaline_a_cssc <- function(pedon, min_ph = 8.5) {
 #' attribute separates the weak expression of the n from its absence. In
 #' another notation n has no weak form, so a B with an n (and a t, for the
 #' Gray Luvisols) is undecided and any other horizon is not one; the horizons
-#' of the surface A are not one either.
+#' of the surface A are not one either. The same holds for a B translated
+#' from a declared FAO notation (.cssc_from_fao()): its n may be an nj.
 #' @noRd
 weak_solonetzic_b_cssc <- function(pedon, t = FALSE) {
   x <- .cssc_horizons(pedon)
@@ -1276,14 +1278,17 @@ weak_solonetzic_b_cssc <- function(pedon, t = FALSE) {
     if (length(comps) == 0L) return(NA)
     any(vapply(comps, function(cmp) {
       sx <- .cssc_suffix_set(cmp)
-      cmp$master == "B" && "n" %in% sx && "n" %in% cmp$weak &&
-        (!t || ("t" %in% sx && !"t" %in% cmp$weak))
+      if (cmp$master != "B" || !"n" %in% sx) return(FALSE)
+      t_ok <- !t || ("t" %in% sx && !"t" %in% cmp$weak)
+      if ("n" %in% cmp$weak) return(t_ok)
+      # an n translated from the FAO notation, whose weak form it cannot write
+      if ("n" %in% cmp$weak_open && t_ok) NA else FALSE
     }, logical(1)))
   }, logical(1))
   raw <- .cssc_raw_master(x); suf <- .cssc_other_suffix(x)
   other <- ifelse(is.na(raw), NA,
                   ifelse(raw == "B" & grepl("n", suf) & (!t | grepl("t", suf)), NA, FALSE))
-  row <- ifelse(x$desig_known, n_weak %in% TRUE, other)
+  row <- ifelse(x$desig_known, n_weak, other)
   row[!x$mineral | .cssc_buried_rows(x)] <- FALSE
   row[.cssc_surface_a(x)$rows] <- FALSE
   passed <- if (any(row %in% TRUE)) TRUE else if (anyNA(row[x$mineral])) NA else FALSE
