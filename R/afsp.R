@@ -83,6 +83,90 @@ wrb06_code_to_rsg <- function(code) {
 }
 
 
+# v0.9.312: AfSP records the structure as class codes of the FAO-ISRIC (1990)
+# and FAO (2006) guidelines, defined in its dictionary
+# AfSP012Qry_DictioClassValues (StrType, StrGrade, StrSize). Until v0.9.311 the
+# codes reached the diagnostic tests unread, and the tests look for words: a
+# massive "M" or a single-grain "N" read as structure not recorded.
+.AFSP_STR_TYPE <- c(P = "platy", R = "prismatic", C = "columnar",
+                    A = "angular blocky", S = "subangular blocky",
+                    G = "granular", B = "crumb", M = "massive",
+                    N = "single grain", W = "wedge-shaped",
+                    K = "rock structure", BL = "blocky",
+                    SN = "nutty subangular blocky")
+# a range of grades is read by its lower end, as the ISIS reader does
+# (W is "(very weak to) weak")
+.AFSP_STR_GRADE <- c(N = "structureless", W = "weak", WM = "weak",
+                     M = "moderate", MS = "moderate", S = "strong")
+# a range of sizes keeps both ends; soilKey reads a size range by its upper end
+.AFSP_STR_SIZE <- c(V = "very fine", F = "fine", M = "medium", C = "coarse",
+                    X = "very coarse", E = "extremely coarse",
+                    FF = "very fine and fine", VM = "very fine to medium",
+                    FM = "fine and medium", FC = "fine to coarse",
+                    MC = "medium and coarse", MV = "medium to very coarse",
+                    CV = "coarse and very coarse")
+.AFSP_STR_FIELDS <- list(
+  structure_type  = list(field = "StrType",  codes = .AFSP_STR_TYPE),
+  structure_grade = list(field = "StrGrade", codes = .AFSP_STR_GRADE),
+  structure_size  = list(field = "StrSize",  codes = .AFSP_STR_SIZE))
+
+
+#' Read the AfSP structure codes into soilKey's words
+#'
+#' A value that is a code (one or two capital letters) becomes the words of
+#' the AfSP dictionary; a code the dictionary does not define (StrGrade V, A,
+#' R and StrSize S occur in AfSP 1.2) becomes NA. Words are left as they are,
+#' so the step can run twice. Each code read goes to the provenance with the
+#' code itself.
+#' @return A list with \code{horizons} and \code{provenance} (a data.frame,
+#'   possibly with no rows).
+#' @noRd
+.afsp_decode_structure <- function(hz) {
+  prov <- list()
+  for (col in names(.AFSP_STR_FIELDS)) {
+    if (is.null(hz[[col]])) next
+    f <- .AFSP_STR_FIELDS[[col]]
+    v <- as.character(hz[[col]])
+    code <- trimws(v)
+    is_code <- !is.na(code) & grepl("^[A-Z]{1,2}$", code)
+    if (!any(is_code)) next
+    known <- is_code & code %in% names(f$codes)
+    words <- v
+    words[known] <- unname(f$codes[code[known]])
+    words[is_code & !known] <- NA_character_
+    hz[[col]] <- words
+    idx <- which(is_code)
+    prov[[length(prov) + 1L]] <- data.frame(
+      horizon_idx = idx, attribute = col, source = "measured",
+      confidence = ifelse(known[idx], 1, NA_real_),
+      notes = ifelse(known[idx],
+                     sprintf("AfSP %s code %s, read by the AfSP dictionary", f$field, code[idx]),
+                     sprintf("AfSP %s code %s is not in the AfSP dictionary: read as not recorded", f$field, code[idx])),
+      stringsAsFactors = FALSE)
+  }
+  prov <- if (length(prov)) do.call(rbind, prov) else
+    data.frame(horizon_idx = integer(0), attribute = character(0),
+               source = character(0), confidence = numeric(0),
+               notes = character(0), stringsAsFactors = FALSE)
+  list(horizons = hz, provenance = prov)
+}
+
+
+#' An AfSP profile with its structure codes read (see .afsp_decode_structure);
+#' the same object when there is no code to read. Profiles built before
+#' v0.9.312, such as the bundled sample, hold the codes.
+#' @noRd
+.afsp_decode_pedon <- function(p) {
+  if (!inherits(p, "PedonRecord") || is.null(p$horizons)) return(p)
+  d <- .afsp_decode_structure(p$horizons)
+  if (!nrow(d$provenance)) return(p)
+  prov <- data.table::as.data.table(d$provenance)
+  if (!is.null(p$provenance) && nrow(p$provenance))
+    prov <- data.table::rbindlist(list(p$provenance, prov), fill = TRUE)
+  PedonRecord$new(site = p$site, horizons = d$horizons, provenance = prov)
+}
+
+
 #' Build a soilKey PedonRecord from AfSP Profiles + Layers rows
 #' @noRd
 .afsp_to_pedon <- function(profile_row, layer_rows) {
@@ -149,8 +233,11 @@ wrb06_code_to_rsg <- function(code) {
   if ("top_cm" %in% colnames(hz))
     hz <- hz[order(hz$top_cm), ]
   hz <- ensure_horizon_schema(hz)
+  dec <- .afsp_decode_structure(hz)
+  hz <- dec$horizons
 
   PedonRecord$new(
+    provenance = if (nrow(dec$provenance)) data.table::as.data.table(dec$provenance),
     site = list(
       id                       = as.character(profile_row$ProfileID),
       country                  = as.character(profile_row$Country),
@@ -263,7 +350,8 @@ load_afsp_pedons <- function(afsp_dir,
          "(load_afsp_pedons()) or the list load_afsp_sample() returns.",
          call. = FALSE)
   }
-  x
+  # v0.9.312: profiles built before v0.9.312 hold the structure codes
+  lapply(x, .afsp_decode_pedon)
 }
 
 
@@ -294,7 +382,11 @@ load_afsp_sample <- function() {
   # `inst/extdata/` (back-compat for developer checkouts), then in
   # the user cache at `tools::R_user_dir("soilKey", "data")`,
   # then offers an on-demand download from GitHub Release.
-  .lazy_fetch_readRDS("afsp_sample")
+  x <- .lazy_fetch_readRDS("afsp_sample")
+  # v0.9.312: the snapshot was built in v0.9.77 and holds the structure codes
+  if (is.list(x) && !is.null(x[["pedons"]]))
+    x[["pedons"]] <- lapply(x[["pedons"]], .afsp_decode_pedon)
+  x
 }
 
 
