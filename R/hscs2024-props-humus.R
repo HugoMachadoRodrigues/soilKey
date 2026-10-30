@@ -15,7 +15,8 @@
 # horizon reaches the next class's; so a Mezosegi talaj, whose key asks 1 %,
 # is always humuszgazdag or igen erosen humuszos, the two its table lists.
 # A surface horizon with no thickness asked (humuszszegeny, lapfold, a raw
-# surface) is read on the layer at the mineral soil surface.
+# surface) is the A horizon with its subhorizons, its organic carbon their
+# thickness-weighted mean (Hugo's decision, 2026-10-30).
 # =============================================================================
 
 # Organic carbon of each row in [lo, hi), three-valued.
@@ -62,11 +63,9 @@
 # (8 % or more is lapfold, 8.1).
 .hscs_p_igen_erosen_humuszos <- function(x) .hscs_humus_class(x, 2, 8)
 
-# The row at the mineral soil surface: the surface horizon that 8.1 names
-# by its organic carbon alone (humuszszegeny talajszint, lapfold, a raw
-# surface). None when the soil has no mineral row, or when organic layers
-# 40 cm or more thick lie over the mineral soil (a Laptalaj, whose surface
-# horizon is the peat: the 40 cm of its key).
+# The row at the mineral soil surface. None when the soil has no mineral
+# row, or when organic layers 40 cm or more thick lie over the mineral soil
+# (a Laptalaj, whose surface horizon is the peat: the 40 cm of its key).
 .hscs_surface_row <- function(x) {
   if (is.na(x$ms) || is.na(x$surface)) return(integer(0))
   if (x$ms - x$surface >= 40 - 0.25) return(integer(0))
@@ -74,14 +73,53 @@
   if (length(r)) r[1L] else integer(0)
 }
 
-# A surface horizon with organic carbon in [lo, hi).
+# The surface horizon that 8.1 names by its organic carbon alone
+# (humuszszegeny talajszint, lapfold, a raw surface). Hugo's decision,
+# 2026-10-30: the A horizon with its subhorizons, the contiguous A rows (not
+# buried) from the mineral soil surface; a top row with no designation, or
+# another one, is the surface horizon alone. An undesignated mineral row in
+# the run of A rows may be an A (the frame's reading of the run of A rows
+# from the surface): each extent such rows allow is returned, the A rows
+# up to each of them and the whole run.
+.hscs_surface_extents <- function(x) {
+  r0 <- .hscs_surface_row(x)
+  if (!length(r0)) return(list())
+  isA <- function(i) x$role[i] %in% "A" && !x$des$buried[i] && x$mineral[i]
+  if (!isA(r0)) return(list(r0))
+  bel <- .hscs_below(x)
+  run <- r0; i <- r0
+  while (!is.na(bel[i]) && (isA(bel[i]) || (is.na(x$role[bel[i]]) && x$mineral[bel[i]]))) {
+    i <- bel[i]; run <- c(run, i)
+  }
+  und <- which(is.na(x$role[run]))
+  c(lapply(und, function(u) run[seq_len(u - 1L)]), list(run))
+}
+
+# A surface horizon with organic carbon in [lo, hi): its thickness-weighted
+# mean (a row with no carbon measured lies between 0 and 20 %, a row of
+# unknown thickness widens the bounds), read on every extent it may have;
+# an extent that changes the verdict leaves it undecided.
+.hscs_surface_oc_verdict <- function(x, lo, hi) {
+  ext <- .hscs_surface_extents(x)
+  if (!length(ext)) return(list(v = FALSE, rows = integer(0)))
+  oc <- x$h$oc_pct
+  ocl <- ifelse(is.na(oc), 0, oc); och <- ifelse(is.na(oc), 20, oc)
+  e <- 1e-9
+  vs <- vapply(ext, function(r) {
+    m <- .hscs_wmean_rows(x, seq_len(x$n) %in% r, ocl, och)
+    if (is.null(m)) return(NA)
+    if (m$lo >= lo - e && m$hi < hi - e) TRUE else if (m$hi < lo - e || m$lo >= hi - e) FALSE else NA
+  }, NA)
+  list(v = if (all(vs %in% TRUE)) TRUE else if (all(vs %in% FALSE)) FALSE else NA,
+       rows = ext[[length(ext)]])
+}
+
 .hscs_surface_oc <- function(x, lo, hi) {
   if (is.na(x$surface)) return(.hscs_prop(NA, missing = "top_cm"))
-  r <- .hscs_surface_row(x)
-  if (!length(r)) return(.hscs_prop(FALSE, note = "no mineral surface horizon"))
-  v <- .hscs_oc_between(x, lo, hi)[r]
-  .hscs_prop(v, layers = if (isTRUE(v)) r else integer(0),
-             missing = if (is.na(v)) "oc_pct" else character(0))
+  if (!length(.hscs_surface_row(x))) return(.hscs_prop(FALSE, note = "no mineral surface horizon"))
+  s <- .hscs_surface_oc_verdict(x, lo, hi)
+  .hscs_prop(s$v, layers = if (isTRUE(s$v)) s$rows else integer(0),
+             missing = if (is.na(s$v)) c("oc_pct", "designation") else character(0))
 }
 
 # Humuszszegeny (p. 30; 8.1 p. 24): a surface horizon with organic carbon
@@ -115,41 +153,15 @@
 
 # ---- nyers: no diagnostic horizon ---------------------------------------------
 
-# Rows of a podzolic horizon (8.2, p. 25): a subsurface horizon with pH (H2O)
-# below 6, organic carbon 0.5 % or more and a red moist colour (a hue redder
-# than 7.5YR, or 7.5YR with a chroma above 4); the 10 cm are the run's. Read
-# for the nyers check (the colour of a crushed sample is not recorded apart).
-.hscs_podzolic_rows_nyers <- function(x) {
-  h <- x$h
-  hue <- toupper(gsub("[[:space:]]", "", as.character(h$munsell_hue_moist)))
-  hn <- .nzsc_hue_num(hue); ch <- h$munsell_chroma_moist
-  red <- ifelse(grepl("^N", hue), FALSE, ifelse(is.na(hn), NA,
-         ifelse(hn < 17.5 - 1e-9, TRUE, ifelse(abs(hn - 17.5) < 1e-9, ifelse(is.na(ch), NA, ch > 4), FALSE))))
-  ph <- h$ph_h2o; oc <- h$oc_pct
-  Reduce(.and3v, list(x$sub3, x$mineral3, ifelse(is.na(ph), NA, ph < 6), ifelse(is.na(oc), NA, oc >= 0.5), red))
-}
-
-# Rows of an iron accumulation horizon (8.2, p. 26): 5 % or more iron or
-# iron-manganese concretions (ferric and manganiferous nodules; their size
-# and cementation are not recorded apart), or 15 % or more large red mottles
-# (their size is not recorded: undecided at most). Mottles and nodules are
-# recorded when met. Read for the nyers check.
-.hscs_iron_rows_nyers <- function(x) {
-  h <- x$h; n <- x$n
-  fe <- h$ferric_nodules_pct %||% rep(NA_real_, n)
-  mn <- h$manganiferous_nodules_pct %||% rep(NA_real_, n)
-  nod <- ifelse(is.na(fe), 0, fe) + ifelse(is.na(mn), 0, mn)
-  rx <- h$redoximorphic_features_pct
-  big <- ifelse(is.na(rx) | rx < 15, FALSE, NA)
-  Reduce(.and3v, list(x$sub3, x$mineral3, .any3v(nod >= 5, big)))
-}
-
 # The diagnostic horizons of 8.1 and 8.2 a soil may have, three-valued,
 # within 100 cm of the soil surface (the nyers definition gives no depth;
 # the key and 8.5 read every subsurface horizon within 100 cm, and the soil
-# below a description that ends above it, not on rock, may hold one). The surface horizons read by
-# their organic carbon (lapfold, humic, umbric, humuszszegeny) are left to
-# the organic carbon of the surface that nyers reads; the anthropogenic
+# below a description that ends above it, not on rock, may hold one). The
+# podzolic and iron accumulation horizons are the podzolos and vaskivalasos
+# properties (R/hscs2024-props-morph.R), which read them within 100 cm. The
+# surface horizons read by their organic carbon (lapfold, humic, umbric,
+# humuszszegeny) are left to the organic carbon of the surface that nyers
+# reads; the anthropogenic
 # horizon by a raised surface of human-made or carried material 20 cm or
 # more thick (8.1 item 2) or Al-P P2O5 of 500 mg/kg or more in the upper
 # 20 cm where it is recorded (as the Antropogen key, the P route is not read
@@ -171,10 +183,10 @@
          clay_accumulation = .hscs_clay_accum(x, 100),
          swelling = .hscs_run(x, .hscs_swelling_rows(x), top_max = z, min_th = 25),
          cambic = .hscs_run(x, .hscs_cambic_rows(x), top_max = z, min_th = 15),
-         podzolic = .hscs_run(x, .hscs_podzolic_rows_nyers(x), top_max = z, min_th = 10),
+         podzolic = .hscs_p_podzolos(x)$passed,
          solonetz = .hscs_run(x, .hscs_solonetz_rows(x), top_max = z),
          solonchak = .hscs_run(x, .hscs_solonchak_rows(x), top_max = z, min_th = 15),
-         iron = .hscs_run(x, .hscs_iron_rows_nyers(x), top_max = z, min_th = 15))
+         iron = .hscs_p_vaskivalasos(x)$passed)
   v
 }
 
@@ -183,22 +195,22 @@
   clay_accumulation = c("clay_pct", "clay_films_amount"),
   swelling = c("clay_pct", "slickensides", "structure_type"),
   cambic = c("designation", "structure_grade", "munsell_value_moist", "munsell_chroma_moist", "caco3_pct"),
-  podzolic = c("ph_h2o", "oc_pct", "munsell_hue_moist"),
+  podzolic = c("ph_h2o", "oc_pct", "munsell_hue_moist", "munsell_chroma_moist"),
   solonetz = c("na_cmol", "mg_cmol", "cec_cmol", "structure_type"),
-  solonchak = "soluble_salts_pct", iron = "redoximorphic_features_pct")
+  solonchak = "soluble_salts_pct", iron = c("ferric_nodules_pct", "redoximorphic_features_pct", "mottle_colors"))
 
 # Nyers (p. 31; 8.1 p. 24, "nyers / jellegtelen felszinek"): no surface or
 # subsurface diagnostic horizon (within 100 cm), and organic carbon below
-# 0.2 % (read at the surface, as 8.1 defines the raw surface).
+# 0.2 % (read on the surface horizon, as 8.1 defines the raw surface).
 .hscs_p_nyers <- function(x) {
   if (is.na(x$surface)) return(.hscs_prop(NA, missing = "top_cm"))
-  r <- .hscs_surface_row(x)
-  if (!length(r)) return(.hscs_prop(FALSE, note = "no mineral surface horizon"))
-  low <- .hscs_oc_between(x, -Inf, 0.2)[r]
+  if (!length(.hscs_surface_row(x))) return(.hscs_prop(FALSE, note = "no mineral surface horizon"))
+  s <- .hscs_surface_oc_verdict(x, -Inf, 0.2)
+  low <- s$v; r <- s$rows
   if (isFALSE(low)) return(.hscs_prop(FALSE))
   dh <- .hscs_diagnostic_horizons(x)
   v <- .and3(low, !.any3(dh))
-  miss <- if (is.na(v)) unique(c(if (is.na(low)) "oc_pct", unlist(.HSCS_HORIZON_MISSING[names(dh)[is.na(dh)]])))
+  miss <- if (is.na(v)) unique(c(if (is.na(low)) c("oc_pct", "designation"), unlist(.HSCS_HORIZON_MISSING[names(dh)[is.na(dh)]])))
           else character(0)
   .hscs_prop(v, layers = if (isTRUE(v)) r else integer(0), missing = miss,
              note = if (any(dh %in% TRUE)) paste("has:", paste(names(dh)[dh %in% TRUE], collapse = ", ")) else NULL)
@@ -368,12 +380,19 @@
   list(lo = lo, hi = hi)
 }
 
+# The peat horizons of a Laptalaj (Hugo's decision, 2026-10-30): every
+# organic horizon of it is peat, as the type forms under saturation for the
+# greater part of the year. The peat properties that read them (rostos
+# tozeges, vegyes tozeges, kotus, mohatozeges, sekely, mely) are listed only
+# for the Laptalajok; tozeges, in the other types, reads .hscs_peat_rows().
+.hscs_lap_peat_rows <- function(x) .hscs_organic_rows(x)
+
 # The share of recognisable plant parts in the volume of the peat
 # horizon(s) ("a tozeg talajszint(ek) terfogatanak"), over the peat rows the
 # description holds.
 .hscs_peat_fibre <- function(x) {
   b <- .hscs_fibre_bounds(x)
-  .hscs_wmean_rows(x, .hscs_peat_rows(x), b$lo, b$hi)
+  .hscs_wmean_rows(x, .hscs_lap_peat_rows(x), b$lo, b$hi)
 }
 
 .HSCS_FIBRE_MISSING <- c("fiber_content_rubbed_pct", "von_post_index")
@@ -403,12 +422,12 @@
 
 # Mohatozeges (p. 31): the organic soil material is undecomposed or
 # partially decomposed Sphagnum: more than half of the fibres of the organic
-# horizons, thickness-weighted, are Sphagnum (sphagnum_fibres_pct, recorded
-# when met).
+# horizons (the peat of a Laptalaj), thickness-weighted, are Sphagnum
+# (sphagnum_fibres_pct, recorded when met).
 .hscs_p_mohatozeges <- function(x) {
   s <- suppressWarnings(as.numeric(x$h$sphagnum_fibres_pct %||% rep(NA_real_, x$n)))
   s <- ifelse(is.na(s), 0, s)
-  m <- .hscs_wmean_rows(x, .hscs_organic_rows(x), s, s)
+  m <- .hscs_wmean_rows(x, .hscs_lap_peat_rows(x), s, s)
   if (is.null(m)) return(.hscs_prop(FALSE, note = "no organic horizon"))
   v <- if (m$present && m$lo > 50) TRUE else if (m$hi <= 50) FALSE else NA
   .hscs_prop(v, missing = if (is.na(v)) c("oc_pct", "bottom_cm", "sphagnum_fibres_pct") else character(0))
@@ -434,7 +453,7 @@
 # under a peat row, or peat at the end of a description that does not end
 # on rock, may go deeper). NULL when no row may be peat.
 .hscs_peat_base <- function(x) {
-  h <- x$h; pt <- .hscs_peat_rows(x)
+  h <- x$h; pt <- .hscs_lap_peat_rows(x)
   sure <- which(pt %in% TRUE); maybe <- which(!(pt %in% FALSE))
   if (!length(maybe)) return(NULL)
   b <- h$bottom_cm
@@ -461,7 +480,7 @@
   lim <- 50 + 0.25
   v <- if (deep) { if (b$present && b$lo > lim) TRUE else if (b$hi <= lim) FALSE else NA }
        else { if (b$present && b$hi <= lim) TRUE else if (b$lo > lim) FALSE else NA }
-  .hscs_prop(v, missing = if (is.na(v)) c("bottom_cm", "designation", .HSCS_ORGANIC_MISSING[-2]) else character(0),
+  .hscs_prop(v, missing = if (is.na(v)) c("bottom_cm", "oc_pct", "designation") else character(0),
              note = sprintf("peat base %s-%s cm", format(b$lo), format(b$hi)))
 }
 

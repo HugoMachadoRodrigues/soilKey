@@ -58,7 +58,7 @@ test_that("the humus classes read the humic horizon layer by layer", {
   expect_true(.hk_p(m, "lapfoldes"))
 })
 
-test_that("humuszszegeny, lapfoldes and nyers read the layer at the mineral soil surface", {
+test_that("humuszszegeny, lapfoldes and nyers read the A horizon at the mineral soil surface", {
   skip_on_cran()
   w <- make_hscs2024_example("weakly_developed")      # A 0-15 at 0.5 % OC
   expect_true(.hk_p(w, "humuszszegeny"))
@@ -66,12 +66,37 @@ test_that("humuszszegeny, lapfoldes and nyers read the layer at the mineral soil
   expect_false(.hk_p(w, "lapfoldes"))
   expect_false(.hk_p(.hk_mod(w, oc_pct = c(0.8, 0.1)), "humuszszegeny"))
   expect_true(is.na(.hk_p(.hk_mod(w, oc_pct = c(NA, 0.1)), "humuszszegeny")))
+  # the A with its subhorizons, thickness-weighted (Hugo's decision, 2026-10-30):
+  # A1 0-10 at 0.7 % and A2 10-30 at 0.4 % make 0.5 %
+  a2 <- .hk_mod(make_hscs2024_example("clay_illuvial"), designation = c("A1", "A2", "Bt", "C"),
+                top_cm = c(0, 10, 30, 80), bottom_cm = c(10, 30, 80, 120), oc_pct = c(0.7, 0.4, 0.4, 0.2))
+  expect_true(.hk_p(a2, "humuszszegeny"))
+  # the E below the A is not part of it
+  expect_false(.hk_p(.hk_mod(make_hscs2024_example("clay_illuvial"), oc_pct = c(0.8, 0.3, 0.4, 0.2)), "humuszszegeny"))
+  # an undesignated row under the A may belong to it: 0.5 % alone, 0.75 % with it
+  u <- .hk_mod(make_hscs2024_example("clay_illuvial"), designation = c("A", NA, "Bt", "C"),
+               oc_pct = c(0.5, 0.9, 0.4, 0.2), top_cm = c(0, 15, 40, 80), bottom_cm = c(15, 40, 80, 120))
+  expect_true(is.na(.hk_p(u, "humuszszegeny")))
+  expect_true(.hk_p(.hk_mod(u, oc_pct = c(0.5, 0.4, 0.4, 0.2)), "humuszszegeny"))
+  # a top row with no designation is the surface horizon alone
+  expect_true(.hk_p(.hk_mod(u, designation = c(NA, NA, "Bt", "C")), "humuszszegeny"))
   # nyers: below 0.2 % and no diagnostic horizon
   n <- .hk_mod(w, oc_pct = c(0.1, 0.05))
   expect_true(.hk_p(n, "nyers"))
   expect_false(.hk_p(n, "humuszszegeny"))
   # a cambic horizon is a diagnostic horizon
   expect_false(.hk_p(.hk_mod(make_hscs2024_example("brown_earth"), oc_pct = c(0.1, 0.1, 0.05)), "nyers"))
+  # so are the podzolic and iron accumulation horizons (the podzolos and
+  # vaskivalasos properties)
+  pz <- .hk_ped(list(designation = c("A", "Bs", "C"), top_cm = c(0, 10, 40), bottom_cm = c(10, 40, 120),
+                     oc_pct = c(0.1, 0.8, 0.05), ph_h2o = c(5, 4.6, 5.2), clay_pct = c(3, 5, 3), sand_pct = c(92, 88, 94),
+                     silt_pct = c(5, 7, 3), munsell_hue_moist = c("10YR", "5YR", "10YR"),
+                     munsell_value_moist = c(5, 4, 6), munsell_chroma_moist = c(2, 6, 4)))
+  expect_true(.hk_p(pz, "podzolos"))
+  expect_false(.hk_p(pz, "nyers"))
+  fe <- .hk_mod(n, ferric_nodules_pct = c(0, 10))
+  expect_true(.hk_p(fe, "vaskivalasos"))
+  expect_false(.hk_p(fe, "nyers"))
   # salts not recorded leave a solonchak horizon possible
   expect_true(is.na(.hk_p(.hk_mod(n, soluble_salts_pct = c(NA, NA)), "nyers")))
   # a lapfold surface over peat in a Laptalaj
@@ -163,6 +188,12 @@ test_that("the peat subtypes of the Laptalajok", {
   expect_true(.hk_p(.hk_mod(p, designation = c("Ha1", "Ha2", "Cr")), "kotus"))
   expect_true(.hk_p(.hk_mod(p, designation = c("He1", "He2", "Cr")), "vegyes_tozeges"))
   expect_true(.hk_p(.hk_mod(p, fiber_content_unrubbed_pct = c(12, 10, NA)), "kotus"))
+  # in a Laptalaj every organic horizon is peat (Hugo's decision, 2026-10-30),
+  # an O of the FAO notation too
+  o <- .hk_mod(p, designation = c("O1", "O2", "Cr"), fiber_content_rubbed_pct = c(80, 70, NA))
+  expect_true(.hk_p(o, "rostos_tozeges"))
+  expect_true(.hk_p(o, "mely"))
+  expect_false(.hk_p(o, "tozeges"))                    # outside them, an O is no peat
   expect_true(is.na(.hk_p(.hk_mod(p, fiber_content_unrubbed_pct = c(60, 60, NA)), "vegyes_tozeges")))
   expect_false(.hk_p(.hk_mod(p, fiber_content_unrubbed_pct = c(60, 60, NA)), "rostos_tozeges"))
   # Sphagnum: recorded when met
