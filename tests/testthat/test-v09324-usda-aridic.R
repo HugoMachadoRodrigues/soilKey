@@ -224,3 +224,48 @@ test_that("G.2: a salic horizon, saturated a month, dry at some time, no sulfuri
   # pH below 4.0 within 150 cm: a sulfuric horizon cannot be ruled out
   expect_true(is.na(aridisol_usda(.g2_profile(ph = c(3.6, 3.8, 4.2)))$passed))
 })
+
+
+# ---- kandic_horizon_usda(): a layer with no recorded lower boundary -------
+# KST 13 p 26, kandic horizon item 3: "Has a thickness of either: a. 30 cm
+# or more". Up to v0.9.323 a run of layers that included an open bottom
+# layer (bottom_cm NA) summed to NA and the test stopped with "missing value
+# where TRUE/FALSE needed"; the key engine caught it and every order that
+# reads the kandic horizon came out undecided.
+
+.kandic_profile <- function(top, bottom) {
+  PedonRecord$new(site = list(id = "made-up"), horizons = data.frame(
+    top_cm = top, bottom_cm = bottom, designation = c("A", "Bt1", "Bt2"),
+    clay_pct = c(10, 30, 32), sand_pct = 40, silt_pct = c(50, 30, 28),
+    cec_cmol = c(4, 3, 3), oc_pct = c(1, 0.3, 0.3)))
+}
+
+test_that("kandic: an open bottom layer leaves a short run undecided, not an error", {
+  skip_on_cran()
+  # Bt1 20-40 cm (20 cm known) over an open Bt2 from 40 cm: the thickness
+  # may or may not reach 30 cm
+  p <- .kandic_profile(c(0, 20, 40), c(20, 40, NA))
+  r <- expect_no_error(kandic_horizon_usda(p))
+  expect_true(is.na(r$passed))
+  expect_true("bottom_cm" %in% r$missing)
+  expect_no_error(classify_usda(p, on_missing = "silent"))
+})
+
+test_that("kandic: the known layers can meet the 30 cm on their own", {
+  skip_on_cran()
+  # Bt1 20-80 cm (60 cm known) over an open Bt2: thick enough, and the
+  # apparent CEC is 10 cmol(+) per kg clay
+  r <- kandic_horizon_usda(.kandic_profile(c(0, 20, 80), c(20, 80, NA)))
+  expect_identical(r$passed, TRUE)
+  closed <- kandic_horizon_usda(.kandic_profile(c(0, 20, 80), c(20, 80, 150)))
+  expect_identical(closed$passed, TRUE)
+})
+
+test_that("kandic: a missing lower boundary inside the profile ends the run", {
+  skip_on_cran()
+  # Bt1 from 20 cm with no lower boundary, Bt2 from 50 cm: contiguity is
+  # unknown, so the run ends at Bt1 and its thickness is undecided
+  r <- expect_no_error(kandic_horizon_usda(.kandic_profile(c(0, 20, 50), c(20, NA, 100))))
+  expect_true(is.na(r$passed))
+  expect_true("bottom_cm" %in% r$missing)
+})
