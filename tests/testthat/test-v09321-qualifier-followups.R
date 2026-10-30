@@ -295,3 +295,32 @@ test_that("v0.9.321 Endodolomitic: depths from the mineral soil surface", {
   expect_false(qual_endodolomitic(org)$passed)
 })
 
+
+# ---- Hypercalcic (Ch 5, p. 129; Ch 2.1, p. 23) ------------------------------------
+
+test_that("v0.9.321 Hypercalcic: every layer of the calcic horizon >= 50%, from the mineral soil surface", {
+  skip_on_cran()
+  mk <- function(caco3, sec = c(0, 20, 20, 0), top = c(0, 30, 45, 60),
+                 bottom = c(30, 45, 60, 110), desg = c("A", "Bk1", "Bk2", "C"), oc = 1)
+    .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, caco3_pct = caco3,
+            secondary_carbonates_pct = sec, oc_pct = oc, clay_pct = 20, silt_pct = 40,
+            sand_pct = 40)
+  p <- mk(c(5, 55, 60, 10))
+  expect_true(isTRUE(calcic(p)$passed))
+  expect_true(isTRUE(qual_hypercalcic(p)$passed))
+  # one layer of the calcic horizon below 50% (was TRUE: any layer)
+  expect_false(qual_hypercalcic(mk(c(5, 55, 30, 10)))$passed)
+  # 20 cm of organic material on top: a calcic horizon starting at 105 cm
+  # starts 85 cm below the mineral soil surface (was FALSE, counted from 0 cm)
+  org <- mk(c(NA, 5, 55, 60), sec = c(NA, 0, 20, 20), top = c(0, 20, 105, 120),
+            bottom = c(20, 105, 120, 140), desg = c("Oa", "A", "Bk1", "Bk2"),
+            oc = c(30, 1, 0.5, 0.3))
+  expect_true(isTRUE(calcic(org)$passed))
+  expect_true(isTRUE(qual_hypercalcic(org)$passed))
+  # an undecided calcic horizon: undecided (was FALSE) ...
+  und <- mk(c(NA, NA, NA, NA), sec = NA)
+  expect_true(is.na(calcic(und)$passed))
+  expect_true(is.na(qual_hypercalcic(und)$passed))
+  # ... and FALSE when no layer within reach has, or may have, 50%
+  expect_false(qual_hypercalcic(mk(c(5, 30, 30, 30), sec = NA))$passed)
+})
