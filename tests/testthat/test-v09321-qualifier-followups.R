@@ -324,3 +324,46 @@ test_that("v0.9.321 Hypercalcic: every layer of the calcic horizon >= 50%, from 
   # ... and FALSE when no layer within reach has, or may have, 50%
   expect_false(qual_hypercalcic(mk(c(5, 30, 30, 30), sec = NA))$passed)
 })
+
+
+# ---- depth specifiers of single qualifiers (Ch 2.3.1 rules 1 and 2, p. 27) ------
+
+test_that("v0.9.321 .compute_depth_specifier follows the rule its Chapter 5 figure names", {
+  skip_on_cran()
+  ped <- function(top, bottom, desg = NULL, oc = 1) {
+    hz <- data.frame(top_cm = top, bottom_cm = bottom, oc_pct = oc)
+    if (!is.null(desg)) hz$designation <- desg
+    PedonRecord$new(site = list(id = "made-up"), horizons = hz)
+  }
+  cds <- .compute_depth_specifier
+  # rule 2, from the mineral soil surface: 20 cm of organic material on top
+  org <- ped(c(0, 20, 50, 80), c(20, 50, 80, 130), c("Oa", "A", "Bk", "C"),
+             oc = c(30, 1, 0.5, 0.2))
+  expect_equal(cds(org, 2:3, "Calcic"), "Ano")        # 20-80 cm = 0-60 cm below
+  # rule 1 (Leptic: Epi- and Endo- only), the upper limit of the rock, from the
+  # soil surface
+  rk <- ped(c(0, 30, 70), c(30, 70, 100), c("A", "Bw", "R"))
+  expect_equal(cds(rk, 3L, "Leptic"), "Endo")
+  # a limiting layer starting <= 50 cm: Epi- for the qualifier that refers to
+  # it, no specifier for the others
+  sh <- ped(c(0, 20, 40), c(20, 40, 100), c("A", "Bw", "R"))
+  expect_equal(cds(sh, 3L, "Leptic"), "Epi")
+  expect_equal(cds(sh, 1:2, "Calcic"), "")
+  # no figure in Chapter 5: no specifier
+  expect_false("Cambic" %in% .WRB_DEPTH_SPECIFIABLE)
+  expect_false("Retic" %in% .WRB_DEPTH_SPECIFIABLE)
+  expect_true(all(c("Clayic", "Loamic", "Siltic") %in% .WRB_DEPTH_SPECIFIABLE))
+  # rule 1 points
+  expect_identical(.wrb_point_specifier(c(30, 70)), "Amphi")
+  expect_identical(.wrb_point_specifier(c(30, 70), only = c("Epi", "Endo")), NA_character_)
+  expect_identical(.wrb_point_specifier(30), "Epi")
+})
+
+test_that("v0.9.321 specifiers = TRUE: a single texture qualifier gets its rule-2 specifier", {
+  skip_on_cran()
+  p <- .fu_tex(clay = c(30, 30, 30), silt = c(55, 55, 55))   # silty clay loam 0-110
+  on <- resolve_wrb_qualifiers(p, "LV", specifiers = TRUE)$supplementary
+  expect_identical(on[1], "Pantoloamic")
+  expect_identical(resolve_wrb_qualifiers(p, "LV", specifiers = FALSE)$supplementary[1],
+                   "Loamic")
+})

@@ -19,11 +19,12 @@
 # =============================================================================
 
 # The specifier of Ch 2.3.1 rule 2 (p. 27) for a qualifier whose layer is made
-# of the horizons `layers`, depths counted from the mineral soil surface `ms`;
-# `lim` is the upper limit of a limiting layer (NA if none). One run of
-# adjoining horizons, upper limit t and lower limit b:
-#   Epi-   b <= 50;
-#   Endo-  t >= 50;
+# of the horizons `layers`, depths counted from the surface `ms` (the mineral
+# soil surface, or the soil surface where the definition says so); `lim` is
+# the upper limit of a limiting layer (NA if none). With one run of adjoining
+# horizons starting within 100 cm, upper limit t and lower limit b:
+#   Epi-   b <= 50 ("and no such layer occurs between 50 and 100 cm");
+#   Endo-  t >= 50 ("and no such layer occurs < 50 cm");
 #   Ano-   t = 0 and 50 < b < 100, nothing between 99 and 100 cm and not
 #          directly above a limiting layer;
 #   Amphi- 0 < t < 50 (none of it < 1 cm) and 50 < b < 100, as Ano-;
@@ -31,29 +32,31 @@
 #          starting > 50 cm;
 #   Panto- t = 0 and b >= 100 or at a limiting layer starting > 50 cm.
 # Two or more runs within 100 cm, interrupted by layers that do not qualify:
-# Poly-; Epi- and Endo- may also fit them ("the layer has its lower limit
-# <= 50 cm; and no such layer occurs between 50 and 100 cm"). The specifier is
+# Poly-; Epi- (all of them above 50 cm) and Endo- (all below 50 cm) may also
+# fit them. Runs that start deeper than 100 cm (a qualifier whose depth range
+# goes further, as Spodic's 200 cm) count for Endo- only. The specifier is
 # returned when exactly one fits, NA otherwise (no specifier, or a choice the
 # text leaves to the user).
 .wrb_layer_specifier <- function(h, layers, ms, lim = NA_real_) {
-  runs <- Filter(function(r) r$top - ms < 100, .q_layer_runs(h, layers))
+  runs <- .q_layer_runs(h, layers)
   if (!length(runs)) return(NA_character_)
   eps <- 1e-6
   lr <- if (is.na(lim)) NA_real_ else lim - ms
   at_lim <- function(b) !is.na(lr) && abs(b - lr) < eps
   t <- vapply(runs, function(r) r$top - ms, numeric(1))
   b <- vapply(runs, function(r) r$bottom - ms, numeric(1))
-  if (length(runs) == 1L) {
-    deep_end <- b >= 100 || (at_lim(b) && lr > 50)
-    mid_end  <- b > 50 && b <= 99 && !at_lim(b)
-    at_top   <- abs(t) < eps
-    below_top <- t >= 1 && t < 50
-    fits <- c(Epi = b <= 50, Endo = t >= 50,
-              Ano = at_top && mid_end, Amphi = below_top && mid_end,
-              Kato = below_top && deep_end, Panto = at_top && deep_end)
-  } else {
-    fits <- c(Epi = all(b <= 50), Endo = all(t >= 50), Poly = TRUE)
-  }
+  in100 <- t < 100
+  n100 <- sum(in100)
+  one <- n100 == 1L
+  k <- if (one) which(in100) else 1L
+  deep_end  <- b[k] >= 100 || (at_lim(b[k]) && lr > 50)
+  mid_end   <- b[k] > 50 && b[k] <= 99 && !at_lim(b[k])
+  at_top    <- abs(t[k]) < eps
+  below_top <- t[k] >= 1 && t[k] < 50
+  fits <- c(Epi = n100 >= 1L && all(b[in100] <= 50), Endo = all(t >= 50),
+            Ano = one && at_top && mid_end, Amphi = one && below_top && mid_end,
+            Kato = one && below_top && deep_end, Panto = one && at_top && deep_end,
+            Poly = n100 >= 2L)
   if (sum(fits) == 1L) names(fits)[fits] else NA_character_
 }
 
