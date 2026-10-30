@@ -61,8 +61,15 @@ pyrophosphate-extractable Fe and Al, the Bt clay increase, the
 solonetzic B Ca/Na ratio, the chernozemic A, the gley colours) and the
 surveyor's designations in the Canadian notation second (Bt, Bf, Bm,
 Btj, Bn, Bv, Bss, Bg, Cz...). When the assigned order rests on
-designations alone, a warning says so. The choices where the book is
-silent are listed in
+designations alone, a warning says so. A profile that declares the FAO
+notation in `site$designation_system` (`"fao2006"`, as
+[`isis_profile_to_pedon`](https://hugomachadorodrigues.github.io/soilKey/reference/isis_profile_to_pedon.md)
+sets it, `"fao"`, `"wrb"` or `"wrb2022"`) is read through a translation
+of its designations into the Canadian notation where the letters mean
+the same (the book's Table 6: E = Ae, Bw = Bm, Bs = Bf, Btn = Bnt, f =
+z, z = s ...); the letters with no Canadian equivalent are not read, and
+the evidence lists what each designation was read as. The choices where
+the book is silent are listed in
 `system.file("rules", "cssc3", "readings.yaml", package = "soilKey")`.
 
 The chernozemic A horizon includes a soil-climate criterion (mean annual

@@ -8,6 +8,10 @@ Permafrost temperature: a layer at top_cm &amp;lt;=
 Designation pattern: a layer at top_cm &amp;lt;=
         max_top_cm with designation containing suffix
         &quot;f&quot; (frozen) or matching &quot;^Cf&quot; / &quot;perma&quot;.
+        A site that declares the Canadian notation
+        (site$designation_system = &quot;cssc&quot;) writes a frozen layer
+        z; the New Zealand and Australian notations have no
+        frozen suffix, so there only &quot;perma&quot; counts.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).
 Either path qualifies. Diagnostic of Cryosols. When neither passes and
@@ -23,6 +27,10 @@ Permafrost temperature: a layer at top_cm &amp;lt;=
 Designation pattern: a layer at top_cm &amp;lt;=
         max_top_cm with designation containing suffix
         &quot;f&quot; (frozen) or matching &quot;^Cf&quot; / &quot;perma&quot;.
+        A site that declares the Canadian notation
+        (site$designation_system = &quot;cssc&quot;) writes a frozen layer
+        z; the New Zealand and Australian notations have no
+        frozen suffix, so there only &quot;perma&quot; counts.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).
 Either path qualifies. Diagnostic of Cryosols. When neither passes and
@@ -37,7 +45,7 @@ have no permafrost (KST 13, Ch. 3, p. 50)."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.316</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.317</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,6 +100,10 @@ the upper <code>max_top_cm</code>. Two alternative paths qualify per WRB
 <li><p><strong>Designation pattern</strong>: a layer at top_cm &lt;=
         <code>max_top_cm</code> with designation containing suffix
         <code>"f"</code> (frozen) or matching <code>"^Cf"</code> / <code>"perma"</code>.
+        A site that declares the Canadian notation
+        (<code>site$designation_system = "cssc"</code>) writes a frozen layer
+        <code>z</code>; the New Zealand and Australian notations have no
+        frozen suffix, so there only <code>"perma"</code> counts.
         Used as a fallback when the temperature field is not in the
         pedon (typical of legacy survey data).</p></li>
 </ol><p>Either path qualifies. Diagnostic of Cryosols. When neither passes and

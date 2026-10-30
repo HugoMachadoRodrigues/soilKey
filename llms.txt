@@ -2237,6 +2237,20 @@ and are not shipped.
 - [`benchmark_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.md)
   : Benchmark the Australian order key on NatSoil
 
+## National Soils Database of New Zealand (NSD, v0.9.317)
+
+The survey exports of Manaaki Whenua’s National Soils Database read into
+pedon records with the surveyor’s NZSC class and Soil Taxonomy name, as
+a benchmark for classify_nzsc4(). The data are licensed CC BY-ND 4.0 and
+are not shipped: download the survey exports from the NSDR.
+
+- [`read_nsd_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_nsd_pedons.md)
+  : Read New Zealand National Soils Database survey exports
+- [`benchmark_nsd()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_nsd.md)
+  : Benchmark the New Zealand key against the National Soils Database
+- [`nsd_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/nsd_citation.md)
+  : Citation for data read from the New Zealand National Soils Database
+
 ## WoSIS stratified WRB benchmark (v0.9.73)
 
 ISRIC WoSIS bundled cache, 130 profiles balanced across 26 WRB Reference

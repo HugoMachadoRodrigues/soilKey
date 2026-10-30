@@ -22,6 +22,7 @@ report(
   include_family = FALSE,
   specifiers = FALSE,
   lang = c("en", "pt"),
+  systems = c("wrb2022", "sibcs", "usda"),
   ...
 )
 ```
@@ -70,6 +71,17 @@ report(
 - lang:
 
   Report language; `"en"` (default) or `"pt"` (Brazilian Portuguese).
+
+- systems:
+
+  When `x` is a `PedonRecord`, the systems to run: any registered ids or
+  aliases (see
+  [`soilkey_systems`](https://hugomachadorodrigues.github.io/soilKey/reference/soilkey_systems.md)).
+  The default runs WRB 2022, SiBCS and USDA, as reports always have; add
+  a national system (e.g. `"cssc3"`) to include its result, with the
+  class at each level, the classes left undecided before the assigned
+  one and, for Hungary, the subtype and variety properties. Ignored when
+  `x` is already a (list of) `ClassificationResult`.
 
 - ...:
 

@@ -20,6 +20,7 @@ report_pdf(
   include_family = FALSE,
   specifiers = FALSE,
   lang = c("en", "pt"),
+  systems = c("wrb2022", "sibcs", "usda"),
   ...
 )
 ```
@@ -50,6 +51,11 @@ report_pdf(
 - lang:
 
   Report language, `"en"` (default) or `"pt"` (Brazilian Portuguese).
+
+- systems:
+
+  The systems to run when `x` is a `PedonRecord`; see
+  [`report`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md).
 
 - ...:
 

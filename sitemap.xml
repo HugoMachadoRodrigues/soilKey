@@ -66,6 +66,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_lucas_2018.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_npdb.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_nsd.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
@@ -284,6 +285,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/npdb_dry_colour_model.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/npdb_scenario.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/npdb_soil_climate.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/nsd_citation.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ollama_is_running.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/organic_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/organotechnic_material.html</loc></url>
@@ -327,6 +329,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/protovertic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_febr_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_isis.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_nsd_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_pedon_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_spectral_library.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_layers_graphql.html</loc></url>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.316</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.317</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,126 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.317" id="soilkey-09317-2026-10-30">soilKey 0.9.317 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09317-2026-10-30"></a></h2>
+<div class="section level3">
+<h3 id="the-national-systems-in-soilkey-pro-and-their-agreement-measured-0-9-317">The national systems in soilKey Pro, and their agreement measured<a class="anchor" aria-label="anchor" href="#the-national-systems-in-soilkey-pro-and-their-agreement-measured-0-9-317"></a></h3>
+<div class="section level4">
+<h4 id="soilkey-pro-0-9-317">soilKey Pro<a class="anchor" aria-label="anchor" href="#soilkey-pro-0-9-317"></a></h4>
+<ul><li>
+<strong>The Classify tab offers the four national systems:</strong> Canada (CSSC, 3rd ed.), Australia (ASC, 3rd ed.), New Zealand (NZSC, 4th ed.) and Hungary (HSCS 2024). They sit under WRB, SiBCS and USDA, each with its edition and an “experimental” label, and run only when ticked.
+<ul><li>Each ticked system gets a card with the class at each level and its code (and the English gloss for Hungary).</li>
+<li>A collapsed note lists the classes the key could not decide before the assigned one, with the attributes each needs.</li>
+<li>For Hungary, a table lists the subtype and variety properties in the name and those undecided, with what would decide them.</li>
+<li>The key trace and the Missing data panel include the national systems.</li>
+</ul></li>
+<li>
+<strong>The Pedon tab’s canonical profiles include one example per order (or type) of each national system:</strong> 10 Canadian, 15 Australian, 15 New Zealand and 15 Hungarian, each keying to the class it is labelled with. Loading one ticks its system and keeps the site details its key reads (the horizon notation, the drainage).</li>
+<li>
+<strong>The report and the session file:</strong>
+<ul><li>
+<code><a href="../reference/report.html">report()</a></code>, <code><a href="../reference/report_html.html">report_html()</a></code> and <code><a href="../reference/report_pdf.html">report_pdf()</a></code> take <code>systems</code>. The default runs WRB, SiBCS and USDA as before (byte-identical reports); a registry id or alias adds that system.</li>
+<li>A saved session keeps the ticked systems, and reopening it ticks them again.</li>
+</ul></li>
+<li>The WoSIS data-source line is shown only for WoSIS data, not for the site details a session or an example carries.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="canada-designations-in-the-fao-notation-cssc-0-9-317">Canada: designations in the FAO notation (CSSC)<a class="anchor" aria-label="anchor" href="#canada-designations-in-the-fao-notation-cssc-0-9-317"></a></h4>
+<ul><li>A profile that declares the FAO notation (<code>site$designation_system</code> “fao2006”, “fao”, “wrb”) is read by the Canadian key through a translation of its designations where the letters mean the same. The source is the book’s Table 6 (p. 154), checked against the definitions of Ch 2 and WRB 2022 Annex 3.
+<ul><li>Masters: E = Ae, AE = Ahe, EB = AB.</li>
+<li>B suffixes: Bw = Bm, Bs = Bf, Bhs = Bhf, Btn = Bnt.</li>
+<li>Other suffixes: f (permafrost) = z, y and z (salts) = s, i = ss, m after a cementing agent = c, a 2 prefix = II.</li>
+<li>The letters with no Canadian equivalent are not read, and what the FAO notation cannot write (the h of a plain A, the m of a plain B, the vertic v) stays undecided.</li>
+<li>The designations are kept, and the evidence lists what each one was read as.</li>
+</ul></li>
+<li>A bare m (Bm, Cm) is not a cementation, as in WRB since 0.9.315.</li>
+<li>A fragipan (Bx) is no Bm: the m “lacks a brittle consistence when moist” (Ch 2, p. 14).</li>
+<li>
+<code><a href="../reference/isis_profile_to_pedon.html">isis_profile_to_pedon()</a></code> declares the FAO notation, so the Canadian key no longer reads an FAO z (salts) as frozen.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="hungary-hscs-0-9-317">Hungary (HSCS 2024)<a class="anchor" aria-label="anchor" href="#hungary-hscs-0-9-317"></a></h4>
+<ul><li>
+<strong>The clay ratio of the clay accumulation horizon (8.2)</strong> passes over a transitional AB, BA, EB or BE horizon with no clay recorded (Hugo), and reads the row against the horizon above it.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-zealand-the-national-soils-database-0-9-317">New Zealand: the National Soils Database<a class="anchor" aria-label="anchor" href="#new-zealand-the-national-soils-database-0-9-317"></a></h4>
+<ul><li>
+<strong><code><a href="../reference/read_nsd_pedons.html">read_nsd_pedons()</a></code></strong> reads the survey exports of Manaaki Whenua’s National Soils Database (NSDR; zips or folders of CSV tables) in memory into pedon records. It reads:
+<ul><li>the field description, decoded through each survey’s code lists;</li>
+<li>the laboratory samples, given to their horizons;</li>
+<li>the provenance of every value;</li>
+<li>the surveyor’s NZSC class, NZ Genetic class and Soil Taxonomy name. The 3rd-edition codes are recoded to the 4th: MIW becomes MIC, and BLAM (withdrawn) is read at no level.</li>
+</ul></li>
+<li>The older notation is translated: (B) = Bw, and fe, ca, cs = s, k, y.</li>
+<li>
+<strong><code><a href="../reference/benchmark_nsd.html">benchmark_nsd()</a></code></strong> compares <code><a href="../reference/classify_nzsc4.html">classify_nzsc4()</a></code> with the surveyor’s code at order, group and subgroup level.</li>
+<li>
+<strong><code><a href="../reference/nsd_citation.html">nsd_citation()</a></code></strong> gives the acknowledgement. The NSD is licensed CC BY-ND 4.0 and is not shipped.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="wrb-and-usda-0-9-317">WRB and USDA<a class="anchor" aria-label="anchor" href="#wrb-and-usda-0-9-317"></a></h4>
+<ul><li>
+<strong>The frozen suffix follows the declared notation</strong> (<code><a href="../reference/cryic_conditions.html">cryic_conditions()</a></code> and the mollic criterion 6a):
+<ul><li>FAO and USDA write a frozen layer f.</li>
+<li>The Canadian notation writes it z (CSSC Ch 2, p. 16); its f is the Fe and Al of a podzolic B.</li>
+<li>The New Zealand and Australian notations have no frozen suffix (their f is fibric peat and faunal accumulation).</li>
+</ul>
+On the NSD, 12 New Zealand profiles with fibric peat had keyed to the Gelisols; 7 are now Histosols, as the surveyors named them.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="agreement-measured-0-9-317">Agreement measured<a class="anchor" aria-label="anchor" href="#agreement-measured-0-9-317"></a></h4>
+<table class="table"><colgroup><col width="20%"><col width="20%"><col width="20%"><col width="20%"><col width="20%"></colgroup><thead><tr><th>System</th>
+<th>Profiles</th>
+<th>Level</th>
+<th>0.9.316</th>
+<th>0.9.317</th>
+</tr></thead><tbody><tr><td>CSSC</td>
+<td>ISIS Canada, 20</td>
+<td>order</td>
+<td>8</td>
+<td><strong>13</strong></td>
+</tr><tr><td></td>
+<td></td>
+<td>great group</td>
+<td>5</td>
+<td><strong>9</strong></td>
+</tr><tr><td></td>
+<td></td>
+<td>subgroup</td>
+<td>3</td>
+<td><strong>4</strong></td>
+</tr><tr><td>HSCS</td>
+<td>ISIS Hungary, 20</td>
+<td>type (genetic name via the guide’s section 9)</td>
+<td>6 (8 lenient)</td>
+<td><strong>7 (9 lenient)</strong></td>
+</tr><tr><td>NZSC</td>
+<td>NSD, 1,139 with a class</td>
+<td>order</td>
+<td>(no reader)</td>
+<td><strong>43.2%</strong></td>
+</tr><tr><td></td>
+<td>1,134</td>
+<td>group</td>
+<td></td>
+<td><strong>24.3%</strong></td>
+</tr><tr><td></td>
+<td>1,114</td>
+<td>subgroup</td>
+<td></td>
+<td><strong>13.8%</strong></td>
+</tr><tr><td>USDA</td>
+<td>NSD, 600 with a class</td>
+<td>order</td>
+<td></td>
+<td><strong>38.5%</strong></td>
+</tr></tbody></table><ul><li>On the NSD, 77% of the NZSC results are provisional at order level. Where every earlier order was decided (265 profiles), the order agrees on 72.8%.</li>
+<li>Most disagreements come from data the NSD does not hold: glass in sand (Pumice Soils), carbonates (Semiarid), bulk density (Allophanic) and moist strength (Pallic). Others come from old descriptions (agreement 26% in the 1960s surveys, 61% in the 1980s) and from 4th-edition criteria that older classes do not meet.</li>
+<li>WRB, SiBCS and USDA are unchanged on every panel, and the 44 fixtures keep their names. The new readings concern declared national notations and the national keys.</li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.316" id="soilkey-09316-2026-10-30">soilKey 0.9.316 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09316-2026-10-30"></a></h2>
 <div class="section level3">

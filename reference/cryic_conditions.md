@@ -8,8 +8,11 @@ upper `max_top_cm`. Two alternative paths qualify per WRB 2022:
 
 2.  **Designation pattern**: a layer at top_cm \<= `max_top_cm` with
     designation containing suffix `"f"` (frozen) or matching `"^Cf"` /
-    `"perma"`. Used as a fallback when the temperature field is not in
-    the pedon (typical of legacy survey data).
+    `"perma"`. A site that declares the Canadian notation
+    (`site$designation_system = "cssc"`) writes a frozen layer `z`; the
+    New Zealand and Australian notations have no frozen suffix, so there
+    only `"perma"` counts. Used as a fallback when the temperature field
+    is not in the pedon (typical of legacy survey data).
 
 Either path qualifies. Diagnostic of Cryosols. When neither passes and
 the site has a soil temperature regime warmer than gelic (cryic, frigid,
