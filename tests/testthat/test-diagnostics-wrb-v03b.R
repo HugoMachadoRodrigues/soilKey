@@ -43,8 +43,11 @@ test_that("nitic_horizon needs Fe-ox, structure and shiny faces (v0.9.220)", {
   expect_true(is.na(nitic_horizon(no_ox)$passed))
   low_ratio <- pr$clone(deep = TRUE); low_ratio$horizons$fe_ox_pct <- c(0.3, 0.3, 0.3)
   expect_false(isTRUE(nitic_horizon(low_ratio)$passed))   # 0.3 / 9 < 0.05
-  few <- pr$clone(deep = TRUE); few$horizons$clay_films_amount <- c(NA, "few", "few")
+  # v0.9.317: the shiny surfaces are pressure faces, not clay films
+  few <- pr$clone(deep = TRUE); few$horizons$pressure_faces <- c("none", "few", "few")
   expect_false(isTRUE(nitic_horizon(few)$passed))
+  films <- pr$clone(deep = TRUE); films$horizons$pressure_faces <- NA_character_
+  expect_true(is.na(nitic_horizon(films)$passed))
   plin <- pr$clone(deep = TRUE); plin$horizons$plinthite_pct <- c(0, 30, 30)
   # v0.9.312: a plinthic horizon has Feox/Fedith < 0.1 (WRB 2022 3.1.30,
   # criterion 3); the fixture's Bt1 has 0.9 / 9 = 0.1

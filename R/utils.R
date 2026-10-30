@@ -223,7 +223,10 @@ horizon_column_spec <- function() {
     # ---- v0.9.308: the ISIS reader ----
     ec_max_dS_m                   = "numeric",   # upper bound of the saturated-paste EC (e.g. EC 1:2.5 x 12.5); read only by the salic test, to rule a layer out
     # ---- WRB 2022 andic properties: the NaF field test as a number ----
-    ph_naf                        = "numeric"    # pH in 1 M NaF (Fieldes and Perrott test); WRB 2022 Ch 3.2.3 (p 73): >= 9.5 indicates allophane or Al-humus; read by andic_properties() where bulk density is not measured
+    ph_naf                        = "numeric",   # pH in 1 M NaF (Fieldes and Perrott test); WRB 2022 Ch 3.2.3 (p 73): >= 9.5 indicates allophane or Al-humus; read by andic_properties() where bulk density is not measured
+    # ---- v0.9.317: the nitic horizon as WRB 2022 words it ----
+    pressure_faces                = "character", # none / few / common / many: pressure faces (shiny aggregate surfaces, stress cutans that do not slide); WRB 2022 Ch 3.1.22 nitic horizon (>= 25% of the aggregate surfaces: common or more)
+    structure_type_secondary      = "character"  # type of the second-level structure the first-level units break into (e.g. blocky breaking into polyhedral); read by the WRB 2022 nitic horizon only
   )
 }
 

@@ -74,6 +74,13 @@
 #' v0.9.310, for \code{system = "wrb2022"} (WRB 2022 Ch 3.1.3, p. 35-36):
 #' \itemize{
 #'   \item criterion 1: the layers have \eqn{\ge} 8\% clay;
+#'   \item criterion 2.a.i (v0.9.317): the coarser-textured layer is not
+#'         separated from the layer by a lithic discontinuity, read from the
+#'         material numbers of the designations and from the data of each
+#'         pair of layers in between (Ch 3.2.7, p. 76-77: the ratio sand to
+#'         silt, criterion 2.a.iv; coarse fragments, criterion 6);
+#'   \item criterion 2.a.ii (v0.9.317): no clay increase counts below a plough
+#'         layer (Ap) that directly overlies the argic horizon;
 #'   \item criterion 2.a.iii: a layer is compared with a coarser-textured layer
 #'         above it only across a transitional horizon of \eqn{\le} 15 cm;
 #'         layers already accepted and layers whose designation has the
@@ -193,10 +200,15 @@ argic <- function(pedon, min_thickness = 7.5,
   tests <- list()
   # v0.9.26: per-system clay-increase thresholds. WRB 2022 (default)
   # uses 6/1.4/20; KST 13ed uses 3/1.2/8 (looser).
+  # v0.9.317: criteria 2.a.i and 2.a.ii as WRB 2022 words them (p. 36): a
+  # lithic discontinuity is also read from the data (Ch 3.2.7), and a plough
+  # layer directly above leaves the clay increase without effect.
   tests$clay_increase <- test_clay_increase_argic(h, system = system,
                                                   lithic_aware = lithic_discontinuity,
                                                   max_transition_cm = max_transition,
-                                                  exclude = not_sub)
+                                                  exclude = not_sub,
+                                                  lithic_data = wrb2022_text,
+                                                  plough_layer = wrb2022_text)
   # v0.9.220: WRB 2022 Ch 3.1.3, criterion 2.a.i. A clay increase across a
   # lithic discontinuity (Ap over 2Bt) is not an argic horizon unless "illuvial
   # clay is evidenced" (criterion 2.b; WRB: "if the soil shows a lithic
@@ -206,7 +218,8 @@ argic <- function(pedon, min_thickness = 7.5,
   if (lithic_discontinuity) {
     across <- setdiff(test_clay_increase_argic(h, system = system,
                                                max_transition_cm = max_transition,
-                                               exclude = not_sub)$layers,
+                                               exclude = not_sub,
+                                               plough_layer = wrb2022_text)$layers,
                       tests$clay_increase$layers)
     if (length(across)) {
       films <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
@@ -619,9 +632,18 @@ mollic <- function(pedon,
   tests$organic_carbon  <- test_mollic_organic_carbon(h,
                                                         min_pct = min_oc,
                                                         candidate_layers = candidate_layers)
-  tests$base_saturation <- test_mollic_base_saturation(h,
-                                                         min_pct = min_bs,
-                                                         candidate_layers = candidate_layers)
+  # v0.9.317: criterion 5, "a base saturation (by 1 M NH4OAc, pH 7) of >= 50%
+  # on a weighted average" (WRB 2022 Ch 3.1.20, p. 53), over the layers of the
+  # horizon; where BS is not recorded, pH by Annex 2 Table 9.2 (p. 220), as for
+  # the umbric horizon.
+  bs <- if (length(candidate_layers)) .wrb_bs_weighted_above(h, candidate_layers, min_bs = min_bs)
+        else list(passed = FALSE, missing = character(0))
+  tests$base_saturation <- .subtest_result(
+    passed  = bs$passed,
+    layers  = if (isTRUE(bs$passed)) candidate_layers else integer(0),
+    missing = bs$missing %||% character(0),
+    details = list(weighted_average = bs$average, bounds = bs$bounds,
+                   layers = bs$details))
   # v0.9.78: cumulative thickness check on the contiguous stack
   # (test_minimum_thickness checks each layer individually against
   # min_cm, but mollic requires the SUMMED thickness of the
@@ -656,8 +678,12 @@ mollic <- function(pedon,
       details = list(cumulative_cm = 0, threshold = min_thickness)
     )
   }
+  # v0.9.317: criterion 1 as WRB 2022 Ch 3.1.20 words it (p. 52): aggregate
+  # structure <= 10 cm or cloddy structure in >= 50% by volume; a structure
+  # that is not described leaves it undecided, it no longer passes.
   tests$structure       <- test_mollic_structure(h,
-                                                    candidate_layers = candidate_layers)
+                                                    candidate_layers = candidate_layers,
+                                                    system = "wrb2022")
 
   agg <- aggregate_subtests(tests)
 
@@ -1491,7 +1517,8 @@ umbric_horizon <- function(pedon,
     missing = if (thk(L) < min_thickness && thk(stack$maybe) >= min_thickness)
                 stack$missing else character(0),
     details = list(cumulative_cm = thk(L), threshold = min_thickness))
-  tests$structure <- test_mollic_structure(h, candidate_layers = L)
+  # v0.9.317: criterion 1, worded as for the mollic horizon (Ch 3.1.39, p. 69)
+  tests$structure <- test_mollic_structure(h, candidate_layers = L, system = "wrb2022")
 
   agg <- aggregate_subtests(tests)
 
@@ -1846,12 +1873,14 @@ solonetz <- function(pedon) {
 #' criterion on each layer:
 #' \enumerate{
 #'   \item \eqn{\ge} 30\% clay (\code{min_clay});
-#'   \item moderate to strong angular or subangular blocky structure, or
+#'   \item moderate to strong angular or subangular blocky structure
+#'         breaking into polyhedral or flat-edged second-level structure, or
 #'         polyhedral structure, with pressure faces (shiny surfaces) on
 #'         \eqn{\ge} 25\% of the aggregate surfaces. Read from
-#'         \code{structure_type}, \code{structure_grade} and
-#'         \code{clay_films_amount}, "common" or more: the cerosidade
-#'         "comum" that the SiBCS B nitico asks for, 25-50\% in KST;
+#'         \code{structure_type}, \code{structure_grade},
+#'         \code{structure_type_secondary} and \code{pressure_faces},
+#'         "common" or more (since v0.9.317; until then from clay films,
+#'         which WRB 2022 keeps apart from pressure faces);
 #'   \item \eqn{\ge} 4\% Fe-dith (\code{fe_dcb_pct}), \eqn{\ge} 0.2\%
 #'         Fe-ox (\code{fe_ox_pct}) and Fe-ox / Fe-dith \eqn{\ge} 0.05;
 #'   \item not part of a plinthic horizon (\code{\link{plinthic}});
@@ -1899,21 +1928,34 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
   gr   <- tolower(as.character(col("structure_grade", NA_character_)))
   fed  <- col("fe_dcb_pct", NA_real_)
   fox  <- col("fe_ox_pct", NA_real_)
-  films <- .clay_films_class(col("clay_films_amount", NA_character_))
+  st2  <- tolower(as.character(col("structure_type_secondary", NA_character_)))
+  pf   <- .clay_films_class(col("pressure_faces", NA_character_))
 
   # 1. >= 30% clay
   c1 <- ifelse(is.na(clay), NA, clay >= min_clay)
-  # 2. blocky (moderate or strong) or polyhedral, with shiny faces >= 25%
-  poly    <- !is.na(st) & grepl("polyhedr|poli[e\u00e9]dr|nutty|nucif", st)
-  type_ok <- ifelse(is.na(st), NA, poly | grepl("block|bloco|angular", st))
+  # 2. v0.9.317, as WRB 2022 Ch 3.1.22 words it (p. 55): "a. moderate to strong
+  #    angular or subangular blocky structure, breaking into polyhedral or
+  #    flat-edged second-level structure with pressure faces (shiny surfaces)
+  #    at >= 25% of the surfaces of the soil aggregates of the second-level
+  #    structure; or b. polyhedral structure with pressure faces (shiny
+  #    surfaces) at >= 25% of the surfaces". The pressure faces are their own
+  #    attribute, common or more read as >= 25%; clay coatings, which the text
+  #    keeps apart ("In addition, clay coatings may be found"), no longer count.
+  #    Nutty structure is read as polyhedral, as before.
+  poly_re <- "polyhedr|poli[e\u00e9]dr|nutty|nucif"
+  poly    <- !is.na(st) & grepl(poly_re, st)
+  blocky  <- ifelse(is.na(st), NA, grepl("block|bloco|angular", st))
+  poly2   <- ifelse(is.na(st2), NA, grepl(paste0(poly_re, "|flat.edged"), st2))
   grade_ok <- ifelse(is.na(gr), NA,
                 ifelse(grepl("moderate|strong|moderad|forte", gr), TRUE,
                   ifelse(grepl("weak|fraca|massive|maci|single|simples|structureless|sem estrutura",
                                gr), FALSE, NA)))
-  shiny <- ifelse(is.na(films), NA, films >= 3L)
-  c2 <- vapply(seq_len(n), function(i)
-    if (poly[i]) .and3(shiny[i]) else .and3(type_ok[i], grade_ok[i], shiny[i]),
-    logical(1))
+  shiny <- ifelse(is.na(pf), NA, pf >= 3L)
+  c2 <- vapply(seq_len(n), function(i) {
+    b <- if (poly[i]) .and3(shiny[i]) else if (is.na(st[i])) NA else FALSE
+    a <- .and3(blocky[i], grade_ok[i], poly2[i], shiny[i])
+    if (isTRUE(a) || isTRUE(b)) TRUE else if (isFALSE(a) && isFALSE(b)) FALSE else NA
+  }, logical(1))
   # 3. Fe-dith >= 4%, Fe-ox >= 0.2%, Fe-ox / Fe-dith >= 0.05
   c3 <- vapply(seq_len(n), function(i) .and3(
     if (is.na(fed[i])) NA else fed[i] >= min_fe_dcb,
@@ -1961,7 +2003,7 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
   cand <- which(!(status %in% FALSE))
   miss <- c(if (anyNA(c1[cand])) "clay_pct",
             if (anyNA(c2[cand])) c("structure_type", "structure_grade",
-                                   "clay_films_amount"),
+                                   "structure_type_secondary", "pressure_faces"),
             if (anyNA(c3[cand])) c("fe_dcb_pct", "fe_ox_pct"))
   DiagnosticResult$new(
     name      = "nitic_horizon",

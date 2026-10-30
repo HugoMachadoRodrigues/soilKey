@@ -1347,6 +1347,9 @@ make_umbrisol_canonical <- function() {
     structure_grade            = c("strong","moderate","weak"),
     structure_type             = c("granular","subangular blocky",
                                      "subangular blocky"),
+    # v0.9.317: the size of the aggregates, which WRB 2022 criterion 1 of the
+    # umbric horizon reads (<= 10 cm, Ch 3.1.39)
+    structure_size             = c("fine", "medium", "medium"),
     consistence_moist          = c("friable","friable","firm"),
     coarse_fragments_pct       = c(8,    15,   25),
     clay_pct                   = c(22,   24,   25),
@@ -1753,6 +1756,10 @@ make_nitisol_canonical <- function() {
     consistence_moist          = c("friable","firm","firm"),
     clay_films_amount          = c(NA_character_, "common",        "many"),
     clay_films_strength        = c(NA_character_, "strong",        "strong"),
+    # v0.9.317: the shiny ped surfaces are pressure faces, which the WRB 2022
+    # nitic horizon asks for (Ch 3.1.22, criterion 2.b: >= 25% of the
+    # aggregate surfaces); clay films no longer stand for them.
+    pressure_faces             = c("none", "common", "many"),
     coarse_fragments_pct       = c(2,    5,    8),
     # v0.9.10: clay 38/58/60 -- the gradient threads BOTH the SiBCS
     # B_nitico ceiling (B/A <= 1.5: 59/38 = 1.553 fails; tightened to

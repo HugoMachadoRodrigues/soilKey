@@ -22,7 +22,9 @@
     cec_cmol = c(20, 25, 30, 30, 28),
     bs_pct   = c(95, 95, 100, 100, 100),
     oc_pct   = c(2.5, 1.5, 0.6, 0.3, 0.2),
-    ph_h2o   = c(7.0, 7.2, 7.5, 7.8, 7.9)
+    ph_h2o   = c(7.0, 7.2, 7.5, 7.8, 7.9),
+    # v0.9.317: WRB 2022 mollic criterion 1 reads the structure
+    structure_type = rep("subangular blocky", 5), structure_size = rep("medium", 5)
   )
   hz <- ensure_horizon_schema(hz)
   PedonRecord$new(site = list(id = "test-mollic-vertic-intergrade"),

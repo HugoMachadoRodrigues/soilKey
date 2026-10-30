@@ -202,6 +202,7 @@ test_that("Pachic fires only when mollic OR umbric thickness >= 50 cm", {
     munsell_value_dry = c(3, 5), munsell_chroma_dry = c(2, 3),
     structure_grade = c("strong", "moderate"),
     structure_type = c("granular", "subangular blocky"),
+    structure_size = c("fine", "medium"),   # v0.9.317: mollic criterion 1 reads it
     consistence_moist = c("friable", "firm"),
     oc_pct = c(2.5, 0.6), bs_pct = c(80, 65),
     cec_cmol = c(25, 18),

@@ -77,7 +77,9 @@ test_that("a clay increase across a lithic discontinuity is not argic (2.a.i)", 
     horizons = ensure_horizon_schema(data.table::data.table(
       top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 120),
       designation = desg,
-      clay_pct = c(12, 30, 32), silt_pct = c(30, 30, 30), sand_pct = c(58, 40, 38),
+      # v0.9.317: the sand to silt ratio kept (1.9), so the data show no
+      # lithic discontinuity of their own (Ch 3.2.7, criterion 2.a.iv)
+      clay_pct = c(12, 30, 32), silt_pct = c(30, 24, 23), sand_pct = c(58, 46, 45),
       clay_films_amount = c(NA, films, films))))
   expect_true(isTRUE(argic(mk(c("A", "Bt1", "Bt2")))$passed))
   expect_false(isTRUE(argic(mk(c("A", "2Bt1", "2Bt2")))$passed))

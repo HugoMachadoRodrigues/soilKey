@@ -234,6 +234,9 @@ test_that("qual_hypernatric fires when ESP >= 70%", {
   p <- .minimal_pedon()
   p$horizons$na_cmol  <- c(7, 5)
   p$horizons$cec_cmol <- c(10, 7)  # ESP = 70 / 71%
+  # v0.9.317: the B keeps the sand to silt ratio of the A (3.0), so the data
+  # show no lithic discontinuity (WRB 2022 Ch 3.2.7, criterion 2.a.iv)
+  p$horizons$sand_pct <- c(60, 52.5); p$horizons$silt_pct <- c(20, 17.5)
   expect_true(isTRUE(qual_hypernatric(p)$passed))
 })
 
