@@ -245,11 +245,19 @@ test_that("the ISIS reader reads pressure faces and the second structure", {
          cutansKind = .v09317_code("R", "pressure"), cutansAbundance = .v09317_code("B", "broken")),
     list(layerNumber = 3L, upperDepth = 70L, lowerDepth = 100L, clay = list("50"))))
   h <- as.data.frame(isis_profile_to_pedon(prof)$horizons)
-  expect_identical(h$pressure_faces, c("none", "common", NA))   # absent unless recorded
+  # v0.9.313: the A records clay cutans in the one cutans field, so its pressure
+  # faces could not have been recorded there and stay unknown
+  expect_identical(h$pressure_faces, c(NA, "common", NA))
   expect_identical(h$clay_films_amount[1:2], c("common", NA))
   expect_identical(h$structure_type_secondary[2], "nutty subangular blocky")
   expect_true("structureType2" %in% soilKey:::.ISIS_MORPH)   # asked of the service
   expect_true(is.na(isis_profile_to_pedon(prof, absent_unless_recorded = FALSE)$horizons$pressure_faces[1]))
+  # a free cutans field (abundance none) still reads them as absent
+  prof$layers[[1]]$cutansKind <- NULL
+  prof$layers[[1]]$cutansAbundance <- .v09317_code("0", "none")
+  h <- as.data.frame(isis_profile_to_pedon(prof)$horizons)
+  expect_identical(h$pressure_faces[1], "none")
+  expect_identical(h$slickensides[1], "absent")
 })
 
 test_that("an R row inside a described horizon is left out, with a note", {

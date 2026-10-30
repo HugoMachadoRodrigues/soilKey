@@ -102,7 +102,9 @@ test_that("cutans, mottles and the absences are read as Hugo decided", {
   # absent unless recorded, in the described horizons only
   expect_equal(h$redoximorphic_features_pct[c(1, 3, 4)], c(0, 0, 0))
   expect_true(is.na(h$redoximorphic_features_pct[5]))                       # laboratory data only
-  expect_identical(h$slickensides[1:3], rep("absent", 3))
+  # v0.9.313: absent only where the one cutans field is free; the Bt and the Btv
+  # record clay cutans there
+  expect_identical(h$slickensides[1:3], c("absent", NA, NA))
   expect_equal(h$plinthite_pct[c(1, 2, 4)], c(0, 0, 0))
   expect_true(is.na(h$plinthite_pct[3]))                                    # Btv: plinthite suggested
   expect_true(is.na(h$duripan_pct[4]))                                      # a duripan is recorded
