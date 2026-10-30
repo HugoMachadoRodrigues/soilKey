@@ -366,7 +366,18 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 #' of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
 #' surface, and a layer whose redox reading is undecided leaves the gate
 #' \code{NA} when it could complete the 25 cm. Path 3 is read from the
-#' designation (W / saturated marker). Path 2 is not implemented.
+#' designation (W / saturated marker).
+#'
+#' Path 2 (since v0.9.323; until then it was not read) takes the horizon of
+#' \code{\link{mollic}} or \code{\link{umbric_horizon}}: more than 40 cm
+#' of its layers, reducing conditions in every layer of it that reaches
+#' below 40 cm from the mineral soil surface, and directly underneath it
+#' (top within 1 cm of its lower limit) adjoining layers, gleyic with
+#' reducing conditions as in path 1, at least 10 cm thick and reaching 65 cm
+#' or more from the mineral soil surface. Where layers below the horizon's
+#' sure layers are undecided, its lower limit is undecided too, and every
+#' lower limit it could have is tried: the path is then \code{NA} at most.
+#' A horizon with no layer recorded underneath it does not meet item 2.b.
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' With \code{strict = TRUE} the path-1 gleyic+reducing layer must start
@@ -398,6 +409,12 @@ gleysol <- function(pedon, strict = NULL) {
   run <- .adjoining_runs(h, ok, min_cm = 25, max_top_cm = ms + path1_max_top)
   path1_ok <- run$passed
   path1_layers <- if (isTRUE(path1_ok)) run$layers else integer(0)
+  # Path 2 (Ch 4, p. 103): a mollic or umbric horizon "> 40 cm thick" with
+  # reducing conditions "from 40 cm below the mineral soil surface to the
+  # lower limit", over a gleyic and reducing layer ">= 10 cm thick" with its
+  # "lower limit >= 65 cm" (v0.9.323).
+  p2 <- .gleysol_path2(pedon, ok, z, ms)
+  path2_ok <- p2$passed
   # Path 3: permanent saturation -- detect via designation 'W' or
   # rock_origin == 'fluviatile' on a layer starting <= 40 cm. Disabled
   # in strict mode (designation-only evidence is not accepted).
@@ -406,24 +423,104 @@ gleysol <- function(pedon, strict = NULL) {
                 any(grepl("^W|aquic|saturated",
                             h$designation[shallow] %||% rep(NA, length(shallow)),
                             ignore.case = TRUE))
-  passed <- if (isTRUE(path1_ok) || isTRUE(path3_ok)) TRUE
-            else if (is.na(path1_ok)) NA else FALSE
+  passed <- if (isTRUE(path1_ok) || isTRUE(path2_ok) || isTRUE(path3_ok)) TRUE
+            else if (is.na(path1_ok) || is.na(path2_ok)) NA else FALSE
   DiagnosticResult$new(
     name = "gleysol",
     passed = passed,
-    layers = path1_layers,
+    layers = if (isTRUE(path1_ok)) path1_layers
+             else if (isTRUE(path2_ok)) p2$layers else integer(0),
     evidence = list(
       gleyic_properties     = gp,
       reducing_conditions   = rc,
       path1_layers          = path1_layers,
       path1_undecided       = if (is.na(path1_ok)) run$layers else integer(0),
       path1_ok              = path1_ok,
+      path2_ok              = path2_ok,
+      path2                 = p2,
       path3_ok              = path3_ok,
       strict_mode           = strict
     ),
-    missing  = if (isTRUE(passed)) character(0) else unique(c(gp$missing, rc$missing)),
+    missing  = if (isTRUE(passed)) character(0)
+               else unique(c(gp$missing, rc$missing,
+                             if (is.na(path2_ok)) p2$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 4, Gleysols (p. 103)"
   )
+}
+
+
+#' Path 2 of the Gleysols key (WRB 2022 Ch 4, p. 103)
+#'
+#' 2.a: a mollic or umbric horizon "> 40 cm thick" with reducing conditions
+#' in every sublayer "from 40 cm below the mineral soil surface to the lower
+#' limit"; 2.b: "directly underneath" it a layer ">= 10 cm thick" with its
+#' "lower limit >= 65 cm below the mineral soil surface", gleyic throughout
+#' with reducing conditions in every sublayer. `ok` is the per-layer reading
+#' of path 1 (gleyic and reducing, TRUE / FALSE / NA), `z` the redox reading
+#' of the layers (.wrb_redox_layers()), `ms` the depth of the mineral soil
+#' surface. The horizon is the run of layers of mollic() or
+#' umbric_horizon(); while layers below its sure layers are undecided its
+#' lower limit is undecided, and each lower limit it could have is tried (NA
+#' at most). Returns passed, the layers of the horizon and of the layer
+#' underneath, and what would decide it.
+#' @noRd
+.gleysol_path2 <- function(pedon, ok, z, ms) {
+  h <- pedon$horizons
+  reducing <- z$reducing
+  ord <- order(h$top_cm)
+  ord <- ord[!is.na(h$top_cm[ord]) & !is.na(h$bottom_cm[ord])]
+  thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
+  # 2.b: the adjoining layers from `bottom` down while they may be gleyic and
+  # reducing; TRUE when the sure ones reach 10 cm and 65 cm, NA when the
+  # undecided ones could
+  underneath <- function(bottom) {
+    lay <- integer(0); end <- bottom; sure_end <- NA_real_; decided <- TRUE
+    for (j in ord) {
+      if (h$top_cm[j] < end - 1) next
+      if (abs(h$top_cm[j] - end) >= 1 || ok[j] %in% FALSE) break
+      lay <- c(lay, j); end <- h$bottom_cm[j]
+      if (decided && ok[j] %in% TRUE) sure_end <- end else decided <- FALSE
+    }
+    meets <- function(e) !is.na(e) && e - bottom >= 10 && e >= ms + 65
+    list(passed = if (meets(sure_end)) TRUE else if (meets(end)) NA else FALSE,
+         layers = lay, undecided = lay[is.na(ok[lay])])
+  }
+  one <- function(res, umbric) {
+    none <- list(passed = FALSE, layers = integer(0), missing = character(0))
+    if (isFALSE(res$passed)) return(none)
+    ls  <- .wrb_mollic_layer_status(h, umbric = umbric)
+    run <- .wrb_mollic_run(h, ls$status, ls$missing)
+    nL <- length(run$layers); nM <- length(run$maybe)
+    if (!nM) return(none)
+    out <- none
+    for (k in seq(max(nL, 1L), nM)) {
+      hz <- run$maybe[seq_len(k)]
+      if (thk(hz) <= 40) next                      # "> 40 cm thick"
+      # the horizon ends here for sure only when it passed and no undecided
+      # layer follows its sure layers
+      st <- if (isTRUE(res$passed) && k == nL && nL == nM) TRUE else NA
+      deep <- hz[h$bottom_cm[hz] > ms + 40]
+      a <- if (length(deep)) .and3(reducing[deep]) else FALSE
+      b <- underneath(max(h$bottom_cm[hz]))
+      v <- .and3(st, a, b$passed)
+      lay <- sort(unique(c(hz, b$layers)))
+      if (isTRUE(v)) return(list(passed = TRUE, layers = lay, missing = character(0)))
+      if (is.na(v)) out <- list(passed = NA, layers = lay, missing = unique(c(
+        if (is.na(st)) c(res$missing, run$missing),
+        if (is.na(a)) c("designation", "redoximorphic_features_pct"),
+        if (is.na(b$passed)) c(.redox_missing(z, b$undecided),
+                               if (anyNA(reducing[b$undecided]))
+                                 c("designation", "redoximorphic_features_pct")))))
+    }
+    out
+  }
+  mo <- one(mollic(pedon), umbric = FALSE)
+  if (isTRUE(mo$passed)) return(c(mo, list(horizon = "mollic")))
+  um <- one(umbric_horizon(pedon), umbric = TRUE)
+  if (isTRUE(um$passed)) return(c(um, list(horizon = "umbric")))
+  if (is.na(mo$passed)) return(c(mo, list(horizon = "mollic")))
+  if (is.na(um$passed)) return(c(um, list(horizon = "umbric")))
+  list(passed = FALSE, layers = integer(0), missing = character(0), horizon = NA_character_)
 }
 
 

@@ -109,7 +109,7 @@ rsgs:
     name: Gleysols
     tests:
       all_of:
-        - gleysol: {}                   # v0.3.4: strict gate (gleyic + reducing + thickness)
+        - gleysol: {}                   # Ch 4 p 103, items 1-3 (v0.9.323: item 2, mollic/umbric > 40 cm over a gleyic layer)
 
   - code: AN
     name: Andosols
