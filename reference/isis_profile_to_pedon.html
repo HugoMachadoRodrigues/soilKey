@@ -27,7 +27,7 @@ citation."><meta property="og:image" content="https://hugomachadorodrigues.githu
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.312</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.313</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,8 +108,10 @@ citation.</p>
 <dd><p>If <code>TRUE</code> (default), mottles,
 slickensides, pressure faces, plinthite, a duripan and artefacts that
 the field description of a horizon does not mention are recorded as
-absent in that horizon; rows with laboratory data only stay unknown. <code>FALSE</code> leaves
-everything not recorded unknown.</p></dd>
+absent in that horizon; rows with laboratory data only stay unknown.
+ISIS has one cutans field per layer, so slickensides and pressure faces
+are read as absent only where that field is free (v0.9.313). <code>FALSE</code>
+leaves everything not recorded unknown.</p></dd>
 
 
 <dt id="arg-accessed">accessed<a class="anchor" aria-label="anchor" href="#arg-accessed"></a></dt>

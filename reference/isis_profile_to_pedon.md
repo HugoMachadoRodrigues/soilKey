@@ -35,7 +35,9 @@ isis_profile_to_pedon(
   If `TRUE` (default), mottles, slickensides, pressure faces, plinthite,
   a duripan and artefacts that the field description of a horizon does
   not mention are recorded as absent in that horizon; rows with
-  laboratory data only stay unknown. `FALSE` leaves everything not
+  laboratory data only stay unknown. ISIS has one cutans field per
+  layer, so slickensides and pressure faces are read as absent only
+  where that field is free (v0.9.313). `FALSE` leaves everything not
   recorded unknown.
 
 - accessed:

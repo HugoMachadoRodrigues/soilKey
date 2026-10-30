@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.312</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.313</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,16 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.313" id="soilkey-09313-2026-10-29">soilKey 0.9.313 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09313-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="isis-slickensides-and-pressure-faces-are-read-as-absent-only-where-the-cutans-field-is-free-0-9-313">ISIS: slickensides and pressure faces are read as absent only where the cutans field is free<a class="anchor" aria-label="anchor" href="#isis-slickensides-and-pressure-faces-are-read-as-absent-only-where-the-cutans-field-is-free-0-9-313"></a></h3>
+<ul><li>ISIS has one cutans field per layer. With <code>absent_unless_recorded = TRUE</code>, slickensides and pressure faces that a described horizon does not mention were read as absent. Where that field records clay cutans, or cutans of no kind, they could not have been recorded there, so they now stay unknown (Hugo, 2026-10-29). Where the field is free or records no cutans, they are still read as absent.</li>
+<li>The seven ISIS Nitisols that record clay cutans only (KE015, KE016 and others) no longer read as having no pressure faces. KE016’s nitic horizon becomes undecided instead of absent.</li>
+<li>
+<strong>Results:</strong> the WRB and USDA names of the ISIS profiles do not change (481 and 748, rebuilt with this reader). The other panels do not read ISIS.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.312" id="soilkey-09312-2026-10-29">soilKey 0.9.312 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09312-2026-10-29"></a></h2>
 <div class="section level3">

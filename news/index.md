@@ -1,5 +1,23 @@
 # Changelog
 
+## soilKey 0.9.313 (2026-10-29)
+
+### ISIS: slickensides and pressure faces are read as absent only where the cutans field is free
+
+- ISIS has one cutans field per layer. With
+  `absent_unless_recorded = TRUE`, slickensides and pressure faces that
+  a described horizon does not mention were read as absent. Where that
+  field records clay cutans, or cutans of no kind, they could not have
+  been recorded there, so they now stay unknown (Hugo, 2026-10-29).
+  Where the field is free or records no cutans, they are still read as
+  absent.
+- The seven ISIS Nitisols that record clay cutans only (KE015, KE016 and
+  others) no longer read as having no pressure faces. KE016’s nitic
+  horizon becomes undecided instead of absent.
+- **Results:** the WRB and USDA names of the ISIS profiles do not change
+  (481 and 748, rebuilt with this reader). The other panels do not read
+  ISIS.
+
 ## soilKey 0.9.312 (2026-10-29)
 
 ### The AfSP reader reads its structure codes
