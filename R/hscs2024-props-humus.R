@@ -385,7 +385,12 @@
 # greater part of the year. The peat properties that read them (rostos
 # tozeges, vegyes tozeges, kotus, mohatozeges, sekely, mely) are listed only
 # for the Laptalajok; tozeges, in the other types, reads .hscs_peat_rows().
-.hscs_lap_peat_rows <- function(x) .hscs_organic_rows(x)
+# A limnic layer (FAO L: lake sediment) is not peat, organic or not.
+.hscs_lap_peat_rows <- function(x) {
+  org <- .hscs_organic_rows(x)
+  org[x$role %in% "L"] <- FALSE
+  org
+}
 
 # The share of recognisable plant parts in the volume of the peat
 # horizon(s) ("a tozeg talajszint(ek) terfogatanak"), over the peat rows the
