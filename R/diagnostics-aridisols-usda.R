@@ -15,22 +15,27 @@
 #' Pass when the soil has aridic SMR AND any one of: argillic, natric,
 #' kandic, calcic, petrocalcic, gypsic, petrogypsic, salic, duripan,
 #' cambic, sulfuric horizon. Also requires no other prior order match.
+#'
+#' The aridic regime is read only from \code{site$soil_moisture_regime}.
+#' When the site does not record a regime the test is undecided (NA) and
+#' the key goes on to the next order; it is never inferred from the
+#' horizons (v0.9.324).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 aridisol_qualifying_usda <- function(pedon) {
-  h <- pedon$horizons
   smr <- smr_aridic_usda(pedon)
-  smr_pass <- isTRUE(smr$passed)
-  # Fallback aridity proxy when SMR is missing: low surface OC
-  # (< 1%) + low chroma in surface (no humus accumulation).
-  if (!smr_pass && length(smr$missing) > 0L) {
-    surface <- which(!is.na(h$top_cm) & h$top_cm <= 5)
-    surface_oc <- if (length(surface) > 0L)
-                    h$oc_pct[surface]
-                  else numeric(0)
-    smr_pass <- length(surface) > 0L &&
-                  all(is.na(surface_oc) | surface_oc < 1)
-  }
+  # Key to Soil Orders, item G.1.a (KST 13 p 69): "An aridic soil moisture
+  # regime". KST 13 p 48 defines it by the moisture control section in
+  # normal years: "Dry in all parts for more than half of the cumulative
+  # days per year" above 5 C at 50 cm, and moist for "less than 90
+  # consecutive days" above 8 C. It is a property of the climate of the
+  # soil, estimated "from climatic data" (p 47, the Newhall model), not
+  # of the horizons. So a site that records no regime leaves the test
+  # undecided (NA). Up to v0.9.314 a missing regime was read as aridic
+  # whenever the surface (top <= 5 cm) organic carbon was below 1 % or
+  # not recorded: a proxy the text does not give, which sent humid
+  # Brazilian Latosols without a recorded regime to the Aridisols.
+  aridic <- if (length(smr$missing) > 0L) NA else isTRUE(smr$passed)
   diag_present <-
     isTRUE(argillic_within_usda(pedon, max_top_cm = 200)$passed) ||
     isTRUE(.natric_horizon_impl(pedon)$passed) ||   # v0.9.310: USDA reading
@@ -42,12 +47,14 @@ aridisol_qualifying_usda <- function(pedon) {
     isTRUE(duric_horizon(pedon)$passed) ||  # broader cementation
     isTRUE(.cambic_impl(pedon)$passed) ||   # v0.9.310: USDA reading
     isTRUE(sulfuric_horizon_usda(pedon, max_top_cm = 200)$passed)
-  passed <- isTRUE(smr_pass) && isTRUE(diag_present)
+  # TRUE / FALSE / NA: a recorded non-aridic regime, or no qualifying
+  # horizon, fails; an unrecorded regime with a qualifying horizon is NA.
+  passed <- .and3v(aridic, diag_present)
   DiagnosticResult$new(
     name = "aridisol_qualifying_usda", passed = passed,
     layers = integer(0),
     evidence = list(aridic = smr, diag_present = diag_present,
-                      smr_pass = smr_pass),
+                      smr_pass = aridic),
     missing = smr$missing,
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 7, p 137"
   )

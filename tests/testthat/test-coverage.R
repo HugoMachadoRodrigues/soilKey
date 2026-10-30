@@ -87,9 +87,15 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
   # Each is a Typic -> specific refinement that the KSSL n=2895 gate cleared
   # (0 was-correct -> now-wrong), firing on genuine multi-condition evidence.
   sg <- function(f) classify_usda(f(), on_missing = "silent")$name
+  # v0.9.324: the Calcisol fixture records no moisture regime, and the
+  # Aridisols need the aridic regime itself (KST 13 p 69, item G.1.a), so
+  # the regime is recorded here to keep testing the Aridisol subgroup.
+  aridic <- function(f) function() {
+    p <- f(); p$site$soil_moisture_regime <- "aridic"; p
+  }
   expect_equal(sg(make_andosol_canonical),    "Thaptic Hydrudands")
   expect_equal(sg(make_argissolo_canonical),  "Rhodic Kandiudults")
-  expect_equal(sg(make_calcisol_canonical),   "Petronodic Haplocalcids")
+  expect_equal(sg(aridic(make_calcisol_canonical)), "Petronodic Haplocalcids")
   expect_equal(sg(make_planossolo_canonical), "Umbric Albaqualfs")
 })
 
@@ -102,9 +108,14 @@ test_that("the generator never changes a fixture's great group", {
     n <- classify_usda(f(), on_missing = "silent")$name
     sub(".*\\s", "", n)
   }
+  # v0.9.324: aridic regime recorded for the Calcisol fixture (KST 13 p 69,
+  # item G.1.a); see the test above.
+  aridic_calcisol <- function() {
+    p <- make_calcisol_canonical(); p$site$soil_moisture_regime <- "aridic"; p
+  }
   expect_equal(gg(make_andosol_canonical),    "Hydrudands")
   expect_equal(gg(make_argissolo_canonical),  "Kandiudults")
-  expect_equal(gg(make_calcisol_canonical),   "Haplocalcids")
+  expect_equal(gg(aridic_calcisol),           "Haplocalcids")
   expect_equal(gg(make_planossolo_canonical), "Albaqualfs")
 })
 

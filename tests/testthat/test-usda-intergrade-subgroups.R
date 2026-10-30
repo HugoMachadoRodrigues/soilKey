@@ -36,7 +36,11 @@ test_that("canonical Gypsisol fixture refines Typic -> Leptic Haplogypsids", {
   skip_on_cran()
   # Validated refinement (great group invariant): its gypsic horizon (caso4 8%,
   # 35 cm thick) begins at 15 cm, within the 18 cm Leptic window.
-  res <- classify_usda(make_gypsisol_canonical())
+  # v0.9.324: the fixture records no moisture regime and the Aridisols need
+  # the aridic regime itself (KST 13 p 69, item G.1.a), so it is recorded.
+  p <- make_gypsisol_canonical()
+  p$site$soil_moisture_regime <- "aridic"
+  res <- classify_usda(p)
   expect_equal(res$trace$great_group_assigned$name, "Haplogypsids")
   expect_equal(res$name, "Leptic Haplogypsids")
 })
