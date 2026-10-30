@@ -187,7 +187,9 @@ test_that("Supragleyic requires gleyic layers above a barrier (rock or petric)",
     munsell_hue_moist = c("10YR","2.5Y", NA_character_),
     munsell_value_moist = c(4, 5, NA_real_),
     munsell_chroma_moist = c(2, 1, NA_real_),
-    redoximorphic_features_pct = c(0, 30, NA_real_),
+    # v0.9.310: at most 5% mottles, so the 2.5Y 5/1 Bg meets gleyic
+    # criterion 1 (>= 95% reductimorphic features, WRB 2022 3.2.6)
+    redoximorphic_features_pct = c(0, 3, NA_real_),
     coarse_fragments_pct = c(2, 5, 100),
     clay_pct = c(20, 22, NA_real_),
     silt_pct = c(40, 38, NA_real_),

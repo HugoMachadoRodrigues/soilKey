@@ -34,14 +34,18 @@ Found by running soilKey on ISRIC's World Soil Reference Collection (ISIS). Six 
   * The calcic horizon follows criterion 2.
   * Arenosols use a weighted average of texture.
   * Fluvic material needs a water origin, and its strata are a texture reversal or irregular organic carbon. ISIS deposition origin is now read into `rock_origin`.
-* **Results:** on the 481 ISIS profiles with an ISRIC WRB 2022 name, the Reference Soil Group agrees for 301 (62.6%), up from 221 (45.9%) in 0.9.308. Other WRB panels: AfSP 25.0 -> 26.7%, FEBR 19.3 -> 19.7%, WoSIS 16.9 -> 13.8%. Most of the WoSIS losses depend on readings still open (a Phaeozem described only to 88 cm, calcic horizons with no secondary carbonates recorded, Arenosols described to 40-80 cm) and on two Histosols whose H horizons have under 20% organic carbon. BDsolos SiBCS 57.2 -> 57.5%; the USDA panels are unchanged against 0.9.309.
+* **Readings decided by Hugo after the measurement:**
+  * A profile described above 100 cm is decided on the part that is described (Phaeozems, Arenosols).
+  * With no secondary carbonates recorded, a layer with CaCO3 >= 15% meets calcic criterion 2 by the laboratory.
+  * Gleyic criterion 1 (>= 95% reductimorphic features) needs at most 5% oximorphic features, and criterion 3 needs a layer below that meets criterion 1.
+* **Results:** on the 481 ISIS profiles with an ISRIC WRB 2022 name, the Reference Soil Group agrees for 310 (64.4%), up from 221 (45.9%) in 0.9.308. Other WRB panels: AfSP 25.0 -> 28.3%, FEBR 19.3 -> 20.2%, WoSIS 16.9 -> 16.2% (one profile, a Histosol whose H horizons have under 20% organic carbon). BDsolos SiBCS goes from 57.2 to 57.5%; Redape and the USDA panels are unchanged against 0.9.309.
 * **Fixtures:** 10 of the 44 canonical fixtures change their WRB name, each by the text:
   * the Planossolo becomes a Planosol;
   * the Argissolo and the Nitossolo become Lixisols;
   * Cambic is dropped where the cambic layers belong to another horizon;
   * the Phaeozem fixture becomes Chernic.
 
-  The Chernozem, Kastanozem, Acrisol, Fluvisol, Stagnosol, Planosol and Retisol fixtures gained or changed recorded properties so that they keep showing the soil they were written for.
+  The Chernozem, Kastanozem, Acrisol, Fluvisol, Stagnosol, Planosol, Retisol and Gleysol fixtures gained or changed recorded properties so that they keep showing the soil they were written for (the Gleysol: the groundwater its drainage class names).
 
 # soilKey 0.9.309 (2026-10-29)
 

@@ -22,11 +22,13 @@ test_that("v0.9.139: calcic() core is byte-identical when morphology is absent",
   # so the enrichment criterion is not disproven (refine-when-present).
   # v0.9.314: that core is .calcic_impl(), read by the USDA calcic horizon and
   # the SiBCS horizonte calcico; the WRB calcic() follows WRB 2022 Ch 3.1.4 and
-  # leaves such a profile undecided (test-v09314-weak.R).
+  # leaves such a profile undecided (test-v09314-weak.R). v0.9.310 (Hugo): with
+  # no secondary carbonates recorded, CaCO3 >= 15% meets criterion 2 by the
+  # laboratory, so the WRB calcic() keeps it too.
   uni <- mkh(data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 80),
                         designation = c("A", "C1", "C2"), caco3_pct = c(20, 20, 20)))
   expect_true(isTRUE(.calcic_impl(prh(uni))$passed))
-  expect_true(is.na(calcic(prh(uni))$passed))
+  expect_true(isTRUE(calcic(prh(uni))$passed))
   # v0.9.142: the core now carries the refine-when-present enrichment sub-test.
   expect_named(.calcic_impl(make_calcisol_canonical())$evidence,
                c("caco3", "enrichment", "thickness"))
