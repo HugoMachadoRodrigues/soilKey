@@ -190,3 +190,51 @@ test_that("v0.9.321 Technosols: the lists of the text, two supplementary columns
                    c("Sulfidic", "Tephric", "Thionic", "Toxic", "Transportic", "Vitric"))
   expect_identical(tc$principal[1:3], c("Ekranic/Thyric", "Linic", "Urbic"))
 })
+
+
+# ---- mollic and umbric horizons, criterion 6a (p. 53, p. 70) --------------------
+
+.fu_m6 <- function(top, bottom, desg, oc = c(3, 2, 0.5, 0.2)[seq_along(top)], cem = NA,
+                   caco3 = NA, bs = 90) {
+  n <- length(top)
+  .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, oc_pct = oc,
+          cementation_class = cem, caco3_pct = caco3, clay_pct = 25, silt_pct = 40,
+          sand_pct = 35, munsell_hue_moist = "10YR",
+          munsell_value_moist = c(2, 2, 5, 6)[seq_len(n)],
+          munsell_chroma_moist = c(1, 2, 4, 4)[seq_len(n)],
+          munsell_value_dry = c(3, 3, 6, 7)[seq_len(n)], bs_pct = bs,
+          ph_h2o = if (bs >= 50) 7 else 4.8)
+}
+
+test_that("v0.9.321 mollic and umbric: >= 10 cm directly over continuous rock (6a)", {
+  skip_on_cran()
+  on_rock <- .fu_m6(c(0, 15), c(15, 40), c("Ah", "R"), oc = c(3, NA))
+  m <- mollic(on_rock)
+  expect_true(isTRUE(m$passed))                       # was FALSE (>= 20 cm only)
+  expect_true(m$evidence$thickness$details$criterion_6a)
+  expect_equal(m$layers, 1L)
+  expect_true(isTRUE(umbric_horizon(.fu_m6(c(0, 15), c(15, 40), c("Ah", "R"),
+                                           oc = c(3, NA), bs = 30))$passed))
+  # < 10 cm: no; the rock is not part of the horizon, so it is not undecided
+  expect_false(mollic(.fu_m6(c(0, 8), c(8, 40), c("Ah", "R"), oc = c(3, NA)))$passed)
+  # over a layer that 6a does not name
+  expect_false(mollic(.fu_m6(c(0, 15), c(15, 40), c("Ah", "Bw"), oc = c(3, 0.3)))$passed)
+  # >= 20 cm needs nothing below
+  expect_true(isTRUE(mollic(.fu_m6(c(0, 15), c(15, 30), c("Ah1", "Ah2"), oc = c(3, 2)))$passed))
+})
+
+test_that("v0.9.321 mollic 6a: petrocalcic horizon below; undecided cemented layers", {
+  skip_on_cran()
+  pk <- .fu_m6(c(0, 15), c(15, 40), c("Ah", "Bkm"), oc = c(3, 0.3),
+               cem = c(NA, "strongly"), caco3 = c(NA, 30))
+  expect_true(isTRUE(petrocalcic(pk)$passed))
+  expect_true(isTRUE(mollic(pk)$passed))
+  # a cemented layer whose petro* horizon cannot be decided
+  und <- .fu_m6(c(0, 15), c(15, 40), c("Ah", "Bkm"), oc = c(3, 0.3))
+  expect_true(is.na(mollic(und)$passed))
+  # recorded as not cemented, or a designation without the suffix m: no petro*
+  expect_false(mollic(.fu_m6(c(0, 15), c(15, 40), c("Ah", "Bk"), oc = c(3, 0.3),
+                             cem = c(NA, "weakly")))$passed)
+  # nothing described below a horizon of 10 to < 20 cm
+  expect_true(is.na(mollic(.fu_m6(0, 15, "Ah", oc = 3))$passed))
+})
