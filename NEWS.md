@@ -1,3 +1,28 @@
+# soilKey 0.9.316 (2026-10-30)
+
+## The Hungarian system (HSCS 2024) names its subtypes and varieties
+
+* `classify_hscs2024()` now names, besides the 15 types, the subtype properties (altípus tulajdonságok, 8.5, p. 29-33) and the variety properties (változati tulajdonságok, 8.6, p. 34-36) of each type's table (section 7, p. 8-22), with the modifiers of 8.7 (p. 37). As the guide writes it (p. 7), the subtypes come before the type, the first with a capital letter, and the varieties after it, in parentheses, in the table's order. The guide's own example, "Savanyú, humuszszegény Agyagbemosódásos talaj (sekélyen kőzettörmelékes)", is a test.
+* The tables are in `inst/rules/hscs2024/properties.yaml`. Each of the 74 properties is a three-valued function, and the result carries every property with its verdict, depth and label (`$qualifiers$status`) and one `levels` row per property named.
+* **Readings decided by Hugo (2026-10-30):**
+  * Every listed property whose definition holds is named. A row of degrees of one property (carbonate degrees, humus classes, base status, peat decomposition, sekély/mély, művelt/rigolozott) names only the strongest, and none when a stronger one is undecided.
+  * A property defined by a layer takes the depth modifier of 8.7 (felszíntől, sekélyen, középmélyen, mélyben) from where its layer starts. The intensity words are used only where the text defines them.
+  * The humus classes are read layer by layer. The surface horizon of humuszszegény, lápföldes and nyers is the weighted A horizon.
+  * Rozsdabarna needs hue 10YR or redder and chroma 5 or more. Fakó is read in an eluvial horizon only. A g suffix shows the reductive conditions of pangóvizes.
+  * In a Láptalaj every organic horizon is peat.
+  * The measured CaCO3 decides the carbonate degree, and 15 % or more without secondary carbonates is közepesen.
+  * Karbonát-szulfátos and -kloridos need carbonate making 20 % of the salts.
+* The other readings where the text is silent are listed in `inst/rules/hscs2024/readings.yaml` (five new entries).
+* **New attributes**, undecided when not recorded:
+  * horizon: `soluble_salts_sulfate_pct`, `soluble_salts_chloride_pct`, `soluble_salts_carbonate_pct`, `p2o5_al_mg_kg`, `digo_pct`, `coarse_fragments_shape`, `secondary_carbonates_form`, `mottle_size_class`;
+  * site: `contaminated`, `terraced`, `flood_irrigated`, `wind_deflation`.
+* The Antropogén key reads the hortic route of the anthropogenic horizon (8.1, criterion 1) from `p2o5_al_mg_kg`. The ISIS reader reads the mottle size (`mottlesSizeclass`).
+* **On ISRIC's ISIS profiles from Hungary, Slovakia and Romania** the names are what the data show. For example:
+  * "Középmélyen erősen karbonátos, telített, sekélyen magnéziumos, kérges Szolonyec talaj (iszapos agyag)" for HU014, a Columnic Solonetz in WRB terms;
+  * "Telítetlen, sekélyen podzolos, sekélyen fakó Agyagbemosódásos talaj (középmélyen duzzadó, sekélyen vörös, iszapos vályog)" for RO008.
+
+  No property errs on the 974 ISIS profiles. The type of every profile is unchanged.
+
 # soilKey 0.9.315 (2026-10-30)
 
 ## The last WRB 2022 and USDA readings of the ISIS triage

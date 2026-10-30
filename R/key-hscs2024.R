@@ -1,8 +1,9 @@
 # =============================================================================
 # v0.9.305 -- the Hungarian diagnostic soil classification (Micheli et al.
 # 2024, "A diagnosztikus szemleletu hazai talajosztalyozasi rendszer",
-# second approximation), keyed to its 15 soil types (section 7). The subtype
-# and variety properties, added to the name, are not keyed yet.
+# second approximation), keyed to its 15 soil types (section 7). Since
+# v0.9.316 the subtype and variety properties of each type's table are added
+# to the name (R/hscs2024-properties.R).
 # Experimental and opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -14,8 +15,13 @@
 #' 15 types (Laptalaj, Antropogen talaj, Koves-sziklas vaztalaj,
 #' Kozethatasu talaj, Szolonyec talaj, Szoloncsak talaj, Duzzado agyagtalaj,
 #' Reti talaj, Karbonat talaj, Mezosegi talaj, Agyagbemosodasos talaj,
-#' Homoktalaj, Barnafold, Hordalektalaj, Foldeskopar). The subtype and
-#' variety properties that the system adds to the name are not keyed yet.
+#' Homoktalaj, Barnafold, Hordalektalaj, Foldeskopar). Since v0.9.316 the
+#' name also carries the subtype properties of the type's table (before the
+#' type, the first with a capital letter) and its variety properties (after
+#' it, in parentheses), in the table's order, with the depth modifiers of 8.7
+#' (felszintol, sekelyen, kozepmelyen, melyben) on properties defined by a
+#' layer: e.g. "Savanyu, humuszszegeny Agyagbemosodasos talaj (sekelyen
+#' kozettormelekes)", with the accents.
 #'
 #' The names are the Hungarian singular, as the text's naming example writes
 #' them; \code{levels$name_en} gives an English gloss. The key reads the FAO
@@ -43,10 +49,13 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"hscs2024"}, the type in \code{name} and \code{rsg_or_order}, the
-#'   type with its English gloss in \code{levels}, the key trace, and
-#'   \code{provisional_because} (types before the assigned one that could
-#'   not be decided).
+#'   \code{"hscs2024"}, the full name in \code{name} and the type in
+#'   \code{rsg_or_order}; \code{levels} has the type with its English gloss
+#'   and one row per subtype and variety property named; \code{qualifiers}
+#'   holds the subtypes, the varieties and \code{status}, every property of
+#'   the type's table with its verdict (TRUE, FALSE, NA), depth and label;
+#'   and the key trace and \code{provisional_because} (types before the
+#'   assigned one that could not be decided).
 #' @references Micheli E., Fuchs M., Lang V., Csorba A., Dobos E., Szegi T.,
 #'   Kele G. (2024). A diagnosztikus szemleletu hazai talajosztalyozasi
 #'   rendszer. Utmutato. Masodik kozelites. Magyar Agrar- es

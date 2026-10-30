@@ -54,7 +54,7 @@ test_that("the registry lists the HSCS as an opt-in system with valid rules", {
   expect_true(isTRUE(k[[15]]$tests$default))
   res <- classify_all(make_hscs2024_example("steppe"), systems = c("wrb", "hscs"), on_missing = "silent")
   expect_true(grepl("Mezőségi talaj", res$summary$hscs2024, fixed = TRUE))
-  expect_length(yaml::read_yaml(system.file("rules", "hscs2024", "readings.yaml", package = "soilKey"))$readings, 17L)
+  expect_length(yaml::read_yaml(system.file("rules", "hscs2024", "readings.yaml", package = "soilKey"))$readings, 22L)   # v0.9.316: five readings of the subtype and variety properties
   # the other hierarchical systems keep their three columns
   expect_identical(names(classify_nzsc4(make_nzsc4_example("brown"), on_missing = "silent")$levels),
                    c("level", "code", "name"))

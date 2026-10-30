@@ -22,7 +22,7 @@ citation: >
   Útmutató. Második közelítés. Magyar Agrár- és Élettudományi Egyetem,
   Gödöllő.
 version: "Second approximation, Gödöllő 2024 (talaj.hu)"
-implementation_status: "soilKey v0.9.305 -- the 15 types of the key (section 7); the subtype and variety properties are not keyed yet"
+implementation_status: "soilKey v0.9.316 -- the 15 types of the key (section 7), their subtype and variety properties (8.5, 8.6) and the modifiers of 8.7"
 source: |
   Michéli et al. (2024). A diagnosztikus szemléletű hazai talajosztályozási
   rendszer. Útmutató, második közelítés. Section 7 (key to the types) and
