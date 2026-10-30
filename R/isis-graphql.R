@@ -42,7 +42,10 @@
 #   * Water-dispersible clay is a clay content.
 #   * absent_unless_recorded = TRUE (default): in a horizon with a field
 #     description, mottles, slickensides, pressure faces, plinthite, a duripan
-#     and artefacts that the description does not mention are absent. Rows
+#     and artefacts that the description does not mention are absent (v0.9.313:
+#     slickensides and pressure faces only where the one cutans field of the
+#     layer is free; where it records cutans of another kind they stay
+#     unknown). Rows
 #     with laboratory data only stay unknown, and so does anything a
 #     designation or a pan suggests (v for plinthite, qm for a duripan, u for
 #     artefacts), and the mottles of a g, l or r horizon with no mottle field.
@@ -599,9 +602,14 @@ isis_citation <- function(accessed = Sys.Date()) {
     mother <- vapply(H, function(L) !is.null(L$mottlesColour) || !is.null(L$mottlesContrast) || !is.null(L$mottlesSizeclass), NA)
     glr <- grepl("^[0-9]*[A-Z]+[a-z]*[glr]", d) & !grepl("^[0-9]*R", d)
     set0("redoximorphic_features_pct", desc & !mfields & !(mother | glr), 0)
-    set0("slickensides", desc, "absent")
+    # v0.9.313 (Hugo, 2026-10-29): ISIS has one cutans field per layer, so
+    # slickensides and pressure faces are absent only where it is free. Where it
+    # records cutans of another kind (clay cutans, say), or cutans of no kind,
+    # they could not have been recorded there and stay unknown.
+    occupied <- !is.na(kind) | (!is.na(amt) & amt != "0")
+    set0("slickensides", desc & !occupied, "absent")
     # v0.9.317: pressure faces too, recorded in the same cutans field
-    set0("pressure_faces", desc, "none")
+    set0("pressure_faces", desc & !occupied, "none")
     set0("plinthite_pct", desc & !grepl("^[0-9]*[A-Z]+[a-z]*v", d) & !pan %in% c("L", "I"), 0)
     set0("duripan_pct", desc & !grepl("qm", d) & !pan %in% "D", 0)
     u <- grepl("^[0-9]*[A-Z]+[a-z]*u", d)
@@ -666,8 +674,10 @@ isis_citation <- function(accessed = Sys.Date()) {
 #' @param absent_unless_recorded If \code{TRUE} (default), mottles,
 #'   slickensides, pressure faces, plinthite, a duripan and artefacts that
 #'   the field description of a horizon does not mention are recorded as
-#'   absent in that horizon; rows with laboratory data only stay unknown. \code{FALSE} leaves
-#'   everything not recorded unknown.
+#'   absent in that horizon; rows with laboratory data only stay unknown.
+#'   ISIS has one cutans field per layer, so slickensides and pressure faces
+#'   are read as absent only where that field is free (v0.9.313). \code{FALSE}
+#'   leaves everything not recorded unknown.
 #' @param accessed Date the data were read (default today).
 #' @return A \code{\link{PedonRecord}}.
 #' @export
