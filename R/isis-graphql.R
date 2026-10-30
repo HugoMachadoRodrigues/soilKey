@@ -30,6 +30,9 @@
 #     slickensides, common when patchy, broken or of no recorded abundance.
 #   * Cracks: the profile's cracking (large or small) or, without it, gilgai
 #     give cracks of 0.5 cm or more in the horizons starting above 100 cm.
+#     v0.9.315: else its surface cracks (cracksSurface): medium cracks are 1 cm;
+#     "no cracks observed" is no cracks only in a profile described dry at the
+#     surface (dryfrom 0), and unknown otherwise.
 #   * Coarse fragments: cfvo when measured, else the middle of the FAO class of
 #     rocksArtefactAbundVol (V 1, F 3.5, C 10, M 27.5, A 60, D 90 %).
 #   * Inclusions: calcareous ones are secondary carbonates; hard Fe/Mn
@@ -128,7 +131,7 @@ isis_citation <- function(accessed = Sys.Date()) {
     "moistureRegimeSoil temperatureRegimeSoil drainageClass siteElevation",
     "depthGroundwater groundwaterTop groundwaterKind",
     "slopeGradientNumeric lithologyParmat lithologyParmatDeposition",
-    "lithologyParmatDeposition2 cracking microreliefKind",
+    "lithologyParmatDeposition2 cracking cracksSurface dryfrom microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
     "layers(first: 100, orderBy: [UPPER_DEPTH_ASC]) { layerNumber upperDepth lowerDepth layerName",
@@ -388,7 +391,9 @@ isis_citation <- function(accessed = Sys.Date()) {
 }
 
 .isis_layers_to_horizons <- function(layers, absent_unless_recorded = TRUE,
-                                     cracking = NA_character_, gilgai = FALSE) {
+                                     cracking = NA_character_, gilgai = FALSE,
+                                     cracks_surface = NA_character_,
+                                     dry_at_surface = FALSE) {
   layers <- Filter(function(L) !is.null(L$upperDepth) && !is.null(L$lowerDepth), layers)
   if (!length(layers)) return(list(horizons = NULL, provenance = NULL, notes = character(0)))
   if (all(vapply(layers, .isis_is_sample_row, NA)))
@@ -540,6 +545,22 @@ isis_citation <- function(accessed = Sys.Date()) {
     note("cracks_width_cm", rows, sprintf("inferred from the profile's %s: cracks of 0.5 cm or more",
       switch(cr, L = "cracking (large cracks)", C = "cracking (small cracks)", gilgai = "gilgai microrelief")))
   }
+  # v0.9.315 (Hugo, 2026-10-30): the surface cracks of the profile. Medium
+  # cracks (1-2 cm) are cracks of 1 cm. "No cracks observed" reads as no cracks
+  # only where the profile was described dry at the surface: cracks "may be
+  # evident only when the soil is dry" (WRB 2022 3.2.12, p. 80), so in a
+  # profile described moist they stay unknown. Fine cracks (< 1 cm) do not
+  # decide the 0.5 cm and are not read.
+  if (is.na(cr) && !is.na(cracks_surface)) {
+    rows <- which(out$top_cm < 100)
+    if (cracks_surface == "M" || (cracks_surface == "N" && isTRUE(dry_at_surface))) {
+      if (is.null(out$cracks_width_cm)) out$cracks_width_cm <- NA_real_
+      out$cracks_width_cm[rows] <- if (cracks_surface == "M") 1 else 0
+      note("cracks_width_cm", rows, if (cracks_surface == "M")
+             "ISIS cracksSurface medium (1-2 cm): cracks of 1 cm"
+           else "ISIS cracksSurface 'no cracks observed', profile described dry at the surface: no cracks")
+    }
+  }
 
   # coarse fragments from the field class when not measured
   pct <- function(field, table) vapply(code(field), function(k)
@@ -687,7 +708,9 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
   code <- as.character(profile$profileCode)
   gil <- identical(.isis_code(profile$microreliefKind), "G")
   x <- .isis_layers_to_horizons(profile$layers %||% list(), absent_unless_recorded,
-                                cracking = .isis_code(profile$cracking), gilgai = gil)
+                                cracking = .isis_code(profile$cracking), gilgai = gil,
+                                cracks_surface = .isis_code(profile$cracksSurface),
+                                dry_at_surface = isTRUE(.isis_num(profile$dryfrom) == 0))
   site <- list(id = code,
                lat = suppressWarnings(as.numeric(profile$geog$latitude %||% NA)),
                lon = suppressWarnings(as.numeric(profile$geog$longitude %||% NA)),

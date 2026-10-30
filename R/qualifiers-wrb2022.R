@@ -1158,6 +1158,14 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
       taken <- FALSE
       alts <- strsplit(entry, "/", fixed = TRUE)[[1]]
       passed_alts <- character(0); alt_layers <- list()
+      # v0.9.315 (Hugo, 2026-10-30): in the texture group, without specifiers,
+      # "only the first applicable qualifier can be used" (Ch 2.1, p. 25); when
+      # an earlier member is undecided, which one is first is not known, so the
+      # group gives no qualifier. Other groups keep the first that passes (the
+      # later member of a redundant pair, such as Eutric after Hypereutric, is
+      # right whatever the earlier one is).
+      texture_group <- length(alts) > 1L && all(alts %in% .WRB_TEXTURE_QUALIFIERS)
+      undecided_before <- FALSE
       for (qname in alts) {
         if (identical(qname, "Haplic")) next
         ev <- .evaluate_qualifier(pedon, qname, rsg_code)
@@ -1165,6 +1173,12 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
         if (isTRUE(ev$passed)) {
           passed_alts <- c(passed_alts, qname)
           alt_layers[[qname]] <- ev$layers %||% integer(0)
+        }
+        if (!taken && is.na(ev$passed)) undecided_before <- TRUE
+        if (!taken && isTRUE(ev$passed) && texture_group && undecided_before &&
+            !isTRUE(specifiers)) {
+          taken <- TRUE
+          trace[[qname]]$note <- "not named: an earlier member of its texture group is undecided"
         }
         if (!taken && isTRUE(ev$passed)) {
           matched <- c(matched, qname)

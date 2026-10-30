@@ -219,6 +219,8 @@ make_calcisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-05-12"),
       country         = "ES",
+      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
+      soil_moisture_regime = "aridic",
       parent_material = "calcareous loess",
       elevation_m     = 280,
       slope_pct       = 5,
@@ -289,6 +291,8 @@ make_gypsisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-07-08"),
       country         = "ES",
+      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
+      soil_moisture_regime = "aridic",
       parent_material = "gypsiferous lutites (Tertiary)",
       elevation_m     = 480,
       slope_pct       = 4,
@@ -358,6 +362,8 @@ make_solonchak_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-08-20"),
       country         = "ES",
+      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
+      soil_moisture_regime = "aridic",
       parent_material = "alluvium with marine influence",
       elevation_m     = 5,
       slope_pct       = 0,
@@ -1446,6 +1452,8 @@ make_durisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-04-18"),
       country         = "CL",
+      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
+      soil_moisture_regime = "aridic",
       parent_material = "Pleistocene alluvium",
       elevation_m     = 380,
       slope_pct       = 5,

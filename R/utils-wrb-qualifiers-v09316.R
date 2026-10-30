@@ -84,6 +84,11 @@
   # silt and sand: Clayic for v0.9.321's qual_clayic(), no other class
   st[is.na(st) & !is.na(h$clay_pct) & h$clay_pct >= 40] <- all(c("C", "SC", "SIC") %in% classes)
   st[!.wrb_mineral_layer(h)] <- FALSE
+  # v0.9.315: a limiting layer (continuous rock, technic hard material, a
+  # petric or other cemented layer) has no texture class of soil material, so
+  # it is none of these qualifiers; its missing particle size left the
+  # qualifiers of a shallow soil over rock undecided
+  st[tryCatch(.wrb_limiting_layers(pedon), error = function(e) integer(0))] <- FALSE
   a <- .q_thickness_rule(h, st, 30, win_top = ms, win_bot = ms + 100)
   lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
   b <- if (is.na(lim) || lim - ms <= 10 || lim - ms >= 60) FALSE else {
