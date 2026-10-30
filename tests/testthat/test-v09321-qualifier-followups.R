@@ -8,6 +8,70 @@
   PedonRecord$new(site = site, horizons = hz)
 }
 
+# A mollic horizon 0-30 cm (two layers) over a third layer; `caco3`, `eff`,
+# `desg3` set the layers' carbonates and the designation of the third.
+.fu_mollic <- function(caco3 = c(10, 12, NA), eff = NA_character_, desg3 = "Ck",
+                       site = list(id = "made-up"), n = 3) {
+  i <- seq_len(n)
+  .fu_ped(designation = c("Ah1", "Ah2", desg3, "C2")[i],
+          top_cm = c(0, 15, 30, 60)[i], bottom_cm = c(15, 30, 60, 90)[i],
+          caco3_pct = caco3[i], effervescence_class = eff,
+          oc_pct = c(3, 2, 0.5, 0.2)[i], clay_pct = 25, silt_pct = 40, sand_pct = 35,
+          munsell_hue_moist = "10YR", munsell_value_moist = c(2, 2, 5, 6)[i],
+          munsell_chroma_moist = c(1, 2, 4, 4)[i], munsell_value_dry = c(3, 3, 6, 7)[i],
+          bs_pct = 90, ph_h2o = 7.8, structure_grade = "moderate",
+          structure_type = "granular", site = site)
+}
+
+
+# ---- Rendzic (Ch 5, p. 145) ---------------------------------------------------
+
+test_that("v0.9.321 Rendzic: a mollic horizon containing or directly over >= 40% CCE", {
+  skip_on_cran()
+  over <- .fu_mollic(caco3 = c(10, 12, 55))
+  expect_true(isTRUE(mollic(over)$passed))
+  expect_true(isTRUE(qual_rendzic(over)$passed))
+  expect_equal(qual_rendzic(over)$layers, 1:2)
+  expect_true(isTRUE(qual_rendzic(.fu_mollic(caco3 = c(45, 12, 20)))$passed))  # contains
+  # 2 to < 40% CCE is calcaric material but not enough (was TRUE: any >= 2%)
+  expect_false(qual_rendzic(.fu_mollic(caco3 = c(10, 12, 20)))$passed)
+  # >= 40% deeper down, not directly under the mollic horizon
+  deep <- .fu_mollic(caco3 = c(10, 12, 5, 60), desg3 = "Bw", n = 4)
+  expect_false(qual_rendzic(deep)$passed)
+})
+
+test_that("v0.9.321 Rendzic: undecided without the CCE, not when the HCl reaction is not visible", {
+  skip_on_cran()
+  # strong effervescence: calcaric material, but how much carbonate is unknown
+  r <- qual_rendzic(.fu_mollic(caco3 = c(10, 12, NA), eff = c(NA, NA, "strong")))
+  expect_true(is.na(r$passed))
+  # slight effervescence is not calcaric material (Ch 3.3.3, p. 86)
+  expect_false(qual_rendzic(.fu_mollic(caco3 = c(10, 12, NA), eff = c(NA, NA, "slight")))$passed)
+  # nothing described below the mollic horizon
+  expect_true(is.na(qual_rendzic(.fu_mollic(caco3 = c(10, 12), n = 2))$passed))
+  # no mollic horizon
+  nom <- .fu_mollic(caco3 = c(10, 12, 55))
+  nom$horizons$oc_pct <- 0.2
+  expect_false(isTRUE(mollic(nom)$passed))
+  expect_false(isTRUE(qual_rendzic(nom)$passed))
+})
+
+test_that("v0.9.321 Rendzic: calcareous rock read from its CCE or the rock named", {
+  skip_on_cran()
+  lime <- .fu_mollic(caco3 = c(10, 12, NA), desg3 = "R",
+                     site = list(id = "made-up", parent_material = "Jurassic limestone"))
+  expect_true(isTRUE(qual_rendzic(lime)$passed))
+  # a rock with no CCE and no carbonate rock named is undecided
+  rock <- .fu_mollic(caco3 = c(10, 12, NA), desg3 = "R",
+                     site = list(id = "made-up", parent_material = "granite"))
+  expect_true(is.na(qual_rendzic(rock)$passed))
+  # a measured CCE decides for the rock too
+  marl <- .fu_mollic(caco3 = c(10, 12, 30), desg3 = "R",
+                     site = list(id = "made-up", parent_material = "limestone"))
+  expect_false(qual_rendzic(marl)$passed)
+})
+
+
 # ---- calcaric material and Endocalcaric (Ch 3.3.3, p. 86; Ch 5, p. 129) ---------
 
 test_that("v0.9.321 calcaric material reads the HCl reaction where CaCO3 is not measured", {
