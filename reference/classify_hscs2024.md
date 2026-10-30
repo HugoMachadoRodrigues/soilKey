@@ -8,8 +8,13 @@ through the Hungarian diagnostic soil classification of Micheli et al.
 talaj, Koves-sziklas vaztalaj, Kozethatasu talaj, Szolonyec talaj,
 Szoloncsak talaj, Duzzado agyagtalaj, Reti talaj, Karbonat talaj,
 Mezosegi talaj, Agyagbemosodasos talaj, Homoktalaj, Barnafold,
-Hordalektalaj, Foldeskopar). The subtype and variety properties that the
-system adds to the name are not keyed yet.
+Hordalektalaj, Foldeskopar). Since v0.9.316 the name also carries the
+subtype properties of the type's table (before the type, the first with
+a capital letter) and its variety properties (after it, in parentheses),
+in the table's order, with the depth modifiers of 8.7 (felszintol,
+sekelyen, kozepmelyen, melyben) on properties defined by a layer: e.g.
+"Savanyu, humuszszegeny Agyagbemosodasos talaj (sekelyen
+kozettormelekes)", with the accents.
 
 ## Usage
 
@@ -46,8 +51,11 @@ classify_hscs2024(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
-with `system_id` `"hscs2024"`, the type in `name` and `rsg_or_order`,
-the type with its English gloss in `levels`, the key trace, and
+with `system_id` `"hscs2024"`, the full name in `name` and the type in
+`rsg_or_order`; `levels` has the type with its English gloss and one row
+per subtype and variety property named; `qualifiers` holds the subtypes,
+the varieties and `status`, every property of the type's table with its
+verdict (TRUE, FALSE, NA), depth and label; and the key trace and
 `provisional_because` (types before the assigned one that could not be
 decided).
 
@@ -89,8 +97,20 @@ Godollo.
 ``` r
 res <- classify_hscs2024(make_hscs2024_example("steppe"), on_missing = "silent")
 res$name
-#> [1] "Mezőségi talaj"
+#> [1] "Középmélyen erősen karbonátos, mély humuszos rétegű, igen erősen humuszos, fekete Mezőségi talaj (iszapos vályog)"
 res$levels
-#>   level code           name                      name_en
-#> 1 types  MEZ Mezőségi talaj Steppe soil (chernozem-like)
+#>                        level                 code                          name
+#> 1                      types                  MEZ                Mezőségi talaj
+#> eros_karbonatos      subtype      eros_karbonatos középmélyen erősen karbonátos
+#> mely_humuszos_retegu subtype mely_humuszos_retegu          mély humuszos rétegű
+#> igen_erosen_humuszos subtype igen_erosen_humuszos          igen erősen humuszos
+#> fekete               subtype               fekete                        fekete
+#> textura              variety              textura                iszapos vályog
+#>                                           name_en
+#> 1                    Steppe soil (chernozem-like)
+#> eros_karbonatos               strongly calcareous
+#> mely_humuszos_retegu      with a deep humic layer
+#> igen_erosen_humuszos          very strongly humic
+#> fekete                                      black
+#> textura                             texture class
 ```

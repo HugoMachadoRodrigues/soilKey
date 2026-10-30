@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.315</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.316</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,38 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.316" id="soilkey-09316-2026-10-30">soilKey 0.9.316 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09316-2026-10-30"></a></h2>
+<div class="section level3">
+<h3 id="the-hungarian-system-hscs-names-its-subtypes-and-varieties-0-9-316">The Hungarian system (HSCS 2024) names its subtypes and varieties<a class="anchor" aria-label="anchor" href="#the-hungarian-system-hscs-names-its-subtypes-and-varieties-0-9-316"></a></h3>
+<ul><li>
+<code><a href="../reference/classify_hscs2024.html">classify_hscs2024()</a></code> now names, besides the 15 types, the subtype properties (altípus tulajdonságok, 8.5, p. 29-33) and the variety properties (változati tulajdonságok, 8.6, p. 34-36) of each type’s table (section 7, p. 8-22), with the modifiers of 8.7 (p. 37). As the guide writes it (p. 7), the subtypes come before the type, the first with a capital letter, and the varieties after it, in parentheses, in the table’s order. The guide’s own example, “Savanyú, humuszszegény Agyagbemosódásos talaj (sekélyen kőzettörmelékes)”, is a test.</li>
+<li>The tables are in <code>inst/rules/hscs2024/properties.yaml</code>. Each of the 74 properties is a three-valued function, and the result carries every property with its verdict, depth and label (<code>$qualifiers$status</code>) and one <code>levels</code> row per property named.</li>
+<li>
+<strong>Readings decided by Hugo (2026-10-30):</strong>
+<ul><li>Every listed property whose definition holds is named. A row of degrees of one property (carbonate degrees, humus classes, base status, peat decomposition, sekély/mély, művelt/rigolozott) names only the strongest, and none when a stronger one is undecided.</li>
+<li>A property defined by a layer takes the depth modifier of 8.7 (felszíntől, sekélyen, középmélyen, mélyben) from where its layer starts. The intensity words are used only where the text defines them.</li>
+<li>The humus classes are read layer by layer. The surface horizon of humuszszegény, lápföldes and nyers is the weighted A horizon.</li>
+<li>Rozsdabarna needs hue 10YR or redder and chroma 5 or more. Fakó is read in an eluvial horizon only. A g suffix shows the reductive conditions of pangóvizes.</li>
+<li>In a Láptalaj every organic horizon is peat.</li>
+<li>The measured CaCO3 decides the carbonate degree, and 15 % or more without secondary carbonates is közepesen.</li>
+<li>Karbonát-szulfátos and -kloridos need carbonate making 20 % of the salts.</li>
+</ul></li>
+<li>The other readings where the text is silent are listed in <code>inst/rules/hscs2024/readings.yaml</code> (five new entries).</li>
+<li>
+<strong>New attributes</strong>, undecided when not recorded:
+<ul><li>horizon: <code>soluble_salts_sulfate_pct</code>, <code>soluble_salts_chloride_pct</code>, <code>soluble_salts_carbonate_pct</code>, <code>p2o5_al_mg_kg</code>, <code>digo_pct</code>, <code>coarse_fragments_shape</code>, <code>secondary_carbonates_form</code>, <code>mottle_size_class</code>;</li>
+<li>site: <code>contaminated</code>, <code>terraced</code>, <code>flood_irrigated</code>, <code>wind_deflation</code>.</li>
+</ul></li>
+<li>The Antropogén key reads the hortic route of the anthropogenic horizon (8.1, criterion 1) from <code>p2o5_al_mg_kg</code>. The ISIS reader reads the mottle size (<code>mottlesSizeclass</code>).</li>
+<li>
+<strong>On ISRIC’s ISIS profiles from Hungary, Slovakia and Romania</strong> the names are what the data show. For example:
+<ul><li>“Középmélyen erősen karbonátos, telített, sekélyen magnéziumos, kérges Szolonyec talaj (iszapos agyag)” for HU014, a Columnic Solonetz in WRB terms;</li>
+<li>“Telítetlen, sekélyen podzolos, sekélyen fakó Agyagbemosódásos talaj (középmélyen duzzadó, sekélyen vörös, iszapos vályog)” for RO008.</li>
+</ul>
+No property errs on the 974 ISIS profiles. The type of every profile is unchanged.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.315" id="soilkey-09315-2026-10-30">soilKey 0.9.315 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09315-2026-10-30"></a></h2>
 <div class="section level3">
