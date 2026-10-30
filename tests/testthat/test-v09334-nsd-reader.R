@@ -400,3 +400,15 @@ test_that("the PARENT ROCK note goes down to the layers whose origin is not reco
   # the NZSC key reads it as fluvial material
   expect_true(isTRUE(fluvial_group_nzsc(p$OS1)$passed))
 })
+
+test_that("a survey whose sd_soil table has no classifier_usda column is read", {
+  skip_on_cran()
+  d <- .nsd_fake_survey_old(file.path(tempdir(), "nsd_fake_old_4"))
+  so <- utils::read.csv(file.path(d, "sd_soil.csv"), stringsAsFactors = FALSE)
+  so$classifier_usda <- NULL
+  utils::write.csv(so, file.path(d, "sd_soil.csv"), row.names = FALSE, na = "")
+  p <- read_nsd_pedons(d)
+  expect_length(p, 2L)
+  expect_true(is.na(p$OS1$site$reference_usda))
+  expect_identical(p$OS1$site$reference_nzsc_order, "R")
+})

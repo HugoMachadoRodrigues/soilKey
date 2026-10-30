@@ -869,7 +869,7 @@ nsd_citation <- function(accessed = NULL) {
       t <- .nsd_num(cc$meantemperatureannual_val %||% NA)
       if (is.finite(t) && t > 0) site$mean_annual_air_temp_C <- t
     }
-    ref <- .nsd_nzsc_reference(so$classifier_nzsc)
+    ref <- .nsd_nzsc_reference(so$classifier_nzsc %||% NA)
     site$reference_nzsc <- ref$code
     site$reference_nzsc_name <- ref$name
     site$reference_nzsc_order <- ref$order
@@ -880,7 +880,7 @@ nsd_citation <- function(accessed = NULL) {
     if (!is.na(so$classifier_nzsc_alt %||% NA)) site$reference_nzsc_alt <- as.character(so$classifier_nzsc_alt)
     if (!is.na(so$classifier_nz_genetic %||% NA)) site$reference_nz_genetic <- as.character(so$classifier_nz_genetic)
     if (!is.na(so$classifier_nz_series %||% NA)) site$reference_nz_series <- as.character(so$classifier_nz_series)
-    us <- .nsd_usda_reference(so$classifier_usda)
+    us <- .nsd_usda_reference(so$classifier_usda %||% NA)
     site$reference_usda <- us$order
     site$reference_usda_grtgroup <- us$grtgroup
     site$reference_usda_subgroup <- us$subgroup
