@@ -1,3 +1,28 @@
+# soilKey 0.9.314 (2026-10-29)
+
+## WRB 2022 mollic and umbric horizons: criteria 1-3 in every layer
+
+* WRB 2022 Ch 2.1 (p. 23): when a diagnostic horizon consists of several subhorizons, every criterion except the thickness must be met in each subhorizon, unless the text says otherwise. For the mollic (3.1.20) and umbric (3.1.39) horizons, only the base saturation is "on a weighted average". The horizon is now the run of layers from the mineral soil surface that each meet:
+  * criterion 1, the structure (not recorded still does not block it);
+  * criterion 2, >= 0.6% SOC;
+  * criterion 3, the colour, items a-c. A plough layer takes the colour of the subhorizon below it.
+
+  The thickness and the weighted base saturation are read on that run.
+* Before, the carbon test passed when any one layer had 0.6%, and the structure was a share of the whole dark stack. An Ah of subangular blocky structure over thick massive dark layers therefore had no horizon. Bounding the stack by structure alone would have given ISIS CN012 a mollic horizon from its massive 6 cm Ah, since the colour and carbon tests let its C layers in; reading every criterion in every layer gives it none.
+* **Colour where it is not wholly recorded:**
+  * A moist value with no dry value still reads the dry value as the moist value + 1.
+  * Of the older proxies, only one stays (Hugo, 2026-10-29): a layer with no colour recorded at all and >= 1.5% SOC is read as dark. The FEBR and WoSIS panels record no colour.
+  * A dry colour alone now leaves criterion 3 undecided unless its value is above 5, and the dry chroma no longer stands in for the moist chroma.
+  * The colour subtest records, for each layer, where its reading came from.
+* A criterion that fails now decides the horizon even when another one is undecided. Until now, an undecided colour beside a massive surface layer left the horizon undecided.
+* **Results against 0.9.313:**
+  * FEBR WRB (22.0%) and WoSIS (16.2%): no name changes.
+  * AfSP: 27.5 to 28.3%. BI wasp_2, an Ah of subangular blocky structure over massive dark layers, is an Umbrisol again.
+  * ISIS: 61.5 to 61.1% (294 of 481), with 3 gained and 5 lost, each by the text:
+    * gained: two profiles that record a dry colour only, which the dry-only proxy made Umbrisols, and an Arenosol;
+    * lost: three that record a dry colour only or lose carbon below the first layer, a Kastanozem whose Ap is recorded as massive, and a Luvisol whose plough layer now takes the colour of the Ah below it (a Phaeozem).
+  * The SiBCS and USDA panels and the 44 canonical fixtures are unchanged.
+
 # soilKey 0.9.313 (2026-10-29)
 
 ## ISIS: slickensides and pressure faces are read as absent only where the cutans field is free
