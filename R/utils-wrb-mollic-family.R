@@ -159,41 +159,8 @@
   list(layers = idx, covered_cm = cov, window_cm = max(0, bottom - top))
 }
 
-# The dark surface stack of the mollic and umbric horizons: the layers that
-# pass the colour test (test_mollic_color), contiguous from the mineral soil
-# surface. WRB 2022 3.1.20 and 3.1.39 (pp. 52, 69): "a surface horizon
-# consisting of mineral material"; Ch 2.1 rule 3 (p. 23): the mineral soil
-# surface is the upper limit of the uppermost layer of mineral material, so
-# organic layers on top are not part of it. `layers` pass; `maybe` goes on
-# through layers whose colour is undecided (NA) until one fails.
-.wrb_dark_surface_stack <- function(h, surface_top_cm = 5) {
-  ms <- .q_mineral_surface_cm(h)
-  out <- list(layers = integer(0), maybe = integer(0),
-              mineral_surface_cm = ms, missing = character(0))
-  if (is.na(ms)) return(out)
-  ord <- order(h$top_cm)
-  ord <- ord[!is.na(h$top_cm[ord]) & h$top_cm[ord] >= ms - 1e-6]
-  undecided <- FALSE
-  last_bottom <- NA_real_
-  for (i in ord) {
-    if (!length(out$maybe)) {
-      if (h$top_cm[i] > ms + surface_top_cm) break
-    } else if (is.na(last_bottom) || abs(h$top_cm[i] - last_bottom) > 1) {
-      break
-    }
-    col <- test_mollic_color(h, candidate_layers = i)
-    if (isFALSE(col$passed)) break
-    out$maybe <- c(out$maybe, i)
-    last_bottom <- h$bottom_cm[i]
-    if (isTRUE(col$passed) && !undecided) {
-      out$layers <- c(out$layers, i)
-    } else {
-      undecided <- TRUE
-      out$missing <- unique(c(out$missing, col$missing))
-    }
-  }
-  out
-}
+# The run of layers of the mollic and umbric horizons: .wrb_mollic_run() in
+# utils-wrb-mollic-layers-v09314.R (v0.9.314).
 
 # Chernozems (Ch 4, p. 111) and Kastanozems (p. 112), criteria 2 and 3: "a
 # layer with protocalcic properties, >= 5 cm thick, or a calcic horizon",

@@ -157,13 +157,16 @@ test_that("mollic criterion 1: aggregate structure <= 10 cm or cloddy in >= 50% 
   expect_false(m(type = "prismatic", size = "very coarse"))    # > 100 mm (Table 8.45)
   expect_false(m(type = "subangular blocky", size = "extremely coarse"))
   expect_true(isTRUE(m(type = "cloddy", size = NA_character_)))
-  # by volume: 15 cm of granular and 10 cm of massive structure pass, 10 and 15 do not
+  # v0.9.314: criterion 1 in every layer (WRB 2022 Ch 2.1, p. 23), so a massive
+  # layer is not part of the horizon: 15 cm of granular over 10 cm of massive
+  # structure is a 15 cm horizon, too thin; 20 cm of granular over 5 cm passes
   p <- .v09317_mollic(type = c("granular", "massive"), size = c("fine", NA),
                       grade = c("moderate", "structureless"))
-  expect_true(isTRUE(mollic(p)$passed))
+  expect_false(mollic(p)$passed)
   q <- .v09317_mollic(type = c("granular", "massive"), size = c("fine", NA),
-                      grade = c("moderate", "structureless"), top = c(0, 10), bottom = c(10, 25))
-  expect_false(mollic(q)$passed)
+                      grade = c("moderate", "structureless"), top = c(0, 20), bottom = c(20, 25))
+  expect_true(isTRUE(mollic(q)$passed))
+  expect_identical(as.integer(mollic(q)$layers), 1L)
   # the USDA mollic epipedon keeps its reading
   h <- .v09317_mollic(type = NA_character_, size = NA_character_, grade = NA_character_)$horizons
   expect_true(isTRUE(test_mollic_structure(h, candidate_layers = 1:2)$passed))
