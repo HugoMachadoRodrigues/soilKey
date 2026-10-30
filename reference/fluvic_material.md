@@ -42,6 +42,20 @@ temporal fields in the schema). The stratification proxy is conservative
 – truly heterogeneous floodplain profiles with dramatic texture swings
 will pass; subtle alluvial sequences may miss. v0.4 will refine.
 
+## v0.9.314
+
+Fluvic material follows WRB 2022 Ch 3.3.6 (p. 87) layer by layer:
+fluviatile, marine or lacustrine origin (`rock_origin`, `layer_origin`,
+else the site's parent material); strata that are obvious (the clay
+reversal above, or a sand reversal of \\\ge\\ 15%) OR evidenced by two
+or more layers with more SOC than the layer directly above (\\\ge\\
+0.2%, \\\ge\\ 25% relative and \\\ge\\ 0.2% absolute, not of a natric or
+spodic horizon); and a single grain, massive, platy or weak subangular
+blocky structure (granular or subangular blocky in a layer of higher
+SOC). The layers returned are those that meet the three. An origin, a
+texture or a structure that is not recorded leaves the result undecided.
+The SiBCS carater fluvico keeps the earlier reading.
+
 ## References
 
 IUSS Working Group WRB (2022), Chapter 3, Fluvic material.

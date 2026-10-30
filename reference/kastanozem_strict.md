@@ -20,11 +20,12 @@ kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70, strict = NULL)
 
 - min_bs:
 
-  Numeric threshold or option (see Details).
+  Minimum base saturation % above the carbonate layer (default 50).
 
 - max_top_cm:
 
-  Numeric threshold or option (see Details).
+  Maximum depth of the carbonate layer below the mineral soil surface,
+  cm (default 70).
 
 - strict:
 

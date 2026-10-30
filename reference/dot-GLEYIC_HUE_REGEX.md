@@ -1,18 +1,14 @@
-# Gleyic Munsell hue patterns (WRB 2022, Ch 3.1.13 redoximorphic features)
+# Gleyic Munsell hue patterns (WRB 2022, Ch 3.2.6 gleyic properties)
 
-Hues consistent with Fe reduction (gleyic / reductimorphic). Used by
-`test_gleyic_features` as a secondary evidence path when
-`redoximorphic_features_pct` is not reported (e.g. BDsolos perfis where
-the surveyor recorded Munsell colors but not mottle percent). Per WRB
-2022 Ch 3.1.13: hues N (neutral), 10Y, 5GY, 10GY, 5G, 10G, 5BG, 10BG,
-5B, 10B (any value, chroma \<= 2 inferred).
+Hues of the reductimorphic colours of WRB 2022 3.2.6 criterion 1.a (p.
+75): N, 10Y, GY, G, BG, B or PB (every step of those hue families, 2.5GY
+to 10GY and so on; since v0.9.312, before only the 5 and 10 steps).
+Criterion 1.b, a hue of 2.5Y or 5Y with a chroma of 2 or less, is
+`.GLEYIC_HUE_1B_REGEX` with `.reductimorphic_colour()`. Used by the
+redox reading of `gleyic_properties` and by `test_gleyic_features`.
 
 ## Usage
 
 ``` r
 .GLEYIC_HUE_REGEX
 ```
-
-## Format
-
-An object of class `character` of length 1.

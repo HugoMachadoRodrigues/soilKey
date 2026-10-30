@@ -19,7 +19,7 @@ Retisol path)."><meta property="og:image" content="https://hugomachadorodrigues.
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,9 +154,18 @@ its textural ratio, and the USDA keys pass <code>FALSE</code>.</p></dd>
 </ul><p>Until v0.9.219 a glossic, albeluvic or retic designation anywhere
 voided the argic horizon (the WRB 2014 Albeluvisol logic); in WRB 2022
 retic properties belong to an argic or natric horizon.</p>
-<p>v0.1 limitations: clay-increase distance (&lt;= 30 cm vertical, or &lt;= 15
-cm with abrupt textural change) is not yet enforced; that is scheduled
-for v0.2 and depends on horizon boundary descriptions.</p>
+<p>v0.9.310, for <code>system = "wrb2022"</code> (WRB 2022 Ch 3.1.3, p. 35-36):</p><ul><li><p>criterion 1: the layers have \(\ge\) 8% clay;</p></li>
+<li><p>criterion 2.a.iii: a layer is compared with a coarser-textured layer
+        above it only across a transitional horizon of \(\le\) 15 cm;
+        layers already accepted and layers whose designation has the
+        suffix t are part of the argic horizon, not transitional;</p></li>
+<li><p>criterion 2.b.ii: clay films of "common" or more (clay coatings on
+        \(\ge\) 15% of the aggregate surfaces) make a layer argic
+        without a clay increase;</p></li>
+<li><p>a subsurface horizon: the layer at the mineral soil surface and
+        the A horizons are not part of it.</p></li>
+</ul><p>The USDA argillic and order keys and the SiBCS B textural keep the earlier
+reading.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

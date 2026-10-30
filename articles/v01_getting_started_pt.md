@@ -177,7 +177,7 @@ res_wrb$trace
 #> $HS$evidence
 #> $HS$evidence[[1]]
 #> $HS$evidence[[1]]$test_name
-#> [1] "histic_horizon"
+#> [1] "histosol"
 #> 
 #> $HS$evidence[[1]]$passed
 #> [1] FALSE
@@ -189,144 +189,32 @@ res_wrb$trace
 #> character(0)
 #> 
 #> $HS$evidence[[1]]$evidence
-#> $HS$evidence[[1]]$evidence$contiguous
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$passed
+#> $HS$evidence[[1]]$evidence$items
+#> $HS$evidence[[1]]$evidence$items$item1
 #> [1] FALSE
 #> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$layers
-#> integer(0)
+#> $HS$evidence[[1]]$evidence$items$item2
+#> [1] FALSE
 #> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$missing
-#> character(0)
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`1`
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`1`$idx
-#> [1] 1
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`1`$oc_pct
-#> [1] 2
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`1`$threshold
-#> [1] 12
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`1`$passed
+#> $HS$evidence[[1]]$evidence$items$item3
 #> [1] FALSE
 #> 
 #> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`2`
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`2`$idx
-#> [1] 2
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`2`$oc_pct
-#> [1] 0.6
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`2`$threshold
-#> [1] 12
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`2`$passed
-#> [1] FALSE
-#> 
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`3`
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`3`$idx
-#> [1] 3
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`3`$oc_pct
-#> [1] 0.3
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`3`$threshold
-#> [1] 12
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`3`$passed
-#> [1] FALSE
-#> 
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`4`
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`4`$idx
-#> [1] 4
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`4`$oc_pct
-#> [1] 0.2
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`4`$threshold
-#> [1] 12
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$details$`4`$passed
-#> [1] FALSE
-#> 
-#> 
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$organic_carbon$notes
-#> [1] NA
-#> 
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$at_surface
-#> $HS$evidence[[1]]$evidence$contiguous$at_surface$passed
-#> [1] FALSE
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$at_surface$layers
-#> integer(0)
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$at_surface$missing
-#> character(0)
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$at_surface$details
-#> list()
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$at_surface$notes
-#> [1] NA
-#> 
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$thickness
-#> $HS$evidence[[1]]$evidence$contiguous$thickness$passed
-#> [1] FALSE
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$thickness$layers
-#> integer(0)
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$thickness$missing
-#> character(0)
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$thickness$details
-#> NULL
-#> 
-#> $HS$evidence[[1]]$evidence$contiguous$thickness$notes
-#> [1] NA
-#> 
-#> 
-#> 
-#> $HS$evidence[[1]]$evidence$cumulative
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$passed
-#> [1] FALSE
-#> 
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$layers
-#> integer(0)
-#> 
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$missing
-#> character(0)
-#> 
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$details
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$details$cumulative_thickness_cm
+#> $HS$evidence[[1]]$evidence$organic_thickness_100cm
 #> [1] 0
 #> 
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$details$min_thickness_cm
-#> [1] 40
+#> $HS$evidence[[1]]$evidence$possible_organic_thickness_100cm
+#> [1] 0
 #> 
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$details$max_depth_cm
-#> [1] 80
+#> $HS$evidence[[1]]$evidence$organic_from_surface
+#> integer(0)
 #> 
-#> 
-#> $HS$evidence[[1]]$evidence$cumulative$cumulative_oc$notes
-#> [1] NA
-#> 
-#> 
+#> $HS$evidence[[1]]$evidence$possible_organic_from_surface
+#> integer(0)
 #> 
 #> 
 #> $HS$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 3, Histic horizon"
+#> [1] "IUSS Working Group WRB (2022), Chapter 4, Histosols (p. 95)"
 #> 
 #> $HS$evidence[[1]]$notes
 #> [1] NA
@@ -609,7 +497,7 @@ res_wrb$trace
 #> $CR$evidence
 #> $CR$evidence[[1]]
 #> $CR$evidence[[1]]$test_name
-#> [1] "cryic_conditions"
+#> [1] "cryosol"
 #> 
 #> $CR$evidence[[1]]$passed
 #> [1] NA
@@ -621,119 +509,36 @@ res_wrb$trace
 #> [1] "permafrost_temp_C"
 #> 
 #> $CR$evidence[[1]]$evidence
-#> $CR$evidence[[1]]$evidence$permafrost_temp
-#> $CR$evidence[[1]]$evidence$permafrost_temp$permafrost
-#> $CR$evidence[[1]]$evidence$permafrost_temp$permafrost$passed
+#> $CR$evidence[[1]]$evidence$item1
 #> [1] NA
 #> 
-#> $CR$evidence[[1]]$evidence$permafrost_temp$permafrost$layers
+#> $CR$evidence[[1]]$evidence$cryic_100cm
+#> 
+#> ── DiagnosticResult: cryic_conditions
+#> Status: NA (insufficient data)
+#> Missing attributes (1): permafrost_temp_C
+#> Sub-tests:
+#> Reference: IUSS Working Group WRB (2022), Chapter 5, Cryosols
+#> 
+#> $CR$evidence[[1]]$evidence$item2
+#> $CR$evidence[[1]]$evidence$item2$passed
+#> [1] FALSE
+#> 
+#> $CR$evidence[[1]]$evidence$item2$cryic_200cm
+#> 
+#> ── DiagnosticResult: cryic_conditions
+#> Status: NA (insufficient data)
+#> Missing attributes (1): permafrost_temp_C
+#> Sub-tests:
+#> Reference: IUSS Working Group WRB (2022), Chapter 5, Cryosols
+#> 
+#> $CR$evidence[[1]]$evidence$item2$cryogenic_alteration_layers
 #> integer(0)
-#> 
-#> $CR$evidence[[1]]$evidence$permafrost_temp$permafrost$missing
-#> [1] "permafrost_temp_C"
-#> 
-#> $CR$evidence[[1]]$evidence$permafrost_temp$permafrost$details
-#> NULL
-#> 
-#> $CR$evidence[[1]]$evidence$permafrost_temp$permafrost$notes
-#> [1] NA
-#> 
-#> 
-#> 
-#> $CR$evidence[[1]]$evidence$designation
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$passed
-#> [1] FALSE
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$layers
-#> integer(0)
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$missing
-#> character(0)
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`1`
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`1`$idx
-#> [1] 1
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`1`$designation
-#> [1] "A"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`1`$pattern
-#> [1] "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`1`$passed
-#> [1] FALSE
-#> 
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`2`
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`2`$idx
-#> [1] 2
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`2`$designation
-#> [1] "AB"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`2`$pattern
-#> [1] "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`2`$passed
-#> [1] FALSE
-#> 
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`3`
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`3`$idx
-#> [1] 3
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`3`$designation
-#> [1] "Bw1"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`3`$pattern
-#> [1] "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`3`$passed
-#> [1] FALSE
-#> 
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`4`
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`4`$idx
-#> [1] 4
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`4`$designation
-#> [1] "Bw2"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`4`$pattern
-#> [1] "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$details$`4`$passed
-#> [1] FALSE
-#> 
-#> 
-#> 
-#> $CR$evidence[[1]]$evidence$designation$frozen_designation$notes
-#> [1] NA
-#> 
-#> 
-#> $CR$evidence[[1]]$evidence$designation$within_depth
-#> $CR$evidence[[1]]$evidence$designation$within_depth$passed
-#> [1] FALSE
-#> 
-#> $CR$evidence[[1]]$evidence$designation$within_depth$layers
-#> integer(0)
-#> 
-#> $CR$evidence[[1]]$evidence$designation$within_depth$missing
-#> character(0)
-#> 
-#> $CR$evidence[[1]]$evidence$designation$within_depth$details
-#> list()
-#> 
-#> $CR$evidence[[1]]$evidence$designation$within_depth$notes
-#> [1] NA
-#> 
 #> 
 #> 
 #> 
 #> $CR$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 5, Cryosols"
+#> [1] "IUSS Working Group WRB (2022), Chapter 4, Cryosols (p. 98)"
 #> 
 #> $CR$evidence[[1]]$notes
 #> [1] NA
@@ -914,7 +719,7 @@ res_wrb$trace
 #> $SN$evidence
 #> $SN$evidence[[1]]
 #> $SN$evidence[[1]]$test_name
-#> [1] "natric_horizon"
+#> [1] "solonetz"
 #> 
 #> $SN$evidence[[1]]$passed
 #> [1] FALSE
@@ -926,23 +731,23 @@ res_wrb$trace
 #> character(0)
 #> 
 #> $SN$evidence[[1]]$evidence
-#> $SN$evidence[[1]]$evidence$argic
+#> $SN$evidence[[1]]$evidence$natric_horizon
 #> 
-#> ── DiagnosticResult: argic
+#> ── DiagnosticResult: natric_horizon
 #> Status: failed
 #> Sub-tests:
-#> [fail] clay_increase
-#> [fail] thickness
-#> [fail] texture
-#> Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon
-#> Notes: No layer satisfied the clay-increase precondition
+#> Reference: IUSS Working Group WRB (2022), Chapter 3, Natric horizon
+#> Notes: Profile lacks an argic horizon -- natric inapplicable
+#> 
+#> $SN$evidence[[1]]$evidence$mineral_surface_cm
+#> [1] 0
 #> 
 #> 
 #> $SN$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 3, Natric horizon"
+#> [1] "IUSS Working Group WRB (2022), Chapter 4, Solonetz (p. 100)"
 #> 
 #> $SN$evidence[[1]]$notes
-#> [1] "Profile lacks an argic horizon -- natric inapplicable"
+#> [1] NA
 #> 
 #> 
 #> 
@@ -975,36 +780,77 @@ res_wrb$trace
 #> integer(0)
 #> 
 #> $VR$evidence[[1]]$missing
-#> [1] "slickensides"
+#> [1] "slickensides"    "structure_type"  "cracks_width_cm"
 #> 
 #> $VR$evidence[[1]]$evidence
 #> $VR$evidence[[1]]$evidence$vertic_horizon
 #> 
 #> ── DiagnosticResult: vertic_horizon
 #> Status: NA (insufficient data)
-#> Missing attributes (1): slickensides
+#> Missing attributes (3): slickensides, structure_type, cracks_width_cm
 #> Sub-tests:
-#> [PASS] clay
-#> [ NA ] slickensides
-#> [fail] cracks
-#> [fail] thickness
-#> [ NA ] cole_le_path
 #> [ NA ] designation_inference
 #> [ NA ] chroma_clay_inference
-#> Reference: IUSS Working Group WRB (2022), Chapter 3.1, Vertic horizon; KST 13ed
-#> Ch 16 LE alternative
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.40, Vertic horizon (p.
+#> 70)
+#> 
+#> $VR$evidence[[1]]$evidence$mineral_surface_cm
+#> [1] 0
+#> 
+#> $VR$evidence[[1]]$evidence$vertic_top_cm
+#> [1] 0
+#> 
+#> $VR$evidence[[1]]$evidence$clay_above_30_throughout
+#> [1] TRUE
+#> 
+#> $VR$evidence[[1]]$evidence$clay_threshold_pct
+#> [1] 30
+#> 
+#> $VR$evidence[[1]]$evidence$strict_mode
+#> [1] FALSE
+#> 
+#> $VR$evidence[[1]]$evidence$cracks_at_surface
+#> [1] TRUE
+#> 
+#> $VR$evidence[[1]]$evidence$cracks
+#> $VR$evidence[[1]]$evidence$cracks$passed
+#> [1] TRUE
+#> 
+#> $VR$evidence[[1]]$evidence$cracks$starts
+#> $VR$evidence[[1]]$evidence$cracks$starts$mineral_surface
+#> [1] TRUE
+#> 
+#> $VR$evidence[[1]]$evidence$cracks$starts$plough_layer_base
+#> [1] FALSE
+#> 
+#> $VR$evidence[[1]]$evidence$cracks$starts$below_self_mulching_surface
+#> [1] NA
+#> 
+#> 
+#> $VR$evidence[[1]]$evidence$cracks$plough_base_cm
+#> [1] NA
+#> 
+#> $VR$evidence[[1]]$evidence$cracks$self_mulching_base_cm
+#> [1] NA
+#> 
+#> $VR$evidence[[1]]$evidence$cracks$crack_status
+#> [1] NA NA NA NA
+#> 
+#> 
+#> $VR$evidence[[1]]$evidence$morphological_inference_fired
+#> [1] FALSE
 #> 
 #> 
 #> $VR$evidence[[1]]$reference
 #> [1] "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)"
 #> 
 #> $VR$evidence[[1]]$notes
-#> [1] "Failed/NA because vertic_horizon test did not pass"
+#> [1] NA
 #> 
 #> 
 #> 
 #> $VR$missing
-#> [1] "slickensides"
+#> [1] "slickensides"    "structure_type"  "cracks_width_cm"
 #> 
 #> $VR$notes
 #> NULL
@@ -1133,10 +979,8 @@ res_wrb$trace
 #> Status: NA (insufficient data)
 #> Missing attributes (1): redoximorphic_features_pct
 #> Sub-tests:
-#> [fail] gleyic_features
-#> [ NA ] stagnic_pattern
-#> [ NA ] designation_inference
-#> Reference: IUSS Working Group WRB (2022), Chapter 3, Gleyic properties
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.2.6, Gleyic properties (p.
+#> 75)
 #> 
 #> $GL$evidence[[1]]$evidence$reducing_conditions
 #> 
@@ -1147,6 +991,9 @@ res_wrb$trace
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.2.10
 #> 
 #> $GL$evidence[[1]]$evidence$path1_layers
+#> integer(0)
+#> 
+#> $GL$evidence[[1]]$evidence$path1_undecided
 #> integer(0)
 #> 
 #> $GL$evidence[[1]]$evidence$path1_ok
@@ -1196,17 +1043,18 @@ res_wrb$trace
 #> integer(0)
 #> 
 #> $AN$evidence[[1]]$missing
-#> [1] "al_ox_pct"               "fe_ox_pct"              
-#> [3] "phosphate_retention_pct" "volcanic_glass_pct"     
+#> character(0)
 #> 
 #> $AN$evidence[[1]]$evidence
 #> $AN$evidence[[1]]$evidence$andic
 #> 
 #> ── DiagnosticResult: andic_properties
-#> Status: failed
-#> Missing attributes (3): al_ox_pct, fe_ox_pct, phosphate_retention_pct
+#> Status: NA (insufficient data)
+#> Missing attributes (5): al_ox_pct, fe_ox_pct, bulk_density_g_cm3, ph_naf,
+#> phosphate_retention_pct
 #> Sub-tests:
 #> [ NA ] oc_bd_proxy
+#> [fail] naf_field_test
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Andic properties
 #> 
 #> $AN$evidence[[1]]$evidence$vitric
@@ -1220,18 +1068,154 @@ res_wrb$trace
 #> [fail] phosphate_ret
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.2.16
 #> 
+#> $AN$evidence[[1]]$evidence$layer_status
+#> [1] NA NA NA NA
+#> 
+#> $AN$evidence[[1]]$evidence$combined_thickness_cm
+#> [1] 0
+#> 
+#> $AN$evidence[[1]]$evidence$possible_thickness_cm
+#> [1] 100
+#> 
+#> $AN$evidence[[1]]$evidence$item1a
+#> [1] NA
+#> 
+#> $AN$evidence[[1]]$evidence$item1b
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$limiting_layer_top_cm
+#> [1] NA
+#> 
+#> $AN$evidence[[1]]$evidence$strict_mode
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_failed
+#> $AN$evidence[[1]]$evidence$exclusion_failed$argic
+#> 
+#> ── DiagnosticResult: argic
+#> Status: failed
+#> Sub-tests:
+#> [fail] clay_increase
+#> [fail] illuvial_clay
+#> [fail] criterion_2
+#> [fail] clay_min
+#> [fail] thickness
+#> [fail] texture
+#> Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon
+#> Notes: No layer satisfied the clay-increase precondition
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_failed$ferralic
+#> 
+#> ── DiagnosticResult: ferralic
+#> Status: PASSED
+#> Layers satisfying: 2, 3, 4
+#> Sub-tests:
+#> [PASS] texture
+#> [PASS] cec_per_clay
+#> [PASS] thickness
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.10, Ferralic horizon (p.
+#> 44)
+#> Notes: v0.3.1: ECEC/clay <= 12 test removed; not part of WRB 2022 ferralic.
+#> v0.9.67 engine=soilkey threshold = 16 cmol_c/kg clay.
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_failed$petroplinthic
+#> 
+#> ── DiagnosticResult: petroplinthic
+#> Status: NA (insufficient data)
+#> Missing attributes (3): pan_type, plinthite_pct, cementation_class
+#> Sub-tests:
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.27, Petroplinthic horizon
+#> (p. 59)
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_failed$pisoplinthic
+#> 
+#> ── DiagnosticResult: pisoplinthic
+#> Status: NA (insufficient data)
+#> Missing attributes (1): ferric_nodules_pct
+#> Sub-tests:
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.28, Pisoplinthic horizon
+#> (p. 60)
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_failed$plinthic
+#> 
+#> ── DiagnosticResult: plinthic
+#> Status: NA (insufficient data)
+#> Missing attributes (1): plinthite_pct
+#> Sub-tests:
+#> [ NA ] plinthite
+#> [ NA ] thickness
+#> [ NA ] designation_inference
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic horizon (p.
+#> 62)
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_failed$spodic
+#> 
+#> ── DiagnosticResult: spodic
+#> Status: NA (insufficient data)
+#> Missing attributes (2): al_ox_pct, fe_ox_pct
+#> Sub-tests:
+#> [ NA ] alfe_oxalate
+#> [fail] ph
+#> [fail] illuvial_signature
+#> [fail] thickness
+#> Reference: IUSS Working Group WRB (2022), Chapter 3, Spodic horizon
+#> Notes: v0.9.19: + morphological inference path when Al/Fe oxalate missing
+#> 
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_buried
+#> $AN$evidence[[1]]$evidence$exclusion_buried$argic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_buried$ferralic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_buried$petroplinthic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_buried$pisoplinthic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_buried$plinthic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_buried$spodic
+#> [1] FALSE
+#> 
+#> 
+#> $AN$evidence[[1]]$evidence$argic_of_andic_layers
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_active
+#> $AN$evidence[[1]]$evidence$exclusion_active$argic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_active$ferralic
+#> [1] TRUE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_active$petroplinthic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_active$pisoplinthic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_active$plinthic
+#> [1] FALSE
+#> 
+#> $AN$evidence[[1]]$evidence$exclusion_active$spodic
+#> [1] FALSE
+#> 
+#> 
 #> 
 #> $AN$evidence[[1]]$reference
 #> [1] "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)"
 #> 
 #> $AN$evidence[[1]]$notes
-#> [1] "No andic or vitric layers"
+#> [1] NA
 #> 
 #> 
 #> 
 #> $AN$missing
-#> [1] "al_ox_pct"               "fe_ox_pct"              
-#> [3] "phosphate_retention_pct" "volcanic_glass_pct"     
+#> character(0)
 #> 
 #> $AN$notes
 #> NULL
@@ -1364,7 +1348,7 @@ res_wrb$trace
 #> $PT$evidence
 #> $PT$evidence[[1]]
 #> $PT$evidence[[1]]$test_name
-#> [1] "plinthic"
+#> [1] "plinthosol"
 #> 
 #> $PT$evidence[[1]]$passed
 #> [1] NA
@@ -1373,57 +1357,50 @@ res_wrb$trace
 #> integer(0)
 #> 
 #> $PT$evidence[[1]]$missing
-#> [1] "plinthite_pct"
+#> [1] "plinthite_pct"      "ferric_nodules_pct" "pan_type"          
+#> [4] "cementation_class" 
 #> 
 #> $PT$evidence[[1]]$evidence
-#> $PT$evidence[[1]]$evidence$plinthite
-#> $PT$evidence[[1]]$evidence$plinthite$passed
-#> [1] NA
+#> $PT$evidence[[1]]$evidence$plinthic
 #> 
-#> $PT$evidence[[1]]$evidence$plinthite$layers
-#> integer(0)
+#> ── DiagnosticResult: plinthic
+#> Status: NA (insufficient data)
+#> Missing attributes (1): plinthite_pct
+#> Sub-tests:
+#> [ NA ] plinthite
+#> [ NA ] thickness
+#> [ NA ] designation_inference
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic horizon (p.
+#> 62)
 #> 
-#> $PT$evidence[[1]]$evidence$plinthite$missing
-#> [1] "plinthite_pct"
+#> $PT$evidence[[1]]$evidence$pisoplinthic
 #> 
-#> $PT$evidence[[1]]$evidence$plinthite$details
-#> list()
+#> ── DiagnosticResult: pisoplinthic
+#> Status: NA (insufficient data)
+#> Missing attributes (1): ferric_nodules_pct
+#> Sub-tests:
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.28, Pisoplinthic horizon
+#> (p. 60)
 #> 
-#> $PT$evidence[[1]]$evidence$plinthite$notes
-#> [1] NA
+#> $PT$evidence[[1]]$evidence$petroplinthic
 #> 
+#> ── DiagnosticResult: petroplinthic
+#> Status: NA (insufficient data)
+#> Missing attributes (3): pan_type, plinthite_pct, cementation_class
+#> Sub-tests:
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.1.27, Petroplinthic horizon
+#> (p. 59)
 #> 
-#> $PT$evidence[[1]]$evidence$thickness
-#> $PT$evidence[[1]]$evidence$thickness$passed
-#> [1] FALSE
+#> $PT$evidence[[1]]$evidence$starts_cm
+#>      plinthic  pisoplinthic petroplinthic 
+#>             0             0             0 
 #> 
-#> $PT$evidence[[1]]$evidence$thickness$layers
-#> integer(0)
-#> 
-#> $PT$evidence[[1]]$evidence$thickness$missing
-#> character(0)
-#> 
-#> $PT$evidence[[1]]$evidence$thickness$details
-#> NULL
-#> 
-#> $PT$evidence[[1]]$evidence$thickness$notes
-#> [1] NA
-#> 
-#> 
-#> $PT$evidence[[1]]$evidence$designation_inference
-#> $PT$evidence[[1]]$evidence$designation_inference$passed
-#> [1] NA
-#> 
-#> $PT$evidence[[1]]$evidence$designation_inference$layers
-#> integer(0)
-#> 
-#> $PT$evidence[[1]]$evidence$designation_inference$source
-#> [1] "off"
-#> 
+#> $PT$evidence[[1]]$evidence$mineral_surface_cm
+#> [1] 0
 #> 
 #> 
 #> $PT$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon "
+#> [1] "IUSS Working Group WRB (2022), Chapter 4, Plinthosols (p. 106)"
 #> 
 #> $PT$evidence[[1]]$notes
 #> [1] NA
@@ -1431,7 +1408,8 @@ res_wrb$trace
 #> 
 #> 
 #> $PT$missing
-#> [1] "plinthite_pct"
+#> [1] "plinthite_pct"      "ferric_nodules_pct" "pan_type"          
+#> [4] "cementation_class" 
 #> 
 #> $PT$notes
 #> NULL
@@ -1467,14 +1445,17 @@ res_wrb$trace
 #> ── DiagnosticResult: abrupt_textural_difference
 #> Status: failed
 #> Sub-tests:
-#> Reference: IUSS Working Group WRB (2022), Chapter 3.2.1
+#> Reference: IUSS Working Group WRB (2022), Chapter 3.2.1 (p. 72)
+#> 
+#> $PL$evidence[[1]]$evidence$strict_mode
+#> [1] FALSE
 #> 
 #> 
 #> $PL$evidence[[1]]$reference
 #> [1] "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)"
 #> 
 #> $PL$evidence[[1]]$notes
-#> [1] "No abrupt textural difference within profile"
+#> [1] "No abrupt textural difference within 75 cm of the mineral soil surface"
 #> 
 #> 
 #> 
@@ -1493,15 +1474,15 @@ res_wrb$trace
 #> [1] "Stagnosols"
 #> 
 #> $ST$passed
-#> [1] NA
+#> [1] FALSE
 #> 
 #> $ST$evidence
 #> $ST$evidence[[1]]
 #> $ST$evidence[[1]]$test_name
-#> [1] "stagnic_properties"
+#> [1] "stagnosol"
 #> 
 #> $ST$evidence[[1]]$passed
-#> [1] NA
+#> [1] FALSE
 #> 
 #> $ST$evidence[[1]]$layers
 #> integer(0)
@@ -1510,26 +1491,58 @@ res_wrb$trace
 #> [1] "redoximorphic_features_pct"
 #> 
 #> $ST$evidence[[1]]$evidence
-#> $ST$evidence[[1]]$evidence$stagnic_pattern
-#> $ST$evidence[[1]]$evidence$stagnic_pattern$passed
+#> $ST$evidence[[1]]$evidence$redox_layers
+#> $ST$evidence[[1]]$evidence$redox_layers$reductimorphic
+#> [1] FALSE FALSE FALSE FALSE
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$oximorphic
+#> [1] NA NA NA NA
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$claric
+#> [1] FALSE FALSE FALSE FALSE
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$crit1
+#> [1] FALSE FALSE FALSE FALSE
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$gleyic
+#> [1] NA NA NA NA
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$stagnic
+#> [1] NA NA NA NA
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$stagnic_oximorphic
+#> [1] NA NA NA NA
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$area
+#> [1] 100 100 100 100
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$reducing
+#> [1] FALSE FALSE FALSE FALSE
+#> 
+#> $ST$evidence[[1]]$evidence$redox_layers$groundwater
 #> [1] NA
 #> 
-#> $ST$evidence[[1]]$evidence$stagnic_pattern$layers
-#> integer(0)
+#> $ST$evidence[[1]]$evidence$redox_layers$rock
+#> [1] FALSE FALSE FALSE FALSE
 #> 
-#> $ST$evidence[[1]]$evidence$stagnic_pattern$missing
-#> [1] "redoximorphic_features_pct"
 #> 
-#> $ST$evidence[[1]]$evidence$stagnic_pattern$details
-#> NULL
+#> $ST$evidence[[1]]$evidence$depth_cm
+#> from   to 
+#>    0   60 
 #> 
-#> $ST$evidence[[1]]$evidence$stagnic_pattern$notes
+#> $ST$evidence[[1]]$evidence$area_fraction
+#>  low high 
+#>    0    1 
+#> 
+#> $ST$evidence[[1]]$evidence$area_ok
 #> [1] NA
 #> 
+#> $ST$evidence[[1]]$evidence$reducing_ok
+#> [1] FALSE
 #> 
 #> 
 #> $ST$evidence[[1]]$reference
-#> [1] "IUSS Working Group WRB (2022), Chapter 3, Stagnic properties"
+#> [1] "IUSS Working Group WRB (2022), Chapter 4, Stagnosols (p. 108)"
 #> 
 #> $ST$evidence[[1]]$notes
 #> [1] NA
@@ -1640,6 +1653,9 @@ res_wrb$trace
 #> Status: failed
 #> Sub-tests:
 #> [fail] clay_increase
+#> [fail] illuvial_clay
+#> [fail] criterion_2
+#> [fail] clay_min
 #> [fail] thickness
 #> [fail] texture
 #> Reference: IUSS Working Group WRB (2022), Chapter 3, Argic horizon

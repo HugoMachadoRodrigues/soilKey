@@ -7,7 +7,8 @@ DeltapH (pH_KCl - pH_water) \&amp;gt;= 0; OR
 \&amp;gt;= 1.4% soil organic carbon.
 v0.3.4 enforces all three exception paths. The DeltapH check uses
 ph_kcl and ph_h2o; the WDC check uses
-water_dispersible_clay_pct (introduced in v0.3.3 schema)."><meta property="og:description" content="WRB-canonical: ferralic horizon \&amp;lt;= 150 cm AND no argic horizon
+water_dispersible_clay_pct (introduced in v0.3.3 schema), a clay
+content in % of the fine earth."><meta property="og:description" content="WRB-canonical: ferralic horizon \&amp;lt;= 150 cm AND no argic horizon
 starting above (or at the upper limit of) the ferralic, UNLESS the
 argic in its upper 30 cm or throughout has one or more of:
 &amp;lt; 10% water-dispersible clay; OR
@@ -15,7 +16,8 @@ DeltapH (pH_KCl - pH_water) \&amp;gt;= 0; OR
 \&amp;gt;= 1.4% soil organic carbon.
 v0.3.4 enforces all three exception paths. The DeltapH check uses
 ph_kcl and ph_h2o; the WDC check uses
-water_dispersible_clay_pct (introduced in v0.3.3 schema)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+water_dispersible_clay_pct (introduced in v0.3.3 schema), a clay
+content in % of the fine earth."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +25,7 @@ water_dispersible_clay_pct (introduced in v0.3.3 schema)."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +79,8 @@ argic in its upper 30 cm or throughout has one or more of:</p><ul><li><p>&lt; 10
 <li><p>\&gt;= 1.4% soil organic carbon.</p></li>
 </ul><p>v0.3.4 enforces all three exception paths. The DeltapH check uses
 <code>ph_kcl</code> and <code>ph_h2o</code>; the WDC check uses
-<code>water_dispersible_clay_pct</code> (introduced in v0.3.3 schema).</p>
+<code>water_dispersible_clay_pct</code> (introduced in v0.3.3 schema), a clay
+content in % of the fine earth.</p>
     </div>
 
     <div class="section level2">
@@ -102,6 +105,15 @@ resolves via <code>getOption("soilKey.rsg_strict", FALSE)</code>.
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="DiagnosticResult.html">DiagnosticResult</a></code> recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>v0.9.310: the ferralic horizon must start &lt;= 150 cm from the mineral soil
+surface; an argic horizon counts when it starts above or at the upper limit
+of the ferralic horizon (not only when it lies wholly above it); and an
+exception must hold throughout the upper 30 cm of the argic horizon (or all
+of it when it is thinner). Data that do not decide an exception leave the
+gate undecided (NA).</p>
     </div>
     <div class="section level2">
     <h2 id="tier-strict-mode-v-">Tier-3 strict mode (v0.9.98)<a class="anchor" aria-label="anchor" href="#tier-strict-mode-v-"></a></h2>

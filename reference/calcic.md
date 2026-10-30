@@ -44,6 +44,18 @@ calcic horizons but may also mark uniformly carbonate-rich substrates
 that are not pedologically calcic. Cementation (petrocalcic) is not yet
 detected. Both refinements are scheduled for v0.3.
 
+## v0.9.314
+
+The WRB calcic horizon follows WRB 2022 Ch 3.1.4 (p. 37-38) criterion by
+criterion: criterion 2 is protocalcic properties (secondary carbonates
+on \\\ge\\ 5% of the exposed area, `secondary_carbonates_pct`) or
+\\\ge\\ 5% more CaCO3 than an underlying layer with no lithic
+discontinuity between; a layer of a petrocalcic horizon is not calcic;
+the 15 cm are those of the adjoining layers. A layer whose criterion 2
+cannot be decided (secondary carbonates not recorded) is undecided, not
+calcic. The USDA calcic horizon and the SiBCS horizonte calcico keep the
+earlier reading.
+
 ## References
 
 IUSS Working Group WRB (2022). *World Reference Base for Soil

@@ -141,7 +141,7 @@ ferralic(ferralsol)
 #> 
 #> ── DiagnosticResult: ferralic
 #> Status: PASSED
-#> Layers satisfying: 3, 4, 5
+#> Layers satisfying: 2, 3, 4, 5
 #> Sub-tests:
 #> [PASS] texture
 #> [PASS] cec_per_clay
@@ -173,21 +173,21 @@ knitr::kable(t(mat))
 |  | argic | ferralic | mollic | calcic | gypsic | salic | cambic | plinthic | spodic | gleyic_properties | vertic_properties |
 |:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|
 | Ferralsol | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
-| Luvisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
-| Acrisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
-| Lixisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
-| Alisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| Luvisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
+| Acrisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
+| Lixisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
+| Alisol | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
 | Chernozem | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
 | Kastanozem | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
 | Phaeozem | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
-| Calcisol | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
-| Gypsisol | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
-| Solonchak | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | TRUE | FALSE | FALSE | FALSE | FALSE |
+| Calcisol | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| Gypsisol | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| Solonchak | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE | FALSE |
 | Cambisol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | FALSE |
-| Plinthosol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | TRUE | FALSE | FALSE | FALSE |
+| Plinthosol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE |
 | Podzol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE |
 | Gleysol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | TRUE | FALSE |
-| Vertisol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE | FALSE | FALSE | FALSE | TRUE |
+| Vertisol | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | TRUE |
 
 Every fixture activates exactly one diagnostic (or, for the
 argic-derived RSGs Acrisol / Lixisol / Alisol / Luvisol, just the shared
@@ -246,40 +246,40 @@ classify_wrb2022(ferralsol)
 #> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic, FALSE, NA,
 #> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, structure_type,
 #> structure_grade, clay_films_amount, fe_dcb_pct, fe_ox_pct, FALSE,
-#> p_mehlich3_mg_kg, FALSE, redoximorphic_features_pct, FALSE,
-#> redoximorphic_features_pct, FALSE, FALSE, top_cm, bottom_cm, FALSE, FALSE,
-#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, al_ox_pct,
-#> fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct, FALSE, NA,
-#> rupture_resistance, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE,
-#> ferric_nodules_pct, redoximorphic_features_pct, FALSE, FALSE, TRUE, FALSE, NA,
-#> bioturbation_density, bulk_density_g_cm3, particles_630um_pct, FALSE, FALSE,
-#> NA, water_saturation_days, redoximorphic_features_pct, FALSE, NA, visible black
-#> carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,
-#> rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,
-#> technic_hardmaterial_pct, NA, artefacts_pct, NA, contamination_type, NA,
-#> layer_origin, artefacts_pct
+#> p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, FALSE,
+#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+#> volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,
+#> FALSE, FALSE, FALSE, ferric_nodules_pct, redoximorphic_features_pct, FALSE,
+#> FALSE, TRUE, FALSE, NA, bioturbation_density, bulk_density_g_cm3,
+#> particles_630um_pct, FALSE, FALSE, NA, water_saturation_days,
+#> redoximorphic_features_pct, FALSE, NA, visible black carbon, % of exposed area
+#> (not in the schema), FALSE, NA, saprolite_pct, FALSE, rock_origin, FALSE,
+#> FALSE, artefacts_pct, geomembrane_present, technic_hardmaterial_pct, NA,
+#> artefacts_pct, NA, contamination_type, NA, layer_origin, artefacts_pct
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
 #> - TC: Indeterminate -- missing 3 attribute(s): artefacts_pct,
 #> geomembrane_present, technic_hardmaterial_pct
 #> - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C
-#> - VR: Indeterminate -- missing 1 attribute(s): slickensides
+#> - VR: Indeterminate -- missing 3 attribute(s): slickensides, structure_type,
+#> cracks_width_cm
 #> - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
-#> - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct
-#> - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct
+#> - PT: Indeterminate -- missing 4 attribute(s): plinthite_pct,
+#> ferric_nodules_pct, pan_type, cementation_class
 #> - NT: Indeterminate -- missing 5 attribute(s): structure_type, structure_grade,
 #> clay_films_amount, fe_dcb_pct, fe_ox_pct
 #> 
 #> ── Missing data that would refine result
 #> artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
-#> permafrost_temp_C, slickensides, ec_dS_m, redoximorphic_features_pct,
-#> al_ox_pct, fe_ox_pct, phosphate_retention_pct, volcanic_glass_pct,
-#> plinthite_pct, structure_type, structure_grade, clay_films_amount, fe_dcb_pct
+#> permafrost_temp_C, slickensides, structure_type, cracks_width_cm, ec_dS_m,
+#> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, plinthite_pct,
+#> ferric_nodules_pct, pan_type, cementation_class, structure_grade,
+#> clay_films_amount, fe_dcb_pct
 #> 
 #> ── Warnings
-#> ! 16 distinct attribute(s) missing across the key trace -- see $missing_data
+#> ! 18 distinct attribute(s) missing across the key trace -- see $missing_data
 #> 
 #> ── Key trace
 #> (16 RSGs tested before assignment)
@@ -289,14 +289,14 @@ classify_wrb2022(ferralsol)
 #> 4. CR Cryosols -- NA (1 attrs missing)
 #> 5. LP Leptosols -- failed
 #> 6. SN Solonetz -- failed
-#> 7. VR Vertisols -- NA (1 attrs missing)
+#> 7. VR Vertisols -- NA (3 attrs missing)
 #> 8. SC Solonchaks -- NA (1 attrs missing)
 #> 9. GL Gleysols -- failed (1 attrs missing)
-#> 10. AN Andosols -- failed (4 attrs missing)
+#> 10. AN Andosols -- failed
 #> 11. PZ Podzols -- NA (2 attrs missing)
-#> 12. PT Plinthosols -- NA (1 attrs missing)
+#> 12. PT Plinthosols -- NA (4 attrs missing)
 #> 13. PL Planosols -- failed
-#> 14. ST Stagnosols -- NA (1 attrs missing)
+#> 14. ST Stagnosols -- failed (1 attrs missing)
 #> 15. NT Nitisols -- NA (5 attrs missing)
 #> 16. FR Ferralsols -- PASSED
 ```

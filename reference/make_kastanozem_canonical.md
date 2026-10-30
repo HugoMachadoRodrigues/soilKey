@@ -11,9 +11,12 @@ carbonates accumulating in the Bk. By construction:
 - [`kastanozem`](https://hugomachadorodrigues.github.io/soilKey/reference/kastanozem.md):
   PASSES.
 
-- [`chernozem`](https://hugomachadorodrigues.github.io/soilKey/reference/chernozem.md),
-  [`phaeozem`](https://hugomachadorodrigues.github.io/soilKey/reference/phaeozem.md):
-  FAIL.
+- [`chernozem`](https://hugomachadorodrigues.github.io/soilKey/reference/chernozem.md):
+  FAILS.
+
+- [`phaeozem`](https://hugomachadorodrigues.github.io/soilKey/reference/phaeozem.md):
+  PASSES too (WRB 2022 Phaeozems allow carbonates); the key reaches the
+  Kastanozems first.
 
 ## Usage
 

@@ -231,14 +231,10 @@ Benchmark drivers and KSSL/NASIS label normalisers.
   : Petrogypsic horizon (WRB 2022): cemented gypsic.
 
 - [`petroplinthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/petroplinthic.md)
-  : Petroplinthic horizon (WRB 2022): cemented plinthic.
+  : Petroplinthic horizon (WRB 2022)
 
 - [`pisoplinthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/pisoplinthic.md)
-  :
-
-  Pisoplinthic horizon (WRB 2022): pisolitic plinthic. v0.3.3 detects
-  via designation pattern `Bspl` / `Bvpi` or via plinthite \\= 15% AND
-  structure_type containing 'pisol'.
+  : Pisoplinthic horizon (WRB 2022)
 
 - [`plinthic()`](https://hugomachadorodrigues.github.io/soilKey/reference/plinthic.md)
   : Plinthic horizon (WRB 2022)
@@ -264,13 +260,10 @@ Benchmark drivers and KSSL/NASIS label normalisers.
   : Umbric horizon (WRB 2022)
 
 - [`vertic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_horizon.md)
-  : Vertic horizon (WRB 2022 Ch 3.1)
+  : Vertic horizon (WRB 2022 Ch 3.1.40)
 
 - [`chernic()`](https://hugomachadorodrigues.github.io/soilKey/reference/chernic.md)
-  : Chernic horizon (WRB 2022): the cherozemic-style mollic with very
-  high biological activity (worm holes, casts, coprolites). v0.3.3:
-  delegates to mollic + worm_holes_pct \>= 50 (proxy for "biological
-  homogenization").
+  : Chernic horizon (WRB 2022 3.1.6)
 
 - [`tsitelic()`](https://hugomachadorodrigues.github.io/soilKey/reference/tsitelic.md)
   : Tsitelic horizon (WRB 2022 Ch 3.1)
@@ -988,7 +981,7 @@ plus auxiliaries) used in the test suite.
   : Oxic horizon (USDA Soil Taxonomy)
 
 - [`vertic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/vertic_horizon.md)
-  : Vertic horizon (WRB 2022 Ch 3.1)
+  : Vertic horizon (WRB 2022 Ch 3.1.40)
 
 - [`protovertic()`](https://hugomachadorodrigues.github.io/soilKey/reference/protovertic.md)
   : Protovertic horizon (WRB 2022 Ch 3.1)
@@ -1458,8 +1451,7 @@ pública curada.
 - [`.FEBR_TO_HORIZON_MAP`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-FEBR_TO_HORIZON_MAP.md)
   : Map FEBR layer-table columns to soilKey horizon attributes
 - [`.GLEYIC_HUE_REGEX`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-GLEYIC_HUE_REGEX.md)
-  : Gleyic Munsell hue patterns (WRB 2022, Ch 3.1.13 redoximorphic
-  features)
+  : Gleyic Munsell hue patterns (WRB 2022, Ch 3.2.6 gleyic properties)
 - [`.KST13_CACHE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-KST13_CACHE.md)
   : Package-level cache for the parsed KST 13ed JSON files
 - [`.REDAPE_API_BASE`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-REDAPE_API_BASE.md)

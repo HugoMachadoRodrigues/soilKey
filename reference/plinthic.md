@@ -1,8 +1,9 @@
 # Plinthic horizon (WRB 2022)
 
-Tests whether any horizon meets the plinthic horizon criteria. Plinthite
-is Fe-rich material that hardens irreversibly on repeated wetting and
-drying; the plinthic horizon is the diagnostic of Plinthosols.
+Tests whether any horizon meets the plinthic horizon criteria (WRB 2022
+Ch 3.1.30, p. 62), the diagnostic of Plinthosols with the pisoplinthic
+and petroplinthic horizons. The depth limit belongs to the Plinthosols
+key (`plinthosol()`), not to the horizon.
 
 ## Usage
 
@@ -32,17 +33,25 @@ A
 
 ## Details
 
-Sub-tests:
+Criteria read (v0.9.312):
 
-- `test_plinthite_concentration` – plinthite volume % \>= 15
+- 1: `plinthite_pct` \\= 15 (the oximorphic features inside former
+  aggregates of criterion 1, as `plinthite_pct` records them); a layer
+  where it is not recorded is undecided;
 
-- `test_minimum_thickness` – thickness \>= 15 cm
+- 2: Fe-dithionite \\= 2.5% (2.a) when `fe_dcb_pct` is measured; below
+  it the layer is undecided, since 2.b (10% Fe in the oximorphic
+  features) and 2.c (hardening after drying and wetting) are not
+  recorded; not measured, the recorded plinthite is taken for 2.c;
 
-v0.2 limitations: WRB 2022 also accepts profiles with \>= 40% red
-Fe-rich mottles as alternative criterion – not yet wired. The
-"irreversibly hardens" criterion is conceptual and requires field
-observation; v0.2 takes `plinthite_pct` as already representing true
-plinthite (as opposed to soft mottles).
+- 3: Feox/Fedith \< 0.1 when both are measured;
+
+- 4: not part of a petroplinthic or pisoplinthic horizon;
+
+- 5: \\= 15 cm thick; adjoining sublayers (Btv1 over Btv2) count
+  together.
+
+The result is `NA` when undecided layers could make the horizon.
 
 ## v0.9.72 designation morphological inference (opt-in)
 
@@ -64,4 +73,4 @@ Default is `FALSE` (canonical behaviour preserved).
 
 ## References
 
-IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon.
+IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic horizon.

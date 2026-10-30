@@ -1,6 +1,9 @@
 # Lixisol RSG diagnostic (WRB 2022)
 
-argic + CEC \< 24 cmol_c/kg clay + BS \>= 50%.
+The Lixisols of the WRB 2022 key (Ch 4, p. 120): an argic horizon
+starting \\\le\\ 100 cm from the mineral soil surface and a CEC of \< 24
+cmolc/kg clay in some subhorizon of the argic horizon within 150 cm. The
+key reaches them after the Acrisols.
 
 ## Usage
 
@@ -17,11 +20,11 @@ lixisol(pedon, max_cec = 24, min_bs = 50)
 
 - max_cec:
 
-  Maximum CEC per kg clay (default 24).
+  CEC per kg clay below which the clay is of low activity (default 24).
 
 - min_bs:
 
-  Minimum base saturation % (default 50).
+  Unused since v0.9.310, kept so that existing calls still run.
 
 ## Value
 
@@ -30,4 +33,4 @@ A
 
 ## References
 
-IUSS Working Group WRB (2022), Chapter 5, Lixisols.
+IUSS Working Group WRB (2022), Chapter 4, Lixisols (p. 120).

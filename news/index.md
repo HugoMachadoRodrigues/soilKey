@@ -1,5 +1,105 @@
 # Changelog
 
+## soilKey 0.9.310 (2026-10-29)
+
+### WRB 2022 diagnostics by the text: six groups
+
+Found by running soilKey on ISRIC’s World Soil Reference Collection
+(ISIS). Six investigations sorted the profiles where soilKey and ISRIC
+disagree. Many came from soilKey readings that did not follow the 2022
+text, and those are fixed here, group by group. Each group was measured
+on the BDsolos, FEBR, KSSL, Redape, AfSP, WoSIS and ISIS panels. The
+SiBCS and USDA keys keep their readings: where they shared a WRB
+diagnostic, it now has a separate reading for them.
+
+- **Mollic family:**
+  - Phaeozems need base saturation of 50% or more throughout to 100 cm
+    or to a limiting layer, and carbonates are allowed (Ch 4, p. 113).
+  - Chernozems and Kastanozems need a protocalcic layer or a calcic
+    horizon at the depth the key gives, with base saturation of 50% or
+    more above it.
+  - Protocalcic properties are visible secondary carbonates (3.2.8), not
+    laboratory CaCO3.
+  - The chernic horizon follows its seven criteria and no longer needs
+    worm holes.
+  - Umbrisols take an umbric, mollic or hortic horizon, and the umbric
+    horizon is the contiguous stack from the mineral surface.
+  - Where base saturation is missing, the pH stands in, by Annex 2 Table
+    9.2.
+- **Argic family:**
+  - The argic horizon gains criterion 1 (8% clay or more), the
+    transition of 15 cm or less, and criterion 2.b.ii (clay films common
+    or more). It is a subsurface horizon.
+  - Acrisols, Lixisols, Alisols and Luvisols use the 2022 tests: CEC
+    below 24 per kg clay, and exchangeable Al above the bases in half of
+    50-100 cm. Where the cations are missing, the pH stands in, by Table
+    9.3.
+  - The natric horizon gets its structure and ESP criteria, and Solonetz
+    need a natric horizon within 100 cm.
+  - The ferralic thickness counts adjoining sub-horizons. Ferralsols
+    follow the text on the argic horizon above the ferralic.
+- **Vertic horizon:**
+  - Wedge-shaped aggregates count as well as slickensides.
+  - The 25 cm counts adjoining layers, and the COLE path stays in the
+    USDA reading only.
+  - Vertisols need the vertic horizon within 100 cm, 30% clay above it,
+    and cracks; missing crack data is undecided.
+- **Redox and plinthite:**
+  - Gleyic and stagnic properties are told apart by colour and by the
+    site’s groundwater. This replaces a “mottles decreasing with depth”
+    test that is not in the text. ISIS groundwater is now read into the
+    new site attributes `groundwater_kind` and `groundwater_depth_cm`.
+  - Stagnosols need stagnic properties on a third of 0-60 cm, and
+    Planosols an abrupt textural difference within 75 cm with a
+    transition of 2 cm or less.
+  - Plinthosols take a plinthic, pisoplinthic or petroplinthic horizon.
+    The pisoplinthic horizon reads nodules, and the petroplinthic
+    horizon is at least strongly cemented.
+- **Organic material and Andosols:**
+  - Organic material is 20% organic carbon, not 12%. Histosols follow
+    the key: 40 cm of organic material within 100 cm, or 10 cm over rock
+    or ice.
+  - Andosols sum the andic layers within 100 cm.
+  - Where bulk density is missing, Alox + 1/2 Feox of 2% or more with a
+    pH NaF of 9.5 or more counts as andic, as a field test. The new
+    attribute `ph_naf` holds the pH NaF, and ISIS phnf is read into it.
+  - Cryosols gain item 2: a cryic horizon within 200 cm with
+    cryoturbation.
+- **Weakly developed and carbonate groups:**
+  - The cambic horizon excludes only the layers of another diagnostic
+    horizon. Cambisols, Calcisols, Gypsisols and Fluvisols get their
+    depth tests.
+  - The calcic horizon follows criterion 2.
+  - Arenosols use a weighted average of texture.
+  - Fluvic material needs a water origin, and its strata are a texture
+    reversal or irregular organic carbon. ISIS deposition origin is now
+    read into `rock_origin`.
+- **Readings decided by Hugo after the measurement:**
+  - A profile described above 100 cm is decided on the part that is
+    described (Phaeozems, Arenosols).
+  - With no secondary carbonates recorded, a layer with CaCO3 \>= 15%
+    meets calcic criterion 2 by the laboratory.
+  - Gleyic criterion 1 (\>= 95% reductimorphic features) needs at most
+    5% oximorphic features, and criterion 3 needs a layer below that
+    meets criterion 1.
+- **Results:** on the 481 ISIS profiles with an ISRIC WRB 2022 name, the
+  Reference Soil Group agrees for 310 (64.4%), up from 221 (45.9%) in
+  0.9.308. Other WRB panels: AfSP 25.0 -\> 28.3%, FEBR 19.3 -\> 20.2%,
+  WoSIS 16.9 -\> 16.2% (one profile, a Histosol whose H horizons have
+  under 20% organic carbon). BDsolos SiBCS goes from 57.2 to 57.5%;
+  Redape and the USDA panels are unchanged against 0.9.309.
+- **Fixtures:** 10 of the 44 canonical fixtures change their WRB name,
+  each by the text:
+  - the Planossolo becomes a Planosol;
+  - the Argissolo and the Nitossolo become Lixisols;
+  - Cambic is dropped where the cambic layers belong to another horizon;
+  - the Phaeozem fixture becomes Chernic.
+
+  The Chernozem, Kastanozem, Acrisol, Fluvisol, Stagnosol, Planosol,
+  Retisol and Gleysol fixtures gained or changed recorded properties so
+  that they keep showing the soil they were written for (the Gleysol:
+  the groundwater its drainage class names).
+
 ## soilKey 0.9.309 (2026-10-29)
 
 ### ISRIC’s KE009: four WRB qualifiers and the key to the Oxisols by the texts

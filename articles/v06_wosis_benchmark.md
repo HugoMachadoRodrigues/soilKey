@@ -399,11 +399,11 @@ knitr::kable(
 | FR  | FR      | Geric            |
 | CH  | CH      | Vermic           |
 | KS  | KS      | Cambic           |
-| PH  | PH      | Cambic           |
-| UM  | UM      | Cambic           |
+| PH  | PH      | Chernic          |
+| UM  | UM      | Haplic           |
 | DU  | DU      | Eutric           |
 | GY  | GY      | Calcaric         |
-| CL  | CL      | Cambic           |
+| CL  | CL      | Haplic           |
 | RT  | RT      | Eutric           |
 | AC  | AC      | Chromic          |
 | LX  | LX      | Chromic          |

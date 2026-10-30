@@ -92,9 +92,24 @@ Until v0.9.219 a glossic, albeluvic or retic designation anywhere voided
 the argic horizon (the WRB 2014 Albeluvisol logic); in WRB 2022 retic
 properties belong to an argic or natric horizon.
 
-v0.1 limitations: clay-increase distance (\<= 30 cm vertical, or \<= 15
-cm with abrupt textural change) is not yet enforced; that is scheduled
-for v0.2 and depends on horizon boundary descriptions.
+v0.9.310, for `system = "wrb2022"` (WRB 2022 Ch 3.1.3, p. 35-36):
+
+- criterion 1: the layers have \\\ge\\ 8% clay;
+
+- criterion 2.a.iii: a layer is compared with a coarser-textured layer
+  above it only across a transitional horizon of \\\le\\ 15 cm; layers
+  already accepted and layers whose designation has the suffix t are
+  part of the argic horizon, not transitional;
+
+- criterion 2.b.ii: clay films of "common" or more (clay coatings on
+  \\\ge\\ 15% of the aggregate surfaces) make a layer argic without a
+  clay increase;
+
+- a subsurface horizon: the layer at the mineral soil surface and the A
+  horizons are not part of it.
+
+The USDA argillic and order keys and the SiBCS B textural keep the
+earlier reading.
 
 ## References
 

@@ -1,8 +1,10 @@
 # Planosol RSG gate (WRB 2022 Ch 4, p 107)
 
-WRB-canonical: abrupt textural difference \\= 75 cm AND, in 5 cm
-directly above or below the abrupt textural difference, stagnic
-properties (\>= 50% redoximorphic features) AND reducing conditions.
+WRB 2022: an abrupt textural difference \\= 75 cm from the mineral soil
+surface and, within 5 cm directly above or below it, (1) stagnic
+properties in which the area of reductimorphic plus oximorphic features
+is \\= 50% and (2) reducing conditions in some parts of the volume with
+the reductimorphic features.
 
 ## Usage
 
@@ -19,9 +21,8 @@ planosol(pedon, strict = NULL)
 
 - strict:
 
-  Logical or `NULL`. When `NULL` (default) it resolves via
-  `getOption("soilKey.rsg_strict", FALSE)`. `TRUE` disables the
-  planic-features fallback.
+  Logical or `NULL`; recorded in the evidence. Since v0.9.312 it changes
+  nothing (the fallback it disabled is gone).
 
 ## Value
 
@@ -32,14 +33,13 @@ the supporting evidence.
 
 ## Details
 
-v0.3.4 enforces all three components. The 5-cm-window restriction is
-relaxed to "the layer immediately above or below the abrupt textural
-difference satisfies stagnic + reducing".
-
-## Tier-3 strict mode (v0.9.98)
-
-With `strict = TRUE` the `planic_features` fallback path is disabled.
-Strict mode requires the canonical evidence – an abrupt textural
-difference *plus* measured stagnic and reducing conditions in the
-bracketing layer – and will not accept the simpler clay-doubling proxy
-on its own.
+The two layers that meet at the abrupt textural difference stand for the
+5 cm above and below it. Stagnic properties are those of
+[`stagnic_properties`](https://hugomachadorodrigues.github.io/soilKey/reference/stagnic_properties.md);
+a claric layer directly above the abrupt textural difference is stagnic
+(Ch 3.2.14, criterion 4) and its whole area counts as reductimorphic.
+Since v0.9.312 the abrupt textural difference has its transition
+criterion (`boundary_distinctness`), the depth limit of 75 cm is
+applied, and the v0.2 `planic_features` fallback (clay doubling at an
+abrupt boundary, with no redox evidence), which is not in WRB 2022, is
+gone.

@@ -1,8 +1,7 @@
 # Natric horizon (WRB 2022)
 
 Tests for the natric horizon: an argic horizon with diagnostic sodium
-accumulation (ESP \>= 15%) within at least one argic layer. Diagnostic
-of Solonetz.
+accumulation. Diagnostic of Solonetz.
 
 ## Usage
 
@@ -30,6 +29,15 @@ natric_horizon(pedon, min_esp = 15, min_pH_h2o = 7)
 
 A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md).
+
+## Details
+
+v0.9.310: WRB 2022 Ch 3.1.21 (p. 53-54) criterion 3 (columnar or
+prismatic structure, or blocky with tongues of the overlying layer) and
+criterion 4 (ESP \\\ge\\ 15 throughout the upper 40 cm, or Mg + Na \>
+Ca + exchange acidity there with ESP \\\ge\\ 15 within 50 cm). Until
+then an ESP \\\ge\\ 15 in any argic layer sufficed; the USDA natric
+helpers keep that reading.
 
 ## v0.9.76 designation + ESP-only inference (opt-in)
 

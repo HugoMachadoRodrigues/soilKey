@@ -7,7 +7,9 @@ soilKey's words, and each value records its ISIS field in the provenance.
 The site carries the WRB and USDA names ISRIC gives the profile
 (reference_wrb, reference_wrb_full, reference_usda,
 reference_usda_subgroup and their editions), the soil moisture and
-temperature regimes when ISIS records them, the licence and the citation."><meta property="og:description" content="Builds a PedonRecord from one profile as the ISIS GraphQL
+temperature regimes and the groundwater (groundwater_kind,
+groundwater_depth_cm) when ISIS records them, the licence and the
+citation."><meta property="og:description" content="Builds a PedonRecord from one profile as the ISIS GraphQL
 service returns it (one element of the profiles list; see
 read_isis, which calls this for every profile it reads).
 Laboratory values are converted to soilKey units, FAO field codes to
@@ -15,7 +17,9 @@ soilKey's words, and each value records its ISIS field in the provenance.
 The site carries the WRB and USDA names ISRIC gives the profile
 (reference_wrb, reference_wrb_full, reference_usda,
 reference_usda_subgroup and their editions), the soil moisture and
-temperature regimes when ISIS records them, the licence and the citation."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+temperature regimes and the groundwater (groundwater_kind,
+groundwater_depth_cm) when ISIS records them, the licence and the
+citation."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +27,7 @@ temperature regimes when ISIS records them, the licence and the citation."><meta
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +82,9 @@ soilKey's words, and each value records its ISIS field in the provenance.
 The site carries the WRB and USDA names ISRIC gives the profile
 (<code>reference_wrb</code>, <code>reference_wrb_full</code>, <code>reference_usda</code>,
 <code>reference_usda_subgroup</code> and their editions), the soil moisture and
-temperature regimes when ISIS records them, the licence and the citation.</p>
+temperature regimes and the groundwater (<code>groundwater_kind</code>,
+<code>groundwater_depth_cm</code>) when ISIS records them, the licence and the
+citation.</p>
     </div>
 
     <div class="section level2">

@@ -25,7 +25,8 @@ cambic(pedon, min_thickness = 15, min_top_cm = 5, engine = NULL)
 - min_top_cm:
 
   Minimum top depth (cm) for a horizon to be considered cambic-eligible
-  (default 5). Anchors the candidate set to subsurface layers.
+  (default 5). Anchors the candidate set to subsurface layers. Since
+  v0.9.314 the WRB reading asks it only when it is given.
 
 - engine:
 
@@ -62,6 +63,17 @@ gypsic, plinthic, vertic, and several other diagnostic horizons. Those
 exclusions, plus the WRB criteria of "evidence of alteration"
 (color/structure differences from parent material, carbonate removal),
 are scheduled for v0.3.
+
+## v0.9.314
+
+The WRB cambic horizon follows WRB 2022 Ch 3.1.5 (p. 39-40): criterion 4
+is read layer by layer, so a layer that forms part of an argic,
+ferralic, calcic, mollic or other listed horizon (or of a layer with
+andic properties) is set aside, not the whole profile; the subsurface
+layers are those below the layer at the mineral soil surface that are
+not A horizons; the 15 cm are those of the adjoining layers; a layer
+whose texture or structure is not recorded leaves the result undecided.
+Criterion 3 is not tested. The USDA keys keep the earlier reading.
 
 ## References
 

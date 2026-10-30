@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,7 +159,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x62471b0cb1b0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5c8c2ed811a0&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -241,10 +241,11 @@ um <code>ClassificationResult</code> por sistema:</p>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
 <span><span class="co">#&gt; - V: Indeterminate -- missing 1 attribute(s): slickensides</span></span>
 <span><span class="co">#&gt; - E: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct</span></span>
-<span><span class="co">#&gt; - F: Indeterminate -- missing 1 attribute(s): plinthite_pct</span></span>
+<span><span class="co">#&gt; - F: Indeterminate -- missing 3 attribute(s): plinthite_pct, pan_type,</span></span>
+<span><span class="co">#&gt; cementation_class</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
-<span><span class="co">#&gt; slickensides, al_ox_pct, fe_ox_pct, plinthite_pct</span></span>
+<span><span class="co">#&gt; slickensides, al_ox_pct, fe_ox_pct, plinthite_pct, pan_type, cementation_class</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (30 classes tested before assignment)</span></span>
@@ -257,7 +258,7 @@ um <code>ClassificationResult</code> por sistema:</p>
 <span><span class="co">#&gt; 7. L Latossolos -- failed</span></span>
 <span><span class="co">#&gt; 8. M Chernossolos -- failed</span></span>
 <span><span class="co">#&gt; 9. C Cambissolos -- failed</span></span>
-<span><span class="co">#&gt; 10. F Plintossolos -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 10. F Plintossolos -- NA (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 11. T Luvissolos -- failed</span></span>
 <span><span class="co">#&gt; 12. N Nitossolos -- failed</span></span>
 <span><span class="co">#&gt; 13. P Argissolos -- PASSED</span></span>
@@ -312,21 +313,22 @@ Subordem <strong>Vermelho-Amarelo</strong>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (WRB 2022)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Name: Rhodic Ferralic Acrisol (Clayic, Cutanic, Differentic, Epic, Geric,</span></span>
+<span><span class="co">#&gt; Name: Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Geric,</span></span>
 <span><span class="co">#&gt; Ochric, Profondic)</span></span>
-<span><span class="co">#&gt; RSG/Order: Acrisols</span></span>
+<span><span class="co">#&gt; RSG/Order: Lixisols</span></span>
 <span><span class="co">#&gt; Qualifiers: Rhodic, Ferralic, Clayic, Cutanic, Differentic, Epic, Geric,</span></span>
-<span><span class="co">#&gt; Ochric, Profondic, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, p_mehlich3_mg_kg,</span></span>
-<span><span class="co">#&gt; FALSE, FALSE, redoximorphic_features_pct, FALSE, redoximorphic_features_pct,</span></span>
-<span><span class="co">#&gt; TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, ferric_nodules_pct,</span></span>
-<span><span class="co">#&gt; redoximorphic_features_pct, FALSE, coarse_fragments_pct, FALSE, TRUE, TRUE,</span></span>
-<span><span class="co">#&gt; FALSE, FALSE, al_ox_pct, fe_ox_pct, phosphate_retention_pct,</span></span>
-<span><span class="co">#&gt; volcanic_glass_pct, FALSE, FALSE, FALSE, NA, rupture_resistance, TRUE, FALSE,</span></span>
-<span><span class="co">#&gt; TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, NA, gibbsite_clay_fraction_pct, FALSE,</span></span>
+<span><span class="co">#&gt; Ochric, Profondic, FALSE, FALSE, FALSE, caco3_pct, FALSE, FALSE, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; p_mehlich3_mg_kg, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, ferric_nodules_pct, redoximorphic_features_pct, FALSE, caso4_pct,</span></span>
+<span><span class="co">#&gt; FALSE, caco3_pct, FALSE, desert_pavement_pct, FALSE, FALSE,</span></span>
+<span><span class="co">#&gt; coarse_fragments_pct, FALSE, TRUE, TRUE, FALSE, FALSE, volcanic_glass_pct,</span></span>
+<span><span class="co">#&gt; FALSE, FALSE, FALSE, NA, rupture_resistance, FALSE, TRUE, FALSE, TRUE, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, TRUE, FALSE, NA, broken_petro_remnants_pct,</span></span>
+<span><span class="co">#&gt; broken_petro_remnants_length_cm, TRUE, NA, gibbsite_clay_fraction_pct, FALSE,</span></span>
 <span><span class="co">#&gt; TRUE, FALSE, FALSE, FALSE, fe_dcb_pct, fe_ox_pct, FALSE, NA,</span></span>
-<span><span class="co">#&gt; water_saturation_days, redoximorphic_features_pct, FALSE, TRUE, NA, visible</span></span>
-<span><span class="co">#&gt; black carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct,</span></span>
-<span><span class="co">#&gt; FALSE, FALSE, rock_origin, FALSE, FALSE, artefacts_pct, geomembrane_present,</span></span>
+<span><span class="co">#&gt; water_saturation_days, redoximorphic_features_pct, TRUE, NA, visible black</span></span>
+<span><span class="co">#&gt; carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,</span></span>
+<span><span class="co">#&gt; FALSE, rock_origin, FALSE, artefacts_pct, geomembrane_present,</span></span>
 <span><span class="co">#&gt; technic_hardmaterial_pct, NA, artefacts_pct, NA, contamination_type, NA,</span></span>
 <span><span class="co">#&gt; layer_origin, artefacts_pct, FALSE, volcanic_glass_pct</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
@@ -337,50 +339,53 @@ Subordem <strong>Vermelho-Amarelo</strong>
 <span><span class="co">#&gt; geomembrane_present, technic_hardmaterial_pct</span></span>
 <span><span class="co">#&gt; - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C</span></span>
 <span><span class="co">#&gt; - LP: Indeterminate -- missing 1 attribute(s): coarse_fragments_pct</span></span>
-<span><span class="co">#&gt; - VR: Indeterminate -- missing 1 attribute(s): slickensides</span></span>
 <span><span class="co">#&gt; - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m</span></span>
 <span><span class="co">#&gt; - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct</span></span>
-<span><span class="co">#&gt; - PT: Indeterminate -- missing 1 attribute(s): plinthite_pct</span></span>
-<span><span class="co">#&gt; - ST: Indeterminate -- missing 1 attribute(s): redoximorphic_features_pct</span></span>
+<span><span class="co">#&gt; - PT: Indeterminate -- missing 4 attribute(s): plinthite_pct,</span></span>
+<span><span class="co">#&gt; ferric_nodules_pct, pan_type, cementation_class</span></span>
 <span><span class="co">#&gt; - NT: Indeterminate -- missing 2 attribute(s): fe_dcb_pct, fe_ox_pct</span></span>
+<span><span class="co">#&gt; - FR: Indeterminate -- missing 1 attribute(s): water_dispersible_clay_pct</span></span>
+<span><span class="co">#&gt; - UM: Indeterminate -- missing 3 attribute(s): top_cm, bottom_cm,</span></span>
+<span><span class="co">#&gt; p_mehlich3_mg_kg</span></span>
 <span><span class="co">#&gt; - DU: Indeterminate -- missing 1 attribute(s): duripan_pct</span></span>
 <span><span class="co">#&gt; - GY: Indeterminate -- missing 1 attribute(s): caso4_pct</span></span>
 <span><span class="co">#&gt; - CL: Indeterminate -- missing 1 attribute(s): caco3_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
 <span><span class="co">#&gt; p_mehlich3_mg_kg, artefacts_pct, geomembrane_present, technic_hardmaterial_pct,</span></span>
-<span><span class="co">#&gt; permafrost_temp_C, coarse_fragments_pct, slickensides, ec_dS_m,</span></span>
-<span><span class="co">#&gt; redoximorphic_features_pct, al_ox_pct, fe_ox_pct, phosphate_retention_pct,</span></span>
-<span><span class="co">#&gt; volcanic_glass_pct, plinthite_pct, fe_dcb_pct, top_cm, bottom_cm, duripan_pct,</span></span>
-<span><span class="co">#&gt; caso4_pct, caco3_pct</span></span>
+<span><span class="co">#&gt; permafrost_temp_C, coarse_fragments_pct, ec_dS_m, redoximorphic_features_pct,</span></span>
+<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, plinthite_pct, ferric_nodules_pct, pan_type,</span></span>
+<span><span class="co">#&gt; cementation_class, fe_dcb_pct, water_dispersible_clay_pct, top_cm, bottom_cm,</span></span>
+<span><span class="co">#&gt; duripan_pct, caso4_pct, caco3_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
-<span><span class="co">#&gt; (25 RSGs tested before assignment)</span></span>
+<span><span class="co">#&gt; (26 RSGs tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. HS Histosols -- failed</span></span>
 <span><span class="co">#&gt; 2. AT Anthrosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 3. TC Technosols -- NA (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 4. CR Cryosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. LP Leptosols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 6. SN Solonetz -- failed</span></span>
-<span><span class="co">#&gt; 7. VR Vertisols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 7. VR Vertisols -- failed</span></span>
 <span><span class="co">#&gt; 8. SC Solonchaks -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 9. GL Gleysols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 10. AN Andosols -- failed (4 attrs missing)</span></span>
+<span><span class="co">#&gt; 10. AN Andosols -- failed</span></span>
 <span><span class="co">#&gt; 11. PZ Podzols -- NA (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 12. PT Plinthosols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 12. PT Plinthosols -- NA (4 attrs missing)</span></span>
 <span><span class="co">#&gt; 13. PL Planosols -- failed</span></span>
-<span><span class="co">#&gt; 14. ST Stagnosols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 14. ST Stagnosols -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 15. NT Nitisols -- NA (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 16. FR Ferralsols -- failed</span></span>
-<span><span class="co">#&gt; 17. CH Chernozems -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 16. FR Ferralsols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 17. CH Chernozems -- failed</span></span>
 <span><span class="co">#&gt; 18. KS Kastanozems -- failed (2 attrs missing)</span></span>
 <span><span class="co">#&gt; 19. PH Phaeozems -- failed (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 20. UM Umbrisols -- failed</span></span>
+<span><span class="co">#&gt; 20. UM Umbrisols -- NA (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 21. DU Durisols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 22. GY Gypsisols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 23. CL Calcisols -- NA (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 24. RT Retisols -- failed</span></span>
-<span><span class="co">#&gt; 25. AC Acrisols -- PASSED</span></span></code></pre></div>
+<span><span class="co">#&gt; 25. AC Acrisols -- failed</span></span>
+<span><span class="co">#&gt; 26. LX Lixisols -- PASSED</span></span></code></pre></div>
 <p>WRB devolve o RSG mais qualificadores (em ordem canonica):
 <strong>Acrisol Dystric Cutanic</strong> (caracter argico + V baixa +
 presenca de revestimentos argilosos).</p>
@@ -459,7 +464,7 @@ o solum).</p>
 <span><span class="co">#&gt; 3 USDA-ST 13a</span></span>
 <span><span class="co">#&gt;                                                                                   Classe</span></span>
 <span><span class="co">#&gt; 1           Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado, Tmob</span></span>
-<span><span class="co">#&gt; 2 Rhodic Ferralic Acrisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)</span></span>
+<span><span class="co">#&gt; 2 Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)</span></span>
 <span><span class="co">#&gt; 3                                                                     Rhodic Kandiudults</span></span>
 <span><span class="co">#&gt;   EvidGrade</span></span>
 <span><span class="co">#&gt; 1         A</span></span>

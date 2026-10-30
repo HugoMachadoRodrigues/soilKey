@@ -12,7 +12,7 @@ upper 30 cm or throughout has one or more of:
 
 v0.3.4 enforces all three exception paths. The DeltapH check uses
 `ph_kcl` and `ph_h2o`; the WDC check uses `water_dispersible_clay_pct`
-(introduced in v0.3.3 schema).
+(introduced in v0.3.3 schema), a clay content in % of the fine earth.
 
 ## Usage
 
@@ -39,6 +39,15 @@ A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
 recording whether the diagnostic is present, the qualifying layers, and
 the supporting evidence.
+
+## Details
+
+v0.9.310: the ferralic horizon must start \<= 150 cm from the mineral
+soil surface; an argic horizon counts when it starts above or at the
+upper limit of the ferralic horizon (not only when it lies wholly above
+it); and an exception must hold throughout the upper 30 cm of the argic
+horizon (or all of it when it is thinner). Data that do not decide an
+exception leave the gate undecided (NA).
 
 ## Tier-3 strict mode (v0.9.98)
 

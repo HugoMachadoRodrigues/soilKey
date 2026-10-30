@@ -2,17 +2,14 @@
 
 Synthetic Stagnosol: redoximorphic features in a perched layer (Bg,
 15-50 cm; redox 25%) but the deeper subsoil is well-drained (BC redox
-2%, C redox 0). The decay-with-depth contrast is what distinguishes
-stagnic from gleyic. By construction
+2%, C redox 0). Since v0.9.312 what tells stagnic from gleyic is the
+recorded perched water table and the Bg's matrix, which has no
+reductimorphic colour (WRB 2022 3.2.6 and 3.2.14, as Hugo reads them):
 [`stagnic_properties`](https://hugomachadorodrigues.github.io/soilKey/reference/stagnic_properties.md)
-passes and
+passes,
 [`gleyic_properties`](https://hugomachadorodrigues.github.io/soilKey/reference/gleyic_properties.md)
-also passes (the surface redox qualifies for both); the WRB key tests
-Stagnosols (#16) and Gleysols (#9), so a real Stagnosol-typed fixture
-lands at Gleysols if both pass – the criteria differ in depth pattern,
-which is enough for the diagnostic functions but not for key precedence
-in v0.3. This is documented in the test as known overlap; v0.4 will add
-a stronger discriminator.
+does not, and the grey Bg covers more than one third of 0-60 cm (the
+Stagnosols key, Ch 4, p. 108).
 
 ## Usage
 

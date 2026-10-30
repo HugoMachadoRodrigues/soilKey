@@ -9,9 +9,14 @@ Mollic/umbric &amp;gt; 40 cm thick with reducing conditions some
         limit \&amp;gt;= 65 cm having gleyic properties + reducing
         conditions; OR
 Permanent saturation by water \&amp;lt;= 40 cm.
-v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
-(W / saturated marker). Path 2 is deferred (requires a depth-of-
-saturation column that's not standard)."><meta property="og:description" content="WRB-canonical (multi-path):
+Path 1 reads the layers of gleyic_properties (since
+v0.9.312: the matrix colour, the layer underneath and the site's
+groundwater, without the old decay-with-depth test) and of
+reducing_conditions; since v0.9.312 the 25 cm may be made
+of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
+surface, and a layer whose redox reading is undecided leaves the gate
+NA when it could complete the 25 cm. Path 3 is read from the
+designation (W / saturated marker). Path 2 is not implemented."><meta property="og:description" content="WRB-canonical (multi-path):
 Layer \&amp;gt;= 25 cm starting \&amp;lt;= 40 cm with gleyic properties
         throughout AND reducing conditions in some parts of every
         sublayer; OR
@@ -21,9 +26,14 @@ Mollic/umbric &amp;gt; 40 cm thick with reducing conditions some
         limit \&amp;gt;= 65 cm having gleyic properties + reducing
         conditions; OR
 Permanent saturation by water \&amp;lt;= 40 cm.
-v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
-(W / saturated marker). Path 2 is deferred (requires a depth-of-
-saturation column that's not standard)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+Path 1 reads the layers of gleyic_properties (since
+v0.9.312: the matrix colour, the layer underneath and the site's
+groundwater, without the old decay-with-depth test) and of
+reducing_conditions; since v0.9.312 the 25 cm may be made
+of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
+surface, and a layer whose redox reading is undecided leaves the gate
+NA when it could complete the 25 cm. Path 3 is read from the
+designation (W / saturated marker). Path 2 is not implemented."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +41,7 @@ saturation column that's not standard)."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,9 +97,14 @@ saturation column that's not standard)."><meta property="og:image" content="http
         limit \&gt;= 65 cm having gleyic properties + reducing
         conditions; OR</p></li>
 <li><p>Permanent saturation by water \&lt;= 40 cm.</p></li>
-</ol><p>v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
-(W / saturated marker). Path 2 is deferred (requires a depth-of-
-saturation column that's not standard).</p>
+</ol><p>Path 1 reads the layers of <code><a href="gleyic_properties.html">gleyic_properties</a></code> (since
+v0.9.312: the matrix colour, the layer underneath and the site's
+groundwater, without the old decay-with-depth test) and of
+<code><a href="reducing_conditions.html">reducing_conditions</a></code>; since v0.9.312 the 25 cm may be made
+of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
+surface, and a layer whose redox reading is undecided leaves the gate
+<code>NA</code> when it could complete the 25 cm. Path 3 is read from the
+designation (W / saturated marker). Path 2 is not implemented.</p>
     </div>
 
     <div class="section level2">

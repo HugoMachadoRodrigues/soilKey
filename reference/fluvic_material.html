@@ -13,7 +13,7 @@ Diagnostic of Fluvisols."><meta property="og:image" content="https://hugomachado
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,22 @@ check (no temporal fields in the schema). The stratification proxy
 is conservative – truly heterogeneous floodplain profiles with
 dramatic texture swings will pass; subtle alluvial sequences may
 miss. v0.4 will refine.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-">v0.9.314<a class="anchor" aria-label="anchor" href="#v-"></a></h2>
+
+
+<p>Fluvic material follows WRB 2022 Ch 3.3.6 (p. 87) layer by layer:
+fluviatile, marine or lacustrine origin (<code>rock_origin</code>,
+<code>layer_origin</code>, else the site's parent material); strata that are
+obvious (the clay reversal above, or a sand reversal of \(\ge\) 15%) OR
+evidenced by two or more layers with more SOC than the layer directly above
+(\(\ge\) 0.2%, \(\ge\) 25% relative and \(\ge\) 0.2% absolute,
+not of a natric or spodic horizon); and a single grain, massive, platy or
+weak subangular blocky structure (granular or subangular blocky in a layer
+of higher SOC). The layers returned are those that meet the three. An
+origin, a texture or a structure that is not recorded leaves the result
+undecided. The SiBCS carater fluvico keeps the earlier reading.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

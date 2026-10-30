@@ -29,7 +29,7 @@ on (andic OR vitric) at the RSG-gate level (andosol)."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,6 +139,21 @@ proxy is enabled.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="DiagnosticResult.html">DiagnosticResult</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-">v0.9.313<a class="anchor" aria-label="anchor" href="#v-"></a></h2>
+
+
+<p>The answer is read layer by layer and is <code>NA</code> when a value it
+needs is not recorded (until v0.9.312 an undecided profile returned
+<code>FALSE</code>); <code>evidence$layer_status</code> holds the answer per layer.
+A layer fails when Al_ox + 0.5*Fe_ox &lt; <code>min_alfe</code> or the bulk
+density &gt; <code>max_bd</code> is measured (phosphate retention, an optional
+path, can still pass it). Where bulk density is not measured,
+Al_ox + 0.5*Fe_ox &gt;= <code>min_alfe</code> together with a pH in NaF
+(<code>ph_naf</code>) &gt;= 9.5 in a carbonate-free layer passes, read from the
+field test of WRB 2022 Ch 3.2.3; this is a proxy, named in
+<code>notes</code>, <code>reference</code> and <code>evidence$naf_field_test</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="v-oc-bd-proxy-opt-in-">v0.9.80 OC + BD proxy (opt-in)<a class="anchor" aria-label="anchor" href="#v-oc-bd-proxy-opt-in-"></a></h2>

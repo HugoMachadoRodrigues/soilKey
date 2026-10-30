@@ -117,7 +117,7 @@ m <- data.frame(from = "ORGC", to = "oc_pct", factor = 0.1)
 classify_profiles(h2, sites = s, map = m)[, c("profile_id", "wrb", "sibcs", "usda")]
 #>   profile_id                                                  wrb
 #> 1         p1 Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
-#> 2         p2              Cambic Phaeozem (Loamic, Humic, Pachic)
+#> 2         p2             Chernic Phaeozem (Loamic, Humic, Pachic)
 #>                                                                    sibcs
 #> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
 #> 2                   Chernossolos Háplicos Órticos típicos, textura média

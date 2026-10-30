@@ -3,8 +3,12 @@
 WRB-canonical: chernic horizon AND, starting \\= 50 cm below the lower
 limit of the mollic horizon and (if a petrocalcic horizon is present)
 above it, a layer with protocalcic properties \\= 5 cm thick OR a calcic
-horizon AND base saturation \\= 50% from the surface to the protocalcic
-/ calcic layer throughout.
+horizon AND base saturation \\= 50% from the mineral soil surface to the
+protocalcic / calcic layer throughout. Protocalcic properties are
+visible secondary carbonates
+([`protocalcic_properties`](https://hugomachadorodrigues.github.io/soilKey/reference/protocalcic_properties.md));
+where BS is not recorded it is read from pH (WRB 2022 Annex 2, Table
+9.2).
 
 ## Usage
 
@@ -21,11 +25,12 @@ chernozem_strict(pedon, min_bs = 50, max_top_cm = 50, strict = NULL)
 
 - min_bs:
 
-  Numeric threshold or option (see Details).
+  Minimum base saturation % above the carbonate layer (default 50).
 
 - max_top_cm:
 
-  Numeric threshold or option (see Details).
+  Maximum depth of the carbonate layer below the lower limit of the
+  mollic horizon, cm (default 50).
 
 - strict:
 

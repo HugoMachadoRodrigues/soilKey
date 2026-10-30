@@ -11,7 +11,7 @@ folic horizon is saturated for \< 30 days and is not drained.
 ## Usage
 
 ``` r
-folic(pedon, min_oc = 12, max_saturation_days = 30, min_thickness = 10)
+folic(pedon, min_oc = 20, max_saturation_days = 30, min_thickness = 10)
 ```
 
 ## Arguments
@@ -23,9 +23,8 @@ folic(pedon, min_oc = 12, max_saturation_days = 30, min_thickness = 10)
 
 - min_oc:
 
-  Minimum soil organic carbon (%) for organic material, default 12
-  (matching
-  [`histic_horizon`](https://hugomachadorodrigues.github.io/soilKey/reference/histic_horizon.md)).
+  Minimum soil organic carbon (%) for organic material, default 20 (WRB
+  2022 Ch 3.3.13; it was 12 until v0.9.312).
 
 - max_saturation_days:
 

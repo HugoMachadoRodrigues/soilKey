@@ -11,7 +11,7 @@ Diagnostic of Umbrisols."><meta property="og:image" content="https://hugomachado
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,8 +96,8 @@ be BELOW this).</p></dd>
 
 
 <dt id="arg-surface-top-cm">surface_top_cm<a class="anchor" aria-label="anchor" href="#arg-surface-top-cm"></a></dt>
-<dd><p>Maximum top_cm for surface-related layers
-(default 5).</p></dd>
+<dd><p>Maximum depth (cm) below the mineral soil
+surface at which the stack may start (default 5).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -106,12 +106,15 @@ be BELOW this).</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Implementation reuses every mollic sub-test except the BS test,
-which is inverted via <code>test_bs_below</code>.</p>
+    <p>Implementation reuses the mollic sub-tests on the contiguous stack of
+dark layers from the mineral soil surface (organic layers on top are
+not part of it), and tests the weighted average base saturation of the
+stack against <code>max_bs</code> (WRB 2022 3.1.39, pp. 69-70).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>IUSS Working Group WRB (2022), Chapter 3, Umbric horizon.</p>
+    <p>IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric
+  horizon (pp. 69-70).</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

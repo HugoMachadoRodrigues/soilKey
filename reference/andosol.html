@@ -17,7 +17,7 @@ petroplinthic, pisoplinthic, plinthic or spodic horizon \&amp;lt;= 100 cm
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.309</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,6 +121,22 @@ resolves via <code>getOption("soilKey.rsg_strict", FALSE)</code>.
     <p>v0.3.4 enforces (1) andic OR vitric AND (2) combined thickness
 \&gt;= 30 cm starting in the upper 25 cm AND (3) the negative-list
 exclusions on argic / ferralic / plinthic / spodic.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="v-wrb-ch-p-as-worded-">v0.9.313 (WRB 2022 Ch 4, p 104, as worded)<a class="anchor" aria-label="anchor" href="#v-wrb-ch-p-as-worded-"></a></h2>
+
+
+<p>The combined thickness is that of every andic or vitric layer within
+100 cm of the soil surface (clipped at 100 cm), provided the uppermost
+starts \&lt;= 25 cm; until v0.9.312 only layers starting \&lt;= 25 cm were
+added up. Item 1b applies: where a limiting layer starts \&gt; 25 and
+\&lt;= 50 cm, andic or vitric layers covering \&gt;= 60% of the soil above
+it qualify. Petroplinthic and pisoplinthic horizons join the
+exclusions. An argic horizon read from a clay increase alone (no clay
+films recorded) whose layers all have andic properties does not
+exclude (Hugo, N4: the clay of andic material does not disperse fully).
+Layers whose andic or vitric status is not recorded leave the gate
+undecided (<code>NA</code>) where they could change it.</p>
     </div>
     <div class="section level2">
     <h2 id="v-buried-exclusion-fix">v0.9.85 buried-exclusion fix<a class="anchor" aria-label="anchor" href="#v-buried-exclusion-fix"></a></h2>

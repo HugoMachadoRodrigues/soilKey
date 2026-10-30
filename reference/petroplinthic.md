@@ -1,6 +1,12 @@
-# Petroplinthic horizon (WRB 2022): cemented plinthic.
+# Petroplinthic horizon (WRB 2022)
 
-Petroplinthic horizon (WRB 2022): cemented plinthic.
+Continuous or fractured layer cemented by Fe (WRB 2022 Ch 3.1.27, p.
+59). Since v0.9.312 a layer qualifies when its Fe cement is recorded (an
+iron pan, `pan_type` ferricrete or ironpan, or plinthite \\=
+`min_plinthite_pct`) and its cementation class is at least strongly
+cemented (criterion 4; until v0.9.311 moderately was enough), over
+`min_thickness` cm of adjoining layers (criterion 7). A layer whose Fe
+cement or cementation is not recorded is undecided.
 
 ## Usage
 

@@ -1,20 +1,22 @@
 # Abrupt textural difference (WRB 2022 Ch 3.2.1)
 
 Sharp clay-content increase between two superimposed mineral layers
-meeting all of:
+meeting all of (WRB 2022 3.2.1, p. 72):
 
 - underlying clay \\= 15% AND thickness \\= 7.5 cm;
 
-- underlying starts \\= 10 cm below mineral soil surface;
+- underlying starts \\= 10 cm below the mineral soil surface;
 
 - underlying has, vs overlying: 2x clay if overlying \< 20%, OR \\= 20pp
   (absolute) more clay if overlying \\= 20%;
 
 - transitional layer, if any, \\= 2 cm.
 
-v0.3.3 enforces criteria 1, 2, 3. The transitional-layer check is
-deferred (the canonical horizon schema does not carry a "transitional"
-marker; it can be added later via boundary_distinctness inspection).
+Since v0.9.312 criterion 5 is read from the distinctness of the lower
+boundary of the overlying layer (`boundary_distinctness`): abrupt (2 cm
+or less) or very abrupt passes, clear, gradual or diffuse fails, and a
+boundary not recorded leaves the pair undecided (`NA`). Criterion 2 is
+counted from the mineral soil surface (below organic layers).
 
 ## Usage
 
