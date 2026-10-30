@@ -2208,7 +2208,7 @@ qual_raptic <- function(pedon) {
                  # volcanic ash, pumice, lapilli and scoria are tephric;
                  # river and estuarine deposits (and alluvium spelt aluvium)
                  # are fluvic
-                 "|loess|wind[- ]?blown|\\bash(es)?\\b|pumice|lapill|scoria|\\brivers?\\b|estuar|aluvi"),
+                 "|loess|wind[- ]?blown|\\bash(es)?\\b|pumice|lapill|scoria|\\briver(s|ine|beds?)?\\b|estuar|aluvi"),
           origin, perl = TRUE)
   # A lithic discontinuity compares two layers of mineral (soil) material: the
   # contact with continuous rock or technic hard material is not one.
