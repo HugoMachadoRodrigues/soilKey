@@ -1,5 +1,63 @@
 # Changelog
 
+## soilKey 0.9.311 (2026-10-29)
+
+### WRB 2022 qualifiers, the argic, nitic, mollic and irragric horizons, and two ISIS reader guards by the text
+
+These are the remaining corrections from the triage of the ISIS profiles
+where soilKey and ISRIC disagree.
+
+- **Qualifiers (Ch 5):**
+  - Calcaric needs a layer of calcaric material 30 cm thick within 100
+    cm, and no calcic horizon. A moderate or stronger HCl reaction
+    counts when CaCO3 is not measured.
+  - Skeletic needs 40% coarse fragments averaged over 100 cm.
+  - Geric no longer reads a missing Al as 0.
+  - Aric needs a ploughed layer of 10 cm or more with an abrupt lower
+    boundary.
+  - Sodic needs a layer of 20 cm and no natric horizon.
+  - Loamic and Siltic use the texture classes of the triangle.
+  - Brunic needs a layer that fails cambic criterion 1 and meets
+    criteria 3 and 4.
+  - Pellic is tested in the upper 30 cm.
+- **Argic horizon (3.1.3):**
+  - Item 2.a.ii: when the coarser layer directly over the argic horizon
+    is a plough layer, the clay increase does not count. The argic
+    horizon is then shown by illuvial clay (2.b).
+  - Item 2.a.i: a lithic discontinuity between the two layers also voids
+    the clay increase. Readings decided by Hugo: the discontinuity
+    counts when a material number records it or the coarse fragments
+    show it (3.2.7, criteria 3-6). The particle-size ratios of criterion
+    2 are not read, since its item 2.b (not the original variation of
+    the parent material) is not shown by the data.
+- **Nitic horizon (3.1.22):** the shiny ped faces are pressure faces,
+  not clay films. ISIS cutans of kind pressure are read into the new
+  attribute `pressure_faces`, and the second-level structure into
+  `structure_type_secondary`.
+- **Mollic and umbric horizons:**
+  - Criterion 1 needs aggregates of 10 cm or less, or cloddy structure,
+    in half of the horizon. A recorded massive or single-grain structure
+    fails it; structure or size not recorded does not block it (Hugo).
+  - Criterion 5 is the weighted base saturation.
+- **Irragric horizon:** follows its criteria (3.1.18). Since none of the
+  data record a raised land surface, it is never shown, only ruled out
+  or left open.
+- **ISIS reader:**
+  - An R row inside a described horizon is not read as continuous rock
+    (IT017: an “R 0-5” row inside an Apkc 0-35).
+  - A particle-size record of zeros only is missing.
+- **Results against 0.9.310:**
+  - FEBR WRB goes from 20.2 to 22.0%. AfSP goes from 28.3 to 27.5% (1
+    profile), and WoSIS is unchanged.
+  - ISIS goes from 64.7 to 61.5%, with 4 profiles gained and 19 lost:
+    - 7 Nitisols that record clay cutans only;
+    - 4 Phaeozems whose Ah is recorded as massive;
+    - 8 argic horizons under a plough layer with patchy clay films.
+  - The SiBCS and USDA panels are unchanged.
+- **Fixtures:** 7 of the 44 change qualifiers only: Skeletic, Calcaric
+  and Irragric dropped where the text does not support them, Loamic
+  added where it does, and Hypereutric now shown.
+
 ## soilKey 0.9.310 (2026-10-29)
 
 ### WRB 2022 diagnostics by the text: six groups

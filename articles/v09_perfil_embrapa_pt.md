@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5c8c2ed811a0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5d633d71a1b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -236,17 +236,17 @@ print(res$wrb)
 #> Ochric, Profondic, FALSE, FALSE, FALSE, caco3_pct, FALSE, FALSE, FALSE, FALSE,
 #> p_mehlich3_mg_kg, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE,
 #> FALSE, FALSE, ferric_nodules_pct, redoximorphic_features_pct, FALSE, caso4_pct,
-#> FALSE, caco3_pct, FALSE, desert_pavement_pct, FALSE, FALSE,
-#> coarse_fragments_pct, FALSE, TRUE, TRUE, FALSE, FALSE, volcanic_glass_pct,
-#> FALSE, FALSE, FALSE, NA, rupture_resistance, FALSE, TRUE, FALSE, TRUE, FALSE,
-#> FALSE, TRUE, FALSE, NA, broken_petro_remnants_pct,
-#> broken_petro_remnants_length_cm, TRUE, NA, gibbsite_clay_fraction_pct, FALSE,
-#> TRUE, FALSE, FALSE, FALSE, fe_dcb_pct, fe_ox_pct, FALSE, NA,
-#> water_saturation_days, redoximorphic_features_pct, TRUE, NA, visible black
-#> carbon, % of exposed area (not in the schema), FALSE, NA, saprolite_pct, FALSE,
-#> FALSE, rock_origin, FALSE, artefacts_pct, geomembrane_present,
-#> technic_hardmaterial_pct, NA, artefacts_pct, NA, contamination_type, NA,
-#> layer_origin, artefacts_pct, FALSE, volcanic_glass_pct
+#> FALSE, caco3_pct, FALSE, desert_pavement_pct, FALSE, NA, coarse_fragments_pct,
+#> FALSE, TRUE, TRUE, FALSE, FALSE, volcanic_glass_pct, FALSE, FALSE, FALSE, NA,
+#> rupture_resistance, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, NA,
+#> broken_petro_remnants_pct, broken_petro_remnants_length_cm, TRUE, NA,
+#> gibbsite_clay_fraction_pct, FALSE, TRUE, FALSE, FALSE, FALSE, structure_type,
+#> structure_grade, structure_type_secondary, pressure_faces, fe_dcb_pct,
+#> fe_ox_pct, FALSE, NA, water_saturation_days, redoximorphic_features_pct, TRUE,
+#> NA, visible black carbon, % of exposed area (not in the schema), FALSE, NA,
+#> saprolite_pct, FALSE, FALSE, rock_origin, FALSE, artefacts_pct,
+#> geomembrane_present, technic_hardmaterial_pct, NA, artefacts_pct, NA,
+#> contamination_type, NA, layer_origin, artefacts_pct, FALSE, volcanic_glass_pct
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -259,7 +259,8 @@ print(res$wrb)
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 4 attribute(s): plinthite_pct,
 #> ferric_nodules_pct, pan_type, cementation_class
-#> - NT: Indeterminate -- missing 2 attribute(s): fe_dcb_pct, fe_ox_pct
+#> - NT: Indeterminate -- missing 6 attribute(s): structure_type, structure_grade,
+#> structure_type_secondary, pressure_faces, fe_dcb_pct, fe_ox_pct
 #> - FR: Indeterminate -- missing 1 attribute(s): water_dispersible_clay_pct
 #> - UM: Indeterminate -- missing 3 attribute(s): top_cm, bottom_cm,
 #> p_mehlich3_mg_kg
@@ -271,7 +272,8 @@ print(res$wrb)
 #> p_mehlich3_mg_kg, artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
 #> permafrost_temp_C, coarse_fragments_pct, ec_dS_m, redoximorphic_features_pct,
 #> al_ox_pct, fe_ox_pct, plinthite_pct, ferric_nodules_pct, pan_type,
-#> cementation_class, fe_dcb_pct, water_dispersible_clay_pct, top_cm, bottom_cm,
+#> cementation_class, structure_type, structure_grade, structure_type_secondary,
+#> pressure_faces, fe_dcb_pct, water_dispersible_clay_pct, top_cm, bottom_cm,
 #> duripan_pct, caso4_pct, caco3_pct
 #> 
 #> ── Key trace
@@ -290,7 +292,7 @@ print(res$wrb)
 #> 12. PT Plinthosols -- NA (4 attrs missing)
 #> 13. PL Planosols -- failed
 #> 14. ST Stagnosols -- failed (1 attrs missing)
-#> 15. NT Nitisols -- NA (2 attrs missing)
+#> 15. NT Nitisols -- NA (6 attrs missing)
 #> 16. FR Ferralsols -- NA (1 attrs missing)
 #> 17. CH Chernozems -- failed
 #> 18. KS Kastanozems -- failed (2 attrs missing)

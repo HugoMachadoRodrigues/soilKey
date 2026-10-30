@@ -1578,16 +1578,17 @@ res_wrb$trace
 #> integer(0)
 #> 
 #> $NT$evidence[[1]]$missing
-#> [1] "structure_type"    "structure_grade"   "clay_films_amount"
-#> [4] "fe_dcb_pct"        "fe_ox_pct"        
+#> [1] "structure_type"           "structure_grade"         
+#> [3] "structure_type_secondary" "pressure_faces"          
+#> [5] "fe_dcb_pct"               "fe_ox_pct"               
 #> 
 #> $NT$evidence[[1]]$evidence
 #> $NT$evidence[[1]]$evidence$nitic_horizon
 #> 
 #> ── DiagnosticResult: nitic_horizon
 #> Status: NA (insufficient data)
-#> Missing attributes (5): structure_type, structure_grade, clay_films_amount,
-#> fe_dcb_pct, fe_ox_pct
+#> Missing attributes (6): structure_type, structure_grade,
+#> structure_type_secondary, pressure_faces, fe_dcb_pct, fe_ox_pct
 #> Sub-tests:
 #> Reference: IUSS Working Group WRB (2022), Chapter 3.1.22, Nitic horizon
 #> 
@@ -1601,8 +1602,9 @@ res_wrb$trace
 #> 
 #> 
 #> $NT$missing
-#> [1] "structure_type"    "structure_grade"   "clay_films_amount"
-#> [4] "fe_dcb_pct"        "fe_ox_pct"        
+#> [1] "structure_type"           "structure_grade"         
+#> [3] "structure_type_secondary" "pressure_faces"          
+#> [5] "fe_dcb_pct"               "fe_ox_pct"               
 #> 
 #> $NT$notes
 #> NULL

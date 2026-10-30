@@ -297,11 +297,8 @@ Benchmark drivers and KSSL/NASIS label normalisers.
   high SOC.
 
 - [`irragric()`](https://hugomachadorodrigues.github.io/soilKey/reference/irragric.md)
-  :
-
-  Irragric horizon (WRB 2022): topsoil thickened by irrigation deposits.
-  v0.3.3: thickness \>= 20 cm + sediment-derived structure proxied via
-  designation `Apk|Apg|Au`.
+  : Irragric horizon (WRB 2022): topsoil thickened by irrigation
+  deposits.
 
 - [`plaggic()`](https://hugomachadorodrigues.github.io/soilKey/reference/plaggic.md)
   : Plaggic horizon (WRB 2022): sod-derived topsoil \>= 20 cm with low

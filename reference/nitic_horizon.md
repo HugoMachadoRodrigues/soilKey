@@ -5,11 +5,13 @@ criterion on each layer:
 
 1.  \\\ge\\ 30% clay (`min_clay`);
 
-2.  moderate to strong angular or subangular blocky structure, or
-    polyhedral structure, with pressure faces (shiny surfaces) on
-    \\\ge\\ 25% of the aggregate surfaces. Read from `structure_type`,
-    `structure_grade` and `clay_films_amount`, "common" or more: the
-    cerosidade "comum" that the SiBCS B nitico asks for, 25-50% in KST;
+2.  moderate to strong angular or subangular blocky structure breaking
+    into polyhedral or flat-edged second-level structure, or polyhedral
+    structure, with pressure faces (shiny surfaces) on \\\ge\\ 25% of
+    the aggregate surfaces. Read from `structure_type`,
+    `structure_grade`, `structure_type_secondary` and `pressure_faces`,
+    "common" or more (since v0.9.317; until then from clay films, which
+    WRB 2022 keeps apart from pressure faces);
 
 3.  \\\ge\\ 4% Fe-dith (`fe_dcb_pct`), \\\ge\\ 0.2% Fe-ox (`fe_ox_pct`)
     and Fe-ox / Fe-dith \\\ge\\ 0.05;

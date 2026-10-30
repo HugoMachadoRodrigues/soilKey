@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.310</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.311</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,55 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.311" id="soilkey-09311-2026-10-29">soilKey 0.9.311 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09311-2026-10-29"></a></h2>
+<div class="section level3">
+<h3 id="wrb-qualifiers-the-argic-nitic-mollic-and-irragric-horizons-and-two-isis-reader-guards-by-the-text-0-9-311">WRB 2022 qualifiers, the argic, nitic, mollic and irragric horizons, and two ISIS reader guards by the text<a class="anchor" aria-label="anchor" href="#wrb-qualifiers-the-argic-nitic-mollic-and-irragric-horizons-and-two-isis-reader-guards-by-the-text-0-9-311"></a></h3>
+<p>These are the remaining corrections from the triage of the ISIS profiles where soilKey and ISRIC disagree.</p>
+<ul><li>
+<strong>Qualifiers (Ch 5):</strong>
+<ul><li>Calcaric needs a layer of calcaric material 30 cm thick within 100 cm, and no calcic horizon. A moderate or stronger HCl reaction counts when CaCO3 is not measured.</li>
+<li>Skeletic needs 40% coarse fragments averaged over 100 cm.</li>
+<li>Geric no longer reads a missing Al as 0.</li>
+<li>Aric needs a ploughed layer of 10 cm or more with an abrupt lower boundary.</li>
+<li>Sodic needs a layer of 20 cm and no natric horizon.</li>
+<li>Loamic and Siltic use the texture classes of the triangle.</li>
+<li>Brunic needs a layer that fails cambic criterion 1 and meets criteria 3 and 4.</li>
+<li>Pellic is tested in the upper 30 cm.</li>
+</ul></li>
+<li>
+<strong>Argic horizon (3.1.3):</strong>
+<ul><li>Item 2.a.ii: when the coarser layer directly over the argic horizon is a plough layer, the clay increase does not count. The argic horizon is then shown by illuvial clay (2.b).</li>
+<li>Item 2.a.i: a lithic discontinuity between the two layers also voids the clay increase. Readings decided by Hugo: the discontinuity counts when a material number records it or the coarse fragments show it (3.2.7, criteria 3-6). The particle-size ratios of criterion 2 are not read, since its item 2.b (not the original variation of the parent material) is not shown by the data.</li>
+</ul></li>
+<li>
+<strong>Nitic horizon (3.1.22):</strong> the shiny ped faces are pressure faces, not clay films. ISIS cutans of kind pressure are read into the new attribute <code>pressure_faces</code>, and the second-level structure into <code>structure_type_secondary</code>.</li>
+<li>
+<strong>Mollic and umbric horizons:</strong>
+<ul><li>Criterion 1 needs aggregates of 10 cm or less, or cloddy structure, in half of the horizon. A recorded massive or single-grain structure fails it; structure or size not recorded does not block it (Hugo).</li>
+<li>Criterion 5 is the weighted base saturation.</li>
+</ul></li>
+<li>
+<strong>Irragric horizon:</strong> follows its criteria (3.1.18). Since none of the data record a raised land surface, it is never shown, only ruled out or left open.</li>
+<li>
+<strong>ISIS reader:</strong>
+<ul><li>An R row inside a described horizon is not read as continuous rock (IT017: an “R 0-5” row inside an Apkc 0-35).</li>
+<li>A particle-size record of zeros only is missing.</li>
+</ul></li>
+<li>
+<strong>Results against 0.9.310:</strong>
+<ul><li>FEBR WRB goes from 20.2 to 22.0%. AfSP goes from 28.3 to 27.5% (1 profile), and WoSIS is unchanged.</li>
+<li>ISIS goes from 64.7 to 61.5%, with 4 profiles gained and 19 lost:
+<ul><li>7 Nitisols that record clay cutans only;</li>
+<li>4 Phaeozems whose Ah is recorded as massive;</li>
+<li>8 argic horizons under a plough layer with patchy clay films.</li>
+</ul></li>
+<li>The SiBCS and USDA panels are unchanged.</li>
+</ul></li>
+<li>
+<strong>Fixtures:</strong> 7 of the 44 change qualifiers only: Skeletic, Calcaric and Irragric dropped where the text does not support them, Loamic added where it does, and Hypereutric now shown.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.310" id="soilkey-09310-2026-10-29">soilKey 0.9.310 (2026-10-29)<a class="anchor" aria-label="anchor" href="#soilkey-09310-2026-10-29"></a></h2>
 <div class="section level3">

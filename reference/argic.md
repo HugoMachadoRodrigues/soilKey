@@ -96,6 +96,15 @@ v0.9.310, for `system = "wrb2022"` (WRB 2022 Ch 3.1.3, p. 35-36):
 
 - criterion 1: the layers have \\\ge\\ 8% clay;
 
+- criterion 2.a.i (v0.9.317): the coarser-textured layer is not
+  separated from the layer by a lithic discontinuity, read from the
+  material numbers of the designations and from the data of each pair of
+  layers in between (Ch 3.2.7, p. 76-77: the ratio sand to silt,
+  criterion 2.a.iv; coarse fragments, criterion 6);
+
+- criterion 2.a.ii (v0.9.317): no clay increase counts below a plough
+  layer (Ap) that directly overlies the argic horizon;
+
 - criterion 2.a.iii: a layer is compared with a coarser-textured layer
   above it only across a transitional horizon of \\\le\\ 15 cm; layers
   already accepted and layers whose designation has the suffix t are

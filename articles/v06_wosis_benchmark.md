@@ -384,8 +384,8 @@ knitr::kable(
 | HS  | HS      | Ombric           |
 | AT  | AT      | Hortic           |
 | TC  | TC      | NA               |
-| CR  | CR      | Skeletic         |
-| LP  | LP      | Skeletic         |
+| CR  | CR      | Cambic           |
+| LP  | LP      | Lithic           |
 | SN  | SN      | Albic            |
 | VR  | VR      | Haplic           |
 | SC  | SC      | Sodic            |

@@ -32,10 +32,11 @@ isis_profile_to_pedon(
 
 - absent_unless_recorded:
 
-  If `TRUE` (default), mottles, slickensides, plinthite, a duripan and
-  artefacts that the field description of a horizon does not mention are
-  recorded as absent in that horizon; rows with laboratory data only
-  stay unknown. `FALSE` leaves everything not recorded unknown.
+  If `TRUE` (default), mottles, slickensides, pressure faces, plinthite,
+  a duripan and artefacts that the field description of a horizon does
+  not mention are recorded as absent in that horizon; rows with
+  laboratory data only stay unknown. `FALSE` leaves everything not
+  recorded unknown.
 
 - accessed:
 

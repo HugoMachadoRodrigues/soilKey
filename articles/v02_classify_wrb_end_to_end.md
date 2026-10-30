@@ -83,12 +83,12 @@ res
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic, FALSE, NA,
 #> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, structure_type,
-#> structure_grade, clay_films_amount, fe_dcb_pct, fe_ox_pct, FALSE,
-#> p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, top_cm, bottom_cm, FALSE, FALSE,
-#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,
-#> FALSE, FALSE, FALSE, ferric_nodules_pct, redoximorphic_features_pct, FALSE,
-#> FALSE, TRUE, FALSE, NA, bioturbation_density, bulk_density_g_cm3,
+#> structure_grade, structure_type_secondary, pressure_faces, fe_dcb_pct,
+#> fe_ox_pct, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, top_cm,
+#> bottom_cm, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE,
+#> FALSE, volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE,
+#> TRUE, FALSE, FALSE, FALSE, ferric_nodules_pct, redoximorphic_features_pct,
+#> FALSE, FALSE, TRUE, FALSE, NA, bioturbation_density, bulk_density_g_cm3,
 #> particles_630um_pct, FALSE, FALSE, NA, water_saturation_days,
 #> redoximorphic_features_pct, FALSE, NA, visible black carbon, % of exposed area
 #> (not in the schema), FALSE, NA, saprolite_pct, FALSE, rock_origin, FALSE,
@@ -106,18 +106,18 @@ res
 #> - PZ: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - PT: Indeterminate -- missing 4 attribute(s): plinthite_pct,
 #> ferric_nodules_pct, pan_type, cementation_class
-#> - NT: Indeterminate -- missing 5 attribute(s): structure_type, structure_grade,
-#> clay_films_amount, fe_dcb_pct, fe_ox_pct
+#> - NT: Indeterminate -- missing 6 attribute(s): structure_type, structure_grade,
+#> structure_type_secondary, pressure_faces, fe_dcb_pct, fe_ox_pct
 #> 
 #> ── Missing data that would refine result
 #> artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
 #> permafrost_temp_C, slickensides, structure_type, cracks_width_cm, ec_dS_m,
 #> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, plinthite_pct,
 #> ferric_nodules_pct, pan_type, cementation_class, structure_grade,
-#> clay_films_amount, fe_dcb_pct
+#> structure_type_secondary, pressure_faces, fe_dcb_pct
 #> 
 #> ── Warnings
-#> ! 18 distinct attribute(s) missing across the key trace -- see $missing_data
+#> ! 19 distinct attribute(s) missing across the key trace -- see $missing_data
 #> 
 #> ── Key trace
 #> (16 RSGs tested before assignment)
@@ -135,7 +135,7 @@ res
 #> 12. PT Plinthosols -- NA (4 attrs missing)
 #> 13. PL Planosols -- failed
 #> 14. ST Stagnosols -- failed (1 attrs missing)
-#> 15. NT Nitisols -- NA (5 attrs missing)
+#> 15. NT Nitisols -- NA (6 attrs missing)
 #> 16. FR Ferralsols -- PASSED
 ```
 
