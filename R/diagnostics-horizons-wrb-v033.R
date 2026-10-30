@@ -1140,24 +1140,109 @@ hortic <- function(pedon, min_thickness = 20, min_oc = 1.0,
 }
 
 #' Irragric horizon (WRB 2022): topsoil thickened by irrigation deposits.
-#' v0.3.3: thickness >= 20 cm + sediment-derived structure proxied via
-#' designation \code{Apk|Apg|Au}.
+#'
+#' v0.9.317: the criteria of WRB 2022 Ch 3.1.18 (p. 50-51), tested on every
+#' stack of contiguous layers from the mineral soil surface (a surface
+#' horizon of mineral material), each against the layer directly below it:
+#' \enumerate{
+#'   \item soil aggregate structure or cloddy structure in \eqn{\ge} 90\% by
+#'         volume;
+#'   \item a clay content \eqn{\ge} 10\% (relative) and \eqn{\ge} 3\%
+#'         (absolute) higher than that of the layer directly buried; the fine
+#'         clay alternative is not recorded, so a smaller increase leaves it
+#'         undecided;
+#'   \item differences between subhorizons of < 20\% (relative) or < 4\%
+#'         (absolute) in silt, clay and carbonates (also in the medium, fine and
+#'         very fine sand, which soilKey does not record: undecided for more
+#'         than one layer unless a recorded difference fails);
+#'   \item \eqn{\ge} 0.3\% SOC in each layer and \eqn{\ge} 0.5\% on a weighted
+#'         average;
+#'   \item \eqn{\ge} 25\% traces of soil animal activity (\code{worm_holes_pct},
+#'         weighted);
+#'   \item evidence that the land surface has been raised: soilKey records no
+#'         such evidence, so this criterion is undecided;
+#'   \item \eqn{\ge} 20 cm thick (\code{min_thickness}).
+#' }
+#' The horizon is therefore never established from the data: \code{FALSE}
+#' when every stack fails a criterion, \code{NA} otherwise. Until v0.9.316 any
+#' Ap or Au of 20 cm passed.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Numeric threshold or option (see Details).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 irragric <- function(pedon, min_thickness = 20) {
   h <- pedon$horizons
-  tests <- list()
-  tests$designation <- test_pattern_match(h, "designation", "^A[pu]k?|^Ahu")
-  tests$thickness   <- test_minimum_thickness(h, min_cm = min_thickness,
-                                                 candidate_layers = tests$designation$layers)
-  agg <- aggregate_subtests(tests)
+  n <- nrow(h)
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.1.18, Irragric horizon (p. 50-51)"
+  ms <- if (n) .q_mineral_surface_cm(h) else NA_real_
+  if (!n || is.na(ms))
+    return(DiagnosticResult$new(name = "irragric", passed = NA, layers = integer(0),
+                                evidence = list(), missing = c("top_cm", "bottom_cm"),
+                                reference = ref))
+  col <- function(v) suppressWarnings(as.numeric(h[[v]] %||% rep(NA_real_, n)))
+  clay <- col("clay_pct"); silt <- col("silt_pct"); caco3 <- col("caco3_pct")
+  oc <- col("oc_pct"); worm <- col("worm_holes_pct")
+  thick <- h$bottom_cm - h$top_cm
+  kind <- .wrb_structure_kind(h$structure_type %||% rep(NA_character_, n),
+                              h$structure_grade %||% rep(NA_character_, n))
+  aggregate <- ifelse(is.na(kind), NA, kind != "none")
+  ord <- order(h$top_cm)
+  ord <- ord[!is.na(h$top_cm[ord]) & !is.na(h$bottom_cm[ord]) & h$top_cm[ord] >= ms - 1e-6]
+  run <- integer(0)
+  for (i in ord) {
+    if (!length(run)) {
+      if (abs(h$top_cm[i] - ms) > 1e-6) break
+    } else if (abs(h$top_cm[i] - h$bottom_cm[run[length(run)]]) > 1) break
+    run <- c(run, i)
+  }
+  wavg <- function(x, L) if (anyNA(x[L])) NA_real_ else sum(x[L] * thick[L]) / sum(thick[L])
+  # differences between subhorizons: < 20% relative or < 4% absolute
+  small <- function(x, L) {
+    if (length(L) < 2L) return(TRUE)
+    d <- vapply(seq_len(length(L) - 1L), function(k) {
+      a <- x[L[k]]; b <- x[L[k + 1L]]
+      if (is.na(a) || is.na(b)) return(NA)
+      abs(a - b) < 4 || (max(a, b) > 0 && abs(a - b) / max(a, b) < 0.2)
+    }, logical(1))
+    if (any(d %in% FALSE)) FALSE else if (all(d %in% TRUE)) TRUE else NA
+  }
+  stacks <- lapply(seq_along(run), function(k) {
+    L <- run[seq_len(k)]
+    below <- ord[match(L[k], ord) + 1L]
+    c1 <- .wrb_share_by_volume(h, L, aggregate[L], 0.9)
+    c2 <- if (is.na(below) || is.na(clay[below]) || anyNA(clay[L])) NA
+          else if (all(clay[L] >= 1.1 * clay[below] & clay[L] - clay[below] >= 3)) TRUE
+          else NA
+    c3 <- .and3(small(silt, L), small(clay, L), small(caco3, L),
+                if (length(L) > 1L) NA else TRUE)
+    c4 <- .and3(if (any(oc[L] < 0.3, na.rm = TRUE)) FALSE else if (anyNA(oc[L])) NA else TRUE,
+                { a <- wavg(oc, L); if (is.na(a)) NA else a >= 0.5 })
+    c5 <- { a <- wavg(worm, L); if (is.na(a)) NA else a >= 25 }
+    c6 <- NA
+    c7 <- sum(thick[L]) >= min_thickness
+    data.frame(layers = paste(L, collapse = " "), bottom_cm = h$bottom_cm[L[k]],
+               buried_layer = below, structure = c1, clay_increase = c2,
+               uniform = c3, organic_carbon = c4, animal_traces = c5,
+               raised_surface = c6, thickness = c7,
+               status = .and3(c1, c2, c3, c4, c5, c6, c7), stringsAsFactors = FALSE)
+  })
+  crit <- if (length(stacks)) do.call(rbind, stacks) else NULL
+  st <- if (is.null(crit)) logical(0) else crit$status
+  passed <- if (any(st %in% TRUE)) TRUE else if (length(st) && all(st %in% FALSE)) FALSE else NA
+  layers <- if (isTRUE(passed))
+    as.integer(strsplit(crit$layers[which(st %in% TRUE)[1]], " ")[[1]]) else integer(0)
+  und <- if (is.null(crit)) crit else crit[is.na(st), , drop = FALSE]
+  miss <- if (!is.na(passed) || is.null(und)) character(0) else unique(c(
+    if (anyNA(und$structure)) "structure_type",
+    if (anyNA(und$clay_increase)) "clay_pct",
+    if (anyNA(und$organic_carbon)) "oc_pct",
+    if (anyNA(und$animal_traces)) "worm_holes_pct"))
   DiagnosticResult$new(
-    name = "irragric", passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.1, Irragric horizon"
-  )
+    name = "irragric", passed = passed, layers = layers,
+    evidence = list(criteria = crit),
+    missing = miss, reference = ref,
+    notes = paste("WRB 2022 Ch 3.1.18 criterion 6 (evidence that the land",
+                  "surface has been raised) is not recorded by soilKey"))
 }
 
 #' Plaggic horizon (WRB 2022): sod-derived topsoil >= 20 cm with low BD

@@ -285,7 +285,8 @@ test_that("the nitic horizon is a subsurface horizon", {
     designation = c("A", "Bt"), top_cm = c(0, 15), bottom_cm = c(15, b_bottom),
     clay_pct = c(45, 55), silt_pct = c(25, 20), sand_pct = c(30, 25),
     structure_type = c("polyhedral", "polyhedral"), structure_grade = c("strong", "strong"),
-    clay_films_amount = c("common", "many"), fe_dcb_pct = c(8, 9), fe_ox_pct = c(0.6, 0.6))
+    clay_films_amount = c("common", "many"), fe_dcb_pct = c(8, 9), fe_ox_pct = c(0.6, 0.6),
+    pressure_faces = c("common", "many"))   # v0.9.317: the shiny faces of 3.1.22
   r <- nitic_horizon(p(60))
   expect_true(isTRUE(r$passed))
   expect_equal(r$layers, 2L)                  # the A is not part of it

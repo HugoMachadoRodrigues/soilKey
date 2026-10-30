@@ -19,29 +19,54 @@
 # ============================================================================
 
 
-#' Aric qualifier (ar): mineral surface horizon homogenised by
-#' ploughing -- designation pattern \code{Ap}, \code{Apk},
-#' \code{Apc}, etc., starting within the upper 30 cm.
+#' Aric qualifier (ai): a ploughed layer from the soil surface, >= 10 cm
+#' thick, with an abrupt or very abrupt lower boundary.
+#'
+#' v0.9.316: WRB 2022 Ch 5 (p. 129), "having a layer, >= 10 cm thick and
+#' starting at the soil surface, that is homogenized by ploughing and that has
+#' an abrupt or very abrupt lower boundary". Before v0.9.316 any Ap starting
+#' <= 30 cm passed, whatever its boundary (ISRIC's PE018 and ES016 have an Ap
+#' with a gradual one). The ploughed layer is the run of horizons with a "p"
+#' suffix from the top of the profile (.wrb_plough_designation()); its lower
+#' boundary is that of its deepest horizon (boundary_distinctness, read by
+#' .wrb_abrupt_boundary()), undecided when not recorded.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_aric <- function(pedon) {
   h <- pedon$horizons
-  ly <- which(!is.na(h$top_cm) & h$top_cm <= 30)
-  if (length(ly) == 0L)
-    return(DiagnosticResult$new(name = "Aric", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = "designation",
-            reference = "WRB (2022) Ch 5, Aric"))
-  d <- h$designation[ly]
-  ok <- !is.na(d) & grepl("^Ap", d, ignore.case = FALSE)
-  passed <- any(ok)
-  DiagnosticResult$new(
-    name = "Aric", passed = passed,
-    layers = ly[ok],
-    evidence = list(designation = d),
-    missing = if (all(is.na(d))) "designation" else character(0),
-    reference = "WRB (2022) Ch 5, Aric"
-  )
+  ref <- "WRB (2022) Ch 5, Aric (p. 129)"
+  res <- function(passed, layers = integer(0), missing = character(0), ...)
+    DiagnosticResult$new(name = "Aric", passed = passed,
+                         layers = if (isTRUE(passed)) layers else integer(0),
+                         evidence = list(...), missing = missing, reference = ref)
+  ok <- which(!is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > h$top_cm)
+  if (!length(ok)) return(res(NA, missing = c("top_cm", "bottom_cm")))
+  ok <- ok[order(h$top_cm[ok])]
+  surface <- h$top_cm[ok[1L]]
+  plough <- .wrb_plough_designation(h$designation %||% rep(NA_character_, nrow(h)))
+  run <- integer(0); edge <- surface; nxt <- NA_integer_
+  for (i in ok) {
+    if (h$top_cm[i] > edge + 0.5 || !isTRUE(plough[i])) { nxt <- i; break }
+    run <- c(run, i); edge <- h$bottom_cm[i]
+  }
+  if (!length(run))
+    return(res(if (is.na(plough[ok[1L]])) NA else FALSE,
+               missing = if (is.na(plough[ok[1L]])) "designation" else character(0),
+               reason = "no horizon with a p (ploughing) suffix at the soil surface"))
+  thick <- edge - surface
+  # a horizon below with no designation may continue the ploughed layer
+  open <- !is.na(nxt) && is.na(plough[nxt]) && abs(h$top_cm[nxt] - edge) <= 0.5
+  abrupt <- .wrb_abrupt_boundary(h$boundary_distinctness[run[length(run)]] %||% NA_character_)
+  passed <- if (thick >= 10 && isTRUE(abrupt)) TRUE
+            else if (open) NA
+            else if (thick < 10 || isFALSE(abrupt)) FALSE
+            else NA
+  res(passed, layers = run,
+      missing = if (is.na(passed)) c(if (is.na(abrupt)) "boundary_distinctness",
+                                     if (open) "designation")
+                else character(0),
+      plough_layer_cm = c(surface, edge), lower_boundary_abrupt = abrupt,
+      designation = h$designation[run])
 }
 
 

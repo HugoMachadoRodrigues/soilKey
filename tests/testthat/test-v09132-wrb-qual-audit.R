@@ -25,7 +25,8 @@ test_that("Geric: (bases+Al) < 6 cmol/kg CLAY, no spurious delta-pH path", {
 })
 
 test_that("Pellic: value <= 3 AND chroma <= 2 (was value <= 4)", {
-  p3 <- mk(data.frame(top_cm = 0, bottom_cm = 25, munsell_value_moist = 3,
+  # v0.9.316: the colours hold throughout the upper 30 cm (Ch 5, p. 143)
+  p3 <- mk(data.frame(top_cm = 0, bottom_cm = 30, munsell_value_moist = 3,
                       munsell_chroma_moist = 2))
   expect_true(qual_pellic(p3)$passed)
   p4 <- mk(data.frame(top_cm = 0, bottom_cm = 25, munsell_value_moist = 4,

@@ -4,10 +4,14 @@
 
 # ---- Aric ------------------------------------------------------------------
 
-test_that("Aric fires on a designation matching ^Ap in the upper 30 cm", {
+test_that("Aric fires on a ploughed layer with an abrupt lower boundary", {
+  # v0.9.316: WRB 2022 Ch 5 (p. 129) asks for a layer >= 10 cm from the soil
+  # surface, homogenized by ploughing, with an abrupt or very abrupt lower
+  # boundary; any Ap starting <= 30 cm was enough before.
   hz <- data.table::data.table(
     top_cm = c(0, 25), bottom_cm = c(25, 100),
     designation = c("Ap", "Bw"),
+    boundary_distinctness = c("abrupt", NA),
     structure_grade = c("moderate", "moderate"),
     structure_type  = c("granular", "subangular blocky"),
     clay_pct = c(20, 22), silt_pct = c(40, 38), sand_pct = c(40, 40)

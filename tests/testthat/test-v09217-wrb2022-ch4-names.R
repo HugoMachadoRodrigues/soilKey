@@ -176,8 +176,8 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     cambissolo_canonical = "Eutric Cambisol (Loamic, Ochric)",
     chernossolo_canonical = "Vermic Chernozem (Loamic, Humic, Pachic)",
     chernozem_canonical = "Vermic Chernozem (Loamic, Humic, Pachic)",
-    cryosol_canonical = "Skeletic Cambic Cryosol (Loamic, Epic, Eutric, Humic)",
-    durisol_canonical = "Eutric Skeletic Durisol (Loamic, Epic, Ochric)",
+    cryosol_canonical = "Cambic Cryosol (Loamic, Epic, Eutric, Humic)",
+    durisol_canonical = "Eutric Durisol (Loamic, Epic, Ochric)",
     espodossolo_canonical = "Albic Podzol (Arenic, Epic)",
     ferralsol_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)",
     fluvisol_canonical = "Eutric Fluvisol (Loamic, Humic)",
@@ -187,11 +187,11 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     histosol_canonical = "Ombric Drainic Sapric Floatic Folic Histosol (Dystric, Mulmic)",
     kastanozem_canonical = "Cambic Kastanozem (Loamic, Humic)",
     latossolo_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)",
-    leptosol_canonical = "Skeletic Lithic Leptosol (Ochric)",
+    leptosol_canonical = "Lithic Leptosol (Ochric)",
     lixisol_canonical = "Chromic Lixisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
     luvisol_canonical = "Haplic Luvisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric)",
     luvissolo_canonical = "Haplic Luvisol (Clayic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
-    neossolo_canonical = "Umbric Leptosol (Humic)",
+    neossolo_canonical = "Umbric Leptosol (Loamic, Humic)",
     nitisol_canonical = "Eutric Luvic Ferritic Nitisol (Epic, Humic)",
     nitossolo_canonical = "Rhodic Ferralic Lixisol (Clayic, Cutanic, Epic, Humic, Profondic)",
     organossolo_canonical = "Ombric Folic Histosol (Dystric, Mulmic)",
@@ -205,10 +205,10 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     solonchak_canonical = "Sodic Solonchak (Loamic, Ochric)",
     solonetz_canonical = "Albic Solonetz (Loamic, Columnic, Cutanic, Differentic, Epic, Hypernatric, Ochric)",
     stagnosol_canonical = "Eutric Albic Stagnosol (Loamic, Cambic, Humic)",
-    technosol_canonical = "Technosol (Loamic, Eutric, Humic, Irragric, Mollic, Terric)",
+    technosol_canonical = "Technosol (Loamic, Eutric, Humic, Mollic, Terric)",
     umbrisol_canonical = "Haplic Umbrisol (Loamic, Eutric, Humic, Pachic)",
-    vertisol_canonical = "Haplic Vertisol (Calcaric, Epic, Humic)",
-    vertissolo_canonical = "Haplic Vertisol (Calcaric, Epic, Humic)"
+    vertisol_canonical = "Haplic Vertisol (Epic, Hypereutric, Humic)",
+    vertissolo_canonical = "Haplic Vertisol (Epic, Hypereutric, Humic)"
   )
   for (f in names(expected)) {
     p <- get(paste0("make_", f), envir = asNamespace("soilKey"))()

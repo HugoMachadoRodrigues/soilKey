@@ -39,12 +39,14 @@ Tests for a nitic horizon, WRB 2022 Chapter 3.1.22, criterion by
 criterion on each layer:
 \enumerate{
   \item \eqn{\ge} 30\% clay (\code{min_clay});
-  \item moderate to strong angular or subangular blocky structure, or
+  \item moderate to strong angular or subangular blocky structure
+        breaking into polyhedral or flat-edged second-level structure, or
         polyhedral structure, with pressure faces (shiny surfaces) on
         \eqn{\ge} 25\% of the aggregate surfaces. Read from
-        \code{structure_type}, \code{structure_grade} and
-        \code{clay_films_amount}, "common" or more: the cerosidade
-        "comum" that the SiBCS B nitico asks for, 25-50\% in KST;
+        \code{structure_type}, \code{structure_grade},
+        \code{structure_type_secondary} and \code{pressure_faces},
+        "common" or more (since v0.9.317; until then from clay films,
+        which WRB 2022 keeps apart from pressure faces);
   \item \eqn{\ge} 4\% Fe-dith (\code{fe_dcb_pct}), \eqn{\ge} 0.2\%
         Fe-ox (\code{fe_ox_pct}) and Fe-ox / Fe-dith \eqn{\ge} 0.05;
   \item not part of a plinthic horizon (\code{\link{plinthic}});

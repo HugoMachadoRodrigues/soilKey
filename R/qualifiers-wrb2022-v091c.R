@@ -246,41 +246,51 @@ qual_hyperalbic <- function(pedon) {
 
 # ---------- VERY-LOW-CEC FAMILY (HIGHLY WEATHERED TROPICAL SOILS) ----------
 
-#' Geric qualifier (gr): in some layer at <= 100 cm, the effective
-#' exchange complex (sum of bases + 1 N KCl Al-exchangeable) does not
-#' exceed 1.5 cmol+/kg fine earth, OR the soil shows net positive charge
-#' (delta pH = pH_KCl - pH_H2O > 0). The "or" path makes Geric / Posic
-#' overlap by design (per WRB Ch 5).
+#' Geric qualifier (gr): a layer within 100 cm with exchangeable bases plus
+#' exchangeable Al < 6 cmolc per kg clay.
+#'
+#' WRB 2022 Ch 5 (p. 135): "having within 100 cm of the mineral soil surface a
+#' layer that has a sum of exchangeable bases (by 1 M NH4OAc, pH 7) plus
+#' exchangeable Al (by 1 M KCl, unbuffered) of < 6 cmolc kg-1 clay" (v0.9.132
+#' replaced the 1.5 cmolc per kg fine earth and the delta-pH branch). v0.9.316:
+#' an exchangeable Al or base that is not recorded is no longer read as 0
+#' (ISRIC's BR001 and BR002 have no Al where the bases alone are 5-6 per kg
+#' clay); the layer is then undecided unless the recorded part alone reaches
+#' 6. The Annex 2 pH substitute (Ch 9.13) is not used: Geric does not carry
+#' that note. Depth is counted from the mineral soil surface.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_geric <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
+  ref <- "WRB (2022) Ch 5, Geric (p. 135)"
+  miss <- c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol", "al_kcl_cmol", "clay_pct")
+  ms <- .q_mineral_surface_cm(h)
+  layers <- if (is.na(ms)) integer(0)
+            else which(!is.na(h$top_cm) & !is.na(h$bottom_cm) &
+                         h$bottom_cm > ms & h$top_cm < ms + 100)
   if (length(layers) == 0L)
     return(DiagnosticResult$new(name = "Geric", passed = NA,
-            layers = integer(0), evidence = list(),
-            missing = c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol",
-                          "al_kcl_cmol", "ph_h2o", "ph_kcl"),
-            reference = "WRB (2022) Ch 5, Geric"))
-  ca <- h$ca_cmol[layers]; mg <- h$mg_cmol[layers]
-  k  <- h$k_cmol[layers];  na <- h$na_cmol[layers]
-  al <- h$al_kcl_cmol[layers]
-  if (all(is.na(al))) al <- h$al_cmol[layers]
-  # WRB 2022 Ch 5 Geric: (sum of exch bases + exch Al) < 6 cmol_c per kg CLAY
-  # (Hypergeric is < 1.5). The v0.9 code used <= 1.5 cmol per kg fine earth and
-  # a spurious delta-pH (Posic) branch; both removed (v0.9.132).
+            layers = integer(0), evidence = list(), missing = miss,
+            reference = ref))
+  bases <- cbind(h$ca_cmol[layers], h$mg_cmol[layers],
+                 h$k_cmol[layers], h$na_cmol[layers])
+  al <- ifelse(is.na(h$al_kcl_cmol[layers]), h$al_cmol[layers], h$al_kcl_cmol[layers])
   clay <- h$clay_pct[layers]
-  ecec <- ca + mg + k + na + ifelse(is.na(al), 0, al)
-  ecec_per_clay <- ecec / pmax(clay, 1) * 100
-  ok <- !is.na(ecec_per_clay) & !is.na(clay) & clay > 0 & ecec_per_clay < 6
-  passed <- any(ok)
+  complete <- rowSums(is.na(bases)) == 0L & !is.na(al)
+  recorded <- rowSums(bases, na.rm = TRUE) + ifelse(is.na(al), 0, al)
+  per_clay <- ifelse(!is.na(clay) & clay > 0, recorded / clay * 100, NA_real_)
+  status <- ifelse(!is.na(clay) & clay <= 0, FALSE,
+            ifelse(is.na(per_clay), NA,
+            ifelse(per_clay >= 6, FALSE,
+            ifelse(complete, TRUE, NA))))
+  passed <- if (any(status %in% TRUE)) TRUE else if (anyNA(status)) NA else FALSE
   DiagnosticResult$new(
     name = "Geric", passed = passed,
-    layers = layers[ok],
-    evidence = list(ecec_per_kg_clay = ecec_per_clay),
-    missing = if (all(is.na(ecec)) || all(is.na(clay)))
-                c("cec components", "clay_pct") else character(0),
-    reference = "WRB (2022) Ch 5, Geric"
+    layers = if (isTRUE(passed)) layers[status %in% TRUE] else integer(0),
+    evidence = list(bases_plus_al_per_kg_clay = per_clay, complete = complete,
+                    layer_status = status),
+    missing = if (is.na(passed)) miss else character(0),
+    reference = ref
   )
 }
 

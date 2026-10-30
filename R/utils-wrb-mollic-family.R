@@ -116,6 +116,38 @@
                             stringsAsFactors = FALSE))
 }
 
+# v0.9.317: weighted average BS of `layers` at or above min_bs (mollic horizon,
+# WRB 2022 Ch 3.1.20 criterion 5, p. 53: ">= 50% on a weighted average"):
+# TRUE / FALSE / NA, the counterpart of .wrb_bs_weighted_below(). A layer read
+# from pH is bounded on its side of 50%; one with nothing recorded by 0 and 100.
+.wrb_bs_weighted_above <- function(h, layers, min_bs = 50) {
+  w <- pmax(h$bottom_cm[layers] - h$top_cm[layers], 0)
+  ok <- !is.na(w) & w > 0
+  layers <- layers[ok]; w <- w[ok]
+  if (!length(layers)) {
+    return(list(passed = NA, average = NA_real_, missing = c("top_cm", "bottom_cm")))
+  }
+  st <- lapply(layers, function(i) .wrb_bs_status(h, i, min_bs))
+  v <- vapply(st, function(s) s$value, 0)
+  p <- vapply(st, function(s) s$passed, NA)
+  lo <- ifelse(!is.na(v), v, ifelse(p %in% TRUE, min_bs, 0))
+  hi <- ifelse(!is.na(v), v, ifelse(p %in% FALSE, min_bs, 100))
+  avg_lo <- sum(w * lo) / sum(w)
+  avg_hi <- sum(w * hi) / sum(w)
+  # a layer read below 50% by pH lies under its bound, so the average does too
+  below_bound <- any(is.na(v) & p %in% FALSE)
+  passed <- if (avg_lo >= min_bs) TRUE
+            else if (avg_hi < min_bs || (below_bound && avg_hi <= min_bs)) FALSE
+            else NA
+  list(passed = passed,
+       average = if (!anyNA(v)) sum(w * v) / sum(w) else NA_real_,
+       bounds = c(avg_lo, avg_hi),
+       missing = if (is.na(passed)) c("bs_pct", "ph_h2o") else character(0),
+       details = data.frame(layer = layers, thickness_cm = w, bs_pct = v,
+                            source = vapply(st, function(s) s$source, ""),
+                            stringsAsFactors = FALSE))
+}
+
 # Layers overlapping the depth window [top, bottom), in depth order, and how
 # much of the window they cover (cm).
 .wrb_window_layers <- function(h, top, bottom) {

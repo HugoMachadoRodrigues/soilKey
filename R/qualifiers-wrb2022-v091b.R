@@ -161,30 +161,37 @@ qual_grumic <- function(pedon) {
   )
 }
 
-#' Pellic qualifier (pe): in the upper 30 cm, Munsell value <= 4 moist
-#' AND chroma <= 2 moist. Diagnostic of "black" (dark) Vertisols.
+#' Pellic qualifier (pe): value <= 3 and chroma <= 2, moist, in the upper
+#' 30 cm of the mineral soil (Vertisols).
+#'
+#' WRB 2022 Ch 5 (p. 143): "having in the upper 30 cm of the mineral soil a
+#' Munsell colour value of <= 3 and a chroma of <= 2, both moist (in Vertisols
+#' only)". v0.9.316: the colours hold throughout those 30 cm (Ch 2.1, rule 7:
+#' "throughout the specified depth range"); before, one horizon starting above
+#' 30 cm was enough (the Ap of 0-20 cm of ISRIC's CU004, over a BAi of value
+#' 7). A part of the 30 cm with no moist colour recorded leaves it undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_pellic <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm < 30)
-  if (length(layers) == 0L)
+  ref <- "WRB (2022) Ch 5, Pellic (p. 143)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
     return(DiagnosticResult$new(name = "Pellic", passed = NA,
             layers = integer(0), evidence = list(),
-            missing = "munsell_value_moist",
-            reference = "WRB (2022) Ch 5, Pellic"))
-  vals <- h$munsell_value_moist[layers]
-  chrs <- h$munsell_chroma_moist[layers]
-  # WRB 2022 Ch 5 Pellic: Munsell value <= 3 AND chroma <= 2 moist (was <= 4).
-  ok <- !is.na(vals) & !is.na(chrs) & vals <= 3 & chrs <= 2
-  passed <- any(ok)
+            missing = "munsell_value_moist", reference = ref))
+  vals <- h$munsell_value_moist
+  chrs <- h$munsell_chroma_moist
+  ok <- ifelse((!is.na(vals) & vals > 3) | (!is.na(chrs) & chrs > 2), FALSE,
+               ifelse(!is.na(vals) & !is.na(chrs), TRUE, NA))
+  run <- .q_run_tristate(h, ok, 30, from = ms, to = ms + 30)
   DiagnosticResult$new(
-    name = "Pellic", passed = passed,
-    layers = layers[ok],
-    evidence = list(values = vals, chromas = chrs),
-    missing = if (all(is.na(vals)) && all(is.na(chrs)))
+    name = "Pellic", passed = run$passed,
+    layers = if (isTRUE(run$passed)) run$layers else integer(0),
+    evidence = list(values = vals, chromas = chrs, window_cm = c(ms, ms + 30)),
+    missing = if (is.na(run$passed))
                 c("munsell_value_moist", "munsell_chroma_moist") else character(0),
-    reference = "WRB (2022) Ch 5, Pellic"
+    reference = ref
   )
 }
 

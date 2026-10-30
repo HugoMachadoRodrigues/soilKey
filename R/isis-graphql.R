@@ -41,11 +41,11 @@
 #     (ec_max_dS_m), read only by the salic test.
 #   * Water-dispersible clay is a clay content.
 #   * absent_unless_recorded = TRUE (default): in a horizon with a field
-#     description, mottles, slickensides, plinthite, a duripan and artefacts
-#     that the description does not mention are absent. Rows with laboratory
-#     data only stay unknown, and so does anything a designation or a pan
-#     suggests (v for plinthite, qm for a duripan, u for artefacts), and the
-#     mottles of a g, l or r horizon with no mottle field.
+#     description, mottles, slickensides, pressure faces, plinthite, a duripan
+#     and artefacts that the description does not mention are absent. Rows
+#     with laboratory data only stay unknown, and so does anything a
+#     designation or a pan suggests (v for plinthite, qm for a duripan, u for
+#     artefacts), and the mottles of a g, l or r horizon with no mottle field.
 #   * Base saturation (100 x exchangeable bases / CEC at pH 7), the ECEC and
 #     the aluminium saturation are calculated when ISIS has the parts; silt is
 #     100 - sand - clay when only those two are given.
@@ -59,6 +59,13 @@
 #     1), are the rock_origin of the mineral layers. Other deposits are not
 #     read, and nothing is set when a second deposit of another kind is
 #     recorded, since ISIS does not say which layers it holds.
+#   * v0.9.317: cutans of kind pressure faces (R) are the pressure faces of the
+#     WRB 2022 nitic horizon (patchy, broken, continuous: few, common, many;
+#     absent unless recorded, as slickensides); the second structure ISIS
+#     records (structureType2) is the second-level structure, read only by the
+#     nitic horizon. A particle-size record of zeros only is missing. A row
+#     designated R inside the depth range of another described horizon is
+#     left out, with a note in site$depth_note.
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"
@@ -99,6 +106,7 @@ isis_citation <- function(accessed = Sys.Date()) {
 .ISIS_MORPH <- c("colourMoistHue", "colourMoistValue", "colourMoistChroma",
                  "colourDryHue", "colourDryValue", "colourDryChroma",
                  "structureGrade1", "structureType", "structureSize",
+                 "structureType2",
                  "consistenceSoilmassMoist", "consistenceSoilmassDry",
                  "stickinessClass", "consistencyWetPlasticity",
                  "cutansAbundance", "cutansKind", "cutansThickness",
@@ -176,6 +184,7 @@ isis_citation <- function(accessed = Sys.Date()) {
 .ISIS_CUTAN_STRENGTH <- c(f = "faint", m = "distinct", t = "prominent")
 .ISIS_CUTAN_CLAY <- c("C", "F", "U")          # clay; clay and sesquioxides; clay and humus
 .ISIS_CUTAN_SLICKENSIDES <- "P"
+.ISIS_CUTAN_PRESSURE <- "R"                    # pressure faces (stress cutans)
 .ISIS_CONTRAST <- c(F = "faint", D = "distinct", P = "prominent")
 .ISIS_EFFERVESCENCE <- c(N = "none", SL = "slight", MO = "moderate",
                          ST = "strong", EX = "very strong")
@@ -248,6 +257,50 @@ isis_citation <- function(accessed = Sys.Date()) {
   }
   drop <- S[!is.na(host)]
   list(layers = layers[setdiff(which(keep), drop)], merged = length(drop))
+}
+
+# v0.9.317: two guards on the rows of a profile, before the samples are merged.
+#   * A particle-size record whose values are all 0 (clay, silt and sand, as
+#     many as are recorded) is no analysis: it is read as missing, not as 0%
+#     clay (IN001, a Ck2 of silt loam texture with every fraction at 0.0).
+#   * A row designated R, described or not, that lies inside the depth range
+#     of another described horizon is not continuous rock below the profile: it
+#     is left out, with a note (IT017: an "R 0-5" inside "Apkc 0-35", the
+#     bedrock below 230 cm entered with wrong depths). Other named rows with
+#     neither laboratory data nor a description are kept: in some profiles
+#     (FR009, UY002) they carry the designations of horizons whose data sit in
+#     unnamed rows of the same depths, and they are not read as rock.
+.isis_guard_layers <- function(layers) {
+  notes <- character(0)
+  nm <- function(L) as.character(L$layerName %||% NA_character_)
+  where <- function(L) sprintf("%s (%g-%g cm)", if (is.na(nm(L))) "a sample row" else nm(L),
+                               .isis_num(L$upperDepth), .isis_num(L$lowerDepth))
+  for (k in seq_along(layers)) {
+    v <- vapply(c("clay", "silt", "sand"), function(f) .isis_num(layers[[k]][[f]]), 0)
+    if (any(is.finite(v)) && all(v[is.finite(v)] == 0)) {
+      for (f in c("clay", "silt", "sand")) layers[[k]][f] <- list(NULL)
+      notes <- c(notes, sprintf("The particle-size record of %s is all zeros and is read as missing.",
+                                where(layers[[k]])))
+    }
+  }
+  if (length(layers) < 2L) return(list(layers = layers, notes = notes))
+  tp <- vapply(layers, function(L) .isis_num(L$upperDepth), 0)
+  bt <- vapply(layers, function(L) .isis_num(L$lowerDepth), 0)
+  desc <- vapply(layers, .isis_described, NA)
+  rock <- vapply(layers, function(L) grepl("^([0-9]+|[IVX]+)?R", nm(L)), NA)
+  host <- desc & !rock & is.finite(tp) & is.finite(bt)
+  drop <- integer(0)
+  for (r in which(rock & is.finite(tp) & is.finite(bt))) {
+    # inside, not at the lower boundary ("R 100-100" below a "C 50-100" stays)
+    inside <- which(host & seq_along(layers) != r & tp <= tp[r] & bt >= bt[r] & tp[r] < bt)
+    if (!length(inside)) next
+    drop <- c(drop, r)
+    notes <- c(notes, sprintf(
+      "ISIS layer %s lies inside the described horizon %s: it is not read as continuous rock and is left out.",
+      where(layers[[r]]), where(layers[[inside[1]]])))
+  }
+  if (length(drop)) layers <- layers[-drop]
+  list(layers = layers, notes = notes)
 }
 
 # ---- One profile ------------------------------------------------------------
@@ -338,7 +391,8 @@ isis_citation <- function(accessed = Sys.Date()) {
   if (all(vapply(layers, .isis_is_sample_row, NA)))
     return(list(horizons = NULL, provenance = NULL,
                 notes = "ISIS has sample rows only for this profile."))
-  mg <- .isis_merge_samples(layers)
+  gd <- .isis_guard_layers(layers)
+  mg <- .isis_merge_samples(gd$layers)
   H <- mg$layers
   top <- vapply(H, function(L) .isis_num(L$upperDepth), 0)
   ord <- order(top); H <- H[ord]
@@ -432,6 +486,9 @@ isis_citation <- function(accessed = Sys.Date()) {
   setchr("structure_grade", "structureGrade1", .ISIS_GRADE)
   setchr("structure_type", "structureType", .ISIS_STRUCTURE)
   setchr("structure_size", "structureSize", .ISIS_SIZE)
+  # v0.9.317: the second structure ISIS records, as the second-level structure
+  # the first-level units break into; read only by the WRB nitic horizon
+  setchr("structure_type_secondary", "structureType2", .ISIS_STRUCTURE)
   setchr("consistence_moist", "consistenceSoilmassMoist", .ISIS_MOIST)
   setchr("rupture_resistance", "consistenceSoilmassDry", .ISIS_DRY)
   setchr("stickiness", "stickinessClass", .ISIS_STICKY)
@@ -464,6 +521,12 @@ isis_citation <- function(accessed = Sys.Date()) {
   sa <- vapply(amt, function(k) .isis_lookup(.ISIS_SLICKENSIDES, k), "", USE.NAMES = FALSE)
   out$slickensides <- unname(ifelse(sl, ifelse(is.na(sa) | sa == "absent", "common", sa), NA_character_))
   note("slickensides", which(sl), "ISIS cutans of kind slickensides (patchy, broken or no abundance read as common; continuous as many)")
+  # v0.9.317: cutans of kind pressure faces are the pressure faces of the WRB
+  # nitic horizon (Ch 3.1.22): patchy, broken and continuous are few, common
+  # and many, as for clay films, and with no abundance few
+  pr <- kind %in% .ISIS_CUTAN_PRESSURE
+  out$pressure_faces <- unname(ifelse(pr, ifelse(is.na(a), "few", a), NA_character_))
+  note("pressure_faces", which(pr), "ISIS cutans of kind pressure faces (patchy few, broken common, continuous many; no abundance read as few)")
   # cracks: the profile's cracking (L large, C small) or, without it, gilgai,
   # in every horizon starting above 100 cm; the width of 0.5 cm is inferred
   cr <- if (!is.na(cracking) && cracking %in% c("L", "C")) cracking else if (isTRUE(gilgai)) "gilgai" else NA_character_
@@ -537,6 +600,8 @@ isis_citation <- function(accessed = Sys.Date()) {
     glr <- grepl("^[0-9]*[A-Z]+[a-z]*[glr]", d) & !grepl("^[0-9]*R", d)
     set0("redoximorphic_features_pct", desc & !mfields & !(mother | glr), 0)
     set0("slickensides", desc, "absent")
+    # v0.9.317: pressure faces too, recorded in the same cutans field
+    set0("pressure_faces", desc, "none")
     set0("plinthite_pct", desc & !grepl("^[0-9]*[A-Z]+[a-z]*v", d) & !pan %in% c("L", "I"), 0)
     set0("duripan_pct", desc & !grepl("qm", d) & !pan %in% "D", 0)
     u <- grepl("^[0-9]*[A-Z]+[a-z]*u", d)
@@ -548,8 +613,8 @@ isis_citation <- function(accessed = Sys.Date()) {
     data.frame(horizon_idx = integer(0), attribute = character(0), source = character(0),
                confidence = numeric(0), notes = character(0), stringsAsFactors = FALSE)
   rownames(out) <- NULL
-  notes <- character(0)
-  if (mg$merged) notes <- sprintf("%d laboratory sample row(s) with no field description were given to the described horizon that holds them.", mg$merged)
+  notes <- gd$notes
+  if (mg$merged) notes <- c(notes, sprintf("%d laboratory sample row(s) with no field description were given to the described horizon that holds them.", mg$merged))
   list(horizons = out, provenance = prov, notes = notes)
 }
 
@@ -599,9 +664,9 @@ isis_citation <- function(accessed = Sys.Date()) {
 #'
 #' @param profile One ISIS profile, a list as parsed from the service's JSON.
 #' @param absent_unless_recorded If \code{TRUE} (default), mottles,
-#'   slickensides, plinthite, a duripan and artefacts that the field
-#'   description of a horizon does not mention are recorded as absent in that
-#'   horizon; rows with laboratory data only stay unknown. \code{FALSE} leaves
+#'   slickensides, pressure faces, plinthite, a duripan and artefacts that
+#'   the field description of a horizon does not mention are recorded as
+#'   absent in that horizon; rows with laboratory data only stay unknown. \code{FALSE} leaves
 #'   everything not recorded unknown.
 #' @param accessed Date the data were read (default today).
 #' @return A \code{\link{PedonRecord}}.

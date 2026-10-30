@@ -28,7 +28,9 @@
     cec_cmol = c(20, 20, 20),
     bs_pct   = c(85, 85, 85),
     oc_pct   = c(2.0, 1.5, 0.8),
-    ph_h2o   = c(7, 7.2, 7.5)
+    ph_h2o   = c(7, 7.2, 7.5),
+    # v0.9.317: WRB 2022 mollic criterion 1 reads the structure
+    structure_type = rep("granular", 3), structure_size = rep("fine", 3)
   )
   hz <- ensure_horizon_schema(hz)
   PedonRecord$new(site = list(id = "test-mollic-stack"),
@@ -72,7 +74,8 @@ test_that("v0.9.78: mollic stack handles small gap between contiguous layers (ro
     munsell_chroma_moist = c(1,1,1),
     clay_pct = c(40,41,42), silt_pct = c(30,31,30), sand_pct = c(30,28,28),
     cec_cmol = c(20,20,20), bs_pct = c(85,85,85),
-    oc_pct = c(2,1.5,0.8), ph_h2o = c(7,7.2,7.5)
+    oc_pct = c(2,1.5,0.8), ph_h2o = c(7,7.2,7.5),
+    structure_type = rep("granular", 3), structure_size = rep("fine", 3)   # v0.9.317
   )
   hz <- ensure_horizon_schema(hz)
   pr <- PedonRecord$new(site = list(id = "test"), horizons = hz)
@@ -95,7 +98,8 @@ test_that("v0.9.78: KE Phaeozem fixture (A11+A12=27cm) now passes mollic", {
     clay_pct = c(28, 30, 43, 46), silt_pct = c(35,35,30,28),
     sand_pct = c(37,35,27,26),
     cec_cmol = c(13, 11, 13, 13), bs_pct = c(100,100,100,100),
-    oc_pct = c(1.13, 0.61, 0.47, 0.44), ph_h2o = c(7.3,7.9,8.1,8.1)
+    oc_pct = c(1.13, 0.61, 0.47, 0.44), ph_h2o = c(7.3,7.9,8.1,8.1),
+    structure_type = rep("subangular blocky", 4), structure_size = rep("medium", 4)   # v0.9.317
   )
   hz <- ensure_horizon_schema(hz)
   pr <- PedonRecord$new(site = list(id = "KE-Phaeozem-replica"),

@@ -216,7 +216,10 @@ test_that("Cutanic requires argic + visible clay films", {
 
 test_that("Brunic / Protic are exclusive on Arenosol-style profiles", {
   skip_on_cran()
-  # Arenosol with weakly developed cambic Bw -> Brunic fires.
+  # v0.9.316: WRB 2022 Ch 5 (p. 129) Brunic is a layer that meets cambic
+  # criteria 3 and 4 but FAILS criterion 1 (sandy loam or finer). This sandy
+  # loam Bw meets criterion 1, so it is not Brunic (it was before v0.9.316);
+  # the C is a sandy loam too.
   hz <- data.table::data.table(
     top_cm = c(0, 15, 50), bottom_cm = c(15, 50, 150),
     designation = c("A", "Bw", "C"),
@@ -224,7 +227,7 @@ test_that("Brunic / Protic are exclusive on Arenosol-style profiles", {
     munsell_value_moist = c(4, 5, 6), munsell_chroma_moist = c(3, 4, 3),
     structure_grade = c("weak","weak","massive"),
     structure_type  = c("granular","subangular blocky","massive"),
-    clay_pct = c(8, 10, 7), silt_pct = c(15, 18, 13), sand_pct = c(77, 72, 80),
+    clay_pct = c(8, 10, 7), silt_pct = c(15, 18, 20), sand_pct = c(77, 72, 73),
     oc_pct = c(0.8, 0.4, 0.2), bs_pct = c(40, 45, 50),
     cec_cmol = c(5, 4, 3), ph_h2o = c(6, 6.2, 6.5)
   )
@@ -233,8 +236,14 @@ test_that("Brunic / Protic are exclusive on Arenosol-style profiles", {
                   parent_material = "aeolian sand"),
     horizons = ensure_horizon_schema(hz)
   )
-  expect_true(isTRUE(qual_brunic(pr_br)$passed))
+  expect_false(qual_brunic(pr_br)$passed)
   expect_false(isTRUE(qual_protic(pr_br)$passed))
+  # a sand Bw fails criterion 1 unless it is very fine sand, which soilKey
+  # cannot tell: undecided
+  sand <- pr_br$clone(deep = TRUE)
+  sand$horizons$clay_pct <- c(4, 4, 2); sand$horizons$silt_pct <- c(6, 6, 4)
+  sand$horizons$sand_pct <- c(90, 90, 94)
+  expect_true(is.na(qual_brunic(sand)$passed))
 
   # v0.9.217: WRB 2022 Protic is "showing no soil horizon development". The
   # canonical Arenosol has an A horizon and sideralic properties, so it is

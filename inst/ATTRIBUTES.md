@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.308)
+# soilKey -- recognised horizon attribute names (v0.9.309)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -65,6 +65,8 @@ and do not warn.
 | `clay_films_amount` | - | character | Abundance of clay coatings / films (none / few / common / many). | - |
 | `clay_films_strength` | - | character | Distinctness / thickness of clay films (faint / distinct / prominent). | - |
 | `coarse_fragments_pct` | % (vol) | numeric | Coarse fragments (> 2 mm) by volume. | `cf`, `coarse_fragments`, `gravel`, `rock_fragments` |
+| `pressure_faces` | - | character | Abundance of pressure faces on the surfaces of the soil aggregates (none / few / common / many): shiny surfaces of aggregates pressed against each other, without the striations of slickensides and of the colour of the matrix (WRB 2022 Annex 1, Ch 8.4.14). The WRB 2022 nitic horizon (Ch 3.1.22) asks for pressure faces on 25 % or more of the aggregate surfaces, read as common or more. Clay coatings are recorded in clay_films_amount, not here. | - |
+| `structure_type_secondary` | - | character | Type of the second-level structure into which the first-level structural units break (e.g. angular blocky breaking into polyhedral or flat-edged elements). Read only by the WRB 2022 nitic horizon (Ch 3.1.22, criterion 2.a); structure_type is the first level. | - |
 
 ## Texture
 
@@ -452,5 +454,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.308._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.309._
 

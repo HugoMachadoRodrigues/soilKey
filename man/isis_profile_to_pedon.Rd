@@ -14,9 +14,9 @@ isis_profile_to_pedon(
 \item{profile}{One ISIS profile, a list as parsed from the service's JSON.}
 
 \item{absent_unless_recorded}{If \code{TRUE} (default), mottles,
-slickensides, plinthite, a duripan and artefacts that the field
-description of a horizon does not mention are recorded as absent in that
-horizon; rows with laboratory data only stay unknown. \code{FALSE} leaves
+slickensides, pressure faces, plinthite, a duripan and artefacts that
+the field description of a horizon does not mention are recorded as
+absent in that horizon; rows with laboratory data only stay unknown. \code{FALSE} leaves
 everything not recorded unknown.}
 
 \item{accessed}{Date the data were read (default today).}

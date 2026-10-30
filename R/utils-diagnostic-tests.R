@@ -136,6 +136,18 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #' @param exclude v0.9.310. Logical, one per layer: layers that cannot be part
 #'        of the horizon (the WRB argic is a subsurface horizon). They are still
 #'        read as coarser-textured or transitional layers.
+#' @param lithic_data v0.9.317. With \code{lithic_aware}, also read a lithic
+#'        discontinuity from the data (WRB 2022 Ch 3.2.7, p. 76-77, criteria
+#'        2.a.iv and 6; \code{.wrb_lithic_discontinuity_above()}): a layer is
+#'        not compared with a coarser layer above such a discontinuity
+#'        (criterion 2.a.i, p. 36).
+#' @param plough_layer v0.9.317. Criterion 2.a.ii (p. 36): "if the
+#'        coarser-textured layer directly overlies the argic horizon, its
+#'        lowermost sublayer does not form part of a plough layer". A layer
+#'        whose nearest layer above, outside the argic horizon, is a plough
+#'        layer (Ap) is not compared at all: that Ap is either the coarser
+#'        layer directly above or its lowermost sublayer, not a transitional
+#'        horizon.
 #' @return Sub-test result list.
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
 #'   horizon, criteria 2.a.iii-vi (p. 36); Soil Survey Staff (2022),
@@ -144,7 +156,9 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
                                      lithic_aware = FALSE,
                                      max_transition_cm = NULL,
-                                     exclude = NULL) {
+                                     exclude = NULL,
+                                     lithic_data = FALSE,
+                                     plough_layer = FALSE) {
   system <- match.arg(system)
   # v0.9.220: with lithic_aware = TRUE (the WRB argic), a layer is not compared
   # with a coarser layer of another material (WRB 2022 Ch 3.1.3, criterion
@@ -169,6 +183,10 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
   t_desg <- grepl("^[0-9]*[A-Z]+[a-z]*t",
                   as.character(h$designation %||% rep(NA_character_, nrow(h))))
   thick  <- pmax(h$bottom_cm - h$top_cm, 0)
+  # v0.9.317: criterion 2.a.i from the data (3.2.7) and criterion 2.a.ii.
+  ld <- if (lithic_aware && isTRUE(lithic_data)) .wrb_lithic_discontinuity_above(h)
+        else list(at = rep(FALSE, nrow(h)), criterion = rep(NA_character_, nrow(h)))
+  plough <- if (isTRUE(plough_layer)) .wrb_plough_layer(h) else rep(FALSE, nrow(h))
 
   # v0.9.23: KST 13ed Ch 3 (argillic horizon, p 4) and WRB 2022
   # Ch 3.1.3 (argic horizon, p 36) define the clay-increase test
@@ -195,6 +213,26 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
     if (!is.na(mat[i]))
       above_idx_set <- above_idx_set[is.na(mat[above_idx_set]) |
                                        mat[above_idx_set] == mat[i]]
+    # v0.9.317: WRB 2022 Ch 3.1.3 criterion 2.a.i, "not separated from the argic
+    # horizon by a lithic discontinuity", with the discontinuity read from the
+    # data of each pair of layers in between (Ch 3.2.7, p. 76-77).
+    if (any(ld$at[seq_len(i)]) && length(above_idx_set))
+      above_idx_set <- above_idx_set[vapply(above_idx_set, function(j)
+        !any(ld$at[seq.int(j + 1L, i)]), logical(1))]
+    # v0.9.317: criterion 2.a.ii. The nearest layer above that is not part of
+    # the argic horizon (accepted layers and t layers are) is a plough layer:
+    # it is the coarser-textured layer directly above, or its lowermost
+    # sublayer, so the clay increase does not make this layer argic.
+    if (any(plough[seq_len(i - 1L)])) {
+      outside <- setdiff(seq_len(i - 1L), union(candidates, which(t_desg)))
+      if (length(outside) && plough[max(outside)]) {
+        details[[as.character(i)]] <- list(here_idx = i, here_clay = here,
+          rule = sprintf("plough layer directly above (idx=%d): criterion 2.a.ii",
+                         max(outside)),
+          passed = FALSE)
+        next
+      }
+    }
     if (!is.null(max_transition_cm) && length(above_idx_set)) {
       in_argic <- union(candidates, which(t_desg))
       gap <- vapply(above_idx_set, function(j) {
@@ -270,12 +308,17 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
             else if (!any_evaluable && length(missing) > 0L) NA
             else FALSE
 
-  .subtest_result(
+  out <- .subtest_result(
     passed  = passed,
     layers  = candidates,
     missing = missing,
     details = details
   )
+  if (any(ld$at))
+    out$lithic_discontinuities <- data.frame(above_layer = which(ld$at),
+                                             criterion = ld$criterion[ld$at],
+                                             stringsAsFactors = FALSE)
+  out
 }
 
 
@@ -1012,16 +1055,30 @@ test_mollic_thickness <- function(h, min_cm = 20, candidate_layers = NULL) {
                           candidate_layers = candidate_layers)
 }
 
-#' Mollic structure test (WRB 2022)
+#' Mollic structure test
 #'
-#' Excludes horizons that are simultaneously massive AND very hard when
-#' dry. v0.1 implementation reads \code{structure_grade} and
-#' \code{consistence_moist} as text and looks for the keyword pair.
+#' \code{system = "usda"} (default, the USDA mollic epipedon): excludes
+#' horizons that are simultaneously massive AND very hard when dry. v0.1
+#' implementation reads \code{structure_grade} and \code{consistence_moist}
+#' as text and looks for the keyword pair.
+#'
+#' \code{system = "wrb2022"} (v0.9.317, the WRB mollic and umbric horizons):
+#' criterion 1 of WRB 2022 Ch 3.1.20 (p. 52) and 3.1.39 (p. 69), "single or
+#' in combination, in >= 50\% (by volume): a. soil aggregate structure with an
+#' average aggregate size of <= 10 cm; or b. cloddy structure or other
+#' structural elements created by agricultural practices", read layer by layer
+#' (\code{.wrb_aggregate_structure_le_10cm()}) and weighted by thickness over
+#' the candidate layers, which pass or fail together. A structure that is not
+#' described leaves it undecided.
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
+#' @param system \code{"usda"} or \code{"wrb2022"}.
 #' @noRd
-test_mollic_structure <- function(h, candidate_layers = NULL) {
+test_mollic_structure <- function(h, candidate_layers = NULL,
+                                  system = c("usda", "wrb2022")) {
+  system <- match.arg(system)
+  if (system == "wrb2022") return(.wrb_mollic_structure(h, candidate_layers))
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0)
   missing <- character(0)

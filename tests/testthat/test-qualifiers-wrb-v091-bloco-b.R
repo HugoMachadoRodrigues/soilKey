@@ -202,6 +202,7 @@ test_that("Pachic fires only when mollic OR umbric thickness >= 50 cm", {
     munsell_value_dry = c(3, 5), munsell_chroma_dry = c(2, 3),
     structure_grade = c("strong", "moderate"),
     structure_type = c("granular", "subangular blocky"),
+    structure_size = c("fine", "medium"),   # v0.9.317: mollic criterion 1 reads it
     consistence_moist = c("friable", "firm"),
     oc_pct = c(2.5, 0.6), bs_pct = c(80, 65),
     cec_cmol = c(25, 18),
@@ -237,9 +238,10 @@ test_that("Pellic / Grumic / Mazic key on surface structure & color", {
                   parent_material = "smectitic alluvium"),
     horizons = ensure_horizon_schema(base(...))
   )
-  # Pellic-dark profile: every layer has low chroma -> Pellic fires;
+  # Pellic-dark profile: value <= 3 and chroma <= 2 throughout the upper
+  # 30 cm (v0.9.316, WRB 2022 Ch 5, p. 143) -> Pellic fires;
   # subangular-blocky surface -> neither Grumic nor Mazic.
-  pr_pel <- mk(v1 = 3, c1 = 1, v2 = 4, c2 = 2,
+  pr_pel <- mk(v1 = 3, c1 = 1, v2 = 3, c2 = 2,
                grade1 = "weak", type1 = "subangular blocky")
   expect_true(isTRUE(qual_pellic(pr_pel)$passed))
   expect_false(isTRUE(qual_grumic(pr_pel)$passed))
@@ -249,7 +251,7 @@ test_that("Pellic / Grumic / Mazic key on surface structure & color", {
   # Pellic also fires legitimately (the two qualifiers are not
   # mutually exclusive in WRB -- Mazic / Grumic / Pellic gate on
   # different attributes).
-  pr_gru <- mk(v1 = 3, c1 = 2, v2 = 4, c2 = 2,
+  pr_gru <- mk(v1 = 3, c1 = 2, v2 = 3, c2 = 2,
                grade1 = "strong", type1 = "granular")
   expect_true(isTRUE(qual_grumic(pr_gru)$passed))
   expect_true(isTRUE(qual_pellic(pr_gru)$passed))
