@@ -517,23 +517,19 @@ ferralic <- function(pedon,
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
-#' Sub-tests called:
-#' \itemize{
-#'   \item \code{test_mollic_color} -- moist value <= 3, moist
-#'         chroma <= 3, dry value <= 5.
-#'   \item \code{test_mollic_organic_carbon} -- SOC >= 0.6\%.
-#'   \item \code{test_mollic_base_saturation} -- BS (NH4OAc, pH 7)
-#'         >= 50\%.
-#'   \item \code{test_mollic_thickness} -- horizon thickness >= 20 cm.
-#'   \item \code{test_mollic_structure} -- not simultaneously
-#'         massive AND very hard when dry.
-#' }
-#'
-#' v0.1 limitations: cumulative thickness across contiguous mollic-
-#' qualifying horizons is not yet supported -- this matters for profiles
-#' where mollic criteria are met by an A1+A2 sequence but no single
-#' horizon is >= 20 cm thick. Mixing of upper 20 cm before the test (per
-#' WRB) is also deferred to v0.2.
+#' Since v0.9.314 the criteria are read as WRB 2022 Ch 2.1 (p. 23) sets them for
+#' a horizon of several subhorizons: every criterion except the thickness in
+#' every layer, unless the text says otherwise. Criteria 1 (structure;
+#' structure not recorded does not block it), 2 (>= 0.6\% SOC) and 3 (colour,
+#' items a-c; a plough layer takes the colour of the subhorizon below it) are
+#' read in each layer, and the horizon is the run of such layers from the
+#' mineral soil surface. Criterion 5, the base saturation, is the weighted
+#' average over the run (by pH where it is not recorded, Annex 2 Table 9.2),
+#' and criterion 6b its thickness (>= 20 cm). A moist value with no dry value
+#' recorded reads the dry value as the moist value + 1; a layer with no colour
+#' recorded at all and >= 1.5\% SOC is read as dark (Hugo, 2026-10-29). A dry
+#' colour alone leaves criterion 3 undecided unless its value is above 5. The
+#' colour subtest records where each layer's reading came from.
 #'
 #' @references IUSS Working Group WRB (2022). \emph{World Reference Base
 #' for Soil Resources}, 4th edition. International Union of Soil Sciences,
@@ -546,157 +542,56 @@ mollic <- function(pedon,
                      min_bs         = 50,
                      surface_top_cm = 5) {
   h <- pedon$horizons
-
-  # v0.9.78 -- mollic candidate-layer logic.
-  #
-  # WRB 2022 Ch 3: the mollic horizon is the diagnostic SURFACE horizon
-  # AND must be at least 20 cm thick. Previously soilKey gated the
-  # candidate set with `top_cm <= surface_top_cm` (default 5 cm), which
-  # excluded contiguous A12 / AB layers that DO belong to the mollic
-  # horizon as a single morphological unit. The KE W3_0289 Phaeozem
-  # has A11 (0-10) + A12 (10-27): 27 cm of mollic-passing material, but
-  # only A11 entered the candidate pool, so thickness 10 < 20 -> fail.
-  #
-  # The fix: candidate_layers is the CONTIGUOUS stack of layers from
-  # the surface where each layer passes the mollic color test. This
-  # matches WRB's "contiguous from surface" definition.
-
+  ref <- "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon"
   if (nrow(h) == 0L) {
     return(DiagnosticResult$new(
       name = "mollic", passed = NA, layers = integer(0),
-      evidence = list(), missing = character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon"
-    ))
+      evidence = list(), missing = character(0), reference = ref))
   }
+  # v0.9.314: criteria 1-3 in every layer (WRB 2022 Ch 2.1, p. 23); the
+  # horizon is the run of such layers from the mineral soil surface
+  ls  <- .wrb_mollic_layer_status(h, umbric = FALSE, min_oc = min_oc)
+  run <- .wrb_mollic_run(h, ls$status, ls$missing, surface_top_cm = surface_top_cm)
+  L <- run$layers
+  thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
 
-  # v0.9.78: when the surface layer has insufficient evidence
-  # (NA Munsell value/chroma AND NA OC AND NA BS), we CANNOT
-  # determine whether the surface is mollic. Return NA rather
-  # than firing the contiguous-stack inference (which permissively
-  # default-passes such layers via OC-inference and would yield
-  # spurious TRUE on profiles whose surface morphology is unknown).
-  surf_idx <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
-  if (length(surf_idx) > 0L) {
-    si <- surf_idx[1]
-    surf_all_na <- is.na(h$munsell_value_moist[si]) &&
-                      is.na(h$munsell_chroma_moist[si]) &&
-                      is.na(h$oc_pct[si]) &&
-                      is.na(h$bs_pct %||% rep(NA_real_, nrow(h)))[si]
-    if (isTRUE(surf_all_na)) {
-      return(DiagnosticResult$new(
-        name = "mollic",
-        passed = NA,
-        layers = integer(0),
-        evidence = list(surface_attributes_all_na = TRUE),
-        missing = c("munsell_value_moist", "munsell_chroma_moist",
-                     "oc_pct", "bs_pct"),
-        reference = "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon"
-      ))
-    }
-  }
-
-  # Order by top_cm to compute the contiguous stack
-  ord <- order(h$top_cm, na.last = TRUE)
-  # Quick mollic-color check on every layer
-  cl_all <- seq_len(nrow(h))
-  color_check <- test_mollic_color(h, candidate_layers = cl_all)
-  passing_color <- color_check$layers
-  # Find the surface-anchored contiguous stack: starts with a layer
-  # whose top_cm <= surface_top_cm, then extends downward while each
-  # next layer (a) starts where the previous ends and (b) passes color.
-  candidate_layers <- integer(0)
-  for (i in ord) {
-    if (length(candidate_layers) == 0L) {
-      # First layer must be surface-anchored AND pass color
-      if (!is.na(h$top_cm[i]) && h$top_cm[i] <= surface_top_cm &&
-            i %in% passing_color) {
-        candidate_layers <- c(candidate_layers, i)
-      } else if (!is.na(h$top_cm[i]) && h$top_cm[i] <= surface_top_cm) {
-        # surface layer fails color -> can't be mollic
-        break
-      }
-    } else {
-      # Subsequent layer must contiguous AND pass color
-      last <- candidate_layers[length(candidate_layers)]
-      gap <- h$top_cm[i] - h$bottom_cm[last]
-      if (!is.na(gap) && abs(gap) <= 1 && i %in% passing_color) {
-        candidate_layers <- c(candidate_layers, i)
-      } else {
-        break
-      }
-    }
-  }
-
-  tests <- list()
-  tests$color           <- color_check
-  tests$organic_carbon  <- test_mollic_organic_carbon(h,
-                                                        min_pct = min_oc,
-                                                        candidate_layers = candidate_layers)
-  # v0.9.317: criterion 5, "a base saturation (by 1 M NH4OAc, pH 7) of >= 50%
-  # on a weighted average" (WRB 2022 Ch 3.1.20, p. 53), over the layers of the
-  # horizon; where BS is not recorded, pH by Annex 2 Table 9.2 (p. 220), as for
-  # the umbric horizon.
-  bs <- if (length(candidate_layers)) .wrb_bs_weighted_above(h, candidate_layers, min_bs = min_bs)
-        else list(passed = FALSE, missing = character(0))
+  tests <- .wrb_mollic_layer_subtests(h, ls, run)
+  # 5. "a base saturation (by 1 M NH4OAc, pH 7) of >= 50% on a weighted
+  # average" (p. 53); where BS is not recorded, pH by Annex 2 Table 9.2
+  bs <- if (length(L)) .wrb_bs_weighted_above(h, L, min_bs = min_bs)
+        else list(passed = if (length(run$maybe)) NA else FALSE, missing = character(0))
   tests$base_saturation <- .subtest_result(
     passed  = bs$passed,
-    layers  = if (isTRUE(bs$passed)) candidate_layers else integer(0),
+    layers  = if (isTRUE(bs$passed)) L else integer(0),
     missing = bs$missing %||% character(0),
     details = list(weighted_average = bs$average, bounds = bs$bounds,
                    layers = bs$details))
-  # v0.9.78: cumulative thickness check on the contiguous stack
-  # (test_minimum_thickness checks each layer individually against
-  # min_cm, but mollic requires the SUMMED thickness of the
-  # contiguous stack to reach 20 cm -- a single A11 layer of 10 cm
-  # plus A12 of 17 cm = 27 cm cumulative, valid mollic).
-  if (length(candidate_layers) > 0L) {
-    thk <- sum(pmax(h$bottom_cm[candidate_layers] -
-                          h$top_cm[candidate_layers], 0, na.rm = TRUE),
-                 na.rm = TRUE)
-    tests$thickness <- list(
-      passed  = thk >= min_thickness,
-      layers  = if (thk >= min_thickness) candidate_layers else integer(0),
-      missing = character(0),
-      details = list(cumulative_cm = thk, threshold = min_thickness,
-                       layers       = candidate_layers)
-    )
-  } else {
-    # No surface-anchored stack found. Distinguish between (a) NA
-    # input (surface Munsell/OC/BS missing -> NA) vs (b) genuine
-    # FAIL (surface fails colour with measured values -> FALSE).
-    surface_idx <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
-    has_na_surface <- length(surface_idx) > 0L && any(
-      is.na(h$munsell_value_moist[surface_idx]) |
-        is.na(h$munsell_chroma_moist[surface_idx])
-    )
-    tests$thickness <- list(
-      passed = if (has_na_surface) NA else FALSE,
-      layers = integer(0),
-      missing = if (has_na_surface)
-                  c("munsell_value_moist", "munsell_chroma_moist")
-                else c("top_cm", "bottom_cm"),
-      details = list(cumulative_cm = 0, threshold = min_thickness)
-    )
-  }
-  # v0.9.317: criterion 1 as WRB 2022 Ch 3.1.20 words it (p. 52): aggregate
-  # structure <= 10 cm or cloddy structure in >= 50% by volume; a structure
-  # that is not described leaves it undecided, it no longer passes.
-  tests$structure       <- test_mollic_structure(h,
-                                                    candidate_layers = candidate_layers,
-                                                    system = "wrb2022")
+  # 6b. >= 20 cm, the layers of the run taken together; undecided where
+  # layers not yet decided could make it up
+  tests$thickness <- .subtest_result(
+    passed  = if (thk(L) >= min_thickness) TRUE
+              else if (thk(run$maybe) >= min_thickness) NA
+              else FALSE,
+    layers  = if (thk(L) >= min_thickness) L else integer(0),
+    missing = if (thk(L) < min_thickness && thk(run$maybe) >= min_thickness)
+                run$missing else character(0),
+    details = list(cumulative_cm = thk(L), threshold = min_thickness, layers = L,
+                   undecided_below = setdiff(run$maybe, L)))
 
+  # the order of the sub-tests before v0.9.314
+  tests <- tests[c("color", "organic_carbon", "base_saturation", "thickness", "structure")]
   agg <- aggregate_subtests(tests)
-
+  # a criterion that fails decides, whatever is undecided (three-valued AND)
+  if (any(vapply(tests, function(t) isFALSE(t$passed), NA))) agg$passed <- FALSE
   DiagnosticResult$new(
     name      = "mollic",
     passed    = agg$passed,
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Mollic horizon",
-    notes     = if (length(candidate_layers) == 0L) {
-                   "No surface-anchored contiguous mollic stack found"
-                 } else NA_character_
+    reference = ref,
+    notes     = if (!length(run$maybe)) "No run of mollic layers from the mineral soil surface"
+                else NA_character_
   )
 }
 
@@ -1485,30 +1380,25 @@ umbric_horizon <- function(pedon,
   # soil surface, as mollic() has used since v0.9.78, instead of each layer
   # starting <= 5 cm on its own. Organic layers on top are skipped (Ch 2.1
   # rule 3, p. 23).
-  stack <- .wrb_dark_surface_stack(h, surface_top_cm = surface_top_cm)
+  # v0.9.314: criteria 1-3 in every layer (WRB 2022 Ch 2.1, p. 23); the
+  # horizon is the run of such layers from the mineral soil surface
+  ls    <- .wrb_mollic_layer_status(h, umbric = TRUE, min_oc = min_oc)
+  stack <- .wrb_mollic_run(h, ls$status, ls$missing, surface_top_cm = surface_top_cm)
   L <- stack$layers
   thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
 
-  tests <- list()
-  tests$color <- .subtest_result(
-    passed  = if (length(L)) TRUE else if (length(stack$maybe)) NA else FALSE,
-    layers  = L,
-    missing = if (!length(L)) stack$missing else character(0),
-    details = list(stack = L, undecided_below = setdiff(stack$maybe, L),
-                   mineral_surface_cm = stack$mineral_surface_cm))
-  tests$organic_carbon <- test_mollic_organic_carbon(h, min_pct = min_oc,
-                                                       candidate_layers = L)
+  tests <- .wrb_mollic_layer_subtests(h, ls, stack)
   # 5. "a base saturation (by 1 M NH4OAc, pH 7) of < 50% on a weighted
   # average" (p. 70); where BS is not recorded, pH (Annex 2, Table 9.2).
   bs <- if (length(L)) .wrb_bs_weighted_below(h, L, max_bs = max_bs)
         else list(passed = NA, missing = character(0))
   tests$bs_low <- .subtest_result(
-    passed  = if (length(L)) bs$passed else FALSE,
+    passed  = if (length(L)) bs$passed else if (length(stack$maybe)) NA else FALSE,
     layers  = if (isTRUE(bs$passed)) L else integer(0),
     missing = bs$missing %||% character(0),
     details = list(weighted_average = bs$average, bounds = bs$bounds,
                    layers = bs$details))
-  # 6b. >= 20 cm; undecided where layers of unknown colour could make it up
+  # 6b. >= 20 cm; undecided where layers not yet decided could make it up
   tests$thickness <- .subtest_result(
     passed  = if (thk(L) >= min_thickness) TRUE
               else if (thk(stack$maybe) >= min_thickness) NA
@@ -1517,10 +1407,10 @@ umbric_horizon <- function(pedon,
     missing = if (thk(L) < min_thickness && thk(stack$maybe) >= min_thickness)
                 stack$missing else character(0),
     details = list(cumulative_cm = thk(L), threshold = min_thickness))
-  # v0.9.317: criterion 1, worded as for the mollic horizon (Ch 3.1.39, p. 69)
-  tests$structure <- test_mollic_structure(h, candidate_layers = L, system = "wrb2022")
 
   agg <- aggregate_subtests(tests)
+  # a criterion that fails decides, whatever is undecided (three-valued AND)
+  if (any(vapply(tests, function(t) isFALSE(t$passed), NA))) agg$passed <- FALSE
 
   DiagnosticResult$new(
     name      = "umbric_horizon",
@@ -1530,7 +1420,7 @@ umbric_horizon <- function(pedon,
     missing   = agg$missing,
     reference = ref,
     notes     = if (length(stack$maybe) == 0L) {
-                   "No dark surface stack from the mineral soil surface"
+                   "No run of umbric layers from the mineral soil surface"
                  } else NA_character_
   )
 }
