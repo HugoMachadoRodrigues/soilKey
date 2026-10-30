@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.317</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.318</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,61 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.318" id="soilkey-09318-2026-10-30">soilKey 0.9.318 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09318-2026-10-30"></a></h2>
+<div class="section level3">
+<h3 id="the-new-zealand-national-soils-database-read-by-hugos-readings-0-9-318">The New Zealand National Soils Database read by Hugo’s readings<a class="anchor" aria-label="anchor" href="#the-new-zealand-national-soils-database-read-by-hugos-readings-0-9-318"></a></h3>
+<div class="section level4">
+<h4 id="nsd-reader-read_nsd_pedons-0-9-318">NSD reader (<code>read_nsd_pedons()</code>)<a class="anchor" aria-label="anchor" href="#nsd-reader-read_nsd_pedons-0-9-318"></a></h4>
+<ul><li>
+<strong>The older ped term nut</strong> (and nutty) is granular or polyhedral, one of the two, not known which (NZ Soil Description Handbook 2024, Note 12.1; Milne et al. 1995 has no nut). It goes to a new horizon attribute, <code>structure_type_one_of</code> (“granular or polyhedral”), and <code>structure_type</code> stays empty.
+<ul><li>
+<code><a href="../reference/classify_nzsc4.html">classify_nzsc4()</a></code> reads a criterion under each shape: it holds when it holds for both, fails when it fails for both, and is undecided otherwise. A criterion that needs polyhedral peds is undecided for a nut horizon.</li>
+<li>The other keys read the shape as not recorded.</li>
+</ul></li>
+<li>
+<strong>The older strength words</strong> moderately weak, moderately firm and moderately strong belong to the Taylor and Pohlen (1962) scale, which has no class in Milne et al. (1995). They stay unread (undecided).</li>
+<li>
+<strong>The older notation</strong>, for designations the NSD has not converted itself:
+<ul><li>A2 is E, with its subdivisions and suffixes (A21 E1, A2g Eg, A22x Ex2).</li>
+<li>The old master G (a gley horizon) is Bg when a B horizon lies below it in the profile, otherwise Cg (GC: BCg or Cg).</li>
+<li>The old master D (the substratum) is C, its prefixes and suffixes kept (BD BC, DG Cg, Dh Ch), except its old suffixes r and n. The NSD’s own conversions give Dr as Cu or C and Dn as Bt, 2Btb, Cm or Cu, so neither is the r (reduced) or n (sodium) of the current notations: Dr and Dn are C.</li>
+<li>The provenance keeps the recorded designation and says what it was read as.</li>
+</ul></li>
+<li>
+<strong>The soil note PARENT ROCK</strong> goes down to the layers whose origin is not recorded (<code>layer_origin</code>, read by the NZSC fluvial features); a layer with its own origin keeps it.
+<ul><li>A note of one material goes to every such layer.</li>
+<li>A note naming a sequence (“loess over outwash gravels”; over, overlying or on, or under and underlain by read from the bottom) is split by the profile’s lithologic groups (2C, IIC) when its parts are as many: the first part to the unnumbered layers, the next to the next group. Otherwise it stays the site’s <code>parent_material</code> and goes to no layer. A slash is not read as a sequence: the NSD also writes it in mixtures and abbreviations.</li>
+</ul></li>
+<li>A survey whose soil table has no <code>classifier_usda</code> (or <code>classifier_nzsc</code>) column is read.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="wrb-0-9-318">WRB 2022<a class="anchor" aria-label="anchor" href="#wrb-0-9-318"></a></h4>
+<ul><li>
+<strong>Raptic:</strong> the recorded origin of the layers on each side of a lithic discontinuity also reads loess (and wind-blown material) as aeolic, volcanic ash, pumice, lapilli and scoria as tephric, and river and estuarine deposits (and alluvium spelt aluvium) as fluvic (Hugo). Such a discontinuity is not Raptic.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="soilkey-pro-0-9-318">soilKey Pro<a class="anchor" aria-label="anchor" href="#soilkey-pro-0-9-318"></a></h4>
+<ul><li>A loaded example without coordinates no longer keeps the previous profile’s. The coordinates, country and parent material are the loaded profile’s, and blank where it has none, as the moisture and temperature regimes already were. Coordinates feed the inferred temperature regime. The 44 WRB and SiBCS examples carry all four; the national examples carry no coordinates.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="agreement-on-the-nsd-surveys-0-9-318">Agreement on the NSD (94 surveys)<a class="anchor" aria-label="anchor" href="#agreement-on-the-nsd-surveys-0-9-318"></a></h4>
+<table class="table"><thead><tr><th>NZSC level</th>
+<th>0.9.317</th>
+<th>0.9.318</th>
+</tr></thead><tbody><tr><td>order</td>
+<td>43.2% (492/1,139)</td>
+<td><strong>43.6% (497/1,139)</strong></td>
+</tr><tr><td>group</td>
+<td>24.3% (276/1,134)</td>
+<td><strong>26.7% (303/1,134)</strong></td>
+</tr><tr><td>subgroup</td>
+<td>13.8% (154/1,114)</td>
+<td><strong>14.7% (164/1,114)</strong></td>
+</tr></tbody></table><p>Of the 73 profiles the surveyors call Fluvial Recent Soils, 34 are now keyed as such (9 in 0.9.317). The 44 canonical fixtures are byte-identical under WRB, SiBCS and USDA.</p>
+</div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.317" id="soilkey-09317-2026-10-30">soilKey 0.9.317 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09317-2026-10-30"></a></h2>
 <div class="section level3">

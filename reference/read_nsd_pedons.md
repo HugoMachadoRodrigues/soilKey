@@ -90,12 +90,32 @@ older New Zealand notation (Taylor and Pohlen 1962). With
 `old_notation = "translate"`, (B) is read as Bw, the suffixes fe, ca and
 cs as s, k and y, an upper-case G suffix as g, and digits written
 between the master and its suffixes are moved to the end (B2g as Bg2).
-The masters G (gley) and D of that notation, which the NZSC key does not
-read, stay as written: the key reads such a horizon as one of unknown
-kind. A2 (an eluvial horizon in the 1951 notation, but a lower A in some
-surveys) also stays as written. A cemented sesquioxidic B written Bms is
-read as Bfm (a placic horizon) when 10 mm or less thick and as Bsm (an
-ortstein-pan) when thicker, as the NZSC Diagnostics define them.
+A2 is read as E, with its subdivisions and suffixes (A21 as E1, A2g as
+Eg). The old master G (a gley horizon) is read as Bg when a B horizon
+lies below it in the profile, otherwise as Cg (GC as BCg or Cg); the old
+master D (the substratum) as C, its prefixes and suffixes kept (BD as
+BC, DG as Cg) except its old suffixes r and n, which are not read (Dr
+and Dn as C; the NSD's own conversions give them as Cu, C, Bt or Cm). A
+cemented sesquioxidic B written Bms is read as Bfm (a placic horizon)
+when 10 mm or less thick and as Bsm (an ortstein-pan) when thicker, as
+the NZSC Diagnostics define them. The provenance keeps the recorded
+designation and what it was read as.
+
+Structure: the older ped term nut (not a shape of Milne et al. 1995) is
+granular or polyhedral, one of the two (NZ Soil Description Handbook
+2024, Note 12.1). It is kept in `structure_type_one_of` with
+`structure_type` empty:
+[`classify_nzsc4`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_nzsc4.md)
+reads a criterion under each shape, and the other keys read the shape as
+not recorded. The older strength words moderately weak, moderately firm
+and moderately strong (of the Taylor and Pohlen 1962 scale) are not
+read.
+
+Parent material: the soil note PARENT ROCK is also the `layer_origin` of
+each horizon whose origin is not recorded (the NSD exports record none
+per horizon). A note naming a sequence of materials ("loess over outwash
+gravels") is split by the profile's lithologic groups (2C, IIC) when its
+parts are as many; otherwise it stays the site's `parent_material` only.
 
 The NSD records no field reactive-aluminium (NaF) test, Childs' test,
 sensitivity, fluidity, packing or Ksat, which the NZSC key reads; the
