@@ -199,20 +199,25 @@
 # or more, at least weakly cemented (ferric_nodules_pct). Mottles
 # (redoximorphic_features_pct, mottle_colors) and concretions are recorded
 # when met: not recorded reads as none (but a mottle colour recorded with no
-# abundance leaves the abundance unknown). soilKey records no mottle size:
-# route 1 is at most undecided.
+# abundance leaves the abundance unknown). Large mottles: mottle_size_class
+# coarse (FAO 2006: over 20 mm; Hugo's decision, 2026-10-30); another class
+# recorded is not large; no size recorded leaves route 1 undecided. With
+# several mottle colours of which only some are red, the share of the red
+# ones is not known: undecided.
 .hscs_pm_iron_rows <- function(x) {
   h <- x$h; n <- x$n
   mot <- h$redoximorphic_features_pct %||% rep(NA_real_, n)
+  sz <- .hscs_txt(h$mottle_size_class %||% rep(NA_character_, n), n)
+  big <- ifelse(is.na(sz), NA, grepl("coarse", sz) & !grepl("fine|medium", sz))
   c1 <- rep(FALSE, n)
   for (i in seq_len(n)) {
     sp <- .hscs_pm_spot_colours(x, i)
     if (!is.na(mot[i]) && mot[i] < 15) next
     if (is.na(mot[i]) && !length(sp$hue)) next
-    if (!length(sp$hue)) { c1[i] <- NA; next }
+    abund <- if (is.na(mot[i])) NA else TRUE
     q <- ifelse(is.na(sp$hue) | is.na(sp$chroma), NA, sp$hue < 17.5 - 1e-6 & sp$chroma > 5)
-    # the size of the mottles is not recorded
-    c1[i] <- if (all(q %in% FALSE)) FALSE else NA
+    red <- if (!length(q)) NA else if (all(q %in% FALSE)) FALSE else if (all(q %in% TRUE)) TRUE else NA
+    c1[i] <- .and3(c(abund, red, big[i]))
   }
   nod <- h$ferric_nodules_pct %||% rep(NA_real_, n)
   c2 <- !is.na(nod) & nod >= 5
@@ -223,7 +228,7 @@
 # within 100 cm of the soil surface.
 .hscs_p_vaskivalasos <- function(x) {
   .hscs_pm_layer(x, .hscs_pm_iron_rows(x), 100, 15,
-                 c("ferric_nodules_pct", "redoximorphic_features_pct", "mottle_colors"))
+                 c("ferric_nodules_pct", "redoximorphic_features_pct", "mottle_colors", "mottle_size_class"))
 }
 
 # duzzado (variety, p. 34): a swelling horizon (8.2: 25 cm or more thick) within
@@ -314,10 +319,12 @@
 # window, from the mineral soil surface to 100 cm or to shallower hard rock,
 # by the thickness of the rows with the pattern; the pattern is recorded
 # when met, so a part of the window the description does not cover has none.
-# Reductive conditions as for the Reti talajok (Hugo's decision): a positive
-# dipyridyl test, iron sulfides, an l or r suffix, or methane; negative
-# tests over the whole window are none; otherwise undecided. The modifier
-# reads the top of the uppermost row with the pattern.
+# Reductive conditions as for the Reti talajok (Hugo's decision of
+# 2026-10-29): a positive dipyridyl test, iron sulfides, an l or r suffix, or
+# methane; and, for pangovizes only, a g suffix (FAO 2006 stagnic conditions;
+# Hugo's decision, 2026-10-30). Negative tests over the whole window are
+# none; otherwise undecided. The modifier reads the top of the uppermost row
+# with the pattern.
 .hscs_p_pangovizes <- function(x) {
   if (is.na(x$ms)) return(.hscs_prop(NA, missing = "top_cm"))
   h <- x$h
@@ -331,6 +338,7 @@
   lo <- sum(ov[stag[r] %in% TRUE]) / span; hi <- sum(ov[!(stag[r] %in% FALSE)]) / span
   share <- if (lo >= 0.25 - 1e-9) TRUE else if (hi < 0.25 - 1e-9) FALSE else NA
   red <- .hscs_reductive_rows(x)
+  red[x$des$g & !x$rock] <- TRUE
   rr <- r[!x$rock[r]]
   meth <- .hscs_truthy(.hscs_site1(x, "methane_odour"))
   c1 <- if (isTRUE(meth) || any(red[rr] %in% TRUE)) TRUE
@@ -345,28 +353,72 @@
 
 # ---- colours ------------------------------------------------------------------
 
+# Eluvial rows (Hugo's decision, 2026-10-30, for fako): an E horizon (an E
+# master, or a transition led by E: EB, E/B), or the subsurface horizon
+# directly above a clay accumulation horizon (a run of its rows 10 cm or
+# more thick from the row below) or a solonetz horizon, with less clay than
+# that horizon's top row (clay measured, else the range of the texture
+# class). A row with no designation may be an E.
+.hscs_pm_eluvial_rows <- function(x) {
+  h <- x$h; n <- x$n
+  dsg <- as.character(h$designation %||% rep(NA_character_, n))
+  e_role <- x$role %in% c("E", "EB", "E/B") | (x$role %in% "other" & grepl("^[0-9]*E", dsg))
+  ca <- .hscs_clay_accum_rows(x)
+  sn <- .hscs_solonetz_rows(x)
+  bel <- .hscs_below(x)
+  cr <- .hscs_clay_range(x)
+  # the clay accumulation rows from row i down: a sure run 10 cm or more
+  # thick, or one that may be
+  ca_from <- function(i) {
+    if (ca[i] %in% FALSE) return(FALSE)
+    s_th <- 0; p_th <- 0; sure <- TRUE; k <- i
+    while (!is.na(k) && !(ca[k] %in% FALSE)) {
+      th <- x$thick[k]
+      if (sure && ca[k] %in% TRUE) s_th <- s_th + (if (is.na(th)) 0 else th) else sure <- FALSE
+      p_th <- p_th + (if (is.na(th)) Inf else th)
+      k <- bel[k]
+    }
+    if (is.na(k) && !x$ends_on_rock) p_th <- Inf
+    if (s_th >= 10 - 1e-9) TRUE else if (p_th >= 10 - 1e-9) NA else FALSE
+  }
+  above <- rep(FALSE, n)
+  for (j in seq_len(n)) {
+    i <- bel[j]
+    if (is.na(i)) next
+    hz <- .any3(c(if (ca[j] %in% TRUE) FALSE else ca_from(i), if (sn[j] %in% TRUE) FALSE else sn[i]))
+    less <- if (!is.na(cr$hi[j]) && !is.na(cr$lo[i]) && cr$hi[j] < cr$lo[i]) TRUE
+            else if (!is.na(cr$lo[j]) && !is.na(cr$hi[i]) && cr$lo[j] >= cr$hi[i]) FALSE else NA
+    above[j] <- .and3(c(hz, less))
+  }
+  out <- ifelse(e_role, TRUE, ifelse(is.na(x$role), .any3v(NA, above), above))
+  .and3v(.and3v(out, x$mineral3), x$sub3)
+}
+
 # fako (p. 29): a subsurface horizon 5 cm or more thick with a dry colour of
 # value 7 or 8 and chroma 3 or less, or value 5 or 6 and chroma 3 or less
-# (dry value 5 to 8, chroma 3 or less). The text gives no depth: the horizons
-# the description records are read, not the soil below it.
+# (dry value 5 to 8, chroma 3 or less); the horizon an eluvial one (Hugo's
+# decision, 2026-10-30; .hscs_pm_eluvial_rows). The text gives no depth: the
+# horizons the description records are read, not the soil below it.
 .hscs_p_fako <- function(x) {
   h <- x$h
   dv <- h$munsell_value_dry; dc <- h$munsell_chroma_dry
   col <- ifelse(is.na(dv) | is.na(dc), ifelse(!is.na(dc) & dc > 3 | !is.na(dv) & (dv < 5 | dv > 8), FALSE, NA),
                 dv >= 5 & dv <= 8 & dc <= 3)
-  ok <- .and3v(.and3v(col, x$mineral3), x$sub3)
-  .hscs_pm_layer(x, ok, Inf, 5, c("munsell_value_dry", "munsell_chroma_dry"), below_open = FALSE)
+  ok <- .and3v(col, .hscs_pm_eluvial_rows(x))
+  .hscs_pm_layer(x, ok, Inf, 5, c("munsell_value_dry", "munsell_chroma_dry", "designation", "clay_pct"),
+                 below_open = FALSE)
 }
 
 # rozsdabarna (p. 31): within 100 cm of the soil surface a layer 30 cm or more
 # thick with a moist hue of 10YR or redder "and/or" a moist chroma of 5 or
-# more: read as written, either one (or both). Mineral soil material.
+# more: read as both (Hugo's decision, 2026-10-30; a rust-brown colour).
+# Mineral soil material.
 .hscs_p_rozsdabarna <- function(x) {
   h <- x$h
   hn <- .hscs_pm_hue(h$munsell_hue_moist); ch <- h$munsell_chroma_moist
   hue_ok <- ifelse(is.na(hn), NA, hn <= 20 + 1e-6)
   ch_ok <- ifelse(is.na(ch), NA, ch >= 5)
-  ok <- .and3v(.any3v(hue_ok, ch_ok), x$mineral3)
+  ok <- .and3v(.and3v(hue_ok, ch_ok), x$mineral3)
   .hscs_pm_layer(x, ok, 100, 30, c("munsell_hue_moist", "munsell_chroma_moist"))
 }
 

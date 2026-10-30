@@ -111,8 +111,24 @@ test_that("vaskivalasos: concretions or large red mottles in a subsurface horizo
   # 4 % concretions, or none recorded, fail
   expect_false(.hm_p("vaskivalasos", .hm_mod("deposit", list(ferric_nodules_pct = c(0, 4, 0))))$passed)
   expect_false(.hm_p("vaskivalasos", make_hscs2024_example("deposit"))$passed)
-  # red mottles of 20 %: their size is not recorded
+  # red mottles of 20 %: large (coarse, over 20 mm) pass, medium fail, no
+  # size recorded is undecided
   q <- .hm_mod("deposit", list(redoximorphic_features_pct = c(0, 20, 0), mottle_colors = c(NA, "5YR 5/8", NA)))
+  expect_true(is.na(.hm_p("vaskivalasos", q)$passed))
+  expect_true("mottle_size_class" %in% .hm_p("vaskivalasos", q)$missing)
+  q <- .hm_mod("deposit", list(redoximorphic_features_pct = c(0, 20, 0), mottle_colors = c(NA, "5YR 5/8", NA),
+                               mottle_size_class = c(NA, "coarse", NA)))
+  r <- .hm_p("vaskivalasos", q)
+  expect_true(r$passed); expect_equal(r$top, 20)
+  q <- .hm_mod("deposit", list(redoximorphic_features_pct = c(0, 20, 0), mottle_colors = c(NA, "5YR 5/8", NA),
+                               mottle_size_class = c(NA, "medium", NA)))
+  expect_false(.hm_p("vaskivalasos", q)$passed)
+  # coarse mottles of 10 %, or coarse mottles of which only some are red
+  q <- .hm_mod("deposit", list(redoximorphic_features_pct = c(0, 10, 0), mottle_colors = c(NA, "5YR 5/8", NA),
+                               mottle_size_class = c(NA, "coarse", NA)))
+  expect_false(.hm_p("vaskivalasos", q)$passed)
+  q <- .hm_mod("deposit", list(redoximorphic_features_pct = c(0, 20, 0), mottle_colors = c(NA, "5YR 5/8; 10YR 6/2", NA),
+                               mottle_size_class = c(NA, "coarse", NA)))
   expect_true(is.na(.hm_p("vaskivalasos", q)$passed))
   # grey or 7.5YR mottles are not iron mottles
   q <- .hm_mod("deposit", list(redoximorphic_features_pct = c(0, 20, 0), mottle_colors = c(NA, "10YR 6/2; 7.5YR 5/8", NA)))
@@ -209,9 +225,17 @@ test_that("pangovizes: reductive conditions and the stagnic pattern in 25 % of t
                                                redoximorphic_features_pct = c(0, 10, 0, 0)))$passed)
   # no mottles recorded: no pattern
   expect_false(.hm_p("pangovizes", make_hscs2024_example("clay_illuvial"))$passed)
+  # a g suffix shows the reductive conditions of pangovizes (Hugo, 2026-10-30),
+  # not those of glejes
+  q <- .hm_stagnic(childs_test = NA_character_, designation = c("A", "Eg", "Btg", "C"))
+  r <- .hm_p("pangovizes", q)
+  expect_true(r$passed); expect_equal(r$top, 20)
+  expect_true(is.na(.hm_p("glejes", q)$passed))
+  q <- .hm_mod("clay_illuvial", list(designation = c("A", "E", "Btg", "C")))
+  expect_true(.hm_p("pangovizes", q)$passed)
 })
 
-test_that("fako: a pale subsurface horizon (dry colour), 5 cm or more", {
+test_that("fako: a pale eluvial horizon (dry colour), 5 cm or more", {
   skip_on_cran()
   dry <- list(munsell_value_dry = c(4, 7, 4, 4, 4), munsell_chroma_dry = c(2, 2, 3, 3, 3))
   p <- .hm_mod("solonetz", dry)
@@ -225,9 +249,24 @@ test_that("fako: a pale subsurface horizon (dry colour), 5 cm or more", {
   # the surface horizon does not count; no dry colours: undecided
   expect_false(.hm_p("fako", .hm_mod("solonetz", list(munsell_value_dry = c(7, 4, 4, 4, 4), munsell_chroma_dry = 2)))$passed)
   expect_true(is.na(.hm_p("fako", make_hscs2024_example("solonetz"))$passed))
-  # a Szoloncsak talaj with a pale C
-  q <- .hm_mod("solonchak", list(munsell_value_dry = c(4, 7, 4), munsell_chroma_dry = c(2, 2, 2)))
+  # only an eluvial horizon (Hugo, 2026-10-30): a pale Btn or a pale C is not
+  expect_false(.hm_p("fako", .hm_mod("solonetz", list(munsell_value_dry = c(4, 4, 7, 4, 4), munsell_chroma_dry = 2)))$passed)
+  dry4 <- list(munsell_value_dry = c(4, 4, 4, 7), munsell_chroma_dry = c(2, 2, 4, 2))
+  expect_false(.hm_p("fako", .hm_mod("clay_illuvial", dry4))$passed)
+  # a BE directly above the Bt, with less clay than it, is eluvial
+  q <- .hm_mod("clay_illuvial", list(designation = c("A", "BE", "Bt", "C"), munsell_value_dry = c(4, 7, 4, 5),
+                                     munsell_chroma_dry = c(2, 2, 4, 4)))
+  r <- .hm_p("fako", q)
+  expect_true(r$passed); expect_equal(r$top, 20)
+  # a pale row with no designation may be an E
+  q <- .hm_mod("clay_illuvial", utils::modifyList(dry4, list(designation = c("A", "E", "Bt", NA))))
+  expect_true(is.na(.hm_p("fako", q)$passed))
+  # a Szoloncsak talaj with a pale E
+  q <- .hm_mod("solonchak", list(designation = c("Az", "E", "Czl"), munsell_value_dry = c(4, 7, 4),
+                                 munsell_chroma_dry = c(2, 2, 2)))
   expect_identical(.hm_name(q), "Sek\u00e9lyen glejes, sek\u00e9lyen fak\u00f3 Szoloncs\u00e1k talaj")
+  q <- .hm_mod("solonchak", list(munsell_value_dry = c(4, 7, 4), munsell_chroma_dry = c(2, 2, 2)))
+  expect_identical(.hm_name(q), "Sek\u00e9lyen glejes Szoloncs\u00e1k talaj")
 })
 
 test_that("kerges: the columnar horizon begins within 10 cm (Szolonyec talajok)", {
@@ -243,16 +282,25 @@ test_that("kerges: the columnar horizon begins within 10 cm (Szolonyec talajok)"
   expect_true(is.na(.hm_p("kerges", q)$passed))
 })
 
-test_that("rozsdabarna: 30 cm of hue 10YR or redder, or chroma 5 or more, within 100 cm", {
+test_that("rozsdabarna: 30 cm of hue 10YR or redder and chroma 5 or more, within 100 cm", {
   skip_on_cran()
-  p <- make_hscs2024_example("sandy")
+  # "es/vagy" read as both (Hugo, 2026-10-30)
+  p <- .hm_mod("sandy", list(munsell_chroma_moist = c(2, 5, 5)))
   r <- .hm_p("rozsdabarna", p)
-  expect_true(r$passed); expect_equal(r$top, 0)
-  expect_identical(.hm_name(p), "Felsz\u00ednt\u0151l rozsdabarna Homoktalaj")
-  expect_false(.hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = "2.5Y")))$passed)
-  r <- .hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = "2.5Y", munsell_chroma_moist = c(2, 5, 5))))
   expect_true(r$passed); expect_equal(r$top, 25)
-  expect_true(is.na(.hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = NA_character_)))$passed))
+  expect_identical(.hm_name(p), "Sek\u00e9lyen rozsdabarna Homoktalaj")
+  expect_true(.hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = "7.5YR", munsell_chroma_moist = 6)))$passed)
+  # a 10YR hue with a low chroma, or a high chroma with a 2.5Y hue, is not
+  expect_false(.hm_p("rozsdabarna", make_hscs2024_example("sandy"))$passed)
+  expect_identical(.hm_name(make_hscs2024_example("sandy")), "Homoktalaj")
+  expect_false(.hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = "2.5Y", munsell_chroma_moist = c(2, 5, 5))))$passed)
+  # a 30 cm layer is needed: 25 cm is not enough
+  expect_false(.hm_p("rozsdabarna", .hm_mod("sandy", list(top_cm = c(0, 25, 50), bottom_cm = c(25, 50, 130),
+                                                          munsell_chroma_moist = c(2, 5, 3))))$passed)
+  # no hue recorded with chroma 5: undecided; with chroma 3: no
+  expect_true(is.na(.hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = NA_character_,
+                                                               munsell_chroma_moist = c(2, 5, 5))))$passed))
+  expect_false(.hm_p("rozsdabarna", .hm_mod("sandy", list(munsell_hue_moist = NA_character_, munsell_chroma_moist = 3)))$passed)
 })
 
 test_that("voros: 15 cm redder than 7.5YR, or 7.5YR with moist chroma above 4, within 150 cm", {
@@ -375,7 +423,7 @@ test_that("futo: a drifting sand surface (Homoktalajok)", {
   skip_on_cran()
   p <- .hm_mod("sandy", site = list(wind_deflation = TRUE))
   expect_true(.hm_p("futo", p)$passed)
-  expect_identical(.hm_name(p), "Felsz\u00ednt\u0151l rozsdabarna, fut\u00f3 Homoktalaj")
+  expect_identical(.hm_name(p), "Fut\u00f3 Homoktalaj")
   expect_false(.hm_p("futo", .hm_mod("sandy", site = list(wind_deflation = FALSE)))$passed)
   expect_true(is.na(.hm_p("futo", make_hscs2024_example("sandy"))$passed))
   expect_true(.hm_p("futo", .hm_mod("sandy", site = list(surface_condition = "bare; wind deflation")))$passed)
