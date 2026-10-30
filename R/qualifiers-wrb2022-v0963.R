@@ -833,9 +833,8 @@ qual_anthromollic <- function(pedon) {
 # v0.9.321: `unknown` (row indices) names the horizons whose material is
 # undecided when it is not read from `col` alone (Endocalcaric reads the HCl
 # reaction too); `surface` is the depth the 50 and 100 cm are counted from
-# (the mineral soil surface for Endocalcaric; 0 keeps the earlier reading). A
-# deep layer that only undecided horizons could make up is undecided (NA), not
-# absent.
+# (the mineral soil surface for Endocalcaric and Endodolomitic). A deep layer
+# that only undecided horizons could make up is undecided (NA), not absent.
 .q_endo_material <- function(pedon, name, mat, col = "caco3_pct",
                              exclude = list(), unknown = NULL, surface = 0,
                              reference = paste0("WRB (2022) Ch 5, ", name)) {
@@ -929,7 +928,16 @@ qual_endodolomitic <- function(pedon) {
   # subqualifier if a limiting layer starts < 60 cm)"; Endo-: "the layer
   # starts >= 50 cm ...; and no such layer occurs < 50 cm". The old code
   # passed on any dolomitic horizon overlapping 50-200 cm.
-  .q_endo_material(pedon, "Endodolomitic", dolomitic_material(pedon))
+  # v0.9.321: the 50 and 100 cm, and the limiting layer, are counted from the
+  # mineral soil surface, as Dolomitic says (Ch 5, p. 131); from 0 cm before.
+  ms <- .q_mineral_surface_cm(pedon$horizons)
+  ref <- "WRB (2022) Ch 5, Dolomitic (p. 131) with the Endo- specifier (Ch 2.3.1, p. 27)"
+  if (is.na(ms))
+    return(DiagnosticResult$new(name = "Endodolomitic", passed = NA,
+                                layers = integer(0), evidence = list(),
+                                missing = "top_cm", reference = ref))
+  .q_endo_material(pedon, "Endodolomitic", dolomitic_material(pedon),
+                   surface = ms, reference = ref)
 }
 
 

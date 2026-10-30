@@ -274,3 +274,24 @@ test_that("v0.9.321 Clayic: sandy clay is sand > 45%; the limiting-layer alterna
   # no texture recorded: undecided (was FALSE)
   expect_true(is.na(qual_clayic(tx(c(NA, NA), c(NA, NA)))$passed))
 })
+
+
+# ---- Endodolomitic from the mineral soil surface (Ch 5, p. 131) ------------------
+
+test_that("v0.9.321 Endodolomitic: depths from the mineral soil surface", {
+  skip_on_cran()
+  mk <- function(top, bottom, desg, oc)
+    .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, oc_pct = oc,
+            caco3_pct = c(NA, 0, 0, 8)[seq_along(top)], clay_pct = 20, silt_pct = 40,
+            sand_pct = 40)
+  # dolomitic C from 60 cm: Endo- without organic layers on top
+  plain <- mk(c(0, 30, 60), c(30, 60, 110), c("A", "Bw", "Ckdo"), oc = 1)
+  plain$horizons$caco3_pct <- c(0, 0, 8)
+  expect_true(isTRUE(qual_endodolomitic(plain)$passed))
+  # 20 cm of organic material on top: 60-110 cm starts 40 cm below the mineral
+  # soil surface, so not Endo- (was TRUE, counted from 0 cm)
+  org <- mk(c(0, 20, 40, 60), c(20, 40, 60, 110), c("Oa", "A", "Bw", "Ckdo"),
+            oc = c(30, 1, 1, 1))
+  expect_false(qual_endodolomitic(org)$passed)
+})
+
