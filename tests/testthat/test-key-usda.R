@@ -36,7 +36,7 @@ test_that("classify_usda assigns Mollisols to mollic + high-BS fixture (Chernoze
 test_that("classify_usda assigns Aridisols to a salic / saline fixture (Solonchak)", {
   # WRB Solonchak (salic horizon + dry surface) ~ USDA Aridisol via the
   # aridic + salic / calcic path.
-  # v0.9.324: the key needs the aridic regime itself (KST 13 p 69, item
+  # v0.9.315: the key needs the aridic regime itself (KST 13 p 69, item
   # G.1.a), which the fixture does not record, so the test records it;
   # without it the Aridisols are undecided and the key goes on.
   pr <- make_solonchak_canonical()

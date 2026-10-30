@@ -1,5 +1,5 @@
 # =============================================================================
-# v0.9.321 -- WRB 2022 Ch 2.1 and 2.3.1: texture qualifiers of one slash group
+# v0.9.315 -- WRB 2022 Ch 2.1 and 2.3.1: texture qualifiers of one slash group
 # at different depths.
 #
 # Ch 2.1 (p. 24-25): "Qualifiers that are mutually exclusive may apply to the

@@ -14,10 +14,10 @@ test_that(".compute_depth_specifier maps a feature's bands to the right prefix",
   skip_on_cran()
   cds <- soilKey:::.compute_depth_specifier
   expect_equal(cds(.spc_pedon(0,   40),  1L), "Epi")
-  # v0.9.321: depths from the mineral soil surface, the top of the first
+  # v0.9.315: depths from the mineral soil surface, the top of the first
   # layer, so these pedons start at 0 cm and the feature is given by its rows
   expect_equal(cds(.spc_pedon(c(0, 60), c(60, 95)), 2L), "Endo")
-  # v0.9.321: WRB 2022 Ch 2.3.1 rule 2 (p. 27). A layer starting >= 50 cm is
+  # v0.9.315: WRB 2022 Ch 2.3.1 rule 2 (p. 27). A layer starting >= 50 cm is
   # Endo- at any depth (the text's Endospodic starts >= 50 and <= 200 cm); it
   # was "Bathy", which rule 6 keeps for criteria met only below 100 cm.
   expect_equal(cds(.spc_pedon(c(0, 120), c(120, 160)), 2L), "Endo")
@@ -41,7 +41,7 @@ test_that(".compute_depth_specifier maps a feature's bands to the right prefix",
 test_that(".apply_depth_specifiers renames only depth-specifiable qualifiers", {
   skip_on_cran()
   apply_sp <- soilKey:::.apply_depth_specifiers
-  # v0.9.321: described to 100 cm (Ch 2.3.1, p. 26: depth subqualifiers "are
+  # v0.9.315: described to 100 cm (Ch 2.3.1, p. 26: depth subqualifiers "are
   # only used if the relevant soil characteristics are reported until
   # >= 100 cm"); this pedon stopped at 95 cm before.
   pr <- .spc_pedon(c(0, 30, 60), c(30, 60, 100))

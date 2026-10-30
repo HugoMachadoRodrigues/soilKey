@@ -1,12 +1,12 @@
 # =============================================================================
-# v0.9.321 -- criterion 6 of the WRB 2022 mollic and umbric horizons, the
+# v0.9.315 -- criterion 6 of the WRB 2022 mollic and umbric horizons, the
 # thickness, with item a.
 #
 # Mollic horizon (3.1.20, p. 53): "6. a thickness of one of the following:
 # a. >= 10 cm if directly overlying continuous rock, technic hard material or
 # a cryic, petrocalcic, petroduric, petrogypsic or petroplinthic horizon; or
 # b. >= 20 cm." Umbric horizon (3.1.39, p. 70): the same, with "a cryic,
-# petroduric or petroplinthic horizon". Until v0.9.321 only item b was read,
+# petroduric or petroplinthic horizon". Until v0.9.314 only item b was read,
 # so a mollic or umbric horizon of 10 to < 20 cm on rock was not one.
 # =============================================================================
 

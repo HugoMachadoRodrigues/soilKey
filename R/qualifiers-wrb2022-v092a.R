@@ -137,13 +137,13 @@ qual_hyposodic <- function(pedon) {
 #' horizon with a calcium carbonate equivalent of >= 50% and starting <= 100 cm
 #' from the mineral soil surface".
 #'
-#' v0.9.321: the CaCO3 equivalent in every layer of the calcic horizon, as WRB
+#' v0.9.315: the CaCO3 equivalent in every layer of the calcic horizon, as WRB
 #' 2022 Ch 2.1 (p. 23) reads the criteria of a horizon of several subhorizons
 #' ("must be fulfilled in every subhorizon separately (averages are not
 #' calculated), unless stated otherwise"); the calcic horizon is a run of
 #' adjoining calcic layers (calcic()) starting <= 100 cm from the mineral soil
 #' surface. An undecided calcic horizon leaves it undecided unless no layer
-#' within reach has, or may have, >= 50%. Before v0.9.321 one calcic layer of
+#' within reach has, or may have, >= 50%. Before v0.9.315 one calcic layer of
 #' >= 50% was enough, the 100 cm were counted from 0 cm, and an undecided
 #' calcic horizon gave FALSE.
 #' @param pedon A \code{\link{PedonRecord}}.

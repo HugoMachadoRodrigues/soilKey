@@ -1,4 +1,4 @@
-# v0.9.323: two WRB 2022 Ch 4 gates read as the key words them: path 2 of
+# v0.9.315: two WRB 2022 Ch 4 gates read as the key words them: path 2 of
 # the Gleysols (p. 103), a mollic or umbric horizon over a gleyic layer, and
 # the Retisols (p. 118), an argic horizon starting <= 100 cm from the mineral
 # soil surface with retic properties at its upper boundary. Made-up profiles.

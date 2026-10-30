@@ -769,7 +769,7 @@ qual_xanthic <- function(pedon) {
 #' surface". The v0.9 wrapper used arenic_texture(), the Arenosol test (coarse
 #' texture throughout the upper 100 cm), which misses a 30 cm sandy layer over
 #' finer material.
-#' v0.9.321: read as Loamic and Siltic are (.q_texture_qualifier(), p. 128):
+#' v0.9.315: read as Loamic and Siltic are (.q_texture_qualifier(), p. 128):
 #' the classes S and LS of the triangle (Annex 1, Table 8.39, p. 182), the
 #' depths counted from the mineral soil surface (from 0 cm before), and the
 #' limiting layer counted from it too.
@@ -783,7 +783,7 @@ qual_arenic <- function(pedon)
 #' A texture class of \strong{clay, sandy clay or silty clay} in one or more
 #' layers with a combined thickness of >= 30 cm within 100 cm of the mineral
 #' soil surface (v0.9.130: not the v0.9 proxy of clay >= 60\%).
-#' v0.9.321: read as Loamic and Siltic are (.q_texture_qualifier(), p. 130):
+#' v0.9.315: read as Loamic and Siltic are (.q_texture_qualifier(), p. 130):
 #' the classes C, SC and SIC of Annex 1, Table 8.39 (p. 182), so sandy clay is
 #' clay >= 35\% with sand > 45\% (>= 45\% before); the depths counted from
 #' the mineral soil surface (from 0 cm before); the second alternative of the
@@ -1100,7 +1100,7 @@ qual_haplic <- function(pedon) {
 #' (\code{"Arenic/Clayic/Loamic/Siltic"}) that apply at different depths are
 #' all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 #' to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
-#' v0.9.321); a qualifier made redundant by another is
+#' v0.9.315); a qualifier made redundant by another is
 #' left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
 #' where the RSG lists it and no other principal qualifier does.
 #'
@@ -1147,7 +1147,7 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   # ("Rhodic/Xanthic"): mutually exclusive, or the later ones redundant, so
   # only the first that applies is used (WRB 2022 Ch 2.2). Every alternative
   # is still evaluated, so the trace shows each one's result.
-  # v0.9.321: with specifiers, the texture qualifiers of one group that apply
+  # v0.9.315: with specifiers, the texture qualifiers of one group that apply
   # at different depths are all used, each with its specifier (Ch 2.1,
   # p. 24-25: "they can be used both, each one with the respective specifier
   # ... If no specifier is used, only the first applicable qualifier can be

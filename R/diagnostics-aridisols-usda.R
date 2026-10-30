@@ -28,7 +28,7 @@
 #' three-valued (TRUE / FALSE / NA):
 #' \itemize{
 #'   \item G.1: (a) an aridic soil moisture regime, read only from
-#'     \code{site$soil_moisture_regime} (v0.9.324); and (b) an ochric or
+#'     \code{site$soil_moisture_regime} (v0.9.315); and (b) an ochric or
 #'     anthropic epipedon; and either (c) within 100 cm a cambic horizon
 #'     reaching 25 cm or more, a cryic regime and a cambic horizon, a
 #'     calcic, gypsic, petrocalcic, petrogypsic or salic horizon or a
@@ -58,7 +58,7 @@ aridisol_qualifying_usda <- function(pedon) {
   # G.1.b (p 69): "An ochric or anthropic epipedon".
   epi <- .aridisol_epipedon_usda(pedon)
   # G.1.c (p 69): "One or more of the following within 100 cm of the soil
-  # surface". Up to v0.9.323 soilKey searched to 200 cm and also accepted
+  # surface". Up to v0.9.314 soilKey searched to 200 cm and also accepted
   # a kandic, a sulfuric and the WRB duric horizon, which item G does not
   # list, and any cambic horizon, without the 25 cm of the text.
   item_c <- .aridisol_item_c_usda(pedon)

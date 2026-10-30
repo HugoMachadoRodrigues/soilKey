@@ -16,7 +16,7 @@
 # Used in v0.9.216 to find the ten qualifiers that do not exist in WRB 2022,
 # and to measure how far the lists are from Chapter 4.
 #
-# v0.9.321: the supplementary list of the Technosols (p. 97) is printed in two
+# v0.9.315: the supplementary list of the Technosols (p. 97) is printed in two
 # columns. Read as one, they interleaved line by line, which gave the groups
 # "Arenic/Clayic/Sulfidic", "Anthraquic/Irragric/Transportic" and
 # "Hortic/Plaggic/Pretic/Vitric" and split "Arenic/Clayic/Loamic/Siltic" in

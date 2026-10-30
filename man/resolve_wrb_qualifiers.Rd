@@ -29,7 +29,13 @@ Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
 Chapter 4, in \code{inst/rules/wrb2022/qualifiers.yaml}) and tests each
 qualifier against the pedon, following the rules for naming soils of
 Chapter 2.2: in a slash group (\code{"Rhodic/Xanthic"}) only the first
-qualifier that applies is used; a qualifier made redundant by another is
+qualifier that applies is used ("If no specifier is used, only the first
+applicable qualifier can be used", Ch 2.1, p. 24-25); with
+\code{specifiers = TRUE} the texture qualifiers of the group
+(\code{"Arenic/Clayic/Loamic/Siltic"}) that apply at different depths are
+all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
+to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
+v0.9.315); a qualifier made redundant by another is
 left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
 where the RSG lists it and no other principal qualifier does.
 }

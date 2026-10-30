@@ -1,4 +1,4 @@
-# v0.9.324: the USDA Aridisols read the aridic moisture regime only from
+# v0.9.315: the USDA Aridisols read the aridic moisture regime only from
 # site$soil_moisture_regime. KST 13 p 69 (Key to Soil Orders, item G.1.a)
 # needs "An aridic soil moisture regime"; p 48 defines it by the moisture
 # control section in normal years, a property estimated from climatic data
@@ -228,7 +228,7 @@ test_that("G.2: a salic horizon, saturated a month, dry at some time, no sulfuri
 
 # ---- kandic_horizon_usda(): a layer with no recorded lower boundary -------
 # KST 13 p 26, kandic horizon item 3: "Has a thickness of either: a. 30 cm
-# or more". Up to v0.9.323 a run of layers that included an open bottom
+# or more". Up to v0.9.314 a run of layers that included an open bottom
 # layer (bottom_cm NA) summed to NA and the test stopped with "missing value
 # where TRUE/FALSE needed"; the key engine caught it and every order that
 # reads the kandic horizon came out undecided.

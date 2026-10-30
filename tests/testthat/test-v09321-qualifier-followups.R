@@ -1,4 +1,4 @@
-# v0.9.321: WRB 2022 follow-ups read from the text: Rendzic (Ch 5, p. 145),
+# v0.9.315: WRB 2022 follow-ups read from the text: Rendzic (Ch 5, p. 145),
 # calcaric material and Endocalcaric (Ch 3.3.3, p. 86; Ch 5, p. 129), and the
 # texture qualifiers of one slash group used together with specifiers (Ch 2.1,
 # p. 24-25; Ch 2.3.1, p. 27). Small made-up pedons; no third-party data.
@@ -26,7 +26,7 @@
 
 # ---- Rendzic (Ch 5, p. 145) ---------------------------------------------------
 
-test_that("v0.9.321 Rendzic: a mollic horizon containing or directly over >= 40% CCE", {
+test_that("v0.9.315 Rendzic: a mollic horizon containing or directly over >= 40% CCE", {
   skip_on_cran()
   over <- .fu_mollic(caco3 = c(10, 12, 55))
   expect_true(isTRUE(mollic(over)$passed))
@@ -40,7 +40,7 @@ test_that("v0.9.321 Rendzic: a mollic horizon containing or directly over >= 40%
   expect_false(qual_rendzic(deep)$passed)
 })
 
-test_that("v0.9.321 Rendzic: undecided without the CCE, not when the HCl reaction is not visible", {
+test_that("v0.9.315 Rendzic: undecided without the CCE, not when the HCl reaction is not visible", {
   skip_on_cran()
   # strong effervescence: calcaric material, but how much carbonate is unknown
   r <- qual_rendzic(.fu_mollic(caco3 = c(10, 12, NA), eff = c(NA, NA, "strong")))
@@ -56,7 +56,7 @@ test_that("v0.9.321 Rendzic: undecided without the CCE, not when the HCl reactio
   expect_false(isTRUE(qual_rendzic(nom)$passed))
 })
 
-test_that("v0.9.321 Rendzic: calcareous rock read from its CCE or the rock named", {
+test_that("v0.9.315 Rendzic: calcareous rock read from its CCE or the rock named", {
   skip_on_cran()
   lime <- .fu_mollic(caco3 = c(10, 12, NA), desg3 = "R",
                      site = list(id = "made-up", parent_material = "Jurassic limestone"))
@@ -74,7 +74,7 @@ test_that("v0.9.321 Rendzic: calcareous rock read from its CCE or the rock named
 
 # ---- calcaric material and Endocalcaric (Ch 3.3.3, p. 86; Ch 5, p. 129) ---------
 
-test_that("v0.9.321 calcaric material reads the HCl reaction where CaCO3 is not measured", {
+test_that("v0.9.315 calcaric material reads the HCl reaction where CaCO3 is not measured", {
   skip_on_cran()
   mk <- function(caco3, eff)
     .fu_ped(designation = c("A", "B", "C"), top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 110),
@@ -90,7 +90,7 @@ test_that("v0.9.321 calcaric material reads the HCl reaction where CaCO3 is not 
   expect_true(isTRUE(calcaric_material(mk(c(0, 0, 3), NA))$passed))
 })
 
-test_that("v0.9.321 Endocalcaric: the HCl reaction, depths from the mineral soil surface", {
+test_that("v0.9.315 Endocalcaric: the HCl reaction, depths from the mineral soil surface", {
   skip_on_cran()
   mk <- function(caco3, eff, top = c(0, 30, 60), bottom = c(30, 60, 110),
                  desg = c("A", "B", "C"), oc = 1)
@@ -123,7 +123,7 @@ test_that("v0.9.321 Endocalcaric: the HCl reaction, depths from the mineral soil
           silt_pct = silt, sand_pct = 100 - clay - silt, oc_pct = 1)
 }
 
-test_that("v0.9.321 specifier of a layer qualifier (Ch 2.3.1 rule 2, p. 27)", {
+test_that("v0.9.315 specifier of a layer qualifier (Ch 2.3.1 rule 2, p. 27)", {
   skip_on_cran()
   sp <- function(t, b, lim = NA_real_, ms = 0)
     .wrb_layer_specifier(data.frame(top_cm = t, bottom_cm = b), seq_along(t), ms, lim)
@@ -140,7 +140,7 @@ test_that("v0.9.321 specifier of a layer qualifier (Ch 2.3.1 rule 2, p. 27)", {
   expect_identical(sp(20, 80, ms = 20), "Ano")            # from the mineral soil surface
 })
 
-test_that("v0.9.321 texture group: both qualifiers with specifiers, top to bottom (p. 26 example)", {
+test_that("v0.9.315 texture group: both qualifiers with specifiers, top to bottom (p. 26 example)", {
   skip_on_cran()
   p <- .fu_tex()                                   # silty clay loam 0-60, silty clay 60-110
   expect_true(isTRUE(qual_loamic(p)$passed))
@@ -154,7 +154,7 @@ test_that("v0.9.321 texture group: both qualifiers with specifiers, top to botto
   expect_false(any(grepl("oamic$", off)))
 })
 
-test_that("v0.9.321 texture group: only the first without a decided specifier", {
+test_that("v0.9.315 texture group: only the first without a decided specifier", {
   skip_on_cran()
   grp <- function(p) .wrb_texture_group_specified(
     p, c("Clayic", "Loamic"),
@@ -177,7 +177,7 @@ test_that("v0.9.321 texture group: only the first without a decided specifier", 
 
 # ---- Technosols lists (Ch 4, p. 97) ---------------------------------------------
 
-test_that("v0.9.321 Technosols: the lists of the text, two supplementary columns read in order", {
+test_that("v0.9.315 Technosols: the lists of the text, two supplementary columns read in order", {
   skip_on_cran()
   q <- yaml::read_yaml(system.file("rules/wrb2022/qualifiers.yaml", package = "soilKey"))
   tc <- q$rsg_qualifiers$TC
@@ -206,7 +206,7 @@ test_that("v0.9.321 Technosols: the lists of the text, two supplementary columns
           ph_h2o = if (bs >= 50) 7 else 4.8)
 }
 
-test_that("v0.9.321 mollic and umbric: >= 10 cm directly over continuous rock (6a)", {
+test_that("v0.9.315 mollic and umbric: >= 10 cm directly over continuous rock (6a)", {
   skip_on_cran()
   on_rock <- .fu_m6(c(0, 15), c(15, 40), c("Ah", "R"), oc = c(3, NA))
   m <- mollic(on_rock)
@@ -223,7 +223,7 @@ test_that("v0.9.321 mollic and umbric: >= 10 cm directly over continuous rock (6
   expect_true(isTRUE(mollic(.fu_m6(c(0, 15), c(15, 30), c("Ah1", "Ah2"), oc = c(3, 2)))$passed))
 })
 
-test_that("v0.9.321 mollic 6a: petrocalcic horizon below; undecided cemented layers", {
+test_that("v0.9.315 mollic 6a: petrocalcic horizon below; undecided cemented layers", {
   skip_on_cran()
   pk <- .fu_m6(c(0, 15), c(15, 40), c("Ah", "Bkm"), oc = c(3, 0.3),
                cem = c(NA, "strongly"), caco3 = c(NA, 30))
@@ -242,7 +242,7 @@ test_that("v0.9.321 mollic 6a: petrocalcic horizon below; undecided cemented lay
 
 # ---- Arenic and Clayic read as Loamic (Ch 5, p. 128, p. 130) ----------------------
 
-test_that("v0.9.321 Arenic and Clayic: depths from the mineral soil surface, within 100 cm", {
+test_that("v0.9.315 Arenic and Clayic: depths from the mineral soil surface, within 100 cm", {
   skip_on_cran()
   tx <- function(top, bottom, clay, silt, desg, oc = 1)
     .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, clay_pct = clay,
@@ -257,7 +257,7 @@ test_that("v0.9.321 Arenic and Clayic: depths from the mineral soil surface, wit
   expect_false(qual_clayic(deep)$passed)
 })
 
-test_that("v0.9.321 Clayic: sandy clay is sand > 45%; the limiting-layer alternative; undecided", {
+test_that("v0.9.315 Clayic: sandy clay is sand > 45%; the limiting-layer alternative; undecided", {
   skip_on_cran()
   tx <- function(clay, silt, top = c(0, 30), bottom = c(30, 70), desg = c("A", "Bt"))
     .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, clay_pct = clay,
@@ -278,7 +278,7 @@ test_that("v0.9.321 Clayic: sandy clay is sand > 45%; the limiting-layer alterna
 
 # ---- Endodolomitic from the mineral soil surface (Ch 5, p. 131) ------------------
 
-test_that("v0.9.321 Endodolomitic: depths from the mineral soil surface", {
+test_that("v0.9.315 Endodolomitic: depths from the mineral soil surface", {
   skip_on_cran()
   mk <- function(top, bottom, desg, oc)
     .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, oc_pct = oc,
@@ -298,7 +298,7 @@ test_that("v0.9.321 Endodolomitic: depths from the mineral soil surface", {
 
 # ---- Hypercalcic (Ch 5, p. 129; Ch 2.1, p. 23) ------------------------------------
 
-test_that("v0.9.321 Hypercalcic: every layer of the calcic horizon >= 50%, from the mineral soil surface", {
+test_that("v0.9.315 Hypercalcic: every layer of the calcic horizon >= 50%, from the mineral soil surface", {
   skip_on_cran()
   mk <- function(caco3, sec = c(0, 20, 20, 0), top = c(0, 30, 45, 60),
                  bottom = c(30, 45, 60, 110), desg = c("A", "Bk1", "Bk2", "C"), oc = 1)
@@ -328,7 +328,7 @@ test_that("v0.9.321 Hypercalcic: every layer of the calcic horizon >= 50%, from 
 
 # ---- depth specifiers of single qualifiers (Ch 2.3.1 rules 1 and 2, p. 27) ------
 
-test_that("v0.9.321 .compute_depth_specifier follows the rule its Chapter 5 figure names", {
+test_that("v0.9.315 .compute_depth_specifier follows the rule its Chapter 5 figure names", {
   skip_on_cran()
   ped <- function(top, bottom, desg = NULL, oc = 1) {
     hz <- data.frame(top_cm = top, bottom_cm = bottom, oc_pct = oc)
@@ -359,7 +359,7 @@ test_that("v0.9.321 .compute_depth_specifier follows the rule its Chapter 5 figu
   expect_identical(.wrb_point_specifier(30), "Epi")
 })
 
-test_that("v0.9.321 specifiers = TRUE: a single texture qualifier gets its rule-2 specifier", {
+test_that("v0.9.315 specifiers = TRUE: a single texture qualifier gets its rule-2 specifier", {
   skip_on_cran()
   p <- .fu_tex(clay = c(30, 30, 30), silt = c(55, 55, 55))   # silty clay loam 0-110
   on <- resolve_wrb_qualifiers(p, "LV", specifiers = TRUE)$supplementary

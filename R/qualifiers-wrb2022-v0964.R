@@ -827,7 +827,7 @@ qual_alcalic <- function(pedon, rsg_code = NULL) {
         layers = integer(0), evidence = list(reason = "no mineral material"),
         missing = character(0), reference = ref))
     # Limiting layer (Ch 2.1, rule 8, p. 23): .wrb_limiting_layers(). Until
-    # v0.9.321 only continuous rock and technic hard material were read here.
+    # v0.9.315 only continuous rock and technic hard material were read here.
     lim <- tryCatch(h$top_cm[.wrb_limiting_layers(pedon)],
                     error = function(e) numeric(0))
     bot <- min(c(mss + 50, lim[!is.na(lim) & lim > mss]))

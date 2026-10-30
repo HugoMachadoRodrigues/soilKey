@@ -1,4 +1,4 @@
-# v0.9.322: the limiting layer of WRB 2022 Ch 2.1, rule 8 (p. 23) reads the
+# v0.9.315: the limiting layer of WRB 2022 Ch 2.1, rule 8 (p. 23) reads the
 # "other cemented layers" (a cemented Bsm, a layer recorded as at least
 # moderately cemented), and texture_class_from_pct() follows every boundary
 # of the USDA texture triangle (WRB 2022 Annex 1, Table 8.39, p. 182; Soil
@@ -12,7 +12,7 @@
 
 # ---- the limiting layer (Ch 2.1, rule 8, p. 23) ---------------------------------
 
-test_that("v0.9.322 cemented layers: the class decides, else an m after the cementing agent", {
+test_that("v0.9.315 cemented layers: the class decides, else an m after the cementing agent", {
   skip_on_cran()
   h <- data.frame(
     designation = c("Bsm", "Bhsm", "Bkm1", "2Bqm", "Bsm/Btsm", "Bm", "Cm", "Bk/Bkm",
@@ -32,7 +32,7 @@ test_that("v0.9.322 cemented layers: the class decides, else an m after the ceme
                                                       cementation_class = NA_character_))))
 })
 
-test_that("v0.9.322 limiting layer: a cemented Bsm or a moderately cemented layer is one", {
+test_that("v0.9.315 limiting layer: a cemented Bsm or a moderately cemented layer is one", {
   skip_on_cran()
   mk <- function(des, cc = rep(NA_character_, 4))
     .k22_ped(top_cm = c(0, 20, 45, 52), bottom_cm = c(20, 45, 52, 120),
@@ -51,7 +51,7 @@ test_that("v0.9.322 limiting layer: a cemented Bsm or a moderately cemented laye
   expect_equal(.barrier_top_cm(mk(c("A", "Bsm", "Bs", "R")), other_cemented = FALSE), 52)
 })
 
-test_that("v0.9.322 Humic and Skeletic count to the cemented layer", {
+test_that("v0.9.315 Humic and Skeletic count to the cemented layer", {
   skip_on_cran()
   # Humic (Ch 5, p. 136): the depth range below a limiting layer contributes 0
   hu <- function(des) .k22_ped(top_cm = c(0, 20, 30, 50), bottom_cm = c(20, 30, 50, 100),
@@ -73,7 +73,7 @@ test_that("v0.9.322 Humic and Skeletic count to the cemented layer", {
   expect_equal(s1$evidence$window_cm, c(0, 30))
 })
 
-test_that("v0.9.322 Alcalic reads the whole limiting layer, not only rock and technic hard material", {
+test_that("v0.9.315 Alcalic reads the whole limiting layer, not only rock and technic hard material", {
   skip_on_cran()
   p <- .k22_ped(top_cm = c(0, 30, 45), bottom_cm = c(30, 45, 100),
                 designation = c("A", "Bkm", "C"), ph_h2o = c(8.8, 8.6, 8),
@@ -87,7 +87,7 @@ test_that("v0.9.322 Alcalic reads the whole limiting layer, not only rock and te
 
 # ---- texture_class_from_pct() (WRB 2022 Annex 1, Table 8.39, p. 182) ------------
 
-test_that("v0.9.322 texture triangle: the four boundaries that were wrong", {
+test_that("v0.9.315 texture triangle: the four boundaries that were wrong", {
   skip_on_cran()
   tc <- function(clay, silt, sand) texture_class_from_pct(clay, silt, sand)
   # sandy clay is > 45% sand: clay 40 with 45% sand is clay (was sandy clay)
@@ -109,7 +109,7 @@ test_that("v0.9.322 texture triangle: the four boundaries that were wrong", {
   expect_equal(tc(7, 49.9, 43.1), "L")
 })
 
-test_that("v0.9.322 texture triangle: the other boundaries stay where they were", {
+test_that("v0.9.315 texture triangle: the other boundaries stay where they were", {
   skip_on_cran()
   tc <- function(clay, silt, sand) texture_class_from_pct(clay, silt, sand)
   expect_equal(tc(c(4, 4), c(8.9, 9), c(87.1, 87)), c("S", "LS"))        # silt + 1.5 clay = 15
@@ -126,7 +126,7 @@ test_that("v0.9.322 texture triangle: the other boundaries stay where they were"
   expect_equal(tc(c(30, 30), c(25, 24.9), c(45, 45.1)), c("CL", "SCL"))   # 45% sand
 })
 
-test_that("v0.9.322 texture triangle: every point of a 1% grid as the Soil Survey Manual classes", {
+test_that("v0.9.315 texture triangle: every point of a 1% grid as the Soil Survey Manual classes", {
   skip_on_cran()
   # the definitions of Table 8.39 (Soil Science Division Staff 2017), one by one
   ssm <- function(cl, si, sa) {
@@ -153,7 +153,7 @@ test_that("v0.9.322 texture triangle: every point of a 1% grid as the Soil Surve
                    toupper(aqp::ssc_to_texcl(sand = g$sa, clay = g$cl, as.is = TRUE)))
 })
 
-test_that("v0.9.322 WRB texture classes: sandy clay without the old patch", {
+test_that("v0.9.315 WRB texture classes: sandy clay without the old patch", {
   skip_on_cran()
   h <- data.frame(clay_pct = c(36, 36, 40), silt_pct = c(NA, 14, NA), sand_pct = c(50, NA, 45))
   expect_equal(.wrb_texture_class(h), c("SC", "SC", "C"))

@@ -50,9 +50,9 @@
 #' texture_class_from_pct() ("S", "LS", "SL", "L", "SIL", "SI", "SCL", "CL",
 #' "SICL", "SC", "SIC", "C"). Silt is taken as 100 - sand - clay when it is not
 #' recorded (and sand likewise). NA where clay and one of silt and sand are not
-#' recorded. Until v0.9.321 clay 35 to < 40% with > 45% sand was set to "SC"
+#' recorded. Until v0.9.314 clay 35 to < 40% with > 45% sand was set to "SC"
 #' here, as texture_class_from_pct() read it as sandy clay loam; the function
-#' follows Table 8.39 at every boundary since v0.9.322.
+#' follows Table 8.39 at every boundary since v0.9.315.
 #' @noRd
 .wrb_texture_class <- function(h) {
   cl <- h$clay_pct; si <- h$silt_pct; sa <- h$sand_pct
@@ -62,7 +62,7 @@
 }
 
 #' A texture qualifier of WRB 2022 Ch 5 (Arenic p. 128, Clayic p. 130, Loamic
-#' p. 140, Siltic p. 146; the first two since v0.9.321): mineral
+#' p. 140, Siltic p. 146; the first two since v0.9.315): mineral
 #' material with, "single or in combination", a texture class of `classes`
 #' "in one or more layers with a combined thickness of >= 30 cm, occurring
 #' within 100 cm of the mineral soil surface, or in the major part between the
@@ -81,7 +81,7 @@
   tex <- .wrb_texture_class(h)
   st <- ifelse(is.na(tex), NA, tex %in% classes)
   # clay >= 40 % is a clay class (clay, silty clay or sandy clay) whatever the
-  # silt and sand: Clayic for v0.9.321's qual_clayic(), no other class
+  # silt and sand: Clayic for v0.9.315's qual_clayic(), no other class
   st[is.na(st) & !is.na(h$clay_pct) & h$clay_pct >= 40] <- all(c("C", "SC", "SIC") %in% classes)
   st[!.wrb_mineral_layer(h)] <- FALSE
   # v0.9.315: a limiting layer (continuous rock, technic hard material, a

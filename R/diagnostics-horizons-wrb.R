@@ -525,7 +525,7 @@ ferralic <- function(pedon,
 #' read in each layer, and the horizon is the run of such layers from the
 #' mineral soil surface. Criterion 5, the base saturation, is the weighted
 #' average over the run (by pH where it is not recorded, Annex 2 Table 9.2),
-#' and criterion 6 its thickness: >= 20 cm (6b), or since v0.9.321 >= 10 cm
+#' and criterion 6 its thickness: >= 20 cm (6b), or since v0.9.315 >= 10 cm
 #' directly over continuous rock, technic hard material or a cryic,
 #' petrocalcic, petroduric, petrogypsic or petroplinthic horizon (6a, p. 53;
 #' the umbric horizon names cryic, petroduric and petroplinthic, p. 70). A
@@ -574,7 +574,7 @@ mollic <- function(pedon,
   # material or a cryic, petrocalcic, petroduric, petrogypsic or
   # petroplinthic horizon"; b. >= 20 cm (p. 53); the layers of the run taken
   # together, undecided where layers not yet decided could make it up.
-  # v0.9.321: item a is read (.wrb_mollic_criterion6()); before, only b.
+  # v0.9.315: item a is read (.wrb_mollic_criterion6()); before, only b.
   six <- .wrb_mollic_criterion6(pedon, run, min_thickness = min_thickness)
   tests$thickness <- .subtest_result(
     passed  = six$passed,
@@ -1409,7 +1409,7 @@ umbric_horizon <- function(pedon,
   # 6. a. >= 10 cm "if directly overlying continuous rock, technic hard
   # material or a cryic, petroduric or petroplinthic horizon"; b. >= 20 cm
   # (p. 70); undecided where layers not yet decided could make it up.
-  # v0.9.321: item a is read (.wrb_mollic_criterion6()); before, only b.
+  # v0.9.315: item a is read (.wrb_mollic_criterion6()); before, only b.
   six <- .wrb_mollic_criterion6(pedon, stack, min_thickness = min_thickness,
                                 umbric = TRUE)
   tests$thickness <- .subtest_result(

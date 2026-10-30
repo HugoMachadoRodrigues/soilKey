@@ -34,10 +34,10 @@
 # definitions comprises continuous rock, technic hard material, petrocalcic,
 # petroduric, petrogypsic and petroplinthic horizons and other cemented
 # layers" that are at least moderately cemented and continuous. Until
-# v0.9.321 the other cemented layers (a cemented spodic Bsm, ortstein, a
+# v0.9.315 the other cemented layers (a cemented spodic Bsm, ortstein, a
 # cemented layer whose agent is not recorded) were left out; they are read
 # by .wrb_cemented_limiting(). .wrb_limiting_layers() gives the layers.
-# `other_cemented = FALSE` keeps the reading before v0.9.322, for the USDA
+# `other_cemented = FALSE` keeps the reading before v0.9.315, for the USDA
 # kandic horizon, which uses this as its contact and is not a WRB criterion.
 .barrier_top_cm <- function(pedon, other_cemented = TRUE) {
   layers <- .wrb_limiting_layers(pedon, other_cemented = other_cemented)
@@ -278,7 +278,7 @@
 # Chapter 5 definition names: "If a subqualifier related to depth
 # requirements can be constructed by the user, the figure indicates, which
 # rule applies ... If no figure is indicated, these subqualifiers cannot be
-# constructed" (Ch 5, general rule 2, p. 127). v0.9.321: rule 1 for Abruptic
+# constructed" (Ch 5, general rule 2, p. 127). v0.9.315: rule 1 for Abruptic
 # (p. 127) and Leptic ("1: Epi- and Endo- only", p. 139); rule 2 for the
 # others. Cambic (p. 129) and Retic (p. 145) have no figure and left the list;
 # Clayic, Loamic and Siltic, rule 2 like Arenic, joined it. Epipedons and
@@ -329,7 +329,7 @@
 # the others (rule 2, Epi-); the qualifiers marked "no subqualifier if a
 # limiting layer starts < 60 cm" get none then. "" when no specifier applies
 # or the text leaves the choice open. Without `qname`, a layer qualifier
-# counted from the mineral soil surface. Until v0.9.321 the bands were 0-50,
+# counted from the mineral soil surface. Until v0.9.314 the bands were 0-50,
 # 50-100 and > 100 cm from 0 cm, with no Ano-, Amphi- for two bands with a gap
 # between (rule 2: Poly-), Kato- for 50-100 cm plus deeper (rule 2: Endo-, as
 # the layer starts >= 50 cm) and Bathy- for a feature below 100 cm.
@@ -353,7 +353,7 @@
 
 # Attach depth specifiers to a set of matched qualifier names, using a
 # name -> layers map. Only names in .WRB_DEPTH_SPECIFIABLE are touched.
-# v0.9.321: none when the soil is not described to 100 cm from the mineral
+# v0.9.315: none when the soil is not described to 100 cm from the mineral
 # soil surface or to a limiting layer, whichever is shallower (Ch 2.3.1,
 # p. 26: depth subqualifiers "are only used if the relevant soil
 # characteristics are reported until >= 100 cm ...").

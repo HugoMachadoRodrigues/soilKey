@@ -616,7 +616,7 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
 }
 
 #' Retic properties at the upper limit of an argic or natric horizon, or
-#' (\code{natric = FALSE}, v0.9.323) of an argic horizon alone, as the
+#' (\code{natric = FALSE}, v0.9.315) of an argic horizon alone, as the
 #' Retisols key reads them (Ch 4, p. 118). `arg` may carry an argic() result
 #' already computed.
 #' @noRd

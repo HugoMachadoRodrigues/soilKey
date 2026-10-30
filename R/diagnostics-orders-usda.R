@@ -280,13 +280,13 @@ vertisol_usda <- function(pedon) {
 #' Aridisols (USDA Cap 7): aridic moisture regime + ochric/anthropic +
 #' subsurface diagnostic. The aridic regime is read from
 #' \code{site$soil_moisture_regime}; when it is not recorded the order
-#' is undecided (NA) and the key goes on (v0.9.324: no aridity proxy).
+#' is undecided (NA) and the key goes on (v0.9.315: no aridity proxy).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 aridisol_usda <- function(pedon) {
   # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
   # aridic SMR + a diagnostic subsurface horizon (KST 13ed Ch 7
-  # p 137). v0.9.324: no fallback to aridity proxies when the regime
+  # p 137). v0.9.315: no fallback to aridity proxies when the regime
   # is not recorded (KST 13 p 69, item G.1.a, needs the regime itself);
   # the result is then NA, kept here instead of collapsed to FALSE.
   aq <- aridisol_qualifying_usda(pedon)

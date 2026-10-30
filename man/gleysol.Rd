@@ -36,7 +36,19 @@ groundwater, without the old decay-with-depth test) and of
 of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
 surface, and a layer whose redox reading is undecided leaves the gate
 \code{NA} when it could complete the 25 cm. Path 3 is read from the
-designation (W / saturated marker). Path 2 is not implemented.
+designation (W / saturated marker).
+}
+\details{
+Path 2 (since v0.9.315; until then it was not read) takes the horizon of
+\code{\link{mollic}} or \code{\link{umbric_horizon}}: more than 40 cm
+of its layers, reducing conditions in every layer of it that reaches
+below 40 cm from the mineral soil surface, and directly underneath it
+(top within 1 cm of its lower limit) adjoining layers, gleyic with
+reducing conditions as in path 1, at least 10 cm thick and reaching 65 cm
+or more from the mineral soil surface. Where layers below the horizon's
+sure layers are undecided, its lower limit is undecided too, and every
+lower limit it could have is tried: the path is then \code{NA} at most.
+A horizon with no layer recorded underneath it does not meet item 2.b.
 }
 \section{Tier-3 strict mode (v0.9.98)}{
 

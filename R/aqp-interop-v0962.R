@@ -67,7 +67,7 @@ texture_class_from_pct <- function(clay, silt, sand) {
     #   Sand        : silt + 1.5*clay <  15
     #   Loamy sand  : silt + 1.5*clay >= 15 AND silt + 2*clay < 30
     # The other classes as in WRB 2022 Annex 1, Table 8.39 (p. 182, after
-    # Soil Science Division Staff 2017). v0.9.322 fixed four boundaries:
+    # Soil Science Division Staff 2017). v0.9.315 fixed four boundaries:
     # sandy clay is "> 45" sand (sand 45 with clay >= 40 is clay), clay 35
     # to < 40 with > 45 sand is sandy clay (was sandy clay loam), silt 50 to
     # < 80 with clay < 12 is silt loam (was silt), and clay < 7, silt < 50,

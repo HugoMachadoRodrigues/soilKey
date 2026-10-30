@@ -586,12 +586,12 @@ qual_hyperskeletic <- function(pedon) {
 
 #' Rendzic qualifier (rz), WRB 2022 Ch 5 (p. 145).
 #'
-#' v0.9.321: "having a mollic horizon that contains or directly overlies
+#' v0.9.315: "having a mollic horizon that contains or directly overlies
 #' calcaric material containing >= 40% calcium carbonate equivalent or that
 #' directly overlies calcareous rock containing >= 40% calcium carbonate
 #' equivalent". So a mollic horizon with a layer of >= 40% CaCO3 equivalent,
 #' or whose lower limit is the upper limit of such a layer or of such rock
-#' (.wrb_rendzic_cce40()). Before v0.9.321 any layer anywhere with >= 2% CaCO3
+#' (.wrb_rendzic_cce40()). Before v0.9.315 any layer anywhere with >= 2% CaCO3
 #' (calcaric material, whatever its depth) or a carbonate word in the site's
 #' parent material made a mollic horizon Rendzic: the Phaeozems of ISRIC's
 #' KE037 (3% CaCO3) or CU016 (6.8% under the mollic horizon). Nothing described

@@ -368,7 +368,7 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 #' \code{NA} when it could complete the 25 cm. Path 3 is read from the
 #' designation (W / saturated marker).
 #'
-#' Path 2 (since v0.9.323; until then it was not read) takes the horizon of
+#' Path 2 (since v0.9.315; until then it was not read) takes the horizon of
 #' \code{\link{mollic}} or \code{\link{umbric_horizon}}: more than 40 cm
 #' of its layers, reducing conditions in every layer of it that reaches
 #' below 40 cm from the mineral soil surface, and directly underneath it
@@ -412,7 +412,7 @@ gleysol <- function(pedon, strict = NULL) {
   # Path 2 (Ch 4, p. 103): a mollic or umbric horizon "> 40 cm thick" with
   # reducing conditions "from 40 cm below the mineral soil surface to the
   # lower limit", over a gleyic and reducing layer ">= 10 cm thick" with its
-  # "lower limit >= 65 cm" (v0.9.323).
+  # "lower limit >= 65 cm" (v0.9.315).
   p2 <- .gleysol_path2(pedon, ok, z, ms)
   path2_ok <- p2$passed
   # Path 3: permanent saturation -- detect via designation 'W' or
@@ -535,7 +535,7 @@ gleysol <- function(pedon, strict = NULL) {
 #' horizon only (a natric horizon is not an argic horizon). \code{FALSE} with
 #' no argic horizon or one starting deeper than 100 cm; \code{NA} when the
 #' argic horizon or its retic properties cannot be decided and nothing
-#' fails. Until v0.9.323 the key asked for retic properties alone, at the
+#' fails. Until v0.9.314 the key asked for retic properties alone, at the
 #' upper limit of an argic or natric horizon at any depth.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.

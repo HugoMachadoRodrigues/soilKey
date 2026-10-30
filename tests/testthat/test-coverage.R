@@ -87,7 +87,7 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
   # Each is a Typic -> specific refinement that the KSSL n=2895 gate cleared
   # (0 was-correct -> now-wrong), firing on genuine multi-condition evidence.
   sg <- function(f) classify_usda(f(), on_missing = "silent")$name
-  # v0.9.324: the Calcisol fixture records no moisture regime, and the
+  # v0.9.315: the Calcisol fixture records no moisture regime, and the
   # Aridisols need the aridic regime itself (KST 13 p 69, item G.1.a), so
   # the regime is recorded here to keep testing the Aridisol subgroup.
   aridic <- function(f) function() {
@@ -108,7 +108,7 @@ test_that("the generator never changes a fixture's great group", {
     n <- classify_usda(f(), on_missing = "silent")$name
     sub(".*\\s", "", n)
   }
-  # v0.9.324: aridic regime recorded for the Calcisol fixture (KST 13 p 69,
+  # v0.9.315: aridic regime recorded for the Calcisol fixture (KST 13 p 69,
   # item G.1.a); see the test above.
   aridic_calcisol <- function() {
     p <- make_calcisol_canonical(); p$site$soil_moisture_regime <- "aridic"; p

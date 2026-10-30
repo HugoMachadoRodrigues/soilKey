@@ -830,7 +830,7 @@ qual_anthromollic <- function(pedon) {
 # 0-100 cm, starting >= 50 cm, and no such run starting above 50 cm. Horizons
 # whose `col` is missing may hide a shallower run (NA). `exclude` holds
 # diagnostics that must not start <= 100 cm (calcic, petrocalcic).
-# v0.9.321: `unknown` (row indices) names the horizons whose material is
+# v0.9.315: `unknown` (row indices) names the horizons whose material is
 # undecided when it is not read from `col` alone (Endocalcaric reads the HCl
 # reaction too); `surface` is the depth the 50 and 100 cm are counted from
 # (the mineral soil surface for Endocalcaric and Endodolomitic). A deep layer
@@ -895,11 +895,11 @@ qual_endocalcaric <- function(pedon) {
   # layer starts >= 50 cm ...; and no such layer occurs < 50 cm". The old code
   # passed on any horizon with >= 2% CaCO3 overlapping 50-200 cm, with no
   # thickness, no shallow-layer check and no calcic exclusion.
-  # v0.9.321: the layers are read as qual_calcaric() reads them (Ch 5, p. 129;
+  # v0.9.315: the layers are read as qual_calcaric() reads them (Ch 5, p. 129;
   # calcaric material, Ch 3.3.3, p. 86): CaCO3 where it is measured, otherwise
   # the HCl reaction (moderate or stronger is calcaric, none and slight are
   # not), and the depths are counted from the mineral soil surface. Before
-  # v0.9.321 only caco3_pct was read and the depths were counted from 0 cm.
+  # v0.9.315 only caco3_pct was read and the depths were counted from 0 cm.
   h <- pedon$horizons
   ref <- paste("WRB (2022) Ch 5, Calcaric (p. 129) with the Endo- specifier",
                "(Ch 2.3.1, p. 27); calcaric material, Ch 3.3.3 (p. 86)")
@@ -928,7 +928,7 @@ qual_endodolomitic <- function(pedon) {
   # subqualifier if a limiting layer starts < 60 cm)"; Endo-: "the layer
   # starts >= 50 cm ...; and no such layer occurs < 50 cm". The old code
   # passed on any dolomitic horizon overlapping 50-200 cm.
-  # v0.9.321: the 50 and 100 cm, and the limiting layer, are counted from the
+  # v0.9.315: the 50 and 100 cm, and the limiting layer, are counted from the
   # mineral soil surface, as Dolomitic says (Ch 5, p. 131); from 0 cm before.
   ms <- .q_mineral_surface_cm(pedon$horizons)
   ref <- "WRB (2022) Ch 5, Dolomitic (p. 131) with the Endo- specifier (Ch 2.3.1, p. 27)"
