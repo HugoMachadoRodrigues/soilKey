@@ -33,7 +33,10 @@
 #     G, a gley horizon, is Bg when a B horizon lies below it in the
 #     profile, otherwise Cg (the usual lowest gleyed horizon), GC likewise
 #     BCg or Cg; the old master D, the substratum, is C, its prefixes and
-#     suffixes kept (2D 2C, Dn Cn, BD BC). The NSD's own conversions
+#     suffixes kept (2D 2C, BD BC, DG Cg, Dh Ch) except its old suffixes r
+#     and n, which are not read (Hugo, 2026-10-30: the NSD's own conversions
+#     give Dr as Cu or C and Dn as Bt, 2Btb, Cm or Cu, so neither is the r
+#     or n of the current notations; Dr and Dn are C). The NSD's own conversions
 #     (designation_fao) are not touched; the provenance keeps the recorded
 #     designation and says what it was read as. A cemented sesquioxidic B
 #     written Bms is the Bfm of a placic horizon when 10 mm or less thick,
@@ -83,8 +86,13 @@
 #     Soils, and for pumice, fill and refuse), while a layer with its own
 #     recorded origin keeps it.
 #     The NSD exports have no origin field per horizon (only free-text
-#     horizon notes, which are not read), so every layer of a soil with the
-#     note takes it.
+#     horizon notes, which are not read). A note of one material goes to
+#     every layer. A note naming a sequence (X over, overlying or on Y; Y
+#     under or underlain by X; a slash is not read as a sequence) is split
+#     where its parts are as many as the profile's lithologic groups (the
+#     numbered breaks, 2C or IIC): the first part to the unnumbered layers,
+#     the next to the next group. Otherwise it stays the site's
+#     parent_material and goes to no layer (Hugo, 2026-10-30).
 #   * Depths start at the soil surface (organic horizons recorded above the
 #     mineral surface with negative depths are shifted down).
 # =============================================================================
@@ -306,12 +314,23 @@ nsd_citation <- function(accessed = NULL) {
     d[k] <- sub("G", "g", sub(a2, "\\1E\\4\\5\\3\\6", d[k]), fixed = TRUE)
     why[k] <- "the A2 is E"
     # the old master D (the substratum) is C, its prefixes and suffixes kept
-    # (as a second master too: BD is BC)
-    k <- grepl(paste0(pre, "([AB]?)D"), d)
-    d[k] <- sub(paste0(pre, "([AB]?)D"), "\\1\\3C", d[k])
-    why[k] <- "the old master D, the substratum, is C"
+    # (as a second master too: BD is BC); its r and n are dropped below
+    kd <- grepl(paste0(pre, "([AB]?)D"), d)
+    d[kd] <- sub(paste0(pre, "([AB]?)D"), "\\1\\3C", d[kd])
+    why[kd] <- "the old master D, the substratum, is C"
     d <- sub("^([0-9]*[a-z]*[ABC])([0-9]*)G([0-9]*)$", "\\1g\\2\\3", d)                   # B2G, BG
     d <- sub("^([0-9]*[a-z]*[LOAEBC]{1,2})([0-9]+)([a-z]+)$", "\\1\\3\\2", d)             # B2g -> Bg2
+    # the old D's suffixes r and n are not read (Hugo, 2026-10-30): the
+    # NSD's own conversions give Dr as Cu or C and Dn as Bt, 2Btb, Cm or Cu,
+    # so neither is the r (reduced) or n (sodium) of the current notations;
+    # g and h stay (DG Cg, Dh Ch)
+    cpat <- paste0(pre, "([AB]?C)([A-Za-z]*)(.*)$")
+    if (any(kd)) {
+      dk <- d[kd]
+      d[kd] <- paste0(sub(cpat, "\\1\\3", dk), gsub("[rnN]", "", sub(cpat, "\\4", dk)), sub(cpat, "\\5", dk))
+      why[kd] <- ifelse(d[kd] == sub(cpat, "\\1\\3\\4\\5", dk), why[kd],
+                        "the old master D, the substratum, is C; its old suffixes r and n are not read")
+    }
   }
   out[o] <- d
   # the old master G (a gley horizon; GC its transition to the C): Bg (BCg)
@@ -505,15 +524,79 @@ nsd_citation <- function(accessed = NULL) {
              stringsAsFactors = FALSE)
 }
 
-# The soil's PARENT ROCK note (`pm`, named by soil) taken down to each layer
+# The parts of a PARENT ROCK note that names a sequence of materials, top
+# first: "X over Y", "X overlying Y", "X on Y" (and "Y under X",
+# "Y underlying X", "Y underlain by X", read from the bottom). NULL for a
+# note of one material, and for a note that mixes the two directions. A
+# slash is not read as a sequence: the NSD also writes it in mixtures
+# (granite/limestone) and abbreviations (Taup/pum, G/W).
+.nsd_note_sequence <- function(note) {
+  if (is.na(note) || !nzchar(note)) return(NULL)
+  down <- "(?i)\\s+(over|overlying|overlies|on|upon)\\s+"
+  up <- "(?i)\\s+(under|underlying|underlies|underlain\\s+by)\\s+"
+  has_down <- grepl(down, note, perl = TRUE); has_up <- grepl(up, note, perl = TRUE)
+  if (has_down == has_up) return(NULL)
+  parts <- trimws(strsplit(note, if (has_down) down else up, perl = TRUE)[[1L]])
+  parts <- parts[nzchar(parts)]
+  if (length(parts) < 2L) return(NULL)
+  if (has_up) rev(parts) else parts
+}
+
+# The lithologic group of each designation (the numeral prefix, Arabic or
+# Roman; none is 1).
+.nsd_litho_number <- function(d) {
+  d <- trimws(as.character(d))
+  out <- rep(1L, length(d))
+  k <- !is.na(d) & grepl("^[0-9]+", d)
+  out[k] <- as.integer(sub("^([0-9]+).*", "\\1", d[k]))
+  r <- !is.na(d) & !k & grepl("^[IVX]+[A-Z]", d)
+  out[r] <- vapply(sub("^([IVX]+)[A-Z].*", "\\1", d[r]),
+                   function(x) as.integer(utils::as.roman(x)), integer(1))
+  out[is.na(d)] <- NA_integer_
+  out
+}
+
+# The soil's PARENT ROCK note (`pm`, named by soil) taken down to the layers
 # whose origin (`own`) is not recorded; a layer with its own recorded origin
-# keeps it. `filled`: the layers that took the note.
-.nsd_layer_origin <- function(own, soil, pm) {
+# keeps it (Hugo, 2026-10-30). A note of one material goes to every such
+# layer. A note naming a sequence ("loess over outwash gravels") is split
+# where its parts are as many as the profile's lithologic groups (the
+# numbered breaks of `designation`, 2C, IIC; groups taken in depth order by
+# `top`): the first part goes to the unnumbered layers, the second to the
+# layers of the next group, and so on. Otherwise a sequence goes to no layer
+# and stays the site's parent_material only (Hugo, 2026-10-30). `filled`: the
+# layers that took the note or a part of it; `how`: the provenance text.
+.nsd_layer_origin <- function(own, soil, pm, designation = rep(NA_character_, length(own)),
+                              top = seq_along(own)) {
   own <- as.character(own)
-  down <- unname(pm[as.character(soil)])
-  filled <- (is.na(own) | !nzchar(trimws(own))) & !is.na(down) & nzchar(down)
-  own[filled] <- down[filled]
-  list(value = own, filled = filled)
+  n <- length(own)
+  free <- is.na(own) | !nzchar(trimws(own))
+  filled <- rep(FALSE, n); how <- rep(NA_character_, n)
+  num <- .nsd_litho_number(designation)
+  for (s in unique(as.character(soil))) {
+    note <- unname(pm[s])
+    if (is.null(note) || is.na(note) || !nzchar(note)) next
+    rows <- which(as.character(soil) == s)
+    seq_parts <- .nsd_note_sequence(note)
+    if (is.null(seq_parts)) {
+      r <- rows[free[rows]]
+      own[r] <- note; filled[r] <- TRUE
+      how[r] <- "NSD sd_soil_note PARENT ROCK of the soil, taken down to a layer whose origin is not recorded"
+      next
+    }
+    g <- num[rows]
+    if (anyNA(g)) next
+    first_top <- tapply(top[rows], g, min, na.rm = TRUE)
+    groups <- as.integer(names(sort(first_top)))
+    if (length(groups) != length(seq_parts)) next
+    for (k in seq_along(groups)) {
+      r <- rows[g == groups[k] & free[rows]]
+      own[r] <- seq_parts[k]; filled[r] <- TRUE
+      how[r] <- sprintf("NSD sd_soil_note PARENT ROCK of the soil (\"%s\"), part %d of %d, by the layer's lithologic group",
+                        note, k, length(groups))
+    }
+  }
+  list(value = own, filled = filled, how = how)
 }
 
 # ---- One survey ------------------------------------------------------------------
@@ -815,18 +898,18 @@ nsd_citation <- function(accessed = NULL) {
   }
 
   # the soil's PARENT ROCK note (the site's parent material), taken down to
-  # each layer whose origin is not recorded; a layer with its own origin keeps
-  # it (the NSD exports record none per horizon)
+  # the layers whose origin is not recorded (the NSD exports record none per
+  # horizon); a sequence only where its parts match the lithologic groups
   snote <- rd("sd_soil_note.csv")
   pm <- if (!is.null(snote)) {
     k <- grepl("^\\s*PARENT (ROCK|MATERIAL)\\s*:", snote$note, ignore.case = TRUE)
     stats::setNames(trimws(sub("^\\s*PARENT (ROCK|MATERIAL)\\s*:\\s*", "", snote$note[k], ignore.case = TRUE)),
                     snote$sd_soil_id[k])
   } else character(0)
-  lo <- .nsd_layer_origin(H$layer_origin %||% rep(NA_character_, n), H$sd_soil_id, pm)
+  lo <- .nsd_layer_origin(H$layer_origin %||% rep(NA_character_, n), H$sd_soil_id, pm,
+                          designation = H$designation, top = H$top_cm)
   H$layer_origin <- lo$value
-  note("layer_origin", lo$filled,
-       "NSD sd_soil_note PARENT ROCK of the soil, taken down to a layer whose origin is not recorded")
+  note("layer_origin", lo$filled, lo$how)
 
   prov <- if (length(prov)) do.call(rbind, prov) else NULL
 
@@ -967,8 +1050,9 @@ nsd_citation <- function(accessed = NULL) {
 #' A2 is read as E, with its subdivisions and suffixes (A21 as E1, A2g as
 #' Eg). The old master G (a gley horizon) is read as Bg when a B horizon
 #' lies below it in the profile, otherwise as Cg (GC as BCg or Cg); the old
-#' master D (the substratum) as C, its prefixes and suffixes kept (Dn as Cn,
-#' BD as BC). A cemented sesquioxidic B written Bms is read as Bfm (a placic
+#' master D (the substratum) as C, its prefixes and suffixes kept (BD as BC,
+#' DG as Cg) except its old suffixes r and n, which are not read (Dr and Dn
+#' as C; the NSD's own conversions give them as Cu, C, Bt or Cm). A cemented sesquioxidic B written Bms is read as Bfm (a placic
 #' horizon) when 10 mm or less thick and as Bsm (an ortstein-pan) when
 #' thicker, as the NZSC Diagnostics define them. The provenance keeps the
 #' recorded designation and what it was read as.
@@ -983,7 +1067,10 @@ nsd_citation <- function(accessed = NULL) {
 #'
 #' Parent material: the soil note PARENT ROCK is also the
 #' \code{layer_origin} of each horizon whose origin is not recorded (the
-#' NSD exports record none per horizon).
+#' NSD exports record none per horizon). A note naming a sequence of
+#' materials ("loess over outwash gravels") is split by the profile's
+#' lithologic groups (2C, IIC) when its parts are as many; otherwise it
+#' stays the site's \code{parent_material} only.
 #'
 #' The NSD records no field reactive-aluminium (NaF) test, Childs' test,
 #' sensitivity, fluidity, packing or Ksat, which the NZSC key reads; the

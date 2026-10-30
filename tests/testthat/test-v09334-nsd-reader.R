@@ -364,7 +364,7 @@ test_that("A2 is E, the old G is Bg over a B horizon and Cg otherwise, D is C", 
   p <- read_nsd_pedons(d)
   h <- as.data.frame(p$OS1$horizons)
   # G1 lies above the (B): Bg1; G2 has only the D below it: Cg2
-  expect_identical(h$designation, c("A1", "E1", "Bg1", "Bw", "Cg2", "Cn"))
+  expect_identical(h$designation, c("A1", "E1", "Bg1", "Bw", "Cg2", "C"))
   h2 <- as.data.frame(p$OS2$horizons)
   expect_identical(h2$designation, c("A1", "Eg", "Cg"))           # GC at the bottom: Cg
   pv <- as.data.frame(p$OS1$provenance)
@@ -372,7 +372,7 @@ test_that("A2 is E, the old G is Bg over a B horizon and Cg otherwise, D is C", 
   expect_match(pd[2], "A21 in the older New Zealand notation, read as E1 \\(the A2 is E\\)")
   expect_match(pd[3], "G1 .* read as Bg1 .*a B horizon lies below it")
   expect_match(pd[5], "G2 .* read as Cg2 .*no B horizon lies below it")
-  expect_match(pd[6], "Dn .* read as Cn .*the substratum, is C")
+  expect_match(pd[6], "Dn .* read as C .*the substratum, is C; its old suffixes r and n are not read")
   # as recorded
   pa <- read_nsd_pedons(d, old_notation = "asis")
   expect_identical(as.data.frame(pa$OS1$horizons)$designation, c("A1", "A21", "G1", "(B)", "G2", "Dn"))
@@ -411,4 +411,37 @@ test_that("a survey whose sd_soil table has no classifier_usda column is read", 
   expect_length(p, 2L)
   expect_true(is.na(p$OS1$site$reference_usda))
   expect_identical(p$OS1$site$reference_nzsc_order, "R")
+})
+
+test_that("the old D's suffixes r and n are not read; g and h stay", {
+  skip_on_cran()
+  x <- soilKey:::.nsd_designation(orig = c("Dr", "Dn", "Dn2", "DNg", "2Dn", "Dh", "DG", "uDr"), fao = NA,
+                                  soil = 1:8)
+  expect_identical(x$designation, c("C", "C", "C2", "Cg", "2C", "Ch", "Cg", "uC"))
+})
+
+test_that("a PARENT ROCK note naming a sequence is split by the lithologic groups, or goes to no layer", {
+  skip_on_cran()
+  sq <- soilKey:::.nsd_note_sequence
+  expect_identical(sq("loess over outwash gravels"), c("loess", "outwash gravels"))
+  expect_identical(sq("TEPHRA OVERLYING IGNIMBRITE"), c("TEPHRA", "IGNIMBRITE"))
+  expect_identical(sq("ash on loess on gravels"), c("ash", "loess", "gravels"))
+  expect_identical(sq("schist colluvium under loess"), c("loess", "schist colluvium"))
+  expect_null(sq("granite/limestone gravels"))                 # a slash is no sequence
+  expect_null(sq("fine alluvium from greywacke"))
+  expect_null(sq("loess over gravels under ash"))              # two directions
+  expect_identical(soilKey:::.nsd_litho_number(c("A", "Bw", "2C", "IIC", "3Cg", NA)),
+                   c(1L, 1L, 2L, 2L, 3L, NA))
+  lo <- soilKey:::.nsd_layer_origin(rep(NA_character_, 4), rep("a", 4), c(a = "loess over outwash gravels"),
+                                    designation = c("A", "Bw", "2Bw", "2C"), top = c(0, 20, 50, 80))
+  expect_identical(lo$value, c("loess", "loess", "outwash gravels", "outwash gravels"))
+  expect_match(lo$how[3], "part 2 of 2, by the layer's lithologic group")
+  # parts and groups differ: the note goes to no layer
+  lo <- soilKey:::.nsd_layer_origin(rep(NA_character_, 3), rep("a", 3), c(a = "loess over outwash gravels"),
+                                    designation = c("A", "Bw", "C"), top = c(0, 20, 50))
+  expect_true(all(is.na(lo$value))); expect_false(any(lo$filled))
+  # a layer with its own origin keeps it
+  lo <- soilKey:::.nsd_layer_origin(c(NA, "dune sand", NA), rep("a", 3), c(a = "loess over gravels"),
+                                    designation = c("A", "Bw", "2C"), top = c(0, 20, 50))
+  expect_identical(lo$value, c("loess", "dune sand", "gravels"))
 })

@@ -2179,7 +2179,9 @@ qual_puffic <- function(pedon) {
 #' the origin of both layers it separates is recorded (\code{rock_origin} /
 #' \code{layer_origin}) and neither is aeolic, fluvic (incl. marine,
 #' lacustrine), solimovic (colluvial) or tephric (pyroclastic), nor flagged by
-#' the corresponding material diagnostics.
+#' the corresponding material diagnostics. v0.9.318: the recorded origin also
+#' reads loess and wind-blown material as aeolic, volcanic ash, pumice,
+#' lapilli and scoria as tephric, and river and estuarine deposits as fluvic.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_raptic <- function(pedon) {
@@ -2201,7 +2203,12 @@ qual_raptic <- function(pedon) {
   origin_known <- !is.na(h$rock_origin %||% rep(NA, n)) |
                   !is.na(h$layer_origin %||% rep(NA, n))
   related <- (seq_len(n) %in% related_layers) |
-    grepl("(?i)aeol|fluv|marine|lacustr|alluv|solimov|colluv|tephr|pyroclast",
+    grepl(paste0("(?i)aeol|fluv|marine|lacustr|alluv|solimov|colluv|tephr|pyroclast",
+                 # v0.9.318 (Hugo): loess (and wind-blown material) is aeolic;
+                 # volcanic ash, pumice, lapilli and scoria are tephric;
+                 # river and estuarine deposits (and alluvium spelt aluvium)
+                 # are fluvic
+                 "|loess|wind[- ]?blown|\\bash(es)?\\b|pumice|lapill|scoria|\\brivers?\\b|estuar|aluvi"),
           origin, perl = TRUE)
   # A lithic discontinuity compares two layers of mineral (soil) material: the
   # contact with continuous rock or technic hard material is not one.
