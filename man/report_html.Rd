@@ -12,6 +12,7 @@ report_html(
   include_family = FALSE,
   specifiers = FALSE,
   lang = c("en", "pt"),
+  systems = c("wrb2022", "sibcs", "usda"),
   ...
 )
 }
@@ -30,6 +31,9 @@ report_html(
 
 \item{lang}{Report language; \code{"en"} (default) or \code{"pt"}
 (Brazilian Portuguese).}
+
+\item{systems}{The systems to run when \code{x} is a \code{PedonRecord};
+see \code{\link{report}}.}
 
 \item{...}{Currently unused.}
 }

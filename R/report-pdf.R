@@ -39,6 +39,8 @@
 #'               \code{x} is a \code{PedonRecord}; see \code{\link{report}}.
 #' @param lang   Report language, \code{"en"} (default) or \code{"pt"}
 #'               (Brazilian Portuguese).
+#' @param systems The systems to run when \code{x} is a \code{PedonRecord};
+#'               see \code{\link{report}}.
 #' @param ...    Passed to \code{rmarkdown::render()}.
 #' @return       The output path, invisibly.
 #' @export
@@ -49,6 +51,7 @@ report_pdf <- function(x,
                        include_family = FALSE,
                        specifiers     = FALSE,
                        lang = c("en", "pt"),
+                       systems = c("wrb2022", "sibcs", "usda"),
                        ...) {
   lang <- match.arg(lang)
   old_lang <- getOption("soilKey.report_lang")
@@ -83,11 +86,11 @@ report_pdf <- function(x,
     rmd <- .build_report_rmd_multi(x, title = title, logo_path = logo_path,
                                    map_path = map_path,
                                    include_family = include_family,
-                                   specifiers = specifiers)
+                                   specifiers = specifiers, systems = systems)
   } else {
     norm <- .normalise_results(x, pedon = pedon,
                                include_family = include_family,
-                               specifiers = specifiers)
+                               specifiers = specifiers, systems = systems)
     results <- norm$results
     pedon   <- norm$pedon
     if (is.null(title)) {
@@ -247,6 +250,12 @@ report_pdf <- function(x,
     if (length(qual_suppl) > 0)
       paste0(sprintf("* %s: ", .report_msg("report.supplementary_qualifiers")),
                paste(qual_suppl, collapse = ", "), "\n"),
+    # the national systems' levels, provisional classes and Hungarian
+    # properties; "" for WRB, SiBCS and USDA (R/report-national.R)
+    {
+      nat <- .rmd_national_sections(res)
+      if (nzchar(nat)) paste0("\n", nat) else ""
+    },
     sprintf("\n### %s\n\n", .report_msg("report.key_trace")),
     trace_lines,
     "\n\n",
@@ -385,10 +394,10 @@ report_pdf <- function(x,
 #' per profile, separated by \\newpage.
 #' @noRd
 .build_report_rmd_multi <- function(pedons, title, logo_path, map_path,
-                                    include_family, specifiers) {
+                                    include_family, specifiers, systems = NULL) {
   per <- lapply(pedons, function(p)
     .normalise_results(p, pedon = p, include_family = include_family,
-                       specifiers = specifiers)$results)
+                       specifiers = specifiers, systems = systems)$results)
   name_for <- function(res, sys) {
     r <- Find(function(z) grepl(sys, tolower(z$system %||% ""), fixed = TRUE),
               res)

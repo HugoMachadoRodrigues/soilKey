@@ -1,8 +1,9 @@
 # =============================================================================
 # soilKey Pro -- Report module (v0.9.97).
 #
-# Renders a self-contained cross-system report (WRB / SiBCS / USDA plus the
-# horizon table and provenance log) and offers it as an HTML download, and as a
+# Renders a self-contained cross-system report (WRB / SiBCS / USDA, the
+# national systems of the last Classify run, the horizon table and the
+# provenance log) and offers it as an HTML download, and as a
 # PDF where a LaTeX engine is installed. The hosted app has none, so there the
 # PDF button is not shown: the HTML report carries a Print / Save as PDF button
 # instead (v0.9.210). Until then a "Download PDF" button handed over an HTML
@@ -63,6 +64,16 @@ report_server <- function(id, rv, settings) {
       )
     }
 
+    # The systems the report runs: the three it always has, and the national
+    # systems of the last Classify run (rv$classified_systems), so the file
+    # has what the Classify tab shows.
+    report_systems <- function() {
+      nat <- intersect(.sk_national_systems()$id,
+                       tryCatch(rv$classified_systems, error = function(e) NULL) %||%
+                         character(0))
+      c(.SK_DEFAULT_SYSTEMS, nat)
+    }
+
     # The Spectra tab records its preprocessing pipeline in rv$spectra_pp (kept
     # off rv$pedon to avoid cross-tab churn); inject it into the pedon copy so
     # the report shows the treatment sequence that was applied.
@@ -85,7 +96,8 @@ report_server <- function(id, rv, settings) {
           .sk_report(report_pedon(), file = file, format = "html",
                           pedon = report_pedon(), title = input$title,
                           include_family = cf$include_family,
-                          specifiers = cf$specifiers, lang = .sk_app_lang())
+                          specifiers = cf$specifiers, lang = .sk_app_lang(),
+                          systems = report_systems())
         })
       }
     )
@@ -98,7 +110,8 @@ report_server <- function(id, rv, settings) {
           .sk_report(report_pedon(), file = tmp, format = "pdf",
                           pedon = report_pedon(), title = input$title,
                           include_family = cf$include_family,
-                          specifiers = cf$specifiers, lang = .sk_app_lang())
+                          specifiers = cf$specifiers, lang = .sk_app_lang(),
+                          systems = report_systems())
           "pdf"
         }, error = function(e) "html")
         ext <- if (identical(out, "pdf")) "pdf" else "html"
@@ -112,7 +125,8 @@ report_server <- function(id, rv, settings) {
             .sk_report(report_pedon(), file = file, format = "pdf",
                             pedon = report_pedon(), title = input$title,
                             include_family = cf$include_family,
-                            specifiers = cf$specifiers, lang = .sk_app_lang())
+                            specifiers = cf$specifiers, lang = .sk_app_lang(),
+                            systems = report_systems())
             TRUE
           }, error = function(e) FALSE)
           if (!ok) {
@@ -122,7 +136,8 @@ report_server <- function(id, rv, settings) {
             .sk_report(report_pedon(), file = file, format = "html",
                             pedon = report_pedon(), title = input$title,
                             include_family = cf$include_family,
-                            specifiers = cf$specifiers, lang = .sk_app_lang())
+                            specifiers = cf$specifiers, lang = .sk_app_lang(),
+                            systems = report_systems())
           }
         })
       }
@@ -156,6 +171,8 @@ report_server <- function(id, rv, settings) {
             shiny::tags$li(i18n("report.bundle_trace")),
             shiny::tags$li(i18n("report.bundle_table_log"))
           ),
+          # which national systems the file will hold (those of the last run)
+          shiny::uiOutput(ns("national")),
           # A live checklist of the depth-level options the report will honour,
           # mirroring the Settings tab -- so the user knows what they will get
           # before clicking download.
@@ -170,6 +187,18 @@ report_server <- function(id, rv, settings) {
     # v0.9.303: the buttons live in renderUI'd UI. They are action buttons
     # now (sk_download), whose observers run whether the tab is shown or not,
     # so the outputOptions() that kept the old download links bound are gone.
+
+    output$national <- shiny::renderUI({
+      nat <- setdiff(report_systems(), .SK_DEFAULT_SYSTEMS)
+      if (!length(nat))
+        return(shiny::div(class = "small text-muted mb-2",
+                          shiny::icon("circle-info"), " ",
+                          i18n("report.national_none")))
+      shiny::div(class = "small mb-2",
+                 shiny::icon("circle-check", class = "text-success"), " ",
+                 i18n("report.national_included",
+                      paste(.sk_slot_labels(nat), collapse = ", ")))
+    })
 
     # Render one row per optional setting with a check/cross icon.
     output$opts <- shiny::renderUI({

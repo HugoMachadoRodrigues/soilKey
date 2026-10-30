@@ -5,7 +5,9 @@
 #   * Pedon    -- build a profile from a canonical fixture, a CSV upload, or
 #                 from scratch, with an interactive horizon editor.
 #   * Classify -- run WRB 2022 / SiBCS 5 / USDA ST 13 side-by-side, with the
-#                 full deterministic key trace and missing-data hints.
+#                 full deterministic key trace and missing-data hints; the
+#                 national systems (Canada, Australia, New Zealand, Hungary)
+#                 when ticked, marked experimental.
 #   * Photo    -- VLM extraction of Munsell colour and site metadata from
 #                 field photographs (mock provider by default; no data leaves
 #                 the machine unless a live provider is configured).
@@ -357,8 +359,14 @@ server <- function(input, output, session) {
   # `include_family` / `specifiers` are the two depth-level options: rv is their
   # single source of truth, so the Settings switch and the Classify-sidebar
   # switch stay in lock-step (each module two-way-syncs its widget to rv).
+  # `classify_systems` is every system ticked on the Classify tab (saved with
+  # the session), `classify_restore` a reopened session's request to tick its
+  # systems again, `classified_systems` the systems of the last run (the
+  # Report tab includes its national ones).
   rv <- reactiveValues(pedon = NULL, example_request = 0L,
-                       include_family = FALSE, specifiers = FALSE)
+                       include_family = FALSE, specifiers = FALSE,
+                       classify_systems = c("wrb2022", "sibcs", "usda"),
+                       classify_restore = NULL, classified_systems = NULL)
 
   settings <- settings_server("settings", rv)
 

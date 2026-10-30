@@ -574,6 +574,10 @@ pedon_server <- function(id, rv) {
         }
         # v0.9.306 / v0.9.307: the soil moisture and temperature regimes, when known
         payload$site <- .sk_site_with_str(.sk_site_with_smr(payload$site, input$smr), input$str)
+        # the systems ticked on the Classify tab, national ones included (a
+        # top-level key: the pedon schema allows additional properties)
+        payload$classify <- .sk_session_classify(
+          tryCatch(rv$classify_systems, error = function(e) NULL))
         jsonlite::write_json(payload, file, pretty = TRUE, auto_unbox = TRUE,
                              null = "null", na = "null", digits = NA)
       }
@@ -638,6 +642,13 @@ pedon_server <- function(id, rv) {
       shiny::updateSelectInput(session, "str", selected = .sk_str_value(site$soil_temperature_regime))
       site_extra$soil_temperature_regime <- NULL
       data_source(if (length(site_extra)) site_extra else NULL)
+      # the systems the session was saved with go back to the Classify tab;
+      # a file without them (saved before) leaves the ticks as they are
+      saved_systems <- .sk_session_systems(parsed)
+      if (!is.null(saved_systems)) {
+        prev <- tryCatch(rv$classify_restore$n, error = function(e) NULL) %||% 0L
+        rv$classify_restore <- list(systems = saved_systems, n = prev + 1L)
+      }
       notice <- .sk_unrecognised_notice(hzdf, site)
       hz(hzdf)
       hz_reload(hz_reload() + 1L)
