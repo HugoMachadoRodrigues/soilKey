@@ -291,7 +291,9 @@
 # fluvial origin, sedimentary bedding in a C horizon, a buried A horizon, or
 # a moderately or very fluid horizon within 120 cm; and no cover of more
 # than 30 cm of material of another recorded origin over the uppermost of
-# them. Recorded when met: none of these reads as no fluvial features.
+# them. Recorded when met: none of these reads as no fluvial features. An
+# origin reads as fluvial when it names fluvial, alluvial (or aluvial),
+# river, estuarine, lacustrine, lagoon, deltaic or flood deposits.
 .nzsc_fluvial <- function(pedon, x, from) {
   h <- x$h; n <- x$n
   land <- tolower(paste(.nzsc_site1(pedon, "landform") %|NA|% "", .nzsc_site1(pedon, "landform_element") %|NA|% ""))
@@ -299,7 +301,9 @@
   site_fluvial <- grepl(paste0("flood|estuar|lacustr|alluvial fan|\\bfan\\b|levee|backplain|\\bbar\\b|",
                                "channel|delta|bench|outwash|swamp"), land)
   orig <- .nzsc_txt(h$layer_origin, n)
-  fluv_row <- grepl("fluv|alluv|estuar|lacustr|lagoon|deltaic|flood", orig)
+  # v0.9.319 (Hugo): a river deposit is fluvial, and alluvium is also read
+  # in the spelling aluvium (both written so in NSD parent-rock notes)
+  fluv_row <- grepl("fluv|alluv|aluvi|\\briver(s|ine|beds?)?\\b|estuar|lacustr|lagoon|deltaic|flood", orig)
   strat <- .nzsc_txt(h$stratification_pattern, n)
   bedded <- x$role %in% c("C", "BC", "CB") & !is.na(strat) & nzchar(strat) &
             !grepl("^none|^no|^absent|lithologic", strat)

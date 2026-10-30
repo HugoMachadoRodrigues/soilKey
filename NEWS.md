@@ -1,3 +1,22 @@
+# soilKey 0.9.319 (2026-10-30)
+
+## New Zealand: the fluvial features read river deposits and the spelling aluvium
+
+* **NZSC fluvial features** (Fluvial Recent and Fluvial Raw Soils): a recorded origin naming a river deposit (river, rivers, riverine, riverbed) is fluvial, and alluvium is also read in the spelling aluvium, both as NSD parent-rock notes write them (Hugo). A place name such as Riversdale is not read as a river.
+* **WRB Raptic** reads riverine and riverbed like river.
+* On the NSD (94 surveys) the NZSC group agreement goes from 26.7% to 27.0% (303 to 306 of 1,134). Of the 73 profiles the surveyors call Fluvial Recent Soils, 37 are keyed as such (34 in 0.9.318). Order (43.6%) and subgroup (14.7%) are unchanged, as are WRB and USDA on the NSD and the 44 canonical fixtures.
+
+## Australia: the agreement on NatSoil, measured again
+
+The Australian key has been measured since 0.9.278 on CSIRO's NatSoil (`benchmark_natsoil()`, profiles with the surveyor's ASC label, CC BY 4.0, not shipped). On 9,700 profiles with the current code no prediction has changed since the last measurement (2026-10-27), at any level:
+
+| ASC level | Profiles compared | Agreement | Where the key decides |
+|---|---|---|---|
+| order | 9,700 | 43.9% (45.8% counting the Arenosols, absent from the older labels, as Tenosols or Rudosols) | 74.5% of 1,305 |
+| suborder, where the order agrees | 3,694 | 75.9% | 95.5% of 694 |
+| great group, where the suborder agrees | 2,669 | 32.8% | 77.5% of 413 |
+| subgroup, where the great group agrees | 852 | 33.3% | 25.0% of 20 |
+
 # soilKey 0.9.318 (2026-10-30)
 
 ## The New Zealand National Soils Database read by Hugo's readings
