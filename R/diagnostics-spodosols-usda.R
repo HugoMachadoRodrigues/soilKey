@@ -261,8 +261,10 @@ kandic_horizon_usda <- function(pedon) {
   cec <- h$cec_cmol[o]
   sand <- if (!is.null(h$sand_pct)) h$sand_pct[o] else rep(NA_real_, length(o))
   sandy <- !is.na(sand) & !is.na(clay) & sand >= 70 & clay < 15        # loamy fine sand or coarser
-  # the contact that shortens the thickness and the CEC window
-  contact <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  # the contact that shortens the thickness and the CEC window (the reading
+  # before v0.9.322: the WRB cemented layers added then are not KST contacts)
+  contact <- tryCatch(.barrier_top_cm(pedon, other_cemented = FALSE),
+                      error = function(e) NA_real_)
   upper100_sandy <- all(sandy[top < ms + 100]) && any(top < ms + 100)
   miss <- character(0); cand_tops <- numeric(0)
   bdist <- if (!is.null(h$boundary_distinctness)) tolower(as.character(h$boundary_distinctness[o])) else rep(NA_character_, length(o))
