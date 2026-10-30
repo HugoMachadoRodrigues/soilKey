@@ -52,6 +52,20 @@ Either path qualifies. The volcanic-glass criterion is the
 separate \code{\link{vitric_properties}} diagnostic; Andosols key
 on (andic OR vitric) at the RSG-gate level (\code{\link{andosol}}).
 }
+\section{v0.9.313}{
+
+The answer is read layer by layer and is \code{NA} when a value it
+needs is not recorded (until v0.9.312 an undecided profile returned
+\code{FALSE}); \code{evidence$layer_status} holds the answer per layer.
+A layer fails when Al_ox + 0.5*Fe_ox < \code{min_alfe} or the bulk
+density > \code{max_bd} is measured (phosphate retention, an optional
+path, can still pass it). Where bulk density is not measured,
+Al_ox + 0.5*Fe_ox >= \code{min_alfe} together with a pH in NaF
+(\code{ph_naf}) >= 9.5 in a carbonate-free layer passes, read from the
+field test of WRB 2022 Ch 3.2.3; this is a proxy, named in
+\code{notes}, \code{reference} and \code{evidence$naf_field_test}.
+}
+
 \section{v0.9.80 OC + BD proxy (opt-in)}{
 
 Field-described volcanic-ash soils (e.g.\ AfSP, KSSL/NASIS, SOTER)

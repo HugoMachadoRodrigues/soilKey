@@ -23,6 +23,11 @@ test_that("gleyic_properties does NOT trigger on Podzol's albic-like E", {
 test_that("gleyic_properties NA when redox features missing in top 50", {
   pr <- make_gleysol_canonical()
   pr$horizons$redoximorphic_features_pct <- NA_real_
+  # v0.9.312: the reductimorphic matrix of the Bg (2.5Y 5/1, WRB 2022 3.2.6
+  # criterion 1.b) decides without the mottles; with no colour either, the
+  # layers are undecided
+  expect_true(isTRUE(gleyic_properties(pr)$passed))
+  pr$horizons$munsell_hue_moist <- NA_character_
   res <- gleyic_properties(pr)
   expect_true(is.na(res$passed))
 })

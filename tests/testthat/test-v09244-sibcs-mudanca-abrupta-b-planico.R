@@ -25,6 +25,13 @@
                   horizons = ensure_horizon_schema(hz))
 }
 
+
+# v0.9.312: the WRB abrupt textural difference reads its criterion 5 (a
+# transition of 2 cm or less) from the boundary; these profiles record none
+.with_abrupt <- function(p) {
+  q <- p$clone(deep = TRUE); q$horizons$boundary_distinctness <- "abrupt"; q
+}
+
 # ---- the mudanca textural abrupta ------------------------------------------------
 
 test_that("it is the transition from the A or E to the first B", {
@@ -44,10 +51,10 @@ test_that("it is the transition from the A or E to the first B", {
 test_that("a jump between two B horizons, to a C, or below a layer that is no A or E, is none", {
   # the WRB property, which the function used to be, finds each of these
   bb <- .ab(c("A", "B1", "B2"), c(0, 20, 50), c(20, 50, 120), c(40, 45, 70))
-  expect_true(isTRUE(abrupt_textural_difference(bb)$passed))
+  expect_true(isTRUE(abrupt_textural_difference(.with_abrupt(bb))$passed))
   expect_false(isTRUE(mudanca_textural_abrupta(bb)$passed))
   bc <- .ab(c("A", "Bw", "C"), c(0, 20, 60), c(20, 60, 120), c(20, 25, 50))
-  expect_true(isTRUE(abrupt_textural_difference(bc)$passed))
+  expect_true(isTRUE(abrupt_textural_difference(.with_abrupt(bc))$passed))
   expect_false(isTRUE(mudanca_textural_abrupta(bc)$passed))
   # a C between the A and the B
   cb <- .ab(c("A", "C", "2Bt"), c(0, 20, 40), c(20, 40, 100), c(30, 10, 40))
@@ -178,7 +185,7 @@ test_that("it is a type of B textural: a first B sub-horizon coarser than franco
 test_that("a jump of clay inside the B is no B planico", {
   # A 40%, B1 45%, B2 70%: the jump is between the two B sub-horizons
   p <- .pl(c("A", "B1", "B2"), c(0, 20, 50), c(20, 50, 120), c(40, 45, 70))
-  expect_true(isTRUE(abrupt_textural_difference(p)$passed))
+  expect_true(isTRUE(abrupt_textural_difference(.with_abrupt(p))$passed))
   expect_false(isTRUE(B_planico(p)$passed))
 })
 

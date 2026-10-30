@@ -667,7 +667,11 @@ make_gleysol_canonical <- function() {
       slope_pct       = 0,
       land_use        = "intensive grassland",
       vegetation      = "Lolium perenne / Trifolium",
-      drainage_class  = "poorly drained (high groundwater)"
+      drainage_class  = "poorly drained (high groundwater)",
+      # v0.9.310: the groundwater the drainage class names, as WRB 2022
+      # gleyic properties read it (3.2.6): the mottles of the Bg are gleyic
+      groundwater_kind     = "observed",
+      groundwater_depth_cm = 50
     ),
     horizons = hz
   )
@@ -756,10 +760,14 @@ make_vertisol_canonical <- function() {
 #'
 #' Synthetic tropical-humid Acrisol on weathered gneiss: argic horizon
 #' at Bt1 with low-activity clay (CEC/clay ~ 17 cmol_c/kg clay) and low
-#' base saturation (BS ~ 25\%). By construction:
+#' base saturation (BS ~ 25\%). v0.9.310: in Bt1 and Bt2 the exchangeable Al
+#' (0.4 until then) exceeds the exchangeable bases (lowered from 1.15 to 0.72
+#' cmolc/kg, so that the ECEC stays below 6 cmolc/kg clay, Geric), as the WRB
+#' 2022 Acrisols ask for in 50-100 cm (Ch 4, p. 119); with Al below the bases
+#' the profile is a Lixisol. By construction:
 #' \itemize{
 #'   \item \code{\link{argic}}: PASSES on Bt1.
-#'   \item \code{\link{acrisol}}: PASSES (CEC low, BS low).
+#'   \item \code{\link{acrisol}}: PASSES (CEC low, exchangeable Al > bases).
 #'   \item \code{\link{lixisol}}, \code{\link{alisol}},
 #'         \code{\link{luvisol}}: FAIL.
 #'   \item Other diagnostics: FAIL.
@@ -791,13 +799,13 @@ make_acrisol_canonical <- function() {
     ph_kcl                     = c(3.9,  4.0,  4.1,  4.2),
     oc_pct                     = c(1.5,  0.5,  0.3,  0.2),
     cec_cmol                   = c(8,    6,    6,    6.5),
-    ca_cmol                    = c(0.8,  0.5,  0.6,  0.6),
-    mg_cmol                    = c(0.4,  0.3,  0.4,  0.4),
-    k_cmol                     = c(0.15, 0.10, 0.10, 0.10),
-    na_cmol                    = c(0.05, 0.05, 0.05, 0.05),
-    al_cmol                    = c(0.4,  0.5,  0.4,  0.4),
-    bs_pct                     = c(18,   16,   19,   18),
-    al_sat_pct                 = c(22,   33,   25,   26),
+    ca_cmol                    = c(0.8,  0.5,  0.4,  0.4),
+    mg_cmol                    = c(0.4,  0.3,  0.2,  0.2),
+    k_cmol                     = c(0.15, 0.10, 0.08, 0.08),
+    na_cmol                    = c(0.05, 0.05, 0.04, 0.04),
+    al_cmol                    = c(0.4,  0.5,  0.9,  0.95),
+    bs_pct                     = c(18,   16,   12,   11),
+    al_sat_pct                 = c(22,   33,   56,   57),
     plinthite_pct              = c(0,    0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0,    0),
     slickensides               = c("absent","absent","absent","absent"),
@@ -984,7 +992,9 @@ make_alisol_canonical <- function() {
 #' \itemize{
 #'   \item \code{\link{mollic}}: PASSES.
 #'   \item \code{\link{kastanozem}}: PASSES.
-#'   \item \code{\link{chernozem}}, \code{\link{phaeozem}}: FAIL.
+#'   \item \code{\link{chernozem}}: FAILS.
+#'   \item \code{\link{phaeozem}}: PASSES too (WRB 2022 Phaeozems allow
+#'         carbonates); the key reaches the Kastanozems first.
 #' }
 #'
 #' @return A \code{\link{PedonRecord}}.
@@ -1020,6 +1030,9 @@ make_kastanozem_canonical <- function() {
     bs_pct                     = c(84,   87,   97,   99),
     al_sat_pct                 = c(0,    0,    0,    0),
     caco3_pct                  = c(0,    0,    7,    14),
+    # v0.9.309: the visible secondary carbonates of the Bk / Ck (WRB 2022
+    # 3.2.8, protocalcic properties): lab CaCO3 alone does not show them
+    secondary_carbonates_pct   = c(0,    0,    10,   5),
     plinthite_pct              = c(0,    0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0,    0),
     slickensides               = c("absent","absent","absent","absent"),
@@ -1586,21 +1599,30 @@ make_andosol_canonical <- function() {
 #' (because C2 is more recently deposited, OC-richer than C1).
 #' By construction \code{\link{fluvic_material}} passes.
 #'
+#' v0.9.310: the strata are numbered as deposits of their own (C, 2C, 3C; FAO
+#' 2006 Guidelines), the lithic discontinuities that their particle-size
+#' distributions show (WRB 2022 Ch 3.2.7, criterion 2.a.iv), and the first two
+#' are massive, as unaltered alluvium is. Written C1, C2, C3, the clay-richer
+#' second stratum met the argic horizon (WRB 2022 Ch 3.1.3), and the profile
+#' keyed out as a Luvisol once the Luvisols asked only for an argic horizon
+#' starting <= 100 cm (Ch 4, p. 122); with the weak subangular blocky
+#' structure they had, the C below the Ah (chroma 1 unit higher) was a cambic
+#' horizon (Ch 3.1.5, criterion 3.b.iii) and the profile a Fluvic Cambisol.
+#'
 #' @return A \code{\link{PedonRecord}}.
 #' @export
 make_fluvisol_canonical <- function() {
   hz <- data.table::data.table(
     top_cm                     = c(0,    15,   45,   80),
     bottom_cm                  = c(15,   45,   80,   150),
-    designation                = c("Ah", "C1", "C2", "C3"),
+    designation                = c("Ah", "C", "2C", "3C"),
     munsell_hue_moist          = c("10YR","10YR","2.5Y","10YR"),
     munsell_value_moist        = c(3,    5,    4,    5),
     munsell_chroma_moist       = c(2,    3,    3,    3),
     munsell_value_dry          = c(5,    6,    5,    6),
     munsell_chroma_dry         = c(2,    3,    3,    3),
-    structure_grade            = c("moderate","weak","weak","massive"),
-    structure_type             = c("granular","subangular blocky",
-                                     "subangular blocky","massive"),
+    structure_grade            = c("moderate","massive","massive","massive"),
+    structure_type             = c("granular","massive","massive","massive"),
     consistence_moist          = c("friable","firm","firm","firm"),
     coarse_fragments_pct       = c(0,    2,    0,    5),
     clay_pct                   = c(30,   18,   35,   22),
@@ -1767,6 +1789,9 @@ make_nitisol_canonical <- function() {
     # Nitisols, whose "active" Fe sets them apart from Ferralsols.
     fe_ox_pct                  = c(0.8,  0.9,  0.9),
     plinthite_pct              = c(0,    0,    0),
+    # v0.9.312: no Fe nodules, so no pisoplinthic horizon (WRB 2022
+    # 3.1.28), which the Ferritic qualifier must rule out
+    ferric_nodules_pct         = c(0,    0,    0),
     redoximorphic_features_pct = c(0,    0,    0),
     slickensides               = c("absent","absent","absent"),
     artefacts_pct              = c(0,    0,    0),
@@ -1810,7 +1835,10 @@ make_planosol_canonical <- function() {
     bottom_cm                  = c(15,   25,   70,   150),
     designation                = c("A",  "E",  "Btg","BC"),
     boundary_distinctness      = c("clear","abrupt","gradual","gradual"),
-    munsell_hue_moist          = c("10YR","10YR","2.5Y","10YR"),
+    # v0.9.312: the stagnic Btg keeps the matrix colour of its soil material
+    # (WRB 2022 3.2.14, criteria 1-2); a 2.5Y matrix of chroma 2 or less is
+    # reductimorphic (3.2.6, criterion 1.b), which makes the mottles gleyic
+    munsell_hue_moist          = c("10YR","10YR","10YR","10YR"),
     munsell_value_moist        = c(4,    6,    4,    5),
     munsell_chroma_moist       = c(3,    2,    2,    3),
     munsell_value_dry          = c(5,    7,    5,    6),
@@ -1858,7 +1886,10 @@ make_planosol_canonical <- function() {
       slope_pct       = 2,
       land_use        = "rotational rice / pasture",
       vegetation      = "Pampean grassland (grazed)",
-      drainage_class  = "imperfectly drained"
+      drainage_class  = "imperfectly drained",
+      # v0.9.312: the perched water table that tells stagnic from gleyic
+      # properties (WRB 2022 3.2.14; Hugo's reading of 3.2.6 against it)
+      groundwater_kind = "perched"
     ),
     horizons = hz
   )
@@ -1869,16 +1900,12 @@ make_planosol_canonical <- function() {
 #'
 #' Synthetic Stagnosol: redoximorphic features in a perched layer
 #' (Bg, 15-50 cm; redox 25\%) but the deeper subsoil is well-drained
-#' (BC redox 2\%, C redox 0). The decay-with-depth contrast is what
-#' distinguishes stagnic from gleyic. By construction
-#' \code{\link{stagnic_properties}} passes and
-#' \code{\link{gleyic_properties}} also passes (the surface redox
-#' qualifies for both); the WRB key tests Stagnosols (#16) and
-#' Gleysols (#9), so a real Stagnosol-typed fixture lands at
-#' Gleysols if both pass -- the criteria differ in depth pattern,
-#' which is enough for the diagnostic functions but not for key
-#' precedence in v0.3. This is documented in the test as known
-#' overlap; v0.4 will add a stronger discriminator.
+#' (BC redox 2\%, C redox 0). Since v0.9.312 what tells stagnic from
+#' gleyic is the recorded perched water table and the Bg's matrix, which
+#' has no reductimorphic colour (WRB 2022 3.2.6 and 3.2.14, as Hugo reads
+#' them): \code{\link{stagnic_properties}} passes,
+#' \code{\link{gleyic_properties}} does not, and the grey Bg covers more
+#' than one third of 0-60 cm (the Stagnosols key, Ch 4, p. 108).
 #'
 #' @return A \code{\link{PedonRecord}}.
 #' @export
@@ -1887,7 +1914,10 @@ make_stagnosol_canonical <- function() {
     top_cm                     = c(0,    15,   50,   100),
     bottom_cm                  = c(15,   50,   100,  150),
     designation                = c("Ah", "Bg", "BC", "C"),
-    munsell_hue_moist          = c("10YR","2.5Y","10YR","10YR"),
+    # v0.9.312: the stagnic Bg keeps the matrix colour of its soil material
+    # (WRB 2022 3.2.14, criteria 1-2); a 2.5Y matrix of chroma 2 or less is
+    # reductimorphic (3.2.6, criterion 1.b), which makes the mottles gleyic
+    munsell_hue_moist          = c("10YR","10YR","10YR","10YR"),
     munsell_value_moist        = c(3,    5,    5,    5),
     munsell_chroma_moist       = c(2,    1,    3,    3),
     munsell_value_dry          = c(4,    6,    6,    6),
@@ -1926,7 +1956,10 @@ make_stagnosol_canonical <- function() {
       slope_pct       = 4,
       land_use        = "winter wheat",
       vegetation      = "former mixed deciduous forest",
-      drainage_class  = "moderately well drained (perched)"
+      drainage_class  = "moderately well drained (perched)",
+      # v0.9.312: the perched water table that tells stagnic from gleyic
+      # properties (WRB 2022 3.2.14; Hugo's reading of 3.2.6 against it)
+      groundwater_kind = "perched"
     ),
     horizons = hz
   )
@@ -1940,7 +1973,9 @@ make_stagnosol_canonical <- function() {
 #' Bt. By construction \code{\link{retic_properties}} passes via
 #' the "glossic" designation pattern; \code{\link{argic}} also
 #' passes (this is correct -- Retisols are argic + retic features,
-#' and the WRB key tests RT before AC/LX/AL/LV).
+#' and the WRB key tests RT before AC/LX/AL/LV). The Bt is below
+#' 1.5 kg/dm3, so that the claric E has no stagnic properties (WRB 2022
+#' 3.2.14 criterion 4) and the profile does not key as a Stagnosol.
 #'
 #' @return A \code{\link{PedonRecord}}.
 #' @export
@@ -1980,7 +2015,11 @@ make_retisol_canonical <- function() {
     slickensides               = c("absent","absent","absent","absent"),
     artefacts_pct              = c(0,    0,    0,    0),
     duripan_pct                = c(0,    0,    0,    0),
-    bulk_density_g_cm3         = c(1.30, 1.50, 1.50, 1.55)
+    # v0.9.312: the Bt was 1.50 kg/dm3, and a claric Eg directly above a
+    # layer of 1.5 or more has stagnic properties (WRB 2022 3.2.14
+    # criterion 4): with the reducing conditions of its g, one third of
+    # 0-60 cm, which makes a Stagnosol (Ch 4, p. 108), not a Retisol
+    bulk_density_g_cm3         = c(1.30, 1.50, 1.45, 1.55)
   )
 
   hz <- ensure_horizon_schema(hz)
@@ -2173,7 +2212,10 @@ make_chernozem_canonical <- function() {
     bs_pct                = c(89,   87,   86,   97,   95),
     al_sat_pct            = c(0,    0,    0,    0,    0),
     caco3_pct             = c(0,    0,    0,    8,    12),
-    worm_holes_pct        = c(60,   55,   45,   20,   5),    # v0.3.4: chernic strict gate
+    # v0.9.309: the visible secondary carbonates (pseudomycelia) of the Bk /
+    # Ck (WRB 2022 3.2.8, protocalcic properties)
+    secondary_carbonates_pct = c(0, 0,    0,    10,   5),
+    worm_holes_pct        = c(60,   55,   45,   20,   5),    # the Vermic qualifier
     bulk_density_g_cm3    = c(1.05, 1.10, 1.20, 1.30, 1.35)
   )
 

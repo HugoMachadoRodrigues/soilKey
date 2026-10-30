@@ -579,7 +579,7 @@ horizonte_A_moderado <- function(pedon) {
 B_textural <- function(pedon, ...) {
   d <- pedon$horizons$designation
   if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
-    res <- argic(pedon, lithic_discontinuity = FALSE, ...)
+    res <- .argic_impl(pedon, lithic_discontinuity = FALSE, ...)
     res$name      <- "B_textural"
     res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
     res$notes     <- paste0("no horizon designation: tested by the clay ",
@@ -1025,7 +1025,10 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   pet  <- petrocalcic(pedon)
   fra  <- fragic(pedon)
   pli  <- plinthic(pedon)
-  gle  <- gleyic_properties(pedon)
+  # v0.9.310: the glei horizon of this system, not the WRB 2022 gleyic
+  # properties, whose colour criterion 1b (2.5Y or 5Y with chroma <= 2) reads
+  # a dark Vertissolo matrix as reductimorphic
+  gle  <- horizonte_glei(pedon)
   excluded <- unique(c(if (isTRUE(fer$passed)) fer$layers else integer(0),
                         if (isTRUE(arg$passed)) arg$layers else integer(0),
                         esp$layers %||% integer(0),
@@ -1035,7 +1038,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
                         pet$layers %||% integer(0),
                         fra$layers %||% integer(0),
                         pli$layers %||% integer(0),
-                        gle$layers %||% integer(0)))
+                        if (isTRUE(gle$passed)) gle$layers else integer(0)))
   layers_ok <- setdiff(candidates, excluded)
   # v0.9.246: "deve ter no minimo 10 cm de espessura" is said of the horizon:
   # the thickness is that of its adjoining sub-horizons, as in the
@@ -1749,7 +1752,7 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
 #' @param ... Reserved for future arguments.
 #' @noRd
 horizonte_calcico <- function(pedon, ...) {
-  res <- calcic(pedon, ...)
+  res <- .calcic_impl(pedon, ...)   # v0.9.314: not the WRB 2022 reading of calcic()
   # v0.9.139: SiBCS Cap 2 p.71 requires the calcic horizon to carry >= 50 g/kg
   # (5% absolute) MORE CaCO3 than the subjacent layer -- and, unlike WRB/USDA,
   # SiBCS has NO protocalcic morphological alternative (the "expresso em volume"
@@ -1869,9 +1872,13 @@ horizonte_vertico <- function(pedon, ...) {
     old <- options(soilKey.vertic_designation_inference = TRUE)
     on.exit(options(old), add = TRUE)
   }
-  res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0, ...)
-  # v0.9.245: the features of the book. vertic_horizon(), which serves WRB
-  # and USDA too, asks for slickensides and 20 cm of one layer; the book
+  # v0.9.311: the reading it was built on (reading = "usda": slickensides and
+  # cracks of one layer, or the COLE path of v0.7); vertic_horizon() itself
+  # now follows WRB 2022 Ch 3.1.40.
+  res <- vertic_horizon(pedon, min_thickness = 20, min_crack_width_cm = 1.0,
+                        reading = "usda", ...)
+  # v0.9.245: the features of the book. That reading asks for slickensides
+  # and 20 cm of one layer; the book
   # (p. 73) gives "superficies de friccao (slickensides) em quantidade no
   # minimo comum, e/ou unidades estruturais cuneiformes e/ou
   # paralelepipedicas", and its 20 cm are those of the horizon.

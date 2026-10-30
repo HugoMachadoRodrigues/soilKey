@@ -99,7 +99,12 @@ qual_brunic <- function(pedon) {
   nt  <- nitic_horizon(pedon)
   has_other_b <- isTRUE(arg$passed) || isTRUE(sp$passed) ||
                    isTRUE(fr$passed) || isTRUE(nt$passed)
-  in_upper <- intersect(cm$layers, .in_upper(pedon, 100))
+  # v0.9.314: "starting <= 50 cm from the mineral soil surface" (WRB 2022 Ch 5,
+  # Brunic); it was 100 cm. Since v0.9.314 cambic() finds a cambic horizon
+  # below a mollic or beside an argic horizon, which made Brunic of the deep
+  # Bw of a Phaeozem or a Chernozem.
+  ms <- .q_mineral_surface_cm(pedon$horizons)
+  in_upper <- intersect(cm$layers, .in_upper(pedon, (if (is.na(ms)) 0 else ms) + 50))
   passed <- !has_other_b && length(in_upper) > 0L
   DiagnosticResult$new(
     name = "Brunic", passed = passed,

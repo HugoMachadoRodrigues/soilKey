@@ -181,7 +181,10 @@ test_that("abrupt_textural_difference returns the abrupt-change layer", {
     bottom_cm = c(30,  50, 100),
     clay_pct  = c(15,  15,  45),   # 15 -> 45 = +30 absolute (>= 20pp)
     silt_pct  = c(40,  40,  35),
-    sand_pct  = c(45,  45,  20)
+    sand_pct  = c(45,  45,  20),
+    # v0.9.312: criterion 5, a transition of 2 cm or less, is read from the
+    # boundary (WRB 2022 3.2.1); without it the pair is undecided
+    boundary_distinctness = c("clear", "abrupt", NA)
   )
   res <- abrupt_textural_difference(pr)
   expect_true(isTRUE(res$passed))
@@ -200,10 +203,13 @@ test_that("continuous_rock detects R designation", {
 })
 
 test_that("protocalcic_properties separates from calcic", {
+  # v0.9.309: protocalcic properties are visible secondary carbonates (WRB
+  # 2022 3.2.8); the 8% recorded in the Bk shows them, the lab CaCO3 does not
   pr <- build_pedon(
     top_cm = c(0, 30), bottom_cm = c(30, 80),
     designation = c("A", "Bk"),
-    caco3_pct = c(0.2, 5),   # 5% -> protocalcic, not calcic (which needs >=15)
+    caco3_pct = c(0.2, 5),   # 5% -> not calcic (which needs >=15)
+    secondary_carbonates_pct = c(0, 8),
     clay_pct = c(20, 25), silt_pct = c(40, 40), sand_pct = c(40, 35)
   )
   res_proto <- protocalcic_properties(pr)

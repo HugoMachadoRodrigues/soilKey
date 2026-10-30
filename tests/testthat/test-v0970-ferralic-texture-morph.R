@@ -136,13 +136,17 @@ test_that("v0.9.70: ferralic with morphological-fallback recovers Bw-only Latoss
   # Build a pedon with cec_cmol+clay only on topsoil but Bw subsoil
   # has no texture. With cec measured directly (no ECEC fallback needed),
   # only the texture morphological fallback is exercised.
+  # v0.9.310: the A is no longer part of a ferralic horizon (a subsurface
+  # horizon), and it was the A, with its texture recorded, that passed here;
+  # the Bw layers now carry the clay that CEC per kg clay needs, and no layer
+  # has its texture class, so that the fallback is what is tested.
   hz <- data.table::data.table(
     top_cm    = c(0, 30, 90),
     bottom_cm = c(30, 90, 150),
     designation = c("A", "Bw1", "Bw2"),
-    clay_pct = c(45, NA_real_, NA_real_),
-    silt_pct = c(25, NA_real_, NA_real_),
-    sand_pct = c(30, NA_real_, NA_real_),
+    clay_pct = c(45, 50, 52),
+    silt_pct = c(NA_real_, NA_real_, NA_real_),
+    sand_pct = c(NA_real_, NA_real_, NA_real_),
     cec_cmol = c(8, 4, 4),  # CEC measured everywhere
     oc_pct   = c(2, 0.6, 0.4),
     ph_h2o   = c(4.5, 4.7, 4.8)

@@ -5,7 +5,8 @@
 # in v0.9.15 to lift the seven "v0.3 simplified" diagnostics to
 # canonical WRB 2022 coverage:
 #
-#   1. test_oc_cumulative_thickness    -- histic cumulative variant
+#   1. (test_oc_cumulative_thickness, the histic cumulative variant,
+#      removed in v0.9.313: histosol() reads the Histosols key itself)
 #   2. test_coarse_fragments_above     -- leptic coarse-fragments path
 #   3. test_permafrost_temp_below      -- cryic permafrost-temp path
 #   4. test_phosphate_retention_above  -- andic alternative
@@ -66,61 +67,6 @@ aggregate_alternatives <- function(paths) {
        layers       = integer(0),
        missing      = missing,
        passing_path = NA_character_)
-}
-
-
-# ============================================================ histic =====
-
-#' Test cumulative organic-carbon thickness within a depth window
-#'
-#' WRB 2022 alternative criterion for the histic horizon: organic
-#' material >= \code{min_oc} \% summing to \code{min_thickness_cm}
-#' cumulative thickness within the upper \code{max_depth_cm}, even if
-#' no single contiguous layer reaches the standard 10 cm. Relevant for
-#' folic / mossy Histosols on slopes.
-#'
-#' @noRd
-test_oc_cumulative_thickness <- function(h,
-                                            min_oc          = 12,
-                                            min_thickness_cm = 40,
-                                            max_depth_cm     = 80) {
-  if (is.null(h) || nrow(h) == 0L)
-    return(.subtest_result(passed = FALSE, layers = integer(0)))
-
-  oc <- h$oc_pct
-  top  <- h$top_cm
-  bot  <- h$bottom_cm
-
-  cumul <- 0
-  passing <- integer(0)
-  missing <- character(0)
-  for (i in seq_len(nrow(h))) {
-    if (is.na(top[i]) || is.na(bot[i])) {
-      missing <- c(missing, "top_cm", "bottom_cm")
-      next
-    }
-    if (top[i] >= max_depth_cm) next
-    if (is.na(oc[i])) {
-      missing <- c(missing, "oc_pct")
-      next
-    }
-    if (oc[i] < min_oc) next
-    eff_bot <- min(bot[i], max_depth_cm)
-    cumul   <- cumul + (eff_bot - top[i])
-    passing <- c(passing, i)
-  }
-  passed <- if (cumul >= min_thickness_cm) TRUE
-            else if (length(passing) == 0L && length(missing) > 0L) NA
-            else FALSE
-
-  .subtest_result(
-    passed  = passed,
-    layers  = if (isTRUE(passed)) passing else integer(0),
-    missing = unique(missing),
-    details = list(cumulative_thickness_cm = cumul,
-                   min_thickness_cm        = min_thickness_cm,
-                   max_depth_cm            = max_depth_cm)
-  )
 }
 
 

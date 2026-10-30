@@ -14,10 +14,27 @@
 
 #' Gleyic properties (WRB 2022)
 #'
-#' Tests whether the profile shows gleyic properties -- evidence of
-#' prolonged saturation by groundwater -- within the upper 50 cm.
-#' Gleyic properties are diagnostic for Gleysols and qualify many other
-#' RSGs (Endogleyic, Epigleyic qualifiers).
+#' Tests whether the profile shows gleyic properties (WRB 2022 Ch 3.2.6,
+#' p. 75) in a layer starting within the upper \code{max_top_cm} (default
+#' 50). Gleyic properties qualify the Gleysols and many other RSGs (Gleyic,
+#' Endogleyic, Epigleyic qualifiers).
+#'
+#' Since v0.9.312 the layer reading follows the text and Hugo's reading of
+#' it for field descriptions that do not say where the mottles sit: a layer
+#' has gleyic properties when its matrix has a reductimorphic colour, moist
+#' (criterion 1: hue N, 10Y, GY, G, BG, B or PB, or hue 2.5Y or 5Y with a
+#' chroma of 2 or less; with more than 5\% oximorphic features these are read
+#' as the gleyic features of criterion 2 over a reduced matrix); when it has
+#' more than 5\% oximorphic features and lies directly on a layer with such a
+#' matrix (criterion 3); or when it has them and the site records
+#' groundwater within 150 cm that is not perched
+#' (\code{site$groundwater_kind}, \code{site$groundwater_depth_cm}). A
+#' mottled layer with none of these is \code{NA}, unless the site records no
+#' groundwater, a perched water table or a deeper one, or a claric layer
+#' lies directly above it: its features are then stagnic. Continuous rock
+#' has no gleyic properties. Until v0.9.311 the features also had to
+#' continue with depth (a "decay" test that is not in WRB 2022 and failed
+#' the textbook oximorphic-over-reductimorphic sequence).
 #'
 #' @section v0.9.72 designation morphological inference (opt-in):
 #' Field-described Brazilian Gleissolos profiles (e.g.\ the Embrapa
@@ -25,116 +42,50 @@
 #' designation suffix \code{g} (e.g.\ \code{Cg}, \code{Cg1}, \code{Cgn},
 #' \code{Apg}) plus low-chroma Munsell colours (chroma \\<= 2), without
 #' recording \code{redoximorphic_features_pct} as a numeric percent.
-#' The strict canonical test then returns \code{NA} on every horizon
-#' and Gleissolos cascade to other Orders.
 #'
 #' With \code{options(soilKey.gleyic_designation_inference = TRUE)} the
-#' function accepts a layer as gleyic when:
-#' \enumerate{
-#'   \item the canonical \code{redoximorphic_features_pct} test is
-#'         \code{NA} for that layer, AND
-#'   \item the designation matches \code{[A-Z]+g[0-9a-z]?} (a horizon
-#'         name with a \code{g} suffix in the master letter sequence,
-#'         e.g.\ \code{Cg}, \code{Bg2}, \code{Apg}, \code{Cgn}), AND
-#'   \item the layer has \code{munsell_chroma_moist <= 2} (low-chroma
-#'         reduced colour) when Munsell is recorded; if Munsell is
-#'         missing on the layer the suffix alone is sufficient
-#'         (designation suffix is the most direct signal of pedologist
-#'         field judgment).
-#' }
-#'
-#' This is conservative: the suffix \code{g} is a master-letter
-#' modifier in the FAO/Embrapa horizon nomenclature that explicitly
-#' means "gleyic-affected" -- the curator already made the call.
-#' Default is \code{FALSE} (canonical behaviour preserved).
+#' function accepts a layer as gleyic when the reading above does not pass,
+#' the designation matches \code{[A-Z][a-z0-9]*g} and
+#' \code{munsell_chroma_moist <= 2} (or no Munsell colour). Default is
+#' \code{FALSE}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_top_cm Maximum top depth (cm) of a candidate layer
-#'        (default 50, per WRB 2022).
-#' @param min_redox_pct Minimum \code{redoximorphic_features_pct}
-#'        (default 5).
+#'        (default 50).
+#' @param min_redox_pct The oximorphic features of criterion 2 are more
+#'        than this \% of the layer (default 5).
+#' @param stagnic_decay_factor Not used since v0.9.312 (the decay test was
+#'        removed); kept so that existing calls still work.
 #' @return A \code{\link{DiagnosticResult}}.
-#'
-#' @details
-#' Sub-test: \code{test_gleyic_features} -- requires explicit
-#' \code{redoximorphic_features_pct} >= 5\% within the upper 50 cm.
-#'
-#' v0.2 deliberately does NOT use the Munsell-based shortcut (chroma <=
-#' 2 + value >= 4) as a primary criterion: that pattern fits albic /
-#' bleached horizons of Podzols just as well as truly reduced gleyic
-#' horizons. v0.3 will add reductimorphic / oxidimorphic feature
-#' discrimination once we model field-described mottle properties.
-#' v0.9.72 adds the designation-suffix path (opt-in).
-#'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Gleyic properties.
-#' @param stagnic_decay_factor Numeric threshold or option (see Details).
+#' @references IUSS Working Group WRB (2022), Chapter 3.2.6, Gleyic
+#'   properties.
 #' @export
 gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
                                  stagnic_decay_factor = 3) {
   h <- pedon$horizons
+  z <- .wrb_redox_layers(pedon, min_redox_pct = min_redox_pct)
+  in_window <- !is.na(h$top_cm) & h$top_cm <= max_top_cm
+  layers <- which(in_window & z$gleyic %in% TRUE)
+  undecided <- which(in_window & is.na(z$gleyic))
+  passed <- if (length(layers)) TRUE else if (length(undecided)) NA else FALSE
+  missing <- .redox_missing(z, undecided)
+  tests <- list(redox_layers = z, undecided_layers = undecided)
 
-  tests <- list()
-  tests$gleyic_features <- test_gleyic_features(h,
-                                                   max_top_cm    = max_top_cm,
-                                                   min_redox_pct = min_redox_pct)
-  # Refined v0.3 criterion: gleyic vs stagnic discrimination.
-  # Gleyic implies groundwater saturation, so redox features should
-  # CONTINUE with depth (no substantial decay). If redox decays with
-  # depth by stagnic_decay_factor, the profile is more consistent
-  # with stagnic / perched-water regime and gleyic_properties must
-  # NOT fire (otherwise Stagnosols would never key correctly given
-  # GL @ #9 < ST @ #16 in the canonical WRB order).
-  tests$stagnic_pattern <- test_stagnic_pattern(h,
-                                                   max_top_cm    = max_top_cm,
-                                                   min_redox_pct = min_redox_pct,
-                                                   decay_factor  = stagnic_decay_factor)
-
-  features_ok <- isTRUE(tests$gleyic_features$passed)
-  stagnic_pat <- isTRUE(tests$stagnic_pattern$passed)
-  any_na      <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
-
-  # v0.9.72 -- designation-suffix morphological inference
-  designation_inference_enabled <- isTRUE(
-    getOption("soilKey.gleyic_designation_inference", default = FALSE))
+  # v0.9.72 -- designation-suffix morphological inference (opt-in)
   inferred_layers <- integer(0)
-  inference_path  <- list(passed = NA, layers = integer(0), source = "off")
-  if (designation_inference_enabled && !features_ok) {
-    desig <- if (!is.null(h$designation)) as.character(h$designation)
-              else rep(NA_character_, nrow(h))
-    chroma <- if (!is.null(h$munsell_chroma_moist)) h$munsell_chroma_moist
-              else rep(NA_real_, nrow(h))
-    topcm  <- if (!is.null(h$top_cm)) h$top_cm else rep(NA_real_, nrow(h))
-    # Match a "g" master-letter modifier: uppercase, then optional
-    # lowercase modifiers OR sequence digits (e.g. C1, C2), then 'g'.
-    # Catches Cg, Cg1, Cgn, Apg, 2Cgnz, 3Cgjz, 11C1g, Cgnz1, Cnz1g.
-    has_g_suffix <- !is.na(desig) & grepl("[A-Z][a-z0-9]*g", desig)
-    in_window    <- !is.na(topcm) & topcm <= max_top_cm
-    chroma_ok    <- is.na(chroma) | chroma <= 2
-    inferred_mask <- has_g_suffix & in_window & chroma_ok
-    inferred_layers <- which(inferred_mask)
-    inference_path <- list(
-      passed = length(inferred_layers) > 0L,
-      layers = inferred_layers,
+  if (isTRUE(getOption("soilKey.gleyic_designation_inference", default = FALSE)) &&
+      !isTRUE(passed)) {
+    desig  <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
+    chroma <- h$munsell_chroma_moist %||% rep(NA_real_, nrow(h))
+    inferred_layers <- which(!is.na(desig) & grepl("[A-Z][a-z0-9]*g", desig) &
+                               in_window & (is.na(chroma) | chroma <= 2))
+    tests$designation_inference <- list(
+      passed = length(inferred_layers) > 0L, layers = inferred_layers,
       source = "designation_g_suffix",
-      details = list(matched_designations = desig[inferred_mask],
-                       max_top_cm           = max_top_cm)
-    )
+      details = list(matched_designations = desig[inferred_layers],
+                     max_top_cm = max_top_cm))
+    if (length(inferred_layers)) { passed <- TRUE; layers <- inferred_layers }
   }
-  tests$designation_inference <- inference_path
-
-  passed <- if (features_ok && !stagnic_pat) TRUE
-            else if (length(inferred_layers) > 0L && !stagnic_pat) TRUE
-            else if (any_na && !features_ok) NA
-            else FALSE
-
-  layers <- if (features_ok && !stagnic_pat)
-              tests$gleyic_features$layers
-            else if (length(inferred_layers) > 0L && !stagnic_pat)
-              inferred_layers
-            else integer(0)
-  missing <- unique(unlist(lapply(tests[c("gleyic_features", "stagnic_pattern")],
-                                    function(t) t$missing %||% character(0))))
-  if (is.null(missing)) missing <- character(0)
 
   # v0.9.187 -- designation fallback (opt-in): a bare Bg/Cg records field-
   # observed gleying; accept it when the redox data is missing.
@@ -146,8 +97,8 @@ gleyic_properties <- function(pedon, max_top_cm = 50, min_redox_pct = 5,
     passed    = passed,
     layers    = layers,
     evidence  = tests,
-    missing   = missing,
-    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Gleyic properties",
+    missing   = if (isTRUE(passed)) character(0) else missing,
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3.2.6, Gleyic properties (p. 75)",
                        if (length(inferred_layers) > 0L)
                          "[v0.9.72 designation-suffix inference]" else "")
   )
@@ -305,6 +256,18 @@ leptic_features <- function(pedon, max_depth = 25, min_coarse_pct = NULL,
 #' separate \code{\link{vitric_properties}} diagnostic; Andosols key
 #' on (andic OR vitric) at the RSG-gate level (\code{\link{andosol}}).
 #'
+#' @section v0.9.313:
+#' The answer is read layer by layer and is \code{NA} when a value it
+#' needs is not recorded (until v0.9.312 an undecided profile returned
+#' \code{FALSE}); \code{evidence$layer_status} holds the answer per layer.
+#' A layer fails when Al_ox + 0.5*Fe_ox < \code{min_alfe} or the bulk
+#' density > \code{max_bd} is measured (phosphate retention, an optional
+#' path, can still pass it). Where bulk density is not measured,
+#' Al_ox + 0.5*Fe_ox >= \code{min_alfe} together with a pH in NaF
+#' (\code{ph_naf}) >= 9.5 in a carbonate-free layer passes, read from the
+#' field test of WRB 2022 Ch 3.2.3; this is a proxy, named in
+#' \code{notes}, \code{reference} and \code{evidence$naf_field_test}.
+#'
 #' @section v0.9.80 OC + BD proxy (opt-in):
 #' Field-described volcanic-ash soils (e.g.\ AfSP, KSSL/NASIS, SOTER)
 #' routinely lack oxalate Al/Fe and phosphate retention measurements,
@@ -448,22 +411,92 @@ andic_properties <- function(pedon,
   }
   paths$oc_bd_proxy <- proxy_path
 
-  agg <- aggregate_alternatives(paths[c("alfe_lowbd", "phosphate_retention")])
-  inferred_passed <- isTRUE(proxy_path$passed)
-  passed <- isTRUE(agg$passed) || isTRUE(inferred_passed)
-  layers <- if (isTRUE(agg$passed)) agg$layers
-            else if (isTRUE(inferred_passed)) proxy_path$layers
+  # v0.9.313: the answer per layer (.andic_layer_status()), so that a value
+  # not recorded stays undecided. Until v0.9.312 `isTRUE(agg) || isTRUE(proxy)`
+  # turned every undecided profile into FALSE. Where bulk density is not
+  # measured, Alox + 1/2 Feox >= 2% with a pH NaF >= 9.5 is read as andic
+  # (WRB 2022 Ch 3.2.3, p 73, field identification; Hugo, N2): a proxy, named
+  # in `notes`, `reference` and `evidence$naf_field_test`.
+  st <- .andic_layer_status(h, min_alfe = min_alfe, max_bd = max_bd,
+                            min_p_retention = min_p_retention)
+  paths$naf_field_test <- list(
+    passed = length(st$naf) > 0L, layers = st$naf,
+    details = list(rule = "bulk density not measured; Alox + 1/2 Feox >= 2 and pH NaF >= 9.5, carbonate-free",
+                   proxy = TRUE))
+  canonical <- if (any(st$status %in% TRUE)) TRUE
+               else if (all(st$status %in% FALSE)) FALSE
+               else NA
+  inferred_passed <- !isTRUE(canonical) && isTRUE(proxy_path$passed)
+  passed <- if (isTRUE(canonical) || inferred_passed) TRUE else canonical
+  layers <- if (isTRUE(canonical)) which(st$status %in% TRUE)
+            else if (inferred_passed) proxy_path$layers
             else integer(0)
+  naf_used <- isTRUE(canonical) && length(st$naf) > 0L
+  evidence <- c(paths, list(layer_status = st$status))
 
   DiagnosticResult$new(
     name      = "andic_properties",
     passed    = passed,
     layers    = layers,
-    evidence  = paths,
-    missing   = agg$missing,
+    evidence  = evidence,
+    missing   = if (is.na(passed)) st$missing else character(0),
     reference = paste("IUSS Working Group WRB (2022), Chapter 3, Andic properties",
-                       if (inferred_passed) "[v0.9.80 OC+BD proxy]" else "")
+                       if (inferred_passed) "[v0.9.80 OC+BD proxy]"
+                       else if (naf_used) "[pH NaF field test where bulk density is not measured]"
+                       else ""),
+    notes     = if (naf_used)
+                  sprintf(paste("Andic properties in layer(s) %s read from Alox + 1/2 Feox",
+                                "and the NaF field test (pH NaF >= 9.5), bulk density not",
+                                "measured: a proxy (WRB 2022 Ch 3.2.3, field identification)."),
+                          paste(st$naf, collapse = ", "))
+                else NA_character_
   )
+}
+
+
+# Andic properties per layer (v0.9.313) as TRUE / FALSE / NA, on the paths
+# andic_properties() reads:
+#   (a) Alox + 1/2 Feox >= min_alfe and bulk density <= max_bd (WRB 2022 Ch
+#       3.2.3, p 73, criteria 1 and 2);
+#   (b) phosphate retention >= min_p_retention, the optional path soilKey has
+#       kept since v0.3.4 (Hugo: not a required criterion). It can pass a
+#       layer; where it is not measured the layer is decided by (a) and (c);
+#   (c) where bulk density is not measured, Alox + 1/2 Feox >= min_alfe with
+#       pH NaF >= min_ph_naf in a carbonate-free layer (the field test of Ch
+#       3.2.3, which "indicates allophane and/or organo-aluminium complexes in
+#       carbonate-free soils"; Hugo, N2). A pH NaF below 9.5 does not rule the
+#       layer out (the text: the test fails in layers very rich in organic
+#       matter), so it stays undecided.
+# A layer fails when (a) fails on a measured value: Alox + 1/2 Feox < 2%, or
+# bulk density > 0.9.
+.andic_layer_status <- function(h, min_alfe = 2.0, max_bd = 0.9,
+                                min_p_retention = 70, min_ph_naf = 9.5) {
+  n <- nrow(h)
+  col <- function(x) h[[x]] %||% rep(NA_real_, n)
+  al <- col("al_ox_pct"); fe <- col("fe_ox_pct")
+  bd <- col("bulk_density_g_cm3"); pr <- col("phosphate_retention_pct")
+  naf <- col("ph_naf"); caco3 <- col("caco3_pct")
+  alfe <- al + fe / 2
+  alfe_ok <- ifelse(!is.na(alfe), alfe >= min_alfe,
+                    ifelse(!is.na(al) & al >= min_alfe, TRUE, NA))
+  a <- alfe_ok & (bd <= max_bd)
+  p <- !is.na(pr) & pr >= min_p_retention
+  calcareous <- !is.na(caco3) & caco3 > 0
+  f <- is.na(bd) & alfe_ok %in% TRUE & !is.na(naf) & naf >= min_ph_naf &
+       !calcareous
+  status <- ifelse(a %in% TRUE | p | f, TRUE, ifelse(a %in% FALSE, FALSE, NA))
+  und <- which(is.na(status))
+  missing <- unique(c(
+    if (any(is.na(al[und]))) "al_ox_pct",
+    if (any(is.na(fe[und]) & !(alfe_ok[und] %in% TRUE))) "fe_ox_pct",
+    if (any(is.na(bd[und]))) "bulk_density_g_cm3",
+    if (any(is.na(bd[und]) & is.na(naf[und]))) "ph_naf",
+    if (any(is.na(pr[und]))) "phosphate_retention_pct"))
+  list(status = status,
+       alfe_lowbd = which(a %in% TRUE),
+       p_retention = which(p),
+       naf = which(f & !(a %in% TRUE) & !p),
+       missing = missing %||% character(0))
 }
 
 
@@ -503,41 +536,48 @@ planic_features <- function(pedon, min_ratio = 2.0,
 
 #' Stagnic properties (WRB 2022)
 #'
-#' Tests for redoximorphic features driven by perched water. Distinct
-#' from gleyic (groundwater): stagnic features appear in upper layers
-#' AND redox decreases substantially with depth (the perched layer
-#' sits above a slowly permeable subsoil that itself is not
-#' saturated).
+#' Tests for stagnic properties (WRB 2022 Ch 3.2.14, p. 81) in a layer
+#' starting within the upper \code{max_top_cm} (default 100).
+#'
+#' Since v0.9.312 the layer reading is that of \code{\link{gleyic_properties}}
+#' (Hugo's reading for descriptions that do not say where the mottles sit):
+#' a layer with more than 5\% oximorphic features that are not gleyic
+#' (criteria 1-3: the matrix has no reductimorphic colour, the layer does
+#' not lie directly on a layer with such a matrix, and the site records no
+#' groundwater within 150 cm that is not perched, or a claric layer lies
+#' directly above it); a layer with claric colours in 95\% or more of
+#' its area above an abrupt textural difference or a layer of 1.5 kg/dm3 or
+#' more (criterion 4), or above a layer with stagnic oximorphic features
+#' (criterion 5). Mottles with neither colour nor water evidence leave the
+#' layer \code{NA}. Until v0.9.311 a layer with 5\% redox features passed when
+#' the features decayed with depth, which is not in WRB 2022.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Maximum top depth (cm) of candidate shallow
-#'        layers (default 100).
-#' @param min_redox_pct Minimum redox feature percent in the shallow
+#' @param max_top_cm Maximum top depth (cm) of candidate layers
+#'        (default 100).
+#' @param min_redox_pct The oximorphic features are more than this \% of the
 #'        layer (default 5).
-#' @param decay_factor Required factor of redox decrease with depth
-#'        (default 3, i.e., deeper redox < shallow / 3).
+#' @param decay_factor Not used since v0.9.312 (the decay test was removed);
+#'        kept so that existing calls still work.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 3, Stagnic
+#' @references IUSS Working Group WRB (2022), Chapter 3.2.14, Stagnic
 #'   properties.
 #' @export
 stagnic_properties <- function(pedon, max_top_cm = 100,
                                   min_redox_pct = 5, decay_factor = 3) {
   h <- pedon$horizons
-  tests <- list()
-  tests$stagnic_pattern <- test_stagnic_pattern(h,
-                                                   max_top_cm    = max_top_cm,
-                                                   min_redox_pct = min_redox_pct,
-                                                   decay_factor  = decay_factor)
-
-  agg <- aggregate_subtests(tests)
-
+  z <- .wrb_redox_layers(pedon, min_redox_pct = min_redox_pct)
+  in_window <- !is.na(h$top_cm) & h$top_cm <= max_top_cm
+  layers <- which(in_window & z$stagnic %in% TRUE)
+  undecided <- which(in_window & is.na(z$stagnic))
+  passed <- if (length(layers)) TRUE else if (length(undecided)) NA else FALSE
   DiagnosticResult$new(
     name      = "stagnic_properties",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Stagnic properties"
+    passed    = passed,
+    layers    = layers,
+    evidence  = list(redox_layers = z, undecided_layers = undecided),
+    missing   = if (isTRUE(passed)) character(0) else .redox_missing(z, undecided),
+    reference = "IUSS Working Group WRB (2022), Chapter 3.2.14, Stagnic properties (p. 81)"
   )
 }
 
@@ -550,14 +590,20 @@ stagnic_properties <- function(pedon, max_top_cm = 100,
 #' (\code{\link{argic}}, \code{\link{natric_horizon}}) and the interfingering
 #' recorded at its upper limit, and stands in for criteria 2-5, 7 and 8
 #' (claric coarser parts, colour and clay contrasts, width, 10-90\% of the
-#' sections, not in a plough layer), which no column holds, by the
-#' designation the describer gave: \code{pattern} on the uppermost argic or
-#' natric layer or the layer directly above it.
+#' sections, not in a plough layer), which no column holds, by what the
+#' describer recorded on the uppermost argic or natric layer or the layer
+#' directly above it: a designation matching \code{pattern}; an FAO
+#' designation of a layer with distinct parts of an E and a B horizon
+#' (\code{E/B}, \code{2E/Bt}, \code{B/E}, since v0.9.312); or (since v0.9.312)
+#' an E or claric layer whose lower boundary on the argic or natric horizon
+#' is irregular or broken (\code{boundary_topography}), the uneven limit that
+#' 3.2.1 names as an example of retic properties.
 #'
-#' \code{FALSE} without an argic or natric horizon, or when designations are
-#' recorded and none shows the interfingering; \code{NA} when the argic or
-#' natric horizon cannot be established or there are no designations. Until
-#' v0.9.219 the designation alone decided, anywhere in the profile.
+#' \code{FALSE} without an argic or natric horizon, or when designations or
+#' boundaries are recorded and none shows the interfingering; \code{NA} when
+#' the argic or natric horizon cannot be established or there are neither
+#' designations nor boundary topographies. Until v0.9.219 the designation
+#' alone decided, anywhere in the profile.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param pattern Regex (default \code{"glossic|retic|albeluvic"}).
@@ -567,16 +613,23 @@ stagnic_properties <- function(pedon, max_top_cm = 100,
 #' @export
 retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
   h <- pedon$horizons
-  ref <- "IUSS Working Group WRB (2022), Chapter 3.2.11, Retic properties"
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.2.11, Retic properties (p. 79)"
   arg <- argic(pedon)
   nat <- natric_horizon(pedon)
   hz  <- sort(union(if (isTRUE(arg$passed)) arg$layers,
                     if (isTRUE(nat$passed)) nat$layers))
   desg <- as.character(h$designation %||% rep(NA_character_, nrow(h)))
-  flag <- !is.na(desg) & grepl(pattern, desg, ignore.case = TRUE)
+  topo <- as.character(h$boundary_topography %||% rep(NA_character_, nrow(h)))
+  # v0.9.312: E/B and B/E (FAO), a layer with distinct parts of an E and a B
+  # horizon, the claric material in the finer-textured argic or natric parts
+  # (3.2.11 criteria 1-2).
+  inter <- !is.na(desg) &
+    grepl("^[0-9]*E[a-z0-9]*/[0-9]*B|^[0-9]*B[a-z0-9]*/[0-9]*E", desg)
+  flag <- (!is.na(desg) & grepl(pattern, desg, ignore.case = TRUE)) | inter
+  recorded <- !all(is.na(desg)) || !all(is.na(topo))
   if (!length(hz)) {
     passed <- if (is.na(arg$passed) || is.na(nat$passed)) {
-      if (any(flag) || all(is.na(desg))) NA else FALSE
+      if (any(flag) || !recorded) NA else FALSE
     } else FALSE
     return(DiagnosticResult$new(
       name = "retic_properties", passed = passed, layers = integer(0),
@@ -587,14 +640,25 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
   top <- hz[which.min(h$top_cm[hz])]
   above <- which(!is.na(h$bottom_cm) & abs(h$bottom_cm - h$top_cm[top]) < 1e-6)
   at_boundary <- intersect(which(flag), c(top, above))
-  passed <- if (length(at_boundary)) TRUE else if (all(is.na(desg))) NA else FALSE
+  # v0.9.312: the irregular or broken lower boundary of an E or claric layer
+  # on the argic or natric horizon: coarser material reaching into it from
+  # its upper limit (3.2.11 criterion 6; 3.2.1, p. 72: retic properties are
+  # an example of an uneven limit).
+  clr <- .subtest_by_layer(test_claric_munsell(h), nrow(h))
+  tongue <- above[!is.na(topo[above]) &
+                    grepl("irregular|broken", topo[above], ignore.case = TRUE) &
+                    ((!is.na(desg[above]) & grepl("^[0-9]*E", desg[above])) |
+                       clr[above] %in% TRUE)]
+  hit <- sort(union(at_boundary, tongue))
+  passed <- if (length(hit)) TRUE else if (!recorded) NA else FALSE
   DiagnosticResult$new(
     name      = "retic_properties",
     passed    = passed,
-    layers    = if (isTRUE(passed)) sort(union(at_boundary, top)) else integer(0),
+    layers    = if (isTRUE(passed)) sort(union(hit, top)) else integer(0),
     evidence  = list(argic_or_natric = hz, upper_limit_layer = top,
-                     designation_flags = which(flag), argic = arg, natric = nat),
-    missing   = if (is.na(passed)) "designation" else character(0),
+                     designation_flags = which(flag), irregular_boundary = tongue,
+                     argic = arg, natric = nat),
+    missing   = if (is.na(passed)) c("designation", "boundary_topography") else character(0),
     reference = ref
   )
 }
@@ -666,6 +730,73 @@ cryic_conditions <- function(pedon, max_top_cm = 100, max_temp_C = 0) {
     evidence  = evidence,
     missing   = agg$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 5, Cryosols"
+  )
+}
+
+
+#' Cryosols (WRB 2022 Ch 4, p 98)
+#'
+#' (1) A cryic horizon starting <= 100 cm, or (2) a cryic horizon starting
+#' <= 200 cm and evidence of cryogenic alteration in some layer within
+#' 100 cm.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+cryosol <- function(pedon) {
+  # v0.9.313: WRB 2022 Ch 4, Cryosols (p 98). Item 1 is cryic_conditions()
+  # (cryic horizon starting <= 100 cm), the old gate. Item 2: "a cryic
+  # horizon starting <= 200 cm from the soil surface and evidence of
+  # cryogenic alteration (cryoturbation, frost heave, cryogenic sorting,
+  # thermal cracking, ice segregation, patterned ground, etc.) in some layer
+  # within 100 cm". Cryogenic alteration is read as the Gelic qualifier reads
+  # it (cryoturbation_usda(): jj or @ designations, broken or involuted
+  # boundaries), so that Gelic and this item stay complementary. Both items
+  # keep the v0.9.307 rule: no permafrost under a temperature regime warmer
+  # than gelic.
+  h <- pedon$horizons
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Cryosols (p. 98)"
+  c100 <- cryic_conditions(pedon)
+  if (isTRUE(c100$passed))
+    return(DiagnosticResult$new(
+      name = "cryosol", passed = TRUE, layers = c100$layers,
+      evidence = list(item1 = c100), missing = character(0), reference = ref))
+  c200 <- cryic_conditions(pedon, max_top_cm = 200)
+  top <- h$top_cm
+  # Where no soil temperature is recorded, horizons described without the
+  # frozen suffix, in a profile that uses it deeper down, count as not frozen
+  # (the reading of qual_gelic()).
+  frozen_des <- c200$evidence$designation$frozen_designation$layers %||% integer(0)
+  settle <- function(x, depth) {
+    if (!is.na(x)) return(x)
+    up <- which(!is.na(top) & top <= depth)
+    if (length(frozen_des) && all(!is.na(h$designation[up]))) FALSE else NA
+  }
+  item1 <- settle(c100$passed, 100)
+  cryic200 <- settle(c200$passed, 200)
+  ct <- cryoturbation_usda(pedon)
+  alt <- ct$layers[!is.na(top[ct$layers]) & top[ct$layers] < 100]
+  up <- which(!is.na(top) & top < 100)
+  seen <- any(!is.na(h$designation[up]) | !is.na(h$boundary_topography[up]))
+  altered <- if (length(alt)) TRUE else if (seen) FALSE else NA
+  item2 <- if (isFALSE(cryic200) || isFALSE(altered)) FALSE
+           else if (isTRUE(cryic200) && isTRUE(altered)) TRUE
+           else NA
+  passed <- if (isTRUE(item2)) TRUE
+            else if (isFALSE(item1) && isFALSE(item2)) FALSE
+            else NA
+  missing <- character(0)
+  if (is.na(passed)) {
+    missing <- c(if (is.na(item1)) c100$missing, if (is.na(cryic200)) c200$missing)
+    if (is.na(altered)) missing <- c(missing, "designation", "boundary_topography")
+  }
+  DiagnosticResult$new(
+    name      = "cryosol",
+    passed    = passed,
+    layers    = if (isTRUE(passed)) sort(union(c200$layers, alt)) else integer(0),
+    evidence  = list(item1 = item1, cryic_100cm = c100,
+                     item2 = list(passed = item2, cryic_200cm = c200,
+                                  cryogenic_alteration_layers = alt)),
+    missing   = unique(missing),
+    reference = ref
   )
 }
 

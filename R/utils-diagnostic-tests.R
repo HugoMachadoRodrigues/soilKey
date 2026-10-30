@@ -124,13 +124,27 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #' @param h Horizons data.table (canonical schema).
 #' @param system One of \code{"wrb2022"} (default) or \code{"usda"}.
 #'        Selects the threshold set.
+#' @param max_transition_cm v0.9.310. \code{NULL} (default): a layer is
+#'        compared with any coarser layer above it. A number (15 for the WRB
+#'        2022 argic): criterion 2.a.iii, "if the coarser-textured layer does
+#'        not directly overlie the argic horizon, the transitional horizon
+#'        between [them] has a thickness of <= 15 cm" (WRB 2022 Ch 3.1.3,
+#'        p. 36). A layer is then compared only with the layers above it whose
+#'        intervening layers add up to no more than this thickness, leaving out
+#'        the layers already accepted and those whose designation has the
+#'        suffix t (Bt, 2Btg): they are part of the argic horizon.
+#' @param exclude v0.9.310. Logical, one per layer: layers that cannot be part
+#'        of the horizon (the WRB argic is a subsurface horizon). They are still
+#'        read as coarser-textured or transitional layers.
 #' @return Sub-test result list.
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
-#'   horizon, criteria 2.a.iv-vi (p. 36); Soil Survey Staff (2022),
+#'   horizon, criteria 2.a.iii-vi (p. 36); Soil Survey Staff (2022),
 #'   Keys to Soil Taxonomy 13th ed., Chapter 3, Argillic horizon (p. 4).
 #' @noRd
 test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
-                                     lithic_aware = FALSE) {
+                                     lithic_aware = FALSE,
+                                     max_transition_cm = NULL,
+                                     exclude = NULL) {
   system <- match.arg(system)
   # v0.9.220: with lithic_aware = TRUE (the WRB argic), a layer is not compared
   # with a coarser layer of another material (WRB 2022 Ch 3.1.3, criterion
@@ -149,6 +163,12 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
   candidates <- integer(0)
   details    <- list()
   missing    <- character(0)
+  if (is.null(exclude)) exclude <- rep(FALSE, nrow(h))
+  # v0.9.310: criterion 2.a.iii. A layer whose designation has the suffix t is
+  # part of the argic horizon, not a transitional horizon (Hugo's reading).
+  t_desg <- grepl("^[0-9]*[A-Z]+[a-z]*t",
+                  as.character(h$designation %||% rep(NA_character_, nrow(h))))
+  thick  <- pmax(h$bottom_cm - h$top_cm, 0)
 
   # v0.9.23: KST 13ed Ch 3 (argillic horizon, p 4) and WRB 2022
   # Ch 3.1.3 (argic horizon, p 36) define the clay-increase test
@@ -170,10 +190,19 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
       missing <- c(missing, "clay_pct")
       next
     }
+    if (isTRUE(exclude[i])) next
     above_idx_set <- seq.int(1L, i - 1L)
     if (!is.na(mat[i]))
       above_idx_set <- above_idx_set[is.na(mat[above_idx_set]) |
                                        mat[above_idx_set] == mat[i]]
+    if (!is.null(max_transition_cm) && length(above_idx_set)) {
+      in_argic <- union(candidates, which(t_desg))
+      gap <- vapply(above_idx_set, function(j) {
+        btw <- setdiff(seq_len(i - 1L)[seq_len(i - 1L) > j], in_argic)
+        sum(thick[btw], na.rm = TRUE)
+      }, numeric(1))
+      above_idx_set <- above_idx_set[gap <= max_transition_cm]
+    }
     if (!length(above_idx_set)) next
     above_clays   <- h$clay_pct[above_idx_set]
     has_clay      <- !is.na(above_clays)
@@ -747,7 +776,8 @@ test_mollic_color <- function(h,
     # qualifies. When chroma is also missing we accept on the dry
     # value alone, because moisture darkens chroma too.
     if (has_dry) {
-      dry_ok <- vd <= max_value_dry
+      # v0.9.309: a moist value, where recorded, is tested too
+      dry_ok <- vd <= max_value_dry && (is.na(vm) || vm <= max_value_moist)
       cd <- if ("munsell_chroma_dry" %in% names(h)) h$munsell_chroma_dry[i]
             else NA_real_
       chroma_evidence <- if (!is.na(cm)) cm
@@ -773,6 +803,16 @@ test_mollic_color <- function(h,
     # fires when allow_oc_inference is TRUE (default) AND OC is
     # measured; when OC is also missing we record the field as
     # missing and the layer remains unevaluated.
+    # v0.9.309: a moist value recorded above the limit fails whatever the
+    # chroma (WRB 2022 3.1.20 crit 3, p. 52); the OC inference is for layers
+    # with no colour recorded.
+    if (!is.na(vm) && vm > max_value_moist) {
+      details[[as.character(i)]] <- list(
+        idx = i, source = "moist_value_only", value_moist = vm,
+        passed = FALSE)
+      next
+    }
+
     if (allow_oc_inference && !is.na(oc) && oc >= 1.5) {
       details[[as.character(i)]] <- list(
         idx = i, source = "oc_inferred",
@@ -783,10 +823,24 @@ test_mollic_color <- function(h,
       next
     }
 
+    # v0.9.309: moist value recorded, chroma not: the dry chroma stands in as
+    # in Path 2; with no chroma at all the layer is undecided (it used to
+    # fail, as the test looked for the column, not its value).
+    cd <- if ("munsell_chroma_dry" %in% names(h)) h$munsell_chroma_dry[i]
+          else NA_real_
+    if (!is.na(vm) && !is.na(cd)) {
+      ok <- cd <= max_chroma_moist && (vm + 1) <= max_value_dry
+      details[[as.character(i)]] <- list(
+        idx = i, source = "moist_value_dry_chroma",
+        value_moist = vm, chroma_dry = cd, passed = ok)
+      if (ok) passing <- c(passing, i)
+      next
+    }
+
     if (is.na(vm) && is.na(vd)) {
       missing <- c(missing, "munsell_value_moist", "munsell_value_dry")
     }
-    if (is.na(cm) && !"munsell_chroma_dry" %in% names(h)) {
+    if (is.na(cm) && is.na(cd)) {
       missing <- c(missing, "munsell_chroma_moist")
     }
     if (allow_oc_inference && is.na(oc)) missing <- c(missing, "oc_pct")
@@ -1167,9 +1221,10 @@ test_plinthite_concentration <- function(h, min_pct = 15,
     )
     if (val >= min_pct) passing <- c(passing, i)
   }
-  evaluated <- length(details)
+  # v0.9.312: a layer where plinthite is not recorded leaves the test
+  # undecided (NA), even when other layers record none.
   passed <- if (length(passing) > 0L) TRUE
-            else if (evaluated == 0L && length(missing) > 0L) NA
+            else if (length(missing) > 0L) NA
             else FALSE
   .subtest_result(passed = passed, layers = passing,
                    missing = missing, details = details)
@@ -1246,22 +1301,22 @@ test_ph_below <- function(h, max_ph = 5.9, candidate_layers = NULL) {
 }
 
 
-#' Gleyic Munsell hue patterns (WRB 2022, Ch 3.1.13 redoximorphic features)
+#' Gleyic Munsell hue patterns (WRB 2022, Ch 3.2.6 gleyic properties)
 #'
-#' Hues consistent with Fe reduction (gleyic / reductimorphic). Used by
-#' \code{test_gleyic_features} as a secondary evidence path when
-#' \code{redoximorphic_features_pct} is not reported (e.g. BDsolos
-#' perfis where the surveyor recorded Munsell colors but not mottle
-#' percent). Per WRB 2022 Ch 3.1.13: hues N (neutral), 10Y, 5GY, 10GY,
-#' 5G, 10G, 5BG, 10BG, 5B, 10B (any value, chroma <= 2 inferred).
+#' Hues of the reductimorphic colours of WRB 2022 3.2.6 criterion 1.a
+#' (p. 75): N, 10Y, GY, G, BG, B or PB (every step of those hue families,
+#' 2.5GY to 10GY and so on; since v0.9.312, before only the 5 and 10 steps).
+#' Criterion 1.b, a hue of 2.5Y or 5Y with a chroma of 2 or less, is
+#' \code{.GLEYIC_HUE_1B_REGEX} with \code{.reductimorphic_colour()}. Used by
+#' the redox reading of \code{gleyic_properties} and by
+#' \code{test_gleyic_features}.
 #'
 #' @keywords internal
 .GLEYIC_HUE_REGEX <- paste0(
   "^(",
-  "N|N\\s*[0-9]|",                # neutral (achromatic)
-  "10Y|5GY|10GY|5G|10G|",         # green / yellow-green
-  "5BG|10BG|5B|10B|",             # blue / blue-green
-  "10PB|5PB",                     # transitional purple-blue (rare but seen)
+  "N|N\\s*[0-9]|",                       # neutral (achromatic)
+  "10Y|[0-9.]*GY|[0-9.]*G|",             # yellow-green / green
+  "[0-9.]*BG|[0-9.]*B|[0-9.]*PB",        # blue-green / blue / purple-blue
   ")(\\s|$)"
 )
 
@@ -1831,13 +1886,14 @@ test_chernic_color <- function(h, max_top_cm = 20, max_chroma = 2,
 
 #' Test that organic carbon is at or above a threshold
 #'
-#' Default 12\% (histic horizon, WRB 2022 Chapter 3).
+#' Default 20\% (organic material, WRB 2022 Ch 3.3.13; it was 12 until
+#' v0.9.312). Every caller passes its own threshold.
 #'
 #' @param h Numeric threshold or option (see Details).
 #' @param min_pct Numeric threshold or option (see Details).
 #' @param candidate_layers Numeric threshold or option (see Details).
 #' @noRd
-test_oc_above <- function(h, min_pct = 12, candidate_layers = NULL) {
+test_oc_above <- function(h, min_pct = 20, candidate_layers = NULL) {
   cl <- .candidate_layers(h, candidate_layers)
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in cl) {
@@ -1932,56 +1988,9 @@ test_designation_pattern <- function(h, pattern,
 }
 
 
-#' Test for coarse texture throughout the upper part of the profile
-#'
-#' Default predicate: \code{silt + 2 * clay < 15} (loamy sand or
-#' coarser) in EVERY layer that intersects the upper
-#' \code{max_top_cm} (default 100). Diagnostic for Arenosols.
-#'
-#' @param h Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
-#' @param candidate_layers Numeric threshold or option (see Details).
-#' @noRd
-test_coarse_texture_throughout <- function(h, max_top_cm = 100,
-                                              candidate_layers = NULL) {
-  cl <- .candidate_layers(h, candidate_layers)
-  cl <- cl[!is.na(h$top_cm[cl]) & h$top_cm[cl] < max_top_cm]
-  if (length(cl) == 0L) {
-    return(.subtest_result(passed = FALSE, layers = integer(0)))
-  }
-
-  passing <- integer(0); missing <- character(0); details <- list()
-  all_coarse <- TRUE
-  for (i in cl) {
-    s <- is_loamy_sand_or_finer(h$sand_pct[i], h$silt_pct[i], h$clay_pct[i])
-    if (is.na(s)) {
-      missing <- c(missing, "sand_pct", "silt_pct", "clay_pct")
-      all_coarse <- NA
-      next
-    }
-    is_coarse <- !s   # loamy sand boundary -- if NOT loamy-sand-or-finer, coarse
-    # Actually arenic uses "loamy sand or coarser" = NOT sandy loam or finer
-    # silt + 2*clay < 30 is "coarser than sandy loam"
-    is_coarse <- (h$silt_pct[i] + 2 * h$clay_pct[i]) < 30
-    details[[as.character(i)]] <- list(
-      idx = i, sand = h$sand_pct[i], silt = h$silt_pct[i],
-      clay = h$clay_pct[i],
-      silt_plus_2clay = h$silt_pct[i] + 2 * h$clay_pct[i],
-      is_coarse = is_coarse
-    )
-    if (is_coarse) {
-      passing <- c(passing, i)
-    } else {
-      all_coarse <- FALSE
-    }
-  }
-
-  passed <- if (isTRUE(all_coarse) && length(passing) == length(cl)) TRUE
-            else if (is.na(all_coarse) && length(missing) > 0L) NA
-            else FALSE
-  .subtest_result(passed = passed, layers = passing,
-                   missing = missing, details = details)
-}
+# v0.9.314: test_coarse_texture_throughout() (every layer above 100 cm
+# coarser than sandy loam) gave way to test_arenosol_texture(), the weighted
+# average of WRB 2022 Ch 4 (R/utils-wrb-weak-v09314.R).
 
 
 #' Test the andic Al/Fe oxalate criterion: (al_ox + 0.5*fe_ox) >= 2.0\%

@@ -81,6 +81,7 @@ and do not warn.
 | `ph_h2o` | - | numeric | pH measured in water (1:2.5 or as reported). soilKey's default pH. | `ph`, `ph_h20`, `ph_water`, `phw` |
 | `ph_kcl` | - | numeric | pH measured in 1 M KCl. | - |
 | `ph_cacl2` | - | numeric | pH measured in 0.01 M CaCl2. | - |
+| `ph_naf` | - | numeric | pH in 1 M NaF (the sodium fluoride test of Fieldes and Perrott, 1966). WRB 2022 Ch 3.2.3: a pH in NaF of 9.5 or more indicates allophane or organo-aluminium complexes. andic_properties() reads Alox + 1/2 Feox >= 2 % with a pH NaF >= 9.5 as andic where bulk density is not measured (a proxy, recorded in the evidence). The USDA keys do not read it. | - |
 
 ## Organics
 
@@ -154,7 +155,7 @@ and do not warn.
 | `cementation_class` | - | character | 'none' / 'weakly' / 'moderately' / 'strongly' / 'indurated' (for petric variants) | - |
 | `p_mehlich3_mg_kg` | mg/kg | numeric | plant-available P (anthric / hortic / pretic / ornithogenic) | - |
 | `worm_holes_pct` | % | numeric | volume % of worm holes / casts / coprolites (chernic / vermic / arenicolic) | - |
-| `water_dispersible_clay_pct` | % | numeric | WDC / total clay (Ferralsols 'activic' check) | - |
+| `water_dispersible_clay_pct` | % | numeric | water-dispersible clay, % of the fine earth (a clay content, WRB 2022 Annex 2 Ch 9.4; not a share of the total clay); Ferralsols argic exception | - |
 | `sulfidic_s_pct` | % | numeric | inorganic sulfidic S (hypersulfidic / hyposulfidic / thionic) | - |
 | `volcanic_glass_pct` | % | numeric | % volcanic glass in 0.02-2 mm fraction (vitric / tephric) | - |
 | `phosphate_retention_pct` | % | numeric | P retention (vitric / andic threshold) | - |
@@ -362,6 +363,8 @@ the last section are stored by the loaders and reports and read by no key.
 | `mean_annual_air_temp_C` | deg C | numeric | Mean annual air temperature. Read by the NZSC Hydrothermal Recent and Raw Soils, against soil_temp_30cm_C. | - | `nzsc4` |
 | `surface_water` | - | character | How often water stands on the soil surface. Read by the NZSC Hydric Raw Soils (surface water for the majority of the time, but not constantly). | `constant`, `most of the time`, `occasional`, `none` | `nzsc4` |
 | `artificially_drained` | - | logical | The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply. | - | `nzsc4` |
+| `groundwater_kind` | - | character | Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon(). | `none observed`, `observed`, `apparent`, `perched`, `flooded` | `wrb2022` |
+| `groundwater_depth_cm` | cm | numeric | Depth of the water table below the soil surface (0 at the surface). Read with groundwater_kind by the WRB gleyic and stagnic properties (within 150 cm, or deeper). Written by isis_profile_to_pedon() from depthGroundwater, or groundwaterTop where ISIS writes 0 for the depth. | - | `wrb2022` |
 | `water_table_cm_above_surface` | cm | numeric | Height of a water table above the soil surface (positive above it). Read by the USDA key: the Wassents (above 0) and the Wassists (2 cm or more). | - | `usda` |
 | `tidal_zone` | - | character | Tidal zone of the site. Read by the ASC Hydrosol settings (Subtidal, Intertidal, Supratidal and Extratidal suborders); a zone named in landform is read too. | `subtidal`, `intertidal`, `supratidal`, `extratidal` | `asc3` |
 | `tidal_inundation` | - | logical | The site is subject to tidal flooding. Read by the ASC key: it makes the soil a Hydrosol, rules out the Organosols, and without tidal_zone leaves the tidal Hydrosol settings undecided. | - | `asc3` |

@@ -22,11 +22,14 @@ test_that("mollic-derived RSGs are mutually exclusive on each fixture", {
   ks <- make_kastanozem_canonical()
   ph <- make_phaeozem_canonical()
 
+  # v0.9.309: phaeozem() is the WRB 2022 Phaeozem test (mollic + BS >= 50% to
+  # 100 cm), which a Chernozem or a Kastanozem also meets: the key order keeps
+  # them apart, as the text does.
   expect_false(isTRUE(kastanozem(ch)$passed))
-  expect_false(isTRUE(phaeozem(ch)$passed))
+  expect_true(isTRUE(phaeozem(ch)$passed))
 
   expect_false(isTRUE(chernozem(ks)$passed))
-  expect_false(isTRUE(phaeozem(ks)$passed))
+  expect_true(isTRUE(phaeozem(ks)$passed))
 
   expect_false(isTRUE(chernozem(ph)$passed))
   expect_false(isTRUE(kastanozem(ph)$passed))

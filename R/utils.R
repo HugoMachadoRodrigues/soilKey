@@ -95,7 +95,7 @@ horizon_column_spec <- function() {
     cementation_class             = "character", # 'none' / 'weakly' / 'moderately' / 'strongly' / 'indurated' (for petric variants)
     p_mehlich3_mg_kg              = "numeric",   # plant-available P (anthric / hortic / pretic / ornithogenic)
     worm_holes_pct                = "numeric",   # volume % of worm holes / casts / coprolites (chernic / vermic / arenicolic)
-    water_dispersible_clay_pct    = "numeric",   # WDC / total clay (Ferralsols 'activic' check)
+    water_dispersible_clay_pct    = "numeric",   # water-dispersible clay, % of the fine earth (a clay content, WRB 2022 Annex 2 Ch 9.4; not a share of the total clay); Ferralsols argic exception
     sulfidic_s_pct                = "numeric",   # inorganic sulfidic S (hypersulfidic / hyposulfidic / thionic)
     volcanic_glass_pct            = "numeric",   # % volcanic glass in 0.02-2 mm fraction (vitric / tephric)
     phosphate_retention_pct       = "numeric",   # P retention (vitric / andic threshold)
@@ -221,7 +221,9 @@ horizon_column_spec <- function() {
     # ---- v0.9.305: the Hungarian diagnostic system (HSCS 2024) ----
     soluble_salts_pct             = "numeric",   # total water-soluble salts, % by mass (Hungarian method, from the EC of the saturated paste); HSCS solonchak horizon
     # ---- v0.9.308: the ISIS reader ----
-    ec_max_dS_m                   = "numeric"    # upper bound of the saturated-paste EC (e.g. EC 1:2.5 x 12.5); read only by the salic test, to rule a layer out
+    ec_max_dS_m                   = "numeric",   # upper bound of the saturated-paste EC (e.g. EC 1:2.5 x 12.5); read only by the salic test, to rule a layer out
+    # ---- WRB 2022 andic properties: the NaF field test as a number ----
+    ph_naf                        = "numeric"    # pH in 1 M NaF (Fieldes and Perrott test); WRB 2022 Ch 3.2.3 (p 73): >= 9.5 indicates allophane or Al-humus; read by andic_properties() where bulk density is not measured
   )
 }
 

@@ -87,7 +87,20 @@ test_that("v0.9.137: B_incipiente excludes a gleyed layer", {
                    munsell_value_moist = c(4, 5), munsell_chroma_moist = c(3, 1),
                    structure_type = c("granular", "blocks"))
   expect_true(isTRUE(gleyic_properties(prh(mkh(gl)))$passed))
+  # v0.9.310: the exclusion is the glei horizon of the SiBCS (p. 70-71),
+  # which asks a sign of saturation beside the colour: here, mottles
+  gl$redoximorphic_features_pct <- c(0, 10)
+  expect_true(isTRUE(horizonte_glei(prh(mkh(gl)))$passed))
   expect_false(isTRUE(B_incipiente(prh(mkh(gl)))$passed))   # excluded
+  # a dark Vertissolo matrix (2.5Y 3/2) is reductimorphic for WRB 2022
+  # (criterion 1b) but no glei horizon of the SiBCS: the B incipiente stays
+  dk <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
+                   designation = c("A", "Bi"), clay_pct = c(40, 45),
+                   munsell_hue_moist = c("10YR", "2.5Y"),
+                   munsell_value_moist = c(3, 3), munsell_chroma_moist = c(2, 2),
+                   structure_type = c("granular", "blocks"))
+  expect_false(isTRUE(horizonte_glei(prh(mkh(dk)))$passed))
+  expect_true(isTRUE(B_incipiente(prh(mkh(dk)))$passed))
 })
 
 test_that("v0.9.137: B_incipiente is byte-identical on a plain cambic Bw", {

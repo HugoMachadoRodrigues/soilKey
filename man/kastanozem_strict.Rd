@@ -9,9 +9,11 @@ kastanozem_strict(pedon, min_bs = 50, max_top_cm = 70, strict = NULL)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_bs}{Numeric threshold or option (see Details).}
+\item{min_bs}{Minimum base saturation \% above the carbonate layer
+(default 50).}
 
-\item{max_top_cm}{Numeric threshold or option (see Details).}
+\item{max_top_cm}{Maximum depth of the carbonate layer below the mineral
+soil surface, cm (default 70).}
 
 \item{strict}{Logical or \code{NULL}. When \code{NULL} (default) it
 resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.

@@ -92,7 +92,10 @@ test_that("oxic_usda delegates faithfully to ferralic", {
   fer <- ferralic(pr)
   oxi <- oxic_usda(pr)
   expect_identical(fer$passed, oxi$passed)
-  expect_identical(fer$layers, oxi$layers)
+  # v0.9.310: the WRB ferralic takes its adjoining sub-horizons together (the
+  # 20 cm AB joins the BA and Bw); the oxic horizon keeps the per-layer test
+  expect_identical(fer$layers, 2:5)
+  expect_identical(oxi$layers, 3:5)
   expect_match(oxi$reference, "Soil Survey Staff")
 })
 

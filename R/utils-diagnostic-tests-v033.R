@@ -309,8 +309,12 @@ test_reducing_conditions <- function(h, min_redox_pct = 5,
     redox <- h$redoximorphic_features_pct[i]
     sulf  <- h$sulfidic_s_pct[i]
     have_signal <- FALSE; reasons <- character(0)
-    if (!is.na(desg) && grepl("^[A-Z]+(g|r|j|Br|Bj|Bg|Cr|Cg|Sj)",
-                                  desg, ignore.case = FALSE)) {
+    # v0.9.312: every suffix is read, not the first only (Apg, Btg, 2Bg,
+    # BCg): g (gleying), r (strong reduction) or l (capillary-fringe
+    # mottling, FAO 2006), not the old Brazilian "pl" (plinthite). j
+    # (jarosite) is no reduction and no iron sulfide (WRB 2022 3.2.10, p. 79).
+    if (!is.na(desg) && grepl("^[0-9]*[A-Z]+[a-z0-9]*?(g|r|(?<!p)l)",
+                                  desg, perl = TRUE)) {
       have_signal <- TRUE; reasons <- c(reasons, "reduction_designation")
     }
     if (!is.na(redox) && redox >= min_redox_pct) {

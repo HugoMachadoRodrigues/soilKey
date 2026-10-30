@@ -171,11 +171,33 @@ qual_folic       <- function(pedon) {
   )
 }
 
-#' Gleyic qualifier (gl): gleyic properties throughout a layer >= 25 cm
-#' starting <= 75 cm + reducing conditions.
+#' Gleyic qualifier (gl): WRB 2022 Ch 5 (p. 135), a layer \\>= 25 cm thick
+#' starting \\<= 75 cm from the mineral soil surface with gleyic properties
+#' throughout and reducing conditions in some parts of every sublayer.
+#' v0.9.312: the layer is read as the Gleysols gate reads its 25 cm
+#' (adjoining sublayers count together, each gleyic and reducing); until
+#' then gleyic properties in any layer starting \\<= 50 cm were enough, which
+#' since the 2.5Y and 5Y colours of criterion 1.b would have named Gleyic a
+#' dark 2.5Y 2/2 topsoil with no sign of reduction.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_gleyic      <- function(pedon) .q_presence("Gleyic",      gleyic_properties(pedon), 75, pedon)
+qual_gleyic <- function(pedon) {
+  h <- pedon$horizons
+  gp <- gleyic_properties(pedon, max_top_cm = Inf)
+  z <- gp$evidence$redox_layers
+  gl <- z$gleyic
+  gl[gp$layers] <- TRUE                  # opt-in designation inference
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  run <- .adjoining_runs(h, .and3v(gl, z$reducing), min_cm = 25, max_top_cm = ms + 75)
+  DiagnosticResult$new(
+    name = "Gleyic", passed = run$passed,
+    layers = if (isTRUE(run$passed)) run$layers else integer(0),
+    evidence = list(base = gp),
+    missing = if (is.na(run$passed)) gp$missing %||% character(0) else character(0),
+    reference = "WRB (2022) Ch 5, Gleyic (p. 135)"
+  )
+}
 
 #' Gypsic qualifier (gy): gypsic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -247,10 +269,43 @@ qual_salic       <- function(pedon) .q_presence("Salic",       salic(pedon),    
 #' @noRd
 qual_spodic      <- function(pedon) .q_presence("Spodic",      spodic(pedon),      200, pedon)
 
-#' Stagnic qualifier (st): stagnic properties <= 75 cm.
+#' Stagnic qualifier (st): WRB 2022 Ch 5 (p. 147), a layer \\>= 25 cm thick
+#' starting \\<= 75 cm from the mineral soil surface with stagnic properties
+#' in which reductimorphic plus oximorphic features cover \\>= 25\% of its
+#' area (weighted average) and reducing conditions in some part of it.
+#' v0.9.312: the layer, its area and its reducing conditions are read as the
+#' Stagnosols gate reads them (adjoining sublayers count together); until
+#' then stagnic properties in any layer starting \\<= 75 cm were enough. The
+#' hydragric exclusion is not read.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_stagnic     <- function(pedon) .q_presence("Stagnic",     stagnic_properties(pedon), 75, pedon)
+qual_stagnic <- function(pedon) {
+  h <- pedon$horizons
+  st <- stagnic_properties(pedon, max_top_cm = Inf)
+  z <- st$evidence$redox_layers
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  # a run of stagnic layers (sure, or sure and undecided) >= 25 cm thick,
+  # starting <= 75 cm, with >= 25% redox area and reducing conditions
+  test <- function(sel, reducing_ok) {
+    run <- .adjoining_runs(h, sel, min_cm = 25, max_top_cm = ms + 75)
+    if (!isTRUE(run$passed)) return(list(ok = FALSE, layers = integer(0)))
+    L <- run$layers
+    w <- pmax(0, h$bottom_cm[L] - h$top_cm[L])
+    list(ok = sum(w * z$area[L]) / sum(w) >= 25 && any(z$reducing[L] %in% reducing_ok),
+         layers = L)
+  }
+  sure  <- test(z$stagnic %in% TRUE, TRUE)
+  maybe <- test(!(z$stagnic %in% FALSE), c(TRUE, NA))
+  passed <- if (sure$ok) TRUE else if (maybe$ok) NA else FALSE
+  DiagnosticResult$new(
+    name = "Stagnic", passed = passed,
+    layers = if (isTRUE(passed)) sure$layers else integer(0),
+    evidence = list(base = st),
+    missing = if (is.na(passed)) st$missing %||% character(0) else character(0),
+    reference = "WRB (2022) Ch 5, Stagnic (p. 147)"
+  )
+}
 
 #' Umbric qualifier (um): umbric horizon.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -270,52 +325,45 @@ qual_vitric      <- function(pedon) .q_presence("Vitric",      vitric_properties
 
 # ---------- CHEMISTRY-BASED PRINCIPAL QUALIFIERS ----------------------------
 
-#' Acric qualifier (ac): argic horizon + low CEC + high Al.
-#' v0.9: argic + CEC < 24 cmolc/kg clay + exch Al > Ca+Mg+K+Na.
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @noRd
-qual_acric <- function(pedon) {
-  arg <- argic(pedon)
-  if (!isTRUE(arg$passed))
-    return(DiagnosticResult$new(name = "Acric", passed = FALSE,
-            layers = integer(0), evidence = list(argic = arg),
-            missing = arg$missing, reference = "WRB (2022) Ch 5"))
-  ac <- acrisol(pedon)
-  passed <- isTRUE(ac$passed)
-  DiagnosticResult$new(name = "Acric", passed = passed,
-    layers = ac$layers, evidence = list(acrisol = ac),
-    missing = ac$missing, reference = "WRB (2022) Ch 5, Acric")
+# v0.9.310: the Acric, Alic, Lixic and Luvic qualifiers as WRB 2022 Ch 5
+# defines them (p. 127-128 and 139-140): an argic horizon starting <= 100 cm
+# from the mineral soil surface; a CEC of < 24 cmolc/kg clay in some
+# subhorizon within 150 cm (Acric, Lixic) or of >= 24 throughout within 150 cm
+# (Alic, Luvic); and exchangeable Al > exchangeable (Ca+Mg+K+Na) (Acric,
+# Alic) or Al <= the bases (Lixic, Luvic) in half or more of 50-100 cm or of
+# the lower half of the mineral soil above a limiting layer starting <= 100 cm.
+# Until v0.9.309 they called the RSG gates, which used the WRB 2014 tests.
+.qual_argic_family <- function(pedon, name, cec, al) {
+  r <- .argic_derived_gate(pedon, tolower(name), cec = cec, al = al,
+                           ref = paste0("WRB (2022) Ch 5, ", name))
+  DiagnosticResult$new(name = name, passed = r$passed, layers = r$layers,
+                       evidence = r$evidence, missing = r$missing,
+                       reference = r$reference, notes = r$notes)
 }
 
-#' Alic qualifier (al): argic + high CEC + high Al saturation.
+#' Acric qualifier (ac): argic <= 100 cm, CEC < 24 in some subhorizon within
+#' 150 cm, exchangeable Al > bases (WRB 2022 Ch 5, p. 127).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_alic <- function(pedon) {
-  al <- alisol(pedon)
-  DiagnosticResult$new(name = "Alic", passed = al$passed,
-    layers = al$layers, evidence = list(alisol = al),
-    missing = al$missing, reference = "WRB (2022) Ch 5, Alic")
-}
+qual_acric <- function(pedon) .qual_argic_family(pedon, "Acric", cec = "low", al = "gt")
 
-#' Lixic qualifier (lx): argic + low CEC, low Al.
+#' Alic qualifier (al): argic <= 100 cm, CEC >= 24 throughout within 150 cm,
+#' exchangeable Al > bases (WRB 2022 Ch 5, p. 128).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_lixic <- function(pedon) {
-  lx <- lixisol(pedon)
-  DiagnosticResult$new(name = "Lixic", passed = lx$passed,
-    layers = lx$layers, evidence = list(lixisol = lx),
-    missing = lx$missing, reference = "WRB (2022) Ch 5, Lixic")
-}
+qual_alic <- function(pedon) .qual_argic_family(pedon, "Alic", cec = "high", al = "gt")
 
-#' Luvic qualifier (lv): argic + high CEC, low Al saturation.
+#' Lixic qualifier (lx): argic <= 100 cm, CEC < 24 in some subhorizon within
+#' 150 cm, exchangeable Al <= bases (WRB 2022 Ch 5, p. 139).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_luvic <- function(pedon) {
-  lv <- luvisol(pedon)
-  DiagnosticResult$new(name = "Luvic", passed = lv$passed,
-    layers = lv$layers, evidence = list(luvisol = lv),
-    missing = lv$missing, reference = "WRB (2022) Ch 5, Luvic")
-}
+qual_lixic <- function(pedon) .qual_argic_family(pedon, "Lixic", cec = "low", al = "le")
+
+#' Luvic qualifier (lv): argic <= 100 cm, CEC >= 24 throughout within 150 cm,
+#' exchangeable Al <= bases (WRB 2022 Ch 5, p. 140).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", al = "le")
 
 #' WRB 2022 exchangeable-acidity status over a depth window.
 #'

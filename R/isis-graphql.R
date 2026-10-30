@@ -49,6 +49,16 @@
 #   * Base saturation (100 x exchangeable bases / CEC at pH 7), the ECEC and
 #     the aluminium saturation are calculated when ISIS has the parts; silt is
 #     100 - sand - clay when only those two are given.
+#   * The groundwater of the site (groundwaterKind; depthGroundwater, or
+#     groundwaterTop where the depth is 0) becomes groundwater_kind and
+#     groundwater_depth_cm, which tell gleyic from stagnic properties in WRB
+#     2022 (v0.9.312).
+#   * v0.9.314: the deposition of the parent material: fluvial (F, which ISIS
+#     describes as fluvio-glacial sediments), marine (M) and lacustrine (L)
+#     sediments, the origins of WRB 2022 fluvic material (Ch 3.3.6, criterion
+#     1), are the rock_origin of the mineral layers. Other deposits are not
+#     read, and nothing is set when a second deposit of another kind is
+#     recorded, since ISIS does not say which layers it holds.
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"
@@ -85,7 +95,7 @@ isis_citation <- function(accessed = Sys.Date()) {
                "nitkjd", "cecph7", "ecec", "caExcph7", "mgExcph7", "kExcph7",
                "naExcph7", "exbas", "alExch", "esp", "tceq", "gypsumContent",
                "feExtdith", "feExtacox", "alExtox", "sietox", "bdfiod", "bdfiot",
-               "wv1500", "elcosp", "elco25", "clayWaterdispTotal")
+               "wv1500", "elcosp", "elco25", "clayWaterdispTotal", "phnf")
 .ISIS_MORPH <- c("colourMoistHue", "colourMoistValue", "colourMoistChroma",
                  "colourDryHue", "colourDryValue", "colourDryChroma",
                  "structureGrade1", "structureType", "structureSize",
@@ -105,7 +115,9 @@ isis_citation <- function(accessed = Sys.Date()) {
   paste(
     "profileCode countryCode profileId geog { latitude longitude }",
     "moistureRegimeSoil temperatureRegimeSoil drainageClass siteElevation",
-    "slopeGradientNumeric lithologyParmat cracking microreliefKind",
+    "depthGroundwater groundwaterTop groundwaterKind",
+    "slopeGradientNumeric lithologyParmat lithologyParmatDeposition",
+    "lithologyParmatDeposition2 cracking microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
     "layers(first: 100, orderBy: [UPPER_DEPTH_ASC]) { layerNumber upperDepth lowerDepth layerName",
@@ -302,6 +314,23 @@ isis_citation <- function(accessed = Sys.Date()) {
   if (identical(r, "torric")) "aridic" else r
 }
 
+# The groundwater of the site (FAO groundwaterKind): N none observed, W
+# observed, A apparent, P perched, F flooded. Its depth is depthGroundwater,
+# in cm; ISIS writes 0 there when it records the level in groundwaterTop
+# instead (the upper limit of the water table), which is then read. A depth
+# of 0 with neither stays unknown, unless the site is flooded; none is kept
+# when no water table was observed.
+.ISIS_GROUNDWATER <- c(N = "none observed", W = "observed", A = "apparent",
+                       P = "perched", F = "flooded")
+.isis_groundwater <- function(p) {
+  kind <- .isis_lookup(.ISIS_GROUNDWATER, .isis_code(p$groundwaterKind))
+  d <- .isis_num(p$depthGroundwater); t <- .isis_num(p$groundwaterTop)
+  depth <- if (is.finite(d) && d > 0) d else if (is.finite(t) && t > 0) t
+           else if (identical(kind, "flooded")) 0 else NA_real_
+  if (identical(kind, "none observed")) depth <- NA_real_
+  list(kind = kind, depth = depth)
+}
+
 .isis_layers_to_horizons <- function(layers, absent_unless_recorded = TRUE,
                                      cracking = NA_character_, gilgai = FALSE) {
   layers <- Filter(function(L) !is.null(L$upperDepth) && !is.null(L$lowerDepth), layers)
@@ -340,7 +369,7 @@ isis_citation <- function(accessed = Sys.Date()) {
   setnum("water_dispersible_clay_pct", "clayWaterdispTotal", 1, "g/100g, a clay content")
   setnum("coarse_fragments_pct", "cfvo", 1, "cm3/100cm3")
   setnum("ph_h2o", "phaq", 1, "pH water"); setnum("ph_kcl", "phkc", 1, "pH KCl")
-  setnum("ph_cacl2", "phca", 1, "pH CaCl2")
+  setnum("ph_cacl2", "phca", 1, "pH CaCl2"); setnum("ph_naf", "phnf", 1, "pH NaF")
   setnum("oc_pct", "orgc", 0.1, "g/kg"); setnum("n_total_pct", "nitkjd", 0.1, "g/kg")
   setnum("cec_cmol", "cecph7", 1, "cmol(c)/kg, pH 7"); setnum("ecec_cmol", "ecec", 1, "cmol(c)/kg")
   setnum("ca_cmol", "caExcph7", 1, "cmol(c)/kg"); setnum("mg_cmol", "mgExcph7", 1, "cmol(c)/kg")
@@ -524,6 +553,36 @@ isis_citation <- function(accessed = Sys.Date()) {
   list(horizons = out, provenance = prov, notes = notes)
 }
 
+# v0.9.314: fluviatile, marine and lacustrine parent materials
+# (lithologyParmatDeposition F, M, L) as the rock_origin of the mineral layers
+# (not O, H or R), when no second deposit of another kind is recorded.
+.ISIS_WATER_DEPOSITION <- c(F = "fluviatile", M = "marine", L = "lacustrine")
+.isis_water_deposition <- function(x, profile) {
+  h <- x$horizons
+  if (is.null(h) || !nrow(h)) return(x)
+  d1 <- .isis_code(profile$lithologyParmatDeposition)
+  d2 <- .isis_code(profile$lithologyParmatDeposition2)
+  if (is.na(d1) || !d1 %in% names(.ISIS_WATER_DEPOSITION) ||
+      (!is.na(d2) && !d2 %in% names(.ISIS_WATER_DEPOSITION))) return(x)
+  origin <- unname(.ISIS_WATER_DEPOSITION[[d1]])
+  if (!is.na(d2) && d2 != d1)
+    origin <- paste(origin, "and", .ISIS_WATER_DEPOSITION[[d2]])
+  dsg <- ifelse(is.na(h$designation), "", h$designation)
+  rows <- which(!grepl("^[0-9]*[OHR]", dsg))
+  if (!length(rows)) return(x)
+  if (is.null(h$rock_origin)) h$rock_origin <- NA_character_
+  h$rock_origin[rows] <- origin
+  x$horizons <- h
+  pv <- data.frame(horizon_idx = rows, attribute = "rock_origin", source = "measured",
+                   confidence = 1,
+                   notes = sprintf("ISIS lithologyParmatDeposition %s%s: deposition of the parent material",
+                                   d1, if (is.na(d2)) "" else paste0(" and ", d2)),
+                   stringsAsFactors = FALSE)
+  x$provenance <- if (is.null(x$provenance) || !nrow(x$provenance)) pv
+                  else rbind(x$provenance, pv)
+  x
+}
+
 #' Turn one ISIS profile into a PedonRecord
 #'
 #' Builds a \code{\link{PedonRecord}} from one profile as the ISIS GraphQL
@@ -534,7 +593,9 @@ isis_citation <- function(accessed = Sys.Date()) {
 #' The site carries the WRB and USDA names ISRIC gives the profile
 #' (\code{reference_wrb}, \code{reference_wrb_full}, \code{reference_usda},
 #' \code{reference_usda_subgroup} and their editions), the soil moisture and
-#' temperature regimes when ISIS records them, the licence and the citation.
+#' temperature regimes and the groundwater (\code{groundwater_kind},
+#' \code{groundwater_depth_cm}) when ISIS records them, the licence and the
+#' citation.
 #'
 #' @param profile One ISIS profile, a list as parsed from the service's JSON.
 #' @param absent_unless_recorded If \code{TRUE} (default), mottles,
@@ -559,6 +620,9 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
   el <- .isis_num(profile$siteElevation); if (is.finite(el)) site$elevation_m <- el
   sl <- .isis_num(profile$slopeGradientNumeric); if (is.finite(sl)) site$slope_pct <- sl
   dr <- .isis_desc(profile$drainageClass); if (!is.na(dr)) site$drainage_class <- tolower(dr)
+  gw <- .isis_groundwater(profile)
+  if (!is.na(gw$kind)) site$groundwater_kind <- gw$kind
+  if (!is.na(gw$depth)) site$groundwater_depth_cm <- gw$depth
   pm <- .isis_desc(profile$lithologyParmat); if (!is.na(pm)) site$parent_material <- pm
   if (gil) site$gilgai_presence <- TRUE
   smr <- .isis_regime(profile, "moistureRegimeSoil", "moistureRegime")
@@ -578,6 +642,7 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
                              "Reference Collection, read through ISIS on ",
                              site$accessed, ".")
   if (length(x$notes)) site$depth_note <- paste(x$notes, collapse = " ")
+  x <- .isis_water_deposition(x, profile)
   h <- if (is.null(x$horizons)) NULL else
     ensure_horizon_schema(data.table::as.data.table(x$horizons))
   prov <- if (is.null(x$provenance) || !nrow(x$provenance)) NULL else

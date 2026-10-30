@@ -9,14 +9,12 @@
 #                    the upper 20 cm of the mollic
 #   Kastanozem (KS): mollic + secondary carbonates + NOT Chernozem
 #                    colour (chroma > 2 in the upper 20 cm)
-#   Phaeozem (PH):   mollic + NO secondary carbonates anywhere
+#   Phaeozem (PH):   mollic + BS >= 50% throughout to 100 cm (v0.9.309)
 #
-# v0.2d simplification: the WRB depth restrictions on the carbonate
-# accumulation ("within 50 cm of the lower limit of the mollic" /
-# "within 100 cm of soil surface") are not enforced -- any layer with
-# caco3_pct > 0 is treated as "carbonates present". Refinement is
-# scheduled for v0.3 when carbonate depth localisation joins the
-# qualifier-resolution work.
+# chernozem() and kastanozem() are the v0.2d simplifications (any layer
+# with caco3_pct > 0 counts as "carbonates present"); the key uses
+# chernozem_strict() and kastanozem_strict() (R/diagnostics-rsg-tier2.R).
+# phaeozem() follows WRB 2022 Ch 4 (p. 113) since v0.9.309.
 # ================================================================
 
 
@@ -116,13 +114,17 @@ kastanozem <- function(pedon, max_chroma_upper = 2) {
 
 #' Phaeozem RSG diagnostic (WRB 2022)
 #'
-#' Tests whether a profile satisfies the Phaeozem RSG criteria: a
-#' mollic horizon AND no secondary carbonate accumulation anywhere in
-#' the profile.
+#' Tests whether a profile satisfies the Phaeozem RSG criteria (WRB 2022
+#' Ch 4, p. 113): a mollic horizon AND a base saturation (1 M NH4OAc, pH 7)
+#' \\>= 50\% throughout to 100 cm from the mineral soil surface or to a
+#' limiting layer, whichever is shallower. Carbonates are allowed: the
+#' Chernozems and Kastanozems are keyed out before. Where BS is not
+#' recorded, pH is read as in WRB 2022 Annex 2, Table 9.2. A profile not
+#' described down to that depth is undecided.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 5, Phaeozems.
+#' @references IUSS Working Group WRB (2022), Chapter 4, Phaeozems (p. 113).
 #' @export
 phaeozem <- function(pedon) {
   mol <- mollic(pedon)
@@ -131,33 +133,44 @@ phaeozem <- function(pedon) {
       "Profile lacks a mollic horizon -- Phaeozem RSG cannot apply."))
   }
 
+  # v0.9.309: WRB 2022 Ch 4, Phaeozems (p. 113), "a base saturation ... of
+  # >= 50% throughout to a depth of 100 cm from the mineral soil surface or to
+  # a limiting layer, whichever is shallower". The old test (no CaCO3 in any
+  # layer) is not in the text.
   h <- pedon$horizons
-  tests <- list(mollic = mol)
-  tests$carbonates <- test_carbonates_present(h)
-  tests$no_carbonates <- list(
-    passed  = if (is.na(tests$carbonates$passed)) NA
-               else !isTRUE(tests$carbonates$passed),
-    layers  = if (isTRUE(tests$carbonates$passed)) integer(0)
-               else seq_len(nrow(h)),
-    missing = tests$carbonates$missing,
-    details = list(carbonates_passed = tests$carbonates$passed),
-    notes   = if (isTRUE(tests$carbonates$passed))
-                "Profile has secondary carbonates -- Chernozem/Kastanozem path"
-              else NA_character_
-  )
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  lim <- .barrier_top_cm(pedon)
+  bottom <- if (!is.na(lim)) min(ms + 100, lim) else ms + 100
+  win <- .wrb_window_layers(h, ms, bottom)
+  bs <- .wrb_bs_throughout(h, win$layers, min_bs = 50)
+  described <- win$covered_cm >= win$window_cm - 1e-6
+  # Hugo (2026-10-29): a profile described above 100 cm (or with gaps) is
+  # decided on the part that is described
+  passed <- if (isFALSE(bs$passed)) FALSE
+            else if (isTRUE(bs$passed) && length(win$layers)) TRUE
+            else NA
 
-  agg <- .mollic_derived_aggregate(
-    tests,
-    require_pass = c("mollic", "no_carbonates")
+  tests <- list(
+    mollic = mol,
+    base_saturation = list(
+      passed = passed,
+      layers = win$layers,
+      missing = c(bs$missing,
+                  character(0)),
+      details = list(window_cm = c(ms, bottom), covered_cm = win$covered_cm,
+                     limiting_layer_top_cm = lim, layers = bs$details)
+    )
   )
 
   DiagnosticResult$new(
     name      = "phaeozem",
-    passed    = agg$passed,
+    passed    = passed,
     layers    = mol$layers,
     evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Phaeozems"
+    missing   = if (is.na(passed)) unique(tests$base_saturation$missing)
+                else character(0),
+    reference = "IUSS Working Group WRB (2022), Chapter 4, Phaeozems (p. 113)"
   )
 }
 

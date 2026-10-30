@@ -15,7 +15,8 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 vertisol_qualifying_usda <- function(pedon) {
-  res <- vertic_horizon(pedon)
+  # v0.9.311: the USDA reading, with the KST 13 LE path
+  res <- vertic_horizon(pedon, reading = "usda")
   res$name <- "vertisol_qualifying_usda"
   res
 }
@@ -54,7 +55,7 @@ salic_subgroup_usda <- function(pedon, max_top_cm = 100) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 natric_subgroup_usda <- function(pedon) {
-  res <- natric_horizon(pedon)
+  res <- .natric_horizon_impl(pedon)   # v0.9.310: the reading before the WRB 2022 criteria 3-4
   res$name <- "natric_subgroup_usda"
   res
 }

@@ -1,272 +1,185 @@
 # ================================================================
 # WRB 2022 -- argic-derived RSG diagnostics
 #
-# These four diagnostics test whether a profile that satisfies the
-# argic horizon also satisfies the activity-of-clay and chemistry
-# criteria that distinguish the four argic-derived RSGs:
+# v0.9.310: the four gates follow the WRB 2022 key (Ch 4, p. 119-122),
+# which tests them in this order, each on the "other soils":
 #
-#   Acrisol (AC): argic + CEC <  24 cmol_c/kg clay + BS <  50%
-#   Lixisol (LX): argic + CEC <  24 cmol_c/kg clay + BS >= 50%
-#   Alisol  (AL): argic + CEC >= 24 cmol_c/kg clay + Al sat >= 50%
-#   Luvisol (LV): argic + CEC >= 24 cmol_c/kg clay + Al sat <  50%
+#   Acrisols (p. 119): argic starting <= 100 cm + CEC < 24 cmolc/kg clay
+#                      in some argic subhorizon within 150 cm + exch. Al >
+#                      exch. (Ca+Mg+K+Na) in half or more of 50-100 cm
+#   Lixisols (p. 120): argic starting <= 100 cm + the CEC test
+#   Alisols  (p. 121): argic starting <= 100 cm + the Al test
+#   Luvisols (p. 122): argic starting <= 100 cm
 #
-# Each function calls argic() internally to identify the argic
-# horizon(s) and then applies the chemistry tests on those layers.
-#
-# Tests are written so that each fixture passes exactly one of the
-# four functions; this is the cleanest way to demonstrate that the
-# four "argic family" RSGs are mutually disambiguating.
+# Until v0.9.309 they used the WRB 2014 tests (base saturation below or
+# above 50% and Al saturation in the argic layers, CEC >= 24 for Alisols
+# and Luvisols) and no depth limit. Each gate tests only its own criteria;
+# the key's order separates them (a Lixisol is not an Acrisol because the
+# Acrisols come first). The Acric, Lixic, Alic and Luvic qualifiers (Ch 5)
+# are defined apart and are in qualifiers-wrb2022.R.
 # ================================================================
 
 
 #' Acrisol RSG diagnostic (WRB 2022)
 #'
-#' Tests whether a profile satisfies the Acrisol RSG criteria: an
-#' argic horizon with low-activity clay (CEC < 24 cmol_c/kg clay) AND
-#' low base saturation (BS < 50\%) within at least one argic layer.
+#' The Acrisols of the WRB 2022 key (Ch 4, p. 119): an argic horizon starting
+#' \eqn{\le} 100 cm from the mineral soil surface; a CEC (1 M NH4OAc, pH 7) of
+#' < 24 cmolc/kg clay in some subhorizon of the argic horizon within 150 cm of
+#' the mineral soil surface; and exchangeable Al > exchangeable (Ca+Mg+K+Na) in
+#' half or more of 50-100 cm from the mineral soil surface, or of the lower half
+#' of the mineral soil above a limiting layer starting \eqn{\le} 100 cm,
+#' whichever is shallower. Where the cations are not available, the pH is read
+#' by WRB 2022 Annex 2, Table 9.3.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_cec Maximum CEC per kg clay (default 24).
-#' @param max_bs Maximum base saturation \% (default 50).
+#' @param max_cec CEC per kg clay below which the clay is of low activity
+#'        (default 24).
+#' @param max_bs Unused since v0.9.310 (WRB 2022 does not use the base
+#'        saturation here), kept so that existing calls still run.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 5, Acrisols.
+#' @references IUSS Working Group WRB (2022), Chapter 4, Acrisols (p. 119).
 #' @export
 acrisol <- function(pedon, max_cec = 24, max_bs = 50) {
-  arg <- argic(pedon)
-
-  if (!isTRUE(arg$passed)) {
-    return(.argic_derived_negative("acrisol", arg,
-      "Profile lacks an argic horizon -- Acrisol RSG cannot apply."))
-  }
-
-  h <- pedon$horizons
-  layers <- arg$layers
-
-  tests <- list(argic = arg)
-  tests$cec_low <- test_cec_per_clay(h, max_cmol_per_kg_clay = max_cec,
-                                       candidate_layers = layers)
-  tests$bs_low  <- test_bs_below(h, max_pct = max_bs,
-                                   candidate_layers = layers)
-
-  # v0.9.17: graceful BS-low fallback when bs_pct is missing in all
-  # argic layers. al_sat_pct >= 50 mathematically forces BS < 50; pH
-  # < 5.0 in tropical B horizons empirically does the same. Promotes
-  # the inferred-FALSE bs_low to TRUE only when direct measurement
-  # is absent so lab-grade profiles use the canonical gate.
-  if (!isTRUE(tests$bs_low$passed)) {
-    bs_inf <- .bs_low_inferred(pedon, bs_threshold = max_bs)
-    if (isTRUE(bs_inf$bs_low) &&
-          bs_inf$source %in% c("al_sat_ge_50", "ph_below_5")) {
-      tests$bs_low$passed <- TRUE
-      tests$bs_low$layers <- layers
-      tests$bs_low$details <- c(tests$bs_low$details %||% list(),
-                                 list(bs_low_inferred_source = bs_inf$source))
-    }
-  }
-
-  agg <- .argic_derived_aggregate(tests, layer_keys = c("cec_low", "bs_low"))
-
-  DiagnosticResult$new(
-    name      = "acrisol",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Acrisols"
-  )
+  .argic_derived_gate(pedon, "acrisol", cec = "low", al = "gt", max_cec = max_cec,
+                      ref = "IUSS Working Group WRB (2022), Chapter 4, Acrisols (p. 119)")
 }
 
 
 #' Lixisol RSG diagnostic (WRB 2022)
 #'
-#' argic + CEC < 24 cmol_c/kg clay + BS >= 50\%.
+#' The Lixisols of the WRB 2022 key (Ch 4, p. 120): an argic horizon starting
+#' \eqn{\le} 100 cm from the mineral soil surface and a CEC of < 24 cmolc/kg
+#' clay in some subhorizon of the argic horizon within 150 cm. The key reaches
+#' them after the Acrisols.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_cec Maximum CEC per kg clay (default 24).
-#' @param min_bs Minimum base saturation \% (default 50).
+#' @param max_cec CEC per kg clay below which the clay is of low activity
+#'        (default 24).
+#' @param min_bs Unused since v0.9.310, kept so that existing calls still run.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 5, Lixisols.
+#' @references IUSS Working Group WRB (2022), Chapter 4, Lixisols (p. 120).
 #' @export
 lixisol <- function(pedon, max_cec = 24, min_bs = 50) {
-  arg <- argic(pedon)
-
-  if (!isTRUE(arg$passed)) {
-    return(.argic_derived_negative("lixisol", arg,
-      "Profile lacks an argic horizon -- Lixisol RSG cannot apply."))
-  }
-
-  h <- pedon$horizons
-  layers <- arg$layers
-
-  tests <- list(argic = arg)
-  tests$cec_low <- test_cec_per_clay(h, max_cmol_per_kg_clay = max_cec,
-                                       candidate_layers = layers)
-  tests$bs_high <- test_bs_above(h, min_pct = min_bs,
-                                   candidate_layers = layers)
-
-  agg <- .argic_derived_aggregate(tests, layer_keys = c("cec_low", "bs_high"))
-
-  DiagnosticResult$new(
-    name      = "lixisol",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Lixisols"
-  )
+  .argic_derived_gate(pedon, "lixisol", cec = "low", al = "none", max_cec = max_cec,
+                      ref = "IUSS Working Group WRB (2022), Chapter 4, Lixisols (p. 120)")
 }
 
 
 #' Alisol RSG diagnostic (WRB 2022)
 #'
-#' argic + CEC >= 24 cmol_c/kg clay + Al saturation >= 50\%.
+#' The Alisols of the WRB 2022 key (Ch 4, p. 121): an argic horizon starting
+#' \eqn{\le} 100 cm from the mineral soil surface and exchangeable Al >
+#' exchangeable (Ca+Mg+K+Na) in half or more of 50-100 cm (or of the lower half
+#' of the mineral soil above a limiting layer starting \eqn{\le} 100 cm). The
+#' key reaches them after the Acrisols and Lixisols.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_cec Minimum CEC per kg clay (default 24).
-#' @param min_al_sat Minimum Al saturation \% (default 50).
+#' @param min_cec,min_al_sat Unused since v0.9.310, kept so that existing
+#'        calls still run.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 5, Alisols.
+#' @references IUSS Working Group WRB (2022), Chapter 4, Alisols (p. 121).
 #' @export
 alisol <- function(pedon, min_cec = 24, min_al_sat = 50) {
-  arg <- argic(pedon)
-
-  if (!isTRUE(arg$passed)) {
-    return(.argic_derived_negative("alisol", arg,
-      "Profile lacks an argic horizon -- Alisol RSG cannot apply."))
-  }
-
-  h <- pedon$horizons
-  layers <- arg$layers
-
-  tests <- list(argic = arg)
-  tests$cec_high     <- test_cec_per_clay_above(h,
-                                                  min_cmol_per_kg_clay = min_cec,
-                                                  candidate_layers     = layers)
-  tests$al_sat_high  <- test_al_saturation_above(h,
-                                                   min_pct = min_al_sat,
-                                                   candidate_layers = layers)
-
-  agg <- .argic_derived_aggregate(tests,
-                                    layer_keys = c("cec_high", "al_sat_high"))
-
-  DiagnosticResult$new(
-    name      = "alisol",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Alisols"
-  )
+  .argic_derived_gate(pedon, "alisol", cec = "none", al = "gt",
+                      ref = "IUSS Working Group WRB (2022), Chapter 4, Alisols (p. 121)")
 }
 
 
 #' Luvisol RSG diagnostic (WRB 2022)
 #'
-#' argic + CEC >= 24 cmol_c/kg clay + Al saturation < 50\%.
+#' The Luvisols of the WRB 2022 key (Ch 4, p. 122): "Other soils having an
+#' argic horizon starting \eqn{\le} 100 cm from the mineral soil surface".
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_cec Minimum CEC per kg clay (default 24).
-#' @param max_al_sat Maximum Al saturation \% (default 50).
+#' @param min_cec,max_al_sat Unused since v0.9.310, kept so that existing
+#'        calls still run.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references IUSS Working Group WRB (2022), Chapter 5, Luvisols.
+#' @references IUSS Working Group WRB (2022), Chapter 4, Luvisols (p. 122).
 #' @export
 luvisol <- function(pedon, min_cec = 24, max_al_sat = 50) {
-  arg <- argic(pedon)
-
-  if (!isTRUE(arg$passed)) {
-    return(.argic_derived_negative("luvisol", arg,
-      "Profile lacks an argic horizon -- Luvisol RSG cannot apply."))
-  }
-
-  h <- pedon$horizons
-  layers <- arg$layers
-
-  tests <- list(argic = arg)
-  tests$cec_high   <- test_cec_per_clay_above(h,
-                                                min_cmol_per_kg_clay = min_cec,
-                                                candidate_layers     = layers)
-  tests$al_sat_low <- test_al_saturation_below(h,
-                                                  max_pct = max_al_sat,
-                                                  candidate_layers = layers)
-
-  # v0.9.111: graceful Al-saturation fallback. A confirmed argic horizon with
-  # high-activity clay (CEC >= 24) but NO Al-saturation measurement is a Luvisol
-  # by default -- the Alisol is the special high-Al case that requires POSITIVE
-  # al_sat >= 50 evidence. Without this, an undeterminable eutric/alic split
-  # leaves al_sat_low = NA, the gate returns NA, and the profile drops to the
-  # Regosol catch-all -- but an argic horizon is never a Regosol. Fires only on
-  # is.na() (unmeasured): a measured Luvisol (al_sat < 50) already passes and a
-  # measured Alisol (al_sat >= 50) gives FALSE, so neither is overridden. The
-  # promoted layers must equal what the aggregate re-intersects with, and
-  # al_sat_pct stays in $missing so it still surfaces in $missing_data.
-  # The B-horizon guard rejects a known false-positive: argic's clay-increase
-  # test can fire on a STRATIFIED (sedimentary) clay jump between a Fluvisol's C
-  # layers. A genuine argic horizon is an illuvial B (Bt); a clay increase into
-  # a C layer is depositional, not pedogenic. Only default to Luvisol when the
-  # promoted, CEC-high argic layer is a B master horizon -- this keeps the
-  # Fluvisol (its argic sits on a C) keyed to Fluvisols, not Luvisol.
-  if (isTRUE(tests$cec_high$passed) && is.na(tests$al_sat_low$passed)) {
-    promoted <- intersect(arg$layers, tests$cec_high$layers)
-    desig    <- as.character(pedon$horizons$designation)[promoted]
-    promoted <- promoted[grepl("B", desig)]
-    if (length(promoted) > 0L) {
-      tests$al_sat_low$passed  <- TRUE
-      tests$al_sat_low$layers  <- promoted
-      tests$al_sat_low$details <- c(tests$al_sat_low$details %||% list(),
-        list(al_sat_low_default =
-          "no Al-saturation measured; high-activity argic defaults to Luvisol"))
-    }
-  }
-
-  agg <- .argic_derived_aggregate(tests,
-                                    layer_keys = c("cec_high", "al_sat_low"))
-
-  DiagnosticResult$new(
-    name      = "luvisol",
-    passed    = agg$passed,
-    layers    = agg$layers,
-    evidence  = tests,
-    missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 5, Luvisols"
-  )
+  .argic_derived_gate(pedon, "luvisol", cec = "none", al = "none",
+                      ref = "IUSS Working Group WRB (2022), Chapter 4, Luvisols (p. 122)")
 }
 
 
 # ----------------------------------------------------------- helpers ----
-#' Internal helper: .argic_derived_negative
 
+#' The tests of the argic family (WRB 2022 Ch 4 p. 119-122, and the Acric,
+#' Alic, Lixic and Luvic qualifiers of Ch 5): \code{cec} is "low" (< max_cec
+#' in some argic subhorizon within 150 cm), "high" (>= max_cec throughout the
+#' argic horizon within 150 cm) or "none"; \code{al} is "gt" (Al > bases in
+#' half or more of the depth range), "le" (Al <= bases in half or more) or
+#' "none". Every gate asks for an argic horizon starting <= 100 cm from the
+#' mineral soil surface.
 #' @noRd
-.argic_derived_negative <- function(name, arg_res, note) {
+.argic_derived_gate <- function(pedon, name, cec = c("none", "low", "high"),
+                                al = c("none", "gt", "le"), max_cec = 24,
+                                ref = NULL) {
+  cec <- match.arg(cec); al <- match.arg(al)
+  ref <- ref %||% sprintf("IUSS Working Group WRB (2022), Chapter 4, %s",
+                          tools::toTitleCase(name))
+  arg <- argic(pedon)
+  if (!isTRUE(arg$passed))
+    return(.argic_derived_negative(name, arg, sprintf(
+      "Profile lacks an argic horizon -- %s cannot apply.", tools::toTitleCase(name)),
+      reference = ref))
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  argic_top <- min(h$top_cm[arg$layers], na.rm = TRUE)
+  tests <- list(argic = arg)
+  tests$argic_within_100 <- argic_top - ms <= 100
+  # "in some subhorizon of the argic horizon within 150 cm of the mineral soil
+  # surface": the argic layers that start above 150 cm.
+  within150 <- arg$layers[!is.na(h$top_cm[arg$layers]) & h$top_cm[arg$layers] - ms < 150]
+  if (cec != "none") {
+    t <- test_cec_per_clay(h, max_cmol_per_kg_clay = max_cec,
+                           candidate_layers = within150)
+    known <- vapply(t$details, function(d) !is.null(d$passed), logical(1))
+    all_known <- length(within150) > 0L && length(known) == length(within150) && all(known)
+    low_some <- if (length(t$layers)) TRUE else if (all_known) FALSE else NA
+    # Lixisols and the Acric and Lixic qualifiers: "< 24 ... in some
+    # subhorizon"; the Alic and Luvic qualifiers: ">= 24 ... throughout".
+    tests$cec <- if (cec == "low") low_some
+                 else if (isTRUE(low_some)) FALSE else if (all_known) TRUE else NA
+    tests$cec_detail <- t
+  }
+  if (al != "none") {
+    ad <- .wrb_al_dominance(pedon)
+    tests$al <- if (al == "gt") ad$al_gt else ad$al_le
+    tests$al_detail <- ad
+  }
+  crit <- unlist(tests[intersect(c("argic_within_100", "cec", "al"), names(tests))])
+  passed <- .and3(crit)
+  missing <- character(0)
+  if (is.na(passed)) {
+    if ("cec" %in% names(tests) && is.na(tests$cec))
+      missing <- c(missing, tests$cec_detail$missing, "cec_cmol", "clay_pct")
+    if ("al" %in% names(tests) && is.na(tests$al))
+      missing <- c(missing, "al_cmol", "ca_cmol", "mg_cmol", "k_cmol", "na_cmol",
+                   "ph_h2o", "oc_pct")
+  }
+  DiagnosticResult$new(
+    name      = name,
+    passed    = passed,
+    layers    = if (isTRUE(passed)) arg$layers else integer(0),
+    evidence  = tests,
+    missing   = unique(missing),
+    reference = ref
+  )
+}
+
+#' Internal helper: .argic_derived_negative
+#' @noRd
+.argic_derived_negative <- function(name, arg_res, note, reference = NULL) {
   DiagnosticResult$new(
     name      = name,
     passed    = if (is.na(arg_res$passed)) NA else FALSE,
     layers    = integer(0),
     evidence  = list(argic = arg_res),
     missing   = arg_res$missing %||% character(0),
-    reference = sprintf("IUSS Working Group WRB (2022), Chapter 5, %s",
-                          tools::toTitleCase(name)),
+    reference = reference %||% sprintf("IUSS Working Group WRB (2022), Chapter 4, %s",
+                                       tools::toTitleCase(name)),
     notes     = note
   )
-}
-#' Internal helper: .argic_derived_aggregate
-
-#' @noRd
-.argic_derived_aggregate <- function(tests, layer_keys) {
-  # Layers passing = intersection of argic layers AND each chemistry test's layers
-  layer_lists <- list(tests$argic$layers)
-  for (k in layer_keys) {
-    layer_lists[[length(layer_lists) + 1]] <- tests[[k]]$layers
-  }
-  layers_passing <- Reduce(intersect, layer_lists)
-
-  missing <- unique(unlist(lapply(tests, function(t) t$missing %||% character(0))))
-  if (is.null(missing)) missing <- character(0)
-
-  any_test_na <- any(vapply(tests, function(t) is.na(t$passed), logical(1)))
-
-  passed <- if (length(layers_passing) > 0L) TRUE
-            else if (any_test_na && length(missing) > 0L) NA
-            else FALSE
-
-  list(passed = passed, layers = layers_passing, missing = missing)
 }

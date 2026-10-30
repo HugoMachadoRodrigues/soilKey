@@ -4,55 +4,40 @@
 \alias{histic_horizon}
 \title{Histic horizon (WRB 2022)}
 \usage{
-histic_horizon(
-  pedon,
-  min_thickness = 10,
-  min_oc = 12,
-  surface_top_cm = 0,
-  cumulative_min_cm = 40,
-  cumulative_max_depth_cm = 80
-)
+histic_horizon(pedon, min_thickness = 10, min_oc = 20, surface_top_cm = 0)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_thickness}{Minimum thickness (cm) for the contiguous
-path (default 10).}
+\item{min_thickness}{Minimum thickness (cm), default 10.}
 
-\item{min_oc}{Minimum organic carbon \% (default 12, WRB 2022;
-equivalent to \code{>= 20\%} organic matter).}
+\item{min_oc}{Minimum soil organic carbon (\%) of organic material,
+default 20 (WRB 2022 Ch 3.3.13).}
 
-\item{surface_top_cm}{Maximum top depth (cm) for a layer to be
-considered "surface-related" in the contiguous path
-(default 0).}
-
-\item{cumulative_min_cm}{Minimum cumulative thickness (cm) for the
-cumulative path (default 40).}
-
-\item{cumulative_max_depth_cm}{Depth window (cm) for the cumulative
-path (default 80).}
+\item{surface_top_cm}{Maximum top depth (cm) of the uppermost layer of
+the horizon (default 0, the soil surface).}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-A surface (or near-surface, after drainage) horizon of organic
-material; diagnostic of Histosols. Two alternative qualifying
-paths per WRB 2022:
-\itemize{
-  \item \strong{Contiguous}: a single layer of organic material
-        (OC \% >= \code{min_oc}) reaching the surface and at
-        least \code{min_thickness} cm thick (default 10 cm).
-  \item \strong{Cumulative}: organic material totalling
-        \code{cumulative_min_cm} cm (default 40) within the upper
-        \code{cumulative_max_depth_cm} (default 80). Relevant for
-        folic / mossy Histosols on slopes.
+A horizon of organic material (WRB 2022 Ch 3.1.15): organic material
+(\code{oc_pct >= min_oc}, default 20, Ch 3.3.13) that is at least
+\code{min_thickness} cm thick (default 10). The thickness is that of the
+adjoining organic layers that run from the surface, taken together. A
+layer whose organic carbon is not recorded may be organic material and
+leaves the answer undecided (\code{NA}) where it could change it. The
+water-saturation criterion (saturated for 30 or more consecutive days, or
+drained) is not read.
 }
-Either path qualifies. The "after drainage" qualifier (recently
-drained organic soils) is treated as implicit since the same OC
-and thickness criteria apply.
+\details{
+Since v0.9.313 this is the horizon only: the Histosols are keyed by
+\code{histosol()}, which reads the Chapter 4 key as worded. Until then
+this function was also the Histosols gate, with organic material read at
+12\% organic carbon and a second path of 40 cm of organic material within
+the upper 80 cm.
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 3, Histic horizon
-  and organic material.
+IUSS Working Group WRB (2022), Chapter 3.1.15, Histic
+  horizon, and Chapter 3.3.13, Organic material.
 }

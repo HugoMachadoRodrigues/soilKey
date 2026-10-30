@@ -894,7 +894,7 @@ argillic_within_usda <- function(pedon, max_top_cm = 100) {
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 natric_horizon_usda <- function(pedon) {
-  res <- natric_horizon(pedon)
+  res <- .natric_horizon_impl(pedon)   # v0.9.310: the reading before the WRB 2022 criteria 3-4
   res$name <- "natric_horizon_usda"
   res
 }
@@ -939,7 +939,7 @@ gypsic_horizon_usda <- function(pedon, max_top_cm = 100) {
 #' @param max_top_cm Numeric threshold or option (see Details).
 #' @noRd
 calcic_horizon_usda <- function(pedon, max_top_cm = 100) {
-  res <- calcic(pedon)
+  res <- .calcic_impl(pedon)   # v0.9.314: the reading before the WRB 2022 text (USDA)
   res$name <- "calcic_horizon_usda"
   if (isTRUE(res$passed) && length(res$layers) > 0L) {
     h <- pedon$horizons

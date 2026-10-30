@@ -71,6 +71,8 @@ test_that("Amphicalcic requires calcic in BOTH 0-50 and 50-100 bands", {
     top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100),
     designation = c("A", "Bk1", "Bk2"),
     caco3_pct = c(0, 22, 25),
+    # v0.9.314: calcic criterion 2.a (WRB 2022 Ch 3.1.4): secondary carbonates
+    secondary_carbonates_pct = c(0, 10, 10),
     clay_pct = c(20, 22, 22), silt_pct = c(40, 38, 38), sand_pct = c(40, 40, 40)
   )
   pr2 <- PedonRecord$new(
@@ -185,7 +187,9 @@ test_that("Supragleyic requires gleyic layers above a barrier (rock or petric)",
     munsell_hue_moist = c("10YR","2.5Y", NA_character_),
     munsell_value_moist = c(4, 5, NA_real_),
     munsell_chroma_moist = c(2, 1, NA_real_),
-    redoximorphic_features_pct = c(0, 30, NA_real_),
+    # v0.9.310: at most 5% mottles, so the 2.5Y 5/1 Bg meets gleyic
+    # criterion 1 (>= 95% reductimorphic features, WRB 2022 3.2.6)
+    redoximorphic_features_pct = c(0, 3, NA_real_),
     coarse_fragments_pct = c(2, 5, 100),
     clay_pct = c(20, 22, NA_real_),
     silt_pct = c(40, 38, NA_real_),

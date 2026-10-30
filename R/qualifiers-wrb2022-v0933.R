@@ -95,7 +95,7 @@ qual_endostagnic <- function(pedon)
 #'
 #' WRB 2022 Ch 5 / Ch 4 Histosols (p 96): organic material with very low
 #' bulk density (< 0.1 g/cm3 dry, OR < 0.4 g/cm3 in fully saturated state)
-#' that floats on water. Practical proxy: oc_pct >= 12 (Histic threshold)
+#' that floats on water. Practical proxy: oc_pct >= 20 (organic material)
 #' AND bulk_density_g_cm3 <= 0.4 in any layer of the upper 100 cm.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -113,7 +113,8 @@ qual_floatic <- function(pedon) {
 
   oc <- h$oc_pct[cand]
   bd <- h$bulk_density_g_cm3[cand]
-  ok <- !is.na(oc) & oc >= 12 & !is.na(bd) & bd <= 0.4
+  # v0.9.313: organic material is oc >= 20 (WRB 2022 Ch 3.3.13, p 91; was 12)
+  ok <- !is.na(oc) & oc >= 20 & !is.na(bd) & bd <= 0.4
   passing <- cand[ok]
   passed <- length(passing) > 0L
 
@@ -123,7 +124,7 @@ qual_floatic <- function(pedon) {
 
   DiagnosticResult$new(
     name = "Floatic", passed = passed, layers = passing,
-    evidence = list(threshold_oc = 12, threshold_bd = 0.4,
+    evidence = list(threshold_oc = 20, threshold_bd = 0.4,
                       candidate_layers = cand),
     missing = miss,
     reference = "WRB (2022) Ch 4 Histosols (p 96), Ch 5"
@@ -199,8 +200,9 @@ qual_ombric <- function(pedon) {
   caco3 <- h$caco3_pct[cand] %||% rep(NA_real_, length(cand))
   oc    <- h$oc_pct[cand]
 
-  # Histic-ish layers (oc >= 12) with very low pH and no carbonates
-  histic <- !is.na(oc) & oc >= 12
+  # Organic material (v0.9.313: oc >= 20, WRB 2022 Ch 3.3.13, p 91; was 12)
+  # with very low pH and no carbonates
+  histic <- !is.na(oc) & oc >= 20
   acidic <- !is.na(ph) & ph <= 4.5
   no_carb <- is.na(caco3) | caco3 < 1
   ok <- histic & acidic & no_carb
@@ -214,7 +216,7 @@ qual_ombric <- function(pedon) {
   DiagnosticResult$new(
     name = "Ombric", passed = passed, layers = passing,
     evidence = list(threshold_ph_max = 4.5,
-                      threshold_oc_min = 12,
+                      threshold_oc_min = 20,
                       candidate_layers = cand),
     missing = miss,
     reference = "WRB (2022) Ch 4 Histosols (p 96), Ch 5"
@@ -248,7 +250,8 @@ qual_rheic <- function(pedon) {
   caco3 <- h$caco3_pct[cand] %||% rep(NA_real_, length(cand))
   oc    <- h$oc_pct[cand]
 
-  histic <- !is.na(oc) & oc >= 12
+  # v0.9.313: organic material is oc >= 20 (WRB 2022 Ch 3.3.13, p 91; was 12)
+  histic <- !is.na(oc) & oc >= 20
   base_evidence <- (!is.na(ph) & ph > 4.5) | (!is.na(caco3) & caco3 >= 1)
   ok <- histic & base_evidence
   passing <- cand[ok]
@@ -261,7 +264,7 @@ qual_rheic <- function(pedon) {
   DiagnosticResult$new(
     name = "Rheic", passed = passed, layers = passing,
     evidence = list(threshold_ph_min = 4.5,
-                      threshold_oc_min = 12,
+                      threshold_oc_min = 20,
                       candidate_layers = cand),
     missing = miss,
     reference = "WRB (2022) Ch 4 Histosols (p 96), Ch 5"

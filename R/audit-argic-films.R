@@ -90,7 +90,7 @@
 #' }
 #' @export
 argic_with_strong_clay_films <- function(pedon) {
-  bt <- argic(pedon)
+  bt <- .argic_impl(pedon)   # v0.9.310: a SiBCS audit, the reading before the WRB 2022 criteria
   if (!isTRUE(bt$passed)) {
     return(list(passed = FALSE, layers = integer(0),
                   argic  = bt,    films  = character(0)))

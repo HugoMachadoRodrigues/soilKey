@@ -57,6 +57,8 @@ test_that("test_caco3_concentration handles per-layer thresholds", {
 test_that("calcic evidence carries the named sub-tests", {
   pr <- make_calcisol_canonical()
   res <- calcic(pr)
-  # v0.9.142: the core carries the refine-when-present enrichment sub-test.
-  expect_named(res$evidence, c("caco3", "enrichment", "thickness"))
+  # v0.9.314: WRB 2022 Ch 3.1.4, criteria 1 to 4 (the USDA / SiBCS core,
+  # .calcic_impl(), keeps "caco3", "enrichment", "thickness").
+  expect_named(res$evidence, c("caco3", "secondary", "not_petrocalcic", "thickness"))
+  expect_named(.calcic_impl(pr)$evidence, c("caco3", "enrichment", "thickness"))
 })

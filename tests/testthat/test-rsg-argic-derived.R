@@ -23,28 +23,32 @@ test_that("luvisol passes on canonical Luvisol fixture", {
   expect_true(isTRUE(res$passed))
 })
 
-test_that("argic-derived RSGs are mutually exclusive on each fixture", {
+test_that("argic-derived RSGs are told apart by the order of the key", {
   skip_on_cran()
+  # v0.9.310: the WRB 2022 key tests each of them on the "other soils" (Ch 4,
+  # p. 119-122), so a gate tests only its own criteria: every argic profile
+  # within 100 cm passes the Luvisol gate, and the key's order separates them.
   ac <- make_acrisol_canonical()
   lx <- make_lixisol_canonical()
   al <- make_alisol_canonical()
   lv <- make_luvisol_canonical()
 
-  expect_false(isTRUE(lixisol(ac)$passed))
-  expect_false(isTRUE(alisol(ac)$passed))
-  expect_false(isTRUE(luvisol(ac)$passed))
-
-  expect_false(isTRUE(acrisol(lx)$passed))
+  expect_true(isTRUE(lixisol(ac)$passed))      # low CEC
+  expect_true(isTRUE(alisol(ac)$passed))       # Al > bases
+  expect_false(isTRUE(acrisol(lx)$passed))     # Al <= bases
   expect_false(isTRUE(alisol(lx)$passed))
-  expect_false(isTRUE(luvisol(lx)$passed))
-
-  expect_false(isTRUE(acrisol(al)$passed))
+  expect_false(isTRUE(acrisol(al)$passed))     # CEC >= 24
   expect_false(isTRUE(lixisol(al)$passed))
-  expect_false(isTRUE(luvisol(al)$passed))
-
+  for (p in list(ac, lx, al, lv)) expect_true(isTRUE(luvisol(p)$passed))
   expect_false(isTRUE(acrisol(lv)$passed))
   expect_false(isTRUE(lixisol(lv)$passed))
   expect_false(isTRUE(alisol(lv)$passed))
+
+  rsg <- function(p) classify_wrb2022(p, on_missing = "silent")$rsg_or_order
+  expect_equal(rsg(ac), "Acrisols")
+  expect_equal(rsg(lx), "Lixisols")
+  expect_equal(rsg(al), "Alisols")
+  expect_equal(rsg(lv), "Luvisols")
 })
 
 test_that("argic-derived RSGs all FAIL on non-argic fixtures", {

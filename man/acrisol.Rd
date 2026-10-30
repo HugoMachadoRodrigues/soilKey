@@ -9,18 +9,25 @@ acrisol(pedon, max_cec = 24, max_bs = 50)
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{max_cec}{Maximum CEC per kg clay (default 24).}
+\item{max_cec}{CEC per kg clay below which the clay is of low activity
+(default 24).}
 
-\item{max_bs}{Maximum base saturation \% (default 50).}
+\item{max_bs}{Unused since v0.9.310 (WRB 2022 does not use the base
+saturation here), kept so that existing calls still run.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests whether a profile satisfies the Acrisol RSG criteria: an
-argic horizon with low-activity clay (CEC < 24 cmol_c/kg clay) AND
-low base saturation (BS < 50\%) within at least one argic layer.
+The Acrisols of the WRB 2022 key (Ch 4, p. 119): an argic horizon starting
+\eqn{\le} 100 cm from the mineral soil surface; a CEC (1 M NH4OAc, pH 7) of
+< 24 cmolc/kg clay in some subhorizon of the argic horizon within 150 cm of
+the mineral soil surface; and exchangeable Al > exchangeable (Ca+Mg+K+Na) in
+half or more of 50-100 cm from the mineral soil surface, or of the lower half
+of the mineral soil above a limiting layer starting \eqn{\le} 100 cm,
+whichever is shallower. Where the cations are not available, the pH is read
+by WRB 2022 Annex 2, Table 9.3.
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 5, Acrisols.
+IUSS Working Group WRB (2022), Chapter 4, Acrisols (p. 119).
 }

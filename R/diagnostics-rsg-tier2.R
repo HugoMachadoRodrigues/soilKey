@@ -12,17 +12,28 @@
 
 #' Vertisol RSG gate (WRB 2022 Ch 4, p 101)
 #'
-#' WRB-canonical: vertic horizon \\<= 100 cm AND \\>= 30\% clay between
-#' the surface and the vertic horizon throughout AND shrink-swell cracks
-#' that start at the surface (or below a plough layer / below a self-
-#' mulching surface / below a surface crust) and extend to the vertic
-#' horizon.
-#'
-#' v0.3.4 enforces (1) vertic horizon, (2) all overlying layers \\>= 30\%
-#' clay, and (3) shrink-swell cracks that start within the upper 20 cm.
-#' "Cracks extending to the vertic horizon" is enforced indirectly by the
-#' test_shrink_swell_cracks test that already requires an explicit
-#' \code{cracks_width_cm} value.
+#' WRB 2022 Ch 4 (p. 101), Vertisols: other soils having
+#' \enumerate{
+#'   \item a vertic horizon starting \\<= 100 cm from the mineral soil
+#'         surface;
+#'   \item \\>= 30\% clay between the mineral soil surface and the vertic
+#'         horizon throughout;
+#'   \item shrink-swell cracks that start (a) at the mineral soil surface,
+#'         (b) at the base of a plough layer, (c) directly below a
+#'         self-mulching surface (a layer with strong granular, or strong
+#'         angular or subangular blocky, structure of aggregates \\<= 1 cm)
+#'         or (d) directly below a surface crust, and extend to the vertic
+#'         horizon.
+#' }
+#' Since v0.9.311 each item is TRUE, FALSE or NA (not recorded), and the gate
+#' is NA when an item is undecided and none fails. Only a vertic horizon that
+#' can start within 100 cm decides item 1, so unrecorded layers below it do
+#' not leave the gate undecided. Item 3 reads the cracks of each layer as
+#' \code{\link{vertic_horizon}} does (\code{cracks_width_cm}, or slickensides
+#' or an \code{ss} designation as evidence of them): every layer between the
+#' start and the vertic horizon must have them, and a layer whose cracks are
+#' not recorded leaves the item undecided. Until v0.9.310 item 3 asked for a
+#' layer with cracks starting within 20 cm and read missing cracks as absent.
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' With \code{strict = TRUE} the overlying-clay threshold is raised from
@@ -38,55 +49,126 @@
 vertisol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   min_clay <- if (strict) 35L else 30L
-  vh <- vertic_horizon(pedon)
-  if (!isTRUE(vh$passed)) {
-    return(DiagnosticResult$new(
-      name = "vertisol",
-      passed = if (is.na(vh$passed)) NA else FALSE,
-      layers = integer(0),
-      evidence = list(vertic_horizon = vh),
-      missing = vh$missing %||% character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)",
-      notes = "Failed/NA because vertic_horizon test did not pass"
-    ))
-  }
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)"
   h <- pedon$horizons
-  vertic_top <- min(h$top_cm[vh$layers], na.rm = TRUE)
-  # All layers strictly above the vertic horizon must have >= 30% clay.
-  above <- which(!is.na(h$top_cm) & h$bottom_cm <= vertic_top)
-  clay_throughout <- all(!is.na(h$clay_pct[above]) &
-                           h$clay_pct[above] >= min_clay)
-  cracks <- test_shrink_swell_cracks(h, min_width_cm = 0.5)
-  cracks_start_at_surface <- length(cracks$layers) > 0L &&
-                              any(h$top_cm[cracks$layers] <= 20, na.rm = TRUE)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
 
+  # 1. a vertic horizon starting <= 100 cm from the mineral soil surface
+  vh <- .vertic_horizon_wrb(pedon, max_top_cm = ms + 100)
+  c1 <- vh$passed
+  if (isFALSE(c1))
+    return(DiagnosticResult$new(
+      name = "vertisol", passed = FALSE, layers = integer(0),
+      evidence = list(vertic_horizon = vh, mineral_surface_cm = ms),
+      missing = character(0), reference = ref,
+      notes = "No vertic horizon starting <= 100 cm from the mineral soil surface"))
+  # the horizon's top; while it is undecided, the shallowest top it could
+  # have, where items 2 and 3 can still fail
+  top <- if (isTRUE(c1)) min(h$top_cm[vh$layers], na.rm = TRUE)
+         else vh$evidence$possible_top_cm
+
+  # 2. >= 30 % clay throughout between the mineral soil surface and the
+  # vertic horizon (35 % in strict mode)
+  ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+  above <- which(ok & h$top_cm < top & h$bottom_cm > ms)
+  c2 <- if (!length(above)) TRUE
+        else .and3(ifelse(is.na(h$clay_pct[above]), NA,
+                          h$clay_pct[above] >= min_clay))
+
+  # 3. shrink-swell cracks that start at the surface (or below a plough
+  # layer or a self-mulching surface) and extend to the vertic horizon
+  cracks <- .vertisol_cracks_start(h, ms = ms, top = top)
   # v0.9.77 -- when vertic_horizon fired via the v0.9.72 v-suffix
-  # designation inference OR the v0.9.76 chroma+clay inference, the
-  # cracks-at-surface gate is allowed to be missing because the
-  # inference paths themselves require strong morphological evidence
-  # (B subsoil + high clay + low chroma + designation marker).
+  # designation inference OR the v0.9.76 chroma+clay inference (both
+  # opt-in), the cracks item is allowed to be missing because the
+  # inference paths themselves require strong morphological evidence.
   inferred_path_fired <- isTRUE(vh$evidence$designation_inference$passed) ||
                             isTRUE(vh$evidence$chroma_clay_inference$passed)
-  cracks_gate <- isTRUE(cracks_start_at_surface) || isTRUE(inferred_path_fired)
+  c3 <- if (inferred_path_fired) TRUE else cracks$passed
 
-  passed <- isTRUE(vh$passed) && isTRUE(clay_throughout) &&
-              isTRUE(cracks_gate)
+  passed <- .and3(c1, c2, c3)
+  missing <- if (is.na(passed)) unique(c(
+    if (is.na(c1)) vh$missing,
+    if (is.na(c2)) "clay_pct",
+    if (is.na(c3)) "cracks_width_cm")) else character(0)
   DiagnosticResult$new(
     name = "vertisol",
     passed = passed,
-    layers = vh$layers,
+    layers = if (isTRUE(passed)) vh$layers else integer(0),
     evidence = list(
       vertic_horizon                = vh,
-      clay_above_30_throughout      = clay_throughout,
+      mineral_surface_cm            = ms,
+      vertic_top_cm                 = top,
+      clay_above_30_throughout      = c2,
       clay_threshold_pct            = min_clay,
       strict_mode                   = strict,
-      cracks_at_surface             = cracks_start_at_surface,
+      cracks_at_surface             = c3,
       cracks                        = cracks,
       morphological_inference_fired = inferred_path_fired
     ),
-    missing  = vh$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Vertisols (p. 101)"
+    missing  = missing,
+    reference = ref
   )
+}
+
+
+# Item 3 of the Vertisols key (WRB 2022 Ch 4, p. 101): shrink-swell cracks
+# that start (a) at the mineral soil surface, (b) at the base of a plough
+# layer, (c) directly below a self-mulching surface, or (d) directly below a
+# surface crust, and extend to the vertic horizon starting at `top`. A start
+# is met when every layer between it and the vertic horizon has cracks
+# (.vertic_crack_status()). A surface crust is a few cm at most, inside the
+# surface layer of a description, so (d) is read as (a). TRUE, FALSE or NA.
+.vertisol_cracks_start <- function(h, ms, top, min_width_cm = 0.5) {
+  cr <- .vertic_crack_status(h, min_width_cm = min_width_cm)
+  ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+  span <- function(from) {
+    idx <- which(ok & h$top_cm < top & h$bottom_cm > from)
+    if (!length(idx)) TRUE else .and3(cr[idx])
+  }
+  # the layers from the mineral soil surface downwards, in depth order
+  surf <- which(ok & h$bottom_cm > ms)
+  surf <- surf[order(h$top_cm[surf])]
+  # base of the run of surface layers where `cond` is TRUE (NA if none)
+  run_base <- function(cond) {
+    base <- NA_real_; edge <- ms
+    for (i in surf) {
+      if (h$top_cm[i] > edge || !isTRUE(cond[i])) break
+      edge <- max(edge, h$bottom_cm[i]); base <- edge
+    }
+    base
+  }
+  dsg <- as.character(h$designation)
+  # (b) a plough layer: Ap layers at the mineral soil surface
+  plough_base <- run_base(!is.na(dsg) & grepl("^[0-9]*A[a-z]*p", dsg))
+  at_plough <- if (is.na(plough_base)) FALSE else span(plough_base)
+  # (c) a self-mulching surface: strong granular structure, or strong angular
+  # or subangular blocky structure, of aggregates <= 1 cm. The size is read
+  # by the FAO classes of each type: granular up to coarse (5-10 mm), blocky
+  # up to fine (5-10 mm).
+  grade <- .field_grade_class(h$structure_grade)
+  stype <- .field_term(h$structure_type)
+  size  <- .structure_size_class(h$structure_size)
+  gran  <- !is.na(stype) & grepl("granul", stype)
+  blky  <- !is.na(stype) & grepl("blocky|blocos", stype)
+  small <- ifelse(is.na(stype) | (!gran & !blky), NA,
+                  ifelse(is.na(size), NA, ifelse(gran, size <= 4, size <= 2)))
+  mulch <- .and3v(.and3v(ifelse(is.na(grade), NA, grade >= 3),
+                         ifelse(is.na(stype), NA, gran | blky)), small)
+  mulch_base <- run_base(mulch)
+  below_mulch <- if (!is.na(mulch_base)) span(mulch_base)
+                 else if (length(surf) && is.na(mulch[surf[1L]]))
+                   .and3(NA, span(h$bottom_cm[surf[1L]]))
+                 else FALSE
+  # (a), and (d) read as (a)
+  at_surface <- span(ms)
+  list(passed = .any3(c(at_surface, at_plough, below_mulch)),
+       starts = list(mineral_surface = at_surface,
+                     plough_layer_base = at_plough,
+                     below_self_mulching_surface = below_mulch),
+       plough_base_cm = plough_base, self_mulching_base_cm = mulch_base,
+       crack_status = cr)
 }
 
 
@@ -102,6 +184,19 @@ vertisol <- function(pedon, strict = NULL) {
 #' v0.3.4 enforces (1) andic OR vitric AND (2) combined thickness
 #' \\>= 30 cm starting in the upper 25 cm AND (3) the negative-list
 #' exclusions on argic / ferralic / plinthic / spodic.
+#'
+#' @section v0.9.313 (WRB 2022 Ch 4, p 104, as worded):
+#' The combined thickness is that of every andic or vitric layer within
+#' 100 cm of the soil surface (clipped at 100 cm), provided the uppermost
+#' starts \\<= 25 cm; until v0.9.312 only layers starting \\<= 25 cm were
+#' added up. Item 1b applies: where a limiting layer starts \\> 25 and
+#' \\<= 50 cm, andic or vitric layers covering \\>= 60\% of the soil above
+#' it qualify. Petroplinthic and pisoplinthic horizons join the
+#' exclusions. An argic horizon read from a clay increase alone (no clay
+#' films recorded) whose layers all have andic properties does not
+#' exclude (Hugo, N4: the clay of andic material does not disperse fully).
+#' Layers whose andic or vitric status is not recorded leave the gate
+#' undecided (\code{NA}) where they could change it.
 #'
 #' @section v0.9.85 buried-exclusion fix:
 #' WRB 2022 Ch 4 p 104 specifies the Andosol exclusion list (argic /
@@ -137,42 +232,81 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
                        buried_below_cm = 50, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   if (strict) buried_below_cm <- Inf
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)"
   ap <- andic_properties(pedon)
   vp <- vitric_properties(pedon)
-  ap_layers <- ap$layers %||% integer(0)
-  vp_layers <- vp$layers %||% integer(0)
-  candidate <- union(ap_layers, vp_layers)
-  if (length(candidate) == 0L) {
+  h <- pedon$horizons
+  # Per layer: andic or vitric (TRUE), neither (FALSE), not known (NA). The
+  # layers andic_properties() and vitric_properties() pass are TRUE.
+  st_an <- ap$evidence$layer_status %||% rep(NA, nrow(h))
+  st_vi <- .vitric_layer_status(h)
+  status <- ifelse(st_an %in% TRUE | st_vi %in% TRUE, TRUE,
+                   ifelse(st_an %in% FALSE & st_vi %in% FALSE, FALSE, NA))
+  status[union(ap$layers %||% integer(0), vp$layers %||% integer(0))] <- TRUE
+  ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
+  if (!any(status %in% TRUE) && all(status[ok] %in% FALSE)) {
     return(DiagnosticResult$new(
-      name = "andosol",
-      passed = if (is.na(ap$passed) && is.na(vp$passed)) NA else FALSE,
-      layers = integer(0),
+      name = "andosol", passed = FALSE, layers = integer(0),
       evidence = list(andic = ap, vitric = vp),
-      missing = unique(c(ap$missing, vp$missing)),
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)",
+      missing = character(0), reference = ref,
       notes = "No andic or vitric layers"
     ))
   }
-  h <- pedon$horizons
-  # Restrict to layers that start within the upper max_top_cm.
-  starts_ok <- candidate[!is.na(h$top_cm[candidate]) &
-                            h$top_cm[candidate] <= max_top_cm]
-  combined_thickness <- if (length(starts_ok) == 0L) 0 else
-    sum(h$bottom_cm[starts_ok] - h$top_cm[starts_ok], na.rm = TRUE)
-  thickness_ok <- combined_thickness >= min_thickness
 
-  # v0.9.85: exclusion-list refinement. The diagnostic is only
-  # disqualifying if it ALSO has at least one layer starting in
-  # the upper `buried_below_cm` (default 50 cm). When all of its
-  # passing layers lie deeper than 50 cm the diagnostic is
-  # treated as "buried" and does NOT exclude the Andosol, per
-  # WRB 2022 Ch 4 p 104.
+  # v0.9.313: WRB 2022 Ch 4, Andosols (p 104), item 1: "one or more layers
+  # with andic or vitric properties with a combined thickness of: a. >= 30 cm,
+  # within 100 cm of the soil surface and starting <= 25 cm from the soil
+  # surface; or b. >= 60% of the entire thickness of the soil, if a limiting
+  # layer starts > 25 and <= 50 cm from the soil surface". The thickness is
+  # summed over all such layers within 100 cm (until v0.9.312 only layers
+  # starting <= 25 cm were added up), clipped at 100 cm. The limiting layer
+  # (Ch 2.1, rule 8, p 23) is .barrier_top_cm(): continuous rock, a petric
+  # horizon or technic hard material.
+  surface <- if (any(ok)) min(h$top_cm[ok]) else 0
+  top <- h$top_cm - surface; bot <- h$bottom_cm - surface
+  thick_in <- function(sel, to) sum(pmax(0, pmin(bot[sel], to) - pmax(top[sel], 0)))
+  yes <- ok & status %in% TRUE
+  may <- ok & !(status %in% FALSE)
+  start_yes <- any(yes & top <= max_top_cm & top < 100)
+  start_may <- any(may & top <= max_top_cm & top < 100)
+  thk_yes <- thick_in(yes, 100); thk_may <- thick_in(may, 100)
+  item1a <- if (start_yes && thk_yes >= min_thickness) TRUE
+            else if (!start_may || thk_may < min_thickness) FALSE
+            else NA
+  lim <- .barrier_top_cm(pedon) - surface
+  item1b <- FALSE
+  if (!is.na(lim) && lim > 25 && lim <= 50) {
+    need <- 0.6 * lim
+    item1b <- if (thick_in(yes, lim) >= need) TRUE
+              else if (thick_in(may, lim) < need) FALSE else NA
+  }
+  thickness_ok <- if (isTRUE(item1a) || isTRUE(item1b)) TRUE
+                  else if (isFALSE(item1a) && isFALSE(item1b)) FALSE
+                  else NA
+  andic_layers <- which(yes & top < 100)
+
+  # Item 2: "no argic, ferralic, petroplinthic, pisoplinthic, plinthic or
+  # spodic horizon starting <= 100 cm of the soil surface, unless buried
+  # deeper than 50 cm from the mineral soil surface". v0.9.85: a diagnostic
+  # whose layers all start >= `buried_below_cm` is read as buried. v0.9.313:
+  # petroplinthic and pisoplinthic added; an argic horizon read from a clay
+  # increase alone (no clay films recorded) whose layers all have andic
+  # properties does not exclude (Hugo, N4).
   exclusions <- list(
-    argic        = argic(pedon),
-    ferralic     = ferralic(pedon),
-    plinthic     = plinthic(pedon),
-    spodic       = spodic(pedon)
+    argic         = argic(pedon),
+    ferralic      = ferralic(pedon),
+    petroplinthic = petroplinthic(pedon),
+    pisoplinthic  = pisoplinthic(pedon),
+    plinthic      = plinthic(pedon),
+    spodic        = spodic(pedon)
   )
+  argic_andic <- FALSE
+  arg <- exclusions$argic
+  if (isTRUE(arg$passed) && length(arg$layers)) {
+    films <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
+    no_films <- all(is.na(films[arg$layers]) | films[arg$layers] == 0L)
+    argic_andic <- no_films && all(st_an[arg$layers] %in% TRUE)
+  }
   exclusion_buried <- vapply(exclusions, function(d) {
     if (!isTRUE(d$passed) || length(d$layers) == 0L) return(FALSE)
     tops <- h$top_cm[d$layers]
@@ -182,23 +316,31 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
   }, logical(1))
   exclusion_active <- vapply(exclusions, function(d) isTRUE(d$passed),
                                 logical(1)) & !exclusion_buried
+  exclusion_active[["argic"]] <- exclusion_active[["argic"]] && !argic_andic
   any_excl <- any(exclusion_active)
-  passed <- isTRUE(thickness_ok) && !any_excl
+  passed <- if (any_excl) FALSE else thickness_ok
+  missing <- if (is.na(passed)) unique(c(ap$missing, vp$missing)) else character(0)
   DiagnosticResult$new(
     name = "andosol",
     passed = passed,
-    layers = starts_ok,
+    layers = andic_layers,
     evidence = list(
-      andic                = ap,
-      vitric               = vp,
-      combined_thickness_cm = combined_thickness,
-      strict_mode          = strict,
-      exclusion_failed     = exclusions,
-      exclusion_buried     = as.list(exclusion_buried),
-      exclusion_active     = as.list(exclusion_active)
+      andic                 = ap,
+      vitric                = vp,
+      layer_status          = status,
+      combined_thickness_cm = thk_yes,
+      possible_thickness_cm = thk_may,
+      item1a                = item1a,
+      item1b                = item1b,
+      limiting_layer_top_cm = if (is.na(lim)) NA_real_ else lim,
+      strict_mode           = strict,
+      exclusion_failed      = exclusions,
+      exclusion_buried      = as.list(exclusion_buried),
+      argic_of_andic_layers = argic_andic,
+      exclusion_active      = as.list(exclusion_active)
     ),
-    missing  = unique(c(ap$missing, vp$missing)),
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Andosols (p. 104)"
+    missing  = missing,
+    reference = ref
   )
 }
 
@@ -217,9 +359,14 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 #'         conditions; OR
 #'   \item Permanent saturation by water \\<= 40 cm.
 #' }
-#' v0.3.4 enforces path 1 (the dominant path) and path 3 via designation
-#' (W / saturated marker). Path 2 is deferred (requires a depth-of-
-#' saturation column that's not standard).
+#' Path 1 reads the layers of \code{\link{gleyic_properties}} (since
+#' v0.9.312: the matrix colour, the layer underneath and the site's
+#' groundwater, without the old decay-with-depth test) and of
+#' \code{\link{reducing_conditions}}; since v0.9.312 the 25 cm may be made
+#' of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
+#' surface, and a layer whose redox reading is undecided leaves the gate
+#' \code{NA} when it could complete the 25 cm. Path 3 is read from the
+#' designation (W / saturated marker). Path 2 is not implemented.
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' With \code{strict = TRUE} the path-1 gleyic+reducing layer must start
@@ -236,18 +383,21 @@ andosol <- function(pedon, min_thickness = 30, max_top_cm = 25,
 gleysol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
   path1_max_top <- if (strict) 25 else 40
-  gp <- gleyic_properties(pedon)
-  rc <- reducing_conditions(pedon)
   h <- pedon$horizons
-  shared <- intersect(gp$layers %||% integer(0),
-                       rc$layers %||% integer(0))
-  # Path 1: any qualifying layer >= 25 cm thick starting <= path1_max_top.
-  path1_layers <- shared[
-    !is.na(h$top_cm[shared]) & h$top_cm[shared] <= path1_max_top &
-    !is.na(h$bottom_cm[shared]) &
-    (h$bottom_cm[shared] - h$top_cm[shared]) >= 25
-  ]
-  path1_ok <- length(path1_layers) > 0L
+  gp <- gleyic_properties(pedon, max_top_cm = Inf)
+  rc <- reducing_conditions(pedon)
+  z  <- gp$evidence$redox_layers
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  # Path 1 (Ch 4, p. 103): one layer, >= 25 cm thick, starting <= 40 cm from
+  # the mineral soil surface, gleyic throughout with reducing conditions in
+  # every sublayer: adjoining sublayers count together (v0.9.312).
+  gl <- z$gleyic
+  gl[gp$layers] <- TRUE                  # opt-in designation inference
+  ok <- .and3v(gl, z$reducing)
+  run <- .adjoining_runs(h, ok, min_cm = 25, max_top_cm = ms + path1_max_top)
+  path1_ok <- run$passed
+  path1_layers <- if (isTRUE(path1_ok)) run$layers else integer(0)
   # Path 3: permanent saturation -- detect via designation 'W' or
   # rock_origin == 'fluviatile' on a layer starting <= 40 cm. Disabled
   # in strict mode (designation-only evidence is not accepted).
@@ -256,7 +406,8 @@ gleysol <- function(pedon, strict = NULL) {
                 any(grepl("^W|aquic|saturated",
                             h$designation[shallow] %||% rep(NA, length(shallow)),
                             ignore.case = TRUE))
-  passed <- isTRUE(path1_ok) || isTRUE(path3_ok)
+  passed <- if (isTRUE(path1_ok) || isTRUE(path3_ok)) TRUE
+            else if (is.na(path1_ok)) NA else FALSE
   DiagnosticResult$new(
     name = "gleysol",
     passed = passed,
@@ -265,85 +416,187 @@ gleysol <- function(pedon, strict = NULL) {
       gleyic_properties     = gp,
       reducing_conditions   = rc,
       path1_layers          = path1_layers,
+      path1_undecided       = if (is.na(path1_ok)) run$layers else integer(0),
       path1_ok              = path1_ok,
       path3_ok              = path3_ok,
       strict_mode           = strict
     ),
-    missing  = unique(c(gp$missing, rc$missing)),
+    missing  = if (isTRUE(passed)) character(0) else unique(c(gp$missing, rc$missing)),
     reference = "IUSS Working Group WRB (2022), Chapter 4, Gleysols (p. 103)"
+  )
+}
+
+
+#' Plinthosol RSG gate (WRB 2022 Ch 4, p 106)
+#'
+#' WRB 2022: a plinthic, pisoplinthic or petroplinthic horizon starting
+#' \\<= 100 cm from the mineral soil surface. The horizons are those of
+#' \code{\link{plinthic}}, \code{\link{pisoplinthic}} and
+#' \code{\link{petroplinthic}}; a horizon that cannot be decided and could
+#' start within 100 cm leaves the gate \code{NA}. Until v0.9.311 the gate
+#' was the plinthic horizon alone, at any depth.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+plinthosol <- function(pedon) {
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  d <- list(plinthic = plinthic(pedon), pisoplinthic = pisoplinthic(pedon),
+            petroplinthic = petroplinthic(pedon))
+  start <- function(r) {
+    lay <- if (isTRUE(r$passed)) r$layers else r$evidence$undecided_layers %||% integer(0)
+    if (length(lay)) min(h$top_cm[lay], na.rm = TRUE) else NA_real_
+  }
+  tops <- vapply(d, start, 0)
+  sure <- vapply(d, function(r) isTRUE(r$passed), NA) & !is.na(tops) & tops <= ms + 100
+  maybe <- vapply(d, function(r) is.na(r$passed), NA) &
+    (is.na(tops) | tops <= ms + 100)
+  passed <- if (any(sure)) TRUE else if (any(maybe)) NA else FALSE
+  DiagnosticResult$new(
+    name = "plinthosol",
+    passed = passed,
+    layers = if (isTRUE(passed)) sort(unique(unlist(lapply(d[sure], `[[`, "layers")))) else integer(0),
+    evidence = c(d, list(starts_cm = tops, mineral_surface_cm = ms)),
+    missing = if (isTRUE(passed)) character(0) else unique(unlist(lapply(d[maybe], `[[`, "missing"))),
+    reference = "IUSS Working Group WRB (2022), Chapter 4, Plinthosols (p. 106)"
   )
 }
 
 
 #' Planosol RSG gate (WRB 2022 Ch 4, p 107)
 #'
-#' WRB-canonical: abrupt textural difference \\<= 75 cm AND, in 5 cm
-#' directly above or below the abrupt textural difference, stagnic
-#' properties (>= 50\% redoximorphic features) AND reducing conditions.
+#' WRB 2022: an abrupt textural difference \\<= 75 cm from the mineral soil
+#' surface and, within 5 cm directly above or below it, (1) stagnic
+#' properties in which the area of reductimorphic plus oximorphic features
+#' is \\>= 50\% and (2) reducing conditions in some parts of the volume with
+#' the reductimorphic features.
 #'
-#' v0.3.4 enforces all three components. The 5-cm-window restriction is
-#' relaxed to "the layer immediately above or below the abrupt textural
-#' difference satisfies stagnic + reducing".
-#'
-#' @section Tier-3 strict mode (v0.9.98):
-#' With \code{strict = TRUE} the \code{planic_features} fallback path is
-#' disabled. Strict mode requires the canonical evidence -- an abrupt
-#' textural difference \emph{plus} measured stagnic and reducing
-#' conditions in the bracketing layer -- and will not accept the
-#' simpler clay-doubling proxy on its own.
+#' The two layers that meet at the abrupt textural difference stand for the
+#' 5 cm above and below it. Stagnic properties are those of
+#' \code{\link{stagnic_properties}}; a claric layer directly above the
+#' abrupt textural difference is stagnic (Ch 3.2.14, criterion 4) and its
+#' whole area counts as reductimorphic. Since v0.9.312 the abrupt textural
+#' difference has its transition criterion (\code{boundary_distinctness}),
+#' the depth limit of 75 cm is applied, and the v0.2 \code{planic_features}
+#' fallback (clay doubling at an abrupt boundary, with no redox evidence),
+#' which is not in WRB 2022, is gone.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
-#'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
-#'        \code{TRUE} disables the planic-features fallback.
+#' @param strict Logical or \code{NULL}; recorded in the evidence. Since
+#'        v0.9.312 it changes nothing (the fallback it disabled is gone).
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 planosol <- function(pedon, strict = NULL) {
   if (is.null(strict)) strict <- isTRUE(getOption("soilKey.rsg_strict", FALSE))
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)"
+  h <- pedon$horizons
   atd <- abrupt_textural_difference(pedon)
-  if (!isTRUE(atd$passed)) {
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  pairs <- Filter(function(p) !isFALSE(p$passed) && !is.na(p$top_cm) &&
+                    p$top_cm - ms <= 75,
+                  atd$evidence$layer_pairs %||% list())
+  if (!length(pairs)) {
     return(DiagnosticResult$new(
       name = "planosol",
       passed = if (is.na(atd$passed)) NA else FALSE,
       layers = integer(0),
-      evidence = list(abrupt_textural_difference = atd),
+      evidence = list(abrupt_textural_difference = atd, strict_mode = strict),
       missing = atd$missing %||% character(0),
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)",
-      notes = "No abrupt textural difference within profile"
+      reference = ref,
+      notes = "No abrupt textural difference within 75 cm of the mineral soil surface"
     ))
   }
-  h <- pedon$horizons
-  # The abrupt-textural-difference test returns the underlying layer index;
-  # check the layer above (immediately overlying the abrupt jump) and the
-  # underlying layer for stagnic + reducing.
-  windows <- unique(c(atd$layers - 1L, atd$layers))
-  windows <- windows[windows >= 1L & windows <= nrow(h)]
-  sp <- stagnic_properties(pedon)
-  rc <- reducing_conditions(pedon)
-  sp_layers <- sp$layers %||% integer(0)
-  rc_layers <- rc$layers %||% integer(0)
-  ok_layers <- intersect(intersect(windows, sp_layers), rc_layers)
-  # Path 3 fallback: many Planosol fixtures encode planic_features (the
-  # v0.2 simpler diagnostic) which already combines clay-doubling +
-  # abrupt boundary; allow it as a backup.
-  pf <- planic_features(pedon)
-  fallback_ok <- !strict && isTRUE(pf$passed)
-  passed <- length(ok_layers) > 0L || isTRUE(fallback_ok)
-  layers_out <- if (length(ok_layers) > 0L) ok_layers else (pf$layers %||% integer(0))
+  z <- .wrb_redox_layers(pedon)
+  # one of the two layers at the abrupt textural difference: stagnic, with
+  # >= 50% reductimorphic plus oximorphic features, and reducing conditions
+  side_ok <- function(k) .and3(z$stagnic[k], z$area[k] >= 50, z$reducing[k])
+  verdict <- vapply(pairs, function(p) {
+    sides <- vapply(p$between, side_ok, NA)
+    near <- if (any(sides %in% TRUE)) TRUE else if (any(is.na(sides))) NA else FALSE
+    .and3(p$passed, near)
+  }, NA)
+  hit <- which(verdict %in% TRUE)
+  passed <- if (length(hit)) TRUE else if (anyNA(verdict)) NA else FALSE
+  layers <- if (length(hit)) sort(unique(unlist(lapply(pairs[hit], `[[`, "between"))))
+            else integer(0)
   DiagnosticResult$new(
     name = "planosol",
     passed = passed,
-    layers = layers_out,
+    layers = layers,
     evidence = list(
       abrupt_textural_difference = atd,
-      stagnic_properties         = sp,
-      reducing_conditions        = rc,
-      planic_features_fallback   = pf,
-      fallback_used              = isTRUE(fallback_ok) && length(ok_layers) == 0L,
+      pairs_within_75_cm         = pairs,
+      redox_layers               = z,
       strict_mode                = strict
     ),
-    missing  = unique(c(atd$missing, sp$missing, rc$missing)),
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Planosols (p. 107)"
+    missing  = if (isTRUE(passed)) character(0)
+               else unique(c(atd$missing, .redox_missing(z, unique(unlist(lapply(pairs, `[[`, "between")))))),
+    reference = ref
+  )
+}
+
+
+#' Stagnosol RSG gate (WRB 2022 Ch 4, p 108)
+#'
+#' WRB 2022: (1) stagnic properties in which the area of reductimorphic plus
+#' oximorphic features is \\>= one third (weighted average) of the area from
+#' the mineral soil surface to 60 cm or to continuous rock, whichever is
+#' shallower; and (2) reducing conditions for some time in some parts of the
+#' volume with the reductimorphic features within that depth.
+#'
+#' The layers and their areas are those of the redox reading behind
+#' \code{\link{stagnic_properties}}: a mottled stagnic layer counts with its
+#' mottles, or wholly when its matrix is grey (moist value 4 or more, chroma
+#' 2 or less), a claric layer of criteria 4-5 wholly. Undecided layers (and a
+#' part of the 60 cm not described) count towards what the area could be, so
+#' that the gate is \code{NA} when they could reach one third. Until v0.9.311
+#' the gate was \code{stagnic_properties()}: one layer with 5\% redox features
+#' that decayed with depth.
+#'
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+stagnosol <- function(pedon) {
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Stagnosols (p. 108)"
+  h <- pedon$horizons
+  z <- .wrb_redox_layers(pedon)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  lim <- ms + 60
+  rock_top <- suppressWarnings(min(h$top_cm[z$rock], na.rm = TRUE))
+  if (is.finite(rock_top)) lim <- min(lim, rock_top)
+  span <- lim - ms
+  if (span <= 0) {
+    return(DiagnosticResult$new(name = "stagnosol", passed = FALSE,
+      layers = integer(0), evidence = list(redox_layers = z), missing = character(0),
+      reference = ref, notes = "Continuous rock at the mineral soil surface"))
+  }
+  w <- pmax(0, pmin(h$bottom_cm, lim) - pmax(h$top_cm, ms))
+  w[is.na(w)] <- 0
+  low  <- ifelse(z$stagnic %in% TRUE, z$area, 0)
+  high <- ifelse(z$stagnic %in% FALSE, 0, z$area)
+  uncovered <- max(0, span - sum(w))
+  denom <- max(span, sum(w))
+  frac_low  <- sum(w * low) / 100 / denom
+  frac_high <- (sum(w * high) / 100 + uncovered) / denom
+  area_ok <- if (frac_low >= 1/3) TRUE else if (frac_high >= 1/3) NA else FALSE
+  inside <- w > 0
+  red_ok <- .and3v(z$stagnic, z$reducing)[inside]
+  reducing_ok <- if (any(red_ok %in% TRUE)) TRUE
+                 else if (anyNA(red_ok) || uncovered > 0) NA else FALSE
+  passed <- .and3(area_ok, reducing_ok)
+  DiagnosticResult$new(
+    name = "stagnosol",
+    passed = passed,
+    layers = if (isTRUE(passed)) which(inside & z$stagnic %in% TRUE) else integer(0),
+    evidence = list(redox_layers = z, depth_cm = c(from = ms, to = lim),
+                    area_fraction = c(low = frac_low, high = frac_high),
+                    area_ok = area_ok, reducing_ok = reducing_ok),
+    missing = if (isTRUE(passed)) character(0) else .redox_missing(z, which(inside & is.na(z$stagnic))),
+    reference = ref
   )
 }
 
@@ -360,7 +613,15 @@ planosol <- function(pedon, strict = NULL) {
 #' }
 #' v0.3.4 enforces all three exception paths. The DeltapH check uses
 #' \code{ph_kcl} and \code{ph_h2o}; the WDC check uses
-#' \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema).
+#' \code{water_dispersible_clay_pct} (introduced in v0.3.3 schema), a clay
+#' content in \% of the fine earth.
+#'
+#' v0.9.310: the ferralic horizon must start <= 150 cm from the mineral soil
+#' surface; an argic horizon counts when it starts above or at the upper limit
+#' of the ferralic horizon (not only when it lies wholly above it); and an
+#' exception must hold throughout the upper 30 cm of the argic horizon (or all
+#' of it when it is thinner). Data that do not decide an exception leave the
+#' gate undecided (NA).
 #'
 #' @section Tier-3 strict mode (v0.9.98):
 #' When an argic horizon sits above the ferralic, the default gate
@@ -390,6 +651,21 @@ ferralsol <- function(pedon, strict = NULL) {
       notes = "Failed/NA because ferralic horizon test did not pass"
     ))
   }
+  h <- pedon$horizons
+  ref <- "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+  # v0.9.310: criterion 1, "a ferralic horizon starting <= 150 cm from the
+  # mineral soil surface" (p. 110), was not tested.
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  ferralic_top <- min(h$top_cm[fr$layers], na.rm = TRUE)
+  if (ferralic_top - ms > 150) {
+    return(DiagnosticResult$new(
+      name = "ferralsol", passed = FALSE, layers = integer(0),
+      evidence = list(ferralic = fr, ferralic_top_cm = ferralic_top,
+                      mineral_surface_cm = ms, strict_mode = strict),
+      missing = character(0), reference = ref,
+      notes = "The ferralic horizon starts > 150 cm from the mineral soil surface"))
+  }
   ar <- argic(pedon)
   if (!isTRUE(ar$passed)) {
     # No argic at all -- pass.
@@ -398,15 +674,16 @@ ferralsol <- function(pedon, strict = NULL) {
       layers = fr$layers,
       evidence = list(ferralic = fr, argic = ar, strict_mode = strict),
       missing = fr$missing,
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+      reference = ref
     ))
   }
-  # Argic present -- check its position vs ferralic.
-  h <- pedon$horizons
-  ferralic_top <- min(h$top_cm[fr$layers], na.rm = TRUE)
-  argic_above <- ar$layers[h$bottom_cm[ar$layers] <= ferralic_top]
-  if (length(argic_above) == 0L) {
-    # Argic only below or at-and-below ferralic -- still ferralsol.
+  # v0.9.310: criterion 2, "no argic horizon starting above or at the upper
+  # limit of the ferralic horizon" (p. 110). Until v0.9.309 only argic layers
+  # lying wholly above the ferralic horizon were read, so an argic horizon
+  # starting above it and reaching into it did not count.
+  argic_top <- min(h$top_cm[ar$layers], na.rm = TRUE)
+  if (argic_top > ferralic_top) {
+    # The argic horizon starts below the upper limit of the ferralic.
     return(DiagnosticResult$new(
       name = "ferralsol", passed = TRUE,
       layers = fr$layers,
@@ -414,44 +691,56 @@ ferralsol <- function(pedon, strict = NULL) {
                        argic_above_ferralic = "none",
                        strict_mode = strict),
       missing = fr$missing,
-      reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+      reference = ref
     ))
   }
-  # Argic above ferralic -- evaluate the three exception paths in the
-  # upper 30 cm of the argic.
-  arg_layers <- argic_above
-  upper_30 <- arg_layers[h$top_cm[arg_layers] <
-                            min(h$top_cm[arg_layers], na.rm = TRUE) + 30]
+  # "... unless the argic horizon has, in its upper 30 cm or throughout,
+  # whichever is shallower, one or more of the following" (p. 110). Each
+  # exception must hold throughout that depth (Hugo's reading): in every layer
+  # of the argic horizon (its adjoining layers from its upper limit) that
+  # starts less than 30 cm below its upper limit.
+  run <- .nitic_runs(h, ar$layers)[[1]]$layers
+  upper_30 <- run[h$top_cm[run] < argic_top + 30]
+  throughout <- function(v) if (any(v %in% FALSE)) FALSE
+                            else if (length(v) && all(v %in% TRUE)) TRUE else NA
   paths <- list()
-  # Path 1: WDC < 10% in some upper layer.
+  # a. < 10% water-dispersible clay (a clay content, % of the fine earth;
+  #    WRB 2022 Annex 2, Ch 9.4).
   wdc_vals <- h$water_dispersible_clay_pct[upper_30]
-  paths$wdc_below_10 <- any(!is.na(wdc_vals) & wdc_vals < 10)
-  # Path 2: DeltapH = pH_KCl - pH_water >= 0.
+  paths$wdc_below_10 <- throughout(ifelse(is.na(wdc_vals), NA, wdc_vals < 10))
+  # b. Delta pH (pH KCl - pH water) >= 0.
   dpH <- h$ph_kcl[upper_30] - h$ph_h2o[upper_30]
-  paths$delta_pH_ge_0 <- any(!is.na(dpH) & dpH >= 0)
-  # Path 3: SOC >= 1.4%.
-  paths$oc_ge_1.4 <- any(!is.na(h$oc_pct[upper_30]) &
-                            h$oc_pct[upper_30] >= 1.4)
-  n_paths <- sum(unlist(paths))
+  paths$delta_pH_ge_0 <- throughout(ifelse(is.na(dpH), NA, dpH >= 0))
+  # c. >= 1.4% soil organic carbon.
+  oc <- h$oc_pct[upper_30]
+  paths$oc_ge_1.4 <- throughout(ifelse(is.na(oc), NA, oc >= 1.4))
+  ex <- unlist(paths)
+  n_paths <- sum(ex %in% TRUE)
   min_paths <- if (strict) 2L else 1L
-  exception_met <- n_paths >= min_paths
+  exception_met <- if (n_paths >= min_paths) TRUE
+                   else if (n_paths + sum(is.na(ex)) < min_paths) FALSE else NA
   passed <- exception_met
   DiagnosticResult$new(
     name = "ferralsol",
     passed = passed,
-    layers = fr$layers,
+    layers = if (isTRUE(passed)) fr$layers else integer(0),
     evidence = list(
       ferralic              = fr,
       argic                 = ar,
-      argic_above_ferralic  = arg_layers,
+      argic_upper_30_cm     = upper_30,
       exception_paths       = paths,
       exception_paths_met   = n_paths,
       exception_paths_required = min_paths,
       strict_mode           = strict,
       exception_met         = exception_met
     ),
-    missing  = fr$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 4, Ferralsols (p. 110)"
+    missing  = if (is.na(passed))
+                 unlist(list(wdc_below_10 = "water_dispersible_clay_pct",
+                             delta_pH_ge_0 = c("ph_kcl", "ph_h2o"),
+                             oc_ge_1.4 = "oc_pct")[names(ex)[is.na(ex)]],
+                        use.names = FALSE)
+               else fr$missing,
+    reference = ref
   )
 }
 
@@ -463,8 +752,11 @@ ferralsol <- function(pedon, strict = NULL) {
 #' WRB-canonical: chernic horizon AND, starting \\<= 50 cm below the
 #' lower limit of the mollic horizon and (if a petrocalcic horizon is
 #' present) above it, a layer with protocalcic properties \\>= 5 cm thick
-#' OR a calcic horizon AND base saturation \\>= 50\% from the surface
-#' to the protocalcic / calcic layer throughout.
+#' OR a calcic horizon AND base saturation \\>= 50\% from the mineral
+#' soil surface to the protocalcic / calcic layer throughout. Protocalcic
+#' properties are visible secondary carbonates
+#' (\code{\link{protocalcic_properties}}); where BS is not recorded it is
+#' read from pH (WRB 2022 Annex 2, Table 9.2).
 #'
 #' v0.3.4 strengthens the previous v0.2 chernozem (which only required
 #' mollic + chernic_color) by adding the protocalcic / calcic gate and
@@ -480,8 +772,10 @@ ferralsol <- function(pedon, strict = NULL) {
 #' the very high base status expected of a textbook Chernozem.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_bs Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_bs Minimum base saturation \% above the carbonate layer
+#'        (default 50).
+#' @param max_top_cm Maximum depth of the carbonate layer below the lower
+#'        limit of the mollic horizon, cm (default 50).
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} raises the base-saturation floor to 80\%.
@@ -503,34 +797,39 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
       notes = "v0.3.4: chernic horizon test did not pass"
     ))
   }
+  # v0.9.309: WRB 2022 Ch 4, Chernozems (p. 111), criteria 2-3: the layer
+  # with protocalcic properties (>= 5 cm) or the calcic horizon starts <= 50
+  # cm below the lower limit of the mollic horizon (which may extend below
+  # the chernic, footnote 4) and above any petrocalcic horizon; BS >= 50%
+  # from the mineral soil surface to it, throughout (pH where BS is not
+  # recorded, footnote 5 and Annex 2 Table 9.2). A carbonate layer at the
+  # mineral soil surface leaves nothing above it to test.
   h <- pedon$horizons
-  pc  <- protocalcic_properties(pedon)
-  cal <- calcic(pedon)
-  has_carbonate_layer <- isTRUE(pc$passed) || isTRUE(cal$passed)
-  # BS >= 50% from surface down to first carbonate-bearing layer.
-  carb_layers <- union(pc$layers %||% integer(0), cal$layers %||% integer(0))
-  if (length(carb_layers) == 0L) {
-    bs_ok <- FALSE
-  } else {
-    carb_top <- min(h$top_cm[carb_layers], na.rm = TRUE)
-    above <- which(!is.na(h$top_cm) & h$top_cm < carb_top)
-    bs_ok <- length(above) > 0L &&
-              all(!is.na(h$bs_pct[above]) & h$bs_pct[above] >= min_bs)
-  }
-  passed <- isTRUE(has_carbonate_layer) && isTRUE(bs_ok)
+  mol <- mollic(pedon)
+  mol_stack <- if (isTRUE(mol$passed))
+                 mol$evidence$thickness$details$layers %||% integer(0)
+               else integer(0)
+  mollic_bottom <- max(h$bottom_cm[c(ch$layers, mol_stack)], na.rm = TRUE)
+  g <- .wrb_carbonate_bs_gate(pedon, max_top_cm = mollic_bottom + max_top_cm,
+                              min_bs = min_bs)
   DiagnosticResult$new(
     name = "chernozem_strict",
-    passed = passed,
+    passed = g$passed,
     layers = ch$layers,
     evidence = list(
       chernic                = ch,
-      protocalcic_properties = pc,
-      calcic                 = cal,
-      bs_throughout_ok       = bs_ok,
+      mollic_lower_limit_cm  = mollic_bottom,
+      protocalcic_properties = g$protocalcic,
+      calcic                 = g$calcic,
+      carbonate_layers       = g$candidates,
+      carbonate_layer        = g$layer,
+      bs_throughout_ok       = g$bs_above$passed %||% NA,
+      bs_above               = g$bs_above,
+      petrocalcic_top_cm     = g$petrocalcic_top_cm,
       bs_threshold_pct       = min_bs,
       strict_mode            = strict
     ),
-    missing  = ch$missing,
+    missing  = g$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Chernozems (p. 111)"
   )
 }
@@ -548,8 +847,10 @@ chernozem_strict <- function(pedon, min_bs = 50, max_top_cm = 50,
 #' carbonate-depth window is left unchanged.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_bs Numeric threshold or option (see Details).
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param min_bs Minimum base saturation \% above the carbonate layer
+#'        (default 50).
+#' @param max_top_cm Maximum depth of the carbonate layer below the mineral
+#'        soil surface, cm (default 70).
 #' @param strict Logical or \code{NULL}. When \code{NULL} (default) it
 #'        resolves via \code{getOption("soilKey.rsg_strict", FALSE)}.
 #'        \code{TRUE} raises the base-saturation floor to 75\%.
@@ -570,39 +871,34 @@ kastanozem_strict <- function(pedon, min_bs = 50, max_top_cm = 70,
       reference = "IUSS Working Group WRB (2022), Chapter 4, Kastanozems (p. 112)"
     ))
   }
+  # v0.9.309: WRB 2022 Ch 4, Kastanozems (p. 112), criteria 2-3: the layer
+  # with protocalcic properties (>= 5 cm) or the calcic horizon starts <= 70
+  # cm from the mineral soil surface and above any petrocalcic horizon; BS
+  # >= 50% from the mineral soil surface to it, throughout (pH where BS is
+  # not recorded, footnote 6 and Annex 2 Table 9.2). A carbonate layer at the
+  # mineral soil surface leaves nothing above it to test.
   h <- pedon$horizons
-  pc  <- protocalcic_properties(pedon)
-  cal <- calcic(pedon)
-  has_carbonate_layer <- isTRUE(pc$passed) || isTRUE(cal$passed)
-  carb_layers <- union(pc$layers %||% integer(0), cal$layers %||% integer(0))
-  if (length(carb_layers) == 0L) {
-    bs_ok <- FALSE
-  } else {
-    carb_top <- min(h$top_cm[carb_layers], na.rm = TRUE)
-    if (carb_top > max_top_cm) {
-      # Carbonate layer too deep -- doesn't satisfy the Kastanozem
-      # depth gate.
-      bs_ok <- FALSE
-    } else {
-      above <- which(!is.na(h$top_cm) & h$top_cm < carb_top)
-      bs_ok <- length(above) > 0L &&
-                all(!is.na(h$bs_pct[above]) & h$bs_pct[above] >= min_bs)
-    }
-  }
-  passed <- isTRUE(has_carbonate_layer) && isTRUE(bs_ok)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  g <- .wrb_carbonate_bs_gate(pedon, max_top_cm = ms + max_top_cm,
+                              min_bs = min_bs)
   DiagnosticResult$new(
     name = "kastanozem_strict",
-    passed = passed,
+    passed = g$passed,
     layers = m$layers,
     evidence = list(
       mollic                  = m,
-      protocalcic_properties  = pc,
-      calcic                  = cal,
-      bs_throughout_ok        = bs_ok,
+      protocalcic_properties  = g$protocalcic,
+      calcic                  = g$calcic,
+      carbonate_layers        = g$candidates,
+      carbonate_layer         = g$layer,
+      bs_throughout_ok        = g$bs_above$passed %||% NA,
+      bs_above                = g$bs_above,
+      petrocalcic_top_cm      = g$petrocalcic_top_cm,
       bs_threshold_pct        = min_bs,
       strict_mode             = strict
     ),
-    missing  = m$missing,
+    missing  = g$missing,
     reference = "IUSS Working Group WRB (2022), Chapter 4, Kastanozems (p. 112)"
   )
 }

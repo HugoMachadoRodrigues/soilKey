@@ -14,26 +14,37 @@ stagnic_properties(
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{max_top_cm}{Maximum top depth (cm) of candidate shallow
-layers (default 100).}
+\item{max_top_cm}{Maximum top depth (cm) of candidate layers
+(default 100).}
 
-\item{min_redox_pct}{Minimum redox feature percent in the shallow
+\item{min_redox_pct}{The oximorphic features are more than this \% of the
 layer (default 5).}
 
-\item{decay_factor}{Required factor of redox decrease with depth
-(default 3, i.e., deeper redox < shallow / 3).}
+\item{decay_factor}{Not used since v0.9.312 (the decay test was removed);
+kept so that existing calls still work.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests for redoximorphic features driven by perched water. Distinct
-from gleyic (groundwater): stagnic features appear in upper layers
-AND redox decreases substantially with depth (the perched layer
-sits above a slowly permeable subsoil that itself is not
-saturated).
+Tests for stagnic properties (WRB 2022 Ch 3.2.14, p. 81) in a layer
+starting within the upper \code{max_top_cm} (default 100).
+}
+\details{
+Since v0.9.312 the layer reading is that of \code{\link{gleyic_properties}}
+(Hugo's reading for descriptions that do not say where the mottles sit):
+a layer with more than 5\% oximorphic features that are not gleyic
+(criteria 1-3: the matrix has no reductimorphic colour, the layer does
+not lie directly on a layer with such a matrix, and the site records no
+groundwater within 150 cm that is not perched, or a claric layer lies
+directly above it); a layer with claric colours in 95\% or more of
+its area above an abrupt textural difference or a layer of 1.5 kg/dm3 or
+more (criterion 4), or above a layer with stagnic oximorphic features
+(criterion 5). Mottles with neither colour nor water evidence leave the
+layer \code{NA}. Until v0.9.311 a layer with 5\% redox features passed when
+the features decayed with depth, which is not in WRB 2022.
 }
 \references{
-IUSS Working Group WRB (2022), Chapter 3, Stagnic
+IUSS Working Group WRB (2022), Chapter 3.2.14, Stagnic
   properties.
 }

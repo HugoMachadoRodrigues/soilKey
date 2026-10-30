@@ -71,9 +71,21 @@
 #' voided the argic horizon (the WRB 2014 Albeluvisol logic); in WRB 2022
 #' retic properties belong to an argic or natric horizon.
 #'
-#' v0.1 limitations: clay-increase distance (<= 30 cm vertical, or <= 15
-#' cm with abrupt textural change) is not yet enforced; that is scheduled
-#' for v0.2 and depends on horizon boundary descriptions.
+#' v0.9.310, for \code{system = "wrb2022"} (WRB 2022 Ch 3.1.3, p. 35-36):
+#' \itemize{
+#'   \item criterion 1: the layers have \eqn{\ge} 8\% clay;
+#'   \item criterion 2.a.iii: a layer is compared with a coarser-textured layer
+#'         above it only across a transitional horizon of \eqn{\le} 15 cm;
+#'         layers already accepted and layers whose designation has the
+#'         suffix t are part of the argic horizon, not transitional;
+#'   \item criterion 2.b.ii: clay films of "common" or more (clay coatings on
+#'         \eqn{\ge} 15\% of the aggregate surfaces) make a layer argic
+#'         without a clay increase;
+#'   \item a subsurface horizon: the layer at the mineral soil surface and
+#'         the A horizons are not part of it.
+#' }
+#' The USDA argillic and order keys and the SiBCS B textural keep the earlier
+#' reading.
 #'
 #' @references IUSS Working Group WRB (2022). \emph{World Reference Base
 #' for Soil Resources}, 4th edition. International Union of Soil Sciences,
@@ -85,6 +97,27 @@ argic <- function(pedon, min_thickness = 7.5,
                     engine = NULL,
                     require_t = NULL,
                     lithic_discontinuity = NULL) {
+  system <- match.arg(system)
+  # v0.9.310: the WRB argic reads the WRB 2022 text of Ch 3.1.3 (criteria 1,
+  # 2.a.iii and 2.b.ii; a subsurface horizon), see .argic_impl(). The USDA
+  # argillic, the USDA orders and the SiBCS B textural call .argic_impl()
+  # without it, so that those keys keep their reading.
+  .argic_impl(pedon, min_thickness = min_thickness, system = system,
+              engine = engine, require_t = require_t,
+              lithic_discontinuity = lithic_discontinuity,
+              wrb2022_text = system == "wrb2022")
+}
+
+#' The argic test. \code{wrb2022_text = TRUE} adds the readings of the WRB 2022
+#' text made in v0.9.310 (see the comments below); \code{argic()} sets it for
+#' \code{system = "wrb2022"}. The callers of the other systems use the default.
+#' @noRd
+.argic_impl <- function(pedon, min_thickness = 7.5,
+                        system = c("wrb2022", "usda"),
+                        engine = NULL,
+                        require_t = NULL,
+                        lithic_discontinuity = NULL,
+                        wrb2022_text = FALSE) {
   system <- match.arg(system)
   # v0.9.220: WRB 2022 criterion 2.a.i (see below) for the WRB argic only; the
   # SiBCS B textural (item j) and the USDA keys call this with FALSE.
@@ -149,11 +182,21 @@ argic <- function(pedon, min_thickness = 7.5,
   }
   h <- pedon$horizons
 
+  # v0.9.310: "An argic horizon ... is a subsurface horizon" (WRB 2022 Ch 3.1.3,
+  # p. 35). The layer at the mineral soil surface and the A horizons (Ah2, Ap2)
+  # are not part of it (Hugo's reading, 2026-10-29).
+  not_sub <- if (wrb2022_text) .wrb_not_subsurface(h) else rep(FALSE, nrow(h))
+  # v0.9.310: criterion 2.a.iii, a transitional horizon of <= 15 cm at most
+  # between the coarser-textured layer and the argic horizon (p. 36).
+  max_transition <- if (wrb2022_text) 15 else NULL
+
   tests <- list()
   # v0.9.26: per-system clay-increase thresholds. WRB 2022 (default)
   # uses 6/1.4/20; KST 13ed uses 3/1.2/8 (looser).
   tests$clay_increase <- test_clay_increase_argic(h, system = system,
-                                                  lithic_aware = lithic_discontinuity)
+                                                  lithic_aware = lithic_discontinuity,
+                                                  max_transition_cm = max_transition,
+                                                  exclude = not_sub)
   # v0.9.220: WRB 2022 Ch 3.1.3, criterion 2.a.i. A clay increase across a
   # lithic discontinuity (Ap over 2Bt) is not an argic horizon unless "illuvial
   # clay is evidenced" (criterion 2.b; WRB: "if the soil shows a lithic
@@ -161,7 +204,9 @@ argic <- function(pedon, min_thickness = 7.5,
   # be clearly established"), read here as clay films ("cerosidade") of
   # "common" or more (2.b.ii: coatings on >= 15% of the aggregate surfaces).
   if (lithic_discontinuity) {
-    across <- setdiff(test_clay_increase_argic(h, system = system)$layers,
+    across <- setdiff(test_clay_increase_argic(h, system = system,
+                                               max_transition_cm = max_transition,
+                                               exclude = not_sub)$layers,
                       tests$clay_increase$layers)
     if (length(across)) {
       films <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
@@ -176,6 +221,31 @@ argic <- function(pedon, min_thickness = 7.5,
   }
 
   candidate_layers <- tests$clay_increase$layers
+  layer_tests <- c("clay_increase", "thickness", "texture")
+
+  if (wrb2022_text) {
+    # v0.9.310: criterion 2.b.ii, without a clay increase: "clay coatings
+    # covering >= 15% of the surfaces of soil aggregates, coarse fragments
+    # and/or biopore walls" (p. 36), read as clay films of "common" or more in
+    # a subsurface layer (patchy cutans are "few" and do not count). Clay films
+    # that are not recorded leave the criterion unmet, not undecided: the other
+    # forms of 2.b (clay bridges, thin sections, fine clay) are not recorded
+    # either.
+    films  <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
+    coated <- which(!is.na(films) & films >= 3L & !not_sub)
+    tests$illuvial_clay <- .subtest_result(
+      passed = length(coated) > 0L, layers = coated,
+      notes  = "WRB 2022 Ch 3.1.3 criterion 2.b.ii: clay films common or more")
+    candidate_layers <- sort(union(candidate_layers, coated))
+    tests$criterion_2 <- .subtest_result(
+      passed  = if (length(candidate_layers)) TRUE else tests$clay_increase$passed,
+      layers  = candidate_layers,
+      missing = tests$clay_increase$missing)
+    # v0.9.310: criterion 1, ">= 8% clay" (p. 36).
+    tests$clay_min <- test_clay_above(h, min_pct = 8,
+                                      candidate_layers = candidate_layers)
+    layer_tests <- c("criterion_2", "thickness", "texture", "clay_min")
+  }
 
   tests$thickness     <- test_minimum_thickness(h,
                                                   min_cm           = min_thickness,
@@ -187,10 +257,7 @@ argic <- function(pedon, min_thickness = 7.5,
   # Albeluvisol logic); in WRB 2022 retic properties belong to an argic or
   # natric horizon (Ch 3.2.11, criterion 1) and Retisols have one (Ch 4).
 
-  agg <- aggregate_subtests(
-    tests,
-    layer_tests = c("clay_increase", "thickness", "texture")
-  )
+  agg <- aggregate_subtests(tests, layer_tests = layer_tests)
 
   # v0.9.90 -- Designation-inference fallback (opt-in, auto-on under
   # engine="aqp"). BDsolos / SOTERLAC profiles routinely report only 2
@@ -244,6 +311,12 @@ argic <- function(pedon, min_thickness = 7.5,
   # above it does not require a recorded clay_films qualifier.
   mi <- .apply_morph_inference("argic", h, final_passed, final_layers, tests)
   final_passed <- mi$passed; final_layers <- mi$layers; tests <- mi$evidence
+  # v0.9.310: nor do the designation readings above make a surface layer or an
+  # A horizon argic (a subsurface horizon, p. 35).
+  if (wrb2022_text && any(not_sub[final_layers])) {
+    final_layers <- setdiff(final_layers, which(not_sub))
+    if (isTRUE(final_passed) && !length(final_layers)) final_passed <- FALSE
+  }
 
   DiagnosticResult$new(
     name      = "argic",
@@ -328,6 +401,21 @@ ferralic <- function(pedon,
                        max_cec       = NULL,
                        engine        = NULL,
                        cec_inclusive = FALSE) {
+  .ferralic_impl(pedon, min_thickness = min_thickness, max_cec = max_cec,
+                 engine = engine, cec_inclusive = cec_inclusive,
+                 wrb2022_text = TRUE)
+}
+
+#' The ferralic test; \code{wrb2022_text = FALSE} keeps the thickness asked of
+#' each layer alone, the reading before v0.9.310, for USDA's oxic horizon
+#' (oxic_usda) and the cambic horizon of the USDA keys.
+#' @noRd
+.ferralic_impl <- function(pedon,
+                           min_thickness = 30,
+                           max_cec       = NULL,
+                           engine        = NULL,
+                           cec_inclusive = FALSE,
+                           wrb2022_text  = FALSE) {
   if (is.null(engine))
     engine <- getOption("soilKey.diagnostic_engine", "soilkey")
   engine <- match.arg(engine, c("soilkey", "aqp"))
@@ -345,7 +433,25 @@ ferralic <- function(pedon,
   tests$cec_per_clay  <- test_cec_per_clay(h,
                                              max_cmol_per_kg_clay = max_cec,
                                              inclusive = isTRUE(cec_inclusive))
-  tests$thickness     <- test_ferralic_thickness(h, min_cm = min_thickness)
+  # v0.9.310: criterion 6, "a thickness of >= 30 cm" (WRB 2022 Ch 3.1.10,
+  # p. 44), is that of the horizon: the adjoining layers that meet the texture
+  # and CEC criteria are taken together (Ch 2.1, rule 7, p. 23: the criteria
+  # "except thickness" are met in every subhorizon). It was asked of each layer
+  # alone. The ferralic is "a subsurface horizon" (p. 44), so the layer at the
+  # mineral soil surface and the A horizons are not taken into it (as for the
+  # argic and nitic horizons); a thin A of low-activity clay no longer starts
+  # the horizon at the surface. USDA's oxic horizon (oxic_usda) keeps the
+  # per-layer test: read as a horizon there, it moved profiles of the FEBR and
+  # ISIS USDA panels from the Ultisols and Alfisols to the Oxisols, as many
+  # wrongly as rightly, and is left to a review of the USDA keys.
+  tests$thickness <- if (wrb2022_text)
+    test_minimum_thickness(
+      h, min_cm = min_thickness,
+      candidate_layers = setdiff(intersect(tests$texture$layers,
+                                           tests$cec_per_clay$layers),
+                                 which(.wrb_not_subsurface(h))),
+      adjoining = TRUE)
+  else test_ferralic_thickness(h, min_cm = min_thickness)
 
   agg <- aggregate_subtests(tests)
 
@@ -598,8 +704,30 @@ mollic <- function(pedon,
 #' for Soil Resources}, 4th edition. International Union of Soil Sciences,
 #' Vienna. Chapter 3 -- Calcic horizon.
 #'
+#' @section v0.9.314:
+#' The WRB calcic horizon follows WRB 2022 Ch 3.1.4 (p. 37-38) criterion by
+#' criterion: criterion 2 is protocalcic properties (secondary carbonates on
+#' \eqn{\ge} 5\% of the exposed area, \code{secondary_carbonates_pct}) or
+#' \eqn{\ge} 5\% more CaCO3 than an underlying layer with no lithic
+#' discontinuity between; a layer of a petrocalcic horizon is not calcic; the
+#' 15 cm are those of the adjoining layers. A layer whose criterion 2 cannot be
+#' decided (secondary carbonates not recorded) is undecided, not calcic. The
+#' USDA calcic horizon and the SiBCS horizonte calcico keep the earlier
+#' reading.
+#'
 #' @export
 calcic <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
+  # v0.9.314: WRB 2022 Ch 3.1.4 (p. 37-38), see .calcic_wrb2022(). The USDA
+  # calcic horizon and the SiBCS horizonte calcico call .calcic_impl().
+  .calcic_wrb2022(pedon, min_thickness = min_thickness,
+                  min_caco3_pct = min_caco3_pct)
+}
+
+#' The calcic test before v0.9.314, read by the USDA calcic horizon and the
+#' SiBCS horizonte calcico: a layer with >= 15\% CaCO3 is dropped only when
+#' its enrichment and its secondary carbonates are both disproven.
+#' @noRd
+.calcic_impl <- function(pedon, min_thickness = 15, min_caco3_pct = 15) {
   h <- pedon$horizons
 
   tests <- list()
@@ -722,10 +850,21 @@ gypsic <- function(pedon, min_thickness = 15, min_gypsum_pct = 5) {
 #' alteration" (color/structure differences from parent material,
 #' carbonate removal), are scheduled for v0.3.
 #'
+#' @section v0.9.314:
+#' The WRB cambic horizon follows WRB 2022 Ch 3.1.5 (p. 39-40): criterion 4
+#' is read layer by layer, so a layer that forms part of an argic, ferralic,
+#' calcic, mollic or other listed horizon (or of a layer with andic
+#' properties) is set aside, not the whole profile; the subsurface layers are
+#' those below the layer at the mineral soil surface that are not A horizons;
+#' the 15 cm are those of the adjoining layers; a layer whose texture or
+#' structure is not recorded leaves the result undecided. Criterion 3 is not
+#' tested. The USDA keys keep the earlier reading.
+#'
 #' @references IUSS Working Group WRB (2022), Chapter 3, Cambic horizon.
 #' @param min_top_cm Minimum top depth (cm) for a horizon to be
 #'        considered cambic-eligible (default 5). Anchors the
-#'        candidate set to subsurface layers.
+#'        candidate set to subsurface layers. Since v0.9.314 the WRB
+#'        reading asks it only when it is given.
 #' @param engine v0.9.63+. One of \code{"soilkey"} (hand-coded path,
 #'        default for back-compat) or \code{"aqp"} (canonical NRCS
 #'        dispatch via \code{aqp::getCambicBounds}). When \code{NULL}
@@ -744,6 +883,26 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
   if (is.null(engine))
     engine <- getOption("soilKey.diagnostic_engine", "soilkey")
   engine <- match.arg(engine, c("soilkey", "aqp"))
+  if (engine == "aqp")
+    return(.cambic_impl(pedon, engine = "aqp"))
+  # v0.9.314: WRB 2022 Ch 3.1.5 (p. 39-40), see .cambic_wrb2022(): the
+  # subsurface layers, criterion 4 layer by layer, the 15 cm of the horizon.
+  # min_top_cm is asked only when given. The USDA keys call .cambic_impl().
+  .cambic_wrb2022(pedon, min_thickness = min_thickness,
+                  min_top_cm = if (missing(min_top_cm)) NULL else min_top_cm)
+}
+
+#' The cambic test. It sets aside a profile with an argic or ferralic horizon;
+#' \code{wrb2022_text = FALSE} reads those two as before v0.9.310, for the USDA
+#' keys that use this cambic horizon (Inceptisols, Aridisols, Andisols). Since
+#' v0.9.314 the WRB cambic() reads .cambic_wrb2022() and calls this only for
+#' \code{engine = "aqp"}.
+#' @noRd
+.cambic_impl <- function(pedon, min_thickness = 15, min_top_cm = 5,
+                         engine = NULL, wrb2022_text = FALSE) {
+  if (is.null(engine))
+    engine <- getOption("soilKey.diagnostic_engine", "soilkey")
+  engine <- match.arg(engine, c("soilkey", "aqp"))
   # v0.9.63: optional dispatch to aqp::getCambicBounds() via
   # `cambic_aqp()`. The v0.9.62 RJ A/B showed soilkey's cambic
   # passes 0% of BDsolos perfis vs aqp's 40.6% -- a critical gap
@@ -758,8 +917,8 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
   }
   h <- pedon$horizons
 
-  arg_res <- argic(pedon)
-  fer_res <- ferralic(pedon)
+  arg_res <- if (wrb2022_text) argic(pedon) else .argic_impl(pedon)
+  fer_res <- if (wrb2022_text) ferralic(pedon) else .ferralic_impl(pedon)
 
   tests <- list()
   # v0.9.2.C: cambic is by definition a SUBSURFACE horizon. The bare
@@ -863,10 +1022,10 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 
 #' Plinthic horizon (WRB 2022)
 #'
-#' Tests whether any horizon meets the plinthic horizon criteria.
-#' Plinthite is Fe-rich material that hardens irreversibly on repeated
-#' wetting and drying; the plinthic horizon is the diagnostic of
-#' Plinthosols.
+#' Tests whether any horizon meets the plinthic horizon criteria (WRB 2022
+#' Ch 3.1.30, p. 62), the diagnostic of Plinthosols with the pisoplinthic
+#' and petroplinthic horizons. The depth limit belongs to the Plinthosols
+#' key (\code{plinthosol()}), not to the horizon.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness in cm (default 15).
@@ -874,18 +1033,22 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @details
-#' Sub-tests:
+#' Criteria read (v0.9.312):
 #' \itemize{
-#'   \item \code{test_plinthite_concentration} -- plinthite
-#'         volume \% >= 15
-#'   \item \code{test_minimum_thickness} -- thickness >= 15 cm
+#'   \item 1: \code{plinthite_pct} \\>= 15 (the oximorphic features inside
+#'         former aggregates of criterion 1, as \code{plinthite_pct} records
+#'         them); a layer where it is not recorded is undecided;
+#'   \item 2: Fe-dithionite \\>= 2.5\% (2.a) when \code{fe_dcb_pct} is
+#'         measured; below it the layer is undecided, since 2.b (10\% Fe in
+#'         the oximorphic features) and 2.c (hardening after drying and
+#'         wetting) are not recorded; not measured, the recorded plinthite
+#'         is taken for 2.c;
+#'   \item 3: Feox/Fedith < 0.1 when both are measured;
+#'   \item 4: not part of a petroplinthic or pisoplinthic horizon;
+#'   \item 5: \\>= 15 cm thick; adjoining sublayers (Btv1 over Btv2) count
+#'         together.
 #' }
-#'
-#' v0.2 limitations: WRB 2022 also accepts profiles with >= 40\% red
-#' Fe-rich mottles as alternative criterion -- not yet wired. The
-#' "irreversibly hardens" criterion is conceptual and requires field
-#' observation; v0.2 takes \code{plinthite_pct} as already representing
-#' true plinthite (as opposed to soft mottles).
+#' The result is \code{NA} when undecided layers could make the horizon.
 #'
 #' @section v0.9.72 designation morphological inference (opt-in):
 #' Field-described Brazilian Plintossolos profiles (e.g.\ the Embrapa
@@ -906,19 +1069,38 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #'
 #' Default is \code{FALSE} (canonical behaviour preserved).
 #'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic
+#'   horizon.
 #' @export
 plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
   h <- pedon$horizons
+  n <- nrow(h)
 
   tests <- list()
   tests$plinthite <- test_plinthite_concentration(h,
                                                     min_pct = min_plinthite_pct)
-  tests$thickness <- test_minimum_thickness(h,
-                                              min_cm           = min_thickness,
-                                              candidate_layers = tests$plinthite$layers)
-
-  agg <- aggregate_subtests(tests)
+  ok <- .subtest_by_layer(tests$plinthite, n)
+  # criteria 2 and 3 (p. 62), where the Fe is measured
+  fe_d  <- suppressWarnings(as.numeric(h$fe_dcb_pct %||% rep(NA_real_, n)))
+  fe_ox <- suppressWarnings(as.numeric(h$fe_ox_pct %||% rep(NA_real_, n)))
+  low_fe <- !is.na(fe_d) & fe_d < 2.5
+  ratio_high <- !is.na(fe_d) & !is.na(fe_ox) & fe_d > 0 & fe_ox / fe_d >= 0.1
+  ok[ok %in% TRUE & low_fe] <- NA
+  ok[ratio_high] <- FALSE
+  # criterion 4: not part of a petroplinthic or pisoplinthic horizon
+  part <- union(.petroplinthic_run(h)$layers_true, .pisoplinthic_run(h)$layers_true)
+  ok[part] <- FALSE
+  run <- .adjoining_runs(h, ok, min_cm = min_thickness)
+  tests$thickness <- list(passed = run$passed, layers = run$layers,
+                          min_cm = min_thickness, adjoining = TRUE)
+  tests$fe_criteria <- list(low_fe_dith = which(low_fe), feox_fedith_high = which(ratio_high),
+                            part_of_petro_or_pisoplinthic = part)
+  agg <- list(passed = run$passed,
+              layers = if (isTRUE(run$passed)) run$layers else integer(0),
+              missing = if (isTRUE(run$passed)) character(0)
+                        else unique(c(tests$plinthite$missing,
+                                      if (any(low_fe)) "fe_dcb_pct")))
+  tests$undecided_layers <- if (is.na(run$passed)) run$layers else integer(0)
 
   # v0.9.72 -- designation-suffix morphological inference
   designation_inference_enabled <- isTRUE(
@@ -975,7 +1157,7 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
     layers    = final_layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = paste("IUSS Working Group WRB (2022), Chapter 3, Plinthic horizon",
+    reference = paste("IUSS Working Group WRB (2022), Chapter 3.1.30, Plinthic horizon (p. 62)",
                        if (length(inferred_layers) > 0L)
                          "[v0.9.72 designation-suffix inference]" else "")
   )
@@ -1247,19 +1429,22 @@ spodic <- function(pedon,
 #' horizon like mollic, but with low base saturation (< 50\%).
 #' Diagnostic of Umbrisols.
 #'
-#' Implementation reuses every mollic sub-test except the BS test,
-#' which is inverted via \code{test_bs_below}.
+#' Implementation reuses the mollic sub-tests on the contiguous stack of
+#' dark layers from the mineral soil surface (organic layers on top are
+#' not part of it), and tests the weighted average base saturation of the
+#' stack against \code{max_bs} (WRB 2022 3.1.39, pp. 69-70).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness (cm; default 20).
 #' @param min_oc Minimum SOC \% (default 0.6).
 #' @param max_bs Maximum base saturation \% (default 50; profile must
 #'        be BELOW this).
-#' @param surface_top_cm Maximum top_cm for surface-related layers
-#'        (default 5).
+#' @param surface_top_cm Maximum depth (cm) below the mineral soil
+#'        surface at which the stack may start (default 5).
 #' @return A \code{\link{DiagnosticResult}}.
 #'
-#' @references IUSS Working Group WRB (2022), Chapter 3, Umbric horizon.
+#' @references IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric
+#'   horizon (pp. 69-70).
 #' @export
 umbric_horizon <- function(pedon,
                               min_thickness  = 20,
@@ -1267,18 +1452,46 @@ umbric_horizon <- function(pedon,
                               max_bs         = 50,
                               surface_top_cm = 5) {
   h <- pedon$horizons
-  candidate_layers <- which(!is.na(h$top_cm) & h$top_cm <= surface_top_cm)
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric horizon (pp. 69-70)"
+
+  # v0.9.309: WRB 2022 3.1.39 (p. 69), "a surface horizon consisting of
+  # mineral material": the contiguous stack of dark layers from the mineral
+  # soil surface, as mollic() has used since v0.9.78, instead of each layer
+  # starting <= 5 cm on its own. Organic layers on top are skipped (Ch 2.1
+  # rule 3, p. 23).
+  stack <- .wrb_dark_surface_stack(h, surface_top_cm = surface_top_cm)
+  L <- stack$layers
+  thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
 
   tests <- list()
-  tests$color           <- test_mollic_color(h, candidate_layers = candidate_layers)
-  tests$organic_carbon  <- test_mollic_organic_carbon(h, min_pct = min_oc,
-                                                        candidate_layers = candidate_layers)
-  tests$bs_low          <- test_bs_below(h, max_pct = max_bs,
-                                            candidate_layers = candidate_layers)
-  tests$thickness       <- test_mollic_thickness(h, min_cm = min_thickness,
-                                                    candidate_layers = candidate_layers)
-  tests$structure       <- test_mollic_structure(h,
-                                                    candidate_layers = candidate_layers)
+  tests$color <- .subtest_result(
+    passed  = if (length(L)) TRUE else if (length(stack$maybe)) NA else FALSE,
+    layers  = L,
+    missing = if (!length(L)) stack$missing else character(0),
+    details = list(stack = L, undecided_below = setdiff(stack$maybe, L),
+                   mineral_surface_cm = stack$mineral_surface_cm))
+  tests$organic_carbon <- test_mollic_organic_carbon(h, min_pct = min_oc,
+                                                       candidate_layers = L)
+  # 5. "a base saturation (by 1 M NH4OAc, pH 7) of < 50% on a weighted
+  # average" (p. 70); where BS is not recorded, pH (Annex 2, Table 9.2).
+  bs <- if (length(L)) .wrb_bs_weighted_below(h, L, max_bs = max_bs)
+        else list(passed = NA, missing = character(0))
+  tests$bs_low <- .subtest_result(
+    passed  = if (length(L)) bs$passed else FALSE,
+    layers  = if (isTRUE(bs$passed)) L else integer(0),
+    missing = bs$missing %||% character(0),
+    details = list(weighted_average = bs$average, bounds = bs$bounds,
+                   layers = bs$details))
+  # 6b. >= 20 cm; undecided where layers of unknown colour could make it up
+  tests$thickness <- .subtest_result(
+    passed  = if (thk(L) >= min_thickness) TRUE
+              else if (thk(stack$maybe) >= min_thickness) NA
+              else FALSE,
+    layers  = if (thk(L) >= min_thickness) L else integer(0),
+    missing = if (thk(L) < min_thickness && thk(stack$maybe) >= min_thickness)
+                stack$missing else character(0),
+    details = list(cumulative_cm = thk(L), threshold = min_thickness))
+  tests$structure <- test_mollic_structure(h, candidate_layers = L)
 
   agg <- aggregate_subtests(tests)
 
@@ -1288,9 +1501,9 @@ umbric_horizon <- function(pedon,
     layers    = agg$layers,
     evidence  = tests,
     missing   = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3, Umbric horizon",
-    notes     = if (length(candidate_layers) == 0L) {
-                   "No surface-related candidate layers"
+    reference = ref,
+    notes     = if (length(stack$maybe) == 0L) {
+                   "No dark surface stack from the mineral soil surface"
                  } else NA_character_
   )
 }
@@ -1339,8 +1552,14 @@ duric_horizon <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 #' Natric horizon (WRB 2022)
 #'
 #' Tests for the natric horizon: an argic horizon with diagnostic
-#' sodium accumulation (ESP >= 15\%) within at least one argic layer.
-#' Diagnostic of Solonetz.
+#' sodium accumulation. Diagnostic of Solonetz.
+#'
+#' v0.9.310: WRB 2022 Ch 3.1.21 (p. 53-54) criterion 3 (columnar or
+#' prismatic structure, or blocky with tongues of the overlying layer) and
+#' criterion 4 (ESP \eqn{\ge} 15 throughout the upper 40 cm, or Mg + Na >
+#' Ca + exchange acidity there with ESP \eqn{\ge} 15 within 50 cm). Until
+#' then an ESP \eqn{\ge} 15 in any argic layer sufficed; the USDA natric
+#' helpers keep that reading.
 #'
 #' @section v0.9.76 designation + ESP-only inference (opt-in):
 #' Field-described Solonetz profiles in NCSS / KSSL data routinely
@@ -1376,13 +1595,30 @@ duric_horizon <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 #' @references IUSS Working Group WRB (2022), Chapter 3, Natric horizon.
 #' @export
 natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
-  arg <- argic(pedon)
+  # v0.9.310: the WRB natric horizon follows WRB 2022 Ch 3.1.21 (criteria 3
+  # and 4, see .natric_wrb2022()). The USDA keys, which delegate their natric
+  # horizon here, call .natric_horizon_impl() and keep the earlier reading.
+  .natric_horizon_impl(pedon, min_esp = min_esp, min_pH_h2o = min_pH_h2o,
+                       wrb2022_text = TRUE)
+}
+
+#' The natric test; \code{wrb2022_text = FALSE} is the reading before v0.9.310
+#' (argic + ESP >= 15 in an argic layer), kept for the USDA keys.
+#' @noRd
+.natric_horizon_impl <- function(pedon, min_esp = 15, min_pH_h2o = 7.0,
+                                 wrb2022_text = FALSE) {
+  arg <- if (wrb2022_text) argic(pedon) else .argic_impl(pedon)
   designation_inference_enabled <- isTRUE(
     getOption("soilKey.natric_designation_inference", default = FALSE)) ||
     .morph_inference_enabled()   # v0.9.187: also under the global morph mode
 
+  if (wrb2022_text && isTRUE(arg$passed)) {
+    res <- .natric_wrb2022(pedon, arg, min_esp = min_esp)
+    if (isTRUE(res$passed) || !designation_inference_enabled) return(res)
+  }
+
   # ---- canonical path: argic + ESP >= min_esp on argic layers ----
-  if (isTRUE(arg$passed)) {
+  if (!wrb2022_text && isTRUE(arg$passed)) {
     h <- pedon$horizons
     layers <- arg$layers
     tests <- list(argic = arg)
@@ -1458,6 +1694,149 @@ natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
     reference = paste("IUSS Working Group WRB (2022), Chapter 3, Natric horizon",
                        "[v0.9.76 designation + ESP inference]")
   )
+}
+
+#' The WRB 2022 natric horizon on a profile with an argic horizon (v0.9.310).
+#'
+#' Criteria 1, 2 and 5 of the natric horizon (WRB 2022 Ch 3.1.21, p. 53-54)
+#' are those of the argic horizon (criteria 1, 2 and 4), so the natric horizon
+#' is sought among the argic layers: adjoining argic layers from a start down to
+#' an end (the argic layers above or below it are an argic horizon; argic
+#' criterion 3.a). The uppermost start with an end that passes is the natric
+#' horizon, down to the deepest such end. Each is tested on:
+#' \itemize{
+#'   \item criterion 3: "a columnar or prismatic structure in some part of the
+#'         horizon", or an angular or subangular blocky structure with
+#'         "penetrations of an overlying coarser-textured layer ... extending
+#'         >= 2.5 cm into the natric horizon", read from the lower boundary of
+#'         the layer above: tongued or irregular (pockets deeper than wide)
+#'         meets it, smooth does not, anything else is undecided. A structure
+#'         soilKey does not recognise (a code) is undecided. When no structure
+#'         is recorded in the whole horizon the criterion is not tested
+#'         (Hugo's reading N8).
+#'   \item criterion 4: (a) an ESP >= 15 "throughout the entire natric horizon
+#'         or its upper 40 cm, whichever is thinner"; or (b) "more exchangeable
+#'         Mg plus Na than Ca plus exchange acidity (buffered at pH 8.2)" over
+#'         the same depth and an ESP >= 15 in a subhorizon starting <= 50 cm
+#'         below its upper limit. The ESP is .natric_esp() (Hugo's reading N10).
+#'         The exchange acidity is not a soilKey attribute: it is at least the
+#'         exchangeable Al, and nil at a pH (H2O) of 8.2 or more; otherwise
+#'         4.b is undecided where Mg + Na exceed Ca.
+#' }
+#' @noRd
+.natric_wrb2022 <- function(pedon, arg, min_esp = 15) {
+  h <- pedon$horizons
+  n <- nrow(h)
+  ref <- "IUSS Working Group WRB (2022), Chapter 3.1.21, Natric horizon (p. 53-54)"
+  col <- function(v, na = NA_real_) h[[v]] %||% rep(na, n)
+  esp <- .natric_esp(h)
+  st  <- .field_term(col("structure_type", NA_character_))
+  columnar <- !is.na(st) & grepl("column|colun|prism", st)
+  blocky   <- !is.na(st) & !columnar & grepl("block|bloco|angular", st)
+  # a structure recorded that is neither (massive, granular, platy, ...)
+  other <- !is.na(st) & !columnar & !blocky &
+    grepl(paste0("massive|maci|granul|platy|lamin|single|simples|grao|",
+                 "structureless|sem estrutura|crumb|grumo|polyhedr|polied|",
+                 "nutty|wedge|cuneif|lenticular"), st)
+  topo <- .field_term(col("boundary_topography", NA_character_))
+  ph <- col("ph_h2o"); ca <- col("ca_cmol"); mg <- col("mg_cmol")
+  na <- col("na_cmol"); al <- col("al_cmol")
+  mg_na <- vapply(seq_len(n), function(i) {
+    if (is.na(mg[i]) || is.na(na[i]) || is.na(ca[i])) return(NA)
+    if (mg[i] + na[i] <= ca[i] + (if (is.na(al[i])) 0 else al[i])) return(FALSE)
+    if (!is.na(ph[i]) && ph[i] >= 8.2) TRUE else NA
+  }, logical(1))
+
+  # one candidate horizon: the adjoining argic layers `lay`
+  test_run <- function(lay) {
+    top <- h$top_cm[lay[1]]
+    bot <- max(h$bottom_cm[lay])
+    above <- which(!is.na(h$bottom_cm) & abs(h$bottom_cm - top) < 1e-6)
+    tongues <- if (!length(above) || all(is.na(topo[above]))) NA
+               else if (any(grepl("tongu|irregular", topo[above]))) TRUE
+               else if (any(grepl("smooth|plana", topo[above]))) FALSE else NA
+    tested <- !all(is.na(st[lay]))
+    may_be_columnar <- any(!columnar[lay] & !blocky[lay] & !other[lay])
+    c3 <- if (any(columnar[lay])) TRUE
+          else if (!tested) TRUE
+          else if (isTRUE(tongues) && any(blocky[lay])) TRUE
+          else if (may_be_columnar || (any(blocky[lay]) && is.na(tongues))) NA
+          else FALSE
+    win  <- lay[h$top_cm[lay] < min(top + 40, bot)]
+    e    <- esp[win]
+    c4a  <- if (any(e < min_esp, na.rm = TRUE)) FALSE else if (!anyNA(e)) TRUE else NA
+    deep <- lay[h$top_cm[lay] - top <= 50]
+    c4bii <- if (any(esp[deep] >= min_esp, na.rm = TRUE)) TRUE
+             else if (anyNA(esp[deep])) NA else FALSE
+    c4b <- .and3(.and3(mg_na[win]), c4bii)
+    c4  <- if (isTRUE(c4a) || isTRUE(c4b)) TRUE
+           else if (isFALSE(c4a) && isFALSE(c4b)) FALSE else NA
+    list(start = lay[1], top_cm = top, layers = lay, structure_tested = tested,
+         c3 = c3, c4a = c4a, c4b = c4b, passed = .and3(c3, c4))
+  }
+  starts <- list()
+  for (r in .nitic_runs(h, arg$layers)) {
+    L <- r$layers
+    for (k in seq_along(L)) {
+      ends <- lapply(seq.int(k, length(L)), function(m) test_run(L[k:m]))
+      ok <- vapply(ends, function(x) x$passed, logical(1))
+      # the deepest end that passes; else the whole run, which records why not
+      best <- if (any(ok %in% TRUE)) ends[[max(which(ok %in% TRUE))]] else ends[[length(ends)]]
+      best$passed <- if (any(ok %in% TRUE)) TRUE else if (anyNA(ok)) NA else FALSE
+      if (is.na(best$passed)) best <- modifyList(ends[[which(is.na(ok))[1]]], list(passed = NA))
+      starts[[length(starts) + 1L]] <- best
+    }
+  }
+  pass <- vapply(starts, function(s) s$passed, logical(1))
+  passed <- if (any(pass %in% TRUE)) TRUE else if (anyNA(pass)) NA else FALSE
+  layers <- if (isTRUE(passed)) starts[[which(pass %in% TRUE)[1]]]$layers else integer(0)
+  miss <- character(0)
+  if (is.na(passed)) {
+    if (any(vapply(starts, function(s) is.na(s$c3), logical(1))))
+      miss <- c(miss, "structure_type", "boundary_topography")
+    if (any(vapply(starts, function(s) is.na(s$c4a) && !isTRUE(s$c4b), logical(1))))
+      miss <- c(miss, "na_cmol", "cec_cmol", "esp_pct", "ca_cmol", "mg_cmol")
+  }
+  DiagnosticResult$new(
+    name      = "natric_horizon",
+    passed    = passed,
+    layers    = layers,
+    evidence  = list(argic = arg, starts = starts, esp_pct = esp),
+    missing   = miss,
+    reference = ref
+  )
+}
+
+#' Solonetz RSG gate (WRB 2022): "a natric horizon starting <= 100 cm from the
+#' mineral soil surface" (Ch 4, p. 100). v0.9.310; until then the key asked
+#' for a natric horizon at any depth.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+solonetz <- function(pedon) {
+  nat <- natric_horizon(pedon)
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  starts <- nat$evidence$starts
+  if (length(starts)) {
+    near <- vapply(starts, function(s) s$top_cm - ms <= 100, logical(1))
+    pass <- vapply(starts, function(s) s$passed, logical(1))
+    passed <- if (any(pass[near] %in% TRUE)) TRUE
+              else if (anyNA(pass[near])) NA else FALSE
+    layers <- if (isTRUE(passed)) starts[[which(near & pass %in% TRUE)[1]]]$layers
+              else integer(0)
+  } else {
+    passed <- nat$passed
+    layers <- nat$layers %||% integer(0)
+    if (isTRUE(passed) && min(h$top_cm[layers], na.rm = TRUE) - ms > 100) {
+      passed <- FALSE; layers <- integer(0)
+    }
+  }
+  DiagnosticResult$new(
+    name = "solonetz", passed = passed, layers = layers,
+    evidence = list(natric_horizon = nat, mineral_surface_cm = ms),
+    missing = if (is.na(passed)) nat$missing %||% character(0) else character(0),
+    reference = "IUSS Working Group WRB (2022), Chapter 4, Solonetz (p. 100)")
 }
 
 
@@ -1564,8 +1943,12 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
     }
   }
 
-  status <- vapply(seq_len(n), function(i) .and3(c1[i], c2[i], c3[i], c4[i]),
-                   logical(1))
+  # v0.9.310: "A nitic horizon ... is a clay-rich subsurface horizon" (WRB 2022
+  # Ch 3.1.22, p. 55): not the layer at the mineral soil surface nor an A
+  # horizon (Hugo's reading, as for the argic horizon).
+  subsurface <- !.wrb_not_subsurface(h)
+  status <- vapply(seq_len(n), function(i)
+    .and3(c1[i], c2[i], c3[i], c4[i], subsurface[i]), logical(1))
   # 5. >= 30 cm, as one horizon (contiguous layers)
   runs <- .nitic_runs(h, which(status %in% TRUE))
   may  <- .nitic_runs(h, which(status %in% TRUE | is.na(status)))
@@ -1586,7 +1969,8 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
     layers    = layers %||% integer(0),
     evidence  = list(
       criteria = data.frame(layer = seq_len(n), clay = c1, structure_shiny = c2,
-                            fe = c3, not_plinthic = c4, status = status),
+                            fe = c3, not_plinthic = c4, subsurface = subsurface,
+                            status = status),
       plinthic = pl,
       morphological_inference = if (length(inferred))
         list(layers = inferred, provenance = "morphological_designation",

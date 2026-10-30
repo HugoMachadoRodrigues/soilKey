@@ -2,24 +2,33 @@
 % Please edit documentation in R/diagnostics-horizons-wrb-v033.R
 \name{chernic}
 \alias{chernic}
-\title{Chernic horizon (WRB 2022): the cherozemic-style mollic with very high
-biological activity (worm holes, casts, coprolites). v0.3.3:
-delegates to mollic + worm_holes_pct >= 50 (proxy for "biological
-homogenization").}
+\title{Chernic horizon (WRB 2022 3.1.6)}
 \usage{
-chernic(pedon, min_worm_pct = 50)
+chernic(pedon, min_thickness = 30)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{min_worm_pct}{Numeric threshold or option (see Details).}
+\item{min_thickness}{Minimum thickness in cm (default 30).}
 }
 \value{
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Chernic horizon (WRB 2022): the cherozemic-style mollic with very high
-biological activity (worm holes, casts, coprolites). v0.3.3:
-delegates to mollic + worm_holes_pct >= 50 (proxy for "biological
-homogenization").
+A thick, well-structured, very dark surface horizon with a high base
+saturation (WRB 2022 3.1.6, pp. 40-41). Every layer of the horizon, from
+the mineral soil surface down, must have: (1) \\>= 50\% fine earth and no
+mulmic material; (2) granular structure, subangular blocky structure of
+average size \\<= 2 cm (very fine, fine or medium), or cloddy /
+agricultural structure; (3) \\>= 1\% SOC; (4) moist value \\<= 3, dry
+value \\<= 5 and moist chroma \\<= 2, or the carbonate-rich (15-40\%
+CaCO3, \\>= 1.5\% SOC) or the \\>= 40\% CaCO3 / loamy-sand (value \\<= 5,
+\\>= 2.5\% SOC) alternatives; (5) \\>= 1\% more SOC than a parent-material
+layer of moist value \\<= 4, where one is recorded; (6) BS \\>= 50\%.
+The layers together must be (7) \\>= 30 cm thick. Worm holes belong to the
+Vermic qualifier, not to this horizon.
+}
+\details{
+A missing dry value is taken as the moist value plus one, as in the mollic
+colour test. A missing BS is read from pH (Annex 2, Table 9.2).
 }

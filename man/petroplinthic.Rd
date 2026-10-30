@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnostics-horizons-wrb-v033.R
 \name{petroplinthic}
 \alias{petroplinthic}
-\title{Petroplinthic horizon (WRB 2022): cemented plinthic.}
+\title{Petroplinthic horizon (WRB 2022)}
 \usage{
 petroplinthic(pedon, min_thickness = 10, min_plinthite_pct = 15)
 }
@@ -17,5 +17,11 @@ petroplinthic(pedon, min_thickness = 10, min_plinthite_pct = 15)
 A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 }
 \description{
-Petroplinthic horizon (WRB 2022): cemented plinthic.
+Continuous or fractured layer cemented by Fe (WRB 2022 Ch 3.1.27, p. 59).
+Since v0.9.312 a layer qualifies when its Fe cement is recorded (an iron
+pan, \code{pan_type} ferricrete or ironpan, or plinthite \\>=
+\code{min_plinthite_pct}) and its cementation class is at least strongly
+cemented (criterion 4; until v0.9.311 moderately was enough), over
+\code{min_thickness} cm of adjoining layers (criterion 7). A layer whose
+Fe cement or cementation is not recorded is undecided.
 }

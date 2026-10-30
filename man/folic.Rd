@@ -4,13 +4,13 @@
 \alias{folic}
 \title{Folic horizon (WRB 2022, Chapter 3.1.12)}
 \usage{
-folic(pedon, min_oc = 12, max_saturation_days = 30, min_thickness = 10)
+folic(pedon, min_oc = 20, max_saturation_days = 30, min_thickness = 10)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{min_oc}{Minimum soil organic carbon (\%) for organic material,
-default 12 (matching \code{\link{histic_horizon}}).}
+default 20 (WRB 2022 Ch 3.3.13; it was 12 until v0.9.312).}
 
 \item{max_saturation_days}{Maximum consecutive water-saturation days that
 still count as well-aerated, default 30.}

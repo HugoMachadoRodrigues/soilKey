@@ -12,8 +12,8 @@ arenic_texture(pedon, max_top_cm = 100, engine = NULL)
 \item{max_top_cm}{Maximum top depth (cm) of layers to be tested
 (default 100, per WRB 2022).}
 
-\item{engine}{One of \code{"soilkey"} (default; strict WRB sand
-threshold via \code{test_coarse_texture_throughout})
+\item{engine}{One of \code{"soilkey"} (default; the WRB 2022 test,
+\code{test_arenosol_texture})
 or \code{"aqp"} (LUCAS-friendly fallback: passes when sand
 >= 70\\% across the upper \code{max_top_cm}). \code{NULL}
 reads \code{getOption("soilKey.diagnostic_engine")}.}
@@ -22,12 +22,17 @@ reads \code{getOption("soilKey.diagnostic_engine")}.}
 A \code{\link{DiagnosticResult}}.
 }
 \description{
-Tests whether the upper 100 cm is uniformly coarser than sandy
-loam (i.e., \code{silt + 2 * clay < 30} in every layer).
-Diagnostic of Arenosols.
+Tests the texture of the Arenosols (WRB 2022 Ch 4, p. 124): within
+100 cm of the mineral soil surface, a weighted average texture of loamy
+sand or sand (\code{silt + 2 * clay < 30}), layers of finer texture and
+layers with \eqn{\ge} 40\% coarse fragments each with a combined
+thickness of < 15 cm (v0.9.314; until then every layer had to be coarser
+than sandy loam). Diagnostic of Arenosols.
 }
 \details{
-Sub-test: \code{test_coarse_texture_throughout}.
+Sub-test: \code{test_arenosol_texture}. A part of the 100 cm whose
+texture or coarse fragments are not recorded, or that is not described,
+leaves the result undecided (NA) when it could change it.
 
 v0.3 limitations: WRB 2022 Arenosol also requires that no other
 diagnostic horizon (argic, ferralic, etc.) is present, but those

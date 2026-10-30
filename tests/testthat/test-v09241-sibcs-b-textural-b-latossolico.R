@@ -136,8 +136,9 @@ test_that("a jump of clay between two B horizons, or to a C, is no item (g)", {
   expect_false(isTRUE(r$passed))
   # the test of the WRB property compares every pair of adjoining layers;
   # since v0.9.244 the SiBCS attribute is the transition from the A or E to
-  # the B
-  expect_true(isTRUE(abrupt_textural_difference(p)$passed))
+  # the B (v0.9.312: with the abrupt transition of its criterion 5)
+  q <- p$clone(deep = TRUE); q$horizons$boundary_distinctness <- "abrupt"
+  expect_true(isTRUE(abrupt_textural_difference(q)$passed))
   expect_false(isTRUE(mudanca_textural_abrupta(p)$passed))
 })
 
@@ -302,7 +303,9 @@ test_that("the 50 cm are those of the horizon, not of each sub-horizon", {
   r <- B_latossolico(p)
   expect_true(isTRUE(r$passed))
   expect_equal(r$layers, 2:4)
-  expect_false(isTRUE(ferralic(p, min_thickness = 50, max_cec = 17)$passed))
+  # v0.9.310: the WRB ferralic horizon also takes its sub-horizons together
+  # (WRB 2022 Ch 3.1.10, criterion 6; Ch 2.1, rule 7)
+  expect_true(isTRUE(ferralic(p, min_thickness = 50, max_cec = 17)$passed))
   expect_equal(classify_sibcs(p, on_missing = "silent")$rsg_or_order, "Latossolos")
   # a sub-horizon that does not meet the requirements breaks the horizon
   q <- .lat(cec = c(8, 4, 12, 4))            # B21: 23 cmolc per kg of clay
