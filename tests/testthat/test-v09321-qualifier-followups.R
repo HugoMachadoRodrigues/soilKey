@@ -238,3 +238,39 @@ test_that("v0.9.321 mollic 6a: petrocalcic horizon below; undecided cemented lay
   # nothing described below a horizon of 10 to < 20 cm
   expect_true(is.na(mollic(.fu_m6(0, 15, "Ah", oc = 3))$passed))
 })
+
+
+# ---- Arenic and Clayic read as Loamic (Ch 5, p. 128, p. 130) ----------------------
+
+test_that("v0.9.321 Arenic and Clayic: depths from the mineral soil surface, within 100 cm", {
+  skip_on_cran()
+  tx <- function(top, bottom, clay, silt, desg, oc = 1)
+    .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, clay_pct = clay,
+            silt_pct = silt, sand_pct = 100 - clay - silt, oc_pct = oc)
+  # 30 cm of organic material on top: the sand of 90-130 cm lies within 100 cm
+  # of the mineral soil surface (was FALSE, counted from 0 cm)
+  org <- tx(c(0, 30, 90), c(30, 90, 130), c(NA, 20, 5), c(NA, 40, 5),
+            c("Oa", "A", "C"), oc = c(30, 1, 0.2))
+  expect_true(isTRUE(qual_arenic(org)$passed))
+  # clay of 85-130 cm: 15 cm within 100 cm (was TRUE, the 45 cm unclipped)
+  deep <- tx(c(0, 30, 85), c(30, 85, 130), c(20, 25, 50), c(40, 40, 30), c("A", "Bw", "Bt"))
+  expect_false(qual_clayic(deep)$passed)
+})
+
+test_that("v0.9.321 Clayic: sandy clay is sand > 45%; the limiting-layer alternative; undecided", {
+  skip_on_cran()
+  tx <- function(clay, silt, top = c(0, 30), bottom = c(30, 70), desg = c("A", "Bt"))
+    .fu_ped(designation = desg, top_cm = top, bottom_cm = bottom, clay_pct = clay,
+            silt_pct = silt, sand_pct = 100 - clay - silt, oc_pct = 1)
+  # clay 36%, sand 45%: clay loam (Table 8.39, p. 182), not sandy clay (was TRUE)
+  expect_false(qual_clayic(tx(c(36, 36), c(19, 19)))$passed)
+  expect_true(isTRUE(qual_loamic(tx(c(36, 36), c(19, 19)))$passed))
+  expect_true(isTRUE(qual_clayic(tx(c(36, 36), c(18, 18)))$passed))   # sand 46%
+  # the major part above a limiting layer starting > 10 and < 60 cm
+  rk <- tx(c(45, 25, NA), c(30, 40, NA), top = c(0, 15, 25), bottom = c(15, 25, 50),
+           desg = c("A", "Bw", "R"))
+  expect_equal(.barrier_top_cm(rk), 25)
+  expect_true(isTRUE(qual_clayic(rk)$passed))                         # 15 of 25 cm (was FALSE)
+  # no texture recorded: undecided (was FALSE)
+  expect_true(is.na(qual_clayic(tx(c(NA, NA), c(NA, NA)))$passed))
+})

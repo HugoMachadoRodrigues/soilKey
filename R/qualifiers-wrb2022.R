@@ -768,57 +768,32 @@ qual_xanthic <- function(pedon) {
 #' and a limiting layer starting > 10 and < 60 cm from the mineral soil
 #' surface". The v0.9 wrapper used arenic_texture(), the Arenosol test (coarse
 #' texture throughout the upper 100 cm), which misses a 30 cm sandy layer over
-#' finer material. Sand or loamy sand is silt + 2 clay < 30; organic layers
-#' (SOC >= 20 \%) do not count.
+#' finer material.
+#' v0.9.321: read as Loamic and Siltic are (.q_texture_qualifier(), p. 128):
+#' the classes S and LS of the triangle (Annex 1, Table 8.39, p. 182), the
+#' depths counted from the mineral soil surface (from 0 cm before), and the
+#' limiting layer counted from it too.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_arenic <- function(pedon) {
-  h <- pedon$horizons
-  clay <- h$clay_pct
-  silt <- ifelse(is.na(h$silt_pct) & !is.na(h$sand_pct) & !is.na(clay),
-                 100 - h$sand_pct - clay, h$silt_pct)
-  sandy <- ifelse(is.na(clay) | is.na(silt), NA, silt + 2 * clay < 30)
-  sandy[!is.na(h$oc_pct) & h$oc_pct >= 20] <- FALSE
-  a <- .q_thickness_rule(h, sandy, 30, win_top = 0, win_bot = 100)
-  lim <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
-  b <- if (is.na(lim) || lim <= 10 || lim >= 60) FALSE else {
-    yes <- .q_layers_thickness(h, which(sandy %in% TRUE), 0, lim)
-    may <- .q_layers_thickness(h, which(sandy %in% TRUE | is.na(sandy)), 0, lim)
-    if (yes > lim / 2) TRUE else if (may <= lim / 2) FALSE else NA
-  }
-  x <- c(a$passed, b)
-  passed <- if (any(x %in% TRUE)) TRUE else if (anyNA(x)) NA else FALSE
-  DiagnosticResult$new(
-    name = "Arenic", passed = passed,
-    layers = if (isTRUE(passed)) which(sandy %in% TRUE & !is.na(h$top_cm) &
-                                         h$top_cm < 100) else integer(0),
-    evidence = list(sandy_thickness_cm = a$thickness_cm, limiting_layer_cm = lim),
-    missing = if (is.na(passed)) c("clay_pct", "silt_pct", "sand_pct") else character(0),
-    reference = "WRB (2022) Ch 5, Arenic")
-}
+qual_arenic <- function(pedon)
+  .q_texture_qualifier(pedon, "Arenic", c("S", "LS"), 128)
 
 #' Clayic qualifier (ce), WRB 2022 Ch 5.
 #'
 #' A texture class of \strong{clay, sandy clay or silty clay} in one or more
 #' layers with a combined thickness of >= 30 cm within 100 cm of the mineral
-#' soil surface. Those three classes correspond to clay >= 40\% (clay / silty
-#' clay) or clay >= 35\% with sand >= 45\% (sandy clay) -- NOT the v0.9 proxy of
-#' clay >= 60\%, which under-fired (fixed v0.9.130).
+#' soil surface (v0.9.130: not the v0.9 proxy of clay >= 60\%).
+#' v0.9.321: read as Loamic and Siltic are (.q_texture_qualifier(), p. 130):
+#' the classes C, SC and SIC of Annex 1, Table 8.39 (p. 182), so sandy clay is
+#' clay >= 35\% with sand > 45\% (>= 45\% before); the depths counted from
+#' the mineral soil surface (from 0 cm before); the second alternative of the
+#' text, "in the major part between the mineral soil surface and a limiting
+#' layer starting > 10 and < 60 cm", which was not read; organic layers do not
+#' count; undecided where the texture is not recorded (it was FALSE).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_clayic <- function(pedon) {
-  h <- pedon$horizons
-  clay <- h$clay_pct; sand <- h$sand_pct
-  is_clayey <- !is.na(clay) &
-    (clay >= 40 | (clay >= 35 & !is.na(sand) & sand >= 45))
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100 & is_clayey)
-  thickness <- if (length(layers) > 0L)
-    sum(h$bottom_cm[layers] - h$top_cm[layers], na.rm = TRUE) else 0
-  passed <- thickness >= 30
-  DiagnosticResult$new(name = "Clayic", passed = passed,
-    layers = layers, evidence = list(thickness_cm = thickness),
-    missing = character(0), reference = "WRB (2022) Ch 5, Clayic")
-}
+qual_clayic <- function(pedon)
+  .q_texture_qualifier(pedon, "Clayic", c("C", "SC", "SIC"), 130)
 
 #' Loamic qualifier (lo): loam, sandy loam, clay loam, sandy clay loam or
 #' silty clay loam, >= 30 cm combined within 100 cm.
