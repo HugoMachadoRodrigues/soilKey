@@ -372,9 +372,11 @@
       out <- setdiff(out, "h"); skip("h")
     }
     if (plain_a && !any(c("h", "p") %in% out)) open <- c(open, "h")
-    # (a cemented B is no Bm: "No cementation or induration", Ch 2, p. 14)
+    # (a cemented B is no Bm: "No cementation or induration", Ch 2, p. 14;
+    # nor is a fragipan, brittle when moist, since the m "lacks a brittle
+    # consistence when moist")
     if (master == "B" && !any(c("m", "c") %in% out) &&
-        !any(ch %in% c("t", "g", "l", "r", "s", "h", "n", "o")))
+        !any(ch %in% c("t", "g", "l", "r", "s", "h", "n", "o", "x")))
       open <- c(open, "m")
     if (!"k" %in% out) open <- c(open, "k")
     if (master %in% c("B", "BC", "CB")) open <- c(open, "v")

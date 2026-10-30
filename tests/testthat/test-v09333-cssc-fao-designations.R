@@ -89,6 +89,9 @@ test_that("what the FAO notation cannot write is left open, not absent", {
   # a plain FAO B may be a Bm: the Brunisolic B is undecided, a Bw decides it
   expect_true(is.na(soilKey:::brunisolic_b_cssc(.fao_pedon(c("Ah", "B", "C")))$passed))
   expect_true(soilKey:::brunisolic_b_cssc(.fao_pedon(c("Ah", "Bw", "C")))$passed)
+  # a fragipan is no Bm: the m "lacks a brittle consistence when moist"
+  # (Ch 2, p. 14) and a fragipan is brittle when moist
+  expect_identical(soilKey:::.cssc_is(soilKey:::.cssc_from_fao("Bx")$comps, "B", "m", "any"), FALSE)
   # the vertic horizon has no FAO letter
   vp <- .fao_pedon(c("Ah", "Bi", "Bik", "Ck"), clay_pct = c(60, 62, 64, 60),
                    slickensides = c(NA, "many", "many", NA))
