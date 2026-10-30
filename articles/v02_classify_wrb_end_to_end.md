@@ -227,7 +227,7 @@ applies first. Each tag, with the source the resolver cites:
     #> 3    Eutric
     #> 4     Humic
     #>                                                                                                                                                                                                                               Reference
-    #> 1                                                                                                                                                                                                               WRB (2022) Ch 5, Clayic
+    #> 1                                                                                                                                                        WRB (2022) Ch 5, Clayic (p. 130); texture classes, Annex 1 Table 8.39 (p. 182)
     #> 2                                                                                                                                                                                                                 WRB (2022) Ch 5, Epic
     #> 3 WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): exchangeable Al vs exchangeable bases over 20-100 cm; Dystric = Al > bases in >= half, Eutric = bases >= Al in the major part. Not base saturation (that was WRB 2014). Eutric
     #> 4                                                                                                                                                                                                                WRB (2022) Ch 5, Humic

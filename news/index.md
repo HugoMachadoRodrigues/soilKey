@@ -1,5 +1,105 @@
 # Changelog
 
+## soilKey 0.9.315 (2026-10-30)
+
+### The last WRB 2022 and USDA readings of the ISIS triage
+
+#### WRB 2022
+
+- **Gleysols, item 2 (Ch 4, p. 103):** a mollic or umbric horizon more
+  than 40 cm thick, with reducing conditions from 40 cm below the
+  mineral soil surface, over a gleyic layer 10 cm or more thick whose
+  lower limit is at 65 cm or deeper.
+- **Retisols (Ch 4, p. 118):** the argic horizon starts within 100 cm of
+  the mineral soil surface and has retic properties at its upper
+  boundary. A natric horizon no longer counts, since the text names the
+  argic one only.
+- **The limiting layer (Ch 2.1, rule 8, p. 23)** includes the other
+  cemented layers. A recorded cementation class of moderately cemented
+  or stronger counts, or the suffix m after a cementing agent (Bsm, Bkm,
+  Bqm). Continuity is read as met, as for the petric horizons. A
+  limiting layer has no texture class, so a shallow soil over rock no
+  longer leaves Arenic, Clayic and Siltic undecided.
+- **Mollic and umbric horizons:** criterion 6a, 10 cm or more when
+  directly over continuous rock, technic hard material or the horizons
+  the text names. Rock, technic hard material and petric layers end the
+  run of mollic layers.
+- **Qualifiers (Ch 5):**
+  - Rendzic (p. 145): a mollic horizon that contains or directly
+    overlies material or rock with 40% CaCO3 equivalent or more. Any
+    layer of the mollic horizon counts. Rock recorded as limestone,
+    chalk, dolomite or marble counts without a measured CCE (Hugo).
+  - Calcaric material and Endocalcaric read the HCl reaction where CaCO3
+    is not measured. Endocalcaric and Endodolomitic count from the
+    mineral soil surface.
+  - Arenic and Clayic are read as Loamic and Siltic are: from the
+    mineral soil surface, with the limiting-layer alternative and the
+    sand limit of \> 45% of Table 8.39.
+  - Hypercalcic: 50% CCE or more in every layer of the calcic horizon
+    (Ch 2.1, p. 23).
+  - The texture group without specifiers gives its first applicable
+    member. When an earlier member is undecided, which one is first is
+    not known, so the group gives none (Hugo).
+  - With `specifiers = TRUE`, the texture qualifiers of one group that
+    apply at different depths are all given, each with its specifier (Ch
+    2.1, p. 24-26). The depth specifiers follow Ch 2.3.1 rules 1 and 2
+    (p. 27).
+- **The Technosols lists** of Ch 4 (p. 97) are read as printed, in two
+  columns.
+- **ISIS reader, surface cracks:**
+  - Medium cracks are cracks of 1 cm.
+  - “No cracks observed” means no cracks only in a profile described dry
+    at the surface (cracks “may be evident only when the soil is dry”,
+    3.2.12, p. 80); described moist, they stay unknown (Hugo).
+
+#### USDA Soil Taxonomy
+
+- **Aridisols (KST 13, item G, p. 69):**
+  - No aridic moisture regime is inferred when none is recorded. soilKey
+    had read low surface carbon as aridic, which KST does not give. With
+    no regime recorded, the order is undecided and the key goes on.
+  - The order follows item G point by point: an ochric or anthropic
+    epipedon, the diagnostic horizons KST lists within 100 cm, the
+    cambic horizon’s 25 cm, and item G.2, the salic path.
+  - The canonical Calcisol, Gypsisol, Solonchak and Durisol fixtures
+    record an aridic moisture regime (Hugo).
+- **The kandic horizon:** a layer with no recorded lower boundary is
+  undecided, not an error (KSSL 2523).
+- **[`texture_class_from_pct()`](https://hugomachadorodrigues.github.io/soilKey/reference/texture_class_from_pct.md)**
+  follows the texture triangle (WRB 2022 Annex 1, Table 8.39, after Soil
+  Science Division Staff 2017) at four boundaries it had wrong:
+  - sandy clay needs more than 45% sand;
+  - clay 35 to \< 40% with more than 45% sand is sandy clay;
+  - silt 50 to \< 80% with \< 12% clay is silt loam;
+  - clay \< 7% with \< 50% silt and more than 43% sand is sandy loam.
+
+  It now matches
+  [`aqp::ssc_to_texcl()`](https://ncss-tech.github.io/aqp/reference/texture.html)
+  on the whole grid. 707 horizons of the panels change class, and no
+  name changes.
+
+#### Results against 0.9.314
+
+| panel | 0.9.314 | 0.9.315 |
+|----|----|----|
+| FEBR USDA (886) | 44.5 | 50.9 |
+| KSSL USDA (497) | 38.4 | 38.8 |
+| ISIS USDA (748) | 47.5 | 47.9 |
+| ISIS WRB 2022 (481) | 61.1 | 61.3 |
+| FEBR WRB (218), WoSIS (130), AfSP (120) | 22.0, 16.2, 28.3 | unchanged (qualifiers change) |
+| BDsolos, FEBR and Redape SiBCS | 57.5, 37.6, 87.1 | unchanged |
+
+- In FEBR and KSSL no profile records a moisture regime, so no profile
+  there is an Aridisol now. The 127 FEBR profiles move to the Ultisols,
+  Alfisols and others. KSSL loses 34 reference Aridisols and gains 36
+  other profiles.
+- ISIS KE069 (an indurated Ckm at 30 cm) is now a Phaeozem, as ISRIC
+  names it.
+- **Fixtures:** the WRB and SiBCS names of the 44 canonical fixtures do
+  not change. In USDA, the Durisol is now a Typic Torriorthents (its
+  duripan is not cemented) and the Luvissolo a Typic Hapludalfs (no
+  moisture regime).
+
 ## soilKey 0.9.314 (2026-10-29)
 
 ### WRB 2022 mollic and umbric horizons: criteria 1-3 in every layer

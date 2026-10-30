@@ -16,7 +16,7 @@ reducing_conditions; since v0.9.312 the 25 cm may be made
 of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
 surface, and a layer whose redox reading is undecided leaves the gate
 NA when it could complete the 25 cm. Path 3 is read from the
-designation (W / saturated marker). Path 2 is not implemented."><meta property="og:description" content="WRB-canonical (multi-path):
+designation (W / saturated marker)."><meta property="og:description" content="WRB-canonical (multi-path):
 Layer \&amp;gt;= 25 cm starting \&amp;lt;= 40 cm with gleyic properties
         throughout AND reducing conditions in some parts of every
         sublayer; OR
@@ -33,7 +33,7 @@ reducing_conditions; since v0.9.312 the 25 cm may be made
 of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
 surface, and a layer whose redox reading is undecided leaves the gate
 NA when it could complete the 25 cm. Path 3 is read from the
-designation (W / saturated marker). Path 2 is not implemented."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+designation (W / saturated marker)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -41,7 +41,7 @@ designation (W / saturated marker). Path 2 is not implemented."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.314</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.315</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@ groundwater, without the old decay-with-depth test) and of
 of adjoining sublayers (Bg1 over Bg2), counted from the mineral soil
 surface, and a layer whose redox reading is undecided leaves the gate
 <code>NA</code> when it could complete the 25 cm. Path 3 is read from the
-designation (W / saturated marker). Path 2 is not implemented.</p>
+designation (W / saturated marker).</p>
     </div>
 
     <div class="section level2">
@@ -129,6 +129,19 @@ resolves via <code>getOption("soilKey.rsg_strict", FALSE)</code>.
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="DiagnosticResult.html">DiagnosticResult</a></code> recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Path 2 (since v0.9.315; until then it was not read) takes the horizon of
+<code><a href="mollic.html">mollic</a></code> or <code><a href="umbric_horizon.html">umbric_horizon</a></code>: more than 40 cm
+of its layers, reducing conditions in every layer of it that reaches
+below 40 cm from the mineral soil surface, and directly underneath it
+(top within 1 cm of its lower limit) adjoining layers, gleyic with
+reducing conditions as in path 1, at least 10 cm thick and reaching 65 cm
+or more from the mineral soil surface. Where layers below the horizon's
+sure layers are undecided, its lower limit is undecided too, and every
+lower limit it could have is tried: the path is then <code>NA</code> at most.
+A horizon with no layer recorded underneath it does not meet item 2.b.</p>
     </div>
     <div class="section level2">
     <h2 id="tier-strict-mode-v-">Tier-3 strict mode (v0.9.98)<a class="anchor" aria-label="anchor" href="#tier-strict-mode-v-"></a></h2>

@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5d8b516381b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x63079e2911b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -321,9 +321,13 @@ print(res$usda)
 #> RSG/Order: Ultisols
 #> Evidence grade: A
 #> 
+#> ── Ambiguities
+#> - AS: Indeterminate -- missing 5 attribute(s): site$soil_moisture_regime,
+#> caco3_pct, caso4_pct, ec_dS_m, water_saturation_days
+#> 
 #> ── Missing data that would refine result
 #> permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct, slickensides,
-#> site$soil_moisture_regime
+#> site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m, water_saturation_days
 #> 
 #> ── Key trace
 #> (31 classes tested before assignment)
@@ -333,7 +337,7 @@ print(res$usda)
 #> 4. AD Andisols -- failed (3 attrs missing)
 #> 5. OX Oxisols -- failed
 #> 6. VE Vertisols -- failed (1 attrs missing)
-#> 7. AS Aridisols -- failed (1 attrs missing)
+#> 7. AS Aridisols -- NA (5 attrs missing)
 #> 8. UT Ultisols -- PASSED
 #> 9. HA Aquults -- failed (1 attrs missing)
 #> 10. HB Humults -- failed

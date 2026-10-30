@@ -59,12 +59,16 @@ and 3 (colour, items a-c; a plough layer takes the colour of the
 subhorizon below it) are read in each layer, and the horizon is the run
 of such layers from the mineral soil surface. Criterion 5, the base
 saturation, is the weighted average over the run (by pH where it is not
-recorded, Annex 2 Table 9.2), and criterion 6b its thickness (\>= 20
-cm). A moist value with no dry value recorded reads the dry value as the
-moist value + 1; a layer with no colour recorded at all and \>= 1.5% SOC
-is read as dark (Hugo, 2026-10-29). A dry colour alone leaves criterion
-3 undecided unless its value is above 5. The colour subtest records
-where each layer's reading came from.
+recorded, Annex 2 Table 9.2), and criterion 6 its thickness: \>= 20 cm
+(6b), or since v0.9.315 \>= 10 cm directly over continuous rock, technic
+hard material or a cryic, petrocalcic, petroduric, petrogypsic or
+petroplinthic horizon (6a, p. 53; the umbric horizon names cryic,
+petroduric and petroplinthic, p. 70). A moist value with no dry value
+recorded reads the dry value as the moist value + 1; a layer with no
+colour recorded at all and \>= 1.5% SOC is read as dark (Hugo,
+2026-10-29). A dry colour alone leaves criterion 3 undecided unless its
+value is above 5. The colour subtest records where each layer's reading
+came from.
 
 ## References
 

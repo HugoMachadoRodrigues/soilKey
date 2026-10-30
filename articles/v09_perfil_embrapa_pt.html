@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.314</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.315</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,7 +159,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5d8b516381b0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x63079e2911b0&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -403,9 +403,13 @@ presenca de revestimentos argilosos).</p>
 <span><span class="co">#&gt; RSG/Order: Ultisols</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Ambiguities</span></span>
+<span><span class="co">#&gt; - AS: Indeterminate -- missing 5 attribute(s): site$soil_moisture_regime,</span></span>
+<span><span class="co">#&gt; caco3_pct, caso4_pct, ec_dS_m, water_saturation_days</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
 <span><span class="co">#&gt; permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct, slickensides,</span></span>
-<span><span class="co">#&gt; site$soil_moisture_regime</span></span>
+<span><span class="co">#&gt; site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m, water_saturation_days</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (31 classes tested before assignment)</span></span>
@@ -415,7 +419,7 @@ presenca de revestimentos argilosos).</p>
 <span><span class="co">#&gt; 4. AD Andisols -- failed (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. OX Oxisols -- failed</span></span>
 <span><span class="co">#&gt; 6. VE Vertisols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 7. AS Aridisols -- failed (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 7. AS Aridisols -- NA (5 attrs missing)</span></span>
 <span><span class="co">#&gt; 8. UT Ultisols -- PASSED</span></span>
 <span><span class="co">#&gt; 9. HA Aquults -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 10. HB Humults -- failed</span></span>

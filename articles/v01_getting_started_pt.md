@@ -999,6 +999,23 @@ res_wrb$trace
 #> $GL$evidence[[1]]$evidence$path1_ok
 #> [1] FALSE
 #> 
+#> $GL$evidence[[1]]$evidence$path2_ok
+#> [1] FALSE
+#> 
+#> $GL$evidence[[1]]$evidence$path2
+#> $GL$evidence[[1]]$evidence$path2$passed
+#> [1] FALSE
+#> 
+#> $GL$evidence[[1]]$evidence$path2$layers
+#> integer(0)
+#> 
+#> $GL$evidence[[1]]$evidence$path2$missing
+#> character(0)
+#> 
+#> $GL$evidence[[1]]$evidence$path2$horizon
+#> [1] NA
+#> 
+#> 
 #> $GL$evidence[[1]]$evidence$path3_ok
 #> [1] FALSE
 #> 

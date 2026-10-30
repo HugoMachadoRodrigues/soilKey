@@ -20,8 +20,7 @@ groundwater, without the old decay-with-depth test) and of
 since v0.9.312 the 25 cm may be made of adjoining sublayers (Bg1 over
 Bg2), counted from the mineral soil surface, and a layer whose redox
 reading is undecided leaves the gate `NA` when it could complete the 25
-cm. Path 3 is read from the designation (W / saturated marker). Path 2
-is not implemented.
+cm. Path 3 is read from the designation (W / saturated marker).
 
 ## Usage
 
@@ -48,6 +47,22 @@ A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
 recording whether the diagnostic is present, the qualifying layers, and
 the supporting evidence.
+
+## Details
+
+Path 2 (since v0.9.315; until then it was not read) takes the horizon of
+[`mollic`](https://hugomachadorodrigues.github.io/soilKey/reference/mollic.md)
+or
+[`umbric_horizon`](https://hugomachadorodrigues.github.io/soilKey/reference/umbric_horizon.md):
+more than 40 cm of its layers, reducing conditions in every layer of it
+that reaches below 40 cm from the mineral soil surface, and directly
+underneath it (top within 1 cm of its lower limit) adjoining layers,
+gleyic with reducing conditions as in path 1, at least 10 cm thick and
+reaching 65 cm or more from the mineral soil surface. Where layers below
+the horizon's sure layers are undecided, its lower limit is undecided
+too, and every lower limit it could have is tried: the path is then `NA`
+at most. A horizon with no layer recorded underneath it does not meet
+item 2.b.
 
 ## Tier-3 strict mode (v0.9.98)
 
