@@ -84,7 +84,9 @@ sali_citation <- function(accessed = NULL) {
 #' next run. Each request waits \code{pause} seconds, retries with a growing
 #' backoff, and the run stops (an error) on any page that asks for a login,
 #' a key or the acceptance of terms, or that a web application firewall
-#' rejected. Requests go only to the layer of Queensland Spatial and, per
+#' rejected. The report host began refusing requests after some 14,000 of
+#' them (2 processes, a 1 s pause), so fetch in batches (\code{max_sites})
+#' rather than all at once. Requests go only to the layer of Queensland Spatial and, per
 #' site, to the report host and the soil chemistry API; the report address
 #' is built from the project code and site number, not taken from the data.
 #'

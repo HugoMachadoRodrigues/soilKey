@@ -24,17 +24,20 @@ Queensland's Soil and Land Information system (SALI) publishes about 21,000 site
 * Laboratory samples go to the horizon holding their middle, then NatSoil's overlap rule applies; bulked samples count; results flagged invalid are dropped; "<x" is x/2 with NatSoil's limit rule. A trailing letter of a method variant is dropped (6B2b is 6B2), and 2Z2_Clay is 2Z2_C.
 * Tidal landform spellings are NatSoil's; no tidal flooding is inferred, nor the soil water status. The depth to free water and the substrate are kept in the site but not used.
 
-### The pilot (a stratified sample of 200 sites, 186 pedons)
+### The run (6,911 sites, 5,600 pedons)
 
-Of a stratified random sample of 200 sites (at least 3 per order), 13 reports were over 3 MB and 1 had no morphology table: 186 pedons. Against the surveyors' labels:
+Of the layer's sites with an ASC order, 18,557 are not in NatSoil already (same project and site, or a NatSoil site within 100 m). They were taken in a fixed random order, in stages of 2,000. The run stopped in the fourth stage, when the report server began refusing requests (after some 14,000, from 2 processes pausing 1 s): 6,911 sites were fetched. Reports over 150 KB (those with embedded site photos) were not downloaded: 1,286 sites (18.6%), unevenly by order (Organosols 82%, Calcarosols 41%, Dermosols 29%, Tenosols 27%; Vertosols 11%, Hydrosols 15%). 25 reports have no morphology table, which leaves 5,600 pedons. Against the surveyors' labels:
 
 | ASC level | Profiles compared | Agreement | Where the key decides |
 |---|---|---|---|
-| order | 186 | 37.6% | 83.3% of 36 (pilot); 81.1% of 37 with the MIR predictions |
-| suborder, where the order agrees | 67 | 80.6% | 90.5% of 21 |
-| great group, where the suborder agrees | 47 | 34.0% | 72.7% of 11 |
+| order | 5,600 | 34.5% (36.3% counting a keyed Arenosol for a surveyed Tenosol or Rudosol) | 83.3% of 1,012 |
+| suborder, where the order agrees | 1,838 | 82.4% | 91.7% of 567 |
+| great group, where the suborder agrees | 1,093 | 42.5% | 73.5% of 336 |
+| subgroup, where the great group agrees | 438 | 39.5% | |
 
-For comparison, the Queensland profiles of NatSoil (agencies 301, 302, 304 and 399; 4,412 profiles) give 54.0% at the order, 82.6% where the key decides. The MIR predictions fill 151 values in 6 of the 186 pedons and change one decision (a surveyed Dermosol now keyed as a decided Sodosol); every other value of the 186 pedons is the pilot's. The 44 canonical fixtures are byte-identical under WRB, SiBCS and USDA.
+The order agreement stayed within 34% to 35% from the first stage (1,588 pedons) to the last. The Hydrosols (1,377 pedons) agree in 4.9%, mostly keyed as Kandosols: the key confirms a Hydrosol by its drainage, which the reports seldom record (the depth to free water, observed once, is kept but not used). The Ferrosols (156) agree in 0.6%, keyed as Dermosols. The laboratory data come from the API for 5,008 pedons and from the report's table for 562; 30 have none. The MIR predictions fill 243 values in 30 pedons. A MIR water pH never stands beside a measured CaCl2 pH; two MIR calibrations behind one value occur in 4 pedons (16 values).
+
+A pilot of 200 sites stratified by order (186 pedons) gave 37.6% at the order and 83.3% of 36 where the key decides. For comparison, the Queensland profiles of NatSoil (agencies 301, 302, 304 and 399; 4,412 profiles) give 54.0% at the order, 82.6% where the key decides. The 44 canonical fixtures are byte-identical under WRB, SiBCS and USDA.
 
 # soilKey 0.9.319 (2026-10-30)
 
