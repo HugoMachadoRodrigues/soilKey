@@ -1,3 +1,50 @@
+# soilKey 0.9.320 (2026-10-30)
+
+## Australia: Queensland's SALI read from its site reports and its soil chemistry API
+
+Queensland's Soil and Land Information system (SALI) publishes about 21,000 sites with the surveyors' ASC label and laboratory data, anonymously and under CC BY 4.0 (State of Queensland). Its morphology exists only in a per-site report (a PDF), so the reader reads the PDF. The data are not shipped with soilKey.
+
+* **`fetch_sali()`** downloads the site layer (Queensland Spatial, MapServer layer 101: the sites with an ASC label and laboratory data), then per site the report (SALI4320) and the samples with their results from the SALI soil chemistry API (OData). It is resumable, waits between requests, retries with a backoff, stops on any login, key, terms or firewall page, and talks only to the layer and, per site, to the report host and the API.
+* **`read_sali_pedons()`** reads the folder into pedons. The report is read from the coordinates of its words (pdftools, in Suggests), and each row of its morphology table is translated into the coded horizon of the NatSoil API and read by the NatSoil reader's own code, the laboratory samples too, so the two Australian panels are read alike. The provenance has a row per horizon for the morphology and one per laboratory value, naming its source and method. The site fields it adds (`sali_*`) are listed in `site_attribute_spec()` and `inst/ATTRIBUTES.md`.
+* **`benchmark_sali()`** gives the metrics of `benchmark_natsoil()` (which it calls), with a table by surveyed order and one by the ASC edition the report cites. **`sali_citation()`** gives the CC BY 4.0 attribution.
+
+### Hugo's decisions
+
+* **Reports over 150 KB are not downloaded** (`cap_bytes = 150e3`): those with embedded site photographs are aborted at the cap, marked and not tried again.
+* **MIR predictions** (method codes ending in _MC2, _MC91, _MQ01, _MQ02 and the like) are used only where nothing was measured for that attribute in that horizon. The provenance marks them as predictions (source `predicted_spectra`, a note naming the MIR codes), and the evidence grade of such a pedon is B. The pilot left them out. MIR methods the NatSoil reader has no code for are read by the property their name gives: 15C2_CEC ("Cation exchange capacity - MIR QLD Calibration 1") as the CEC, 6B4 (total organic carbon) as organic carbon and 15J2 as the effective CEC.
+* **The lab table printed in the report** is used only when the API holds no samples for the site's observation; the provenance says which of the two each value came from.
+
+### The readings (the pilot's, kept)
+
+* Sites labelled "Unclassified" are left out; observation 1 of a site is read.
+* The label is read by position (order, suborder, great group, subgroup), each name matched, case-insensitive, to the 3rd edition. A name the 3rd edition does not have stays NA; "No Available Class" is ZZ and "Class Undetermined" YY. The edition the report cites is kept in `site$sali_asc_edition`, without changing the codes. The report's confidence phrases are 1 to 4; conversions from another classification and rapid checks of key attributes are "C".
+* An empty cell is not recorded; "No mottles", "No segregations" and "No coarse fragments" are recorded absent. A colour without its moisture status is moist. Mottles of biological mixing, mechanical mixing and substrate influence are not mottles; jarosite mottles are.
+* Textures: "Loam, fine sandy" is a loam, sandy and silty clays are clays of unspecified grade, and heavy or light before a grade lighter than a clay is the + or - qualifier. The first structure listed is read; "Blocky" alone names no type; "Not recorded (historical)" is NA. A strength without its moisture is not read.
+* Field pH by depth: Raupach and Tucker first, then an electrode in situ, then a 1:5 suspension by probe; the pH after peroxide and the field EC are not used. The effervescence field test gives the horizon's effervescence.
+* Laboratory samples go to the horizon holding their middle, then NatSoil's overlap rule applies; bulked samples count; results flagged invalid are dropped; "<x" is x/2 with NatSoil's limit rule. A trailing letter of a method variant is dropped (6B2b is 6B2), and 2Z2_Clay is 2Z2_C.
+* Tidal landform spellings are NatSoil's; no tidal flooding is inferred, nor the soil water status. The depth to free water and the substrate are kept in the site but not used.
+
+### The run (6,911 sites, 5,600 pedons)
+
+Of the layer's sites with an ASC order, 18,557 are not in NatSoil already (same project and site, or a NatSoil site within 100 m). They were taken in a fixed random order, in stages of 2,000. The run stopped in the fourth stage, when the report server began refusing requests (after some 14,000, from 2 processes pausing 1 s): 6,911 sites were fetched. Reports over 150 KB (those with embedded site photos) were not downloaded: 1,286 sites (18.6%), unevenly by order (Organosols 82%, Calcarosols 41%, Dermosols 29%, Tenosols 27%; Vertosols 11%, Hydrosols 15%). 25 reports have no morphology table, which leaves 5,600 pedons. Against the surveyors' labels:
+
+| ASC level | Profiles compared | Agreement | Where the key decides |
+|---|---|---|---|
+| order | 5,600 | 34.8% (36.6% counting a keyed Arenosol for a surveyed Tenosol or Rudosol) | 83.3% of 1,017 |
+| suborder, where the order agrees | 1,854 | 82.6% | 91.8% of 571 |
+| great group, where the suborder agrees | 1,106 | 42.8% | 73.5% of 340 |
+| subgroup, where the great group agrees | 446 | 40.1% | |
+
+The order agreement stayed within 34% to 35% from the first stage (1,588 pedons) to the last. The Hydrosols (1,377 pedons) agree in 4.9%, mostly keyed as Kandosols: the key confirms a Hydrosol by its drainage, which the reports seldom record (the depth to free water, observed once, is kept but not used). The Ferrosols (156) agree in 11.5%; most of the rest are keyed as Dermosols, as free iron was measured in only 30 of them. The laboratory data come from the API for 5,008 pedons and from the report's table for 562; 30 have none. The MIR predictions fill 243 values in 30 pedons. A MIR water pH never stands beside a measured CaCl2 pH; two MIR calibrations behind one value occur in 4 pedons (16 values).
+
+A pilot of 200 sites stratified by order (186 pedons) gave 37.6% at the order and 83.3% of 36 where the key decides. For comparison, the Queensland profiles of NatSoil (agencies 301, 302, 304 and 399; 4,412 profiles) give 54.3% at the order, 82.6% of 783 where the key decides. The 44 canonical fixtures are byte-identical under WRB, SiBCS and USDA.
+
+### Ferrosols: vertic properties that are not recorded
+
+* The Ferrosol test keeps a soil out when at least 0.3 m of its B2 has vertic properties. A B2 horizon whose vertic properties are not recorded now counts as without them; only recorded slickensides or lenticular peds keep a soil out. Slickensides are seldom recorded (Queensland's site reports have no column for them; NatSoil reads them as absent only when other cutans are recorded), so a measured free iron above 5% in the major part of the B2 had decided the order in 1 of 30 SALI Ferrosols and 2 of 35 NatSoil Queensland ones. The trace gives the thickness read this way (`vertic_unrecorded_b2_cm`), and the test names slickensides as missing only when recorded vertic properties leave the answer open.
+* SALI: 18 pedons change to Ferrosols, 17 of them surveyed Ferrosols and 1 a Kandosol (order 34.5% to 34.8%). NatSoil: 19 change, 16 surveyed Ferrosols and 3 Kandosols (all 9,700 profiles 43.9% to 44.0%; Queensland 54.0% to 54.3%).
+* Gley colours and mottles were looked at for the Hydrosols and left out of the key. The ASC says they may or may not be present and are not universally indicative of saturation. A reading by low chroma, gley colours or mottles in most of the upper metre would raise SALI (where a quarter of the pedons are Hydrosols) to 52.9% but lower NatSoil Queensland (where 2% are) from 54.0% to 52.1%.
+
 # soilKey 0.9.319 (2026-10-30)
 
 ## New Zealand: the fluvial features read river deposits and the spelling aluvium

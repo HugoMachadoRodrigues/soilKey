@@ -952,7 +952,11 @@ calcarosol_asc <- function(pedon) {
 #'
 #' More than 5 % free iron oxide (as Fe, fe_dcb_pct) in the fine earth of the
 #' major part of the B2, unless at least 0.3 m of the B2 has vertic
-#' properties.
+#' properties. Here a horizon whose vertic properties are not recorded
+#' counts as without them (Hugo, 2026-10-31): slickensides are seldom
+#' recorded (Queensland's site reports have no column for them), and
+#' otherwise a measured free iron above 5 % would never decide the order.
+#' Only recorded vertic properties keep a soil out.
 #' @noRd
 ferrosol_asc <- function(pedon) {
   x <- .asc_horizons(pedon); h <- x$h
@@ -961,14 +965,16 @@ ferrosol_asc <- function(pedon) {
   rows <- .asc_b2_rows(x)
   vert <- .asc_vertic_rows(x)
   v_cm <- if (is.null(rows) || !length(rows)) 0 else sum(x$thick[rows][vert[rows] %in% TRUE], na.rm = TRUE)
+  # B2 horizons with no vertic properties recorded, read as without them
+  v_unrec <- if (is.null(rows) || !length(rows)) 0 else sum(x$thick[rows][is.na(vert[rows])], na.rm = TRUE)
   maybe <- .asc_b2_maybe(x)
-  v_open <- if (is.null(rows) || !length(rows)) 0 else
-    sum(x$thick[rows][is.na(vert[rows])], na.rm = TRUE) + sum(x$thick[maybe][!(vert[maybe] %in% FALSE)], na.rm = TRUE)
+  # horizons that may be B2 count only with vertic properties recorded
+  v_open <- if (is.null(rows) || !length(rows)) 0 else sum(x$thick[maybe][vert[maybe] %in% TRUE], na.rm = TRUE)
   vertic30 <- if (v_cm >= 30) TRUE else if (v_cm + v_open < 30) FALSE else NA
   passed <- .and3(high_fe, !vertic30)
   .asc_result("ferrosol_asc", passed, rows %||% integer(0),
-              list(free_fe_major_part = high_fe, vertic_b2_cm = v_cm),
-              if (is.na(passed)) c("fe_dcb_pct", "designation", "slickensides") else character(0),
+              list(free_fe_major_part = high_fe, vertic_b2_cm = v_cm, vertic_unrecorded_b2_cm = v_unrec),
+              if (is.na(passed)) c("fe_dcb_pct", "designation", if (is.na(vertic30)) "slickensides") else character(0),
               "Key to orders, step 10; Ferrosols; glossary 'Free iron oxide'")
 }
 

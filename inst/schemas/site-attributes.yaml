@@ -551,6 +551,66 @@ attributes:
     type: "character"
     unit: "-"
     description: "Code of the NSD soil survey the profile belongs to. Written by read_nsd_pedons()."
+  - name: sali_asc_label
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Surveyors' ASC label of a Queensland SALI site as the site layer gives it (order, suborder, great group, subgroup names). Written by read_sali_pedons(); its codes are in reference_asc_order and the following fields."
+  - name: sali_pdf_asc
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "ASC name of a SALI site as its site report prints it (the book's order, with the family). Written by read_sali_pedons()."
+  - name: sali_asc_edition
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Edition of the ASC technical reference the SALI site report cites, e.g. '3rd (2021)', '2nd (2016)', '1st (1996)'. Written by read_sali_pedons(); benchmark_sali() reports the agreement by edition."
+  - name: sali_asc_confidence_text
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Confidence phrase of the SALI site report for its ASC class, as printed (reference_asc_confidence gives it as 1-4, or C). Written by read_sali_pedons()."
+  - name: sali_unmapped
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Names of the SALI label that match no class of the ASC 3rd edition (left NA), separated by '; '. Written by read_sali_pedons()."
+  - name: sali_observation_class
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Observation class of the SALI site (e.g. 'Class IIIb (core analytical suite)'). Written by read_sali_pedons()."
+  - name: sali_observation_type
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Observation type of the SALI site (e.g. 'Soil pit', 'Hand auger boring'). Written by read_sali_pedons()."
+  - name: sali_depth_to_free_water
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Depth to free water as the SALI site report records it (text). Written by read_sali_pedons(); not used."
+  - name: sali_substrate
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Substrate as the SALI site report records it (text). Written by read_sali_pedons(); not used."
+  - name: sali_n_lab_samples
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "numeric"
+    unit: "-"
+    description: "Number of laboratory samples of observation 1 read for the SALI site. Written by read_sali_pedons()."
+  - name: sali_lab_source
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Where the laboratory values of the SALI site come from: 'api' (the SALI soil chemistry API), 'report table' (the site report's table, read only when the API holds no samples) or 'none'. Written by read_sali_pedons()."
+  - name: sali_n_predicted
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "numeric"
+    unit: "-"
+    description: "Number of horizon values of the SALI site that are MIR predictions, used where nothing was measured (marked predicted_spectra in the provenance). Written by read_sali_pedons()."
   - name: curation_note
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
