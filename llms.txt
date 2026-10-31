@@ -2237,6 +2237,23 @@ and are not shipped.
 - [`benchmark_natsoil()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_natsoil.md)
   : Benchmark the Australian order key on NatSoil
 
+## Queensland SALI benchmark (Australia, v0.9.320)
+
+Queensland’s Soil and Land Information system (SALI): the site layer,
+the per-site report (a PDF, the only place its morphology is published)
+and the soil chemistry API, read by the NatSoil conventions, as a
+benchmark for classify_asc3(). The data are licensed CC BY 4.0 (State of
+Queensland) and are not shipped.
+
+- [`fetch_sali()`](https://hugomachadorodrigues.github.io/soilKey/reference/fetch_sali.md)
+  : Download Queensland SALI sites, reports and laboratory data
+- [`read_sali_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_sali_pedons.md)
+  : Read Queensland SALI sites as pedons
+- [`benchmark_sali()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_sali.md)
+  : Benchmark the Australian key on Queensland SALI
+- [`sali_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/sali_citation.md)
+  : Citation for data read from Queensland's SALI
+
 ## National Soils Database of New Zealand (NSD, v0.9.317)
 
 The survey exports of Manaaki Whenua’s National Soils Database read into

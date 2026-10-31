@@ -70,6 +70,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_performance.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_redape.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_run_classification.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_sali.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_spectral_fill.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_unified.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_wrb_vs_usda.html</loc></url>
@@ -156,6 +157,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/ferric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fetch_aafc_normals.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fetch_natsoil.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fetch_sali.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fibrico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fill_from_spectra.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/fill_munsell_from_spectra.html</loc></url>
@@ -331,6 +333,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_isis.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_nsd_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_pedon_csv.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_sali_pedons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_spectral_library.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_layers_graphql.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_profiles_graphql.html</loc></url>
@@ -355,6 +358,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_subgroup.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_usda_suborder.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/run_wrb_key.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/sali_citation.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/salic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/saprico.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/save_ossl_models.html</loc></url>
