@@ -30,14 +30,20 @@ Of the layer's sites with an ASC order, 18,557 are not in NatSoil already (same 
 
 | ASC level | Profiles compared | Agreement | Where the key decides |
 |---|---|---|---|
-| order | 5,600 | 34.5% (36.3% counting a keyed Arenosol for a surveyed Tenosol or Rudosol) | 83.3% of 1,012 |
-| suborder, where the order agrees | 1,838 | 82.4% | 91.7% of 567 |
-| great group, where the suborder agrees | 1,093 | 42.5% | 73.5% of 336 |
-| subgroup, where the great group agrees | 438 | 39.5% | |
+| order | 5,600 | 34.8% (36.6% counting a keyed Arenosol for a surveyed Tenosol or Rudosol) | 83.3% of 1,017 |
+| suborder, where the order agrees | 1,854 | 82.6% | 91.8% of 571 |
+| great group, where the suborder agrees | 1,106 | 42.8% | 73.5% of 340 |
+| subgroup, where the great group agrees | 446 | 40.1% | |
 
-The order agreement stayed within 34% to 35% from the first stage (1,588 pedons) to the last. The Hydrosols (1,377 pedons) agree in 4.9%, mostly keyed as Kandosols: the key confirms a Hydrosol by its drainage, which the reports seldom record (the depth to free water, observed once, is kept but not used). The Ferrosols (156) agree in 0.6%, keyed as Dermosols. The laboratory data come from the API for 5,008 pedons and from the report's table for 562; 30 have none. The MIR predictions fill 243 values in 30 pedons. A MIR water pH never stands beside a measured CaCl2 pH; two MIR calibrations behind one value occur in 4 pedons (16 values).
+The order agreement stayed within 34% to 35% from the first stage (1,588 pedons) to the last. The Hydrosols (1,377 pedons) agree in 4.9%, mostly keyed as Kandosols: the key confirms a Hydrosol by its drainage, which the reports seldom record (the depth to free water, observed once, is kept but not used). The Ferrosols (156) agree in 11.5%; most of the rest are keyed as Dermosols, as free iron was measured in only 30 of them. The laboratory data come from the API for 5,008 pedons and from the report's table for 562; 30 have none. The MIR predictions fill 243 values in 30 pedons. A MIR water pH never stands beside a measured CaCl2 pH; two MIR calibrations behind one value occur in 4 pedons (16 values).
 
-A pilot of 200 sites stratified by order (186 pedons) gave 37.6% at the order and 83.3% of 36 where the key decides. For comparison, the Queensland profiles of NatSoil (agencies 301, 302, 304 and 399; 4,412 profiles) give 54.0% at the order, 82.6% where the key decides. The 44 canonical fixtures are byte-identical under WRB, SiBCS and USDA.
+A pilot of 200 sites stratified by order (186 pedons) gave 37.6% at the order and 83.3% of 36 where the key decides. For comparison, the Queensland profiles of NatSoil (agencies 301, 302, 304 and 399; 4,412 profiles) give 54.3% at the order, 82.6% of 783 where the key decides. The 44 canonical fixtures are byte-identical under WRB, SiBCS and USDA.
+
+### Ferrosols: vertic properties that are not recorded
+
+* The Ferrosol test keeps a soil out when at least 0.3 m of its B2 has vertic properties. A B2 horizon whose vertic properties are not recorded now counts as without them; only recorded slickensides or lenticular peds keep a soil out. Slickensides are seldom recorded (Queensland's site reports have no column for them; NatSoil reads them as absent only when other cutans are recorded), so a measured free iron above 5% in the major part of the B2 had decided the order in 1 of 30 SALI Ferrosols and 2 of 35 NatSoil Queensland ones. The trace gives the thickness read this way (`vertic_unrecorded_b2_cm`), and the test names slickensides as missing only when recorded vertic properties leave the answer open.
+* SALI: 18 pedons change to Ferrosols, 17 of them surveyed Ferrosols and 1 a Kandosol (order 34.5% to 34.8%). NatSoil: 19 change, 16 surveyed Ferrosols and 3 Kandosols (all 9,700 profiles 43.9% to 44.0%; Queensland 54.0% to 54.3%).
+* Gley colours and mottles were looked at for the Hydrosols and left out of the key. The ASC says they may or may not be present and are not universally indicative of saturation. A reading by low chroma, gley colours or mottles in most of the upper metre would raise SALI (where a quarter of the pedons are Hydrosols) to 52.9% but lower NatSoil Queensland (where 2% are) from 54.0% to 52.1%.
 
 # soilKey 0.9.319 (2026-10-30)
 
