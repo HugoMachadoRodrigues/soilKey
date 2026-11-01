@@ -35,24 +35,30 @@ lithosols_cscj <- .cscj_shared(function(p) lithosols_scsj(p), "lithosols_cscj", 
 
 # ---- D. Andosols: the brown polyhumic kuroboku surface horizon ---------------
 
-# The depth within [from, to] cm that no horizon describes: gaps between
-# horizons, and below a description that stops (not on rock, not complete);
-# a horizon without a bottom covers the depth below its top.
-.cscj_undescribed <- function(x, from, to) {
+# The depth within [from, to] cm that no horizon describes (in all, or its
+# longest stretch): gaps between horizons, below a horizon without a bottom
+# (which may end at once), and below a description that stops (not on rock,
+# not complete); nothing below the bedrock.
+.cscj_undescribed <- function(x, from, to, longest = FALSE) {
   ok <- which(!is.na(x$dtop))
   if (!length(ok)) return(to - from)
-  a <- pmax(x$dtop[ok], from); b <- pmin(ifelse(is.na(x$dbot[ok]), to, x$dbot[ok]), to)
-  keep <- b > a
-  segs <- cbind(a[keep], b[keep]); segs <- segs[order(segs[, 1]), , drop = FALSE]
-  covered <- 0; reach <- from
-  for (k in seq_len(nrow(segs))) {
-    s1 <- max(segs[k, 1], reach); if (segs[k, 2] > s1) covered <- covered + (segs[k, 2] - s1)
-    reach <- max(reach, segs[k, 2])
-  }
   e <- .scsj_ends(x)
   rock <- if (is.finite(x$rock_top %||% NA)) x$rock_top else Inf
   end <- if (e$on_rock || isTRUE(x$complete)) min(rock, max(c(x$dbot[ok], x$dtop[ok]), na.rm = TRUE)) else rock
-  max(0, min(to, end) - from - covered)
+  hi <- min(to, end)
+  if (hi <= from) return(0)
+  # a horizon without a bottom covers only its top: it may end at once
+  a <- pmax(x$dtop[ok], from); b <- pmin(ifelse(is.na(x$dbot[ok]), x$dtop[ok], x$dbot[ok]), hi)
+  keep <- b > a
+  segs <- cbind(a[keep], b[keep]); segs <- segs[order(segs[, 1]), , drop = FALSE]
+  gaps <- numeric(0); reach <- from
+  for (k in seq_len(nrow(segs))) {
+    if (segs[k, 1] > reach) gaps <- c(gaps, segs[k, 1] - reach)
+    reach <- max(reach, segs[k, 2])
+  }
+  if (hi > reach) gaps <- c(gaps, hi - reach)
+  if (!length(gaps)) return(0)
+  if (longest) max(gaps) else sum(gaps)
 }
 
 # The weighted mean of `v` (weights `w`) over the sure rows and a subset of
@@ -160,7 +166,7 @@ dystric_dark_red_cscj <- function(pedon) {
   # no subsurface: the criterion is not met (Hugo, 2026-11-01); depth the
   # description does not cover may hold another subhorizon (5 cm or more)
   low <- if (!length(cs$rows)) { if (isTRUE(cs$covered)) FALSE else NA } else .scsj_any(ifelse(is.na(ph), NA, ph < 5.5))
-  if (isFALSE(low) && .cscj_undescribed(x, cs$from, cs$to) >= 5) low <- NA
+  if (isFALSE(low) && .cscj_undescribed(x, cs$from, cs$to, longest = TRUE) >= 5) low <- NA
   if (isFALSE(low) && isTRUE(.scsj_site_flag(x$site$acid_neutralising_amendment))) low <- NA
   .cscj_result("dystric_dark_red_cscj", low, cs$rows, list(acid_subhorizon = low),
                if (is.na(low)) c("ph_h2o", "acid_neutralising_amendment") else character(0), "VI E, p. 35")

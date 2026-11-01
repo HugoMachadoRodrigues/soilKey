@@ -110,3 +110,25 @@ test_that("review: the brown polyhumic mean with open horizons, gaps and unreada
   p$horizons$gravel_pct <- c(0, 30, 30, 30, NA)
   expect_false(dystric_dark_red_cscj(p)$passed)
 })
+
+test_that("verification: open horizons and the rock in the undescribed depth", {
+  skip_on_cran()
+  kb <- function(...) utils::modifyList(list(designation = c("A1", "A2"), top_cm = c(0, 25), bottom_cm = c(25, NA),
+              oc_pct = c(5, 5), phosphate_absorption_coef = 2200, munsell_hue_moist = "10YR",
+              munsell_value_moist = 3, munsell_chroma_moist = 3, structure_grade = "moderate", field_texture = "loam",
+              clay_pct = 20, ph_h2o = 5.5, layer_origin = "volcanic ash", redoximorphic_features_pct = 0,
+              si_ox_pct = 1.5, al_ox_pct = 3, al_pyro_pct = 0.3, exchange_acidity_y1 = 1), list(...))
+  # below an open horizon a richer layer may follow: undecided
+  expect_true(is.na(fulvic_andosols_cscj(.jp(kb()))$passed))
+  # a gap above the rock counts as undescribed
+  x <- .scsj_profile(.jp(kb(designation = c("A", "A2", "R"), top_cm = c(0, 25, 30), bottom_cm = c(20, 30, 60),
+                            oc_pct = c(5, 5, NA))))
+  expect_equal(soilKey:::.cscj_undescribed(x, 0, 40), 5)
+  # Dystric: an open last horizon in the section leaves it undecided
+  p <- make_cscj2011_example("dark_red")
+  p$horizons$layer_origin <- "weathered basalt"; p$horizons$rock_origin <- c(NA, NA, NA, NA, "basalt")
+  p$site$parent_material <- "basalt"; p$horizons$caco3_pct <- 0
+  p$horizons <- p$horizons[1:3, ]
+  p$horizons$top_cm <- c(0, 12, 50); p$horizons$bottom_cm <- c(12, 50, NA)
+  expect_true(is.na(dystric_dark_red_cscj(p)$passed))
+})
