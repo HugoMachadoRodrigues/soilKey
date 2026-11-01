@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.324)
+# soilKey -- recognised horizon attribute names (v0.9.325)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -410,6 +410,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `mechanical_mixing_purpose` | - | character | Why the original horizons were mechanically mixed: tephra flipping (a modified tephra stratigraphy), breaking impeding horizons (to break up drainage-impeding horizons such as placic horizons or pans, often with hump-and-hollow recontouring), or other. Read by the NZSC Inverted-tephric and Inverted-impeded Mixed Anthropic Soils; recorded when met. | `tephra flipping`, `breaking impeding horizons`, `other` | `nzsc4`, `scsj2017` |
 | `acid_neutralising_amendment` | - | logical | TRUE where acid-neutralising amendments (lime or similar) were added to the soil material. Read by the NZSC Treated-sulfidic Fill Anthropic Soils; recorded when met. | - | `nzsc4`, `scsj2017` |
 | `overthickened_a` | - | logical | The surveyor recorded an overthickened A horizon (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC key: with its base at 45 cm or more, under 30 cm of anthropic material and no mottles within 30 cm, the soil enters the key at the Recent Soils. | - | `nzsc4` |
+| `jp_edition` | - | character | Internal: set by classify_cscj2011() on its copy of the pedon ('cscj2011') so that the diagnostics the CSCJ 2011 shares with the SCSJ 2017 read the CSCJ's own limits. Not for user data. | - | `cscj2011` |
 | `scsj_part` | - | logical | Internal: set by the SCSJ key on a part of a profile it keys on its own (the fill of Man-made soils, or the soil under it); the fill's own material is then read. Not for user data. | - | `scsj2017` |
 | `scsj_part_complete` | - | logical | Internal: with scsj_part, whether nothing lies below the part's last horizon (the fill; the soil under it only where the original profile ends on rock). Not for user data. | - | `scsj2017` |
 | `artefacts_organic` | - | logical | TRUE where the artificial material of the soil is mainly organic (household refuse and the like). SCSJ 2017 Organic Artifactual soils, read when no horizon records artefacts_organic. | - | `scsj2017` |
@@ -510,5 +511,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.324._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.325._
 

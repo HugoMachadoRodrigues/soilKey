@@ -755,6 +755,12 @@ attributes:
     unit: "-"
     description: "The surface is bare, structureless single grains with marks of wind reworking (deflation). HSCS 2024 subtype futó (Sandy soils)."
     systems: [hscs2024]
+  - name: jp_edition
+    section: "Description & notation"
+    type: "character"
+    unit: "-"
+    description: "Internal: set by classify_cscj2011() on its copy of the pedon ('cscj2011') so that the diagnostics the CSCJ 2011 shares with the SCSJ 2017 read the CSCJ's own limits. Not for user data."
+    systems: [cscj2011]
   - name: scsj_part
     section: "Description & notation"
     type: "logical"

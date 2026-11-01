@@ -158,6 +158,17 @@ reference:
       - classify_scsj2017
       - make_scsj2017_example
 
+  - title: "Comprehensive Soil Classification System of Japan (experimental)"
+    desc: >
+      The ten great groups of the First Approximation (2011) of the National
+      Institute for Agro-Environmental Sciences, named in English with the
+      Japanese names beside them. Reads the diagnostics it shares with the
+      2017 system by its own limits (argic horizon, immature kuroboku
+      feature), and adds the Dark Red soils (dark red colour, limestone).
+    contents:
+      - classify_cscj2011
+      - make_cscj2011_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:
