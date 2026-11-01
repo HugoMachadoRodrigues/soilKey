@@ -1,0 +1,25 @@
+# Groups of the Dark Red soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "E":
+    - code: "E1"
+      name: Calcaric Dark Red soils
+      name_native: 石灰性暗赤色土
+      tests:
+        all_of:
+          - calcaric_dark_red_cscj: {}
+      notes: "From limestone or calcareous deposits, every subhorizon of the subsurface at pH(H2O) 5.5 or more or base saturation 50 % or more."
+    - code: "E2"
+      name: Dystric Dark Red soils
+      name_native: 酸性暗赤色土
+      tests:
+        all_of:
+          - dystric_dark_red_cscj: {}
+      notes: "At least one subhorizon of the subsurface at pH(H2O) under 5.5."
+    - code: "E3"
+      name: Eutric Dark Red soils
+      name_native: 塩基性暗赤色土
+      tests:
+        default: true
+      notes: "Other Dark Red soils (every subhorizon of the subsurface at pH 5.5 or more, not from liming)."

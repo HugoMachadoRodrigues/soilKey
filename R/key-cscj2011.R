@@ -1,8 +1,8 @@
 # =============================================================================
 # v0.9.325 -- the Comprehensive Soil Classification System of Japan, First
 # Approximation (CSCJ 2011; Obara et al., NIAES Bulletin 29), keyed to the
-# ten great groups of chapter V. The groups, subgroups, soil series groups
-# and phases follow. The gates it shares with the SCSJ 2017 read the pedon by
+# ten great groups of chapter V and the 27 groups of chapter VI (0.9.326).
+# The subgroups, soil series groups and phases follow. The gates it shares with the SCSJ 2017 read the pedon by
 # the CSCJ edition (site$jp_edition). Experimental and opt-in.
 # =============================================================================
 
@@ -13,8 +13,9 @@
 #' following its key to great groups. \strong{Experimental}: this release
 #' keys the ten great groups (Man-made soils, Organic soils, Podzols,
 #' Andosols, Dark Red soils, Lowland soils, Red-Yellow soils, Stagnic soils,
-#' Brown Forest soils, Regosols); the 27 groups, 116 subgroups, 381 soil
-#' series groups and the phases follow. Each level gives the English name
+#' Brown Forest soils, Regosols) and their 27 groups (for instance Fulvic and
+#' Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils); the
+#' 116 subgroups, 381 soil series groups and the phases follow. Each level gives the English name
 #' of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 #' one.
 #'
@@ -37,8 +38,8 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"cscj2011"}, the great group in \code{name} and
-#'   \code{rsg_or_order}, the classes of each level in \code{levels} (with
+#'   \code{"cscj2011"}, the deepest class in \code{name}, the great group
+#'   in \code{rsg_or_order}, the classes of each level in \code{levels} (with
 #'   \code{name_native}), the key trace and \code{provisional_because}
 #'   (classes before the assigned one that could not be decided).
 #' @references Obara, H., Ohkura, T., Takata, Y., Kohyama, K., Maejima, Y.

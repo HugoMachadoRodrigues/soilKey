@@ -24,8 +24,8 @@ classify_cscj2011(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"cscj2011"}, the great group in \code{name} and
-  \code{rsg_or_order}, the classes of each level in \code{levels} (with
+  \code{"cscj2011"}, the deepest class in \code{name}, the great group
+  in \code{rsg_or_order}, the classes of each level in \code{levels} (with
   \code{name_native}), the key trace and \code{provisional_because}
   (classes before the assigned one that could not be decided).
 }
@@ -35,8 +35,9 @@ Classification System of Japan, First Approximation (Obara et al. 2011),
 following its key to great groups. \strong{Experimental}: this release
 keys the ten great groups (Man-made soils, Organic soils, Podzols,
 Andosols, Dark Red soils, Lowland soils, Red-Yellow soils, Stagnic soils,
-Brown Forest soils, Regosols); the 27 groups, 116 subgroups, 381 soil
-series groups and the phases follow. Each level gives the English name
+Brown Forest soils, Regosols) and their 27 groups (for instance Fulvic and
+Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils); the
+116 subgroups, 381 soil series groups and the phases follow. Each level gives the English name
 of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 one.
 }

@@ -1,0 +1,39 @@
+# Groups of the Lowland soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "F":
+    - code: "F1"
+      name: Lowland Paddy soils
+      name_native: 低地水田土
+      tests:
+        all_of:
+          - lowland_paddy_soils_cscj: {}
+      notes: "A paddy iron accumulation horizon, or a paddy greyed horizon whose lower boundary is 50 cm or deeper."
+    - code: "F2"
+      name: Gley Lowland soils
+      name_native: グライ低地土
+      tests:
+        all_of:
+          - groundwater_gley_group_cscj: {}
+      notes: "The top of a groundwater gley layer within 50 cm."
+    - code: "F3"
+      name: Gray Lowland soils
+      name_native: 灰色低地土
+      tests:
+        all_of:
+          - groundwater_wet_group_cscj: {}
+      notes: "The top of a layer with the groundwater wetness feature within 50 cm."
+    - code: "F4"
+      name: Brown Lowland soils
+      name_native: 褐色低地土
+      tests:
+        all_of:
+          - brown_lowland_soils_cscj: {}
+      notes: "A yellowish-brown subsurface (the CSCJ colour word: yellower than 5YR)."
+    - code: "F5"
+      name: Regosolic Lowland soils
+      name_native: 未熟低地土
+      tests:
+        default: true
+      notes: "Other Lowland soils."

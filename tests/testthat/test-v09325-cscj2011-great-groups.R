@@ -26,7 +26,7 @@ test_that("every example keys to its great group, decided, named in English and 
     expect_identical(r$system_id, "cscj2011")
   }
   r <- classify_cscj2011(make_cscj2011_example("dark_red"), on_missing = "silent")
-  expect_identical(r$name, "Dark Red soils")
+  expect_identical(r$levels$name[1], "Dark Red soils")
   expect_identical(r$levels$name_native[1], "\u6697\u8d64\u8272\u571f\u5927\u7fa4")
   expect_true("cscj2011" %in% soilkey_systems()$id)
   # the SCSJ reads the same examples as before

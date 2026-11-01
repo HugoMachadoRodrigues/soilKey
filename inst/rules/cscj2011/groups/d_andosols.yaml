@@ -1,0 +1,46 @@
+# Groups of the Andosols, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "D":
+    - code: "D1"
+      name: Regosolic Andosols
+      name_native: 未熟黒ボク土
+      tests:
+        all_of:
+          - regosolic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the immature kuroboku feature within 50 cm."
+    - code: "D2"
+      name: Gleyed Andosols
+      name_native: グライ黒ボク土
+      tests:
+        all_of:
+          - groundwater_gley_group_cscj: {}
+      notes: "The top of a groundwater gley layer within 50 cm."
+    - code: "D3"
+      name: Wet Andosols
+      name_native: 多湿黒ボク土
+      tests:
+        all_of:
+          - groundwater_wet_group_cscj: {}
+      notes: "The top of a layer with the groundwater wetness feature within 50 cm."
+    - code: "D4"
+      name: Fulvic Andosols
+      name_native: 褐色黒ボク土
+      tests:
+        all_of:
+          - fulvic_andosols_cscj: {}
+      notes: "The brown polyhumic kuroboku surface horizon (printed \"Fuluvic Andosols\" in appendix 2)."
+    - code: "D5"
+      name: Non-allophanic Andosols
+      name_native: 非アロフェン質黒ボク土
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D6"
+      name: Allophanic Andosols
+      name_native: アロフェン質黒ボク土
+      tests:
+        default: true
+      notes: "Other Andosols."

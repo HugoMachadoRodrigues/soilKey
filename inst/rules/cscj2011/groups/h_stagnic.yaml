@@ -1,0 +1,18 @@
+# Groups of the Stagnic soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "H":
+    - code: "H1"
+      name: Stagnogley soils
+      name_native: 停滞水グライ土
+      tests:
+        all_of:
+          - stagnogley_soils_cscj: {}
+      notes: "The top of a gley layer within 50 cm, the layer reaching 50 cm or deeper, or the bedrock."
+    - code: "H2"
+      name: Pseudogley soils
+      name_native: 疑似グライ土
+      tests:
+        default: true
+      notes: "Other Stagnic soils."
