@@ -15,6 +15,7 @@
 * "Several gley layers" are adjacent gley horizons taken together; an oxidised layer separates two gley layers.
 * On paddy land the paddy horizons' mottles are not the groundwater wetness feature of the Wet Andosols and Gray Fluvic soils.
 * The mottle class "contains" (the Strong Gley Fluvic soils, next release) is 5 % or more.
+* Later (2026-11-01): the Volcanogenous Regosols' undeveloped horizons leave buried horizons out.
 
 The readings are in `inst/rules/scsj2017/readings.yaml`. Other systems do not change.
 
