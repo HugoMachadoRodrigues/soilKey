@@ -1,3 +1,23 @@
+# soilKey 0.9.327 (2026-11-01)
+
+## Japan: the 116 subgroups of the Comprehensive Soil Classification System of Japan
+
+`classify_cscj2011()` now keys a pedon to its subgroup (chapter VI), named by its word before the group's name, for example "Argic Calcaric Dark Red soils" and 粘土集積石灰性暗赤色土.
+
+* **Subgroups shared with the SCSJ** are its generic gates, read by the CSCJ edition under CSCJ names with the same depths and features. Within them, the Andic subgroups have P retention as their only substitute, and the Endoaeric Lowland Paddy soils read the CSCJ's yellowish brown.
+* **New or different:**
+  * the Cumulic Fulvic Andosols, by the brown polyhumic surface horizon over 50 cm within 60 cm;
+  * the Low-humic Allophanic Andosols;
+  * the Dark Red groups' Argic and Haplic subgroups;
+  * the Brown Forest soils in the CSCJ's order, with Aquic by either wetness, Eutric on every subhorizon at pH 6.5 and the new Terrace subgroup.
+
+### Hugo's decisions (2026-11-01)
+
+* Terrace by recorded words for Pleistocene deposits; nothing recorded means not.
+* Eutric as written, with no liming clause.
+
+The SCSJ 2017 and the other systems do not change.
+
 # soilKey 0.9.326 (2026-11-01)
 
 ## Japan: the 27 groups of the Comprehensive Soil Classification System of Japan

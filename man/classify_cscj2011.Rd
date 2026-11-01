@@ -35,9 +35,10 @@ Classification System of Japan, First Approximation (Obara et al. 2011),
 following its key to great groups. \strong{Experimental}: this release
 keys the ten great groups (Man-made soils, Organic soils, Podzols,
 Andosols, Dark Red soils, Lowland soils, Red-Yellow soils, Stagnic soils,
-Brown Forest soils, Regosols) and their 27 groups (for instance Fulvic and
-Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils); the
-116 subgroups, 381 soil series groups and the phases follow. Each level gives the English name
+Brown Forest soils, Regosols), their 27 groups (for instance Fulvic and
+Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils) and
+their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...); the 381 soil
+series groups and the phases follow. Each level gives the English name
 of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 one.
 }

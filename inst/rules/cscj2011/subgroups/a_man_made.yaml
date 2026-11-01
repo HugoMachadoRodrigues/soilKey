@@ -1,0 +1,40 @@
+# Subgroups of the Man Made great group, Comprehensive Soil Classification System of
+# Japan, First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the text;
+# see R/diagnostics-cscj-subgroups.R and inst/rules/cscj2011/readings.yaml. Names are
+# written on the group's name.
+subgroups:
+  "A1":
+    - code: "A1OR"
+      name: "Organic {parent}"
+      name_native: "有機質{parent}"
+      tests:
+        all_of:
+          - organic_artefacts_cscj: {}
+      notes: "The artificial material is mainly organic."
+    - code: "A1EK"
+      name: "Ekranic {parent}"
+      name_native: "硬盤型{parent}"
+      tests:
+        all_of:
+          - ekranic_cscj: {}
+      notes: "A continuous impermeable artificial layer."
+    - code: "A1MI"
+      name: "Mineral {parent}"
+      name_native: "無機質{parent}"
+      tests:
+        default: true
+      notes: "Other Artifactual soils (mainly inorganic artificial material)."
+  "A2":
+    - code: "A2UP"
+      name: "Upland {parent}"
+      name_native: "台地{parent}"
+      tests:
+        all_of:
+          - upland_cscj: {}
+      notes: "On a terrace, hill or mountain."
+    - code: "A2LO"
+      name: "Lowland {parent}"
+      name_native: "低地{parent}"
+      tests:
+        default: true
+      notes: "Other Reformed soils (in a lowland)."

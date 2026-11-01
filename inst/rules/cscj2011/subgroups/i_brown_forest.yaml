@@ -1,0 +1,68 @@
+# Subgroups of the Brown Forest great group, Comprehensive Soil Classification System of
+# Japan, First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the text;
+# see R/diagnostics-cscj-subgroups.R and inst/rules/cscj2011/readings.yaml. Names are
+# written on the group's name.
+subgroups:
+  "I1":
+    - code: "I1AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_cscj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "I1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_cscj: {features: ["sw", "gw"], to: 75}
+      notes: "The top of a layer with the surface-water or the groundwater wetness feature within 75 cm."
+    - code: "I1EU"
+      name: "Eutric {parent}"
+      name_native: "塩基型{parent}"
+      tests:
+        all_of:
+          - eutric_all_cscj: {}
+      notes: "Every subhorizon of the subsurface at pH(H2O) 6.5 or more."
+    - code: "I1AD"
+      name: "Andic {parent}"
+      name_native: "ばん土質{parent}"
+      tests:
+        all_of:
+          - andic_subgroup_cscj: {}
+      notes: "Within 50 cm, 25 cm or more of layers with a phosphate absorption coefficient of 1000 mg P2O5/100 g or more (P retention 60 %; the CSCJ gives no Alo + 1/2 Feo substitute)."
+    - code: "I1HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "I1PZ"
+      name: "Podzolic {parent}"
+      name_native: "ポドゾル化{parent}"
+      tests:
+        all_of:
+          - podzolic_horizon_cscj: {}
+      notes: "A podzolic accumulation horizon (morphology or analysis)."
+    - code: "I1TR"
+      name: "Thapto-red-yellow {parent}"
+      name_native: "下層赤黄色{parent}"
+      tests:
+        all_of:
+          - thapto_red_yellow_cscj: {within: 75}
+      notes: "Within 75 cm, a weathered or argic horizon with the red-yellow feature."
+    - code: "I1TE"
+      name: "Terrace {parent}"
+      name_native: "台地{parent}"
+      tests:
+        all_of:
+          - terrace_cscj: {}
+      notes: "From Pleistocene deposits."
+    - code: "I1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Brown Forest soils."
