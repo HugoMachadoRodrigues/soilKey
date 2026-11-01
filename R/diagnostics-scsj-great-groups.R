@@ -159,6 +159,12 @@ man_made_soils_scsj <- function(pedon) {
       g_fill <- expand(.scsj_part_possible(p_fill), p_fill)
       g_below <- expand(.scsj_part_possible(p_below), p_below)
       c <- .scsj_differ(g_fill, g_below)
+      # the CSCJ: a fill that keys as Andosols is a combination that occurs
+      # in nature, volcanic ash covering any material (IX, step D, whose
+      # example is a humic kuroboku fill on alluvium; Hugo, 2026-11-01), so
+      # it does not make the soil Man-made
+      if (identical(x$edition, "cscj2011") && "D" %in% g_fill)
+        c <- if (identical(g_fill, "D")) FALSE else if (isTRUE(c)) NA else c
     }
   }
   cond2 <- .scsj_or3(a, b, c)

@@ -50,7 +50,8 @@ The appendix's typos "Fuluvic" and "Volcangenous" are written Fulvic and Volcano
 * **Shared code, the CSCJ's own limits.** The diagnostics the two Japanese systems share are read with the SCSJ code, by the CSCJ edition:
   * the argic horizon by the CSCJ's clay increase (the WRB 2006 values);
   * the immature kuroboku feature with P retention as its only substitute;
-  * the heterogeneous fill of the Man-made soils by the CSCJ great groups, without the SCSJ's Regosol-group rule.
+  * the heterogeneous fill of the Man-made soils by the CSCJ great groups, without the SCSJ's Regosol-group rule;
+  * a fill that keys as Andosols is a combination that occurs in nature (chapter IX, step D), so it does not make the soil Man-made.
 * **Podzols before Andosols**, as the CSCJ keys them.
 * **New great group:** the Dark Red soils, by a dark red subsurface (the new colour word) or an origin from limestone or calcareous deposits with a base-rich subsurface.
 * **The CSCJ's Red-Yellow soils**, without the SCSJ's base-status criterion.
@@ -65,6 +66,7 @@ The appendix's typos "Fuluvic" and "Volcangenous" are written Fulvic and Volcano
 * Limestone or calcareous deposits come from recorded words or 40 % CaCO3 or more; nothing recorded means not. Liming leaves a high base status undecided.
 * The Podzols: one horizon may meet both the analysis and the morphology criteria; the single parent material is read on the bleached and accumulation horizons.
 * The Red-Yellow soils' 25 cm are those of one horizon, in the CSCJ and in the SCSJ alike.
+* A kuroboku fill is a natural combination in the CSCJ only: the text's example of a humic kuroboku fill on alluvium keys as an Andosol, not as a Man-made soil. The SCSJ still reads every recorded fill as not natural.
 * Decided for the later parts:
   * a Japanese texture-class attribute;
   * the series-group names with their term first;
