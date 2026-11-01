@@ -329,12 +329,15 @@ magnesian_eutrosols_scsj <- function(pedon) {
 # ---- J. Regosols ----------------------------------------------------------------------
 
 # Volcanogenous Regosols (J1): horizons undeveloped (no weathered or argic
-# horizon) and 25 cm or more (cumulative) of volcanic ejecta within 50 cm.
+# horizon; a buried one does not count, Hugo, 2026-11-01) and 25 cm or more
+# (cumulative) of volcanic ejecta within 50 cm.
 volcanogenous_regosols_scsj <- function(pedon) {
   x <- .scsj_profile(pedon)
   if (is.na(x$surface)) return(.scsj_no_surface("volcanogenous_regosols_scsj", x, "III J, p. 15"))
   f <- .scsj_horizon_flags(x)
-  undeveloped <- .scsj_not(.scsj_any(.scsj_or(f$weathered, f$argic)))
+  developed <- .scsj_or(f$weathered, f$argic)
+  developed[x$des$buried %in% TRUE] <- FALSE
+  undeveloped <- .scsj_not(.scsj_any(developed))
   ej <- .scsj_at_least(.scsj_cum(x, x$orig$ejecta, 0, 50), 25)
   passed <- .scsj_and3(undeveloped, ej)
   .scsj_result("volcanogenous_regosols_scsj", passed, which(x$orig$ejecta),
