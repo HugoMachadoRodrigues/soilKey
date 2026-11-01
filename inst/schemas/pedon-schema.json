@@ -608,6 +608,9 @@
           },
           "artefacts_organic": {
             "type": ["boolean", "null"]
+          },
+          "leached_spots": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false

@@ -247,7 +247,9 @@ horizon_column_spec <- function() {
     # ---- v0.9.323: the subgroups of the SCSJ 2017 ----
     ph_h2o2                       = "numeric",   # pH after oxidation with hydrogen peroxide; SCSJ potential sulfuric material (pH(H2O) >= 4.0 and pH(H2O2) < 3.0)
     peat_moor_type                = "character", # peat by its plants: 'high-moor' (Sphagnum ...), 'transitional', 'low-moor'; SCSJ Peat soils subgroups
-    artefacts_organic             = "logical"    # the artificial material is mainly organic (household refuse ...); SCSJ Organic Artifactual soils
+    artefacts_organic             = "logical",   # the artificial material is mainly organic (household refuse ...); SCSJ Organic Artifactual soils
+    # ---- v0.9.324: the SCSJ 2017 soil phases ----
+    leached_spots                 = "logical"    # leached (bleached) spots in a podzolic B; SCSJ moderately developed forest phase of the Podzols
   )
 }
 

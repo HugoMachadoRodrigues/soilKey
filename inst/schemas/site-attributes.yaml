@@ -74,7 +74,7 @@ attributes:
     type: "character"
     unit: "-"
     description: "Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces)."
-    systems: [wrb2022, asc3]
+    systems: [wrb2022, asc3, scsj2017]
   - name: landform_element
     section: "Landscape & surface"
     type: "character"
@@ -140,13 +140,13 @@ attributes:
     type: "character"
     unit: "-"
     description: "Parent material, as text. Read by the WRB Rendzic qualifier (limestone, chalk, dolomite, carbonate or marl) and the NZSC Melanic Soils (calcareous, mafic or ultramafic rock); also shown by print() and the reports."
-    systems: [wrb2022, nzsc4]
+    systems: [wrb2022, nzsc4, scsj2017]
   - name: land_use
     section: "Landscape & surface"
     type: "character"
     unit: "-"
     description: "Land use, as text. Read by the WRB Drainic (artificial drainage), Tidalic (tidal, salt marsh, mangrove) and Escalic (built terraces) qualifiers."
-    systems: [wrb2022]
+    systems: [wrb2022, scsj2017]
   - name: vegetation
     section: "Landscape & surface"
     type: "character"
@@ -160,14 +160,14 @@ attributes:
     unit: "-"
     description: "Drainage class, in English or Portuguese; a range ('imperfectly to poorly drained') is read by the end each test asks for. Read by the WRB Drainic, Subaquatic and Tidalic qualifiers (which also look for words such as 'artificial', 'submerged' and 'tidal'), the SiBCS horizonte glei (after drainage), the CSSC Folisol and Vertisol great groups, the ASC key (Hydrosols, organic materials, Folic Organosols, Aquic Vertosols, the Podosol and Hypersalic suborders) and the NZSC Organic Soils."
     allowed: ["excessively drained", "somewhat excessively drained", "rapidly drained", "well drained", "moderately well drained", "imperfectly drained", "somewhat poorly drained", "poorly drained", "very poorly drained", "excessivamente drenado", "fortemente drenado", "acentuadamente drenado", "bem drenado", "moderadamente drenado", "imperfeitamente drenado", "mal drenado", "muito mal drenado"]
-    systems: [wrb2022, sibcs5, cssc3, asc3, nzsc4]
+    systems: [wrb2022, sibcs5, cssc3, asc3, nzsc4, scsj2017]
   - name: drainage
     section: "Water, climate & regimes"
     type: "character"
     unit: "-"
     description: "Drainage class as the BDsolos export writes it (classe de drenagem, in Portuguese), on the same scale as drainage_class. The SiBCS horizonte glei reads it before drainage_class; the CSSC drainage groups read it when drainage_class is absent."
     allowed: ["excessively drained", "somewhat excessively drained", "rapidly drained", "well drained", "moderately well drained", "imperfectly drained", "somewhat poorly drained", "poorly drained", "very poorly drained", "excessivamente drenado", "fortemente drenado", "acentuadamente drenado", "bem drenado", "moderadamente drenado", "imperfeitamente drenado", "mal drenado", "muito mal drenado"]
-    systems: [sibcs5, cssc3]
+    systems: [sibcs5, cssc3, scsj2017]
   - name: soil_moisture_regime
     section: "Water, climate & regimes"
     type: "character"
@@ -188,13 +188,13 @@ attributes:
     unit: "-"
     description: "USDA soil temperature regime, compared in lower case. Read by the USDA key (the cryic suborders and great groups, and the family temperature class, which is otherwise estimated from lat and elevation_m) and by the CSSC key when mean_annual_soil_temp_C is absent (Gray Brown Luvisols: mesic or thermic; Chernozemic climate: not pergelic or gelic)."
     allowed: ["gelic", "cryic", "frigid", "mesic", "thermic", "hyperthermic", "isofrigid", "isomesic", "isothermic", "isohyperthermic", "pergelic"]
-    systems: [usda, cssc3]
+    systems: [usda, cssc3, scsj2017]
   - name: mean_annual_soil_temp_C
     section: "Water, climate & regimes"
     type: "numeric"
     unit: "deg C"
     description: "Mean annual soil temperature. Read by the CSSC key: the Chernozemic climate (0 degrees or more) and the Gray Brown Luvisols (8 degrees or more). Filled by npdb_scenario() for NPDB pedons."
-    systems: [cssc3]
+    systems: [cssc3, scsj2017]
   - name: soil_temp_30cm_C
     section: "Water, climate & regimes"
     type: "numeric"
@@ -219,7 +219,7 @@ attributes:
     type: "logical"
     unit: "-"
     description: "The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
   - name: groundwater_kind
     section: "Water, climate & regimes"
     type: "character"
@@ -232,7 +232,7 @@ attributes:
     type: "numeric"
     unit: "cm"
     description: "Depth of the water table below the soil surface (0 at the surface). Read with groundwater_kind by the WRB gleyic and stagnic properties (within 150 cm, or deeper). Written by isis_profile_to_pedon() from depthGroundwater, or groundwaterTop where ISIS writes 0 for the depth."
-    systems: [wrb2022]
+    systems: [wrb2022, scsj2017]
   - name: water_table_cm_above_surface
     section: "Water, climate & regimes"
     type: "numeric"
@@ -266,7 +266,7 @@ attributes:
     unit: "-"
     description: "Notation of the horizon designations. Read by the CSSC, ASC and NZSC keys to decide whether the designations are in their notation (otherwise judged from the designations and the country). Written by the NatSoil ('asc') and NPDB ('cssc') loaders."
     allowed: ["cssc", "cssc3", "canadian", "canada", "asc", "australian", "field handbook", "nchs", "australian field handbook", "nzsc", "nz", "new zealand"]
-    systems: [cssc3, asc3, nzsc4]
+    systems: [cssc3, asc3, nzsc4, scsj2017]
   - name: nasis_diagnostic_features
     section: "Description & notation"
     type: "character"
@@ -278,13 +278,13 @@ attributes:
     type: "logical"
     unit: "-"
     description: "The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
   - name: mechanical_mixing_depth_cm
     section: "Description & notation"
     type: "numeric"
     unit: "cm"
     description: "Depth from the mineral soil surface to which people mechanically disturbed the original horizons (mixing, deep ripping, subsoil lifting). Read by the NZSC Mixed Anthropic Soils (more than 30 cm)."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
   - name: methane_odour
     section: "Description & notation"
     type: "logical"
@@ -296,14 +296,14 @@ attributes:
     type: "character"
     unit: "-"
     description: "Why the original horizons were mechanically mixed: tephra flipping (a modified tephra stratigraphy), breaking impeding horizons (to break up drainage-impeding horizons such as placic horizons or pans, often with hump-and-hollow recontouring), or other. Read by the NZSC Inverted-tephric and Inverted-impeded Mixed Anthropic Soils; recorded when met."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
     allowed: [tephra flipping, breaking impeding horizons, other]
   - name: acid_neutralising_amendment
     section: "Description & notation"
     type: "logical"
     unit: "-"
     description: "TRUE where acid-neutralising amendments (lime or similar) were added to the soil material. Read by the NZSC Treated-sulfidic Fill Anthropic Soils; recorded when met."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
   - name: overthickened_a
     section: "Description & notation"
     type: "logical"
@@ -748,7 +748,7 @@ attributes:
     type: "logical"
     unit: "-"
     description: "The soil is under flood-irrigated cultivation (e.g. rice). HSCS 2024 variety árasztott."
-    systems: [hscs2024]
+    systems: [hscs2024, scsj2017]
   - name: wind_deflation
     section: "Landscape & surface"
     type: "logical"
@@ -772,4 +772,10 @@ attributes:
     type: "logical"
     unit: "-"
     description: "TRUE where the artificial material of the soil is mainly organic (household refuse and the like). SCSJ 2017 Organic Artifactual soils, read when no horizon records artefacts_organic."
+    systems: [scsj2017]
+  - name: forest_soil_type
+    section: "Description & notation"
+    type: "character"
+    unit: "-"
+    description: "The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols; the types of the other 1975 groups (BlD, lBlD, RC, YD(d), dRB ...) are read by their moisture letter, and PW (wet podzols) gives no development phase. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile; a recorded type also says forest land when no land use is recorded."
     systems: [scsj2017]
