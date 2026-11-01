@@ -106,7 +106,13 @@ pro_fixture_catalog <- function() {
   cscj2011 = c("Man-made soils" = "man_made", "Organic soils" = "organic", "Podzols" = "podzol",
                "Andosols" = "andosol", "Dark Red soils" = "dark_red", "Lowland soils" = "lowland",
                "Red-Yellow soils" = "red_yellow", "Stagnic soils" = "stagnic",
-               "Brown Forest soils" = "brown_forest", "Regosols" = "regosol")
+               "Brown Forest soils" = "brown_forest", "Regosols" = "regosol"),
+  cpcs1967 = c("Sols min\u00e9raux bruts" = "raw_mineral", "Sols peu \u00e9volu\u00e9s" = "weakly_developed",
+               "Vertisols" = "vertisol", "Andosols" = "andosol",
+               "Sols calcimagn\u00e9siques" = "calcimagnesic", "Sols isohumiques" = "isohumic",
+               "Sols brunifi\u00e9s" = "brunified", "Sols podzolis\u00e9s" = "podzolised",
+               "Sols \u00e0 sesquioxydes de fer et mangan\u00e8se" = "sesquioxide", "Sols ferrallitiques" = "ferrallitic",
+               "Sols hydromorphes" = "hydromorphic", "Sols sodiques" = "sodic")
 )
 
 # Resolve a make_*_canonical() name, or a national example written
