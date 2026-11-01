@@ -362,3 +362,21 @@ test_that("review of PR 129: paddy iron thickness, pairs inside one material, a 
   mm$site$geomembrane <- TRUE; mm$site$geomembrane_depth_cm <- 40
   expect_false(soilKey:::.scsj_impermeable_within(soilKey:::.scsj_profile(mm), 30))
 })
+
+test_that("Red-Yellow soils: the 25 cm are those of one horizon (Hugo, 2026-11-01)", {
+  skip_on_cran()
+  p <- make_scsj2017_example("red_yellow")
+  expect_true(red_yellow_soils_scsj(p)$passed)
+  # a 15 cm red argic horizon within 50 cm and another one far below: not 25 cm of one horizon
+  h <- list(designation = c("A", "Bt1", "BC", "Bt2", "C"), top_cm = c(0, 30, 45, 150, 170),
+            bottom_cm = c(30, 45, 150, 170, 200), oc_pct = c(3, 0.6, 0.3, 0.3, 0.2),
+            munsell_hue_moist = c("10YR", "2.5YR", "10YR", "2.5YR", "10YR"), munsell_value_moist = c(3, 4, 5, 4, 5),
+            munsell_chroma_moist = c(3, 6, 4, 6, 4), clay_pct = c(20, 40, 30, 40, 25),
+            clay_films_amount = c(NA, "common", "few", "common", NA), ph_h2o = 4.8, bs_pct = 20,
+            structure_grade = "moderate", layer_origin = "weathered sedimentary rock", redoximorphic_features_pct = 0)
+  n <- max(lengths(h)); h <- lapply(h, function(v) if (length(v) == 1L) rep(v, n) else v)
+  q <- PedonRecord$new(site = list(id = "t", country = "JP", designation_system = "scsj", land_use = "forest",
+                                   drainage_class = "well drained"),
+                       horizons = ensure_horizon_schema(data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
+  expect_false(isTRUE(red_yellow_soils_scsj(q)$passed))
+})
