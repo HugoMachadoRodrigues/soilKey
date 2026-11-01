@@ -78,7 +78,7 @@ A new, experimental and opt-in system: the Soil Classification System of Japan (
 * The subsurface section (20 to 60 cm) counts the horizons with 5 cm or more inside it.
 * An undesignated layer of 20 % carbon or more is peat on a poorly or very poorly drained site and a forest floor on any other; undecided without a drainage class.
 * In the forest-floor notation (L, F, H), an H under L or F is the humus layer of the floor, not peat.
-* Later (2026-11-01): the Red-Yellow soils' 25 cm are those of one horizon, not added up over separate horizons; with no subsurface section, neither base-status criterion is met.
+* Later (2026-11-01): the Red-Yellow soils' 25 cm are those of one horizon, not added up over separate horizons; with no subsurface section, neither base-status criterion is met; a gravel layer (in either record) that reaches into the subsurface section cuts it at its top.
 
 The choices where the text is silent are in `inst/rules/scsj2017/readings.yaml`. Other systems do not change: the 44 canonical profiles key as before under WRB, SiBCS and USDA, and the Canadian, Australian, New Zealand and Hungarian examples as before.
 
