@@ -448,7 +448,7 @@ fluvic_soils_scsj <- function(pedon) {
 # ---- F. Red-Yellow soils ------------------------------------------------------------
 
 # Red-Yellow soils (SCSJ 2017, great group F): an argic horizon with the
-# red-yellow feature, 25 cm or more (cumulative), its top within 50 cm, or
+# red-yellow feature, 25 cm or more (adjacent layers), its top within 50 cm, or
 # red-yellow weathered horizons, 25 cm or more, their top within 35 cm; a
 # subhorizon of the subsurface with pH(H2O) under 5.5 or base saturation
 # under 50 %; no bedrock within 30 cm.
@@ -458,14 +458,11 @@ red_yellow_soils_scsj <- function(pedon) {
   f <- .scsj_horizon_flags(x)
   ry <- .scsj_red_yellow_rows(x)
   agry <- .scsj_and(f$argic, ry)
-  top_within <- function(rows, d) {
-    v <- .scsj_any(ifelse(!is.na(x$dtop) & x$dtop <= d, rows, FALSE))
-    e <- .scsj_ends(x)
-    if (isFALSE(v) && !is.na(e$depth) && e$depth < d && !e$on_rock) NA else v
-  }
-  a <- .scsj_and3(top_within(agry, 50), .scsj_at_least(.scsj_cum(x, agry), 25))
+  # 25 cm or more in the horizon (adjacent layers) whose top is within the
+  # depth, not added up over separate horizons (Hugo, 2026-11-01)
+  a <- .scsj_horizon_within(x, agry, 25, 50)$passed
   ryw <- .scsj_red_yellow_weathered_rows(x, f$weathered)
-  b <- .scsj_and3(top_within(ryw, 35), .scsj_at_least(.scsj_cum(x, ryw), 25))
+  b <- .scsj_horizon_within(x, ryw, 25, 35)$passed
   bs <- .scsj_base_status(x)
   rock <- .scsj_no_rock_within(x, 30)
   passed <- .scsj_and3(.scsj_or3(a, b), bs$low, rock)
