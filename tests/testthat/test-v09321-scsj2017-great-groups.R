@@ -399,3 +399,13 @@ test_that("the liming flag is read as yes / no, as elsewhere in soilKey", {
   p$site$acid_neutralising_amendment <- "yes"
   expect_true(is.na(.scsj_base_status(.scsj_profile(p))$high))
 })
+
+test_that("the subsurface section is cut by a gravel layer in either record, also from above 20 cm", {
+  skip_on_cran()
+  p <- make_scsj2017_example("eutrosol")
+  p$horizons$gravel_pct <- c(0, 10, 10, 10); p$horizons$coarse_fragments_pct <- c(0, 0, 30, 30)
+  expect_identical(.scsj_control(.scsj_profile(p))$to, 45)
+  q <- make_scsj2017_example("eutrosol")
+  q$horizons$gravel_pct <- c(0, 40, 0, 0)            # Bw1 15-45 is a gravel layer from 15 cm
+  expect_length(.scsj_control(.scsj_profile(q))$rows, 0)
+})
