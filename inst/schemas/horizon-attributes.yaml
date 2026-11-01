@@ -798,3 +798,21 @@ attributes:
     unit: "-"
     description: "The type of structure when the record names one of several, not known which, as words joined by 'or' (the older New Zealand term nut is granular or polyhedral, NZ Soil Description Handbook 2024, Note 12.1: 'granular or polyhedral'); structure_type is then left empty, so the keys that do not read this attribute read the type as not recorded. The NZSC key reads a criterion under each type: it holds when it holds for every one, fails when it fails for every one, and is undecided otherwise."
     systems: [nzsc4]
+  - name: phosphate_absorption_coef
+    section: "Japanese system (SCSJ 2017)"
+    unit: "mg P2O5/100 g"
+    description: "Phosphate absorption coefficient (Japanese method), mg P2O5 per 100 g of dry soil; the SCSJ 2017 writes it in mg P2O5/g (15.00 = 1500). The kuroboku feature needs 1500 or more and the immature kuroboku feature 300 to under 1500; P retention (phosphate_retention_pct, 85 % and 25 %) or Alo + 1/2 Feo (2.0 % and 0.4 %) replace it when it is not measured. Not the Blakemore P retention."
+    systems: [scsj2017]
+    min: 0
+  - name: active_al_test
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "Japanese field active-aluminium test (NaF with phenolphthalein paper, Soil Survey Handbook, JSP 1997), graded by how fast and how strongly the paper turns red: -, +-, +, 2+, 3+. SCSJ 2017: a vivid red within a minute (2+ or more) indicates the kuroboku feature; none or +- (no colour, or colour after 5 minutes) indicates no kuroboku feature. Read only when no laboratory value decides. The New Zealand NaF test (naf_test) uses other grades."
+    systems: [scsj2017]
+    allowed: ["-", "+-", "+", "2+", "3+"]
+  - name: n_value
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "n value of a water-saturated deposit (Pons and Zonneveld 1965): (field water content % of dry soil - 0.2 x silt and sand %) / (clay % + 3 x organic matter %). SCSJ 2017 physical immaturity: 1 or more (or the material squeezes between the fingers, fluidity_class)."
+    systems: [scsj2017]
+    min: 0

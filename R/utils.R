@@ -237,7 +237,11 @@ horizon_column_spec <- function() {
     pressure_faces                = "character", # none / few / common / many: pressure faces (shiny aggregate surfaces, stress cutans that do not slide); WRB 2022 Ch 3.1.22 nitic horizon (>= 25% of the aggregate surfaces: common or more)
     structure_type_secondary      = "character", # type of the second-level structure the first-level units break into (e.g. blocky breaking into polyhedral); read by the WRB 2022 nitic horizon only
     # ---- a ped shape known only as one of several ----
-    structure_type_one_of         = "character"  # the ped shape when recorded as one of several, not known which, as words joined by "or" (the older New Zealand nut: "granular or polyhedral", NZ Soil Description Handbook 2024, Note 12.1); structure_type is then empty; read by the NZSC key, which reads a criterion under each shape
+    structure_type_one_of         = "character", # the ped shape when recorded as one of several, not known which, as words joined by "or" (the older New Zealand nut: "granular or polyhedral", NZ Soil Description Handbook 2024, Note 12.1); structure_type is then empty; read by the NZSC key, which reads a criterion under each shape
+    # ---- v0.9.321: the Soil Classification System of Japan (SCSJ 2017) ----
+    phosphate_absorption_coef     = "numeric",   # phosphate absorption coefficient, mg P2O5 per 100 g dry soil (the SCSJ writes mg/g: 15.00 = 1500); SCSJ kuroboku (>= 1500) and immature kuroboku (300 to < 1500) features
+    active_al_test                = "character", # Japanese field active-aluminium test (NaF with phenolphthalein, JSP 1997): '-' / '+-' / '+' / '2+' / '3+'; SCSJ kuroboku feature in the field (vivid red within a minute, 2+ or more)
+    n_value                       = "numeric"    # n value (Pons and Zonneveld): (field water % - 0.2 silt and sand %) / (clay % + 3 organic matter %); SCSJ physical immaturity (>= 1)
   )
 }
 

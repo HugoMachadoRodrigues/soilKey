@@ -1,3 +1,27 @@
+# soilKey 0.9.321 (2026-10-31)
+
+## Japan: the great groups of the Soil Classification System of Japan (2017)
+
+A new, experimental and opt-in system: the Soil Classification System of Japan (SCSJ 2017) of the Japanese Society of Pedology, Fifth Committee for Soil Classification and Nomenclature. This release keys the ten great groups of chapter II with the definitions of chapter IV; groups, subgroups and the soil phases follow, then the Comprehensive Soil Classification System of Japan (2011) as a system of its own.
+
+* **`classify_scsj2017()`** keys a pedon to Man-made soils, Organic Soils, Andosols, Podzols, Fluvic soils, Red-Yellow soils, Stagnic soils, Eutrosols, Brown Forest soils or Regosols. Each level gives the official English name of the SCSJ table and, in `levels$name_native`, the Japanese one (a new column that the generic classifier fills for any system whose classes carry `name_native`).
+* **`make_scsj2017_example()`** gives one made-up profile per great group.
+* The key reads the Japanese horizon notation of the Soil Survey Handbook (H, O, A, E, B, C, G with Go and Gr, R; p, g, t, w, s, h, ir, mn; a 2 or II prefix; a trailing b), colours by the colour words of the text, the subsurface control section (20 to 60 cm), paddy land from `site$land_use` or `site$flood_irrigated`, and the recorded origin of the layers (fill, volcanic ejecta, alluvial deposits).
+* New horizon attributes: `phosphate_absorption_coef` (mg P2O5/100 g; the kuroboku feature needs 1500 or more), `active_al_test` (the Japanese field active-aluminium test, -, +-, +, 2+, 3+) and `n_value` (physical immaturity). The dipyridyl test is the existing `childs_test`.
+
+### Hugo's decisions (2026-10-31)
+
+* The SCSJ 2017 complete (great groups, groups, subgroups and phases), then the CSCJ 2011 as a system of its own.
+* English names with the Japanese ones beside them.
+* The phosphate absorption coefficient is a new attribute; P retention (85 %) or Alo + 1/2 Feo (2.0 %) replace it when it is not measured, as the text allows, and the field active-aluminium test after them.
+* Paddy land is read from the land use; with none recorded the paddy horizons are undecided, not absent.
+* Podzols: the bleached horizon must lie above the podzolic accumulation horizon, the sequence of the great group's concept.
+* The subsurface section (20 to 60 cm) counts the horizons with 5 cm or more inside it.
+* An undesignated layer of 20 % carbon or more is peat on a poorly or very poorly drained site and a forest floor on any other; undecided without a drainage class.
+* In the forest-floor notation (L, F, H), an H under L or F is the humus layer of the floor, not peat.
+
+The choices where the text is silent are in `inst/rules/scsj2017/readings.yaml`. Other systems do not change: the 44 canonical profiles key as before under WRB, SiBCS and USDA, and the Canadian, Australian, New Zealand and Hungarian examples as before.
+
 # soilKey 0.9.320 (2026-10-30)
 
 ## Australia: Queensland's SALI read from its site reports and its soil chemistry API

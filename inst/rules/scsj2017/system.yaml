@@ -1,0 +1,29 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: scsj2017
+order: 8
+aliases: [scsj, japan]
+legacy: false
+default: false
+status: experimental
+namespace: scsj
+classifier: classify_scsj2017
+result_slot: scsj2017
+top_level: great_groups
+levels: [great_groups, groups, subgroups]
+display:
+  en: "Soil Classification System of Japan (2017)"
+  pt: "Sistema de Classificação de Solos do Japão (2017)"
+  native: "日本土壌分類体系"
+  result: "SCSJ 2017"
+edition: "Soil Classification System of Japan (2017), Japanese Society of Pedology"
+citation: >
+  The Fifth Committee for Soil Classification and Nomenclature (2017).
+  Soil Classification System of Japan (日本土壌分類体系). The Japanese
+  Society of Pedology, Tokyo. 53 pp.
+version: "Soil Classification System of Japan, 1 April 2017 (pedology.jp)"
+implementation_status: "soilKey v0.9.321 -- 10/10 great groups (chapter II, the key to great groups); groups, subgroups and the soil phases follow"
+source: |
+  Japanese Society of Pedology, Fifth Committee for Soil Classification and
+  Nomenclature (2017). Soil Classification System of Japan. Chapter II (key
+  to great groups), chapter IV (diagnostic horizons, features, materials and
+  other terms).
