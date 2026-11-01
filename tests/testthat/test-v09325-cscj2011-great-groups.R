@@ -206,3 +206,29 @@ test_that("verification: maybe-B rows all agree, a thin B is not the B below, un
   p$horizons$layer_origin <- "\u77f3\u7070\u5ca9\u3067\u306a\u3044\u9801\u5ca9"
   expect_false(soilKey:::.cscj_limestone_origin(.scsj_profile(soilKey:::.cscj_mark(p))))
 })
+
+test_that("a kuroboku fill is a natural combination in the CSCJ (IX, step D), not in the SCSJ", {
+  skip_on_cran()
+  h <- list(designation = c("A1", "A2", "2C1", "2C2"), top_cm = c(0, 20, 40, 80), bottom_cm = c(20, 40, 80, 110),
+            layer_origin = c("fill (volcanic ash)", "fill (volcanic ash)", "river alluvium", "river alluvium"),
+            oc_pct = c(5, 4, 0.8, 0.5), phosphate_absorption_coef = c(2000, 1900, 700, 600),
+            al_ox_pct = c(2.8, 2.6, 0.4, 0.3), fe_ox_pct = c(1.2, 1.1, 0.5, 0.4), si_ox_pct = c(1, 1, 0.1, 0.1),
+            bulk_density_g_cm3 = c(0.7, 0.75, 1.2, 1.3),
+            munsell_hue_moist = c("10YR", "10YR", "2.5Y", "2.5Y"), munsell_value_moist = c(2, 3, 4, 5),
+            munsell_chroma_moist = c(2, 2, 3, 3), structure_grade = c("moderate", "moderate", "weak", "structureless"),
+            field_texture = c("loam", "loam", "silt loam", "sandy loam"), clay_pct = c(20, 20, 18, 10),
+            ph_h2o = c(5.6, 5.8, 6.2, 6.4), redoximorphic_features_pct = 0, artefacts_pct = 0)
+  p <- .jp(h, list(land_use = "upland field", drainage_class = "moderately well drained"))
+  expect_false(man_made_soils_cscj(p)$evidence$fill_other_great_group)
+  expect_identical(.gg(p)[["code"]], "D")
+  expect_identical(classify_scsj2017(p, on_missing = "silent")$levels$code[1], "A")
+  # a fill of other material stays heterogeneous
+  q <- p$clone(deep = TRUE)
+  q$horizons$layer_origin <- c("fill (weathered granite)", "fill (weathered granite)", "river alluvium", "river alluvium")
+  q$horizons$phosphate_absorption_coef <- c(500, 450, 700, 600)
+  q$horizons$al_ox_pct <- c(0.3, 0.3, 0.4, 0.3); q$horizons$fe_ox_pct <- c(0.4, 0.4, 0.5, 0.4)
+  q$horizons$bulk_density_g_cm3 <- c(1.3, 1.35, 1.2, 1.3); q$horizons$oc_pct <- c(1.5, 0.6, 0.8, 0.5)
+  q$horizons$munsell_value_moist <- c(4, 5, 4, 5); q$horizons$munsell_chroma_moist <- c(4, 6, 3, 3)
+  expect_true(man_made_soils_cscj(q)$evidence$fill_other_great_group)
+  expect_identical(.gg(q)[["code"]], "A")
+})
