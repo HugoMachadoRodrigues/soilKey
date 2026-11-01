@@ -156,3 +156,28 @@ test_that("Man-made: artifactual, and a sand fill over a Regosol of another grou
   expect_true(r$passed)
   expect_identical(.grp(p)[["code"]], "A2")
 })
+
+test_that("a gap that cannot hold a gley layer; farmland words; a fill keeps no site material", {
+  skip_on_cran()
+  # known non-gley horizons around a 20-25 cm gap: no groundwater gley layer
+  g <- .al(top_cm = c(0, 25, 50, 80), bottom_cm = c(20, 50, 80, 120), childs_test = "negative")
+  x <- .scsj_profile(.jp(g))
+  expect_false(.scsj_groundwater_gley_within(x))
+  expect_false(stagnogley_soils_scsj(.jp(g))$passed)
+  # a gap from 20 to 80 cm could hold one
+  g2 <- .al(designation = c("A", "C2"), top_cm = c(0, 80), bottom_cm = c(20, 120), oc_pct = c(2.5, 0.3),
+            phosphate_absorption_coef = c(700, 400), munsell_hue_moist = "2.5Y", munsell_value_moist = c(3, 5),
+            munsell_chroma_moist = c(2, 2), clay_pct = c(18, 8), field_texture = c("silt loam", "loamy sand"),
+            structure_grade = c("moderate", "structureless"), childs_test = "negative")
+  expect_true(is.na(.scsj_groundwater_gley_within(.scsj_profile(.jp(g2)))))
+  # upland rice and cropping are farmland
+  for (lu in c("upland rice", "extensive cropping", "陸稲"))
+    expect_true(.scsj_farmland(.scsj_profile(.jp(.al(), site = list(land_use = lu)))), info = lu)
+  # a fill of the notation with no origin of its own does not take the site's
+  f <- .al(designation = c("^A", "^C", "2Bw", "2C"), top_cm = c(0, 20, 50, 80), bottom_cm = c(20, 50, 80, 120),
+           layer_origin = c(NA, NA, "alluvium", "alluvium"))
+  x <- .scsj_profile(.jp(f, site = list(parent_material = "volcanic ash")))
+  o <- .scsj_origins(x$h, x$site, x$des)
+  expect_identical(o$ejecta[1:2], c(FALSE, FALSE))
+  expect_identical(o$alluvial[1:2], c(FALSE, FALSE))
+})

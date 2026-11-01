@@ -111,9 +111,11 @@ peat_within_scsj <- function(pedon, within = 100, cum = 25) {
 # The humic (3 % carbon) or polyhumic (6 %) surface horizon: from the soil
 # surface down, surface horizons (A, or undesignated) of moist value 3 or
 # less and chroma 3 or less (not 3/3), with the carbon, mineral (not peat or
-# organic material), `thick` cm or more in all; layers failing the colour or
-# carbon sandwiched inside it count as long as they total less than 10 cm
-# (the note to the definitions); a failing layer at the top ends it. colour
+# organic material), `thick` cm or more in all. Layers failing the colour or
+# carbon sandwiched inside it do not break it while they total less than 10
+# cm, and only the layers that meet the criteria add to the thickness (the
+# note to the definitions); a failing layer at the top, an E, B, C, G or R
+# horizon (any designation not A) or a layer that is not mineral ends it. colour
 # = "brown": every requirement but the dark colour, with moist value and
 # chroma both 3 or more (the Brown-humic subgroups; chapter VI, Hugo,
 # 2026-10-31). Three-valued: gaps, a horizon without a bottom and the end of
@@ -129,11 +131,16 @@ peat_within_scsj <- function(pedon, within = 100, cum = 25) {
   meet <- if (identical(colour, "brown")) .scsj_and(meet, brown) else if (isTRUE(colour)) .scsj_and(meet, dark) else meet
   rows <- x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= -0.5]
   e <- .scsj_ends(x)
+  # horizons that end the surface horizon: a designation other than A, or not
+  # mineral (may end it: mineral status unknown)
+  end_sure <- (!is.na(x$role) & !grepl("^A", x$role)) | x$mineral %in% FALSE
+  end_poss <- end_sure | is.na(x$mineral)
   walk <- function(possible) {
     got <- 0; fail <- 0; pend <- 0; prev <- 0; started <- FALSE
     for (i in rows) {
       gap <- x$dtop[i] - prev
       if (gap > 0.5) { if (!possible) return(got); got <- got + gap; started <- TRUE }
+      if (if (possible) end_sure[i] else end_poss[i]) return(got)
       ok <- if (possible) !(meet[i] %in% FALSE) else meet[i] %in% TRUE
       th <- x$thick[i]
       if (ok) {
@@ -179,17 +186,29 @@ buried_humic_scsj <- function(pedon, within = 50) {
   cand <- .scsj_and(.scsj_and(dark, ifelse(is.na(x$oc), NA, x$oc >= 3)), .scsj_not(x$organic))
   ord <- x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= -0.5]
   over_ok <- function(i) {
-    # the 10 cm directly above row i, lighter and leaner than it
-    k <- match(i, ord); if (is.na(k) || k == 1L) return(FALSE)
-    th <- 0; res <- TRUE
+    # the 10 cm directly above row i, lighter and leaner than it, read upward
+    # from its top: a gap (or undescribed depth below the soil surface) there
+    # is unknown material
+    k <- match(i, ord); if (is.na(k)) return(FALSE)
+    th <- 0; res <- TRUE; cur <- x$dtop[i]
     for (j in rev(ord[seq_len(k - 1L)])) {
-      if (is.na(x$thick[j])) return(NA)
+      if (is.na(x$dbot[j])) return(NA)
+      g <- cur - x$dbot[j]
+      if (g > 0.5) {
+        th <- th + g; res <- .scsj_and(res, NA)
+        if (th >= 10) return(res)
+      }
       lighter <- if (is.na(v[j]) || is.na(v[i])) NA else v[j] >= v[i] + 1
       leaner <- if (is.na(x$oc[j]) || is.na(x$oc[i])) NA else x$oc[j] <= x$oc[i] - 1
       cond <- .scsj_and(lighter, leaner)
       if (isFALSE(cond)) return(FALSE)
       if (is.na(cond)) res <- NA
       th <- th + x$thick[j]
+      if (th >= 10) return(res)
+      cur <- x$dtop[j]
+    }
+    if (cur > 0.5) {
+      th <- th + cur; res <- .scsj_and(res, NA)
       if (th >= 10) return(res)
     }
     FALSE
@@ -583,9 +602,10 @@ organic_artefacts_scsj <- function(pedon) {
   } else if (all(is.na(ao[rows]))) {
     if (!is.na(s)) s else NA
   } else {
-    th <- ifelse(is.na(x$thick[rows]), 0, x$thick[rows])
-    org <- sum(th[ao[rows] %in% TRUE]); inorg <- sum(th[ao[rows] %in% FALSE]); unk <- sum(th[is.na(ao[rows])])
-    if (org > inorg + unk) TRUE else if (org + unk <= inorg) FALSE else NA
+    # a horizon without a bottom (or a depth) is 0 cm or more thick
+    lo <- ifelse(is.na(x$thick[rows]), 0, x$thick[rows]); hi <- ifelse(is.na(x$thick[rows]), Inf, x$thick[rows])
+    o <- ao[rows] %in% TRUE; i <- ao[rows] %in% FALSE; u <- is.na(ao[rows])
+    if (sum(lo[o]) > sum(hi[i]) + sum(hi[u])) TRUE else if (sum(hi[o]) + sum(hi[u]) <= sum(lo[i])) FALSE else NA
   }
   .scsj_result("organic_artefacts_scsj", passed, rows, list(), if (is.na(passed)) "artefacts_organic" else character(0),
                "III A, p. 7")
@@ -639,9 +659,9 @@ sapric_peat_scsj <- function(pedon) {
   th <- ifelse(closed, pmin(x$dbot[rows], 50) - pmax(x$dtop[rows], 0), 0)
   sure_peat <- x$peat[rows] %in% TRUE & closed
   share <- function(kind) sum(th[sure_peat & k[rows] %in% kind])
-  unk <- sum(th[!sure_peat | is.na(k[rows])]) +
-         sum(ifelse(closed, 0, 50 - pmax(x$dtop[rows], 0))) +
-         .scsj_cum(x, rep(FALSE, x$n), 0, 50)$poss
+  # the depth below an open horizon's top, gaps and undescribed depth come
+  # once, from the cumulative helper
+  unk <- sum(th[!sure_peat | is.na(k[rows])]) + .scsj_cum(x, rep(FALSE, x$n), 0, 50)$poss
   s <- share("sapric"); o <- max(share("hemic"), share("fibric"))
   passed <- if (s > o + unk) TRUE else if (s + unk <= o) FALSE else NA
   .scsj_result("sapric_peat_scsj", passed, rows, list(sapric_cm = s, other_cm = o, unknown_cm = unk),
@@ -650,8 +670,9 @@ sapric_peat_scsj <- function(pedon) {
 
 # High-moor and Transitional-moor Peat soils: the uppermost 25 cm of the peat
 # layers is that peat (peat_moor_type: high-moor, transitional, low-moor, or
-# the Japanese words). A layer whose peat status is undecided counts as
-# unknown.
+# the Japanese words), the 25 cm counted on the peat alone, in depth order
+# (mineral layers between peat layers are skipped). A layer whose peat
+# status is undecided, a gap and undescribed depth count as unknown.
 moor_type_scsj <- function(pedon, type = "high-moor") {
   x <- .scsj_profile(pedon)
   if (is.na(x$surface)) return(.scsj_no_surface("moor_type_scsj", x, "III B, p. 7"))
@@ -659,14 +680,38 @@ moor_type_scsj <- function(pedon, type = "high-moor") {
   mt <- ifelse(is.na(mt), NA, ifelse(grepl("high|\u9ad8\u4f4d", mt), "high-moor",
                ifelse(grepl("transit|intermed|\u4e2d\u9593", mt), "transitional",
                ifelse(grepl("low|\u4f4e\u4f4d", mt), "low-moor", NA))))
-  rows <- x$ord[!(x$peat[x$ord] %in% FALSE)]
   if (!any(x$peat %in% TRUE)) return(.scsj_result("moor_type_scsj", NA, integer(0), list(), "oc_pct", "III B, p. 7"))
-  top <- x$dtop[rows[1L]]
-  in25 <- rows[x$dtop[rows] < top + 25]
   want <- if (identical(type, "transitional")) "transitional" else "high-moor"
-  v <- ifelse(is.na(mt[in25]), NA, mt[in25] == want)
-  v <- ifelse(x$peat[in25] %in% TRUE, v, ifelse(v %in% FALSE, NA, v))
-  passed <- .scsj_all(v)
-  .scsj_result("moor_type_scsj", passed, in25, list(type = want),
+  # down the profile, adding up the peat only: `lo` the peat surely above, `hi`
+  # the peat possibly above (undecided rows, gaps, horizons without a bottom).
+  # A peat row is surely in the uppermost 25 cm of peat while hi is under 25,
+  # possibly while lo is; gaps and undescribed depth are peat of unknown type.
+  ord <- x$ord[!is.na(x$dtop[x$ord])]
+  lo <- 0; hi <- 0; cur <- 0; res <- TRUE; used <- integer(0); e <- .scsj_ends(x)
+  for (i in ord) {
+    if (lo >= 25) break
+    if (x$dtop[i] - cur > 0.5) { res <- .scsj_and(res, NA); hi <- hi + (x$dtop[i] - cur) }
+    b <- x$dbot[i]
+    if (!(x$peat[i] %in% FALSE)) {
+      vi <- if (is.na(mt[i])) NA else mt[i] == want
+      if (x$peat[i] %in% TRUE && hi < 25) {
+        if (isFALSE(vi)) { res <- FALSE; used <- c(used, i); break }
+        res <- .scsj_and(res, vi)
+      } else if (!isTRUE(vi)) res <- .scsj_and(res, NA)
+      th <- x$thick[i]
+      if (x$peat[i] %in% TRUE) lo <- lo + (if (is.na(th)) 0 else th)
+      hi <- hi + (if (is.na(th)) Inf else th)
+      used <- c(used, i)
+      # a horizon without a bottom may end at once: below it is unknown
+      if (is.na(b) && lo < 25) res <- .scsj_and(res, NA)
+    }
+    if (is.na(b)) { cur <- Inf; break }
+    cur <- max(cur, b)
+  }
+  # more peat may follow below the description, within the 1 m classified
+  if (!isFALSE(res) && lo < 25 && is.finite(cur) && cur < 100 && !(e$on_rock || isTRUE(x$complete)))
+    res <- .scsj_and(res, NA)
+  passed <- res
+  .scsj_result("moor_type_scsj", passed, used, list(type = want, peat_cm = lo),
                if (is.na(passed)) "peat_moor_type" else character(0), "III B, p. 7")
 }
