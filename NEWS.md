@@ -7,7 +7,7 @@
 * **Lists.** Each subgroup has its own ordered list, drawn from the text's vocabulary:
   * bedrock, a gravel layer or a pan layer within 60 cm;
   * the texture of the subsurface;
-  * buried peat, alluvial or kuroboku layers, and the non-allophanic feature;
+  * peat, alluvial or kuroboku layers in the subsoil, and the non-allophanic feature;
   * the humus classes;
   * the mineral layers and fibre of the peat soils;
   * the base-rich dark surface horizon;
@@ -25,7 +25,8 @@
 * **Texture:**
   * it is read from `texture_class_jp`;
   * without it, clay of 15 % or more is fine, and medium vs coarse stays undecided;
-  * it is read on the horizon of 15 cm or more with the largest overlap of 20 to 40 cm.
+  * it is read on the horizon of 15 cm or more with the largest overlap of 20 to 40 cm; a tie goes to the larger part of the section, then to the thicker horizon;
+  * with no subsurface, no texture class is met.
 * **The base-rich dark surface horizon** is undecided where liming is recorded.
 
 The SCSJ 2017 and the other systems do not change.

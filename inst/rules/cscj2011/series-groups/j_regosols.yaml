@@ -58,21 +58,21 @@ series_groups:
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J2AQ":
     - code: "J2AQTY"
       name: "typic {parent}"
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J2HA":
     - code: "J2HATY"
       name: "typic {parent}"
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J3CA":
     - code: "J3CAMO"
       name: "mollic {parent}"
@@ -93,14 +93,14 @@ series_groups:
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J3HA":
     - code: "J3HATY"
       name: "typic {parent}"
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J4MA":
     - code: "J4MAAQ"
       name: "aquic {parent}"
@@ -135,18 +135,18 @@ series_groups:
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J4PL":
     - code: "J4PLTY"
       name: "typic {parent}"
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."
   "J4HA":
     - code: "J4HATY"
       name: "typic {parent}"
       name_native: "典型{parent}"
       tests:
         default: true
-      notes: "The others."
+      notes: "All of the above: the only series group of the subgroup."

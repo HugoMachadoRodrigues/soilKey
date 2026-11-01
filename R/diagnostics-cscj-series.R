@@ -4,7 +4,7 @@
 # VI). Each subgroup has its own ordered list (inst/rules/cscj2011/
 # series-groups/), drawn from a shared vocabulary: bedrock, a gravel layer or
 # a pan layer within 60 cm, the texture of the subsurface, buried peat,
-# alluvial or kuroboku layers, the humus classes, the mineral layers and
+# alluvial or kuroboku layers in the subsoil, the humus classes, the mineral layers and
 # fibre of the peat soils, the base-rich dark surface horizon, wetness. The
 # terms the SCSJ gates read are their CSCJ wrappers with parameters; the
 # others are here. Three-valued.
@@ -53,30 +53,31 @@ petoric_cscj <- function(pedon, within = 60) {
   pan <- !is.na(hd) & hd >= 29
   passed <- .scsj_top_in(x, pan, -Inf, within, 10)
   .cscj_result("petoric_cscj", passed, which(pan), list(within = within),
-               if (is.na(passed)) "hardness_yamanaka_mm" else character(0), "VI (series groups)")
+               if (is.na(passed)) c("hardness_yamanaka_mm", "bottom_cm") else character(0), "VI (series groups)")
 }
 
 # ---- texture of the subsurface ------------------------------------------------------
 
 # The Japanese texture classes (Soil Survey Handbook, ISSS fractions) and
-# their words.
+# their words; the undivided sandy loam (SL) is medium or coarse, not fine.
 .CSCJ_TEXTURE_CLASS <- c(HC = "fine", SIC = "fine", LIC = "fine", SC = "fine", SICL = "fine", CL = "fine",
                          SCL = "fine", SIL = "medium", L = "medium", FSL = "medium", COSL = "coarse",
-                         LS = "coarse", S = "coarse")
+                         LS = "coarse", S = "coarse", SL = "not_fine")
 .CSCJ_TEXTURE_WORDS <- c("\u91cd\u57f4\u571f" = "HC", "\u30b7\u30eb\u30c8\u8cea\u57f4\u571f" = "SIC",
                          "\u8efd\u57f4\u571f" = "LIC", "\u7802\u8cea\u57f4\u571f" = "SC",
                          "\u30b7\u30eb\u30c8\u8cea\u57f4\u58cc\u571f" = "SICL", "\u7802\u8cea\u57f4\u58cc\u571f" = "SCL",
                          "\u57f4\u58cc\u571f" = "CL", "\u30b7\u30eb\u30c8\u8cea\u58cc\u571f" = "SIL",
                          "\u7d30\u7802\u58cc\u571f" = "FSL", "\u7c97\u7802\u58cc\u571f" = "COSL",
-                         "\u58cc\u8cea\u7802\u571f" = "LS", "\u58cc\u571f" = "L", "\u7802\u571f" = "S")
+                         "\u58cc\u8cea\u7802\u571f" = "LS", "\u58cc\u571f" = "L", "\u7802\u571f" = "S",
+                         "\u7802\u58cc\u571f" = "SL")
 
 # The texture class of each row: "fine", "medium", "coarse" from
 # texture_class_jp; without it, clay 15 % or more is fine and less is
 # "not_fine" (medium or coarse, undecided; Hugo, 2026-11-01); NA without
 # either.
 .cscj_texture_rows <- function(x) {
-  tc <- as.character(.scsj_col(x$h, "texture_class_jp", NA_character_))
-  key <- toupper(gsub("[[:space:]]", "", tc))
+  tc <- gsub("[[:space:]\u3000]", "", as.character(.scsj_col(x$h, "texture_class_jp", NA_character_)), perl = TRUE)
+  key <- toupper(tc)
   for (w in names(.CSCJ_TEXTURE_WORDS)) key <- ifelse(!is.na(tc) & tc == w, .CSCJ_TEXTURE_WORDS[[w]], key)
   cls <- unname(.CSCJ_TEXTURE_CLASS[key])
   clay <- .scsj_col(x$h, "clay_pct")
@@ -85,8 +86,9 @@ petoric_cscj <- function(pedon, within = 60) {
 
 # The rows the texture of the subsurface is read on (IV.4; Hugo,
 # 2026-11-01): among the horizons of the subsurface section, those 15 cm or
-# more thick with the largest overlap of 20 to 40 cm; none: the thickest in
-# the section. A horizon without a bottom there may be one of them.
+# more thick with the largest overlap of 20 to 40 cm, a tie broken by the
+# larger part of the section and then by the thicker horizon; none: the
+# thickest in the section. A horizon without a bottom there may be one.
 .cscj_texture_rep <- function(x) {
   cs <- .scsj_control(x)
   rows <- cs$rows
@@ -96,11 +98,13 @@ petoric_cscj <- function(pedon, within = 60) {
   th <- ifelse(open, Inf, db - x$dtop[rows])
   ov <- pmin(db, 40) - pmax(x$dtop[rows], 20)
   cand <- which(th >= 15 & ov > 0)
+  ov2 <- pmin(db, cs$to) - pmax(x$dtop[rows], cs$from)
+  pick <- function(k, v) k[v[k] >= max(v[k]) - 1e-9]
   if (length(cand)) {
-    best <- rows[cand[ov[cand] >= max(ov[cand]) - 1e-9]]
+    k <- pick(cand, ov); k <- pick(k, ov2); k <- pick(k, th)
+    best <- rows[k]
   } else {
-    ov2 <- pmin(db, cs$to) - pmax(x$dtop[rows], cs$from)
-    best <- rows[ov2 >= max(ov2) - 1e-9]
+    best <- rows[pick(seq_along(rows), ov2)]
   }
   list(rows = setdiff(best, rows[open]), maybe = intersect(best, rows[open]), covered = cs$covered)
 }
@@ -125,10 +129,13 @@ texture_cscj <- function(pedon, class = "fine") {
   }
   rows <- c(rep$rows, rep$maybe)
   v <- vapply(tr[rows], one, NA)
-  passed <- if (!length(rows)) NA else if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
+  # no subsurface: a criterion on it is not met (Hugo, 2026-11-01)
+  passed <- if (!length(rows)) { if (isTRUE(rep$covered)) FALSE else NA } else
+            if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
   if (!is.na(passed) && !isTRUE(rep$covered) && .cscj_undescribed(x, 20, 60, longest = TRUE) >= 15) passed <- NA
-  .cscj_result("texture_cscj", passed, rows, list(class = class, texture = tr[rows]),
-               if (is.na(passed)) c("texture_class_jp", "clay_pct") else character(0), "VI (series groups); IV.4")
+  miss <- if (!is.na(passed)) character(0) else if (length(rows) && all(tr[rows] %in% "not_fine")) "texture_class_jp" else
+          c("texture_class_jp", "clay_pct", "bottom_cm")
+  .cscj_result("texture_cscj", passed, rows, list(class = class, texture = tr[rows]), miss, "VI (series groups); IV.4")
 }
 
 # ---- peat soils --------------------------------------------------------------------
@@ -181,7 +188,9 @@ mollic_cscj <- function(pedon) {
   x <- .scsj_profile(.cscj_marked(pedon))
   if (is.na(x$surface)) return(.cscj_result("mollic_cscj", NA, integer(0), list(), "bs_pct", "IV.1"))
   v <- x$colour$value; c <- x$colour$chroma
-  dark <- ifelse(is.na(v) | is.na(c), NA, v <= 3 & c <= 3 & !(v == 3 & c == 3))
+  # three-valued: a value or chroma over 3 rules it out alone; 3/3 is not dark
+  dark <- ifelse((!is.na(v) & v > 3) | (!is.na(c) & c > 3), FALSE,
+          ifelse(is.na(v) | is.na(c), NA, !(v == 3 & c == 3)))
   oc <- ifelse(is.na(x$oc), NA, x$oc >= 0.6)
   bs <- .scsj_col(x$h, "bs_pct")
   bs50 <- ifelse(is.na(bs), NA, bs >= 50)
@@ -196,7 +205,7 @@ mollic_cscj <- function(pedon) {
   sure <- 0; poss <- 0; prev <- 0; sure_open <- TRUE; sure_end <- NA_real_; poss_end <- NA_real_; ended <- FALSE
   for (i in rows) {
     gap <- x$dtop[i] - prev
-    if (gap > 0.5) { sure_open <- FALSE; poss <- poss + gap }
+    if (gap > 0.5) { sure_open <- FALSE; poss <- poss + gap; poss_end <- x$dtop[i] }
     m <- meets[i]
     if (m %in% FALSE) { ended <- TRUE; break }
     th <- x$thick[i]

@@ -95,3 +95,30 @@ test_that("Andosol, peat and Regosol terms; names lower case before the subgroup
   r <- classify_cscj2011(make_cscj2011_example("podzol"), on_missing = "silent")
   expect_identical(r$name, "typic Haplic Podzols")
 })
+
+test_that("review: texture ties, no subsurface, words; mollic colour and a gap over the rock", {
+  skip_on_cran()
+  # a boundary at exactly 30 cm: the larger part of the section decides
+  p <- make_cscj2011_example("lowland")
+  p$horizons$top_cm <- c(0, 15, 30, 60); p$horizons$bottom_cm <- c(15, 30, 60, 110)
+  p$horizons$texture_class_jp <- c("SiL", "LiC", "LS", "S")
+  expect_identical(.se(p)[["code"]], "F4HACO")
+  # no subsurface (a gravel layer from 15 cm): no texture class is met
+  q <- make_cscj2011_example("lowland"); q$horizons$gravel_pct <- c(0, 40, 0, 0)
+  expect_false(texture_cscj(q, "fine")$passed)
+  # the undivided sandy loam and a word with spaces
+  x <- .scsj_profile(soilKey:::.cscj_mark(.jp(list(designation = c("A", "B", "C"), top_cm = c(0, 20, 50),
+          bottom_cm = c(20, 50, 100), texture_class_jp = c("SL", " \u58cc\u571f\u3000", "\u7802\u58cc\u571f"),
+          clay_pct = c(20, 20, NA)))))
+  expect_identical(soilKey:::.cscj_texture_rows(x), c("not_fine", "medium", "not_fine"))
+  # mollic: a value of 5 rules it out without the chroma
+  h <- list(designation = c("A", "C"), top_cm = c(0, 25), bottom_cm = c(25, 100), oc_pct = c(2, 0.3),
+            munsell_hue_moist = "10YR", munsell_value_moist = c(5, 5), munsell_chroma_moist = c(NA, 3),
+            bs_pct = c(80, 90), ph_h2o = 7.8, layer_origin = "colluvium")
+  expect_false(mollic_cscj(.jp(h))$passed)
+  # a gap just above the rock: the horizon may reach it
+  r <- list(designation = c("A", "R"), top_cm = c(0, 12), bottom_cm = c(8, 40), oc_pct = c(2, NA),
+            munsell_hue_moist = "10YR", munsell_value_moist = c(2, NA), munsell_chroma_moist = c(2, NA),
+            bs_pct = c(80, NA), ph_h2o = 7.5)
+  expect_true(is.na(mollic_cscj(.jp(r))$passed))
+})
