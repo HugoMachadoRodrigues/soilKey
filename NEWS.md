@@ -1,3 +1,23 @@
+# soilKey 0.9.326 (2026-11-01)
+
+## Japan: the 27 groups of the Comprehensive Soil Classification System of Japan
+
+`classify_cscj2011()` now keys a pedon to its group (chapter VI): for example the Fulvic Andosols, the Calcaric, Dystric and Eutric Dark Red soils, and the Brown Lowland soils.
+
+* **Groups shared with the SCSJ** are its gates, read by the CSCJ edition under CSCJ names.
+* **New groups and readings:**
+  * the Fulvic Andosols, by the brown polyhumic kuroboku surface horizon (30 cm in 40 cm, each layer 4 % carbon, a weighted mean of 6 %);
+  * the Calcaric and Dystric Dark Red soils;
+  * the Brown Lowland soils, by the CSCJ's own yellowish-brown colour, which leaves out 5YR.
+
+### Hugo's decisions (2026-11-01)
+
+* The brown polyhumic horizon adds up the layers that meet it, with no allowance for layers that fail between them.
+* The Brown Lowland soils use the CSCJ's yellowish brown.
+* Where liming is recorded, the Dystric Dark Red group is undecided rather than Eutric.
+
+The appendix's typos "Fuluvic" and "Volcangenous" are written Fulvic and Volcanogenous. The SCSJ 2017 and the other systems do not change.
+
 # soilKey 0.9.325 (2026-11-01)
 
 ## Japan: the Comprehensive Soil Classification System of Japan, the ten great groups

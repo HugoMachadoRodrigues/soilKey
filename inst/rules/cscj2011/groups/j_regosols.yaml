@@ -1,0 +1,32 @@
+# Groups of the Regosols, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "J":
+    - code: "J1"
+      name: Volcanogenous Regosols
+      name_native: 火山放出物未熟土
+      tests:
+        all_of:
+          - volcanogenous_regosols_cscj: {}
+      notes: "Undeveloped horizons and 25 cm or more (cumulative) of volcanic ejecta within 50 cm (printed \"Volcangenous Regosols\" in appendix 2)."
+    - code: "J2"
+      name: Sandy Regosols
+      name_native: 砂質未熟土
+      tests:
+        all_of:
+          - sandy_regosols_cscj: {}
+      notes: "Every horizon to 100 cm with coarse fragments under 35 % and a texture of loamy sand or coarser."
+    - code: "J3"
+      name: Lithosols
+      name_native: 固結岩屑土
+      tests:
+        all_of:
+          - lithosols_cscj: {}
+      notes: "Consolidated bedrock within 30 cm."
+    - code: "J4"
+      name: Terrestrial Regosols
+      name_native: 陸成未熟土
+      tests:
+        default: true
+      notes: "Other Regosols."

@@ -239,13 +239,15 @@ fluvic_paddy_soils_scsj <- function(pedon) {
 # represented by the thickest). No section (gravel or rock at 20 cm, the
 # description complete): not brown.
 .scsj_subsurface_colour <- function(x) {
+  # the colour word: brown (SCSJ), yellowish brown without 5YR (CSCJ)
+  word <- if (identical(x$edition, "cscj2011")) x$colour$yellowish_brown else x$colour$brown
   cs <- .scsj_control(x)
   if (!length(cs$rows)) return(list(rows = integer(0), brown3 = if (isTRUE(cs$covered)) FALSE else NA))
   db <- ifelse(is.na(x$dbot), Inf, x$dbot)
   ov <- pmin(db[cs$rows], cs$to) - pmax(x$dtop[cs$rows], cs$from)
   best <- cs$rows[ov == max(ov)]
-  b <- if (all(x$colour$brown[best] %in% TRUE)) TRUE else
-       if (all(x$colour$brown[best] %in% FALSE)) FALSE else NA
+  b <- if (all(word[best] %in% TRUE)) TRUE else
+       if (all(word[best] %in% FALSE)) FALSE else NA
   # a section not described in full, or an open thickest horizon, may hide a
   # thicker horizon of another colour, unless the best overlap exceeds what
   # is undescribed
