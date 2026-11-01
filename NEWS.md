@@ -1,3 +1,43 @@
+# soilKey 0.9.331 (2026-11-01)
+
+## France: the 35 sub-classes of the CPCS 1967
+
+`classify_cpcs1967()` now keys a pedon to its sub-class, a second registry level, `subclasses`, for example "Sols ferrallitiques fortement désaturés en (B)" or "Sols brunifiés des climats tempérés humides". The groups and subgroups follow.
+
+* **The climate.** The sub-classes rest on the pedoclimate where they can. A climatic sub-class needs its climate and the morphology of one of its groups.
+  * The climate is read from a new site field, `koppen_climate` (the Köppen code), else from the USDA soil temperature and moisture regimes, else from the latitude.
+  * With no climate recorded, the soil falls to the class's non-climatic or temperate sub-class, and the trace says so.
+  * A second new field, `mean_annual_precip_mm`, is recorded but decides nothing yet.
+* **The other sub-classes** read the profile:
+  * the external drainage of the vertisols, from the slope or the landform;
+  * the organic matter of the andosols;
+  * gypsum and carbonate in the A for the calcimagnesic soils;
+  * hydromorphy reaching the A2 or the top of the B for the podzolised soils;
+  * the base saturation of the B for the sesquioxide and ferrallitic soils;
+  * the peat and the anmoor for the hydromorphic soils;
+  * the structure for the sodic soils.
+* The app and the report label the new level "Subclass".
+
+### Hugo's decisions (2026-11-01)
+
+* **Climate:** Köppen first, then the USDA regimes, then the latitude. With no climate, the default sub-class. The isohumic soils, whose four sub-classes are all climatic, stay undecided unless the property test of VI-1 holds.
+* **Classes I and II:**
+  * I-2 cold deserts and I-3 hot deserts;
+  * II-2 humic: 5 % OM or more in the A, pH under 6.8, not arid;
+  * II-3 xeric: a dry climate, under 2 % OM, no calcareous accumulation.
+* **Classes III and IV:**
+  * III-1: a slope under 2 % or a flat landform; nothing recorded leaves it undecided;
+  * IV-1: OM above 10 % in the A over 25 cm.
+* **Classes V, VII and VIII:**
+  * V-3 gypseous first, then V-1 carbonated, then V-2;
+  * VII-4 tropical, VII-3 boreal and VII-2 continental, each with the morphology of its groups;
+  * VIII-3 hydromorphic, then VIII-2 cold.
+* **Classes IX to XII:**
+  * IX-1 when base saturation is under 65 %;
+  * X by the base saturation of the (B), at 40 % and 20 %;
+  * XI-1 peat, XI-2 anmoor;
+  * XII-2 by the sodium route.
+
 # soilKey 0.9.330 (2026-11-01)
 
 ## France: the twelve classes of the French soil classification (CPCS 1967)

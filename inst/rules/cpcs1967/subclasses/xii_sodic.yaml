@@ -1,0 +1,17 @@
+# Sous-classes des sols sodiques (p. 77-78), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "XII":
+    - code: "XII-2"
+      name: Sols sodiques à structure dégradée
+      name_native: Sols sodiques à structure dégradée
+      tests:
+        all_of:
+          - sodic_degraded_structure_cpcs: {}
+      notes: "Exchangeable Na above 10 % of the CEC with a massive, columnar or structureless, compact structure."
+    - code: "XII-1"
+      name: Sols sodiques à structure non dégradée
+      name_native: Sols sodiques à structure non dégradée
+      tests:
+        default: true
+      notes: "The other sodic soils (soluble salts, structure not degraded)."

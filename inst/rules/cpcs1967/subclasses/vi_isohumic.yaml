@@ -1,0 +1,32 @@
+# Sous-classes des sols isohumiques (p. 40-43); all four are climatic, so a soil whose climate is not recorded has no sub-class, French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "VI":
+    - code: "VI-1"
+      name: Sols isohumiques à pédoclimat relativement humide
+      name_native: Sols isohumiques à pédoclimat relativement humide
+      tests:
+        all_of:
+          - isohumic_humid_cpcs: {}
+      notes: "A udic regime or Köppen Cfa or Dfa; or the upper horizons partly desaturated (S/T 50 to 80 %) and 80 % or more at depth."
+    - code: "VI-2"
+      name: Sols isohumiques à pédoclimat très froid
+      name_native: Sols isohumiques à pédoclimat très froid
+      tests:
+        all_of:
+          - isohumic_very_cold_cpcs: {}
+      notes: "Very cold for part of the year: a frigid or cryic regime (not udic), or Köppen D or BSk."
+    - code: "VI-3"
+      name: Sols isohumiques à pédoclimat frais pendant la saison pluvieuse
+      name_native: Sols isohumiques à pédoclimat frais pendant la saison pluvieuse
+      tests:
+        all_of:
+          - isohumic_cool_rainy_cpcs: {}
+      notes: "Cool in the rainy season: a xeric regime, or Köppen Cs."
+    - code: "VI-4"
+      name: Sols isohumiques à pédoclimat à température élevée en période pluvieuse
+      name_native: Sols isohumiques à pédoclimat à température élevée en période pluvieuse
+      tests:
+        all_of:
+          - isohumic_hot_rainy_cpcs: {}
+      notes: "Hot in the rainy season: an ustic or aridic regime with a thermic or warmer one, or Köppen BSh or Aw."

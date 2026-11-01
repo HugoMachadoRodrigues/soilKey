@@ -171,8 +171,8 @@ reference:
 
   - title: "French soil classification CPCS 1967 (experimental)"
     desc: >
-      The twelve classes of the 1967 classification of the Commission de
-      Pedologie et de Cartographie des Sols, named in French. The text gives
+      The twelve classes and 35 sub-classes of the 1967 classification of the
+      Commission de Pedologie et de Cartographie des Sols, named in French. The text gives
       no key: the classes are keyed in an order built from its statements of
       precedence. Reads the old French horizon notation, organic matter
       (1.72 x C), the intensity of hydromorphy and halomorphy, Ki and the

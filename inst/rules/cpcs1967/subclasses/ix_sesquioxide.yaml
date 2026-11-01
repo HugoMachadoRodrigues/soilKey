@@ -1,0 +1,17 @@
+# Sous-classes des sols à sesquioxydes de fer et manganèse (p. 57-60), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "IX":
+    - code: "IX-1"
+      name: Sols ferrugineux tropicaux
+      name_native: Sols ferrugineux tropicaux
+      tests:
+        all_of:
+          - ferruginous_tropical_soils_cpcs: {}
+      notes: "Base saturation in the B under 65 %; without it, a yellow B (10YR or 7.5YR)."
+    - code: "IX-2"
+      name: Sols fersiallitiques
+      name_native: Sols fersiallitiques
+      tests:
+        default: true
+      notes: "The other sesquioxide soils: base saturation of 65 % or more, a red B."

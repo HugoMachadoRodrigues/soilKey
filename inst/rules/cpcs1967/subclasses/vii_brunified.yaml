@@ -1,0 +1,31 @@
+# Sous-classes des sols brunifiés (p. 45-48), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "VII":
+    - code: "VII-4"
+      name: Sols brunifiés des pays tropicaux
+      name_native: Sols brunifiés des pays tropicaux
+      tests:
+        all_of:
+          - brunified_tropical_cpcs: {}
+      notes: "A tropical climate (Köppen A, an isothermic or hyperthermic regime, or a latitude of 23.5 degrees or less) and a B or (B) with base saturation of 50 % or more."
+    - code: "VII-3"
+      name: Sols brunifiés des climats boréaux
+      name_native: Sols brunifiés des climats boréaux
+      tests:
+        all_of:
+          - brunified_boreal_cpcs: {}
+      notes: "A boreal climate (Köppen Dfc, Dfd, Dwc, Dwd, or a cryic regime) and an A2 over a textural B."
+    - code: "VII-2"
+      name: Sols brunifiés des climats tempérés continentaux
+      name_native: Sols brunifiés des climats tempérés continentaux
+      tests:
+        all_of:
+          - brunified_continental_cpcs: {}
+      notes: "A continental temperate climate (Köppen Da or Db) and an A2 over a textural B."
+    - code: "VII-1"
+      name: Sols brunifiés des climats tempérés humides
+      name_native: Sols brunifiés des climats tempérés humides
+      tests:
+        default: true
+      notes: "The other brunified soils (and those whose climate is not recorded)."
