@@ -1,0 +1,719 @@
+# Soil series groups of the Andosols great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "D1AQ":
+    - code: "D1AQTP"
+      name: "thapto-peaty {parent}"
+      name_native: "下層泥炭{parent}"
+      tests:
+        all_of:
+          - peat_within_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of peat material within 75 cm."
+    - code: "D1AQEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "D1AQTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D1HU":
+    - code: "D1HUPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D1HUEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "D1HUTA"
+      name: "thapto-andic {parent}"
+      name_native: "下層黒ボク{parent}"
+      tests:
+        all_of:
+          - kuroboku_within_cscj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of layers with the kuroboku feature within 100 cm."
+    - code: "D1HUTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D1TH":
+    - code: "D1THPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D1THTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D1HA":
+    - code: "D1HAPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D1HAEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "D1HATA"
+      name: "thapto-andic {parent}"
+      name_native: "下層黒ボク{parent}"
+      tests:
+        all_of:
+          - kuroboku_within_cscj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of layers with the kuroboku feature within 100 cm."
+    - code: "D1HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D2PE":
+    - code: "D2PEHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D2PETY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D2CU":
+    - code: "D2CUNA"
+      name: "non-allophanic {parent}"
+      name_native: "非アロフェン質{parent}"
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D2CUHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D2CUHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D2HA":
+    - code: "D2HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D2HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D2HAHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D2HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D3PE":
+    - code: "D3PEHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D3PETY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D3TU":
+    - code: "D3TUHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D3TUTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D3EF":
+    - code: "D3EFSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "D3EFHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D3EFTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D3CU":
+    - code: "D3CULI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D3CUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D3CUNA"
+      name: "non-allophanic {parent}"
+      name_native: "非アロフェン質{parent}"
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D3CUHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D3CUHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D3HA":
+    - code: "D3HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D3HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D3HANA"
+      name: "non-allophanic {parent}"
+      name_native: "非アロフェン質{parent}"
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D3HAHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D3HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D4CU":
+    - code: "D4CULI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D4CUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D4CUNA"
+      name: "non-allophanic {parent}"
+      name_native: "非アロフェン質{parent}"
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D4CUTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D4TH":
+    - code: "D4THLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D4THSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D4THNA"
+      name: "non-allophanic {parent}"
+      name_native: "非アロフェン質{parent}"
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D4THTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D4HA":
+    - code: "D4HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D4HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D4HANA"
+      name: "non-allophanic {parent}"
+      name_native: "非アロフェン質{parent}"
+      tests:
+        all_of:
+          - non_allophanic_andosols_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "D4HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D5AN":
+    - code: "D5ANLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D5ANSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D5ANEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "D5ANCU"
+      name: "cumulic {parent}"
+      name_native: "厚層{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 50}
+      notes: "A humic or polyhumic surface horizon 50 cm or more thick."
+    - code: "D5ANTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D5CU":
+    - code: "D5CUHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D5CUHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D5TH":
+    - code: "D5THLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D5THSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D5THTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D5HA":
+    - code: "D5HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D5HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D5HAEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "D5HALH"
+      name: "low-humic {parent}"
+      name_native: "淡色{parent}"
+      tests:
+        all_of:
+          - low_humic_cscj: {}
+      notes: "No humic or polyhumic surface horizon."
+    - code: "D5HAHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D5HAHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D6AN":
+    - code: "D6ANLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D6ANSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D6ANEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "D6ANLH"
+      name: "low-humic {parent}"
+      name_native: "淡色{parent}"
+      tests:
+        all_of:
+          - low_humic_cscj: {}
+      notes: "No humic or polyhumic surface horizon."
+    - code: "D6ANCU"
+      name: "cumulic {parent}"
+      name_native: "厚層{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 50}
+      notes: "A humic or polyhumic surface horizon 50 cm or more thick."
+    - code: "D6ANHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D6ANHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D6TU":
+    - code: "D6TULI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D6TUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D6TULH"
+      name: "low-humic {parent}"
+      name_native: "淡色{parent}"
+      tests:
+        all_of:
+          - low_humic_cscj: {}
+      notes: "No humic or polyhumic surface horizon."
+    - code: "D6TUHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D6TUHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D6EF":
+    - code: "D6EFSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "D6EFLH"
+      name: "low-humic {parent}"
+      name_native: "淡色{parent}"
+      tests:
+        all_of:
+          - low_humic_cscj: {}
+      notes: "No humic or polyhumic surface horizon."
+    - code: "D6EFHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D6EFHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D6LH":
+    - code: "D6LHLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D6LHSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D6LHPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D6LHTH"
+      name: "thapto-humic {parent}"
+      name_native: "埋没腐植質{parent}"
+      tests:
+        all_of:
+          - buried_humic_cscj: {within: 50}
+      notes: "The top of a buried humic layer within 50 cm (appendix 2 gives no English name; soilKey writes thapto-humic)."
+    - code: "D6LHTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D6CU":
+    - code: "D6CULI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D6CUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D6CUPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D6CUHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D6CUHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."
+  "D6TH":
+    - code: "D6THLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D6THSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D6THPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D6THTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "D6HA":
+    - code: "D6HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "D6HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "D6HAPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "D6HAHH"
+      name: "high-humic {parent}"
+      name_native: "多腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25, oc_min: 6}
+      notes: "A polyhumic surface horizon."
+    - code: "D6HAHU"
+      name: "humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        default: true
+      notes: "The others (a humic surface horizon)."

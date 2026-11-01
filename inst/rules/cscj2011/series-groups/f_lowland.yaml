@@ -1,0 +1,551 @@
+# Soil series groups of the Lowland great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "F1AL":
+    - code: "F1ALSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F1ALTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "F1EY":
+    - code: "F1EYSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F1EYFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F1EYCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture CoSL, LS, S, SiL, L or FSL."
+  "F1EA":
+    - code: "F1EASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F1EAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F1EACO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F1EAME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F1AQ":
+    - code: "F1AQSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F1AQFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F1AQCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F1AQME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F1HA":
+    - code: "F1HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F1HAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F1HACO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F1HAME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F2TN":
+    - code: "F2TNFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F2TNTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "F2PE":
+    - code: "F2PEFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F2PECO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F2PEME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F2HU":
+    - code: "F2HUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F2HUFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F2HUCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture CoSL, LS, S, SiL, L or FSL."
+  "F2GY":
+    - code: "F2GYSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F2GYFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F2GYCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F2GYME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F2ST":
+    - code: "F2STSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F2STFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F2STCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F2STME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F2MO":
+    - code: "F2MOSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F2MOFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F2MOCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F2MOME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F3TN":
+    - code: "F3TNFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3TNTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "F3PE":
+    - code: "F3PESK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F3PEFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3PECM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture CoSL, LS, S, SiL, L or FSL."
+  "F3HU":
+    - code: "F3HUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F3HUFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3HUCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture CoSL, LS, S, SiL, L or FSL."
+  "F3EY":
+    - code: "F3EYSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F3EYFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3EYCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture CoSL, LS, S, SiL, L or FSL."
+  "F3GL":
+    - code: "F3GLSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F3GLFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3GLCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F3GLME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F3TA":
+    - code: "F3TAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3TATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "F3HA":
+    - code: "F3HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F3HAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F3HACO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F3HAME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F4AQ":
+    - code: "F4AQSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F4AQFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F4AQCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F4AQME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F4HU":
+    - code: "F4HUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F4HUFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F4HUCO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F4HUME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F4PA":
+    - code: "F4PASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F4PAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F4PACO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F4PAME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F4HA":
+    - code: "F4HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F4HAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "fine"}
+      notes: "Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+    - code: "F4HACO"
+      name: "coarse-textured {parent}"
+      name_native: "粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse"}
+      notes: "Subsurface texture CoSL, LS or S."
+    - code: "F4HAME"
+      name: "medium-textured {parent}"
+      name_native: "中粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture SiL, L or FSL."
+  "F5AQ":
+    - code: "F5AQSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F5AQTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "F5HA":
+    - code: "F5HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60, or_rock: true}
+      notes: "The top of a gravel layer (20 % or more gravel), or bedrock, within 60 cm."
+    - code: "F5HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."

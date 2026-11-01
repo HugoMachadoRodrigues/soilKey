@@ -37,8 +37,10 @@ keys the ten great groups (Man-made soils, Organic soils, Podzols,
 Andosols, Dark Red soils, Lowland soils, Red-Yellow soils, Stagnic soils,
 Brown Forest soils, Regosols), their 27 groups (for instance Fulvic and
 Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils) and
-their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...); the 381 soil
-series groups and the phases follow. Each level gives the English name
+their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...) and their 381
+soil series groups (lithic, skeletal, fine-textured, high-humic ...,
+read with the new attributes \code{texture_class_jp} and
+\code{hardness_yamanaka_mm}); the phases follow. Each level gives the English name
 of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 one.
 }
