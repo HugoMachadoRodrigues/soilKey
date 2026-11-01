@@ -262,11 +262,13 @@
                    !grepl("clear[- ]?cut|cut[- ]?over|cut flower", lu))
   if (isTRUE(.scsj_site_flag(site$anthropic_truncation)) || cut_words)
     out[[length(out) + 1L]] <- .scsj_phase_row("man-made", "cut", basis = "cut recorded")
-  if (length(fr$rows)) {
+  # the CSCJ gives no phase to a fill in the plough layer alone, the subsoil
+  # untouched (IX, step A)
+  if (length(fr$rows) && !(cscj && all(ap[fr$rows] %in% TRUE))) {
     e <- .scsj_ends(x)
     last_bot <- x$dbot[fr$rows[length(fr$rows)]]
     open <- fr$open || (!is.na(e$depth) && !is.na(last_bot) && abs(last_bot - e$depth) <= 0.5 && !e$on_rock)
-    mat <- if (cscj) .cscj_fill_material(x, fr$rows, open) else .scsj_fill_material(x, fr$rows, open)
+    mat <- if (cscj) .cscj_fill_material(pedon, x, fr$rows, open) else .scsj_fill_material(x, fr$rows, open)
     out[[length(out) + 1L]] <- if (anyNA(mat))
       .scsj_phase_row("man-made", "fill", "fill man-made phase", "\u76db\u571f\u9020\u6210\u76f8",
                       sprintf("a fill of %.0f cm recorded; its material undecided", fr$thick))

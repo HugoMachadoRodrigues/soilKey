@@ -55,43 +55,63 @@
   if (is.null(word)) kind else c(paste(word[1L], kind[1L]), paste0(word[2L], kind[2L]))
 }
 
+# The word before a soil kind in a fill name (VIII): for a kuroboku fill its
+# humus class (high-humic with 6 % carbon or more, humic with 3 %), else the
+# texture word of its thickest layer; none for a peat fill (Organic soils);
+# NULL when not decided.
+.cscj_kind_word <- function(x, big, kind) {
+  if (identical(kind, "B")) return(NULL)
+  if (identical(kind, "D")) {
+    oc <- x$oc[big]
+    if (is.na(oc)) return(NULL)
+    if (oc >= 6) return(c("high-humic", "\u591a\u8150\u690d\u8cea"))
+    if (oc >= 3) return(c("humic", "\u8150\u690d\u8cea"))
+  }
+  .cscj_texture_word(x, big)
+}
+
 # The material of a fill outside the Man-made soils (VIII; Hugo,
 # 2026-11-01): its artificial material (20 % or more artefacts), dredged
 # sediment, or the soil kind its material features name in the order of the
 # key (peat: Organic soils; the kuroboku feature: Andosols; the dark red
-# colour: Dark Red soils; alluvial deposits: Lowland soils; the red-yellow
-# colour: Red-Yellow soils), after the texture word of its thickest layer
-# when decided, or for a kuroboku fill its humus class (high-humic with 6 %
-# carbon or more, humic with 3 %). NA when the kind is not decided.
-.cscj_fill_material <- function(x, rows, open = FALSE) {
+# colour, under 2 % carbon in an A horizon: Dark Red soils; alluvial
+# deposits: Lowland soils; the red-yellow colour: Red-Yellow soils), after
+# the word of .cscj_kind_word(). A fill with none of the five kinds is
+# keyed on its own when 25 cm or more and named by its great group, else by
+# the texture word alone (Hugo, 2026-11-01). NA when not decided.
+.cscj_fill_material <- function(pedon, x, rows, open = FALSE) {
+  na <- c(NA_character_, NA_character_)
   rows <- x$ord[x$ord %in% rows]
-  if (!length(rows)) return(c(NA_character_, NA_character_))
+  if (!length(rows)) return(na)
   art <- .scsj_col(x$h, "artefacts_pct")[rows]
   if (any(!is.na(art) & art >= 20)) return(.scsj_artefact_name(x, rows))
-  if (open) return(c(NA_character_, NA_character_))
+  if (open) return(na)
   big <- .cscj_thickest(x, rows)
   txt <- tolower(paste(.scsj_txt(x$h, "layer_origin")[rows], collapse = " "))
   if (grepl("dredg|\u6d5a\u6e2b", txt))
     return(.cscj_with_word(.cscj_texture_word(x, big), c("dredged sediment", "\u6d5a\u6e2b\u571f\u7802")))
-  feats <- list(B = x$peat, D = x$kb, E = x$colour$dark_red, F = x$orig$alluvial, G = .scsj_red_yellow_rows(x))
-  kind <- NA_character_
+  # a dark red colour in a humus-rich A horizon is not that of dark red soil
+  # material
+  a_row <- ifelse(is.na(x$role) | x$role %in% "other", NA, grepl("^A", x$role))
+  low_c <- ifelse(is.na(x$oc), NA, x$oc < 2)
+  dark_red <- .scsj_and(x$colour$dark_red, .scsj_or(low_c, .scsj_not(a_row)))
+  feats <- list(B = x$peat, D = x$kb, E = dark_red, F = x$orig$alluvial, G = .scsj_red_yellow_rows(x))
   for (k in names(feats)) {
     v <- .scsj_any(feats[[k]][rows])
-    if (isTRUE(v)) { kind <- k; break }
-    if (is.na(v)) break
+    if (isTRUE(v)) return(.cscj_with_word(.cscj_kind_word(x, big, k), .cscj_material_name(k)))
+    if (is.na(v)) return(na)
   }
-  if (is.na(kind)) return(c(NA_character_, NA_character_))
-  word <- if (identical(kind, "D")) {
-    oc <- x$oc[big]
-    if (is.na(oc)) NULL else if (oc >= 6) c("high-humic", "\u591a\u8150\u690d\u8cea") else
-      if (oc >= 3) c("humic", "\u8150\u690d\u8cea") else .cscj_texture_word(x, big)
-  } else .cscj_texture_word(x, big)
-  .cscj_with_word(word, .cscj_material_name(kind))
+  if (sum(x$thick[rows], na.rm = TRUE) >= 25) {
+    gg <- .scsj_part_great_group(.scsj_part_pedon(pedon, rows, complete = TRUE))
+    if (is.na(gg)) return(na)
+    return(.cscj_with_word(.cscj_kind_word(x, big, gg), .cscj_material_name(gg)))
+  }
+  .cscj_texture_word(x, big) %||% na
 }
 
 # The fill of the Reformed soils (35 cm or more, keyed on its own): its
-# artificial material or dredged sediment, or the texture word of its
-# thickest layer and its great group (Hugo, 2026-11-01).
+# artificial material or dredged sediment, or its great group after the word
+# of .cscj_kind_word() (Hugo, 2026-11-01).
 .cscj_reformed_fill_material <- function(pedon, x, rows) {
   rows <- x$ord[x$ord %in% rows]
   art <- .scsj_col(x$h, "artefacts_pct")[rows]
@@ -102,20 +122,20 @@
     return(.cscj_with_word(.cscj_texture_word(x, big), c("dredged sediment", "\u6d5a\u6e2b\u571f\u7802")))
   gg <- .scsj_part_great_group(.scsj_part_pedon(pedon, rows, complete = TRUE))
   if (is.na(gg)) return(c(NA_character_, NA_character_))
-  .cscj_with_word(.cscj_texture_word(x, big), .cscj_material_name(gg))
+  .cscj_with_word(.cscj_kind_word(x, big, gg), .cscj_material_name(gg))
 }
 
 # The original soil under the fill of the Reformed soils, by its group (VIII:
 # texture and group name; the group alone is written): keyed on its own to
-# the group level, outside the Man-made soils; NA when undecided.
+# the group level, outside the Man-made soils; NA when undecided. An error
+# goes to the caller, which records it as a warning.
 .cscj_original_group <- function(p) {
   if (is.null(p)) return(c(NA_character_, NA_character_))
   rules <- load_rules("cscj2011")
   rules$great_groups <- Filter(function(t) !identical(t$code, "A"), rules$great_groups)
   rules$subgroups <- NULL; rules$series_groups <- NULL
-  r <- tryCatch(classify_hierarchical("cscj2011", .cscj_marked(p), rules = rules, on_missing = "silent"),
-                error = function(e) NULL)
-  if (is.null(r) || length(r$provisional_because) || nrow(r$levels) < 2L) return(c(NA_character_, NA_character_))
+  r <- classify_hierarchical("cscj2011", .cscj_marked(p), rules = rules, on_missing = "silent")
+  if (length(r$provisional_because) || nrow(r$levels) < 2L) return(c(NA_character_, NA_character_))
   c(r$levels$name[2L], r$levels$name_native[2L])
 }
 

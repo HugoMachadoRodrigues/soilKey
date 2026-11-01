@@ -8,12 +8,17 @@
 * **Man-made phases**, with the CSCJ's names:
   * a fill is named by its texture or, for a kuroboku fill, its humus class, and by its kind of soil or material (多腐植質黒ボク土盛土造成相, 粗粒質浚渫土砂盛土造成相, as the text's examples);
   * the Reformed soils: the fill over the original soil's group (細粒質低地土／粘土集積赤黄色土造成相).
+  * a fill in the plough layer alone takes no phase (chapter IX, step A);
+  * a fill with none of the five kinds that the materials name is keyed on its own and named by its great group when 25 cm or more, by its texture alone when thinner;
+  * a kuroboku fill on other material is a natural combination (chapter IX, step D; also on #133): the text's example keys as 腐植質下層低地アロフェン質黒ボク土 with the phase 腐植質黒ボク土盛土造成相.
 * No forest phases: the CSCJ has none.
 
 ### Hugo's decisions (2026-11-01)
 
 * The air temperature plus 2 C for the CSCJ temperature phase, marked as estimated.
 * A fill's name puts the texture word, or the humus class of a kuroboku fill, before the soil kind; for the Reformed soils, the fill's texture and great group over the original soil's group.
+* A kuroboku fill is a natural combination in the CSCJ only: it does not make the soil Man-made (on #133 and merged up the stack).
+* A fill with none of the five kinds: 25 cm or more is classified on its own and named by its great group; a thinner one is named by its texture word, when decided.
 
 The SCSJ 2017 and the other systems do not change.
 
