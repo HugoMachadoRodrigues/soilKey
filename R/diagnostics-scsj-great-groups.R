@@ -378,19 +378,23 @@ fluvic_soils_scsj <- function(pedon) {
 
 # The subsurface (jihyoso): the horizons between 20 and 60 cm of the soil
 # surface, the plough layer excepted, or from 20 cm to the top of a gravel
-# layer (20 % or more gravel) or the bedrock when one appears within 60 cm
-# of the ground surface. A horizon counts when 5 cm or more of it lie in the
+# layer (20 % or more gravel, in either record) or the bedrock when one
+# appears within 60 cm of the ground surface (a gravel layer from above 20
+# cm that reaches into the section: no subsurface). A horizon counts when 5 cm or more of it lie in the
 # section (Hugo, 2026-10-31). `covered`: whether the description covers
 # the section.
 .scsj_control <- function(x) {
   if (is.na(x$surface)) return(list(rows = integer(0), covered = NA, from = 20, to = 60))
   h <- x$h
+  # a gravel layer: 20 % or more in either record (Hugo, 2026-11-01); one
+  # that reaches into the section cuts it at its top, so one from above 20 cm
+  # leaves no subsurface, as the bedrock does (Hugo, 2026-11-01)
   gv <- .scsj_col(h, "gravel_pct"); cf <- .scsj_col(h, "coarse_fragments_pct")
-  grav <- ifelse(!is.na(gv), gv >= 20, ifelse(!is.na(cf), cf >= 20, FALSE))
+  grav <- (!is.na(gv) & gv >= 20) | (!is.na(cf) & cf >= 20)
   gdep <- x$top - x$ground                    # depth below the ground surface
   lim <- 60
-  cut <- grav & !is.na(x$dtop) & x$dtop >= 20 & !is.na(gdep) & gdep <= 60
-  if (any(cut)) lim <- min(lim, x$dtop[cut])
+  cut <- grav & !is.na(x$dtop) & (is.na(x$dbot) | x$dbot > 20) & !is.na(gdep) & gdep <= 60
+  if (any(cut)) lim <- min(lim, max(20, min(x$dtop[cut])))
   if (is.finite(x$rock_top %||% NA) && x$rock_top + (x$surface - x$ground) <= 60) lim <- min(lim, x$rock_top)
   if (lim <= 20) return(list(rows = integer(0), covered = TRUE, from = 20, to = lim))
   db <- ifelse(is.na(x$dbot), Inf, x$dbot)
