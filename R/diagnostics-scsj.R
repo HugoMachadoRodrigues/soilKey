@@ -901,35 +901,13 @@
   if (is.na(x$surface)) return(NA)
   ok <- which(!is.na(x$dtop))
   if (!length(ok)) return(NA)
-  top <- pmax(x$dtop[ok], 0); bot <- x$dbot[ok]; st <- rows[ok]
-  open <- is.na(bot)
+  top <- pmax(x$dtop[ok], 0); open <- is.na(x$dbot[ok])
   eps <- 1e-3
-  e <- .scsj_ends(x)
-  rock <- if (is.finite(x$rock_top %||% NA)) x$rock_top else Inf
-  closed_end <- if (any(!open)) max(bot[!open]) else 0
-  cuts <- sort(unique(c(0, top, pmax(bot[!open], 0), top[open] + eps)))
-  segs <- data.frame(a = cuts, b = c(cuts[-1L], Inf))
-  status <- character(nrow(segs))
-  for (k in seq_len(nrow(segs))) {
-    a <- segs$a[k]; b <- segs$b[k]; mid <- if (is.finite(b)) (a + b) / 2 else a + 1
-    if (mid >= rock) { status[k] <- "F"; next }
-    cov_c <- !open & top <= mid & bot > mid
-    if (any(cov_c)) {
-      v <- st[cov_c]
-      status[k] <- if (any(v %in% FALSE)) "F" else if (all(v %in% TRUE)) "T" else "U"
-      next
-    }
-    o_first <- open & abs(top - a) < eps / 2
-    if (any(o_first)) {
-      v <- st[o_first]
-      status[k] <- if (any(v %in% FALSE)) "F" else if (all(v %in% TRUE)) "T" else "U"
-      next
-    }
-    if (any(open & top <= mid)) { status[k] <- "U"; next }
-    # a gap, or below the description
-    below <- mid > max(c(closed_end, top))
-    status[k] <- if (below && (e$on_rock || isTRUE(x$complete))) "F" else "U"
-  }
+  closed_end <- if (any(!open)) max(x$dbot[ok][!open]) else 0
+  # cut at the top of the window too: an open segment across it may hold a
+  # layer starting inside the window
+  segs <- .scsj_segments(x, rows, extra = from)
+  status <- segs$status
   w <- segs$b - segs$a
   lo <- if (is.finite(from)) from - 0.5 else -Inf
   n <- nrow(segs)

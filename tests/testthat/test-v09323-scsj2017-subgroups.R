@@ -225,3 +225,59 @@ test_that("Hugo's subgroup decisions: Brown-humic colour, Endoaeric, the Aeric p
              redoximorphic_features_pct = c(5, 20, 10, 0), fe_dcb_pct = c(0.8, 2.4, 0.8, 0.5))
   expect_false(soilKey:::brown_layer_scsj(.jp(ea, list(land_use = "paddy")))$passed)
 })
+
+test_that("review of PR 131: a B ends the humic walk, gaps over a buried humic layer, peat and artefact shares", {
+  skip_on_cran()
+  g <- function(fn, p, ...) fn(p, ...)$passed
+  # A 0-20 humic, B 20-25, buried A 25-45 humic: the B ends the surface horizon
+  h <- .kb(designation = c("A", "B", "2Ab", "2C"), top_cm = c(0, 20, 25, 45), bottom_cm = c(20, 25, 45, 100),
+           munsell_value_moist = c(2, 4, 2, 5), munsell_chroma_moist = c(2, 4, 2, 6), oc_pct = c(6, 1.5, 6, 0.8))
+  expect_false(g(humic_surface_scsj, .jp(h)))
+  # only the layers that meet the criteria add up: 25 + 20 = 45 cm, not Cumulic
+  h <- .kb(designation = c("A1", "A2", "A3", "C"), top_cm = c(0, 25, 33, 53), bottom_cm = c(25, 33, 53, 100),
+           munsell_value_moist = c(2, 4, 2, 5), munsell_chroma_moist = c(2, 4, 2, 6), oc_pct = c(6, 6, 6, 0.8))
+  expect_true(g(humic_surface_scsj, .jp(h), thick = 25))
+  expect_false(g(humic_surface_scsj, .jp(h), thick = 50))
+  # a lighter, leaner C at 10-20, a gap at 20-40, a dark 2Ab at 40-55: undecided
+  b <- .kb(designation = c("A", "C", "2Ab", "2C"), top_cm = c(0, 10, 40, 55), bottom_cm = c(10, 20, 55, 100),
+           munsell_value_moist = c(3, 5, 2, 5), munsell_chroma_moist = c(3, 4, 2, 6), oc_pct = c(2, 1, 6, 0.8))
+  expect_true(is.na(g(buried_humic_scsj, .jp(b))))
+  b$top_cm <- c(0, 10, 20, 35); b$bottom_cm <- c(10, 20, 35, 100)
+  expect_true(g(buried_humic_scsj, .jp(b)))
+  # Organic Artifactual: an organic horizon without a bottom may hold the majority
+  a <- list(designation = c("^C1", "^C2"), top_cm = c(0, 30), bottom_cm = c(30, NA), artefacts_pct = 50,
+            artefacts_organic = c(FALSE, TRUE), oc_pct = 1, layer_origin = "fill")
+  expect_true(is.na(g(organic_artefacts_scsj, .jp(a))))
+  a$artefacts_organic <- c(TRUE, FALSE)
+  expect_true(is.na(g(organic_artefacts_scsj, .jp(a))))
+  a$bottom_cm <- c(30, 40)
+  expect_true(g(organic_artefacts_scsj, .jp(a)))
+  # Sapric: 30 cm of sapric peat over an open horizon: 30 > 20 unknown
+  pt <- list(designation = c("H1", "H2"), top_cm = c(0, 30), bottom_cm = c(30, NA), oc_pct = 35,
+             fiber_content_rubbed_pct = c(10, NA))
+  s <- .jp(pt, site = list(drainage_class = "very poorly drained"))
+  expect_true(g(sapric_peat_scsj, s))
+  # High-moor: the uppermost 25 cm of the peat, counted on the peat alone
+  m <- list(designation = c("H1", "C", "H2"), top_cm = c(0, 10, 30), bottom_cm = c(10, 30, 80),
+            oc_pct = c(40, 1, 40), peat_moor_type = c("high-moor", NA, "low-moor"), field_texture = c(NA, "silt loam", NA))
+  mp <- .jp(m, site = list(drainage_class = "very poorly drained"))
+  expect_false(g(moor_type_scsj, mp))
+  m$designation <- c("H1", "H2"); m$top_cm <- c(0, 30); m$bottom_cm <- c(10, 80); m$oc_pct <- c(40, 40)
+  m$peat_moor_type <- c("high-moor", "low-moor"); m$field_texture <- NULL
+  expect_true(is.na(g(moor_type_scsj, .jp(m, site = list(drainage_class = "very poorly drained")))))
+  m$top_cm <- c(0, 10); m$peat_moor_type <- c("high-moor", "high-moor")
+  expect_true(g(moor_type_scsj, .jp(m, site = list(drainage_class = "very poorly drained"))))
+})
+
+test_that("review of PR 131: an undecided segment across the top of the window", {
+  skip_on_cran()
+  x <- .scsj_profile(.jp(.kb(top_cm = c(0, 45, 90, 100), bottom_cm = c(45, 90, 100, 120))))
+  expect_true(is.na(.scsj_top_in(x, c(FALSE, NA, FALSE, FALSE), 50, 75)))
+  expect_false(.scsj_top_in(x, c(FALSE, TRUE, FALSE, FALSE), 50, 75))
+  # a description that stops at 40 cm, not on rock
+  x2 <- .scsj_profile(.jp(.kb(designation = c("A1", "A2"), top_cm = c(0, 20), bottom_cm = c(20, 40),
+                               oc_pct = c(9, 6), phosphate_absorption_coef = c(2200, 2100), munsell_value_moist = c(2, 2),
+                               munsell_chroma_moist = c(1, 2), structure_grade = "moderate", clay_pct = 20,
+                               field_texture = "loam", ph_h2o = 5.5)))
+  expect_true(is.na(.scsj_top_in(x2, c(FALSE, FALSE), 50, 75)))
+})
