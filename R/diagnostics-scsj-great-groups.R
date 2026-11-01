@@ -152,8 +152,9 @@ man_made_soils_scsj <- function(pedon) {
   pgr <- .scsj_paddy_grey_rows(x, ps, wet)
   wr <- .scsj_weathered_rows(x)
   other <- .scsj_or(.scsj_or(agh, gley_layer), .scsj_or(pseudo, .scsj_or(pfe, pgr)))
-  wr <- .scsj_horizon_rows(x, .scsj_and(wr, .scsj_not(other)), 15)
-  list(argic = agh, podzolic = .scsj_or(.scsj_horizon_rows(x, pz$morph, 2.5),
+  wr_raw <- .scsj_and(wr, .scsj_not(other))
+  wr <- .scsj_horizon_rows(x, wr_raw, 15)
+  list(argic = agh, argic_rows = ag, weathered_raw = wr_raw, podzolic = .scsj_or(.scsj_horizon_rows(x, pz$morph, 2.5),
                                         .scsj_horizon_rows(x, pz$analysis, 2.5)),
        gley = wet$gley, gley_layer = gley_layer, wet = wet$any, pseudogley = pseudo,
        paddy_fe = pfe, paddy_grey = pgr, weathered = wr)
@@ -399,7 +400,7 @@ fluvic_soils_scsj <- function(pedon) {
   # a section the description does not cover may hold another subhorizon
   if (!isTRUE(cs$covered)) { if (isFALSE(low)) low <- NA; if (isTRUE(high)) high <- NA }
   # on farmland the high status must not come from liming
-  if (isTRUE(high) && isTRUE(as.logical(x$site$acid_neutralising_amendment %||% NA)[1L])) high <- NA
+  if (isTRUE(high) && isTRUE(.nzsc_yes(x$site$acid_neutralising_amendment %||% NA)[1L])) high <- NA
   list(low = low, high = high, rows = rows)
 }
 

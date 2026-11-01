@@ -392,3 +392,10 @@ test_that("no subsurface section: neither base-status criterion is met (Hugo, 20
   expect_false(bs$low); expect_false(bs$high)
   expect_false(eutrosols_scsj(p)$passed)
 })
+
+test_that("the liming flag is read as yes / no, as elsewhere in soilKey", {
+  skip_on_cran()
+  p <- make_scsj2017_example("eutrosol")
+  p$site$acid_neutralising_amendment <- "yes"
+  expect_true(is.na(.scsj_base_status(.scsj_profile(p))$high))
+})
