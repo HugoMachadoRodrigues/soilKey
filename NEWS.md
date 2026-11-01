@@ -17,15 +17,18 @@
 
 * The soil surface, which the CSCJ does not define, is read as in the SCSJ.
 * The CSCJ's own argic limits.
-* The Dark Red colour is that of the thickest B horizon in the subsurface section, else the first B below it.
-* Limestone or calcareous deposits come from recorded words or 40 % CaCO3 or more; nothing recorded means not.
+* The subsurface section excludes the plough layer, as in the SCSJ.
+* The Dark Red colour is that of the thickest B horizon in the subsurface section (a buried B included), else the first B below it, else the thickest layer of the section.
+* Limestone or calcareous deposits come from recorded words or 40 % CaCO3 or more; nothing recorded means not. Liming leaves a high base status undecided.
+* The Podzols: one horizon may meet both the analysis and the morphology criteria; the single parent material is read on the bleached and accumulation horizons.
+* The Red-Yellow soils' 25 cm are those of one horizon, in the CSCJ and in the SCSJ alike.
 * Decided for the later parts:
   * a Japanese texture-class attribute;
   * the series-group names with their term first;
   * the air temperature plus 2 C for the CSCJ temperature phase;
-  * the subsurface rules (plough layer excluded, the texture layer in 20 to 60 cm, the non-allophanic test by the key).
+  * the texture layer in 20 to 40 cm and the non-allophanic test by the key.
 
-The SCSJ 2017 and the other systems do not change.
+The other systems do not change; the SCSJ changes only in its Red-Yellow soils' count (also on #129).
 
 # soilKey 0.9.324 (2026-10-31)
 

@@ -110,3 +110,71 @@ test_that("Red-Yellow soils of the CSCJ: no base-status criterion", {
   # the SCSJ asks for an acid or unsaturated subhorizon
   expect_false(isTRUE(red_yellow_soils_scsj(ry)$passed))
 })
+
+test_that("review: the Dark Red colour reading (buried B, open B, ties, the thickest layer, coverage)", {
+  skip_on_cran()
+  dr <- function(p) { x <- .scsj_profile(soilKey:::.cscj_mark(p)); soilKey:::.cscj_subsurface_dark_red(x) }
+  al <- function(...) {
+    h <- utils::modifyList(list(designation = c("A", "2Bwb", "2C", "2C2"), top_cm = c(0, 20, 40, 70),
+              bottom_cm = c(20, 40, 70, 100), oc_pct = c(3, 1, 0.5, 0.3), munsell_hue_moist = "10YR",
+              munsell_value_moist = c(3, 4, 5, 5), munsell_chroma_moist = c(2, 4, 4, 3), clay_pct = 25,
+              structure_grade = c("moderate", "moderate", "weak", "structureless"), ph_h2o = 6,
+              layer_origin = "alluvium", redoximorphic_features_pct = 0), list(...))
+    .jp(h)
+  }
+  # a buried B over alluvium, nothing dark red: decided, not provisional on E
+  p <- al()
+  expect_false(dr(p))
+  r <- classify_cscj2011(p, on_missing = "silent")
+  expect_false("great_groups:E" %in% r$provisional_because)
+  # an open last B: undecided where its colour differs from the other B
+  q <- .jp(list(designation = c("A", "Bw1", "Bw2"), top_cm = c(0, 20, 32), bottom_cm = c(20, 32, NA),
+                munsell_hue_moist = c("10YR", "2.5YR", "10YR"), munsell_value_moist = c(3, 3, 4),
+                munsell_chroma_moist = c(2, 4, 4), oc_pct = c(3, 1, 0.5), structure_grade = "moderate"))
+  expect_true(is.na(dr(q)))
+  # no B in or below the section, a complete-enough description: the
+  # thickest layer of the section
+  t <- .jp(list(designation = c("A", "C1", "C2"), top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 110),
+                munsell_hue_moist = c("10YR", "2.5YR", "2.5YR"), munsell_value_moist = c(3, 3, 4),
+                munsell_chroma_moist = c(2, 4, 4), oc_pct = c(3, 0.5, 0.3)))
+  expect_true(dr(t))
+  # an unreadable designation may be the B
+  u <- .jp(list(designation = c("A", "Bw", "X"), top_cm = c(0, 20, 30), bottom_cm = c(20, 30, 70),
+                munsell_hue_moist = c("10YR", "10YR", "2.5YR"), munsell_value_moist = c(3, 4, 3),
+                munsell_chroma_moist = c(2, 4, 4), oc_pct = c(3, 1, 0.5), structure_grade = "moderate"))
+  expect_true(is.na(dr(u)))
+  # a description that stops inside the section: undecided
+  v <- .jp(list(designation = c("A", "Bw"), top_cm = c(0, 20), bottom_cm = c(20, 35),
+                munsell_hue_moist = c("10YR", "2.5YR"), munsell_value_moist = c(3, 3), munsell_chroma_moist = c(2, 4),
+                oc_pct = c(3, 1), structure_grade = "moderate"))
+  expect_true(is.na(dr(v)))
+})
+
+test_that("review: limestone words, the edition never leaks into the SCSJ, gates mark their input", {
+  skip_on_cran()
+  lim <- function(...) { p <- make_cscj2011_example("dark_red"); s <- list(...)
+    for (k in names(s)) { if (k == "parent_material") p$site$parent_material <- s[[k]] else p$horizons[[k]] <- s[[k]] }
+    soilKey:::.cscj_limestone_origin(.scsj_profile(soilKey:::.cscj_mark(p))) }
+  expect_true(lim())
+  for (w in c("not limestone", "non-limestone", "limestone-free", "without coral", "Marlborough schist"))
+    expect_false(lim(layer_origin = w, rock_origin = NA, parent_material = "granite", caco3_pct = 0), info = w)
+  expect_true(lim(layer_origin = "non-calcareous shale over limestone", rock_origin = NA, parent_material = "shale",
+                  caco3_pct = 0))
+  # nothing recorded: not from limestone
+  expect_false(lim(layer_origin = "volcanic ash", rock_origin = c(NA, NA, NA, NA, NA), parent_material = "volcanic ash",
+                   caco3_pct = 0))
+  # a jp_edition the user leaves in the site is not read by the SCSJ
+  k <- .jp(list(designation = c("A", "C"), top_cm = c(0, 30), bottom_cm = c(30, 100), oc_pct = c(1.5, 0.5),
+                al_ox_pct = c(0.8, 0.6), fe_ox_pct = c(0.4, 0.4), layer_origin = "volcanic ash",
+                munsell_hue_moist = "10YR", munsell_value_moist = c(3, 5), munsell_chroma_moist = c(3, 4)))
+  a <- classify_scsj2017(k, on_missing = "silent")$levels$code
+  k$site$jp_edition <- "cscj2011"
+  expect_identical(classify_scsj2017(k, on_missing = "silent")$levels$code, a)
+  # the CSCJ gates read the CSCJ edition when called on an unmarked pedon,
+  # and carry their own names in the trace
+  p <- make_cscj2011_example("red_yellow")
+  expect_identical(red_yellow_soils_cscj(p)$passed, red_yellow_soils_cscj(soilKey:::.cscj_mark(p))$passed)
+  r <- classify_cscj2011(p, on_missing = "silent")
+  expect_true(any(grepl("andosols_cscj", vapply(r$trace, function(t) t$code %||% t$name %||% "", ""))) ||
+              any(grepl("andosols_cscj", utils::capture.output(str(r$trace)))))
+})

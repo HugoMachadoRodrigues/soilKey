@@ -5,8 +5,9 @@
 # own letters (the same letter names different great groups in the SCSJ
 # 2017 from C to H); name is the English name of appendix 2 and name_native
 # the Japanese one. The gates shared with the SCSJ read the pedon by the CSCJ
-# edition (classify_cscj2011()). Criteria are summarised from the text; see
-# R/diagnostics-cscj-great-groups.R and readings.yaml.
+# edition, under their CSCJ names (classify_cscj2011()). Criteria are
+# summarised from the text; see R/diagnostics-cscj-great-groups.R and
+# readings.yaml.
 
 great_groups:
 
@@ -15,7 +16,7 @@ great_groups:
     name_native: 造成土大群
     tests:
       all_of:
-        - man_made_soils_scsj: {}
+        - man_made_soils_cscj: {}
     notes: "The fill shows none of the natural diagnostic horizons and wetness features; and within 50 cm, 25 cm or more (cumulative) of layers with 20 % or more artificial material, a continuous impermeable artificial layer from within 30 cm, or 35 cm or more of fill of heterogeneous soil material (material of another CSCJ great group)."
 
   - code: "B"
@@ -23,7 +24,7 @@ great_groups:
     name_native: 有機質土大群
     tests:
       all_of:
-        - organic_soils_scsj: {}
+        - organic_soils_cscj: {}
     notes: "25 cm or more (cumulative) of peat material within 50 cm of the soil surface, or 25 cm continuous below a fill of other material under 35 cm."
 
   - code: "C"
@@ -31,15 +32,15 @@ great_groups:
     name_native: ポドゾル大群
     tests:
       all_of:
-        - podzols_scsj: {}
-    notes: "No paddy surface horizon (unbleached), no layer with the red-yellow feature; a podzolic accumulation horizon (morphology) under a bleached horizon, or one by analysis under a bleached horizon or with one by morphology. Keyed before the Andosols."
+        - podzols_cscj: {}
+    notes: "A single parent material (read on the pair: the bleached and accumulation horizons in one lithologic layer); no paddy surface horizon (unbleached), no layer with the red-yellow feature; a podzolic accumulation horizon (morphology) under a bleached horizon, or one by analysis under a bleached horizon or with one by morphology (the same horizon may meet both). Keyed before the Andosols."
 
   - code: "D"
     name: Andosols
     name_native: 黒ボク土大群
     tests:
       all_of:
-        - andosols_scsj: {}
+        - andosols_cscj: {}
     notes: "25 cm or more (cumulative) of layers with the kuroboku or the immature kuroboku feature within 50 cm, or 25 cm continuous below a fill under 35 cm. The immature kuroboku feature has P retention as its only substitute for the phosphate absorption coefficient."
 
   - code: "E"
@@ -55,7 +56,7 @@ great_groups:
     name_native: 低地土大群
     tests:
       all_of:
-        - fluvic_soils_scsj: {}
+        - lowland_soils_cscj: {}
     notes: "25 cm or more (cumulative) of alluvial deposits within 50 cm, or 25 cm continuous below a fill of other material under 35 cm."
 
   - code: "G"
@@ -64,14 +65,14 @@ great_groups:
     tests:
       all_of:
         - red_yellow_soils_cscj: {}
-    notes: "The top within 50 cm of a weathered or argic horizon with the red-yellow feature, 25 cm or more (cumulative); no bedrock within 30 cm. No base-status criterion."
+    notes: "A weathered or argic horizon with the red-yellow feature, 25 cm or more (one horizon), its top within 50 cm; no bedrock within 30 cm. No base-status criterion."
 
   - code: "H"
     name: Stagnic soils
     name_native: 停滞水成土大群
     tests:
       all_of:
-        - stagnic_soils_scsj: {}
+        - stagnic_soils_cscj: {}
     notes: "Less than 25 cm of volcanic ejecta within 50 cm; a gley layer, or a layer with a wetness feature, 10 cm or more, its top within 50 cm, reaching 50 cm or the bedrock."
 
   - code: "I"
@@ -79,7 +80,7 @@ great_groups:
     name_native: 褐色森林土大群
     tests:
       all_of:
-        - brown_forest_soils_scsj: {}
+        - brown_forest_soils_cscj: {}
     notes: "The top of a weathered or argic horizon within 50 cm; no bedrock within 30 cm."
 
   - code: "J"

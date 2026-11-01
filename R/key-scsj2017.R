@@ -68,7 +68,14 @@ classify_scsj2017 <- function(pedon, rules = NULL,
                               gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
   # gap-fill once, so that the key and the phases read the same pedon
-  if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(.cssc_prepare_pedon(pedon), gapfill)
+  if (inherits(pedon, "PedonRecord")) {
+    pedon <- .cssc_prepare_pedon(pedon)
+    # the CSCJ edition marker is classify_cscj2011()'s own: never read here
+    if (!is.null(pedon$site$jp_edition)) {
+      pedon <- pedon$clone(deep = TRUE); s <- pedon$site; s$jp_edition <- NULL; pedon$site <- s
+    }
+    pedon <- .classify_apply_gapfill(pedon, gapfill)
+  }
   rules <- rules %||% load_rules("scsj2017")
   res <- classify_hierarchical("scsj2017", pedon, rules = rules,
                                on_missing = on_missing, gapfill = FALSE)

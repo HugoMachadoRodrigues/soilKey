@@ -1,58 +1,130 @@
 # =============================================================================
-# v0.9.325 -- the two great groups of the Comprehensive Soil Classification
-# System of Japan, First Approximation (CSCJ 2011; Obara et al., NIAES) that
-# the SCSJ 2017 does not share: the Dark Red soils (E) and its own Red-Yellow
-# soils (G). The other great groups are keyed by the SCSJ gates, read by the
-# CSCJ edition (site$jp_edition, set by classify_cscj2011()). Three-valued.
+# v0.9.325 -- the great groups of the Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011; Obara et al., NIAES). The
+# Dark Red soils (E) and the CSCJ's own Red-Yellow soils (G) are new gates;
+# the other great groups are the SCSJ 2017 gates read by the CSCJ edition
+# (site$jp_edition), under their CSCJ names. Three-valued.
 # =============================================================================
 
+.CSCJ_REF <- "Obara et al. (2011). Comprehensive Soil Classification System of Japan, First Approximation."
+
+# The pedon marked to be read by the CSCJ edition (marked once).
+.cscj_marked <- function(pedon) {
+  if (!inherits(pedon, "PedonRecord") || identical((pedon$site %||% list())$jp_edition, "cscj2011")) pedon
+  else .cscj_mark(pedon)
+}
+
+.cscj_result <- function(name, passed, layers = integer(0), evidence = list(),
+                         missing = character(0), where = "") {
+  DiagnosticResult$new(name = name, passed = passed, layers = as.integer(layers),
+                       evidence = evidence, missing = unique(missing),
+                       reference = sprintf("%s %s", .CSCJ_REF, where), notes = NA_character_)
+}
+
+# A gate the CSCJ shares with the SCSJ, read by the CSCJ edition and named
+# and referenced as the CSCJ's.
+.cscj_shared <- function(gate, name, where) {
+  force(gate); force(name); force(where)
+  function(pedon) {
+    r <- gate(.cscj_marked(pedon))
+    r$name <- name
+    r$reference <- sprintf("%s %s", .CSCJ_REF, where)
+    r
+  }
+}
+
+#' @noRd
+man_made_soils_cscj <- .cscj_shared(function(p) man_made_soils_scsj(p), "man_made_soils_cscj", "V A, p. 28")
+#' @noRd
+organic_soils_cscj <- .cscj_shared(function(p) organic_soils_scsj(p), "organic_soils_cscj", "V B, p. 28")
+#' @noRd
+podzols_cscj <- .cscj_shared(function(p) podzols_scsj(p), "podzols_cscj", "V C, p. 28")
+#' @noRd
+andosols_cscj <- .cscj_shared(function(p) andosols_scsj(p), "andosols_cscj", "V D, p. 28")
+#' @noRd
+lowland_soils_cscj <- .cscj_shared(function(p) fluvic_soils_scsj(p), "lowland_soils_cscj", "V F, p. 29")
+#' @noRd
+stagnic_soils_cscj <- .cscj_shared(function(p) stagnic_soils_scsj(p), "stagnic_soils_cscj", "V H, p. 29")
+#' @noRd
+brown_forest_soils_cscj <- .cscj_shared(function(p) brown_forest_soils_scsj(p), "brown_forest_soils_cscj", "V I, p. 29")
+
 # Limestone or calcareous deposits (CSCJ IV.3: 40 % or more calcium
-# carbonate equivalent) as the origin of the soil: words in rock_origin,
-# layer_origin or the site parent material, or a layer with 40 % or more
-# CaCO3; nothing recorded: not (Hugo, 2026-11-01).
-.SCSJ_LIMESTONE_RE <- paste0("limestone|calcareous|\\bcoral|marl|chalk|travertine|",
+# carbonate equivalent) as the origin of the soil: the words limestone,
+# calcareous, coral, marl, chalk, travertine (and the Japanese words) in
+# rock_origin or layer_origin of the layers to 1 m, or in the site parent
+# material (not for a profile that is all fill), negated words taken out;
+# or a layer to 1 m with 40 % or more CaCO3. Nothing recorded: not (Hugo,
+# 2026-11-01).
+.SCSJ_LIMESTONE_RE <- paste0("\\b(limestones?|calcareous|corals?|marls?|chalk|travertine)\\b|",
                              "\u77f3\u7070\u5ca9|\u77f3\u7070\u8cea|\u73ca\u745a|\u30b5\u30f3\u30b4|\u6ce5\u7070\u5ca9")
-.SCSJ_NOT_LIMESTONE_RE <- "non[- ]?calcareous|not calcareous|\u975e\u77f3\u7070"
+.SCSJ_NOT_LIMESTONE_RE <- paste0("\\b(non[- ]?|not +|no +|without +|free of +)(limestones?|calcareous|corals?|marls?|chalk)\\b|",
+                                 "\\b(limestone|carbonate|calcareous)[- ]free\\b|",
+                                 "\u77f3\u7070\u5ca9\u4ee5\u5916|\u975e\u77f3\u7070\u8cea|\u975e\u77f3\u7070")
 .cscj_limestone_origin <- function(x) {
-  txt <- c(.scsj_txt(x$h, "rock_origin"), .scsj_txt(x$h, "layer_origin"),
-           tolower(as.character(unlist(x$site$parent_material %||% character(0)))))
+  soil <- !is.na(x$dtop) & x$dtop < 100
+  txt <- c(.scsj_txt(x$h, "rock_origin")[soil], .scsj_txt(x$h, "layer_origin")[soil])
+  if (any(soil & !x$orig$fill))
+    txt <- c(txt, tolower(as.character(unlist(x$site$parent_material %||% character(0)))))
   txt <- txt[!is.na(txt)]
-  words <- any(grepl(.SCSJ_LIMESTONE_RE, txt, perl = TRUE) & !grepl(.SCSJ_NOT_LIMESTONE_RE, txt, perl = TRUE))
+  txt <- gsub(.SCSJ_NOT_LIMESTONE_RE, " ", txt, perl = TRUE)
+  words <- any(grepl(.SCSJ_LIMESTONE_RE, txt, perl = TRUE))
   cc <- .scsj_col(x$h, "caco3_pct")
-  words || any(!is.na(cc) & cc >= 40)
+  words || any(soil & !is.na(cc) & cc >= 40)
 }
 
 # The colour of the subsurface for the Dark Red soils (Hugo, 2026-11-01):
-# that of the thickest B horizon in the subsurface section (20 to 60 cm),
-# else of the first B horizon below the section; an undesignated row counts
-# as a B where it is a weathered or argic horizon. Three-valued: B rows of
-# equal thickness that disagree, or rows that may be B, leave it undecided.
+# that of the thickest B horizon (a buried B included) of the subsurface
+# section (20 to 60 cm), else of the first B horizon below it, else of the
+# thickest layer of the section (the text's general rule). An undesignated
+# row is a B where it is a weathered or argic horizon; an unreadable
+# designation may be one. Three-valued: rows that may be the one read
+# (undecided B status, a horizon without a bottom, depth the description
+# does not cover) leave it undecided where their colours would disagree.
 .cscj_subsurface_dark_red <- function(x, f = .scsj_horizon_flags(x)) {
+  if (is.na(x$surface)) return(NA)
   dr <- x$colour$dark_red
-  is_b <- ifelse(!is.na(x$role), grepl("^B", x$role) & !x$des$buried,
+  is_b <- ifelse(x$role %in% "other", NA,
+          ifelse(!is.na(x$role), grepl("^B", x$role),
           ifelse(f$weathered %in% TRUE | f$argic %in% TRUE, TRUE,
-          ifelse(f$weathered %in% FALSE & f$argic %in% FALSE, FALSE, NA)))
+          ifelse(f$weathered %in% FALSE & f$argic %in% FALSE, FALSE, NA))))
   cs <- .scsj_control(x)
-  if (!length(cs$rows) && is.na(x$surface)) return(NA)
-  inside <- cs$rows
-  ov <- pmin(ifelse(is.na(x$dbot[inside]), cs$to, x$dbot[inside]), cs$to) - pmax(x$dtop[inside], cs$from)
-  b_sure <- inside[is_b[inside] %in% TRUE]
-  b_maybe <- inside[is.na(is_b[inside])]
-  if (length(b_sure)) {
-    th <- ov[match(b_sure, inside)]
-    top <- b_sure[th >= max(th) - 1e-9]
-    # a row that may be a B and is thicker than the thickest sure one
-    if (length(b_maybe) && any(ov[match(b_maybe, inside)] > max(th) + 1e-9)) return(NA)
-    v <- dr[top]
-    return(if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA)
+  rows <- cs$rows
+  # each row's thickness in the section: certain (an open row may end at its
+  # top) and possible (to the end of the section)
+  open <- is.na(x$dbot[rows])
+  lo <- pmax(pmin(ifelse(open, x$dtop[rows], x$dbot[rows]), cs$to) - pmax(x$dtop[rows], cs$from), 0)
+  hi <- pmax(pmin(ifelse(open, cs$to, x$dbot[rows]), cs$to) - pmax(x$dtop[rows], cs$from), 0)
+  und <- if (isTRUE(cs$covered)) 0 else .scsj_cum(x, rep(FALSE, x$n), cs$from, cs$to)$poss
+  agree <- function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
+  # the colour of the thickest of `cand` (positions in rows); `extra` rows
+  # that may also be candidates
+  thickest <- function(cand, extra = integer(0)) {
+    best <- max(lo[cand])
+    if (und > 0 && und >= best - 1e-9) return(NA)
+    pool <- c(cand, extra)
+    agree(dr[rows[pool[hi[pool] >= best - 1e-9]]])
   }
-  if (length(b_maybe)) return(NA)
-  # no B in the section (an A reaching through it): the first B below
-  below <- x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= cs$to - 0.5 & !(is_b[x$ord] %in% FALSE)]
-  if (!length(below)) return(NA)
-  i <- below[1L]
-  if (is.na(is_b[i])) return(NA)
-  dr[i]
+  sure <- which(is_b[rows] %in% TRUE); maybe <- which(is.na(is_b[rows]))
+  if (length(sure)) return(thickest(sure, maybe))
+  # no B surely in the section: the first B below, else the thickest layer
+  below_of <- function() {
+    below <- x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= cs$from & !(x$ord %in% rows) &
+                   !(x$mineral[x$ord] %in% FALSE)]
+    for (i in below) {
+      if (is_b[i] %in% TRUE) return(dr[i])
+      if (is.na(is_b[i])) return(NA)
+    }
+    e <- .scsj_ends(x)
+    if (isTRUE(x$complete) || e$on_rock || (!is.na(e$depth) && e$depth >= 100)) {
+      if (!length(rows)) return(NA)
+      return(thickest(seq_along(rows)))
+    }
+    NA
+  }
+  fallback <- below_of()
+  if (!length(maybe)) return(fallback)
+  # rows that may be B: their colour, or the fallback, must agree
+  agree(c(thickest(maybe), fallback))
 }
 
 # Dark Red soils (CSCJ 2011, great group E): (1) the top of a weathered or
@@ -61,8 +133,12 @@
 # has pH(H2O) 5.5 or more or base saturation 50 % or more; (3) no bedrock
 # within 30 cm.
 dark_red_soils_cscj <- function(pedon) {
-  x <- .scsj_profile(pedon)
-  if (is.na(x$surface)) return(.scsj_no_surface("dark_red_soils_cscj", x, "CSCJ V E, p. 29"))
+  x <- .scsj_profile(.cscj_marked(pedon))
+  if (is.na(x$surface)) {
+    r <- .scsj_no_surface("dark_red_soils_cscj", x, "")
+    r$reference <- sprintf("%s V E, p. 29", .CSCJ_REF)
+    return(r)
+  }
   f <- .scsj_horizon_flags(x)
   b <- .scsj_b_within_50(x)
   dark <- .cscj_subsurface_dark_red(x, f)
@@ -71,29 +147,33 @@ dark_red_soils_cscj <- function(pedon) {
   c2 <- .scsj_or(dark, .scsj_and(lime, bs$high))
   rock <- .scsj_no_rock_within(x, 30)
   passed <- .scsj_and3(b$passed, c2, rock)
-  .scsj_result("dark_red_soils_cscj", passed, b$rows,
+  .cscj_result("dark_red_soils_cscj", passed, b$rows,
                list(weathered_or_argic_within_50 = b$passed, dark_red_subsurface = dark,
                     limestone_origin = lime, base_rich_subsurface = bs$high, no_rock_within_30 = rock),
-               if (is.na(passed)) c("munsell_hue_moist", "munsell_value_moist", "ph_h2o", "bs_pct", "rock_origin")
-               else character(0), "CSCJ V E, p. 29")
+               if (is.na(passed)) c("munsell_hue_moist", "munsell_value_moist", "ph_h2o", "bs_pct", "rock_origin",
+                                    "designation", "structure_grade") else character(0),
+               "V E, p. 29")
 }
 
-# Red-Yellow soils (CSCJ 2011, great group G): the top within 50 cm of a
-# weathered or argic horizon with the red-yellow feature, 25 cm or more
-# (cumulative); no bedrock within 30 cm. Unlike the SCSJ, no base-status
-# criterion and no red-yellow weathered horizon.
+# Red-Yellow soils (CSCJ 2011, great group G): a weathered or argic horizon
+# with the red-yellow feature, 25 cm or more (one horizon: adjacent layers;
+# Hugo, 2026-11-01), its top within 50 cm; no bedrock within 30 cm. Unlike
+# the SCSJ, no base-status criterion and no red-yellow weathered horizon.
 red_yellow_soils_cscj <- function(pedon) {
-  x <- .scsj_profile(pedon)
-  if (is.na(x$surface)) return(.scsj_no_surface("red_yellow_soils_cscj", x, "CSCJ V G, p. 29"))
+  x <- .scsj_profile(.cscj_marked(pedon))
+  if (is.na(x$surface)) {
+    r <- .scsj_no_surface("red_yellow_soils_cscj", x, "")
+    r$reference <- sprintf("%s V G, p. 29", .CSCJ_REF)
+    return(r)
+  }
   f <- .scsj_horizon_flags(x)
   ry <- .scsj_red_yellow_rows(x)
   bry <- .scsj_and(.scsj_or(f$argic, f$weathered), ry)
-  top <- .scsj_top_in(x, bry, -Inf, 50, 0)
-  a <- .scsj_and(top, .scsj_at_least(.scsj_cum(x, bry), 25))
+  a <- .scsj_horizon_within(x, bry, 25, 50)$passed
   rock <- .scsj_no_rock_within(x, 30)
   passed <- .scsj_and(a, rock)
-  .scsj_result("red_yellow_soils_cscj", passed, which(bry %in% TRUE),
+  .cscj_result("red_yellow_soils_cscj", passed, which(bry %in% TRUE),
                list(red_yellow_weathered_or_argic = a, no_rock_within_30 = rock),
-               if (is.na(passed)) c("munsell_hue_moist", "clay_pct", "oc_pct") else character(0),
-               "CSCJ V G, p. 29")
+               if (is.na(passed)) c("munsell_hue_moist", "clay_pct", "oc_pct", "designation", "structure_grade")
+               else character(0), "V G, p. 29")
 }
