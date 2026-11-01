@@ -2,8 +2,8 @@
 # v0.9.325 -- the Comprehensive Soil Classification System of Japan, First
 # Approximation (CSCJ 2011; Obara et al., NIAES Bulletin 29), keyed to the
 # ten great groups of chapter V, the 27 groups (0.9.326) and the 116
-# subgroups (0.9.327) and the 381 soil series groups (0.9.328) of chapter VI.
-# The phases follow. The gates it shares with the SCSJ 2017 read the pedon by
+# subgroups (0.9.327) and the 381 soil series groups (0.9.328) of chapter VI,
+# and the soil phases of chapter VIII (0.9.329). The gates it shares with the SCSJ 2017 read the pedon by
 # the CSCJ edition (site$jp_edition). Experimental and opt-in.
 # =============================================================================
 
@@ -19,7 +19,9 @@
 #' their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...) and their 381
 #' soil series groups (lithic, skeletal, fine-textured, high-humic ...,
 #' read with the new attributes \code{texture_class_jp} and
-#' \code{hardness_yamanaka_mm}); the phases follow. Each level gives the English name
+#' \code{hardness_yamanaka_mm}), and gives the soil phases of chapter VIII
+#' (temperature, estimated from the air temperature plus 2 C when the soil
+#' temperature is not recorded, and the man-made phases). Each level gives the English name
 #' of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 #' one.
 #'
@@ -44,8 +46,10 @@
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
 #'   \code{"cscj2011"}, the deepest class in \code{name}, the great group
 #'   in \code{rsg_or_order}, the classes of each level in \code{levels} (with
-#'   \code{name_native}), the key trace and \code{provisional_because}
-#'   (classes before the assigned one that could not be decided).
+#'   \code{name_native}), the key trace, \code{provisional_because}
+#'   (classes before the assigned one that could not be decided), and in
+#'   \code{phases} the soil phases of chapter VIII (temperature and man-made
+#'   phases; the class name is left as it is).
 #' @references Obara, H., Ohkura, T., Takata, Y., Kohyama, K., Maejima, Y.
 #'   and Hamazaki, T. (2011). Comprehensive Soil Classification System of
 #'   Japan, First Approximation. Bulletin of the National Institute for
@@ -61,10 +65,13 @@ classify_cscj2011 <- function(pedon, rules = NULL,
                               on_missing = c("warn", "silent", "error"),
                               gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
-  if (inherits(pedon, "PedonRecord")) pedon <- .cscj_mark(.cssc_prepare_pedon(pedon))
+  # gap-fill once, so that the key and the phases read the same pedon
+  if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(.cscj_mark(.cssc_prepare_pedon(pedon)), gapfill)
   rules <- rules %||% load_rules("cscj2011")
   res <- classify_hierarchical("cscj2011", pedon, rules = rules,
-                               on_missing = on_missing, gapfill = gapfill)
+                               on_missing = on_missing, gapfill = FALSE)
+  # v0.9.329: the soil phases (chapter VIII), beside the class name
+  if (inherits(pedon, "PedonRecord")) res$phases <- .cscj_phases(pedon, res)
   if (inherits(pedon, "PedonRecord") &&
       all(is.na(pedon$horizons$designation %||% NA) | !nzchar(trimws(pedon$horizons$designation %||% "")))) {
     res$warnings <- c(res$warnings, paste(

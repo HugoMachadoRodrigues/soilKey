@@ -26,8 +26,10 @@ classify_cscj2011(
 A \code{\link{ClassificationResult}} with \code{system_id}
   \code{"cscj2011"}, the deepest class in \code{name}, the great group
   in \code{rsg_or_order}, the classes of each level in \code{levels} (with
-  \code{name_native}), the key trace and \code{provisional_because}
-  (classes before the assigned one that could not be decided).
+  \code{name_native}), the key trace, \code{provisional_because}
+  (classes before the assigned one that could not be decided), and in
+  \code{phases} the soil phases of chapter VIII (temperature and man-made
+  phases; the class name is left as it is).
 }
 \description{
 Keys a \code{\link{PedonRecord}} through the Comprehensive Soil
@@ -40,7 +42,9 @@ Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils) and
 their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...) and their 381
 soil series groups (lithic, skeletal, fine-textured, high-humic ...,
 read with the new attributes \code{texture_class_jp} and
-\code{hardness_yamanaka_mm}); the phases follow. Each level gives the English name
+\code{hardness_yamanaka_mm}), and gives the soil phases of chapter VIII
+(temperature, estimated from the air temperature plus 2 C when the soil
+temperature is not recorded, and the man-made phases). Each level gives the English name
 of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 one.
 }

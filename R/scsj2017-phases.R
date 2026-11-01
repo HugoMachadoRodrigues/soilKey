@@ -196,6 +196,8 @@
   gv <- .scsj_col(x$h, "gravel_pct"); cf <- .scsj_col(x$h, "coarse_fragments_pct")
   grav <- ifelse((!is.na(gv) & gv >= 20) | (!is.na(cf) & cf >= 20), TRUE,
                  ifelse(!is.na(cf) | !is.na(gv), FALSE, NA))
+  # the CSCJ reads a gravel layer as recorded when present (Hugo, 2026-11-01)
+  if (identical(x$edition, "cscj2011")) grav <- .cscj_gravel_rows(x)
   k <- .scsj_first_code(list(gley = .scsj_ground_within(x, wet$gley, 75),
                              wet = .scsj_ground_within(x, wet$any, 75),
                              gravelly = .scsj_ground_within(x, grav, 60),
@@ -204,6 +206,9 @@
 }
 
 .scsj_man_made_phases <- function(pedon, x, res) {
+  # the CSCJ edition names the fill by its own words (R/cscj2011-phases.R)
+  cscj <- identical(x$edition, "cscj2011")
+  src <- if (cscj) "CSCJ VIII" else "V.2"
   gg <- res$levels$code[1L] %||% NA_character_
   grp <- if (nrow(res$levels) >= 2L) res$levels$code[2L] else NA_character_
   site <- x$site
@@ -215,7 +220,7 @@
     if (identical(grp, "A1")) {
       mat <- .scsj_artefact_name(x)
       return(.scsj_phase_row("man-made", paste0("A1-", kind), sprintf("%s %s", mat[1L], end[1L]),
-                             paste0(mat[2L], end[2L]), "Artifactual soils (V.2)"))
+                             paste0(mat[2L], end[2L]), sprintf("Artifactual soils (%s)", src)))
     }
     if (identical(grp, "A2")) {
       # the fill's material over the original soil's, with the same phase
@@ -223,11 +228,12 @@
       # example)
       below <- if (length(fr$rows) && !fr$open)
         x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= fr$bottom - 0.5 & !(x$ord %in% fr$rows)] else integer(0)
-      mf <- .scsj_reformed_fill_material(pedon, x, fr$rows)
-      mb <- .scsj_material_name(.scsj_part_great_group(.scsj_part_pedon(pedon, below, complete = isTRUE(x$complete))))
+      mf <- if (cscj) .cscj_reformed_fill_material(pedon, x, fr$rows) else .scsj_reformed_fill_material(pedon, x, fr$rows)
+      mb <- if (cscj) .cscj_original_group(.scsj_part_pedon(pedon, below, complete = isTRUE(x$complete))) else
+        .scsj_material_name(.scsj_part_great_group(.scsj_part_pedon(pedon, below, complete = isTRUE(x$complete))))
       if (anyNA(c(mf, mb))) return(NULL)
       return(.scsj_phase_row("man-made", paste0("A2-", kind), sprintf("%s over %s %s", mf[1L], mb[1L], end[1L]),
-                             paste0(mf[2L], "\uff0f", mb[2L], end[2L]), "Reformed soils (V.2)"))
+                             paste0(mf[2L], "\uff0f", mb[2L], end[2L]), sprintf("Reformed soils (%s)", src)))
     }
     return(NULL)
   }
@@ -260,7 +266,7 @@
     e <- .scsj_ends(x)
     last_bot <- x$dbot[fr$rows[length(fr$rows)]]
     open <- fr$open || (!is.na(e$depth) && !is.na(last_bot) && abs(last_bot - e$depth) <= 0.5 && !e$on_rock)
-    mat <- .scsj_fill_material(x, fr$rows, open)
+    mat <- if (cscj) .cscj_fill_material(x, fr$rows, open) else .scsj_fill_material(x, fr$rows, open)
     out[[length(out) + 1L]] <- if (anyNA(mat))
       .scsj_phase_row("man-made", "fill", "fill man-made phase", "\u76db\u571f\u9020\u6210\u76f8",
                       sprintf("a fill of %.0f cm recorded; its material undecided", fr$thick))
