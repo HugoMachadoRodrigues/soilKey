@@ -1,7 +1,8 @@
 # =============================================================================
 # v0.9.321 -- the Soil Classification System of Japan (SCSJ 2017, Japanese
 # Society of Pedology), keyed to the ten great groups of chapter II and the
-# 26 groups of chapter III (0.9.322). Subgroups and the soil phases follow.
+# 26 groups (0.9.322) and 120 subgroups (0.9.323) of chapter III. The soil
+# phases follow.
 # Experimental and opt-in:
 # classify_all() runs it only when asked.
 # =============================================================================
@@ -15,7 +16,8 @@
 #' Red-Yellow soils, Stagnic soils, Eutrosols, Brown Forest soils,
 #' Regosols) and their 26 groups (for instance Allophanic and
 #' Non-allophanic Andosols, Fluvic Paddy soils, Magnesian Eutrosols, Sandy
-#' Regosols); subgroups and the soil phases follow. Each level gives
+#' Regosols), and their 120 subgroups (Haplic, Humic, Cumulic, Aquic ...);
+#' the soil phases follow. Each level gives
 #' the official English name and, in \code{levels$name_native}, the Japanese
 #' one.
 #'
@@ -115,7 +117,7 @@ make_scsj2017_example <- function(great_group = c("man_made", "organic", "andoso
       munsell_hue_moist = c("10YR", "10YR", "2.5Y", "10YR", "10YR"), munsell_value_moist = c(3, 4, 5, 2, 4),
       munsell_chroma_moist = c(3, 3, 3, 2, 4), structure_grade = c("weak", "structureless", "structureless", "moderate", "moderate"),
       ph_h2o = c(7.0, 7.4, 7.5, 5.6, 5.5), phosphate_absorption_coef = c(600, 400, 350, 900, 800),
-      redoximorphic_features_pct = 0),
+      redoximorphic_features_pct = 0, artefacts_organic = c(FALSE, FALSE, FALSE, NA, NA)),
       site(land_use = "urban park")),
     organic = mk(list(
       designation = c("H1", "H2", "H3", "G"), top_cm = c(0, 25, 55, 85), bottom_cm = c(25, 55, 85, 110),
@@ -123,7 +125,7 @@ make_scsj2017_example <- function(great_group = c("man_made", "organic", "andoso
       munsell_hue_moist = c("7.5YR", "7.5YR", "10YR", "5GY"), munsell_value_moist = c(2, 2, 2, 5),
       munsell_chroma_moist = c(2, 1, 1, 1), ph_h2o = c(4.8, 4.9, 5.0, 6.0),
       phosphate_absorption_coef = c(500, 450, 450, 600), childs_test = c(NA, NA, NA, "positive"),
-      layer_origin = c(NA, NA, NA, "lacustrine clay")),
+      layer_origin = c(NA, NA, NA, "lacustrine clay"), peat_moor_type = c("low-moor", "low-moor", "low-moor", NA)),
       site(drainage_class = "very poorly drained", land_use = "wetland")),
     andosol = mk(list(
       designation = c("A1", "A2", "Bw", "C"), top_cm = c(0, 20, 45, 80), bottom_cm = c(20, 45, 80, 110),
@@ -196,7 +198,8 @@ make_scsj2017_example <- function(great_group = c("man_made", "organic", "andoso
       munsell_hue_moist = c("10YR", "2.5Y", "2.5Y"), munsell_value_moist = c(4, 6, 6),
       munsell_chroma_moist = c(2, 3, 3), clay_pct = c(4, 2, 2), field_texture = c("loamy sand", "sand", "sand"),
       structure_grade = c("weak", "structureless", "structureless"), ph_h2o = c(6.5, 6.8, 7.0),
-      layer_origin = c("dune sand", "dune sand", "dune sand"), redoximorphic_features_pct = 0),
+      layer_origin = c("dune sand", "dune sand", "dune sand"), redoximorphic_features_pct = 0,
+      caco3_pct = c(0, 0, 0)),
       site(land_use = "coastal pine forest"))
   )
 }

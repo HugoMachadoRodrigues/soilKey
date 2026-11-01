@@ -1,0 +1,228 @@
+# Subgroups of the Andosols great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "C1":
+    - code: "C1EP"
+      name: "Epi-peaty {parent}"
+      name_native: "表層泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_scsj: {within: 25, cum: 10}
+      notes: "10 cm or more (cumulative) of peat material within 25 cm."
+    - code: "C1EG"
+      name: "Epi-pseudogleyic {parent}"
+      name_native: "表層疑似グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["pseudogley"], to: 50}
+      notes: "The top of a pseudogley horizon within 50 cm."
+    - code: "C1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["pseudogley"], to: 75}
+      notes: "The top of a pseudogley horizon within 75 cm."
+    - code: "C1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Podzolic Andosols."
+  "C2":
+    - code: "C2AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw", "gw_gley"], to: 50}
+      notes: "The top of a layer with the groundwater wetness feature or of a groundwater gley layer within 50 cm."
+    - code: "C2HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "C2TH"
+      name: "Thapto-humic {parent}"
+      name_native: "埋没腐植質{parent}"
+      tests:
+        all_of:
+          - buried_humic_scsj: {within: 50}
+      notes: "The top of a buried humic layer within 50 cm."
+    - code: "C2HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Regosolic Andosols."
+  "C3":
+    - code: "C3PE"
+      name: "Peaty {parent}"
+      name_native: "泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_scsj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of peat material within 100 cm."
+    - code: "C3CU"
+      name: "Cumulic {parent}"
+      name_native: "厚層{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 50}
+      notes: "A humic or polyhumic surface horizon 50 cm or more thick."
+    - code: "C3HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Gleyed Andosols."
+  "C4":
+    - code: "C4PE"
+      name: "Peaty {parent}"
+      name_native: "泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_scsj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of peat material within 100 cm."
+    - code: "C4TU"
+      name: "Thapto-upland {parent}"
+      name_native: "下層台地{parent}"
+      tests:
+        all_of:
+          - thapto_upland_scsj: {within: 50}
+      notes: "The top of a buried non-kuroboku upland soil within 50 cm."
+    - code: "C4EF"
+      name: "Endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_scsj: {within: 75, cum: 25, mode: "window"}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "C4CU"
+      name: "Cumulic {parent}"
+      name_native: "厚層{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 50}
+      notes: "A humic or polyhumic surface horizon 50 cm or more thick."
+    - code: "C4HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Wet Andosols."
+  "C5":
+    - code: "C5AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_scsj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "C5CU"
+      name: "Cumulic {parent}"
+      name_native: "厚層{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 50}
+      notes: "A humic or polyhumic surface horizon 50 cm or more thick."
+    - code: "C5TH"
+      name: "Thapto-humic {parent}"
+      name_native: "埋没腐植質{parent}"
+      tests:
+        all_of:
+          - buried_humic_scsj: {within: 50}
+      notes: "The top of a buried humic layer within 50 cm."
+    - code: "C5HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A polyhumic or humic surface horizon."
+    - code: "C5BH"
+      name: "Brown-humic {parent}"
+      name_native: "腐植質褐色{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25, colour: false}
+      notes: "The requirements of the humic surface horizon other than its colour."
+    - code: "C5AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw", "sw", "gley_layer"], to: 75}
+      notes: "The top of a layer with the groundwater or surface-water wetness feature, or of a gley layer, within 75 cm."
+    - code: "C5HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Non-allophanic Andosols."
+  "C6":
+    - code: "C6AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_scsj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "C6TU"
+      name: "Thapto-upland {parent}"
+      name_native: "下層台地{parent}"
+      tests:
+        all_of:
+          - thapto_upland_scsj: {within: 50}
+      notes: "The top of a buried non-kuroboku upland soil within 50 cm."
+    - code: "C6EF"
+      name: "Endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_scsj: {within: 75, cum: 25, mode: "top"}
+      notes: "The top of alluvial deposits, 25 cm or more (cumulative), within 75 cm."
+    - code: "C6CU"
+      name: "Cumulic {parent}"
+      name_native: "厚層{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 50}
+      notes: "A humic or polyhumic surface horizon 50 cm or more thick."
+    - code: "C6TH"
+      name: "Thapto-humic {parent}"
+      name_native: "埋没腐植質{parent}"
+      tests:
+        all_of:
+          - buried_humic_scsj: {within: 50}
+      notes: "The top of a buried humic layer within 50 cm."
+    - code: "C6HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A polyhumic or humic surface horizon."
+    - code: "C6BH"
+      name: "Brown-humic {parent}"
+      name_native: "腐植質褐色{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25, colour: false}
+      notes: "The requirements of the humic surface horizon other than its colour."
+    - code: "C6AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw", "sw", "gley_layer"], to: 75}
+      notes: "The top of a layer with the groundwater or surface-water wetness feature, or of a gley layer, within 75 cm."
+    - code: "C6HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Allophanic Andosols."
