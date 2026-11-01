@@ -1,0 +1,31 @@
+# Sous-classes des sols peu évolués (p. 22-25), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "II":
+    - code: "II-1"
+      name: Sols peu évolués à permagel
+      name_native: Sols peu évolués à permagel
+      tests:
+        all_of:
+          - permafrost_weakly_developed_soils_cpcs: {}
+      notes: "Permafrost."
+    - code: "II-2"
+      name: Sols peu évolués humifères
+      name_native: Sols peu évolués humifères
+      tests:
+        all_of:
+          - humic_weakly_developed_soils_cpcs: {}
+      notes: "High organic matter in the A (5 % OM or more), pH under 6.8, not an arid climate."
+    - code: "II-3"
+      name: Sols peu évolués xériques
+      name_native: Sols peu évolués xériques
+      tests:
+        all_of:
+          - xeric_weakly_developed_soils_cpcs: {}
+      notes: "A dry climate (aridic, torric, xeric or ustic regime, or Köppen B or Cs), under 2 % OM in the A, no calcareous accumulation horizon."
+    - code: "II-4"
+      name: Sols peu évolués non climatiques
+      name_native: Sols peu évolués non climatiques
+      tests:
+        default: true
+      notes: "The other weakly developed soils: a recent deposit or recent erosion."

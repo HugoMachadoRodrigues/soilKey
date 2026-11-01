@@ -1,0 +1,25 @@
+# Sous-classes des sols ferrallitiques (p. 64-70); read on the thickness-weighted base saturation of the first 100 cm of the (B), with no default, French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "X":
+    - code: "X-1"
+      name: Sols ferrallitiques faiblement désaturés en (B)
+      name_native: Sols ferrallitiques faiblement désaturés en (B)
+      tests:
+        all_of:
+          - ferrallitic_weakly_desaturated_cpcs: {}
+      notes: "Base saturation of the (B) of 40 % or more; without it, a sum of bases above 3 cmol(+)/kg."
+    - code: "X-2"
+      name: Sols ferrallitiques moyennement désaturés en (B)
+      name_native: Sols ferrallitiques moyennement désaturés en (B)
+      tests:
+        all_of:
+          - ferrallitic_moderately_desaturated_cpcs: {}
+      notes: "Base saturation of the (B) of 20 to under 40 %."
+    - code: "X-3"
+      name: Sols ferrallitiques fortement désaturés en (B)
+      name_native: Sols ferrallitiques fortement désaturés en (B)
+      tests:
+        all_of:
+          - ferrallitic_strongly_desaturated_cpcs: {}
+      notes: "Base saturation of the (B) under 20 %; without it, a sum of bases under 1 cmol(+)/kg."

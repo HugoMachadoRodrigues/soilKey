@@ -36,7 +36,10 @@ Cartographie des Sols). \strong{Experimental}: this release keys the
 classes (sols mineraux bruts, sols peu evolues, vertisols, andosols,
 sols calcimagnesiques, sols isohumiques, sols brunifies, sols
 podzolises, sols a sesquioxydes de fer et manganese, sols ferrallitiques, sols
-hydromorphes, sols sodiques); the sub-classes, groups and subgroups
+hydromorphes, sols sodiques) and their 35 sub-classes, the climatic
+ones read from \code{site$koppen_climate}, else the USDA soil
+temperature and moisture regimes, else the latitude (with no climate,
+the non-climatic or temperate sub-class); the groups and subgroups
 follow. The names are French, as the text writes them, in \code{name}
 and in \code{levels$name_native}.
 }

@@ -1,0 +1,24 @@
+# Sous-classes des sols hydromorphes (p. 73-76), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "XI":
+    - code: "XI-1"
+      name: Sols hydromorphes organiques
+      name_native: Sols hydromorphes organiques
+      tests:
+        all_of:
+          - hydromorphic_organic_cpcs: {}
+      notes: "Peat: more than 30 % OM (20 % in sandy material) over 40 cm or more of the top 80 cm."
+    - code: "XI-2"
+      name: Sols hydromorphes moyennement organiques
+      name_native: Sols hydromorphes moyennement organiques
+      tests:
+        all_of:
+          - hydromorphic_moderately_organic_cpcs: {}
+      notes: "8 to 30 % OM over 20 cm or more from the mineral surface, over a gley or stagnogley."
+    - code: "XI-3"
+      name: Sols hydromorphes minéraux ou peu humifères
+      name_native: Sols hydromorphes minéraux ou peu humifères
+      tests:
+        default: true
+      notes: "The other hydromorphic soils."

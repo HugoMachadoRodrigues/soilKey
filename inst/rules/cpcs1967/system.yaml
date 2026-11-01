@@ -9,7 +9,7 @@ namespace: cpcs
 classifier: classify_cpcs1967
 result_slot: cpcs1967
 top_level: classes
-levels: [classes]
+levels: [classes, subclasses]
 display:
   en: "French soil classification CPCS (1967)"
   pt: "Classificação francesa de solos CPCS (1967)"
@@ -22,7 +22,7 @@ citation: >
   Association Française pour l'Étude du Sol (2011), with corrections by
   D. Baize.
 version: "Classification des sols, édition 1967 (AFES digitisation of 2011)"
-implementation_status: "soilKey v0.9.330 -- the 12 classes, keyed in an order built from the text's statements of precedence; the sub-classes, groups and subgroups follow"
+implementation_status: "soilKey v0.9.331 -- the 12 classes, keyed in an order built from the text's statements of precedence, and their 35 sub-classes (the climatic ones from the Koppen climate or the USDA regimes); the groups and subgroups follow"
 source: |
   Commission de Pédologie et de Cartographie des Sols (1967). Classification
   des sols. The definitions and rules of classification of each class

@@ -1,0 +1,24 @@
+# Sous-classes des sols calcimagnésiques (p. 36-38), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "V":
+    - code: "V-3"
+      name: Sols gypseux
+      name_native: Sols gypseux
+      tests:
+        all_of:
+          - gypseous_soils_cpcs: {}
+      notes: "Gypsum in the A: 5 % or more, or visible gypsum."
+    - code: "V-1"
+      name: Sols carbonatés
+      name_native: Sols carbonatés
+      tests:
+        all_of:
+          - carbonated_soils_cpcs: {}
+      notes: "Carbonate in the fine earth of the A: 1 % or more, or an effervescence moderate or stronger."
+    - code: "V-2"
+      name: Sols saturés
+      name_native: Sols saturés
+      tests:
+        default: true
+      notes: "The other calcimagnesic soils."
