@@ -67,10 +67,11 @@ classify_scsj2017 <- function(pedon, rules = NULL,
                               on_missing = c("warn", "silent", "error"),
                               gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
-  if (inherits(pedon, "PedonRecord")) pedon <- .cssc_prepare_pedon(pedon)
+  # gap-fill once, so that the key and the phases read the same pedon
+  if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(.cssc_prepare_pedon(pedon), gapfill)
   rules <- rules %||% load_rules("scsj2017")
   res <- classify_hierarchical("scsj2017", pedon, rules = rules,
-                               on_missing = on_missing, gapfill = gapfill)
+                               on_missing = on_missing, gapfill = FALSE)
   # v0.9.324: the soil phases (chapter V), beside the class name
   if (inherits(pedon, "PedonRecord")) res$phases <- .scsj_phases(pedon, res)
   if (inherits(pedon, "PedonRecord") &&
