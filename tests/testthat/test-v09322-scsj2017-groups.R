@@ -200,7 +200,9 @@ test_that("Volcanogenous Regosols: a buried row lends no thickness to a thin B a
             oc_pct = c(0.5, 0.3, 1.0, 1.5), phosphate_absorption_coef = c(250, 200, 600, 900),
             munsell_hue_moist = "10YR", munsell_value_moist = c(5, 6, 4, 4), munsell_chroma_moist = c(3, 3, 4, 4),
             structure_grade = c("structureless", "structureless", "moderate", "moderate"),
-            field_texture = c("loamy sand", "sand", "loam", "loam"), clay_pct = c(4, 2, 15, 18),
+            field_texture = c("sandy loam", "sandy loam", "loam", "loam"), clay_pct = c(10, 10, 12, 12),
             layer_origin = c("pumice", "pumice", "weathered andesite", "weathered andesite"), redoximorphic_features_pct = 0)
-  expect_true(volcanogenous_regosols_scsj(.jp(h))$passed)
+  x <- .scsj_profile(.jp(h))
+  expect_true(.scsj_horizon_flags(x)$weathered[3])          # the Bw with the Bwb: 45 cm
+  expect_true(volcanogenous_regosols_scsj(.jp(h))$passed)   # the Bw alone: 10 cm
 })
