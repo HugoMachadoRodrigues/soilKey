@@ -386,3 +386,15 @@ test_that("Red-Yellow soils: the 25 cm are those of one horizon (Hugo, 2026-11-0
                        horizons = ensure_horizon_schema(data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
   expect_false(isTRUE(red_yellow_soils_scsj(q)$passed))
 })
+
+test_that("no subsurface section: neither base-status criterion is met (Hugo, 2026-11-01)", {
+  skip_on_cran()
+  p <- make_scsj2017_example("eutrosol")
+  p$horizons$top_cm <- c(0, 20, 45, 80); p$horizons$bottom_cm <- c(20, 45, 80, 110)
+  p$horizons$gravel_pct <- c(0, 40, 40, 40)
+  x <- .scsj_profile(p)
+  expect_length(.scsj_control(x)$rows, 0)
+  bs <- .scsj_base_status(x)
+  expect_false(bs$low); expect_false(bs$high)
+  expect_false(eutrosols_scsj(p)$passed)
+})
