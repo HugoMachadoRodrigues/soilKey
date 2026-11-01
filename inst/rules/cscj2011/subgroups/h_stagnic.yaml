@@ -1,0 +1,68 @@
+# Subgroups of the Stagnic great group, Comprehensive Soil Classification System of
+# Japan, First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the text;
+# see R/diagnostics-cscj-subgroups.R and inst/rules/cscj2011/readings.yaml. Names are
+# written on the group's name.
+subgroups:
+  "H1":
+    - code: "H1IW"
+      name: "Irrigation water-aquic {parent}"
+      name_native: "水田型{parent}"
+      tests:
+        all_of:
+          - paddy_reverse_gley_cscj: {}
+      notes: "A paddy reverse gley layer."
+    - code: "H1EP"
+      name: "Epi-peaty {parent}"
+      name_native: "表層泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_cscj: {within: 25, cum: 10}
+      notes: "10 cm or more (cumulative) of peat material within 25 cm."
+    - code: "H1HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "H1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Stagnogley soils."
+  "H2":
+    - code: "H2AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_cscj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "H2GA"
+      name: "Groundwater-aquic {parent}"
+      name_native: "地下水型{parent}"
+      tests:
+        all_of:
+          - wet_top_cscj: {features: ["gw", "gley"], from: 50, to: 75, thick: 10}
+      notes: "The top of a layer 10 cm or more thick with the groundwater wetness feature or the gley feature at 50 to 75 cm."
+    - code: "H2HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_cscj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "H2AE"
+      name: "Aeric {parent}"
+      name_native: "褐色{parent}"
+      tests:
+        all_of:
+          - no_wet_top_cscj: {features: ["pseudogley"], to: 30, gw_thick: 10}
+      notes: "Within 30 cm, no pseudogley horizon and no layer 10 cm or more thick with the groundwater wetness feature."
+    - code: "H2HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Pseudogley soils."

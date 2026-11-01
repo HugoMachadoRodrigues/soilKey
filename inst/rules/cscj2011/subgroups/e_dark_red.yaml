@@ -1,0 +1,47 @@
+# Subgroups of the Dark Red great group, Comprehensive Soil Classification System of
+# Japan, First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the text;
+# see R/diagnostics-cscj-subgroups.R and inst/rules/cscj2011/readings.yaml. Names are
+# written on the group's name.
+subgroups:
+  "E1":
+    - code: "E1AR"
+      name: "Argic {parent}"
+      name_native: "粘土集積{parent}"
+      tests:
+        all_of:
+          - argic_cscj: {}
+      notes: "An argic horizon."
+    - code: "E1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Calcaric Dark Red soils."
+  "E2":
+    - code: "E2AR"
+      name: "Argic {parent}"
+      name_native: "粘土集積{parent}"
+      tests:
+        all_of:
+          - argic_cscj: {}
+      notes: "An argic horizon."
+    - code: "E2HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Dystric Dark Red soils."
+  "E3":
+    - code: "E3AR"
+      name: "Argic {parent}"
+      name_native: "粘土集積{parent}"
+      tests:
+        all_of:
+          - argic_cscj: {}
+      notes: "An argic horizon."
+    - code: "E3HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Eutric Dark Red soils."

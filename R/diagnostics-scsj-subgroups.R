@@ -280,6 +280,8 @@ andic_subgroup_scsj <- function(pedon) {
   pac <- .scsj_col(h, "phosphate_absorption_coef"); pr <- .scsj_col(h, "phosphate_retention_pct")
   alo <- .scsj_col(h, "al_ox_pct"); feo <- .scsj_col(h, "fe_ox_pct")
   af <- ifelse(is.na(alo) | is.na(feo), NA_real_, alo + feo / 2)
+  # the CSCJ gives P retention as the only substitute
+  if (identical(x$edition, "cscj2011")) af <- rep(NA_real_, length(af))
   sub_pass <- (!is.na(pr) & pr >= 60) | (!is.na(af) & af >= 1.2)
   rows <- ifelse(!is.na(pac), pac >= 1000, ifelse(sub_pass, TRUE, ifelse(!is.na(pr) | !is.na(af), FALSE, NA)))
   passed <- .scsj_at_least(.scsj_cum(x, rows, 0, 50), 25)
@@ -397,7 +399,9 @@ brown_layer_scsj <- function(pedon, within = 75, thick = 15) {
   x <- .scsj_profile(pedon)
   if (is.na(x$surface)) return(.scsj_no_surface("brown_layer_scsj", x, "III E, p. 10"))
   surface <- .scsj_plough_rows(x) | (!is.na(x$role) & grepl("^A", x$role))
-  rows <- ifelse(surface, FALSE, x$colour$brown)
+  # brown (SCSJ), yellowish brown without 5YR (CSCJ)
+  word <- if (identical(x$edition, "cscj2011")) x$colour$yellowish_brown else x$colour$brown
+  rows <- ifelse(surface, FALSE, word)
   passed <- .scsj_top_in(x, rows, -Inf, within, thick)
   .scsj_result("brown_layer_scsj", passed, which(rows %in% TRUE), list(),
                if (is.na(passed)) "munsell_hue_moist" else character(0), "III E, p. 10")
