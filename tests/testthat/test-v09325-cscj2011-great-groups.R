@@ -178,3 +178,31 @@ test_that("review: limestone words, the edition never leaks into the SCSJ, gates
   expect_true(any(grepl("andosols_cscj", vapply(r$trace, function(t) t$code %||% t$name %||% "", ""))) ||
               any(grepl("andosols_cscj", utils::capture.output(str(r$trace)))))
 })
+
+test_that("verification: maybe-B rows all agree, a thin B is not the B below, undescribed depth", {
+  skip_on_cran()
+  dr <- function(p) { x <- .scsj_profile(soilKey:::.cscj_mark(p)); soilKey:::.cscj_subsurface_dark_red(x) }
+  # two undesignated rows whose B status is undecided, of different colours
+  p1 <- .jp(list(designation = c("A", "Bt", NA, NA, "C"), top_cm = c(0, 10, 20, 50, 60), bottom_cm = c(10, 20, 50, 60, 100),
+                 munsell_hue_moist = c("10YR", "2.5YR", "2.5YR", "10YR", "10YR"), munsell_value_moist = c(3, 3, 3, 4, 5),
+                 munsell_chroma_moist = c(2, 4, 4, 4, 4), oc_pct = c(3, 1, 0.8, 0.5, 0.3), clay_pct = c(20, 35, NA, NA, 25),
+                 clay_films_amount = c(NA, "common", NA, NA, NA)))
+  expect_false(isTRUE(dr(p1)))
+  # a thin B ending inside the section is not "the B below": the thickest layer
+  p2 <- .jp(list(designation = c("A", "Bt1", "Bt2", "C"), top_cm = c(0, 12, 20, 24), bottom_cm = c(12, 20, 24, 100),
+                 munsell_hue_moist = c("10YR", "2.5YR", "2.5YR", "10YR"), munsell_value_moist = c(3, 3, 3, 5),
+                 munsell_chroma_moist = c(2, 4, 4, 4), oc_pct = c(3, 1, 0.8, 0.3), structure_grade = "moderate"))
+  expect_false(dr(p2))
+  # undescribed depth in the section, with no B there
+  p3 <- .jp(list(designation = c("A", "Bt", "C", "2Bw"), top_cm = c(0, 12, 24, 70), bottom_cm = c(12, 24, 52, 100),
+                 munsell_hue_moist = c("10YR", "10YR", "10YR", "2.5YR"), munsell_value_moist = c(3, 4, 5, 3),
+                 munsell_chroma_moist = c(2, 4, 4, 4), oc_pct = c(3, 1, 0.5, 0.3), structure_grade = "moderate"))
+  expect_true(is.na(dr(p3)))
+  # negated travertine; a Japanese negation after the word
+  p <- make_cscj2011_example("dark_red")
+  p$horizons$layer_origin <- "travertine-free shale"; p$horizons$rock_origin <- NA; p$site$parent_material <- "shale"
+  p$horizons$caco3_pct <- 0
+  expect_false(soilKey:::.cscj_limestone_origin(.scsj_profile(soilKey:::.cscj_mark(p))))
+  p$horizons$layer_origin <- "\u77f3\u7070\u5ca9\u3067\u306a\u3044\u9801\u5ca9"
+  expect_false(soilKey:::.cscj_limestone_origin(.scsj_profile(soilKey:::.cscj_mark(p))))
+})

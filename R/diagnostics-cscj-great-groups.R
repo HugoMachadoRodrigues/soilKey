@@ -55,11 +55,13 @@ brown_forest_soils_cscj <- .cscj_shared(function(p) brown_forest_soils_scsj(p), 
 # material (not for a profile that is all fill), negated words taken out;
 # or a layer to 1 m with 40 % or more CaCO3. Nothing recorded: not (Hugo,
 # 2026-11-01).
-.SCSJ_LIMESTONE_RE <- paste0("\\b(limestones?|calcareous|corals?|marls?|chalk|travertine)\\b|",
+.SCSJ_LIMESTONE_RE <- paste0("\\b(limestones?|calcareous|corals?|coralline|marls?|marly|chalk|chalky|travertine)\\b|",
                              "\u77f3\u7070\u5ca9|\u77f3\u7070\u8cea|\u73ca\u745a|\u30b5\u30f3\u30b4|\u6ce5\u7070\u5ca9")
-.SCSJ_NOT_LIMESTONE_RE <- paste0("\\b(non[- ]?|not +|no +|without +|free of +)(limestones?|calcareous|corals?|marls?|chalk)\\b|",
-                                 "\\b(limestone|carbonate|calcareous)[- ]free\\b|",
-                                 "\u77f3\u7070\u5ca9\u4ee5\u5916|\u975e\u77f3\u7070\u8cea|\u975e\u77f3\u7070")
+.SCSJ_NOT_LIMESTONE_RE <- paste0("\\b(non[- ]?|not +|no +|without +|free of +|lacking +)",
+                                 "(limestones?|calcareous|corals?|coralline|marls?|marly|chalk|chalky|travertine)\\b|",
+                                 "\\b(limestone|carbonate|calcareous|coral|travertine)[- ]free\\b|",
+                                 "(\u77f3\u7070\u5ca9|\u77f3\u7070\u8cea|\u73ca\u745a|\u30b5\u30f3\u30b4)(\u4ee5\u5916|\u3067(\u306f)?\u306a\u3044|\u306a\u3057|\u3092\u542b\u307e\u306a\u3044)|",
+                                 "\u975e\u77f3\u7070\u8cea|\u975e\u77f3\u7070")
 .cscj_limestone_origin <- function(x) {
   soil <- !is.na(x$dtop) & x$dtop < 100
   txt <- c(.scsj_txt(x$h, "rock_origin")[soil], .scsj_txt(x$h, "layer_origin")[soil])
@@ -83,7 +85,8 @@ brown_forest_soils_cscj <- .cscj_shared(function(p) brown_forest_soils_scsj(p), 
 .cscj_subsurface_dark_red <- function(x, f = .scsj_horizon_flags(x)) {
   if (is.na(x$surface)) return(NA)
   dr <- x$colour$dark_red
-  is_b <- ifelse(x$role %in% "other", NA,
+  wa <- f$weathered %in% TRUE | f$argic %in% TRUE
+  is_b <- ifelse(x$role %in% "other", ifelse(wa, TRUE, NA),
           ifelse(!is.na(x$role), grepl("^B", x$role),
           ifelse(f$weathered %in% TRUE | f$argic %in% TRUE, TRUE,
           ifelse(f$weathered %in% FALSE & f$argic %in% FALSE, FALSE, NA))))
@@ -106,11 +109,16 @@ brown_forest_soils_cscj <- .cscj_shared(function(p) brown_forest_soils_scsj(p), 
   }
   sure <- which(is_b[rows] %in% TRUE); maybe <- which(is.na(is_b[rows]))
   if (length(sure)) return(thickest(sure, maybe))
-  # no B surely in the section: the first B below, else the thickest layer
+  # no B surely in the section: undescribed depth there may hold one
+  if (und >= 5) return(NA)
+  # the first B below (a horizon reaching below the section), else the
+  # thickest layer of the section; undescribed depth before that B may hold
+  # another
   below_of <- function() {
     below <- x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= cs$from & !(x$ord %in% rows) &
-                   !(x$mineral[x$ord] %in% FALSE)]
+                   (is.na(x$dbot[x$ord]) | x$dbot[x$ord] > cs$to + 0.5) & !(x$mineral[x$ord] %in% FALSE)]
     for (i in below) {
+      if (x$dtop[i] > cs$to + 0.5 && .scsj_cum(x, rep(FALSE, x$n), cs$to, x$dtop[i])$poss > 0.5) return(NA)
       if (is_b[i] %in% TRUE) return(dr[i])
       if (is.na(is_b[i])) return(NA)
     }
@@ -123,8 +131,9 @@ brown_forest_soils_cscj <- .cscj_shared(function(p) brown_forest_soils_scsj(p), 
   }
   fallback <- below_of()
   if (!length(maybe)) return(fallback)
-  # rows that may be B: their colour, or the fallback, must agree
-  agree(c(thickest(maybe), fallback))
+  # rows that may be B: any of them may be the only one, so their colours
+  # and the fallback must agree
+  agree(c(dr[rows[maybe]], fallback))
 }
 
 # Dark Red soils (CSCJ 2011, great group E): (1) the top of a weathered or
@@ -150,8 +159,8 @@ dark_red_soils_cscj <- function(pedon) {
   .cscj_result("dark_red_soils_cscj", passed, b$rows,
                list(weathered_or_argic_within_50 = b$passed, dark_red_subsurface = dark,
                     limestone_origin = lime, base_rich_subsurface = bs$high, no_rock_within_30 = rock),
-               if (is.na(passed)) c("munsell_hue_moist", "munsell_value_moist", "ph_h2o", "bs_pct", "rock_origin",
-                                    "designation", "structure_grade") else character(0),
+               if (is.na(passed)) c("munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist", "ph_h2o",
+                                    "bs_pct", "designation", "structure_grade", "bottom_cm") else character(0),
                "V E, p. 29")
 }
 
