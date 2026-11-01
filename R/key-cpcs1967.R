@@ -14,7 +14,7 @@
 #' Cartographie des Sols). \strong{Experimental}: this release keys the
 #' classes (sols mineraux bruts, sols peu evolues, vertisols, andosols,
 #' sols calcimagnesiques, sols isohumiques, sols brunifies, sols
-#' podzolises, sols a sesquioxydes de fer, sols ferrallitiques, sols
+#' podzolises, sols a sesquioxydes de fer et manganese, sols ferrallitiques, sols
 #' hydromorphes, sols sodiques); the sub-classes, groups and subgroups
 #' follow. The names are French, as the text writes them, in \code{name}
 #' and in \code{levels$name_native}.
@@ -23,7 +23,8 @@
 #' the text's own statements of precedence: raw mineral soils, vertisols,
 #' sodic soils, andosols, podzolised, ferrallitic and sesquioxide soils,
 #' hydromorphic soils, weakly developed soils, isohumic soils,
-#' calcimagnesic soils, and the brunified soils last. Every threshold of
+#' calcimagnesic soils, and the brunified soils last; a peat is a
+#' hydromorphic soil, whatever lies under it. Every threshold of
 #' the text is in % organic matter, read as 1.72 x organic carbon, with
 #' depths from the top of the first mineral horizon.
 #'

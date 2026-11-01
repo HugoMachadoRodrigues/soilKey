@@ -292,3 +292,66 @@ test_that("after the canonical profiles: iron, the fall of OM, the solum, the cr
     expect_identical(.cl(get(paste0("make_", k, "_canonical"))())[["code"]], can[[k]], info = k)
   }
 })
+
+test_that("after the reviews: peat, the A2 without a B, the notation, data before the notation", {
+  skip_on_cran()
+  # a peat over raw sand is a hydromorphic soil, not a raw mineral soil
+  pt <- .fr(list(designation = c("H1", "H2", "C"), top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 120),
+                 oc_pct = c(40, 35, 0.1), clay_pct = c(NA, NA, 4), silt_pct = c(NA, NA, 4), sand_pct = c(NA, NA, 92)),
+            list(designation_system = NULL, drainage_class = "very poorly drained"))
+  expect_false(raw_mineral_soils_cpcs(pt)$passed)
+  expect_identical(.cl(pt)[["code"]], "XI")
+  # a peat over a vertisol: a hydromorphic soil
+  v <- make_cpcs1967_example("vertisol")
+  h <- as.data.frame(v$horizons); h$top_cm <- h$top_cm + 60; h$bottom_cm <- h$bottom_cm + 60
+  peat <- h[1:2, ]; peat[] <- NA; peat$designation <- c("H1", "H2"); peat$top_cm <- c(0, 30); peat$bottom_cm <- c(30, 60)
+  peat$oc_pct <- c(30, 28)
+  pv <- PedonRecord$new(site = v$site, horizons = ensure_horizon_schema(data.table::as.data.table(rbind(peat, h))))
+  expect_false(vertisols_cpcs(pv)$passed)
+  expect_identical(.cl(pv)[["code"]], "XI")
+  # an A2 that is not ashy, and no B: a brunified soil
+  a2 <- .fr(list(designation = c("A1", "A2", "C"), top_cm = c(0, 10, 30), bottom_cm = c(10, 30, 80),
+                 oc_pct = c(2, 0.5, 0.2), n_total_pct = c(0.18, 0.05, 0.02), clay_pct = 15, silt_pct = 40, sand_pct = 45,
+                 ph_h2o = 5.5, bs_pct = 40, munsell_hue_moist = "10YR", munsell_value_moist = c(3, 5, 5),
+                 munsell_chroma_moist = c(2, 4, 4), munsell_value_dry = c(4, 6, 6), munsell_chroma_dry = c(2, 4, 4),
+                 redoximorphic_features_pct = 0))
+  expect_identical(.cl(a2)[["code"]], "VII")
+  # A1 and A2 of the FAO notation are subdivisions of the A
+  f <- soilKey:::.cpcs_designations(c("A1", "A2", "Bt", "C"), list())
+  expect_identical(f$role[2], "A")
+  # CPCS symbols after a B: gypsum, not a podzolic B nor a sodic soil
+  g <- .fr(list(designation = c("A1", "BCs", "Cs"), top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100),
+                oc_pct = c(1, 0.3, 0.1), clay_pct = 25, silt_pct = 40, sand_pct = 35, ec_dS_m = c(9, 10, 10),
+                na_cmol = 0.6, cec_cmol = 15, ph_h2o = 7.8, bs_pct = 100, caco3_pct = 2))
+  x <- soilKey:::.cpcs_designations(c("A1", "BCs", "Cs"), list(designation_system = "cpcs"))
+  expect_true(all(x$cs[2:3])); expect_false(any(x$fe))
+  expect_false(sodic_soils_cpcs(g)$passed)
+  # f is not frozen on an organic master (the Canadian and New Zealand Of)
+  o <- make_cssc3_example("organic")
+  expect_false(soilKey:::.cpcs_permafrost(soilKey:::.cpcs_profile(o)))
+  # a g with 0 % mottles recorded and no reduced matrix is not hydromorphic
+  r <- .fr(list(designation = c("A1", "A2g", "Btg", "C"), top_cm = c(0, 15, 35, 90), bottom_cm = c(15, 35, 90, 150),
+                oc_pct = c(2, 0.5, 0.3, 0.2), clay_pct = c(18, 15, 32, 25), munsell_hue_moist = "10YR",
+                munsell_value_moist = c(4, 6, 4, 5), munsell_chroma_moist = c(3, 2, 4, 3), redoximorphic_features_pct = 0))
+  expect_false(hydromorphic_soils_cpcs(r)$passed)
+  r$horizons$redoximorphic_features_pct <- NA_real_
+  expect_true(hydromorphic_soils_cpcs(r)$passed)
+  # numerals written apart, notes, New Zealand brackets
+  y <- soilKey:::.cpcs_designations(c("A1", "II B3", "III C2", "IV R", "Bw(h)"), list(designation_system = "cpcs"))
+  expect_identical(y$lith, c(1L, 2L, 3L, 4L, 1L)); expect_identical(y$role[4], "R"); expect_true(y$bstruct[5])
+  # negated words are not records
+  e <- make_cpcs1967_example("weakly_developed"); e$horizons$layer_origin <- "marl"; e$horizons$oc_pct <- c(4, 0.6, 0.2)
+  e$site$surface_condition <- "no erosion"
+  expect_false(soilKey:::.cpcs_recent_erosion(soilKey:::.cpcs_profile(e)))
+  nc <- make_cpcs1967_example("brunified"); nc$site$parent_material <- "non-calcareous shale"
+  expect_false(isTRUE(soilKey:::.cpcs_camg_source(soilKey:::.cpcs_profile(nc))))
+  # organic matter not recorded leaves the isohumic test undecided
+  iso <- make_cpcs1967_example("isohumic"); iso$horizons$oc_pct <- c(3, NA, NA, NA)
+  expect_true(is.na(isohumic_soils_cpcs(iso)$passed))
+  # a partly designated ferrallitic soil: the undesignated rows below the A are the B
+  fe <- make_cpcs1967_example("ferrallitic"); fe$horizons$designation <- c("A1", NA, NA, NA)
+  expect_true(ferrallitic_soils_cpcs(fe)$passed)
+  # a row with no top depth keeps its B
+  b <- make_cpcs1967_example("brunified"); b$horizons$top_cm[2] <- NA
+  expect_true(soilKey:::.cpcs_horizon_types(soilKey:::.cpcs_profile(b), b)$b_any)
+})

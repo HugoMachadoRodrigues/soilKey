@@ -4,7 +4,7 @@
 
 `classify_cpcs1967()` keys a pedon to the twelve classes of the French soil classification of 1967 (Commission de Pédologie et de Cartographie des Sols, *Classification des sols*), a system of its own beside the other national systems. `make_cpcs1967_example()` gives one profile per class. The names are French, as the text writes them, in `name` and `levels$name_native`. The sub-classes, groups and subgroups follow.
 
-* **An order of classes.** The CPCS gives no key. soilKey keys the classes in an order built from the text's statements of precedence: I sols minéraux bruts, III vertisols, XII sols sodiques, IV andosols, VIII sols podzolisés, X sols ferrallitiques, IX sols à sesquioxydes de fer, XI sols hydromorphes, II sols peu évolués, VI sols isohumiques, V sols calcimagnésiques, VII sols brunifiés.
+* **An order of classes.** The CPCS gives no key. soilKey keys the classes in an order built from the text's statements of precedence: I sols minéraux bruts, III vertisols, XII sols sodiques, IV andosols, VIII sols podzolisés, X sols ferrallitiques, IX sols à sesquioxydes de fer et manganèse, XI sols hydromorphes, II sols peu évolués, VI sols isohumiques, V sols calcimagnésiques, VII sols brunifiés.
 * **The old French notation** (Aoo, Ao, A1, A2, A3, (B), B, Bh, Bfe, Bt, Cca, Can, Cs, Cn, Sa, g, G, R, a Roman numeral for a change of parent material), declared with `site$designation_system = "cpcs"` or recognised by its own symbols, beside the FAO letters. In a profile without designations, soilKey's diagnostic horizons stand in for the profile type.
 * **The class tests** read organic matter as 1.72 × organic carbon, with depths from the top of the first mineral horizon:
   * the intensity of hydromorphy and halomorphy that makes classes XI and XII;
@@ -39,6 +39,10 @@
   * VI: a gradual fall over half the solum, OM minima by texture, S/T of 50 % or more in the upper horizons and 80 % in the B (p. 39);
   * VII: the remaining soils with a B or (B).
 * **Supporting readings:** the ashy A2 is albic material; in an undesignated profile, the B is read from soilKey's diagnostics.
+* **After the reviews:**
+  * the notation gives the profile type (B, (B), A2), and the recorded data the properties: a g with 0 % mottles recorded is not a hydromorphic layer;
+  * class VII takes the soils with an A2 and no B;
+  * a peat excludes the mineral classes keyed before class XI, and class I takes no organic layer.
 
 The other systems do not change.
 

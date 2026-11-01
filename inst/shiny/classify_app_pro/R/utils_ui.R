@@ -111,7 +111,7 @@ pro_fixture_catalog <- function() {
                "Vertisols" = "vertisol", "Andosols" = "andosol",
                "Sols calcimagn\u00e9siques" = "calcimagnesic", "Sols isohumiques" = "isohumic",
                "Sols brunifi\u00e9s" = "brunified", "Sols podzolis\u00e9s" = "podzolised",
-               "Sols \u00e0 sesquioxydes de fer" = "sesquioxide", "Sols ferrallitiques" = "ferrallitic",
+               "Sols \u00e0 sesquioxydes de fer et mangan\u00e8se" = "sesquioxide", "Sols ferrallitiques" = "ferrallitic",
                "Sols hydromorphes" = "hydromorphic", "Sols sodiques" = "sodic")
 )
 

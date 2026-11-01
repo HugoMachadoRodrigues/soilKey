@@ -17,9 +17,27 @@
 .cpcs_notation <- function(desig, site) {
   d <- tolower(trimws(as.character((site %||% list())$designation_system %||% NA)[1L]))
   if (!is.na(d) && nzchar(d) && d != "na") return(d %in% .CPCS_DECLARED)
-  v <- trimws(as.character(desig)); v <- v[!is.na(v) & nzchar(v)]
+  v <- vapply(as.character(desig), .cpcs_symbol, "")
+  v <- v[!is.na(v) & nzchar(v)]
   if (!length(v)) return(FALSE)
-  any(grepl("^(A00|Aoo|AOO|A0|Ao|AO)$|\\((A|B)\\)|fe|[ABC][Cc]an?$|^[IVX0-9]*C(s|n|Sa|sa)$|^[IVX0-9]*G[or0]?$", v))
+  any(grepl(paste0("^(A00|Aoo|AOO|A0|Ao|AO)$|^\\((A|B)\\)|fe|",
+                   "^[IVX0-9]*[ABC][0-9]*(C(an?|s|n)|Sa)[0-9]*$|^[IVX0-9]*C[0-9]*c(an?|s|n)$|",
+                   "^[IVX0-9]*G[or0]?$|^[IVX0-9]*B[123]([0-9]|$)"), v))
+}
+
+# The symbol of a designation: a Roman or Arabic numeral written apart is
+# joined to the master ("II B3", p. 12); a word after a space or a slash
+# ("Btg/glossic") and a bracketed letter after the master (the New Zealand
+# "Bw(h)") are notes; a designation written all in lower case takes a
+# capital master.
+.cpcs_symbol <- function(d) {
+  if (is.na(d) || !nzchar(trimws(d))) return(NA_character_)
+  s <- sub("^([IVX]+|[0-9]+)[[:space:]]+(?=[A-Z(])", "\\1", trimws(as.character(d)), perl = TRUE)
+  s <- strsplit(s, "[[:space:]]+")[[1L]][1L]
+  s <- sub("/[a-z]{3,}.*$", "", s)
+  s <- gsub("(?<=[A-Za-z0-9])\\([a-z]{1,3}\\)", "", s, perl = TRUE)
+  if (nchar(s) > 1L && grepl("^[abcer][a-z0-9]*$", s)) s <- paste0(toupper(substr(s, 1L, 1L)), substring(s, 2L))
+  s
 }
 
 # One designation: its master (role), and the symbols.
@@ -37,15 +55,12 @@
               sa = FALSE, p = FALSE, x = FALSE, m = FALSE, frozen = FALSE, buried = FALSE, natric = FALSE,
               ss = FALSE, wrock = FALSE, trans = FALSE, lith = 1L)
   if (is.na(d) || !nzchar(trimws(d))) return(out)
-  # the symbol only: a word written after a space or a slash ("Btg/glossic")
-  # is a note, not symbols
-  s <- strsplit(trimws(as.character(d)), "[[:space:]]+")[[1L]][1L]
-  s <- sub("/[a-z]{3,}.*$", "", s)
+  s <- .cpcs_symbol(d)
   # a Roman (or Arabic) numeral before the master: a change of parent material
   lm <- regmatches(s, regexpr("^([IVX]+|[0-9]+)(?=[A-Z(])", s, perl = TRUE))
   if (length(lm) && nzchar(lm)) {
-    out$lith <- if (grepl("^[0-9]+$", lm)) as.integer(lm) else
-      c(I = 1L, II = 2L, III = 3L, IV = 4L, V = 5L, VI = 6L, VII = 7L, VIII = 8L, IX = 9L, X = 10L)[lm] %||% 2L
+    rom <- c("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV")
+    out$lith <- if (grepl("^[0-9]+$", lm)) as.integer(lm) else { k <- match(lm, rom); if (is.na(k)) 2L else k }
     s <- substring(s, nchar(lm) + 1L)
   }
   out$known <- TRUE
@@ -53,11 +68,15 @@
   pick <- function(pat, role) {
     if (grepl(pat, s, perl = TRUE)) { rest <<- sub(pat, "", s, perl = TRUE); out$role <<- role; TRUE } else FALSE
   }
-  if (pick("^\\(A\\)", "A")) out$embryo <- TRUE
+  if (cpcs && grepl("^[AB][0-9]*C(an?|s|n)([0-9]|$)", s)) {
+    out$role <- substr(s, 1L, 1L); rest <- substring(s, 2L)
+  }
+  else if (pick("^\\(A\\)", "A")) out$embryo <- TRUE
   else if (pick("^\\(B\\)", "B")) out$bstruct <- TRUE
   else if (pick("^(A00|Aoo|AOO|A0|Ao|AO)(?![0-9])", "O")) NULL
   else if (pick("^(L|F|H|O)", "O")) NULL
-  else if (pick("^(A2|E)", "E")) NULL
+  else if (cpcs && pick("^A2", "E")) NULL
+  else if (pick("^E", "E")) NULL
   else if (pick("^(A3|AB|A/B|AE)", "AB")) NULL
   else if (pick("^(AC|A/C)", "AC")) NULL
   else if (pick("^A", "A")) NULL
@@ -76,6 +95,9 @@
     hit
   }
   # the CPCS two-letter symbols first, then the single letters
+  # in the CPCS notation a C master followed by s or n is Cs (gypsum) or Cn
+  # (concretions)
+  if (cpcs && out$role %in% "C" && grepl("^(s|n)$", r0)) r0 <- paste0("C", r0)
   can <- take("[Cc]an")
   ca <- take("[Cc]a") || can
   cs <- if (cpcs) take("[Cc]s") else FALSE
@@ -125,6 +147,18 @@
       vapply(v, function(z) if (is.na(z)) NA else isTRUE(z), NA)
   })
   names(out) <- fields
+  # the Canadian, New Zealand and Australian notations (declared, or the
+  # country when none is declared): f on a B is iron (the podzolic Bf), not
+  # frozen
+  ds <- tolower(as.character((site %||% list())$designation_system %||% NA)[1L])
+  ct <- toupper(trimws(as.character((site %||% list())$country %||% NA)[1L]))
+  other <- (!is.na(ds) && grepl("cssc|canad|nzsc|new zealand|^nz$|asc|austral|field handbook|nchs", ds)) ||
+    ((is.na(ds) || !nzchar(ds) || ds == "na") && !is.na(ct) &&
+       ct %in% c("CA", "CAN", "CANADA", "NZ", "NZL", "NEW ZEALAND", "AU", "AUS", "AUSTRALIA"))
+  if (other && !cpcs) {
+    out$fe <- out$fe | (out$role %in% "B" & out$frozen %in% TRUE)
+    out$frozen <- rep(FALSE, length(out$frozen))
+  }
   out$cpcs <- cpcs
   out$any_known <- any(out$known)
   out
