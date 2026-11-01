@@ -133,6 +133,9 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       if (length(self$provisional_because) > 0L) {
         cli::cli_text("Provisional: undecided before it, {paste(self$provisional_because, collapse = ', ')}")
       }
+      if (is.data.frame(self$phases) && nrow(self$phases) > 0L) {
+        cli::cli_text("Phases: {paste(self$phases$name, collapse = '; ')}")
+      }
       if (length(self$qualifiers) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(self$qualifiers), collapse = ', ')}")
       }

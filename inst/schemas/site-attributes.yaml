@@ -777,5 +777,5 @@ attributes:
     section: "Description & notation"
     type: "character"
     unit: "-"
-    description: "The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile."
+    description: "The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols; the types of the other 1975 groups (BlD, lBlD, RC, YD(d), dRB ...) are read by their moisture letter, and PW (wet podzols) gives no development phase. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile; a recorded type also says forest land when no land use is recorded."
     systems: [scsj2017]

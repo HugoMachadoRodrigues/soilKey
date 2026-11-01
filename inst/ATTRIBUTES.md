@@ -413,7 +413,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `scsj_part` | - | logical | Internal: set by the SCSJ key on a part of a profile it keys on its own (the fill of Man-made soils, or the soil under it); the fill's own material is then read. Not for user data. | - | `scsj2017` |
 | `scsj_part_complete` | - | logical | Internal: with scsj_part, whether nothing lies below the part's last horizon (the fill; the soil under it only where the original profile ends on rock). Not for user data. | - | `scsj2017` |
 | `artefacts_organic` | - | logical | TRUE where the artificial material of the soil is mainly organic (household refuse and the like). SCSJ 2017 Organic Artifactual soils, read when no horizon records artefacts_organic. | - | `scsj2017` |
-| `forest_soil_type` | - | character | The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile. | - | `scsj2017` |
+| `forest_soil_type` | - | character | The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols; the types of the other 1975 groups (BlD, lBlD, RC, YD(d), dRB ...) are read by their moisture letter, and PW (wet podzols) gives no development phase. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile; a recorded type also says forest land when no land use is recorded. | - | `scsj2017` |
 
 ## Soil construction (soilKey Pro)
 

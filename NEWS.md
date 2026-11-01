@@ -2,18 +2,22 @@
 
 ## Japan: the soil phases of the Soil Classification System of Japan
 
-`classify_scsj2017()` now gives the soil phases of chapter V in `ClassificationResult$phases`, a new field (kind, code, English and Japanese name, basis). The class name is left as it is.
+`classify_scsj2017()` now gives the soil phases of chapter V in `ClassificationResult$phases`, a new field (kind, code, English and Japanese name, basis), which `print()` lists. The class name is left as it is.
 
 * **Temperature phase:** frigid, mesic, thermic, hyperthermic, from the mean annual soil temperature or the USDA soil temperature regime.
-* **Man-made phases:** mixed-layer, cut and fill phases for the other great groups; the gley, wet, gravelly or plain phase of the Artifactual soils, named by the artificial material; the fill over the original soil for the Reformed soils.
-* **Forest phases**, on forest or grazing land: the 1975 forest soil type when recorded (new site field `forest_soil_type`); otherwise the three development phases of the Podzols from the text's criteria (new horizon attribute `leached_spots`), and the seven moisture phases of the other forest soils from soilKey's reading of their descriptions.
+* **Man-made phases:** mixed-layer, cut and fill phases for the other great groups, the fill named by its materials; the gley, wet, gravelly or plain phase of the Artifactual soils, named by the artificial material; the fill over the original soil, with the same endings, for the Reformed soils.
+* **Forest phases**, on forest or grazing land: the 1975 forest soil type when recorded (new site field `forest_soil_type`, read in any spelling and for the other 1975 groups by their moisture letter); otherwise the three development phases of the Podzols on the key's own pairings (new horizon attribute `leached_spots`), and the seven moisture phases of the other forest soils from soilKey's reading of their descriptions.
+* A phase is given only when it is decided: a test earlier in its order that the data leave undecided gives none.
 
-### Hugo's decisions (2026-10-31)
+### Hugo's decisions (2026-10-31 and 2026-11-01)
 
 * The phases sit beside the class name, not in it.
 * The temperature phase reads the soil temperature or the USDA regime, with no estimate from the air.
-* One man-made phase for the Artifactual soils: gley before wet before gravelly.
-* The forest moisture phases: the recorded type, else rules from the structures, undecided when ambiguous.
+* One man-made phase for the Man-made soils: gley before wet before gravelly; the Reformed soils take it too, as the supplement's example.
+* The forest moisture phases: the recorded type, else rules from the structures, undecided when ambiguous. Slightly wet: no O, a crumb A of 25 cm or more, a B without blocky, nutty or granular structure. Moderately dry: nutty structure in the lower A and the upper B. Moderately moist, drier type: granular upper A or nutty lower A, no crumb required. Angular blocky is nutty.
+* The 1975 types of the other groups are read by their moisture letter.
+* A thin fill is named by its materials; mixing counts only below the plough layer; land consolidation alone is not a cut.
+* Undecided data give no phase.
 
 Other systems do not change.
 
