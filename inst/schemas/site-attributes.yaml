@@ -773,3 +773,9 @@ attributes:
     unit: "-"
     description: "TRUE where the artificial material of the soil is mainly organic (household refuse and the like). SCSJ 2017 Organic Artifactual soils, read when no horizon records artefacts_organic."
     systems: [scsj2017]
+  - name: forest_soil_type
+    section: "Description & notation"
+    type: "character"
+    unit: "-"
+    description: "The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile."
+    systems: [scsj2017]

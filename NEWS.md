@@ -1,3 +1,22 @@
+# soilKey 0.9.324 (2026-10-31)
+
+## Japan: the soil phases of the Soil Classification System of Japan
+
+`classify_scsj2017()` now gives the soil phases of chapter V in `ClassificationResult$phases`, a new field (kind, code, English and Japanese name, basis). The class name is left as it is.
+
+* **Temperature phase:** frigid, mesic, thermic, hyperthermic, from the mean annual soil temperature or the USDA soil temperature regime.
+* **Man-made phases:** mixed-layer, cut and fill phases for the other great groups; the gley, wet, gravelly or plain phase of the Artifactual soils, named by the artificial material; the fill over the original soil for the Reformed soils.
+* **Forest phases**, on forest or grazing land: the 1975 forest soil type when recorded (new site field `forest_soil_type`); otherwise the three development phases of the Podzols from the text's criteria (new horizon attribute `leached_spots`), and the seven moisture phases of the other forest soils from soilKey's reading of their descriptions.
+
+### Hugo's decisions (2026-10-31)
+
+* The phases sit beside the class name, not in it.
+* The temperature phase reads the soil temperature or the USDA regime, with no estimate from the air.
+* One man-made phase for the Artifactual soils: gley before wet before gravelly.
+* The forest moisture phases: the recorded type, else rules from the structures, undecided when ambiguous.
+
+Other systems do not change.
+
 # soilKey 0.9.323 (2026-10-31)
 
 ## Japan: the 120 subgroups of the Soil Classification System of Japan

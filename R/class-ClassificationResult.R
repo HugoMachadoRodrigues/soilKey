@@ -48,6 +48,11 @@
 #'                       provisional; these are those classes, as
 #'                       \code{"<level>:<code>"}. Empty when the assignment
 #'                       is firm or the classifier does not report it.
+#' @field phases         Soil phases of the systems that have them (the SCSJ
+#'                       2017: temperature, man-made and forest phases), a
+#'                       \code{data.frame} with \code{kind}, \code{code},
+#'                       \code{name}, \code{name_native} and \code{basis};
+#'                       \code{NULL} otherwise. Since v0.9.324.
 #'
 #' @export
 ClassificationResult <- R6::R6Class("ClassificationResult",
@@ -66,6 +71,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     system_id      = NULL,
     levels         = NULL,
     provisional_because = NULL,
+    phases         = NULL,
 
     #' @description Build a ClassificationResult.
     #' @param system System name.

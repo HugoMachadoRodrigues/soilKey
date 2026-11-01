@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.323)
+# soilKey -- recognised horizon attribute names (v0.9.324)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -327,6 +327,7 @@ and do not warn.
 | `ph_h2o2` | - | numeric | pH of the soil after oxidation with hydrogen peroxide. SCSJ 2017 potential sulfuric material: pH(H2O) 4.0 or more with pH(H2O2) under 3.0, in material saturated unless drained (the Thionic subgroups of the Gley and Gray Fluvic soils). | - |
 | `peat_moor_type` | - | character | Peat material by the plants it is made of (SCSJ 2017 IV.3): high-moor (Sphagnum, Carex middendorffii, Vaccinium oxycoccus, Rhynchospora, Scheuchzeria the largest share), transitional (Moliniopsis, Eriophorum, Myrica gale, Picea glehnii), low-moor (other). The High-moor and Transitional-moor Peat soils read the uppermost 25 cm of the peat. | - |
 | `artefacts_organic` | - | logical | TRUE where the artificial material of the horizon is mainly organic (household refuse and the like), FALSE where mainly inorganic. SCSJ 2017 Organic Artifactual soils (also read from the site). | - |
+| `leached_spots` | - | logical | Leached (bleached) spots in the horizon (the Japanese youdatsu-han), TRUE or FALSE. SCSJ 2017 forest soil phases of the Podzols: a podzolic accumulation horizon by analysis with one by morphology and leached spots is moderately developed. | - |
 
 # Site properties
 
@@ -412,6 +413,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `scsj_part` | - | logical | Internal: set by the SCSJ key on a part of a profile it keys on its own (the fill of Man-made soils, or the soil under it); the fill's own material is then read. Not for user data. | - | `scsj2017` |
 | `scsj_part_complete` | - | logical | Internal: with scsj_part, whether nothing lies below the part's last horizon (the fill; the soil under it only where the original profile ends on rock). Not for user data. | - | `scsj2017` |
 | `artefacts_organic` | - | logical | TRUE where the artificial material of the soil is mainly organic (household refuse and the like). SCSJ 2017 Organic Artifactual soils, read when no horizon records artefacts_organic. | - | `scsj2017` |
+| `forest_soil_type` | - | character | The soil type of the Japanese forest soil classification (1975) recorded for the site: BA, BB, BC, BD, BD(d), BE, BF, or PDI, PDII, PDIII for the Podzols. SCSJ 2017 forest soil phases (chapter V.3), read before the phases soilKey derives from the profile. | - | `scsj2017` |
 
 ## Soil construction (soilKey Pro)
 
@@ -508,5 +510,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.323._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.324._
 

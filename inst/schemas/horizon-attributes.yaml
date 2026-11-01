@@ -840,3 +840,8 @@ attributes:
     unit: "-"
     description: "TRUE where the artificial material of the horizon is mainly organic (household refuse and the like), FALSE where mainly inorganic. SCSJ 2017 Organic Artifactual soils (also read from the site)."
     systems: [scsj2017]
+  - name: leached_spots
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "Leached (bleached) spots in the horizon (the Japanese youdatsu-han), TRUE or FALSE. SCSJ 2017 forest soil phases of the Podzols: a podzolic accumulation horizon by analysis with one by morphology and leached spots is moderately developed."
+    systems: [scsj2017]
