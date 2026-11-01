@@ -35,7 +35,9 @@ of Japan (Japanese Society of Pedology 2017), following its key to great
 groups. \strong{Experimental}: this release keys the ten great groups
 (Man-made soils, Organic Soils, Andosols, Podzols, Fluvic soils,
 Red-Yellow soils, Stagnic soils, Eutrosols, Brown Forest soils,
-Regosols); groups, subgroups and the soil phases follow. Each level gives
+Regosols) and their 26 groups (for instance Allophanic and
+Non-allophanic Andosols, Fluvic Paddy soils, Magnesian Eutrosols, Sandy
+Regosols); subgroups and the soil phases follow. Each level gives
 the official English name and, in \code{levels$name_native}, the Japanese
 one.
 }
@@ -47,7 +49,9 @@ by the same letters), moist Munsell colours, texture, organic carbon,
 the phosphate absorption coefficient (\code{phosphate_absorption_coef},
 mg P2O5/100 g) or its substitutes (P retention, Alo + 1/2 Feo) and the
 field active-aluminium test (\code{active_al_test}), rubbed fibre, pH,
-base saturation, Fe(d), the dipyridyl test (\code{childs_test}), fluidity
+base saturation, exchangeable Ca and Mg, Fe(d), Sio, Alp/Alo, the
+exchange acidity (\code{exchange_acidity_y1}), the dipyridyl test
+(\code{childs_test}), fluidity
 and \code{n_value}, mottles and where they are, artefacts, and the
 recorded origin of the layers (\code{layer_origin}, \code{rock_origin}:
 fill, volcanic ejecta, alluvial deposits). From the site it reads

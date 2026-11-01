@@ -1,0 +1,17 @@
+# Groups of the Stagnic soils, Soil Classification System of Japan (2017),
+# chapter III G (p. 13).
+groups:
+  "G":
+    - code: "G1"
+      name: Stagnogley soils
+      name_native: 停滞水グライ土
+      tests:
+        all_of:
+          - stagnogley_soils_scsj: {}
+      notes: "The top of a gley layer within 50 cm, reaching 50 cm or deeper, or the bedrock."
+    - code: "G2"
+      name: Pseudogley soils
+      name_native: 疑似グライ土
+      tests:
+        default: true
+      notes: "Other Stagnic soils."

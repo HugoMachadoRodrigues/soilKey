@@ -1,3 +1,23 @@
+# soilKey 0.9.322 (2026-10-31)
+
+## Japan: the 26 groups of the Soil Classification System of Japan
+
+`classify_scsj2017()` now keys a pedon past its great group to the 26 groups of chapter III, among them Podzolic, Regosolic, Gleyed, Wet, Non-allophanic and Allophanic Andosols, Fluvic Paddy, Gley, Gray, Brown and Regosolic Fluvic soils, Argic and Cambic Red-Yellow soils, Stagnogley and Pseudogley soils, Magnesian and Calcareous Eutrosols, and Volcanogenous and Sandy Regosols, Lithosols and Terrestrial Regosols. Each has its English and Japanese name.
+
+* New horizon attribute `exchange_acidity_y1` (the exchange acidity y1 of the non-allophanic kuroboku feature, not read on farmland). The groups also read Sio (`si_ox_pct`), Alp/Alo (`al_pyro_pct`, `al_ox_pct`) and exchangeable Ca and Mg.
+* The gley layers are subdivided as the text does (groundwater gley layers reach 75 cm or deeper, taken together).
+* Man-made soils: a fill and the soil under it that both key to Regosols are compared by their groups; a part of a profile keyed on its own is read as complete.
+* Corrections to 0.9.321: a layer with the kuroboku feature no longer also has the immature one (an ash layer that is certainly one of the two still counts for the Andosols); a fill keeps the material it records, so a fill of the same material is read as part of an ordinary profile (chapter VI, the fill phase); colour words decided by value or chroma alone; a run's certain depth and the end of the description read in the depth tests.
+
+### Hugo's decisions (2026-10-31)
+
+* The podzolic accumulation horizon's criterion (2) is read for the soil, as its verb says (as in 0.9.321).
+* "Several gley layers" are adjacent gley horizons taken together; an oxidised layer separates two gley layers.
+* On paddy land the paddy horizons' mottles are not the groundwater wetness feature of the Wet Andosols and Gray Fluvic soils.
+* The mottle class "contains" (the Strong Gley Fluvic soils, next release) is 5 % or more.
+
+The readings are in `inst/rules/scsj2017/readings.yaml`. Other systems do not change.
+
 # soilKey 0.9.321 (2026-10-31)
 
 ## Japan: the great groups of the Soil Classification System of Japan (2017)

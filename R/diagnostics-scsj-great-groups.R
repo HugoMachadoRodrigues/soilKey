@@ -66,13 +66,44 @@
 # The great group of a part of a profile (the fill, or the soil under it),
 # keyed through the gates B to J; NA when a gate before the assigned one is
 # undecided.
-.scsj_part_great_group <- function(pedon, rows) {
-  if (!length(rows)) return(NA_character_)
+.scsj_part_pedon <- function(pedon, rows, complete = TRUE) {
+  if (!length(rows)) return(NULL)
   h <- as.data.frame(pedon$horizons)[rows, , drop = FALSE]
-  if (all(is.na(h$top_cm))) return(NA_character_)
+  if (all(is.na(h$top_cm))) return(NULL)
   shift <- min(h$top_cm, na.rm = TRUE)
   h$top_cm <- h$top_cm - shift; h$bottom_cm <- h$bottom_cm - shift
-  p <- PedonRecord$new(site = pedon$site, horizons = data.table::as.data.table(h))
+  # a part keyed on its own reads the fill's own material; it is complete
+  # (nothing below its last horizon) only where the original ends there
+  site <- pedon$site; site$scsj_part <- TRUE; site$scsj_part_complete <- isTRUE(complete)
+  PedonRecord$new(site = site, horizons = data.table::as.data.table(h))
+}
+
+# The great groups a part of a profile may key to: those of the gates up to
+# the first that passes, the undecided ones included.
+.scsj_part_possible <- function(p) {
+  if (is.null(p)) return(c("B", "C", "D", "E", "F", "G", "H", "I", "J"))
+  gates <- list(B = organic_soils_scsj, C = andosols_scsj, D = podzols_scsj, E = fluvic_soils_scsj,
+                F = red_yellow_soils_scsj, G = stagnic_soils_scsj, H = eutrosols_scsj,
+                I = brown_forest_soils_scsj)
+  out <- character(0)
+  for (k in names(gates)) {
+    r <- gates[[k]](p)$passed
+    if (isTRUE(r)) return(c(out, k))
+    if (is.na(r)) out <- c(out, k)
+  }
+  c(out, "J")
+}
+
+# Do two parts certainly differ (TRUE), certainly agree (FALSE), or is it
+# undecided? Their possible classes compared.
+.scsj_differ <- function(a, b) {
+  if (!length(intersect(a, b))) return(TRUE)
+  if (length(a) == 1L && length(b) == 1L && identical(a, b)) return(FALSE)
+  NA
+}
+
+.scsj_part_great_group <- function(p) {
+  if (is.null(p)) return(NA_character_)
   gates <- list(B = organic_soils_scsj, C = andosols_scsj, D = podzols_scsj, E = fluvic_soils_scsj,
                 F = red_yellow_soils_scsj, G = stagnic_soils_scsj, H = eutrosols_scsj,
                 I = brown_forest_soils_scsj)
@@ -91,8 +122,7 @@
 # gley or wetness features; and within 50 cm 25 cm or more (cumulative) of
 # layers with 20 % or more artificial material, a continuous impermeable
 # artificial layer starting within 30 cm, or 35 cm or more of fill of soil
-# material of another great group (in Regosols, of another group: decided
-# with the groups).
+# material of another great group (in Regosols, of another group).
 man_made_soils_scsj <- function(pedon) {
   x <- .scsj_profile(pedon)
   if (is.na(x$surface)) return(.scsj_no_surface("man_made_soils_scsj", x, "II A, p. 2"))
@@ -110,18 +140,23 @@ man_made_soils_scsj <- function(pedon) {
     } else {
       below <- if (fr$open) integer(0) else
         x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= fr$bottom - 0.5 & !(x$ord %in% fr$rows)]
-      g_fill <- .scsj_part_great_group(pedon, fr$rows)
-      g_below <- .scsj_part_great_group(pedon, below)
-      c <- if (is.na(g_fill) || is.na(g_below)) NA else
-           # two Regosols: heterogeneous when of different groups (IV.3),
-           # decided with the groups
-           if (g_fill == "J" && g_below == "J") NA else g_fill != g_below
+      p_fill <- .scsj_part_pedon(pedon, fr$rows, complete = TRUE)
+      p_below <- .scsj_part_pedon(pedon, below, complete = isTRUE(x$complete))
+      # the classes each part may key to, a Regosol by its group (in
+      # Regosols, material of another group is heterogeneous too: IV.3)
+      expand <- function(g, p) if ("J" %in% g) c(setdiff(g, "J"), .scsj_regosol_possible(p)) else g
+      g_fill <- expand(.scsj_part_possible(p_fill), p_fill)
+      g_below <- expand(.scsj_part_possible(p_below), p_below)
+      c <- .scsj_differ(g_fill, g_below)
     }
   }
   cond2 <- .scsj_or3(a, b, c)
   # (1) the man-made layers (the fill, or the layers of artificial material)
   # show none of the natural horizons and features
-  layers <- sort(unique(c(fr$rows, which(art20 | imp))))
+  # the layers that make criterion (2): the fill, the layers of artificial
+  # material within 50 cm and the impermeable layer within 30 cm
+  layers <- sort(unique(c(fr$rows, which(art20 & !is.na(x$dtop) & x$dtop < 50),
+                          which(imp & !is.na(x$dtop) & x$dtop <= 30))))
   cond1 <- TRUE
   if (length(layers) && !isFALSE(cond2)) {
     f <- .scsj_horizon_flags(x)
@@ -249,7 +284,9 @@ organic_soils_scsj <- function(pedon) {
 andosols_scsj <- function(pedon) {
   x <- .scsj_profile(pedon)
   if (is.na(x$surface)) return(.scsj_no_surface("andosols_scsj", x, "II C, pp. 2-3"))
-  rows <- .scsj_or(x$kb, x$ikb)
+  # either feature: a layer undecided between them but certainly one of the
+  # two (the raw immature criteria met) counts
+  rows <- .scsj_or(x$kb, x$ikb_raw)
   g <- .scsj_material_gate(x, rows)
   .scsj_result("andosols_scsj", g$passed, which(rows %in% TRUE),
                list(kuroboku_cm_within_50 = .scsj_cum(x, rows, 0, 50)$sure, fill_cm = g$fill$thick),
@@ -265,7 +302,7 @@ andosols_scsj <- function(pedon) {
 # thicknesses are paired, `b` above `a` (the bleached horizon above the
 # accumulation horizon, the sequence of the Podzols' concept: Hugo,
 # 2026-10-31); with above = FALSE at any depth (route b with morphology).
-.scsj_pair <- function(x, a, a_thick, b, b_thick, above = TRUE) {
+.scsj_pair <- function(x, a, a_thick, b, b_thick, above = TRUE, same_material = TRUE) {
   # runs split at lithologic boundaries, so a pair inside one material is
   # found even when an adjacent qualifying layer is of another
   test <- function(sure) {
@@ -279,7 +316,7 @@ andosols_scsj <- function(pedon) {
         if ((if (sure) q$sure else q$poss) < b_thick) next
         if (above && (is.na(q$bottom) || q$bottom > p$top + 0.5)) next
         li <- unique(stats::na.omit(x$des$lith[c(p$rows, q$rows)]))
-        if (length(li) > 1L) next
+        if (same_material && length(li) > 1L) next
         return(c(p$rows, q$rows))
       }
     }
@@ -446,7 +483,7 @@ stagnic_soils_scsj <- function(pedon) {
   e <- .scsj_ends(x)
   c23 <- FALSE
   for (r in .scsj_runs(x, ifelse(rows %in% TRUE, TRUE, FALSE)))
-    if (r$top <= 50 && r$sure >= 10 && ((!is.na(r$bottom) && r$bottom >= 50) || on_rock(r$bottom))) { c23 <- TRUE; break }
+    if (r$top <= 50 && r$sure >= 10 && (r$deep >= 50 || on_rock(r$bottom))) { c23 <- TRUE; break }
   if (!isTRUE(c23)) {
     for (r in .scsj_runs(x, rows, bridge = TRUE)) {
       # deep enough, or reaching the end of a description that stops above

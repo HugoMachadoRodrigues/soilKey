@@ -816,3 +816,9 @@ attributes:
     description: "n value of a water-saturated deposit (Pons and Zonneveld 1965): (field water content % of dry soil - 0.2 x silt and sand %) / (clay % + 3 x organic matter %). SCSJ 2017 physical immaturity: 1 or more (or the material squeezes between the fingers, fluidity_class)."
     systems: [scsj2017]
     min: 0
+  - name: exchange_acidity_y1
+    section: "Japanese system (SCSJ 2017)"
+    unit: "mL"
+    description: "Exchange acidity y1 (Daikuhara's method): mL of 0.1 M NaOH needed to titrate the 1 M KCl extract of 100 g of dry soil. SCSJ 2017 non-allophanic kuroboku feature: 5 or more (or Sio under 0.6 %, or Alp/Alo 0.5 or more); not read on farmland, where fertilising and liming change it."
+    systems: [scsj2017]
+    min: 0
