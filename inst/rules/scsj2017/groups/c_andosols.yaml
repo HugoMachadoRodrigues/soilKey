@@ -1,0 +1,46 @@
+# Groups of the Andosols (kuroboku soils), Soil Classification System of
+# Japan (2017), chapter III C (pp. 7-10). Criteria summarised from the text;
+# see R/diagnostics-scsj-groups.R and inst/rules/scsj2017/readings.yaml.
+groups:
+  "C":
+    - code: "C1"
+      name: Podzolic Andosols
+      name_native: ポドゾル化黒ボク土
+      tests:
+        all_of:
+          - podzolic_andosols_scsj: {}
+      notes: "A podzolic accumulation horizon (morphology) under a bleached horizon, or one by analysis under a bleached horizon or with one by morphology; with a bleached horizon, both from one parent material."
+    - code: "C2"
+      name: Regosolic Andosols
+      name_native: 未熟黒ボク土
+      tests:
+        all_of:
+          - regosolic_andosols_scsj: {}
+      notes: "25 cm or more (cumulative) of layers with the immature kuroboku feature within 50 cm."
+    - code: "C3"
+      name: Gleyed Andosols
+      name_native: グライ黒ボク土
+      tests:
+        all_of:
+          - groundwater_gley_group_scsj: {}
+      notes: "The top of a groundwater gley layer within 50 cm."
+    - code: "C4"
+      name: Wet Andosols
+      name_native: 多湿黒ボク土
+      tests:
+        all_of:
+          - groundwater_wet_group_scsj: {}
+      notes: "The top of a layer with the groundwater wetness feature within 50 cm."
+    - code: "C5"
+      name: Non-allophanic Andosols
+      name_native: 非アロフェン質黒ボク土
+      tests:
+        all_of:
+          - non_allophanic_andosols_scsj: {}
+      notes: "25 cm or more (cumulative) of layers with the non-allophanic kuroboku feature within 50 cm."
+    - code: "C6"
+      name: Allophanic Andosols
+      name_native: アロフェン質黒ボク土
+      tests:
+        default: true
+      notes: "Other Andosols."

@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.320)
+# soilKey -- recognised horizon attribute names (v0.9.322)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -323,6 +323,7 @@ and do not warn.
 | `phosphate_absorption_coef` | mg P2O5/100 g | numeric | Phosphate absorption coefficient (Japanese method), mg P2O5 per 100 g of dry soil; the SCSJ 2017 writes it in mg P2O5/g (15.00 = 1500). The kuroboku feature needs 1500 or more and the immature kuroboku feature 300 to under 1500; P retention (phosphate_retention_pct, 85 % and 25 %) or Alo + 1/2 Feo (2.0 % and 0.4 %) replace it when it is not measured. Not the Blakemore P retention. | - |
 | `active_al_test` | - | character | Japanese field active-aluminium test (NaF with phenolphthalein paper, Soil Survey Handbook, JSP 1997), graded by how fast and how strongly the paper turns red: -, +-, +, 2+, 3+. SCSJ 2017: a vivid red within a minute (2+ or more) indicates the kuroboku feature; none or +- (no colour, or colour after 5 minutes) indicates no kuroboku feature. Read only when no laboratory value decides. The New Zealand NaF test (naf_test) uses other grades. | - |
 | `n_value` | - | numeric | n value of a water-saturated deposit (Pons and Zonneveld 1965): (field water content % of dry soil - 0.2 x silt and sand %) / (clay % + 3 x organic matter %). SCSJ 2017 physical immaturity: 1 or more (or the material squeezes between the fingers, fluidity_class). | - |
+| `exchange_acidity_y1` | mL | numeric | Exchange acidity y1 (Daikuhara's method): mL of 0.1 M NaOH needed to titrate the 1 M KCl extract of 100 g of dry soil. SCSJ 2017 non-allophanic kuroboku feature: 5 or more (or Sio under 0.6 %, or Alp/Alo 0.5 or more); not read on farmland, where fertilising and liming change it. | - |
 
 # Site properties
 
@@ -405,6 +406,8 @@ the last section are stored by the loaders and reports and read by no key.
 | `mechanical_mixing_purpose` | - | character | Why the original horizons were mechanically mixed: tephra flipping (a modified tephra stratigraphy), breaking impeding horizons (to break up drainage-impeding horizons such as placic horizons or pans, often with hump-and-hollow recontouring), or other. Read by the NZSC Inverted-tephric and Inverted-impeded Mixed Anthropic Soils; recorded when met. | `tephra flipping`, `breaking impeding horizons`, `other` | `nzsc4` |
 | `acid_neutralising_amendment` | - | logical | TRUE where acid-neutralising amendments (lime or similar) were added to the soil material. Read by the NZSC Treated-sulfidic Fill Anthropic Soils; recorded when met. | - | `nzsc4` |
 | `overthickened_a` | - | logical | The surveyor recorded an overthickened A horizon (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC key: with its base at 45 cm or more, under 30 cm of anthropic material and no mottles within 30 cm, the soil enters the key at the Recent Soils. | - | `nzsc4` |
+| `scsj_part` | - | logical | Internal: set by the SCSJ key on a part of a profile it keys on its own (the fill of Man-made soils, or the soil under it); the fill's own material is then read. Not for user data. | - | `scsj2017` |
+| `scsj_part_complete` | - | logical | Internal: with scsj_part, whether nothing lies below the part's last horizon (the fill; the soil under it only where the original profile ends on rock). Not for user data. | - | `scsj2017` |
 
 ## Soil construction (soilKey Pro)
 
@@ -501,5 +504,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.320._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.322._
 

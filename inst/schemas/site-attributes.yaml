@@ -755,3 +755,15 @@ attributes:
     unit: "-"
     description: "The surface is bare, structureless single grains with marks of wind reworking (deflation). HSCS 2024 subtype futó (Sandy soils)."
     systems: [hscs2024]
+  - name: scsj_part
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "Internal: set by the SCSJ key on a part of a profile it keys on its own (the fill of Man-made soils, or the soil under it); the fill's own material is then read. Not for user data."
+    systems: [scsj2017]
+  - name: scsj_part_complete
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "Internal: with scsj_part, whether nothing lies below the part's last horizon (the fill; the soil under it only where the original profile ends on rock). Not for user data."
+    systems: [scsj2017]

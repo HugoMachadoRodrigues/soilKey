@@ -1,0 +1,10 @@
+# Groups of the Podzols, Soil Classification System of Japan (2017),
+# chapter III D (p. 10).
+groups:
+  "D":
+    - code: "D1"
+      name: Podzols
+      name_native: ポドゾル
+      tests:
+        default: true
+      notes: "All Podzols."
