@@ -1,0 +1,257 @@
+# Soil series groups of the Stagnic great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "H1IW":
+    - code: "H1IWLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H1IWSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H1IWCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H1IWFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H1EP":
+    - code: "H1EPLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H1EPSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H1EPCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H1EPFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H1HU":
+    - code: "H1HULI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H1HUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H1HUCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H1HUFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H1HA":
+    - code: "H1HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H1HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H1HACM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H1HAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H2AN":
+    - code: "H2ANLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H2ANSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H2ANCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H2ANFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H2GA":
+    - code: "H2GALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H2GASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H2GACM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H2GAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H2HU":
+    - code: "H2HULI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H2HUSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H2HUCM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H2HUFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H2AE":
+    - code: "H2AELI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H2AESK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H2AECM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H2AEFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."
+  "H2HA":
+    - code: "H2HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "H2HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "H2HACM"
+      name: "coarse-medium-textured {parent}"
+      name_native: "中粗粒質{parent}"
+      tests:
+        all_of:
+          - texture_cscj: {class: "coarse_medium"}
+      notes: "Subsurface texture CoSL, LS, S, SiL, L or FSL."
+    - code: "H2HAFI"
+      name: "fine-textured {parent}"
+      name_native: "細粒質{parent}"
+      tests:
+        default: true
+      notes: "The others: Subsurface texture HC, SiC, LiC, SC, SiCL, CL or SCL."

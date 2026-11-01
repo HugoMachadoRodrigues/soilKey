@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.325)
+# soilKey -- recognised horizon attribute names (v0.9.328)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -328,6 +328,8 @@ and do not warn.
 | `peat_moor_type` | - | character | Peat material by the plants it is made of (SCSJ 2017 IV.3): high-moor (Sphagnum, Carex middendorffii, Vaccinium oxycoccus, Rhynchospora, Scheuchzeria the largest share), transitional (Moliniopsis, Eriophorum, Myrica gale, Picea glehnii), low-moor (other). The High-moor and Transitional-moor Peat soils read the uppermost 25 cm of the peat. | - |
 | `artefacts_organic` | - | logical | TRUE where the artificial material of the horizon is mainly organic (household refuse and the like), FALSE where mainly inorganic. SCSJ 2017 Organic Artifactual soils (also read from the site). | - |
 | `leached_spots` | - | logical | Leached (bleached) spots in the horizon (the Japanese youdatsu-han), TRUE or FALSE. SCSJ 2017 forest soil phases of the Podzols: a podzolic accumulation horizon by analysis with one by morphology and leached spots is moderately developed. | - |
+| `texture_class_jp` | - | character | The Japanese soil texture class of the Soil Survey Handbook (ISSS fractions): HC, SiC, LiC, SC, SiCL, CL, SCL (fine-textured), SiL, L, FSL (medium-textured), CoSL, LS, S (coarse-textured), or the Japanese words. CSCJ 2011 soil series groups; without it, clay_pct of 15 % or more reads as fine-textured and medium vs coarse is undecided. | - |
+| `hardness_yamanaka_mm` | mm | numeric | Soil hardness by the Yamanaka-type hardness tester (penetration in mm). CSCJ 2011 pan layer (29 mm or more, 10 cm or more thick); not recorded: no pan layer. | - |
 
 # Site properties
 
@@ -511,5 +513,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.325._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.328._
 

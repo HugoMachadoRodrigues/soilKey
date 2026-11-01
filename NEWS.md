@@ -1,3 +1,35 @@
+# soilKey 0.9.328 (2026-11-01)
+
+## Japan: the 381 soil series groups of the Comprehensive Soil Classification System of Japan
+
+`classify_cscj2011()` now keys a pedon down to its soil series group (土壌統群), the CSCJ's lowest category, for example "fine-textured Reddish Argic Red-Yellow soils" / 細粒質赤色粘土集積赤黄色土.
+
+* **Lists.** Each subgroup has its own ordered list, drawn from the text's vocabulary:
+  * bedrock, a gravel layer or a pan layer within 60 cm;
+  * the texture of the subsurface;
+  * buried peat, alluvial or kuroboku layers, and the non-allophanic feature;
+  * the humus classes;
+  * the mineral layers and fibre of the peat soils;
+  * the base-rich dark surface horizon;
+  * wetness.
+* **New horizon attributes:** `texture_class_jp` (the Japanese texture classes, codes or words) and `hardness_yamanaka_mm` (soil hardness, for the pan layer).
+* **App and report** label the new level "Soil series group".
+
+### Hugo's decisions (2026-11-01)
+
+* Series groups are named by their term, in lower case, before the subgroup's name.
+* **Bedrock, gravel and pan layers:**
+  * bedrock and the gravel layer are measured from the soil surface;
+  * a gravel layer is 20 % or more in either record; with no record, there is no gravel layer;
+  * hardness not recorded means no pan layer.
+* **Texture:**
+  * it is read from `texture_class_jp`;
+  * without it, clay of 15 % or more is fine, and medium vs coarse stays undecided;
+  * it is read on the horizon of 15 cm or more with the largest overlap of 20 to 40 cm.
+* **The base-rich dark surface horizon** is undecided where liming is recorded.
+
+The SCSJ 2017 and the other systems do not change.
+
 # soilKey 0.9.327 (2026-11-01)
 
 ## Japan: the 116 subgroups of the Comprehensive Soil Classification System of Japan

@@ -1,0 +1,110 @@
+# Soil series groups of the Podzols great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "C1EP":
+    - code: "C1EPLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "C1EPSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "C1EPTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "C1AQ":
+    - code: "C1AQLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "C1AQSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "C1AQTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "C1EG":
+    - code: "C1EGLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "C1EGSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "C1EGTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "C1PG":
+    - code: "C1PGLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "C1PGSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "C1PGTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "C1HA":
+    - code: "C1HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "C1HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "C1HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."

@@ -1,0 +1,152 @@
+# Soil series groups of the Regosols great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "J1AQ":
+    - code: "J1AQTP"
+      name: "thapto-peaty {parent}"
+      name_native: "下層泥炭{parent}"
+      tests:
+        all_of:
+          - peat_within_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of peat material within 75 cm."
+    - code: "J1AQEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "J1AQTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J1HA":
+    - code: "J1HAPE"
+      name: "petoric {parent}"
+      name_native: "盤層型{parent}"
+      tests:
+        all_of:
+          - petoric_cscj: {within: 60}
+      notes: "The top of a pan layer (hardness 29 mm or more, 10 cm or more) within 60 cm."
+    - code: "J1HAEF"
+      name: "endofluvic {parent}"
+      name_native: "下層低地{parent}"
+      tests:
+        all_of:
+          - endofluvic_cscj: {within: 75, cum: 25}
+      notes: "25 cm or more (cumulative) of alluvial deposits within 75 cm."
+    - code: "J1HATA"
+      name: "thapto-andic {parent}"
+      name_native: "下層黒ボク{parent}"
+      tests:
+        all_of:
+          - kuroboku_within_cscj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of layers with the kuroboku feature within 100 cm."
+    - code: "J1HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J2CA":
+    - code: "J2CATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J2AQ":
+    - code: "J2AQTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J2HA":
+    - code: "J2HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J3CA":
+    - code: "J3CAMO"
+      name: "mollic {parent}"
+      name_native: "暗色表層{parent}"
+      tests:
+        all_of:
+          - mollic_cscj: {}
+      notes: "The base-rich dark surface horizon."
+    - code: "J3CATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J3AQ":
+    - code: "J3AQTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J3HA":
+    - code: "J3HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J4MA":
+    - code: "J4MAAQ"
+      name: "aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_cscj: {features: ["gley", "gw"], to: 75}
+      notes: "The top of a layer with the gley feature or the groundwater wetness feature within 75 cm."
+    - code: "J4MATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J4CA":
+    - code: "J4CAMO"
+      name: "mollic {parent}"
+      name_native: "暗色表層{parent}"
+      tests:
+        all_of:
+          - mollic_cscj: {}
+      notes: "The base-rich dark surface horizon."
+    - code: "J4CATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J4GR":
+    - code: "J4GRTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J4PL":
+    - code: "J4PLTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "J4HA":
+    - code: "J4HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."

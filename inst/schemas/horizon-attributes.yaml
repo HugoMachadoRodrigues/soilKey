@@ -845,3 +845,14 @@ attributes:
     unit: "-"
     description: "Leached (bleached) spots in the horizon (the Japanese youdatsu-han), TRUE or FALSE. SCSJ 2017 forest soil phases of the Podzols: a podzolic accumulation horizon by analysis with one by morphology and leached spots is moderately developed."
     systems: [scsj2017]
+
+  - name: texture_class_jp
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "The Japanese soil texture class of the Soil Survey Handbook (ISSS fractions): HC, SiC, LiC, SC, SiCL, CL, SCL (fine-textured), SiL, L, FSL (medium-textured), CoSL, LS, S (coarse-textured), or the Japanese words. CSCJ 2011 soil series groups; without it, clay_pct of 15 % or more reads as fine-textured and medium vs coarse is undecided."
+    systems: [cscj2011]
+  - name: hardness_yamanaka_mm
+    section: "Japanese system (SCSJ 2017)"
+    unit: "mm"
+    description: "Soil hardness by the Yamanaka-type hardness tester (penetration in mm). CSCJ 2011 pan layer (29 mm or more, 10 cm or more thick); not recorded: no pan layer."
+    systems: [cscj2011]
