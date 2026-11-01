@@ -1,3 +1,27 @@
+# soilKey 0.9.329 (2026-11-01)
+
+## Japan: the soil phases of the Comprehensive Soil Classification System of Japan (the CSCJ now complete)
+
+`classify_cscj2011()` now gives the soil phases of chapter VIII in `ClassificationResult$phases`, beside the class name, as `classify_scsj2017()` does. With them, the CSCJ 2011 is complete in soilKey: 10 great groups, 27 groups, 116 subgroups, 381 soil series groups and the phases.
+
+* **Temperature phase:** from the soil temperature, else the USDA regime, else estimated from the mean annual air temperature plus 2 C, as the CSCJ says.
+* **Man-made phases**, with the CSCJ's names:
+  * a fill is named by its texture or, for a kuroboku fill, its humus class, and by its kind of soil or material (多腐植質黒ボク土盛土造成相, 粗粒質浚渫土砂盛土造成相, as the text's examples);
+  * the Reformed soils: the fill over the original soil's group (細粒質低地土／粘土集積赤黄色土造成相).
+  * a fill in the plough layer alone takes no phase (chapter IX, step A);
+  * a fill with none of the five kinds that the materials name is keyed on its own and named by its great group when 25 cm or more, by its texture alone when thinner;
+  * a kuroboku fill on other material is a natural combination (chapter IX, step D; also on #133): the text's example keys as 腐植質下層低地アロフェン質黒ボク土 with the phase 腐植質黒ボク土盛土造成相.
+* No forest phases: the CSCJ has none.
+
+### Hugo's decisions (2026-11-01)
+
+* The air temperature plus 2 C for the CSCJ temperature phase, marked as estimated.
+* A fill's name puts the texture word, or the humus class of a kuroboku fill, before the soil kind; for the Reformed soils, the fill's texture and great group over the original soil's group.
+* A kuroboku fill is a natural combination in the CSCJ only: it does not make the soil Man-made (on #133 and merged up the stack).
+* A fill with none of the five kinds: 25 cm or more is classified on its own and named by its great group; a thinner one is named by its texture word, when decided.
+
+The SCSJ 2017 and the other systems do not change.
+
 # soilKey 0.9.328 (2026-11-01)
 
 ## Japan: the 381 soil series groups of the Comprehensive Soil Classification System of Japan

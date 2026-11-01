@@ -22,7 +22,7 @@ citation: >
   First Approximation (包括的土壌分類 第１次試案). Bulletin of the National
   Institute for Agro-Environmental Sciences 29: 1-73.
 version: "Comprehensive Soil Classification System of Japan, First Approximation, 2011 (NIAES Bulletin 29)"
-implementation_status: "soilKey v0.9.328 -- 10/10 great groups (chapter V), 27/27 groups, 116/116 subgroups and 381/381 soil series groups (chapter VI); the phases follow"
+implementation_status: "soilKey v0.9.329 -- complete: 10/10 great groups (chapter V), 27/27 groups, 116/116 subgroups and 381/381 soil series groups (chapter VI), and the soil phases of chapter VIII (temperature, man-made) in ClassificationResult$phases"
 source: |
   Obara et al. (2011). Comprehensive Soil Classification System of Japan,
   First Approximation. Chapter V (key to great groups), chapter IV
