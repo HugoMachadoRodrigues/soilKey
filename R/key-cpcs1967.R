@@ -67,6 +67,11 @@ classify_cpcs1967 <- function(pedon, rules = NULL,
                               gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
   if (inherits(pedon, "PedonRecord")) {
+    # a horizon table without its depth columns is completed first
+    if (!all(c("top_cm", "bottom_cm") %in% names(pedon$horizons))) {
+      pedon <- pedon$clone(deep = TRUE)
+      pedon$horizons <- ensure_horizon_schema(data.table::as.data.table(pedon$horizons))
+    }
     pedon <- .cssc_prepare_pedon(pedon)
     pedon <- .classify_apply_gapfill(pedon, gapfill)
   }

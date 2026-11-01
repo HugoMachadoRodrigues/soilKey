@@ -42,7 +42,8 @@
 * **After the reviews:**
   * the notation gives the profile type (B, (B), A2), and the recorded data the properties: a g with 0 % mottles recorded is not a hydromorphic layer;
   * class VII takes the soils with an A2 and no B;
-  * a peat excludes the mineral classes keyed before class XI, and class I takes no organic layer.
+  * a peat excludes the mineral classes keyed before class XI, and class I takes no organic layer (an organic layer counts as more than traces for class II);
+  * the Canadian, New Zealand and Australian letters keep their own meanings (f iron, v vertic, z frozen), and the recorded data come before the Ca, Cs and Cn of the notation.
 
 The other systems do not change.
 

@@ -355,3 +355,34 @@ test_that("after the reviews: peat, the A2 without a B, the notation, data befor
   b <- make_cpcs1967_example("brunified"); b$horizons$top_cm[2] <- NA
   expect_true(soilKey:::.cpcs_horizon_types(soilKey:::.cpcs_profile(b), b)$b_any)
 })
+
+test_that("after the verification: litter, the Canadian letters, data before symbols, sands, depths", {
+  skip_on_cran()
+  # a thin litter over raw sand: a weakly developed soil (no key hole)
+  a <- .fr(list(designation = c("Ao", "(A)", "C"), top_cm = c(0, 3, 8), bottom_cm = c(3, 8, 100),
+                oc_pct = c(35, 0.2, 0.05), sand_pct = 92, clay_pct = 4, silt_pct = 4, ph_h2o = 5, bs_pct = 20))
+  expect_identical(.cl(a)[["code"]], "II")
+  # the Canadian Bv is vertic, the z frozen
+  expect_identical(.cl(make_cssc3_example("vertisolic"))[["code"]], "III")
+  cr <- make_cssc3_example("cryosolic"); cr$horizons$permafrost_temp_C <- NA_real_
+  expect_identical(.cl(cr)[["code"]], "II")
+  # a recorded carbonate of 0 overrides the Ca of the notation
+  c0 <- make_cpcs1967_example("brunified"); c0$horizons$designation <- c("A1Ca", "(B)", "C"); c0$horizons$caco3_pct <- 0
+  expect_identical(.cl(c0)[["code"]], "VII")
+  # a Bs with 0.2 % OM recorded is not a podzolic B
+  bs <- make_cpcs1967_example("podzolised"); bs$horizons$n_total_pct <- NA_real_; bs$horizons$oc_pct[4:5] <- 0.1
+  expect_false(isTRUE(podzolised_soils_cpcs(bs)$passed))
+  # an undesignated sand: a pale C is not an A2
+  ar <- make_arenosol_canonical(); ar$horizons$designation <- NA_character_
+  expect_identical(.cl(ar)[["code"]], "II")
+  # no depth columns: no error
+  d <- make_cpcs1967_example("brunified"); h <- as.data.frame(d$horizons); h$top_cm <- NULL
+  d$horizons <- data.table::as.data.table(h)
+  expect_s3_class(classify_cpcs1967(d, on_missing = "silent"), "ClassificationResult")
+  # lower-case designations
+  for (nm in c("cambisol", "stagnosol", "calcisol")) {
+    p <- get(paste0("make_", nm, "_canonical"))(); q <- p$clone(deep = TRUE)
+    q$horizons$designation <- tolower(q$horizons$designation)
+    expect_identical(.cl(q)[["code"]], .cl(p)[["code"]], info = nm)
+  }
+})

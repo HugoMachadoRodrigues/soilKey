@@ -22,7 +22,7 @@
   if (!length(v)) return(FALSE)
   any(grepl(paste0("^(A00|Aoo|AOO|A0|Ao|AO)$|^\\((A|B)\\)|fe|",
                    "^[IVX0-9]*[ABC][0-9]*(C(an?|s|n)|Sa)[0-9]*$|^[IVX0-9]*C[0-9]*c(an?|s|n)$|",
-                   "^[IVX0-9]*G[or0]?$|^[IVX0-9]*B[123]([0-9]|$)"), v))
+                   "^[IVX0-9]*C(s|n|Sa|sa)$|^[IVX0-9]*G[or0]?$|^[IVX0-9]*B[123]"), v))
 }
 
 # The symbol of a designation: a Roman or Arabic numeral written apart is
@@ -36,7 +36,13 @@
   s <- strsplit(s, "[[:space:]]+")[[1L]][1L]
   s <- sub("/[a-z]{3,}.*$", "", s)
   s <- gsub("(?<=[A-Za-z0-9])\\([a-z]{1,3}\\)", "", s, perl = TRUE)
-  if (nchar(s) > 1L && grepl("^[abcer][a-z0-9]*$", s)) s <- paste0(toupper(substr(s, 1L, 1L)), substring(s, 2L))
+  if (grepl("^[0-9]*[abcehor][a-z0-9]*$", s)) {
+    m <- regmatches(s, regexec("^([0-9]*)([a-z])([a-z]?)(.*)$", s))[[1L]]
+    # the first letter is the master; a second master letter makes a
+    # transition (ab, bc, ac), except the r of a weathered rock (cr)
+    two <- nzchar(m[4L]) && m[3L] %in% c("a", "b", "c", "e") && m[4L] %in% c("a", "b", "c", "e")
+    s <- paste0(m[2L], toupper(m[3L]), if (two) toupper(m[4L]) else m[4L], m[5L])
+  }
   s
 }
 
@@ -128,7 +134,7 @@
   if (out$role %in% "B" && !out$bstruct) {
     if (out$t || out$h || out$fe || "o" %in% ch || out$natric || "v" %in% ch) out$benriched <- TRUE
     else if ("w" %in% ch || out$ca || out$cs || out$sa || ss) out$bstruct <- TRUE
-    else if (cpcs) out$benriched <- TRUE
+    else if (cpcs && !any(!(ch %in% c("t", "h", "g", "G", "p", "x", "m")))) out$benriched <- TRUE
     else { out$benriched <- NA; out$bstruct <- NA }
   }
   out
@@ -156,8 +162,17 @@
     ((is.na(ds) || !nzchar(ds) || ds == "na") && !is.na(ct) &&
        ct %in% c("CA", "CAN", "CANADA", "NZ", "NZL", "NEW ZEALAND", "AU", "AUS", "AUSTRALIA"))
   if (other && !cpcs) {
+    # their own letters: f iron, v vertic, y cryoturbated, z frozen (the
+    # CSSC); not the FAO plinthite, gypsum and salts
+    low <- vapply(desig, function(d) { sy <- .cpcs_symbol(d); if (is.na(sy)) "" else gsub("[^a-z]", "", sub("^[^A-Za-z(]*[A-Z(][^a-z]*", "", sy)) }, "")
     out$fe <- out$fe | (out$role %in% "B" & out$frozen %in% TRUE)
-    out$frozen <- rep(FALSE, length(out$frozen))
+    out$frozen <- grepl("z", low)
+    out$sa <- out$sa & !grepl("z", low)
+    out$cs <- out$cs & !grepl("y", low)
+    v <- grepl("v", low) & out$role %in% "B"
+    out$ss <- out$ss | v
+    out$benriched[v & !(out$t | out$h | out$fe)] <- FALSE
+    out$bstruct[v] <- TRUE
   }
   out$cpcs <- cpcs
   out$any_known <- any(out$known)

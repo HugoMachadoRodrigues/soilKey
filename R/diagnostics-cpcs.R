@@ -105,10 +105,21 @@
     if (any(undes)) {
       d_any <- .cpcs_or(d_enr, pass(cambic))
       out$b_any <- pick3(b_any_des, d_any)
-      out$e <- pick3(e_des, pass(albic))
+      # an albic layer is an A2 only over a mineral layer that is not albic
+      cl <- tryCatch(test_claric_munsell(x$h), error = function(e) NULL)
+      st <- vapply(seq_len(x$n), function(i) cl$details[[as.character(i)]]$passed %||% NA, NA)
+      ord <- x$ord[!(x$organic[x$ord] %in% TRUE) & !x$rock[x$ord]]
+      ue <- vapply(seq_along(ord), function(k) {
+        i <- ord[k]; if (!isTRUE(st[i])) return(st[i] %in% NA && FALSE)
+        below <- ord[seq_len(length(ord)) > k]
+        any(st[below] %in% FALSE)
+      }, NA)
+      d_e <- if (any(ue)) TRUE else if (any(is.na(st[ord]))) NA else FALSE
+      out$e <- pick3(e_des, d_e)
       out$from <- "designations and soilKey diagnostics"
     }
     out$b_enriched <- if (is.na(b_enr_des)) d_enr else pick3(b_enr_des, d_enr)
+    if (is.na(b_enr_des) && !is.na(d_enr)) out$from <- "designations and soilKey diagnostics"
   }
   out
 }
@@ -144,15 +155,17 @@
 # glacial or fluvioglacial deposit, or loess, is not one.
 .cpcs_recent_deposit <- function(x) {
   txt <- tolower(paste(c(.scsj_txt(x$h, "layer_origin"), .scsj_txt(x$h, "rock_origin")), collapse = " "))
-  txt <- gsub("fluvio-?glac[a-z]*|glacio[a-z]*|glacial[a-z]*|\\bloess\\b", " ", txt)
+  txt <- gsub("fluvio-?glac[a-z]*|glacio-?[a-z]*|glacial[a-z]*|\\bloess\\b", " ", txt)
   grepl(.CPCS_DEPOSIT_RE, txt)
 }
 
 # Negated words taken out of a free text ("no erosion", "not eroded",
 # "erosion: none", "non-calcareous").
 .cpcs_drop_negated <- function(txt) {
-  txt <- gsub("\\b(no|not|non|without|sans|pas de|aucune?)[- ]+[a-z\u00e0-\u00ff]+", " ", txt)
-  gsub("[a-z\u00e0-\u00ff]+[: ]+(none|nil|absent|no|aucune?|nulle?)\\b", " ", txt)
+  w <- "[a-z\u00e0-\u00ff]+"
+  txt <- gsub("\\b(un|non-?)(eroded|\u00e9rod\u00e9|calcareous|calcaire)", " ", txt)
+  txt <- gsub(paste0("\\b(no|not|non|without|sans|pas d[e']|aucune?)[- ]+(", w, "[- ]+){0,3}", w), " ", txt)
+  gsub(paste0(w, "[ ]*(class|degree|:|-)?[ ]*(none|nil|absent|aucune?|nulle?|0)\\b"), " ", txt)
 }
 
 .cpcs_recent_erosion <- function(x) {
@@ -170,14 +183,9 @@
   if (!is.na(reg) && grepl("gelic|pergelic", reg)) return(TRUE)
   pt <- .cpcs_num(x$h, "permafrost_temp_C")
   ice <- .cpcs_num(x$h, "ice_pct")
-  ds <- tolower(as.character(x$site$designation_system %||% NA)[1L])
-  ct <- toupper(trimws(as.character(x$site$country %||% NA)[1L]))
-  # in the Canadian, New Zealand and Australian notations f is iron or
-  # fibric, not frozen: declared, or (undeclared) the country
-  other <- (!is.na(ds) && grepl("cssc|canad|nzsc|new zealand|^nz$|asc|austral|field handbook|nchs", ds)) ||
-    ((is.na(ds) || !nzchar(ds)) && !is.na(ct) && ct %in% c("CA", "CAN", "CANADA", "NZ", "NZL", "NEW ZEALAND",
-                                                           "AU", "AUS", "AUSTRALIA"))
-  frozen <- x$des$frozen %in% TRUE & !(x$role %in% "O") & !other
+  # the reader gives each notation its frozen letter (f in the FAO notation,
+  # z in the Canadian one); never on an organic master
+  frozen <- x$des$frozen %in% TRUE & !(x$role %in% "O")
   any(pt <= 0, na.rm = TRUE) || any(ice > 0, na.rm = TRUE) || any(frozen)
 }
 
@@ -192,7 +200,7 @@
   for (i in rows) {
     r <- x$role[i]
     if (r %in% c("A", "AB", "AC")) { out <- c(out, i); next }
-    if (is.na(r) && !length(out)) { out <- i; break }
+    if ((is.na(r) || r %in% "other") && !length(out)) { out <- i; break }
     break
   }
   out
@@ -210,7 +218,8 @@
 .cpcs_bs <- function(x) {
   h <- x$h
   bs <- .cpcs_num(h, "bs_pct"); cec <- .cpcs_num(h, "cec_cmol")
-  sb <- .cpcs_num(h, "ca_cmol") + .cpcs_num(h, "mg_cmol") + .cpcs_num(h, "k_cmol") + .cpcs_num(h, "na_cmol")
+  z <- function(v) ifelse(is.na(v), 0, v)
+  sb <- .cpcs_num(h, "ca_cmol") + .cpcs_num(h, "mg_cmol") + z(.cpcs_num(h, "k_cmol")) + z(.cpcs_num(h, "na_cmol"))
   ifelse(!is.na(bs), bs, ifelse(!is.na(sb) & !is.na(cec) & cec > 0, pmin(100, 100 * sb / cec), NA_real_))
 }
 
@@ -224,7 +233,7 @@
   ph <- .cpcs_num(h, "ph_h2o")[a]
   cec <- .cpcs_num(h, "cec_cmol")[a]; ca <- .cpcs_num(h, "ca_cmol")[a]; mg <- .cpcs_num(h, "mg_cmol")[a]
   bs <- .cpcs_num(h, "bs_pct")[a]; cc <- .cpcs_num(h, "caco3_pct")[a]
-  calc <- (!is.na(cc) & cc > 0) | x$des$ca[a] %in% TRUE
+  calc <- ifelse(!is.na(cc), cc > 0, x$des$ca[a] %in% TRUE)
   sat <- ifelse(calc, 100, ifelse(!is.na(cec) & cec > 0 & !is.na(ca) & !is.na(mg), 100 * (ca + mg) / cec, bs))
   ph_ok <- .cpcs_all(ifelse(is.na(ph), NA, ph > 6.8))
   sat_ok <- .cpcs_all(ifelse(is.na(sat), NA, sat > 90))
@@ -241,7 +250,7 @@
   ef <- .scsj_txt(x$h, "effervescence_class")
   ef_pos <- !is.na(ef) & grepl("slight|weak|moderate|strong|violent|faible|forte|moyenne", ef) &
     !grepl("^(none|no|not|non|absent|nil|0)", ef)
-  if (any(cc > 0, na.rm = TRUE) || any(x$des$ca %in% TRUE) || any(ef_pos)) return(TRUE)
+  if (any(cc > 0, na.rm = TRUE) || any(is.na(cc) & x$des$ca %in% TRUE) || any(ef_pos)) return(TRUE)
   txt <- tolower(paste(c(.scsj_txt(x$h, "rock_origin"), .scsj_txt(x$h, "layer_origin"),
                          as.character(unlist(x$site$parent_material %||% character(0)))), collapse = " "))
   if (grepl(.CPCS_CAMG_RE, .cpcs_drop_negated(txt))) return(TRUE)
@@ -469,7 +478,8 @@ weakly_developed_soils_cpcs <- function(pedon) {
   ty <- .cpcs_horizon_types(x, pedon)
   pf <- .cpcs_permafrost(x)
   ac <- .cpcs_and(.cpcs_not(ty$b_any), .cpcs_not(ty$e))
-  om_more <- .cpcs_not(.cpcs_om_traces(x))
+  # an organic layer over the mineral soil is more than traces
+  om_more <- if (any(x$organic %in% TRUE)) TRUE else .cpcs_not(.cpcs_om_traces(x))
   # an AC soil with the chemistry of class V and a source of Ca or Mg is a
   # calcimagnesic soil, unless a cause of class II is recorded (Hugo,
   # 2026-11-01): a recent deposit or recent erosion
@@ -556,7 +566,8 @@ sodic_soils_cpcs <- function(pedon) {
   sod_rows <- mapply(function(a, b, c) .cpcs_and(a, b, c), sod, degraded, compact)
   sod_route <- if (all(is.na(esp))) FALSE else .cpcs_any(sod_rows)
   # a salinity of gypsum alone, with little Na, belongs to class V (p. 79)
-  gyp <- any(.cpcs_num(h, "caso4_pct")[rows] > 0, na.rm = TRUE) || any(x$des$cs[rows] %in% TRUE) ||
+  cs4 <- .cpcs_num(h, "caso4_pct")[rows]
+  gyp <- any(cs4 > 0, na.rm = TRUE) || any(is.na(cs4) & x$des$cs[rows] %in% TRUE) ||
     any(.cpcs_num(h, "gypsum_visible_pct")[rows] > 0, na.rm = TRUE)
   if (isTRUE(ec_route) && gyp && !any(esp > 10, na.rm = TRUE))
     ec_route <- if (all(!is.na(esp))) FALSE else NA
@@ -634,14 +645,14 @@ podzolised_soils_cpcs <- function(pedon) {
   # notation gives the kind of B: a (B), Bw or Bt is not a podzolic B.
   bz <- vapply(b, function(i) {
     if (isFALSE(x$des$h[i]) && isFALSE(x$des$fe[i]) &&
-        (isTRUE(x$des$bstruct[i]) || isTRUE(x$des$t[i]))) return(FALSE)
+        (isTRUE(x$des$bstruct[i]) || isTRUE(x$des$t[i]) || isTRUE(x$des$trans[i]))) return(FALSE)
     if (!is.na(x$om[i]) && !is.na(n[i]) && n[i] > 0) {
       ok <- x$om[i] > 0.5 && x$oc[i] / n[i] > 14
       if (length(e)) ok <- ok && (if (is.na(oc_e)) NA else x$oc[i] > oc_e)
       return(ok)
     }
-    if (isTRUE(x$des$h[i]) || isTRUE(x$des$fe[i])) return(TRUE)
     if (!is.na(x$om[i]) && x$om[i] <= 0.5) return(FALSE)
+    if (isTRUE(x$des$h[i]) || isTRUE(x$des$fe[i])) return(TRUE)
     # a B of the notation without h, s or fe is not podzolic, except a plain
     # B of the FAO notation (no symbol at all), which stays undecided
     if (x$role[i] %in% "B") {
@@ -652,8 +663,12 @@ podzolised_soils_cpcs <- function(pedon) {
     NA
   }, NA)
   podz_b <- if (length(b)) .cpcs_any(bz) else FALSE
-  # an undesignated profile: soilKey's spodic horizon stands in
-  if (undes && is.na(podz_b)) podz_b <- tryCatch(spodic(pedon)$passed, error = function(err) NA)
+  # an undesignated profile: soilKey's spodic horizon decides when it can
+  # (the C/N of an undesignated layer may be that of a C)
+  if (undes) {
+    sp <- tryCatch(spodic(pedon)$passed, error = function(err) NA)
+    if (!is.na(sp)) podz_b <- sp
+  }
   # an ashy A2 alone (sols humo-cendreux): an A2 of albic material, no B; not
   # a g master nor a hydromorphic A2 (p. 51)
   rf <- .cpcs_num(h, "redoximorphic_features_pct")
@@ -703,7 +718,7 @@ sesquioxide_soils_cpcs <- function(pedon) {
   cr <- .cpcs_num(h, "munsell_chroma_moist"); va <- .cpcs_num(h, "munsell_value_moist")
   nod <- .cpcs_num(h, "ferric_nodules_pct")
   trop <- .cpcs_tropical(x)
-  fe <- ifelse((!is.na(nod) & nod > 0) | x$des$cn %in% TRUE, TRUE,
+  fe <- ifelse((!is.na(nod) & nod > 0) | (is.na(nod) & x$des$cn %in% TRUE), TRUE,
         ifelse(neu, FALSE,
         ifelse(is.na(hn) | is.na(cr), NA,
         ifelse(hn <= 15 & cr >= 4, TRUE,
@@ -808,7 +823,7 @@ isohumic_soils_cpcs <- function(pedon) {
   # to 80 % or more in the B, read in the larger part of its first 100 cm
   # (p. 39; a calcareous horizon counts as saturated)
   bs <- .cpcs_bs(x); cc <- .cpcs_num(h, "caco3_pct")
-  calc <- (!is.na(cc) & cc > 0) | x$des$ca %in% TRUE
+  calc <- ifelse(!is.na(cc), cc > 0, x$des$ca %in% TRUE)
   sat50 <- ifelse(calc, TRUE, ifelse(is.na(bs), NA, bs >= 50))
   sat80 <- ifelse(calc, TRUE, ifelse(is.na(bs), NA, bs >= 80))
   a <- .cpcs_a_rows(x); if (!length(a)) a <- rows[1L]
