@@ -171,7 +171,7 @@ test_that("a gap that cannot hold a gley layer; farmland words; a fill keeps no 
             structure_grade = c("moderate", "structureless"), childs_test = "negative")
   expect_true(is.na(.scsj_groundwater_gley_within(.scsj_profile(.jp(g2)))))
   # upland rice and cropping are farmland
-  for (lu in c("upland rice", "extensive cropping", "陸稲"))
+  for (lu in c("upland rice", "extensive cropping", "\u9678\u7a32"))
     expect_true(.scsj_farmland(.scsj_profile(.jp(.al(), site = list(land_use = lu)))), info = lu)
   # a fill of the notation with no origin of its own does not take the site's
   f <- .al(designation = c("^A", "^C", "2Bw", "2C"), top_cm = c(0, 20, 50, 80), bottom_cm = c(20, 50, 80, 120),
