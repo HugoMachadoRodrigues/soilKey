@@ -1,3 +1,32 @@
+# soilKey 0.9.325 (2026-11-01)
+
+## Japan: the Comprehensive Soil Classification System of Japan, the ten great groups
+
+`classify_cscj2011()` keys a pedon to the ten great groups of the Comprehensive Soil Classification System of Japan, First Approximation (Obara et al. 2011, NIAES), a system of its own beside the SCSJ 2017. `make_cscj2011_example()` gives one profile per great group. Names are the English names of the text's appendix 2, with the Japanese ones in `levels$name_native`. The 27 groups, 116 subgroups, 381 soil series groups and the phases follow.
+
+* **Shared code, the CSCJ's own limits.** The diagnostics the two Japanese systems share are read with the SCSJ code, by the CSCJ edition:
+  * the argic horizon by the CSCJ's clay increase (the WRB 2006 values);
+  * the immature kuroboku feature with P retention as its only substitute;
+  * the heterogeneous fill of the Man-made soils by the CSCJ great groups, without the SCSJ's Regosol-group rule.
+* **Podzols before Andosols**, as the CSCJ keys them.
+* **New great group:** the Dark Red soils, by a dark red subsurface (the new colour word) or an origin from limestone or calcareous deposits with a base-rich subsurface.
+* **The CSCJ's Red-Yellow soils**, without the SCSJ's base-status criterion.
+* In the Pro app, the CSCJ is a national system of its own.
+
+### Hugo's decisions (2026-11-01)
+
+* The soil surface, which the CSCJ does not define, is read as in the SCSJ.
+* The CSCJ's own argic limits.
+* The Dark Red colour is that of the thickest B horizon in the subsurface section, else the first B below it.
+* Limestone or calcareous deposits come from recorded words or 40 % CaCO3 or more; nothing recorded means not.
+* Decided for the later parts:
+  * a Japanese texture-class attribute;
+  * the series-group names with their term first;
+  * the air temperature plus 2 C for the CSCJ temperature phase;
+  * the subsurface rules (plough layer excluded, the texture layer in 20 to 60 cm, the non-allophanic test by the key).
+
+The SCSJ 2017 and the other systems do not change.
+
 # soilKey 0.9.324 (2026-10-31)
 
 ## Japan: the soil phases of the Soil Classification System of Japan

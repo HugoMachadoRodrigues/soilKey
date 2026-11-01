@@ -78,13 +78,24 @@
   PedonRecord$new(site = site, horizons = data.table::as.data.table(h))
 }
 
+# The gates B to I of the key a part of a profile is keyed through, by the
+# edition: the SCSJ 2017 or the CSCJ 2011 (Podzols before Andosols, Dark Red
+# soils, its own Red-Yellow soils).
+.scsj_part_gates <- function(p) {
+  if (identical(.scsj_edition(p$site %||% list()), "cscj2011"))
+    return(list(B = organic_soils_scsj, C = podzols_scsj, D = andosols_scsj, E = dark_red_soils_cscj,
+                F = fluvic_soils_scsj, G = red_yellow_soils_cscj, H = stagnic_soils_scsj,
+                I = brown_forest_soils_scsj))
+  list(B = organic_soils_scsj, C = andosols_scsj, D = podzols_scsj, E = fluvic_soils_scsj,
+       F = red_yellow_soils_scsj, G = stagnic_soils_scsj, H = eutrosols_scsj,
+       I = brown_forest_soils_scsj)
+}
+
 # The great groups a part of a profile may key to: those of the gates up to
 # the first that passes, the undecided ones included.
 .scsj_part_possible <- function(p) {
   if (is.null(p)) return(c("B", "C", "D", "E", "F", "G", "H", "I", "J"))
-  gates <- list(B = organic_soils_scsj, C = andosols_scsj, D = podzols_scsj, E = fluvic_soils_scsj,
-                F = red_yellow_soils_scsj, G = stagnic_soils_scsj, H = eutrosols_scsj,
-                I = brown_forest_soils_scsj)
+  gates <- .scsj_part_gates(p)
   out <- character(0)
   for (k in names(gates)) {
     r <- gates[[k]](p)$passed
@@ -104,9 +115,7 @@
 
 .scsj_part_great_group <- function(p) {
   if (is.null(p)) return(NA_character_)
-  gates <- list(B = organic_soils_scsj, C = andosols_scsj, D = podzols_scsj, E = fluvic_soils_scsj,
-                F = red_yellow_soils_scsj, G = stagnic_soils_scsj, H = eutrosols_scsj,
-                I = brown_forest_soils_scsj)
+  gates <- .scsj_part_gates(p)
   for (k in names(gates)) {
     r <- gates[[k]](p)$passed
     if (isTRUE(r)) return(k)
@@ -142,9 +151,11 @@ man_made_soils_scsj <- function(pedon) {
         x$ord[!is.na(x$dtop[x$ord]) & x$dtop[x$ord] >= fr$bottom - 0.5 & !(x$ord %in% fr$rows)]
       p_fill <- .scsj_part_pedon(pedon, fr$rows, complete = TRUE)
       p_below <- .scsj_part_pedon(pedon, below, complete = isTRUE(x$complete))
-      # the classes each part may key to, a Regosol by its group (in
-      # Regosols, material of another group is heterogeneous too: IV.3)
-      expand <- function(g, p) if ("J" %in% g) c(setdiff(g, "J"), .scsj_regosol_possible(p)) else g
+      # the classes each part may key to, a Regosol by its group (SCSJ IV.3:
+      # in Regosols, material of another group is heterogeneous too; the CSCJ
+      # has no such rule)
+      expand <- function(g, p) if ("J" %in% g && identical(x$edition, "scsj2017"))
+        c(setdiff(g, "J"), .scsj_regosol_possible(p)) else g
       g_fill <- expand(.scsj_part_possible(p_fill), p_fill)
       g_below <- expand(.scsj_part_possible(p_below), p_below)
       c <- .scsj_differ(g_fill, g_below)

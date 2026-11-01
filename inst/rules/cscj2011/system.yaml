@@ -1,0 +1,31 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: cscj2011
+order: 9
+aliases: [cscj]
+legacy: false
+default: false
+status: experimental
+namespace: cscj
+classifier: classify_cscj2011
+result_slot: cscj2011
+top_level: great_groups
+levels: [great_groups]
+display:
+  en: "Comprehensive Soil Classification System of Japan (2011)"
+  pt: "Sistema Abrangente de Classificação de Solos do Japão (2011)"
+  native: "包括的土壌分類 第1次試案"
+  result: "CSCJ 2011"
+edition: "Comprehensive Soil Classification System of Japan, First Approximation (2011), NIAES"
+citation: >
+  Obara, H., Ohkura, T., Takata, Y., Kohyama, K., Maejima, Y. and
+  Hamazaki, T. (2011). Comprehensive Soil Classification System of Japan,
+  First Approximation (包括的土壌分類 第1次試案). Bulletin of the National
+  Institute for Agro-Environmental Sciences 29: 1-73.
+version: "Comprehensive Soil Classification System of Japan, First Approximation, 2011 (NIAES Bulletin 29)"
+implementation_status: "soilKey v0.9.325 -- 10/10 great groups (chapter V); the 27 groups, 116 subgroups, 381 soil series groups and the phases follow"
+source: |
+  Obara et al. (2011). Comprehensive Soil Classification System of Japan,
+  First Approximation. Chapter V (key to great groups), chapter IV
+  (diagnostic horizons, features, materials and other terms). The
+  diagnostics it shares with the SCSJ 2017 are read by the SCSJ code under
+  the CSCJ edition (argic limits, immature kuroboku feature, dark red).
