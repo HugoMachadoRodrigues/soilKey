@@ -1,3 +1,47 @@
+# soilKey 0.9.330 (2026-11-01)
+
+## France: the twelve classes of the French soil classification (CPCS 1967)
+
+`classify_cpcs1967()` keys a pedon to the twelve classes of the French soil classification of 1967 (Commission de Pédologie et de Cartographie des Sols, *Classification des sols*), a system of its own beside the other national systems. `make_cpcs1967_example()` gives one profile per class. The names are French, as the text writes them, in `name` and `levels$name_native`. The sub-classes, groups and subgroups follow.
+
+* **An order of classes.** The CPCS gives no key. soilKey keys the classes in an order built from the text's statements of precedence: I sols minéraux bruts, III vertisols, XII sols sodiques, IV andosols, VIII sols podzolisés, X sols ferrallitiques, IX sols à sesquioxydes de fer, XI sols hydromorphes, II sols peu évolués, VI sols isohumiques, V sols calcimagnésiques, VII sols brunifiés.
+* **The old French notation** (Aoo, Ao, A1, A2, A3, (B), B, Bh, Bfe, Bt, Cca, Can, Cs, Cn, Sa, g, G, R, a Roman numeral for a change of parent material), declared with `site$designation_system = "cpcs"` or recognised by its own symbols, beside the FAO letters. In a profile without designations, soilKey's diagnostic horizons stand in for the profile type.
+* **The class tests** read organic matter as 1.72 × organic carbon, with depths from the top of the first mineral horizon:
+  * the intensity of hydromorphy and halomorphy that makes classes XI and XII;
+  * Ki (or the CEC of the clay) for the ferrallitic soils, read in the larger part of the B;
+  * the podzolic B by its C/N;
+  * the andic properties with a (B);
+  * the sharp or gradual fall of organic matter that separates the calcimagnesic soils from the isohumic soils.
+* In the Pro app, the CPCS is a national system of its own; the level is labelled "Class".
+
+### Hugo's decisions (2026-11-01)
+
+* The order of the classes above. Class XI excludes permafrost soils (they stay in class II); the sesquioxide soils exclude the isohumic soils.
+* **Class XI:** peat (30 % OM, 20 % in sandy material) over 40 cm of the top 80 cm; 8 to 30 % OM over 20 cm on a gley; or hydromorphic layers over most of the profile from the base of the A1 to 100 cm. A deep gley alone does not count, and a mottle that is not recorded is absent.
+* **Class XII:** EC above 7 dS/m in every horizon to 100 cm, or Na above 10 % of the CEC with a massive or columnar, compact structure. Na only; clean sands and gypsum alone excluded.
+* **Conventions:** OM = 1.72 × C; depth zero at the top of the A1; ranges read as in the SiBCS; data first, the notation where the data do not decide.
+* **Names:** French in both name fields.
+* **After the canonical profiles** (the 44 WRB, SiBCS and USDA examples keyed under the CPCS):
+  * class IX's individualised iron is a reddened B (5YR or redder, chroma 4) or iron concretions, a yellower B only under a tropical climate;
+  * the gradual fall of OM of class VI is read at a third, and class V drops its own fall test (the isohumic soils are keyed before it);
+  * the EC of class XII is read in the solum;
+  * the cracks of class III are 0.5 cm, as soilKey reads the WRB.
+* **Classes I, II and IV:**
+  * class I has traces of OM, 0.5 % (1.5 % in the top 3 cm);
+  * class II has permafrost, or an AC profile with more than traces;
+  * an AC soil with the chemistry of class V and a source of Ca or Mg is calcimagnesic unless a recent deposit or recent erosion is recorded;
+  * class IV needs the andic properties over 30 cm, a CEC above 25 (the thickness-weighted mean of the andic A and (B)) and a (B).
+* **Classes III and VIII:** the CPCS's own vertisol reading (slickensides to 150 cm, 30 % clay in the (B)); the podzolic B by criterion 2 (OM above 0.5 %, C/N above 14), or an ashy A2 without a B.
+* **Classes X, IX, V, VI and VII:**
+  * X: Ki of 2.0 or less, else a CEC of the clay of 16 or less;
+  * IX: Ki above 2, base saturation above 50 % and individualised iron;
+  * V: no B, pH above 6.8 and Ca + Mg above 90 %;
+  * VI: a gradual fall over half the solum, OM minima by texture, S/T of 50 % or more in the upper horizons and 80 % in the B (p. 39);
+  * VII: the remaining soils with a B or (B).
+* **Supporting readings:** the ashy A2 is albic material; in an undesignated profile, the B is read from soilKey's diagnostics.
+
+The other systems do not change.
+
 # soilKey 0.9.329 (2026-11-01)
 
 ## Japan: the soil phases of the Comprehensive Soil Classification System of Japan (the CSCJ now complete)

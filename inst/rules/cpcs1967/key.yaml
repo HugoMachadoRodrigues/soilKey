@@ -1,0 +1,110 @@
+# The twelve classes of the French soil classification (CPCS 1967). The text
+# gives no key: the classes are keyed in an order built from its own
+# statements of precedence (Hugo, 2026-11-01): the vertisols, podzolised,
+# ferrallitic and sesquioxide soils keep their own strong hydromorphy; the
+# sodic and hydromorphic soils take a soil only when the process is intense
+# (pp. 8, 73, 77); permafrost soils stay weakly developed even when
+# waterlogged; class V excludes the vertisols and the isohumic soils; class
+# VII is what remains of the developed soils. Each class after the first is
+# "the soils other than the above", so a gate tests only its own definition.
+# The codes are the text's Roman numerals; the names are French, as the
+# text writes them (name and name_native). Criteria are summarised from the
+# text; see R/diagnostics-cpcs.R and readings.yaml.
+
+classes:
+
+  - code: "I"
+    name: Sols minéraux bruts
+    name_native: Sols minéraux bruts
+    tests:
+      all_of:
+        - raw_mineral_soils_cpcs: {}
+    notes: "Profile (A)C, (A)R or R: no A2, B or (B), and only traces of organic matter in the top 20 cm (0.5 % OM or less; the top 3 cm 1.5 %)."
+
+  - code: "III"
+    name: Vertisols
+    name_native: Vertisols
+    tests:
+      all_of:
+        - vertisols_cpcs: {}
+    notes: "Slickensides or wedge-shaped aggregates (common or more) in the solum to 150 cm, 30 % clay or more in the (B), cracks of 0.5 cm or more when recorded, no B other than (B)."
+
+  - code: "XII"
+    name: Sols sodiques
+    name_native: Sols sodiques
+    tests:
+      all_of:
+        - sodic_soils_cpcs: {}
+    notes: "EC of the saturated paste above 7 dS/m in every horizon of the solum (A and B to 100 cm; without a B, to 50 cm), or exchangeable Na above 10 % of the CEC with a massive or columnar, compact structure within 100 cm. Not clean sands, not a salinity of gypsum alone."
+
+  - code: "IV"
+    name: Andosols
+    name_native: Andosols
+    tests:
+      all_of:
+        - andosols_cpcs: {}
+    notes: "Andic properties over 30 cm or more within 100 cm, a mean CEC above 25 cmol(+)/kg in the andic A and (B) where measured, and a B or (B) (allophanic AC soils are weakly developed)."
+
+  - code: "VIII"
+    name: Sols podzolisés
+    name_native: Sols podzolisés
+    tests:
+      all_of:
+        - podzolised_soils_cpcs: {}
+    notes: "A podzolic B (OM above 0.5 %, C/N above 14 and more carbon than the A2; a Bh, Bs or Bfe without C or N), or an ashy A2 (albic material) without a B."
+
+  - code: "X"
+    name: Sols ferrallitiques
+    name_native: Sols ferrallitiques
+    tests:
+      all_of:
+        - ferrallitic_soils_cpcs: {}
+    notes: "A B or (B) whose larger part (first 100 cm) has Ki of 2.0 or less, or without Ki a CEC of the clay of 16 cmol(+)/kg or less."
+
+  - code: "IX"
+    name: Sols à sesquioxydes de fer
+    name_native: Sols à sesquioxydes de fer
+    tests:
+      all_of:
+        - sesquioxide_soils_cpcs: {}
+    notes: "A B or (B) whose larger part has Ki above 2, base saturation above 50 % and individualised iron (a reddened B, 5YR or redder with chroma 4 or more, or iron concretions; a 7.5YR or 10YR B with chroma 4 or more and value 5 or more under a tropical climate); not isohumic."
+
+  - code: "XI"
+    name: Sols hydromorphes
+    name_native: Sols hydromorphes
+    tests:
+      all_of:
+        - hydromorphic_soils_cpcs: {}
+    notes: "No permafrost; peat (30 % OM or more, 20 % in sandy material) over 40 cm of the top 80 cm, or 8 to 30 % OM over 20 cm on a gley, or hydromorphic layers over most of the profile from the base of the A1 to 100 cm."
+
+  - code: "II"
+    name: Sols peu évolués
+    name_native: Sols peu évolués
+    tests:
+      all_of:
+        - weakly_developed_soils_cpcs: {}
+    notes: "Permafrost; or an AC profile (no A2, B or (B)) with more than traces of organic matter, not an AC soil with the chemistry of class V and a source of Ca or Mg unless a recent deposit or recent erosion is recorded."
+
+  - code: "VI"
+    name: Sols isohumiques
+    name_native: Sols isohumiques
+    tests:
+      all_of:
+        - isohumic_soils_cpcs: {}
+    notes: "OM in the top 15 cm at least 0.5 / 0.75 / 1 % (sandy / medium / clayey), marked horizons over half the depth to the C or more, no drop of OM to under a third from one horizon to the next nor below the A, S/T of 50 % or more in the upper horizons and 80 % or more in the B."
+
+  - code: "V"
+    name: Sols calcimagnésiques
+    name_native: Sols calcimagnésiques
+    tests:
+      all_of:
+        - calcimagnesic_soils_cpcs: {}
+    notes: "No enriched B; pH(H2O) above 6.8 and saturation by Ca and Mg above 90 % in the A. The isohumic soils, which the class excludes, are keyed before it."
+
+  - code: "VII"
+    name: Sols brunifiés
+    name_native: Sols brunifiés
+    tests:
+      all_of:
+        - brunified_soils_cpcs: {}
+    notes: "The remaining developed soils: a B or (B)."
