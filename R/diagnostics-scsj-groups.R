@@ -333,8 +333,11 @@ volcanogenous_regosols_scsj <- function(pedon) {
   x <- .scsj_profile(pedon)
   if (is.na(x$surface)) return(.scsj_no_surface("volcanogenous_regosols_scsj", x, "III J, p. 15"))
   f <- .scsj_horizon_flags(x)
-  developed <- .scsj_or(f$weathered, f$argic)
-  developed[x$des$buried %in% TRUE] <- FALSE
+  # buried rows are left out before the thickness of the horizons is read
+  bur <- x$des$buried %in% TRUE
+  ag <- f$argic_rows; ag[bur] <- FALSE
+  w <- f$weathered_raw; w[bur] <- FALSE
+  developed <- .scsj_or(.scsj_horizon_rows(x, w, 15), .scsj_argic_horizon_rows(x, ag))
   undeveloped <- .scsj_not(.scsj_any(developed))
   ej <- .scsj_at_least(.scsj_cum(x, x$orig$ejecta, 0, 50), 25)
   passed <- .scsj_and3(undeveloped, ej)
