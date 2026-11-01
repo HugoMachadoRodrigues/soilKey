@@ -1,0 +1,89 @@
+# The key to the great groups of the Soil Classification System of Japan
+# (SCSJ 2017, chapter II, pp. 2-5), in its own order. Each great group after
+# the first is "soils other than the above", so a gate tests only its own
+# requirements: the key's order supplies the exclusions. The codes are the
+# SCSJ's own letters; name is the official English name of the SCSJ table
+# (pp. 17-19) and name_native the Japanese one. Criteria are summarised from
+# the text; see R/diagnostics-scsj-great-groups.R and readings.yaml for the
+# choices where the text is silent.
+
+great_groups:
+
+  - code: "A"
+    name: Man-made soils
+    name_native: 造成土大群
+    tests:
+      all_of:
+        - man_made_soils_scsj: {}
+    notes: "The fill shows none of the natural diagnostic horizons and wetness features; and within 50 cm, 25 cm or more (cumulative) of layers with 20 % or more artificial material, a continuous impermeable artificial layer from within 30 cm, or 35 cm or more of fill of soil material of another great group."
+
+  - code: "B"
+    name: Organic Soils
+    name_native: 有機質土大群
+    tests:
+      all_of:
+        - organic_soils_scsj: {}
+    notes: "25 cm or more (cumulative) of peat material within 50 cm of the soil surface, or 25 cm continuous below a fill of other material under 35 cm."
+
+  - code: "C"
+    name: Andosols
+    name_native: 黒ボク土大群
+    tests:
+      all_of:
+        - andosols_scsj: {}
+    notes: "25 cm or more (cumulative) of layers with the kuroboku or the immature kuroboku feature within 50 cm, or 25 cm continuous below a fill under 35 cm."
+
+  - code: "D"
+    name: Podzols
+    name_native: ポドゾル大群
+    tests:
+      all_of:
+        - podzols_scsj: {}
+    notes: "One parent material, no paddy surface horizon, no red-yellow layer; a podzolic accumulation horizon (morphology) with a bleached horizon, or one by analysis with a bleached horizon or one by morphology."
+
+  - code: "E"
+    name: Fluvic soils
+    name_native: 沖積土大群
+    tests:
+      all_of:
+        - fluvic_soils_scsj: {}
+    notes: "25 cm or more (cumulative) of alluvial deposits within 50 cm, or 25 cm continuous below a fill under 35 cm."
+
+  - code: "F"
+    name: Red-Yellow soils
+    name_native: 赤黄色土大群
+    tests:
+      all_of:
+        - red_yellow_soils_scsj: {}
+    notes: "A red-yellow argic horizon of 25 cm or more from within 50 cm, or red-yellow weathered horizons of 25 cm or more from within 35 cm; an acid or unsaturated subhorizon in the subsurface; no bedrock within 30 cm."
+
+  - code: "G"
+    name: Stagnic soils
+    name_native: 停滞水成土大群
+    tests:
+      all_of:
+        - stagnic_soils_scsj: {}
+    notes: "Under 25 cm of volcanic ejecta within 50 cm; a gley layer or a wet layer (groundwater or surface-water feature) of 10 cm or more from within 50 cm, reaching 50 cm or the bedrock."
+
+  - code: "H"
+    name: Eutrosols
+    name_native: 富塩基土大群
+    tests:
+      all_of:
+        - eutrosols_scsj: {}
+    notes: "A weathered or argic horizon from within 50 cm; every subhorizon of the subsurface with pH(H2O) 5.5 or more or base saturation 50 % or more; no bedrock within 30 cm."
+
+  - code: "I"
+    name: Brown Forest soils
+    name_native: 褐色森林土大群
+    tests:
+      all_of:
+        - brown_forest_soils_scsj: {}
+    notes: "A weathered or argic horizon from within 50 cm; no bedrock within 30 cm."
+
+  - code: "J"
+    name: Regosols
+    name_native: 未熟土大群
+    tests:
+      default: true
+    notes: "Other soils."
