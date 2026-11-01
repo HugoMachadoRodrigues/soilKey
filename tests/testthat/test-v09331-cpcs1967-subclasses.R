@@ -93,7 +93,10 @@ test_that("classes V, VII and VIII", {
   # (a 10YR 5/6 B with V above 50 % would be a ferruginous tropical soil, IX)
   t <- .with_site(b, lat = -6); t$horizons$bs_pct <- c(70, 65, 60); t$horizons$munsell_chroma_moist <- c(2, 3, 4)
   expect_identical(.sub(t)[["code"]], "VII-4")
-  expect_identical(.sub(.with_site(b, lat = -6))[["code"]], "VII-1")
+  # tropical, but the (B) not eutrophic: not named temperate, undecided
+  r <- .sub(.with_site(b, lat = -6))
+  expect_true(is.na(r[["code"]])); expect_match(r[["prov"]], "subclasses:VII-1")
+  expect_identical(.sub(.with_site(b, koppen_climate = "Cfb"))[["code"]], "VII-1")
   # an A2 over a textural B, boreal or continental
   le <- .fr(list(designation = c("A1", "A2", "B2t", "C"), top_cm = c(0, 10, 30, 80), bottom_cm = c(10, 30, 80, 120),
                  oc_pct = c(3, 0.8, 0.4, 0.2), n_total_pct = c(0.25, 0.07, 0.04, 0.02), clay_pct = c(15, 14, 32, 25),
@@ -137,4 +140,30 @@ test_that("classes IX to XII", {
   dg <- so$clone(deep = TRUE); dg$horizons$structure_type <- c("granular", "columnar", "massive")
   dg$horizons$consistence_moist <- c("friable", "very firm", "firm")
   expect_identical(.sub(dg)[["code"]], "XII-2")
+})
+
+test_that("after the review: every Koppen code, the Koppen case, the regimes, the X mean", {
+  skip_on_cran()
+  iso <- make_cpcs1967_example("isohumic")
+  want <- c(Cfb = "VI-1", Af = "VI-1", Dfb = "VI-2", BWk = "VI-2", ET = "VI-2", Csa = "VI-3",
+            BWh = "VI-4", Cwa = "VI-4", Aw = "VI-4")
+  for (k in names(want)) expect_identical(.sub(.with_site(iso, koppen_climate = k))[["code"]], want[[k]], info = k)
+  expect_identical(.sub(.with_site(iso, koppen_climate = "dfb"))[["code"]], "VI-2")
+  s <- iso$site; s$koppen_climate <- NULL; iso$site <- s
+  expect_identical(.sub(.with_site(iso, soil_temperature_regime = "mesic", soil_moisture_regime = "ustic"))[["code"]], "VI-2")
+  expect_true(is.na(soilKey:::.cpcs_koppen(list(koppen_climate = "temperate"))))
+  # a recorded temperature regime decides the tropics before the latitude
+  x <- soilKey:::.cpcs_profile(.with_site(make_cpcs1967_example("brunified"), soil_temperature_regime = "cryic", lat = 10))
+  expect_false(soilKey:::.cpcs_climate(x, "tropical"))
+  # class IX reads the Koppen tropics: a yellow eutrophic B under Aw
+  y <- make_cpcs1967_example("sesquioxide"); y$horizons$munsell_hue_moist <- "7.5YR"; y$horizons$munsell_value_moist <- 5
+  expect_identical(classify_cpcs1967(.with_site(y, koppen_climate = "Aw"), on_missing = "silent")$levels$code[1], "IX")
+  # the ferrallitic sub-class by the weighted mean of the first 100 cm of the (B)
+  f <- make_cpcs1967_example("ferrallitic"); f$horizons$bs_pct <- c(20, 45, 30, 15)
+  expect_false(is.na(.sub(f)[["code"]]))
+  # an anmoor over a stagnogley (a mottled Bg)
+  an <- .fr(list(designation = c("A1", "Bg", "C"), top_cm = c(0, 25, 70), bottom_cm = c(25, 70, 110),
+                 oc_pct = c(8, 0.6, 0.3), clay_pct = 30, munsell_hue_moist = "10YR", munsell_value_moist = c(2, 5, 5),
+                 munsell_chroma_moist = c(1, 2, 3), redoximorphic_features_pct = c(0, 30, 10)))
+  expect_identical(.sub(an)[["code"]], "XI-2")
 })

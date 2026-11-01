@@ -32,9 +32,12 @@
   * V-3 gypseous first, then V-1 carbonated, then V-2;
   * VII-4 tropical, VII-3 boreal and VII-2 continental, each with the morphology of its groups;
   * VIII-3 hydromorphic, then VIII-2 cold.
+* **After the review:**
+  * every Köppen climate falls in one isohumic sub-class (VI-1 Cf, Dfa, Af, Am; VI-2 the other D, BSk, BWk, E; VI-3 Cs; VI-4 BSh, BWh, Aw, As, Cw);
+  * VII-1 and VIII-1 hold under a temperate climate or none recorded; under another recorded climate, a soil without the morphology of the climatic sub-class is undecided rather than named temperate.
 * **Classes IX to XII:**
   * IX-1 when base saturation is under 65 %;
-  * X by the base saturation of the (B), at 40 % and 20 %;
+  * X by the thickness-weighted base saturation of the (B), at 40 % and 20 %;
   * XI-1 peat, XI-2 anmoor;
   * XII-2 by the sodium route.
 

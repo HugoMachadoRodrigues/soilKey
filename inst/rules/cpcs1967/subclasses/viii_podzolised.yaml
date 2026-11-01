@@ -15,10 +15,11 @@ subclasses:
       tests:
         all_of:
           - podzols_cold_climate_cpcs: {}
-      notes: "A cold climate: Köppen E, Dfc, Dfd, Dwc, Dwd, or a cryic, gelic or pergelic regime."
+      notes: "A cold climate (Köppen E, or D with c or d, or a cryic, gelic or pergelic regime) and the podzol morphology: an A2 over the B."
     - code: "VIII-1"
       name: Sols podzolisés de climat tempéré
       name_native: Sols podzolisés de climat tempéré
       tests:
-        default: true
-      notes: "The other podzolised soils."
+        all_of:
+          - podzolised_temperate_cpcs: {}
+      notes: "The other podzolised soils under a temperate climate (Köppen C, or D with a or b) or no climate recorded; under another recorded climate, undecided."

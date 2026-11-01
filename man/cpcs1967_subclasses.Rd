@@ -18,8 +18,10 @@
 \alias{brunified_tropical_cpcs}
 \alias{brunified_boreal_cpcs}
 \alias{brunified_continental_cpcs}
+\alias{brunified_temperate_cpcs}
 \alias{podzolised_hydromorphic_cpcs}
 \alias{podzols_cold_climate_cpcs}
+\alias{podzolised_temperate_cpcs}
 \alias{ferruginous_tropical_soils_cpcs}
 \alias{ferrallitic_weakly_desaturated_cpcs}
 \alias{ferrallitic_moderately_desaturated_cpcs}
@@ -61,9 +63,13 @@ brunified_boreal_cpcs(pedon)
 
 brunified_continental_cpcs(pedon)
 
+brunified_temperate_cpcs(pedon)
+
 podzolised_hydromorphic_cpcs(pedon)
 
 podzols_cold_climate_cpcs(pedon)
+
+podzolised_temperate_cpcs(pedon)
 
 ferruginous_tropical_soils_cpcs(pedon)
 

@@ -1,4 +1,4 @@
-# Sous-classes des sols ferrallitiques (p. 64-70); read on the base saturation of the (B), with no default, French soil classification (CPCS 1967). Criteria summarised
+# Sous-classes des sols ferrallitiques (p. 64-70); read on the thickness-weighted base saturation of the first 100 cm of the (B), with no default, French soil classification (CPCS 1967). Criteria summarised
 # from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
 subclasses:
   "X":

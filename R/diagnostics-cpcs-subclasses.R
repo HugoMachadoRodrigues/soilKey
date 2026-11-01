@@ -11,9 +11,18 @@
 
 # ---- the climate -------------------------------------------------------------------
 
+# The Koppen code, written in its own case (Cfb, BWh, ET); a code that is not
+# a Koppen climate is not read.
 .cpcs_koppen <- function(site) {
   k <- trimws(as.character((site %||% list())$koppen_climate %||% NA)[1L])
-  if (is.na(k) || !nzchar(k) || toupper(k) == "NA") NA_character_ else k
+  if (is.na(k) || !nzchar(k)) return(NA_character_)
+  k <- toupper(gsub("[^A-Za-z]", "", k))
+  if (!nzchar(k)) return(NA_character_)
+  k <- switch(substr(k, 1L, 1L),
+              B = paste0(substr(k, 1L, 2L), tolower(substring(k, 3L))),
+              E = k,
+              paste0(substr(k, 1L, 1L), tolower(substring(k, 2L))))
+  if (grepl("^(A[fmsw]|B[WS][hkn]?|C[fsw][abc]|D[fsw][abcd]|E[FT])$", k)) k else NA_character_
 }
 
 .cpcs_regimes <- function(site) {
@@ -50,10 +59,13 @@
       boreal = kp("^D[fsw][cd]"),
       continental = kp("^D[fsw][ab]"),
       cold = kp("^E|^D[fsw][cd]"),
-      vi1 = kp("^Cfa|^Dfa"),
-      vi2 = kp("^D|^BSk") && !kp("^Dfa"),
+      # every Koppen climate falls in one isohumic sub-class (Hugo,
+      # 2026-11-01)
+      vi1 = kp("^Cf|^Dfa|^Af|^Am"),
+      vi2 = (kp("^D|^BSk|^BWk|^E")) && !kp("^Dfa"),
       vi3 = kp("^Cs"),
-      vi4 = kp("^BSh|^Aw|^As"),
+      vi4 = kp("^BSh|^BWh|^Aw|^As|^Cw"),
+      temperate = kp("^C|^D[fsw][ab]"),
       NA))
   }
   have_t <- !is.na(r$t); have_m <- !is.na(r$m)
@@ -63,21 +75,26 @@
       hot_desert = if (mre("aridic|torric")) TRUE else if (have_m) FALSE else none,
       dry = if (mre("aridic|torric|xeric|ustic")) TRUE else if (have_m) FALSE else none,
       not_arid = if (have_m) !mre("aridic|torric") else TRUE,
-      tropical = if (tre("isothermic|isohyperthermic|^hyperthermic")) TRUE else
-        if (!is.na(lat)) abs(lat) <= 23.5 else if (.cpcs_brazil(s)) TRUE else if (have_t) FALSE else none,
+      tropical = if (have_t) tre("isothermic|isohyperthermic|^hyperthermic") else
+        if (!is.na(lat)) abs(lat) <= 23.5 else if (.cpcs_brazil(s)) TRUE else none,
       boreal = if (tre("cryic")) TRUE else if (have_t) FALSE else none,
       continental = none,
       cold = if (tre("cryic|gelic|pergelic")) TRUE else if (have_t) FALSE else none,
       vi1 = if (mre("udic")) TRUE else if (have_m) FALSE else NA,
-      vi2 = if (tre("frigid|cryic") && !mre("udic")) TRUE else if (have_t && (have_m || !tre("frigid|cryic"))) FALSE else NA,
+      # a mesic regime with an ustic or aridic one (cold winters, summer
+      # rains) is very cold too (Hugo, 2026-11-01)
+      vi2 = if ((tre("frigid|cryic") && !mre("udic")) || (tre("^mesic") && mre("ustic|aridic|torric"))) TRUE else
+        if (have_t && (have_m || !tre("frigid|cryic|^mesic"))) FALSE else NA,
       vi3 = if (mre("xeric")) TRUE else if (have_m) FALSE else NA,
       vi4 = if (mre("ustic|aridic|torric") && tre("thermic|hyperthermic|isothermic|isohyperthermic") && !tre("mesic|frigid|cryic"))
         TRUE else if (have_t && have_m) FALSE else NA,
+      temperate = !(tre("isothermic|isohyperthermic|^hyperthermic|cryic|gelic|pergelic") || mre("aridic|torric")),
       NA)
     return(out)
   }
   if (kind == "tropical" && !is.na(lat)) return(abs(lat) <= 23.5)
   if (kind == "tropical" && .cpcs_brazil(s)) return(TRUE)
+  if (kind == "temperate") return(!(( !is.na(lat) && abs(lat) <= 23.5) || .cpcs_brazil(s)))
   if (kind == "not_arid") return(TRUE)
   if (kind %in% c("vi1", "vi2", "vi3", "vi4")) return(NA)
   none
@@ -88,13 +105,14 @@
   s <- x$site
   if (!is.na(.cpcs_koppen(s))) return(sprintf("Koppen %s", .cpcs_koppen(s)))
   r <- .cpcs_regimes(s)
-  if (!is.na(r$t) || !is.na(r$m)) return(sprintf("regimes %s / %s", r$t %||% "-", r$m %||% "-"))
+  if (!is.na(r$t) || !is.na(r$m)) return(sprintf("regimes %s / %s", if (is.na(r$t)) "-" else r$t,
+                                                 if (is.na(r$m)) "-" else r$m))
   if (!is.na(.cpcs_lat(s))) return(sprintf("latitude %s", .cpcs_lat(s)))
-  "no climate recorded: the default sub-class"
+  "no climate recorded"
 }
 
-.cpcs_sub_result <- function(name, passed, x, evidence = list(), where = "") {
-  evidence$climate <- .cpcs_climate_source(x)
+.cpcs_sub_result <- function(name, passed, x, evidence = list(), where = "", climatic = FALSE) {
+  if (climatic) evidence$climate <- .cpcs_climate_source(x)
   .cpcs_result(name, passed, integer(0), evidence, character(0), where)
 }
 
@@ -127,14 +145,14 @@ NULL
 cold_desert_raw_soils_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   p <- .cpcs_or(.cpcs_permafrost(x), .cpcs_climate(x, "cold_desert"))
-  .cpcs_sub_result("cold_desert_raw_soils_cpcs", p, x, list(permafrost = .cpcs_permafrost(x)), "I-2, p. 18")
+  .cpcs_sub_result("cold_desert_raw_soils_cpcs", p, x, list(permafrost = .cpcs_permafrost(x)), "I-2, p. 18", climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
 #' @export
 hot_desert_raw_soils_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  .cpcs_sub_result("hot_desert_raw_soils_cpcs", .cpcs_climate(x, "hot_desert"), x, where = "I-3, p. 19")
+  .cpcs_sub_result("hot_desert_raw_soils_cpcs", .cpcs_climate(x, "hot_desert"), x, where = "I-3, p. 19", climatic = TRUE)
 }
 
 # ---- II -------------------------------------------------------------------------
@@ -159,7 +177,7 @@ humic_weakly_developed_soils_cpcs <- function(pedon) {
   ph_ok <- if (!length(a)) NA else .cpcs_all(ifelse(is.na(ph), NA, ph < 6.8))
   p <- .cpcs_and(om_ok, ph_ok, .cpcs_climate(x, "not_arid"))
   .cpcs_sub_result("humic_weakly_developed_soils_cpcs", p, x,
-                   list(om_5_in_A = om_ok, ph_under_6_8 = ph_ok), "II-2, p. 23")
+                   list(om_5_in_A = om_ok, ph_under_6_8 = ph_ok), "II-2, p. 23", climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
@@ -172,11 +190,10 @@ xeric_weakly_developed_soils_cpcs <- function(pedon) {
   om <- if (length(a)) x$om[a] else NA_real_
   poor <- if (!length(a)) NA else .cpcs_all(ifelse(is.na(om), NA, om < 2))
   below <- setdiff(which(!(x$organic %in% TRUE)), a)
-  cc <- .cpcs_num(x$h, "caco3_pct")
   accum <- any(x$des$ca[below] %in% TRUE) || isTRUE(tryCatch(calcic(pedon)$passed, error = function(e) NA))
   p <- .cpcs_and(.cpcs_climate(x, "dry"), poor, !accum)
   .cpcs_sub_result("xeric_weakly_developed_soils_cpcs", p, x,
-                   list(om_under_2_in_A = poor, calcareous_accumulation = accum), "II-3, p. 24")
+                   list(om_under_2_in_A = poor, calcareous_accumulation = accum), "II-3, p. 24", climatic = TRUE)
 }
 
 # ---- III ------------------------------------------------------------------------
@@ -222,7 +239,8 @@ gypseous_soils_cpcs <- function(pedon) {
   # where gypsum is not measured (p. 38; Hugo, 2026-11-01)
   a <- .cpcs_a_rows(x)
   g <- .cpcs_num(x$h, "caso4_pct")[a]; vis <- .cpcs_num(x$h, "gypsum_visible_pct")[a]
-  v <- ifelse(!is.na(g), g >= 5, ifelse(!is.na(vis), vis > 0, ifelse(x$des$cs[a] %in% TRUE, TRUE, NA)))
+  v <- ifelse((!is.na(g) & g >= 5) | (!is.na(vis) & vis > 0), TRUE,
+       ifelse(!is.na(g) | !is.na(vis), FALSE, ifelse(x$des$cs[a] %in% TRUE, TRUE, NA)))
   p <- if (!length(a)) NA else if (any(v %in% TRUE)) TRUE else if (all(is.na(g)) && all(is.na(vis))) FALSE else .cpcs_any(v)
   .cpcs_sub_result("gypseous_soils_cpcs", p, x, where = "V-3, p. 38")
 }
@@ -260,29 +278,29 @@ carbonated_soils_cpcs <- function(pedon) {
 isohumic_humid_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   p <- .cpcs_or(.cpcs_climate(x, "vi1", none = NA), .cpcs_vi1_props(x))
-  if (!is.na(.cpcs_koppen(x$site)) && isFALSE(.cpcs_climate(x, "vi1"))) p <- FALSE
-  .cpcs_sub_result("isohumic_humid_cpcs", p, x, list(desaturated_A = .cpcs_vi1_props(x)), "VI-1, p. 40")
+  .cpcs_sub_result("isohumic_humid_cpcs", p, x, list(desaturated_A = .cpcs_vi1_props(x)), "VI-1, p. 40",
+                   climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
 #' @export
 isohumic_very_cold_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  .cpcs_sub_result("isohumic_very_cold_cpcs", .cpcs_climate(x, "vi2", none = NA), x, where = "VI-2, p. 41")
+  .cpcs_sub_result("isohumic_very_cold_cpcs", .cpcs_climate(x, "vi2", none = NA), x, where = "VI-2, p. 41", climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
 #' @export
 isohumic_cool_rainy_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  .cpcs_sub_result("isohumic_cool_rainy_cpcs", .cpcs_climate(x, "vi3", none = NA), x, where = "VI-3, p. 42")
+  .cpcs_sub_result("isohumic_cool_rainy_cpcs", .cpcs_climate(x, "vi3", none = NA), x, where = "VI-3, p. 42", climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
 #' @export
 isohumic_hot_rainy_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  .cpcs_sub_result("isohumic_hot_rainy_cpcs", .cpcs_climate(x, "vi4", none = NA), x, where = "VI-4, p. 43")
+  .cpcs_sub_result("isohumic_hot_rainy_cpcs", .cpcs_climate(x, "vi4", none = NA), x, where = "VI-4, p. 43", climatic = TRUE)
 }
 
 # ---- VII ------------------------------------------------------------------------
@@ -297,7 +315,7 @@ brunified_tropical_cpcs <- function(pedon) {
   bs <- .cpcs_bs(x)
   eu <- .cpcs_larger_part_b(x, ifelse(is.na(bs), NA, bs >= 50))
   p <- .cpcs_and(.cpcs_climate(x, "tropical"), ty$b_any, eu)
-  .cpcs_sub_result("brunified_tropical_cpcs", p, x, list(eutrophic_B = eu), "VII-4, p. 48")
+  .cpcs_sub_result("brunified_tropical_cpcs", p, x, list(eutrophic_B = eu), "VII-4, p. 48", climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
@@ -308,7 +326,7 @@ brunified_boreal_cpcs <- function(pedon) {
   # a boreal climate and the boreal leached soils of VII/31: an A2 over a
   # textural B (p. 48)
   p <- .cpcs_and(.cpcs_climate(x, "boreal"), ty$e, .cpcs_textural_b(x, pedon))
-  .cpcs_sub_result("brunified_boreal_cpcs", p, x, list(A2 = ty$e), "VII-3, p. 48")
+  .cpcs_sub_result("brunified_boreal_cpcs", p, x, list(A2 = ty$e), "VII-3, p. 48", climatic = TRUE)
 }
 
 #' @rdname cpcs1967_subclasses
@@ -320,7 +338,22 @@ brunified_continental_cpcs <- function(pedon) {
   # tell it from the humid one) and the grey forest or sod-podzolic soils of
   # VII/21-22: an A2 over a textural B (pp. 47-48)
   p <- .cpcs_and(.cpcs_climate(x, "continental"), ty$e, .cpcs_textural_b(x, pedon))
-  .cpcs_sub_result("brunified_continental_cpcs", p, x, list(A2 = ty$e), "VII-2, p. 47")
+  .cpcs_sub_result("brunified_continental_cpcs", p, x, list(A2 = ty$e), "VII-2, p. 47", climatic = TRUE)
+}
+
+# The temperate sub-classes VII-1 and VIII-1: a temperate climate (Koppen C,
+# or D with a or b), or no climate recorded; under another recorded climate,
+# a soil that has not the morphology of the climatic sub-class is undecided,
+# not named temperate (Hugo, 2026-11-01).
+.cpcs_temperate_default <- function(name, x, where) {
+  t <- .cpcs_climate(x, "temperate", none = TRUE)
+  .cpcs_sub_result(name, if (isTRUE(t)) TRUE else NA, x, where = where, climatic = TRUE)
+}
+
+#' @rdname cpcs1967_subclasses
+#' @export
+brunified_temperate_cpcs <- function(pedon) {
+  .cpcs_temperate_default("brunified_temperate_cpcs", .cpcs_profile(pedon), "VII-1, p. 46")
 }
 
 # ---- VIII -----------------------------------------------------------------------
@@ -348,7 +381,17 @@ podzolised_hydromorphic_cpcs <- function(pedon) {
 #' @export
 podzols_cold_climate_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  .cpcs_sub_result("podzols_cold_climate_cpcs", .cpcs_climate(x, "cold"), x, where = "VIII-2, p. 53")
+  ty <- .cpcs_horizon_types(x, pedon)
+  # a cold climate and the podzol morphology of its groups: an A2 over the B
+  # (p. 53)
+  p <- .cpcs_and(.cpcs_climate(x, "cold"), ty$e)
+  .cpcs_sub_result("podzols_cold_climate_cpcs", p, x, list(A2 = ty$e), "VIII-2, p. 53", climatic = TRUE)
+}
+
+#' @rdname cpcs1967_subclasses
+#' @export
+podzolised_temperate_cpcs <- function(pedon) {
+  .cpcs_temperate_default("podzolised_temperate_cpcs", .cpcs_profile(pedon), "VIII-1, p. 50")
 }
 
 # ---- IX -------------------------------------------------------------------------
@@ -363,23 +406,37 @@ ferruginous_tropical_soils_cpcs <- function(pedon) {
   v <- .cpcs_larger_part_b(x, ifelse(is.na(bs), NA, bs < 65))
   if (is.na(v)) {
     hn <- .scsj_hue_num(as.character(.scsj_col(x$h, "munsell_hue_moist", NA_character_)))
-    v <- .cpcs_larger_part_b(x, ifelse(is.na(hn), NA, hn > 15))
+    va <- .cpcs_num(x$h, "munsell_value_moist"); cr <- .cpcs_num(x$h, "munsell_chroma_moist")
+    yel <- ifelse(is.na(hn) | is.na(va) | is.na(cr), NA,
+           ifelse(hn > 15 & hn <= 20 & va >= 5 & cr >= 4, TRUE, ifelse(hn <= 15, FALSE, NA)))
+    v <- .cpcs_larger_part_b(x, yel)
   }
   .cpcs_sub_result("ferruginous_tropical_soils_cpcs", v, x, where = "IX-1, pp. 57-58")
 }
 
 # ---- X --------------------------------------------------------------------------
 
-# The base saturation of the (B), in the larger part of its first 100 cm,
-# in a band; without it, the sum of the bases S (Hugo, 2026-11-01).
+# The thickness-weighted mean of a property over the first 100 cm of the B.
+.cpcs_b_mean <- function(x, v) {
+  b <- .cpcs_b_rows(x); b <- b[!is.na(x$dtop[b])]
+  if (!length(b)) return(NA_real_)
+  t0 <- min(x$dtop[b]); t1 <- t0 + 100
+  w <- vapply(b, function(i) { bt <- if (is.na(x$dbot[i])) x$dtop[i] + 1 else x$dbot[i]; max(0, min(bt, t1) - max(x$dtop[i], t0)) }, 0)
+  k <- !is.na(v[b]) & w > 0
+  if (!any(k)) NA_real_ else sum(v[b][k] * w[k]) / sum(w[k])
+}
+
+# The sub-class band of a ferrallitic soil: the thickness-weighted mean
+# base saturation of the first 100 cm of the (B); without it, the mean sum
+# of the bases S (Hugo, 2026-11-01).
 .cpcs_x_band <- function(x, lo, hi, s_test) {
-  bs <- .cpcs_bs(x)
-  v <- .cpcs_larger_part_b(x, ifelse(is.na(bs), NA, bs >= lo & bs < hi))
-  if (!is.na(v)) return(v)
+  m <- .cpcs_b_mean(x, .cpcs_bs(x))
+  if (!is.na(m)) return(m >= lo && m < hi)
   h <- x$h
   z <- function(v) ifelse(is.na(v), 0, v)
   s <- .cpcs_num(h, "ca_cmol") + .cpcs_num(h, "mg_cmol") + z(.cpcs_num(h, "k_cmol")) + z(.cpcs_num(h, "na_cmol"))
-  .cpcs_larger_part_b(x, ifelse(is.na(s), NA, s_test(s)))
+  ms <- .cpcs_b_mean(x, s)
+  if (is.na(ms)) NA else s_test(ms)
 }
 
 #' @rdname cpcs1967_subclasses

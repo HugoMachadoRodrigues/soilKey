@@ -8,7 +8,7 @@ subclasses:
       tests:
         all_of:
           - ferruginous_tropical_soils_cpcs: {}
-      notes: "Base saturation in the B under 65 %; without it, a yellow B (10YR or 7.5YR)."
+      notes: "Base saturation in the B under 65 %; without it, a yellow B (10YR or 7.5YR, value 5 or more, chroma 4 or more)."
     - code: "IX-2"
       name: Sols fersiallitiques
       name_native: Sols fersiallitiques

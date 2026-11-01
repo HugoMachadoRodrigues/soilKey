@@ -3,19 +3,19 @@
 subclasses:
   "VI":
     - code: "VI-1"
-      name: Sols isohumiques à pédoclimat relativement humide
-      name_native: Sols isohumiques à pédoclimat relativement humide
+      name: Sols isohumiques de pédoclimat relativement humide
+      name_native: Sols isohumiques de pédoclimat relativement humide
       tests:
         all_of:
           - isohumic_humid_cpcs: {}
-      notes: "A udic regime or Köppen Cfa or Dfa; or the upper horizons partly desaturated (S/T 50 to 80 %) and 80 % or more at depth."
+      notes: "A udic regime, or Köppen Cf, Dfa, Af or Am; or the upper horizons partly desaturated (S/T 50 to 80 %) and 80 % or more at depth."
     - code: "VI-2"
       name: Sols isohumiques à pédoclimat très froid
       name_native: Sols isohumiques à pédoclimat très froid
       tests:
         all_of:
           - isohumic_very_cold_cpcs: {}
-      notes: "Very cold for part of the year: a frigid or cryic regime (not udic), or Köppen D or BSk."
+      notes: "Very cold for part of the year: a frigid or cryic regime (not udic), a mesic regime with an ustic or aridic one, or Köppen D (not Dfa), BSk, BWk or E."
     - code: "VI-3"
       name: Sols isohumiques à pédoclimat frais pendant la saison pluvieuse
       name_native: Sols isohumiques à pédoclimat frais pendant la saison pluvieuse
@@ -29,4 +29,4 @@ subclasses:
       tests:
         all_of:
           - isohumic_hot_rainy_cpcs: {}
-      notes: "Hot in the rainy season: an ustic or aridic regime with a thermic or warmer one, or Köppen BSh or Aw."
+      notes: "Hot in the rainy season: an ustic, aridic or torric regime with a thermic or warmer one, or Köppen BSh, BWh, Aw, As or Cw."

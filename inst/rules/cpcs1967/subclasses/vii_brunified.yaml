@@ -15,17 +15,18 @@ subclasses:
       tests:
         all_of:
           - brunified_boreal_cpcs: {}
-      notes: "A boreal climate (Köppen Dfc, Dfd, Dwc, Dwd, or a cryic regime) and an A2 over a textural B."
+      notes: "A boreal climate (Köppen D with c or d: Dfc, Dfd, Dsc, Dsd, Dwc, Dwd; or a cryic regime) and an A2 over a textural B."
     - code: "VII-2"
       name: Sols brunifiés des climats tempérés continentaux
       name_native: Sols brunifiés des climats tempérés continentaux
       tests:
         all_of:
           - brunified_continental_cpcs: {}
-      notes: "A continental temperate climate (Köppen Da or Db) and an A2 over a textural B."
+      notes: "A continental temperate climate (Köppen D with a or b) and an A2 over a textural B."
     - code: "VII-1"
       name: Sols brunifiés des climats tempérés humides
       name_native: Sols brunifiés des climats tempérés humides
       tests:
-        default: true
-      notes: "The other brunified soils (and those whose climate is not recorded)."
+        all_of:
+          - brunified_temperate_cpcs: {}
+      notes: "The other brunified soils under a temperate climate (Köppen C, or D with a or b) or no climate recorded; under another recorded climate, undecided."
