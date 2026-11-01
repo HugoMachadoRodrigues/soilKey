@@ -181,3 +181,15 @@ test_that("a gap that cannot hold a gley layer; farmland words; a fill keeps no 
   expect_identical(o$ejecta[1:2], c(FALSE, FALSE))
   expect_identical(o$alluvial[1:2], c(FALSE, FALSE))
 })
+
+test_that("Volcanogenous Regosols: a buried B does not make the horizons developed (Hugo, 2026-11-01)", {
+  skip_on_cran()
+  h <- list(designation = c("C1", "C2", "2Bwb", "2Cb"), top_cm = c(0, 20, 60, 100), bottom_cm = c(20, 60, 100, 130),
+            oc_pct = c(0.5, 0.3, 1.5, 0.5), phosphate_absorption_coef = c(250, 200, 900, 700),
+            munsell_hue_moist = "10YR", munsell_value_moist = c(5, 6, 4, 5), munsell_chroma_moist = c(3, 3, 4, 4),
+            structure_grade = c("structureless", "structureless", "moderate", "weak"),
+            field_texture = c("loamy sand", "sand", "loam", "loam"), clay_pct = c(4, 2, 18, 15),
+            layer_origin = c("pumice", "pumice", "weathered andesite", "weathered andesite"), redoximorphic_features_pct = 0)
+  p <- .jp(h)
+  expect_true(volcanogenous_regosols_scsj(p)$passed)
+})
