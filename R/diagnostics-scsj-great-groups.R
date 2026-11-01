@@ -385,7 +385,13 @@ fluvic_soils_scsj <- function(pedon) {
 .scsj_base_status <- function(x) {
   cs <- .scsj_control(x)
   rows <- cs$rows
-  if (!length(rows)) return(list(low = NA, high = NA, rows = rows))
+  # no subsurface (a gravel layer or the bedrock from 20 cm, or the plough
+  # layer through it): a criterion on its subhorizons is not met (Hugo,
+  # 2026-11-01); a section the description may not cover: undecided
+  if (!length(rows)) {
+    v <- if (isTRUE(cs$covered)) FALSE else NA
+    return(list(low = v, high = v, rows = rows))
+  }
   ph <- .scsj_col(x$h, "ph_h2o")[rows]; bs <- .scsj_col(x$h, "bs_pct")[rows]
   low_r <- .scsj_or(ifelse(is.na(ph), NA, ph < 5.5), ifelse(is.na(bs), NA, bs < 50))
   high_r <- .scsj_or(ifelse(is.na(ph), NA, ph >= 5.5), ifelse(is.na(bs), NA, bs >= 50))
