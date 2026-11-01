@@ -6,7 +6,7 @@
 
 * **Groups shared with the SCSJ** are its gates, read by the CSCJ edition under CSCJ names.
 * **New groups and readings:**
-  * the Fulvic Andosols, by the brown polyhumic kuroboku surface horizon (30 cm in 40 cm, each layer 4 % carbon, a weighted mean of 6 %);
+  * the Fulvic Andosols, by the brown polyhumic kuroboku surface horizon: layers with the kuroboku feature, a moist value and chroma of 3 or more and 4 % carbon or more each, 30 cm in 40 cm, with a weighted mean of 6 % or more;
   * the Calcaric and Dystric Dark Red soils;
   * the Brown Lowland soils, by the CSCJ's own yellowish-brown colour, which leaves out 5YR.
 
@@ -14,9 +14,12 @@
 
 * The brown polyhumic horizon adds up the layers that meet it, with no allowance for layers that fail between them.
 * The Brown Lowland soils use the CSCJ's yellowish brown.
-* Where liming is recorded, the Dystric Dark Red group is undecided rather than Eutric.
+* Where liming is recorded, the Dystric and Calcaric Dark Red groups are undecided (the soil keys to the Eutric group, provisional).
+* The Non-allophanic Andosols by the key alone.
+* The Volcanogenous Regosols' undeveloped horizons leave buried horizons out, in both Japanese systems (the SCSJ change is on #130 and merged up).
+* With no subsurface section, a criterion on its subhorizons is not met, in both systems (on #129 and merged up).
 
-The appendix's typos "Fuluvic" and "Volcangenous" are written Fulvic and Volcanogenous. The SCSJ 2017 and the other systems do not change.
+The appendix's typos "Fuluvic" and "Volcangenous" are written Fulvic and Volcanogenous. The other systems do not change.
 
 # soilKey 0.9.325 (2026-11-01)
 

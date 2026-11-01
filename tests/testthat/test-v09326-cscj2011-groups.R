@@ -83,3 +83,30 @@ test_that("Brown Lowland soils: the CSCJ yellowish brown, without 5YR", {
   p$horizons$munsell_hue_moist <- c("10YR", "7.5YR", "7.5YR", "7.5YR")
   expect_identical(.grp(p)[["code"]], "F4")
 })
+
+test_that("review: the brown polyhumic mean with open horizons, gaps and unreadable designations; Dystric", {
+  skip_on_cran()
+  kb <- function(...) utils::modifyList(list(designation = c("A1", "A2"), top_cm = c(0, 30), bottom_cm = c(30, NA),
+              oc_pct = c(5, 20), phosphate_absorption_coef = 2200, munsell_hue_moist = "10YR",
+              munsell_value_moist = 3, munsell_chroma_moist = 3, structure_grade = "moderate", field_texture = "loam",
+              clay_pct = 20, ph_h2o = 5.5, layer_origin = "volcanic ash", redoximorphic_features_pct = 0,
+              si_ox_pct = 1.5, al_ox_pct = 3, al_pyro_pct = 0.3, exchange_acidity_y1 = 1), list(...))
+  g <- function(h) fulvic_andosols_cscj(.jp(h))$passed
+  # an open A2 that may end at once: the mean is not decided
+  expect_true(is.na(g(kb())))
+  expect_true(is.na(g(kb(oc_pct = c(6.5, 4), top_cm = c(0, 25), bottom_cm = c(25, NA)))))
+  # a gap inside the 40 cm
+  expect_true(is.na(g(kb(top_cm = c(0, 30), bottom_cm = c(20, 40), oc_pct = c(5.5, 5.5)))))
+  # closed and complete: decided
+  expect_false(g(kb(designation = c("A1", "A2", "C"), top_cm = c(0, 30, 31), bottom_cm = c(30, 31, 100),
+                     oc_pct = c(5, 9, 1), munsell_value_moist = c(3, 3, 5), munsell_chroma_moist = c(3, 3, 4))))
+  # an unreadable designation may be a surface horizon
+  expect_true(is.na(g(kb(designation = c("X1", "X2"), top_cm = c(0, 20), bottom_cm = c(20, 40), oc_pct = c(8, 8)))))
+  # Dystric with no subsurface section: not met
+  p <- make_cscj2011_example("dark_red")
+  p$horizons$layer_origin <- "weathered basalt"; p$horizons$rock_origin <- c(NA, NA, NA, NA, "basalt")
+  p$site$parent_material <- "basalt"; p$horizons$caco3_pct <- 0
+  p$horizons$top_cm <- c(0, 20, 40, 70, 95); p$horizons$bottom_cm <- c(20, 40, 70, 95, 120)
+  p$horizons$gravel_pct <- c(0, 30, 30, 30, NA)
+  expect_false(dystric_dark_red_cscj(p)$passed)
+})

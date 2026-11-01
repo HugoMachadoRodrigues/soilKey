@@ -16,7 +16,7 @@ groups:
       tests:
         all_of:
           - sandy_regosols_cscj: {}
-      notes: "Every horizon to 100 cm with coarse fragments under 35 % and a texture of loamy sand or coarser."
+      notes: "Every horizon to 100 cm with coarse fragments under 35 % and a texture of loamy sand or coarser (calcareous and coral sands included)."
     - code: "J3"
       name: Lithosols
       name_native: 固結岩屑土
