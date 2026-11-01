@@ -193,3 +193,14 @@ test_that("Volcanogenous Regosols: a buried B does not make the horizons develop
   p <- .jp(h)
   expect_true(volcanogenous_regosols_scsj(p)$passed)
 })
+
+test_that("Volcanogenous Regosols: a buried row lends no thickness to a thin B above it", {
+  skip_on_cran()
+  h <- list(designation = c("C1", "C2", "Bw", "Bwb"), top_cm = c(0, 25, 45, 55), bottom_cm = c(25, 45, 55, 90),
+            oc_pct = c(0.5, 0.3, 1.0, 1.5), phosphate_absorption_coef = c(250, 200, 600, 900),
+            munsell_hue_moist = "10YR", munsell_value_moist = c(5, 6, 4, 4), munsell_chroma_moist = c(3, 3, 4, 4),
+            structure_grade = c("structureless", "structureless", "moderate", "moderate"),
+            field_texture = c("loamy sand", "sand", "loam", "loam"), clay_pct = c(4, 2, 15, 18),
+            layer_origin = c("pumice", "pumice", "weathered andesite", "weathered andesite"), redoximorphic_features_pct = 0)
+  expect_true(volcanogenous_regosols_scsj(.jp(h))$passed)
+})
