@@ -1,3 +1,18 @@
+# soilKey 0.9.323 (2026-10-31)
+
+## Japan: the 120 subgroups of the Soil Classification System of Japan
+
+`classify_scsj2017()` now keys a pedon to the subgroups of chapter III: 120 under the 26 groups (Haplic, Humic, Cumulic, Brown-humic, Thapto-humic, Thapto-upland, Endofluvic, Aquic, Peaty, Anthraquic, Albic, Epi-gleyed, Thionic, Strong and Mottled, Reddish, Andic, Podzolic, Eutric, Calcaric, Granitic, Para-lithic ...). Each is named by its word before the group's name, in English and in Japanese (`levels$name_native`; the generic classifier now fills `{parent}` in the native name too).
+
+* New horizon attributes: `ph_h2o2` (potential sulfuric material), `peat_moor_type` (high-moor, transitional or low-moor peat) and `artefacts_organic` (mainly organic artificial material).
+* The subgroups also read the humic and polyhumic surface horizons, the buried humic layer, the buried non-kuroboku upland soil, the paddy reverse gley layer, jarosite, carbonates, the site's landform and groundwater depth, and the parent rock.
+* Hugo's decision (2026-10-31): the mottle class 'contains' of the Strong Gley Fluvic soils, for which the text gives no figure, is 5 % or more.
+* On paddy land the Aquic subgroups do not read the paddy horizons' mottles as groundwater wetness, as the groups do; the groundwater gley layers are adjacent gley horizons reaching 75 cm.
+* Hugo's decisions (2026-10-31): the Brown-humic colour is a moist value and chroma both 3 or more (chapter VI); a paddy greyed horizon within 30 cm rules the Aeric Pseudogley soils out; the Endoaeric brown layer is below the plough layer and the surface horizons; the Podzolic Brown Forest soils read the podzolic accumulation horizon as the text gives it (its colour suffices).
+* Corrections to the shared definitions: "at A to B cm" windows no longer pass a layer that may start above A; the humic surface horizon starts at the soil surface and reads gaps and the end of the description as possible; a buried humic layer may be several horizons; an H horizon with carbon but no kuroboku data is peat material; a buried plough layer is not the plough layer; Japanese drainage classes are read.
+
+The readings are in `inst/rules/scsj2017/readings.yaml`. Other systems do not change.
+
 # soilKey 0.9.322 (2026-10-31)
 
 ## Japan: the 26 groups of the Soil Classification System of Japan

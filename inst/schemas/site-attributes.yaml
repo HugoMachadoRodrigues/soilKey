@@ -767,3 +767,9 @@ attributes:
     unit: "-"
     description: "Internal: with scsj_part, whether nothing lies below the part's last horizon (the fill; the soil under it only where the original profile ends on rock). Not for user data."
     systems: [scsj2017]
+  - name: artefacts_organic
+    section: "Description & notation"
+    type: "logical"
+    unit: "-"
+    description: "TRUE where the artificial material of the soil is mainly organic (household refuse and the like). SCSJ 2017 Organic Artifactual soils, read when no horizon records artefacts_organic."
+    systems: [scsj2017]

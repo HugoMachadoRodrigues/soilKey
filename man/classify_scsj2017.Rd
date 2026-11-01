@@ -37,7 +37,8 @@ groups. \strong{Experimental}: this release keys the ten great groups
 Red-Yellow soils, Stagnic soils, Eutrosols, Brown Forest soils,
 Regosols) and their 26 groups (for instance Allophanic and
 Non-allophanic Andosols, Fluvic Paddy soils, Magnesian Eutrosols, Sandy
-Regosols); subgroups and the soil phases follow. Each level gives
+Regosols), and their 120 subgroups (Haplic, Humic, Cumulic, Aquic ...);
+the soil phases follow. Each level gives
 the official English name and, in \code{levels$name_native}, the Japanese
 one.
 }

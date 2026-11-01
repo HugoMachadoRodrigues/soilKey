@@ -1,0 +1,39 @@
+# Subgroups of the Podzols great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "D1":
+    - code: "D1EP"
+      name: "Epi-peaty {parent}"
+      name_native: "表層泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_scsj: {within: 25, cum: 10}
+      notes: "10 cm or more (cumulative) of peat material within 25 cm."
+    - code: "D1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw", "gley_layer"], to: 75}
+      notes: "The top of a layer with the groundwater wetness feature or of a gley layer within 75 cm."
+    - code: "D1EG"
+      name: "Epi-pseudogleyic {parent}"
+      name_native: "表層疑似グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["pseudogley"], to: 50}
+      notes: "The top of a pseudogley horizon within 50 cm."
+    - code: "D1PG"
+      name: "Pseudogleyic {parent}"
+      name_native: "疑似グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["pseudogley"], from: 50, to: 75}
+      notes: "The top of a pseudogley horizon at 50 to 75 cm."
+    - code: "D1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Podzols."

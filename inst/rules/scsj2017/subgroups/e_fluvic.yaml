@@ -1,0 +1,172 @@
+# Subgroups of the Fluvic great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "E1":
+    - code: "E1AL"
+      name: "Albic {parent}"
+      name_native: "漂白化{parent}"
+      tests:
+        all_of:
+          - bleached_paddy_surface_scsj: {}
+      notes: "A bleached paddy surface horizon."
+    - code: "E1EY"
+      name: "Epi-gleyed {parent}"
+      name_native: "表層グライ化{parent}"
+      tests:
+        all_of:
+          - paddy_reverse_gley_scsj: {}
+      notes: "A paddy reverse gley layer."
+    - code: "E1EA"
+      name: "Endoaeric {parent}"
+      name_native: "下層褐色{parent}"
+      tests:
+        all_of:
+          - brown_layer_scsj: {within: 75, thick: 15}
+      notes: "The top of a brown layer 15 cm or more thick within 75 cm."
+    - code: "E1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw"], to: 75}
+      notes: "The top of a layer with the groundwater wetness feature within 75 cm."
+    - code: "E1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Fluvic Paddy soils."
+  "E2":
+    - code: "E2TN"
+      name: "Thionic {parent}"
+      name_native: "硫酸酸性質{parent}"
+      tests:
+        all_of:
+          - thionic_scsj: {}
+      notes: "The top of layers (15 cm or more, cumulative) with the sulfuric feature or potential sulfuric material within 75 cm."
+    - code: "E2PE"
+      name: "Peaty {parent}"
+      name_native: "泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_scsj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of peat material within 100 cm."
+    - code: "E2HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "E2GY"
+      name: "Epi-gray {parent}"
+      name_native: "表層灰色{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw"], from: 25, to: 50, overlap: true}
+      notes: "A layer with the groundwater wetness feature between 25 and 50 cm (the text names no top)."
+    - code: "E2ST"
+      name: "Strong {parent}"
+      name_native: "還元型{parent}"
+      tests:
+        all_of:
+          - strong_gley_scsj: {}
+      notes: "No iron mottles of the class contains or more in the gley layers deeper than 25 cm."
+    - code: "E2MO"
+      name: "Mottled {parent}"
+      name_native: "斑鉄型{parent}"
+      tests:
+        default: true
+      notes: "Other Gley Fluvic soils."
+  "E3":
+    - code: "E3TN"
+      name: "Thionic {parent}"
+      name_native: "硫酸酸性質{parent}"
+      tests:
+        all_of:
+          - thionic_scsj: {}
+      notes: "The top of layers (15 cm or more, cumulative) with the sulfuric feature or potential sulfuric material within 75 cm."
+    - code: "E3PE"
+      name: "Peaty {parent}"
+      name_native: "泥炭質{parent}"
+      tests:
+        all_of:
+          - peat_within_scsj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of peat material within 100 cm."
+    - code: "E3HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "E3EY"
+      name: "Epi-gleyed {parent}"
+      name_native: "表層グライ化{parent}"
+      tests:
+        all_of:
+          - paddy_reverse_gley_scsj: {}
+      notes: "A paddy reverse gley layer."
+    - code: "E3GL"
+      name: "Gleyic {parent}"
+      name_native: "グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw_gley"], from: 50, to: 75}
+      notes: "The top of a groundwater gley layer at 50 to 75 cm."
+    - code: "E3TA"
+      name: "Thapto-andic {parent}"
+      name_native: "下層黒ボク{parent}"
+      tests:
+        all_of:
+          - kuroboku_within_scsj: {within: 100, cum: 25}
+      notes: "25 cm or more (cumulative) of layers with the kuroboku feature within 100 cm."
+    - code: "E3HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Gray Fluvic soils."
+  "E4":
+    - code: "E4AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw"], from: 50, to: 75}
+      notes: "The top of a layer with the groundwater wetness feature at 50 to 75 cm."
+    - code: "E4HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "E4PA"
+      name: "Protoanthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - protoanthraquic_scsj: {}
+      notes: "Greyed with iron mottles down below the plough layer."
+    - code: "E4HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Brown Fluvic soils."
+  "E5":
+    - code: "E5AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - shallow_groundwater_scsj: {}
+      notes: "Groundwater within 50 cm for half the year or more."
+    - code: "E5HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Regosolic Fluvic soils."
