@@ -24,13 +24,15 @@
 }
 
 # The top of a groundwater gley layer (a gley layer reaching 75 cm or deeper)
-# within `within` cm.
+# within `within` cm. Undecided when rows that may have the gley feature,
+# gaps and undescribed depth together could make one (a span without a break
+# from `within` cm or shallower to 75 cm or deeper).
 .scsj_groundwater_gley_within <- function(x, within = 50, f = .scsj_horizon_flags(x)) {
+  if (is.na(x$surface)) return(NA)
   gl <- .scsj_gley_layers(x, f)
   if (any(vapply(gl$sure, function(v) v[["top"]] <= within && v[["deep"]] >= 75, NA))) return(TRUE)
-  if (any(vapply(gl$poss, function(v) v[["top"]] <= within && v[["bottom"]] >= 75, NA))) return(NA)
-  # a part of the window no horizon describes may hold one
-  if (is.finite(within) && .scsj_cum(x, rep(FALSE, x$n), 0, within)$poss > 0) return(NA)
+  sp <- .scsj_possible_spans(x, f$gley)
+  if (any(sp$a <= within & sp$b >= 75)) return(NA)
   FALSE
 }
 
@@ -156,9 +158,9 @@ groundwater_wet_group_scsj <- function(pedon) {
   lu <- tolower(paste(as.character(unlist(x$site$land_use %||% character(0))), collapse = " "))
   if (nzchar(trimws(lu)) && !identical(trimws(lu), "na")) {
     lu2 <- gsub("\\b(un|non[- ]?)(cultivat\\w*|farm\\w*|arable)", " ", lu, perl = TRUE)
-    farm <- grepl(paste0("\\b(crops?|cropland|fields?|arable|cultivat\\w*|farm|farmland|orchards?|",
-                         "tea (garden|field|plantation)s?|vegetables?|pastures?|hay ?fields?)\\b|",
-                         "\u7551|\u6a39\u5712|\u679c\u6a39\u5712|\u8336\u5712|\u8fb2\u5730|\u8015\u5730|\u7267\u8349\u5730"),
+    farm <- grepl(paste0("\\b(crops?|cropping|cropland|fields?|arable|cultivat\\w*|farm|farmland|orchards?|",
+                         "tea (garden|field|plantation)s?|vegetables?|pastures?|hay ?fields?|upland rice)\\b|",
+                         "\u7551|\u6a39\u5712|\u679c\u6a39\u5712|\u8336\u5712|\u8fb2\u5730|\u8015\u5730|\u7267\u8349\u5730|\u9678\u7a32"),
                   lu2, perl = TRUE)
     return(farm)
   }
@@ -288,9 +290,12 @@ stagnogley_soils_scsj <- function(pedon) {
   gl <- .scsj_gley_layers(x)
   rt <- x$rock_top
   on_rock <- function(b) is.finite(b) && is.finite(rt %||% NA) && abs(b - rt) <= 0.5
+  # undecided: a span that may hold a gley layer of 10 cm starting within 50
+  # cm and reaching 50 cm or the bedrock (rows, gaps, undescribed depth)
+  sp <- .scsj_possible_spans(x, .scsj_horizon_flags(x)$gley)
+  poss <- any(sp$a <= 50 & sp$b - sp$a >= 10 & (sp$b >= 50 | vapply(sp$b, on_rock, NA)))
   passed <- if (any(vapply(gl$sure, function(v) v[["top"]] <= 50 && (v[["deep"]] >= 50 || on_rock(v[["deep"]])), NA))) TRUE else
-            if (any(vapply(gl$poss, function(v) v[["top"]] <= 50 && (v[["bottom"]] >= 50 || on_rock(v[["bottom"]])), NA))) NA else
-            if (.scsj_cum(x, rep(FALSE, x$n), 0, 50)$poss > 0) NA else FALSE
+            if (poss) NA else FALSE
   .scsj_result("stagnogley_soils_scsj", passed, which(.scsj_gley_feature_rows(x) %in% TRUE),
                list(gley_layer_to_50 = passed),
                if (is.na(passed)) c("childs_test", "designation") else character(0), "III G, p. 13")

@@ -127,10 +127,11 @@
   pm <- tolower(paste(as.character(unlist(site$parent_material %||% character(0))), collapse = " "))
   pm <- if (nzchar(trimws(pm)) && !identical(trimws(pm), "na")) pm else NA_character_
   fill <- (!is.na(lo) & grepl(.SCSJ_FILL_RE, lo, perl = TRUE)) | des$fill
-  ej_txt <- ifelse(!is.na(lo) | !is.na(ro), paste(ifelse(is.na(lo), "", lo), ifelse(is.na(ro), "", ro)), pm)
+  ej_txt <- ifelse(!is.na(lo) | !is.na(ro), paste(ifelse(is.na(lo), "", lo), ifelse(is.na(ro), "", ro)),
+                   ifelse(fill, NA_character_, pm))
   ejecta <- !is.na(ej_txt) & grepl(.SCSJ_EJECTA_RE, ej_txt, perl = TRUE) &
             !grepl(.SCSJ_NOT_EJECTA_RE, ej_txt, perl = TRUE)
-  al_txt <- ifelse(!is.na(lo), lo, pm)
+  al_txt <- ifelse(!is.na(lo), lo, ifelse(fill, NA_character_, pm))
   alluvial <- !is.na(al_txt) & grepl(.SCSJ_ALLUVIAL_RE, al_txt, perl = TRUE) &
               !grepl(.SCSJ_NOT_ALLUVIAL_RE, al_txt, perl = TRUE)
   list(fill = fill, ejecta = ejecta, alluvial = alluvial)
@@ -464,6 +465,52 @@
   for (r in .scsj_runs(x, rows, bridge = TRUE)) if (r$poss < thick) out[r$rows] <- FALSE
   for (r in .scsj_runs(x, ifelse(rows %in% TRUE, TRUE, FALSE))) if (r$sure >= thick) out[r$rows] <- TRUE
   out
+}
+
+# The depth cut into segments from the soil surface, each with the status of
+# `rows` there: "T" (TRUE rows), "F" (a FALSE row, or below the bedrock or a
+# complete description) or "U" (an undecided row, a gap, a horizon without a
+# bottom past its top, or below a description that stops). `extra`: more
+# depths to cut at. A data.frame of a (top), b (bottom, Inf for the last)
+# and status, in depth order.
+.scsj_segments <- function(x, rows, extra = numeric(0)) {
+  ok <- which(!is.na(x$dtop))
+  if (!length(ok)) return(data.frame(a = 0, b = Inf, status = "U", stringsAsFactors = FALSE))
+  top <- pmax(x$dtop[ok], 0); bot <- x$dbot[ok]; st <- rows[ok]
+  open <- is.na(bot)
+  eps <- 1e-3
+  e <- .scsj_ends(x)
+  rock <- if (is.finite(x$rock_top %||% NA)) x$rock_top else Inf
+  closed_end <- if (any(!open)) max(bot[!open]) else 0
+  ex <- extra[is.finite(extra) & extra > 0]
+  cuts <- sort(unique(c(0, top, pmax(bot[!open], 0), top[open] + eps, ex)))
+  segs <- data.frame(a = cuts, b = c(cuts[-1L], Inf), status = "", stringsAsFactors = FALSE)
+  for (k in seq_len(nrow(segs))) {
+    a <- segs$a[k]; b <- segs$b[k]; mid <- if (is.finite(b)) (a + b) / 2 else a + 1
+    if (mid >= rock) { segs$status[k] <- "F"; next }
+    cov_c <- !open & top <= mid & bot > mid
+    pick <- if (any(cov_c)) cov_c else open & abs(top - a) < eps / 2
+    if (any(pick)) {
+      v <- st[pick]
+      segs$status[k] <- if (any(v %in% FALSE)) "F" else if (all(v %in% TRUE)) "T" else "U"
+      next
+    }
+    if (any(open & top <= mid)) { segs$status[k] <- "U"; next }
+    # a gap, or below the description
+    below <- mid > max(c(closed_end, top))
+    segs$status[k] <- if (below && (e$on_rock || isTRUE(x$complete))) "F" else "U"
+  }
+  segs
+}
+
+# The spans (top a, bottom b) where `rows` may hold without a break: runs of
+# segments that are not "F".
+.scsj_possible_spans <- function(x, rows) {
+  s <- .scsj_segments(x, rows)
+  keep <- s$status != "F"
+  if (!any(keep)) return(data.frame(a = numeric(0), b = numeric(0)))
+  r <- rle(keep); end <- cumsum(r$lengths); start <- end - r$lengths + 1L
+  data.frame(a = s$a[start[r$values]], b = s$b[end[r$values]])
 }
 
 # ---- features (IV.2) ------------------------------------------------------------
