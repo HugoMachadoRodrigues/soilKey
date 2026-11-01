@@ -28,19 +28,25 @@ rm(.g)
 # `within` cm (the Fulvic Andosols 30 in 40; their Cumulic subgroup 50 in 60).
 brown_polyhumic_cscj <- function(pedon, within = 40, thick = 30) {
   x <- .scsj_profile(.cscj_marked(pedon))
-  if (is.na(x$surface)) return(.cscj_result("brown_polyhumic_cscj", NA, integer(0), list(), "oc_pct", "VI D"))
+  if (is.na(x$surface)) return(.cscj_result("brown_polyhumic_cscj", NA, integer(0), list(), "oc_pct", "VI D, p. 33"))
   passed <- .cscj_brown_polyhumic(x, within, thick)
   .cscj_result("brown_polyhumic_cscj", passed, integer(0), list(within = within, thick = thick),
-               if (is.na(passed)) c("oc_pct", "munsell_value_moist", "munsell_chroma_moist") else character(0),
-               "VI D, p. 32")
+               if (is.na(passed)) c("oc_pct", "munsell_value_moist", "munsell_chroma_moist", "phosphate_absorption_coef",
+                                    "phosphate_retention_pct", "designation", "bottom_cm") else character(0),
+               "VI D, p. 33")
 }
+
+# The Argic subgroups of the Dark Red groups: an argic horizon (the CSCJ's
+# limits).
+#' @noRd
+argic_cscj <- .cscj_shared(function(p, ...) argic_group_scsj(p), "argic_cscj", "VI E, p. 35")
 
 # Low-humic Allophanic Andosols: no humic or polyhumic surface horizon.
 low_humic_cscj <- function(pedon) {
   r <- humic_surface_scsj(.cscj_marked(pedon), thick = 25)
   passed <- .scsj_not(r$passed)
   .cscj_result("low_humic_cscj", passed, integer(0), list(humic_surface = r$passed),
-               if (is.na(passed)) r$missing else character(0), "VI D, p. 33")
+               if (is.na(passed)) r$missing else character(0), "VI D, p. 34")
 }
 
 # Eutric Brown Forest soils (CSCJ): every subhorizon of the subsurface at
@@ -58,16 +64,28 @@ eutric_all_cscj <- function(pedon) {
                if (is.na(passed)) "ph_h2o" else character(0), "VI I, p. 42")
 }
 
-# Terrace Brown Forest soils: from Pleistocene deposits, by the words
-# Pleistocene, diluvial, terrace deposit (and the Japanese words) in the
-# layer_origin of the layers to 1 m or the site parent material; nothing
-# recorded: not (Hugo, 2026-11-01).
-.SCSJ_PLEISTOCENE_RE <- "pleistocene|diluvi|terrace deposit|terrace gravel|terrace sediment|\u6d2a\u7a4d|\u6bb5\u4e18|\u66f4\u65b0\u4e16"
+# Terrace Brown Forest soils: from Pleistocene deposits (unconsolidated
+# fluvial, marine or lacustrine), by recorded words in the layer_origin of
+# the layers to 1 m or the site parent material; nothing recorded: not
+# (Hugo, 2026-11-01). Each record: negated words taken out; a rock (lava,
+# andesite, rock ...) is not a deposit; Pleistocene, diluvial and the
+# Japanese words count, and a terrace deposit (terrace gravel, the Japanese
+# words for terrace deposits) counts unless the record says Holocene or
+# alluvial.
+.SCSJ_PLEISTOCENE_RE <- "pleistocene|diluvi|\u6d2a\u7a4d|\u66f4\u65b0\u4e16"
+.SCSJ_TERRACE_DEPOSIT_RE <- "terrace (deposit|gravel|sediment|sand|clay|loam)|\u6bb5\u4e18(\u5806\u7a4d|\u792b|\u7802|\u7c98\u571f)"
+.SCSJ_HOLOCENE_RE <- "holocene|alluvi|recent|\u5b8c\u65b0\u4e16|\u6c96\u7a4d"
+.SCSJ_NOT_PLEISTOCENE_RE <- paste0("\\b(non[- ]?|not +|no +|pre[- ]|post[- ])(pleistocene|diluvial|diluvium)\\b|antediluvi\\w*|",
+                                   "(\u6d2a\u7a4d|\u66f4\u65b0\u4e16)\\S*(\u4ee5\u5916|\u3067\u306a\u3044|\u3067\u306f\u306a\u3044)|\u975e\u6d2a\u7a4d")
+.SCSJ_ROCK_WORDS_RE <- "\\b(lavas?|rocks?|bedrock|andesite|basalt|granite|tuff|sandstone|mudstone|shale|schist)\\b|\u5ca9"
 terrace_cscj <- function(pedon) {
   x <- .scsj_profile(.cscj_marked(pedon))
   soil <- !is.na(x$dtop) & x$dtop < 100
   txt <- c(.scsj_txt(x$h, "layer_origin")[soil], tolower(as.character(unlist(x$site$parent_material %||% character(0)))))
-  txt <- txt[!is.na(txt)]
-  passed <- any(grepl(.SCSJ_PLEISTOCENE_RE, txt, perl = TRUE))
+  txt <- gsub(.SCSJ_NOT_PLEISTOCENE_RE, " ", txt[!is.na(txt)], perl = TRUE)
+  counts <- !grepl(.SCSJ_ROCK_WORDS_RE, txt, perl = TRUE) &
+            (grepl(.SCSJ_PLEISTOCENE_RE, txt, perl = TRUE) |
+             (grepl(.SCSJ_TERRACE_DEPOSIT_RE, txt, perl = TRUE) & !grepl(.SCSJ_HOLOCENE_RE, txt, perl = TRUE)))
+  passed <- any(counts)
   .cscj_result("terrace_cscj", passed, integer(0), list(pleistocene_deposits = passed), character(0), "VI I, p. 43")
 }

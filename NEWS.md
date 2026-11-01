@@ -13,7 +13,7 @@
 
 ### Hugo's decisions (2026-11-01)
 
-* Terrace by recorded words for Pleistocene deposits; nothing recorded means not.
+* Terrace by recorded words for Pleistocene deposits, negations taken out, a Holocene or alluvial terrace and a rock not counting; nothing recorded means not.
 * Eutric as written, with no liming clause.
 
 The SCSJ 2017 and the other systems do not change.

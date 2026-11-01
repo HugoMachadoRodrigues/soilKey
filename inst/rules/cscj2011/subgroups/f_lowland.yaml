@@ -37,7 +37,7 @@ subgroups:
       name_native: "普通{parent}"
       tests:
         default: true
-      notes: "Other Fluvic Paddy soils."
+      notes: "Other Lowland Paddy soils."
   "F2":
     - code: "F2TN"
       name: "Thionic {parent}"
@@ -79,7 +79,7 @@ subgroups:
       name_native: "斑鉄型{parent}"
       tests:
         default: true
-      notes: "Other Gley Fluvic soils."
+      notes: "Other Gley Lowland soils."
   "F3":
     - code: "F3TN"
       name: "Thionic {parent}"
@@ -128,7 +128,7 @@ subgroups:
       name_native: "普通{parent}"
       tests:
         default: true
-      notes: "Other Gray Fluvic soils."
+      notes: "Other Gray Lowland soils."
   "F4":
     - code: "F4AQ"
       name: "Aquic {parent}"
@@ -156,7 +156,7 @@ subgroups:
       name_native: "普通{parent}"
       tests:
         default: true
-      notes: "Other Brown Fluvic soils."
+      notes: "Other Brown Lowland soils."
   "F5":
     - code: "F5AQ"
       name: "Aquic {parent}"
@@ -170,4 +170,4 @@ subgroups:
       name_native: "普通{parent}"
       tests:
         default: true
-      notes: "Other Regosolic Fluvic soils."
+      notes: "Other Regosolic Lowland soils."

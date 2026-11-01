@@ -78,18 +78,39 @@ test_that("Lowland Paddy Endoaeric by the CSCJ yellowish brown", {
   skip_on_cran()
   h <- list(designation = c("Apg", "Bg", "B", "C"), top_cm = c(0, 15, 30, 70), bottom_cm = c(15, 30, 70, 110),
             oc_pct = c(2.5, 1, 0.5, 0.3), munsell_hue_moist = c("2.5Y", "2.5Y", "10YR", "10YR"),
-            munsell_value_moist = c(4, 5, 4, 5), munsell_chroma_moist = c(1, 2, 4, 4), clay_pct = 25,
+            munsell_value_moist = c(4, 5, 5, 5), munsell_chroma_moist = c(1, 2, 4, 4), clay_pct = 25,
             field_texture = "silt loam", layer_origin = "alluvium", redoximorphic_features_pct = c(10, 15, 0, 0),
             redox_segregations_location = c("pores", "within peds", NA, NA), fe_dcb_pct = c(1.0, 2.5, 1.2, 1.0),
             structure_grade = "moderate")
   p <- .jp(h, site = list(land_use = "paddy rice"))
-  g <- classify_cscj2011(p, on_missing = "silent")$levels$code
-  if (identical(g[2], "F1")) {
-    expect_identical(g[3], "F1EA")
-    p$horizons$munsell_hue_moist <- c("2.5Y", "2.5Y", "5YR", "5YR")
-    expect_false(identical(classify_cscj2011(p, on_missing = "silent")$levels$code[3], "F1EA"))
+  expect_identical(classify_cscj2011(p, on_missing = "silent")$levels$code[2:3], c("F1", "F1EA"))
+  # 5YR 5/4 (not dark red, not the CSCJ yellowish brown): Haplic in the CSCJ,
+  # Endoaeric in the SCSJ (its brown includes 5YR)
+  p$horizons$munsell_hue_moist <- c("2.5Y", "2.5Y", "5YR", "5YR")
+  expect_identical(classify_cscj2011(p, on_missing = "silent")$levels$code[2:3], c("F1", "F1HA"))
+  expect_identical(classify_scsj2017(p, on_missing = "silent")$levels$code[3], "E1EA")
+})
+
+test_that("review: Terrace words without negations, Holocene terraces or rock", {
+  skip_on_cran()
+  te <- function(w, pm = NULL) { p <- make_cscj2011_example("brown_forest"); p$horizons$layer_origin <- w
+    if (!is.null(pm)) p$site$parent_material <- pm; terrace_cscj(p)$passed }
+  for (w in c("Pleistocene terrace deposits", "diluvial loam", "\u6d2a\u7a4d\u4e16\u5806\u7a4d\u7269",
+              "\u6bb5\u4e18\u5806\u7a4d\u7269", "terrace gravel"))
+    expect_true(te(w), info = w)
+  for (w in c("non-Pleistocene alluvium", "not Pleistocene", "pre-Pleistocene sandstone", "Holocene terrace deposits",
+              "\u5b8c\u65b0\u4e16\u6bb5\u4e18\u5806\u7a4d\u7269", "\u6cb3\u5cb8\u6bb5\u4e18", "antediluvian clay",
+              "Pleistocene andesite lava", "marine terrace", "weathered granite"))
+    expect_false(te(w), info = w)
+})
+
+test_that("every subgroup's parameters are formals of its gate", {
+  skip_on_cran()
+  r <- load_rules("cscj2011")
+  ns <- asNamespace("soilKey")
+  for (g in r$subgroups) for (s in g) for (t in s$tests$all_of %||% list()) {
+    nm <- names(t)[1]
+    gate <- if (exists(sub("_cscj$", "_scsj", nm), envir = ns)) get(sub("_cscj$", "_scsj", nm), envir = ns) else get(nm, envir = ns)
+    expect_true(all(names(t[[1]]) %in% names(formals(gate))), info = paste(s$code, nm))
   }
-  # the colour gate itself
-  x <- .scsj_profile(soilKey:::.cscj_mark(p))
-  expect_false(isTRUE(brown_layer_cscj(p)$passed))
 })

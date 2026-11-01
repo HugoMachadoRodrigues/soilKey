@@ -132,11 +132,11 @@ lithosols_cscj <- .cscj_shared(function(p) lithosols_scsj(p), "lithosols_cscj", 
 # Fulvic Andosols (D4): the brown polyhumic kuroboku surface horizon.
 fulvic_andosols_cscj <- function(pedon) {
   x <- .scsj_profile(.cscj_marked(pedon))
-  if (is.na(x$surface)) return(.cscj_result("fulvic_andosols_cscj", NA, integer(0), list(), "oc_pct", "VI D, p. 32"))
+  if (is.na(x$surface)) return(.cscj_result("fulvic_andosols_cscj", NA, integer(0), list(), "oc_pct", "VI D, p. 33"))
   passed <- .cscj_brown_polyhumic(x, 40, 30)
   .cscj_result("fulvic_andosols_cscj", passed, integer(0), list(brown_polyhumic_kuroboku_surface = passed),
                if (is.na(passed)) c("oc_pct", "munsell_value_moist", "munsell_chroma_moist", "phosphate_absorption_coef")
-               else character(0), "VI D, p. 32")
+               else character(0), "VI D, p. 33")
 }
 
 # ---- E. Dark Red soils ------------------------------------------------------------

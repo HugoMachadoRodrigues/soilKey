@@ -9,7 +9,7 @@ subgroups:
       name_native: "粘土集積{parent}"
       tests:
         all_of:
-          - argic_group_cscj: {}
+          - argic_cscj: {}
       notes: "An argic horizon."
     - code: "E1HA"
       name: "Haplic {parent}"
@@ -23,7 +23,7 @@ subgroups:
       name_native: "粘土集積{parent}"
       tests:
         all_of:
-          - argic_group_cscj: {}
+          - argic_cscj: {}
       notes: "An argic horizon."
     - code: "E2HA"
       name: "Haplic {parent}"
@@ -37,7 +37,7 @@ subgroups:
       name_native: "粘土集積{parent}"
       tests:
         all_of:
-          - argic_group_cscj: {}
+          - argic_cscj: {}
       notes: "An argic horizon."
     - code: "E3HA"
       name: "Haplic {parent}"
