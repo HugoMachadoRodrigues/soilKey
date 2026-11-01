@@ -146,7 +146,10 @@ test_that("forest moisture phases from the structures, three-valued", {
   expect_identical(st("nutty", "nutty", "subangular blocky", NA), "BC")
   expect_identical(st("nutty", "angular blocky", "subangular blocky", NA), "BC")         # angular blocky = nutty
   expect_identical(st("nutty", "subangular blocky", "subangular blocky", NA), "BDd")     # nutty lower A only
+  d$horizons$structure_size <- c("medium", NA, NA, NA)
   expect_identical(st("granular", "subangular blocky", "subangular blocky", NA), "BDd")
+  d$horizons$structure_size <- NA
+  expect_null(st("granular", "subangular blocky", "subangular blocky", NA))   # fine granular or granular
   expect_identical(st("crumb", NA, NA, NA), "BD")
   # a massive, mottled B: wet (the profile itself keys to the Stagnic soils,
   # which take no forest phase); mottles not recorded: undecided
@@ -178,4 +181,67 @@ test_that("Podzols: the development phases on the key's pairings; leached spots 
   expect_identical(.code(p), "PDII")
   p$horizons$leached_spots <- FALSE
   expect_identical(.code(p), "PDIII")
+})
+
+test_that("review of the phases: 1975 spellings, structures, no B, open fills, purposes, land words, gravel", {
+  skip_on_cran()
+  b <- make_scsj2017_example("brown_forest")
+  # the drier subtype read from the case; the other 1975 groups; types
+  # without a moisture letter
+  for (ft in list(c("rBD", "BD"), c("yBD(d)", "BDd"), c("gBE", "BE"), c("BDd", "BDd"), c("BD-d", "BDd")))
+    { b$site$forest_soil_type <- ft[1]; expect_identical(.code(b), ft[2], info = ft[1]) }
+  b$site$forest_soil_type <- "Mc"
+  expect_null(.ph(b))
+  b$site$forest_soil_type <- NULL
+  # sub-angular blocky is blocky, however it is spelled
+  b$horizons$structure_type <- c("crumb", "sub-angular blocky", "sub angular blocky", NA)
+  expect_identical(.code(b), "BD")
+  # English granular without a size: fine granular or granular, undecided
+  b$horizons$structure_type <- c("granular", "granular", "granular", NA)
+  expect_null(.ph(b))
+  b$horizons$structure_size <- c("fine", "fine", "fine", NA)
+  expect_identical(.code(b), "BA")
+  b$horizons$structure_size <- NA
+  # no B described: no moisture phase
+  a <- make_scsj2017_example("andosol")
+  a$horizons <- a$horizons[1:2, ]
+  a$horizons$structure_type <- c("crumb", "crumb")
+  expect_null(.ph(a))
+  # a mixing purpose naming tephra flipping or inversion
+  b$horizons$structure_type <- NA
+  b$site$mechanical_mixing_purpose <- "tephra flipping"
+  expect_identical(.code(b), "mixed")
+  b$site$mechanical_mixing_purpose <- NULL
+  # land words: non-forest is not forest; forestry is
+  b$site$forest_soil_type <- "BD"
+  b$site$land_use <- "non-forest"
+  expect_null(.ph(b))
+  b$site$land_use <- "forestry"
+  expect_identical(.code(b), "BD")
+  # gravel: either record of 20 % or more
+  p <- make_scsj2017_example("man_made")
+  p$horizons$gravel_pct <- 10; p$horizons$coarse_fragments_pct <- c(30, 0, 0, 0, 0)
+  expect_identical(.code(p), "A1-gravelly")
+  # names left without a material keep the generic word
+  p$horizons$gravel_pct <- 0; p$horizons$coarse_fragments_pct <- 0
+  p$horizons$layer_origin <- c("fill material", "fill", "fill", NA, NA)
+  expect_identical(.ph(p)$name, "artificial material man-made phase")
+  p$horizons$layer_origin <- c("\u57cb\u3081\u7acb\u3066\u5730", "fill", "fill", NA, NA)
+  expect_identical(.ph(p)$name_native, "\u4eba\u5de5\u7269\u8cea\u9020\u6210\u76f8")
+})
+
+test_that("review of the phases: a fill reaching the end of the description; spots in the forest floor", {
+  skip_on_cran()
+  r <- make_scsj2017_example("red_yellow")
+  r$horizons$layer_origin <- "soil dressing"
+  r$horizons <- r$horizons[r$horizons$top_cm < 40, ]
+  r$horizons$bottom_cm[nrow(r$horizons)] <- 40
+  ph <- .ph(r)
+  expect_identical(ph$code, "fill")
+  expect_identical(ph$name_native, "\u76db\u571f\u9020\u6210\u76f8")
+  # leached spots recorded only in the forest floor do not count
+  p <- make_scsj2017_example("podzol")
+  p$horizons$designation[2] <- "A"; p$horizons$munsell_value_moist[2] <- 4; p$horizons$munsell_chroma_moist[2] <- 3
+  p$horizons$leached_spots <- c(TRUE, NA, NA, NA, NA)
+  expect_null(.ph(p))
 })

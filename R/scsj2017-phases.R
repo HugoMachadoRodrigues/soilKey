@@ -106,9 +106,14 @@
   c(gg[[1L]]$name, sub("\u5927\u7fa4$", "", gg[[1L]]$name_native))
 }
 
-# Words that only say a layer is fill, taken out of a recorded material.
-.SCSJ_FILL_WORDS_RE <- paste0("(?i)\\b(back|land)?fill(s|ed|ing)?\\b|\\bmade ground\\b|\\bspoils?\\b|",
-                              "\u76db\u571f|\u57cb\u3081\u7acb\u3066|\u9020\u6210")
+# Words that only say a layer is fill, taken out of a recorded material
+# (longer words first), and what may be left that names no material.
+.SCSJ_FILL_WORDS_RE <- paste0("(?i)\\b(back|land)?fill(s|ed|ing)?( material)?\\b|\\bmade ground\\b|\\bspoils?\\b|",
+                              "\\bsoil dressing\\b|\\bdredged\\b|",
+                              "\u57cb\u3081\u7acb\u3066\u5730|\u57cb\u7acb\u5730|\u57cb\u3081\u7acb\u3066|\u57cb\u7acb|",
+                              "\u9020\u6210\u571f|\u9020\u6210\u5730|\u9020\u6210|\u76db\u571f|\u5ba2\u571f|\u6d5a\u6e2b")
+.SCSJ_NO_MATERIAL <- c("", "material", "materials", "soil", "soils", "deposit", "deposits",
+                       "\u571f", "\u5730", "\u7269", "\u7269\u8cea", "\u571f\u7802")
 
 # The recorded name of the artificial material: the layer_origin of the
 # first layer (in depth order, among `rows`) with 20 % or more artefacts,
@@ -121,7 +126,7 @@
   for (i in rows) {
     v <- gsub(.SCSJ_FILL_WORDS_RE, " ", lo[i], perl = TRUE)
     v <- trimws(gsub("\\s+", " ", gsub("[(),;\uff08\uff09\u3001]", " ", v, perl = TRUE)))
-    if (nzchar(v)) {
+    if (!(tolower(v) %in% .SCSJ_NO_MATERIAL)) {
       jp <- grepl("[^\\x01-\\x7f]", v, perl = TRUE)
       return(c(v, if (jp) gsub(" ", "", v, fixed = TRUE) else "\u4eba\u5de5\u7269\u8cea"))
     }
@@ -137,11 +142,14 @@
 # 2026-11-01: a fill thinner than the groups' 25 cm is named by its
 # materials, as the text's example of a thin kuroboku fill). NA when none
 # is decided.
-.scsj_fill_material <- function(x, rows) {
+.scsj_fill_material <- function(x, rows, open = FALSE) {
   rows <- x$ord[x$ord %in% rows]
   if (!length(rows)) return(c(NA_character_, NA_character_))
   art <- .scsj_col(x$h, "artefacts_pct")[rows]
   if (any(!is.na(art) & art >= 20)) return(.scsj_artefact_name(x, rows))
+  # a fill that may go on below the description may hold artificial
+  # material there, which comes first
+  if (open) return(c(NA_character_, NA_character_))
   txt <- tolower(paste(.scsj_txt(x$h, "layer_origin")[rows], collapse = " "))
   if (grepl("dredg|\u6d5a\u6e2b", txt)) return(c("dredged sediment", "\u6d5a\u6e2b\u571f\u7802"))
   feats <- list(B = x$peat, C = x$kb, E = x$orig$alluvial, F = .scsj_red_yellow_rows(x))
@@ -182,8 +190,12 @@
 # that holds is undecided.
 .scsj_man_made_kind <- function(x) {
   wet <- .scsj_wetness_rows(x)
+  # gravel (the text's word covers all coarse fragments): 20 % or more in
+  # either record; under 20 % in coarse fragments, or in gravel with coarse
+  # fragments not recorded, is not a gravel layer
   gv <- .scsj_col(x$h, "gravel_pct"); cf <- .scsj_col(x$h, "coarse_fragments_pct")
-  grav <- ifelse(!is.na(gv), gv >= 20, ifelse(!is.na(cf), cf >= 20, NA))
+  grav <- ifelse((!is.na(gv) & gv >= 20) | (!is.na(cf) & cf >= 20), TRUE,
+                 ifelse(!is.na(cf) | !is.na(gv), FALSE, NA))
   k <- .scsj_first_code(list(gley = .scsj_ground_within(x, wet$gley, 75),
                              wet = .scsj_ground_within(x, wet$any, 75),
                              gravelly = .scsj_ground_within(x, grav, 60),
@@ -226,10 +238,14 @@
   # turned)
   depth <- suppressWarnings(as.numeric(as.character(unlist(site$mechanical_mixing_depth_cm %||% NA))[1L]))
   lu <- .scsj_site_items(site$land_use)
+  words <- c(lu, .scsj_site_items(site$mechanical_mixing_purpose))
   ap <- .scsj_plough_rows(x)
-  ap_bottom <- if (any(ap & !is.na(x$dbot))) max(x$dbot[ap & !is.na(x$dbot)]) + (x$surface - x$ground) else 30
-  deep_words <- any(grepl("deep plough|deep plow|inversion|\u5929\u5730\u8fd4\u3057|\u6df1\u8015", lu))
-  if ((!is.na(depth) && depth > ap_bottom + 0.5) || deep_words)
+  # the bottom of the plough layer from the soil surface (the mixing depth
+  # is recorded from the mineral soil surface); an Ap without a bottom
+  # leaves it undecided
+  ap_bottom <- if (!any(ap)) 30 else if (anyNA(x$dbot[ap])) NA_real_ else max(x$dbot[ap])
+  deep_words <- any(grepl("deep plough|deep plow|deep ripping|inversion|tephra flipping|flipping|\u5929\u5730\u8fd4\u3057|\u6df1\u8015", words))
+  if ((!is.na(depth) && !is.na(ap_bottom) && depth > ap_bottom + 0.5) || deep_words)
     out[[length(out) + 1L]] <- .scsj_phase_row("man-made", "mixed", basis = "mechanical mixing below the plough layer recorded")
   # cut: truncation recorded, or a cut named (not land consolidation alone,
   # not a clear-cut forest)
@@ -238,7 +254,10 @@
   if (isTRUE(.scsj_site_flag(site$anthropic_truncation)) || cut_words)
     out[[length(out) + 1L]] <- .scsj_phase_row("man-made", "cut", basis = "cut recorded")
   if (length(fr$rows)) {
-    mat <- .scsj_fill_material(x, fr$rows)
+    e <- .scsj_ends(x)
+    last_bot <- x$dbot[fr$rows[length(fr$rows)]]
+    open <- fr$open || (!is.na(e$depth) && !is.na(last_bot) && abs(last_bot - e$depth) <= 0.5 && !e$on_rock)
+    mat <- .scsj_fill_material(x, fr$rows, open)
     out[[length(out) + 1L]] <- if (anyNA(mat))
       .scsj_phase_row("man-made", "fill", "fill man-made phase", "\u76db\u571f\u9020\u6210\u76f8",
                       sprintf("a fill of %.0f cm recorded; its material undecided", fr$thick))
@@ -258,15 +277,19 @@
 .scsj_forest_structure <- function(h) {
   st <- .scsj_txt(h, "structure_type")
   sz <- .scsj_txt(h, "structure_size")
+  en_gran <- !is.na(st) & grepl("granular|^gr$", st) & !grepl("fine granular", st)
   ifelse(is.na(st), NA_character_,
   ifelse(grepl("fine granular|\u7d30\u7c92\u72b6|powdery", st) |
-           (grepl("granular|^gr$", st) & !is.na(sz) & grepl("very fine|fine|^vf$|^f$", sz)), "fine_granular",
+           (en_gran & !is.na(sz) & grepl("very fine|fine|^vf$|^f$", sz)), "fine_granular",
   ifelse(grepl("crumb|\u56e3\u7c92|^cr$", st), "crumb",
+  # English granular without a size may be the text's fine granular
+  ifelse(en_gran & is.na(sz), "granular_any",
   ifelse(grepl("granular|\u7c92\u72b6|^gr$", st), "granular",
-  ifelse(grepl("nut|\u5805\u679c|polyhedral|(^|[^b])angular blocky|^abk$", st, perl = TRUE) |
-           grepl("(?<!\u4e9c)\u89d2\u584a\u72b6", st, perl = TRUE), "nutty",
+  ifelse(!grepl("sub[- ]?angular", st) &
+           (grepl("nut|\u5805\u679c|polyhedral|angular blocky|^abk$", st) |
+            grepl("(?<!\u4e9c)\u89d2\u584a\u72b6", st, perl = TRUE)), "nutty",
   ifelse(grepl("blocky|\u584a\u72b6|^(sbk|bk)$", st), "blocky",
-  ifelse(grepl("massive|\u30ab\u30d9|\u58c1\u72b6|structureless|^ma$", st), "massive", "other")))))))
+  ifelse(grepl("massive|\u30ab\u30d9|\u58c1\u72b6|structureless|^ma$", st), "massive", "other"))))))))
 }
 
 # The forest soil type of the 1975 classification recorded for the site
@@ -279,20 +302,25 @@
   if (is.na(v) || !nzchar(trimws(v))) return(NA_character_)
   cp <- utf8ToInt(v); fw <- cp >= 0xFF01 & cp <= 0xFF5E; cp[fw] <- cp[fw] - 0xFEE0L; v <- intToUtf8(cp)
   v <- gsub("\u2162", "III", gsub("\u2161", "II", gsub("\u2160", "I", v, fixed = TRUE), fixed = TRUE), fixed = TRUE)
-  v <- toupper(gsub("[[:space:]_-]", "", v))
-  if (grepl("^PW", v)) return("PW")
-  if (grepl("^PD?(III|II|I)$", v)) return(sub("^PD?(III|II|I)$", "PD\\1", v))
-  m <- regmatches(v, regexec("^([A-Z]{1,3}?)([A-F])(\\(?D\\)?)?$", v))[[1L]]
-  if (length(m) && nzchar(m[2L])) return(paste0("B", m[3L], if (nzchar(m[4L])) "d" else ""))
+  v <- gsub("[[:space:]_-]", "", v)
+  # the drier subtype: (d) in brackets, or a small d after the D
+  drier <- grepl("\\([dD]\\)$", v) || grepl("Dd$", v)
+  core <- toupper(sub("\\([dD]\\)$", "", if (grepl("Dd$", v)) sub("d$", "", v) else v))
+  if (grepl("^PW", core)) return("PW")
+  if (grepl("^PD?(III|II|I)$", core)) return(sub("^PD?(III|II|I)$", "PD\\1", core))
+  # the types without a moisture letter (muck, peat, immature, eroded, gley)
+  if (grepl("^(MC|PT|PP|IM|G|PG|PSG)$|^ER", core)) return("none")
+  m <- regmatches(core, regexec("^(B|RB|YB|GB|R|Y|RY|LR|LY|BL|LBL|DR)([A-F])$", core))[[1L]]
+  if (length(m)) return(paste0("B", m[3L], if (drier && m[3L] == "D") "d" else ""))
   NA_character_
 }
 
 # Forest or grazing land (V.3: "forest or grazing land and the like"), from
 # the items of site$land_use: TRUE, FALSE, or NA when no land use is
 # recorded.
-.SCSJ_FOREST_RE <- paste0("\\b(forest(s|ed)?|woodlands?|woods?|pastures?|grazing|rangelands?|range|meadows?)\\b|",
-                          "\u68ee\u6797|\u6797|\u7267\u91ce|\u653e\u7267")
-.SCSJ_NOT_FOREST_RE <- "deforest|agroforest|\u8fb2\u6797|\u679c\u6a39"
+.SCSJ_FOREST_RE <- paste0("\\b(forest(s|ed|ry)?|afforest\\w*|reforest\\w*|woodlands?|woods|wooded|pastures?|grazing|",
+                          "rangelands?|meadows?)\\b|\u68ee\u6797|\u6797|\u7267\u91ce|\u653e\u7267")
+.SCSJ_NOT_FOREST_RE <- "deforest|agroforest|non[- ]?forest|not forest|\u8fb2\u6797|\u679c\u6a39|\u975e\u68ee\u6797"
 .scsj_forest_land <- function(site) {
   lu <- .scsj_site_items(site$land_use)
   if (!length(lu)) return(NA)
@@ -320,15 +348,19 @@
   isA <- !is.na(role) & grepl("^A", role) & !x$des$buried
   isB <- !is.na(role) & grepl("^B", role) & !x$des$buried
   A <- which(isA); B <- which(isB)
-  if (!any(!is.na(fs[c(A, B)]))) return(NA_character_)
+  # the rules read the A and the B: either not described, no phase
+  if (!length(A) || !length(B) || !any(!is.na(fs[c(A, B)]))) return(NA_character_)
   Bup <- if (length(B)) B[order(x$top[B])][1L] else integer(0)
   Alo <- if (length(A)) A[order(x$top[A], decreasing = TRUE)][1L] else integer(0)
   Aup <- if (length(A)) A[order(x$top[A])][1L] else integer(0)
   # some row of `rows` has a structure of `cls`: TRUE / FALSE / NA
+  gr <- c("granular", "fine_granular")
   has <- function(rows, cls) {
     if (!length(rows)) return(FALSE)
     f <- fs[rows]
-    if (any(f %in% cls)) TRUE else if (anyNA(f)) NA else FALSE
+    amb <- f %in% "granular_any"
+    if (any(f %in% cls | (amb & all(gr %in% cls)))) TRUE
+    else if (anyNA(f) || (any(amb) && any(gr %in% cls))) NA else FALSE
   }
   rf <- .scsj_col(x$h, "redoximorphic_features_pct")
   mott <- if (!length(B)) FALSE else if (any(rf[B] >= 2, na.rm = TRUE)) TRUE else if (anyNA(rf[B])) NA else FALSE
@@ -361,7 +393,9 @@
   mb <- .scsj_pair(x, pz$morph, 2.5, bl, 1)$passed
   ab <- .scsj_pair(x, pz$analysis, 2.5, bl, 1)$passed
   am <- .scsj_pair(x, pz$analysis, 2.5, pz$morph, 2.5, above = FALSE)$passed
-  spots <- .scsj_any(as.logical(.scsj_col(x$h, "leached_spots", NA)))
+  # leached spots in the mineral soil (not the forest floor)
+  soil <- !is.na(x$dtop) & x$dtop >= -0.5 & !(x$mineral %in% FALSE)
+  spots <- .scsj_any(as.logical(.scsj_col(x$h, "leached_spots", NA))[soil])
   .scsj_first_code(list(PDI = mb, PDII = .scsj_or(ab, .scsj_and(am, spots)), PDIII = am))
 }
 
@@ -379,6 +413,7 @@
     code <- if (from_rec) rec else .scsj_podzol_phase(x)
     basis <- if (from_rec) "forest soil type recorded" else "podzolic and bleached horizons"
   } else if (gg %in% c("C", "E", "F", "H", "I")) {
+    if (identical(rec, "none")) return(NULL)
     from_rec <- !is.na(rec) && grepl("^B", rec)
     code <- if (from_rec) rec else .scsj_moisture_phase(x)
     basis <- if (from_rec) "forest soil type recorded" else "structure and horizons (soilKey's reading)"
