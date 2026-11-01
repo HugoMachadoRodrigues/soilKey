@@ -245,7 +245,10 @@
   # leaves it undecided
   ap_bottom <- if (!any(ap)) 30 else if (anyNA(x$dbot[ap])) NA_real_ else max(x$dbot[ap])
   deep_words <- any(grepl("deep plough|deep plow|deep ripping|inversion|tephra flipping|flipping|\u5929\u5730\u8fd4\u3057|\u6df1\u8015", words))
-  if ((!is.na(depth) && !is.na(ap_bottom) && depth > ap_bottom + 0.5) || deep_words)
+  # a recorded depth decides (an Ap without a bottom: undecided); without
+  # one, deep ploughing or inversion named is mixing below the plough layer
+  mixed <- if (!is.na(depth)) { if (is.na(ap_bottom)) NA else depth > ap_bottom + 0.5 } else deep_words
+  if (isTRUE(mixed))
     out[[length(out) + 1L]] <- .scsj_phase_row("man-made", "mixed", basis = "mechanical mixing below the plough layer recorded")
   # cut: truncation recorded, or a cut named (not land consolidation alone,
   # not a clear-cut forest)
@@ -363,13 +366,15 @@
     else if (anyNA(f) || (any(amb) && any(gr %in% cls))) NA else FALSE
   }
   rf <- .scsj_col(x$h, "redoximorphic_features_pct")
-  mott <- if (!length(B)) FALSE else if (any(rf[B] >= 2, na.rm = TRUE)) TRUE else if (anyNA(rf[B])) NA else FALSE
-  grey <- if (!length(B)) FALSE else .scsj_any(.scsj_or(x$colour$grey[B], x$colour$bluegrey[B]))
+  # the wet phase: one B horizon both massive and mottled, grey or blue-grey
+  massive_b <- ifelse(is.na(fs[B]), NA, fs[B] %in% "massive")
+  wet_b <- .scsj_or(ifelse(is.na(rf[B]), NA, rf[B] >= 2), .scsj_or(x$colour$grey[B], x$colour$bluegrey[B]))
+  bf <- .scsj_any(.scsj_and(massive_b, wet_b))
   o_rec <- if (any(role %in% "O")) TRUE else if (all(x$des$known)) FALSE else NA
   a_th <- sum(x$thick[A], na.rm = TRUE)
   a_thick <- if (a_th >= 25) TRUE else if (anyNA(x$thick[A])) NA else FALSE
   rules <- list(
-    BF = .scsj_and(has(B, "massive"), .scsj_or(mott, grey)),
+    BF = bf,
     BA = .scsj_and(has(A, "fine_granular"), has(B, "fine_granular")),
     BB = .scsj_and(.scsj_and(has(A, "granular"), .scsj_not(has(A, "crumb"))), o_rec),
     BC = .scsj_and(has(Alo, "nutty"), has(Bup, "nutty")),
@@ -394,8 +399,8 @@
   ab <- .scsj_pair(x, pz$analysis, 2.5, bl, 1)$passed
   am <- .scsj_pair(x, pz$analysis, 2.5, pz$morph, 2.5, above = FALSE)$passed
   # leached spots in the mineral soil (not the forest floor)
-  soil <- !is.na(x$dtop) & x$dtop >= -0.5 & !(x$mineral %in% FALSE)
-  spots <- .scsj_any(as.logical(.scsj_col(x$h, "leached_spots", NA))[soil])
+  in_soil <- .scsj_and(!is.na(x$dtop) & x$dtop >= -0.5, x$mineral)
+  spots <- .scsj_any(.scsj_and(in_soil, as.logical(.scsj_col(x$h, "leached_spots", NA))))
   .scsj_first_code(list(PDI = mb, PDII = .scsj_or(ab, .scsj_and(am, spots)), PDIII = am))
 }
 

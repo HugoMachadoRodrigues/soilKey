@@ -245,3 +245,31 @@ test_that("review of the phases: a fill reaching the end of the description; spo
   p$horizons$leached_spots <- c(TRUE, NA, NA, NA, NA)
   expect_null(.ph(p))
 })
+
+test_that("review of PR 132: gap-fill reaches the phases; mixing depth first; BF in one B; spots three-valued", {
+  skip_on_cran()
+  # gap-fill: the phases read the filled pedon
+  p <- make_scsj2017_example("man_made")
+  p$horizons$gravel_pct <- c(0, NA, 0, 0, 0)
+  expect_null(.ph(p))
+  expect_identical(classify_scsj2017(p, on_missing = "silent", gapfill = "gravel_pct")$phases$code, "A1-plain")
+  expect_true(is.na(p$horizons$gravel_pct[2]))       # the caller's pedon is untouched
+  # a recorded mixing depth within the plough layer gives no phase, whatever
+  # practice is named
+  b <- make_scsj2017_example("brown_forest")
+  b$horizons$designation[1] <- "Ap"
+  b$site$mechanical_mixing_depth_cm <- 10; b$site$mechanical_mixing_purpose <- "tephra flipping"
+  expect_null(.ph(b))
+  # the wet phase needs one B both massive and mottled
+  d <- make_scsj2017_example("brown_forest")
+  d$horizons$structure_type <- c("crumb", "massive", "subangular blocky", NA)
+  d$horizons$redoximorphic_features_pct <- c(0, 0, 5, 0)
+  expect_false(identical(.scsj_moisture_phase(.scsj_profile(d)), "BF"))
+  d$horizons$redoximorphic_features_pct <- c(0, 5, 0, 0)
+  expect_identical(.scsj_moisture_phase(.scsj_profile(d)), "BF")
+  # leached spots on a layer whose mineral status is undecided: undecided
+  pz <- make_scsj2017_example("podzol")
+  pz$horizons$designation[2] <- "A"; pz$horizons$munsell_value_moist[2] <- 4; pz$horizons$munsell_chroma_moist[2] <- 3
+  pz$horizons$leached_spots <- c(FALSE, FALSE, FALSE, FALSE, FALSE)
+  expect_identical(.code(pz), "PDIII")
+})
