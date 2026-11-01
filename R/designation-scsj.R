@@ -56,11 +56,15 @@
 # Is the notation one this parser reads? Declared in site$designation_system;
 # the Australian, Canadian and New Zealand notations are not read. `fao` when
 # the FAO notation is declared (a Cr is then a reduced C).
+.SCSJ_OTHER_NOTATIONS <- c("asc", "australian", "fieldhandbook", "nchs", "australianfieldhandbook",
+                           "cssc", "cssc3", "canadian", "canada", "nzsc", "nzsc4", "nz", "newzealand")
+
 .scsj_notation <- function(site = list()) {
   declared <- tolower(as.character(site$designation_system %||% NA)[1L])
-  if (!is.na(declared) && declared %in% c("asc", "australian", "cssc", "canadian", "nzsc", "nz"))
+  key <- gsub("[^a-z0-9]", "", declared)
+  if (!is.na(declared) && key %in% .SCSJ_OTHER_NOTATIONS)
     return(list(ok = FALSE, fao = FALSE, why = sprintf("declared: %s", declared)))
-  list(ok = TRUE, fao = !is.na(declared) && declared %in% c("fao", "wrb", "fao2006"),
+  list(ok = TRUE, fao = !is.na(declared) && .cssc_fao_declared(declared),
        why = if (is.na(declared)) "Japanese or FAO/USDA notation" else sprintf("declared: %s", declared))
 }
 

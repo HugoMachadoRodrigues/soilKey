@@ -90,7 +90,7 @@
 # volcanic ejecta: pyroclastic materials (ash, lapilli, pumice, scoria,
 # pyroclastic-flow deposits), not volcanic rock, nor ash redeposited by wind
 # as dunes
-.SCSJ_EJECTA_RE <- paste0("tephra|volcanic ash|ash ?fall|pumice|scoria|lapilli|pyroclast|cinders?\\b|",
+.SCSJ_EJECTA_RE <- paste0("tephr|volcanic ash|ash ?fall|pumice|scoria|lapilli|pyroclast|cinders?\\b|",
                           "volcanic ejecta|volcanic sand|",
                           "\u706b\u5c71\u7070|\u706b\u5c71\u792b|\u8efd\u77f3|\u30b9\u30b3\u30ea\u30a2|",
                           "\u30c6\u30d5\u30e9|\u706b\u7815|\u706b\u5c71\u653e\u51fa\u7269")
@@ -98,7 +98,7 @@
                               "\u5ca9|\u6eb6\u5ca9|\u7802\u4e18|dune")
 # alluvial deposits: Holocene fluvial, marine or lacustrine unconsolidated
 # deposits; not rock, terrace, Pleistocene or older, glacial
-.SCSJ_ALLUVIAL_RE <- paste0("alluvi|fluvial|fluviatile|river|marine|lacustrine|estuarine|delta|",
+.SCSJ_ALLUVIAL_RE <- paste0("alluvi|fluvial|fluviatile|fluvic|river|marine|lacustrine|estuarine|delta|",
                             "lagoon|backswamp|floodplain|holocene|",
                             "\u6c96\u7a4d|\u6cb3\u6210|\u6d77\u6210|\u6e56\u6cbc\u6210|\u6e56\u6210|\u5b8c\u65b0\u4e16")
 .SCSJ_NOT_ALLUVIAL_RE <- paste0("pleistocene|terrace|tertiary|miocene|pliocene|glacio|glacial|\\brock\\b|",
@@ -244,7 +244,9 @@
   ground <- if (is.na(first)) NA_real_ else top[first]
   surface <- ground
   surface_note <- "ground surface"
-  floor_row <- function(i) if (role[i] %in% "O") TRUE else orgmat[i]
+  # a forest floor: organic material (an O horizon, unless its carbon is
+  # measured under 20 %)
+  floor_row <- function(i) orgmat[i]
   if (!is.na(first) && !(peat[first] %in% TRUE) && !(wet %in% TRUE)) {
     f1 <- floor_row(first)
     if (is.na(f1)) {
@@ -307,7 +309,8 @@
 }
 
 # "No bedrock within d cm": FALSE when rock starts within d, NA when a row
-# that may be rock starts within d or the description stops short of d, TRUE
+# that may be rock starts within d or the description (its closed bottoms;
+# a horizon without a bottom may end at once) stops short of d, TRUE
 # otherwise.
 .scsj_no_rock_within <- function(x, d) {
   if (is.na(x$surface)) return(NA)
@@ -316,8 +319,8 @@
   if (is.finite(rt) && rt <= d) return(FALSE)
   if (any(x$rock_maybe & !is.na(x$dtop) & x$dtop <= d)) return(NA)
   if (is.finite(rt)) return(TRUE)
-  dep <- .scsj_depth(x)
-  if (is.na(dep)) return(NA)
+  dep <- suppressWarnings(max(x$dbot, na.rm = TRUE))
+  if (!is.finite(dep)) return(NA)
   if (dep > d) TRUE else NA
 }
 
@@ -369,8 +372,9 @@
 # the rows, its top and bottom (from the soil surface; NA bottom when its
 # last row has none), the certain thickness (closed TRUE rows), the possible
 # one, and whether it is open. A gap between rows breaks a run, unless
-# `bridge` (then the gap is counted as possible thickness).
-.scsj_runs <- function(x, rows, bridge = FALSE) {
+# `bridge` (then the gap is counted as possible thickness); with
+# `split_lith`, so does a change of lithologic number.
+.scsj_runs <- function(x, rows, bridge = FALSE, split_lith = FALSE) {
   if (is.na(x$surface)) return(list())
   ord <- x$ord[!is.na(x$dtop[x$ord])]
   runs <- list(); cur <- integer(0); gap <- 0
@@ -391,6 +395,7 @@
     if (length(cur)) {
       pb <- x$dbot[cur[length(cur)]]
       if (is.na(pb)) { flush() }
+      else if (split_lith && !identical(x$des$lith[i], x$des$lith[cur[length(cur)]])) { flush() }
       else if (x$dtop[i] - pb > 0.5) { if (bridge) gap <- gap + (x$dtop[i] - pb) else flush() }
     }
     cur <- c(cur, i)
@@ -758,4 +763,37 @@
   bleached <- .scsj_and(any, .scsj_and(ifelse(is.na(rf), NA, rf < 2), ifelse(is.na(fed), NA, fed < 0.4)))
   list(any = any, unbleached = unbleached, bleached = bleached,
        surface = .scsj_or(unbleached, bleached))
+}
+
+# ---- impermeable artificial layers (II A) -------------------------------------------
+
+# Rows of a continuous impermeable artificial layer: a geomembrane recorded
+# in the horizon (geomembrane_present), or technic hard material of 90 % or
+# more.
+.scsj_impermeable_rows <- function(x) {
+  h <- x$h
+  gm <- .scsj_col(h, "geomembrane_present", NA)
+  thm <- .scsj_col(h, "technic_hardmaterial_pct")
+  (as.logical(gm) %in% TRUE) | (!is.na(thm) & thm >= 90)
+}
+
+# "The top of a continuous impermeable artificial layer within d cm":
+# technic hard material from its horizon's top; a geomembrane at the site's
+# geomembrane_depth_cm (from the ground), else somewhere in its horizon
+# (undecided when the horizon spans the depth).
+.scsj_impermeable_within <- function(x, d) {
+  h <- x$h
+  gm <- as.logical(.scsj_col(h, "geomembrane_present", NA)) %in% TRUE
+  thm <- .scsj_col(h, "technic_hardmaterial_pct")
+  hard <- !is.na(thm) & thm >= 90
+  sgd <- suppressWarnings(as.numeric(x$site$geomembrane_depth_cm %||% NA)[1L])
+  site_gm <- isTRUE(as.logical(x$site$geomembrane %||% NA)[1L]) || any(gm)
+  v <- any(hard & !is.na(x$dtop) & x$dtop <= d)
+  if (site_gm && !is.na(sgd)) return(v || (sgd - (x$surface - x$ground)) <= d)
+  if (any(gm)) {
+    g <- .scsj_any(ifelse(gm, ifelse(!is.na(x$dbot) & x$dbot <= d, TRUE,
+                                     ifelse(!is.na(x$dtop) & x$dtop > d, FALSE, NA)), FALSE))
+    return(.scsj_or3(v, g))
+  }
+  v
 }

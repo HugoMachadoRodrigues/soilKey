@@ -100,13 +100,8 @@ man_made_soils_scsj <- function(pedon) {
   art <- .scsj_col(h, "artefacts_pct")
   art20 <- ifelse(is.na(art), FALSE, art >= 20)
   a <- .scsj_at_least(.scsj_cum(x, art20, 0, 50), 25)
-  gm <- .scsj_col(h, "geomembrane_present", NA)
-  thm <- .scsj_col(h, "technic_hardmaterial_pct")
-  imp <- (as.logical(gm) %in% TRUE) | (!is.na(thm) & thm >= 90)
-  b <- any(imp & !is.na(x$dtop) & x$dtop <= 30)
-  sgd <- suppressWarnings(as.numeric(x$site$geomembrane_depth_cm %||% NA)[1L])
-  if (isTRUE(as.logical(x$site$geomembrane %||% NA)[1L]) && !is.na(sgd) &&
-      sgd - (x$surface - x$ground) <= 30) b <- TRUE
+  imp <- .scsj_impermeable_rows(x)
+  b <- .scsj_impermeable_within(x, 30)
   fr <- .scsj_fill_run(x)
   c <- FALSE
   if (fr$thick >= 35 || (fr$open && length(fr$rows))) {
@@ -199,10 +194,12 @@ man_made_soils_scsj <- function(pedon) {
   for (i in u$rows) {
     th <- x$thick[i]
     ratio <- if (!is.na(th) && th >= 10) 1.4 else if (!is.na(th) && th >= 5) 1.6 else 2
+    # 2 cm or more, by either route (thickness unknown: undecided)
+    th_ok <- if (is.na(th)) NA else th >= 2
     v <- if (!is.na(fed[i]) && !is.na(ap_fed)) {
-           fed[i] >= ratio * ap_fed && (is.na(th) || th >= 2)
+           .scsj_and3(fed[i] >= ratio * ap_fed, th_ok)
          } else if (!is.na(fed[i])) NA
-           else if (x$des$ir[i] || x$des$mn[i]) TRUE
+           else if (x$des$ir[i] || x$des$mn[i]) th_ok
            else if (x$des$known[i]) FALSE else NA
     out[i] <- if (isFALSE(pad) || isFALSE(v)) FALSE else if (isTRUE(v) && isTRUE(pad)) TRUE else NA
     if (!isTRUE(out[i])) break
@@ -269,9 +266,13 @@ andosols_scsj <- function(pedon) {
 # accumulation horizon, the sequence of the Podzols' concept: Hugo,
 # 2026-10-31); with above = FALSE at any depth (route b with morphology).
 .scsj_pair <- function(x, a, a_thick, b, b_thick, above = TRUE) {
+  # runs split at lithologic boundaries, so a pair inside one material is
+  # found even when an adjacent qualifying layer is of another
   test <- function(sure) {
-    ra <- if (sure) .scsj_runs(x, ifelse(a %in% TRUE, TRUE, FALSE)) else .scsj_runs(x, a, bridge = TRUE)
-    rb <- if (sure) .scsj_runs(x, ifelse(b %in% TRUE, TRUE, FALSE)) else .scsj_runs(x, b, bridge = TRUE)
+    ra <- if (sure) .scsj_runs(x, ifelse(a %in% TRUE, TRUE, FALSE), split_lith = TRUE) else
+      .scsj_runs(x, a, bridge = TRUE, split_lith = TRUE)
+    rb <- if (sure) .scsj_runs(x, ifelse(b %in% TRUE, TRUE, FALSE), split_lith = TRUE) else
+      .scsj_runs(x, b, bridge = TRUE, split_lith = TRUE)
     for (p in ra) {
       if ((if (sure) p$sure else p$poss) < a_thick) next
       for (q in rb) {
@@ -356,20 +357,25 @@ fluvic_soils_scsj <- function(pedon) {
   if (lim <= 20) return(list(rows = integer(0), covered = TRUE, from = 20, to = lim))
   db <- ifelse(is.na(x$dbot), Inf, x$dbot)
   ov <- pmin(db, lim) - pmax(x$dtop, 20)
-  keep <- !is.na(x$dtop) & !is.na(ov) & ov >= min(5, lim - 20) & !.scsj_plough_rows(x) &
-          !(x$mineral %in% FALSE)
+  # an open horizon (no bottom) may hold 5 cm or more: it counts
+  keep <- !is.na(x$dtop) & !is.na(ov) & (ov >= 5 | (is.na(x$dbot) & x$dtop < lim)) &
+          !.scsj_plough_rows(x) & !(x$mineral %in% FALSE)
   rows <- which(keep)
-  # coverage of [20, lim] by the described rows (the plough layer included)
-  desc <- which(!is.na(x$dtop))
-  segs <- cbind(pmax(x$dtop[desc], 20), pmin(db[desc], lim))
-  segs <- segs[segs[, 2] > segs[, 1], , drop = FALSE]
-  covered <- FALSE
-  if (nrow(segs)) {
-    segs <- segs[order(segs[, 1]), , drop = FALSE]
+  # coverage of [20, lim] by the closed rows (the plough layer included);
+  # a horizon without a bottom covers only possibly: NA
+  reach_of <- function(bots) {
+    segs <- cbind(pmax(x$dtop[desc], 20), pmin(bots, lim))
+    segs <- segs[segs[, 2] > segs[, 1], , drop = FALSE]
     reach <- 20
-    for (k in seq_len(nrow(segs))) { if (segs[k, 1] > reach + 0.5) break; reach <- max(reach, segs[k, 2]) }
-    covered <- reach >= lim - 0.5
+    if (nrow(segs)) {
+      segs <- segs[order(segs[, 1]), , drop = FALSE]
+      for (k in seq_len(nrow(segs))) { if (segs[k, 1] > reach + 0.5) break; reach <- max(reach, segs[k, 2]) }
+    }
+    reach >= lim - 0.5
   }
+  desc <- which(!is.na(x$dtop))
+  closed <- ifelse(is.na(x$dbot[desc]), -Inf, x$dbot[desc])
+  covered <- if (reach_of(closed)) TRUE else if (reach_of(db[desc])) NA else FALSE
   list(rows = rows, covered = covered, from = 20, to = lim)
 }
 

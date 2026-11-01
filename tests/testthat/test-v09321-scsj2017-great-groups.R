@@ -311,3 +311,54 @@ test_that("a fill of sand over a Regosol waits for the groups", {
   expect_true(is.na(r$evidence$fill_other_great_group))
   expect_true(is.na(r$passed))
 })
+
+test_that("review of PR 129: aliases, canonical origins, measured carbon, open bottoms", {
+  skip_on_cran()
+  expect_identical(soilKey:::.scsj_designations("Bw", list(designation_system = "cssc3"))$role, "other")
+  expect_identical(soilKey:::.scsj_designations("Bw", list(designation_system = "New Zealand"))$role, "other")
+  expect_true(soilKey:::.scsj_designations("Cr", list(designation_system = "wrb2022"))$gley_master)
+  o <- soilKey:::.scsj_origins(data.frame(layer_origin = c("tephric", "fluvic")), list(),
+                               soilKey:::.scsj_designations(c(NA, NA)))
+  expect_identical(o$ejecta, c(TRUE, FALSE))
+  expect_identical(o$alluvial, c(FALSE, TRUE))
+  # an O horizon measured under 20 % carbon is not a forest floor
+  x <- soilKey:::.scsj_profile(.jp(list(designation = c("O", "A", "Bw"), top_cm = c(0, 10, 30),
+                                        bottom_cm = c(10, 30, 80), oc_pct = c(5, 3, 1))))
+  expect_identical(x$surface, 0)
+  # an open C from 25 cm may end over rock above 30 cm
+  y <- soilKey:::.scsj_profile(.jp(list(designation = c("A", "Bw", "C"), top_cm = c(0, 10, 25),
+                                        bottom_cm = c(10, 25, NA), oc_pct = c(4, 1, 0.3))))
+  expect_true(is.na(soilKey:::.scsj_no_rock_within(y, 30)))
+  # base-rich A, Bw and an open C: the section may not be covered
+  e <- .jp(list(designation = c("A", "Bw", "C"), top_cm = c(0, 15, 35), bottom_cm = c(15, 35, NA),
+                oc_pct = c(3, 1, 0.3), phosphate_absorption_coef = c(800, 700, 600), clay_pct = c(30, 35, 30),
+                munsell_hue_moist = "10YR", munsell_value_moist = c(3, 4, 5), munsell_chroma_moist = c(2, 4, 3),
+                ph_h2o = 6.8, bs_pct = 90, redoximorphic_features_pct = 0))
+  expect_true(is.na(soilKey:::.scsj_control(soilKey:::.scsj_profile(e))$covered))
+  expect_true(is.na(soilKey:::eutrosols_scsj(e)$passed))
+  # gravel from 23 cm: no horizon has 5 cm in the section
+  q <- make_scsj2017_example("eutrosol"); q$horizons$gravel_pct <- c(0, 0, 30, 30)
+  q$horizons$top_cm <- c(0, 15, 23, 80); q$horizons$bottom_cm <- c(15, 23, 80, 110)
+  expect_length(soilKey:::.scsj_control(soilKey:::.scsj_profile(q))$rows, 0)
+})
+
+test_that("review of PR 129: paddy iron thickness, pairs inside one material, a geomembrane's depth", {
+  skip_on_cran()
+  pd <- list(designation = c("Ap", "Bir", "C"), top_cm = c(0, 15, 16), bottom_cm = c(15, 16, 80),
+             oc_pct = c(2.5, 0.8, 0.5), phosphate_absorption_coef = c(700, 500, 450), redoximorphic_features_pct = c(5, 20, 5),
+             fe_dcb_pct = c(0.8, NA, 0.6))
+  x <- soilKey:::.scsj_profile(.jp(pd, list(land_use = "paddy")))
+  expect_false(soilKey:::.scsj_paddy_fe_rows(x)[2])
+  pz <- list(designation = c("A", "E", "2E", "2Bs", "2C"), top_cm = c(0, 10, 20, 30, 40), bottom_cm = c(10, 20, 30, 40, 90),
+             oc_pct = c(5, 0.8, 0.8, 2, 0.4), phosphate_absorption_coef = c(600, 300, 300, 1100, 500),
+             munsell_hue_moist = c("10YR", "10YR", "10YR", "7.5YR", "10YR"), munsell_value_moist = c(3, 6, 6, 4, 6),
+             munsell_chroma_moist = c(2, 2, 2, 4, 4), clay_pct = 8, redoximorphic_features_pct = 0, ph_h2o = 4.5)
+  expect_true(soilKey:::podzols_scsj(.jp(pz))$passed)
+  mm <- .jp(list(designation = c("A", "C", "2Bw"), top_cm = c(0, 20, 100), bottom_cm = c(20, 100, 130),
+                 oc_pct = c(2, 0.5, 1), geomembrane_present = c(FALSE, TRUE, FALSE), layer_origin = c("fill", "fill", NA),
+                 artefacts_pct = 0, phosphate_absorption_coef = 500))
+  xm <- soilKey:::.scsj_profile(mm)
+  expect_true(is.na(soilKey:::.scsj_impermeable_within(xm, 30)))
+  mm$site$geomembrane <- TRUE; mm$site$geomembrane_depth_cm <- 40
+  expect_false(soilKey:::.scsj_impermeable_within(soilKey:::.scsj_profile(mm), 30))
+})
