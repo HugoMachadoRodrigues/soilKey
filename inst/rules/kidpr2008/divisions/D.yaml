@@ -1,0 +1,14 @@
+# The division of trunk D, Слаборазвитые почвы (Field Guide of 2008, 4.3.1,
+# p. 130). The trunk has one division, which the book does not code: soilKey
+# writes it [DA], in brackets as a code of its own (Hugo, 2026-11-02).
+
+divisions:
+  "D":
+    - code: "[DA]"
+      name: "Weakly developed soils"
+      name_native: "Слаборазвитые почвы"
+      synonyms_native: ["Отдел слаборазвитых почв"]
+      path: "2.2: 5а (the trunk has one division)"
+      tests:
+        default: true
+      notes: "A weakly developed humus horizon W or a litter-peat horizon O over hard or loose rock, or over a stratified alluvial, ash or aeolian body (p. 130)."

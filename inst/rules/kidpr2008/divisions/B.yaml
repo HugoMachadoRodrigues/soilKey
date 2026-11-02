@@ -1,0 +1,47 @@
+# The divisions of trunk B, Синлитогенные почвы (Field Guide of 2008, key 2.3,
+# B.1-B.2, pp. 30-31), a first-match list. B.2 has no "other" answer: trunk B
+# takes only what one of these divisions takes (Hugo's decision Q21), so its
+# gate in key.yaml is the union of the three gates below; keep them in step.
+# A gate may leave out what an earlier division excludes (the order supplies
+# it). Names: an English gloss, the Russian of the chapter 4 heading, the
+# key and index forms as synonyms (Q12).
+
+divisions:
+  "B":
+    - code: "BA"
+      name: "Alluvial soils"
+      name_native: "Аллювиальные почвы"
+      path: "B.1а"
+      tests:
+        all_of:
+          - floodplain_kidpr: {}
+          # an agro horizon with no remnant of the natural humus or organic
+          # horizon under it is an agrozem (p. 124; Hugo's decision Q9)
+          - none_of:
+              - all_of:
+                  - surface_horizon_kidpr: {codes: ["P", "PU", "PT", "PTR", "PB"]}
+                  - none_of:
+                      - directly_over_kidpr:
+                          upper: ["P", "PU", "PT", "PTR", "PB"]
+                          lower: ["AJ", "AY", "AU", "AO", "AK", "AH", "O", "T", "TO", "TE", "TJ", "H", "RJ", "RY", "RU"]
+      notes: "Formed on modern alluvium within a river floodplain (p. 124): a floodplain recorded and alluvial material (the alluvial mark of the notation, or the recorded origin); an agro type needs the natural horizon under the plough layer, else the soil is an agrozem of trunk C (CS)."
+
+    - code: "BB"
+      name: "Volcanic soils"
+      name_native: "Вулканические почвы"
+      path: "B.1б-B.2а"
+      tests:
+        all_of:
+          - has_horizon_kidpr: {codes: ["BAN"]}
+      notes: "The ochre horizon BAN, and the soil developed in a layer of volcanic ash (p. 126). BAN is formed in volcanic ash by its definition (horizon key position 55, chapter 3), so BAN alone makes the division, by the notation or by the horizon key on the data (Hugo, 2026-11-02)."
+
+    - code: "BC"
+      name: "Stratozems"
+      name_native: "Стратоземы"
+      synonyms_native: ["Стратифицированные"]
+      path: "B.1б-B.2б"
+      tests:
+        any_of:
+          - surface_deposit_kidpr: {min_cm: 40, humified: true}
+          - stratified_body_kidpr: {min_cm: 40}
+      notes: "A stratified humus horizon RJ, RY or RU: a humified deposit of 40 cm or more, the agro horizons P and PU over it counted with it (p. 128; Hugo's decision Q21). The key and the index name the division Стратифицированные."

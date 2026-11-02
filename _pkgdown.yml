@@ -182,6 +182,17 @@ reference:
       - classify_cpcs1967
       - make_cpcs1967_example
 
+  - title: "Russian soil classification, Field Guide 2008 (experimental)"
+    desc: >
+      The five trunks and 27 divisions of the Field Guide of Russian soils
+      (Dokuchaev Soil Science Institute, 2008), its branching keys flattened
+      into ordered lists, named in English with the Russian names beside
+      them. Reads the Russian horizon notation, or identifies the diagnostic
+      horizons on the data by the Field Guide's key to horizons.
+    contents:
+      - classify_kidpr2008
+      - make_kidpr2008_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

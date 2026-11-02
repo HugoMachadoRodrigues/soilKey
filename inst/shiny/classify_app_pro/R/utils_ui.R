@@ -112,7 +112,20 @@ pro_fixture_catalog <- function() {
                "Sols calcimagn\u00e9siques" = "calcimagnesic", "Sols isohumiques" = "isohumic",
                "Sols brunifi\u00e9s" = "brunified", "Sols podzolis\u00e9s" = "podzolised",
                "Sols \u00e0 sesquioxydes de fer et mangan\u00e8se" = "sesquioxide", "Sols ferrallitiques" = "ferrallitic",
-               "Sols hydromorphes" = "hydromorphic", "Sols sodiques" = "sodic")
+               "Sols hydromorphes" = "hydromorphic", "Sols sodiques" = "sodic"),
+  # the Russian examples, one per division, labelled by the division (its
+  # English gloss, the name the result gives)
+  kidpr2008 = c("Peat soils" = "AA", "Peatozems" = "AB", "Alluvial soils" = "BA",
+                "Volcanic soils" = "BB", "Stratozems" = "BC", "Weakly developed soils" = "DA",
+                "Texture-differentiated soils" = "CA", "Al-Fe-humus soils" = "CB",
+                "Fe-metamorphic soils" = "CC", "Structural-metamorphic soils" = "CD",
+                "Cryometamorphic soils" = "CE", "Pale-metamorphic soils" = "CF",
+                "Cryogenic soils (cryozems)" = "CG", "Gley soils" = "CH",
+                "Humus-accumulative soils" = "CI", "Light-humus carbonate-accumulative soils" = "CJ",
+                "Alkaline clay-differentiated soils" = "CK", "Halomorphic soils" = "CL",
+                "Hydrometamorphic soils" = "CM", "Organo-accumulative soils" = "CN",
+                "Eluvial soils" = "CO", "Lithozems" = "CP", "Abrazems" = "CQ",
+                "Agroabrazems" = "CR", "Agrozems" = "CS", "Turbozems" = "CT", "Chemozems" = "CU")
 )
 
 # Resolve a make_*_canonical() name, or a national example written
