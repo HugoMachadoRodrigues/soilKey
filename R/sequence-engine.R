@@ -534,7 +534,7 @@
 }
 
 # Three-valued AND.
-.and3 <- function(a, b) {
+.mhs_and3 <- function(a, b) {
   if (isFALSE(a) || isFALSE(b)) FALSE else if (is.na(a) || is.na(b)) NA else TRUE
 }
 
@@ -742,12 +742,12 @@
       }
       na_set <- pt$features_na[[i]]
       if (!is.na(f$rockflag) && !identical(pt$rockflag[i], f$rockflag))
-        v <- .and3(v, if (is.na(pt$rockflag[i]) && f$rockflag %in% na_set) NA else FALSE)
+        v <- .mhs_and3(v, if (is.na(pt$rockflag[i]) && f$rockflag %in% na_set) NA else FALSE)
       if (!is.na(f$mark) && !identical(pt$mark[i], f$mark))
-        v <- .and3(v, if (is.na(pt$mark[i]) && f$mark %in% na_set) NA else FALSE)
+        v <- .mhs_and3(v, if (is.na(pt$mark[i]) && f$mark %in% na_set) NA else FALSE)
       if (length(f$composition) && !isFALSE(v)) {
         tc <- pt$composition[[i]]
-        v <- if (!length(tc)) .and3(v, NA) else .and3(v, all(f$composition %in% tc))
+        v <- if (!length(tc)) .mhs_and3(v, NA) else .mhs_and3(v, all(f$composition %in% tc))
       }
     }
     if (isTRUE(v)) return(TRUE)
