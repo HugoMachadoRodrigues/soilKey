@@ -560,15 +560,16 @@
 .kidpr_q18a <- function(x, i) .kidpr_r(TRUE)
 
 # 19: the colour of the agro horizon: dark grey to black (PU), light grey or
-# grey (P: the book gives it no brown tint, so chroma 2 or less), brown,
-# brownish or pale with a grey tint (PB: a grey hue at chroma 3).
+# grey (P: grey as Q5 reads it, chroma 3 or less in 10YR, 2.5Y, 5Y or N,
+# with a dry value of 5 or more; default 17, Hugo 2026-11-02), else brown,
+# brownish or pale (PB).
 .kidpr_q19a <- function(x, i) .kidpr_dark(x, i)
 .kidpr_q19b <- function(x, i) {
   g <- .kidpr_grey(x, i)
   col <- .kidpr_colour(x, i, "dry")
   if (!isTRUE(g$passed)) return(g)
-  p <- if (is.na(col$chroma)) NA else col$chroma <= 2
-  .kidpr_colour_word(col, p, "light grey or grey with no brown tint")
+  p <- if (is.na(col$value)) NA else col$value >= 5
+  .kidpr_colour_word(col, p, "light grey or grey, dry value 5 or more")
 }
 
 # 20: starts at the surface with a colour almost free of grey.

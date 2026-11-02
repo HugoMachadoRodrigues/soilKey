@@ -926,10 +926,14 @@ test_that("low items: the middle horizons of a dark-rock profile, criterion 3 of
   expect_identical(f$features[[1]], "rh")
   expect_true("deposit_lighter_over_humus" %in% f$fallbacks[[1]])
   expect_identical(f$code[2], "AU")
-  # 15a allows a brown tint (10YR 3/3 is AU); 19b has none (10YR 5/3 is PB)
+  # 15a allows a brown tint (10YR 3/3 is AU); P is grey as Q5 reads it with a
+  # dry value of 5 or more (default 17, Hugo 2026-11-02): 10YR 5/3 is P, 10YR
+  # 5/4 is PB
   expect_identical(.ru_labels(.ru_P(.ru_AY(munsell_value_dry = 3, munsell_chroma_dry = 3, ph_h2o = 7), .ru_L(15, 100)))[1], "AU")
   ar <- list(land_use = "arable")
   expect_identical(.ru_labels(.ru_P(.ru_AY(0, 25, munsell_chroma_dry = 3, boundary_distinctness = "abrupt"), .ru_L(25, 100),
+                                    site = ar))[1], "P")
+  expect_identical(.ru_labels(.ru_P(.ru_AY(0, 25, munsell_chroma_dry = 4, boundary_distinctness = "abrupt"), .ru_L(25, 100),
                                     site = ar))[1], "PB")
   expect_identical(.ru_labels(.ru_P(.ru_AY(0, 25, boundary_distinctness = "abrupt"), .ru_L(25, 100), site = ar))[1], "P")
 })
