@@ -266,13 +266,21 @@
                       if (rstar) ", humified (RJ, RY or RU)" else ""))
 }
 
-# One horizon entry of the profile: its code, kind, overlays, candidates,
-# thickness, top (and its depth below the ground) and rows.
+# Overlays that are no horizon of the key (v0.9.338, Hugo, 2026-11-02): a V
+# laid over the horizon of a layer is a feature of that layer for every step
+# that reads middle horizons (C.5, C.8, C.13 ...); only a V that is the
+# horizon of its own layer counts.
+.KIDPR_DV_FEATURE_OVERLAYS <- "V"
+
+# One horizon entry of the profile: its code, kind, overlays (S and X; a V
+# overlay is a feature), candidates, thickness, top (and its depth below the
+# ground) and rows.
 .kidpr_dv_entry <- function(v, rows) {
   f <- v$f
   i <- rows[1L]
   list(code = f$code[i], kind = v$kind[i], rows = rows,
-       overlay = unique(unlist(f$overlay[rows])), overlay_na = unique(unlist(f$overlay_na[rows])),
+       overlay = setdiff(unique(unlist(f$overlay[rows])), .KIDPR_DV_FEATURE_OVERLAYS),
+       overlay_na = setdiff(unique(unlist(f$overlay_na[rows])), .KIDPR_DV_FEATURE_OVERLAYS),
        cands = if (v$kind[i] == "undecided") as.character(f$candidates[[i]]) else character(0),
        missing = unique(unlist(f$missing[rows])),
        thick = sum(v$thick[rows]), top = f$top_cm[i], rtop = v$rtop[i], bottom = f$bottom_cm[rows[length(rows)]])
@@ -458,7 +466,8 @@
 #'
 #' \describe{
 #'   \item{\code{has_horizon_kidpr}}{One of the horizons is in the profile
-#'     (an overlay counts).}
+#'     (an overlay S or X counts; a V laid over another horizon is a
+#'     feature of its layer).}
 #'   \item{\code{starts_at_surface_kidpr}}{The first horizon of the profile
 #'     (at the surface, or under a deposit of 40 cm or less) is one of the
 #'     horizons.}
@@ -815,7 +824,10 @@ stratified_body_kidpr <- function(pedon, min_cm = 40) {
       k <- v$kind[i]
       if (k %in% c("small", "litter")) next
       cd <- v$f$code[i]
-      if (k == "horizon" && cd %in% c(.KIDPR_DV_RSTAR, "P", "PU")) {
+      # v0.9.338: the agro horizon counts only over the stratified horizons
+      # (BC07-BC10: P-RY-D, PU-RU-D), not under them
+      seen <- any(v$f$code[used] %in% .KIDPR_DV_RSTAR)
+      if (k == "horizon" && (cd %in% .KIDPR_DV_RSTAR || (cd %in% c("P", "PU") && !seen))) {
         tot <- tot + v$thick[i]; used <- c(used, i); next
       }
       if (k == "undecided") {

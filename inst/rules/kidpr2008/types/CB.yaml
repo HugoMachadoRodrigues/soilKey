@@ -1,0 +1,195 @@
+# The types of the division CB, Альфегумусовые почвы
+# (Al-Fe-humus soils): Field Guide of 2008, chapter 4.1.2, pp. 80-83;
+# 17 types (14 natural, 3 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 CB..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested.
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# BEL closes only the formulas where it is diagnostic (CA07, CA08, CA11, CA20,
+# CA21, CD09; p. 44); `ignore` lists it on the formulas of CA and CD that do
+# not write it, where a BEL neither blocks the formula nor is required by it,
+# and BCA on the formulas of CD that do not write it (p. 85). In CB and CE an
+# EL counts as an eluvial horizon with E (p. 43). (Hugo, 2026-11-02.)
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "CB":
+    - code: "[CB01]"
+      name: "Podburs"
+      name_native: "Подбуры"
+      formula: "O-BHF-C"
+      page: 81
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB01]"}
+      notes: "An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB02]"
+      name: "Gley podburs"
+      name_native: "Подбуры глеевые"
+      formula: "O-BHF-G-CG"
+      page: 81
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB02]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB03]"
+      name: "Dry-peaty podburs"
+      name_native: "Сухоторфяно-подбуры"
+      formula: "TJ-BHF-C"
+      page: 81
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB03]"}
+      notes: "An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB04]"
+      name: "Peaty gley podburs"
+      name_native: "Торфяно-подбуры глеевые"
+      formula: "T-BHFg-G-CG"
+      page: 81
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB04]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB05]"
+      name: "Sod podburs"
+      name_native: "Дерново-подбуры"
+      formula: "AY-BF-C"
+      page: 81
+      near_identity: {BF: ["BHF"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB05]"}
+      notes: "BF is read as a BHF of either kind (BH, BF or neither), which names the subtype (Hugo's decision Q15). An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB06]"
+      name: "Sod gley podburs"
+      name_native: "Дерново-подбуры глеевые"
+      formula: "AY-BHFg-G-CG"
+      page: 81
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB06]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB07]"
+      name: "Podzols"
+      name_native: "Подзолы"
+      formula: "O-E-BHF-C"
+      page: 81
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB07]"}
+      notes: "An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB08]"
+      name: "Gley podzols"
+      name_native: "Подзолы глеевые"
+      formula: "O-Eg-BHFg-G-CG"
+      page: 81
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB08]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB09]"
+      name: "Dry-peaty podzols"
+      name_native: "Сухоторфяно-подзолы"
+      formula: "TJ-E-BHF-C"
+      page: 81
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB09]"}
+      notes: "An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB10]"
+      name: "Sod podzols"
+      name_native: "Дерново-подзолы"
+      formula: "AY-E-BHF-C"
+      page: 81
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB10]"}
+      notes: "An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB11]"
+      name: "Sod gley podzols"
+      name_native: "Дерново-подзолы глеевые"
+      formula: "AY-E-BHFg-G-CG"
+      page: 81
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB11]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB12]"
+      name: "Peaty podzols"
+      name_native: "Торфяно-подзолы"
+      formula: "T-E-BHF-C"
+      page: 82
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB12]"}
+      notes: "An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB13]"
+      name: "Peaty gley podzols"
+      name_native: "Торфяно-подзолы глеевые"
+      formula: "T-E-BHFg-G-CG"
+      page: 82
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB13]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB14]"
+      name: "Peaty ortstein podzols"
+      name_native: "Торфяно-подзолы рудяковые"
+      formula: "T-Eg-BHFg-F-G-CG"
+      page: 82
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB14]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB15]"
+      name: "Agro-sod podzols"
+      name_native: "Агродерново-подзолы"
+      formula: "P-E-BHF-C"
+      page: 82
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB15]"}
+      notes: "An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB16]"
+      name: "Agro-sod gley podzols"
+      name_native: "Агродерново-подзолы глеевые"
+      formula: "P-E-BHFg-G-CG"
+      page: 82
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB16]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CB17]"
+      name: "Agro-peaty gley podzols"
+      name_native: "Агроторфяно-подзолы глеевые"
+      formula: "PT-(T)-E-BHFg-G-CG"
+      page: 82
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CB17]"}
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."

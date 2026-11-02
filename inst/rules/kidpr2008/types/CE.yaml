@@ -1,0 +1,96 @@
+# The types of the division CE, Криометаморфические почвы
+# (Cryometamorphic soils): Field Guide of 2008, chapter 4.1.5, pp. 87-88;
+# 7 types (7 natural, 0 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 CE..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested.
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# BEL closes only the formulas where it is diagnostic (CA07, CA08, CA11, CA20,
+# CA21, CD09; p. 44); `ignore` lists it on the formulas of CA and CD that do
+# not write it, where a BEL neither blocks the formula nor is required by it,
+# and BCA on the formulas of CD that do not write it (p. 85). In CB and CE an
+# EL counts as an eluvial horizon with E (p. 43). (Hugo, 2026-11-02.)
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "CE":
+    - code: "[CE01]"
+      name: "Cryometamorphic"
+      name_native: "Криометаморфические"
+      formula: "O-CRM-C"
+      page: 88
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE01]"}
+      notes: "An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CE02]"
+      name: "Muck-cryometamorphic"
+      name_native: "Перегнойно-криометаморфические"
+      formula: "H-CRM-C"
+      page: 88
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE02]"}
+      notes: "An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CE03]"
+      name: "Coarse-humus cryometamorphic"
+      name_native: "Криометаморфические грубогумусовые"
+      formula: "AO-CRM-C"
+      page: 88
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE03]"}
+      notes: "An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CE04]"
+      name: "Sod-cryometamorphic"
+      name_native: "Дерново-криометаморфические"
+      formula: "AY-CRM-C"
+      page: 88
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE04]"}
+      notes: "An EL in the profile counts as an eluvial horizon: a formula without E does not take it (p. 43; Hugo, 2026-11-02)."
+    - code: "[CE05]"
+      name: "Svetlozems"
+      name_native: "Светлоземы"
+      formula: "O-E-CRM-C"
+      page: 88
+      near_identity: {E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE05]"}
+      notes: "An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CE06]"
+      name: "Iron-illuvial svetlozems"
+      name_native: "Светлоземы иллювиально-железистые"
+      formula: "O-E-BF-CRM-C"
+      page: 88
+      near_identity: {BF: ["BHF"], E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE06]"}
+      notes: "BF is read as a BHF of either kind (BH, BF or neither), which names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."
+    - code: "[CE07]"
+      name: "Texture-differentiated svetlozems"
+      name_native: "Светлоземы текстурно-дифференцированные"
+      formula: "O-E-BF-CRM-BT-C"
+      page: 88
+      near_identity: {BF: ["BHF"], E: ["EL"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CE07]"}
+      notes: "BF is read as a BHF of either kind (BH, BF or neither), which names the subtype (Hugo's decision Q15). An EL counts as an eluvial horizon here: it fills the E of the formula, and it blocks the formulas without E (p. 43; Hugo, 2026-11-02)."

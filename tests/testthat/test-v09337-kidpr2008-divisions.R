@@ -89,7 +89,7 @@ test_that("the registry has the Russian system, experimental and opt-in", {
   r <- s[s$id == "kidpr2008", ]
   expect_identical(nrow(r), 1L)
   expect_identical(r$classifier, "classify_kidpr2008")
-  expect_identical(r$levels, "trunks, divisions")
+  expect_identical(r$levels, "trunks, divisions, types")
   expect_identical(r$aliases, "kidpr, russia, ru2008")
   expect_identical(r$status, "experimental")
   expect_false(r$default)
@@ -106,7 +106,7 @@ test_that("the registry has the Russian system, experimental and opt-in", {
   p <- make_kidpr2008_example("CI")
   expect_false("kidpr2008" %in% names(classify_all(p, on_missing = "silent")))
   res <- classify_all(p, systems = "kidpr2008", on_missing = "silent")
-  expect_identical(res$kidpr2008$levels$code, c("C", "CI"))
+  expect_identical(res$kidpr2008$levels$code, c("C", "CI", "[CI01]"))
 })
 
 test_that("the rules are clean: predicates, suffixes, codes, names and paths", {
@@ -176,7 +176,7 @@ test_that("each example keys to its division, decided, in the Russian notation",
     expect_identical(res$system_id, "kidpr2008")
     expect_identical(res$levels$code[2L], code, info = d)
     expect_identical(res$levels$code[1L], substr(d, 1L, 1L), info = d)
-    expect_identical(res$name, names_of[[code]], info = d)
+    expect_identical(res$levels$name[2L], names_of[[code]], info = d)
     expect_true(all(nzchar(res$levels$name_native)), info = d)
     expect_length(res$provisional_because, 0L)
     expect_false(any(grepl("not provided|not a soil", res$warnings)), info = d)

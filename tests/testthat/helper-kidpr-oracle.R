@@ -138,7 +138,9 @@
 }
 
 # The readings of the walk.
-.kor_is <- function(pr, i, K) pr$hc[i] %in% K || any(pr$hz[[i]]$overlay %in% K)
+# a V laid over another horizon is a feature, not a horizon of the key (Hugo, 2026-11-02)
+.kor_ov <- function(o) setdiff(o, "V")
+.kor_is <- function(pr, i, K) pr$hc[i] %in% K || any(.kor_ov(pr$hz[[i]]$overlay) %in% K)
 .kor_has <- function(pr, K) any(vapply(seq_along(pr$hz), function(i) .kor_is(pr, i, K), NA))
 .kor_has_within <- function(pr, K, cm) any(vapply(seq_along(pr$hz), function(i) .kor_is(pr, i, K) && pr$hz[[i]]$top < cm, NA))
 .kor_first <- function(pr, K) length(pr$hz) > 0L && .kor_is(pr, 1L, K)
@@ -160,7 +162,7 @@
   for (i in seq_len(n - 1L)) for (j in seq.int(i + 1L, n)) if (.kor_is(pr, i, U) && .kor_is(pr, j, Lw)) return(TRUE)
   FALSE
 }
-.kor_set <- function(q) sort(unique(c(q$hc[!q$hc %in% .KOR_NOSOIL], unlist(lapply(q$hz, `[[`, "overlay")))))
+.kor_set <- function(q) sort(unique(c(q$hc[!q$hc %in% .KOR_NOSOIL], .kor_ov(unlist(lapply(q$hz, `[[`, "overlay"))))))
 .kor_only <- function(pr, sets, raw = FALSE) {
   q <- if (raw) list(hc = vapply(pr$hz_raw, `[[`, "", "code"), hz = pr$hz_raw) else pr
   any(vapply(sets, function(s) identical(.kor_set(q), sort(unique(s))), NA))
