@@ -172,6 +172,20 @@ with depth.
 - [`make_cpcs1967_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cpcs1967_example.md)
   : Example pedons for the CPCS 1967 classes
 
+## Russian soil classification, Field Guide 2008 (experimental)
+
+The five trunks and 27 divisions of the Field Guide of Russian soils
+(Dokuchaev Soil Science Institute, 2008), its branching keys flattened
+into ordered lists, named in English with the Russian names beside them.
+Reads the Russian horizon notation, or identifies the diagnostic
+horizons on the data by the Field Guide’s key to horizons.
+
+- [`classify_kidpr2008()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_kidpr2008.md)
+  : Classify a pedon under the Russian soil classification (Field Guide,
+  2008)
+- [`make_kidpr2008_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_kidpr2008_example.md)
+  : Example pedons for the divisions of the Russian soil classification
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:
@@ -1685,6 +1699,22 @@ pública curada.
   : The order a SiBCS label states, when it is not the order of its name
 - [`identify_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/identify_horizons.md)
   : Identify the diagnostic horizons of a pedon
+- [`has_horizon_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`starts_at_surface_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`surface_horizon_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`directly_over_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`below_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`only_horizons_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`rock_within_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`turbated_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`peat_body_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`surface_deposit_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`stratified_body_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`soil_horizon_within_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`floodplain_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`volcanic_ash_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  [`contaminated_x_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
+  : Trunks and divisions of the Russian soil classification (internal)
 - [`match_horizon_sequence()`](https://hugomachadorodrigues.github.io/soilKey/reference/match_horizon_sequence.md)
   : Match a profile against a profile formula
 - [`print(`*`<npdb_dry_colour_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.npdb_dry_colour_model.md)

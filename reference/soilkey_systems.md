@@ -34,17 +34,18 @@ in that system), `levels` and `aliases` (both comma-separated), and
 
 ``` r
 soilkey_systems()
-#>          id
-#> 1   wrb2022
-#> 2    sibcs5
-#> 3      usda
-#> 4     cssc3
-#> 5      asc3
-#> 6     nzsc4
-#> 7  hscs2024
-#> 8  scsj2017
-#> 9  cscj2011
-#> 10 cpcs1967
+#>           id
+#> 1    wrb2022
+#> 2     sibcs5
+#> 3       usda
+#> 4      cssc3
+#> 5       asc3
+#> 6      nzsc4
+#> 7   hscs2024
+#> 8   scsj2017
+#> 9   cscj2011
+#> 10  cpcs1967
+#> 11 kidpr2008
 #>                                                                     name
 #> 1                                                               WRB 2022
 #> 2                                                     SiBCS, 5th edition
@@ -56,6 +57,7 @@ soilkey_systems()
 #> 8                             Soil Classification System of Japan (2017)
 #> 9               Comprehensive Soil Classification System of Japan (2011)
 #> 10                                French soil classification CPCS (1967)
+#> 11                       Russian soil classification (Field Guide, 2008)
 #>                                                                                       edition
 #> 1                                                                          4th edition (2022)
 #> 2                                                                          5th edition (2018)
@@ -67,26 +69,29 @@ soilkey_systems()
 #> 8                    Soil Classification System of Japan (2017), Japanese Society of Pedology
 #> 9        Comprehensive Soil Classification System of Japan, First Approximation (2011), NIAES
 #> 10 Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols
-#>          status        classifier
-#> 1        stable  classify_wrb2022
-#> 2        stable    classify_sibcs
-#> 3        stable     classify_usda
-#> 4  experimental    classify_cssc3
-#> 5  experimental     classify_asc3
-#> 6  experimental    classify_nzsc4
-#> 7  experimental classify_hscs2024
-#> 8  experimental classify_scsj2017
-#> 9  experimental classify_cscj2011
-#> 10 experimental classify_cpcs1967
-#>                                            levels       aliases default
-#> 1                                            rsgs           wrb    TRUE
-#> 2    ordens, subordens, grandes_grupos, subgrupos         sibcs    TRUE
-#> 3      orders, suborders, great_groups, subgroups                  TRUE
-#> 4                 orders, great_groups, subgroups          cssc   FALSE
-#> 5      orders, suborders, great_groups, subgroups           asc   FALSE
-#> 6                       orders, groups, subgroups          nzsc   FALSE
-#> 7                                           types hscs, hungary   FALSE
-#> 8                 great_groups, groups, subgroups   scsj, japan   FALSE
-#> 9  great_groups, groups, subgroups, series_groups          cscj   FALSE
-#> 10         classes, subclasses, groups, subgroups  cpcs, france   FALSE
+#> 11              Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008
+#>          status         classifier
+#> 1        stable   classify_wrb2022
+#> 2        stable     classify_sibcs
+#> 3        stable      classify_usda
+#> 4  experimental     classify_cssc3
+#> 5  experimental      classify_asc3
+#> 6  experimental     classify_nzsc4
+#> 7  experimental  classify_hscs2024
+#> 8  experimental  classify_scsj2017
+#> 9  experimental  classify_cscj2011
+#> 10 experimental  classify_cpcs1967
+#> 11 experimental classify_kidpr2008
+#>                                            levels               aliases default
+#> 1                                            rsgs                   wrb    TRUE
+#> 2    ordens, subordens, grandes_grupos, subgrupos                 sibcs    TRUE
+#> 3      orders, suborders, great_groups, subgroups                          TRUE
+#> 4                 orders, great_groups, subgroups                  cssc   FALSE
+#> 5      orders, suborders, great_groups, subgroups                   asc   FALSE
+#> 6                       orders, groups, subgroups                  nzsc   FALSE
+#> 7                                           types         hscs, hungary   FALSE
+#> 8                 great_groups, groups, subgroups           scsj, japan   FALSE
+#> 9  great_groups, groups, subgroups, series_groups                  cscj   FALSE
+#> 10         classes, subclasses, groups, subgroups          cpcs, france   FALSE
+#> 11                              trunks, divisions kidpr, russia, ru2008   FALSE
 ```
