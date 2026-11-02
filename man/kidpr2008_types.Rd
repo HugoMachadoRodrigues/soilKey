@@ -47,6 +47,10 @@ horizon between AU and BCA. The types are tried most specific first, agro
 before natural: the first that matches is the type, and another that
 matches is an intergrade, in the evidence. A few near-identity readings
 are written on the types they concern (the BF of CB05, CE06 and CE07 is a
-BHF of either kind; CJ01 takes BCA or CAT; CH02 takes O, T or H).
+BHF of either kind; CJ01 takes BCA or CAT; CH02 takes O, T or H; in CB and
+CE an EL fills the E of a formula); in CD a BCA, like BEL, closes no
+formula that does not write it. A tie or a missing thickness at the
+surface, or a layer the data route reads as no horizon between two
+horizons of a formula, leaves the type undecided.
 }
 \keyword{internal}

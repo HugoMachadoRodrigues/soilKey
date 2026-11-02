@@ -157,21 +157,27 @@ test_that("the registry has the type level; the 106 types are clean and as the f
   opt <- vapply(Filter(function(e) length(e$optional), all), `[[`, "", "code")
   expect_identical(opt, sprintf("[CA%02d]", c(1:6, 16:19, 22)))
   for (e in all) if (length(e$optional)) expect_identical(unlist(e$optional), "BEL")
-  # BEL closes only the formulas where it is diagnostic (Hugo, 2026-11-02):
-  # the formulas of CA and CD that do not write it ignore it
-  ign <- vapply(Filter(function(e) length(e$ignore), all), `[[`, "", "code")
+  # BEL closes only the formulas where it is diagnostic, and BCA does not
+  # close the formulas of CD that do not write it (Hugo, 2026-11-02)
+  ign_of <- function(h) vapply(Filter(function(e) h %in% unlist(e$ignore), all), `[[`, "", "code")
+  ign <- ign_of("BEL")
   expect_identical(ign, c(sprintf("[CA%02d]", c(10, 12:15, 23:27)), sprintf("[CD%02d]", c(1:8, 10:13))))
-  for (e in all) if (length(e$ignore)) expect_identical(unlist(e$ignore), "BEL")
+  expect_identical(ign_of("BCA"), sprintf("[CD%02d]", c(1:7, 9:12)))
+  for (e in all) expect_true(all(unlist(e$ignore) %in% c("BEL", "BCA")), info = e$code)
   # in CA and CD, a formula writes BEL or ignores it
   for (e in all) if (substr(e$code, 2L, 3L) %in% c("CA", "CD"))
     expect_true(xor(grepl("BEL", e$formula), e$code %in% ign), info = e$code)
   sch <- .kidpr_ty_parse(r$types$CA)
   expect_false("BEL" %in% sch$vocabularies[["[CA10]"]])
   expect_true(all(c("BEL", "EL", "BT", "G") %in% sch$vocabularies[["[CA08]"]]))
-  # the near-identity readings of Q15, on the types they concern
+  # the near-identity readings of Q15, on the types they concern, and the EL
+  # that counts with E in CB and CE (Hugo, 2026-11-02)
   ni <- Filter(function(e) length(e$near_identity), all)
-  expect_identical(vapply(ni, `[[`, "", "code"), c("[CB05]", "[CE06]", "[CE07]", "[CH02]", "[CJ01]"))
+  expect_identical(vapply(ni, `[[`, "", "code"),
+                   c("[CB05]", sprintf("[CB%02d]", 7:17), sprintf("[CE%02d]", 5:7), "[CH02]", "[CJ01]"))
   expect_identical(r$types$CJ[[1L]]$near_identity, list(BCA = "CAT"))
+  expect_identical(r$types$CE[[6L]]$near_identity, list(BF = "BHF", E = "EL"))
+  for (e in ni) if (grepl("^\\[C[BE]", e$code) && e$code != "[CB05]") expect_identical(e$near_identity$E, "EL", info = e$code)
   # Hugo's decisions on the types (2026-11-02), with his answers on the
   # readings of this release
   rd <- yaml::read_yaml(system.file("rules", "kidpr2008", "readings.yaml", package = "soilKey"))$readings
@@ -273,7 +279,7 @@ test_that("Q14: BEL optional or required, parent material not tested, g and q ex
 
 test_that("Q14 on the data: up to 15 cm with no horizon between AU and BCA", {
   skip_on_cran()
-  gap <- function(th) .ty_P(.ty_AU(0, 35, designation = "Ah"), .ty_L(35, 35 + th, designation = "C1", ph_h2o = 7.4),
+  gap <- function(th) .ty_P(.ty_AU(0, 35, designation = "Ah"), .ty_L(35, 35 + th, designation = "Bw", ph_h2o = 7.4),
                             .ty_BCA(35 + th, 90, designation = "Bk"), .ty_L(90, 150, designation = "Ck", caco3_pct = 10))
   f <- identify_horizons(gap(10), "kidpr2008")
   expect_true(is.na(f$code[2]) && isFALSE(f$passed[2]))
@@ -529,6 +535,135 @@ test_that("a type list with a second match: the intergrade in the trace, and a p
   expect_identical(.ty_type(r), "[CA91]")
   expect_true(all(c("types:[CA05]", "types:[CA04]", "types:[CA90]") %in% r$provisional_because))
   expect_true(any(grepl("^Provisional", r$warnings)))
+})
+
+
+# --- the fixes of the review, Hugo's answers (2026-11-02) -------------------------------
+
+.ty_tab <- function(d, top, bot, site = list()) {
+  h <- data.frame(designation = d, top_cm = top, bottom_cm = bot, stringsAsFactors = FALSE)
+  PedonRecord$new(site = utils::modifyList(list(id = "ru-type", designation_system = "kidpr"), site),
+                  horizons = ensure_horizon_schema(data.table::as.data.table(h)))
+}
+.ty_und <- function(r, cands) {
+  expect_identical(nrow(r$levels), 2L)
+  expect_true(all(paste0("types:", cands) %in% r$provisional_because))
+  w <- grep("The type is undecided between", r$warnings, value = TRUE)
+  expect_length(w, 1L)
+  for (k in cands) expect_match(w, k, fixed = TRUE)
+}
+
+test_that("D1: a tie or a missing thickness at the surface leaves the type undecided", {
+  skip_on_cran()
+  .ty_und(.ty_class(.ty_tab(c("O", "AY", "EL", "BEL", "BT", "C"), c(0, 10, 20, 35, 50, 90), c(10, 20, 35, 50, 90, 120))),
+          c("[CA01]", "[CA04]"))
+  r <- .ty_class(.ty_tab(c("O", "AY", "EL", "BEL", "BT", "C"), c(0, NA, 25, 40, 55, 95), c(10, 25, 40, 55, 95, 120)))
+  .ty_und(r, c("[CA01]", "[CA04]"))
+  expect_true(all(c("top_cm", "bottom_cm") %in% r$missing_data))
+  .ty_und(.ty_class(.ty_tab(c("O", "AU", "G", "CG"), c(0, 15, 30, 60), c(15, 30, 60, 90))), c("[CH01]", "[CH04]"))
+  # under the plough: two natural horizons of equal thickness
+  .ty_und(.ty_class(.ty_tab(c("PU", "AU", "H", "G", "CG"), c(0, 30, 40, 50, 80), c(30, 40, 50, 80, 110))),
+          c("[CH08]", "[CH09]"))
+  # a layer that could thicken a horizon the rule drops: AY 8 + (AY 8) > O 10
+  .ty_und(.ty_of(c("O:10", "AY:8", "NA:8", "EL:10", "BT:40", "C:30")), c("[CA01]", "[CA04]"))
+  # the thicker one decided: still decided
+  expect_identical(.ty_type(.ty_of(c("O:5", "AY:15", "EL:15", "BEL:15", "BT:40", "C:30"))), "[CA04]")
+  expect_identical(.ty_type(.ty_of(c("O:20", "AY:10", "EL:15", "BEL:15", "BT:40", "C:30"))), "[CA01]")
+  # a W of 5 cm or less over another horizon is still a feature
+  expect_identical(.ty_type(.ty_of(c("W:4", "O:6", "BHF:30", "C:30"))), "[CB01]")
+  # on the data: litter-free organic and humus layers of 5 cm each
+  p <- .ty_P(.ty_O(0, 5, designation = "Oe"), .ty_AY(5, 10, designation = "Ah"), .ty_E(10, 30, designation = "E"),
+             .ty_BT(30, 90, designation = "Bt"), .ty_L(90, 150, designation = "C"))
+  r <- .ty_class(p)
+  expect_identical(r$levels$code[2L], "CA")
+  .ty_und(r, c("[CA01]", "[CA04]"))
+})
+
+test_that("D2 and R1: transitions and loose rock on the data; a layer with no horizon between", {
+  skip_on_cran()
+  dr <- list(drainage_class = "poorly drained")
+  gley <- function(mid) .ty_P(.ty_AY(0, 15, designation = "Ah"), .ty_E(15, 32, designation = "Eg"),
+                              .ty_BT(32, 80, designation = "Btg"), mid,
+                              .ty_moist(90, 130, "5GY", 6, 1, designation = "Bg"), site = dr)
+  # an FAO transition (BC) or loose rock (Cg1) between Bt and Bg
+  for (d in c("BC", "Cg1")) {
+    r <- .ty_class(gley(.ty_L(80, 90, designation = d)))
+    expect_identical(r$levels$code, c("C", "CA", "[CA05]"), info = d)
+    expect_length(r$provisional_because, 0L)
+  }
+  # a layer the key reads as no horizon: it may be a transition or loose rock
+  # (Hugo, 2026-11-02), so the type is undecided, not FALSE
+  p <- gley(.ty_L(80, 90))
+  f <- identify_horizons(p, "kidpr2008")
+  expect_true(is.na(f$code[4]) && isFALSE(f$passed[4]))
+  r <- .ty_class(p)
+  expect_identical(r$levels$code, c("C", "CA"))
+  expect_true("types:[CA05]" %in% r$provisional_because)
+  expect_match(grep("undecided", r$warnings, value = TRUE), "the formula of [CA05] AY-EL-BELg-BTg-G-CG may match", fixed = TRUE)
+  expect_true("designation" %in% r$missing_data)
+  # the allowance of 15 cm between AU and BCA still takes it, decided
+  p <- .ty_P(.ty_AU(0, 35, designation = "Ah"), .ty_L(35, 45, ph_h2o = 7.4), .ty_BCA(45, 90, designation = "Bk"),
+             .ty_L(90, 150, designation = "Ck", caco3_pct = 10))
+  r <- .ty_class(p)
+  expect_identical(r$levels$code, c("C", "CI", "[CI01]"))
+  expect_length(r$provisional_because, 0L)
+})
+
+test_that("M1: a gap that blocks the nearest formula is named in the note", {
+  skip_on_cran()
+  m <- soilKey:::.kidpr_ty_describe(list(formula = "AU-BCA-Cca", distance = 1, missing = character(0), extra = character(0),
+                                         notes = "BCA (3) lies under AU (1) across 20 cm with no diagnostic horizon (allowed 15)"))
+  expect_match(m, "AU-BCA-Cca, distance 1 (BCA (3) lies under AU (1) across 20 cm", fixed = TRUE)
+})
+
+test_that("D4: an agro horizon under RY is no part of the stratified body", {
+  skip_on_cran()
+  expect_identical(.ty_of(c("RY:12", "P:25", "EL:15", "BEL:15", "BT:40", "C:30"))$levels$code, c("C", "CA", "[CA17]"))
+  expect_identical(.ty_of(c("RY:12", "PU:30", "AU:10", "BCA:40", "Cca:30"))$levels$code, c("C", "CI", "[CI11]"))
+  # over the stratified horizon it still counts (P-RY-D, PU-RU-D)
+  expect_identical(.ty_of(c("P:25", "RY:25", "D:40"))$levels$code[1:2], c("B", "BC"))
+  expect_identical(.ty_of(c("PU:30", "RY:12", "AU:10", "BCA:40", "Cca:30"))$levels$code[1:2], c("B", "BC"))
+})
+
+test_that("R2: in CB and CE an EL counts with E", {
+  skip_on_cran()
+  expect_identical(.ty_type(.ty_of(c("O:5", "EL:12", "BHF:30", "C:30"))), "[CB07]")
+  expect_identical(.ty_type(.ty_of(c("T:30", "EL:12", "BHF:30", "C:30"))), "[CB12]")
+  expect_identical(.ty_type(.ty_of(c("O:5", "EL:12", "CRM:30", "C:30"))), "[CE05]")
+  # not a podbur, nor a plain cryometamorphic soil
+  r <- .ty_of(c("O:5", "EL:12", "BHF:30", "C:30"))
+  expect_false(isTRUE(r$trace$types[["[CB01]"]]$passed))
+  # no formula with E for TJ over G: the division stays (Q15)
+  r <- .ty_of(c("TJ:20", "EL:10", "BHF:30", "G:30", "CG:30"))
+  expect_identical(r$levels$code, c("C", "CB"))
+  expect_true(any(grepl("Combination not provided", r$warnings)))
+  expect_identical(.ty_type(.ty_of(c("O:5", "BHF:30", "C:30"))), "[CB01]")
+  expect_identical(.ty_type(.ty_of(c("O:5", "CRM:30", "C:30"))), "[CE01]")
+})
+
+test_that("R3: in CD a BCA neither blocks nor is required where the formula does not write it", {
+  skip_on_cran()
+  expect_identical(.ty_type(.ty_of(c("AY:15", "BM:40", "BCA:30", "Cca:30"))), "[CD01]")
+  expect_identical(.ty_type(.ty_of(c("AO:8", "BM:40", "BCA:30", "Cca:30"))), "[CD02]")
+  expect_identical(.ty_type(.ty_of(c("PU:30", "AU:10", "BM:40", "BCA:30", "Cca:30"))), "[CD13]")
+  # CD08 wins where it matches; CD03, which ignores the BCA, is its intergrade
+  r <- .ty_of(c("AU:30", "BM:40", "BCA:30", "Cca:30"))
+  expect_identical(.ty_type(r), "[CD08]")
+  expect_identical(r$trace$types[["[CD08]"]]$evidence[[1L]]$evidence$intergrades, "[CD03]")
+})
+
+test_that("R4: a V laid over another horizon is a feature at the division key too", {
+  skip_on_cran()
+  r <- .ty_of(c("AU:30", "G+V:40", "CG:30"))
+  expect_identical(r$levels$code, c("C", "CH", "[CH04]"))
+  expect_identical(.ty_of(c("AU:30", "BCA+V:40", "Cca:30"))$levels$code, c("C", "CI", "[CI01]"))
+  expect_identical(.ty_of(c("AU:30", "V:40", "C:30"))$levels$code, c("C", "CI", "[CI04]"))
+  # the predicates of the key do not read the V overlay as V
+  v <- .kidpr_dv_pedon(.ty_ped(c("AU:30", "G+V:40", "CG:30")))
+  expect_false(has_horizon_kidpr(v, "V")$passed)
+  expect_true(has_horizon_kidpr(v, "G")$passed)
+  # an S overlay still counts (C.3)
+  expect_identical(.ty_of(c("AY+S:8", "C:40"))$levels$code[2L], "CL")
 })
 
 

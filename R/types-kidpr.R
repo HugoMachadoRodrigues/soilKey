@@ -29,7 +29,10 @@
 #       closes only the formulas where it is diagnostic (CA07, CA08, CA11,
 #       CA20, CA21, CD09); elsewhere a BEL is read as part of the passage from
 #       the eluvial to the middle horizon, neither blocking a formula nor
-#       required by it (the type files list it under `ignore`).
+#       required by it (the type files list it under `ignore`). So is BCA
+#       in the formulas of CD that do not write it (p. 85), and in CB and
+#       CE an EL counts with E (p. 43): it fills the E of a formula and
+#       blocks the formulas without E.
 #   Q14 a horizon in parentheses is optional; BEL is required only where
 #       p. 44 calls it diagnostic (CA07, CA08, CA11, CA20, CA21, CD09) and
 #       optional elsewhere (the type files say where); the g and q marks on
@@ -150,21 +153,42 @@
 }
 
 # The profile as the types read it: the rows of the view under a deposit of
-# 40 cm or less, fresh litter out, the surface horizons the thickest-horizon
-# rule dropped out, buried rows marked; an overlay is a feature of its layer.
-# The matcher applies the same rule to the completions of an undecided layer
-# in the surface run (agro_remnant "thickest": under the agro horizon only the
-# thickest natural horizon stays, its remnant).
+# 40 cm or less, fresh litter out, buried rows marked; an overlay is a feature
+# of its layer. The surface horizons all stay, but for a W of 5 cm or less
+# over another horizon (p. 39): the matcher applies the thickest-horizon rule
+# of p. 37 itself (agro_remnant "thickest": under the agro horizon only the
+# thickest natural horizon stays, its remnant), so that a tie or a missing
+# thickness, or an undecided layer that could thicken a horizon of the
+# surface run, leaves the type undecided instead of following one reading.
+# Rows the view reads as transitions or loose rock (the FAO transitions BC,
+# B/C and the FAO C of the data route) are transitions and parent material
+# here too. A data-route layer with no horizon may be a transition or loose
+# rock (Hugo, 2026-11-02): it is undecided between no horizon and loose
+# rock, so between two horizons of a formula it leaves the type undecided.
 .kidpr_ty_table <- function(v) {
   f <- v$f
   rows <- if (v$start <= v$n) seq.int(v$start, v$n) else integer(0)
   if (length(v$dep$rows) && isTRUE(v$dep$thick <= 40)) rows <- setdiff(rows, v$dep$rows)
-  dropped <- setdiff(unlist(lapply(v$hz_raw, `[[`, "rows")), unlist(lapply(v$hz, `[[`, "rows")))
-  rows <- setdiff(rows, dropped)
+  # the W of 5 cm or less the view drops in every reading
+  wdrop <- integer(0)
+  for (e in v$hz_raw) if (identical(e$code, "W") && e$kind == "horizon" && isTRUE(e$thick <= 5) &&
+                          all(vapply(v$var, function(w) !any(vapply(w$hz, function(h) identical(h$rows, e$rows), NA)), NA)))
+    wdrop <- c(wdrop, e$rows)
+  rows <- setdiff(rows, wdrop)
   cols <- c("horizon_idx", "top_cm", "bottom_cm", "designation", "code", "passed", "small",
             "transitional", "rockflag", "mark", "route", "evidence", "features", "features_na",
             "composition", "missing", "candidates")
   t <- f[rows, intersect(cols, names(f)), drop = FALSE]
+  kind <- v$kind[rows]
+  t$transitional <- t$transitional | kind == "trans"
+  rk <- kind == "rock" & is.na(t$code)
+  t$code[rk] <- "C"
+  t$passed[rk] <- TRUE
+  nh <- kind == "none" & !(t$route %in% "notation")
+  t$passed[nh] <- NA
+  t$candidates[nh] <- rep(list(c("", "C")), sum(nh))
+  t$missing[nh] <- lapply(t$missing[nh], function(m) if (length(m)) m else "designation")
+  t$no_horizon <- nh
   t$buried <- v$bur[rows]
   ov <- f$overlay[rows]
   ovna <- if (is.null(f$overlay_na)) rep(list(character(0)), length(rows)) else f$overlay_na[rows]
@@ -239,16 +263,21 @@
 # ("AY-EL-BT-G-C"): sub-horizons merged, transitions, small horizons and
 # layers with no horizon left out, an undecided layer "?".
 .kidpr_ty_sequence <- function(tab) {
-  keep <- !(tab$small | tab$transitional) & !(is.na(tab$code) & tab$passed %in% FALSE) & tab$buried == 0L
+  nh <- if (is.null(tab$no_horizon)) FALSE else tab$no_horizon
+  keep <- !(tab$small | tab$transitional) & !(is.na(tab$code) & tab$passed %in% FALSE) & !nh & tab$buried == 0L
   cd <- ifelse(is.na(tab$code[keep]), "?", tab$code[keep])
   if (!length(cd)) return("")
   paste(cd[c(TRUE, cd[-1L] != cd[-length(cd)] | cd[-1L] == "?")], collapse = "-")
 }
 
-# One line on a formula and how far the profile is from it.
+# One line on a formula and how far the profile is from it: the slots
+# missing, the horizons not in the formula, and a horizon not directly under
+# the one above it (a gap with no diagnostic horizon).
 .kidpr_ty_describe <- function(r) {
+  gap <- grep(" across .* with no diagnostic horizon", r$notes, value = TRUE)
   parts <- c(if (length(r$missing)) sprintf("missing %s", paste(r$missing, collapse = ", ")),
-             if (length(r$extra)) sprintf("not in the formula: %s", paste(r$extra, collapse = ", ")))
+             if (length(r$extra)) sprintf("not in the formula: %s", paste(r$extra, collapse = ", ")),
+             gap)
   sprintf("%s, distance %s%s", r$formula, format(r$distance),
           if (length(parts)) paste0(" (", paste(parts, collapse = "; "), ")") else "")
 }
@@ -279,7 +308,11 @@
 #' before natural: the first that matches is the type, and another that
 #' matches is an intergrade, in the evidence. A few near-identity readings
 #' are written on the types they concern (the BF of CB05, CE06 and CE07 is a
-#' BHF of either kind; CJ01 takes BCA or CAT; CH02 takes O, T or H).
+#' BHF of either kind; CJ01 takes BCA or CAT; CH02 takes O, T or H; in CB and
+#' CE an EL fills the E of a formula); in CD a BCA, like BEL, closes no
+#' formula that does not write it. A tie or a missing thickness at the
+#' surface, or a layer the data route reads as no horizon between two
+#' horizons of a formula, leaves the type undecided.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param type The code of a type, as its rule file writes it

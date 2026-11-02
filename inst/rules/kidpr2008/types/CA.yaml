@@ -21,8 +21,9 @@
 #       written one stands for.
 # BEL closes only the formulas where it is diagnostic (CA07, CA08, CA11, CA20,
 # CA21, CD09; p. 44); `ignore` lists it on the formulas of CA and CD that do
-# not write it, where a BEL neither blocks the formula nor is required by it
-# (Hugo, 2026-11-02).
+# not write it, where a BEL neither blocks the formula nor is required by it,
+# and BCA on the formulas of CD that do not write it (p. 85). In CB and CE an
+# EL counts as an eluvial horizon with E (p. 43). (Hugo, 2026-11-02.)
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:

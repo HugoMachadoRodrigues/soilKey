@@ -108,7 +108,8 @@ are features; a W of 5 cm or less over another horizon is the feature w).
 
 \describe{
   \item{\code{has_horizon_kidpr}}{One of the horizons is in the profile
-    (an overlay counts).}
+    (an overlay S or X counts; a V laid over another horizon is a
+    feature of its layer).}
   \item{\code{starts_at_surface_kidpr}}{The first horizon of the profile
     (at the surface, or under a deposit of 40 cm or less) is one of the
     horizons.}

@@ -21,8 +21,9 @@
 #       written one stands for.
 # BEL closes only the formulas where it is diagnostic (CA07, CA08, CA11, CA20,
 # CA21, CD09; p. 44); `ignore` lists it on the formulas of CA and CD that do
-# not write it, where a BEL neither blocks the formula nor is required by it
-# (Hugo, 2026-11-02).
+# not write it, where a BEL neither blocks the formula nor is required by it,
+# and BCA on the formulas of CD that do not write it (p. 85). In CB and CE an
+# EL counts as an eluvial horizon with E (p. 43). (Hugo, 2026-11-02.)
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:
@@ -32,71 +33,71 @@ types:
       name_native: "Буроземы"
       formula: "AY-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD01]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD02]"
       name: "Coarse-humus burozems"
       name_native: "Буроземы грубогумусовые"
       formula: "AO-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD02]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD03]"
       name: "Dark-humus burozems"
       name_native: "Буроземы темногумусовые"
       formula: "AU-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD03]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD04]"
       name: "Grey metamorphic"
       name_native: "Серые метаморфические"
       formula: "AY-AEL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD04]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD05]"
       name: "Dark grey metamorphic"
       name_native: "Темно-серые метаморфические"
       formula: "AU-AEL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD05]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD06]"
       name: "Eluvial-metamorphic"
       name_native: "Элювиально-метаморфические"
       formula: "O-EL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD06]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD07]"
       name: "Sod-eluvial-metamorphic"
       name_native: "Дерново-элювиально-метаморфические"
       formula: "AY-EL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD07]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD08]"
       name: "Cinnamonic"
       name_native: "Коричневые"
@@ -112,40 +113,41 @@ types:
       name_native: "Желтоземы"
       formula: "AY-BEL-BM-CLM"
       page: 86
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD09]"}
-      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02). The weathering crust CLM is the parent material, not tested (Hugo's decision Q14)."
+      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02). The weathering crust CLM is the parent material, not tested (Hugo's decision Q14). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD10]"
       name: "Agro-sod-eluvial-metamorphic"
       name_native: "Агродерново-элювиально-метаморфические"
       formula: "P-EL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD10]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD11]"
       name: "Agro-grey metamorphic"
       name_native: "Агросерые метаморфические"
       formula: "P-AEL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD11]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD12]"
       name: "Agro-dark-grey metamorphic"
       name_native: "Агротемно-серые метаморфические"
       formula: "PU-AEL-BM-C"
       page: 86
-      ignore: ["BEL"]
+      ignore: ["BEL", "BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CD12]"}
-      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02). A BCA in the profile neither blocks this formula nor is required by it: the structure-metamorphic soils admit it (p. 85; Hugo, 2026-11-02)."
     - code: "[CD13]"
       name: "Agro-cinnamonic"
       name_native: "Агрокоричневые"
