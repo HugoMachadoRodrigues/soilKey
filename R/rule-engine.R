@@ -22,6 +22,11 @@
 # Three-valued logic: any test that returns NA propagates: with all_of,
 # the result is NA if no test failed but at least one was NA; with
 # any_of, the result is NA if no test passed but at least one was NA.
+#
+# v0.9.344: a system with tolerances on its thresholds evaluates a block twice,
+# strictly and tolerantly (.evaluate_degree(), R/attachment.R); in the
+# tolerant pass the direction of the tolerances flips inside none_of. Every
+# other evaluation is strict, as before.
 # ================================================================
 
 
@@ -221,6 +226,13 @@ evaluate_rsg_tests <- function(pedon, tests) {
   }
 
   test_list <- tests[[combinator]]
+  # v0.9.344: in the tolerant pass of .evaluate_degree() (R/tolerance.R) the
+  # tests of a none_of block must fail for the class, so the direction in
+  # which their thresholds move flips. Off in every other evaluation.
+  if (combinator == "none_of" && isTRUE(.rule_ctx$tolerant)) {
+    .rule_ctx$negated <- !.rule_ctx$negated
+    on.exit(.rule_ctx$negated <- !.rule_ctx$negated, add = TRUE)
+  }
   results   <- lapply(test_list, function(spec) run_single_test(pedon, spec))
 
   passed_vec <- vapply(results, function(r) isTRUE(r$passed), logical(1))

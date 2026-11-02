@@ -1,3 +1,16 @@
+# soilKey 0.9.340 (2026-11-02)
+
+## Attachment: engine pieces for systems that are not keys
+
+This release prepares the French Referentiel pédologique 2008, which is not a key: a soil is attached to one, two or none of its references, simply or imperfectly. It adds the generic pieces that system will use. No system uses them yet, and every other classification is unchanged.
+
+* **`within_tolerance(value, threshold, direction, tol)`** compares a value with a threshold that has a tolerance. It returns "pass", "imperfect" (beyond the threshold but within the tolerance), "fail" or NA. The edge of the tolerance band is inside it.
+* **Tolerance tables.** A system lists its tolerances by kind of threshold (depth, pH, CEC, ...), for one threshold or for every threshold of a kind. A threshold the table does not list is strict.
+* **A tolerant mode of the rule engine.** A class can be evaluated twice, strictly and then tolerantly. In the tolerant pass, the predicates that read their thresholds through the new helpers see each listed threshold moved by its tolerance, in the direction that favours the class. Inside a `none_of` block the direction flips: "no BT within 120 cm" is read within 100 cm, not 140. The two verdicts give the degree: simple, imperfect, simple or imperfect (undecided between the two), undecided, or fail. The criteria that fail, pass only within tolerance, or are missing are named. The mode is off unless a system asks for it, so every other system runs as before.
+* **The attachment combiner** chooses the main name among the classes that attach. The explicit precedence rules come first, then the degree (simple before imperfect), then an order list. A double or multiple name is written only for a listed group, in the group's order. A class that could take the name once its data are known makes the name provisional. When nothing attaches, the name says so and the three nearest classes are listed.
+* **A `candidates` slot** in the classification result holds every class that may attach the soil, with its degree, rank and criteria. It is empty for every other system, and printing and the summary are unchanged unless it is filled.
+* **An additive level with no typical class.** `typical = NULL` adds no "typical" label when nothing is named, for systems that have none.
+
 # soilKey 0.9.339 (2026-11-02)
 
 ## Russia: the types of the divisions CK to CT
