@@ -8,7 +8,7 @@ groups:
       tests:
         all_of:
           - ice_segregation_cpcs: {strong: true, network: false}
-      notes: "Strong ice segregation (20 % ice or more, or ice lenses) and no network in site$patterned_ground; not recorded, undecided."
+      notes: "Strong ice segregation (20 % ice or more, ice lenses, or ice-wedge polygons) and no network in site$patterned_ground; not recorded, undecided."
     - code: "II/12"
       name: Sols à forte ségrégation de glace ordonnée en réseau
       name_native: Sols à forte ségrégation de glace ordonnée en réseau

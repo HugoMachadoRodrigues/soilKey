@@ -45,12 +45,12 @@ groups:
           - ferrallitic_impoverished_cpcs: {}
       notes: "The clay index 1.4 or more, no common or many clay films."
     - code: "X/24"
-      name: Sols ferrallitiques moyennement désaturés remaniés
-      name_native: Sols ferrallitiques moyennement désaturés remaniés
+      name: Sols ferrallitiques moyennement désaturés [remaniés]
+      name_native: Sols ferrallitiques moyennement désaturés [remaniés]
       tests:
         all_of:
           - ferrallitic_reworked_cpcs: {}
-      notes: "A stone line (15 % coarse fragments or more at the base of the A or in the B, more than above and below), a lithological discontinuity, or a colluvial origin. The title prints no qualifier; its subgroups are those of the reworked soils."
+      notes: "A stone line (15 % coarse fragments or more at the base of the A or in the B, more than above and below), a lithological discontinuity, or a colluvial origin. The title prints no qualifier (pp. 69, 93); its subgroups are those of the reworked soils, and the bracketed word is soilKey's."
     - code: "X/25"
       name: Sols ferrallitiques moyennement désaturés rajeunis ou pénévolués
       name_native: Sols ferrallitiques moyennement désaturés rajeunis ou pénévolués

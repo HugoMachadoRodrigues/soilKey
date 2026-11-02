@@ -99,9 +99,14 @@
   grepl(.CPCS_PATTERN_RE, .cpcs_drop_negated(v))
 }
 
-# Strong ice segregation: 20 % ice or more in a layer, or ice lenses
-# (horizon ice_form); NA when neither is recorded (Hugo, 2026-11-01).
+# Strong ice segregation: 20 % ice or more in a layer, ice lenses (horizon
+# ice_form), or ice-wedge polygons; NA when none is recorded (Hugo,
+# 2026-11-01).
 .cpcs_strong_ice <- function(x) {
+  # ice-wedge polygons recorded are a strong segregation (II/12; Hugo,
+  # 2026-11-01)
+  pg <- .cpcs_drop_negated(.cpcs_lc(x$site$patterned_ground %||% character(0)))
+  if (grepl("ice[- ]?wedge|wedge[- ]ice|coins? de glace", pg)) return(TRUE)
   ice <- .cpcs_num(x$h, "ice_pct")
   f <- .scsj_txt(x$h, "ice_form")
   lens <- !is.na(f) & grepl("lens|lentil|lenticul|segregat|s\u00e9gr\u00e9g", .cpcs_drop_negated(ifelse(is.na(f), "", f)))
@@ -217,7 +222,11 @@
   rows <- .cpcs_mineral_rows(x)
   if (!length(ci$b) && !all(is.na(x$role[rows]) | x$role[rows] %in% "other")) return(FALSE)
   if (is.na(ci$r)) {
-    if (any(x$des$t[ci$b] %in% TRUE)) return(!isFALSE(fl))
+    # a Bt, or a plain B or B2 of the CPCS notation (an A B C profile, p. 46),
+    # is a textural B; a Bh, Bfe or (B) is not (Hugo, 2026-11-01)
+    plain <- isTRUE(x$des$cpcs) & x$role[ci$b] %in% "B" & x$des$benriched[ci$b] %in% TRUE &
+      !(x$des$h[ci$b] %in% TRUE) & !(x$des$fe[ci$b] %in% TRUE) & !(x$des$bstruct[ci$b] %in% TRUE)
+    if (any(x$des$t[ci$b] %in% TRUE) || any(plain)) return(!isFALSE(fl))
     if (length(ci$b) && all(x$des$bstruct[ci$b] %in% TRUE)) return(FALSE)
     return(NA)
   }
@@ -505,11 +514,11 @@ melanised_calcic_cpcs <- function(pedon) {
 gypseous_rendziniform_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   ty <- .cpcs_horizon_types(x, pedon)
-  # thin (rock within 50 cm), AR or ACR: no A3 and no (B) (p. 38)
-  t <- .cpcs_hard_top(x)
+  # an AR or ACR profile: no A3 and no (B); the text's thinness (under
+  # 50 cm) is a description (p. 38; Hugo, 2026-11-01)
   rows <- .cpcs_mineral_rows(x)
-  p <- .cpcs_and(!is.na(t) && t < 50, !any(x$role[rows] %in% "AB"), .cpcs_not(ty$b_any))
-  .cpcs_sub_result("gypseous_rendziniform_cpcs", p, x, list(rock_top_cm = t), "V/31, p. 38")
+  p <- .cpcs_and(!any(x$role[rows] %in% "AB"), .cpcs_not(ty$b_any))
+  .cpcs_sub_result("gypseous_rendziniform_cpcs", p, x, list(rock_top_cm = .cpcs_hard_top(x)), "V/31, p. 38")
 }
 
 # ---- VI ---------------------------------------------------------------------------
@@ -610,16 +619,21 @@ podzolic_cpcs <- function(pedon) {
 #' @export
 ochre_podzolic_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # no A2 (or a broken one), and an ochre B: hue 10YR to 5YR, chroma 6 or
-  # more (Hugo, 2026-11-01)
+  # no A2 (or a broken one, or one under 5 cm), an ochre B (hue 10YR to 5YR,
+  # chroma 6 or more), and never a Bh over 3 cm (p. 52; Hugo, 2026-11-01)
   e <- .cpcs_e_rows(x)
   bt <- .scsj_txt(x$h, "boundary_topography")
-  no_a2 <- !length(e) || all(!is.na(bt[e]) & grepl("broken|discontinu", bt[e]))
+  th <- .cpcs_thickness(x, e)
+  no_a2 <- if (!length(e) || all(!is.na(bt[e]) & grepl("broken|discontinu", bt[e]))) TRUE else
+    if (is.na(th)) NA else th < 5
   b <- .cpcs_b_rows(x)
   hc <- .cpcs_hue_chroma(x)
   och <- ifelse(hc$neu, FALSE, ifelse(is.na(hc$hn) | is.na(hc$cr), NA, hc$hn >= 15 & hc$hn <= 20 & hc$cr >= 6))
-  p <- .cpcs_and(no_a2, if (length(b)) .cpcs_any(och[b]) else FALSE)
-  .cpcs_sub_result("ochre_podzolic_cpcs", p, x, list(no_A2 = no_a2), "VIII/13, p. 52")
+  bh <- b[x$des$h[b] %in% TRUE & !(x$des$fe[b] %in% TRUE)]
+  bh_th <- .cpcs_thickness(x, bh)
+  no_bh <- if (!length(bh)) TRUE else if (is.na(bh_th)) NA else bh_th <= 3
+  p <- .cpcs_and(no_a2, if (length(b)) .cpcs_any(och[b]) else FALSE, no_bh)
+  .cpcs_sub_result("ochre_podzolic_cpcs", p, x, list(no_A2 = no_a2, no_Bh = no_bh), "VIII/13, p. 52")
 }
 
 #' @rdname cpcs1967_groups
@@ -649,9 +663,13 @@ crypto_podzolic_cpcs <- function(pedon) {
 boreal_podzol_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # cold by latitude: Koppen D with c or d, or a latitude of 50 degrees or
-  # more (Hugo, 2026-11-01)
+  # more; not at 1,500 m or more below 60 degrees, which is alpine (Hugo,
+  # 2026-11-01)
   k <- .cpcs_koppen(x$site); lat <- .cpcs_lat(x$site)
-  p <- .cpcs_or(if (is.na(k)) NA else grepl("^D[fsw][cd]", k), if (is.na(lat)) NA else abs(lat) >= 50)
+  el <- suppressWarnings(as.numeric(as.character(x$site$elevation_m %||% NA)[1L]))
+  high <- if (is.na(el) || el < 1500) FALSE else if (is.na(lat)) NA else abs(lat) < 60
+  p <- .cpcs_and(.cpcs_or(if (is.na(k)) NA else grepl("^D[fsw][cd]", k), if (is.na(lat)) NA else abs(lat) >= 50),
+                 .cpcs_not(high))
   .cpcs_sub_result("boreal_podzol_cpcs", p, x, where = "VIII/21, p. 54", climatic = TRUE)
 }
 
@@ -982,25 +1000,32 @@ calcium_redistribution_cpcs <- function(pedon) {
 #' @export
 amphigley_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # a pseudogley (mottled, not reduced) over a gley starting at 50 cm or
-  # deeper (p. 76). The two are told apart from the oxidised top of one
-  # gley by a layer without hydromorphy between them, or by the notation (a
-  # g of the CPCS notation over a G); continuous mottling over the reduced
-  # matrix is the gley's own
+  # a pseudogley (mottled, not reduced) over a deep gley, starting at 80 cm
+  # or deeper (the 'gley profond' of XI/312, p. 75). The two are told apart
+  # from the oxidised top of one gley by a layer without hydromorphy between
+  # them, or by the notation: a g of the CPCS notation over a G, or in a
+  # declared FAO notation a g (stagnic) rather than an l (the capillary
+  # fringe of the gley); continuous mottling over the reduced matrix is the
+  # gley's own (Hugo, 2026-11-01)
   fr <- .cpcs_first_reduced(x); f <- fr$row
   hyd <- .cpcs_hydromorphic_rows(x)
   rows <- .cpcs_mineral_rows(x); rows <- rows[!is.na(x$dtop[rows])]
   p <- FALSE
-  if (!is.na(f) && x$dtop[f] >= 50) {
+  ds <- tolower(as.character(x$site$designation_system %||% NA)[1L])
+  fao <- !is.na(ds) && grepl("fao|wrb", ds)
+  suf <- vapply(as.character(.scsj_col(x$h, "designation", NA_character_)), function(d) {
+    sy <- .cpcs_symbol(d); if (is.na(sy)) "" else gsub("[^a-z]", "", sub("^[IVX0-9]*[A-Z]+", "", sy)) }, "", USE.NAMES = FALSE)
+  if (!is.na(f) && x$dtop[f] >= 80) {
     above <- rows[x$dtop[rows] < x$dtop[f]]
     ps <- above[hyd[above] %in% TRUE & fr$r3[above] %in% FALSE]
     if (length(ps)) {
       last <- ps[length(ps)]
       between <- above[x$dtop[above] > x$dtop[last]]
       p <- any(hyd[between] %in% FALSE) ||
-        (isTRUE(x$des$cpcs) && any(x$des$g[ps] %in% TRUE) && isTRUE(x$des$G[f]))
+        (isTRUE(x$des$cpcs) && any(x$des$g[ps] %in% TRUE) && isTRUE(x$des$G[f])) ||
+        (fao && any(grepl("g", suf[ps]) & !grepl("l", suf[ps])))
       # a row above that may be reduced may start the gley higher
-      if (p && !is.na(fr$open_top) && fr$open_top < 50) p <- NA
+      if (p && !is.na(fr$open_top) && fr$open_top < 80) p <- NA
     }
   }
   .cpcs_sub_result("amphigley_cpcs", p, x, where = "XI/34, p. 76")
@@ -1041,7 +1066,8 @@ stagnogley_cpcs <- function(pedon) {
 solodised_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # an albic A2 over a B with the clay increase of the WRB argic horizon, and
-  # an acid surface (pH under 7) when recorded (p. 79; Hugo, 2026-11-01)
+  # an acid surface (pH under 7); with no pH, undecided (p. 79; Hugo,
+  # 2026-11-01)
   e0 <- .cpcs_e_rows(x); cl <- .cpcs_claric_rows(x)
   b <- .cpcs_group_b_rows(x)
   over_b <- function(e) {
@@ -1056,7 +1082,7 @@ solodised_cpcs <- function(pedon) {
   step <- if (isTRUE(s1)) TRUE else if (isFALSE(s1) && isFALSE(s2)) FALSE else NA
   rows <- .cpcs_mineral_rows(x)
   ph <- .cpcs_num(x$h, "ph_h2o")[rows[1L]]
-  acid <- is.na(ph) || ph < 7
+  acid <- if (is.na(ph)) NA else ph < 7
   p <- .cpcs_and(step, acid)
   .cpcs_sub_result("solodised_cpcs", p, x, list(albic_A2_over_B = step, surface_ph = ph), "XII/23, p. 79")
 }
@@ -1070,6 +1096,9 @@ solonetz_cpcs <- function(pedon) {
   b <- .cpcs_b_rows(x); b <- b[!is.na(x$dtop[b])]
   rows <- .cpcs_mineral_rows(x)
   comp <- .cpcs_compact_rows(x); esp <- .cpcs_esp(x)
+  # without a consistence, a columnar B is very compact (Hugo, 2026-11-01)
+  st <- .scsj_txt(x$h, "structure_type")
+  comp <- ifelse(is.na(comp) & !is.na(st) & grepl("column|colonn", st), TRUE, comp)
   p <- if (!length(b)) FALSE else .cpcs_any(vapply(b, function(i) {
     up <- rows[!is.na(x$dtop[rows]) & x$dtop[rows] < x$dtop[i] & !(rows %in% b)]
     upc <- if (length(up) && any(!is.na(x$clay[up]))) min(x$clay[up], na.rm = TRUE) else NA_real_

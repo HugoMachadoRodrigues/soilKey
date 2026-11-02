@@ -15,14 +15,14 @@ groups:
       tests:
         all_of:
           - solodised_cpcs: {}
-      notes: "An albic A2 over a B with the clay increase of the WRB argic horizon, and an acid surface (pH under 7) when recorded."
+      notes: "An albic A2 over a B with the clay increase of the WRB argic horizon, and an acid surface (pH under 7); with no pH recorded, undecided."
     - code: "XII/22"
       name: Sols sodiques à horizon B (Solonetz), profil A B C
       name_native: Sols sodiques à horizon B (Solonetz), profil A B C
       tests:
         all_of:
           - solonetz_cpcs: {}
-      notes: "A B with the clay increase of the WRB argic horizon, compact, with Na above 10 % of the CEC."
+      notes: "A B with the clay increase of the WRB argic horizon, compact (very or extremely firm or hard; without a consistence, a columnar B), with Na above 10 % of the CEC."
     - code: "XII/21"
       name: Sols salins à alcalins (Solontchak-Solonetz), profil A (B) C
       name_native: Sols salins à alcalins (Solontchak-Solonetz), profil A (B) C

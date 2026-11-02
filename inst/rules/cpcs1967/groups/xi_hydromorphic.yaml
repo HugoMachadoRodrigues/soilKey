@@ -58,14 +58,14 @@ groups:
       tests:
         all_of:
           - amphigley_cpcs: {}
-      notes: "A pseudogley over a gley starting at 50 cm or deeper."
+      notes: "A pseudogley over a deep gley, starting at 80 cm or deeper, separated from it by a layer without hydromorphy or told apart by the notation."
     - code: "XI/31"
       name: Sols hydromorphes peu humifères à gley
       name_native: Sols hydromorphes peu humifères à gley
       tests:
         all_of:
           - gley_cpcs: {}
-      notes: "A reduced matrix starting within 130 cm, under a water table that is not perched."
+      notes: "A reduced matrix starting within 130 cm; a perched water table, or one recorded as none or not recorded with the stagnogley morphology, is a stagnogley."
     - code: "XI/33"
       name: Sols hydromorphes peu humifères à stagnogley
       name_native: Sols hydromorphes peu humifères à stagnogley

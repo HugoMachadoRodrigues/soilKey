@@ -22,7 +22,7 @@ groups:
       tests:
         all_of:
           - ochre_podzolic_cpcs: {}
-      notes: "No A2 (or a broken one) and an ochre B: hue 10YR to 5YR with chroma 6 or more."
+      notes: "No A2 (or a broken one, or one under 5 cm), an ochre B (hue 10YR to 5YR with chroma 6 or more), and no Bh over 3 cm."
     - code: "VIII/14"
       name: Sols crypto-podzoliques
       name_native: Sols crypto-podzoliques
@@ -37,7 +37,7 @@ groups:
       tests:
         all_of:
           - boreal_podzol_cpcs: {}
-      notes: "Cold by latitude: Koppen D with c or d, or a latitude of 50 degrees or more."
+      notes: "Cold by latitude: Koppen D with c or d, or a latitude of 50 degrees or more; not at 1,500 m or more below 60 degrees, which is alpine."
     - code: "VIII/22"
       name: Podzols alpins
       name_native: Podzols alpins
@@ -52,7 +52,7 @@ groups:
       tests:
         all_of:
           - molken_podzol_cpcs: {}
-      notes: "A g in the place of the A2, under a perched water table (a recorded water table that is not perched rules it out)."
+      notes: "A g in the place of the A2, under a perched water table (a recorded phreatic water table rules it out)."
     - code: "VIII/33"
       name: Podzols de nappe tropicaux
       name_native: Podzols de nappe tropicaux

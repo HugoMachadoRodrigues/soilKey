@@ -36,6 +36,13 @@
   * the peat groups by the fibre class over the greatest thickness;
   * XI-3 in the order 35, 36, 34, 31, 33, 32 (the specific groups first);
   * XII-2 in the order solodised, Solonetz, Solonchak-Solonetz.
+* **After the review** (Hugo, 2026-11-01):
+  * the deep gley of the amphigley starts at 80 cm; in a declared FAO notation, g is a pseudogley and l the fringe of a gley;
+  * a water table recorded as none, or not recorded, makes a stagnogley of a profile with its morphology (undecided when not recorded);
+  * VIII/13 allows an A2 under 5 cm and no Bh over 3 cm; a site at 1,500 m or more below 60 degrees is alpine;
+  * V/31 is the AR or ACR profile, its thinness a description; a plain B of the CPCS notation is a textural B when clay is not recorded;
+  * ice-wedge polygons are a strong ice segregation; XII/23 without a pH is undecided; a columnar B is compact;
+  * names carry soilKey's insertions in brackets: "[possible]" for III/21-22 (the text prints "nul"), "[remaniés]" for X/24.
 
 # soilKey 0.9.331 (2026-11-01)
 

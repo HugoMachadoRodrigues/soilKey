@@ -8,7 +8,7 @@ groups:
       tests:
         all_of:
           - textural_b_leached_cpcs: {}
-      notes: "A textural B: the clay index (largest clay of the B over the smallest of the A above) above 1.4, with 5 % clay or more; clay films recorded as none or few rule it out. Without clay, a Bt."
+      notes: "A textural B: the clay index (largest clay of the B over the smallest of the A above) above 1.4, with 5 % clay or more; clay films recorded as none or few rule it out. Without clay, a Bt, or a plain B of the CPCS notation."
     - code: "VII/11"
       name: Sols bruns
       name_native: Sols bruns

@@ -292,10 +292,18 @@ test_that("class XI", {
                  redoximorphic_features_pct = c(0, 25, 30)), list(drainage_class = "imperfectly drained"))
   expect_identical(.g(pg), "XI/32")
   am <- .with_h(pg, designation = c("A1", "Bg", "G"), munsell_hue_moist = c("10YR", "10YR", "5GY"),
-                munsell_chroma_moist = c(2, 4, 1))
+                munsell_chroma_moist = c(2, 4, 1), top_cm = c(0, 20, 90), bottom_cm = c(20, 90, 130))
   expect_identical(.g(am), "XI/34")
-  # mottling continuous with the reduced matrix in the FAO notation is the gley's own
-  expect_identical(.g(.with_site(.with_h(am, designation = c("A", "Bg", "Cr")), designation_system = "fao")), "XI/31")
+  # the deep gley of the amphigley starts at 80 cm
+  expect_identical(.g(.with_h(am, top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 120))), "XI/31")
+  # in a declared FAO notation, g is a pseudogley and l the fringe of a gley
+  fao <- .with_site(am, designation_system = "fao", groundwater_kind = "observed")
+  expect_identical(.g(.with_h(fao, designation = c("A", "Bg", "Cr"))), "XI/34")
+  expect_identical(.g(.with_h(fao, designation = c("A", "Bl", "Cr"))), "XI/31")
+  # mottling continuous with the reduced matrix, in a notation that is not
+  # declared, is the gley's own
+  expect_identical(.g(.with_site(.with_h(am, designation = c("A", "Bg", "Cr")), designation_system = NULL,
+                                 groundwater_kind = "observed")), "XI/31")
   an <- .with_h(h, oc_pct = c(10, 0.5, 0.3), top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 120))
   expect_identical(.grp(an)[["sub"]], "XI-2")
   expect_identical(.g(an), "XI/21")
@@ -415,5 +423,61 @@ test_that("the fixes of the reviews", {
   # a molken-podzol under a water table recorded as none
   mk <- .with_h(p, designation = c("Ao", "A1", "g", "B2h", "B2fe", "C"), redoximorphic_features_pct = c(NA, 0, NA, 0, 0, 0))
   expect_identical(.g(.with_site(mk, groundwater_kind = "none")), "VIII/32")
+})
+
+test_that("Hugo's answers on the review (2026-11-01)", {
+  skip_on_cran()
+  # VIII/13: a thin A2 is allowed, a Bh over 3 cm is not
+  oc <- .fr(list(designation = c("Ao", "A1", "A2", "B2fe", "C"), top_cm = c(0, 5, 15, 17, 60), bottom_cm = c(5, 15, 17, 60, 100),
+                 oc_pct = c(35, 5, 0.6, 1.2, 0.2), n_total_pct = c(1.2, 0.2, 0.04, 0.06, 0.02), clay_pct = c(NA, 8, 6, 8, 5),
+                 silt_pct = c(NA, 12, 10, 12, 8), sand_pct = c(NA, 80, 84, 80, 87), ph_h2o = 4.4, cec_cmol = c(NA, 10, 3, 8, 3),
+                 bs_pct = 10, munsell_hue_moist = c("7.5YR", "10YR", "10YR", "7.5YR", "10YR"),
+                 munsell_value_moist = c(2, 3, 4, 5, 6), munsell_chroma_moist = c(1, 2, 2, 6, 4),
+                 redoximorphic_features_pct = c(NA, 0, 0, 0, 0)), list(parent_material = "granite"))
+  expect_identical(.g(oc), "VIII/13")
+  bh <- .with_h(oc, designation = c("Ao", "A1", "B2h", "B2fe", "C"), oc_pct = c(35, 5, 3, 1.2, 0.2),
+                n_total_pct = c(1.2, 0.2, 0.15, 0.06, 0.02), top_cm = c(0, 5, 15, 25, 60), bottom_cm = c(5, 15, 25, 60, 100))
+  expect_false(isTRUE(.g(bh) == "VIII/13"))
+  # an alpine site of a Dfc climate
+  p <- make_cpcs1967_example("podzolised")
+  expect_identical(.g(.with_site(p, koppen_climate = "Dfc", lat = 46, elevation_m = 1800)), "VIII/22")
+  expect_identical(.g(.with_site(p, koppen_climate = "Dfc", lat = 62, elevation_m = 1800)), "VIII/21")
+  # V/31: an ACR profile without A3 or (B), whatever its depth
+  gy <- .fr(list(designation = c("A1", "C"), top_cm = c(0, 30), bottom_cm = c(30, 120), oc_pct = c(1.5, 0.3),
+                 n_total_pct = c(0.15, 0.03), clay_pct = 25, silt_pct = 40, sand_pct = 35, caso4_pct = c(15, 40),
+                 caco3_pct = c(5, 5), ph_h2o = 7.8, cec_cmol = 15, ca_cmol = 14, mg_cmol = 0.5, bs_pct = 100,
+                 munsell_hue_moist = "10YR", munsell_value_moist = c(4, 6), munsell_chroma_moist = c(2, 3),
+                 redoximorphic_features_pct = 0), list(koppen_climate = "BSh", parent_material = "gypsum marl"))
+  r <- .grp(gy)
+  expect_identical(r[["sub"]], "V-3"); expect_identical(r[["code"]], "V/31")
+  # VII/12 without clay: a plain B of the CPCS notation is textural
+  b <- make_cpcs1967_example("brunified")
+  expect_identical(.g(.with_h(b, designation = c("A1", "B2", "C"), clay_pct = NA_real_)), "VII/12")
+  expect_identical(.g(.with_h(b, clay_pct = NA_real_)), "VII/11")
+  # II/12: an ice-wedge network recorded is a strong ice segregation
+  wd <- .with_h(make_cpcs1967_example("weakly_developed"), ice_pct = c(0, 5, 5))
+  expect_identical(.g(.with_site(wd, patterned_ground = "ice-wedge polygons")), "II/12")
+  # XII/23 without a pH is undecided; XII/22 reads a columnar B as compact
+  sd <- .fr(list(designation = c("A1", "A2", "Bt", "C"), top_cm = c(0, 10, 25, 60), bottom_cm = c(10, 25, 60, 100),
+                 oc_pct = c(1.5, 0.3, 0.5, 0.2), n_total_pct = c(0.12, 0.03, 0.05, 0.02), clay_pct = c(12, 10, 35, 30),
+                 silt_pct = 40, sand_pct = c(48, 50, 25, 30), ec_dS_m = c(0.5, 1, 2, 3), na_cmol = c(0.3, 0.4, 4, 3),
+                 cec_cmol = 15, bs_pct = c(60, 60, 100, 100), structure_type = c("granular", "platy", "columnar", "massive"),
+                 consistence_moist = c("friable", "friable", NA, NA), munsell_hue_moist = "10YR",
+                 munsell_value_moist = c(4, 6, 3, 5), munsell_chroma_moist = c(2, 2, 2, 3),
+                 munsell_value_dry = c(5, 7, 4, 6), munsell_chroma_dry = c(2, 2, 2, 3), redoximorphic_features_pct = 0))
+  firm <- .with_h(sd, consistence_moist = c("friable", "friable", "very firm", "firm"))
+  r <- .grp(firm)
+  expect_identical(r[["code"]], "XII/22"); expect_match(r[["prov"]], "groups:XII/23")
+  expect_identical(.g(.with_h(firm, ph_h2o = c(6, 6.2, 8.8, 8.6))), "XII/23")
+  expect_identical(.g(.with_h(firm, ph_h2o = c(7.5, 7.6, 8.8, 8.6))), "XII/22")
+  # the class passes on the compact C; the columnar Bt with no consistence is the Solonetz B
+  col <- .with_h(sd, ph_h2o = c(7.5, 7.6, 8.8, 8.6), consistence_moist = c("friable", "friable", NA, "very firm"),
+                 na_cmol = c(0.3, 0.4, 4, 4))
+  expect_identical(.g(col), "XII/22")
+  # the names that carry soilKey's insertion in brackets
+  rules <- load_rules("cpcs1967")
+  nm <- unlist(lapply(rules$groups, function(l) vapply(l, function(t) t$name, "")))
+  expect_true(any(grepl("[possible]", nm, fixed = TRUE)))
+  expect_true(any(grepl("[remani\u00e9s]", nm, fixed = TRUE)))
 })
 

@@ -50,7 +50,7 @@ groups:
       tests:
         all_of:
           - gypseous_rendziniform_cpcs: {}
-      notes: "Thin: the rock within 50 cm, with no A3 and no (B)."
+      notes: "An AR or ACR profile: no A3 and no (B); the text's thinness (under 50 cm) is a description."
     - code: "V/32"
       name: Sols bruns gypseux
       name_native: Sols bruns gypseux
