@@ -63,7 +63,8 @@
 #'                       simple_or_imperfect, imperfect, undecided; fail for
 #'                       the nearest classes when nothing attaches),
 #'                       \code{rank} (the order of precedence), \code{in_name},
-#'                       \code{double_with}, \code{n_failed}, \code{distance}
+#'                       \code{double_with}, \code{double_possible},
+#'                       \code{n_failed}, \code{distance}
 #'                       (the size of the failures in tolerance units),
 #'                       \code{failed}, \code{imperfect_by},
 #'                       \code{undecided_by}, \code{excluded_by} (the
@@ -106,6 +107,8 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     #' @param levels Assigned class per level (data.frame), or NULL.
     #' @param provisional_because Character vector of undecided classes
     #'        tested before the assigned ones.
+    #' @param candidates The classes that may attach the soil (a
+    #'        data.frame), or NULL; since v0.9.344.
     initialize = function(system,
                           name,
                           rsg_or_order   = NA_character_,
@@ -118,7 +121,8 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
                           warnings       = character(0),
                           system_id      = NULL,
                           levels         = NULL,
-                          provisional_because = character(0)) {
+                          provisional_because = character(0),
+                          candidates     = NULL) {
       self$system         <- system
       self$name           <- name
       self$rsg_or_order   <- rsg_or_order
@@ -132,6 +136,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       self$system_id      <- system_id
       self$levels         <- levels
       self$provisional_because <- as.character(provisional_because)
+      self$candidates <- candidates
     },
 
     #' @description Pretty-print the result with key trace, ambiguities, and

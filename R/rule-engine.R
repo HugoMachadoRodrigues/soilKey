@@ -230,8 +230,9 @@ evaluate_rsg_tests <- function(pedon, tests) {
   # tests of a none_of block must fail for the class, so the direction in
   # which their thresholds move flips. Off in every other evaluation.
   if (combinator == "none_of" && isTRUE(.rule_ctx$tolerant)) {
-    .rule_ctx$negated <- !.rule_ctx$negated
-    on.exit(.rule_ctx$negated <- !.rule_ctx$negated, add = TRUE)
+    old_negated <- .rule_ctx$negated
+    .rule_ctx$negated <- !old_negated
+    on.exit(.rule_ctx$negated <- old_negated, add = TRUE)
   }
   results   <- lapply(test_list, function(spec) run_single_test(pedon, spec))
 
@@ -348,7 +349,7 @@ run_single_test <- function(pedon, test_spec) {
 
   # Normalise R6 DiagnosticResult and plain-list returns to a flat dict.
   if (inherits(result, "DiagnosticResult") || inherits(result, "R6")) {
-    list(
+    out <- list(
       test_name = test_name,
       passed    = result$passed,
       layers    = result$layers   %||% integer(0),
@@ -357,6 +358,16 @@ run_single_test <- function(pedon, test_spec) {
       reference = result$reference,
       notes     = result$notes
     )
+    # v0.9.344: in the tolerant pass of .evaluate_degree() only, the distance
+    # of a failure in tolerance units, for the attachment's nearest classes (a
+    # field of the result, or an entry of its evidence). Not in any other
+    # evaluation: some evidence already holds a "distance" of its own (the
+    # edit distance of a profile formula), and the traces stay as they were.
+    if (isTRUE(.rule_ctx$tolerant)) {
+      ev <- result$evidence
+      out$distance <- result$distance %||% (if (is.list(ev)) ev[["distance"]])
+    }
+    out
   } else if (is.list(result) && "passed" %in% names(result)) {
     result$test_name <- test_name
     if (is.null(result$missing)) result$missing <- character(0)

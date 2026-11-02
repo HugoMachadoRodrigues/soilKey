@@ -271,8 +271,8 @@ test_that("the combiner: the degree before the order, unlisted pairs stay candid
   a <- .attach_combine(list(.e("A", "imperfect")))
   expect_identical(a$attachment, "imperfect")
   expect_identical(names(a$candidates),
-                   c("code", "name", "group", "degree", "rank", "in_name", "double_with", "n_failed",
-                     "distance", "failed", "imperfect_by", "undecided_by", "excluded_by", "nearest"))
+                   c("code", "name", "group", "degree", "rank", "in_name", "double_with", "double_possible",
+                     "n_failed", "distance", "failed", "imperfect_by", "undecided_by", "excluded_by", "nearest"))
 })
 
 test_that("the combiner: explicit precedence before the degree; cycles are broken", {
@@ -492,4 +492,177 @@ test_that("the additive level with no typical class", {
   f[[1L]]$passed <- FALSE
   r <- .add_additive_level(res, NULL, f, level = "qualifiers", after = "references")
   expect_identical(r$name, "luvisol [typical]")
+})
+
+
+# --- the fixes of the review (2026-11-02) ---------------------------------------
+
+test_that("exclusions are resolved together: cycles kept, excluded classes do not exclude", {
+  skip_on_cran()
+  # two classes that exclude each other are both kept, with a note
+  a <- .attach_combine(list(.e("A", "simple"), .e("B", "simple")), order = c("B", "A"),
+                       exclusions = list(list(code = "A", by = "B"), list(code = "B", by = "A")))
+  expect_identical(a$name, "b")
+  expect_identical(a$candidates$code, c("B", "A"))
+  expect_identical(a$candidates$excluded_by, c("", ""))
+  expect_true(any(grepl("exclude each other \\(", a$notes)))
+  # a chain: A excludes B, B excludes C; B is excluded, so C stays
+  a <- .attach_combine(list(.e("A", "simple"), .e("B", "simple"), .e("C", "imperfect")),
+                       exclusions = data.frame(code = c("B", "C"), by = c("A", "B")))
+  expect_identical(a$candidates$code, c("A", "C", "B"))
+  expect_identical(a$candidates$excluded_by, c("", "", "A"))
+  # a class excluded by its own test does not exclude
+  a <- .attach_combine(list(.e("A", "imperfect", excluded_by = "a test of its own"), .e("B", "simple")),
+                       exclusions = data.frame(code = "B", by = "A"))
+  expect_identical(a$name, "b")
+  # a three-class cycle, and a pair outside it still applies
+  a <- .attach_combine(list(.e("A", "simple"), .e("B", "simple"), .e("C", "simple"), .e("D", "simple")),
+                       exclusions = data.frame(code = c("B", "C", "A", "D"), by = c("A", "B", "C", "A")))
+  expect_identical(a$candidates$code[is.na(a$candidates$rank)], "D")
+  expect_match(a$notes, "A, B, C|B, C, A|C, A, B", all = FALSE)
+})
+
+test_that("a double whose member may be excluded by its partner is provisional", {
+  skip_on_cran()
+  a <- .attach_combine(list(.e("A", "simple"), .e("B", "simple")), groups = list(c("A", "B")),
+                       exclusions = list(list(code = "B", by = "A", when = NA)))
+  expect_identical(a$name, "a-b")
+  expect_identical(a$provisional_because, "exclusion:B")
+  expect_identical(a$candidates$excluded_by[a$candidates$code == "B"], "A (undecided)")
+  a <- .attach_combine(list(.e("A", "simple"), .e("B", "simple")), groups = list(c("A", "B")),
+                       exclusions = list(list(code = "A", by = "B", when = NA)))
+  expect_identical(a$name, "a-b")
+  expect_identical(a$provisional_because, "exclusion:A")
+})
+
+test_that("a class that passes strictly is simple; the tolerance table is always checked", {
+  skip_on_cran()
+  expect_identical(.degree_of(TRUE, NA), "simple")
+  expect_identical(.degree_of(TRUE, FALSE), "simple")
+  local_mocked_bindings(.attribute_threshold = function(pedon, ...) {
+    if (isTRUE(soilKey:::.rule_ctx$tolerant)) stop("out of range") else list(passed = TRUE)
+  }, .package = "soilKey")
+  d <- .evaluate_degree(.ped("A", 0, 20, ph = 5), list(all_of = list(.ph55)), .tab())
+  expect_identical(d$degree, "simple")
+  expect_true(is.na(d$tolerant))
+  expect_match(d$notes, "passes strictly")
+  dup <- data.frame(kind = c("ph", "ph"), threshold = c(NA, NA), tol = c(0.2, 0.5))
+  expect_error(.evaluate_degree(.ped("A", 0, 20, ph = 5), list(all_of = list(.ph55)), dup), "twice")
+  neg <- data.frame(kind = "ph", threshold = NA, tol = -1)
+  expect_error(.evaluate_degree(.ped("A", 0, 20, ph = 5), list(all_of = list(.ph55)), neg), "0 or more")
+})
+
+test_that("the best degree a class can reach decides whether it makes the name provisional", {
+  skip_on_cran()
+  # undecided, failing strictly: imperfect at best, after an imperfect main in the order
+  a <- .attach_combine(list(.e("M", "imperfect"), .e("X", "undecided", strict = FALSE)), order = c("M", "X"))
+  expect_identical(a$provisional_because, character(0))
+  # undecided strictly too: could be simple, so it could take the name
+  a <- .attach_combine(list(.e("M", "imperfect"), .e("X", "undecided", strict = NA)), order = c("M", "X"))
+  expect_identical(a$provisional_because, "X")
+  # before the main class in the order, imperfect at best still could
+  a <- .attach_combine(list(.e("X", "undecided", strict = FALSE), .e("M", "imperfect")), order = c("X", "M"))
+  expect_identical(a$provisional_because, "X")
+  # .evaluate_degree() gives what the combiner reads
+  tab <- .tab()
+  p <- .ped(c("A", "B"), c(0, 20), c(20, 50), ph = c(5.0, 5.0), oc = c(NA, NA))
+  tX <- list(all_of = list(.at(attribute = "ph", threshold = 5.5, kind = "ph", layers = "all"), .oc8))
+  dX <- .evaluate_degree(p, tX, list(list(kind = "ph", tol = 0.6), list(kind = "organic_carbon", thresholds = 8, tol = 2)))
+  expect_identical(c(dX$degree, dX$best), c("undecided", "imperfect"))
+  a <- .attach_combine(list(.e("M", "imperfect"), c(list(code = "X"), dX)), order = c("M", "X"))
+  expect_identical(a$provisional_because, character(0))
+})
+
+test_that("an R6 predicate's distance reaches the degree", {
+  skip_on_cran()
+  local_mocked_bindings(.attribute_threshold = function(pedon, ...) {
+    DiagnosticResult$new(name = "x", passed = FALSE, evidence = list(distance = 2.5))
+  }, .package = "soilKey")
+  d <- .evaluate_degree(.ped("A", 0, 20, ph = 5), list(all_of = list(.ph55)), .tab())
+  expect_identical(d$degree, "fail")
+  expect_identical(d$distance, 2.5)
+  # outside the tolerant pass nothing is added to the test's entry, even when
+  # the evidence holds a distance of its own (traces of every system unchanged)
+  r <- evaluate_rsg_tests(.ped("A", 0, 20, ph = 5), list(all_of = list(.ph55)))
+  expect_false("distance" %in% names(r$evidence[[1L]]))
+  local_mocked_bindings(.attribute_threshold = function(pedon, ...) DiagnosticResult$new(name = "x", passed = FALSE),
+                        .package = "soilKey")
+  d <- .evaluate_degree(.ped("A", 0, 20, ph = 5), list(all_of = list(.ph55)), .tab())
+  expect_true(is.na(d$distance))
+  expect_false("distance" %in% names(d$evidence$tolerant$evidence[[1L]]))
+})
+
+test_that("the tolerant pass belongs to one system", {
+  skip_on_cran()
+  tab <- .tab()
+  expect_identical(.with_rule_ctx(TRUE, tab, .rule_threshold(120, "depth", "max", system = "rp2008"), "rp2008"), 140)
+  # a predicate of another system, e.g. in a classification run from inside the pass
+  expect_identical(.with_rule_ctx(TRUE, tab, .rule_threshold(120, "depth", "max", system = "wrb2022"), "rp2008"), 120)
+  expect_identical(.with_rule_ctx(TRUE, tab, .rule_threshold(120, "depth", "max"), "rp2008"), 120)
+  expect_true(is.na(.with_rule_ctx(TRUE, tab, .rule_distance(90, 120, "depth", "min", system = "wrb2022"), "rp2008")))
+  p <- .ped("A", 0, 20, oc = 6.5)
+  own <- list(all_of = list(.at(attribute = "oc", threshold = 8, kind = "organic_carbon", system = "rp2008")))
+  other <- list(all_of = list(.at(attribute = "oc", threshold = 8, kind = "organic_carbon", system = "wrb2022")))
+  expect_identical(.evaluate_degree(p, own, tab, system = "rp2008")$degree, "imperfect")
+  expect_identical(.evaluate_degree(p, other, tab, system = "rp2008")$degree, "fail")
+  expect_null(.rule_ctx$system)
+})
+
+test_that("precedence pairs that contradict the degrees give a note", {
+  skip_on_cran()
+  a <- .attach_combine(list(.e("A", "imperfect"), .e("B", "simple"), .e("C", "simple_or_imperfect")),
+                       precedence = data.frame(first = "A", second = "B"), order = c("A", "B", "C"))
+  expect_identical(a$candidates$code, c("C", "A", "B"))
+  expect_match(a$notes, "convention", all = FALSE)
+  # a pair that only overrides the degree is no contradiction
+  a <- .attach_combine(list(.e("A", "imperfect"), .e("B", "simple")), precedence = data.frame(first = "A", second = "B"))
+  expect_identical(a$notes, character(0))
+})
+
+test_that("the combiner checks its arguments and notes codes that name no candidate", {
+  skip_on_cran()
+  ents <- list(.e("A", "simple"), .e("B", "simple"))
+  expect_error(.attach_combine(ents, groups = list("A")), "two or more distinct")
+  expect_error(.attach_combine(ents, groups = list(c("A", "A", "B"))), "two or more distinct")
+  expect_error(.attach_combine(ents, n_nearest = NA), "n_nearest")
+  expect_error(.attach_combine(ents, n_nearest = -1), "n_nearest")
+  expect_error(.attach_combine("A"), "list of entries")
+  a <- .attach_combine(ents, precedence = list(list(first = "Z", second = "A")), groups = list(c("A", "Y")),
+                       exclusions = list(code = "X", by = "A"))
+  expect_match(a$notes, "Precedence pairs name codes that are no candidate: Z", all = FALSE)
+  expect_match(a$notes, "Groups name codes that are no candidate: Y", all = FALSE)
+  expect_match(a$notes, "Exclusions name codes that are no candidate: X", all = FALSE)
+  # one entry unwrapped
+  expect_identical(.attach_combine(.e("A", "imperfect"))$name, "a")
+  # double_possible: listed with the main class
+  a <- .attach_combine(list(.e("A", "simple"), .e("B", "undecided"), .e("C", "imperfect")),
+                       groups = list(c("A", "B")), order = c("A", "B", "C"))
+  expect_identical(stats::setNames(a$candidates$double_possible, a$candidates$code)[c("A", "B", "C")],
+                   c(A = TRUE, B = TRUE, C = FALSE))
+})
+
+test_that("thresholds must be known numbers; factors read by their labels", {
+  skip_on_cran()
+  expect_identical(within_tolerance(factor(c("5.4", "9")), 5.5, "min", 0.2), c("imperfect", "pass"))
+  expect_error(.rule_check(5, NA_real_, "ph", "min"), "single known number")
+  expect_error(.rule_check(5, c(5, 6), "ph", "min"), "single known number")
+  expect_error(.tolerance_of(.tab(), "depth", c(10, 120)), "single known number")
+  expect_error(.tolerance_of(.tab(), NA_character_, 40), "single name")
+  # in a rule set the error is reported with the predicate's name, undecided
+  r <- evaluate_rsg_tests(.ped("A", 0, 20, ph = 5),
+                          list(all_of = list(.at(attribute = "ph", threshold = NA_real_, kind = "ph"))))
+  expect_true(is.na(r$passed))
+  expect_match(r$evidence[[1L]]$notes, "Error running '.attribute_threshold': A threshold must be")
+  # the tolerance table: a single entry unwrapped, no partial matching
+  expect_identical(.tolerance_table(list(kind = "ph", tol = 0.2)), .tolerance_table(list(list(kind = "ph", tol = 0.2))))
+  expect_error(.tolerance_table(list(list(kind = "ph", tolerance = 0.2))), "no tolerance")
+  expect_error(.tolerance_table(list("ph")), "not a list")
+})
+
+test_that("ClassificationResult$new() takes the candidates", {
+  skip_on_cran()
+  cd <- .attach_combine(list(.e("A", "simple")))$candidates
+  r <- ClassificationResult$new(system = "test", name = "a", candidates = cd)
+  expect_identical(r$candidates, cd)
+  expect_null(ClassificationResult$new(system = "test", name = "a")$candidates)
 })

@@ -89,7 +89,8 @@ first), every class that may attach it: a
 simple_or_imperfect, imperfect, undecided; fail for
 the nearest classes when nothing attaches),
 \code{rank} (the order of precedence), \code{in_name},
-\code{double_with}, \code{n_failed}, \code{distance}
+\code{double_with}, \code{double_possible},
+\code{n_failed}, \code{distance}
 (the size of the failures in tolerance units),
 \code{failed}, \code{imperfect_by},
 \code{undecided_by}, \code{excluded_by} (the
@@ -128,7 +129,8 @@ Build a ClassificationResult.
   warnings = character(0),
   system_id = NULL,
   levels = NULL,
-  provisional_because = character(0)
+  provisional_because = character(0),
+  candidates = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -161,6 +163,9 @@ Build a ClassificationResult.
 
 \item{\code{provisional_because}}{Character vector of undecided classes
 tested before the assigned ones.}
+
+\item{\code{candidates}}{The classes that may attach the soil (a
+data.frame), or NULL; since v0.9.344.}
 }
 \if{html}{\out{</div>}}
 }

@@ -7,7 +7,8 @@
 within_tolerance(value, threshold, direction = c("min", "max"), tol = 0)
 }
 \arguments{
-\item{value}{Numeric vector: the values compared.}
+\item{value}{Numeric vector: the values compared (a factor or character
+vector is read by its labels).}
 
 \item{threshold}{Numeric: the printed threshold, recycled.}
 
@@ -42,7 +43,8 @@ itself is read exactly. A tolerance of 0 makes the comparison strict (only
 \examples{
 # organic carbon 6.5 g/100 g against a minimum of 8 with a tolerance of 2
 within_tolerance(6.5, 8, "min", 2)
-# a horizon starting at 110 cm against "within 120 cm", tolerance 20
+# horizons starting at 100, 130 and 150 cm against "within 120 cm",
+# tolerance 20
 within_tolerance(c(100, 130, 150), 120, "max", 20)
 # a threshold with no tolerance is strict
 within_tolerance(39, 40, "min", 0)
