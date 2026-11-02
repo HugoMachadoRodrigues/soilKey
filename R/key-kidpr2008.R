@@ -18,8 +18,9 @@
 #' organogenic, synlithogenic, postlithogenic and weakly developed soils, and
 #' trunk E, not a soil: rock outcrops, technogenic surface formations, or a
 #' deposit that is not humified over a buried soil) and the 27 divisions
-#' (key 2.3). The types (profile formulas) and subtypes follow in later
-#' releases.
+#' (key 2.3), and the types of the divisions CA to CJ (the profile formulas
+#' of chapter 4, v0.9.338). The types of the other divisions and the subtypes
+#' follow in later releases.
 #'
 #' The keys read the diagnostic horizons of the profile: the Russian
 #' notation where the profile is written in it (declared with
@@ -54,6 +55,13 @@
 #' text is silent are listed in \code{system.file("rules", "kidpr2008",
 #' "readings.yaml", package = "soilKey")}.
 #'
+#' The type is named by the formula of its profile: the profile is matched
+#' against every formula of its division (see \code{\link{kidpr2008_types}}),
+#' closed on the horizons the division's formulas write, most specific first
+#' and agro before natural. A profile no formula matches keeps its division,
+#' the type unassigned, with the nearest formulas in the warnings and in the
+#' trace (phase \code{types_nearest}).
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Optional pre-loaded rule set (\code{load_rules("kidpr2008")}).
 #' @param on_missing One of \code{"warn"} (default), \code{"silent"},
@@ -62,8 +70,8 @@
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
 #'   \code{"kidpr2008"}, the deepest class assigned in \code{name} (the
-#'   division, or the trunk when no division is assigned), the trunk in
-#'   \code{rsg_or_order}, the trunk and division in \code{levels} (with
+#'   type, else the division, else the trunk), the trunk in
+#'   \code{rsg_or_order}, the trunk, division and type in \code{levels} (with
 #'   \code{name_native}, the Russian name), the key trace, the notes on a
 #'   profile that is not a soil or whose combination of horizons the Field
 #'   Guide does not provide for in \code{warnings}, and
@@ -94,6 +102,8 @@ classify_kidpr2008 <- function(pedon, rules = NULL,
   rules <- rules %||% load_rules("kidpr2008")
   # the profile read once: every predicate of the keys reads this view
   view <- .kidpr_dv_pedon(pedon)
+  # v0.9.338: the type lists in the order of trial, kept on the view
+  rules <- .kidpr_types_attach(rules, view)
   prev <- list(pedon = .kidpr_dv_state$pedon, view = .kidpr_dv_state$view)
   .kidpr_dv_state$pedon <- pedon
   .kidpr_dv_state$view <- view
@@ -103,7 +113,7 @@ classify_kidpr2008 <- function(pedon, rules = NULL,
   }, add = TRUE)
   res <- classify_hierarchical("kidpr2008", pedon, rules = rules,
                                on_missing = on_missing, gapfill = FALSE)
-  .kidpr_result_notes(res, view, pedon)
+  .kidpr_types_notes(.kidpr_result_notes(res, view, pedon), view)
 }
 
 # The notes of a result: trunk E is not a soil; a profile of trunk C that no

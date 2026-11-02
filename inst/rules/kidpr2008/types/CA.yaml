@@ -1,0 +1,292 @@
+# The types of the division CA, Текстурно-дифференцированные почвы
+# (Texture-differentiated soils): Field Guide of 2008, chapter 4.1.1, pp. 76-80;
+# 27 types (15 natural, 12 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 CA..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested.
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# BEL closes only the formulas where it is diagnostic (CA07, CA08, CA11, CA20,
+# CA21, CD09; p. 44); `ignore` lists it on the formulas of CA and CD that do
+# not write it, where a BEL neither blocks the formula nor is required by it
+# (Hugo, 2026-11-02).
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "CA":
+    - code: "[CA01]"
+      name: "Podzolic"
+      name_native: "Подзолистые"
+      formula: "O-EL-BEL-BT-C"
+      page: 78
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA01]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA02]"
+      name: "Gley-podzolic"
+      name_native: "Подзолисто-глеевые"
+      formula: "O-EL-BELg-BTg-G-CG"
+      page: 78
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA02]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA03]"
+      name: "Peaty gley-podzolic"
+      name_native: "Торфяно-подзолисто-глеевые"
+      formula: "T-ELg-BELg-BTg-G-CG"
+      page: 78
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA03]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA04]"
+      name: "Sod-podzolic"
+      name_native: "Дерново-подзолистые"
+      formula: "AY-EL-BEL-BT-C"
+      page: 78
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA04]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA05]"
+      name: "Sod gley-podzolic"
+      name_native: "Дерново-подзолисто-глеевые"
+      formula: "AY-EL-BELg-BTg-G-CG"
+      page: 78
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA05]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA06]"
+      name: "Grey"
+      name_native: "Серые"
+      formula: "AY-AEL-BEL-BT-C"
+      page: 78
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA06]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA07]"
+      name: "Dark grey"
+      name_native: "Темно-серые"
+      formula: "AU-BEL-BT-C"
+      page: 78
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA07]"}
+      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02)."
+    - code: "[CA08]"
+      name: "Dark grey gley"
+      name_native: "Темно-серые глеевые"
+      formula: "AU-BELg-BTg-G-CG"
+      page: 78
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA08]"}
+      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02)."
+    - code: "[CA09]"
+      name: "Dark-humus podbels"
+      name_native: "Темногумусовые подбелы"
+      formula: "AU-EL-(BEL)-BT-C"
+      page: 78
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA09]"}
+    - code: "[CA10]"
+      name: "Dark-humus gley podbels"
+      name_native: "Темногумусовые подбелы глеевые"
+      formula: "AU-ELg-BTg-G-CG"
+      page: 78
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA10]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA11]"
+      name: "Sod-brown-podzolic"
+      name_native: "Дерново-буро-подзолистые"
+      formula: "AY-BEL-BT-C"
+      page: 78
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA11]"}
+      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02)."
+    - code: "[CA12]"
+      name: "Sod solods"
+      name_native: "Дерново-солоди"
+      formula: "AY-EL-BT-BCA-Cca"
+      page: 78
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA12]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA13]"
+      name: "Sod gley solods"
+      name_native: "Дерново-солоди глеевые"
+      formula: "AY-EL-BTg-BCAg-Gca(s)-CGca(s)"
+      page: 78
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA13]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA14]"
+      name: "Dark-humus solods"
+      name_native: "Солоди темногумусовые"
+      formula: "AU-EL-BT-BCA-Cca,s"
+      page: 78
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA14]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA15]"
+      name: "Muck-dark-humus quasigley solods"
+      name_native: "Солоди перегнойно-темногумусовые квазиглеевые"
+      formula: "AH-EL-BTq-BCAq-Q(s)-CQ(s)"
+      page: 78
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA15]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA16]"
+      name: "Agro-peaty gley-podzolic"
+      name_native: "Агроторфяно-подзолисто-глеевые"
+      formula: "PT-(T)-ELg-BELg-BTg-G-CG"
+      page: 79
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA16]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA17]"
+      name: "Agro-sod-podzolic"
+      name_native: "Агродерново-подзолистые"
+      formula: "P-(EL)-BEL-BT-C"
+      page: 79
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA17]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA18]"
+      name: "Agro-sod gley-podzolic"
+      name_native: "Агродерново-подзолисто-глеевые"
+      formula: "P-(ELg)-BELg-BTg-G-CG"
+      page: 79
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA18]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA19]"
+      name: "Agro-grey"
+      name_native: "Агросерые"
+      formula: "P-(AY)-AEL-BEL-BT-C"
+      page: 79
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA19]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA20]"
+      name: "Agro-dark-grey"
+      name_native: "Агротемносерые"
+      formula: "PU-(AU)-BEL-BT-C"
+      page: 79
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA20]"}
+      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02)."
+    - code: "[CA21]"
+      name: "Agro-dark-grey gley"
+      name_native: "Агротемно-серые глеевые"
+      formula: "PU-(AU)-BELg-BTg-G-CG"
+      page: 79
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA21]"}
+      notes: "BEL required, and it blocks the formulas that do not write it: here it is the only eluvial horizon, the diagnostic one (p. 44; Hugo's decisions Q14 and of 2026-11-02)."
+    - code: "[CA22]"
+      name: "Agro-dark-humus podbels"
+      name_native: "Агротемногумусовые подбелы"
+      formula: "PU-EL-BEL-BT-C"
+      page: 79
+      optional: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA22]"}
+      notes: "BEL optional: it is the diagnostic eluvial horizon only in CA07, CA08, CA11, CA20, CA21 and CD09 (p. 44; Hugo's decision Q14)."
+    - code: "[CA23]"
+      name: "Agro-dark-humus gley podbels"
+      name_native: "Агротемногумусовые подбелы глеевые"
+      formula: "PU-ELg-BTg-G-CG"
+      page: 79
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA23]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA24]"
+      name: "Agro-solods"
+      name_native: "Агросолоди"
+      formula: "P-(EL)-BT-BCA-Cca"
+      page: 79
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA24]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA25]"
+      name: "Dark agro-solods"
+      name_native: "Агросолоди темные"
+      formula: "PU-(AU)-EL-BT-BCA-Cca"
+      page: 79
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA25]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA26]"
+      name: "Gley agro-solods"
+      name_native: "Агросолоди глеевые"
+      formula: "P-EL-BTg-BCAg-Gca-CGca"
+      page: 79
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA26]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."
+    - code: "[CA27]"
+      name: "Dark-humus quasigley agro-solods"
+      name_native: "Агросолоди темногумусовые квазиглеевые"
+      formula: "PU-EL-BTq-BCAq-Q-CQ"
+      page: 79
+      ignore: ["BEL"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CA27]"}
+      notes: "A BEL in the profile is read as part of the passage from the eluvial to the middle horizon: it neither blocks this formula nor is required by it, BEL closing only the formulas where it is diagnostic (p. 44; Hugo, 2026-11-02)."

@@ -25,8 +25,8 @@ classify_kidpr2008(
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
   \code{"kidpr2008"}, the deepest class assigned in \code{name} (the
-  division, or the trunk when no division is assigned), the trunk in
-  \code{rsg_or_order}, the trunk and division in \code{levels} (with
+  type, else the division, else the trunk), the trunk in
+  \code{rsg_or_order}, the trunk, division and type in \code{levels} (with
   \code{name_native}, the Russian name), the key trace, the notes on a
   profile that is not a soil or whose combination of horizons the Field
   Guide does not provide for in \code{warnings}, and
@@ -41,8 +41,9 @@ opredelitel' pochv Rossii, Dokuchaev Soil Science Institute, 2008).
 organogenic, synlithogenic, postlithogenic and weakly developed soils, and
 trunk E, not a soil: rock outcrops, technogenic surface formations, or a
 deposit that is not humified over a buried soil) and the 27 divisions
-(key 2.3). The types (profile formulas) and subtypes follow in later
-releases.
+(key 2.3), and the types of the divisions CA to CJ (the profile formulas
+of chapter 4, v0.9.338). The types of the other divisions and the subtypes
+follow in later releases.
 }
 \details{
 The keys read the diagnostic horizons of the profile: the Russian
@@ -77,6 +78,13 @@ unassigned, with a note. Names: an English gloss in \code{name}, the
 Russian of the book in \code{levels$name_native}. The readings where the
 text is silent are listed in \code{system.file("rules", "kidpr2008",
 "readings.yaml", package = "soilKey")}.
+
+The type is named by the formula of its profile: the profile is matched
+against every formula of its division (see \code{\link{kidpr2008_types}}),
+closed on the horizons the division's formulas write, most specific first
+and agro before natural. A profile no formula matches keeps its division,
+the type unassigned, with the nearest formulas in the warnings and in the
+trace (phase \code{types_nearest}).
 }
 \examples{
 res <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent")

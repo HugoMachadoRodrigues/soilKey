@@ -16,6 +16,7 @@ match_horizon_sequence(
   pair_gaps_cm = NULL,
   buried_within_cm = Inf,
   max_completions = 2000L,
+  agro_remnant = c("all", "thickest"),
   ...
 )
 }
@@ -50,6 +51,12 @@ horizons (cm), and named allowances for pairs.}
 
 \item{max_completions}{Most completions of undecided layers tried; beyond
 it the result is NA.}
+
+\item{agro_remnant}{Under an agro surface horizon, \code{"all"} keeps
+every natural horizon of the surface run in the sequence (the default);
+\code{"thickest"} keeps only the thickest of them, as the remnant, and
+reads the others as features (the thickest-horizon rule of the Russian
+Field Guide, p. 37).}
 
 \item{...}{When `spec` is a string, the arguments of the parser:
 \code{test_terminals} (rock and parent slots to test, by code, by

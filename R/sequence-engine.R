@@ -561,7 +561,9 @@
 # alone: it takes its horizon when present, and never fails the match.
 .mhs_context <- function(tab, spec, vocabulary = NULL, surface = NULL, agro = NULL,
                          closure_surface = FALSE, max_cover_cm = 40, max_gap_cm = 0,
-                         pair_gaps_cm = NULL, buried_within_cm = Inf, max_completions = 2000L) {
+                         pair_gaps_cm = NULL, buried_within_cm = Inf, max_completions = 2000L,
+                         agro_remnant = c("all", "thickest")) {
+  agro_remnant <- match.arg(agro_remnant)
   agro <- as.character(agro)
   natural <- setdiff(as.character(surface), agro)
   tested <- Filter(function(z) isTRUE(z$tested) && z$kind %in% c("horizon", "buried"), spec$slots)
@@ -591,7 +593,7 @@
        play = play, agro = agro, natural = natural, buried_play = buried_play,
        max_cover_cm = max_cover_cm, max_gap_cm = max_gap_cm, pair_gaps_cm = pair_gaps_cm,
        buried_within_cm = buried_within_cm, max_completions = max_completions,
-       top0 = if (is.finite(top0)) top0 else NA_real_)
+       agro_remnant = agro_remnant, top0 = if (is.finite(top0)) top0 else NA_real_)
 }
 
 .mhs_is_agro <- function(code, ctx) code %in% ctx$agro
@@ -668,7 +670,10 @@
 # `surface` codes given, the run of surface horizons at the top of the profile
 # gives the surface: the first agro horizon of the run, else the thickest
 # natural one; the other horizons of the run above it, or all of them for a
-# natural surface, are read as features and leave the sequence. Above the run
+# natural surface, are read as features and leave the sequence (v0.9.338: with
+# agro_remnant "thickest", of the natural horizons of the run under the agro
+# one only the thickest stays, as the remnant, and the others are features
+# too). Above the run
 # lies the cover: rows with no diagnostic horizon and horizons neither in play
 # nor surface horizons (litter coded L); a cover of max_cover_cm or more means
 # no surface run. Thicknesses that are not known, or equal, leave several
@@ -693,13 +698,23 @@
     list(tok = .mhs_drop(tok, absorbed), forced = k - sum(absorbed < k), surface = tok$code[k],
          absorbed = .mhs_label(tok$code[absorbed], tok$buried[absorbed], tok$idx[absorbed]))
   }
+  # the thickest of the natural horizons `nat`: several when thicknesses are
+  # not known or equal
+  thickest <- function(nat) {
+    th <- tok$thick[nat]
+    mx <- suppressWarnings(max(th, na.rm = TRUE))
+    nat[is.na(th) | (is.finite(mx) & th == mx)]
+  }
   ag <- run[.mhs_is_agro(tok$code[run], ctx)]
-  if (length(ag)) return(list(choice(ag[1L], run[run < ag[1L]])))
+  if (length(ag)) {
+    above <- run[run < ag[1L]]
+    below <- run[run > ag[1L] & !.mhs_is_agro(tok$code[run], ctx)]
+    if (!identical(ctx$agro_remnant, "thickest") || length(below) < 2L)
+      return(list(choice(ag[1L], above)))
+    return(lapply(thickest(below), function(k) choice(ag[1L], c(above, setdiff(below, k)))))
+  }
   if (length(run) == 1L) return(list(choice(i, integer(0))))
-  th <- tok$thick[run]
-  mx <- suppressWarnings(max(th, na.rm = TRUE))
-  can <- run[is.na(th) | (is.finite(mx) & th == mx)]
-  lapply(can, function(k) choice(k, setdiff(run, k)))
+  lapply(thickest(run), function(k) choice(k, setdiff(run, k)))
 }
 
 # The horizons in play, consecutive ones with the same code merged when only
@@ -1270,6 +1285,11 @@
 #' @param buried_within_cm Depth within which a buried profile counts.
 #' @param max_completions Most completions of undecided layers tried; beyond
 #'   it the result is NA.
+#' @param agro_remnant Under an agro surface horizon, \code{"all"} keeps
+#'   every natural horizon of the surface run in the sequence (the default);
+#'   \code{"thickest"} keeps only the thickest of them, as the remnant, and
+#'   reads the others as features (the thickest-horizon rule of the Russian
+#'   Field Guide, p. 37).
 #' @param ... When `spec` is a string, the arguments of the parser:
 #'   \code{test_terminals} (rock and parent slots to test, by code, by
 #'   signature such as "C~~" or "DG", or by text such as "[ABC]"; TRUE for
@@ -1308,7 +1328,8 @@
 match_horizon_sequence <- function(table, spec, vocabulary = NULL,
                                    surface = NULL, agro = NULL, closure_surface = FALSE,
                                    max_cover_cm = 40, max_gap_cm = 0, pair_gaps_cm = NULL,
-                                   buried_within_cm = Inf, max_completions = 2000L, ...) {
+                                   buried_within_cm = Inf, max_completions = 2000L,
+                                   agro_remnant = c("all", "thickest"), ...) {
   dots <- list(...)
   if (length(dots) && (is.null(names(dots)) || any(!nzchar(names(dots)))))
     rlang::abort("Arguments of the parser must be named.")
@@ -1325,7 +1346,8 @@ match_horizon_sequence <- function(table, spec, vocabulary = NULL,
   ctx <- .mhs_context(tab, spec, vocabulary = vocabulary, surface = surface, agro = agro,
                       closure_surface = closure_surface, max_cover_cm = max_cover_cm,
                       max_gap_cm = max_gap_cm, pair_gaps_cm = pair_gaps_cm,
-                      buried_within_cm = buried_within_cm, max_completions = max_completions)
+                      buried_within_cm = buried_within_cm, max_completions = max_completions,
+                      agro_remnant = agro_remnant)
   .mhs_match(tab, ctx)
 }
 
@@ -1379,7 +1401,9 @@ match_horizon_sequence <- function(table, spec, vocabulary = NULL,
 # strings or parsed, in the order of trial. The parser's arguments go in
 # `parse_args` or among `...` (they apply to the strings; an error with a
 # parsed scheme); the others go to the matcher. The vocabulary defaults to the
-# union of the schemes' codes; the table is read once. Returns the pick
+# union of the schemes' codes; it may also be a list of vocabularies named by
+# scheme (v0.9.338: a horizon that closes only some schemes), a scheme it does
+# not name taking the union. The table is read once. Returns the pick
 # (.pick_scheme()), the nearest schemes when none matched, and every result.
 .match_schemes <- function(table, specs, vocabulary = NULL, parse_args = list(),
                            n_nearest = 3L, ...) {
@@ -1394,12 +1418,15 @@ match_horizon_sequence <- function(table, spec, vocabulary = NULL,
       paste(names(parse_args), collapse = ", ")))
   specs <- lapply(specs, function(s) if (is.character(s)) do.call(.parse_profile_formula, c(list(s), parse_args)) else s)
   if (is.null(names(specs))) names(specs) <- vapply(specs, function(s) s$formula, "")
-  vocabulary <- vocabulary %||% .formula_vocabulary(specs)
+  union <- .formula_vocabulary(specs)
+  voc_of <- if (is.list(vocabulary)) function(k) vocabulary[[k]] %||% union
+            else { vocabulary <- vocabulary %||% union; function(k) vocabulary }
   tab <- .as_horizon_table(table)
-  res <- lapply(specs, function(sp) {
-    ctx <- do.call(.mhs_context, c(list(tab, sp, vocabulary = vocabulary), ma))
+  res <- lapply(seq_along(specs), function(i) {
+    ctx <- do.call(.mhs_context, c(list(tab, specs[[i]], vocabulary = voc_of(names(specs)[i])), ma))
     .mhs_match(tab, ctx)
   })
+  names(res) <- names(specs)
   pick <- .pick_scheme(res)
   pick$nearest <- if (!isTRUE(pick$passed)) .nearest_schemes(res, n_nearest) else NULL
   pick$results <- res

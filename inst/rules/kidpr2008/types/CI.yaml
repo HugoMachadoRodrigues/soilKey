@@ -1,0 +1,193 @@
+# The types of the division CI, Аккумулятивно-гумусовые почвы
+# (Humus-accumulative soils): Field Guide of 2008, chapter 4.1.9, pp. 93-98;
+# 20 types (10 natural, 10 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 CI..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested.
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# BEL closes only the formulas where it is diagnostic (CA07, CA08, CA11, CA20,
+# CA21, CD09; p. 44); `ignore` lists it on the formulas of CA and CD that do
+# not write it, where a BEL neither blocks the formula nor is required by it
+# (Hugo, 2026-11-02).
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "CI":
+    - code: "[CI01]"
+      name: "Chernozems"
+      name_native: "Черноземы"
+      formula: "AU-BCA-Cca"
+      page: 96
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI01]"}
+      notes: "Up to 15 cm with no diagnostic horizon between AU and BCA is not counted (p. 94; Hugo's decision Q14)."
+    - code: "[CI02]"
+      name: "Clay-illuvial chernozems"
+      name_native: "Черноземы глинисто-иллювиальные"
+      formula: "AU-BI-(BCA)-C(ca)"
+      page: 96
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI02]"}
+    - code: "[CI03]"
+      name: "Texture-carbonate chernozems"
+      name_native: "Черноземы текстурно-карбонатные"
+      formula: "AU-CAT-Cca"
+      page: 96
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI03]"}
+    - code: "[CI04]"
+      name: "Dark slitic"
+      name_native: "Темные слитые"
+      formula: "AU-V-C(ca)"
+      page: 96
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI04]"}
+    - code: "[CI05]"
+      name: "Chernozem-like"
+      name_native: "Черноземовидные"
+      formula: "AU-CRH-Cg"
+      page: 96
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI05]"}
+    - code: "[CI06]"
+      name: "Quasigley chernozems"
+      name_native: "Черноземы квазиглеевые"
+      formula: "AU-BCA-Q-CQ"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI06]"}
+      notes: "Up to 15 cm with no diagnostic horizon between AU and BCA is not counted (p. 94; Hugo's decision Q14)."
+    - code: "[CI07]"
+      name: "Quasigley clay-illuvial chernozems"
+      name_native: "Черноземы глинисто-иллювиальные квазиглеевые"
+      formula: "AU-BI-(BCA)-Q-CQ"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI07]"}
+    - code: "[CI08]"
+      name: "Gley clay-illuvial chernozems"
+      name_native: "Черноземы глинисто-иллювиальные глеевые"
+      formula: "AU-BI-(BCA)-G-CG(ca)"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI08]"}
+    - code: "[CI09]"
+      name: "Quasigley texture-carbonate chernozems"
+      name_native: "Черноземы текстурно-карбонатные квазиглеевые"
+      formula: "AU-CAT-Q-CQ"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI09]"}
+    - code: "[CI10]"
+      name: "Gley chernozem-like"
+      name_native: "Черноземовидные глеевые"
+      formula: "AU-CRH-G-CG"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI10]"}
+    - code: "[CI11]"
+      name: "Agrochernozems"
+      name_native: "Агрочерноземы"
+      formula: "PU-AU-BCA-Cca"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI11]"}
+      notes: "Up to 15 cm with no diagnostic horizon between AU and BCA is not counted (p. 94; Hugo's decision Q14)."
+    - code: "[CI12]"
+      name: "Clay-illuvial agrochernozems"
+      name_native: "Агрочерноземы глинисто-иллювиальные"
+      formula: "PU-AU-BI-(BCA)-C(ca)"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI12]"}
+    - code: "[CI13]"
+      name: "Texture-carbonate agrochernozems"
+      name_native: "Агрочерноземы текстурно-карбонатные"
+      formula: "PU-AU-CAT-Cca"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI13]"}
+    - code: "[CI14]"
+      name: "Dark agro-slitic"
+      name_native: "Агрослитые темные"
+      formula: "PU-AU-V-C(ca)"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI14]"}
+    - code: "[CI15]"
+      name: "Agro-chernozem-like"
+      name_native: "Агрочерноземовидные"
+      formula: "PU-AU-CRH-Cg"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI15]"}
+    - code: "[CI16]"
+      name: "Quasigley agrochernozems"
+      name_native: "Агрочерноземы квазиглеевые"
+      formula: "PU-AU-BCA-Q-CQ"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI16]"}
+      notes: "Up to 15 cm with no diagnostic horizon between AU and BCA is not counted (p. 94; Hugo's decision Q14)."
+    - code: "[CI17]"
+      name: "Quasigley clay-illuvial agrochernozems"
+      name_native: "Агрочерноземы глинисто-иллювиальные квазиглеевые"
+      formula: "PU-AU-BI-(BCA)-Q-CQ"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI17]"}
+    - code: "[CI18]"
+      name: "Gley clay-illuvial agrochernozems"
+      name_native: "Агрочерноземы глинисто-иллювиальные глеевые"
+      formula: "PU-AU-BI-(BCA)-G-CG(ca)"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI18]"}
+    - code: "[CI19]"
+      name: "Quasigley texture-carbonate agrochernozems"
+      name_native: "Агрочерноземы текстурно-карбонатные квазиглеевые"
+      formula: "PU-AU-CAT-Q-CQ"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI19]"}
+    - code: "[CI20]"
+      name: "Gley agro-chernozem-like"
+      name_native: "Агрочерноземовидные глеевые"
+      formula: "PU-AU-CRH-G-CG"
+      page: 97
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CI20]"}
