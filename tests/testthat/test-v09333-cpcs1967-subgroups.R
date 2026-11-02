@@ -623,3 +623,25 @@ test_that("every subgroup is reached", {
   expect_length(all, 276L)
   expect_identical(sort(setdiff(all, ls(.reached))), character(0))
 })
+
+test_that("the fixes of the logic review", {
+  skip_on_cran()
+  # a negated mottle record is no sign of hydromorphy
+  f <- .with_h(make_cpcs1967_example("ferrallitic"), redoximorphic_features_pct = NA_real_, mottle_colors = "none observed")
+  expect_identical(.key(f)$levels$code[4], "X/216")
+  f2 <- .with_h(make_cpcs1967_example("ferrallitic"), redoximorphic_features_pct = NA_real_, mottle_colors = "no mottles")
+  expect_identical(.key(f2)$levels$code[4], "X/216")
+  # the stop at the group is warned once
+  r <- classify_cpcs1967(make_asc3_example("hydrosols"), on_missing = "silent")
+  if (nrow(r$levels) == 3L && !any(grepl("^subgroups:", r$provisional_because))) {
+    expect_length(grep("Sous-groupe non d\u00e9fini", r$warnings), 1L)
+    expect_length(grep("^No class of the subgroups list", r$warnings), 0L)
+  }
+  # an undesignated profile with no rock: the depth of the solum is not known
+  x <- soilKey:::.cpcs_profile(.with_h(make_cpcs1967_example("brunified"), designation = NA_character_))
+  expect_true(is.na(solum_depth_cpcs(.with_h(make_cpcs1967_example("brunified"), designation = NA_character_), at_most = 50)$passed))
+  # a gypsum crust is not a calcareous crust
+  g <- .with_h(make_cpcs1967_example("calcimagnesic"), pan_type = c(NA, "gypsum crust"))
+  expect_false(any(soilKey:::.cpcs_calc_crust_rows(soilKey:::.cpcs_profile(g))))
+})
+

@@ -11,11 +11,13 @@
 
 # ---- shared readings --------------------------------------------------------------
 
-.CPCS_NONE_RE <- "^(none|no|nil|absent|aucune?|nulle?|0|-|na|false|non)$"
+.CPCS_NONE_RE <- "^(none|no|nil|absent|aucune?|nulle?|0|-|na|false|non|not)\\b"
 
-# A free text that is recorded and is not a negation.
+# A free text that is recorded and is not a negation ("no mottles", "none
+# observed" are not records).
 .cpcs_recorded_txt <- function(v) {
   v <- tolower(trimws(as.character(v)))
+  v <- ifelse(is.na(v), NA_character_, trimws(.cpcs_drop_negated(v)))
   !is.na(v) & nzchar(v) & !grepl(.CPCS_NONE_RE, v)
 }
 
@@ -262,7 +264,10 @@ alpine_belt_cpcs <- function(pedon) {
   # the alpine reading of VIII/22; with no climate and no elevation recorded,
   # not alpine (Hugo, 2026-11-01)
   el <- suppressWarnings(as.numeric(as.character(x$site$elevation_m %||% NA)[1L]))
-  p <- if (is.na(.cpcs_koppen(x$site)) && is.na(el)) FALSE else alpine_podzol_cpcs(pedon)$passed
+  k <- .cpcs_koppen(x$site)
+  # a Koppen climate that is not E, with no elevation: not alpine
+  p <- if (is.na(k) && is.na(el)) FALSE else if (!is.na(k) && !grepl("^E", k) && is.na(el)) FALSE else
+    alpine_podzol_cpcs(pedon)$passed
   .cpcs_sub_result("alpine_belt_cpcs", p, x, list(elevation_m = el), "II/213, p. 24", climatic = TRUE)
 }
 
@@ -511,10 +516,14 @@ solum_depth_cpcs <- function(pedon, at_most = NA, above = NA) {
   c <- rows[(x$role[rows] %in% c("C", "R", "G") | x$rock[rows]) & !is.na(x$dtop[rows])]
   bot <- suppressWarnings(max(x$dbot[rows], na.rm = TRUE)); if (!is.finite(bot)) bot <- NA_real_
   d <- if (length(c)) min(x$dtop[c]) else NA_real_
+  # an undesignated profile with no rock or hard layer recorded: the solum
+  # is not known
+  undes <- all(is.na(x$role[rows]) | x$role[rows] %in% "other")
+  if (undes && !length(c)) { ht <- .cpcs_hard_top(x); if (!is.na(ht)) d <- ht else bot <- NA_real_ }
   p <- if (!is.na(at_most)) {
     if (!is.na(d)) d <= at_most else if (is.na(bot)) NA else if (bot > at_most) FALSE else NA
   } else {
-    if (!is.na(d)) d > above else if (is.na(bot)) NA else if (bot >= above) TRUE else NA
+    if (!is.na(d)) d > above else if (is.na(bot)) NA else if (bot > above) TRUE else NA
   }
   .cpcs_sub_result("solum_depth_cpcs", p, x, list(solum_cm = d, described_to_cm = bot), "subgroups, pp. 33-47")
 }
@@ -573,8 +582,9 @@ b_colour_cpcs <- function(pedon, kind) {
   # both in the larger part of the B. Ochre: a B row of hue 10YR to 5YR with
   # chroma 6 or more (Hugo, 2026-11-01)
   p <- switch(kind,
-    reddened = .cpcs_larger_part_b(x, .cpcs_reddened_rows(x), b),
-    yellow = .cpcs_larger_part_b(x, ifelse(hc$neu, FALSE, ifelse(is.na(hc$hn), NA, hc$hn >= 17.5)), b),
+    reddened = if (!length(b)) FALSE else .cpcs_larger_part_b(x, .cpcs_reddened_rows(x), b),
+    yellow = if (!length(b)) FALSE else
+      .cpcs_larger_part_b(x, ifelse(hc$neu, FALSE, ifelse(is.na(hc$hn), NA, hc$hn >= 17.5)), b),
     ochre = if (!length(b)) FALSE else .cpcs_any(ifelse(hc$neu, FALSE, ifelse(is.na(hc$hn) | is.na(hc$cr), NA,
                                                      hc$hn >= 15 & hc$hn <= 20 & hc$cr >= 6))[b]),
     NA)
@@ -586,7 +596,8 @@ b_colour_cpcs <- function(pedon, kind) {
 b_ph_cpcs <- function(pedon, below = 5.5) {
   x <- .cpcs_profile(pedon)
   ph <- .cpcs_num(x$h, "ph_h2o")
-  p <- .cpcs_larger_part_b(x, ifelse(is.na(ph), NA, ph < below), .cpcs_group_b_rows(x))
+  b <- .cpcs_group_b_rows(x)
+  p <- if (!length(b)) FALSE else .cpcs_larger_part_b(x, ifelse(is.na(ph), NA, ph < below), b)
   .cpcs_sub_result("b_ph_cpcs", p, x, where = "VII/11-12, pp. 46-47")
 }
 
@@ -784,8 +795,8 @@ gibbsitic_dark_cpcs <- function(pedon) {
   # else Ki under 1.0 where Ki exists (Hugo, 2026-11-01)
   b <- .cpcs_group_b_rows(x)
   hc <- .cpcs_hue_chroma(x); v <- .cpcs_num(x$h, "munsell_value_moist"); ph <- .cpcs_num(x$h, "ph_h2o")
-  dark <- .cpcs_larger_part_b(x, ifelse(is.na(hc$hn) | is.na(v) | is.na(hc$cr), NA,
-                                        hc$hn >= 17.5 & hc$hn <= 20 & v <= 3 & hc$cr <= 3), b)
+  dark <- .cpcs_larger_part_b(x, ifelse(hc$neu, FALSE, ifelse(is.na(hc$hn) | is.na(v) | is.na(hc$cr), NA,
+                                        hc$hn >= 17.5 & hc$hn <= 20 & v <= 3 & hc$cr <= 3)), b)
   acid <- .cpcs_larger_part_b(x, ifelse(is.na(ph), NA, ph < 4.5), b)
   gb <- .cpcs_num(x$h, "gibbsite_pct"); ki <- .cpcs_ki(x)
   gibb <- if (any(!is.na(gb[b]))) .cpcs_larger_part_b(x, ifelse(is.na(gb), NA, gb >= 25), b) else

@@ -491,7 +491,8 @@ carbonated_humic_cpcs <- function(pedon) {
 .cpcs_calc_crust_rows <- function(x) {
   cem <- .scsj_txt(x$h, "cementation_class"); pan <- .scsj_txt(x$h, "pan_type")
   (x$des$ca %in% TRUE & (x$des$m %in% TRUE | (!is.na(cem) & grepl("moderat|strong|indurat", cem)))) |
-    (!is.na(pan) & grepl("calcrete|petrocalc|cro\u00fbte|croute|crust|encro\u00fbt", pan))
+    (!is.na(pan) & grepl("calcrete|petrocalc|cro\u00fbte|croute|crust|encro\u00fbt", pan) &
+       !grepl("gyps|salt|salin|ferr|iron|silic", pan))
 }
 
 #' @rdname cpcs1967_groups
