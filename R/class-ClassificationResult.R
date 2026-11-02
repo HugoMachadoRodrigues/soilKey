@@ -127,9 +127,13 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
         cli::cli_text("RSG/Order: {self$rsg_or_order}")
       }
       if (is.data.frame(self$levels) && nrow(self$levels) > 1L) {
-        cli::cli_text("Levels: {paste(sprintf('%s %s', self$levels$code,
-                                                self$levels$name),
-                                       collapse = ' > ')}")
+        # v0.9.334: the classes of one level together (several subtypes of a
+        # type are not one under the other); a class with no code by its name
+        lv <- self$levels
+        lab <- ifelse(is.na(lv$code), lv$name, sprintf("%s %s", lv$code, lv$name))
+        grp <- cumsum(c(TRUE, lv$level[-1L] != lv$level[-nrow(lv)]))
+        txt <- paste(vapply(split(lab, grp), paste, "", collapse = ", "), collapse = " > ")
+        cli::cli_text("Levels: {txt}")
       }
       if (length(self$provisional_because) > 0L) {
         cli::cli_text("Provisional: undecided before it, {paste(self$provisional_because, collapse = ', ')}")

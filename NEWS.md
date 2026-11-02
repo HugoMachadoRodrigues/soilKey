@@ -1,3 +1,26 @@
+# soilKey 0.9.334 (2026-11-02)
+
+## Russia: the engine for profile formulas
+
+The Russian soil classification (Field Guide of 2008) names its types by profile formulas ("O-EL-BEL-BT-C") and its subtypes by a list of features per division. This release adds the generic pieces it needs; no system uses them yet, so every classification is unchanged. The Russian notation, horizons, divisions and types follow.
+
+* **Profile formulas.** An internal parser reads a formula into slots: alternative codes ("RY(RJ)", "CG~~ (CQ~~)", and soilKey's "O|T|H"), optional horizons in parentheses, features (typical, or required where they name the type, as Rca), the role of each slot (surface, middle, parent), buried profiles ([ABC], {ABC}), turbated compositions (TUR[AU+SEL+ASN]), small horizons ([e-hf], e), rock flags (CG, CQ, DG) and rock marks (C~~, C", C^^, C"", C=, C..). Given a vocabulary of horizons and features, an unknown token stops it with its name.
+* **`match_horizon_sequence()`** matches the identified horizons of a profile against a formula: TRUE, FALSE or NA when an undecided layer could change the answer, with the slots matched, the slots missing, the extra horizons and the edit distance. A horizon fills a slot by its code or by an overlay (an AU with an S overlay fills an S slot); surface and agro codes the formula does not name stay out of the closure unless `closure_surface = TRUE`, so a natural remnant under the plough does not block an agro type. Internal helpers run a division's schemes, pick the most specific match (the others noted as intergrades) and, when none matches, rank the nearest schemes by edit distance.
+* **`identify_horizons()`** gives the reading of every layer as a diagnostic horizon (code, overlays, features, small and transitional rows, buried profiles, route, verdict, evidence, the candidates when undecided), by the system's own identification; a system without one stops with an error, as every system does in this release.
+* **A walker of horizon keys** (internal): a key written as a tree of questions answered TRUE, FALSE or NA.
+* **An additive level** (internal): after the type, every listed feature that passes is named, in list order. The Hungarian subtype properties keep their own code.
+* `print()` of a result lists the classes of one level together ("CA01 Podzolic > g gleyic, y tongued"), so the Hungarian subtype and variety properties are no longer chained with ">" as if each were below the one before.
+
+### Hugo's decisions (2026-11-02)
+
+* **Undecided key questions (Q4):** an undecided question follows every branch; one outcome gives the horizon, several leave it undecided with the candidates.
+* **The surface horizon (Q11):** the agro horizon, else the thickest natural organic or humus horizon starting at the surface or under a deposit under 40 cm; the others are read as features.
+* **Templates (Q13):** a type's formula is closed on the vocabulary of its division: a horizon that appears in any scheme of the division must be matched when present; a horizon foreign to the division is ignored. The most specific scheme is tried first, agro before natural; when two match, the more specific wins and the other is an intergrade in the trace.
+* **Formulas (Q14):** a horizon in parentheses is optional; terminal symbols are tested only where they name the type; "directly under" skips transitional rows and sub-horizons, with an allowed gap (up to 15 cm between AU and BCA).
+* **No type (Q15):** when no scheme matches, the name stops at the division and the trace lists the nearest schemes.
+* **Subtypes (Q16):** every listed feature that passes is named, in list order; typical when every one is FALSE; provisional when some are undecided, which are listed; a feature already written in the type's formula is not named again.
+* **Also accepted:** sub-horizons are merged (BT1, BT2 = BT); transitions are not diagnostic; small horizons are marked rows, not diagnostic horizons; one layer may hold a horizon and an overlay (S, X, V).
+
 # soilKey 0.9.333 (2026-11-01)
 
 ## France: the 276 subgroups of the CPCS 1967
