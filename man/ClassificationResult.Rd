@@ -74,7 +74,8 @@ provisional; these are those classes, as
 is firm or the classifier does not report it.}
 
 \item{\code{phases}}{Soil phases of the systems that have them (the SCSJ
-2017: temperature, man-made and forest phases), a
+2017: temperature, man-made and forest phases; the
+CSCJ 2011: temperature and man-made phases), a
 \code{data.frame} with \code{kind}, \code{code},
 \code{name}, \code{name_native} and \code{basis};
 \code{NULL} otherwise. Since v0.9.324.}
