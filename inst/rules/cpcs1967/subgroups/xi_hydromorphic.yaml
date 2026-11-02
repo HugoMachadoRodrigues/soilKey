@@ -85,15 +85,15 @@ subgroups:
       notes: "No B horizon."
   "XI/36":
     - code: "XI/361"
-      name: "{parent}, A encroûtement"
-      name_native: "{parent}, A encroûtement"
+      name: "{parent}, À encroûtement"
+      name_native: "{parent}, À encroûtement"
       tests:
         all_of:
           - calcareous_crust_cpcs: {kind: cemented, mineral: any}
       notes: "A cemented layer of carbonate or gypsum (petrocalcic, petrogypsic, a calcrete, a Ca or Cs cemented moderately or more)."
     - code: "XI/362"
-      name: "{parent}, A nodules"
-      name_native: "{parent}, A nodules"
+      name: "{parent}, À nodules"
+      name_native: "{parent}, À nodules"
       tests:
         all_of:
           - carbonate_nodules_cpcs: {}
@@ -122,8 +122,8 @@ subgroups:
           - salt_cpcs: {within: 100, ec: 4}
       notes: "EC of the saturated paste 4 dS/m or more in a layer within 100 cm; salts seen with no EC leave it undecided."
     - code: "XI/314"
-      name: "Sols à gley lessivés"
-      name_native: "Sols à gley lessivés"
+      name: "Sols à gley, lessivés"
+      name_native: "Sols à gley, lessivés"
       tests:
         all_of:
           - textural_b_leached_cpcs: {}

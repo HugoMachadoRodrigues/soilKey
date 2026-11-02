@@ -33,8 +33,8 @@ subgroups:
       notes: "Ice-cored mounds in patterned_ground."
   "II/13":
     - code: "II/131"
-      name: "Cryosols à buttes de faibles dimensions séparées par des fentes larges mais peu profondes"
-      name_native: "Cryosols à buttes de faibles dimensions séparées par des fentes larges mais peu profondes"
+      name: "Cryosols à buttes de faibles dimensions séparées par des fentes larges, mais peu profondes"
+      name_native: "Cryosols à buttes de faibles dimensions séparées par des fentes larges, mais peu profondes"
       tests:
         all_of:
           - frost_form_cpcs: {kind: small_hummocks}

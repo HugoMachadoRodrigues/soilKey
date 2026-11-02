@@ -2,13 +2,6 @@
 # from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
 subgroups:
   "III/11":
-    - code: "III/112"
-      name: "Sols vertiques"
-      name_native: "Sols vertiques"
-      tests:
-        all_of:
-          - slickensides_moderate_cpcs: {}
-      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/113"
       name: "{parent}, Hydromorphes"
       name_native: "{parent}, Hydromorphes"
@@ -23,6 +16,13 @@ subgroups:
         all_of:
           - salt_cpcs: {within: 100, ec: 4}
       notes: "EC of the saturated paste 4 dS/m or more within 100 cm (class III is keyed before class XII, so no upper limit)."
+    - code: "III/112"
+      name: "Sols vertiques"
+      name_native: "Sols vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/111"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -30,13 +30,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "III/12":
-    - code: "III/122"
-      name: "{parent}, Vertiques"
-      name_native: "{parent}, Vertiques"
-      tests:
-        all_of:
-          - slickensides_moderate_cpcs: {}
-      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/123"
       name: "{parent}, Hydromorphes"
       name_native: "{parent}, Hydromorphes"
@@ -58,6 +51,13 @@ subgroups:
         all_of:
           - self_mulching_cpcs: {depth: 10}
       notes: "A self-mulching surface, with fine or very fine structure from the surface to 10 cm or more (with no structure size recorded, met)."
+    - code: "III/122"
+      name: "{parent}, Vertiques"
+      name_native: "{parent}, Vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/121"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -65,13 +65,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "III/21":
-    - code: "III/212"
-      name: "{parent}, Vertiques"
-      name_native: "{parent}, Vertiques"
-      tests:
-        all_of:
-          - slickensides_moderate_cpcs: {}
-      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/213"
       name: "{parent}, Hydromorphes"
       name_native: "{parent}, Hydromorphes"
@@ -86,6 +79,13 @@ subgroups:
         all_of:
           - salt_cpcs: {within: 100, ec: 4}
       notes: "EC of the saturated paste 4 dS/m or more within 100 cm (class III is keyed before class XII, so no upper limit)."
+    - code: "III/212"
+      name: "{parent}, Vertiques"
+      name_native: "{parent}, Vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/211"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -93,13 +93,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "III/22":
-    - code: "III/222"
-      name: "{parent}, Vertiques"
-      name_native: "{parent}, Vertiques"
-      tests:
-        all_of:
-          - slickensides_moderate_cpcs: {}
-      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/223"
       name: "{parent}, Hydromorphes"
       name_native: "{parent}, Hydromorphes"
@@ -121,6 +114,13 @@ subgroups:
         all_of:
           - self_mulching_cpcs: {depth: 20}
       notes: "A self-mulching surface, with fine or very fine structure from the surface to 20 cm or more (with no structure size recorded, undecided)."
+    - code: "III/222"
+      name: "{parent}, Vertiques"
+      name_native: "{parent}, Vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
     - code: "III/221"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"

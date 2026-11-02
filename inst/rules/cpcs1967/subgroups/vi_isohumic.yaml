@@ -45,13 +45,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "VI/21":
-    - code: "VI/211"
-      name: "Chernozem très humifère"
-      name_native: "Chernozem très humifère"
-      tests:
-        all_of:
-          - organic_matter_cpcs: {rows: top20, above: 10}
-      notes: "A mean OM above 10 % over the top 20 cm."
     - code: "VI/213"
       name: "Chernozem à B textural"
       name_native: "Chernozem à B textural"
@@ -59,6 +52,13 @@ subgroups:
         all_of:
           - textural_b_leached_cpcs: {}
       notes: "A textural B: the clay index above 1.4 with 5 % clay more (the VII/12 reading)."
+    - code: "VI/211"
+      name: "Chernozem très humifère"
+      name_native: "Chernozem très humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: top20, above: 10}
+      notes: "A mean OM above 10 % over the top 20 cm."
     - code: "VI/212"
       name: "Chernozem modal"
       name_native: "Chernozem modal"

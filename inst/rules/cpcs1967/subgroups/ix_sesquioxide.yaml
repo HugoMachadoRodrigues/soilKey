@@ -101,8 +101,8 @@ subgroups:
           - vertic_cpcs: {}
       notes: "soilKey's protovertic (or vertic) horizon."
     - code: "IX/215"
-      name: "{parent}, des sols recalcifiés"
-      name_native: "{parent}, des sols recalcifiés"
+      name: "Sols recalcifiés"
+      name_native: "Sols recalcifiés"
       tests:
         all_of:
           - recalcified_cpcs: {}

@@ -10,8 +10,8 @@ subgroups:
           - organic_matter_cpcs: {rows: a, at_least: 10}
       notes: "10 % OM or more in the A (thickness-weighted; the range 10-20 % read by its lower end)."
     - code: "V/112"
-      name: "Rendzines à très forte effervescence (riches en calcaire actif)"
-      name_native: "Rendzines à très forte effervescence (riches en calcaire actif)"
+      name: "Rendzines à très forte effervescence (riche en calcaire actif)"
+      name_native: "Rendzines à très forte effervescence (riche en calcaire actif)"
       tests:
         all_of:
           - rendzina_carbonate_cpcs: {kind: active}

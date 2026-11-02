@@ -354,7 +354,9 @@ test_that("class VIII", {
                   munsell_value_dry = c(NA, 4, 6, 3, 5, 7), munsell_chroma_dry = c(NA, 1, 3, 2, 6, 3))
   .hit(pale, "VIII/121")
   .hit(.with_h(pale, redoximorphic_features_pct = c(NA, 0, 0, 0, 0, 10)), "VIII/122")
-  .hit(.with_h(pale, designation = c("Ao", "A1", "A2", "B2g", "B2fe", "C")), "VIII/123")
+  # an A2 over a Bg with no podzolic B under it (p. 51)
+  .hit(.with_h(pale, designation = c("Ao", "A1", "A2", "B2g", "BCg", "C")), "VIII/123")
+  expect_false(identical(.key(.with_h(pale, designation = c("Ao", "A1", "A2", "B2g", "B2fe", "C")))$levels$code[4], "VIII/123"))
   .hit(.with_h(pale, designation = c("Ao", "A1", "A2", "g", "B2fe", "C"), oc_pct = c(35, 5, 0.5, 0.4, 1.2, 0.2),
                n_total_pct = c(1.2, 0.2, 0.03, 0.03, 0.06, 0.02)), "VIII/124")
   ap <- .fr(list(designation = c("Ap", "B2h", "B2fe", "C"), top_cm = c(0, 20, 30, 55), bottom_cm = c(20, 30, 55, 100),
@@ -412,6 +414,9 @@ test_that("class IX", {
   .hit(.with_h(pl, slickensides = c(NA, NA, "few", NA), structure_size = c(NA, NA, "coarse", NA)), "IX/113")
   # a fine structure at depth is not the coarse one of IX/113
   .hit(.with_h(pl, slickensides = c(NA, NA, "few", NA), structure_size = c(NA, NA, "fine", NA)), "IX/111")
+  # a protovertic B above 50 cm over a coarse prismatic B below it (IX/113)
+  .hit(.with_h(pl, slickensides = c(NA, "few", NA, NA), structure_size = c(NA, NA, "coarse", NA),
+               structure_type = c(NA, NA, "prismatic", NA)), "IX/113")
   sand <- .fr(list(designation = c("A1", "B21", "B22", "C"), top_cm = c(0, 20, 50, 100), bottom_cm = c(20, 50, 100, 140),
                    oc_pct = c(0.4, 0.2, 0.15, 0.1), n_total_pct = c(0.04, 0.02, 0.015, 0.01), clay_pct = c(5, 7, 8, 8),
                    silt_pct = c(5, 5, 5, 5), sand_pct = c(92, 88, 87, 89), cec_cmol = c(2, 3, 3, 2), bs_pct = c(70, 85, 55, 60),

@@ -73,8 +73,9 @@
 # Hard rock under a set of rows: an R, or a layer strongly cemented or
 # indurated (or an m of the notation) that is not a calcareous crust.
 .cpcs_hard_rock_rows <- function(x) {
-  cem <- .scsj_txt(x$h, "cementation_class")
-  x$rock | (((!is.na(cem) & grepl("strong|indurat", cem)) | x$des$m %in% TRUE) & !(x$des$ca %in% TRUE))
+  cem <- .scsj_txt(x$h, "cementation_class"); pan <- .scsj_txt(x$h, "pan_type")
+  crust <- x$des$ca %in% TRUE | (!is.na(pan) & grepl("calcrete|petrocalc|cro\u00fbte|croute|encro\u00fbt", pan))
+  x$rock | (((!is.na(cem) & grepl("strong|indurat", cem)) | x$des$m %in% TRUE) & !crust)
 }
 
 # A calcareous layer: carbonate, a positive effervescence, or a calcareous
@@ -94,12 +95,14 @@
 # undesignated profile, the rows below the A with more than 0.5 % OM.
 .cpcs_b_kind_rows <- function(x) {
   b <- .cpcs_b_rows(x)
-  b <- b[!(x$des$trans[b] %in% TRUE) & !(x$des$bstruct[b] %in% TRUE) & !is.na(x$dtop[b])]
+  sy <- x$des$h %in% TRUE | x$des$fe %in% TRUE
+  b <- b[(!(x$des$trans[b] %in% TRUE) | sy[b]) & !(x$des$bstruct[b] %in% TRUE) & !is.na(x$dtop[b])]
   b <- b[x$role[b] %in% "B" | is.na(x$om[b]) | x$om[b] > 0.5]
   hs <- x$des$h[b] %in% TRUE; fs <- x$des$fe[b] %in% TRUE
   v <- .cpcs_num(x$h, "munsell_value_moist")[b]; cr <- .cpcs_num(x$h, "munsell_chroma_moist")[b]
   sym <- hs | fs
-  kh <- ifelse(sym, hs, ifelse(!is.na(v) & !is.na(cr), v <= 3 & cr <= 2, NA))
+  kh <- ifelse(sym, hs, ifelse(!is.na(v) & !is.na(cr), v <= 3 & cr <= 2,
+               ifelse((!is.na(cr) & cr > 2) | (!is.na(v) & v > 3), FALSE, NA)))
   kf <- ifelse(sym, fs, ifelse(!is.na(cr), cr >= 4, NA))
   list(b = b, h = kh, fe = kf)
 }
@@ -119,9 +122,21 @@
       humoferruginous = length(HF) > 0L || (length(H) && length(F) && min(top[H]) < max(top[F])),
       NA)
   }
-  fill <- function(v, w) ifelse(is.na(v), w, v)
-  out <- c(judge(fill(k$h, FALSE), fill(k$fe, FALSE)), judge(fill(k$h, TRUE), fill(k$fe, FALSE)),
-           judge(fill(k$h, FALSE), fill(k$fe, TRUE)))
+  # every assignment of the rows of unknown kind (a Bh, a Bfe, both or
+  # neither): decided only when they all give the same answer
+  u <- which(is.na(k$h) | is.na(k$fe))
+  if (!length(u)) return(judge(k$h, k$fe))
+  if (length(u) > 6L) return(NA)
+  opts <- lapply(u, function(i) {
+    hv <- if (is.na(k$h[i])) c(TRUE, FALSE) else k$h[i]; fv <- if (is.na(k$fe[i])) c(TRUE, FALSE) else k$fe[i]
+    expand.grid(h = hv, f = fv)
+  })
+  idx <- expand.grid(lapply(opts, function(o) seq_len(nrow(o))))
+  out <- vapply(seq_len(nrow(idx)), function(r) {
+    kh <- k$h; kf <- k$fe
+    for (j in seq_along(u)) { o <- opts[[j]][idx[r, j], ]; kh[u[j]] <- o$h; kf[u[j]] <- o$f }
+    judge(kh, kf)
+  }, NA)
   if (all(out)) TRUE else if (!any(out)) FALSE else NA
 }
 
@@ -172,9 +187,13 @@ deep_hydromorphy_cpcs <- function(pedon) {
   # a hydromorphic layer starting at or below the base of the podzolic B,
   # none above the B (Hugo, 2026-11-01)
   b <- .cpcs_b_rows(x); b <- b[!is.na(x$dtop[b])]
+  hyd <- .cpcs_hydromorphic_rows(x)
+  # the podzolic B: the B rows above the first hydromorphic B row (a Bg of
+  # pseudogley under the B, pp. 51-52, belongs below it)
+  hb <- b[hyd[b] %in% TRUE]
+  if (length(hb)) b <- b[x$dtop[b] < min(x$dtop[hb])]
   if (!length(b)) return(.cpcs_sub_result("deep_hydromorphy_cpcs", FALSE, x, where = "VIII, pp. 50-52"))
   base <- max(ifelse(is.na(x$dbot[b]), x$dtop[b], x$dbot[b]))
-  hyd <- .cpcs_hydromorphic_rows(x)
   rows <- .cpcs_mineral_rows(x); rows <- rows[!is.na(x$dtop[rows])]
   deep <- any(hyd[rows[x$dtop[rows] >= base]] %in% TRUE)
   above <- rows[x$dtop[rows] < min(x$dtop[b])]
@@ -290,10 +309,19 @@ vertic_cpcs <- function(pedon, from = 0, prismatic_b = FALSE, coarse = FALSE) {
   pv <- tryCatch(protovertic(pedon), error = function(e) NULL)
   vh <- tryCatch(vertic_horizon(pedon), error = function(e) NULL)
   lay <- unique(c(if (isTRUE(pv$passed)) as.integer(pv$layers), if (isTRUE(vh$passed)) as.integer(vh$layers)))
-  lay <- lay[!is.na(x$dtop[lay]) & x$dtop[lay] >= from]
   sz <- .scsj_txt(x$h, "structure_size")
   big <- !is.na(sz) & grepl("coarse|gross", sz)
-  if (isTRUE(coarse)) lay <- lay[is.na(sz[lay]) | big[lay]]
+  if (isTRUE(coarse)) {
+    # IX/113: vertic anywhere, and a coarse structure (or none recorded) in a
+    # row reaching below `from` cm ('\u00e0 structure grossi\u00e8re en profondeur')
+    rows <- .cpcs_mineral_rows(x); rows <- rows[!x$rock[rows] & !is.na(x$dtop[rows])]
+    deep <- rows[ifelse(is.na(x$dbot[rows]), x$dtop[rows] + 1, x$dbot[rows]) > from]
+    # the sizes recorded there decide; none recorded does not rule it out
+    rec <- deep[!is.na(sz[deep])]
+    if (length(rec) && !any(big[rec])) lay <- integer(0)
+  } else {
+    lay <- lay[!is.na(x$dtop[lay]) & x$dtop[lay] >= from]
+  }
   prism <- FALSE
   if (isTRUE(prismatic_b)) {
     b <- .cpcs_group_b_rows(x); b <- b[!is.na(x$dtop[b]) & x$dtop[b] >= from]
@@ -335,12 +363,13 @@ self_mulching_cpcs <- function(pedon, depth = 10) {
     rows <- .cpcs_mineral_rows(x); rows <- rows[!x$rock[rows] & !is.na(x$dtop[rows])]
     sz <- .scsj_txt(x$h, "structure_size")
     if (!length(rows) || all(is.na(sz[rows]))) p <- if (depth <= 10) TRUE else NA else {
-      reach <- 0
+      reach <- 0; open <- FALSE
       for (i in rows) {
-        if (is.na(sz[i]) || !grepl("fine|fin\\b", sz[i])) break
+        if (is.na(sz[i])) { open <- TRUE; break }
+        if (!grepl("fine|fin\\b", sz[i])) break
         reach <- if (is.na(x$dbot[i])) x$dtop[i] else x$dbot[i]
       }
-      p <- reach >= depth
+      p <- if (reach >= depth) TRUE else if (open) NA else FALSE
     }
   }
   .cpcs_sub_result("self_mulching_cpcs", p, x, list(self_mulching = sm, fine_structure_to_cm = reach), "III, pp. 28-29")
@@ -565,7 +594,16 @@ b_ph_cpcs <- function(pedon, below = 5.5) {
 #' @export
 allophane_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  .cpcs_sub_result("allophane_cpcs", .cpcs_allophanic(x), x, where = "VII/113, p. 46")
+  # the allophane of II/23 in the top 50 cm or in the (B) (Hugo, 2026-11-01)
+  p <- .cpcs_allophanic(x)
+  b <- .cpcs_group_b_rows(x)
+  if (!isTRUE(p) && length(b)) {
+    naf <- .cpcs_num(x$h, "ph_naf")[b]
+    alo <- .cpcs_num(x$h, "al_ox_pct")[b]; feo <- .cpcs_num(x$h, "fe_ox_pct")[b]
+    ox <- alo + 0.5 * ifelse(is.na(feo), 0, feo)
+    if (any((!is.na(naf) & naf >= 9.5) | (!is.na(ox) & ox >= 2))) p <- TRUE
+  }
+  .cpcs_sub_result("allophane_cpcs", p, x, where = "VII/113, p. 46")
 }
 
 #' @rdname cpcs1967_subgroups
@@ -732,7 +770,7 @@ humic_horizon_cpcs <- function(pedon, kind) {
     th <- .cpcs_thickness(x, a)
     rows <- .cpcs_mineral_rows(x)
     bot <- suppressWarnings(max(x$dbot[rows], na.rm = TRUE))
-    p <- if (is.na(th) || !is.finite(bot)) NA else th >= 50 && th >= (bot - x$surface) / 2
+    p <- if (is.na(th) || !is.finite(bot)) NA else th >= 50 && th >= bot / 2
   }
   .cpcs_sub_result("humic_horizon_cpcs", p, x, list(kind = kind), "X/221-222, p. 69")
 }
@@ -778,7 +816,14 @@ no_b_cpcs <- function(pedon) {
 podzolic_path_cpcs <- function(pedon, path) {
   x <- .cpcs_profile(pedon)
   p <- switch(path,
-    a2_over_bg = .cpcs_podzolic_paths(x)$b,
+    a2_over_bg = {
+      # 'il n'y a pas d'horizon B de type podzolique' (p. 51): no Bh, Bfe or Bs
+      # under the Bg
+      bb <- .cpcs_b_rows(x); bb <- bb[!is.na(x$dtop[bb])]
+      bg <- bb[x$des$g[bb] %in% TRUE]
+      pz <- if (length(bg)) bb[x$dtop[bb] > min(x$dtop[bg]) & (x$des$h[bb] %in% TRUE | x$des$fe[bb] %in% TRUE)] else integer(0)
+      .cpcs_and(.cpcs_podzolic_paths(x)$b, !length(pz))
+    },
     ap_over_b = .cpcs_podzolic_paths(x)$c,
     humic_a1 = .cpcs_crypto_paths(x)$humic,
     brown_b = .cpcs_crypto_paths(x)$brown,
@@ -1043,7 +1088,7 @@ solonchak_solonetz_cpcs <- function(pedon, kind) {
   if (inherits(pedon, "PedonRecord") && !is.null(lv) && nrow(lv) == 3L &&
       length(rules$subgroups[[lv$code[3L]]] %||% list()) &&
       !any(grepl("^subgroups:", res$provisional_because)))
-    res$warnings <- c(res$warnings, sprintf(
+    res$warnings <- c(grep("^No class of the subgroups list", res$warnings, value = TRUE, invert = TRUE), sprintf(
       "Sous-groupe non d\u00e9fini par le texte: no subgroup of %s fits, so the name stops at the group.", lv$code[3L]))
   if (!inherits(pedon, "PedonRecord") || is.null(lv) || nrow(lv) < 4L) return(res)
   grp <- lv$code[3L]; sg <- lv$code[4L]
