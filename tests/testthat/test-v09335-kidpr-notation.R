@@ -204,7 +204,7 @@ test_that("an FAO profile is not read as Russian; its letters give hints only", 
   expect_false(.kd(c("Ap", "Bt", "Bk", "C"), list(country = "Russia"))$kidpr)
   h <- .kd(c("Oi", "Oe", "Ah", "E", "Bhs", "Btn", "Bss", "Bw", "Cr", "Bg", "Az", "Cf"),
            list(designation_system = "fao2006"))
-  expect_identical(h$hint[[1L]], character(0))
+  expect_identical(h$hint[[1L]], c("T", "H", "O"))
   expect_identical(h$hint[[2L]], c("T", "H", "O"))
   expect_identical(h$hint[[4L]], c("E", "EL", "AEL", "BEL", "SEL"))
   expect_identical(h$hint[[5L]], "BHF")

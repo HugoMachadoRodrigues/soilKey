@@ -971,7 +971,8 @@
 #' Btn, Bn ASN or BSN; Bss (FAO i) V; Bs, Bh, and the iron B of the Soviet
 #' and Canadian notations (Bf, Bhf, Bfe) BHF; Bk, Bca BCA or CAT; Bw BM, BFM or
 #' BMK; r G; z on a B or C the feature s; k or ca on a C the feature ca; cs
-#' the feature cs; g the feature g; Oi, L litter; Oe, Oa, H T, H or O by the
+#' the feature cs; g the feature g; Oi, L litter in a run of 5 cm or less at
+#' the top, else T, H or O; Oe, Oa, H T, H or O by the
 #' decomposition; @ the feature @; f on an A or C permafrost.
 #' @noRd
 .kidpr_hint <- function(d, caps = FALSE) {
@@ -1047,7 +1048,8 @@
   }
   if (grepl("ca", low, fixed = TRUE)) l <- unique(c(setdiff(l, c("c", "a")), "k"))
   if (m == "L" || (m == "O" && "i" %in% l)) {
-    hint(character(0), note = sprintf("%s: litter, not diagnostic", s))
+    hint(.KIDPR_HINT_GROUPS$organic,
+         note = sprintf("%s: litter, not diagnostic, in a run of 5 cm or less at the top; else T, H or O by the decomposition", s))
   } else if (m == "H" || (m == "O" && any(c("e", "a") %in% l))) {
     hint(.KIDPR_HINT_GROUPS$organic, note = sprintf("%s: T, H or O by the decomposition", s))
   } else if (m == "O") {
