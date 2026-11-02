@@ -74,7 +74,7 @@ attributes:
     type: "character"
     unit: "-"
     description: "Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces)."
-    systems: [wrb2022, asc3, scsj2017]
+    systems: [wrb2022, asc3, scsj2017, cpcs1967]
   - name: landform_element
     section: "Landscape & surface"
     type: "character"
@@ -116,7 +116,7 @@ attributes:
     type: "character"
     unit: "-"
     description: "Condition of the soil surface, as text with items separated by ';' ('cracking; self-mulching'). Read by the ASC key: surface cracks for the Vertosols, self-mulching and crusts for the Vertosol great groups, and a saline or salt surface for the Salic Hydrosols and the Hypersalic and Hypergypsic suborders."
-    systems: [asc3]
+    systems: [asc3, cpcs1967]
   - name: surface_gravel_pct
     section: "Landscape & surface"
     type: "numeric"
@@ -140,13 +140,13 @@ attributes:
     type: "character"
     unit: "-"
     description: "Parent material, as text. Read by the WRB Rendzic qualifier (limestone, chalk, dolomite, carbonate or marl) and the NZSC Melanic Soils (calcareous, mafic or ultramafic rock); also shown by print() and the reports."
-    systems: [wrb2022, nzsc4, scsj2017]
+    systems: [wrb2022, nzsc4, scsj2017, cpcs1967]
   - name: land_use
     section: "Landscape & surface"
     type: "character"
     unit: "-"
     description: "Land use, as text. Read by the WRB Drainic (artificial drainage), Tidalic (tidal, salt marsh, mangrove) and Escalic (built terraces) qualifiers."
-    systems: [wrb2022, scsj2017]
+    systems: [wrb2022, scsj2017, cpcs1967]
   - name: vegetation
     section: "Landscape & surface"
     type: "character"
@@ -188,7 +188,7 @@ attributes:
     unit: "-"
     description: "USDA soil temperature regime, compared in lower case. Read by the USDA key (the cryic suborders and great groups, and the family temperature class, which is otherwise estimated from lat and elevation_m) and by the CSSC key when mean_annual_soil_temp_C is absent (Gray Brown Luvisols: mesic or thermic; Chernozemic climate: not pergelic or gelic)."
     allowed: ["gelic", "cryic", "frigid", "mesic", "thermic", "hyperthermic", "isofrigid", "isomesic", "isothermic", "isohyperthermic", "pergelic"]
-    systems: [usda, cssc3, scsj2017]
+    systems: [usda, cssc3, scsj2017, cpcs1967]
   - name: mean_annual_soil_temp_C
     section: "Water, climate & regimes"
     type: "numeric"
@@ -264,9 +264,9 @@ attributes:
     section: "Description & notation"
     type: "character"
     unit: "-"
-    description: "Notation of the horizon designations. Read by the CSSC, ASC and NZSC keys to decide whether the designations are in their notation (otherwise judged from the designations and the country). Written by the NatSoil ('asc') and NPDB ('cssc') loaders."
-    allowed: ["cssc", "cssc3", "canadian", "canada", "asc", "australian", "field handbook", "nchs", "australian field handbook", "nzsc", "nz", "new zealand"]
-    systems: [cssc3, asc3, nzsc4, scsj2017]
+    description: "Notation of the horizon designations. Read by the CSSC, ASC and NZSC keys to decide whether the designations are in their notation (otherwise judged from the designations and the country), and by the CPCS key ('cpcs': the old French notation of 1967, otherwise recognised by its symbols, never by the country). Written by the NatSoil ('asc') and NPDB ('cssc') loaders."
+    allowed: ["cssc", "cssc3", "canadian", "canada", "asc", "australian", "field handbook", "nchs", "australian field handbook", "nzsc", "nz", "new zealand", "cpcs", "cpcs1967", "french"]
+    systems: [cssc3, asc3, nzsc4, scsj2017, cpcs1967]
   - name: nasis_diagnostic_features
     section: "Description & notation"
     type: "character"
@@ -278,7 +278,7 @@ attributes:
     type: "logical"
     unit: "-"
     description: "The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material."
-    systems: [nzsc4, scsj2017]
+    systems: [nzsc4, scsj2017, cpcs1967]
   - name: mechanical_mixing_depth_cm
     section: "Description & notation"
     type: "numeric"
@@ -754,7 +754,7 @@ attributes:
     type: "logical"
     unit: "-"
     description: "The surface is bare, structureless single grains with marks of wind reworking (deflation). HSCS 2024 subtype futó (Sandy soils)."
-    systems: [hscs2024]
+    systems: [hscs2024, cpcs1967]
   - name: jp_edition
     section: "Description & notation"
     type: "character"

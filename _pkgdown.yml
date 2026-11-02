@@ -169,6 +169,19 @@ reference:
       - classify_cscj2011
       - make_cscj2011_example
 
+  - title: "French soil classification CPCS 1967 (experimental)"
+    desc: >
+      The twelve classes of the 1967 classification of the Commission de
+      Pedologie et de Cartographie des Sols, named in French. The text gives
+      no key: the classes are keyed in an order built from its statements of
+      precedence. Reads the old French horizon notation, organic matter
+      (1.72 x C), the intensity of hydromorphy and halomorphy, Ki and the
+      CEC of the clay, the C/N of the B and the fall of organic matter with
+      depth.
+    contents:
+      - classify_cpcs1967
+      - make_cpcs1967_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

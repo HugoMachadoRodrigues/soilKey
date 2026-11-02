@@ -1,0 +1,31 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: cpcs1967
+order: 10
+aliases: [cpcs, france]
+legacy: false
+default: false
+status: experimental
+namespace: cpcs
+classifier: classify_cpcs1967
+result_slot: cpcs1967
+top_level: classes
+levels: [classes]
+display:
+  en: "French soil classification CPCS (1967)"
+  pt: "Classificação francesa de solos CPCS (1967)"
+  native: "Classification des sols (CPCS 1967)"
+  result: "CPCS 1967"
+edition: "Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols"
+citation: >
+  Commission de Pédologie et de Cartographie des Sols (1967).
+  Classification des sols. ENSA, Grignon. 87 pp. Digitised by the
+  Association Française pour l'Étude du Sol (2011), with corrections by
+  D. Baize.
+version: "Classification des sols, édition 1967 (AFES digitisation of 2011)"
+implementation_status: "soilKey v0.9.330 -- the 12 classes, keyed in an order built from the text's statements of precedence; the sub-classes, groups and subgroups follow"
+source: |
+  Commission de Pédologie et de Cartographie des Sols (1967). Classification
+  des sols. The definitions and rules of classification of each class
+  (pp. 17-79); the horizon notation (pp. 11-13). The CPCS gives no key: the
+  order of the classes is soilKey's, from the text's own statements of
+  precedence (see readings.yaml).
