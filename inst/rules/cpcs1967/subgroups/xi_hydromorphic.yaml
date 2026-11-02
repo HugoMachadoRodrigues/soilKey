@@ -1,0 +1,159 @@
+# Sous-groupes des sols hydromorphes (pp. 74-76), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "XI/11":
+    - code: "XI/111"
+      name: "{parent}, Oligotrophes"
+      name_native: "{parent}, Oligotrophes"
+      tests:
+        all_of:
+          - peat_trophic_cpcs: {kind: oligotrophic}
+      notes: "Peat pH(H2O) under 5.5, thickness-weighted over the peat of the top 80 cm of the ground; with no pH, a high-moor peat_moor_type."
+    - code: "XI/112"
+      name: "{parent}, Mésotrophes et eutrophes"
+      name_native: "{parent}, Mésotrophes et eutrophes"
+      tests:
+        all_of:
+          - peat_trophic_cpcs: {kind: eutrophic}
+      notes: "Peat pH(H2O) 5.5 or more; with no pH, a low-moor peat_moor_type."
+  "XI/12":
+    - code: "XI/121"
+      name: "{parent}, Oligotrophes"
+      name_native: "{parent}, Oligotrophes"
+      tests:
+        all_of:
+          - peat_trophic_cpcs: {kind: oligotrophic}
+      notes: "Peat pH(H2O) under 5.5, thickness-weighted over the peat of the top 80 cm of the ground; with no pH, a high-moor peat_moor_type."
+    - code: "XI/122"
+      name: "{parent}, Mésotrophes et eutrophes"
+      name_native: "{parent}, Mésotrophes et eutrophes"
+      tests:
+        all_of:
+          - peat_trophic_cpcs: {kind: eutrophic}
+      notes: "Peat pH(H2O) 5.5 or more; with no pH, a low-moor peat_moor_type."
+  "XI/13":
+    - code: "XI/131"
+      name: "{parent}, Oligotrophes"
+      name_native: "{parent}, Oligotrophes"
+      tests:
+        all_of:
+          - peat_trophic_cpcs: {kind: oligotrophic}
+      notes: "Peat pH(H2O) under 5.5, thickness-weighted over the peat of the top 80 cm of the ground; with no pH, a high-moor peat_moor_type."
+    - code: "XI/132"
+      name: "{parent}, Mésotrophes et eutrophes"
+      name_native: "{parent}, Mésotrophes et eutrophes"
+      tests:
+        all_of:
+          - peat_trophic_cpcs: {kind: eutrophic}
+      notes: "Peat pH(H2O) 5.5 or more; with no pH, a low-moor peat_moor_type."
+  "XI/21":
+    - code: "XI/211"
+      name: "{parent}, Salés"
+      name_native: "{parent}, Salés"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more in a layer within 100 cm; salts seen with no EC leave it undecided."
+    - code: "XI/212"
+      name: "{parent}, à anmoor acide"
+      name_native: "{parent}, à anmoor acide"
+      tests:
+        all_of:
+          - anmoor_cpcs: {kind: acid}
+      notes: "An anmoor (C/N under 20 in the humic horizon, or humus_form anmoor) that is not calcic."
+    - code: "XI/213"
+      name: "{parent}, à anmoor calcique"
+      name_native: "{parent}, à anmoor calcique"
+      tests:
+        all_of:
+          - anmoor_cpcs: {kind: calcic}
+      notes: "An anmoor with carbonate 1 % or more or an effervescence (else pH 7 or more)."
+    - code: "XI/214"
+      name: "{parent}, à hydromor"
+      name_native: "{parent}, à hydromor"
+      tests:
+        all_of:
+          - anmoor_cpcs: {kind: hydromor}
+      notes: "humus_form hydromor; not recorded, a C/N of 20 or more in the humic horizon."
+  "XI/22":
+    - code: "XI/221"
+      name: "{parent}, Sans horizon B"
+      name_native: "{parent}, Sans horizon B"
+      tests:
+        all_of:
+          - no_b_cpcs: {}
+      notes: "No B horizon."
+  "XI/36":
+    - code: "XI/361"
+      name: "{parent}, A encroûtement"
+      name_native: "{parent}, A encroûtement"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: cemented, mineral: any}
+      notes: "A cemented layer of carbonate or gypsum (petrocalcic, petrogypsic, a calcrete, a Ca or Cs cemented moderately or more)."
+    - code: "XI/362"
+      name: "{parent}, A nodules"
+      name_native: "{parent}, A nodules"
+      tests:
+        all_of:
+          - carbonate_nodules_cpcs: {}
+      notes: "Carbonate nodules or concretions within 100 cm: their form recorded, hard carbonate, or a Can."
+  "XI/34":
+    - code: "XI/341"
+      name: "Sols à nappe perchée et à nappe phréatique profonde"
+      name_native: "Sols à nappe perchée et à nappe phréatique profonde"
+      tests:
+        all_of:
+          - amphigley_kind_cpcs: {kind: two_tables}
+      notes: "A layer without hydromorphy between the pseudogley and the deep gley."
+    - code: "XI/342"
+      name: "Sols à battement de nappe phréatique de forte amplitude"
+      name_native: "Sols à battement de nappe phréatique de forte amplitude"
+      tests:
+        all_of:
+          - amphigley_kind_cpcs: {kind: fluctuating}
+      notes: "The pseudogley passing straight into the gley (a g over a G of the CPCS notation, or an FAO g over the gley)."
+  "XI/31":
+    - code: "XI/313"
+      name: "Sols à gley salés"
+      name_native: "Sols à gley salés"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more in a layer within 100 cm; salts seen with no EC leave it undecided."
+    - code: "XI/314"
+      name: "Sols à gley lessivés"
+      name_native: "Sols à gley lessivés"
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+      notes: "A textural B: the clay index above 1.4 with 5 % clay more (the VII/12 reading)."
+    - code: "XI/311"
+      name: "Sols à gley peu profond (< 80 cm)"
+      name_native: "Sols à gley peu profond (< 80 cm)"
+      tests:
+        all_of:
+          - gley_depth_cpcs: {below: 80}
+      notes: "The first reduced layer starting above 80 cm."
+    - code: "XI/312"
+      name: "Sols à gley profond (> 80 cm)"
+      name_native: "Sols à gley profond (> 80 cm)"
+      tests:
+        all_of:
+          - gley_depth_cpcs: {at_least: 80}
+      notes: "The first reduced layer starting at 80 cm or deeper."
+  "XI/32":
+    - code: "XI/321"
+      name: "Sols à pseudogley de surface (pélosols etc.)"
+      name_native: "Sols à pseudogley de surface (pélosols etc.)"
+      tests:
+        all_of:
+          - pseudogley_kind_cpcs: {kind: surface}
+      notes: "Hydromorphic signs already in the first mineral row."
+    - code: "XI/322"
+      name: "Sols à nappe perchée"
+      name_native: "Sols à nappe perchée"
+      tests:
+        all_of:
+          - pseudogley_kind_cpcs: {kind: perched}
+      notes: "A perched water table recorded, or a slowly permeable layer (an argic clay step, a fragipan, a cemented layer) directly under a pseudogley row."

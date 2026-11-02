@@ -1,0 +1,118 @@
+# Sous-groupes des sols podzolisés (pp. 50-54), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "VIII/11":
+    - code: "VIII/115"
+      name: "Podzols à hydromorphie profonde"
+      name_native: "Podzols à hydromorphie profonde"
+      tests:
+        all_of:
+          - deep_hydromorphy_cpcs: {}
+      notes: "A hydromorphic layer (5 % mottles or more, g or G, a reduced matrix) starting at or below the base of the podzolic B, none above the B."
+    - code: "VIII/111"
+      name: "Podzols humiques"
+      name_native: "Podzols humiques"
+      tests:
+        all_of:
+          - podzol_b_kind_cpcs: {kind: humic}
+      notes: "A Bh and no Bfe (the notation, else the moist colour: value 3 or less and chroma 2 or less)."
+    - code: "VIII/112"
+      name: "Podzols ferrugineux"
+      name_native: "Podzols ferrugineux"
+      tests:
+        all_of:
+          - podzol_b_kind_cpcs: {kind: ferruginous}
+      notes: "A Bfe and no Bh (the notation, else moist chroma 4 or more)."
+    - code: "VIII/113"
+      name: "Podzols humo-ferrugineux"
+      name_native: "Podzols humo-ferrugineux"
+      tests:
+        all_of:
+          - podzol_b_kind_cpcs: {kind: humoferruginous}
+      notes: "A Bh over a Bfe, or a B marked both (Bhs, Bhfe)."
+    - code: "VIII/114"
+      name: "Sols humo-cendreux"
+      name_native: "Sols humo-cendreux"
+      tests:
+        all_of:
+          - no_b_cpcs: {}
+      notes: "No B: the ashy A2 alone."
+  "VIII/12":
+    - code: "VIII/122"
+      name: "Sols podzoliques à hydromorphie profonde"
+      name_native: "Sols podzoliques à hydromorphie profonde"
+      tests:
+        all_of:
+          - deep_hydromorphy_cpcs: {}
+      notes: "A hydromorphic layer (5 % mottles or more, g or G, a reduced matrix) starting at or below the base of the podzolic B, none above the B."
+    - code: "VIII/123"
+      name: "Sols podzoliques à pseudogley"
+      name_native: "Sols podzoliques à pseudogley"
+      tests:
+        all_of:
+          - podzolic_path_cpcs: {path: a2_over_bg}
+      notes: "An A2 directly over a Bg."
+    - code: "VIII/124"
+      name: "Sols podzoliques à stagnogley"
+      name_native: "Sols podzoliques à stagnogley"
+      tests:
+        all_of:
+          - stagnogley_a2_cpcs: {}
+      notes: "Between the A2 and the B, a g master or a reduced greenish-white layer (5Y or bluer, or neutral; value 6 or more; chroma 2 or less; or a positive Childs test)."
+    - code: "VIII/125"
+      name: "Sols podzoliques anthropomorphes"
+      name_native: "Sols podzoliques anthropomorphes"
+      tests:
+        all_of:
+          - podzolic_path_cpcs: {path: ap_over_b}
+      notes: "An Ap directly over the podzolic B."
+    - code: "VIII/121"
+      name: "Sols podzoliques modaux"
+      name_native: "Sols podzoliques modaux"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VIII/13":
+    - code: "VIII/132"
+      name: "Sols ocre-podzoliques à hydromorphie profonde"
+      name_native: "Sols ocre-podzoliques à hydromorphie profonde"
+      tests:
+        all_of:
+          - deep_hydromorphy_cpcs: {}
+      notes: "A hydromorphic layer (5 % mottles or more, g or G, a reduced matrix) starting at or below the base of the podzolic B, none above the B."
+    - code: "VIII/131"
+      name: "Sols ocre-podzoliques modaux"
+      name_native: "Sols ocre-podzoliques modaux"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VIII/14":
+    - code: "VIII/141"
+      name: "Sols crypto-podzoliques humifères"
+      name_native: "Sols crypto-podzoliques humifères"
+      tests:
+        all_of:
+          - podzolic_path_cpcs: {path: humic_a1}
+      notes: "An A1 of 30 to 60 cm with more than 10 % OM."
+    - code: "VIII/142"
+      name: "Sols crypto-podzoliques bruns"
+      name_native: "Sols crypto-podzoliques bruns"
+      tests:
+        all_of:
+          - podzolic_path_cpcs: {path: brown_b}
+      notes: "A brown B (moist chroma 4 or less) with more than 2 % OM."
+  "VIII/31":
+    - code: "VIII/311"
+      name: "Podzols humiques à gley"
+      name_native: "Podzols humiques à gley"
+      tests:
+        all_of:
+          - podzol_gley_cpcs: {kind: humic}
+      notes: "A Bh with a gley (a reduced matrix, or a G) above it or in contact."
+    - code: "VIII/312"
+      name: "Podzols ferrugineux hydromorphes"
+      name_native: "Podzols ferrugineux hydromorphes"
+      tests:
+        all_of:
+          - podzol_gley_cpcs: {kind: concretioned}
+      notes: "A concretioned or cemented B."

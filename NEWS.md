@@ -1,3 +1,32 @@
+# soilKey 0.9.333 (2026-11-01)
+
+## France: the 276 subgroups of the CPCS 1967
+
+`classify_cpcs1967()` now keys a pedon to its subgroup, the fourth and last registry level, `subgroups`. A subgroup the text names in full stands alone ("Podzols humo-ferrugineux", "Chernozem modal"); one it names by an adjective follows its group ("Rankers, à mor", "Sols ferrallitiques moyennement désaturés en (B) typiques, Faiblement appauvri"). `name` is now the deepest level.
+
+* **Subgroups.** The text names most subgroups by a secondary process or by one side of a measure; soilKey's readings are listed in `readings.yaml`.
+  * A subgroup the data cannot decide leaves the name provisional.
+  * When no listed subgroup of a group fits (27 groups have no modal), the name stops at the group and the trace says why; 22 groups have no subgroups.
+  * The other subgroups whose tests pass are noted in the trace as "intergrade vers ...", and a brown soil with hydromorphic signs only below its (B) as a "faciès hydromorphe".
+* **Five new fields:** `humus_form` (site: mull, moder, mor, hydromull, hydromoder, hydromor, anmoor, tourbe), `caco3_active_pct`, `coarse_sand_pct`, `fine_sand_pct` and `gibbsite_pct` (horizon).
+
+### Hugo's decisions (2026-11-01)
+
+* **Inventory:** the main text of the AFES edition, 276 subgroups; I/16 has no common subgroups; the two peat subgroups under each peat group (XI/111 to XI/132); "Sans horizon B" is XI/221; VII/115 and VII/413 included; IV/22 takes the subgroups of IV/21. Codes: the class and the text's three digits (I/111 under I/11).
+* **Order:** the printed order, modal last; a subgroup that splits the group by a measure after those of a secondary process, and a composite subgroup before its parts.
+* **Hydromorphy:** signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm; also a water table within 1 m for "à nappe"; pronounced signs or concretions within 50 cm for the vertisols; signs from 50 cm and none above for II/142.
+* **Shallow profiles:** by the profile type: hard rock directly under the A for the lithosols, C or R within 45 cm for IV x13 and 50 cm for VII/411, a (B) on hard non-calcareous rock within 50 cm for VII/115.
+* **Vertisols:** "vertiques" with slickensides common at most; self-mulching with fine structure to 10 or 20 cm.
+* **Salt and sodium:** EC 4 dS/m or more, exchangeable Na 6 % of the CEC or more, within 100 cm.
+* **Rendzinas:** a very strong effervescence or 10 % active carbonate (V/112), under 10 % carbonate with 15 % coarse fragments (V/114), a dry climate (V/115).
+* **Crusts:** an encroûtement is soilKey's calcic horizon, 5 % secondary carbonates or a Ca of the notation; a croûte is a cemented layer.
+* **Isohumic soils:** vertique = protovertic or a coarse prismatic (B); à B textural = the textural B of VII/12; rubéfié = the reddened B of class IX.
+* **Brunified soils:** the measures decide (allophane, clay index, pH of the B); the colour words of the A2 and the humus are descriptions, except the ashy A2 over an ochre B of VII/124.
+* **Podzolised soils:** Bh and Bfe by the notation, then the colour; deep hydromorphy below the base of the B with none above it.
+* **Classes IX and X:** the accepted IX/X table; "faiblement rajeuni" at 3 % weatherable minerals; "faiblement remanié" by the evidence of the reworked groups; X/322 by a dark brown B, pH under 4.5 and gibbsite (or Ki under 1.0).
+* **Class XI:** the peats by their pH (5.5), else the moor type; anmoor by a C/N under 20, hydromor by the humus form, else a C/N of 20 or more; XI/321, 322, 341 and 342 by the morphology.
+* **Class XII:** XII/21 by the surface structure, then the EC route; XII/23 by the Na of the first B; XII/114 by a thionic horizon, or pH under 4 with jarosite or sulfidic S.
+
 # soilKey 0.9.332 (2026-11-01)
 
 ## France: the 101 groups of the CPCS 1967

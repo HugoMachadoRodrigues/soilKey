@@ -13,7 +13,8 @@
   r <- .key(p)
   c(code = if (nrow(r$levels) >= 3) r$levels$code[3] else NA_character_,
     sub = if (nrow(r$levels) >= 2) r$levels$code[2] else NA_character_,
-    prov = paste(r$provisional_because, collapse = ","))
+    # the group level and above (v0.9.333 keys the subgroups too)
+    prov = paste(grep("^subgroups:", r$provisional_because, value = TRUE, invert = TRUE), collapse = ","))
 }
 .g <- function(p) .grp(p)[["code"]]
 .with_site <- function(p, ...) { q <- p$clone(deep = TRUE); s <- q$site; a <- list(...); s[names(a)] <- a; q$site <- s; q }
@@ -34,7 +35,7 @@ test_that("every example keys to its group, decided, with the French names", {
     expect_length(r$provisional_because, 0)
   }
   r <- .key(make_cpcs1967_example("podzolised"))
-  expect_identical(r$name, "Podzols")
+  expect_identical(r$levels$name[3], "Podzols")
   expect_identical(r$levels$name_native[3], "Podzols")
   rules <- load_rules("cpcs1967")
   expect_identical(sum(lengths(rules$groups)), 101L)

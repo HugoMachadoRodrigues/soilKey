@@ -3,7 +3,7 @@
 # Pedologie et de Cartographie des Sols), keyed to its twelve classes. The
 # CPCS gives no key: soilKey keys the classes in an order built from the
 # text's own statements of precedence (Hugo, 2026-11-01), then to their
-# sub-classes (v0.9.331) and groups (v0.9.332); the subgroups follow.
+# sub-classes (v0.9.331), groups (v0.9.332) and subgroups (v0.9.333).
 # Experimental and opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
@@ -18,11 +18,15 @@
 #' hydromorphes, sols sodiques), their 35 sub-classes, the climatic
 #' ones read from \code{site$koppen_climate}, else the USDA soil
 #' temperature and moisture regimes, else the latitude (with no climate,
-#' the non-climatic or temperate sub-class), and their 101 groups (a
-#' group the data cannot decide leaves the name provisional; when no group
-#' of a sub-class fits, the name stops at the sub-class); the subgroups
-#' follow. The names are French, as the text writes them, in \code{name}
-#' and in \code{levels$name_native}.
+#' the non-climatic or temperate sub-class), their 101 groups and their
+#' 276 subgroups (a group or subgroup the data cannot decide leaves the
+#' name provisional; when no group of a sub-class, or no subgroup of a
+#' group, fits, the name stops at the level above, and none is invented).
+#' The names are French, as the text writes them, in \code{name} and in
+#' \code{levels$name_native}; a subgroup named by an adjective is shown
+#' after its group ("Rankers, a mor"), one the text names in full stands
+#' alone, and the other subgroups whose tests pass are noted in
+#' the trace as intergrades.
 #'
 #' The CPCS gives no key. soilKey keys the classes in an order built from
 #' the text's own statements of precedence: raw mineral soils, vertisols,
@@ -46,8 +50,11 @@
 #' sand minerals, the fibre content of peat, ice (\code{ice_pct},
 #' \code{ice_form}), and the recorded origin of the layers; from the site
 #' the climate, the soil temperature regime, the parent material, recorded
-#' erosion, the water table, the elevation and patterned ground
-#' (\code{patterned_ground}). The choices where the text is silent are listed in
+#' erosion, the water table, the elevation, patterned ground
+#' (\code{patterned_ground}) and the humus form (\code{humus_form}); for
+#' some subgroups also active carbonate (\code{caco3_active_pct}), the
+#' coarse and fine sand (\code{coarse_sand_pct}, \code{fine_sand_pct}) and
+#' gibbsite (\code{gibbsite_pct}). The choices where the text is silent are listed in
 #' \code{system.file("rules", "cpcs1967", "readings.yaml", package =
 #' "soilKey")}.
 #'
@@ -58,7 +65,8 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"cpcs1967"}, the class in \code{name} and \code{rsg_or_order},
+#'   \code{"cpcs1967"}, the deepest class assigned in \code{name}, the class
+#'   in \code{rsg_or_order},
 #'   the classes of each level in \code{levels} (with \code{name_native}),
 #'   the key trace, and \code{provisional_because} (classes before the
 #'   assigned one that could not be decided).
@@ -86,6 +94,8 @@ classify_cpcs1967 <- function(pedon, rules = NULL,
   rules <- rules %||% load_rules("cpcs1967")
   res <- classify_hierarchical("cpcs1967", pedon, rules = rules,
                                on_missing = on_missing, gapfill = FALSE)
+  # v0.9.333: the other subgroups that pass, as intergrades, in the trace
+  res <- .cpcs_subgroup_notes(pedon, res, rules)
   if (inherits(pedon, "PedonRecord") &&
       all(is.na(pedon$horizons$designation %||% NA) | !nzchar(trimws(pedon$horizons$designation %||% "")))) {
     res$warnings <- c(res$warnings, paste(

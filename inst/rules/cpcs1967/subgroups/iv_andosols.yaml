@@ -1,0 +1,45 @@
+# Sous-groupes des andosols (p. 33), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "IV/21":
+    - code: "IV/213"
+      name: "{parent}, Peu développé"
+      name_native: "{parent}, Peu développé"
+      tests:
+        all_of:
+          - solum_depth_cpcs: {at_most: 45}
+      notes: "A thin profile: the top of the C or R at 45 cm or less (the minimum A of 15 cm and (B) of 30 cm)."
+    - code: "IV/212"
+      name: "{parent}, Humique"
+      name_native: "{parent}, Humique"
+      tests:
+        all_of:
+          - a1_thickness_cpcs: {above: 25}
+      notes: "An A1 thicker than 25 cm."
+    - code: "IV/211"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "An A1 of 25 cm or less."
+  "IV/22":
+    - code: "IV/223"
+      name: "{parent}, [Peu développé]"
+      name_native: "{parent}, [Peu développé]"
+      tests:
+        all_of:
+          - solum_depth_cpcs: {at_most: 45}
+      notes: "As IV/213 (the text: the same subgroups as IV/21)."
+    - code: "IV/222"
+      name: "{parent}, [Humique]"
+      name_native: "{parent}, [Humique]"
+      tests:
+        all_of:
+          - a1_thickness_cpcs: {above: 25}
+      notes: "As IV/212."
+    - code: "IV/221"
+      name: "{parent}, [Modal]"
+      name_native: "{parent}, [Modal]"
+      tests:
+        default: true
+      notes: "As IV/211."

@@ -1,0 +1,123 @@
+# Sous-groupes des sols calcimagnésiques (pp. 36-38), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "V/11":
+    - code: "V/111"
+      name: "Rendzines très humifères"
+      name_native: "Rendzines très humifères"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a, at_least: 10}
+      notes: "10 % OM or more in the A (thickness-weighted; the range 10-20 % read by its lower end)."
+    - code: "V/112"
+      name: "Rendzines à très forte effervescence (riches en calcaire actif)"
+      name_native: "Rendzines à très forte effervescence (riches en calcaire actif)"
+      tests:
+        all_of:
+          - rendzina_carbonate_cpcs: {kind: active}
+      notes: "A very strong effervescence in the A, or 10 % active carbonate or more (caco3_active_pct)."
+    - code: "V/114"
+      name: "Rendzines pauvres en calcaire fin"
+      name_native: "Rendzines pauvres en calcaire fin"
+      tests:
+        all_of:
+          - rendzina_carbonate_cpcs: {kind: poor_fine}
+      notes: "Under 10 % carbonate in the fine earth of the A, with 15 % coarse fragments or more."
+    - code: "V/115"
+      name: "Xérorendzines"
+      name_native: "Xérorendzines"
+      tests:
+        all_of:
+          - climate_cpcs: {kind: dry}
+      notes: "A dry climate: Koppen B or Cs, or an aridic, torric, xeric or ustic regime; no climate recorded, not dry."
+    - code: "V/113"
+      name: "Rendzines modales"
+      name_native: "Rendzines modales"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "V/12":
+    - code: "V/122"
+      name: "Sol brun calcaire à encroûtement calcaire"
+      name_native: "Sol brun calcaire à encroûtement calcaire"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: accumulation, mineral: carbonate}
+      notes: "A calcareous accumulation: soilKey's calcic horizon, 5 % secondary carbonates or more, or a Ca of the notation where neither is measured."
+    - code: "V/123"
+      name: "Sols bruns calcaires à pseudogley"
+      name_native: "Sols bruns calcaires à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "V/124"
+      name: "Sol brun calcaire vertique"
+      name_native: "Sol brun calcaire vertique"
+      tests:
+        all_of:
+          - vertic_cpcs: {}
+      notes: "soilKey's protovertic (or vertic) horizon."
+    - code: "V/121"
+      name: "Sol brun calcaire modal"
+      name_native: "Sol brun calcaire modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "V/22":
+    - code: "V/221"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The only subgroup of the group."
+  "V/23":
+    - code: "V/231"
+      name: "{parent}, Rendziniforme (profil AR)"
+      name_native: "{parent}, Rendziniforme (profil AR)"
+      tests:
+        all_of:
+          - hard_rock_contact_cpcs: {under: A}
+      notes: "The A directly on hard rock: no C and no Cca between."
+    - code: "V/232"
+      name: "{parent}, À encroûtement calcaire (profil A Cca R)"
+      name_native: "{parent}, À encroûtement calcaire (profil A Cca R)"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: accumulation, mineral: carbonate, where: under_a}
+      notes: "A calcareous accumulation or crust directly under the A."
+  "V/21":
+    - code: "V/211"
+      name: "Rendzines brunifiées humifères"
+      name_native: "Rendzines brunifiées humifères"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a, at_least: 10}
+      notes: "10 % OM or more in the A (thickness-weighted)."
+    - code: "V/213"
+      name: "Sol brun calcique épais (plus de 50 cm)"
+      name_native: "Sol brun calcique épais (plus de 50 cm)"
+      tests:
+        all_of:
+          - solum_depth_cpcs: {above: 50}
+      notes: "A solum thicker than 50 cm (the top of the C or R below 50 cm; with none, a profile described to 50 cm or more)."
+    - code: "V/212"
+      name: "Rendzines brunifiées modales"
+      name_native: "Rendzines brunifiées modales"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "V/32":
+    - code: "V/322"
+      name: "{parent}, À encroûtement gypseux"
+      name_native: "{parent}, À encroûtement gypseux"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: accumulation, mineral: gypsum}
+      notes: "A gypseous accumulation: soilKey's gypsic horizon, 5 % visible gypsum or more, or a Cs where neither is measured."
+    - code: "V/321"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."

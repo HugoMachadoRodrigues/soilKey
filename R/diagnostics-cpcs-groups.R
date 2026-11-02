@@ -486,6 +486,14 @@ carbonated_humic_cpcs <- function(pedon) {
   .cpcs_sub_result("carbonated_humic_cpcs", p, x, list(om_A = om, hard_carbonate_rock = rock), "V/22, p. 37")
 }
 
+# A calcareous crust in each row: a Ca of the notation cemented moderately or
+# more (or an m), or a calcrete pan recorded.
+.cpcs_calc_crust_rows <- function(x) {
+  cem <- .scsj_txt(x$h, "cementation_class"); pan <- .scsj_txt(x$h, "pan_type")
+  (x$des$ca %in% TRUE & (x$des$m %in% TRUE | (!is.na(cem) & grepl("moderat|strong|indurat", cem)))) |
+    (!is.na(pan) & grepl("calcrete|petrocalc|cro\u00fbte|croute|crust|encro\u00fbt", pan))
+}
+
 #' @rdname cpcs1967_groups
 #' @export
 melanised_calcic_cpcs <- function(pedon) {
@@ -502,9 +510,7 @@ melanised_calcic_cpcs <- function(pedon) {
   }, NA))
   cc <- .cpcs_cec_clay(x)[a]
   cec <- if (!length(a) || all(is.na(cc))) NA else .cpcs_all(cc[!is.na(cc)] >= 50)
-  cem <- .scsj_txt(x$h, "cementation_class"); pan <- .scsj_txt(x$h, "pan_type")
-  crust <- any(x$des$ca %in% TRUE & (x$des$m %in% TRUE | (!is.na(cem) & grepl("moderat|strong|indurat", cem)))) ||
-    any(!is.na(pan) & grepl("calcrete|petrocalc|cro\u00fbte|croute|crust|encro\u00fbt", pan))
+  crust <- any(.cpcs_calc_crust_rows(x))
   p <- .cpcs_and(fp, cec, any(x$rock) || crust)
   .cpcs_sub_result("melanised_calcic_cpcs", p, x, list(fine_polyhedral_A = fp, cec_clay_50 = cec), "V/23, p. 38")
 }
@@ -553,17 +559,23 @@ textural_b_leached_cpcs <- function(pedon) {
                    "VII/12, p. 46; X/36, p. 70")
 }
 
+# An A2 tonguing into the B: an E/B, B/E or glossic designation, a tonguing
+# lower boundary of an A2, or soilKey's retic properties.
+.cpcs_tongues <- function(x, pedon) {
+  d <- tolower(as.character(.scsj_col(x$h, "designation", NA_character_)))
+  bt <- .scsj_txt(x$h, "boundary_topography")
+  any(!is.na(d) & grepl("glossic|tongu|e/b|b/e|a2/b|b/a2|e&b|b&e", d)) ||
+    any(x$role %in% "E" & !is.na(bt) & grepl("tongu|glossic|langu|interfing", bt)) ||
+    isTRUE(tryCatch(retic_properties(pedon)$passed, error = function(e) NA))
+}
+
 #' @rdname cpcs1967_groups
 #' @export
 sod_podzolic_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # a thick A1 (25 cm or more) and an A2 tonguing into the textural B (p. 48)
   th <- .cpcs_thickness(x, .cpcs_a1_rows(x))
-  d <- tolower(as.character(.scsj_col(x$h, "designation", NA_character_)))
-  bt <- .scsj_txt(x$h, "boundary_topography")
-  tongues <- any(!is.na(d) & grepl("glossic|tongu|e/b|b/e|a2/b|b/a2|e&b|b&e", d)) ||
-    any(x$role %in% "E" & !is.na(bt) & grepl("tongu|glossic|langu|interfing", bt)) ||
-    isTRUE(tryCatch(retic_properties(pedon)$passed, error = function(e) NA))
+  tongues <- .cpcs_tongues(x, pedon)
   p <- .cpcs_and(if (is.na(th)) NA else th >= 25, tongues)
   .cpcs_sub_result("sod_podzolic_cpcs", p, x, list(a1_cm = th, tongues = tongues), "VII/22, p. 48")
 }
@@ -585,6 +597,16 @@ podzol_ashy_a2_cpcs <- function(pedon) {
 #' @export
 podzolic_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
+  pp <- .cpcs_podzolic_paths(x)
+  p <- .cpcs_or(pp$a, pp$b, pp$c)
+  .cpcs_sub_result("podzolic_cpcs", p, x, list(pale_A2_over_B = pp$a, A2_over_Bg = pp$b, Ap_over_B = pp$c),
+                   "VIII/12, p. 51")
+}
+
+# The three paths of the sols podzoliques (p. 51): (a) a pale A2 that is not
+# ashy over a B with more than 1 % OM, (b) an A2 directly over a Bg, (c) an Ap
+# directly over a podzolic B.
+.cpcs_podzolic_paths <- function(x) {
   rows <- .cpcs_mineral_rows(x)
   e <- .cpcs_e_rows(x)
   b <- .cpcs_b_rows(x)
@@ -610,9 +632,7 @@ podzolic_cpcs <- function(pedon) {
     if (!is.na(x$om[j])) return(x$om[j] > 1)
     if (isTRUE(x$des$fe[j]) || isTRUE(x$des$h[j])) TRUE else NA
   }, NA))
-  p <- .cpcs_or(path_a, path_b, path_c)
-  .cpcs_sub_result("podzolic_cpcs", p, x, list(pale_A2_over_B = path_a, A2_over_Bg = path_b, Ap_over_B = path_c),
-                   "VIII/12, p. 51")
+  list(a = path_a, b = path_b, c = path_c)
 }
 
 #' @rdname cpcs1967_groups
@@ -640,8 +660,16 @@ ochre_podzolic_cpcs <- function(pedon) {
 #' @export
 crypto_podzolic_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # no thick A2 (under 5 cm); a brown B (chroma 4 or less) with more than
-  # 2 % OM, or an A1 of 30 to 60 cm with more than 10 % OM (pp. 52-53)
+  cp <- .cpcs_crypto_paths(x)
+  p <- .cpcs_and(cp$thin, .cpcs_or(cp$brown, cp$humic))
+  .cpcs_sub_result("crypto_podzolic_cpcs", p, x, list(thin_A2 = cp$thin, brown_B = cp$brown, humic_A1 = cp$humic),
+                   "VIII/14, pp. 52-53")
+}
+
+# The sols crypto-podzoliques (pp. 52-53): no thick A2 (under 5 cm); a brown
+# B (chroma 4 or less) with more than 2 % OM, or an A1 of 30 to 60 cm with
+# more than 10 % OM.
+.cpcs_crypto_paths <- function(x) {
   e <- .cpcs_e_rows(x)
   th <- .cpcs_thickness(x, e)
   thin <- if (!length(e)) TRUE else if (is.na(th)) NA else th < 5
@@ -653,9 +681,7 @@ crypto_podzolic_cpcs <- function(pedon) {
   a1th <- .cpcs_thickness(x, a1); a1om <- .cpcs_wmean(x, x$om, a1)
   humic <- if (!length(a1)) FALSE else .cpcs_and(if (is.na(a1th)) NA else a1th >= 30 && a1th <= 60,
                                                 if (is.na(a1om)) NA else a1om > 10)
-  p <- .cpcs_and(thin, .cpcs_or(brown, humic))
-  .cpcs_sub_result("crypto_podzolic_cpcs", p, x, list(thin_A2 = thin, brown_B = brown, humic_A1 = humic),
-                   "VIII/14, pp. 52-53")
+  list(thin = thin, brown = brown, humic = humic)
 }
 
 #' @rdname cpcs1967_groups
@@ -700,20 +726,26 @@ molken_podzol_cpcs <- function(pedon) {
   .cpcs_sub_result("molken_podzol_cpcs", p, x, list(g_master = g), "VIII/32, p. 54")
 }
 
+# A concretioned or cemented B: iron nodules, a Cn or an m of the notation,
+# a cementation moderately or more, or a pan recorded (not a fragipan).
+.cpcs_concretioned_b <- function(x) {
+  b <- .cpcs_b_rows(x)
+  nod <- .cpcs_num(x$h, "ferric_nodules_pct"); cem <- .scsj_txt(x$h, "cementation_class")
+  pan <- .scsj_txt(x$h, "pan_type")
+  pan <- ifelse(is.na(pan), NA, trimws(.cpcs_drop_negated(pan)))
+  pan[!is.na(pan) & (!nzchar(pan) | grepl("^none|fragipan|densipan", pan))] <- NA
+  any((!is.na(nod[b]) & nod[b] > 0) | x$des$cn[b] %in% TRUE | x$des$m[b] %in% TRUE |
+        (!is.na(cem[b]) & grepl("moderat|strong|indurat", cem[b])) |
+        !is.na(pan[b]))
+}
+
 #' @rdname cpcs1967_groups
 #' @export
 tropical_groundwater_podzol_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # tropical, a very thick A2 (50 cm or more), a concretioned or cemented B
   e <- .cpcs_e_rows(x); th <- .cpcs_thickness(x, e)
-  b <- .cpcs_b_rows(x)
-  nod <- .cpcs_num(x$h, "ferric_nodules_pct"); cem <- .scsj_txt(x$h, "cementation_class")
-  pan <- .scsj_txt(x$h, "pan_type")
-  pan <- ifelse(is.na(pan), NA, trimws(.cpcs_drop_negated(pan)))
-  pan[!is.na(pan) & (!nzchar(pan) | grepl("^none|fragipan|densipan", pan))] <- NA
-  conc <- any((!is.na(nod[b]) & nod[b] > 0) | x$des$cn[b] %in% TRUE | x$des$m[b] %in% TRUE |
-                (!is.na(cem[b]) & grepl("moderat|strong|indurat", cem[b])) |
-                !is.na(pan[b]))
+  conc <- .cpcs_concretioned_b(x)
   p <- .cpcs_and(.cpcs_tropical(x), if (!length(e)) FALSE else if (is.na(th)) NA else th >= 50, conc)
   .cpcs_sub_result("tropical_groundwater_podzol_cpcs", p, x, list(a2_cm = th, concretioned_B = conc), "VIII/33, p. 55",
                    climatic = TRUE)
@@ -817,14 +849,21 @@ ferrallitic_impoverished_cpcs <- function(pedon) {
 #' @export
 ferrallitic_reworked_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # a stone line (15 % coarse fragments or more at the base of the A or in
-  # the B, more than in the recorded rows above and below), a lithological
-  # discontinuity, or a colluvial origin (Hugo, 2026-11-01); not recorded,
-  # none
+  rw <- .cpcs_reworked(x)
+  .cpcs_sub_result("ferrallitic_reworked_cpcs", rw$p, x, list(stone_line = rw$line, discontinuity = rw$disc,
+                   colluvial = rw$coll), "X, pp. 67-70")
+}
+
+# The reworked material (X/13, X/24, X/34): a stone line (15 % coarse
+# fragments or more at the base of the A or in the B, more than in the
+# recorded rows above and below), a lithological discontinuity, or a
+# colluvial origin (Hugo, 2026-11-01); not recorded, none. `cand` restricts
+# the rows where the stone line may lie.
+.cpcs_reworked <- function(x, cand = NULL) {
   rows <- .cpcs_mineral_rows(x); rows <- rows[!x$rock[rows]]
   cf <- .cpcs_num(x$h, "coarse_fragments_pct")
   a <- .cpcs_a_rows(x)
-  cand <- unique(c(if (length(a)) a[length(a)], .cpcs_b_rows(x)))
+  if (is.null(cand)) cand <- unique(c(if (length(a)) a[length(a)], .cpcs_b_rows(x)))
   line <- any(vapply(cand, function(i) {
     if (is.na(cf[i]) || cf[i] < 15) return(FALSE)
     k <- match(i, rows); if (is.na(k) || k >= length(rows)) return(FALSE)
@@ -836,24 +875,27 @@ ferrallitic_reworked_cpcs <- function(pedon) {
   disc <- length(unique(x$des$lith[rows])) > 1L
   coll <- identical(.cpcs_origin_kind(x), "colluvial") ||
     grepl(.CPCS_ORIGIN_RE$colluvial, .cpcs_drop_negated(.cpcs_lc(.scsj_txt(x$h, "layer_origin"))))
-  p <- line || disc || coll
-  .cpcs_sub_result("ferrallitic_reworked_cpcs", p, x, list(stone_line = line, discontinuity = disc, colluvial = coll),
-                   "X, pp. 67-70")
+  list(p = line || disc || coll, line = line, disc = disc, coll = coll)
 }
 
 #' @rdname cpcs1967_groups
 #' @export
 ferrallitic_rejuvenated_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # weatherable minerals in the sand, 10 % or more (feldspars, micas,
-  # amphiboles); not recorded, none (Hugo, 2026-11-01)
+  .cpcs_sub_result("ferrallitic_rejuvenated_cpcs", .cpcs_weatherable(x, 10), x, where = "X, pp. 68-70")
+}
+
+# Weatherable minerals in the sand within 100 cm: feldspars, micas and
+# amphiboles at `at_least` % or more, or named in the sand mineralogy without
+# 'traces'; not recorded, none (Hugo, 2026-11-01: 10 % for the groups, 3 % for
+# the subgroups).
+.cpcs_weatherable <- function(x, at_least = 10) {
   rows <- .cpcs_rows_within(x, 100); rows <- rows[!x$rock[rows]]
   s <- cbind(.cpcs_num(x$h, "sand_feldspar_pct"), .cpcs_num(x$h, "sand_mica_pct"), .cpcs_num(x$h, "sand_amphibole_pct"))
   tot <- ifelse(rowSums(!is.na(s)) > 0, rowSums(s, na.rm = TRUE), NA_real_)
   mn <- .scsj_txt(x$h, "sand_mineralogy")[rows]
   mn <- ifelse(is.na(mn), "", gsub("(traces?|few|rare|some|little|peu de|quelques)( of)? [a-z\u00e0-\u00ff]+", " ", .cpcs_drop_negated(mn)))
-  p <- any(tot[rows] >= 10, na.rm = TRUE) || any(grepl("mica|feldsp|anfib|amphib", mn))
-  .cpcs_sub_result("ferrallitic_rejuvenated_cpcs", p, x, where = "X, pp. 68-70")
+  any(tot[rows] >= at_least, na.rm = TRUE) || any(grepl("mica|feldsp|anfib|amphib", mn))
 }
 
 # ---- XI ---------------------------------------------------------------------------
@@ -1007,10 +1049,18 @@ amphigley_cpcs <- function(pedon) {
   # declared FAO notation a g (stagnic) rather than an l (the capillary
   # fringe of the gley); continuous mottling over the reduced matrix is the
   # gley's own (Hugo, 2026-11-01)
+  am <- .cpcs_amphigley_parts(x)
+  .cpcs_sub_result("amphigley_cpcs", am$p, x, list(separating_layer = am$sep, notation = am$notation),
+                   "XI/34, p. 76")
+}
+
+# The amphigley: the result, and the two ways of telling the pseudogley from
+# the gley (a separating layer without hydromorphy; the notation).
+.cpcs_amphigley_parts <- function(x) {
   fr <- .cpcs_first_reduced(x); f <- fr$row
   hyd <- .cpcs_hydromorphic_rows(x)
   rows <- .cpcs_mineral_rows(x); rows <- rows[!is.na(x$dtop[rows])]
-  p <- FALSE
+  p <- FALSE; sep <- FALSE; nota <- FALSE
   ds <- tolower(as.character(x$site$designation_system %||% NA)[1L])
   fao <- !is.na(ds) && grepl("fao|wrb", ds)
   suf <- vapply(as.character(.scsj_col(x$h, "designation", NA_character_)), function(d) {
@@ -1021,14 +1071,15 @@ amphigley_cpcs <- function(pedon) {
     if (length(ps)) {
       last <- ps[length(ps)]
       between <- above[x$dtop[above] > x$dtop[last]]
-      p <- any(hyd[between] %in% FALSE) ||
-        (isTRUE(x$des$cpcs) && any(x$des$g[ps] %in% TRUE) && isTRUE(x$des$G[f])) ||
+      sep <- any(hyd[between] %in% FALSE)
+      nota <- (isTRUE(x$des$cpcs) && any(x$des$g[ps] %in% TRUE) && isTRUE(x$des$G[f])) ||
         (fao && any(grepl("g", suf[ps]) & !grepl("l", suf[ps])))
+      p <- sep || nota
       # a row above that may be reduced may start the gley higher
       if (p && !is.na(fr$open_top) && fr$open_top < 80) p <- NA
     }
   }
-  .cpcs_sub_result("amphigley_cpcs", p, x, where = "XI/34, p. 76")
+  list(p = p, sep = sep, notation = nota)
 }
 
 #' @rdname cpcs1967_groups
