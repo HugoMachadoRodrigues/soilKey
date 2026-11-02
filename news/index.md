@@ -1,5 +1,126 @@
 # Changelog
 
+## soilKey 0.9.338 (2026-11-02)
+
+### Russia: the types of the divisions CA to CJ
+
+The Russian soil classification (Field Guide of 2008) names its types by
+the formula of the profile, drawn in chapter 4. This release adds the
+type level for the ten divisions CA to CJ: 106 types, matched on the
+diagnostic horizons the divisions read. The other divisions keep the
+division as the name until their types follow. Every other
+classification is unchanged.
+
+- **The type level.** After the division,
+  [`classify_kidpr2008()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_kidpr2008.md)
+  matches the profile against every formula of the division with
+  [`match_horizon_sequence()`](https://hugomachadorodrigues.github.io/soilKey/reference/match_horizon_sequence.md),
+  three-valued. The profile is the one the divisions read: fresh litter
+  left out, the profile under a deposit of 40 cm or less, the surface
+  horizons by the thickest-horizon rule (p. 37), sub-horizons merged,
+  transitions and small horizons left out, an overlay a feature of its
+  layer. The type is the third level of the result, with soilKey’s
+  English gloss in `name` and the Russian name in `levels$name_native`.
+  An undecided type tried before the one assigned makes the name
+  provisional; with none matched and some undecided, the name stops at
+  the division and the warnings name the candidates.
+- **The 106 types** in `inst/rules/kidpr2008/types/`: CA 27, CB 17, CC
+  3, CD 13, CE 7, CF 4, CG 3, CH 9, CI 20, CJ 3. Each has a code of
+  soilKey’s in brackets (\[CA01\] to \[CJ03\], in the order of chapter
+  4, the natural types first), the Russian name as printed, an English
+  gloss, the formula as the fixture of the formulas transcribes it, and
+  the page. The test of each is the new predicate
+  [`type_formula_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_types.md).
+- **A combination no formula provides for** keeps its division. The type
+  is unassigned, a warning says the Field Guide of 2008 does not provide
+  for it, and the three nearest formulas by edit distance are in that
+  warning and in the trace (phase `types_nearest`).
+- **Intergrades.** When two formulas match, the more specific names the
+  type; the other is named in the evidence and in the warnings. Among
+  the formulas of CA to CJ this happens only for AY-BEL-BM, where CD09
+  names the type and CD01 is the intergrade, and for AU-BM-BCA, where
+  CD08 names it and CD03 is the intergrade.
+- **Fixes of the review.** A tie or a missing thickness among the
+  organic and humus horizons at the surface, or an undecided layer that
+  could make one of them the thickest, now leaves the type undecided
+  between its candidates (O 10 cm over AY 10 cm over EL-BEL-BT is CA01
+  or CA04); the type no longer follows one reading silently. On the data
+  route an FAO transition (BC, B/C) or an FAO C layer between two
+  horizons is passed over, as the divisions do: Ah-Eg-Btg-BC-Bg is CA05.
+  A nearest formula that only a gap blocks says so in the note.
+- **The stratified body of the stratozems** counts P and PU only over
+  the first RJ, RY or RU, as the agro stratozems draw them (P-RY-D,
+  PU-RU-D). This changes a division result of 0.9.337: RY 12 cm over
+  P-EL-BEL-BT, or over PU-AU-BCA, is no longer a stratozem (BC) but CA17
+  or CI11.
+- **A V laid over another horizon** is a feature of its layer for the
+  key to divisions too. This changes a division result of 0.9.337: AU
+  over G+V is a gley soil (CH, type CH04), not a humus-accumulative
+  soil.
+- **The matcher** takes a new option, `agro_remnant = "thickest"`: under
+  an agro horizon only the thickest natural horizon of the surface run
+  stays in the sequence, as its remnant, and the others are features.
+  The default keeps the old behaviour. A list of schemes may also be
+  closed on a vocabulary per scheme.
+- Every chapter 4 formula of CA to CJ, written as a profile in the
+  Russian notation, reaches its own division and its own type, decided.
+  So do the profiles without their optional horizons, except CA24
+  without its EL: P directly over BT is an agrozem. One undesignated
+  profile per division reaches its type through the key to horizons on
+  the data.
+
+#### Hugo’s decisions (2026-11-02)
+
+- **Closed formulas (Q13):** every horizon that some formula of the
+  division writes must be in the type’s formula when it is in the
+  profile; a horizon foreign to the division is ignored and may name a
+  subtype. Most specific first, agro before natural; a second match is
+  an intergrade.
+- **BEL closes only where it is diagnostic:** BEL blocks a formula that
+  does not write it only in the types where page 44 makes it diagnostic
+  (CA07, CA08, CA11, CA20, CA21, CD09). In every other formula a BEL is
+  read as part of the passage from the eluvial to the middle horizon: it
+  neither blocks the formula nor is required by it. So AU-EL-BEL-BT-G-CG
+  is CA10, AY-EL-BEL-BT-BCA-Cca CA12, PU-EL-BEL-BT-G-CG CA23 and
+  AY-EL-BEL-BM-C CD07, while AY-EL-BEL-BT-C stays CA04, AU-BEL-BT-C CA07
+  and AY-BEL-BT-C CA11. The key to divisions already keeps a BEL apart
+  from the clay-illuvial chernozems: AU-BEL-BT is CA07, AU-BI is CI02,
+  AU-BEL-BI has no division.
+- **What a formula tests (Q14):** a horizon in parentheses is optional;
+  BEL is required only where it is the diagnostic eluvial horizon (CA07,
+  CA08, CA11, CA20, CA21, CD09); the g and q marks are expected, not
+  required; the parent material is not tested; directly under passes
+  over transitions and sub-horizons, with up to 15 cm with no diagnostic
+  horizon between AU and BCA.
+- **No type (Q15):** the division stays and the type is unassigned, with
+  the nearest formulas and a note. The near-identity readings: the BF of
+  CB05, CE06 and CE07, and the BH of the gley Al-Fe-humus soils, are a
+  BHF of either kind; CJ01 takes BCA or CAT; CH02 takes O, T or H over
+  G-CRM.
+- **A layer with no horizon** on the data, between two horizons of a
+  formula, may be a transition or loose rock: the type is undecided,
+  with its candidates, not unassigned. Up to 15 cm of it between AU and
+  BCA is still passed over.
+- **E and EL in CB and CE:** an EL counts as an eluvial horizon with E.
+  It fills the E of a formula (O-EL-BHF-C is CB07, O-EL-CRM-C is CE05)
+  and blocks the formulas without E (no podbur CB01, no CE01); with no
+  formula with E, the type is unassigned (Q15).
+- **BCA in CD:** like BEL, a BCA neither blocks a formula of CD that
+  does not write it nor is required by it (p. 85): AY-BM-BCA-Cca is
+  CD01, AO-BM-BCA CD02; CD08 and CD13 still win where they match.
+- **Overlays at the division key:** only a V that is the horizon of its
+  own layer is a middle horizon; a V laid over another horizon is a
+  feature (G+V under AU is CH04). The overlays S and X count as before.
+- **The stratified body:** P and PU count only over the stratified
+  horizons.
+- **The readings of the types** (`readings.yaml`): the T of a formula
+  takes TO and TE; a natural humus or organic horizon of the surface run
+  that a formula does not write stays out of the closure, and under the
+  plough the thickest natural horizon is the remnant; an overlay (S, X
+  or V over a host) is a feature for the types, not a horizon of the
+  formula; at equal specificity the agro types come before the natural
+  ones, then the order of chapter 4.
+
 ## soilKey 0.9.337 (2026-11-02)
 
 ### Russia: the registry entry, the trunks and the 27 divisions

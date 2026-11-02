@@ -118,7 +118,8 @@ feature w).
 
 - `has_horizon_kidpr`:
 
-  One of the horizons is in the profile (an overlay counts).
+  One of the horizons is in the profile (an overlay S or X counts; a V
+  laid over another horizon is a feature of its layer).
 
 - `starts_at_surface_kidpr`:
 

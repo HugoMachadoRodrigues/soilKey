@@ -20,6 +20,7 @@ match_horizon_sequence(
   pair_gaps_cm = NULL,
   buried_within_cm = Inf,
   max_completions = 2000L,
+  agro_remnant = c("all", "thickest"),
   ...
 )
 ```
@@ -73,6 +74,13 @@ match_horizon_sequence(
 
   Most completions of undecided layers tried; beyond it the result is
   NA.
+
+- agro_remnant:
+
+  Under an agro surface horizon, `"all"` keeps every natural horizon of
+  the surface run in the sequence (the default); `"thickest"` keeps only
+  the thickest of them, as the remnant, and reads the others as features
+  (the thickest-horizon rule of the Russian Field Guide, p. 37).
 
 - ...:
 

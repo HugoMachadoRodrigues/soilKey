@@ -2671,6 +2671,8 @@ pública curada.
   [`volcanic_ash_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
   [`contaminated_x_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_divisions.md)
   : Trunks and divisions of the Russian soil classification (internal)
+- [`type_formula_kidpr()`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_types.md)
+  : Types of the Russian soil classification (internal)
 - [`match_horizon_sequence()`](https://hugomachadorodrigues.github.io/soilKey/reference/match_horizon_sequence.md)
   : Match a profile against a profile formula
 - [`print(`*`<npdb_dry_colour_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.npdb_dry_colour_model.md)

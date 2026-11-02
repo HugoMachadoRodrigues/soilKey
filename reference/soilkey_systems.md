@@ -93,5 +93,5 @@ soilkey_systems()
 #> 8                 great_groups, groups, subgroups           scsj, japan   FALSE
 #> 9  great_groups, groups, subgroups, series_groups                  cscj   FALSE
 #> 10         classes, subclasses, groups, subgroups          cpcs, france   FALSE
-#> 11                              trunks, divisions kidpr, russia, ru2008   FALSE
+#> 11                       trunks, divisions, types kidpr, russia, ru2008   FALSE
 ```

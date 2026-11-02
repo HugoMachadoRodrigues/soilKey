@@ -8,8 +8,9 @@ Soil Science Institute, 2008). **Experimental**: this release keys the
 five trunks (key 2.2: the organogenic, synlithogenic, postlithogenic and
 weakly developed soils, and trunk E, not a soil: rock outcrops,
 technogenic surface formations, or a deposit that is not humified over a
-buried soil) and the 27 divisions (key 2.3). The types (profile
-formulas) and subtypes follow in later releases.
+buried soil) and the 27 divisions (key 2.3), and the types of the
+divisions CA to CJ (the profile formulas of chapter 4, v0.9.338). The
+types of the other divisions and the subtypes follow in later releases.
 
 ## Usage
 
@@ -47,12 +48,12 @@ classify_kidpr2008(
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
 with `system_id` `"kidpr2008"`, the deepest class assigned in `name`
-(the division, or the trunk when no division is assigned), the trunk in
-`rsg_or_order`, the trunk and division in `levels` (with `name_native`,
-the Russian name), the key trace, the notes on a profile that is not a
-soil or whose combination of horizons the Field Guide does not provide
-for in `warnings`, and `provisional_because` (classes before the
-assigned one that could not be decided).
+(the type, else the division, else the trunk), the trunk in
+`rsg_or_order`, the trunk, division and type in `levels` (with
+`name_native`, the Russian name), the key trace, the notes on a profile
+that is not a soil or whose combination of horizons the Field Guide does
+not provide for in `warnings`, and `provisional_because` (classes before
+the assigned one that could not be decided).
 
 ## Details
 
@@ -90,6 +91,14 @@ of the book in `levels$name_native`. The readings where the text is
 silent are listed in
 `system.file("rules", "kidpr2008", "readings.yaml", package = "soilKey")`.
 
+The type is named by the formula of its profile: the profile is matched
+against every formula of its division (see
+[`kidpr2008_types`](https://hugomachadorodrigues.github.io/soilKey/reference/kidpr2008_types.md)),
+closed on the horizons the division's formulas write, most specific
+first and agro before natural. A profile no formula matches keeps its
+division, the type unassigned, with the nearest formulas in the warnings
+and in the trace (phase `types_nearest`).
+
 ## References
 
 Polevoi opredelitel' pochv Rossii \[Field Guide of Russian Soils\]
@@ -106,12 +115,14 @@ Polevoi opredelitel' pochv Rossii \[Field Guide of Russian Soils\]
 ``` r
 res <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent")
 res$name
-#> [1] "Texture-differentiated soils"
+#> [1] "Sod-podzolic"
 res$levels
-#>       level code                         name
-#> 1    trunks    C         Postlithogenic soils
-#> 2 divisions   CA Texture-differentiated soils
+#>       level   code                         name
+#> 1    trunks      C         Postlithogenic soils
+#> 2 divisions     CA Texture-differentiated soils
+#> 3     types [CA04]                 Sod-podzolic
 #>                          name_native
 #> 1               Постлитогенные почвы
 #> 2 Текстурно-дифференцированные почвы
+#> 3                Дерново-подзолистые
 ```

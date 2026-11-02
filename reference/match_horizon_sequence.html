@@ -13,7 +13,7 @@ the surface horizons are the caller's."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.337</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.338</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,7 @@ the surface horizons are the caller's.</p>
 <span>  pair_gaps_cm <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  buried_within_cm <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  max_completions <span class="op">=</span> <span class="fl">2000L</span>,</span>
+<span>  agro_remnant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"thickest"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -135,6 +136,14 @@ horizons (cm), and named allowances for pairs.</p></dd>
 <dt id="arg-max-completions">max_completions<a class="anchor" aria-label="anchor" href="#arg-max-completions"></a></dt>
 <dd><p>Most completions of undecided layers tried; beyond
 it the result is NA.</p></dd>
+
+
+<dt id="arg-agro-remnant">agro_remnant<a class="anchor" aria-label="anchor" href="#arg-agro-remnant"></a></dt>
+<dd><p>Under an agro surface horizon, <code>"all"</code> keeps
+every natural horizon of the surface run in the sequence (the default);
+<code>"thickest"</code> keeps only the thickest of them, as the remnant, and
+reads the others as features (the thickest-horizon rule of the Russian
+Field Guide, p. 37).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
