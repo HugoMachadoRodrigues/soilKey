@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.320</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.321</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,32 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.321" id="soilkey-09321-2026-10-31">soilKey 0.9.321 (2026-10-31)<a class="anchor" aria-label="anchor" href="#soilkey-09321-2026-10-31"></a></h2>
+<div class="section level3">
+<h3 id="japan-the-great-groups-of-the-soil-classification-system-of-japan-0-9-321">Japan: the great groups of the Soil Classification System of Japan (2017)<a class="anchor" aria-label="anchor" href="#japan-the-great-groups-of-the-soil-classification-system-of-japan-0-9-321"></a></h3>
+<p>A new, experimental and opt-in system: the Soil Classification System of Japan (SCSJ 2017) of the Japanese Society of Pedology, Fifth Committee for Soil Classification and Nomenclature. This release keys the ten great groups of chapter II with the definitions of chapter IV; groups, subgroups and the soil phases follow, then the Comprehensive Soil Classification System of Japan (2011) as a system of its own.</p>
+<ul><li>
+<strong><code><a href="../reference/classify_scsj2017.html">classify_scsj2017()</a></code></strong> keys a pedon to Man-made soils, Organic Soils, Andosols, Podzols, Fluvic soils, Red-Yellow soils, Stagnic soils, Eutrosols, Brown Forest soils or Regosols. Each level gives the official English name of the SCSJ table and, in <code>levels$name_native</code>, the Japanese one (a new column that the generic classifier fills for any system whose classes carry <code>name_native</code>).</li>
+<li>
+<strong><code><a href="../reference/make_scsj2017_example.html">make_scsj2017_example()</a></code></strong> gives one made-up profile per great group.</li>
+<li>The key reads the Japanese horizon notation of the Soil Survey Handbook (H, O, A, E, B, C, G with Go and Gr, R; p, g, t, w, s, h, ir, mn; a 2 or II prefix; a trailing b), colours by the colour words of the text, the subsurface control section (20 to 60 cm), paddy land from <code>site$land_use</code> or <code>site$flood_irrigated</code>, and the recorded origin of the layers (fill, volcanic ejecta, alluvial deposits).</li>
+<li>New horizon attributes: <code>phosphate_absorption_coef</code> (mg P2O5/100 g; the kuroboku feature needs 1500 or more), <code>active_al_test</code> (the Japanese field active-aluminium test, -, +-, +, 2+, 3+) and <code>n_value</code> (physical immaturity). The dipyridyl test is the existing <code>childs_test</code>.</li>
+</ul><div class="section level4">
+<h4 id="hugos-decisions-0-9-321">Hugo’s decisions (2026-10-31)<a class="anchor" aria-label="anchor" href="#hugos-decisions-0-9-321"></a></h4>
+<ul><li>The SCSJ 2017 complete (great groups, groups, subgroups and phases), then the CSCJ 2011 as a system of its own.</li>
+<li>English names with the Japanese ones beside them.</li>
+<li>The phosphate absorption coefficient is a new attribute; P retention (85 %) or Alo + 1/2 Feo (2.0 %) replace it when it is not measured, as the text allows, and the field active-aluminium test after them.</li>
+<li>Paddy land is read from the land use; with none recorded the paddy horizons are undecided, not absent.</li>
+<li>Podzols: the bleached horizon must lie above the podzolic accumulation horizon, the sequence of the great group’s concept.</li>
+<li>The subsurface section (20 to 60 cm) counts the horizons with 5 cm or more inside it.</li>
+<li>An undesignated layer of 20 % carbon or more is peat on a poorly or very poorly drained site and a forest floor on any other; undecided without a drainage class.</li>
+<li>In the forest-floor notation (L, F, H), an H under L or F is the humus layer of the floor, not peat.</li>
+<li>Later (2026-11-01): the Red-Yellow soils’ 25 cm are those of one horizon, not added up over separate horizons; with no subsurface section, neither base-status criterion is met; a gravel layer (in either record) that reaches into the subsurface section cuts it at its top.</li>
+</ul><p>The choices where the text is silent are in <code>inst/rules/scsj2017/readings.yaml</code>. Other systems do not change: the 44 canonical profiles key as before under WRB, SiBCS and USDA, and the Canadian, Australian, New Zealand and Hungarian examples as before.</p>
+</div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.320" id="soilkey-09320-2026-10-30">soilKey 0.9.320 (2026-10-30)<a class="anchor" aria-label="anchor" href="#soilkey-09320-2026-10-30"></a></h2>
 <div class="section level3">

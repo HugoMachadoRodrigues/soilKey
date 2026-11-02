@@ -128,6 +128,19 @@ names of the USDA triangle, and the total water-soluble salts
 - [`make_hscs2024_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_hscs2024_example.md)
   : Example pedons for the Hungarian soil types
 
+## Soil Classification System of Japan (experimental)
+
+The ten great groups of the 2017 system of the Japanese Society of
+Pedology, named in English with the Japanese names beside them. Reads
+the Japanese horizon notation, the phosphate absorption coefficient (or
+P retention, Alo + 1/2 Feo, the field active-aluminium test), colours,
+paddy land use and the recorded origin of the layers.
+
+- [`classify_scsj2017()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_scsj2017.md)
+  : Classify a pedon under the Soil Classification System of Japan
+- [`make_scsj2017_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_scsj2017_example.md)
+  : Example pedons for the Japanese great groups
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

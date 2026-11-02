@@ -42,6 +42,7 @@ soilkey_systems()
 #> 5     asc3
 #> 6    nzsc4
 #> 7 hscs2024
+#> 8 scsj2017
 #>                                                                    name
 #> 1                                                              WRB 2022
 #> 2                                                    SiBCS, 5th edition
@@ -50,28 +51,32 @@ soilkey_systems()
 #> 5                           Australian Soil Classification, 3rd edition
 #> 6                          New Zealand Soil Classification, 4th edition
 #> 7 Hungarian diagnostic soil classification (2024, second approximation)
-#>                                                         edition       status
-#> 1                                            4th edition (2022)       stable
-#> 2                                            5th edition (2018)       stable
-#> 3                                           13th edition (2022)       stable
-#> 4                                            3rd edition (1998) experimental
-#> 5 3rd edition (2021), online version with errata (25 June 2026) experimental
-#> 6           4th edition (2026), Quarto source of 7 October 2026 experimental
-#> 7                         Second approximation (Útmutató, 2024) experimental
-#>          classifier                                       levels       aliases
-#> 1  classify_wrb2022                                         rsgs           wrb
-#> 2    classify_sibcs ordens, subordens, grandes_grupos, subgrupos         sibcs
-#> 3     classify_usda   orders, suborders, great_groups, subgroups              
-#> 4    classify_cssc3              orders, great_groups, subgroups          cssc
-#> 5     classify_asc3   orders, suborders, great_groups, subgroups           asc
-#> 6    classify_nzsc4                    orders, groups, subgroups          nzsc
-#> 7 classify_hscs2024                                        types hscs, hungary
-#>   default
-#> 1    TRUE
-#> 2    TRUE
-#> 3    TRUE
-#> 4   FALSE
-#> 5   FALSE
-#> 6   FALSE
-#> 7   FALSE
+#> 8                            Soil Classification System of Japan (2017)
+#>                                                                    edition
+#> 1                                                       4th edition (2022)
+#> 2                                                       5th edition (2018)
+#> 3                                                      13th edition (2022)
+#> 4                                                       3rd edition (1998)
+#> 5            3rd edition (2021), online version with errata (25 June 2026)
+#> 6                      4th edition (2026), Quarto source of 7 October 2026
+#> 7                                    Second approximation (Útmutató, 2024)
+#> 8 Soil Classification System of Japan (2017), Japanese Society of Pedology
+#>         status        classifier                                       levels
+#> 1       stable  classify_wrb2022                                         rsgs
+#> 2       stable    classify_sibcs ordens, subordens, grandes_grupos, subgrupos
+#> 3       stable     classify_usda   orders, suborders, great_groups, subgroups
+#> 4 experimental    classify_cssc3              orders, great_groups, subgroups
+#> 5 experimental     classify_asc3   orders, suborders, great_groups, subgroups
+#> 6 experimental    classify_nzsc4                    orders, groups, subgroups
+#> 7 experimental classify_hscs2024                                        types
+#> 8 experimental classify_scsj2017              great_groups, groups, subgroups
+#>         aliases default
+#> 1           wrb    TRUE
+#> 2         sibcs    TRUE
+#> 3                  TRUE
+#> 4          cssc   FALSE
+#> 5           asc   FALSE
+#> 6          nzsc   FALSE
+#> 7 hscs, hungary   FALSE
+#> 8   scsj, japan   FALSE
 ```
