@@ -96,7 +96,8 @@ identify_horizons <- function(pedon, system, ...) {
   out <- fn(pedon, ...)
   if (!is.data.frame(out) || !"code" %in% names(out))
     rlang::abort(sprintf("The horizon identification of %s must return a data frame with a 'code' column.", id))
-  .as_horizon_table(out)
+  # the system's own columns are kept beside the frame's
+  .as_horizon_table(out, keep_extra = TRUE)
 }
 
 
@@ -124,8 +125,10 @@ identify_horizons <- function(pedon, system, ...) {
 #' An undecided question (NA) follows its branch and the ones after it, so
 #' every outcome the data leave possible is collected. One outcome, reached
 #' with no dead end, is the result; several, or a dead end, leave the layer
-#' undecided with the candidates. A test that fails with an error answers NA
-#' and its message is kept in \code{notes}.
+#' undecided with the candidates. A test that fails with an error, or gives
+#' other than one value, answers NA; its message, and any warning, is kept in
+#' \code{notes}. Branch labels repeated within a position are made unique
+#' (".1", ".2").
 #'
 #' @param tree A named list of positions; the first is the start.
 #' @param layer What the tests read as the layer (opaque here).
@@ -133,7 +136,8 @@ identify_horizons <- function(pedon, system, ...) {
 #' @param start The position to start from (default the first).
 #' @return A list: \code{outcome} (NA when undecided), \code{passed} (TRUE
 #'   when decided, NA otherwise), \code{candidates} (every outcome reached,
-#'   in the order of the walk), \code{paths} (the path to each, as
+#'   in the order of the walk, and NA when a dead end is reached: possibly no
+#'   horizon), \code{paths} (the path to each, as
 #'   "position:branch"), \code{path} (the path of the outcome), \code{dead_end},
 #'   \code{undecided} (the positions answered NA), \code{answers} (every
 #'   answer), \code{missing} (attributes named by the undecided tests) and
@@ -155,14 +159,20 @@ identify_horizons <- function(pedon, system, ...) {
     if (is.logical(test) && length(test) == 1L) return(test)
     if (!is.function(test))
       rlang::abort(sprintf("Position '%s': a test must be a function or TRUE.", id))
-    r <- tryCatch(test(layer, context), error = function(e) {
+    r <- tryCatch(withCallingHandlers(test(layer, context), warning = function(w) {
+      notes <<- c(notes, sprintf("%s: warning: %s", id, conditionMessage(w)))
+      invokeRestart("muffleWarning")
+    }), error = function(e) {
       notes <<- c(notes, sprintf("%s: %s", id, conditionMessage(e)))
       NA
     })
     miss <- character(0)
     if (is.list(r)) { miss <- as.character(unlist(r[["missing"]])); r <- r[["passed"]] }
     r <- suppressWarnings(as.logical(r))
-    r <- if (length(r) == 1L) r else NA
+    if (length(r) != 1L) {
+      notes <<- c(notes, sprintf("%s: the test gave %d values, read as undecided", id, length(r)))
+      r <- NA
+    }
     if (is.na(r)) missing <<- c(missing, miss)
     r
   }
@@ -190,9 +200,12 @@ identify_horizons <- function(pedon, system, ...) {
       rlang::abort(sprintf("Position '%s' has neither a test nor branches.", id))
     out <- list(outcomes = list(), dead = list())
     sure <- FALSE
+    # labels of the branches, made unique so that no answer is overwritten
+    labs <- make.unique(vapply(seq_along(branches), function(k)
+      as.character(branches[[k]][["label"]] %||% k)[1L], ""), sep = ".")
     for (k in seq_along(branches)) {
       b <- branches[[k]]
-      lab <- as.character(b[["label"]] %||% k)
+      lab <- labs[k]
       a <- ask(b[["test"]] %||% TRUE, id)
       if (multi || k == 1L) answers[[if (multi) paste0(id, "/", lab) else id]] <<- a
       if (isFALSE(a)) next
@@ -215,11 +228,12 @@ identify_horizons <- function(pedon, system, ...) {
   }
 
   r <- visit(start)
-  oc <- names(r$outcomes)
+  oc <- as.character(names(r$outcomes))
   decided <- length(oc) == 1L && !length(r$dead)
+  # a dead end is a possible "no horizon": NA among the candidates
   list(outcome = if (decided) oc else NA_character_,
        passed = if (decided) TRUE else NA,
-       candidates = oc,
+       candidates = if (length(r$dead)) c(oc, NA_character_) else oc,
        paths = r$outcomes,
        path = if (decided) r$outcomes[[1L]] else character(0),
        dead_end = length(r$dead) > 0L,

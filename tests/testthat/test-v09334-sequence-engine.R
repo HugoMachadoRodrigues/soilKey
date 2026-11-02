@@ -475,7 +475,7 @@ test_that("an undecided question follows every branch and leaves the candidates"
   w <- .walk_key(tree4, list())
   expect_true(w$dead_end)
   expect_identical(w$outcome, NA_character_)
-  expect_identical(w$candidates, "BI")
+  expect_identical(w$candidates, c("BI", NA))
   # an error in a test is an undecided answer, with its message
   tree5 <- list(q = list(test = function(l, ctx) stop("no data"), yes = "BT", no = "BI"))
   w <- .walk_key(tree5, list())
@@ -554,4 +554,261 @@ test_that("the additive level: a feature written in the type's formula is not na
   expect_identical(r$name, "Podzolic")
   expect_identical(nrow(r$levels), 2L)
   expect_error(.add_additive_level(.res(), NULL, list(list(name = "x", passed = TRUE))), "no id")
+})
+
+
+# --- the review of 2026-11-02: one regression per finding ---------------------
+
+.CAV <- c("O", "EL", "BEL", "BT", "G", "T", "AY", "AEL", "AU", "BCA", "AH", "Q", "PT", "P", "PU")
+
+test_that("H1: the completion cap with every completion tried FALSE gives NA, not an error", {
+  skip_on_cran()
+  r <- .mhs(c("AY", NA, NA, NA, NA, NA, "C"), "AY-EL-BEL-BT-C", vocabulary = .CAV)
+  expect_identical(r$passed, NA)
+  # every completion fails by the gap, the relaxed bound cannot see it
+  p <- .tab(c("AU", NA, NA, "BCA", "C"), c(0, 40, 52, 60, 90), c(40, 52, 60, 90, 130),
+            passed = c(TRUE, FALSE, NA, TRUE, TRUE))
+  expect_false(.mhs(p, "AU-BCA-Cca")$passed)
+  r <- .mhs(p, "AU-BCA-Cca", max_completions = 2L)
+  expect_identical(r$passed, NA)
+  expect_match(r$notes, "more than 2 completions", all = FALSE)
+  p <- .tab(c("O", NA, NA, "R"), c(0, 5, 10, 20), c(5, 10, 20, 40))
+  expect_false(.mhs(p, "O-(Cca)-Rca", test_terminals = "R", max_completions = 3L)$passed)
+})
+
+test_that("H2: a candidate keeps its own code where it merges with a neighbour or is a surface code", {
+  skip_on_cran()
+  p <- .tab(c("O", NA, "AY", "EL", "BEL", "BT", "C"), c(0, 10, 16, 22, 35, 50, 100),
+            c(10, 16, 22, 35, 50, 100, 130))
+  p$candidates <- list(NULL, c("AY", "AO"), NULL, NULL, NULL, NULL, NULL)
+  x <- .match_schemes(p, c(CA01 = "O-EL-BEL-BT-C", CA04 = "AY-EL-BEL-BT-C"), surface = .NAT, agro = .AGRO)
+  v <- vapply(x$results, function(r) r$passed, NA)
+  # AY merges with the AY under it (12 cm, thicker than the O): CA04; AO: CA01
+  expect_identical(unname(v), c(NA, NA))
+  expect_identical(x$passed, NA)
+  q <- p; q$code[2] <- "AY"; q$candidates <- NULL
+  expect_true(.mhs(q, "AY-EL-BEL-BT-C", vocabulary = c("O", "EL", "BEL", "BT", "AY"), surface = .NAT, agro = .AGRO)$passed)
+})
+
+test_that("H3: the parser's arguments are not dropped", {
+  skip_on_cran()
+  p <- .tab(c("O", "R"), c(0, 10), c(10, 30))
+  x <- .match_schemes(p, c(R = "O-R", Rca = "O-Rca"), test_terminals = "R")
+  expect_identical(vapply(x$results, function(r) r$passed, NA), c(R = TRUE, Rca = FALSE))
+  expect_identical(x$code, "R")
+  expect_error(.mhs(p, .pf("O-R"), test_terminals = "R"), "already parsed")
+  expect_error(.match_schemes(p, list(R = .pf("O-R")), test_terminals = "R"), "already parsed")
+  expect_error(.mhs(p, "O-R", no_such_argument = 1), "Unknown argument")
+})
+
+test_that("M1: a row with no recorded top stays where it was written", {
+  skip_on_cran()
+  p <- .tab(c("AY", "EL", "BEL", "BT", "C"), c(0, NA, 30, 45, 100), c(15, 30, 45, 100, 150))
+  expect_identical(.as_horizon_table(p)$code, c("AY", "EL", "BEL", "BT", "C"))
+  expect_true(.mhs(p, "AY-EL-BEL-BT-C")$passed)
+  # with every top known, rows are sorted
+  p <- .tab(c("C", "BT", "BEL", "EL", "AY"), c(100, 45, 30, 15, 0), c(150, 100, 45, 30, 15))
+  expect_true(.mhs(p, "AY-EL-BEL-BT-C")$passed)
+})
+
+test_that("M2: the relaxed bound reads fixed features and decided gaps", {
+  skip_on_cran()
+  p <- .tab(c("AY", NA, NA, NA, "R"), c(0, 10, 20, 30, 40), c(10, 20, 30, 40, 60))
+  r <- .mhs(p, "AY-(Cca)-Rca", test_terminals = "R",
+            vocabulary = c("AY", "AU", "AH", "AJ", "AK", "H", "O", "T", "PU", "P", "TJ", "AO"))
+  expect_false(r$passed)
+  expect_match(r$notes, "no completion", all = FALSE)
+  p <- .tab(c("AU", NA, "BCA", NA, "C"), c(0, 40, 52, 90, 110), c(40, 52, 90, 110, 130),
+            passed = c(TRUE, FALSE, TRUE, NA, TRUE))
+  r <- .mhs(p, "AU-BCA-Cca")
+  expect_false(r$passed)
+  expect_match(r$notes, "no completion", all = FALSE)
+  expect_identical(.mhs(p, "AU-BCA-Cca", pair_gaps_cm = c("AU>BCA" = 15))$passed, NA)
+})
+
+test_that("M3: a witness and a completion meant to fail settle NA without the enumeration", {
+  skip_on_cran()
+  r <- .mhs(c("AY", NA, NA, NA, "C"), "AY-EL-BEL-BT-C", vocabulary = .CAV, max_completions = 10L)
+  expect_identical(r$passed, NA)
+  expect_false(any(grepl("more than", r$notes)))
+  # more than three layers that could be anything: NA, unless no completion can match
+  r <- .mhs(c("AY", NA, NA, NA, NA, "C"), "AY-EL-BEL-BT-C", vocabulary = .CAV)
+  expect_identical(r$passed, NA)
+  expect_match(r$notes, "with no candidates", all = FALSE)
+  expect_false(.mhs(c("AY", NA, NA, NA, NA, "C"), "O-EL-BEL-BT-C", vocabulary = .CAV)$passed)
+})
+
+test_that("M4: a natural remnant under the plough does not block an agro type unless asked", {
+  skip_on_cran()
+  ca <- c(CA07 = "AU-BEL-BT-C", CA20 = "PU-(AU)-BEL-BT-C", CA22 = "PU-EL-BEL-BT-C")
+  p <- .tab(c("PU", "AU", "EL", "BEL", "BT", "C"), c(0, 25, 32, 45, 60, 120), c(25, 32, 45, 60, 120, 150))
+  x <- .match_schemes(p, ca, surface = .NAT, agro = .AGRO)
+  expect_identical(x$code, "CA22")
+  x <- .match_schemes(p, ca, surface = .NAT, agro = .AGRO, closure_surface = TRUE)
+  expect_false(x$passed)
+  expect_identical(x$nearest$code[1], "CA22")
+})
+
+test_that("M5: a leading foreign horizon is cover, not the end of the surface rule", {
+  skip_on_cran()
+  p <- .tab(c("L", "O", "AY", "EL", "BEL", "BT", "C"), c(0, 2, 5, 25, 40, 60, 120), c(2, 5, 25, 40, 60, 120, 150))
+  r <- .mhs(p, "AY-EL-BEL-BT-C", vocabulary = c("O", "AY", "EL", "BEL", "BT"), surface = .NAT, agro = .AGRO)
+  expect_true(r$passed)
+  expect_identical(r$surface, "AY")
+  expect_identical(r$ignored[1], "L (1)")
+  # a cover of 40 cm or more: no surface run
+  p <- .tab(c("L", "O", "AY", "EL", "BT", "C"), c(0, 40, 45, 65, 80, 120), c(40, 45, 65, 80, 120, 150))
+  r <- .mhs(p, "AY-EL-BT-C", vocabulary = c("O", "AY", "EL", "BT"), surface = .NAT, agro = .AGRO)
+  expect_identical(r$surface, NA_character_)
+  expect_false(.mhs(p, "AY-EL-BT-C", vocabulary = c("O", "AY", "EL", "BT"), surface = .NAT, agro = .AGRO,
+                    closure_surface = TRUE)$passed)
+})
+
+test_that("M6: an undecided rock flag or mark gives NA", {
+  skip_on_cran()
+  p <- .tab(c("AY", "EL", "D"), c(0, 15, 40), c(15, 40, 90))
+  expect_false(.mhs(p, "AY-EL-DG", test_terminals = "DG")$passed)
+  p$features_na <- list(character(0), character(0), "G")
+  expect_identical(.mhs(p, "AY-EL-DG", test_terminals = "DG")$passed, NA)
+  x <- .match_schemes(p, c(CO03 = "AY-EL-D", CO04 = "AY-EL-DG"), test_terminals = "DG")
+  expect_identical(x$code, "CO03")
+  expect_identical(x$provisional_because, "CO04")
+  p <- .tab(c("O", "C"), c(0, 5), c(5, 60))
+  p$features_na <- list(character(0), "~~")
+  expect_identical(.mhs(p, "O-C~~", test_terminals = TRUE)$passed, NA)
+  p$mark <- c(NA, "..")
+  expect_false(.mhs(p, "O-C~~", test_terminals = TRUE)$passed)
+})
+
+test_that("M7: an overlay fills a slot", {
+  skip_on_cran()
+  p <- .tab(c("AU", "G", "C"), c(0, 20, 60), c(20, 60, 100))
+  p$overlay <- list("S", character(0), character(0))
+  p$features <- list(character(0), "s", character(0))
+  r <- .mhs(p, "S-Gs-CGs", vocabulary = c("S", "SS", "G"))
+  expect_true(r$passed)
+  expect_identical(r$matched$written[1], "S")
+  expect_identical(r$matched$code[1], "AU")
+  p$overlay[[1]] <- character(0)
+  expect_false(.mhs(p, "S-Gs-CGs", vocabulary = c("S", "SS", "G"))$passed)
+})
+
+test_that("M8: tested rock and parent symbols stay in play for every scheme", {
+  skip_on_cran()
+  da <- c(DA03 = "O-C..", DA05 = "O-R", Dx = "O-C..-R")
+  p <- .tab(c("O", "C", "R"), c(0, 5, 40), c(5, 40, 60))
+  p$mark <- c(NA, "..", NA)
+  x <- .match_schemes(p, da, test_terminals = TRUE)
+  expect_identical(x$code, "Dx")
+  v <- vapply(x$results, function(r) r$passed, NA)
+  expect_identical(unname(v), c(FALSE, FALSE, TRUE))
+  # an untested slot whose code is in play takes its horizon
+  expect_true(.mhs(c("AY", "BM", "C"), "AY-BM-C", vocabulary = c("AY", "BM", "C"))$passed)
+  expect_true(.mhs(c("AY", "BM"), "AY-BM-C", vocabulary = c("AY", "BM", "C"))$passed)
+  expect_false(.mhs(c("AY", "BM", "C"), "AY-BM", vocabulary = c("AY", "BM", "C"))$passed)
+})
+
+test_that("low: Cyrillic look-alikes, primes, and a mixture written first", {
+  skip_on_cran()
+  # T-ELg and AO written with Cyrillic letters, CRH with a Cyrillic H
+  expect_identical(.slots("\u0422-ELg-BELg-BTg-G-CG")$codes[1], "T")
+  expect_identical(.slots("\u0410\u041e-CR\u041d-C")$codes[1:2], c("AO", "CRH"))
+  expect_identical(.pf("AU-BCA-C\u0441\u0430")$slots[[3]]$forms[[1]]$typical, "ca")
+  mk <- function(s) .pf(s)$slots[[2]]$forms[[1]]$mark
+  expect_identical(c(mk("O-C\u2032"), mk("O-C\u2019\u2019"), mk("PT-TT''")), c("\"", "\"", "\""))
+  st <- .slots("[AY, EL]tr-BT-C")
+  expect_identical(st$role[1:2], c("feature", "middle"))
+  expect_false("surface" %in% st$role)
+})
+
+test_that("low: the tie note, one kind of distance, merges across ignored horizons, the buried gap key", {
+  skip_on_cran()
+  p <- .tab(c(NA, "EL", "BEL", "BT", "C"), c(0, 20, 35, 50, 100), c(20, 35, 50, 100, 130))
+  p$candidates <- list(c("O", "AY"), NULL, NULL, NULL, NULL)
+  r <- .mhs(p, "AY-EL-BEL-BT-C", vocabulary = c("O", "AY", "EL", "BEL", "BT"), surface = .NAT, agro = .AGRO)
+  expect_identical(r$passed, NA)
+  expect_false(any(grepl("thickest", r$notes)))
+  expect_identical(r$undecided, "1 (O, AY)")
+  expect_false(r$distance_exact)
+  expect_true(.mhs(c("AY", "BT"), "AY-BT")$distance_exact)
+  x <- .match_schemes(p, .CA, surface = .NAT, agro = .AGRO)
+  expect_true(all(!vapply(x$results, function(r) r$distance_exact, NA)))
+  r <- .mhs(c("AY", "EL", "BT", "V", "BT", "C"), "AY-EL-BT-C", vocabulary = c("AY", "EL", "BT", "BEL"))
+  expect_true(r$passed)
+  expect_identical(r$matched$horizon[3], "BT (3, 5)")
+  p <- .tab(c("RY", NA, "AU", "BT"), c(0, 45, 50, 70), c(45, 50, 70, 110),
+            buried = c(0, 0, 1, 1), passed = c(TRUE, FALSE, TRUE, TRUE))
+  expect_false(.mhs(p, "RY-[ABC]", test_terminals = "[ABC]")$passed)
+  expect_true(.mhs(p, "RY-[ABC]", test_terminals = "[ABC]", pair_gaps_cm = c("RY>[ABC]" = 10))$passed)
+})
+
+test_that("low: the walker keeps every answer, captures warnings and odd results, marks dead ends", {
+  skip_on_cran()
+  tree <- list(a = list(branches = list(list(test = function(l, c) NA, to = "X", label = "x"),
+                                        list(test = function(l, c) FALSE, to = "Y", label = "x"),
+                                        list(test = TRUE, to = "Z"))))
+  w <- .walk_key(tree, list())
+  expect_identical(names(w$answers), c("a/x", "a/x.1", "a/3"))
+  expect_identical(w$candidates, c("X", "Z"))
+  tree <- list(k1 = list(test = function(l, ctx) { warning("careful"); TRUE }, yes = "BT", no = "BM"))
+  expect_silent(w <- .walk_key(tree, list()))
+  expect_identical(w$outcome, "BT")
+  expect_match(w$notes, "warning: careful")
+  tree <- list(k1 = list(test = function(l, ctx) l$clay_ratio >= 1.4, yes = "BT", no = "BM"))
+  w <- .walk_key(tree, list())
+  expect_identical(w$candidates, c("BT", "BM"))
+  expect_match(w$notes, "gave 0 values")
+  tree <- list(k1 = list(test = function(l, ctx) TRUE, yes = "k2", no = "BM"),
+               k2 = list(test = function(l, ctx) FALSE, yes = "X", no = NULL))
+  w <- .walk_key(tree, list())
+  expect_true(is.character(w$candidates))
+  expect_identical(w$candidates, NA_character_)
+  expect_true(w$dead_end)
+})
+
+test_that("low: the additive level copies the result, replaces itself, marks skipped entries", {
+  skip_on_cran()
+  r0 <- .res()
+  f <- list(.feat("g", "gleyic", TRUE), .feat("y", "tongued", NA))
+  r1 <- .add_additive_level(r0, NULL, f)
+  expect_identical(nrow(r0$levels), 2L)
+  expect_identical(r0$name, "Podzolic")
+  r2 <- .add_additive_level(r1, NULL, f)
+  expect_identical(r2$name, "Podzolic gleyic")
+  expect_identical(r2$levels$code, c("CA", "CA01", "g"))
+  expect_identical(r2$provisional_because, "subtypes:y")
+  expect_identical(sum(grepl("^Provisional subtypes", r2$warnings)), 1L)
+  r <- .add_additive_level(.res(), NULL, list(.feat("g", "gleyic", TRUE)), already = "g")
+  e <- r$trace$subtypes$g
+  expect_true(e$passed)
+  expect_identical(e$status, "in the formula")
+  expect_identical(r$trace$subtypes, r$trace$subtypes)
+  # the name is the type's, whatever the name passed in
+  rr <- .res(); rr$name <- "Texture-differentiated: Podzolic"
+  expect_identical(.add_additive_level(rr, NULL, list(.feat("y", "tongued", NA)))$name, "Podzolic")
+  expect_error(.add_additive_level(.res(), NULL, list(.feat("g", "a", TRUE), .feat("g", "b", TRUE))),
+               "repeats the id")
+  r <- .add_additive_level(.res(), NULL, list(list(id = "g", name = "gleyic",
+                                                   test = function(p, c) { warning("w"); TRUE })))
+  expect_identical(r$name, "Podzolic gleyic")
+  expect_match(r$trace$subtypes$g$notes, "warning: w")
+  # print() keeps the classes of one level together
+  r <- .add_additive_level(.res(), NULL, list(.feat("g", "gleyic", TRUE), .feat("y", "tongued", TRUE)))
+  out <- utils::capture.output(print(r), type = "message")
+  expect_true(any(grepl("CA01 Podzolic > g gleyic, y tongued", out, fixed = TRUE)))
+})
+
+test_that("low: identify_horizons() keeps the columns the system adds", {
+  skip_on_cran()
+  p <- make_hscs2024_example("steppe")
+  local_mocked_bindings(.horizon_identifier = function(ns) function(pedon, ...) {
+    f <- .horizon_frame(pedon)
+    f$code <- c("AU", "BCA", "BCA", "C")
+    f$group <- c("humus", "middle", "middle", "rock")
+    f$top_cm[2] <- NA
+    f
+  })
+  h <- identify_horizons(p, "hscs2024")
+  expect_identical(h$group, c("humus", "middle", "middle", "rock"))
+  expect_identical(h$horizon_idx, 1:4)
 })

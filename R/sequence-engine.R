@@ -33,19 +33,33 @@
 # Roman numerals of a lithological layer, II to IX (V and X alone are horizon
 # letters in some notations, so they are not read as numerals).
 .FORMULA_ROMAN <- c("VIII", "VII", "III", "IX", "VI", "IV", "II")
-# Codes of the matcher that stand for a class of codes: an undecided layer
-# completed by "a code of the vocabulary not in the formula", "a code foreign
-# to the vocabulary", "no diagnostic horizon"; "p"/"f" in play or free, "a"
-# and "n" agro or natural surface codes.
-.MHS_REPS <- c("<p>", "<pa>", "<pn>", "<f>", "<fa>", "<fn>", "<none>")
+# Codes of the matcher that stand for a class of codes, for an undecided
+# layer: "a code in play that no slot names and no other layer has", "a code
+# foreign to the match", and "no diagnostic horizon".
+.MHS_REPS <- c("<p>", "<f>", "<none>")
 
 
-# Typographic variants folded before a formula is read: curly and double
-# primes to a straight quote, the Symbol-font perpendicular (U+F05E) to U+22A5,
-# dashes and the minus sign to a hyphen; spaces removed.
+# Cyrillic letters that look like Latin ones, as the book's own text and
+# Russian databases mix them into the indices (TO, CRH, AO, ca, ek ...).
+.FORMULA_CYRILLIC <- c(
+  "\u0410" = "A", "\u0412" = "B", "\u0415" = "E", "\u041a" = "K", "\u041c" = "M",
+  "\u041d" = "H", "\u041e" = "O", "\u0420" = "P", "\u0421" = "C", "\u0422" = "T",
+  "\u0425" = "X", "\u0423" = "Y",
+  "\u0430" = "a", "\u0435" = "e", "\u043e" = "o", "\u0440" = "p", "\u0441" = "c",
+  "\u0443" = "y", "\u0445" = "x", "\u043a" = "k", "\u043c" = "m", "\u0442" = "t",
+  "\u043d" = "h", "\u0432" = "b")
+
+# Typographic variants folded before a formula is read: Cyrillic look-alikes
+# to Latin; curly quotes, primes and doubled single quotes to a straight
+# double quote (the ash mark), a single prime or right quote likewise; the
+# Symbol-font perpendicular (U+F05E) to U+22A5; dashes and the minus sign to a
+# hyphen; spaces removed.
 .formula_normalise <- function(s) {
   s <- enc2utf8(as.character(s))
-  for (q in c("\u201c", "\u201d", "\u201e", "\u2033", "\u02ba", "``"))
+  s <- chartr(paste(names(.FORMULA_CYRILLIC), collapse = ""),
+              paste(.FORMULA_CYRILLIC, collapse = ""), s)
+  for (q in c("\u2032\u2032", "\u2019\u2019", "''", "\u201c", "\u201d", "\u201e",
+              "\u2033", "\u02ba", "``", "\u2032", "\u2019"))
     s <- gsub(q, "\"", s, fixed = TRUE)
   s <- gsub("\uf05e", "\u22a5", s, fixed = TRUE)
   for (d in c("\u2010", "\u2011", "\u2012", "\u2013", "\u2014", "\u2212"))
@@ -358,7 +372,10 @@
   items <- .formula_items(.formula_normalise(s), s)
   slots <- lapply(seq_along(items), function(i) .formula_slot(items[[i]], i, voc))
   kinds <- vapply(slots, function(z) z$kind, "")
-  first <- which(kinds == "horizon")[1L]
+  # the surface slot is the first row of the formula when it is a horizon (a
+  # turbated mixture written first, [AY, EL]tr, leaves no surface slot)
+  first <- which(kinds %in% c("horizon", "mixture"))[1L]
+  if (!is.na(first) && kinds[first] != "horizon") first <- NA_integer_
   test_all <- isTRUE(test_terminals)
   tt <- if (is.character(test_terminals)) test_terminals else character(0)
   for (i in seq_along(slots)) {
@@ -380,7 +397,7 @@
     sigs <- vapply(z$forms, function(f) f$signature, "")
     z$role <- if (z$kind %in% c("small", "mixture")) "feature"
               else if (z$kind == "buried" || any(z$codes %in% voc$parents)) "parent"
-              else if (identical(i, first)) "surface" else "middle"
+              else if (!is.na(first) && i == first) "surface" else "middle"
     z$tested <- switch(z$role,
       feature = FALSE,
       parent = test_all || any(c(z$codes, sigs, z$written) %in% tt),
@@ -447,8 +464,10 @@
 # A table of identified horizons in the form the matcher reads: the frame of
 # identify_horizons(), any data frame with a `code` column, or a character
 # vector of codes (NA an undecided layer, "" a layer with no diagnostic
-# horizon). Missing columns take their defaults; rows are put in depth order.
-.as_horizon_table <- function(x) {
+# horizon). Missing columns take their defaults; with `keep_extra` the other
+# columns are kept. Rows are put in depth order only when every top is known:
+# a row whose top is not recorded stays where it was written.
+.as_horizon_table <- function(x, keep_extra = FALSE) {
   if (is.character(x) || (is.logical(x) && all(is.na(x)))) {
     v <- as.character(x)
     x <- data.frame(code = ifelse(!is.na(v) & !nzchar(trimws(v)), NA_character_, v),
@@ -461,6 +480,7 @@
   if (!"code" %in% names(x))
     rlang::abort("The table of identified horizons needs a 'code' column.")
   n <- nrow(x)
+  col <- function(k) x[[k]]
   chr <- function(v, d = NA_character_) {
     if (is.null(v)) return(rep(d, n))
     v <- as.character(v)
@@ -482,53 +502,103 @@
       unique(e[!is.na(e) & nzchar(e)])
     })
   }
-  code <- chr(x[["code"]])
-  passed <- if (is.null(x[["passed"]])) ifelse(is.na(code), NA, TRUE) else as.logical(x[["passed"]])
-  bur <- x[["buried"]]
+  code <- chr(col("code"))
+  passed <- if (is.null(col("passed"))) ifelse(is.na(code), NA, TRUE) else as.logical(col("passed"))
+  bur <- col("buried")
   bur <- if (is.null(bur)) rep(0L, n)
          else if (is.logical(bur)) ifelse(bur %in% TRUE, 1L, 0L)
          else { b <- suppressWarnings(as.integer(bur)); b[is.na(b)] <- 0L; b }
   out <- data.frame(
-    horizon_idx = if (is.null(x[["horizon_idx"]])) seq_len(n) else as.integer(x[["horizon_idx"]]),
-    top_cm = num(x[["top_cm"]]), bottom_cm = num(x[["bottom_cm"]]),
-    designation = chr(x[["designation"]]), code = code, passed = passed,
-    small = lgl(x[["small"]], FALSE), transitional = lgl(x[["transitional"]], FALSE),
-    buried = bur, rockflag = chr(x[["rockflag"]]), mark = chr(x[["mark"]]),
-    route = chr(x[["route"]]), evidence = chr(x[["evidence"]]),
+    horizon_idx = if (is.null(col("horizon_idx"))) seq_len(n) else as.integer(col("horizon_idx")),
+    top_cm = num(col("top_cm")), bottom_cm = num(col("bottom_cm")),
+    designation = chr(col("designation")), code = code, passed = passed,
+    small = lgl(col("small"), FALSE), transitional = lgl(col("transitional"), FALSE),
+    buried = bur, rockflag = chr(col("rockflag")), mark = chr(col("mark")),
+    route = chr(col("route")), evidence = chr(col("evidence")),
     stringsAsFactors = FALSE)
   for (k in c("overlay", "features", "features_na", "composition", "missing", "candidates")) {
-    out[[k]] <- if (n) lst(x[[k]]) else list()
+    out[[k]] <- if (n) lst(col(k)) else list()
   }
   # NA in a candidate list ("or no horizon") is kept as ""
-  if (!is.null(x[["candidates"]]) && is.list(x[["candidates"]])) {
-    out$candidates <- lapply(x[["candidates"]], function(e) {
+  if (!is.null(col("candidates")) && is.list(col("candidates"))) {
+    out$candidates <- lapply(col("candidates"), function(e) {
       e <- as.character(unlist(e))
       unique(ifelse(is.na(e), "", trimws(e)))
     })
   }
-  if (n && any(!is.na(out$top_cm))) out <- out[order(out$top_cm, na.last = TRUE), , drop = FALSE]
+  if (keep_extra) for (k in setdiff(names(x), names(out))) out[[k]] <- x[[k]]
+  if (n > 1L && !anyNA(out$top_cm) && is.unsorted(out$top_cm))
+    out <- out[order(out$top_cm), , drop = FALSE]
   rownames(out) <- NULL
   out
 }
 
-# The class of a code for a given formula and vocabulary: the code itself when
-# a slot names it, else one of .MHS_REPS.
-.mhs_category <- function(code, ctx) {
-  vapply(code, function(c1) {
-    if (is.na(c1) || !nzchar(c1)) return("<none>")
-    if (c1 %in% ctx$spec_codes) return(c1)
-    play <- c1 %in% ctx$play
-    kind <- if (c1 %in% ctx$agro) "a" else if (c1 %in% ctx$natural) "n" else ""
-    paste0("<", if (play) "p" else "f", kind, ">")
-  }, "", USE.NAMES = FALSE)
+# Three-valued AND.
+.and3 <- function(a, b) {
+  if (isFALSE(a) || isFALSE(b)) FALSE else if (is.na(a) || is.na(b)) NA else TRUE
 }
 
-# Is a token in play (a code of the vocabulary or of a tested slot)?
-.mhs_in_play <- function(code, ctx) {
-  code %in% ctx$play | code %in% c("<p>", "<pa>", "<pn>")
+# The context of one match: the slots matched, the codes in play, the surface
+# codes and the allowances.
+#
+# The codes in play are the vocabulary's and the formula's tested slots'
+# (rock and parent symbols included: a parent the division tests counts in
+# every scheme of it). With closure_surface FALSE (the default), surface and
+# agro codes the formula does not name are left out of the closure, so a
+# natural remnant under the plough does not block an agro type. An untested
+# slot whose code is in play is matched as an optional slot, by its code
+# alone: it takes its horizon when present, and never fails the match.
+.mhs_context <- function(tab, spec, vocabulary = NULL, surface = NULL, agro = NULL,
+                         closure_surface = FALSE, max_cover_cm = 40, max_gap_cm = 0,
+                         pair_gaps_cm = NULL, buried_within_cm = Inf, max_completions = 2000L) {
+  agro <- as.character(agro)
+  natural <- setdiff(as.character(surface), agro)
+  tested <- Filter(function(z) isTRUE(z$tested) && z$kind %in% c("horizon", "buried"), spec$slots)
+  tested_codes <- unique(unlist(lapply(tested, function(z) z$codes)))
+  voc <- unique(as.character(vocabulary))
+  if (!isTRUE(closure_surface)) voc <- setdiff(voc, setdiff(c(agro, natural), tested_codes))
+  play <- unique(c(voc, tested_codes))
+  buried_play <- any(.FORMULA_BURIED %in% play)
+  slots <- list()
+  for (z in spec$slots) {
+    if (!(z$kind %in% c("horizon", "buried"))) next
+    if (isTRUE(z$tested)) { slots <- c(slots, list(z)); next }
+    inplay <- if (z$kind == "buried") buried_play else any(z$codes %in% play)
+    if (!inplay) next
+    z$optional <- TRUE
+    z$untested <- TRUE
+    z$forms <- lapply(z$forms, function(f) {
+      f$required <- character(0); f$rockflag <- NA_character_
+      f$mark <- NA_character_; f$composition <- character(0)
+      f
+    })
+    slots <- c(slots, list(z))
+  }
+  top0 <- suppressWarnings(min(tab$top_cm, na.rm = TRUE))
+  list(slots = slots, spec = spec,
+       spec_codes = unique(unlist(lapply(slots, function(z) z$codes))),
+       play = play, agro = agro, natural = natural, buried_play = buried_play,
+       max_cover_cm = max_cover_cm, max_gap_cm = max_gap_cm, pair_gaps_cm = pair_gaps_cm,
+       buried_within_cm = buried_within_cm, max_completions = max_completions,
+       top0 = if (is.finite(top0)) top0 else NA_real_)
 }
-.mhs_is_agro <- function(code, ctx) code %in% ctx$agro | code %in% c("<pa>", "<fa>")
-.mhs_is_natural <- function(code, ctx) code %in% ctx$natural | code %in% c("<pn>", "<fn>")
+
+.mhs_is_agro <- function(code, ctx) code %in% ctx$agro
+.mhs_is_natural <- function(code, ctx) code %in% ctx$natural
+.mhs_is_surface <- function(code, ctx) code %in% ctx$agro | code %in% ctx$natural
+
+# The options of an undecided row: each candidate kept as itself when a slot
+# names it, a decided row of the profile has it, or it is a surface or agro
+# code in a row that could belong to the surface run (it may merge with a
+# neighbour or change the thickest surface); otherwise a stand-in: "<p>" in
+# play, "<f>" foreign; "" or NA "<none>".
+.mhs_options <- function(cand, keep, ctx, surface_kept = TRUE) {
+  unique(vapply(cand, function(c1) {
+    if (is.na(c1) || !nzchar(c1)) return("<none>")
+    if (c1 %in% keep || (surface_kept && .mhs_is_surface(c1, ctx))) return(c1)
+    if (c1 %in% ctx$play) "<p>" else "<f>"
+  }, "", USE.NAMES = FALSE))
+}
 
 # The rows of a completed profile collapsed top-down into tokens: consecutive
 # rows with the same code merged (BT1, BT2 -> BT), the rows of one buried
@@ -540,30 +610,41 @@
   b <- rows$buried > 0L
   key[b] <- paste0("<buried", rows$buried[b], ">")
   start <- c(TRUE, key[-1L] != key[-n])
-  g <- cumsum(start)
-  grp <- split(seq_len(n), g)
+  grp <- split(seq_len(n), cumsum(start))
   code <- key[start]
   bur <- b[start]
   code[bur] <- "<buried>"
   first_chr <- function(v) { v <- v[!is.na(v)]; if (length(v)) v[1L] else NA_character_ }
   top <- vapply(grp, function(r) suppressWarnings(min(rows$top_cm[r])), 0)
   bottom <- vapply(grp, function(r) suppressWarnings(max(rows$bottom_cm[r])), 0)
-  thick <- vapply(grp, function(r) sum(rows$bottom_cm[r] - rows$top_cm[r]), 0)
   top[!is.finite(top)] <- NA_real_
   bottom[!is.finite(bottom)] <- NA_real_
   idx <- vapply(grp, function(r) {
     h <- rows$horizon_idx[r]
     if (length(h) == 1L) as.character(h) else paste0(h[1L], "-", h[length(h)])
   }, "")
-  lab <- ifelse(code %in% .MHS_REPS, "?", ifelse(bur, .FORMULA_BURIED[["square"]], code))
-  list(n = length(grp), code = unname(code), buried = unname(bur),
-       label = paste0(lab, " (", unname(idx), ")"),
-       top = unname(top), bottom = unname(bottom), thick = unname(thick),
+  ul <- function(k) unname(lapply(grp, function(r) unique(unlist(rows[[k]][r]))))
+  list(n = length(grp), code = unname(code), buried = unname(bur), idx = unname(idx),
+       top = unname(top), bottom = unname(bottom),
+       thick = unname(vapply(grp, function(r) sum(rows$bottom_cm[r] - rows$top_cm[r]), 0)),
        features = unname(lapply(grp, function(r) unique(c(unlist(rows$features[r]), unlist(rows$overlay[r]))))),
-       features_na = unname(lapply(grp, function(r) unique(unlist(rows$features_na[r])))),
-       composition = unname(lapply(grp, function(r) unique(unlist(rows$composition[r])))),
+       features_na = ul("features_na"), overlay = ul("overlay"), composition = ul("composition"),
        rockflag = unname(vapply(grp, function(r) first_chr(rows$rockflag[r]), "")),
        mark = unname(vapply(grp, function(r) first_chr(rows$mark[r]), "")))
+}
+
+.mhs_label <- function(code, buried, idx) {
+  lab <- ifelse(code %in% .MHS_REPS, "?", ifelse(buried, .FORMULA_BURIED[["square"]], code))
+  paste0(lab, " (", idx, ")")
+}
+
+# Which tokens are in play: by code or by an overlay; a buried profile when the
+# match counts one and it starts within buried_within_cm.
+.mhs_play_mask <- function(tok, ctx) {
+  ov <- vapply(tok$overlay, function(o) any(o %in% ctx$play), NA)
+  p <- (tok$code %in% ctx$play | tok$code == "<p>" | ov) & !tok$buried
+  if (ctx$buried_play) p <- p | (tok$buried & (is.na(tok$top) | tok$top <= ctx$buried_within_cm))
+  p
 }
 
 .mhs_drop <- function(tok, drop) {
@@ -574,30 +655,32 @@
 
 # The surface horizon (Hugo's decision Q11, 2026-11-02): with `agro` and
 # `surface` codes given, the run of surface horizons at the top of the profile
-# (under no cover of `max_cover_cm` or more: leading rows with no diagnostic
-# horizon, and the small and transitional rows dropped before) gives the
-# surface: the first agro horizon of the run, else the thickest natural one;
-# the other horizons of the run above it, or all of them for a natural
-# surface, are read as features and leave the sequence. Thicknesses that are
-# not known, or equal, leave several choices, which the matcher follows. Each
-# choice is the tokens left and the index of the surface token (in play).
+# gives the surface: the first agro horizon of the run, else the thickest
+# natural one; the other horizons of the run above it, or all of them for a
+# natural surface, are read as features and leave the sequence. Above the run
+# lies the cover: rows with no diagnostic horizon and horizons neither in play
+# nor surface horizons (litter coded L); a cover of max_cover_cm or more means
+# no surface run. Thicknesses that are not known, or equal, leave several
+# choices, which the matcher follows. Each choice is the tokens left and the
+# index of the surface token, which is always in play.
 .mhs_surface <- function(tok, ctx) {
-  none <- list(list(tok = tok, forced = NA_integer_, surface = NA_character_, absorbed = character(0)))
+  none <- list(list(tok = tok, forced = NA_integer_, surface = NA_character_,
+                    absorbed = character(0)))
   if (!length(ctx$agro) && !length(ctx$natural)) return(none)
   if (is.null(tok) || !tok$n) return(none)
-  i <- which(tok$code != "<none>")[1L]
-  if (is.na(i)) return(none)
-  is_surf <- function(k) !tok$buried[k] && (.mhs_is_agro(tok$code[k], ctx) || .mhs_is_natural(tok$code[k], ctx))
-  if (!is_surf(i)) return(none)
+  play <- .mhs_play_mask(tok, ctx)
+  is_surf <- function(k) !tok$buried[k] && .mhs_is_surface(tok$code[k], ctx)
+  i <- 1L
+  while (i <= tok$n && !is_surf(i) && !tok$buried[i] && (tok$code[i] == "<none>" || !play[i])) i <- i + 1L
+  if (i > tok$n || !is_surf(i)) return(none)
   cover <- tok$top[i] - ctx$top0
   if (!is.na(cover) && cover >= ctx$max_cover_cm) return(none)
   j <- i
   while (j < tok$n && is_surf(j + 1L)) j <- j + 1L
   run <- i:j
   choice <- function(k, absorbed) {
-    t2 <- .mhs_drop(tok, absorbed)
-    list(tok = t2, forced = k - sum(absorbed < k), surface = tok$code[k],
-         absorbed = tok$label[absorbed])
+    list(tok = .mhs_drop(tok, absorbed), forced = k - sum(absorbed < k), surface = tok$code[k],
+         absorbed = .mhs_label(tok$code[absorbed], tok$buried[absorbed], tok$idx[absorbed]))
   }
   ag <- run[.mhs_is_agro(tok$code[run], ctx)]
   if (length(ag)) return(list(choice(ag[1L], run[run < ag[1L]])))
@@ -608,27 +691,63 @@
   lapply(can, function(k) choice(k, setdiff(run, k)))
 }
 
-# Three-valued compatibility of a token with a slot (any of its forms).
-.mhs_compat <- function(tok, i, slot, ctx) {
+# The horizons in play, consecutive ones with the same code merged when only
+# horizons left out of the match lie between them (BT, V, BT with V foreign:
+# one BT); a row with no diagnostic horizon between them keeps them apart.
+.mhs_play_tokens <- function(tok, play) {
+  pi <- which(play)
+  if (!length(pi)) return(list(n = 0L, first = integer(0), last = integer(0)))
+  grp <- list(pi[1L])
+  for (k in pi[-1L]) {
+    g <- grp[[length(grp)]]
+    a <- g[length(g)]
+    mid <- if (k - a > 1L) (a + 1L):(k - 1L) else integer(0)
+    same <- !tok$buried[k] && !tok$buried[a] && tok$code[k] == tok$code[a] &&
+      !(tok$code[k] %in% .MHS_REPS) && !any(tok$code[mid] == "<none>")
+    if (same) grp[[length(grp)]] <- c(g, k) else grp <- c(grp, list(k))
+  }
+  first_chr <- function(v) { v <- v[!is.na(v)]; if (length(v)) v[1L] else NA_character_ }
+  ul <- function(k) lapply(grp, function(g) unique(unlist(tok[[k]][g])))
+  list(n = length(grp),
+       first = vapply(grp, function(g) g[1L], 0L), last = vapply(grp, function(g) g[length(g)], 0L),
+       code = vapply(grp, function(g) tok$code[g[1L]], ""),
+       buried = vapply(grp, function(g) tok$buried[g[1L]], NA),
+       label = vapply(grp, function(g) .mhs_label(tok$code[g[1L]], tok$buried[g[1L]],
+                                                  paste(tok$idx[g], collapse = ", ")), ""),
+       top = vapply(grp, function(g) tok$top[g[1L]], 0),
+       bottom = vapply(grp, function(g) tok$bottom[g[length(g)]], 0),
+       thick = vapply(grp, function(g) sum(tok$thick[g]), 0),
+       features = ul("features"), features_na = ul("features_na"),
+       overlay = ul("overlay"), composition = ul("composition"),
+       rockflag = vapply(grp, function(g) first_chr(tok$rockflag[g]), ""),
+       mark = vapply(grp, function(g) first_chr(tok$mark[g]), ""))
+}
+
+# Three-valued compatibility of a horizon in play with a slot (any of its
+# forms). A horizon fills a slot by its code or by an overlay. A rock flag or
+# mark the slot requires that the layer does not record is FALSE, NA when it is
+# listed among the layer's undecided features (features_na: "G", "~~" ...).
+.mhs_compat <- function(pt, i, slot, ctx) {
   best <- FALSE
   for (f in slot$forms) {
-    if (tok$buried[i]) {
+    if (pt$buried[i]) {
       if (!(f$code %in% .FORMULA_BURIED)) next
-      v <- if (is.na(tok$top[i])) NA else tok$top[i] <= ctx$buried_within_cm
+      v <- if (is.na(pt$top[i])) NA else pt$top[i] <= ctx$buried_within_cm
     } else {
-      if (!identical(tok$code[i], f$code)) next
+      if (!identical(pt$code[i], f$code) && !(f$code %in% pt$overlay[[i]])) next
       v <- TRUE
-      req <- f$required
-      if (length(req)) {
-        miss <- setdiff(req, tok$features[[i]])
-        if (length(miss)) v <- if (all(miss %in% tok$features_na[[i]])) NA else FALSE
+      if (length(f$required)) {
+        miss <- setdiff(f$required, pt$features[[i]])
+        if (length(miss)) v <- if (all(miss %in% pt$features_na[[i]])) NA else FALSE
       }
-      if (!is.na(f$rockflag) && !identical(tok$rockflag[i], f$rockflag)) v <- FALSE
-      if (!is.na(f$mark) && !identical(tok$mark[i], f$mark)) v <- FALSE
+      na_set <- pt$features_na[[i]]
+      if (!is.na(f$rockflag) && !identical(pt$rockflag[i], f$rockflag))
+        v <- .and3(v, if (is.na(pt$rockflag[i]) && f$rockflag %in% na_set) NA else FALSE)
+      if (!is.na(f$mark) && !identical(pt$mark[i], f$mark))
+        v <- .and3(v, if (is.na(pt$mark[i]) && f$mark %in% na_set) NA else FALSE)
       if (length(f$composition) && !isFALSE(v)) {
-        tc <- tok$composition[[i]]
-        if (!length(tc)) v <- if (isTRUE(v)) NA else v
-        else if (!all(f$composition %in% tc)) v <- FALSE
+        tc <- pt$composition[[i]]
+        v <- if (!length(tc)) .and3(v, NA) else .and3(v, all(f$composition %in% tc))
       }
     }
     if (isTRUE(v)) return(TRUE)
@@ -637,9 +756,9 @@
   best
 }
 
-# Edit distance between the tokens in play and the tested slots (an optional
-# slot is skipped at no cost, a required one at cost 1, an extra token costs
-# 1, a mismatched pair 1), with the operations of one cheapest alignment.
+# Edit distance between the horizons in play and the slots (an optional slot
+# is skipped at no cost, a required one at cost 1, an extra horizon costs 1,
+# a mismatched pair 1), with the operations of one cheapest alignment.
 .mhs_dp <- function(C, opt, trace = TRUE) {
   n <- nrow(C); m <- ncol(C)
   D <- matrix(0, n + 1L, m + 1L)
@@ -663,6 +782,17 @@
   list(cost = D[n + 1L, m + 1L], ops = ops)
 }
 
+# The code of a horizon in the keys of pair_gaps_cm: a buried profile is
+# "[ABC]" ("RY>[ABC]").
+.mhs_key_code <- function(code, buried) if (buried) .FORMULA_BURIED[["square"]] else code
+
+# The allowance between two horizons in play.
+.mhs_allow <- function(a, b, ctx) {
+  key <- paste0(a, ">", b)
+  if (!is.null(ctx$pair_gaps_cm) && key %in% names(ctx$pair_gaps_cm)) ctx$pair_gaps_cm[[key]]
+  else ctx$max_gap_cm
+}
+
 # Match one choice of tokens (a completed profile with its surface chosen):
 # the verdict and the distance, and with `evidence` the alignment read out.
 .mhs_align <- function(ch, ctx, evidence = TRUE) {
@@ -670,38 +800,34 @@
   slots <- ctx$slots
   m <- length(slots)
   n0 <- if (is.null(tok)) 0L else tok$n
-  play <- if (n0) {
-    p <- .mhs_in_play(tok$code, ctx) & !tok$buried
-    if (ctx$buried_play) p <- p | (tok$buried & (is.na(tok$top) | tok$top <= ctx$buried_within_cm))
-    if (!is.na(ch$forced)) p[ch$forced] <- TRUE
-    p
-  } else logical(0)
-  pi <- which(play)
-  n <- length(pi)
+  play <- if (n0) .mhs_play_mask(tok, ctx) else logical(0)
+  if (n0 && !is.na(ch$forced)) play[ch$forced] <- TRUE
+  pt <- if (n0) .mhs_play_tokens(tok, play) else list(n = 0L)
+  n <- pt$n
   notes <- character(0)
   # "directly under": the rows with no diagnostic horizon between two horizons
   # in play may sum to max_gap_cm (or the allowance of the pair); transitional
-  # rows and sub-horizons are skipped, foreign horizons ignored
+  # rows and sub-horizons are dropped before, foreign horizons ignored
   gaps <- logical(0)
   if (n > 1L) {
     gaps <- vapply(seq_len(n - 1L), function(k) {
-      a <- pi[k]; b <- pi[k + 1L]
+      a <- pt$last[k]; b <- pt$first[k + 1L]
       mid <- if (b - a > 1L) (a + 1L):(b - 1L) else integer(0)
       mid <- mid[tok$code[mid] == "<none>"]
       if (!length(mid)) return(TRUE)
-      key <- paste0(tok$code[a], ">", tok$code[b])
-      allow <- if (!is.null(ctx$pair_gaps_cm) && key %in% names(ctx$pair_gaps_cm))
-                 ctx$pair_gaps_cm[[key]] else ctx$max_gap_cm
+      allow <- .mhs_allow(.mhs_key_code(pt$code[k], pt$buried[k]),
+                          .mhs_key_code(pt$code[k + 1L], pt$buried[k + 1L]), ctx)
       th <- sum(tok$thick[mid])
       v <- if (allow <= 0) FALSE else if (is.na(th)) NA else th <= allow
-      if (evidence && !isTRUE(v)) notes <<- c(notes, sprintf("%s lies under %s across %s cm with no diagnostic horizon (allowed %s)",
-                                                 tok$label[b], tok$label[a],
-                                                 if (is.na(th)) "an unknown thickness" else format(th), format(allow)))
+      if (evidence && !isTRUE(v)) notes <<- c(notes, sprintf(
+        "%s lies under %s across %s cm with no diagnostic horizon (allowed %s)",
+        pt$label[k + 1L], pt$label[k],
+        if (is.na(th)) "an unknown thickness" else format(th), format(allow)))
       v
     }, NA)
   }
   C3 <- matrix(FALSE, n, m)
-  for (a in seq_len(n)) for (j in seq_len(m)) C3[a, j] <- .mhs_compat(tok, pi[a], slots[[j]], ctx)
+  for (a in seq_len(n)) for (j in seq_len(m)) C3[a, j] <- .mhs_compat(pt, a, slots[[j]], ctx)
   opt <- vapply(slots, function(z) z$optional, NA)
   Copt <- C3; Copt[is.na(Copt)] <- TRUE
   Cpes <- C3; Cpes[is.na(Cpes)] <- FALSE
@@ -710,35 +836,35 @@
   gap_bad <- sum(gaps %in% FALSE)
   value <- if (dpes$cost == 0 && all(gaps %in% TRUE)) TRUE
            else if (dopt$cost > 0 || gap_bad > 0) FALSE else NA
-  if (!evidence) return(list(value = value, distance = dopt$cost + gap_bad, surface = ch$surface))
-  # the evidence of the cheapest alignment
+  if (!evidence) return(list(value = value, distance = dopt$cost + gap_bad))
   matched <- list(); missing <- character(0); extra <- character(0); absent <- character(0)
   for (op in dopt$ops) {
     if (op[1L] == 1L) {
-      a <- pi[op[2L]]; z <- slots[[op[3L]]]
-      if (Copt[op[2L], op[3L]]) {
+      a <- op[2L]; z <- slots[[op[3L]]]
+      if (Copt[a, op[3L]]) {
         matched[[length(matched) + 1L]] <- data.frame(
-          slot = z$index, written = z$written, horizon = tok$label[a], code = tok$code[a],
-          top_cm = tok$top[a], bottom_cm = tok$bottom[a],
-          decided = !is.na(C3[op[2L], op[3L]]), stringsAsFactors = FALSE)
-        typ <- setdiff(unique(unlist(lapply(z$forms, function(f) f$typical))), tok$features[[a]])
-        if (length(typ) && !tok$buried[a])
+          slot = z$index, written = z$written, horizon = pt$label[a], code = pt$code[a],
+          top_cm = pt$top[a], bottom_cm = pt$bottom[a],
+          decided = !is.na(C3[a, op[3L]]), stringsAsFactors = FALSE)
+        typ <- setdiff(unique(unlist(lapply(z$forms, function(f) f$typical))), pt$features[[a]])
+        if (length(typ) && !pt$buried[a] && !isTRUE(z$untested))
           notes <- c(notes, sprintf("typical feature(s) %s of %s not recorded on %s",
-                                    paste(typ, collapse = ", "), z$written, tok$label[a]))
+                                    paste(typ, collapse = ", "), z$written, pt$label[a]))
       } else {
         missing <- c(missing, z$written)
-        extra <- c(extra, tok$label[a])
-        if (tok$code[a] %in% z$codes)
-          notes <- c(notes, sprintf("%s does not have what %s requires", tok$label[a], z$written))
+        extra <- c(extra, pt$label[a])
+        if (pt$code[a] %in% z$codes)
+          notes <- c(notes, sprintf("%s does not have what %s requires", pt$label[a], z$written))
       }
     } else if (op[1L] == 2L) {
       z <- slots[[op[3L]]]
-      if (z$optional) absent <- c(absent, z$written) else missing <- c(missing, z$written)
+      if (z$optional) { if (!isTRUE(z$untested)) absent <- c(absent, z$written) }
+      else missing <- c(missing, z$written)
     } else {
-      extra <- c(extra, tok$label[pi[op[2L]]])
+      extra <- c(extra, pt$label[op[2L]])
     }
   }
-  ignored <- if (n0) tok$label[!play & tok$code != "<none>"] else character(0)
+  ignored <- if (n0) .mhs_label(tok$code, tok$buried, tok$idx)[!play & tok$code != "<none>"] else character(0)
   matched <- if (length(matched)) do.call(rbind, matched)
              else data.frame(slot = integer(0), written = character(0), horizon = character(0),
                              code = character(0), top_cm = numeric(0), bottom_cm = numeric(0),
@@ -746,81 +872,330 @@
   list(value = value, distance = dopt$cost + gap_bad, matched = matched,
        missing = missing, extra = extra, absent = absent, ignored = ignored,
        surface = ch$surface, absorbed = ch$absorbed,
-       sequence = if (n) tok$code[pi] else character(0),
-       notes = unique(notes))
+       sequence = if (n) pt$code else character(0), notes = unique(notes))
 }
 
-# A necessary condition for a match, checked before the completions of
-# undecided layers are tried: the match relaxed so that every completion's
-# alignment is one of its paths. An undecided layer may fill any slot one of
-# its options names, or vanish when an option is foreign or no horizon; a
-# decided horizon in play must fill a slot, or may vanish when it could be
-# merged with the horizon before it (same slot again) or read as a feature of
-# the surface (a surface code in the top run); features, flags, gaps and the
-# forced surface are ignored (they only take matches away). Returns the
-# cheapest relaxed edit distance: 0 when a match is possible, else a lower
-# bound of the distance of every completion.
+# One completion of the undecided rows: its verdict over the surface choices
+# (TRUE when every choice matches, FALSE when none does, else NA), the least
+# distance, and whether the choices of the surface gave different verdicts.
+.mhs_try <- function(rows, codes, ctx) {
+  chs <- .mhs_surface(.mhs_tokens(rows, codes), ctx)
+  rs <- lapply(chs, .mhs_align, ctx = ctx, evidence = FALSE)
+  v <- vapply(rs, function(r) r$value, NA)
+  list(value = if (anyNA(v)) NA else if (all(v)) TRUE else if (!any(v)) FALSE else NA,
+       distance = min(vapply(rs, function(r) r$distance, 0)),
+       tie = length(chs) > 1L && length(unique(v)) > 1L)
+}
+
+# The evidence of one completion: the alignment of the choice of surface whose
+# verdict is `value` (else the closest one).
+.mhs_evidence <- function(rows, codes, ctx, value) {
+  chs <- .mhs_surface(.mhs_tokens(rows, codes), ctx)
+  rs <- lapply(chs, .mhs_align, ctx = ctx, evidence = TRUE)
+  v <- vapply(rs, function(r) r$value, NA)
+  k <- which(vapply(v, identical, NA, value))
+  rs[[if (length(k)) k[1L] else which.min(vapply(rs, function(r) r$distance, 0))]]
+}
+
+# A necessary condition for a match, before the completions of undecided
+# layers are tried: the match relaxed so that every completion's alignment is
+# one of its paths. An undecided layer may fill any slot one of its options
+# names, or vanish when an option is foreign, no horizon, or a surface code in
+# the top run. A decided horizon in play must fill a slot it is compatible
+# with (optimistically: what is undecided counts as present, over the layers
+# it could merge with), or may vanish as a feature of the surface (a surface
+# code in the top run), or fill the same slot as the horizon before it (a
+# merge). Two decided horizons in play with only decided rows between them,
+# whose gap breaks its allowance, cost 1. Returns the cheapest relaxed edit
+# distance (0 when a match is possible, else a lower bound of the distance of
+# every completion) and a completion along the cheapest path: the witness.
 .mhs_relaxed <- function(rows, base, und, opts, ctx) {
   slots <- ctx$slots
   m <- length(slots)
   req <- vapply(slots, function(z) !z$optional, NA)
   scodes <- lapply(slots, function(z) z$codes)
   surf_rule <- length(ctx$agro) || length(ctx$natural)
-  vanish_reps <- c("<none>", "<f>", "<fa>", "<fn>")
+  vanish_reps <- c("<f>", "<none>")
+  n <- nrow(rows)
+  is_und <- seq_len(n) %in% und
+  is_bur <- rows$buried > 0L
+  inplay_dec <- vapply(seq_len(n), function(r) {
+    !is_und[r] && !is_bur[r] && base[r] != "<none>" &&
+      (base[r] %in% ctx$play || any(unlist(rows$overlay[r]) %in% ctx$play))
+  }, NA)
+  # the rows a decided horizon could merge with: the same code, undecided rows
+  # and horizons left out of the match, up to a row with no horizon
+  merge_group <- function(r) {
+    c1 <- base[r]
+    ok <- function(q) !is_bur[q] && (is_und[q] || base[q] == c1 ||
+                                      (base[q] != "<none>" && !inplay_dec[q]))
+    lo <- r; while (lo > 1L && ok(lo - 1L)) lo <- lo - 1L
+    hi <- r; while (hi < n && ok(hi + 1L)) hi <- hi + 1L
+    lo:hi
+  }
+  fits_decided <- function(r) {
+    g <- merge_group(r)
+    feats <- unique(c(unlist(rows$features[g]), unlist(rows$overlay[g]), unlist(rows$features_na[g])))
+    flags <- unique(c(rows$rockflag[g], unlist(rows$features_na[g])))
+    marks <- unique(c(rows$mark[g], unlist(rows$features_na[g])))
+    comp <- unique(unlist(rows$composition[g]))
+    codes <- c(base[r], unlist(rows$overlay[r]))
+    vapply(slots, function(z) any(vapply(z$forms, function(f) {
+      f$code %in% codes && all(f$required %in% feats) &&
+        (is.na(f$rockflag) || f$rockflag %in% flags) && (is.na(f$mark) || f$mark %in% marks) &&
+        (!length(f$composition) || !length(comp) || all(f$composition %in% comp))
+    }, NA)), NA)
+  }
   el <- list()
   top_run <- TRUE
-  n <- nrow(rows)
   r <- 1L
   while (r <= n) {
-    if (rows$buried[r] > 0L) {
+    if (is_bur[r]) {
       b <- rows$buried[r]; r2 <- r
       while (r2 < n && rows$buried[r2 + 1L] == b) r2 <- r2 + 1L
       top <- suppressWarnings(min(rows$top_cm[r:r2]))
-      play <- ctx$buried_play && (!is.finite(top) || top <= ctx$buried_within_cm)
-      if (play) el[[length(el) + 1L]] <- list(
-        fits = vapply(scodes, function(cc) any(cc %in% .FORMULA_BURIED), NA), vanish = FALSE)
+      if (ctx$buried_play && (!is.finite(top) || top <= ctx$buried_within_cm)) {
+        el[[length(el) + 1L]] <- list(kind = "decided", row = r, vanish = FALSE,
+          fits = vapply(slots, function(z) z$kind == "buried" &&
+                          (!is.finite(top) || top <= ctx$buried_within_cm), NA))
+      }
       top_run <- FALSE
       r <- r2 + 1L
       next
     }
-    k <- match(r, und)
-    if (!is.na(k)) {
-      o <- opts[[k]]
-      surf <- surf_rule && top_run && any(.mhs_is_agro(o, ctx) | .mhs_is_natural(o, ctx))
-      el[[length(el) + 1L]] <- list(fits = vapply(scodes, function(cc) any(o %in% cc), NA),
-                                    vanish = any(o %in% vanish_reps) || surf)
+    if (is_und[r]) {
+      o <- opts[[match(r, und)]]
+      ov <- unlist(rows$overlay[r])
+      surf <- surf_rule && top_run && any(.mhs_is_surface(o, ctx))
+      # an option leaves the row out of the match: no horizon, a stand-in for
+      # a foreign code, or a real code not in play (unless an overlay is)
+      free_opt <- o %in% vanish_reps | (!(o %in% .MHS_REPS) & !(o %in% ctx$play))
+      el[[length(el) + 1L]] <- list(kind = "wild", row = r, k = match(r, und), surf = surf,
+        free = o[free_opt & o != "<none>"],
+        fits = vapply(scodes, function(cc) any(o %in% cc) || any(ov %in% cc), NA),
+        vanish = (any(free_opt) && !any(ov %in% ctx$play)) || surf)
     } else if (base[r] != "<none>") {
-      c1 <- base[r]
-      is_surf <- .mhs_is_agro(c1, ctx) || .mhs_is_natural(c1, ctx)
-      if (.mhs_in_play(c1, ctx)) {
-        el[[length(el) + 1L]] <- list(fits = vapply(scodes, function(cc) c1 %in% cc, NA),
-                                      vanish = surf_rule && top_run && is_surf)
+      is_s <- .mhs_is_surface(base[r], ctx)
+      if (inplay_dec[r]) {
+        el[[length(el) + 1L]] <- list(kind = "decided", row = r,
+                                      fits = fits_decided(r), vanish = surf_rule && top_run && is_s)
+        if (!is_s) top_run <- FALSE
       }
-      if (!is_surf) top_run <- FALSE
     }
     r <- r + 1L
   }
-  # cost[j + 1, f + 1]: slots 1..j resolved, f = the last element filled slot j
+  # decided gaps: two decided horizons in play that cannot vanish, with only
+  # decided rows between them, among them a row with no horizon
+  gap_cost <- 0
+  dec <- Filter(function(e) e$kind == "decided" && !e$vanish && !is_bur[e$row], el)
+  if (length(dec) > 1L) for (k in seq_len(length(dec) - 1L)) {
+    a <- dec[[k]]$row; b <- dec[[k + 1L]]$row
+    mid <- if (b - a > 1L) (a + 1L):(b - 1L) else integer(0)
+    if (!length(mid) || any(is_und[mid]) || any(is_bur[mid])) next
+    nn <- mid[base[mid] == "<none>"]
+    if (!length(nn)) next
+    allow <- .mhs_allow(base[a], base[b], ctx)
+    th <- sum(rows$bottom_cm[nn] - rows$top_cm[nn])
+    if (allow <= 0 || (!is.na(th) && th > allow)) gap_cost <- gap_cost + 1
+  }
+  # cost[j + 1, f]: slots 1..j resolved; f = 2 when the last element filled
+  # slot j (so the next may fill it again, a merge)
+  skip <- function(a, b) if (b > a + 1L) sum(req[(a + 1L):(b - 1L)]) else 0
   cost <- matrix(Inf, m + 1L, 2L)
   cost[1L, 1L] <- 0
-  skip <- function(a, b) if (b > a + 1L) sum(req[(a + 1L):(b - 1L)]) else 0
-  for (e in el) {
+  bp <- vector("list", length(el))
+  for (e in seq_along(el)) {
+    E <- el[[e]]
     nw <- matrix(Inf, m + 1L, 2L)
+    pj <- matrix(NA_integer_, m + 1L, 2L); pf <- pj; act <- pj
+    upd <- function(j2, f2, c, j, f, a) {
+      if (c < nw[j2 + 1L, f2]) {
+        nw[j2 + 1L, f2] <<- c; pj[j2 + 1L, f2] <<- j; pf[j2 + 1L, f2] <<- f; act[j2 + 1L, f2] <<- a
+      }
+    }
     for (j in 0:m) for (f in 1:2) {
       c0 <- cost[j + 1L, f]
       if (!is.finite(c0)) next
-      if (e$vanish) nw[j + 1L, f] <- min(nw[j + 1L, f], c0)
-      nw[j + 1L, f] <- min(nw[j + 1L, f], c0 + 1)
-      if (f == 2L && j > 0L && e$fits[j]) nw[j + 1L, 2L] <- min(nw[j + 1L, 2L], c0)
-      if (j < m) for (j2 in (j + 1L):m) {
-        nw[j2 + 1L, 2L] <- min(nw[j2 + 1L, 2L], c0 + skip(j, j2) + !e$fits[j2])
-      }
+      if (E$vanish) upd(j, f, c0, j, f, 1L)
+      if (f == 2L && j > 0L && E$fits[j]) upd(j, 2L, c0, j, f, 3L)
+      if (j < m) for (j2 in (j + 1L):m) upd(j2, 2L, c0 + skip(j, j2) + !E$fits[j2], j, f, 4L)
+      upd(j, f, c0 + 1, j, f, 2L)
     }
+    bp[[e]] <- list(pj = pj, pf = pf, act = act)
     cost <- nw
   }
   fin <- vapply(0:m, function(j) min(cost[j + 1L, ]) + skip(j, m + 1L), 0)
-  min(fin)
+  jb <- which.min(fin) - 1L
+  total <- fin[jb + 1L] + gap_cost
+  # the witness: the options along the cheapest path
+  wit <- vapply(opts, function(o) o[1L], "")
+  if (length(el)) {
+    f <- which.min(cost[jb + 1L, ])
+    j <- jb
+    acts <- vector("list", length(el))
+    for (e in rev(seq_along(el))) {
+      a <- bp[[e]]$act[j + 1L, f]
+      acts[[e]] <- c(a, j)
+      j2 <- bp[[e]]$pj[j + 1L, f]; f2 <- bp[[e]]$pf[j + 1L, f]
+      j <- j2; f <- f2
+    }
+    last_code <- rep(NA_character_, m)
+    for (e in seq_along(el)) {
+      E <- el[[e]]; a <- acts[[e]][1L]; j <- acts[[e]][2L]
+      if (E$kind == "decided") {
+        if (a %in% c(3L, 4L) && j > 0L) last_code[j] <- base[E$row]
+        next
+      }
+      o <- opts[[E$k]]
+      pick <- if (a == 1L) {
+        c(E$free, if (E$surf) o[.mhs_is_surface(o, ctx)], intersect("<none>", o))[1L]
+      } else if (a %in% c(3L, 4L) && j > 0L) {
+        cand <- o[o %in% scodes[[j]]]
+        if (!is.na(last_code[j]) && last_code[j] %in% cand) last_code[j] else cand[1L]
+      } else NA_character_
+      if (!is.na(pick)) {
+        wit[E$k] <- pick
+        if (a %in% c(3L, 4L) && j > 0L) last_code[j] <- pick
+      }
+    }
+  }
+  list(cost = total, witness = wit)
 }
+
+# The match of a normalised table against a parsed formula in a context.
+.mhs_match <- function(tab, ctx) {
+  spec <- ctx$spec
+  rows <- tab[!(tab$small | tab$transitional), , drop = FALSE]
+  und <- which(is.na(rows$code) & !(rows$passed %in% FALSE) & rows$buried == 0L)
+  base <- ifelse(is.na(rows$code), "<none>", rows$code)
+  keep <- unique(c(ctx$spec_codes, setdiff(base[setdiff(seq_len(nrow(rows)), und)], "<none>")))
+  universe <- setdiff(unique(c(ctx$play, ctx$spec_codes, ctx$agro, ctx$natural)), .FORMULA_BURIED)
+  free <- vapply(und, function(r) !length(rows$candidates[[r]]), NA)
+  # a row under a decided horizon in play that is no surface horizon (or under
+  # a buried profile) cannot be in the surface run
+  stop_run <- (!(seq_len(nrow(rows)) %in% und) & base != "<none>" &
+                 (base %in% ctx$play | vapply(rows$overlay, function(o) any(o %in% ctx$play), NA)) &
+                 !.mhs_is_surface(base, ctx)) | rows$buried > 0L
+  top_region <- cumsum(c(0, utils::head(stop_run, -1L))) == 0
+  opts <- lapply(und, function(r) {
+    cand <- rows$candidates[[r]]
+    if (length(cand)) .mhs_options(cand, keep, ctx, top_region[r])
+    else unique(c(.mhs_options(universe, keep, ctx, top_region[r]), "<f>", "<none>"))
+  })
+  notes <- character(0)
+  result <- function(value, distance, exact, ev, undecided = character(0), more = character(0)) {
+    list(passed = value, formula = spec$formula, specificity = spec$specificity,
+         distance = distance, distance_exact = exact,
+         matched = ev$matched, missing = ev$missing, extra = ev$extra,
+         absent = ev$absent, ignored = ev$ignored,
+         surface = ev$surface, absorbed = ev$absorbed, sequence = ev$sequence,
+         undecided = undecided, notes = unique(c(ev$notes, more)))
+  }
+  undecided_list <- function() vapply(und, function(r) {
+    cand <- rows$candidates[[r]]
+    sprintf("%s (%s)", rows$horizon_idx[r],
+            if (length(cand)) paste(ifelse(nzchar(cand), cand, "no horizon"), collapse = ", ") else "any")
+  }, "")
+  tie_note <- "the thickest surface horizon is not decided by the recorded depths"
+  if (!length(und)) {
+    chs <- .mhs_surface(.mhs_tokens(rows, base), ctx)
+    rs <- lapply(chs, .mhs_align, ctx = ctx, evidence = TRUE)
+    v <- vapply(rs, function(r) r$value, NA)
+    value <- if (anyNA(v)) NA else if (all(v)) TRUE else if (!any(v)) FALSE else NA
+    k <- which(vapply(v, identical, NA, value))
+    ev <- rs[[if (length(k)) k[1L] else 1L]]
+    tie <- length(chs) > 1L && length(unique(v)) > 1L
+    return(result(value, min(vapply(rs, function(r) r$distance, 0)), TRUE, ev,
+                  more = if (tie) tie_note))
+  }
+  rel <- .mhs_relaxed(rows, base, und, opts, ctx)
+  wit <- base
+  wit[und] <- rel$witness
+  # no completion can match
+  if (rel$cost > 0) {
+    ev <- .mhs_evidence(rows, wit, ctx, FALSE)
+    return(result(FALSE, rel$cost, FALSE, ev, more = sprintf(
+      "no completion of the %d undecided layer(s) can match", length(und))))
+  }
+  # a match is possible: try the witness, then completions meant to fail,
+  # then every completion while it can still change the answer
+  vals <- logical(0); tried <- list(); ties <- FALSE
+  try_codes <- function(codes) {
+    key <- paste(codes[und], collapse = "\r")
+    if (!is.null(tried[[key]])) return(invisible(NULL))
+    t <- .mhs_try(rows, codes, ctx)
+    tried[[key]] <<- codes
+    vals <<- c(vals, t$value)
+    if (t$tie) ties <<- TRUE
+    invisible(t$value)
+  }
+  settled <- function() anyNA(vals) || (any(vals) && !all(vals))
+  pick_ev <- function(value) {
+    w <- which(vapply(vals, identical, NA, value))
+    w <- if (length(w)) w[1L] else 1L
+    .mhs_evidence(rows, tried[[w]], ctx, value)
+  }
+  # more than three layers that could be anything: undecided, not enumerated
+  if (sum(free) > 3L) {
+    ev <- .mhs_evidence(rows, wit, ctx, TRUE)
+    return(result(NA, rel$cost, FALSE, ev, undecided_list(), sprintf(
+      "%d undecided layer(s) with no candidates, so the match is left undecided", sum(free))))
+  }
+  try_codes(wit)
+  if (!settled()) {
+    # one completion meant to fail (an extra horizon in place of every
+    # undecided layer), then the witness changed one layer at a time
+    probes <- list()
+    bad <- wit
+    bad[und] <- vapply(seq_along(und), function(k) {
+      o <- opts[[k]]
+      alt <- c(intersect("<p>", o), setdiff(o[o %in% ctx$spec_codes], wit[und[k]]),
+               setdiff(o, wit[und[k]]))
+      if (length(alt)) alt[1L] else wit[und[k]]
+    }, "")
+    probes[[1L]] <- bad
+    for (k in seq_along(und)) for (o in setdiff(opts[[k]], wit[und[k]])) {
+      q <- wit; q[und[k]] <- o
+      probes[[length(probes) + 1L]] <- q
+    }
+    for (q in utils::head(probes, 64L)) {
+      try_codes(q)
+      if (settled()) break
+    }
+  }
+  capped <- FALSE
+  if (!settled()) {
+    total <- prod(as.numeric(lengths(opts)))
+    if (total > ctx$max_completions) {
+      capped <- TRUE
+    } else {
+      ix <- rep(1L, length(opts))
+      repeat {
+        codes <- base
+        codes[und] <- vapply(seq_along(und), function(k) opts[[k]][ix[k]], "")
+        try_codes(codes)
+        if (settled()) break
+        k <- length(ix)
+        while (k > 0L) {
+          if (ix[k] < length(opts[[k]])) { ix[k] <- ix[k] + 1L; break }
+          ix[k] <- 1L; k <- k - 1L
+        }
+        if (k == 0L) break
+      }
+    }
+  }
+  value <- if (capped || settled()) NA else all(vals)
+  more <- c(if (ties) tie_note,
+            if (capped) sprintf("%d undecided layer(s): more than %d completions, so the match is left undecided",
+                                length(und), as.integer(ctx$max_completions)))
+  ev <- if (isTRUE(value)) pick_ev(TRUE) else if (isFALSE(value)) pick_ev(FALSE)
+        else if (anyNA(vals)) pick_ev(NA) else pick_ev(TRUE)
+  result(value, rel$cost, FALSE, ev, if (isTRUE(value) || isFALSE(value)) character(0) else undecided_list(), more)
+}
+
+# The parser's arguments, which a formula given as a string takes.
+.PARSER_ARGS <- c("masters", "features", "parents", "rock_flags", "flag_masters",
+                  "test_terminals", "optional", "required_features", "alternatives")
 
 #' Match a profile against a profile formula
 #'
@@ -831,27 +1206,36 @@
 #'
 #' The profile side is collapsed top-down: small horizons and transitional
 #' rows are dropped; consecutive rows with the same code are merged
-#' (sub-horizons: BT1, BT2 = BT); the rows of a buried profile become one
-#' buried token; overlays become features of their row. With `surface` and
-#' `agro` codes, the surface slot is read by the thickest-horizon rule: the
-#' agro horizon if the surface run has one, else the thickest natural horizon
-#' starting at the surface or under a cover thinner than `max_cover_cm`; the
-#' other horizons of that run are read as features and leave the sequence.
+#' (sub-horizons: BT1, BT2 = BT), also across horizons left out of the match;
+#' the rows of a buried profile become one buried token. A horizon fills a
+#' slot by its code or by an overlay (an AU with an S overlay fills an S
+#' slot). With `surface` and `agro` codes, the surface slot is read by the
+#' thickest-horizon rule: the agro horizon if the surface run has one, else
+#' the thickest natural horizon starting at the surface or under a cover
+#' thinner than `max_cover_cm` (rows with no diagnostic horizon, and horizons
+#' neither in play nor surface horizons, such as litter coded L); the other
+#' horizons of that run are read as features and leave the sequence.
 #'
 #' The match is closed on `vocabulary` (the codes of every scheme of a
-#' division): a horizon of the vocabulary, or of the formula, present in the
-#' profile must be matched by a slot, in order; a horizon foreign to both is
-#' ignored. Optional slots (in parentheses) may be absent; untested parent
-#' slots (C, D, R unless flagged) are left out, and their horizons ignored.
-#' Two horizons matched one after the other must lie directly one under the
-#' other: rows with no diagnostic horizon between them may sum to
-#' `max_gap_cm`, or to the allowance of the pair in `pair_gaps_cm`.
+#' division): a horizon of the vocabulary, or of a tested slot of the
+#' formula, present in the profile must be matched by a slot, in order; a
+#' horizon foreign to both is ignored. Surface and agro codes the formula does
+#' not name are left out of the closure unless `closure_surface` is TRUE.
+#' Optional slots (in parentheses) may be absent. A rock or parent slot not
+#' tested (C, D, R unless flagged) takes its horizon when that code is in play
+#' and is left out otherwise. Two horizons matched one after the other must
+#' lie directly one under the other: rows with no diagnostic horizon between
+#' them may sum to `max_gap_cm`, or to the allowance of the pair in
+#' `pair_gaps_cm`, named "UPPER>LOWER" by codes (a buried profile is
+#' "[ABC]": \code{c("AU>BCA" = 15, "RY>[ABC]" = 10)}).
 #'
 #' A layer whose code is undecided (NA, with or without a list of
 #' candidates) is completed in every way that matters: TRUE when every
 #' completion matches, FALSE when none does, NA otherwise. A required
-#' feature listed as undecided, a turbated composition not recorded, or an
-#' unknown thickness, leave the result NA when they decide it.
+#' feature, rock flag or rock mark listed in \code{features_na}, a turbated
+#' composition not recorded, or an unknown thickness, leave the result NA when
+#' they decide it. More than three undecided layers with no candidates leave
+#' the result NA unless no completion can match.
 #'
 #' @param table The identified horizons: the frame of
 #'   \code{\link{identify_horizons}}, any data frame with a \code{code} column
@@ -860,29 +1244,42 @@
 #'   \code{overlay}, \code{small}, \code{transitional}, \code{buried},
 #'   \code{rockflag}, \code{mark}, \code{composition}), or a character vector
 #'   of codes from the top (NA an undecided layer, "" no diagnostic horizon).
+#'   Rows are read in depth order when every top is recorded, else as given.
 #' @param spec The formula: a string, or one parsed by the package's parser.
 #' @param vocabulary Codes the match is closed on; NULL closes it on the
 #'   formula's own codes only.
 #' @param surface,agro Natural and agro surface codes for the
 #'   thickest-horizon rule; both NULL: no rule, the first horizon is the
 #'   surface.
+#' @param closure_surface Whether surface and agro codes of the vocabulary
+#'   that the formula does not name count in the closure (default FALSE).
 #' @param max_cover_cm Thickness of cover above which no surface run is read.
 #' @param max_gap_cm,pair_gaps_cm The gap allowed between two consecutive
-#'   horizons (cm), and named allowances for pairs (\code{c("AU>BCA" = 15)}).
+#'   horizons (cm), and named allowances for pairs.
 #' @param buried_within_cm Depth within which a buried profile counts.
 #' @param max_completions Most completions of undecided layers tried; beyond
 #'   it the result is NA.
-#' @param ... Passed to the parser when `spec` is a string (for example
-#'   \code{test_terminals = "R"}, \code{optional = "BEL"}).
+#' @param ... When `spec` is a string, the arguments of the parser:
+#'   \code{test_terminals} (rock and parent slots to test, by code, by
+#'   signature such as "C~~" or "DG", or by text such as "[ABC]"; TRUE for
+#'   all), \code{optional} (codes whose slots are optional),
+#'   \code{required_features} (features required wherever written),
+#'   \code{alternatives} (a named list of codes accepted in place of a written
+#'   one, \code{list(BCA = "CAT")}), \code{masters} and \code{features}
+#'   (vocabularies: an unknown token is then an error), \code{parents},
+#'   \code{rock_flags} and \code{flag_masters}. An error when `spec` is
+#'   already parsed.
 #' @return A list: \code{passed} (TRUE, FALSE or NA), \code{formula},
-#'   \code{specificity}, \code{distance} (edit distance of the closest
-#'   reading: 0 for a match), \code{matched} (a data frame of slots and the
-#'   horizons that fill them), \code{missing} (slots not filled),
-#'   \code{extra} (horizons in play not matched), \code{absent} (optional
-#'   slots not present), \code{ignored} (horizons left out of the match),
-#'   \code{surface} and \code{absorbed} (the surface horizon and the ones read
-#'   as its features), \code{sequence} (the codes in play), \code{undecided}
-#'   (layers whose completion was followed) and \code{notes}.
+#'   \code{specificity}, \code{distance} and \code{distance_exact} (the edit
+#'   distance of the closest reading, 0 for a match: exact when no layer is
+#'   undecided, else a lower bound over the completions), \code{matched} (a
+#'   data frame of slots and the horizons that fill them), \code{missing}
+#'   (slots not filled), \code{extra} (horizons in play not matched),
+#'   \code{absent} (optional slots not present), \code{ignored} (horizons left
+#'   out of the match), \code{surface} and \code{absorbed} (the surface
+#'   horizon and the ones read as its features), \code{sequence} (the codes in
+#'   play), \code{undecided} (layers whose completion leaves it NA) and
+#'   \code{notes}.
 #' @keywords internal
 #' @examples
 #' # a profile as its sequence of horizon codes, from the top
@@ -894,111 +1291,31 @@
 #'                        vocabulary = c("O", "EL", "BEL", "BT", "G"))$passed
 #' # an undecided layer that could be EL or another horizon
 #' match_horizon_sequence(c("AY", NA, "BT", "C"), "AY-EL-BT-C")$passed
+#' # a rock symbol tested where it names the type
+#' match_horizon_sequence(c("O", "C", "R"), "O-(C)-R", test_terminals = "R")$passed
 #' @export
 match_horizon_sequence <- function(table, spec, vocabulary = NULL,
-                                   surface = NULL, agro = NULL, max_cover_cm = 40,
-                                   max_gap_cm = 0, pair_gaps_cm = NULL,
+                                   surface = NULL, agro = NULL, closure_surface = FALSE,
+                                   max_cover_cm = 40, max_gap_cm = 0, pair_gaps_cm = NULL,
                                    buried_within_cm = Inf, max_completions = 2000L, ...) {
-  if (is.character(spec)) spec <- .parse_profile_formula(spec, ...)
+  dots <- list(...)
+  if (length(dots) && (is.null(names(dots)) || any(!nzchar(names(dots)))))
+    rlang::abort("Arguments of the parser must be named.")
+  bad <- setdiff(names(dots), .PARSER_ARGS)
+  if (length(bad)) rlang::abort(sprintf("Unknown argument(s): %s.", paste(bad, collapse = ", ")))
+  if (is.character(spec)) spec <- do.call(.parse_profile_formula, c(list(spec), dots))
+  else if (length(dots))
+    rlang::abort(sprintf(
+      "The parser's arguments (%s) apply to a formula given as a string; this one is already parsed.",
+      paste(names(dots), collapse = ", ")))
   if (!inherits(spec, "soilkey_formula"))
     rlang::abort("'spec' must be a profile formula string or a parsed formula.")
   tab <- .as_horizon_table(table)
-  slots <- Filter(function(z) isTRUE(z$tested) && z$kind %in% c("horizon", "buried"), spec$slots)
-  spec_codes <- unique(unlist(lapply(slots, function(z) z$codes)))
-  play <- unique(c(setdiff(as.character(vocabulary), spec$parents), spec_codes))
-  ctx <- list(slots = slots, spec_codes = spec_codes, play = play,
-              agro = as.character(agro), natural = setdiff(as.character(surface), as.character(agro)),
-              buried_play = any(.FORMULA_BURIED %in% play),
-              max_cover_cm = max_cover_cm, max_gap_cm = max_gap_cm,
-              pair_gaps_cm = pair_gaps_cm, buried_within_cm = buried_within_cm,
-              top0 = suppressWarnings(min(tab$top_cm, na.rm = TRUE)))
-  if (!is.finite(ctx$top0)) ctx$top0 <- NA_real_
-  rows <- tab[!(tab$small | tab$transitional), , drop = FALSE]
-  und <- which(is.na(rows$code) & !(rows$passed %in% FALSE) & rows$buried == 0L)
-  # a decided row keeps its code; a row with no diagnostic horizon is "<none>"
-  base <- ifelse(is.na(rows$code), "<none>", rows$code)
-  universe <- unique(c(as.character(vocabulary), spec_codes, ctx$agro, ctx$natural))
-  universe <- setdiff(universe, .FORMULA_BURIED)
-  opts <- lapply(und, function(r) {
-    cand <- rows$candidates[[r]]
-    o <- if (length(cand)) .mhs_category(cand, ctx)
-         else c(.mhs_category(universe, ctx), "<f>", "<none>")
-    unique(o)
-  })
-  total <- if (length(opts)) prod(as.numeric(lengths(opts))) else 1
-  # no completion can match: FALSE without trying them, the relaxed distance
-  # as the distance, the evidence of one completion
-  if (total > 1) {
-    lb <- .mhs_relaxed(rows, base, und, opts, ctx)
-    if (lb > 0) {
-      codes <- base
-      codes[und] <- vapply(opts, function(o) if ("<none>" %in% o) "<none>" else o[1L], "")
-      best <- .mhs_align(.mhs_surface(.mhs_tokens(rows, codes), ctx)[[1L]], ctx)
-      return(list(passed = FALSE, formula = spec$formula, specificity = spec$specificity,
-                  distance = lb, matched = best$matched, missing = best$missing,
-                  extra = best$extra, absent = best$absent, ignored = best$ignored,
-                  surface = best$surface, absorbed = best$absorbed, sequence = best$sequence,
-                  undecided = character(0),
-                  notes = unique(c(best$notes, sprintf(
-                    "no completion of the %d undecided layer(s) can match", length(und))))))
-    }
-  }
-  ix <- rep(1L, length(opts))
-  outs <- list()
-  vals <- logical(0)
-  where <- list()
-  tried <- 0
-  capped <- FALSE
-  repeat {
-    codes <- base
-    if (length(und)) codes[und] <- vapply(seq_along(und), function(k) opts[[k]][ix[k]], "")
-    tok <- .mhs_tokens(rows, codes)
-    chs <- .mhs_surface(tok, ctx)
-    for (ci in seq_along(chs)) {
-      r <- .mhs_align(chs[[ci]], ctx, evidence = FALSE)
-      outs[[length(outs) + 1L]] <- r
-      where[[length(where) + 1L]] <- list(codes = codes, choice = ci)
-      vals <- c(vals, r$value)
-    }
-    tried <- tried + 1
-    if (anyNA(vals) || (any(vals) && !all(vals))) break
-    if (tried >= total) break
-    if (tried >= max_completions) { capped <- TRUE; break }
-    k <- length(ix)
-    while (k > 0L) {
-      if (ix[k] < length(opts[[k]])) { ix[k] <- ix[k] + 1L; break }
-      ix[k] <- 1L; k <- k - 1L
-    }
-  }
-  value <- if (capped || anyNA(vals) || (any(vals) && !all(vals))) NA else all(vals)
-  bi <- if (isTRUE(value)) 1L
-        else if (isFALSE(value)) which.min(vapply(outs, function(o) o$distance, 0))
-        else {
-          w <- which(is.na(vals))
-          if (length(w)) w[1L] else which(vals)[1L]
-        }
-  # the evidence of the representative completion, read out once
-  best <- .mhs_align(.mhs_surface(.mhs_tokens(rows, where[[bi]]$codes), ctx)[[where[[bi]]$choice]], ctx)
-  notes <- best$notes
-  if (capped) notes <- c(notes, sprintf(
-    "%d undecided layer(s): more than %d completions, so the match is left undecided",
-    length(und), as.integer(max_completions)))
-  undecided <- character(0)
-  if (length(und) && !isTRUE(value) && !isFALSE(value)) {
-    undecided <- vapply(und, function(r) {
-      cand <- rows$candidates[[r]]
-      sprintf("%s (%s)", rows$horizon_idx[r],
-              if (length(cand)) paste(ifelse(nzchar(cand), cand, "no horizon"), collapse = ", ") else "any")
-    }, "")
-  }
-  if (length(unique(vapply(outs, function(o) o$surface %||% NA_character_, ""))) > 1L)
-    notes <- c(notes, "the thickest surface horizon is not decided by the recorded depths")
-  list(passed = value, formula = spec$formula, specificity = spec$specificity,
-       distance = min(vapply(outs, function(o) o$distance, 0)),
-       matched = best$matched, missing = best$missing, extra = best$extra,
-       absent = best$absent, ignored = best$ignored,
-       surface = best$surface, absorbed = best$absorbed, sequence = best$sequence,
-       undecided = undecided, notes = unique(notes))
+  ctx <- .mhs_context(tab, spec, vocabulary = vocabulary, surface = surface, agro = agro,
+                      closure_surface = closure_surface, max_cover_cm = max_cover_cm,
+                      max_gap_cm = max_gap_cm, pair_gaps_cm = pair_gaps_cm,
+                      buried_within_cm = buried_within_cm, max_completions = max_completions)
+  .mhs_match(tab, ctx)
 }
 
 
@@ -1031,31 +1348,47 @@ match_horizon_sequence <- function(table, spec, vocabulary = NULL,
 }
 
 # The nearest schemes of a list of match results by edit distance (Hugo's
-# decision Q15, 2026-11-02), then the more specific, then the list order.
+# decision Q15, 2026-11-02), then the more specific, then the list order. The
+# results of one profile share one kind of distance (exact, or the bound when
+# a layer is undecided).
 .nearest_schemes <- function(results, n = 3L) {
   nm <- names(results) %||% vapply(results, function(r) r$formula, "")
   d <- vapply(results, function(r) r$distance, 0)
   sp <- vapply(results, function(r) as.numeric(r$specificity[1L]), 0)
-  ord <- order(d, -sp, seq_along(results))
-  ord <- utils::head(ord, n)
+  ord <- utils::head(order(d, -sp, seq_along(results)), n)
   data.frame(code = nm[ord], formula = vapply(results[ord], function(r) r$formula, ""),
              distance = d[ord],
+             exact = vapply(results[ord], function(r) isTRUE(r$distance_exact), NA),
              missing = vapply(results[ord], function(r) paste(r$missing, collapse = ", "), ""),
              extra = vapply(results[ord], function(r) paste(r$extra, collapse = ", "), ""),
              stringsAsFactors = FALSE, row.names = NULL)
 }
 
 # Match a profile against a list of schemes (a division): named formulas,
-# strings or parsed, in the order of trial. The vocabulary defaults to the
-# union of the schemes' codes. Returns the pick (.pick_scheme()), the nearest
-# schemes when none matched, and every result.
+# strings or parsed, in the order of trial. The parser's arguments go in
+# `parse_args` or among `...` (they apply to the strings; an error with a
+# parsed scheme); the others go to the matcher. The vocabulary defaults to the
+# union of the schemes' codes; the table is read once. Returns the pick
+# (.pick_scheme()), the nearest schemes when none matched, and every result.
 .match_schemes <- function(table, specs, vocabulary = NULL, parse_args = list(),
                            n_nearest = 3L, ...) {
+  dots <- list(...)
+  pa <- dots[names(dots) %in% .PARSER_ARGS]
+  ma <- dots[!(names(dots) %in% .PARSER_ARGS)]
+  parse_args <- utils::modifyList(as.list(parse_args), pa)
   if (is.character(specs)) specs <- as.list(specs)
+  if (length(parse_args) && any(vapply(specs, inherits, NA, "soilkey_formula")))
+    rlang::abort(sprintf(
+      "The parser's arguments (%s) apply to schemes given as strings; some are already parsed.",
+      paste(names(parse_args), collapse = ", ")))
   specs <- lapply(specs, function(s) if (is.character(s)) do.call(.parse_profile_formula, c(list(s), parse_args)) else s)
   if (is.null(names(specs))) names(specs) <- vapply(specs, function(s) s$formula, "")
   vocabulary <- vocabulary %||% .formula_vocabulary(specs)
-  res <- lapply(specs, function(sp) match_horizon_sequence(table, sp, vocabulary = vocabulary, ...))
+  tab <- .as_horizon_table(table)
+  res <- lapply(specs, function(sp) {
+    ctx <- do.call(.mhs_context, c(list(tab, sp, vocabulary = vocabulary), ma))
+    .mhs_match(tab, ctx)
+  })
   pick <- .pick_scheme(res)
   pick$nearest <- if (!isTRUE(pick$passed)) .nearest_schemes(res, n_nearest) else NULL
   pick$results <- res
