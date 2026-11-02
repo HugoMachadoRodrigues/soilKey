@@ -1,3 +1,26 @@
+# soilKey 0.9.339 (2026-11-02)
+
+## Russia: the types of the divisions CK to CT
+
+The Russian soil classification (Field Guide of 2008) gains the types of the ten divisions CK to CT: 111 types, matched as the types of CA to CJ are (0.9.338). Every division of trunk C now has its types but the chemozems (CU), which have none. Every other classification is unchanged.
+
+* **The 111 types** in `inst/rules/kidpr2008/types/`: CK 12 (solonetzes), CL 3 (solonchaks), CM 4 (hydrometamorphic), CN 9 (organo-accumulative), CO 11 (eluvozems), CP 13 (lithozems), CQ 10 (abrazems), CR 13 (agroabrazems), CS 19 (agrozems), CT 17 (turbozems). Each has soilKey's code in brackets ([CK01] to [CT17], in the order of chapter 4), the Russian name as printed (two slips of the diagrams, Агрослонцы and Сухотофяно-литоземы, as chapter 6 writes them), an English gloss, the formula as the fixture of the formulas transcribes it, and the page.
+* **What the formulas test (Q14).** The BCA under the solonetz horizon (BCAs,cs) is optional, in the solonetzes, the solonetzic abrazems, agrozems and turbozems. The hard rock R of the lithozems is tested, with its carbonate mark where the formula writes it without parentheses (Rca: the carbolithozems CP10, CP11). The gleyed substrate DG of the gley eluvozems is tested; the D of the others is not. The fragments of a TUR (TUR[SEL+ASN]) are tested.
+* **The fragments of a TUR (Q20)** come from the notation or from the column `turbated_fragments` ("SEL;ASN"); with neither, the solonetzic types are undecided when the TUR has a high exchangeable sodium, and the TUR is not theirs otherwise.
+* **Near-identity readings (Q15):** S over Q is a gley solonchak (CL01); a BT exposed or under PB is read as BI (CQ01, CR04, CR05); the BH of CR07 and CS10 is a BHF of either kind.
+* **Doubles.** Two formulas match one profile only where the gleyed substrate or the carbonate rock names a type: O-EL-DG is CO02 with CO01 its intergrade (likewise CO04 and CO03, CO10 and CO09), AU-Cca-Rca is CP11 with CP06 its intergrade (likewise CP10 and CP09).
+* Every chapter 4 formula of CK to CT, written as a profile in the Russian notation, reaches its own division and its own type, decided, with and without its optional horizons, except CS16 and CS17 without their BCA: a thin TUR of solonetz fragments under P or PU over the parent material has no division (C.6а). One undesignated profile per division reaches its type through the key to horizons on the data.
+* **An exposed BT is an abrazem.** At C.20 a BT at the surface, with no humus, organic, agro or eluvial horizon above it and the description starting at 0 cm, counts as BI. This changes a division result of 0.9.337 and 0.9.338: BT over C, which had no division ("not provided"), is now an abrazem (CQ), type CQ01.
+* **The secondary solonchaks.** In the types of the halomorphic soils an S or SS laid over another horizon counts as the S of the formula: AY+S over C is CL03, AU+S over G or Q is CL01. The key to divisions sends these profiles to CL as before; outside CL an overlay stays a feature of its layer.
+
+### Hugo's decisions (2026-11-02)
+
+* **Secondary solonchaks:** the secondary solonchaks form over any profile (pp. 56, 105), so in the types of CL an overlay S is the S of the formula; the [ABC] of CL03 is any formed profile, not tested.
+* **Exposed BT:** the near-identity of Q15 (a BT exposed is BI) holds at the key to divisions too, at C.20, with the guard of Q19.
+* **The fragments of TUR:** every fragment a formula writes must be among those of the TUR (TUR[SEL+ASN] at the surface is no CT14); with no record of them, the type is undecided when the TUR has an ESP of 15 % or more and the TUR is not one of these otherwise.
+* **The five doubles** (CO02 and CO01, CO04 and CO03, CO10 and CO09, CP10 and CP09, CP11 and CP06): the more specific names the type, the other is an intergrade.
+* **A division and no type:** the profiles the literal rules leave without a type stay so, with the note of Q15: TJ over C (CN), V at the surface (CQ), O, T or PT over Q, AU-SEL-BSN, AU-ASN without SEL, PB or PU over BSN; a horizon foreign to the division under the plough is ignored (PB over BFM is CR01); CS16 and CS17 without their BCA have no division; on the data a carbonate layer directly under the plough is read as AJ.
+
 # soilKey 0.9.338 (2026-11-02)
 
 ## Russia: the types of the divisions CA to CJ

@@ -130,7 +130,9 @@ test_that("the registry has the type level; the 106 types are clean and as the f
   expect_length(v$codes, 0L)
   expect_true("type_formula_kidpr" %in% .collect_rule_predicates(load_rules("kidpr2008")$types))
   r <- load_rules("kidpr2008")
-  expect_identical(names(r$types), names(.ty_counts))
+  # the divisions CA to CJ (CK to CT: test-v09339-kidpr2008-types-ck-ct.R)
+  expect_true(all(names(.ty_counts) %in% names(r$types)))
+  r$types <- r$types[names(.ty_counts)]
   expect_identical(lengths(r$types)[names(.ty_counts)], .ty_counts)
   expect_identical(sum(lengths(r$types)), 106L)
   fx <- .ty_fixture()
@@ -234,8 +236,8 @@ test_that("the example of each division CA to CJ reaches its type", {
     expect_identical(r$name, r$levels$name[3L])
     expect_true("types" %in% names(r$trace))
   }
-  # a division whose types come later keeps the division as the name
-  r <- .ty_class(make_kidpr2008_example("CK"))
+  # a division with no types keeps the division as the name
+  r <- .ty_class(make_kidpr2008_example("CU"))
   expect_identical(r$levels$level, c("trunks", "divisions"))
   expect_false(any(grepl("not provided", r$warnings)))
 })
@@ -382,7 +384,7 @@ test_that("BEL closes only the formulas where it is diagnostic (Hugo, 2026-11-02
 test_that("agro before natural, and the remnant under the plough", {
   skip_on_cran()
   r <- load_rules("kidpr2008")
-  for (d in names(r$types)) {
+  for (d in names(.ty_counts)) {
     sch <- .kidpr_ty_parse(r$types[[d]])
     sp <- vapply(sch$specs[sch$trial], function(s) s$specificity[["slots"]], 0)
     ag <- sch$agro[sch$trial]

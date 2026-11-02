@@ -1,0 +1,57 @@
+# The types of the division CL, Галоморфные почвы
+# (Halomorphic soils): Field Guide of 2008, chapter 4.1.12, pp. 104-106;
+# 3 types (3 natural, 0 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 CL..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested, but
+#       the rock and substrate slots that name a type are (`test_terminals`).
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# S over Q is a gley solonchak (CL01; Hugo's decision Q15). The [ABC] of
+# CL03 is any formed profile under the S, not tested, and an S laid over
+# another horizon counts as the S of the formulas (Hugo, 2026-11-02).
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "CL":
+    - code: "[CL01]"
+      name: "Gley solonchaks"
+      name_native: "Солончаки глеевые"
+      formula: "S-Gs-CGs"
+      page: 105
+      near_identity: {G: ["Q"]}
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CL01]"}
+      notes: "S over Q is a gley solonchak: the solonchak horizon lies over gley or quasigley material (p. 56; Hugo's decision Q15). An S laid over another horizon counts as the S of the formula (Hugo, 2026-11-02)."
+    - code: "[CL02]"
+      name: "Sulphidic solonchaks"
+      name_native: "Солончаки сульфидные"
+      formula: "SS-Gs-CGs"
+      page: 105
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CL02]"}
+      notes: "The diagram (p. 105) prints SS-GsC-Gss, a slip; read as chapter 6 writes it. An SS laid over another horizon counts as the SS of the formula (Hugo, 2026-11-02)."
+    - code: "[CL03]"
+      name: "Secondary solonchaks"
+      name_native: "Солончаки вторичные"
+      formula: "S-[ABC]"
+      page: 105
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[CL03]"}
+      notes: "The [ABC] stands for any formed profile under the S (p. 105), not a buried soil: it is not tested, so the type is an S with no G or Q under it. An S laid over another horizon counts as the S of the formula: the secondary solonchaks form over any profile (pp. 56, 105; Hugo, 2026-11-02)."

@@ -58,6 +58,16 @@
 # chapter 4, natural types first and then the agro types; the entry's test
 # is type_formula_kidpr(). classify_kidpr2008() reorders each list into the
 # order of trial before the generic engine walks it.
+#
+# v0.9.339 adds the types of CK to CT, under the same decisions: the BCA
+# under the solonetz horizon is optional (Q14); the rock R of the lithozems
+# and the gleyed substrate DG of the gley eluvozems are tested where they
+# name the type (`test_terminals`, with the carbonate mark of Rca); the
+# fragments of a TUR are tested, read by .kidpr_ty_fragments() (Q20); S over
+# Q is a gley solonchak, a BT exposed or under PB is BI, the BH of CR07 and
+# CS10 a BHF (Q15). Hugo's decisions of 2026-11-02 on them: in the types of
+# CL an S laid over another horizon is the S of the formula
+# (.kidpr_ty_salt_rows()); an exposed BT is BI at C.20 too (CQ01).
 # =============================================================================
 
 .KIDPR_TY_REF <- "Polevoi opredelitel' pochv Rossii (2008), chapter 4 (the profile formulas of the types)."
@@ -165,7 +175,7 @@
 # here too. A data-route layer with no horizon may be a transition or loose
 # rock (Hugo, 2026-11-02): it is undecided between no horizon and loose
 # rock, so between two horizons of a formula it leaves the type undecided.
-.kidpr_ty_table <- function(v) {
+.kidpr_ty_table <- function(v, div = NULL) {
   f <- v$f
   rows <- if (v$start <= v$n) seq.int(v$start, v$n) else integer(0)
   if (length(v$dep$rows) && isTRUE(v$dep$thick <= 40)) rows <- setdiff(rows, v$dep$rows)
@@ -195,8 +205,79 @@
   t$features <- Map(function(a, b) unique(c(as.character(a), as.character(b))), t$features, ov)
   t$features_na <- Map(function(a, b) unique(c(as.character(a), as.character(b))), t$features_na, ovna)
   t$overlay <- rep(list(character(0)), length(rows))
+  t$composition <- .kidpr_ty_fragments(v, t)
+  if (identical(div, "CL")) t <- .kidpr_ty_salt_rows(t)
   rownames(t) <- NULL
   t
+}
+
+# In the types of the halomorphic soils an S or SS laid over another horizon
+# is the S of the formula (Hugo, 2026-11-02: the secondary solonchaks form
+# over any profile, pp. 56, 105): the layer is read as the salt horizon over
+# its host, two rows at the same depths; an overlay the data leave undecided
+# makes the salt row undecided (S or no horizon). Elsewhere the overlay stays
+# a feature of its layer.
+.kidpr_ty_salt_rows <- function(t) {
+  salt <- c("S", "SS")
+  if (!nrow(t)) return(t)
+  dec <- lapply(t$features, function(x) intersect(salt, as.character(x)))
+  und <- lapply(t$features_na, function(x) intersect(salt, as.character(x)))
+  host <- !(t$code %in% salt)
+  add <- host & (lengths(dec) > 0L | lengths(und) > 0L)
+  if (!any(add)) return(t)
+  idx <- unlist(lapply(seq_len(nrow(t)), function(i) if (add[i]) c(i, i) else i))
+  first <- c(TRUE, idx[-1L] != idx[-length(idx)])
+  out <- t[idx, , drop = FALSE]
+  srow <- which(add[idx] & first)
+  for (j in srow) {
+    i <- idx[j]
+    d <- length(dec[[i]]) > 0L
+    out$code[j] <- if (d) dec[[i]][1L] else NA_character_
+    out$passed[j] <- if (d) TRUE else NA
+    out$candidates[[j]] <- if (d) character(0) else c(und[[i]], "")
+    out$missing[[j]] <- if (d) character(0) else out$missing[[j]]
+    for (k in c("features", "features_na", "composition")) out[[k]][[j]] <- character(0)
+    out$small[j] <- FALSE
+    out$transitional[j] <- FALSE
+    if (!is.null(out$rockflag)) out$rockflag[j] <- NA_character_
+    if (!is.null(out$mark)) out$mark[j] <- NA_character_
+    if (!is.null(out$no_horizon)) out$no_horizon[j] <- FALSE
+  }
+  hostrow <- which(add[idx] & !first)
+  for (j in hostrow) {
+    out$features[[j]] <- setdiff(as.character(out$features[[j]]), salt)
+    out$features_na[[j]] <- setdiff(as.character(out$features_na[[j]]), salt)
+  }
+  out
+}
+
+# The fragments of a TUR (Hugo's decision Q20): from the notation
+# (TUR[SEL+ASN]), else from the column turbated_fragments ("SEL;ASN"); with
+# neither, unknown (the solonetzic types undecided) when the TUR has an ESP
+# of 15 % or more, from na_cmol and cec_cmol or esp_pct, and otherwise not
+# the fragments of a formula ("none", which no formula writes).
+.kidpr_ty_fragments <- function(v, t) {
+  comp <- if (is.null(t$composition)) rep(list(character(0)), nrow(t)) else t$composition
+  h <- v$h
+  col <- function(k, i) {
+    if (is.null(h) || is.null(h[[k]]) || is.na(i) || i < 1L || i > nrow(h)) return(NA)
+    h[[k]][i]
+  }
+  for (j in which(t$code %in% "TUR")) {
+    if (length(comp[[j]])) next
+    i <- t$horizon_idx[j]
+    fr <- col("turbated_fragments", i)
+    if (!is.na(fr) && nzchar(trimws(fr))) {
+      x <- toupper(trimws(unlist(strsplit(.formula_normalise(fr), "[;+,]+"))))
+      comp[[j]] <- x[nzchar(x)]
+      next
+    }
+    na <- suppressWarnings(as.numeric(col("na_cmol", i)))
+    cec <- suppressWarnings(as.numeric(col("cec_cmol", i)))
+    esp <- if (!is.na(na) && !is.na(cec) && cec > 0) 100 * na / cec else suppressWarnings(as.numeric(col("esp_pct", i)))
+    if (!isTRUE(esp >= 15)) comp[[j]] <- "none"
+  }
+  comp
 }
 
 # The match of the profile against the formulas of a division, once per
@@ -207,7 +288,7 @@
     entries <- .kidpr_ty_list(v$type_lists %||% .kidpr_ty_installed(), div)
     if (!length(entries)) return(NULL)
     sch <- .kidpr_ty_parse(entries)
-    tab <- .kidpr_ty_table(v)
+    tab <- .kidpr_ty_table(v, div)
     m <- .match_schemes(tab, sch$specs, vocabulary = sch$vocabularies,
                         surface = .KIDPR_DV_NATURAL, agro = .KIDPR_DV_AGRO, agro_remnant = "thickest",
                         pair_gaps_cm = .KIDPR_TY_GAPS)

@@ -50,6 +50,8 @@
 # horizon); a profile C.6 gives no exit (an agro horizon on ASN or BSN, the
 # types CK09-CK12) goes on to C.7; the surface S or SS of C.3 starts within
 # 10 cm, the X within 30 cm.
+# Hugo's decision of 2026-11-02 (v0.9.339): at C.20 an exposed BT counts as BI
+# (Q15 at the key): BT over C is an abrazem, CQ01.
 #
 # Names: an English gloss in `name`, the Russian of the chapter 4 heading in
 # `name_native`, the key and index forms in `synonyms_native` (Q12).
@@ -168,8 +170,9 @@ steps:
   C19v: &C19v {only_horizons_kidpr: {sets: [["AJ"], ["AY"], ["AU"], ["AO"], ["AH"], ["H"], ["TJ"], ["AK"],
                                             ["P", "AY"], ["PU", "AU"]]}}
   # C.20 a middle horizon at the surface (or under a deposit of 40 cm or
-  # less), the description starting at 0 cm (Q19)
-  C20a: &C20a {starts_at_surface_kidpr: {codes: ["BI", "BHF", "BFM", "BM", "BPL", "CRM", "BCA", "CAT", "ASN",
+  # less), the description starting at 0 cm (Q19); an exposed BT counts as
+  # BI (Hugo, 2026-11-02, Q15 at the key: the abrazem CQ01)
+  C20a: &C20a {starts_at_surface_kidpr: {codes: ["BI", "BT", "BHF", "BFM", "BM", "BPL", "CRM", "BCA", "CAT", "ASN",
                                                  "BSN", "V"], from_ground_zero: true}}
 
 divisions:
@@ -204,7 +207,7 @@ divisions:
       path: "C.1б-C.3в-C.4б-C.20а"
       tests:
         all_of: [*C1b, *C4b, *C20a]
-      notes: "No organic, humus, agro or eluvial horizon at the surface, and a middle horizon at the surface: a truncated soil (p. 114), read on the profile when the description starts at 0 cm (Hugo's decision Q19)."
+      notes: "No organic, humus, agro or eluvial horizon at the surface, and a middle horizon at the surface: a truncated soil (p. 114), read on the profile when the description starts at 0 cm (Hugo's decision Q19). An exposed BT counts as BI (Hugo, 2026-11-02)."
 
     - code: "CO"
       name: "Eluvial soils"
