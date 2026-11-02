@@ -823,12 +823,36 @@
   })
 }
 
-# Fresh litter, moss or felt (not diagnostic, p. 36): the FAO Oi or L, the
-# Soviet A00, read from the hints of a designation that is not Russian.
+# Fresh litter, moss or felt (not diagnostic, p. 36), read from the hints of
+# a designation that is not Russian: the Soviet A00 always; the FAO Oi or L
+# only in the run of such layers that starts the description, when the run
+# is 5 cm thick or less (thicker, or lower in the profile, it is an organic
+# layer the key reads on the data: Hugo, 2026-11-02). A run whose thickness
+# is not recorded is litter, as before.
 .kidpr_litter <- function(x, i) {
   if (x$kidpr && isTRUE(x$des$known[i])) return(FALSE)
   nt <- x$des$notes[[i]] %||% character(0)
-  any(grepl("litter, not diagnostic", nt))
+  if (any(grepl("Soviet A00", nt, fixed = TRUE))) return(TRUE)
+  if (!any(grepl("litter, not diagnostic", nt, fixed = TRUE))) return(FALSE)
+  i %in% .kidpr_litter_run(x)
+}
+
+# The layers of the FAO Oi or L run at the top that count as litter: the run
+# from the first layer of the description, when its thickness is 5 cm or
+# less or not recorded; otherwise none.
+.kidpr_litter_run <- function(x) {
+  .kidpr_memo(x, "litter_run", function() {
+    run <- integer(0)
+    for (j in x$ord) {
+      if (x$kidpr && isTRUE(x$des$known[j])) break
+      nt <- x$des$notes[[j]] %||% character(0)
+      if (!any(grepl("litter, not diagnostic", nt, fixed = TRUE))) break
+      run <- c(run, j)
+    }
+    if (!length(run)) return(integer(0))
+    th <- x$thick[run]
+    if (anyNA(th) || sum(th) <= 5) run else integer(0)
+  })
 }
 
 # A designation that is not Russian with the plough suffix p (Ap, Op, Hp), or

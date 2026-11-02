@@ -501,6 +501,34 @@ test_that("other notations give hints only; litter is no horizon; hard rock is R
   expect_identical(f$code[3], "R")
 })
 
+test_that("an FAO Oi or L is litter only in a run of 5 cm or less at the top (Hugo, 2026-11-02)", {
+  skip_on_cran()
+  # a run of two thin Oi layers (5 cm) over an Oe and a humus horizon: litter
+  f <- .ru_id(.ru_P(.ru_org(0, 2, designation = "Oi"), .ru_org(2, 5, designation = "Oi"),
+                    .ru_org(5, 9, designation = "Oe", peat_decomposition_pct = 20), .ru_AY(9, 25, designation = "Ah"),
+                    .ru_L(25, 80, designation = "C")))
+  expect_false(f$passed[1]); expect_false(f$passed[2])
+  expect_match(f$evidence[2], "litter", fixed = TRUE)
+  expect_identical(f$code[3], "O")
+  # 40 cm of Oi over a gleyed layer: an organic layer read on the data, the peat T
+  f <- .ru_id(.ru_P(.ru_org(0, 40, designation = "Oi", peat_moor_type = "low-moor", peat_decomposition_pct = 10),
+                    .ru_L(40, 80, designation = "Cg")))
+  expect_identical(f$code[1], "T")
+  expect_false(grepl("litter, moss or felt", f$evidence[1], fixed = TRUE))
+  # a raised bog described Oi1/Oi2/Oe: peat, not litter
+  f <- .ru_id(.ru_P(.ru_org(0, 10, designation = "Oi1", peat_moor_type = "high-moor", peat_decomposition_pct = 5),
+                    .ru_org(10, 40, designation = "Oi2", peat_moor_type = "high-moor", peat_decomposition_pct = 10),
+                    .ru_org(40, 120, designation = "Oe", peat_moor_type = "high-moor", peat_decomposition_pct = 30),
+                    .ru_L(120, 150, designation = "Cg")))
+  expect_true(all(f$code[1:2] %in% c("TO", "T")))
+  # an Oi lower in the profile is no litter
+  f <- .ru_id(.ru_P(.ru_AY(0, 10, designation = "Ah"), .ru_org(10, 13, designation = "Oi"), .ru_L(13, 60, designation = "C")))
+  expect_false(grepl("litter, moss or felt", f$evidence[2], fixed = TRUE))
+  # thickness not recorded: litter, as before
+  f <- .ru_id(.ru_P(.ru_org(0, NA, designation = "Oi"), .ru_AY(3, 20, designation = "Ah"), .ru_L(20, 60, designation = "C")))
+  expect_match(f$evidence[1], "litter", fixed = TRUE)
+})
+
 
 # --- fallbacks and stand-ins ------------------------------------------------------------------
 
