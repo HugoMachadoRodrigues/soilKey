@@ -29,15 +29,20 @@
 #' From them the keys read whether a horizon is present, whether it starts
 #' the profile (at the surface, or under a deposit of 40 cm or less),
 #' whether it lies directly over another, whether the profile consists of
-#' one horizon only, the depth of hard rock, a deposit at the surface, the
-#' peat body of trunk A (51 cm or more, the agro-peat horizons included)
+#' one horizon only, the depth of hard rock, a deposit at the surface (TPO
+#' and the deposits the key to horizons finds on the data included), the
+#' peat body of trunk A (more than 50 cm, the agro-peat horizons included)
 #' and the thickness of a turbated horizon; of the site, a river floodplain
 #' on modern alluvium (\code{landform}, \code{landform_element},
 #' \code{layer_origin}, \code{rock_origin}, \code{parent_material}, the
-#' alluvial mark of the notation), volcanic ash (the same, the ash mark,
-#' \code{volcanic_glass_pct}) and the contaminated horizon X
-#' (\code{contamination_hazard}). With several organic and humus horizons
-#' at the surface the thickest is the diagnostic one (p. 37).
+#' alluvial mark of the notation; a terrace is no floodplain) and the
+#' contaminated horizon X (\code{contamination_hazard}). The ochre horizon
+#' BAN is formed in volcanic ash, so it makes the volcanic soils alone. With
+#' several organic and humus horizons at the surface the thickest is the
+#' diagnostic one (p. 37), for step 5 of the key to trunks as for the
+#' divisions; FAO and WRB transitions (AB, BC, E/B) in which the key on the
+#' data finds no diagnostic horizon are transitions, as those of the Russian
+#' notation; a missing depth leaves the step that needs it undecided.
 #'
 #' The keys are branching trees; soilKey flattens them into ordered lists
 #' in which each gate is the conjunction of the conditions of the book's path
@@ -77,14 +82,14 @@ classify_kidpr2008 <- function(pedon, rules = NULL,
                                on_missing = c("warn", "silent", "error"),
                                gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
-  if (inherits(pedon, "PedonRecord")) {
-    # a horizon table without its depth columns is completed first
-    if (!all(c("top_cm", "bottom_cm") %in% names(pedon$horizons))) {
-      pedon <- pedon$clone(deep = TRUE)
-      pedon$horizons <- ensure_horizon_schema(data.table::as.data.table(pedon$horizons))
-    }
-    pedon <- .classify_apply_gapfill(pedon, gapfill)
+  if (!inherits(pedon, "PedonRecord"))
+    rlang::abort("classify_kidpr2008(): 'pedon' must be a PedonRecord (see PedonRecord$new()).")
+  # a horizon table without its depth columns is completed first
+  if (!is.null(pedon$horizons) && !all(c("top_cm", "bottom_cm") %in% names(pedon$horizons))) {
+    pedon <- pedon$clone(deep = TRUE)
+    pedon$horizons <- ensure_horizon_schema(data.table::as.data.table(pedon$horizons))
   }
+  pedon <- .classify_apply_gapfill(pedon, gapfill)
   .classify_require_horizons(pedon, "classify_kidpr2008")
   rules <- rules %||% load_rules("kidpr2008")
   # the profile read once: every predicate of the keys reads this view

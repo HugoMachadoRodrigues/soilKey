@@ -7,16 +7,22 @@
 #
 # The order is the book's: no soil horizon within about 1 m, and a deposit
 # over 40 cm that is not humified (E); only O or only W (D); a peat body of
-# 51 cm (A); a humified deposit over 40 cm, or a soil one of the divisions
-# of trunk B takes (B); the rest (C). A humified deposit over 40 cm (step
-# 4a) is tested after D and A, whose gates exclude any deposit over 40 cm.
+# more than 50 cm (A); a humified deposit over 40 cm, or a soil one of the
+# divisions of trunk B takes (B); the rest (C). A humified deposit over 40 cm
+# (step 4a) is tested after D and A, whose gates exclude any deposit over
+# 40 cm. The deposit of step 2 holds the technogenic formation TPO and the
+# deposit the horizon key finds on the data (position 38b) as well as the
+# stratified humus horizons, so that TPO or a raw deposit over 40 cm on a
+# soil is trunk E.
 #
-# The repairs of the gaps the types prove (Hugo's decision Q10): trunk D
-# also takes O with W, and an S alone over loose rock (the automorphic
-# Солончаки of trunk D). Trunk B takes only what one of its divisions takes
-# (Q21): its gate is the union of the gates of BA, BB and BC
-# (divisions/B.yaml). Trunk E is not a soil (Q1); the chapter 8 groups of
-# technogenic surface formations are not keyed.
+# Step 5 reads the profile after the thickest-horizon rule of p. 37 (Hugo,
+# 2026-11-02): O over a thinner humus horizon is only O, and O with W is one
+# of them. The repair of a gap the types prove (Hugo's decision Q10): trunk
+# D also takes an S alone over loose rock (the automorphic Солончаки of
+# trunk D). Trunk B takes only what one of its divisions takes (Q21): its
+# gate is the union of the gates of BA, BB and BC (divisions/B.yaml). Trunk E
+# is not a soil (Q1); the chapter 8 groups of technogenic surface formations
+# are not keyed.
 #
 # Names: an English gloss in `name`, the Russian of the key and the index of
 # trunks (p. 29) in `name_native`, the chapter 4 headings in `synonyms_native`
@@ -34,7 +40,7 @@ trunks:
         - none_of:
             - soil_horizon_within_kidpr: {max_cm: 100}
         - surface_deposit_kidpr: {min_cm: 40, humified: false}
-    notes: "No soil horizon from the surface to about 1 m (rock outcrop, or technogenic surface formation); or a deposit over 40 cm thick with no stratified humus horizon (RJ, RY, RU) over a buried soil (a technogenic formation, or a water-laid or aeolian deposit on a buried soil). Not a soil."
+    notes: "No soil horizon from the surface to about 1 m (rock outcrop, or technogenic surface formation); or a deposit over 40 cm thick with no stratified humus horizon (RJ, RY, RU) over a buried soil (a technogenic formation TPO, or a water-laid or aeolian deposit on a buried soil, the deposit of horizon key position 38b on the data). Not a soil. On the data, a layer in which the key finds no diagnostic horizon (position 66) may be a transition: it does not prove the absence of a soil horizon."
 
   - code: "D"
     name: "Weakly developed soils"
@@ -46,11 +52,11 @@ trunks:
         - none_of:
             - surface_deposit_kidpr: {min_cm: 40}
         - any_of:
-            - only_horizons_kidpr: {sets: [["O"], ["W"], ["O", "W"]], raw: true}
+            - only_horizons_kidpr: {sets: [["O"], ["W"]]}
             - all_of:
-                - only_horizons_kidpr: {sets: [["S"]], raw: true}
+                - only_horizons_kidpr: {sets: [["S"]]}
                 - directly_over_kidpr: {upper: ["S"], lower: ["C", "D"]}
-    notes: "The profile has only the litter-peat horizon O, or only the weakly developed humus horizon W, and no other soil horizon (all its horizons read, before the thickest-horizon rule of the surface); soilKey also takes O with W (the thicker names the type, p. 37) and an S alone over loose rock (the Солончаки of the division), Hugo's decision Q10."
+    notes: "The profile has only the litter-peat horizon O, or only the weakly developed humus horizon W, and no other soil horizon, read after the thickest-horizon rule of the surface (p. 37; Hugo, 2026-11-02): an O over a thinner humus horizon, or O with W, is one horizon with features. soilKey also takes an S alone over loose rock (the Солончаки of the division), Hugo's decision Q10."
 
   - code: "A"
     name: "Organogenic soils"
@@ -61,8 +67,8 @@ trunks:
       all_of:
         - none_of:
             - surface_deposit_kidpr: {min_cm: 40}
-        - peat_body_kidpr: {min_cm: 51}
-    notes: "A peat body of more than 50 cm (51 cm or more): the organic layers contiguous from the surface or under a deposit of 40 cm or less, muck (H) and the agro-peat horizons PT and PTR included (Hugo's decision Q22); a description that ends in peat before 51 cm leaves it undecided."
+        - peat_body_kidpr: {min_cm: 50}
+    notes: "A peat body of more than 50 cm: the organic layers contiguous from the surface or under a deposit of 40 cm or less, muck (H) and the agro-peat horizons PT and PTR included (Hugo's decision Q22), a layer the data leave undecided between peat horizons counted; a description that ends in peat at 50 cm or less leaves it undecided."
 
   - code: "B"
     name: "Synlithogenic soils"
@@ -82,16 +88,16 @@ trunks:
                         - directly_over_kidpr:
                             upper: ["P", "PU", "PT", "PTR", "PB"]
                             lower: ["AJ", "AY", "AU", "AO", "AK", "AH", "O", "T", "TO", "TE", "TJ", "H", "RJ", "RY", "RU"]
-        # BB (B.2a): the ochre horizon BAN, in volcanic ash
+        # BB (B.2a): the ochre horizon BAN, formed in volcanic ash by its
+        # definition (Hugo, 2026-11-02)
         - all_of:
             - has_horizon_kidpr: {codes: ["BAN"]}
-            - volcanic_ash_kidpr: {}
         # BC (B.2b): a humified deposit over 40 cm (step 4a), or a
         # stratified humus body of 40 cm or more (P and PU counted)
         - any_of:
             - surface_deposit_kidpr: {min_cm: 40, humified: true}
             - stratified_body_kidpr: {min_cm: 40}
-    notes: "A humified deposit over 40 cm (RJ, RY or RU); or, by Hugo's decision Q21, a soil one of the divisions of the trunk takes: within a river floodplain on modern alluvium (BA), the ochre horizon BAN in volcanic ash (BB), a stratified humus body of 40 cm or more (BC). Other layering stays in trunk C."
+    notes: "A humified deposit over 40 cm (RJ, RY or RU); or, by Hugo's decision Q21, a soil one of the divisions of the trunk takes: within a river floodplain on modern alluvium (BA), the ochre horizon BAN, which is formed in volcanic ash (BB; Hugo, 2026-11-02), a stratified humus body of 40 cm or more (BC). Other layering stays in trunk C."
 
   - code: "C"
     name: "Postlithogenic soils"

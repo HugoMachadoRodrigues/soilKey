@@ -33,8 +33,7 @@ divisions:
       tests:
         all_of:
           - has_horizon_kidpr: {codes: ["BAN"]}
-          - volcanic_ash_kidpr: {}
-      notes: "The ochre horizon BAN, and the soil developed in a layer of volcanic ash (p. 126)."
+      notes: "The ochre horizon BAN, and the soil developed in a layer of volcanic ash (p. 126). BAN is formed in volcanic ash by its definition (horizon key position 55, chapter 3), so BAN alone makes the division, by the notation or by the horizon key on the data (Hugo, 2026-11-02)."
 
     - code: "BC"
       name: "Stratozems"

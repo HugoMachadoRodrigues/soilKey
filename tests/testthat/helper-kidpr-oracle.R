@@ -5,17 +5,27 @@
 # A profile is a vector of tokens, top-down, "CODE:thickness": a horizon
 # ("AY:15"), an overlay after a "+" ("AY+S:15"), a buried horizon in brackets
 # ("[AU]:20"), a rock mark after the code ("C~~:40", "C\":30"), a small
-# horizon in lower case ("r:10", "e:2"); and a site flag, a recorded
-# floodplain. The walker reads the profile with its own simple helpers
-# (every layer decided) and follows the book's branching steps in their
-# printed order, each step a question with its answers; an answer with no
-# exit is "not provided" (C.21). With `repaired = TRUE` it applies, at the
-# step where each acts, the repairs and readings of Hugo's decisions of
-# 2026-11-02 (Q9, Q10, Q20, Q21) and soilKey's readings, and records the
-# ones that changed the walk. The readings shared by both walks (the
-# thickest-horizon rule of the surface, Q11; the deposit, Q21; the peat
-# body, Q22; the guard of a truncated soil, Q19; T read with TO and TE) are
-# not differences.
+# horizon in lower case ("r:10", "e:2"), a transition of the notation
+# ("AB:15", "BC:20"), the technogenic formation TPO ("TPO:60"); and two
+# layers of the data route: one in which the key to horizons finds no
+# diagnostic horizon ("_none:10", position 66), the same with an FAO or WRB
+# designation after a tilde ("~AB:25", "~E/B:15": a transition when it names
+# two master horizons) and the deposit of its position 38b ("_dep:60"); and a
+# site flag, a recorded floodplain. The
+# walker reads the profile with its own simple helpers (every layer decided;
+# the codes from its own reading of the tokens, not the package's notation
+# reader) and follows the book's branching steps in their printed order,
+# each step a question with its answers; an answer with no exit is "not
+# provided" (C.21). With `repaired = TRUE` it applies, at the step where each
+# acts, the repairs and readings of Hugo's decisions of 2026-11-02 (Q9, Q10,
+# Q20, Q21, and those taken after the review: every ploughed soil of CC or
+# CJ is an agrozem; BAN is formed in volcanic ash) and the readings he
+# accepted, and records the ones that changed the walk. The readings shared
+# by both walks (the thickest-horizon rule of the surface, Q11, read by step
+# 5 as by C.19; the deposit, Q21, TPO and the deposit of 38b in it; the peat
+# body, Q22; the guard of a truncated soil, Q19; transitions and up to 15 cm
+# with no diagnostic horizon between AU and BCA passed over, Q14; T read with
+# TO and TE; C.14 "under" as printed, anywhere below) are not differences.
 
 .KOR_ROCKS <- c("C", "D", "R", "CLM", "TT")
 .KOR_AGRO <- c("P", "PU", "PT", "PTR", "PB")
@@ -24,6 +34,10 @@
 .KOR_ORG4 <- c("O", "T", "TO", "TE", "TJ", "H")
 .KOR_ELUV <- c("E", "EL", "AEL", "BEL", "SEL")
 .KOR_RSTAR <- c("RJ", "RY", "RU")
+.KOR_TRANS <- c("AB", "BA", "BC", "CB", "AC")
+# Codes that are no soil horizon of the profile: rock, TPO, and the data
+# route's layers with no horizon and deposits.
+.KOR_NOSOIL <- c(.KOR_ROCKS, "TPO", "_none", "_dep")
 
 # One token as a layer.
 .kor_layer <- function(tok) {
@@ -40,8 +54,18 @@
   mark <- if (length(m)) m else NA_character_
   if (length(m)) s <- substr(s, 1L, nchar(s) - nchar(m))
   small <- grepl("^[a-z]", s)
-  list(code = if (small) NA_character_ else s, feature = if (small) s else NA_character_,
-       small = small, buried = buried, overlay = ov, mark = mark, thick = as.numeric(p[2L]))
+  trans <- s %in% .KOR_TRANS
+  # a layer of the data route with an FAO designation and no horizon
+  fao <- if (startsWith(s, "~")) substring(s, 2L) else NA_character_
+  if (!is.na(fao)) {
+    m2 <- regmatches(fao, regexec("^([ABEC])[a-z0-9]*/?([ABEC])", fao))[[1L]]
+    trans <- length(m2) == 3L && m2[2L] != m2[3L]
+    # an FAO C is loose rock
+    s <- if (grepl("^[0-9]*C[a-z0-9]*$", fao)) "C" else "_none"
+  }
+  list(code = if (small || trans) NA_character_ else s, feature = if (small) s else NA_character_,
+       small = small, trans = trans, buried = buried, overlay = ov, mark = mark, thick = as.numeric(p[2L]),
+       fao = fao)
 }
 
 # The profile as a list of layers with tops, and its readings.
@@ -52,13 +76,15 @@
   pr <- list(L = L, tokens = tokens, floodplain = floodplain)
   code <- vapply(L, function(l) l$code %||% NA_character_, "")
   small <- vapply(L, `[[`, NA, "small")
+  trans <- vapply(L, `[[`, NA, "trans")
   bur <- vapply(L, `[[`, NA, "buried")
   feat <- vapply(L, function(l) l$feature %||% NA_character_, "")
-  # the deposit at the surface (Q21)
+  # the deposit at the surface (Q21): TPO and the deposit of 38b always,
+  # loose rock only over a buried soil or an organic or humus horizon
   run <- integer(0); i <- 1L
   while (i <= length(L) && !bur[i] &&
-         ((!small[i] && code[i] %in% .KOR_RSTAR) || (small[i] && feat[i] %in% c("r", "rh", "ur", "rr", "rx")) ||
-          (!small[i] && code[i] %in% c("C", "D")))) { run <- c(run, i); i <- i + 1L }
+         ((!small[i] && code[i] %in% c(.KOR_RSTAR, "TPO", "_dep", "C", "D")) ||
+          (small[i] && feat[i] %in% c("r", "rh", "ur", "rr", "rx")))) { run <- c(run, i); i <- i + 1L }
   if (length(run)) {
     ok <- i <= length(L) && (bur[i] || (!small[i] && code[i] %in% c(.KOR_ORG4, .KOR_HUM4, "W", .KOR_RSTAR)))
     if (!ok) {
@@ -78,11 +104,12 @@
     if (length(rows) && b2[rows[1L]]) { k <- 1L; while (k <= length(rows) && b2[rows[k]]) { b2[rows[k]] <- FALSE; k <- k + 1L } }
   }
   pr$prof <- rows[!b2[rows]]
-  # the horizons in order, sub-horizons merged, small ones out
-  s <- pr$prof[!small[pr$prof]]
+  # the horizons in order, sub-horizons merged, small ones and transitions
+  # out (a layer with no horizon is an entry of its own)
+  s <- pr$prof[!small[pr$prof] & !trans[pr$prof]]
   hz <- list()
   for (j in s) {
-    if (length(hz) && identical(hz[[length(hz)]]$code, code[j])) {
+    if (length(hz) && identical(hz[[length(hz)]]$code, code[j]) && !code[j] %in% c("_none", "_dep")) {
       hz[[length(hz)]]$thick <- hz[[length(hz)]]$thick + L[[j]]$thick
       hz[[length(hz)]]$overlay <- unique(c(hz[[length(hz)]]$overlay, L[[j]]$overlay))
     } else hz[[length(hz) + 1L]] <- list(code = code[j], thick = L[[j]]$thick, top = L[[j]]$top, overlay = L[[j]]$overlay)
@@ -97,7 +124,7 @@
     nat <- which(hc[seq_len(run)] %in% .KOR_NATURAL)
     if (length(nat) > 1L) drop <- setdiff(nat, nat[which.max(th[nat])])
     if (length(nat) == 1L && hc[nat] == "W" && !any(hc[seq_len(run)] %in% .KOR_AGRO) && th[nat] <= 5 &&
-        run < length(hz) && !hc[run + 1L] %in% c(.KOR_ROCKS, "TPO")) drop <- nat
+        run < length(hz) && !hc[run + 1L] %in% .KOR_NOSOIL) drop <- nat
   }
   pr$hz_raw <- hz
   pr$hz <- hz[setdiff(seq_along(hz), drop)]
@@ -105,7 +132,7 @@
   pr$run <- run - length(drop)
   rc <- pr$hc[seq_len(pr$run)]
   pr$surf <- if (any(rc %in% .KOR_AGRO)) rc[rc %in% .KOR_AGRO][1L] else if (length(rc)) rc[1L] else NA_character_
-  pr$all_code <- code; pr$small <- small; pr$bur <- bur
+  pr$all_code <- code; pr$small <- small; pr$trans <- trans; pr$bur <- bur
   pr
 }
 
@@ -114,9 +141,17 @@
 .kor_has <- function(pr, K) any(vapply(seq_along(pr$hz), function(i) .kor_is(pr, i, K), NA))
 .kor_has_within <- function(pr, K, cm) any(vapply(seq_along(pr$hz), function(i) .kor_is(pr, i, K) && pr$hz[[i]]$top < cm, NA))
 .kor_first <- function(pr, K) length(pr$hz) > 0L && .kor_is(pr, 1L, K)
-.kor_over <- function(pr, U, Lw) {
+# directly over: transitions are out of the list; layers with no horizon
+# passed over up to `gap` cm
+.kor_over <- function(pr, U, Lw, gap = 0) {
   n <- length(pr$hz)
-  n > 1L && any(vapply(seq_len(n - 1L), function(i) .kor_is(pr, i, U) && .kor_is(pr, i + 1L, Lw), NA))
+  for (i in seq_len(n)) {
+    if (!.kor_is(pr, i, U)) next
+    j <- i + 1L; g <- 0
+    while (j <= n && pr$hc[j] == "_none" && g + pr$hz[[j]]$thick <= gap) { g <- g + pr$hz[[j]]$thick; j <- j + 1L }
+    if (j <= n && .kor_is(pr, j, Lw)) return(TRUE)
+  }
+  FALSE
 }
 .kor_below <- function(pr, U, Lw) {
   n <- length(pr$hz)
@@ -124,20 +159,21 @@
   for (i in seq_len(n - 1L)) for (j in seq.int(i + 1L, n)) if (.kor_is(pr, i, U) && .kor_is(pr, j, Lw)) return(TRUE)
   FALSE
 }
-.kor_set <- function(q) sort(unique(c(q$hc[!q$hc %in% .KOR_ROCKS & q$hc != "TPO"], unlist(lapply(q$hz, `[[`, "overlay")))))
+.kor_set <- function(q) sort(unique(c(q$hc[!q$hc %in% .KOR_NOSOIL], unlist(lapply(q$hz, `[[`, "overlay")))))
 .kor_only <- function(pr, sets, raw = FALSE) {
   q <- if (raw) list(hc = vapply(pr$hz_raw, `[[`, "", "code"), hz = pr$hz_raw) else pr
   any(vapply(sets, function(s) identical(.kor_set(q), sort(unique(s))), NA))
 }
 .kor_rock30 <- function(pr) any(vapply(pr$L, function(l) identical(l$code, "R") && !l$buried && l$top <= 30, NA))
 .kor_tur40 <- function(pr) any(vapply(pr$hz, function(e) identical(e$code, "TUR") && e$thick > 40, NA))
-.kor_peat51 <- function(pr) {
+# step 6: more than 50 cm of peat (51 cm or more, as the book says)
+.kor_peat50 <- function(pr) {
   tot <- 0
   for (j in pr$prof) {
     if (pr$small[j]) next
     if (pr$all_code[j] %in% c(.KOR_ORG4, "TT", "PT", "PTR")) tot <- tot + pr$L[[j]]$thick else break
   }
-  tot >= 51
+  tot > 50
 }
 .kor_strat40 <- function(pr) {
   tot <- 0; rs <- FALSE
@@ -148,7 +184,8 @@
   }
   rs && tot >= 40
 }
-.kor_soil100 <- function(pr) any(vapply(pr$L, function(l) !l$small && !is.na(l$code) && !l$code %in% c(.KOR_ROCKS, "TPO") && l$top < 100, NA))
+# step 1: a soil horizon (a transition is one) within about 1 m
+.kor_soil100 <- function(pr) any(vapply(pr$L, function(l) !l$small && (l$trans || !l$code %in% .KOR_NOSOIL) && l$top < 100, NA))
 .kor_marks <- function(pr, m) any(vapply(pr$L, function(l) identical(l$mark, m), NA))
 .kor_floodplain <- function(pr) isTRUE(pr$floodplain) && any(vapply(pr$L[pr$prof], function(l) identical(l$mark, "~~"), NA))
 .kor_ash <- function(pr) .kor_marks(pr, "\"")
@@ -156,6 +193,20 @@
   # an agro horizon at the surface with no natural horizon under it
   agro <- !is.na(pr$surf) && pr$surf %in% .KOR_AGRO
   !agro || .kor_over(pr, .KOR_AGRO, c(.KOR_HUM4, .KOR_ORG4, .KOR_RSTAR))
+}
+
+# The profile under the agro horizon, as a natural soil: the agro horizons
+# taken out, the natural horizon under them (if any) the surface, else the
+# natural counterpart of the agro horizon (P: AY, PU: AU, PT and PTR: T;
+# none for PB).
+.kor_natural <- function(pr) {
+  q <- pr
+  ag <- which(pr$hc %in% .KOR_AGRO)
+  q$hz <- pr$hz[setdiff(seq_along(pr$hz), ag)]
+  q$hc <- pr$hc[setdiff(seq_along(pr$hc), ag)]
+  rem <- if (length(q$hc) && q$hc[1L] %in% .KOR_NATURAL) q$hc[1L] else NA_character_
+  q$surf <- if (!is.na(rem)) rem else c(P = "AY", PU = "AU", PT = "T", PTR = "T", PB = NA_character_)[[pr$surf]]
+  q
 }
 
 #' The literal walk of keys 2.2 and 2.3 (`repaired = FALSE`), or the walk
@@ -173,25 +224,22 @@
     if (pr$dep_humified) b4 <- TRUE else return(out("E", why = "4b"))
   }
   if (!b4) {
-    # step 5: only O or only W
-    only_ow <- .kor_only(pr, list("O", "W"), raw = TRUE)
-    if (only_ow) return(out("D", "[DA]"))
-    if (repaired) {
-      if (.kor_only(pr, list(c("O", "W")), raw = TRUE)) { fix("Q10: trunk D takes O with W"); return(out("D", "[DA]")) }
-      if (.kor_only(pr, list("S"), raw = TRUE) && .kor_over(pr, "S", c("C", "D"))) {
-        fix("Q10: trunk D takes S alone over C"); return(out("D", "[DA]"))
-      }
+    # step 5: only O or only W, read after the thickest-horizon rule
+    if (.kor_only(pr, list("O", "W"))) return(out("D", "[DA]"))
+    if (repaired && .kor_only(pr, list("S")) && .kor_over(pr, "S", c("C", "D"))) {
+      fix("Q10: trunk D takes S alone over C"); return(out("D", "[DA]"))
     }
     # step 6: the peat body
-    if (.kor_peat51(pr)) return(out("A", if (.kor_has(pr, c("PT", "PTR"))) "AB" else "AA"))
+    if (.kor_peat50(pr)) return(out("A", if (.kor_has(pr, c("PT", "PTR"))) "AB" else "AA"))
     # step 7
     lit7 <- isTRUE(pr$floodplain) || .kor_marks(pr, "~~") || .kor_marks(pr, "\"") || .kor_marks(pr, "^^") ||
       .kor_marks(pr, "\"\"") || any(pr$all_code %in% .KOR_RSTAR)
     ba <- .kor_floodplain(pr) && .kor_remnant(pr)
-    bb <- .kor_has(pr, "BAN") && .kor_ash(pr)
+    bb <- .kor_has(pr, "BAN")
     bc <- .kor_strat40(pr)
     if (repaired) {
       b7 <- ba || bb || bc
+      if (bb && !lit7) fix("decision: BAN is formed in volcanic ash")
       if (lit7 && !b7) fix(if (.kor_floodplain(pr) && !.kor_remnant(pr))
                              "Q9: an agro horizon with no natural remnant on alluvium is an agrozem"
                            else "Q21: step 7 only for what a division of trunk B takes")
@@ -205,6 +253,7 @@
     return(.kor_walk_c(pr, repaired, used))
   }
   if (.kor_has(pr, "BAN") && .kor_ash(pr)) return(out("B", "BB"))
+  if (repaired && .kor_has(pr, "BAN")) { fix("decision: BAN is formed in volcanic ash"); return(out("B", "BB")) }
   if (!repaired) return(if (any(pr$all_code %in% .KOR_RSTAR)) out("B", "BC") else out("B", NA_character_, "B.2: no exit"))
   if (b4 || .kor_strat40(pr)) return(out("B", "BC"))
   out("B", NA_character_, "B.2: no exit")
@@ -269,14 +318,19 @@
   to <- if (!repaired) {
     if (over6) "C.15" else if (b6) "C.7" else "none"
   } else {
+    ploughed <- pr$surf %in% .KOR_AGRO &&
+      .kor_walk_c7(.kor_natural(pr), repaired, character(0))$division %in% c("CC", "CJ")
     if (.kor_tur40(pr)) { if (!over6) fix("Q10: a TUR over 40 cm is tested at C.6"); "CT" }
-    else if (.kor_over(pr, c("P", "PU", "PT", "PTR"), c("BFM", "BMK"))) { fix("Q9: an agro horizon on BFM or BMK is an agrozem"); "CS" }
+    else if (ploughed) {
+      fix("decision: a ploughed CC or CJ soil is an agrozem")
+      if (identical(pr$surf, "PB")) "CR" else "CS"
+    }
     else if (list6) { if (over6) fix("Q9: C.6b over C.6a with BFM, BPL, CRM, CR, CRH or BMK"); "C.7" }
     else if (over6) "C.15"
     else { if (!b6) fix("reading: C.6 with no exit goes on to C.7"); "C.7" }
   }
   if (to == "none") return(np("C.6"))
-  if (to %in% c("CT", "CS")) return(out(to))
+  if (to %in% c("CT", "CS", "CR")) return(out(to))
   if (to == "C.15") {
     if (.kor_has(pr, "TUR")) {
       if (!repaired) return(out("CT"))
@@ -286,6 +340,17 @@
     if (pr$surf %in% c("P", "PU", "PT", "PTR")) return(out("CS"))
     return(np("C.16"))
   }
+  r <- .kor_walk_c7(pr, repaired, used)
+  r$used <- unique(c(used, r$used))
+  r
+}
+
+# The walk from C.7 on.
+.kor_walk_c7 <- function(pr, repaired, used) {
+  fix <- function(what) used <<- c(used, what)
+  out <- function(division = NA_character_, why = NA_character_)
+    list(trunk = "C", division = division, why = why, used = unique(used))
+  np <- function(step) out(NA_character_, step)
   # C.7
   if (.kor_has(pr, "BFM")) return(out("CC"))
   if (.kor_has(pr, "BPL")) return(out("CF"))
@@ -306,14 +371,16 @@
   s <- pr$surf
   if (identical(s, "AJ")) return(if (.kor_has(pr, c("BCA", "CAT"))) out("CJ") else np("C.12b"))
   if (identical(s, "AU") || (identical(s, "PU") && .kor_over(pr, "PU", "AU"))) {
-    if (.kor_over(pr, "AU", c("BI", "BCA", "CAT", "V", "CRH"))) return(out("CI"))
+    # C.13: directly under AU; up to 15 cm with no diagnostic horizon over BCA
+    if (.kor_over(pr, "AU", c("BI", "CAT", "V", "CRH")) || .kor_over(pr, "AU", "BCA", gap = 15)) return(out("CI"))
     if (.kor_over(pr, "AU", "G")) return(out("CH"))
     if (.kor_over(pr, "AU", "Q")) return(out("CM"))
     return(np("C.13"))
   }
   if (s %in% c("O", "T", "TO", "TE", "H", "PT", "PU")) {
-    if (.kor_over(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "G")) return(out("CH"))
-    if (.kor_over(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "Q")) return(out("CM"))
+    # C.14: under the organic or agro horizon, as printed (anywhere below)
+    if (.kor_below(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "G")) return(out("CH"))
+    if (.kor_below(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "Q")) return(out("CM"))
     return(np("C.14"))
   }
   if (repaired && s %in% c("AY", "AO") && .kor_over(pr, c("AY", "AO"), "G")) {
@@ -324,18 +391,26 @@
 }
 
 # The profile as the frame identify_horizons() gives, the site, and the
-# view the flattened key reads.
+# view the flattened key reads. The data route's layers carry the outcome of
+# the key to horizons in key_path.
 .kor_view <- function(pr) {
   L <- pr$L
   n <- length(L)
+  code <- vapply(L, function(l) l$code %||% NA_character_, "")
+  fao <- vapply(L, function(l) l$fao %||% NA_character_, "")
+  data <- code %in% c("_none", "_dep") | !is.na(fao)
+  # the data route's frame marks no transition: the view reads the FAO
+  # designation
   fr <- data.frame(horizon_idx = seq_len(n), top_cm = vapply(L, `[[`, 0, "top"),
-                   bottom_cm = vapply(L, `[[`, 0, "bottom"), designation = pr$tokens,
-                   code = vapply(L, function(l) l$code %||% NA_character_, ""),
-                   small = vapply(L, `[[`, NA, "small"), transitional = FALSE,
+                   bottom_cm = vapply(L, `[[`, 0, "bottom"), designation = ifelse(data, fao, pr$tokens),
+                   code = ifelse(data, NA_character_, code),
+                   small = vapply(L, `[[`, NA, "small"), transitional = vapply(L, `[[`, NA, "trans") & !data,
                    buried = as.integer(vapply(L, `[[`, NA, "buried")),
                    mark = vapply(L, function(l) l$mark %||% NA_character_, ""),
-                   route = "notation", stringsAsFactors = FALSE)
-  fr$passed <- !fr$small
+                   route = ifelse(data, "data", "notation"), stringsAsFactors = FALSE)
+  fr$passed <- !fr$small & !fr$transitional & !data
+  fr$key_path <- ifelse(code %in% "_none" | !is.na(fao), "66\u0430: _none",
+                        ifelse(code %in% "_dep", "38\u0431: _deposit", NA_character_))
   fr$overlay <- lapply(L, `[[`, "overlay")
   fr$features <- lapply(L, function(l) if (l$small) l$feature else character(0))
   site <- if (isTRUE(pr$floodplain)) list(landform = "floodplain") else list()
@@ -354,6 +429,26 @@
        undecided = length(t$undecided) + length(d$undecided) > 0L)
 }
 
+# The same profile end to end: a PedonRecord in the Russian notation through
+# classify_kidpr2008() (the notation reader, identify_horizons() and the
+# view of the pedon). Not for the data route's tokens.
+.kor_pedon <- function(tokens, floodplain = FALSE) {
+  d <- sub(":[0-9.]+$", "", tokens)
+  th <- as.numeric(sub("^.*:", "", tokens))
+  bot <- cumsum(th)
+  h <- data.frame(designation = d, top_cm = c(0, bot[-length(bot)]), bottom_cm = bot, stringsAsFactors = FALSE)
+  site <- list(id = "kor", designation_system = "kidpr")
+  if (isTRUE(floodplain)) site$landform <- "floodplain"
+  PedonRecord$new(site = site, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
+}
+.kor_e2e <- function(tokens, floodplain = FALSE) {
+  r <- classify_kidpr2008(.kor_pedon(tokens, floodplain), on_missing = "silent")
+  lv <- r$levels
+  list(trunk = if (nrow(lv)) lv$code[1L] else NA_character_,
+       division = if (nrow(lv) > 1L) lv$code[2L] else NA_character_,
+       undecided = length(r$provisional_because) > 0L)
+}
+
 .kor_rules_cache <- new.env(parent = emptyenv())
 .kor_rules <- function() {
   if (is.null(.kor_rules_cache$r)) .kor_rules_cache$r <- load_rules("kidpr2008")
@@ -363,6 +458,30 @@
 # A label "trunk/division" of an outcome.
 .kor_label <- function(o) paste0(o$trunk, "/", ifelse(is.na(o$division), "-", o$division))
 
+# The index of an item of a profile formula, by the walker's own reading: the
+# capitals that start it (BCAs,cs: BCA; BTg: BT), a rock flag G or Q after C
+# or D left out (CG, CQca: C; DG: D), the modifications BH and BF read as
+# BHF and AV as V, the turbated composition in brackets and the optional
+# features in parentheses dropped; the mark of the rock kept.
+.KOR_INDICES <- c("O", "T", "TO", "TE", "TJ", "TT", "H", "AY", "AU", "AJ", "AO", "AK", "AH", "W", "P", "PU",
+                  "PT", "PTR", "PB", "RJ", "RY", "RU", "E", "EL", "AEL", "BEL", "SEL", "BT", "BI", "BHF", "BFM",
+                  "BM", "BMK", "BPL", "CRM", "CR", "CRH", "BCA", "CAT", "ASN", "BSN", "V", "BAN", "F", "G", "Q",
+                  "S", "SS", "X", "TUR", "ML", "C", "D", "R", "CLM", "TPO")
+.kor_index <- function(item) {
+  s <- sub("\\[.*\\]$", "", item)
+  s <- gsub("\\([^)]*\\)", "", s)
+  m <- regmatches(s, regexpr("(~~|\"\"|\"|\\^\\^|=|\\.\\.|\u22a5)$", s))
+  mark <- if (length(m)) m else NA_character_
+  if (length(m)) s <- substr(s, 1L, nchar(s) - nchar(m))
+  cap <- regmatches(s, regexpr("^[A-Z]+", s))
+  code <- if (!length(cap)) NA_character_
+          else if (cap %in% c("BH", "BF")) "BHF" else if (cap == "AV") "V"
+          else if (cap %in% .KOR_INDICES) cap
+          else if (substr(cap, 1L, 1L) %in% c("C", "D") && substring(cap, 2L) %in% c("G", "Q")) substr(cap, 1L, 1L)
+          else NA_character_
+  list(code = code, mark = if (identical(mark, "\u22a5")) NA_character_ else mark)
+}
+
 # A profile formula of chapter 4 ("AU-EL-(BEL)-BT-C") as a token profile of
 # plausible thicknesses for its division: the optional horizon in
 # parentheses written or left out, a buried soil ([ABC], {ABC}) as two buried
@@ -371,7 +490,7 @@
 # the rock of a lithozem thin.
 .kor_formula_tokens <- function(formula, division, optional = TRUE) {
   f <- sub(" \\(.*\\)$", "", formula)
-  items <- soilKey:::.kidpr_split_outside(f, "-")
+  items <- strsplit(f, "-(?![^\\[]*\\])", perl = TRUE)[[1L]]
   th <- c(O = 5, W = 3, T = 30, TO = 30, TE = 30, TJ = 30, H = 20, AY = 15, AU = 30, AJ = 15, AO = 8,
           AK = 10, AH = 20, P = 25, PU = 30, PT = 25, PTR = 25, PB = 25, RJ = 50, RY = 50, RU = 50,
           E = 10, EL = 15, AEL = 10, BEL = 15, SEL = 8, G = 30, Q = 30, F = 15, ML = 20, S = 10, SS = 10,
@@ -383,10 +502,10 @@
       it <- sub("^\\((.*)\\)$", "\\1", it)
     }
     if (it %in% c("[ABC]", "{ABC}")) { toks <- c(toks, "[AU]:20", "[BM]:30"); next }
-    it <- gsub("\\((ca|s|g|RJ)\\)", "", it)
-    d <- soilKey:::.kidpr_designations(it, list(designation_system = "kidpr"))
-    code <- d$index[1L]
-    mark <- d$mark[1L]
+    d <- .kor_index(it)
+    code <- d$code
+    if (is.na(code)) stop(sprintf("the walker cannot read the formula item '%s'", it))
+    mark <- d$mark
     t <- if (code %in% names(th)) th[[code]] else 30
     if (code == "TUR") t <- if (division == "CT") 50 else 20
     if (code == "T" && prev %in% c("PT", "PTR")) t <- 15

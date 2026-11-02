@@ -53,15 +53,20 @@ horizons 2.1 run on the recorded data (see \code{\link{identify_horizons}}).
 From them the keys read whether a horizon is present, whether it starts
 the profile (at the surface, or under a deposit of 40 cm or less),
 whether it lies directly over another, whether the profile consists of
-one horizon only, the depth of hard rock, a deposit at the surface, the
-peat body of trunk A (51 cm or more, the agro-peat horizons included)
+one horizon only, the depth of hard rock, a deposit at the surface (TPO
+and the deposits the key to horizons finds on the data included), the
+peat body of trunk A (more than 50 cm, the agro-peat horizons included)
 and the thickness of a turbated horizon; of the site, a river floodplain
 on modern alluvium (\code{landform}, \code{landform_element},
 \code{layer_origin}, \code{rock_origin}, \code{parent_material}, the
-alluvial mark of the notation), volcanic ash (the same, the ash mark,
-\code{volcanic_glass_pct}) and the contaminated horizon X
-(\code{contamination_hazard}). With several organic and humus horizons
-at the surface the thickest is the diagnostic one (p. 37).
+alluvial mark of the notation; a terrace is no floodplain) and the
+contaminated horizon X (\code{contamination_hazard}). The ochre horizon
+BAN is formed in volcanic ash, so it makes the volcanic soils alone. With
+several organic and humus horizons at the surface the thickest is the
+diagnostic one (p. 37), for step 5 of the key to trunks as for the
+divisions; FAO and WRB transitions (AB, BC, E/B) in which the key on the
+data finds no diagnostic horizon are transitions, as those of the Russian
+notation; a missing depth leaves the step that needs it undecided.
 
 The keys are branching trees; soilKey flattens them into ordered lists
 in which each gate is the conjunction of the conditions of the book's path

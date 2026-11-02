@@ -73,7 +73,7 @@ attributes:
     section: "Landscape & surface"
     type: "character"
     unit: "-"
-    description: "Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces). The Russian Field Guide of 2008 reads a river floodplain (floodplain, levee, backswamp, пойма) for its alluvial soils; another landform recorded rules them out."
+    description: "Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces). The Russian Field Guide of 2008 reads a river floodplain (floodplain, levee, backswamp, пойма) for its alluvial soils; a valley, an alluvial plain or a delta leaves them undecided, and a terrace (above the floodplain or not) or another landform recorded rules them out."
     systems: [wrb2022, asc3, scsj2017, cpcs1967, kidpr2008]
   - name: landform_element
     section: "Landscape & surface"
@@ -145,7 +145,7 @@ attributes:
     section: "Landscape & surface"
     type: "character"
     unit: "-"
-    description: "Parent material, as text. Read by the WRB Rendzic qualifier (limestone, chalk, dolomite, carbonate or marl) and the NZSC Melanic Soils (calcareous, mafic or ultramafic rock); the Russian Field Guide of 2008 reads alluvium (its alluvial soils) and volcanic ash (its volcanic soils); also shown by print() and the reports."
+    description: "Parent material, as text. Read by the WRB Rendzic qualifier (limestone, chalk, dolomite, carbonate or marl) and the NZSC Melanic Soils (calcareous, mafic or ultramafic rock); the Russian Field Guide of 2008 reads alluvium for its alluvial soils (glaciofluvial material, outwash, moraine and marine material are none); also shown by print() and the reports."
     systems: [wrb2022, nzsc4, scsj2017, cpcs1967, kidpr2008]
   - name: land_use
     section: "Landscape & surface"
