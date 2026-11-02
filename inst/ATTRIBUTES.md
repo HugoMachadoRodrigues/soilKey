@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.331)
+# soilKey -- recognised horizon attribute names (v0.9.332)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -336,6 +336,12 @@ and do not warn.
 | `texture_class_jp` | - | character | The Japanese soil texture class of the Soil Survey Handbook (ISSS fractions): HC, SiC, LiC, SC, SiCL, CL, SCL (fine-textured), SiL, L, FSL (medium-textured), CoSL, LS, S (coarse-textured), or the Japanese words. CSCJ 2011 soil series groups; without it, clay_pct of 15 % or more reads as fine-textured and medium vs coarse is undecided. | - |
 | `hardness_yamanaka_mm` | mm | numeric | Soil hardness by the Yamanaka-type hardness tester (penetration in mm). CSCJ 2011 pan layer (29 mm or more, 10 cm or more thick); not recorded: no pan layer. | - |
 
+## French system (CPCS 1967)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `ice_form` | - | character | Form of the ground ice in the layer, as text: lenses (large or small), veins, wedges, pore ice, massive ice, or none. Read by the CPCS groups of the permafrost soils (II/11-13): ice lenses or segregated ice, or 20 % ice or more (ice_pct), is a strong ice segregation. Not recorded with ice_pct: the group is undecided. | - |
+
 # Site properties
 
 The named elements of `PedonRecord$site` that soilKey recognises. Give them in
@@ -362,12 +368,13 @@ the last section are stored by the loaders and reports and read by no key.
 
 | Property | Unit | Type | Description | Values | Read by |
 |----------|------|------|-------------|--------|---------|
-| `elevation_m` | m | numeric | Elevation above sea level. Read by the USDA family soil temperature class, which estimates the regime from lat and elevation (0 m when absent) when soil_temperature_regime is not given; also shown by the reports. | - | `usda` |
+| `elevation_m` | m | numeric | Elevation above sea level. Read by the USDA family soil temperature class, which estimates the regime from lat and elevation (0 m when absent) when soil_temperature_regime is not given; also shown by the reports. The CPCS reads 1,500 m or more as the altitude of the alpine podzols (VIII/22). | - | `usda`, `cpcs1967` |
 | `slope_pct` | % | numeric | Slope gradient in percent, not degrees. Read by the WRB Inclinic qualifier (5 % or more) and the USDA Cumulic subgroups of the Mollisols (less than 25 %, or not recorded); also shown by the reports. | - | `wrb2022`, `usda`, `cpcs1967` |
 | `aspect_deg` | deg | numeric | Slope aspect in degrees clockwise from true north (0 to 360). Filled by the field-sheet extraction (VLM); no key reads it. | - | - |
 | `landform` | - | character | Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces). | - | `wrb2022`, `asc3`, `scsj2017`, `cpcs1967` |
 | `landform_element` | - | character | Landform element, as text (NatSoil). Read with landform by the ASC Hydrosol settings; a playa element on a plain pattern counts as a playa. | - | `asc3`, `cpcs1967` |
 | `microrelief_form` | - | character | Microrelief at the soil surface, as text (NatSoil writes its microrelief types); also a horizon column of the same name. Read by the WRB Gilgaic qualifier (a recorded microrelief that names no gilgai rules it out) and the Escalic qualifier (built terraces). | - | `wrb2022` |
+| `patterned_ground` | - | character | Patterned ground of frost action at the site, as text: polygons (earth, stone, ice-wedge, low-centre), circles, nets, stripes, mud boils, ice-cored mounds, hummocks, thufurs, palsas, or none. Read by the CPCS groups of the cold-desert raw soils (I/22-23) and of the permafrost soils (II/11-14): a network of polygons, circles, stripes, mud boils or cracks is an organised form; hummocks, thufurs and palsas alone are not. Not recorded: the group is undecided. | - | `cpcs1967` |
 | `gilgai_presence` | - | logical | Gilgai microrelief present (TRUE) or absent (FALSE). Read first by the WRB Gilgaic qualifier (Vertisols only), before the relief texts. | - | `wrb2022` |
 | `forma_relevo` | - | character | Relief form, as text (Portuguese field name). Read beside microrelief_form by the WRB Gilgaic and Escalic qualifiers; no loader writes it. | - | `wrb2022` |
 | `relevo_local` | - | character | Local relief, as text (Portuguese field name). Read beside microrelief_form by the WRB Gilgaic qualifier; no loader writes it. | - | `wrb2022` |
@@ -400,7 +407,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `mean_annual_precip_mm` | mm | numeric | Mean annual precipitation. Recorded for the CPCS climate (the ferrallitic sub-classes describe their rainfall); not yet a criterion of any key. | - | `cpcs1967` |
 | `surface_water` | - | character | How often water stands on the soil surface. Read by the NZSC Hydric Raw Soils (surface water for the majority of the time, but not constantly). | `constant`, `most of the time`, `occasional`, `none` | `nzsc4` |
 | `artificially_drained` | - | logical | The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply. | - | `nzsc4`, `scsj2017` |
-| `groundwater_kind` | - | character | Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon(). | `none observed`, `observed`, `apparent`, `perched`, `flooded` | `wrb2022` |
+| `groundwater_kind` | - | character | Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon(). The CPCS groups read a perched water table, or none, as a stagnogley (XI/33, VIII/32) and any other as a gley (XI/31). | `none observed`, `observed`, `apparent`, `perched`, `flooded` | `wrb2022`, `cpcs1967` |
 | `groundwater_depth_cm` | cm | numeric | Depth of the water table below the soil surface (0 at the surface). Read with groundwater_kind by the WRB gleyic and stagnic properties (within 150 cm, or deeper). Written by isis_profile_to_pedon() from depthGroundwater, or groundwaterTop where ISIS writes 0 for the depth. | - | `wrb2022`, `scsj2017` |
 | `water_table_cm_above_surface` | cm | numeric | Height of a water table above the soil surface (positive above it). Read by the USDA key: the Wassents (above 0) and the Wassists (2 cm or more). | - | `usda` |
 | `tidal_zone` | - | character | Tidal zone of the site. Read by the ASC Hydrosol settings (Subtidal, Intertidal, Supratidal and Extratidal suborders); a zone named in landform is read too. | `subtidal`, `intertidal`, `supratidal`, `extratidal` | `asc3` |
@@ -520,5 +527,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.331._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.332._
 

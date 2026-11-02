@@ -2,9 +2,9 @@
 # v0.9.330 -- the French soil classification (CPCS 1967, Commission de
 # Pedologie et de Cartographie des Sols), keyed to its twelve classes. The
 # CPCS gives no key: soilKey keys the classes in an order built from the
-# text's own statements of precedence (Hugo, 2026-11-01). The sub-classes,
-# groups and subgroups follow. Experimental and opt-in: classify_all() runs
-# it only when asked.
+# text's own statements of precedence (Hugo, 2026-11-01), then to their
+# sub-classes (v0.9.331) and groups (v0.9.332); the subgroups follow.
+# Experimental and opt-in: classify_all() runs it only when asked.
 # =============================================================================
 
 #' Classify a pedon under the French soil classification (CPCS 1967)
@@ -15,10 +15,12 @@
 #' classes (sols mineraux bruts, sols peu evolues, vertisols, andosols,
 #' sols calcimagnesiques, sols isohumiques, sols brunifies, sols
 #' podzolises, sols a sesquioxydes de fer et manganese, sols ferrallitiques, sols
-#' hydromorphes, sols sodiques) and their 35 sub-classes, the climatic
+#' hydromorphes, sols sodiques), their 35 sub-classes, the climatic
 #' ones read from \code{site$koppen_climate}, else the USDA soil
 #' temperature and moisture regimes, else the latitude (with no climate,
-#' the non-climatic or temperate sub-class); the groups and subgroups
+#' the non-climatic or temperate sub-class), and their 101 groups (a
+#' group the data cannot decide leaves the name provisional; when no group
+#' of a sub-class fits, the name stops at the sub-class); the subgroups
 #' follow. The names are French, as the text writes them, in \code{name}
 #' and in \code{levels$name_native}.
 #'
@@ -40,9 +42,12 @@
 #' the exchangeable bases, carbonate and gypsum, the EC of the saturated
 #' paste, Ki (\code{sio2_sulfuric_pct}, \code{al2o3_sulfuric_pct}), the
 #' andic properties, moist and dry Munsell colours, mottles, slickensides,
-#' cracks, structure and consistence, and the recorded origin of the
-#' layers; from the site the soil temperature regime, the parent material
-#' and recorded erosion. The choices where the text is silent are listed in
+#' cracks, structure and consistence, clay films, coarse fragments, the
+#' sand minerals, the fibre content of peat, ice (\code{ice_pct},
+#' \code{ice_form}), and the recorded origin of the layers; from the site
+#' the climate, the soil temperature regime, the parent material, recorded
+#' erosion, the water table, the elevation and patterned ground
+#' (\code{patterned_ground}). The choices where the text is silent are listed in
 #' \code{system.file("rules", "cpcs1967", "readings.yaml", package =
 #' "soilKey")}.
 #'
@@ -203,7 +208,8 @@ make_cpcs1967_example <- function(class = c("raw_mineral", "weakly_developed", "
       oc_pct = c(3, 0.5, 0.3), n_total_pct = c(0.25, 0.05, 0.03), clay_pct = 35, silt_pct = 40, sand_pct = 25,
       ph_h2o = 6.5, cec_cmol = 20, bs_pct = 70, ca_cmol = 11, mg_cmol = 2.5, na_cmol = 0.2,
       munsell_hue_moist = c("10YR", "5GY", "5GY"), munsell_value_moist = c(3, 5, 5), munsell_chroma_moist = c(2, 1, 1),
-      redoximorphic_features_pct = c(15, 5, 2)), list(drainage_class = "poorly drained", landform = "valley floor")),
+      redoximorphic_features_pct = c(15, 5, 2)), list(drainage_class = "poorly drained", landform = "valley floor",
+                                                     groundwater_kind = "observed", groundwater_depth_cm = 40)),
     sodic = mk(list(
       designation = c("A1Sa", "C1Sa", "C2"), top_cm = c(0, 15, 50), bottom_cm = c(15, 50, 100),
       oc_pct = c(1, 0.4, 0.2), n_total_pct = c(0.1, 0.04, 0.02), clay_pct = 30, silt_pct = 40, sand_pct = 30,

@@ -36,10 +36,12 @@ Cartographie des Sols). \strong{Experimental}: this release keys the
 classes (sols mineraux bruts, sols peu evolues, vertisols, andosols,
 sols calcimagnesiques, sols isohumiques, sols brunifies, sols
 podzolises, sols a sesquioxydes de fer et manganese, sols ferrallitiques, sols
-hydromorphes, sols sodiques) and their 35 sub-classes, the climatic
+hydromorphes, sols sodiques), their 35 sub-classes, the climatic
 ones read from \code{site$koppen_climate}, else the USDA soil
 temperature and moisture regimes, else the latitude (with no climate,
-the non-climatic or temperate sub-class); the groups and subgroups
+the non-climatic or temperate sub-class), and their 101 groups (a
+group the data cannot decide leaves the name provisional; when no group
+of a sub-class fits, the name stops at the sub-class); the subgroups
 follow. The names are French, as the text writes them, in \code{name}
 and in \code{levels$name_native}.
 }
@@ -62,9 +64,12 @@ horizons it reads organic carbon and nitrogen, texture, pH, the CEC and
 the exchangeable bases, carbonate and gypsum, the EC of the saturated
 paste, Ki (\code{sio2_sulfuric_pct}, \code{al2o3_sulfuric_pct}), the
 andic properties, moist and dry Munsell colours, mottles, slickensides,
-cracks, structure and consistence, and the recorded origin of the
-layers; from the site the soil temperature regime, the parent material
-and recorded erosion. The choices where the text is silent are listed in
+cracks, structure and consistence, clay films, coarse fragments, the
+sand minerals, the fibre content of peat, ice (\code{ice_pct},
+\code{ice_form}), and the recorded origin of the layers; from the site
+the climate, the soil temperature regime, the parent material, recorded
+erosion, the water table, the elevation and patterned ground
+(\code{patterned_ground}). The choices where the text is silent are listed in
 \code{system.file("rules", "cpcs1967", "readings.yaml", package =
 "soilKey")}.
 }

@@ -617,6 +617,9 @@
           },
           "hardness_yamanaka_mm": {
             "type": ["number", "null"]
+          },
+          "ice_form": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

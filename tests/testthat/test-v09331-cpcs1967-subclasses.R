@@ -26,7 +26,7 @@ test_that("every example keys to its sub-class, decided, with the French names",
     expect_length(r$provisional_because, 0)
   }
   r <- classify_cpcs1967(make_cpcs1967_example("ferrallitic"), on_missing = "silent")
-  expect_identical(r$name, "Sols ferrallitiques moyennement d\u00e9satur\u00e9s en (B)")
+  expect_identical(r$levels$name[2], "Sols ferrallitiques moyennement d\u00e9satur\u00e9s en (B)")
   rules <- load_rules("cpcs1967")
   expect_identical(sum(lengths(rules$subclasses)), 35L)
   expect_length(soilKey:::.validate_rules("cpcs1967")$missing, 0)

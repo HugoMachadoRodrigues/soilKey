@@ -56,8 +56,8 @@ attributes:
     section: "Landscape & surface"
     type: "numeric"
     unit: "m"
-    description: "Elevation above sea level. Read by the USDA family soil temperature class, which estimates the regime from lat and elevation (0 m when absent) when soil_temperature_regime is not given; also shown by the reports."
-    systems: [usda]
+    description: "Elevation above sea level. Read by the USDA family soil temperature class, which estimates the regime from lat and elevation (0 m when absent) when soil_temperature_regime is not given; also shown by the reports. The CPCS reads 1,500 m or more as the altitude of the alpine podzols (VIII/22)."
+    systems: [usda, cpcs1967]
   - name: slope_pct
     section: "Landscape & surface"
     type: "numeric"
@@ -87,6 +87,12 @@ attributes:
     unit: "-"
     description: "Microrelief at the soil surface, as text (NatSoil writes its microrelief types); also a horizon column of the same name. Read by the WRB Gilgaic qualifier (a recorded microrelief that names no gilgai rules it out) and the Escalic qualifier (built terraces)."
     systems: [wrb2022]
+  - name: patterned_ground
+    section: "Landscape & surface"
+    type: "character"
+    unit: "-"
+    description: "Patterned ground of frost action at the site, as text: polygons (earth, stone, ice-wedge, low-centre), circles, nets, stripes, mud boils, ice-cored mounds, hummocks, thufurs, palsas, or none. Read by the CPCS groups of the cold-desert raw soils (I/22-23) and of the permafrost soils (II/11-14): a network of polygons, circles, stripes, mud boils or cracks is an organised form; hummocks, thufurs and palsas alone are not. Not recorded: the group is undecided."
+    systems: [cpcs1967]
   - name: gilgai_presence
     section: "Landscape & surface"
     type: "logical"
@@ -236,9 +242,9 @@ attributes:
     section: "Water, climate & regimes"
     type: "character"
     unit: "-"
-    description: "Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon()."
+    description: "Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon(). The CPCS groups read a perched water table, or none, as a stagnogley (XI/33, VIII/32) and any other as a gley (XI/31)."
     allowed: ["none observed", "observed", "apparent", "perched", "flooded"]
-    systems: [wrb2022]
+    systems: [wrb2022, cpcs1967]
   - name: groundwater_depth_cm
     section: "Water, climate & regimes"
     type: "numeric"

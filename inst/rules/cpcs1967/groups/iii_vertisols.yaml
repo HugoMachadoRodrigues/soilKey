@@ -1,0 +1,31 @@
+# Groupes des vertisols (pp. 28-29), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "III-1":
+    - code: "III/11"
+      name: Vertisols à drainage externe nul ou réduit à structure arrondie
+      name_native: Vertisols à drainage externe nul ou réduit à structure arrondie
+      tests:
+        all_of:
+          - rounded_surface_structure_cpcs: {}
+      notes: "A rounded structure (granular, crumb, nutty, subangular blocky) over the top 15 cm; massive or not recorded, undecided."
+    - code: "III/12"
+      name: Vertisols à drainage externe nul ou réduit et à structure anguleuse sur au moins les 15 cm supérieurs
+      name_native: Vertisols à drainage externe nul ou réduit et à structure anguleuse sur au moins les 15 cm supérieurs
+      tests:
+        default: true
+      notes: "An angular structure from the surface, or a self-mulching surface."
+  "III-2":
+    - code: "III/21"
+      name: Vertisols à drainage externe [possible] et à structure arrondie, sur au moins les 15 cm supérieurs
+      name_native: Vertisols à drainage externe [possible] et à structure arrondie, sur au moins les 15 cm supérieurs
+      tests:
+        all_of:
+          - rounded_surface_structure_cpcs: {}
+      notes: "As III/11. The text prints 'nul' here, in the body (p. 29) and the synoptic table (p. 84), by a slip: the group belongs to III-2; the bracketed word is soilKey's."
+    - code: "III/22"
+      name: Vertisols à drainage externe [possible] et à structure anguleuse sur au moins les 15 cm supérieurs
+      name_native: Vertisols à drainage externe [possible] et à structure anguleuse sur au moins les 15 cm supérieurs
+      tests:
+        default: true
+      notes: "As III/12. The text prints 'nul' by a slip (pp. 29, 84); the bracketed word is soilKey's."

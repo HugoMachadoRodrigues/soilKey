@@ -1,0 +1,108 @@
+# Groupes des sols peu évolués (pp. 22-25), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "II-1":
+    - code: "II/11"
+      name: Sols à forte ségrégation de glace non ordonnée
+      name_native: Sols à forte ségrégation de glace non ordonnée
+      tests:
+        all_of:
+          - ice_segregation_cpcs: {strong: true, network: false}
+      notes: "Strong ice segregation (20 % ice or more, ice lenses, or ice-wedge polygons) and no network in site$patterned_ground; not recorded, undecided."
+    - code: "II/12"
+      name: Sols à forte ségrégation de glace ordonnée en réseau
+      name_native: Sols à forte ségrégation de glace ordonnée en réseau
+      tests:
+        all_of:
+          - ice_segregation_cpcs: {strong: true, network: true}
+      notes: "Strong ice segregation and a network of ice-filled cracks or ice-cored mounds."
+    - code: "II/13"
+      name: Sols sans ségrégation de glace importante à réseau organisé
+      name_native: Sols sans ségrégation de glace importante à réseau organisé
+      tests:
+        all_of:
+          - ice_segregation_cpcs: {strong: false, network: true}
+      notes: "No strong ice segregation, and a network (hummocks between cracks, mud boils, sorted polygons, stripes)."
+    - code: "II/14"
+      name: Sols bruns arctiques
+      name_native: Sols bruns arctiques
+      tests:
+        default: true
+      notes: "No ice segregation and no clear network."
+  "II-2":
+    - code: "II/23"
+      name: Sols peu évolués à allophanes
+      name_native: Sols peu évolués à allophanes
+      tests:
+        all_of:
+          - allophanic_weakly_developed_cpcs: {}
+      notes: "Allophane in the top 50 cm: pH NaF 9.5 or more, or Alo + 1/2 Feo of 2 % or more; with no such data, none without a sign of volcanic material."
+    - code: "II/22"
+      name: Sols humifères lithocalciques
+      name_native: Sols humifères lithocalciques
+      tests:
+        all_of:
+          - lithocalcic_cpcs: {}
+      notes: "On a calcareous rock: carbonate of 2 % or more or effervescence under the A, or a calcareous rock named; nothing recorded, undecided."
+    - code: "II/21"
+      name: Rankers
+      name_native: Rankers
+      tests:
+        default: true
+      notes: "The other humic weakly developed soils, on a rock that is not calcareous."
+  "II-3":
+    - code: "II/31"
+      name: Sols gris subdésertiques
+      name_native: Sols gris subdésertiques
+      tests:
+        all_of:
+          - subdesert_grey_cpcs: {}
+      notes: "An arid climate (Koppen B, or an aridic or torric regime) and under 1 % OM in the surface horizons."
+    - code: "II/32"
+      name: Xérorankers
+      name_native: Xérorankers
+      tests:
+        default: true
+      notes: "The other xeric weakly developed soils."
+  "II-4":
+    - code: "II/46"
+      name: Sols d'apport anthropique
+      name_native: Sols d'apport anthropique
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: anthropic}
+      notes: "As I/16."
+    - code: "II/45"
+      name: Sols d'apports volcaniques friables
+      name_native: Sols d'apports volcaniques friables
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: volcanic}
+      notes: "As I/15."
+    - code: "II/42"
+      name: Sols d'apport alluvial
+      name_native: Sols d'apport alluvial
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: alluvial}
+      notes: "As I/12."
+    - code: "II/43"
+      name: Sols d'apport colluvial
+      name_native: Sols d'apport colluvial
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: colluvial}
+      notes: "As I/13."
+    - code: "II/44"
+      name: Sols d'apport éolien
+      name_native: Sols d'apport éolien
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: aeolian}
+      notes: "As I/14."
+    - code: "II/41"
+      name: Sols d'érosion
+      name_native: Sols d'érosion
+      tests:
+        default: true
+      notes: "No deposit recorded: a parent rock recently eroded."
