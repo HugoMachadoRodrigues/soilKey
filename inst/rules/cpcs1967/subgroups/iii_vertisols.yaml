@@ -1,0 +1,129 @@
+# Sous-groupes des vertisols (pp. 28-29), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "III/11":
+    - code: "III/113"
+      name: "{parent}, Hydromorphes"
+      name_native: "{parent}, Hydromorphes"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 50, grade: pronounced, concretions: true, manganese: true}
+      notes: "Very marked hydromorphy: mottles 15 % or more, a reduced matrix, or Fe-Mn concretions 5 % or more, in a layer starting within 50 cm."
+    - code: "III/114"
+      name: "{parent}, Halomorphes"
+      name_native: "{parent}, Halomorphes"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more within 100 cm (class III is keyed before class XII, so no upper limit)."
+    - code: "III/112"
+      name: "Sols vertiques"
+      name_native: "Sols vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
+    - code: "III/111"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "III/12":
+    - code: "III/123"
+      name: "{parent}, Hydromorphes"
+      name_native: "{parent}, Hydromorphes"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 50, grade: pronounced, concretions: true, manganese: true}
+      notes: "Very marked hydromorphy: mottles 15 % or more, a reduced matrix, or Fe-Mn concretions 5 % or more, in a layer starting within 50 cm."
+    - code: "III/124"
+      name: "{parent}, Halomorphes"
+      name_native: "{parent}, Halomorphes"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more within 100 cm (class III is keyed before class XII, so no upper limit)."
+    - code: "III/125"
+      name: "{parent}, À structure finement divisée (auto-division = self-mulching) sur au moins les 10 cm supérieurs"
+      name_native: "{parent}, À structure finement divisée (auto-division = self-mulching) sur au moins les 10 cm supérieurs"
+      tests:
+        all_of:
+          - self_mulching_cpcs: {depth: 10}
+      notes: "A self-mulching surface, with fine or very fine structure from the surface to 10 cm or more (with no structure size recorded, met)."
+    - code: "III/122"
+      name: "{parent}, Vertiques"
+      name_native: "{parent}, Vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
+    - code: "III/121"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "III/21":
+    - code: "III/213"
+      name: "{parent}, Hydromorphes"
+      name_native: "{parent}, Hydromorphes"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 50, grade: pronounced, concretions: true, manganese: true}
+      notes: "Very marked hydromorphy: mottles 15 % or more, a reduced matrix, or Fe-Mn concretions 5 % or more, in a layer starting within 50 cm."
+    - code: "III/214"
+      name: "{parent}, Halomorphes"
+      name_native: "{parent}, Halomorphes"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more within 100 cm (class III is keyed before class XII, so no upper limit)."
+    - code: "III/212"
+      name: "{parent}, Vertiques"
+      name_native: "{parent}, Vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
+    - code: "III/211"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "III/22":
+    - code: "III/223"
+      name: "{parent}, Hydromorphes"
+      name_native: "{parent}, Hydromorphes"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 50, grade: pronounced, concretions: true, manganese: true}
+      notes: "Very marked hydromorphy: mottles 15 % or more, a reduced matrix, or Fe-Mn concretions 5 % or more, in a layer starting within 50 cm."
+    - code: "III/224"
+      name: "{parent}, Halomorphes"
+      name_native: "{parent}, Halomorphes"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more within 100 cm (class III is keyed before class XII, so no upper limit)."
+    - code: "III/225"
+      name: "{parent}, À auto-division sur au moins les 20 cm supérieurs"
+      name_native: "{parent}, À auto-division sur au moins les 20 cm supérieurs"
+      tests:
+        all_of:
+          - self_mulching_cpcs: {depth: 20}
+      notes: "A self-mulching surface, with fine or very fine structure from the surface to 20 cm or more (with no structure size recorded, undecided)."
+    - code: "III/222"
+      name: "{parent}, Vertiques"
+      name_native: "{parent}, Vertiques"
+      tests:
+        all_of:
+          - slickensides_moderate_cpcs: {}
+      notes: "Vertic characters moderately marked: slickensides recorded, none many or continuous."
+    - code: "III/221"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."

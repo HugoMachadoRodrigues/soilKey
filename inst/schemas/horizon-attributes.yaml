@@ -498,7 +498,7 @@ attributes:
     section: "Australian system (ASC 3rd ed.)"
     unit: "%"
     description: "Hard pedogenic carbonate (nodules, concretions, calcrete fragments, carbonate-coated gravel), visual abundance; ASC carbonate classes (Calcarosol suborders)."
-    systems: [asc3]
+    systems: [asc3, cpcs1967]
     min: 0
     max: 100
   - name: ec_1to5_dS_m
@@ -541,7 +541,7 @@ attributes:
     section: "Australian system (ASC 3rd ed.)"
     unit: "%"
     description: "Black manganiferous nodules or concretions, mostly uncemented, visual abundance; ASC manganic horizon (more than 20 %), Manganic Arenosols."
-    systems: [asc3]
+    systems: [asc3, cpcs1967]
     min: 0
     max: 100
   - name: gypsum_visible_pct
@@ -598,7 +598,7 @@ attributes:
     section: "Australian system (ASC 3rd ed.)"
     unit: "% (vol)"
     description: "Gravel-sized (2-60 mm) coarse fragments, visual abundance; ASC family gravel classes (glossary 'Gravel'). Without it the family reads coarse_fragments_pct."
-    systems: [asc3, scsj2017]
+    systems: [asc3, scsj2017, cpcs1967]
     min: 0
     max: 100
   - name: water_repellence
@@ -765,7 +765,7 @@ attributes:
     section: "Carbonates / sulphates"
     unit: "-"
     description: "Form of the secondary carbonates, FAO (2006): pseudomycelia, coatings (on ped faces), soft concretions, hard concretions, powdery, masses. HSCS 2024 subtype mészlepedékes (whitish coatings, pseudomycelia, on ped faces)."
-    systems: [hscs2024]
+    systems: [hscs2024, cpcs1967]
     allowed: [pseudomycelia, coatings, soft concretions, hard concretions, powdery, masses]
   - name: mottle_size_class
     section: "Salinity, redoximorphism, vertic"
@@ -833,7 +833,7 @@ attributes:
     section: "Japanese system (SCSJ 2017)"
     unit: "-"
     description: "Peat material by the plants it is made of (SCSJ 2017 IV.3): high-moor (Sphagnum, Carex middendorffii, Vaccinium oxycoccus, Rhynchospora, Scheuchzeria the largest share), transitional (Moliniopsis, Eriophorum, Myrica gale, Picea glehnii), low-moor (other). The High-moor and Transitional-moor Peat soils read the uppermost 25 cm of the peat."
-    systems: [scsj2017]
+    systems: [scsj2017, cpcs1967]
     allowed: [high-moor, transitional, low-moor]
   - name: artefacts_organic
     section: "Japanese system (SCSJ 2017)"
@@ -860,4 +860,24 @@ attributes:
     section: "French system (CPCS 1967)"
     unit: "-"
     description: "Form of the ground ice in the layer, as text: lenses (large or small), veins, wedges, pore ice, massive ice, or none. Read by the CPCS groups of the permafrost soils (II/11-13): ice lenses or segregated ice, or 20 % ice or more (ice_pct), is a strong ice segregation. Not recorded with ice_pct: the group is undecided."
+    systems: [cpcs1967]
+  - name: caco3_active_pct
+    section: "French system (CPCS 1967)"
+    unit: "%"
+    description: "Active carbonate (calcaire actif, the Drouineau ammonium-oxalate method), % of the fine earth. Read by the CPCS rendzinas rich in active carbonate (V/112): 10 % or more in the A; not recorded, a very strong effervescence decides."
+    systems: [cpcs1967]
+  - name: coarse_sand_pct
+    section: "French system (CPCS 1967)"
+    unit: "%"
+    description: "Coarse sand (0.2-2 mm, the French size class), % of the fine earth. Read by the CPCS ferrallitic subgroups: 'faiblement remanié' (with fine_sand_pct, the coarse to fine sand ratio of the A and of the B differing by 20 % or more) and 'éluvié' (twice the coarse sand at the A/(B) boundary, as twice the coarse fragments and nodules)."
+    systems: [cpcs1967]
+  - name: fine_sand_pct
+    section: "French system (CPCS 1967)"
+    unit: "%"
+    description: "Fine sand (0.05-0.2 mm, the French size class), % of the fine earth. Read with coarse_sand_pct by the CPCS ferrallitic subgroups 'faiblement remanié' (X/124, X/235, X/335)."
+    systems: [cpcs1967]
+  - name: gibbsite_pct
+    section: "French system (CPCS 1967)"
+    unit: "%"
+    description: "Gibbsite, % of the clay fraction. Read by the CPCS subgroup of the dark brown, very acid, gibbsitic ferrallitic soils (X/322): 25 % or more in the larger part of the B; not recorded, Ki under 1.0 where Ki exists, else the colour and the pH alone."
     systems: [cpcs1967]

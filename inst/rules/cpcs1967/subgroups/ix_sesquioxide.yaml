@@ -1,0 +1,151 @@
+# Sous-groupes des sols à sesquioxydes de fer et manganèse (pp. 59-61), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "IX/12":
+    - code: "IX/123"
+      name: "{parent}, induré"
+      name_native: "{parent}, induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: within, within: 100}
+      notes: "A carapace or cuirasse within 100 cm (cemented moderately or more, a ferricrete, an m, petroplinthic)."
+    - code: "IX/122"
+      name: "{parent}, à concrétions"
+      name_native: "{parent}, à concrétions"
+      tests:
+        all_of:
+          - concretions_cpcs: {where: within, within: 100}
+      notes: "Iron concretions 5 % or more, or a Cn where nodules are not recorded, within 100 cm."
+    - code: "IX/124"
+      name: "{parent}, hydromorphe à pseudogley"
+      name_native: "{parent}, hydromorphe à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "IX/125"
+      name: "{parent}, remanié sur toute l'épaisseur de l'horizon A"
+      name_native: "{parent}, remanié sur toute l'épaisseur de l'horizon A"
+      tests:
+        all_of:
+          - reworked_cpcs: {where: a_base}
+      notes: "A stone line in the last A row, a discontinuity at the A/B boundary, or a colluvial origin of the A."
+    - code: "IX/121"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "IX/13":
+    - code: "IX/132"
+      name: "{parent}, hydromorphe à pseudogley"
+      name_native: "{parent}, hydromorphe à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "IX/131"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "IX/11":
+    - code: "IX/112"
+      name: "{parent}, à pseudogley"
+      name_native: "{parent}, à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "IX/113"
+      name: "{parent}, vertique, à structure grossière en profondeur"
+      name_native: "{parent}, vertique, à structure grossière en profondeur"
+      tests:
+        all_of:
+          - vertic_cpcs: {from: 50, coarse: true}
+      notes: "soilKey's protovertic horizon starting at 50 cm or deeper, of coarse or very coarse structure where recorded."
+    - code: "IX/114"
+      name: "{parent}, à complexe presque saturé, pauvre en matière organique, sur sable (7-8 % d'argile)"
+      name_native: "{parent}, à complexe presque saturé, pauvre en matière organique, sur sable (7-8 % d'argile)"
+      tests:
+        all_of:
+          - saturated_poor_sand_cpcs: {}
+      notes: "V 80 % or more in the larger part of the B, under 1 % OM in the A, and 8 % clay or less in every row to 100 cm (the sub-class IX-1 takes these tropical sands whatever their V)."
+    - code: "IX/111"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "IX/21":
+    - code: "IX/213"
+      name: "{parent}, à caractères d'hydromorphie"
+      name_native: "{parent}, à caractères d'hydromorphie"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: b}
+      notes: "Redox mottles in the (B): any hydromorphic sign (Hugo, 2026-11-01)."
+    - code: "IX/214"
+      name: "{parent}, à caractères vertiques"
+      name_native: "{parent}, à caractères vertiques"
+      tests:
+        all_of:
+          - vertic_cpcs: {}
+      notes: "soilKey's protovertic (or vertic) horizon."
+    - code: "IX/215"
+      name: "Sols recalcifiés"
+      name_native: "Sols recalcifiés"
+      tests:
+        all_of:
+          - recalcified_cpcs: {}
+      notes: "Carbonate in the A or the (B): 1 % or more, an effervescence moderate or stronger, or a Ca of the notation."
+    - code: "IX/212"
+      name: "{parent}, brun"
+      name_native: "{parent}, brun"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A brown (B): moist hue 7.5YR or yellower in its larger part."
+    - code: "IX/211"
+      name: "{parent}, modal avec (ou plus rarement sans) horizon Cca"
+      name_native: "{parent}, modal avec (ou plus rarement sans) horizon Cca"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "IX/22":
+    - code: "IX/225"
+      name: "{parent}, très lessivé et très hydromorphe à pseudogley prononcé"
+      name_native: "{parent}, très lessivé et très hydromorphe à pseudogley prononcé"
+      tests:
+        all_of:
+          - clay_index_cpcs: {above: 2.0}
+          - hydromorphic_signs_cpcs: {window: b, grade: pronounced}
+      notes: "A clay index above 2.0 and pronounced hydromorphic signs in the B (15 % or more, a reduced matrix)."
+    - code: "IX/222"
+      name: "{parent}, légèrement hydromorphe"
+      name_native: "{parent}, légèrement hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs within 100 cm, any grade; the very leached and pronounced ones are IX/225, keyed first (Hugo, 2026-11-01)."
+    - code: "IX/223"
+      name: "{parent}, à caractères vertiques"
+      name_native: "{parent}, à caractères vertiques"
+      tests:
+        all_of:
+          - vertic_cpcs: {}
+      notes: "soilKey's protovertic (or vertic) horizon."
+    - code: "IX/224"
+      name: "{parent}, très lessivé"
+      name_native: "{parent}, très lessivé"
+      tests:
+        all_of:
+          - clay_index_cpcs: {above: 2.0}
+      notes: "A clay index above 2.0."
+    - code: "IX/221"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."

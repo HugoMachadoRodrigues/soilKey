@@ -1,0 +1,469 @@
+# Sous-groupes des sols ferrallitiques (pp. 67-71), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "X/11":
+    - code: "X/112"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/113"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/114"
+      name: "{parent}, Faiblement rajeuni ou pénévolué"
+      name_native: "{parent}, Faiblement rajeuni ou pénévolué"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 3}
+      notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/115"
+      name: "{parent}, Humique"
+      name_native: "{parent}, Humique"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: top20, above: 3}
+      notes: "A mean OM above 3 % over the top 20 cm."
+    - code: "X/111"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/12":
+    - code: "X/122"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/123"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/124"
+      name: "{parent}, Faiblement remanié"
+      name_native: "{parent}, Faiblement remanié"
+      tests:
+        all_of:
+          - reworked_cpcs: {sand_fractions: true}
+      notes: "Reworked material (a stone line, a lithological discontinuity, a colluvial origin), or the coarse to fine sand ratio of the A and the B differing by 20 % or more."
+    - code: "X/121"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/13":
+    - code: "X/132"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/133"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/134"
+      name: "{parent}, Faiblement rajeuni ou pénévolué"
+      name_native: "{parent}, Faiblement rajeuni ou pénévolué"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 3}
+      notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/135"
+      name: "{parent}, Éluvié"
+      name_native: "{parent}, Éluvié"
+      tests:
+        all_of:
+          - eluviated_cpcs: {}
+      notes: "A row at the A/(B) boundary with twice the coarse elements (coarse fragments or gravel, and nodules) of the rows above and below, or twice the coarse sand."
+    - code: "X/131"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/14":
+    - code: "X/141"
+      name: "{parent}, Avec apport éolien"
+      name_native: "{parent}, Avec apport éolien"
+      tests:
+        all_of:
+          - aeolian_addition_cpcs: {}
+      notes: "An aeolian addition within 50 cm: aeolian words in the origin of a row, an aeolian morphology, or an aeolian material."
+    - code: "X/142"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/143"
+      name: "{parent}, Avec érosion et remaniement"
+      name_native: "{parent}, Avec érosion et remaniement"
+      tests:
+        all_of:
+          - reworked_cpcs: {or_eroded: true}
+      notes: "Reworked material, or recorded erosion (truncation, deflation, erosion named)."
+  "X/21":
+    - code: "X/213"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/214"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/215"
+      name: "{parent}, Faiblement rajeuni ou pénévolué"
+      name_native: "{parent}, Faiblement rajeuni ou pénévolué"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 3}
+      notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/216"
+      name: "{parent}, Faiblement appauvri"
+      name_native: "{parent}, Faiblement appauvri"
+      tests:
+        all_of:
+          - clay_index_cpcs: {above: 1.1, below: 1.4}
+      notes: "A weak impoverishment: the clay index above 1.1 and under 1.4."
+    - code: "X/217"
+      name: "{parent}, Humique"
+      name_native: "{parent}, Humique"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: top20, above: 3}
+      notes: "A mean OM above 3 % over the top 20 cm."
+    - code: "X/212"
+      name: "{parent}, Jaune (horizon B)"
+      name_native: "{parent}, Jaune (horizon B)"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
+    - code: "X/211"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/22":
+    - code: "X/221"
+      name: "{parent}, À horizon humifère très contrasté"
+      name_native: "{parent}, À horizon humifère très contrasté"
+      tests:
+        all_of:
+          - humic_horizon_cpcs: {kind: contrasted}
+      notes: "An A of moist value 3 or less over a (B) of hue 5YR or redder."
+    - code: "X/222"
+      name: "{parent}, À horizon humifère A très profond"
+      name_native: "{parent}, À horizon humifère A très profond"
+      tests:
+        all_of:
+          - humic_horizon_cpcs: {kind: deep}
+      notes: "The A (with the AB) 50 cm or more thick and half the described depth or more."
+    - code: "X/223"
+      name: "{parent}, Rajeuni"
+      name_native: "{parent}, Rajeuni"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 10, volcanic: true}
+      notes: "Weatherable minerals in the sand 10 % or more, volcanic glass, or a volcanic or aeolian deposit within 50 cm."
+  "X/23":
+    - code: "X/233"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/234"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/235"
+      name: "{parent}, Faiblement remanié"
+      name_native: "{parent}, Faiblement remanié"
+      tests:
+        all_of:
+          - reworked_cpcs: {sand_fractions: true}
+      notes: "Reworked material (a stone line, a lithological discontinuity, a colluvial origin), or the coarse to fine sand ratio of the A and the B differing by 20 % or more."
+    - code: "X/232"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
+    - code: "X/231"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/24":
+    - code: "X/243"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/244"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/245"
+      name: "{parent}, Faiblement rajeuni ou pénévolué"
+      name_native: "{parent}, Faiblement rajeuni ou pénévolué"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 3}
+      notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/246"
+      name: "{parent}, Éluvié"
+      name_native: "{parent}, Éluvié"
+      tests:
+        all_of:
+          - eluviated_cpcs: {}
+      notes: "A row at the A/(B) boundary with twice the coarse elements (coarse fragments or gravel, and nodules) of the rows above and below, or twice the coarse sand."
+    - code: "X/242"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
+    - code: "X/241"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/25":
+    - code: "X/251"
+      name: "{parent}, Avec apport éolien"
+      name_native: "{parent}, Avec apport éolien"
+      tests:
+        all_of:
+          - aeolian_addition_cpcs: {}
+      notes: "An aeolian addition within 50 cm: aeolian words in the origin of a row, an aeolian morphology, or an aeolian material."
+    - code: "X/252"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/253"
+      name: "{parent}, Avec érosion et remaniement"
+      name_native: "{parent}, Avec érosion et remaniement"
+      tests:
+        all_of:
+          - reworked_cpcs: {or_eroded: true}
+      notes: "Reworked material, or recorded erosion (truncation, deflation, erosion named)."
+  "X/31":
+    - code: "X/313"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/314"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/315"
+      name: "{parent}, Faiblement rajeuni ou pénévolué"
+      name_native: "{parent}, Faiblement rajeuni ou pénévolué"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 3}
+      notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/316"
+      name: "{parent}, Faiblement appauvri"
+      name_native: "{parent}, Faiblement appauvri"
+      tests:
+        all_of:
+          - clay_index_cpcs: {above: 1.1, below: 1.4}
+      notes: "A weak impoverishment: the clay index above 1.1 and under 1.4."
+    - code: "X/317"
+      name: "{parent}, Humique"
+      name_native: "{parent}, Humique"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: top20, above: 3}
+      notes: "A mean OM above 3 % over the top 20 cm."
+    - code: "X/312"
+      name: "{parent}, Jaune (horizon B)"
+      name_native: "{parent}, Jaune (horizon B)"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
+    - code: "X/311"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/32":
+    - code: "X/322"
+      name: "Sols brun-foncé très acides, gibbsitiques"
+      name_native: "Sols brun-foncé très acides, gibbsitiques"
+      tests:
+        all_of:
+          - gibbsitic_dark_cpcs: {}
+      notes: "A dark brown B (7.5YR to 10YR, value 3 or less, chroma 3 or less), pH under 4.5, and gibbsite 25 % of the clay or more where measured, else Ki under 1.0 where Ki exists."
+    - code: "X/321"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/36":
+    - code: "X/362"
+      name: "{parent}, Podzolisé"
+      name_native: "{parent}, Podzolisé"
+      tests:
+        all_of:
+          - podzol_ashy_a2_cpcs: {}
+      notes: "An albic A2 (albic material) over the textural B; the coarse humus is a description."
+    - code: "X/363"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/364"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/361"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/33":
+    - code: "X/333"
+      name: "{parent}, Induré"
+      name_native: "{parent}, Induré"
+      tests:
+        all_of:
+          - indurated_cpcs: {where: b}
+      notes: "A carapace or cuirasse in the B: cemented moderately or more, a ferricrete or ironpan, an m of the notation, or soilKey's petroplinthic horizon."
+    - code: "X/334"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/335"
+      name: "{parent}, Faiblement remanié"
+      name_native: "{parent}, Faiblement remanié"
+      tests:
+        all_of:
+          - reworked_cpcs: {sand_fractions: true}
+      notes: "Reworked material (a stone line, a lithological discontinuity, a colluvial origin), or the coarse to fine sand ratio of the A and the B differing by 20 % or more."
+    - code: "X/332"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
+    - code: "X/331"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/34":
+    - code: "X/343"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/344"
+      name: "{parent}, Faiblement rajeuni ou pénévolué"
+      name_native: "{parent}, Faiblement rajeuni ou pénévolué"
+      tests:
+        all_of:
+          - weatherable_minerals_cpcs: {at_least: 3}
+      notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/342"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
+    - code: "X/341"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "X/35":
+    - code: "X/351"
+      name: "{parent}, Avec apport éolien"
+      name_native: "{parent}, Avec apport éolien"
+      tests:
+        all_of:
+          - aeolian_addition_cpcs: {}
+      notes: "An aeolian addition within 50 cm: aeolian words in the origin of a row, an aeolian morphology, or an aeolian material."
+    - code: "X/352"
+      name: "{parent}, Hydromorphe"
+      name_native: "{parent}, Hydromorphe"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: x}
+      notes: "Hydromorphic signs in the A or the top 50 cm of the B."
+    - code: "X/353"
+      name: "{parent}, Avec érosion et remaniement"
+      name_native: "{parent}, Avec érosion et remaniement"
+      tests:
+        all_of:
+          - reworked_cpcs: {or_eroded: true}
+      notes: "Reworked material, or recorded erosion (truncation, deflation, erosion named)."

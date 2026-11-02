@@ -620,6 +620,18 @@
           },
           "ice_form": {
             "type": ["string", "null"]
+          },
+          "caco3_active_pct": {
+            "type": ["number", "null"]
+          },
+          "coarse_sand_pct": {
+            "type": ["number", "null"]
+          },
+          "fine_sand_pct": {
+            "type": ["number", "null"]
+          },
+          "gibbsite_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

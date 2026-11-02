@@ -1,0 +1,239 @@
+# Sous-groupes des sols peu évolués (pp. 22-25), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "II/11":
+    - code: "II/111"
+      name: "Cryosols à grandes lentilles de glace disposées sans ordre (palses)"
+      name_native: "Cryosols à grandes lentilles de glace disposées sans ordre (palses)"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: palsa}
+      notes: "Palsas in patterned_ground, or large ice lenses in ice_form; neither recorded, undecided."
+    - code: "II/112"
+      name: "Cryosols à petites lentilles de glace (thufurs)"
+      name_native: "Cryosols à petites lentilles de glace (thufurs)"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: thufur}
+      notes: "Thufurs or earth hummocks in patterned_ground, or small ice lenses in ice_form."
+  "II/12":
+    - code: "II/121"
+      name: "Cryosols à réseau polygonal de grande dimension à partie centrale en dépression"
+      name_native: "Cryosols à réseau polygonal de grande dimension à partie centrale en dépression"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: low_centre}
+      notes: "Low-centre (ice-wedge) polygons in patterned_ground."
+    - code: "II/122"
+      name: "Cryosols à buttes à noyau de glace ordonnées en réseau"
+      name_native: "Cryosols à buttes à noyau de glace ordonnées en réseau"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: ice_cored}
+      notes: "Ice-cored mounds in patterned_ground."
+  "II/13":
+    - code: "II/131"
+      name: "Cryosols à buttes de faibles dimensions séparées par des fentes larges, mais peu profondes"
+      name_native: "Cryosols à buttes de faibles dimensions séparées par des fentes larges, mais peu profondes"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: small_hummocks}
+      notes: "Small hummocks separated by cracks, or non-sorted circles or nets, in patterned_ground."
+    - code: "II/132"
+      name: "Cryosols à pustules de boue"
+      name_native: "Cryosols à pustules de boue"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: mud_boils}
+      notes: "Mud boils in patterned_ground."
+    - code: "II/133"
+      name: "Cryosols à réseaux polygonaux et circulaires à pierres"
+      name_native: "Cryosols à réseaux polygonaux et circulaires à pierres"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: stone_polygons}
+      notes: "Sorted (stone) polygons or circles in patterned_ground."
+    - code: "II/134"
+      name: "Cryosols à réseaux parallèles : sols striés"
+      name_native: "Cryosols à réseaux parallèles : sols striés"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: stripes}
+      notes: "Stripes in patterned_ground."
+  "II/14":
+    - code: "II/142"
+      name: "Sols bruns arctiques à hydromorphie de profondeur"
+      name_native: "Sols bruns arctiques à hydromorphie de profondeur"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: .inf, from: 50, none_above: true}
+      notes: "Hydromorphic signs in a layer starting at 50 cm or deeper, and none above."
+    - code: "II/141"
+      name: "Sols bruns arctiques modaux"
+      name_native: "Sols bruns arctiques modaux"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "II/21":
+    - code: "II/211"
+      name: "{parent}, à mor"
+      name_native: "{parent}, à mor"
+      tests:
+        all_of:
+          - humus_form_cpcs: {kind: mor}
+      notes: "humus_form mor; not recorded, undecided."
+    - code: "II/213"
+      name: "{parent}, à moder altialpin"
+      name_native: "{parent}, à moder altialpin"
+      tests:
+        all_of:
+          - humus_form_cpcs: {kind: moder}
+          - alpine_belt_cpcs: {}
+      notes: "humus_form moder in the alpine belt (the VIII/22 reading: Koppen ET or EF below 60 degrees, or 1,500 m or more)."
+    - code: "II/212"
+      name: "{parent}, à moder"
+      name_native: "{parent}, à moder"
+      tests:
+        all_of:
+          - humus_form_cpcs: {kind: moder}
+      notes: "humus_form moder; a mull ranker has no subgroup."
+  "II/31":
+    - code: "II/312"
+      name: "{parent}, faiblement salins"
+      name_native: "{parent}, faiblement salins"
+      tests:
+        all_of:
+          - salt_cpcs: {within: 100, ec: 4}
+      notes: "EC of the saturated paste 4 dS/m or more in a layer within 100 cm; salts seen with no EC leave it undecided."
+    - code: "II/313"
+      name: "{parent}, éolisés"
+      name_native: "{parent}, éolisés"
+      tests:
+        all_of:
+          - aeolian_addition_cpcs: {deflation: true}
+      notes: "Recorded wind deflation, or an aeolian addition within 50 cm."
+    - code: "II/311"
+      name: "{parent}, modaux"
+      name_native: "{parent}, modaux"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "II/41":
+    - code: "II/412"
+      name: "{parent}, lithique (roche dure)"
+      name_native: "{parent}, lithique (roche dure)"
+      tests:
+        all_of:
+          - hard_rock_contact_cpcs: {under: A}
+      notes: "Hard rock directly under the A, with no C between."
+    - code: "II/411"
+      name: "{parent}, régosolique (roche friable)"
+      name_native: "{parent}, régosolique (roche friable)"
+      tests:
+        default: true
+      notes: "The other erosion soils: on friable rock."
+  "II/42":
+    - code: "II/422"
+      name: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      name_native: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "II/423"
+      name: "{parent}, humifère"
+      name_native: "{parent}, humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a1, at_least: 5}
+      notes: "5 % OM or more in the A1 (thickness-weighted), the II-2 reading of high contents."
+    - code: "II/421"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "II/43":
+    - code: "II/432"
+      name: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      name_native: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "II/433"
+      name: "{parent}, humifère"
+      name_native: "{parent}, humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a1, at_least: 5}
+      notes: "5 % OM or more in the A1 (thickness-weighted), the II-2 reading of high contents."
+    - code: "II/431"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "II/44":
+    - code: "II/442"
+      name: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      name_native: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "II/443"
+      name: "{parent}, humifère"
+      name_native: "{parent}, humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a1, at_least: 5}
+      notes: "5 % OM or more in the A1 (thickness-weighted), the II-2 reading of high contents."
+    - code: "II/441"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "II/45":
+    - code: "II/452"
+      name: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      name_native: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "II/453"
+      name: "{parent}, humifère"
+      name_native: "{parent}, humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a1, at_least: 5}
+      notes: "5 % OM or more in the A1 (thickness-weighted), the II-2 reading of high contents."
+    - code: "II/451"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "II/46":
+    - code: "II/462"
+      name: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      name_native: "{parent}, hydromorphe (nappe se trouvant à certaines périodes à moins de 1 m)"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "II/463"
+      name: "{parent}, humifère"
+      name_native: "{parent}, humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a1, at_least: 5}
+      notes: "5 % OM or more in the A1 (thickness-weighted), the II-2 reading of high contents."
+    - code: "II/461"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."

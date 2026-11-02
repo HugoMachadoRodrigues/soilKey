@@ -24,7 +24,8 @@ classify_cpcs1967(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"cpcs1967"}, the class in \code{name} and \code{rsg_or_order},
+  \code{"cpcs1967"}, the deepest class assigned in \code{name}, the class
+  in \code{rsg_or_order},
   the classes of each level in \code{levels} (with \code{name_native}),
   the key trace, and \code{provisional_because} (classes before the
   assigned one that could not be decided).
@@ -39,11 +40,15 @@ podzolises, sols a sesquioxydes de fer et manganese, sols ferrallitiques, sols
 hydromorphes, sols sodiques), their 35 sub-classes, the climatic
 ones read from \code{site$koppen_climate}, else the USDA soil
 temperature and moisture regimes, else the latitude (with no climate,
-the non-climatic or temperate sub-class), and their 101 groups (a
-group the data cannot decide leaves the name provisional; when no group
-of a sub-class fits, the name stops at the sub-class); the subgroups
-follow. The names are French, as the text writes them, in \code{name}
-and in \code{levels$name_native}.
+the non-climatic or temperate sub-class), their 101 groups and their
+276 subgroups (a group or subgroup the data cannot decide leaves the
+name provisional; when no group of a sub-class, or no subgroup of a
+group, fits, the name stops at the level above, and none is invented).
+The names are French, as the text writes them, in \code{name} and in
+\code{levels$name_native}; a subgroup named by an adjective is shown
+after its group ("Rankers, a mor"), one the text names in full stands
+alone, and the other subgroups whose tests pass are noted in
+the trace as intergrades.
 }
 \details{
 The CPCS gives no key. soilKey keys the classes in an order built from
@@ -68,8 +73,11 @@ cracks, structure and consistence, clay films, coarse fragments, the
 sand minerals, the fibre content of peat, ice (\code{ice_pct},
 \code{ice_form}), and the recorded origin of the layers; from the site
 the climate, the soil temperature regime, the parent material, recorded
-erosion, the water table, the elevation and patterned ground
-(\code{patterned_ground}). The choices where the text is silent are listed in
+erosion, the water table, the elevation, patterned ground
+(\code{patterned_ground}) and the humus form (\code{humus_form}); for
+some subgroups also active carbonate (\code{caco3_active_pct}), the
+coarse and fine sand (\code{coarse_sand_pct}, \code{fine_sand_pct}) and
+gibbsite (\code{gibbsite_pct}). The choices where the text is silent are listed in
 \code{system.file("rules", "cpcs1967", "readings.yaml", package =
 "soilKey")}.
 }

@@ -1,0 +1,113 @@
+# Sous-groupes des sols brunifiés (pp. 46-48), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "VII/12":
+    - code: "VII/124"
+      name: "Sols lessivés faiblement podzoliques"
+      name_native: "Sols lessivés faiblement podzoliques"
+      tests:
+        all_of:
+          - podzol_ashy_a2_cpcs: {}
+          - b_colour_cpcs: {kind: ochre}
+      notes: "An ashy A2 (albic material) over an ochre B (hue 10YR to 5YR, moist chroma 6 or more)."
+    - code: "VII/125"
+      name: "Sols lessivés hydromorphes"
+      name_native: "Sols lessivés hydromorphes"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: b_or_a2_base, concretions: true}
+      notes: "Hydromorphic signs, or iron concretions, in the B or the lowest A2 row."
+    - code: "VII/126"
+      name: "Sols lessivés glossiques"
+      name_native: "Sols lessivés glossiques"
+      tests:
+        all_of:
+          - tongues_cpcs: {}
+      notes: "A2 tongues into the B (E/B, B/E, glossic, a tonguing boundary, retic properties)."
+    - code: "VII/121"
+      name: "Sols bruns lessivés"
+      name_native: "Sols bruns lessivés"
+      tests:
+        all_of:
+          - clay_index_cpcs: {above: 1.4, at_most: 2.0}
+      notes: "A clay index above 1.4 and 2.0 or less."
+    - code: "VII/123"
+      name: "Sols lessivés acides"
+      name_native: "Sols lessivés acides"
+      tests:
+        all_of:
+          - b_ph_cpcs: {below: 5.5}
+      notes: "pH(H2O) under 5.5 in the larger part of the B (a clay index above 2.0)."
+    - code: "VII/122"
+      name: "Sols lessivés modaux"
+      name_native: "Sols lessivés modaux"
+      tests:
+        default: true
+      notes: "A clay index above 2.0 and pH 5.5 or more."
+  "VII/11":
+    - code: "VII/113"
+      name: "Sols bruns andiques"
+      name_native: "Sols bruns andiques"
+      tests:
+        all_of:
+          - allophane_cpcs: {}
+      notes: "Allophane in the top 50 cm (pH NaF 9.5 or more, or Alo + 1/2 Feo 2 % or more); none without volcanic signs."
+    - code: "VII/114"
+      name: "Sols bruns faiblement lessivés"
+      name_native: "Sols bruns faiblement lessivés"
+      tests:
+        all_of:
+          - clay_index_cpcs: {above: 1.1, not_eroded: true}
+      notes: "A clay index above 1.1, not where erosion is recorded."
+    - code: "VII/115"
+      name: "Bruns Rankers"
+      name_native: "Bruns Rankers"
+      tests:
+        all_of:
+          - hard_rock_contact_cpcs: {under: B, within: 50, noncalcareous: true}
+      notes: "A (B) directly on hard non-calcareous rock within 50 cm."
+    - code: "VII/112"
+      name: "Sols bruns acides (oligotrophes)"
+      name_native: "Sols bruns acides (oligotrophes)"
+      tests:
+        all_of:
+          - b_ph_cpcs: {below: 5.5}
+      notes: "pH(H2O) under 5.5 in the larger part of the (B)."
+    - code: "VII/111"
+      name: "Sols bruns modaux (eutrophes et mésotrophes)"
+      name_native: "Sols bruns modaux (eutrophes et mésotrophes)"
+      tests:
+        default: true
+      notes: "pH 5.5 or more in the (B)."
+  "VII/41":
+    - code: "VII/412"
+      name: "Sols bruns eutrophes tropicaux hydromorphes vertiques"
+      name_native: "Sols bruns eutrophes tropicaux hydromorphes vertiques"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: b}
+          - vertic_cpcs: {}
+      notes: "Hydromorphic signs in the (B), and soilKey's protovertic horizon."
+    - code: "VII/413"
+      name: "Bruns eutrophes tropicaux hydromorphes"
+      name_native: "Bruns eutrophes tropicaux hydromorphes"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {window: b}
+      notes: "Hydromorphic signs in the (B)."
+    - code: "VII/414"
+      name: "Sols bruns eutrophes tropicaux ferruginisés"
+      name_native: "Sols bruns eutrophes tropicaux ferruginisés"
+      tests:
+        all_of:
+          - any_of:
+              - b_colour_cpcs: {kind: reddened}
+              - concretions_cpcs: {where: b}
+      notes: "A reddened (B), or iron concretions in it."
+    - code: "VII/411"
+      name: "Sols bruns eutrophes tropicaux peu évolués"
+      name_native: "Sols bruns eutrophes tropicaux peu évolués"
+      tests:
+        all_of:
+          - solum_depth_cpcs: {at_most: 50}
+      notes: "A thin profile: the top of the C or R at 50 cm or less."

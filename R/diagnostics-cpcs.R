@@ -695,6 +695,15 @@ ferrallitic_soils_cpcs <- function(pedon) {
                "X, pp. 63-65"), x)
 }
 
+# A reddened row: a moist hue of 5YR or redder with a chroma of 4 or more
+# (the fersiallitic colours, p. 60); a neutral row is not; NA when the colour
+# is not recorded.
+.cpcs_reddened_rows <- function(x) {
+  hue <- as.character(.scsj_col(x$h, "munsell_hue_moist", NA_character_))
+  hn <- .scsj_hue_num(hue); neu <- .scsj_neutral(hue); cr <- .cpcs_num(x$h, "munsell_chroma_moist")
+  ifelse(neu, FALSE, ifelse(is.na(hn) | is.na(cr), NA, hn <= 15 & cr >= 4))
+}
+
 #' @rdname cpcs1967_classes
 #' @export
 sesquioxide_soils_cpcs <- function(pedon) {
@@ -714,10 +723,11 @@ sesquioxide_soils_cpcs <- function(pedon) {
   cr <- .cpcs_num(h, "munsell_chroma_moist"); va <- .cpcs_num(h, "munsell_value_moist")
   nod <- .cpcs_num(h, "ferric_nodules_pct")
   trop <- .cpcs_tropical(x)
+  red <- .cpcs_reddened_rows(x)
   fe <- ifelse((!is.na(nod) & nod > 0) | (is.na(nod) & x$des$cn %in% TRUE), TRUE,
         ifelse(neu, FALSE,
         ifelse(is.na(hn) | is.na(cr), NA,
-        ifelse(hn <= 15 & cr >= 4, TRUE,
+        ifelse(red %in% TRUE, TRUE,
         ifelse(hn <= 20 & cr >= 4 & !is.na(va) & va >= 5 & trop, TRUE, FALSE)))))
   fe_ind <- .cpcs_larger_part_b(x, fe)
   not_iso <- .cpcs_not(isohumic_soils_cpcs(pedon)$passed)

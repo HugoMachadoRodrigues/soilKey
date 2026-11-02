@@ -254,7 +254,12 @@ horizon_column_spec <- function() {
     texture_class_jp              = "character", # Japanese soil texture class (HC, SiC, LiC, SC, SiCL, CL, SCL, SiL, L, FSL, CoSL, LS, S); CSCJ series groups
     hardness_yamanaka_mm          = "numeric",   # soil hardness by the Yamanaka-type tester, mm; CSCJ pan layer (29 mm or more)
     # ---- v0.9.332: the CPCS 1967 groups ----
-    ice_form                      = "character"  # form of the ground ice (lenses, veins, wedges, none); CPCS permafrost groups
+    ice_form                      = "character", # form of the ground ice (lenses, veins, wedges, none); CPCS permafrost groups
+    # ---- v0.9.333: the CPCS 1967 subgroups ----
+    caco3_active_pct              = "numeric",   # active carbonate (calcaire actif, Drouineau method), % of the fine earth; CPCS rendzinas V/112
+    coarse_sand_pct               = "numeric",   # coarse sand (0.2-2 mm), % of the fine earth; CPCS ferrallitic subgroups (faiblement remanie, eluvie)
+    fine_sand_pct                 = "numeric",   # fine sand (0.05-0.2 mm), % of the fine earth; CPCS ferrallitic subgroups (faiblement remanie)
+    gibbsite_pct                  = "numeric"    # gibbsite, % of the clay fraction; CPCS X/322 (gibbsitiques)
   )
 }
 

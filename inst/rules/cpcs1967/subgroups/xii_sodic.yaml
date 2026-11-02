@@ -1,0 +1,77 @@
+# Sous-groupes des sols sodiques (pp. 78-79), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "XII/11":
+    - code: "XII/111"
+      name: "{parent}, à efflorescences salines"
+      name_native: "{parent}, à efflorescences salines"
+      tests:
+        all_of:
+          - solonchak_surface_cpcs: {kind: efflorescence}
+      notes: "Salt efflorescences: salt_crust_pattern efflorescent, or named in surface_condition."
+    - code: "XII/112"
+      name: "{parent}, à horizon superficiel friable"
+      name_native: "{parent}, à horizon superficiel friable"
+      tests:
+        all_of:
+          - solonchak_surface_cpcs: {kind: friable}
+      notes: "A puffed surface layer, a loose or friable first mineral row, or a puffed or friable surface named."
+    - code: "XII/113"
+      name: "{parent}, à encroûtement salin superficiel"
+      name_native: "{parent}, à encroûtement salin superficiel"
+      tests:
+        all_of:
+          - solonchak_surface_cpcs: {kind: crust}
+      notes: "A salt crust at the surface: salt_crust_pattern crusty or hardpan, an evaporite surface crust, or a salt crust named."
+    - code: "XII/114"
+      name: "{parent}, acidifié (oxydation des sulfures)"
+      name_native: "{parent}, acidifié (oxydation des sulfures)"
+      tests:
+        all_of:
+          - acid_sulphate_cpcs: {}
+      notes: "soilKey's thionic horizon, or pH(H2O) under 4 with jarosite or sulfidic S within 100 cm."
+  "XII/23":
+    - code: "XII/231"
+      name: "Solonetz solodisés"
+      name_native: "Solonetz solodisés"
+      tests:
+        all_of:
+          - solod_cpcs: {kind: solodised_solonetz}
+      notes: "Exchangeable Na above 10 % of the CEC in the first B row under the bleached A2."
+    - code: "XII/232"
+      name: "Solods"
+      name_native: "Solods"
+      tests:
+        all_of:
+          - solod_cpcs: {kind: solod}
+      notes: "Exchangeable Na 10 % of the CEC or less in the first B row under the bleached A2."
+  "XII/22":
+    - code: "XII/221"
+      name: "Sols sodiques à structure en colonnettes de l'horizon B"
+      name_native: "Sols sodiques à structure en colonnettes de l'horizon B"
+      tests:
+        all_of:
+          - solonetz_structure_cpcs: {kind: columnar}
+      notes: "A columnar structure in the Solonetz B."
+    - code: "XII/222"
+      name: "Sols sodiques à structure prismatique ou massive de l'horizon B"
+      name_native: "Sols sodiques à structure prismatique ou massive de l'horizon B"
+      tests:
+        all_of:
+          - solonetz_structure_cpcs: {kind: prismatic}
+      notes: "A prismatic or massive structure in the Solonetz B."
+  "XII/21":
+    - code: "XII/211"
+      name: "{parent}, salin à alcalins"
+      name_native: "{parent}, salin à alcalins"
+      tests:
+        all_of:
+          - solonchak_solonetz_cpcs: {kind: saline}
+      notes: "A powdery, single-grain, loose or puffed surface; with no such structure recorded, the EC route of class XII met."
+    - code: "XII/212"
+      name: "{parent}, moyennement ou peu salin à alcalins"
+      name_native: "{parent}, moyennement ou peu salin à alcalins"
+      tests:
+        all_of:
+          - solonchak_solonetz_cpcs: {kind: moderate}
+      notes: "A massive or structureless surface; with no such structure recorded, the EC route of class XII not met."

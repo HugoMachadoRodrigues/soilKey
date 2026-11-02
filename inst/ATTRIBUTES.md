@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.332)
+# soilKey -- recognised horizon attribute names (v0.9.333)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -341,6 +341,10 @@ and do not warn.
 | Attribute | Unit | Type | Description | Accepted aliases |
 |-----------|------|------|-------------|------------------|
 | `ice_form` | - | character | Form of the ground ice in the layer, as text: lenses (large or small), veins, wedges, pore ice, massive ice, or none. Read by the CPCS groups of the permafrost soils (II/11-13): ice lenses or segregated ice, or 20 % ice or more (ice_pct), is a strong ice segregation. Not recorded with ice_pct: the group is undecided. | - |
+| `caco3_active_pct` | % | numeric | Active carbonate (calcaire actif, the Drouineau ammonium-oxalate method), % of the fine earth. Read by the CPCS rendzinas rich in active carbonate (V/112): 10 % or more in the A; not recorded, a very strong effervescence decides. | - |
+| `coarse_sand_pct` | % | numeric | Coarse sand (0.2-2 mm, the French size class), % of the fine earth. Read by the CPCS ferrallitic subgroups: 'faiblement remanié' (with fine_sand_pct, the coarse to fine sand ratio of the A and of the B differing by 20 % or more) and 'éluvié' (twice the coarse sand at the A/(B) boundary, as twice the coarse fragments and nodules). | - |
+| `fine_sand_pct` | % | numeric | Fine sand (0.05-0.2 mm, the French size class), % of the fine earth. Read with coarse_sand_pct by the CPCS ferrallitic subgroups 'faiblement remanié' (X/124, X/235, X/335). | - |
+| `gibbsite_pct` | % | numeric | Gibbsite, % of the clay fraction. Read by the CPCS subgroup of the dark brown, very acid, gibbsitic ferrallitic soils (X/322): 25 % or more in the larger part of the B; not recorded, Ki under 1.0 where Ki exists, else the colour and the pH alone. | - |
 
 # Site properties
 
@@ -373,7 +377,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `aspect_deg` | deg | numeric | Slope aspect in degrees clockwise from true north (0 to 360). Filled by the field-sheet extraction (VLM); no key reads it. | - | - |
 | `landform` | - | character | Landform, as text (the landform pattern in NatSoil). Read by the ASC Hydrosol settings (tidal, coastal, lake, playa and subaqueous landforms) and by the WRB Gilgaic and Escalic qualifiers (gilgai, built terraces). | - | `wrb2022`, `asc3`, `scsj2017`, `cpcs1967` |
 | `landform_element` | - | character | Landform element, as text (NatSoil). Read with landform by the ASC Hydrosol settings; a playa element on a plain pattern counts as a playa. | - | `asc3`, `cpcs1967` |
-| `microrelief_form` | - | character | Microrelief at the soil surface, as text (NatSoil writes its microrelief types); also a horizon column of the same name. Read by the WRB Gilgaic qualifier (a recorded microrelief that names no gilgai rules it out) and the Escalic qualifier (built terraces). | - | `wrb2022` |
+| `microrelief_form` | - | character | Microrelief at the soil surface, as text (NatSoil writes its microrelief types); also a horizon column of the same name. Read by the WRB Gilgaic qualifier (a recorded microrelief that names no gilgai rules it out) and the Escalic qualifier (built terraces). | - | `wrb2022`, `cpcs1967` |
 | `patterned_ground` | - | character | Patterned ground of frost action at the site, as text: polygons (earth, stone, ice-wedge, low-centre), circles, nets, stripes, mud boils, ice-cored mounds, hummocks, thufurs, palsas, or none. Read by the CPCS groups of the cold-desert raw soils (I/22-23) and of the permafrost soils (II/11-14): a network of polygons, circles, stripes, mud boils or cracks is an organised form; hummocks, thufurs and palsas alone are not. Not recorded: the group is undecided. | - | `cpcs1967` |
 | `gilgai_presence` | - | logical | Gilgai microrelief present (TRUE) or absent (FALSE). Read first by the WRB Gilgaic qualifier (Vertisols only), before the relief texts. | - | `wrb2022` |
 | `forma_relevo` | - | character | Relief form, as text (Portuguese field name). Read beside microrelief_form by the WRB Gilgaic and Escalic qualifiers; no loader writes it. | - | `wrb2022` |
@@ -408,7 +412,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `surface_water` | - | character | How often water stands on the soil surface. Read by the NZSC Hydric Raw Soils (surface water for the majority of the time, but not constantly). | `constant`, `most of the time`, `occasional`, `none` | `nzsc4` |
 | `artificially_drained` | - | logical | The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply. | - | `nzsc4`, `scsj2017` |
 | `groundwater_kind` | - | character | Kind of water table recorded at the site (FAO): none observed, observed, apparent, perched or flooded. Read with groundwater_depth_cm by the WRB gleyic and stagnic properties: mottles over a layer with no reductimorphic matrix are gleyic where groundwater that is not perched lies within 150 cm, stagnic where none was observed or it is perched, and undecided where the site does not say. Written by isis_profile_to_pedon(). The CPCS groups read a perched water table, or none, as a stagnogley (XI/33, VIII/32) and any other as a gley (XI/31). | `none observed`, `observed`, `apparent`, `perched`, `flooded` | `wrb2022`, `cpcs1967` |
-| `groundwater_depth_cm` | cm | numeric | Depth of the water table below the soil surface (0 at the surface). Read with groundwater_kind by the WRB gleyic and stagnic properties (within 150 cm, or deeper). Written by isis_profile_to_pedon() from depthGroundwater, or groundwaterTop where ISIS writes 0 for the depth. | - | `wrb2022`, `scsj2017` |
+| `groundwater_depth_cm` | cm | numeric | Depth of the water table below the soil surface (0 at the surface). Read with groundwater_kind by the WRB gleyic and stagnic properties (within 150 cm, or deeper). Written by isis_profile_to_pedon() from depthGroundwater, or groundwaterTop where ISIS writes 0 for the depth. | - | `wrb2022`, `scsj2017`, `cpcs1967` |
 | `water_table_cm_above_surface` | cm | numeric | Height of a water table above the soil surface (positive above it). Read by the USDA key: the Wassents (above 0) and the Wassists (2 cm or more). | - | `usda` |
 | `tidal_zone` | - | character | Tidal zone of the site. Read by the ASC Hydrosol settings (Subtidal, Intertidal, Supratidal and Extratidal suborders); a zone named in landform is read too. | `subtidal`, `intertidal`, `supratidal`, `extratidal` | `asc3` |
 | `tidal_inundation` | - | logical | The site is subject to tidal flooding. Read by the ASC key: it makes the soil a Hydrosol, rules out the Organosols, and without tidal_zone leaves the tidal Hydrosol settings undecided. | - | `asc3` |
@@ -419,6 +423,7 @@ the last section are stored by the loaders and reports and read by no key.
 | Property | Unit | Type | Description | Values | Read by |
 |----------|------|------|-------------|--------|---------|
 | `designation_system` | - | character | Notation of the horizon designations. Read by the CSSC, ASC and NZSC keys to decide whether the designations are in their notation (otherwise judged from the designations and the country), and by the CPCS key ('cpcs': the old French notation of 1967, otherwise recognised by its symbols, never by the country). Written by the NatSoil ('asc') and NPDB ('cssc') loaders. | `cssc`, `cssc3`, `canadian`, `canada`, `asc`, `australian`, `field handbook`, `nchs`, `australian field handbook`, `nzsc`, `nz`, `new zealand`, `cpcs`, `cpcs1967`, `french` | `cssc3`, `asc3`, `nzsc4`, `scsj2017`, `cpcs1967` |
+| `humus_form` | - | character | Humus form of the site, as the French and European typologies name it: mull, moder, mor (humus brut), hydromull, hydromoder, hydromor, anmoor, tourbe (peat). Read by the CPCS subgroups of the rankers (II/211-213: mor or moder; not recorded, the subgroup is undecided) and of the humic gley soils (XI/212-214: anmoor or hydromor decides before the C/N). | `mull`, `moder`, `mor`, `hydromull`, `hydromoder`, `hydromor`, `anmoor`, `tourbe` | `cpcs1967` |
 | `nasis_diagnostic_features` | - | character | Diagnostic features the surveyor recorded in NASIS (pediagfeatures featkind, one string per feature). Read by the USDA key: the argillic clay-films test and the fragipan, and as a tie-breaker that turns an undecided order test (histic, spodic, andic, vertic, argillic, kandic, natric, mollic, cambic) into a pass. Written by the KSSL NASIS loader. | - | `usda` |
 | `anthropic_truncation` | - | logical | The soil has been truncated by human activity (TRUE, or 'yes', 'y', 't', '1'). Read by the NZSC Anthropic Soils, where it meets the first condition without 30 cm of anthropic soil material. | - | `nzsc4`, `scsj2017`, `cpcs1967` |
 | `mechanical_mixing_depth_cm` | cm | numeric | Depth from the mineral soil surface to which people mechanically disturbed the original horizons (mixing, deep ripping, subsoil lifting). Read by the NZSC Mixed Anthropic Soils (more than 30 cm). | - | `nzsc4`, `scsj2017` |
@@ -527,5 +532,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.332._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.333._
 

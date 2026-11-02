@@ -1,0 +1,266 @@
+# Sous-groupes des sols isohumiques (pp. 40-44), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "VI/11":
+    - code: "VI/116"
+      name: "{parent}, Lessivé à alcali"
+      name_native: "{parent}, Lessivé à alcali"
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+          - sodium_cpcs: {within: 100, esp: 6, in_textural_b: true}
+      notes: "A textural B with exchangeable Na 6 % of the CEC or more in it."
+    - code: "VI/112"
+      name: "{parent}, à B textural"
+      name_native: "{parent}, à B textural"
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+      notes: "A textural B: the clay index above 1.4 with 5 % clay more (the VII/12 reading)."
+    - code: "VI/113"
+      name: "{parent}, à pseudogley"
+      name_native: "{parent}, à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "VI/114"
+      name: "{parent}, à (B) vertique, de structure élargie et prismatique"
+      name_native: "{parent}, à (B) vertique, de structure élargie et prismatique"
+      tests:
+        all_of:
+          - vertic_cpcs: {prismatic_b: true}
+      notes: "soilKey's protovertic (or vertic) horizon, or a (B) of coarse or very coarse prismatic structure."
+    - code: "VI/115"
+      name: "{parent}, à encroûtement calcaire au sommet de C"
+      name_native: "{parent}, à encroûtement calcaire au sommet de C"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: accumulation, mineral: carbonate, where: top_of_c}
+      notes: "A calcareous accumulation in the first C row, or in a BCca at the top of the C."
+    - code: "VI/111"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VI/21":
+    - code: "VI/213"
+      name: "Chernozem à B textural"
+      name_native: "Chernozem à B textural"
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+      notes: "A textural B: the clay index above 1.4 with 5 % clay more (the VII/12 reading)."
+    - code: "VI/211"
+      name: "Chernozem très humifère"
+      name_native: "Chernozem très humifère"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: top20, above: 10}
+      notes: "A mean OM above 10 % over the top 20 cm."
+    - code: "VI/212"
+      name: "Chernozem modal"
+      name_native: "Chernozem modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VI/22":
+    - code: "VI/222"
+      name: "Sols châtains vertiques"
+      name_native: "Sols châtains vertiques"
+      tests:
+        all_of:
+          - vertic_cpcs: {prismatic_b: true}
+      notes: "soilKey's protovertic (or vertic) horizon, or a (B) of coarse or very coarse prismatic structure."
+    - code: "VI/223"
+      name: "Sols châtains à pseudogley"
+      name_native: "Sols châtains à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, concretions: true}
+      notes: "Hydromorphic signs, or iron concretions 5 % or more, in a layer starting within 100 cm."
+    - code: "VI/224"
+      name: "Sols châtains encroûtés"
+      name_native: "Sols châtains encroûtés"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: accumulation, mineral: carbonate}
+      notes: "A calcareous accumulation: soilKey's calcic horizon, 5 % secondary carbonates or more, or a Ca of the notation where neither is measured."
+    - code: "VI/225"
+      name: "Sols châtains faiblement salés ou alcalisés"
+      name_native: "Sols châtains faiblement salés ou alcalisés"
+      tests:
+        all_of:
+          - any_of:
+              - salt_cpcs: {within: 100, ec: 4}
+              - sodium_cpcs: {within: 100, esp: 6}
+      notes: "EC 4 dS/m or more, or exchangeable Na 6 % of the CEC or more, in a layer within 100 cm."
+    - code: "VI/221"
+      name: "Sols châtains modaux"
+      name_native: "Sols châtains modaux"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VI/23":
+    - code: "VI/232"
+      name: "Sol brun à pseudogley"
+      name_native: "Sol brun à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "VI/233"
+      name: "Sol brun vertique"
+      name_native: "Sol brun vertique"
+      tests:
+        all_of:
+          - vertic_cpcs: {prismatic_b: true}
+      notes: "soilKey's protovertic (or vertic) horizon, or a (B) of coarse or very coarse prismatic structure."
+    - code: "VI/234"
+      name: "Sol brun encroûté"
+      name_native: "Sol brun encroûté"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: accumulation, mineral: carbonate}
+      notes: "A calcareous accumulation: soilKey's calcic horizon, 5 % secondary carbonates or more, or a Ca of the notation where neither is measured."
+    - code: "VI/235"
+      name: "Sol brun faiblement salé ou alcalisé"
+      name_native: "Sol brun faiblement salé ou alcalisé"
+      tests:
+        all_of:
+          - any_of:
+              - salt_cpcs: {within: 100, ec: 4}
+              - sodium_cpcs: {within: 100, esp: 6}
+      notes: "EC 4 dS/m or more, or exchangeable Na 6 % of the CEC or more, in a layer within 100 cm."
+    - code: "VI/231"
+      name: "Sol brun modal"
+      name_native: "Sol brun modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VI/31":
+    - code: "VI/312"
+      name: "Sol marron rubéfié"
+      name_native: "Sol marron rubéfié"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: reddened}
+      notes: "A reddened B: moist hue 5YR or redder, chroma 4 or more, in the larger part of the B."
+    - code: "VI/313"
+      name: "Sol marron à B textural"
+      name_native: "Sol marron à B textural"
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+      notes: "A textural B: the clay index above 1.4 with 5 % clay more (the VII/12 reading)."
+    - code: "VI/314"
+      name: "Sol marron encroûté (à croûte calcaire)"
+      name_native: "Sol marron encroûté (à croûte calcaire)"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: cemented, mineral: carbonate}
+      notes: "A calcareous crust: soilKey's petrocalcic horizon, a calcrete, or a Ca cemented moderately or more."
+    - code: "VI/315"
+      name: "Sol marron à pseudogley"
+      name_native: "Sol marron à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "VI/316"
+      name: "Sol marron vertique"
+      name_native: "Sol marron vertique"
+      tests:
+        all_of:
+          - vertic_cpcs: {prismatic_b: true}
+      notes: "soilKey's protovertic (or vertic) horizon, or a (B) of coarse or very coarse prismatic structure."
+    - code: "VI/317"
+      name: "Sol marron faiblement salé ou alcalisé"
+      name_native: "Sol marron faiblement salé ou alcalisé"
+      tests:
+        all_of:
+          - any_of:
+              - salt_cpcs: {within: 100, ec: 4}
+              - sodium_cpcs: {within: 100, esp: 6}
+      notes: "EC 4 dS/m or more, or exchangeable Na 6 % of the CEC or more, in a layer within 100 cm."
+    - code: "VI/311"
+      name: "Sol marron modal"
+      name_native: "Sol marron modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VI/32":
+    - code: "VI/322"
+      name: "{parent}, Encroûté (à croûte gypseuse)"
+      name_native: "{parent}, Encroûté (à croûte gypseuse)"
+      tests:
+        all_of:
+          - calcareous_crust_cpcs: {kind: cemented, mineral: gypsum}
+      notes: "A gypseous crust: soilKey's petrogypsic horizon, or a Cs cemented moderately or more."
+    - code: "VI/323"
+      name: "{parent}, à pseudogley"
+      name_native: "{parent}, à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "VI/324"
+      name: "{parent}, Vertique en profondeur"
+      name_native: "{parent}, Vertique en profondeur"
+      tests:
+        all_of:
+          - vertic_cpcs: {from: 50, prismatic_b: true}
+      notes: "Vertic characters (as VI/114) starting at 50 cm or deeper."
+    - code: "VI/325"
+      name: "{parent}, Faiblement salé ou alcalisé"
+      name_native: "{parent}, Faiblement salé ou alcalisé"
+      tests:
+        all_of:
+          - any_of:
+              - salt_cpcs: {within: 100, ec: 4}
+              - sodium_cpcs: {within: 100, esp: 6}
+      notes: "EC 4 dS/m or more, or exchangeable Na 6 % of the CEC or more, in a layer within 100 cm."
+    - code: "VI/321"
+      name: "{parent}, Modal"
+      name_native: "{parent}, Modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "VI/41":
+    - code: "VI/412"
+      name: "Brun rouge sub-aride"
+      name_native: "Brun rouge sub-aride"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: reddened}
+      notes: "A reddened B: moist hue 5YR or redder, chroma 4 or more, in the larger part of the B."
+    - code: "VI/413"
+      name: "Brun sub-aride à pseudogley"
+      name_native: "Brun sub-aride à pseudogley"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs (redox features above 0 %, mottle colours, a reduced matrix, or a g or G where no mottles are recorded) in a layer starting within 100 cm."
+    - code: "VI/414"
+      name: "Brun sub-aride vertique"
+      name_native: "Brun sub-aride vertique"
+      tests:
+        all_of:
+          - vertic_cpcs: {prismatic_b: true}
+      notes: "soilKey's protovertic (or vertic) horizon, or a (B) of coarse or very coarse prismatic structure."
+    - code: "VI/415"
+      name: "Brun sub-aride faiblement salé ou alcalisé"
+      name_native: "Brun sub-aride faiblement salé ou alcalisé"
+      tests:
+        all_of:
+          - any_of:
+              - salt_cpcs: {within: 100, ec: 4}
+              - sodium_cpcs: {within: 100, esp: 6}
+      notes: "EC 4 dS/m or more, or exchangeable Na 6 % of the CEC or more, in a layer within 100 cm."
+    - code: "VI/411"
+      name: "Brun sub-aride modal"
+      name_native: "Brun sub-aride modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."

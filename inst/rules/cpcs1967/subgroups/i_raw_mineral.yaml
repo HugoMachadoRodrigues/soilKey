@@ -1,0 +1,123 @@
+# Sous-groupes des sols minéraux bruts (pp. 18-20), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subgroups.R and readings.yaml.
+subgroups:
+  "I/11":
+    - code: "I/111"
+      name: "Lithosols"
+      name_native: "Lithosols"
+      tests:
+        all_of:
+          - hard_rock_contact_cpcs: {under: A}
+      notes: "Hard rock (an R, or a layer strongly cemented) directly under the (A): profile (A)R."
+    - code: "I/112"
+      name: "Régosols"
+      name_native: "Régosols"
+      tests:
+        default: true
+      notes: "The other raw erosion soils: on loose rock."
+  "I/12":
+    - code: "I/122"
+      name: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      name_native: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "I/121"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "I/13":
+    - code: "I/132"
+      name: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      name_native: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "I/131"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "I/14":
+    - code: "I/142"
+      name: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      name_native: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "I/141"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "I/15":
+    - code: "I/152"
+      name: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      name_native: "{parent}, à nappe se trouvant à certaines périodes à moins de 1 mètre de profondeur"
+      tests:
+        all_of:
+          - hydromorphic_signs_cpcs: {within: 100, water_table: true}
+      notes: "A water table recorded within 1 m, or hydromorphic signs in a layer starting within 100 cm."
+    - code: "I/151"
+      name: "{parent}, modal"
+      name_native: "{parent}, modal"
+      tests:
+        default: true
+      notes: "The other soils of the group."
+  "I/22":
+    - code: "I/222"
+      name: "Cryosol brut à microrelief"
+      name_native: "Cryosol brut à microrelief"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: microrelief, unrecorded: absent}
+      notes: "Hummocks, thufurs or solifluction lobes recorded in patterned_ground or microrelief_form; not recorded, absent."
+    - code: "I/221"
+      name: "Cryosol brut plan uni"
+      name_native: "Cryosol brut plan uni"
+      tests:
+        default: true
+      notes: "No microrelief recorded: a plane even surface."
+  "I/23":
+    - code: "I/231"
+      name: "Cryosols bruts à réseaux de fentes en coin"
+      name_native: "Cryosols bruts à réseaux de fentes en coin"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: wedges}
+      notes: "Wedges or a network of large cracks in patterned_ground."
+    - code: "I/232"
+      name: "Cryosols bruts à « polygones de terre »"
+      name_native: "Cryosols bruts à « polygones de terre »"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: earth_polygons}
+      notes: "Earth (non-sorted) polygons in patterned_ground."
+    - code: "I/233"
+      name: "Cryosols bruts à polygones de pierres (ou à cercles ou à roses de pierres)"
+      name_native: "Cryosols bruts à polygones de pierres (ou à cercles ou à roses de pierres)"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: stone_polygons}
+      notes: "Stone (sorted) polygons, circles, nets or rosettes in patterned_ground."
+    - code: "I/234"
+      name: "Cryosols bruts à pustules de boue"
+      name_native: "Cryosols bruts à pustules de boue"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: mud_boils}
+      notes: "Mud boils (pustules, ostioles) in patterned_ground."
+    - code: "I/235"
+      name: "Cryosols bruts striés"
+      name_native: "Cryosols bruts striés"
+      tests:
+        all_of:
+          - frost_form_cpcs: {kind: stripes}
+      notes: "Stripes in patterned_ground."
