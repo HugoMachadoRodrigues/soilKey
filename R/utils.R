@@ -252,7 +252,9 @@ horizon_column_spec <- function() {
     leached_spots                 = "logical",   # leached (bleached) spots in a podzolic B; SCSJ moderately developed forest phase of the Podzols
     # ---- v0.9.328: the CSCJ 2011 soil series groups ----
     texture_class_jp              = "character", # Japanese soil texture class (HC, SiC, LiC, SC, SiCL, CL, SCL, SiL, L, FSL, CoSL, LS, S); CSCJ series groups
-    hardness_yamanaka_mm          = "numeric"    # soil hardness by the Yamanaka-type tester, mm; CSCJ pan layer (29 mm or more)
+    hardness_yamanaka_mm          = "numeric",   # soil hardness by the Yamanaka-type tester, mm; CSCJ pan layer (29 mm or more)
+    # ---- v0.9.332: the CPCS 1967 groups ----
+    ice_form                      = "character"  # form of the ground ice (lenses, veins, wedges, none); CPCS permafrost groups
   )
 }
 

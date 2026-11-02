@@ -53,6 +53,7 @@
     return(switch(kind,
       cold_desert = kp("^E"),
       hot_desert = kp("^BW"),
+      arid = kp("^B"),
       dry = kp("^B|^Cs"),
       not_arid = !kp("^BW"),
       tropical = kp("^A"),
@@ -73,6 +74,7 @@
     out <- switch(kind,
       cold_desert = if (tre("cryic|pergelic|gelic")) TRUE else if (have_t) FALSE else none,
       hot_desert = if (mre("aridic|torric")) TRUE else if (have_m) FALSE else none,
+      arid = if (mre("aridic|torric")) TRUE else if (have_m) FALSE else none,
       dry = if (mre("aridic|torric|xeric|ustic")) TRUE else if (have_m) FALSE else none,
       not_arid = if (have_m) !mre("aridic|torric") else TRUE,
       tropical = if (have_t) tre("isothermic|isohyperthermic|^hyperthermic") else

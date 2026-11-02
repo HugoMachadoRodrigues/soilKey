@@ -1,0 +1,24 @@
+# Groupes des andosols (p. 33), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "IV-1":
+    - code: "IV/11"
+      name: Andosols humifères désaturés (des pays froids)
+      name_native: Andosols humifères désaturés (des pays froids)
+      tests:
+        default: true
+      notes: "The only group of IV-1."
+  "IV-2":
+    - code: "IV/21"
+      name: Sols saturés
+      name_native: Sols saturés
+      tests:
+        all_of:
+          - saturated_andosol_cpcs: {}
+      notes: "Base saturation of 50 % or more in the (B); without it, pH(H2O) 6 or more."
+    - code: "IV/22"
+      name: Sols désaturés
+      name_native: Sols désaturés
+      tests:
+        default: true
+      notes: "Acid, strongly desaturated."

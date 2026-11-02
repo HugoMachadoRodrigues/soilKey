@@ -1,0 +1,68 @@
+# Groupes des sols podzolisés (pp. 50-55), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "VIII-1":
+    - code: "VIII/11"
+      name: Podzols
+      name_native: Podzols
+      tests:
+        all_of:
+          - podzol_ashy_a2_cpcs: {}
+      notes: "An ashy A2 (albic material), over a podzolic B or alone."
+    - code: "VIII/12"
+      name: Sols podzoliques
+      name_native: Sols podzoliques
+      tests:
+        all_of:
+          - podzolic_cpcs: {}
+      notes: "A pale A2 that is not ashy (a Munsell value one unit above the A1 and the B) over a B with more than 1 % OM; or an A2 over a Bg; or an Ap over such a B."
+    - code: "VIII/13"
+      name: Sols ocre-podzoliques
+      name_native: Sols ocre-podzoliques
+      tests:
+        all_of:
+          - ochre_podzolic_cpcs: {}
+      notes: "No A2 (or a broken one) and an ochre B: hue 10YR to 5YR with chroma 6 or more."
+    - code: "VIII/14"
+      name: Sols crypto-podzoliques
+      name_native: Sols crypto-podzoliques
+      tests:
+        all_of:
+          - crypto_podzolic_cpcs: {}
+      notes: "No thick A2 (under 5 cm), and a brown B (chroma 4 or less) with more than 2 % OM, or an A1 of 30 to 60 cm with more than 10 % OM."
+  "VIII-2":
+    - code: "VIII/21"
+      name: Podzols boréaux
+      name_native: Podzols boréaux
+      tests:
+        all_of:
+          - boreal_podzol_cpcs: {}
+      notes: "Cold by latitude: Koppen D with c or d, or a latitude of 50 degrees or more."
+    - code: "VIII/22"
+      name: Podzols alpins
+      name_native: Podzols alpins
+      tests:
+        all_of:
+          - alpine_podzol_cpcs: {}
+      notes: "Cold by altitude: Koppen ET or EF below 60 degrees of latitude, or an elevation of 1,500 m or more."
+  "VIII-3":
+    - code: "VIII/32"
+      name: Molken-podzols
+      name_native: Molken-podzols
+      tests:
+        all_of:
+          - molken_podzol_cpcs: {}
+      notes: "A g in the place of the A2, under a perched water table (a recorded water table that is not perched rules it out)."
+    - code: "VIII/33"
+      name: Podzols de nappe tropicaux
+      name_native: Podzols de nappe tropicaux
+      tests:
+        all_of:
+          - tropical_groundwater_podzol_cpcs: {}
+      notes: "A tropical climate, a very thick A2 (50 cm or more) and a concretioned or cemented B."
+    - code: "VIII/31"
+      name: Podzols à gley
+      name_native: Podzols à gley
+      tests:
+        default: true
+      notes: "A water table near the surface, with a gley."

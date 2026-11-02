@@ -1,3 +1,42 @@
+# soilKey 0.9.332 (2026-11-01)
+
+## France: the 101 groups of the CPCS 1967
+
+`classify_cpcs1967()` now keys a pedon to its group, a third registry level, `groups`, for example "Podzols", "Sols lessivés" or "Sols ferrallitiques fortement désaturés en (B) typiques". The subgroups follow.
+
+* **Groups.** The text defines most groups by a profile type, a colour word or a property with no number; soilKey's readings are listed in `readings.yaml`.
+  * A group the data cannot decide leaves the name provisional.
+  * When no group of a sub-class fits (VIII-1, VIII-2, XI-1 have no default), the name stops at the sub-class and the trace says why.
+* **Two new fields:** `patterned_ground` (site: polygons, circles, stripes, mud boils, hummocks, palsas) and `ice_form` (horizon: ice lenses, wedges). They decide the groups of the cold-desert and permafrost soils; not recorded, those groups are undecided.
+* The FAO and USDA suffixes i, e and a of an O horizon give the fibre class of a peat when no fibre content is recorded.
+
+### Hugo's decisions (2026-11-01)
+
+* **Deposits and erosion (I-1, II-4):** the origin recorded for the material under the A within 50 cm, else the parent material; anthropic, volcanic, alluvial, colluvial, aeolian, in that order; no origin recorded, the erosion group.
+* **Classes I to IV:**
+  * the lithosols of the deserts: hard rock within 10 cm;
+  * II/23 allophanic first (pH NaF 9.5 or more, or Alo + 1/2 Feo 2 % or more), II/22 only on a calcareous rock;
+  * II/31: under 1 % OM and an arid climate;
+  * the vertisol groups by the structure of the top 15 cm (self-mulching is angular, massive undecided);
+  * IV/21: base saturation of 50 % or more in the (B), pH 6 or more without it.
+* **Classes V and VI:**
+  * V/13 cryptorendzinas first (dolomite), then V/11 rendzinas (no (B)), V/12 the others;
+  * V/22 (OM above 20 % on hard carbonate rock), V/23 (fine polyhedral A, CEC of the clay 50 or more), V/21 the others;
+  * the isohumic groups by the mean OM of the top 20 cm (chernozems above 5 %, chestnut soils 3 % or more, marron soils 1 % or more).
+* **Classes VII and VIII:**
+  * the leached soils: the clay index (largest clay of the B over smallest of the A) above 1.4 with 5 % clay more; films recorded as none or few rule it out;
+  * the sod-podzolic soils: an A1 of 25 cm or more and tongues;
+  * one colour table for the podzolised soils (ashy = albic, pale = one Munsell value above the A1 and the B, ochre = 10YR to 5YR with chroma 6, brown = chroma 4 or less);
+  * boreal podzols (Köppen Dc or Dd, or latitude 50 or more) before alpine ones (ET or EF below 60 degrees, or 1,500 m).
+* **Classes IX and X:**
+  * IX/12 leached, IX/13 impoverished, IX/11 the others, by the clay index, the thickness of the A, the C and the clay films;
+  * IX/21: a calcium reserve within 100 cm, or a (B) with V 95 % or more and pH 7 to 7.5;
+  * class X in the order humic, leached, impoverished, reworked, rejuvenated, typical (X/24 read as reworked).
+* **Classes XI and XII:**
+  * the peat groups by the fibre class over the greatest thickness;
+  * XI-3 in the order 35, 36, 34, 31, 33, 32 (the specific groups first);
+  * XII-2 in the order solodised, Solonetz, Solonchak-Solonetz.
+
 # soilKey 0.9.331 (2026-11-01)
 
 ## France: the 35 sub-classes of the CPCS 1967

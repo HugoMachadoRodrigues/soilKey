@@ -1,0 +1,81 @@
+# Groupes des sols hydromorphes (pp. 74-76), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "XI-1":
+    - code: "XI/11"
+      name: Sols à tourbe fibreuse (Fibrist)
+      name_native: Sols à tourbe fibreuse (Fibrist)
+      tests:
+        all_of:
+          - peat_fibre_cpcs: {kind: fibric}
+      notes: "Fibrous peat over the greatest thickness: unrubbed fibre above 2/3, else von Post H1-H3, else rubbed fibre of 40 % or more."
+    - code: "XI/12"
+      name: Sols à tourbe semi-fibreuse (Lenist)
+      name_native: Sols à tourbe semi-fibreuse (Lenist)
+      tests:
+        all_of:
+          - peat_fibre_cpcs: {kind: hemic}
+      notes: "Semi-fibrous peat: unrubbed fibre 1/3 to 2/3, else von Post H4-H6, else rubbed fibre 17 to 40 %."
+    - code: "XI/13"
+      name: Sols à tourbe altérée (Saprist)
+      name_native: Sols à tourbe altérée (Saprist)
+      tests:
+        all_of:
+          - peat_fibre_cpcs: {kind: sapric}
+      notes: "Altered peat: unrubbed fibre under 1/3, else von Post H7-H10, else rubbed fibre under 17 %."
+  "XI-2":
+    - code: "XI/21"
+      name: Sols humiques à gley (profil AG)
+      name_native: Sols humiques à gley (profil AG)
+      tests:
+        all_of:
+          - humic_gley_cpcs: {}
+      notes: "The layer under the humic horizon is a gley (a reduced matrix)."
+    - code: "XI/22"
+      name: Sols humiques à stagnogley
+      name_native: Sols humiques à stagnogley
+      tests:
+        default: true
+      notes: "The layer under the humic horizon is a stagnogley."
+  "XI-3":
+    - code: "XI/35"
+      name: Sols hydromorphes à accumulation de fer en carapace ou cuirasse
+      name_native: Sols hydromorphes à accumulation de fer en carapace ou cuirasse
+      tests:
+        all_of:
+          - iron_pan_hydromorphic_cpcs: {}
+      notes: "A layer cemented by iron within 100 cm (a carapace or a cuirasse)."
+    - code: "XI/36"
+      name: Sols hydromorphes à redistribution du calcaire ou du gypse
+      name_native: Sols hydromorphes à redistribution du calcaire ou du gypse
+      tests:
+        all_of:
+          - calcium_redistribution_cpcs: {}
+      notes: "Secondary carbonates or visible gypsum of 5 % or more within 100 cm."
+    - code: "XI/34"
+      name: Sols à amphigley
+      name_native: Sols à amphigley
+      tests:
+        all_of:
+          - amphigley_cpcs: {}
+      notes: "A pseudogley over a gley starting at 50 cm or deeper."
+    - code: "XI/31"
+      name: Sols hydromorphes peu humifères à gley
+      name_native: Sols hydromorphes peu humifères à gley
+      tests:
+        all_of:
+          - gley_cpcs: {}
+      notes: "A reduced matrix starting within 130 cm, under a water table that is not perched."
+    - code: "XI/33"
+      name: Sols hydromorphes peu humifères à stagnogley
+      name_native: Sols hydromorphes peu humifères à stagnogley
+      tests:
+        all_of:
+          - stagnogley_cpcs: {}
+      notes: "A reduced matrix from just under the A over most of the profile to 100 cm, with a perched water table or none."
+    - code: "XI/32"
+      name: Sols hydromorphes peu humifères à pseudogley
+      name_native: Sols hydromorphes peu humifères à pseudogley
+      tests:
+        default: true
+      notes: "The other mineral hydromorphic soils: alternating grey and rust mottles."

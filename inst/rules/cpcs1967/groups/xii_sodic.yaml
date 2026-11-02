@@ -1,0 +1,31 @@
+# Groupes des sols sodiques (pp. 78-79), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "XII-1":
+    - code: "XII/11"
+      name: Sols salins (Solontchak), profil AC
+      name_native: Sols salins (Solontchak), profil AC
+      tests:
+        default: true
+      notes: "The only group of XII-1."
+  "XII-2":
+    - code: "XII/23"
+      name: Sols sodiques à horizon blanchi (solodisés)
+      name_native: Sols sodiques à horizon blanchi (solodisés)
+      tests:
+        all_of:
+          - solodised_cpcs: {}
+      notes: "An albic A2 over a B with the clay increase of the WRB argic horizon, and an acid surface (pH under 7) when recorded."
+    - code: "XII/22"
+      name: Sols sodiques à horizon B (Solonetz), profil A B C
+      name_native: Sols sodiques à horizon B (Solonetz), profil A B C
+      tests:
+        all_of:
+          - solonetz_cpcs: {}
+      notes: "A B with the clay increase of the WRB argic horizon, compact, with Na above 10 % of the CEC."
+    - code: "XII/21"
+      name: Sols salins à alcalins (Solontchak-Solonetz), profil A (B) C
+      name_native: Sols salins à alcalins (Solontchak-Solonetz), profil A (B) C
+      tests:
+        default: true
+      notes: "The clay content constant through the horizons."

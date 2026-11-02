@@ -1,0 +1,45 @@
+# Groupes des sols brunifiés (pp. 45-48), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "VII-1":
+    - code: "VII/12"
+      name: Sols lessivés
+      name_native: Sols lessivés
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+      notes: "A textural B: the clay index (largest clay of the B over the smallest of the A above) above 1.4, with 5 % clay or more; clay films recorded as none or few rule it out. Without clay, a Bt."
+    - code: "VII/11"
+      name: Sols bruns
+      name_native: Sols bruns
+      tests:
+        default: true
+      notes: "No textural B."
+  "VII-2":
+    - code: "VII/22"
+      name: Sols derno-podzoliques
+      name_native: Sols derno-podzoliques
+      tests:
+        all_of:
+          - sod_podzolic_cpcs: {}
+      notes: "A thick A1 (25 cm or more) and an A2 tonguing into the textural B."
+    - code: "VII/21"
+      name: Sols gris forestiers
+      name_native: Sols gris forestiers
+      tests:
+        default: true
+      notes: "A grey A2 rich in OM, little different from the A1."
+  "VII-3":
+    - code: "VII/31"
+      name: Sols lessivés boréaux
+      name_native: Sols lessivés boréaux
+      tests:
+        default: true
+      notes: "The only group of VII-3 (grey wooded soils)."
+  "VII-4":
+    - code: "VII/41"
+      name: Sols bruns eutrophes tropicaux
+      name_native: Sols bruns eutrophes tropicaux
+      tests:
+        default: true
+      notes: "The only group of VII-4."

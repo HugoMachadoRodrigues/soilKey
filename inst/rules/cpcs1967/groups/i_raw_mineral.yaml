@@ -1,0 +1,101 @@
+# Groupes des sols minéraux bruts (pp. 18-20), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "I-1":
+    - code: "I/16"
+      name: Sols minéraux bruts anthropiques
+      name_native: Sols minéraux bruts anthropiques
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: anthropic}
+      notes: "Material laid down or moved by people: artefacts of 20 % or more, or a fill, in the material under the A within 50 cm."
+    - code: "I/15"
+      name: Sols minéraux bruts d'apport volcanique
+      name_native: Sols minéraux bruts d'apport volcanique
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: volcanic}
+      notes: "A recent volcanic deposit (tephra, ash, pumice) recorded as the origin of the material."
+    - code: "I/12"
+      name: Sols minéraux bruts d'apport alluvial
+      name_native: Sols minéraux bruts d'apport alluvial
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: alluvial}
+      notes: "A recent alluvial deposit (with the lacustrine and marine ones) recorded as the origin of the material."
+    - code: "I/13"
+      name: Sols minéraux bruts d'apport colluvial
+      name_native: Sols minéraux bruts d'apport colluvial
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: colluvial}
+      notes: "A recent colluvial deposit recorded as the origin of the material."
+    - code: "I/14"
+      name: Sols minéraux bruts d'apport éolien
+      name_native: Sols minéraux bruts d'apport éolien
+      tests:
+        all_of:
+          - deposit_origin_cpcs: {kind: aeolian}
+      notes: "A recent wind-borne deposit recorded as the origin of the material."
+    - code: "I/11"
+      name: Sols minéraux bruts d'érosion
+      name_native: Sols minéraux bruts d'érosion
+      tests:
+        default: true
+      notes: "No deposit recorded: material in place, freshly exposed by erosion."
+  "I-2":
+    - code: "I/21"
+      name: Lithosols des déserts froids
+      name_native: Lithosols des déserts froids
+      tests:
+        all_of:
+          - rock_near_surface_cpcs: {within: 10}
+      notes: "Hard rock at the surface or under 10 cm or less of loose material."
+    - code: "I/23"
+      name: Cryosols bruts organisés
+      name_native: Cryosols bruts organisés
+      tests:
+        all_of:
+          - patterned_ground_cpcs: {}
+      notes: "Patterned ground (polygons, circles, nets, stripes, mud boils, wedge cracks) recorded in site$patterned_ground; not recorded, undecided. The synoptic table repeats 'inorganisés' by a slip (p. 81)."
+    - code: "I/22"
+      name: Cryosols bruts inorganisés
+      name_native: Cryosols bruts inorganisés
+      tests:
+        default: true
+      notes: "Frost action without a geometric redistribution of the material."
+  "I-3":
+    - code: "I/31"
+      name: Lithosols des déserts chauds
+      name_native: Lithosols des déserts chauds
+      tests:
+        all_of:
+          - rock_near_surface_cpcs: {within: 10}
+      notes: "Hard rock at the surface or under 10 cm or less of loose material."
+    - code: "I/33"
+      name: Sols minéraux bruts xériques organisés d'ablation
+      name_native: Sols minéraux bruts xériques organisés d'ablation
+      tests:
+        all_of:
+          - yermic_cpcs: {}
+      notes: "A desert pavement (regs): soilKey's yermic properties."
+    - code: "I/35"
+      name: Sols minéraux bruts xériques organisés d'apport
+      name_native: Sols minéraux bruts xériques organisés d'apport
+      tests:
+        all_of:
+          - takyric_cpcs: {}
+      notes: "A compact clayey surface of the depressions (takyr): soilKey's takyric properties."
+    - code: "I/34"
+      name: Sols minéraux bruts xériques inorganisés d'apport
+      name_native: Sols minéraux bruts xériques inorganisés d'apport
+      tests:
+        all_of:
+          - aeolian_sands_cpcs: {}
+      notes: "Dunes (ergs): an aeolian deposit or a dune landform, sandy within 50 cm."
+    - code: "I/32"
+      name: Sols minéraux bruts xériques inorganisés
+      name_native: Sols minéraux bruts xériques inorganisés
+      tests:
+        default: true
+      notes: "The other hot-desert raw soils, on any loose material."

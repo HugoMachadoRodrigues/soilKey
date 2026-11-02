@@ -1,0 +1,52 @@
+# Groupes des sols isohumiques (pp. 40-43), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "VI-1":
+    - code: "VI/11"
+      name: Brunizems
+      name_native: Brunizems
+      tests:
+        default: true
+      notes: "The only group of VI-1."
+  "VI-2":
+    - code: "VI/21"
+      name: Chernozems
+      name_native: Chernozems
+      tests:
+        all_of:
+          - isohumic_om20_cpcs: {above: 5}
+      notes: "Mean OM of the top 20 cm above 5 %."
+    - code: "VI/22"
+      name: Sols châtains
+      name_native: Sols châtains
+      tests:
+        all_of:
+          - isohumic_om20_cpcs: {at_least: 3}
+      notes: "Mean OM of the top 20 cm of 3 % or more (3 to 6 %; from 5 % the chernozems are keyed first)."
+    - code: "VI/23"
+      name: Sols bruns isohumiques
+      name_native: Sols bruns isohumiques
+      tests:
+        default: true
+      notes: "Mean OM of the top 20 cm under 3 %."
+  "VI-3":
+    - code: "VI/31"
+      name: Sols marrons
+      name_native: Sols marrons
+      tests:
+        all_of:
+          - isohumic_om20_cpcs: {at_least: 1}
+      notes: "Mean OM of the top 20 cm of 1 % or more."
+    - code: "VI/32"
+      name: Sierozems
+      name_native: Sierozems
+      tests:
+        default: true
+      notes: "Mean OM of the top 20 cm under 1 %."
+  "VI-4":
+    - code: "VI/41"
+      name: Sols bruns subarides
+      name_native: Sols bruns subarides
+      tests:
+        default: true
+      notes: "The only group of VI-4 (the synoptic table writes 'bruns arides')."

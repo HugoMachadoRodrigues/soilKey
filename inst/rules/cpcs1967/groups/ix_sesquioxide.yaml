@@ -1,0 +1,38 @@
+# Groupes des sols à sesquioxydes de fer et manganèse (pp. 58-61), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "IX-1":
+    - code: "IX/12"
+      name: Sols ferrugineux tropicaux lessivés
+      name_native: Sols ferrugineux tropicaux lessivés
+      tests:
+        all_of:
+          - ferruginous_leached_cpcs: {}
+      notes: "The clay index above 1.4 with 5 % clay more, an A of 15 cm or more (or a third of the solum), and a C intermediate (under 0.9 x the largest clay of the B) or clay films in the B."
+    - code: "IX/13"
+      name: Sols ferrugineux tropicaux appauvris
+      name_native: Sols ferrugineux tropicaux appauvris
+      tests:
+        all_of:
+          - ferruginous_impoverished_cpcs: {}
+      notes: "The same clay change from the A to the B, the C as clayey as the B, and no clay films."
+    - code: "IX/11"
+      name: Sols ferrugineux tropicaux peu lessivés
+      name_native: Sols ferrugineux tropicaux peu lessivés
+      tests:
+        default: true
+      notes: "The other ferruginous tropical soils."
+  "IX-2":
+    - code: "IX/21"
+      name: Sols fersiallitiques à réserve calcique et le plus souvent peu lessivés
+      name_native: Sols fersiallitiques à réserve calcique et le plus souvent peu lessivés
+      tests:
+        all_of:
+          - fersiallitic_calcium_reserve_cpcs: {}
+      notes: "A calcium reserve: carbonate within 100 cm, calcareous fragments or rock, or a (B) of base saturation 95 % or more with pH 7 to 7.5."
+    - code: "IX/22"
+      name: Sols fersiallitiques sans réserve calcique (et lessivés)
+      name_native: Sols fersiallitiques sans réserve calcique (et lessivés)
+      tests:
+        default: true
+      notes: "No calcium reserve."

@@ -1,0 +1,59 @@
+# Groupes des sols calcimagnésiques (pp. 36-38), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "V-1":
+    - code: "V/13"
+      name: Cryptorendzines
+      name_native: Cryptorendzines
+      tests:
+        all_of:
+          - cryptorendzina_cpcs: {}
+      notes: "Dolomitic: a dolomitic material named, effervescence only with hot acid, or carbonate with no or a slight cold effervescence; no (B)."
+    - code: "V/11"
+      name: Rendzines
+      name_native: Rendzines
+      tests:
+        all_of:
+          - rendzina_cpcs: {}
+      notes: "No (B): an A on the C or the rock."
+    - code: "V/12"
+      name: Sols bruns calcaires
+      name_native: Sols bruns calcaires
+      tests:
+        default: true
+      notes: "With a structural (B)."
+  "V-2":
+    - code: "V/22"
+      name: Sols humiques carbonatés
+      name_native: Sols humiques carbonatés
+      tests:
+        all_of:
+          - carbonated_humic_cpcs: {}
+      notes: "OM above 20 % in the A, on a hard carbonate rock."
+    - code: "V/23"
+      name: Sols calciques mélanisés
+      name_native: Sols calciques mélanisés
+      tests:
+        all_of:
+          - melanised_calcic_cpcs: {}
+      notes: "A fine polyhedral A, a CEC of the clay of 50 cmol(+)/kg or more, on hard rock or a calcareous crust."
+    - code: "V/21"
+      name: Sols bruns calciques
+      name_native: Sols bruns calciques
+      tests:
+        default: true
+      notes: "The other saturated calcimagnesic soils."
+  "V-3":
+    - code: "V/31"
+      name: Sols gypseux rendziniformes
+      name_native: Sols gypseux rendziniformes
+      tests:
+        all_of:
+          - gypseous_rendziniform_cpcs: {}
+      notes: "Thin: the rock within 50 cm, with no A3 and no (B)."
+    - code: "V/32"
+      name: Sols bruns gypseux
+      name_native: Sols bruns gypseux
+      tests:
+        default: true
+      notes: "With an A3 or a (B)."

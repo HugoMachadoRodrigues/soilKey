@@ -1,0 +1,108 @@
+# Groupes des sols ferrallitiques (pp. 67-70), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-groups.R and readings.yaml.
+groups:
+  "X-1":
+    - code: "X/12"
+      name: Sols ferrallitiques faiblement désaturés appauvris
+      name_native: Sols ferrallitiques faiblement désaturés appauvris
+      tests:
+        all_of:
+          - ferrallitic_impoverished_cpcs: {}
+      notes: "The clay index 1.4 or more, no common or many clay films."
+    - code: "X/13"
+      name: Sols ferrallitiques faiblement désaturés remaniés
+      name_native: Sols ferrallitiques faiblement désaturés remaniés
+      tests:
+        all_of:
+          - ferrallitic_reworked_cpcs: {}
+      notes: "A stone line (15 % coarse fragments or more at the base of the A or in the B, more than above and below), a lithological discontinuity, or a colluvial origin."
+    - code: "X/14"
+      name: Sols ferrallitiques faiblement désaturés rajeunis ou pénévolués
+      name_native: Sols ferrallitiques faiblement désaturés rajeunis ou pénévolués
+      tests:
+        all_of:
+          - ferrallitic_rejuvenated_cpcs: {}
+      notes: "Weatherable minerals in the sand (feldspars, micas, amphiboles) of 10 % or more."
+    - code: "X/11"
+      name: Sols ferrallitiques faiblement désaturés en (B) typiques
+      name_native: Sols ferrallitiques faiblement désaturés en (B) typiques
+      tests:
+        default: true
+      notes: "The other weakly desaturated ferrallitic soils."
+  "X-2":
+    - code: "X/22"
+      name: Sols ferrallitiques moyennement désaturés en (B) humifères
+      name_native: Sols ferrallitiques moyennement désaturés en (B) humifères
+      tests:
+        all_of:
+          - ferrallitic_humic_cpcs: {}
+      notes: "A mean OM of 7 % or more over 0-20 cm, or more than 1 % in every horizon to 100 cm."
+    - code: "X/23"
+      name: Sols ferrallitiques moyennement désaturés appauvris
+      name_native: Sols ferrallitiques moyennement désaturés appauvris
+      tests:
+        all_of:
+          - ferrallitic_impoverished_cpcs: {}
+      notes: "The clay index 1.4 or more, no common or many clay films."
+    - code: "X/24"
+      name: Sols ferrallitiques moyennement désaturés remaniés
+      name_native: Sols ferrallitiques moyennement désaturés remaniés
+      tests:
+        all_of:
+          - ferrallitic_reworked_cpcs: {}
+      notes: "A stone line (15 % coarse fragments or more at the base of the A or in the B, more than above and below), a lithological discontinuity, or a colluvial origin. The title prints no qualifier; its subgroups are those of the reworked soils."
+    - code: "X/25"
+      name: Sols ferrallitiques moyennement désaturés rajeunis ou pénévolués
+      name_native: Sols ferrallitiques moyennement désaturés rajeunis ou pénévolués
+      tests:
+        all_of:
+          - ferrallitic_rejuvenated_cpcs: {}
+      notes: "Weatherable minerals in the sand (feldspars, micas, amphiboles) of 10 % or more."
+    - code: "X/21"
+      name: Sols ferrallitiques moyennement désaturés en (B) typiques
+      name_native: Sols ferrallitiques moyennement désaturés en (B) typiques
+      tests:
+        default: true
+      notes: "The other moderately desaturated ferrallitic soils."
+  "X-3":
+    - code: "X/32"
+      name: Sols ferrallitiques fortement désaturés humifères
+      name_native: Sols ferrallitiques fortement désaturés humifères
+      tests:
+        all_of:
+          - ferrallitic_humic_cpcs: {}
+      notes: "A mean OM of 7 % or more over 0-20 cm, or more than 1 % in every horizon to 100 cm."
+    - code: "X/36"
+      name: Sols ferrallitiques lessivés
+      name_native: Sols ferrallitiques lessivés
+      tests:
+        all_of:
+          - textural_b_leached_cpcs: {}
+      notes: "A textural B, as the leached soils of VII/12."
+    - code: "X/33"
+      name: Sols ferrallitiques fortement désaturés appauvris
+      name_native: Sols ferrallitiques fortement désaturés appauvris
+      tests:
+        all_of:
+          - ferrallitic_impoverished_cpcs: {}
+      notes: "The clay index 1.4 or more, no common or many clay films."
+    - code: "X/34"
+      name: Sols ferrallitiques fortement désaturés remaniés
+      name_native: Sols ferrallitiques fortement désaturés remaniés
+      tests:
+        all_of:
+          - ferrallitic_reworked_cpcs: {}
+      notes: "A stone line (15 % coarse fragments or more at the base of the A or in the B, more than above and below), a lithological discontinuity, or a colluvial origin."
+    - code: "X/35"
+      name: Sols ferrallitiques fortement désaturés rajeunis ou pénévolués
+      name_native: Sols ferrallitiques fortement désaturés rajeunis ou pénévolués
+      tests:
+        all_of:
+          - ferrallitic_rejuvenated_cpcs: {}
+      notes: "Weatherable minerals in the sand (feldspars, micas, amphiboles) of 10 % or more."
+    - code: "X/31"
+      name: Sols ferrallitiques fortement désaturés en (B) typiques
+      name_native: Sols ferrallitiques fortement désaturés en (B) typiques
+      tests:
+        default: true
+      notes: "The other strongly desaturated ferrallitic soils."
