@@ -26,7 +26,7 @@ The Russian soil classification (Field Guide of 2008) joins the registry as `kid
   * A layer the data leave undecided between peat horizons counts in the peat body, and step 6 no longer asks for the decomposition or the von Post value it does not need.
   * A layer the data leave undecided between soil horizons is a soil horizon for step 1, so such profiles are no longer provisional on trunk E.
   * A layer in which the key on the data finds no diagnostic horizon may be a transition: it no longer proves that the profile has no soil horizon, so the canonical plinthosol is no longer trunk E. Rock, TPO and a deposit still do.
-  * FAO and WRB transitions (AB, BC, E/B and the like) in which the key on the data finds no diagnostic horizon are transitions, passed over as those of the Russian notation are. A chernozem Ah-AB-Bk is a humus-accumulative soil on both routes.
+  * FAO and WRB transitions (AB, BC, E/B and the like) are passed over as those of the Russian notation are. A chernozem Ah-AB-Bk is a humus-accumulative soil on both routes.
   * A missing depth or thickness leaves the step that needs it undecided: hard rock, a surface salt horizon or a contaminated layer of unknown depth, and the thickest-horizon rule with a thickness missing. No R warning any more.
   * The texts of the site are read as words. A terrace is no floodplain, glaciofluvial material and outwash are no alluvium, and outwash or washed sand is no volcanic ash.
   * The peat body is more than 50 cm, as the book says. `classify_kidpr2008()` says it needs a PedonRecord when it is given something else.
@@ -36,7 +36,10 @@ The Russian soil classification (Field Guide of 2008) joins the registry as `kid
   * BAN is formed in volcanic ash by its definition, so BAN alone makes the volcanic soils: H-BAN-C is BB, by the notation or by the key on the data.
   * Step 5 of the key to trunks reads the profile after the thickest-horizon rule, as C.2 and C.19 do. O over a thinner humus horizon is only O, a weakly developed soil, and O with W needs no repair.
   * Every ploughed soil of the iron-metamorphic (CC) and light-humus carbonate-accumulative (CJ) divisions is an agrozem (CS), or an agroabrazem (CR) under PB, with or without a remnant of the natural horizon (pp. 83, 99). P-AJ-BCA, P-AY-BFM and P-AJ-BM-BCA are agrozems, PB-BFM an agroabrazem. This replaces the reading of an agro horizon directly over BFM or BMK.
-  * C.14 reads "under" as printed, anywhere below the organic or agro horizon, so O-BI-G is a gley soil. BMK stays out of C.5: AJ-BMK-C is not provided.
+  * On the data route an FAO or WRB transition counts as a transition only when the key to horizons finds no diagnostic horizon in it. AE read as AEL and EB read as BEL keep their horizon, so the grey forest soil keeps its division (CA06).
+  * On the data route a layer designated C (C, Cg, 2Ck) in which the key to horizons finds no diagnostic horizon is loose rock, one of the readings key position 66 lists.
+  * C.14 reads "directly under", as C.13 does. The key prints "under", but the text of the gley soils (p. 92) puts G directly under the organic or humus horizon and leaves out a profile with any other mineral horizon, and the text decides. O-BI-G is not provided by the Field Guide of 2008.
+  * BMK stays out of C.5: AJ-BMK-C is not provided.
 
 # soilKey 0.9.336 (2026-11-02)
 

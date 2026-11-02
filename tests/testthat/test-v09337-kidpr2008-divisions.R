@@ -517,7 +517,7 @@ test_that("missing depths leave the steps undecided, with no R warning", {
   expect_length(w, 0L)
 })
 
-test_that("step 5 after the thickest-horizon rule; C.14 under; BMK out of C.5", {
+test_that("step 5 after the thickest-horizon rule; C.14 directly under; BMK out of C.5", {
   skip_on_cran()
   # O over a thinner humus horizon is only O (trunk D), over loose rock or
   # over hard rock; O with W is one of them
@@ -531,13 +531,22 @@ test_that("step 5 after the thickest-horizon rule; C.14 under; BMK out of C.5", 
   }
   # a thicker humus horizon is the surface one, the O a feature
   expect_identical(.ru_label(.ru_class(.ru_ped(c("O:6", "AY:12", "C:50")))), "C/CN")
-  # C.14 reads "under" as printed: anywhere below O, T, H, PT or PU
-  for (tk in list(c("O:8", "BI:30", "G:40", "CG:30"), c("T:30", "BCA:30", "Q:40", "CQ:30"))) {
+  # C.14 reads "directly under", as C.13: the gley division text (p. 92)
+  # puts G directly under the organic or humus horizon, and another mineral
+  # horizon leaves the soil out of the gley soils (Hugo, 2026-11-02)
+  for (tk in list(c("O:8", "BI:30", "G:40", "CG:30"), c("T:30", "BCA:30", "Q:40", "CQ:30"),
+                  c("O:5", "BI:40", "C:30"))) {
     r <- .ru_class(.ru_ped(tk))
-    expect_identical(.ru_label(r), if (grepl("Q:", tk[3L])) "C/CM" else "C/CH", info = paste(tk, collapse = " "))
+    expect_identical(.ru_label(r), "C/-", info = paste(tk, collapse = " "))
+    expect_true(any(grepl("not provided by the Field Guide of 2008", r$warnings)))
+    expect_length(r$provisional_because, 0L)
+    expect_identical(.kor_label(.kor_walk(.kor_profile(tk), FALSE)), "C/-")
+  }
+  for (tk in list(c("O:8", "G:40", "CG:30"), c("T:30", "Q:40", "CQ:30"), c("PT:25", "T:15", "G:30", "CG:30"))) {
+    r <- .ru_class(.ru_ped(tk))
+    expect_identical(.ru_label(r), if (grepl("^Q:", tk[2L])) "C/CM" else "C/CH", info = paste(tk, collapse = " "))
     expect_identical(.kor_label(.kor_walk(.kor_profile(tk), FALSE)), .ru_label(r))
   }
-  expect_identical(.ru_label(.ru_class(.ru_ped(c("O:5", "BI:40", "C:30")))), "C/-")
   # BMK stays out of C.5 (Q10: only the gaps the types prove are repaired)
   r <- .ru_class(.ru_ped(c("AJ:15", "BMK:20", "C:30")))
   expect_identical(.ru_label(r), "C/-")

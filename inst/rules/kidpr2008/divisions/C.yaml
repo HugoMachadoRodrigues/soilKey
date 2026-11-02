@@ -40,9 +40,11 @@
 # or CJ is an agrozem (the texts of the divisions, pp. 83 and 99): an agro
 # horizon at the surface over a profile that keys to CC or CJ goes to CS, a
 # PB to CR, with or without a remnant of the natural horizon under it; C.14
-# reads "under" as printed, anywhere below the organic or agro horizon
-# (C.13 says "directly under"); BMK stays out of C.5 (AJ-BMK-C is not
-# provided). Hugo's decisions on soilKey's readings (readings.yaml): the
+# reads "directly under", as C.13 does: it prints "under", but the gley
+# division text (p. 92) puts G directly under the organic or humus horizon
+# and leaves out the gley soils when another mineral horizon is in the
+# profile, and the text decides (O-BI-G is not provided); BMK stays out of
+# C.5 (AJ-BMK-C is not provided). Hugo's decisions on soilKey's readings (readings.yaml): the
 # peat T of the key's lists includes TO and TE; V and CRH join the middle
 # horizons of C.5 (the types CI04, CI05, CI14, CI15 have no other middle
 # horizon); a profile C.6 gives no exit (an agro horizon on ASN or BSN, the
@@ -143,10 +145,12 @@ steps:
       - directly_over_kidpr: {upper: ["AU"], lower: ["BCA"], gap_cm: 15}
   C13b: &C13b {all_of: [{none_of: [*C13a]}, {directly_over_kidpr: {upper: ["AU"], lower: ["G"]}}]}
   C13v: &C13v {directly_over_kidpr: {upper: ["AU"], lower: ["Q"]}}
-  # C.14 under O, T, H, PT or PU, as printed (anywhere below; C.13 says
-  # directly under; Hugo, 2026-11-02): G (CH); else Q (CM, after CH)
-  C14a: &C14a {below_kidpr: {upper: ["O", "T", "TO", "TE", "H", "PT", "PU"], lower: ["G"]}}
-  C14b: &C14b {below_kidpr: {upper: ["O", "T", "TO", "TE", "H", "PT", "PU"], lower: ["Q"]}}
+  # C.14 directly under O, T, H, PT or PU, as C.13 under AU (the key prints
+  # "under"; the gley division text, p. 92, puts G directly under the
+  # organic or humus horizon and decides; Hugo, 2026-11-02): G (CH); else Q
+  # (CM, after CH)
+  C14a: &C14a {directly_over_kidpr: {upper: ["O", "T", "TO", "TE", "H", "PT", "PU"], lower: ["G"]}}
+  C14b: &C14b {directly_over_kidpr: {upper: ["O", "T", "TO", "TE", "H", "PT", "PU"], lower: ["Q"]}}
   # C.16 the agro horizon: PB; P, PU, PT, PTR
   C16a: &C16a {surface_horizon_kidpr: {codes: ["PB"]}}
   C16b: &C16b {surface_horizon_kidpr: {codes: ["P", "PU", "PT", "PTR"]}}
@@ -295,7 +299,7 @@ divisions:
               - all_of: [*C7zh, *C8g, *C11b, *C13b]
               - all_of: [*C7zh, *C8g, *C11v, *C14a]
               - all_of: [*C7zh, *C8g, *C11g]
-      notes: "The gley horizon G above CRM, directly under the dark-humus AU, or under the surface organic or agro horizon O, T, H, PT or PU, anywhere below it as C.14 prints it (p. 92; Hugo, 2026-11-02); AY or AO directly over G by Hugo's decision Q10."
+      notes: "The gley horizon G above CRM, or directly under the surface humus, organic or agro horizon (p. 92: any other mineral horizon leaves the soil out of the gley soils, so C.14 reads directly under, Hugo, 2026-11-02); AY or AO directly over G by Hugo's decision Q10."
 
     - code: "CE"
       name: "Cryometamorphic soils"
@@ -378,4 +382,4 @@ divisions:
           - any_of:
               - all_of: [*C11b, *C13v]
               - all_of: [*C11v, *C14b]
-      notes: "The quasi-gley horizon Q directly under AU, or anywhere under O, T, H, PT or PU (p. 106)."
+      notes: "The quasi-gley horizon Q directly under AU, or directly under O, T, H, PT or PU (p. 106)."

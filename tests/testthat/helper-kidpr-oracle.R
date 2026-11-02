@@ -25,7 +25,8 @@
 # 5 as by C.19; the deposit, Q21, TPO and the deposit of 38b in it; the peat
 # body, Q22; the guard of a truncated soil, Q19; transitions and up to 15 cm
 # with no diagnostic horizon between AU and BCA passed over, Q14; T read with
-# TO and TE; C.14 "under" as printed, anywhere below) are not differences.
+# TO and TE; C.14 read "directly under", as C.13 and the gley division text,
+# p. 92, say) are not differences.
 
 .KOR_ROCKS <- c("C", "D", "R", "CLM", "TT")
 .KOR_AGRO <- c("P", "PU", "PT", "PTR", "PB")
@@ -378,9 +379,11 @@
     return(np("C.13"))
   }
   if (s %in% c("O", "T", "TO", "TE", "H", "PT", "PU")) {
-    # C.14: under the organic or agro horizon, as printed (anywhere below)
-    if (.kor_below(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "G")) return(out("CH"))
-    if (.kor_below(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "Q")) return(out("CM"))
+    # C.14: directly under the organic or agro horizon (the key prints
+    # "under"; the gley division text, p. 92, says directly under and that
+    # another mineral horizon leaves the soil out of the gley soils)
+    if (.kor_over(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "G")) return(out("CH"))
+    if (.kor_over(pr, c("O", "T", "TO", "TE", "H", "PT", "PU"), "Q")) return(out("CM"))
     return(np("C.14"))
   }
   if (repaired && s %in% c("AY", "AO") && .kor_over(pr, c("AY", "AO"), "G")) {
