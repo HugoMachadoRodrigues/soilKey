@@ -70,7 +70,7 @@
 #'                       \code{undecided_by}, \code{excluded_by} (the
 #'                       criteria, joined with "; ") and \code{nearest}.
 #'                       \code{NULL} for every other system, and then not
-#'                       printed. Since v0.9.344.
+#'                       printed. Since v0.9.340.
 #'
 #' @export
 ClassificationResult <- R6::R6Class("ClassificationResult",
@@ -108,7 +108,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     #' @param provisional_because Character vector of undecided classes
     #'        tested before the assigned ones.
     #' @param candidates The classes that may attach the soil (a
-    #'        data.frame), or NULL; since v0.9.344.
+    #'        data.frame), or NULL; since v0.9.340.
     initialize = function(system,
                           name,
                           rsg_or_order   = NA_character_,
@@ -163,7 +163,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       if (is.data.frame(self$phases) && nrow(self$phases) > 0L) {
         cli::cli_text("Phases: {paste(self$phases$name, collapse = '; ')}")
       }
-      # v0.9.344: the classes that may attach the soil, for the systems that
+      # v0.9.340: the classes that may attach the soil, for the systems that
       # are not keys; nothing for the others
       if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L) {
         cd <- self$candidates
@@ -244,7 +244,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
         n_missing      = length(self$missing_data),
         n_warnings     = length(self$warnings)
       )
-      # v0.9.344: only for a result that has candidates
+      # v0.9.340: only for a result that has candidates
       if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L)
         out$n_candidates <- nrow(self$candidates)
       out

@@ -96,7 +96,7 @@ the nearest classes when nothing attaches),
 \code{undecided_by}, \code{excluded_by} (the
 criteria, joined with "; ") and \code{nearest}.
 \code{NULL} for every other system, and then not
-printed. Since v0.9.344.}
+printed. Since v0.9.340.}
 }
 \if{html}{\out{</div>}}
 }
@@ -165,7 +165,7 @@ Build a ClassificationResult.
 tested before the assigned ones.}
 
 \item{\code{candidates}}{The classes that may attach the soil (a
-data.frame), or NULL; since v0.9.344.}
+data.frame), or NULL; since v0.9.340.}
 }
 \if{html}{\out{</div>}}
 }

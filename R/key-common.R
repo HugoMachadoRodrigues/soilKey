@@ -152,7 +152,7 @@ collect_missing_attributes <- function(trace) {
 #' @param after The level whose class the entries qualify.
 #' @param already Ids not evaluated: features the class already names.
 #' @param typical,typical_en The name of the typical class, and its gloss.
-#'   \code{typical = NULL} (v0.9.344): the system has no typical class, so
+#'   \code{typical = NULL} (v0.9.340): the system has no typical class, so
 #'   when nothing is named no row is added and the name is the class's alone.
 #' @param context Passed to the tests with \code{type} (the code of the
 #'   class) and \code{result}.
@@ -231,7 +231,7 @@ collect_missing_attributes <- function(trace) {
       und <- c(und, id); missing <- c(missing, miss)
     }
   }
-  # v0.9.344: typical = NULL, a system with no typical class (the
+  # v0.9.340: typical = NULL, a system with no typical class (the
   # Referentiel's qualifiers): nothing is added when nothing is named
   is_typical <- !length(ids) && !length(und) && !is.null(typical)
   add_code <- if (length(ids)) ids else if (is_typical) NA_character_ else character(0)

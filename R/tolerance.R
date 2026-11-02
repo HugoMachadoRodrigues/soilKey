@@ -1,5 +1,5 @@
 # =============================================================================
-# v0.9.344 -- tolerances on thresholds, and the tolerant mode of the rule
+# v0.9.340 -- tolerances on thresholds, and the tolerant mode of the rule
 # engine.
 #
 # Some systems give a tolerance to some of their printed thresholds: a value

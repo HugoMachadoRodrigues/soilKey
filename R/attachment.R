@@ -1,5 +1,5 @@
 # =============================================================================
-# v0.9.344 -- attachment: the degree of one class, and the choice of a name
+# v0.9.340 -- attachment: the degree of one class, and the choice of a name
 # among several classes that may each attach the soil.
 #
 # Some systems are not keys: every class is tested and a soil may attach to

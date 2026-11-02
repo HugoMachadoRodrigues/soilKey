@@ -23,7 +23,7 @@
 # the result is NA if no test failed but at least one was NA; with
 # any_of, the result is NA if no test passed but at least one was NA.
 #
-# v0.9.344: a system with tolerances on its thresholds evaluates a block twice,
+# v0.9.340: a system with tolerances on its thresholds evaluates a block twice,
 # strictly and tolerantly (.evaluate_degree(), R/attachment.R); in the
 # tolerant pass the direction of the tolerances flips inside none_of. Every
 # other evaluation is strict, as before.
@@ -226,7 +226,7 @@ evaluate_rsg_tests <- function(pedon, tests) {
   }
 
   test_list <- tests[[combinator]]
-  # v0.9.344: in the tolerant pass of .evaluate_degree() (R/tolerance.R) the
+  # v0.9.340: in the tolerant pass of .evaluate_degree() (R/tolerance.R) the
   # tests of a none_of block must fail for the class, so the direction in
   # which their thresholds move flips. Off in every other evaluation.
   if (combinator == "none_of" && isTRUE(.rule_ctx$tolerant)) {
@@ -358,7 +358,7 @@ run_single_test <- function(pedon, test_spec) {
       reference = result$reference,
       notes     = result$notes
     )
-    # v0.9.344: in the tolerant pass of .evaluate_degree() only, the distance
+    # v0.9.340: in the tolerant pass of .evaluate_degree() only, the distance
     # of a failure in tolerance units, for the attachment's nearest classes (a
     # field of the result, or an entry of its evidence). Not in any other
     # evaluation: some evidence already holds a "distance" of its own (the

@@ -1,4 +1,4 @@
-# v0.9.344: the generic engine pieces of attachment, for systems that are not
+# v0.9.340: the generic engine pieces of attachment, for systems that are not
 # keys (the French Referentiel pedologique 2008 first): within_tolerance(),
 # the tolerance table, the tolerant mode of the rule engine with the flip
 # inside none_of, the degree of one class, the combiner, the candidates slot
