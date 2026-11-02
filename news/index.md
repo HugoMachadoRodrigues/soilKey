@@ -1,5 +1,1031 @@
 # Changelog
 
+## soilKey 0.9.336 (2026-11-02)
+
+### Russia: the diagnostic horizons on the data
+
+The Russian soil classification (Field Guide of 2008) identifies the
+diagnostic horizons of a profile by a key of 66 positions (section 2.1).
+This release runs that key on the recorded data, so that every layer
+gets its Russian horizon where the profile is not written in the Russian
+notation, with soilKey’s WRB diagnostics standing in where a field
+descriptor of the key is missing. Nothing is classified yet, so every
+classification is unchanged; the registry entry with the trunks and
+divisions follows.
+
+- **The key 2.1** (internal; the horizon identification
+  [`identify_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/identify_horizons.md)
+  dispatches to once the registry entry exists). The 66 positions in the
+  book’s order, each a question on the layer and on the whole profile
+  (the layers above and below, the depth of a boundary, frost in the
+  profile). It reaches the 50 horizons, the modifications AV, BH and BF,
+  the peat as rock TT, the features u, tr, rh, r, ao, e, el and ca, and
+  no diagnostic horizon (position 66). The overlays S, X and V are kept
+  beside the horizon of the layer; one left undecided leaves only the
+  overlay undecided. Two answers the key gives no exit (a mixed layer
+  neither TUR nor tr; continuous effervescence with cutans and no
+  white-eye) leave the layer undecided between their neighbours. In a
+  profile dark from a dark rock, a middle horizon gets the feature u and
+  goes on at 31.
+- **One row per layer**: the horizon and its modification, overlays,
+  features, small horizons (e, el, ao, r, rh), the route (notation, data
+  or both), the path of the key in the book’s notation, the evidence,
+  the WRB diagnostics that stood in and the fallbacks used, and, when
+  undecided, the candidates and the attributes that would decide it. A
+  layer written in the Russian notation keeps its horizon; the key runs
+  on its data too, and a reading that differs goes to the evidence.
+  Designations in other notations give hints only; fresh litter is no
+  horizon; hard rock is R.
+- **The readers** (internal): the colour words of the key in Munsell,
+  the Kachinsky gradations of texture and the clay ratio, acid or not,
+  the salts and the pollutants, the organic matter, the decomposition,
+  the carbonates, frost, ploughing and the surface deposit, each
+  three-valued and noting the fallback it used. soilKey’s cambic horizon
+  also stands in for the transformed structure of BM, and its andic
+  properties for the volcanic ash of BAN; a layer under pH(H2O) 7.0 is
+  read as holding no free carbonates when no effervescence is recorded,
+  and a layer with a particle-size analysis, CaCO3 or a mineral bulk
+  density but no carbon as mineral.
+- **The fixes of the review.** A grey layer under an organic layer, or
+  one continuing the surface horizon, is a humus horizon only when it
+  looks like one (not gley or olive, not massive, single-grained or
+  stratified, not frozen, darker than the parent material), so the CRM,
+  CR or G under the O of a cryozem or a gleyzem, a pale soil’s BPL and
+  layered alluvium are no longer read as AY or AJ. The light horizon is
+  compared with the middle horizon under the BEL. The argic stand-in
+  gives no cutans to massive layers, carbonate layers or layers outside
+  the clay maximum; the solonetz structure comes only from a columnar
+  structure recorded in the layer’s run; the carbonate neoformations not
+  recorded are read by calcic(), protocalcic_properties() or the
+  carbonate maximum of the solum. The Soviet plough layer (Apakh, Ap
+  with a Cyrillic p) and a clear plough boundary are read; the site’s
+  mixing depth no longer makes the plough layer mixed. With equal values
+  the lower chroma is the lighter layer; CRM is dull (chroma 3 or less)
+  with a cryogenic structure; BMK needs the effervescence; a rich
+  granular AU is no AH; a film colour must be brighter than the parent
+  material; AK must be strictly the darkest; a natural surface layer
+  lighter than the humus horizon under it is a deposit (criterion 3 of
+  position 8); Russian texture words are read in either order.
+
+#### Hugo’s decisions (2026-11-02)
+
+- **Without the notation (Q4):** the key runs on the attributes; where a
+  field descriptor is missing a soilKey WRB diagnostic stands in,
+  flagged: spodic() for the iron films of BHF, argic() for the cutans of
+  BT and BI, calcic() for the carbonate neoformations of BCA, the
+  structure of natric_horizon() for ASN and BSN (the exchangeable sodium
+  never decides). An undecided question follows every branch: one
+  outcome gives the horizon, several leave it undecided with the
+  candidates.
+- **Colours (Q5):** dry Munsell, one cut-point per binary choice of the
+  key (dark: value 4 or less, chroma 2 or less; grey: chroma 3 or less
+  in 10YR, 2.5Y, 5Y or N, 7.5YR only at chroma 2 or less; whitish: value
+  7 or more, chroma 2 or less); dry value = moist value + 1 when only
+  the moist colour is recorded, flagged; the gley, olive and solonetz
+  colours read moist, the gley set the whole gley chart.
+- **Organic matter (Q6):** humus = 1.724 x OC; LOI from `loi_pct`, else
+  1.724 x OC; decomposition from `peat_decomposition_pct`, else von Post
+  (H7 or more, H4 or less), else the rubbed fibre (under 17 %, 40 % or
+  more); between them undecided.
+- **Texture (Q7):** the Kachinsky gradations from `phys_clay_pct` or
+  `texture_class_ru`, else the USDA classes in order of fineness, one
+  step one gradation, flagged; BT against BI by the clay ratio of 1.4 to
+  the overlying humus or eluvial horizon.
+- **Salts and pH (Q8):** `soluble_salts_pct`, else the EC of chapter 9
+  (ECe 16 dS/m, EC 1:5 2 dS/m), else a salt crust or efflorescences
+  recorded at the surface; pH(KCl) alone acid under 5.0, not acid from
+  6.2.
+- **The surface (Q11), the sources (Q12):** a horizon starts at the
+  surface at the top of the mineral soil, under the agro layers or under
+  the deposit; exact boundary values follow the key’s inequality (e 2 cm
+  or less, O 10 cm or less, el 5 cm or less, salts over 1 %, a humified
+  deposit of 40 cm a horizon, a raw one a feature).
+- **Ploughing (Q18):** the Russian index, else the plough suffix p in
+  the layers from the surface, else a tilled land use with an abrupt
+  boundary within 40 cm; a designated profile with no plough mark is
+  natural, a profile with no designation and no land use undecided.
+- **TUR (Q20), the deposit (Q21), peat (Q22), X (Q23):** TUR from
+  `foreign_fragments_pct` (80 % or more) or the site’s mixing depth,
+  flagged; the deposit is the mineral material over a buried soil, or a
+  layered deposit at the surface, never a humus horizon formed in it; TO
+  and TE in the upper 50 cm of the peat, TT below, TJ by the value
+  mesophilic; X from `contamination_hazard`, the site’s contamination
+  without a category undecided.
+- **Frost (position 26, the review):** `frost_regime` first; else frozen
+  ground in the profile (ice, a temperature of 0 C or less, the
+  permafrost sign, the FAO frozen suffix, cryoturbation) yes; else the
+  Koppen climate (D with c or d, ET, EF yes; A, C, D with a or b, BWh,
+  BSh no; BWk and BSk undecided); else the soil temperature regime
+  (cryic, gelic, pergelic yes; mesic or warmer no; frigid undecided);
+  else a mean annual air temperature over 5 C no; nothing recorded,
+  undecided. Latitude does not decide; the route is flagged.
+- **After the review (Hugo, 2026-11-02):** no free carbonates under
+  pH(H2O) 7.0 when no effervescence is recorded; carbonate neoformations
+  not recorded read as the carbonate maximum of the solum (calcic() or
+  protocalcic_properties() passing, or the layer with more carbonate
+  than every layer above, at least as much as those below except the
+  parent material, and 1 % or more), not for the parent material,
+  undecided otherwise; Koppen BWk and BSk fall through to the soil
+  temperature regime and the air temperature; a film horizon neither BFM
+  nor fading is BHF; GY, G, BG, B and PB above chroma 1 need a structure
+  or a redox sign as 2.5Y does; plant residues count above 5 %; LOI
+  10-15 % with a crumb or granular structure is AU; the clay maximum is
+  90 % of the highest argic clay; the site’s mixing depth is undecided
+  when ploughing is.
+- **Litter (Hugo, 2026-11-02):** an FAO Oi or L is fresh litter only in
+  a run of such layers that starts the description and is 5 cm thick or
+  less (a run with no recorded thickness stays litter); thicker, or
+  lower in the profile, it is an organic layer the key reads on the
+  data, so a raised bog described Oi/Oe is peat and 40 cm of Oi over a
+  gleyed layer is T. The Soviet A00 stays litter.
+- **The peat body of positions 41 and 44 (the review):** only weakly
+  decomposed peat, without H, PT or PTR, as the key writes it (the 51 cm
+  body of the organogenic trunk keeps them).
+- **Gley in 2.5Y (the review):** with 2.5Y at chroma 2-3 a G needs a
+  massive or structureless structure or a recorded redox sign (mottles,
+  redox features, a dipyridyl test); the rest of the gley chart (N, and
+  GY, G, BG, B, PB at chroma 1) suffices by colour.
+- **Defaults:** the agro horizon by the colour of position 19 (PU dark;
+  P grey as Q5 reads it, chroma 3 or less in 10YR, 2.5Y, 5Y or N, with a
+  dry value of 5 or more, so 10YR 5/3 is P; PB the others; 15a allows a
+  brown tint); V by slickensides, wedge-shaped peds and clay 30 % or
+  more within 80 cm, one or two of the signs the feature v; continuous
+  effervescence by `effervescence_extent`, else CaCO3, else the
+  effervescence class; white-eye = soft concretions; field observations
+  not recorded are absent, measurements not recorded leave their
+  question undecided; field-only criteria are evidence.
+
+## soilKey 0.9.335 (2026-11-02)
+
+### Russia: the notation of the Field Guide of 2008
+
+The Russian soil classification (Field Guide of 2008) writes its
+horizons in a notation of its own (AY, EL, BEL, BTg, BCAs,cs) and names
+its types by profile formulas in it. This release adds the reader of
+that notation, the catalogues of its horizons and features, and the
+fields its horizon key will read. Nothing is classified yet, so every
+classification is unchanged; the horizon key on the data, then the
+registry entry with the trunks and divisions, follow.
+
+- **The notation reader** (internal). Each designation is read into its
+  horizon and features: small horizons written alone (O-e-BHF-C),
+  bracketed features (\[hh\], \[e-hf\], \[akl\], also on a host:
+  AJ\[akl\]), turbated mixtures (\[AY, EL\]tr, TUR\[SEL+ASN\]), a
+  remnant in parentheses ((EL)), the modifications BH, BF and AV, the
+  rock flags (CG, CQ, DG), the rock marks (C, C”, C, C”“, C=, C..), a
+  lithological layer (2BM, IIBT), sub-horizons (BT1, BT2), transitions
+  (AUBM, AU/BM, BC), a buried horizon in brackets (\[AU\], \[BTg\]) and
+  an overlay written after a”+” (AU+S). A row it cannot read gets the
+  hints of the FAO letters, and each reading it had to make is noted (a
+  note after a space, a trailing “?”, a bracket that is no feature of
+  the catalogue read by its parts). Text that is not valid UTF-8 is read
+  as Windows-1251, the Cyrillic code page, when it can be, else left
+  unread; nothing stops with an error.
+- **The catalogues** `inst/rules/kidpr2008/horizons.yaml` and
+  `features.yaml`: the 50 diagnostic horizons (Russian name as printed,
+  an English gloss, the chapter 3 group, the path of the horizon key,
+  the page), the modifications AV, BH and BF, the alias PC, the rock
+  symbols C, D, CLM, R, TT and TPO (technogenic surface formations), the
+  marks and the four tokens of the chapter 6 formulas (AM, AKL, PY, TR);
+  the 64 features of section 3.2 and the three indices only the chapter
+  4 lists use (w, x, rx), with their aliases, their host horizons and
+  the host-bound forms of the lists (ELf, Th, Tote, AUlc-BCAmc …). Every
+  profile formula of chapter 4 (275) and of the chapter 6
+  correlation (266) parses with them, with no unknown token; 478 of them
+  are recognised as Russian with no declaration (the other 63 are
+  written only with letters other notations share).
+- **The WRB cryic conditions** read a profile declared in the Russian
+  notation by its permafrost sign, not by an f, which is ferruginated
+  there (ELf); no other profile changes.
+- The split of a run of features written without commas (internal, the
+  formula parser) takes linear time; a long run that could not be split
+  took seconds to minutes.
+- **New fields.** Horizon: `phys_clay_pct` and `texture_class_ru` (the
+  Kachinsky texture), `loi_pct` and `peat_decomposition_pct` (the
+  organic horizons), `plant_residues_pct`, `uncoated_grains_pct`,
+  `effervescence_extent`, `sulfide_odour`, `slickensides_size` and
+  `cryoturbation` (positions of the horizon key),
+  `foreign_fragments_pct` and `turbated_fragments` (turbated layers),
+  `contamination_hazard` and `pollutants` (the contaminated horizon X).
+  Site: `frost_regime`. The value `mesophilic` of `peat_moor_type`, and
+  the Russian names of `site$designation_system` (kidpr, kidpr2008, ru,
+  ru2004, ru2008, russian, russia, rfg2008, rsc2004).
+
+#### Hugo’s decisions (2026-11-02)
+
+- **Notations (Q3):** only the Russian notation of 2004/2008 gives the
+  profile type: declared in `site$designation_system`, or recognised by
+  an index only it writes (AY, AU, EL, BEL, BHF, BCA, PU, TUR …) or a
+  sign only it writes (the permafrost sign, a rock mark, a
+  comma-separated feature list, a bracketed feature), once the Cyrillic
+  letters that look like Latin ones are read as Latin; never by the
+  country. FAO letters (Ap, Bt, Bs, Bk) only give hints to the key on
+  the data, and so does the Soviet notation of 1977 (A0, A1, A2, Bca);
+  in a profile with its numbered tokens, AO is the Soviet A0. In a
+  profile written all in capitals, the indices an upper-cased FAO
+  designation could spell (AY, EL, BEL …) count while the rows that read
+  as FAO ones (AP, BW, BTG) are not more numerous, and the capitals
+  after an index are then features (BTG = BT + g); PU, PT, TUR, SEL, TO
+  … always count. AH, AK, AO, BH and BF count only where the case of the
+  letters is kept, or beside an index no FAO master starts (P, G, T …).
+- **The notation (defaults 8 to 13):** the Cyrillic look-alikes are
+  folded and the permafrost sign is read in both its forms; the aliases
+  tr = tu, ek = ko, agr = ag, ae = ael, cs = as and PB = PC are read as
+  the first; Tote is TO with te; the tokens AM and AKL of chapter 6 are
+  read; a lithological layer is numbered in Arabic or Roman figures; a
+  layer may hold a horizon and an overlay S, X or V; small horizons are
+  marked rows, sub-horizons are merged and transitions are not
+  diagnostic; a feature string without commas is read by the longest
+  match, with a note where it could be read otherwise (hi, gr, md, mr,
+  rh, ur, yu, hh, ff, rr, rx, hf, agr); a feature written alone is a
+  small horizon only where the text allows it (e, el, ao, ek, r …, not
+  g, s, ca or v); CG, CQ and DG are a gleyed or quasi-gleyed rock, not a
+  G or Q horizon; the printing slips of the keys are corrected.
+- **The new fields (Q6, Q7, Q20, Q22, Q23, Q24):** the Kachinsky texture
+  (`phys_clay_pct`, `texture_class_ru`), the loss on ignition and the
+  degree of decomposition, the fragments of a turbated layer and their
+  horizons, the hazard category and the pollutants of the contaminated
+  horizon, `mesophilic` peat, and the seven descriptors that decide
+  positions of the horizon key (uncoated grains, the extent of the
+  effervescence, the frost regime, plant residues, the smell of hydrogen
+  sulfide, the size of the slickensides, cryoturbation). The descriptive
+  ones (skeletans, the place and layering of the clay films, the mineral
+  admixture, carbonate pendants, an erosion mark) are not added: the
+  notation or the evidence carries them.
+
+## soilKey 0.9.334 (2026-11-02)
+
+### Russia: the engine for profile formulas
+
+The Russian soil classification (Field Guide of 2008) names its types by
+profile formulas (“O-EL-BEL-BT-C”) and its subtypes by a list of
+features per division. This release adds the generic pieces it needs; no
+system uses them yet, so every classification is unchanged. The Russian
+notation, horizons, divisions and types follow.
+
+- **Profile formulas.** An internal parser reads a formula into slots:
+  alternative codes (“RY(RJ)”, “CG (CQ~~)”, and soilKey’s ”O\|T\|H”),
+  optional horizons in parentheses, features (typical, or required where
+  they name the type, as Rca), the role of each slot (surface, middle,
+  parent), buried profiles (\[ABC\], {ABC}), turbated compositions
+  (TUR\[AU+SEL+ASN\]), small horizons (\[e-hf\], e), rock flags (CG, CQ,
+  DG) and rock marks (C~~, C”, C, C”“, C=, C..). Given a vocabulary of
+  horizons and features, an unknown token stops it with its name.
+- **[`match_horizon_sequence()`](https://hugomachadorodrigues.github.io/soilKey/reference/match_horizon_sequence.md)**
+  matches the identified horizons of a profile against a formula: TRUE,
+  FALSE or NA when an undecided layer could change the answer, with the
+  slots matched, the slots missing, the extra horizons and the edit
+  distance. A horizon fills a slot by its code or by an overlay (an AU
+  with an S overlay fills an S slot); surface and agro codes the formula
+  does not name stay out of the closure unless `closure_surface = TRUE`,
+  so a natural remnant under the plough does not block an agro type.
+  Internal helpers run a division’s schemes, pick the most specific
+  match (the others noted as intergrades) and, when none matches, rank
+  the nearest schemes by edit distance.
+- **[`identify_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/identify_horizons.md)**
+  gives the reading of every layer as a diagnostic horizon (code,
+  overlays, features, small and transitional rows, buried profiles,
+  route, verdict, evidence, the candidates when undecided), by the
+  system’s own identification; a system without one stops with an error,
+  as every system does in this release.
+- **A walker of horizon keys** (internal): a key written as a tree of
+  questions answered TRUE, FALSE or NA.
+- **An additive level** (internal): after the type, every listed feature
+  that passes is named, in list order. The Hungarian subtype properties
+  keep their own code.
+- [`print()`](https://rdrr.io/r/base/print.html) of a result lists the
+  classes of one level together (“CA01 Podzolic \> g gleyic, y
+  tongued”), so the Hungarian subtype and variety properties are no
+  longer chained with “\>” as if each were below the one before.
+
+#### Hugo’s decisions (2026-11-02)
+
+- **Undecided key questions (Q4):** an undecided question follows every
+  branch; one outcome gives the horizon, several leave it undecided with
+  the candidates.
+- **The surface horizon (Q11):** the agro horizon, else the thickest
+  natural organic or humus horizon starting at the surface or under a
+  deposit under 40 cm; the others are read as features.
+- **Templates (Q13):** a type’s formula is closed on the vocabulary of
+  its division: a horizon that appears in any scheme of the division
+  must be matched when present; a horizon foreign to the division is
+  ignored. The most specific scheme is tried first, agro before natural;
+  when two match, the more specific wins and the other is an intergrade
+  in the trace.
+- **Formulas (Q14):** a horizon in parentheses is optional; terminal
+  symbols are tested only where they name the type; “directly under”
+  skips transitional rows and sub-horizons, with an allowed gap (up to
+  15 cm between AU and BCA).
+- **No type (Q15):** when no scheme matches, the name stops at the
+  division and the trace lists the nearest schemes.
+- **Subtypes (Q16):** every listed feature that passes is named, in list
+  order; typical when every one is FALSE; provisional when some are
+  undecided, which are listed; a feature already written in the type’s
+  formula is not named again.
+- **Also accepted:** sub-horizons are merged (BT1, BT2 = BT);
+  transitions are not diagnostic; small horizons are marked rows, not
+  diagnostic horizons; one layer may hold a horizon and an overlay (S,
+  X, V).
+
+## soilKey 0.9.333 (2026-11-01)
+
+### France: the 276 subgroups of the CPCS 1967
+
+[`classify_cpcs1967()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cpcs1967.md)
+now keys a pedon to its subgroup, the fourth and last registry level,
+`subgroups`. A subgroup the text names in full stands alone (“Podzols
+humo-ferrugineux”, “Chernozem modal”); one it names by an adjective
+follows its group (“Rankers, à mor”, “Sols ferrallitiques moyennement
+désaturés en (B) typiques, Faiblement appauvri”). `name` is now the
+deepest level.
+
+- **Subgroups.** The text names most subgroups by a secondary process or
+  by one side of a measure; soilKey’s readings are listed in
+  `readings.yaml`.
+  - A subgroup the data cannot decide leaves the name provisional.
+  - When no listed subgroup of a group fits (27 groups have no modal),
+    the name stops at the group and the trace says why; 22 groups have
+    no subgroups.
+  - The other subgroups whose tests pass are noted in the trace as
+    “intergrade vers …”, and a brown soil with hydromorphic signs only
+    below its (B) as a “faciès hydromorphe”.
+- **Five new fields:** `humus_form` (site: mull, moder, mor, hydromull,
+  hydromoder, hydromor, anmoor, tourbe), `caco3_active_pct`,
+  `coarse_sand_pct`, `fine_sand_pct` and `gibbsite_pct` (horizon).
+
+#### Hugo’s decisions (2026-11-01)
+
+- **Inventory:** the main text of the AFES edition, 276 subgroups; I/16
+  has no common subgroups; the two peat subgroups under each peat group
+  (XI/111 to XI/132); “Sans horizon B” is XI/221; VII/115 and VII/413
+  included; IV/22 takes the subgroups of IV/21. Codes: the class and the
+  text’s three digits (I/111 under I/11).
+- **Order:** the printed order, modal last; a subgroup that splits the
+  group by a measure after those of a secondary process, and a composite
+  subgroup before its parts.
+- **Hydromorphy:** signs (redox features above 0 %, mottle colours, a
+  reduced matrix, or a g or G where no mottles are recorded) in a layer
+  starting within 100 cm; also a water table within 1 m for “à nappe”;
+  pronounced signs or concretions within 50 cm for the vertisols; signs
+  from 50 cm and none above for II/142.
+- **Shallow profiles:** by the profile type: hard rock directly under
+  the A for the lithosols, C or R within 45 cm for IV x13 and 50 cm for
+  VII/411, a (B) on hard non-calcareous rock within 50 cm for VII/115.
+- **Vertisols:** “vertiques” with slickensides common at most;
+  self-mulching with fine structure to 10 or 20 cm.
+- **Salt and sodium:** EC 4 dS/m or more, exchangeable Na 6 % of the CEC
+  or more, within 100 cm.
+- **Rendzinas:** a very strong effervescence or 10 % active carbonate
+  (V/112), under 10 % carbonate with 15 % coarse fragments (V/114), a
+  dry climate (V/115).
+- **Crusts:** an encroûtement is a recorded accumulation (5 % secondary
+  carbonates, 5 % more carbonate than the layer below, or a Ca of the
+  notation); a croûte is a cemented layer.
+- **Isohumic soils:** vertique = protovertic or a coarse prismatic (B);
+  à B textural = the textural B of VII/12; rubéfié = the reddened B of
+  class IX.
+- **Brunified soils:** the measures decide (allophane, clay index, pH of
+  the B); the colour words of the A2 and the humus are descriptions,
+  except the ashy A2 over an ochre B of VII/124.
+- **Podzolised soils:** Bh and Bfe by the notation, then the colour;
+  deep hydromorphy below the base of the B with none above it.
+- **Classes IX and X:** the accepted IX/X table; “faiblement rajeuni” at
+  3 % weatherable minerals; “faiblement remanié” by the evidence of the
+  reworked groups; X/322 by a dark brown B, pH under 4.5 and gibbsite
+  (or Ki under 1.0).
+- **Class XI:** the peats by their pH (5.5), else the moor type; anmoor
+  by a C/N under 20, hydromor by the humus form, else a C/N of 20 or
+  more; XI/321, 322, 341 and 342 by the morphology.
+- **Class XII:** XII/21 by the surface structure, then the EC route;
+  XII/23 by the Na of the first B; XII/114 by a thionic horizon, or pH
+  under 4 with jarosite or sulfidic S.
+- **After the review** (Hugo, 2026-11-01):
+  - the sub-class IX-1 takes the nearly saturated tropical sands of
+    IX/114 (8 % clay or less to 100 cm, under 1 % OM in the A) whatever
+    their base saturation, and IX/114 reads V 80 % or more in the larger
+    part of the B;
+  - an encroûtement needs a recorded accumulation, not soilKey’s calcic
+    horizon alone;
+  - the yellow and brown subgroups of classes IX and X come after the
+    subgroups of a process, and the thick calcic brown soils (V/213)
+    before the brunified rendzinas;
+  - IX/213 and IX/222 take any hydromorphic sign;
+  - a subgroup left undecided before the assigned one makes it
+    provisional, as at the other levels;
+  - the detailed readings soilKey made where the plan was silent are
+    kept, marked as soilKey’s in readings.yaml.
+
+## soilKey 0.9.332 (2026-11-01)
+
+### France: the 101 groups of the CPCS 1967
+
+[`classify_cpcs1967()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cpcs1967.md)
+now keys a pedon to its group, a third registry level, `groups`, for
+example “Podzols”, “Sols lessivés” or “Sols ferrallitiques fortement
+désaturés en (B) typiques”. The subgroups follow.
+
+- **Groups.** The text defines most groups by a profile type, a colour
+  word or a property with no number; soilKey’s readings are listed in
+  `readings.yaml`.
+  - A group the data cannot decide leaves the name provisional.
+  - When no group of a sub-class fits (VIII-1, VIII-2, XI-1 have no
+    default), the name stops at the sub-class and the trace says why.
+- **Two new fields:** `patterned_ground` (site: polygons, circles,
+  stripes, mud boils, hummocks, palsas) and `ice_form` (horizon: ice
+  lenses, wedges). They decide the groups of the cold-desert and
+  permafrost soils; not recorded, those groups are undecided.
+- The FAO and USDA suffixes i, e and a of an O horizon give the fibre
+  class of a peat when no fibre content is recorded.
+
+#### Hugo’s decisions (2026-11-01)
+
+- **Deposits and erosion (I-1, II-4):** the origin recorded for the
+  material under the A within 50 cm, else the parent material;
+  anthropic, volcanic, alluvial, colluvial, aeolian, in that order; no
+  origin recorded, the erosion group.
+- **Classes I to IV:**
+  - the lithosols of the deserts: hard rock within 10 cm;
+  - II/23 allophanic first (pH NaF 9.5 or more, or Alo + 1/2 Feo 2 % or
+    more), II/22 only on a calcareous rock;
+  - II/31: under 1 % OM and an arid climate;
+  - the vertisol groups by the structure of the top 15 cm (self-mulching
+    is angular, massive undecided);
+  - IV/21: base saturation of 50 % or more in the (B), pH 6 or more
+    without it.
+- **Classes V and VI:**
+  - V/13 cryptorendzinas first (dolomite), then V/11 rendzinas (no (B)),
+    V/12 the others;
+  - V/22 (OM above 20 % on hard carbonate rock), V/23 (fine polyhedral
+    A, CEC of the clay 50 or more), V/21 the others;
+  - the isohumic groups by the mean OM of the top 20 cm (chernozems
+    above 5 %, chestnut soils 3 % or more, marron soils 1 % or more).
+- **Classes VII and VIII:**
+  - the leached soils: the clay index (largest clay of the B over
+    smallest of the A) above 1.4 with 5 % clay more; films recorded as
+    none or few rule it out;
+  - the sod-podzolic soils: an A1 of 25 cm or more and tongues;
+  - one colour table for the podzolised soils (ashy = albic, pale = one
+    Munsell value above the A1 and the B, ochre = 10YR to 5YR with
+    chroma 6, brown = chroma 4 or less);
+  - boreal podzols (Köppen Dc or Dd, or latitude 50 or more) before
+    alpine ones (ET or EF below 60 degrees, or 1,500 m).
+- **Classes IX and X:**
+  - IX/12 leached, IX/13 impoverished, IX/11 the others, by the clay
+    index, the thickness of the A, the C and the clay films;
+  - IX/21: a calcium reserve within 100 cm, or a (B) with V 95 % or more
+    and pH 7 to 7.5;
+  - class X in the order humic, leached, impoverished, reworked,
+    rejuvenated, typical (X/24 read as reworked).
+- **Classes XI and XII:**
+  - the peat groups by the fibre class over the greatest thickness;
+  - XI-3 in the order 35, 36, 34, 31, 33, 32 (the specific groups
+    first);
+  - XII-2 in the order solodised, Solonetz, Solonchak-Solonetz.
+- **After the review** (Hugo, 2026-11-01):
+  - the deep gley of the amphigley starts at 80 cm; in a declared FAO
+    notation, g is a pseudogley and l the fringe of a gley;
+  - a water table recorded as none, or not recorded, makes a stagnogley
+    of a profile with its morphology (undecided when not recorded);
+  - VIII/13 allows an A2 under 5 cm and no Bh over 3 cm; a site at 1,500
+    m or more below 60 degrees is alpine;
+  - V/31 is the AR or ACR profile, its thinness a description; a plain B
+    of the CPCS notation is a textural B when clay is not recorded;
+  - ice-wedge polygons are a strong ice segregation; XII/23 without a pH
+    is undecided; a columnar B is compact;
+  - names carry soilKey’s insertions in brackets: “\[possible\]” for
+    III/21-22 (the text prints “nul”), “\[remaniés\]” for X/24.
+
+## soilKey 0.9.331 (2026-11-01)
+
+### France: the 35 sub-classes of the CPCS 1967
+
+[`classify_cpcs1967()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cpcs1967.md)
+now keys a pedon to its sub-class, a second registry level,
+`subclasses`, for example “Sols ferrallitiques fortement désaturés en
+(B)” or “Sols brunifiés des climats tempérés humides”. The groups and
+subgroups follow.
+
+- **The climate.** The sub-classes rest on the pedoclimate where they
+  can. A climatic sub-class needs its climate and the morphology of one
+  of its groups.
+  - The climate is read from a new site field, `koppen_climate` (the
+    Köppen code), else from the USDA soil temperature and moisture
+    regimes, else from the latitude.
+  - With no climate recorded, the soil falls to the class’s non-climatic
+    or temperate sub-class, and the trace says so.
+  - A second new field, `mean_annual_precip_mm`, is recorded but decides
+    nothing yet.
+- **The other sub-classes** read the profile:
+  - the external drainage of the vertisols, from the slope or the
+    landform;
+  - the organic matter of the andosols;
+  - gypsum and carbonate in the A for the calcimagnesic soils;
+  - hydromorphy reaching the A2 or the top of the B for the podzolised
+    soils;
+  - the base saturation of the B for the sesquioxide and ferrallitic
+    soils;
+  - the peat and the anmoor for the hydromorphic soils;
+  - the structure for the sodic soils.
+- The app and the report label the new level “Subclass”.
+
+#### Hugo’s decisions (2026-11-01)
+
+- **Climate:** Köppen first, then the USDA regimes, then the latitude.
+  With no climate, the default sub-class. The isohumic soils, whose four
+  sub-classes are all climatic, stay undecided unless the property test
+  of VI-1 holds.
+- **Classes I and II:**
+  - I-2 cold deserts and I-3 hot deserts;
+  - II-2 humic: 5 % OM or more in the A, pH under 6.8, not arid;
+  - II-3 xeric: a dry climate, under 2 % OM, no calcareous accumulation.
+- **Classes III and IV:**
+  - III-1: a slope under 2 % or a flat landform; nothing recorded leaves
+    it undecided;
+  - IV-1: OM above 10 % in the A over 25 cm.
+- **Classes V, VII and VIII:**
+  - V-3 gypseous first, then V-1 carbonated, then V-2;
+  - VII-4 tropical, VII-3 boreal and VII-2 continental, each with the
+    morphology of its groups;
+  - VIII-3 hydromorphic, then VIII-2 cold.
+- **After the review:**
+  - every Köppen climate falls in one isohumic sub-class (VI-1 Cf, Dfa,
+    Af, Am; VI-2 the other D, BSk, BWk, E; VI-3 Cs; VI-4 BSh, BWh, Aw,
+    As, Cw);
+  - VII-1 and VIII-1 hold under a temperate climate or none recorded;
+    under another recorded climate, a soil without the morphology of the
+    climatic sub-class is undecided rather than named temperate.
+- **Classes IX to XII:**
+  - IX-1 when base saturation is under 65 %;
+  - X by the thickness-weighted base saturation of the (B), at 40 % and
+    20 %;
+  - XI-1 peat, XI-2 anmoor;
+  - XII-2 by the sodium route.
+
+## soilKey 0.9.330 (2026-11-01)
+
+### France: the twelve classes of the French soil classification (CPCS 1967)
+
+[`classify_cpcs1967()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cpcs1967.md)
+keys a pedon to the twelve classes of the French soil classification of
+1967 (Commission de Pédologie et de Cartographie des Sols,
+*Classification des sols*), a system of its own beside the other
+national systems.
+[`make_cpcs1967_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cpcs1967_example.md)
+gives one profile per class. The names are French, as the text writes
+them, in `name` and `levels$name_native`. The sub-classes, groups and
+subgroups follow.
+
+- **An order of classes.** The CPCS gives no key. soilKey keys the
+  classes in an order built from the text’s statements of precedence: I
+  sols minéraux bruts, III vertisols, XII sols sodiques, IV andosols,
+  VIII sols podzolisés, X sols ferrallitiques, IX sols à sesquioxydes de
+  fer et manganèse, XI sols hydromorphes, II sols peu évolués, VI sols
+  isohumiques, V sols calcimagnésiques, VII sols brunifiés.
+- **The old French notation** (Aoo, Ao, A1, A2, A3, (B), B, Bh, Bfe, Bt,
+  Cca, Can, Cs, Cn, Sa, g, G, R, a Roman numeral for a change of parent
+  material), declared with `site$designation_system = "cpcs"` or
+  recognised by its own symbols, beside the FAO letters. In a profile
+  without designations, soilKey’s diagnostic horizons stand in for the
+  profile type.
+- **The class tests** read organic matter as 1.72 × organic carbon, with
+  depths from the top of the first mineral horizon:
+  - the intensity of hydromorphy and halomorphy that makes classes XI
+    and XII;
+  - Ki (or the CEC of the clay) for the ferrallitic soils, read in the
+    larger part of the B;
+  - the podzolic B by its C/N;
+  - the andic properties with a (B);
+  - the sharp or gradual fall of organic matter that separates the
+    calcimagnesic soils from the isohumic soils.
+- In the Pro app, the CPCS is a national system of its own; the level is
+  labelled “Class”.
+
+#### Hugo’s decisions (2026-11-01)
+
+- The order of the classes above. Class XI excludes permafrost soils
+  (they stay in class II); the sesquioxide soils exclude the isohumic
+  soils.
+- **Class XI:** peat (30 % OM, 20 % in sandy material) over 40 cm of the
+  top 80 cm; 8 to 30 % OM over 20 cm on a gley; or hydromorphic layers
+  over most of the profile from the base of the A1 to 100 cm. A deep
+  gley alone does not count, and a mottle that is not recorded is
+  absent.
+- **Class XII:** EC above 7 dS/m in every horizon to 100 cm, or Na above
+  10 % of the CEC with a massive or columnar, compact structure. Na
+  only; clean sands and gypsum alone excluded.
+- **Conventions:** OM = 1.72 × C; depth zero at the top of the A1;
+  ranges read as in the SiBCS; data first, the notation where the data
+  do not decide.
+- **Names:** French in both name fields.
+- **After the canonical profiles** (the 44 WRB, SiBCS and USDA examples
+  keyed under the CPCS):
+  - class IX’s individualised iron is a reddened B (5YR or redder,
+    chroma 4) or iron concretions, a yellower B only under a tropical
+    climate;
+  - the gradual fall of OM of class VI is read at a third, and class V
+    drops its own fall test (the isohumic soils are keyed before it);
+  - the EC of class XII is read in the solum;
+  - the cracks of class III are 0.5 cm, as soilKey reads the WRB.
+- **Classes I, II and IV:**
+  - class I has traces of OM, 0.5 % (1.5 % in the top 3 cm);
+  - class II has permafrost, or an AC profile with more than traces;
+  - an AC soil with the chemistry of class V and a source of Ca or Mg is
+    calcimagnesic unless a recent deposit or recent erosion is recorded;
+  - class IV needs the andic properties over 30 cm, a CEC above 25 (the
+    thickness-weighted mean of the andic A and (B)) and a (B).
+- **Classes III and VIII:** the CPCS’s own vertisol reading
+  (slickensides to 150 cm, 30 % clay in the (B)); the podzolic B by
+  criterion 2 (OM above 0.5 %, C/N above 14), or an ashy A2 without a B.
+- **Classes X, IX, V, VI and VII:**
+  - X: Ki of 2.0 or less, else a CEC of the clay of 16 or less;
+  - IX: Ki above 2, base saturation above 50 % and individualised iron;
+  - V: no B, pH above 6.8 and Ca + Mg above 90 %;
+  - VI: a gradual fall over half the solum, OM minima by texture, S/T of
+    50 % or more in the upper horizons and 80 % in the B (p. 39);
+  - VII: the remaining soils with a B or (B).
+- **Supporting readings:** the ashy A2 is albic material; in an
+  undesignated profile, the B is read from soilKey’s diagnostics.
+- **After the reviews:**
+  - the notation gives the profile type (B, (B), A2), and the recorded
+    data the properties: a g with 0 % mottles recorded is not a
+    hydromorphic layer;
+  - class VII takes the soils with an A2 and no B;
+  - a peat excludes the mineral classes keyed before class XI, and class
+    I takes no organic layer (an organic layer counts as more than
+    traces for class II);
+  - the Canadian, New Zealand and Australian letters keep their own
+    meanings (f iron, v vertic, z frozen), and the recorded data come
+    before the Ca, Cs and Cn of the notation.
+
+The other systems do not change.
+
+## soilKey 0.9.329 (2026-11-01)
+
+### Japan: the soil phases of the Comprehensive Soil Classification System of Japan (the CSCJ now complete)
+
+[`classify_cscj2011()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.md)
+now gives the soil phases of chapter VIII in
+`ClassificationResult$phases`, beside the class name, as
+[`classify_scsj2017()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_scsj2017.md)
+does. With them, the CSCJ 2011 is complete in soilKey: 10 great groups,
+27 groups, 116 subgroups, 381 soil series groups and the phases.
+
+- **Temperature phase:** from the soil temperature, else the USDA
+  regime, else estimated from the mean annual air temperature plus 2 C,
+  as the CSCJ says.
+- **Man-made phases**, with the CSCJ’s names:
+  - a fill is named by its texture or, for a kuroboku fill, its humus
+    class, and by its kind of soil or material
+    (多腐植質黒ボク土盛土造成相, 粗粒質浚渫土砂盛土造成相, as the text’s
+    examples);
+  - the Reformed soils: the fill over the original soil’s group
+    (細粒質低地土／粘土集積赤黄色土造成相).
+  - a fill in the plough layer alone takes no phase (chapter IX, step
+    A);
+  - a fill with none of the five kinds that the materials name is keyed
+    on its own and named by its great group when 25 cm or more, by its
+    texture alone when thinner;
+  - a kuroboku fill on other material is a natural combination (chapter
+    IX, step D; also on
+    [\#133](https://github.com/HugoMachadoRodrigues/soilKey/issues/133)):
+    the text’s example keys as 腐植質下層低地アロフェン質黒ボク土 with
+    the phase 腐植質黒ボク土盛土造成相.
+- No forest phases: the CSCJ has none.
+
+#### Hugo’s decisions (2026-11-01)
+
+- The air temperature plus 2 C for the CSCJ temperature phase, marked as
+  estimated.
+- A fill’s name puts the texture word, or the humus class of a kuroboku
+  fill, before the soil kind; for the Reformed soils, the fill’s texture
+  and great group over the original soil’s group.
+- A kuroboku fill is a natural combination in the CSCJ only: it does not
+  make the soil Man-made (on
+  [\#133](https://github.com/HugoMachadoRodrigues/soilKey/issues/133)
+  and merged up the stack).
+- A fill with none of the five kinds: 25 cm or more is classified on its
+  own and named by its great group; a thinner one is named by its
+  texture word, when decided.
+
+The SCSJ 2017 and the other systems do not change.
+
+## soilKey 0.9.328 (2026-11-01)
+
+### Japan: the 381 soil series groups of the Comprehensive Soil Classification System of Japan
+
+[`classify_cscj2011()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.md)
+now keys a pedon down to its soil series group (土壌統群), the CSCJ’s
+lowest category, for example “fine-textured Reddish Argic Red-Yellow
+soils” / 細粒質赤色粘土集積赤黄色土.
+
+- **Lists.** Each subgroup has its own ordered list, drawn from the
+  text’s vocabulary:
+  - bedrock, a gravel layer or a pan layer within 60 cm;
+  - the texture of the subsurface;
+  - peat, alluvial or kuroboku layers in the subsoil, and the
+    non-allophanic feature;
+  - the humus classes;
+  - the mineral layers and fibre of the peat soils;
+  - the base-rich dark surface horizon;
+  - wetness.
+- **New horizon attributes:** `texture_class_jp` (the Japanese texture
+  classes, codes or words) and `hardness_yamanaka_mm` (soil hardness,
+  for the pan layer).
+- **App and report** label the new level “Soil series group”.
+
+#### Hugo’s decisions (2026-11-01)
+
+- Series groups are named by their term, in lower case, before the
+  subgroup’s name.
+- **Bedrock, gravel and pan layers:**
+  - bedrock and the gravel layer are measured from the soil surface;
+  - a gravel layer is 20 % or more in either record; with no record,
+    there is no gravel layer;
+  - hardness not recorded means no pan layer.
+- **Texture:**
+  - it is read from `texture_class_jp`;
+  - without it, clay of 15 % or more is fine, and medium vs coarse stays
+    undecided;
+  - it is read on the horizon of 15 cm or more with the largest overlap
+    of 20 to 40 cm; a tie goes to the larger part of the section, then
+    to the thicker horizon;
+  - with no subsurface, no texture class is met.
+- **The base-rich dark surface horizon** is undecided where liming is
+  recorded.
+
+The SCSJ 2017 and the other systems do not change.
+
+## soilKey 0.9.327 (2026-11-01)
+
+### Japan: the 116 subgroups of the Comprehensive Soil Classification System of Japan
+
+[`classify_cscj2011()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.md)
+now keys a pedon to its subgroup (chapter VI), named by its word before
+the group’s name, for example “Argic Calcaric Dark Red soils” and
+粘土集積石灰性暗赤色土.
+
+- **Subgroups shared with the SCSJ** are its generic gates, read by the
+  CSCJ edition under CSCJ names with the same depths and features.
+  Within them, the Andic subgroups have P retention as their only
+  substitute, and the Endoaeric Lowland Paddy soils read the CSCJ’s
+  yellowish brown.
+- **New or different:**
+  - the Cumulic Fulvic Andosols, by the brown polyhumic surface horizon
+    over 50 cm within 60 cm;
+  - the Low-humic Allophanic Andosols;
+  - the Dark Red groups’ Argic and Haplic subgroups;
+  - the Brown Forest soils in the CSCJ’s order, with Aquic by either
+    wetness, Eutric on every subhorizon at pH 6.5 and the new Terrace
+    subgroup.
+
+#### Hugo’s decisions (2026-11-01)
+
+- Terrace by recorded words for Pleistocene deposits, negations taken
+  out, a Holocene or alluvial terrace and a rock not counting; nothing
+  recorded means not.
+- Eutric as written, with no liming clause.
+
+The SCSJ 2017 and the other systems do not change.
+
+## soilKey 0.9.326 (2026-11-01)
+
+### Japan: the 27 groups of the Comprehensive Soil Classification System of Japan
+
+[`classify_cscj2011()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.md)
+now keys a pedon to its group (chapter VI): for example the Fulvic
+Andosols, the Calcaric, Dystric and Eutric Dark Red soils, and the Brown
+Lowland soils.
+
+- **Groups shared with the SCSJ** are its gates, read by the CSCJ
+  edition under CSCJ names.
+- **New groups and readings:**
+  - the Fulvic Andosols, by the brown polyhumic kuroboku surface
+    horizon: layers with the kuroboku feature, a moist value and chroma
+    of 3 or more and 4 % carbon or more each, 30 cm in 40 cm, with a
+    weighted mean of 6 % or more;
+  - the Calcaric and Dystric Dark Red soils;
+  - the Brown Lowland soils, by the CSCJ’s own yellowish-brown colour,
+    which leaves out 5YR.
+
+#### Hugo’s decisions (2026-11-01)
+
+- The brown polyhumic horizon adds up the layers that meet it, with no
+  allowance for layers that fail between them.
+- The Brown Lowland soils use the CSCJ’s yellowish brown.
+- Where liming is recorded, the Dystric and Calcaric Dark Red groups are
+  undecided (the soil keys to the Eutric group, provisional).
+- The Non-allophanic Andosols by the key alone.
+- The Volcanogenous Regosols’ undeveloped horizons leave buried horizons
+  out, in both Japanese systems (the SCSJ change is on
+  [\#130](https://github.com/HugoMachadoRodrigues/soilKey/issues/130)
+  and merged up).
+- With no subsurface section, a criterion on its subhorizons is not met,
+  in both systems (on
+  [\#129](https://github.com/HugoMachadoRodrigues/soilKey/issues/129)
+  and merged up).
+
+The appendix’s typos “Fuluvic” and “Volcangenous” are written Fulvic and
+Volcanogenous. The other systems do not change.
+
+## soilKey 0.9.325 (2026-11-01)
+
+### Japan: the Comprehensive Soil Classification System of Japan, the ten great groups
+
+[`classify_cscj2011()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.md)
+keys a pedon to the ten great groups of the Comprehensive Soil
+Classification System of Japan, First Approximation (Obara et al. 2011,
+NIAES), a system of its own beside the SCSJ 2017.
+[`make_cscj2011_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cscj2011_example.md)
+gives one profile per great group. Names are the English names of the
+text’s appendix 2, with the Japanese ones in `levels$name_native`. The
+27 groups, 116 subgroups, 381 soil series groups and the phases follow.
+
+- **Shared code, the CSCJ’s own limits.** The diagnostics the two
+  Japanese systems share are read with the SCSJ code, by the CSCJ
+  edition:
+  - the argic horizon by the CSCJ’s clay increase (the WRB 2006 values);
+  - the immature kuroboku feature with P retention as its only
+    substitute;
+  - the heterogeneous fill of the Man-made soils by the CSCJ great
+    groups, without the SCSJ’s Regosol-group rule;
+  - a fill that keys as Andosols is a combination that occurs in nature
+    (chapter IX, step D), so it does not make the soil Man-made.
+- **Podzols before Andosols**, as the CSCJ keys them.
+- **New great group:** the Dark Red soils, by a dark red subsurface (the
+  new colour word) or an origin from limestone or calcareous deposits
+  with a base-rich subsurface.
+- **The CSCJ’s Red-Yellow soils**, without the SCSJ’s base-status
+  criterion.
+- In the Pro app, the CSCJ is a national system of its own.
+
+#### Hugo’s decisions (2026-11-01)
+
+- The soil surface, which the CSCJ does not define, is read as in the
+  SCSJ.
+- The CSCJ’s own argic limits.
+- The subsurface section excludes the plough layer, as in the SCSJ.
+- The Dark Red colour is that of the thickest B horizon in the
+  subsurface section (a buried B included), else the first B below it,
+  else the thickest layer of the section.
+- Limestone or calcareous deposits come from recorded words or 40 %
+  CaCO3 or more; nothing recorded means not. Liming leaves a high base
+  status undecided.
+- The Podzols: one horizon may meet both the analysis and the morphology
+  criteria; the single parent material is read on the bleached and
+  accumulation horizons.
+- The Red-Yellow soils’ 25 cm are those of one horizon, in the CSCJ and
+  in the SCSJ alike.
+- A kuroboku fill is a natural combination in the CSCJ only: the text’s
+  example of a humic kuroboku fill on alluvium keys as an Andosol, not
+  as a Man-made soil. The SCSJ still reads every recorded fill as not
+  natural.
+- Decided for the later parts:
+  - a Japanese texture-class attribute;
+  - the series-group names with their term first;
+  - the air temperature plus 2 C for the CSCJ temperature phase;
+  - the texture layer in 20 to 40 cm and the non-allophanic test by the
+    key.
+
+The other systems do not change; the SCSJ changes only in its Red-Yellow
+soils’ count (also on
+[\#129](https://github.com/HugoMachadoRodrigues/soilKey/issues/129)).
+
+## soilKey 0.9.324 (2026-10-31)
+
+### Japan: the soil phases of the Soil Classification System of Japan
+
+[`classify_scsj2017()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_scsj2017.md)
+now gives the soil phases of chapter V in `ClassificationResult$phases`,
+a new field (kind, code, English and Japanese name, basis), which
+[`print()`](https://rdrr.io/r/base/print.html) lists. The class name is
+left as it is.
+
+- **Temperature phase:** frigid, mesic, thermic, hyperthermic, from the
+  mean annual soil temperature or the USDA soil temperature regime.
+- **Man-made phases:** mixed-layer, cut and fill phases for the other
+  great groups, the fill named by its materials; the gley, wet, gravelly
+  or plain phase of the Artifactual soils, named by the artificial
+  material; the fill over the original soil, with the same endings, for
+  the Reformed soils.
+- **Forest phases**, on forest or grazing land: the 1975 forest soil
+  type when recorded (new site field `forest_soil_type`, read in any
+  spelling and for the other 1975 groups by their moisture letter);
+  otherwise the three development phases of the Podzols on the key’s own
+  pairings (new horizon attribute `leached_spots`), and the seven
+  moisture phases of the other forest soils from soilKey’s reading of
+  their descriptions.
+- A phase is given only when it is decided: a test earlier in its order
+  that the data leave undecided gives none.
+
+#### Hugo’s decisions (2026-10-31 and 2026-11-01)
+
+- The phases sit beside the class name, not in it.
+- The temperature phase reads the soil temperature or the USDA regime,
+  with no estimate from the air.
+- One man-made phase for the Man-made soils: gley before wet before
+  gravelly; the Reformed soils take it too, as the supplement’s example.
+- The forest moisture phases: the recorded type, else rules from the
+  structures, undecided when ambiguous. Slightly wet: no O, a crumb A of
+  25 cm or more, a B without blocky, nutty or granular structure.
+  Moderately dry: nutty structure in the lower A and the upper B.
+  Moderately moist, drier type: granular upper A or nutty lower A, no
+  crumb required. Angular blocky is nutty.
+- The 1975 types of the other groups are read by their moisture letter.
+- A thin fill is named by its materials; mixing counts only below the
+  plough layer; land consolidation alone is not a cut.
+- Undecided data give no phase.
+
+Other systems do not change.
+
+## soilKey 0.9.323 (2026-10-31)
+
+### Japan: the 120 subgroups of the Soil Classification System of Japan
+
+[`classify_scsj2017()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_scsj2017.md)
+now keys a pedon to the subgroups of chapter III: 120 under the 26
+groups (Haplic, Humic, Cumulic, Brown-humic, Thapto-humic,
+Thapto-upland, Endofluvic, Aquic, Peaty, Anthraquic, Albic, Epi-gleyed,
+Thionic, Strong and Mottled, Reddish, Andic, Podzolic, Eutric, Calcaric,
+Granitic, Para-lithic …). Each is named by its word before the group’s
+name, in English and in Japanese (`levels$name_native`; the generic
+classifier now fills `{parent}` in the native name too).
+
+- New horizon attributes: `ph_h2o2` (potential sulfuric material),
+  `peat_moor_type` (high-moor, transitional or low-moor peat) and
+  `artefacts_organic` (mainly organic artificial material).
+- The subgroups also read the humic and polyhumic surface horizons, the
+  buried humic layer, the buried non-kuroboku upland soil, the paddy
+  reverse gley layer, jarosite, carbonates, the site’s landform and
+  groundwater depth, and the parent rock.
+- Hugo’s decision (2026-10-31): the mottle class ‘contains’ of the
+  Strong Gley Fluvic soils, for which the text gives no figure, is 5 %
+  or more.
+- On paddy land the Aquic subgroups do not read the paddy horizons’
+  mottles as groundwater wetness, as the groups do; the groundwater gley
+  layers are adjacent gley horizons reaching 75 cm.
+- Hugo’s decisions (2026-10-31): the Brown-humic colour is a moist value
+  and chroma both 3 or more (chapter VI); a paddy greyed horizon within
+  30 cm rules the Aeric Pseudogley soils out; the Endoaeric brown layer
+  is below the plough layer and the surface horizons; the Podzolic Brown
+  Forest soils read the podzolic accumulation horizon as the text gives
+  it (its colour suffices).
+- Corrections to the shared definitions: “at A to B cm” windows no
+  longer pass a layer that may start above A; the humic surface horizon
+  starts at the soil surface and reads gaps and the end of the
+  description as possible; a buried humic layer may be several horizons;
+  an H horizon with carbon but no kuroboku data is peat material; a
+  buried plough layer is not the plough layer; Japanese drainage classes
+  are read.
+
+The readings are in `inst/rules/scsj2017/readings.yaml`. Other systems
+do not change.
+
+## soilKey 0.9.322 (2026-10-31)
+
+### Japan: the 26 groups of the Soil Classification System of Japan
+
+[`classify_scsj2017()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_scsj2017.md)
+now keys a pedon past its great group to the 26 groups of chapter III,
+among them Podzolic, Regosolic, Gleyed, Wet, Non-allophanic and
+Allophanic Andosols, Fluvic Paddy, Gley, Gray, Brown and Regosolic
+Fluvic soils, Argic and Cambic Red-Yellow soils, Stagnogley and
+Pseudogley soils, Magnesian and Calcareous Eutrosols, and Volcanogenous
+and Sandy Regosols, Lithosols and Terrestrial Regosols. Each has its
+English and Japanese name.
+
+- New horizon attribute `exchange_acidity_y1` (the exchange acidity y1
+  of the non-allophanic kuroboku feature, not read on farmland). The
+  groups also read Sio (`si_ox_pct`), Alp/Alo (`al_pyro_pct`,
+  `al_ox_pct`) and exchangeable Ca and Mg.
+- The gley layers are subdivided as the text does (groundwater gley
+  layers reach 75 cm or deeper, taken together).
+- Man-made soils: a fill and the soil under it that both key to Regosols
+  are compared by their groups; a part of a profile keyed on its own is
+  read as complete.
+- Corrections to 0.9.321: a layer with the kuroboku feature no longer
+  also has the immature one (an ash layer that is certainly one of the
+  two still counts for the Andosols); a fill keeps the material it
+  records, so a fill of the same material is read as part of an ordinary
+  profile (chapter VI, the fill phase); colour words decided by value or
+  chroma alone; a run’s certain depth and the end of the description
+  read in the depth tests.
+
+#### Hugo’s decisions (2026-10-31)
+
+- The podzolic accumulation horizon’s criterion (2) is read for the
+  soil, as its verb says (as in 0.9.321).
+- “Several gley layers” are adjacent gley horizons taken together; an
+  oxidised layer separates two gley layers.
+- On paddy land the paddy horizons’ mottles are not the groundwater
+  wetness feature of the Wet Andosols and Gray Fluvic soils.
+- The mottle class “contains” (the Strong Gley Fluvic soils, next
+  release) is 5 % or more.
+- Later (2026-11-01): the Volcanogenous Regosols’ undeveloped horizons
+  leave buried horizons out.
+
+The readings are in `inst/rules/scsj2017/readings.yaml`. Other systems
+do not change.
+
 ## soilKey 0.9.321 (2026-10-31)
 
 ### Japan: the great groups of the Soil Classification System of Japan (2017)

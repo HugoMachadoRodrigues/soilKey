@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.321</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.336</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -374,7 +374,7 @@
       </dl></div><div class="section level2">
       <h2 id="soil-classification-system-of-japan-experimental-">Soil Classification System of Japan (experimental)<a class="anchor" aria-label="anchor" href="#soil-classification-system-of-japan-experimental-"></a></h2>
 
-      <div class="section-desc"><p>The ten great groups of the 2017 system of the Japanese Society of Pedology, named in English with the Japanese names beside them. Reads the Japanese horizon notation, the phosphate absorption coefficient (or P retention, Alo + 1/2 Feo, the field active-aluminium test), colours, paddy land use and the recorded origin of the layers.</p></div>
+      <div class="section-desc"><p>The ten great groups, 26 groups, 120 subgroups and the soil phases of the 2017 system of the Japanese Society of Pedology, named in English with the Japanese names beside them. Reads the Japanese horizon notation, the phosphate absorption coefficient (or P retention, Alo + 1/2 Feo, the field active-aluminium test), colours, paddy land use and the recorded origin of the layers.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -394,6 +394,52 @@
 
         </dt>
         <dd>Example pedons for the Japanese great groups</dd>
+      </dl></div><div class="section level2">
+      <h2 id="comprehensive-soil-classification-system-of-japan-experimental-">Comprehensive Soil Classification System of Japan (experimental)<a class="anchor" aria-label="anchor" href="#comprehensive-soil-classification-system-of-japan-experimental-"></a></h2>
+
+      <div class="section-desc"><p>The ten great groups, 27 groups, 116 subgroups, 381 soil series groups and the soil phases of the First Approximation (2011) of the National Institute for Agro-Environmental Sciences, named in English with the Japanese names beside them. Reads the diagnostics it shares with the 2017 system by its own limits (argic horizon, immature kuroboku feature), and adds the Dark Red soils (dark red colour, limestone).</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="classify_cscj2011.html">classify_cscj2011()</a></code>
+
+        </dt>
+        <dd>Classify a pedon under the Comprehensive Soil Classification System of Japan</dd>
+
+        <dt>
+
+          <code><a href="make_cscj2011_example.html">make_cscj2011_example()</a></code>
+
+        </dt>
+        <dd>Example pedons for the CSCJ great groups</dd>
+      </dl></div><div class="section level2">
+      <h2 id="french-soil-classification-cpcs-experimental-">French soil classification CPCS 1967 (experimental)<a class="anchor" aria-label="anchor" href="#french-soil-classification-cpcs-experimental-"></a></h2>
+
+      <div class="section-desc"><p>The twelve classes and 35 sub-classes of the 1967 classification of the Commission de Pedologie et de Cartographie des Sols, named in French. The text gives no key: the classes are keyed in an order built from its statements of precedence. Reads the old French horizon notation, organic matter (1.72 x C), the intensity of hydromorphy and halomorphy, Ki and the CEC of the clay, the C/N of the B and the fall of organic matter with depth.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="classify_cpcs1967.html">classify_cpcs1967()</a></code>
+
+        </dt>
+        <dd>Classify a pedon under the French soil classification (CPCS 1967)</dd>
+
+        <dt>
+
+          <code><a href="make_cpcs1967_example.html">make_cpcs1967_example()</a></code>
+
+        </dt>
+        <dd>Example pedons for the CPCS 1967 classes</dd>
       </dl></div><div class="section level2">
       <h2 id="interoperability">Interoperability<a class="anchor" aria-label="anchor" href="#interoperability"></a></h2>
 
@@ -3472,6 +3518,34 @@
 
         <dt>
 
+          <code><a href="cpcs1967_classes.html">raw_mineral_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">weakly_developed_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">vertisols_cpcs()</a></code> <code><a href="cpcs1967_classes.html">sodic_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">andosols_cpcs()</a></code> <code><a href="cpcs1967_classes.html">podzolised_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">ferrallitic_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">sesquioxide_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">hydromorphic_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">isohumic_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">calcimagnesic_soils_cpcs()</a></code> <code><a href="cpcs1967_classes.html">brunified_soils_cpcs()</a></code>
+
+        </dt>
+        <dd>CPCS 1967 class gates (internal)</dd>
+
+        <dt>
+
+          <code><a href="cpcs1967_groups.html">deposit_origin_cpcs()</a></code> <code><a href="cpcs1967_groups.html">rock_near_surface_cpcs()</a></code> <code><a href="cpcs1967_groups.html">patterned_ground_cpcs()</a></code> <code><a href="cpcs1967_groups.html">yermic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">takyric_cpcs()</a></code> <code><a href="cpcs1967_groups.html">aeolian_sands_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ice_segregation_cpcs()</a></code> <code><a href="cpcs1967_groups.html">allophanic_weakly_developed_cpcs()</a></code> <code><a href="cpcs1967_groups.html">lithocalcic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">subdesert_grey_cpcs()</a></code> <code><a href="cpcs1967_groups.html">rounded_surface_structure_cpcs()</a></code> <code><a href="cpcs1967_groups.html">saturated_andosol_cpcs()</a></code> <code><a href="cpcs1967_groups.html">cryptorendzina_cpcs()</a></code> <code><a href="cpcs1967_groups.html">rendzina_cpcs()</a></code> <code><a href="cpcs1967_groups.html">carbonated_humic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">melanised_calcic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">gypseous_rendziniform_cpcs()</a></code> <code><a href="cpcs1967_groups.html">isohumic_om20_cpcs()</a></code> <code><a href="cpcs1967_groups.html">textural_b_leached_cpcs()</a></code> <code><a href="cpcs1967_groups.html">sod_podzolic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">podzol_ashy_a2_cpcs()</a></code> <code><a href="cpcs1967_groups.html">podzolic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ochre_podzolic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">crypto_podzolic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">boreal_podzol_cpcs()</a></code> <code><a href="cpcs1967_groups.html">alpine_podzol_cpcs()</a></code> <code><a href="cpcs1967_groups.html">molken_podzol_cpcs()</a></code> <code><a href="cpcs1967_groups.html">tropical_groundwater_podzol_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ferruginous_leached_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ferruginous_impoverished_cpcs()</a></code> <code><a href="cpcs1967_groups.html">fersiallitic_calcium_reserve_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ferrallitic_humic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ferrallitic_impoverished_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ferrallitic_reworked_cpcs()</a></code> <code><a href="cpcs1967_groups.html">ferrallitic_rejuvenated_cpcs()</a></code> <code><a href="cpcs1967_groups.html">peat_fibre_cpcs()</a></code> <code><a href="cpcs1967_groups.html">humic_gley_cpcs()</a></code> <code><a href="cpcs1967_groups.html">iron_pan_hydromorphic_cpcs()</a></code> <code><a href="cpcs1967_groups.html">calcium_redistribution_cpcs()</a></code> <code><a href="cpcs1967_groups.html">amphigley_cpcs()</a></code> <code><a href="cpcs1967_groups.html">gley_cpcs()</a></code> <code><a href="cpcs1967_groups.html">stagnogley_cpcs()</a></code> <code><a href="cpcs1967_groups.html">solodised_cpcs()</a></code> <code><a href="cpcs1967_groups.html">solonetz_cpcs()</a></code>
+
+        </dt>
+        <dd>CPCS 1967 group gates (internal)</dd>
+
+        <dt>
+
+          <code><a href="cpcs1967_subclasses.html">cold_desert_raw_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">hot_desert_raw_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">permafrost_weakly_developed_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">humic_weakly_developed_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">xeric_weakly_developed_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">vertisols_reduced_external_drainage_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">cold_country_andosols_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">gypseous_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">carbonated_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">isohumic_humid_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">isohumic_very_cold_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">isohumic_cool_rainy_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">isohumic_hot_rainy_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">brunified_tropical_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">brunified_boreal_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">brunified_continental_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">brunified_temperate_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">podzolised_hydromorphic_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">podzols_cold_climate_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">podzolised_temperate_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">ferruginous_tropical_soils_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">ferrallitic_weakly_desaturated_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">ferrallitic_moderately_desaturated_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">ferrallitic_strongly_desaturated_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">hydromorphic_organic_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">hydromorphic_moderately_organic_cpcs()</a></code> <code><a href="cpcs1967_subclasses.html">sodic_degraded_structure_cpcs()</a></code>
+
+        </dt>
+        <dd>CPCS 1967 sub-class gates (internal)</dd>
+
+        <dt>
+
+          <code><a href="cpcs1967_subgroups.html">hydromorphic_signs_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">deep_hydromorphy_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">frost_form_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">humus_form_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">alpine_belt_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">salt_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">sodium_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">vertic_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">slickensides_moderate_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">self_mulching_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">calcareous_crust_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">carbonate_nodules_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">recalcified_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">rendzina_carbonate_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">hard_rock_contact_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">solum_depth_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">a1_thickness_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">organic_matter_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">climate_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">clay_index_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">b_colour_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">b_ph_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">allophane_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">tongues_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">reworked_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">weatherable_minerals_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">aeolian_addition_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">eluviated_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">indurated_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">concretions_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">saturated_poor_sand_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">humic_horizon_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">gibbsitic_dark_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">podzol_b_kind_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">no_b_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">podzolic_path_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">stagnogley_a2_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">podzol_gley_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">peat_trophic_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">anmoor_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">gley_depth_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">pseudogley_kind_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">amphigley_kind_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">solonchak_surface_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">acid_sulphate_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">solod_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">solonetz_structure_cpcs()</a></code> <code><a href="cpcs1967_subgroups.html">solonchak_solonetz_cpcs()</a></code>
+
+        </dt>
+        <dd>CPCS 1967 subgroup gates (internal)</dd>
+
+        <dt>
+
           <code><a href="dot-BDSOLOS_COLUMN_PATTERNS.html">.BDSOLOS_COLUMN_PATTERNS</a></code>
 
         </dt>
@@ -3581,6 +3655,20 @@
 
         </dt>
         <dd>The order a SiBCS label states, when it is not the order of its name</dd>
+
+        <dt>
+
+          <code><a href="identify_horizons.html">identify_horizons()</a></code>
+
+        </dt>
+        <dd>Identify the diagnostic horizons of a pedon</dd>
+
+        <dt>
+
+          <code><a href="match_horizon_sequence.html">match_horizon_sequence()</a></code>
+
+        </dt>
+        <dd>Match a profile against a profile formula</dd>
 
         <dt>
 

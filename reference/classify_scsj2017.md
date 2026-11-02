@@ -6,9 +6,11 @@ through the Soil Classification System of Japan (Japanese Society of
 Pedology 2017), following its key to great groups. **Experimental**:
 this release keys the ten great groups (Man-made soils, Organic Soils,
 Andosols, Podzols, Fluvic soils, Red-Yellow soils, Stagnic soils,
-Eutrosols, Brown Forest soils, Regosols); groups, subgroups and the soil
-phases follow. Each level gives the official English name and, in
-`levels$name_native`, the Japanese one.
+Eutrosols, Brown Forest soils, Regosols) and their 26 groups (for
+instance Allophanic and Non-allophanic Andosols, Fluvic Paddy soils,
+Magnesian Eutrosols, Sandy Regosols), and their 120 subgroups (Haplic,
+Humic, Cumulic, Aquic ...); the soil phases follow. Each level gives the
+official English name and, in `levels$name_native`, the Japanese one.
 
 ## Usage
 
@@ -47,8 +49,10 @@ A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
 with `system_id` `"scsj2017"`, the deepest class in `name`, the great
 group in `rsg_or_order`, the classes of each level in `levels` (with
-`name_native`), the key trace, and `provisional_because` (classes before
-the assigned one that could not be decided).
+`name_native`), the key trace, `provisional_because` (classes before the
+assigned one that could not be decided), and in `phases` the soil phases
+of chapter V (temperature, man-made and forest phases; the class name is
+left as it is).
 
 ## Details
 
@@ -59,14 +63,15 @@ notation by the same letters), moist Munsell colours, texture, organic
 carbon, the phosphate absorption coefficient
 (`phosphate_absorption_coef`, mg P2O5/100 g) or its substitutes (P
 retention, Alo + 1/2 Feo) and the field active-aluminium test
-(`active_al_test`), rubbed fibre, pH, base saturation, Fe(d), the
-dipyridyl test (`childs_test`), fluidity and `n_value`, mottles and
-where they are, artefacts, and the recorded origin of the layers
-(`layer_origin`, `rock_origin`: fill, volcanic ejecta, alluvial
-deposits). From the site it reads `land_use` or `flood_irrigated` (paddy
-land), `parent_material`, `drainage_class`, `artificially_drained`,
-`acid_neutralising_amendment` and `designation_system`. The choices
-where the text is silent are listed in
+(`active_al_test`), rubbed fibre, pH, base saturation, exchangeable Ca
+and Mg, Fe(d), Sio, Alp/Alo, the exchange acidity
+(`exchange_acidity_y1`), the dipyridyl test (`childs_test`), fluidity
+and `n_value`, mottles and where they are, artefacts, and the recorded
+origin of the layers (`layer_origin`, `rock_origin`: fill, volcanic
+ejecta, alluvial deposits). From the site it reads `land_use` or
+`flood_irrigated` (paddy land), `parent_material`, `drainage_class`,
+`artificially_drained`, `acid_neutralising_amendment` and
+`designation_system`. The choices where the text is silent are listed in
 `system.file("rules", "scsj2017", "readings.yaml", package = "soilKey")`.
 
 ## References
@@ -84,8 +89,10 @@ Soil Classification System of Japan. The Japanese Society of Pedology.
 ``` r
 res <- classify_scsj2017(make_scsj2017_example("andosol"), on_missing = "silent")
 res$name
-#> [1] "Andosols"
+#> [1] "Humic Allophanic Andosols"
 res$levels
-#>          level code     name  name_native
-#> 1 great_groups    C Andosols 黒ボク土大群
+#>          level code                      name                name_native
+#> 1 great_groups    C                  Andosols               黒ボク土大群
+#> 2       groups   C6       Allophanic Andosols       アロフェン質黒ボク土
+#> 3    subgroups C6HU Humic Allophanic Andosols 腐植質アロフェン質黒ボク土
 ```

@@ -91,6 +91,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_asc3_family.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_by_spectral_neighbours.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_cpcs1967.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.html</loc></url>
@@ -118,6 +120,10 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/compute_per_attribute_evidence_grade.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/continuous_rock.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/coverage_report.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cryic_conditions.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/cryic_horizon.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/distrofico.html</loc></url>
@@ -186,6 +192,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/hydragric.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/hypersulfidic_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/hyposulfidic_material.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/identify_horizons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/index.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/inspect_bdsolos_csv.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/irragric.html</loc></url>
@@ -236,7 +243,9 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cambissolo_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_chernossolo_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_chernozem_canonical.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cpcs1967_example.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cryosol_canonical.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cscj2011_example.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_cssc3_example.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_durisol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_horizons.html</loc></url>
@@ -275,6 +284,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_umbrisol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_vertisol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_vertissolo_canonical.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/match_horizon_sequence.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/mineral_material.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/mollic.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/mudanca_textural_abrupta.html</loc></url>

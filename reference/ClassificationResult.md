@@ -87,6 +87,13 @@ biogeographical or prior-based warnings.
   `"<level>:<code>"`. Empty when the assignment is firm or the
   classifier does not report it.
 
+- `phases`:
+
+  Soil phases of the systems that have them (the SCSJ 2017: temperature,
+  man-made and forest phases; the CSCJ 2011: temperature and man-made
+  phases), a `data.frame` with `kind`, `code`, `name`, `name_native` and
+  `basis`; `NULL` otherwise. Since v0.9.324.
+
 ## Methods
 
 ### Public methods

@@ -1086,16 +1086,47 @@ names of the USDA triangle, and the total water-soluble salts
 
 ## Soil Classification System of Japan (experimental)
 
-The ten great groups of the 2017 system of the Japanese Society of
-Pedology, named in English with the Japanese names beside them. Reads
-the Japanese horizon notation, the phosphate absorption coefficient (or
-P retention, Alo + 1/2 Feo, the field active-aluminium test), colours,
-paddy land use and the recorded origin of the layers.
+The ten great groups, 26 groups, 120 subgroups and the soil phases of
+the 2017 system of the Japanese Society of Pedology, named in English
+with the Japanese names beside them. Reads the Japanese horizon
+notation, the phosphate absorption coefficient (or P retention, Alo +
+1/2 Feo, the field active-aluminium test), colours, paddy land use and
+the recorded origin of the layers.
 
 - [`classify_scsj2017()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_scsj2017.md)
   : Classify a pedon under the Soil Classification System of Japan
 - [`make_scsj2017_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_scsj2017_example.md)
   : Example pedons for the Japanese great groups
+
+## Comprehensive Soil Classification System of Japan (experimental)
+
+The ten great groups, 27 groups, 116 subgroups, 381 soil series groups
+and the soil phases of the First Approximation (2011) of the National
+Institute for Agro-Environmental Sciences, named in English with the
+Japanese names beside them. Reads the diagnostics it shares with the
+2017 system by its own limits (argic horizon, immature kuroboku
+feature), and adds the Dark Red soils (dark red colour, limestone).
+
+- [`classify_cscj2011()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cscj2011.md)
+  : Classify a pedon under the Comprehensive Soil Classification System
+  of Japan
+- [`make_cscj2011_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cscj2011_example.md)
+  : Example pedons for the CSCJ great groups
+
+## French soil classification CPCS 1967 (experimental)
+
+The twelve classes and 35 sub-classes of the 1967 classification of the
+Commission de Pedologie et de Cartographie des Sols, named in French.
+The text gives no key: the classes are keyed in an order built from its
+statements of precedence. Reads the old French horizon notation, organic
+matter (1.72 x C), the intensity of hydromorphy and halomorphy, Ki and
+the CEC of the clay, the C/N of the B and the fall of organic matter
+with depth.
+
+- [`classify_cpcs1967()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cpcs1967.md)
+  : Classify a pedon under the French soil classification (CPCS 1967)
+- [`make_cpcs1967_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cpcs1967_example.md)
+  : Example pedons for the CPCS 1967 classes
 
 ## Interoperability
 
@@ -2439,6 +2470,141 @@ pública curada.
 
 - [`MockVLMProvider`](https://hugomachadorodrigues.github.io/soilKey/reference/MockVLMProvider.md)
   : Mock VLM provider for testing
+- [`raw_mineral_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`weakly_developed_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`vertisols_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`sodic_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`andosols_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`podzolised_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`ferrallitic_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`sesquioxide_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`hydromorphic_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`isohumic_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`calcimagnesic_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  [`brunified_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_classes.md)
+  : CPCS 1967 class gates (internal)
+- [`deposit_origin_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`rock_near_surface_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`patterned_ground_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`yermic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`takyric_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`aeolian_sands_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ice_segregation_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`allophanic_weakly_developed_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`lithocalcic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`subdesert_grey_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`rounded_surface_structure_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`saturated_andosol_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`cryptorendzina_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`rendzina_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`carbonated_humic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`melanised_calcic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`gypseous_rendziniform_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`isohumic_om20_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`textural_b_leached_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`sod_podzolic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`podzol_ashy_a2_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`podzolic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ochre_podzolic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`crypto_podzolic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`boreal_podzol_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`alpine_podzol_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`molken_podzol_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`tropical_groundwater_podzol_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ferruginous_leached_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ferruginous_impoverished_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`fersiallitic_calcium_reserve_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ferrallitic_humic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ferrallitic_impoverished_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ferrallitic_reworked_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`ferrallitic_rejuvenated_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`peat_fibre_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`humic_gley_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`iron_pan_hydromorphic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`calcium_redistribution_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`amphigley_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`gley_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`stagnogley_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`solodised_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  [`solonetz_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_groups.md)
+  : CPCS 1967 group gates (internal)
+- [`cold_desert_raw_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`hot_desert_raw_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`permafrost_weakly_developed_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`humic_weakly_developed_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`xeric_weakly_developed_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`vertisols_reduced_external_drainage_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`cold_country_andosols_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`gypseous_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`carbonated_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`isohumic_humid_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`isohumic_very_cold_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`isohumic_cool_rainy_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`isohumic_hot_rainy_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`brunified_tropical_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`brunified_boreal_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`brunified_continental_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`brunified_temperate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`podzolised_hydromorphic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`podzols_cold_climate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`podzolised_temperate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`ferruginous_tropical_soils_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`ferrallitic_weakly_desaturated_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`ferrallitic_moderately_desaturated_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`ferrallitic_strongly_desaturated_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`hydromorphic_organic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`hydromorphic_moderately_organic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  [`sodic_degraded_structure_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subclasses.md)
+  : CPCS 1967 sub-class gates (internal)
+- [`hydromorphic_signs_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`deep_hydromorphy_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`frost_form_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`humus_form_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`alpine_belt_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`salt_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`sodium_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`vertic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`slickensides_moderate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`self_mulching_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`calcareous_crust_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`carbonate_nodules_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`recalcified_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`rendzina_carbonate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`hard_rock_contact_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`solum_depth_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`a1_thickness_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`organic_matter_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`climate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`clay_index_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`b_colour_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`b_ph_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`allophane_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`tongues_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`reworked_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`weatherable_minerals_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`aeolian_addition_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`eluviated_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`indurated_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`concretions_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`saturated_poor_sand_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`humic_horizon_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`gibbsitic_dark_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`podzol_b_kind_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`no_b_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`podzolic_path_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`stagnogley_a2_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`podzol_gley_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`peat_trophic_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`anmoor_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`gley_depth_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`pseudogley_kind_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`amphigley_kind_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`solonchak_surface_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`acid_sulphate_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`solod_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`solonetz_structure_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  [`solonchak_solonetz_cpcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/cpcs1967_subgroups.md)
+  : CPCS 1967 subgroup gates (internal)
 - [`.BDSOLOS_COLUMN_PATTERNS`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-BDSOLOS_COLUMN_PATTERNS.md)
   : Canonical mapping from BDsolos column-name variants to soilKey
   schema
@@ -2473,6 +2639,10 @@ pública curada.
   : WRB Reference Soil Group code-to-name table
 - [`.sibcs_stated_order()`](https://hugomachadorodrigues.github.io/soilKey/reference/dot-sibcs_stated_order.md)
   : The order a SiBCS label states, when it is not the order of its name
+- [`identify_horizons()`](https://hugomachadorodrigues.github.io/soilKey/reference/identify_horizons.md)
+  : Identify the diagnostic horizons of a pedon
+- [`match_horizon_sequence()`](https://hugomachadorodrigues.github.io/soilKey/reference/match_horizon_sequence.md)
+  : Match a profile against a profile formula
 - [`print(`*`<npdb_dry_colour_model>`*`)`](https://hugomachadorodrigues.github.io/soilKey/reference/print.npdb_dry_colour_model.md)
   : print method for npdb_dry_colour_model
 - [`soilKey`](https://hugomachadorodrigues.github.io/soilKey/reference/soilKey-package.md)

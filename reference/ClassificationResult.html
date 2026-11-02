@@ -9,7 +9,7 @@ ClassificationResult: structured outcome of running a key"><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.321</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.336</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,6 +150,15 @@ before the one assigned, makes the assignment
 provisional; these are those classes, as
 <code>"&lt;level&gt;:&lt;code&gt;"</code>. Empty when the assignment
 is firm or the classifier does not report it.</p></dd>
+
+
+<dt><code>phases</code></dt>
+<dd><p>Soil phases of the systems that have them (the SCSJ
+2017: temperature, man-made and forest phases; the
+CSCJ 2011: temperature and man-made phases), a
+<code>data.frame</code> with <code>kind</code>, <code>code</code>,
+<code>name</code>, <code>name_native</code> and <code>basis</code>;
+<code>NULL</code> otherwise. Since v0.9.324.</p></dd>
 
 
 </dl><p></p></div>
