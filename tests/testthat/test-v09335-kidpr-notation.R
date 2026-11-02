@@ -122,7 +122,7 @@ test_that("an unknown token is refused, with its name", {
   expect_error(.pff("O-ZZ-C"), "Unknown horizon 'ZZ'")
   # the printing slips of chapter 6 are corrected in the fixture, with a note
   fx <- .formulas()
-  expect_identical(sum(nzchar(fx$note)), 7L)
+  expect_identical(sum(nzchar(fx$note)), 9L)
   expect_true("TJ-E-BHF-C" %in% fx$formula)
   expect_error(.pff("J-E-BHF-C"), "Unknown horizon 'J'")
 })
@@ -132,10 +132,10 @@ test_that("an unknown token is refused, with its name", {
 
 test_that("Cyrillic look-alikes, quotes and the permafrost sign are folded", {
   skip_on_cran()
-  x <- .kd(c("\u0410Y", "\u0421AT", "\u041d", "\u0425", "\u0412EL", "\u0422\u041f\u041e", "\u0441\u0430"),
+  x <- .kd(c("\u0410Y", "\u0421AT", "\u041d", "\u0425", "\u0412EL", "\u0422\u041f\u041e", "\u0435\u043a"),
            list(designation_system = "ru"))
   expect_identical(x$index, c("AY", "CAT", "H", "X", "BEL", "TPO", NA))
-  expect_identical(x$features[[7L]], "ca")
+  expect_identical(x$features[[7L]], "ek")
   expect_true(x$small[7L])
   expect_match(x$notes[[1L]][1L], "Cyrillic", fixed = TRUE)
   expect_identical(x$group[6L], "not_soil")
@@ -238,10 +238,13 @@ test_that("an all-capitals profile is Russian only by an index FAO cannot spell"
   expect_false(x$kidpr)
   expect_identical(x$hint[[1L]], c("P", "PU", "PB", "PT", "PTR"))
   expect_identical(x$hint_features[[2L]], "g")
-  # AY, EL, BEL could be an upper-cased Ay, El, BEl
+  # one row written as FAO capitals does not outweigh three Russian indices
   x <- .kd(c("AY", "EL", "BEL", "BTG", "C"))
   expect_true(x$caps)
-  expect_false(x$kidpr)
+  expect_true(x$kidpr)
+  expect_identical(x$features[[4L]], "g")
+  # but AY, EL alone do not outweigh more FAO rows
+  expect_false(.kd(c("AY", "AP", "BW", "BK", "C"))$kidpr)
   # PU cannot: the capitals after an index are then its features
   x <- .kd(c("PU", "AU", "BCA", "CCA"))
   expect_true(x$caps && x$kidpr)
@@ -337,4 +340,282 @@ test_that("rock flags and marks belong to the rock, not to a G or Q horizon", {
   expect_identical(x$rockflag, c("G", "Q", "G", rep(NA, 6L), "G", NA))
   expect_identical(x$mark, c(NA, NA, NA, "~~", "\"", "^^", "\"\"", "=", "..", "~~", NA))
   expect_identical(x$group, c(rep("rock", 10L), "hydrogenic"))
+})
+
+
+# --- the fixes of the review (2026-11-02) -------------------------------------------
+
+.ru <- list(designation_system = "ru")
+.has_note <- function(notes, pattern) any(grepl(pattern, notes, fixed = TRUE))
+
+test_that("H1: text that is not valid UTF-8 never stops the reader", {
+  skip_on_cran()
+  cp <- iconv("\u0410\u0423", "UTF-8", "CP1251")
+  x <- .kd(c("AY", cp), list())
+  expect_identical(x$index, c("AY", "AY"))
+  expect_true(.has_note(x$notes[[2L]], "Windows-1251"))
+  lat <- "BT\xb4"
+  Encoding(lat) <- "latin1"
+  for (bad in list("BT\xff", "BT\xff\xfe", rawToChar(as.raw(c(0x42, 0x54, 0xc3))), lat)) {
+    x <- expect_no_error(.kd(c("AY", "EL", bad), list()))
+    expect_true(x$kidpr)
+    expect_identical(x$index[1:2], c("AY", "EL"))
+    expect_false(x$known[3L])
+  }
+  expect_no_error(.kd(c(NA, "", " "), list()))
+})
+
+test_that("H2: a Soviet A0 typed with the letter O is not the Russian AO", {
+  skip_on_cran()
+  x <- .kd(c("AO", "A1", "A2", "B1", "B2", "C"))
+  expect_false(x$kidpr)
+  expect_match(x$why, "Soviet", fixed = TRUE)
+  expect_identical(x$hint[[1L]], "O")
+  cyr <- c("\u0410\u041e", paste0("\u0410", "1"), paste0("\u0410", "2"), "\u0412", "\u0421")
+  x <- .kd(cyr)
+  expect_false(x$kidpr)
+  expect_identical(x$hint[[1L]], "O")
+  # with lower case too, and an old FAO AO
+  expect_false(.kd(c("AO", "A1", "A2", "Bt", "Cca"))$kidpr)
+  x <- .kd(c("AO", "Bw", "C"))
+  expect_false(x$kidpr)
+  expect_identical(x$hint[[1L]], "O")
+  # beside a Russian-only index other than AO, the profile is Russian
+  x <- .kd(c("O", "AO", "BHF", "C"))
+  expect_true(x$kidpr)
+  expect_identical(x$index[2L], "AO")
+})
+
+test_that("H3: one row does not flip a Russian profile into FAO capitals", {
+  skip_on_cran()
+  base <- c("AY", "EL", "BEL", "BT", "C")
+  for (miss in c("NA", "N/A", "ND", "-", "?", "n/a")) {
+    x <- .kd(c(base, miss))
+    expect_true(x$kidpr, info = miss)
+    expect_false(x$caps, info = miss)
+    expect_true(is.na(x$index[6L]) && !x$known[6L], info = miss)
+    expect_true(.has_note(x$notes[[6L]], "records nothing"), info = miss)
+  }
+  lat <- "BT\xb4"
+  Encoding(lat) <- "latin1"
+  x <- .kd(c("AY", "EL", "BEL", lat, "C"))
+  expect_true(x$kidpr)
+  expect_false(x$caps)
+  # a Cyrillic lower-case letter is lower case
+  x <- .kd(c("AY", "EL", "BT\u0433", "C"))
+  expect_true(x$kidpr)
+  expect_false(x$caps)
+  # Russian transitions of two indices, and a junk row
+  expect_true(.kd(c("AU", "AUB", "BM", "BC", "C"))$kidpr)
+  x <- .kd(c("AY", "EL", "BEL", "BT", "BTD", "D"))
+  expect_true(x$kidpr)
+  expect_identical(x$masters[[5L]], c("BT", "D"))
+  x <- .kd(c("AY", "EL", "BEL", "BT", "CB", "C"))
+  expect_true(x$kidpr)
+  expect_true(x$transitional[5L])
+  expect_true(.kd(c("AY", "EL", "BEL", "BTG", "G"))$kidpr)
+  expect_true(.kd(c(base, "QQZ"))$kidpr)
+  expect_true(.kd(c(base, "BTCA"))$kidpr)
+  # AH, AK, AO written in capitals beside shared letters only: no decision
+  for (p in list(c("AH", "C"), c("AH", "AC", "C"), c("AH", "BC", "C"), c("AH", "BW", "C"),
+                 c("AO", "C"), c("AK", "C"))) {
+    expect_false(.kd(p)$kidpr, info = paste(p, collapse = "-"))
+  }
+  # ... but where the case is kept, or beside an index FAO has no master for
+  expect_true(.kd(c("AH", "Cca"))$kidpr)
+  expect_true(.kd(c("P", "BH", "G", "CG"))$kidpr)
+  # the limit left: AU over C alone reads as Russian (an FAO Au is rare)
+  expect_true(.kd(c("AU", "C"))$kidpr)
+})
+
+test_that("M1: spaces inside a feature list do not drop features", {
+  skip_on_cran()
+  x <- .kd(c("BCAs, cs", "BCA s,cs", "AJ [akl]", "BT grey", "BT g"), .ru)
+  expect_identical(x$features[1:3], list(c("s", "cs"), c("s", "cs"), "[akl]"))
+  expect_identical(x$features[[4L]], character(0))
+  expect_identical(x$features[[5L]], "g")
+  expect_true(.has_note(x$notes[[1L]], "spaces around a comma"))
+  expect_true(.has_note(x$notes[[2L]], "after a space read as part of the designation"))
+  expect_true(.has_note(x$notes[[4L]], "'grey' after a space read as a note"))
+})
+
+test_that("M2: a bracket that is no feature of the catalogue is read by its parts, noted", {
+  skip_on_cran()
+  x <- .kd(c("[g]", "[e]", "[ek]", "[gox]", "[e,hf]", "[hf-e]", "AJ[g]", "[abc]"), .ru)
+  expect_identical(x$known, c(FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE))
+  expect_identical(x$features[[2L]], "e")
+  expect_true(.has_note(x$notes[[2L]], "no bracketed feature of the Field Guide"))
+  expect_identical(x$features[5:6], list("[e-hf]", "[e-hf]"))
+  expect_true(.has_note(x$notes[[6L]], "[hf-e] read as [e-hf]"))
+  expect_identical(x$index[7L], "AJ")
+  expect_identical(x$features[[7L]], "g")
+  expect_true(all(is.na(x$bracket[c(2L, 3L)])))
+})
+
+test_that("M3: one horizon in brackets is buried, with its features", {
+  skip_on_cran()
+  x <- .kd(c("[AU]", "[AUg]", "[BT1]", "[2BT]", "[AU]g", "[AU,EL]", "[AY+EL]tr"), .ru)
+  expect_identical(x$index, c("AU", "AU", "BT", "BT", "AU", NA, NA))
+  expect_identical(x$buried, c(rep(TRUE, 5L), FALSE, FALSE))
+  expect_identical(x$features[c(2L, 5L)], list("g", "g"))
+  expect_identical(x$subdiv[3L], "1")
+  expect_identical(x$lith[4L], 2L)
+  expect_identical(x$composition[6:7], list(c("AU", "EL"), c("AY", "EL")))
+  expect_identical(x$features[[7L]], "tr")
+})
+
+test_that("M4: the hints of the Soviet and FAO letters", {
+  skip_on_cran()
+  h <- function(d, caps = FALSE) .kidpr_hint(d, caps)
+  for (d in c("Bf", "Bhf", "Bfe")) {
+    expect_identical(h(d)$hint, "BHF", info = d)
+    expect_identical(h(d)$hint_features, character(0), info = d)
+  }
+  expect_identical(h("Bcs")$hint, character(0))
+  expect_identical(h("Bcs")$hint_features, "cs")
+  expect_identical(h("T")$hint, c("T", "TO", "TE", "TJ"))
+  expect_identical(h("AT")$hint, c("T", "AO"))
+  expect_identical(h("G")$hint, "G")
+  expect_identical(h("A2B")$hint, "BEL")
+  expect_identical(h("A1A2", caps = TRUE)$hint[1L], "AEL")
+  expect_identical(h("Ck")$hint_features, "ca")
+  expect_identical(h("Cca")$hint_features, "ca")
+  expect_identical(h("Bz")$hint, character(0))
+  expect_identical(h("Bz")$hint_features, "s")
+  expect_true("S" %in% h("Az")$hint)
+  expect_identical(h("Cf")$hint_features, "\u22a5")
+})
+
+test_that("M5: every formula with a sign only the Russian notation writes is recognised", {
+  skip_on_cran()
+  fx <- .formulas()
+  rec <- vapply(fx$formula, function(f) {
+    rows <- .formula_items(.formula_normalise(f), f)
+    .kd(rows, list())$kidpr
+  }, NA)
+  expect_identical(sum(rec), 478L)
+  # the 63 left are written only with letters other notations share (O, T,
+  # H, G, C, R, D, P, S, W, E, BT, BI, BM), or with AH, AK, AO beside them
+  shared <- c("O", "T", "H", "G", "Q", "C", "R", "D", "P", "S", "W", "E", "BT", "BI", "BM", "CR",
+              "AH", "AK", "AO", "[ABC]")
+  v <- .voc()
+  left <- fx$formula[!rec]
+  codes <- unique(unlist(lapply(left, function(f)
+    unlist(lapply(.pff(f)$slots, function(z) c(z$codes, z$small))))))
+  expect_true(all(codes %in% shared), info = paste(setdiff(codes, shared), collapse = " "))
+  for (f in c("O-CR-C\u22a5", "O-C~~", "W-C^^", "H-G-CG~~", "P-BH-G-CG", "PY-E-BF-C", "O-C..", "W-C=")) {
+    expect_true(.kd(.formula_items(.formula_normalise(f), f), list())$kidpr, info = f)
+  }
+  expect_true(.kd(c("\u0422\u041f\u041e", "C"))$kidpr)
+  expect_true(.kd(c("O", "C\uf05e"))$kidpr)
+})
+
+test_that("M6: a long feature run that cannot be split is refused at once", {
+  skip_on_cran()
+  v <- .voc()
+  t0 <- proc.time()[["elapsed"]]
+  expect_null(.formula_decompose(paste0(strrep("r", 40), "j"), v$features))
+  x <- .kd(c("AY", paste0("BT", strrep("r", 40), "j")), list())
+  expect_lt(proc.time()[["elapsed"]] - t0, 2)
+  expect_false(x$known[2L])
+  # the split itself is unchanged: longest first, with backtracking
+  expect_identical(.formula_decompose("scs", v$features), c("s", "cs"))
+  expect_identical(.formula_decompose("gox", v$features), c("g", "ox"))
+  expect_identical(.formula_decompose("hhi", v$features), c("hh", "i"))
+})
+
+test_that("M7: the psammozems of chapter 6 take the sand mark", {
+  skip_on_cran()
+  fx <- .formulas()
+  ps <- fx[fx$source %in% c("ch6 p159", "ch6 p160") & grepl("^[OW]-C\\.\\.$", fx$formula), ]
+  expect_identical(ps$formula, c("O-C..", "W-C.."))
+  expect_true(all(grepl("sand mark", ps$note, fixed = TRUE)))
+  marks <- .kidpr_catalogue()$horizons$marks
+  ash <- Filter(function(e) e$code == "\"", marks)[[1L]]
+  expect_match(ash$note, "psammozems", fixed = TRUE)
+})
+
+test_that("M8: in the Russian notation f is not frozen and the permafrost sign is", {
+  skip_on_cran()
+  for (ds in c("ru", "kidpr", "Russian 2008")) {
+    pat <- .frozen_designation_pattern(list(designation_system = ds))
+    expect_false(grepl(pat, "Cf"), info = ds)
+    expect_false(grepl(pat, "ELf"), info = ds)
+    expect_true(grepl(pat, "C\u22a5"), info = ds)
+    expect_true(grepl(pat, "BT\uf05e"), info = ds)
+  }
+  expect_true(grepl(.frozen_designation_pattern(list()), "Cf"))
+  expect_true(grepl(.frozen_designation_pattern(list(designation_system = "fao")), "Bf"))
+})
+
+test_that("L2, L3: Russian texture words; the declared value is normalised", {
+  skip_on_cran()
+  a <- horizon_attribute_spec()
+  allowed <- strsplit(a$allowed[a$name == "texture_class_ru"], ", ", fixed = TRUE)[[1L]]
+  expect_true(all(c("sand", "heavy clay", "\u043f\u0435\u0441\u043e\u043a",
+                    "\u0441\u0443\u043f\u0435\u0441\u044c") %in% allowed))
+  for (ds in c(" RU ", "Russian 2008", "rus", "KIDPR-2008", "Russian")) {
+    expect_true(.kd(c("O", "G", "CG"), list(designation_system = ds))$kidpr, info = ds)
+  }
+  for (ds in c("unknown", "none", "n/a", "NA", "", "1")) {
+    x <- .kd(c("AY", "EL", "BT"), list(designation_system = ds))
+    expect_true(x$kidpr, info = ds)
+    expect_false(grepl("designation_system", x$why), info = ds)
+  }
+  expect_no_error(x <- .kd(c("AY", "BT"), "ru"))
+  expect_true(x$kidpr)
+  expect_false(.kd(c("AY", "BT"), data.frame(designation_system = "fao"))$kidpr)
+  expect_true(.kd(c("O", "G"), list(designation_system = list("ru")))$kidpr)
+})
+
+test_that("L4: transitions, rock flags, brackets, marks and folded characters", {
+  skip_on_cran()
+  x <- .kd(c("CB", "CGG", "BT1/BT2", "BTBT", "IIIIBT", "AU+", "(AU+S)", "BT[AU]", "BT~~",
+             "C\u02dc\u02dc", "C\u223c\u223c", "C\uff5e\uff5e", "C'", "\uff21\uff39",
+             "\u0406\u0406BT", "AU/BM+S"), .ru)
+  expect_true(x$transitional[1L])
+  expect_identical(x$masters[[1L]], c("C", "B"))
+  expect_identical(x$rockflag[2L], "G")
+  expect_identical(x$index[3:4], c("BT", "BT"))
+  expect_false(any(x$transitional[3:4]))
+  expect_false(x$known[5L])
+  expect_identical(x$lith[5L], 1L)
+  expect_identical(x$index[6L], "AU")
+  expect_true(.has_note(x$notes[[6L]], "empty part"))
+  expect_identical(x$index[7L], "AU")
+  expect_identical(x$overlay[[7L]], "S")
+  expect_true(x$remnant[7L])
+  expect_false(x$known[8L])
+  expect_true(.has_note(x$notes[[8L]], "only TUR"))
+  expect_true(.has_note(x$notes[[9L]], "written on a rock"))
+  expect_identical(x$mark[10:12], rep("~~", 3L))
+  expect_identical(x$mark[13L], "\"")
+  expect_identical(x$index[14L], "AY")
+  expect_identical(x$lith[15L], 2L)
+  expect_identical(x$masters[[16L]], c("AU", "BM"))
+  expect_identical(x$overlay[[16L]], "S")
+})
+
+test_that("L5, L6: small horizons by the catalogue; more ambiguous runs", {
+  skip_on_cran()
+  x <- .kd(c("ca", "g", "s", "v", "te", "cf", "Pagr", "Crx", "BHFhf"), .ru)
+  expect_identical(x$known[1:4], rep(FALSE, 4L))
+  expect_true(.has_note(x$notes[[1L]], "not a small horizon"))
+  expect_identical(x$small[5:6], c(TRUE, TRUE))
+  expect_false(any(is.na(x$ambiguous[7:9])))
+  f <- .kidpr_catalogue()$features$features
+  host <- function(code) unlist(Filter(function(e) e$code == code, f)[[1L]]$hosts)
+  expect_true(all(c("AY", "AU", "T") %in% host("h")))
+  expect_identical(host("cf"), "G")
+  expect_true(all(c("P", "PU", "BT", "BM") %in% host("w")))
+  expect_true("AU" %in% host("el"))
+})
+
+test_that("L7: notes name what was read", {
+  skip_on_cran()
+  x <- .kd(c("CG~~(CQ~~)", "BT/\u0433\u043b\u0435\u0435\u0432\u044b\u0439", "BT?", "\u0412T"), .ru)
+  expect_true(.has_note(x$notes[[1L]], "CQ~~"))
+  expect_false(.has_note(x$notes[[2L]], "Cyrillic"))
+  expect_true(.has_note(x$notes[[3L]], "trailing '?'"))
+  expect_true(.has_note(x$notes[[4L]], "Cyrillic"))
 })

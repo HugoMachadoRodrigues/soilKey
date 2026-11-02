@@ -891,9 +891,9 @@ attributes:
   - name: texture_class_ru
     section: "Russian system (Field Guide 2008)"
     unit: "-"
-    description: "Texture class of the Russian (Kachinsky) scale, in English or in Russian: sand (песок), loamy sand (супесь), light, medium or heavy loam (лёгкий, средний, тяжёлый суглинок), light, medium or heavy clay (лёгкая, средняя, тяжёлая глина). Read for the gradations of the Russian Field Guide of 2008 where phys_clay_pct is not recorded (Hugo's decision Q7)."
+    description: "Texture class of the Russian (Kachinsky) scale, in English or in Russian: sand (песок), loamy sand (супесь), light, medium or heavy loam (легкий, средний, тяжелый суглинок), light, medium or heavy clay (легкая, средняя, тяжелая глина), the Russian words written with е or ё. Read for the gradations of the Russian Field Guide of 2008 where phys_clay_pct is not recorded (Hugo's decision Q7)."
     systems: [kidpr2008]
-    allowed: [sand, loamy sand, light loam, medium loam, heavy loam, light clay, medium clay, heavy clay]
+    allowed: [sand, loamy sand, light loam, medium loam, heavy loam, light clay, medium clay, heavy clay, песок, супесь, легкий суглинок, средний суглинок, тяжелый суглинок, легкая глина, средняя глина, тяжелая глина]
   - name: loi_pct
     section: "Russian system (Field Guide 2008)"
     unit: "%"

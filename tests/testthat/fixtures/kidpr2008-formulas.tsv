@@ -2,7 +2,7 @@
 # chapter 4 (275, transcribed from its drawings) and every formula of the
 # chapter 6 correlation table (266, as the text layer of the PDF prints them, with
 # its Cyrillic look-alikes; marks lost in the text layer restored from the page,
-# two printing slips corrected, each noted). Codes only.
+# printing slips corrected, each noted). Codes only.
 source	formula	note
 ch4 CA01	O-EL-BEL-BT-C	
 ch4 CA02	O-EL-BELg-BTg-G-CG	
@@ -522,8 +522,8 @@ ch6 p159	P-RY(RJ)-[AВC]
 ch6 p159	PU-RU-[AВC]	
 ch6 p159	O-C=	
 ch6 p159	W-C=	
-ch6 p159	O-C”	
-ch6 p160	W-C”	
+ch6 p159	O-C..	printed O-C”, the ash mark of 3.3; chapter 4 (DA03, DA04) writes the sand mark ..
+ch6 p160	W-C..	printed W-C”, the ash mark of 3.3; chapter 4 (DA03, DA04) writes the sand mark ..
 ch6 p160	O-R	
 ch6 p160	W-R	
 ch6 p160	O-Rca	

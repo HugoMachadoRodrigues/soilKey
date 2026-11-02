@@ -44,14 +44,16 @@ features:
     name: "residual-eutrophic"
     group: transitional
     hosts: [TO]
+    small: true
     page: 61
   - code: h
     name_native: "Перегнойный"
     name: "peregnoi (highly decomposed)"
     group: transitional
-    hosts: [O, T, TO, TE, PT, AU]
+    hosts: [O, T, TO, TE, TJ, PT, AU, AY, AJ, AH, AK, AO]
     small: true
     page: 61
+    note: "Inside a peat or a humus horizon, or a band at the base of O, T or PT, or on top of the AU of the dark-humus gley soils."
   - code: e
     name_native: "Оподзоленный"
     name: "podzolised"
@@ -62,8 +64,10 @@ features:
     name_native: "Элювиированный"
     name: "eluviated"
     group: transitional
+    hosts: [AY, AJ, AU, AH, AK, D]
     small: true
     page: 61
+    note: "Mostly in the lower part of a humus horizon (and on the underlying rock D); written as a row of its own (an EL-like band of 5 cm or less) it is a marked small horizon, not a diagnostic one (default 11)."
   - code: BH
     written_as: horizon
     name_native: "Иллювиально-гумусовый"
@@ -191,8 +195,10 @@ features:
     name_native: "Криогенно-ожелезненный"
     name: "cryogenic-ferruginated"
     group: process
+    hosts: [G]
     small: true
     page: 66
+    note: "A rusty band above, more rarely below, the G horizon."
   - code: ox
     name_native: "Окисленно-глеевый"
     name: "oxidised-gley"
@@ -279,6 +285,7 @@ features:
     name_native: "Агрогетерогенный"
     name: "agro-heterogeneous"
     group: turbation
+    ambiguous: true
     hosts: [P, PU, PB, PT, PTR]
     page: 69
   - code: pb
@@ -435,7 +442,7 @@ features:
     name_native: "Реградированные"
     name: "regraded"
     group: list_only
-    hosts: [P, PU]
+    hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN]
     page: 39
     note: "Defined with the W horizon (3.1.1): W formed on an abandoned agro horizon or on the middle horizon of an abrazem."
   - code: x
@@ -449,6 +456,7 @@ features:
     name: "toxi-stratified"
     group: list_only
     small: true
+    ambiguous: true
     page: 80
     note: "A universal subtype of the chapter 4 lists, not defined in chapter 3."
 
@@ -458,6 +466,7 @@ components:
     part_of: "[e-hf]"
     name: "Al-Fe-humus band of the podzol microprofile"
     small: true
+    ambiguous: true
     page: 62
 
 # Subtype indices of the chapter 4 lists written with their host horizon; the
