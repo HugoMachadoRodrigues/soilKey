@@ -1,0 +1,359 @@
+# The divisions of trunk C, Постлитогенные почвы (Field Guide of 2008, key 2.3,
+# C.1-C.23, pp. 31-35).
+#
+# The key is a branching tree. soilKey flattens it into one first-match list
+# (Hugo's decision Q9, 2026-11-02): each division's gate is the conjunction
+# of the conditions of the book's path (or paths) to it, given in `path` as
+# the steps with their Cyrillic letters (C.4а-C.5а-C.6б-C.7а). Each step's
+# condition is written once below, under `steps`, and the gates name them.
+# The alternatives of a step are taken in the book's printed order (C.7: BFM >
+# BPL > CR > CRM > BMK > ASN, BSN; C.8: BHF > BT > BM > the rest). A gate
+# leaves out the exclusions an earlier entry of the list supplies (CL and CU
+# before every soil of C.4, CO before CN, CT before the agro soils, CC, CF
+# and CG before CRM ...), as the other keys do, so that a division left
+# undecided makes the one assigned after it provisional; it keeps those no
+# earlier entry supplies (C.1, C.4, C.5 and C.6, which have no entry of their
+# own; an alternative listed later; a BT with no eluvial horizon over it,
+# which C.9 leaves without a division). A division the book reaches from
+# several steps (CH, CJ, CR, CS, CM) has one entry with an any_of of its
+# paths, each branch excluding what the entries after it would take.
+#
+# Hugo's decisions read into the steps (2026-11-02):
+#   Q9  precedence: the printed order of steps and alternatives; C.19в before
+#       C.19а (P with AY and PU with AU are organo-accumulative, CN08 and
+#       CN09); C.6б over C.6а when BFM, BPL, CRM, CR, CRH or BMK is in the
+#       profile (P-G-CRM reaches CH06); an agro horizon P, PU, PT or PTR
+#       directly over BFM or BMK is an agrozem (the CC and CJ texts, pp. 83,
+#       99).
+#   Q10 the gaps the types prove: AY and AK at C.2 (CP05, CP08); PT and PTR
+#       at C.19а (CS05, CS06); AK at C.19в (CN05); a TUR over 40 cm thick at
+#       C.6, before C.7 (CT01, CT02), and a TUR at the surface at C.4
+#       (CT14-CT17); AY or AO directly over G to CH (the division text: G
+#       directly under a humus horizon). Every other combination the key
+#       leaves without an exit is "not provided by the Field Guide of 2008"
+#       (C.21-C.23): no division, with a note.
+#   Q19 a middle horizon at the surface (C.20) counts only when the
+#       description starts at 0 cm (or under O or W); otherwise undecided.
+#   Q20 CT needs a TUR more than 40 cm thick; a thinner TUR under P or PU
+#       (which the horizon key makes a TUR when its base lies below 40 cm)
+#       leaves the soil to C.16 (the solonetzic agrozems CS16-CS19).
+#   Q23 CU only at C.3б, after CP and CL.
+# soilKey's readings where the decisions are silent (readings.yaml): the
+# peat T of the key's lists includes TO and TE; V and CRH join the middle
+# horizons of C.5 (the types CI04, CI05, CI14, CI15 have no other middle
+# horizon); a profile C.6 gives no exit (an agro horizon on ASN or BSN, the
+# types CK09-CK12) goes on to C.7; the surface S or SS of C.3 starts within
+# 10 cm, the X within 30 cm.
+#
+# Names: an English gloss in `name`, the Russian of the chapter 4 heading in
+# `name_native`, the key and index forms in `synonyms_native` (Q12).
+
+steps:
+  # C.1 hard rock R at 30 cm or less
+  C1a: &C1a {rock_within_kidpr: {max_cm: 30}}
+  C1b: &C1b {none_of: [{rock_within_kidpr: {max_cm: 30}}]}
+  # C.2 an organic or humus horizon over the shallow rock (+ AY, AK: Q10)
+  C2a: &C2a {has_horizon_kidpr: {codes: ["T", "TO", "TE", "TJ", "H", "AO", "AJ", "AU", "AH", "P", "PU", "AY", "AK"]}}
+  # C.3 a surface saline (S, SS) or contaminated (X) horizon
+  C3a: &C3a {has_horizon_kidpr: {codes: ["S", "SS"], within_cm: 10}}
+  C3b: &C3b {contaminated_x_kidpr: {within_cm: 30}}
+  # C.4 a humus, organic or agro horizon at the surface (or under a deposit
+  # of 40 cm or less; + TUR: Q10), and/or any eluvial horizon
+  C4a: &C4a
+    any_of:
+      - starts_at_surface_kidpr: {codes: ["AJ", "AY", "AU", "AO", "AK", "AH", "O", "T", "TO", "TE", "TJ", "H",
+                                          "P", "PU", "PT", "PTR", "PB", "TUR"]}
+      - has_horizon_kidpr: {codes: ["E", "EL", "AEL", "BEL", "SEL"]}
+  C4b: &C4b {none_of: [*C4a]}
+  # C.5 a middle horizon, G, Q or TUR (+ V, CRH: soilKey's reading)
+  C5a: &C5a {has_horizon_kidpr: {codes: ["BT", "BI", "BHF", "BFM", "BM", "BPL", "CRM", "CR", "BCA", "CAT",
+                                         "ASN", "BSN", "G", "Q", "TUR", "V", "CRH"]}}
+  C5b: &C5b {none_of: [*C5a]}
+  # C.6 first a TUR over 40 cm (Q10, Q20; CT) and an agro horizon on BFM or
+  # BMK (Q9; CS); then б (any of BFM, BPL, CRM, CR, CRH, BMK) over а (an agro
+  # horizon or TUR directly over BT, BI, BHF, BM, BCA, CAT, G or Q); with
+  # neither, on to C.7 (soilKey's reading). C.6а is read by CR and CS, before
+  # CS takes the agro horizon on BFM or BMK; C.6б by the entries after CT and
+  # CS, which supply the first two.
+  C6tur: &C6tur {turbated_kidpr: {min_cm: 40}}
+  C6P: &C6P {directly_over_kidpr: {upper: ["P", "PU", "PT", "PTR"], lower: ["BFM", "BMK"]}}
+  C6list: &C6list {has_horizon_kidpr: {codes: ["BFM", "BPL", "CRM", "CR", "CRH", "BMK"]}}
+  C6over: &C6over {directly_over_kidpr: {upper: ["P", "PU", "PT", "PTR", "PB", "TUR"],
+                                         lower: ["BT", "BI", "BHF", "BM", "BCA", "CAT", "G", "Q"]}}
+  C6a: &C6a {all_of: [{none_of: [*C6P, *C6list]}, *C6over]}
+  C6b: &C6b {any_of: [*C6list, {none_of: [*C6over]}]}
+  # C.7 BFM > BPL > CR > CRM > BMK > ASN, BSN > other: the entries CC, CF,
+  # CG, CH, CE, CJ and CK supply the order; the branches of CH and CJ that
+  # pass C.7 (tested before CK) exclude every one of them
+  C7zh: &C7zh {none_of: [{has_horizon_kidpr: {codes: ["BFM", "BPL", "CR", "CRM", "BMK", "ASN", "BSN"]}}]}
+  # C.8 BHF > BT > BM > BI, BCA, CAT, V, CRH, G, Q without BT, BHF, BM: in full
+  # for the branches of CH and CJ (before CB); after CB, BHF is excluded by
+  # the order, BT and BM are not (C.9б and C.10в have no division)
+  C8v: &C8v {all_of: [{none_of: [{has_horizon_kidpr: {codes: ["BHF", "BT"]}}]}, {has_horizon_kidpr: {codes: ["BM"]}}]}
+  C8g: &C8g {all_of: [{none_of: [{has_horizon_kidpr: {codes: ["BHF", "BT", "BM"]}}]},
+                      {has_horizon_kidpr: {codes: ["BI", "BCA", "CAT", "V", "CRH", "G", "Q"]}}]}
+  C8v_after: &C8v_after {all_of: [{none_of: [{has_horizon_kidpr: {codes: ["BT"]}}]}, {has_horizon_kidpr: {codes: ["BM"]}}]}
+  C8g_after: &C8g_after {all_of: [{none_of: [{has_horizon_kidpr: {codes: ["BT", "BM"]}}]},
+                                  {has_horizon_kidpr: {codes: ["BI", "BCA", "CAT", "V", "CRH", "G", "Q"]}}]}
+  # C.9 an eluvial EL, AEL or BEL above BT
+  C9a: &C9a {below_kidpr: {upper: ["EL", "AEL", "BEL"], lower: ["BT"]}}
+  # C.10 the surface horizon (p. 37; Q11)
+  C10a: &C10a {surface_horizon_kidpr: {codes: ["AJ"]}}
+  C10b: &C10b {surface_horizon_kidpr: {codes: ["O", "AO", "AY", "AU", "P", "PU"]}}
+  # C.11 the surface horizon: AJ; AU or PU over AU; O, T, H, PT or PU; and
+  # AY or AO directly over G (Q10)
+  C11a: &C11a {surface_horizon_kidpr: {codes: ["AJ"]}}
+  C11b: &C11b
+    any_of:
+      - surface_horizon_kidpr: {codes: ["AU"]}
+      - all_of:
+          - surface_horizon_kidpr: {codes: ["PU"]}
+          - directly_over_kidpr: {upper: ["PU"], lower: ["AU"]}
+  C11v: &C11v {all_of: [{none_of: [*C11b]}, {surface_horizon_kidpr: {codes: ["O", "T", "TO", "TE", "H", "PT", "PU"]}}]}
+  C11g: &C11g {all_of: [{surface_horizon_kidpr: {codes: ["AY", "AO"]}},
+                        {directly_over_kidpr: {upper: ["AY", "AO"], lower: ["G"]}}]}
+  # C.12 BCA or CAT
+  C12a: &C12a {has_horizon_kidpr: {codes: ["BCA", "CAT"]}}
+  # C.13 directly under AU: BI, BCA (up to 15 cm with no diagnostic horizon
+  # between, p. 94; Q14), CAT, V, CRH (CI); else G (CH, before CI); else Q
+  # (CM, after CI and CH)
+  C13a: &C13a
+    any_of:
+      - directly_over_kidpr: {upper: ["AU"], lower: ["BI", "CAT", "V", "CRH"]}
+      - directly_over_kidpr: {upper: ["AU"], lower: ["BCA"], gap_cm: 15}
+  C13b: &C13b {all_of: [{none_of: [*C13a]}, {directly_over_kidpr: {upper: ["AU"], lower: ["G"]}}]}
+  C13v: &C13v {directly_over_kidpr: {upper: ["AU"], lower: ["Q"]}}
+  # C.14 under O, T, H, PT or PU: G (CH); else Q (CM, after CH)
+  C14a: &C14a {directly_over_kidpr: {upper: ["O", "T", "TO", "TE", "H", "PT", "PU"], lower: ["G"]}}
+  C14b: &C14b {directly_over_kidpr: {upper: ["O", "T", "TO", "TE", "H", "PT", "PU"], lower: ["Q"]}}
+  # C.16 the agro horizon: PB; P, PU, PT, PTR
+  C16a: &C16a {surface_horizon_kidpr: {codes: ["PB"]}}
+  C16b: &C16b {surface_horizon_kidpr: {codes: ["P", "PU", "PT", "PTR"]}}
+  # C.17 G above CRM (CH, before CE)
+  C17a: &C17a {below_kidpr: {upper: ["G"], lower: ["CRM"]}}
+  # C.18 E or EL in the middle of the profile, under an organic, humus or
+  # agro horizon (CO, before CN, CR and CS)
+  C18a: &C18a {below_kidpr: {upper: ["AJ", "AY", "AU", "AO", "AK", "AH", "O", "T", "TO", "TE", "TJ", "H",
+                                     "P", "PU", "PT", "PTR", "PB"], lower: ["E", "EL"]}}
+  # C.19 в one organic or humus horizon only (+ AK: Q10), or P with AY, PU
+  # with AU (CN, first: Q9); б a single PB (CR); а P or PU (+ PT, PTR: Q10;
+  # CS, after CN)
+  C19a: &C19a {has_horizon_kidpr: {codes: ["P", "PU", "PT", "PTR"]}}
+  C19b: &C19b {only_horizons_kidpr: {sets: [["PB"]]}}
+  C19v: &C19v {only_horizons_kidpr: {sets: [["AJ"], ["AY"], ["AU"], ["AO"], ["AH"], ["H"], ["TJ"], ["AK"],
+                                            ["P", "AY"], ["PU", "AU"]]}}
+  # C.20 a middle horizon at the surface (or under a deposit of 40 cm or
+  # less), the description starting at 0 cm (Q19)
+  C20a: &C20a {starts_at_surface_kidpr: {codes: ["BI", "BHF", "BFM", "BM", "BPL", "CRM", "BCA", "CAT", "ASN",
+                                                 "BSN", "V"], from_ground_zero: true}}
+
+divisions:
+  "C":
+    - code: "CP"
+      name: "Lithozems"
+      name_native: "Литоземы"
+      path: "C.1а-C.2а"
+      tests:
+        all_of: [*C1a, *C2a]
+      notes: "Hard rock at 30 cm or less, under an organic or humus horizon of any kind or an agro horizon (p. 112). With none of them the profile is a thin layer of loose rock over hard rock (C.2б), no division."
+
+    - code: "CL"
+      name: "Halomorphic soils"
+      name_native: "Галоморфные почвы"
+      path: "C.1б-C.3а"
+      tests:
+        all_of: [*C1b, *C3a]
+      notes: "A surface saline horizon S or SS (p. 104)."
+
+    - code: "CU"
+      name: "Chemozems"
+      name_native: "Хемоземы"
+      path: "C.1б-C.3б"
+      tests:
+        all_of: [*C1b, *C3b]
+      notes: "A chemically contaminated horizon X: pollutants at the extremely hazardous level in the upper 30 cm (p. 134; Hugo's decision Q23). The name of the chemozem (the pollutants and the soil it was) comes with the types."
+
+    - code: "CQ"
+      name: "Abrazems"
+      name_native: "Абраземы"
+      path: "C.1б-C.3в-C.4б-C.20а"
+      tests:
+        all_of: [*C1b, *C4b, *C20a]
+      notes: "No organic, humus, agro or eluvial horizon at the surface, and a middle horizon at the surface: a truncated soil (p. 114), read on the profile when the description starts at 0 cm (Hugo's decision Q19)."
+
+    - code: "CO"
+      name: "Eluvial soils"
+      name_native: "Элювиальные почвы"
+      path: "C.1б-C.3в-C.4а-C.5б-C.18а"
+      tests:
+        all_of: [*C1b, *C4a, *C5b, *C18a]
+      notes: "No middle horizon; E or EL under an organic, humus or agro horizon (p. 110)."
+
+    - code: "CN"
+      name: "Organo-accumulative soils"
+      name_native: "Органо-аккумулятивные почвы"
+      path: "C.1б-C.3в-C.4а-C.5б-C.18б-C.19в"
+      tests:
+        all_of: [*C1b, *C4a, *C5b, *C19v]
+      notes: "One organic or humus horizon only (AJ, AY, AU, AO, AH, H, TJ; AK by Hugo's decision Q10), or P with AY, PU with AU (C.19в before C.19а, Q9), over the parent material (p. 108)."
+
+    - code: "CT"
+      name: "Turbozems"
+      name_native: "Турбоземы"
+      synonyms_native: ["Турбированные почвы"]
+      path: "C.1б-C.3в-C.4а-C.5а-C.6 [TUR over 40 cm, Q10]-C.15а"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6tur]
+      notes: "A turbated horizon TUR more than 40 cm thick, under an agro horizon or at the surface (p. 121; Hugo's decisions Q10 and Q20)."
+
+    - code: "CR"
+      name: "Agroabrazems"
+      name_native: "Агроабраземы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6а-C.15б-C.16а | C.1б-C.3в-C.4а-C.5б-C.18б-C.19б"
+      tests:
+        all_of:
+          - *C1b
+          - *C4a
+          - any_of:
+              - all_of: [*C5a, *C6a, *C16a]
+              - all_of: [*C5b, *C19b]
+      notes: "The agro-abraded horizon PB directly over a middle horizon, G or Q, or a single PB over the parent material (p. 115)."
+
+    - code: "CS"
+      name: "Agrozems"
+      name_native: "Агроземы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6 [P on BFM or BMK, Q9] | C.1б-C.3в-C.4а-C.5а-C.6а-C.15б-C.16б | C.1б-C.3в-C.4а-C.5б-C.18б-C.19а"
+      tests:
+        all_of:
+          - *C1b
+          - *C4a
+          - any_of:
+              - all_of: [*C5a, *C6P]
+              - all_of: [*C5a, *C6a, *C16b]
+              - all_of: [*C5b, *C19a]
+      notes: "An agro horizon P, PU, PT or PTR directly over a middle horizon, G or Q, or over the parent material (p. 118); also directly over BFM or BMK (the CC and CJ texts, Hugo's decision Q9), and a ploughed floodplain soil with no natural remnant under the agro horizon (trunk B's gate leaves it here)."
+
+    - code: "CC"
+      name: "Fe-metamorphic soils"
+      name_native: "Железисто-метаморфические почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7а"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["BFM"]}}]
+      notes: "The iron-metamorphic horizon BFM (p. 83)."
+
+    - code: "CF"
+      name: "Pale-metamorphic soils"
+      name_native: "Палево-метаморфические почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7б"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["BPL"]}}]
+      notes: "The pale-metamorphic horizon BPL (p. 89)."
+
+    - code: "CG"
+      name: "Cryogenic soils (cryozems)"
+      name_native: "Криогенные почвы (криоземы)"
+      synonyms_native: ["Криогенные почвы"]
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7в"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["CR"]}}]
+      notes: "The cryogenic horizon CR (p. 90)."
+
+    - code: "CH"
+      name: "Gley soils"
+      name_native: "Глеевые почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7г-C.17а | ...-C.6б-C.7ж-C.8г-C.11б-C.13б | ...-C.6б-C.7ж-C.8г-C.11в-C.14а | ...-C.6б-C.7ж-C.8г-C.11 [AY or AO over G, Q10]"
+      tests:
+        all_of:
+          - *C1b
+          - *C4a
+          - *C5a
+          - *C6b
+          - any_of:
+              - all_of: [{has_horizon_kidpr: {codes: ["CRM"]}}, *C17a]
+              - all_of: [*C7zh, *C8g, *C11b, *C13b]
+              - all_of: [*C7zh, *C8g, *C11v, *C14a]
+              - all_of: [*C7zh, *C8g, *C11g]
+      notes: "The gley horizon G above CRM, or directly under the surface humus, organic or agro horizon (p. 92); AY or AO over G by Hugo's decision Q10."
+
+    - code: "CE"
+      name: "Cryometamorphic soils"
+      name_native: "Криометаморфические почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7г-C.17б"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["CRM"]}}]
+      notes: "The cryometamorphic horizon CRM, with no gley horizon G above it (p. 87)."
+
+    - code: "CJ"
+      name: "Light-humus carbonate-accumulative soils"
+      name_native: "Светлогумусовые аккумулятивно-карбонатные почвы"
+      synonyms_native: ["Аккумулятивно-карбонатные малогумусные почвы"]
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7д | ...-C.6б-C.7ж-C.8в-C.10а | ...-C.6б-C.7ж-C.8г-C.11а-C.12а"
+      tests:
+        all_of:
+          - *C1b
+          - *C4a
+          - *C5a
+          - *C6b
+          - any_of:
+              - has_horizon_kidpr: {codes: ["BMK"]}
+              - all_of: [*C7zh, *C8v, *C10a]
+              - all_of: [*C7zh, *C8g, *C11a, *C12a]
+      notes: "The xerometamorphic horizon BMK; or the light-humus AJ over BM, or over BCA or CAT (p. 98)."
+
+    - code: "CK"
+      name: "Alkaline clay-differentiated soils"
+      name_native: "Щелочно-глинисто-дифференцированные почвы"
+      synonyms_native: ["Щелочно-текстурно-дифференцированные почвы", "Щелочно-глинисто-дифференцируемые почвы"]
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7е"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["ASN", "BSN"]}}]
+      notes: "A dark solonetz horizon ASN or a solonetz horizon BSN (p. 100). The key and the index call the division Щелочно-текстурно-дифференцированные."
+
+    - code: "CB"
+      name: "Al-Fe-humus soils"
+      name_native: "Альфегумусовые почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7ж-C.8а"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["BHF"]}}]
+      notes: "The Al-Fe-humus horizon BHF (p. 80), before BT and BM."
+
+    - code: "CA"
+      name: "Texture-differentiated soils"
+      name_native: "Текстурно-дифференцированные почвы"
+      synonyms_native: ["Текстурно-дифференцируемые почвы"]
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7ж-C.8б-C.9а"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, {has_horizon_kidpr: {codes: ["BT"]}}, *C9a]
+      notes: "The textural horizon BT under an eluvial horizon EL, AEL or BEL (p. 76). A BT with none above is not provided (C.9б)."
+
+    - code: "CD"
+      name: "Structural-metamorphic soils"
+      name_native: "Структурно-метаморфические почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7ж-C.8в-C.10б"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, *C8v_after, *C10b]
+      notes: "The structural-metamorphic horizon BM under an O, AO, AY, AU, P or PU (p. 84)."
+
+    - code: "CI"
+      name: "Humus-accumulative soils"
+      name_native: "Аккумулятивно-гумусовые почвы"
+      path: "C.1б-C.3в-C.4а-C.5а-C.6б-C.7ж-C.8г-C.11б-C.13а"
+      tests:
+        all_of: [*C1b, *C4a, *C5a, *C6b, *C8g_after, *C11b, *C13a]
+      notes: "The dark-humus AU (or PU over AU) directly over BI, BCA, CAT, V or CRH (p. 93); up to 15 cm with no carbonates between AU and BCA (p. 94)."
+
+    - code: "CM"
+      name: "Hydrometamorphic soils"
+      name_native: "Гидрометаморфические почвы"
+      path: "...-C.6б-C.7ж-C.8г-C.11б-C.13в | ...-C.6б-C.7ж-C.8г-C.11в-C.14б"
+      tests:
+        all_of:
+          - *C1b
+          - *C4a
+          - *C5a
+          - *C6b
+          - *C8g_after
+          - any_of:
+              - all_of: [*C11b, *C13v]
+              - all_of: [*C11v, *C14b]
+      notes: "The quasi-gley horizon Q directly under AU, or under O, T, H, PT or PU (p. 106)."

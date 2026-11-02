@@ -1,0 +1,103 @@
+# The trunks of the Russian soil classification (Field Guide of 2008, key
+# 2.2, p. 28). The key is a branching tree; soilKey flattens it into a
+# first-match list (Hugo's decision Q9, 2026-11-02), each gate a conjunction
+# of the conditions of the book's path to the trunk, the path in `path`
+# (the steps with their Cyrillic letters). A gate may leave out what an
+# earlier trunk of the list excludes (the order supplies it).
+#
+# The order is the book's: no soil horizon within about 1 m, and a deposit
+# over 40 cm that is not humified (E); only O or only W (D); a peat body of
+# 51 cm (A); a humified deposit over 40 cm, or a soil one of the divisions
+# of trunk B takes (B); the rest (C). A humified deposit over 40 cm (step
+# 4a) is tested after D and A, whose gates exclude any deposit over 40 cm.
+#
+# The repairs of the gaps the types prove (Hugo's decision Q10): trunk D
+# also takes O with W, and an S alone over loose rock (the automorphic
+# Солончаки of trunk D). Trunk B takes only what one of its divisions takes
+# (Q21): its gate is the union of the gates of BA, BB and BC
+# (divisions/B.yaml). Trunk E is not a soil (Q1); the chapter 8 groups of
+# technogenic surface formations are not keyed.
+#
+# Names: an English gloss in `name`, the Russian of the key and the index of
+# trunks (p. 29) in `name_native`, the chapter 4 headings in `synonyms_native`
+# (Q12). The predicates are in R/diagnostics-kidpr.R.
+
+trunks:
+
+  - code: "E"
+    name: "Technogenic surface formations and rock outcrops (not soils)"
+    name_native: "ТПО и выходы горных пород"
+    synonyms_native: ["Техногенные поверхностные образования", "Выходы горных пород"]
+    path: "2.2: 1б | 1а-2а-3а-4б"
+    tests:
+      any_of:
+        - none_of:
+            - soil_horizon_within_kidpr: {max_cm: 100}
+        - surface_deposit_kidpr: {min_cm: 40, humified: false}
+    notes: "No soil horizon from the surface to about 1 m (rock outcrop, or technogenic surface formation); or a deposit over 40 cm thick with no stratified humus horizon (RJ, RY, RU) over a buried soil (a technogenic formation, or a water-laid or aeolian deposit on a buried soil). Not a soil."
+
+  - code: "D"
+    name: "Weakly developed soils"
+    name_native: "Слаборазвитые почвы"
+    synonyms_native: ["Ствол первичного почвообразования"]
+    path: "2.2: 1а-2б-5а | 1а-2а-3б-5а"
+    tests:
+      all_of:
+        - none_of:
+            - surface_deposit_kidpr: {min_cm: 40}
+        - any_of:
+            - only_horizons_kidpr: {sets: [["O"], ["W"], ["O", "W"]], raw: true}
+            - all_of:
+                - only_horizons_kidpr: {sets: [["S"]], raw: true}
+                - directly_over_kidpr: {upper: ["S"], lower: ["C", "D"]}
+    notes: "The profile has only the litter-peat horizon O, or only the weakly developed humus horizon W, and no other soil horizon (all its horizons read, before the thickest-horizon rule of the surface); soilKey also takes O with W (the thicker names the type, p. 37) and an S alone over loose rock (the Солончаки of the division), Hugo's decision Q10."
+
+  - code: "A"
+    name: "Organogenic soils"
+    name_native: "Органогенные почвы"
+    synonyms_native: ["Ствол органогенного почвообразования"]
+    path: "2.2: 1а-2б-5б-6а | 1а-2а-3б-5б-6а"
+    tests:
+      all_of:
+        - none_of:
+            - surface_deposit_kidpr: {min_cm: 40}
+        - peat_body_kidpr: {min_cm: 51}
+    notes: "A peat body of more than 50 cm (51 cm or more): the organic layers contiguous from the surface or under a deposit of 40 cm or less, muck (H) and the agro-peat horizons PT and PTR included (Hugo's decision Q22); a description that ends in peat before 51 cm leaves it undecided."
+
+  - code: "B"
+    name: "Synlithogenic soils"
+    name_native: "Синлитогенные почвы"
+    synonyms_native: ["Ствол синлитогенного почвообразования"]
+    path: "2.2: 1а-2а-3а-4а | 1а-2б-5б-6б-7а | 1а-2а-3б-5б-6б-7а"
+    tests:
+      any_of:
+        # BA (B.1a): within a river floodplain, on modern alluvium; not an
+        # agro horizon with no natural remnant under it (an agrozem, p. 124)
+        - all_of:
+            - floodplain_kidpr: {}
+            - none_of:
+                - all_of:
+                    - surface_horizon_kidpr: {codes: ["P", "PU", "PT", "PTR", "PB"]}
+                    - none_of:
+                        - directly_over_kidpr:
+                            upper: ["P", "PU", "PT", "PTR", "PB"]
+                            lower: ["AJ", "AY", "AU", "AO", "AK", "AH", "O", "T", "TO", "TE", "TJ", "H", "RJ", "RY", "RU"]
+        # BB (B.2a): the ochre horizon BAN, in volcanic ash
+        - all_of:
+            - has_horizon_kidpr: {codes: ["BAN"]}
+            - volcanic_ash_kidpr: {}
+        # BC (B.2b): a humified deposit over 40 cm (step 4a), or a
+        # stratified humus body of 40 cm or more (P and PU counted)
+        - any_of:
+            - surface_deposit_kidpr: {min_cm: 40, humified: true}
+            - stratified_body_kidpr: {min_cm: 40}
+    notes: "A humified deposit over 40 cm (RJ, RY or RU); or, by Hugo's decision Q21, a soil one of the divisions of the trunk takes: within a river floodplain on modern alluvium (BA), the ochre horizon BAN in volcanic ash (BB), a stratified humus body of 40 cm or more (BC). Other layering stays in trunk C."
+
+  - code: "C"
+    name: "Postlithogenic soils"
+    name_native: "Постлитогенные почвы"
+    synonyms_native: ["Ствол постлитогенного почвообразования"]
+    path: "2.2: 1а-2б-5б-6б-7б | 1а-2а-3б-5б-6б-7б"
+    tests:
+      default: true
+    notes: "The other soils: formed on a parent material already in place."

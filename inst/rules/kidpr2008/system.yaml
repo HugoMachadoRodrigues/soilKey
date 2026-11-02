@@ -1,0 +1,31 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: kidpr2008
+order: 11
+aliases: [kidpr, russia, ru2008]
+legacy: false
+default: false
+status: experimental
+namespace: kidpr
+classifier: classify_kidpr2008
+result_slot: kidpr2008
+top_level: trunks
+levels: [trunks, divisions]
+display:
+  en: "Russian soil classification (Field Guide, 2008)"
+  pt: "Classificação russa de solos (Guia de campo, 2008)"
+  native: "Полевой определитель почв России (2008)"
+  result: "KiDPR 2008"
+edition: "Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008"
+citation: >
+  Полевой определитель почв России (2008). Почвенный институт им. В.В.
+  Докучаева, Москва. The field version of the classification of
+  2004 (Shishov L.L., Tonkonogov V.D., Lebedeva I.I., Gerasimova M.I.,
+  Классификация и диагностика почв России, Ойкумена, Смоленск, 2004).
+version: "Полевой определитель почв России, 2008 (the text published by the Dokuchaev Soil Science Institute)"
+implementation_status: "soilKey v0.9.337 -- the 5 trunks (key 2.2) and the 27 divisions (key 2.3), the keys flattened into ordered lists; the diagnostic horizons from the Russian notation or from key 2.1 on the data (v0.9.335-0.9.336); the types and subtypes follow"
+source: |
+  Полевой определитель почв России (2008), Почвенный институт им. В.В.
+  Докучаева. The keys to trunks (2.2, p. 28) and divisions (2.3, pp.
+  30-35), the diagnostic horizons and features (chapters 2.1 and 3), the
+  divisions and their types (chapter 4). The branching keys are flattened
+  into first-match lists (Hugo, 2026-11-02; see readings.yaml).

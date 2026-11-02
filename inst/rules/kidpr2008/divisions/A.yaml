@@ -1,0 +1,23 @@
+# The divisions of trunk A, Органогенные почвы (Field Guide of 2008, key 2.3,
+# A.1, p. 30): an agro-peat horizon PT or PTR makes the Торфоземы, else the
+# Торфяные почвы. Names as in key.yaml: an English gloss, the Russian of the
+# chapter 4 heading (Q12).
+
+divisions:
+  "A":
+    - code: "AB"
+      name: "Peatozems"
+      name_native: "Торфоземы"
+      path: "A.1а"
+      tests:
+        all_of:
+          - has_horizon_kidpr: {codes: ["PT", "PTR"]}
+      notes: "An agro-peat horizon PT or an agro-peat-mineral horizon PTR (p. 133)."
+
+    - code: "AA"
+      name: "Peat soils"
+      name_native: "Торфяные почвы"
+      path: "A.1б"
+      tests:
+        default: true
+      notes: "The other organogenic soils: a natural peat over the peat as rock TT (p. 132)."
