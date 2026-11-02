@@ -267,16 +267,12 @@
   grepl(.CPCS_VOLCANIC_RE, txt) || any(.cpcs_num(x$h, "volcanic_glass_pct") > 0, na.rm = TRUE)
 }
 
-# A tropical climate: an isothermic, isohyperthermic or hyperthermic soil
-# temperature regime, or a
+# A tropical climate, read as the sub-classes read it (R/diagnostics-cpcs-
+# subclasses.R): Koppen A, else an isothermic, isohyperthermic or hyperthermic
+# soil temperature regime, else a
 # latitude of 23.5 degrees or less; not recorded, not tropical (the default
 # of the climate readings, Hugo, 2026-11-01).
-.cpcs_tropical <- function(x) {
-  reg <- tolower(as.character(x$site$soil_temperature_regime %||% NA)[1L])
-  if (!is.na(reg) && grepl("isothermic|isohyperthermic|^hyperthermic", reg)) return(TRUE)
-  lat <- suppressWarnings(as.numeric(as.character(x$site$lat %||% NA)[1L]))
-  !is.na(lat) && abs(lat) <= 23.5
-}
+.cpcs_tropical <- function(x) isTRUE(.cpcs_climate(x, "tropical"))
 
 # ---- reading a property in the B ----------------------------------------------
 
@@ -760,7 +756,8 @@ hydromorphic_soils_cpcs <- function(pedon) {
     if (th >= 20 && !is.na(nxt)) {
       known <- !is.na(.cpcs_num(x$h, "munsell_chroma_moist")[nxt]) || x$des$known[nxt] ||
         !is.na(.scsj_dipyridyl(x$h)[nxt])
-      anm <- if (isTRUE(red[nxt])) TRUE else if (known) FALSE else NA
+      # a gley (a reduced matrix) or a stagnogley (a hydromorphic layer)
+      anm <- if (isTRUE(red[nxt]) || isTRUE(.cpcs_hydromorphic_rows(x)[nxt])) TRUE else if (known) FALSE else NA
     }
   }
   # the mineral route: hydromorphic layers over the larger part of the

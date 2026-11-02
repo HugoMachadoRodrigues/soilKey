@@ -1,0 +1,24 @@
+# Sous-classes des sols minéraux bruts (p. 18-20), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "I":
+    - code: "I-2"
+      name: Sols minéraux bruts climatiques des déserts froids (cryosols bruts)
+      name_native: Sols minéraux bruts climatiques des déserts froids (cryosols bruts)
+      tests:
+        all_of:
+          - cold_desert_raw_soils_cpcs: {}
+      notes: "A cold desert: permafrost, a cryic, pergelic or gelic regime, or Köppen E."
+    - code: "I-3"
+      name: Sols minéraux bruts des déserts chauds (ou xériques)
+      name_native: Sols minéraux bruts des déserts chauds (ou xériques)
+      tests:
+        all_of:
+          - hot_desert_raw_soils_cpcs: {}
+      notes: "A hot desert: an aridic or torric moisture regime, or Köppen BW."
+    - code: "I-1"
+      name: Sols minéraux bruts non climatiques
+      name_native: Sols minéraux bruts non climatiques
+      tests:
+        default: true
+      notes: "The other raw mineral soils: recent erosion or deposit (and no climate recorded)."

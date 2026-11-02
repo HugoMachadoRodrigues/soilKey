@@ -1,0 +1,17 @@
+# Sous-classes des vertisols (p. 28-29), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "III":
+    - code: "III-1"
+      name: Vertisols à drainage externe nul ou réduit
+      name_native: Vertisols à drainage externe nul ou réduit
+      tests:
+        all_of:
+          - vertisols_reduced_external_drainage_cpcs: {}
+      notes: "External drainage nil or reduced: a flat or low landform, or a slope under 2 %."
+    - code: "III-2"
+      name: Vertisols à drainage externe possible
+      name_native: Vertisols à drainage externe possible
+      tests:
+        default: true
+      notes: "The other vertisols."

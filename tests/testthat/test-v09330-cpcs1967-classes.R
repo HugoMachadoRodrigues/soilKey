@@ -25,7 +25,7 @@ test_that("every example keys to its class, decided, with the French names", {
     expect_identical(r$system_id, "cpcs1967")
   }
   r <- classify_cpcs1967(make_cpcs1967_example("calcimagnesic"), on_missing = "silent")
-  expect_identical(r$name, "Sols calcimagn\u00e9siques")
+  expect_identical(r$levels$name[1], "Sols calcimagn\u00e9siques")
   expect_identical(r$levels$name_native[1], "Sols calcimagn\u00e9siques")
   expect_true("cpcs1967" %in% soilkey_systems()$id)
   expect_length(soilKey:::.validate_rules("cpcs1967")$missing, 0)

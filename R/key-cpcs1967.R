@@ -15,7 +15,10 @@
 #' classes (sols mineraux bruts, sols peu evolues, vertisols, andosols,
 #' sols calcimagnesiques, sols isohumiques, sols brunifies, sols
 #' podzolises, sols a sesquioxydes de fer et manganese, sols ferrallitiques, sols
-#' hydromorphes, sols sodiques); the sub-classes, groups and subgroups
+#' hydromorphes, sols sodiques) and their 35 sub-classes, the climatic
+#' ones read from \code{site$koppen_climate}, else the USDA soil
+#' temperature and moisture regimes, else the latitude (with no climate,
+#' the non-climatic or temperate sub-class); the groups and subgroups
 #' follow. The names are French, as the text writes them, in \code{name}
 #' and in \code{levels$name_native}.
 #'
@@ -137,7 +140,8 @@ make_cpcs1967_example <- function(class = c("raw_mineral", "weakly_developed", "
       slickensides = c("few", "common", "many", "few"), cracks_width_cm = c(2, 2, NA, NA),
       ph_h2o = 7.6, cec_cmol = 45, bs_pct = 95, ca_cmol = 35, mg_cmol = 8, na_cmol = 0.6,
       munsell_hue_moist = "10YR", munsell_value_moist = c(3, 3, 4, 5), munsell_chroma_moist = c(1, 1, 2, 2),
-      redoximorphic_features_pct = 0, structure_type = c("granular", "prismatic", "prismatic", "massive"))),
+      redoximorphic_features_pct = 0, structure_type = c("granular", "prismatic", "prismatic", "massive")),
+      list(slope_pct = 1, landform = "alluvial plain")),
     andosol = mk(list(
       designation = c("A1", "(B)", "C"), top_cm = c(0, 30, 80), bottom_cm = c(30, 80, 120),
       oc_pct = c(8, 3, 1), n_total_pct = c(0.6, 0.25, 0.08), clay_pct = 20, silt_pct = 45, sand_pct = 35,
@@ -160,7 +164,7 @@ make_cpcs1967_example <- function(class = c("raw_mineral", "weakly_developed", "
       sand_pct = 20, ph_h2o = c(7.2, 7.4, 7.6, 8.2), cec_cmol = 30, bs_pct = c(95, 96, 98, 100),
       ca_cmol = c(25, 26, 27, 28), mg_cmol = 4, na_cmol = 0.3, caco3_pct = c(0, 0, 0, 12),
       munsell_hue_moist = "10YR", munsell_value_moist = c(2, 3, 4, 5), munsell_chroma_moist = c(1, 2, 3, 3),
-      redoximorphic_features_pct = 0), list(vegetation = "steppe grassland")),
+      redoximorphic_features_pct = 0), list(vegetation = "steppe grassland", koppen_climate = "Dfb")),
     brunified = mk(list(
       designation = c("A1", "(B)", "C"), top_cm = c(0, 10, 60), bottom_cm = c(10, 60, 100),
       oc_pct = c(4, 0.8, 0.2), n_total_pct = c(0.25, 0.07, 0.02), clay_pct = c(20, 22, 15), silt_pct = 40,
@@ -204,6 +208,8 @@ make_cpcs1967_example <- function(class = c("raw_mineral", "weakly_developed", "
       designation = c("A1Sa", "C1Sa", "C2"), top_cm = c(0, 15, 50), bottom_cm = c(15, 50, 100),
       oc_pct = c(1, 0.4, 0.2), n_total_pct = c(0.1, 0.04, 0.02), clay_pct = 30, silt_pct = 40, sand_pct = 30,
       ec_dS_m = c(25, 18, 12), na_cmol = c(4, 3.5, 3), cec_cmol = 15, bs_pct = 100, ph_h2o = 8.4,
+      structure_type = c("granular", "subangular blocky", "subangular blocky"), structure_grade = "moderate",
+      consistence_moist = "friable",
       munsell_hue_moist = "2.5Y", munsell_value_moist = c(5, 6, 6), munsell_chroma_moist = c(2, 2, 3),
       redoximorphic_features_pct = 0), list(drainage_class = "moderately well drained", landform = "playa margin"))
   )

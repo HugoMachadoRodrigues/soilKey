@@ -1,0 +1,17 @@
+# Sous-classes des andosols (p. 33), French soil classification (CPCS 1967). Criteria summarised
+# from the text; see R/diagnostics-cpcs-subclasses.R and readings.yaml.
+subclasses:
+  "IV":
+    - code: "IV-1"
+      name: Andosols des pays froids
+      name_native: Andosols des pays froids
+      tests:
+        all_of:
+          - cold_country_andosols_cpcs: {}
+      notes: "Organic matter above 10 % in the A over 25 cm or more."
+    - code: "IV-2"
+      name: Andosols des pays tropicaux
+      name_native: Andosols des pays tropicaux
+      tests:
+        default: true
+      notes: "The other andosols."

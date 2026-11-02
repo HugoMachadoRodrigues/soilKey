@@ -23,7 +23,7 @@ attributes:
     type: "numeric"
     unit: "decimal degrees"
     description: "Latitude (-90 to 90; validate() flags a value outside). When the country is not Brazil, |lat| <= 23.5 marks the site as tropical, which lets a Bw or Bo designation stand for the WRB ferralic horizon (and so the USDA oxic horizon) and the SiBCS B latossolico; the USDA family soil temperature class estimates the regime from it when soil_temperature_regime is absent. Also read by the SoilGrids prior, the maps and the reports."
-    systems: [wrb2022, usda, sibcs5]
+    systems: [wrb2022, usda, sibcs5, cpcs1967]
   - name: lon
     section: "Identity & location"
     type: "numeric"
@@ -63,7 +63,7 @@ attributes:
     type: "numeric"
     unit: "%"
     description: "Slope gradient in percent, not degrees. Read by the WRB Inclinic qualifier (5 % or more) and the USDA Cumulic subgroups of the Mollisols (less than 25 %, or not recorded); also shown by the reports."
-    systems: [wrb2022, usda]
+    systems: [wrb2022, usda, cpcs1967]
   - name: aspect_deg
     section: "Landscape & surface"
     type: "numeric"
@@ -80,7 +80,7 @@ attributes:
     type: "character"
     unit: "-"
     description: "Landform element, as text (NatSoil). Read with landform by the ASC Hydrosol settings; a playa element on a plain pattern counts as a playa."
-    systems: [asc3]
+    systems: [asc3, cpcs1967]
   - name: microrelief_form
     section: "Landscape & surface"
     type: "character"
@@ -174,7 +174,7 @@ attributes:
     unit: "-"
     description: "USDA soil moisture regime, compared in lower case (aridic and torric are the same). Read by the USDA key (the Aridisols, and the ustic, xeric, udic and torric suborders, great groups and subgroups) and by the CSSC key when soil_moisture_subclass is absent (Chernozemic climate, the subhumid Solonetzic subgroups)."
     allowed: ["aquic", "aridic", "torric", "udic", "perudic", "ustic", "xeric"]
-    systems: [usda, cssc3]
+    systems: [usda, cssc3, cpcs1967]
   - name: soil_moisture_subclass
     section: "Water, climate & regimes"
     type: "character"
@@ -207,6 +207,18 @@ attributes:
     unit: "deg C"
     description: "Mean annual air temperature. Read by the NZSC Hydrothermal Recent and Raw Soils, against soil_temp_30cm_C."
     systems: [nzsc4]
+  - name: koppen_climate
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Koppen climate of the site, as its code (Af, Aw, BWh, BSk, Csa, Cfb, Dfa, Dfc, ET ...). Read first by the CPCS sub-classes, whose classes are split by pedoclimate (cold or hot deserts, cold or tropical countries, humid, continental or boreal temperate climates); without it the CPCS reads the USDA soil temperature and moisture regimes, then the latitude."
+    systems: [cpcs1967]
+  - name: mean_annual_precip_mm
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "mm"
+    description: "Mean annual precipitation. Recorded for the CPCS climate (the ferrallitic sub-classes describe their rainfall); not yet a criterion of any key."
+    systems: [cpcs1967]
   - name: surface_water
     section: "Water, climate & regimes"
     type: "character"
