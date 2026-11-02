@@ -1,8 +1,8 @@
 # =============================================================================
 # v0.9.325 -- the Comprehensive Soil Classification System of Japan, First
 # Approximation (CSCJ 2011; Obara et al., NIAES Bulletin 29), keyed to the
-# ten great groups of chapter V and the 27 groups of chapter VI (0.9.326).
-# The subgroups, soil series groups and phases follow. The gates it shares with the SCSJ 2017 read the pedon by
+# ten great groups of chapter V, the 27 groups (0.9.326) and the 116
+# subgroups (0.9.327) of chapter VI. The soil series groups and phases follow. The gates it shares with the SCSJ 2017 read the pedon by
 # the CSCJ edition (site$jp_edition). Experimental and opt-in.
 # =============================================================================
 
@@ -13,9 +13,10 @@
 #' following its key to great groups. \strong{Experimental}: this release
 #' keys the ten great groups (Man-made soils, Organic soils, Podzols,
 #' Andosols, Dark Red soils, Lowland soils, Red-Yellow soils, Stagnic soils,
-#' Brown Forest soils, Regosols) and their 27 groups (for instance Fulvic and
-#' Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils); the
-#' 116 subgroups, 381 soil series groups and the phases follow. Each level gives the English name
+#' Brown Forest soils, Regosols), their 27 groups (for instance Fulvic and
+#' Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils) and
+#' their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...); the 381 soil
+#' series groups and the phases follow. Each level gives the English name
 #' of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 #' one.
 #'

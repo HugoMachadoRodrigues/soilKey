@@ -25,7 +25,7 @@ test_that("every example keys to a group, decided, named in English and Japanese
     expect_length(r$provisional_because, 0)
   }
   r <- classify_cscj2011(make_cscj2011_example("dark_red"), on_missing = "silent")
-  expect_identical(r$name, "Calcaric Dark Red soils")
+  expect_identical(r$levels$name[2], "Calcaric Dark Red soils")
   expect_identical(r$levels$name_native[2], "\u77f3\u7070\u6027\u6697\u8d64\u8272\u571f")
   expect_identical(length(unlist(lapply(load_rules("cscj2011")$groups, function(g) vapply(g, `[[`, "", "code")))), 27L)
 })

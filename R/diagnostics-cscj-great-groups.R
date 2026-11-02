@@ -25,8 +25,8 @@
 # and referenced as the CSCJ's.
 .cscj_shared <- function(gate, name, where) {
   force(gate); force(name); force(where)
-  function(pedon) {
-    r <- gate(.cscj_marked(pedon))
+  function(pedon, ...) {
+    r <- gate(.cscj_marked(pedon), ...)
     r$name <- name
     r$reference <- sprintf("%s %s", .CSCJ_REF, where)
     r
