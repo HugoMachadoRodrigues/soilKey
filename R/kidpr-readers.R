@@ -247,20 +247,59 @@
   if (is.na(value) || is.na(chroma)) NA else TRUE
 }
 
-# The gley colours (key 24, moist): the whole gley chart (hues GY, G, BG, B,
-# PB and N at value 4-7), with the text's own set (2.5Y value 5-6 chroma 3 or
-# less; 7.5Y and 10Y value 5-6 chroma 1).
+# The gley colours (key 24, moist): the gley chart (N, and the hues GY, G,
+# BG, B, PB at chroma 1 or less, value 4-7) and the text's own set (2.5Y value
+# 5-6 chroma 3 or less; 7.5Y and 10Y value 5-6 chroma 1). "chart": the colour
+# suffices; "support": a 2.5Y at chroma 2-3 (or a gley hue at a higher
+# chroma), a G only with a massive or structureless structure or a recorded
+# redox sign (Hugo, 2026-11-02); FALSE: no gley colour.
 .kidpr_is_gley <- function(col) {
   f <- col$family; num <- col$number; v <- col$value; c <- col$chroma
   if (is.na(f) || is.na(v)) return(NA)
-  if (f %in% c("GY", "G", "BG", "B", "PB", "N")) return(v >= 4 && v <= 7)
-  if (f == "Y" && isTRUE(num == 2.5)) return(if (is.na(c)) NA else v >= 5 && v <= 6 && c <= 3)
-  if (f == "Y" && num %in% c(7.5, 10)) return(if (is.na(c)) NA else v >= 5 && v <= 6 && c <= 1)
+  if (f == "N") return(if (v >= 4 && v <= 7) "chart" else FALSE)
+  if (f %in% c("GY", "G", "BG", "B", "PB")) {
+    if (!(v >= 4 && v <= 7)) return(FALSE)
+    return(if (is.na(c)) NA else if (c <= 1) "chart" else "support")
+  }
+  if (f == "Y" && isTRUE(num == 2.5)) {
+    if (is.na(c)) return(NA)
+    if (!(v >= 5 && v <= 6 && c <= 3)) return(FALSE)
+    return(if (c <= 1) "chart" else "support")
+  }
+  if (f == "Y" && num %in% c(7.5, 10)) return(if (is.na(c)) NA else if (v >= 5 && v <= 6 && c <= 1) "chart" else FALSE)
   FALSE
 }
+
+# A redox sign recorded on a layer: mottles, redoximorphic features, redox
+# segregations, a positive dipyridyl (Childs') test.
+.kidpr_redox_sign <- function(x, i) {
+  mc <- .kidpr_txt(x, i, "mottle_colors")
+  rf <- .kidpr_num(x, i, "redoximorphic_features_pct")
+  rl <- .kidpr_txt(x, i, "redox_segregations_location")
+  ct <- .kidpr_txt(x, i, "childs_test")
+  !is.na(mc) || isTRUE(rf > 0) || !is.na(rl) || isTRUE(grepl("^(pos|\\+|yes|true)", ct))
+}
+
 .kidpr_gley <- function(x, i) {
-  col <- .kidpr_colour(x, i, "moist")
-  .kidpr_colour_word(col, .kidpr_is_gley(col), "a gley colour of the matrix")
+  .kidpr_memo(x, sprintf("gley_%d", i), function() {
+    col <- .kidpr_colour(x, i, "moist")
+    g <- .kidpr_is_gley(col)
+    if (identical(g, "support")) {
+      st <- .kidpr_structure(x, i)
+      raw <- isTRUE(grepl(.KIDPR_RAW_STRUCTURE, st$type)) || isTRUE(.field_grade_class(st$grade) == 0L)
+      rx <- .kidpr_redox_sign(x, i)
+      p <- raw || rx
+      if (!p && is.na(st$type) && is.na(st$grade))
+        return(.kidpr_r(NA, missing = c("structure_type", "mottle_colors"),
+                        note = sprintf("%s: a gley colour only with a massive structure or a redox sign; neither recorded",
+                                       .kidpr_colour_text(col)), tag = col$tag))
+      return(.kidpr_r(p, tag = col$tag,
+                      note = c(sprintf("%s: %s", .kidpr_colour_text(col),
+                                       if (p) sprintf("a gley colour with %s", if (raw) "a massive or structureless structure" else "a redox sign")
+                                       else "a 2.5Y colour of chroma 2-3 with a structure and no redox sign: not gley"), col$note)))
+    }
+    .kidpr_colour_word(col, if (is.na(g)) NA else !isFALSE(g), "a gley colour of the matrix")
+  })
 }
 
 # The olive colour (key 25, moist): 5Y value 5-6, chroma 3-4.
@@ -306,22 +345,21 @@
                       "silt loam" = 4, "silt" = 4, "sandy clay loam" = 5, "clay loam" = 5,
                       "silty clay loam" = 5, "sandy clay" = 6, "silty clay" = 6, "clay" = 6)
 
-# The Kachinsky gradation of a texture word, English or Russian.
+# The Kachinsky gradation of a texture word, English or Russian; the Russian
+# noun (sand, loamy sand, loam, clay) and its grade (light, medium, heavy) in
+# either order ("legkii suglinok", "suglinok legkii", "legkosuglinistyi").
 .kidpr_texture_word <- function(w) {
   if (length(w) != 1L || is.na(w)) return(NA_real_)
   w <- tolower(trimws(gsub("\u0451", "\u0435", as.character(w))))
   if (w %in% names(.KIDPR_KACHINSKY)) return(.KIDPR_KACHINSKY[[w]])
-  ru <- list(
-    c("^\u0441\u0443\u043f\u0435\u0441", 2),                                  # supes'
-    c("^\u043f\u0435\u0441\u043e\u043a|^\u043f\u0435\u0441\u0447\u0430\u043d", 1),  # pesok
-    c("\u043b\u0435\u0433\u043a.*\u0441\u0443\u0433\u043b\u0438\u043d|^\u043b\u0435\u0433\u043a\u043e\u0441\u0443\u0433\u043b", 3),
-    c("\u0441\u0440\u0435\u0434\u043d.*\u0441\u0443\u0433\u043b\u0438\u043d|^\u0441\u0440\u0435\u0434\u043d\u0435\u0441\u0443\u0433\u043b", 4),
-    c("\u0442\u044f\u0436\u0435\u043b.*\u0441\u0443\u0433\u043b\u0438\u043d|^\u0442\u044f\u0436\u0435\u043b\u043e\u0441\u0443\u0433\u043b", 5),
-    c("\u043b\u0435\u0433\u043a.*\u0433\u043b\u0438\u043d|^\u043b\u0435\u0433\u043a\u043e\u0433\u043b\u0438\u043d", 6),
-    c("\u0441\u0440\u0435\u0434\u043d.*\u0433\u043b\u0438\u043d|^\u0441\u0440\u0435\u0434\u043d\u0435\u0433\u043b\u0438\u043d", 7),
-    c("\u0442\u044f\u0436\u0435\u043b.*\u0433\u043b\u0438\u043d|^\u0442\u044f\u0436\u0435\u043b\u043e\u0433\u043b\u0438\u043d", 8))
-  for (e in ru) if (grepl(e[1], w, perl = TRUE)) return(as.numeric(e[2]))
-  NA_real_
+  if (grepl("\u0441\u0443\u043f\u0435\u0441", w)) return(2)
+  loam <- grepl("\u0441\u0443\u0433\u043b\u0438\u043d", w)
+  clay <- !loam && grepl("\u0433\u043b\u0438\u043d", w)
+  if (!loam && !clay) return(if (grepl("\u043f\u0435\u0441\u043e\u043a|\u043f\u0435\u0441\u0447\u0430\u043d", w)) 1 else NA_real_)
+  grade <- if (grepl("\u043b\u0435\u0433\u043a", w)) 1L else if (grepl("\u0441\u0440\u0435\u0434\u043d", w)) 2L
+           else if (grepl("\u0442\u044f\u0436\u0435\u043b", w)) 3L else NA_integer_
+  if (is.na(grade)) return(NA_real_)
+  as.numeric(if (loam) c(3, 4, 5)[grade] else c(6, 7, 8)[grade])
 }
 
 #' The texture of a layer as a gradation: the Kachinsky gradation (1 sand to
@@ -475,15 +513,27 @@
   list(value = NA_real_, note = character(0), tag = character(0))
 }
 
+# A mineral layer by its analyses when there is no carbon: a particle-size
+# analysis, CaCO3, or a bulk density of 0.8 g/cm3 or more (review M4).
+.kidpr_mineral_lab <- function(x, i) {
+  fr <- c(.kidpr_num(x, i, "clay_pct"), .kidpr_num(x, i, "silt_pct"), .kidpr_num(x, i, "sand_pct"),
+          .kidpr_num(x, i, "phys_clay_pct"))
+  any(!is.na(fr)) || !is.na(.kidpr_num(x, i, "caco3_pct")) || isTRUE(.kidpr_num(x, i, "bulk_density_g_cm3") >= 0.8)
+}
+
 #' Key position 10: plant residues make up more than 2/3 of the volume (live
 #' roots aside): plant_residues_pct; not recorded, the organic matter stands
-#' in: LOI over 35 % yes, 25 % or less no, undecided between (Q6, Q24).
+#' in: LOI over 35 % yes, 25 % or less no, undecided between (Q6, Q24);
+#' without carbon, a layer with a particle-size analysis, CaCO3 or a mineral
+#' bulk density is mineral, flagged.
 #' @noRd
 .kidpr_org23 <- function(x, i) {
   .kidpr_memo(x, sprintf("org23_%d", i), function() {
     pr <- .kidpr_num(x, i, "plant_residues_pct")
     if (!is.na(pr)) return(.kidpr_r(pr > 200 / 3, note = sprintf("plant residues %s %% of the volume", format(pr))))
     l <- .kidpr_loi(x, i)
+    if (is.na(l$value) && .kidpr_mineral_lab(x, i))
+      return(.kidpr_r(FALSE, tag = "mineral_from_lab", note = "no carbon recorded; a mineral layer by its particle size, CaCO3 or bulk density"))
     if (is.na(l$value)) return(.kidpr_r(NA, missing = c("plant_residues_pct", "loi_pct", "oc_pct")))
     p <- if (l$value > 35) TRUE else if (l$value <= 25) FALSE else NA
     .kidpr_r(p, missing = if (is.na(p)) "plant_residues_pct" else character(0),
@@ -493,20 +543,32 @@
   })
 }
 
-#' Key position 11: coarse plant residues under 1/3 of the volume (a few
-#' fragments do not count): plant_residues_pct over 0 and under 1/3; not
-#' recorded, LOI 15 % or more yes (the range of AO, AH and PTR), under 10 %
-#' no, undecided between.
+#' Key position 11: coarse plant residues in the layer, under 1/3 of the
+#' volume (single fragments, 5 % or less, do not count): plant_residues_pct
+#' over 5 %; between 1/3 and 2/3, which the key does not foresee, the layer
+#' is read with them (11a), not as a mineral layer. Not recorded, LOI 15 % or
+#' more yes (the range of AO, AH and PTR), under 10 % no; between them a
+#' mineral layer with a crumb, granular or blocky structure is a humus
+#' horizon without coarse residues (AU, not AH), else undecided. Without
+#' carbon, a layer with a particle-size analysis, CaCO3 or a mineral bulk
+#' density has none.
 #' @noRd
 .kidpr_res13 <- function(x, i) {
   pr <- .kidpr_num(x, i, "plant_residues_pct")
-  if (!is.na(pr)) return(.kidpr_r(pr > 0 && pr < 100 / 3, note = sprintf("plant residues %s %% of the volume", format(pr))))
+  if (!is.na(pr)) return(.kidpr_r(pr > 5, note = sprintf("plant residues %s %% of the volume%s", format(pr),
+                                                         if (pr >= 100 / 3) ": between 1/3 and 2/3, read with the coarse residues" else "")))
   l <- .kidpr_loi(x, i)
+  if (is.na(l$value) && .kidpr_mineral_lab(x, i))
+    return(.kidpr_r(FALSE, tag = "mineral_from_lab", note = "no carbon recorded; a mineral layer by its particle size, CaCO3 or bulk density"))
   if (is.na(l$value)) return(.kidpr_r(NA, missing = c("plant_residues_pct", "loi_pct", "oc_pct")))
-  p <- if (l$value >= 15) TRUE else if (l$value < 10) FALSE else NA
+  st <- .kidpr_structure(x, i)$type
+  aggregated <- isTRUE(grepl("granul|crumb|block|nut|polyhed", st))
+  p <- if (l$value >= 15) TRUE else if (l$value < 10 || aggregated) FALSE else NA
   .kidpr_r(p, missing = if (is.na(p)) "plant_residues_pct" else character(0),
            note = c(l$note, sprintf("plant residues not recorded: organic matter %s", if (is.na(p)) "10-15 % LOI, undecided"
-                                     else if (p) "15 % LOI or more, coarse residues" else "under 10 % LOI, no coarse residues")),
+                                     else if (p) "15 % LOI or more, coarse residues"
+                                     else if (l$value < 10) "under 10 % LOI, no coarse residues"
+                                     else sprintf("10-15 %% LOI in a %s mineral horizon, no coarse residues", st))),
            tag = c("residues_from_om", l$tag))
 }
 
@@ -535,7 +597,7 @@
 #' Continuous effervescence (key positions 32, 60, 64): effervescence_extent
 #' when recorded; else caco3_pct 1 % or more yes, under 0.5 % no; else
 #' effervescence_class strong or very strong yes, none no; else an acid
-#' layer (pH(H2O) under 6.5) holds no free carbonates, flagged; else
+#' layer (pH(H2O) under 7.0) holds no free carbonates, flagged; else
 #' undecided.
 #' @noRd
 .kidpr_eff_cont <- function(x, i) {
@@ -556,11 +618,11 @@
   })
 }
 
-# No effervescence where the layer is acid (pH(H2O) under 6.5): free
-# carbonates do not stay there. NULL when the pH does not say it.
+# No effervescence where the layer is not alkaline (pH(H2O) under 7.0): free
+# carbonates keep the pH above it. NULL when the pH does not say it.
 .kidpr_acid_no_carbonates <- function(x, i) {
   ph <- .kidpr_num(x, i, "ph_h2o")
-  if (is.na(ph) || ph >= 6.5) return(NULL)
+  if (is.na(ph) || ph >= 7.0) return(NULL)
   .kidpr_r(FALSE, tag = "effervescence_from_ph",
            note = sprintf("no effervescence recorded; pH(H2O) %s: no free carbonates", format(ph)))
 }
@@ -587,8 +649,14 @@
 
 #' Distinct carbonate neoformations (key position 62): pseudomycelium, white-
 #' eye (soft concretions) or impregnation spots (masses, powdery), or
-#' secondary carbonates recorded with no form; not recorded, soilKey's calcic
-#' horizon stands in (Hugo's decision Q4), flagged.
+#' secondary carbonates recorded with no form. Not recorded, a stand-in
+#' (Hugo's decision Q4, the review's M3), flagged: soilKey's calcic horizon
+#' or protocalcic properties when they pass, else the carbonate maximum of
+#' the solum (more CaCO3 than every layer above and at least as much as every
+#' layer below it but the parent material). The parent material itself, and
+#' a layer with under half the CaCO3 of a lower solum layer (the maximum is
+#' there), have none by this reading (their carbonates make the feature ca);
+#' anything else stays undecided.
 #' @noRd
 .kidpr_carb_neo <- function(x, i) {
   fm <- .kidpr_carb_forms(x, i)
@@ -602,10 +670,38 @@
   }
   if (isTRUE(sp > 0) || isTRUE(soft > 0))
     return(.kidpr_r(TRUE, note = "secondary carbonates recorded (no form)"))
-  w <- .kidpr_wrb_layer(x, "calcic", i)
-  .kidpr_r(w, missing = if (is.na(w)) c("secondary_carbonates_form", "secondary_carbonates_pct") else character(0),
-           tag = "calcic", note = sprintf("carbonate neoformations not recorded: soilKey's calcic horizon %s",
-                                          if (is.na(w)) "undecided" else if (w) "stands in (passes)" else "stands in (fails)"))
+  miss <- c("secondary_carbonates_form", "secondary_carbonates_pct")
+  if (isTRUE(.kidpr_wrb_layer(x, "calcic", i)))
+    return(.kidpr_r(TRUE, tag = "calcic", note = "carbonate neoformations not recorded: soilKey's calcic horizon stands in (passes)"))
+  if (isTRUE(.kidpr_wrb_layer(x, "protocalcic_properties", i)))
+    return(.kidpr_r(TRUE, tag = "protocalcic_properties",
+                    note = "carbonate neoformations not recorded: soilKey's protocalcic properties stand in (pass)"))
+  cc <- .kidpr_num(x, i, "caco3_pct")
+  if (is.na(cc)) return(.kidpr_r(NA, missing = c(miss, "caco3_pct")))
+  pr <- .kidpr_parent_row(x, i)
+  is_parent <- is.na(pr) || isTRUE(.kidpr_parent_like(x, i))
+  if (is_parent)
+    return(.kidpr_r(FALSE, tag = "carbonate_maximum",
+                    note = "carbonate neoformations not recorded; the parent material: its carbonates are not read as neoformations"))
+  cc_of <- function(j) {
+    v <- .kidpr_num(x, j, "caco3_pct")
+    if (!is.na(v)) v else if (isFALSE(.kidpr_eff_cont(x, j)$passed)) 0 else NA_real_
+  }
+  ca <- vapply(.kidpr_above(x, i), cc_of, 0)
+  below <- .kidpr_below(x, i)
+  below <- below[!vapply(below, function(j) .kidpr_hard_rock(x, j) || identical(j, pr) || isTRUE(.kidpr_parent_like(x, j)), NA)]
+  cb <- vapply(below, cc_of, 0)
+  if (any(cb > 2 * cc, na.rm = TRUE))
+    return(.kidpr_r(FALSE, tag = "carbonate_maximum",
+                    note = sprintf("carbonate neoformations not recorded; CaCO3 %s %%, under half that of a lower layer: the carbonate maximum lies below",
+                                   format(cc))))
+  mx <- .kidpr_and(if (!length(ca)) TRUE else if (any(ca >= cc, na.rm = TRUE)) FALSE else if (anyNA(ca)) NA else TRUE,
+                   if (!length(cb)) TRUE else if (any(cb > cc, na.rm = TRUE)) FALSE else if (anyNA(cb)) NA else TRUE)
+  if (isTRUE(mx) && cc >= 1)
+    return(.kidpr_r(TRUE, tag = "carbonate_maximum",
+                    note = sprintf("carbonate neoformations not recorded; CaCO3 %s %%, more than every layer above and the solum below: the carbonate maximum",
+                                   format(cc))))
+  .kidpr_r(NA, missing = miss, note = "carbonate neoformations not recorded; not the carbonate maximum: undecided")
 }
 
 # White-eye (beloglazka): rounded soft carbonate segregations, the FAO soft
@@ -619,63 +715,86 @@
 
 # --- frost (default 20) --------------------------------------------------------------
 
-# A climate that excludes long frost: a soil temperature regime of mesic or
-# warmer, a mean annual soil or air temperature over 5 C, a Koppen A or C
-# climate.
-.kidpr_warm <- function(x) {
-  str <- .kidpr_site_txt(x, "soil_temperature_regime")
-  ms <- suppressWarnings(as.numeric(.kidpr_site(x, "mean_annual_soil_temp_C")))
-  ma <- suppressWarnings(as.numeric(.kidpr_site(x, "mean_annual_air_temp_C")))
-  kp <- .kidpr_site(x, "koppen_climate")
-  isTRUE(grepl("mesic|thermic", str)) || isTRUE(ms > 5) || isTRUE(ma > 5) ||
-    isTRUE(grepl("^[AaCc]", as.character(kp)))
+# Frozen ground in the profile: ice (ice_pct, ice_form), permafrost_temp_C 0
+# or less, the permafrost sign of the Russian notation or the FAO frozen
+# suffix, cryoturbation recorded present.
+.kidpr_profile_frozen <- function(x) {
+  h <- x$h
+  pt <- suppressWarnings(as.numeric(h$permafrost_temp_C))
+  ice <- suppressWarnings(as.numeric(h$ice_pct))
+  ifm <- .field_term(h$ice_form)
+  cr <- .field_term(h$cryoturbation)
+  des <- as.character(h$designation)
+  pat <- tryCatch(.frozen_designation_pattern(x$site), error = function(e) "perma")
+  if (x$kidpr) pat <- "\u22a5|\uf05e|perma"
+  any(pt <= 0, na.rm = TRUE) || any(ice > 0, na.rm = TRUE) ||
+    any(!is.na(ifm) & nzchar(ifm) & !grepl("^(none|no|absent)", ifm)) ||
+    any(grepl("^present", cr)) || any(grepl(pat, des, perl = TRUE))
 }
 
-#' Permafrost in or under the profile: frost_regime permafrost; ice or a
-#' frozen layer in the horizon data (permafrost_temp_C 0 or less, ice_pct,
-#' ice_form, the permafrost sign, the FAO frozen suffix); a gelic or pergelic
-#' soil temperature regime.
-#' @noRd
-.kidpr_permafrost <- function(x) {
-  .kidpr_memo(x, "permafrost", function() {
-    fr <- .kidpr_site_txt(x, "frost_regime")
-    if (!is.na(fr) && fr == "permafrost") return(.kidpr_r(TRUE, note = "frost regime: permafrost"))
-    h <- x$h
-    pt <- suppressWarnings(as.numeric(h$permafrost_temp_C))
-    ice <- suppressWarnings(as.numeric(h$ice_pct))
-    ifm <- .field_term(h$ice_form)
-    des <- as.character(h$designation)
-    pat <- tryCatch(.frozen_designation_pattern(x$site), error = function(e) "perma")
-    if (x$kidpr) pat <- "\u22a5|\uf05e|perma"
-    if (any(pt <= 0, na.rm = TRUE) || any(ice > 0, na.rm = TRUE) ||
-        any(!is.na(ifm) & nzchar(ifm) & !grepl("^(none|no|absent)", ifm)) ||
-        any(grepl(pat, des, perl = TRUE)))
-      return(.kidpr_r(TRUE, note = "frozen ground in the horizon data"))
-    str <- .kidpr_site_txt(x, "soil_temperature_regime")
-    if (isTRUE(grepl("gelic", str))) return(.kidpr_r(TRUE, note = sprintf("soil temperature regime %s", str)))
-    if (!is.na(fr)) return(.kidpr_r(FALSE, note = sprintf("frost regime: %s", fr)))
-    if (!is.na(str) || .kidpr_warm(x)) return(.kidpr_r(FALSE, note = "no permafrost (soil temperature regime or climate)"))
-    .kidpr_r(NA, missing = c("frost_regime", "permafrost_temp_C", "ice_pct", "soil_temperature_regime"))
-  })
+# The Koppen climate against long frost (Hugo, 2026-11-02): D with a third
+# letter c or d, ET and EF yes; A, C, D with a or b, BWh and BSh no; BWk,
+# BSk and anything else undecided (NA).
+.kidpr_koppen_frost <- function(x) {
+  kp <- gsub("[^A-Za-z]", "", as.character(.kidpr_site(x, "koppen_climate")))
+  if (!length(kp) || is.na(kp) || !nzchar(kp)) return(NA)
+  k1 <- toupper(substr(kp, 1, 1)); k2 <- substr(kp, 2, 2); k3 <- tolower(substr(kp, 3, 3))
+  if (k1 %in% c("A", "C")) return(FALSE)
+  if (k1 == "E") return(if (toupper(k2) %in% c("T", "F")) TRUE else NA)
+  if (k1 == "D") return(if (k3 %in% c("c", "d")) TRUE else if (k3 %in% c("a", "b")) FALSE else NA)
+  if (k1 == "B") return(if (k3 == "h") FALSE else NA)
+  NA
 }
 
 #' Long-seasonal or perennial frost in or directly under the profile (key
-#' position 26): frost_regime long-seasonal or permafrost; permafrost by the
-#' data; no frost by frost_regime none or seasonal, or by a climate that
-#' excludes it; else undecided (default 20).
+#' position 26; Hugo's decision of 2026-11-02), in this order: frost_regime
+#' (long-seasonal or permafrost yes, none or seasonal no); frozen ground in
+#' the profile yes; the Koppen climate (.kidpr_koppen_frost()); the soil
+#' temperature regime (cryic, gelic, pergelic yes, mesic or warmer no, frigid
+#' undecided); a mean annual air temperature over 5 C no; nothing recorded,
+#' undecided. Latitude does not decide. The route is flagged.
 #' @noRd
 .kidpr_frost <- function(x) {
   .kidpr_memo(x, "frost", function() {
     fr <- .kidpr_site_txt(x, "frost_regime")
-    if (!is.na(fr) && fr %in% c("long-seasonal", "permafrost"))
-      return(.kidpr_r(TRUE, note = sprintf("frost regime: %s", fr)))
-    pf <- .kidpr_permafrost(x)
-    if (isTRUE(pf$passed)) return(pf)
-    if (!is.na(fr)) return(.kidpr_r(FALSE, note = sprintf("frost regime: %s", fr)))
-    if (.kidpr_warm(x)) return(.kidpr_r(FALSE, tag = "frost_from_climate",
-                                        note = "no long frost: a climate record excludes it"))
-    .kidpr_r(NA, missing = c("frost_regime", "soil_temperature_regime"),
+    if (!is.na(fr)) return(.kidpr_r(fr %in% c("long-seasonal", "permafrost"), note = sprintf("frost regime: %s", fr)))
+    if (.kidpr_profile_frozen(x))
+      return(.kidpr_r(TRUE, tag = "frost_from_profile", note = "frozen ground in the profile (ice, temperature, sign, cryoturbation)"))
+    kf <- .kidpr_koppen_frost(x)
+    kp <- as.character(.kidpr_site(x, "koppen_climate"))
+    if (!is.na(kf)) return(.kidpr_r(kf, tag = "frost_from_koppen",
+                                    note = sprintf("Koppen %s: %s", kp, if (kf) "long frost" else "no long frost")))
+    str <- .kidpr_site_txt(x, "soil_temperature_regime")
+    if (!is.na(str) && !grepl("frigid", str)) {
+      p <- grepl("cryic|gelic", str)
+      return(.kidpr_r(p, tag = "frost_from_soil_temperature",
+                      note = sprintf("soil temperature regime %s: %s", str, if (p) "long frost" else "no long frost")))
+    }
+    ma <- suppressWarnings(as.numeric(.kidpr_site(x, "mean_annual_air_temp_C")))
+    if (isTRUE(ma > 5)) return(.kidpr_r(FALSE, tag = "frost_from_air_temperature",
+                                        note = sprintf("mean annual air temperature %s C: no long frost", format(ma))))
+    .kidpr_r(NA, missing = c("frost_regime", "koppen_climate", "soil_temperature_regime"),
              note = "long-seasonal frost not recorded")
+  })
+}
+
+#' Permafrost in or under the profile (the cryo-humus AK, key 21a):
+#' frost_regime permafrost; frozen ground in the profile; a gelic or pergelic
+#' soil temperature regime. No permafrost where frost_regime is recorded
+#' otherwise or the route of .kidpr_frost() finds no long frost.
+#' @noRd
+.kidpr_permafrost <- function(x) {
+  .kidpr_memo(x, "permafrost", function() {
+    fr <- .kidpr_site_txt(x, "frost_regime")
+    if (!is.na(fr)) return(.kidpr_r(fr == "permafrost", note = sprintf("frost regime: %s", fr)))
+    if (.kidpr_profile_frozen(x)) return(.kidpr_r(TRUE, tag = "frost_from_profile", note = "frozen ground in the profile"))
+    str <- .kidpr_site_txt(x, "soil_temperature_regime")
+    if (isTRUE(grepl("gelic", str))) return(.kidpr_r(TRUE, tag = "frost_from_soil_temperature",
+                                                     note = sprintf("soil temperature regime %s", str)))
+    f <- .kidpr_frost(x)
+    if (isFALSE(f$passed)) return(.kidpr_r(FALSE, note = c("no permafrost:", f$note), tag = f$tag))
+    .kidpr_r(NA, missing = c("frost_regime", "permafrost_temp_C", "ice_pct"),
+             note = "permafrost not recorded")
   })
 }
 
@@ -685,6 +804,10 @@
 .KIDPR_ARABLE <- paste0("arable|crop|cultivat|plough|plow|tillage|tilled|cereal|wheat|maize|corn|",
                         "barley|potato|vegetable|horticult|fallow|abandoned (arable|field|crop)|",
                         "\u043f\u0430\u0448\u043d|\u043f\u0430\u0445\u043e\u0442|\u0437\u0430\u043b\u0435\u0436")
+
+# A lower boundary sharp enough for a plough layer: abrupt, sharp or clear
+# (and the Russian rezkii, yasnyi).
+.KIDPR_PLOUGH_BOUNDARY <- "abrupt|sharp|clear|\u0440\u0435\u0437\u043a|\u044f\u0441\u043d"
 
 # The top layer that is not litter: where the soil starts.
 .kidpr_ground <- function(x) {
@@ -708,17 +831,21 @@
   any(grepl("litter, not diagnostic", nt))
 }
 
-# A designation that is not Russian with the plough suffix p (Ap, Op, Hp).
+# A designation that is not Russian with the plough suffix p (Ap, Op, Hp), or
+# the Soviet plough layer written with a Cyrillic p (Apakh, Ap, A1pakh, with a
+# Latin or Cyrillic A).
 .kidpr_fao_p <- function(x, i) {
   d <- as.character(.kidpr_v(x, i, "designation"))
   if (is.na(d) || (x$kidpr && isTRUE(x$des$known[i]))) return(NA)
-  grepl("^[0-9IVX]*[A-Z][A-Z]?[a-z]*p", d) && !grepl("^[0-9IVX]*[A-Z][A-Z]?[a-z]*b", d)
+  (grepl("^[0-9IVX]*[A-Z][A-Z]?[a-z]*p", d) && !grepl("^[0-9IVX]*[A-Z][A-Z]?[a-z]*b", d)) ||
+    grepl("^[0-9IVX]*[A\u0410][0-9]?[\u043f\u041f]", d)
 }
 
 #' An agro (ploughed) horizon (key positions 14, 21, 40, 46; Hugo's decision
-#' Q18): the Russian agro index; else the plough suffix p (Ap, Op, Hp) in the
-#' run of layers from the surface; else a land use of tillage with the top
-#' layers ending at an abrupt (smooth) boundary within 40 cm. A designated
+#' Q18): the Russian agro index; else the plough suffix p (Ap, Op, Hp, the
+#' Soviet Apakh) in the run of layers from the surface; else a land use of
+#' tillage with the top layers ending at an abrupt or clear (smooth) boundary
+#' within 40 cm. A designated
 #' profile with no plough mark and no tillage is natural; a profile with no
 #' designation and no land use is undecided.
 #' @noRd
@@ -749,7 +876,7 @@
         bt <- .kidpr_txt(x, j, "boundary_topography")
         if (is.na(bd)) return(.kidpr_r(NA, missing = "boundary_distinctness",
                                        note = sprintf("land use '%s'; the lower boundary not recorded", lu)))
-        if (grepl("abrupt|sharp", bd) && (is.na(bt) || grepl("smooth|even|plan", bt))) {
+        if (grepl(.KIDPR_PLOUGH_BOUNDARY, bd) && (is.na(bt) || grepl("smooth|even|plan|\u0440\u043e\u0432\u043d", bt))) {
           ok <- x$rank[i] <= x$rank[j]
           return(.kidpr_r(ok, tag = if (ok) "agro_from_land_use",
                           note = sprintf("land use '%s'%s", lu, if (ok) sprintf(" and an abrupt smooth boundary at %s cm", format(x$bot[j]))
@@ -786,8 +913,9 @@
 #' from the surface whose origin is a deposit and that show layering
 #' (stratification recorded, criterion 1). A humus horizon formed in the
 #' deposit, with no buried soil and no layering, is not a deposit (an AY at
-#' the top of a floodplain). Rows in depth order, the total thickness and the
-#' base.
+#' the top of a floodplain). Else a natural surface layer lighter than the
+#' humus horizon under it (criterion 3). Rows in depth order, the total
+#' thickness and the base.
 #' @noRd
 .kidpr_deposit <- function(x) {
   .kidpr_memo(x, "deposit", function() {
@@ -833,6 +961,23 @@
       return(list(rows = rows, thick = th, bottom = x$bot[rows[length(rows)]], passed = TRUE,
                   note = sprintf("%s cm of layered deposited material at the surface", format(th))))
     }
+    # criterion 3: a natural surface layer, not a light horizon, lighter than
+    # the humus horizon under it (darker by a value, richer in carbon, 1 % OC
+    # or more, with the crumb or granular structure of a humus horizon and no
+    # clay films)
+    t1 <- o[!vapply(o, function(j) isTRUE(.kidpr_org23(x, j)$passed), NA)][1L]
+    j2 <- if (is.na(t1)) NA_integer_ else .kidpr_next(x, t1)
+    if (!is.na(j2) && isFALSE(.kidpr_agro(x, t1)$passed) && !isTRUE(.kidpr_q22(x, t1)$passed)) {
+      c1 <- .kidpr_colour(x, t1, "dry"); c2 <- .kidpr_colour(x, j2, "dry")
+      o1 <- .kidpr_num(x, t1, "oc_pct"); o2 <- .kidpr_num(x, j2, "oc_pct")
+      st2 <- .kidpr_structure(x, j2)$type
+      cf2 <- .clay_films_class(.kidpr_v(x, j2, "clay_films_amount"))
+      if (!is.na(c1$value) && !is.na(c2$value) && !is.na(o1) && !is.na(o2) && c2$value <= c1$value - 1 &&
+          o2 > o1 && o2 >= 1 && isTRUE(.kidpr_is_grey(c2)) && isTRUE(grepl("granul|crumb", st2)) && !isTRUE(cf2 >= 3L))
+        return(list(rows = t1, thick = x$thick[t1], bottom = x$bot[t1], passed = TRUE, tag = "deposit_lighter_over_humus",
+                    note = sprintf("%s cm of a surface layer lighter than the humus horizon under it (key 8, criterion 3)",
+                                   format(x$thick[t1]))))
+    }
     none
   })
 }
@@ -854,12 +999,29 @@
 #' Continuous clay or humus-clay cutans (key position 31): clay films common
 #' or many; few or none, no. The thin cutans of CAT (position 63, `thin`):
 #' few or more. Not recorded, soilKey's argic horizon stands in (Hugo's
-#' decision Q4), flagged.
+#' decision Q4), flagged, but not on a layer without peds (massive,
+#' structureless), with carbonate neoformations recorded, or outside the
+#' zone of the clay maximum (clay under 90 % of the highest clay of the argic
+#' layers): there no cutans are read (the review's H3).
 #' @noRd
 .kidpr_cutans <- function(x, i, thin = FALSE) {
   cf <- .clay_films_class(.kidpr_v(x, i, "clay_films_amount"))
   if (!is.na(cf)) return(.kidpr_r(cf >= if (thin) 2L else 3L, note = sprintf("clay films %s", .kidpr_txt(x, i, "clay_films_amount"))))
+  st <- .kidpr_structure(x, i)
+  if (isTRUE(grepl(.KIDPR_RAW_STRUCTURE, st$type)) || isTRUE(.field_grade_class(st$grade) == 0L))
+    return(.kidpr_r(FALSE, note = "clay films not recorded; no peds (massive or structureless): no cutans"))
+  fm <- .kidpr_carb_forms(x, i)
+  if (any(grepl("pseudomyc|soft concr|mass|powder", fm)))
+    return(.kidpr_r(FALSE, note = "clay films not recorded; carbonate neoformations: the argic horizon does not stand in"))
   w <- .kidpr_wrb_layer(x, "argic", i)
+  if (isTRUE(w)) {
+    ar <- .kidpr_wrb(x, "argic")
+    cl <- vapply(ar$layers, function(j) .kidpr_num(x, j, "clay_pct"), 0)
+    ci <- .kidpr_num(x, i, "clay_pct")
+    if (!is.na(ci) && any(!is.na(cl)) && ci < 0.9 * max(cl, na.rm = TRUE))
+      return(.kidpr_r(FALSE, note = sprintf("clay films not recorded; clay %s %% outside the zone of the clay maximum (%s %%)",
+                                            format(ci), format(max(cl, na.rm = TRUE)))))
+  }
   .kidpr_r(w, missing = if (is.na(w)) "clay_films_amount" else character(0), tag = "argic",
            note = sprintf("clay films not recorded: soilKey's argic horizon %s",
                           if (is.na(w)) "undecided" else if (w) "stands in (the layer is argic)" else "stands in (the layer is not argic)"))

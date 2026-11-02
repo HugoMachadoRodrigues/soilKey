@@ -364,10 +364,11 @@ test_that("hydrogenic and turbated horizons: G, Q, TUR, the feature tr, the gap 
   expect_true(is.na(f$code[1]))
   expect_false(f$passed[1])
   expect_identical(f$features[[1]], "tr")
-  # a mixed layer of 20 cm under a natural horizon: neither 7a nor 7b
+  # a mixed layer of 20 cm under a natural horizon: neither 7a nor 7b; the
+  # gap lists TUR alone, 7b (tr) being FALSE (the review)
   f <- .ru_id(.ru_P(.ru_AY(0, 20), .ru_B(20, 50), .ru_L(50, 70, foreign_fragments_pct = 90), .ru_L(70, 100)))
   expect_true(is.na(f$passed[3]))
-  expect_setequal(f$candidates[[3]], c("TUR", "tr"))
+  expect_identical(f$candidates[[3]], "TUR")
   # the site's mixing depth stands in for the fragments, flagged
   f <- .ru_id(.ru_P(.ru_AY(0, 25), .ru_L(25, 50), .ru_L(50, 100), site = list(mechanical_mixing_depth_cm = 60)))
   expect_identical(f$code[1], "TUR")
@@ -435,8 +436,9 @@ test_that("an undecided question follows every branch: one outcome decides, seve
   expect_true(all(c("designation", "land_use") %in% f$missing[[1]]))
   expect_match(f$key_path[1], "14\u0431 > 19\u0431: P", fixed = TRUE)
   expect_match(f$key_path[1], "14\u0430 > 15\u0431 > 17\u0430: AY", fixed = TRUE)
-  # no frost record: a dull brown middle horizon may be cryometamorphic
-  f <- .ru_id(.ru_P(.ru_AY(), .ru_L(15, 45, munsell_value_dry = 4, munsell_chroma_dry = 2, structure_type = "blocky",
+  # no frost record: a dull brown middle horizon with a cryogenic structure
+  # may be cryometamorphic
+  f <- .ru_id(.ru_P(.ru_AY(), .ru_L(15, 45, munsell_value_dry = 4, munsell_chroma_dry = 2, structure_type = "lenticular",
                                    structure_grade = "moderate"),
                     .ru_L(45, 100), site = list(frost_regime = NA)))
   expect_true(is.na(f$passed[2]))
@@ -608,4 +610,346 @@ test_that("the frame is the one identify_horizons() gives and the matcher reads"
   p <- PedonRecord$new(site = list(), horizons = data.frame(top_cm = numeric(0), bottom_cm = numeric(0)))
   expect_identical(nrow(.ru_id(p)), 0L)
   expect_error(.kidpr_identify(list()), "PedonRecord")
+})
+
+
+# --- the review of 0.9.336 and Hugo's decisions of 2026-11-02 ---------------------
+
+# The data route's labels of a profile: the code, the feature of a feature
+# row, "" for no horizon, "?" for undecided.
+.ru_labels <- function(p) {
+  f <- .ru_id(p)
+  vapply(seq_len(nrow(f)), function(i) {
+    if (is.na(f$passed[i])) "?" else if (!is.na(f$code[i])) f$code[i]
+    else if (length(f$features[[i]]) && f$small[i]) f$features[[i]][1L] else ""
+  }, "")
+}
+.ru_O <- function(top, bottom, ...) .ru_org(top, bottom, peat_decomposition_pct = 25, ...)
+.ru_frost <- function(...) {
+  old <- options(soilKey.warn_unrecognised = FALSE)
+  on.exit(options(old))
+  p <- PedonRecord$new(site = list(...), horizons = data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60)))
+  .kidpr_frost(.kidpr_profile(p))
+}
+
+test_that("frost (position 26) follows Hugo's order: regime, profile, Koppen, soil temperature, air temperature", {
+  skip_on_cran()
+  expect_false(.ru_frost(frost_regime = "seasonal", koppen_climate = "Dfd")$passed)
+  expect_true(.ru_frost(frost_regime = "long-seasonal")$passed)
+  for (k in c("Dfc", "Dwd", "Dsc", "ET", "EF")) {
+    r <- .ru_frost(koppen_climate = k)
+    expect_true(r$passed, info = k)
+    expect_identical(r$tag, "frost_from_koppen", info = k)
+  }
+  for (k in c("Af", "Cfb", "Csa", "Dfa", "Dfb", "Dwb", "BWh", "BSh")) expect_false(.ru_frost(koppen_climate = k)$passed, info = k)
+  # BWk and BSk do not decide: the soil temperature regime, then the air
+  expect_true(is.na(.ru_frost(koppen_climate = "BSk")$passed))
+  r <- .ru_frost(koppen_climate = "BWk", soil_temperature_regime = "mesic")
+  expect_false(r$passed)
+  expect_identical(r$tag, "frost_from_soil_temperature")
+  for (t in c("cryic", "gelic", "pergelic")) expect_true(.ru_frost(soil_temperature_regime = t)$passed, info = t)
+  expect_false(.ru_frost(soil_temperature_regime = "thermic")$passed)
+  expect_true(is.na(.ru_frost(soil_temperature_regime = "frigid")$passed))
+  r <- .ru_frost(soil_temperature_regime = "frigid", mean_annual_air_temp_C = 7)
+  expect_false(r$passed)
+  expect_identical(r$tag, "frost_from_air_temperature")
+  expect_true(is.na(.ru_frost(mean_annual_air_temp_C = 3)$passed))
+  # latitude does not decide
+  expect_true(is.na(.ru_frost(lat = 70, lon = 130)$passed))
+  # frozen ground in the profile: ice, temperature, cryoturbation
+  p <- .ru_P(.ru_AY(), .ru_L(15, 60, cryoturbation = "present"), site = list(frost_regime = NA, land_use = "tundra"))
+  r <- .kidpr_frost(.kidpr_profile(p))
+  expect_true(r$passed)
+  expect_identical(r$tag, "frost_from_profile")
+  # the route goes to the evidence of the layer
+  f <- .ru_id(.ru_P(.ru_AY(), .ru_L(15, 45, munsell_value_dry = 4, munsell_chroma_dry = 2), .ru_L(45, 100),
+                    site = list(frost_regime = NA, koppen_climate = "Dfc")))
+  expect_identical(f$code[2], "CR")
+  expect_true("frost_from_koppen" %in% f$fallbacks[[2]])
+  expect_match(f$evidence[2], "Koppen Dfc: long frost", fixed = TRUE)
+})
+
+test_that("H1: a CRM, CR or G under an organic layer, a BPL, layered alluvium are not surface humus horizons", {
+  skip_on_cran()
+  ls <- list(frost_regime = "long-seasonal")
+  # H1a: O-CRM-C
+  expect_identical(.ru_labels(.ru_P(.ru_O(0, 8),
+                                    .ru_L(8, 40, munsell_value_dry = 5, munsell_chroma_dry = 3, structure_type = "angular",
+                                          structure_grade = "moderate", structure_size = "fine", oc_pct = 0.8),
+                                    .ru_L(40, 100, munsell_value_dry = 5, munsell_chroma_dry = 3), site = ls)),
+                   c("O", "CRM", "CR"))
+  # H1b: a cryozem, frost from the frozen layer
+  expect_identical(.ru_labels(.ru_P(.ru_O(0, 7), .ru_L(7, 40, munsell_value_dry = 5, munsell_chroma_dry = 2, thixotropic_index = 60, oc_pct = 1.2),
+                                    .ru_L(40, 80, munsell_value_dry = 5, munsell_chroma_dry = 2, ice_pct = 30, permafrost_temp_C = -2),
+                                    site = list(frost_regime = NA))),
+                   c("O", "CR", "CR"))
+  # H1c: a 2.5Y 5/2 massive gley under O
+  g <- function(top, bottom) .ru_L(top, bottom, munsell_hue_dry = NA, munsell_value_dry = NA, munsell_chroma_dry = NA,
+                                   munsell_hue_moist = "2.5Y", munsell_value_moist = 5, munsell_chroma_moist = 2, oc_pct = 0.9)
+  expect_identical(.ru_labels(.ru_P(.ru_O(0, 8), g(8, 50), g(50, 90), site = ls)), c("O", "G", "G"))
+  # H1d: a Yakutian pale soil
+  f <- .ru_id(.ru_P(.ru_L(0, 15, munsell_value_dry = 6, munsell_chroma_dry = 2, structure_type = "crumb", structure_grade = "weak",
+                          ph_h2o = 7.2, oc_pct = 1.5),
+                    .ru_L(15, 50, munsell_value_dry = 7, munsell_chroma_dry = 3, structure_type = "subangular blocky",
+                          structure_grade = "weak", ph_h2o = 7.6),
+                    .ru_L(50, 90, munsell_value_dry = 7, munsell_chroma_dry = 3, ph_h2o = 8.2, caco3_pct = 8,
+                          secondary_carbonates_form = "pseudomycelia"),
+                    .ru_L(90, 150, munsell_value_dry = 6, munsell_chroma_dry = 3, ph_h2o = 8, caco3_pct = 5, ice_pct = 20,
+                          secondary_carbonates_form = NA),
+                    site = list(frost_regime = NA, koppen_climate = "Dfd")))
+  expect_identical(f$code, c("AJ", "BPL", "BCA", NA))
+  expect_identical(f$features[[4]], "ca")
+  # H1e: layered alluvium under an AY
+  expect_identical(.ru_labels(.ru_P(.ru_AY(0, 20, ph_h2o = 6.4, layer_origin = "fluvic"),
+                                    .ru_L(20, 45, munsell_value_dry = 6, munsell_chroma_dry = 3, ph_h2o = 6.6, layer_origin = "fluvic",
+                                          stratification_pattern = "layered", effervescence_class = NA),
+                                    .ru_L(45, 100, munsell_value_dry = 6, munsell_chroma_dry = 3, ph_h2o = 6.8, layer_origin = "fluvic",
+                                          stratification_pattern = "layered", effervescence_class = NA))),
+                   c("AY", "", ""))
+  # an AY under O stays an AY over its BM
+  expect_identical(.ru_labels(.ru_P(.ru_O(0, 5), .ru_AY(5, 20), .ru_B(20, 70, munsell_hue_dry = "10YR", munsell_chroma_dry = 4),
+                                    .ru_L(70, 110))),
+                   c("O", "AY", "BM", ""))
+})
+
+test_that("H2: the light horizon is compared with the middle horizon under the BEL", {
+  skip_on_cran()
+  p <- .ru_P(.ru_AY(0, 18, phys_clay_pct = 28),
+             .ru_L(18, 32, munsell_value_dry = 7, munsell_chroma_dry = 2, structure_type = "platy", phys_clay_pct = 25),
+             .ru_L(32, 48, munsell_value_dry = 6, munsell_chroma_dry = 3, structure_type = "subangular blocky", structure_grade = "moderate",
+                   variegated_colors = "10YR 7/2; 7.5YR 5/6", clay_films_amount = "few", phys_clay_pct = 28),
+             .ru_B(48, 110, structure_type = "prismatic", clay_films_amount = "common", phys_clay_pct = 45, clay_pct = 30))
+  expect_identical(.ru_labels(p), c("AY", "EL", "BEL", "BT"))
+})
+
+test_that("H3: no argic stand-in on massive layers, carbonate layers or outside the clay maximum", {
+  skip_on_cran()
+  # a massive parent with no clay films recorded
+  p <- .ru_elp()
+  p$horizons$clay_films_amount <- NA
+  f <- .ru_id(p)
+  expect_identical(f$code[3], "BT")
+  expect_true(is.na(f$code[4]) && isFALSE(f$passed[4]))
+  # a solonetz: its BCA and its C do not reach the gap of position 60
+  p <- .ru_P(.ru_L(0, 10, munsell_value_dry = 6, munsell_chroma_dry = 2, structure_type = "platy", structure_grade = "weak",
+                   ph_h2o = 7.3, oc_pct = 1, clay_pct = 14, clay_films_amount = NA),
+             .ru_L(10, 32, munsell_value_dry = 4, munsell_chroma_dry = 3, structure_type = "columnar", structure_grade = "strong",
+                   clay_pct = 42, clay_films_amount = "many", ph_h2o = 8.6, na_cmol = 6, cec_cmol = 25),
+             .ru_L(32, 70, munsell_value_dry = 7, munsell_chroma_dry = 3, structure_type = "prismatic", structure_grade = "weak",
+                   clay_pct = 34, caco3_pct = 9, secondary_carbonates_form = "pseudomycelia", ph_h2o = 8.8, clay_films_amount = NA),
+             .ru_L(70, 140, munsell_value_dry = 7, munsell_chroma_dry = 4, clay_pct = 30, caco3_pct = 10, ph_h2o = 8.9,
+                   clay_films_amount = NA, secondary_carbonates_form = NA),
+             site = list(land_use = "pasture"))
+  f <- .ru_id(p)
+  expect_identical(f$code, c("SEL", "BSN", "BCA", NA))
+  expect_identical(f$features[[4]], "ca")
+  # a structured layer outside the zone of the clay maximum
+  p <- .ru_elp()
+  p$horizons <- rbind(p$horizons[1:3, ], p$horizons[3, ], p$horizons[4, ])
+  p$horizons$top_cm <- c(0, 15, 35, 90, 120); p$horizons$bottom_cm <- c(15, 35, 90, 120, 150)
+  p$horizons$clay_pct[4] <- 20
+  p$horizons$clay_films_amount <- NA
+  expect_identical(.ru_id(p)$data_code[4], "BM")
+})
+
+test_that("H4: the solonetz structure comes only from a recorded columnar structure in the layer's run", {
+  skip_on_cran()
+  p <- .ru_P(.ru_AY(0, 18, na_cmol = 0.1, cec_cmol = 12),
+             .ru_L(18, 32, munsell_value_dry = 7, munsell_chroma_dry = 2, structure_type = "platy", clay_pct = 10, silt_pct = 55,
+                   sand_pct = 35, ph_h2o = 5, na_cmol = 0.1, cec_cmol = 8),
+             .ru_B(32, 70, structure_type = NA, structure_grade = NA, clay_pct = 32, clay_films_amount = "common", ph_h2o = 5.4,
+                   na_cmol = 0.2, cec_cmol = 20),
+             .ru_B(70, 120, structure_type = "prismatic", structure_grade = "strong", clay_pct = 30, clay_films_amount = "common",
+                   ph_h2o = 5.6, na_cmol = 0.2, cec_cmol = 20))
+  expect_identical(.ru_labels(p), c("AY", "EL", "BT", "BT"))
+  p$horizons$na_cmol <- NA
+  expect_identical(.ru_labels(p), c("AY", "EL", "BT", "BT"))
+  # high sodium does not make it a solonetz horizon either
+  p$horizons$na_cmol <- c(0.1, 0.1, 8, 8)
+  expect_identical(.ru_labels(p)[3], "BT")
+})
+
+test_that("H5 and M8: the Soviet plough layer and a clear plough boundary", {
+  skip_on_cran()
+  ap <- function(d) .ru_P(.ru_AY(0, 26, designation = d), .ru_L(26, 40, designation = "A2B", variegated_colors = "10YR 7/2; 7.5YR 5/6",
+                                                            munsell_chroma_dry = 3, structure_type = "subangular blocky",
+                                                            structure_grade = "moderate"),
+                          .ru_B(40, 110, designation = "B", clay_pct = 32, clay_films_amount = "common", structure_type = "prismatic"),
+                          .ru_L(110, 160, designation = "C"), site = list(land_use = NA))
+  for (d in c("A\u043f\u0430\u0445", "\u0410\u043f\u0430\u0445", "A\u043f", "A1\u043f\u0430\u0445"))
+    expect_identical(.ru_labels(ap(d))[1], "P", info = d)
+  pl <- function(b) .ru_P(.ru_AY(0, 26, boundary_distinctness = b, boundary_topography = "smooth"), .ru_L(26, 100),
+                          site = list(land_use = "arable"))
+  for (b in c("clear", "\u0440\u0435\u0437\u043a\u0438\u0439", "\u044f\u0441\u043d\u044b\u0439"))
+    expect_identical(.ru_labels(pl(b))[1], "P", info = b)
+  expect_identical(.ru_labels(pl("gradual"))[1], "AY")
+})
+
+test_that("H6: the site's mixing depth at the plough depth does not make the plough layer mixed", {
+  skip_on_cran()
+  p <- .ru_P(.ru_AY(0, 26, boundary_distinctness = "abrupt", boundary_topography = "smooth"), .ru_B(26, 100),
+             site = list(land_use = "arable", mechanical_mixing_depth_cm = 26))
+  f <- .ru_id(p)
+  expect_identical(f$code[1], "P")
+  expect_false("tr" %in% f$features[[1]])
+  # mixing below the plough layer is read there (a TUR under P)
+  p <- .ru_P(.ru_AY(0, 26, boundary_distinctness = "abrupt", boundary_topography = "smooth"), .ru_B(26, 60), .ru_L(60, 100),
+             site = list(land_use = "arable", mechanical_mixing_depth_cm = 60))
+  expect_identical(.ru_labels(p)[1:2], c("P", "TUR"))
+})
+
+test_that("M1: with equal values the lower chroma is the lighter layer", {
+  skip_on_cran()
+  p <- .ru_P(.ru_O(0, 5), .ru_sand(5, 15, munsell_value_dry = 7, munsell_chroma_dry = 1, structure_type = "single grain", ph_h2o = 4.3),
+             .ru_sand(15, 40, munsell_value_dry = 7, munsell_chroma_dry = 6, uncoated_grains_pct = 20),
+             .ru_sand(40, 100, munsell_value_dry = 7, munsell_chroma_dry = 3, uncoated_grains_pct = 95))
+  f <- .ru_id(p)
+  expect_identical(f$code[1:3], c("O", "E", "BHF"))
+  expect_identical(f$modification[3], "BF")
+})
+
+test_that("M2: CRM only dull (chroma 3 or less) and with a cryogenic structure", {
+  skip_on_cran()
+  fr <- list(frost_regime = "long-seasonal")
+  # a brown prismatic BT with cutans is not a cryometamorphic candidate
+  f <- .ru_id(.ru_P(.ru_AY(), .ru_B(15, 90, munsell_hue_dry = "10YR", munsell_chroma_dry = 4, structure_type = "prismatic",
+                                    clay_pct = 34, clay_films_amount = "many"), .ru_L(90, 150), site = list(frost_regime = NA)))
+  expect_identical(f$code[2], "BT")
+  # a dull blocky layer with long frost goes on at 30
+  f <- .ru_id(.ru_P(.ru_AY(), .ru_L(15, 45, munsell_value_dry = 4, munsell_chroma_dry = 2, structure_type = "blocky",
+                                   structure_grade = "moderate"), .ru_L(45, 100), site = fr))
+  expect_identical(f$code[2], "BM")
+  expect_match(f$key_path[2], "28\u0432 > 30", fixed = TRUE)
+})
+
+test_that("M3: carbonate neoformations not recorded: the calcic, protocalcic or carbonate-maximum stand-in", {
+  skip_on_cran()
+  p <- .ru_chz(.ru_L(40, 90, munsell_value_dry = 7, munsell_chroma_dry = 3, structure_type = "prismatic", structure_grade = "weak",
+                     caco3_pct = 11, ph_h2o = 8.2, secondary_carbonates_form = NA))
+  p$horizons$caco3_pct[3] <- 12
+  p$horizons$secondary_carbonates_form[3] <- NA
+  f <- .ru_id(p)
+  expect_identical(f$code[2], "BCA")
+  expect_identical(f$fallbacks[[2]][f$fallbacks[[2]] == "carbonate_maximum"], "carbonate_maximum")
+  # the parent material: the feature ca, no horizon
+  expect_true(is.na(f$code[3]))
+  expect_identical(f$features[[3]], "ca")
+  # under half the CaCO3 of a lower layer: not the maximum (a BMK)
+  p <- .ru_P(.ru_AY(0, 20, munsell_value_dry = 5, ph_h2o = 7.4, structure_type = "crumb", structure_grade = "weak", oc_pct = 1.4),
+             .ru_B(20, 38, munsell_chroma_dry = 4, structure_type = "prismatic", structure_size = "fine",
+                   structure_type_secondary = "blocky", caco3_pct = 1.5, secondary_carbonates_form = NA, ph_h2o = 7.9),
+             .ru_L(38, 100, caco3_pct = 9, secondary_carbonates_form = "soft concretions", structure_type = "prismatic",
+                   structure_grade = "moderate"),
+             .ru_L(100, 160, caco3_pct = 10, secondary_carbonates_form = NA), site = list(land_use = "pasture"))
+  expect_identical(.ru_id(p)$code[2], "BMK")
+})
+
+test_that("M4 and M7: no carbon is not organic; a rich granular AU is not an AH", {
+  skip_on_cran()
+  p <- .ru_P(.ru_AY(0, 40, munsell_value_dry = 3, munsell_chroma_dry = 1, ph_h2o = 7, oc_pct = 3.5, structure_grade = "strong"),
+             .ru_L(40, 80, munsell_value_dry = 7, munsell_chroma_dry = 3, structure_type = "prismatic", structure_grade = "weak",
+                   ph_h2o = 8.2, caco3_pct = 10, secondary_carbonates_form = "pseudomycelia", oc_pct = NA),
+             site = list(land_use = "pasture"))
+  f <- .ru_id(p)
+  expect_identical(f$code, c("AU", "BCA"))
+  expect_true("mineral_from_lab" %in% f$fallbacks[[2]])
+  p$horizons$oc_pct[1] <- 6.5
+  expect_identical(.ru_id(p)$code[1], "AU")
+  # residues between 1/3 and 2/3 are read with the coarse residues (46)
+  f <- .ru_id(.ru_P(.ru_L(0, 15, plant_residues_pct = 50, oc_pct = 15, munsell_hue_dry = "7.5YR", munsell_value_dry = 3,
+                          munsell_chroma_dry = 3), .ru_L(15, 60)))
+  expect_identical(f$code[1], "AO")
+})
+
+test_that("M5: a 2.5Y gley needs a massive structure or a redox sign; the gley chart suffices by colour", {
+  skip_on_cran()
+  m <- function(top, bottom, hue, v, c, ...) .ru_L(top, bottom, munsell_hue_dry = NA, munsell_value_dry = NA, munsell_chroma_dry = NA,
+                                                   munsell_hue_moist = hue, munsell_value_moist = v, munsell_chroma_moist = c, ...)
+  # 2.5Y 5/3 prismatic with cutans: a BT, not G
+  f <- .ru_id(.ru_P(.ru_AY(), .ru_L(15, 30, munsell_hue_dry = "2.5Y", munsell_value_dry = 7, munsell_chroma_dry = 2,
+                                   structure_type = "platy", clay_pct = 10, silt_pct = 55, sand_pct = 35),
+                    m(30, 100, "2.5Y", 5, 3, structure_type = "prismatic", structure_grade = "strong", clay_pct = 32,
+                      clay_films_amount = "common")))
+  expect_identical(f$code[3], "BT")
+  # 2.5Y 5/2 with mottles: G
+  expect_identical(.ru_id(.ru_P(.ru_AY(), m(15, 60, "2.5Y", 5, 2, structure_type = "blocky", structure_grade = "moderate",
+                                            mottle_colors = "7.5YR 5/6"), .ru_L(60, 100)))$code[2], "G")
+  # 2.5Y 5/2 with a structure and no redox sign: not G
+  expect_false(identical(.ru_id(.ru_P(.ru_AY(), m(15, 60, "2.5Y", 5, 2, structure_type = "blocky", structure_grade = "moderate"),
+                                      .ru_L(60, 100)))$code[2], "G"))
+  # 5GY 5/1 with a structure: G by colour
+  expect_identical(.ru_id(.ru_P(.ru_AY(), m(15, 60, "5GY", 5, 1, structure_type = "blocky", structure_grade = "moderate"),
+                                .ru_L(60, 100)))$code[2], "G")
+})
+
+test_that("M6: the peat body of positions 41 and 44 is weakly decomposed natural peat only", {
+  skip_on_cran()
+  G <- .ru_L(55, 90, munsell_hue_dry = NA, munsell_value_dry = NA, munsell_chroma_dry = NA, munsell_hue_moist = "5GY",
+             munsell_value_moist = 5, munsell_chroma_moist = 1)
+  expect_identical(.ru_labels(.ru_P(.ru_org(0, 30, peat_decomposition_pct = 60, munsell_value_dry = 2, munsell_chroma_dry = 1),
+                                    .ru_org(30, 55, peat_moor_type = "low-moor"), G)),
+                   c("H", "T", "G"))
+  G$top_cm <- 38
+  expect_identical(.ru_labels(.ru_P(.ru_org(0, 30, peat_decomposition_pct = 40, boundary_distinctness = "abrupt",
+                                            boundary_topography = "smooth"),
+                                    .ru_org(30, 38, peat_decomposition_pct = 20, peat_moor_type = "low-moor"), G,
+                                    site = list(land_use = "arable"))),
+                   c("PT", "O", "G"))
+})
+
+test_that("M9: BMK needs the effervescence", {
+  skip_on_cran()
+  p <- .ru_P(.ru_AY(0, 20, munsell_value_dry = 5, ph_h2o = 7, oc_pct = 1.4, structure_type = "crumb", structure_grade = "weak"),
+             .ru_B(20, 40, structure_type = "prismatic", structure_size = "fine", structure_type_secondary = "blocky", ph_h2o = 7,
+                   clay_pct = 30),
+             .ru_L(40, 100, ph_h2o = 7.2))
+  expect_identical(.ru_labels(p), c("AJ", "BM", ""))
+})
+
+test_that("low items: the middle horizons of a dark-rock profile, criterion 3 of position 8, the tints of 15 and 19", {
+  skip_on_cran()
+  # 13a for a middle horizon: the feature u, then on at 31
+  dk <- function(top, bottom, ...) .ru_L(top, bottom, munsell_value_dry = 3, munsell_chroma_dry = 1, ...)
+  p <- .ru_P(.ru_AY(munsell_value_dry = 3, munsell_chroma_dry = 1, ph_h2o = 7),
+             dk(15, 60, munsell_chroma_dry = 2, structure_type = "prismatic", structure_grade = "moderate", clay_pct = 35,
+                clay_films_amount = "common"),
+             dk(60, 100), site = list(parent_material = "black shale"))
+  f <- .ru_id(p)
+  expect_identical(f$code[1:2], c("AU", "BT"))
+  expect_identical(f$features[[2]], "u")
+  expect_match(f$key_path[2], "13\u0430 > 31\u0430", fixed = TRUE)
+  # criterion 3: a natural surface layer lighter than the humus horizon under it
+  p <- .ru_P(.ru_L(0, 15, munsell_value_dry = 6, munsell_chroma_dry = 3, structure_type = "crumb", structure_grade = "weak", oc_pct = 0.5),
+             .ru_AY(15, 40, munsell_value_dry = 3, munsell_chroma_dry = 1, ph_h2o = 7, oc_pct = 3),
+             .ru_L(40, 100))
+  f <- .ru_id(p)
+  expect_identical(f$features[[1]], "rh")
+  expect_true("deposit_lighter_over_humus" %in% f$fallbacks[[1]])
+  expect_identical(f$code[2], "AU")
+  # 15a allows a brown tint (10YR 3/3 is AU); 19b has none (10YR 5/3 is PB)
+  expect_identical(.ru_labels(.ru_P(.ru_AY(munsell_value_dry = 3, munsell_chroma_dry = 3, ph_h2o = 7), .ru_L(15, 100)))[1], "AU")
+  ar <- list(land_use = "arable")
+  expect_identical(.ru_labels(.ru_P(.ru_AY(0, 25, munsell_chroma_dry = 3, boundary_distinctness = "abrupt"), .ru_L(25, 100),
+                                    site = ar))[1], "PB")
+  expect_identical(.ru_labels(.ru_P(.ru_AY(0, 25, boundary_distinctness = "abrupt"), .ru_L(25, 100), site = ar))[1], "P")
+})
+
+test_that("low items: texture words in either order, film colours brighter than the parent, AK strictly darkest", {
+  skip_on_cran()
+  expect_identical(.kidpr_texture_word("\u0441\u0443\u0433\u043b\u0438\u043d\u043e\u043a \u043b\u0435\u0433\u043a\u0438\u0439"), 3)
+  expect_identical(.kidpr_texture_word("\u043b\u0435\u0433\u043a\u0438\u0439 \u0441\u0443\u0433\u043b\u0438\u043d\u043e\u043a"), 3)
+  expect_identical(.kidpr_texture_word("\u0433\u043b\u0438\u043d\u0430 \u0442\u044f\u0436\u0435\u043b\u0430\u044f"), 8)
+  expect_identical(.kidpr_texture_word("\u0441\u0440\u0435\u0434\u043d\u0435\u0441\u0443\u0433\u043b\u0438\u043d\u0438\u0441\u0442\u044b\u0439"), 4)
+  expect_identical(.kidpr_texture_word("\u0441\u0443\u043f\u0435\u0441\u044c"), 2)
+  expect_identical(.kidpr_texture_word("\u043f\u0435\u0441\u043e\u043a"), 1)
+  # a pale parent sand is not a film horizon
+  f <- .ru_id(.ru_P(.ru_AY(), .ru_sand(15, 60, munsell_value_dry = 7, munsell_chroma_dry = 3)))
+  expect_identical(.ru_labels(.ru_P(.ru_AY(), .ru_sand(15, 60, munsell_value_dry = 7, munsell_chroma_dry = 3)))[2], "")
+  # AK: a tie for the darkest is not; nor a chroma over 4
+  ak <- function(v2, c1) .ru_P(.ru_L(0, 15, munsell_hue_dry = "7.5YR", munsell_value_dry = 4, munsell_chroma_dry = c1,
+                                     structure_type = "granular"),
+                               .ru_L(15, 60, munsell_value_dry = v2), site = list(frost_regime = "permafrost"))
+  expect_identical(.ru_labels(ak(6, 3))[1], "AK")
+  expect_false(identical(.ru_labels(ak(4, 3))[1], "AK"))
+  expect_false(identical(.ru_labels(ak(6, 5))[1], "AK"))
 })

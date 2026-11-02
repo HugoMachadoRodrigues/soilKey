@@ -22,11 +22,16 @@
 # Where a field descriptor the key asks for is missing, a soilKey WRB
 # diagnostic stands in, flagged in the evidence (Q4): spodic() for the iron
 # films of BHF (position 30, and its colour pattern at 56), argic() for the
-# cutans of BT and BI (31, 63), calcic() for the carbonate neoformations of
-# BCA (62), the structure criterion of natric_horizon() for the solonetz
-# structure of ASN and BSN (58; the exchangeable sodium never decides, p.
-# 52), cambic() for the transformed structure of BM (33, 65), and
-# andic_properties() for the volcanic ash of BAN (55).
+# cutans of BT and BI (31, 63; not on massive or carbonate layers, nor
+# outside the clay maximum), calcic() or protocalcic_properties() for the
+# carbonate neoformations of BCA (62; else the carbonate maximum of the
+# solum), the structure criterion of the natric horizon for the solonetz
+# structure of ASN and BSN (58: a columnar structure recorded in the layer's
+# run; the exchangeable sodium never decides, p. 52), cambic() for the
+# transformed structure of BM (33, 65), and andic_properties() for the
+# volcanic ash of BAN (55). The review of 0.9.336 and Hugo's decisions of
+# 2026-11-02 set the frost of position 26, the peat body of 41 and 44, and
+# the gley colours of 2.5Y.
 #
 # .kidpr_identify() is the horizon identification of the registry namespace
 # kidpr (identify_horizons(pedon, "kidpr2008") once the registry entry
@@ -39,7 +44,7 @@
 .KIDPR_LETTERS <- c(a = "\u0430", b = "\u0431", c = "\u0432", d = "\u0433")
 
 # The WRB diagnostics that stand in for a field descriptor.
-.KIDPR_STAND_INS <- c("spodic", "argic", "calcic", "natric_horizon", "cambic", "andic_properties")
+.KIDPR_STAND_INS <- c("spodic", "argic", "calcic", "protocalcic_properties", "natric_horizon", "cambic", "andic_properties")
 
 # Horizons by kind, for the questions on the layers above.
 .KIDPR_AGRO <- c("P", "PU", "PB", "PT", "PTR")
@@ -49,7 +54,8 @@
 }
 
 # The candidates of a gap of the key (an answer with no exit).
-.KIDPR_GAPS <- list("7" = c("TUR", "tr"), "60" = c("CAT", "BI", "BT"))
+# (gap 7 is reached only when 7b, tr, is FALSE: TUR alone).
+.KIDPR_GAPS <- list("7" = "TUR", "60" = c("CAT", "BI", "BT"))
 
 
 # --- a question of the key ----------------------------------------------------------
@@ -110,9 +116,12 @@
 # the layer above as its sub-horizon (AY1, AY2): the same hue page, value
 # and chroma within one unit, the same darkness, both agro or both natural,
 # no sign of a light, gley or olive horizon, not heavier by a gradation and
-# no clay films the layer above lacks. A light horizon (key 22)
-# directly under an organic, agro or deposited layer is not a surface humus
-# horizon: the E under O or P of a podzol.
+# no clay films the layer above lacks. A light horizon (key 22) directly
+# under an organic, agro or deposited layer is not a surface humus horizon
+# (the E under O or P of a podzol); and a grey layer under an organic layer,
+# or continuing the surface horizon, must look like a humus horizon
+# (.kidpr_humus_like(), the review's H1): the CRM, CR or G under the O of a
+# cryozem or a gleyzem is not.
 .kidpr_surface_colour <- function(x, i, grey) {
   key <- sprintf("surface_%s_%d", if (grey) "grey" else "notgrey", i)
   .kidpr_memo(x, key, function() {
@@ -121,20 +130,52 @@
     if (isFALSE(col$passed)) return(col)
     st <- .kidpr_is_start(x, i)
     light <- .kidpr_q22(x, i)$passed
-    if (grey && isTRUE(st) && !identical(.kidpr_start_row(x), i) && !isFALSE(light)) {
-      st <- if (isTRUE(light)) FALSE else NA
+    hl <- NULL
+    if (grey && isTRUE(st) && !identical(.kidpr_start_row(x), i)) {
+      if (!isFALSE(light)) st <- if (isTRUE(light)) FALSE else NA
       if (isFALSE(st)) return(.kidpr_r(FALSE, note = "a light horizon under an organic, agro or deposited layer, not a humus horizon"))
+      if (isTRUE(.kidpr_is_first_mineral(x, i))) {
+        hl <- .kidpr_humus_like(x, i)
+        st <- .kidpr_and(st, hl$passed)
+        if (isFALSE(st)) return(.kidpr_r(FALSE, note = c("under an organic layer, not a humus horizon", hl$note)))
+      }
     }
     cont <- FALSE
     p <- .kidpr_prev(x, i)
     if (!isTRUE(st) && !is.na(p) && !isTRUE(.kidpr_org23(x, p)$passed)) {
       cont <- .kidpr_and(.kidpr_surface_colour(x, p, grey)$passed, .kidpr_subhorizon(x, p, i, grey))
+      if (grey && !isFALSE(cont)) {
+        hl <- .kidpr_humus_like(x, i)
+        cont <- .kidpr_and(cont, hl$passed)
+      }
     }
     pos <- .kidpr_or(st, cont)
-    .kidpr_r(.kidpr_and(pos, col$passed), missing = c(col$missing, if (is.na(pos)) c("land_use", "designation")),
+    .kidpr_r(.kidpr_and(pos, col$passed), missing = c(col$missing, if (is.na(pos)) c("land_use", "designation", hl$missing)),
              note = c(col$note, if (isTRUE(pos)) "starts at the surface (or under the agro layers or the deposit)"
-                                else if (isFALSE(pos)) "does not start at the surface"),
+                                else if (isFALSE(pos)) "does not start at the surface", hl$note),
              tag = col$tag)
+  })
+}
+
+# Does a grey layer look like a humus horizon (the review's H1)? Not with a
+# gley or olive moist colour, not massive, single-grained or stratified, not
+# frozen, and darker when dry than the parent material by a value or more
+# (or as dark with a chroma 2 lower); with no parent material below, yes.
+.kidpr_humus_like <- function(x, i) {
+  .kidpr_memo(x, sprintf("humus_like_%d", i), function() {
+    if (isTRUE(.kidpr_gley(x, i)$passed) || isTRUE(.kidpr_olive(x, i)$passed))
+      return(.kidpr_r(FALSE, note = "a gley or olive colour, not a humus horizon"))
+    st <- .kidpr_structure(x, i)
+    if (isTRUE(grepl(.KIDPR_RAW_STRUCTURE, st$type)) || isTRUE(.field_grade_class(st$grade) == 0L))
+      return(.kidpr_r(FALSE, note = "massive or structureless, not a humus horizon"))
+    if (isTRUE(.kidpr_num(x, i, "permafrost_temp_C") <= 0) || isTRUE(.kidpr_num(x, i, "ice_pct") > 0))
+      return(.kidpr_r(FALSE, note = "frozen, not a humus horizon"))
+    p <- .kidpr_parent_row(x, i)
+    if (is.na(p)) return(.kidpr_r(TRUE))
+    ci <- .kidpr_colour(x, i, "dry"); cp <- .kidpr_colour(x, p, "dry")
+    if (is.na(ci$value) || is.na(cp$value)) return(.kidpr_r(NA, missing = "munsell_value_dry"))
+    dk <- ci$value <= cp$value - 1 || (ci$value == cp$value && isTRUE(ci$chroma <= cp$chroma - 2))
+    .kidpr_r(dk, note = if (!dk) sprintf("not darker than the parent material (%s)", .kidpr_colour_text(cp)))
   })
 }
 
@@ -306,9 +347,14 @@
     if (!is.na(ff)) return(.kidpr_r(ff >= 80, note = sprintf("fragments of other horizons %s %%", format(ff))))
     d <- suppressWarnings(as.numeric(.kidpr_site(x, "mechanical_mixing_depth_cm")))
     g <- .kidpr_ground(x)
-    if (!is.na(d) && !is.na(x$top[i]) && !is.na(g))
-      return(.kidpr_r(x$top[i] - g < d, tag = "mixing_from_site",
-                      note = sprintf("fragments not recorded: the site's mixing depth (%s cm)", format(d))))
+    if (!is.na(d) && !is.na(x$top[i]) && !is.na(g)) {
+      # the plough layer is not the mixed layer of key 6 (the review's H6)
+      ag <- .kidpr_agro(x, i)$passed
+      if (isTRUE(ag)) return(.kidpr_r(FALSE, note = "the plough layer: not mixed by the site's mixing depth"))
+      p <- .kidpr_and(.kidpr_not(ag), x$top[i] - g < d)
+      return(.kidpr_r(p, missing = if (is.na(p)) c("land_use", "designation") else character(0), tag = "mixing_from_site",
+                      note = sprintf("fragments not recorded: the site's mixing depth (%s cm), below the plough layer", format(d))))
+    }
     .kidpr_r(FALSE)
   })
 }
@@ -348,7 +394,7 @@
 # 8-9: a deposited layer at the surface, and the layer is in it.
 .kidpr_q08 <- function(x, i) {
   d <- .kidpr_deposit(x)
-  .kidpr_r(d$passed, note = d$note)
+  .kidpr_r(d$passed, note = d$note, tag = d$tag %||% character(0))
 }
 .kidpr_q09 <- function(x, i) {
   d <- .kidpr_deposit(x)
@@ -359,31 +405,60 @@
 .kidpr_q10 <- function(x, i) .kidpr_org23(x, i)
 .kidpr_q11 <- function(x, i) .kidpr_res13(x, i)
 
-# 12: starts at the surface (or under the deposit) and is mainly grey.
-.kidpr_q12 <- function(x, i) .kidpr_surface_colour(x, i, grey = TRUE)
+# 12: starts at the surface (or under the deposit) and is mainly grey; in a
+# profile dark from a dark rock (13), a grey middle horizon too, which 13a
+# sends on with the feature u (the book: 58 for the middle horizons; soilKey
+# goes on at 31, whose yes leads to 58, so that a layer without cutans is
+# not forced into it).
+.kidpr_q12 <- function(x, i) {
+  s <- .kidpr_surface_colour(x, i, grey = TRUE)
+  if (!isFALSE(s$passed)) return(s)
+  if (isTRUE(.kidpr_dark_rock(x)$passed) && isTRUE(.kidpr_grey(x, i)$passed))
+    return(.kidpr_r(TRUE, note = "a grey middle horizon of a profile dark from a dark rock"))
+  s
+}
 
 # 13: the whole profile is dark from a dark rock (shungite, carbonaceous or
 # black shales): the site's parent material names one and every mineral
 # layer below is dark (dry value 4 or less).
 .KIDPR_DARK_ROCK <- paste0("shungit|black shale|carbonaceous|coal|graphit|anthracit|",
                            "\u0448\u0443\u043d\u0433\u0438\u0442|\u0443\u0433\u043b\u0438\u0441\u0442|\u0447\u0435\u0440\u043d\u044b\u0445? \u0441\u043b\u0430\u043d\u0446")
-.kidpr_q13 <- function(x, i) {
-  b <- .kidpr_below(x, i)
-  b <- b[!vapply(b, function(j) .kidpr_hard_rock(x, j), NA)]
-  dk <- vapply(b, function(j) { v <- .kidpr_colour(x, j, "dry")$value; if (is.na(v)) NA else v <= 4 }, NA)
-  if (any(dk %in% FALSE) || !length(b)) return(.kidpr_r(FALSE, note = "the profile is not dark throughout"))
-  pm <- .kidpr_site_txt(x, "parent_material")
-  rock <- if (is.na(pm)) NA else grepl(.KIDPR_DARK_ROCK, pm, perl = TRUE)
-  p <- .kidpr_and(.kidpr_and(dk), rock)
-  .kidpr_r(p, missing = if (is.na(p)) c("parent_material", "munsell_value_dry") else character(0),
-           note = if (isTRUE(p)) sprintf("dark throughout, from a dark rock (%s)", pm)
-                  else if (isFALSE(p)) "the dark colour is not inherited from the rock")
+.kidpr_dark_rock <- function(x) {
+  .kidpr_memo(x, "dark_rock", function() {
+    b <- x$ord[!vapply(x$ord, function(j) .kidpr_hard_rock(x, j) || .kidpr_litter(x, j) ||
+                         isTRUE(.kidpr_org23(x, j)$passed), NA)]
+    dk <- vapply(b, function(j) { v <- .kidpr_colour(x, j, "dry")$value; if (is.na(v)) NA else v <= 4 }, NA)
+    if (any(dk %in% FALSE) || length(b) < 2L) return(.kidpr_r(FALSE, note = "the profile is not dark throughout"))
+    pm <- .kidpr_site_txt(x, "parent_material")
+    rock <- if (is.na(pm)) NA else grepl(.KIDPR_DARK_ROCK, pm, perl = TRUE)
+    p <- .kidpr_and(.kidpr_and(dk), rock)
+    .kidpr_r(p, missing = if (is.na(p)) c("parent_material", "munsell_value_dry") else character(0),
+             note = if (isTRUE(p)) sprintf("dark throughout, from a dark rock (%s)", pm)
+                    else if (isFALSE(p)) "the dark colour is not inherited from the rock")
+  })
+}
+# 13a for a surface horizon (go on at 14) or a middle one (go on at 31).
+.kidpr_q13s <- function(x, i) {
+  d <- .kidpr_dark_rock(x)
+  sf <- .kidpr_surface_colour(x, i, grey = TRUE)$passed
+  .kidpr_r(.kidpr_and(d$passed, sf), missing = d$missing, note = c(d$note, if (isTRUE(sf)) "a surface horizon"))
+}
+.kidpr_q13m <- function(x, i) {
+  d <- .kidpr_dark_rock(x)
+  sf <- .kidpr_surface_colour(x, i, grey = TRUE)$passed
+  .kidpr_r(.kidpr_and(d$passed, .kidpr_not(sf)), missing = d$missing, note = c(d$note, if (isFALSE(sf)) "a middle horizon"))
 }
 
 # 14: an agro horizon (b) or a natural one (a).
 .kidpr_q14 <- function(x, i) .kidpr_agro(x, i)
-# 15: dark grey to black (a) or light grey to grey (b).
-.kidpr_q15 <- function(x, i) .kidpr_dark(x, i)
+# 15: dark grey to black, a brown or coffee tint allowed (a: dry value 4 or
+# less, chroma 3 or less), or light grey to grey (b).
+.kidpr_q15 <- function(x, i) {
+  col <- .kidpr_colour(x, i, "dry")
+  p <- if (!is.na(col$value) && col$value > 4) FALSE else if (!is.na(col$chroma) && col$chroma > 3) FALSE
+       else if (is.na(col$value) || is.na(col$chroma)) NA else TRUE
+  .kidpr_colour_word(col, p, "dark grey to black (a brown tint allowed)")
+}
 
 # The three vertic signs together (key 16b, 23; default 18): slickensides
 # common or more (small and large when slickensides_size is recorded),
@@ -411,25 +486,28 @@
 }
 
 # The structure of a solonetz horizon (key 16c, 58a): columnar (prisms with
-# rounded tops). Not recorded, the structure criterion of soilKey's natric
-# horizon stands in when it was tested on the layer's run (the exchangeable
-# sodium never decides).
+# rounded tops). Not recorded, the structure criterion of the WRB natric
+# horizon stands in, read on the layer's own run (the adjoining layers with
+# continuous clay films recorded): a recorded columnar structure there yes,
+# recorded structures that are not columnar no, none recorded undecided. The
+# exchangeable sodium never decides (the review's H4).
+.KIDPR_COLUMNAR <- "column|colun|\u0441\u0442\u043e\u043b\u0431"
 .kidpr_columnar <- function(x, i) {
   .kidpr_memo(x, sprintf("columnar_%d", i), function() {
     st <- .kidpr_structure(x, i)$type
     if (!is.na(st)) {
-      p <- grepl("column|colun|\u0441\u0442\u043e\u043b\u0431", st)
+      p <- grepl(.KIDPR_COLUMNAR, st)
       return(.kidpr_r(p, note = sprintf("structure %s", st)))
     }
-    r <- .kidpr_wrb(x, "natric_horizon")
-    starts <- if (is.list(r) && isTRUE(r$failed)) NULL else r$evidence$starts
-    c3 <- NA
-    for (s in starts %||% list()) {
-      if (i %in% s$layers && isTRUE(s$structure_tested) && !is.na(s$c3)) { c3 <- isTRUE(s$c3); break }
-    }
-    .kidpr_r(c3, missing = if (is.na(c3)) "structure_type" else character(0), tag = if (!is.na(c3)) "natric_horizon",
-             note = if (!is.na(c3)) sprintf("structure not recorded: the structure criterion of soilKey's natric horizon stands in (%s)",
-                                            if (c3) "columnar or prismatic" else "not columnar"))
+    films <- function(x, j) isTRUE(.clay_films_class(.kidpr_v(x, j, "clay_films_amount")) >= 3L)
+    run <- setdiff(.kidpr_run(x, i, films)$rows, i)
+    ss <- vapply(run, function(j) .kidpr_structure(x, j)$type, "")
+    ss <- ss[!is.na(ss)]
+    if (!length(ss)) return(.kidpr_r(NA, missing = "structure_type", note = "structure not recorded in the layer or its run"))
+    c3 <- any(grepl(.KIDPR_COLUMNAR, ss))
+    .kidpr_r(c3, tag = "natric_horizon",
+             note = sprintf("structure not recorded: the structure of its run (%s) stands in, the structure criterion of the WRB natric horizon without the sodium",
+                            paste(unique(ss), collapse = ", ")))
   })
 }
 
@@ -482,9 +560,16 @@
 .kidpr_q18a <- function(x, i) .kidpr_r(TRUE)
 
 # 19: the colour of the agro horizon: dark grey to black (PU), light grey or
-# grey (P), brown with a grey tint (PB).
+# grey (P: the book gives it no brown tint, so chroma 2 or less), brown,
+# brownish or pale with a grey tint (PB: a grey hue at chroma 3).
 .kidpr_q19a <- function(x, i) .kidpr_dark(x, i)
-.kidpr_q19b <- function(x, i) .kidpr_grey(x, i)
+.kidpr_q19b <- function(x, i) {
+  g <- .kidpr_grey(x, i)
+  col <- .kidpr_colour(x, i, "dry")
+  if (!isTRUE(g$passed)) return(g)
+  p <- if (is.na(col$chroma)) NA else col$chroma <= 2
+  .kidpr_colour_word(col, p, "light grey or grey with no brown tint")
+}
 
 # 20: starts at the surface with a colour almost free of grey.
 .kidpr_q20 <- function(x, i) .kidpr_surface_colour(x, i, grey = FALSE)
@@ -499,8 +584,10 @@
   others <- setdiff(x$ord, i)
   others <- others[!vapply(others, function(j) .kidpr_hard_rock(x, j) || isTRUE(.kidpr_org23(x, j)$passed), NA)]
   ov <- vapply(others, function(j) .kidpr_colour(x, j, "dry")$value, 0)
-  darkest <- if (is.na(col$value)) NA else if (any(ov < col$value, na.rm = TRUE)) FALSE
+  # strictly the darkest (a tie is not), with the chroma of AK (2-4)
+  darkest <- if (is.na(col$value)) NA else if (any(ov <= col$value, na.rm = TRUE)) FALSE
              else if (anyNA(ov)) NA else TRUE
+  chroma <- if (is.na(col$chroma)) NA else col$chroma >= 2 && col$chroma <= 4
   pf <- .kidpr_permafrost(x)
   .kidpr_rand(.kidpr_r(.kidpr_not(ag$passed), missing = ag$missing, note = ag$note, tag = ag$tag),
               .kidpr_rl(red, missing = "munsell_hue_dry", note = sprintf("%s: %s", .kidpr_colour_text(col),
@@ -508,12 +595,14 @@
                         tag = col$tag),
               .kidpr_rl(darkest, missing = "munsell_value_dry",
                         note = if (isTRUE(darkest)) "the darkest layer of the profile" else if (isFALSE(darkest)) "not the darkest layer"),
+              .kidpr_rl(chroma, missing = "munsell_chroma_dry", note = if (isFALSE(chroma)) "not the chroma 2-4 of AK"),
               pf)
 }
 .kidpr_q21b <- function(x, i) .kidpr_agro(x, i)
 
 # 22: the light horizon: (1) platy or structureless and the lightest of the
-# profile (lighter than every layer above and than the next one down), or (2)
+# profile (no layer above lighter, and lighter than the next one down: a
+# higher value, or the same value with a chroma 2 lower), or (2)
 # many whitish spots without effervescence. soilKey adds that no eluvial
 # horizon effervesces continuously (chapter 3).
 .kidpr_q22 <- function(x, i) {
@@ -522,12 +611,17 @@
     nx <- .kidpr_next(x, i)
     above <- .kidpr_above(x, i)
     above <- above[!vapply(above, function(j) .kidpr_litter(x, j) || isTRUE(.kidpr_org23(x, j)$passed), NA)]
-    av <- vapply(above, function(j) .kidpr_colour(x, j, "dry")$value, 0)
-    nv <- if (is.na(nx) || .kidpr_hard_rock(x, nx)) NA_real_ else .kidpr_colour(x, nx, "dry")$value
+    # lighter: a higher value, or the same value with a chroma 2 lower (M1)
+    lighter <- function(a, b) {
+      if (is.na(a$value) || is.na(b$value)) return(NA)
+      a$value > b$value || (a$value == b$value && isTRUE(a$chroma <= b$chroma - 2))
+    }
+    la <- vapply(above, function(j) lighter(.kidpr_colour(x, j, "dry"), col), NA)
+    ln <- if (is.na(nx) || .kidpr_hard_rock(x, nx)) NA else lighter(col, .kidpr_colour(x, nx, "dry"))
     lightest <- if (is.na(nx) || .kidpr_hard_rock(x, nx)) FALSE
                 else if (is.na(col$value)) NA
-                else if (any(av > col$value, na.rm = TRUE) || isTRUE(nv >= col$value)) FALSE
-                else if (anyNA(av) || is.na(nv)) NA else TRUE
+                else if (any(la %in% TRUE) || isFALSE(ln)) FALSE
+                else if (anyNA(la) || is.na(ln)) NA else TRUE
     st <- .kidpr_structure(x, i)$type
     flat <- if (is.na(st)) NA else grepl(paste0("platy|lamin|scaly|flaky|", .KIDPR_RAW_STRUCTURE), st)
     # a bluish or greenish layer is answered at 24, not here
@@ -562,14 +656,14 @@
 
 # 27: almost black (CRH); greyish or dirty brown (28); pale or pale light
 # brown (29); other (30). Dry colour, one cut each: almost black value 2 or
-# less with chroma 2 or less; dull brown value 3-5, chroma 4 or less;
+# less with chroma 2 or less; dull brown value 3-5, chroma 3 or less;
 # pale value 6 or more, chroma 4 or less, in red or yellow hues.
 .kidpr_col27 <- function(x, i, which) {
   col <- .kidpr_colour(x, i, "dry")
   v <- col$value; c <- col$chroma; f <- col$family
   p <- switch(which,
               a = if (is.na(v) || is.na(c)) NA else v <= 2 && c <= 2,
-              b = if (is.na(v) || is.na(c) || is.na(f)) NA else v >= 3 && v <= 5 && c <= 4 && f %in% c("YR", "Y", "N"),
+              b = if (is.na(v) || is.na(c) || is.na(f)) NA else v >= 3 && v <= 5 && c <= 3 && f %in% c("YR", "Y", "N"),
               c = if (is.na(v) || is.na(c) || is.na(f)) NA else v >= 6 && c <= 4 && c >= 1 && f %in% c("YR", "Y"))
   word <- c(a = "almost black", b = "greyish or dirty brown", c = "pale")[[which]]
   .kidpr_colour_word(col, p, word)
@@ -579,7 +673,16 @@
 .kidpr_q27c <- function(x, i) .kidpr_col27(x, i, "c")
 
 # 28: a no structure, thixotropic when wet, or frozen (CR); b friable,
-# angular-crumbly or lenticular cryogenic structure (CRM).
+# angular-crumbly or lenticular cryogenic structure (CRM); any other
+# structure goes on at 30 (the review's M2).
+.kidpr_q28b <- function(x, i) {
+  st <- .kidpr_structure(x, i)
+  if (is.na(st$type)) return(.kidpr_r(NA, missing = "structure_type"))
+  cryo <- (grepl("lentic|crumb|granul|platy|lamin", st$type) ||
+             (grepl("angular", st$type) && (!grepl("block", st$type) || isTRUE(grepl("fine", st$size))))) &&
+    !grepl("prism|column|wedge", st$type)
+  .kidpr_r(cryo, note = sprintf("structure %s%s", st$type, if (cryo) ": cryogenic" else ": not the cryogenic one of CRM"))
+}
 .kidpr_q28a <- function(x, i) {
   st <- .kidpr_structure(x, i)
   raw <- if (is.na(st$type) && is.na(st$grade)) NA
@@ -628,7 +731,9 @@
     col <- .kidpr_colour(x, i, "dry")
     g <- .kidpr_grad(x, i)
     light <- if (is.na(g$step)) NA else g$step <= 3
-    coloured <- if (is.na(col$chroma) || is.na(col$family)) NA else col$family %in% c("R", "YR", "Y") && col$chroma >= 3
+    # a film colour, brighter than the parent material (the review)
+    coloured <- if (is.na(col$chroma) || is.na(col$family)) NA
+                else .kidpr_and(col$family %in% c("R", "YR", "Y") && col$chroma >= 3, .kidpr_brighter(x, i))
     coarse <- isTRUE(.kidpr_num(x, i, "coarse_fragments_pct") >= 50)
     open <- .kidpr_and(.kidpr_or(light, coarse), coloured)
     if (isFALSE(open)) return(.kidpr_r(FALSE, tag = if (!is.na(sp)) "spodic",
@@ -717,10 +822,12 @@
 # 40: mechanically mixed, homogenised, abrupt smooth base (PT).
 .kidpr_q40 <- function(x, i) .kidpr_agro(x, i)
 
-# The peat body: the adjoining organic layers around a layer; truncated when
-# the description ends in it.
+# The peat body of positions 41 and 44: the adjoining layers of weakly
+# decomposed natural peat around a layer, without H, PT or PTR, as the key
+# writes it (Hugo, 2026-11-02); truncated when the description ends in it.
 .kidpr_peat_body <- function(x, i) {
-  r <- .kidpr_run(x, i, function(x, j) .kidpr_org23(x, j)$passed)
+  r <- .kidpr_run(x, i, function(x, j) .kidpr_and(.kidpr_org23(x, j)$passed, .kidpr_not(.kidpr_decomp50(x, j)$passed),
+                                                  .kidpr_not(.kidpr_agro(x, j)$passed)))
   r$truncated <- identical(r$rows[length(r$rows)], x$ord[x$n])
   r
 }
@@ -808,11 +915,14 @@
 .kidpr_light_like <- function(x, j) .kidpr_and(.kidpr_q22(x, j)$passed, !.kidpr_heterogeneous(x, j))
 .kidpr_light_run <- function(x, i) .kidpr_run(x, i, .kidpr_light_like)
 
-# 49: the texture of the light horizon equal to the middle horizon below
-# (50) or lighter by one gradation or more (51).
+# 49: the texture of the light horizon equal to the middle horizon below it
+# (the first layer under it that is not light, past a BEL) (50), or lighter
+# by one gradation or more (51).
 .kidpr_q49 <- function(x, i) {
   r <- .kidpr_light_run(x, i)
   j <- .kidpr_next(x, r$rows[length(r$rows)])
+  # the first middle horizon: past the light layers under the run (a BEL)
+  while (!is.na(j) && isTRUE(.kidpr_q22(x, j)$passed)) j <- .kidpr_next(x, j)
   if (is.na(j)) return(.kidpr_r(NA, missing = .KIDPR_TEXTURE_MISSING, note = "no horizon below"))
   d <- .kidpr_grad_diff(x, i, j)
   p <- if (is.na(d$diff)) NA else d$diff > -1
@@ -877,10 +987,35 @@
               .kidpr_colour_word(col, ochre, "bright ochre"))
 }
 
+# Is a layer brighter (more intensely coloured) than its parent material: a
+# higher chroma, or a hue 2.5 units redder? The parent itself, or a layer
+# with no parent below, is not.
+.kidpr_brighter <- function(x, i) {
+  p <- .kidpr_parent_row(x, i)
+  if (is.na(p)) return(FALSE)
+  ci <- .kidpr_colour(x, i, "dry"); cp <- .kidpr_colour(x, p, "dry")
+  if (is.na(ci$chroma) || is.na(cp$chroma)) return(NA)
+  ui <- suppressWarnings(.munsell_hue_units(ci$hue)); up <- suppressWarnings(.munsell_hue_units(cp$hue))
+  ci$chroma > cp$chroma || isTRUE(ui <= up - 2.5)
+}
+# 56a: rusty brown or brown (hue 7.5YR or redder, or a value of 5 or less;
+# not the yellow ochre of BF), more intensely coloured than the parent
+# material (BFM).
+.kidpr_q56a <- function(x, i) {
+  col <- .kidpr_colour(x, i, "dry")
+  rusty <- .kidpr_or(.kidpr_reddish(col), if (is.na(col$value)) NA else col$value <= 5)
+  b <- .kidpr_brighter(x, i)
+  .kidpr_rand(.kidpr_colour_word(col, rusty, "rusty brown or brown"),
+              .kidpr_rl(b, missing = "munsell_chroma_dry",
+                        note = if (isTRUE(b)) "more intensely coloured than the parent material" else if (isFALSE(b)) "not brighter than the parent material"))
+}
+
 # 56: b the colour brightest at the top of the horizon, paling downward
-# (57, BHF); a uniform, rusty brown (BFM). Within the horizon: the next (or
-# the previous) layer with films is paler (value 1 higher or chroma 1 lower)
-# or not; a horizon of one layer: soilKey's spodic horizon stands in.
+# (57, BHF); a uniform, rusty brown, more intense than the parent (BFM);
+# neither, a film horizon that is not BFM is read as BHF (57). Within the
+# horizon: the next (or the previous) layer with films is paler (value 1
+# higher or chroma 1 lower) or not; a horizon of one layer: soilKey's spodic
+# horizon stands in.
 .kidpr_q56b <- function(x, i) {
   pale <- function(a, b) {   # is b paler than a?
     ca <- .kidpr_colour(x, a, "dry"); cb <- .kidpr_colour(x, b, "dry")
@@ -991,7 +1126,8 @@
               .kidpr_colour_word(col, white, "light pale or dirty white"))
 }
 # 65: a brownish or reddish (chestnut) with a fine prismatic or pencil-like
-# structure breaking into small nutty peds (BMK); b a transformed structure
+# structure breaking into small nutty peds, effervescing uniformly (BMK; the
+# book's parenthetical and chapter 3); b a transformed structure
 # under humus or eluvial horizons without effervescence, or under a humus
 # horizon or BMK with it (BM); otherwise no diagnostic horizon (66).
 .kidpr_q65a <- function(x, i) {
@@ -1001,7 +1137,8 @@
   pencil <- if (is.na(st$type)) NA else grepl("prism|pencil", st$type) &&
     (isTRUE(grepl("fine", st$size)) || isTRUE(grepl("block|nut|polyhed", st$secondary)))
   .kidpr_rand(.kidpr_colour_word(col, chest, "brownish or reddish brown (chestnut)"),
-              .kidpr_rl(pencil, missing = "structure_type", note = if (!is.na(st$type)) sprintf("structure %s", st$type)))
+              .kidpr_rl(pencil, missing = "structure_type", note = if (!is.na(st$type)) sprintf("structure %s", st$type)),
+              .kidpr_eff_cont(x, i))
 }
 .kidpr_q65b <- function(x, i) {
   e <- .kidpr_eff_cont(x, i)
@@ -1038,7 +1175,10 @@
   k[["10"]] <- .kn2("10", q(10), "39", "11")
   k[["11"]] <- .kn2("11", q(11), "46", "12")
   k[["12"]] <- .kn2("12", q(12), "13", "20")
-  k[["13"]] <- .kn2("13", q(13), "14", "14")        # 13a: the feature u, go on at 14 (the u copy)
+  # 13a: the feature u, go on at 14 (a surface horizon) or 31 (a middle one)
+  # in the u copies
+  k[["13"]] <- list(branches = list(.kb("a", "14", .kq("13a", qq("13s"))), .kb("a", "31", .kq("13d", qq("13m"))),
+                                    .kb("b", "14")))
   k[["14"]] <- list(branches = list(.kb("b", "19", .kq("14", q(14))), .kb("a", "15")))
   k[["15"]] <- .kn2("15", q(15), "16", "17")
   k[["16"]] <- list(branches = list(.kb("b", "AV", .kq("16b", qq("16b"))), .kb("c", "ASN", .kq("16c", qq("16c"))),
@@ -1057,7 +1197,8 @@
   k[["26"]] <- .kn2("26", q(26), "27", "30")
   k[["27"]] <- list(branches = list(.kb("a", "CRH", .kq("27a", qq("27a"))), .kb("b", "28", .kq("27b", qq("27b"))),
                                     .kb("c", "29", .kq("27c", qq("27c"))), .kb("d", "30")))
-  k[["28"]] <- list(branches = list(.kb("a", "CR", .kq("28a", qq("28a"))), .kb("b", "CRM")))
+  k[["28"]] <- list(branches = list(.kb("a", "CR", .kq("28a", qq("28a"))), .kb("b", "CRM", .kq("28b", qq("28b"))),
+                                    .kb("c", "30")))
   k[["29"]] <- list(branches = list(.kb("a", "BPL", .kq("29a", qq("29a"))), .kb("b", "30")))
   k[["30"]] <- .kn2("30", q(30), "54", "31")
   k[["31"]] <- .kn2("31", q(31), "58", "32")
@@ -1088,7 +1229,8 @@
   k[["53"]] <- .kn2("53", q(53), "AEL", "BEL")
   k[["54"]] <- .kn2("54", q(54), "F", "55")
   k[["55"]] <- .kn2("55", q(55), "BAN", "56")
-  k[["56"]] <- list(branches = list(.kb("b", "57", .kq("56b", qq("56b"))), .kb("a", "BFM")))
+  k[["56"]] <- list(branches = list(.kb("b", "57", .kq("56b", qq("56b"))), .kb("a", "BFM", .kq("56a", qq("56a"))),
+                                    .kb("b", "57")))
   k[["57"]] <- list(branches = list(.kb("a", "BH", .kq("57a", function(x, i) .kidpr_q57(x, i, "a"))),
                                     .kb("b", "BF", .kq("57b", function(x, i) .kidpr_q57(x, i, "b"))),
                                     .kb("c", "BHF")))
@@ -1126,7 +1268,7 @@
 
 #' The key 2.1 as the walker runs it: the 66 positions, and the copies that
 #' carry an overlay (S after 3b, X after 4a, V after 23a) or a feature that
-#' continues (u after 13a, ca after 64b) to the outcome.
+#' continues (u after 13a, at 14 or 31; ca after 64b) to the outcome.
 #' @noRd
 .kidpr_key_tree <- function() {
   if (!is.null(.kidpr_cache$key_tree)) return(.kidpr_cache$key_tree)
@@ -1135,8 +1277,9 @@
   t[["64"]]$branches[[2L]]$to <- "ca.65"
   t <- .kidpr_tree_clone(t, c(as.character(24:66), "ca.65", "ca.66"), "V.", "+V")
   t[["23"]]$branches[[1L]]$to <- "V.24"
-  t <- .kidpr_tree_clone(t, as.character(14:19), "u.", "/u")
+  t <- .kidpr_tree_clone(t, c(as.character(14:19), as.character(c(31:33, 58:66)), "ca.65", "ca.66"), "u.", "/u")
   t[["13"]]$branches[[1L]]$to <- "u.14"
+  t[["13"]]$branches[[2L]]$to <- "u.31"
   rest <- setdiff(names(t), as.character(1:4))
   t <- .kidpr_tree_clone(t, rest, "S.", "+S")
   t <- .kidpr_tree_clone(t, rest, "X.", "+X")
@@ -1183,7 +1326,7 @@
 .kidpr_path_text <- function(steps) {
   if (!length(steps)) return("")
   pos <- sub("^([A-Za-z]+\\.)+", "", sub(":.*$", "", steps))
-  lab <- sub("^.*:", "", steps)
+  lab <- sub("\\.[0-9]+$", "", sub("^.*:", "", steps))
   paste0(pos, unname(.KIDPR_LETTERS[lab]), collapse = " > ")
 }
 
