@@ -596,6 +596,9 @@
           },
           "n_value": {
             "type": ["number", "null"]
+          },
+          "exchange_acidity_y1": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

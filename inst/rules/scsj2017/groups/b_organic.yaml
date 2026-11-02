@@ -1,0 +1,10 @@
+# Groups of the Organic Soils, Soil Classification System of Japan (2017),
+# chapter III B (p. 7).
+groups:
+  "B":
+    - code: "B1"
+      name: Peat soils
+      name_native: 泥炭土
+      tests:
+        default: true
+      notes: "All Organic Soils."

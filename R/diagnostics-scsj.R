@@ -68,9 +68,14 @@
   yellow <- yellower5 & v >= 3 & c >= 6 & !(v %in% c(3, 4) & c == 6)
   brown <- yel_eq5 & v >= 3 & ((c >= 3 & c < 6) | (v %in% c(3, 4) & c == 6))
   grey <- ((!is.na(hn) & !bluer10y & v >= 3 & c < 3) | (neu & v >= 3))
-  na_out <- function(x) ifelse(known, x, NA)
-  list(red = na_out(red), yellow = na_out(yellow), brown = na_out(brown),
-       grey = na_out(grey), bluegrey = ifelse(!is.na(hn) | neu, bluer10y, NA),
+  # a partial record that already rules a word out (value or chroma alone)
+  no_red <- (!is.na(v) & v <= 3) | (!is.na(c) & c < 3)
+  no_yellow <- (!is.na(v) & v < 3) | (!is.na(c) & c < 6)
+  no_brown <- (!is.na(v) & v < 3) | (!is.na(c) & (c < 3 | c > 6))
+  no_grey <- (!is.na(v) & v < 3) | (!is.na(c) & c >= 3)
+  na_out <- function(x, no) ifelse(known, x, ifelse(no, FALSE, NA))
+  list(red = na_out(red, no_red), yellow = na_out(yellow, no_yellow), brown = na_out(brown, no_brown),
+       grey = na_out(grey, no_grey), bluegrey = ifelse(!is.na(hn) | neu, bluer10y, NA),
        black = ifelse(is.na(v), NA, v < 3), hue_num = hn, value = v, chroma = c)
 }
 
@@ -113,18 +118,22 @@
 # layer_origin only (rock_origin names the rock the material came from). A
 # row without its own origin takes the site parent material (except fill). A
 # profile that records no origin at all has none of them (recorded when
-# present). Fill rows are neither ejecta nor alluvial deposits in place.
+# present). A fill row keeps the material it records ("fill (river
+# alluvium)"): a fill of the same material is part of an ordinary profile
+# (chapter VI, the fill phase), and the 35 cm rules of the key name a fill of
+# other material (0.9.322).
 .scsj_origins <- function(h, site, des) {
   lo <- .scsj_txt(h, "layer_origin"); ro <- .scsj_txt(h, "rock_origin")
   pm <- tolower(paste(as.character(unlist(site$parent_material %||% character(0))), collapse = " "))
   pm <- if (nzchar(trimws(pm)) && !identical(trimws(pm), "na")) pm else NA_character_
   fill <- (!is.na(lo) & grepl(.SCSJ_FILL_RE, lo, perl = TRUE)) | des$fill
-  ej_txt <- ifelse(!is.na(lo) | !is.na(ro), paste(ifelse(is.na(lo), "", lo), ifelse(is.na(ro), "", ro)), pm)
+  ej_txt <- ifelse(!is.na(lo) | !is.na(ro), paste(ifelse(is.na(lo), "", lo), ifelse(is.na(ro), "", ro)),
+                   ifelse(fill, NA_character_, pm))
   ejecta <- !is.na(ej_txt) & grepl(.SCSJ_EJECTA_RE, ej_txt, perl = TRUE) &
-            !grepl(.SCSJ_NOT_EJECTA_RE, ej_txt, perl = TRUE) & !fill
-  al_txt <- ifelse(!is.na(lo), lo, pm)
+            !grepl(.SCSJ_NOT_EJECTA_RE, ej_txt, perl = TRUE)
+  al_txt <- ifelse(!is.na(lo), lo, ifelse(fill, NA_character_, pm))
   alluvial <- !is.na(al_txt) & grepl(.SCSJ_ALLUVIAL_RE, al_txt, perl = TRUE) &
-              !grepl(.SCSJ_NOT_ALLUVIAL_RE, al_txt, perl = TRUE) & !fill
+              !grepl(.SCSJ_NOT_ALLUVIAL_RE, al_txt, perl = TRUE)
   list(fill = fill, ejecta = ejecta, alluvial = alluvial)
 }
 
@@ -192,7 +201,10 @@
 
   # kuroboku and immature kuroboku features (IV.2), needed for peat material
   kb <- .scsj_kuroboku_rows(h, des, oc)
-  ikb <- .scsj_immature_kuroboku_rows(h, des, oc, orig)
+  # immature kuroboku: an ejecta layer without the kuroboku feature (the
+  # field note of IV.2 splits ejecta layers between the two)
+  ikb_raw <- .scsj_immature_kuroboku_rows(h, des, oc, orig)
+  ikb <- .scsj_and(ikb_raw, .scsj_not(kb))
 
   # peat material (IV.3): 12 % organic carbon or more, without the kuroboku
   # feature unless a sixth or more of the volume is fibre after rubbing; an H
@@ -253,10 +265,13 @@
       surface <- NA_real_; surface_note <- "undecided (the first layer may be a forest floor)"
     } else if (isTRUE(f1)) {
       surface <- NA_real_
+      prev_bot <- NA_real_
       for (i in ord) {
         fi <- floor_row(i)
-        if (isTRUE(fi) && !(kb[i] %in% TRUE)) next
+        if (isTRUE(fi) && !(kb[i] %in% TRUE)) { prev_bot <- bot[i]; next }
         if (is.na(fi)) break
+        # a gap under the floor: the soil surface may lie in it
+        if (!is.na(prev_bot) && top[i] - prev_bot > 0.5) break
         surface <- top[i]; break
       }
       surface_note <- if (is.na(surface)) "undecided (below the forest floor)" else
@@ -266,7 +281,7 @@
   dtop <- top - surface; dbot <- bot - surface
 
   out <- list(h = h, n = n, site = site, des = des, role = role, top = top, bot = bot,
-              thick = thick, ord = ord, oc = oc, orig = orig, kb = kb, ikb = ikb,
+              thick = thick, ord = ord, oc = oc, orig = orig, kb = kb, ikb = ikb, ikb_raw = ikb_raw,
               peat = peat, orgmat = orgmat, organic = organic,
               mineral = .scsj_not(organic), surface = surface, ground = ground,
               surface_note = surface_note, dtop = dtop, dbot = dbot, wet = wet)
@@ -275,6 +290,9 @@
   rk <- .scsj_rock_rows(out)
   out$rock <- rk$rock; out$rock_maybe <- rk$maybe
   out$rock_top <- .scsj_rock_top(out)
+  # a part of a profile keyed on its own (the fill of Man-made soils, or the
+  # soil under it) is complete: nothing lies below its last horizon
+  out$complete <- isTRUE(site$scsj_part) && isTRUE(site$scsj_part_complete %||% TRUE)
   out
 }
 
@@ -320,6 +338,7 @@
   if (any(x$rock_maybe & !is.na(x$dtop) & x$dtop <= d)) return(NA)
   if (is.finite(rt)) return(TRUE)
   dep <- suppressWarnings(max(x$dbot, na.rm = TRUE))
+  if (isTRUE(x$complete)) return(TRUE)
   if (!is.finite(dep)) return(NA)
   if (dep > d) TRUE else NA
 }
@@ -347,7 +366,8 @@
     cov <- top <= mid & bot > mid
     closed <- cov & !open
     if (!any(cov)) {
-      if (!(is.finite(rock %||% NA) && mid > rock) && !(mid > last && !is.finite(to))) poss <- poss + (b - a)
+      if (!(is.finite(rock %||% NA) && mid > rock) && !(mid > last && (!is.finite(to) || isTRUE(x$complete))))
+        poss <- poss + (b - a)
       next
     }
     if (any(closed)) {
@@ -382,10 +402,17 @@
     if (length(cur)) {
       last <- cur[length(cur)]
       open <- is.na(x$dbot[last])
+      # the deepest certain depth of the run (an open last row reaches at
+      # least its top), and whether the description stops at its end (not
+      # on rock or a complete part): it may then go on
+      deep <- if (open) x$dtop[last] else x$dbot[last]
+      e <- .scsj_ends(x)
+      at_end <- open || (!is.na(e$depth) && abs(x$dbot[last] - e$depth) <= 0.5 && !e$on_rock)
       runs[[length(runs) + 1L]] <<- list(
         rows = cur, top = x$dtop[cur[1L]], bottom = x$dbot[last], open = open,
+        deep = deep, at_end = at_end,
         sure = sum(x$thick[cur][rows[cur] %in% TRUE], na.rm = TRUE),
-        poss = if (open) Inf else sum(x$thick[cur], na.rm = TRUE) + gap,
+        poss = if (at_end) Inf else sum(x$thick[cur], na.rm = TRUE) + gap,
         all_true = all(rows[cur] %in% TRUE))
     }
     cur <<- integer(0); gap <<- 0
@@ -407,7 +434,7 @@
 # The deepest closed bottom of the description and whether it ends on rock.
 .scsj_ends <- function(x) {
   dep <- .scsj_depth(x)
-  list(depth = dep, on_rock = is.finite(x$rock_top %||% NA))
+  list(depth = dep, on_rock = is.finite(x$rock_top %||% NA) || isTRUE(x$complete))
 }
 
 # "A horizon of rows, at least `thick` cm thick, whose top is within
@@ -438,6 +465,52 @@
   for (r in .scsj_runs(x, rows, bridge = TRUE)) if (r$poss < thick) out[r$rows] <- FALSE
   for (r in .scsj_runs(x, ifelse(rows %in% TRUE, TRUE, FALSE))) if (r$sure >= thick) out[r$rows] <- TRUE
   out
+}
+
+# The depth cut into segments from the soil surface, each with the status of
+# `rows` there: "T" (TRUE rows), "F" (a FALSE row, or below the bedrock or a
+# complete description) or "U" (an undecided row, a gap, a horizon without a
+# bottom past its top, or below a description that stops). `extra`: more
+# depths to cut at. A data.frame of a (top), b (bottom, Inf for the last)
+# and status, in depth order.
+.scsj_segments <- function(x, rows, extra = numeric(0)) {
+  ok <- which(!is.na(x$dtop))
+  if (!length(ok)) return(data.frame(a = 0, b = Inf, status = "U", stringsAsFactors = FALSE))
+  top <- pmax(x$dtop[ok], 0); bot <- x$dbot[ok]; st <- rows[ok]
+  open <- is.na(bot)
+  eps <- 1e-3
+  e <- .scsj_ends(x)
+  rock <- if (is.finite(x$rock_top %||% NA)) x$rock_top else Inf
+  closed_end <- if (any(!open)) max(bot[!open]) else 0
+  ex <- extra[is.finite(extra) & extra > 0]
+  cuts <- sort(unique(c(0, top, pmax(bot[!open], 0), top[open] + eps, ex)))
+  segs <- data.frame(a = cuts, b = c(cuts[-1L], Inf), status = "", stringsAsFactors = FALSE)
+  for (k in seq_len(nrow(segs))) {
+    a <- segs$a[k]; b <- segs$b[k]; mid <- if (is.finite(b)) (a + b) / 2 else a + 1
+    if (mid >= rock) { segs$status[k] <- "F"; next }
+    cov_c <- !open & top <= mid & bot > mid
+    pick <- if (any(cov_c)) cov_c else open & abs(top - a) < eps / 2
+    if (any(pick)) {
+      v <- st[pick]
+      segs$status[k] <- if (any(v %in% FALSE)) "F" else if (all(v %in% TRUE)) "T" else "U"
+      next
+    }
+    if (any(open & top <= mid)) { segs$status[k] <- "U"; next }
+    # a gap, or below the description
+    below <- mid > max(c(closed_end, top))
+    segs$status[k] <- if (below && (e$on_rock || isTRUE(x$complete))) "F" else "U"
+  }
+  segs
+}
+
+# The spans (top a, bottom b) where `rows` may hold without a break: runs of
+# segments that are not "F".
+.scsj_possible_spans <- function(x, rows) {
+  s <- .scsj_segments(x, rows)
+  keep <- s$status != "F"
+  if (!any(keep)) return(data.frame(a = numeric(0), b = numeric(0)))
+  r <- rle(keep); end <- cumsum(r$lengths); start <- end - r$lengths + 1L
+  data.frame(a = s$a[start[r$values]], b = s$b[end[r$values]])
 }
 
 # ---- features (IV.2) ------------------------------------------------------------
@@ -690,7 +763,8 @@
 #     less and chroma 4 or less, or 10YR with value 3 or less and chroma 2 or
 #     less, or a visible accumulation of free oxides with the reddest hue of
 #     the profile (a Bs, Bh or Bhs of the notation); in a soil without a
-#     red-yellow layer or an argic horizon.
+#     layer with the red-yellow feature and without an argic horizon
+#     (criterion 2 read for the soil, as its verb says: Hugo, 2026-10-31).
 #   analysis: 0.6 % carbon or more, pH(H2O) 5.9 or less, Alo + 1/2 Feo 0.5 %
 #     or more and twice that of the A or the bleached horizon.
 .scsj_podzolic_rows <- function(x, red_yellow = NULL, argic = NULL) {
@@ -708,7 +782,7 @@
   col <- .scsj_or(.scsj_or(col_a, col_b), col_c)
   ry <- red_yellow %||% .scsj_red_yellow_rows(x)
   ag <- .scsj_argic_horizon_rows(x, argic %||% .scsj_argic_rows(x))
-  none_ry_ag <- if (any(ry %in% TRUE | ag %in% TRUE)) FALSE else if (all(ry %in% FALSE & ag %in% FALSE)) TRUE else NA
+  none_ry_ag <- .scsj_not(.scsj_any(.scsj_or(ry, ag)))
   sub <- .scsj_subsurface_pos(x)
   not_e <- !(!is.na(x$role) & grepl("^E", x$role))
   morph <- ifelse(not_e, .scsj_and(.scsj_and(col, rep(none_ry_ag, x$n)), sub), FALSE)
@@ -796,4 +870,26 @@
     return(.scsj_or3(v, g))
   }
   v
+}
+
+# ---- "the top of a layer within / between depths" ------------------------------------
+
+# "The top of a layer with the feature(s) within [from, to] cm of the soil
+# surface", the layer `thick` cm or more. `rows` are row flags. TRUE: a run of
+# TRUE rows of the thickness with its top in the window; NA: rows that may
+# hold could make one (open bottoms and the end of the description counted
+# as possible), or a part of the window no horizon describes (a gap, or below
+# the description) could hold one; FALSE otherwise.
+.scsj_top_in <- function(x, rows, from = -Inf, to = Inf, thick = 0) {
+  if (is.na(x$surface)) return(NA)
+  for (r in .scsj_runs(x, ifelse(rows %in% TRUE, TRUE, FALSE)))
+    if (r$top >= from - 0.5 && r$top <= to && r$sure >= max(thick, 1e-9)) return(TRUE)
+  for (r in .scsj_runs(x, rows, bridge = TRUE)) {
+    bot <- if (r$at_end) Inf else r$bottom
+    starts_above <- r$all_true && r$top < from - 0.5
+    if (!starts_above && r$top <= to && bot >= from && r$poss >= thick) return(NA)
+  }
+  lo <- if (is.finite(from)) max(from, 0) else 0
+  if (is.finite(to) && to > lo && .scsj_cum(x, rep(FALSE, x$n), lo, to)$poss > 0) return(NA)
+  FALSE
 }

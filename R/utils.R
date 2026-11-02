@@ -241,7 +241,9 @@ horizon_column_spec <- function() {
     # ---- v0.9.321: the Soil Classification System of Japan (SCSJ 2017) ----
     phosphate_absorption_coef     = "numeric",   # phosphate absorption coefficient, mg P2O5 per 100 g dry soil (the SCSJ writes mg/g: 15.00 = 1500); SCSJ kuroboku (>= 1500) and immature kuroboku (300 to < 1500) features
     active_al_test                = "character", # Japanese field active-aluminium test (NaF with phenolphthalein, JSP 1997): '-' / '+-' / '+' / '2+' / '3+'; SCSJ kuroboku feature in the field (vivid red within a minute, 2+ or more)
-    n_value                       = "numeric"    # n value (Pons and Zonneveld): (field water % - 0.2 silt and sand %) / (clay % + 3 organic matter %); SCSJ physical immaturity (>= 1)
+    n_value                       = "numeric",   # n value (Pons and Zonneveld): (field water % - 0.2 silt and sand %) / (clay % + 3 organic matter %); SCSJ physical immaturity (>= 1)
+    # ---- v0.9.322: the groups of the SCSJ 2017 ----
+    exchange_acidity_y1           = "numeric"    # exchange acidity y1 (Daikuhara): mL of 0.1 M NaOH to titrate the 1 M KCl extract of 100 g of dry soil; SCSJ non-allophanic kuroboku feature (>= 5)
   )
 }
 

@@ -1,0 +1,17 @@
+# Groups of the Red-Yellow soils, Soil Classification System of Japan
+# (2017), chapter III F (pp. 12-13).
+groups:
+  "F":
+    - code: "F1"
+      name: Argic Red-Yellow soils
+      name_native: 粘土集積赤黄色土
+      tests:
+        all_of:
+          - argic_group_scsj: {}
+      notes: "An argic horizon."
+    - code: "F2"
+      name: Cambic Red-Yellow soils
+      name_native: 風化変質赤黄色土
+      tests:
+        default: true
+      notes: "Other Red-Yellow soils."

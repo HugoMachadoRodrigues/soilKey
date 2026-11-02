@@ -1,0 +1,17 @@
+# Groups of the Eutrosols, Soil Classification System of Japan (2017),
+# chapter III H (p. 14).
+groups:
+  "H":
+    - code: "H1"
+      name: Magnesian Eutrosols
+      name_native: マグネシウム型富塩基土
+      tests:
+        all_of:
+          - magnesian_eutrosols_scsj: {}
+      notes: "A subhorizon of the subsurface with an exchangeable Ca/Mg ratio under 0.1, or every subhorizon under 1.0."
+    - code: "H2"
+      name: Calcareous Eutrosols
+      name_native: カルシウム型富塩基土
+      tests:
+        default: true
+      notes: "Other Eutrosols."

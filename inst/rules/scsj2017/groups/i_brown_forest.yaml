@@ -1,0 +1,10 @@
+# Groups of the Brown Forest soils, Soil Classification System of Japan
+# (2017), chapter III I (p. 14).
+groups:
+  "I":
+    - code: "I1"
+      name: Brown Forest soils
+      name_native: 褐色森林土
+      tests:
+        default: true
+      notes: "All Brown Forest soils."

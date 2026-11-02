@@ -1,0 +1,39 @@
+# Groups of the Fluvic soils, Soil Classification System of Japan (2017),
+# chapter III E (pp. 10-12). Criteria summarised from the text; see
+# R/diagnostics-scsj-groups.R and inst/rules/scsj2017/readings.yaml.
+groups:
+  "E":
+    - code: "E1"
+      name: Fluvic Paddy soils
+      name_native: 沖積水田土
+      tests:
+        all_of:
+          - fluvic_paddy_soils_scsj: {}
+      notes: "A paddy iron accumulation horizon, or a paddy greyed horizon whose lower boundary is 50 cm or deeper."
+    - code: "E2"
+      name: Gley Fluvic soils
+      name_native: グライ沖積土
+      tests:
+        all_of:
+          - groundwater_gley_group_scsj: {}
+      notes: "The top of a groundwater gley layer within 50 cm."
+    - code: "E3"
+      name: Gray Fluvic soils
+      name_native: 灰色沖積土
+      tests:
+        all_of:
+          - groundwater_wet_group_scsj: {}
+      notes: "The top of a layer with the groundwater wetness feature within 50 cm."
+    - code: "E4"
+      name: Brown Fluvic soils
+      name_native: 褐色沖積土
+      tests:
+        all_of:
+          - brown_fluvic_soils_scsj: {}
+      notes: "A brown subsurface."
+    - code: "E5"
+      name: Regosolic Fluvic soils
+      name_native: 未熟沖積土
+      tests:
+        default: true
+      notes: "Other Fluvic soils."

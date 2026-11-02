@@ -22,7 +22,7 @@ test_that("each example keys to its great group, decided", {
     expect_identical(r$system_id, "scsj2017")
   }
   r <- .gg(make_scsj2017_example("andosol"))
-  expect_identical(r$name, "Andosols")
+  expect_identical(r$levels$name[1], "Andosols")
   expect_identical(r$levels$name_native[1], "\u9ed2\u30dc\u30af\u571f\u5927\u7fa4")
   expect_true("scsj2017" %in% soilkey_systems()$id)
 })
@@ -197,9 +197,10 @@ test_that("origins: volcanic rock is not ejecta, rock and terraces are not alluv
   expect_false(o("Miocene marine mudstone")$alluvial)
   expect_false(o("\u6d77\u6210\u6bb5\u4e18\u5806\u7a4d\u7269")$alluvial)
   expect_false(o(NA, "marine")$alluvial)
+  # a fill keeps the material it records (0.9.322)
   r <- o("dredged river sediment (fill)")
   expect_true(r$fill)
-  expect_false(r$alluvial)
+  expect_true(r$alluvial)
   expect_false(o("loess transported by wind")$fill)
   expect_true(o(NA, NA, "alluvium")$alluvial)
 })
@@ -301,15 +302,20 @@ test_that("an open deepest horizon, a lithologic discontinuity, an unreadable ro
   expect_true(is.na(soilKey:::.scsj_no_rock_within(soilKey:::.scsj_profile(b), 30)))
 })
 
-test_that("a fill of sand over a Regosol waits for the groups", {
+test_that("a fill of sand over a sandy Regosol: same group, not heterogeneous (0.9.322)", {
   skip_on_cran()
   p <- .jp(list(designation = c("C1", "C2", "2C"), top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 100),
                 layer_origin = c("fill", "fill", "weathered granite"), oc_pct = c(0.3, 0.2, 0.1),
                 phosphate_absorption_coef = c(200, 150, 100), clay_pct = c(3, 3, 5),
                 field_texture = c("sand", "sand", "loamy sand"), redoximorphic_features_pct = 0, artefacts_pct = 0))
+  # the soil under the fill is described for 60 cm only: its group is open
   r <- soilKey:::man_made_soils_scsj(p)
   expect_true(is.na(r$evidence$fill_other_great_group))
-  expect_true(is.na(r$passed))
+  # described to 140 cm: both sandy Regosols, the same group
+  p$horizons$bottom_cm[3] <- 140
+  r <- soilKey:::man_made_soils_scsj(p)
+  expect_false(r$evidence$fill_other_great_group)
+  expect_false(r$passed)
 })
 
 test_that("review of PR 129: aliases, canonical origins, measured carbon, open bottoms", {
