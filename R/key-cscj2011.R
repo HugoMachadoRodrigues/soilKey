@@ -2,7 +2,8 @@
 # v0.9.325 -- the Comprehensive Soil Classification System of Japan, First
 # Approximation (CSCJ 2011; Obara et al., NIAES Bulletin 29), keyed to the
 # ten great groups of chapter V, the 27 groups (0.9.326) and the 116
-# subgroups (0.9.327) of chapter VI. The soil series groups and phases follow. The gates it shares with the SCSJ 2017 read the pedon by
+# subgroups (0.9.327) and the 381 soil series groups (0.9.328) of chapter VI.
+# The phases follow. The gates it shares with the SCSJ 2017 read the pedon by
 # the CSCJ edition (site$jp_edition). Experimental and opt-in.
 # =============================================================================
 
@@ -15,8 +16,10 @@
 #' Andosols, Dark Red soils, Lowland soils, Red-Yellow soils, Stagnic soils,
 #' Brown Forest soils, Regosols), their 27 groups (for instance Fulvic and
 #' Allophanic Andosols, Calcaric Dark Red soils, Brown Lowland soils) and
-#' their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...); the 381 soil
-#' series groups and the phases follow. Each level gives the English name
+#' their 116 subgroups (Haplic, Argic, Low-humic, Terrace ...) and their 381
+#' soil series groups (lithic, skeletal, fine-textured, high-humic ...,
+#' read with the new attributes \code{texture_class_jp} and
+#' \code{hardness_yamanaka_mm}); the phases follow. Each level gives the English name
 #' of the text's appendix 2 and, in \code{levels$name_native}, the Japanese
 #' one.
 #'
@@ -103,7 +106,12 @@ make_cscj2011_example <- function(great_group = c("man_made", "organic", "podzol
                                                   "regosol")) {
   great_group <- match.arg(great_group)
   p <- switch(great_group,
-    lowland = make_scsj2017_example("fluvic"),
+    lowland = {
+      q <- make_scsj2017_example("fluvic")
+      # the Japanese texture classes the soil series groups read
+      q$horizons$texture_class_jp <- c("SiL", "FSL", "LS", "S")
+      q
+    },
     dark_red = {
       h <- list(designation = c("A", "Bw1", "Bw2", "C", "R"), top_cm = c(0, 12, 40, 70, 95),
                 bottom_cm = c(12, 40, 70, 95, 120), oc_pct = c(3.5, 1.2, 0.6, 0.3, NA),

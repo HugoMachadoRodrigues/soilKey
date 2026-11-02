@@ -1,0 +1,131 @@
+# Soil series groups of the Dark Red great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "E1AR":
+    - code: "E1ARLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "E1ARSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "E1ARTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "E1HA":
+    - code: "E1HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "E1HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "E1HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "E2AR":
+    - code: "E2ARLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "E2ARSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "E2ARTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "E2HA":
+    - code: "E2HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "E2HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "E2HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "E3AR":
+    - code: "E3ARLI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "E3ARSK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "E3ARTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "E3HA":
+    - code: "E3HALI"
+      name: "lithic {parent}"
+      name_native: "岩盤質{parent}"
+      tests:
+        all_of:
+          - lithic_cscj: {within: 60}
+      notes: "Bedrock within 60 cm of the soil surface."
+    - code: "E3HASK"
+      name: "skeletal {parent}"
+      name_native: "礫質{parent}"
+      tests:
+        all_of:
+          - skeletal_cscj: {within: 60}
+      notes: "The top of a gravel layer (20 % or more gravel) within 60 cm."
+    - code: "E3HATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."

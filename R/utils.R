@@ -249,7 +249,10 @@ horizon_column_spec <- function() {
     peat_moor_type                = "character", # peat by its plants: 'high-moor' (Sphagnum ...), 'transitional', 'low-moor'; SCSJ Peat soils subgroups
     artefacts_organic             = "logical",   # the artificial material is mainly organic (household refuse ...); SCSJ Organic Artifactual soils
     # ---- v0.9.324: the SCSJ 2017 soil phases ----
-    leached_spots                 = "logical"    # leached (bleached) spots in a podzolic B; SCSJ moderately developed forest phase of the Podzols
+    leached_spots                 = "logical",   # leached (bleached) spots in a podzolic B; SCSJ moderately developed forest phase of the Podzols
+    # ---- v0.9.328: the CSCJ 2011 soil series groups ----
+    texture_class_jp              = "character", # Japanese soil texture class (HC, SiC, LiC, SC, SiCL, CL, SCL, SiL, L, FSL, CoSL, LS, S); CSCJ series groups
+    hardness_yamanaka_mm          = "numeric"    # soil hardness by the Yamanaka-type tester, mm; CSCJ pan layer (29 mm or more)
   )
 }
 

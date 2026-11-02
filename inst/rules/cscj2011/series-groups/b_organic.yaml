@@ -1,0 +1,110 @@
+# Soil series groups of the Organic great group, Comprehensive Soil Classification
+# System of Japan, First Approximation (CSCJ 2011), chapter VI: each subgroup's own
+# list, in the key's order, the last the others. Names: the term of appendix 2,
+# lower case, before the subgroup's name. See R/diagnostics-cscj-series.R.
+series_groups:
+  "B1SA":
+    - code: "B1SAEM"
+      name: "epi-mineralic {parent}"
+      name_native: "表層無機質{parent}"
+      tests:
+        all_of:
+          - epimineralic_cscj: {}
+      notes: "A mineral layer 10 cm or more thick at the surface."
+    - code: "B1SADM"
+      name: "endomineralic {parent}"
+      name_native: "下層無機質{parent}"
+      tests:
+        all_of:
+          - endomineralic_cscj: {}
+      notes: "25 cm or more (cumulative) of mineral layers within 75 cm."
+    - code: "B1SATY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "B1HM":
+    - code: "B1HMEM"
+      name: "epi-mineralic {parent}"
+      name_native: "表層無機質{parent}"
+      tests:
+        all_of:
+          - epimineralic_cscj: {}
+      notes: "A mineral layer 10 cm or more thick at the surface."
+    - code: "B1HMDM"
+      name: "endomineralic {parent}"
+      name_native: "下層無機質{parent}"
+      tests:
+        all_of:
+          - endomineralic_cscj: {}
+      notes: "25 cm or more (cumulative) of mineral layers within 75 cm."
+    - code: "B1HMFB"
+      name: "fibric {parent}"
+      name_native: "繊維質{parent}"
+      tests:
+        all_of:
+          - fibric_peat_cscj: {}
+      notes: "Fibric peat material has the largest share of the peat layers to 50 cm."
+    - code: "B1HMTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "B1TM":
+    - code: "B1TMEM"
+      name: "epi-mineralic {parent}"
+      name_native: "表層無機質{parent}"
+      tests:
+        all_of:
+          - epimineralic_cscj: {}
+      notes: "A mineral layer 10 cm or more thick at the surface."
+    - code: "B1TMDM"
+      name: "endomineralic {parent}"
+      name_native: "下層無機質{parent}"
+      tests:
+        all_of:
+          - endomineralic_cscj: {}
+      notes: "25 cm or more (cumulative) of mineral layers within 75 cm."
+    - code: "B1TMFB"
+      name: "fibric {parent}"
+      name_native: "繊維質{parent}"
+      tests:
+        all_of:
+          - fibric_peat_cscj: {}
+      notes: "Fibric peat material has the largest share of the peat layers to 50 cm."
+    - code: "B1TMTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."
+  "B1LM":
+    - code: "B1LMEM"
+      name: "epi-mineralic {parent}"
+      name_native: "表層無機質{parent}"
+      tests:
+        all_of:
+          - epimineralic_cscj: {}
+      notes: "A mineral layer 10 cm or more thick at the surface."
+    - code: "B1LMDM"
+      name: "endomineralic {parent}"
+      name_native: "下層無機質{parent}"
+      tests:
+        all_of:
+          - endomineralic_cscj: {}
+      notes: "25 cm or more (cumulative) of mineral layers within 75 cm."
+    - code: "B1LMFB"
+      name: "fibric {parent}"
+      name_native: "繊維質{parent}"
+      tests:
+        all_of:
+          - fibric_peat_cscj: {}
+      notes: "Fibric peat material has the largest share of the peat layers to 50 cm."
+    - code: "B1LMTY"
+      name: "typic {parent}"
+      name_native: "典型{parent}"
+      tests:
+        default: true
+      notes: "The others."

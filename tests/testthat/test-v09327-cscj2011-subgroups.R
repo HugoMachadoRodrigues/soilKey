@@ -31,7 +31,7 @@ test_that("every example keys to a subgroup, decided; 116 subgroups with unique 
     expect_length(r$provisional_because, 0)
   }
   r <- classify_cscj2011(make_cscj2011_example("dark_red"), on_missing = "silent")
-  expect_identical(r$name, "Argic Calcaric Dark Red soils")
+  expect_identical(r$levels$name[3], "Argic Calcaric Dark Red soils")
   expect_identical(r$levels$name_native[3], "\u7c98\u571f\u96c6\u7a4d\u77f3\u7070\u6027\u6697\u8d64\u8272\u571f")
   codes <- unlist(lapply(load_rules("cscj2011")$subgroups, function(g) vapply(g, `[[`, "", "code")))
   expect_length(codes, 116L)

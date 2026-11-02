@@ -611,6 +611,12 @@
           },
           "leached_spots": {
             "type": ["boolean", "null"]
+          },
+          "texture_class_jp": {
+            "type": ["string", "null"]
+          },
+          "hardness_yamanaka_mm": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false
