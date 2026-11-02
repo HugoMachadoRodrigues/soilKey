@@ -142,7 +142,14 @@
 .scsj_drainage <- function(site) {
   for (k in c("drainage_class", "drainage")) {
     v <- tolower(trimws(as.character(site[[k]] %||% NA)[1L]))
-    if (!is.na(v) && nzchar(v) && v != "na") return(v)
+    if (!is.na(v) && nzchar(v) && v != "na") {
+      # the Japanese drainage classes, in English words
+      jp <- c("\u6392\u6c34\u8d85\u4e0d\u826f" = "very poorly drained", "\u6392\u6c34\u3084\u3084\u4e0d\u826f" = "somewhat poorly drained",
+              "\u6392\u6c34\u4e0d\u826f" = "poorly drained", "\u6392\u6c34\u3084\u3084\u826f" = "moderately well drained",
+              "\u6392\u6c34\u826f\u597d" = "well drained", "\u6392\u6c34\u904e\u826f" = "excessively drained")
+      for (w in names(jp)) if (grepl(w, v, fixed = TRUE)) return(jp[[w]])
+      return(v)
+    }
   }
   NA_character_
 }
@@ -240,8 +247,9 @@
       orgmat[i] <- .scsj_and(.scsj_not(peaty), .scsj_not(kb[i]))
       next
     }
-    # a designated horizon (or 12 to 20 % carbon): peat unless kuroboku
-    peat[i] <- not_kb[i]
+    # a designated horizon (or 12 to 20 % carbon): peat unless kuroboku; an
+    # H whose kuroboku status is not known is peat by the notation (0.9.323)
+    peat[i] <- if (r %in% "H" && is.na(not_kb[i])) TRUE else not_kb[i]
     orgmat[i] <- FALSE
   }
   organic <- .scsj_or(peat, orgmat)
@@ -663,7 +671,7 @@
 }
 
 # The plough layer (Ap) of each row.
-.scsj_plough_rows <- function(x) x$des$p & x$role %in% c("A", "AB", "AC")
+.scsj_plough_rows <- function(x) x$des$p & x$role %in% c("A", "AB", "AC") & !x$des$buried
 
 # The mineral row directly above each row (in depth order), NA when none.
 .scsj_row_above <- function(x) {
@@ -752,7 +760,10 @@
 .scsj_bleached_rows <- function(x) {
   v <- x$colour$value; c <- x$colour$chroma
   col <- ifelse(is.na(v) | is.na(c), NA, (v >= 6 & c <= 4) | (v == 5 & c <= 3) | (v == 4 & c <= 2))
-  col <- ifelse(is.na(col), ifelse(x$role %in% "E", TRUE, ifelse(x$des$known, FALSE, NA)), col)
+  # an E of the notation stands in for a colour not recorded, unless the part
+  # recorded already rules bleaching out (chroma over 4, value under 4)
+  ruled_out <- (!is.na(c) & c > 4) | (!is.na(v) & v < 4)
+  col <- ifelse(is.na(col), ifelse(x$role %in% "E" & !ruled_out, TRUE, ifelse(x$des$known | ruled_out, FALSE, NA)), col)
   out <- .scsj_and(col, .scsj_subsurface_pos(x))
   ifelse(x$des$s | x$des$h, FALSE, out)
 }
@@ -875,21 +886,55 @@
 # ---- "the top of a layer within / between depths" ------------------------------------
 
 # "The top of a layer with the feature(s) within [from, to] cm of the soil
-# surface", the layer `thick` cm or more. `rows` are row flags. TRUE: a run of
-# TRUE rows of the thickness with its top in the window; NA: rows that may
-# hold could make one (open bottoms and the end of the description counted
-# as possible), or a part of the window no horizon describes (a gap, or below
-# the description) could hold one; FALSE otherwise.
+# surface", the layer `thick` cm or more (thick = 0: any thickness). `rows`
+# are row flags. The depth is cut into segments, each certain (a TRUE row),
+# excluded (a FALSE row, or below the bedrock or a complete description) or
+# open (an undecided row, a gap, a horizon without a bottom past its top, or
+# below a description that stops). TRUE when a run of certain segments of
+# the thickness starts in the window and cannot start higher (the open
+# segments directly above it, if any, do not reach above the window); NA
+# when an open or certain segment could be the top of such a layer in the
+# window; FALSE otherwise. The undescribed depth below the description counts
+# from inside the window only (a layer starting exactly at `to` there is
+# not read).
 .scsj_top_in <- function(x, rows, from = -Inf, to = Inf, thick = 0) {
   if (is.na(x$surface)) return(NA)
-  for (r in .scsj_runs(x, ifelse(rows %in% TRUE, TRUE, FALSE)))
-    if (r$top >= from - 0.5 && r$top <= to && r$sure >= max(thick, 1e-9)) return(TRUE)
-  for (r in .scsj_runs(x, rows, bridge = TRUE)) {
-    bot <- if (r$at_end) Inf else r$bottom
-    starts_above <- r$all_true && r$top < from - 0.5
-    if (!starts_above && r$top <= to && bot >= from && r$poss >= thick) return(NA)
+  ok <- which(!is.na(x$dtop))
+  if (!length(ok)) return(NA)
+  top <- pmax(x$dtop[ok], 0); open <- is.na(x$dbot[ok])
+  eps <- 1e-3
+  closed_end <- if (any(!open)) max(x$dbot[ok][!open]) else 0
+  # cut at the top of the window too: an open segment across it may hold a
+  # layer starting inside the window
+  segs <- .scsj_segments(x, rows, extra = from)
+  status <- segs$status
+  w <- segs$b - segs$a
+  lo <- if (is.finite(from)) from - 0.5 else -Inf
+  n <- nrow(segs)
+  undesc <- function(k) segs$a[k] >= max(c(closed_end, top)) - 1e-9 && !any(open & top <= segs$a[k])
+  # TRUE: a certain run starting in the window, of the thickness, that
+  # cannot start higher
+  k <- 1L
+  while (k <= n) {
+    if (status[k] != "T") { k <- k + 1L; next }
+    j <- k
+    while (j < n && status[j + 1L] == "T") j <- j + 1L
+    s_top <- segs$a[k]; s_th <- sum(w[k:j])
+    m <- k
+    while (m > 1L && status[m - 1L] %in% c("T", "U")) m <- m - 1L
+    if (s_top >= lo && s_top <= to && s_th >= max(thick, eps / 2) && segs$a[m] >= lo) return(TRUE)
+    k <- j + 1L
   }
-  lo <- if (is.finite(from)) max(from, 0) else 0
-  if (is.finite(to) && to > lo && .scsj_cum(x, rep(FALSE, x$n), lo, to)$poss > 0) return(NA)
+  # NA: a possible top in the window
+  for (k in seq_len(n)) {
+    if (status[k] == "F") next
+    a <- segs$a[k]
+    if (a < lo || a > to) next
+    if (k > 1L && status[k - 1L] == "T") next      # inside a certain run
+    if (undesc(k) && a >= to - 0.5) next
+    j <- k; th <- 0
+    while (j <= n && status[j] != "F") { th <- th + w[j]; j <- j + 1L }
+    if (th >= max(thick, eps / 2)) return(NA)
+  }
   FALSE
 }

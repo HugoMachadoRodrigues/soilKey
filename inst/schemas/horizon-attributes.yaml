@@ -822,3 +822,21 @@ attributes:
     description: "Exchange acidity y1 (Daikuhara's method): mL of 0.1 M NaOH needed to titrate the 1 M KCl extract of 100 g of dry soil. SCSJ 2017 non-allophanic kuroboku feature: 5 or more (or Sio under 0.6 %, or Alp/Alo 0.5 or more); not read on farmland, where fertilising and liming change it."
     systems: [scsj2017]
     min: 0
+  - name: ph_h2o2
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "pH of the soil after oxidation with hydrogen peroxide. SCSJ 2017 potential sulfuric material: pH(H2O) 4.0 or more with pH(H2O2) under 3.0, in material saturated unless drained (the Thionic subgroups of the Gley and Gray Fluvic soils)."
+    systems: [scsj2017]
+    min: 0
+    max: 14
+  - name: peat_moor_type
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "Peat material by the plants it is made of (SCSJ 2017 IV.3): high-moor (Sphagnum, Carex middendorffii, Vaccinium oxycoccus, Rhynchospora, Scheuchzeria the largest share), transitional (Moliniopsis, Eriophorum, Myrica gale, Picea glehnii), low-moor (other). The High-moor and Transitional-moor Peat soils read the uppermost 25 cm of the peat."
+    systems: [scsj2017]
+    allowed: [high-moor, transitional, low-moor]
+  - name: artefacts_organic
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "TRUE where the artificial material of the horizon is mainly organic (household refuse and the like), FALSE where mainly inorganic. SCSJ 2017 Organic Artifactual soils (also read from the site)."
+    systems: [scsj2017]

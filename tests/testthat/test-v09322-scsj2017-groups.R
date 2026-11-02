@@ -11,7 +11,7 @@
 }
 .grp <- function(p) {
   r <- classify_scsj2017(p, on_missing = "silent")
-  c(code = r$levels$code[nrow(r$levels)], prov = paste(r$provisional_because, collapse = ","))
+  c(code = r$levels$code[2], prov = paste(r$provisional_because, collapse = ","))
 }
 
 # a kuroboku profile to modify
@@ -45,7 +45,7 @@ test_that("every example keys to a group, decided", {
     r <- classify_scsj2017(make_scsj2017_example(g), on_missing = "silent")
     expect_identical(r$levels$code[2], want[[g]], info = g)
     expect_length(r$provisional_because, 0)
-    expect_identical(nrow(r$levels), 2L)
+    expect_gte(nrow(r$levels), 2L)
     expect_false(anyNA(r$levels$name_native))
   }
 })

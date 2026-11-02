@@ -1,0 +1,67 @@
+# Subgroups of the Brown Forest great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "I1":
+    - code: "I1AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_scsj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "I1AD"
+      name: "Andic {parent}"
+      name_native: "ばん土質{parent}"
+      tests:
+        all_of:
+          - andic_subgroup_scsj: {}
+      notes: "Within 50 cm, 25 cm or more of layers with a phosphate absorption coefficient of 1000 mg P2O5/100 g or more (P retention 60 %, Alo + 1/2 Feo 1.2 %)."
+    - code: "I1PZ"
+      name: "Podzolic {parent}"
+      name_native: "ポドゾル化{parent}"
+      tests:
+        all_of:
+          - podzolic_horizon_scsj: {}
+      notes: "A podzolic accumulation horizon (morphology or analysis)."
+    - code: "I1HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "I1TR"
+      name: "Thapto-red-yellow {parent}"
+      name_native: "下層赤黄色{parent}"
+      tests:
+        all_of:
+          - thapto_red_yellow_scsj: {within: 75}
+      notes: "Within 75 cm, a weathered or argic horizon with the red-yellow feature."
+    - code: "I1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw"], to: 75}
+      notes: "The top of a layer with the groundwater wetness feature within 75 cm."
+    - code: "I1EY"
+      name: "Epi-gleyed {parent}"
+      name_native: "表層グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["sw"], to: 75}
+      notes: "The top of a layer with the surface-water wetness feature within 75 cm."
+    - code: "I1EU"
+      name: "Eutric {parent}"
+      name_native: "塩基型{parent}"
+      tests:
+        all_of:
+          - eutric_subsurface_scsj: {}
+      notes: "A subhorizon of the subsurface with pH(H2O) 6.5 or more, or base saturation 50 % or more."
+    - code: "I1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Brown Forest soils."

@@ -1,0 +1,32 @@
+# Subgroups of the Organic great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "B1":
+    - code: "B1SA"
+      name: "Sapric {parent}"
+      name_native: "腐朽質{parent}"
+      tests:
+        all_of:
+          - sapric_peat_scsj: {}
+      notes: "Sapric peat material has the largest share of the peat layers to 50 cm."
+    - code: "B1HM"
+      name: "High-moor {parent}"
+      name_native: "高位{parent}"
+      tests:
+        all_of:
+          - moor_type_scsj: {type: "high-moor"}
+      notes: "The uppermost 25 cm of the peat layers is high-moor peat material."
+    - code: "B1TM"
+      name: "Transitional-moor {parent}"
+      name_native: "中間{parent}"
+      tests:
+        all_of:
+          - moor_type_scsj: {type: "transitional"}
+      notes: "The uppermost 25 cm of the peat layers is transitional peat material."
+    - code: "B1LM"
+      name: "Low-moor {parent}"
+      name_native: "低位{parent}"
+      tests:
+        default: true
+      notes: "Other Peat soils."

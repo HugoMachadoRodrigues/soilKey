@@ -599,6 +599,15 @@
           },
           "exchange_acidity_y1": {
             "type": ["number", "null"]
+          },
+          "ph_h2o2": {
+            "type": ["number", "null"]
+          },
+          "peat_moor_type": {
+            "type": ["string", "null"]
+          },
+          "artefacts_organic": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false

@@ -21,7 +21,7 @@ citation: >
   Soil Classification System of Japan (日本土壌分類体系). The Japanese
   Society of Pedology, Tokyo. 53 pp.
 version: "Soil Classification System of Japan, 1 April 2017 (pedology.jp)"
-implementation_status: "soilKey v0.9.322 -- 10/10 great groups (chapter II) and 26/26 groups (chapter III); subgroups and the soil phases follow"
+implementation_status: "soilKey v0.9.323 -- 10/10 great groups (chapter II), 26/26 groups and 120/120 subgroups (chapter III); the soil phases follow"
 source: |
   Japanese Society of Pedology, Fifth Committee for Soil Classification and
   Nomenclature (2017). Soil Classification System of Japan. Chapter II (key

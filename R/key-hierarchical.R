@@ -259,6 +259,10 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
     # {parent}", for a list shared by every class under a part of the path)
     if (!is.null(parent) && grepl("{parent}", r$assigned$name %||% "", fixed = TRUE))
       r$assigned$name <- sub("{parent}", parent$name, r$assigned$name, fixed = TRUE)
+    # v0.9.323: the native name too ("{parent}" in name_native, the SCSJ
+    # subgroups written before their group's Japanese name)
+    if (!is.null(parent) && grepl("{parent}", r$assigned$name_native %||% "", fixed = TRUE))
+      r$assigned$name_native <- sub("{parent}", parent$name_native %||% "", r$assigned$name_native, fixed = TRUE)
     chosen[[lvl]] <- r$assigned
     parent <- r$assigned
     path <- c(path, r$assigned$code)

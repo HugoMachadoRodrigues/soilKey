@@ -1,0 +1,32 @@
+# Subgroups of the Eutrosols great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "H1":
+    - code: "H1AR"
+      name: "Argic {parent}"
+      name_native: "粘土集積{parent}"
+      tests:
+        all_of:
+          - argic_group_scsj: {}
+      notes: "An argic horizon."
+    - code: "H1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Magnesian Eutrosols."
+  "H2":
+    - code: "H2AR"
+      name: "Argic {parent}"
+      name_native: "粘土集積{parent}"
+      tests:
+        all_of:
+          - argic_group_scsj: {}
+      notes: "An argic horizon."
+    - code: "H2HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Calcareous Eutrosols."

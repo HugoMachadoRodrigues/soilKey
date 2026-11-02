@@ -1,0 +1,109 @@
+# Subgroups of the Red Yellow great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "F1":
+    - code: "F1AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_scsj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "F1AW"
+      name: "Albic {parent}"
+      name_native: "灰白化{parent}"
+      tests:
+        all_of:
+          - bleached_horizon_scsj: {}
+      notes: "A bleached horizon."
+    - code: "F1PG"
+      name: "Pseudogleyic {parent}"
+      name_native: "疑似グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["pseudogley"], to: 75}
+      notes: "The top of a pseudogley horizon within 75 cm."
+    - code: "F1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw"], from: 50, to: 75}
+      notes: "The top of a layer with the groundwater wetness feature at 50 to 75 cm."
+    - code: "F1HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "F1RE"
+      name: "Reddish {parent}"
+      name_native: "赤色{parent}"
+      tests:
+        all_of:
+          - reddish_scsj: {horizon: "argic"}
+      notes: "An argic horizon of red moist colour."
+    - code: "F1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Argic Red-Yellow soils."
+  "F2":
+    - code: "F2AN"
+      name: "Anthraquic {parent}"
+      name_native: "水田化{parent}"
+      tests:
+        all_of:
+          - paddy_fe_scsj: {}
+      notes: "A paddy iron accumulation horizon."
+    - code: "F2AW"
+      name: "Albic {parent}"
+      name_native: "灰白化{parent}"
+      tests:
+        all_of:
+          - bleached_horizon_scsj: {}
+      notes: "A bleached horizon."
+    - code: "F2PG"
+      name: "Pseudogleyic {parent}"
+      name_native: "疑似グライ化{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["pseudogley"], to: 75}
+      notes: "The top of a pseudogley horizon within 75 cm."
+    - code: "F2AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gw"], from: 50, to: 75}
+      notes: "The top of a layer with the groundwater wetness feature at 50 to 75 cm."
+    - code: "F2HU"
+      name: "Humic {parent}"
+      name_native: "腐植質{parent}"
+      tests:
+        all_of:
+          - humic_surface_scsj: {thick: 25}
+      notes: "A humic or polyhumic surface horizon."
+    - code: "F2RE"
+      name: "Reddish {parent}"
+      name_native: "赤色{parent}"
+      tests:
+        all_of:
+          - reddish_scsj: {horizon: "weathered"}
+      notes: "A weathered horizon of red moist colour."
+    - code: "F2AD"
+      name: "Andic {parent}"
+      name_native: "ばん土質{parent}"
+      tests:
+        all_of:
+          - andic_subgroup_scsj: {}
+      notes: "Within 50 cm, 25 cm or more of layers with a phosphate absorption coefficient of 1000 mg P2O5/100 g or more (P retention 60 %, Alo + 1/2 Feo 1.2 %)."
+    - code: "F2HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Cambic Red-Yellow soils."

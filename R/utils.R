@@ -243,7 +243,11 @@ horizon_column_spec <- function() {
     active_al_test                = "character", # Japanese field active-aluminium test (NaF with phenolphthalein, JSP 1997): '-' / '+-' / '+' / '2+' / '3+'; SCSJ kuroboku feature in the field (vivid red within a minute, 2+ or more)
     n_value                       = "numeric",   # n value (Pons and Zonneveld): (field water % - 0.2 silt and sand %) / (clay % + 3 organic matter %); SCSJ physical immaturity (>= 1)
     # ---- v0.9.322: the groups of the SCSJ 2017 ----
-    exchange_acidity_y1           = "numeric"    # exchange acidity y1 (Daikuhara): mL of 0.1 M NaOH to titrate the 1 M KCl extract of 100 g of dry soil; SCSJ non-allophanic kuroboku feature (>= 5)
+    exchange_acidity_y1           = "numeric",   # exchange acidity y1 (Daikuhara): mL of 0.1 M NaOH to titrate the 1 M KCl extract of 100 g of dry soil; SCSJ non-allophanic kuroboku feature (>= 5)
+    # ---- v0.9.323: the subgroups of the SCSJ 2017 ----
+    ph_h2o2                       = "numeric",   # pH after oxidation with hydrogen peroxide; SCSJ potential sulfuric material (pH(H2O) >= 4.0 and pH(H2O2) < 3.0)
+    peat_moor_type                = "character", # peat by its plants: 'high-moor' (Sphagnum ...), 'transitional', 'low-moor'; SCSJ Peat soils subgroups
+    artefacts_organic             = "logical"    # the artificial material is mainly organic (household refuse ...); SCSJ Organic Artifactual soils
   )
 }
 

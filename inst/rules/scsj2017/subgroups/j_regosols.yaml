@@ -1,0 +1,95 @@
+# Subgroups of the Regosols great group, Soil Classification System of Japan (2017),
+# chapter III. Criteria summarised from the text; see R/diagnostics-scsj-subgroups.R
+# and inst/rules/scsj2017/readings.yaml. Names are written on the group's name.
+subgroups:
+  "J1":
+    - code: "J1AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gley", "gw"], to: 50}
+      notes: "The top of a layer with the gley feature or the groundwater wetness feature within 50 cm."
+    - code: "J1HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Volcanogenous Regosols."
+  "J2":
+    - code: "J2CA"
+      name: "Calcaric {parent}"
+      name_native: "石灰質{parent}"
+      tests:
+        all_of:
+          - calcaric_scsj: {from: 20, to: 50}
+      notes: "Carbonates of 2.0 % or more (CaCO3 equivalent) between 20 and 50 cm."
+    - code: "J2AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - wet_top_scsj: {features: ["gley", "gw"], to: 75}
+      notes: "The top of a layer with the gley feature or the groundwater wetness feature within 75 cm."
+    - code: "J2HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Sandy Regosols."
+  "J3":
+    - code: "J3CA"
+      name: "Calcaric {parent}"
+      name_native: "石灰質{parent}"
+      tests:
+        all_of:
+          - calcaric_scsj: {above: "rock"}
+      notes: "Carbonates of 2.0 % or more (CaCO3 equivalent) in the layer on the bedrock."
+    - code: "J3AQ"
+      name: "Aquic {parent}"
+      name_native: "湿性{parent}"
+      tests:
+        all_of:
+          - aquic_above_rock_scsj: {}
+      notes: "The top of a layer with the gley feature or the groundwater wetness feature above the bedrock."
+    - code: "J3HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Lithosols."
+  "J4":
+    - code: "J4MA"
+      name: "Marlitic {parent}"
+      name_native: "泥灰岩質{parent}"
+      tests:
+        all_of:
+          - parent_rock_scsj: {rock: "marl"}
+      notes: "From marl, with 30 % clay or more in every horizon to 100 cm or the bedrock."
+    - code: "J4CA"
+      name: "Calcaric {parent}"
+      name_native: "石灰質{parent}"
+      tests:
+        all_of:
+          - calcaric_scsj: {from: 20, to: 50}
+      notes: "Carbonates of 2.0 % or more (CaCO3 equivalent) between 20 and 50 cm."
+    - code: "J4GR"
+      name: "Granitic {parent}"
+      name_native: "花崗岩型{parent}"
+      tests:
+        all_of:
+          - parent_rock_scsj: {rock: "granite"}
+      notes: "From granite."
+    - code: "J4PL"
+      name: "Para-lithic {parent}"
+      name_native: "軟岩型{parent}"
+      tests:
+        all_of:
+          - para_lithic_scsj: {}
+      notes: "Gravel or bedrock that a trowel or shovel can cut."
+    - code: "J4HA"
+      name: "Haplic {parent}"
+      name_native: "普通{parent}"
+      tests:
+        default: true
+      notes: "Other Terrestrial Regosols."
