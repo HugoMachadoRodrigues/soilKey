@@ -50,8 +50,10 @@
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
 #'   \code{"scsj2017"}, the deepest class in \code{name}, the great group in
 #'   \code{rsg_or_order}, the classes of each level in \code{levels} (with
-#'   \code{name_native}), the key trace, and \code{provisional_because}
-#'   (classes before the assigned one that could not be decided).
+#'   \code{name_native}), the key trace, \code{provisional_because}
+#'   (classes before the assigned one that could not be decided), and in
+#'   \code{phases} the soil phases of chapter V (temperature, man-made and
+#'   forest phases; the class name is left as it is).
 #' @references The Fifth Committee for Soil Classification and Nomenclature
 #'   (2017). Soil Classification System of Japan. The Japanese Society of
 #'   Pedology.
@@ -65,10 +67,13 @@ classify_scsj2017 <- function(pedon, rules = NULL,
                               on_missing = c("warn", "silent", "error"),
                               gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
-  if (inherits(pedon, "PedonRecord")) pedon <- .cssc_prepare_pedon(pedon)
+  # gap-fill once, so that the key and the phases read the same pedon
+  if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(.cssc_prepare_pedon(pedon), gapfill)
   rules <- rules %||% load_rules("scsj2017")
   res <- classify_hierarchical("scsj2017", pedon, rules = rules,
-                               on_missing = on_missing, gapfill = gapfill)
+                               on_missing = on_missing, gapfill = FALSE)
+  # v0.9.324: the soil phases (chapter V), beside the class name
+  if (inherits(pedon, "PedonRecord")) res$phases <- .scsj_phases(pedon, res)
   if (inherits(pedon, "PedonRecord") &&
       all(is.na(pedon$horizons$designation %||% NA) | !nzchar(trimws(pedon$horizons$designation %||% "")))) {
     res$warnings <- c(res$warnings, paste(

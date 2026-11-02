@@ -467,7 +467,7 @@ attributes:
     section: "Canadian system (CSSC 3rd ed.)"
     unit: "% Al"
     description: "Sodium-pyrophosphate-extractable Al (organically complexed aluminium); CSSC podzolic B, Bf and Bhf horizons."
-    systems: [cssc3]
+    systems: [cssc3, scsj2017]
     min: 0
     max: 100
   - name: mottle_contrast
@@ -598,7 +598,7 @@ attributes:
     section: "Australian system (ASC 3rd ed.)"
     unit: "% (vol)"
     description: "Gravel-sized (2-60 mm) coarse fragments, visual abundance; ASC family gravel classes (glossary 'Gravel'). Without it the family reads coarse_fragments_pct."
-    systems: [asc3]
+    systems: [asc3, scsj2017]
     min: 0
     max: 100
   - name: water_repellence
@@ -617,7 +617,7 @@ attributes:
     section: "New Zealand system (NZSC 4th ed.)"
     unit: "-"
     description: "Childs' test (2,2'-bipyridine) for ferrous iron, positive or negative; NZSC Gley Soils (ironstone-pan route) and reductimorphic horizons."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
     allowed: [positive, negative]
   - name: sensitivity_class
     section: "New Zealand system (NZSC 4th ed.)"
@@ -628,7 +628,7 @@ attributes:
     section: "New Zealand system (NZSC 4th ed.)"
     unit: "-"
     description: "Fluidity class: non-fluid, slightly fluid, moderately fluid, very fluid; NZSC Gley and Recent Soils (no moderately or very fluid horizon within 30 cm)."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
     allowed: [non-fluid, slightly fluid, moderately fluid, very fluid]
   - name: stickiness
     section: "New Zealand system (NZSC 4th ed.)"
@@ -656,7 +656,7 @@ attributes:
     section: "New Zealand system (NZSC 4th ed.)"
     unit: "-"
     description: "Where the high-chroma redox segregations (mottles) mainly are: within peds, matrix (of an apedal horizon), ped faces, voids or skeletans; NZSC perch-gley features (within peds or the matrix) and Groundwater-gley Podzol Soils (coatings on voids or skeletans)."
-    systems: [nzsc4]
+    systems: [nzsc4, scsj2017]
     allowed: [within peds, matrix, ped faces, voids, skeletans]
   - name: sulfate_s_pct
     section: "New Zealand system (NZSC 4th ed.)"
@@ -839,4 +839,9 @@ attributes:
     section: "Japanese system (SCSJ 2017)"
     unit: "-"
     description: "TRUE where the artificial material of the horizon is mainly organic (household refuse and the like), FALSE where mainly inorganic. SCSJ 2017 Organic Artifactual soils (also read from the site)."
+    systems: [scsj2017]
+  - name: leached_spots
+    section: "Japanese system (SCSJ 2017)"
+    unit: "-"
+    description: "Leached (bleached) spots in the horizon (the Japanese youdatsu-han), TRUE or FALSE. SCSJ 2017 forest soil phases of the Podzols: a podzolic accumulation horizon by analysis with one by morphology and leached spots is moderately developed."
     systems: [scsj2017]

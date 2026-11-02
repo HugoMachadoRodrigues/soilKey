@@ -26,8 +26,10 @@ classify_scsj2017(
 A \code{\link{ClassificationResult}} with \code{system_id}
   \code{"scsj2017"}, the deepest class in \code{name}, the great group in
   \code{rsg_or_order}, the classes of each level in \code{levels} (with
-  \code{name_native}), the key trace, and \code{provisional_because}
-  (classes before the assigned one that could not be decided).
+  \code{name_native}), the key trace, \code{provisional_because}
+  (classes before the assigned one that could not be decided), and in
+  \code{phases} the soil phases of chapter V (temperature, man-made and
+  forest phases; the class name is left as it is).
 }
 \description{
 Keys a \code{\link{PedonRecord}} through the Soil Classification System
