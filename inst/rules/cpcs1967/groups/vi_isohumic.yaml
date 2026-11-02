@@ -22,7 +22,7 @@ groups:
       tests:
         all_of:
           - isohumic_om20_cpcs: {at_least: 3}
-      notes: "Mean OM of the top 20 cm of 3 % or more (3 to 6 %; from 5 % the chernozems are keyed first)."
+      notes: "Mean OM of the top 20 cm of 3 % or more (3 to 6 %; from 5 % the chernozems are keyed first). The text prints 'chatains'."
     - code: "VI/23"
       name: Sols bruns isohumiques
       name_native: Sols bruns isohumiques
@@ -45,8 +45,8 @@ groups:
       notes: "Mean OM of the top 20 cm under 1 %."
   "VI-4":
     - code: "VI/41"
-      name: Sols bruns subarides
-      name_native: Sols bruns subarides
+      name: Sols bruns sub-arides
+      name_native: Sols bruns sub-arides
       tests:
         default: true
       notes: "The only group of VI-4 (the synoptic table writes 'bruns arides')."

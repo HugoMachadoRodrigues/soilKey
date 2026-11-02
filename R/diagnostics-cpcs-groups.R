@@ -92,6 +92,10 @@
 .cpcs_patterned <- function(x) {
   v <- .cpcs_lc(x$site$patterned_ground %||% character(0))
   if (!nzchar(trimws(v)) || trimws(v) == "na") return(NA)
+  if (trimws(v) %in% c("true", "yes", "present", "oui")) return(TRUE)
+  if (trimws(v) %in% c("false", "no", "absent", "non")) return(FALSE)
+  # "non-sorted" (circles, polygons) is a kind of patterned ground, not a negation
+  v <- gsub("non[- ]?sorted", "nonsorted", v)
   grepl(.CPCS_PATTERN_RE, .cpcs_drop_negated(v))
 }
 
@@ -145,10 +149,13 @@
 # columnar, wedge), NA massive, single grain or not recorded.
 .cpcs_round_row <- function(s) {
   if (is.na(s)) return(NA)
-  if (grepl("sub-?angul|nucif|nutty|granul|crumb|grumel|grenu", s)) return(TRUE)
-  if (grepl("angular|anguleu|prism|platy|plat|lamel|lamin|column|colonn|wedge|cuneif|lenticul|polyhedr|poly\u00e9dr|polyedr", s))
-    return(FALSE)
-  NA
+  # the first structure named decides ("prismatic parting to subangular
+  # blocky" is prismatic)
+  r <- regexpr("sub-?angul|nucif|nutty|granul|crumb|grumel|grenu", s)
+  s2 <- gsub("sub-?angul", "subxxxxx", s)
+  a <- regexpr("angular|anguleu|prism|platy|plat|lamel|lamin|column|colonn|wedge|cuneif|lenticul|polyhedr|poly\u00e9dr|polyedr", s2)
+  if (r < 0 && a < 0) return(NA)
+  if (a < 0) TRUE else if (r < 0) FALSE else r < a
 }
 
 # A rounded structure over the top 15 cm (III); a self-mulching surface
@@ -165,11 +172,20 @@
 
 # ---- clay and the B (VII, IX, X, XII) -------------------------------------------------
 
+# The B rows read by the groups: in an undesignated profile, a layer of
+# albic material is an A2, not a B (as for class VIII).
+.cpcs_group_b_rows <- function(x) {
+  b <- .cpcs_b_rows(x)
+  rows <- .cpcs_mineral_rows(x)
+  if (all(is.na(x$role[rows]) | x$role[rows] %in% "other")) b <- setdiff(b, .cpcs_e_rows(x))
+  b
+}
+
 # The clay index of the text: the largest clay of the B over the smallest
 # clay of the A rows above it (A1, A2, A3), with the absolute difference
 # (Hugo, 2026-11-01).
 .cpcs_clay_index <- function(x) {
-  b <- .cpcs_b_rows(x); b <- b[!is.na(x$dtop[b])]
+  b <- .cpcs_group_b_rows(x); b <- b[!is.na(x$dtop[b])]
   none <- list(r = NA_real_, d = NA_real_, b = b, a = integer(0), bmax = NA_real_, amin = NA_real_)
   if (!length(b)) return(none)
   tb <- min(x$dtop[b])
@@ -181,12 +197,14 @@
   list(r = if (amin > 0) bmax / amin else Inf, d = bmax - amin, b = b, a = a, bmax = bmax, amin = amin)
 }
 
-# Clay films in some rows: TRUE common or more, FALSE recorded none or few,
-# NA not recorded.
+# Clay films in some rows: TRUE common or more in one of them, FALSE none
+# or few recorded in all of them, NA otherwise.
 .cpcs_films <- function(x, rows) {
   f <- .scsj_txt(x$h, "clay_films_amount")[rows]
-  if (!length(rows) || all(is.na(f))) return(NA)
-  any(!is.na(f) & grepl("common|many|abundant|frequent|continuous|nombreu|abondant|fr\u00e9quent", f))
+  if (!length(rows)) return(NA)
+  many <- !is.na(f) & grepl("common|many|abundant|frequent|continuous|nombreu|abondant|fr\u00e9quent", f) &
+    !grepl("discontinu", f)
+  if (any(many)) TRUE else if (all(!is.na(f))) FALSE else NA
 }
 
 # The leached soils (VII/12, X/36): a textural B, the clay index above 1.4
@@ -196,6 +214,8 @@
 .cpcs_leached <- function(x) {
   ci <- .cpcs_clay_index(x)
   fl <- .cpcs_films(x, ci$b)
+  rows <- .cpcs_mineral_rows(x)
+  if (!length(ci$b) && !all(is.na(x$role[rows]) | x$role[rows] %in% "other")) return(FALSE)
   if (is.na(ci$r)) {
     if (any(x$des$t[ci$b] %in% TRUE)) return(!isFALSE(fl))
     if (length(ci$b) && all(x$des$bstruct[ci$b] %in% TRUE)) return(FALSE)
@@ -307,7 +327,11 @@ NULL
 deposit_origin_cpcs <- function(pedon, kind) {
   x <- .cpcs_profile(pedon)
   k <- .cpcs_origin_kind(x)
-  .cpcs_sub_result("deposit_origin_cpcs", identical(k, as.character(kind)), x,
+  p <- identical(k, as.character(kind))
+  # a recent deposit recorded whose kind cannot be read: the deposit groups
+  # are undecided, not the erosion group
+  if (is.na(k) && .cpcs_recent_deposit(x)) p <- NA
+  .cpcs_sub_result("deposit_origin_cpcs", p, x,
                    list(origin = if (is.na(k)) "none recorded" else k), "I-1, p. 18; II-4, p. 25")
 }
 
@@ -347,7 +371,7 @@ takyric_cpcs <- function(pedon) {
 aeolian_sands_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # dunes: an aeolian deposit (or a dune landform) of sand
-  lf <- .cpcs_lc(c(x$site$landform, x$site$landform_element, x$site$aeolian_morphology))
+  lf <- .cpcs_lc(c(x$site$landform, x$site$landform_element, .scsj_txt(x$h, "aeolian_morphology")))
   aeo <- identical(.cpcs_origin_kind(x), "aeolian") || grepl("dune|erg\\b", .cpcs_drop_negated(lf))
   rows <- .cpcs_rows_within(x, 50); rows <- rows[!x$rock[rows]]
   tex <- vapply(rows, function(i) .cpcs_texture(x, i), "")
@@ -462,7 +486,8 @@ melanised_calcic_cpcs <- function(pedon) {
   a <- .cpcs_a_rows(x)
   st <- .scsj_txt(x$h, "structure_type")[a]; sz <- .scsj_txt(x$h, "structure_size")[a]
   fp <- if (!length(a)) NA else .cpcs_any(vapply(seq_along(a), function(k) {
-    poly <- if (is.na(st[k])) NA else grepl("angul|polyhedr|poly\u00e9dr|polyedr|blocky", st[k])
+    poly <- if (is.na(st[k])) NA else
+      grepl("angul|polyhedr|poly\u00e9dr|polyedr|blocky", st[k]) && !grepl("sub-?angul", st[k])
     fine <- if (is.na(sz[k])) NA else grepl("fine|fin\\b", sz[k])
     .cpcs_and(poly, fine)
   }, NA))
@@ -495,7 +520,7 @@ gypseous_rendziniform_cpcs <- function(pedon) {
   if (!length(rows)) return(NA_real_)
   w <- vapply(rows, function(i) max(0, min(if (is.na(x$dbot[i])) 20 else x$dbot[i], 20) - max(x$dtop[i], 0)), 0)
   if (any(is.na(x$om[rows][w > 0])) || sum(w) <= 0) return(NA_real_)
-  sum(x$om[rows] * w) / sum(w)
+  sum(x$om[rows][w > 0] * w[w > 0]) / sum(w)
 }
 
 #' @rdname cpcs1967_groups
@@ -567,7 +592,7 @@ podzolic_cpcs <- function(pedon) {
     .cpcs_paler(x, i, if (length(above)) above[length(above)] else integer(0), below[1L])
   }, NA))
   path_a <- .cpcs_and(light, bom)
-  # (b) a pale A2 directly over a Bg (the sols podzoliques a pseudogley)
+  # (b) an A2 directly over a Bg (the sols podzoliques a pseudogley)
   path_b <- any(vapply(e, function(i) { j <- .cpcs_next_row(x, i); !is.na(j) && x$role[j] %in% "B" && isTRUE(x$des$g[j]) }, NA))
   # (c) an Ap directly over a podzolic B with more than 1 % OM (the A2 ploughed in)
   path_c <- .cpcs_any(vapply(rows[x$role[rows] %in% "A" & x$des$p[rows] %in% TRUE], function(i) {
@@ -648,11 +673,11 @@ alpine_podzol_cpcs <- function(pedon) {
 molken_podzol_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # a g in the place of the A2, under a perched water table (p. 54); a
-  # recorded water table that is not perched rules it out
+  # recorded phreatic water table rules it out
   rows <- .cpcs_mineral_rows(x)
   g <- any(x$role[rows] %in% "E" & .cpcs_g_master(x)[rows])
-  gw <- tolower(as.character(x$site$groundwater_kind %||% NA)[1L])
-  ok_gw <- is.na(gw) || !nzchar(gw) || grepl("perch|suspend", gw)
+  gw <- .cpcs_gw_kind(x)
+  ok_gw <- is.na(gw) || grepl(.CPCS_GW_STAGNANT_RE, gw)
   p <- g && !length(.cpcs_e_rows(x)) && ok_gw
   .cpcs_sub_result("molken_podzol_cpcs", p, x, list(g_master = g), "VIII/32, p. 54")
 }
@@ -664,10 +689,13 @@ tropical_groundwater_podzol_cpcs <- function(pedon) {
   # tropical, a very thick A2 (50 cm or more), a concretioned or cemented B
   e <- .cpcs_e_rows(x); th <- .cpcs_thickness(x, e)
   b <- .cpcs_b_rows(x)
-  nod <- .cpcs_num(x$h, "ferric_nodules_pct"); cem <- .scsj_txt(x$h, "cementation_class"); pan <- .scsj_txt(x$h, "pan_type")
+  nod <- .cpcs_num(x$h, "ferric_nodules_pct"); cem <- .scsj_txt(x$h, "cementation_class")
+  pan <- .scsj_txt(x$h, "pan_type")
+  pan <- ifelse(is.na(pan), NA, trimws(.cpcs_drop_negated(pan)))
+  pan[!is.na(pan) & (!nzchar(pan) | grepl("^none|fragipan|densipan", pan))] <- NA
   conc <- any((!is.na(nod[b]) & nod[b] > 0) | x$des$cn[b] %in% TRUE | x$des$m[b] %in% TRUE |
                 (!is.na(cem[b]) & grepl("moderat|strong|indurat", cem[b])) |
-                (!is.na(pan[b]) & !grepl("^none", pan[b])))
+                !is.na(pan[b]))
   p <- .cpcs_and(.cpcs_tropical(x), if (!length(e)) FALSE else if (is.na(th)) NA else th >= 50, conc)
   .cpcs_sub_result("tropical_groundwater_podzol_cpcs", p, x, list(a2_cm = th, concretioned_B = conc), "VIII/33, p. 55",
                    climatic = TRUE)
@@ -677,9 +705,10 @@ tropical_groundwater_podzol_cpcs <- function(pedon) {
 
 # The leaching of the ferruginous soils (pp. 59-60): the clay index above
 # 1.4 with 5 % clay more, and an A of 15 cm or more or a third of the solum
-# or more; the C intermediate (under 0.9 x the largest clay of the B) or
-# clay films in the B for the leached soils, the C as clayey and no films
-# for the impoverished ones (Hugo, 2026-11-01).
+# or more; the C intermediate (under 0.9 x the largest clay of the B) for
+# the leached soils, or clay films in the B whatever the A (a thin A with
+# visible films is leached, p. 59); the C as clayey and no films for the
+# impoverished ones (Hugo, 2026-11-01).
 .cpcs_ix_leaching <- function(x) {
   ci <- .cpcs_clay_index(x)
   ath <- .cpcs_thickness(x, ci$a); sol <- .cpcs_solum_depth(x)
@@ -697,7 +726,8 @@ tropical_groundwater_podzol_cpcs <- function(pedon) {
 ferruginous_leached_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   l <- .cpcs_ix_leaching(x)
-  p <- .cpcs_and(l$idx, l$thick, .cpcs_or(l$films, l$c_intermediate))
+  # clay films in the B make it leached even under a thin A (p. 59)
+  p <- .cpcs_and(l$idx, .cpcs_or(l$films, .cpcs_and(l$thick, l$c_intermediate)))
   .cpcs_sub_result("ferruginous_leached_cpcs", p, x, list(clay_index = l$ci$r, A_thick = l$thick,
                    C_intermediate = l$c_intermediate, films = l$films), "IX/12, p. 59")
 }
@@ -728,7 +758,8 @@ fersiallitic_calcium_reserve_cpcs <- function(pedon) {
   carb <- any(cc > 0, na.rm = TRUE) || any(sc > 0, na.rm = TRUE) || any(efp) ||
     any(x$des$ca[rows] %in% TRUE) || grepl(.CPCS_CALC_ROCK_RE, txt)
   bs <- .cpcs_bs(x); ph <- .cpcs_num(x$h, "ph_h2o")
-  chem <- .cpcs_larger_part_b(x, ifelse(is.na(bs) | is.na(ph), NA, bs >= 95 & ph >= 7 & ph <= 7.5))
+  chem <- .cpcs_larger_part_b(x, vapply(seq_len(x$n), function(i)
+    .cpcs_and(if (is.na(bs[i])) NA else bs[i] >= 95, if (is.na(ph[i])) NA else ph[i] >= 7 && ph[i] <= 7.5), NA))
   p <- if (carb) TRUE else if (isTRUE(chem)) TRUE else if (isFALSE(chem)) FALSE else
     if (any(!is.na(cc)) || any(!is.na(ef))) FALSE else NA
   .cpcs_sub_result("fersiallitic_calcium_reserve_cpcs", p, x, list(carbonate = carb, saturated_neutral_B = chem),
@@ -746,6 +777,10 @@ ferrallitic_humic_cpcs <- function(pedon) {
   m <- .cpcs_om20(x)
   rows <- .cpcs_rows_within(x, 100); rows <- rows[!x$rock[rows]]
   deep <- if (!length(rows)) NA else .cpcs_all(ifelse(is.na(x$om[rows]), NA, x$om[rows] > 1))
+  # 'jusqu'a au moins 1 m' (p. 68): a description that stops short of 100 cm
+  # (above any rock) leaves it open
+  reach <- suppressWarnings(max(x$dbot[rows], na.rm = TRUE))
+  if (isTRUE(deep) && (!is.finite(reach) || reach < min(100, x$rock_top, na.rm = TRUE))) deep <- NA
   p <- .cpcs_or(if (is.na(m)) NA else m >= 7, deep)
   .cpcs_sub_result("ferrallitic_humic_cpcs", p, x, list(om_top_20 = m, om_1_to_100 = deep), "X, pp. 68-70")
 }
@@ -765,17 +800,18 @@ ferrallitic_impoverished_cpcs <- function(pedon) {
 ferrallitic_reworked_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # a stone line (15 % coarse fragments or more at the base of the A or in
-  # the B, more than above and below), a lithological discontinuity, or a
-  # colluvial origin (Hugo, 2026-11-01); not recorded, none
+  # the B, more than in the recorded rows above and below), a lithological
+  # discontinuity, or a colluvial origin (Hugo, 2026-11-01); not recorded,
+  # none
   rows <- .cpcs_mineral_rows(x); rows <- rows[!x$rock[rows]]
-  cf <- .cpcs_num(x$h, "coarse_fragments_pct"); cf0 <- ifelse(is.na(cf), 0, cf)
+  cf <- .cpcs_num(x$h, "coarse_fragments_pct")
   a <- .cpcs_a_rows(x)
   cand <- unique(c(if (length(a)) a[length(a)], .cpcs_b_rows(x)))
   line <- any(vapply(cand, function(i) {
     if (is.na(cf[i]) || cf[i] < 15) return(FALSE)
-    k <- match(i, rows); if (is.na(k)) return(FALSE)
-    up <- if (k > 1L) cf0[rows[k - 1L]] else 0; lo <- if (k < length(rows)) cf0[rows[k + 1L]] else 0
-    cf[i] > up && cf[i] > lo
+    k <- match(i, rows); if (is.na(k) || k >= length(rows)) return(FALSE)
+    up <- if (k > 1L) cf[rows[k - 1L]] else 0; lo <- cf[rows[k + 1L]]
+    !is.na(up) && !is.na(lo) && cf[i] > up && cf[i] > lo
   }, NA))
   txt <- .cpcs_lc(c(.scsj_col(x$h, "designation", NA_character_), .scsj_txt(x$h, "layer_origin")))
   line <- line || grepl("stone ?-?line|ligne (de )?(cailloux|pierres|graviers)|nappe de gravats|gravel line", txt)
@@ -796,8 +832,9 @@ ferrallitic_rejuvenated_cpcs <- function(pedon) {
   rows <- .cpcs_rows_within(x, 100); rows <- rows[!x$rock[rows]]
   s <- cbind(.cpcs_num(x$h, "sand_feldspar_pct"), .cpcs_num(x$h, "sand_mica_pct"), .cpcs_num(x$h, "sand_amphibole_pct"))
   tot <- ifelse(rowSums(!is.na(s)) > 0, rowSums(s, na.rm = TRUE), NA_real_)
-  mn <- .scsj_txt(x$h, "sand_mineralogy")
-  p <- any(tot[rows] >= 10, na.rm = TRUE) || any(!is.na(mn[rows]) & grepl("mica|feldsp|anfib|amphib", mn[rows]))
+  mn <- .scsj_txt(x$h, "sand_mineralogy")[rows]
+  mn <- ifelse(is.na(mn), "", gsub("(traces?|few|rare|some|little|peu de|quelques)( of)? [a-z\u00e0-\u00ff]+", " ", .cpcs_drop_negated(mn)))
+  p <- any(tot[rows] >= 10, na.rm = TRUE) || any(grepl("mica|feldsp|anfib|amphib", mn))
   .cpcs_sub_result("ferrallitic_rejuvenated_cpcs", p, x, where = "X, pp. 68-70")
 }
 
@@ -839,8 +876,14 @@ peat_fibre_cpcs <- function(pedon, kind) {
   others <- max(tot[kinds != kind])
   # a tie goes to the first class of the key (the fibrous peat)
   best <- kinds[which.max(tot)]
+  # with layers of unknown class: decided when the class wins (or loses)
+  # whatever the unknown layers are
+  ki <- match(kind, kinds)
+  beats <- function(a, ia, b, ib) a > b || (a == b && ia < ib)
+  win <- all(vapply(setdiff(seq_along(kinds), ki), function(j) beats(tot[[ki]], ki, tot[[j]] + u, j), NA))
+  lose <- any(vapply(setdiff(seq_along(kinds), ki), function(j) beats(tot[[j]], j, tot[[ki]] + u, ki), NA))
   p <- if (!length(pr) || sum(th) <= 0) FALSE else if (u == 0) identical(best, kind) else
-    if (tot[[kind]] > others + u) TRUE else if (tot[[kind]] + u < others) FALSE else NA
+    if (win) TRUE else if (lose) FALSE else NA
   .cpcs_sub_result("peat_fibre_cpcs", p, x, as.list(c(tot, unknown = u)), "XI-1, p. 74")
 }
 
@@ -853,9 +896,7 @@ humic_gley_cpcs <- function(pedon) {
   run <- integer(0)
   for (i in mrows) { if (!is.na(x$om[i]) && x$om[i] >= 8 && x$om[i] < 30) run <- c(run, i) else break }
   nxt <- if (length(run)) mrows[match(run[length(run)], mrows) + 1L] else NA_integer_
-  red <- .cpcs_reduced_rows(x)
-  p <- if (is.na(nxt)) NA else if (isTRUE(red[nxt])) TRUE else
-    if (!is.na(.cpcs_num(x$h, "munsell_chroma_moist")[nxt]) || x$des$known[nxt]) FALSE else NA
+  p <- if (is.na(nxt)) NA else .cpcs_reduced3(x)[nxt]
   .cpcs_sub_result("humic_gley_cpcs", p, x, where = "XI/21, p. 75")
 }
 
@@ -888,17 +929,53 @@ calcium_redistribution_cpcs <- function(pedon) {
   .cpcs_sub_result("calcium_redistribution_cpcs", p, x, where = "XI/36, p. 76")
 }
 
-# The first row with a reduced matrix, from the mineral surface.
-.cpcs_first_reduced <- function(x) {
+# A reduced matrix for the groups, three-valued: TRUE as the class reads it,
+# NA where the matrix colour that would decide is not recorded (no G of the
+# notation, no dipyridyl test), FALSE otherwise; a g of the CPCS notation
+# with no colour is a pseudogley.
+.cpcs_reduced3 <- function(x) {
   red <- .cpcs_reduced_rows(x)
-  rows <- .cpcs_mineral_rows(x)
-  r <- rows[red[rows] %in% TRUE & !is.na(x$dtop[rows])]
-  if (length(r)) r[1L] else NA_integer_
+  hue <- as.character(.scsj_col(x$h, "munsell_hue_moist", NA_character_))
+  v <- .cpcs_num(x$h, "munsell_value_moist"); cr <- .cpcs_num(x$h, "munsell_chroma_moist")
+  neu <- .scsj_neutral(hue)
+  cr <- ifelse(neu & is.na(cr), 0, cr)
+  grey_known <- !is.na(v) & !is.na(cr)
+  open <- (!grey_known | (v >= 4 & cr <= 2 & is.na(hue))) & is.na(.scsj_dipyridyl(x$h))
+  cpcs_g <- isTRUE(x$des$cpcs) & x$des$g %in% TRUE
+  ifelse(red, TRUE, ifelse(open & !cpcs_g & !x$rock & !(x$role %in% c("E", "O")) & !(x$organic %in% TRUE), NA, FALSE))
+}
+
+# The first mineral row with a reduced matrix, and whether a row that may be
+# reduced lies above it (or, with none, anywhere).
+.cpcs_first_reduced <- function(x) {
+  r3 <- .cpcs_reduced3(x)
+  rows <- .cpcs_mineral_rows(x); rows <- rows[!is.na(x$dtop[rows])]
+  f <- rows[r3[rows] %in% TRUE][1L]
+  open <- rows[is.na(r3[rows]) & (is.na(f) | x$dtop[rows] < (x$dtop[f] %||% Inf))]
+  list(row = f, open_top = if (length(open)) min(x$dtop[open]) else NA_real_, r3 = r3)
 }
 
 .cpcs_gw_kind <- function(x) {
   g <- tolower(trimws(as.character(x$site$groundwater_kind %||% NA)[1L]))
   if (is.na(g) || !nzchar(g) || g == "na") NA_character_ else g
+}
+
+# A water table that is perched, or none: the stagnogley's (p. 76).
+.CPCS_GW_STAGNANT_RE <- "perch|suspend|^none|no water|not observed|absent|aucune"
+
+# The stagnogley morphology: a reduced matrix just under the A, over the
+# larger part of the profile from the base of the A to 100 cm.
+.cpcs_stagno_morph <- function(x) {
+  base <- .cpcs_a1_base(x)
+  r3 <- .cpcs_reduced3(x)
+  rows <- .cpcs_mineral_rows(x)
+  nxt <- rows[!(rows %in% .cpcs_a1_rows(x))][1L]
+  to <- min(100, x$rock_top, na.rm = TRUE)
+  if (is.na(base) || is.na(nxt)) return(if (is.na(nxt)) FALSE else NA)
+  if (base >= to) return(FALSE)
+  cu <- .scsj_cum(x, r3, base, to)
+  maj <- if (cu$sure > (to - base) / 2) TRUE else if (cu$poss <= (to - base) / 2) FALSE else NA
+  .cpcs_and(r3[nxt], maj)
 }
 
 #' @rdname cpcs1967_groups
@@ -910,18 +987,20 @@ amphigley_cpcs <- function(pedon) {
   # gley by a layer without hydromorphy between them, or by the notation (a
   # g of the CPCS notation over a G); continuous mottling over the reduced
   # matrix is the gley's own
-  f <- .cpcs_first_reduced(x)
-  hyd <- .cpcs_hydromorphic_rows(x); red <- .cpcs_reduced_rows(x)
+  fr <- .cpcs_first_reduced(x); f <- fr$row
+  hyd <- .cpcs_hydromorphic_rows(x)
   rows <- .cpcs_mineral_rows(x); rows <- rows[!is.na(x$dtop[rows])]
   p <- FALSE
   if (!is.na(f) && x$dtop[f] >= 50) {
     above <- rows[x$dtop[rows] < x$dtop[f]]
-    ps <- above[hyd[above] %in% TRUE & !(red[above] %in% TRUE)]
+    ps <- above[hyd[above] %in% TRUE & fr$r3[above] %in% FALSE]
     if (length(ps)) {
       last <- ps[length(ps)]
       between <- above[x$dtop[above] > x$dtop[last]]
       p <- any(hyd[between] %in% FALSE) ||
         (isTRUE(x$des$cpcs) && any(x$des$g[ps] %in% TRUE) && isTRUE(x$des$G[f]))
+      # a row above that may be reduced may start the gley higher
+      if (p && !is.na(fr$open_top) && fr$open_top < 50) p <- NA
     }
   }
   .cpcs_sub_result("amphigley_cpcs", p, x, where = "XI/34, p. 76")
@@ -931,37 +1010,28 @@ amphigley_cpcs <- function(pedon) {
 #' @export
 gley_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # a reduced matrix starting within 130 cm, under a water table that is
-  # not perched; a perched water table or none recorded is a stagnogley
-  # (p. 75; Hugo, 2026-11-01)
-  f <- .cpcs_first_reduced(x)
+  # a reduced matrix starting within 130 cm (p. 75). A perched water table
+  # is a stagnogley's; a water table recorded as none, or not recorded, is
+  # one too when the profile has the stagnogley morphology (Hugo, 2026-11-01)
+  fr <- .cpcs_first_reduced(x)
+  red <- if (!is.na(fr$row) && x$dtop[fr$row] < 130) TRUE else if (!is.na(fr$open_top) && fr$open_top < 130) NA else FALSE
   gw <- .cpcs_gw_kind(x)
-  ok <- is.na(gw) || !grepl("perch|suspend|^none|no water|absent", gw)
-  p <- !is.na(f) && x$dtop[f] < 130 && ok
-  .cpcs_sub_result("gley_cpcs", p, x, list(groundwater = gw), "XI/31, p. 75")
+  st <- .cpcs_stagno_morph(x)
+  ok <- if (is.na(gw)) { if (isFALSE(st)) TRUE else NA } else
+    if (grepl("perch|suspend", gw)) FALSE else
+      if (grepl(.CPCS_GW_STAGNANT_RE, gw)) { if (isTRUE(st)) FALSE else if (is.na(st)) NA else TRUE } else TRUE
+  .cpcs_sub_result("gley_cpcs", .cpcs_and(red, ok), x, list(groundwater = gw, stagnogley_morphology = st), "XI/31, p. 75")
 }
 
 #' @rdname cpcs1967_groups
 #' @export
 stagnogley_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # a reduced matrix from just under the A, over the larger part of the
-  # profile from the base of the A to 100 cm, with a perched water table or
-  # none (p. 76)
-  base <- .cpcs_a1_base(x)
-  red <- .cpcs_reduced_rows(x)
-  rows <- .cpcs_mineral_rows(x)
-  a <- .cpcs_a1_rows(x)
-  nxt <- rows[!(rows %in% a)][1L]
-  to <- min(100, x$rock_top, na.rm = TRUE)
-  maj <- if (is.na(base) || base >= to) FALSE else {
-    cu <- .scsj_cum(x, red %in% TRUE, base, to)
-    if (cu$sure > (to - base) / 2) TRUE else if (cu$poss <= (to - base) / 2) FALSE else NA
-  }
+  # the stagnogley morphology, with a perched water table, none, or none
+  # recorded (p. 76)
   gw <- .cpcs_gw_kind(x)
-  ok <- is.na(gw) || grepl("perch|suspend|^none|no water|absent", gw)
-  p <- .cpcs_and(!is.na(nxt) && isTRUE(red[nxt]), maj, ok)
-  .cpcs_sub_result("stagnogley_cpcs", p, x, list(groundwater = gw), "XI/33, p. 76")
+  ok <- is.na(gw) || grepl(.CPCS_GW_STAGNANT_RE, gw)
+  .cpcs_sub_result("stagnogley_cpcs", .cpcs_and(.cpcs_stagno_morph(x), ok), x, list(groundwater = gw), "XI/33, p. 76")
 }
 
 # ---- XII --------------------------------------------------------------------------
@@ -972,13 +1042,18 @@ solodised_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
   # an albic A2 over a B with the clay increase of the WRB argic horizon, and
   # an acid surface (pH under 7) when recorded (p. 79; Hugo, 2026-11-01)
-  e <- .cpcs_e_rows(x); cl <- .cpcs_claric_rows(x)
-  e <- e[cl[e] %in% TRUE]
-  b <- .cpcs_b_rows(x)
-  emin <- if (length(e) && any(!is.na(x$clay[e]))) min(x$clay[e], na.rm = TRUE) else NA_real_
-  etop <- if (length(e) && any(!is.na(x$dtop[e]))) min(x$dtop[e], na.rm = TRUE) else NA_real_
-  below <- b[!is.na(x$dtop[b]) & !is.na(etop) & x$dtop[b] > etop]
-  step <- if (!length(e) || !length(below)) FALSE else .cpcs_any(vapply(below, function(i) .cpcs_argic_step(emin, x$clay[i]), NA))
+  e0 <- .cpcs_e_rows(x); cl <- .cpcs_claric_rows(x)
+  b <- .cpcs_group_b_rows(x)
+  over_b <- function(e) {
+    if (!length(e)) return(FALSE)
+    emin <- if (any(!is.na(x$clay[e]))) min(x$clay[e], na.rm = TRUE) else NA_real_
+    etop <- if (any(!is.na(x$dtop[e]))) min(x$dtop[e], na.rm = TRUE) else NA_real_
+    below <- b[!is.na(x$dtop[b]) & !is.na(etop) & x$dtop[b] > etop]
+    if (!length(below)) FALSE else .cpcs_any(vapply(below, function(i) .cpcs_argic_step(emin, x$clay[i]), NA))
+  }
+  # an A2 whose albic test is undecided may still be the bleached horizon
+  s1 <- over_b(e0[cl[e0] %in% TRUE]); s2 <- over_b(e0[is.na(cl[e0])])
+  step <- if (isTRUE(s1)) TRUE else if (isFALSE(s1) && isFALSE(s2)) FALSE else NA
   rows <- .cpcs_mineral_rows(x)
   ph <- .cpcs_num(x$h, "ph_h2o")[rows[1L]]
   acid <- is.na(ph) || ph < 7

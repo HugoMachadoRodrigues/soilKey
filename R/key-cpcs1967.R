@@ -208,7 +208,8 @@ make_cpcs1967_example <- function(class = c("raw_mineral", "weakly_developed", "
       oc_pct = c(3, 0.5, 0.3), n_total_pct = c(0.25, 0.05, 0.03), clay_pct = 35, silt_pct = 40, sand_pct = 25,
       ph_h2o = 6.5, cec_cmol = 20, bs_pct = 70, ca_cmol = 11, mg_cmol = 2.5, na_cmol = 0.2,
       munsell_hue_moist = c("10YR", "5GY", "5GY"), munsell_value_moist = c(3, 5, 5), munsell_chroma_moist = c(2, 1, 1),
-      redoximorphic_features_pct = c(15, 5, 2)), list(drainage_class = "poorly drained", landform = "valley floor")),
+      redoximorphic_features_pct = c(15, 5, 2)), list(drainage_class = "poorly drained", landform = "valley floor",
+                                                     groundwater_kind = "observed", groundwater_depth_cm = 40)),
     sodic = mk(list(
       designation = c("A1Sa", "C1Sa", "C2"), top_cm = c(0, 15, 50), bottom_cm = c(15, 50, 100),
       oc_pct = c(1, 0.4, 0.2), n_total_pct = c(0.1, 0.04, 0.02), clay_pct = 30, silt_pct = 40, sand_pct = 30,

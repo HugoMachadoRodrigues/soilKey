@@ -247,8 +247,13 @@ test_that("class IX", {
   expect_identical(.g(f), "IX/12")
   expect_identical(.g(.with_h(f, clay_pct = c(25, 40, 42, 40), clay_films_amount = c("none", "few", "few", "few"))), "IX/13")
   expect_identical(.g(.with_h(f, clay_pct = c(35, 40, 42, 35))), "IX/11")
-  # a thin A (under 15 cm and a third of the solum) is not leached
-  expect_identical(.g(.with_h(f, top_cm = c(0, 10, 60, 100), bottom_cm = c(10, 60, 100, 140))), "IX/11")
+  # a thin A (under 15 cm and a third of the solum): leached only with clay
+  # films in the B (p. 59)
+  thin <- .with_h(f, top_cm = c(0, 10, 60, 100), bottom_cm = c(10, 60, 100, 140))
+  expect_identical(.g(thin), "IX/12")
+  expect_identical(.g(.with_h(thin, clay_films_amount = c("none", "few", "few", "few"))), "IX/11")
+  # the calcium reserve read row by row: a B at V 80 fails whatever its pH
+  expect_identical(.grp(.with_h(s, bs_pct = c(80, 80, 80, 80), ph_h2o = NA_real_))[["prov"]], "")
 })
 
 test_that("class X", {
@@ -337,3 +342,78 @@ test_that("class XII", {
   expect_identical(.g(sd), "XII/23")
   expect_identical(.g(.with_h(so, designation = c("A1", "(B)", "C"), clay_pct = 30, sand_pct = 30)), "XII/21")
 })
+
+test_that("the fixes of the reviews", {
+  skip_on_cran()
+  # "non-sorted" circles are patterned ground, not a negation
+  cold <- .with_site(make_cpcs1967_example("raw_mineral"), koppen_climate = "ET")
+  expect_identical(.g(.with_site(cold, patterned_ground = "non-sorted circles")), "I/23")
+  expect_identical(.g(.with_site(cold, patterned_ground = TRUE)), "I/23")
+  # the humic ferrallitic soils: more than 1 % OM to at least 100 cm
+  x <- make_cpcs1967_example("ferrallitic")
+  short <- .with_h(x, oc_pct = c(1.5, 1.2, 1, 0.8), n_total_pct = c(0.14, 0.11, 0.09, 0.07),
+                   top_cm = c(0, 15, 30, 45), bottom_cm = c(15, 30, 45, 60))
+  r <- .grp(short)
+  expect_identical(r[["code"]], "X/21"); expect_match(r[["prov"]], "groups:X/22")
+  # a stone line needs a recorded row below with less gravel
+  expect_identical(.g(.with_h(x, coarse_fragments_pct = c(0, 0, 0, 25))), "X/21")
+  expect_identical(.g(.with_h(x, coarse_fragments_pct = c(NA, 30, NA, NA))), "X/21")
+  # negated or trace minerals are not weatherable minerals
+  expect_identical(.g(.with_h(x, sand_mineralogy = c(NA, "quartz; no feldspar or mica", NA, NA))), "X/21")
+  expect_identical(.g(.with_h(x, sand_mineralogy = c(NA, "traces of mica", NA, NA))), "X/21")
+  # a fine subangular blocky A is not polyhedral (V/23)
+  c1 <- make_cpcs1967_example("calcimagnesic")
+  expect_identical(.g(.with_h(c1, caco3_pct = c(0, NA), effervescence_class = c("none", NA),
+                              structure_type = c("subangular blocky", NA), structure_size = c("fine", NA))), "V/21")
+  # primary structure first
+  expect_false(soilKey:::.cpcs_round_row("prismatic parting to subangular blocky"))
+  expect_true(soilKey:::.cpcs_round_row("subangular blocky parting to granular"))
+  # gley or stagnogley: the water table decides when the morphology is both
+  h <- make_cpcs1967_example("hydromorphic")
+  nogw <- .with_site(h, groundwater_kind = NULL, groundwater_depth_cm = NULL)
+  r <- .grp(nogw)
+  expect_identical(r[["code"]], "XI/33"); expect_match(r[["prov"]], "groups:XI/31")
+  expect_identical(.g(.with_site(h, groundwater_kind = "none observed")), "XI/33")
+  # a gley from 70 cm with no water table recorded is still a gley
+  deep <- .with_h(nogw, designation = c("A", "Bg", "Cg"), munsell_hue_moist = c("10YR", "10YR", "5GY"),
+                  munsell_chroma_moist = c(2, 4, 1), top_cm = c(0, 20, 70), bottom_cm = c(20, 70, 120))
+  expect_identical(.g(.with_site(deep, groundwater_kind = "none", designation_system = "fao")), "XI/31")
+  # a matrix colour not recorded leaves the gley undecided
+  nocol <- .with_site(.fr(list(designation = c("A", "Bg", "Cg"), top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 120),
+                               oc_pct = c(2, 0.4, 0.2), redoximorphic_features_pct = c(2, 30, 40))), designation_system = "fao")
+  expect_match(.grp(nocol)[["prov"]], "groups:XI/31")
+  # the solodised soils keep an A2 whose albic test cannot be read
+  sd <- .fr(list(designation = c("A1", "A2", "Bt", "C"), top_cm = c(0, 10, 25, 60), bottom_cm = c(10, 25, 60, 100),
+                 oc_pct = c(1.5, 0.3, 0.5, 0.2), n_total_pct = c(0.12, 0.03, 0.05, 0.02), clay_pct = c(12, 10, 35, 30),
+                 silt_pct = 40, sand_pct = c(48, 50, 25, 30), ec_dS_m = c(0.5, 1, 2, 3), na_cmol = c(0.3, 0.4, 4, 3),
+                 cec_cmol = 15, bs_pct = c(60, 60, 100, 100), ph_h2o = c(6, 6.2, 8.8, 8.6),
+                 structure_type = c("granular", "platy", "columnar", "massive"),
+                 consistence_moist = c("friable", "friable", "very firm", "firm"), redoximorphic_features_pct = 0))
+  r <- .grp(sd)
+  expect_identical(r[["code"]], "XII/22"); expect_match(r[["prov"]], "groups:XII/23")
+  # clay films recorded in part of the B do not rule the leached soils out
+  b <- make_cpcs1967_example("brunified")
+  le <- .with_h(b, designation = c("A1", "BA", "Bt"), clay_pct = c(10, 15, 30), sand_pct = c(50, 45, 30),
+                clay_films_amount = c(NA, "few", NA))
+  expect_identical(.g(le), "VII/12")
+  # an A1/A2/C profile has no textural B
+  ac <- .with_h(b, designation = c("A1", "A2", "C"))
+  expect_identical(.grp(ac)[["prov"]], "")
+  # a recent deposit recorded whose kind cannot be read: the erosion group is undecided
+  wd <- make_cpcs1967_example("weakly_developed")
+  r <- .grp(.with_h(wd, layer_origin = "recent deposit"))
+  expect_identical(r[["code"]], "II/41"); expect_match(r[["prov"]], "groups:II/46")
+  # the mean OM of the top 20 cm skips a row of no thickness
+  iso <- .with_h(make_cpcs1967_example("isohumic"), top_cm = c(0, 35, 70, 100), bottom_cm = c(35, 70, 100, 140))
+  expect_equal(soilKey:::.cpcs_om20(soilKey:::.cpcs_profile(iso)), 3 * 1.72)
+  # a pan recorded as absent is no cemented B
+  p <- make_cpcs1967_example("podzolised")
+  tp <- .with_site(.with_h(p, top_cm = c(0, 5, 12, 80, 90, 120), bottom_cm = c(5, 12, 80, 90, 120, 160),
+                           redoximorphic_features_pct = c(NA, 0, 10, 0, 0, 0), pan_type = c(NA, NA, NA, NA, "no pan", NA)),
+                   lat = -3)
+  expect_identical(.g(tp), "VIII/31")
+  # a molken-podzol under a water table recorded as none
+  mk <- .with_h(p, designation = c("Ao", "A1", "g", "B2h", "B2fe", "C"), redoximorphic_features_pct = c(NA, 0, NA, 0, 0, 0))
+  expect_identical(.g(.with_site(mk, groundwater_kind = "none")), "VIII/32")
+})
+

@@ -24,8 +24,8 @@ groups:
           - ferrallitic_rejuvenated_cpcs: {}
       notes: "Weatherable minerals in the sand (feldspars, micas, amphiboles) of 10 % or more."
     - code: "X/11"
-      name: Sols ferrallitiques faiblement désaturés en (B) typiques
-      name_native: Sols ferrallitiques faiblement désaturés en (B) typiques
+      name: Sols ferrallitiques faiblement désaturés en (B) typique
+      name_native: Sols ferrallitiques faiblement désaturés en (B) typique
       tests:
         default: true
       notes: "The other weakly desaturated ferrallitic soils."
