@@ -102,6 +102,10 @@ pro_fixture_catalog <- function() {
   scsj2017 = c("Man-made soils" = "man_made", "Organic Soils" = "organic", "Andosols" = "andosol",
                "Podzols" = "podzol", "Fluvic soils" = "fluvic", "Red-Yellow soils" = "red_yellow",
                "Stagnic soils" = "stagnic", "Eutrosols" = "eutrosol",
+               "Brown Forest soils" = "brown_forest", "Regosols" = "regosol"),
+  cscj2011 = c("Man-made soils" = "man_made", "Organic soils" = "organic", "Podzols" = "podzol",
+               "Andosols" = "andosol", "Dark Red soils" = "dark_red", "Lowland soils" = "lowland",
+               "Red-Yellow soils" = "red_yellow", "Stagnic soils" = "stagnic",
                "Brown Forest soils" = "brown_forest", "Regosols" = "regosol")
 )
 

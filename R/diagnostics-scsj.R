@@ -54,7 +54,7 @@
 # The colour words of IV.4 for each row, from the moist matrix colour: red,
 # yellow, brown, grey, blue-grey, black. A list of logical vectors, NA where
 # the colour is not recorded.
-.scsj_colour_words <- function(h) {
+.scsj_colour_words <- function(h, edition = "scsj2017") {
   hue <- as.character(.scsj_col(h, "munsell_hue_moist", NA_character_))
   v <- .scsj_col(h, "munsell_value_moist"); c <- .scsj_col(h, "munsell_chroma_moist")
   hn <- .scsj_hue_num(hue); neu <- .scsj_neutral(hue)
@@ -68,6 +68,10 @@
   yellow <- yellower5 & v >= 3 & c >= 6 & !(v %in% c(3, 4) & c == 6)
   brown <- yel_eq5 & v >= 3 & ((c >= 3 & c < 6) | (v %in% c(3, 4) & c == 6))
   grey <- ((!is.na(hn) & !bluer10y & v >= 3 & c < 3) | (neu & v >= 3))
+  # dark red (CSCJ IV.4): 5YR or redder, value 3 or less and chroma 3 to 6,
+  # or 4/3 and 4/4
+  dark_red <- redder5 & ((v <= 3 & c >= 3 & c <= 6) | (v == 4 & c %in% c(3, 4)))
+  no_dark_red <- (!is.na(v) & v > 4) | (!is.na(c) & (c < 3 | c > 6)) | (!is.na(hn) & !redder5)
   # a partial record that already rules a word out (value or chroma alone)
   no_red <- (!is.na(v) & v <= 3) | (!is.na(c) & c < 3)
   no_yellow <- (!is.na(v) & v < 3) | (!is.na(c) & c < 6)
@@ -76,7 +80,11 @@
   na_out <- function(x, no) ifelse(known, x, ifelse(no, FALSE, NA))
   list(red = na_out(red, no_red), yellow = na_out(yellow, no_yellow), brown = na_out(brown, no_brown),
        grey = na_out(grey, no_grey), bluegrey = ifelse(!is.na(hn) | neu, bluer10y, NA),
-       black = ifelse(is.na(v), NA, v < 3), hue_num = hn, value = v, chroma = c)
+       dark_red = na_out(dark_red, no_dark_red),
+       # black to blackish brown: value under 3 (CSCJ: not dark red)
+       black = if (identical(edition, "cscj2011")) .scsj_and(ifelse(is.na(v), NA, v < 3), .scsj_not(na_out(dark_red, no_dark_red)))
+               else ifelse(is.na(v), NA, v < 3),
+       hue_num = hn, value = v, chroma = c)
 }
 
 # ---- texture ------------------------------------------------------------------
@@ -194,10 +202,15 @@
 # Shared reading of a pedon: designations, row order, organic and mineral
 # rows, the soil surface (IV.4), depths from it, the materials and the
 # features of each row. Recomputed by each gate.
+# The edition of the Japanese system a pedon is read by: the CSCJ 2011
+# (site$jp_edition, set by classify_cscj2011() on its copy) or the SCSJ 2017.
+.scsj_edition <- function(site) if (identical(site$jp_edition, "cscj2011")) "cscj2011" else "scsj2017"
+
 .scsj_profile <- function(pedon) {
   h <- pedon$horizons
   n <- nrow(h)
   site <- pedon$site %||% list()
+  edition <- .scsj_edition(site)
   top <- h$top_cm; bot <- h$bottom_cm
   des <- .scsj_designations(.scsj_col(h, "designation", NA_character_), site, top)
   role <- des$role
@@ -210,7 +223,7 @@
   kb <- .scsj_kuroboku_rows(h, des, oc)
   # immature kuroboku: an ejecta layer without the kuroboku feature (the
   # field note of IV.2 splits ejecta layers between the two)
-  ikb_raw <- .scsj_immature_kuroboku_rows(h, des, oc, orig)
+  ikb_raw <- .scsj_immature_kuroboku_rows(h, des, oc, orig, edition)
   ikb <- .scsj_and(ikb_raw, .scsj_not(kb))
 
   # peat material (IV.3): 12 % organic carbon or more, without the kuroboku
@@ -293,7 +306,8 @@
               peat = peat, orgmat = orgmat, organic = organic,
               mineral = .scsj_not(organic), surface = surface, ground = ground,
               surface_note = surface_note, dtop = dtop, dbot = dbot, wet = wet)
-  out$colour <- .scsj_colour_words(h)
+  out$edition <- edition
+  out$colour <- .scsj_colour_words(h, edition)
   out$paddy <- .scsj_paddy_site(site)
   rk <- .scsj_rock_rows(out)
   out$rock <- rk$rock; out$rock_maybe <- rk$maybe
@@ -570,11 +584,13 @@
 # retention 25 to under 85 %, or Alo + 1/2 Feo 0.4 to under 2.0 %), or 3 %
 # organic carbon or more. Ejecta are read from the recorded origin (none
 # recorded: no ejecta); coarse fragments not recorded read as under half.
-.scsj_immature_kuroboku_rows <- function(h, des, oc, orig) {
+.scsj_immature_kuroboku_rows <- function(h, des, oc, orig, edition = "scsj2017") {
   pac <- .scsj_col(h, "phosphate_absorption_coef")
   pr <- .scsj_col(h, "phosphate_retention_pct")
   alo <- .scsj_col(h, "al_ox_pct"); feo <- .scsj_col(h, "fe_ox_pct")
   af <- ifelse(is.na(alo) | is.na(feo), NA_real_, alo + feo / 2)
+  # the CSCJ (IV.2) gives P retention as the only substitute
+  if (identical(edition, "cscj2011")) af <- rep(NA_real_, length(pac))
   mid <- ifelse(!is.na(pac), pac >= 300 & pac < 1500,
          ifelse((!is.na(pr) & pr >= 25 & pr < 85) | (!is.na(af) & af >= 0.4 & af < 2.0), TRUE,
          ifelse(!is.na(pr) | !is.na(af), FALSE, NA)))
@@ -715,7 +731,11 @@
     ok <- vapply(above, function(j) {
       u <- clay[j]
       if (is.na(u) || is.na(x$mineral[j])) return(NA)
-      if (u < 10) clay[i] >= u + 4 else if (u < 50) clay[i] >= 1.4 * u else clay[i] >= u + 20
+      # SCSJ 2017: under 10 % +4, to 50 % x1.4, else +20; CSCJ 2011 (WRB
+      # 2006): under 15 % +3, to 40 % x1.2, else +8
+      if (identical(x$edition, "cscj2011")) {
+        if (u < 15) clay[i] >= u + 3 else if (u < 40) clay[i] >= 1.2 * u else clay[i] >= u + 8
+      } else if (u < 10) clay[i] >= u + 4 else if (u < 50) clay[i] >= 1.4 * u else clay[i] >= u + 20
     }, NA)
     inc[i] <- if (any(ok %in% TRUE)) TRUE else if (all(ok %in% FALSE)) FALSE else NA
   }
