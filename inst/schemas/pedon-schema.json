@@ -632,6 +632,48 @@
           },
           "gibbsite_pct": {
             "type": ["number", "null"]
+          },
+          "phys_clay_pct": {
+            "type": ["number", "null"]
+          },
+          "texture_class_ru": {
+            "type": ["string", "null"]
+          },
+          "loi_pct": {
+            "type": ["number", "null"]
+          },
+          "peat_decomposition_pct": {
+            "type": ["number", "null"]
+          },
+          "foreign_fragments_pct": {
+            "type": ["number", "null"]
+          },
+          "turbated_fragments": {
+            "type": ["string", "null"]
+          },
+          "contamination_hazard": {
+            "type": ["string", "null"]
+          },
+          "pollutants": {
+            "type": ["string", "null"]
+          },
+          "uncoated_grains_pct": {
+            "type": ["number", "null"]
+          },
+          "effervescence_extent": {
+            "type": ["string", "null"]
+          },
+          "plant_residues_pct": {
+            "type": ["number", "null"]
+          },
+          "sulfide_odour": {
+            "type": ["boolean", "null"]
+          },
+          "slickensides_size": {
+            "type": ["string", "null"]
+          },
+          "cryoturbation": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false
