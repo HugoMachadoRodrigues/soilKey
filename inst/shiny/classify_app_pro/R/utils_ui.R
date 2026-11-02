@@ -98,7 +98,11 @@ pro_fixture_catalog <- function() {
       "K\u0151zethat\u00e1s\u00fa talaj", "Szolonyec talaj", "Szoloncs\u00e1k talaj",
       "Duzzad\u00f3 agyagtalaj", "R\u00e9ti talaj", "Karbon\u00e1t talaj",
       "Mez\u0151s\u00e9gi talaj", "Agyagbemos\u00f3d\u00e1sos talaj", "Homoktalaj",
-      "Barnaf\u00f6ld", "Hordal\u00e9ktalaj", "F\u00f6ldeskop\u00e1r"))
+      "Barnaf\u00f6ld", "Hordal\u00e9ktalaj", "F\u00f6ldeskop\u00e1r")),
+  scsj2017 = c("Man-made soils" = "man_made", "Organic Soils" = "organic", "Andosols" = "andosol",
+               "Podzols" = "podzol", "Fluvic soils" = "fluvic", "Red-Yellow soils" = "red_yellow",
+               "Stagnic soils" = "stagnic", "Eutrosols" = "eutrosol",
+               "Brown Forest soils" = "brown_forest", "Regosols" = "regosol")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

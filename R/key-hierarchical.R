@@ -276,6 +276,11 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
   if (any(vapply(chosen, function(x) !is.null(x$name_en), NA)))
     levels$name_en <- vapply(chosen, function(x) as.character(x$name_en %||% NA_character_),
                              character(1), USE.NAMES = FALSE)
+  # the name in the system's own language, for the systems whose classes
+  # carry one (v0.9.321, the Japanese names of the SCSJ)
+  if (any(vapply(chosen, function(x) !is.null(x$name_native), NA)))
+    levels$name_native <- vapply(chosen, function(x) as.character(x$name_native %||% NA_character_),
+                                 character(1), USE.NAMES = FALSE)
   top_class <- chosen[[top]]
   name <- if (nrow(levels) > 0L) levels$name[nrow(levels)] else NA_character_
 

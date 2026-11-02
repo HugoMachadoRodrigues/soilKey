@@ -316,6 +316,14 @@ and do not warn.
 | `coarse_fragments_shape` | - | character | Shape of the coarse fragments: rounded (gravel) or angular (rock debris). HSCS 2024 varieties kavicsos (rounded) and kőzettörmelékes (angular). | - |
 | `soluble_salts_carbonate_pct` | % | numeric | Carbonate and bicarbonate share of the total water-soluble salts, % (of the salts, not of the soil). HSCS 2024 subtypes karbonát-szulfátos and karbonát-kloridos: at least 20 % beside the sulphate or chloride share (Hugo's reading, 2026-10-30). | - |
 
+## Japanese system (SCSJ 2017)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `phosphate_absorption_coef` | mg P2O5/100 g | numeric | Phosphate absorption coefficient (Japanese method), mg P2O5 per 100 g of dry soil; the SCSJ 2017 writes it in mg P2O5/g (15.00 = 1500). The kuroboku feature needs 1500 or more and the immature kuroboku feature 300 to under 1500; P retention (phosphate_retention_pct, 85 % and 25 %) or Alo + 1/2 Feo (2.0 % and 0.4 %) replace it when it is not measured. Not the Blakemore P retention. | - |
+| `active_al_test` | - | character | Japanese field active-aluminium test (NaF with phenolphthalein paper, Soil Survey Handbook, JSP 1997), graded by how fast and how strongly the paper turns red: -, +-, +, 2+, 3+. SCSJ 2017: a vivid red within a minute (2+ or more) indicates the kuroboku feature; none or +- (no colour, or colour after 5 minutes) indicates no kuroboku feature. Read only when no laboratory value decides. The New Zealand NaF test (naf_test) uses other grades. | - |
+| `n_value` | - | numeric | n value of a water-saturated deposit (Pons and Zonneveld 1965): (field water content % of dry soil - 0.2 x silt and sand %) / (clay % + 3 x organic matter %). SCSJ 2017 physical immaturity: 1 or more (or the material squeezes between the fingers, fluidity_class). | - |
+
 # Site properties
 
 The named elements of `PedonRecord$site` that soilKey recognises. Give them in

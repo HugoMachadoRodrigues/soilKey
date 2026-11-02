@@ -146,6 +146,17 @@ reference:
       - classify_hscs2024
       - make_hscs2024_example
 
+  - title: "Soil Classification System of Japan (experimental)"
+    desc: >
+      The ten great groups of the 2017 system of the Japanese Society of
+      Pedology, named in English with the Japanese names beside them. Reads
+      the Japanese horizon notation, the phosphate absorption coefficient
+      (or P retention, Alo + 1/2 Feo, the field active-aluminium test),
+      colours, paddy land use and the recorded origin of the layers.
+    contents:
+      - classify_scsj2017
+      - make_scsj2017_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:
