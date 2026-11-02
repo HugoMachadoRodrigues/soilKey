@@ -72,6 +72,8 @@
   # or 4/3 and 4/4
   dark_red <- redder5 & ((v <= 3 & c >= 3 & c <= 6) | (v == 4 & c %in% c(3, 4)))
   no_dark_red <- (!is.na(v) & v > 4) | (!is.na(c) & (c < 3 | c > 6)) | (!is.na(hn) & !redder5)
+  # yellowish brown (CSCJ IV.4): the SCSJ's brown without the hue 5YR
+  yellowish_brown <- yellower5 & v >= 3 & ((c >= 3 & c < 6) | (v %in% c(3, 4) & c == 6))
   # a partial record that already rules a word out (value or chroma alone)
   no_red <- (!is.na(v) & v <= 3) | (!is.na(c) & c < 3)
   no_yellow <- (!is.na(v) & v < 3) | (!is.na(c) & c < 6)
@@ -81,6 +83,7 @@
   list(red = na_out(red, no_red), yellow = na_out(yellow, no_yellow), brown = na_out(brown, no_brown),
        grey = na_out(grey, no_grey), bluegrey = ifelse(!is.na(hn) | neu, bluer10y, NA),
        dark_red = na_out(dark_red, no_dark_red),
+       yellowish_brown = na_out(yellowish_brown, no_brown | (!is.na(hn) & !yellower5)),
        # black to blackish brown: value under 3 (CSCJ: not dark red)
        black = if (identical(edition, "cscj2011")) .scsj_and(ifelse(is.na(v), NA, v < 3), .scsj_not(na_out(dark_red, no_dark_red)))
                else ifelse(is.na(v), NA, v < 3),

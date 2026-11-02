@@ -1,0 +1,11 @@
+# Groups of the Podzols, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "C":
+    - code: "C1"
+      name: Podzols
+      name_native: ポドゾル
+      tests:
+        default: true
+      notes: "All Podzols."

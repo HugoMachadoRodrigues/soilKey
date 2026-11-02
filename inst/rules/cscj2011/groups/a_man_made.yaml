@@ -1,0 +1,18 @@
+# Groups of the Man-made soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "A":
+    - code: "A1"
+      name: Artifactual soils
+      name_native: 人工物質土
+      tests:
+        all_of:
+          - artifactual_soils_cscj: {}
+      notes: "25 cm or more (cumulative) of layers with 20 % or more artificial material within 50 cm, or a continuous impermeable artificial layer from within 30 cm."
+    - code: "A2"
+      name: Reformed soils
+      name_native: 盛土造成土
+      tests:
+        default: true
+      notes: "Other Man-made soils."

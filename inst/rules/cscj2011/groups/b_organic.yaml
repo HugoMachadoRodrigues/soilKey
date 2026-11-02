@@ -1,0 +1,11 @@
+# Groups of the Organic soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "B":
+    - code: "B1"
+      name: Peat soils
+      name_native: 泥炭土
+      tests:
+        default: true
+      notes: "All Organic soils."

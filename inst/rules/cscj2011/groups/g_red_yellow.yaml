@@ -1,0 +1,18 @@
+# Groups of the Red-Yellow soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "G":
+    - code: "G1"
+      name: Argic Red-Yellow soils
+      name_native: 粘土集積赤黄色土
+      tests:
+        all_of:
+          - argic_group_cscj: {}
+      notes: "An argic horizon."
+    - code: "G2"
+      name: Cambic Red-Yellow soils
+      name_native: 風化変質赤黄色土
+      tests:
+        default: true
+      notes: "Other Red-Yellow soils."

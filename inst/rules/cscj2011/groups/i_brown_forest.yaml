@@ -1,0 +1,11 @@
+# Groups of the Brown Forest soils, Comprehensive Soil Classification System of Japan,
+# First Approximation (CSCJ 2011), chapter VI. Criteria summarised from the
+# text; see R/diagnostics-cscj-groups.R and inst/rules/cscj2011/readings.yaml.
+groups:
+  "I":
+    - code: "I1"
+      name: Brown Forest soils
+      name_native: 褐色森林土
+      tests:
+        default: true
+      notes: "All Brown Forest soils."
