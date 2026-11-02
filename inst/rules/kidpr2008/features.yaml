@@ -1,0 +1,491 @@
+# The genetic features of the Russian soil classification, Field Guide of 2008
+# (section 3.2, pp. 59-74, and the subtype lists of chapter 4). A feature is
+# written in lower case to the right of a horizon index (BTg, BCAs,cs); one
+# that forms a thin band is a small horizon written alone between hyphens
+# (O-e-BHF-C); three are written in square brackets ([hh], [e-hf], [akl]);
+# BH and BF are written in capitals (horizons.yaml, modifications). Read by
+# the notation reader (R/designation-kidpr.R); the feature tests come later.
+#
+# code         the index as printed (the canonical form where the book has two)
+# aliases      other spellings in the book, read as the code
+# name_native  the Russian name of the 3.2 heading (or of the chapter 4 list)
+# name         soilKey's English gloss
+# group        the 3.2 group: transitional (3.2.1), process (3.2.2),
+#              turbation (3.2.3), evolutionary (3.2.4), parent_rock (3.2.5),
+#              substrate (3.2.6); list_only for the indices of the chapter 4
+#              lists that 3.2 does not define
+# hosts        the horizons the text puts it on (empty: any horizon or the
+#              whole profile)
+# small        it may be written alone as a small horizon
+# ambiguous    written without commas it can also be read as two features
+# page         printed page
+# The criteria are not reproduced: they are in the Field Guide.
+
+edition: "Polevoi opredelitel' pochv Rossii (Dokuchaev Soil Science Institute, Moscow, 2008)"
+
+features:
+  # --- 3.2.1 transitional features (23) --------------------------------------
+  - code: ao
+    name_native: "Грубогумусированный"
+    name: "coarse-humified"
+    group: transitional
+    hosts: [O]
+    small: true
+    page: 60
+  - code: mr
+    name_native: "Минерально-торфяный"
+    name: "mineral-peaty"
+    group: transitional
+    hosts: [T, TO, TE, TJ, H, PT]
+    ambiguous: true
+    page: 61
+  - code: te
+    name_native: "Остаточно-эутрофный"
+    name: "residual-eutrophic"
+    group: transitional
+    hosts: [TO]
+    small: true
+    page: 61
+  - code: h
+    name_native: "Перегнойный"
+    name: "peregnoi (highly decomposed)"
+    group: transitional
+    hosts: [O, T, TO, TE, TJ, PT, AU, AY, AJ, AH, AK, AO]
+    small: true
+    page: 61
+    note: "Inside a peat or a humus horizon, or a band at the base of O, T or PT, or on top of the AU of the dark-humus gley soils."
+  - code: e
+    name_native: "Оподзоленный"
+    name: "podzolised"
+    group: transitional
+    small: true
+    page: 61
+  - code: el
+    name_native: "Элювиированный"
+    name: "eluviated"
+    group: transitional
+    hosts: [AY, AJ, AU, AH, AK, D]
+    small: true
+    page: 61
+    note: "Mostly in the lower part of a humus horizon (and on the underlying rock D); written as a row of its own (an EL-like band of 5 cm or less) it is a marked small horizon, not a diagnostic one (default 11)."
+  - code: BH
+    written_as: horizon
+    name_native: "Иллювиально-гумусовый"
+    name: "illuvial-humus (modification of BHF)"
+    group: transitional
+    hosts: [BHF]
+    page: 62
+  - code: BF
+    written_as: horizon
+    name_native: "Иллювиально-железистый"
+    name: "illuvial-iron (modification of BHF)"
+    group: transitional
+    hosts: [BHF]
+    page: 62
+  - code: f
+    name_native: "Ожелезненный"
+    name: "ferruginated"
+    group: transitional
+    hosts: [E, EL, C]
+    page: 62
+  - code: "[e-hf]"
+    name_native: "С микропрофилем подзола"
+    name: "with a podzol microprofile"
+    group: transitional
+    hosts: [EL]
+    small: true
+    components: [e, hf]
+    page: 62
+  - code: "[akl]"
+    aliases: [akl]
+    name_native: "С корково-подкорковым микропрофилем"
+    name: "with a crust-subcrust microprofile"
+    group: transitional
+    hosts: [AJ]
+    page: 63
+  - code: i
+    name_native: "Глинисто-иллювиированный"
+    name: "clay-illuviated"
+    group: transitional
+    hosts: [BM, CRM, C, D]
+    page: 63
+  - code: m
+    name_native: "Метаморфизованный"
+    name: "metamorphised"
+    group: transitional
+    hosts: [C]
+    page: 63
+  - code: crm
+    name_native: "Криометаморфизованный"
+    name: "cryo-metamorphised"
+    group: transitional
+    small: true
+    page: 63
+  - code: an
+    name_native: "Охристый"
+    name: "ochric"
+    group: transitional
+    hosts: [BHF]
+    page: 63
+  - code: pl
+    name_native: "Палевый"
+    name: "pale"
+    group: transitional
+    hosts: [CR]
+    page: 64
+  - code: sn
+    name_native: "Солонцеватый"
+    name: "solonetzic"
+    group: transitional
+    page: 64
+  - code: v
+    name_native: "Слитизированный"
+    name: "vertic"
+    group: transitional
+    page: 64
+  - code: g
+    name_native: "Глееватый"
+    name: "gleyic"
+    group: transitional
+    page: 65
+  - code: q
+    name_native: "Квазиглееватый"
+    name: "quasi-gleyic"
+    group: transitional
+    small: true
+    page: 65
+  - code: ml
+    name_native: "Омергеленный"
+    name: "marly"
+    group: transitional
+    page: 65
+  - code: s
+    name_native: "Засоленный"
+    name: "saline"
+    group: transitional
+    page: 65
+  - code: tk
+    name_native: "Такыровидный"
+    name: "takyric"
+    group: transitional
+    small: true
+    page: 65
+  # --- 3.2.2 process features (14) -------------------------------------------
+  - code: ff
+    name_native: "Псевдофибровый"
+    name: "pseudo-fibre bands"
+    group: process
+    hosts: [BHF, C]
+    ambiguous: true
+    page: 66
+  - code: fn
+    name_native: "Оруденелый"
+    name: "ore-bearing (Fe-Mn segregations)"
+    group: process
+    hosts: [G, BHF]
+    small: true
+    page: 66
+  - code: nn
+    name_native: "Конкреционный"
+    name: "concretionary"
+    group: process
+    hosts: [EL, E]
+    page: 66
+  - code: cf
+    name_native: "Криогенно-ожелезненный"
+    name: "cryogenic-ferruginated"
+    group: process
+    hosts: [G]
+    small: true
+    page: 66
+    note: "A rusty band above, more rarely below, the G horizon."
+  - code: ox
+    name_native: "Окисленно-глеевый"
+    name: "oxidised-gley"
+    group: process
+    hosts: [G]
+    small: true
+    page: 66
+  - code: ek
+    aliases: [ko]
+    name_native: "Контактно-осветленный"
+    name: "contact-bleached"
+    group: process
+    small: true
+    page: 67
+  - code: gr
+    name_native: "Железисто-гранулированный"
+    name: "Fe-granulated"
+    group: process
+    hosts: [BFM]
+    ambiguous: true
+    page: 67
+  - code: hi
+    name_native: "Потечно-гумусовый"
+    name: "humus-streaked"
+    group: process
+    ambiguous: true
+    page: 67
+  - code: mc
+    name_native: "Мицелярно-карбонатный"
+    name: "mycelial-carbonate"
+    group: process
+    hosts: [BCA]
+    page: 67
+  - code: lc
+    name_native: "Миграционно-карбонатный"
+    name: "migrating-carbonate"
+    group: process
+    hosts: [AU, AJ]
+    page: 68
+  - code: nc
+    name_native: "Сегрегационно-карбонатный"
+    name: "segregational-carbonate"
+    group: process
+    hosts: [BCA]
+    page: 68
+  - code: dc
+    name_native: "Дисперсно-карбонатный"
+    name: "disperse-carbonate"
+    group: process
+    hosts: [BCA]
+    page: 68
+  - code: ic
+    name_native: "Натечно-карбонатный"
+    name: "pendant-carbonate"
+    group: process
+    page: 68
+  - code: cs
+    aliases: [as]
+    name_native: "Гипс-содержащий"
+    name: "gypsum-bearing"
+    group: process
+    page: 69
+  # --- 3.2.3 turbation features (5) ------------------------------------------
+  - code: tr
+    aliases: [tu]
+    name_native: "Поверхностно-турбированный"
+    name: "surface-turbated"
+    group: turbation
+    page: 69
+    note: "The 3.2.3 heading writes tu; key 7б, the example [AY, EL]tr and the chapter 4 lists write tr."
+  - code: "@"
+    name_native: "Криотурбированный"
+    name: "cryoturbated"
+    group: turbation
+    page: 69
+  - code: ocr
+    name_native: "Криогомогенный"
+    name: "cryo-homogeneous"
+    group: turbation
+    hosts: [CR]
+    page: 69
+  - code: agr
+    aliases: [ag]
+    name_native: "Агрогетерогенный"
+    name: "agro-heterogeneous"
+    group: turbation
+    ambiguous: true
+    hosts: [P, PU, PB, PT, PTR]
+    page: 69
+  - code: pb
+    name_native: "Абрадированный"
+    name: "abraded"
+    group: turbation
+    hosts: [P, PU, PB, PT, PTR]
+    page: 69
+  # --- 3.2.4 evolutionary features (10) --------------------------------------
+  - code: "[hh]"
+    aliases: [hh]
+    name_native: "\"Второй гумусовый горизонт\""
+    name: "second humus horizon"
+    group: evolutionary
+    hosts: [EL, BEL, BT]
+    small: true
+    ambiguous: true
+    page: 70
+  - code: ct
+    name_native: "Останцовый"
+    name: "relict-fragment"
+    group: evolutionary
+    hosts: [BEL]
+    page: 70
+  - code: "y"
+    name_native: "Языковатый"
+    name: "tongued"
+    group: evolutionary
+    hosts: [BEL, BT, BHF]
+    page: 70
+  - code: yu
+    name_native: "Темноязыковатый"
+    name: "dark-tongued"
+    group: evolutionary
+    ambiguous: true
+    page: 70
+  - code: d
+    name_native: "Переуплотненный"
+    name: "over-compacted"
+    group: evolutionary
+    small: true
+    page: 71
+  - code: ad
+    name_native: "Агропереуплотненный"
+    name: "agro-over-compacted"
+    group: evolutionary
+    hosts: [P, PU, PB, PT, PTR]
+    page: 71
+  - code: pa
+    name_native: "Постагрогенный"
+    name: "post-agrogenic"
+    group: evolutionary
+    page: 71
+  - code: pr
+    name_native: "Агропроградированный"
+    name: "agro-prograded"
+    group: evolutionary
+    page: 71
+  - code: md
+    name_native: "Торфяно-деструктивный"
+    name: "peat-destructive"
+    group: evolutionary
+    hosts: [T, TO, TE, PT]
+    small: true
+    ambiguous: true
+    page: 72
+  - code: pir
+    name_native: "Пирогенный"
+    name: "pyrogenic"
+    group: evolutionary
+    small: true
+    page: 72
+  # --- 3.2.5 parent-rock features (4) ----------------------------------------
+  - code: ca
+    name_native: "Остаточно-карбонатный"
+    name: "residual-carbonate"
+    group: parent_rock
+    page: 72
+  - code: u
+    name_native: "Темноцветный"
+    name: "dark-coloured (from the parent rock)"
+    group: parent_rock
+    page: 72
+  - code: ro
+    name_native: "Красноцветный"
+    name: "red-coloured (from the parent rock)"
+    group: parent_rock
+    page: 72
+  - code: "⊥"
+    name_native: "Мерзлотный"
+    name: "permafrost"
+    group: parent_rock
+    page: 73
+    note: "The PDF stores the symbol in the Symbol font (U+F05E); the reader takes it and U+22A5."
+  # --- 3.2.6 accumulative-substrate features (8) -----------------------------
+  - code: r
+    name_native: "Стратифицированный"
+    name: "stratified"
+    group: substrate
+    small: true
+    page: 73
+  - code: rh
+    name_native: "Гумусово-стратифицированный"
+    name: "humus-stratified"
+    group: substrate
+    small: true
+    ambiguous: true
+    page: 73
+  - code: aq
+    name_native: "Водно-аккумулятивный"
+    name: "water-deposited"
+    group: substrate
+    hosts: [RU, RY, RJ]
+    page: 73
+  - code: ae
+    aliases: [ael]
+    name_native: "Эолово-аккумулятивный"
+    name: "aeolian-accumulative"
+    group: substrate
+    hosts: [RU, RY, RJ]
+    page: 73
+    note: "The list of division BC writes ael."
+  - code: ur
+    name_native: "Урби-стратифицированный"
+    name: "urbi-stratified"
+    group: substrate
+    small: true
+    ambiguous: true
+    page: 73
+  - code: rr
+    name_native: "Арти-стратифицированный"
+    name: "arti-stratified"
+    group: substrate
+    small: true
+    ambiguous: true
+    page: 74
+  - code: "TT~~"
+    written_as: horizon
+    name_native: "Аллювиально-слоистый"
+    name: "alluvial-layered (peat soils)"
+    group: substrate
+    hosts: [TT]
+    page: 74
+  - code: "TT\""
+    written_as: horizon
+    name_native: "Пеплово-слоистый"
+    name: "ash-layered (peat soils)"
+    group: substrate
+    hosts: [TT]
+    page: 74
+    note: "The mark is lost in the text layer of 3.2.6; the chapter 4 lists print TT``."
+  # --- indices of the chapter 4 lists only (3) -------------------------------
+  - code: w
+    name_native: "Реградированные"
+    name: "regraded"
+    group: list_only
+    hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN]
+    page: 39
+    note: "Defined with the W horizon (3.1.1): W formed on an abandoned agro horizon or on the middle horizon of an abrazem."
+  - code: x
+    name_native: "Химически загрязненные"
+    name: "chemically contaminated"
+    group: list_only
+    page: 80
+    note: "A universal subtype of the chapter 4 lists, not defined in chapter 3."
+  - code: rx
+    name_native: "Токсистратифицированные"
+    name: "toxi-stratified"
+    group: list_only
+    small: true
+    ambiguous: true
+    page: 80
+    note: "A universal subtype of the chapter 4 lists, not defined in chapter 3."
+
+# Parts of a bracketed microprofile, read when written alone.
+components:
+  - code: hf
+    part_of: "[e-hf]"
+    name: "Al-Fe-humus band of the podzol microprofile"
+    small: true
+    ambiguous: true
+    page: 62
+
+# Subtype indices of the chapter 4 lists written with their host horizon; the
+# paired ones need both horizons.
+host_forms:
+  - {written: ELf, host: EL, features: [f], lists: [CA]}
+  - {written: ELg, host: EL, features: [g], lists: [CA]}
+  - {written: Th, host: T, features: [h], lists: [CA, CH, AA]}
+  - {written: Oh, host: O, features: [h], lists: [CH]}
+  - {written: AUh, host: AU, features: [h], lists: [CH]}
+  - {written: AUel, host: AU, features: [el], lists: [CH]}
+  - {written: Gel, host: G, features: [el], lists: [CH]}
+  - {written: Pw, host: P, features: [w], lists: [CD]}
+  - {written: PUw, host: PU, features: [w], lists: [CI]}
+  - {written: TEmr, host: TE, features: [mr], lists: [AA]}
+  - {written: Tote, host: TO, features: [te], lists: [AA], reads_as: TOte, note: "Written with a lower-case o: TO with te."}
+  - {written: Di, host: D, features: [i], lists: [CB]}
+  - {written: Del, host: D, features: [el], lists: [], page: 62, note: "Written in 3.2.1 (el, the contact-eluviated top of a heavier underlying rock)."}
+  - {written: "AJ[akl]", host: AJ, features: ["[akl]"], lists: [CJ]}
+  - {written: AUlc-BCAmc, host: [AU, BCA], features: [lc, mc], lists: [CI]}
+  - {written: AUlc-BCAnc, host: [AU, BCA], features: [lc, nc], lists: [CI]}
+  - {written: AJlc-BCAnc, host: [AJ, BCA], features: [lc, nc], lists: [CJ]}

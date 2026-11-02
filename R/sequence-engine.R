@@ -106,17 +106,28 @@
 }
 
 # Split a run of feature letters into known features, longest first (with
-# backtracking); NULL when it cannot be split.
+# backtracking); NULL when it cannot be split. The split of every tail of the
+# run is computed once, from the end (v0.9.335: the recursive search took
+# exponential time on a long run that cannot be split, such as BTrrr...rj).
 .formula_decompose <- function(x, vocab) {
-  if (!nzchar(x)) return(character(0))
-  for (k in rev(seq_len(nchar(x)))) {
-    pre <- substr(x, 1L, k)
-    if (pre %in% vocab) {
-      rest <- .formula_decompose(substring(x, k + 1L), vocab)
-      if (!is.null(rest)) return(c(pre, rest))
+  n <- nchar(x)
+  if (!n) return(character(0))
+  maxlen <- max(c(1L, nchar(vocab)))
+  # tail[[i]]: the split of the letters from i on, or NULL
+  tail <- vector("list", n + 1L)
+  ok <- c(logical(n), TRUE)
+  tail[[n + 1L]] <- character(0)
+  for (i in rev(seq_len(n))) {
+    for (k in rev(seq_len(min(maxlen, n - i + 1L)))) {
+      pre <- substr(x, i, i + k - 1L)
+      if (ok[i + k] && pre %in% vocab) {
+        tail[[i]] <- c(pre, tail[[i + k]])
+        ok[i] <- TRUE
+        break
+      }
     }
   }
-  NULL
+  if (ok[1L]) tail[[1L]] else NULL
 }
 
 # The features of a chunk ("ca,s", "g", "cs"): comma-separated; the symbols

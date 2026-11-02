@@ -1,0 +1,463 @@
+# The diagnostic horizons of the Russian soil classification, Field Guide of
+# 2008 (Polevoi opredelitel' pochv Rossii, Dokuchaev Soil Science Institute),
+# and the other symbols its profile formulas use. Read by the notation reader
+# (R/designation-kidpr.R); the horizon key on the data and the registry entry
+# come later.
+#
+# code         the index as printed (Latin capitals; the book itself prints
+#              Cyrillic look-alikes in places, which the reader folds)
+# name_native  the Russian name of the chapter 3 heading, as printed
+# name_index   the name of the index list (pp. 11-12) where it differs
+# name         soilKey's English gloss
+# group        the chapter 3 group: organic and humus (3.1.1), eluvial
+#              (3.1.2), middle (3.1.3), hydrogenic (3.1.4), halomorphic
+#              (3.1.5), anthropogenic (3.1.6); rock for the symbols of 3.3
+# key          the path of key 2.1 (pp. 12-27) to the horizon, positions and
+#              their branches as printed; "|" separates two paths
+# page         printed page of the chapter 3 description
+# agro         an agro (ploughed) horizon
+# overlay      the key identifies it and goes on looking for a second horizon
+#              in the same layer (positions 3, 4, 23)
+# The criteria are not reproduced: they are in the Field Guide.
+
+edition: "Polevoi opredelitel' pochv Rossii (Dokuchaev Soil Science Institute, Moscow, 2008)"
+
+horizons:
+  # --- 3.1.1 surface humus and organic horizons (16) --------------------------
+  - code: AY
+    name_native: "Серогумусовый (дерновый)"
+    name: "grey-humus (sod)"
+    group: humus
+    key: "12 > 14а > 15б > 17а"
+    page: 37
+  - code: AJ
+    name_native: "Светлогумусовый"
+    name: "light-humus"
+    group: humus
+    key: "15б > 17б > 18а"
+    page: 37
+  - code: AU
+    name_native: "Темногумусовый"
+    name: "dark-humus"
+    group: humus
+    key: "15а > 16а"
+    page: 38
+  - code: AH
+    name_native: "Перегнойно-темногумусовый"
+    name: "peaty dark-humus"
+    group: humus
+    key: "11а > 46в"
+    page: 38
+    note: "Keys C.2 and C.19 of the divisions write перегнойно-гумусовый."
+  - code: AK
+    name_native: "Криогумусовый"
+    name: "cryo-humus"
+    group: humus
+    key: "20 > 21а"
+    page: 39
+  - code: W
+    name_native: "Гумусово-слаборазвитый"
+    name: "weakly developed humus"
+    group: humus
+    key: "5"
+    page: 39
+  - code: RU
+    name_native: "Стратифицированный темногумусовый"
+    name: "stratified dark-humus"
+    group: humus
+    key: "8 > 9а > 34 > 35б > 36а"
+    page: 39
+  - code: RY
+    name_native: "Стратифицированный серогумусовый"
+    name: "stratified grey-humus"
+    group: humus
+    key: "34 > 36б > 37а"
+    page: 40
+  - code: RJ
+    name_native: "Стратифицированный светлогумусовый"
+    name: "stratified light-humus"
+    group: humus
+    key: "34 > 36б > 37б"
+    page: 40
+  - code: AO
+    name_native: "Грубогумусовый"
+    name: "coarse-humus (mor, moder)"
+    group: humus
+    key: "11а > 46б > 47б"
+    page: 40
+  - code: H
+    name_native: "Перегнойный"
+    name: "peregnoi (highly decomposed organic)"
+    group: organic
+    key: "10а > 39а"
+    page: 41
+    note: "Not in the index list (pp. 11-12)."
+  - code: O
+    name_native: "Подстилочно-торфяный"
+    name: "litter-peat"
+    group: organic
+    key: "10а > 39б > 40 > 41а"
+    page: 41
+  - code: T
+    name_native: "Торфяный"
+    name: "peat"
+    group: organic
+    key: "41б > 42а"
+    page: 41
+  - code: TO
+    name_native: "Олиготрофно-торфяный"
+    name: "oligotrophic peat"
+    group: organic
+    key: "41в > 43а > 44а"
+    page: 42
+  - code: TE
+    name_native: "Эутрофно-торфяный"
+    name: "eutrophic peat"
+    group: organic
+    key: "41в > 43б > 45а"
+    page: 42
+  - code: TJ
+    name_native: "Сухоторфяный"
+    name: "dry peat"
+    group: organic
+    key: "42б | 43в"
+    page: 42
+  # --- 3.1.2 eluvial horizons (5) --------------------------------------------
+  - code: E
+    name_native: "Подзолистый"
+    name: "podzolic (bleached)"
+    group: eluvial
+    key: "22 > 48а > 49а > 50б"
+    page: 43
+  - code: EL
+    name_native: "Элювиальный"
+    name: "eluvial"
+    group: eluvial
+    key: "22 > 48а > 49б > 51б > 52б"
+    page: 43
+  - code: AEL
+    name_native: "Гумусово-элювиальный"
+    name: "humus-eluvial"
+    group: eluvial
+    key: "22 > 48б > 53а"
+    page: 44
+  - code: BEL
+    name_native: "Субэлювиальный"
+    name: "sub-eluvial"
+    group: eluvial
+    key: "22 > 48б > 53б"
+    page: 44
+  - code: SEL
+    name_native: "Солонцово-элювиальный"
+    name: "solonetzic-eluvial"
+    group: eluvial
+    key: "18б | 51а"
+    page: 45
+  # --- 3.1.3 middle horizons (17) --------------------------------------------
+  - code: BHF
+    name_native: "Альфегумусовый"
+    name: "Al-Fe-humus"
+    group: middle
+    key: "30 > 54б > 55б > 56б > 57"
+    page: 45
+    modifications: [BH, BF]
+  - code: BFM
+    name_native: "Железисто-метаморфический"
+    name: "Fe-metamorphic"
+    group: middle
+    key: "30 > 54б > 55б > 56а"
+    page: 46
+  - code: BT
+    name_native: "Текстурный"
+    name: "textural"
+    group: middle
+    key: "31 > 58б > 60б > 61б"
+    page: 46
+  - code: BI
+    name_native: "Глинисто-иллювиальный"
+    name: "clay-illuvial"
+    group: middle
+    key: "31 > 58б > 60б > 61а"
+    page: 47
+  - code: BM
+    name_native: "Структурно-метаморфический"
+    name: "structural-metamorphic"
+    group: middle
+    key: "33 > 65б"
+    page: 47
+  - code: BMK
+    name_native: "Ксерометаморфический"
+    name: "xero-metamorphic"
+    group: middle
+    key: "33 > 65а"
+    page: 48
+  - code: CRM
+    name_native: "Криометаморфический"
+    name: "cryo-metamorphic"
+    group: middle
+    key: "26 > 27б > 28б"
+    page: 48
+  - code: CR
+    name_native: "Криогенный"
+    name_index: "Криотурбированный"
+    name: "cryogenic"
+    group: middle
+    key: "26 > 27б > 28а"
+    page: 49
+  - code: CRH
+    name_native: "Гумусово-криометаморфический"
+    name: "humus-cryo-metamorphic"
+    group: middle
+    key: "26 > 27а"
+    page: 49
+    note: "Not in the index list (pp. 11-12); keys C.8г and C.13 of the divisions print криогумусовый, a slip read as this horizon."
+  - code: BPL
+    name_native: "Палево-метаморфический"
+    name_index: "Палевометаморфический"
+    name: "pale-metamorphic"
+    group: middle
+    key: "26 > 27в > 29а"
+    page: 50
+  - code: BAN
+    name_native: "Охристый"
+    name: "ochric (andic, in volcanic ash)"
+    group: middle
+    key: "30 > 54б > 55а"
+    page: 50
+  - code: BCA
+    name_native: "Аккумулятивно-карбонатный"
+    name: "carbonate-accumulative"
+    group: middle
+    key: "32 > 62а > 63б"
+    page: 51
+  - code: CAT
+    name_native: "Текстурно-карбонатный"
+    name: "textural-carbonate"
+    group: middle
+    key: "31 > 58б > 60а | 62а > 63а"
+    page: 51
+  - code: ASN
+    name_native: "Темносолонцовый"
+    name: "dark solonetz"
+    group: middle
+    key: "16в | 31 > 58а > 59а"
+    page: 52
+  - code: BSN
+    name_native: "Солонцовый"
+    name: "solonetz"
+    group: middle
+    key: "31 > 58а > 59б"
+    page: 52
+  - code: V
+    name_native: "Слитой"
+    name: "vertic"
+    group: middle
+    key: "16б | 23а"
+    page: 53
+    overlay: true
+    modifications: [AV]
+  - code: TUR
+    name_native: "Турбированный"
+    name: "turbated"
+    group: middle
+    key: "6 > 7а"
+    page: 53
+  # --- 3.1.4 hydrogenic horizons (4) -----------------------------------------
+  - code: G
+    name_native: "Глеевый"
+    name: "gley"
+    group: hydrogenic
+    key: "24а"
+    page: 54
+  - code: Q
+    name_native: "Квазиглеевый (гидрометаморфический)"
+    name_index: "Гидрометаморфический"
+    name: "quasi-gley (hydrometamorphic)"
+    group: hydrogenic
+    key: "25а"
+    page: 54
+  - code: F
+    name_native: "Рудяковый"
+    name: "bog-iron (ortstein-like)"
+    group: hydrogenic
+    key: "30 > 54а"
+    page: 55
+  - code: ML
+    name_native: "Мергелистый (\"луговой мергель\")"
+    name: "marl (meadow marl)"
+    group: hydrogenic
+    key: "32 > 62б > 64а"
+    page: 55
+  # --- 3.1.5 halomorphic horizons (2) ----------------------------------------
+  - code: S
+    name_native: "Солончаковый"
+    name: "solonchak (saline)"
+    group: halomorphic
+    key: "1 > 2 > 3б"
+    page: 55
+    overlay: true
+  - code: SS
+    name_native: "Солончаковый сульфидный"
+    name: "sulfidic solonchak"
+    group: halomorphic
+    key: "1 > 2 > 3а"
+    page: 56
+  # --- 3.1.6 anthropogenically transformed horizons (6) ----------------------
+  - code: P
+    name_native: "Агрогумусовый"
+    name: "agro-humus"
+    group: anthropogenic
+    agro: true
+    key: "14б > 19б"
+    page: 56
+    note: "Key C.2 of the divisions prints грубогумусовый, a slip read as this horizon."
+  - code: PU
+    name_native: "Агротемногумусовый"
+    name: "agro-dark-humus"
+    group: anthropogenic
+    agro: true
+    key: "14б > 19а"
+    page: 57
+  - code: PB
+    name_native: "Агроабразионный"
+    name: "agro-abraded"
+    group: anthropogenic
+    agro: true
+    key: "19в | 21б"
+    page: 57
+    aliases: [PC]
+  - code: PT
+    name_native: "Агроторфяный"
+    name: "agro-peat"
+    group: anthropogenic
+    agro: true
+    key: "10а > 39б > 40б"
+    page: 58
+  - code: PTR
+    name_native: "Агроторфяно-минеральный"
+    name: "agro-peat-mineral"
+    group: anthropogenic
+    agro: true
+    key: "11а > 46а"
+    page: 58
+  - code: X
+    name_native: "Химически-загрязненный"
+    name: "chemically contaminated"
+    group: anthropogenic
+    key: "1 > 2б > 4а"
+    page: 58
+    overlay: true
+
+# Modifications: written in capitals like a horizon, they name a variety of
+# one (the reader gives the horizon and the modification).
+modifications:
+  - code: AV
+    of: V
+    name_native: "Темнослитой"
+    name: "dark vertic"
+    key: "16б"
+    page: 53
+    note: "In the index list and key position 16б only."
+  - code: BH
+    of: BHF
+    name_native: "Иллювиально-гумусовый"
+    name: "illuvial-humus (coffee-coloured BHF)"
+    key: "57"
+    page: 62
+    note: "Chapter 3 lists it among the features (3.2.1), written in capitals."
+  - code: BF
+    of: BHF
+    name_native: "Иллювиально-железистый"
+    name: "illuvial-iron (ochre BHF)"
+    key: "57"
+    page: 62
+    note: "Chapter 3 lists it among the features (3.2.1), written in capitals."
+
+# Other spellings of a horizon index, read as the canonical code.
+aliases:
+  - code: PC
+    reads_as: PB
+    note: "Chapter 3 writes PB (PC); chapters 4 and 6 write PB(PC)."
+
+# Rock and parent symbols (3.3, pp. 74-75); not diagnostic horizons.
+rock_symbols:
+  - code: C
+    name_native: "Рыхлая почвообразующая порода"
+    name: "loose parent rock"
+    page: 74
+    flags: [G, Q]
+  - code: D
+    name_native: "Подстилающая порода"
+    name: "underlying rock of contrasting material"
+    page: 74
+    flags: [G, Q]
+  - code: CLM
+    name_native: "Рыхлая кора выветривания"
+    name: "loose weathering crust (lithomarge, rotten rock)"
+    page: 74
+  - code: R
+    name_native: "Плотная порода"
+    name: "hard rock"
+    page: 74
+  - code: TT
+    name_native: "Органогенная порода (торф как порода)"
+    name_index: "торф как порода"
+    name: "organogenic rock: peat deposit below 50 cm"
+    key: "44б | 45б"
+    page: 74
+  - code: TPO
+    written: "ТПО"
+    name_native: "Техногенные поверхностные образования"
+    name: "technogenic surface formations (not a soil, chapter 8)"
+    page: 174
+
+# The rock flags (G or Q after C or D) and the marks of the parent rock's
+# genesis and texture (3.3, p. 75).
+rock_flags:
+  - code: G
+    name: "gleyed rock (CG, DG): a feature of the rock, not a G horizon"
+  - code: Q
+    name: "quasi-gleyed rock (CQ): a feature of the rock, not a Q horizon"
+marks:
+  - code: "~~"
+    name_native: "Аллювиальные слоистые отложения"
+    name: "alluvial layered deposits"
+  - code: "\""
+    name_native: "Пеплово-вулканические слоистые отложения"
+    name: "volcanic-ash layered deposits"
+    note: "Printed ” or `` in places. Chapter 6 also prints ” after the psammozems (O-C”, W-C”, p. 159-160), where chapter 4 (DA03, DA04) writes the sand mark ..: there it is read as the sand mark."
+  - code: "^^"
+    name_native: "Пролювиальные слоистые отложения"
+    name: "proluvial layered deposits"
+    note: "The types of trunk D and chapter 6 use ^^ for aeolian deposits."
+  - code: "\"\""
+    name_native: "Эоловые слоистые отложения"
+    name: "aeolian layered deposits"
+  - code: "="
+    name_native: "Суглинистые и глинистые породы"
+    name: "loamy and clayey rocks"
+  - code: ".."
+    name_native: "Песчаные породы"
+    name: "sandy rocks"
+
+# Tokens of chapter 6 only (the 2004 formulas printed beside the 1977 names):
+# read, but they give no 2008 horizon by themselves.
+legacy:
+  - code: PY
+    reads_as: P
+    page: 141
+    note: "Agro horizon of the agro-grey-humus soils in chapter 6 (PY-(EL)-BEL-BT-C, PY-E-BF-C); chapter 4 writes P in the same types (CA17, CA19, CB15, CB16)."
+  - code: TR
+    reads_as: T
+    page: 158
+    note: "Chapter 6 writes PTR-TR-G-CG~~ for the alluvial agro-peat soils; chapter 4 writes PTR-T-G-CG~~ (BA17)."
+  - code: AKL
+    reads_as: AJ
+    features: ["[akl]"]
+    page: 148
+    note: "Chapter 6 writes AKL-BMK-BCA-Cca for the brown arid soils; chapter 4 writes AJ-BM-BCA-Cca (CJ02) and keeps the crust-subcrust microprofile as the subtype AJ[akl]."
+  - code: AM
+    reads_as: null
+    candidates: [BMK, BM]
+    page: 148
+    note: "Chapter 6 writes AJ-AM-CAT-Cca for the chestnut soils; chapter 4 writes AJ-BMK-BM-CAT-Cca (CJ03). No 2008 horizon by itself."

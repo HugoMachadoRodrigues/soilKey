@@ -684,10 +684,13 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
 # being the illuvial Fe and Al of a podzolic B; the New Zealand and
 # Australian notations have no frozen suffix (their f is fibric peat and
 # faunal accumulation), so only a designation naming permafrost counts.
+# v0.9.335: the Russian notation of 2008 writes permafrost with its own sign
+# (U+22A5, or U+F05E in the Symbol font), its f being ferruginated (ELf).
 .frozen_designation_pattern <- function(site) {
   ds <- tolower(trimws(as.character((site %||% list())$designation_system %||% NA)[1L]))
   if (is.na(ds) || !nzchar(ds)) return("^[A-Z][a-z]*f($|[0-9])|^Cf|perma")
   if (ds %in% c("cssc", "cssc3", "canadian", "canada")) return("^[IVX]*[A-Z]+[a-z]*z|perma")
+  if (.kidpr_is_declared(ds)) return("\u22a5|\uf05e|perma")
   if (ds %in% c("nzsc", "nzsc4", "nz", "new zealand", "asc", "asc3", "australian",
                 "field handbook", "nchs", "australian field handbook")) return("perma")
   "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"

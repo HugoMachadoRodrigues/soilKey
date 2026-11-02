@@ -259,7 +259,22 @@ horizon_column_spec <- function() {
     caco3_active_pct              = "numeric",   # active carbonate (calcaire actif, Drouineau method), % of the fine earth; CPCS rendzinas V/112
     coarse_sand_pct               = "numeric",   # coarse sand (0.2-2 mm), % of the fine earth; CPCS ferrallitic subgroups (faiblement remanie, eluvie)
     fine_sand_pct                 = "numeric",   # fine sand (0.05-0.2 mm), % of the fine earth; CPCS ferrallitic subgroups (faiblement remanie)
-    gibbsite_pct                  = "numeric"    # gibbsite, % of the clay fraction; CPCS X/322 (gibbsitiques)
+    gibbsite_pct                  = "numeric",   # gibbsite, % of the clay fraction; CPCS X/322 (gibbsitiques)
+    # ---- v0.9.335: the Russian Field Guide of 2008 ----
+    phys_clay_pct                 = "numeric",   # physical clay (< 0.01 mm, Kachinsky), % of the fine earth; texture gradations (E vs EL, BT vs BI)
+    texture_class_ru              = "character", # Kachinsky texture class: sand, loamy sand, light / medium / heavy loam, light / medium / heavy clay
+    loi_pct                       = "numeric",   # loss on ignition, % of the dry mass; peat horizons > 35, H > 25, PTR < 35, AO 15-35, AH 10-25
+    peat_decomposition_pct        = "numeric",   # degree of decomposition of peat, % (Russian method); H >= 50, peat horizons <= 50
+    foreign_fragments_pct         = "numeric",   # fragments of other horizons, % of the section; TUR (>= 80), agr (> 25), tr, pb
+    turbated_fragments            = "character", # horizons whose fragments make a turbated layer, Russian indices joined by ';' (SEL;ASN)
+    contamination_hazard          = "character", # hazard category of the pollutants (Russian sanitary standards); X = extremely hazardous within 30 cm
+    pollutants                    = "character", # the pollutants of the layer, as text; named in the name of a chemozem
+    uncoated_grains_pct           = "numeric",   # sand and silt grains with no colouring film, %; key position 30 (films on < 20 % = none)
+    effervescence_extent          = "character", # extent of the effervescence with HCl: none / local / continuous; key position 32
+    plant_residues_pct            = "numeric",   # plant residues (live roots excluded), % by volume; key positions 10 (> 2/3) and 11 (< 1/3)
+    sulfide_odour                 = "logical",   # smell of hydrogen sulfide; key position 3 (sulfidic solonchak SS)
+    slickensides_size             = "character", # size of the slickensides: small / large / both; V vs v
+    cryoturbation                 = "character"  # cryoturbation in the layer: none / present; the feature @ and the CR horizon
   )
 }
 
