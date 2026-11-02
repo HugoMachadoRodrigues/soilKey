@@ -389,8 +389,9 @@ test_that("class IX", {
   .hit(s, "IX/221")
   .hit(.with_h(s, clay_pct = c(15, 40, 42, 35), redoximorphic_features_pct = c(0, 20, 20, 0)), "IX/225")
   .hit(.with_h(s, redoximorphic_features_pct = c(0, 5, 0, 0)), "IX/222")
-  # pronounced signs with a clay index of 2.0 or less: neither 225 nor 222
-  .hit(.with_h(s, redoximorphic_features_pct = c(0, 20, 0, 0)), "IX/221")
+  # pronounced signs with a clay index of 2.0 or less: 222 takes any sign
+  # (Hugo, 2026-11-01)
+  .hit(.with_h(s, redoximorphic_features_pct = c(0, 20, 0, 0)), "IX/222")
   .hit(.with_h(s, slickensides = c(NA, "few", "few", NA)), "IX/223")
   .hit(.with_h(s, clay_pct = c(15, 40, 42, 35)), "IX/224")
   ca <- .with_h(s, caco3_pct = c(0, 0, 0, 5), top_cm = c(0, 20, 60, 90), bottom_cm = c(20, 60, 90, 140))
@@ -419,10 +420,12 @@ test_that("class IX", {
                structure_type = c(NA, NA, "prismatic", NA)), "IX/113")
   sand <- .fr(list(designation = c("A1", "B21", "B22", "C"), top_cm = c(0, 20, 50, 100), bottom_cm = c(20, 50, 100, 140),
                    oc_pct = c(0.4, 0.2, 0.15, 0.1), n_total_pct = c(0.04, 0.02, 0.015, 0.01), clay_pct = c(5, 7, 8, 8),
-                   silt_pct = c(5, 5, 5, 5), sand_pct = c(92, 88, 87, 89), cec_cmol = c(2, 3, 3, 2), bs_pct = c(70, 85, 55, 60),
+                   silt_pct = c(5, 5, 5, 5), sand_pct = c(92, 88, 87, 89), cec_cmol = c(2, 3, 3, 2), bs_pct = c(70, 85, 85, 60),
                    ph_h2o = 6.5, munsell_hue_moist = c("7.5YR", "5YR", "5YR", "5YR"), munsell_value_moist = c(4, 5, 5, 5),
                    munsell_chroma_moist = c(3, 6, 6, 6), redoximorphic_features_pct = 0), list(lat = 13))
+  # the nearly saturated tropical sand stays in IX-1 (Hugo, 2026-11-01)
   .hit(sand, "IX/114")
+  expect_identical(.key(sand)$levels$code[2], "IX-1")
 })
 
 test_that("class X", {

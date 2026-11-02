@@ -413,6 +413,15 @@ ferruginous_tropical_soils_cpcs <- function(pedon) {
            ifelse(hn > 15 & hn <= 20 & va >= 5 & cr >= 4, TRUE, ifelse(hn <= 15, FALSE, NA)))
     v <- .cpcs_larger_part_b(x, yel)
   }
+  # the nearly saturated sands of IX/114 ('tr\u00e8s g\u00e9n\u00e9ralement', p. 57):
+  # under a tropical climate, 8 % clay or less to 100 cm and under 1 % OM in
+  # the A, whatever the base saturation (Hugo, 2026-11-01)
+  if (!isTRUE(v) && .cpcs_tropical(x)) {
+    rows <- .cpcs_rows_within(x, 100); rows <- rows[!x$rock[rows]]
+    sand <- if (!length(rows)) NA else .cpcs_all(ifelse(is.na(x$clay[rows]), NA, x$clay[rows] <= 8))
+    om <- .cpcs_wmean(x, x$om, .cpcs_a_rows(x))
+    if (isTRUE(.cpcs_and(sand, if (is.na(om)) NA else om < 1))) v <- TRUE
+  }
   .cpcs_sub_result("ferruginous_tropical_soils_cpcs", v, x, where = "IX-1, pp. 57-58")
 }
 

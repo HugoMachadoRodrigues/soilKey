@@ -87,13 +87,6 @@ subgroups:
           - calcareous_crust_cpcs: {kind: accumulation, mineral: carbonate, where: under_a}
       notes: "A calcareous accumulation or crust directly under the A."
   "V/21":
-    - code: "V/211"
-      name: "Rendzines brunifiées humifères"
-      name_native: "Rendzines brunifiées humifères"
-      tests:
-        all_of:
-          - organic_matter_cpcs: {rows: a, at_least: 10}
-      notes: "10 % OM or more in the A (thickness-weighted)."
     - code: "V/213"
       name: "Sol brun calcique épais (plus de 50 cm)"
       name_native: "Sol brun calcique épais (plus de 50 cm)"
@@ -101,6 +94,13 @@ subgroups:
         all_of:
           - solum_depth_cpcs: {above: 50}
       notes: "A solum thicker than 50 cm (the top of the C or R below 50 cm; with none, a profile described to 50 cm or more)."
+    - code: "V/211"
+      name: "Rendzines brunifiées humifères"
+      name_native: "Rendzines brunifiées humifères"
+      tests:
+        all_of:
+          - organic_matter_cpcs: {rows: a, at_least: 10}
+      notes: "10 % OM or more in the A (thickness-weighted)."
     - code: "V/212"
       name: "Rendzines brunifiées modales"
       name_native: "Rendzines brunifiées modales"

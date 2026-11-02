@@ -122,13 +122,6 @@ subgroups:
           - reworked_cpcs: {or_eroded: true}
       notes: "Reworked material, or recorded erosion (truncation, deflation, erosion named)."
   "X/21":
-    - code: "X/212"
-      name: "{parent}, Jaune (horizon B)"
-      name_native: "{parent}, Jaune (horizon B)"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/213"
       name: "{parent}, Induré"
       name_native: "{parent}, Induré"
@@ -164,6 +157,13 @@ subgroups:
         all_of:
           - organic_matter_cpcs: {rows: top20, above: 3}
       notes: "A mean OM above 3 % over the top 20 cm."
+    - code: "X/212"
+      name: "{parent}, Jaune (horizon B)"
+      name_native: "{parent}, Jaune (horizon B)"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/211"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -193,13 +193,6 @@ subgroups:
           - weatherable_minerals_cpcs: {at_least: 10, volcanic: true}
       notes: "Weatherable minerals in the sand 10 % or more, volcanic glass, or a volcanic or aeolian deposit within 50 cm."
   "X/23":
-    - code: "X/232"
-      name: "{parent}, Jaune"
-      name_native: "{parent}, Jaune"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/233"
       name: "{parent}, Induré"
       name_native: "{parent}, Induré"
@@ -221,6 +214,13 @@ subgroups:
         all_of:
           - reworked_cpcs: {sand_fractions: true}
       notes: "Reworked material (a stone line, a lithological discontinuity, a colluvial origin), or the coarse to fine sand ratio of the A and the B differing by 20 % or more."
+    - code: "X/232"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/231"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -228,13 +228,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "X/24":
-    - code: "X/242"
-      name: "{parent}, Jaune"
-      name_native: "{parent}, Jaune"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/243"
       name: "{parent}, Induré"
       name_native: "{parent}, Induré"
@@ -263,6 +256,13 @@ subgroups:
         all_of:
           - eluviated_cpcs: {}
       notes: "A row at the A/(B) boundary with twice the coarse elements (coarse fragments or gravel, and nodules) of the rows above and below, or twice the coarse sand."
+    - code: "X/242"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/241"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -292,13 +292,6 @@ subgroups:
           - reworked_cpcs: {or_eroded: true}
       notes: "Reworked material, or recorded erosion (truncation, deflation, erosion named)."
   "X/31":
-    - code: "X/312"
-      name: "{parent}, Jaune (horizon B)"
-      name_native: "{parent}, Jaune (horizon B)"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/313"
       name: "{parent}, Induré"
       name_native: "{parent}, Induré"
@@ -334,6 +327,13 @@ subgroups:
         all_of:
           - organic_matter_cpcs: {rows: top20, above: 3}
       notes: "A mean OM above 3 % over the top 20 cm."
+    - code: "X/312"
+      name: "{parent}, Jaune (horizon B)"
+      name_native: "{parent}, Jaune (horizon B)"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/311"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -383,13 +383,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "X/33":
-    - code: "X/332"
-      name: "{parent}, Jaune"
-      name_native: "{parent}, Jaune"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/333"
       name: "{parent}, Induré"
       name_native: "{parent}, Induré"
@@ -411,6 +404,13 @@ subgroups:
         all_of:
           - reworked_cpcs: {sand_fractions: true}
       notes: "Reworked material (a stone line, a lithological discontinuity, a colluvial origin), or the coarse to fine sand ratio of the A and the B differing by 20 % or more."
+    - code: "X/332"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/331"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"
@@ -418,13 +418,6 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "X/34":
-    - code: "X/342"
-      name: "{parent}, Jaune"
-      name_native: "{parent}, Jaune"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/343"
       name: "{parent}, Hydromorphe"
       name_native: "{parent}, Hydromorphe"
@@ -439,6 +432,13 @@ subgroups:
         all_of:
           - weatherable_minerals_cpcs: {at_least: 3}
       notes: "Feldspars, micas and amphiboles in the sand 3 % or more within 100 cm, or named without 'traces'."
+    - code: "X/342"
+      name: "{parent}, Jaune"
+      name_native: "{parent}, Jaune"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A yellow B: moist hue 7.5YR or yellower in the larger part of the B."
     - code: "X/341"
       name: "{parent}, Modal"
       name_native: "{parent}, Modal"

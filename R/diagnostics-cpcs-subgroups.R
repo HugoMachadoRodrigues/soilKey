@@ -748,14 +748,12 @@ concretions_cpcs <- function(pedon, where = "within", within = 100) {
 #' @export
 saturated_poor_sand_cpcs <- function(pedon) {
   x <- .cpcs_profile(pedon)
-  # V 80 % or more in the B, under 1 % OM in the A, and 8 % clay or less in
-  # every row to 100 cm (Hugo, 2026-11-01). The V is read in a B row of the
-  # first 100 cm of the B, not in its larger part: the sub-class IX-1 already
-  # needs V under 65 % in the larger part of the B (soilKey's reading)
+  # V 80 % or more in the larger part of the B, under 1 % OM in the A, and
+  # 8 % clay or less in every row to 100 cm; the sub-class IX-1 takes these
+  # sands under a tropical climate whatever their V (Hugo, 2026-11-01)
   bs <- .cpcs_bs(x)
-  b <- .cpcs_group_b_rows(x); b <- b[!is.na(x$dtop[b])]
-  b <- if (length(b)) b[x$dtop[b] < min(x$dtop[b]) + 100] else b
-  v80 <- if (!length(b)) FALSE else .cpcs_any(ifelse(is.na(bs[b]), NA, bs[b] >= 80))
+  b <- .cpcs_group_b_rows(x)
+  v80 <- if (!length(b)) FALSE else .cpcs_larger_part_b(x, ifelse(is.na(bs), NA, bs >= 80), b)
   om <- .cpcs_wmean(x, x$om, .cpcs_a_rows(x))
   rows <- .cpcs_rows_within(x, 100); rows <- rows[!x$rock[rows]]
   clay <- if (!length(rows)) NA else .cpcs_all(ifelse(is.na(x$clay[rows]), NA, x$clay[rows] <= 8))

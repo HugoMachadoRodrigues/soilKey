@@ -71,7 +71,7 @@ subgroups:
       tests:
         all_of:
           - saturated_poor_sand_cpcs: {}
-      notes: "V 80 % or more in a B row (the sub-class already needs V under 65 % in the larger part of the B), under 1 % OM in the A, and 8 % clay or less in every row to 100 cm."
+      notes: "V 80 % or more in the larger part of the B, under 1 % OM in the A, and 8 % clay or less in every row to 100 cm (the sub-class IX-1 takes these tropical sands whatever their V)."
     - code: "IX/111"
       name: "{parent}, modal"
       name_native: "{parent}, modal"
@@ -79,20 +79,13 @@ subgroups:
         default: true
       notes: "The other soils of the group."
   "IX/21":
-    - code: "IX/212"
-      name: "{parent}, brun"
-      name_native: "{parent}, brun"
-      tests:
-        all_of:
-          - b_colour_cpcs: {kind: yellow}
-      notes: "A brown (B): moist hue 7.5YR or yellower in its larger part."
     - code: "IX/213"
       name: "{parent}, à caractères d'hydromorphie"
       name_native: "{parent}, à caractères d'hydromorphie"
       tests:
         all_of:
-          - hydromorphic_signs_cpcs: {window: b, grade: slight}
-      notes: "A few redox mottles in the (B): slight hydromorphic signs (under 15 %, no reduced matrix)."
+          - hydromorphic_signs_cpcs: {window: b}
+      notes: "Redox mottles in the (B): any hydromorphic sign (Hugo, 2026-11-01)."
     - code: "IX/214"
       name: "{parent}, à caractères vertiques"
       name_native: "{parent}, à caractères vertiques"
@@ -107,6 +100,13 @@ subgroups:
         all_of:
           - recalcified_cpcs: {}
       notes: "Carbonate in the A or the (B): 1 % or more, an effervescence moderate or stronger, or a Ca of the notation."
+    - code: "IX/212"
+      name: "{parent}, brun"
+      name_native: "{parent}, brun"
+      tests:
+        all_of:
+          - b_colour_cpcs: {kind: yellow}
+      notes: "A brown (B): moist hue 7.5YR or yellower in its larger part."
     - code: "IX/211"
       name: "{parent}, modal avec (ou plus rarement sans) horizon Cca"
       name_native: "{parent}, modal avec (ou plus rarement sans) horizon Cca"
@@ -127,8 +127,8 @@ subgroups:
       name_native: "{parent}, légèrement hydromorphe"
       tests:
         all_of:
-          - hydromorphic_signs_cpcs: {within: 100, grade: slight}
-      notes: "Slight hydromorphic signs within 100 cm (under 15 %, no reduced matrix)."
+          - hydromorphic_signs_cpcs: {within: 100}
+      notes: "Hydromorphic signs within 100 cm, any grade; the very leached and pronounced ones are IX/225, keyed first (Hugo, 2026-11-01)."
     - code: "IX/223"
       name: "{parent}, à caractères vertiques"
       name_native: "{parent}, à caractères vertiques"

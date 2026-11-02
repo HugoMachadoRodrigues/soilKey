@@ -19,13 +19,20 @@
 * **Vertisols:** "vertiques" with slickensides common at most; self-mulching with fine structure to 10 or 20 cm.
 * **Salt and sodium:** EC 4 dS/m or more, exchangeable Na 6 % of the CEC or more, within 100 cm.
 * **Rendzinas:** a very strong effervescence or 10 % active carbonate (V/112), under 10 % carbonate with 15 % coarse fragments (V/114), a dry climate (V/115).
-* **Crusts:** an encroûtement is soilKey's calcic horizon, 5 % secondary carbonates or a Ca of the notation; a croûte is a cemented layer.
+* **Crusts:** an encroûtement is a recorded accumulation (5 % secondary carbonates, 5 % more carbonate than the layer below, or a Ca of the notation); a croûte is a cemented layer.
 * **Isohumic soils:** vertique = protovertic or a coarse prismatic (B); à B textural = the textural B of VII/12; rubéfié = the reddened B of class IX.
 * **Brunified soils:** the measures decide (allophane, clay index, pH of the B); the colour words of the A2 and the humus are descriptions, except the ashy A2 over an ochre B of VII/124.
 * **Podzolised soils:** Bh and Bfe by the notation, then the colour; deep hydromorphy below the base of the B with none above it.
 * **Classes IX and X:** the accepted IX/X table; "faiblement rajeuni" at 3 % weatherable minerals; "faiblement remanié" by the evidence of the reworked groups; X/322 by a dark brown B, pH under 4.5 and gibbsite (or Ki under 1.0).
 * **Class XI:** the peats by their pH (5.5), else the moor type; anmoor by a C/N under 20, hydromor by the humus form, else a C/N of 20 or more; XI/321, 322, 341 and 342 by the morphology.
 * **Class XII:** XII/21 by the surface structure, then the EC route; XII/23 by the Na of the first B; XII/114 by a thionic horizon, or pH under 4 with jarosite or sulfidic S.
+* **After the review** (Hugo, 2026-11-01):
+  * the sub-class IX-1 takes the nearly saturated tropical sands of IX/114 (8 % clay or less to 100 cm, under 1 % OM in the A) whatever their base saturation, and IX/114 reads V 80 % or more in the larger part of the B;
+  * an encroûtement needs a recorded accumulation, not soilKey's calcic horizon alone;
+  * the yellow and brown subgroups of classes IX and X come after the subgroups of a process, and the thick calcic brown soils (V/213) before the brunified rendzinas;
+  * IX/213 and IX/222 take any hydromorphic sign;
+  * a subgroup left undecided before the assigned one makes it provisional, as at the other levels;
+  * the detailed readings soilKey made where the plan was silent are kept, marked as soilKey's in readings.yaml.
 
 # soilKey 0.9.332 (2026-11-01)
 
