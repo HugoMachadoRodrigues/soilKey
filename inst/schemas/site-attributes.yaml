@@ -855,6 +855,11 @@ attributes:
     unit: "-"
     description: "How the parent material enters the name of a type of the French Référentiel pédologique 2008 (pp. 61, 401): 'issu de' (the solum formed in it) or 'sur' (the solum lies on it). The phrase is written only when this and parent_material are recorded (Hugo's decision Q21)."
     allowed: ["issu de", "sur"]
+  - name: intertropical
+    section: "French system (Référentiel pédologique 2008)"
+    type: "logical"
+    unit: "-"
+    description: "TRUE when the site is declared in the intertropical domain, FALSE when declared outside it. The French Référentiel pédologique 2008 calls the horizons F, OX, RT, ND, FE, OXc and OXm specific to that domain (p. 6) and soilKey tests them only there: declared here, else a Köppen climate of group A or a latitude between the tropics; neither recorded, they stay undecided (Hugo's decision Q18)."
   - name: rp_paleo
     section: "French system (Référentiel pédologique 2008)"
     type: "character"

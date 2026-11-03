@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.341)
+# soilKey -- recognised horizon attribute names (v0.9.343)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -598,9 +598,10 @@ the last section are stored by the loaders and reports and read by no key.
 | `rp_anthropic_history` | - | character | The history of the soil recorded in the terms of the French Référentiel pédologique 2008, joined by ';' (sablage; défoncement; amendements organiques; terrassettes; nivellement; décapage ...). Read for the anthroposols transformés (a history recorded over 50 cm or more) and the qualifiers of human history; never inferred from the profile (Hugo's decision Q15). | - | - |
 | `rp_qualifiers_recorded` | - | character | Qualifiers of the French Référentiel pédologique 2008 recorded by the surveyor, the names as printed joined by ';' (drainé; colluvial; alpin ...). The qualifiers of landscape, climate, history and management enter the name of the type only when recorded here, land_use or landform (Hugo's decision Q21). | - | - |
 | `parent_material_relation` | - | character | How the parent material enters the name of a type of the French Référentiel pédologique 2008 (pp. 61, 401): 'issu de' (the solum formed in it) or 'sur' (the solum lies on it). The phrase is written only when this and parent_material are recorded (Hugo's decision Q21). | `issu de`, `sur` | - |
+| `intertropical` | - | logical | TRUE when the site is declared in the intertropical domain, FALSE when declared outside it. The French Référentiel pédologique 2008 calls the horizons F, OX, RT, ND, FE, OXc and OXm specific to that domain (p. 6) and soilKey tests them only there: declared here, else a Köppen climate of group A or a latitude between the tropics; neither recorded, they stay undecided (Hugo's decision Q18). | - | - |
 | `rp_paleo` | - | character | The terms of the paleosolum vocabulary of the French Référentiel pédologique 2008 (pp. 58-63) declared by the surveyor, joined by ';': paléo- (with the reference: paléoluvisol), développé dans, superposé à, multi-, vétuste, fossilisé, bigénétique, polygénétique. These are named only when declared; bilithique, polylithique, recouvert par and enfoui are read from the profile (Hugo's decision Q1). | - | - |
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.341._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.343._
 
