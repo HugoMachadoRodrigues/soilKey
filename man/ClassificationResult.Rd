@@ -79,6 +79,24 @@ CSCJ 2011: temperature and man-made phases), a
 \code{data.frame} with \code{kind}, \code{code},
 \code{name}, \code{name_native} and \code{basis};
 \code{NULL} otherwise. Since v0.9.324.}
+
+\item{\code{candidates}}{For the systems that attach a soil to several
+classes rather than key it to one (none yet; the
+French Referentiel pedologique 2008 will be the
+first), every class that may attach it: a
+\code{data.frame} with \code{code}, \code{name},
+\code{group}, \code{degree} (simple,
+simple_or_imperfect, imperfect, undecided; fail for
+the nearest classes when nothing attaches),
+\code{rank} (the order of precedence), \code{in_name},
+\code{double_with}, \code{double_possible},
+\code{n_failed}, \code{distance}
+(the size of the failures in tolerance units),
+\code{failed}, \code{imperfect_by},
+\code{undecided_by}, \code{excluded_by} (the
+criteria, joined with "; ") and \code{nearest}.
+\code{NULL} for every other system, and then not
+printed. Since v0.9.340.}
 }
 \if{html}{\out{</div>}}
 }
@@ -111,7 +129,8 @@ Build a ClassificationResult.
   warnings = character(0),
   system_id = NULL,
   levels = NULL,
-  provisional_because = character(0)
+  provisional_because = character(0),
+  candidates = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -144,6 +163,9 @@ Build a ClassificationResult.
 
 \item{\code{provisional_because}}{Character vector of undecided classes
 tested before the assigned ones.}
+
+\item{\code{candidates}}{The classes that may attach the soil (a
+data.frame), or NULL; since v0.9.340.}
 }
 \if{html}{\out{</div>}}
 }

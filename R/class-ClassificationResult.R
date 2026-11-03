@@ -54,6 +54,23 @@
 #'                       \code{data.frame} with \code{kind}, \code{code},
 #'                       \code{name}, \code{name_native} and \code{basis};
 #'                       \code{NULL} otherwise. Since v0.9.324.
+#' @field candidates     For the systems that attach a soil to several
+#'                       classes rather than key it to one (none yet; the
+#'                       French Referentiel pedologique 2008 will be the
+#'                       first), every class that may attach it: a
+#'                       \code{data.frame} with \code{code}, \code{name},
+#'                       \code{group}, \code{degree} (simple,
+#'                       simple_or_imperfect, imperfect, undecided; fail for
+#'                       the nearest classes when nothing attaches),
+#'                       \code{rank} (the order of precedence), \code{in_name},
+#'                       \code{double_with}, \code{double_possible},
+#'                       \code{n_failed}, \code{distance}
+#'                       (the size of the failures in tolerance units),
+#'                       \code{failed}, \code{imperfect_by},
+#'                       \code{undecided_by}, \code{excluded_by} (the
+#'                       criteria, joined with "; ") and \code{nearest}.
+#'                       \code{NULL} for every other system, and then not
+#'                       printed. Since v0.9.340.
 #'
 #' @export
 ClassificationResult <- R6::R6Class("ClassificationResult",
@@ -73,6 +90,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     levels         = NULL,
     provisional_because = NULL,
     phases         = NULL,
+    candidates     = NULL,
 
     #' @description Build a ClassificationResult.
     #' @param system System name.
@@ -89,6 +107,8 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     #' @param levels Assigned class per level (data.frame), or NULL.
     #' @param provisional_because Character vector of undecided classes
     #'        tested before the assigned ones.
+    #' @param candidates The classes that may attach the soil (a
+    #'        data.frame), or NULL; since v0.9.340.
     initialize = function(system,
                           name,
                           rsg_or_order   = NA_character_,
@@ -101,7 +121,8 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
                           warnings       = character(0),
                           system_id      = NULL,
                           levels         = NULL,
-                          provisional_because = character(0)) {
+                          provisional_because = character(0),
+                          candidates     = NULL) {
       self$system         <- system
       self$name           <- name
       self$rsg_or_order   <- rsg_or_order
@@ -115,6 +136,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       self$system_id      <- system_id
       self$levels         <- levels
       self$provisional_because <- as.character(provisional_because)
+      self$candidates <- candidates
     },
 
     #' @description Pretty-print the result with key trace, ambiguities, and
@@ -140,6 +162,14 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       }
       if (is.data.frame(self$phases) && nrow(self$phases) > 0L) {
         cli::cli_text("Phases: {paste(self$phases$name, collapse = '; ')}")
+      }
+      # v0.9.340: the classes that may attach the soil, for the systems that
+      # are not keys; nothing for the others
+      if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L) {
+        cd <- self$candidates
+        txt <- paste(sprintf("%s (%s%s)", cd$code, cd$degree,
+                             ifelse(cd$in_name, ", in the name", "")), collapse = "; ")
+        cli::cli_text("Candidates: {txt}")
       }
       if (length(self$qualifiers) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(self$qualifiers), collapse = ', ')}")
@@ -204,7 +234,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     #' @description Compact summary list.
     #' @param ... Ignored (S3 summary signature compatibility).
     summary = function(...) {
-      list(
+      out <- list(
         system         = self$system,
         name           = self$name,
         rsg_or_order   = self$rsg_or_order,
@@ -214,6 +244,10 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
         n_missing      = length(self$missing_data),
         n_warnings     = length(self$warnings)
       )
+      # v0.9.340: only for a result that has candidates
+      if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L)
+        out$n_candidates <- nrow(self$candidates)
+      out
     },
 
     #' @description Render this classification as a self-contained

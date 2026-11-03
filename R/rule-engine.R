@@ -22,6 +22,11 @@
 # Three-valued logic: any test that returns NA propagates: with all_of,
 # the result is NA if no test failed but at least one was NA; with
 # any_of, the result is NA if no test passed but at least one was NA.
+#
+# v0.9.340: a system with tolerances on its thresholds evaluates a block twice,
+# strictly and tolerantly (.evaluate_degree(), R/attachment.R); in the
+# tolerant pass the direction of the tolerances flips inside none_of. Every
+# other evaluation is strict, as before.
 # ================================================================
 
 
@@ -221,6 +226,14 @@ evaluate_rsg_tests <- function(pedon, tests) {
   }
 
   test_list <- tests[[combinator]]
+  # v0.9.340: in the tolerant pass of .evaluate_degree() (R/tolerance.R) the
+  # tests of a none_of block must fail for the class, so the direction in
+  # which their thresholds move flips. Off in every other evaluation.
+  if (combinator == "none_of" && isTRUE(.rule_ctx$tolerant)) {
+    old_negated <- .rule_ctx$negated
+    .rule_ctx$negated <- !old_negated
+    on.exit(.rule_ctx$negated <- old_negated, add = TRUE)
+  }
   results   <- lapply(test_list, function(spec) run_single_test(pedon, spec))
 
   passed_vec <- vapply(results, function(r) isTRUE(r$passed), logical(1))
@@ -336,7 +349,7 @@ run_single_test <- function(pedon, test_spec) {
 
   # Normalise R6 DiagnosticResult and plain-list returns to a flat dict.
   if (inherits(result, "DiagnosticResult") || inherits(result, "R6")) {
-    list(
+    out <- list(
       test_name = test_name,
       passed    = result$passed,
       layers    = result$layers   %||% integer(0),
@@ -345,6 +358,16 @@ run_single_test <- function(pedon, test_spec) {
       reference = result$reference,
       notes     = result$notes
     )
+    # v0.9.340: in the tolerant pass of .evaluate_degree() only, the distance
+    # of a failure in tolerance units, for the attachment's nearest classes (a
+    # field of the result, or an entry of its evidence). Not in any other
+    # evaluation: some evidence already holds a "distance" of its own (the
+    # edit distance of a profile formula), and the traces stay as they were.
+    if (isTRUE(.rule_ctx$tolerant)) {
+      ev <- result$evidence
+      out$distance <- result$distance %||% (if (is.list(ev)) ev[["distance"]])
+    }
+    out
   } else if (is.list(result) && "passed" %in% names(result)) {
     result$test_name <- test_name
     if (is.null(result$missing)) result$missing <- character(0)
