@@ -48,6 +48,29 @@ The Russian soil classification (Field Guide of 2008) gains the types of the six
 * **A named rock that is neither carbonate nor gypsum** (granite, sandstone ...) has neither mark: O over an R of granite with no effervescence recorded is DA05, decided.
 * **The readings of this release, accepted** (`readings.yaml`): TT below the upper 50 cm of the peat body and a T of the notation as TO or TE by its botany; the substrate of the weakly developed soils (no horizon is loose rock, the mark from the origin or the texture, the legend's "" read as ^^, a proluvial body with no type, the marks of R from the rock recorded); the BH of BB01 and BB03 a BHF of either kind; the profiles the literal formulas leave without a type. Every reading in `readings.yaml` is again one of Hugo's decisions.
 
+### After the review (2026-11-02)
+
+* **Fixes.**
+  * A grey matrix outside the bluish, greenish and neutral hues is reductic only with a positive dipyridyl test, recorded water saturation or a water table at the layer (or water above the surface), never the drainage class alone; an A is AG only in a bluish or greenish hue; Gr only with 5 % of redox features or less, 5-10 % with no location leaving Go and g undecided.
+  * The A run at the surface continues only under a layer of A material, with more than 1 % carbon (a transition such as BA is no A designation); a layer that continues it is read by the subsurface tests too, and is undecided between the A and the subsurface code when both hold.
+  * E: bleached is a moist value of 5 or more with chroma 2 or less; a lower chroma counts as lighter only at an equal or higher value; clay films common or many, or more clay than the layer above, exclude it; above a rock or a coarse layer with no fine earth only a bleached layer is an E.
+  * Aso holds only on the list of p. 13 (the grisols reading of p. 193 is evidence), and only in a well aerated A (no functional redox features, no reduced matrix).
+  * A BT that is also fersiallitic is FSt; a BT or FE with ferric nodules under 40 % is BTcn or FEcn, not Fe; -cn only on BT and FE, -j only on S, Sci and BT, on an angular (not subangular) structure.
+  * TH never with jarosite or a pH under 4 (the sulfated U).
+  * Jp under an A or LA in a young deposit as well as under a Js, before the S.
+  * A G candidate is never narrowed away by a designation.
+  * The andosol domain opens only on volcanic material recorded or on the andic or vitric properties holding; an Alox + 1/2 Feox under 2 % closes it.
+  * Na only on a columnar, prismatic or coarse structure, or a massive one with 1 cmol+/kg of sodium or more; never undecided on a layer with no degraded structure.
+  * Ach: the 3 % carbon in the top 10 cm of the A run, a lighter mineral layer below and a gradual decrease of the carbon, chernic() alone as the stand-in; the moist value stays 3.5 or less (the chapter, p. 126, Q17).
+  * Ae not on a ploughed layer; M without a designation (a soft layer with no fine earth and its carbonates recorded, or an FAO Cr); OL in a profile written in capitals still the litter of the depth datum, and OF, OH as hints; a light layer under 1 % carbon under an O read as an E, not an A; a mineral designation with no data makes the layer mineral; OX with pH 5.5-6.5; Sci with pH over 6.5; a loss on ignition contradicted by the carbon flagged, and no A over 30 % carbon; an imperfectly drained site as a sign of water excess.
+
+### Hugo's decisions after the review (2026-11-02)
+
+* **The revised readings** (`inst/rules/rp2008/readings.yaml`): the designations narrowing the candidates (never a G away; BA is no A; OL, OF and OH in capitals; a mineral designation makes the layer mineral), the reductic matrix, the holorganic layers, the A run at the surface, Ach, Aso and An, BT and E, the intertropical horizons, Sn, FS, Sp, Sal and the andosol gate, the layers and materials, gypsum, silica and iron, the overlays and the features, as the fixes above read them.
+* **soilKey's additions, accepted:** Aso needs a well aerated A (no functional redox features, no reduced matrix, p. 13); tidal flooding, water above the surface or a subaqueous site count as a water table for a grey matrix; the A run continues only under a layer of A material; a light layer low in carbon is read as an E only directly under an O; an E is undecided when the BP below it is undecided; Fe only with ferric nodules of 40 % or more where a BT or FE also holds, otherwise BTcn or FEcn.
+* **Aso:** with the list of p. 13 as the only test, the "imperfect when only one holds" clause of Q17 is empty: when the list of p. 13 holds, the grisols reading of p. 193 always holds too.
+* **The biomacrostructured A (d3):** without biogenic_aggregates_pct, a crumb or granular structure with a recorded biological activity (worm holes, burrows, earthworms, a mull) reads the biomacrostructured A, flagged; a polyhedral, massive or other structure reads the A that is not; nothing recorded stays undecided.
+
 # soilKey 0.9.341 (2026-11-02)
 
 ## France: the notation of the Référentiel pédologique 2008

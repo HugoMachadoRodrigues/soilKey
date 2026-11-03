@@ -135,6 +135,14 @@
   # the hints of other notations read as RP codes and families
   voc <- .rp_vocabulary()
   x$hint_codes <- lapply(seq_len(n), function(i) .rp_hint_codes(x$des$hint[[i]], voc))
+  # OL, OF and OH written in a profile not read in the RP notation (all in
+  # capitals, or undecided) are still the litter, fragmentation and humified
+  # O horizons as hints (the review's d5, m5)
+  for (i in seq_len(n)) {
+    d <- .rp_des(x, i)
+    if (!(x$rp && isTRUE(x$des$known[i])) && isTRUE(grepl("^O[LFH]([nvtrmf]|zo|noz)*[0-9]*$", d)))
+      x$hint_codes[[i]] <- substr(d, 1L, 2L)
+  }
   x$hint_fam <- lapply(x$hint_codes, function(cc) unique(stats::na.omit(voc$info[cc, "family"])))
   .rp_datum(x)
   x
@@ -197,6 +205,7 @@
 .rp_is_litter <- function(x, i) {
   d <- x$des
   if (x$rp && isTRUE(d$known[i])) return(isTRUE(d$code[i] %in% c("OL", "OLn", "OLv", "OLt")))
+  if (isTRUE(grepl("^OL[nvt]?[0-9]*$", .rp_des(x, i)))) return(TRUE)
   hc <- x$hint_codes[[i]]
   length(hc) > 0L && all(hc == "OL")
 }
@@ -299,11 +308,18 @@
 .rp_organic <- function(x, i) {
   .rp_memo(x, sprintf("organic_%d", i), function() {
     loi <- .rp_num(x, i, "loi_pct")
-    if (!is.na(loi))
-      return(.rp_r(loi >= 50, note = sprintf("loss on ignition %s %% (ash %s %%): %s", format(loi), format(100 - loi),
-                                               if (loi >= 50) "holorganic, ash under 50 %" else "ash 50 % or more, not holorganic")))
     oc <- .rp_num(x, i, "oc_pct")
+    if (!is.na(loi)) {
+      # a carbon that contradicts the loss on ignition is flagged (the review's m3)
+      contra <- (loi < 50 && isTRUE(oc >= 25)) || (loi >= 50 && isTRUE(oc < 17))
+      return(.rp_r(loi >= 50, tag = if (contra) "loi_oc_contradiction",
+                   note = c(sprintf("loss on ignition %s %% (ash %s %%): %s", format(loi), format(100 - loi),
+                                    if (loi >= 50) "holorganic, ash under 50 %" else "ash 50 % or more, not holorganic"),
+                            if (contra) sprintf("the organic carbon %s %% contradicts it: the loss on ignition decides, flagged", format(oc)))))
+    }
     if (!is.na(oc)) return(.rp_tol(oc, 30, "min", .RP_TOL$oc30, "organic carbon (g/100 g)", "oc_pct"))
+    if (length(x$hint_fam[[i]]) && !any(x$hint_fam[[i]] %in% c("O", "H")))
+      return(.rp_r(FALSE, note = sprintf("no carbon recorded: the designation '%s' names a mineral horizon", .rp_des(x, i))))
     if (.rp_hint_in(x, i, c("O", "H")))
       return(.rp_r(TRUE, tag = "designation_hint",
                    note = sprintf("no carbon or loss on ignition: the designation '%s' names an organic horizon", .rp_des(x, i))))
@@ -379,22 +395,25 @@
     return(.rp_r(if (is.na(ok_size)) NA else TRUE, missing = "biogenic_aggregate_size",
                  note = sprintf("biogenic aggregates %s %%%s", format(pct), if (is.na(sz)) "" else paste0(", ", sz))))
   }
+  # not recorded (Hugo's decision d3, 2026-11-02): a crumb or granular
+  # structure with a recorded biological activity (worm holes, burrows, a
+  # mull) reads biomacrostructured, flagged; a polyhedral, massive or other
+  # structure reads not biostructured; nothing recorded stays undecided
   st <- .kidpr_structure(x, i)
-  if (isTRUE(grepl(.KIDPR_RAW_STRUCTURE, st$type)))
-    return(.rp_r(FALSE, note = sprintf("structure %s: not biostructured", st$type)))
-  crumb <- isTRUE(grepl("crumb|granul|grumel", st$type))
-  g <- .field_grade_class(st$grade)
+  if (is.na(st$type))
+    return(.rp_r(NA, missing = c("biogenic_aggregates_pct", "structure_type"), note = "the biogenic aggregates and the structure are not recorded"))
+  crumb <- grepl("crumb|granul|grumel", st$type)
+  if (!crumb) return(.rp_r(FALSE, note = sprintf("structure %s: not biostructured (Hugo's decision d3)", st$type)))
   wh <- .rp_num(x, i, "worm_holes_pct")
-  hf <- .rp_site_txt(x, "humus_form")
-  mull <- isTRUE(grepl("mull", hf))
-  if (crumb && isTRUE(g >= 2L) && (isTRUE(wh > 0) || mull))
+  bt <- .rp_txt(x, i, "bioturbation_density")
+  mull <- isTRUE(grepl("mull", .rp_site_txt(x, "humus_form")))
+  act <- isTRUE(wh > 0) || isTRUE(!is.na(bt) && !grepl("^none", bt)) || mull
+  if (act)
     return(.rp_r(TRUE, tag = "biomacro_from_structure",
-                 note = sprintf("biogenic aggregates not recorded: a %s crumb or granular structure with %s, flagged",
-                                st$grade, if (isTRUE(wh > 0)) "worm holes" else "a mull")))
-  if (!is.na(st$type) && !crumb && !isTRUE(grepl("subang|polyhed|block", st$type)))
-    return(.rp_r(FALSE, note = sprintf("structure %s: not biostructured", st$type)))
-  .rp_r(NA, missing = c("biogenic_aggregates_pct", "biogenic_aggregate_size"),
-        note = "the biogenic aggregates are not recorded")
+                 note = sprintf("biogenic aggregates not recorded: a %s structure with %s, flagged (Hugo's decision d3)", st$type,
+                                if (isTRUE(wh > 0)) "worm holes" else if (mull) "a mull" else "burrows")))
+  .rp_r(NA, missing = c("biogenic_aggregates_pct", "worm_holes_pct"),
+        note = sprintf("structure %s: biological activity not recorded, the biogenic aggregates undecided", st$type))
 }
 
 
@@ -637,7 +656,7 @@
   dr <- .rp_site_txt(x, "drainage_class")
   gw <- suppressWarnings(as.numeric(.rp_site(x, "groundwater_depth_cm")))
   isTRUE(rx$mottles) || isTRUE(grepl("^(pos|\\+|yes|true)", ct)) || isTRUE(d > 30) ||
-    isTRUE(grepl("poor|mal drenado", dr)) || (!is.na(gw) && !is.na(x$bot[i]) && gw <= x$bot[i])
+    isTRUE(grepl("poor|imperfect|mal drenado", dr)) || (!is.na(gw) && !is.na(x$bot[i]) && gw <= x$bot[i])
 }
 
 #' A reduced matrix (G, p. 22, 280): moist colour of a gley hue (GY, G, BG,
@@ -663,9 +682,18 @@
     if (.rp_gley_hue(col) || neutral)
       return(.rp_r(TRUE, tag = col$tag, note = c(sprintf("%s: a bluish, greenish or neutral matrix", txt), col$note)))
     if (c <= 2) {
-      if (.rp_wet_sign(x, i))
-        return(.rp_r(TRUE, tag = col$tag, note = c(sprintf("%s: a grey matrix with a sign of water excess", txt), col$note)))
-      return(.rp_r(FALSE, tag = col$tag, note = sprintf("%s: grey, but no sign of water excess recorded", txt)))
+      # outside the gley and neutral hues, a measured sign of water at the
+      # layer: saturation days or a water table recorded at it (a positive
+      # dipyridyl test is read above); never the drainage class alone (the
+      # review's D1)
+      d <- .rp_num(x, i, "water_saturation_days")
+      gw <- suppressWarnings(as.numeric(.rp_site(x, "groundwater_depth_cm")))
+      wt <- suppressWarnings(as.numeric(.rp_site(x, "water_table_cm_above_surface")))
+      flooded <- isTRUE(wt > 0) || isTRUE(.rp_site_lgl(x, "subaqueous")) || isTRUE(.rp_site_lgl(x, "tidal_inundation"))
+      at <- (isTRUE(d > 30)) || (!is.na(gw) && !is.na(x$bot[i]) && gw <= x$bot[i]) || flooded
+      if (at) return(.rp_r(TRUE, tag = col$tag, note = c(sprintf("%s: a grey matrix with %s", txt,
+                                                                 if (isTRUE(d > 30)) "water saturation recorded" else "the water table at the layer or above the surface"), col$note)))
+      return(.rp_r(FALSE, tag = col$tag, note = sprintf("%s: grey, but no dipyridyl test, saturation or water table at the layer recorded", txt)))
     }
     .rp_r(FALSE, tag = col$tag, note = sprintf("%s: not a reductic matrix", txt))
   })
@@ -703,7 +731,11 @@
 # undecided (high Mg may compensate, p. 24).
 .rp_sodic <- function(x, i) {
   st <- .kidpr_structure(x, i)
-  degraded <- isTRUE(grepl("column|prism|massive|coarse", paste(st$type, st$size, st$secondary)))
+  na_c <- .rp_num(x, i, "na_cmol")
+  # a columnar, prismatic or coarse structure; a massive one only with 1
+  # cmol+/kg of exchangeable Na or more (the review's D12)
+  degraded <- isTRUE(grepl("column|prism|coarse", paste(st$type, st$size, st$secondary))) ||
+    (isTRUE(grepl("massive", st$type)) && isTRUE(na_c >= 1))
   nb <- .rp_na_bases(x, i)
   if (!degraded) return(.rp_r(FALSE, note = if (is.na(st$type)) "no degraded structure recorded" else sprintf("structure %s: not degraded", st$type)))
   sal <- .rp_salic(x, i)
@@ -753,10 +785,16 @@
     rec <- vapply(meas, function(a) !is.na(.kidpr_v(x, i, a)), NA)
     lo <- .rp_txt(x, i, "layer_origin"); pm <- .rp_site_txt(x, "parent_material")
     volcanic <- isTRUE(grepl("tephr|volcan|pyrocl|ash|pumic|cinder|basalt", paste(lo, pm)))
+    alo <- .rp_num(x, i, "al_ox_pct"); feo <- .rp_num(x, i, "fe_ox_pct")
+    if (!is.na(alo) && !is.na(feo) && alo + feo / 2 < 2 && !isTRUE(.rp_num(x, i, "volcanic_glass_pct") >= 5))
+      return(.rp_r(FALSE, note = sprintf("Alox + 1/2 Feox %s %%: under 2 %%, outside the andosol domain", format(alo + feo / 2))))
     if (!any(rec) && !volcanic) return(.rp_r(FALSE, note = "no andic measurement and no volcanic material recorded"))
     a <- .kidpr_wrb_layer(x, "andic_properties", i)
     v <- .kidpr_wrb_layer(x, "vitric_properties", i)
     p <- .kidpr_or(a, v)
+    # an oxalate measurement alone does not open the gate: volcanic material
+    # recorded, or the andic or vitric properties holding (the review's D11)
+    if (!isTRUE(p) && !volcanic) p <- FALSE
     .rp_r(p, missing = c("al_ox_pct", "fe_ox_pct", "phosphate_retention_pct", "bulk_density_g_cm3"),
           tag = c(if (!is.na(a)) "andic_properties", if (!is.na(v)) "vitric_properties"),
           value = if (isTRUE(a)) "andic" else if (isTRUE(v)) "vitric" else NA_character_,

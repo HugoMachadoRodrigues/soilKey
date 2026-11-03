@@ -160,7 +160,7 @@ test_that("G dominates every other character; Gr, Go, AG; g as a feature", {
   expect_true("BT" %in% r$candidates[[1]])   # the BT reading goes to the candidates, never BTG
   # Go: segregations at the voids
   go <- .fr_S(30, 80, munsell_hue_moist = "2.5Y", munsell_value_moist = 6, munsell_chroma_moist = 1,
-              redoximorphic_features_pct = 20, redox_segregations_location = "voids")
+              redoximorphic_features_pct = 20, redox_segregations_location = "voids", water_saturation_days = 200)
   expect_identical(.fr_code(.fr_P(.fr_A(0, 30), go, .fr_C(80, 120)), 30), "Go")
   # inside the peds: g, a feature of the S
   g <- .fr_S(30, 80, redoximorphic_features_pct = 20, redox_segregations_location = "within peds")
@@ -180,7 +180,8 @@ test_that("G dominates every other character; Gr, Go, AG; g as a feature", {
   expect_identical(.fr_code(.fr_P(ag, .fr_S(20, 60)), 0), "AG")
   # a grey matrix with mottles and no location: Go or g undecided
   r <- .fr_row(.rp_identify(.fr_P(.fr_A(0, 30), .fr_S(30, 80, munsell_hue_moist = "2.5Y", munsell_value_moist = 6,
-                                                      munsell_chroma_moist = 1, redoximorphic_features_pct = 20),
+                                                      munsell_chroma_moist = 1, redoximorphic_features_pct = 20,
+                                                      water_saturation_days = 200),
                                   .fr_C(80, 120))), 30)
   expect_true("G" %in% r$candidates[[1]] || is.na(r$passed))
   expect_true("redox_segregations_location" %in% r$missing[[1]])
@@ -218,7 +219,7 @@ test_that("the A horizons: An, Ach, Aso, Aca, Ado, Aci, Amg, A, Av, Ae, Js", {
   expect_identical(one(.fr_A(0, 30, oc_pct = 12, munsell_value_moist = 2, munsell_chroma_moist = 1,
                              water_saturation_days = 250)), "An")
   expect_identical(one(do.call(.fr_A, c(list(0, 30, oc_pct = 4, munsell_value_moist = 2, munsell_chroma_moist = 1,
-                                             ph_h2o = 7, bs_pct = 95), bio))), "Ach")
+                                             ph_h2o = 7, bs_pct = 95, boundary_distinctness = "gradual"), bio))), "Ach")
   expect_identical(one(.fr_A(0, 30, oc_pct = 2.5, munsell_value_moist = 3, munsell_chroma_moist = 2,
                              ph_h2o = 6.0, bs_pct = 65)), "Aso")
   expect_identical(one(do.call(.fr_A, c(list(0, 30, oc_pct = 3, munsell_value_moist = 3, munsell_chroma_moist = 3,
@@ -502,6 +503,99 @@ test_that("the humic words of the solum and the hydromorphy of the profile", {
                            .fr_S(50, 100, munsell_hue_moist = "5GY", munsell_value_moist = 5, munsell_chroma_moist = 1)))
   hy <- .rp_hydromorphy(fr)
   expect_identical(c(hy$g_top, hy$G_top, hy$thickness), c(20, 50, 80))
+})
+
+test_that("the fixes of the review (D1-D13, d1-d7, m1-m5) and Hugo's decision d3", {
+  skip_on_cran()
+  # D1: a grey matrix of another hue needs saturation, a water table or a
+  # dipyridyl test, never the drainage class alone; an A only in a gley hue
+  grey <- .fr_S(30, 80, munsell_hue_moist = "10YR", munsell_value_moist = 5, munsell_chroma_moist = 1)
+  expect_false(.fr_code(.fr_P(.fr_A(0, 30), grey, .fr_C(80, 120), site = list(drainage_class = "poorly drained")), 30) %in% c("G", "Gr", "Go"))
+  expect_identical(.fr_code(.fr_P(.fr_A(0, 30), modifyList(grey, list(childs_test = "positive")), .fr_C(80, 120)), 30), "Gr")
+  expect_false(.fr_code(.fr_P(.fr_A(0, 20, munsell_value_moist = 4, munsell_chroma_moist = 1, water_saturation_days = 250),
+                              .fr_S(20, 60)), 0) == "AG")
+  # Gr only with 5 % or less; 5-10 % with no location stays undecided
+  r <- .fr_row(.rp_identify(.fr_P(.fr_A(0, 30), modifyList(grey, list(childs_test = "positive", redoximorphic_features_pct = 8)),
+                                  .fr_C(80, 120))), 30)
+  expect_true(is.na(r$passed))
+  # D2: the A run continues only over 1 % carbon, and a layer that continues
+  # it with a subsurface code too is undecided between the two
+  r <- .rp_identify(.fr_P(.fr_A(0, 20, oc_pct = 3), .fr_S(20, 50, oc_pct = 1.5, munsell_value_moist = 4, munsell_chroma_moist = 3),
+                          .fr_C(50, 100)))
+  expect_true(is.na(r$passed[2]))
+  expect_true(all(c("A", "S") %in% r$candidates[[2]]))
+  # D3, D4: no E over a rock unless bleached; an E has no more clay than above
+  rock <- .fr_L(40, 80, clay_pct = NA, silt_pct = NA, sand_pct = NA, oc_pct = NA, structure_type = NA, structure_grade = NA,
+                rupture_resistance = "extremely hard")
+  e <- function(...) .fr_L(20, 40, munsell_value_moist = 6, munsell_chroma_moist = 3, oc_pct = 0.4, clay_pct = 10,
+                           structure_type = "platy", structure_grade = "weak", ...)
+  expect_false(identical(.fr_code(.fr_P(.fr_A(0, 20, clay_pct = 12), e(), rock), 20), "E"))
+  expect_identical(.fr_code(.fr_P(.fr_A(0, 20, clay_pct = 12), e(munsell_chroma_moist = 1), rock), 20), "E")
+  # D5: Aso on the list of p. 13 only (10YR 3/3: the grisols reading alone)
+  expect_false(identical(.fr_code(.fr_P(.fr_A(0, 30, oc_pct = 2.5, munsell_value_moist = 3, munsell_chroma_moist = 3,
+                                              ph_h2o = 6.0, bs_pct = 65), .fr_S(30, 80)), 0), "Aso"))
+  # D6: BT and FS both hold: FSt
+  fst <- .fr_S(20, 70, clay_pct = 35, clay_films_amount = "common", munsell_hue_moist = "2.5YR", munsell_value_moist = 4,
+               munsell_chroma_moist = 6, structure_type = "angular blocky", structure_grade = "strong")
+  expect_identical(.fr_row(.rp_identify(.fr_P(.fr_A(0, 20, clay_pct = 15), fst, .fr_C(70, 120))), 20)$composed, "FSt")
+  # D7: a BT with 25 % ferric nodules is a BTcn; 45 % is Fe
+  btn <- function(n) .fr_S(20, 70, clay_pct = 30, clay_films_amount = "many", ferric_nodules_pct = n)
+  expect_identical(.fr_row(.rp_identify(.fr_P(.fr_A(0, 20, clay_pct = 12), btn(25), .fr_C(70, 120))), 20)$composed, "BTcn")
+  expect_identical(.fr_code(.fr_P(.fr_A(0, 20, clay_pct = 12), btn(45), .fr_C(70, 120)), 20), "Fe")
+  # D8: jarosite or a pH under 4: U, not TH
+  u <- .fr_L(0, 30, s_total_pct = 1.5, jarosite_present = TRUE, ph_h2o = 3.3, water_saturation_days = 365, oc_pct = 2)
+  expect_identical(.fr_code(.fr_P(u, .fr_C(30, 80)), 0), "U")
+  # D9: Jp under an A in a young deposit
+  jp <- .fr_L(20, 60, oc_pct = 0.2, structure_type = "subangular blocky", structure_grade = "weak", layer_origin = "fluvic", bs_pct = 30)
+  expect_identical(.fr_code(.fr_P(.fr_A(0, 20), jp, .fr_C(60, 100)), 20), "Jp")
+  # D10: an FAO g keeps the G candidates
+  gg <- modifyList(grey, list(designation = "Bg", water_saturation_days = 200, redoximorphic_features_pct = 20,
+                              structure_type = NA, structure_grade = NA))
+  r <- .fr_row(.rp_identify(.fr_P(.fr_A(0, 30, designation = "Ah"), gg, .fr_C(80, 120, designation = "C"))), 30)
+  expect_true("G" %in% r$candidates[[1]] || r$code %in% c("G", "Gr", "Go"))
+  # D11: a measured Alox + 1/2 Feox under 2 % closes the andosol domain
+  expect_false(.rp_andic(.rp_profile(.fr_P(.fr_A(0, 20, al_ox_pct = 0.3, fe_ox_pct = 0.4), .fr_S(20, 60))), 1)$passed)
+  # D12: no Na on a massive layer with little sodium, none undecided on a C
+  na <- .fr_L(20, 60, structure_type = "massive", ph_h2o = 5, cec_cmol = 3, ca_cmol = 0.2, mg_cmol = 0.1, k_cmol = 0.1, na_cmol = 0.1)
+  r <- .fr_row(.rp_identify(.fr_P(.fr_A(0, 20), na)), 20)
+  expect_false("Na" %in% c(r$overlay[[1]], r$overlay_na[[1]]))
+  # d1: no Ach without a lighter mineral layer below (over a rock)
+  ach <- .fr_A(0, 30, oc_pct = 5, munsell_value_moist = 2, munsell_chroma_moist = 1, ph_h2o = 7.2, bs_pct = 95,
+               biogenic_aggregates_pct = 50, biogenic_aggregate_size = "macro")
+  expect_false(identical(.fr_code(.fr_P(ach, modifyList(rock, list(top_cm = 30, bottom_cm = 60))), 0), "Ach"))
+  # d2: no Ae on a ploughed layer
+  ae <- .rp_identify(.fr_P(.fr_A(0, 20, clay_pct = 12), e(munsell_chroma_moist = 2),
+                           .fr_S(40, 90, clay_pct = 35, clay_films_amount = "many"), site = list(land_use = "cropland")))
+  expect_identical(ae$composed[1], "LA")
+  # d4: a soft chalk with no fine earth is M
+  chalk <- .fr_L(20, 60, clay_pct = NA, silt_pct = NA, sand_pct = NA, oc_pct = NA, structure_type = NA, structure_grade = NA,
+                 rupture_resistance = "slightly hard", caco3_pct = 95)
+  expect_identical(.fr_code(.fr_P(.fr_A(), chalk), 20), "M")
+  # d5, m5: OL and OF in a profile in capitals are still the litter and the OF
+  ol <- .fr_L(0, 3, oc_pct = 45, clay_pct = NA, silt_pct = NA, sand_pct = NA, structure_type = NA, structure_grade = NA,
+              designation = "OL")
+  fr <- .rp_identify(.fr_P(ol, modifyList(ol, list(top_cm = 3, bottom_cm = 6, designation = "OF")),
+                           .fr_A(6, 20, designation = "A"), .fr_S(20, 60, designation = "B")))
+  expect_identical(fr$top_rp[1:3], c(-3, 0, 3))
+  expect_identical(fr$code[1:2], c("OL", "OF"))
+  # d7: a mineral designation with no data is no H or O
+  r <- .rp_identify(.fr_P(list(top_cm = 0, bottom_cm = 20, designation = "Ap"), list(top_cm = 20, bottom_cm = 60, designation = "Bt")))
+  expect_false(any(c("H", "O") %in% unlist(r$candidates)))
+  # m1: OX needs pH 5.5-6.5
+  ox <- .fr_S(20, 150, munsell_hue_moist = "10R", munsell_value_moist = 3, munsell_chroma_moist = 3, clay_pct = 10,
+              oxides_triacid_pct = 70, cec_cmol = 0.3, ph_h2o = 4.4, ph_kcl = 4.6)
+  expect_false(identical(.fr_code(.fr_P(.fr_A(0, 20, clay_pct = 10), ox, site = list(lat = -12, koppen_climate = "Aw")), 20), "OX"))
+  # m3: a loss on ignition contradicted by the carbon is flagged; no A over 30 %
+  r <- .fr_row(.rp_identify(.fr_P(.fr_L(0, 10, oc_pct = 35, loi_pct = 30), .fr_S(10, 50))), 0)
+  expect_true("loi_oc_contradiction" %in% r$fallbacks[[1]])
+  expect_false(isTRUE(r$code == "A") || "A" %in% r$candidates[[1]])
+  # Hugo's decision d3: crumb with worm holes is biomacrostructured; a
+  # polyhedral structure is not; crumb with no activity recorded stays open
+  x <- .rp_profile(.fr_P(.fr_A(0, 20, structure_type = "crumb", worm_holes_pct = 3), .fr_A(20, 30, structure_type = "crumb"),
+                         .fr_A(30, 40, structure_type = "subangular blocky")))
+  expect_true(.rp_biomacro(x, 1)$passed)
+  expect_true(is.na(.rp_biomacro(x, 2)$passed))
+  expect_false(.rp_biomacro(x, 3)$passed)
 })
 
 test_that("the readings of the RP horizons are listed in readings.yaml", {

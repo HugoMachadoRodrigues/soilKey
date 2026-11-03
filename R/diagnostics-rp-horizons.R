@@ -63,23 +63,32 @@
   .rp_memo(x, "positions", function() {
     n <- x$n
     org <- vapply(seq_len(n), function(i) isTRUE(.rp_organic(x, i)$passed), NA)
-    surf <- logical(n); first <- NA_integer_; open <- TRUE
+    surf <- logical(n); first <- NA_integer_; open <- TRUE; last <- NA_integer_
     for (i in x$ord) {
       if (org[i]) next
-      if (is.na(first)) { first <- i; surf[i] <- TRUE; next }
+      if (is.na(first)) { first <- i; surf[i] <- TRUE; last <- i; next }
       if (!open) break
-      cont <- if (length(x$hint_fam[[i]])) "A" %in% x$hint_fam[[i]] || "L" %in% x$hint_fam[[i]]
+      # the run continues only under a layer of A material
+      if (!isTRUE(.rp_a_material(x, last)$passed)) break
+      # an A or L designation of another notation (not a transition that
+      # starts with B, E or C, as BA), else carbon over 1 % with a moist value
+      # of 4 or less (the review's D2)
+      a_first <- isTRUE(grepl("^[0-9]*(A|Ap|L)", .rp_des(x, i)))
+      cont <- if (length(x$hint_fam[[i]])) a_first && ("A" %in% x$hint_fam[[i]] || "L" %in% x$hint_fam[[i]])
               else if (x$rp && isTRUE(x$des$known[i])) isTRUE(x$des$family[i] %in% c("A", "L"))
               else {
                 oc <- .rp_num(x, i, "oc_pct"); col <- .rp_colour(x, i)
-                isTRUE(oc >= 1) && !isTRUE(col$value > 4)
+                isTRUE(oc > 1) && !isTRUE(col$value > 4)
               }
-      if (isTRUE(cont) && !isTRUE("b" %in% x$des$hint_features[[i]])) surf[i] <- TRUE else open <- FALSE
+      if (isTRUE(cont) && !isTRUE("b" %in% x$des$hint_features[[i]])) { surf[i] <- TRUE; last <- i } else open <- FALSE
     }
     list(organic = org, first = first, surface = surf)
   })
 }
 .rp_is_surface <- function(x, i) isTRUE(.rp_positions(x)$surface[i])
+.rp_is_first <- function(x, i) identical(.rp_positions(x)$first, i)
+# The surface run of a layer: the layers of the run, in depth order.
+.rp_surface_run <- function(x) { pos <- .rp_positions(x); x$ord[pos$surface[x$ord]] }
 .rp_is_mineral <- function(x, i) !isTRUE(.rp_positions(x)$organic[i])
 
 # The thickness of a layer and of the run of adjacent layers for which
@@ -92,6 +101,12 @@
   k <- r + 1L
   while (k <= x$n && isTRUE(pred(x$ord[k]))) { th <- th + (x$thick[x$ord[k]] %||% 0); k <- k + 1L }
   th
+}
+
+# No particle size, carbon or structure recorded (carbonates may be: a chalk).
+.rp_no_fine_earth_but <- function(x, i) {
+  all(is.na(c(.rp_num(x, i, "clay_pct"), .rp_num(x, i, "sand_pct"), .rp_num(x, i, "silt_pct"),
+              .rp_num(x, i, "oc_pct")))) && is.na(.kidpr_structure(x, i)$type)
 }
 
 # Is there no fine earth recorded in a layer (a rock)?
@@ -146,6 +161,15 @@
 
 .rp_t_M <- function(x, i) {
   hc <- x$hint_codes[[i]]
+  rr <- .rp_txt(x, i, "rupture_resistance")
+  soft <- !is.na(rr) && !grepl("very hard|extremely hard|indurat|loose", rr)
+  # without a designation of a rock: a soft or slightly hard layer with no
+  # fine earth and its carbonates recorded (chalk, marl), or an FAO Cr, a
+  # weathered rock (the review's d4)
+  if (soft && .rp_no_fine_earth_but(x, i) &&
+      (!is.na(.rp_num(x, i, "caco3_pct")) || isTRUE(grepl("^[0-9]*Cr[0-9]*$", .rp_des(x, i)))))
+    return(.rp_r(TRUE, tag = if (isTRUE(grepl("Cr", .rp_des(x, i)))) "designation_hint",
+                 note = sprintf("rupture resistance %s, no fine earth: a coherent soft rock", rr)))
   if (!length(hc) || !all(hc %in% c("R", "M", "D")) || identical(hc, "R")) return(.rp_r(FALSE))
   rr <- .rp_txt(x, i, "rupture_resistance")
   if (is.na(rr)) return(.rp_r(NA, missing = "rupture_resistance", note = "a rock layer: hard, loose or fragmented undecided"))
@@ -186,6 +210,11 @@
   sign <- !is.na(st) || !is.na(sf) || isTRUE(.rp_lgl(x, i, "sulfide_odour")) ||
     !is.na(.rp_num(x, i, "ph_h2o2")) || !is.na(.rp_num(x, i, "incubation_ph"))
   if (!sign) return(.rp_r(FALSE))
+  # an oxidised, sulfated layer is no sulfidic material: jarosite, or a pH
+  # under 4 (the review's D8)
+  ph <- .rp_num(x, i, "ph_h2o")
+  if (isTRUE(.rp_lgl(x, i, "jarosite_present")) || isTRUE(ph < 4))
+    return(.rp_r(FALSE, note = "jarosite or a pH under 4: oxidised, not a sulfidic material"))
   s <- if (!is.na(st)) .rp_r(st >= 0.75, note = sprintf("total S %s %%", format(st)))
        else if (isTRUE(sf >= 0.75)) .rp_r(TRUE, tag = "sulfidic_s_lower_bound", note = sprintf("sulfidic S %s %% (a lower bound of the total S)", format(sf)))
        else .rp_r(NA, missing = "s_total_pct", note = "the total sulfur is not recorded")
@@ -363,15 +392,22 @@
   if (!isTRUE(red$passed)) return(red)
   rx <- .rp_redox(x, i)
   code <- NA_character_; r <- red
+  # Gr with redox features of 5 % or less; 5-10 % with no location leaves Go
+  # and g undecided (the review's D1)
   if (identical(rx$kind, "Go") && isTRUE(rx$pct > 0 || rx$mottles)) code <- "Go"
-  else if (!is.na(rx$pct) && rx$pct <= 10) code <- "Gr"
+  else if (!is.na(rx$pct) && rx$pct <= 5) code <- "Gr"
   else if (!rx$mottles) code <- "Gr"
   else if (identical(rx$kind, "g")) return(.rp_r(FALSE, note = c(red$note, rx$note, "segregations inside the peds: redox g, not G (default 18)")))
   else return(.rp_r(NA, missing = "redox_segregations_location", note = c(red$note, rx$note, "a grey matrix with mottles and no location: Go or g undecided (default 18)")))
   r$note <- c(red$note, rx$note)
   pos <- .rp_positions(x)
   a <- if (.rp_is_surface(x, i)) .rp_a_material(x, i) else .rp_r(FALSE)
-  if (isTRUE(a$passed)) { code <- "AG"; r$note <- c(r$note, "an A with reductic characters (p. 13)") }
+  if (isTRUE(a$passed)) {
+    # an A is reductic only in a bluish or greenish hue (the review's D1)
+    if (!.rp_gley_hue(.rp_colour(x, i)))
+      return(.rp_r(FALSE, note = c(red$note, "an A: reductic only in a bluish or greenish hue")))
+    code <- "AG"; r$note <- c(r$note, "an A with reductic characters (p. 13)")
+  }
   r$code <- code
   r
 }
@@ -475,6 +511,7 @@
   }
   if (!isTRUE(r$passed)) return(r)
   r$code <- if (isTRUE(ind)) "Fem" else "Fe"
+  r$value <- fn
   if (isTRUE(ind)) {
     th <- x$thick[i]
     if (!is.na(th) && th < 1) r$code <- "Femp"
@@ -547,8 +584,14 @@
       return(.rp_r(NA, missing = "oc_pct", note = "the organic carbon is not recorded"))
     }
     if (oc < 0.5) return(.rp_r(FALSE, note = sprintf("organic carbon %s %%: too little for an A", format(oc))))
+    if (oc > 30) return(.rp_r(FALSE, note = sprintf("organic carbon %s %%: an A is never over 30 %% (p. 10)", format(oc))))
     if (isTRUE(col$value >= 5 && col$chroma <= 2) && oc < 2)
       return(.rp_r(FALSE, note = sprintf("%s with %s %% carbon: bleached, not an A", .rp_colour_text(col), format(oc))))
+    # a light layer low in carbon directly under the O horizons is an E (the
+    # review's d6)
+    pv <- .rp_prev(x, i)
+    if (!is.na(pv) && isTRUE(.rp_organic(x, pv)$passed) && isTRUE(col$value >= 5) && oc < 1)
+      return(.rp_r(FALSE, note = sprintf("%s with %s %% carbon: light and low in carbon, not an A", .rp_colour_text(col), format(oc))))
     .rp_r(TRUE, note = sprintf("organic carbon %s %%", format(oc)))
   })
 }
@@ -580,10 +623,37 @@
 .rp_t_Ach <- function(x, i) {
   g <- .rp_a_gate(x, i); if (isFALSE(g$passed)) return(g)
   col <- .rp_colour(x, i)
+  # value 3.5 or less: the chapter (p. 126) over the general list (Q17)
   cv <- .rp_all(.rp_tol(col$value, 3.5, "max", 0, "moist value", "munsell_value_moist"),
                 .rp_tol(col$chroma, 2, "max", 0, "moist chroma", "munsell_chroma_moist"))
   if (isFALSE(cv$passed)) return(cv)
-  oc <- .rp_oc_min(x, i, 3); if (isFALSE(oc$passed)) return(oc)
+  # 3 % carbon in the top 10 cm of the A run (the review's D13)
+  run <- .rp_surface_run(x)
+  top <- run[1L]
+  oc <- .rp_oc_min(x, top, 3)
+  if (top != i) oc$note <- c(oc$note, "in the top 10 cm of the A run")
+  if (isFALSE(oc$passed)) return(oc)
+  # darker than a mineral layer below, with a gradual decrease of the carbon
+  # (pp. 12, 126; the review's d1)
+  last <- run[length(run)]
+  below <- .rp_next(x, last)
+  lb <- if (is.na(below) || !.rp_is_mineral(x, below) || .rp_no_fine_earth(x, below) || .rp_hint_in(x, below, c("R", "M", "D")))
+          .rp_r(FALSE, note = "no mineral layer below the A run: not a chernic A")
+        else {
+          cb <- .rp_colour(x, below); cl <- .rp_colour(x, last)
+          .rp_r(if (is.na(cb$value) || is.na(cl$value)) NA else cb$value > cl$value, missing = "munsell_value_moist",
+                note = if (!is.na(cb$value) && !is.na(cl$value)) sprintf("the layer below %s", .rp_colour_text(cb)))
+        }
+  if (isFALSE(lb$passed)) return(lb)
+  ocs <- vapply(c(run, below), function(j) .rp_num(x, j, "oc_pct"), 0)
+  bd <- .rp_txt(x, last, "boundary_distinctness")
+  grad <- if (isTRUE(grepl("gradual|diffuse", bd))) TRUE
+          else if (length(run) >= 2L && !anyNA(ocs[seq_along(run)]) &&
+                   all(ocs[seq_along(run)][-1L] / ocs[seq_along(run)][-length(run)] >= 0.4)) TRUE
+          else if (isTRUE(ocs[length(ocs)] >= 0.6)) TRUE
+          else if (!is.na(bd) && !is.na(ocs[length(ocs)])) FALSE else NA
+  gd <- .rp_r(grad, missing = "boundary_distinctness", note = if (isTRUE(grad)) "carbon decreasing gradually with depth")
+  if (isFALSE(gd$passed)) return(gd)
   cc <- .rp_num(x, i, "caco3_pct")
   carb <- .rp_r(if (is.na(cc)) TRUE else cc < 5, note = if (!is.na(cc)) sprintf("CaCO3 %s %%", format(cc)))
   if (isFALSE(carb$passed)) return(carb)
@@ -591,12 +661,12 @@
   if (isFALSE(ph$passed)) return(ph)
   st <- .rp_biomacro(x, i, meso = TRUE)
   if (is.na(st$passed)) {
-    w <- .kidpr_or(.kidpr_wrb_layer(x, "chernic", i), .kidpr_wrb_layer(x, "mollic", i))
-    st <- .rp_r(w, missing = st$missing, tag = c("chernic", "mollic"),
-                note = sprintf("the biological structure not recorded: soilKey's chernic() or mollic() %s",
-                               if (is.na(w)) "undecided" else if (w) "stand in (yes)" else "stand in (no)"))
+    w <- .kidpr_wrb_layer(x, "chernic", i)
+    st <- .rp_r(w, missing = st$missing, tag = "chernic",
+                note = sprintf("the biological structure not recorded: soilKey's chernic() %s",
+                               if (is.na(w)) "undecided" else if (w) "stands in (yes)" else "stands in (no)"))
   }
-  .rp_all(g, cv, oc, carb, ph, st)
+  .rp_all(g, cv, oc, lb, gd, carb, ph, st)
 }
 
 # Aso (p. 13; grisols p. 193): not calcareous; organic carbon over 1.2 %;
@@ -610,13 +680,18 @@
   v <- col$value; c <- col$chroma
   gen <- if (is.na(v) || is.na(c)) NA else v < 4 && c < 4 && v + c < 6
   gri <- if (is.na(v) || is.na(c)) NA else v < 4.5 && c < 4 && !(v == 4 && c == 3)
-  if (isFALSE(gen) && isFALSE(gri)) return(.rp_r(FALSE, note = sprintf("%s: not sombre enough", .rp_colour_text(col))))
-  cv <- .rp_r(if (is.na(gen)) NA else TRUE, missing = col$missing, tag = col$tag, imperfect = !isTRUE(gen) || !isTRUE(gri),
-              note = c(sprintf("%s: the list of p. 13 %s, the grisols of p. 193 %s", .rp_colour_text(col),
-                               if (isTRUE(gen)) "holds" else "fails", if (isTRUE(gri)) "holds" else "fails"),
-                       if (!isTRUE(gen) || !isTRUE(gri)) "only one of the two readings holds: imperfect (Q17)"))
+  # the list of p. 13 is the test; the grisols reading of p. 193 is evidence
+  # only (the review's D5)
+  if (isFALSE(gen)) return(.rp_r(FALSE, note = sprintf("%s: not sombre by p. 13 (the grisols reading of p. 193 %s)",
+                                                       .rp_colour_text(col), if (isTRUE(gri)) "holds" else "fails")))
+  cv <- .rp_r(gen, missing = col$missing, tag = col$tag,
+              note = sprintf("%s: the list of p. 13 holds, the grisols of p. 193 %s", .rp_colour_text(col),
+                             if (isTRUE(gri)) "holds" else "fails"))
   oc <- .rp_tol(.rp_num(x, i, "oc_pct"), 1.2, "min", 0, "organic carbon (%)", "oc_pct")
   if (isFALSE(oc$passed)) return(oc)
+  # good aeration (p. 13): no functional redox features and no reduced matrix
+  if (isTRUE(.rp_redox(x, i)$functional) || isTRUE(.rp_reduced(x, i)$passed))
+    return(.rp_r(FALSE, note = "redox features or a reduced matrix: not the well aerated Aso (p. 13)"))
   nc <- .rp_not_carbonated(x, i); if (isFALSE(nc$passed)) return(nc)
   cult <- isTRUE(.rp_ploughed(x, i, .rp_positions(x)$first %in% i)$passed)
   sat <- if (cult) .rp_r(TRUE, note = "under cultivation: S/CEC and pH not tested (LAso)")
@@ -781,6 +856,9 @@
   g <- .rp_a_gate(x, i); if (isFALSE(g$passed)) return(g)
   nx <- .rp_next(x, i)
   if (is.na(nx)) return(.rp_r(FALSE))
+  # not on a ploughed layer: p. 11 places Ae under forest or spontaneous
+  # vegetation (the review's d2)
+  if (isTRUE(.rp_ploughed(x, i, .rp_is_first(x, i))$passed)) return(.rp_r(FALSE, note = "a ploughed layer: not an Ae"))
   e <- .rp_e_raw(x, nx)
   .rp_all(g, .rp_r(e$passed, missing = e$missing, tag = e$tag, note = if (isTRUE(e$passed)) "directly above an E"))
 }
@@ -814,24 +892,41 @@
     pv <- .rp_prev(x, i); nx <- .rp_next(x, i)
     if (is.na(pv) || is.na(nx)) return(.rp_r(FALSE))
     col <- .rp_colour(x, i); cb <- .rp_colour(x, nx)
+    # bleached: moist value 5 or more and chroma 2 or less (the review's D4)
+    bleached <- isTRUE(col$value >= 5 && col$chroma <= 2)
     ocv <- .rp_num(x, i, "oc_pct"); oca <- .rp_num(x, pv, "oc_pct")
     if (!is.na(ocv) && !is.na(oca) && .rp_is_mineral(x, pv) && ocv >= oca)
       return(.rp_r(FALSE, note = "no less carbon than the layer above"))
+    # E is depleted: clay films common or many, or more clay than the layer
+    # above, exclude it (the review's D4)
+    if (isTRUE(.clay_films_class(.kidpr_v(x, i, "clay_films_amount")) >= 3L))
+      return(.rp_r(FALSE, note = "clay films common or many: not an eluvial horizon"))
+    ca <- .rp_clay(x, pv); ci <- .rp_clay(x, i)
+    if (.rp_is_mineral(x, pv) && !is.na(ca) && !is.na(ci) && ci > ca)
+      return(.rp_r(FALSE, note = "more clay than the layer above: not an eluvial horizon"))
+    # above a rock or a coarse layer with no fine earth, only a bleached layer
+    # is an E (the review's D3)
+    rocky <- .rp_no_fine_earth(x, nx) || (length(x$hint_codes[[nx]]) && all(x$hint_codes[[nx]] %in% c("R", "M", "D"))) ||
+      isTRUE(.rp_t_R(x, nx)$passed) || isTRUE(.rp_t_D(x, nx)$passed) || isTRUE(.rp_t_M(x, nx)$passed)
+    if (rocky && !bleached)
+      return(.rp_r(FALSE, note = "above a rock or a layer with no fine earth, and not bleached: not an E"))
     if (is.na(col$value) || is.na(cb$value)) {
+      if (bleached) return(.rp_r(TRUE, tag = col$tag, note = sprintf("%s: bleached", .rp_colour_text(col))))
       r <- .rp_stand_in(x, i, "albic", "the colour")
       return(r)
     }
-    lighter <- col$value >= cb$value + 1 || isTRUE(col$chroma <= cb$chroma - 1)
+    # lighter: a higher value, or a lower chroma at an equal or higher value
+    lighter <- col$value >= cb$value + 1 || isTRUE(col$chroma <= cb$chroma - 1 && col$value >= cb$value)
     if (!lighter) return(.rp_r(FALSE, note = sprintf("%s: not lighter than the layer below", .rp_colour_text(col))))
-    ci <- .rp_clay(x, i); cn <- .rp_clay(x, nx)
+    cn <- .rp_clay(x, nx)
     clay_inc <- .rp_more_clay(cn, ci)
-    bp_below <- isTRUE(.rp_bp_raw(x, nx)$passed)
-    bleached <- isTRUE(col$chroma <= 2)
-    dep <- if (isTRUE(clay_inc) || bp_below || bleached) TRUE else if (is.na(clay_inc)) NA else FALSE
+    bpb <- .rp_bp_raw(x, nx)$passed
+    bp_below <- isTRUE(bpb)
+    dep <- if (isTRUE(clay_inc) || bp_below || bleached) TRUE else if (is.na(clay_inc) || is.na(bpb)) NA else FALSE
     .rp_r(dep, missing = "clay_pct", tag = col$tag,
           note = c(sprintf("%s: lighter than the layer below", .rp_colour_text(col)),
                    if (isTRUE(clay_inc)) "more clay below", if (bp_below) "a podzolic B below",
-                   if (bleached) "bleached (chroma 2 or less)"))
+                   if (bleached) "bleached (moist value 5 or more, chroma 2 or less)"))
   })
 }
 
@@ -976,7 +1071,7 @@
 # over-structure) with clay 40 % or more and no V; vertic_properties()
 # stands in.
 .rp_t_SV <- function(x, i) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   cl <- .rp_vertic_clay(x, i); if (isFALSE(cl$passed)) return(cl)
   ck <- .rp_cracks(x, i)
   s <- if (!is.na(ck)) .rp_r(ck, note = if (ck) "shrinkage cracks or a prismatic over-structure")
@@ -989,7 +1084,7 @@
 # 0.6-3 %; Snd pH 5.0 or more, Alpy/Alox under 0.5, Siox 0.6 % or more; Slu
 # pH under 5.0, Alpy/Alox 0.5 or more.
 .rp_andic_s <- function(x, i, kind) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   an <- .rp_andic(x, i); if (isFALSE(an$passed)) return(an)
   if (identical(an$value, "vitric")) return(.rp_r(FALSE, note = "vitric, not andic"))
   oc <- .rp_between(.rp_num(x, i, "oc_pct"), 0.6, 3, 0, "organic carbon (%)", "oc_pct")
@@ -1018,7 +1113,7 @@
 # of clay (the table, Q17; per kg of soil under 16 +/- 1 as the fallback);
 # pH 3.5-7. Without Ki, soilKey's ferralic() stands in.
 .rp_t_F <- function(x, i) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   ox <- .rp_num(x, i, "oxides_triacid_pct")
   if (isTRUE(ox > 60)) return(.rp_r(FALSE, note = "oxides over 60 % of the clay: oxidic"))
   col <- .rp_colour(x, i)
@@ -1051,7 +1146,7 @@
 # pH KCl. Without the oxides, ferralic() with the CEC of the clay and the
 # delta pH stand in.
 .rp_t_OX <- function(x, i) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   ox <- .rp_num(x, i, "oxides_triacid_pct")
   cc <- .rp_cec_clay(x, i)
   if (isTRUE(cc >= 5)) return(.rp_r(FALSE, note = sprintf("CEC %s cmol+/kg of clay (5 or more)", format(round(cc, 1)))))
@@ -1065,7 +1160,8 @@
          if (!is.na(ki)) .rp_r(ki < 0.5, note = sprintf("Ki %s", format(signif(ki, 3))))
          else .rp_all(.rp_stand_in(x, i, "ferralic", "the oxides"), .rp_r(if (is.na(cc)) NA else TRUE, missing = c("cec_cmol", "clay_pct")))
        }
-  .rp_all(o, dph, .rp_tropical(x))
+  ph <- .rp_between(phw, 5.5, 6.5, .RP_TOL$ph, "pH in water", "ph_h2o")
+  .rp_all(o, dph, ph, .rp_tropical(x))
 }
 
 # RT (p. 152, intertropical): a reticulate pattern of contrasted colours
@@ -1087,7 +1183,7 @@
 # under 5 cmol+/kg, total Fe 12 % or less when recorded, not indurated,
 # pH 6.0-6.5.
 .rp_t_FE <- function(x, i) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   col <- .rp_colour(x, i)
   colr <- .rp_r(.kidpr_and(.rp_hue_in(col, 12.5, 17.5),
                            if (is.na(col$value)) NA else col$value >= 4 && col$value <= 7,
@@ -1111,7 +1207,7 @@
 # 50 % of the clay, else Ki under 2.2 and Kr under 1.8 (map 3); clay films
 # absent or few; CEC 8-30 cmol+/kg of soil.
 .rp_t_Sn <- function(x, i) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   cl <- .rp_between(.rp_clay(x, i), 50, 80, 0, "clay (%)", "clay_pct")
   if (isFALSE(cl$passed)) return(cl)
   cf <- .clay_films_class(.kidpr_v(x, i, "clay_films_amount"))
@@ -1139,7 +1235,7 @@
 # or FFE/Fe total over 0.20 when recorded (else the field route, map 2);
 # kaolinite dominant excludes it (2:1 clays needed).
 .rp_t_FS <- function(x, i) {
-  if (!.rp_is_mineral(x, i) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   col <- .rp_colour(x, i)
   colr <- .rp_r(.kidpr_and(.rp_hue_in(col, -10, 15), if (is.na(col$chroma)) NA else col$chroma > 3.5),
                 missing = col$missing, tag = col$tag, note = .rp_colour_text(col))
@@ -1166,7 +1262,7 @@
 # Sp (p. 15): clay over 45 %, never calcareous, a prismatic or coarse
 # polyhedral over-structure; undecided without the structure (map 4).
 .rp_t_Sp <- function(x, i) {
-  if (.rp_is_surface(x, i)) return(.rp_r(FALSE))
+  if (.rp_is_first(x, i)) return(.rp_r(FALSE))
   g <- .rp_s_gate(x, i); if (isFALSE(g$passed)) return(g)
   cl <- .rp_clay(x, i)
   c1 <- .rp_r(if (is.na(cl)) NA else cl > 45, missing = "clay_pct", note = if (!is.na(cl)) sprintf("clay %s %%", format(cl)))
@@ -1222,7 +1318,7 @@
           else if (cm >= 2) .rp_r(TRUE, imperfect = TRUE, note = sprintf("Ca/Mg %s: the calcimagnesian variant, imperfect", format(signif(cm, 3))))
           else .rp_r(FALSE)
   if (isFALSE(camg$passed)) return(camg)
-  ph <- .rp_tol(.rp_num(x, i, "ph_h2o"), 6.5, "min", .RP_TOL$ph, "pH in water", "ph_h2o")
+  ph <- .rp_tol(.rp_num(x, i, "ph_h2o"), 6.5 + 1e-9, "min", .RP_TOL$ph, "pH in water", "ph_h2o")
   if (isFALSE(ph$passed)) return(ph)
   col <- .rp_colour(x, i)
   hue <- .rp_r(.rp_hue_in(col, 17.5, 22.5), missing = col$missing, tag = col$tag, note = .rp_colour_text(col))
@@ -1255,16 +1351,40 @@
   .rp_all(g, ph, a1, a2, a3, bs)
 }
 
-.rp_t_S <- function(x, i) .rp_s_gate(x, i)
+# S haplique; a young Jp is no S (its weak structure follows the texture).
+.rp_t_S <- function(x, i) {
+  g <- .rp_s_gate(x, i)
+  if (isTRUE(g$passed) && isTRUE(.rp_jp_raw(x, i)$passed))
+    return(.rp_r(FALSE, note = "a young J horizon: its weak structure is not pedological"))
+  g
+}
 
 # Jp (p. 25): under a Js, little organic matter, a weak structure or none.
 .rp_t_Jp <- function(x, i) {
   if (!.rp_is_mineral(x, i)) return(.rp_r(FALSE))
-  pv <- .rp_prev(x, i)
-  if (is.na(pv) || !isTRUE(.rp_t_Js(x, pv)$passed)) return(.rp_r(FALSE))
-  gr <- .rp_grade(x, i); st <- .rp_structured(x, i)
-  .rp_r(if (isFALSE(st$passed)) TRUE else if (!is.na(gr)) gr <= 1 else NA,
-        missing = c("structure_grade"), note = "under a Js, a weak structure or none")
+  .rp_jp_raw(x, i)
+}
+
+#' Jp on the data (p. 25): under a Js, or under an A or LA in a young deposit
+#' (layer_origin fluvic, marine, aeolic, colluvic, tephric or solimovic: the
+#' fluviosols, thalassosols, cryosols and arenosols of p. 25; the review's
+#' D9); traces of carbon (under 0.3 %); a weak structure or none.
+#' @noRd
+.rp_jp_raw <- function(x, i) {
+  .rp_memo(x, sprintf("jpraw_%d", i), function() {
+    pv <- .rp_prev(x, i)
+    if (is.na(pv) || !.rp_is_surface(x, pv) || .rp_is_surface(x, i)) return(.rp_r(FALSE))
+    js <- isTRUE(.rp_t_Js(x, pv)$passed)
+    lo <- .rp_txt(x, i, "layer_origin")
+    young <- isTRUE(grepl("fluvi|marine|aeol|eolian|colluv|tephr|solimov|alluv", lo))
+    if (!js && !young) return(.rp_r(FALSE))
+    oc <- .rp_num(x, i, "oc_pct")
+    if (isTRUE(oc >= 0.3)) return(.rp_r(FALSE, note = sprintf("organic carbon %s %%: more than traces", format(oc))))
+    gr <- .rp_grade(x, i); st <- .rp_structured(x, i)
+    .rp_r(if (isFALSE(st$passed)) TRUE else if (!is.na(gr)) gr <= 1 else NA,
+          missing = c("structure_grade"),
+          note = sprintf("under %s, a weak structure or none", if (js) "a Js" else sprintf("an A, in a %s deposit", lo)))
+  })
 }
 
 # C (p. 25): no generalised pedological structure (massive, single grain,
@@ -1369,9 +1489,13 @@
   add("d", d)
   nod <- .rp_num(x, i, "ferric_nodules_pct") %||% NA
   mn <- .rp_num(x, i, "manganiferous_nodules_pct")
-  add("cn", .rp_r(isTRUE(sum(c(nod, mn), na.rm = TRUE) >= 15), note = if (isTRUE(sum(c(nod, mn), na.rm = TRUE) >= 15)) "many sesquioxide nodules"))
+  # -cn on BT and FE, -j on S, Sci and BT: the hosts the book writes them on
+  # (BTcn, FEcn; Sj, Scij, BTj; the review's D7)
+  if (isTRUE(code %in% c("BT", "FE")))
+    add("cn", .rp_r(isTRUE(sum(c(nod, mn), na.rm = TRUE) >= 15), note = if (isTRUE(sum(c(nod, mn), na.rm = TRUE) >= 15)) "many sesquioxide nodules"))
   col <- .rp_colour(x, i); st <- .kidpr_structure(x, i)
-  add("j", .rp_r(isTRUE(.rp_hue_in(col, 17.5, 22.5)) && isTRUE(col$chroma >= 6) && isTRUE(grepl("angular|polyhed", st$type)) &&
+  if (isTRUE(code %in% c("S", "Sci", "BT"))) add("j", .rp_r(isTRUE(.rp_hue_in(col, 17.5, 22.5)) && isTRUE(col$chroma >= 6) &&
+                   isTRUE(grepl("angular|polyhed", st$type) && !grepl("subangular", st$type)) &&
                    (isTRUE(mn > 0) || isTRUE(.rp_txt(x, i, "pressure_faces") %in% c("common", "many"))),
                  note = "bright yellow, angular, with Fe-Mn signs: xanthomorphic"))
   add("cry", .rp_r(isTRUE(.rp_txt(x, i, "cryoturbation") == "present"), note = "cryoturbation"))
@@ -1405,7 +1529,7 @@
   steps <- .rp_steps()
   ans <- list()
   code <- NA_character_; dec <- NULL; undecided <- FALSE; cands <- character(0); pending <- character(0)
-  g_block <- FALSE
+  g_block <- FALSE; dec_step <- NA_character_; extra_notes <- character(0); extra_feats <- character(0)
   for (s in names(steps)) {
     rs <- lapply(steps[[s]], function(t) .rp_ask(x, i, s, t))
     ans[[s]] <- rs
@@ -1418,7 +1542,7 @@
       nas <- which(is.na(v[seq_len(k - 1L)]))
       if (length(nas)) { undecided <- TRUE; cands <- c(lab[nas], lab[k]) }
       else if (g_block) { undecided <- TRUE; cands <- lab[k] }
-      else { code <- lab[k]; dec <- rs[[k]]
+      else { code <- lab[k]; dec <- rs[[k]]; dec_step <- s
              cands <- c(lab[-seq_len(k)][v[-seq_len(k)] %in% TRUE | is.na(v[-seq_len(k)])]) }
     } else if (any(is.na(v))) {
       nas <- which(is.na(v))
@@ -1429,20 +1553,51 @@
       if (s == "hydromorphy") g_block <- TRUE
     }
   }
+  sub_true <- function(names) {
+    rs <- ans$subsurface
+    k <- which(vapply(rs, function(r) isTRUE(r$passed) && r$name %in% names, NA))
+    if (length(k)) rs[[k[1L]]] else NULL
+  }
+  # Fe only where no host of -cn holds, or with 40 % nodules or more: else the
+  # host (BT, FE) with the feature cn (the review's D7)
+  if (identical(code, "Fe") && !isTRUE(dec$value >= 40)) {
+    h <- sub_true(c("BT", "FE"))
+    if (!is.null(h)) {
+      extra_notes <- c(dec$note, sprintf("the iron accumulation of a %s: %scn (the review's D7)", h$code, h$code))
+      code <- h$code; dec <- h; dec_step <- "subsurface"; extra_feats <- "cn"
+    }
+  }
+  # BT and FS both hold: FS with the clay illuviation -t, FSt (the review's D6)
+  if (isTRUE(code %in% c("BT", "BT\u00df")) && !is.null(fs <- sub_true("FS"))) {
+    extra_notes <- c(extra_notes, dec$note, "a fersiallitic horizon with clay illuviation: FSt (p. 180)")
+    code <- "FS"; dec <- fs; extra_feats <- c(extra_feats, "t")
+  }
+  # a layer that continues the A run: when a subsurface code holds as well,
+  # the layer is undecided between the two (the review's D2)
+  if (identical(dec_step, "surface") && .rp_is_surface(x, i) && !.rp_is_first(x, i)) {
+    rs <- ans$subsurface
+    k <- which(vapply(rs, function(r) isTRUE(r$passed) && !r$name %in% c("C", "Jp"), NA))
+    if (length(k)) {
+      sc <- rs[[k[1L]]]$code %||% rs[[k[1L]]]$name
+      undecided <- TRUE; cands <- c(code, sc, cands)
+      extra_notes <- c(sprintf("the layer continues the A run and reads %s as well", sc))
+      code <- NA_character_; dec <- NULL
+    }
+  }
   # the other codes that hold, in any step, are candidates too
   all_r <- unlist(ans, recursive = FALSE)
   holds <- unique(vapply(Filter(function(r) isTRUE(r$passed), all_r), function(r) r$code %||% r$name, ""))
   missing <- character(0); notes <- character(0); tags <- character(0); imperfect <- FALSE
   variants <- character(0); feats_code <- character(0)
   if (!is.na(code)) {
-    notes <- dec$note; tags <- dec$tag; imperfect <- isTRUE(dec$imperfect)
-    variants <- dec$variants %||% character(0); feats_code <- dec$features %||% character(0)
+    notes <- c(extra_notes, dec$note); tags <- dec$tag; imperfect <- isTRUE(dec$imperfect)
+    variants <- dec$variants %||% character(0); feats_code <- unique(c(dec$features %||% character(0), extra_feats))
     cands <- unique(c(pending, cands, setdiff(holds, code)))
   } else {
     cands <- unique(c(pending, cands))
     nr <- Filter(function(r) (r$code %||% r$name) %in% cands || r$name %in% cands, all_r)
     missing <- unique(unlist(lapply(nr, `[[`, "missing")))
-    notes <- unique(unlist(lapply(nr, `[[`, "note")))
+    notes <- unique(c(extra_notes, unlist(lapply(nr, `[[`, "note"))))
     tags <- unique(unlist(lapply(nr, `[[`, "tag")))
   }
   passed <- if (!is.na(code)) TRUE else if (undecided || length(cands)) NA else FALSE
@@ -1450,7 +1605,9 @@
   hint_note <- character(0)
   hc <- x$hint_codes[[i]]; hf <- x$hint_fam[[i]]
   if (is.na(passed) && (length(hc) || length(hf))) {
-    keep <- cands[cands %in% hc | voc$info[cands, "family"] %in% hf]
+    # a G candidate is never narrowed away: the FAO and CPCS g marks keep the
+    # G family (the review's D10)
+    keep <- cands[cands %in% hc | voc$info[cands, "family"] %in% hf | voc$info[cands, "family"] %in% "G"]
     if (length(keep) && length(keep) < length(cands)) {
       hint_note <- sprintf("the designation '%s' narrows the candidates %s to %s", .rp_des(x, i),
                            paste(cands, collapse = ", "), paste(keep, collapse = ", "))
@@ -1463,6 +1620,9 @@
       if (length(d1)) { variants <- d1[[1L]]$variants %||% character(0); feats_code <- d1[[1L]]$features %||% character(0) }
     }
   }
+  # a loss on ignition that the carbon contradicts is flagged (the review's m3)
+  og <- .rp_organic(x, i)
+  if ("loi_oc_contradiction" %in% og$tag) { tags <- unique(c(tags, og$tag)); notes <- unique(c(notes, og$note)) }
   # features and overlays (step 8)
   fx <- .rp_features(x, i, code)
   if (!is.na(code) || !undecided) {
