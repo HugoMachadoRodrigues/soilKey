@@ -274,7 +274,40 @@ horizon_column_spec <- function() {
     plant_residues_pct            = "numeric",   # plant residues (live roots excluded), % by volume; key positions 10 (> 2/3) and 11 (< 1/3)
     sulfide_odour                 = "logical",   # smell of hydrogen sulfide; key position 3 (sulfidic solonchak SS)
     slickensides_size             = "character", # size of the slickensides: small / large / both; V vs v
-    cryoturbation                 = "character"  # cryoturbation in the layer: none / present; the feature @ and the CR horizon
+    cryoturbation                 = "character", # cryoturbation in the layer: none / present; the feature @ and the CR horizon
+    # ---- v0.9.341: the French Referentiel pedologique 2008 ----
+    coarse_fragments_wt_pct       = "numeric",   # coarse elements, % by weight of the whole soil; RP X, peyrosols (> 60), qualifiers (> 40)
+    gravel_wt_pct                 = "numeric",   # gravel (0.2-2 cm), % by weight; RP Xgr
+    cobbles_wt_pct                = "numeric",   # cobbles (2-7.5 cm), % by weight; RP Xc
+    stones_wt_pct                 = "numeric",   # stones (7.5-20 cm), % by weight; RP Xp
+    boulders_wt_pct               = "numeric",   # boulders (> 20 cm), % by weight; RP Xp
+    cec_method                    = "character", # method of the CEC: acetate_ph7 / cobaltihexammine / bacl2 / kcl / nh4cl / oxalate; RP S/CEC
+    redox_relict                  = "logical",   # redox features relict (fossil), not functional; RP g, G and the redoxisol doubles
+    anthropic_material            = "character", # kind of anthropic material: earthy / technological / holorganic / archaeological / transported; RP Z
+    anthropic_material_pct        = "numeric",   # anthropic material, % by volume; RP anthroposols
+    o_zoogenic                    = "character", # OF or OH zoogenic (zo) or not (noz); RP Annex 1 humus forms
+    fine_organic_matter_pct       = "numeric",   # fine organic matter, % by volume of an O horizon; RP OL (< 10), OF, OH (> 70)
+    biogenic_aggregates_pct       = "numeric",   # biogenic crumb aggregates, % by volume of an A; RP A kinds (> 25)
+    biogenic_aggregate_size       = "character", # size of the biogenic aggregates: macro (> 3 mm) / meso (1-3 mm); RP A kinds
+    effervescence_hot             = "logical",   # effervescence only with hot HCl (dolomite); RP Ado, Sdo
+    mgco3_pct                     = "numeric",   # magnesium carbonate, % of the fine earth; RP molar CaCO3/MgCO3
+    fe_total_pct                  = "numeric",   # total iron as Fe2O3, %; RP FE (<= 12), ND, OXm, FS, Sn
+    fe_ffe_pct                    = "numeric",   # free iron by the Segalen method, %; RP FS (FFE/Fe total > 0.20)
+    weatherable_minerals_pct      = "numeric",   # weatherable minerals, % of 20-200 um; RP OX (< 10)
+    oxides_triacid_pct            = "numeric",   # sum of Fe, Al, Ti oxides, % of < 2 um; RP F (< 60), Fox, OX (> 60)
+    clay_mineralogy               = "character", # dominant clay mineral; RP Sn, F, FS, vertic horizons
+    halloysite_pct                = "numeric",   # halloysite, % of the clay; RP Sn (> 50), Fhy (10-50)
+    kaolinite_pct                 = "numeric",   # kaolinite, % of the clay; RP F
+    smectite_pct                  = "numeric",   # smectite, % of the clay; RP vertic horizons
+    degradation_form              = "character", # degradation of a BT: diffuse / interdigitations / tongues / planosolic; RP BTd
+    tongue_vol_pct                = "numeric",   # tongues of E in a BT, % by volume; RP BTd (> 15)
+    tongue_width_mm               = "numeric",   # smallest width of the tongues, mm; RP BTd (5 to 15)
+    lamellae_cumulative_cm        = "numeric",   # cumulative thickness of the clay bands, cm; RP BT in bands (> 15)
+    c_pyro_pct                    = "numeric",   # pyrophosphate-extractable organic carbon, %; RP BP
+    pyrophosphate_index           = "numeric",   # pyrophosphate index of a peat (Kaila); RP Hf, Hm, Hs, Ha
+    s_total_pct                   = "numeric",   # total sulfur, %; RP TH (>= 0.75), U
+    nodules_wt_pct                = "numeric",   # metal-oxide nodules, % by weight; RP ND (> 60), -nod (30-60)
+    lateral_cover_pct             = "numeric"    # share of the ground the horizon covers, %; RP Annex 1 O horizons (hemimoder OH < 10)
   )
 }
 

@@ -674,6 +674,102 @@
           },
           "cryoturbation": {
             "type": ["string", "null"]
+          },
+          "coarse_fragments_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "gravel_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "cobbles_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "stones_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "boulders_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "cec_method": {
+            "type": ["string", "null"]
+          },
+          "redox_relict": {
+            "type": ["boolean", "null"]
+          },
+          "anthropic_material": {
+            "type": ["string", "null"]
+          },
+          "anthropic_material_pct": {
+            "type": ["number", "null"]
+          },
+          "o_zoogenic": {
+            "type": ["string", "null"]
+          },
+          "fine_organic_matter_pct": {
+            "type": ["number", "null"]
+          },
+          "biogenic_aggregates_pct": {
+            "type": ["number", "null"]
+          },
+          "biogenic_aggregate_size": {
+            "type": ["string", "null"]
+          },
+          "effervescence_hot": {
+            "type": ["boolean", "null"]
+          },
+          "mgco3_pct": {
+            "type": ["number", "null"]
+          },
+          "fe_total_pct": {
+            "type": ["number", "null"]
+          },
+          "fe_ffe_pct": {
+            "type": ["number", "null"]
+          },
+          "weatherable_minerals_pct": {
+            "type": ["number", "null"]
+          },
+          "oxides_triacid_pct": {
+            "type": ["number", "null"]
+          },
+          "clay_mineralogy": {
+            "type": ["string", "null"]
+          },
+          "halloysite_pct": {
+            "type": ["number", "null"]
+          },
+          "kaolinite_pct": {
+            "type": ["number", "null"]
+          },
+          "smectite_pct": {
+            "type": ["number", "null"]
+          },
+          "degradation_form": {
+            "type": ["string", "null"]
+          },
+          "tongue_vol_pct": {
+            "type": ["number", "null"]
+          },
+          "tongue_width_mm": {
+            "type": ["number", "null"]
+          },
+          "lamellae_cumulative_cm": {
+            "type": ["number", "null"]
+          },
+          "c_pyro_pct": {
+            "type": ["number", "null"]
+          },
+          "pyrophosphate_index": {
+            "type": ["number", "null"]
+          },
+          "s_total_pct": {
+            "type": ["number", "null"]
+          },
+          "nodules_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "lateral_cover_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false
