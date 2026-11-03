@@ -105,7 +105,8 @@ test_that("humus, bleached and agro tables: the classes of each", {
   # the peat horizon of a mineral soil
   r <- .sp_of(c("T:25", "ELg:15", "BELg:15", "BTg:30", "G:20", "CG:20"))
   expect_identical(.sp_type(r), "[CA03]")
-  expect_identical(.sp_codes(r), c("peat_horizon:peaty", "gley_place:profile", "bleached:deep"))
+  # the lower boundary of EL at 40 cm is 15 cm under the T: shallow
+  expect_identical(.sp_codes(r), c("peat_horizon:peaty", "gley_place:profile", "bleached:shallow"))
 })
 
 test_that("the bleached species takes the term of its horizon (p. 136)", {
@@ -331,4 +332,104 @@ test_that("the 1977 analogue is a note and a field, never a class", {
   md <- withr::with_options(list(soilKey.report_lang = "pt"), soilKey:::.rmd_national_sections(r))
   expect_match(md, "Nome na classifica", fixed = TRUE)
   expect_null(soilKey:::.kidpr_1977_lines(classify_cssc3(make_ferralsol_canonical(), on_missing = "silent")))
+})
+
+
+# --- the review of 2026-11-03 and Hugo's decisions ----------------------------------------
+
+test_that("depths are measured from the mineral surface, under O and T (Hugo, 2026-11-03)", {
+  skip_on_cran()
+  # EL from 8 to 23 cm under an O of 8 cm: the lower boundary at 15 cm
+  r <- .sp_of(c("O:8", "EL:15", "BEL:20", "BT:50", "C:30"))
+  expect_identical(.sp_type(r), "[CA01]")
+  expect_identical(.sp_codes(r), "bleached:shallow")
+  # E from 8 to 17 cm under O: 9 cm, surface-podzolic
+  expect_identical(.sp_codes(.sp_of(c("O:8", "E:9", "BHF:30", "C:40"))), "bleached:surface")
+  # the peat itself is still measured as peat
+  r <- .sp_of(c("TO:50", "TT:50", "G:20"))
+  expect_true("peat_body:medium" %in% .sp_codes(r))
+})
+
+test_that("gleying by its continuity (Hugo, 2026-11-03)", {
+  skip_on_cran()
+  # a humus or agro horizon that is not gleyed is allowed over profile gleying
+  expect_true("gley_place:profile" %in% .sp_codes(.sp_of(c("AU:20", "G:40", "CG:40"))))
+  expect_true("gley_place:profile" %in% .sp_codes(.sp_of(c("PU:30", "G:40", "CG:40"))))
+  # gleying from 49 cm to the bottom under the dark-humus horizon
+  expect_true("gley_place:profile" %in% .sp_codes(.sp_of(c("AU:49", "BCAg:31", "Cg:40"))))
+  # gleying at 15-30 cm only: surface
+  expect_true("gley_place:surface" %in% .sp_codes(.sp_of(c("AY:15", "ELg:15", "BEL:20", "BT:50", "C:30"))))
+  # gleying from 25 cm to the bottom under an EL that is not gleyed: neither
+  r <- .sp_of(c("O:5", "EL:20", "BEL:15", "BTg:40", "G:40", "Cg:30"))
+  expect_false(any(startsWith(.sp_codes(r), "gley_place")))
+  # gleying starting at 50-100 cm: no class
+  r <- .sp_of(c("AU:30", "AU:30", "BCAg:30", "Cg:40"))
+  expect_false(any(startsWith(.sp_codes(r), "gley_place")))
+  # the class reader on its own: an undecided layer read both ways
+  tab <- .sp_tab("gley_place")
+  expect_identical(soilKey:::.kidpr_sp_gley_class(c(FALSE, TRUE, TRUE), c(0, 20, 60), c(TRUE, FALSE, FALSE), tab), "profile")
+  expect_identical(soilKey:::.kidpr_sp_gley_class(c(FALSE, TRUE, FALSE), c(0, 20, 60), c(TRUE, FALSE, FALSE), tab), "surface")
+  expect_identical(soilKey:::.kidpr_sp_gley_class(c(FALSE, FALSE, TRUE), c(0, 60, 110), c(TRUE, FALSE, FALSE), tab), "deep")
+})
+
+test_that("cotton-grass is no herb, in any spelling; a double name puts the larger share last", {
+  skip_on_cran()
+  pl <- .sp_tab("botanical")$plants
+  for (w in c("cotton-grass 60", "cottongrass 60", "cotton grass 60", "Eriophorum 60", "\u043f\u0443\u0448\u0438\u0446\u0430 60"))
+    expect_identical(names(soilKey:::.kidpr_sp_plants_of(w, pl)), "cottongrass", info = w)
+  expect_identical(names(soilKey:::.kidpr_sp_plants_of("grass 60", pl)), "herb")
+  # the spellings of one plant add up, in a layer and across layers
+  expect_equal(soilKey:::.kidpr_sp_plants_of("cotton-grass 30; Eriophorum 30; sphagnum 40", pl),
+               c(cottongrass = 60, sphagnum = 40))
+  r <- .sp_of(c("TO:50", "TT:50", "G:20"), peat_botanical_composition = c("cotton-grass 60; sphagnum 40", "Eriophorum 60; sphagnum 40", NA))
+  expect_true("botanical:cottongrass" %in% .sp_codes(r))
+  expect_true("\u043f\u0443\u0448\u0438\u0446\u0435\u0432\u044b\u0435" %in% r$qualifiers$species_native)
+  # wood 45 with sedge 50: drevesno-osokovye (the larger share last)
+  r <- .sp_of(c("TO:50", "TT:50", "G:20"), peat_botanical_composition = c("wood 45; sedge 50; sphagnum 5", "wood 45; sedge 50; sphagnum 5", NA))
+  expect_true("botanical:wood+sedge" %in% .sp_codes(r))
+  expect_true("\u0434\u0440\u0435\u0432\u0435\u0441\u043d\u043e-\u043e\u0441\u043e\u043a\u043e\u0432\u044b\u0435" %in% r$qualifiers$species_native)
+  r <- .sp_of(c("TO:50", "TT:50", "G:20"), peat_botanical_composition = c("wood 50; sedge 45; sphagnum 5", "wood 50; sedge 45; sphagnum 5", NA))
+  expect_true("botanical:sedge+wood" %in% .sp_codes(r))
+  expect_true("\u043e\u0441\u043e\u043a\u043e\u0432\u043e-\u0434\u0440\u0435\u0432\u0435\u0441\u043d\u044b\u0435" %in% r$qualifiers$species_native)
+})
+
+test_that("a transition to a carbonate horizon has carbonates, and stays out of the humus thickness", {
+  skip_on_cran()
+  r <- .sp_of(c("AU:40", "AUBCA:30", "BCA:40", "Cca:40"))
+  expect_identical(.sp_type(r), "[CI01]")
+  # carbonates from 40 cm (the AUBCA); AU 40 cm thin, the AUBCA not counted
+  expect_identical(.sp_codes(r), c("humus_dark:thin", "carbonates:slightly_leached"))
+})
+
+test_that("a lower boundary needs only its depth; a repeated adjective is named once", {
+  skip_on_cran()
+  # the top of EL not recorded: its lower boundary still decides
+  p <- .sp_ped(c("AY:15", "EL:15", "BEL:20", "BT:50", "C:30"))
+  p$horizons$top_cm[2L] <- NA
+  r <- classify_kidpr2008(p, on_missing = "silent")
+  expect_true("bleached:deep" %in% .sp_codes(r))
+  expect_false("bleached" %in% r$qualifiers$species_undecided)
+  # melkie twice (an AU of 4 cm, the solonetzic horizon from 8 cm): once in the name
+  r <- .sp_of(c("AU:4", "SEL:4", "ASN:25", "BCAs,cs:35", "Cca,s:40"))
+  expect_true(all(c("humus_dark:shallow", "sel:shallow") %in% .sp_codes(r)))
+  mel <- "\u043c\u0435\u043b\u043a\u0438\u0435"
+  expect_identical(lengths(regmatches(r$qualifiers$name_native, gregexpr(mel, r$qualifiers$name_native))), 1L)
+  expect_identical(lengths(regmatches(r$name, gregexpr("shallow", r$name))), 1L)
+})
+
+test_that("the 1977 note keeps what the table adds to a unit, and the Rmd report escapes the marks", {
+  skip_on_cran()
+  rows <- soilKey:::.kidpr_c77_rules()
+  sm <- function(n) soilKey:::.kidpr_c77_sentence(rows[[n]])
+  expect_match(sm(58), "varieties", fixed = TRUE)
+  expect_match(sm(149), "\u0440\u0438\u0445\u043a\u043e\u0432\u044b\u0435", fixed = TRUE)
+  expect_match(sm(188), "eroded", fixed = TRUE)
+  expect_match(sm(180), "\u0442\u043e\u0440\u0444\u044f\u043d\u044b\u0435 \u0431\u043e\u043b\u043e\u0442\u043d\u044b\u0435 \u0432\u0435\u0440\u0445\u043e\u0432\u044b\u0435", fixed = TRUE)
+  expect_match(sm(180), "reclaimed", fixed = TRUE)
+  # the alluvial dark-humus soils, AU-C~~: escaped in the Markdown of the PDF
+  r <- classify_kidpr2008(make_kidpr2008_example("BA"), on_missing = "silent")
+  md <- withr::with_options(list(soilKey.report_lang = "en"), soilKey:::.rmd_national_sections(r))
+  expect_match(md, "AU-C(ca)\\~\\~", fixed = TRUE)
+  expect_false(grepl("[^\\\\]~~", md))
+  expect_identical(soilKey:::.md_escape_marks("a`b"), "a\\`b")
 })

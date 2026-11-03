@@ -519,10 +519,7 @@ test_that("the readings of the features are Hugo's decisions, each naming the fe
   ft <- Filter(function(x) x$topic %in% topics, rd)
   expect_length(ft, 4L)
   for (x in ft) expect_match(x$reading, "\\(Hugo, 2026-11-02\\)\\.$", info = x$topic)
-  # v0.9.347: only the readings of the species and of the 1977 analogue wait
-  # for him (test-v09337 lists them)
-  open <- Filter(function(x) grepl("for Hugo to confirm", x$reading, fixed = TRUE), rd)
-  expect_true(all(grepl("^(Species: |The 1977 analogue: )", vapply(open, `[[`, "", "topic"))))
+  expect_false(any(grepl("for Hugo to confirm", vapply(rd, `[[`, "", "reading"), fixed = TRUE)))
   # every feature whose route was soilKey's reading is named in one of them
   m <- .kidpr_ft_meta()
   sk <- names(m)[vapply(m, function(e) identical(e$q17, "soilkey"), NA)]

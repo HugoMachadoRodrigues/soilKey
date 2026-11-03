@@ -124,6 +124,12 @@
 }
 
 
+# Markdown marks a Russian formula writes (the alluvial ~~, the ash " and
+# the backtick some texts use for it) escaped for the PDF report, so that
+# AU-C~~ is not struck through.
+.md_escape_marks <- function(x) gsub("([~`*_])", "\\\\\\1", x)
+
+
 # ---- HTML ---------------------------------------------------------------------
 
 # The sections of a national result's card: the experimental note, the class
@@ -254,6 +260,6 @@
   if (!is.null(k77))
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.kidpr_1977"),
                           .report_msg("report.kidpr_1977_desc")),
-             paste0("- ", k77, collapse = "\n"), "\n\n")
+             paste0("- ", .md_escape_marks(k77), collapse = "\n"), "\n\n")
   paste(out, collapse = "")
 }

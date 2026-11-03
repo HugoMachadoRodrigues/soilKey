@@ -24,7 +24,9 @@
 # interval and a class is named only when the whole interval lies in it. An
 # undecided species is not named and does not make the name provisional:
 # it is listed in qualifiers$species_undecided, in the trace (phase
-# "species") and in a note (soilKey's reading, for Hugo to confirm,
+# "species") and in a note. Depths are measured from the mineral surface,
+# under the organic horizons O and T (p. 136); gleying is read by its
+# continuity; a double botanical name puts the larger share last (Hugo,
 # 2026-11-03).
 # =============================================================================
 
@@ -77,13 +79,27 @@
 
 # --- the profile -------------------------------------------------------------------------
 
-# The depth of a layer's top or bottom from the ground (the top layer that is
-# not litter).
-.kidpr_sp_depth <- function(ctx, v) {
+# The depth of a layer's top or bottom from the mineral surface: under the
+# organic horizons O and T (with TO, TE, TJ) that start the profile, since the
+# litter-peat O does not count (p. 136; Hugo, 2026-11-03); the species of the
+# peat itself measure the peat. With no mineral layer, the bottom of the
+# organic ones; with its top not recorded, the ground.
+.kidpr_sp_surface <- function(ctx) {
+  if (!is.null(ctx$memo$sp_surface)) return(ctx$memo$sp_surface)
   g <- .kidpr_ground(ctx$x)
   if (is.na(g)) g <- 0
-  v - g
+  org <- c("O", "T", "TO", "TE", "TJ")
+  m <- ctx$main
+  k <- 1L
+  while (k <= length(m) && isTRUE(.kidpr_ft_is_host(ctx, m[k], org))) k <- k + 1L
+  v <- if (k == 1L) g
+       else if (k > length(m)) ctx$x$bot[m[length(m)]]
+       else ctx$x$top[m[k]]
+  if (is.na(v)) v <- g
+  assign("sp_surface", v, envir = ctx$memo)
+  v
 }
+.kidpr_sp_depth <- function(ctx, v) v - .kidpr_sp_surface(ctx)
 
 # The first run of `H` layers among the main layers (small horizons inside
 # the run belong to it): the layers that surely are H (`sure`), the run
@@ -152,7 +168,8 @@
     }
   }
   bot_lo <- x$bot[last]; bot_hi <- x$bot[last2]
-  used <- c(top_hi, top_lo, bot_lo, bot_hi)
+  # only the depths the measure uses: a lower boundary needs no top
+  used <- if (depth == "bottom") c(bot_lo, bot_hi) else c(top_hi, top_lo, bot_lo, bot_hi)
   if (anyNA(used))
     return(.kidpr_sp_measure(evidence = sprintf("the depths of %s not recorded", .kidpr_sp_labs(ctx, r$maybe)),
                              missing = c("top_cm", "bottom_cm")))
@@ -161,7 +178,12 @@
   } else {
     lo <- bot_lo - top_hi; hi <- bot_hi - top_lo
   }
-  if (isTRUE(r$bottom)) {
+  # the run reaches the bottom of the description when no layer is recorded
+  # under it (read on the depths, not on the order: a layer whose top is
+  # not recorded comes last in the order)
+  mm <- ctx$main
+  below <- any(x$top[mm] >= bot_hi, na.rm = TRUE) || any(x$bot[setdiff(mm, r$maybe)] > bot_hi, na.rm = TRUE)
+  if (!below) {
     hi <- Inf
     notes <- c(notes, "the run reaches the bottom of the description: it may go deeper")
   }
@@ -209,6 +231,11 @@
 .kidpr_sp_carbonates <- function(ctx, i) {
   cd <- ctx$code[i]
   if (isTRUE(cd %in% c("BCA", "CAT", "ML"))) return(list(passed = TRUE, note = sprintf("%s: a carbonate horizon", .kidpr_ft_lab(ctx, i))))
+  # a transition one of whose masters is a carbonate horizon (AUBCA)
+  d0 <- ctx$x$des
+  if (isTRUE(ctx$x$kidpr) && isTRUE(d0$known[i]) && isTRUE(d0$transitional[i]) &&
+      any(c("BCA", "CAT", "ML") %in% (d0$masters[[i]] %||% character(0))))
+    return(list(passed = TRUE, note = sprintf("%s: a transition to a carbonate horizon", .kidpr_ft_lab(ctx, i))))
   e <- .kidpr_eff_any(ctx$x, i)
   if (!is.na(e$passed)) return(list(passed = e$passed, note = sprintf("%s: %s", .kidpr_ft_lab(ctx, i), paste(e$note, collapse = "; "))))
   d <- ctx$x$des
@@ -298,10 +325,27 @@
 
 # --- the tables of their own ---------------------------------------------------------
 
-# The place of gleying: deep (only from the layer transitional to the rock,
-# its top at 100-130 cm, nothing gleyed above 100 cm), surface (a gleyed
-# layer starting above 50 cm, the profile not gleyed throughout), profile
-# (every mineral layer gleyed). Organic layers and hard rock are left out.
+# The place of gleying, by its continuity (Hugo, 2026-11-03): deep (nothing
+# gleyed above 100 cm, a gleyed layer whose top is at 100-130 cm, the layer
+# transitional to the rock); surface (gleying in the upper horizons, a gleyed
+# layer starting above 50 cm, that does not continue below 50 cm); profile
+# (gleying from a layer starting above 50 cm down to the bottom, only a
+# humus or agro horizon that is not gleyed allowed over it). Depths from the
+# mineral surface; organic layers and hard rock left out. A layer whose
+# gleying is undecided is read both ways: the class is named when every
+# reading gives it.
+.kidpr_sp_gley_class <- function(p, top, hum, tab) {
+  cls <- stats::setNames(tab$classes, vapply(tab$classes, `[[`, "", "id"))
+  sc <- cls$surface; dc <- cls$deep
+  lim_s <- sc$under %||% 50
+  if (anyNA(top)) return(NA_character_)
+  if (!any(p)) return("")
+  k <- which(p)[1L]
+  if (top[k] < lim_s && all(p[k:length(p)]) && all(hum[seq_len(k - 1L)]) && length(p) >= 2L) return("profile")
+  if (top[k] < lim_s && !any(p[top >= lim_s])) return("surface")
+  if (!any(p[top < (dc$from %||% 100)]) && any(p & vapply(top, function(t) isTRUE(.kidpr_sp_in(t, dc)), NA))) return("deep")
+  ""
+}
 .kidpr_sp_gley_place <- function(ctx, tab) {
   m <- ctx$main
   m <- m[!vapply(m, function(j) isTRUE(.kidpr_ft_is_peat(ctx, j)) || isTRUE(ctx$code[j] %in% c("R", "TT")), NA)]
@@ -309,25 +353,19 @@
   gv <- lapply(m, function(j) .kidpr_sp_gley(ctx, j))
   p <- vapply(gv, function(v) v$passed, NA)
   top <- .kidpr_sp_depth(ctx, ctx$x$top[m])
-  cls <- stats::setNames(tab$classes, vapply(tab$classes, `[[`, "", "id"))
-  sc <- cls$surface; dc <- cls$deep
-  in_s <- vapply(top, function(t) .kidpr_sp_in(t, sc), NA)
-  in_d <- vapply(top, function(t) .kidpr_sp_in(t, dc), NA)
-  above_d <- vapply(top, function(t) if (is.na(t)) NA else t < (dc$from %||% 100), NA)
-  prof <- .kidpr_and(p)
-  if (length(m) < 2L) prof <- FALSE
-  surf <- .kidpr_and(c(.kidpr_or(vapply(seq_along(m), function(k) .kidpr_and(c(in_s[k], p[k])), NA)), .kidpr_not(prof)))
-  deep <- .kidpr_and(c(.kidpr_not(.kidpr_or(vapply(seq_along(m), function(k) .kidpr_and(c(above_d[k], p[k])), NA))),
-                       .kidpr_or(vapply(seq_along(m), function(k) .kidpr_and(c(in_d[k], p[k])), NA)),
-                       .kidpr_not(prof)))
-  v <- c(deep = deep, surface = surf, profile = prof)
+  hum <- vapply(m, function(j) isTRUE(.kidpr_ft_is_host(ctx, j, c(.KIDPR_FT_GROUPS$humus, .KIDPR_FT_GROUPS$agro))), NA)
+  na <- which(is.na(p))
   gl <- m[p %in% TRUE]
   ev <- if (length(gl)) sprintf("gleyed: %s", .kidpr_sp_labs(ctx, gl)) else "no gleyed layer"
-  und <- m[is.na(p)]
-  if (length(und)) ev <- c(ev, sprintf("gleying undecided: %s", .kidpr_sp_labs(ctx, und)))
+  if (length(na)) ev <- c(ev, sprintf("gleying undecided: %s", .kidpr_sp_labs(ctx, m[na])))
+  if (anyNA(top)) return(list(id = NA_character_, layers = gl, evidence = c(ev, "the depths not recorded"),
+                              missing = c("top_cm", "bottom_cm")))
+  ids <- if (length(na) > 8L) NA_character_ else {
+    combos <- if (length(na)) as.matrix(expand.grid(rep(list(c(FALSE, TRUE)), length(na)))) else matrix(logical(0), 1L, 0L)
+    unique(apply(combos, 1L, function(z) { q <- p; q[na] <- z; .kidpr_sp_gley_class(q, top, hum, tab) }))
+  }
+  id <- if (length(ids) == 1L) ids else NA_character_
   miss <- unique(unlist(lapply(gv[is.na(p)], `[[`, "missing")))
-  id <- if (sum(v %in% TRUE) == 1L && !anyNA(v[!(v %in% TRUE)])) names(v)[v %in% TRUE]
-        else if (all(v %in% FALSE)) "" else NA_character_
   list(id = id, layers = gl, evidence = ev, missing = if (is.na(id)) miss else character(0))
 }
 
@@ -379,7 +417,9 @@
     for (pl in plants) if (grepl(pl$pattern, lp, perl = TRUE)) { hit <- as.character(pl$id); break }
     if (is.na(hit)) return(NULL)
     sh <- suppressWarnings(as.numeric(regmatches(lp, regexpr("[0-9]+(\\.[0-9]+)?", lp))))
-    out[hit] <- if (length(sh)) sh else NA_real_
+    sh <- if (length(sh)) sh else NA_real_
+    # one plant written twice (cotton-grass; Eriophorum) adds up
+    out[hit] <- if (hit %in% names(out)) out[[hit]] + sh else sh
   }
   out
 }
@@ -408,7 +448,9 @@
     ids <- unique(unlist(lapply(rec, names)))
     w <- vapply(ids, function(id) sum(th * vapply(rec, function(r) if (id %in% names(r)) r[[id]] else 0, 0)) / sum(th), 0)
     dom <- ids[w > over]
-    dom <- dom[order(-w[dom], match(dom, vapply(plants, `[[`, "", "id")))]
+    # the larger share last, as Russian writes it (Hugo, 2026-11-03):
+    # wood 45 with sedge 50 is drevesno-osokovye; a tie in the book's order
+    dom <- dom[order(w[dom], match(dom, vapply(plants, `[[`, "", "id")))]
     ev <- c(ev, sprintf("thickness-weighted shares: %s", paste(sprintf("%s %s %%", ids, format(round(w, 1))), collapse = ", ")))
   } else {
     # names without shares: the plants recorded are the dominant ones, the
@@ -418,6 +460,7 @@
       return(list(id = NA_character_, evidence = c(ev, "the dominant plants differ between the layers or are not given by share"),
                   missing = tab$attribute))
     dom <- sets[[1L]]
+    dom <- dom[order(match(dom, vapply(plants, `[[`, "", "id")))]
   }
   if (!length(dom)) return(list(id = "", evidence = c(ev, sprintf("no plant over %s %%", format(over)))))
   if (length(dom) > 2L) return(list(id = NA_character_, evidence = c(ev, "more than two dominant plants"), missing = tab$attribute))
@@ -561,14 +604,17 @@
     rownames(add) <- NULL
     res$levels <- rbind(lv, add)
     rownames(res$levels) <- NULL
-    res$name <- paste(c(res$name, vapply(named, `[[`, "", "en")), collapse = ", ")
+    res$name <- paste(c(res$name, unique(vapply(named, `[[`, "", "en"))), collapse = ", ")
   }
   q <- res$qualifiers %||% list()
   q$species <- unname(vapply(named, `[[`, "", "en"))
   q$species_native <- unname(vapply(named, `[[`, "", "ru"))
   if (length(named)) {
     base <- q$name_native %||% (lv$name_native[at[1L]] %||% lv$name[at[1L]])
-    q$name_native <- paste(c(base, q$species_native), collapse = ", ")
+    # two tables that print the same adjective (melkie: the dark-humus
+    # horizon under 30 cm and the layer over the solonetzic horizon of 5-10
+    # cm, p. 136) give it once in the name; both rows stay in levels
+    q$name_native <- paste(c(base, unique(q$species_native)), collapse = ", ")
   }
   q$species_undecided <- und
   res$qualifiers <- q

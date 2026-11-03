@@ -13,9 +13,21 @@ The Russian soil classification (Field Guide of 2008) now names its soils down t
 * `classify_kidpr2008()` gains `species` (default: as `subtypes`); `subtypes = FALSE` still stops at the type. New i18n keys `classify.level_species`, `classify.levels_species`, `classify.kidpr_1977`, `report.level_species`, `report.kidpr_1977` and `report.kidpr_1977_desc` (EN, PT).
 * The other systems are unchanged (their fixtures byte-identical).
 
-### Readings for Hugo to confirm (2026-11-03)
+### Hugo's decisions (2026-11-03)
 
-Seven readings of soilKey's wait for Hugo in `readings.yaml`: the limits of the classes; what each table measures (the agro horizon counted with the humus horizon under it, the depths from the ground, the carbonate and salt tables where the formula or the profile has them, the solonchaks without a salt species); the depth and place of gleying; an undecided species not named and the name not provisional, and the form of the name; the botanical composition (the plants over 40 %); the rows of chapter 6 and the types of 2008; and the readings of its two columns (shared cells, a level not printed).
+* **Gleying by its continuity:** surface-gleyed is gleying in the upper horizons (those starting above 50 cm) that does not continue below 50 cm; profile-gleyed is gleying from a horizon starting above 50 cm down to the bottom, only a humus or agro horizon that is not gleyed allowed over it (AU-G-CG and PU-G-CG are profile-gleyed); deep-gleyed is unchanged (a gleyed layer from 100-130 cm, nothing gleyed above 100 cm). A layer whose gleying is undecided is read both ways.
+* **Depths from the mineral surface:** the depths of the species are measured under the organic horizons O and T that start the profile, since the litter-peat O does not count (p. 136); the species of the peat itself still measure the peat. A podzolic soil O 0-8 over EL 8-23 is shallow-eluvial.
+* **A double botanical name puts the larger share last**, as Russian writes it: wood 45 with sedge 50 is древесно-осоковые.
+* **The other readings are accepted:** the class limits (the lower end of a range for a minimum, the upper end for a maximum, the last carbonate class 80-120); what each table measures; an undecided species not named and the name not provisional; the rows of chapter 6 resolved to the types of 2008; the readings of its two columns. Transitions such as AUBCA stay out of the thickness of the dark-humus horizon. No reading of the Russian classification waits for confirmation.
+
+### Fixed after the review (2026-11-03)
+
+* Cotton-grass is no longer read as herb: "grass" after "cotton" is not the herb, and the spellings of one plant (cotton-grass, cottongrass, Eriophorum, пушица) add up, in a layer and across layers.
+* A transition one of whose masters is a carbonate horizon (AUBCA) has carbonates: a chernozem AU 0-40 over AUBCA 40-70 is slightly leached, no longer medium leached.
+* The bleached species needs only the lower boundary of its horizon: an EL whose top is not recorded no longer leaves it undecided. Whether a horizon reaches the bottom of the description is read on the depths, not on the order of the layers.
+* The adjective мелкие, printed by two tables (the dark-humus horizon under 30 cm and the layer of 5-10 cm over the solonetzic horizon, p. 136), is named once; both rows stay in `levels`.
+* The 1977 note keeps what the table adds to a unit (a new `qualifier` of the analogues): the varieties of CE03, the genus рихковые of CP10, the erosion of CS13, the reclaimed peat soils of raised and fen bogs of CS05 and CS06 (now the 1977 types торфяные болотные верховые and низинные).
+* The PDF report escapes the marks of the formulas (~~, the backtick) in the 1977 section.
 
 # soilKey 0.9.346 (2026-11-03)
 

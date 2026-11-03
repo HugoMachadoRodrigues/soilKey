@@ -18,11 +18,11 @@
 #                            directly over it counted where `with_agro_over`
 #                            names it (PU over AU ...)
 #               bottom_depth the depth of the lower boundary of the first
-#                            run of `hosts` layers, from the ground
+#                            run of `hosts` layers, from the mineral surface
 #               top_depth    the depth of the upper boundary of the first
-#                            `hosts` layer, from the ground
+#                            `hosts` layer, from the mineral surface
 #               first_depth  the depth of the top of the first layer that has
-#                            `property` (carbonates, salts), from the ground
+#                            `property` (carbonates, salts), from the mineral surface
 #               gley_place   the place of gleying in the profile
 #               weighted_pct the thickness-weighted mean of `attribute` over
 #                            the layers of the peat body
@@ -52,8 +52,10 @@
 # leave undecided at the edge of a run, or a run that reaches the bottom of
 # the description when a deeper class is possible, leaves the species of the
 # table undecided: it is not named, and it is listed in
-# qualifiers$species_undecided (soilKey's reading, for Hugo to confirm,
-# 2026-11-03, readings.yaml).
+# qualifiers$species_undecided. Depths are measured from the mineral
+# surface, under the organic horizons O and T that start the profile
+# (p. 136: the O does not count); the species of the peat measure the
+# peat (Hugo, 2026-11-03, readings.yaml).
 
 tables:
   - id: humus_light
@@ -123,7 +125,12 @@ tables:
     applies:
       trunks: [B, C, D]
     # the degree of gleying is not considered: the gley horizon G (and a
-    # gleyed rock CG) and the gleyic feature g count alike (p. 135)
+    # gleyed rock CG) and the gleyic feature g count alike (p. 135). By the
+    # continuity of the gleying (Hugo, 2026-11-03): surface, in the upper
+    # horizons and not continuing below 50 cm; profile, from a layer
+    # starting above 50 cm to the bottom, a humus or agro horizon not
+    # gleyed allowed on top; deep, nothing gleyed above 100 cm. Depths from
+    # the mineral surface, under O and T.
     classes:
       - {id: deep, name: "глубокооглеенные", name_en: "deep-gleyed", place: transitional, from: 100, to: 130}
       - {id: surface, name: "поверхностно-оглеенные", name_en: "surface-gleyed", place: surface, under: 50}
@@ -225,16 +232,19 @@ tables:
     applies:
       trunks: [A]
     # named by the plant whose remains dominate (more than 40 %); two
-    # dominant plants give a double name (древесно-осоковый), p. 136. The
-    # printed names are of the peat (masculine singular); the soil takes
-    # them in the plural, the first of a double name as its stem.
+    # dominant plants give a double name (древесно-осоковый), p. 136, the
+    # larger share last (Hugo, 2026-11-03). The printed names are of the
+    # peat (masculine singular); the soil takes them in the plural, the
+    # first of a double name as its stem. A plant is matched by any of its
+    # spellings (cotton-grass, cottongrass, Eriophorum and пушица are one
+    # plant; "grass" after "cotton" is no herb).
     dominant_over: 40
     plants:
       - {id: wood, name: "древесные", stem: "древесно", name_en: "wood", pattern: "wood|tree|древес"}
       - {id: reed, name: "тростниковые", stem: "тростниково", name_en: "reed", pattern: "reed|phragmites|тростник"}
       - {id: scheuchzeria, name: "шейхцериевые", stem: "шейхцериево", name_en: "Scheuchzeria", pattern: "scheuchzer|шейхцер"}
       - {id: horsetail, name: "хвощовые", stem: "хвощово", name_en: "horsetail", pattern: "horsetail|equisetum|хвощ"}
-      - {id: herb, name: "травяные", stem: "травяно", name_en: "herb", pattern: "herb|grass(?!.*cotton)|трав"}
+      - {id: herb, name: "травяные", stem: "травяно", name_en: "herb", pattern: "herb|(?<!cotton)(?<!cotton-)(?<!cotton )grass|трав"}
       - {id: cottongrass, name: "пушицевые", stem: "пушицево", name_en: "cotton-grass", pattern: "cotton|eriophorum|пушиц"}
       - {id: sphagnum, name: "сфагновые", stem: "сфагново", name_en: "Sphagnum", pattern: "sphagn|сфагн"}
       - {id: sedge, name: "осоковые", stem: "осоково", name_en: "sedge", pattern: "sedge|carex|осок"}

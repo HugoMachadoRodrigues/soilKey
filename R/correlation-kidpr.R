@@ -43,7 +43,9 @@
   ext <- switch(as.character(a$extent %||% "full"), approximately = " (approximately)", partly = " (partly)",
                 mostly = " (mostly)", "")
   it <- if (!is.null(a$in_type) && !is.na(a$in_type) && nzchar(a$in_type)) sprintf(", in the type %s", a$in_type) else ""
-  sprintf("%s %s%s%s", lev, a$name, it, ext)
+  # what the table adds to the unit (its genus, varieties, erosion ...)
+  ql <- if (!is.null(a$qualifier) && !is.na(a$qualifier) && nzchar(a$qualifier)) sprintf(", %s", a$qualifier) else ""
+  sprintf("%s %s%s%s%s", lev, a$name, it, ql, ext)
 }
 
 # The analogue of one row as a sentence of the note.
@@ -67,9 +69,10 @@
     level = vapply(an, function(a) as.character(a$level %||% NA_character_), ""),
     in_type = vapply(an, function(a) as.character(a$in_type %||% NA_character_), ""),
     extent = vapply(an, function(a) as.character(a$extent %||% NA_character_), ""),
+    qualifier = vapply(an, function(a) as.character(a$qualifier %||% NA_character_), ""),
     stringsAsFactors = FALSE)
   else data.frame(name = character(0), level = character(0), in_type = character(0), extent = character(0),
-                  stringsAsFactors = FALSE)
+                  qualifier = character(0), stringsAsFactors = FALSE)
   list(row = as.integer(r$row), page = as.integer(r$page), name_2004 = as.character(r$name_2004),
        formula_2004 = as.character(r$formula_2004), distinguished = !isFALSE(r$distinguished),
        analogues = tb, summary = .kidpr_c77_sentence(r), en = as.character(r$en %||% NA_character_))

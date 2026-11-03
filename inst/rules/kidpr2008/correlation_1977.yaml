@@ -26,14 +26,14 @@
 #               literature (a name of the literature or of maps, not of the
 #               1977 system), `in_type` the 1977 type it belongs to when the
 #               table names it, `extent` full, approximately, partly or
-#               mostly
+#               mostly, `qualifier` soilKey's words for what the table adds
+#               to the unit (its genus, varieties, erosion, reclaimed state)
 # en            soilKey's English paraphrase of the entry (no text of the
 #               book is shipped)
 # note          soilKey's remarks: slips, readings of the two-column layout
 #
 # The readings (shared cells, slips, a 2004 type that the Field Guide of 2008
-# does not keep) are listed in readings.yaml (soilKey's reading, for Hugo to
-# confirm, 2026-11-03).
+# does not keep) are listed in readings.yaml (Hugo, 2026-11-03).
 
 rows:
 - row: 1
@@ -942,6 +942,7 @@ rows:
     level: subtype
     in_type: null
     extent: approximately
+    qualifier: its loamy and clayey varieties with little gravel, close in build and properties
   en: Not separated; in build and properties they are close to the loamy and clayey low-gravel varieties of the
     acid raw-humus brown forest subtype.
   note: ch4 name 'Криометаморфические грубогумусовые' (CE03). The text names varieties (разновидности, texture level)
@@ -2511,6 +2512,7 @@ rows:
     level: species
     in_type: дерново-карбонатные
     extent: partly
+    qualifier: of the genus рихковые, mostly in mountain regions
   en: Not separated in 1977; partly the humus-rich (peregnoinye) species of the rubbly (rikhkovye) genus of soddy-calcareous
     soils, mostly in mountain regions.
   note: Species of the genus 'рихковые' in the type 'дерново-карбонатные'; 'преимущественно горных областей' qualifies
@@ -2994,17 +2996,19 @@ rows:
   type: '[CS05]'
   distinguished: true
   analogues:
-  - name: торфяные верховые освоенные
-    level: subtype
-    in_type: болотные верховые
+  - name: торфяные болотные верховые
+    level: type
+    in_type: null
     extent: partly
-  - name: торфяные низинные освоенные
-    level: subtype
-    in_type: болотные низинные
+    qualifier: reclaimed
+  - name: торфяные болотные низинные
+    level: type
+    in_type: null
     extent: partly
+    qualifier: reclaimed
   en: Partly the reclaimed peat soils of raised (high-moor) and fen (low-moor) bogs.
-  note: 'Level and in_type not printed: read as the ''торфяные'' subtypes of the 1977 types болотные верховые /
-    болотные низинные, in their reclaimed state.'
+  note: 'The text names the reclaimed peat soils of raised and fen bogs: the 1977 types торфяные болотные верховые
+    and торфяные болотные низинные, reclaimed (review of 2026-11-03).'
 - row: 181
   page: 154
   division: Агроземы
@@ -3013,13 +3017,14 @@ rows:
   type: '[CS06]'
   distinguished: true
   analogues:
-  - name: торфяные низинные освоенные
-    level: subtype
-    in_type: болотные низинные
+  - name: торфяные болотные низинные
+    level: type
+    in_type: null
     extent: partly
+    qualifier: reclaimed, the mineral layer near the surface
   en: Partly the reclaimed fen peat soils where the mineral substratum lies close to the surface.
-  note: 'Level and in_type not printed: read as the ''торфяные'' subtype of болотные низинные; restricted to a shallow
-    mineral substratum.'
+  note: 'The text names the reclaimed fen peat soils with the mineral layer near the surface: the 1977 type торфяные
+    болотные низинные, reclaimed (as CS05, review of 2026-11-03).'
 - row: 182
   page: 154
   division: Агроземы
@@ -3134,10 +3139,12 @@ rows:
     level: subtype
     in_type: черноземы
     extent: partly
+    qualifier: moderately and strongly eroded arable variants
   - name: черноземы выщелоченные
     level: subtype
     in_type: черноземы
     extent: partly
+    qualifier: moderately and strongly eroded arable variants
   en: Not separated in 1977; assigned to moderately and strongly eroded arable variants of podzolized and leached
     chernozem subtypes.
 - row: 189
