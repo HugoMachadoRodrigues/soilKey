@@ -1,0 +1,360 @@
+ger	reference	kind	page	sequence	note
+alocrisols	alocrisols_typiques	reference	70	A/Sal/C|R	-
+alocrisols	alocrisols_typiques	reference	70	Ah/Sal/C|R	second whole sequence (A humifere solums)
+alocrisols	alocrisols_humiques	reference	70	Aho/Salh/C|R	-
+alocrisols	alocrisols_humiques	reference	70	Aho/Salh/Sal/C|R	-
+alocrisols	alocrisols_typiques	other	71	A/Sal/C|R	figure
+alocrisols	alocrisols_typiques	other	71	Ah/Sal/C|R	figure (humiferes)
+alocrisols	alocrisols_humiques	other	71	Aho/Salh/Sal/C|R	figure
+alocrisols	alocrisols_humiques	other	71	Aho/Salh/C|R	figure
+andosols	vitrandosols	reference	80	Avi/C|M|R	-
+andosols	silandosols_eutriques	reference	80	And/M|R	heading shared by silandosols eutriques, dystriques, perhydriques
+andosols	silandosols_eutriques	reference	80	And/Snd/M|R	heading shared by silandosols eutriques, dystriques, perhydriques
+andosols	silandosols_dystriques	reference	80	And/M|R	heading shared by silandosols eutriques, dystriques, perhydriques
+andosols	silandosols_dystriques	reference	80	And/Snd/M|R	heading shared by silandosols eutriques, dystriques, perhydriques
+andosols	silandosols_perhydriques	reference	80	And/M|R	heading shared by silandosols eutriques, dystriques, perhydriques
+andosols	silandosols_perhydriques	reference	80	And/Snd/M|R	heading shared by silandosols eutriques, dystriques, perhydriques
+andosols		other	81	And/Snd	silandosols in general (And alone or And/Snd)
+andosols	aluandosols_hapliques	reference	81	Alu/C/M|R	heading shared by aluandosols hapliques and perhydriques
+andosols	aluandosols_hapliques	reference	81	Alu/Slu/C/M|R	heading shared by aluandosols hapliques and perhydriques
+andosols	aluandosols_perhydriques	reference	81	Alu/C/M|R	heading shared by aluandosols hapliques and perhydriques
+andosols	aluandosols_perhydriques	reference	81	Alu/Slu/C/M|R	heading shared by aluandosols hapliques and perhydriques
+andosols		other	81	Alu/Slu	aluandosols in general (Alu alone or Alu/Slu)
+anthroposols	anthroposols_artificiels	reference	91	JZ/Z/II	final II printed alone (buried natural layers or horizons, given in words): discontinuity with no code
+anthroposols	anthroposols_artificiels	reference	91	Z/II	final II printed alone (buried natural layers or horizons, given in words): discontinuity with no code
+anthroposols	anthroposols_reconstitues	reference	92	Ltp/II Z|II D|II R	-
+anthroposols	anthroposols_construits	reference	94	Ztc	printed as the reference sequence; single code (Ztc or JZtc), read as two whole sequences
+anthroposols	anthroposols_construits	reference	94	JZtc	printed as the reference sequence; single code (Ztc or JZtc), read as two whole sequences
+arenosols	arenosols	reference	100	O/A/C|M	-
+arenosols	arenosols	reference	100	A/C|M	-
+arenosols	arenosols	reference	100	A/Jp/C|M	-
+arenosols	arenosols	reference	100	Js/Jp/C|M	-
+brunisols		reference	104	A/S/C|M|R	chapter sequence under forest
+brunisols		reference	104	LA|LS/S/C|M|R	chapter sequence under crops
+brunisols		other	108	A/S/II S	pseudo-luvisols of RP 1995
+brunisols		other	108	A/II S	pseudo-luvisols of RP 1995
+calcium_magnesium	rendosols	reference	111	Aca|LAca/Cca|M|R|D	"Cca and/or M or R or D" read as one position
+calcium_magnesium	calcosols	reference	111	Aca|LAca/Sca/Cca|M|R|D	general case (calcosols hapliques)
+calcium_magnesium	calcosols	reference	111	Aci|LAci/Sca/Cca|M|R|D	calcosols decarbonated at the surface
+calcium_magnesium	calcosols	reference	111	Aci|LAci/Sci/Sca/Cca|M|R|D	calcosols decarbonated at the surface
+calcium_magnesium	calcosols	other	111	Aci/Sca	qualifier decarbonate en surface
+calcium_magnesium	calcosols	other	111	Aci/Sci/Sca	qualifier decarbonate en surface
+calcium_magnesium	dolomitosols	reference	112	Ado/Sdo/C|Rdo	"C and/or Rdo" read as one position
+calcium_magnesium	rendisols	reference	112	Aci|LAci/Cca|M|R|D	-
+calcium_magnesium	calcisols	reference	112	Aci|LAci/Sci/Cca|M|R|D	-
+calcium_magnesium	calcisols	other	113	Aci/Sci/Sca	qualifier bathycarbonate
+calcium_magnesium	calcisols	other	113	A/Sci	qualifier insature en surface
+calcium_magnesium		other	113	Aci|LAci/Sci/Sca/Cca|M|R|D	calcisol-calcosol intergrades
+calcium_magnesium	magnesisols	reference	113	Amg/Smg/C|M|R	-
+calcium_magnesium	calcarisols	type	114	Aca/Km	-
+calcium_magnesium	calcarisols	type	114	Aci/Kc	-
+calcium_magnesium		other	117	A/S/II Sca/(II Cca)/II Rca	brunisols over calcosols (distinction 9); II Cca marked facultatif
+calcium_magnesium	calcisols	other	118	Aci/Sci	WRB remark (superposition Aci/Sci)
+calcium_magnesium	calcosols	other	120	Aci/Sca	complements, qualifier decarbonate en surface
+chernosols	chernosols_hapliques	reference	127	Ach/Ck|K	-
+chernosols	chernosols_hapliques	reference	127	LAch|LAh/Ck|K	under crops
+chernosols	chernosols_typiques	reference	127	Ach/Sh/Ck|K	-
+chernosols	chernosols_typiques	reference	127	Ach|LAh/Sh/Ck|K	under crops; printed "Ach or LAh/ Sh" (space after /); first alternative likely a slip for LAch (the other two references print LAch or LAh)
+chernosols	chernosols_melanoluviques	reference	127	Ach/BTh/Ck|K	-
+chernosols	chernosols_melanoluviques	reference	127	LAch|LAh/BTh/Ck|K	under crops
+cryosols	cryosols_histiques	reference	140	OL/H/R	printed "OL, H and R" (commas and and, no slash; horizons listed as possibly present), normalised to /; the permafrost layer P within 200 cm stated apart, not added
+cryosols	cryosols_histiques	reference	140	H/R	printed "H and R", normalised to /; the permafrost layer P within 200 cm stated apart, not added
+cryosols	cryosols_histiques	reference	140	H/-*	printed "H and -*": -* = frozen horizon mark (p. 139) printed alone, no master; not in map_horizons; the permafrost layer P within 200 cm stated apart, not added
+cryosols	cryosols_mineraux	reference	140	Hcry/Jscry/C|M|R|D	printed with commas, normalised to /; Hcry, Jscry composed (H/Js + -cry); the permafrost layer P within 200 cm stated apart, not added
+cryosols	cryosols_mineraux	reference	140	Hcry/Jpcry/C|M|R|D	printed with commas, normalised to /; Hcry, Jpcry composed (H/Jp + -cry); the permafrost layer P within 200 cm stated apart, not added
+ferrallitisols_oxydisols	ferrallitisols_meubles	reference	157	(A)/F/RT/C/R	first of two sequences joined by 'or'
+ferrallitisols_oxydisols	ferrallitisols_meubles	reference	157	(A)/F/C/R	second of two sequences joined by 'or'
+ferrallitisols_oxydisols	ferrallitisols_meubles	type	157	F/Fnod/RT	type without A
+ferrallitisols_oxydisols	ferrallitisols_meubles	type	157	Anod/Fnod/RT/C/R	-
+ferrallitisols_oxydisols	ferrallitisols_meubles	type	157	A/Sn/F/II Sn/II F/II RT/C/R	polylithic type
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	ND/F	printed as the succession of the proximal type
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	(A|Ae|Anod)/ND/F|Fnod/(RT)	-
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	F/ND	printed as the succession of the distal type
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	(A|Ae|Anod)/F|Fnod/ND/RT	RT printed without optional mark although the text says it may be absent
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	ND/F/ND/F	succession of the multiferrallitic type
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	F/ND/F/ND	succession of the multiferrallitic type
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	(A|Ae|Anod)/F|Fnod/ND/II F|II Fnod/II ND/III F|III Fnod/IV RT	numerals as printed (IV RT after III)
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	(A|Ae|Anod)/ND/F|Fnod/II ND/II F|II Fnod/III RT	-
+ferrallitisols_oxydisols	ferrallitisols_nodulaires	type	158	(A|Ae|Anod)/ND/II ND/III F|III Fnod/IV RT	numerals as printed
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/OXm/F|Fnod/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/OXm/ND/F|Fnod/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/OXm/F|Fnod/ND/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/OXm/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/ND/OXm/F|Fnod/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/F|Fnod/OXm/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/F|Fnod/OXm/ND/RT	-
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/F|Fnod/OXm/II F|II Fnod/II OXm/III F|III Fnod/IV RT	numerals as printed
+ferrallitisols_oxydisols	ferrallitisols_petroxydiques	type	159	(A|Ae|Anod)/OXm/F|Fnod/II OXm/II F|II Fnod/III RT	-
+ferrallitisols_oxydisols	ferrallitisols_duroxydiques	type	159	(A|Ae|Anod)/OXc/RT	-
+ferrallitisols_oxydisols	ferrallitisols_duroxydiques	type	159	(A|Ae|Anod)/ND/OXc/RT	-
+ferrallitisols_oxydisols	ferrallitisols_duroxydiques	type	159	(A|Ae|Anod)/F|Fnod/OXc/RT	-
+ferrallitisols_oxydisols	ferrallitisols_duroxydiques	type	159	(A|Ae|Anod)/F|Fnod/OXc/ND/RT	-
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	160	ND/OX	printed as the succession of the proximal type
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	160	(A|Ae|Anod)/ND/OX|OXnod	-
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	160	OX/ND	printed as the succession of the distal type
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	161	(A|Ae|Anod)/OX|OXnod/ND	-
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	161	ND/OX/ND/OX	succession of the multioxydic type
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	161	OX/ND/OX/ND	succession of the multioxydic type
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	161	(A|Ae|Anod)/OX|OXnod/ND/II OX|II OXnod/II ND/III OX|III OXnod	-
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	161	(A|Ae|Anod)/ND/OX|OXnod/II ND/II OX|II OXnod	-
+ferrallitisols_oxydisols	oxydisols_nodulaires	type	161	(A|Ae|Anod)/ND/II ND/II OX|II OXnod	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OXm/OX|OXnod	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OXm/OX|OXnod/ND	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OXm/ND/OX|OXnod	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/ND/OXm/OX|OXnod	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OX|OXnod/OXm/RT	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OX|OXnod/OXm/ND	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OX|OXnod/OXm/II OX|II OXnod/II OXm/III OX|III OXnod	-
+ferrallitisols_oxydisols	oxydisols_petroxydiques	type	161	(A|Ae|Anod)/OXm/OX|OXnod/II OXm/II OX|II OXnod	-
+ferrallitisols_oxydisols		other	165	F/OX	landscape text: ferrallitic/oxydic intergrade, may mean one transitional horizon rather than a sequence
+ferruginosols	ferruginosols_meubles	reference	173	A/FE/S/C|M	printed again on the same page for the type hapliques (kept once)
+ferruginosols	ferruginosols_meubles	type	173	A/FE/C|M	-
+ferruginosols	ferruginosols_meubles	type	173	A/FE/Sg/C	-
+ferruginosols	ferruginosols_meubles	type	173	A/FE/Sg/OXm	-
+ferruginosols	ferruginosols_meubles	type	173	A/FE/Sg/RT	printed with a stray space after the second slash
+ferruginosols	ferruginosols_meubles	type	173	A/FE/Sg/C/II RT	-
+ferruginosols	ferruginosols_semiluviques	reference	174	A/FE/BT/C/R	-
+ferruginosols	ferruginosols_semiluviques	type	174	A/FE/BTg/Sg/Cg/II R	-
+ferruginosols	ferruginosols_semiluviques	type	174	A/FEcn/BTg/Cg/R	-
+ferruginosols	ferruginosols_luviques	reference	174	A/FE/Ea/BT/II C	-
+ferruginosols	ferruginosols_luviques	type	174	A/FE/Ea/BT/BTcn/BTg/πRT/R	-
+ferruginosols	ferruginosols_luviques	type	174	A/FE/Ea/BT/πRT/II C/R	-
+ferruginosols	ferruginosols_luviques	type	174	A/FE/Ea/BT/BTcn/C/R	-
+ferruginosols	ferruginosols_luviques	type	174	A/FE/Ea/BT/BTg/II C|OXm	II printed only before C
+ferruginosols	ferruginosols_petroxydiques	type	175	A/OXm/Ea/BTg/C/R	first of two sequences joined by 'or'
+ferruginosols	ferruginosols_petroxydiques	type	175	A/OXm/Ea/C/R	second of two sequences joined by 'or'
+ferruginosols	ferruginosols_petroxydiques	type	175	OXm/Ea/BTg/Sg/C/R	truncated type, no A
+ferruginosols	ferruginosols_petroxydiques	type	175	A/OXm/BTg/Cg/R	-
+fersialsols	fersialsols_carbonates	reference	181	Aca/FS/C|M|R	adjective after FS dropped
+fersialsols	fersialsols_calciques	reference	181	Aci/FS/C|M|R	adjective after FS dropped
+fersialsols	fersialsols_insatures	reference	181	A/FS/C|M|R	adjective after FS dropped
+fersialsols	fersialsols_eluviques	reference	181	A/E/FSt/C|M|R	-
+fersialsols	fersialsols_eluviques	other	181	E/FSt	contact in qualifiers glossique and planosolique (same page, kept once)
+fluviosols	fluviosols_bruts	reference	185	M|D	single position (M or D layers), no slash; keep only if single positions are wanted
+fluviosols	fluviosols_juveniles	reference	185	Js/M|D	-
+fluviosols	fluviosols_typiques	reference	185	A|LA/Jp/D	solum type 1
+fluviosols	fluviosols_typiques	reference	186	A|LA/Jp/M/D	solum type 2; also drawn in the figure on the same page (kept once)
+fluviosols	fluviosols_bruts	other	186	M|D	figure column; single position
+fluviosols	fluviosols_juveniles	other	186	Js/M|D	figure column
+fluviosols	fluviosols_typiques	other	186	A|LA/Jp/D	figure column 1
+fluviosols	fluviosols_brunifies	other	186	A|LA/S/(M)/D	figure column; M in parentheses
+fluviosols	fluviosols_brunifies	reference	186	A|Aca|Aci|LA/S|Sca|Sci/D	text adds that an M may lie between S and D (not in the printed sequence)
+fluviosols	fluviosols_typiques	other	190	LA/Jp/M/D	solum type 2 cited in land use
+grisols		reference	192	Aso/Eh/BTh	GER-level sequence under permanent vegetation, first of three joined by 'or'
+grisols		reference	192	Aso/Eh/BThd	GER-level sequence, second of three
+grisols		reference	192	Aso/BThd	GER-level sequence, third of three
+grisols	grisols_eluviques	reference	193	Aso/Eh/BTh	under permanent vegetation (words dropped)
+grisols	grisols_eluviques	reference	193	LAh/Eh/BTh	under cultivation, first of two joined by 'or'
+grisols	grisols_eluviques	reference	193	LEh/BTh	under cultivation, second of two
+grisols	grisols_degrades	reference	194	Aso/Eh/BThd	under permanent vegetation
+grisols	grisols_degrades	reference	194	LAh/Eh/BThd	under cultivation
+grisols	grisols_hapliques	reference	194	Aso/BThd	under permanent vegetation
+grisols	grisols_hapliques	reference	194	LAh/BThd	under cultivation
+gypsosols	gypsosols_hapliques	reference	198	Ys/Cy/My	-
+gypsosols	gypsosols_petrogypsiques	reference	198	Ym/Ys/Cy/My	-
+gypsosols	gypsosols_hapliques	other	199	Ys/Cy/My	figure
+gypsosols	gypsosols_petrogypsiques	other	199	Ym/Ys/Cy/My	figure
+histosols	lithosols	other	209	H/R	figure; lithosols epihistiques (H < 10 over R)
+histosols	histosols_leptiques	other	209	H/R	figure; histosols leptiques lithiques
+histosols		other	209	H/R	figure; histosols fibriques/mesiques/sapriques/composites bathylithiques
+histosols	regosols	other	209	H/M|D	figure; regosols epihistiques; "M or D"
+histosols	histosols_leptiques	other	209	H/M|D	figure; histosols leptiques non lithiques; "M or D"
+histosols		other	209	H/M|D	figure; histosols fibriques/mesiques/sapriques/composites (H > 50 over M or D)
+histosols	reductisols_stagniques	other	209	H/G	figure; reductisols stagniques or typiques epihistiques (one profile for both)
+histosols		other	209	H/G	figure; histosols fibriques/mesiques/sapriques/composites reductiques
+leptismectisols	leptismectisols	reference	217	Av|Lav/SV/R|Km|C	Lav as printed (list has LAv)
+lithosols	lithosols	reference	219	C|M|D/R|Km|FEm|Sim|OXc|OXm	sequence given in words and bullets, not with "/"; first position also allows "a pedological horizon (organo-mineral or holorganic)" given only in words, dropped; FEm as printed here, the qualifier petroferrique on the same page prints Fem (FEm not in list; probable slip for Fem)
+luvisols		reference	221	E/BT	GER-level sequence
+luvisols	neoluvisols	reference	225	A/E/BT	under forest
+luvisols	neoluvisols	reference	225	LA/E/BT	under cultivation; "or" splits two whole sequences
+luvisols	neoluvisols	reference	225	LA/BT	under cultivation
+luvisols	luvisols_typiques	reference	225	Ae/E/BT	under forest
+luvisols	luvisols_typiques	reference	225	LA|LE/E/BT	under cultivation; printed "LA or LE/E/BT or LA or LE/BT", read as two whole sequences, each with LA or LE on top
+luvisols	luvisols_typiques	reference	225	LA|LE/BT	under cultivation; see previous row
+luvisols	luvisols_degrades	reference	226	Ae/E/Eg/BTgd	under forest
+luvisols	luvisols_degrades	reference	226	LE/Eg/BTgd	under cultivation
+luvisols	luvisols_degrades	reference	226	LE/BTgd	under cultivation
+luvisols	luvisols_derniques	reference	226	Ae/E/Ea/BTd	-
+luvisols	luvisols_derniques	other	226	E/BTd	contact between the two horizons
+luvisols	neoluvisols	other	227	A/(E)/BT/BC/C|M	figure, left (forest) side; "C or M"
+luvisols	neoluvisols	other	227	LA/BT/BC/C|M	figure, right side: the LA line reaches the E/BT boundary at the right edge
+luvisols	luvisols_typiques	other	227	Ae/E/BT/BC/C|M	figure, left side
+luvisols	luvisols_typiques	other	227	LA|LE/BT/BC/C|M	figure, right side "LA or LE"; line reaches the E/BT boundary at the right edge
+luvisols	luvisols_degrades	other	227	Ae/Eg/E&BT/BTgd/BTg/C|M	figure, left side; printed "E & BT"; no plain E between Ae and Eg (text sequence has Ae/E/Eg)
+luvisols	luvisols_degrades	other	227	LE/Eg/E&BT/BTgd/BTg/C|M	figure, right side; LE line ends above the base of Eg
+luvisols	luvisols_derniques	other	227	Ae/E/Ea/BTd/BC/C|M	figure, left side
+luvisols	luvisols_derniques	other	227	LE/Ea/BTd/BC/C|M	figure, right side; LE line reaches the E/Ea boundary at the right edge
+luvisols	luvisols_tronques	reference	227	A/BT	under forest
+luvisols	luvisols_tronques	reference	227	LBT/BT	under cultivation
+luvisols	quasi_luvisols	reference	227	E/II BT	-
+luvisols	quasi_luvisols	other	228	LE/BT1/BT2/C	figure, initial state before truncation; printed "BT 1", "BT 2"
+luvisols	quasi_luvisols	other	228	LE/BT2/C	figure, present state; allochthonous LE -> LE; no II printed in the figure (text: E/II BT)
+luvisols		other	229	E/BT	qualifier planosolique (boundary between the two horizons)
+luvisols		other	229	A/E/BP	qualifier a micro-podzol; printed as "[A + E + BP]" (plus-joined episolum, not "/"); keep or drop
+luvisols		other	229	A/BP	qualifier a micro-podzol; printed as "[A + BP]"; keep or drop
+luvisols		other	230	E/BT	distinction with brunisols
+luvisols		other	230	E/BTd	distinction with brunisols; "E/BT or E/BTd" split into two sequences
+nitosols	nitosols	reference	234	A|LA|L/Sn/C|M|R	"C, M or R"
+nitosols	nitosols	reference	234	A|LA|L/Sn/Sng/II RT	printed "IIRT" without a space
+nitosols	nitosols	reference	234	A|LA|L/Sn/Si|Sim	-
+organosols		other	239	O/S/C	example in the horizon section
+organosols	organosols_holorganiques	reference	239	OF/C|M|R	-
+organosols	organosols_holorganiques	reference	239	OF/OH/C|M|R	-
+organosols	organosols_holorganiques	reference	239	OL/OF/OHta/R	followed by words saying R is most often Rca
+organosols	organosols_calcaires	reference	239	OF/OH/Acaho/C|M|R	-
+organosols	organosols_calcaires	reference	239	Acaho/C|M|R	-
+organosols	organosols_satures	reference	239	OF/OH/Aho/C|M|R	-
+organosols	organosols_satures	reference	239	Aho/C|M|R	-
+organosols	organosols_insatures	reference	240	OF/OH/Aho/C|M|R	-
+organosols	organosols_insatures	reference	240	Aho/C|M|R	-
+pelosols	pelosols_typiques	reference	244	A|Av/Sp/C	under forest
+pelosols	pelosols_typiques	reference	244	LSp/Sp/C	under crops
+pelosols	pelosols_typiques	other	245	A/Sp/C	figure
+pelosols	pelosols_brunifies	other	245	A|LS/S/Sp/C	figure; A and LS drawn split diagonally in one box (forest or crops)
+pelosols	pelosols_differencies	other	245	Ae/E/Sp/C	figure, under forest; Ae and E drawn split diagonally
+pelosols	pelosols_differencies	other	245	L|LE/Sp/C	figure, under crops; L printed alone as a code
+pelosols	pelosols_brunifies	reference	245	A/S/Sp/C	under forest
+pelosols	pelosols_brunifies	reference	245	LS/S/Sp/C	under crops
+pelosols	pelosols_differencies	reference	246	Ae/E|Eg/Sp/C	under forest; first of two sequences joined by or (bold units)
+pelosols	pelosols_differencies	reference	246	Ae/E|Eg/II Sp/II C	under forest; second sequence
+pelosols	pelosols_differencies	reference	246	LE/Sp/II C	under crops; first of two sequences
+pelosols	pelosols_differencies	reference	246	LE/II Sp/II C	under crops; second sequence
+pelosols	pelosols_differencies	other	246	Ae|E/II Sp/II C	qualifier sedimorphe; printed Ae and/or E read as one position
+phaeosols	phaeosols_hapliques	reference	257	Aso|LAso/Sh/K|Kc|C	-
+phaeosols	phaeosols_melanoluviques	reference	257	Aso|LAso/BTh/K|Kc|C	-
+phaeosols		other	258	Ah|LAh/Eh/BTh|BThd	distinction: sequence of grisols eluviques or degrades; split across a line break after Eh/
+phaeosols		other	258	A/Eg/BThg	distinction: sequence of planosols typiques melanoluviques
+planosols		other	260	Eg/Sg	genesis: lateral impoverishment
+planosols		other	260	Eg/Sdg	genesis: geochemical degradation
+planosols		other	260	Eg/BTg	genesis: vertical clay illuviation
+planosols		other	260	Eg/II S	genesis: two superposed layers (sedimorphe)
+planosols		other	260	Eg/II BT	genesis: two superposed layers, rarer case
+planosols		other	260	Eg/BP	superposition excluded from the planosol concept (podzosols)
+planosols	planosols_typiques	other	261	Eg/II S|II BT	figure, sedimorphes; surface horizons above Eg not labelled
+planosols	planosols_typiques	other	261	Eg/S|BT	figure, pedomorphes; surface horizons above Eg not labelled
+planosols	planosols_distaux	other	261	E/Eg/S|BT|II S|II BT	figure; surface horizons above E not labelled
+podzosols		other	265	OL/OF/OH	humus forms moder or mor (succession of O horizons)
+podzosols		other	268	OH/E|Eh	direct superposition under a mor
+podzosols	podzosols_ocriques	reference	268	O/A|Ae/BP/(S)/C|R	loose BP -> BP
+podzosols	podzosols_meubles	reference	268	O/(Ae)/E/BP/C|R	loose BP -> BP
+podzosols	podzosols_meubles	other	268	BPh/BPs	possible superposition
+podzosols	podzosols_ocriques	other	269	O/A|Ae/BP/(S)/C|R	figure; BP meuble
+podzosols	podzosols_meubles	other	269	O/(Ae)/E/BP/C|R	figure; E clair, BP meuble
+podzosols	podzosols_duriques	other	269	O/(Ae)/E/BP/BP/C|R	figure; BP indure over BP meuble
+podzosols	podzosols_placiques	other	269	O/(Ae)/E/Femp/BP/C|R	figure; E clair, BP meuble
+podzosols	podzosols_humiques	other	269	O/(Ae)/Eh/BP/C|R	figure; Eh sombre, BP meuble
+podzosols	podzosols_humo_duriques	other	269	O/(Ae)/Eh/BP/BP/C|R	figure; BP indure over BP meuble
+podzosols	podzosols_eluviques	other	269	O/(Ae)/E/C|R	figure; E clair
+podzosols	podzosols_duriques	reference	269	O/(Ae)/E/BP/(BP)	cemented BP (alios) -> BP
+podzosols	podzosols_humiques	reference	270	O/(Ae)/Eh/BPh|BPs/C|R	the word for loose dropped
+podzosols	podzosols_humo_duriques	reference	270	O/(Ae)/Eh/BP/(BP)	cemented BP (alios) -> BP
+podzosols	podzosols_eluviques	reference	270	O/(Ae)/E/C|R	vertical sequence; BP present laterally downslope
+podzosols	podzosols_placiques	reference	270	O/Ae/E/Femp/BP	first of two sequences joined by or
+podzosols	podzosols_placiques	reference	270	O/Ae/Femp/BP	second sequence
+podzosols	post_podzosols	reference	271	LA/BP	first of two sequences joined by or
+podzosols	post_podzosols	reference	271	LE/E/BP	second sequence
+podzosols		other	273	Eh/BP/C	distinction with redoxisols/reductisols: hydromorphic podzosols
+podzosols		other	273	A/BPh/C	distinction: indurated BPh -> BPh; waterlogged podzolisation
+rankosols	rankosols	reference	276	(O)/A|LA/R	optional O -> (O)
+reductisols_redoxisols	reductisols_typiques	reference	282	Ag/Go/Gr	first of three sequences joined by or
+reductisols_redoxisols	reductisols_typiques	reference	282	An/Go/Gr	second sequence
+reductisols_redoxisols	reductisols_typiques	reference	282	H/Gr	third sequence
+reductisols_redoxisols	reductisols_stagniques	reference	282	A|An/Gr/C	first of three sequences (bold unit 'A or An/Gr/C')
+reductisols_redoxisols	reductisols_stagniques	reference	282	H/Gr/C	second sequence
+reductisols_redoxisols	reductisols_stagniques	reference	282	H/A/Gr/C	third sequence
+reductisols_redoxisols	reductisols_typiques	other	283	A/Go/Gr	figure; text p. 282 has Ag/Go/Gr (figure prints A)
+reductisols_redoxisols	reductisols_typiques	other	283	H/Gr	figure, epihistiques
+reductisols_redoxisols	reductisols_typiques	other	283	An/Gr	figure, a anmoor
+reductisols_redoxisols	reductisols_stagniques	other	283	An/Gr/C|R	figure, a anmoor; text p. 282 gives C only
+reductisols_redoxisols	redoxisols	other	283	A/g/Sg/Gr	figure, a horizon reductique de profondeur
+reductisols_redoxisols	redoxisols	other	283	Ag/g/Fem/Go/Gr	figure, reductiques petroferriques
+reductisols_redoxisols	redoxisols	other	283	Ag/g/II C|II M	figure, a substrat meuble
+reductisols_redoxisols	redoxisols	other	283	Ag/g/II R	figure, a substrat rocheux
+reductisols_redoxisols	redoxisols	other	283	Ag/g/Cg	figure
+reductisols_redoxisols	redoxisols	other	283	A/g/C	figure
+reductisols_redoxisols	redoxisols	reference	284	A/g	first of three sequences joined by or (bold units)
+reductisols_redoxisols	redoxisols	reference	284	A/S/g	second sequence
+reductisols_redoxisols	redoxisols	reference	284	Ag/g/C|II C|II M|II R	third sequence; bold unit 'Ag/g/C or II C or II M or II R' read as one sequence with alternatives at the base
+reductisols_redoxisols	redoxisols	reference	284	A/g/Go/Gr	G deeper than 50 cm; first of two sequences
+reductisols_redoxisols	redoxisols	reference	284	A/g/Sg|Cg/G	second sequence; bold unit 'A/g/Sg or Cg/G' read as Sg or Cg over G (cf. figure p. 283 A/g/Sg/Gr); alternative reading: two sequences A/g/Sg and Cg/G
+reductisols_redoxisols		other	285	A/E/BP/G	distinction: double attachment podzosol meuble-reductisol
+reductisols_redoxisols		other	285	A/Eg/Sp	distinction: succession of pelosols differencies
+reductisols_redoxisols		other	290	g/G	GEPPA hydromorphy figure: classes III c, IV d, V b, V d, VI c, VI d (marks per depth column, no slashes printed)
+reductisols_redoxisols		other	290	(g)/g/G	GEPPA figure class IV c; here (g) is the legend mark for faint redox features, not an optional horizon
+reductisols_redoxisols		other	290	H/G	GEPPA figure, histosol column
+salisols_sodisols		other	296	SaA/SaS	figure, the complex salt profile: labels at two depths; printed 'Sa A', 'Sa S' with a space
+salisols_sodisols	sodisols_indifferencies	other	296	NaA/NaS/NaC	figure, the sodic profile; printed 'Na A', 'Na S', 'Na C' with a space
+salisols_sodisols	sodisols_solonetziques	other	296	E/NaBT	figure, the solonetzic profile; printed 'Na BT' with a space
+salisols_sodisols	sodisols_solodises	other	296	Ea/NaBT	figure, the solodic profile; printed 'Na BT' with a space
+salisols_sodisols	sodisols_indifferencies	reference	297	NaA/NaS/NaC	-
+salisols_sodisols	sodisols_solonetziques	reference	297	E/NaBT	-
+salisols_sodisols	sodisols_solodises	reference	297	Ea/NaBT	-
+salisols_sodisols	sodisalisols	reference	297	NaA/SaS	-
+salisols_sodisols	salisodisols	reference	298	SaA/NaS	-
+thalassosols	thalassosols_juveniles	reference	304	Js/M	'Js/M or Js/Jp/M' read as two whole sequences
+thalassosols	thalassosols_juveniles	reference	304	Js/Jp/M	'Js/M or Js/Jp/M' read as two whole sequences
+thalassosols	thalassosols_polderises	reference	304	A/Jp/M	-
+thiosols_sulfatosols	thiosols	other	312	H/TH	figure, thiosols epihistiques; depth marks dropped
+thiosols_sulfatosols	histosols_fibriques	other	312	Hf/TH	figure, histosols fibriques bathysulfidiques; depth marks dropped
+thiosols_sulfatosols	thiosols	other	312	TH/H	figure, thiosols bathyhistiques; an unlabelled layer under H dropped
+thiosols_sulfatosols	sulfatosols	other	312	U/TH	figure, sulfatosols; unlabelled wedge above U dropped
+thiosols_sulfatosols	redoxisols	other	312	Ag/g/U	figure, redoxisols bathysulfates; depth mark dropped
+veracrisols	veracrisols	reference	314	Ah/E|Eg/BTgd/II F	under heath
+veracrisols	veracrisols	reference	314	Ah/BTgd/II F	under heath; 'Ah/BTgd/II F or Ah/C or II F' read as two whole sequences (printed with a gap before 'or')
+veracrisols	veracrisols	reference	314	Ah/C|II F	under heath; second of the two whole sequences
+veracrisols	veracrisols	other	315	LA/Ah/E&A/BTgd/BTg/II F	figure, veracrisol paleoluvique cultive; printed 'E + A' (mixed E and A), '+' read as '&'; depth mark dropped
+veracrisols	veracrisols	other	315	LA/Ah/C	figure, veracrisol cultive; depth mark dropped
+veracrisols	veracrisols	reference	315	LAh|LA/Ah/E|Eg/BTgd/II F	under culture
+veracrisols	veracrisols	reference	315	LAh|LA/Ah/BTgd/II F	under culture
+veracrisols	veracrisols	reference	315	LAh|LA/Ah/C|II F	under culture
+vertisols	lithovertisols	reference	322	Av|LAv/SV/V	-
+vertisols	lithovertisols	other	322	SV/V	-
+vertisols	topovertisols	reference	322	Av|LAv/SV/V	-
+vertisols	topovertisols	other	323	SV/V	-
+vertisols	paravertisols_hapliques	reference	323	A|LA/SV/V/C|M|R|K|Yp	the words not vertic after A or LA dropped
+vertisols	paravertisols_planosoliques	reference	323	A|LA/Eg/SV|SVg/V|Vg/C|M|R|K|Yp	SVg composed by the rules (SV + g)
+annex1	moder	humus	337	OL/OFzo/OHzo/A	schematic case 2; printed as a comma list, not with '/'
+annex1	moder	humus	337	OL/OFzo/A	schematic case 2 (sometimes); printed as a comma list, not with '/'
+annex1	mor	humus	337	OL/OFnoz	schematic case 3; printed as OL and OFnoz present; extra OHnoz, OFzo, OHzo listed as sometimes present, unordered, dropped
+annex1	amphimus	humus	337	OL/OFzo/OHzo	schematic case 4; printed as a comma list; A named in the next bullet, not added
+annex1	mull	humus	340	(OL)/A	-
+annex1	mull	humus	340	OL/A	-
+annex1	mull	humus	340	OL|OF/A	transition forms; printed 'OL or OF/A', read as an alternative in the first position
+annex1	eumull	humus	341	(OLn)/A	-
+annex1	eumull	humus	341	OLn/A	text adds OLt possible between OLn and A (in words, not added)
+annex1	mesomull	humus	342	OLn|(OLv)/A	printed 'OLn or (OLv)/A'; text says OLn continuous and OLv discontinuous, so it may mean OLn/(OLv)/A
+annex1	oligomull	humus	342	OLn|OLv|(OFr)/A	printed 'OLn or OLv or (OFr)/A'; may mean OLn/OLv/(OFr)/A
+annex1	dysmull	humus	342	OLn|OLv|OF/A	printed 'OLn or OLv or OF/A'; may mean OLn/OLv/OF/A
+annex1	moder	humus	343	OL/OFzo/OHzo/A	-
+annex1	moder	humus	343	OL/OFzo/A	-
+annex1	hemimoder	humus	344	OL/OFzo/A	-
+annex1	eumoder	humus	344	OL/OFzo/OHzo/A	printed under 'moder or eumoder'
+annex1	mor	humus	345	OL/OFnoz	underlying horizon given in words (generally E, or Eh), not added
+annex1	mor	humus	345	OL/OFnoz/OHnoz	underlying horizon given in words (generally E, or Eh), not added
+annex1	amphimus	humus	347	OL/OFzo/OHzo/A	-
+annex1		other	348	O/X	forms without fine mineral fraction, very stony solums
+annex1		other	348	O/R|D	forms without fine mineral fraction, very shallow solums
+annex1	peyromull	humus	348	OL/Xh	-
+annex1	lithomoder	humus	349	OL/OFzo/(OHzo)/R|D	-
+annex1	peyromoder	humus	349	OL/OFz/Xh	OFz printed for OFzo (abbreviated zo)
+annex1	peyromoder	humus	349	OL/OFz/OHz/Xh	OFz, OHz printed for OFzo, OHzo (abbreviated zo)
+annex1	lithomor	humus	349	OL/OFnoz/R|D	printed 'OL/OFnoz/R or D or OL/OFnoz/OHnoz/R or D', split into two sequences
+annex1	lithomor	humus	349	OL/OFnoz/OHnoz/R|D	-
+annex1	peyromor	humus	349	OL/OFnoz/X	-
+annex1	peyromor	humus	349	OL/OFnoz/OHnoz/X	-
+annex1	tangel	humus	349	OL/OF/OHz/OHta/A	OHz printed for OHzo (abbreviated zo); also the sequence of organosols holorganiques a tangel
+annex1	peyro_amphimus	humus	349	OL/OF/OHzo/Xh	-
+annex1	hydromoder	humus	350	OL/OFzo/OHzo	word 'thick' after OHzo dropped
+annex1	anmoor	humus	351	(OL)/An	-
+annex1	anmoor	humus	351	OL/An	-
+annex1	mull	humus	352	OL/(OFzo)	table O column for eumull, mesomull, oligomull: printed 'OL or OL and (OFzo)'; the lone OL alternative is a single code; A of the column heading not added
+annex1	mesomull	humus	352	OLn/(OLv)	table O column printed 'OLn (OLv)*' (footnote: OLt optional above A); A not added
+annex1	oligomull	humus	352	OLn/OLv/(OFzo)	table O column printed 'OLn OLv (OFzo)'; A not added
+annex1	dysmull	humus	352	OL/OFzo	table O column printed 'OL and OFzo**'; same row gives hemimoder; A not added
+annex1	euamphimus	humus	352	OL/OFzo/OHzo|(OHzo)	table O column printed 'OL and OFzo and OHzo or (OHzo)'; same row gives eumoder and dysmoder; A not added
+annex1	hemimor	humus	352	OL/OFnoz	table O column printed OL and OFnoz, no OH (words dropped)
+annex1	humimor	humus	352	OL/OFnoz/OHnoz|OHzo	table O column printed 'OL and OFnoz and OHnoz or OHzo'; same row gives mor
+annex1		other	352	O//A	table heading: double slash = discontinuity (new mark); also O// over an organo-mineral horizon with the second position in words, dropped
+annex1		other	353	O/A	Figure 1 label of the O/A boundary (O/A boundary), printed twice on the page
+annex1		other	355	OL/OF/OH	Figure 3 RP column read top to bottom; a correspondence table, codes not joined by '/'
+annex1		other	355	OLn/OLv/OFr/OFm/OHr/OHf	Figure 3 RP sub-horizons read top to bottom; a correspondence table, codes not joined by '/'

@@ -311,7 +311,7 @@ attributes:
   - name: layer_origin
     section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
     unit: "-"
-    description: "'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating)"
+    description: "'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating). The French Référentiel pédologique 2008 also reads 'colluvic' (the colluviosols and the qualifier colluvial), 'marine' (the thalassosols) and 'transported' (the anthroposols reconstitués) (Hugo's decisions Q14 and Q15)."
   - name: fiber_content_rubbed_pct
     section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
     unit: "%"
@@ -327,7 +327,7 @@ attributes:
   - name: cole_value
     section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
     unit: "-"
-    description: "Coefficient of Linear Extensibility (1500 kPa moist -> oven dry); SiBCS retratil >= 0.06"
+    description: "Coefficient of Linear Extensibility (moist at 33 kPa -> oven dry); SiBCS retratil >= 0.06; the French Référentiel pédologique 2008 measures it at -33 kPa too (vertisols, pp. 320-321)"
   - name: sio2_sulfuric_pct
     section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
     unit: "%"
@@ -968,3 +968,207 @@ attributes:
     description: "Cryoturbation in the layer (bent or torn horizons, involutions, organic material pulled down by frost): none or present. The feature @ of the Russian Field Guide of 2008, and evidence of its cryogenic horizon CR. Not recorded: an irregular or broken boundary with frost in the profile (Hugo's decision Q24)."
     systems: [kidpr2008]
     allowed: [none, present]
+  - name: coarse_fragments_wt_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Coarse elements (over 2 mm), % by weight of the air-dried whole soil, as the French Référentiel pédologique 2008 measures them (pp. 24, 249), not by volume. The RP reads them for the peyric horizons X (over 60 % over more than 10 cm), the peyrosols (over 60 % in the upper 50 cm), the rankosols and the qualifiers caillouteux, graveleux and pierreux (over 40 %). Not recorded: coarse_fragments_pct (by volume) converted with a rock density of 2.65 and the recorded bulk density of the fine earth, flagged; with no bulk density, a volume at or above the threshold reads yes (the weight share is never lower, except for porous rocks), a volume under 35 % (for 60) or under 20 % (for 40) no, and between them the test is undecided (Hugo's decision Q11)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: gravel_wt_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Gravel (graviers, 0.2-2 cm), % by weight of the whole soil (Référentiel pédologique 2008, p. 249). The RP gravelly horizon Xgr has over 50 % gravel; also the qualifier graveleux. Not recorded: gravel_pct (by volume), flagged (Hugo's decision Q11)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: cobbles_wt_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Cobbles (cailloux, 2-7.5 cm), % by weight of the whole soil (Référentiel pédologique 2008, p. 249). The RP cobbly horizon Xc has over 50 % cobbles, stones and boulders with cobbles dominant; also the qualifier caillouteux. Not recorded: the coarse fragments by volume, flagged (Hugo's decision Q11)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: stones_wt_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Stones (pierres, 7.5-20 cm; not the 7.5-25 cm of other French guides), % by weight of the whole soil (Référentiel pédologique 2008, p. 249). The RP stony horizon Xp has over 50 % cobbles, stones and boulders with stones or boulders dominant; also the qualifier pierreux. Not recorded: the coarse fragments by volume, flagged (Hugo's decision Q11)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: boulders_wt_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Boulders (blocs, over 20 cm), % by weight of the whole soil (Référentiel pédologique 2008, p. 249), counted with the stones for the RP stony horizon Xp. Not recorded: the coarse fragments by volume, flagged (Hugo's decision Q11)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: cec_method
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "Method of the CEC and the exchangeable bases of the layer: acetate_ph7 (ammonium acetate at pH 7), cobaltihexammine (at the pH of the soil, common in French laboratories), bacl2, kcl, nh4cl or oxalate. The French Référentiel pédologique 2008 reads S/CEC with the CEC by ammonium acetate at pH 7 (p. 50); a CEC by another method stands in for it, flagged, with a lower grade of evidence; not recorded, the CEC is read as reported, with a note (Hugo's decision Q12)."
+    systems: [rp2008]
+    allowed: ["acetate_ph7", "cobaltihexammine", "bacl2", "kcl", "nh4cl", "oxalate"]
+  - name: redox_relict
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "TRUE when the redox features of the layer are relict (fossil hydromorphy, the qualifier paléorédoxique), FALSE when they are recorded as functional. The French Référentiel pédologique 2008 asks for a functional hydromorphy (pp. 279, 281) for g, G and the doubles with the rédoxisols: redox features count as functional unless recorded as relict, and reductic features always (Hugo's decision Q13)."
+    systems: [rp2008]
+  - name: anthropic_material
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "Kind of anthropic material of the layer, as the materials Z of the French Référentiel pédologique 2008 (pp. 27-28): earthy (Ztr), technological (Ztc), holorganic (ZO), archaeological (Zar), or transported (pedological or geological material moved by people, the suffix -tp). Read for the anthroposols artificiels, construits, archéologiques and reconstitués. Not recorded: the Z codes of the designation, then the artefacts_* attributes (Hugo's decision Q15)."
+    systems: [rp2008]
+    allowed: ["earthy", "technological", "holorganic", "archaeological", "transported"]
+  - name: anthropic_material_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "% (vol)"
+    description: "Share of the anthropic material in the layer, % by volume. French Référentiel pédologique 2008 (pp. 27-28, 88-98): the anthroposols artificiels have over 50 %, the archéologiques 20 % or more of anthropic debris and artefacts over 50 cm, the qualifier anthropisé under 50 %. Not recorded: artefacts_pct (Hugo's decision Q15)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: o_zoogenic
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "For an OF or OH horizon: zoogenic (zo: the fine organic matter is made of faecal pellets of the litter fauna) or non-zoogenic (noz), French Référentiel pédologique 2008, Annex 1 (pp. 331-333). Reads OFzo, OFnoz, OHzo and OHnoz, and the humus forms (moder and amphimus against mor). The suffix zo or noz of the designation gives it too; not recorded, the humus form stays undecided between its candidates (Hugo's decision Q22)."
+    systems: [rp2008]
+    allowed: ["zo", "noz"]
+  - name: fine_organic_matter_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "% (vol)"
+    description: "Fine organic matter (holorganic material with no plant debris recognisable by eye), % by volume of an O horizon, fine roots and mycelia excluded (French Référentiel pédologique 2008, pp. 8, 329-333): OL under 10 %, OF 10-70 % (OFr under 30, OFm 30-70), OH over 70 % (OHr 70-90; OHf with recognisable debris under 10 %). Not recorded: the designation (OL, OF, OH; the FAO Oi, Oe, Oa as hints), else 100 minus plant_residues_pct, flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: biogenic_aggregates_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "% (vol)"
+    description: "Biogenic crumb or granular aggregates, % by volume of an A horizon (French Référentiel pédologique 2008, pp. 10-11, 334): over 25 % makes a biomacrostructured or biomesostructured A, 25 % or less a non-crumb A; read by Aca, Aci, Ado, the veracrisols and the humus forms. Not recorded: a moderate or strong crumb or granular structure with worm holes, or a mull humus form, flagged; otherwise undecided (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: biogenic_aggregate_size
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "Size of most biogenic aggregates of an A horizon (French Référentiel pédologique 2008, p. 10): macro (more than half over about 3 mm: a biomacrostructured A) or meso (more than half 1-3 mm: a biomesostructured A). Not recorded: structure_size, flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    allowed: ["macro", "meso"]
+  - name: effervescence_hot
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "TRUE when the fine earth effervesces with hot HCl and not, or very weakly, with cold HCl: dolomite. French Référentiel pédologique 2008 (pp. 12, 16): the dolomitic Ado and Sdo and the dolomitic qualifiers. With neither this nor mgco3_pct, Ado and Sdo stay undecided against Aca and Sca (Hugo's decision Q23)."
+    systems: [rp2008]
+  - name: mgco3_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Magnesium carbonate, % of the fine earth. With caco3_pct it gives the molar ratio CaCO3/MgCO3 of the French Référentiel pédologique 2008 (pp. 12, 15-16): calcaire over 8, dolomiteux 1.5 to 8, dolomitique under 1.5 (Ado, Sdo). Not recorded: effervescence_hot (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: fe_total_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Total iron as Fe2O3 (HF digestion, alkaline fusion or XRF), % of the fine earth. French Référentiel pédologique 2008: the ferruginous FE at most 12 % (p. 171), the ND of the ferruginosols 12-20 % and their OXc and OXm over 20 % (p. 172), the FS by free over total iron (pp. 179-180), the Sn by free over total iron 0.60-0.90 (p. 17). fe2o3_sulfuric_pct is not total iron (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: fe_ffe_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Free iron by the method of Ségalen (FFE), % of the fine earth. The fersiallitic FS of the French Référentiel pédologique 2008 has FFE over total iron above 0.20 (pp. 179-180). Not recorded: fe_dcb_pct over fe_total_pct above 0.50 (about 0.30 on iron-rich parents) is evidence, flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: weatherable_minerals_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Weatherable minerals other than quartz and muscovite, % of the 20-200 µm fraction. The oxidic OX of the French Référentiel pédologique 2008 has under 10 % (p. 151); also read for the ferrallitisols against the ferruginosols and for the nitosols (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: oxides_triacid_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Sum of the iron, aluminium and titanium oxides (triacid attack or alkaline fusion), % of the fraction under 2 µm. French Référentiel pédologique 2008 (pp. 149-151): the ferrallitic F under 60 % (usually 3-18 %), Fox 30-60 %, the oxidic OX over 60 % (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: clay_mineralogy
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "Dominant clay mineral of the layer: smectite, halloysite, kaolinite, illite, vermiculite (the hydroxy-Al vermiculite of Sal), interstratified or mixed (2:1). French Référentiel pédologique 2008: the nitic Sn (halloysite), the ferrallitic F and Fhy, the fersiallitic FS, Sal, the vertic horizons, the pélosols against the vertisols, the leptismectisols, the qualifiers kaolinitique and smectitique. Not recorded: Ki and Kr and the CEC of the clay as evidence (Hugo's decision Q23)."
+    systems: [rp2008]
+    allowed: ["smectite", "halloysite", "kaolinite", "illite", "vermiculite", "interstratified", "mixed"]
+  - name: halloysite_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Halloysite, % of the clay fraction. French Référentiel pédologique 2008: the nitic Sn over 50 % (p. 16), the halloysitic Fhy 10-50 % (p. 149); over 50 % confirms the nitosols, 50 % or less rules them out. Not recorded: clay_mineralogy (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: kaolinite_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Kaolinite, % of the clay fraction. French Référentiel pédologique 2008: the ferrallitic F has 1:1 clays 90-100 % (p. 151); the qualifiers kaolinitique. Not recorded: clay_mineralogy (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: smectite_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Smectite, % of the clay fraction. French Référentiel pédologique 2008: swelling clays dominant in the vertic horizons (p. 22), the leptismectisols, the qualifiers smectitique. Not recorded: clay_mineralogy (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: degradation_form
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "Form of the morphological degradation of a BT (French Référentiel pédologique 2008, p. 18): diffuse, interdigitations (E penetrating along the vertical ped faces, too narrow for tongues), tongues, or planosolic. Read by BTd and the luvisols dégradés and derniques, and the qualifiers glossique and à dégradation diffuse. Not recorded: soilKey's retic properties and albeluvic glossae stand in, flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    allowed: ["diffuse", "interdigitations", "tongues", "planosolic"]
+  - name: tongue_vol_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "% (vol)"
+    description: "Tongues of E material in a BT, % of the volume of its affected part. The tongues of the degraded BTd of the French Référentiel pédologique 2008 make over 15 % of it (p. 18). Not recorded: degradation_form (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: tongue_width_mm
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "mm"
+    description: "Smallest horizontal size of the tongues of E material in a BT, mm. The tongues of the degraded BTd of the French Référentiel pédologique 2008 are at least 5 mm (clayey) to 15 mm (silty to sandy) wide (p. 18). Not recorded: degradation_form (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+  - name: lamellae_cumulative_cm
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "cm"
+    description: "Cumulative thickness of the clay bands (lamellae) of the layer, cm. A BT of the French Référentiel pédologique 2008 made only of bands needs each band 0.5 cm or more and more than 15 cm in all (p. 17); also the qualifier lamellique. Not recorded: the designation (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+  - name: c_pyro_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Organic carbon extractable with 0.1 M sodium pyrophosphate, % of the fine earth. The podzolic BP of the French Référentiel pédologique 2008 has most of its organic matter so extractable (p. 19). Not recorded: soilKey's spodic horizon stands in, flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: pyrophosphate_index
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "-"
+    description: "Pyrophosphate index of a peat (Kaila). French Référentiel pédologique 2008, the histic horizons (pp. 205-206): Hf 7-10, Hm 10-25, Hs over 10 (with the exceptions of its table), Ha and LH over 50. Not recorded: the rubbed fibres, then the von Post index (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+  - name: s_total_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Total sulfur, % of the dry mass. French Référentiel pédologique 2008: the thionic material TH 0.75 % or more (p. 27), the sulfated U and the thiosols over 0.75 % (p. 308). Not recorded: sulfidic_s_pct plus sulfate_s_pct as a lower bound (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: nodules_wt_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Metal-oxide (sesquioxidic) nodules and concretions, % by weight of the whole soil. French Référentiel pédologique 2008: the nodular ND over 60 % (p. 154), the suffix -nod and Anod 30-60 % (pp. 151, 155), the qualifier nodulaire. Not recorded: ferric_nodules_pct and bauxitic_nodules_pct (by volume), flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100

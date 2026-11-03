@@ -1,0 +1,306 @@
+# The reference horizons, layers and materials of the French Référentiel
+# pédologique 2008 (AFES; Baize D., Girard M.-C. coord.; Éditions Quæ, 2009),
+# its notation marks, and the hints other notations give. Read by the
+# notation reader (R/designation-rp.R); the identification of the horizons on
+# the data, the registry entry and the references come later.
+#
+# Pages are the printed pages of the book. Names are as the book prints them
+# (French); name_en is soilKey's English gloss. The criteria are not
+# reproduced: they are in the book.
+#
+# horizons     one entry per code the reader reads as a master:
+#   code       the code as printed, case-sensitive (FE is not Fe, SV is not Sv)
+#   family     the code of its group in the list of pp. 1-4 (A, BT, O, S ...),
+#              or the layer or material it belongs to
+#   kind       horizon, layer or material (pp. 4, 26-28)
+#   source     list (the 75 codes and the layers and materials of pp. 1-4),
+#              variant (printed in the definitions or chapters as a kind of a
+#              listed code), annex1 (the O sub-horizons of Annex 1), old (an
+#              old code the list names), transition (a letter written only in
+#              transitions)
+#   variant_of the listed code a variant belongs to
+#   reads_as   for an old code, the 2008 code it is read as
+#   page       printed page of the definition
+#   detection  the class of the code for recognising the notation without a
+#              declaration (Hugo's decision Q9): strong (only the RP writes
+#              it), likely (another notation could write it but seldom does),
+#              ambiguous (shared with the CPCS, FAO, KA5 or Russian notation)
+#   domain     tropical or andic: the book calls the code specific to that
+#              domain (p. 6); read by the identification on the data
+
+edition: "Référentiel pédologique 2008 (AFES, Éditions Quæ, 2009)"
+
+horizons:
+  # --- A horizons (p. 1; definitions pp. 9-13, 76-79) ------------------------
+  - {code: "A",    family: "A", kind: horizon, source: list, page: 9,  detection: ambiguous, name: "A hapliques", name_en: "haplic A horizon", group_name: "Horizons A"}
+  - {code: "Aca",  family: "A", kind: horizon, source: list, page: 12, detection: strong, name: "A calcaires", name_en: "calcareous A horizon"}
+  - {code: "Ach",  family: "A", kind: horizon, source: list, page: 12, detection: strong, name: "A cherniques", name_en: "chernic A horizon"}
+  - {code: "Aci",  family: "A", kind: horizon, source: list, page: 12, detection: strong, name: "A calciques", name_en: "calcic A horizon (non-calcareous, Ca-dominated)"}
+  - {code: "Ado",  family: "A", kind: horizon, source: list, page: 12, detection: strong, name: "A dolomitiques", name_en: "dolomitic A horizon"}
+  - {code: "Ae",   family: "A", kind: horizon, source: list, page: 11, detection: ambiguous, name: "A éluviaux", name_en: "eluvial A horizon"}
+  - {code: "AG",   family: "A", kind: horizon, source: list, page: 13, detection: ambiguous, name: "A à caractères réductiques", name_en: "A horizon with reductic characters"}
+  - {code: "Alu",  family: "A", kind: horizon, source: list, page: 76, detection: strong, domain: andic, name: "A aluandiques", name_en: "aluandic A horizon"}
+  - {code: "Amg",  family: "A", kind: horizon, source: list, page: 13, detection: strong, name: "A magnésiques", name_en: "magnesic A horizon"}
+  - {code: "An",   family: "A", kind: horizon, source: list, page: 13, detection: ambiguous, name: "A d’anmoor", name_en: "anmoor A horizon"}
+  - {code: "And",  family: "A", kind: horizon, source: list, page: 77, detection: strong, domain: andic, name: "A silandiques", name_en: "silandic A horizon"}
+  - {code: "Aso",  family: "A", kind: horizon, source: list, page: 13, detection: strong, name: "A sombriques", name_en: "sombric A horizon (dark, unsaturated; not the WRB sombric horizon)", old_codes: ["Ahs"]}
+  - {code: "Avi",  family: "A", kind: horizon, source: list, page: 77, detection: strong, domain: andic, name: "A vitriques", name_en: "vitric A horizon"}
+  # --- BT, BP (pp. 1, 17-19) ---------------------------------------------------
+  - {code: "BT",   family: "BT", kind: horizon, source: list, page: 17, detection: ambiguous, name: "B argilluviaux", name_en: "clay-illuvial B horizon", note: "Likely when written with a lower-case suffix in a profile with lower case elsewhere (BTg, BTd, BTcn, BTh)."}
+  - {code: "BTß",  family: "BT", kind: horizon, source: list, page: 18, detection: strong, name: "BT bêta", name_en: "beta BT horizon (at a carbonate contact)", written: ["BTß", "BTβ"], note: "Formerly the horizon bêta (p. 1)."}
+  - {code: "BP",   family: "BP", kind: horizon, source: list, page: 19, detection: strong, name: "B podzoliques", name_en: "podzolic B horizon"}
+  - {code: "BPh",  family: "BP", kind: horizon, source: list, page: 19, detection: strong, name: "BP humifères", name_en: "humic podzolic B horizon", note: "The h of BPh is part of the code, not the suffix -h (p. 376)."}
+  - {code: "BPs",  family: "BP", kind: horizon, source: list, page: 19, detection: strong, name: "BP sesquioxydiques", name_en: "sesquioxidic podzolic B horizon"}
+  # --- C, E (pp. 1, 14-15, 25) -------------------------------------------------
+  - {code: "C",    family: "C", kind: horizon, source: list, page: 25, detection: ambiguous, name: "Horizons C", name_en: "C horizon", note: "Cca is a calcareous C and Ccra a chalky C (p. 25), not a carbonate accumulation as the CPCS Cca."}
+  - {code: "E",    family: "E", kind: horizon, source: list, page: 14, detection: ambiguous, name: "Horizons éluviaux", name_en: "eluvial horizon", note: "Ea, Eg and Eh are E with the suffixes a, g and h."}
+  # --- intertropical F, FE, OX, RT, ND (pp. 1-2, 149-155, 170) -----------------
+  - {code: "F",    family: "F", kind: horizon, source: list, page: 149, detection: ambiguous, domain: tropical, name: "Horizons ferrallitiques", name_en: "ferrallitic horizon"}
+  - {code: "Fox",  family: "F", kind: horizon, source: variant, variant_of: "F", page: 149, detection: strong, domain: tropical, name: "F oxydiques", name_en: "oxidic ferrallitic horizon"}
+  - {code: "Fhy",  family: "F", kind: horizon, source: variant, variant_of: "F", page: 149, detection: strong, domain: tropical, name: "F halloysitiques", name_en: "halloysitic ferrallitic horizon"}
+  - {code: "FE",   family: "FE", kind: horizon, source: list, page: 170, detection: strong, domain: tropical, name: "Horizons ferrugineux", name_en: "ferruginous horizon", note: "In the RP of 1995 FE was the ferric horizon, now Fe (p. 1): FE is read as Fe in a profile declared rp1995 or written with FEm, FEmp or Ahs."}
+  - {code: "OX",   family: "OX", kind: horizon, source: list, page: 150, detection: strong, domain: tropical, name: "Horizons oxydiques meubles", name_en: "loose oxidic horizon", group_name: "Horizons oxydiques"}
+  - {code: "OXc",  family: "OX", kind: horizon, source: list, page: 154, detection: strong, domain: tropical, name: "Horizons duroxydiques", name_en: "duroxidic horizon (carapace)"}
+  - {code: "OXm",  family: "OX", kind: horizon, source: list, page: 152, detection: strong, domain: tropical, name: "Horizons pétroxydiques", name_en: "petroxidic horizon (cuirass)"}
+  - {code: "OXal", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 150, detection: strong, domain: tropical, name: "OX allitiques", name_en: "allitic oxidic horizon"}
+  - {code: "OXfl", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX ferrallitiques", name_en: "ferrallitic oxidic horizon"}
+  - {code: "OXfr", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 150, detection: strong, domain: tropical, name: "OX ferritiques", name_en: "ferritic oxidic horizon"}
+  - {code: "OXba", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX bauxitiques", name_en: "bauxitic oxidic horizon"}
+  - {code: "OXti", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX titaniques", name_en: "titanic oxidic horizon"}
+  - {code: "RT",   family: "RT", kind: horizon, source: list, page: 152, detection: strong, domain: tropical, name: "Horizons réticulés", name_en: "reticulate horizon (retichron, plinthite)"}
+  - {code: "ND",   family: "ND", kind: horizon, source: list, page: 154, detection: likely, domain: tropical, name: "Horizons nodulaires", name_en: "nodular (gravelly) horizon", note: "Likely, not strong, for the recognition: databases write ND for not determined."}
+  # --- Fe, FS (pp. 1-2, 20, 179) -----------------------------------------------
+  - {code: "Fe",   family: "Fe", kind: horizon, source: list, page: 20, detection: likely, name: "Horizons ferriques", name_en: "ferric horizon", old_codes: ["FE"]}
+  - {code: "Fem",  family: "Fe", kind: horizon, source: list, page: 20, detection: likely, name: "Horizons pétroferriques", name_en: "petroferric horizon", old_codes: ["FEm"]}
+  - {code: "Femp", family: "Fe", kind: horizon, source: list, page: 20, detection: strong, name: "Horizons placiques", name_en: "placic horizon", old_codes: ["FEmp"]}
+  - {code: "FS",   family: "FS", kind: horizon, source: list, page: 179, detection: strong, name: "Horizons fersiallitiques", name_en: "fersiallitic horizon", note: "FSt is FS with the suffix t (clay illuviation)."}
+  # --- G, g (p. 2, 21-22, 280-281) ---------------------------------------------
+  - {code: "G",    family: "G", kind: horizon, source: list, page: 22, detection: ambiguous, name: "Horizons réductiques", name_en: "reductic horizon", note: "Ga is G with the suffix a (albic). G, Go, Gr and g are written alike in the CPCS and FAO notations."}
+  - {code: "Gr",   family: "G", kind: horizon, source: variant, variant_of: "G", page: 22, detection: ambiguous, name: "réductique stricto sensu", name_en: "permanently reduced reductic horizon"}
+  - {code: "Go",   family: "G", kind: horizon, source: variant, variant_of: "G", page: 22, detection: ambiguous, name: "réductique temporairement réoxydé", name_en: "temporarily reoxidised reductic horizon"}
+  - {code: "g",    family: "g", kind: horizon, source: list, page: 21, detection: ambiguous, name: "Horizons rédoxiques", name_en: "redox horizon", note: "Also the suffix -g of any horizon; ga is g with the suffix a."}
+  # --- H (p. 2, 205-206) -------------------------------------------------------
+  - {code: "H",    family: "H", kind: horizon, source: list, page: 205, detection: ambiguous, name: "Horizons histiques", name_en: "histic horizon", note: "Not to be used alone (p. 2). LH is a ploughed H."}
+  - {code: "Ha",   family: "H", kind: horizon, source: list, page: 206, detection: ambiguous, name: "H assainis", name_en: "drained histic horizon", note: "Not the FAO Ha (highly decomposed)."}
+  - {code: "Hf",   family: "H", kind: horizon, source: list, page: 206, detection: likely, name: "H fibriques", name_en: "fibric histic horizon"}
+  - {code: "Hm",   family: "H", kind: horizon, source: list, page: 206, detection: likely, name: "H mésiques", name_en: "mesic histic horizon"}
+  - {code: "Hs",   family: "H", kind: horizon, source: list, page: 206, detection: likely, name: "H sapriques", name_en: "sapric histic horizon"}
+  # --- J (p. 2, 25) ------------------------------------------------------------
+  - {code: "J",    family: "J", kind: horizon, source: list, page: 25, detection: ambiguous, name: "Horizons jeunes", name_en: "young (weakly differentiated) horizon", note: "Not to be used alone, except before a material (JZ, JZtc, pp. 91, 94)."}
+  - {code: "Js",   family: "J", kind: horizon, source: list, page: 25, detection: strong, name: "J de surface", name_en: "surface J horizon"}
+  - {code: "Jp",   family: "J", kind: horizon, source: list, page: 25, detection: strong, name: "J de profondeur", name_en: "subsurface J horizon"}
+  # --- K (p. 2, 20) ------------------------------------------------------------
+  - {code: "K",    family: "K", kind: horizon, source: list, page: 20, detection: likely, name: "Horizons calcariques discontinus", name_en: "discontinuous calcaric horizon", group_name: "Horizons calcariques"}
+  - {code: "Kc",   family: "K", kind: horizon, source: list, page: 20, detection: strong, name: "Horizons calcariques continus", name_en: "continuous (non-indurated) calcaric horizon", note: "The c of Kc is part of the code: continuous and not indurated (p. 20)."}
+  - {code: "Km",   family: "K", kind: horizon, source: list, page: 20, detection: strong, name: "Horizons pétrocalcariques", name_en: "petrocalcaric horizon"}
+  # --- L, Na, Sa (pp. 2, 14, 24) -----------------------------------------------
+  - {code: "L",    family: "L", kind: horizon, source: list, page: 14, detection: ambiguous, name: "Horizons labourés", name_en: "ploughed horizon", note: "Also a prefix: LA, LE, LS, LO, LH, LBT, LBP. Formerly Ap (p. 14)."}
+  - {code: "Na",   family: "Na", kind: horizon, source: list, page: 24, detection: likely, name: "Horizons sodiques", name_en: "sodic horizon", note: "Also a prefix: NaA, NaS, NaBT, NaC."}
+  - {code: "Sa",   family: "Sa", kind: horizon, source: list, page: 24, detection: likely, name: "Horizons saliques", name_en: "salic horizon", note: "Also a prefix: SaA, SaS, SaBT, SaC, SaY, SaH, SaK."}
+  # --- O (p. 2, 7-9; Annex 1 pp. 329-333) --------------------------------------
+  - {code: "O",    family: "O", kind: horizon, source: list, page: 7, detection: ambiguous, name: "Horizons organiques", name_en: "organic horizon", note: "Not to be used alone (p. 2)."}
+  - {code: "OF",   family: "O", kind: horizon, source: list, page: 8, detection: strong, name: "Horizons O de fragmentation", name_en: "fragmentation O horizon"}
+  - {code: "OH",   family: "O", kind: horizon, source: list, page: 8, detection: strong, name: "Horizons O « humifiés »", name_en: "humified O horizon"}
+  - {code: "OHta", family: "O", kind: horizon, source: list, page: 9, detection: strong, name: "Horizons de tangel", name_en: "tangel OH horizon"}
+  - {code: "OL",   family: "O", kind: horizon, source: list, page: 8, detection: strong, name: "Horizons O de litières", name_en: "litter O horizon", note: "Depths are counted from the top of the first layer that is not OL (p. 64)."}
+  - {code: "OLn",  family: "O", kind: horizon, source: annex1, variant_of: "OL", page: 330, detection: strong, name: "OLn (n = neue, nouvelle)", name_en: "new litter"}
+  - {code: "OLv",  family: "O", kind: horizon, source: annex1, variant_of: "OL", page: 330, detection: strong, name: "OLv (v = verändert, vieilli)", name_en: "old (modified) litter"}
+  - {code: "OLt",  family: "O", kind: horizon, source: annex1, variant_of: "OL", page: 330, detection: strong, name: "OLt (t = transition avec un horizon A)", name_en: "litter in transition to an A horizon"}
+  - {code: "OFr",  family: "O", kind: horizon, source: annex1, variant_of: "OF", page: 331, detection: strong, name: "OFr", name_en: "residual fragmentation horizon (fine organic matter under 30 %)"}
+  - {code: "OFm",  family: "O", kind: horizon, source: annex1, variant_of: "OF", page: 331, detection: strong, name: "OFm", name_en: "medium fragmentation horizon (fine organic matter 30-70 %)"}
+  - {code: "OHr",  family: "O", kind: horizon, source: annex1, variant_of: "OH", page: 332, detection: strong, name: "OHr", name_en: "residual humified horizon (fine organic matter 70-90 %)"}
+  - {code: "OHf",  family: "O", kind: horizon, source: annex1, variant_of: "OH", page: 332, detection: strong, name: "OHf", name_en: "fine humified horizon (recognisable debris under 10 %)"}
+  # --- S (p. 2, 15-17, 23, 78, 80) ---------------------------------------------
+  - {code: "S",    family: "S", kind: horizon, source: list, page: 15, detection: ambiguous, name: "S hapliques", name_en: "haplic structural horizon", group_name: "Horizons structuraux", note: "Likely when written Sg, St, Sk or Sh."}
+  - {code: "Sal",  family: "S", kind: horizon, source: list, page: 16, detection: strong, name: "S aluminiques", name_en: "aluminic structural horizon"}
+  - {code: "Sca",  family: "S", kind: horizon, source: list, page: 15, detection: strong, name: "S calcaires", name_en: "calcareous structural horizon"}
+  - {code: "Sci",  family: "S", kind: horizon, source: list, page: 16, detection: strong, name: "S calciques", name_en: "calcic structural horizon (non-calcareous, Ca-dominated)"}
+  - {code: "Sdo",  family: "S", kind: horizon, source: list, page: 16, detection: strong, name: "S dolomitiques", name_en: "dolomitic structural horizon"}
+  - {code: "Slu",  family: "S", kind: horizon, source: list, page: 80, detection: strong, domain: andic, name: "S aluandiques", name_en: "aluandic structural horizon"}
+  - {code: "Smg",  family: "S", kind: horizon, source: list, page: 16, detection: strong, name: "S magnésiques", name_en: "magnesic structural horizon"}
+  - {code: "Sn",   family: "S", kind: horizon, source: list, page: 16, detection: likely, name: "S nitiques", name_en: "nitic structural horizon"}
+  - {code: "Snd",  family: "S", kind: horizon, source: list, page: 78, detection: strong, domain: andic, name: "S silandiques", name_en: "silandic structural horizon"}
+  - {code: "Sp",   family: "S", kind: horizon, source: list, page: 15, detection: strong, name: "S pélosoliques", name_en: "pelosolic structural horizon"}
+  - {code: "SV",   family: "S", kind: horizon, source: list, page: 23, detection: strong, name: "S vertiques", name_en: "vertic structural horizon", note: "Sv is S with the suffix v (vertic properties), not SV."}
+  # --- Si, U, V (p. 3, 20-25, 318) ---------------------------------------------
+  - {code: "Si",   family: "Si", kind: horizon, source: list, page: 20, detection: likely, name: "Horizons siliciques", name_en: "silicic horizon"}
+  - {code: "Sim",  family: "Si", kind: horizon, source: list, page: 21, detection: strong, name: "Horizons pétrosiliciques", name_en: "petrosilicic horizon (duripan)"}
+  - {code: "U",    family: "U", kind: horizon, source: list, page: 25, detection: likely, name: "Horizons sulfatés", name_en: "sulfated horizon"}
+  - {code: "V",    family: "V", kind: horizon, source: list, page: 23, detection: likely, name: "Horizons vertiques sphénoïdes", name_en: "sphenoid vertic horizon", note: "Variants Vk, Vy, Vs, VNa, VSa and Vg (p. 318) are V with suffixes; the list prints Vna and Vsa (p. 3)."}
+  # --- X, Y (p. 3, 24, 197-198) ------------------------------------------------
+  - {code: "X",    family: "X", kind: horizon, source: list, page: 24, detection: likely, name: "Horizons grossiers", name_en: "coarse (peyric) horizon", group_name: "Horizons peyriques"}
+  - {code: "Xc",   family: "X", kind: horizon, source: list, page: 24, detection: strong, name: "Horizons cailloutiques", name_en: "cobbly peyric horizon", note: "The c of Xc is part of the code, not the suffix -c (p. 3)."}
+  - {code: "Xgr",  family: "X", kind: horizon, source: list, page: 24, detection: strong, name: "Horizons graveliques", name_en: "gravelly peyric horizon"}
+  - {code: "Xp",   family: "X", kind: horizon, source: list, page: 24, detection: strong, name: "Horizons pierriques", name_en: "stony peyric horizon"}
+  - {code: "Y",    family: "Y", kind: horizon, source: list, page: 197, detection: likely, name: "Horizons gypsiques", name_en: "gypsic horizon", note: "Not to be used alone (p. 3)."}
+  - {code: "Ym",   family: "Y", kind: horizon, source: list, page: 197, detection: strong, name: "Horizons pétrogypsiques", name_en: "petrogypsic horizon"}
+  - {code: "Yp",   family: "Y", kind: horizon, source: list, page: 198, detection: strong, name: "Y de profondeur", name_en: "subsurface gypsic horizon", note: "Ypm (p. 198, an indurated crust) is Yp with the suffix m."}
+  - {code: "Ys",   family: "Y", kind: horizon, source: list, page: 197, detection: strong, name: "Y de surface", name_en: "surface gypsic horizon"}
+  # --- layers R, M, D, P (pp. 4-5, 26-27) --------------------------------------
+  - {code: "R",    family: "R", kind: layer, source: list, page: 26, detection: ambiguous, name: "Couches R", name_en: "hard rock layer", note: "Kinds Rca, Rdo, Rcri, Rvo, Rsi, Rsch are R with suffixes."}
+  - {code: "M",    family: "M", kind: layer, source: list, page: 26, detection: ambiguous, name: "Couches M", name_en: "loose or soft rock layer", note: "Kinds Mcra, Mca, Msi, Mvo, Msch are M with suffixes; Mma and Marg are kinds of their own."}
+  - {code: "Mma",  family: "M", kind: layer, source: variant, variant_of: "M", page: 26, detection: strong, name: "marnes", name_en: "marl layer"}
+  - {code: "Marg", family: "M", kind: layer, source: variant, variant_of: "M", page: 26, detection: strong, name: "roches argileuses", name_en: "clay rock layer"}
+  - {code: "D",    family: "D", kind: layer, source: list, page: 26, detection: ambiguous, name: "Couches D", name_en: "fragmented hard rock layer", note: "Kinds Dca, Dcra, Dsi, Dx (mixed rocks: x is not fragic here), Dvo, and Dcri, Ddo, Dsch (p. 5)."}
+  - {code: "P",    family: "P", kind: layer, source: list, page: 27, detection: ambiguous, name: "Couches P = pergélisol", name_en: "permafrost layer"}
+  # --- materials (pp. 4, 27-28) -----------------------------------------------
+  - {code: "Mli",  family: "Mli", kind: material, source: list, page: 27, detection: strong, name: "Matériaux limniques", name_en: "limnic material"}
+  - {code: "Mt",   family: "Mt", kind: material, source: list, page: 27, detection: likely, name: "Matériaux terriques", name_en: "terric material"}
+  - {code: "TH",   family: "TH", kind: material, source: list, page: 27, detection: likely, name: "Matériaux thioniques", name_en: "thionic (sulfidic) material"}
+  - {code: "Z",    family: "Z", kind: material, source: list, page: 27, detection: ambiguous, name: "Matériaux anthropiques", name_en: "anthropic material"}
+  - {code: "Zar",  family: "Z", kind: material, source: list, page: 28, detection: strong, name: "Matériaux archéo-anthropiques", name_en: "archaeo-anthropic material"}
+  - {code: "ZO",   family: "Z", kind: material, source: list, page: 27, detection: strong, name: "Matériaux anthropiques holorganiques", name_en: "holorganic anthropic material"}
+  - {code: "Ztc",  family: "Z", kind: material, source: list, page: 27, detection: strong, name: "Matériaux anthropiques technologiques", name_en: "technological anthropic material"}
+  - {code: "Ztr",  family: "Z", kind: material, source: list, page: 27, detection: strong, name: "Matériaux anthropiques terreux", name_en: "earthy anthropic material"}
+  # --- old codes the list names (pp. 1, 14) -----------------------------------
+  - {code: "Ahs",  family: "A", kind: horizon, source: old, reads_as: "Aso", page: 1, detection: strong, name: "ancien code de Aso", name_en: "old code of Aso"}
+  - {code: "FEm",  family: "Fe", kind: horizon, source: old, reads_as: "Fem", page: 1, detection: strong, name: "ancien code de Fem", name_en: "old code of Fem"}
+  - {code: "FEmp", family: "Fe", kind: horizon, source: old, reads_as: "Femp", page: 1, detection: strong, name: "ancien code de Femp", name_en: "old code of Femp"}
+  - {code: "Ap",   family: "L", kind: horizon, source: old, reads_as: "L", page: 14, detection: ambiguous, name: "ancien code de L", name_en: "old code of L (ploughed)"}
+  # --- a letter written only in transitions (p. 3: B-C) ----------------------
+  - {code: "B",    family: "B", kind: horizon, source: transition, page: 3, detection: ambiguous, name: "B (transitions)", name_en: "B of a transition (B-C)"}
+
+# Prefixes: written before a master, read as an overlay of the horizon.
+prefixes:
+  - {mark: "L",  page: 14, name: "labouré", name_en: "ploughed", examples: ["LA", "LE", "LS", "LO", "LH", "LBT", "LBP", "LAch", "LAso", "LAh", "LAv", "LSp"]}
+  - {mark: "Na", page: 24, name: "sodique", name_en: "sodic", examples: ["NaA", "NaS", "NaBT", "NaC"]}
+  - {mark: "Sa", page: 24, name: "salique", name_en: "salic", examples: ["SaA", "SaS", "SaBT", "SaC", "SaY", "SaH", "SaK"], note: "Sa is a prefix only before a capital: Sal is the aluminic S."}
+  - {mark: "π",  page: 4, name: "paléo-", name_en: "palaeo (a relict horizon)", examples: ["πBT", "πBPh", "πRT"]}
+  - {mark: "J",  page: 25, name: "jeune (dans un matériau)", name_en: "young horizon formed in a material", only_before: "Z", examples: ["JZ", "JZtc"], note: "Pages 91 and 94 write J before an anthropic material; Js and Jp too (JsZ, JpZ, p. 90)."}
+
+# Suffixes (pp. 3-5, 139, 318), read as features of the horizon, by the
+# longest match. hosts: the families (or codes) the book allows them on, where
+# it gives a complete list (LC) or restricts them; absent = any horizon.
+# meanings: the reading where it depends on the host.
+suffixes:
+  - {mark: "b",   page: 3, name: "horizon enfoui", name_en: "buried under more than 50 cm of deposit"}
+  - {mark: "cry", page: 3, name: "très cryoturbé", name_en: "strongly cryoturbated"}
+  - {mark: "g",   page: 3, name: "à caractère rédoxique", name_en: "redox character"}
+  - {mark: "h",   page: 3, name: "plus humifère que la norme", name_en: "more humic than the norm"}
+  - {mark: "*",   page: 139, name: "horizon gelé", name_en: "frozen", note: "Cryosols chapter (p. 139), written -*."}
+  - {mark: "a",   page: 3, name: "albique", name_en: "albic", hosts: ["E", "G", "g"]}
+  - {mark: "c",   page: 3, name: "induré", name_en: "indurated", meanings: {O: "mycogenic (fibrous) structure (Annex 1, p. 331)"}, note: "Kc and Xc are codes of their own (p. 3, p. 20); after OF or OH, c is the mycogenic structure (Annex 1)."}
+  - {mark: "ca",  page: 3, name: "calcaire", name_en: "calcareous", hosts: ["C", "D", "M", "R"]}
+  - {mark: "cn",  page: 3, name: "accumulation de sesquioxydes (films, concrétions, nodules)", name_en: "sesquioxide films, concretions or many nodules"}
+  - {mark: "cra", page: 3, name: "crayeux", name_en: "chalky", hosts: ["C", "D", "M"]}
+  - {mark: "d",   page: 3, name: "à dégradation morphologique", name_en: "morphologically degraded", hosts: ["BT", "S"]}
+  - {mark: "ho",  page: 3, name: "hémiorganique", name_en: "hemiorganic (8-30 g organic carbon per 100 g)"}
+  - {mark: "j",   page: 3, name: "à caractère xanthomorphe", name_en: "xanthomorphic", note: "Not on FS (p. 180)."}
+  - {mark: "k",   page: 3, name: "début d’accumulation de calcite secondaire", name_en: "incipient secondary calcite accumulation"}
+  - {mark: "m",   page: 4, name: "fortement induré", name_en: "strongly indurated", hosts: ["Y"], note: "Fem, Km, OXm and Sim are codes of their own (LC, p. 4); m as a suffix only in Ypm (p. 198)."}
+  - {mark: "nod", page: 4, name: "grande abondance de nodules d’oxydes métalliques", name_en: "many metal-oxide nodules", hosts: ["A", "F", "OX", "RT"]}
+  - {mark: "noz", page: 4, name: "d’origine non zoogène", name_en: "non-zoogenic", hosts: ["O"]}
+  - {mark: "s",   page: 4, name: "à accumulation de sesquioxydes", name_en: "sesquioxide accumulation (not as nodules)"}
+  - {mark: "t",   page: 4, name: "illuviation d’argile", name_en: "incipient or marked clay illuviation", hosts: ["S", "C", "FS"]}
+  - {mark: "tp",  page: 4, name: "matériau transporté", name_en: "transported pedological or geological material"}
+  - {mark: "v",   page: 4, name: "à propriétés vertiques", name_en: "vertic properties"}
+  - {mark: "x",   page: 4, name: "à caractères fragiques", name_en: "fragic", meanings: {D: "mixed rocks (p. 26)"}}
+  - {mark: "y",   page: 4, name: "contenant du gypse", name_en: "with gypsum"}
+  - {mark: "z",   page: 4, name: "très anthropisé", name_en: "strongly anthropised"}
+  - {mark: "zo",  page: 4, name: "d’origine zoogène", name_en: "zoogenic", hosts: ["O"]}
+  - {mark: "cri", page: 5, name: "roches cristallines ou cristallophylliennes dures", name_en: "hard crystalline or crystallophyllian rock", hosts: ["R", "D"]}
+  - {mark: "do",  page: 5, name: "roches dolomitiques dures", name_en: "hard dolomitic rock", hosts: ["R", "D"]}
+  - {mark: "sch", page: 5, name: "schistes durs", name_en: "hard schist", hosts: ["R", "D", "M"], note: "Msch, soft schist, p. 26."}
+  - {mark: "si",  page: 5, name: "roches siliceuses dures", name_en: "hard siliceous rock", hosts: ["R", "D", "M"], note: "Msi (gaize, arène) and Dsi (silicate rocks), p. 26."}
+  - {mark: "vo",  page: 5, name: "roches volcaniques dures", name_en: "hard volcanic rock", hosts: ["R", "D", "M"], note: "Mvo, pyroclastic rocks, p. 26."}
+  - {mark: "Na",  page: 318, name: "propriétés sodiques", name_en: "sodic properties", hosts: ["V"], note: "VNa (p. 318); the list prints Vna (p. 3)."}
+  - {mark: "Sa",  page: 318, name: "propriétés saliques", name_en: "salic properties", hosts: ["V"], note: "VSa (p. 318); the list prints Vsa (p. 3)."}
+
+# Writings of the book that the reader accepts as another code (Hugo's
+# default 12): the from is a regular expression on the designation.
+written_variants:
+  - {from: "^Lav", to: "LAv", page: 217, note: "Lav (leptismectisols) is LAv."}
+  - {from: "^Vna", to: "VNa", page: 3, note: "the list prints Vna; the vertisols chapter VNa (p. 318)."}
+  - {from: "^Vsa", to: "VSa", page: 3, note: "the list prints Vsa; the vertisols chapter VSa (p. 318)."}
+  - {from: "^(O[FH][rmf]?)z(?!o)", to: "\\1zo", page: 349, note: "OFz and OHz (Annex 1) are OFzo and OHzo."}
+  - {from: "^OHm(?=zo|noz)", to: "OHf", page: 333, note: "OHmzo (Annex 1) is OHfzo: the OH sub-horizons are OHr and OHf."}
+
+# Other notations as hints (Hugo's decision Q9): never the RP code by
+# themselves, a set of candidates for the identification on the data.
+#
+# Annex 6 (p. 393): the CPCS 1967 horizons and the RP codes the book gives
+# for each. match is soilKey's regular expression on the CPCS symbol
+# (lithological numeral removed); the first row that matches applies. A row
+# marked soilkey is soilKey's, in brackets. slips: codes Annex 6 writes that
+# are not RP codes or contradict the definitions.
+annex6:
+  - {cpcs: "A00",   match: "^(A00|Aoo|AOO)$", rp: ["OL"]}
+  - {cpcs: "A0F",   match: "^(A0|Ao)F", rp: ["OF", "Hf", "Hm"]}
+  - {cpcs: "A0H",   match: "^(A0|Ao)H", rp: ["OH", "Hs"]}
+  - {cpcs: "[A0]",  match: "^(A0|Ao|AO)$", rp: ["OL", "OF", "OH"], soilkey: true}
+  - {cpcs: "A1",    match: "^A1[0-9]*$", rp: ["A", "Ah", "Aca", "Ach", "Aci", "Ado", "Ae", "Alu", "An", "And", "Aso", "Av", "Avi", "Ha", "Eh", "Js"], slips: ["Ha"], note: "Ha (a drained histic horizon) under A1 is a slip of the table."}
+  - {cpcs: "Ap",    match: "^Ap", rp: ["L", "LA", "LH", "LO", "LE", "LS", "LBT"]}
+  - {cpcs: "A2g",   match: "^A2[0-9]*g", rp: ["Eg", "Ea"]}
+  - {cpcs: "A2",    match: "^A2[0-9]*$", rp: ["E", "Ea"]}
+  - {cpcs: "ACs",   match: "^ACs", rp: ["Ys"]}
+  - {cpcs: "BCn",   match: "^BCn", rp: ["BTfe", "Fe"], slips: ["BTfe"], note: "BTfe: there is no -fe suffix."}
+  - {cpcs: "BCs",   match: "^BCs", rp: ["Yp"]}
+  - {cpcs: "Bs",    match: "^B[0-9]*s([0-9]|$)", rp: ["BPs"], note: "not in the CPCS, used after 1967"}
+  - {cpcs: "Btgx",  match: "^B[0-9]*tgx", rp: ["BTgx"]}
+  - {cpcs: "Btgd",  match: "^B[0-9]*tgd", rp: ["BTgd"], note: "not in the CPCS, used after 1967"}
+  - {cpcs: "Btg",   match: "^B[0-9]*tg", rp: ["BTg"]}
+  - {cpcs: "Bt",    match: "^B[0-9]*t", rp: ["BT", "FSt"]}
+  - {cpcs: "Bw",    match: "^B[0-9]*w", rp: ["S", "Sp", "Sca", "Sci", "Sa", "Na", "Snd", "Slu", "Sal", "Jp", "SV", "FS", "FSj"], slips: ["FSj"], note: "not in the CPCS, used after 1967; FSj contradicts p. 180 (-j not on FS)."}
+  - {cpcs: "B2fe",  match: "^B[0-9]*fe", rp: ["BPs", "FE"], note: "FE here is the 2008 ferruginous horizon, which the 1995 FE (ferric) was not."}
+  - {cpcs: "B2h",   match: "^B[0-9]*h", rp: ["BPh"]}
+  - {cpcs: "(B)v",  match: "^\\(B\\)v", rp: ["V", "Sp", "SV"], note: "not in the CPCS, used after 1967"}
+  - {cpcs: "(B)Ca", match: "^\\(B\\)C?ca", rp: ["Sk"]}
+  - {cpcs: "(B)",   match: "^\\(B\\)", rp: ["S", "Sa", "Sal", "Sca", "Sci", "Slu", "Sn", "Snd", "Sp", "SV", "FS", "FSj", "NaS", "Jp"], slips: ["FSj"]}
+  - {cpcs: "B",     match: "^B[0-9]*$", rp: ["S", "BT", "FS", "SV", "V", "FE", "OX", "F"], note: "FE, OX and F in the intertropical domain."}
+  - {cpcs: "Cca",   match: "^C[0-9]*[Cc]a", rp: ["Ck", "K", "Kc", "Km"], note: "the CPCS Cca is a carbonate accumulation; the RP Cca is a calcareous C."}
+  - {cpcs: "CCs",   match: "^CCs", rp: ["Yp"]}
+  - {cpcs: "C",     match: "^C", rp: ["C"]}
+  - {cpcs: "R",     match: "^R", rp: ["M", "R", "D"]}
+  - {cpcs: "G",     match: "^G", rp: ["Go", "Gr"]}
+  - {cpcs: "-g",    match: "g", rp: ["g"], features: ["g"], all: true, note: "-g gives -g or g on any row."}
+
+# The FAO (2006) letters as hints (soilKey's table, in brackets, from the
+# book's correspondences where it states them: Ap formerly L, p. 14; K, Kc
+# and Km the WRB calcic and petrocalcic, p. 20; Sim the duripan, p. 21; BTx
+# the fragipan, p. 18; Femp placic, p. 1). A row applies when the master
+# is the FAO master and every letter of with is a suffix of the designation;
+# the rows with no with apply only when no other row of that master did.
+fao_hints:
+  - {master: "O", with: ["i"], rp: ["OL"]}
+  - {master: "O", with: ["e"], rp: ["OF"]}
+  - {master: "O", with: ["a"], rp: ["OH"]}
+  - {master: "O", rp: ["OL", "OF", "OH"]}
+  - {master: "H", with: ["i"], rp: ["Hf"]}
+  - {master: "H", with: ["e"], rp: ["Hm"]}
+  - {master: "H", with: ["a"], rp: ["Hs"]}
+  - {master: "H", rp: ["H", "Hf", "Hm", "Hs"]}
+  - {master: "L", rp: ["Mli"]}
+  - {master: "A", with: ["p"], rp: ["L", "LA", "LE", "LS"]}
+  - {master: "A", with: ["n"], rp: ["NaA"]}
+  - {master: "A", with: ["z"], rp: ["SaA"]}
+  - {master: "A", with: ["k"], rp: ["Aca"]}
+  - {master: "A", rp: ["A", "Aca", "Ach", "Aci", "Ado", "Ae", "Alu", "Amg", "An", "And", "Aso", "Avi"]}
+  - {master: "E", with: ["g"], rp: ["Eg"]}
+  - {master: "E", rp: ["E", "Ea"]}
+  - {master: "B", with: ["t"], rp: ["BT", "FSt"]}
+  - {master: "B", with: ["n"], rp: ["NaBT", "NaS"]}
+  - {master: "B", with: ["h"], rp: ["BPh"]}
+  - {master: "B", with: ["s"], rp: ["BPs"]}
+  - {master: "B", with: ["s", "m"], rp: ["Femp"]}
+  - {master: "B", with: ["w"], rp: ["S", "Sp", "Sca", "Sci", "Sdo", "Smg", "Sal", "Slu", "Sn", "Snd"]}
+  - {master: "B", with: ["k"], rp: ["K", "Kc"]}
+  - {master: "B", with: ["k", "m"], rp: ["Km"]}
+  - {master: "B", with: ["y"], rp: ["Yp", "Ys"]}
+  - {master: "B", with: ["y", "m"], rp: ["Ym"]}
+  - {master: "B", with: ["q"], rp: ["Si"]}
+  - {master: "B", with: ["q", "m"], rp: ["Sim"]}
+  - {master: "B", with: ["c"], rp: ["Fe"]}
+  - {master: "B", with: ["v"], rp: ["RT"]}
+  - {master: "B", with: ["o"], rp: ["F", "OX"]}
+  - {master: "B", with: ["i"], rp: ["V", "SV"]}
+  - {master: "B", with: ["z"], rp: ["SaS"]}
+  - {master: "B", with: ["r"], rp: ["G", "Gr"]}
+  - {master: "B", rp: ["S", "BT", "FS", "SV", "V"]}
+  - {master: "C", with: ["k"], rp: ["Ck", "K"]}
+  - {master: "C", with: ["k", "m"], rp: ["Km"]}
+  - {master: "C", with: ["r"], rp: ["G", "Gr"]}
+  - {master: "C", with: ["y"], rp: ["Cy", "Yp"]}
+  - {master: "C", rp: ["C"]}
+  - {master: "R", rp: ["R"]}
+# FAO suffix letters that give an RP feature as a hint
+fao_features: {b: "b", g: "g", x: "x", y: "y", "@": "cry", f: "*"}
