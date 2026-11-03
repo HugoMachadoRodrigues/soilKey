@@ -120,7 +120,7 @@ test_that("each feature with a proxy passes and fails on the recorded data", {
   # from the notation, the verdict from the data
   cases <- list(
     g = list(.ftp("AY-BT-C", mottle_colors = c(NA, "7.5YR 5/8", NA)), .ftp("AY-BT-C", redoximorphic_features_pct = 0)),
-    q = list(.ftp("AU-BCA-C", mottle_colors = c(NA, "5Y 5/3", NA)), .ftp("AU-BCA-C", mottle_colors = c(NA, "7.5YR 5/6", NA))),
+    q = list(.ftp("AU-BCA-C", mottle_colors = c(NA, "5Y 5/3", NA)), .ftp("AU-BCA-C", mottle_colors = c(NA, "none", NA))),
     v = list(.ftp("AU-BM-C", slickensides = c(NA, "few", NA)), .ftp("AU-BM-C", slickensides = c(NA, "absent", NA))),
     s = list(.ftp("AU-BCA-C", soluble_salts_pct = c(0.05, 0.3, 0.2)), .ftp("AU-BCA-C", soluble_salts_pct = c(0.05, 0.05, 0.02))),
     cs = list(.ftp("AU-BCA-C", gypsum_visible_pct = c(0, 2, 0)), .ftp("AU-BCA-C", gypsum_visible_pct = 0)),
@@ -154,7 +154,7 @@ test_that("each feature with a proxy passes and fails on the recorded data", {
                     .ftp("O-CR-C", top = c(0, 10, 120), bot = c(10, 120, 150), permafrost_temp_C = c(NA, NA, -1))),
     te = list(.ftp("TO-TT", top = c(0, 30), bot = c(30, 100), peat_moor_type = c("high-moor", "low-moor")),
               .ftp("TO-TT", top = c(0, 30), bot = c(30, 100), peat_moor_type = "high-moor")),
-    m = list(.ftp("AY-C", structure_grade = c(NA, "weak"), structure_type = c(NA, "crumb")),
+    m = list(.ftp("AY-C", structure_grade = c(NA, "weak"), structure_type = c(NA, "crumb"), clay_pct = c(20, 25)),
              .ftp("AY-C", structure_type = c(NA, "massive"))),
     tk = list(.ftp("AJ-BCA-C", surface_crust_type = c("clay", NA, NA), polygonal_cracks_spacing_cm = c(20, NA, NA)),
               .ftp("AJ-BCA-C", surface_crust_type = c("biological", NA, NA))),
@@ -176,7 +176,9 @@ test_that("each feature with a proxy passes and fails on the recorded data", {
     expect_true(isTRUE(a$passed), info = paste(f, "passes"))
     expect_true(a$route %in% c("data", "both"), info = paste(f, "passes"))
     expect_true(isFALSE(b$passed), info = paste(f, "fails"))
-    expect_true(b$route %in% c("data", "both"), info = paste(f, "fails"))
+    # sn is one-sided: a structure that is not columnar only fails to
+    # confirm it, and the notation decides
+    expect_true(b$route %in% c("data", "both", if (f == "sn") "notation"), info = paste(f, "fails"))
   }
 })
 
@@ -411,6 +413,76 @@ test_that("x is an X horizon in a soil that is no chemozem; rx, ur and rr the de
   # with no buried horizon there is no deposited layer
   expect_identical(.kidpr_features(.ftp(c("C", "Bw", "C"), ru = FALSE, artefacts_pct = c(30, 0, 0)), c("ur", "rr", "rx"))$passed,
                    c(FALSE, FALSE, FALSE))
+})
+
+
+# --- the review of 0.9.344 ---------------------------------------------------------
+
+test_that("the fixes of the review: y, ca, v, pa, ro, x, g and the one-sided proxies", {
+  skip_on_cran()
+  # D1 y: tongues only from an eluvial horizon
+  expect_false(.ftv(.ftp("AU-BT-C", boundary_topography = c("tonguing", NA, NA)), "y"))
+  expect_true(.ftv(.ftp("AU-BTy-C", boundary_topography = c("tonguing", NA, NA)), "y"))
+  # D2 ca: a recorded form of secondary carbonates is a neoformation; an FAO
+  # k is pedogenic
+  ca <- function(form) .ftv(.ftp(c("Ah", "Bw", "C"), ru = FALSE, effervescence_class = c("none", "none", "strong"),
+                                 secondary_carbonates_form = c(NA, NA, form), oc_pct = c(2, 0.5, 0.2)), "ca")
+  expect_false(ca("hard concretions")); expect_false(ca("coatings")); expect_true(ca("none"))
+  expect_false(.ftv(.ftp(c("Ah", "Bw", "Ck"), ru = FALSE), "ca"))
+  # D3 v: a structure recorded without slickensides leaves it to the notation
+  expect_true(.ftv(.ftp("AU-BMv-C", structure_type = c(NA, "angular blocky", NA)), "v"))
+  # D4 pa: a written pa in a soil now under forest stands; tillage now rules it out
+  expect_true(.ftv(.ftp("AYpa-EL-BT-C", site = list(land_use = "forest")), "pa"))
+  expect_false(.ftv(.ftp("PUpa-BCA-C", site = list(land_use = "arable")), "pa"))
+  # D5 ro: the organic layers by their horizon; gley and neutral hues not red
+  expect_true(.ftv(.ftp("O-BM-C", munsell_hue_moist = c("10YR", "2.5YR", "2.5YR")), "ro"))
+  expect_false(.ftv(.ftp(c("Ah", "Bw", "Cg"), ru = FALSE, munsell_hue_moist = c("5YR", "2.5YR", "5GY")), "ro"))
+  expect_true(.ftv(.ftp("AY-BM-C", munsell_hue_moist = c("10RP", "5R", "2.5YR")), "ro"))
+  # D6 x: a hazard recorded within 30 cm decides; the X written within 30 cm
+  expect_false(.ftv(.ftp("AY+X-EL-BT-C", contamination_hazard = c("permissible", NA, NA, NA)), "x"))
+  expect_false(.ftv(.ftp("AY-EL-BT+X-C"), "x"))
+  # D7 g: mottles recorded as none are no redox sign
+  expect_false(.ftv(.ftp("AY-BT-C", mottle_colors = c(NA, "none", NA)), "g"))
+  # R1 sn and q: failing to confirm leaves the notation to decide
+  expect_true(.ftv(.ftp("AU-BMsn-C", structure_type = c("granular", "prismatic", NA)), "sn"))
+  expect_true(.ftv(.ftp("AU-BCAq-C", mottle_colors = c(NA, "10YR 6/2", NA)), "q"))
+  # R2 m: grade not recorded, a weak no; texture not recorded, undecided
+  expect_true(.ftv(.ftp("AY-Cm", structure_type = c(NA, "crumb")), "m"))
+  expect_true(is.na(.ftv(.ftp(c("AY", "C"), ru = FALSE, structure_grade = c(NA, "weak"), structure_type = c(NA, "crumb")), "m")))
+  # R3 d: the first mineral layer under an organic one
+  expect_true(.ftv(.ftp(c("Oe", "Ah", "Bw", "C"), ru = FALSE, top = c(0, 3, 15, 50), bot = c(3, 15, 50, 90),
+                        structure_type = c(NA, "platy", NA, NA), oc_pct = c(40, 3, 0.5, 0.1),
+                        fiber_content_rubbed_pct = c(50, NA, NA, NA)), "d"))
+  # R6 s: over 1 % in the top 20 cm is the salt horizon, no s in the profile;
+  # ECe over EC 1:5
+  expect_false(.ftv(.ftp("AU-BCA-C", soluble_salts_pct = c(1.5, 0.5, 0.3)), "s"))
+  expect_false(.ftv(.ftp(c("Ah", "Bk", "C"), ru = FALSE, ec_dS_m = c(1, 3, 1), ec_1to5_dS_m = c(0.1, 0.3, 0.1)), "s"))
+})
+
+test_that("the limits of the definitions, the places of te, crm and [e-hf], and the dispatcher's input", {
+  skip_on_cran()
+  expect_true(.ftv(.ftp("TO-te-TT"), "te"))
+  expect_true(.ftv(.ftp("O-crm-BT-C"), "crm")); expect_false(.ftv(.ftp("AY-EL-BT-crm-C"), "crm"))
+  expect_false(.ftv(.ftp("AY-BM-C-C", clay_films_amount = c(NA, "none", "none", "few")), "i"))
+  expect_false(.ftv(.ftp("AY-EL-BT-C", ferric_nodules_pct = c(0, 25, 0, 0)), "nn"))
+  expect_false(.ftv(.ftp(c("Ah", "Bw", "C"), ru = FALSE, top = c(0, 1, 20), bot = c(1, 20, 50),
+                         surface_crust_type = c("clay", NA, NA), polygonal_cracks_spacing_cm = c(10, NA, NA)), "tk"))
+  expect_false(.ftv(.ftp("AY-BM-C", structure_type = c("platy", NA, NA), structure_size = c("fine", NA, NA)), "d"))
+  # the muck band on top: only on the AU of a dark-humus gley soil
+  p <- function(f) .ftp(f, top = c(0, 3, 20), bot = c(3, 20, 60))
+  expect_true(.ftv(p("H-AU-G"), "h")); expect_false(.ftv(p("H-AU-BCA"), "AUh"))
+  # ml not in a surface humus horizon
+  expect_false(.ftv(.ftp("AU-BCA-C", secondary_carbonates_form = c("hard concretions", NA, NA)), "ml"))
+  expect_true(.ftv(.ftp("O-CR-C", cryoturbation = c(NA, "yes", NA)), "@"))
+  # [e-hf] beside EL, as the book writes it (p. 60)
+  expect_true(.ftv(.ftp(c("O", "[e-hf]", "EL", "BEL", "BT", "C")), "[e-hf]"))
+  # the dispatcher
+  p <- .ftp("AY-BM-C")
+  expect_error(.kidpr_features(p, list(list(feature = "g", host = "ZZ"))), "no horizon")
+  expect_error(.kidpr_features(p, list(list(feature = "g", place = "beside"))), "no place")
+  r <- .kidpr_features(p, list())
+  expect_identical(nrow(r), 0L)
+  expect_identical(names(r), c("feature", "code", "host", "place", "layers", "passed", "route", "evidence", "missing"))
 })
 
 

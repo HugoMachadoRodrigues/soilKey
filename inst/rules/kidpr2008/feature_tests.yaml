@@ -35,7 +35,7 @@ features:
   - {code: ao, fn: ao, route: key, q17: key, kind: measured, hosts: [O], place: under, small: true,
      attributes: [plant_residues_pct, loi_pct, oc_pct, munsell_value_dry]}
   - {code: mr, fn: mr, route: notation, q17: soilkey, kind: observed, hosts: [T, TO, TE, TJ, H, PT], place: "on"}
-  - {code: te, fn: te, route: data, q17: soilkey, kind: measured, hosts: [TO], place: "on",
+  - {code: te, fn: te, route: data, q17: soilkey, kind: measured, hosts: [TO], place: "on", small: true,
      attributes: [peat_moor_type]}
   - {code: h, fn: h, route: data, q17: proxy, kind: measured,
      hosts: [O, T, TO, TE, TJ, PT, AU, AY, AJ, AH, AK, AO], place: "on", small: true,
@@ -49,13 +49,14 @@ features:
   - {code: BF, fn: bf, route: data, q17: proxy, kind: measured, hosts: [BHF], place: "on", attributes: [oc_pct]}
   - {code: f, fn: f, route: notation, q17: notation_only, kind: observed, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], place: "on",
      note: "The hosts of 3.2 (E, EL, C) and of the lists that name it (CD, CE, CF, CH ...)."}
-  - {code: "[e-hf]", fn: ehf, route: notation, q17: soilkey, kind: observed, hosts: [EL], place: in, small: true}
+  - {code: "[e-hf]", fn: ehf, route: notation, q17: soilkey, kind: observed, hosts: [EL], place: near, small: true,
+     note: "In or beside EL (O-[e-hf]-EL-BEL-BT-C, p. 60)."}
   - {code: "[akl]", fn: akl, route: notation, q17: soilkey, kind: observed, hosts: [AJ], place: "on"}
   - {code: i, fn: i, route: data, q17: proxy, kind: observed, hosts: [BM, CRM, C, D, G], place: "on",
      attributes: [clay_films_amount]}
   - {code: m, fn: m, route: data, q17: soilkey, kind: observed, hosts: [C], place: "on",
      attributes: [structure_grade, structure_type, phys_clay_pct, texture_class_ru, clay_pct]}
-  - {code: crm, fn: crm, route: notation, q17: notation_only, kind: observed, hosts: [BT, CR], place: near, small: true}
+  - {code: crm, fn: crm, route: notation, q17: notation_only, kind: observed, hosts: [BT], place: over, small: true}
   - {code: an, fn: an, route: data, q17: proxy, kind: measured, hosts: [BHF], place: "on", attributes: [fe_ox_pct, al_ox_pct]}
   - {code: pl, fn: pl, route: notation, q17: notation_only, kind: observed, hosts: [CR, CRM], place: "on",
      note: "CRM by analogy (Q17)."}
@@ -67,7 +68,7 @@ features:
      attributes: [mottle_colors, redoximorphic_features_pct, redox_segregations_location, childs_test]}
   - {code: q, fn: q, route: data, q17: proxy, kind: observed, hosts: [mineral], not_on: [Q], place: "on", small: true,
      attributes: [mottle_colors, munsell_hue_moist, munsell_value_moist, munsell_chroma_moist]}
-  - {code: ml, fn: ml, route: data, q17: proxy, kind: observed, hosts: [mineral], not_on: [ML], place: "on",
+  - {code: ml, fn: ml, route: data, q17: proxy, kind: observed, hosts: [mineral], not_on: [ML, humus, agro], place: "on",
      attributes: [secondary_carbonates_form, carbonate_hard_pct, caco3_pct]}
   - {code: s, fn: s, route: data, q17: proxy, kind: measured, hosts: [any], not_on: [S], place: "on",
      attributes: [soluble_salts_pct, ec_dS_m, ec_1to5_dS_m]}
@@ -119,7 +120,7 @@ features:
   - {code: pir, fn: pir, route: data, q17: soilkey, kind: observed, hosts: [peat], place: over, small: true,
      attributes: [layer_origin]}
   # --- 3.2.5 parent-rock features (4) ----------------------------------------
-  - {code: ca, fn: ca, route: key, q17: key, kind: measured, hosts: [any], place: "on",
+  - {code: ca, fn: ca, route: key, q17: key, kind: observed, hosts: [any], place: "on",
      attributes: [effervescence_extent, effervescence_class, caco3_pct, secondary_carbonates_form]}
   - {code: u, fn: u, route: key, q17: key, kind: measured, place: profile,
      attributes: [munsell_value_dry, parent_material]}

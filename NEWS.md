@@ -19,6 +19,18 @@ The Russian soil classification (Field Guide of 2008) gains the tests of its gen
 * **Deposited layers and cut-points:** r, rh, ur, rr, rx need 5-40 cm over a buried humus horizon; ur 20 % to under half of artefacts, rr half or more and not toxic, rx a hazard above permissible; ro every mineral horizon 5YR or redder; cs visible gypsum (CaSO4 0 % none); s by the EC of chapter 9 (ECe 4, EC 1:5 0.2 dS/m); ml hard concretions; g not on olive mottles alone, q olive mottles of 5Y chroma 3-4; [hh] darker by a value and richer in carbon than the layer above; y with the retic or albeluvic stand-in, flagged.
 * The four readings are in `readings.yaml` as his decisions; no reading of the Russian classification waits for confirmation.
 
+### After the review (2026-11-02)
+
+* **Fixes.** y only under an eluvial horizon (E, EL, AEL, BEL), dark tongues from a humus horizon being yu; ca not where any form of secondary carbonates is recorded, nor on an FAO k layer, and the FAO Ck no longer suggests ca; v and sn not ruled out by a structure alone (the notation decides), q not by mottles of other colours; pa ruled out only by current tillage on an agro horizon; ro leaves out the organic and peat layers by their horizon and reads the gley, blue, purple and neutral hues as not red, RP as red; x ruled out by a hazard category recorded within 30 cm, and written only on a layer starting within 30 cm; g not on mottles recorded as "none"; m undecided when the texture of the rock is not recorded, a weak no when the grade is not; d read on the first mineral layer under an organic one.
+* **The salts:** over 1 % in the top 20 cm makes the salt horizon S and no feature s in the profile; ECe decides over EC 1:5 where both are recorded.
+* **Limits of the definitions:** te may be a small horizon; crm only over BT; i on the parent rock only at its top; nn 10-20 %; a crust layer of tk 0.5 cm or less; d not on a fine platy structure; the muck band of h on top of a humus horizon only on the AU of the dark-humus gley soils; ml in the middle or lower profile only; @ reads yes and TRUE; [e-hf] in or beside EL (the example of p. 60, O-[e-hf]-EL-BEL-BT-C).
+* The dispatcher stops on an unknown host or place and returns an empty table for no entries.
+
+### Hugo's decisions after the review (2026-11-02)
+
+* **Accepted edits:** crm over BT only; [e-hf] in or beside EL.
+* **New readings** (`readings.yaml`, "The feature tests after the review"): ca a field observation (effervescence not recorded is absent; an FAO k layer a weak no); m with 15 % clay or more as a loamy or clayey rock when no texture class is recorded; tk fails on a surface layer of 0.5-2 cm (a crust thicker than 0.5 cm); d fails on a fine or very fine platy structure; [hh] by the darker colour, confirmed by the carbon; q ruled out by mottles recorded as none, other colours only a weak no; sn never ruled out by the data; s ruled out for the whole profile by over 1 % salts within the top 20 cm; the muck band h on top of a humus horizon only on an AU in a profile with G.
+
 # soilKey 0.9.343 (2026-11-02)
 
 ## France: the reference horizons of the Référentiel pédologique 2008 on the data

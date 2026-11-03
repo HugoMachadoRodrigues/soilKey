@@ -62,6 +62,9 @@
                                      .KIDPR_FT_GROUPS$middle, .KIDPR_FT_GROUPS$hydrogenic,
                                      .KIDPR_FT_GROUPS$halomorphic, .KIDPR_FT_GROUPS$parent))
 
+# The places a feature is read in.
+.KIDPR_FT_PLACES <- c("on", "in", "under", "over", "near", "surface", "profile")
+
 # Humus horizon = 1.724 x OC (Tyurin): BH over 3 % humus is C over 1.74 %;
 # pb over 1.5 % humus is C over 0.87 %.
 .KIDPR_FT_BH_OC <- 1.74
@@ -171,7 +174,8 @@
   hosts <- as.character(unlist(hosts))
   if (!length(hosts) || "any" %in% hosts) return("any")
   out <- unlist(lapply(hosts, function(h) .KIDPR_FT_GROUPS[[h]] %||% h))
-  setdiff(unique(out), as.character(unlist(not_on)))
+  no <- unlist(lapply(as.character(unlist(not_on)), function(h) .KIDPR_FT_GROUPS[[h]] %||% h))
+  setdiff(unique(out), no)
 }
 
 # Is a layer (not a small horizon) one of the hosts: TRUE, FALSE, or NA when
@@ -212,6 +216,9 @@
     if (length(ctx$ord)) {
       add(ctx$ord[1L], TRUE)
       if (length(ctx$main)) add(ctx$main[1L], TRUE)
+      # the first mineral layer under an organic layer or litter
+      mn <- ctx$main[!vapply(ctx$main, function(j) .kidpr_ft_is_peat(ctx, j), NA)]
+      if (length(mn)) add(mn[1L], TRUE)
     }
     return(list(rows = rows, host = host))
   }
@@ -231,7 +238,7 @@
       add(p, h)
       if (small_ok || place == "over") for (s in smalls_between(p, j)) add(s, h)
     }
-    if (place == "on" && small_ok) {
+    if (place %in% c("on", "near") && small_ok) {
       for (s in c(smalls_between(p, j), smalls_between(j, q))) add(s, h)
     }
   }
@@ -308,6 +315,7 @@
 # over a thinner eutrophic (low-moor) one: peat_moor_type.
 .kidpr_ft_te <- function(ctx, i) {
   x <- ctx$x
+  if (ctx$small[i]) return(.kidpr_fd(NA, said = FALSE, note = "a small horizon: read from the notation"))
   k <- match(i, ctx$main)
   peat <- vapply(ctx$main, function(j) .kidpr_ft_is_peat(ctx, j), NA)
   a <- k; while (a > 1L && peat[a - 1L]) a <- a - 1L
@@ -336,6 +344,8 @@
   x <- ctx$x; cd <- ctx$code[i]
   org <- c("O", "T", "TO", "TE", "TJ", "PT", "PTR")
   j <- if (isTRUE(cd %in% org)) .kidpr_ft_next(ctx, i) else .kidpr_ft_prev(ctx, i)
+  # on top of a humus horizon, only the AU of the dark-humus gley soils (p. 61)
+  if (!isTRUE(cd %in% org) && !(identical(cd, "AU") && "G" %in% ctx$code[ctx$main])) j <- NA_integer_
   if (!is.na(j) && identical(ctx$code[j], "H") && isTRUE(x$thick[j] < 5))
     return(.kidpr_fd(TRUE, note = sprintf("a muck band of %s cm (%s) %s the host", format(x$thick[j]),
                                           .kidpr_ft_lab(ctx, j), if (isTRUE(cd %in% org)) "at the base of" else "on top of")))
@@ -390,6 +400,12 @@
 # i: thin fragmentary clay cutans on BM, CRM, the parent rock (C, D) or G:
 # clay films recorded (few or more); none, no.
 .kidpr_ft_i <- function(ctx, i) {
+  # on the parent rock, only its top
+  if (isTRUE(ctx$code[i] %in% c("C", "D"))) {
+    p <- .kidpr_ft_prev(ctx, i)
+    if (!is.na(p) && isTRUE(ctx$code[p] %in% c("C", "D")))
+      return(.kidpr_fd(FALSE, note = "not the top of the parent rock"))
+  }
   a <- .kidpr_v(ctx$x, i, "clay_films_amount")
   cf <- .clay_films_class(a)
   if (is.na(cf)) return(.kidpr_fd(NA, said = FALSE, missing = "clay_films_amount", note = "clay films not recorded"))
@@ -408,9 +424,18 @@
   st <- .kidpr_structure(x, i)
   if (is.na(st$type) && is.na(st$grade))
     return(.kidpr_fd(NA, said = FALSE, missing = c("structure_type", "structure_grade"), note = "structure not recorded"))
+  txt <- sprintf("structure %s", paste(stats::na.omit(c(st$grade, st$type)), collapse = " "))
+  if (isTRUE(grepl(.KIDPR_RAW_STRUCTURE, st$type)) || isTRUE(.field_grade_class(st$grade) == 0L))
+    return(.kidpr_fd(FALSE, note = c(txt, "no pedogenic structure")))
+  gc <- .field_grade_class(st$grade)
+  if (is.na(gc)) return(.kidpr_fd(FALSE, said = FALSE, missing = "structure_grade", note = c(txt, "the grade not recorded")))
   ped <- isTRUE(grepl("granul|crumb|block|nut|polyhed|subang", st$type))
-  weak <- isTRUE(.field_grade_class(st$grade) == 1L)
-  .kidpr_fd(ped && weak, note = sprintf("structure %s", paste(stats::na.omit(c(st$grade, st$type)), collapse = " ")))
+  if (!(ped && gc == 1L)) return(.kidpr_fd(FALSE, note = c(txt, "not a weak crumb or nutty structure")))
+  # with no texture class, 15 % clay or more is no sand or loamy sand
+  cl <- .kidpr_num(x, i, "clay_pct")
+  if (is.na(g$step) && isTRUE(cl >= 15)) return(.kidpr_fd(TRUE, note = c(txt, sprintf("clay %s %%: a loamy or clayey rock", format(cl)))))
+  if (is.na(g$step)) return(.kidpr_fd(NA, missing = .KIDPR_TEXTURE_MISSING, note = c(txt, "the texture of the rock not recorded")))
+  .kidpr_fd(TRUE, note = c(txt, g$note), tag = g$tag)
 }
 
 # crm: from the notation.
@@ -440,7 +465,9 @@
   if (is.na(st$type) && is.na(st$secondary))
     return(.kidpr_fd(NA, said = FALSE, missing = "structure_type", note = "structure not recorded"))
   p <- grepl(.KIDPR_COLUMNAR, s)
-  .kidpr_fd(p, note = sprintf("structure %s", trimws(s)))
+  # a structure that is not columnar does not rule out the other signs
+  # (compaction, glossy dark coatings): only a weak no
+  .kidpr_fd(p, said = p, note = sprintf("structure %s", trimws(s)))
 }
 
 # v: one or two of the three vertic signs (slickensides, wedge-shaped peds,
@@ -450,7 +477,9 @@
   vt <- .kidpr_vertic3(x, i)
   if (isTRUE(vt$partial)) return(.kidpr_fd(TRUE, note = c("vertic signs short of the vertic horizon", vt$note)))
   sl <- .kidpr_txt(x, i, "slickensides"); st <- .kidpr_structure(x, i)$type
-  if (!is.na(sl) || !is.na(st)) return(.kidpr_fd(FALSE, note = c("no vertic sign recorded", vt$note)))
+  if (!is.na(sl)) return(.kidpr_fd(FALSE, note = c("no vertic sign recorded", vt$note)))
+  if (!is.na(st)) return(.kidpr_fd(FALSE, said = FALSE, missing = "slickensides",
+                                   note = sprintf("structure %s, slickensides not recorded", st)))
   .kidpr_fd(NA, said = FALSE, missing = c("slickensides", "structure_type"), note = "slickensides not recorded")
 }
 
@@ -469,12 +498,19 @@
   mc <- .kidpr_txt(x, i, "mottle_colors")
   rf <- .kidpr_num(x, i, "redoximorphic_features_pct")
   rl <- .kidpr_txt(x, i, "redox_segregations_location")
+  ct <- .kidpr_txt(x, i, "childs_test")
+  none <- function(v) !is.na(v) && grepl("^(none|no|absent|nil|0)$", v)
   m <- .kidpr_morphons(x, i)$mottles
+  if (none(mc)) m <- m[0L, , drop = FALSE]
   only_olive <- nrow(m) > 0L && all(.kidpr_ft_olive_mottle(m)) && !isTRUE(rf > 0)
-  if (.kidpr_redox_sign(x, i) && !only_olive)
-    return(.kidpr_fd(TRUE, note = sprintf("redox signs: %s", paste(c(if (!is.na(mc)) sprintf("mottles %s", mc),
+  # a redox sign: parsed mottle colours, redox features, segregations
+  # recorded somewhere, a positive dipyridyl test ("none" is no sign)
+  seg <- !is.na(rl) && !none(rl)
+  sign <- nrow(m) > 0L || isTRUE(rf > 0) || seg || isTRUE(grepl("^(pos|\\+|yes|true)", ct))
+  if (sign && !only_olive)
+    return(.kidpr_fd(TRUE, note = sprintf("redox signs: %s", paste(c(if (nrow(m)) sprintf("mottles %s", mc),
                                                                        if (isTRUE(rf > 0)) sprintf("redox features %s %%", format(rf)),
-                                                                       if (!is.na(rl)) sprintf("segregations %s", rl)), collapse = ", "))))
+                                                                       if (seg) sprintf("segregations %s", rl)), collapse = ", "))))
   if (!is.na(mc) || !is.na(rf) || !is.na(rl))
     return(.kidpr_fd(FALSE, note = if (only_olive) "only olive mottles (q, not g)" else "no redox sign"))
   .kidpr_fd(NA, said = FALSE, missing = c("mottle_colors", "redoximorphic_features_pct"), note = "mottles not recorded")
@@ -492,7 +528,12 @@
     o <- .kidpr_olive(x, i)
     if (isTRUE(o$passed)) return(.kidpr_fd(TRUE, note = c("a continuous olive layer deeper than 120 cm", o$note)))
   }
-  if (nrow(m)) return(.kidpr_fd(FALSE, note = "no olive mottles"))
+  mc <- .kidpr_txt(x, i, "mottle_colors")
+  if (!is.na(mc) && grepl("^(none|no|absent|nil)$", mc)) m <- m[0L, , drop = FALSE]
+  # no mottles at all rules q out; mottles of other colours (the dirty
+  # grey of q among them) do not
+  if (!is.na(mc) && grepl("^(none|no|absent|nil)$", mc)) return(.kidpr_fd(FALSE, note = "no mottles"))
+  if (nrow(m)) return(.kidpr_fd(FALSE, said = FALSE, note = "no olive mottles recorded"))
   .kidpr_fd(NA, said = FALSE, missing = "mottle_colors", note = "mottles not recorded")
 }
 
@@ -515,22 +556,41 @@
 # chapter 9 (ECe 4 dS/m or more, EC 1:5 0.2 dS/m or more).
 .kidpr_ft_s <- function(ctx, i) {
   x <- ctx$x
-  g <- .kidpr_ground(x)
-  top20 <- !is.na(x$top[i]) && !is.na(g) && x$top[i] - g < 20
+  # over 1 % in the top 20 cm: the salt horizon S, and the profile has no
+  # feature s (p. 65)
+  cap <- .kidpr_ft_salt_cap(ctx)
+  if (isTRUE(cap$over)) return(.kidpr_fd(FALSE, note = cap$note))
+  r <- .kidpr_ft_salts(ctx, i)
+  if (is.na(r$pct)) {
+    if (is.na(r$saline)) return(.kidpr_fd(NA, said = FALSE, missing = c("soluble_salts_pct", "ec_dS_m", "ec_1to5_dS_m"),
+                                          note = "salts not measured"))
+    return(.kidpr_fd(r$saline, tag = "ec_salts", note = r$note))
+  }
+  .kidpr_fd(r$pct > 0.1, note = r$note)
+}
+
+# The salts of a layer: soluble_salts_pct, else the EC of chapter 9 (ECe
+# when recorded, else EC 1:5): saline from ECe 4 or EC 1:5 0.2 dS/m, over 1 %
+# from ECe 16 or EC 1:5 over 2.
+.kidpr_ft_salts <- function(ctx, i) {
+  x <- ctx$x
   s <- .kidpr_num(x, i, "soluble_salts_pct")
-  if (!is.na(s)) {
-    if (top20 && s > 1) return(.kidpr_fd(FALSE, note = sprintf("soluble salts %s %% within 20 cm: the salt horizon S, not s", format(s))))
-    return(.kidpr_fd(s > 0.1, note = sprintf("soluble salts %s %%", format(s))))
-  }
+  if (!is.na(s)) return(list(pct = s, saline = s > 0.1, over1 = s > 1, note = sprintf("soluble salts %s %%", format(s))))
   ece <- .kidpr_num(x, i, "ec_dS_m"); e15 <- .kidpr_num(x, i, "ec_1to5_dS_m")
-  if (!is.na(ece) || !is.na(e15)) {
-    strong <- isTRUE(ece >= 16) || isTRUE(e15 > 2)
-    if (top20 && strong) return(.kidpr_fd(FALSE, tag = "ec_salts", note = "salts over 1 % by the EC within 20 cm: the salt horizon S, not s"))
-    p <- .kidpr_or(if (!is.na(ece)) ece >= 4, if (!is.na(e15)) e15 >= 0.2)
-    return(.kidpr_fd(p, tag = "ec_salts", note = sprintf("salts by the EC of chapter 9 (%s)", paste(c(
-      if (!is.na(ece)) sprintf("ECe %s dS/m", format(ece)), if (!is.na(e15)) sprintf("EC 1:5 %s dS/m", format(e15))), collapse = ", "))))
-  }
-  .kidpr_fd(NA, said = FALSE, missing = c("soluble_salts_pct", "ec_dS_m", "ec_1to5_dS_m"), note = "salts not measured")
+  if (!is.na(ece)) return(list(pct = NA_real_, saline = ece >= 4, over1 = ece >= 16,
+                               note = sprintf("salts by the EC of chapter 9: ECe %s dS/m", format(ece))))
+  if (!is.na(e15)) return(list(pct = NA_real_, saline = e15 >= 0.2, over1 = e15 > 2,
+                               note = sprintf("salts by the EC of chapter 9: EC 1:5 %s dS/m", format(e15))))
+  list(pct = NA_real_, saline = NA, over1 = NA, note = character(0))
+}
+.kidpr_ft_salt_cap <- function(ctx) {
+  .kidpr_memo(ctx$x, "ft_salt_cap", function() {
+    x <- ctx$x; g <- .kidpr_ground(x)
+    top <- ctx$ord[vapply(ctx$ord, function(j) !is.na(x$top[j]) && !is.na(g) && x$top[j] - g < 20, NA)]
+    o <- vapply(top, function(j) isTRUE(.kidpr_ft_salts(ctx, j)$over1), NA)
+    list(over = any(o), note = if (any(o)) sprintf("salts over 1 %% in the top 20 cm (%s): the salt horizon S, not the feature s",
+                                                  .kidpr_ft_lab(ctx, top[which(o)[1L]])))
+  })
 }
 
 # tk: a smooth clay crust of 0.5 cm or less cracked into polygons on a bare
@@ -541,6 +601,9 @@
   cr <- .kidpr_txt(x, i, "surface_crust_type")
   pc <- .kidpr_num(x, i, "polygonal_cracks_spacing_cm")
   if (is.na(cr)) return(.kidpr_fd(NA, said = FALSE, missing = "surface_crust_type", note = "no surface crust recorded"))
+  # a crust described as its own layer is 0.5 cm or less
+  th <- x$thick[i]
+  if (isTRUE(th > 0.5 && th < 2)) return(.kidpr_fd(FALSE, note = sprintf("a crust layer of %s cm: thicker than 0.5 cm", format(th))))
   p <- grepl("clay|pelocrust|takyr", cr) && !is.na(pc)
   .kidpr_fd(p, note = sprintf("surface crust %s%s", cr, if (!is.na(pc)) sprintf(", polygonal cracks every %s cm", format(pc)) else ", no polygonal cracks"))
 }
@@ -555,7 +618,7 @@
 .kidpr_ft_nn <- function(ctx, i) {
   fn <- .kidpr_num(ctx$x, i, "ferric_nodules_pct")
   if (is.na(fn)) return(.kidpr_fd(NA, said = FALSE, missing = "ferric_nodules_pct", note = "iron concretions not recorded"))
-  .kidpr_fd(fn >= 10, note = sprintf("iron concretions %s %%", format(fn)))
+  .kidpr_fd(fn >= 10 && fn <= 20, note = sprintf("iron concretions %s %% (the feature: 10-20 %%)", format(fn)))
 }
 
 # cf: from the notation (soilKey's reading).
@@ -654,7 +717,10 @@
 .kidpr_ft_cryo <- function(ctx, i) {
   x <- ctx$x
   cr <- .kidpr_txt(x, i, "cryoturbation")
-  if (!is.na(cr)) return(.kidpr_fd(grepl("^present", cr), note = sprintf("cryoturbation %s", cr)))
+  if (!is.na(cr)) {
+    if (grepl("^(present|yes|y|true|t|1)$", cr)) return(.kidpr_fd(TRUE, note = sprintf("cryoturbation %s", cr)))
+    if (grepl("^(none|no|n|absent|false|f|0)$", cr)) return(.kidpr_fd(FALSE, note = sprintf("cryoturbation %s", cr)))
+  }
   bt <- .kidpr_txt(x, i, "boundary_topography")
   if (isTRUE(grepl("involut|broken|cryoturb|convolut", bt))) {
     fr <- .kidpr_frost(x)
@@ -717,10 +783,13 @@
   oi <- .kidpr_num(x, i, "oc_pct"); oa <- .kidpr_num(x, a, "oc_pct")
   dark <- if (is.na(vi) || is.na(va)) NA else vi <= va - 1
   rich <- if (is.na(oi) || is.na(oa)) NA else oi > oa
-  p <- .kidpr_and(dark, rich)
-  .kidpr_fd(p, said = !is.na(p), missing = c(if (is.na(dark)) "munsell_value_moist", if (is.na(rich)) "oc_pct"),
-            note = sprintf("against %s: moist value %s vs %s, OC %s vs %s %%", .kidpr_ft_lab(ctx, a),
-                           format(vi), format(va), format(oi), format(oa)))
+  txt <- sprintf("against %s: moist value %s vs %s, OC %s vs %s %%", .kidpr_ft_lab(ctx, a),
+                 format(vi), format(va), format(oi), format(oa))
+  # the darker colour makes the horizon; the carbon confirms it
+  if (is.na(dark)) return(.kidpr_fd(NA, missing = c("munsell_value_moist", if (is.na(rich)) "oc_pct"), note = txt))
+  if (!dark) return(.kidpr_fd(FALSE, note = txt))
+  if (is.na(rich)) return(.kidpr_fd(NA, missing = "oc_pct", note = txt))
+  .kidpr_fd(rich, said = rich, note = txt)
 }
 
 .kidpr_ft_ct <- function(ctx, i) .kidpr_ft_nota("ct")
@@ -731,14 +800,19 @@
 .kidpr_ft_y <- function(ctx, i) {
   x <- ctx$x
   a <- .kidpr_ft_prev(ctx, i)
+  # the tongues are of eluvial material: the layer over the host is E, EL,
+  # AEL or BEL (dark tongues from a humus horizon are yu)
+  el <- .kidpr_ft_is_host(ctx, a, c("E", "EL", "AEL", "BEL"))
+  if (isFALSE(el)) return(.kidpr_fd(FALSE, said = FALSE, note = "no eluvial horizon over the host"))
+  und <- function(r) { if (is.na(el) && isTRUE(r$passed)) { r$passed <- NA; r$note <- c(r$note, "the horizon above undecided") }; r }
   tv <- .kidpr_num(x, i, "tongue_vol_pct")
-  if (isTRUE(tv > 0)) return(.kidpr_fd(TRUE, note = sprintf("tongues %s %% of the volume", format(tv))))
+  if (isTRUE(tv > 0)) return(und(.kidpr_fd(TRUE, note = sprintf("tongues %s %% of the volume", format(tv)))))
   bt <- if (is.na(a)) NA_character_ else .kidpr_txt(x, a, "boundary_topography")
-  if (!is.na(bt)) return(.kidpr_fd(grepl("tongu|glossic|\u044f\u0437\u044b\u043a", bt),
-                                   note = sprintf("lower boundary of %s: %s", .kidpr_ft_lab(ctx, a), bt)))
+  if (!is.na(bt)) return(und(.kidpr_fd(grepl("tongu|glossic|\u044f\u0437\u044b\u043a", bt),
+                                       note = sprintf("lower boundary of %s: %s", .kidpr_ft_lab(ctx, a), bt))))
   for (nm in c("retic_properties", "albeluvic_glossae")) {
     w <- .kidpr_wrb_layer(x, nm, i)
-    if (isTRUE(w)) return(.kidpr_fd(TRUE, tag = nm, note = sprintf("tongues not recorded: soilKey's %s() stands in (passes)", nm)))
+    if (isTRUE(w)) return(und(.kidpr_fd(TRUE, tag = nm, note = sprintf("tongues not recorded: soilKey's %s() stands in (passes)", nm))))
   }
   .kidpr_fd(NA, said = FALSE, missing = "boundary_topography", note = "tongues not recorded")
 }
@@ -749,10 +823,14 @@
 .kidpr_ft_d <- function(ctx, i) {
   x <- ctx$x
   if (isTRUE(.kidpr_agro(x, i)$passed)) return(.kidpr_fd(FALSE, note = "an agro horizon (ad, not d)"))
-  if (isTRUE(.kidpr_org23(x, i)$passed)) return(.kidpr_fd(FALSE, said = FALSE, note = "an organic layer"))
-  st <- .kidpr_structure(x, i)$type
-  if (is.na(st)) return(.kidpr_fd(NA, said = FALSE, missing = "structure_type", note = "structure not recorded"))
-  .kidpr_fd(grepl("platy|lamin", st), note = sprintf("structure %s at the surface", st))
+  if (.kidpr_ft_is_peat(ctx, i)) return(.kidpr_fd(FALSE, said = FALSE, note = "an organic layer"))
+  st <- .kidpr_structure(x, i)
+  if (is.na(st$type)) return(.kidpr_fd(NA, said = FALSE, missing = "structure_type", note = "structure not recorded"))
+  if (!grepl("platy|lamin", st$type)) return(.kidpr_fd(FALSE, note = sprintf("structure %s at the surface", st$type)))
+  # coarse plates, up to 2-3 cm: a fine or very fine platy structure is not
+  if (isTRUE(grepl("^(very fine|fine|thin|very thin)", st$size)))
+    return(.kidpr_fd(FALSE, note = sprintf("a %s platy structure: not coarse plates", st$size)))
+  .kidpr_fd(TRUE, note = sprintf("a %splaty structure at the surface", if (is.na(st$size)) "" else paste0(st$size, " ")))
 }
 
 .kidpr_ft_ad <- function(ctx, i) .kidpr_ft_nota("ad")
@@ -767,10 +845,14 @@
   lu <- .kidpr_site_txt(x, "land_use")
   if (is.na(lu)) return(.kidpr_fd(NA, said = FALSE, missing = "land_use", note = "land use not recorded"))
   ab <- grepl(.KIDPR_FT_ABANDONED, lu, perl = TRUE)
-  if (!ab) return(.kidpr_fd(FALSE, note = sprintf("land use '%s': not abandoned arable land", lu)))
   ag <- isTRUE(ctx$code[i] %in% .KIDPR_FT_GROUPS$agro) || isTRUE(.kidpr_fao_p(x, i))
-  if (ag) return(.kidpr_fd(TRUE, note = sprintf("land use '%s' on a ploughed horizon", lu)))
-  .kidpr_fd(NA, said = FALSE, note = sprintf("land use '%s'; no plough mark on the horizon", lu))
+  if (ab && ag) return(.kidpr_fd(TRUE, note = sprintf("land use '%s' on a ploughed horizon", lu)))
+  if (ab) return(.kidpr_fd(NA, said = FALSE, note = sprintf("land use '%s'; no plough mark on the horizon", lu)))
+  # still ploughed: no post-agrogenic change on the agro horizon; any other
+  # land use (forest, grassland) leaves a former ploughing possible
+  if (ag && grepl(.KIDPR_ARABLE, lu, perl = TRUE))
+    return(.kidpr_fd(FALSE, note = sprintf("land use '%s': ploughed now", lu)))
+  .kidpr_fd(FALSE, said = FALSE, note = sprintf("land use '%s': no sign of former ploughing", lu))
 }
 
 .kidpr_ft_pr <- function(ctx, i) .kidpr_ft_nota("pr")
@@ -810,10 +892,18 @@
 # recorded or read.
 .kidpr_ft_ca <- function(ctx, i) {
   x <- ctx$x
-  k <- .kidpr_ft_key(ctx, i, "ca")
-  if (isTRUE(k$passed)) return(k)
   if (isTRUE(ctx$code[i] %in% c("BCA", "CAT", "ML")))
     return(.kidpr_fd(FALSE, note = "a horizon of pedogenic carbonates"))
+  # any recorded form of secondary carbonates is a neoformation
+  fm <- .kidpr_carb_forms(x, i)
+  if (length(fm) && !all(grepl("^(none|no|absent)$", fm)))
+    return(.kidpr_fd(FALSE, note = sprintf("carbonate neoformations recorded (%s): not residual", paste(fm, collapse = ", "))))
+  # an FAO k is an accumulation of pedogenic carbonates
+  d <- as.character(ctx$fr$designation[i])
+  if (!isTRUE(x$des$known[i]) && !is.na(d) && grepl("^[0-9IVX]*[A-Z][a-z]*k", d))
+    return(.kidpr_fd(FALSE, said = FALSE, note = sprintf("%s: pedogenic carbonates (FAO k)", d)))
+  k <- .kidpr_ft_key(ctx, i, "ca")
+  if (isTRUE(k$passed)) return(k)
   e <- .kidpr_eff_any(x, i)
   if (isFALSE(e$passed)) return(.kidpr_fd(FALSE, note = c("no effervescence", e$note), tag = e$tag))
   if (is.na(e$passed)) return(.kidpr_fd(NA, said = FALSE, missing = e$missing, note = "effervescence not recorded"))
@@ -834,16 +924,23 @@
 # ro: every mineral horizon red (hue 5YR or redder) from the parent rock.
 .kidpr_ft_ro <- function(ctx, i = NA_integer_) {
   x <- ctx$x
-  rows <- ctx$main[!vapply(ctx$main, function(j) .kidpr_hard_rock(x, j) || isTRUE(.kidpr_org23(x, j)$passed), NA)]
+  rows <- ctx$main[!vapply(ctx$main, function(j) .kidpr_hard_rock(x, j) || .kidpr_ft_is_peat(ctx, j), NA)]
   if (!length(rows)) return(.kidpr_fd(FALSE, note = "no mineral horizon"))
   hue <- vapply(rows, function(j) {
     h <- .kidpr_colour(x, j, "moist")$hue
     if (is.na(h)) .kidpr_colour(x, j, "dry")$hue else h
   }, "")
-  u <- suppressWarnings(.munsell_hue_units(hue))
-  red <- ifelse(is.na(u), NA, u <= 12.5)
+  # red: R and RP, YR up to 5YR; Y and the gley, blue, purple and neutral
+  # hues are not
+  red <- vapply(hue, function(h) {
+    hp <- .munsell_hue_parts(h)
+    if (is.na(hp$family)) return(NA)
+    if (hp$family %in% c("R", "RP")) return(TRUE)
+    if (hp$family == "YR") return(isTRUE(hp$number <= 5))
+    FALSE
+  }, NA, USE.NAMES = FALSE)
   if (any(red %in% FALSE))
-    return(.kidpr_fd(FALSE, note = sprintf("%s: hue %s, yellower than 5YR", .kidpr_ft_lab(ctx, rows[which(red %in% FALSE)[1L]]),
+    return(.kidpr_fd(FALSE, note = sprintf("%s: hue %s, not red", .kidpr_ft_lab(ctx, rows[which(red %in% FALSE)[1L]]),
                                            hue[which(red %in% FALSE)[1L]])))
   if (anyNA(red)) return(.kidpr_fd(NA, said = FALSE, missing = "munsell_hue_moist", note = "the hue of some mineral horizons not recorded"))
   .kidpr_fd(TRUE, layers = rows, note = sprintf("every mineral horizon of hue 5YR or redder (%s)", paste(unique(hue), collapse = ", ")))
@@ -1017,7 +1114,18 @@
   p <- vapply(rs, function(r) r$passed, NA)
   if (any(p %in% TRUE)) return(.kidpr_fd(TRUE, layers = ctx$ord[p %in% TRUE], note = "pollutants at the extremely hazardous level within 30 cm"))
   if (any(is.na(p))) return(.kidpr_fd(NA, missing = "contamination_hazard", note = "contamination recorded without its hazard category"))
+  # a hazard category recorded within 30 cm that is not the extreme one
+  w30 <- .kidpr_ft_within30(ctx)
+  hz <- vapply(ctx$ord[w30], function(j) .kidpr_txt(ctx$x, j, "contamination_hazard"), "")
+  if (any(!is.na(hz))) return(.kidpr_fd(FALSE, note = sprintf("contamination hazard %s within 30 cm: not extremely hazardous",
+                                                           paste(unique(stats::na.omit(hz)), collapse = ", "))))
   .kidpr_fd(FALSE, said = FALSE, note = "no contamination recorded within 30 cm")
+}
+
+# The layers (in depth order) that start within 30 cm of the ground (Q23).
+.kidpr_ft_within30 <- function(ctx) {
+  x <- ctx$x; g <- .kidpr_ground(x)
+  vapply(ctx$ord, function(j) !is.na(x$top[j]) && !is.na(g) && x$top[j] - g < 30, NA)
 }
 
 
@@ -1043,10 +1151,13 @@
       a <- .kidpr_ft_prev(ctx, i)
       w <- w || (!is.na(a) && isTRUE(d$known[a]) && identical(d$index[a], "W"))
     }
-    if (f == "x") w <- "X" %in% c(d$overlay[[i]], d$index[i])
+    if (f == "x") w <- "X" %in% c(d$overlay[[i]], d$index[i]) && isTRUE(.kidpr_ft_within30(ctx)[match(i, ctx$ord)])
     return(list(passed = w, note = sprintf("the Russian notation %s %s on %s", if (w) "writes" else "does not write", f, lab)))
   }
   hf <- d$hint_features[[i]] %||% character(0)
+  # residual carbonates only from a ca written (Cca), not from the FAO k of
+  # a pedogenic accumulation (Ck)
+  if (f == "ca" && !grepl("ca", gsub("[^a-z]", "", as.character(ctx$fr$designation[i])), fixed = TRUE)) hf <- setdiff(hf, "ca")
   if (f %in% hf) return(list(passed = TRUE, hint = TRUE,
                              note = sprintf("the designation of %s suggests %s (a letter of another notation)", lab, f)))
   list(passed = NA, note = character(0))
@@ -1108,6 +1219,13 @@
 .kidpr_ft_one <- function(ctx, code, host = NULL, place = NULL) {
   meta <- .kidpr_ft_meta()[[code]]
   if (is.null(meta)) rlang::abort(sprintf("'%s' is no feature of the Russian classification.", code))
+  if (!is.null(place) && !place %in% .KIDPR_FT_PLACES)
+    rlang::abort(sprintf("'%s' is no place of a feature (%s).", place, paste(.KIDPR_FT_PLACES, collapse = ", ")))
+  if (!is.null(host)) {
+    hh <- as.character(unlist(host))
+    bad <- setdiff(hh, c("any", names(.KIDPR_FT_GROUPS), .kidpr_vocabulary()$horizons, "C", "D", "CLM", "TT", "R"))
+    if (length(bad)) rlang::abort(sprintf("'%s' is no horizon of the Russian classification.", paste(bad, collapse = "', '")))
+  }
   fn <- get(paste0(".kidpr_ft_", meta$fn), mode = "function")
   kind <- meta$kind %||% "observed"
   place <- place %||% meta$place %||% "on"
@@ -1213,6 +1331,10 @@
   ctx <- .kidpr_ft_context(pedon, division)
   if (is.null(entries)) entries <- names(.kidpr_ft_meta())
   if (is.character(entries)) entries <- lapply(entries, function(e) list(feature = e))
+  if (!length(entries))
+    return(data.frame(feature = character(0), code = character(0), host = character(0), place = character(0),
+                      layers = I(list()), passed = logical(0), route = character(0), evidence = character(0),
+                      missing = I(list()), stringsAsFactors = FALSE))
   rows <- lapply(entries, function(e) {
     parts <- .kidpr_ft_parts(e$feature, e$host, e$place)
     res <- lapply(parts, function(pt) .kidpr_ft_one(ctx, pt$code, pt$host, pt$place))
