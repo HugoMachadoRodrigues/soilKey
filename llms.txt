@@ -1142,6 +1142,24 @@ horizons on the data by the Field Guide’s key to horizons.
 - [`make_kidpr2008_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_kidpr2008_example.md)
   : Example pedons for the divisions of the Russian soil classification
 
+## French Referentiel pedologique 2008 (experimental)
+
+The references of the Referentiel pedologique 2008 (AFES), named in
+French as printed: every reference is tested by its sequence of
+reference horizons and the side tests of its chapter, strictly and with
+the tolerances of p. 64, and the solum attaches simply, imperfectly,
+doubly or not at all; one main name by the book’s precedence and the
+rapid key, every candidate in the result. Reads the RP horizon notation,
+or identifies the reference horizons on the data. This release tests the
+29 references of the first nine groups of references.
+
+- [`classify_rp2008()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_rp2008.md)
+  : Attach a pedon to the references of the French Referentiel
+  pedologique 2008
+- [`make_rp2008_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_rp2008_example.md)
+  : Example pedons for the references of the Referentiel pedologique
+  2008
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

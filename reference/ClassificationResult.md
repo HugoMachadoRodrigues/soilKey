@@ -97,15 +97,16 @@ biogeographical or prior-based warnings.
 - `candidates`:
 
   For the systems that attach a soil to several classes rather than key
-  it to one (none yet; the French Referentiel pedologique 2008 will be
-  the first), every class that may attach it: a `data.frame` with
-  `code`, `name`, `group`, `degree` (simple, simple_or_imperfect,
-  imperfect, undecided; fail for the nearest classes when nothing
-  attaches), `rank` (the order of precedence), `in_name`, `double_with`,
-  `double_possible`, `n_failed`, `distance` (the size of the failures in
-  tolerance units), `failed`, `imperfect_by`, `undecided_by`,
-  `excluded_by` (the criteria, joined with "; ") and `nearest`. `NULL`
-  for every other system, and then not printed. Since v0.9.340.
+  it to one (the French Referentiel pedologique 2008, since v0.9.346,
+  [`classify_rp2008`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_rp2008.md)),
+  every class that may attach it: a `data.frame` with `code`, `name`,
+  `group`, `degree` (simple, simple_or_imperfect, imperfect, undecided;
+  fail for the nearest classes when nothing attaches), `rank` (the order
+  of precedence), `in_name`, `double_with`, `double_possible`,
+  `n_failed`, `distance` (the size of the failures in tolerance units),
+  `failed`, `imperfect_by`, `undecided_by`, `excluded_by` (the criteria,
+  joined with "; ") and `nearest`. `NULL` for every other system, and
+  then not printed. Since v0.9.340.
 
 ## Methods
 

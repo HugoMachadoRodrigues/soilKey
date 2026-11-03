@@ -46,6 +46,7 @@ soilkey_systems()
 #> 9   cscj2011
 #> 10  cpcs1967
 #> 11 kidpr2008
+#> 12    rp2008
 #>                                                                     name
 #> 1                                                               WRB 2022
 #> 2                                                     SiBCS, 5th edition
@@ -58,6 +59,7 @@ soilkey_systems()
 #> 9               Comprehensive Soil Classification System of Japan (2011)
 #> 10                                French soil classification CPCS (1967)
 #> 11                       Russian soil classification (Field Guide, 2008)
+#> 12                                 French Référentiel pédologique (2008)
 #>                                                                                       edition
 #> 1                                                                          4th edition (2022)
 #> 2                                                                          5th edition (2018)
@@ -70,6 +72,7 @@ soilkey_systems()
 #> 9        Comprehensive Soil Classification System of Japan, First Approximation (2011), NIAES
 #> 10 Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols
 #> 11              Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008
+#> 12                                    Référentiel pédologique 2008, AFES, Éditions Quæ (2009)
 #>          status         classifier
 #> 1        stable   classify_wrb2022
 #> 2        stable     classify_sibcs
@@ -82,6 +85,7 @@ soilkey_systems()
 #> 9  experimental  classify_cscj2011
 #> 10 experimental  classify_cpcs1967
 #> 11 experimental classify_kidpr2008
+#> 12 experimental    classify_rp2008
 #>                                            levels               aliases default
 #> 1                                            rsgs                   wrb    TRUE
 #> 2    ordens, subordens, grandes_grupos, subgrupos                 sibcs    TRUE
@@ -94,4 +98,5 @@ soilkey_systems()
 #> 9  great_groups, groups, subgroups, series_groups                  cscj   FALSE
 #> 10         classes, subclasses, groups, subgroups          cpcs, france   FALSE
 #> 11                       trunks, divisions, types kidpr, russia, ru2008   FALSE
+#> 12                                     references       rp, referentiel   FALSE
 ```
