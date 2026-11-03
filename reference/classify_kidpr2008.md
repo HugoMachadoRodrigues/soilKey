@@ -12,7 +12,8 @@ buried soil) and the 27 divisions (key 2.3), and the types of every
 division (the profile formulas of chapter 4: CA to CJ in v0.9.338, CK to
 CT in v0.9.339, trunks A, B and D in v0.9.342). The chemozems CU have no
 types: their name is built from the pollutants and the soil they were
-(v0.9.342). The subtypes follow in later releases.
+(v0.9.342). The subtypes of every division's list follow the type
+(v0.9.345).
 
 ## Usage
 
@@ -21,7 +22,8 @@ classify_kidpr2008(
   pedon,
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
-  gapfill = FALSE
+  gapfill = FALSE,
+  subtypes = TRUE
 )
 ```
 
@@ -45,17 +47,23 @@ classify_kidpr2008(
   Opt-in within-pedon gap-fill, as in
   [`classify_usda`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md).
 
+- subtypes:
+
+  Name the subtypes after the type (default `TRUE`); `FALSE` stops at
+  the type.
+
 ## Value
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
 with `system_id` `"kidpr2008"`, the deepest class assigned in `name`
-(the type, else the division, else the trunk), the trunk in
-`rsg_or_order`, the trunk, division and type in `levels` (with
-`name_native`, the Russian name), the key trace, the notes on a profile
-that is not a soil or whose combination of horizons the Field Guide does
-not provide for in `warnings`, and `provisional_because` (classes before
-the assigned one that could not be decided).
+(the type with its subtypes, else the division, else the trunk), the
+trunk in `rsg_or_order`, the trunk, division, type and subtypes in
+`levels` (with `name_native`, the Russian name), the key trace, the
+notes on a profile that is not a soil or whose combination of horizons
+the Field Guide does not provide for in `warnings`, and
+`provisional_because` (classes before the assigned one that could not be
+decided).
 
 ## Details
 
@@ -111,6 +119,27 @@ type level is soilKey's `"[CU:<code of the original soil>]"`, named
 original soil keyed is in the trace (phase `chemozem`), and an original
 soil left undecided makes the name provisional.
 
+The subtypes (v0.9.345): each division has one list of subtypes in
+chapter 4 (26 lists, 558 entries; the chemozems have none), each the
+index of a genetic feature of section 3.2, read by the feature tests
+(the recorded data first, the Russian notation where they say nothing).
+The soil is named by its type and every subtype of the list that passes,
+in the order of the list, comma-separated and in the plural as printed
+("Podzolistye gleevatye, yazykovatye"): the subtypes are the rows of
+level `"subtype"` of `levels` (code: soilKey's key of the entry; `name`
+the English gloss, `name_native` the Russian), the full name in English
+in `name` and in Russian in `qualifiers$name_native`. When every entry
+is FALSE the soil is of the typical subtype, soilKey's "\[tipichnye\]"
+("\[typical\]", code NA); when some are undecided the name is
+provisional, the undecided entries in `provisional_because`
+("subtype:\<key\>") and in a warning. A feature the formula of the type
+already writes (the g of the gley types, the BF of CB05, the permafrost
+sign of the cryozems ...) is not named again, and a sentence of 3.2 that
+names a single type restricts its subtype to it. Each entry, with its
+evidence, is in the trace (phase `subtype`). A soil whose type is
+unassigned gets no subtypes. The lists are in
+`system.file("rules", "kidpr2008", "subtypes.yaml", package = "soilKey")`.
+
 ## References
 
 Polevoi opredelitel' pochv Rossii \[Field Guide of Russian Soils\]
@@ -127,14 +156,16 @@ Polevoi opredelitel' pochv Rossii \[Field Guide of Russian Soils\]
 ``` r
 res <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent")
 res$name
-#> [1] "Sod-podzolic"
+#> [1] "Sod-podzolic [typical]"
 res$levels
 #>       level   code                         name
 #> 1    trunks      C         Postlithogenic soils
 #> 2 divisions     CA Texture-differentiated soils
 #> 3     types [CA04]                 Sod-podzolic
+#> 4   subtype   <NA>                    [typical]
 #>                          name_native
 #> 1               Постлитогенные почвы
 #> 2 Текстурно-дифференцированные почвы
 #> 3                Дерново-подзолистые
+#> 4                         [типичные]
 ```

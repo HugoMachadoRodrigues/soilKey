@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.342</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.345</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,117 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.345" id="soilkey-09345-2026-11-02">soilKey 0.9.345 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09345-2026-11-02"></a></h2>
+<div class="section level3">
+<h3 id="russia-the-subtypes-and-the-full-name-0-9-345">Russia: the subtypes and the full name<a class="anchor" aria-label="anchor" href="#russia-the-subtypes-and-the-full-name-0-9-345"></a></h3>
+<p>The Russian soil classification (Field Guide of 2008) names its soils down to the subtype (подтип): each division has one list of subtypes in chapter 4, and a soil is named by its type and every subtype of the list that passes, in the order of the list, comma-separated and in the plural as printed: “Подзолистые глееватые, языковатые” (Hugo’s decision Q16).</p>
+<ul><li>
+<strong>The 26 lists, 558 entries</strong> (the chemozems CU have none), in the new <code>inst/rules/kidpr2008/subtypes.yaml</code>, transcribed in the book’s order from pp. 79-133: AA 15, AB 10, BA 22, BB 12, BC 14, [DA] 19, CA 35, CB 30, CC 16, CD 24, CE 16, CF 17, CG 15, CH 27, CI 27, CJ 18, CK 16, CL 11, CM 22, CN 31, CO 22, CP 23, CQ 30, CR 30, CS 35, CT 21. Each entry has soilKey’s ASCII key (g, ELf, hh for [hh], e_hf for [e-hf], akl, cryoturb for @, perm for the permafrost sign, TTal for TT<sub></sub>, TTash for TT”), the index as printed, the Russian name, an English gloss, the hosts, the page and notes; the universal subtypes are marked.</li>
+<li>
+<strong>The subtype level</strong> after the type, read by the feature tests of 0.9.344 (data first, then the Russian notation, then the defaults): the subtypes are rows of level <code>subtype</code> in <code>levels</code> (as the Hungarian subtypes), the full name in English in <code>name</code> (“Podzolic gleyic, tongued”) and in Russian in <code>qualifiers$name_native</code>; every entry, with its evidence, route and hosts, is in the trace (phase <code>subtype</code>).</li>
+<li>
+<strong>Typical and provisional.</strong> When every entry is FALSE the soil is of the typical subtype, soilKey’s [типичные] ([typical]), which the lists leave out (p. 76); when some are undecided the name is provisional, the undecided entries in <code>provisional_because</code> and in a warning, the passing ones still named.</li>
+<li>
+<strong>Not named again</strong> when the formula of the type writes the feature: g in the gley types, q in the quasigley ones, ELg in CA03, BF in CB05, s and cs in the BCAs,cs of the solonetzes, the residual carbonates in a type written with Cca; a feature in parentheses (C(ca), Q(s)) is optional and does not count. A V or an S laid over a horizon (BCA+V, AU+S) names the soil vertic or saline. Where the list has ELg, g is read on the layers other than EL.</li>
+<li>
+<strong>Single-type sentences.</strong> The list decides where a feature applies; a sentence of 3.2 restricts it only when it names a single type: te in the oligotrophic peat soils, [akl] in the brown arid soils, crm in the podzolic soils, ct in the sod-podzolic soils, cf in the gleyzems, ocr in the peaty cryozems.</li>
+<li>
+<strong>The carbonate profile</strong> of CI, CJ and CQ to CT is one of a scale (default 19): nodules over pseudomycelium over diffuse carbonates, the form with the migrating carbonates of the humus horizon (AUlc-BCAmc, AUlc-BCAnc, AJlc-BCAnc) where lc holds. The double el of CI and CM is read by its place; [BHF-BAN]&gt;3 of the volcanic soils is a test of its own (more than three elementary profiles buried under the surface soil).</li>
+<li>
+<strong>Buried soils and thin deposits.</strong> A soil keyed by its buried horizons under a deposit of 40 cm or less keeps them for its subtypes, and the deposit written as a horizon of 5-40 cm over a bracketed humus horizon is rh (RU, RY, RJ) or r (C<sub></sub>); only where the formula writes the buried soil ([ABC], {ABC}) is it left out.</li>
+<li>
+<strong>Reachability.</strong> On profiles built from the formulas of each division, every entry is named somewhere except those its division cannot have: s and cs in CK (written in every formula) and x in the divisions of trunk C keyed after the chemozems (an X within 30 cm makes a chemozem); pb in CC, CE and CG and agr, ad, pa in the abrazems are reached only by the feature tests, not in a classified soil.</li>
+<li>
+<strong>The book’s own names</strong> are reproduced: the sod-pale-podzolic gleyic soil and the podzolic soil with a podzol microprofile (p. 60), the podzolised podbur (p. 60), the contact-bleached podzol (p. 67), the dark-humus water-accumulative stratozem (p. 129), and the chemozem of p. 134 keeps its name.</li>
+<li>
+<code><a href="../reference/classify_kidpr2008.html">classify_kidpr2008()</a></code> gains <code>subtypes = TRUE</code>; <code>FALSE</code> stops at the type (the tests of the keys and types use it). A soil whose type is unassigned gets no subtypes.</li>
+<li>On the 27 examples the classification takes about 5 s instead of 3; on the 44 canonical fixtures 5 s instead of 4. The other systems are unchanged (their fixtures byte-identical).</li>
+</ul><div class="section level4">
+<h4 id="hugos-decisions-and-0-9-345">Hugo’s decisions (2026-11-02 and 2026-11-03)<a class="anchor" aria-label="anchor" href="#hugos-decisions-and-0-9-345"></a></h4>
+<p>Nine readings of the subtypes, accepted by Hugo and recorded in <code>readings.yaml</code> as his decisions, as revised after the review of the subtypes: no subtypes for a soil whose type is unassigned; the six single-type sentences; what counts as written in the formula (the horizon that is the feature in full: G, Q, V, ML, S, F, CR; Cca keeps the residual-carbonate subtype out of the solods; an optional (ca) does not; a V or S overlay is v or s); the hosts the lists narrow (h, mr, Th, [e-hf], el of the weakly developed soils on W, hi of the agrozems under PT, ae of CJ on AJ, crm of the cryozems on or over CR, ox, fn and ff of the eluvial soils on their D or EL); a buried soil does not name the soil over it where the formula writes it, and a thin deposit over a buried soil is r or rh; the misprints corrected and the glosses kept; the layered-ochric soils (buried profiles only); the subtypes their division cannot have (pb in CC, CE and CG; agr, ad and pa in the abrazems; s and cs in CK; x in trunk C after the chemozems; the contact-eluviated podzol of p. 67, since the CB list has no el; no v for CH04 with a V on its G; a solonchak under a small deposit loses its division in the key); and the form of the full name. A tenth, of 2026-11-03: where the list has ELg, g is read on the layers other than EL (gleying in EL alone is ELg alone, in BT too both). No reading of the Russian classification waits for confirmation.</p>
+<p>The report’s note on the undecided classes now covers the undecided subtypes too, and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> no longer lists the Russian full name and the formula of the type among the qualifiers.</p>
+</div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.344" id="soilkey-09344-2026-11-02">soilKey 0.9.344 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09344-2026-11-02"></a></h2>
+<div class="section level3">
+<h3 id="russia-the-tests-of-the-genetic-features-0-9-344">Russia: the tests of the genetic features<a class="anchor" aria-label="anchor" href="#russia-the-tests-of-the-genetic-features-0-9-344"></a></h3>
+<p>The Russian soil classification (Field Guide of 2008) gains the tests of its genetic features (признаки, section 3.2 and the subtype lists of chapter 4): one test per feature, shared by every division that lists it, for the subtypes that follow (the 26 lists and the full name come next). Nothing is named yet, so every classification is unchanged.</p>
+<ul><li>
+<strong>67 tests, the 73 index forms.</strong> One internal function per feature of <code>features.yaml</code> (the 64 of 3.2 and w, x, rx of the lists); the aliases of the book (tu, ko, ag, as, ael, hh, akl) and the host forms of the lists (ELf, ELg, Th, Oh, AUh, AUel, Gel, Pw, PUw, TEmr, Tote, Di, Del, AJ[akl], and the pairs AUlc-BCAmc, AUlc-BCAnc, AJlc-BCAnc, which need both parts) are read through them. Each test is three-valued and gives its evidence and the attributes that would decide it.</li>
+<li>
+<strong>Data first, then the notation, then the defaults.</strong> A feature is read on the recorded data where an attribute records what it describes (the proxies of Q17: g, q, v, s, cs, nn, i, the columnar sn, BH and BF by the carbon of the BHF, an by the oxalates, the sapric h, lc, mc, nc and dc by the form of the carbonates, ml, the permafrost sign, @, tr, y, [hh], ro, r, rh, ur, rr), and the key to horizons gives the small horizons and the features it ends in (ao, e, el, r, rh, tr, u, ca). Where the data say nothing, the Russian notation decides: a feature not written on a layer of a profile written in it is absent; a letter of another notation can add one (an FAO Bg suggests g). Where neither does, a field observation not recorded is absent and a measurement not recorded leaves the feature undecided. hi, pl, crm, f, el on a horizon, ic, agr, ad, pr, ff, fn, ocr and yu come from the notation only (Q17). Recorded data that contradict the notation decide, with a note.</li>
+<li>
+<strong>Hosts and places.</strong> A feature holds on the horizons the text puts it on, with the analogies of Q17 (pl in CRM, cf at the edge of CR) and the horizons of the lists that name it; a host the data leave undecided leaves a passing feature undecided, and with no host the feature is absent. The double el of CI and CM is read by its place: in the AU, solodised (осолоделые); under the AU, eluviated (элювиированные).</li>
+<li>
+<strong>x, rx and ur (Q17).</strong> x is an X horizon (pollutants at the extremely hazardous level within 30 cm) in a soil the key did not send to the chemozems; rx a toxic layer of 5-40 cm over a buried humus horizon; ur the same layer with 20 % or more of artefacts. pb is read in the agro horizon with over 1.5 % humus, and in the light-humus carbonate soils (CJ) on a natural soil with deflation or truncation recorded (Q19).</li>
+<li>
+<strong>The dispatcher</strong> (internal) runs a list of (feature, host, place) entries on a pedon and returns one row per entry: the feature, its code, the host, the place, the layers, the verdict, the route (data, notation or both), the evidence and what is missing. Its metadata are in the new <code>inst/rules/kidpr2008/feature_tests.yaml</code> (the test, its route, the hosts, the place, whether it is a field observation or a measurement, the attributes it reads); <code>features.yaml</code> keeps the hosts the text gives.</li>
+<li>On the 27 examples every feature is decided; on the 44 canonical fixtures of the other systems 2,849 of 2,948 feature tests are decided, the undecided ones mostly the salts and the permafrost, which those profiles do not record.</li>
+</ul><div class="section level4">
+<h4 id="hugos-decisions-0-9-344">Hugo’s decisions (2026-11-02)<a class="anchor" aria-label="anchor" href="#hugos-decisions-0-9-344"></a></h4>
+<ul><li>
+<strong>Features read on the data where Q17 is silent:</strong> te (high-moor over a thinner low-moor peat within 50 cm), e (also bleached spots recorded in a humus or middle horizon), el on the data only as the band of key 52a, m (a weak pedogenic structure in the top C that is not sand), tk (a clay crust with polygonal cracks), ox (redox features of 50 % or more in G), ek (a whitish band of 5 cm or less over a heavier lithological layer or D), gr (a granular BFM), d (a platy surface layer of a natural soil), pa (abandoned or fallow land on a ploughed horizon), md (a sapric surface layer over the peat), pir (a pyrogenic layer of over 2 cm on the peat), aq and ae (the origin of the stratified horizon), TT<sub></sub> and TT” (alluvial or ash bands in the peat), w (a W over the host) and ca (also local effervescence with no carbonate neoformation).</li>
+<li>
+<strong>From the notation only:</strong> mr, [e-hf], [akl], cf and ct, like the features of Q17’s list; in a profile not written in the Russian notation these features are absent, not undecided.</li>
+<li>
+<strong>Hosts and places:</strong> the hosts of 3.2 and of the lists that name a feature elsewhere (f, i, crm, fn, hi, ic, sn, pa, e, w on the horizon under the W); a small horizon counts for the host beside it; AUel is el in the AU, the eluviated el is el under the AU, Gel el on G; an undecided host leaves a passing feature undecided, no host makes it absent.</li>
+<li>
+<strong>Deposited layers and cut-points:</strong> r, rh, ur, rr, rx need 5-40 cm over a buried humus horizon; ur 20 % to under half of artefacts, rr half or more and not toxic, rx a hazard above permissible; ro every mineral horizon 5YR or redder; cs visible gypsum (CaSO4 0 % none); s by the EC of chapter 9 (ECe 4, EC 1:5 0.2 dS/m); ml hard concretions; g not on olive mottles alone, q olive mottles of 5Y chroma 3-4; [hh] darker by a value and richer in carbon than the layer above; y with the retic or albeluvic stand-in, flagged.</li>
+<li>The four readings are in <code>readings.yaml</code> as his decisions; no reading of the Russian classification waits for confirmation.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="after-the-review-0-9-344">After the review (2026-11-02)<a class="anchor" aria-label="anchor" href="#after-the-review-0-9-344"></a></h4>
+<ul><li>
+<strong>Fixes.</strong> y only under an eluvial horizon (E, EL, AEL, BEL), dark tongues from a humus horizon being yu; ca not where any form of secondary carbonates is recorded, nor on an FAO k layer, and the FAO Ck no longer suggests ca; v and sn not ruled out by a structure alone (the notation decides), q not by mottles of other colours; pa ruled out only by current tillage on an agro horizon; ro leaves out the organic and peat layers by their horizon and reads the gley, blue, purple and neutral hues as not red, RP as red; x ruled out by a hazard category recorded within 30 cm, and written only on a layer starting within 30 cm; g not on mottles recorded as “none”; m undecided when the texture of the rock is not recorded, a weak no when the grade is not; d read on the first mineral layer under an organic one.</li>
+<li>
+<strong>The salts:</strong> over 1 % in the top 20 cm makes the salt horizon S and no feature s in the profile; ECe decides over EC 1:5 where both are recorded.</li>
+<li>
+<strong>Limits of the definitions:</strong> te may be a small horizon; crm only over BT; i on the parent rock only at its top; nn 10-20 %; a crust layer of tk 0.5 cm or less; d not on a fine platy structure; the muck band of h on top of a humus horizon only on the AU of the dark-humus gley soils; ml in the middle or lower profile only; @ reads yes and TRUE; [e-hf] in or beside EL (the example of p. 60, O-[e-hf]-EL-BEL-BT-C).</li>
+<li>The dispatcher stops on an unknown host or place and returns an empty table for no entries.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="hugos-decisions-after-the-review-0-9-344">Hugo’s decisions after the review (2026-11-02)<a class="anchor" aria-label="anchor" href="#hugos-decisions-after-the-review-0-9-344"></a></h4>
+<ul><li>
+<strong>Accepted edits:</strong> crm over BT only; [e-hf] in or beside EL.</li>
+<li>
+<strong>New readings</strong> (<code>readings.yaml</code>, “The feature tests after the review”): ca a field observation (effervescence not recorded is absent; an FAO k layer a weak no); m with 15 % clay or more as a loamy or clayey rock when no texture class is recorded; tk fails on a surface layer of 0.5-2 cm (a crust thicker than 0.5 cm); d fails on a fine or very fine platy structure; [hh] by the darker colour, confirmed by the carbon; q ruled out by mottles recorded as none, other colours only a weak no; sn never ruled out by the data; s ruled out for the whole profile by over 1 % salts within the top 20 cm; the muck band h on top of a humus horizon only on an AU in a profile with G.</li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.343" id="soilkey-09343-2026-11-02">soilKey 0.9.343 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09343-2026-11-02"></a></h2>
+<div class="section level3">
+<h3 id="france-the-reference-horizons-of-the-référentiel-pédologique-on-the-data-0-9-343">France: the reference horizons of the Référentiel pédologique 2008 on the data<a class="anchor" aria-label="anchor" href="#france-the-reference-horizons-of-the-r%C3%A9f%C3%A9rentiel-p%C3%A9dologique-on-the-data-0-9-343"></a></h3>
+<p>The Référentiel pédologique 2008 has no key to its reference horizons: they are concepts read with the whole sequence (p. XII). This release reads them on the recorded data, layer by layer, for profiles not written in the RP notation, and gives the horizon frame the references will be matched on. Nothing is classified yet, so every classification of the other systems is unchanged; the registry entry and the references follow.</p>
+<ul><li>
+<strong>A fixed order of tests</strong> (internal, <code>.rp_identify()</code>), soilKey’s, from the book’s order of presentation (p. 6) and its statements of dominance: the layers and materials (R, M, D, P, TH, Z and its kinds, Mli, Mt); the holorganic horizons (H with Hf, Hm, Hs and Ha; O with OL, OFr, OFm, OHr, OHf and OHta); the coarse elements (ND, X with Xgr, Xc, Xp); G (Gr, Go, AG), which dominates every other character of the layer, so no SG or BTG; the indurated and accumulation horizons (U, K, Kc, Km, Si, Sim, Fe, Fem, Femp, Y, Ys, Yp, Ym, OXm, OXc); the surface A horizons (An, Ach, Aso, Aca, Ado, Aci, Amg, Alu, And, Avi, Av, Anod, Ae, A, Js); the subsurface ones (E, BP, BPh, BPs, BT, BTß, V, SV, Snd, Slu, F, Fox, Fhy, OX, RT, FE, Sn, FS, Sp, Sca, Sdo, Sci, Smg, Sal, S, Jp, C); then the features of every layer (g, ho, k, t, v, x, y, d, cn, j, cry, nod, c, b, ca, a, h of Scah) on the hosts the book lists, and the overlays L, Na and Sa (LA, NaBT, SaA, JZ). Every test is three-valued: the first that holds gives the code, the other codes that hold or stay undecided go to the candidates, and a layer the data leave open is undecided with the attributes that would decide it.</li>
+<li>
+<strong>The frame</strong> has the columns of <code><a href="../reference/identify_horizons.html">identify_horizons()</a></code> and the RP ones: the family of the code, the code written with its prefixes, features and Roman numeral (<code>composed</code>: LAch, NaBTg, II Scag), the kinds a code may be refined to (<code>variants</code>: H to Hf, Hm, Hs), the thresholds met only within the tolerance of p. 64 (<code>imperfect</code>), the WRB stand-ins and the other substitutes used, a lower grade where they were, the depths from the datum (<code>top_rp</code>, <code>bottom_rp</code>), the lithological discontinuity and the hints of other notations.</li>
+<li>
+<strong>The notation and the data.</strong> A layer written in the RP notation keeps its code; the order of tests runs on its data as well, and a different reading goes to the evidence (route “both” when they agree). A layer in the CPCS or FAO notation is read on the data, its designation narrowing the candidates through Annex 6 and the FAO letters.</li>
+<li>
+<strong>The readers</strong> (<code>R/rp-readers.R</code>): the moist colour, the carbon classes, the carbonates and effervescence (cold, hot, the molar CaCO3/MgCO3), S/CEC with its CEC method, the sodium over the sum of the bases, the coarse elements by weight with the volume band, the redox features (location, relict), the reduced matrix, the salts, the intertropical and andosol gates, ploughing, the depth datum (the top of the first layer that is not a litter OL, FAO Oi or CPCS A00) and the hydromorphy of a profile from its frame.</li>
+<li>
+<strong>WRB stand-ins</strong>, flagged and with a lower grade, where a field descriptor is missing: argic() for the clay coatings of BT, spodic() for BP, calcic() and petrocalcic() for K, vertic_horizon() and vertic_properties() for V and SV, nitic_horizon() for the pressure faces of Sn, ferralic() for F and OX, chernic() and mollic() for Ach, umbric_horizon() for Aso (never sombric()), albic() for E, stagnic_properties() for g, andic_properties() and vitric_properties() for the andosol domain, retic_properties() and albeluvic_glossae() for BTd, continuous_rock() for R, and some others.</li>
+<li>
+<strong>New site field</strong> <code>intertropical</code>: the site declared in or outside the intertropical domain, where F, OX, RT, ND, FE, OXc and OXm are tested (Q18).</li>
+<li>The identification is internal until the registry entry <code>rp2008</code> exists: <code><a href="../reference/identify_horizons.html">identify_horizons()</a></code> does not reach it yet.</li>
+</ul><div class="section level4">
+<h4 id="hugos-decisions-read-here-0-9-343">Hugo’s decisions read here (2026-11-02)<a class="anchor" aria-label="anchor" href="#hugos-decisions-read-here-0-9-343"></a></h4>
+<ul><li>
+<strong>The order of tests (Q10):</strong> soilKey’s order from the book’s order of presentation; the first test that holds gives the code, the others go to the candidates; a missing field descriptor is read through a WRB diagnostic, flagged, never the faux amis of p. 392.</li>
+<li>
+<strong>Coarse elements (Q11), methods (Q12), functional redox (Q13), the most specific text (Q17), the tropical domain (Q18), H against O (Q19)</strong> and the defaults 3, 6, 7, 8, 10, 11, 14, 15, 17, 18 and 20, as the readers and <code>inst/rules/rp2008/readings.yaml</code> state them.</li>
+<li>
+<strong>The new site field <code>intertropical</code> (Q18)</strong> is kept: the site declared in or outside the intertropical domain, before the Köppen climate and the latitude.</li>
+<li>
+<strong>The readings of the horizons on the data, accepted</strong> (<code>inst/rules/rp2008/readings.yaml</code>): an undecided G leaves the layer undecided against the code read after it (G dominates, p. 280); the designation of another notation narrows the candidates and decides a single one left, never an H; a grey matrix is reductic only with a sign of water excess (Gr with 10 % redox features or less, Go with segregations at the voids); the holorganic layers by the loss on ignition, else carbon 30 +/- 5 %, and the kinds of O by the fine organic matter; the surface run of the A horizons and the A material (0.5 % carbon or more, not bleached), Js and Jp, Ae; Ach (value 3.5 or less, chroma 2 or less, carbon 3 % or more for every texture), Aso (the list of p. 13 as the test, the grisols of p. 193 as evidence, imperfect when only one holds) and An; the carbonates (a slight effervescence not generalised, no carbonate recorded at pH under 6.5 not carbonated) and the calcimagnesian variant of Aci and Sci, imperfect; the stand-in of K only below the surface and with more CaCO3 than every layer below; BT (the increase of the WRB argic horizon, clay films common or many), BTss, BTd and E on the data; BP (the oxalate, else spodic() under a bleached layer or with more carbon above); V, SV and Av; the intertropical horizons (F by the CEC of the clay, OX, RT, FE; OXm and OXc, not Fem, in the domain); Sn, FS, Sp, Sal and the andosol gate; the layers and materials (R, M, D, P, TH, Z, Mli, Mt); coarse elements not recorded are none; gypsum, silica and iron (Ys, Yp, Ym, Si, Sim, Fe, Fem, Femp); the overlays L, Na and Sa; the features.</li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.342" id="soilkey-09342-2026-11-02">soilKey 0.9.342 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09342-2026-11-02"></a></h2>
 <div class="section level3">
 <h3 id="russia-the-types-of-trunks-a-b-and-d-and-the-name-of-the-chemozems-0-9-342">Russia: the types of trunks A, B and D, and the name of the chemozems<a class="anchor" aria-label="anchor" href="#russia-the-types-of-trunks-a-b-and-d-and-the-name-of-the-chemozems-0-9-342"></a></h3>
@@ -94,6 +205,35 @@
 <strong>A named rock that is neither carbonate nor gypsum</strong> (granite, sandstone …) has neither mark: O over an R of granite with no effervescence recorded is DA05, decided.</li>
 <li>
 <strong>The readings of this release, accepted</strong> (<code>readings.yaml</code>): TT below the upper 50 cm of the peat body and a T of the notation as TO or TE by its botany; the substrate of the weakly developed soils (no horizon is loose rock, the mark from the origin or the texture, the legend’s “” read as <sup></sup>, a proluvial body with no type, the marks of R from the rock recorded); the BH of BB01 and BB03 a BHF of either kind; the profiles the literal formulas leave without a type. Every reading in <code>readings.yaml</code> is again one of Hugo’s decisions.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="after-the-review-0-9-342">After the review (2026-11-02)<a class="anchor" aria-label="anchor" href="#after-the-review-0-9-342"></a></h4>
+<ul><li>
+<strong>Fixes.</strong>
+<ul><li>A grey matrix outside the bluish, greenish and neutral hues is reductic only with a positive dipyridyl test, recorded water saturation or a water table at the layer (or water above the surface), never the drainage class alone; an A is AG only in a bluish or greenish hue; Gr only with 5 % of redox features or less, 5-10 % with no location leaving Go and g undecided.</li>
+<li>The A run at the surface continues only under a layer of A material, with more than 1 % carbon (a transition such as BA is no A designation); a layer that continues it is read by the subsurface tests too, and is undecided between the A and the subsurface code when both hold.</li>
+<li>E: bleached is a moist value of 5 or more with chroma 2 or less; a lower chroma counts as lighter only at an equal or higher value; clay films common or many, or more clay than the layer above, exclude it; above a rock or a coarse layer with no fine earth only a bleached layer is an E.</li>
+<li>Aso holds only on the list of p. 13 (the grisols reading of p. 193 is evidence), and only in a well aerated A (no functional redox features, no reduced matrix).</li>
+<li>A BT that is also fersiallitic is FSt; a BT or FE with ferric nodules under 40 % is BTcn or FEcn, not Fe; -cn only on BT and FE, -j only on S, Sci and BT, on an angular (not subangular) structure.</li>
+<li>TH never with jarosite or a pH under 4 (the sulfated U).</li>
+<li>Jp under an A or LA in a young deposit as well as under a Js, before the S.</li>
+<li>A G candidate is never narrowed away by a designation.</li>
+<li>The andosol domain opens only on volcanic material recorded or on the andic or vitric properties holding; an Alox + 1/2 Feox under 2 % closes it.</li>
+<li>Na only on a columnar, prismatic or coarse structure, or a massive one with 1 cmol+/kg of sodium or more; never undecided on a layer with no degraded structure.</li>
+<li>Ach: the 3 % carbon in the top 10 cm of the A run, a lighter mineral layer below and a gradual decrease of the carbon, chernic() alone as the stand-in; the moist value stays 3.5 or less (the chapter, p. 126, Q17).</li>
+<li>Ae not on a ploughed layer; M without a designation (a soft layer with no fine earth and its carbonates recorded, or an FAO Cr); OL in a profile written in capitals still the litter of the depth datum, and OF, OH as hints; a light layer under 1 % carbon under an O read as an E, not an A; a mineral designation with no data makes the layer mineral; OX with pH 5.5-6.5; Sci with pH over 6.5; a loss on ignition contradicted by the carbon flagged, and no A over 30 % carbon; an imperfectly drained site as a sign of water excess.</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="hugos-decisions-after-the-review-0-9-342">Hugo’s decisions after the review (2026-11-02)<a class="anchor" aria-label="anchor" href="#hugos-decisions-after-the-review-0-9-342"></a></h4>
+<ul><li>
+<strong>The revised readings</strong> (<code>inst/rules/rp2008/readings.yaml</code>): the designations narrowing the candidates (never a G away; BA is no A; OL, OF and OH in capitals; a mineral designation makes the layer mineral), the reductic matrix, the holorganic layers, the A run at the surface, Ach, Aso and An, BT and E, the intertropical horizons, Sn, FS, Sp, Sal and the andosol gate, the layers and materials, gypsum, silica and iron, the overlays and the features, as the fixes above read them.</li>
+<li>
+<strong>soilKey’s additions, accepted:</strong> Aso needs a well aerated A (no functional redox features, no reduced matrix, p. 13); tidal flooding, water above the surface or a subaqueous site count as a water table for a grey matrix; the A run continues only under a layer of A material; a light layer low in carbon is read as an E only directly under an O; an E is undecided when the BP below it is undecided; Fe only with ferric nodules of 40 % or more where a BT or FE also holds, otherwise BTcn or FEcn.</li>
+<li>
+<strong>Aso:</strong> with the list of p. 13 as the only test, the “imperfect when only one holds” clause of Q17 is empty: when the list of p. 13 holds, the grisols reading of p. 193 always holds too.</li>
+<li>
+<strong>The biomacrostructured A (d3):</strong> without biogenic_aggregates_pct, a crumb or granular structure with a recorded biological activity (worm holes, burrows, earthworms, a mull) reads the biomacrostructured A, flagged; a polyhedral, massive or other structure reads the A that is not; nothing recorded stays undecided.</li>
 </ul></div>
 </div>
 </div>

@@ -33,5 +33,5 @@ A
 
 ``` r
 classify_kidpr2008(make_kidpr2008_example("CI"), on_missing = "silent")$name
-#> [1] "Chernozems"
+#> [1] "Chernozems [typical]"
 ```

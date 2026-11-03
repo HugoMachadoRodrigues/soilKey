@@ -9,8 +9,8 @@ deposit that is not humified over a buried soil) and the 27 divisions
 (key 2.3), and the types of every division (the profile formulas of
 chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339, trunks A, B and D
 in v0.9.342). The chemozems CU have no types: their name is built from
-the pollutants and the soil they were (v0.9.342). The subtypes follow in
-later releases."><meta property="og:description" content="Keys a PedonRecord to the trunks and divisions of the Russian
+the pollutants and the soil they were (v0.9.342). The subtypes of every
+division's list follow the type (v0.9.345)."><meta property="og:description" content="Keys a PedonRecord to the trunks and divisions of the Russian
 soil classification, in the version of its Field Guide (Polevoi
 opredelitel' pochv Rossii, Dokuchaev Soil Science Institute, 2008).
 Experimental: this release keys the five trunks (key 2.2: the
@@ -20,8 +20,8 @@ deposit that is not humified over a buried soil) and the 27 divisions
 (key 2.3), and the types of every division (the profile formulas of
 chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339, trunks A, B and D
 in v0.9.342). The chemozems CU have no types: their name is built from
-the pollutants and the soil they were (v0.9.342). The subtypes follow in
-later releases."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+the pollutants and the soil they were (v0.9.342). The subtypes of every
+division's list follow the type (v0.9.345)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ later releases."><meta property="og:image" content="https://hugomachadorodrigues
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.342</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.345</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,8 +86,8 @@ deposit that is not humified over a buried soil) and the 27 divisions
 (key 2.3), and the types of every division (the profile formulas of
 chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339, trunks A, B and D
 in v0.9.342). The chemozems CU have no types: their name is built from
-the pollutants and the soil they were (v0.9.342). The subtypes follow in
-later releases.</p>
+the pollutants and the soil they were (v0.9.342). The subtypes of every
+division's list follow the type (v0.9.345).</p>
     </div>
 
     <div class="section level2">
@@ -96,7 +96,8 @@ later releases.</p>
 <span>  <span class="va">pedon</span>,</span>
 <span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"silent"</span>, <span class="st">"error"</span><span class="op">)</span>,</span>
-<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  subtypes <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -121,13 +122,18 @@ later releases.</p>
 <dd><p>Opt-in within-pedon gap-fill, as in
 <code><a href="classify_usda.html">classify_usda</a></code>.</p></dd>
 
+
+<dt id="arg-subtypes">subtypes<a class="anchor" aria-label="anchor" href="#arg-subtypes"></a></dt>
+<dd><p>Name the subtypes after the type (default <code>TRUE</code>);
+<code>FALSE</code> stops at the type.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="ClassificationResult.html">ClassificationResult</a></code> with <code>system_id</code>
   <code>"kidpr2008"</code>, the deepest class assigned in <code>name</code> (the
-  type, else the division, else the trunk), the trunk in
-  <code>rsg_or_order</code>, the trunk, division and type in <code>levels</code> (with
+  type with its subtypes, else the division, else the trunk), the trunk in
+  <code>rsg_or_order</code>, the trunk, division, type and subtypes in <code>levels</code> (with
   <code>name_native</code>, the Russian name), the key trace, the notes on a
   profile that is not a soil or whose combination of horizons the Field
   Guide does not provide for in <code>warnings</code>, and
@@ -182,6 +188,27 @@ type level is soilKey's <code>"[CU:&lt;code of the original soil&gt;]"</code>, n
 "Chemozems polluted with Cu, Ni, Co; original soil: Sod-podzolic"; the
 original soil keyed is in the trace (phase <code>chemozem</code>), and an
 original soil left undecided makes the name provisional.</p>
+<p>The subtypes (v0.9.345): each division has one list of subtypes in
+chapter 4 (26 lists, 558 entries; the chemozems have none), each the
+index of a genetic feature of section 3.2, read by the feature tests (the
+recorded data first, the Russian notation where they say nothing). The
+soil is named by its type and every subtype of the list that passes, in
+the order of the list, comma-separated and in the plural as printed
+("Podzolistye gleevatye, yazykovatye"): the subtypes are the rows of
+level <code>"subtype"</code> of <code>levels</code> (code: soilKey's key of the
+entry; <code>name</code> the English gloss, <code>name_native</code> the Russian),
+the full name in English in <code>name</code> and in Russian in
+<code>qualifiers$name_native</code>. When every entry is FALSE the soil is of
+the typical subtype, soilKey's "[tipichnye]" ("[typical]", code NA);
+when some are undecided the name is provisional, the undecided entries
+in <code>provisional_because</code> ("subtype:&lt;key&gt;") and in a warning. A
+feature the formula of the type already writes (the g of the gley types,
+the BF of CB05, the permafrost sign of the cryozems ...) is not named
+again, and a sentence of 3.2 that names a single type restricts its
+subtype to it. Each entry, with its evidence, is in the trace (phase
+<code>subtype</code>). A soil whose type is unassigned gets no subtypes. The
+lists are in <code>system.file("rules", "kidpr2008", "subtypes.yaml",
+package = "soilKey")</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -198,16 +225,18 @@ original soil left undecided makes the name provisional.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">classify_kidpr2008</span><span class="op">(</span><span class="fu"><a href="make_kidpr2008_example.html">make_kidpr2008_example</a></span><span class="op">(</span><span class="st">"CA"</span><span class="op">)</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">name</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Sod-podzolic"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Sod-podzolic [typical]"</span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">levels</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       level   code                         name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    trunks      C         Postlithogenic soils</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 divisions     CA Texture-differentiated soils</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3     types [CA04]                 Sod-podzolic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   subtype   &lt;NA&gt;                    [typical]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          name_native</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1               Постлитогенные почвы</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 Текстурно-дифференцированные почвы</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3                Дерново-подзолистые</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                         [типичные]</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
