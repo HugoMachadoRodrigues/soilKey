@@ -1,0 +1,254 @@
+# The species (виды) of the Russian soil classification, Field Guide of 2008
+# (Полевой определитель почв России), chapter 5.1, pp. 135-137: the twelve
+# tables of thickness and depth classes (the humus horizons counted as two
+# tables, one for the grey-humus and light-humus horizons and one for the
+# dark-humus horizon). The species rank under the subtype: a soil whose type
+# is assigned is named, after its subtypes, by the class of every table that
+# applies to it, in the order of the tables, comma-separated, in the plural
+# as printed (Hugo's decision Q1, 2026-11-02). Read by R/species-kidpr.R.
+# The varieties (5.2) and ranks (5.3) are not keyed.
+#
+# Each table:
+# id          soilKey's ASCII code of the table
+# page        the printed page
+# title_en    soilKey's gloss of the heading (the headings are not shipped)
+# measure     what is measured:
+#               thickness    the thickness of the run of `hosts` layers (the
+#                            first run from the top), with an agro horizon
+#                            directly over it counted where `with_agro_over`
+#                            names it (PU over AU ...)
+#               bottom_depth the depth of the lower boundary of the first
+#                            run of `hosts` layers, from the ground
+#               top_depth    the depth of the upper boundary of the first
+#                            `hosts` layer, from the ground
+#               first_depth  the depth of the top of the first layer that has
+#                            `property` (carbonates, salts), from the ground
+#               gley_place   the place of gleying in the profile
+#               weighted_pct the thickness-weighted mean of `attribute` over
+#                            the layers of the peat body
+#               botanical    the plants whose remains dominate the peat body
+#               peat_body    the thickness of the peat body from the ground
+# applies     the types the table is read for: `trunks`, `divisions`,
+#             `formula_any` (the type's formula writes one of these
+#             horizons, in parentheses or not), `formula_first` (the formula
+#             starts with one of them), `formula_not_first`, `or_profile`
+#             (also where a layer of the profile has the property). A table
+#             that does not apply is not read.
+# classes     in the order printed; `name` the printed adjective (plural),
+#             `name_en` soilKey's gloss. The limits, in cm or %, are read by
+#             the owner's rule, the lower end of a range for a minimum and
+#             the upper end for a maximum: `from` (the value is at least
+#             it), `over` (more than it, printed "> x"), `under` (less than
+#             it), `to` (at most it). A value at a limit shared by two
+#             ranges ("10-20", "20-30") belongs to the range it opens; the
+#             last range under a class printed "> x", or with no class above
+#             it, keeps its upper end.
+# term        bleached horizon: the term by the genesis of the horizon, which
+#             replaces "осветленные" (p. 136: глубокоэлювиальные,
+#             неглубокоподзолистые, мелкоосолоделые); the class gives the
+#             prefix.
+#
+# A thickness or depth that is not recorded, a layer whose horizon the data
+# leave undecided at the edge of a run, or a run that reaches the bottom of
+# the description when a deeper class is possible, leaves the species of the
+# table undecided: it is not named, and it is listed in
+# qualifiers$species_undecided (soilKey's reading, for Hugo to confirm,
+# 2026-11-03, readings.yaml).
+
+tables:
+  - id: humus_light
+    page: 135
+    title_en: "Thickness of the grey-humus and light-humus horizons"
+    measure: thickness
+    unit: cm
+    hosts: [AY, AJ]
+    with_agro_over: [P]
+    applies:
+      formula_any: [AY, AJ]
+      trunks: [B, C, D]
+    classes:
+      - {id: thin, name: "маломощные", name_en: "thin", under: 10}
+      - {id: medium, name: "среднемощные", name_en: "medium-thick", from: 10, under: 20}
+      - {id: thick, name: "мощные", name_en: "thick", from: 20, to: 30}
+
+  - id: humus_dark
+    page: 135
+    title_en: "Thickness of the dark-humus horizon"
+    measure: thickness
+    unit: cm
+    hosts: [AU]
+    with_agro_over: [PU]
+    applies:
+      formula_any: [AU]
+      trunks: [B, C, D]
+    classes:
+      - {id: shallow, name: "мелкие", name_en: "shallow", under: 30}
+      - {id: thin, name: "маломощные", name_en: "thin", from: 30, under: 50}
+      - {id: medium, name: "среднемощные", name_en: "medium-thick", from: 50, under: 80}
+      - {id: thick, name: "мощные", name_en: "thick", from: 80, to: 120}
+      - {id: very_thick, name: "сверхмощные", name_en: "very thick", over: 120}
+
+  - id: peat_horizon
+    page: 135
+    title_en: "Thickness of the peat horizon"
+    measure: thickness
+    unit: cm
+    hosts: [T, TO, TE]
+    applies:
+      formula_any: [T]
+      trunks: [B, C, D]
+    classes:
+      - {id: slightly_peaty, name: "мелкоторфянистые", name_en: "slightly peaty", from: 10, under: 20}
+      - {id: peaty, name: "торфянистые", name_en: "peaty", from: 20, under: 30}
+      - {id: peat, name: "торфяные", name_en: "peat", from: 30, to: 50}
+
+  - id: plough
+    page: 135
+    title_en: "Thickness of the agro (plough) horizon"
+    measure: thickness
+    unit: cm
+    hosts: [P, PU, PB, PT, PTR]
+    applies:
+      formula_first: [P, PU, PB, PT, PTR]
+    classes:
+      - {id: shallow, name: "мелкопахотные", name_en: "shallow-ploughed", under: 20}
+      - {id: medium, name: "среднепахотные", name_en: "medium-ploughed", from: 20, under: 30}
+      - {id: deep, name: "глубокопахотные", name_en: "deep-ploughed", from: 30, to: 40}
+
+  - id: gley_place
+    page: 135
+    title_en: "Depth and place of gleying in the profile"
+    measure: gley_place
+    unit: cm
+    applies:
+      trunks: [B, C, D]
+    # the degree of gleying is not considered: the gley horizon G (and a
+    # gleyed rock CG) and the gleyic feature g count alike (p. 135)
+    classes:
+      - {id: deep, name: "глубокооглеенные", name_en: "deep-gleyed", place: transitional, from: 100, to: 130}
+      - {id: surface, name: "поверхностно-оглеенные", name_en: "surface-gleyed", place: surface, under: 50}
+      - {id: profile, name: "профильно-оглеенные", name_en: "profile-gleyed", place: profile}
+
+  - id: bleached
+    page: 135
+    title_en: "Lower boundary of the bleached (eluvial, solodised or podzolic) horizon"
+    measure: bottom_depth
+    unit: cm
+    hosts: [E, EL]
+    applies:
+      formula_any: [E, EL]
+    # p. 136: the tongues of the bleached horizon are not considered; by the
+    # genesis of the horizon the term "осветленные" gives way to
+    # "элювиальные", "подзолистые" or "осолоделые"
+    term:
+      default: {name: "осветленные", name_en: "bleached"}
+      E: {name: "подзолистые", name_en: "podzolic"}
+      EL: {name: "элювиальные", name_en: "eluvial"}
+      solodised: {name: "осолоделые", name_en: "solodised", types: ["[CA12]", "[CA13]", "[CA14]", "[CA15]", "[CA24]", "[CA25]", "[CA26]", "[CA27]"]}
+    classes:
+      - {id: surface, prefix: "поверхностно-", prefix_en: "surface-", name: "поверхностно-осветленные", name_en: "surface-bleached", under: 10}
+      - {id: shallow, prefix: "мелко", prefix_en: "shallow-", name: "мелкоосветленные", name_en: "shallow-bleached", from: 10, under: 20}
+      - {id: moderate, prefix: "неглубоко", prefix_en: "moderately deep-", name: "неглубокоосветленные", name_en: "moderately deep-bleached", from: 20, under: 30}
+      - {id: deep, prefix: "глубоко", prefix_en: "deep-", name: "глубокоосветленные", name_en: "deep-bleached", from: 30, to: 45}
+      - {id: very_deep, prefix: "сверхглубоко", prefix_en: "very deep-", name: "сверхглубокоосветленные", name_en: "very deep-bleached", over: 45}
+
+  - id: sel
+    page: 136
+    title_en: "Thickness of the solonetzic-eluvial horizon (the layer over the solonetzic horizon) in the solonetzes"
+    measure: top_depth
+    unit: cm
+    hosts: [ASN, BSN]
+    applies:
+      divisions: [CK]
+    classes:
+      - {id: crusty, name: "корковые", name_en: "crusty", under: 5}
+      - {id: shallow, name: "мелкие", name_en: "shallow", from: 5, under: 10}
+      - {id: medium, name: "средние", name_en: "medium", from: 10, to: 20}
+      - {id: deep, name: "глубокие", name_en: "deep", over: 20}
+
+  - id: carbonates
+    page: 136
+    title_en: "Depth of the carbonates (of effervescence with 10 % HCl)"
+    measure: first_depth
+    unit: cm
+    property: carbonates
+    applies:
+      formula_any: [BCA, CAT, ML, BMK]
+      formula_feature: [ca]
+      or_profile: true
+      trunks: [B, C, D]
+    # the last class is printed "-120": soilKey reads 80-120
+    classes:
+      - {id: calcareous, name: "карбонатные", name_en: "calcareous", under: 30}
+      - {id: slightly_leached, name: "слабовыщелоченные", name_en: "slightly leached", from: 30, under: 50}
+      - {id: medium_leached, name: "средневыщелоченные", name_en: "medium leached", from: 50, under: 80}
+      - {id: strongly_leached, name: "сильновыщелоченные", name_en: "strongly leached", from: 80, to: 120}
+
+  - id: salts
+    page: 136
+    title_en: "Depth of the readily soluble salts"
+    measure: first_depth
+    unit: cm
+    property: salts
+    applies:
+      formula_any: [S, SS]
+      formula_feature: [s]
+      or_profile: true
+      formula_not_first: [S, SS]
+      trunks: [B, C, D]
+    classes:
+      - {id: solonchakous, name: "солончаковые", name_en: "solonchakous", from: 0, under: 30}
+      - {id: slightly_solonchakous, name: "солончаковатые", name_en: "slightly solonchakous", from: 30, under: 80}
+      - {id: deep_solonchakous, name: "глубокосолончаковатые", name_en: "deep slightly solonchakous", from: 80, to: 150}
+      - {id: deep_saline, name: "глубокозасоленные", name_en: "deep-saline", over: 150}
+
+  - id: peat_decomposition
+    page: 136
+    title_en: "Degree of decomposition of the peat"
+    measure: weighted_pct
+    unit: "%"
+    attribute: peat_decomposition_pct
+    applies:
+      trunks: [A]
+    classes:
+      - {id: peat, name: "торфяные", name_en: "peat", under: 25}
+      - {id: muck_peat, name: "перегнойно-торфяные", name_en: "muck-peat", from: 25, under: 50}
+      - {id: peat_muck, name: "торфяно-перегнойные", name_en: "peat-muck", from: 50, to: 75}
+      - {id: muck, name: "перегнойные", name_en: "muck", over: 75}
+
+  - id: botanical
+    page: 136
+    title_en: "Botanical composition of the peat (the peat-forming plants)"
+    measure: botanical
+    unit: "%"
+    attribute: peat_botanical_composition
+    applies:
+      trunks: [A]
+    # named by the plant whose remains dominate (more than 40 %); two
+    # dominant plants give a double name (древесно-осоковый), p. 136. The
+    # printed names are of the peat (masculine singular); the soil takes
+    # them in the plural, the first of a double name as its stem.
+    dominant_over: 40
+    plants:
+      - {id: wood, name: "древесные", stem: "древесно", name_en: "wood", pattern: "wood|tree|древес"}
+      - {id: reed, name: "тростниковые", stem: "тростниково", name_en: "reed", pattern: "reed|phragmites|тростник"}
+      - {id: scheuchzeria, name: "шейхцериевые", stem: "шейхцериево", name_en: "Scheuchzeria", pattern: "scheuchzer|шейхцер"}
+      - {id: horsetail, name: "хвощовые", stem: "хвощово", name_en: "horsetail", pattern: "horsetail|equisetum|хвощ"}
+      - {id: herb, name: "травяные", stem: "травяно", name_en: "herb", pattern: "herb|grass(?!.*cotton)|трав"}
+      - {id: cottongrass, name: "пушицевые", stem: "пушицево", name_en: "cotton-grass", pattern: "cotton|eriophorum|пушиц"}
+      - {id: sphagnum, name: "сфагновые", stem: "сфагново", name_en: "Sphagnum", pattern: "sphagn|сфагн"}
+      - {id: sedge, name: "осоковые", stem: "осоково", name_en: "sedge", pattern: "sedge|carex|осок"}
+      - {id: hypnum, name: "гипновые", stem: "гипново", name_en: "Hypnum", pattern: "hypn|brown moss|гипн"}
+
+  - id: peat_body
+    page: 137
+    title_en: "Thickness of the peat body (soils of the organogenic trunk)"
+    measure: peat_body
+    unit: cm
+    hosts: [T, TO, TE, TJ, TT, PT]
+    applies:
+      trunks: [A]
+    classes:
+      - {id: thin, name: "маломощные", name_en: "thin", from: 50, under: 100}
+      - {id: medium, name: "среднемощные", name_en: "medium-thick", from: 100, to: 200}
+      - {id: thick, name: "мощные", name_en: "thick", over: 200}

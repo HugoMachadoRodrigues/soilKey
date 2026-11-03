@@ -304,7 +304,7 @@
 # the scale of the carbonate profile; then the generic additive level
 # (level "subtype", as the Hungarian subtypes), the Russian names on the
 # rows, and the full name in Russian in qualifiers$name_native.
-.kidpr_add_subtypes <- function(res, pedon, rules) {
+.kidpr_add_subtypes <- function(res, pedon, rules, ctx = NULL) {
   lv <- res$levels
   if (is.null(lv) || nrow(lv) < 3L || isTRUE(.kidpr_dv_state$masking)) return(res)
   at <- which(lv$level == "types")
@@ -315,7 +315,7 @@
   type <- lv$code[at[1L]]
   te <- Filter(function(t) identical(as.character(t$code), type), .kidpr_ty_list(rules$types %||% list(), div))
   formula <- if (length(te)) as.character(te[[1L]]$formula) else NA_character_
-  ctx <- .kidpr_ft_context(pedon, div)
+  ctx <- ctx %||% .kidpr_ft_context(pedon, div)
   keys <- vapply(entries, function(e) as.character(e$key), "")
   in_formula <- vapply(entries, function(e) .kidpr_st_in_formula(e, formula), NA)
   restricted <- vapply(entries, function(e) length(e$only_types) > 0L && !(type %in% unlist(e$only_types)), NA)

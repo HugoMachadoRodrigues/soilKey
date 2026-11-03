@@ -1,6 +1,6 @@
 # Profile formulas of the Russian Field Guide of 2008: every type scheme of
 # chapter 4 (275, transcribed from its drawings) and every formula of the
-# chapter 6 correlation table (266, as the text layer of the PDF prints them, with
+# chapter 6 correlation table (268, as the text layer of the PDF prints them, with
 # its Cyrillic look-alikes; marks lost in the text layer restored from the page,
 # printing slips corrected, each noted). Codes only.
 source	formula	note
@@ -326,6 +326,7 @@ ch6 p143	AO-BFM-C
 ch6 p143	O-BFM-C	
 ch6 p143	АY-BM-C	
 ch6 p143	AU-BM-C	
+ch6 p143	AY-AEL-BM-C	printed letter-spaced (A Y -A E L -B M -C); missed by the first transcription, added in 0.9.347
 ch6 p143	О-EL-BM-C	
 ch6 p144	AY-EL-BM-C	
 ch6 p144	AU-BM-BCA-Cca	
@@ -472,6 +473,7 @@ ch6 p155	PU-TUR[SEL+АSN]-ВСАs,cs-Cca,s
 ch6 p155	P-TUR[SEL+BSN]-ВСАs,cs-Cca,s	
 ch6 p155	PU-TUR[SEL+АSN]-ВСАs,cs-Qs-Cqca,s	
 ch6 p155	P-TUR[SEL+BSN]-ВСАs,cs-Qs-Cqca,s	
+ch6 p156	P-TUR-C	printed on the line of its name; missed by the first transcription, added in 0.9.347
 ch6 p156	PU-TUR-C	
 ch6 p156	PU-TUR-G-CG	
 ch6 p156	PU-TUR-Q-CQ	

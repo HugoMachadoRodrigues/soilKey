@@ -123,18 +123,19 @@ sk_experimental_badge <- function() {
 
 # The class at each level, as rows of a definition list: the class name with
 # its code (and the English gloss where the system gives one); the Hungarian
-# subtype and variety properties are listed together on one row each.
+# subtype and variety properties, and the Russian subtypes and species, are
+# listed together on one row each.
 .sk_levels_rows <- function(lv) {
   if (!is.data.frame(lv) || !nrow(lv)) return(NULL)
   has_en <- "name_en" %in% names(lv)
-  props <- lv$level %in% c("subtype", "variety")
+  props <- lv$level %in% c("subtype", "variety", "species")
   rows <- lapply(which(!props), function(i) shiny::tagList(
     shiny::tags$dt(class = "col-5", .sk_level_label(lv$level[i])),
     shiny::tags$dd(class = "col-7", lv$name[i],
                    shiny::tags$code(class = "ms-1 small", lv$code[i]),
                    if (has_en && !is.na(lv$name_en[i]))
                      shiny::div(class = "text-muted small", lv$name_en[i]))))
-  for (lev in c("subtype", "variety")) {
+  for (lev in c("subtype", "variety", "species")) {
     w <- which(lv$level == lev)
     if (!length(w)) next
     rows[[length(rows) + 1L]] <- shiny::tagList(
@@ -194,8 +195,19 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
         shiny::div(class = "alert alert-warning small py-2 mb-2",
                    i18n("ui.no_measured_data_note")),
       shiny::tags$dl(class = "row mb-0 small", .sk_levels_rows(res$levels)),
+      .sk_1977_note(res),
       meta,
       .sk_provisional_note(res)))
+}
+
+# The 1977 analogue of a Russian soil (chapter 6 of the Field Guide), as a
+# note under the levels; NULL for the other systems.
+.sk_1977_note <- function(res) {
+  k77 <- tryCatch(soilKey:::.kidpr_1977_lines(res), error = function(e) NULL)
+  if (is.null(k77) || !length(k77)) return(NULL)
+  shiny::div(class = "sk-1977 small text-muted mt-2",
+             shiny::strong(i18n("classify.kidpr_1977")), " ",
+             paste(k77, collapse = " "))
 }
 
 # The Hungarian properties table for display: the properties the name carries

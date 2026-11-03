@@ -106,8 +106,10 @@ test_that("the registry has the Russian system, experimental and opt-in", {
   p <- make_kidpr2008_example("CI")
   expect_false("kidpr2008" %in% names(classify_all(p, on_missing = "silent")))
   res <- classify_all(p, systems = "kidpr2008", on_missing = "silent")
-  # v0.9.345: the type is followed by its subtypes (here the typical one)
-  expect_identical(res$kidpr2008$levels$code, c("C", "CI", "[CI01]", NA))
+  # v0.9.345: the type is followed by its subtypes (here the typical one);
+  # v0.9.347: and by its species
+  expect_identical(res$kidpr2008$levels$code,
+                   c("C", "CI", "[CI01]", NA, "humus_dark:medium", "carbonates:medium_leached"))
 })
 
 test_that("the rules are clean: predicates, suffixes, codes, names and paths", {
@@ -153,9 +155,22 @@ test_that("the rules are clean: predicates, suffixes, codes, names and paths", {
   # for him to confirm
   rd <- yaml::read_yaml(system.file("rules", "kidpr2008", "readings.yaml", package = "soilKey"))$readings
   expect_true(length(rd) >= 10L)
-  # (2026-11-03: his answer to the review of the subtypes)
-  for (x in rd) expect_true(nzchar(x$topic) && grepl("\\(Hugo, 2026-11-0[23]\\)\\.$", x$reading), info = x$topic)
-  expect_false(any(grepl("for Hugo to confirm", vapply(rd, `[[`, "", "reading"))))
+  # (2026-11-03: his answer to the review of the subtypes). v0.9.347: the
+  # readings of the species and of the 1977 analogue wait for him, and only
+  # they may
+  pending <- c("Species: the limits of the classes", "Species: what each table measures",
+               "Species: the depth and place of gleying", "Species: undecided, and the name",
+               "Species: the botanical composition of the peat",
+               "The 1977 analogue: the rows of chapter 6 and the types of 2008",
+               "The 1977 analogue: reading the two columns")
+  topics <- vapply(rd, `[[`, "", "topic")
+  expect_true(all(pending %in% topics))
+  for (x in rd) {
+    end <- if (x$topic %in% pending) "\\(soilKey's reading, for Hugo to confirm, 2026-11-03\\)\\.$"
+           else "\\(Hugo, 2026-11-0[23]\\)\\.$"
+    expect_true(nzchar(x$topic) && grepl(end, x$reading), info = x$topic)
+  }
+  expect_false(any(grepl("for Hugo to confirm", vapply(rd[!topics %in% pending], `[[`, "", "reading"))))
   # no text of the book: the readings are in English, Cyrillic only for names
   # and terms
   expect_false(any(grepl("[\u0400-\u04ff]{5,} [\u0400-\u04ff]{5,} [\u0400-\u04ff]{5,}",

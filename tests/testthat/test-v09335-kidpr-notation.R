@@ -85,9 +85,9 @@ test_that("the host forms of the chapter 4 lists read as their host and features
 test_that("every formula of chapters 4 and 6 parses with zero unknown tokens", {
   skip_on_cran()
   fx <- .formulas()
-  expect_identical(nrow(fx), 541L)
+  expect_identical(nrow(fx), 543L)
   expect_identical(sum(startsWith(fx$source, "ch4")), 275L)
-  expect_identical(sum(startsWith(fx$source, "ch6")), 266L)
+  expect_identical(sum(startsWith(fx$source, "ch6")), 268L)
   v <- .voc()
   codes <- character(0)
   feats <- character(0)
@@ -122,7 +122,8 @@ test_that("an unknown token is refused, with its name", {
   expect_error(.pff("O-ZZ-C"), "Unknown horizon 'ZZ'")
   # the printing slips of chapter 6 are corrected in the fixture, with a note
   fx <- .formulas()
-  expect_identical(sum(nzchar(fx$note)), 9L)
+  # (v0.9.347: the two rows added then carry a note too, no slip)
+  expect_identical(sum(nzchar(fx$note) & !grepl("added in 0.9.347", fx$note, fixed = TRUE)), 9L)
   expect_true("TJ-E-BHF-C" %in% fx$formula)
   expect_error(.pff("J-E-BHF-C"), "Unknown horizon 'J'")
 })
@@ -493,7 +494,9 @@ test_that("M5: every formula with a sign only the Russian notation writes is rec
     rows <- .formula_items(.formula_normalise(f), f)
     .kd(rows, list())$kidpr
   }, NA)
-  expect_identical(sum(rec), 478L)
+  # v0.9.347: 480 with the two formulas of chapter 6 the text layer had
+  # hidden (AY-AEL-BM-C, P-TUR-C)
+  expect_identical(sum(rec), 480L)
   # the 63 left are written only with letters other notations share (O, T,
   # H, G, C, R, D, P, S, W, E, BT, BI, BM), or with AH, AK, AO beside them
   shared <- c("O", "T", "H", "G", "Q", "C", "R", "D", "P", "S", "W", "E", "BT", "BI", "BM", "CR",

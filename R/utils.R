@@ -265,6 +265,7 @@ horizon_column_spec <- function() {
     texture_class_ru              = "character", # Kachinsky texture class: sand, loamy sand, light / medium / heavy loam, light / medium / heavy clay
     loi_pct                       = "numeric",   # loss on ignition, % of the dry mass; peat horizons > 35, H > 25, PTR < 35, AO 15-35, AH 10-25
     peat_decomposition_pct        = "numeric",   # degree of decomposition of peat, % (Russian method); H >= 50, peat horizons <= 50
+    peat_botanical_composition    = "character", # plants whose remains make the peat, with their shares (sedge 50; wood 30); species of 5.1
     foreign_fragments_pct         = "numeric",   # fragments of other horizons, % of the section; TUR (>= 80), agr (> 25), tr, pb
     turbated_fragments            = "character", # horizons whose fragments make a turbated layer, Russian indices joined by ';' (SEL;ASN)
     contamination_hazard          = "character", # hazard category of the pollutants (Russian sanitary standards); X = extremely hazardous within 30 cm
