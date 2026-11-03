@@ -25,7 +25,8 @@
 # C" ash, C^^ aeolian) and the hard rock R, with its carbonate or gypsum
 # mark where the formula writes it (Rca, Rcs); the C of the solonchaks is
 # not tested. Where the notation or the data do not write the mark of the
-# loose rock, it is read from the data (Hugo, 2026-11-02).
+# loose rock, it is read from the data; the substrate is the layer directly
+# under the O or W, a deeper rock is not tested (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:

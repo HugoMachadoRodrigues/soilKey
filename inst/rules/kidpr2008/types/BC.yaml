@@ -23,7 +23,8 @@
 # The buried soil [ABC] names the types on a buried soil and is tested, a
 # buried profile starting within 100 cm (p. 128; Hugo's decision Q14); the
 # substrate D is not tested. P and PU count only over the stratified
-# horizons (Hugo, 2026-11-02).
+# horizons; of several stratified horizons the thickest names the type,
+# the others are its features (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:

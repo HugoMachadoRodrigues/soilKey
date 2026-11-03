@@ -23,8 +23,10 @@
 # TO, TE and TJ are the peat horizons of the upper 50 cm of the peat body and
 # TT the peat below (Hugo's decision Q22); a peat horizon that runs across
 # that line is read as TT below it, and a T of the notation as TO or TE by
-# the botany of its layer. The rock under the dry peat of AA05 is tested, R
-# or loose material C (p. 43); C closes no other formula (Hugo, 2026-11-02).
+# the botany of its layer, and a peat horizon starting 50 cm or more under
+# the top of the body is TT. The rock under the dry peat of AA05 is tested,
+# R or loose material C (p. 43); a rock under the peat closes no other
+# formula (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:
@@ -34,41 +36,41 @@ types:
       name_native: "Торфяные олиготрофные"
       formula: "TO-TT"
       page: 132
-      ignore: ["C"]
+      ignore: ["C", "R"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[AA01]"}
-      notes: "Loose rock C under the peat closes no formula that does not write it (`ignore`): it is tested only in AA05 (Hugo, 2026-11-02)."
+      notes: "Loose rock C or hard rock R under the peat closes no formula that does not write it (`ignore`): the rock is tested only in AA05 (Hugo, 2026-11-02)."
     - code: "[AA02]"
       name: "Oligotrophic gley peat soils"
       name_native: "Торфяные олиготрофные глеевые"
       formula: "TO-TT-G"
       page: 132
-      ignore: ["C"]
+      ignore: ["C", "R"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[AA02]"}
-      notes: "Loose rock C under the peat closes no formula that does not write it (`ignore`): it is tested only in AA05 (Hugo, 2026-11-02)."
+      notes: "Loose rock C or hard rock R under the peat closes no formula that does not write it (`ignore`): the rock is tested only in AA05 (Hugo, 2026-11-02)."
     - code: "[AA03]"
       name: "Eutrophic peat soils"
       name_native: "Торфяные эутрофные"
       formula: "TE-TT"
       page: 132
-      ignore: ["C"]
+      ignore: ["C", "R"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[AA03]"}
-      notes: "Loose rock C under the peat closes no formula that does not write it (`ignore`): it is tested only in AA05 (Hugo, 2026-11-02)."
+      notes: "Loose rock C or hard rock R under the peat closes no formula that does not write it (`ignore`): the rock is tested only in AA05 (Hugo, 2026-11-02)."
     - code: "[AA04]"
       name: "Eutrophic gley peat soils"
       name_native: "Торфяные эутрофные глеевые"
       formula: "TE-TT-G"
       page: 132
-      ignore: ["C"]
+      ignore: ["C", "R"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[AA04]"}
-      notes: "Loose rock C under the peat closes no formula that does not write it (`ignore`): it is tested only in AA05 (Hugo, 2026-11-02)."
+      notes: "Loose rock C or hard rock R under the peat closes no formula that does not write it (`ignore`): the rock is tested only in AA05 (Hugo, 2026-11-02)."
     - code: "[AA05]"
       name: "Dry-peat soils"
       name_native: "Сухоторфяные"

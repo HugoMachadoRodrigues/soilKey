@@ -1,5 +1,5 @@
 # The types of the division BA, Аллювиальные почвы
-# (Alluvial soils): Field Guide of 2008, chapter 4.2.1, pp. 123-126;
+# (Alluvial soils): Field Guide of 2008, chapter 4.2.1, pp. 124-126;
 # 18 types (10 natural, 8 agro).
 #
 # Each type is the formula of its profile, transcribed from the drawings of
@@ -23,7 +23,9 @@
 # The alluvial mark of the parent material (C~~, CG~~, CQ~~) is not tested:
 # the division has proved the alluvium (Hugo's decision Q14). The buried humus
 # horizons of the alluvial soils are described but are not in the type
-# formula (p. 124): a buried soil is not read.
+# formula (p. 124): a buried soil is not read, and on the data route the
+# stratified humus horizon found over one at the top of the floodplain is
+# the humus horizon AU, AY or AJ (Q21; Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:

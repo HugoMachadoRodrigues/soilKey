@@ -21,8 +21,8 @@
 #       the nearest formulas; `near_identity` lists the other horizons a
 #       written one stands for.
 # TT is the peat below the upper 50 cm of the peat body (Hugo's decision
-# Q22); a peat horizon that runs across that line is read as TT below it
-# (Hugo, 2026-11-02).
+# Q22); a peat horizon that runs across that line is read as TT below it,
+# and one starting under it is TT (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:

@@ -252,6 +252,8 @@
   dv <- if (is.null(div)) "" else .kidpr_ty_bare(div)
   if (dv %in% c("AA", "AB")) t <- .kidpr_ty_peat_rows(v, t, dv)
   if (dv == "DA") t <- .kidpr_ty_substrate(v, t)
+  if (dv == "BA") t <- .kidpr_ty_alluvial_rows(t)
+  if (dv == "BC") t <- .kidpr_ty_strat_rows(t)
   rownames(t) <- NULL
   t
 }
@@ -268,9 +270,9 @@
 # the non-gley or non-carbonate one by default, and so does a designation
 # that marks the substrate gleyed (Cg, 2Cg) against a colour that is not
 # (Hugo, 2026-11-02).
-.KIDPR_TY_CARB_ROCK <- paste0("limestone|dolomit|marl|chalk|calcar|carbonat|travertin|calcite|",
+.KIDPR_TY_CARB_ROCK <- paste0("limestone|dolomit|marl|chalk|calcar|carbonat|travertin|calcite|marble|",
                               "\u0438\u0437\u0432\u0435\u0441\u0442\u043d|\u0434\u043e\u043b\u043e\u043c\u0438\u0442|",
-                              "\u043c\u0435\u0440\u0433\u0435\u043b|\u043a\u0430\u0440\u0431\u043e\u043d\u0430\u0442")
+                              "\u043c\u0435\u0440\u0433\u0435\u043b|\u043a\u0430\u0440\u0431\u043e\u043d\u0430\u0442|\u043c\u0440\u0430\u043c\u043e\u0440")
 .kidpr_ty_data_flags <- function(v, t, div) {
   if (is.null(t$rockflag)) t$rockflag <- rep(NA_character_, nrow(t))
   data <- t$route %in% "data" & t$buried == 0L
@@ -350,14 +352,22 @@
   out
 }
 
+# The notes of the readings applied to the table of a division (shown in the
+# notes of every type of the division).
+.kidpr_ty_note <- function(t, note) {
+  attr(t, "ty_notes") <- unique(c(attr(t, "ty_notes"), note))
+  t
+}
+
 # The peat of trunk A (Hugo's decision Q22: TO, TE and TJ are the peat
 # horizons of the upper 50 cm of the peat body, TT the peat below), as the
-# types read it (Hugo, 2026-11-02, on soilKey's readings): a
-# peat horizon that runs across the line 50 cm under the top of the body is
-# split there, TT below; in AA a T of the notation is TO or TE by the botany
-# of its layer (keys 43a, 43b: the moor type, Sphagnum fibres, a pH of 6.5
-# or more that rules TO out), undecided between them when the layer records
-# neither. A peat horizon that starts under the line keeps its index.
+# types read it (Hugo, 2026-11-02): a peat horizon that runs across the line
+# 50 cm under the top of the body is split there, TT below, and a peat
+# horizon (T, TO, TE, TJ) that starts 50 cm or more under the top of the body
+# is TT, as the data route reads it, with a note; in AA a T of the notation
+# is TO or TE by the botany of its layer (keys 43a, 43b: the moor type,
+# Sphagnum fibres, a pH of 6.5 or more that rules TO out), undecided between
+# them when the layer records neither.
 .KIDPR_TY_PEAT <- c("T", "TO", "TE", "TJ")
 .kidpr_ty_peat_rows <- function(v, t, div) {
   if (!nrow(t)) return(t)
@@ -382,39 +392,127 @@
   body <- which(live & (t$code %in% .KIDPR_DV_PEAT | allin(.KIDPR_DV_PEAT)))
   if (!length(body) || is.na(t$top_cm[body[1L]])) return(t)
   line <- t$top_cm[body[1L]] + 50
-  peat <- t$code %in% .KIDPR_TY_PEAT | (is.na(t$code) & allin(.KIDPR_TY_PEAT))
+  # a decided peat horizon, or an undecided layer that may be one (its peat
+  # candidates become TT, the others stay)
+  anyin <- vapply(t$candidates, function(c) any(c %in% .KIDPR_TY_PEAT), NA)
+  peat <- t$code %in% .KIDPR_TY_PEAT | (is.na(t$code) & anyin)
+  to_tt <- function(tb, j) {
+    if (is.na(tb$code[j])) {
+      cd <- unique(c(setdiff(tb$candidates[[j]], .KIDPR_TY_PEAT), "TT"))
+      if (length(cd) > 1L) { tb$candidates[[j]] <- cd; return(tb) }
+    }
+    tb$code[j] <- "TT"
+    tb$passed[j] <- TRUE
+    tb$candidates[[j]] <- character(0)
+    tb$missing[[j]] <- character(0)
+    tb
+  }
+  deep <- which(live & peat & !is.na(t$top_cm) & t$top_cm >= line)
+  if (length(deep)) {
+    for (j in deep) t <- to_tt(t, j)
+    t <- .kidpr_ty_note(t, sprintf(paste("a peat horizon starting %s cm or more under the top of the peat body is read as TT,",
+                                         "the peat below the upper 50 cm (Hugo, 2026-11-02)"), 50))
+  }
   cut <- which(live & peat & !is.na(t$top_cm) & !is.na(t$bottom_cm) & t$top_cm < line & t$bottom_cm > line)
   if (!length(cut)) return(t)
   idx <- unlist(lapply(seq_len(nrow(t)), function(i) if (i %in% cut) c(i, i) else i))
   first <- c(TRUE, idx[-1L] != idx[-length(idx)])
   out <- t[idx, , drop = FALSE]
+  attr(out, "ty_notes") <- attr(t, "ty_notes")
   up <- which(idx %in% cut & first)
   lo <- which(idx %in% cut & !first)
   out$bottom_cm[up] <- line
   out$top_cm[lo] <- line
-  out$code[lo] <- "TT"
-  out$passed[lo] <- TRUE
-  out$candidates[lo] <- rep(list(character(0)), length(lo))
-  out$missing[lo] <- rep(list(character(0)), length(lo))
+  for (j in lo) out <- to_tt(out, j)
   out
 }
 
+# The surface horizon of an alluvial soil on the data route (Hugo,
+# 2026-11-02, from Q21: an AY or AU at the top of a floodplain is no
+# deposit): a stratified humus horizon RU, RY or RJ that the key to horizons
+# finds on the data at the top of the profile, a deposit over a buried humus
+# horizon, is the humus horizon AU, AY or AJ of the alluvial soil, whose
+# buried humus horizons are described and not put in the type formula (p.
+# 124). In the Russian notation the index written stays. A layer of the data
+# route with no diagnostic horizon is the alluvium (C~~) itself, as the
+# notation writes it, so it does not part the humus horizon from a G or Q
+# under it.
+.kidpr_ty_alluvial_rows <- function(t) {
+  if (!nrow(t)) return(t)
+  nh <- if (is.null(t$no_horizon)) rep(FALSE, nrow(t)) else t$no_horizon
+  raw <- which(t$route %in% "data" & t$buried == 0L & !t$small & !t$transitional & is.na(t$code) &
+                 (t$passed %in% FALSE | nh))
+  for (j in raw) {
+    t$code[j] <- "C"
+    t$passed[j] <- TRUE
+    t$candidates[[j]] <- character(0)
+    t$missing[[j]] <- character(0)
+    if (!is.null(t$no_horizon)) t$no_horizon[j] <- FALSE
+  }
+  live <- which(t$buried == 0L & !t$small & !t$transitional)
+  if (!length(live)) return(t)
+  map <- c(RU = "AU", RY = "AY", RJ = "AJ")
+  j <- live[1L]
+  if (!(t$code[j] %in% names(map)) || !(t$route[j] %in% "data")) return(t)
+  k <- j
+  while (k <= nrow(t) && identical(t$code[k], t$code[j]) && t$buried[k] == 0L) {
+    t$code[k] <- map[[t$code[j]]]
+    k <- k + 1L
+  }
+  .kidpr_ty_note(t, paste("the stratified humus horizon the data route finds at the top of the floodplain is read as the humus",
+                          "horizon of the alluvial soil (an AY or AU at the top of a floodplain is no deposit; Hugo, 2026-11-02)"))
+}
+
+# The stratified body of the stratozems (Hugo, 2026-11-02): when it holds
+# more than one stratified horizon (RY over RU), the thickest names the type
+# and the others are its features: their rows take its index. A tie, or a
+# missing thickness, leaves the rows undecided between the indices.
+.kidpr_ty_strat_rows <- function(t) {
+  if (!nrow(t)) return(t)
+  rs <- c("RY", "RU", "RJ")
+  r <- which(t$buried == 0L & t$code %in% rs)
+  cds <- unique(t$code[r])
+  if (length(cds) < 2L) return(t)
+  th <- vapply(cds, function(k) {
+    j <- r[t$code[r] == k]
+    sum(t$bottom_cm[j] - t$top_cm[j])
+  }, 0)
+  win <- if (anyNA(th)) cds else cds[th == max(th)]
+  for (j in r) {
+    if (length(win) == 1L) t$code[j] <- win
+    else {
+      t$code[j] <- NA_character_
+      t$passed[j] <- NA
+      t$candidates[[j]] <- win
+      t$missing[[j]] <- if (anyNA(th)) c("top_cm", "bottom_cm") else character(0)
+    }
+  }
+  .kidpr_ty_note(t, paste("the stratified body holds several stratified horizons: the thickest names the type,",
+                          "the others are its features (Hugo, 2026-11-02)"))
+}
+
 # The substrate of the weakly developed soils, whose types it names (Q14), as
-# the types read it (Hugo, 2026-11-02, on soilKey's readings): a
-# layer with no horizon under the O or W is the loose rock C (the trunk has no
-# other horizon); the legend's aeolian mark "" (p. 75) is the ^^ of the
-# diagrams; a C whose mark is not written (the notation or the data route)
-# takes it from the data: an alluvial origin "~~", volcanic ash (or 30 % of
-# volcanic glass) the ash mark, an aeolian one "^^" (loess is no stratified
-# aeolian body), else the texture (sand and loamy sand, the Russian pesok and
-# supes', ".."; finer "="), undecided between them when no texture is
-# recorded; a proluvial body has no type. On the data route the rock R takes
-# its carbonate mark as in the lithozems (a carbonate rock named, or
-# effervescence) and its gypsum mark from a gypsum rock named; a rock not
-# named leaves the gypsum mark undecided.
+# the types read it (Hugo, 2026-11-02): the substrate is the layer directly
+# under the O or W, and a deeper rock is not tested (W-C..-R is the sandy
+# type); on the data route a layer with no horizon is the loose rock C (the
+# trunk has no other horizon), and an undesignated layer that names a rock
+# and records no texture is the hard rock R or the loose rock C, undecided;
+# the legend's aeolian mark "" (p. 75) is the ^^ of the diagrams; a C whose
+# mark is not written takes it from the data, the origin the layer records
+# first and the site's parent material only when the layer records none: an
+# alluvial origin "~~", volcanic ash (or 30 % of volcanic glass) the ash
+# mark, an aeolian one "^^" (loess is no stratified aeolian body), a
+# proluvial body (an alluvial fan) no mark of the types, else the texture
+# (sand and loamy sand, the Russian pesok and supes', ".."; finer "="),
+# undecided between them when no texture is recorded. A rock R whose marks
+# are not written (on the data route, or a bare R of the notation) takes its
+# carbonate mark from a carbonate rock named, or effervescence, and its
+# gypsum mark from a gypsum or anhydrite rock named; a rock not named leaves
+# the gypsum mark undecided.
 .KIDPR_TY_AEOLIAN <- paste0("aeolian|eolian|\\bdunes?\\b|wind-?blown|blown sand|", .KIDPR_DV_NL, "\u044d\u043e\u043b")
 .KIDPR_TY_LOESS <- paste0("\\bloess|l\u00f6ss|", .KIDPR_DV_NL, "\u043b[\u0435\u0451]\u0441\u0441")
-.KIDPR_TY_PROLUVIAL <- paste0("proluv|", .KIDPR_DV_NL, "\u043f\u0440\u043e\u043b\u044e\u0432")
+.KIDPR_TY_PROLUVIAL <- paste0("proluv|alluvial fans?|\\bfans?\\b|", .KIDPR_DV_NL, "\u043f\u0440\u043e\u043b\u044e\u0432|",
+                              "\u043a\u043e\u043d\u0443\u0441\u0430? \u0432\u044b\u043d\u043e\u0441\u0430")
 .KIDPR_TY_GYPSUM_ROCK <- paste0("gypsum|gypsite|anhydrit|", .KIDPR_DV_NL, "\u0433\u0438\u043f\u0441|",
                                 .KIDPR_DV_NL, "\u0430\u043d\u0433\u0438\u0434\u0440\u0438\u0442")
 .kidpr_ty_substrate <- function(v, t) {
@@ -429,51 +527,86 @@
     t$missing[[j]] <- character(0)
     t$no_horizon[j] <- FALSE
   }
+  # the substrate directly under the O or W; a deeper rock is not tested
+  # (the surface run, O, W and the horizons the thickest-horizon rule leaves
+  # out of it, is not the substrate)
+  sub <- which(live & !t$small & !t$transitional & !(t$code %in% c(.KIDPR_DV_SURFACE, "S")))
+  if (length(sub) > 1L) {
+    deeper <- sub[-1L][t$code[sub[-1L]] %in% c("C", "R")]
+    if (length(deeper)) {
+      t <- .kidpr_ty_note(t[-deeper, , drop = FALSE],
+                          "the substrate directly under the O or W names the type; a deeper rock is not tested (Hugo, 2026-11-02)")
+      live <- t$buried == 0L
+    }
+  }
   t$mark[t$mark %in% "\"\""] <- "^^"
   if (is.null(v$pedon)) return(t)
   x <- v$kidpr_x %||% (v$kidpr_x <- .kidpr_profile(v$pedon))
   txt <- function(i, keys) {
-    s <- c(vapply(keys, function(k) as.character(.kidpr_txt(x, i, k)), ""), as.character(v$site$parent_material %||% NA))
+    s <- vapply(keys, function(k) as.character(.kidpr_txt(x, i, k)), "")
     s <- s[!is.na(s) & nzchar(s)]
+    if (!length(s)) {
+      s <- as.character(v$site$parent_material %||% NA)
+      s <- s[!is.na(s) & nzchar(s)]
+    }
     if (length(s)) tolower(paste(s, collapse = " ")) else NA_character_
+  }
+  rockmarks <- function(j, i) {
+    o <- txt(i, c("rock_origin", "parent_material"))
+    carb <- .kidpr_dv_match(.KIDPR_TY_CARB_ROCK, o)
+    gyps <- .kidpr_dv_match(.KIDPR_TY_GYPSUM_ROCK, o)
+    eff <- .kidpr_eff_any(x, i)$passed
+    # a rock named that is neither carbonate nor gypsum has neither mark
+    ca <- if (carb || isTRUE(eff)) TRUE else if (isFALSE(eff) || (!is.na(o) && !gyps)) FALSE else NA
+    cs <- if (gyps) TRUE else if (!is.na(o) || isTRUE(ca)) FALSE else NA
+    f <- as.character(t$features[[j]]); fna <- as.character(t$features_na[[j]])
+    if (isTRUE(ca)) f <- c(f, "ca") else if (is.na(ca)) fna <- c(fna, "ca")
+    if (isTRUE(cs)) f <- c(f, "cs") else if (is.na(cs)) fna <- c(fna, "cs")
+    t$features[[j]] <<- unique(f)
+    t$features_na[[j]] <<- unique(fna)
+    if (is.na(ca) || is.na(cs))
+      t$flag_missing[[j]] <<- unique(c(as.character(t$flag_missing[[j]]), "rock_origin",
+                                       if (is.na(ca)) c("effervescence_class", "caco3_pct")))
   }
   for (j in which(live & t$code %in% "C" & is.na(t$mark) & !t$transitional & !t$small)) {
     i <- t$horizon_idx[j]
     if (is.na(i)) next
     o <- txt(i, c("layer_origin", "rock_origin", "parent_material"))
     vg <- .kidpr_num(x, i, "volcanic_glass_pct")
-    mk <- if (.kidpr_dv_match(.KIDPR_DV_ALLUVIUM, o) && !.kidpr_dv_match(.KIDPR_DV_NOT_ALLUVIUM, o)) "~~"
+    prol <- .kidpr_dv_match(.KIDPR_TY_PROLUVIAL, o)
+    mk <- if (prol) NA_character_
+          else if (.kidpr_dv_match(.KIDPR_DV_ALLUVIUM, o) && !.kidpr_dv_match(.KIDPR_DV_NOT_ALLUVIUM, o)) "~~"
           else if (.kidpr_dv_match(.KIDPR_DV_ASH, o) || isTRUE(vg >= 30)) "\""
           else if (.kidpr_dv_match(.KIDPR_TY_AEOLIAN, o) && !.kidpr_dv_match(.KIDPR_TY_LOESS, o)) "^^"
           else NA_character_
-    if (is.na(mk) && .kidpr_dv_match(.KIDPR_TY_PROLUVIAL, o)) next
-    if (is.na(mk)) {
-      k <- .kidpr_grad(x, i)$step
-      mk <- if (is.na(k)) NA_character_ else if (k <= 2) ".." else "="
+    if (prol) next
+    k <- if (is.na(mk)) .kidpr_grad(x, i)$step else NA_real_
+    # an undesignated layer that names a rock and records no texture: R or C
+    des <- as.character(.kidpr_v(x, i, "designation"))
+    rock <- !is.na(.kidpr_txt(x, i, "rock_origin"))
+    if (is.na(mk) && is.na(k) && rock && (is.na(des) || !nzchar(trimws(des))) && t$route[j] %in% "data") {
+      t$code[j] <- NA_character_
+      t$passed[j] <- NA
+      t$candidates[[j]] <- c("R", "C")
+      t$missing[[j]] <- unique(c(as.character(t$missing[[j]]), "designation", "rupture_resistance"))
+      rockmarks(j, i)
+      t$features_na[[j]] <- unique(c(as.character(t$features_na[[j]]), "=", ".."))
+      t$flag_missing[[j]] <- unique(c(as.character(t$flag_missing[[j]]), .KIDPR_TEXTURE_MISSING))
+      next
     }
+    if (is.na(mk) && !is.na(k)) mk <- if (k <= 2) ".." else "="
     if (!is.na(mk)) t$mark[j] <- mk
     else {
       t$features_na[[j]] <- unique(c(as.character(t$features_na[[j]]), "=", ".."))
       t$flag_missing[[j]] <- unique(c(as.character(t$flag_missing[[j]]), .KIDPR_TEXTURE_MISSING))
     }
   }
-  for (j in which(live & t$code %in% "R" & t$route %in% "data")) {
+  # a rock whose marks are not written: on the data route, or a bare R of the
+  # notation
+  for (j in which(live & t$code %in% "R" & !vapply(t$features, function(f) any(c("ca", "cs") %in% f), NA))) {
     i <- t$horizon_idx[j]
     if (is.na(i)) next
-    o <- txt(i, c("rock_origin", "parent_material"))
-    carb <- .kidpr_dv_match(.KIDPR_TY_CARB_ROCK, o)
-    gyps <- .kidpr_dv_match(.KIDPR_TY_GYPSUM_ROCK, o)
-    eff <- .kidpr_eff_any(x, i)$passed
-    ca <- if (carb || isTRUE(eff)) TRUE else if (isFALSE(eff)) FALSE else NA
-    cs <- if (gyps) TRUE else if (!is.na(o) || isTRUE(ca)) FALSE else NA
-    f <- as.character(t$features[[j]]); fna <- as.character(t$features_na[[j]])
-    if (isTRUE(ca)) f <- c(f, "ca") else if (is.na(ca)) fna <- c(fna, "ca")
-    if (isTRUE(cs)) f <- c(f, "cs") else if (is.na(cs)) fna <- c(fna, "cs")
-    t$features[[j]] <- unique(f)
-    t$features_na[[j]] <- unique(fna)
-    if (is.na(ca) || is.na(cs))
-      t$flag_missing[[j]] <- unique(c(as.character(t$flag_missing[[j]]), "rock_origin",
-                                      if (is.na(ca)) c("effervescence_class", "caco3_pct")))
+    rockmarks(j, i)
   }
   t
 }
@@ -521,6 +654,9 @@
                         surface = .KIDPR_DV_NATURAL, agro = .KIDPR_DV_AGRO, agro_remnant = "thickest",
                         pair_gaps_cm = .KIDPR_TY_GAPS, buried_within_cm = .KIDPR_TY_BURIED_CM)
     m <- .kidpr_ty_checks(m, tab, sch)
+    # the readings applied to the table (v0.9.342)
+    tn <- attr(tab, "ty_notes")
+    if (length(tn)) for (k in names(m$results)) m$results[[k]]$notes <- unique(c(m$results[[k]]$notes, tn))
     m$division <- div
     m$schemes <- sch
     m$table <- tab
@@ -621,7 +757,9 @@
   if (!is.null(tab$flag_missing)) miss <- unique(c(miss, unlist(tab$flag_missing[tab$buried == 0L])))
   tur <- which(tab$code %in% "TUR" & tab$buried == 0L & lengths(tab$composition) == 0L)
   if (length(tur)) miss <- unique(c(miss, "turbated_fragments"))
-  if (!length(miss)) miss <- c("top_cm", "bottom_cm")
+  # the depths, when one is not recorded (v0.9.342: a tie of recorded
+  # thicknesses asks for nothing)
+  if (!length(miss) && (anyNA(tab$top_cm) || anyNA(tab$bottom_cm))) miss <- c("top_cm", "bottom_cm")
   miss
 }
 

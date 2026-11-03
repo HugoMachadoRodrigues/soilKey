@@ -693,6 +693,13 @@ only_horizons_kidpr <- function(pedon, sets, raw = FALSE) {
   sets <- lapply(sets, function(s) sort(unique(as.character(unlist(s)))))
   .kidpr_dv_memo(v, .kidpr_dv_key("only", sets, raw), function() .kidpr_dv_each(v, function() {
     hz <- if (isTRUE(raw)) v$hz_raw else v$hz
+    # v0.9.342: the contaminated horizon X is no horizon of the profile here
+    # (Q23: a contaminated soil of trunk A, B or D keeps its division)
+    hz <- lapply(hz, function(e) {
+      e$overlay <- setdiff(e$overlay, "X")
+      e$overlay_na <- setdiff(e$overlay_na, "X")
+      e
+    })
     dec <- unique(unlist(lapply(hz, function(e) {
       if (e$kind == "horizon") c(e$code, e$overlay) else if (e$kind == "undecided") character(0) else e$overlay
     })))
@@ -939,7 +946,9 @@ volcanic_ash_kidpr <- function(pedon) {
 contaminated_x_kidpr <- function(pedon, within_cm = 30) {
   v <- .kidpr_dv_of(pedon)
   .kidpr_dv_memo(v, .kidpr_dv_key("x", within_cm), function() .kidpr_dv_each(v, function() {
-    ents <- v$hz
+    # v0.9.342: X is any horizon of the upper 30 cm (p. 58), so the overlay of
+    # a surface horizon the thickest-horizon rule leaves out still counts
+    ents <- v$hz_raw %||% v$hz
     r <- vapply(ents, .kidpr_dv_isk, NA, K = "X") &
       vapply(ents, function(e) .kidpr_dv_lt(e$rtop, within_cm), NA)
     rows <- .kidpr_dv_rows(v)

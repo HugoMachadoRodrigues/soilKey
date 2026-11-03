@@ -148,12 +148,12 @@ test_that("the 58 types of trunks A, B and D are clean and as the fixture writes
   tt <- vapply(r$types[["[DA]"]][-11L], function(e) unlist(e$test_terminals), "")
   expect_identical(unname(tt), c("C=", "C=", "C..", "C..", rep("R", 6L), "C~~", "C\"", "C^^", "C~~", "C\"", "C^^"))
   # the BH of the ochric types is a BHF of either kind; the rock under the
-  # dry peat is R or loose material C, which closes no other formula of AA
+  # dry peat is R or loose material C, and neither closes another formula of AA
   # (Hugo, 2026-11-02)
   expect_identical(codes_with("near_identity"), c("[AA05]", "[BB01]", "[BB03]"))
   expect_identical(r$types$AA[[5L]]$near_identity, list(R = "C"))
   expect_identical(codes_with("ignore"), sprintf("[AA%02d]", 1:4))
-  for (e in r$types$AA[1:4]) expect_identical(unlist(e$ignore), "C")
+  for (e in r$types$AA[1:4]) expect_identical(unlist(e$ignore), c("C", "R"))
   # Hugo's decisions on the readings of this release (2026-11-02)
   rd <- yaml::read_yaml(system.file("rules", "kidpr2008", "readings.yaml", package = "soilKey"))$readings
   top <- vapply(rd, `[[`, "", "topic")
@@ -178,7 +178,9 @@ test_that("every formula of trunks A, B and D, as a profile in the Russian notat
   for (k in names(fx)) {
     d <- substr(k, 1L, 2L)
     tk <- .ab_tokens(fx[[k]])
-    r <- .ab_of(tk, site = if (d == "BA") .ab_fp else list())
+    # a bare R takes its marks from the data (Hugo, 2026-11-02): a granite
+    rk <- if (grepl("-R$", fx[[k]]) && d == "DA") list(rock_origin = c(NA, "granite")) else list()
+    r <- do.call(.ab_of, c(list(tk, site = if (d == "BA") .ab_fp else list()), rk))
     info <- paste(k, paste(tk, collapse = " "))
     expect_identical(r$levels$code, c(substr(k, 1L, 1L), if (d == "DA") "[DA]" else d, sprintf("[%s]", k)), info = info)
     expect_length(r$provisional_because, 0L)
@@ -215,7 +217,8 @@ test_that("Q14: the buried soil within 100 cm, the substrate of trunk D, the roc
   # the substrate and its mark name the types of trunk D
   for (k in list(c("C=", "[DA02]"), c("C..", "[DA04]"), c("C~~", "[DA15]"), c("C\"", "[DA16]"), c("C^^", "[DA17]"),
                  c("R", "[DA06]"), c("Rca", "[DA08]"), c("Rcs", "[DA10]")))
-    expect_identical(.ab_codes(c("W:4", paste0(k[1L], ":40"))), paste0("D/[DA]/", k[2L]), info = k[1L])
+    expect_identical(.ab_codes(c("W:4", paste0(k[1L], ":40")), rock_origin = c(NA, if (k[1L] == "R") "granite" else NA)),
+                     paste0("D/[DA]/", k[2L]), info = k[1L])
   # the legend's aeolian mark is the ^^ of the diagrams (soilKey's reading)
   expect_identical(.ab_codes(c("O:5", "C\"\":40")), "D/[DA]/[DA14]")
   # the C of the solonchaks is not tested
@@ -437,4 +440,112 @@ test_that("a chemozem is named by its pollutants and the soil it was, keyed with
   # the masking does not touch the pedon
   expect_identical(p$horizons$contamination_hazard[1L], "extremely hazardous")
   expect_true(isTRUE(p$site$contaminated))
+})
+
+
+# --- the review of part 7 and Hugo's answers (2026-11-02) ------------------------------
+
+test_that("Hugo 1 and 4: peat starting 50 cm under the top of the body is TT; a rock under the peat closes no formula", {
+  skip_on_cran()
+  r <- .ab_of(c("TO:50", "TO:70"))
+  expect_identical(r$levels$code, c("A", "AA", "[AA01]"))
+  expect_true(any(grepl("is read as TT", unlist(lapply(r$trace$types, function(x) x$evidence[[1L]]$notes)))))
+  expect_identical(.ab_codes(c("TO:50", "TE:70")), "A/AA/[AA01]")
+  expect_identical(.ab_codes(c("TE:50", "TO:70", "G:20")), "A/AA/[AA04]")
+  expect_identical(.ab_codes(c("TO:40", "TT:100", "R:30")), "A/AA/[AA01]")
+  expect_identical(.ab_codes(c("TE:40", "TT:100", "C:30")), "A/AA/[AA03]")
+})
+
+test_that("Hugo 2 and 6: the substrate directly under the O or W; the marks of a bare R from the data", {
+  skip_on_cran()
+  # a deeper rock is not tested
+  expect_identical(.ab_codes(c("W:4", "C..:20", "R:30")), "D/[DA]/[DA04]")
+  expect_identical(.ab_codes(c("W:4", "C:20", "R:30"), phys_clay_pct = c(NA, 30, NA)), "D/[DA]/[DA02]")
+  # a bare R of the notation: limestone, marble, effervescence; nothing recorded
+  expect_identical(.ab_codes(c("O:4", "R:40"), rock_origin = c(NA, "limestone")), "D/[DA]/[DA07]")
+  expect_identical(.ab_codes(c("O:4", "R:40"), rock_origin = c(NA, "marble")), "D/[DA]/[DA07]")
+  expect_identical(.ab_codes(c("O:4", "R:40"), effervescence_class = c(NA, "strong")), "D/[DA]/[DA07]")
+  r <- .ab_of(c("O:4", "R:40"))
+  expect_identical(r$levels$code[3L], "[DA05]")
+  expect_true(all(c("types:[DA07]", "types:[DA09]") %in% r$provisional_because))
+  # an undesignated layer naming a rock with no texture: R or C, undecided
+  r <- .ab_class(.ab_P(.ab_org(0, 4, peat_decomposition_pct = 20),
+                       .ab_L(4, 40, rock_origin = "granite", clay_pct = NA, silt_pct = NA, sand_pct = NA)))
+  .ab_und(r, c("[DA05]", "[DA01]", "[DA03]"), "[DA]")
+  # the layer's own origin before the site's; an alluvial fan is proluvial
+  W <- .ab_W()
+  expect_identical(.ab_class(.ab_P(W, .ab_L(3, 60, designation = "C", layer_origin = "aeolian sand"),
+                                   site = list(parent_material = "alluvium")))$levels$code[3L], "[DA17]")
+  expect_identical(.ab_class(.ab_P(W, .ab_L(3, 60, designation = "C", layer_origin = "alluvium"),
+                                   site = list(parent_material = "aeolian sand")))$levels$code[3L], "[DA15]")
+  r <- .ab_class(.ab_P(W, .ab_L(3, 60, designation = "C", layer_origin = "alluvial fan")))
+  expect_identical(nrow(r$levels), 2L)
+  expect_true(any(grepl("Combination not provided", r$warnings)))
+})
+
+test_that("Hugo 3: the thickest stratified horizon names the stratozem", {
+  skip_on_cran()
+  expect_identical(.ab_codes(c("RY:20", "RU:30", "D:30")), "B/BC/[BC02]")
+  expect_identical(.ab_codes(c("P:25", "RY:20", "RJ:30", "D:30")), "B/BC/[BC07]")
+  .ab_und(.ab_of(c("RY:30", "RU:30", "D:30")), c("[BC01]", "[BC02]"), "BC")
+})
+
+test_that("D6: on the data route the floodplain surface over a buried humus horizon is the humus horizon", {
+  skip_on_cran()
+  allu <- function(t, b, ...) .ab_L(t, b, layer_origin = "alluvium", stratification_pattern = "continuous", ...)
+  AU <- function(t, b, ...) .ab_AY(t, b, munsell_value_dry = 3, munsell_chroma_dry = 1, ph_h2o = 7.2, oc_pct = 4, ...)
+  gley <- function(t, b, ...) .ab_L(t, b, munsell_hue_moist = "5GY", munsell_value_moist = 5, munsell_chroma_moist = 1,
+                                    munsell_hue_dry = NA, munsell_value_dry = NA, munsell_chroma_dry = NA,
+                                    redoximorphic_features_pct = 20, ...)
+  for (b in c("Ab", "2Ab")) {
+    p <- .ab_P(AU(0, 30, layer_origin = "alluvium"), allu(30, 60), AU(60, 75, designation = b, layer_origin = "alluvium"),
+               allu(75, 120), site = .ab_fp)
+    r <- .ab_class(p)
+    expect_identical(r$levels$code, c("B", "BA", "[BA02]"), info = b)
+    expect_length(r$provisional_because, 0L)
+  }
+  p <- .ab_P(.ab_AY(0, 15), allu(15, 50), .ab_AY(50, 60, designation = "Ab"), gley(60, 120, layer_origin = "alluvium"),
+             site = .ab_fp)
+  expect_identical(.ab_class(p)$levels$code, c("B", "BA", "[BA06]"))
+  # the notation keeps the index written
+  .ab_q15(.ab_of(c("RU:50", "C~~:30"), site = .ab_fp), "BA")
+})
+
+test_that("Hugo 5, D7: a contaminated soil of trunk D keeps its type; X under a thicker O still counts", {
+  skip_on_cran()
+  expect_identical(.ab_codes(c("W+X:4", "C..:40"), pollutants = c("Cd", NA)), "D/[DA]/[DA04]")
+  expect_identical(.ab_codes(c("TO+X:40", "TT:100")), "A/AA/[AA01]")
+  p <- .ab_ped(c("O:15", "AY+X:10", "EL:15", "BT:40", "C:30"))
+  expect_true(contaminated_x_kidpr(p)$passed)
+  expect_identical(.ab_codes(c("O:15", "AY+X:10", "EL:15", "BT:40", "C:30")), "C/CU/[CU:CA01]")
+})
+
+test_that("D1, D5 and the minor fixes of the chemozem name", {
+  skip_on_cran()
+  # an X with a suffix, written first or after its host
+  r <- .ab_of(c("AY+Xpb:15", "EL:15", "BT:40", "C:30"), pollutants = c("Pb and Zn", NA, NA, NA))
+  expect_identical(r$levels$code[3L], "[CU:CA04]")
+  expect_identical(r$trace$chemozem$pollutants, c("Pb", "Zn"))
+  expect_identical(.ab_of(c("Xpb+AY:15", "EL:15", "BT:40", "C:30"))$levels$code[3L], "[CU:CA04]")
+  expect_identical(soilKey:::.kidpr_cu_unmask(c("AY+Xpb", "Xpb+AY", "X", "EL"), list(designation_system = "kidpr")),
+                   list(designation = c("AY", "AY", "X", "EL"), keep = c(TRUE, TRUE, FALSE, TRUE)))
+  # a bare X layer leaves the masked profile
+  r <- .ab_of(c("X:5", "AY:15", "EL:15", "BT:40", "C:30"), contamination_hazard = c("extremely hazardous", NA, NA, NA, NA))
+  expect_identical(r$levels$code, c("C", "CU", "[CU:CA04]"))
+  expect_length(r$provisional_because, 0L)
+  # the trace of the chemozem is an assigned step
+  r <- .ab_class(make_kidpr2008_example("CU"))
+  expect_true(isTRUE(r$trace$chemozem$passed))
+  ft <- soilKey:::.flatten_key_trace(r$trace)
+  expect_identical(ft$status[ft$phase == "chemozem"], "passed")
+  # an original soil with no division
+  r <- .ab_of(c("AU+X:30", "BEL:20", "BI:30", "C:30"), pollutants = c("Hg", NA, NA, NA))
+  expect_identical(r$name, "Chemozems polluted with Hg; original soil: Postlithogenic soils, division not provided by the Field Guide of 2008")
+})
+
+test_that("R8: a tie of recorded thicknesses asks for no depth", {
+  skip_on_cran()
+  r <- .ab_of(c("O:10", "AY:10", "EL:15", "BEL:15", "BT:40", "C:30"))
+  expect_true(all(c("types:[CA01]", "types:[CA04]") %in% r$provisional_because))
+  expect_false(any(c("top_cm", "bottom_cm") %in% r$missing_data))
 })
