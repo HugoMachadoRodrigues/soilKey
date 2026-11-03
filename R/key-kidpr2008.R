@@ -18,9 +18,11 @@
 #' organogenic, synlithogenic, postlithogenic and weakly developed soils, and
 #' trunk E, not a soil: rock outcrops, technogenic surface formations, or a
 #' deposit that is not humified over a buried soil) and the 27 divisions
-#' (key 2.3), and the types of the divisions CA to CT (the profile formulas
-#' of chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339; the chemozems CU
-#' have no types). The subtypes follow in later releases.
+#' (key 2.3), and the types of every division (the profile formulas of
+#' chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339, trunks A, B and D
+#' in v0.9.342). The chemozems CU have no types: their name is built from
+#' the pollutants and the soil they were (v0.9.342). The subtypes follow in
+#' later releases.
 #'
 #' The keys read the diagnostic horizons of the profile: the Russian
 #' notation where the profile is written in it (declared with
@@ -61,6 +63,16 @@
 #' and agro before natural. A profile no formula matches keeps its division,
 #' the type unassigned, with the nearest formulas in the warnings and in the
 #' trace (phase \code{types_nearest}).
+#'
+#' A chemozem (CU, an X horizon: pollutants of the extremely hazardous
+#' category within 30 cm) is named, as p. 134 asks, by the kind of
+#' pollution and the original soil: the \code{pollutants} of the layers of
+#' the X horizon, and the soil the profile keys to with the X masked (the X
+#' overlays and the contamination records removed), down to its type. The
+#' type level is soilKey's \code{"[CU:<code of the original soil>]"}, named
+#' "Chemozems polluted with Cu, Ni, Co; original soil: Sod-podzolic"; the
+#' original soil keyed is in the trace (phase \code{chemozem}), and an
+#' original soil left undecided makes the name provisional.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Optional pre-loaded rule set (\code{load_rules("kidpr2008")}).
@@ -113,7 +125,108 @@ classify_kidpr2008 <- function(pedon, rules = NULL,
   }, add = TRUE)
   res <- classify_hierarchical("kidpr2008", pedon, rules = rules,
                                on_missing = on_missing, gapfill = FALSE)
-  .kidpr_types_notes(.kidpr_result_notes(res, view, pedon), view)
+  res <- .kidpr_types_notes(.kidpr_result_notes(res, view, pedon), view)
+  # v0.9.342: a chemozem is named by its pollutants and the soil it was
+  .kidpr_chemozem_name(res, view, pedon, rules)
+}
+
+# The name of a chemozem (CU, which has no types): the types are told "by
+# the kind of pollution, keeping the name of the original soil" (p. 134), so
+# the name is built from the pollutants of the X horizon (`pollutants` of the
+# layers the X takes) and the soil the profile keys to with the X masked:
+# the X overlays taken out of the designations and the contamination records
+# (contamination_hazard of the extremely hazardous layers,
+# contamination_type, site$contaminated) removed, the profile keyed again
+# down to its type. The type level of the result is soilKey's
+# "[CU:<code of the original soil>]"; in English "Chemozems polluted with
+# Cu, Ni, Co; original soil: Sod-podzolic", in Russian "Khemozemy,
+# zagryaznennye Cu, Ni, Co, po iskhodnoi pochve: Dernovo-podzolistye" (the
+# original soil named in the nominative, after the book's "iskhodnaya
+# pochva"; soilKey's form, accepted by Hugo, 2026-11-02). Pollutants not
+# recorded are named so, and asked in $missing_data; an original soil that
+# is undecided makes the name provisional ("original_soil:" entries in
+# provisional_because), and the original soil keyed is in the trace (phase
+# "chemozem").
+.kidpr_chemozem_name <- function(res, view, pedon, rules) {
+  lv <- res$levels
+  if (is.null(lv) || nrow(lv) < 2L || !identical(lv$code[2L], "CU") || isTRUE(.kidpr_dv_state$masking))
+    return(res)
+  h <- pedon$horizons
+  x <- contaminated_x_kidpr(view)
+  hidx <- unique(stats::na.omit(view$f$horizon_idx[x$layers]))
+  pol <- if (!is.null(h$pollutants) && length(hidx)) as.character(h$pollutants[hidx]) else character(0)
+  pol <- trimws(unlist(strsplit(stats::na.omit(pol), "[;,]")))
+  pol <- unique(pol[nzchar(pol)])
+  # the profile with the X masked
+  masked <- pedon$clone(deep = TRUE)
+  mh <- data.table::copy(data.table::as.data.table(masked$horizons))
+  if (!is.null(mh$designation)) {
+    d <- as.character(mh$designation)
+    d <- gsub("\\s*\\+\\s*[X\u0425](?![A-Za-z])", "", d, perl = TRUE)
+    d <- gsub("^[X\u0425]\\s*\\+\\s*", "", d, perl = TRUE)
+    d[d %in% c("X", "\u0425")] <- NA_character_
+    mh$designation <- d
+  }
+  if (!is.null(mh$contamination_hazard)) {
+    hz <- tolower(as.character(mh$contamination_hazard))
+    mh$contamination_hazard[!is.na(hz) & grepl("^extrem", hz)] <- NA
+  }
+  if (!is.null(mh$contamination_type)) mh$contamination_type <- NA
+  masked$horizons <- mh
+  s <- masked$site
+  s$contaminated <- NULL
+  masked$site <- s
+  prev <- .kidpr_dv_state$masking
+  .kidpr_dv_state$masking <- TRUE
+  on.exit(.kidpr_dv_state$masking <- prev, add = TRUE)
+  m <- classify_kidpr2008(masked, rules = rules, on_missing = "silent")
+  ml <- m$levels
+  k <- nrow(ml)
+  if (!k) return(res)
+  # the level the original soil stops at, undecided below it
+  pb <- m$provisional_because %||% character(0)
+  und <- if (k == 2L && any(startsWith(pb, "types:"))) "type"
+         else if (k == 1L && any(startsWith(pb, "divisions:"))) "division" else ""
+  orig_en <- paste0(ml$name[k], if (nzchar(und)) sprintf(", %s undecided", und) else "")
+  orig_ru <- paste0(ml$name_native[k] %||% ml$name[k],
+                    switch(und, type = " (\u0442\u0438\u043f \u043d\u0435 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d)",
+                           division = " (\u043e\u0442\u0434\u0435\u043b \u043d\u0435 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d)",
+                           ""))
+  en <- if (length(pol)) sprintf("Chemozems polluted with %s; original soil: %s", paste(pol, collapse = ", "), orig_en)
+        else sprintf("Chemozems, pollutants not recorded; original soil: %s", orig_en)
+  ru_head <- "\u0425\u0435\u043c\u043e\u0437\u0435\u043c\u044b"
+  ru_by <- "\u043f\u043e \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0439 \u043f\u043e\u0447\u0432\u0435"
+  ru <- if (length(pol)) sprintf("%s, \u0437\u0430\u0433\u0440\u044f\u0437\u043d\u0435\u043d\u043d\u044b\u0435 %s, %s: %s",
+                                 ru_head, paste(pol, collapse = ", "), ru_by, orig_ru)
+        else sprintf("%s, \u0437\u0430\u0433\u0440\u044f\u0437\u043d\u0438\u0442\u0435\u043b\u0438 \u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u044b, %s: %s",
+                     ru_head, ru_by, orig_ru)
+  code <- sprintf("[CU:%s]", gsub("[][]", "", ml$code[k]))
+  row <- lv[1L, , drop = FALSE]
+  row$level <- "types"
+  row$code <- code
+  row$name <- en
+  if (!is.null(row$name_native)) row$name_native <- ru
+  if (!is.null(row$name_en)) row$name_en <- en
+  res$levels <- rbind(lv[1:2, , drop = FALSE], row)
+  rownames(res$levels) <- NULL
+  res$name <- en
+  if (length(m$provisional_because))
+    res$provisional_because <- unique(c(res$provisional_because, paste0("original_soil:", m$provisional_because)))
+  res$missing_data <- unique(c(res$missing_data, m$missing_data, if (!length(pol)) "pollutants"))
+  path <- paste(ml$code, collapse = "/")
+  notes <- sprintf(paste(
+    "Chemozem (C.3\u0431; Hugo's decision Q23): its type is named by the pollutants and the original soil (p. 134),",
+    "the profile keyed with the X horizon masked: %s, %s%s."), path, ml$name[k],
+    if (nzchar(und)) sprintf(", its %s undecided (see $missing_data)", und) else if (length(m$provisional_because)) ", provisional" else "")
+  if (!length(pol)) notes <- c(notes, "The pollutants of the X horizon are not recorded (`pollutants`).")
+  carried <- grep("^The type is undecided|^Combination not provided|^Intergrade|not provided by the Field Guide",
+                  m$warnings, value = TRUE)
+  if (length(carried)) notes <- c(notes, paste("Original soil:", carried))
+  res$warnings <- c(res$warnings, notes)
+  res$trace[["chemozem"]] <- list(code = code, name = en, name_native = ru, pollutants = pol, layers = hidx,
+                                  original = list(levels = ml, name = m$name, provisional_because = m$provisional_because,
+                                                  missing = m$missing_data, warnings = m$warnings))
+  res
 }
 
 # The notes of a result: trunk E is not a soil; a profile of trunk C that no

@@ -138,7 +138,8 @@ test_that("the 111 types of CK to CT are clean and as the fixture writes them", 
   expect_true(all(names(.ck_counts) %in% names(r$types)))
   expect_identical(lengths(r$types)[names(.ck_counts)], .ck_counts)
   expect_identical(sum(.ck_counts), 111L)
-  expect_identical(sum(lengths(r$types)), 217L)
+  # 217 types of trunk C; with those of trunks A, B and D (v0.9.342), 275
+  expect_identical(sum(lengths(r$types[grepl("^C", names(r$types))])), 217L)
   # the chemozems have no types
   expect_false("CU" %in% names(r$types))
   fx <- .ck_fixture()
@@ -233,7 +234,7 @@ test_that("every formula of CK to CT, as a profile in the Russian notation, keys
   expect_identical(off, c("CS16 no_BCA: C", "CS17 no_BCA: C"))
 })
 
-test_that("the example of each division CK to CT reaches its type; the chemozems stop at the division", {
+test_that("the example of each division CK to CT reaches its type; the chemozems are named by the soil they were", {
   skip_on_cran()
   ex <- c(CK = "[CK05]", CL = "[CL01]", CM = "[CM01]", CN = "[CN01]", CO = "[CO03]", CP = "[CP06]", CQ = "[CQ04]",
           CR = "[CR10]", CS = "[CS07]", CT = "[CT01]")
@@ -243,8 +244,11 @@ test_that("the example of each division CK to CT reaches its type; the chemozems
     expect_identical(r$levels$code[2:3], c(d, ex[[d]]), info = d)
     expect_identical(r$name, r$levels$name[3L])
   }
+  # v0.9.342: the chemozems have no types of their own; the name keeps the
+  # original soil (test-v09342-kidpr2008-types-abd.R)
   r <- .ck_class(make_kidpr2008_example("CU"))
-  expect_identical(r$levels$level, c("trunks", "divisions"))
+  expect_identical(r$levels$level, c("trunks", "divisions", "types"))
+  expect_identical(r$levels$code, c("C", "CU", "[CU:CA04]"))
   expect_false(any(grepl("not provided", r$warnings)))
 })
 

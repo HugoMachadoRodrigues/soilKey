@@ -237,9 +237,11 @@ test_that("the example of each division CA to CJ reaches its type", {
     expect_identical(r$name, r$levels$name[3L])
     expect_true("types" %in% names(r$trace))
   }
-  # a division with no types keeps the division as the name
+  # a division with no types: the chemozems are named by the soil they were
+  # (v0.9.342, test-v09342-kidpr2008-types-abd.R), with no formula of their own
   r <- .ty_class(make_kidpr2008_example("CU"))
-  expect_identical(r$levels$level, c("trunks", "divisions"))
+  expect_identical(r$levels$level, c("trunks", "divisions", "types"))
+  expect_false("types" %in% names(r$trace))
   expect_false(any(grepl("not provided", r$warnings)))
 })
 
