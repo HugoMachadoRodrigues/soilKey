@@ -9,8 +9,9 @@ five trunks (key 2.2: the organogenic, synlithogenic, postlithogenic and
 weakly developed soils, and trunk E, not a soil: rock outcrops,
 technogenic surface formations, or a deposit that is not humified over a
 buried soil) and the 27 divisions (key 2.3), and the types of the
-divisions CA to CJ (the profile formulas of chapter 4, v0.9.338). The
-types of the other divisions and the subtypes follow in later releases.
+divisions CA to CT (the profile formulas of chapter 4: CA to CJ in
+v0.9.338, CK to CT in v0.9.339; the chemozems CU have no types). The
+subtypes follow in later releases.
 
 ## Usage
 
