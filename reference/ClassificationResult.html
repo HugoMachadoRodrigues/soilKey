@@ -9,7 +9,7 @@ ClassificationResult: structured outcome of running a key"><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.339</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.341</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -161,6 +161,26 @@ CSCJ 2011: temperature and man-made phases), a
 <code>NULL</code> otherwise. Since v0.9.324.</p></dd>
 
 
+<dt><code>candidates</code></dt>
+<dd><p>For the systems that attach a soil to several
+classes rather than key it to one (none yet; the
+French Referentiel pedologique 2008 will be the
+first), every class that may attach it: a
+<code>data.frame</code> with <code>code</code>, <code>name</code>,
+<code>group</code>, <code>degree</code> (simple,
+simple_or_imperfect, imperfect, undecided; fail for
+the nearest classes when nothing attaches),
+<code>rank</code> (the order of precedence), <code>in_name</code>,
+<code>double_with</code>, <code>double_possible</code>,
+<code>n_failed</code>, <code>distance</code>
+(the size of the failures in tolerance units),
+<code>failed</code>, <code>imperfect_by</code>,
+<code>undecided_by</code>, <code>excluded_by</code> (the
+criteria, joined with "; ") and <code>nearest</code>.
+<code>NULL</code> for every other system, and then not
+printed. Since v0.9.340.</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -191,7 +211,8 @@ CSCJ 2011: temperature and man-made phases), a
 <span>  warnings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  system_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  provisional_because <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span>  provisional_because <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  candidates <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -248,6 +269,11 @@ CSCJ 2011: temperature and man-made phases), a
 <dt><code>provisional_because</code></dt>
 <dd><p>Character vector of undecided classes
 tested before the assigned ones.</p></dd>
+
+
+<dt><code>candidates</code></dt>
+<dd><p>The classes that may attach the soil (a
+data.frame), or NULL; since v0.9.340.</p></dd>
 
 
 </dl><p></p></div>

@@ -1979,6 +1979,9 @@ plus auxiliaries) used in the test suite.
 - [`evaluate_rsg_tests()`](https://hugomachadorodrigues.github.io/soilKey/reference/evaluate_rsg_tests.md)
   : Evaluate the test block of a single RSG
 
+- [`within_tolerance()`](https://hugomachadorodrigues.github.io/soilKey/reference/within_tolerance.md)
+  : Compare a value with a threshold that has a tolerance
+
 - [`fibrico()`](https://hugomachadorodrigues.github.io/soilKey/reference/fibrico.md)
   : Material organico fibrico (SiBCS Cap 14)
 

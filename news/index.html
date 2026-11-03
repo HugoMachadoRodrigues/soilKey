@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.339</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.341</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,100 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.341" id="soilkey-09341-2026-11-02">soilKey 0.9.341 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09341-2026-11-02"></a></h2>
+<div class="section level3">
+<h3 id="france-the-notation-of-the-référentiel-pédologique-0-9-341">France: the notation of the Référentiel pédologique 2008<a class="anchor" aria-label="anchor" href="#france-the-notation-of-the-r%C3%A9f%C3%A9rentiel-p%C3%A9dologique-0-9-341"></a></h3>
+<p>The French Référentiel pédologique 2008 (AFES) writes its reference horizons in a notation of its own (LAch, NaBTg2, II Scag, E&amp;BT, OFrzo) and defines its references by sequences of them. This release adds the reader of that notation, the catalogue of its horizons and marks, and the fields its references will read. Nothing is classified yet, so every classification is unchanged; the horizons on the data, then the registry entry with the references, follow.</p>
+<ul><li>
+<strong>The notation reader</strong> (internal). A designation is read in a closed, case-sensitive vocabulary by the longest match (Snd is the silandic S, not Sn with d; Sal the aluminic S, not Sa with l; Kc, Xc, OXc and Femp are codes of their own) into its code, the listed code a variant belongs to (OF for OFr), its family, the overlays L, Na, Sa, the paleo π and J (LA, NaBT, πRT, JZtc), its suffixes as features with their reading on that host (c is indurated, but the mycogenic structure after OF or OH; x is fragic, but mixed rocks after D), a Roman numeral for a lithological discontinuity, the digits of a sub-horizon, transitions (A-S, and BC or ACk written without the hyphen) and juxtaposed volumes (E&amp;BT). The writings the book uses for another code are read with a note (Lav, Vna, Vsa, OFz, OHz, OHmzo), and the old codes Ahs, FEm, FEmp and Ap as Aso, Fem, Femp and L. A designation it cannot read is left unread with a note; text that is not UTF-8 is read as Latin-1; nothing stops with an error.</li>
+<li>
+<strong>The notation of a profile</strong> is decided before any letter is read, since the RP shares A1, A2, Cca, G, Go and Gr with the CPCS 1967, with opposite meanings for A2 and Cca. A profile is in the RP notation when <code>site$designation_system</code> declares it, or when it has one code only the RP writes (OL, OF, OH, BP, LA, SV, FS, OX, RT, FE, Sca, Sal, Aca, Ach, Aso, Kc, Km, Js, Ys, Ztc, Mli, BTß, E&amp;BT, NaBT …) or two kinds of code that it alone usually writes (Fe, K, Si, Hf, Hm, Hs, X, Y, U, V, Sn, ND, Sg, Cca, a BT with a lower-case suffix where another designation has lower case), and no symbol only the CPCS writes (A00, A0, (A), (B), Bfe, Can, an A2 used as an E) and no sign of the Russian notation. A profile with both is undecided: no designation is read as an RP code, and both readings go to the evidence. The country is never read. In a profile declared <code>rp1995</code>, or written with FEm, FEmp or Ahs, FE is the ferric Fe of the RP of 1995, not the ferruginous FE of 2008.</li>
+<li>
+<strong>Hints from other notations.</strong> A CPCS designation gives the RP codes of Annex 6 (A2 gives E or Ea, Cca gives Ck, K, Kc or Km, (B) the S horizons, with the slips of the table noted), and an FAO designation the codes of soilKey’s table of the FAO letters (Bt gives BT or FSt, Bw the S horizons, Oi OL). They are candidates for the identification on the data, never the RP code. The CPCS and Russian readers do not change.</li>
+<li>
+<strong>The catalogue</strong> <code>inst/rules/rp2008/horizons.yaml</code>: the 75 codes of the list of reference horizons, the 4 layers and 8 materials, 11 variants printed in the definitions and chapters (Fox, Fhy, the five kinds of OX, Gr, Go, Mma, Marg), the 7 O sub-horizons of Annex 1, 4 old codes and the B of the transitions (each with the name as printed, an English gloss, its family, the page and its class for the recognition), the 5 prefixes and 32 suffixes with the hosts the book lists, the writings of the book read as another code, the Annex 6 table and the table of the FAO letters. Every sequence of reference horizons printed in the 34 chapters and in Annex 1 (359 rows, 308 distinct strings) reads with no unknown code.</li>
+<li>
+<strong>New fields.</strong> Horizon: <code>coarse_fragments_wt_pct</code> and the four classes by weight <code>gravel_wt_pct</code> (graviers, 0.2-2 cm), <code>cobbles_wt_pct</code> (cailloux, 2-7.5 cm), <code>stones_wt_pct</code> (pierres, 7.5-20 cm) and <code>boulders_wt_pct</code> (blocs, over 20 cm); <code>cec_method</code>; <code>redox_relict</code>; <code>anthropic_material</code> and <code>anthropic_material_pct</code>; <code>o_zoogenic</code>; and the 21 fields that decide a reference horizon: <code>fine_organic_matter_pct</code>, <code>biogenic_aggregates_pct</code>, <code>biogenic_aggregate_size</code>, <code>effervescence_hot</code>, <code>mgco3_pct</code>, <code>fe_total_pct</code>, <code>fe_ffe_pct</code>, <code>weatherable_minerals_pct</code>, <code>oxides_triacid_pct</code>, <code>clay_mineralogy</code>, <code>halloysite_pct</code>, <code>kaolinite_pct</code>, <code>smectite_pct</code>, <code>degradation_form</code>, <code>tongue_vol_pct</code>, <code>tongue_width_mm</code>, <code>lamellae_cumulative_cm</code>, <code>c_pyro_pct</code>, <code>pyrophosphate_index</code>, <code>s_total_pct</code> and <code>nodules_wt_pct</code>. Site: <code>valley_position</code>, <code>flood_frequency</code>, <code>poldered</code>, <code>lateral_bp_downslope</code>, <code>rp_anthropic_history</code>, <code>rp_qualifiers_recorded</code> and <code>parent_material_relation</code>. The values <code>rp</code>, <code>rp2008</code>, <code>rp1995</code>, <code>referentiel</code> and <code>afes</code> of <code>site$designation_system</code>, the humus forms of Annex 1 in <code>humus_form</code>, and the origins <code>colluvic</code>, <code>marine</code> and <code>transported</code> of <code>layer_origin</code>.</li>
+<li>The description of <code>cole_value</code> now says what it measures: from moist at 33 kPa to oven dry, not from 1500 kPa.</li>
+</ul><div class="section level4">
+<h4 id="hugos-decisions-0-9-341">Hugo’s decisions (2026-11-02)<a class="anchor" aria-label="anchor" href="#hugos-decisions-0-9-341"></a></h4>
+<ul><li>
+<strong>Registry names (Q2):</strong> the system will be <code>rp2008</code>, namespace <code>rp</code>, aliases <code>rp</code> and <code>referentiel</code>; <code>france</code>, <code>french</code> and <code>fr</code> stay with the CPCS, so nothing changes for those who use it.</li>
+<li>
+<strong>The notation (Q9):</strong> declared, or one symbol only the RP writes, or two that it alone usually writes, with no symbol only the CPCS or the Russian notation writes; a mixed profile is undecided; the CPCS and FAO designations give hints through Annex 6, and the data decide; never by the country.</li>
+<li>
+<strong>The vocabulary (default 12):</strong> closed and case-sensitive, by the longest match; L, Na, Sa, π and J are overlays and the suffixes features; -c is indurated except in Kc, in Xc and after OF or OH; the variants of the book are read; FE is read as Fe only in an RP 1995 profile or with FEm, FEmp or Ahs.</li>
+<li>
+<strong>The new fields:</strong> the coarse elements by weight in the book’s four classes (Q11), the method of the CEC (Q12), relict redox features (Q13), the position in the valley, the floods, the polders and a BP downslope (Q14), the anthropic materials and history (Q15), the qualifiers recorded and the relation to the parent material (Q21), the zoogenic O and the humus forms (Q22), and the 21 fields that decide a reference horizon (Q23).</li>
+<li>
+<strong>The readings of the reader, accepted</strong> (<code>inst/rules/rp2008/readings.yaml</code>): ND, the nodular horizon, is only a likely sign of the notation, since databases write ND for “not determined”; the suffixes read only on the hosts the book lists completely; Ga, Ea and the V variants read as their code with a feature; the frozen mark * of the cryosols; transitions written without the hyphen; Roman numerals without a space and a numeral written alone; the old codes in any RP profile and as signs of the notation; the classes of the symbols beyond those of Q9; the CPCS A2 used as an E; the sign of the Russian notation; the patterns of Annex 6 and the table of the FAO letters; the writing of the sequences; Latin-1 text.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="after-the-review-hugo-0-9-341">After the review (Hugo, 2026-11-02)<a class="anchor" aria-label="anchor" href="#after-the-review-hugo-0-9-341"></a></h4>
+<ul><li>
+<strong>Fixes.</strong>
+<ul><li>V and X written alone are the vertic and peyric horizons, not Roman numerals (SV/V, O/X).</li>
+<li>Ap (formerly L) inside a transition or written with a slash (Ap/C) is no sign of the notation and no longer makes the profile one of the RP of 1995.</li>
+<li>A juxtaposition is a sign of the notation only as E&amp;BT or with a part that is one: the New Zealand L&amp;F and F&amp;H are not.</li>
+<li>L is a prefix only before the A, E, S, O, H, BT and BP horizons: LF, LC, LR, LM and LD are no RP codes.</li>
+<li>-ho is a sign only on Aho, Acaho, Sho, Zho, THho and Xho with nothing after it, and the frozen * only a likely one, so the FAO runs Ahoc and A* do not make an RP profile.</li>
+<li>A prefix written apart joins its master (Na BT, Sa A, p. 296), and “+” between two horizons is a juxtaposition (E + A, p. 315).</li>
+<li>The (B)Ca row of Annex 6 is read, and A1g takes the A1 row.</li>
+<li>Sub-horizons are numbered from 1: A0, A00, BT0 and S01 are no RP writing, and A00 keeps its Annex 6 hint OL.</li>
+<li>Cs is C with -s, not a symbol of the CPCS only; an Australian A2e is no longer called CPCS in the explanation.</li>
+<li>A mark written twice (Sgg, Rcaca) or -c or -m after a code that says indurated (Kcc, OXmc) leaves the designation unread, with a note; the suffixes of the book’s complete lists are read only on the codes it names (St, Ct, FSt; BTd, Sd; Ea, Ga, ga; noz and zo on OF and OH).</li>
+<li>A transition keeps its sub-horizon digits and the features of each part.</li>
+<li>Thin and narrow spaces, the Windows-1252 en dash, the capital Π, “pi” and the capital ẞ are read.</li>
+<li>Pages corrected in the catalogue: Amg p. 12, Alu p. 78, OXfr p. 151.</li>
+<li>The units of iron: <code>fe_total_pct</code> in % Fe2O3, <code>fe_dcb_pct</code> and <code>fe_ffe_pct</code> in % Fe, and the factor 0.6994 for the ratios of free to total iron (Sn 0.60-0.90, FFE over total iron above 0.20).</li>
+<li>The two fields of the plan that were missing: <code>lateral_cover_pct</code> (horizon: the share of the ground an O horizon covers, Annex 1) and <code>rp_paleo</code> (site: the paleosolum terms declared, pp. 58-63).</li>
+</ul></li>
+<li>
+<strong>New decisions.</strong>
+<ul><li>An FAO or USDA symbol beside an RP symbol leaves the notation undecided, as a CPCS or Russian symbol does: a B with a lower-case suffix (Bw, Bs, Bt …), Oh, Oi, Oe, Oa, Cr, AB or BA, and an Arabic numeral of discontinuity (2Cg, 3Bt). The RP transitions A-S, AS and BC are not such symbols.</li>
+<li>In a profile written all in capitals the case is lost: the designations an upper-cased FAO, USDA or Canadian table also writes (OH, OF, OL, AH, AP, BT, BW, CK, CR …) stop counting as signs, while the codes only the RP writes in capitals (LA, LE, LS, LBT, SV, FS, OX, RT, FE, BP, ND …) still count. OH/AH/E/BT/C is not the RP; LA/BT, SV/V and A/FE/C are. This refines the first reading of the decision, under which only a declaration recognised a profile in capitals, which lost 48 of the 308 sequences of the book.</li>
+<li>A lone g, the redox horizon written alone, is a likely sign of the notation.</li>
+<li>
+<code>site$designation_system</code> is read by prefix: a value that starts with rp, referentiel or afes declares the RP (AFES 2009, RP08, Référentiel pédologique français), rp1995 or rp95 the RP of 1995. The Russian reader reads its own declarations the same way (a value that starts with kidpr, ru, rfg or rsc); nothing else in it changes.</li>
+</ul></li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.340" id="soilkey-09340-2026-11-02">soilKey 0.9.340 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09340-2026-11-02"></a></h2>
+<div class="section level3">
+<h3 id="attachment-engine-pieces-for-systems-that-are-not-keys-0-9-340">Attachment: engine pieces for systems that are not keys<a class="anchor" aria-label="anchor" href="#attachment-engine-pieces-for-systems-that-are-not-keys-0-9-340"></a></h3>
+<p>This release prepares the French Referentiel pédologique 2008, which is not a key: a soil is attached to one, two or none of its references, simply or imperfectly. It adds the generic pieces that system will use. No system uses them yet, and every other classification is unchanged.</p>
+<ul><li>
+<strong><code>within_tolerance(value, threshold, direction, tol)</code></strong> compares a value with a threshold that has a tolerance. It returns “pass”, “imperfect” (beyond the threshold but within the tolerance), “fail” or NA. The edge of the tolerance band is inside it.</li>
+<li>
+<strong>Tolerance tables.</strong> A system lists its tolerances by kind of threshold (depth, pH, CEC, …), for one threshold or for every threshold of a kind. A threshold the table does not list is strict.</li>
+<li>
+<strong>A tolerant mode of the rule engine.</strong> A class can be evaluated twice, strictly and then tolerantly. In the tolerant pass, the predicates that read their thresholds through the new helpers see each listed threshold moved by its tolerance, in the direction that favours the class. Inside a <code>none_of</code> block the direction flips: “no BT within 120 cm” is read within 100 cm, not 140. The two verdicts give the degree: simple, imperfect, simple or imperfect (undecided between the two), undecided, or fail. The criteria that fail, pass only within tolerance, or are missing are named. The mode is off unless a system asks for it, and it belongs to that system: a predicate of another system, even one run from inside the tolerant pass, reads its thresholds as printed. So every other system runs as before. A class that passes strictly is simple. A threshold must be one known number; a tolerance table is always checked.</li>
+<li>
+<strong>The attachment combiner</strong> chooses the main name among the classes that attach. Exclusions come first, resolved together: only a class that is not excluded excludes another. The explicit precedence rules come next, then the degree (simple before imperfect), then an order list. A double or multiple name is written only for a listed group, in the group’s order. A class that could take the name once its data are known makes the name provisional, read at the best degree it can still reach. When nothing attaches, the name says so and the three nearest classes are listed. Codes in the rules that name no class are noted.</li>
+<li>
+<strong>A <code>candidates</code> slot</strong> in the classification result holds every class that may attach the soil, with its degree, rank and criteria. It is empty for every other system, and printing and the summary are unchanged unless it is filled.</li>
+<li>
+<strong>An additive level with no typical class.</strong> <code>typical = NULL</code> adds no “typical” label when nothing is named, for systems that have none.</li>
+</ul><div class="section level4">
+<h4 id="hugos-decisions-0-9-340">Hugo’s decisions (2026-11-02)<a class="anchor" aria-label="anchor" href="#hugos-decisions-0-9-340"></a></h4>
+<ul><li>
+<strong>The band edge counts inside.</strong> Against “no BT within 120 cm” (120 ± 20), a BT at exactly 100 cm is imperfect; at 99 cm it fails.</li>
+<li>
+<strong>Provisional.</strong> An undecided class that could take the name makes the name provisional.</li>
+<li>
+<strong>Exclusion by an undecided class.</strong> The excluded class stays a candidate, and the name is provisional. Classes that exclude each other are all kept, with a note.</li>
+<li>
+<strong>Precedence cycles.</strong> Pairs on a cycle are dropped, with a note; the degree and the order decide. When the pairs and the degrees disagree, a note says the order is a convention.</li>
+<li>
+<strong>Distance.</strong> The nearest classes are ranked by the number of failed criteria, then by the sum of the failures in tolerance units.</li>
+<li>
+<strong>Candidates.</strong> Undecided classes are always in the candidates; failed ones only as the nearest, when nothing attaches.</li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.339" id="soilkey-09339-2026-11-02">soilKey 0.9.339 (2026-11-02)<a class="anchor" aria-label="anchor" href="#soilkey-09339-2026-11-02"></a></h2>
 <div class="section level3">

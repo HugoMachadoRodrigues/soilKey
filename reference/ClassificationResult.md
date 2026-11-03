@@ -94,6 +94,19 @@ biogeographical or prior-based warnings.
   phases), a `data.frame` with `kind`, `code`, `name`, `name_native` and
   `basis`; `NULL` otherwise. Since v0.9.324.
 
+- `candidates`:
+
+  For the systems that attach a soil to several classes rather than key
+  it to one (none yet; the French Referentiel pedologique 2008 will be
+  the first), every class that may attach it: a `data.frame` with
+  `code`, `name`, `group`, `degree` (simple, simple_or_imperfect,
+  imperfect, undecided; fail for the nearest classes when nothing
+  attaches), `rank` (the order of precedence), `in_name`, `double_with`,
+  `double_possible`, `n_failed`, `distance` (the size of the failures in
+  tolerance units), `failed`, `imperfect_by`, `undecided_by`,
+  `excluded_by` (the criteria, joined with "; ") and `nearest`. `NULL`
+  for every other system, and then not printed. Since v0.9.340.
+
 ## Methods
 
 ### Public methods
@@ -129,7 +142,8 @@ Build a ClassificationResult.
       warnings = character(0),
       system_id = NULL,
       levels = NULL,
-      provisional_because = character(0)
+      provisional_because = character(0),
+      candidates = NULL
     )
 
 #### Arguments
@@ -185,6 +199,11 @@ Build a ClassificationResult.
 - `provisional_because`:
 
   Character vector of undecided classes tested before the assigned ones.
+
+- `candidates`:
+
+  The classes that may attach the soil (a data.frame), or NULL; since
+  v0.9.340.
 
 ------------------------------------------------------------------------
 
