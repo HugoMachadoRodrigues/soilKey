@@ -22,7 +22,8 @@
 #       written one stands for.
 # An exposed BT is read as BI, at C.20 and in CQ01 (Hugo's decision Q15 and
 # of 2026-11-02). The BCA under the solonetz horizon is not tested (CQ09,
-# CQ10; Q14).
+# CQ10; Q14); under another middle horizon a BCA is ignored (`ignore`;
+# Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:
@@ -32,51 +33,62 @@ types:
       name_native: "Абраземы глинисто-иллювиальные"
       formula: "BI-C"
       page: 114
+      ignore: ["BCA"]
       near_identity: {BI: ["BT"]}
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ01]"}
-      notes: "A BT exposed at the surface or under PB is read as BI (Hugo's decision Q15). The key to divisions counts an exposed BT as BI at C.20 (p. 35; Hugo, 2026-11-02), so BT over C reaches this type."
+      notes: "A BT is read as BI in this formula: exposed, under PB or under TUR (Hugo's decision Q15 and of 2026-11-02). The key to divisions counts an exposed BT as BI at C.20 (p. 35; Hugo, 2026-11-02), so BT over C reaches this type. A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ02]"
       name: "Al-Fe-humus abrazems"
       name_native: "Абраземы альфегумусовые"
       formula: "BHF-C"
       page: 114
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ02]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ03]"
       name: "Fe-metamorphic abrazems"
       name_native: "Абраземы железисто-метаморфические"
       formula: "BFM-C"
       page: 114
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ03]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ04]"
       name: "Structural-metamorphic abrazems"
       name_native: "Абраземы структурно-метаморфические"
       formula: "BM-C"
       page: 114
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ04]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ05]"
       name: "Pale-metamorphic abrazems"
       name_native: "Абраземы палево-метаморфические"
       formula: "BPL-C(ca)"
       page: 114
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ05]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ06]"
       name: "Cryometamorphic abrazems"
       name_native: "Абраземы криометаморфические"
       formula: "CRM-C"
       page: 114
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ06]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ07]"
       name: "Accumulative-carbonate abrazems"
       name_native: "Абраземы аккумулятивно-карбонатные"
@@ -90,9 +102,11 @@ types:
       name_native: "Абраземы текстурно-карбонатные"
       formula: "CAT-C(ca)"
       page: 114
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CQ08]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CQ09]"
       name: "Solonetzic abrazems"
       name_native: "Абраземы солонцовые"

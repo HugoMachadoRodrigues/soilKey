@@ -20,8 +20,9 @@
 #   Q15 no formula matches: the division stays, the type is unassigned, with
 #       the nearest formulas; `near_identity` lists the other horizons a
 #       written one stands for.
-# The gleyed substrate DG of the gley types is tested; the D of the
-# others is not (Hugo's decision Q14).
+# The gleyed substrate DG of the gley types is tested, the D of the
+# others is not (Hugo's decision Q14); on the data route the substrate is
+# read as D with its gley flag from the data (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:
@@ -43,7 +44,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CO02]"}
-      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5)."
+      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5). On the data route a loose substrate under the eluvial horizon is read as D, its gley flag from a gley colour or a redox sign, undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CO03]"
       name: "Sod-eluvozems"
       name_native: "Дерново-элювоземы"
@@ -61,7 +62,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CO04]"}
-      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5)."
+      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5). On the data route a loose substrate under the eluvial horizon is read as D, its gley flag from a gley colour or a redox sign, undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CO05]"
       name: "Gley peat-eluvozems"
       name_native: "Торфяно-элювоземы глеевые"
@@ -71,7 +72,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CO05]"}
-      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5)."
+      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5). On the data route a loose substrate under the eluvial horizon is read as D, its gley flag from a gley colour or a redox sign, undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CO06]"
       name: "Podzol-eluvozems"
       name_native: "Подзол-элювоземы"
@@ -97,7 +98,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CO08]"}
-      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5)."
+      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5). On the data route a loose substrate under the eluvial horizon is read as D, its gley flag from a gley colour or a redox sign, undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CO09]"
       name: "Agro-sod-eluvozems"
       name_native: "Агродерново-элювоземы"
@@ -115,7 +116,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CO10]"}
-      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5)."
+      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5). On the data route a loose substrate under the eluvial horizon is read as D, its gley flag from a gley colour or a redox sign, undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CO11]"
       name: "Gley agro-peat-eluvozems"
       name_native: "Агроторфяно-элювоземы глеевые"
@@ -125,4 +126,4 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CO11]"}
-      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5)."
+      notes: "The gleyed substrate DG names the type and is tested (Hugo's decision Q14); a G horizon would take the soil out of the division (C.5). On the data route a loose substrate under the eluvial horizon is read as D, its gley flag from a gley colour or a redox sign, undecided when neither is recorded (Hugo, 2026-11-02)."

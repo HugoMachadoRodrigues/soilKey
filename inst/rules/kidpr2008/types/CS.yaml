@@ -21,7 +21,9 @@
 #       the nearest formulas; `near_identity` lists the other horizons a
 #       written one stands for.
 # The BH of CS10 is a BHF of either kind (Q15). The fragments of the TUR
-# (TUR[SEL+ASN]) are tested, the BCA under them is not (Q14, Q20).
+# (TUR[SEL+ASN]) are tested, the BCA under them is not (Q14, Q20). A BCA
+# under another middle horizon is ignored where the formula does not write
+# it (`ignore`), and P over BCA is CS14 (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:
@@ -79,75 +81,92 @@ types:
       name_native: "Агроземы текстурно-дифференцированные"
       formula: "P-BT-C"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS07]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS08]"
       name: "Gley texture-differentiated agrozems"
       name_native: "Агроземы текстурно-дифференцированные глеевые"
       formula: "P-BT-G-CG"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS08]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS09]"
       name: "Al-Fe-humus agrozems"
       name_native: "Агроземы альфегумусовые"
       formula: "P-BHF-C"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS09]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS10]"
       name: "Gley Al-Fe-humus agrozems"
       name_native: "Агроземы альфегумусовые глеевые"
       formula: "P-BH-G-CG"
       page: 119
+      ignore: ["BCA"]
       near_identity: {BH: ["BHF"]}
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS10]"}
-      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15)."
+      notes: "The illuvial horizon of the gley types is often a BH: a BHF of either kind (BH, BF or neither) fills the slot, and the kind names the subtype (Hugo's decision Q15). A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS11]"
       name: "Structural-metamorphic agrozems"
       name_native: "Агроземы структурно-метаморфические"
       formula: "P-BM-C"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS11]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS12]"
       name: "Dark structural-metamorphic agrozems"
       name_native: "Агроземы структурно-метаморфические темные"
       formula: "PU-BM-C"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS12]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS13]"
       name: "Dark clay-illuvial agrozems"
       name_native: "Агроземы темные глинисто-иллювиальные"
       formula: "PU-BI-C"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS13]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS14]"
       name: "Dark accumulative-carbonate agrozems"
       name_native: "Агроземы темные аккумулятивно-карбонатные"
       formula: "PU-BCA-Cca"
       page: 119
+      near_identity: {PU: ["P"]}
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS14]"}
+      notes: "P directly over BCA is read as PU over BCA (p. 102; Hugo, 2026-11-02)."
     - code: "[CS15]"
       name: "Texture-carbonate agrozems"
       name_native: "Агроземы текстурно-карбонатные"
       formula: "P-CAT-Cca"
       page: 119
+      ignore: ["BCA"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CS15]"}
+      notes: "A BCA under the middle horizon neither blocks this formula nor is required by it, as in the structure-metamorphic soils (p. 85; Hugo, 2026-11-02); the formulas that write BCA name the type where they match."
     - code: "[CS16]"
       name: "Dark solonetzic agrozems"
       name_native: "Агроземы солонцовые темные"

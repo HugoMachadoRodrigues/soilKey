@@ -154,7 +154,7 @@ test_that("the 111 types of CK to CT are clean and as the fixture writes them", 
       expect_true(grepl("^[\u0400-\u04ff]", e$name_native), info = k)
       expect_true(is.numeric(e$page) && e$page >= 100 && e$page <= 123, info = k)
       expect_identical(e$tests$all_of[[1L]]$type_formula_kidpr$type, e$code)
-      expect_true(all(unlist(e$ignore) %in% character(0)), info = k)
+      expect_true(all(unlist(e$ignore) %in% "BCA"), info = k)
     }
   }
   all <- unlist(unname(r$types[names(.ck_counts)]), recursive = FALSE)
@@ -168,7 +168,18 @@ test_that("the 111 types of CK to CT are clean and as the fixture writes them", 
   for (e in Filter(function(e) length(e$test_terminals), all))
     expect_identical(unlist(e$test_terminals), if (startsWith(e$code, "[CO")) "DG" else "R", info = e$code)
   # Q15: S over Q, BT exposed or under PB, the BH of the gley Al-Fe-humus soils
-  expect_identical(codes_with("near_identity"), c("[CL01]", "[CQ01]", "[CR04]", "[CR05]", "[CR07]", "[CS10]"))
+  expect_identical(codes_with("near_identity"), c("[CL01]", "[CQ01]", "[CR04]", "[CR05]", "[CR07]", "[CS10]", "[CS14]",
+                                                  sprintf("[CT%02d]", c(5:8, 13))))
+  expect_identical(r$types$CS[[14L]]$near_identity, list(PU = "P"))
+  expect_identical(r$types$CT[[13L]]$near_identity, list(PT = "PTR"))
+  # Hugo, 2026-11-02: BCA ignored under another middle horizon in CQ, CR,
+  # CS and CT; the middle horizons of C.5 close CT; a plain TUR is no TUR of
+  # solonetz fragments; the G or Q of CL01 and CL02 directly under S
+  expect_identical(codes_with("ignore"), c(sprintf("[CQ%02d]", c(1:6, 8)), sprintf("[CR%02d]", c(4:8, 12:13)),
+                                           sprintf("[CS%02d]", c(7:13, 15)), sprintf("[CT%02d]", c(5:8, 12))))
+  expect_identical(codes_with("close"), sprintf("[CT%02d]", 1:17))
+  expect_identical(codes_with("reject_fragments"), sprintf("[CT%02d]", 1:13))
+  expect_identical(codes_with("directly_under"), c("[CL01]", "[CL02]"))
   expect_identical(r$types$CL[[1L]]$near_identity, list(G = "Q"))
   expect_identical(r$types$CR[[7L]]$near_identity, list(BH = "BHF"))
   for (k in c(1L, 4L, 5L)) expect_identical((if (k == 1L) r$types$CQ else r$types$CR)[[k]]$near_identity, list(BI = "BT"))
@@ -192,7 +203,7 @@ test_that("every formula of CK to CT, as a profile in the Russian notation, keys
   fx <- .ck_fixture()
   names_of <- unlist(lapply(unname(load_rules("kidpr2008")$types[names(.ck_counts)]), function(l)
     stats::setNames(vapply(l, `[[`, "", "name_native"), vapply(l, `[[`, "", "code"))))
-  inter <- c(CO02 = "[CO01]", CO04 = "[CO03]", CO10 = "[CO09]", CP10 = "[CP09]", CP11 = "[CP06]")
+  inter <- c(CO02 = "[CO01]", CO04 = "[CO03]", CO10 = "[CO09]", CP10 = "[CP09]", CP11 = "[CP06]", CR09 = "[CR08]")
   off <- character(0)
   for (k in names(fx)) {
     f <- fx[[k]]
@@ -267,6 +278,7 @@ test_that("Q14: the BCA of the solonetzes, the rock R and Rca, the gleyed substr
   expect_identical(.ck_codes(c("O:6", "EL:15", "D:30")), "C/CO/[CO01]")
   expect_identical(.ck_codes(c("O:6", "EL:15", "C:30")), "C/CO/[CO01]")
   expect_identical(.ck_codes(c("O:6", "E:10", "DG:30")), "C/CO/[CO06]")
+  expect_identical(.ck_codes(c("O:6", "EL:15", "C:20", "DG:30")), "C/CO/[CO02]")
   # PT with or without its remnant T
   expect_identical(.ck_codes(c("PT:25", "EL:15", "DG:30")), "C/CO/[CO11]")
 })
@@ -276,10 +288,10 @@ test_that("Q14 and Q20: the fragments of TUR, from the notation, the data, or th
   expect_identical(.ck_codes(c("PU:30", "TUR[SEL+ASN]:30", "BCA:30", "Cca:30")), "C/CS/[CS16]")
   expect_identical(.ck_codes(c("TUR[AJ+SEL+BSN]:50", "BCA:30", "Cca:30")), "C/CT/[CT15]")
   # other fragments, or fragments short of the formula's: not the type
-  .ck_q15(.ck_of(c("PU:30", "TUR[SEL+BSN]:30", "BCA:30", "Cca:30")), "CS", "[CS16]")
+  .ck_q15(.ck_of(c("PU:30", "TUR[SEL+BSN]:30", "BCA:30", "Cca:30")), "CS")
   .ck_q15(.ck_of(c("TUR[SEL+ASN]:50", "BCA:30", "Cca:30")), "CT", "[CT14]")
   # a TUR written with no fragments in the notation: not a solonetzic type
-  .ck_q15(.ck_of(c("PU:30", "TUR:30", "BCA:30", "Cca:30")), "CS", "[CS16]")
+  .ck_q15(.ck_of(c("PU:30", "TUR:30", "BCA:30", "Cca:30")), "CS")
   # the fragments from the column turbated_fragments
   r <- .ck_of(c("PU:30", "TUR:30", "BCA:30", "Cca:30"), turbated_fragments = c(NA, "SEL; ASN", NA, NA))
   expect_identical(.ck_type(r), "[CS16]")
@@ -301,15 +313,12 @@ test_that("Q13: a horizon of the division outside the formula blocks it; a forei
   # a TUR or a G in the division's formulas blocks the formulas without it
   expect_identical(.ck_codes(c("PU:30", "TUR:50", "BCA:30", "Cca:30")), "C/CT/[CT10]")
   expect_identical(.ck_codes(c("PB:25", "BM:40", "BCA:30", "Cca:30")), "C/CR/[CR09]")
-  expect_false(isTRUE(.ck_of(c("PB:25", "BM:40", "BCA:30", "Cca:30"))$trace$types[["[CR08]"]]$passed))
   expect_identical(.ck_codes(c("PB:25", "BCA:35", "Q:30", "CQ:30")), "C/CR/[CR11]")
   # a horizon foreign to the division is ignored (it may name a subtype): a
-  # BM under the lithozem's humus horizon, a BFM or a BMK under the plough,
-  # a BCA between S and Q
+  # BM under the lithozem's humus horizon, a BFM or a BMK under the plough
   expect_identical(.ck_codes(c("AY:15", "BM:10", "R:10")), "C/CP/[CP05]")
   expect_identical(.ck_codes(c("PB:22", "BFM:40", "C:30")), "C/CR/[CR01]")
   expect_identical(.ck_codes(c("P:25", "BMK:30", "CAT:30", "C:30")), "C/CS/[CS15]")
-  expect_identical(.ck_codes(c("S:8", "BCA:30", "Q:30", "CQ:30")), "C/CL/[CL01]")
   # a natural remnant under the plough: written in the formula, or ignored
   expect_identical(.ck_codes(c("PU:30", "AU:15", "Q:30", "CQ:30")), "C/CM/[CM03]")
   expect_identical(.ck_codes(c("PU:30", "H:15", "Q:30", "CQ:30")), "C/CM/[CM04]")
@@ -359,7 +368,6 @@ test_that("Q15: the near-identity readings", {
 test_that("Q15: a combination no formula provides for stops at the division, with the nearest formulas", {
   skip_on_cran()
   cases <- list(
-    list(c("AU:30", "SEL:10", "BSN:30", "BCA:30", "Cca:30"), "CK", c("[CK05]", "[CK06]")),  # AU-SEL-BSN
     list(c("AU:30", "ASN:30", "BCA:30", "Cca:30"), "CK", "[CK05]"),                          # no SEL under AU
     list(c("PB:25", "BSN:30", "BCA:30", "Cca:30"), "CK", "[CK10]"),                          # PB over BSN
     list(c("SS:8", "Q:30", "CQ:30"), "CL", "[CL02]"),                                         # SS over Q
@@ -415,6 +423,138 @@ test_that("an exposed BT counts as BI at C.20: an abrazem, CQ01", {
   r <- .ck_class(p)
   expect_false(identical(r$levels$code[2L], "CQ"))
   expect_true("divisions:CQ" %in% r$provisional_because)
+})
+
+
+# --- the review of part 6 and Hugo's answers (2026-11-02) ------------------------------
+
+test_that("D2: on the data route the gley flag of the substrate and the carbonate mark of the rock", {
+  skip_on_cran()
+  O <- function(top, bottom, ...) .ck_L(top, bottom, munsell_hue_dry = "7.5YR", munsell_value_dry = 3, munsell_chroma_dry = 3,
+                                        plant_residues_pct = 80, peat_decomposition_pct = 20, oc_pct = 40, ...)
+  # a two-layered deposit: light over heavy
+  sub <- function(...) .ck_P(O(0, 6, designation = "Oe"), .ck_E(6, 30, designation = "E"),
+                             .ck_L(30, 100, clay_pct = 45, silt_pct = 35, sand_pct = 20, ...))
+  f <- identify_horizons(sub(designation = "2C"), "kidpr2008")
+  expect_identical(f$code[2L], "EL")
+  expect_true(all(f$route == "data"))
+  # a redox sign recorded: the gleyed substrate, CO02
+  expect_identical(.ck_class(sub(designation = "2Cg", redoximorphic_features_pct = 20))$levels$code, c("C", "CO", "[CO02]"))
+  expect_identical(.ck_class(sub(designation = "2C", mottle_colors = "7.5YR 5/8"))$levels$code, c("C", "CO", "[CO02]"))
+  # a colour that is not gley and no redox sign: CO01, decided
+  r <- .ck_class(sub(designation = "2C"))
+  expect_identical(r$levels$code, c("C", "CO", "[CO01]"))
+  expect_length(r$provisional_because, 0L)
+  # the designation marks it gleyed and nothing else says so: CO02 undecided
+  r <- .ck_class(sub(designation = "2Cg"))
+  expect_identical(r$levels$code[1:2], c("C", "CO"))
+  expect_true("types:[CO02]" %in% r$provisional_because)
+  # a carbonate rock named, or effervescence: the carbolithozem CP11
+  AU <- function() .ck_AU(0, 18, designation = "Ah", ph_h2o = 7.6)
+  expect_identical(.ck_class(.ck_P(AU(), .ck_L(18, 40, designation = "R", rock_origin = "limestone")))$levels$code,
+                   c("C", "CP", "[CP11]"))
+  expect_identical(.ck_class(.ck_P(AU(), .ck_L(18, 40, designation = "R", effervescence_class = "strong", ph_h2o = 8)))$levels$code,
+                   c("C", "CP", "[CP11]"))
+  expect_identical(.ck_class(.ck_P(AU(), .ck_L(18, 40, designation = "R", rock_origin = "granite")))$levels$code,
+                   c("C", "CP", "[CP06]"))
+  # neither recorded: CP11 undecided before CP06
+  r <- .ck_class(.ck_P(AU(), .ck_L(18, 40, designation = "R", effervescence_class = NA, ph_h2o = NA)))
+  expect_true("types:[CP11]" %in% r$provisional_because)
+  expect_true(all(c("rock_origin", "effervescence_class", "caco3_pct") %in% r$missing_data))
+})
+
+test_that("D3: unknown fragments of a TUR ask for turbated_fragments", {
+  skip_on_cran()
+  r <- .ck_of(c("PU:30", "TUR:30", "BCA:30", "Cca:30"), na_cmol = c(NA, 6, NA, NA), cec_cmol = c(NA, 25, NA, NA))
+  expect_true("turbated_fragments" %in% r$missing_data)
+  expect_false(any(c("top_cm", "bottom_cm") %in% r$missing_data))
+})
+
+test_that("M10 and M11: a natural surface horizon a formula does not write; TUR on top tried as agro", {
+  skip_on_cran()
+  # a surface horizon foreign to the division (O, AY) over SEL is left out of
+  # the closure of the formulas that start with SEL; one another formula of
+  # the division writes (AU, AJ) closes them (Hugo, 2026-11-02)
+  expect_identical(.ck_codes(c("O:3", "SEL:10", "ASN:30", "BCA:30", "Cca:30")), "C/CK/[CK01]")
+  expect_identical(.ck_codes(c("AY:10", "SEL:10", "BSN:30", "BCA:30", "Cca:30")), "C/CK/[CK02]")
+  .ck_q15(.ck_of(c("AU:30", "SEL:10", "BSN:30", "BCA:30", "Cca:30")), "CK", c("[CK05]", "[CK06]"))
+  .ck_q15(.ck_of(c("AJ:15", "SEL:10", "ASN:30", "BCA:30", "Cca:30")), "CK")
+  r <- .ck_of(c("AU:30", "SEL:10", "ASN:30", "BCA:30", "Cca:30"))
+  expect_identical(.ck_type(r), "[CK05]")
+  expect_length(r$trace$types[["[CK05]"]]$evidence[[1L]]$evidence$intergrades, 0L)
+  expect_false(isTRUE(r$trace$types[["[CK01]"]]$passed))
+  expect_identical(.ck_codes(c("O:3", "AU:30", "SEL:10", "ASN:30", "BCA:30", "Cca:30")), "C/CK/[CK05]")
+  # an agro horizon is not left out
+  .ck_q15(.ck_of(c("P:25", "SEL:10", "ASN:30", "C:30")), "CK")
+  expect_identical(.ck_codes(c("O:3", "S:8", "G:30", "CG:30")), "C/CL/[CL01]")
+  sch <- .kidpr_ty_parse(load_rules("kidpr2008")$types$CT)
+  expect_true(all(sch$agro))
+})
+
+test_that("Hugo 1: the middle horizons of C.5 close the turbozems; BT is BI in CT05 to CT08", {
+  skip_on_cran()
+  for (tk in list(c("P:25", "TUR:50", "BHF:30", "C:30"), c("P:25", "TUR:50", "BPL:30", "C:30"), c("P:25", "TUR:50", "CRM:30", "C:30"),
+                  c("P:25", "TUR:50", "BFM:30", "C:30"), c("PU:30", "TUR:50", "V:30", "C:30"), c("PU:30", "TUR:50", "BM:35", "C:30"),
+                  c("PU:30", "TUR:50", "BM:35", "BCA:30", "Cca:30")))
+    .ck_q15(.ck_of(tk), "CT")
+  expect_identical(.ck_codes(c("P:25", "TUR:50", "BT:35", "C:30")), "C/CT/[CT05]")
+  expect_identical(.ck_codes(c("PU:30", "TUR:50", "BT:35", "Q:30", "CQ:30")), "C/CT/[CT08]")
+})
+
+test_that("Hugo 2: a BCA under another middle horizon is ignored in CQ, CR, CS and CT", {
+  skip_on_cran()
+  expect_identical(.ck_codes(c("BI:35", "BCA:30", "Cca:30")), "C/CQ/[CQ01]")
+  expect_identical(.ck_codes(c("PB:25", "BI:35", "BCA:30", "Cca:30")), "C/CR/[CR04]")
+  expect_identical(.ck_codes(c("PU:30", "BM:35", "BCA:30", "Cca:30")), "C/CS/[CS12]")
+  expect_identical(.ck_codes(c("PU:30", "BI:35", "BCA:30", "Cca:30")), "C/CS/[CS13]")
+  expect_identical(.ck_codes(c("PU:30", "TUR:50", "BI:35", "BCA:30", "Cca:30")), "C/CT/[CT06]")
+  # the formula that writes BCA wins where it matches
+  r <- .ck_of(c("PB:25", "BM:40", "BCA:30", "Cca:30"))
+  expect_identical(.ck_type(r), "[CR09]")
+  expect_identical(r$trace$types[["[CR09]"]]$evidence[[1L]]$evidence$intergrades, "[CR08]")
+  # with no middle horizon a BCA still closes: P-TUR-BCA is CT09
+  expect_identical(.ck_codes(c("P:25", "TUR:50", "BCA:30", "Cca:30")), "C/CT/[CT09]")
+  # on the data: Ap, Bt, Bk, Ck
+  p <- .ck_P(.ck_AY(0, 25, designation = "Ap", boundary_distinctness = "abrupt", boundary_topography = "smooth"),
+             .ck_BT(25, 80, designation = "Bt"),
+             .ck_L(80, 120, designation = "Bk", munsell_value_dry = 7, munsell_chroma_dry = 3, structure_type = "prismatic",
+                   structure_grade = "weak", caco3_pct = 15, secondary_carbonates_form = "pseudomycelia", ph_h2o = 8.2,
+                   effervescence_class = "strong"),
+             .ck_L(120, 150, designation = "Ck", caco3_pct = 10, ph_h2o = 8.3, effervescence_class = "strong"),
+             site = list(land_use = "arable"))
+  f <- identify_horizons(p, "kidpr2008")
+  expect_identical(f$code[1:3], c("P", "BT", "BCA"))
+  expect_identical(.ck_class(p)$levels$code, c("C", "CS", "[CS07]"))
+})
+
+test_that("Hugo 3: a plain TUR is no TUR of solonetz fragments", {
+  skip_on_cran()
+  r <- .ck_of(c("P:25", "TUR[SEL+BSN]:50", "BCA:30", "Cca:30"))
+  .ck_q15(r, "CT", "[CT09]")
+  expect_match(grep("Combination not provided", r$warnings, value = TRUE), "the TUR holds fragments of ASN or BSN", fixed = TRUE)
+  expect_false(isTRUE(r$trace$types[["[CT09]"]]$passed))
+  # unknown fragments and a high ESP: undecided
+  r <- .ck_of(c("P:25", "TUR:50", "BCA:30", "Cca:30"), esp_pct = c(NA, 30, NA, NA))
+  .ck_und(r, "[CT09]")
+  expect_true("turbated_fragments" %in% r$missing_data)
+  # a low ESP or none recorded, other fragments: the plain type
+  expect_identical(.ck_codes(c("P:25", "TUR:50", "BCA:30", "Cca:30"), esp_pct = c(NA, 3, NA, NA)), "C/CT/[CT09]")
+  expect_identical(.ck_codes(c("P:25", "TUR[AY+BT]:50", "BCA:30", "Cca:30")), "C/CT/[CT09]")
+  # the formulas that write the fragments are unchanged
+  expect_identical(.ck_codes(c("TUR[AU+SEL+ASN]:50", "BCA:30", "Cca:30")), "C/CT/[CT14]")
+  expect_identical(.ck_codes(c("PU:30", "TUR[SEL+ASN]:30", "BCA:30", "Cca:30")), "C/CS/[CS16]")
+})
+
+test_that("Hugo 4: G or Q directly under S; CT13 takes PTR; P over BCA is CS14", {
+  skip_on_cran()
+  .ck_q15(.ck_of(c("S:8", "AU:20", "BCA:30", "G:30", "CG:30")), "CL", "[CL01]")
+  r <- .ck_of(c("S:8", "BCA:30", "Q:30", "CQ:30"))
+  .ck_q15(r, "CL", "[CL01]")
+  expect_match(grep("Combination not provided", r$warnings, value = TRUE), "does not lie directly under the salt horizon", fixed = TRUE)
+  expect_identical(.ck_codes(c("S:8", "SG:5", "G:30", "CG:30")), "C/CL/[CL01]")
+  expect_identical(.ck_codes(c("AU+S:8", "G:30", "CG:30")), "C/CL/[CL01]")
+  expect_identical(.ck_codes(c("PTR:25", "TUR:50", "G:30", "CG:30")), "C/CT/[CT13]")
+  expect_identical(.ck_codes(c("P:25", "BCA:30", "Cca:30")), "C/CS/[CS14]")
 })
 
 

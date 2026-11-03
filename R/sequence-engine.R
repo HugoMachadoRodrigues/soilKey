@@ -569,7 +569,15 @@
   tested <- Filter(function(z) isTRUE(z$tested) && z$kind %in% c("horizon", "buried"), spec$slots)
   tested_codes <- unique(unlist(lapply(tested, function(z) z$codes)))
   voc <- unique(as.character(vocabulary))
-  if (!isTRUE(closure_surface)) voc <- setdiff(voc, setdiff(c(agro, natural), tested_codes))
+  # a formula whose first horizon is no surface horizon (SEL-ASN, BI-C, S-G,
+  # TUR[...]) is closed on the surface horizons the other formulas of the
+  # list write, as on their other horizons, and leaves out the ones foreign
+  # to the list (Hugo, 2026-11-02: AU-SEL-BSN is no SEL-BSN, O-SEL-ASN is
+  # SEL-ASN); a formula that writes a surface horizon leaves out the surface
+  # horizons it does not write, under the thickest-horizon rule
+  surf <- Filter(function(z) identical(z$role, "surface"), spec$slots)
+  force_natural <- !length(surf) || any(surf[[1L]]$codes %in% c(agro, natural))
+  if (!isTRUE(closure_surface) && force_natural) voc <- setdiff(voc, setdiff(c(agro, natural), tested_codes))
   play <- unique(c(voc, tested_codes))
   buried_play <- any(.FORMULA_BURIED %in% play)
   slots <- list()
@@ -588,7 +596,10 @@
     slots <- c(slots, list(z))
   }
   top0 <- suppressWarnings(min(tab$top_cm, na.rm = TRUE))
-  list(slots = slots, spec = spec,
+  # such a formula does not force the surface horizon of the profile into
+  # the match (an agro horizon still counts): one foreign to the list is
+  # left out (v0.9.339)
+  list(slots = slots, spec = spec, force_natural = force_natural,
        spec_codes = unique(unlist(lapply(slots, function(z) z$codes))),
        play = play, agro = agro, natural = natural, buried_play = buried_play,
        max_cover_cm = max_cover_cm, max_gap_cm = max_gap_cm, pair_gaps_cm = pair_gaps_cm,
@@ -827,7 +838,8 @@
   m <- length(slots)
   n0 <- if (is.null(tok)) 0L else tok$n
   play <- if (n0) .mhs_play_mask(tok, ctx) else logical(0)
-  if (n0 && !is.na(ch$forced)) play[ch$forced] <- TRUE
+  if (n0 && !is.na(ch$forced) && (!isFALSE(ctx$force_natural) || .mhs_is_agro(tok$code[ch$forced], ctx)))
+    play[ch$forced] <- TRUE
   pt <- if (n0) .mhs_play_tokens(tok, play) else list(n = 0L)
   n <- pt$n
   notes <- character(0)

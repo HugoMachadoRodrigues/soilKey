@@ -125,7 +125,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CP10]"}
-      notes: "The hard rock R is tested (Hugo's decision Q14); the loose layer (C) over it is not. The carbonate rock Rca names the carbolithozems and is tested, with its carbonate mark (Hugo's decision Q14)."
+      notes: "The hard rock R is tested (Hugo's decision Q14); the loose layer (C) over it is not. The carbonate rock Rca names the carbolithozems and is tested, with its carbonate mark (Hugo's decision Q14); on the data route the mark comes from a carbonate rock named or effervescence, and is undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CP11]"
       name: "Dark-humus carbolithozems"
       name_native: "Карболитоземы темногумусовые"
@@ -135,7 +135,7 @@ types:
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CP11]"}
-      notes: "The hard rock R is tested (Hugo's decision Q14); the loose layer (C) over it is not. The carbonate rock Rca names the carbolithozems and is tested, with its carbonate mark (Hugo's decision Q14)."
+      notes: "The hard rock R is tested (Hugo's decision Q14); the loose layer (C) over it is not. The carbonate rock Rca names the carbolithozems and is tested, with its carbonate mark (Hugo's decision Q14); on the data route the mark comes from a carbonate rock named or effervescence, and is undecided when neither is recorded (Hugo, 2026-11-02)."
     - code: "[CP12]"
       name: "Dark-humus agrolithozems"
       name_native: "Агролитоземы темногумусовые"

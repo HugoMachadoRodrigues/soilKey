@@ -22,7 +22,8 @@
 #       written one stands for.
 # S over Q is a gley solonchak (CL01; Hugo's decision Q15). The [ABC] of
 # CL03 is any formed profile under the S, not tested, and an S laid over
-# another horizon counts as the S of the formulas (Hugo, 2026-11-02).
+# another horizon counts as the S of the formulas; the G or Q of CL01 and
+# CL02 lies directly under the S (`directly_under`) (Hugo, 2026-11-02).
 # The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
 
 types:
@@ -32,20 +33,22 @@ types:
       name_native: "Солончаки глеевые"
       formula: "S-Gs-CGs"
       page: 105
+      directly_under: ["G", "Q"]
       near_identity: {G: ["Q"]}
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CL01]"}
-      notes: "S over Q is a gley solonchak: the solonchak horizon lies over gley or quasigley material (p. 56; Hugo's decision Q15). An S laid over another horizon counts as the S of the formula (Hugo, 2026-11-02)."
+      notes: "S over Q is a gley solonchak: the solonchak horizon lies over gley or quasigley material (p. 56; Hugo's decision Q15). An S laid over another horizon counts as the S of the formula (Hugo, 2026-11-02). The G or Q lies directly under the salt horizon, or under the layer the S is laid over; transitions are passed over (Hugo, 2026-11-02)."
     - code: "[CL02]"
       name: "Sulphidic solonchaks"
       name_native: "Солончаки сульфидные"
       formula: "SS-Gs-CGs"
       page: 105
+      directly_under: ["G", "Q"]
       tests:
         all_of:
           - type_formula_kidpr: {type: "[CL02]"}
-      notes: "The diagram (p. 105) prints SS-GsC-Gss, a slip; read as chapter 6 writes it. An SS laid over another horizon counts as the SS of the formula (Hugo, 2026-11-02)."
+      notes: "The diagram (p. 105) prints SS-GsC-Gss, a slip; read as chapter 6 writes it. An SS laid over another horizon counts as the SS of the formula (Hugo, 2026-11-02). The G or Q lies directly under the salt horizon, or under the layer the S is laid over; transitions are passed over (Hugo, 2026-11-02)."
     - code: "[CL03]"
       name: "Secondary solonchaks"
       name_native: "Солончаки вторичные"

@@ -221,8 +221,9 @@ test_that("every formula of CA to CJ, as a profile in the Russian notation, keys
     }
   }
   # left without its optional EL, CA24 (P-(EL)-BT-BCA-Cca) is P directly over
-  # BT, an agrozem by C.6a (the division takes it before the types)
-  expect_identical(off, "CA24 no_optional: C/CS")
+  # BT, an agrozem by C.6a (the division takes it before the types): CS07,
+  # the BCA under BT ignored (Hugo, 2026-11-02)
+  expect_identical(off, "CA24 no_optional: C/CS/[CS07]")
 })
 
 test_that("the example of each division CA to CJ reaches its type", {

@@ -393,8 +393,11 @@
 .kidpr_dv_pedon <- function(pedon) {
   frame <- identify_horizons(pedon, "kidpr2008")
   h <- pedon$horizons
-  .kidpr_dv(frame, pedon$site %||% list(),
-            if (is.null(h)) NULL else as.data.frame(h, stringsAsFactors = FALSE))
+  v <- .kidpr_dv(frame, pedon$site %||% list(),
+                 if (is.null(h)) NULL else as.data.frame(h, stringsAsFactors = FALSE))
+  # the pedon, for the readers of the type level (R/types-kidpr.R)
+  v$pedon <- pedon
+  v
 }
 
 # The view a predicate reads: the one of the classification in progress, a
