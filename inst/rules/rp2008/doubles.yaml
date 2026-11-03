@@ -1,0 +1,62 @@
+# The double attachments of the Référentiel pédologique 2008 soilKey writes
+# in the name (Hugo's decision Q7): only the pairs the book prescribes or
+# suggests, each with its page and the order of the names in the book's
+# example, joined with "-" (p. XVIII). Two references attaching outside
+# these pairs: one in the name by the precedence, the other in the
+# candidates. A pair with a reference of a GER not implemented yet is
+# listed and waits for it (`status: later`); `when` (a test block, TRUE when
+# absent) must hold for the double to be written.
+doubles:
+  - codes: [calcisols, calcosols]
+    page: "113"
+    note: "[Aci + Sci] and Sca of the same order, the ratio between 0.67 and 1.5 (default 21)"
+    when:
+      all_of:
+        - thickness_ratio_rp: {numerator: [Aci, Sci], denominator: [Sca], min: 0.67, max: 1.5}
+  - codes: [anthroposols_transformes, brunisols_eutriques]
+    page: "91"
+    note: "the intermediate case of p. 91: only when the transformé is imperfect; a simple transformé takes the name, the brunisol stays a candidate (Hugo's decision 2, 2026-11-03)"
+    when_degree:
+      anthroposols_transformes: [imperfect, simple_or_imperfect]
+  - codes: [calcosols, anthroposols_transformes]
+    page: "91"
+    note: "the example of p. 91 (the type of p. 97 writes anthroposol transformé-calcosol; soilKey follows p. 91)"
+  # the pairs of these chapters with references of later releases
+  - codes: [peyrosols, alocrisols_typiques]
+    page: "73"
+    status: later
+  - codes: [peyrosols, anthroposols_artificiels]
+    page: "97"
+    status: later
+  - codes: [peyrosols, anthroposols_reconstitues]
+    page: "97"
+    status: later
+  - codes: [peyrosols, silandosols_eutriques]
+    page: "84"
+    status: later
+  - codes: [vitrandosols, peyrosols]
+    page: "84"
+    status: later
+  - codes: [peyrosols, colluviosols]
+    page: "133"
+    status: later
+  - codes: [colluviosols, redoxisols]
+    page: "133"
+    status: later
+  - codes: [brunisols_eutriques, redoxisols]
+    page: "107"
+    status: later
+  - codes: [brunisols_dystriques, redoxisols]
+    page: "107"
+    status: later
+  - codes: [cryosols_mineraux, podzosols]
+    page: "141"
+    status: later
+    note: "a reference of the podzosols (the book names the GER)"
+  - codes: [cryosols_mineraux, luvisols]
+    page: "141"
+    status: later
+    note: "a reference of the luvisols (the book names the GER)"
+  - codes: [cryosols_mineraux, redoxisols]
+    page: "142"
+    status: later

@@ -1,0 +1,291 @@
+# Solums dont le complexe adsorbant est dominé par le calcium et/ou le
+# magnésium (pp. 109-124), 7 references. The GER holds no solum with the
+# characters of the vertisols, pélosols, gypsosols or fersialsols, an Ach or
+# a tangel OHta (p. 109): a side test of every reference; a V or SV deeper
+# than 100 cm gives the qualifier bathyvertique, not a vertisol (p. 116; the
+# review's D4); the gypsosols need a Ys from the surface or under a Ym (top
+# within 10 +/- 5 cm, map 2): a deeper Ys excludes no reference here. Its horizons
+# (Aca, Ado, Aci, Amg, Sca, Sdo, Sci, Smg, K, Kc, Km) come from the notation
+# or the data (v0.9.343), which read the molar CaCO3/MgCO3 (calcaire over 8,
+# dolomiteux 1.5 to 8, dolomitique under 1.5) and Ca/Mg (calcique over 5,
+# calcimagnésique 2 to 5, magnésique under 2). Holorganic horizons are not
+# written in the sequences (p. 111); [O + A] counts them, the OL excluded.
+#
+# [Aci + Sci] against Sca (pp. 111, 113): clearly thinner, under 0.67, a
+# calcosol décarbonaté en surface; clearly thicker, over 1.5, a calcisol
+# bathycarbonaté; in between, the double calcisol-calcosol (soilKey's ratios
+# for "nettement", default 21; doubles.yaml). A discontinuous K under 35 cm
+# makes no calcarisol, only a Kc or a Km (default 21).
+#
+# Imperfect (pp. 111-113, 120, 123): rendosol pachique and rendisol
+# pachique (A over 35 cm); calcosol, dolomitosol, calcisol and magnésisol
+# leptiques (the solum under 35 cm); calcisol insaturé en surface (an A
+# neither saturated nor subsaturated over Sci).
+# Distinctions (pp. 116-117): a carbonate reserve separates the calcisols
+# from the brunisols eutriques saturés (Q16, precedence.yaml); single-grain
+# calcareous sands are arénosols, never rendosols, calcosols or
+# dolomitosols (no biomacrostructured A); an A hemiorganic throughout makes
+# an organosol; over 60 % coarse elements by weight over 50 cm a peyrosol
+# (double possible); alluvium in a valley a fluviosol or thalassosol.
+scope: &camg_scope
+  none_of:
+    - horizon_within_rp: {codes: [V, SV], depth: 100}
+    - horizon_within_rp: {codes: [Sp], depth: 40}
+    - horizon_within_rp: {codes: [Ys, Ym], depth: 10}
+    - horizon_within_rp: {codes: [FS]}
+    - horizon_within_rp: {codes: [Ach]}
+    - horizon_within_rp: {codes: [OHta]}
+rend_core: &rend_core
+  all_of:
+    - *camg_scope
+    - sequence_rp: {sequences: ["Aca-(C|M|R|D)"]}
+    - no_horizon_within_rp: {codes: [S]}
+    - thickness_rp: {codes: [O, Aca], min: 10, from_surface: true}
+calco_core: &calco_core
+  all_of:
+    - *camg_scope
+    - any_of:
+        - sequence_rp: {sequences: ["Aca-Sca-(C|M|R|D)"]}
+        - all_of:
+            - sequence_rp: {sequences: ["Aci-(Sci)-Sca-(C|M|R|D)"]}
+            - thickness_ratio_rp: {numerator: [Aci, Sci], denominator: [Sca], max: 1.5, open: true}
+dolo_core: &dolo_core
+  all_of:
+    - *camg_scope
+    - sequence_rp: {sequences: ["Ado-(Sdo)-(C|M|R|D)"]}
+rendi_core: &rendi_core
+  all_of:
+    - *camg_scope
+    - sequence_rp: {sequences: ["Aci-(C|M|R|D)"]}
+    - no_horizon_within_rp: {codes: [S]}
+    - thickness_rp: {codes: [O, Aci], min: 10, from_surface: true}
+    - attribute_rp: {attribute: ca_mg, threshold: 2, direction: min, open: true, codes: [Aci], layers: all}
+calci_sat: &calci_sat
+  all_of:
+    - attribute_rp: {attribute: bs, threshold: 80, direction: min, kind: bs, open: true, codes: [Aci, Sci], layers: all}
+    - attribute_rp: {attribute: ca_mg, threshold: 2, direction: min, open: true, codes: [Aci, Sci], layers: all}
+calci_core: &calci_core
+  all_of:
+    - *camg_scope
+    - any_of:
+        - all_of:
+            - sequence_rp: {sequences: ["Aci-Sci-(C|M|R|D)"]}
+            - no_horizon_within_rp: {codes: [Sca]}
+        - all_of:
+            - sequence_rp: {sequences: ["Aci-Sci-Sca-(C|M|R|D)"]}
+            - thickness_ratio_rp: {numerator: [Aci, Sci], denominator: [Sca], min: 0.67, open: true}
+    - *calci_sat
+magn_core: &magn_core
+  all_of:
+    - *camg_scope
+    - sequence_rp: {sequences: ["Amg-(Smg)-(C|M|R)"]}
+references:
+  - code: "rendosols"
+    ger: "calcium_magnesium"
+    name: "rendosols"
+    name_singular: "rendosol"
+    name_en: "rendosols"
+    name_en_singular: "rendosol"
+    page: "111, 120"
+    sequences: ["Aca|LAca-Cca|M|R|D"]
+    notes: "Only an Aca (or LAca), biomacrostructured, under 35 cm; [O + Aca] over 10 cm, the OL excluded (else a lithosol); molar CaCO3/MgCO3 over 1.5. An Aca hemiorganic throughout makes an organosol calcaire."
+    wrb2006: "Rendzic Leptosols or Epileptic Cambisols (Calcaric)"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *rend_core
+        - thickness_rp: {codes: [Aca], max: 35}
+    imperfect:
+      - qualifier: "pachique"
+        page: "111"
+        criterion: "the Aca over 35 cm"
+        tests: {all_of: [*rend_core, {thickness_rp: {codes: [Aca], min: 35}}]}
+  - code: "calcosols"
+    ger: "calcium_magnesium"
+    name: "calcosols"
+    name_singular: "calcosol"
+    name_en: "calcosols"
+    name_en_singular: "calcosol"
+    page: "111, 120"
+    sequences: ["Aca|LAca-Sca-Cca|M|R|D", "Aci|LAci-Sca-Cca|M|R|D", "Aci|LAci-Sci-Sca-Cca|M|R|D"]
+    notes: "Sca compulsory; [A + Sca] over 35 cm; molar CaCO3/MgCO3 over 1.5. Decarbonated at the surface (Aci-Sca, Aci-Sci-Sca) when [Aci + Sci] is clearly thinner than Sca."
+    wrb2006: "Cambisols (Calcaric)"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *calco_core
+        - thickness_rp: {codes: [A, Sci, Sca], min: 35}
+    imperfect:
+      - qualifier: "leptique"
+        page: "111"
+        criterion: "[A + Sca] under 35 cm"
+        tests: {all_of: [*calco_core, {thickness_rp: {codes: [A, Sci, Sca], max: 35}}]}
+  - code: "dolomitosols"
+    ger: "calcium_magnesium"
+    name: "dolomitosols"
+    name_singular: "dolomitosol"
+    name_en: "dolomitosols"
+    name_en_singular: "dolomitosol"
+    page: "112, 120"
+    sequences: ["Ado-Sdo-C", "Ado-Rdo"]
+    notes: "Carbonated horizons with molar CaCO3/MgCO3 under 1.5, no or very weak cold effervescence; a rock with dolomite; usually [Ado + Sdo] over 35 cm. An Ado alone is a dolomitosol leptique (table p. 122)."
+    wrb2006: "Cambisols (Dolomitic)"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *dolo_core
+        - thickness_rp: {codes: [Ado, Sdo], min: 35}
+    imperfect:
+      - qualifier: "leptique"
+        page: "112, 122"
+        criterion: "[Ado + Sdo] under 35 cm"
+        tests: {all_of: [*dolo_core, {thickness_rp: {codes: [Ado, Sdo], max: 35}}]}
+  - code: "rendisols"
+    ger: "calcium_magnesium"
+    name: "rendisols"
+    name_singular: "rendisol"
+    name_en: "rendisols"
+    name_en_singular: "rendisol"
+    page: "112, 120, 123"
+    sequences: ["Aci|LAci-Cca|M|R|D"]
+    notes: "Only an Aci under 35 cm; [O + Aci] over 10 cm, the OL excluded; Ca/Mg over 2 (hapliques over 5, calcimagnésiques 2 to 5). An Aci hemiorganic makes an organosol saturé."
+    wrb2006: "Rendzic Leptosols or Epileptic Cambisols (Hypereutric)"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *rendi_core
+        - thickness_rp: {codes: [Aci], max: 35}
+    imperfect:
+      - qualifier: "pachique"
+        page: "112"
+        criterion: "the Aci over 35 cm"
+        tests: {all_of: [*rendi_core, {thickness_rp: {codes: [Aci], min: 35}}]}
+  - code: "calcisols"
+    ger: "calcium_magnesium"
+    name: "calcisols"
+    name_singular: "calcisol"
+    name_en: "calcisols"
+    name_en_singular: "calcisol"
+    page: "112-113, 123"
+    sequences: ["Aci|LAci-Sci-Cca|M|R|D", "Aci|LAci-Sci-Sca-Cca|M|R|D"]
+    notes: "A solum saturated by Ca or Mg (S/CEC over 80 %), Ca dominant (Ca/Mg over 5, calcimagnésiques over 2); usually [A + Sci] over 35 cm; no Sp within 40 cm; a local effervescence allowed. A carbonate reserve upslope, below or in the coarse elements separates it from the brunisols eutriques (Q16: proved by the data, else the brunisol takes the name)."
+    wrb2006: "Cambisols (Hypereutric)"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *calci_core
+        - thickness_rp: {codes: [A, Sci], min: 35}
+    imperfect:
+      - qualifier: "leptique"
+        page: "113"
+        criterion: "[A + Sci] under 35 cm"
+        tests: {all_of: [*calci_core, {thickness_rp: {codes: [A, Sci], max: 35}}]}
+      - qualifier: "insaturé en surface"
+        page: "113"
+        criterion: "an A neither saturated nor subsaturated over Sci"
+        tests:
+          all_of:
+            - *camg_scope
+            - sequence_rp: {sequences: ["A-Sci-(C|M|R|D)"]}
+            - no_horizon_within_rp: {codes: [Aci, Aca, Ado, Amg, Sca]}
+            - attribute_rp: {attribute: bs, threshold: 80, direction: max, kind: bs, codes: [A], position: first}
+            - attribute_rp: {attribute: bs, threshold: 80, direction: min, kind: bs, open: true, codes: [Sci], layers: all}
+            - thickness_rp: {codes: [A, Sci], min: 35}
+  - code: "magnesisols"
+    ger: "calcium_magnesium"
+    name: "magnésisols"
+    name_singular: "magnésisol"
+    name_en: "magnesisols"
+    name_en_singular: "magnesisol"
+    page: "113, 123"
+    sequences: ["Amg-Smg-C|M|R", "Amg-C|M|R"]
+    notes: "Saturated horizons with Ca/Mg under 2, no effervescence cold or hot; usually [Amg + Smg] over 35 cm; no Sp within 40 cm."
+    wrb2006: "Cambisols (Hypereutric, Magnesic)"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *magn_core
+        - thickness_rp: {codes: [Amg, Smg], min: 35}
+    imperfect:
+      - qualifier: "leptique"
+        page: "113"
+        criterion: "[Amg + Smg] under 35 cm"
+        tests: {all_of: [*magn_core, {thickness_rp: {codes: [Amg, Smg], max: 35}}]}
+  - code: "calcarisols"
+    ger: "calcium_magnesium"
+    name: "calcarisols"
+    name_singular: "calcarisol"
+    name_en: "calcarisols"
+    name_en_singular: "calcarisol"
+    page: "113, 122-123"
+    sequences: ["A-(S)-Kc|Km"]
+    notes: "A Kc or Km starting within 35 cm, at least 10 cm thick (Kc) or 5 cm (Km); above, usually an Aca, rarely an Aci; a thin Sca or Sci may lie between. No sequence printed: the examples Aca-Km and Aci-Kc. A discontinuous K makes no calcarisol."
+    wrb2006: "Epipetric Calcisols"
+    distinctions:
+      - {with: "brunisols eutriques saturés", page: "116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "arénosols, régosols sableux", page: "116", by: "single-grain sands (precedence.yaml)"}
+      - {with: "organosols", page: "116", by: "an A hemiorganic throughout (later release)"}
+      - {with: "peyrosols", page: "116", by: "over 60 % coarse elements by weight over 50 cm (later release)"}
+      - {with: "chernosols", page: "116", by: "an Ach (side test)"}
+      - {with: "fluviosols, thalassosols", page: "116", by: "alluvial material in a valley (later release)"}
+      - {with: "pélosols", page: "116", by: "an Sp within 40 cm (side test)"}
+      - {with: "fersialsols", page: "116", by: "FS horizons (side test)"}
+    tests:
+      all_of:
+        - *camg_scope
+        - sequence_rp: {sequences: ["A-(S)-Kc|Km"]}
+        - any_of:
+            - all_of:
+                - horizon_within_rp: {codes: [Kc], depth: 35}
+                - thickness_rp: {codes: [Kc], min: 10}
+            - all_of:
+                - horizon_within_rp: {codes: [Km], depth: 35}
+                - thickness_rp: {codes: [Km], min: 5}

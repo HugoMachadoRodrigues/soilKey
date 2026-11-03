@@ -1,0 +1,66 @@
+# Alocrisols (pp. 69-73), 2 references. The aluminic structural horizon Sal
+# is compulsory (pp. 16, 69-70). Sequences transcribed with "-" for the
+# book's "/" and "|" for its "ou" (default 13); slots open, the forbidden
+# horizons and the thicknesses as side tests. Criteria paraphrased.
+#
+# Distinctions (pp. 72-73): a BP makes a podzosol; mull humus with Alu or Slu
+# and andic properties an aluandosol; cultivation that destroys the
+# microcrumb S gives a brunisol dystrique (an S, not a Sal); a BT a luvisol;
+# a Sal under 10 cm a rankosol; all horizons above C or R hemi- or
+# holorganic with no Sal an organosol insaturé; an Xp, Xc or Xgr a double
+# peyrosol-alocrisol (doubles.yaml, with the peyrosols).
+humic_a: &alo_humic_a
+  attribute_rp: {attribute: oc_pct, threshold: 8, direction: min, kind: organic_carbon, codes: [A], position: first}
+common: &alo_common
+  all_of:
+    - thickness_rp: {codes: [Sal], min: 10}
+    - no_horizon_within_rp: {codes: [BP, BT, Alu, Slu]}
+references:
+  - code: "alocrisols_typiques"
+    ger: "alocrisols"
+    name: "alocrisols typiques"
+    name_singular: "alocrisol typique"
+    name_en: "typical alocrisols"
+    name_en_singular: "typical alocrisol"
+    page: "70"
+    sequences: &alo_t ["A-Sal-(C|R)", "Ah-Sal-(C|R)"]
+    notes: "A thin biomacrostructured A or an A of insolubilisation over Sal; Sal with less than 2 g/100 g organic carbon, usually 7.5YR or 10YR, chroma 4 to 8. Told from the humiques by an A that is not hemiorganic (8 g/100 g organic carbon, +/- 2)."
+    wrb2006: "Cambisols (Hyperdystric)"
+    distinctions:
+      - {with: "podzosols", page: "72", by: "a BP makes a podzosol: no BP (side test)"}
+      - {with: "aluandosols", page: "72", by: "Alu or Slu with andic properties: no Alu, Slu (side test)"}
+      - {with: "brunisols dystriques", page: "72", by: "an S, not a Sal (the horizon frame)"}
+      - {with: "luvisols", page: "73", by: "a BT: no BT (side test)"}
+      - {with: "rankosols", page: "73", by: "a Sal under 10 cm (thickness)"}
+      - {with: "organosols insaturés", page: "73", by: "all horizons hemi- or holorganic, no Sal (later release)"}
+      - {with: "peyrosols", page: "73", by: "a double peyrosol-alocrisol typique (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: *alo_t}
+        - *alo_common
+        - none_of:
+            - *alo_humic_a
+  - code: "alocrisols_humiques"
+    ger: "alocrisols"
+    name: "alocrisols humiques"
+    name_singular: "alocrisol humique"
+    name_en: "humic alocrisols"
+    name_en_singular: "humic alocrisol"
+    page: "70-71"
+    sequences: &alo_h ["Aho-Salh-(C|R)", "Aho-Salh-Sal-(C|R)"]
+    notes: "A very acid hemiorganic Aho, 8 to 20 g/100 g organic carbon at the top, over a dark Salh with 2 to 4 g/100 g; the organic matter impregnates the top 40 to 80 cm."
+    wrb2006: "Cambic Umbrisols (Hyperdystric)"
+    distinctions:
+      - {with: "podzosols", page: "72", by: "a BP makes a podzosol: no BP (side test)"}
+      - {with: "aluandosols", page: "72", by: "Alu or Slu with andic properties: no Alu, Slu (side test)"}
+      - {with: "brunisols dystriques", page: "72", by: "an S, not a Sal (the horizon frame)"}
+      - {with: "luvisols", page: "73", by: "a BT: no BT (side test)"}
+      - {with: "rankosols", page: "73", by: "a Sal under 10 cm (thickness)"}
+      - {with: "organosols insaturés", page: "73", by: "all horizons hemi- or holorganic, no Sal (later release)"}
+      - {with: "peyrosols", page: "73", by: "a double peyrosol-alocrisol typique (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: *alo_h}
+        - *alo_common
+        - *alo_humic_a
+        - attribute_rp: {attribute: oc_pct, threshold: 2, direction: min, codes: [Sal], position: first}

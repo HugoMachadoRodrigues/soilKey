@@ -1,0 +1,33 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: rp2008
+order: 12
+aliases: [rp, referentiel]
+legacy: false
+default: false
+status: experimental
+namespace: rp
+classifier: classify_rp2008
+result_slot: rp2008
+top_level: references
+levels: [references]
+# the references are read from references/<ger>.yaml; the rapid key, the
+# precedence, the doubles and the tolerances from files of their own
+rule_folders: [references]
+rule_files: [rapid_key, precedence, doubles, tolerances]
+display:
+  en: "French Référentiel pédologique (2008)"
+  pt: "Referencial pedológico francês (2008)"
+  native: "Référentiel pédologique 2008"
+  result: "RP 2008"
+edition: "Référentiel pédologique 2008, AFES, Éditions Quæ (2009)"
+citation: >
+  Baize D., Girard M.-C. (coord.) (2009). Référentiel pédologique 2008.
+  Association française pour l'étude du sol. Éditions Quæ, Versailles. 435 pp.
+version: "Référentiel pédologique 2008 (third edition)"
+implementation_status: "soilKey v0.9.346 -- the 29 references of the first nine groups of references (alocrisols, andosols, anthroposols, arénosols, brunisols, the calcium and magnesium chapter, chernosols, colluviosols, cryosols), attached by their sequences of reference horizons, the side tests of each chapter and the tolerances of p. 64; the reference horizons from the RP notation or on the data (v0.9.341, v0.9.343). The 81 references of the other 25 groups are not implemented yet: a profile that shows their horizons is told so, in the candidates, and its name is provisional"
+source: |
+  The definitions of the reference horizons (pp. 6-28), the tolerances
+  (p. 64), the rapid key (pp. 66-68) and the chapters of the references
+  (pp. 69-145 in this release). The RP gives no key: every reference is
+  tested, and the choice of one main name among those that attach is
+  soilKey's (precedence.yaml, doubles.yaml, readings.yaml).

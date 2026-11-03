@@ -1,0 +1,112 @@
+# Chernosols (pp. 125-129), 3 references. An Ach at least 40 cm thick is
+# compulsory (p. 125; 40 cm strict, Q5); the solum is clinohumic, at least
+# 0.6 % organic carbon deeper than 40 cm in an Ach, Sh or BTh (p. 125). The
+# vermic character (worm channels, coprolites, krotovinas) is read as
+# evidence only: the biomacrostructured Ach stands for it (soilKey's
+# reading). The sequence and the texture differentiation index Ach to the S
+# or BT (1.3) decide the reference; the depth windows of Ck or K and the
+# S/CEC ranges only make the attachment imperfect (default 21). A cultivated
+# LAh or LAch counts for the 40 cm of Ach (p. 127); the typiques forbid only
+# a BT directly under the Ach, or a humic BTh (a deeper BT is bathyluvique, p.
+# 128), and the mélanoluviques need over 0.6 % organic carbon in the first BT
+# (BTh, p. 127) (the review's D5 and R2).
+#
+# Distinctions (p. 128; p. 116): phaeosols have a less black Aso, coarser,
+# S/CEC 50 to 80 %; veracrisols are acid and aluminic; an Ach excludes the
+# whole calcium and magnesium GER (p. 109).
+scope: &cher_scope
+  all_of:
+    - thickness_rp: {codes: [Ach, LAh], min: 40}
+    - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, codes: [Ach, S, BT], from: 40, layers: any}
+hapl_core: &hapl_core
+  all_of:
+    - *cher_scope
+    - sequence_rp: {sequences: ["Ach-(Ck|K)"]}
+    - no_horizon_within_rp: {codes: [S, BT]}
+typ_core: &typ_core
+  all_of:
+    - *cher_scope
+    - sequence_rp: {sequences: ["Ach-Sh-(Ck|K)"]}
+    - none_of:
+        - below_rp: {upper: [Ach, LAh], codes: [BT]}
+        - horizon_within_rp: {codes: [BTh]}
+    - idt_rp: {upper: [Ach], lower: [S], max: 1.3}
+    - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, open: true, codes: [S], position: first}
+mel_core: &mel_core
+  all_of:
+    - *cher_scope
+    - sequence_rp: {sequences: ["Ach-BTh-(Ck|K)"]}
+    - idt_rp: {upper: [Ach], lower: [BT], min: 1.3, open: true}
+    - thickness_rp: {codes: [BT], min: 40}
+    - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, open: true, codes: [BT], position: first}
+references:
+  - code: "chernosols_hapliques"
+    ger: "chernosols"
+    name: "chernosols hapliques"
+    name_singular: "chernosol haplique"
+    name_en: "haplic chernosols"
+    name_en_singular: "haplic chernosol"
+    page: "127"
+    sequences: ["Ach-Ck|K", "LAch|LAh-Ck|K"]
+    notes: "No Sh, no BTh; Ach of 40 cm or more, calcareous from the surface at most 5 % CaCO3; a gradual transition to the Ck or K, which appears between 60 and 85 cm."
+    wrb2006: "Calcic Chernozems"
+    distinctions:
+      - {with: "phæosols", page: "128", by: "a less black, coarser Aso with S/CEC 50 to 80 % (later release)"}
+      - {with: "veracrisols", page: "128", by: "acid and aluminic (later release)"}
+      - {with: "calcosols, calcisols", page: "116", by: "an Ach excludes the calcium and magnesium GER (side test)"}
+    tests:
+      all_of:
+        - *hapl_core
+        - horizon_within_rp: {codes: [Ck, K], from: 60, depth: 85}
+    imperfect:
+      - criterion: "the Ck or K outside 60-85 cm (p. 127; the window makes the attachment imperfect, default 21)"
+        page: "127"
+        tests: *hapl_core
+  - code: "chernosols_typiques"
+    ger: "chernosols"
+    name: "chernosols typiques"
+    name_singular: "chernosol typique"
+    name_en: "typical chernosols"
+    name_en_singular: "typical chernosol"
+    page: "127"
+    sequences: ["Ach-Sh-Ck|K", "Ach|LAh-Sh-Ck|K"]
+    notes: "No BTh; Ach over 40 cm, not calcareous, S/CEC 85 to 95 %; a dark Sh with over 0.6 % organic carbon in its upper part; Ck or K between 70 and 120 cm; texture differentiation index Ach to Sh under 1.3."
+    wrb2006: "Voronic Chernozems"
+    distinctions:
+      - {with: "phæosols", page: "128", by: "a less black, coarser Aso with S/CEC 50 to 80 % (later release)"}
+      - {with: "veracrisols", page: "128", by: "acid and aluminic (later release)"}
+      - {with: "calcosols, calcisols", page: "116", by: "an Ach excludes the calcium and magnesium GER (side test)"}
+    tests:
+      all_of:
+        - *typ_core
+        - horizon_within_rp: {codes: [Ck, K], from: 70, depth: 120}
+        - attribute_rp: {attribute: bs, threshold: 85, direction: min, kind: bs, codes: [Ach], layers: weighted}
+        - attribute_rp: {attribute: bs, threshold: 95, direction: max, kind: bs, codes: [Ach], layers: weighted}
+    imperfect:
+      - criterion: "the Ck or K outside 70-120 cm or S/CEC outside 85-95 % (p. 127; default 21)"
+        page: "127"
+        tests: *typ_core
+  - code: "chernosols_melanoluviques"
+    ger: "chernosols"
+    name: "chernosols mélanoluviques"
+    name_singular: "chernosol mélanoluvique"
+    name_en: "melanoluvic chernosols"
+    name_en_singular: "melanoluvic chernosol"
+    page: "127"
+    sequences: ["Ach-BTh-Ck|K", "LAch|LAh-BTh-Ck|K"]
+    notes: "Ach over 40 cm, not calcareous, S/CEC 75 to 90 %; a BTh of 40 cm or more, brown-black, with many clay-humus coatings; Ck or K between 100 and 160 cm; texture differentiation index Ach to BTh over 1.3."
+    wrb2006: "Luvic Chernozems"
+    distinctions:
+      - {with: "phæosols", page: "128", by: "a less black, coarser Aso with S/CEC 50 to 80 % (later release)"}
+      - {with: "veracrisols", page: "128", by: "acid and aluminic (later release)"}
+      - {with: "calcosols, calcisols", page: "116", by: "an Ach excludes the calcium and magnesium GER (side test)"}
+    tests:
+      all_of:
+        - *mel_core
+        - horizon_within_rp: {codes: [Ck, K], from: 100, depth: 160}
+        - attribute_rp: {attribute: bs, threshold: 75, direction: min, kind: bs, codes: [Ach, BT], layers: weighted}
+        - attribute_rp: {attribute: bs, threshold: 90, direction: max, kind: bs, codes: [Ach, BT], layers: weighted}
+    imperfect:
+      - criterion: "the Ck or K outside 100-160 cm or S/CEC outside 75-90 % (p. 127; default 21)"
+        page: "127"
+        tests: *mel_core

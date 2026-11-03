@@ -329,6 +329,14 @@
     mineral <- any(!is.na(c(.rp_num(x, i, "clay_pct"), .rp_num(x, i, "sand_pct"), .rp_num(x, i, "silt_pct")))) ||
       !is.na(.rp_txt(x, i, "field_texture"))
     if (mineral) return(.rp_r(FALSE, note = "no carbon recorded; the particle size is recorded: a mineral layer"))
+    # carbonates or gypsum of half the layer or more, or a cemented layer,
+    # leave no room for a holorganic material (ash over 50 %; the review of
+    # 0.9.346: a calcrete with no carbon recorded)
+    salts <- sum(c(.rp_num(x, i, "caco3_pct"), .rp_num(x, i, "caso4_pct")), na.rm = TRUE)
+    cem <- .rp_txt(x, i, "cementation_class")
+    if (salts >= 50 || isTRUE(grepl("indurat|strong", cem)))
+      return(.rp_r(FALSE, note = sprintf("no carbon recorded; %s: a mineral layer",
+                                         if (salts >= 50) sprintf("carbonates and gypsum %s %%", format(salts)) else sprintf("cementation %s", cem))))
     .rp_r(NA, missing = c("oc_pct", "loi_pct"), note = "organic or mineral: no carbon, loss on ignition or particle size recorded")
   })
 }

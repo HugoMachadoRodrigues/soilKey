@@ -1,0 +1,67 @@
+# Cryosols (pp. 135-145), 2 references. No specific reference horizon; a
+# permafrost layer (couche P, permanently under 0 C for two years or more)
+# starting within 200 cm (+/- 30) is required (pp. 139-140). The permafrost
+# is read from a frozen designation (-*), a layer P, ice in a layer,
+# permafrost_temp_C at or under 0, or site$frost_regime permafrost; it is
+# absent only when the site records none (default 21), and soilKey also reads
+# it absent from a recorded soil temperature regime or Koppen climate with
+# no permafrost (soilKey's reading). The formulas list the possible horizons
+# with commas, not an order (p. 140).
+#
+# Distinctions (pp. 141-142): cryoturbated podzosols and luvisols make the
+# doubles cryosol minéral-podzosol and cryosol minéral-luvisol (doubles.yaml,
+# with those GER); a peat with no permafrost is a histosol; very filtering,
+# undifferentiated materials with no cryoturbation are régosols.
+references:
+  - code: "cryosols_histiques"
+    ger: "cryosols"
+    name: "cryosols histiques"
+    name_singular: "cryosol histique"
+    name_en: "histic cryosols"
+    name_en_singular: "histic cryosol"
+    page: "140"
+    sequences: ["OL, H et R", "H et R", "H et -*"]
+    notes: "When R or a layer of ice thicker than 30 cm lies within 30 cm, the H horizons are thicker than 10 cm; otherwise thicker than 30 cm. No A, E, S, BT or BP, in both cases (default 21)."
+    wrb2006: "Histic Cryosols or Cryic Histosols (?)"
+    distinctions:
+      - {with: "podzosols, luvisols", page: "141", by: "cryoturbated: the doubles cryosol minéral-podzosol or -luvisol (doubles.yaml, later release)"}
+      - {with: "histosols", page: "142", by: "a peat with no permafrost (side test; later release)"}
+      - {with: "régosols", page: "142", by: "undifferentiated filtering materials with no cryoturbation (side test; later release)"}
+    tests:
+      all_of:
+        - permafrost_rp: {depth: 200}
+        - no_horizon_within_rp: {codes: [A, E, S, BT, BP]}
+        - any_of:
+            - all_of:
+                - any_of:
+                    - horizon_within_rp: {codes: [R], depth: 30}
+                    - ice_layer_rp: {depth: 30, min_thickness: 30}
+                - thickness_rp: {codes: [H], min: 10}
+            - thickness_rp: {codes: [H], min: 30}
+  - code: "cryosols_mineraux"
+    ger: "cryosols"
+    name: "cryosols minéraux"
+    name_singular: "cryosol minéral"
+    name_en: "mineral cryosols"
+    name_en_singular: "mineral cryosol"
+    page: "140"
+    sequences: ["Hcry, Jscry, C|M|R|D", "Hcry, Jpcry, C|M|R|D"]
+    notes: "Very generally cryoturbated (cryoturbation recorded, or -cry written), with no continuous histic horizon over 30 cm; silt-eluvial and silt-illuvial horizons possible. With the permafrost within 200 cm (shown by the data: undecided permafrost does not make this case) and the cryoturbation not recorded the attachment is imperfect, and it takes the name before the references of later entries of the rapid key (Hugo's decision 1)."
+    wrb2006: "Haplic, Umbric or Spodic Cryosols"
+    distinctions:
+      - {with: "podzosols, luvisols", page: "141", by: "cryoturbated: the doubles cryosol minéral-podzosol or -luvisol (doubles.yaml, later release)"}
+      - {with: "histosols", page: "142", by: "a peat with no permafrost (side test; later release)"}
+      - {with: "régosols", page: "142", by: "undifferentiated filtering materials with no cryoturbation (side test; later release)"}
+    tests:
+      all_of:
+        - permafrost_rp: {depth: 200}
+        - cryoturbation_rp: {}
+        - thickness_rp: {codes: [H], max: 30}
+    imperfect:
+      - criterion: "the cryoturbation not recorded (Hugo's decision 1, 2026-11-03)"
+        page: "140"
+        tests:
+          all_of:
+            - permafrost_rp: {depth: 200, proven: true}
+            - cryoturbation_rp: {not_recorded: true}
+            - thickness_rp: {codes: [H], max: 30}

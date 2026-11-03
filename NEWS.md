@@ -1,3 +1,49 @@
+# soilKey 0.9.346 (2026-11-03)
+
+## France: the Référentiel pédologique 2008 attaches its first 29 references
+
+The French Référentiel pédologique 2008 (AFES; Baize and Girard coord.; Éditions Quæ, 2009) enters the registry as `rp2008` (namespace `rp`, aliases `rp` and `referentiel`; `france`, `french` and `fr` stay with the CPCS 1967), experimental and opt-in: `classify_all()` runs it only when asked. `classify_rp2008()` tests the 29 references of the first nine groups of references (GER): alocrisols (2), andosols (6), anthroposols (5), arénosols (1), brunisols (2), the solums dominated by calcium or magnesium (7: rendosols, calcosols, dolomitosols, rendisols, calcisols, magnésisols, calcarisols), chernosols (3), colluviosols (1) and cryosols (2). Every other classification is unchanged.
+
+* **Not a key: an attachment.** Every reference is tested every time (Q3): its sequences of reference horizons, matched with `match_horizon_sequence()` on the horizon frame (the RP notation where written, else the horizons on the data of 0.9.343), and the side tests of its chapter (depths, thicknesses, forbidden horizons, saturation, carbonates, permafrost, colluvial and anthropic materials), in `inst/rules/rp2008/references/<ger>.yaml`, each with its page, its WRB 2006 name (Annex 5, display only) and its distinctions in the comments.
+* **Degrees.** Each reference is evaluated strictly and with the tolerances of p. 64 (`tolerances.yaml`: depth and thickness 10 to 200 cm, pH 0.2, CEC 1, S/CEC 5, organic carbon 8 and 30; every other threshold strict, Q5): simple, imperfect (met only within tolerance, never promoted, Q4), simple or imperfect, undecided or failed. The imperfect cases the chapters name (calcosol leptique, rendosol pachique, arénosol rédoxique, anthroposol lithique, calcisol insaturé en surface ...) attach imperfectly, their qualifier written in the name ("calcosol leptique").
+* **One main name and the candidates.** The precedence of the chapters first (`precedence.yaml`: a colluviosol only when no other reference attaches, a calcarisol before the other six of its GER, the arénosols before the rendosols, calcosols and dolomitosols, the perhydric silandosols first, the calcisol against the brunisol eutrique by the carbonate reserve of Q16 ...), then the degree, then the order of the rapid key (`rapid_key.yaml`, pp. 66-68; the grisols in soilKey's 7c), Q6. Doubles only for the pairs the book prescribes (`doubles.yaml`: calcisol-calcosol, anthroposol transformé-brunisol eutrique when the transformé is imperfect, calcosol-anthroposol transformé; the pairs with references of later releases listed and waiting), Q7. With no reference, "[non rattaché]" and the three nearest references. The new slot `candidates` holds every reference that may attach, with its degree, the criteria that fail, pass only within tolerance or are undecided, and the book's statements that rank it after the name (`precedence`). The name is French, as printed, in the singular, the English gloss in `levels$name_en`, the GER a label (`rsg_or_order`).
+* **The other 25 GER.** Their 81 references come in later releases. `key.yaml` lists all 34 GER and 110 references, with a signpost for each GER not implemented (the horizons or materials of its chapter: BT for the luvisols, BP for the podzosols, G or g within 50 cm for the réductisols and rédoxisols ...): a profile that shows them gets the GER among the candidates, undecided and not implemented yet, and the name is provisional when it ranks first. No profile is attached elsewhere without saying so.
+* `identify_horizons(pedon, "rp2008")` now reaches the RP identification; `make_rp2008_example()` gives one profile per reference, in the RP notation; the examples are in the Pro app.
+* `load_rules()` reads the folders and files a registry entry names besides its levels (`rule_folders`, `rule_files`); no other system names any.
+
+### Hugo's decisions read here (2026-11-02)
+
+* Q1 (references and types, the GER a label), Q3 (one name and the candidates), Q4 (the tolerance band is imperfect), Q5 (the thresholds not in the table strict), Q6 (the book, the degree, the rapid key), Q7 (the doubles the book prescribes), Q14 (the colluvial origin required), Q15 (the anthroposols by their materials and the recorded history), Q16 (the carbonate reserve by a positive proof), and the defaults 1, 2, 9, 13 and 21.
+
+### Hugo's answers on the readings (2026-11-03)
+
+* The 17 readings of this release (`readings.yaml`) are accepted, revised by the review: the imperfect cases (D1), the open sequences (D2), the perhydric andosols (D2, D3), the artificiels and construits (R3), the arénosols (D9 and decision 3), the brunisols (D6), the carbonate reserve (D7), the calcium GER (D4, D9), the chernosols (D5, R2) and the cryosols (decision 1).
+
+### After the review (2026-11-03)
+
+* **D1.** A reference attached imperfectly within the tolerance of p. 64 is named by the imperfect case of its chapter whose test holds strictly: calcosol leptique at [A + Sca] 32 cm, rendosol pachique at Aca 38 cm, arénosol rédoxique with -g at 70 cm, arénosol leptique with clay at 110 cm, vitrandosol leptique at Avi 27 cm, anthroposol artificiel leptique at Z 45 cm, anthroposol reconstitué leptique at Ltp 40 cm.
+* **D2, D3, R5.** The perhydric silandosols and aluandosols take the name only when the perhydric test holds; the aluandosols hapliques no longer test it; an And, Snd, Alu or Slu under an Avi makes no vitrandosol (an épivitrique silandosol); the leptique case of the andosols needs the andic set thinner than 30 cm.
+* **D4.** The calcium and magnesium GER excludes a V or SV within 100 cm only (bathyvertique deeper, p. 116), and a Ys or Ym within 10 cm (a deeper Ys no longer excludes).
+* **D5, R2.** The chernosols typiques forbid only a BT directly under the Ach, or a humic BTh; the mélanoluviques need over 0.6 % organic carbon in the first BT; a cultivated LAh or LAch counts for the 40 cm of Ach.
+* **D6.** The brunisols read their forbidden horizons, and their sequence, in the first material (the first lithological unit of 50 cm or more): A-S-IISca-IIRca is a brunisol eutrique; under crops their sequence is LS-S; S/CEC over 50 % eutric and under 50 % dystric as printed, both imperfect at exactly 50 %, the eutrique named.
+* **D7.** The carbonate reserve reads a closed vocabulary of calcareous rocks and materials, whole words, and not when denied (non-calcareous, decalcified, décarbonaté); a tuff is no longer a reserve.
+* **D8.** A test on the first layer of a set is undecided when an undecided layer above it could belong to the set and would give another verdict.
+* **D9.** The arénosols come before the rendosols, calcosols and dolomitosols only when the A is not biomacrostructured, and are excluded by them when it is; the calcarisols come first only when they attach strictly (a Km within tolerance: a calcosol).
+* **R3, R4.** The artificiels need a technological material dominant (an earthy Ztr or a holorganic ZO makes none); the construits have a leptique case (30 to 50 cm), and a recorded construction keeps them first; the signpost of the rankosols lets a Sal under 10 cm through.
+* The nearest references of a solum attached to none include the colluviosols when colluvial material is recorded; the print of an attachment and the report's provisional section speak of an attachment, not of a key (the report's footer, common to every system, waits for the name builder).
+* Undecided layers that leave the alternatives of a reference undecided are completed with their candidates (up to 32 ways); a layer of 50 % carbonates and gypsum or more, or indurated, is mineral even with no carbon recorded (a calcrete Km).
+
+### Hugo's decisions after the review (2026-11-03)
+
+* **1.** A cryosol minéral is simple with the cryoturbation recorded, imperfect when the data show the permafrost within 200 cm and record no cryoturbation, and then takes the name before the brunisols and the other references of later entries of the rapid key.
+* **2.** The double anthroposol transformé-brunisol eutrique is written only when the transformé is imperfect (the intermediate case of p. 91); a simple transformé takes the name and the brunisol stays among the candidates.
+* **3.** An Ach, And, Alu, Avi, Aso or Sal in the profile excludes the arénosols, so that a texture not recorded no longer makes those names provisional.
+
+### Hugo's decisions on the readings of the review (2026-11-03)
+
+* The first material (a cover under 50 cm skipped); the completion of undecided layers in the sequences; a calcrete with no carbon recorded is mineral; the first layer of a set under an undecided one (D8); the colluviosols among the nearest references; the signposts of the rankosols (a thin Sal) and gypsosols (a Ys within 20 cm).
+* The carbon of a layer holds over its whole depth: a single Ach of 0-45 cm with 3 % carbon is clinohumic (0.6 % or more below 40 cm). No reading of the Référentiel waits for confirmation.
+
 # soilKey 0.9.345 (2026-11-02)
 
 ## Russia: the subtypes and the full name

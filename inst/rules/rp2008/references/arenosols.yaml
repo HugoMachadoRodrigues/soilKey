@@ -1,0 +1,100 @@
+# Arénosols (pp. 99-102), 1 reference. No specific reference horizon. Over
+# at least 120 cm (+/- 20): total sand over 65 %, clay under 12.5 % (the
+# upper limit of the GEPPA sand class), coarse elements under 60 % by weight
+# of the whole soil (else peyrosols); none of the nine horizons of p. 99
+# within 120 cm (BT, BP, S, FS, G, FE, F, OX, RT; default 21, not the five
+# of p. 100); no prolonged water excess within 80 cm (+/- 15).
+#
+# Imperfect (p. 101): rédoxique, -g appearing between 50 and 80 cm (above 50
+# cm, a rédoxisol sableux); leptique, a non-sandy material (C, M, D or R)
+# appearing between 50 and 120 cm; lithique, R between 10 and 50 cm.
+# Distinctions (pp. 101-102): a régosol sableux has no organo-mineral top
+# with roots and biological activity; fluviosols are in valleys under a
+# fluctuating water table; a BP downslope makes a podzosol éluvique; an
+# arénosol salin is never a salisol or sodisol.
+seq: &aren_seq
+  sequence_rp: {sequences: ["(O)-A-(Jp)-(C|M)", "Js-(Jp)-(C|M)"]}
+# an Ach, And, Alu, Avi, Aso or Sal in the profile excludes the arénosol, so
+# that a texture not recorded leaves no name provisional by it (Hugo's
+# decision 3, 2026-11-03)
+excl: &aren_excl
+  no_horizon_within_rp: {codes: [Ach, And, Alu, Avi, Aso, Sal]}
+forbidden: &aren_forbidden
+  no_horizon_within_rp: {codes: [BT, BP, S, FS, G, FE, F, OX, RT], depth: 120}
+sandy120: &aren_sandy120
+  all_of:
+    - attribute_rp: {attribute: sand_pct, threshold: 65, direction: min, open: true, within: 120, window: depth, layers: all}
+    - attribute_rp: {attribute: clay_pct, threshold: 12.5, direction: max, open: true, within: 120, window: depth, layers: all}
+    - coarse_rp: {threshold: 60, within: 120}
+sandy50: &aren_sandy50
+  all_of:
+    - attribute_rp: {attribute: sand_pct, threshold: 65, direction: min, open: true, within: 50, window: depth, layers: all}
+    - attribute_rp: {attribute: clay_pct, threshold: 12.5, direction: max, open: true, within: 50, window: depth, layers: all}
+    - coarse_rp: {threshold: 60, within: 50}
+dry80: &aren_dry80
+  no_horizon_within_rp: {codes: [G, g, "-g"], depth: 80}
+dry50: &aren_dry50
+  no_horizon_within_rp: {codes: [G, g, "-g"], depth: 50}
+references:
+  - code: "arenosols"
+    ger: "arenosols"
+    name: "arénosols"
+    name_singular: "arénosol"
+    name_en: "arenosols"
+    name_en_singular: "arenosol"
+    page: "99-100"
+    sequences: ["O-A-C|M", "A-C|M", "A-Jp-C|M", "Js-Jp-C|M"]
+    notes: "Uniformly sandy over 120 cm: single-grain except a possible A, a massive friable C or M allowed; sandy Jp at mid-depth (decompacted, rooted, some organic matter, unaggregated). Either a sandy rock with no mature pedogenesis, or the upper horizons of a very differentiated solum whose BT, BP or S lie deeper and are judged not functional."
+    wrb2006: "Arenosols"
+    distinctions:
+      - {with: "régosols sableux", page: "101", by: "an organo-mineral top with roots and biological activity (later release)"}
+      - {with: "fluviosols", page: "101", by: "a valley and a fluctuating water table (later release)"}
+      - {with: "brunisols, calcosols, alocrisols, luvisols", page: "101", by: "no S and no BT (side test)"}
+      - {with: "podzosols", page: "102", by: "a BP downslope or deep makes a podzosol (later release)"}
+      - {with: "salisols and sodisols", page: "102", by: "an arénosol salin is never one (later release)"}
+      - {with: "rédoxisols and réductisols", page: "102", by: "no water excess within 80 cm and no G (side test)"}
+    tests:
+      all_of:
+        - *aren_seq
+        - *aren_excl
+        - *aren_forbidden
+        - no_horizon_within_rp: {codes: [R, D], depth: 120}
+        - *aren_sandy120
+        - *aren_dry80
+    imperfect:
+      - qualifier: "rédoxique"
+        page: "101"
+        criterion: "-g appearing between 50 and 80 cm"
+        tests:
+          all_of:
+            - *aren_seq
+            - *aren_excl
+            - *aren_forbidden
+            - no_horizon_within_rp: {codes: [R, D], depth: 120}
+            - *aren_sandy120
+            - *aren_dry50
+      - qualifier: "leptique"
+        page: "101"
+        criterion: "a non-sandy material appearing between 50 and 120 cm"
+        tests:
+          all_of:
+            - *aren_seq
+            - *aren_excl
+            - no_horizon_within_rp: {codes: [BT, BP, S, FS, G, FE, F, OX, RT], depth: 50}
+            - no_horizon_within_rp: {codes: [R, D], depth: 50}
+            - *aren_sandy50
+            - any_of:
+                - horizon_within_rp: {codes: [C, M, D, R], from: 50, depth: 120}
+                - attribute_rp: {attribute: sand_pct, threshold: 65, direction: max, from: 50, within: 120, window: depth, layers: any}
+            - *aren_dry50
+      - qualifier: "lithique"
+        page: "101"
+        criterion: "R between 10 and 50 cm"
+        tests:
+          all_of:
+            - *aren_seq
+            - *aren_excl
+            - no_horizon_within_rp: {codes: [BT, BP, S, FS, G, FE, F, OX, RT], depth: 50}
+            - horizon_within_rp: {codes: [R], from: 10, depth: 50}
+            - *aren_sandy50
+            - *aren_dry50

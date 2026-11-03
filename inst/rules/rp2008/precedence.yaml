@@ -1,0 +1,98 @@
+# The precedence of the Référentiel pédologique 2008 among the references
+# that attach the same solum, for the one main name soilKey gives (Hugo's
+# decision Q6): first the explicit statements of the chapters, below, each
+# with its page; then the degree (simple, simple or imperfect, imperfect,
+# undecided); then the order of the rapid key (rapid_key.yaml: entries 1 to
+# 10 as numbered, then 11 and 12; the references of a GER in the book's
+# order). `first` before `second` when both are candidates and `when` (a
+# test block, TRUE when absent) holds; `second: "*"` or `first: "*"` stands
+# for every other reference. The exclusions remove a reference from the
+# candidates when another attaches. The choice of one name is a convention
+# of soilKey: the book allows several attachments (p. XIV).
+precedence:
+  - first: "*"
+    second: colluviosols
+    page: "132-133"
+    note: "a colluviosol as long as no other reference's characteristic solum is diagnosed; the other reference takes the name, with the qualifier colluvial (Q14)"
+  - first: calcarisols
+    second: [rendosols, calcosols, dolomitosols, rendisols, calcisols, magnesisols]
+    page: "113, 122"
+    note: "an A under 35 cm on a Kc or Km is a calcarisol, whatever the A (the table of p. 122), when the calcarisol attaches strictly: a Km within tolerance is a calcosol pétrocalcarique (p. 113; the review's D9)"
+    when:
+      any_of:
+        - all_of:
+            - horizon_within_rp: {codes: [Kc], depth: 35}
+            - thickness_rp: {codes: [Kc], min: 10}
+        - all_of:
+            - horizon_within_rp: {codes: [Km], depth: 35}
+            - thickness_rp: {codes: [Km], min: 5}
+  - first: arenosols
+    second: [rendosols, calcosols, dolomitosols]
+    page: "116"
+    note: "single-grain sands in calcareous or dolomitic sands are arénosols, never rendosols, calcosols or dolomitosols: the A not biomacrostructured (the review's D9)"
+    when:
+      none_of:
+        - biomacro_rp: {codes: [A]}
+  - first: brunisols_eutriques
+    second: calcisols
+    page: "107, 112, 116"
+    note: "no carbonate reserve recorded: the brunisol eutrique saturé takes the name, the calcisol stays a candidate (Q16)"
+    when:
+      none_of:
+        - carbonate_reserve_rp: {}
+  - first: magnesisols
+    second: brunisols_eutriques
+    page: "68, 109, 113"
+    note: "a complex dominated by magnesium (Ca/Mg under 2) is the calcium and magnesium GER's (rapid key 12), not a brunisol's (11: not dominated by calcium); the reserve of Q16 separates only the calcisols (soilKey's reading)"
+  - first: silandosols_perhydriques
+    second: [silandosols_eutriques, silandosols_dystriques]
+    page: "81, 83"
+    note: "perhydric first, eutric or dystric as a qualifier (the types of p. 83; default 21), when the perhydric test holds (the review's D2)"
+    when:
+      all_of:
+        - attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [And, Snd], within: 100, min: 35}
+  - first: aluandosols_perhydriques
+    second: aluandosols_hapliques
+    page: "81-82"
+    note: "perhydric first, as the silandosols, when the perhydric test holds (the review's D3)"
+    when:
+      all_of:
+        - attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [Alu, Slu], within: 100, min: 35}
+  - first: cryosols_mineraux
+    second: "*"
+    except: [cryosols_histiques]
+    page: "66, 140-141"
+    note: "with the permafrost within 200 cm a mineral cryosol takes the name, also imperfect when the cryoturbation is not recorded (rapid key 3; Hugo's decision 1, 2026-11-03)"
+    when:
+      all_of:
+        - permafrost_rp: {depth: 200}
+  - first: anthroposols_construits
+    second: anthroposols_artificiels
+    page: "91-94"
+    note: "a technological material built on purpose: the construction recorded in rp_anthropic_history (soilKey's reading)"
+    when:
+      all_of:
+        - recorded_rp: {field: rp_anthropic_history, pattern: "constru"}
+exclusions:
+  - code: brunisols_eutriques
+    by: calcisols
+    page: "107, 112, 116"
+    note: "a carbonate reserve recorded (in the C, R, M or D, a calcareous rock or parent material): a calcisol, not a brunisol eutrique saturé (Q16)"
+    when:
+      all_of:
+        - carbonate_reserve_rp: {}
+  - code: arenosols
+    by: rendosols
+    page: "116"
+    note: "a biomacrostructured Aca is no single-grain sand: a rendosol, not an arénosol (the review's D9)"
+    when: {all_of: [{biomacro_rp: {codes: [A]}}]}
+  - code: arenosols
+    by: calcosols
+    page: "116"
+    note: "a biomacrostructured A over Sca: a calcosol, not an arénosol (the review's D9)"
+    when: {all_of: [{biomacro_rp: {codes: [A]}}]}
+  - code: arenosols
+    by: dolomitosols
+    page: "116"
+    note: "a biomacrostructured Ado: a dolomitosol, not an arénosol (the review's D9)"
+    when: {all_of: [{biomacro_rp: {codes: [A]}}]}
