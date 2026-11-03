@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.343)
+# soilKey -- recognised horizon attribute names (v0.9.347)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -354,6 +354,7 @@ and do not warn.
 | `texture_class_ru` | - | character | Texture class of the Russian (Kachinsky) scale, in English or in Russian: sand (песок), loamy sand (супесь), light, medium or heavy loam (легкий, средний, тяжелый суглинок), light, medium or heavy clay (легкая, средняя, тяжелая глина), the Russian words written with е or ё. Read for the gradations of the Russian Field Guide of 2008 where phys_clay_pct is not recorded (Hugo's decision Q7). | - |
 | `loi_pct` | % | numeric | Loss on ignition, % of the dry mass. The Russian Field Guide of 2008 bounds its organic horizons by it: the peat horizons over 35 %, the peregnoi H over 25 %, the agro-peat-mineral PTR under 35 %, the coarse-humus AO 15-35 %, AH 10-25 %. Not recorded: 1.724 x oc_pct (35 % is then 20.3 % organic carbon; Hugo's decision Q6). | - |
 | `peat_decomposition_pct` | % | numeric | Degree of decomposition of peat, % (the Russian method: the share of the plant tissue that has lost its cell structure). The Russian Field Guide of 2008 reads 50 % or more as the peregnoi H and at most 50 % as a peat horizon (O, T, TO, TE, TJ, PT). Not recorded: von_post_index (H7 or more decomposed, H4 or less not), then fiber_content_rubbed_pct (under 17 % decomposed, 40 % or more not); between them undecided (Hugo's decision Q6). | - |
+| `peat_botanical_composition` | - | character | The plants whose remains make the peat, with their share in % where known, joined by ';' (sedge 50; wood 30; sphagnum 20), in English or Russian: wood (древесный), reed (тростниковый), Scheuchzeria (шейхцериевый), horsetail (хвощовый), herb (травяной), cotton-grass (пушицевый), Sphagnum (сфагновый), sedge (осоковый), Hypnum (гипновый). The Russian Field Guide of 2008 names the species of peat of its organogenic soils by the plant whose remains are more than 40 % of the peat, by two when two dominate (древесно-осоковый, p. 136); a record with no shares names its dominant plants. Not recorded: the species is undecided. | - |
 | `foreign_fragments_pct` | % | numeric | Fragments of other horizons mixed into the layer (deep ploughing, plantage, trenching, burrowing), % of the vertical section. The Russian Field Guide of 2008 reads 80 % or more (under 20 % of the section undisturbed) over 40 cm as the turbated horizon TUR, a thinner mixed layer as the feature tr, over 25 % of an agro horizon as agr, fragments of the horizon below in an agro horizon as pb. Not recorded: the site's mechanical_mixing_depth_cm, flagged (Hugo's decision Q20). | - |
 | `turbated_fragments` | - | character | The horizons whose fragments make up a turbated layer, as Russian indices joined by ';' (SEL;ASN). Read for the post-solonetz turbozems and the solonetzic agrozems of the Russian Field Guide of 2008, which the formulas write TUR[SEL+ASN]; a designation written that way gives them too (Hugo's decision Q20). | - |
 | `contamination_hazard` | - | character | Hazard category of the pollutants in the layer by the Russian sanitary standards: permissible, moderately hazardous, highly hazardous or extremely hazardous. The Russian Field Guide of 2008 makes a layer starting within 30 cm with extremely hazardous pollutants the contaminated horizon X, and the soil a chemozem; the site's contaminated or contamination_type without a category leave X undecided, and nothing recorded means no X (Hugo's decision Q23). | - |
@@ -603,5 +604,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.343._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.347._
 

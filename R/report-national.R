@@ -110,6 +110,26 @@
 }
 
 
+# The 1977 analogue of a Russian soil (classify_kidpr2008(),
+# qualifiers$analogue_1977): one line per row of chapter 6 that stands for
+# its type ("Name of 2004 (formula), p. 140: the analogue"), or the line
+# that chapter 6 has no row for it. NULL for a result without it.
+.kidpr_1977_lines <- function(res) {
+  a <- tryCatch(res$qualifiers$analogue_1977, error = function(e) NULL)
+  if (!is.list(a) || is.null(a$status)) return(NULL)
+  if (identical(a$status, "no_row"))
+    return(sprintf("Chapter 6 of the Field Guide has no row for the type %s.", a$type))
+  vapply(a$rows, function(r) sprintf("%s (%s), p. %d: %s.", r$name_2004, r$formula_2004, r$page, r$summary),
+         character(1))
+}
+
+
+# Markdown marks a Russian formula writes (the alluvial ~~, the ash " and
+# the backtick some texts use for it) escaped for the PDF report, so that
+# AU-C~~ is not struck through.
+.md_escape_marks <- function(x) gsub("([~`*_])", "\\\\\\1", x)
+
+
 # ---- HTML ---------------------------------------------------------------------
 
 # The sections of a national result's card: the experimental note, the class
@@ -175,6 +195,12 @@
       .html_escape(.report_msg("report.would_decide")),
       paste(rows, collapse = "\n")))
   }
+  k77 <- .kidpr_1977_lines(res)
+  if (!is.null(k77))
+    out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
+                          .html_escape(.report_msg("report.kidpr_1977")),
+                          .html_escape(.report_msg("report.kidpr_1977_desc")),
+                          paste(sprintf("<li>%s</li>", .html_escape(k77)), collapse = "\n")))
   paste(out, collapse = "")
 }
 
@@ -230,5 +256,10 @@
                      .report_msg("report.status"), .report_msg("report.would_decide")),
              "|---|---|---|---|---|\n", paste(rows, collapse = "\n"), "\n\n")
   }
+  k77 <- .kidpr_1977_lines(res)
+  if (!is.null(k77))
+    out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.kidpr_1977"),
+                          .report_msg("report.kidpr_1977_desc")),
+             paste0("- ", .md_escape_marks(k77), collapse = "\n"), "\n\n")
   paste(out, collapse = "")
 }

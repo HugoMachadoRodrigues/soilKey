@@ -9,7 +9,8 @@ classify_kidpr2008(
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
   gapfill = FALSE,
-  subtypes = TRUE
+  subtypes = TRUE,
+  species = subtypes
 )
 }
 \arguments{
@@ -25,12 +26,15 @@ classify_kidpr2008(
 
 \item{subtypes}{Name the subtypes after the type (default \code{TRUE});
 \code{FALSE} stops at the type.}
+
+\item{species}{Name the species of chapter 5.1 after the subtypes
+(default: as \code{subtypes}).}
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
   \code{"kidpr2008"}, the deepest class assigned in \code{name} (the
   type with its subtypes, else the division, else the trunk), the trunk in
-  \code{rsg_or_order}, the trunk, division, type and subtypes in \code{levels} (with
+  \code{rsg_or_order}, the trunk, division, type, subtypes and species in \code{levels} (with
   \code{name_native}, the Russian name), the key trace, the notes on a
   profile that is not a soil or whose combination of horizons the Field
   Guide does not provide for in \code{warnings}, and
@@ -123,6 +127,36 @@ subtype to it. Each entry, with its evidence, is in the trace (phase
 \code{subtype}). A soil whose type is unassigned gets no subtypes. The
 lists are in \code{system.file("rules", "kidpr2008", "subtypes.yaml",
 package = "soilKey")}.
+
+The species (v0.9.347): the twelve tables of chapter 5.1, the classes of
+the thickness of the humus, peat and agro horizons, of the depth and place
+of gleying, of the lower boundary of the bleached horizon, of the layer
+over the solonetzic horizon, of the depth of the carbonates and of the
+soluble salts and, in the organogenic trunk, of the decomposition, the
+botanical composition (\code{peat_botanical_composition}) and the
+thickness of the peat. Each table that applies to the type is read, and its
+class follows the subtypes in the name, in the order of the tables
+("Dernovo-podzolistye [tipichnye], srednemoshchnye,
+glubokoelyuvial'nye"; the bleached species in the prefix form of p. 136):
+rows of level \code{"species"} of \code{levels} (code
+\code{"<table>:<class>"}), \code{qualifiers$species} and
+\code{species_native}. A depth not recorded, an undecided layer at the edge
+of a horizon, or a horizon that reaches the bottom of the description when
+a deeper class is possible, leaves the table undecided: it is not named,
+it is listed in \code{qualifiers$species_undecided} and in a note, and the
+name stays as it is. The tables are in \code{system.file("rules",
+"kidpr2008", "species.yaml", package = "soilKey")}; the varieties and
+ranks (5.2, 5.3) are not keyed.
+
+The 1977 analogue (v0.9.347): when the type is assigned, the rows of the
+correlation table of chapter 6 that stand for it are added as a note (a
+line in \code{warnings}) and as \code{qualifiers$analogue_1977} (the
+2004 name and formula, the page, whether the soils were distinguished in
+1977 and the units of 1977 with their level and extent), never changing
+the classification; where the table says the soils were not distinguished
+or has no row for the type, the note says so. The table is in
+\code{system.file("rules", "kidpr2008", "correlation_1977.yaml", package =
+"soilKey")}.
 }
 \examples{
 res <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent")

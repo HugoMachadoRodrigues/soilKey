@@ -80,6 +80,7 @@ en:
   "report.level_references": "Reference"
   "report.level_subtype": "Subtype"
   "report.level_variety": "Variety"
+  "report.level_species": "Species"
   "report.provisional": "Provisional"
   "report.provisional_intro": "The key could not decide these classes for want of data (classes tested before the assigned one, or subtypes that would join the name); the name holds if none of them applies."
   "report.provisional_intro_attachment": "The data leave these references (or groups not implemented yet) undecided; any of them could take the name once decided, which holds if none of them applies. Every reference is tested: the choice of one name is a convention of soilKey."
@@ -91,6 +92,8 @@ en:
   "report.would_decide": "Would be decided by"
   "report.prop_named": "in the name"
   "report.prop_undecided": "undecided"
+  "report.kidpr_1977": "Name in the 1977 USSR classification"
+  "report.kidpr_1977_desc": "Chapter 6 of the Field Guide of 2008 correlates its types with the classification of 1977. A note only: it never changes the classification."
 
 pt:
   "report.no_trace": "(sem rastro)"
@@ -171,6 +174,7 @@ pt:
   "report.level_references": "Referência"
   "report.level_subtype": "Subtipo"
   "report.level_variety": "Variedade"
+  "report.level_species": "Espécie"
   "report.provisional": "Provisório"
   "report.provisional_intro": "A chave não pôde decidir estas classes por falta de dados (classes testadas antes da atribuída, ou subtipos que entrariam no nome); o nome vale se nenhuma delas se aplicar."
   "report.provisional_intro_attachment": "Os dados deixam estas referências (ou grupos ainda não implementados) indecisas; qualquer delas poderia tomar o nome uma vez decidida, e o nome vale se nenhuma delas se aplicar. Toda referência é testada: a escolha de um nome é uma convenção do soilKey."
@@ -182,3 +186,5 @@ pt:
   "report.would_decide": "Seria decidida por"
   "report.prop_named": "no nome"
   "report.prop_undecided": "indefinida"
+  "report.kidpr_1977": "Nome na classificação da URSS de 1977"
+  "report.kidpr_1977_desc": "O capítulo 6 do Guia de campo de 2008 correlaciona os seus tipos com a classificação de 1977. Apenas uma nota: nunca muda a classificação."

@@ -908,6 +908,11 @@ attributes:
     systems: [kidpr2008]
     min: 0
     max: 100
+  - name: peat_botanical_composition
+    section: "Russian system (Field Guide 2008)"
+    unit: "-"
+    description: "The plants whose remains make the peat, with their share in % where known, joined by ';' (sedge 50; wood 30; sphagnum 20), in English or Russian: wood (древесный), reed (тростниковый), Scheuchzeria (шейхцериевый), horsetail (хвощовый), herb (травяной), cotton-grass (пушицевый), Sphagnum (сфагновый), sedge (осоковый), Hypnum (гипновый). The Russian Field Guide of 2008 names the species of peat of its organogenic soils by the plant whose remains are more than 40 % of the peat, by two when two dominate (древесно-осоковый, p. 136); a record with no shares names its dominant plants. Not recorded: the species is undecided."
+    systems: [kidpr2008]
   - name: foreign_fragments_pct
     section: "Russian system (Field Guide 2008)"
     unit: "%"

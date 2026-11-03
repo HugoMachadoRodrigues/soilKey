@@ -1,0 +1,4283 @@
+# The correlation of the Field Guide of 2008 (Полевой определитель почв
+# России) with the classification of 1977 (Классификация и диагностика почв
+# СССР): chapter 6, pp. 139-161, as structured data. Each row is a type of
+# the classification of 2004 as chapter 6 prints it (its name and its 2004
+# profile formula, which may differ from chapter 4), the type of 2008 it
+# stands for (soilKey's code), and what the soils were in 1977. soilKey shows
+# it as a note of the result (qualifiers$analogue_1977 and a line in
+# warnings), never to classify (Hugo's decision Q1, 2026-11-02).
+#
+# row           the row, in the order of the book (268 rows: the 266 formulas
+#               of tests/testthat/fixtures/kidpr2008-formulas.tsv and two the
+#               text layer had hidden, CD04 and CT01, now in the fixture too)
+# page          the printed page
+# division      the 2004 division heading in effect (ТИПЫ ОТДЕЛА ...)
+# name_2004     the type's name as chapter 6 prints it
+# formula_2004  the formula as chapter 6 prints it (the look-alike letters of
+#               the text layer kept, as in the fixture)
+# type          the type of 2008 (soilKey's code, types/*.yaml); null where
+#               the Field Guide of 2008 has no such type
+# distinguished false where the table says the soils were not distinguished
+#               in 1977 ("не выделялись"); the analogues are then what they
+#               were part of, or none
+# analogues     the units of 1977 the table names, in its order: `name` the
+#               short printed name (nominative plural), `level` type,
+#               subtype, species, genus, group (an extra-taxonomic group) or
+#               literature (a name of the literature or of maps, not of the
+#               1977 system), `in_type` the 1977 type it belongs to when the
+#               table names it, `extent` full, approximately, partly or
+#               mostly, `qualifier` soilKey's words for what the table adds
+#               to the unit (its genus, varieties, erosion, reclaimed state)
+# en            soilKey's English paraphrase of the entry (no text of the
+#               book is shipped)
+# note          soilKey's remarks: slips, readings of the two-column layout
+#
+# The readings (shared cells, slips, a 2004 type that the Field Guide of 2008
+# does not keep) are listed in readings.yaml (Hugo, 2026-11-03).
+
+rows:
+- row: 1
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Подзолистые
+  formula_2004: O-EL-BEL-BT-C
+  type: '[CA01]'
+  distinguished: true
+  analogues:
+  - name: подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: full
+  - name: глееподзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: full
+  en: The podzolic and gley-podzolic subtypes of loamy and clayey texture, i.e. the extra-taxonomic group of genera
+    with mainly clay illuviation within the podzolic type.
+  note: The text layer gives this cell before 'Подзолисто-глеевые'; read as the cell of 'Подзолистые' only (the
+    next cell is shared by the two gley rows).
+- row: 2
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Подзолисто-глеевые
+  formula_2004: O-EL-BEL-BTg-G-Cg
+  type: '[CA02]'
+  distinguished: true
+  analogues:
+  - name: торфянисто-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: full
+  en: The peaty-podzolic surface-gleyed subtype of the bog-podzolic type.
+  note: 'One right-column cell sits between ''Подзолисто-глеевые'' and ''Торфяно-подзолисто-глеевые'' (no other
+    text for either): read as a cell shared by both rows; doubtful, check the PDF.'
+- row: 3
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Торфяно-подзолисто-глеевые
+  formula_2004: Т-ELg-BELg-BTg-G-Cg
+  type: '[CA03]'
+  distinguished: true
+  analogues:
+  - name: торфянисто-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: full
+  en: The peaty-podzolic surface-gleyed subtype of the bog-podzolic type.
+  note: Cell shared with 'Подзолисто-глеевые' (see that row).
+- row: 4
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Дерново-подзолистые
+  formula_2004: AY-EL-BEL-BT-C
+  type: '[CA04]'
+  distinguished: true
+  analogues:
+  - name: дерново-подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: full
+  en: The soddy-podzolic subtype of loamy and clayey texture (the extra-taxonomic group of genera with mainly clay
+    illuviation) within the podzolic type.
+- row: 5
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Дерново-подзолисто-глеевые
+  formula_2004: AY-EL-BEL-BTg-G-Cg
+  type: '[CA05]'
+  distinguished: true
+  analogues:
+  - name: дерново-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: full
+  en: The soddy-podzolic surface-gleyed subtype of the bog-podzolic type.
+- row: 6
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Серые
+  formula_2004: AY-AEL-BEL-BT-C
+  type: '[CA06]'
+  distinguished: true
+  analogues:
+  - name: серые лесные
+    level: subtype
+    in_type: серые лесные
+    extent: full
+  en: The grey forest subtype of the grey forest type of the same name.
+- row: 7
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Темно-серые
+  formula_2004: AU-BEL-BT-C
+  type: '[CA07]'
+  distinguished: true
+  analogues:
+  - name: темно-серые лесные
+    level: subtype
+    in_type: null
+    extent: full
+  - name: черноземы оподзоленные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: The dark grey forest subtype, and in part the podzolized subtype of chernozems.
+- row: 8
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Темно-серые глеевые
+  formula_2004: AU-BELg-BTg-G-Cg
+  type: '[CA08]'
+  distinguished: true
+  analogues:
+  - name: грунтово-глеевые
+    level: subtype
+    in_type: серые лесные глеевые
+    extent: full
+  - name: грунтово-глееватые
+    level: subtype
+    in_type: серые лесные глеевые
+    extent: partly
+  en: The ground-water gley subtype, and in part the slightly gleyed ground-water subtype, of the grey forest gley
+    type.
+- row: 9
+  page: 140
+  division: Текстурно-дифференцированные почвы
+  name_2004: Подбелы темногумусовые
+  formula_2004: AU-EL-BEL-BT-C
+  type: '[CA09]'
+  distinguished: true
+  analogues:
+  - name: оподзоленные
+    level: subtype
+    in_type: луговые подбелы
+    extent: full
+  - name: солоди
+    level: type
+    in_type: null
+    extent: partly
+  - name: почвы западин
+    level: literature
+    in_type: null
+    extent: partly
+  en: The podzolized subtype of meadow podbels; solods without a carbonate-accumulation horizon; and soils of closed
+    depressions in the European forest-steppe known in the literature under various names.
+  note: 'ch4 name order differs: ''Темногумусовые подбелы'' (CA09). Solods restricted to those without a carbonate
+    horizon, hence partly; the depression soils have no single 1977 name.'
+- row: 10
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Подбелы темногумусовые глеевые
+  formula_2004: AU-ELg-BTg-G-CG
+  type: '[CA10]'
+  distinguished: true
+  analogues:
+  - name: оподзоленно-глеевые
+    level: subtype
+    in_type: луговые подбелы
+    extent: full
+  - name: солоди лугово-болотные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: The podzolized-gley subtype of meadow podbels, plus meadow-bog solods lacking a carbonate-accumulation horizon.
+  note: 'ch4 name order differs: ''Темногумусовые подбелы глеевые'' (CA10).'
+- row: 11
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Дерново-буро-подзолистые
+  formula_2004: AY-ВEL-BT-C
+  type: '[CA11]'
+  distinguished: true
+  analogues:
+  - name: подзолисто-бурые лесные
+    level: type
+    in_type: null
+    extent: approximately
+  en: Roughly the type of podzolic-brown forest soils.
+- row: 12
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Дерново-солоди
+  formula_2004: AY-EL-BT-BCA-Cca
+  type: '[CA12]'
+  distinguished: true
+  analogues:
+  - name: солоди лугово-степные светлые
+    level: species
+    in_type: null
+    extent: full
+  - name: солоди лугово-степные серые
+    level: species
+    in_type: null
+    extent: full
+  en: The light and grey species of the meadow-steppe (soddy slightly gleyed) solod subtype.
+- row: 13
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Дерново-солоди глеевые
+  formula_2004: AY-ELg-BTg-BCAg-G(s)-Cg(s)
+  type: '[CA13]'
+  distinguished: true
+  analogues:
+  - name: солоди луговые светлые
+    level: species
+    in_type: null
+    extent: partly
+  - name: солоди луговые серые
+    level: species
+    in_type: null
+    extent: partly
+  en: In part the light and grey species of the meadow solod subtype.
+- row: 14
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Солоди темногумусовые
+  formula_2004: AU-EL-BT-BCA-Cса,s
+  type: '[CA14]'
+  distinguished: true
+  analogues:
+  - name: солоди лугово-степные темные
+    level: species
+    in_type: null
+    extent: approximately
+  en: Roughly the dark species of the meadow-steppe solod subtype.
+- row: 15
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Солоди перегнойно-темногумусовые квазиглеевые
+  formula_2004: AH-EL-BTq-BCAq-Q-CQ
+  type: '[CA15]'
+  distinguished: true
+  analogues:
+  - name: солоди луговые темные
+    level: species
+    in_type: null
+    extent: full
+  - name: солоди лугово-болотные темные
+    level: species
+    in_type: null
+    extent: full
+  en: The dark species within the meadow and the meadow-bog solod subtypes.
+- row: 16
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агроторфяно-подзолисто-глеевые
+  formula_2004: PT-(T)-ELg-BELg-BTg-G-CG
+  type: '[CA16]'
+  distinguished: false
+  analogues:
+  - name: торфянисто-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated before; they were included in the peaty-podzolic surface-gleyed subtype of the bog-podzolic
+    type.
+- row: 17
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агродерново-подзолистые
+  formula_2004: PY-(EL)-BEL-BT-C
+  type: '[CA17]'
+  distinguished: true
+  analogues:
+  - name: подзолистые освоенные
+    level: subtype
+    in_type: null
+    extent: full
+  - name: подзолистые окультуренные
+    level: subtype
+    in_type: null
+    extent: full
+  - name: культурные
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: светло-серые лесные освоенные
+    level: subtype
+    in_type: null
+    extent: full
+  en: The reclaimed and cultivated podzolic subtypes, cultural soils that keep remnants of the eluvial horizon,
+    and the reclaimed light grey forest subtype.
+  note: Cultural soils only where an eluvial remnant survives, hence partly.
+- row: 18
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агродерново-подзолисто-глеевые
+  formula_2004: P-(ELg)-BELg-BTg-G-CG
+  type: '[CA18]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated before; they were part of the soddy-podzolic surface-gleyed subtype.
+- row: 19
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агросерые
+  formula_2004: РY-(AEL)-BEL-BT-C
+  type: '[CA19]'
+  distinguished: true
+  analogues:
+  - name: серые лесные освоенные
+    level: subtype
+    in_type: null
+    extent: full
+  - name: светло-серые лесные окультуренные
+    level: subtype
+    in_type: null
+    extent: full
+  en: The reclaimed grey forest and the cultivated light grey forest subtypes.
+- row: 20
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агротемно-серые
+  formula_2004: PU-(AU)-BEL-BT-C
+  type: '[CA20]'
+  distinguished: true
+  analogues:
+  - name: темно-серые лесные освоенные
+    level: subtype
+    in_type: null
+    extent: full
+  en: The reclaimed dark grey forest subtype.
+  note: ch4 spells the name 'Агротемносерые' (CA20).
+- row: 21
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агротемно-серые глеевые
+  formula_2004: PU-(AU)-BELg-BTg-G-CG
+  type: '[CA21]'
+  distinguished: false
+  analogues:
+  - name: серые лесные грунтово-глеевые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated before; they were part of the grey forest ground-water gley subtype.
+- row: 22
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агротемногумусовые подбелы
+  formula_2004: PU-EL-BT-C
+  type: '[CA22]'
+  distinguished: false
+  analogues:
+  - name: оподзоленные
+    level: subtype
+    in_type: луговые подбелы
+    extent: partly
+  - name: солоди
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated before; they fell within the podzolized subtype of meadow podbels and within solods lacking
+    a carbonate-accumulation horizon.
+- row: 23
+  page: 141
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агротемногумусовые подбелы глеевые
+  formula_2004: PU-ELg-BTg-G-CG
+  type: '[CA23]'
+  distinguished: false
+  analogues:
+  - name: оподзоленно-глеевые
+    level: subtype
+    in_type: луговые подбелы
+    extent: partly
+  en: Not separated before; they fell within the podzolized-gley subtype of meadow podbels.
+- row: 24
+  page: 142
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агросолоди
+  formula_2004: P-(EL)-BT-BCA-Cca
+  type: '[CA24]'
+  distinguished: false
+  analogues:
+  - name: солоди лугово-степные светлые
+    level: species
+    in_type: null
+    extent: partly
+  - name: солоди лугово-степные серые
+    level: species
+    in_type: null
+    extent: partly
+  en: Not separated before; they were part of the light and grey species of the meadow-steppe solod subtype.
+- row: 25
+  page: 142
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агросолоди темногумусовые
+  formula_2004: PU-(AU)-EL-BT-BCA-C
+  type: '[CA25]'
+  distinguished: false
+  analogues:
+  - name: солоди лугово-степные темные
+    level: species
+    in_type: null
+    extent: partly
+  en: Not separated before; they were part of the dark species of meadow-steppe solods.
+  note: ch4 calls CA25 'Агросолоди темные' (PU-(AU)-EL-BT-BCA-Cca); same type, older wording here.
+- row: 26
+  page: 142
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агросолоди глеевые
+  formula_2004: P-(EL)-BTg-BCAg-Gca-Cgca
+  type: '[CA26]'
+  distinguished: false
+  analogues:
+  - name: солоди луговые светлые
+    level: species
+    in_type: null
+    extent: partly
+  - name: солоди луговые серые
+    level: species
+    in_type: null
+    extent: partly
+  en: Not separated before; they were part of the light and grey species of meadow solods.
+- row: 27
+  page: 142
+  division: Текстурно-дифференцированные почвы
+  name_2004: Агросолоди темногумусовые квазиглеевые
+  formula_2004: PU-EL-BTq-BCAq-Q-CQ
+  type: '[CA27]'
+  distinguished: false
+  analogues:
+  - name: солоди луговые темные
+    level: species
+    in_type: null
+    extent: partly
+  - name: солоди лугово-болотные темные
+    level: species
+    in_type: null
+    extent: partly
+  en: Not separated before; they were part of the dark species of meadow and meadow-bog solods.
+- row: 28
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Подбуры
+  formula_2004: O-BHF-C
+  type: '[CB01]'
+  distinguished: false
+  analogues:
+  - name: скрытоподзолистые
+    level: literature
+    in_type: null
+    extent: full
+  - name: подбуры тундровые
+    level: literature
+    in_type: null
+    extent: full
+  - name: подбуры таежные
+    level: literature
+    in_type: null
+    extent: full
+  - name: таежно-мерзлотные поверхностно-ожелезненные
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; the literature described them as cryptopodzolic soils, tundra and taiga podburs, and
+    surface-ferruginated taiga permafrost soils.
+- row: 29
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Сухоторфяно-подбуры
+  formula_2004: TJ-BHF-C
+  type: '[CB03]'
+  distinguished: false
+  analogues:
+  - name: подбуры тундровые сухоторфянистые
+    level: literature
+    in_type: null
+    extent: full
+  - name: подбуры таежные сухоторфянистые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; described in the literature as dry-peaty tundra and taiga podburs.
+- row: 30
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Подбуры глеевые
+  formula_2004: O-BHF-G-CG
+  type: '[CB02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 31
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Торфяно-подбуры глеевые
+  formula_2004: T-BHFg-G-CG
+  type: '[CB04]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 32
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Дерново-подбуры
+  formula_2004: AY-BF-C
+  type: '[CB05]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые слабодифференцированные
+    level: genus
+    in_type: null
+    extent: partly
+  en: Not separated; in part they match the weakly differentiated genus of the soddy-podzolic subtype.
+- row: 33
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Дерново-подбуры глеевые
+  formula_2004: AY-BFg-G-CG
+  type: '[CB06]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 34
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Подзолы
+  formula_2004: O-E-BHF-C
+  type: '[CB07]'
+  distinguished: true
+  analogues:
+  - name: подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: full
+  en: The podzolic subtype on sandy, sandy-loam and gravelly deposits within the podzolic type.
+  note: The 1977 unit is restricted to sandy and gravelly parent materials.
+- row: 35
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Подзолы глеевые
+  formula_2004: O-Eg-BНFg-G-CG
+  type: '[CB08]'
+  distinguished: true
+  analogues:
+  - name: торфянисто-подзолистые грунтово-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: full
+  en: The peaty-podzolic ground-water gleyed subtype of the bog-podzolic type.
+  note: 'One right-column cell sits between ''Подзолы глеевые'' and ''Торфяно-подзолы глеевые'' (no other text for
+    either): read as a cell shared by both rows; doubtful, check the PDF.'
+- row: 36
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Торфяно-подзолы глеевые
+  formula_2004: Т-Eg-BНFg-G-CG
+  type: '[CB13]'
+  distinguished: true
+  analogues:
+  - name: торфянисто-подзолистые грунтово-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: full
+  en: The peaty-podzolic ground-water gleyed subtype of the bog-podzolic type.
+  note: Cell shared with 'Подзолы глеевые'. Name matches CB13 (ch4 formula T-E-BHFg-G-CG); the Eg of this formula
+    also recalls CB14 'рудяковые' (T-Eg-BHFg-F-G-CG), but that type has an F horizon and a different name.
+- row: 37
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Сухоторфяно-подзолы
+  formula_2004: TJ-E-BHF-C
+  type: '[CB09]'
+  distinguished: true
+  analogues:
+  - name: подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: full
+  en: The podzolic subtype on sandy, sandy-loam and gravelly deposits within the podzolic type (same text as for
+    Podzols).
+  note: Formula printed 'J-E-BHF-C' (slip for TJ, per ch6_rows.tsv). The text repeats that of 'Подзолы'.
+- row: 38
+  page: 142
+  division: Альфегумусовые почвы
+  name_2004: Дерново-подзолы
+  formula_2004: АY-E-BF-C
+  type: '[CB10]'
+  distinguished: true
+  analogues:
+  - name: дерново-подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: full
+  en: The soddy-podzolic subtype on sandy, sandy-loam and gravelly deposits within the podzolic type.
+- row: 39
+  page: 143
+  division: Альфегумусовые почвы
+  name_2004: Дерново-подзолы глеевые
+  formula_2004: АY-E-BНFg-G-СG
+  type: '[CB11]'
+  distinguished: true
+  analogues:
+  - name: дерново-подзолистые грунтово-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: full
+  en: The soddy-podzolic ground-water gleyed subtype of the bog-podzolic type.
+- row: 40
+  page: 143
+  division: Альфегумусовые почвы
+  name_2004: Агродерново-подзолы
+  formula_2004: PY-E-BF-C
+  type: '[CB15]'
+  distinguished: true
+  analogues:
+  - name: подзолистые освоенные
+    level: subtype
+    in_type: null
+    extent: full
+  - name: подзолистые окультуренные
+    level: subtype
+    in_type: null
+    extent: full
+  en: The reclaimed and cultivated podzolic subtypes.
+- row: 41
+  page: 143
+  division: Альфегумусовые почвы
+  name_2004: Агродерново-подзолы глеевые
+  formula_2004: PY-E-BHFg-G-CG
+  type: '[CB16]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые грунтово-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated; they fell within the soddy-podzolic ground-water gleyed subtype of the bog-podzolic type.
+- row: 42
+  page: 143
+  division: Альфегумусовые почвы
+  name_2004: Агроторфяно-подзолы глеевые
+  formula_2004: PT-T-E-BHg-G-CG
+  type: '[CB17]'
+  distinguished: false
+  analogues:
+  - name: торфянисто-подзолистые грунтово-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated; they fell within the peaty-podzolic ground-water gleyed subtype of the bog-podzolic type.
+- row: 43
+  page: 143
+  division: Железисто-метаморфические почвы
+  name_2004: Ржавоземы
+  formula_2004: AY-BFM-C
+  type: '[CC01]'
+  distinguished: false
+  analogues:
+  - name: бурые лесные кислые
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: бурые лесные кислые оподзоленные
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: дерново-подзолистые слабодифференцированные
+    level: genus
+    in_type: null
+    extent: partly
+  en: Not separated; in part they match the acid and acid podzolized brown forest subtypes and the weakly differentiated
+    genus of soddy-podzolic soils.
+- row: 44
+  page: 143
+  division: Железисто-метаморфические почвы
+  name_2004: Ржавоземы грубогумусовые
+  formula_2004: AO-BFM-C
+  type: '[CC02]'
+  distinguished: false
+  analogues:
+  - name: бурые лесные кислые грубогумусные
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: бурые лесные кислые грубогумусные оподзоленные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated; in part they match the acid raw-humus and acid raw-humus podzolized brown forest subtypes.
+- row: 45
+  page: 143
+  division: Железисто-метаморфические почвы
+  name_2004: Органо-ржавоземы
+  formula_2004: O-BFM-C
+  type: '[CC03]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 46
+  page: 143
+  division: Структурно-метаморфические почвы
+  name_2004: Буроземы
+  formula_2004: АY-BM-C
+  type: '[CD01]'
+  distinguished: true
+  analogues:
+  - name: бурые лесные кислые
+    level: subtype
+    in_type: null
+    extent: full
+  - name: бурые лесные кислые оподзоленные
+    level: subtype
+    in_type: null
+    extent: full
+  en: The acid and acid podzolized brown forest subtypes on loamy deposits with little gravel.
+- row: 47
+  page: 143
+  division: Структурно-метаморфические почвы
+  name_2004: Буроземы темные
+  formula_2004: AU-BM-C
+  type: '[CD03]'
+  distinguished: true
+  analogues:
+  - name: бурые лесные слабоненасыщенные
+    level: subtype
+    in_type: null
+    extent: full
+  - name: выщелоченные
+    level: subtype
+    in_type: дерново-карбонатные
+    extent: partly
+  - name: оподзоленные
+    level: subtype
+    in_type: дерново-карбонатные
+    extent: partly
+  en: The weakly unsaturated brown forest subtype, and in part the leached and podzolized subtypes of soddy-calcareous
+    soils.
+  note: 'ch4 name is ''Буроземы темногумусовые'' (CD03, AU-BM-C): same formula, older wording here. The next ch6
+    entry, ''Серые метаморфические'' (AY-AEL-BM-C, p143; = CD04), is printed in the book but has no row in ch6_rows.tsv,
+    so it is not transcribed here.'
+- row: 48
+  page: 143
+  division: Структурно-метаморфические почвы
+  name_2004: Серые метаморфические
+  formula_2004: AY-AEL-BM-C
+  type: '[CD04]'
+  distinguished: false
+  analogues:
+  - name: серые лесные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not distinguished in 1977; these soils were part of the type of grey forest soils.
+  note: Printed letter-spaced (A Y -A E L -B M -C) in the text layer, so the formula fixture missed it; added in
+    0.9.347.
+- row: 49
+  page: 143
+  division: Структурно-метаморфические почвы
+  name_2004: Элювиально-метаморфические
+  formula_2004: О-EL-BM-C
+  type: '[CD06]'
+  distinguished: false
+  analogues:
+  - name: глееподзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: partly
+  - name: подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: partly
+  en: Not separated; they were part of the gley-podzolic and podzolic subtypes of the podzolic type.
+- row: 50
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Дерново-элювиально-метаморфические
+  formula_2004: AY-EL-BM-C
+  type: '[CD07]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые
+    level: subtype
+    in_type: подзолистые
+    extent: partly
+  en: Not separated; they were part of the soddy-podzolic subtype of the podzolic type.
+- row: 51
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Коричневые
+  formula_2004: AU-BM-BCA-Cca
+  type: '[CD08]'
+  distinguished: true
+  analogues:
+  - name: коричневые
+    level: type
+    in_type: null
+    extent: full
+  en: The type of cinnamonic (brown) soils.
+- row: 52
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Желтоземы
+  formula_2004: AY-BEL-BM-CLM
+  type: '[CD09]'
+  distinguished: true
+  analogues:
+  - name: желтоземы
+    level: type
+    in_type: null
+    extent: full
+  en: The type of zheltozems (yellow soils).
+- row: 53
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Агродерново-элювиально-метаморфические
+  formula_2004: P-EL-BM-C
+  type: '[CD10]'
+  distinguished: false
+  analogues:
+  - name: подзолистые освоенные
+    level: subtype
+    in_type: подзолистые
+    extent: partly
+  - name: подзолистые окультуренные
+    level: subtype
+    in_type: подзолистые
+    extent: partly
+  en: Not separated; they were part of the reclaimed and cultivated subtypes of podzolic soils.
+- row: 54
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Агросерые метаморфические
+  formula_2004: P-AEL-BM-C
+  type: '[CD11]'
+  distinguished: false
+  analogues:
+  - name: серые лесные освоенные
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: светло-серые лесные окультуренные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated; they were part of the reclaimed grey forest and cultivated light grey forest subtypes.
+- row: 55
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Агротемносерые метаморфические
+  formula_2004: PU-AEL-BM-C
+  type: '[CD12]'
+  distinguished: false
+  analogues:
+  - name: темно-серые лесные освоенные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated; they were part of the reclaimed dark grey forest subtype.
+  note: ch4 spells it 'Агротемно-серые метаморфические' (CD12).
+- row: 56
+  page: 144
+  division: Структурно-метаморфические почвы
+  name_2004: Агрокоричневые
+  formula_2004: PU-AU-BM-BCA-Cca
+  type: '[CD13]'
+  distinguished: true
+  analogues:
+  - name: коричневые освоенные
+    level: group
+    in_type: коричневые
+    extent: partly
+  - name: коричневые окультуренные
+    level: group
+    in_type: коричневые
+    extent: partly
+  - name: коричневые плантажированные
+    level: group
+    in_type: коричневые
+    extent: partly
+  - name: коричневые культурные
+    level: group
+    in_type: коричневые
+    extent: partly
+  en: They belonged to the extra-taxonomic groups of reclaimed, cultivated, trench-ploughed and cultural soils within
+    the cinnamonic type.
+  note: 'The text says ''входили в состав'' without ''не выделялись''; kept distinguished: true with extent partly.
+    Doubtful: could be read as not distinguished.'
+- row: 57
+  page: 144
+  division: Криометаморфические почвы
+  name_2004: Криометаморфические
+  formula_2004: O-CRM-C
+  type: '[CE01]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 58
+  page: 144
+  division: Криометаморфические почвы
+  name_2004: Криометаморфические грубогумусные
+  formula_2004: AO-CRM-C
+  type: '[CE03]'
+  distinguished: false
+  analogues:
+  - name: бурые лесные кислые грубогумусные
+    level: subtype
+    in_type: null
+    extent: approximately
+    qualifier: its loamy and clayey varieties with little gravel, close in build and properties
+  en: Not separated; in build and properties they are close to the loamy and clayey low-gravel varieties of the
+    acid raw-humus brown forest subtype.
+  note: ch4 name 'Криометаморфические грубогумусовые' (CE03). The text names varieties (разновидности, texture level)
+    of the subtype and says 'близки', read as approximately.
+- row: 59
+  page: 144
+  division: Криометаморфические почвы
+  name_2004: Перегнойно-криометаморфические
+  formula_2004: Н-CRM-C
+  type: '[CE02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 60
+  page: 144
+  division: Криометаморфические почвы
+  name_2004: Дерново-криометаморфические
+  formula_2004: AY-CRM-C
+  type: '[CE04]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 61
+  page: 144
+  division: Криометаморфические почвы
+  name_2004: Светлоземы
+  formula_2004: O-E-CRM-C
+  type: '[CE05]'
+  distinguished: false
+  analogues:
+  - name: глееподзолистые
+    level: literature
+    in_type: null
+    extent: full
+  - name: подзолистые
+    level: literature
+    in_type: null
+    extent: full
+  - name: элювиально-глеевые
+    level: literature
+    in_type: null
+    extent: full
+  - name: глееземы дифференцированные
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated; the literature identified them as gley-podzolic, podzolic and eluvial-gley soils and differentiated
+    gleyzems.
+  note: 'Printed ''глее-подзолистые'' (line-break hyphen), normalised to ''глееподзолистые''. One right-column cell
+    spans ''Светлоземы'' and ''Светлоземы иллювиально-железистые'' (no other text for the latter): read as shared;
+    doubtful, check the PDF.'
+- row: 62
+  page: 144
+  division: Криометаморфические почвы
+  name_2004: Светлоземы иллювиально-железистые
+  formula_2004: O-E-BF-CRM-C
+  type: '[CE06]'
+  distinguished: false
+  analogues:
+  - name: глееподзолистые
+    level: literature
+    in_type: null
+    extent: full
+  - name: подзолистые
+    level: literature
+    in_type: null
+    extent: full
+  - name: элювиально-глеевые
+    level: literature
+    in_type: null
+    extent: full
+  - name: глееземы дифференцированные
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated; the literature identified them as gley-podzolic, podzolic and eluvial-gley soils and differentiated
+    gleyzems.
+  note: Cell shared with 'Светлоземы' (see that row).
+- row: 63
+  page: 145
+  division: Криометаморфические почвы
+  name_2004: Светлоземы текстурно-дифференцированные
+  formula_2004: O-E-BF-CRM-BT-C
+  type: '[CE07]'
+  distinguished: false
+  analogues:
+  - name: глееподзолистые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated; they were part of the gley-podzolic soils.
+  note: Level read as subtype (глееподзолистые is a 1977 subtype of the podzolic type); the text does not name the
+    level.
+- row: 64
+  page: 145
+  division: Палево-метаморфические почвы
+  name_2004: Палевые
+  formula_2004: AJ-BPL-BCA-Cca
+  type: '[CF01]'
+  distinguished: false
+  analogues:
+  - name: палевые
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated; they belonged to the group of soils shown under this same name on small-scale maps.
+  note: Map name (small-scale maps), recorded as level literature.
+- row: 65
+  page: 145
+  division: Палево-метаморфические почвы
+  name_2004: Палевые темногумусовые
+  formula_2004: AU-BPL-BCA-Cca
+  type: '[CF02]'
+  distinguished: false
+  analogues:
+  - name: палево-серые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated; small-scale maps show them as pale-grey soils.
+  note: Map name, recorded as level literature.
+- row: 66
+  page: 145
+  division: Палево-метаморфические почвы
+  name_2004: Криоаридные
+  formula_2004: AK-BPL-BCA-Cca
+  type: '[CF03]'
+  distinguished: false
+  analogues:
+  - name: степные криоаридные
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated; the literature describes them as steppe cryoarid soils.
+- row: 67
+  page: 145
+  division: Палево-метаморфические почвы
+  name_2004: Агропалевые
+  formula_2004: P-BPL-BCA-Cca
+  type: '[CF04]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 68
+  page: 145
+  division: Криогенные почвы
+  name_2004: Криоземы
+  formula_2004: О-CR-C
+  type: '[CG01]'
+  distinguished: false
+  analogues:
+  - name: таежные торфянисто-перегнойные неоглеенные
+    level: literature
+    in_type: null
+    extent: full
+  - name: мерзлотно-таежные
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated; small-scale maps show them as non-gleyed peaty-mucky taiga soils and the literature as permafrost-taiga
+    soils.
+  note: The first name is a map name, recorded as level literature.
+- row: 69
+  page: 145
+  division: Криогенные почвы
+  name_2004: Криоземы грубогумусовые
+  formula_2004: AO-CR-C
+  type: '[CG02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 70
+  page: 145
+  division: Криогенные почвы
+  name_2004: Торфяно-криоземы
+  formula_2004: T-CR-C
+  type: '[CG03]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 71
+  page: 145
+  division: Глеевые почвы
+  name_2004: Глееземы
+  formula_2004: O-G-CG
+  type: '[CH01]'
+  distinguished: false
+  analogues:
+  - name: торфянисто-глеевые
+    level: species
+    in_type: торфяные болотные
+    extent: partly
+  - name: тундровые глеевые
+    level: literature
+    in_type: null
+    extent: full
+  - name: глееземы
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated; in part they match the peaty-gley species of the peat-gley subtype of peat bog soils, and small-scale
+    maps show them as tundra gley soils or gleyzems.
+  note: The species sits in the торфяно-глеевый subtype; 'тундровые глеевые' and 'глееземы' are map names, recorded
+    as literature.
+- row: 72
+  page: 145
+  division: Глеевые почвы
+  name_2004: Глееземы криометаморфические
+  formula_2004: O-G-CRM-C(g)
+  type: '[CH02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 73
+  page: 145
+  division: Глеевые почвы
+  name_2004: Торфяно-глееземы
+  formula_2004: T-G-CG
+  type: '[CH03]'
+  distinguished: true
+  analogues:
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: торфяные болотные верховые
+    extent: full
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: торфяные болотные низинные
+    extent: full
+  en: The peat-gley subtypes of the high-moor and low-moor peat bog types.
+- row: 74
+  page: 146
+  division: Глеевые почвы
+  name_2004: Темногумусово-глеевые
+  formula_2004: AU-G-CG
+  type: '[CH04]'
+  distinguished: true
+  analogues:
+  - name: дерново-глееватые
+    level: subtype
+    in_type: дерново-глеевые
+    extent: full
+  - name: луговые
+    level: type
+    in_type: null
+    extent: partly
+  en: The gleyish subtypes of the soddy-gley soil type, together with part of the meadow soil type.
+- row: 75
+  page: 146
+  division: Глеевые почвы
+  name_2004: Перегнойно-глеевые
+  formula_2004: H-G-CG
+  type: '[CH05]'
+  distinguished: true
+  analogues:
+  - name: перегнойные
+    level: subtype
+    in_type: дерново-глеевые
+    extent: full
+  - name: выщелоченные
+    level: genus
+    in_type: лугово-болотные
+    extent: full
+  en: The mucky subtypes of soddy-gley soils, plus the leached genus found in the mucky and silty subtypes of meadow-bog
+    soils.
+- row: 76
+  page: 146
+  division: Глеевые почвы
+  name_2004: Перегнойно-гумусовые глеевые
+  formula_2004: H-AU-G-CG(са)
+  type: null
+  distinguished: true
+  analogues:
+  - name: лугово-болотные
+    level: type
+    in_type: null
+    extent: mostly
+  en: Correspond mostly to the type of meadow-bog soils.
+  note: 'No 2008 type has this name or formula (H-AU-G-CG(ca)): the 2008 gley division (CH01-CH09) has no such type,
+    and ch. 6 has 10 gley rows against 9 in ch. 4; the Guide does not say where it went (perhaps into Перегнойно-глеевые
+    [CH05]). Name printed with an en dash (Перегнойно–гумусовые).'
+- row: 77
+  page: 146
+  division: Глеевые почвы
+  name_2004: Агроглееземы криометаморфические
+  formula_2004: P-G-CRM-C(g)
+  type: '[CH06]'
+  distinguished: false
+  analogues: []
+  en: Not distinguished in the 1977 classification.
+- row: 78
+  page: 146
+  division: Глеевые почвы
+  name_2004: Агроторфяно-глееземы
+  formula_2004: PT-T-G-CG
+  type: '[CH07]'
+  distinguished: false
+  analogues:
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: торфяные болотные верховые
+    extent: partly
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: торфяные болотные низинные
+    extent: partly
+  en: Not separated in 1977; they were part of the peat-gley subtypes of the high-moor and low-moor peat bog soil
+    types.
+- row: 79
+  page: 146
+  division: Глеевые почвы
+  name_2004: Агроперегнойно-глеевые
+  formula_2004: РU-Н-G-CG
+  type: '[CH09]'
+  distinguished: false
+  analogues:
+  - name: перегнойные
+    level: subtype
+    in_type: дерново-глеевые
+    extent: partly
+  - name: выщелоченные
+    level: genus
+    in_type: лугово-болотные
+    extent: partly
+  en: Not separated in 1977; included in the mucky subtypes of soddy-gley soils and the leached genus of the mucky
+    and silty subtypes of meadow-bog soils.
+  note: '2008 name: Агротемногумусовые перегнойно-глеевые (same formula PU-H-G-CG).'
+- row: 80
+  page: 146
+  division: Глеевые почвы
+  name_2004: Агротемногумусово-глеевые
+  formula_2004: PU-AU-G-Cg
+  type: '[CH08]'
+  distinguished: false
+  analogues:
+  - name: лугово-болотные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; they were part of the meadow-bog soil type.
+  note: '2008 name: Агротемногумусовые глеевые (PU-AU-G-CG).'
+- row: 81
+  page: 146
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы
+  formula_2004: AU-BCA-Cca
+  type: '[CI01]'
+  distinguished: true
+  analogues:
+  - name: типичные
+    level: subtype
+    in_type: черноземы
+    extent: full
+  - name: обыкновенные
+    level: subtype
+    in_type: черноземы
+    extent: full
+  - name: выщелоченные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: луговатые
+    level: subtype
+    in_type: лугово-черноземные
+    extent: mostly
+  en: The typical and ordinary chernozem subtypes, part of the leached subtype, and the meadowish subtype of meadow-chernozem
+    soils without its leached and podzolized genera.
+  note: Extent mostly where the text names the unit but excludes some of its genera (за исключением).
+- row: 82
+  page: 146
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы квазиглеевые
+  formula_2004: AU-BCA-Q-CQ
+  type: '[CI06]'
+  distinguished: false
+  analogues:
+  - name: луговые
+    level: subtype
+    in_type: лугово-черноземные
+    extent: mostly
+  en: Not separated in 1977; mostly the meadow subtype of meadow-chernozem soils, leaving out its leached and podzolized
+    genera.
+  note: Extent mostly where the text names the unit but excludes some of its genera (за исключением).
+- row: 83
+  page: 146
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы глинисто-иллювиальные
+  formula_2004: AU-BI-C(ca)
+  type: '[CI02]'
+  distinguished: true
+  analogues:
+  - name: оподзоленные
+    level: subtype
+    in_type: черноземы
+    extent: full
+  - name: выщелоченные
+    level: subtype
+    in_type: черноземы
+    extent: full
+  - name: выщелоченные
+    level: genus
+    in_type: лугово-черноземные
+    extent: full
+  - name: оподзоленные
+    level: genus
+    in_type: лугово-черноземные
+    extent: full
+  en: The podzolized and leached chernozem subtypes, plus the leached and podzolized genera of the meadowish subtype
+    of meadow-chernozem soils.
+  note: ch. 6 formula AU-BI-C(ca); ch. 4 AU-BI-(BCA)-C(ca).
+- row: 84
+  page: 146
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы глинисто-иллювиальные глеевые
+  formula_2004: AU-BI-(BCA)-G-CGca
+  type: '[CI08]'
+  distinguished: false
+  analogues:
+  - name: выщелоченные
+    level: genus
+    in_type: лугово-черноземные
+    extent: mostly
+  - name: оподзоленные
+    level: genus
+    in_type: лугово-черноземные
+    extent: mostly
+  en: Not separated in 1977; mostly the leached and podzolized genera of the meadow subtype of meadow-chernozem
+    soils.
+- row: 85
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы глинисто-иллювиальные квазиглеевые
+  formula_2004: AU-BI-(BCA)-Q-CQ
+  type: '[CI07]'
+  distinguished: false
+  analogues:
+  - name: выщелоченные
+    level: genus
+    in_type: лугово-черноземные
+    extent: mostly
+  - name: оподзоленные
+    level: genus
+    in_type: лугово-черноземные
+    extent: mostly
+  en: Not separated in 1977; mostly the leached and podzolized genera of the meadow subtype of meadow-chernozem
+    soils where these lack bluish gley.
+- row: 86
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы текстурно-карбонатные
+  formula_2004: AU-CAT-Cca
+  type: '[CI03]'
+  distinguished: true
+  analogues:
+  - name: южные
+    level: subtype
+    in_type: черноземы
+    extent: full
+  - name: темнокаштановые
+    level: subtype
+    in_type: null
+    extent: mostly
+  - name: луговатые
+    level: subtype
+    in_type: лугово-каштановые
+    extent: full
+  en: The southern chernozem subtype, the dark chestnut subtype except its thin species, and the meadowish subtype
+    of meadow-chestnut soils.
+  note: 'темнокаштановые = mostly: the text excludes the thin (маломощный) species.'
+- row: 87
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземы текстурно-карбонатные квазиглеевые
+  formula_2004: AU-CAT-Q-Cca
+  type: '[CI09]'
+  distinguished: false
+  analogues:
+  - name: луговые
+    level: subtype
+    in_type: лугово-черноземные
+    extent: partly
+  - name: луговые
+    level: subtype
+    in_type: лугово-каштановые
+    extent: partly
+  en: Not separated in 1977; in part the meadow subtypes of meadow-chernozem and meadow-chestnut soils, except their
+    leached and podzolized genera.
+- row: 88
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Темные слитые
+  formula_2004: AU-V-C(ca)
+  type: '[CI04]'
+  distinguished: true
+  analogues:
+  - name: слитые
+    level: genus
+    in_type: черноземы
+    extent: full
+  - name: слитые
+    level: genus
+    in_type: каштановые
+    extent: full
+  en: The compact (slitye) genera within the chernozem and chestnut soil types.
+- row: 89
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземовидные
+  formula_2004: AU-СRH-Cg
+  type: '[CI05]'
+  distinguished: true
+  analogues:
+  - name: лугово-черноземовидные
+    level: type
+    in_type: null
+    extent: full
+  - name: лугово-мерзлотные
+    level: literature
+    in_type: null
+    extent: full
+  en: The meadow chernozem-like soil type (the 'Amur prairie soils'), and the meadow-permafrost soils of Transbaikalia
+    known from the literature and small-scale maps.
+- row: 90
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Черноземовидные глеевые
+  formula_2004: AU-СRH-G-CG
+  type: '[CI10]'
+  distinguished: true
+  analogues:
+  - name: луговые темные черноземовидные
+    level: type
+    in_type: null
+    extent: full
+  en: The type of dark meadow chernozem-like soils.
+- row: 91
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрочерноземы глинисто-иллювиальные
+  formula_2004: PU-AU-BI-C(ca)
+  type: '[CI12]'
+  distinguished: false
+  analogues:
+  - name: оподзоленные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: выщелоченные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: выщелоченные
+    level: genus
+    in_type: лугово-черноземные
+    extent: partly
+  - name: оподзоленные
+    level: genus
+    in_type: лугово-черноземные
+    extent: partly
+  en: Not separated in 1977; part of the podzolized and leached chernozem subtypes and of the leached and podzolized
+    genera of meadowish meadow-chernozem soils.
+- row: 92
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрочерноземы
+  formula_2004: PU-AU-BCA-Cca
+  type: '[CI11]'
+  distinguished: false
+  analogues:
+  - name: типичные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: обыкновенные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: луговатые
+    level: subtype
+    in_type: лугово-черноземные
+    extent: partly
+  en: Not separated in 1977; part of the typical and ordinary chernozem subtypes and of the meadowish meadow-chernozem
+    subtype bar its leached and podzolized genera.
+- row: 93
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрочерноземы текстурно-карбонатные
+  formula_2004: PU-AU-CAT-Cca
+  type: '[CI13]'
+  distinguished: false
+  analogues:
+  - name: южные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: темнокаштановые
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: луговатые
+    level: subtype
+    in_type: лугово-каштановые
+    extent: partly
+  en: Not separated in 1977; part of the southern chernozem and dark chestnut subtypes and of the meadowish subtype
+    of meadow-chestnut soils.
+- row: 94
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрочерноземы текстурно-карбонатные квазиглеевые
+  formula_2004: PU-AU-CAT-Q-CQ
+  type: '[CI19]'
+  distinguished: false
+  analogues:
+  - name: луговые
+    level: subtype
+    in_type: лугово-черноземные
+    extent: partly
+  - name: луговые
+    level: subtype
+    in_type: лугово-каштановые
+    extent: partly
+  en: Not separated in 1977; part of the meadow subtypes of meadow-chernozem and meadow-chestnut soils, leaving
+    out the leached and podzolized genera.
+- row: 95
+  page: 147
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрослитые темные
+  formula_2004: PU-AU-V-C(ca)
+  type: '[CI14]'
+  distinguished: false
+  analogues:
+  - name: слитые
+    level: genus
+    in_type: черноземы
+    extent: partly
+  - name: слитые
+    level: genus
+    in_type: каштановые
+    extent: partly
+  en: Not separated in 1977; part of the compact genera of the chernozem and chestnut soil types.
+- row: 96
+  page: 148
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрочерноземовидные
+  formula_2004: PU-AU-СRH-Cg
+  type: '[CI15]'
+  distinguished: false
+  analogues:
+  - name: лугово-черноземовидные
+    level: type
+    in_type: null
+    extent: partly
+  - name: лугово-мерзлотные
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; part of the meadow chernozem-like soil type and of the meadow-permafrost soils.
+  note: лугово-мерзлотные given level literature as in the Черноземовидные row, where they are 'described in the
+    literature'; here the text calls them part of a type.
+- row: 97
+  page: 148
+  division: Аккумулятивно-гумусовые почвы
+  name_2004: Агрочерноземовидные глеевые
+  formula_2004: PU-AU-СRH-G-CG
+  type: '[CI20]'
+  distinguished: false
+  analogues:
+  - name: луговые темные черноземовидные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; part of the dark meadow chernozem-like soil type.
+- row: 98
+  page: 148
+  division: Аккумулятивно-карбонатные малогумусные почвы
+  name_2004: Сероземовидные (светлогумусовые аккумулятивно-карбонатные)
+  formula_2004: AJ-BCA-Ccа
+  type: '[CJ01]'
+  distinguished: false
+  analogues:
+  - name: черноземы
+    level: type
+    in_type: null
+    extent: partly
+  - name: каштановые
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; assigned to various units of the chernozems and chestnut soils.
+  note: The text says 'various units' (разные выделы) of chernozems and chestnut soils; level type is my reading.
+- row: 99
+  page: 148
+  division: Аккумулятивно-карбонатные малогумусные почвы
+  name_2004: Каштановые
+  formula_2004: AJ-AM-САТ-Cca
+  type: '[CJ03]'
+  distinguished: true
+  analogues:
+  - name: каштановые
+    level: subtype
+    in_type: null
+    extent: mostly
+  en: Mostly the chestnut subtype (of the chestnut soil type).
+  note: ch. 6 formula AJ-AM-САТ-Cca (2004); ch. 4 AJ-BMK-BM-CAT-Cca.
+- row: 100
+  page: 148
+  division: Аккумулятивно-карбонатные малогумусные почвы
+  name_2004: Бурые
+  formula_2004: AKL-BMK-BCA-Cca
+  type: '[CJ02]'
+  distinguished: true
+  analogues:
+  - name: бурые полупустынные
+    level: type
+    in_type: null
+    extent: full
+  - name: светлокаштановые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: The type of brown semi-desert soils and partly the light chestnut subtype.
+  note: '2008 name: Бурые (аридные) почвы, AJ-BM-BCA-Cca; ch. 6 has the 2004 formula AKL-BMK-BCA-Cca.'
+- row: 101
+  page: 148
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы темные
+  formula_2004: SEL-ASN-BCAs,cs-Cca,s
+  type: '[CK01]'
+  distinguished: true
+  analogues:
+  - name: черноземные корковые и мелкие
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: лугово-черноземные корковые и мелкие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  - name: лугово-каштановые корковые и мелкие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: partly
+  en: Crusty and shallow species of the chernozemic automorphic solonetz subtype, of the meadow-chernozemic and,
+    in part, the meadow-chestnut semi-hydromorphic subtypes.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 102
+  page: 148
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы светлые
+  formula_2004: SEL-ВSN-BCAs,cs-Cca,s
+  type: '[CK02]'
+  distinguished: true
+  analogues:
+  - name: каштановые корковые и мелкие
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: полупустынные корковые и мелкие
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: лугово-каштановые корковые и мелкие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  - name: лугово-полупустынные корковые и мелкие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  en: Crusty and shallow species of the chestnut and semi-desert automorphic solonetz subtypes and of the meadow-chestnut
+    and meadow-semi-desert semi-hydromorphic ones.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 103
+  page: 148
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы темные квазиглеевые
+  formula_2004: SEL-ASN-BCAs,cs-Qs-CQca,s
+  type: '[CK03]'
+  distinguished: true
+  analogues:
+  - name: черноземно-луговые корковые и мелкие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: каштаново-луговые корковые и мелкие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: partly
+  en: Crusty and shallow species of the chernozemic-meadow and, in part, the chestnut-meadow subtypes of hydromorphic
+    solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 104
+  page: 148
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы светлые квазиглеевые
+  formula_2004: SEL-ВSN-BCAs,cs-Qs-CQca,s
+  type: '[CK04]'
+  distinguished: true
+  analogues:
+  - name: каштаново-луговые корковые и мелкие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: лугово-болотные корковые и мелкие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: луговые мерзлотные корковые и мелкие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  en: Crusty and shallow species of the chestnut-meadow, meadow-bog and meadow permafrost subtypes of hydromorphic
+    solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 105
+  page: 148
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы темногумусовые
+  formula_2004: AU-SEL-ASN-BCAs,cs-Cca,s
+  type: '[CK05]'
+  distinguished: true
+  analogues:
+  - name: черноземные средние и глубокие
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: лугово-черноземные средние и глубокие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  - name: лугово-каштановые средние и глубокие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: partly
+  en: Medium and deep species of the chernozemic automorphic solonetz subtype, of the meadow-chernozemic and partly
+    the meadow-chestnut semi-hydromorphic subtypes.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 106
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы светлогумусовые
+  formula_2004: AJ-SEL-BSN-BCAs,cs-Cca,s
+  type: '[CK06]'
+  distinguished: true
+  analogues:
+  - name: каштановые средние и глубокие
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: полупустынные средние и глубокие
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: лугово-каштановые средние и глубокие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  - name: лугово-полупустынные средние и глубокие
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  en: Medium and deep species of the chestnut and semi-desert automorphic solonetz subtypes and of the meadow-chestnut
+    and meadow-semi-desert semi-hydromorphic ones.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 107
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы темногумусовые квазиглеевые
+  formula_2004: AU-SEL-ASN-BCAs,cs-Qs-CQca,s
+  type: '[CK07]'
+  distinguished: true
+  analogues:
+  - name: черноземно-луговые средние и глубокие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: каштаново-луговые средние и глубокие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: partly
+  en: Medium and deep species of the chernozemic-meadow and, in part, the chestnut-meadow subtypes of hydromorphic
+    solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 108
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Солонцы светлогумусовые квазиглеевые
+  formula_2004: AJ-SEL-BSN-BCAs,cs-Qs-CQca,s
+  type: '[CK08]'
+  distinguished: true
+  analogues:
+  - name: каштаново-луговые средние и глубокие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: лугово-болотные средние и глубокие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: луговые мерзлотные средние и глубокие
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  en: Medium and deep species of the chestnut-meadow, meadow-bog and meadow permafrost subtypes of hydromorphic
+    solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 109
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Агросолонцы темногумусовые
+  formula_2004: PU-ASN-BCAs,cs-Cca,s
+  type: '[CK09]'
+  distinguished: true
+  analogues:
+  - name: черноземные средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: лугово-черноземные средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  - name: лугово-каштановые средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: partly
+  en: The reclaimed and transformed categories of the medium and deep species of the chernozemic automorphic and
+    meadow-chernozemic (partly meadow-chestnut) semi-hydromorphic solonetz.
+  note: 'Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные). Agro rows: the
+    text speaks of reclaimed/transformed categories, not ''not distinguished'', so distinguished: true.'
+- row: 110
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Агросолонцы
+  formula_2004: P-BSN-BCAs,cs-Cca,s
+  type: '[CK10]'
+  distinguished: true
+  analogues:
+  - name: каштановые средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: полупустынные средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы автоморфные
+    extent: full
+  - name: лугово-каштановые средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  - name: лугово-полупустынные средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы полугидроморфные
+    extent: full
+  en: The reclaimed and transformed categories of the medium and deep species of the chestnut and semi-desert automorphic
+    and the meadow-chestnut and meadow-semi-desert semi-hydromorphic solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 111
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Агросолонцы темногумусовые квазиглеевые
+  formula_2004: PU-ASN-BCAs,cs-Qs-CQca,s
+  type: '[CK11]'
+  distinguished: true
+  analogues:
+  - name: черноземно-луговые средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: каштаново-луговые средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы гидроморфные
+    extent: partly
+  en: The reclaimed and transformed categories of the medium and deep species of the chernozemic-meadow and, in
+    part, chestnut-meadow hydromorphic solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 112
+  page: 149
+  division: Щелочные глинисто-дифференцированные почвы
+  name_2004: Агросолонцы квазиглеевые
+  formula_2004: P-BSN-BCAs,cs-Qs-CQca,s
+  type: '[CK12]'
+  distinguished: true
+  analogues:
+  - name: каштаново-луговые средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: лугово-болотные средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  - name: луговые мерзлотные средние и глубокие (освоенные и преобразованные)
+    level: species
+    in_type: солонцы гидроморфные
+    extent: full
+  en: The reclaimed and transformed categories of the medium and deep species of the chestnut-meadow, meadow-bog
+    and meadow permafrost hydromorphic solonetz.
+  note: Species named as subtype + species (корковые и мелкие = crusty and shallow; средние и глубокие = medium
+    and deep); in_type = the 1977 solonetz type (автоморфные / полугидроморфные / гидроморфные).
+- row: 113
+  page: 149
+  division: Галоморфные почвы
+  name_2004: Солончаки глеевые
+  formula_2004: S-Gs-CGs
+  type: '[CL01]'
+  distinguished: true
+  analogues:
+  - name: типичные
+    level: subtype
+    in_type: солончаки гидроморфные
+    extent: full
+  - name: луговые
+    level: subtype
+    in_type: солончаки гидроморфные
+    extent: full
+  - name: болотные
+    level: subtype
+    in_type: солончаки гидроморфные
+    extent: full
+  en: The typical, meadow and bog subtypes of hydromorphic solonchaks.
+- row: 114
+  page: 149
+  division: Галоморфные почвы
+  name_2004: Солончаки сульфидные
+  formula_2004: SS-Gs-CGs
+  type: '[CL02]'
+  distinguished: true
+  analogues:
+  - name: соровые
+    level: subtype
+    in_type: солончаки гидроморфные
+    extent: full
+  en: The sor subtype of hydromorphic solonchaks.
+- row: 115
+  page: 149
+  division: Галоморфные почвы
+  name_2004: Солончаки вторичные
+  formula_2004: S-[ABC]
+  type: '[CL03]'
+  distinguished: false
+  analogues: []
+  en: Not separated in 1977; they arise from surface salt accumulation in an existing profile after the groundwater
+    table rises.
+  note: The text names no 1977 unit, only the genesis, so analogues is empty.
+- row: 116
+  page: 150
+  division: Гидрометаморфические почвы
+  name_2004: Гумусово-квазиглеевые
+  formula_2004: AU-Q-СQ
+  type: '[CM01]'
+  distinguished: true
+  analogues:
+  - name: луговые
+    level: type
+    in_type: null
+    extent: mostly
+  en: Correspond mostly to the type of meadow soils.
+- row: 117
+  page: 150
+  division: Гидрометаморфические почвы
+  name_2004: Перегнойно-квазиглеевые
+  formula_2004: H-Q-CQ
+  type: '[CM02]'
+  distinguished: true
+  analogues:
+  - name: лугово-болотные
+    level: type
+    in_type: null
+    extent: mostly
+  en: Correspond mostly to the type of meadow-bog soils.
+- row: 118
+  page: 150
+  division: Гидрометаморфические почвы
+  name_2004: Агрогумусово-квазиглеевые
+  formula_2004: PU-AU-Q-CQ
+  type: '[CM03]'
+  distinguished: false
+  analogues:
+  - name: луговые
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; they were part of the meadow soil type.
+- row: 119
+  page: 150
+  division: Гидрометаморфические почвы
+  name_2004: Агроперегнойно-квазиглеевые
+  formula_2004: PU-H-Q-CQ
+  type: '[CM04]'
+  distinguished: false
+  analogues:
+  - name: лугово-болотные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; they were part of the meadow-bog soil type.
+  note: '2008 name: Агроперегнойные квазиглеевые (PU-H-Q-CQ).'
+- row: 120
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Серогумусовые (дерновые)
+  formula_2004: AY-C
+  type: '[CN01]'
+  distinguished: false
+  analogues:
+  - name: дерново-карбонатные
+    level: type
+    in_type: null
+    extent: partly
+  - name: слабодифференцированные
+    level: genus
+    in_type: черноземы
+    extent: partly
+  en: Not separated in 1977; partly the soddy-calcareous soil type and the weakly differentiated genus of chernozems.
+  note: '2008 name: Серогумусовые (without ''дерновые'').'
+- row: 121
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Темногумусовые
+  formula_2004: AU-C
+  type: '[CN02]'
+  distinguished: false
+  analogues:
+  - name: дерново-карбонатные
+    level: type
+    in_type: null
+    extent: mostly
+  - name: горные лугово-степные
+    level: type
+    in_type: null
+    extent: mostly
+  - name: горно-лесные черноземовидные
+    level: type
+    in_type: null
+    extent: mostly
+  - name: остаточно-карбонатные
+    level: genus
+    in_type: черноземы
+    extent: mostly
+  - name: неполноразвитые
+    level: genus
+    in_type: черноземы
+    extent: mostly
+  en: Not separated in 1977; mostly the soddy-calcareous, mountain meadow-steppe and mountain-forest chernozem-like
+    types, plus the residually calcareous and underdeveloped chernozem genera.
+- row: 122
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Перегнойные
+  formula_2004: Н-С
+  type: '[CN03]'
+  distinguished: false
+  analogues: []
+  en: Not distinguished in the 1977 classification.
+- row: 123
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Перегнойно-темногумусовые
+  formula_2004: АН-С
+  type: '[CN04]'
+  distinguished: false
+  analogues:
+  - name: горно-луговые
+    level: type
+    in_type: null
+    extent: mostly
+  - name: горно-луговые черноземовидные
+    level: type
+    in_type: null
+    extent: mostly
+  en: Not separated in 1977; mostly the mountain-meadow and mountain-meadow chernozem-like soil types.
+- row: 124
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Грубогумусовые
+  formula_2004: AO-C
+  type: '[CN06]'
+  distinguished: false
+  analogues: []
+  en: Not distinguished in the 1977 classification.
+- row: 125
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Светлогумусовые
+  formula_2004: АJ-С
+  type: '[CN07]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые
+    level: genus
+    in_type: каштановые
+    extent: partly
+  - name: слабодифференцированные
+    level: genus
+    in_type: каштановые
+    extent: partly
+  - name: неполноразвитые
+    level: genus
+    in_type: бурые полупустынные
+    extent: partly
+  - name: слабодифференцированные
+    level: genus
+    in_type: бурые полупустынные
+    extent: partly
+  en: Not separated in 1977; partly the underdeveloped and weakly differentiated genera of the chestnut and brown
+    semi-desert soil types.
+- row: 126
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Криогумусовые
+  formula_2004: АК-С
+  type: '[CN05]'
+  distinguished: false
+  analogues: []
+  en: Not distinguished in the 1977 classification.
+- row: 127
+  page: 150
+  division: Органо-аккумулятивные почвы
+  name_2004: Агрогумусовые
+  formula_2004: P-AY-C
+  type: '[CN08]'
+  distinguished: false
+  analogues:
+  - name: дерново-карбонатные
+    level: type
+    in_type: null
+    extent: partly
+  - name: слабодифференцированные
+    level: genus
+    in_type: черноземы
+    extent: partly
+  en: Not separated in 1977; partly included in the soddy-calcareous soil type and the weakly differentiated chernozem
+    genus.
+- row: 128
+  page: 151
+  division: Органо-аккумулятивные почвы
+  name_2004: Агротемногумусовые
+  formula_2004: PU-AU-C
+  type: '[CN09]'
+  distinguished: false
+  analogues:
+  - name: дерново-карбонатные
+    level: type
+    in_type: null
+    extent: partly
+  - name: остаточно-карбонатные
+    level: genus
+    in_type: черноземы
+    extent: partly
+  - name: неполноразвитые
+    level: genus
+    in_type: черноземы
+    extent: partly
+  en: Not separated in 1977; partly included in the soddy-calcareous soil type and the residually calcareous and
+    underdeveloped chernozem genera.
+- row: 129
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Элювоземы
+  formula_2004: O-EL-D
+  type: '[CO01]'
+  distinguished: false
+  analogues:
+  - name: подзолистые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; they were part of the podzolic subtype.
+- row: 130
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Элювоземы глеевые
+  formula_2004: O-EL-DG
+  type: '[CO02]'
+  distinguished: false
+  analogues:
+  - name: торфянисто-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; part of the peaty-podzolic surface-gleyed subtype of bog-podzolic soils.
+- row: 131
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Дерново-элювоземы
+  formula_2004: AY-EL-D
+  type: '[CO03]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; they were part of the soddy-podzolic subtype.
+- row: 132
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Дерново-элювоземы глеевые
+  formula_2004: AY-EL-DG
+  type: '[CO04]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; part of the soddy-podzolic surface-gleyed subtype of bog-podzolic soils.
+- row: 133
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Торфяно-элювоземы глеевые
+  formula_2004: Т-EL-DG
+  type: '[CO05]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; apparently part of the soddy-podzolic surface-gleyed subtype of bog-podzolic soils
+    (text shared with the row above).
+  note: 'The text layer gives one passage for this row and the row above (the name sits beside the last line of
+    the preceding text, no text of its own); I give both the same reading. Doubtful: check the PDF; by analogy with
+    the podzol-eluvozem rows a peat row might rather go with the торфянисто-подзолистые subtype.'
+- row: 134
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Подзол-элювоземы
+  formula_2004: О-Е-D
+  type: '[CO06]'
+  distinguished: false
+  analogues:
+  - name: со вторым осветленным горизонтом
+    level: genus
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; part of the genus 'with a second bleached horizon' in the podzolic and gley-podzolic
+    subtypes on two-layered parent materials.
+  note: The genus sits in the подзолистые and глее-подзолистые subtypes; in_type null because the text names no
+    type.
+- row: 135
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Дерново-подзол-элювоземы
+  formula_2004: AY-E-D
+  type: '[CO07]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; part of the soddy-podzolic subtype on two-layered parent materials.
+- row: 136
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Торфяно-подзол-элювоземы глеевые
+  formula_2004: Т-Е-DG
+  type: '[CO08]'
+  distinguished: false
+  analogues:
+  - name: торфянисто-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; part of the peaty-podzolic surface-gleyed subtype of bog-podzolic soils on two-layered
+    parent materials.
+- row: 137
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Агродерново-элювоземы
+  formula_2004: Р-EL-D
+  type: '[CO09]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; part of the soddy-podzolic subtype on two-layered parent materials.
+- row: 138
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Агродерново-элювоземы глеевые
+  formula_2004: Р-EL-DG
+  type: '[CO10]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; part of the soddy-podzolic surface-gleyed subtype of bog-podzolic soils on two-layered
+    parent materials.
+- row: 139
+  page: 151
+  division: Элювиальные почвы
+  name_2004: Агроторфяно-элювоземы глеевые
+  formula_2004: РT-(T)-EL-DG
+  type: '[CO11]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые поверхностно-оглеенные
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; apparently part of the soddy-podzolic surface-gleyed bog-podzolic subtype on two-layered
+    materials (text shared with the row above).
+  note: 'The text layer gives one passage for this row and the row above (the name sits beside the last line of
+    the preceding text, no text of its own); I give both the same reading. Doubtful: check the PDF; by analogy with
+    the podzol-eluvozem rows a peat row might rather go with the торфянисто-подзолистые subtype.'
+- row: 140
+  page: 151
+  division: Литоземы
+  name_2004: Торфяно-литоземы
+  formula_2004: Т-(С)-R
+  type: '[CP01]'
+  distinguished: false
+  analogues:
+  - name: органо-щебнистые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; the literature described them as organic-rubbly soils.
+- row: 141
+  page: 152
+  division: Литоземы
+  name_2004: Сухоторфяно-литоземы
+  formula_2004: ТJ-(С)-R
+  type: '[CP02]'
+  distinguished: false
+  analogues:
+  - name: органо-щебнистые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; the literature called them organo-gravelly soils.
+- row: 142
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы грубогумусовые
+  formula_2004: AO-(С)-R
+  type: '[CP03]'
+  distinguished: false
+  analogues:
+  - name: таежные неполноразвитые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; the literature described them as underdeveloped taiga soils.
+- row: 143
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы перегнойные
+  formula_2004: Н-(С)-R
+  type: '[CP04]'
+  distinguished: false
+  analogues:
+  - name: тундровые неполноразвитые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; described in the literature as underdeveloped tundra soils.
+- row: 144
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы серогумусовые
+  formula_2004: AY-(C)-R
+  type: '[CP05]'
+  distinguished: false
+  analogues:
+  - name: таежные неполноразвитые
+    level: literature
+    in_type: null
+    extent: full
+  en: Not separated in 1977; described in the literature as underdeveloped taiga soils.
+- row: 145
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы темногумусовые
+  formula_2004: AU-(С)-R
+  type: '[CP06]'
+  distinguished: false
+  analogues:
+  - name: черноземы неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  - name: степные неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; field descriptions put them either with underdeveloped chernozems or with underdeveloped
+    steppe soils.
+  note: 'Two alternative names joined by ''или'': each marked partly.'
+- row: 146
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы светлогумусовые
+  formula_2004: AJ-(C)-R
+  type: '[CP07]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы сухой степи
+    level: literature
+    in_type: null
+    extent: partly
+  - name: неполноразвитые почвы полупустыни
+    level: literature
+    in_type: null
+    extent: partly
+  - name: неполноразвитые почвы пустыни
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; described as underdeveloped soils of the dry steppe, semi-desert and desert.
+  note: 'Alternatives by zone: each marked partly.'
+- row: 147
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы криогумусовые
+  formula_2004: AK-(C)-R
+  type: '[CP08]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: Ch. 6 formula AK-(C)-R (2004) differs from ch. 4 AK-R(ca); matched by name.
+- row: 148
+  page: 152
+  division: Литоземы
+  name_2004: Литоземы перегнойно-темногумусовые
+  formula_2004: АН-(С)-R
+  type: '[CP09]'
+  distinguished: false
+  analogues:
+  - name: горно-луговые
+    level: type
+    in_type: null
+    extent: partly
+  - name: горно-луговые черноземовидные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; they partly match mountain meadow soils and chernozem-like mountain meadow soils.
+  note: The text gives no taxonomic level; 'type' assumed for both 1977 units.
+- row: 149
+  page: 152
+  division: Литоземы
+  name_2004: Карболитоземы перегнойно-темногумусовые
+  formula_2004: АН-(Сса)-Rca
+  type: '[CP10]'
+  distinguished: false
+  analogues:
+  - name: перегнойные
+    level: species
+    in_type: дерново-карбонатные
+    extent: partly
+    qualifier: of the genus рихковые, mostly in mountain regions
+  en: Not separated in 1977; partly the humus-rich (peregnoinye) species of the rubbly (rikhkovye) genus of soddy-calcareous
+    soils, mostly in mountain regions.
+  note: Species of the genus 'рихковые' in the type 'дерново-карбонатные'; 'преимущественно горных областей' qualifies
+    the region, not the extent.
+- row: 150
+  page: 152
+  division: Литоземы
+  name_2004: Карболитоземы темногумусовые (рендзины)
+  formula_2004: AU-(Cса)-Rса
+  type: '[CP11]'
+  distinguished: false
+  analogues:
+  - name: известковые
+    level: genus
+    in_type: дерново-карбонатные
+    extent: partly
+  - name: рихковые
+    level: genus
+    in_type: дерново-карбонатные
+    extent: partly
+  - name: остаточно-карбонатные
+    level: genus
+    in_type: черноземы
+    extent: partly
+  en: Not separated in 1977; partly the calcareous and rubbly genera of soddy-calcareous soils and the residual-carbonate
+    genus of chernozems.
+  note: Name printed with '(рендзины)', absent from the ch. 4 name.
+- row: 151
+  page: 152
+  division: Литоземы
+  name_2004: Агролитоземы темногумусовые
+  formula_2004: PU-R(ca)
+  type: '[CP12]'
+  distinguished: false
+  analogues:
+  - name: черноземы неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  - name: степные неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; in descriptions they went with underdeveloped chernozems or underdeveloped steppe soils.
+  note: 'Two alternatives joined by ''или'': each marked partly.'
+- row: 152
+  page: 152
+  division: Литоземы
+  name_2004: Агролитоземы гумусовые
+  formula_2004: P-R(са)
+  type: '[CP13]'
+  distinguished: false
+  analogues:
+  - name: таежные неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  - name: сухостепные неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  - name: полупустынные неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  - name: пустынные неполноразвитые
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; descriptions assigned them to underdeveloped taiga, dry-steppe, semi-desert or desert
+    soils.
+  note: 'Four alternatives joined by ''либо'': each marked partly.'
+- row: 153
+  page: 152
+  division: Абраземы
+  name_2004: Абраземы глинисто-иллювиальные
+  formula_2004: BI-C
+  type: '[CQ01]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые подзолистые
+    level: species
+    in_type: подзолистые
+    extent: full
+  - name: средне- и сильносмытые серые лесные
+    level: species
+    in_type: серые лесные
+    extent: full
+  - name: сильносмытые черноземы выщелоченные
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: сильносмытые черноземы оподзоленные
+    level: species
+    in_type: черноземы
+    extent: full
+  en: Moderately and strongly eroded species of loamy-clayey podzolic and grey forest soils, plus strongly eroded
+    leached and podzolized chernozems.
+  note: '''Loamy-clayey'' qualifies the podzolic and grey forest soils.'
+- row: 154
+  page: 152
+  division: Абраземы
+  name_2004: Абраземы альфегумусовые
+  formula_2004: BHF-C
+  type: '[CQ02]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые подзолистые
+    level: species
+    in_type: подзолистые
+    extent: full
+  en: Moderately and strongly eroded species of sandy, sandy-loam and gravelly podzolic soils.
+- row: 155
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы железисто-метаморфические
+  formula_2004: BFM-C
+  type: '[CQ03]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые бурые лесные
+    level: species
+    in_type: бурые лесные
+    extent: full
+  en: Moderately and strongly eroded species of sandy, sandy-loam and gravelly brown forest soils.
+- row: 156
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы структурно-метаморфические
+  formula_2004: BM-C
+  type: '[CQ04]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые бурые лесные
+    level: species
+    in_type: бурые лесные
+    extent: full
+  en: Moderately and strongly eroded species of loamy-clayey brown forest soils.
+- row: 157
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы палево-метаморфические
+  formula_2004: BPL-C(ca)
+  type: '[CQ05]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: One 'Не выделялись' printed between this row and the next (merged cell); read as applying to both.
+- row: 158
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы криометаморфические
+  formula_2004: CRM-C
+  type: '[CQ06]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: Shares the merged 'Не выделялись' cell with the row above.
+- row: 159
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы аккумулятивно-карбонатные
+  formula_2004: BCA-Cса
+  type: '[CQ07]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые черноземы типичные
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: сильносмытые черноземы обыкновенные
+    level: species
+    in_type: черноземы
+    extent: full
+  en: The strongly eroded species of typical and ordinary chernozem subtypes.
+  note: Ch. 6 formula BCA-Cса vs ch. 4 BCA-C(ca); matched by name.
+- row: 160
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы текстурно-карбонатные
+  formula_2004: CAT-Cса
+  type: '[CQ08]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые черноземы южные
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: средне- и сильносмытые каштановые
+    level: species
+    in_type: каштановые
+    extent: full
+  en: Moderately and strongly eroded species of southern chernozems and of chestnut soils.
+  note: Ch. 6 formula CAT-Cса vs ch. 4 CAT-C(ca); matched by name.
+- row: 161
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы солонцовые
+  formula_2004: BSN-ВCАs,cs-Cca,s
+  type: '[CQ09]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: 'DOUBTFUL: no text beside this row; the ''Не выделялись'' printed beside the next row is read as a merged
+    cell covering both.'
+- row: 162
+  page: 153
+  division: Абраземы
+  name_2004: Абраземы солонцовые темные
+  formula_2004: ASN-BCAs,cs-Cca,s
+  type: '[CQ10]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 163
+  page: 153
+  division: Агроабраземы
+  name_2004: Агроабраземы
+  formula_2004: PB(PC)-C
+  type: '[CR01]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные почвы
+    level: species
+    in_type: null
+    extent: full
+  en: Arable soils eroded down to the parent material, with no particular 1977 type named.
+  note: Generic erosion species, no 1977 type named; ch. 6 PB(PC)-C vs ch. 4 PB-C.
+- row: 164
+  page: 153
+  division: Агроабраземы
+  name_2004: Агроабраземы глеевые
+  formula_2004: PB(PC)-G-CG
+  type: '[CR02]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные глеевые почвы
+    level: species
+    in_type: null
+    extent: full
+  en: Arable gley soils eroded down to the parent material.
+  note: No 1977 type named; ch. 6 PB(PC)-G-CG vs ch. 4 PB-G-CG.
+- row: 165
+  page: 153
+  division: Агроабраземы
+  name_2004: Агроабраземы квазиглеевые
+  formula_2004: PB(PC)-Q-CQ
+  type: '[CR03]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные луговые почвы
+    level: species
+    in_type: null
+    extent: full
+  en: Arable meadow soils of various natural zones eroded down to the parent material.
+  note: Meadow soils of several zones (several 1977 types), so in_type null; ch. 6 PB(PC)-Q-CQ vs ch. 4 PB-Q-CQ.
+- row: 166
+  page: 153
+  division: Агроабраземы
+  name_2004: Агроабраземы глинисто-иллювиальные
+  formula_2004: PB-BI-C(ca)
+  type: '[CR04]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные подзолистые
+    level: species
+    in_type: подзолистые
+    extent: full
+  - name: среднесмытые пахотные подзолистые
+    level: species
+    in_type: подзолистые
+    extent: partly
+  - name: сильносмытые пахотные серые лесные
+    level: species
+    in_type: серые лесные
+    extent: full
+  - name: среднесмытые пахотные серые лесные
+    level: species
+    in_type: серые лесные
+    extent: partly
+  - name: сильносмытые пахотные черноземы оподзоленные
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: сильносмытые пахотные черноземы выщелоченные
+    level: species
+    in_type: черноземы
+    extent: full
+  en: Strongly and in part moderately eroded arable loamy-clayey podzolic and grey forest soils, plus strongly eroded
+    arable podzolized and leached chernozems.
+  note: '''частично среднесмытые'' read as applying to both podzolic and grey forest soils.'
+- row: 167
+  page: 153
+  division: Агроабраземы
+  name_2004: Агроабраземы глинисто-иллювиальные глеевые
+  formula_2004: PB-BI-G-CG
+  type: '[CR05]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные болотно-подзолистые поверхностного увлажнения
+    level: species
+    in_type: болотно-подзолистые
+    extent: full
+  - name: среднесмытые пахотные болотно-подзолистые поверхностного увлажнения
+    level: species
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Strongly and in part moderately eroded arable bog-podzolic soils wetted from the surface.
+- row: 168
+  page: 153
+  division: Агроабраземы
+  name_2004: Агроабраземы альфегумусовые
+  formula_2004: PB-BHF-C
+  type: '[CR06]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные подзолистые
+    level: species
+    in_type: подзолистые
+    extent: full
+  - name: среднесмытые пахотные подзолистые
+    level: species
+    in_type: подзолистые
+    extent: partly
+  en: Strongly and in part moderately eroded arable sandy, sandy-loam and gravelly podzolic soils.
+- row: 169
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы альфегумусовые глеевые
+  formula_2004: PB-BH-G-CG
+  type: '[CR07]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные болотно-подзолистые грунтового увлажнения
+    level: species
+    in_type: болотно-подзолистые
+    extent: full
+  - name: среднесмытые пахотные болотно-подзолистые грунтового увлажнения
+    level: species
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Strongly and in part moderately eroded arable bog-podzolic soils wetted by groundwater.
+- row: 170
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы структурно-метаморфические
+  formula_2004: PB-BM-C
+  type: '[CR08]'
+  distinguished: true
+  analogues:
+  - name: среднесмытые пахотные бурые лесные
+    level: species
+    in_type: бурые лесные
+    extent: mostly
+  en: Mostly the moderately eroded arable brown forest soils.
+  note: Only 'среднесмытые' is printed (not 'средне- и сильно-'), unlike the neighbouring rows.
+- row: 171
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы структурно-метаморфические аккумулятивно-карбонатные
+  formula_2004: PB-BM-BCA-Cca
+  type: '[CR09]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые пахотные коричневые
+    level: species
+    in_type: коричневые
+    extent: mostly
+  en: Mostly the moderately and strongly eroded arable cinnamonic (korichnevye) soils.
+- row: 172
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы аккумулятивно-карбонатные
+  formula_2004: PB-BCA-Cca
+  type: '[CR10]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные черноземы типичные
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: сильносмытые пахотные черноземы обыкновенные
+    level: species
+    in_type: черноземы
+    extent: full
+  en: Strongly eroded arable typical and ordinary chernozems.
+- row: 173
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы аккумулятивно-карбонатные квазиглеевые
+  formula_2004: PB-BCA-Q-CQ
+  type: '[CR11]'
+  distinguished: true
+  analogues:
+  - name: сильносмытые пахотные черноземы типичные квазиглеевые
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: сильносмытые пахотные черноземы обыкновенные квазиглеевые
+    level: species
+    in_type: черноземы
+    extent: full
+  en: Strongly eroded arable typical and ordinary chernozems with quasi-gley features.
+  note: '''квазиглеевые'' is not a 1977 term; the text uses the 2004 word for these chernozems.'
+- row: 174
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы текстурно-карбонатные
+  formula_2004: PB-CAT-Cca
+  type: '[CR12]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые черноземы южные
+    level: species
+    in_type: черноземы
+    extent: full
+  - name: средне- и сильносмытые каштановые
+    level: species
+    in_type: каштановые
+    extent: full
+  en: Moderately and strongly eroded southern chernozems and chestnut soils.
+- row: 175
+  page: 154
+  division: Агроабраземы
+  name_2004: Агроабраземы текстурно-карбонатные квазиглеевые
+  formula_2004: PB-CAT-Q-CQ
+  type: '[CR13]'
+  distinguished: true
+  analogues:
+  - name: средне- и сильносмытые черноземы южные квазиглеевые
+    level: species
+    in_type: черноземы
+    extent: full
+  en: Moderately and strongly eroded southern chernozems with quasi-gley features.
+  note: '''квазиглеевые'' is not a 1977 term; the text uses the 2004 word.'
+- row: 176
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы
+  formula_2004: P-C
+  type: '[CS01]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: One 'Не выделялись' printed beside 'Агроземы темные глеевые' spans the four rows P-C, PU-C, PU-G-CG, PU-Q-CQ
+    (merged cell).
+- row: 177
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы темные
+  formula_2004: PU-C
+  type: '[CS02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: Merged 'Не выделялись' cell (see Агроземы).
+- row: 178
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы темные глеевые
+  formula_2004: PU-G-CG
+  type: '[CS03]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 179
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы темные квазиглеевые
+  formula_2004: PU-Q-CQ
+  type: '[CS04]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: Merged 'Не выделялись' cell (see Агроземы).
+- row: 180
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы торфяные
+  formula_2004: PT-C
+  type: '[CS05]'
+  distinguished: true
+  analogues:
+  - name: торфяные болотные верховые
+    level: type
+    in_type: null
+    extent: partly
+    qualifier: reclaimed
+  - name: торфяные болотные низинные
+    level: type
+    in_type: null
+    extent: partly
+    qualifier: reclaimed
+  en: Partly the reclaimed peat soils of raised (high-moor) and fen (low-moor) bogs.
+  note: 'The text names the reclaimed peat soils of raised and fen bogs: the 1977 types торфяные болотные верховые
+    and торфяные болотные низинные, reclaimed (review of 2026-11-03).'
+- row: 181
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы торфяно-минеральные
+  formula_2004: PTR-C
+  type: '[CS06]'
+  distinguished: true
+  analogues:
+  - name: торфяные болотные низинные
+    level: type
+    in_type: null
+    extent: partly
+    qualifier: reclaimed, the mineral layer near the surface
+  en: Partly the reclaimed fen peat soils where the mineral substratum lies close to the surface.
+  note: 'The text names the reclaimed fen peat soils with the mineral layer near the surface: the 1977 type торфяные
+    болотные низинные, reclaimed (as CS05, review of 2026-11-03).'
+- row: 182
+  page: 154
+  division: Агроземы
+  name_2004: Агроземы текстурно-дифференцированные
+  formula_2004: P-BT-C
+  type: '[CS07]'
+  distinguished: true
+  analogues:
+  - name: подзолистые культурные
+    level: type
+    in_type: null
+    extent: partly
+  - name: дерново-подзолистые окультуренные
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: светло-серые лесные окультуренные
+    level: subtype
+    in_type: null
+    extent: partly
+  - name: серые лесные окультуренные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Partly the cultivated podzolic soils type and the cultivated soddy-podzolic subtype on loamy-clayey deposits,
+    plus in part cultivated light grey and grey forest subtypes.
+  note: The text names the subtypes but not their 1977 types, so in_type null.
+- row: 183
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы текстурно-дифференцированные глеевые
+  formula_2004: P-BT-G-CG
+  type: '[CS08]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые поверхностно-глеевые
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; included in the arable variant of the soddy-podzolic surface-gley subtype of bog-podzolic
+    soils.
+- row: 184
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы альфегумусовые
+  formula_2004: P-BHF-C
+  type: '[CS09]'
+  distinguished: true
+  analogues:
+  - name: подзолистые культурные
+    level: type
+    in_type: null
+    extent: partly
+  - name: дерново-подзолистые окультуренные
+    level: subtype
+    in_type: null
+    extent: partly
+  en: Partly the cultivated podzolic soils type and the cultivated soddy-podzolic subtype on sandy and gravelly
+    deposits.
+  note: in_type of the subtype not printed.
+- row: 185
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы альфегумусовые глеевые
+  formula_2004: P-BH-G-CG
+  type: '[CS10]'
+  distinguished: false
+  analogues:
+  - name: дерново-подзолистые грунтово-глеевые
+    level: subtype
+    in_type: болотно-подзолистые
+    extent: partly
+  en: Not separated in 1977; included in the arable variant of the soddy-podzolic groundwater-gley subtype of bog-podzolic
+    soils.
+- row: 186
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы структурно-метаморфические
+  formula_2004: P-BM-C
+  type: '[CS11]'
+  distinguished: false
+  analogues:
+  - name: бурые лесные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; included in the arable variant of loamy-clayey brown forest soils.
+  note: Level not printed; 'type' assumed.
+- row: 187
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы структурно-метаморфические темные
+  formula_2004: PU-BM-С
+  type: '[CS12]'
+  distinguished: false
+  analogues:
+  - name: дерново-карбонатные
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; included in the arable variant of soddy-calcareous soils.
+  note: Level not printed; 'type' assumed.
+- row: 188
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы темные глинисто-иллювиальные
+  formula_2004: PU-BI-C
+  type: '[CS13]'
+  distinguished: false
+  analogues:
+  - name: черноземы оподзоленные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+    qualifier: moderately and strongly eroded arable variants
+  - name: черноземы выщелоченные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+    qualifier: moderately and strongly eroded arable variants
+  en: Not separated in 1977; assigned to moderately and strongly eroded arable variants of podzolized and leached
+    chernozem subtypes.
+- row: 189
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы темные аккумулятивно-карбонатные
+  formula_2004: PU-BCA-Cса
+  type: '[CS14]'
+  distinguished: false
+  analogues:
+  - name: черноземы маломощные
+    level: species
+    in_type: черноземы
+    extent: full
+  en: Not separated in 1977; regarded as thin arable chernozems, weakly eroded ones included.
+  note: '''рассматривались как'' read as full; ''маломощные'' taken as the thickness species.'
+- row: 190
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы текстурно-карбонатные
+  formula_2004: P-СAT-Cca
+  type: '[CS15]'
+  distinguished: false
+  analogues:
+  - name: черноземы южные
+    level: subtype
+    in_type: черноземы
+    extent: partly
+  - name: каштановые
+    level: type
+    in_type: null
+    extent: partly
+  en: Not separated in 1977; included in arable variants of southern chernozems (weakly eroded included) or of chestnut
+    soils.
+  note: Level of the chestnut soils not printed; 'type' assumed.
+- row: 191
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы солонцовые темные
+  formula_2004: PU-TUR[SEL+АSN]-ВСАs,cs-Cca,s
+  type: '[CS16]'
+  distinguished: true
+  analogues:
+  - name: преобразованные черноземные
+    level: genus
+    in_type: солонцы автоморфные
+    extent: approximately
+  - name: преобразованные лугово-черноземные
+    level: genus
+    in_type: солонцы полугидроморфные
+    extent: approximately
+  - name: преобразованные лугово-каштановые
+    level: genus
+    in_type: солонцы полугидроморфные
+    extent: approximately
+  en: Roughly the transformed genus of the chernozemic, meadow-chernozemic and meadow-chestnut subtypes of automorphic
+    and semi-hydromorphic solonetz.
+  note: Each subtype assigned to its 1977 solonetz type (automorphic vs semi-hydromorphic) by the 1977 scheme, not
+    by the text.
+- row: 192
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы солонцовые светлые
+  formula_2004: P-TUR[SEL+BSN]-ВСАs,cs-Cca,s
+  type: '[CS17]'
+  distinguished: true
+  analogues:
+  - name: преобразованные каштановые
+    level: genus
+    in_type: солонцы автоморфные
+    extent: approximately
+  - name: преобразованные полупустынные
+    level: genus
+    in_type: солонцы автоморфные
+    extent: approximately
+  - name: преобразованные лугово-полупустынные
+    level: genus
+    in_type: солонцы полугидроморфные
+    extent: approximately
+  - name: преобразованные лугово-каштановые
+    level: genus
+    in_type: солонцы полугидроморфные
+    extent: partly
+  en: Roughly the transformed genus of chestnut and semi-desert automorphic solonetz, and of meadow-semi-desert
+    and partly meadow-chestnut semi-hydromorphic solonetz.
+- row: 193
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы солонцовые темные квазиглеевые
+  formula_2004: PU-TUR[SEL+АSN]-ВСАs,cs-Qs-Cqca,s
+  type: '[CS18]'
+  distinguished: true
+  analogues:
+  - name: преобразованные черноземно-луговые
+    level: genus
+    in_type: солонцы гидроморфные
+    extent: approximately
+  - name: преобразованные лугово-болотные
+    level: genus
+    in_type: солонцы гидроморфные
+    extent: approximately
+  en: Roughly the transformed genus of the chernozemic-meadow and meadow-bog subtypes of hydromorphic solonetz.
+- row: 194
+  page: 155
+  division: Агроземы
+  name_2004: Агроземы солонцовые светлые квазиглеевые
+  formula_2004: P-TUR[SEL+BSN]-ВСАs,cs-Qs-Cqca,s
+  type: '[CS19]'
+  distinguished: true
+  analogues:
+  - name: преобразованные каштаново-луговые
+    level: genus
+    in_type: солонцы гидроморфные
+    extent: approximately
+  - name: преобразованные луговые мерзлотные
+    level: genus
+    in_type: солонцы гидроморфные
+    extent: approximately
+  en: Roughly the transformed genus of the chestnut-meadow and frozen meadow subtypes of hydromorphic solonetz.
+  note: The text repeats 'подтипов' ('преобразованных подтипов каштаново-луговых ... подтипов'); read as the same
+    pattern as the rows above.
+- row: 195
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы
+  formula_2004: P-TUR-C
+  type: '[CT01]'
+  distinguished: false
+  analogues: []
+  en: Not distinguished in 1977.
+  note: Printed on the line of its name (Турбоземы P-TUR-C), so the formula fixture missed it; added in 0.9.347.
+    The one 'Не выделялись' of the division covers it.
+- row: 196
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы темные
+  formula_2004: PU-TUR-C
+  type: '[CT02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: One 'Не выделялись' printed beside the turbozem rows spans the whole division (merged cell). The book's
+    first row 'Турбоземы P-TUR-C' (CT01) is printed on p. 156 but has no row in ch6_rows.tsv, so it is not in this
+    file.
+- row: 197
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы темные глеевые
+  formula_2004: PU-TUR-G-CG
+  type: '[CT03]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 198
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы темные квазиглеевые
+  formula_2004: PU-TUR-Q-CQ
+  type: '[CT04]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 199
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы глинисто-иллювиальные
+  formula_2004: P-TUR-BI-C
+  type: '[CT05]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 200
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы глинисто-иллювиальные темные
+  formula_2004: PU-TUR-BI-C
+  type: '[CT06]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 201
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы глинисто-иллювиальные глеевые
+  formula_2004: P-TUR-BI-G-CG
+  type: '[CT07]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 202
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы глинисто-иллювиальные темные квазиглеевые
+  formula_2004: PU-TUR-BI-Q-CQ
+  type: '[CT08]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 203
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы аккумулятивно-карбонатные
+  formula_2004: P-TUR-BCA-Cca
+  type: '[CT09]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 204
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы аккумулятивно-карбонатные темные
+  formula_2004: PU-TUR-BCA-Cca
+  type: '[CT10]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 205
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы аккумулятивно-карбонатные темные квазиглеевые
+  formula_2004: PU-TUR-BCA-Q-CQ
+  type: '[CT11]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 206
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы текстурно-карбонатные
+  formula_2004: P-TUR-CAT-Cca
+  type: '[CT12]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 207
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы торфяно-минеральные
+  formula_2004: PT-TUR-G-CG
+  type: '[CT13]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 208
+  page: 156
+  division: Турбированные почвы
+  name_2004: Турбоземы постсолонцовые темные
+  formula_2004: TUR[AU+SEL+ASN]-BCAs,cs-Cca,s
+  type: '[CT14]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 209
+  page: 157
+  division: Турбированные почвы
+  name_2004: Турбоземы постсолонцовые светлые
+  formula_2004: TUR[AJ+SEL+BSN]-ВCAs,cs-Cca,s
+  type: '[CT15]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: Formula has a Latin/Cyrillic mixed 'ВCAs' as printed. The 'Не выделялись' of this block continues the turbozem
+    rows of p. 156.
+- row: 210
+  page: 157
+  division: Турбированные почвы
+  name_2004: Турбоземы постсолонцовые темные квазиглеевые
+  formula_2004: TUR[AU+SEL+ASN]-BCAs,cs-Qs-CQca,s
+  type: '[CT16]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 211
+  page: 157
+  division: Турбированные почвы
+  name_2004: Турбоземы постсолонцовые светлые квазиглеевые
+  formula_2004: TUR[AJ+SEL+BSN]-BCAs,cs-Qs-CQca,s
+  type: '[CT17]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 212
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные гумусовые
+  formula_2004: AY-C~~
+  type: '[BA01]'
+  distinguished: true
+  analogues:
+  - name: собственно дерновые кислые
+    level: subtype
+    in_type: аллювиальные дерновые кислые
+    extent: full
+  - name: дерновые кислые оподзоленные
+    level: subtype
+    in_type: аллювиальные дерновые кислые
+    extent: full
+  en: The proper sod acid and the podzolised sod acid subtypes of alluvial sod acid soils.
+- row: 213
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные темногумусовые
+  formula_2004: AU-C(ca)~~
+  type: '[BA02]'
+  distinguished: true
+  analogues:
+  - name: собственно дерновые насыщенные
+    level: subtype
+    in_type: аллювиальные дерновые насыщенные
+    extent: full
+  en: The proper sod saturated subtype of alluvial sod saturated soils.
+  note: Ch. 6 formula AU-C(ca)~~; ch. 4 writes AU-C~~.
+- row: 214
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные темногумусовые глеевые
+  formula_2004: AU-G-CG~~
+  type: '[BA03]'
+  distinguished: true
+  analogues:
+  - name: собственно луговые кислые
+    level: subtype
+    in_type: аллювиальные луговые кислые
+    extent: full
+  en: The proper meadow acid subtype of alluvial meadow acid soils.
+  note: 'Doubtful: the book gives the same 1977 analogue as for Аллювиальные гумусовые глеевые (AY-G-CG~~); for
+    a dark-humus (AU) gley soil a saturated meadow or meadow-bog unit would be expected. Kept as printed.'
+- row: 215
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные темногумусовые квазиглеевые
+  formula_2004: AU-Q-CQ~~
+  type: '[BA04]'
+  distinguished: true
+  analogues:
+  - name: собственно луговые насыщенные
+    level: subtype
+    in_type: аллювиальные луговые насыщенные
+    extent: full
+  en: The proper meadow saturated subtype of alluvial meadow saturated soils.
+  note: Printed with a capital 'Темногумусовые'; written in lower case here.
+- row: 216
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные перегнойно-глеевые
+  formula_2004: H-G-CG~~
+  type: '[BA05]'
+  distinguished: true
+  analogues:
+  - name: аллювиальные болотные иловато-перегнойно-глеевые
+    level: type
+    in_type: null
+    extent: full
+  en: The 1977 type of alluvial bog silty-mucky-gley soils.
+- row: 217
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные гумусовые глеевые
+  formula_2004: AY-G-CG~~
+  type: '[BA06]'
+  distinguished: true
+  analogues:
+  - name: собственно луговые кислые
+    level: subtype
+    in_type: аллювиальные луговые кислые
+    extent: full
+  en: The proper meadow acid subtype of alluvial meadow acid soils.
+- row: 218
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные рудяковые
+  formula_2004: AY-F-C~~
+  type: '[BA07]'
+  distinguished: true
+  analogues:
+  - name: ожелезненные
+    level: genus
+    in_type: аллювиальные луговые кислые
+    extent: full
+  - name: оруденелые
+    level: genus
+    in_type: аллювиальные болотные иловато-торфяные
+    extent: full
+  en: The ferruginated genus of alluvial meadow acid soils and the ore-bearing genus of alluvial bog silty-peat
+    soils.
+- row: 219
+  page: 157
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные слитые
+  formula_2004: AU-V-C~~
+  type: '[BA08]'
+  distinguished: true
+  analogues:
+  - name: слитые
+    level: genus
+    in_type: аллювиальные луговые карбонатные
+    extent: full
+  - name: слитые
+    level: genus
+    in_type: аллювиальные луговые насыщенные
+    extent: full
+  en: The compact (slitye) genus within the alluvial meadow calcareous and meadow saturated soil types.
+- row: 220
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные мергелистые
+  formula_2004: AU-ML-CG~~(CQ~~)
+  type: '[BA09]'
+  distinguished: true
+  analogues:
+  - name: омергелеванные
+    level: genus
+    in_type: аллювиальные лугово-болотные
+    extent: full
+  en: The marl-enriched genus within alluvial meadow-bog soils.
+- row: 221
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные торфяно-глеевые
+  formula_2004: T-G-CG~~
+  type: '[BA10]'
+  distinguished: true
+  analogues:
+  - name: аллювиальные болотные иловато-торфяные
+    level: type
+    in_type: null
+    extent: full
+  en: The 1977 type of alluvial bog silty-peat soils.
+- row: 222
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агрогумусовые
+  formula_2004: P-AY-C~~
+  type: '[BA11]'
+  distinguished: true
+  analogues:
+  - name: дерновые кислые (пахотные варианты)
+    level: subtype
+    in_type: аллювиальные дерновые кислые
+    extent: full
+  - name: дерновые кислые оподзоленные (пахотные варианты)
+    level: subtype
+    in_type: аллювиальные дерновые кислые
+    extent: full
+  en: Ploughed variants of the sod acid and podzolised sod acid subtypes of alluvial sod acid soils.
+  note: 1977 had no arable level; 'пахотные варианты' is kept in the name and the level is that of the unit named.
+    Same convention in the other agro- alluvial rows.
+- row: 223
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агротемногумусовые
+  formula_2004: PU-AU-C~~
+  type: '[BA12]'
+  distinguished: true
+  analogues:
+  - name: дерновые насыщенные (пахотные варианты)
+    level: subtype
+    in_type: аллювиальные дерновые насыщенные
+    extent: full
+  en: Ploughed variants of the sod saturated subtype of alluvial sod saturated soils.
+  note: Ch. 4 formula PU-AU-C~~-Cca.
+- row: 224
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агротемногумусовые глеевые
+  formula_2004: PU-AU-G-CG~~
+  type: '[BA13]'
+  distinguished: true
+  analogues:
+  - name: луговые кислые (пахотные варианты)
+    level: subtype
+    in_type: аллювиальные луговые кислые
+    extent: full
+  en: Ploughed variants of the meadow acid subtype of alluvial meadow acid soils.
+  note: Ch. 4 formula PU-AUg-G-CG~~.
+- row: 225
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агротемногумусовые квазиглеевые
+  formula_2004: PU-AU-Q-CQ~~
+  type: '[BA14]'
+  distinguished: true
+  analogues:
+  - name: луговые насыщенные (пахотный вариант)
+    level: subtype
+    in_type: аллювиальные луговые насыщенные
+    extent: full
+  en: The ploughed variant of the meadow saturated subtype of alluvial meadow saturated soils.
+  note: Printed with a capital 'Агротемногумусовые'; written in lower case here.
+- row: 226
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агрогумусово-глеевые
+  formula_2004: P-AY-G-CG~~
+  type: '[BA15]'
+  distinguished: true
+  analogues:
+  - name: собственно луговые кислые (пахотный вариант)
+    level: subtype
+    in_type: аллювиальные луговые кислые
+    extent: full
+  en: The ploughed variant of the proper meadow acid subtype of alluvial meadow acid soils.
+  note: Ch. 4 formula P-AYg-G-CG~~.
+- row: 227
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агрослитые
+  formula_2004: PU-AU-V-C(ca)~~
+  type: '[BA16]'
+  distinguished: true
+  analogues:
+  - name: слитые (пахотный вариант)
+    level: genus
+    in_type: аллювиальные луговые карбонатные
+    extent: full
+  - name: слитые (пахотный вариант)
+    level: genus
+    in_type: аллювиальные луговые насыщенные
+    extent: full
+  en: The ploughed variant of the compact genus in alluvial meadow calcareous and meadow saturated soils.
+  note: Ch. 6 formula PU-AU-V-C(ca)~~; ch. 4 writes PU-AU-V-C~~.
+- row: 228
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агроторфяно-глеевые
+  formula_2004: PTR-TR-G-CG~~
+  type: '[BA17]'
+  distinguished: true
+  analogues:
+  - name: аллювиальные болотные иловато-торфяные (пахотный вариант)
+    level: type
+    in_type: null
+    extent: full
+  en: The ploughed variant of the type of alluvial bog silty-peat soils.
+  note: Ch. 6 name and formula (PTR-TR-G-CG~~) are the 2004 wording; the 2008 Guide calls the type 'Аллювиальные
+    агроторфяно-минеральные глеевые' with PTR-T-G-CG~~ (BA17). 'TR' looks like a slip for T.
+- row: 229
+  page: 158
+  division: Аллювиальные почвы
+  name_2004: Аллювиальные агромергелистые
+  formula_2004: PU-AU-ML-CG~~
+  type: '[BA18]'
+  distinguished: true
+  analogues:
+  - name: омергелеванные (пахотный вариант)
+    level: genus
+    in_type: аллювиальные лугово-болотные
+    extent: full
+  en: The ploughed variant of the marl-enriched genus in alluvial meadow-bog soils.
+- row: 230
+  page: 158
+  division: Вулканические почвы
+  name_2004: Охристые
+  formula_2004: AO-BH-BAN-C``
+  type: '[BB01]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: 'Ch. 4 formula adds buried tephra layers: AO-BH-BAN-C"-{ABC}-{ABC}.'
+- row: 231
+  page: 158
+  division: Вулканические почвы
+  name_2004: Перегнойно-охристые
+  formula_2004: H-BAN-C``
+  type: '[BB02]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 232
+  page: 158
+  division: Вулканические почвы
+  name_2004: Охристо-подзолистые
+  formula_2004: AO-E-BH-BAN-C``
+  type: '[BB03]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 233
+  page: 158
+  division: Вулканические почвы
+  name_2004: Агроохристые
+  formula_2004: P-BAN-C``
+  type: '[BB04]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 234
+  page: 159
+  division: Стратоземы
+  name_2004: Стратоземы серогумусовые
+  formula_2004: RY-D
+  type: '[BC01]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 235
+  page: 159
+  division: Стратоземы
+  name_2004: Стратоземы темногумусовые
+  formula_2004: RU-D
+  type: '[BC02]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 236
+  page: 159
+  division: Стратоземы
+  name_2004: Стратоземы светлогумусовые
+  formula_2004: RJ-D
+  type: '[BC03]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 237
+  page: 159
+  division: Стратоземы
+  name_2004: Стратоземы серогумусовые на погребенной почве
+  formula_2004: RY-[AВC]
+  type: '[BC04]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 238
+  page: 159
+  division: Стратоземы
+  name_2004: Стратоземы темногумусовые на погребенной почве
+  formula_2004: RU-[AВC]
+  type: '[BC05]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 239
+  page: 159
+  division: Стратоземы
+  name_2004: Стратоземы светлогумусовые на погребенной почве
+  formula_2004: RJ-[AВC]
+  type: '[BC06]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 240
+  page: 159
+  division: Стратоземы
+  name_2004: Агростратоземы гумусовые
+  formula_2004: P-RY(RJ)-D
+  type: '[BC07]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 241
+  page: 159
+  division: Стратоземы
+  name_2004: Агростратоземы темногумусовые
+  formula_2004: PU-RU-D
+  type: '[BC08]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 242
+  page: 159
+  division: Стратоземы
+  name_2004: Агростратоземы гумусовые на погребенной почве
+  formula_2004: P-RY(RJ)-[AВC]
+  type: '[BC09]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 243
+  page: 159
+  division: Стратоземы
+  name_2004: Агростратоземы темногумусовые на погребенной почве
+  formula_2004: PU-RU-[AВC]
+  type: '[BC10]'
+  distinguished: true
+  analogues:
+  - name: мощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: среднемощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: full
+  - name: маломощные намытые и искусственно аккумулированные гумусированные почвогрунты
+    level: group
+    in_type: null
+    extent: partly
+  en: Matched the thick and medium-thick, and partly the thin, washed-in and artificially accumulated humified soil-grounds
+    of appendix 3 of the 1977 classification.
+  note: One text block covers all ten stratozem rows. The 1977 units are the 'почвогрунты' of appendix 3 (outside
+    the taxonomic key), coded as level group.
+- row: 244
+  page: 159
+  division: Слаборазвитые почвы
+  name_2004: Пелоземы
+  formula_2004: O-C=
+  type: '[DA01]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977, or described in the literature as incompletely developed soils.
+  note: '''Not distinguished or described as incompletely developed soils''; the literature name is recorded with
+    extent partly because the text offers it only as an alternative.'
+- row: 245
+  page: 159
+  division: Слаборазвитые почвы
+  name_2004: Пелоземы гумусовые
+  formula_2004: W-C=
+  type: '[DA02]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977, or described in the literature as incompletely developed soils.
+- row: 246
+  page: 159
+  division: Слаборазвитые почвы
+  name_2004: Псаммоземы
+  formula_2004: O-C..
+  type: '[DA03]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977, or described in the literature as incompletely developed soils.
+- row: 247
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Псаммоземы гумусовые
+  formula_2004: W-C..
+  type: '[DA04]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977, or described in the literature as incompletely developed soils.
+- row: 248
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Петроземы
+  formula_2004: O-R
+  type: '[DA05]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977, or described in the literature as incompletely developed soils.
+- row: 249
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Петроземы гумусовые
+  formula_2004: W-R
+  type: '[DA06]'
+  distinguished: false
+  analogues:
+  - name: неполноразвитые почвы
+    level: literature
+    in_type: null
+    extent: partly
+  en: Not separated in 1977, or described in the literature as incompletely developed soils.
+- row: 250
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Карбопетроземы
+  formula_2004: O-Rca
+  type: '[DA07]'
+  distinguished: false
+  analogues:
+  - name: рихковые
+    level: genus
+    in_type: дерново-карбонатные
+    extent: partly
+  en: Not separated in 1977, or included in the rikhk (fine-gravelly) genus of the sod-calcareous type.
+  note: Карбопетроземы гумусовые (DA08, W-Rca) has no row in ch. 6.
+- row: 251
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Гипсопетроземы
+  formula_2004: O-Rcs
+  type: '[DA09]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 252
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Гипсопетроземы гумусовые
+  formula_2004: W-Ccs
+  type: '[DA10]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+  note: 'Ch. 6 formula W-Ccs is a slip for W-Rcs (ch. 4, DA10): a petrozem sits on rock R, and the name matches
+    DA10.'
+- row: 253
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Солончаки
+  formula_2004: S-Cscs
+  type: '[DA11]'
+  distinguished: true
+  analogues:
+  - name: типичные
+    level: subtype
+    in_type: солончаки автоморфные
+    extent: full
+  en: The typical subtype of the 1977 type of automorphic solonchaks.
+  note: Ch. 6 formula S-Cscs; ch. 4 writes S-Cs,cs.
+- row: 254
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Слоисто-аллювиальные
+  formula_2004: О-С~~
+  type: '[DA12]'
+  distinguished: true
+  analogues:
+  - name: слоистые примитивные
+    level: subtype
+    in_type: аллювиальные
+    extent: full
+  en: The stratified primitive subtypes found in the various alluvial soil types.
+  note: in_type 'аллювиальные' stands for several 1977 alluvial types (the text says 'в различных типах').
+- row: 255
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Слоисто-аллювиальные гумусовые
+  formula_2004: W-C~~
+  type: '[DA15]'
+  distinguished: true
+  analogues:
+  - name: слоистые примитивные
+    level: subtype
+    in_type: аллювиальные
+    extent: full
+  en: The stratified primitive subtypes found in the various alluvial soil types.
+  note: Name printed 'Слоисто- аллювиальные'; space removed. One text block covers both stratified-alluvial rows.
+- row: 256
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Слоисто-пепловые
+  formula_2004: О-C``
+  type: '[DA13]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 257
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Слоисто-пепловые гумусовые
+  formula_2004: W-C``
+  type: '[DA16]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 258
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Слоисто-эоловые
+  formula_2004: О-С^^
+  type: '[DA14]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 259
+  page: 160
+  division: Слаборазвитые почвы
+  name_2004: Слоисто-эоловые гумусовые
+  formula_2004: W-С^^
+  type: '[DA17]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 260
+  page: 160
+  division: Торфяные почвы
+  name_2004: Торфяные олиготрофные
+  formula_2004: ТО-TT
+  type: '[AA01]'
+  distinguished: true
+  analogues:
+  - name: болотные верховые торфяные
+    level: subtype
+    in_type: торфяные болотные верховые
+    extent: full
+  - name: торфяные болотные переходные
+    level: type
+    in_type: null
+    extent: partly
+  en: The bog high-moor peat subtype of high-moor peat bog soils, and partly the type of transitional peat bog soils.
+- row: 261
+  page: 160
+  division: Торфяные почвы
+  name_2004: Торфяные олиготрофные глеевые
+  formula_2004: ТО-ТТ-G
+  type: '[AA02]'
+  distinguished: true
+  analogues:
+  - name: болотные верховые торфяно-глеевые
+    level: subtype
+    in_type: торфяные болотные верховые
+    extent: full
+  en: The bog high-moor peat-gley subtype of high-moor peat bog soils.
+- row: 262
+  page: 161
+  division: Торфяные почвы
+  name_2004: Торфяные эутрофные
+  formula_2004: ТE-TT
+  type: '[AA03]'
+  distinguished: true
+  analogues:
+  - name: типичные
+    level: subtype
+    in_type: торфяные болотные низинные
+    extent: full
+  en: The typical subtype of low-moor peat bog soils.
+- row: 263
+  page: 161
+  division: Торфяные почвы
+  name_2004: Торфяные эутрофные глеевые
+  formula_2004: ТЕ-ТТ-G
+  type: '[AA04]'
+  distinguished: true
+  analogues:
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: торфяные болотные низинные
+    extent: full
+  en: The peat-gley subtype of low-moor peat bog soils.
+- row: 264
+  page: 161
+  division: Торфяные почвы
+  name_2004: Сухоторфяные
+  formula_2004: TJ-ТТ-R
+  type: '[AA05]'
+  distinguished: false
+  analogues: []
+  en: Not separated in the 1977 classification.
+- row: 265
+  page: 161
+  division: Торфоземы
+  name_2004: Торфоземы
+  formula_2004: PT-TT
+  type: '[AB01]'
+  distinguished: true
+  analogues:
+  - name: освоенные торфяные
+    level: type
+    in_type: null
+    extent: full
+  en: The 1977 type of reclaimed (cultivated) peat soils.
+- row: 266
+  page: 161
+  division: Торфоземы
+  name_2004: Торфземы глеевые
+  formula_2004: РТ-ТТ-G
+  type: '[AB02]'
+  distinguished: true
+  analogues:
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: освоенные торфяные
+    extent: full
+  en: The peat-gley subtype of reclaimed (cultivated) peat soils.
+  note: Printed 'Торфземы', a typo for 'Торфоземы' (AB02).
+- row: 267
+  page: 161
+  division: Торфоземы
+  name_2004: Торфоземы агроминеральные
+  formula_2004: PTR-TT
+  type: '[AB03]'
+  distinguished: true
+  analogues:
+  - name: мелиорированные освоенные торфяные
+    level: type
+    in_type: null
+    extent: full
+  en: The 1977 type of drained and cultivated peat soils.
+- row: 268
+  page: 161
+  division: Торфоземы
+  name_2004: Торфоземы агроминеральные глеевые
+  formula_2004: PTR-TT-G
+  type: '[AB04]'
+  distinguished: true
+  analogues:
+  - name: торфяно-глеевые
+    level: subtype
+    in_type: мелиорированные освоенные торфяные
+    extent: full
+  en: The peat-gley subtype of drained and cultivated peat soils.

@@ -173,9 +173,11 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
         cli::cli_text("Candidates: {txt}")
       }
       # v0.9.345: the Russian full name and the formula of the type ride in
-      # $qualifiers but are no qualifiers
+      # $qualifiers but are no qualifiers; v0.9.347: nor are the Russian
+      # species, the undecided ones and the 1977 analogue (a note)
       ql <- self$qualifiers
-      if (!is.null(names(ql))) ql <- ql[!(names(ql) %in% c("name_native", "subtype_native", "type_formula"))]
+      if (!is.null(names(ql))) ql <- ql[!(names(ql) %in% c("name_native", "subtype_native", "type_formula",
+                                                         "species_native", "species_undecided", "analogue_1977"))]
       if (length(ql) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(ql), collapse = ', ')}")
       }

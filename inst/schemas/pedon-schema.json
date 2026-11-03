@@ -645,6 +645,9 @@
           "peat_decomposition_pct": {
             "type": ["number", "null"]
           },
+          "peat_botanical_composition": {
+            "type": ["string", "null"]
+          },
           "foreign_fragments_pct": {
             "type": ["number", "null"]
           },

@@ -4,6 +4,8 @@
 # typical when all are FALSE; provisional when some are undecided; a feature
 # the formula of the type writes not named again; a sentence of 3.2 that
 # names a single type restricts its subtype to it (Hugo's decision Q16).
+# v0.9.347: the species of chapter 5.1 follow the subtypes in the name; the
+# names here are read without them (species = FALSE), test-v09347 reads them.
 
 # A pedon in the Russian notation from tokens "DESIGNATION:thickness".
 .sb_ped <- function(tokens, site = list(), ...) {
@@ -16,7 +18,7 @@
   PedonRecord$new(site = utils::modifyList(list(id = "ru-subtype", designation_system = "kidpr"), site),
                   horizons = ensure_horizon_schema(data.table::as.data.table(h)))
 }
-.sb_of <- function(tokens, ...) classify_kidpr2008(.sb_ped(tokens, ...), on_missing = "silent")
+.sb_of <- function(tokens, ...) classify_kidpr2008(.sb_ped(tokens, ...), on_missing = "silent", species = FALSE)
 .sb_codes <- function(r) r$levels$code[r$levels$level == "subtype"]
 .sb_ru <- function(r) r$qualifiers$name_native
 .sb_type <- function(r) r$levels$code[r$levels$level == "types"]
@@ -156,7 +158,7 @@
     h <- data.table::copy(p$horizons)
     h$designation[1L] <- paste0(h$designation[1L], "+X")
     p$horizons <- h
-    r <- classify_kidpr2008(p, on_missing = "silent")
+    r <- classify_kidpr2008(p, on_missing = "silent", species = FALSE)
     ok[as.character(put)] <- "x" %in% r$levels$code[r$levels$level == "subtype"]
     return(ok)
   }
@@ -337,7 +339,7 @@ test_that("the book's own names: pp. 60, 67, 129 and 134", {
                                     "\u0432\u043e\u0434\u043d\u043e-\u0430\u043a\u043a\u0443\u043c\u0443\u043b\u044f\u0442\u0438\u0432\u043d\u044b\u0435"))
   # p. 134: the chemozem keeps the name built from its pollutants; CU has no
   # subtype list
-  r <- classify_kidpr2008(make_kidpr2008_example("CU"), on_missing = "silent")
+  r <- classify_kidpr2008(make_kidpr2008_example("CU"), on_missing = "silent", species = FALSE)
   expect_identical(r$levels$code, c("C", "CU", "[CU:CA04]"))
   expect_identical(r$name, "Chemozems polluted with Cu, Ni, Co; original soil: Sod-podzolic")
   expect_null(r$qualifiers$name_native)
@@ -353,7 +355,7 @@ test_that("the book's own names: pp. 60, 67, 129 and 134", {
 
 test_that("typical when every entry is FALSE; provisional, with the undecided listed, when some are NA", {
   skip_on_cran()
-  r <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent")
+  r <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent", species = FALSE)
   lv <- r$levels
   expect_identical(lv$level, c("trunks", "divisions", "types", "subtype"))
   expect_true(is.na(lv$code[4L]))
@@ -379,7 +381,7 @@ test_that("typical when every entry is FALSE; provisional, with the undecided li
   p <- .sb_P(.sb_AU(0, 40, designation = "Ah"),
              .sb_BCA(40, 90, designation = "Bk", secondary_carbonates_form = "pseudomycelia"),
              .sb_L(90, 150, designation = "Ck", caco3_pct = 10))
-  r <- classify_kidpr2008(p, on_missing = "silent")
+  r <- classify_kidpr2008(p, on_missing = "silent", species = FALSE)
   expect_identical(.sb_type(r), "[CI01]")
   expect_identical(.sb_codes(r), "mc")
   expect_identical(r$trace$subtype$mc$route, "data")
@@ -401,7 +403,7 @@ test_that("typical when every entry is FALSE; provisional, with the undecided li
                    structure_type = "blocky", structure_grade = "strong", clay_pct = 30, silt_pct = 40,
                    sand_pct = 30, clay_films_amount = "common"),
              .sb_L(90, 150, designation = "C", ph_h2o = NA, effervescence_class = NA))
-  r <- classify_kidpr2008(ca4(), on_missing = "silent")
+  r <- classify_kidpr2008(ca4(), on_missing = "silent", species = FALSE)
   expect_identical(.sb_type(r), "[CA04]")
   expect_identical(r$name, "Sod-podzolic [typical]")
   expect_identical(r$trace$subtype$ca$status, "not named")
@@ -410,7 +412,7 @@ test_that("typical when every entry is FALSE; provisional, with the undecided li
   # frost regime recorded: the permafrost sign undecided, a measurement)
   p <- ca4()
   p$site$frost_regime <- NULL
-  r <- classify_kidpr2008(p, on_missing = "silent")
+  r <- classify_kidpr2008(p, on_missing = "silent", species = FALSE)
   expect_identical(.sb_type(r), "[CA04]")
   expect_false("subtype" %in% r$levels$level)
   expect_identical(r$name, "Sod-podzolic")
@@ -423,7 +425,7 @@ test_that("typical when every entry is FALSE; provisional, with the undecided li
              .sb_BCA(40, 90, designation = "Bk", secondary_carbonates_form = "soft concretions",
                      soluble_salts_pct = 0.05, gypsum_visible_pct = 2),
              .sb_L(90, 150, designation = "Ck", caco3_pct = 10, soluble_salts_pct = 0.05, gypsum_visible_pct = 0))
-  r <- classify_kidpr2008(p, on_missing = "silent")
+  r <- classify_kidpr2008(p, on_missing = "silent", species = FALSE)
   expect_identical(.sb_codes(r), c("nc", "cs"))
   expect_length(r$provisional_because, 0L)
   expect_identical(r$name, "Chernozems segregational, gypsum-bearing")
@@ -467,7 +469,7 @@ test_that("a feature the formula of the type writes is not named again", {
   expect_identical(.sb_type(r), "[CB05]")
   expect_identical(r$trace$subtype$BF$status, "in the formula")
   expect_identical(r$trace$subtype$BH$status, "not named")
-  r <- classify_kidpr2008(make_kidpr2008_example("CK"), on_missing = "silent")
+  r <- classify_kidpr2008(make_kidpr2008_example("CK"), on_missing = "silent", species = FALSE)
   expect_identical(c(r$trace$subtype$s$status, r$trace$subtype$cs$status), c("in the formula", "in the formula"))
   # the permafrost sign and @ in the cryozems (CR is the cryoturbated horizon)
   expect_true(.kidpr_st_in_formula(.sb_entry("CA", "perm"), "O-CR-C\u22a5"))
@@ -626,7 +628,7 @@ test_that("the 27 examples and the canonical fixtures are classified quickly, wi
   skip_on_cran()
   divs <- eval(formals(make_kidpr2008_example)$division)
   t0 <- proc.time()[["elapsed"]]
-  rs <- lapply(divs, function(d) classify_kidpr2008(make_kidpr2008_example(d), on_missing = "silent"))
+  rs <- lapply(divs, function(d) classify_kidpr2008(make_kidpr2008_example(d), on_missing = "silent", species = FALSE))
   t1 <- proc.time()[["elapsed"]] - t0
   expect_lt(t1, 60)
   for (k in seq_along(divs)) {
@@ -640,6 +642,6 @@ test_that("the 27 examples and the canonical fixtures are classified quickly, wi
   }
   fx <- grep("^make_.*_canonical$", ls(asNamespace("soilKey")), value = TRUE)
   t0 <- proc.time()[["elapsed"]]
-  for (f in fx) expect_s3_class(classify_kidpr2008(get(f)(), on_missing = "silent"), "ClassificationResult")
+  for (f in fx) expect_s3_class(classify_kidpr2008(get(f)(), on_missing = "silent", species = FALSE), "ClassificationResult")
   expect_lt(proc.time()[["elapsed"]] - t0, 120)
 })
