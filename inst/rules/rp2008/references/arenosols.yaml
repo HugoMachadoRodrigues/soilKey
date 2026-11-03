@@ -14,6 +14,11 @@
 # arénosol salin is never a salisol or sodisol.
 seq: &aren_seq
   sequence_rp: {sequences: ["(O)-A-(Jp)-(C|M)", "Js-(Jp)-(C|M)"]}
+# an Ach, And, Alu, Avi, Aso or Sal in the profile excludes the arénosol, so
+# that a texture not recorded leaves no name provisional by it (Hugo's
+# decision 3, 2026-11-03)
+excl: &aren_excl
+  no_horizon_within_rp: {codes: [Ach, And, Alu, Avi, Aso, Sal]}
 forbidden: &aren_forbidden
   no_horizon_within_rp: {codes: [BT, BP, S, FS, G, FE, F, OX, RT], depth: 120}
 sandy120: &aren_sandy120
@@ -51,6 +56,7 @@ references:
     tests:
       all_of:
         - *aren_seq
+        - *aren_excl
         - *aren_forbidden
         - no_horizon_within_rp: {codes: [R, D], depth: 120}
         - *aren_sandy120
@@ -62,6 +68,7 @@ references:
         tests:
           all_of:
             - *aren_seq
+            - *aren_excl
             - *aren_forbidden
             - no_horizon_within_rp: {codes: [R, D], depth: 120}
             - *aren_sandy120
@@ -72,6 +79,7 @@ references:
         tests:
           all_of:
             - *aren_seq
+            - *aren_excl
             - no_horizon_within_rp: {codes: [BT, BP, S, FS, G, FE, F, OX, RT], depth: 50}
             - no_horizon_within_rp: {codes: [R, D], depth: 50}
             - *aren_sandy50
@@ -85,6 +93,7 @@ references:
         tests:
           all_of:
             - *aren_seq
+            - *aren_excl
             - no_horizon_within_rp: {codes: [BT, BP, S, FS, G, FE, F, OX, RT], depth: 50}
             - horizon_within_rp: {codes: [R], from: 10, depth: 50}
             - *aren_sandy50

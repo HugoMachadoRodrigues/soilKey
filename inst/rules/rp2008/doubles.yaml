@@ -15,7 +15,9 @@ doubles:
         - thickness_ratio_rp: {numerator: [Aci, Sci], denominator: [Sca], min: 0.67, max: 1.5}
   - codes: [anthroposols_transformes, brunisols_eutriques]
     page: "91"
-    note: "a double attachment is always possible for the transformés; the example of p. 91"
+    note: "the intermediate case of p. 91: only when the transformé is imperfect; a simple transformé takes the name, the brunisol stays a candidate (Hugo's decision 2, 2026-11-03)"
+    when_degree:
+      anthroposols_transformes: [imperfect, simple_or_imperfect]
   - codes: [calcosols, anthroposols_transformes]
     page: "91"
     note: "the example of p. 91 (the type of p. 97 writes anthroposol transformé-calcosol; soilKey follows p. 91)"

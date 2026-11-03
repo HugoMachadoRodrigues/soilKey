@@ -46,7 +46,7 @@ references:
     name_en_singular: "mineral cryosol"
     page: "140"
     sequences: ["Hcry, Jscry, C|M|R|D", "Hcry, Jpcry, C|M|R|D"]
-    notes: "Very generally cryoturbated (cryoturbation recorded, or -cry written), with no continuous histic horizon over 30 cm; silt-eluvial and silt-illuvial horizons possible."
+    notes: "Very generally cryoturbated (cryoturbation recorded, or -cry written), with no continuous histic horizon over 30 cm; silt-eluvial and silt-illuvial horizons possible. With the permafrost within 200 cm (shown by the data: undecided permafrost does not make this case) and the cryoturbation not recorded the attachment is imperfect, and it takes the name before the references of later entries of the rapid key (Hugo's decision 1)."
     wrb2006: "Haplic, Umbric or Spodic Cryosols"
     distinctions:
       - {with: "podzosols, luvisols", page: "141", by: "cryoturbated: the doubles cryosol minéral-podzosol or -luvisol (doubles.yaml, later release)"}
@@ -57,3 +57,11 @@ references:
         - permafrost_rp: {depth: 200}
         - cryoturbation_rp: {}
         - thickness_rp: {codes: [H], max: 30}
+    imperfect:
+      - criterion: "the cryoturbation not recorded (Hugo's decision 1, 2026-11-03)"
+        page: "140"
+        tests:
+          all_of:
+            - permafrost_rp: {depth: 200, proven: true}
+            - cryoturbation_rp: {not_recorded: true}
+            - thickness_rp: {codes: [H], max: 30}

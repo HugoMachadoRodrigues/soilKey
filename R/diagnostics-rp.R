@@ -31,8 +31,10 @@
 # when it heads one ("A" is every A horizon, "S" every structural horizon,
 # "Sca" only Sca); lower-case letters after a code are features it must
 # carry ("Ck": a C with secondary carbonates); "-g" is a feature on any code;
-# "Sa+" and "Na+" the overlays of the salic and sodic horizons. The L of a
-# ploughed horizon does not change its code (LAca is an Aca).
+# "Sa+" and "Na+" the overlays of the salic and sodic horizons; "S=" the
+# code alone, not its family. The L of a ploughed horizon does not change
+# its code in the sequences (LAca is an Aca); written in a side test (LAh,
+# LS) it must be there.
 #
 # A layer the frame reads as a code only within the tolerance of p. 64 (its
 # `imperfect` column) counts for that code in the tolerant pass of a test
@@ -127,11 +129,13 @@
 
 # --- horizon codes ----------------------------------------------------------------------------
 
-# The codes a family head stands for (the head itself and its members).
+# The codes a family head stands for (the head itself and its members),
+# and the variants of a code (OF: OFr and OFm; G: Gr and Go).
 .rp_family_members <- function(code) {
   info <- .rp_vocabulary()$info
   fam <- info[, "family"]
-  members <- rownames(info)[!is.na(fam) & fam == code]
+  var <- info[, "variant_of"]
+  members <- rownames(info)[(!is.na(fam) & fam == code) | (!is.na(var) & var == code)]
   unique(c(code, members))
 }
 
@@ -142,11 +146,13 @@
   memo <- .rp_spec_memo[[key]]
   if (!is.null(memo)) return(memo)
   out <- if (grepl("\\+$", s)) list(overlay = sub("\\+$", "", s), codes = character(0), features = character(0))
+  else if (grepl("=$", s)) list(codes = sub("=$", "", s), features = character(0))
   else {
     r <- .rp_parse_one(s)
     if (!isTRUE(r$known)) rlang::abort(sprintf("'%s' is no code of the RP notation.", s))
     if (is.na(r$code)) list(feature_only = r$features[1L], codes = character(0), features = character(0))
-    else list(codes = .rp_family_members(r$code), features = setdiff(r$features, "*"))
+    else list(codes = .rp_family_members(r$code), features = setdiff(r$features, "*"),
+              overlay_req = intersect(r$overlay, "L"))
   }
   out$written <- s
   assign(key, out, envir = .rp_spec_memo)
@@ -160,9 +166,9 @@
 .rp_member1 <- function(fr, k, spec, strict_pos = FALSE) {
   code <- fr$code[k]
   feats <- fr$features[[k]]
-  if (!is.null(spec$overlay)) {
-    if (spec$overlay %in% fr$overlay[[k]]) return(TRUE)
-    if (spec$overlay %in% (fr$overlay_na[[k]] %||% character(0))) return(NA)
+  if (!is.null(spec[["overlay"]])) {
+    if (spec[["overlay"]] %in% fr$overlay[[k]]) return(TRUE)
+    if (spec[["overlay"]] %in% (fr$overlay_na[[k]] %||% character(0))) return(NA)
     return(FALSE)
   }
   if (!is.null(spec[["feature_only"]])) {
@@ -176,23 +182,28 @@
     code <- .rp_strict_code(fr, k)
     if (is.na(code)) return(FALSE)
   }
+  # a ploughed horizon written with its L (LAh, LS) must be ploughed
+  if (length(spec[["overlay_req"]]) && !(spec[["overlay_req"]] %in% fr$overlay[[k]])) {
+    if (spec[["overlay_req"]] %in% (fr$overlay_na[[k]] %||% character(0)) && !isFALSE(.rp_member1(fr, k, spec[c("codes", "features")], strict_pos))) return(NA)
+    return(FALSE)
+  }
   if (!is.na(code)) {
-    if (!code %in% spec$codes) return(FALSE)
-    if (!length(spec$features) || all(spec$features %in% feats)) return(TRUE)
-    if (all(spec$features %in% c(feats, fr$features_na[[k]] %||% character(0)))) return(NA)
+    if (!code %in% spec[["codes"]]) return(FALSE)
+    if (!length(spec[["features"]]) || all(spec[["features"]] %in% feats)) return(TRUE)
+    if (all(spec[["features"]] %in% c(feats, fr$features_na[[k]] %||% character(0)))) return(NA)
     return(FALSE)
   }
   if (isTRUE(fr$transitional[k]) || isFALSE(fr$passed[k])) return(FALSE)
   # an undecided layer: one of its candidates, with the features required
   # present or undecided
-  if (length(spec$features) && !all(spec$features %in% c(feats, fr$features_na[[k]] %||% character(0))))
+  if (length(spec[["features"]]) && !all(spec[["features"]] %in% c(feats, fr$features_na[[k]] %||% character(0))))
     return(FALSE)
   cand <- fr$candidates[[k]]
   if (length(cand)) {
     # undecided only between codes of the set (Aci or A, for the A family):
     # the layer is one of them
-    if (all(cand %in% spec$codes) && !length(spec$features)) return(TRUE)
-    return(if (any(cand %in% spec$codes)) NA else FALSE)
+    if (all(cand %in% spec[["codes"]]) && !length(spec[["features"]])) return(TRUE)
+    return(if (any(cand %in% spec[["codes"]])) NA else FALSE)
   }
   NA
 }
@@ -209,6 +220,22 @@
   specs <- lapply(as.character(unlist(codes)), .rp_spec)
   vapply(seq_len(nrow(fr)), function(k)
     .rp_or3(vapply(specs, function(sp) .rp_member1(fr, k, sp, strict_pos), NA)), NA)
+}
+
+# The layers of the first material: the first lithological unit (the
+# Roman numerals) at least 50 cm thick, a thinner one above being a cover
+# (recouvert par, p. 61: an epianthropic Z of 30 cm over a brunisol); the
+# whole profile when no numeral is written.
+.rp_first_material <- function(fr) {
+  lith <- suppressWarnings(as.integer(fr$lith %||% rep(1L, nrow(fr))))
+  lith[is.na(lith)] <- 1L
+  if (all(lith == 1L)) return(rep(TRUE, nrow(fr)))
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  for (u in sort(unique(lith))) {
+    th <- sum(pmax(0, bot[lith == u] - pmax(top[lith == u], 0)), na.rm = TRUE)
+    if (th >= 50 || u == max(lith)) return(lith == u)
+  }
+  lith == lith[1L]
 }
 
 # Is the current pass the strict pass of a test that needs its codes (not
@@ -352,6 +379,31 @@
   tab
 }
 
+# Every completion of the undecided layers of a match table (each layer one
+# of its candidates, "" no horizon), up to 32 of them: TRUE when one of the
+# sequences matches every completion, FALSE when none matches any, NA
+# otherwise or beyond 32.
+.rp_seq_completions <- function(tab, specs, max_n = 32L) {
+  und <- which(is.na(tab$code) & !(tab$passed %in% FALSE) & !(tab$transitional %in% TRUE))
+  if (!length(und)) return(NA)
+  opts <- lapply(und, function(k) { cc <- tab$candidates[[k]]; if (length(cc)) cc else NULL })
+  if (any(vapply(opts, is.null, NA))) return(NA)
+  n <- prod(lengths(opts))
+  if (n > max_n) return(NA)
+  grid <- expand.grid(opts, stringsAsFactors = FALSE)
+  out <- vapply(seq_len(nrow(grid)), function(g) {
+    t2 <- tab
+    for (j in seq_along(und)) {
+      cd <- grid[g, j]
+      t2$code[und[j]] <- if (nzchar(cd)) cd else NA_character_
+      t2$passed[und[j]] <- nzchar(cd)
+      t2$candidates[[und[j]]] <- character(0)
+    }
+    isTRUE(.match_schemes(t2, specs, n_nearest = 0L)$passed)
+  }, NA)
+  if (all(out)) TRUE else if (!any(out)) FALSE else NA
+}
+
 #' The reference's sequences of horizons (RP 2008)
 #'
 #' One of the sequences matches the horizon frame (match_horizon_sequence();
@@ -359,20 +411,33 @@
 #' horizon left out: the book writes its exclusions as side tests). A layer
 #' the frame leaves undecided leaves the match undecided when it decides it.
 #' @noRd
-sequence_rp <- function(pedon, sequences, required_features = NULL) {
+sequence_rp <- function(pedon, sequences, required_features = NULL, first_material = FALSE) {
   sequences <- as.character(unlist(sequences))
   if (!length(sequences)) return(.rp_answer(TRUE, notes = "no sequence printed"))
   strict <- .rp_strict_positive()
-  key <- sprintf("seq_%s_%s_%s", paste(sequences, collapse = "~"),
-                 paste(required_features, collapse = ","), strict)
+  fm <- isTRUE(first_material)
+  key <- sprintf("seq_%s_%s_%s_%s", paste(sequences, collapse = "~"),
+                 paste(required_features, collapse = ","), strict, fm)
   .rp_cached(pedon, key, function() {
     fr <- .rp_frame(pedon)
+    # only the first material (above the first lithological discontinuity)
+    if (fm) fr <- fr[.rp_first_material(fr), , drop = FALSE]
     if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons", notes = "no horizons"))
     specs <- lapply(sequences, .rp_formula, required_features = as.character(unlist(required_features)))
     names(specs) <- sequences
-    tab <- .rp_cached(pedon, sprintf("match_table_%s", strict), function()
+    tab <- .rp_cached(pedon, sprintf("match_table_%s_%s", strict, fm), function()
       .as_horizon_table(.rp_match_table(fr, strict = strict)))
     res <- .match_schemes(tab, specs, n_nearest = 2L)
+    # undecided over the alternatives of the reference: complete the
+    # undecided layers (few candidates) and decide when every completion
+    # gives one verdict (Aci or A over Sci, an A or an Slu under an Alu)
+    if (is.na(res$passed)) {
+      v <- .rp_seq_completions(tab, specs)
+      if (!is.na(v)) {
+        res$passed <- v
+        res$code <- if (v) "(every completion of the undecided layers)" else NA_character_
+      }
+    }
     und <- which(is.na(fr$code) & !(fr$passed %in% FALSE))
     layers <- if (isTRUE(res$passed)) {
       m <- res$results[[res$code]]$matched
@@ -424,13 +489,17 @@ horizon_within_rp <- function(pedon, codes, depth = NULL, from = NULL) {
 #' No horizon of a set within a depth (RP 2008)
 #'
 #' No layer of `codes` starts within `depth` cm (the whole profile when
-#' NULL). Tolerant: `depth` lowered by its tolerance ("no BT within 120 cm"
-#' looks within 100 cm).
+#' NULL), in the first material only with `first_material`. Tolerant:
+#' `depth` lowered by its tolerance ("no BT within 120 cm" looks within 100
+#' cm).
 #' @noRd
-no_horizon_within_rp <- function(pedon, codes, depth = NULL) {
+no_horizon_within_rp <- function(pedon, codes, depth = NULL, first_material = FALSE) {
   fr <- .rp_frame(pedon)
   if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
   m <- .rp_members(fr, codes)
+  # only in the first material: the layers above the first lithological
+  # discontinuity (a brunisol on a buried calcosol, p. 117; the review's D6)
+  if (isTRUE(first_material)) m[!.rp_first_material(fr)] <- FALSE
   top <- .rp_tops(fr)
   t <- if (is.null(depth)) Inf else .rule_threshold(depth, "depth", "min", .RP_SYSTEM)
   inwin <- if (is.infinite(t)) rep(TRUE, nrow(fr)) else top < t
@@ -605,7 +674,25 @@ attribute_rp <- function(pedon, attribute, threshold, direction = c("min", "max"
   top <- .rp_tops(fr)
   rows <- which(m %in% TRUE)
   rows <- rows[order(top[rows])]
-  if (position == "first" && length(rows)) rows <- rows[1L]
+  # the first layer of the set: an undecided layer above it that could
+  # belong to the set leaves the answer open unless its value gives the
+  # same verdict (the review's D8)
+  above <- integer(0)
+  if (position == "first") {
+    poss <- which(is.na(m))
+    lim <- if (length(rows)) top[rows[1L]] else Inf
+    above <- poss[!is.na(top[poss]) & top[poss] < lim]
+    if (length(rows)) rows <- rows[1L]
+  }
+  if (length(above)) {
+    va <- vapply(fr$horizon_idx[above], function(i) as.numeric(.rp_value(x, i, attribute)), 0)
+    oa <- .rp_meets(va, threshold, kind, direction, open)
+    vf <- if (length(rows)) .rp_meets(as.numeric(.rp_value(x, fr$horizon_idx[rows], attribute)), threshold, kind,
+                                      direction, open) else NA
+    if (anyNA(oa) || is.na(vf) || any(oa != vf))
+      return(.rp_answer(NA, missing = unique(c(.rp_missing_of(fr, above), .rp_value_attrs(attribute))),
+                        notes = "an undecided layer above the first of the set could be one"))
+  }
   if (!length(rows)) {
     p <- if (any(is.na(m))) NA else FALSE
     return(.rp_answer(p, missing = .rp_missing_of(fr, which(is.na(m))),
@@ -714,7 +801,17 @@ idt_rp <- function(pedon, upper, lower, min = NULL, max = NULL, open = FALSE) {
 
 # --- the tests of the chapters ----------------------------------------------------------------------
 
-.RP_CALCAREOUS_WORDS <- "calc|limestone|chalk|marl|dolom|craie|marne|travertin|tuf"
+# The calcareous rocks and materials (a closed vocabulary, whole words) and
+# the words that deny them (the review's D7).
+.RP_CALCAREOUS_WORDS <- paste0("\\b(limestones?|chalk|chalky|marls?|marly|marlstones?|dolomites?|dolomitic|",
+                               "calcareous|calcarenites?|calcrete|caliche|travertines?|calc-schists?|",
+                               "calcaires?|craies?|crayeux|crayeuse|marnes?|marneux|marneuse|marno-calcaires?|",
+                               "dolomies?|dolomitiques?|calcschistes?|faluns?)\\b")
+.RP_CALCAREOUS_NOT <- paste0("\\b(non|not|no)[- ]?(calcareous|calcaire|calc)|noncalcareous|decalcif|",
+                             "d\u00e9calcif|decarbonat|d\u00e9carbonat|carbonate[- ]free|sans calcaire")
+.rp_calcareous_text <- function(t) {
+  !is.na(t) && grepl(.RP_CALCAREOUS_WORDS, t, perl = TRUE) && !grepl(.RP_CALCAREOUS_NOT, t, perl = TRUE)
+}
 
 #' A carbonate reserve recorded in the solum's material (RP 2008, Q16)
 #'
@@ -743,10 +840,10 @@ carbonate_reserve_rp <- function(pedon) {
         ev <- c(ev, sprintf("carbonates in the %s at %s cm", cd, format(.rp_tops(fr)[k])))
     }
     ro <- .rp_txt(x, i, "rock_origin")
-    if (!is.na(ro) && grepl(.RP_CALCAREOUS_WORDS, ro)) ev <- c(ev, sprintf("a calcareous rock (%s)", ro))
+    if (.rp_calcareous_text(ro)) ev <- c(ev, sprintf("a calcareous rock (%s)", ro))
   }
   pm <- .rp_site_txt(x, "parent_material")
-  if (!is.na(pm) && grepl(.RP_CALCAREOUS_WORDS, pm)) ev <- c(ev, sprintf("a calcareous parent material (%s)", pm))
+  if (.rp_calcareous_text(pm)) ev <- c(ev, sprintf("a calcareous parent material (%s)", pm))
   p <- length(ev) > 0L
   .rp_answer(p, evidence = list(reserve = unique(ev)),
              notes = if (p) sprintf("a carbonate reserve: %s", paste(unique(ev), collapse = "; "))
@@ -763,9 +860,15 @@ carbonate_reserve_rp <- function(pedon) {
 #' another frost regime, a soil temperature regime warmer than cryic, a
 #' Koppen climate outside the polar and subarctic ones, or a latitude under
 #' 50 degrees with an elevation under 1500 m (soilKey's reading);
-#' undecided otherwise (default 21: two years of frost are never measured).
+#' undecided otherwise (default 21: two years of frost are never measured);
+#' with `proven`, FALSE unless the data show it.
 #' @noRd
-permafrost_rp <- function(pedon, depth = 200) {
+permafrost_rp <- function(pedon, depth = 200, proven = FALSE) {
+  if (isTRUE(proven)) {
+    r <- permafrost_rp(pedon, depth)
+    if (is.na(r$passed)) r <- .rp_answer(FALSE, notes = "permafrost not shown by the data")
+    return(r)
+  }
   fr <- .rp_frame(pedon)
   x <- .rp_view(pedon)
   t <- .rule_threshold(depth, "depth", "max", .RP_SYSTEM)
@@ -825,16 +928,61 @@ ice_layer_rp <- function(pedon, depth = 30, min_thickness = 30) {
 #' Cryoturbation recorded (RP 2008)
 #'
 #' A layer with cryoturbation present, or written with -cry; a field
-#' observation, absent when not recorded.
+#' observation, absent when not recorded. With `not_recorded`, TRUE when no
+#' layer records the cryoturbation either way (Hugo's decision 1 of
+#' 2026-11-03: a mineral cryosol imperfect then).
 #' @noRd
-cryoturbation_rp <- function(pedon) {
+cryoturbation_rp <- function(pedon, not_recorded = FALSE) {
   fr <- .rp_frame(pedon)
   x <- .rp_view(pedon)
-  hit <- vapply(seq_len(nrow(fr)), function(k) {
-    "cry" %in% fr$features[[k]] || isTRUE(grepl("present|yes", .rp_txt(x, fr$horizon_idx[k], "cryoturbation")))
-  }, NA)
+  rec <- vapply(seq_len(nrow(fr)), function(k) .rp_txt(x, fr$horizon_idx[k], "cryoturbation"), "")
+  hit <- vapply(seq_len(nrow(fr)), function(k) "cry" %in% fr$features[[k]] || isTRUE(grepl("present|yes", rec[k])), NA)
+  if (isTRUE(not_recorded)) {
+    none <- !any(hit) && all(is.na(rec))
+    return(.rp_answer(none, notes = if (none) "the cryoturbation is not recorded" else "the cryoturbation is recorded"))
+  }
   .rp_answer(any(hit), layers = fr$horizon_idx[hit],
              notes = if (any(hit)) "cryoturbation" else "no cryoturbation recorded")
+}
+
+#' A horizon of a set directly under another (RP 2008)
+#'
+#' The layer directly under the deepest layer of `upper` is one of `codes`
+#' (a BT directly under the Ach of a chernosol, p. 127). Three-valued.
+#' @noRd
+below_rp <- function(pedon, upper, codes) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mu <- .rp_members(fr, upper)
+  top <- .rp_tops(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[is.na(.rp_bots(fr)[ord]) | .rp_bots(fr)[ord] > 0]
+  pos <- which(mu[ord] %in% TRUE)
+  if (!length(pos)) return(.rp_answer(if (anyNA(mu)) NA else FALSE, notes = "no upper horizon"))
+  nxt <- ord[max(pos) + 1L]
+  if (is.na(nxt)) return(.rp_answer(FALSE, notes = "nothing under the upper horizons"))
+  if (is.na(mu[nxt])) return(.rp_answer(NA, missing = .rp_missing_of(fr, nxt)))
+  m <- .rp_members(fr, codes)[nxt]
+  .rp_answer(m, layers = if (isTRUE(m)) fr$horizon_idx[nxt] else integer(0), missing = .rp_missing_of(fr, nxt),
+             notes = sprintf("under the %s: %s", paste(unlist(upper), collapse = ", "), fr$code[nxt] %||% "undecided"))
+}
+
+#' A biomacrostructured A (RP 2008)
+#'
+#' The first layer of `codes` (the A family) is biomacrostructured (pp.
+#' 10-12; .rp_biomacro()): the arenosols against the rendosols, calcosols and
+#' dolomitosols (p. 116, single-grain sands).
+#' @noRd
+biomacro_rp <- function(pedon, codes = "A") {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  m <- .rp_members(fr, codes)
+  top <- .rp_tops(fr)
+  rows <- which(m %in% TRUE)
+  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE, notes = "no A horizon"))
+  k <- rows[which.min(top[rows])]
+  r <- .rp_biomacro(.rp_view(pedon), fr$horizon_idx[k])
+  .rp_answer(r$passed, layers = if (isTRUE(r$passed)) fr$horizon_idx[k] else integer(0), missing = r$missing, notes = r$note)
 }
 
 # The run of layers from the surface (holorganic O layers above skipped)

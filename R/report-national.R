@@ -53,6 +53,14 @@
   }, character(1), USE.NAMES = FALSE)
 }
 
+# The text before the provisional classes: an attachment system (a result
+# with candidates, v0.9.346) ranks its references, it does not test them
+# before one.
+.provisional_intro_key <- function(res) {
+  if (is.data.frame(res$candidates) && nrow(res$candidates) > 0L) "report.provisional_intro_attachment"
+  else "report.provisional_intro"
+}
+
 # The classes left undecided before the assigned one, one row each: the level,
 # the code, the class name (from the trace) and the attributes it lacked.
 # Entries read "<level>:<code>", or "<level>:<class>/<code>" for a list taken
@@ -144,7 +152,7 @@
       character(1))
     out <- c(out, sprintf("<h3>%s</h3><p>%s</p><ul>%s</ul>\n",
                           .html_escape(.report_msg("report.provisional")),
-                          .html_escape(.report_msg("report.provisional_intro")),
+                          .html_escape(.report_msg(.provisional_intro_key(res))),
                           paste(items, collapse = "\n")))
   }
   hp <- .hscs_property_table(res)
@@ -204,7 +212,7 @@
               else ""),
       character(1))
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.provisional"),
-                          .report_msg("report.provisional_intro")),
+                          .report_msg(.provisional_intro_key(res))),
              paste(items, collapse = "\n"), "\n\n")
   }
   hp <- .hscs_property_table(res)

@@ -16,12 +16,23 @@ precedence:
     note: "a colluviosol as long as no other reference's characteristic solum is diagnosed; the other reference takes the name, with the qualifier colluvial (Q14)"
   - first: calcarisols
     second: [rendosols, calcosols, dolomitosols, rendisols, calcisols, magnesisols]
-    page: "122"
-    note: "an A under 35 cm on a Kc or Km is a calcarisol, whatever the A (the table of p. 122)"
+    page: "113, 122"
+    note: "an A under 35 cm on a Kc or Km is a calcarisol, whatever the A (the table of p. 122), when the calcarisol attaches strictly: a Km within tolerance is a calcosol pétrocalcarique (p. 113; the review's D9)"
+    when:
+      any_of:
+        - all_of:
+            - horizon_within_rp: {codes: [Kc], depth: 35}
+            - thickness_rp: {codes: [Kc], min: 10}
+        - all_of:
+            - horizon_within_rp: {codes: [Km], depth: 35}
+            - thickness_rp: {codes: [Km], min: 5}
   - first: arenosols
     second: [rendosols, calcosols, dolomitosols]
     page: "116"
-    note: "single-grain sands in calcareous or dolomitic sands are arénosols, never rendosols, calcosols or dolomitosols"
+    note: "single-grain sands in calcareous or dolomitic sands are arénosols, never rendosols, calcosols or dolomitosols: the A not biomacrostructured (the review's D9)"
+    when:
+      none_of:
+        - biomacro_rp: {codes: [A]}
   - first: brunisols_eutriques
     second: calcisols
     page: "107, 112, 116"
@@ -36,7 +47,25 @@ precedence:
   - first: silandosols_perhydriques
     second: [silandosols_eutriques, silandosols_dystriques]
     page: "81, 83"
-    note: "perhydric first, eutric or dystric as a qualifier (the types of p. 83; default 21)"
+    note: "perhydric first, eutric or dystric as a qualifier (the types of p. 83; default 21), when the perhydric test holds (the review's D2)"
+    when:
+      all_of:
+        - attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [And, Snd], within: 100, min: 35}
+  - first: aluandosols_perhydriques
+    second: aluandosols_hapliques
+    page: "81-82"
+    note: "perhydric first, as the silandosols, when the perhydric test holds (the review's D3)"
+    when:
+      all_of:
+        - attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [Alu, Slu], within: 100, min: 35}
+  - first: cryosols_mineraux
+    second: "*"
+    except: [cryosols_histiques]
+    page: "66, 140-141"
+    note: "with the permafrost within 200 cm a mineral cryosol takes the name, also imperfect when the cryoturbation is not recorded (rapid key 3; Hugo's decision 1, 2026-11-03)"
+    when:
+      all_of:
+        - permafrost_rp: {depth: 200}
   - first: anthroposols_construits
     second: anthroposols_artificiels
     page: "91-94"
@@ -52,3 +81,18 @@ exclusions:
     when:
       all_of:
         - carbonate_reserve_rp: {}
+  - code: arenosols
+    by: rendosols
+    page: "116"
+    note: "a biomacrostructured Aca is no single-grain sand: a rendosol, not an arénosol (the review's D9)"
+    when: {all_of: [{biomacro_rp: {codes: [A]}}]}
+  - code: arenosols
+    by: calcosols
+    page: "116"
+    note: "a biomacrostructured A over Sca: a calcosol, not an arénosol (the review's D9)"
+    when: {all_of: [{biomacro_rp: {codes: [A]}}]}
+  - code: arenosols
+    by: dolomitosols
+    page: "116"
+    note: "a biomacrostructured Ado: a dolomitosol, not an arénosol (the review's D9)"
+    when: {all_of: [{biomacro_rp: {codes: [A]}}]}

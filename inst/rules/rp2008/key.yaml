@@ -147,7 +147,7 @@ ger:
     references:
       - {code: "gypsosols_hapliques", name: "gypsosols hapliques"}
       - {code: "gypsosols_petrogypsiques", name: "gypsosols pétrogypsiques"}
-    signpost: {any_of: [{horizon_within_rp: {codes: [Ys, Ym]}}]}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Ys, Ym], depth: 20}}]}
   - code: "histosols"
     name: "Histosols"
     name_en: "Histosols"
@@ -272,10 +272,12 @@ ger:
     implemented: false
     references:
       - {code: "rankosols", name: "rankosols"}
+    # a Sal under 10 cm is a rankosol's (p. 73; the review's R4)
     signpost:
       all_of:
         - {horizon_within_rp: {codes: [R], depth: 50}}
-        - {no_horizon_within_rp: {codes: [S, BT, BP, E, Aca, Ado, Aci, Amg, Ach, Aso, Alu, And, Avi]}}
+        - {no_horizon_within_rp: {codes: ["S=", Sca, Sci, Sdo, Slu, Smg, Sn, Snd, Sp, SV, BT, BP, E, Aca, Ado, Aci, Amg, Ach, Aso, Alu, And, Avi]}}
+        - {none_of: [{thickness_rp: {codes: [Sal], min: 10}}]}
   - code: "reductisols_redoxisols"
     name: "Réductisols et rédoxisols"
     name_en: "Reductisols and redoxisols"

@@ -210,7 +210,7 @@ test_that("a value inside a tolerance band attaches imperfectly; a failing twin 
                                 oc_pct = c(42, 1)),
                               e(ex("cryosols_histiques"), 3, designation = "H", site = list(frost_regime = "none"))),
     cryosols_mineraux = list(e(ex("cryosols_mineraux"), 1:2, top_cm = c(0, 33), bottom_cm = c(33, 40)),
-                             e(ex("cryosols_mineraux"), 1:2, designation = c("H", "Js"), cryoturbation = NA))
+                             e(ex("cryosols_mineraux"), 1:2, designation = c("H", "Js"), cryoturbation = "none"))
   )
   expect_identical(sort(names(cases)), sort(.rp46_refs))
   for (cd in names(cases)) {
@@ -358,8 +358,12 @@ test_that("the doubles of these chapters, in the book's order", {
   # clearly thicker: the calcisol alone (bathycarbonate)
   r <- .rp46_cl(.rp46_edit(p, 1:4, top_cm = c(0, 25, 70, 90), bottom_cm = c(25, 70, 90, 130)))
   expect_identical(r$name, "calcisol")
-  # anthroposol transforme-brunisol eutrique (p. 91)
+  # anthroposol transforme-brunisol eutrique only when the transforme is
+  # imperfect (p. 91; Hugo's decision 2): simple, it takes the name alone
   r <- .rp46_cl(.rp46_ex("anthroposols_transformes"))
+  expect_identical(r$name, "anthroposol transform\u00e9")
+  expect_identical(r$candidates$degree[r$candidates$code == "brunisols_eutriques"], "simple")
+  r <- .rp46_cl(.rp46_edit(.rp46_ex("anthroposols_transformes"), site = list(mechanical_mixing_depth_cm = 45)))
   expect_identical(r$name, "anthroposol transform\u00e9-brunisol eutrique")
   expect_identical(r$levels$attachment, c("double", "double"))
   # calcosol-anthroposol transforme (p. 91)
@@ -480,11 +484,195 @@ test_that("the side tests read the tolerances of p. 64 in the tolerant pass only
   expect_true(is.na(anthropic_history_rp(.rp46_edit(p, site = list(rp_anthropic_history = "sablage")))$passed))
 })
 
-test_that("the readings of this release wait for Hugo's word", {
+test_that("the readings of this release are Hugo's decisions; none waits for confirmation", {
   skip_on_cran()
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   txt <- vapply(rd, `[[`, "", "reading")
-  mine <- grepl("2026-11-03)", txt, fixed = TRUE)
-  expect_gt(sum(mine), 10L)
-  expect_true(all(grepl("for Hugo to confirm, 2026-11-03\\)\\.?$", txt[mine])))
+  expect_identical(sum(grepl("(Hugo, 2026-11-03).", txt, fixed = TRUE)), 24L)
+  expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
+  # the carbon of a layer over its whole depth: a single Ach 0-45 cm is clinohumic
+  p <- .rp46_mk(list(designation = c("Ach", "Ck"), top_cm = c(0, 45), bottom_cm = c(45, 120), oc_pct = c(3, 0.4)))
+  expect_true(attribute_rp(p, "oc_pct", 0.6, "min", codes = c("Ach", "S", "BT"), from = 40, layers = "any")$passed)
+})
+
+
+# --- the fixes of the review and Hugo's decisions (2026-11-03) ------------------------
+
+# A pedon in the RP notation as the review writes them (France, Koppen Cfb).
+.rp46_N <- function(des, top, bot, ..., site = list()) {
+  h <- data.frame(designation = des, top_cm = top, bottom_cm = bot, stringsAsFactors = FALSE)
+  a <- list(...)
+  for (k in names(a)) h[[k]] <- rep_len(a[[k]], length(des))
+  s <- utils::modifyList(list(id = "n", country = "FR", designation_system = "rp2008", lat = 46,
+                              koppen_climate = "Cfb"), site)
+  PedonRecord$new(site = s, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
+}
+
+test_that("D1: an attachment imperfect within tolerance takes the qualifier of the case that holds", {
+  skip_on_cran()
+  N <- .rp46_N
+  nm <- function(p) .rp46_cl(p)$name
+  expect_identical(nm(N(c("Aca", "Sca", "Rca"), c(0, 12, 32), c(12, 32, 60), clay_pct = 30)), "calcosol leptique")
+  expect_identical(nm(N(c("Aca", "Rca"), c(0, 38), c(38, 60), clay_pct = 30)), "rendosol pachique")
+  expect_identical(nm(N(c("A", "C", "Cg"), c(0, 20, 70), c(20, 70, 150), sand_pct = 90, clay_pct = 4)),
+                   "ar\u00e9nosol r\u00e9doxique")
+  expect_identical(nm(N(c("A", "C", "IIC"), c(0, 20, 110), c(20, 110, 150), sand_pct = c(90, 90, 40), clay_pct = c(4, 4, 30))),
+                   "ar\u00e9nosol leptique")
+  expect_identical(nm(N(c("Avi", "C"), c(0, 27), c(27, 100))), "vitrandosol leptique")
+  expect_identical(nm(N(c("JZ", "Z", "II C"), c(0, 10, 45), c(10, 45, 100))), "anthroposol artificiel leptique")
+  expect_identical(nm(N(c("Ltp", "II C"), c(0, 40), c(40, 100))), "anthroposol reconstitu\u00e9 leptique")
+})
+
+test_that("D2, D3, R5: the andosols", {
+  skip_on_cran()
+  N <- .rp46_N
+  # an Avi over a silandic set is epivitric: a silandosol, not a vitrandosol
+  r <- .rp46_cl(N(c("Avi", "And", "Snd", "C"), c(0, 20, 50, 90), c(20, 50, 90, 130), bs_pct = 60))
+  expect_identical(r$name, "silandosol eutrique")
+  expect_identical(r$candidates$degree[r$candidates$code == "vitrandosols"], character(0))
+  # the perhydric pair only when the perhydric test holds
+  r <- .rp46_cl(N(c("And", "Snd", "C"), c(0, 40, 90), c(40, 90, 130), bs_pct = 30, water_content_1500kpa_undried = 50,
+                  ca_cmol = 3, mg_cmol = 1, k_cmol = 0.3, na_cmol = 0.1))
+  expect_identical(r$name, "silandosol dystrique")
+  expect_identical(r$provisional_because, character(0))
+  r <- .rp46_cl(N(c("And", "Snd", "C"), c(0, 40, 90), c(40, 90, 130), bs_pct = 30, water_content_1500kpa_undried = c(80, 130, 40),
+                  ca_cmol = 3, mg_cmol = 1, k_cmol = 0.3, na_cmol = 0.1))
+  expect_identical(r$name, "silandosol perhydrique")
+  # the aluandosols: haplique, perhydrique first when it holds, provisional undecided
+  alu <- function(w) N(c("Alu", "Slu", "C"), c(0, 30, 80), c(30, 80, 120), water_content_1500kpa_undried = w)
+  expect_identical(.rp46_cl(alu(50))$name, "aluandosol haplique")
+  expect_identical(.rp46_cl(alu(c(130, 140, 40)))$name, "aluandosol perhydrique")
+  r <- .rp46_cl(alu(NA))
+  expect_identical(r$name, "aluandosol haplique")
+  expect_identical(r$provisional_because, "references:aluandosols_perhydriques")
+  # R5: a thick And starting under 50 cm is no silandosol leptique
+  r <- .rp46_cl(N(c("A", "And", "Snd", "C"), c(0, 55, 90, 120), c(55, 90, 120, 150), bs_pct = 60, water_content_1500kpa_undried = 50))
+  expect_false(any(r$candidates$code %in% c("silandosols_eutriques", "silandosols_dystriques") &
+                   r$candidates$degree != "fail"))
+})
+
+test_that("D4, D9 and the calcium chapter", {
+  skip_on_cran()
+  N <- .rp46_N
+  # a V deeper than 100 cm is bathyvertique; within 100 cm it excludes
+  expect_identical(.rp46_cl(N(c("Aca", "Sca", "V"), c(0, 30, 110), c(30, 110, 150), clay_pct = 45))$name, "calcosol")
+  expect_false(.rp46_cl(N(c("Aca", "Sca", "V"), c(0, 30, 80), c(30, 80, 150), clay_pct = 45))$name == "calcosol")
+  # a deep Ys excludes nothing; a Ys from the surface does
+  expect_identical(.rp46_cl(N(c("Aca", "Sca", "Ys"), c(0, 30, 80), c(30, 80, 150), clay_pct = 30))$name, "calcosol")
+  # single-grain calcareous sands: the arenosol (p. 116)
+  r <- .rp46_cl(N(c("Aca", "Cca"), c(0, 20), c(20, 150), sand_pct = 92, clay_pct = 3, structure_type = "single grain"))
+  expect_identical(r$name, "ar\u00e9nosol")
+  # a biomacrostructured Aca: the rendosol, the arenosol excluded
+  r <- .rp46_cl(N(c("Aca", "Cca"), c(0, 20), c(20, 150), sand_pct = 92, clay_pct = 3, structure_type = "granular",
+                  worm_holes_pct = 5))
+  expect_identical(r$name, "rendosol")
+  expect_identical(r$candidates$excluded_by[r$candidates$code == "arenosols"], "rendosols")
+  # a Km within tolerance (38 cm) does not put the calcarisol first: the
+  # calcosol (petrocalcarique, p. 113)
+  r <- .rp46_cl(N(c("Aca", "Sca", "Km"), c(0, 15, 38), c(15, 38, 60), clay_pct = 30))
+  expect_identical(r$name, "calcosol")
+  expect_identical(r$candidates$degree[r$candidates$code == "calcarisols"], "imperfect")
+  # D7: the vocabulary of the carbonate reserve
+  cr <- function(pm) carbonate_reserve_rp(N(c("Aci", "Sci", "C"), c(0, 20, 60), c(20, 60, 100),
+                                            site = list(parent_material = pm)))$passed
+  expect_true(cr("marly limestone"))
+  expect_true(cr("calcaire lacustre"))
+  expect_false(cr("non-calcareous loess"))
+  expect_false(cr("decalcified loess"))
+  expect_false(cr("volcanic tuff"))
+  expect_false(cr("calcium-poor granite"))
+})
+
+test_that("D5, R2: the chernosols", {
+  skip_on_cran()
+  N <- .rp46_N
+  # a deep, non-humic BT under the Sh: typique (bathyluvique, p. 128)
+  r <- .rp46_cl(N(c("Ach", "Sh", "BT", "Ck"), c(0, 50, 90, 150), c(50, 90, 150, 190), oc_pct = c(3.5, 1, 0.3, 0.2),
+                  clay_pct = c(30, 32, 45, 28), bs_pct = 90))
+  expect_identical(r$levels$code, "chernosols_typiques")
+  expect_identical(r$candidates$degree[r$candidates$code == "chernosols_melanoluviques"], character(0))
+  # a BT directly under the Ach is no typique
+  expect_identical(.rp46_deg(N(c("Ach", "BT", "Ck"), c(0, 50, 100), c(50, 100, 150), oc_pct = c(3.5, 1, 0.3),
+                               clay_pct = c(30, 32, 28), bs_pct = 90), "chernosols_typiques")$degree, "fail")
+  # the melanoluviques need over 0.6 % carbon in the first BT
+  p <- .rp46_edit(.rp46_ex("chernosols_melanoluviques"), 2, oc_pct = 0.4)
+  expect_identical(.rp46_deg(p, "chernosols_melanoluviques")$degree, "fail")
+  # a cultivated LAh counts for the 40 cm of Ach (p. 127)
+  expect_identical(.rp46_cl(N(c("LAh", "Ach", "Ck"), c(0, 30, 60), c(30, 60, 120), oc_pct = c(3, 2, 0.4)))$name,
+                   "chernosol haplique")
+  expect_identical(.rp46_cl(N(c("Ach", "Ck"), c(0, 35), c(35, 120), oc_pct = c(3, 0.4)))$name, "[non rattach\u00e9]")
+})
+
+test_that("D6, D8, the brunisol sequence and S/CEC at 50", {
+  skip_on_cran()
+  N <- .rp46_N
+  # the forbidden horizons in the first material only (p. 117)
+  expect_identical(.rp46_cl(N(c("A", "S", "IISca", "IIRca"), c(0, 20, 60, 90), c(20, 60, 90, 120),
+                              bs_pct = c(80, 85, 100, NA)))$name, "brunisol eutrique")
+  # a Z of 30 cm over a brunisol: a cover, the brunisol below (p. 97)
+  expect_identical(.rp46_cl(N(c("Z", "II A", "II S", "II C"), c(0, 30, 45, 90), c(30, 45, 90, 130),
+                              bs_pct = c(NA, 70, 70, 70)))$name, "brunisol eutrique")
+  # LA-S or LS-S under crops; S-S without a ploughed horizon is none
+  expect_identical(.rp46_cl(N(c("LS", "S", "C"), c(0, 30, 70), c(30, 70, 110), bs_pct = 70))$name, "brunisol eutrique")
+  expect_identical(.rp46_deg(N(c("S", "S", "C"), c(0, 30, 70), c(30, 70, 110), bs_pct = 70), "brunisols_eutriques")$degree, "fail")
+  # S/CEC exactly 50: both met only within tolerance; the book's order names the eutrique
+  r <- .rp46_cl(N(c("A", "S", "C"), c(0, 20, 70), c(20, 70, 110), bs_pct = 50))
+  expect_identical(r$name, "brunisol eutrique")
+  expect_identical(r$candidates$degree[r$candidates$code %in% c("brunisols_eutriques", "brunisols_dystriques")],
+                   c("imperfect", "imperfect"))
+  # D8: the first layer of a set under an undecided layer that could be one
+  d <- .rp46_mk(list(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100), oc_pct = c(2, 1, 0.3), bs_pct = c(80, 80, 30),
+                     designation = c("A", NA, "S")), rp = TRUE)
+  fr <- .rp_frame_codes(.rp_identify(d))
+  fr$code[2] <- NA_character_; fr$passed[2] <- NA; fr$candidates[[2]] <- c("S", "E")
+  v <- .rp_with_state(d, fr, .rp_profile(d), attribute_rp(d, "bs", 50, "min", codes = "S", position = "first"))
+  expect_true(is.na(v$passed))
+  v <- .rp_with_state(d, fr, .rp_profile(d), attribute_rp(d, "bs", 90, "max", codes = "S", position = "first"))
+  expect_true(v$passed)
+})
+
+test_that("R3, R4: the anthroposols and the rankosol signpost", {
+  skip_on_cran()
+  N <- .rp46_N
+  # an earthy Ztr makes no artificiel (p. 92)
+  r <- .rp46_cl(N(c("Ztr", "II C"), c(0, 60), c(60, 100)))
+  expect_identical(r$candidates$degree[r$candidates$code == "anthroposols_artificiels"], character(0))
+  # a construction recorded under 50 cm: a construit leptique, before the artificiel
+  r <- .rp46_cl(N("Ztc", 0, 30, site = list(rp_anthropic_history = "construction")))
+  expect_identical(r$name, "anthroposol construit leptique")
+  # a Sal of 3 cm on R: a rankosol of a later release
+  r <- .rp46_cl(N(c("A", "Sal", "R"), c(0, 15, 18), c(15, 18, 60), oc_pct = c(5, 1.2, NA)))
+  expect_identical(r$name, "[non rattach\u00e9]")
+  expect_true("rankosols" %in% r$candidates$code[r$candidates$degree == "undecided"])
+})
+
+test_that("Hugo's decisions 1-3 and the nearest colluviosols", {
+  skip_on_cran()
+  N <- .rp46_N
+  # 1: permafrost and no cryoturbation recorded: a mineral cryosol, imperfect,
+  # before the brunisol; recorded: simple
+  r <- .rp46_cl(N(c("A", "S", "C*"), c(0, 15, 60), c(15, 60, 100), bs_pct = 70, site = list(frost_regime = "permafrost")))
+  expect_identical(r$name, "cryosol min\u00e9ral")
+  expect_identical(r$levels$attachment, "imperfect")
+  expect_identical(r$candidates$degree[r$candidates$code == "brunisols_eutriques"], "simple")
+  r <- .rp46_cl(N(c("A", "S", "C*"), c(0, 15, 60), c(15, 60, 100), bs_pct = 70, cryoturbation = "present",
+                  site = list(frost_regime = "permafrost")))
+  expect_identical(r$levels$attachment, "simple")
+  # permafrost undecided: no imperfect mineral cryosol by it
+  expect_identical(.rp46_deg(.rp46_ex("brunisols_eutriques"), "cryosols_mineraux")$degree, "fail")
+  # 3: an And, Ach, Avi ... excludes the arenosol: no texture, no provisional name
+  r <- .rp46_cl(N(c("Avi", "C"), c(0, 40), c(40, 100)))
+  expect_identical(r$name, "vitrandosol")
+  expect_identical(r$provisional_because, character(0))
+  # colluvial material recorded and nothing attached: the colluviosols among the nearest
+  r <- .rp46_cl(N(c("A", "E", "BT", "C"), c(0, 20, 45, 100), c(20, 45, 100, 140), bs_pct = 60,
+                  layer_origin = c("colluvic", "colluvic", "colluvic", NA)))
+  expect_identical(r$name, "[non rattach\u00e9]")
+  expect_true("colluviosols" %in% r$candidates$code[r$candidates$nearest])
+  # the print and the report speak of an attachment
+  out <- c(capture.output(msg <- testthat::capture_messages(print(r))), msg)
+  expect_true(any(grepl("an attachment, not a key", out, fixed = TRUE)))
+  expect_identical(.provisional_intro_key(r), "report.provisional_intro_attachment")
+  expect_identical(.provisional_intro_key(classify_cssc3(make_cssc3_example(), on_missing = "silent")),
+                   "report.provisional_intro")
 })

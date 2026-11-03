@@ -217,8 +217,14 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       tested_what <- if (identical(self$system_id, "wrb2022") ||
                          (is.null(self$system_id) &&
                           startsWith(self$system %||% "", "WRB"))) "RSGs"
+                     else if (identical(self$system_id, "rp2008")) "references"
                      else "classes"
-      cli::cli_text("({n_tested} {tested_what} tested before assignment)")
+      # v0.9.346: a system that attaches (every class tested, the choice of
+      # a name a convention) says so
+      if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L)
+        cli::cli_text("({n_tested} {tested_what} tested: an attachment, not a key; see $candidates)")
+      else
+        cli::cli_text("({n_tested} {tested_what} tested before assignment)")
       sym_of <- c(passed = "PASSED", failed = "failed",
                   indeterminate = "NA", selected = "assigned", info = "info")
       for (i in seq_len(nrow(tt))) {

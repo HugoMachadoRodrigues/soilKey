@@ -5,14 +5,18 @@
 # evidence only: the biomacrostructured Ach stands for it (soilKey's
 # reading). The sequence and the texture differentiation index Ach to the S
 # or BT (1.3) decide the reference; the depth windows of Ck or K and the
-# S/CEC ranges only make the attachment imperfect (default 21).
+# S/CEC ranges only make the attachment imperfect (default 21). A cultivated
+# LAh or LAch counts for the 40 cm of Ach (p. 127); the typiques forbid only
+# a BT directly under the Ach, or a humic BTh (a deeper BT is bathyluvique, p.
+# 128), and the mélanoluviques need over 0.6 % organic carbon in the first BT
+# (BTh, p. 127) (the review's D5 and R2).
 #
 # Distinctions (p. 128; p. 116): phaeosols have a less black Aso, coarser,
 # S/CEC 50 to 80 %; veracrisols are acid and aluminic; an Ach excludes the
 # whole calcium and magnesium GER (p. 109).
 scope: &cher_scope
   all_of:
-    - thickness_rp: {codes: [Ach], min: 40}
+    - thickness_rp: {codes: [Ach, LAh], min: 40}
     - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, codes: [Ach, S, BT], from: 40, layers: any}
 hapl_core: &hapl_core
   all_of:
@@ -23,7 +27,9 @@ typ_core: &typ_core
   all_of:
     - *cher_scope
     - sequence_rp: {sequences: ["Ach-Sh-(Ck|K)"]}
-    - no_horizon_within_rp: {codes: [BT]}
+    - none_of:
+        - below_rp: {upper: [Ach, LAh], codes: [BT]}
+        - horizon_within_rp: {codes: [BTh]}
     - idt_rp: {upper: [Ach], lower: [S], max: 1.3}
     - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, open: true, codes: [S], position: first}
 mel_core: &mel_core
@@ -32,6 +38,7 @@ mel_core: &mel_core
     - sequence_rp: {sequences: ["Ach-BTh-(Ck|K)"]}
     - idt_rp: {upper: [Ach], lower: [BT], min: 1.3, open: true}
     - thickness_rp: {codes: [BT], min: 40}
+    - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, open: true, codes: [BT], position: first}
 references:
   - code: "chernosols_hapliques"
     ger: "chernosols"

@@ -6,12 +6,18 @@
 # as an epivitric Avi under 50 cm (default 21). Perhydric first, eutric or
 # dystric as a qualifier (default 21, the types of p. 83).
 #
-# Imperfect (p. 82): leptique, the set thinner than 30 cm.
+# Imperfect (p. 82): leptique, the set thinner than 30 cm (an andic set
+# thicker than that but starting deeper than 50 cm is no leptique: p. 83,
+# bathy-andosolique is a qualifier of another reference).
 # Distinctions (pp. 84-85): a pyroclastic deposit with Alox + 1/2 Feox under
 # 0.4 % is a régosol pyroclastique; a BP has twice the Alox of the horizon
 # above and Cf/Cpy of 0.5 or more; brunisols andiques below about 1000 m.
 no_ebpbt: &and_no_ebpbt
   no_horizon_within_rp: {codes: [E, BP, BT], depth: 50}
+# an Avi over a silandic or aluandic set is épivitrique: a silandosol or an
+# aluandosol, not a vitrandosol (the review's D2)
+vitr_no_andic: &vitr_no_andic
+  no_horizon_within_rp: {codes: [And, Snd, Alu, Slu]}
 sila_core: &sila_core
   all_of:
     - sequence_rp: {sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]}
@@ -22,6 +28,7 @@ sila_lept: &sila_lept
   all_of:
     - sequence_rp: {sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]}
     - horizon_within_rp: {codes: [And, Snd], depth: 50}
+    - thickness_rp: {codes: [And, Snd], max: 30}
     - *and_no_ebpbt
 sila_eutric: &sila_eutric
   any_of:
@@ -39,6 +46,7 @@ alua_lept: &alua_lept
   all_of:
     - sequence_rp: {sequences: ["Alu-(C)-(M|R)", "Alu-Slu-(C)-(M|R)"]}
     - horizon_within_rp: {codes: [Alu, Slu], depth: 50}
+    - thickness_rp: {codes: [Alu, Slu], max: 30}
     - *and_no_ebpbt
 alua_perhydric: &alua_perhydric
   attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [Alu, Slu], within: 100, min: 35}
@@ -63,6 +71,7 @@ references:
         - sequence_rp: {sequences: *vitr}
         - thickness_rp: {codes: [Avi], min: 30, from_surface: true}
         - *and_no_ebpbt
+        - *vitr_no_andic
     imperfect:
       - qualifier: "leptique"
         page: "82"
@@ -71,7 +80,9 @@ references:
           all_of:
             - sequence_rp: {sequences: *vitr}
             - horizon_within_rp: {codes: [Avi], depth: 10}
+            - thickness_rp: {codes: [Avi], max: 30}
             - *and_no_ebpbt
+            - *vitr_no_andic
   - code: "silandosols_eutriques"
     ger: "andosols"
     name: "silandosols eutriques"
@@ -152,7 +163,7 @@ references:
     name_en_singular: "haplic aluandosol"
     page: "81"
     sequences: ["Alu-(C)-(M|R)", "Alu-Slu-(C)-(M|R)"]
-    notes: "An acid solum (pH water under 5.0) of immobile Al and Fe organo-mineral complexes; old volcanic or even non-volcanic materials; with no other property (not perhydric)."
+    notes: "An acid solum (pH water under 5.0) of immobile Al and Fe organo-mineral complexes; old volcanic or even non-volcanic materials; with no other property: a perhydric one is an aluandosol perhydrique (precedence.yaml, the review's D3)."
     wrb2006: "Aluandic Andosols"
     distinctions:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
@@ -162,12 +173,11 @@ references:
     tests:
       all_of:
         - *alua_core
-        - none_of: [*alua_perhydric]
     imperfect:
       - qualifier: "leptique"
         page: "82"
         criterion: "the aluandic set thinner than 30 cm"
-        tests: {all_of: [*alua_lept, {none_of: [*alua_perhydric]}]}
+        tests: {all_of: [*alua_lept]}
   - code: "aluandosols_perhydriques"
     ger: "andosols"
     name: "aluandosols perhydriques"

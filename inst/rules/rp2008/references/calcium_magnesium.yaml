@@ -1,7 +1,10 @@
 # Solums dont le complexe adsorbant est dominé par le calcium et/ou le
 # magnésium (pp. 109-124), 7 references. The GER holds no solum with the
 # characters of the vertisols, pélosols, gypsosols or fersialsols, an Ach or
-# a tangel OHta (p. 109): a side test of every reference. Its horizons
+# a tangel OHta (p. 109): a side test of every reference; a V or SV deeper
+# than 100 cm gives the qualifier bathyvertique, not a vertisol (p. 116; the
+# review's D4); the gypsosols need a Ys from the surface or under a Ym (top
+# within 10 +/- 5 cm, map 2): a deeper Ys excludes no reference here. Its horizons
 # (Aca, Ado, Aci, Amg, Sca, Sdo, Sci, Smg, K, Kc, Km) come from the notation
 # or the data (v0.9.343), which read the molar CaCO3/MgCO3 (calcaire over 8,
 # dolomiteux 1.5 to 8, dolomitique under 1.5) and Ca/Mg (calcique over 5,
@@ -26,9 +29,9 @@
 # (double possible); alluvium in a valley a fluviosol or thalassosol.
 scope: &camg_scope
   none_of:
-    - horizon_within_rp: {codes: [V, SV]}
+    - horizon_within_rp: {codes: [V, SV], depth: 100}
     - horizon_within_rp: {codes: [Sp], depth: 40}
-    - horizon_within_rp: {codes: [Ys]}
+    - horizon_within_rp: {codes: [Ys, Ym], depth: 10}
     - horizon_within_rp: {codes: [FS]}
     - horizon_within_rp: {codes: [Ach]}
     - horizon_within_rp: {codes: [OHta]}

@@ -433,8 +433,9 @@ test_that("the new attributes are documented, naming the RP", {
   expect_true(all(c("mull", "eumull", "dysmoder", "amphimus", "tangel", "agri-mull") %in% hf))
   expect_true(all(hz %in% names(pedon_json_schema()$properties$horizons$items$properties)))
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
-  # the readings of later releases carry their own date (0.9.346: 2026-11-03)
-  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-0[23]\\)\\.?\"?$",
+  # every reading is Hugo's decision, of 2026-11-02 or of the later releases
+  # (0.9.346: 2026-11-03); none waits for confirmation
+  expect_true(all(grepl("\\(Hugo, 2026-11-0[23]\\)\\.?\"?$",
                         vapply(rd, `[[`, "", "reading"))))
 })
 

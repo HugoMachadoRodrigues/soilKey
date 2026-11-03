@@ -10,6 +10,15 @@
 # +/- 5, read as the mean of the S layers weighted by their thickness
 # (soilKey's reading). A brunisol dystrique under 20 % stays one when no Sal
 # is read (default 21: the 20 % is "very generally").
+# The forbidden horizons are read in the first material only, and the
+# sequence there too: A-S-IISca-IIRca is a brunisol eutrique bathycarbonaté
+# bilithique (p. 117; the review's D6). The first material is the first
+# lithological unit of 50 cm or more, a thinner one above being a cover (p.
+# 61: an epianthropic Z of 30 cm over II A-S-C).
+# Under crops the sequence is LA-S or LS-S (p. 104). S/CEC over 50 % is
+# eutric, under 50 % dystric (the book's signs): at exactly 50 % both are met
+# only within the tolerance, imperfect, and the order of the book names the
+# eutrique (soilKey's reading, Hugo's minor point of 2026-11-03).
 # Distinctions (pp. 106-108): a Ca or Mg carbonate reserve upslope, below or
 # in the coarse elements makes a calcisol, none a brunisol eutrique saturé
 # (Q16, precedence.yaml); intergrades with andosols are brunisols andiques;
@@ -18,9 +27,14 @@
 # fluviosol brunifié; first clay coatings give the qualifier luvique.
 core: &brun_core
   all_of:
-    - sequence_rp: {sequences: ["A-S-(C|M|R)", "A|S-S-(C|M|R)"]}
-    - no_horizon_within_rp: {codes: [Ach, Aca, And, Alu, Avi, An, Sca, Sal, Snd, Slu, Sp, SV, BP, BT, FS, E, H, V]}
-    - no_horizon_within_rp: {codes: [Ado, Sdo]}
+    - any_of:
+        - sequence_rp: {sequences: ["A-S-(C|M|R)"]}
+        - sequence_rp: {sequences: ["A-S-(C|M|R)"], first_material: true}
+        - all_of:
+            - sequence_rp: {sequences: ["S-(C|M|R)"], first_material: true}
+            - horizon_within_rp: {codes: [LS], depth: 10}
+    - no_horizon_within_rp: {codes: [Ach, Aca, And, Alu, Avi, An, Sca, Sal, Snd, Slu, Sp, SV, BP, BT, FS, E, H, V], first_material: true}
+    - no_horizon_within_rp: {codes: [Ado, Sdo], first_material: true}
     - no_horizon_within_rp: {codes: [G], depth: 50}
 references:
   - code: "brunisols_eutriques"
@@ -43,7 +57,7 @@ references:
     tests:
       all_of:
         - *brun_core
-        - attribute_rp: {attribute: bs, threshold: 50, direction: min, kind: bs, codes: [S], layers: weighted}
+        - attribute_rp: {attribute: bs, threshold: 50, direction: min, kind: bs, open: true, codes: [S], layers: weighted}
   - code: "brunisols_dystriques"
     ger: "brunisols"
     name: "brunisols dystriques"
@@ -64,4 +78,4 @@ references:
     tests:
       all_of:
         - *brun_core
-        - attribute_rp: {attribute: bs, threshold: 50, direction: max, kind: bs, codes: [S], layers: weighted}
+        - attribute_rp: {attribute: bs, threshold: 50, direction: max, kind: bs, open: true, codes: [S], layers: weighted}

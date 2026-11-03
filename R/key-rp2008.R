@@ -83,11 +83,12 @@
   out <- list()
   for (r in rules$precedence) {
     f <- as.character(unlist(r$first)); s <- as.character(unlist(r$second))
-    if (identical(f, "*")) f <- setdiff(codes, s)
-    if (identical(s, "*")) s <- setdiff(codes, f)
+    ex <- as.character(unlist(r$except))
+    if (identical(f, "*")) f <- setdiff(codes, c(s, ex))
+    if (identical(s, "*")) s <- setdiff(codes, c(f, ex))
     f <- intersect(f, codes); s <- intersect(s, codes)
     if (!length(f) || !length(s)) next
-    w <- .rp_when(pedon, r$when)
+    w <- .rp_when(pedon, r[["when"]])
     for (a in f) for (b in s) if (a != b)
       out[[length(out) + 1L]] <- list(first = a, second = b, when = w,
                                       note = sprintf("%s (p. %s)", r$note %||% "", r$page %||% "?"))
@@ -99,19 +100,26 @@
   out <- list()
   for (r in rules$exclusions) {
     if (!(r$code %in% codes) || !(r$by %in% codes)) next
-    out[[length(out) + 1L]] <- list(code = r$code, by = r$by, when = .rp_when(pedon, r$when),
+    out[[length(out) + 1L]] <- list(code = r$code, by = r$by, when = .rp_when(pedon, r[["when"]]),
                                     note = sprintf("%s (p. %s)", r$note %||% "", r$page %||% "?"))
   }
   out
 }
 
 # The doubles of doubles.yaml whose references are all implemented.
-.rp_group_rows <- function(rules, pedon, codes) {
+.rp_group_rows <- function(rules, pedon, codes, evals = list()) {
   out <- list()
   for (d in rules$doubles) {
     cc <- as.character(unlist(d$codes))
     if (identical(d$status, "later") || !all(cc %in% codes)) next
-    out[[length(out) + 1L]] <- list(codes = cc, when = .rp_when(pedon, d$when),
+    w <- .rp_when(pedon, d[["when"]])
+    # `when_degree`: the degree a member must have for the double (the
+    # anthroposol transforme imperfect, the intermediate case of p. 91)
+    for (k in names(d$when_degree %||% list())) {
+      dg <- evals[[k]]$degree %||% NA_character_
+      w <- w && (dg %in% as.character(unlist(d$when_degree[[k]])))
+    }
+    out[[length(out) + 1L]] <- list(codes = cc, when = w,
                                     note = sprintf("p. %s", d$page %||% "?"))
   }
   out
@@ -123,7 +131,25 @@
 .rp_eval_reference <- function(ref, pedon, tol) {
   d <- .evaluate_degree(pedon, ref$tests, tol, system = .RP_SYSTEM)
   d$alt <- NULL
-  if (!(d$degree %in% c("fail", "undecided")) || !length(ref$imperfect)) return(d)
+  if (!length(ref$imperfect)) return(d)
+  # imperfect within tolerance: the imperfect case of the chapter whose test
+  # holds names it (calcosol leptique at [A + Sca] 32 cm; the review's D1)
+  if (d$degree == "imperfect") {
+    for (alt in ref$imperfect) {
+      if (is.null(alt$qualifier)) next
+      a <- .evaluate_degree(pedon, alt$tests, tol, system = .RP_SYSTEM)
+      # only a case whose test holds strictly names it
+      if (identical(a$degree, "simple")) {
+        d$imperfect_by <- unique(c(sprintf("%s (p. %s)", alt$qualifier, alt$page %||% ref$page),
+                                   d$imperfect_by, a$imperfect_by))
+        d$alt <- alt
+        d$alt_evidence <- a$evidence
+        return(d)
+      }
+    }
+    return(d)
+  }
+  if (!(d$degree %in% c("fail", "undecided"))) return(d)
   for (alt in ref$imperfect) {
     a <- .evaluate_degree(pedon, alt$tests, tol, system = .RP_SYSTEM)
     lab <- if (!is.null(alt$qualifier)) sprintf("%s (p. %s)", alt$qualifier, alt$page %||% ref$page)
@@ -281,8 +307,20 @@ classify_rp2008 <- function(pedon, rules = NULL,
     prec <- .rp_precedence_rows(rules, pedon, codes)
     excl <- .rp_exclusion_rows(rules, pedon, codes)
     comb <- .attach_combine(entries, precedence = prec, order = .rp_order(rules),
-                            groups = .rp_group_rows(rules, pedon, codes), exclusions = excl,
-                            n_nearest = 3L, none_label = "[non rattach\u00e9]", sep = "-")
+                            groups = .rp_group_rows(rules, pedon, codes, evals), exclusions = excl,
+                            n_nearest = length(entries), none_label = "[non rattach\u00e9]", sep = "-")
+    # the three nearest references (Q3), and the colluviosols beside them
+    # when colluvial material is recorded (the review's minor point)
+    if (is.na(comb$degree)) {
+      cd <- comb$candidates
+      near <- which(cd$nearest)
+      keep <- near[seq_len(min(3L, length(near)))]
+      co <- near[cd$code[near] == "colluviosols"]
+      if (length(co) && !(co %in% keep) && isTRUE(colluvial_rp(pedon, min_thickness = 1)$passed)) keep <- c(keep, co)
+      drop <- setdiff(near, keep)
+      if (length(drop)) comb$candidates <- cd[-drop, , drop = FALSE]
+      rownames(comb$candidates) <- NULL
+    }
   })
 
   .rp_result(pedon, rules, sys, evals, signs, comb, frame, on_missing, prec, excl)
