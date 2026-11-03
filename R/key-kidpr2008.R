@@ -21,8 +21,8 @@
 #' (key 2.3), and the types of every division (the profile formulas of
 #' chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339, trunks A, B and D
 #' in v0.9.342). The chemozems CU have no types: their name is built from
-#' the pollutants and the soil they were (v0.9.342). The subtypes follow in
-#' later releases.
+#' the pollutants and the soil they were (v0.9.342). The subtypes of every
+#' division's list follow the type (v0.9.345).
 #'
 #' The keys read the diagnostic horizons of the profile: the Russian
 #' notation where the profile is written in it (declared with
@@ -74,16 +74,40 @@
 #' original soil keyed is in the trace (phase \code{chemozem}), and an
 #' original soil left undecided makes the name provisional.
 #'
+#' The subtypes (v0.9.345): each division has one list of subtypes in
+#' chapter 4 (26 lists, 558 entries; the chemozems have none), each the
+#' index of a genetic feature of section 3.2, read by the feature tests (the
+#' recorded data first, the Russian notation where they say nothing). The
+#' soil is named by its type and every subtype of the list that passes, in
+#' the order of the list, comma-separated and in the plural as printed
+#' ("Podzolistye gleevatye, yazykovatye"): the subtypes are the rows of
+#' level \code{"subtype"} of \code{levels} (code: soilKey's key of the
+#' entry; \code{name} the English gloss, \code{name_native} the Russian),
+#' the full name in English in \code{name} and in Russian in
+#' \code{qualifiers$name_native}. When every entry is FALSE the soil is of
+#' the typical subtype, soilKey's "[tipichnye]" ("[typical]", code NA);
+#' when some are undecided the name is provisional, the undecided entries
+#' in \code{provisional_because} ("subtype:<key>") and in a warning. A
+#' feature the formula of the type already writes (the g of the gley types,
+#' the BF of CB05, the permafrost sign of the cryozems ...) is not named
+#' again, and a sentence of 3.2 that names a single type restricts its
+#' subtype to it. Each entry, with its evidence, is in the trace (phase
+#' \code{subtype}). A soil whose type is unassigned gets no subtypes. The
+#' lists are in \code{system.file("rules", "kidpr2008", "subtypes.yaml",
+#' package = "soilKey")}.
+#'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Optional pre-loaded rule set (\code{load_rules("kidpr2008")}).
 #' @param on_missing One of \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}.
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
+#' @param subtypes Name the subtypes after the type (default \code{TRUE});
+#'        \code{FALSE} stops at the type.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
 #'   \code{"kidpr2008"}, the deepest class assigned in \code{name} (the
-#'   type, else the division, else the trunk), the trunk in
-#'   \code{rsg_or_order}, the trunk, division and type in \code{levels} (with
+#'   type with its subtypes, else the division, else the trunk), the trunk in
+#'   \code{rsg_or_order}, the trunk, division, type and subtypes in \code{levels} (with
 #'   \code{name_native}, the Russian name), the key trace, the notes on a
 #'   profile that is not a soil or whose combination of horizons the Field
 #'   Guide does not provide for in \code{warnings}, and
@@ -100,7 +124,7 @@
 #' @export
 classify_kidpr2008 <- function(pedon, rules = NULL,
                                on_missing = c("warn", "silent", "error"),
-                               gapfill = FALSE) {
+                               gapfill = FALSE, subtypes = TRUE) {
   on_missing <- match.arg(on_missing)
   if (!inherits(pedon, "PedonRecord"))
     rlang::abort("classify_kidpr2008(): 'pedon' must be a PedonRecord (see PedonRecord$new()).")
@@ -127,7 +151,10 @@ classify_kidpr2008 <- function(pedon, rules = NULL,
                                on_missing = on_missing, gapfill = FALSE)
   res <- .kidpr_types_notes(.kidpr_result_notes(res, view, pedon), view)
   # v0.9.342: a chemozem is named by its pollutants and the soil it was
-  .kidpr_chemozem_name(res, view, pedon, rules)
+  res <- .kidpr_chemozem_name(res, view, pedon, rules)
+  # v0.9.345: the subtypes of the division's list, and the full name
+  if (isTRUE(subtypes)) res <- .kidpr_add_subtypes(res, pedon, rules)
+  res
 }
 
 # The name of a chemozem (CU, which has no types): the types are told "by

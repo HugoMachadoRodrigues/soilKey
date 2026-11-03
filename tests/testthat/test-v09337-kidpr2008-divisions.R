@@ -28,7 +28,7 @@
   PedonRecord$new(site = utils::modifyList(list(id = "ru-na", designation_system = "kidpr"), site),
                   horizons = ensure_horizon_schema(data.table::as.data.table(h)))
 }
-.ru_class <- function(p) classify_kidpr2008(p, on_missing = "silent")
+.ru_class <- function(p) classify_kidpr2008(p, on_missing = "silent", subtypes = FALSE)
 .ru_label <- function(r) {
   lv <- r$levels
   paste0(if (nrow(lv)) lv$code[1L] else NA, "/", if (nrow(lv) > 1L) lv$code[2L] else "-")
@@ -106,7 +106,8 @@ test_that("the registry has the Russian system, experimental and opt-in", {
   p <- make_kidpr2008_example("CI")
   expect_false("kidpr2008" %in% names(classify_all(p, on_missing = "silent")))
   res <- classify_all(p, systems = "kidpr2008", on_missing = "silent")
-  expect_identical(res$kidpr2008$levels$code, c("C", "CI", "[CI01]"))
+  # v0.9.345: the type is followed by its subtypes (here the typical one)
+  expect_identical(res$kidpr2008$levels$code, c("C", "CI", "[CI01]", NA))
 })
 
 test_that("the rules are clean: predicates, suffixes, codes, names and paths", {
@@ -152,7 +153,8 @@ test_that("the rules are clean: predicates, suffixes, codes, names and paths", {
   # for him to confirm
   rd <- yaml::read_yaml(system.file("rules", "kidpr2008", "readings.yaml", package = "soilKey"))$readings
   expect_true(length(rd) >= 10L)
-  for (x in rd) expect_true(nzchar(x$topic) && grepl("\\(Hugo, 2026-11-02\\)\\.$", x$reading), info = x$topic)
+  # (2026-11-03: his answer to the review of the subtypes)
+  for (x in rd) expect_true(nzchar(x$topic) && grepl("\\(Hugo, 2026-11-0[23]\\)\\.$", x$reading), info = x$topic)
   expect_false(any(grepl("for Hugo to confirm", vapply(rd, `[[`, "", "reading"))))
   # no text of the book: the readings are in English, Cyrillic only for names
   # and terms

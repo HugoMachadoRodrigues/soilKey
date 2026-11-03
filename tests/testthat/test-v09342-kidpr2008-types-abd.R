@@ -19,7 +19,7 @@
   PedonRecord$new(site = utils::modifyList(list(id = "ru-type", designation_system = "kidpr"), site),
                   horizons = ensure_horizon_schema(data.table::as.data.table(h)))
 }
-.ab_class <- function(p, ...) classify_kidpr2008(p, on_missing = "silent", ...)
+.ab_class <- function(p, ...) classify_kidpr2008(p, on_missing = "silent", subtypes = FALSE, ...)
 .ab_of <- function(tokens, ...) .ab_class(.ab_ped(tokens, ...))
 .ab_type <- function(r) if (nrow(r$levels) >= 3L) r$levels$code[3L] else NA_character_
 .ab_codes <- function(tokens, ...) paste(.ab_of(tokens, ...)$levels$code, collapse = "/")

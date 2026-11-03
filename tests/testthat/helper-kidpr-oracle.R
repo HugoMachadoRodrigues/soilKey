@@ -448,7 +448,7 @@
   PedonRecord$new(site = site, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
 }
 .kor_e2e <- function(tokens, floodplain = FALSE) {
-  r <- classify_kidpr2008(.kor_pedon(tokens, floodplain), on_missing = "silent")
+  r <- classify_kidpr2008(.kor_pedon(tokens, floodplain), on_missing = "silent", subtypes = FALSE)
   lv <- r$levels
   list(trunk = if (nrow(lv)) lv$code[1L] else NA_character_,
        division = if (nrow(lv) > 1L) lv$code[2L] else NA_character_,
