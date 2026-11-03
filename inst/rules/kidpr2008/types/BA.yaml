@@ -1,0 +1,187 @@
+# The types of the division BA, Аллювиальные почвы
+# (Alluvial soils): Field Guide of 2008, chapter 4.2.1, pp. 124-126;
+# 18 types (10 natural, 8 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 BA..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested, but
+#       the rock and substrate slots that name a type are (`test_terminals`).
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# The alluvial mark of the parent material (C~~, CG~~, CQ~~) is not tested:
+# the division has proved the alluvium (Hugo's decision Q14). The buried humus
+# horizons of the alluvial soils are described but are not in the type
+# formula (p. 124): a buried soil is not read, and on the data route the
+# stratified humus horizon found over one at the top of the floodplain is
+# the humus horizon AU, AY or AJ (Q21; Hugo, 2026-11-02).
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "BA":
+    - code: "[BA01]"
+      name: "Alluvial humus"
+      name_native: "Аллювиальные гумусовые"
+      formula: "AY-C~~"
+      page: 124
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA01]"}
+    - code: "[BA02]"
+      name: "Alluvial dark-humus"
+      name_native: "Аллювиальные темногумусовые"
+      formula: "AU-C~~"
+      page: 124
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA02]"}
+      notes: "Chapter 6 writes the formula AU-C(ca)~~."
+    - code: "[BA03]"
+      name: "Alluvial dark-humus gley"
+      name_native: "Аллювиальные темногумусовые глеевые"
+      formula: "AU-G-CG~~"
+      page: 124
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA03]"}
+    - code: "[BA04]"
+      name: "Alluvial dark-humus quasigley"
+      name_native: "Аллювиальные темногумусовые квазиглеевые"
+      formula: "AU-Q-CQ~~"
+      page: 124
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA04]"}
+    - code: "[BA05]"
+      name: "Alluvial muck-gley"
+      name_native: "Аллювиальные перегнойно-глеевые"
+      formula: "H-G-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA05]"}
+    - code: "[BA06]"
+      name: "Alluvial humus gley"
+      name_native: "Аллювиальные гумусовые глеевые"
+      formula: "AY-G-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA06]"}
+      notes: "The diagram (p. 125) prints глеевы, a slip."
+    - code: "[BA07]"
+      name: "Alluvial ortstein"
+      name_native: "Аллювиальные рудяковые"
+      formula: "AY-F-C~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA07]"}
+    - code: "[BA08]"
+      name: "Alluvial slitic"
+      name_native: "Аллювиальные слитые"
+      formula: "AU-V-C~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA08]"}
+    - code: "[BA09]"
+      name: "Alluvial marly"
+      name_native: "Аллювиальные мергелистые"
+      formula: "AU-ML-CG~~ (CQ~~)"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA09]"}
+      notes: "CG~~ (CQ~~): the parent material is gleyed or quasigleyed; not tested (Q14)."
+    - code: "[BA10]"
+      name: "Alluvial peaty gley"
+      name_native: "Аллювиальные торфяно-глеевые"
+      formula: "T-G-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA10]"}
+    - code: "[BA11]"
+      name: "Alluvial agro-humus"
+      name_native: "Аллювиальные агрогумусовые"
+      formula: "P-AY-C~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA11]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS)."
+    - code: "[BA12]"
+      name: "Alluvial agro-dark-humus"
+      name_native: "Аллювиальные агротемногумусовые"
+      formula: "PU-AU-C~~-Cca"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA12]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS)."
+    - code: "[BA13]"
+      name: "Alluvial agro-dark-humus gley"
+      name_native: "Аллювиальные агротемногумусовые глеевые"
+      formula: "PU-AUg-G-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA13]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS)."
+    - code: "[BA14]"
+      name: "Alluvial agro-dark-humus quasigley"
+      name_native: "Аллювиальные агротемногумусовые квазиглеевые"
+      formula: "PU-AU-Q-CQ~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA14]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS)."
+    - code: "[BA15]"
+      name: "Alluvial agro-humus-gley"
+      name_native: "Аллювиальные агрогумусово-глеевые"
+      formula: "P-AYg-G-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA15]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS)."
+    - code: "[BA16]"
+      name: "Alluvial agro-slitic"
+      name_native: "Аллювиальные агрослитые"
+      formula: "PU-AU-V-C~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA16]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS)."
+    - code: "[BA17]"
+      name: "Alluvial agro-peat-mineral gley"
+      name_native: "Аллювиальные агроторфяно-минеральные глеевые"
+      formula: "PTR-T-G-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA17]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS). Chapter 6 names the type Аллювиальные агроторфяно-глеевые, with the formula PTR-TR-G-CG~~."
+    - code: "[BA18]"
+      name: "Alluvial agro-marly"
+      name_native: "Аллювиальные агромергелистые"
+      formula: "PU-AU-ML-CG~~"
+      page: 125
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[BA18]"}
+      notes: "An agro type: the natural humus or organic horizon stays under the plough layer, its remnant (p. 124); without it the soil is an agrozem (CS). The diagram (p. 125) prints Аллювиальные мергелистые, a slip; the name as chapter 6 writes it."

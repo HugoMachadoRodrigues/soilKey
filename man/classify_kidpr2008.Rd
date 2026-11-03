@@ -41,9 +41,11 @@ opredelitel' pochv Rossii, Dokuchaev Soil Science Institute, 2008).
 organogenic, synlithogenic, postlithogenic and weakly developed soils, and
 trunk E, not a soil: rock outcrops, technogenic surface formations, or a
 deposit that is not humified over a buried soil) and the 27 divisions
-(key 2.3), and the types of the divisions CA to CT (the profile formulas
-of chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339; the chemozems CU
-have no types). The subtypes follow in later releases.
+(key 2.3), and the types of every division (the profile formulas of
+chapter 4: CA to CJ in v0.9.338, CK to CT in v0.9.339, trunks A, B and D
+in v0.9.342). The chemozems CU have no types: their name is built from
+the pollutants and the soil they were (v0.9.342). The subtypes follow in
+later releases.
 }
 \details{
 The keys read the diagnostic horizons of the profile: the Russian
@@ -85,6 +87,16 @@ closed on the horizons the division's formulas write, most specific first
 and agro before natural. A profile no formula matches keeps its division,
 the type unassigned, with the nearest formulas in the warnings and in the
 trace (phase \code{types_nearest}).
+
+A chemozem (CU, an X horizon: pollutants of the extremely hazardous
+category within 30 cm) is named, as p. 134 asks, by the kind of
+pollution and the original soil: the \code{pollutants} of the layers of
+the X horizon, and the soil the profile keys to with the X masked (the X
+overlays and the contamination records removed), down to its type. The
+type level is soilKey's \code{"[CU:<code of the original soil>]"}, named
+"Chemozems polluted with Cu, Ni, Co; original soil: Sod-podzolic"; the
+original soil keyed is in the trace (phase \code{chemozem}), and an
+original soil left undecided makes the name provisional.
 }
 \examples{
 res <- classify_kidpr2008(make_kidpr2008_example("CA"), on_missing = "silent")

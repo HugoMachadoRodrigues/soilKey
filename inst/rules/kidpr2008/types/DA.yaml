@@ -1,0 +1,202 @@
+# The types of the division [DA], Слаборазвитые почвы
+# (Weakly developed soils): Field Guide of 2008, chapter 4.3.1, pp. 130-131;
+# 17 types (17 natural, 0 agro).
+#
+# Each type is the formula of its profile, transcribed from the drawings of
+# chapter 4 as in tests/testthat/fixtures/kidpr2008-formulas.tsv (rows "ch4 DA..").
+# The code is soilKey's, in brackets, in the order of chapter 4 (the natural
+# types, then the agro types); `name` is soilKey's English gloss and
+# `name_native` the Russian name as printed. type_formula_kidpr() matches the
+# profile against every formula of the division (R/types-kidpr.R), under
+# Hugo's decisions of 2026-11-02:
+#   Q13 closed on the division: a horizon some formula of the division writes
+#       must be in the type's formula when it is in the profile; a horizon
+#       foreign to the division is ignored. The types are tried most specific
+#       first, agro before natural; a second match is an intergrade.
+#   Q14 a horizon in parentheses is optional (`optional` lists the horizons
+#       written without parentheses that are optional too); the g and q marks
+#       are expected, not required; the parent material is not tested, but
+#       the rock and substrate slots that name a type are (`test_terminals`).
+#   Q15 no formula matches: the division stays, the type is unassigned, with
+#       the nearest formulas; `near_identity` lists the other horizons a
+#       written one stands for.
+# The substrate names the type and is tested (Hugo's decision Q14): the
+# marks of the loose rock (C= loamy and clayey, C.. sandy, C~~ alluvial,
+# C" ash, C^^ aeolian) and the hard rock R, with its carbonate or gypsum
+# mark where the formula writes it (Rca, Rcs); the C of the solonchaks is
+# not tested. Where the notation or the data do not write the mark of the
+# loose rock, it is read from the data; the substrate is the layer directly
+# under the O or W, a deeper rock is not tested (Hugo, 2026-11-02).
+# The peat T of every formula also takes TO and TE (Hugo, 2026-11-02).
+
+types:
+  "[DA]":
+    - code: "[DA01]"
+      name: "Pelozems"
+      name_native: "Пелоземы"
+      formula: "O-C="
+      page: 130
+      test_terminals: ["C="]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA01]"}
+      notes: "The loose rock and its mark name the type and are tested (Hugo's decision Q14): = loamy and clayey, .. sandy (sand and loamy sand, the Russian песок and супесь)."
+    - code: "[DA02]"
+      name: "Humus pelozems"
+      name_native: "Пелоземы гумусовые"
+      formula: "W-C="
+      page: 130
+      test_terminals: ["C="]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA02]"}
+      notes: "The loose rock and its mark name the type and are tested (Hugo's decision Q14): = loamy and clayey, .. sandy (sand and loamy sand, the Russian песок and супесь)."
+    - code: "[DA03]"
+      name: "Psammozems"
+      name_native: "Псаммоземы"
+      formula: "O-C.."
+      page: 130
+      test_terminals: ["C.."]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA03]"}
+      notes: "The loose rock and its mark name the type and are tested (Hugo's decision Q14): = loamy and clayey, .. sandy (sand and loamy sand, the Russian песок and супесь)."
+    - code: "[DA04]"
+      name: "Humus psammozems"
+      name_native: "Псаммоземы гумусовые"
+      formula: "W-C.."
+      page: 130
+      test_terminals: ["C.."]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA04]"}
+      notes: "The loose rock and its mark name the type and are tested (Hugo's decision Q14): = loamy and clayey, .. sandy (sand and loamy sand, the Russian песок and супесь)."
+    - code: "[DA05]"
+      name: "Petrozems"
+      name_native: "Петроземы"
+      formula: "O-R"
+      page: 130
+      test_terminals: ["R"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA05]"}
+      notes: "The hard rock R names the type and is tested (Hugo's decision Q14)."
+    - code: "[DA06]"
+      name: "Humus petrozems"
+      name_native: "Петроземы гумусовые"
+      formula: "W-R"
+      page: 131
+      test_terminals: ["R"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA06]"}
+      notes: "The hard rock R names the type and is tested (Hugo's decision Q14)."
+    - code: "[DA07]"
+      name: "Carbopetrozems"
+      name_native: "Карбопетроземы"
+      formula: "O-Rca"
+      page: 131
+      test_terminals: ["R"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA07]"}
+      notes: "The hard rock R names the type and is tested (Hugo's decision Q14). The carbonate rock Rca is tested, with its carbonate mark; on the data route the mark comes from a carbonate rock named or effervescence, undecided when neither is recorded (as in CP, Hugo, 2026-11-02)."
+    - code: "[DA08]"
+      name: "Humus carbopetrozems"
+      name_native: "Карбопетроземы гумусовые"
+      formula: "W-Rca"
+      page: 131
+      test_terminals: ["R"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA08]"}
+      notes: "The hard rock R names the type and is tested (Hugo's decision Q14). The carbonate rock Rca is tested, with its carbonate mark; on the data route the mark comes from a carbonate rock named or effervescence, undecided when neither is recorded (as in CP, Hugo, 2026-11-02)."
+    - code: "[DA09]"
+      name: "Gypsopetrozems"
+      name_native: "Гипсопетроземы"
+      formula: "O-Rcs"
+      page: 131
+      test_terminals: ["R"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA09]"}
+      notes: "The hard rock R names the type and is tested (Hugo's decision Q14). The gypsum rock Rcs is tested, with its gypsum mark; on the data route the mark comes from a gypsum rock named, undecided when no rock is named."
+    - code: "[DA10]"
+      name: "Humus gypsopetrozems"
+      name_native: "Гипсопетроземы гумусовые"
+      formula: "W-Rcs"
+      page: 131
+      test_terminals: ["R"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA10]"}
+      notes: "The hard rock R names the type and is tested (Hugo's decision Q14). The gypsum rock Rcs is tested, with its gypsum mark; on the data route the mark comes from a gypsum rock named, undecided when no rock is named. Chapter 6 writes the formula W-Ccs."
+    - code: "[DA11]"
+      name: "Solonchaks"
+      name_native: "Солончаки"
+      formula: "S-Cs,cs"
+      page: 131
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA11]"}
+      notes: "The automorphic solonchaks: trunk D takes an S alone over loose rock (Hugo's decision Q10); the C is not tested."
+    - code: "[DA12]"
+      name: "Stratified-alluvial"
+      name_native: "Слоисто-аллювиальные"
+      formula: "O-C~~"
+      page: 131
+      test_terminals: ["C~~"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA12]"}
+      notes: "The stratified body and its mark name the type and are tested (Hugo's decision Q14): ~~ alluvial, \" volcanic ash, ^^ aeolian."
+    - code: "[DA13]"
+      name: "Stratified-ash"
+      name_native: "Слоисто-пепловые"
+      formula: "O-C\""
+      page: 131
+      test_terminals: ["C\""]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA13]"}
+      notes: "The stratified body and its mark name the type and are tested (Hugo's decision Q14): ~~ alluvial, \" volcanic ash, ^^ aeolian."
+    - code: "[DA14]"
+      name: "Stratified-aeolian"
+      name_native: "Слоисто-эоловые"
+      formula: "O-C^^"
+      page: 131
+      test_terminals: ["C^^"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA14]"}
+      notes: "The stratified body and its mark name the type and are tested (Hugo's decision Q14): ~~ alluvial, \" volcanic ash, ^^ aeolian. Aeolian by name: the legend of p. 75 gives ^^ for proluvial and \"\" for aeolian, the diagrams draw ^^."
+    - code: "[DA15]"
+      name: "Humus stratified-alluvial"
+      name_native: "Слоисто-аллювиальные гумусовые"
+      formula: "W-C~~"
+      page: 131
+      test_terminals: ["C~~"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA15]"}
+      notes: "The stratified body and its mark name the type and are tested (Hugo's decision Q14): ~~ alluvial, \" volcanic ash, ^^ aeolian."
+    - code: "[DA16]"
+      name: "Humus stratified-ash"
+      name_native: "Слоисто-пепловые гумусовые"
+      formula: "W-C\""
+      page: 131
+      test_terminals: ["C\""]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA16]"}
+      notes: "The stratified body and its mark name the type and are tested (Hugo's decision Q14): ~~ alluvial, \" volcanic ash, ^^ aeolian."
+    - code: "[DA17]"
+      name: "Humus stratified-aeolian"
+      name_native: "Слоисто-эоловые гумусовые"
+      formula: "W-C^^"
+      page: 131
+      test_terminals: ["C^^"]
+      tests:
+        all_of:
+          - type_formula_kidpr: {type: "[DA17]"}
+      notes: "The stratified body and its mark name the type and are tested (Hugo's decision Q14): ~~ alluvial, \" volcanic ash, ^^ aeolian. Aeolian by name: the legend of p. 75 gives ^^ for proluvial and \"\" for aeolian, the diagrams draw ^^."

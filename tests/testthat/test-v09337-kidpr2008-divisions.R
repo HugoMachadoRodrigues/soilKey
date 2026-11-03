@@ -395,9 +395,13 @@ test_that("the peat body: layers undecided between peats count, more than 50 cm"
   expect_true(all(unlist(f$candidates[1:2]) %in% soilKey:::.KIDPR_DV_PEAT))
   r <- .ru_class(p)
   expect_identical(.ru_label(r), "A/AA")
-  expect_length(r$provisional_because, 0L)
-  # step 6 does not ask what it does not need
-  expect_false(any(c("peat_decomposition_pct", "von_post_index") %in% r$missing_data))
+  # the trunk and the division decided (v0.9.342: the type is undecided
+  # between AA02 and AA04, the peat below 50 cm being TT)
+  expect_false(any(grepl("^(trunks|divisions):", r$provisional_because)))
+  # step 6 does not ask what it does not need (the undecided type may)
+  expect_false(any(c("peat_decomposition_pct", "von_post_index") %in% peat_body_kidpr(p)$missing))
+  expect_false(any(c("peat_decomposition_pct", "von_post_index") %in%
+                     collect_missing_attributes(do.call(c, unname(r$trace[c("trunks", "divisions")])))))
   expect_true(isTRUE(peat_body_kidpr(p)$passed))
   expect_identical(.ru_label(.ru_class(make_histosol_canonical())), "A/AA")
   # a layer that may be peat or not stops the body undecided

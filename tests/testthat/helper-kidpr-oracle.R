@@ -452,7 +452,9 @@
   lv <- r$levels
   list(trunk = if (nrow(lv)) lv$code[1L] else NA_character_,
        division = if (nrow(lv) > 1L) lv$code[2L] else NA_character_,
-       undecided = length(r$provisional_because) > 0L)
+       # the trunk and the division only: an undecided type, or the original
+       # soil of a chemozem (v0.9.342), is no answer of the keys 2.2 and 2.3
+       undecided = any(grepl("^(trunks|divisions):", r$provisional_because)))
 }
 
 .kor_rules_cache <- new.env(parent = emptyenv())

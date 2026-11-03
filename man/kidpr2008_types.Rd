@@ -52,5 +52,14 @@ CE an EL fills the E of a formula); in CD a BCA, like BEL, closes no
 formula that does not write it. A tie or a missing thickness at the
 surface, or a layer the data route reads as no horizon between two
 horizons of a formula, leaves the type undecided.
+
+The types of trunks A, B and D (v0.9.342): the buried soil [ABC] of the
+stratozems is tested within 100 cm; the substrate of trunk D names its
+types and is tested (the marks of the loose rock C=, C.., C~~, C", C^^,
+and R, Rca, Rcs), its mark from the data where it is not written (an
+alluvial, ash or aeolian origin, else the texture); in trunk A a peat
+horizon across the line 50 cm under the top of the peat body is TT below
+it, and a T of the notation in AA is TO or TE by its botany; the BH of
+BB01 and BB03 is a BHF of either kind.
 }
 \keyword{internal}
