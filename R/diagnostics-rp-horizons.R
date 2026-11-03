@@ -866,13 +866,17 @@
 .rp_t_A <- function(x, i) .rp_a_gate(x, i)
 
 # Js (p. 25): a surface layer with little organic matter (carbon under
-# 0.5 %), never biomacrostructured, a weak structure or none.
+# 0.5 %), never biomacrostructured, a pedological structure but a weak one:
+# a J is no longer an M or a D, so a structureless surface layer (single
+# grain, massive) is no Js but the raw alluvium of the fluviosols bruts, a
+# C or a D (p. 185; the review's D2, 0.9.348).
 .rp_t_Js <- function(x, i) {
   if (!.rp_is_mineral(x, i) || !.rp_is_surface(x, i)) return(.rp_r(FALSE))
   oc <- .rp_tol(.rp_num(x, i, "oc_pct"), 0.5 - 1e-9, "max", 0, "organic carbon (%)", "oc_pct")
   if (isFALSE(oc$passed)) return(oc)
   gr <- .rp_grade(x, i); st <- .rp_structured(x, i)
-  weak <- .rp_r(if (isFALSE(st$passed)) TRUE else if (!is.na(gr)) gr <= 1 else NA,
+  if (isFALSE(st$passed)) return(.rp_r(FALSE, note = c(st$note, "no pedological structure: not a Js (p. 25)")))
+  weak <- .rp_r(if (!is.na(gr)) gr <= 1 else NA,
                 missing = c("structure_grade", "structure_type"), note = st$note)
   .rp_all(oc, weak)
 }
@@ -942,6 +946,29 @@
   if (isTRUE(col$value <= 4 && col$chroma <= 2) && isTRUE(oc >= 1)) f <- c(f, "h")
   r$features <- f
   r
+}
+
+# The Eh of the grisols on the data (p. 193), for a layer that reads E and
+# also continues the A run (still rich in carbon, dark when moist): under the
+# A, lighter than the layers above and below (the dry colour when recorded
+# for the three, its value one more than both; else the moist value), less
+# clay than the layer below (.rp_more_clay) and a weak structure or none.
+# Not all recorded: NA, the layer stays undecided between A and E (the
+# review's R3; Hugo's decision, 2026-11-03).
+.rp_eh_under_a <- function(x, i) {
+  pv <- .rp_prev(x, i); nx <- .rp_next(x, i)
+  if (is.na(pv) || is.na(nx) || !.rp_is_surface(x, pv)) return(.rp_r(FALSE))
+  dv <- vapply(c(pv, i, nx), function(j) as.numeric(.rp_num(x, j, "munsell_value_dry")), 0)
+  mv <- vapply(c(pv, i, nx), function(j) as.numeric(.rp_colour(x, j, "moist")$value %||% NA), 0)
+  v <- if (!anyNA(dv)) dv else mv
+  lighter <- if (anyNA(v)) NA else v[2] >= v[1] + 1 && v[2] >= v[3] + 1
+  cl <- .rp_more_clay(.rp_clay(x, nx), .rp_clay(x, i))
+  gr <- .rp_grade(x, i); st <- .rp_structured(x, i)
+  weak <- if (isFALSE(st$passed)) TRUE else if (!is.na(gr)) gr <= 1 else NA
+  p <- .kidpr_and(lighter, .kidpr_and(cl, weak))
+  .rp_r(p, missing = c("munsell_value_dry", "clay_pct", "structure_grade"),
+        note = if (isTRUE(p)) sprintf("under the A, lighter (%s value %s against %s above and %s below), less clay than below, weakly structured: an Eh (p. 193)",
+                                      if (!anyNA(dv)) "dry" else "moist", format(v[2]), format(v[1]), format(v[3])))
 }
 
 #' BP on the data (p. 19): a moist hue of 7.5YR or redder (necessary), more
@@ -1247,8 +1274,9 @@
   cm <- .rp_txt(x, i, "clay_mineralogy")
   if (isTRUE(cm == "kaolinite")) return(.rp_r(FALSE, note = "kaolinite dominant: no 2:1 clays"))
   ft <- .rp_num(x, i, "fe_total_pct"); ffe <- .rp_num(x, i, "fe_ffe_pct"); fd <- .rp_num(x, i, "fe_dcb_pct")
-  fe <- if (!is.na(ffe) && isTRUE(ft > 0)) .rp_r(ffe / ft > 0.2, note = sprintf("FFE/Fe total %s", format(signif(ffe / ft, 3))))
-        else if (!is.na(fd) && isTRUE(ft > 0)) .rp_r(fd / ft > 0.5, note = sprintf("Fe free/Fe total %s", format(signif(fd / ft, 3))))
+  # on one basis: the free iron as Fe, the total as Fe2O3 (Q23; 0.9.348)
+  fe <- if (!is.na(ffe) && isTRUE(ft > 0)) .rp_r(ffe / (0.6994 * ft) > 0.2, note = sprintf("FFE/Fe total %s", format(signif(ffe / (0.6994 * ft), 3))))
+        else if (!is.na(fd) && isTRUE(ft > 0)) .rp_r(fd / (0.6994 * ft) > 0.5, note = sprintf("Fe free/Fe total %s", format(signif(fd / (0.6994 * ft), 3))))
         else .rp_r(TRUE, note = "the iron release not recorded: the field route (map 2)")
   .rp_all(colr, stru, fe)
 }
@@ -1378,6 +1406,10 @@
     lo <- .rp_txt(x, i, "layer_origin")
     young <- isTRUE(grepl("fluvi|marine|aeol|eolian|colluv|tephr|solimov|alluv", lo))
     if (!js && !young) return(.rp_r(FALSE))
+    # under an A, not under the raw alluvium of a structureless surface
+    # layer that is no Js and no A (p. 25; the review's D2, 0.9.348)
+    if (!js && isFALSE(.rp_a_material(x, pv)$passed))
+      return(.rp_r(FALSE, note = "the layer above is neither a Js nor an A"))
     oc <- .rp_num(x, i, "oc_pct")
     if (isTRUE(oc >= 0.3)) return(.rp_r(FALSE, note = sprintf("organic carbon %s %%: more than traces", format(oc))))
     gr <- .rp_grade(x, i); st <- .rp_structured(x, i)
@@ -1467,7 +1499,10 @@
     add("k", .rp_r(isTRUE(sc > 0) || (!is.na(fm) && is.na(sc)), note = if (isTRUE(sc > 0) || !is.na(fm)) "secondary carbonates"))
   }
   cf <- .clay_films_class(.kidpr_v(x, i, "clay_films_amount"))
-  add("t", .rp_r(isTRUE(cf >= 2L), note = if (isTRUE(cf >= 2L)) "clay films"))
+  # the FSt of the fersialsols is a clear clay illuviation (p. 181): common or
+  # many clay films, few do not make it (Hugo's decision R1, 2026-11-03)
+  cf_min <- if (isTRUE(code == "FS")) 3L else 2L
+  add("t", .rp_r(isTRUE(cf >= cf_min), note = if (isTRUE(cf >= cf_min)) "clay films"))
   if (!isTRUE(code %in% c("V", "SV"))) {
     sl <- .rp_slickensides(x, i)
     add("v", .rp_r(isTRUE(sl >= 1L), note = if (isTRUE(sl >= 1L)) "slickensides: vertic signs"))
@@ -1529,7 +1564,7 @@
   steps <- .rp_steps()
   ans <- list()
   code <- NA_character_; dec <- NULL; undecided <- FALSE; cands <- character(0); pending <- character(0)
-  g_block <- FALSE; dec_step <- NA_character_; extra_notes <- character(0); extra_feats <- character(0)
+  g_block <- FALSE; dec_step <- NA_character_; extra_notes <- character(0); extra_feats <- character(0); cand_feats_na <- character(0); und_step <- NA_character_
   for (s in names(steps)) {
     rs <- lapply(steps[[s]], function(t) .rp_ask(x, i, s, t))
     ans[[s]] <- rs
@@ -1546,7 +1581,7 @@
              cands <- c(lab[-seq_len(k)][v[-seq_len(k)] %in% TRUE | is.na(v[-seq_len(k)])]) }
     } else if (any(is.na(v))) {
       nas <- which(is.na(v))
-      if (length(nas) >= 2L) { undecided <- TRUE; cands <- lab[nas] }
+      if (length(nas) >= 2L) { undecided <- TRUE; cands <- lab[nas]; und_step <- s }
       else pending <- c(pending, lab[nas])
       # G dominates every other character: an undecided G leaves the layer
       # undecided against the code read after it (soilKey's reading of p. 280)
@@ -1568,9 +1603,13 @@
     }
   }
   # BT and FS both hold: FS with the clay illuviation -t, FSt (the review's D6)
+  # (the t only with common or many clay films recorded: R1, 2026-11-03)
   if (isTRUE(code %in% c("BT", "BT\u00df")) && !is.null(fs <- sub_true("FS"))) {
-    extra_notes <- c(extra_notes, dec$note, "a fersiallitic horizon with clay illuviation: FSt (p. 180)")
-    code <- "FS"; dec <- fs; extra_feats <- c(extra_feats, "t")
+    t_ok <- isTRUE(.clay_films_class(.kidpr_v(x, i, "clay_films_amount")) >= 3L)
+    extra_notes <- c(extra_notes, dec$note,
+                     if (t_ok) "a fersiallitic horizon with clay illuviation: FSt (p. 180)"
+                     else "a fersiallitic horizon; its clay films not recorded as common or many: no t (R1)")
+    code <- "FS"; dec <- fs; if (t_ok) extra_feats <- c(extra_feats, "t")
   }
   # a layer that continues the A run: when a subsurface code holds as well,
   # the layer is undecided between the two (the review's D2)
@@ -1578,11 +1617,28 @@
     rs <- ans$subsurface
     k <- which(vapply(rs, function(r) isTRUE(r$passed) && !r$name %in% c("C", "Jp"), NA))
     if (length(k)) {
-      sc <- rs[[k[1L]]]$code %||% rs[[k[1L]]]$name
-      undecided <- TRUE; cands <- c(code, sc, cands)
-      extra_notes <- c(sprintf("the layer continues the A run and reads %s as well", sc))
-      code <- NA_character_; dec <- NULL
+      sr <- rs[[k[1L]]]
+      sc <- sr$code %||% sr$name
+      eh <- if (identical(sc, "E")) .rp_eh_under_a(x, i) else NULL
+      if (isTRUE(eh$passed)) {
+        # the Eh of the grisols under their Aso, by p. 193: decided E
+        extra_notes <- c(eh$note, sr$note)
+        code <- "E"; dec <- sr; dec_step <- "subsurface"
+      } else {
+        undecided <- TRUE; cands <- c(code, sc, cands)
+        extra_notes <- c(sprintf("the layer continues the A run and reads %s as well", sc))
+        # the features of the candidate stay possible (an Eh: the review's R3)
+        cand_feats_na <- sr$features %||% character(0)
+        code <- NA_character_; dec <- NULL
+      }
     }
+  }
+  # a structureless surface layer undecided between A codes is no Js (p.
+  # 25): should no A hold, it is the code of the subsurface steps that holds
+  # (a C, the raw alluvium of the fluviosols bruts; the review's D2)
+  if (undecided && identical(und_step, "surface") && isFALSE(.rp_structured(x, i)$passed)) {
+    fall <- Filter(function(r) isTRUE(r$passed), ans$subsurface)
+    if (length(fall)) cands <- unique(c(cands, fall[[1L]]$code %||% fall[[1L]]$name))
   }
   # the other codes that hold, in any step, are candidates too
   all_r <- unlist(ans, recursive = FALSE)
@@ -1634,7 +1690,7 @@
   allowed <- .rp_allowed_marks(if (is.na(code) || !code %in% rownames(voc$info)) NA_character_ else code, voc)
   fp <- vapply(fx, function(r) r$passed, NA)
   feats <- unique(c(feats_code, names(fp)[fp %in% TRUE]))
-  feats_na <- names(fp)[is.na(fp)]
+  feats_na <- unique(c(names(fp)[is.na(fp)], setdiff(cand_feats_na, names(fp)[fp %in% TRUE])))
   drop <- setdiff(feats, allowed)
   feats <- intersect(feats, allowed); feats_na <- intersect(feats_na, allowed)
   fnotes <- unlist(lapply(fx[names(fx) %in% feats], `[[`, "note"))

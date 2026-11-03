@@ -1,0 +1,50 @@
+# Gypsosols (pp. 196-200), 2 references: secondary gypsum accumulated in
+# the upper horizons, from evaporitic rocks, in arid and semi-arid climates
+# (under 300 mm a year: reported, not tested), not linked to a water table.
+# The Ys (gypsique de surface: gypsum 25 to 95 %, CaCO3 under 20 %) starts at
+# the surface or directly under a Ym (pétrogypsique, an indurated crust):
+# its top within 10 +/- 5 cm (D18). A Yp (gypsique de profondeur, the water
+# table or downslope form) makes no gypsosol: it gives the qualifier "à
+# horizon gypsique" to the other references (p. 199, a later release with
+# the qualifiers). Other reference horizons possible: Sim, K, Kc, Km (p. 198).
+# The horizons other than Ys, Yp and Ym with localised gypsum carry -y (Cy,
+# My: expected, not tested, in the sequences).
+#
+# Distinctions: the chapter writes none; the calcium and magnesium GER forbids
+# a Ys or Ym within 10 cm (its side test), the salisols and the hydromorphic
+# solums with a gypsum crust have a Yp (the rapid key, entry 6h).
+references:
+  - code: "gypsosols_hapliques"
+    ger: "gypsosols"
+    name: "gypsosols hapliques"
+    name_singular: "gypsosol haplique"
+    name_en: "haplic gypsosols"
+    name_en_singular: "haplic gypsosol"
+    page: "198-199"
+    sequences: ["Ys-Cy-My"]
+    notes: "A Ys from the surface, its base between 20 and 50 cm (the figure of p. 199), over a Cy and an My; no Ym."
+    wrb2006: "Gypsisols"
+    distinctions:
+      - {with: "gypsosols pétrogypsiques", page: "198", by: "a Ym over the Ys"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: ["Ys-(C|M)"]}
+        - horizon_within_rp: {codes: [Ys], depth: 10}
+        - no_horizon_within_rp: {codes: [Ym]}
+  - code: "gypsosols_petrogypsiques"
+    ger: "gypsosols"
+    name: "gypsosols pétrogypsiques"
+    name_singular: "gypsosol pétrogypsique"
+    name_en: "petrogypsic gypsosols"
+    name_en_singular: "petrogypsic gypsosol"
+    page: "198-199"
+    sequences: ["Ym-Ys-Cy-My"]
+    notes: "A Ym (a crust, about 10 cm, the figure of p. 199) at the surface directly over the Ys (\"à croûte\")."
+    wrb2006: "Epipetric (?) Gypsisols"
+    distinctions:
+      - {with: "gypsosols hapliques", page: "198", by: "no Ym"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: ["Ym-Ys-(C|M)"]}
+        - horizon_within_rp: {codes: [Ym], depth: 10}
+        - below_rp: {upper: [Ym], codes: [Ys]}

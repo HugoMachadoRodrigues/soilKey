@@ -88,17 +88,18 @@ test_that("the rule validator passes the RP rules", {
   expect_identical(v$codes, character(0))
 })
 
-test_that("the catalogue has 34 GER and 110 references, 29 of them implemented", {
+test_that("the catalogue has 34 GER and 110 references, the 29 of these nine GER implemented", {
   skip_on_cran()
   rules <- .rp_rules()
   expect_length(rules$ger, 34L)
-  impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
+  # 0.9.348: six more GER implemented after these nine (test-v09348)
+  impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)[1:9]
   expect_identical(vapply(impl, `[[`, "", "code"),
                    c("alocrisols", "andosols", "anthroposols", "arenosols", "brunisols", "calcium_magnesium",
                      "chernosols", "colluviosols", "cryosols"))
   n_ref <- sum(vapply(rules$ger, function(g) length(g$references), 0L))
   expect_identical(n_ref, 110L)
-  expect_identical(names(rules$ref_by_code), .rp46_refs)
+  expect_identical(names(rules$ref_by_code)[seq_along(.rp46_refs)], .rp46_refs)
   expect_identical(unlist(lapply(impl, function(g) unlist(g$references))), .rp46_refs)
   for (r in rules$references) {
     expect_true(all(c("code", "ger", "name", "name_singular", "name_en", "name_en_singular", "page", "tests") %in% names(r)),
@@ -109,7 +110,7 @@ test_that("the catalogue has 34 GER and 110 references, 29 of them implemented",
   }
   # every unimplemented GER has a signpost
   later <- Filter(function(g) !isTRUE(g$implemented), rules$ger)
-  expect_length(later, 25L)
+  expect_length(later, 19L)
   expect_true(all(vapply(later, function(g) !is.null(g$signpost), NA)))
   # the tolerance table of p. 64
   tab <- .tolerance_table(rules$tolerances)
@@ -135,7 +136,7 @@ test_that("the rapid key reaches every GER, the grisols only by soilKey's 7c", {
   expect_lt(match("anthroposols_transformes", ord), match("brunisols_eutriques", ord))
   expect_lt(match("brunisols_dystriques", ord), match("alocrisols_typiques", ord))
   expect_lt(match("alocrisols_humiques", ord), match("rendosols", ord))
-  expect_lt(match("grisols", ord), match("podzosols", ord))
+  expect_lt(match("grisols_hapliques", ord), match("podzosols", ord))
 })
 
 
@@ -433,7 +434,7 @@ test_that("the result carries the levels, the candidates, the trace and prints",
   expect_identical(r$levels$name_en, "typical chernosol")
   expect_true(all(c("code", "name", "group", "degree", "rank", "in_name", "double_with", "failed", "imperfect_by",
                     "undecided_by", "excluded_by", "nearest", "name_en", "implemented", "precedence") %in% names(r$candidates)))
-  expect_length(r$trace$references, 29L + sum(!r$candidates$implemented))
+  expect_length(r$trace$references, length(.rp_rules()$references) + sum(!r$candidates$implemented))
   expect_s3_class(r$trace$horizons, "data.frame")
   expect_identical(r$trace$rapid_key$attached[r$trace$rapid_key$entry == "7c"], TRUE)
   expect_true(any(grepl("convention of soilKey", r$warnings, fixed = TRUE)))
@@ -488,7 +489,9 @@ test_that("the readings of this release are Hugo's decisions; none waits for con
   skip_on_cran()
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   txt <- vapply(rd, `[[`, "", "reading")
-  expect_identical(sum(grepl("(Hugo, 2026-11-03).", txt, fixed = TRUE)), 24L)
+  # 24 of 0.9.346; 0.9.348 adds its eight readings, confirmed, and three
+  # decisions of its review (test-v09348); none waits for confirmation
+  expect_identical(sum(grepl("(Hugo, 2026-11-03).", txt, fixed = TRUE)), 35L)
   expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
   # the carbon of a layer over its whole depth: a single Ach 0-45 cm is clinohumic
   p <- .rp46_mk(list(designation = c("Ach", "Ck"), top_cm = c(0, 45), bottom_cm = c(45, 120), oc_pct = c(3, 0.4)))

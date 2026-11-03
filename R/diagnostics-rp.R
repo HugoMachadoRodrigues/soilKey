@@ -217,9 +217,19 @@
 
 # The membership of every layer of the frame in a list of codes.
 .rp_members <- function(fr, codes, strict_pos = FALSE) {
+  # memoised for the frame of the pedon being classified (the same object)
+  cache <- .rp_state$cache
+  memo <- !is.null(cache) && !is.null(.rp_state$frame) && identical(fr, .rp_state$frame)
+  if (memo) {
+    key <- paste0("members_", paste(as.character(unlist(codes)), collapse = "|"), "_", isTRUE(strict_pos))
+    v <- cache[[key]]
+    if (!is.null(v)) return(v)
+  }
   specs <- lapply(as.character(unlist(codes)), .rp_spec)
-  vapply(seq_len(nrow(fr)), function(k)
+  out <- vapply(seq_len(nrow(fr)), function(k)
     .rp_or3(vapply(specs, function(sp) .rp_member1(fr, k, sp, strict_pos), NA)), NA)
+  if (memo) assign(key, out, envir = cache)
+  out
 }
 
 # The layers of the first material: the first lithological unit (the
@@ -321,18 +331,34 @@
   if (!is.null(memo)) return(memo)
   items <- .rp_split_top(s, "-")
   out <- character(0)
-  for (it in items) {
+  # the parent material written last, optional ("(C|M|R|D)"): a slot matches
+  # a run of one code, so the slot is written as one optional slot per layer
+  # code, each of the C, M and D in any order (an M or a D over a C, a C over
+  # an M: the review of 0.9.348), the R last, so that a description going
+  # through a C into an R matches (0.9.348)
+  layer_fam <- c("C", "M", "D", "R")
+  for (n_it in seq_along(items)) {
+    it <- items[n_it]
     opt <- grepl("^\\(.*\\)$", it)
     inner <- if (opt) substr(it, 2L, nchar(it) - 1L) else it
-    alts <- character(0)
+    alts <- character(0); fams <- character(0)
     for (a in .rp_split_top(inner, "|")) {
       r <- .rp_parse_one(a)
       if (!isTRUE(r$known)) rlang::abort(sprintf("'%s' is no code of the RP notation (in %s).", a, s))
       if (is.na(r$code)) next
       f <- gsub("[^a-z]", "", paste(r$features, collapse = ""))
       alts <- c(alts, paste0(.rp_token(r$code), f))
+      fams <- c(fams, r$code)
     }
     if (!length(alts)) next
+    if (opt && n_it == length(items) && length(alts) > 1L && all(fams %in% layer_fam)) {
+      o <- order(match(fams, layer_fam))
+      alts <- alts[o]; fams <- fams[o]
+      free <- unique(alts[fams != "R"]); last <- unique(alts[fams == "R"])
+      fs <- if (length(free) > 1L) rep(paste(free, collapse = "|"), length(free)) else free
+      out <- c(out, paste0("(", c(fs, last), ")"))
+      next
+    }
     item <- paste(unique(alts), collapse = "|")
     out <- c(out, if (opt) paste0("(", item, ")") else item)
   }
@@ -348,6 +374,7 @@
                                  parents = character(0), alternatives = alts,
                                  required_features = as.character(required_features))
   spec$written_rp <- s
+  spec$rp_voc <- .formula_vocabulary(list(spec))
   assign(key, spec, envir = .rp_spec_memo)
   spec
 }
@@ -391,7 +418,9 @@
   n <- prod(lengths(opts))
   if (n > max_n) return(NA)
   grid <- expand.grid(opts, stringsAsFactors = FALSE)
-  out <- vapply(seq_len(nrow(grid)), function(g) {
+  voc <- .rp_specs_vocabulary(specs)
+  seen_t <- FALSE; seen_f <- FALSE
+  for (g in seq_len(nrow(grid))) {
     t2 <- tab
     for (j in seq_along(und)) {
       cd <- grid[g, j]
@@ -399,9 +428,34 @@
       t2$passed[und[j]] <- nzchar(cd)
       t2$candidates[[und[j]]] <- character(0)
     }
-    isTRUE(.match_schemes(t2, specs, n_nearest = 0L)$passed)
-  }, NA)
-  if (all(out)) TRUE else if (!any(out)) FALSE else NA
+    # one sequence matching is enough (.pick_scheme(): TRUE when any is)
+    ok <- FALSE
+    for (sp in specs) if (isTRUE(.mhs_match(t2, .mhs_context(t2, sp, vocabulary = voc))$passed)) { ok <- TRUE; break }
+    if (ok) seen_t <- TRUE else seen_f <- TRUE
+    # both verdicts seen: undecided, whatever the other completions give
+    if (seen_t && seen_f) return(NA)
+  }
+  seen_t
+}
+
+# The vocabulary of a list of parsed sequences: .formula_vocabulary() of the
+# list, the union in order of the vocabularies of its sequences, each read
+# once when the sequence is parsed (.rp_formula()).
+.rp_specs_vocabulary <- function(specs) {
+  unique(unlist(lapply(specs, function(s) s$rp_voc %||% .formula_vocabulary(list(s))), use.names = FALSE)) %||% character(0)
+}
+
+# .match_schemes() on a table already read by .as_horizon_table() and
+# sequences already parsed and named: the same result, the table not read
+# again (the timing of the review of 0.9.348).
+.rp_match_schemes <- function(tab, specs, n_nearest = 2L) {
+  voc <- .rp_specs_vocabulary(specs)
+  res <- lapply(specs, function(sp) .mhs_match(tab, .mhs_context(tab, sp, vocabulary = voc)))
+  names(res) <- names(specs)
+  pick <- .pick_scheme(res)
+  pick$nearest <- if (!isTRUE(pick$passed)) .nearest_schemes(res, n_nearest) else NULL
+  pick$results <- res
+  pick
 }
 
 #' The reference's sequences of horizons (RP 2008)
@@ -416,18 +470,21 @@ sequence_rp <- function(pedon, sequences, required_features = NULL, first_materi
   if (!length(sequences)) return(.rp_answer(TRUE, notes = "no sequence printed"))
   strict <- .rp_strict_positive()
   fm <- isTRUE(first_material)
+  fr <- .rp_frame(pedon)
+  # only the first material (above the first lithological discontinuity)
+  if (fm && nrow(fr)) fr <- fr[.rp_first_material(fr), , drop = FALSE]
+  # the strict pass reads another table only when a layer is read within
+  # tolerance; otherwise both passes share one match (the same answer)
+  if (strict && !any(!is.na(fr$code) & fr$imperfect %in% TRUE)) strict <- FALSE
   key <- sprintf("seq_%s_%s_%s_%s", paste(sequences, collapse = "~"),
                  paste(required_features, collapse = ","), strict, fm)
   .rp_cached(pedon, key, function() {
-    fr <- .rp_frame(pedon)
-    # only the first material (above the first lithological discontinuity)
-    if (fm) fr <- fr[.rp_first_material(fr), , drop = FALSE]
     if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons", notes = "no horizons"))
     specs <- lapply(sequences, .rp_formula, required_features = as.character(unlist(required_features)))
     names(specs) <- sequences
     tab <- .rp_cached(pedon, sprintf("match_table_%s_%s", strict, fm), function()
       .as_horizon_table(.rp_match_table(fr, strict = strict)))
-    res <- .match_schemes(tab, specs, n_nearest = 2L)
+    res <- .rp_match_schemes(tab, specs, n_nearest = 2L)
     # undecided over the alternatives of the reference: complete the
     # undecided layers (few candidates) and decide when every completion
     # gives one verdict (Aci or A over Sci, an A or an Slu under an Alu)
@@ -1129,4 +1186,293 @@ origin_rp <- function(pedon, pattern, depth = 50) {
 recorded_rp <- function(pedon, field, pattern) {
   v <- .rp_site_txt(.rp_view(pedon), field)
   .rp_answer(isTRUE(grepl(pattern, v)), notes = if (!is.na(v)) sprintf("%s: %s", field, v) else character(0))
+}
+
+
+# --- the tests of the chapters of part 5 (v0.9.348) ------------------------------------------------
+# The ferrallitisols and oxydisols, ferruginosols, fersialsols, fluviosols,
+# grisols and gypsosols (pp. 146-200).
+
+#' The intertropical domain (RP 2008, Q18)
+#'
+#' The ferrallitisols, oxydisols and ferruginosols are solums of the
+#' intertropical domain, whose horizons F, OX, RT, ND, FE, OXc and OXm the
+#' book calls specific to it (p. 6): declared (site$intertropical), a Koppen
+#' climate of group A or a latitude between the tropics; outside, FALSE.
+#' Neither recorded: a profile that writes those horizons in the RP notation
+#' is read as placed in the domain by its author (soilKey's reading), any
+#' other undecided.
+#' @noRd
+tropical_rp <- function(pedon) {
+  x <- .rp_view(pedon)
+  tr <- .rp_tropical(x)
+  if (!is.na(tr$passed)) return(.rp_answer(tr$passed, notes = tr$note))
+  fr <- .rp_frame(pedon)
+  trop <- c(.rp_family_members("F"), .rp_family_members("OX"), "RT", "ND", "FE")
+  wr <- nrow(fr) > 0L && any(fr$code %in% trop & fr$route %in% "notation")
+  if (wr) return(.rp_answer(TRUE, notes = paste("the climate and the latitude are not recorded; the intertropical",
+                                                  "horizons written in the RP notation place the profile in the domain",
+                                                  "(soilKey's reading)")))
+  .rp_answer(NA, missing = tr$missing, notes = tr$note)
+}
+
+# The loose horizons of the ferrallitisols and of the oxydisols (pp. 149-152):
+# F and its variants (Fox, Fhy), OX and its loose variants (OXal, OXfl, OXfr,
+# OXba, OXti; not the carapace OXc or the cuirasse OXm). The nodular ones
+# (Fnod, OXnod) are the same codes with the feature nod.
+.RP_LOOSE <- list(F = c("F", "Fox", "Fhy"), OX = c("OX=", "OXal", "OXfl", "OXfr", "OXba", "OXti"))
+
+#' The loose horizon that makes a ferrallitisol or an oxydisol (RP 2008, D4)
+#'
+#' The thicker of the loose horizons F and OX within `within` cm (120, the
+#' depth of the chapter, pp. 157-161) decides: `kind = "F"` holds when the F
+#' are at least as thick as the OX, or when neither is present (a
+#' ferrallitisol, the book's examples without F, pp. 159; default 21);
+#' `kind = "OX"` when the OX are thicker. Strict: the comparison is
+#' soilKey's. Undecided layers that could change the comparison leave it
+#' undecided.
+#' @noRd
+loose_rp <- function(pedon, kind = c("F", "OX"), within = 120) {
+  kind <- match.arg(kind)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  f <- .rp_thickness_bounds(fr, .RP_LOOSE$F, within = within)
+  o <- .rp_thickness_bounds(fr, .RP_LOOSE$OX, within = within)
+  if (is.na(f$lo) || is.na(o$lo)) return(.rp_answer(NA, missing = c("top_cm", "bottom_cm")))
+  f_dom <- if (f$lo >= o$hi) TRUE else if (f$hi < o$lo) FALSE else NA
+  p <- if (kind == "F") f_dom else if (is.na(f_dom)) NA else !f_dom
+  .rp_answer(p, layers = fr$horizon_idx[if (kind == "F") f$rows else o$rows],
+             missing = .rp_missing_of(fr, c(f$und, o$und)),
+             evidence = list(F = f$lo, OX = o$lo, within = within),
+             notes = sprintf("loose horizons within %s cm: F %s cm, OX %s cm%s", format(within), format(f$lo),
+                             format(o$lo), if (f$lo == 0 && o$lo == 0) " (neither: a ferrallitisol, D4)" else ""))
+}
+
+# The words of an alluvial origin (fluviatile or lacustrine, p. 183), whole
+# word stems; a colluvial or marine origin is none.
+.RP_ALLUVIAL_WORDS <- "fluv|alluv|lacustr|riverine|floodplain deposit"
+
+#' The three conditions of the fluviosols (RP 2008, Q14)
+#'
+#' The material is recent fluviatile or lacustrine alluvium (p. 183): an
+#' alluvial layer_origin in a layer starting within 50 cm, or an alluvial
+#' rock_origin there, or an alluvial parent material; the origin is required,
+#' not recorded it is none. The low position (valley_position minor bed,
+#' major bed or dried marsh, or their French words; a terrace or an alluvial
+#' fan is none, pp. 183, 189; another value is not read) and the alluvial
+#' water table (flood_frequency other than none, or a water table recorded:
+#' groundwater_kind or groundwater_depth_cm; none only when the flooding and
+#' the groundwater are both recorded as none, "none observed" being no
+#' record: Hugo's decision D1) are read when recorded. `bed = "minor"`:
+#' the fluviosols bruts, in the minor bed (p. 185). `site = "lenient"`: the
+#' site conditions not recorded pass (the reference attaches, and the result
+#' says it is provisional, from `provisional_unless`); `"required"`: they
+#' leave the answer undecided.
+#' @noRd
+alluvial_rp <- function(pedon, bed = NULL, site = c("lenient", "required")) {
+  site <- match.arg(site)
+  fr <- .rp_frame(pedon)
+  x <- .rp_view(pedon)
+  top <- .rp_tops(fr)
+  word <- function(t) !is.na(t) && grepl(.RP_ALLUVIAL_WORDS, tolower(t)) && !grepl("^colluv", tolower(t))
+  org <- vapply(seq_len(nrow(fr)), function(k) {
+    i <- fr$horizon_idx[k]
+    isTRUE(top[k] < 50) && (word(.rp_txt(x, i, "layer_origin")) || word(.rp_txt(x, i, "rock_origin")))
+  }, NA)
+  pm <- .rp_site_txt(x, "parent_material")
+  origin <- any(org) || word(pm)
+  if (!origin)
+    return(.rp_answer(FALSE, notes = "no alluvial origin recorded (layer_origin, rock_origin, parent_material; required, Q14)"))
+  vp <- tolower(.rp_site_txt(x, "valley_position") %||% NA_character_)
+  # the vocabulary of the attribute and its French words (lit mineur, lit
+  # majeur, terrasse, cone, marais); another value is not read (undecided)
+  vk <- if (is.na(vp)) NA_character_
+        else if (grepl("terrace|terrasse|fan|c[o\u00f4]ne", vp)) "out"
+        else if (grepl("minor|mineur", vp)) "minor"
+        else if (grepl("major|majeur|flood ?plain", vp)) "major"
+        else if (grepl("marsh|marais", vp)) "marsh"
+        else NA_character_
+  pos <- if (is.na(vk)) NA
+         else if (vk == "out") FALSE
+         else if (!is.null(bed) && identical(bed, "minor")) vk == "minor"
+         else TRUE
+  # the water table: flooding and the groundwater fail it only when both are
+  # recorded as none (an embanked valley is not flooded, p. 186; a pit with
+  # no water seen in the dry season is no record of none: "none observed"
+  # reads as not recorded; Hugo's decision D1, 2026-11-03)
+  ff <- tolower(.rp_site_txt(x, "flood_frequency") %||% NA_character_)
+  gk <- tolower(.rp_site_txt(x, "groundwater_kind") %||% NA_character_)
+  if (!is.na(gk) && grepl("observed|not seen|unknown", gk) && grepl("^(none|not|no)\\b", gk)) gk <- NA_character_
+  gd <- suppressWarnings(as.numeric(.rp_site(x, "groundwater_depth_cm")))
+  gd <- if (length(gd) == 1L) gd else NA_real_
+  ff_none <- !is.na(ff) && grepl("^(none|never|no)\\b", ff)
+  gw_none <- is.na(gd) && !is.na(gk) && grepl("^(none|absent|no)\\b", gk)
+  wt <- if (!is.na(ff) && !ff_none) TRUE
+        else if (!is.na(gd) || (!is.na(gk) && !gw_none)) TRUE
+        else if (ff_none && gw_none) FALSE
+        else NA
+  notes <- c(sprintf("alluvial material%s", if (word(pm)) sprintf(" (%s)", pm) else ""),
+             if (!is.na(vk)) sprintf("valley position %s", vp)
+             else if (!is.na(vp)) sprintf("valley position %s: not a value soilKey reads (undecided)", vp)
+             else "the position in the valley not recorded",
+             if (!is.na(wt)) sprintf("alluvial water table or flooding %s", if (wt) "recorded" else "recorded as none")
+             else "the alluvial water table and the flooding not recorded")
+  cond <- .rp_and3(c(pos, wt))
+  if (isFALSE(cond)) return(.rp_answer(FALSE, notes = notes))
+  if (is.na(cond) && site == "lenient")
+    return(.rp_answer(TRUE, notes = c(notes, "the site conditions not recorded: provisional (Q14)")))
+  .rp_answer(cond, missing = c(if (is.na(pos)) "valley_position", if (is.na(wt)) c("flood_frequency", "groundwater_kind")),
+             notes = notes)
+}
+
+#' The release of iron of the FS horizons (RP 2008, D14)
+#'
+#' In the layers of `codes`, the easily extractable iron (FFE) over the total
+#' iron above 0.20 (pp. 179-180), on one basis (fe_ffe_pct / (0.6994 x
+#' fe_total_pct)); a luvisol has less (p. 182). Not measured, the free over
+#' total iron above 0.50 (fe_dcb_pct) is evidence only, and the field route
+#' of the horizon stands (colour, structure): TRUE, noted. FALSE only when the
+#' FFE is measured and too low.
+#' @noRd
+iron_release_rp <- function(pedon, codes = "FS") {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  m <- .rp_members(fr, codes)
+  rows <- which(m %in% TRUE)
+  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE, notes = "no FS horizon"))
+  r <- lapply(fr$horizon_idx[rows], function(i) {
+    ft <- .rp_num(x, i, "fe_total_pct"); ffe <- .rp_num(x, i, "fe_ffe_pct"); fd <- .rp_num(x, i, "fe_dcb_pct")
+    if (!is.na(ffe) && isTRUE(ft > 0)) { q <- ffe / (0.6994 * ft); list(p = q > 0.2, note = sprintf("FFE/Fe total %s", format(signif(q, 3)))) }
+    else if (!is.na(fd) && isTRUE(ft > 0)) { q <- fd / (0.6994 * ft)
+      list(p = TRUE, note = sprintf("FFE not measured; Fe free/Fe total %s (evidence%s)", format(signif(q, 3)),
+                                    if (q > 0.5) "" else ": under 0.50")) }
+    else list(p = TRUE, note = "the iron release not measured: the field route of the FS (D14)")
+  })
+  p <- all(vapply(r, `[[`, NA, "p"))
+  .rp_answer(p, layers = fr$horizon_idx[rows], notes = unique(vapply(r, `[[`, "", "note")))
+}
+
+#' Carbonates in the fine earth of a set of horizons (RP 2008)
+#'
+#' Each layer of `codes` is carbonated (CaCO3 2 % or more, or an
+#' effervescence; .rp_carbonates()) or not; an effervescence only local
+#' (effervescence_extent local) is not carbonated (p. 181: the FS calciques
+#' are not effervescent, or only locally). `carbonated = TRUE`: the larger
+#' part of the thickness of the set carbonated, the FS carbonates of the
+#' fersialsols (p. 181; Hugo's decision D3, 2026-11-03); `carbonated =
+#' FALSE`: no layer carbonated, the FS calciques. `partial = TRUE`: some
+#' layers carbonated, not the larger part (the calciques imperfect, D3);
+#' `where = "below"` with the shallowest layer of the set not carbonated
+#' (bathycarbonate), `"above"` with it carbonated (recarbonate). Three-valued.
+#' @noRd
+carbonated_rp <- function(pedon, codes, carbonated = TRUE, partial = FALSE, where = c("any", "below", "above")) {
+  where <- match.arg(where)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  m <- .rp_members(fr, codes)
+  rows <- which(m %in% TRUE)
+  what <- paste(unlist(codes), collapse = ", ")
+  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE, notes = sprintf("no %s", what)))
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  rows <- rows[order(top[rows])]
+  v <- vapply(fr$horizon_idx[rows], function(i) {
+    cb <- .rp_carbonates(x, i)
+    if (identical(cb$extent, "local")) FALSE else cb$carbonated
+  }, NA)
+  th <- pmax(0, bot[rows] - pmax(top[rows], 0))
+  if (anyNA(th) || sum(th) <= 0) th <- rep(1, length(rows))
+  tot <- sum(th)
+  lo <- sum(th[v %in% TRUE]) / tot          # surely carbonated
+  hi <- sum(th[!(v %in% FALSE)]) / tot      # possibly carbonated
+  most <- if (lo > 0.5) TRUE else if (hi <= 0.5) FALSE else NA
+  none <- if (all(v %in% FALSE)) TRUE else if (any(v %in% TRUE)) FALSE else NA
+  p <- if (isTRUE(partial)) {
+    some <- if (any(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA
+    pos <- switch(where, any = TRUE, below = if (is.na(v[1L])) NA else !v[1L], above = v[1L])
+    .rp_and3(c(some, if (is.na(most)) NA else !most, pos))
+  } else if (isTRUE(carbonated)) most else none
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[rows] else integer(0),
+             missing = c("caco3_pct", "effervescence_class"),
+             evidence = list(carbonated_share = lo, carbonated_share_upper = hi),
+             notes = sprintf("%s: %s %% of the thickness carbonated in the fine earth%s (%s)", what,
+                             format(round(100 * lo)), if (hi > lo) sprintf(" (up to %s %%)", format(round(100 * hi))) else "",
+                             if (isTRUE(partial)) "some, not the larger part: D3"
+                             else if (isTRUE(carbonated)) "the larger part needed: D3"
+                             else "none needed, or only locally"))
+}
+
+#' The Aso of the grisols, by the chapter (RP 2008, Q17, D15)
+#'
+#' The first A horizon (the holorganic layers skipped) is the sombric Aso of
+#' p. 193: a moist value under 4.5 and chroma under 4, 4/3 excluded, not
+#' calcareous, and under permanent vegetation S/CEC 50-80 % and pH in water
+#' 5.5-6.5 (their tolerances of p. 64); cultivated (an L, or a cultivated
+#' land use) the complex is not tested (D19). The general definition of p. 13
+#' (value under 4, value + chroma under 6, organic carbon over 1.2 %) is
+#' read in the strict pass only: met by the chapter alone, the grisol is
+#' imperfect (D15). An Aso, LAso or LAh written with no colour recorded is
+#' the author's reading of its colour; the S/CEC, pH and carbonates recorded
+#' are still read, and a written Aso found calcareous fails (the review's R4).
+#' A layer with another A code (Ach, Aca, Aci ...) is
+#' no Aso.
+#' @noRd
+sombric_rp <- function(pedon) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mA <- .rp_members(fr, "A")
+  top <- .rp_tops(fr)
+  holo <- .rp_family_members("O")
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!(fr$code[ord] %in% holo) & (is.na(.rp_bots(fr)[ord]) | .rp_bots(fr)[ord] > 0)]
+  if (!length(ord)) return(.rp_answer(FALSE, notes = "no mineral layer"))
+  k <- ord[1L]
+  if (is.na(mA[k])) return(.rp_answer(NA, missing = .rp_missing_of(fr, k), notes = "the first layer is undecided"))
+  if (!isTRUE(mA[k])) return(.rp_answer(FALSE, notes = "the first mineral layer is no A"))
+  cd <- fr$code[k]
+  if (!cd %in% c("A", "Aso")) return(.rp_answer(FALSE, notes = sprintf("an %s, not a sombric A", cd)))
+  i <- fr$horizon_idx[k]
+  written <- identical(fr$route[k], "notation") && (cd == "Aso" || "h" %in% fr$features[[k]])
+  col <- .rp_colour(x, i, "moist")
+  v <- col$value; c1 <- col$chroma
+  nocol <- is.na(v) || is.na(c1)
+  if (nocol && !written) return(.rp_answer(NA, missing = col$missing, notes = "the colour of the A is not recorded"))
+  if (!nocol) {
+    chap <- v < 4.5 && c1 < 4 && !(v == 4 && c1 == 3)
+    if (!chap) return(.rp_answer(FALSE, notes = sprintf("%s: not sombric by the chapter (value under 4.5, chroma under 4, not 4/3, p. 193)",
+                                                        .rp_colour_text(col))))
+  }
+  nc <- .rp_not_carbonated(x, i)$passed
+  if (isFALSE(nc)) return(.rp_answer(FALSE, notes = "calcareous: no Aso"))
+  # written, the Aso is not calcareous unless the data say it is (recorded
+  # checks only; the review's R4)
+  if (written && cd != "A") nc <- TRUE
+  cult <- "L" %in% fr$overlay[[k]] || isTRUE(.rp_ploughed(x, i, TRUE)$passed)
+  sat <- if (cult) TRUE else {
+    b <- .rp_bs(x, i)$value; ph <- .rp_num(x, i, "ph_h2o")
+    ck <- c(.rp_meets(b, 50, "bs", "min"), .rp_meets(b, 80, "bs", "max"),
+            .rp_meets(ph, 5.5, "ph", "min"), .rp_meets(ph, 6.5, "ph", "max"))
+    # written with no colour: the values recorded are still read (R4)
+    if (nocol) ck <- ck[c(!is.na(b), !is.na(b), !is.na(ph), !is.na(ph))]
+    .rp_and3(ck)
+  }
+  if (isFALSE(sat)) return(.rp_answer(FALSE, notes = "under permanent vegetation the Aso has S/CEC 50-80 % and pH 5.5-6.5 (p. 193)"))
+  if (nocol)
+    return(.rp_answer(TRUE, layers = i, notes = c(sprintf("%s written, its colour not recorded", fr$designation[k]),
+                                                  if (cult) "cultivated: the complex not tested (D19)")))
+  gen <- TRUE
+  if (!.rule_tolerant(.RP_SYSTEM)) {
+    oc <- .rp_num(x, i, "oc_pct")
+    gen <- v < 4 && v + c1 < 6
+    gen <- if (!gen) FALSE else if (is.na(oc)) (if (written) TRUE else NA) else oc > 1.2
+  }
+  p <- .rp_and3(c(nc, sat, gen))
+  .rp_answer(p, layers = if (isTRUE(p)) i else integer(0),
+             missing = c(if (is.na(nc)) c("caco3_pct", "effervescence_class"), if (is.na(sat)) c("bs_pct", "ph_h2o"),
+                         if (is.na(gen)) "oc_pct"),
+             notes = c(sprintf("%s: sombric by the chapter (p. 193)", .rp_colour_text(col)),
+                       if (isFALSE(gen)) "not by the general definition of p. 13 (value under 4, value + chroma under 6, organic carbon over 1.2 %): imperfect (D15)",
+                       if (cult) "cultivated: the complex not tested (D19)"))
 }

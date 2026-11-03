@@ -14,7 +14,16 @@ make_rp2008_example(
     "calcisols", "magnesisols", "calcarisols", "chernosols_hapliques", 
     
     "chernosols_typiques", "chernosols_melanoluviques", "colluviosols",
-    "cryosols_histiques", "cryosols_mineraux")
+    "cryosols_histiques", "cryosols_mineraux", "ferrallitisols_meubles",
+    "ferrallitisols_nodulaires", "ferrallitisols_petroxydiques",
+    "ferrallitisols_duroxydiques", "oxydisols_meubles", "oxydisols_nodulaires",
+    "oxydisols_petroxydiques", "ferruginosols_meubles", "ferruginosols_semiluviques",
+    "ferruginosols_luviques", "ferruginosols_petroxydiques", "fersialsols_carbonates",
+    "fersialsols_calciques", "fersialsols_insatures", "fersialsols_eluviques", 
+    
+    "fluviosols_bruts", "fluviosols_juveniles", "fluviosols_typiques",
+    "fluviosols_brunifies", "grisols_eluviques", "grisols_degrades", "grisols_hapliques",
+    "gypsosols_hapliques", "gypsosols_petrogypsiques")
 )
 }
 \arguments{
@@ -33,14 +42,26 @@ make_rp2008_example(
 \code{"calcarisols"}, \code{"chernosols_hapliques"},
 \code{"chernosols_typiques"}, \code{"chernosols_melanoluviques"},
 \code{"colluviosols"}, \code{"cryosols_histiques"},
-\code{"cryosols_mineraux"}.}
+\code{"cryosols_mineraux"}, \code{"ferrallitisols_meubles"},
+\code{"ferrallitisols_nodulaires"}, \code{"ferrallitisols_petroxydiques"},
+\code{"ferrallitisols_duroxydiques"}, \code{"oxydisols_meubles"},
+\code{"oxydisols_nodulaires"}, \code{"oxydisols_petroxydiques"},
+\code{"ferruginosols_meubles"}, \code{"ferruginosols_semiluviques"},
+\code{"ferruginosols_luviques"}, \code{"ferruginosols_petroxydiques"},
+\code{"fersialsols_carbonates"}, \code{"fersialsols_calciques"},
+\code{"fersialsols_insatures"}, \code{"fersialsols_eluviques"},
+\code{"fluviosols_bruts"}, \code{"fluviosols_juveniles"},
+\code{"fluviosols_typiques"}, \code{"fluviosols_brunifies"},
+\code{"grisols_eluviques"}, \code{"grisols_degrades"},
+\code{"grisols_hapliques"}, \code{"gypsosols_hapliques"},
+\code{"gypsosols_petrogypsiques"}.}
 }
 \value{
 A \code{\link{PedonRecord}}.
 }
 \description{
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 29 of the first nine GER), in the RP notation
+reference implemented (the 53 of the first fifteen GER), in the RP notation
 (\code{site$designation_system = "rp2008"}) with the properties their
 tests read. They are not real profiles.
 }

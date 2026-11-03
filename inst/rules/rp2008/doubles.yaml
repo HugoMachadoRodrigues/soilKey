@@ -60,3 +60,21 @@ doubles:
   - codes: [cryosols_mineraux, redoxisols]
     page: "142"
     status: later
+  # the pairs of the chapters of part 5 (v0.9.348) with references of later releases:
+  # a fluviosol with redox features from under 50 cm continuing over 50 cm is
+  # a rédoxisol fluvique, the double among the candidates (Q8)
+  - codes: [fluviosols_juveniles, redoxisols]
+    page: "184, 188"
+    status: later
+    note: "Q8: the rédoxisol fluvique in the name, the double fluviosol-rédoxisol among the candidates"
+  - codes: [fluviosols_typiques, redoxisols]
+    page: "184, 188"
+    status: later
+    note: "Q8: the rédoxisol fluvique in the name, the double fluviosol-rédoxisol among the candidates"
+  - codes: [fluviosols_brunifies, redoxisols]
+    page: "187"
+    status: later
+    note: "Q8: the rédoxisol fluvique in the name, the double fluviosol brunifié-rédoxisol among the candidates"
+  - codes: [peyrosols, fluviosols_bruts]
+    page: "188"
+    status: later

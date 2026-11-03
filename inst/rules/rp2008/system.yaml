@@ -24,10 +24,10 @@ citation: >
   Baize D., Girard M.-C. (coord.) (2009). Référentiel pédologique 2008.
   Association française pour l'étude du sol. Éditions Quæ, Versailles. 435 pp.
 version: "Référentiel pédologique 2008 (third edition)"
-implementation_status: "soilKey v0.9.346 -- the 29 references of the first nine groups of references (alocrisols, andosols, anthroposols, arénosols, brunisols, the calcium and magnesium chapter, chernosols, colluviosols, cryosols), attached by their sequences of reference horizons, the side tests of each chapter and the tolerances of p. 64; the reference horizons from the RP notation or on the data (v0.9.341, v0.9.343). The 81 references of the other 25 groups are not implemented yet: a profile that shows their horizons is told so, in the candidates, and its name is provisional"
+implementation_status: "soilKey v0.9.348 -- the 53 references of the first fifteen groups of references: the nine of v0.9.346 (alocrisols, andosols, anthroposols, arénosols, brunisols, the calcium and magnesium chapter, chernosols, colluviosols, cryosols) and, since v0.9.348, the ferrallitisols et oxydisols, ferruginosols, fersialsols, fluviosols, grisols and gypsosols, attached by their sequences of reference horizons, the side tests of each chapter and the tolerances of p. 64; the reference horizons from the RP notation or on the data (v0.9.341, v0.9.343). The 57 references of the other 19 groups are not implemented yet: a profile that shows their horizons is told so, in the candidates, and its name is provisional"
 source: |
   The definitions of the reference horizons (pp. 6-28), the tolerances
   (p. 64), the rapid key (pp. 66-68) and the chapters of the references
-  (pp. 69-145 in this release). The RP gives no key: every reference is
+  (pp. 69-200 in this release). The RP gives no key: every reference is
   tested, and the choice of one main name among those that attach is
   soilKey's (precedence.yaml, doubles.yaml, readings.yaml).
