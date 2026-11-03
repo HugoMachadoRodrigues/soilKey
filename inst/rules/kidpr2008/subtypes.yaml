@@ -29,7 +29,10 @@
 #              organic, peat, agro, eluvial, middle, hydrogenic,
 #              halomorphic, parent, mineral, any; profile for the features
 #              of the whole profile)
-# host, place  where the list narrows the hosts of the feature
+# host, place  where the list narrows the hosts of the feature (place: one
+#              or several, the entry named where it holds at one)
+# except       horizons left out of the feature's hosts (g where the list
+#              has ELg)
 # only_types   the type a sentence of 3.2 names for the subtype (Q16: the
 #              list decides where a feature applies; a sentence of 3.2
 #              restricts it only when it names a single type)
@@ -184,10 +187,11 @@ lists:
     - {key: e_hf, index: "[e-hf]", name: "С микропрофилем подзола", name_en: "with a podzol microprofile", hosts: [EL], place: "on", page: 79,
        notes: "The micro-podzol is written at the top of EL or inside it (p. 60: O-[e-hf]-EL-BEL-BT-C): read on EL and the small horizons beside or inside it."}
     - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 79}
-    - {key: crm, index: crm, name: "Криометаморфизованные", name_en: "cryo-metamorphised", hosts: [BT, CR], only_types: ["[CA01]"], page: 80,
+    - {key: crm, index: crm, name: "Криометаморфизованные", name_en: "cryo-metamorphised", hosts: [BT], only_types: ["[CA01]"], page: 80,
        notes: "crm: 3.2 names the type of the podzolic soils (Подзолистые, p. 63). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
     - {key: ELg, index: ELg, name: "Глееподзолистые", name_en: "gley-podzolic", hosts: [EL], page: 80}
-    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 80}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], except: [EL], page: 80,
+       notes: "The list has ELg: g is read on the layers other than EL; gleying in EL alone is ELg alone, in EL and below both (Hugo, 2026-11-03)."}
     - {key: ko, index: ko, name: "Контактно-осветленные", name_en: "contact-bleached", hosts: [any], page: 80}
     - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 80}
     - {key: nn, index: nn, name: "Конкреционные", name_en: concretionary, hosts: [EL, E], page: 80,
@@ -341,7 +345,8 @@ lists:
     - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 91}
     - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 91,
        notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
-    - {key: crm, index: crm, name: "Криометаморфизованные", name_en: "cryo-metamorphised", hosts: [BT, CR], page: 91}
+    - {key: crm, index: crm, name: "Криометаморфизованные", name_en: "cryo-metamorphised", hosts: [CR], host: [CR], place: ["on", over], page: 91,
+       notes: "3.2 defines crm over BT; the cryozems have no BT: read on or over their CR, by analogy, as Q17 reads pl on CRM."}
     - {key: pl, index: pl, name: "Палево-метаморфизованные", name_en: "pale-metamorphised", hosts: [CR, CRM], page: 91}
     - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 91}
     - {key: ocr, index: ocr, name: "Криогомогенные", name_en: "cryo-homogeneous", hosts: [CR], only_types: ["[CG03]"], page: 91,
@@ -545,11 +550,14 @@ lists:
     - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 111}
     - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 111}
     - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 111}
-    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 111}
-    - {key: fn, index: fn, name: "Оруденелые", name_en: "ore-bearing", hosts: [G, BHF], page: 111}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [D, EL], host: [D, EL], page: 111,
+       notes: "The eluvial soils have no BHF or C: read on the eluvial EL or the underlying rock D, by analogy."}
+    - {key: fn, index: fn, name: "Оруденелые", name_en: "ore-bearing", hosts: [D], host: [D], page: 111,
+       notes: "The eluvial soils have no G or BHF: read on the gleyed underlying rock D (DG of the formulas), by analogy."}
     - {key: nn, index: nn, name: "Конкреционные", name_en: concretionary, hosts: [EL, E], page: 111,
        notes: "3.2 names the subtype segregation-bleached; the list prints concretionary."}
-    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 111}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [D], host: [D], page: 111,
+       notes: "The eluvial soils have no G or BHF: read on the gleyed underlying rock D (DG of the formulas), by analogy."}
     - {key: ek, index: ek, name: "Контактно-осветленные", name_en: "contact-bleached", hosts: [any], page: 111}
     - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 111}
     - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 111}

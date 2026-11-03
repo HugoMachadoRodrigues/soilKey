@@ -83,7 +83,7 @@
 # its place.
 .st_plan <- function(e) {
   meta <- .kidpr_ft_meta()
-  parts <- .kidpr_ft_parts(as.character(e$feature %||% e$index), e[["host"]], e$place)
+  parts <- .kidpr_ft_parts(as.character(e$feature %||% e$index), .kidpr_st_host(e), e$place[1L])
   lapply(parts, function(p) {
     m <- meta[[p$code]]
     H <- if (is.null(p$host)) .kidpr_ft_hosts(m$hosts, m$not_on) else .kidpr_ft_hosts(p$host)
@@ -96,6 +96,9 @@
 .st_add_host <- function(tok, H) {
   h <- H[1L]
   if (h %in% c("O", "T", "TO", "TE", "TJ", "H")) return(c(h, tok))
+  # the parent rock: the loose rock C of the formula becomes D (i is read at
+  # the top of the parent rock)
+  if (h %in% c("C", "D") && .st_index(utils::tail(tok, 1L)) %in% c("C", "D")) return(c(utils::head(tok, -1L), h))
   if (h %in% c("C", "D", "G", "Q", "R")) return(c(tok, h))
   c(utils::head(tok, -1L), h, utils::tail(tok, 1L))
 }
@@ -104,7 +107,7 @@
 .st_apply <- function(tok, e) {
   if (!is.null(e$test)) {
     if (!identical(e$test, "layered_ochric")) return(NULL)
-    return(c(tok[1L], rep(c("BHF", "BAN", "C\""), 4L)))
+    return(c(tok[1L], rep(c("BHF", "BAN", "C\""), 5L)))
   }
   for (p in .st_plan(e)) {
     code <- p$code
@@ -115,7 +118,7 @@
         tok[k[1L]] <- paste0("TT", sub("^TT", "", code)); next
       }
       if (code %in% c("r", "rh", "ur", "rr", "rx")) { tok <- c(code, tok); next }
-      if (code == "x") { tok[length(tok)] <- paste0(tok[length(tok)], "+X"); next }
+      if (code == "x") { tok[1L] <- paste0(tok[1L], "+X"); next }
       k <- max(which(!is.na(ix)))
       tok[k] <- .st_write(tok[k], code); next
     }
@@ -145,12 +148,23 @@
   site <- if (d == "CJ") list(wind_deflation = TRUE) else list()
   ctx <- .kidpr_ft_context(.st_mk(tok, site), d)
   ok <- stats::setNames(rep(NA, length(put)), put)
+  # x is read by the whole classification: an X within 30 cm keys the soil
+  # to the chemozems in trunk C after CU
+  if (any(vapply(ents[put], function(e) identical(e$key, "x"), NA))) {
+    # on the division's example, which keys to it, the X on its top layer
+    p <- make_kidpr2008_example(d)
+    h <- data.table::copy(p$horizons)
+    h$designation[1L] <- paste0(h$designation[1L], "+X")
+    p$horizons <- h
+    r <- classify_kidpr2008(p, on_missing = "silent")
+    ok[as.character(put)] <- "x" %in% r$levels$code[r$levels$level == "subtype"]
+    return(ok)
+  }
   run <- put[vapply(ents[put], function(e) is.null(e$test) && !identical(e$scale, "carbonate"), NA)]
-  if (length(run)) {
-    fr <- .kidpr_features(ctx, lapply(ents[run], function(e)
-      list(feature = as.character(e$feature %||% e$index), host = if (!is.null(e[["host"]])) unlist(e[["host"]]), place = e$place)),
-      division = d)
-    ok[as.character(run)] <- fr$passed
+  for (k in run) {
+    e <- ents[[k]]
+    ok[as.character(k)] <- .kidpr_st_places(ctx, list(feature = as.character(e$feature %||% e$index),
+                                                     host = .kidpr_st_host(e), place = e$place), d)$passed
   }
   for (k in setdiff(put, run)) {
     e <- ents[[k]]
@@ -191,8 +205,9 @@
           if (length(e$only_types) && !(t$code %in% unlist(e$only_types))) next
           if (.kidpr_st_in_formula(e, t$formula)) next
           grp <- if (identical(e$scale, "carbonate")) "carbonate" else if (e$index %in% c("BF", "BH")) "bhf"
-                 else if (e$index %in% c("r", "rh", "ur", "rr", "rx")) "deposit" else if (!is.null(e$test)) "test" else "plain"
-          alone <- grp %in% c("deposit", "test")
+                 else if (e$index %in% c("r", "rh", "ur", "rr", "rx")) "deposit" else if (!is.null(e$test)) "test"
+                 else if (identical(e$key, "x")) "x" else "plain"
+          alone <- grp %in% c("deposit", "test", "x")
           if (alone != (pass %% 2L == 0L)) next
           if (alone && length(put)) next
           if (grp != "plain" && grp %in% grps) next
@@ -375,9 +390,9 @@ test_that("typical when every entry is FALSE; provisional, with the undecided li
   expect_identical(pd$level, "subtype")
   expect_identical(pd$code, "s")
   expect_identical(pd$name, "saline")
-  # nothing passes and one is undecided: the name is the type's alone (no
-  # effervescence nor pH recorded in the C: residual carbonates undecided)
-  p <- .sb_P(.sb_L(0, 15, designation = "Ah", munsell_value_dry = 5, munsell_chroma_dry = 2,
+  # a field observation not recorded is absent: no effervescence recorded in
+  # the C is no residual carbonate (0.9.344), and the soil is typical
+  ca4 <- function() .sb_P(.sb_L(0, 15, designation = "Ah", munsell_value_dry = 5, munsell_chroma_dry = 2,
                    structure_type = "granular", structure_grade = "moderate", ph_h2o = 5.0, oc_pct = 2,
                    clay_pct = 15, silt_pct = 50, sand_pct = 35),
              .sb_L(15, 35, designation = "E", munsell_value_dry = 7, munsell_chroma_dry = 2, structure_type = "platy",
@@ -386,13 +401,23 @@ test_that("typical when every entry is FALSE; provisional, with the undecided li
                    structure_type = "blocky", structure_grade = "strong", clay_pct = 30, silt_pct = 40,
                    sand_pct = 30, clay_films_amount = "common"),
              .sb_L(90, 150, designation = "C", ph_h2o = NA, effervescence_class = NA))
+  r <- classify_kidpr2008(ca4(), on_missing = "silent")
+  expect_identical(.sb_type(r), "[CA04]")
+  expect_identical(r$name, "Sod-podzolic [typical]")
+  expect_identical(r$trace$subtype$ca$status, "not named")
+  expect_length(r$provisional_because, 0L)
+  # nothing passes and one is undecided: the name is the type's alone (no
+  # frost regime recorded: the permafrost sign undecided, a measurement)
+  p <- ca4()
+  p$site$frost_regime <- NULL
   r <- classify_kidpr2008(p, on_missing = "silent")
   expect_identical(.sb_type(r), "[CA04]")
   expect_false("subtype" %in% r$levels$level)
   expect_identical(r$name, "Sod-podzolic")
   expect_identical(r$qualifiers$name_native, "\u0414\u0435\u0440\u043d\u043e\u0432\u043e-\u043f\u043e\u0434\u0437\u043e\u043b\u0438\u0441\u0442\u044b\u0435")
-  expect_identical(r$provisional_because, "subtype:ca")
-  expect_identical(r$trace$subtype$ca$status, "undecided")
+  expect_identical(r$provisional_because, "subtype:perm")
+  expect_identical(r$trace$subtype$perm$status, "undecided")
+  expect_true("frost_regime" %in% r$missing_data)
   # measured, the salts and the gypsum decide: nodules and gypsum named
   p <- .sb_P(.sb_AU(0, 40, designation = "Ah", soluble_salts_pct = 0.05, gypsum_visible_pct = 0),
              .sb_BCA(40, 90, designation = "Bk", secondary_carbonates_form = "soft concretions",
@@ -409,7 +434,11 @@ test_that("the subtypes are named in the order of the list, whatever the order o
   # tongues on the BEL, gleying in the BT: g (9th) before y (19th)
   r <- .sb_of(c("O:5", "EL:15", "BELy:15", "BTg:40", "C:30"))
   expect_identical(.sb_codes(r), c("g", "y"))
-  r <- .sb_of(c("O:5", "ELg:15", "BELy:15", "BT:40", "C:30"))
+  # where the list has ELg, g is read on the layers other than EL (Hugo,
+  # 2026-11-03): gleying in EL alone is ELg alone, in the BT too both
+  r <- .sb_of(c("O:5", "ELg:15", "BEL:15", "BT:40", "C:30"))
+  expect_identical(.sb_codes(r), "ELg")
+  r <- .sb_of(c("O:5", "ELg:15", "BELy:15", "BTg:40", "C:30"))
   expect_identical(.sb_codes(r), c("ELg", "g", "y"))
   pos <- match(.sb_codes(r), vapply(.kidpr_st_list("CA"), `[[`, "", "key"))
   expect_false(is.unsorted(pos))
@@ -493,13 +522,56 @@ test_that("the carbonate profile is one of a scale; the double el by place; the 
   # the double el of CI: in the AU, solodised; under it, eluviated
   expect_identical(ch(.sb_of(c("AUel:40", "BCA:40", "Cca:30"))), "AUel")
   expect_identical(ch(.sb_of(c("AU:40", "BCAel:40", "Cca:30"))), "el")
-  # more than three runs of BHF and BAN in the ash
-  r <- .sb_of(c("AO:8", "BH:10", "BAN:30", "C\":20", "[BHF]:10", "[BAN]:10", "C\":10", "[BHF]:10", "[BAN]:10",
-                "C\":10", "[BHF]:10", "[BAN]:10", "C\":10"))
+  # more than three elementary profiles buried in the ash, the surface one
+  # not counted (p. 127): four are, three are not
+  bur <- function(n) c("AO:8", "BH:10", "BAN:30", "C\":20", rep(c("[BHF]:10", "[BAN]:10", "C\":10"), n))
+  r <- .sb_of(bur(4L))
   expect_identical(.sb_type(r), "[BB01]")
   expect_identical(ch(r), "BHF_BAN3")
+  expect_true(is.na(ch(.sb_of(bur(3L)))))
   r <- .sb_of(c("AO:8", "BH:10", "BAN:30", "C\":20", "[AO]:5", "[BAN]:10", "C\":10"))
   expect_true(is.na(ch(r)))
+})
+
+test_that("overlays, deposits over a buried soil, hosts by analogy and optional features (review of 2026-11-03)", {
+  skip_on_cran()
+  # a V or an S laid over a host layer is v or s written on it
+  r <- .sb_of(c("AU:40", "BCA+V:40", "Cca:30"))
+  expect_identical(.sb_type(r), "[CI01]")
+  expect_identical(.sb_codes(r), "v")
+  expect_match(paste(r$trace$subtype$v$evidence, collapse = " "), "V laid over", fixed = TRUE)
+  r <- .sb_of(c("AU:40", "BCA+S:40", "Cca:30"))
+  expect_identical(.sb_codes(r), "s")
+  # a soil keyed under a thin deposit keeps its buried horizons; the deposit
+  # is rh (a stratified horizon, humified) or r (alluvium)
+  r <- .sb_of(c("RU:20", "[AU]:30", "[BCAnc]:40", "[Cca]:30"))
+  expect_identical(.sb_type(r), "[CI01]")
+  expect_identical(.sb_codes(r), c("nc", "rh"))
+  r <- .sb_of(c("C~~:20", "[AY]:15", "[EL]:15", "[BEL]:15", "[BTg]:30", "[C]:30"))
+  expect_identical(.sb_type(r), "[CA04]")
+  expect_identical(.sb_codes(r), c("g", "r"))
+  # a deposit over 40 cm is no r or rh
+  expect_true(is.na(.kidpr_st_rdeposit(.kidpr_ft_context(.sb_ped(c("RU:45", "[AU]:30", "[BCA]:40")), "CI"))$kind))
+  # CG: crm on or over the CR; CO: ox and fn on the gleyed rock, ff on EL or D
+  expect_identical(.sb_codes(.sb_of(c("O:5", "crm:5", "CR:30", "C\u22a5:30"))), "crm")
+  expect_identical(.sb_codes(.sb_of(c("O:5", "CRcrm:30", "C\u22a5:30"))), "crm")
+  expect_identical(.sb_codes(.sb_of(c("O:5", "EL:20", "DGox:40"))), "ox")
+  expect_identical(.sb_codes(.sb_of(c("O:5", "EL:20", "DGfn:40"))), "fn")
+  expect_identical(.sb_codes(.sb_of(c("O:5", "ELff:20", "D:40"))), "ff")
+  # an optional (ca) of the formula does not write ca
+  expect_false(.kidpr_st_in_formula(.sb_entry("CR", "ca"), "PB-BI-C(ca)"))
+  expect_true(.kidpr_st_in_formula(.sb_entry("CR", "ca"), "PB-BCA-Cca"))
+  r <- .sb_of(c("PB:25", "BIca:40", "C:30"))
+  expect_identical(.sb_codes(r), "ca")
+  # the formula of CB05 writes BF and takes either BHF: the trace says which
+  r <- .sb_of(c("AY:15", "BF:30", "C:30"))
+  expect_match(paste(r$trace$subtype$BF$notes, collapse = " "), "the BHF of this soil reads BF", fixed = TRUE)
+  # the Russian full name and the formula are not printed as qualifiers
+  m <- character(0)
+  o <- utils::capture.output(m <- utils::capture.output(print(r), type = "message"))
+  out <- paste(c(o, m), collapse = "\n")
+  expect_match(out, "Qualifiers", fixed = TRUE)
+  expect_false(grepl("AY-BF-C", out, fixed = TRUE))
 })
 
 test_that("no subtypes without a type; the app's card shows them as the Hungarian ones", {
@@ -535,9 +607,15 @@ test_that("every entry of every list is reachable on a profile of a type of its 
   out <- .st_reach_all()
   expect_identical(nrow(out), 558L)
   # the saline and gypsum-bearing subtypes of the alkaline soils: every type
-  # of CK writes BCAs,cs, so they are never named (Q16)
+  # of CK writes BCAs,cs, so they are never named (Q16); x, an X within 30
+  # cm, keys a soil of trunk C to the chemozems before every division of
+  # the trunk but the lithozems and the halomorphic soils
   miss <- paste(out$division, out$key)[!(out$named %in% TRUE)]
-  expect_setequal(miss, c("CK s", "CK cs"))
+  L <- .kidpr_st_rules()$lists
+  after_cu <- setdiff(grep("^C", names(L), value = TRUE), c("CP", "CL"))
+  with_x <- after_cu[vapply(after_cu, function(d) "x" %in% vapply(L[[d]], `[[`, "", "key"), NA)]
+  expect_setequal(miss, c("CK s", "CK cs", paste(with_x, "x")))
+  expect_true(all(out$named[out$key == "x" & !(out$division %in% after_cu)] %in% TRUE))
   ty <- load_rules("kidpr2008")$types
   for (k in which(out$division == "CK" & out$key %in% c("s", "cs")))
     expect_true(all(vapply(.kidpr_ty_list(ty, "CK"), function(t)

@@ -171,8 +171,12 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
                              ifelse(cd$in_name, ", in the name", "")), collapse = "; ")
         cli::cli_text("Candidates: {txt}")
       }
-      if (length(self$qualifiers) > 0) {
-        cli::cli_text("Qualifiers: {paste(unlist(self$qualifiers), collapse = ', ')}")
+      # v0.9.345: the Russian full name and the formula of the type ride in
+      # $qualifiers but are no qualifiers
+      ql <- self$qualifiers
+      if (!is.null(names(ql))) ql <- ql[!(names(ql) %in% c("name_native", "subtype_native", "type_formula"))]
+      if (length(ql) > 0) {
+        cli::cli_text("Qualifiers: {paste(unlist(ql), collapse = ', ')}")
       }
       if (!is.na(self$evidence_grade)) {
         cli::cli_text("Evidence grade: {self$evidence_grade}")

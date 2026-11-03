@@ -74,7 +74,8 @@
 # The horizons of a formula as written: one row per token (a token "CG~~
 # (CQ~~)" read as both), with its index, the rock flag of a gleyed or
 # quasigleyed rock (CG, CQ), the features written on it, the modification
-# (BF, BH) and the mark (~~, ").
+# (BF, BH) and the mark (~~, "). A feature written in parentheses is
+# optional (C(ca), Q(s)): the formula does not write it, so it is left out.
 .kidpr_st_formula_tokens <- function(formula) {
   if (is.null(formula) || is.na(formula) || !nzchar(formula)) return(list())
   key <- paste0("st_formula:", formula)
@@ -83,6 +84,7 @@
   toks <- .kidpr_split_outside(as.character(formula), "-")
   toks <- unlist(lapply(toks, function(t) strsplit(trimws(t), "\\s+")[[1L]]))
   out <- lapply(toks, function(t) {
+    t <- gsub("\\([a-z,]+\\)", "", t)
     r <- tryCatch(.kidpr_parse_one(t), error = function(e) NULL)
     if (is.null(r) || is.na(r$index %||% NA)) return(NULL)
     list(index = as.character(r$index), rockflag = as.character(r$rockflag %||% NA_character_),
@@ -100,8 +102,12 @@
 .kidpr_st_parts <- function(e) {
   f <- as.character(e$feature %||% e$index)
   if (!is.null(e$test)) return(list())
-  parts <- tryCatch(.kidpr_ft_parts(f, e[["host"]], e$place), error = function(err) list())
-  lapply(parts, function(p) list(code = p$code, hosts = if (is.null(p$host)) NULL else .kidpr_ft_hosts(p$host)))
+  parts <- tryCatch(.kidpr_ft_parts(f, .kidpr_st_host(e), e$place), error = function(err) list())
+  voc <- .kidpr_vocabulary()
+  alias_code <- function(x) if (x %in% names(voc$feature_aliases)) unname(voc$feature_aliases[[x]]) else x
+  plain <- is.null(e[["host"]]) && length(parts) == 1L && identical(parts[[1L]]$code, alias_code(f))
+  lapply(parts, function(p) list(code = p$code, hosts = if (is.null(p$host)) NULL else .kidpr_ft_hosts(p$host),
+                                 full = plain))
 }
 
 # Is the feature of an entry written in the formula of the type: on one of
@@ -116,7 +122,7 @@
   parts <- .kidpr_st_parts(e)
   if (!length(parts)) return(FALSE)
   in_full <- .kidpr_st_rules()$in_full %||% list()
-  written <- function(code, hosts) {
+  written <- function(code, hosts, full) {
     for (t in toks) {
       on_host <- is.null(hosts) || identical(hosts, "any") || t$index %in% hosts
       if (code %in% c("BF", "BH")) {
@@ -126,12 +132,12 @@
       if (code == "TT~~" && identical(t$index, "TT") && isTRUE(grepl("~", t$mark))) return(TRUE)
       if (code == "TT\"" && identical(t$index, "TT") && isTRUE(grepl("\"", t$mark))) return(TRUE)
       if (on_host && code %in% t$features) return(TRUE)
-      full <- c(t$index, if (!is.na(t$rockflag)) t$rockflag)
-      if (is.null(hosts) && any(vapply(full, function(h) identical(as.character(in_full[[h]] %||% ""), code), NA))) return(TRUE)
+      whole <- c(t$index, if (!is.na(t$rockflag)) t$rockflag)
+      if (isTRUE(full) && any(vapply(whole, function(h) identical(as.character(in_full[[h]] %||% ""), code), NA))) return(TRUE)
     }
     FALSE
   }
-  all(vapply(parts, function(p) written(p$code, p$hosts), NA))
+  all(vapply(parts, function(p) written(p$code, p$hosts, p$full), NA))
 }
 
 
@@ -144,12 +150,17 @@
   length(parts) > 0L && all(vapply(parts, function(p) identical(meta[[p$code]]$place, "profile"), NA))
 }
 
-# The context of the soil's own horizons: a buried soil under them (layers
-# in brackets, the FAO suffix b) is left out, so that the gleyic horizon of a
-# soil buried under a stratozem does not name the stratozem gleyic (the
-# book names the buried soil after the stratozem, p. 128). A profile whose
-# every layer is buried (a soil under a deposit) keeps them all.
-.kidpr_st_own_context <- function(ctx) {
+# The context of the soil's own horizons: where the type is keyed on the
+# layers over a buried soil (a formula that writes the buried soil as [ABC]
+# or {ABC}: the stratozems on a buried soil, the secondary solonchaks, the
+# volcanic soils), the buried soil under them (layers in brackets, the FAO
+# suffix b) is left out, so that the gleyic horizon of a soil buried under a
+# stratozem does not name the stratozem gleyic (the book names the buried
+# soil after the stratozem, p. 128). Otherwise the type was keyed on the
+# buried soil itself (a soil under a deposit of 40 cm or less) and every
+# layer stays.
+.kidpr_st_own_context <- function(ctx, formula = NA_character_) {
+  if (is.na(formula) || !grepl("[[{]ABC[]}]", formula)) return(ctx)
   bur <- vapply(ctx$main, function(j) isTRUE(.kidpr_buried_des(ctx$x, j)), NA)
   if (!any(bur) || all(bur)) return(ctx)
   first <- which(!bur)[1L]
@@ -165,20 +176,92 @@
 }
 
 
+# The hosts an entry passes to the dispatcher: the list's own (`host`), or
+# the feature's less the horizons the list names apart (`except`: where the
+# list has ELg, g is read on the layers other than EL; Hugo, 2026-11-03);
+# NULL for the hosts of the feature.
+.kidpr_st_host <- function(e) {
+  if (!is.null(e[["host"]])) return(as.character(unlist(e[["host"]])))
+  if (is.null(e$except)) return(NULL)
+  m <- .kidpr_ft_meta()[[as.character(e$feature %||% e$index)]]
+  setdiff(.kidpr_ft_hosts(m$hosts, m$not_on), as.character(unlist(e$except)))
+}
+
+# An entry read on the dispatcher at each of its places (CG's crm on or over
+# CR), the verdicts joined: named where it holds at one of them.
+.kidpr_st_places <- function(ctx, d, div) {
+  pl <- as.character(unlist(d$place))
+  if (length(pl) <= 1L) return(.kidpr_features(ctx, list(d), division = div))
+  rs <- .kidpr_features(ctx, lapply(pl, function(x) utils::modifyList(d, list(place = x))), division = div)
+  p <- .kidpr_or(rs$passed)
+  use <- if (isTRUE(p)) which(rs$passed %in% TRUE) else if (is.na(p)) which(is.na(rs$passed)) else seq_len(nrow(rs))
+  out <- rs[use[1L], , drop = FALSE]
+  out$passed <- p
+  out$place <- paste(pl, collapse = "|")
+  out$layers <- I(list(sort(unique(unlist(rs$layers[use])))))
+  out$evidence <- .kidpr_evidence(unlist(rs$evidence[use]))
+  out$missing <- I(list(unique(unlist(rs$missing[use]))))
+  out
+}
+
+# A V or an S laid over a layer of the Russian notation (BCA+V, AU+S) is the
+# feature v or s written on it: the vertic or saline subtype.
+.kidpr_st_overlay <- function(ctx, code) {
+  x <- ctx$x
+  if (!isTRUE(x$kidpr)) return(list(passed = FALSE))
+  ov <- toupper(code)
+  hit <- Filter(function(j) isTRUE(x$des$known[j]) && ov %in% (x$des$overlay[[j]] %||% character(0)), ctx$ord)
+  if (!length(hit)) return(list(passed = FALSE))
+  hit <- unlist(hit)
+  list(passed = TRUE, layers = hit, note = sprintf("%s laid over %s: the feature %s written on it", ov,
+                                                   paste(vapply(hit, function(j) .kidpr_ft_lab(ctx, j), ""), collapse = ", "), code))
+}
+
+# A deposit of 5-40 cm at the surface written as a horizon, over a buried
+# humus or organic horizon (in brackets): a stratified horizon RU, RY or RJ
+# (humified) is the feature rh, alluvium C~~ (not humified) the feature r,
+# as key 2.1 reads a deposit of 40 cm or less (positions 35 and 38).
+.kidpr_st_rdeposit <- function(ctx) {
+  x <- ctx$x
+  none <- list(kind = NA_character_, layers = integer(0), note = character(0))
+  if (!isTRUE(x$kidpr) || !length(ctx$main)) return(none)
+  m <- ctx$main
+  kind_of <- function(j) {
+    if (!isTRUE(x$des$known[j]) || isTRUE(.kidpr_buried_des(x, j))) return(NA_character_)
+    ix <- x$des$index[j]
+    if (ix %in% c("RU", "RY", "RJ")) "rh" else if (identical(ix, "C") && isTRUE(grepl("~", x$des$mark[j]))) "r" else NA_character_
+  }
+  k1 <- kind_of(m[1L])
+  if (is.na(k1)) return(none)
+  n <- 1L
+  while (n < length(m) && identical(kind_of(m[n + 1L]), k1)) n <- n + 1L
+  rows <- m[seq_len(n)]
+  th <- x$bot[rows[n]] - x$top[rows[1L]]
+  nx <- if (n < length(m)) m[n + 1L] else NA_integer_
+  if (is.na(th) || th < 5 || th > 40 || is.na(nx) || !isTRUE(.kidpr_buried_des(x, nx)) ||
+      !isTRUE(.kidpr_ft_buried_humus(ctx, nx))) return(none)
+  list(kind = k1, layers = rows, note = sprintf("%s cm of %s over a buried horizon (%s): the feature %s (key 2.1, positions %s)",
+                                                format(th), if (k1 == "rh") "humified stratified material" else "alluvium",
+                                                .kidpr_ft_lab(ctx, nx), k1, if (k1 == "rh") "34-35" else "34, 38"))
+}
+
+
 # --- the tests of their own --------------------------------------------------------
 
 # [BHF-BAN]>3, the layered-ochric volcanic soils: more than three elementary
-# profiles in the ash (p. 127), read as more than three runs of BHF or BAN
-# horizons separated by other layers (soilKey's reading).
+# profiles buried in the ash (p. 127), read as more than three runs of BHF or
+# BAN horizons separated by other layers, under the run of the surface soil
+# (Hugo, 2026-11-02 and the review of 2026-11-03).
 .kidpr_st_layered_ochric <- function(ctx) {
   H <- c("BHF", "BAN")
   m <- ctx$main
   if (!length(m)) return(list(passed = FALSE, evidence = "no layers"))
   st <- vapply(m, function(j) .kidpr_ft_is_host(ctx, j, H), NA)
   runs <- function(v) { v <- v %in% TRUE; sum(v & !c(FALSE, utils::head(v, -1L))) }
-  sure <- runs(st %in% TRUE)
-  maybe <- runs(!(st %in% FALSE))
-  ev <- sprintf("%d run(s) of BHF or BAN in the profile%s", sure,
+  # the first run is the surface soil's elementary profile
+  sure <- max(runs(st %in% TRUE) - 1L, 0L)
+  maybe <- max(runs(!(st %in% FALSE)) - 1L, 0L)
+  ev <- sprintf("%d buried run(s) of BHF or BAN under the surface soil%s", sure,
                 if (maybe > sure) sprintf(", %d with the undecided layers", maybe) else "")
   if (sure > 3L) return(list(passed = TRUE, evidence = ev))
   if (maybe <= 3L) return(list(passed = FALSE, evidence = ev))
@@ -238,13 +321,11 @@
   restricted <- vapply(entries, function(e) length(e$only_types) > 0L && !(type %in% unlist(e$only_types)), NA)
   # the dispatcher, once for every entry it reads
   run <- which(!in_formula & !restricted & vapply(entries, function(e) is.null(e$test), NA))
-  disp <- lapply(entries[run], function(e) {
-    hf <- as.character(e$feature %||% e$index)
-    list(feature = hf, host = if (!is.null(e[["host"]])) as.character(unlist(e[["host"]])), place = e$place)
-  })
+  disp <- lapply(entries[run], function(e)
+    list(feature = as.character(e$feature %||% e$index), host = .kidpr_st_host(e), place = e$place))
   # a feature of the whole profile reads the whole profile; a feature of a
   # horizon reads the soil's own horizons, not a buried soil under them
-  own <- .kidpr_st_own_context(ctx)
+  own <- .kidpr_st_own_context(ctx, formula)
   prof <- vapply(entries[run], function(e) .kidpr_st_profile_feature(e), NA)
   fr <- NULL
   if (length(disp)) {
@@ -254,8 +335,7 @@
       for (j in seq_len(nrow(fp))) fr[[which(prof)[j]]] <- fp[j, , drop = FALSE]
     }
     if (any(!prof)) {
-      fo <- .kidpr_features(own, disp[!prof], division = div)
-      for (j in seq_len(nrow(fo))) fr[[which(!prof)[j]]] <- fo[j, , drop = FALSE]
+      for (j in which(!prof)) fr[[j]] <- .kidpr_st_places(own, disp[[j]], div)
     }
     fr <- do.call(rbind, fr)
   }
@@ -273,6 +353,18 @@
     cv <- stats::setNames(as.list(cf$passed), c("lc", "mc", "nc", "dc"))
     cev <- stats::setNames(cf$evidence, c("lc", "mc", "nc", "dc"))
     cmiss <- stats::setNames(cf$missing, c("lc", "mc", "nc", "dc"))
+  }
+  # what the dispatcher does not read: a V or S laid over a host layer (v,
+  # s), a stratified horizon or alluvium of 5-40 cm over a buried humus
+  # horizon (rh, r); and the kind of BHF the soil has, where the formula
+  # writes BF or BH
+  ovl <- list()
+  for (cd in c("v", "s")) ovl[[cd]] <- .kidpr_st_overlay(own, cd)
+  dep <- .kidpr_st_rdeposit(ctx)
+  bhf <- NULL
+  if (any(in_formula & vapply(entries, function(e) e$index %in% c("BF", "BH"), NA))) {
+    bk <- .kidpr_features(own, c("BF", "BH"), division = div)$passed
+    bhf <- if (isTRUE(bk[1L])) "BF" else if (isTRUE(bk[2L])) "BH" else if (isFALSE(bk[1L]) && isFALSE(bk[2L])) "neither BF nor BH" else "undecided between BF and BH"
   }
   feats <- vector("list", length(entries))
   extra <- vector("list", length(entries))
@@ -300,6 +392,17 @@
       } else {
         r$evidence <- row$evidence
         r$missing <- unlist(row$missing)
+      }
+      code <- as.character(e$feature %||% e$index)
+      if (code %in% names(ovl) && !isTRUE(p) && isTRUE(ovl[[code]]$passed)) {
+        p <- TRUE
+        r$evidence <- c(r$evidence, ovl[[code]]$note)
+        row$layers <- list(ovl[[code]]$layers)
+      }
+      if (code %in% c("r", "rh") && !isTRUE(p) && identical(dep$kind, code)) {
+        p <- TRUE
+        r$evidence <- c(r$evidence, dep$note)
+        row$layers <- list(dep$layers)
       }
       r$passed <- p
       route <- row$route
@@ -346,6 +449,10 @@
     if (is.null(tr$subtype[[id]])) next
     tr$subtype[[id]] <- c(tr$subtype[[id]], extra[[k]])
     if (restricted[k]) tr$subtype[[id]]$status <- "not named"
+    if (in_formula[k] && !is.null(bhf) && entries[[k]]$index %in% c("BF", "BH"))
+      tr$subtype[[id]]$notes <- c(tr$subtype[[id]]$notes, sprintf(
+        "the type's formula writes %s and takes either kind of BHF (D23); the BHF of this soil reads %s",
+        entries[[k]]$index, bhf))
   }
   res$trace <- tr
   res

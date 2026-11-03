@@ -153,7 +153,8 @@ test_that("the rules are clean: predicates, suffixes, codes, names and paths", {
   # for him to confirm
   rd <- yaml::read_yaml(system.file("rules", "kidpr2008", "readings.yaml", package = "soilKey"))$readings
   expect_true(length(rd) >= 10L)
-  for (x in rd) expect_true(nzchar(x$topic) && grepl("\\(Hugo, 2026-11-02\\)\\.$", x$reading), info = x$topic)
+  # (2026-11-03: his answer to the review of the subtypes)
+  for (x in rd) expect_true(nzchar(x$topic) && grepl("\\(Hugo, 2026-11-0[23]\\)\\.$", x$reading), info = x$topic)
   expect_false(any(grepl("for Hugo to confirm", vapply(rd, `[[`, "", "reading"))))
   # no text of the book: the readings are in English, Cyrillic only for names
   # and terms
