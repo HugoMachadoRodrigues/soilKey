@@ -1,5 +1,152 @@
 # Changelog
 
+## soilKey 0.9.342 (2026-11-02)
+
+### Russia: the types of trunks A, B and D, and the name of the chemozems
+
+The Russian soil classification (Field Guide of 2008) gains the types of
+the six divisions of the organogenic, synlithogenic and weakly developed
+trunks: 58 types, matched as the types of trunk C are (0.9.338,
+0.9.339). The chemozems (CU), which have no types, are now named by
+their pollutants and the soil they were. Every division has its type
+level; the subtypes follow. Every other classification is unchanged.
+
+- **The 58 types** in `inst/rules/kidpr2008/types/`: AA 5 (peat soils),
+  AB 4 (peatozems), BA 18 (alluvial soils), BB 4 (volcanic soils), BC 10
+  (stratozems) and \[DA\] 17 (the weakly developed soils of trunk D, the
+  division the book does not code). Each has soilKey’s code in brackets
+  (\[AA01\] … \[DA17\], in the order of chapter 4, the natural types
+  first), the Russian name as printed (two slips of the diagrams of the
+  alluvial soils, глеевы and the second мергелистые, as chapter 6 writes
+  them), an English gloss, the formula as the fixture of the formulas
+  transcribes it, and the page.
+- **What the formulas test (Q14).** The buried soil \[ABC\] names the
+  stratozems on a buried soil and is tested, a buried profile starting
+  within 100 cm (p. 128); the substrate D is not. The substrate names
+  the types of trunk D and is tested: the marks of the loose rock (C=
+  loamy and clayey, C.. sandy, C alluvial, C” ash, C aeolian) and the
+  hard rock R, with its carbonate or gypsum mark where written (Rca,
+  Rcs); the C of the solonchaks is not. The rock under the dry-peat
+  soils (AA05) is tested: the hard rock R or loose material C (p. 43); a
+  rock under the peat closes no other formula of the peat soils. The
+  alluvial and ash marks of the parent material in BA and BB, and the
+  buried profiles {ABC} of the volcanic soils, are not tested; the
+  buried humus horizons of the alluvial soils are not in the formula
+  (p. 124).
+- **The peat of trunk A.** A peat horizon that runs across the line 50
+  cm under the top of the peat body is TT below that line (Q22): TO
+  0-120 cm is TO-TT (AA01), PT over T 25-125 cm is PT-TT (AB01); a peat
+  horizon that starts 50 cm or more under the top of the body is TT (TO
+  0-50 over TO 50-120 is AA01). A T of the notation in the peat soils is
+  TO or TE by the botany of its layer, undecided between them when the
+  layer records none.
+- **The substrate of trunk D.** The layer directly under the O or W
+  names the type; a deeper rock is not tested (W-C..-R is DA04). On the
+  data route a layer with no horizon under the O or W is the loose rock,
+  and an undesignated layer that names a rock and records no texture is
+  undecided between the R and the C types. A C whose mark is not written
+  takes it from the data, the layer’s own origin first and the site’s
+  parent material only when the layer records none: an alluvial, ash or
+  aeolian origin (loess is not aeolian here), else the texture (sand and
+  loamy sand are sandy, finer is loamy and clayey), undecided with no
+  texture recorded; the legend’s aeolian mark “” is the of the diagrams;
+  a proluvial body (an alluvial fan) has no type. A rock R whose marks
+  are not written, on the data route or a bare R of the notation, takes
+  its carbonate mark from a carbonate rock named (marble included) or
+  effervescence and its gypsum mark from a gypsum rock named; another
+  rock named has neither; a rock not named leaves them undecided.
+- **The stratozems.** Of several stratified horizons in the body, the
+  thickest names the type and the others are its features (RY 20 over RU
+  30 is BC02); a tie leaves the type undecided.
+- **The alluvial soils on the data route.** The surface humus layer the
+  key to horizons reads as RU or RY over a buried humus horizon is, for
+  the types, the humus horizon AU or AY of the floodplain, and a layer
+  with no diagnostic horizon the alluvium: AU over alluvium over Ab over
+  alluvium is BA02, as its twin in the notation. The fix is in the
+  reading of the alluvial types; key 2.1 and the divisions are
+  unchanged.
+- **The BH of the ochric soils.** The notation reads BH and BF as BHF,
+  so the BH of BB01 and BB03 is read as a BHF of either kind, as Q15
+  does for CR07 and CS10; without it the two types could not be reached.
+- **The name of a chemozem.** The book divides the chemozems by the kind
+  of pollution, keeping the name of the original soil (p. 134). The type
+  level is now built: soilKey’s code `[CU:<code of the original soil>]`
+  and the names “Chemozems polluted with Cu, Ni, Co; original soil:
+  Sod-podzolic” and “Хемоземы, загрязненные Cu, Ni, Co, по исходной
+  почве: Дерново-подзолистые”. The pollutants are those recorded in
+  `pollutants` for the layers of the X horizon, split on commas,
+  semicolons and “and”; the original soil is the profile keyed again
+  with the X masked (the X overlays the notation reader parses, AY+Xpb
+  as well as AY+X, taken out, a layer that is only X dropped, and the
+  contamination records removed), down to its type, and is in the trace
+  (phase `chemozem`, an assigned step). An original soil with no
+  division is named “…, division not provided by the Field Guide of
+  2008”; a masked profile that is a chemozem again leaves the original
+  soil undecided (\[CU:?\]). Pollutants not recorded are named so and
+  asked in `$missing_data`; an original soil undecided at its type or
+  division is named so and makes the name provisional (`original_soil:`
+  entries in `provisional_because`). This changes a result of 0.9.337 to
+  0.9.339: a chemozem had the division as its name.
+- **Contaminated soils outside trunk C.** The X horizon is no horizon of
+  the profile for step 5 of the key to trunks, so a contaminated soil of
+  trunk A, B or D keeps its division and type (W+X over C.. is DA04, not
+  a chemozem; the subtype x will name it). This changes a division
+  result of 0.9.337. The X horizon counts at C.3b also when it lies on a
+  surface horizon the thickest-horizon rule leaves out (O 15 over AY+X
+  10 over EL-BT is a chemozem, \[CU:CA01\]); in 0.9.337 to 0.9.341 it
+  was lost.
+- **Doubles.** Two formulas match one profile only where the rock names
+  what the other formula leaves out: O-Rca is DA07 with DA05 its
+  intergrade, W-Rca DA08 with DA06, O-Rcs DA09 with DA05, W-Rcs DA10
+  with DA06; the more specific names the type, as decided for trunk C.
+- Every chapter 4 formula of trunks A, B and D, written as a profile in
+  the Russian notation, reaches its own division and its own type,
+  decided. One undesignated profile per division reaches its type
+  through the key to horizons on the data.
+- **Profiles with a division and no type** under the literal Q13 and Q14
+  (`readings.yaml`): TJ-TT over G, H at the top of a peat body, RU or RY
+  on the floodplain, AY over Q, AO directly over BAN, PU over RY, O or W
+  over D.
+- The tests of the oracle of the keys read only the trunk and the
+  division as undecided: an undecided type, or the original soil of a
+  chemozem, is no answer of keys 2.2 and 2.3.
+- A tie of recorded thicknesses at the surface, which leaves a type
+  undecided, no longer asks for the depths in `$missing_data`.
+
+#### Hugo’s decisions (2026-11-02)
+
+- **The name of a chemozem:** as designed: soilKey’s code
+  `[CU:<code of the original soil>]`, the pollutants as recorded, the
+  original soil in the nominative after “по исходной почве:”,
+  “pollutants not recorded” when none are, and the name provisional when
+  the original soil is undecided.
+- **The rock under the dry peat (AA05):** by p. 43 the hard rock R or
+  loose material C may lie under the TJ body: TJ-TT over C is AA05, as
+  TJ-TT over R; the C closes no other formula of the peat soils (TO-TT
+  over C is AA01).
+- **After the review:** a peat horizon starting 50 cm or more under the
+  top of the peat body is TT, as the data route reads it; in trunk D the
+  substrate directly under the O or W names the type and a deeper R is
+  not tested; of several stratified horizons in a stratozem the thickest
+  names the type; in the peat soils an R under the peat body does not
+  block AA01 to AA04 (TO-TT over R is AA01), only AA05 requires R or C
+  under the TJ; the chemozems follow Q23, a contaminated soil of trunk
+  A, B or D keeping its division and type; a bare R of the notation
+  takes its marks from the data as a C does, and an undesignated layer
+  that names a rock and records no texture is undecided between the R
+  and the C types.
+- **A named rock that is neither carbonate nor gypsum** (granite,
+  sandstone …) has neither mark: O over an R of granite with no
+  effervescence recorded is DA05, decided.
+- **The readings of this release, accepted** (`readings.yaml`): TT below
+  the upper 50 cm of the peat body and a T of the notation as TO or TE
+  by its botany; the substrate of the weakly developed soils (no horizon
+  is loose rock, the mark from the origin or the texture, the legend’s
+  “” read as , a proluvial body with no type, the marks of R from the
+  rock recorded); the BH of BB01 and BB03 a BHF of either kind; the
+  profiles the literal formulas leave without a type. Every reading in
+  `readings.yaml` is again one of Hugo’s decisions.
+
 ## soilKey 0.9.341 (2026-11-02)
 
 ### France: the notation of the Référentiel pédologique 2008
