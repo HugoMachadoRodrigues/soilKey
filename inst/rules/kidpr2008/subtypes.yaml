@@ -1,0 +1,720 @@
+# The subtypes of the Russian soil classification, Field Guide of 2008
+# (Полевой определитель почв России): the 26 lists of chapter 4, one per
+# division (the chemozems CU have none), 558 entries in the order of the
+# book. A soil is named by its type and every subtype of its division's
+# list that passes, in the order of the list, comma-separated, in the plural
+# as printed ("Подзолистые глееватые, языковатые"); typical ([типичные],
+# soilKey's code-less default: the book leaves the typical subtype out of
+# the lists, p. 76) when every entry is FALSE; provisional, with the
+# undecided entries listed, when some are NA. A feature already written in
+# the formula of the type is not named again (Hugo's decision Q16,
+# 2026-11-02). Read by R/key-kidpr2008.R through the feature tests of
+# R/diagnostics-kidpr-features.R (.kidpr_features()).
+#
+# key          soilKey's ASCII code of the entry, from the book's index (g,
+#              ELf, hh for [hh], e_hf for [e-hf], akl for AJ[akl], cryoturb
+#              for @, perm for the permafrost sign, TTal for TT~~, TTash for
+#              TT"; AUel and Hmr where a list prints one index twice)
+# index        the index as printed (homoglyphs read as Latin letters; the
+#              permafrost sign, lost in the text layer, from the page)
+# name         the Russian name as printed, in the plural (misprints
+#              corrected, the printed form in `printed`)
+# name_en      soilKey's English gloss
+# feature      the feature or host form the dispatcher reads when it is not
+#              the index (the double el of CI and CM by place)
+# test         a test of its own, for an entry that is no feature of 3.2
+#              (layered_ochric: [BHF-BAN]>3 of the volcanic soils)
+# hosts        the horizons the feature is read on (the hosts of
+#              feature_tests.yaml, or of the host form; groups: humus,
+#              organic, peat, agro, eluvial, middle, hydrogenic,
+#              halomorphic, parent, mineral, any; profile for the features
+#              of the whole profile)
+# host, place  where the list narrows the hosts of the feature
+# only_types   the type a sentence of 3.2 names for the subtype (Q16: the
+#              list decides where a feature applies; a sentence of 3.2
+#              restricts it only when it names a single type)
+# scale        carbonate: the subtypes of the carbonate profile, one of the
+#              scale (default 19 of the questions)
+# universal    the universal subtypes of the list
+# page         printed page
+# The criteria are not reproduced: they are in the Field Guide.
+
+edition: "Polevoi opredelitel' pochv Rossii (Dokuchaev Soil Science Institute, Moscow, 2008), chapter 4"
+
+typical:
+  name: "[типичные]"
+  name_en: "[typical]"
+
+# A feature is in the formula of a type when the formula writes it on a
+# horizon (BELg, BCAs,cs, C⊥; a host form on its host: ELg; BF and BH as the
+# modification of BHF), or writes the horizon that is the feature in full:
+# G of g, Q of q, V of v, ML of ml, S of s, F of fn, and CR, the
+# cryoturbated horizon of the cryozems, of @ (Q16).
+in_full:
+  G: g
+  Q: q
+  V: v
+  ML: ml
+  S: s
+  F: fn
+  CR: "@"
+
+lists:
+  # --- AA, Торфяные почвы: 15 subtypes, p. 132-133 ---
+  AA:
+    - {key: TEmr, index: TEmr, name: "Иловато-торфяные", name_en: "silty-peaty", hosts: [TE], page: 132}
+    - {key: Tote, index: Tote, name: "Остаточно-эутрофные", name_en: "residual-eutrophic", hosts: [TO], only_types: ["[AA01]"], page: 132,
+       notes: "te: 3.2 names the type of the oligotrophic peat soils (Торфяные олиготрофные, p. 61). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
+    - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 132,
+       notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
+    - {key: fn, index: fn, name: "Оруденелые", name_en: "ore-bearing", hosts: [G, BHF], page: 132}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", printed: "Окислено-глеевые", name_en: "oxidised-gley", hosts: [G], page: 132,
+       notes: "Printed \"Окислено-глеевые\" (a misprint)."}
+    - {key: md, index: md, name: "Деструктивные", name_en: destructive, hosts: [T, TO, TE, PT], page: 132}
+    - {key: pir, index: pir, name: "Пирогенные", name_en: pyrogenic, hosts: [peat], page: 132}
+    - {key: TTal, index: "TT~~", name: "Аллювиально-слоистые", name_en: "alluvial-layered", hosts: [profile], page: 132}
+    - {key: TTash, index: "TT\"", name: "Пеплово-слоистые", name_en: "ash-layered", hosts: [profile], page: 132}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 133}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 133}
+  # --- AB, Торфоземы: 10 subtypes, p. 133 ---
+  AB:
+    - {key: mr, index: mr, name: "Минерально-торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 133,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61)."}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", printed: "Окислено-глеевые", name_en: "oxidised-gley", hosts: [G], page: 133,
+       notes: "Printed \"Окислено-глеевые\" (a misprint)."}
+    - {key: TTal, index: "TT~~", name: "Аллювиально-слоистые", name_en: "alluvial-layered", hosts: [profile], page: 133}
+    - {key: TTash, index: "TT\"", name: "Пеплово-слоистые", name_en: "ash-layered", hosts: [profile], page: 133}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 133}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 133}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 133}
+  # --- BA, Аллювиальные почвы: 22 subtypes, p. 125-126 ---
+  BA:
+    - {key: Hmr, index: mr, name: "Иловато-перегнойные", name_en: "silty-muck", hosts: [H], host: [H], page: 125,
+       notes: "mr in the muck H: the silty-muck subtype (3.2, p. 61)."}
+    - {key: mr, index: mr, name: "Минерально-торфяные", printed: "Минерально- торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 125,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61). Printed \"Минерально- торфяные\" (a misprint)."}
+    - {key: el, index: el, name: "Элювиированные", name_en: eluviated, hosts: [AY, AJ, AU, AH, AK, D, G], page: 125}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 125}
+    - {key: v, index: v, name: "Слитизированные", name_en: vertic, hosts: [mineral], page: 125}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 126}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 126}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 126}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 126}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 126}
+    - {key: fn, index: fn, name: "Оруденелые", name_en: "ore-bearing", hosts: [G, BHF], page: 126}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 126}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 126}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 126}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 126}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 126}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 126}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 126}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 126}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 126}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 126}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 126}
+  # --- BB, Вулканические почвы: 12 subtypes, p. 127-128 ---
+  BB:
+    - {key: e, index: e, name: "Оподзоленные", name_en: podzolised, hosts: [humus, organic, middle], page: 127}
+    - {key: BF, index: BF, name: "Светло-охристые", name_en: "light-ochric", hosts: [BHF], page: 127}
+    - {key: BHF_BAN3, index: "[BHF-BAN]>3", name: "Слоисто-охристые", name_en: "layered-ochric", test: layered_ochric, hosts: [BHF, BAN], page: 128,
+       notes: "More than three elementary profiles (BHF and BAN) buried in the ash (p. 127): counted on the profile."}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 128}
+    - {key: ag, index: ag, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 128}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 128}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 128}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 128}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 128}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 128}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 128}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 128}
+  # --- BC, Стратоземы: 14 subtypes, p. 129 ---
+  BC:
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 129}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 129}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 129}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 129}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 129}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 129}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 129}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 129}
+    - {key: aq, index: aq, name: "Водно-аккумулятивные", name_en: "water-accumulative", hosts: [RU, RY, RJ], page: 129}
+    - {key: ael, index: ael, name: "Эолово-аккумулятивные", name_en: "aeolian-accumulative", hosts: [RU, RY, RJ], page: 129}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 129}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 129}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 129}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 129}
+  # --- [DA], Слаборазвитые почвы: 19 subtypes, p. 131 ---
+  DA:
+    - {key: e, index: e, name: "Оподзоленные", name_en: podzolised, hosts: [humus, organic, middle], page: 131}
+    - {key: el, index: el, name: "Элювиированные", name_en: eluviated, hosts: [W], host: [W], page: 131,
+       notes: "The weakly developed soils have no humus horizon of the hosts of 3.2 (AY, AU ...): el read on their humus horizon W, by analogy (Q17)."}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 131}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 131}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 131}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 131}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 131}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 131}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 131}
+    - {key: ic, index: ic, name: "Натечно-карбонатные", name_en: "pendant-carbonate", hosts: [middle, parent], page: 131}
+    - {key: u, index: u, name: "Темнопрофильные", name_en: "dark-profile", hosts: [profile], page: 131}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 131}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 131}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 131}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 131}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 131}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 131}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 131}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 131}
+  # --- CA, Текстурно-дифференцированные почвы: 35 subtypes, p. 79-80 ---
+  CA:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 79}
+    - {key: mr, index: mr, name: "Минерально-торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 79,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61)."}
+    - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 79,
+       notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
+    - {key: ELf, index: ELf, name: "Палевоподзолистые", name_en: "pale-podzolic", hosts: [EL], page: 79}
+    - {key: e_hf, index: "[e-hf]", name: "С микропрофилем подзола", name_en: "with a podzol microprofile", hosts: [EL], place: "on", page: 79,
+       notes: "The micro-podzol is written at the top of EL or inside it (p. 60: O-[e-hf]-EL-BEL-BT-C): read on EL and the small horizons beside or inside it."}
+    - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 79}
+    - {key: crm, index: crm, name: "Криометаморфизованные", name_en: "cryo-metamorphised", hosts: [BT, CR], only_types: ["[CA01]"], page: 80,
+       notes: "crm: 3.2 names the type of the podzolic soils (Подзолистые, p. 63). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
+    - {key: ELg, index: ELg, name: "Глееподзолистые", name_en: "gley-podzolic", hosts: [EL], page: 80}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 80}
+    - {key: ko, index: ko, name: "Контактно-осветленные", name_en: "contact-bleached", hosts: [any], page: 80}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 80}
+    - {key: nn, index: nn, name: "Конкреционные", name_en: concretionary, hosts: [EL, E], page: 80,
+       notes: "3.2 names the subtype segregation-bleached; the list prints concretionary."}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 80}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 80}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 80}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 80}
+    - {key: hh, index: "[hh]", name: "Со вторым гумусовым горизонтом", name_en: "with a second humus horizon", hosts: [EL, BEL, BT], page: 80}
+    - {key: ct, index: ct, name: "Останцовые", name_en: "relict-fragment", hosts: [BEL], only_types: ["[CA04]"], page: 80,
+       notes: "ct: 3.2 names the sod-podzolic soils (Дерново-подзолистые, p. 70). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 80}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 80}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 80}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 80}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 80}
+    - {key: pr, index: pr, name: "Агропроградированные", name_en: "agro-prograded", hosts: [agro], page: 80}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 80}
+    - {key: u, index: u, name: "Темнопрофильные", name_en: "dark-profile", hosts: [profile], page: 80}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 80}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 80}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 80}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 80}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 80}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 80}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 80}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 80}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 80}
+  # --- CB, Альфегумусовые почвы: 30 subtypes, p. 82-83 ---
+  CB:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 82}
+    - {key: mr, index: mr, name: "Минерально-торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 82,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61)."}
+    - {key: h, index: h, name: "Перегнойные", name_en: mucky, hosts: [O, AY, AJ, AU, AH, AK, AO], host: [O, AY, AJ, AU, AH, AK, AO], page: 82,
+       notes: "h on O or on a humus horizon; h in the peat is the muck-peaty subtype Th."}
+    - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 82,
+       notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
+    - {key: e, index: e, name: "Оподзоленные", name_en: podzolised, hosts: [humus, organic, middle], page: 82}
+    - {key: BF, index: BF, name: "Иллювиально-железистые", name_en: "illuvial-iron", hosts: [BHF], page: 82}
+    - {key: BH, index: BH, name: "Иллювиально-гумусовые", name_en: "illuvial-humus", hosts: [BHF], page: 82}
+    - {key: Di, index: Di, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [D], page: 82}
+    - {key: an, index: an, name: "Охристые", name_en: ochric, hosts: [BHF], page: 82}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 82}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 82}
+    - {key: fn, index: fn, name: "Оруденелые", name_en: "ore-bearing", hosts: [G, BHF], page: 82}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 82}
+    - {key: ek, index: ek, name: "Контактно-осветленные", name_en: "contact-bleached", hosts: [any], page: 82}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 82}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", name_en: cryoturbated, hosts: [any], page: 82}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 82}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 82}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 83}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 83}
+    - {key: pr, index: pr, name: "Агропроградированные", name_en: "agro-prograded", hosts: [agro], page: 83}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 83}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 83}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 83}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 83}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 83}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 83}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 83}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 83}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 83}
+  # --- CC, Железисто-метаморфические почвы: 16 subtypes, p. 84 ---
+  CC:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 84}
+    - {key: h, index: h, name: "Перегнойные", name_en: mucky, hosts: [O, AY, AJ, AU, AH, AK, AO], host: [O, AY, AJ, AU, AH, AK, AO], page: 84,
+       notes: "h on O or on a humus horizon; h in the peat is the muck-peaty subtype Th."}
+    - {key: e, index: e, name: "Оподзоленные", name_en: podzolised, hosts: [humus, organic, middle], page: 84}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 84}
+    - {key: ek, index: ek, name: "Контактно-осветленные", name_en: "contact-bleached", hosts: [any], page: 84}
+    - {key: gr, index: gr, name: "Железисто-гранулированные (грануземы)", name_en: "Fe-granulated (granuzems)", hosts: [BFM], page: 84}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 84}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 84}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 84}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 84}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 84}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 84}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 84}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 84}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 84}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 84}
+  # --- CD, Структурно-метаморфические почвы: 24 subtypes, p. 86-87 ---
+  CD:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 86}
+    - {key: h, index: h, name: "Перегнойные", name_en: mucky, hosts: [O, AY, AJ, AU, AH, AK, AO], host: [O, AY, AJ, AU, AH, AK, AO], page: 86,
+       notes: "h on O or on a humus horizon; h in the peat is the muck-peaty subtype Th."}
+    - {key: el, index: el, name: "Элювиированные", name_en: eluviated, hosts: [AY, AJ, AU, AH, AK, D, G], page: 86}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 86}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 86}
+    - {key: v, index: v, name: "Слитизированные", name_en: vertic, hosts: [mineral], page: 86}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 86}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 86}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 86}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 86}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 86}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 87}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 87}
+    - {key: Pw, index: Pw, name: "Реградированные", name_en: regraded, hosts: [P], page: 87}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 87}
+    - {key: u, index: u, name: "Темнопрофильные", name_en: "dark-profile", hosts: [profile], page: 87}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 87}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 87}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 87}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 87}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 87}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 87}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 87}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 87}
+  # --- CE, Криометаморфические почвы: 16 subtypes, p. 88 ---
+  CE:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 88}
+    - {key: e, index: e, name: "Оподзоленные", name_en: podzolised, hosts: [humus, organic, middle], page: 88}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 88}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 88}
+    - {key: pl, index: pl, name: "Палево-метаморфизованные", name_en: "pale-metamorphised", hosts: [CR, CRM], page: 88}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 88}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 88}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", name_en: cryoturbated, hosts: [any], page: 88}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 88}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 88}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 88}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 88}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 88}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 88}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 88}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 88}
+  # --- CF, Палево-метаморфические почвы: 17 subtypes, p. 90 ---
+  CF:
+    - {key: e, index: e, name: "Осолоделые", name_en: solodised, hosts: [humus, organic, middle], page: 90,
+       notes: "3.2 calls e podzolised; this list names it solodised: read as the bleached feature (Q17)."}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 90}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 90}
+    - {key: ic, index: ic, name: "Натечно-карбонатные", name_en: "pendant-carbonate", hosts: [middle, parent], page: 90}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 90}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", name_en: cryoturbated, hosts: [any], page: 90}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 90}
+    - {key: yu, index: yu, name: "Темноязыковатые", printed: "Темноязыковатый", name_en: "dark-tongued", hosts: [any], page: 90,
+       notes: "Printed \"Темноязыковатый\" (a misprint)."}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 90}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 90}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 90}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 90}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 90}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 90}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 90}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 90}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 90}
+  # --- CG, Криогенные почвы (криоземы): 15 subtypes, p. 91 ---
+  CG:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 91}
+    - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 91,
+       notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
+    - {key: crm, index: crm, name: "Криометаморфизованные", name_en: "cryo-metamorphised", hosts: [BT, CR], page: 91}
+    - {key: pl, index: pl, name: "Палево-метаморфизованные", name_en: "pale-metamorphised", hosts: [CR, CRM], page: 91}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 91}
+    - {key: ocr, index: ocr, name: "Криогомогенные", name_en: "cryo-homogeneous", hosts: [CR], only_types: ["[CG03]"], page: 91,
+       notes: "ocr: 3.2 names the type of the peaty cryozems (Торфяно-криоземы, p. 69). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
+    - {key: cf, index: cf, name: "Криогенно-ожелезненные", name_en: "cryogenic-ferruginated", hosts: [G, CR], page: 91}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 91}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 91}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 91}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 91}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 91}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 91}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 91}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 91}
+  # --- CH, Глеевые почвы: 27 subtypes, p. 93 ---
+  CH:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 93}
+    - {key: mr, index: mr, name: "Иловато-перегнойные", name_en: "silty-muck", hosts: [H], host: [H], page: 93,
+       notes: "mr in the muck H: the silty-muck subtype (3.2, p. 61)."}
+    - {key: Oh, index: Oh, name: "Перегнойные", name_en: mucky, hosts: [O], page: 93}
+    - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 93,
+       notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
+    - {key: AUh, index: AUh, name: "Перегнойно-гумусовые", name_en: "muck-humus", hosts: [AU], page: 93}
+    - {key: Gel, index: Gel, name: "Элювиированные", name_en: eluviated, hosts: [G], page: 93}
+    - {key: AUel, index: AUel, name: "Осолоделые", name_en: solodised, hosts: [AU], page: 93}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 93}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 93}
+    - {key: sn, index: sn, name: "Солонцеватые", printed: "Cолонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 93}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 93}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 93}
+    - {key: cf, index: cf, name: "Криогенно-ожелезненные", name_en: "cryogenic-ferruginated", hosts: [G, CR], only_types: ["[CH01]"], page: 93,
+       notes: "cf: 3.2 names the type of the gleyzems (Глееземы, p. 66). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 93}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 93}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 93}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", printed: "Криотурбированныe", name_en: cryoturbated, hosts: [any], page: 93}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 93}
+    - {key: w, index: w, name: "Реградированные", printed: "Реградированный", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 93,
+       notes: "Printed \"Реградированный\" (a misprint)."}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 93}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 93}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 93}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 93}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 93}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 93}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 93}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 93}
+  # --- CI, Аккумулятивно-гумусовые почвы: 27 subtypes, p. 97-98 ---
+  CI:
+    - {key: el, index: el, name: "Элювиированные", name_en: eluviated, hosts: [AU], host: [AU], place: under, page: 97,
+       notes: "Listed with el twice; by place (Q17): el in the horizon directly under the AU is the eluviated subtype (as Gel in CH)."}
+    - {key: AUel, index: el, name: "Осолоделые", name_en: solodised, feature: AUel, hosts: [AU], page: 97,
+       notes: "Listed with el twice; by place (Q17): el in the AU is the solodised subtype (AUel, as the CH list writes it)."}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 97}
+    - {key: v, index: v, name: "Слитизированные", name_en: vertic, hosts: [mineral], page: 97}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 97}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 98}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 98}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 98}
+    - {key: AUlc_BCAmc, index: "AUlc-BCAmc", name: "Миграционно-мицелярные", name_en: "migrating-mycelial", hosts: [AU, BCA], scale: carbonate, page: 98}
+    - {key: nc, index: nc, name: "Сегрегационные", name_en: segregational, hosts: [BCA], scale: carbonate, page: 98}
+    - {key: AUlc_BCAnc, index: "AUlc-BCAnc", name: "Миграционно-сегрегационные", name_en: "migrating-segregational", hosts: [AU, BCA], scale: carbonate, page: 98}
+    - {key: mc, index: mc, name: "Криогенно-мицелярные", name_en: "cryogenic-mycelial", hosts: [BCA], scale: carbonate, page: 98}
+    - {key: dc, index: dc, name: "Дисперсно-карбонатные", name_en: "disperse-carbonate", hosts: [BCA], scale: carbonate, page: 98}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 98}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 98}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", name_en: cryoturbated, hosts: [any], page: 98}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 98}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 98}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 98}
+    - {key: PUw, index: PUw, name: "Реградированные", name_en: regraded, hosts: [PU], page: 98}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 98}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 98}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 98}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 98}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 98}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 98}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 98}
+  # --- CJ, Светлогумусовые аккумулятивно-карбонатные почвы: 18 subtypes, p. 100 ---
+  CJ:
+    - {key: akl, index: "AJ[akl]", name: "Ксерогумусовые", name_en: "xero-humus", hosts: [AJ], only_types: ["[CJ02]"], page: 100,
+       notes: "[akl]: 3.2 names the type of the brown arid soils (Бурые, p. 63). A sentence of 3.2 that names a single type restricts the subtype to it (Q16)."}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 100}
+    - {key: v, index: v, name: "Слитизированные", name_en: vertic, hosts: [mineral], page: 100}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 100}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 100}
+    - {key: AJlc_BCAnc, index: "AJlc-BCAnc", name: "Миграционно-сегрегационные", name_en: "migrating-segregational", hosts: [AJ, BCA], scale: carbonate, page: 100}
+    - {key: dc, index: dc, name: "Дисперсно-карбонатные", name_en: "disperse-carbonate", hosts: [BCA], scale: carbonate, page: 100}
+    - {key: as, index: as, name: "Гипс-содержащие", printed: "Гипс-содержщие", name_en: "gypsum-bearing", hosts: [any], page: 100,
+       notes: "Printed \"Гипс-содержщие\" (a misprint)."}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 100}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 100}
+    - {key: ae, index: ae, name: "Эолово-аккумулятивные", name_en: "aeolian-accumulative", hosts: [AJ, RJ, RY, RU], host: [AJ, RJ, RY, RU], page: 100,
+       notes: "Defined for the stratozems (p. 73); in this division read on the light-humus AJ, of aeolian origin, by analogy (D20)."}
+    - {key: pb, index: pb, name: "Абрадированные (дефлированные)", name_en: "abraded (deflated)", hosts: [agro], universal: true, page: 100}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 100}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 100}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 100}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 100}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 100}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 100}
+  # --- CK, Щелочно-глинисто-дифференцированные почвы: 16 subtypes, p. 104 ---
+  CK:
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 104}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 104}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 104}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 104}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 104}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 104}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 104}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 104}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 104}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 104}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 104}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 104}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 104}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 104}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 104}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 104}
+  # --- CL, Галоморфные почвы: 11 subtypes, p. 106 ---
+  CL:
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 106}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 106}
+    - {key: tk, index: tk, name: "Такыровидные", name_en: takyric, hosts: [any], page: 106}
+    - {key: cryoturb, index: "@", name: "Криометаморфические", name_en: "cryo-metamorphic", hosts: [any], page: 106,
+       notes: "Printed with the name of the cryometamorphic soils; the index @ is cryoturbation (3.2.3): soilKey reads the index."}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 106}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 106}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 106}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 106}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 106}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 106}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 106}
+  # --- CM, Гидрометаморфические почвы: 22 subtypes, p. 107-108 ---
+  CM:
+    - {key: mr, index: mr, name: "Иловато-перегнойные", name_en: "silty-muck", hosts: [H], host: [H], page: 107,
+       notes: "mr in the muck H: the silty-muck subtype (3.2, p. 61)."}
+    - {key: el, index: el, name: "Элювиированные", name_en: eluviated, hosts: [AU], host: [AU], place: under, page: 107,
+       notes: "Listed with el twice; by place (Q17): el in the horizon directly under the AU is the eluviated subtype (as Gel in CH)."}
+    - {key: AUel, index: el, name: "Осолоделые", name_en: solodised, feature: AUel, hosts: [AU], page: 107,
+       notes: "Listed with el twice; by place (Q17): el in the AU is the solodised subtype (AUel, as the CH list writes it)."}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 107}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 107}
+    - {key: v, index: v, name: "Слитизированные", name_en: vertic, hosts: [mineral], page: 107}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 107}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 107}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 107}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", name_en: cryoturbated, hosts: [any], page: 107}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 107}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 108}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 108}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 108}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 108}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 108}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 108}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 108}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 108}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 108}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 108}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 108}
+  # --- CN, Органо-аккумулятивные почвы: 31 subtypes, p. 109-110 ---
+  CN:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 109}
+    - {key: h, index: h, name: "Перегнойные", name_en: mucky, hosts: [O, AY, AJ, AU, AH, AK, AO], host: [O, AY, AJ, AU, AH, AK, AO], page: 109,
+       notes: "h on O or on a humus horizon; h in the peat is the muck-peaty subtype Th."}
+    - {key: e, index: e, name: "Оподзоленные", name_en: podzolised, hosts: [humus, organic, middle], page: 109}
+    - {key: el, index: el, name: "Элювиированные", name_en: eluviated, hosts: [AY, AJ, AU, AH, AK, D, G], page: 109}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 109}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 109}
+    - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 109}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 109}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 109}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 109}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 109}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 109}
+    - {key: ic, index: ic, name: "Натечно-карбонатные", name_en: "pendant-carbonate", hosts: [middle, parent], page: 109}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 109}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 109}
+    - {key: cryoturb, index: "@", name: "Криотурбированные", name_en: cryoturbated, hosts: [any], page: 109}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 109}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 109}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 109}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 109}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 109}
+    - {key: u, index: u, name: "Темнопрофильные", name_en: "dark-profile", hosts: [profile], page: 109}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 109}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 110}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 110}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 110}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 110}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 110}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 110}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 110}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 110}
+  # --- CO, Элювиальные почвы: 22 subtypes, p. 111-112 ---
+  CO:
+    - {key: ao, index: ao, name: "Грубогумусированные", name_en: "coarse-humified", hosts: [O], page: 111}
+    - {key: mr, index: mr, name: "Минерально-торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 111,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61)."}
+    - {key: h, index: h, name: "Перегнойные", name_en: mucky, hosts: [O, AY, AJ, AU, AH, AK, AO], host: [O, AY, AJ, AU, AH, AK, AO], page: 111,
+       notes: "h on O or on a humus horizon; h in the peat is the muck-peaty subtype Th."}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 111}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 111}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 111}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 111}
+    - {key: fn, index: fn, name: "Оруденелые", name_en: "ore-bearing", hosts: [G, BHF], page: 111}
+    - {key: nn, index: nn, name: "Конкреционные", name_en: concretionary, hosts: [EL, E], page: 111,
+       notes: "3.2 names the subtype segregation-bleached; the list prints concretionary."}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 111}
+    - {key: ek, index: ek, name: "Контактно-осветленные", name_en: "contact-bleached", hosts: [any], page: 111}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 111}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 111}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 111}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 111}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 111}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 111}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 112}
+    - {key: pb, index: pb, name: "Абрадированные", name_en: abraded, hosts: [agro], universal: true, page: 112}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 112}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 112}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 112}
+  # --- CP, Литоземы: 23 subtypes, p. 113 ---
+  CP:
+    - {key: Th, index: Th, name: "Перегнойно-торфяные", name_en: "muck-peaty", hosts: [T, TO, TE], host: [T, TO, TE], page: 113,
+       notes: "The T of Th takes the oligotrophic and eutrophic peats TO and TE, as the T of the formulas does."}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 113}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 113}
+    - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 113}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 113}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [organic], page: 113}
+    - {key: ic, index: ic, name: "Натечно-карбонатные", name_en: "pendant-carbonate", hosts: [middle, parent], page: 113}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 113}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 113}
+    - {key: d, index: d, name: "Переуплотненные", name_en: "over-compacted", hosts: [any], page: 113}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 113}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 113}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 113}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 113}
+    - {key: u, index: u, name: "Темнопрофильные", name_en: "dark-profile", hosts: [profile], page: 113}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 113}
+    - {key: perm, index: "⊥", name: "Мерзлотные", name_en: permafrost, hosts: [profile], page: 113}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 113}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 113}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 113}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 113}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 113}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 113}
+  # --- CQ, Абраземы: 30 subtypes, p. 115 ---
+  CQ:
+    - {key: BF, index: BF, name: "Иллювиально-железистые", name_en: "illuvial-iron", hosts: [BHF], page: 115}
+    - {key: BH, index: BH, name: "Иллювиально-гумусовые", name_en: "illuvial-humus", hosts: [BHF], page: 115}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 115}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 115}
+    - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 115}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 115}
+    - {key: v, index: v, name: "Слитизированные", printed: "Cлитизированные", name_en: vertic, hosts: [mineral], page: 115}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 115}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 115}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 115}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 115}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 115}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 115}
+    - {key: mc, index: mc, name: "Мицелярные", name_en: mycelial, hosts: [BCA], scale: carbonate, page: 115}
+    - {key: nc, index: nc, name: "Сегрегационные", name_en: segregational, hosts: [BCA], scale: carbonate, page: 115}
+    - {key: dc, index: dc, name: "Дисперсно-карбонатные", name_en: "disperse-carbonate", hosts: [BCA], scale: carbonate, page: 115}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 115}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 115}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 115}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 115}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 115}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 115}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 115}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 115}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 115}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 115}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 115}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 115}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 115}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 115}
+  # --- CR, Агроабраземы: 30 subtypes, p. 117-118 ---
+  CR:
+    - {key: BF, index: BF, name: "Иллювиально-железистые", name_en: "illuvial-iron", hosts: [BHF], page: 117}
+    - {key: BH, index: BH, name: "Иллювиально-гумусовые", name_en: "illuvial-humus", hosts: [BHF], page: 117}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 117}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 117}
+    - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 117}
+    - {key: sn, index: sn, name: "Солонцеватые", name_en: solonetzic, hosts: [humus, agro, middle], page: 117}
+    - {key: v, index: v, name: "Слитизированные", printed: "Cлитизированные", name_en: vertic, hosts: [mineral], page: 117}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 117}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 117}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 117}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 117}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 117}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 117}
+    - {key: mc, index: mc, name: "Мицелярные", name_en: mycelial, hosts: [BCA], scale: carbonate, page: 117}
+    - {key: nc, index: nc, name: "Сегрегационные", name_en: segregational, hosts: [BCA], scale: carbonate, page: 117}
+    - {key: dc, index: dc, name: "Дисперсно-карбонатные", name_en: "disperse-carbonate", hosts: [BCA], scale: carbonate, page: 117}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 117}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 117}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 117}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 117}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 118}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 118}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 118}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 118}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 118}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 118}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 118}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 118}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 118}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 118}
+  # --- CS, Агроземы: 35 subtypes, p. 120 ---
+  CS:
+    - {key: mr, index: mr, name: "Минерально-торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 120,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61)."}
+    - {key: BH, index: BH, name: "Иллювиально-гумусовые", printed: "Иллювиально-железистые", name_en: "illuvial-humus", hosts: [BHF], page: 120,
+       notes: "The list prints BH and BF with each other's names (p. 120); named as in 3.2 (p. 62; Q12)."}
+    - {key: BF, index: BF, name: "Иллювиально-железистые", printed: "Иллювиально-гумусовые", name_en: "illuvial-iron", hosts: [BHF], page: 120,
+       notes: "The list prints BH and BF with each other's names (p. 120); named as in 3.2 (p. 62; Q12)."}
+    - {key: f, index: f, name: "Ожелезненные", name_en: ferruginated, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], page: 120}
+    - {key: i, index: i, name: "Глинисто-иллювиированные", name_en: "clay-illuviated", hosts: [BM, CRM, C, D, G], page: 120}
+    - {key: m, index: m, name: "Метаморфизованные", name_en: metamorphised, hosts: [C], page: 120}
+    - {key: v, index: v, name: "Слитизированные", printed: "Cлитизированные", name_en: vertic, hosts: [mineral], page: 120}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 120}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 120}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 120}
+    - {key: ff, index: ff, name: "Псевдофибровые", name_en: "pseudo-fibrous", hosts: [BHF, C], page: 120}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", name_en: "oxidised-gley", hosts: [G], page: 120}
+    - {key: hi, index: hi, name: "Потечно-гумусовые", name_en: "humus-streaked", hosts: [O, T, TO, TE, TJ, H, PT, PTR], host: [O, T, TO, TE, TJ, H, PT, PTR], page: 120,
+       notes: "In the agrozems the organic horizon over the mineral one is the agro-peat PT or PTR: hi read under them too, by analogy (Q17)."}
+    - {key: mc, index: mc, name: "Мицелярные", name_en: mycelial, hosts: [BCA], scale: carbonate, page: 120}
+    - {key: nc, index: nc, name: "Сегрегационные", name_en: segregational, hosts: [BCA], scale: carbonate, page: 120}
+    - {key: dc, index: dc, name: "Дисперсно-карбонатные", name_en: "disperse-carbonate", hosts: [BCA], scale: carbonate, page: 120}
+    - {key: cs, index: cs, name: "Гипс-содержащие", name_en: "gypsum-bearing", hosts: [any], page: 120}
+    - {key: tr, index: tr, name: "Поверхностно-турбированные", name_en: "surface-turbated", hosts: [any], page: 120}
+    - {key: agr, index: agr, name: "Агрогетерогенные", name_en: "agro-heterogeneous", hosts: [agro], page: 120}
+    - {key: hh, index: "[hh]", name: "Со вторым гумусовым горизонтом", printed: "Cо вторым гумусовым горизонтом", name_en: "with a second humus horizon", hosts: [EL, BEL, BT], page: 120}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 120}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 120}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 120}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 120}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 120}
+    - {key: pr, index: pr, name: "Агропроградированные", name_en: "agro-prograded", hosts: [agro], page: 120}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 120}
+    - {key: u, index: u, name: "Темнопрофильные", name_en: "dark-profile", hosts: [profile], page: 120}
+    - {key: ro, index: ro, name: "Краснопрофильные", name_en: "red-profile", hosts: [profile], page: 120}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 120}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 120}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 120}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 120}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 120}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 120}
+  # --- CT, Турбоземы: 21 subtypes, p. 122-123 ---
+  CT:
+    - {key: mr, index: mr, name: "Минерально-торфяные", name_en: "mineral-peaty", hosts: [T, TO, TE, TJ, PT], host: [T, TO, TE, TJ, PT], page: 122,
+       notes: "mr in the peat: the mineral-peaty subtype (3.2, p. 61)."}
+    - {key: g, index: g, name: "Глееватые", name_en: gleyic, hosts: [mineral], page: 122}
+    - {key: q, index: q, name: "Квазиглееватые", name_en: "quasi-gleyic", hosts: [mineral], page: 122}
+    - {key: ml, index: ml, name: "Омергеленные", name_en: marly, hosts: [mineral], page: 122}
+    - {key: s, index: s, name: "Засоленные", name_en: saline, hosts: [any], page: 122}
+    - {key: ox, index: ox, name: "Окисленно-глеевые", printed: "Окисленно-глевые", name_en: "oxidised-gley", hosts: [G], page: 122,
+       notes: "Printed \"Окисленно-глевые\" (a misprint)."}
+    - {key: mc, index: mc, name: "Мицелярные", name_en: mycelial, hosts: [BCA], scale: carbonate, page: 123}
+    - {key: nc, index: nc, name: "Сегрегационные", name_en: segregational, hosts: [BCA], scale: carbonate, page: 123}
+    - {key: dc, index: dc, name: "Дисперсно-карбонатные", name_en: "disperse-carbonate", hosts: [BCA], scale: carbonate, page: 123}
+    - {key: "y", index: "y", name: "Языковатые", name_en: tongued, hosts: [BEL, BT, BHF], page: 123}
+    - {key: yu, index: yu, name: "Темноязыковатые", name_en: "dark-tongued", hosts: [any], page: 123}
+    - {key: ca, index: ca, name: "Остаточно-карбонатные", name_en: "residual-carbonate", hosts: [any], page: 123}
+    - {key: ad, index: ad, name: "Агропереуплотненные", name_en: "agro-over-compacted", hosts: [agro], page: 123}
+    - {key: pa, index: pa, name: "Постагрогенные", name_en: "post-agrogenic", hosts: [agro, AU, AY, EL], page: 123}
+    - {key: w, index: w, name: "Реградированные", name_en: regraded, hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], page: 123}
+    - {key: r, index: r, name: "Стратифицированные", name_en: stratified, hosts: [profile], universal: true, page: 123}
+    - {key: rh, index: rh, name: "Гумусово-стратифицированные", name_en: "humus-stratified", hosts: [profile], universal: true, page: 123}
+    - {key: ur, index: ur, name: "Урбистратифицированные", name_en: "urbi-stratified", hosts: [profile], universal: true, page: 123}
+    - {key: rr, index: rr, name: "Артистратифицированные", name_en: "arti-stratified", hosts: [profile], universal: true, page: 123}
+    - {key: rx, index: rx, name: "Токсистратифицированные", name_en: "toxi-stratified", hosts: [profile], universal: true, page: 123}
+    - {key: x, index: x, name: "Химически загрязненные", name_en: "chemically contaminated", hosts: [profile], universal: true, page: 123}
