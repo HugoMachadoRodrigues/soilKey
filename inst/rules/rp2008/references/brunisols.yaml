@@ -1,0 +1,67 @@
+# Brunisols (pp. 103-108), 2 references. The S haplique (p. 103): very well
+# structured in fine aggregates, never calcareous, no pelosolic behaviour,
+# exchangeable Al under 2 cmol+/kg. Sequences under forest and under crops
+# (p. 104); the horizons the chapter forbids (p. 104) as a side test. A G
+# beginning within 50 cm makes a réductisol typique (p. 107; default 20);
+# -g within 50 cm a double brunisol-rédoxisol or a rédoxisol, which come with
+# the réductisols and rédoxisols.
+#
+# The two references split on S/CEC of the S horizon (CEC at pH 7), 50 %
+# +/- 5, read as the mean of the S layers weighted by their thickness
+# (soilKey's reading). A brunisol dystrique under 20 % stays one when no Sal
+# is read (default 21: the 20 % is "very generally").
+# Distinctions (pp. 106-108): a Ca or Mg carbonate reserve upslope, below or
+# in the coarse elements makes a calcisol, none a brunisol eutrique saturé
+# (Q16, precedence.yaml); intergrades with andosols are brunisols andiques;
+# the S of a brunisol dystrique is not microcrumb and its pH is over 5.0
+# (alocrisols); a floodable valley with a near water table makes a
+# fluviosol brunifié; first clay coatings give the qualifier luvique.
+core: &brun_core
+  all_of:
+    - sequence_rp: {sequences: ["A-S-(C|M|R)", "A|S-S-(C|M|R)"]}
+    - no_horizon_within_rp: {codes: [Ach, Aca, And, Alu, Avi, An, Sca, Sal, Snd, Slu, Sp, SV, BP, BT, FS, E, H, V]}
+    - no_horizon_within_rp: {codes: [Ado, Sdo]}
+    - no_horizon_within_rp: {codes: [G], depth: 50}
+references:
+  - code: "brunisols_eutriques"
+    ger: "brunisols"
+    name: "brunisols eutriques"
+    name_singular: "brunisol eutrique"
+    name_en: "eutric brunisols"
+    name_en_singular: "eutric brunisol"
+    page: "104"
+    sequences: &brun_seq ["A-S-C|M|R", "LA|LS-S-C|M|R"]
+    notes: "S/CEC of the S over 50 % (saturés and resaturés over 80 %, mésosaturés 50 to 80 %)."
+    wrb2006: "Cambisols (Hypereutric) when saturated or resaturated; Cambisols (Eutric) when mesosaturated"
+    distinctions:
+      - {with: "calcisols", page: "107, 116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "andosols", page: "107", by: "intergrades: brunisol andique (the horizon frame)"}
+      - {with: "alocrisols", page: "107", by: "an S, not a microcrumb Sal (the horizon frame)"}
+      - {with: "fluviosols brunifiés", page: "107", by: "recent floodable alluvium (later release)"}
+      - {with: "néoluvisols", page: "107", by: "first clay coatings: the qualifier luvique (later release)"}
+      - {with: "réductisols and rédoxisols", page: "107", by: "a G within 50 cm (side test); a -g within 50 cm, the double brunisol-rédoxisol (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *brun_core
+        - attribute_rp: {attribute: bs, threshold: 50, direction: min, kind: bs, codes: [S], layers: weighted}
+  - code: "brunisols_dystriques"
+    ger: "brunisols"
+    name: "brunisols dystriques"
+    name_singular: "brunisol dystrique"
+    name_en: "dystric brunisols"
+    name_en_singular: "dystric brunisol"
+    page: "104"
+    sequences: *brun_seq
+    notes: "S/CEC of the S under 50 % and very generally over 20 %."
+    wrb2006: "Cambisols (Dystric)"
+    distinctions:
+      - {with: "calcisols", page: "107, 116", by: "the carbonate reserve (Q16, precedence.yaml)"}
+      - {with: "andosols", page: "107", by: "intergrades: brunisol andique (the horizon frame)"}
+      - {with: "alocrisols", page: "107", by: "an S, not a microcrumb Sal (the horizon frame)"}
+      - {with: "fluviosols brunifiés", page: "107", by: "recent floodable alluvium (later release)"}
+      - {with: "néoluvisols", page: "107", by: "first clay coatings: the qualifier luvique (later release)"}
+      - {with: "réductisols and rédoxisols", page: "107", by: "a G within 50 cm (side test); a -g within 50 cm, the double brunisol-rédoxisol (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *brun_core
+        - attribute_rp: {attribute: bs, threshold: 50, direction: max, kind: bs, codes: [S], layers: weighted}

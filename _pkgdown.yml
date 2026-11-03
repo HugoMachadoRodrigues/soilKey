@@ -193,6 +193,20 @@ reference:
       - classify_kidpr2008
       - make_kidpr2008_example
 
+  - title: "French Referentiel pedologique 2008 (experimental)"
+    desc: >
+      The references of the Referentiel pedologique 2008 (AFES), named in French
+      as printed: every reference is tested by its sequence of reference
+      horizons and the side tests of its chapter, strictly and with the
+      tolerances of p. 64, and the solum attaches simply, imperfectly, doubly
+      or not at all; one main name by the book's precedence and the rapid key,
+      every candidate in the result. Reads the RP horizon notation, or
+      identifies the reference horizons on the data. This release tests the
+      29 references of the first nine groups of references.
+    contents:
+      - classify_rp2008
+      - make_rp2008_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

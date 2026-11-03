@@ -1,0 +1,134 @@
+# Anthroposols (pp. 88-98), 5 references. Hugo's decision Q15: the
+# artificiels, construits and archéologiques by the materials Z (the RP code,
+# or anthropic_material with its share anthropic_material_pct, else
+# artefacts_pct); the reconstitués by transported material (-tp,
+# anthropic_material or layer_origin "transported"); the transformés only
+# with the history recorded (rp_anthropic_history) over 50 cm or more, never
+# inferred. The figure of p. 93 gives 50 cm for all five.
+#
+# Imperfect (p. 95): lithique, an artificiel, reconstitué or archéologique
+# thinner than 50 cm over a hard layer (R, or concrete, stone, brick);
+# leptique, an artificiel or reconstitué of 30 to 50 cm.
+# Distinctions (p. 97): coarse anthropic fragments over 60 % by weight make a
+# double peyrosol-anthroposol (doubles.yaml, with the peyrosols); an
+# anthropic material at the surface under 50 cm gives the other reference.
+# Double attachments always possible for the transformés (p. 91). The
+# material present (1 cm or more) and its thickness are two criteria, so that
+# a solum with no anthropic material at all is further from these references
+# than one with too thin a layer of it (the nearest references, Q3).
+art_lithique: &art_lithique
+  qualifier: "lithique"
+  page: "95"
+  criterion: "the anthropic material thinner than 50 cm over a hard layer"
+art_leptique: &art_leptique
+  qualifier: "leptique"
+  page: "95"
+  criterion: "the anthropic material 30 to 50 cm thick"
+references:
+  - code: "anthroposols_transformes"
+    ger: "anthroposols"
+    name: "anthroposols transformés"
+    name_singular: "anthroposol transformé"
+    name_en: "transformed anthroposols"
+    name_en_singular: "transformed anthroposol"
+    page: "91"
+    sequences: []
+    notes: "A natural solum so transformed by long or intense human activity (sanding, deep turning, organic amendments, small terraces, levelling) that it is unrecognisable, over 50 cm or more. No sequence printed. Read only from rp_anthropic_history with the depth of the transformation (mechanical_mixing_depth_cm), never inferred (Q15)."
+    wrb2006: "Anthrosols"
+    distinctions:
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
+    tests:
+      all_of:
+        - recorded_rp: {field: rp_anthropic_history, pattern: "."}
+        - anthropic_history_rp: {min_depth: 50}
+  - code: "anthroposols_artificiels"
+    ger: "anthroposols"
+    name: "anthroposols artificiels"
+    name_singular: "anthroposol artificiel"
+    name_en: "artificial anthroposols"
+    name_en_singular: "artificial anthroposol"
+    page: "91-92"
+    sequences: &art_seq ["JZ-Z-(II)", "Z-(II)"]
+    notes: "A soil developed in a non-pedological anthropic material (mine or quarry spoil, waste, sludge, slag, rubble) over the top 50 cm or more, the anthropic material over half the volume; the natural layers below are buried (II or -b)."
+    wrb2006: "Technosols"
+    distinctions:
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
+    tests:
+      all_of:
+        - anthropic_material_rp: {kinds: [technological, earthy, holorganic, any], min_pct: 50, min_thickness: 1}
+        - anthropic_material_rp: {kinds: [technological, earthy, holorganic, any], min_pct: 50, min_thickness: 50}
+    imperfect:
+      - <<: *art_leptique
+        tests: {all_of: [{anthropic_material_rp: {kinds: [technological, earthy, holorganic, any], min_pct: 50, min_thickness: 30}}]}
+      - <<: *art_lithique
+        tests:
+          all_of:
+            - anthropic_material_rp: {kinds: [technological, earthy, holorganic, any], min_pct: 50, min_thickness: 10}
+            - horizon_within_rp: {codes: [R], depth: 50}
+  - code: "anthroposols_reconstitues"
+    ger: "anthroposols"
+    name: "anthroposols reconstitués"
+    name_singular: "anthroposol reconstitué"
+    name_en: "reconstituted anthroposols"
+    name_en_singular: "reconstituted anthroposol"
+    page: "92"
+    sequences: ["Ltp-Z|D|R"]
+    notes: "Transported, reworked pedological material (topsoil, sometimes geological sand) placed in gardens and parks over the top 50 cm or more; the source, when known, is said with provenant de."
+    wrb2006: "not taken into account"
+    distinctions:
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
+    tests:
+      all_of:
+        - transported_material_rp: {min_thickness: 1}
+        - transported_material_rp: {min_thickness: 50}
+    imperfect:
+      - <<: *art_leptique
+        tests: {all_of: [{transported_material_rp: {min_thickness: 30}}]}
+      - <<: *art_lithique
+        tests:
+          all_of:
+            - transported_material_rp: {min_thickness: 10}
+            - horizon_within_rp: {codes: [R], depth: 50}
+  - code: "anthroposols_construits"
+    ger: "anthroposols"
+    name: "anthroposols construits"
+    name_singular: "anthroposol construit"
+    name_en: "constructed anthroposols"
+    name_en_singular: "constructed anthroposol"
+    page: "94"
+    sequences: ["Ztc", "JZtc"]
+    notes: "Built on purpose from technological wastes to carry vegetation. The text gives no thickness; the figure of p. 93 gives 50 cm. Read on a technological material Ztc over 50 cm or more (Q15); when an artificiel attaches too, the construction recorded in rp_anthropic_history decides (precedence.yaml)."
+    wrb2006: "Technosols (Transportic)"
+    distinctions:
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
+    tests:
+      all_of:
+        - anthropic_material_rp: {kinds: [technological], min_thickness: 1}
+        - anthropic_material_rp: {kinds: [technological], min_thickness: 50}
+  - code: "anthroposols_archeologiques"
+    ger: "anthroposols"
+    name: "anthroposols archéologiques"
+    name_singular: "anthroposol archéologique"
+    name_en: "archaeological anthroposols"
+    name_en_singular: "archaeological anthroposol"
+    page: "91, 94"
+    sequences: []
+    notes: "An archaeo-anthropic material Zar (much phosphorus or charcoal, debris and artefacts, structures made by people) over the top 50 cm or more, at least 20 % of the volume; the natural layers below buried."
+    wrb2006: "not taken into account"
+    distinctions:
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
+    tests:
+      all_of:
+        - anthropic_material_rp: {kinds: [archaeological], min_pct: 20, min_thickness: 1}
+        - anthropic_material_rp: {kinds: [archaeological], min_pct: 20, min_thickness: 50}
+    imperfect:
+      - <<: *art_lithique
+        tests:
+          all_of:
+            - anthropic_material_rp: {kinds: [archaeological], min_pct: 20, min_thickness: 10}
+            - horizon_within_rp: {codes: [R], depth: 50}

@@ -1,0 +1,35 @@
+# Colluviosols (pp. 130-134), 1 reference. Defined by the parent material:
+# colluvium, a slope accumulation of pedological material, weathered or
+# loose rock moved over short distances (p. 130). No specific horizon; no BT,
+# FS or BP (p. 132). Hugo's decision Q14: the colluvial origin is required,
+# recorded in layer_origin ("colluvic") over 50 cm (+/- 10) from the
+# surface; a colluviosol as long as no other reference's characteristic
+# solum is diagnosed (p. 132): when another reference attaches too, it takes
+# the name, with the qualifier colluvial (p. 133; precedence.yaml).
+#
+# Distinctions (p. 133): fluviosols by an alluvial origin and a fluctuating
+# water table; peyric horizons over 50 cm make a peyrosol or a double
+# peyrosol-colluviosol; redox signs starting under 20 cm a rédoxisol
+# colluvial, between 20 and 50 cm the double colluviosol-rédoxisol
+# (doubles.yaml, with the rédoxisols).
+references:
+  - code: "colluviosols"
+    ger: "colluviosols"
+    name: "colluviosols"
+    name_singular: "colluviosol"
+    name_en: "colluviosols"
+    name_en_singular: "colluviosol"
+    page: "130-132"
+    sequences: []
+    notes: "Frequent horizons A, Js, Jp, S, Sca, Sci, C; none specific. The colluvial solum is independent of the material below, a stone line may mark its base."
+    wrb2006: "Colluvic Regosols, or Cambisols or another RSG (Colluvic)"
+    distinctions:
+      - {with: "fluviosols", page: "133", by: "an alluvial origin and a fluctuating water table (later release)"}
+      - {with: "peyrosols", page: "133", by: "peyric horizons over 50 cm: a peyrosol or a double (doubles.yaml, later release)"}
+      - {with: "rédoxisols", page: "133", by: "redox signs from under 20 cm a rédoxisol colluvial, from 20 to 50 cm the double colluviosol-rédoxisol (doubles.yaml, later release)"}
+      - {with: "every other reference", page: "133", by: "the other reference takes the name, with colluvial (precedence.yaml)"}
+    tests:
+      all_of:
+        - colluvial_rp: {min_thickness: 1}
+        - colluvial_rp: {min_thickness: 50}
+        - no_horizon_within_rp: {codes: [BT, FS, BP]}

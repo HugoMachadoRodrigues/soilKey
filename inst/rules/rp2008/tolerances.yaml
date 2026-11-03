@@ -1,0 +1,20 @@
+# The tolerances of the Référentiel pédologique 2008 (pp. 64-65), read by
+# .tolerance_table(): a value beyond a printed threshold but within its
+# tolerance attaches the soil imperfectly (Hugo's decision Q4). Depths and
+# thicknesses share the table. A threshold the table does not list is strict
+# (Q5): 5, 12, 15, 25, 40, 45, 70, 75, 85, 100, 125 and 160 cm, clay, coarse
+# elements, the electrical conductivity, gypsum, aluminium, colour and the
+# carbonate ratios. pH +/- 0.2 on every pH threshold, CEC +/- 1 cmol+/kg on
+# every CEC per kg of soil, S/CEC +/- 5 points on every S/CEC threshold
+# (the book: for all the thresholds proposed), organic carbon 8 +/- 2 and
+# 30 +/- 5 g/100 g only (Hugo's default 9).
+tolerances:
+  - {kind: depth, thresholds: [10, 20, 30, 35], tol: 5, page: "64"}
+  - {kind: depth, thresholds: [50, 60], tol: 10, page: "64"}
+  - {kind: depth, threshold: 80, tol: 15, page: "64"}
+  - {kind: depth, threshold: 120, tol: 20, page: "64"}
+  - {kind: depth, threshold: 200, tol: 30, page: "64"}
+  - {kind: ph, tol: 0.2, page: "64"}
+  - {kind: cec, tol: 1, page: "64"}
+  - {kind: bs, tol: 5, page: "64"}
+  - {kind: organic_carbon, thresholds: [8, 30], tols: [2, 5], page: "65"}

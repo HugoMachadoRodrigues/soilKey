@@ -92,6 +92,29 @@ load_rules <- function(system = "wrb2022",
     if (length(from)) rules[[from_key]] <- c(rules[[from_key]] %||% list(), from)
   }
 
+  # v0.9.346: the folders and files a registry entry names besides its
+  # levels (the French Referentiel pedologique 2008 keeps its references in
+  # references/<ger>.yaml, and its rapid key, precedence, doubles and
+  # tolerances in files of their own), each read under its own name. No other
+  # system names any, so their rules are read as before.
+  sys <- .system_get(system)
+  for (key in as.character(unlist(sys$rule_folders))) {
+    sub_path <- system.file("rules", system, key, package = package)
+    if (!nzchar(sub_path) || !dir.exists(sub_path)) next
+    for (f in sort(list.files(sub_path, pattern = "\\.yaml$", full.names = TRUE))) {
+      block <- yaml::read_yaml(f)[[key]]
+      if (!is.null(block)) rules[[key]] <- c(rules[[key]] %||% list(), block)
+    }
+  }
+  for (key in as.character(unlist(sys$rule_files))) {
+    f <- system.file("rules", system, paste0(key, ".yaml"), package = package)
+    if (!nzchar(f) || !file.exists(f)) next
+    content <- yaml::read_yaml(f)
+    # the block named like the file, and any other block it holds (the
+    # exclusions beside the precedence)
+    for (nm in names(content)) if (nm == key || is.null(rules[[nm]])) rules[[nm]] <- content[[nm]]
+  }
+
   rules
 }
 

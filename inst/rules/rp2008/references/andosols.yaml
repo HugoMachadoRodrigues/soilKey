@@ -1,0 +1,194 @@
+# Andosols (pp. 74-87), 6 references. The five andosol horizons (Avi, And,
+# Snd, Alu, Slu) are tested only with andic or vitric properties (default
+# 15, in the horizon frame). No E, BP or BT within 50 cm (p. 80). A
+# silandic or aluandic set (And or And-Snd; Alu or Alu-Slu) at least 30 cm
+# thick from the surface and appearing within the first 50 cm; a cover only
+# as an epivitric Avi under 50 cm (default 21). Perhydric first, eutric or
+# dystric as a qualifier (default 21, the types of p. 83).
+#
+# Imperfect (p. 82): leptique, the set thinner than 30 cm.
+# Distinctions (pp. 84-85): a pyroclastic deposit with Alox + 1/2 Feox under
+# 0.4 % is a régosol pyroclastique; a BP has twice the Alox of the horizon
+# above and Cf/Cpy of 0.5 or more; brunisols andiques below about 1000 m.
+no_ebpbt: &and_no_ebpbt
+  no_horizon_within_rp: {codes: [E, BP, BT], depth: 50}
+sila_core: &sila_core
+  all_of:
+    - sequence_rp: {sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]}
+    - thickness_rp: {codes: [And, Snd], min: 30, from_surface: true, cover: [Avi], cover_max: 50}
+    - horizon_within_rp: {codes: [And, Snd], depth: 50}
+    - *and_no_ebpbt
+sila_lept: &sila_lept
+  all_of:
+    - sequence_rp: {sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]}
+    - horizon_within_rp: {codes: [And, Snd], depth: 50}
+    - *and_no_ebpbt
+sila_eutric: &sila_eutric
+  any_of:
+    - attribute_rp: {attribute: bs, threshold: 50, direction: min, kind: bs, codes: [And, Snd], within: 30, layers: all}
+    - attribute_rp: {attribute: sum_bases, threshold: 15, direction: min, open: true, codes: [And, Snd], within: 30, layers: all}
+sila_perhydric: &sila_perhydric
+  attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [And, Snd], within: 100, min: 35}
+alua_core: &alua_core
+  all_of:
+    - sequence_rp: {sequences: ["Alu-(C)-(M|R)", "Alu-Slu-(C)-(M|R)"]}
+    - thickness_rp: {codes: [Alu, Slu], min: 30, from_surface: true, cover: [Avi], cover_max: 50}
+    - horizon_within_rp: {codes: [Alu, Slu], depth: 50}
+    - *and_no_ebpbt
+alua_lept: &alua_lept
+  all_of:
+    - sequence_rp: {sequences: ["Alu-(C)-(M|R)", "Alu-Slu-(C)-(M|R)"]}
+    - horizon_within_rp: {codes: [Alu, Slu], depth: 50}
+    - *and_no_ebpbt
+alua_perhydric: &alua_perhydric
+  attribute_thickness_rp: {attribute: water_content_1500kpa_undried, threshold: 100, direction: min, codes: [Alu, Slu], within: 100, min: 35}
+references:
+  - code: "vitrandosols"
+    ger: "andosols"
+    name: "vitrandosols"
+    name_singular: "vitrandosol"
+    name_en: "vitric andosols"
+    name_en_singular: "vitric andosol"
+    page: "80"
+    sequences: &vitr ["Avi-(C|M|R)"]
+    notes: "Avi at least 30 cm thick from the surface on C, M or R; a transition at its base is told from M or R by its vitric chemistry, colour and some organic carbon."
+    wrb2006: "Vitric Andosols"
+    distinctions:
+      - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
+      - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
+      - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: *vitr}
+        - thickness_rp: {codes: [Avi], min: 30, from_surface: true}
+        - *and_no_ebpbt
+    imperfect:
+      - qualifier: "leptique"
+        page: "82"
+        criterion: "the Avi thinner than 30 cm"
+        tests:
+          all_of:
+            - sequence_rp: {sequences: *vitr}
+            - horizon_within_rp: {codes: [Avi], depth: 10}
+            - *and_no_ebpbt
+  - code: "silandosols_eutriques"
+    ger: "andosols"
+    name: "silandosols eutriques"
+    name_singular: "silandosol eutrique"
+    name_en: "eutric silandosols"
+    name_en_singular: "eutric silandosol"
+    page: "80-81"
+    sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]
+    notes: "S/CEC (pH 7) 50 % or more over at least 30 cm from the surface in And and Snd, or a sum of bases over 15 cmol+/kg (default 21: either suffices)."
+    wrb2006: "Silandic Andosols (Eutric)"
+    distinctions:
+      - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
+      - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
+      - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *sila_core
+        - *sila_eutric
+    imperfect:
+      - qualifier: "leptique"
+        page: "82"
+        criterion: "the silandic set thinner than 30 cm"
+        tests: {all_of: [*sila_lept, *sila_eutric]}
+  - code: "silandosols_dystriques"
+    ger: "andosols"
+    name: "silandosols dystriques"
+    name_singular: "silandosol dystrique"
+    name_en: "dystric silandosols"
+    name_en_singular: "dystric silandosol"
+    page: "80-81"
+    sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]
+    notes: "Not eutric: S/CEC under 50 % over 30 cm from the surface and a sum of bases of 15 cmol+/kg or less."
+    wrb2006: "Silandic Andosols (Dystric)"
+    distinctions:
+      - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
+      - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
+      - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *sila_core
+        - none_of: [*sila_eutric]
+    imperfect:
+      - qualifier: "leptique"
+        page: "82"
+        criterion: "the silandic set thinner than 30 cm"
+        tests: {all_of: [*sila_lept, {none_of: [*sila_eutric]}]}
+  - code: "silandosols_perhydriques"
+    ger: "andosols"
+    name: "silandosols perhydriques"
+    name_singular: "silandosol perhydrique"
+    name_en: "perhydric silandosols"
+    name_en_singular: "perhydric silandosol"
+    page: "81"
+    sequences: ["And-(C)-(M|R)", "And-Snd-(C)-(M|R)"]
+    notes: "Water at 1500 kPa of the undried sample 100 % or more of the oven-dry fine earth over 35 cm or more in all within 100 cm. Thixotropy and an irreversible dehydration of 70 % or more confirm it and are read as evidence only (soilKey's reading)."
+    wrb2006: "Hydric Silandic Andosols"
+    distinctions:
+      - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
+      - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
+      - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *sila_core
+        - *sila_perhydric
+    imperfect:
+      - qualifier: "leptique"
+        page: "82"
+        criterion: "the silandic set thinner than 30 cm"
+        tests: {all_of: [*sila_lept, *sila_perhydric]}
+  - code: "aluandosols_hapliques"
+    ger: "andosols"
+    name: "aluandosols hapliques"
+    name_singular: "aluandosol haplique"
+    name_en: "haplic aluandosols"
+    name_en_singular: "haplic aluandosol"
+    page: "81"
+    sequences: ["Alu-(C)-(M|R)", "Alu-Slu-(C)-(M|R)"]
+    notes: "An acid solum (pH water under 5.0) of immobile Al and Fe organo-mineral complexes; old volcanic or even non-volcanic materials; with no other property (not perhydric)."
+    wrb2006: "Aluandic Andosols"
+    distinctions:
+      - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
+      - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
+      - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *alua_core
+        - none_of: [*alua_perhydric]
+    imperfect:
+      - qualifier: "leptique"
+        page: "82"
+        criterion: "the aluandic set thinner than 30 cm"
+        tests: {all_of: [*alua_lept, {none_of: [*alua_perhydric]}]}
+  - code: "aluandosols_perhydriques"
+    ger: "andosols"
+    name: "aluandosols perhydriques"
+    name_singular: "aluandosol perhydrique"
+    name_en: "perhydric aluandosols"
+    name_en_singular: "perhydric aluandosol"
+    page: "82"
+    sequences: ["Alu-(C)-(M|R)", "Alu-Slu-(C)-(M|R)"]
+    notes: "The perhydric test of the silandosols on Slu (and possibly Alu)."
+    wrb2006: "Hydric Aluandic Andosols"
+    distinctions:
+      - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
+      - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
+      - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *alua_core
+        - *alua_perhydric
+    imperfect:
+      - qualifier: "leptique"
+        page: "82"
+        criterion: "the aluandic set thinner than 30 cm"
+        tests: {all_of: [*alua_lept, *alua_perhydric]}

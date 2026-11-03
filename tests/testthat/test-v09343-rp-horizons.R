@@ -58,8 +58,9 @@ test_that("the frame has the columns of identify_horizons() and the RP columns",
   expect_identical(fr$code, c("A", "S", "C"))
   expect_identical(fr$route, rep("data", 3))
   expect_true(all(grepl("^\\[soilKey's order of tests\\]", fr$evidence)))
-  # the identification is internal until the registry entry rp2008 exists
-  expect_error(identify_horizons(.fr_P(.fr_A()), "rp2008"), "should be one of|Unknown")
+  # since the registry entry rp2008 (0.9.346), identify_horizons() reaches it
+  expect_identical(identify_horizons(.fr_P(.fr_A(0, 20), .fr_S(20, 60), .fr_C(60, 120)), "rp2008")$code,
+                   c("A", "S", "C"))
 })
 
 

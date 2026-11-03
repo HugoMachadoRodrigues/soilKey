@@ -1,0 +1,126 @@
+# The rapid key of the Référentiel pédologique 2008 (pp. 66-68), its
+# characters paraphrased. The book calls it non-dichotomous: it orients to a
+# group of references (GER), rarely to a reference, and a double or multiple
+# attachment stays possible (p. 66). soilKey never uses it as a filter: every
+# reference is tested every time. Its order ranks the references that attach
+# equally (Hugo's decision Q6): entries 1 to 10 as numbered, then the
+# residual entries 11 and 12; the outcomes of one line in their printed
+# order. No entry reaches the grisols (pp. 192-195): soilKey places them in
+# 7c beside the chernosols and phaeosols, in brackets (Annex 8 groups them
+# there).
+rapid_key:
+  - entry: "1"
+    page: "66"
+    characters: "very thin solums, under 10 cm, on hard or loose rock little or not weathered"
+    outcomes: [lithosols, regosols]
+  - entry: "2"
+    page: "66"
+    characters: "solums strongly transformed by people (repeated inputs of foreign materials, terraces), or artificial materials over at least the first 50 cm, or moved earthy materials"
+    outcomes: [anthroposols]
+  - entry: "3"
+    page: "66"
+    characters: "morphology, functioning and pedogenesis dominated by freezing and thawing (high altitude and latitude)"
+    outcomes: [cryosols]
+  - entry: "4a"
+    page: "66"
+    characters: "dominated by water excess, with only redox characters appearing within 50 cm"
+    outcomes: [reductisols_redoxisols, planosols]
+    double_outcomes: [luvisols]
+    note: "the outcome luvisols-rédoxisols is a double attachment (p. 285): the luvisols rank by their own entry, 11b"
+  - entry: "4b"
+    page: "66"
+    characters: "reductic horizons appearing within 50 cm, almost always forming the whole lower solum"
+    outcomes: [reductisols_redoxisols]
+  - entry: "4c"
+    page: "66"
+    characters: "mostly holorganic H horizons formed under water saturation"
+    outcomes: [histosols]
+  - entry: "5a"
+    page: "67"
+    characters: "recent fluvial, marine or lake alluvium, little differentiated, in low positions under an alluvial water table"
+    outcomes: [fluviosols, thalassosols]
+  - entry: "5b"
+    page: "67"
+    characters: "muddy estuaries and deltas of tropical regions (mangrove), with sulfur, hyper-acid when drained"
+    outcomes: [thiosols_sulfatosols]
+  - entry: "5c"
+    page: "67"
+    characters: "colluvial materials accumulated at the foot of slopes or in dry valleys"
+    outcomes: [colluviosols]
+  - entry: "6a"
+    page: "67"
+    characters: "coarse elements dominant, over 60 % of the whole earth by weight, in at least the first 50 cm"
+    outcomes: [peyrosols]
+  - entry: "6b"
+    page: "67"
+    characters: "uniformly sandy, with no BT, no BP and no redox or reductic characters within 100 cm"
+    outcomes: [arenosols]
+  - entry: "6c"
+    page: "67"
+    characters: "uniformly heavy clay with swelling clays and V horizons within 100 cm"
+    outcomes: [vertisols]
+  - entry: "6d"
+    page: "67"
+    characters: "heavy swelling clay limited within 50 cm by a hard massive rock, with no V horizon"
+    outcomes: [leptismectisols]
+  - entry: "6e"
+    page: "67"
+    characters: "heavy clay, no V, not calcareous, from compact claystones or marls of low permeability"
+    outcomes: [pelosols]
+  - entry: "6f"
+    page: "67"
+    characters: "clayey, well structured, shiny ped faces, halloysite dominant"
+    outcomes: [nitosols]
+  - entry: "6g"
+    page: "67"
+    characters: "humic solums from pyroclastic or hard volcanic materials"
+    outcomes: [andosols]
+  - entry: "6h"
+    page: "67"
+    characters: "dominated throughout by primary or secondary gypsum"
+    outcomes: [gypsosols]
+  - entry: "6i"
+    page: "67"
+    characters: "dominant influence of soluble salts or sodium"
+    outcomes: [salisols_sodisols]
+  - entry: "7a"
+    page: "67"
+    characters: "only holorganic O horizons or hemiorganic Aho, aerated"
+    outcomes: [organosols, rankosols]
+  - entry: "7b"
+    page: "67"
+    characters: "a biomacrostructured Ah of at least 50 cm (giant earthworms), acid, under a warm humid climate"
+    outcomes: [veracrisols]
+  - entry: "7c"
+    page: "67"
+    characters: "black or nearly black episolums, clinohumic, with a very fine structure of biological origin (steppe, prairie, pampa)"
+    outcomes: [chernosols, phaeosols, grisols]
+    soilkey_added: [grisols]
+    note: "[soilKey] the grisols, which no entry reaches, are placed here (Q6)"
+  - entry: "8"
+    page: "68"
+    characters: "very acid, in materials poor in weatherable minerals, with humus and iron moving down (podzolisation)"
+    outcomes: [podzosols]
+  - entry: "9"
+    page: "68"
+    characters: "FS horizons at least at depth: reddish clayey horizons with a fine, very distinct and stable angular structure"
+    outcomes: [fersialsols]
+  - entry: "10"
+    page: "68"
+    characters: "intertropical solums with total or nearly total weathering of the primary minerals, kaolinite and gibbsite dominant, metal oxyhydroxides abundant"
+    outcomes: [ferrallitisols_oxydisols, ferruginosols]
+  - entry: "11a"
+    page: "68"
+    characters: "neither calcareous nor dominated by calcium, without the characters of 1 to 10; little or no texture differentiation, only A (or L) and S horizons"
+    outcomes: [brunisols, alocrisols]
+    residual: true
+  - entry: "11b"
+    page: "68"
+    characters: "neither calcareous nor dominated by calcium, without the characters of 1 to 10; strong texture differentiation"
+    outcomes: [luvisols, planosols, pelosols, fersialsols]
+    residual: true
+  - entry: "12"
+    page: "68"
+    characters: "calcareous or dominated by calcium, without the characters of 1 to 10"
+    outcomes: [calcium_magnesium]
+    residual: true

@@ -125,7 +125,30 @@ pro_fixture_catalog <- function() {
                 "Alkaline clay-differentiated soils" = "CK", "Halomorphic soils" = "CL",
                 "Hydrometamorphic soils" = "CM", "Organo-accumulative soils" = "CN",
                 "Eluvial soils" = "CO", "Lithozems" = "CP", "Abrazems" = "CQ",
-                "Agroabrazems" = "CR", "Agrozems" = "CS", "Turbozems" = "CT", "Chemozems" = "CU")
+                "Agroabrazems" = "CR", "Agrozems" = "CS", "Turbozems" = "CT", "Chemozems" = "CU"),
+  # the French examples of the Referentiel pedologique 2008, one per reference
+  # implemented, labelled by the reference (the singular, as the name gives it)
+  rp2008 = c("alocrisol typique" = "alocrisols_typiques",
+             "alocrisol humique" = "alocrisols_humiques", "vitrandosol" = "vitrandosols",
+             "silandosol eutrique" = "silandosols_eutriques",
+             "silandosol dystrique" = "silandosols_dystriques",
+             "silandosol perhydrique" = "silandosols_perhydriques",
+             "aluandosol haplique" = "aluandosols_hapliques",
+             "aluandosol perhydrique" = "aluandosols_perhydriques",
+             "anthroposol transform\u00e9" = "anthroposols_transformes",
+             "anthroposol artificiel" = "anthroposols_artificiels",
+             "anthroposol reconstitu\u00e9" = "anthroposols_reconstitues",
+             "anthroposol construit" = "anthroposols_construits",
+             "anthroposol arch\u00e9ologique" = "anthroposols_archeologiques",
+             "ar\u00e9nosol" = "arenosols", "brunisol eutrique" = "brunisols_eutriques",
+             "brunisol dystrique" = "brunisols_dystriques", "rendosol" = "rendosols",
+             "calcosol" = "calcosols", "dolomitosol" = "dolomitosols", "rendisol" = "rendisols",
+             "calcisol" = "calcisols", "magn\u00e9sisol" = "magnesisols",
+             "calcarisol" = "calcarisols", "chernosol haplique" = "chernosols_hapliques",
+             "chernosol typique" = "chernosols_typiques",
+             "chernosol m\u00e9lanoluvique" = "chernosols_melanoluviques",
+             "colluviosol" = "colluviosols", "cryosol histique" = "cryosols_histiques",
+             "cryosol min\u00e9ral" = "cryosols_mineraux")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

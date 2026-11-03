@@ -1,0 +1,352 @@
+# The Référentiel pédologique 2008 (AFES; Baize D., Girard M.-C. coord.;
+# Éditions Quæ, 2009): the catalogue of its 34 groups of references (GER,
+# one per chapter) and 110 references (list of pp. 402-403). The RP is not a
+# key: it has two categories, references and types (p. XI); the GER is an
+# editorial grouping with no hierarchical weight (p. XIII), kept by soilKey
+# as a label of each reference (Hugo's decision Q1). Codes are ASCII slugs of
+# the printed names (default 2); names as printed, the plural of the list.
+#
+# The references of the GER marked implemented are tested by
+# classify_rp2008() from references/<ger>.yaml. The others come in later
+# releases: their references are not tested, and their `signpost` (the
+# reference horizons or materials of the chapter, soilKey's, never a test of
+# the reference) puts the GER among the candidates as not implemented yet,
+# undecided, when the profile shows them, so that no profile is attached
+# elsewhere without saying so.
+version: "Référentiel pédologique 2008"
+source: "Baize D., Girard M.-C. (coord.) (2009). Référentiel pédologique 2008. AFES, Éditions Quæ. List of the references, pp. 402-403; the chapters, pp. 69-326."
+ger:
+  - code: "alocrisols"
+    name: "Alocrisols"
+    name_en: "Alocrisols"
+    pages: "69-73"
+    chapter_version: "10th version, 17 July 2007"
+    implemented: true
+    references: [alocrisols_typiques, alocrisols_humiques]
+  - code: "andosols"
+    name: "Andosols"
+    name_en: "Andosols"
+    pages: "74-87"
+    chapter_version: "23rd version, 6 August 2008"
+    implemented: true
+    references: [vitrandosols, silandosols_eutriques, silandosols_dystriques, silandosols_perhydriques, aluandosols_hapliques, aluandosols_perhydriques]
+  - code: "anthroposols"
+    name: "Anthroposols"
+    name_en: "Anthroposols"
+    pages: "88-98"
+    chapter_version: "14th version, 28 November 2007"
+    implemented: true
+    references: [anthroposols_transformes, anthroposols_artificiels, anthroposols_reconstitues, anthroposols_construits, anthroposols_archeologiques]
+  - code: "arenosols"
+    name: "Arénosols"
+    name_en: "Arenosols"
+    pages: "99-102"
+    chapter_version: "15th version, 9 November 2007"
+    implemented: true
+    references: [arenosols]
+  - code: "brunisols"
+    name: "Brunisols"
+    name_en: "Brunisols"
+    pages: "103-108"
+    chapter_version: "19th version, 18 July 2008"
+    implemented: true
+    references: [brunisols_eutriques, brunisols_dystriques]
+  - code: "calcium_magnesium"
+    name: "Solums dont le complexe adsorbant est dominé par le calcium et/ou le magnésium"
+    label: "[calcium-magnésium]"
+    name_en: "Solums whose exchange complex is dominated by calcium or magnesium"
+    pages: "109-124"
+    chapter_version: "14th version, 10 November 2007"
+    implemented: true
+    references: [rendosols, calcosols, dolomitosols, rendisols, calcisols, magnesisols, calcarisols]
+  - code: "chernosols"
+    name: "Chernosols"
+    name_en: "Chernosols"
+    pages: "125-129"
+    chapter_version: "8th version, 23 November 2007"
+    implemented: true
+    references: [chernosols_hapliques, chernosols_typiques, chernosols_melanoluviques]
+  - code: "colluviosols"
+    name: "Colluviosols"
+    name_en: "Colluviosols"
+    pages: "130-134"
+    chapter_version: "8bis version, 12 September 2007"
+    implemented: true
+    references: [colluviosols]
+  - code: "cryosols"
+    name: "Cryosols"
+    name_en: "Cryosols"
+    pages: "135-145"
+    chapter_version: "16th version, 9 November 2007"
+    implemented: true
+    references: [cryosols_histiques, cryosols_mineraux]
+
+  # --- the GER of later releases ---------------------------------------------------------
+  - code: "ferrallitisols_oxydisols"
+    name: "Ferrallitisols et oxydisols"
+    name_en: "Ferrallitisols and oxydisols"
+    pages: "146-168"
+    implemented: false
+    references:
+      - {code: "ferrallitisols_meubles", name: "ferrallitisols meubles"}
+      - {code: "ferrallitisols_nodulaires", name: "ferrallitisols nodulaires"}
+      - {code: "ferrallitisols_petroxydiques", name: "ferrallitisols pétroxydiques"}
+      - {code: "ferrallitisols_duroxydiques", name: "ferrallitisols duroxydiques"}
+      - {code: "oxydisols_meubles", name: "oxydisols meubles"}
+      - {code: "oxydisols_nodulaires", name: "oxydisols nodulaires"}
+      - {code: "oxydisols_petroxydiques", name: "oxydisols pétroxydiques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [F, OX, ND, RT, OXc, OXm]}}]}
+  - code: "ferruginosols"
+    name: "Ferruginosols"
+    name_en: "Ferruginosols"
+    pages: "169-177"
+    implemented: false
+    references:
+      - {code: "ferruginosols_meubles", name: "ferruginosols meubles"}
+      - {code: "ferruginosols_semiluviques", name: "ferruginosols semiluviques"}
+      - {code: "ferruginosols_luviques", name: "ferruginosols luviques"}
+      - {code: "ferruginosols_petroxydiques", name: "ferruginosols pétroxydiques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [FE]}}]}
+  - code: "fersialsols"
+    name: "Fersialsols"
+    name_en: "Fersialsols"
+    pages: "178-182"
+    implemented: false
+    references:
+      - {code: "fersialsols_carbonates", name: "fersialsols carbonatés"}
+      - {code: "fersialsols_calciques", name: "fersialsols calciques"}
+      - {code: "fersialsols_insatures", name: "fersialsols insaturés"}
+      - {code: "fersialsols_eluviques", name: "fersialsols éluviques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [FS]}}]}
+  - code: "fluviosols"
+    name: "Fluviosols"
+    name_en: "Fluviosols"
+    pages: "183-191"
+    implemented: false
+    references:
+      - {code: "fluviosols_bruts", name: "fluviosols bruts"}
+      - {code: "fluviosols_juveniles", name: "fluviosols juvéniles"}
+      - {code: "fluviosols_typiques", name: "fluviosols typiques"}
+      - {code: "fluviosols_brunifies", name: "fluviosols brunifiés"}
+    signpost: {any_of: [{origin_rp: {pattern: "fluv|alluv", depth: 50}}]}
+  - code: "grisols"
+    name: "Grisols"
+    name_en: "Grisols"
+    pages: "192-195"
+    implemented: false
+    references:
+      - {code: "grisols_eluviques", name: "grisols éluviques"}
+      - {code: "grisols_degrades", name: "grisols dégradés"}
+      - {code: "grisols_hapliques", name: "grisols hapliques"}
+    signpost: {all_of: [{horizon_within_rp: {codes: [Aso]}}, {horizon_within_rp: {codes: [BT]}}]}
+  - code: "gypsosols"
+    name: "Gypsosols"
+    name_en: "Gypsosols"
+    pages: "196-200"
+    implemented: false
+    references:
+      - {code: "gypsosols_hapliques", name: "gypsosols hapliques"}
+      - {code: "gypsosols_petrogypsiques", name: "gypsosols pétrogypsiques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Ys, Ym]}}]}
+  - code: "histosols"
+    name: "Histosols"
+    name_en: "Histosols"
+    pages: "201-216"
+    implemented: false
+    references:
+      - {code: "histosols_fibriques", name: "histosols fibriques"}
+      - {code: "histosols_mesiques", name: "histosols mésiques"}
+      - {code: "histosols_sapriques", name: "histosols sapriques"}
+      - {code: "histosols_composites", name: "histosols composites"}
+      - {code: "histosols_leptiques", name: "histosols leptiques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [H], depth: 40}}]}
+  - code: "leptismectisols"
+    name: "Leptismectisols"
+    name_en: "Leptismectisols"
+    pages: "217-218"
+    implemented: false
+    references:
+      - {code: "leptismectisols", name: "leptismectisols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Av]}}]}
+  - code: "lithosols"
+    name: "Lithosols"
+    name_en: "Lithosols"
+    pages: "219-220"
+    implemented: false
+    references:
+      - {code: "lithosols", name: "lithosols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [R, Km, Fem, Sim, OXc, OXm], depth: 10}}]}
+  - code: "luvisols"
+    name: "Luvisols"
+    name_en: "Luvisols"
+    pages: "221-232"
+    implemented: false
+    references:
+      - {code: "neoluvisols", name: "néoluvisols"}
+      - {code: "luvisols_typiques", name: "luvisols typiques"}
+      - {code: "luvisols_degrades", name: "luvisols dégradés"}
+      - {code: "luvisols_derniques", name: "luvisols derniques"}
+      - {code: "luvisols_tronques", name: "luvisols tronqués"}
+      - {code: "quasi_luvisols", name: "quasi-luvisols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [BT]}}]}
+  - code: "nitosols"
+    name: "Nitosols"
+    name_en: "Nitosols"
+    pages: "233-237"
+    implemented: false
+    references:
+      - {code: "nitosols", name: "nitosols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Sn]}}]}
+  - code: "organosols"
+    name: "Organosols"
+    name_en: "Organosols"
+    pages: "238-242"
+    implemented: false
+    references:
+      - {code: "organosols_holorganiques", name: "organosols holorganiques"}
+      - {code: "organosols_calcaires", name: "organosols calcaires"}
+      - {code: "organosols_satures", name: "organosols saturés"}
+      - {code: "organosols_insatures", name: "organosols insaturés"}
+    signpost:
+      any_of:
+        - {horizon_within_rp: {codes: [OHta]}}
+        - all_of:
+            - {horizon_within_rp: {codes: [Aho, OF, OH], depth: 10}}
+            - {no_horizon_within_rp: {codes: [S, BT, BP, E, H]}}
+  - code: "pelosols"
+    name: "Pélosols"
+    name_en: "Pelosols"
+    pages: "243-248"
+    implemented: false
+    references:
+      - {code: "pelosols_typiques", name: "pélosols typiques"}
+      - {code: "pelosols_brunifies", name: "pélosols brunifiés"}
+      - {code: "pelosols_differencies", name: "pélosols différenciés"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Sp], depth: 40}}]}
+  - code: "peyrosols"
+    name: "Peyrosols"
+    name_en: "Peyrosols"
+    pages: "249-254"
+    implemented: false
+    references:
+      - {code: "peyrosols", name: "peyrosols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [X], depth: 50}}]}
+  - code: "phaeosols"
+    name: "Phæosols"
+    name_en: "Phaeosols"
+    pages: "255-258"
+    implemented: false
+    references:
+      - {code: "phaeosols_hapliques", name: "phæosols hapliques"}
+      - {code: "phaeosols_melanoluviques", name: "phæosols mélanoluviques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Aso]}}]}
+  - code: "planosols"
+    name: "Planosols"
+    name_en: "Planosols"
+    pages: "259-264"
+    implemented: false
+    references:
+      - {code: "planosols_typiques", name: "planosols typiques"}
+      - {code: "planosols_distaux", name: "planosols distaux"}
+      - {code: "planosols_structuraux", name: "planosols structuraux"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [Eg]}}]}
+  - code: "podzosols"
+    name: "Podzosols"
+    name_en: "Podzosols"
+    pages: "265-275"
+    implemented: false
+    references:
+      - {code: "podzosols_ocriques", name: "podzosols ocriques"}
+      - {code: "podzosols_meubles", name: "podzosols meubles"}
+      - {code: "podzosols_duriques", name: "podzosols duriques"}
+      - {code: "podzosols_humiques", name: "podzosols humiques"}
+      - {code: "podzosols_humo_duriques", name: "podzosols humo-duriques"}
+      - {code: "podzosols_eluviques", name: "podzosols éluviques"}
+      - {code: "podzosols_placiques", name: "podzosols placiques"}
+      - {code: "post_podzosols", name: "post-podzosols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [BP]}}]}
+  - code: "rankosols"
+    name: "Rankosols"
+    name_en: "Rankosols"
+    pages: "276-278"
+    implemented: false
+    references:
+      - {code: "rankosols", name: "rankosols"}
+    signpost:
+      all_of:
+        - {horizon_within_rp: {codes: [R], depth: 50}}
+        - {no_horizon_within_rp: {codes: [S, BT, BP, E, Aca, Ado, Aci, Amg, Ach, Aso, Alu, And, Avi]}}
+  - code: "reductisols_redoxisols"
+    name: "Réductisols et rédoxisols"
+    name_en: "Reductisols and redoxisols"
+    pages: "279-290"
+    implemented: false
+    references:
+      - {code: "reductisols_typiques", name: "réductisols typiques"}
+      - {code: "reductisols_stagniques", name: "réductisols stagniques"}
+      - {code: "redoxisols", name: "rédoxisols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [G, g, "-g"], depth: 50}}]}
+  - code: "regosols"
+    name: "Régosols"
+    name_en: "Regosols"
+    pages: "291-293"
+    implemented: false
+    references:
+      - {code: "regosols", name: "régosols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [M, D, C], depth: 10}}]}
+  - code: "salisols_sodisols"
+    name: "Salisols et sodisols"
+    name_en: "Salisols and sodisols"
+    pages: "294-302"
+    implemented: false
+    references:
+      - {code: "salisols_chloruro_sulfates", name: "salisols chloruro-sulfatés"}
+      - {code: "salisols_carbonates", name: "salisols carbonatés"}
+      - {code: "sodisols_indifferencies", name: "sodisols indifférenciés"}
+      - {code: "sodisols_solonetziques", name: "sodisols solonetziques"}
+      - {code: "sodisols_solodises", name: "sodisols solodisés"}
+      - {code: "sodisalisols", name: "sodisalisols"}
+      - {code: "salisodisols", name: "salisodisols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: "thalassosols"
+    name: "Thalassosols"
+    name_en: "Thalassosols"
+    pages: "303-306"
+    implemented: false
+    references:
+      - {code: "thalassosols_bruts", name: "thalassosols bruts"}
+      - {code: "thalassosols_juveniles", name: "thalassosols juvéniles"}
+      - {code: "thalassosols_polderises", name: "thalassosols poldérisés"}
+    signpost: {any_of: [{origin_rp: {pattern: "marin|tidal|estuar", depth: 50}}]}
+  - code: "thiosols_sulfatosols"
+    name: "Thiosols et sulfatosols"
+    name_en: "Thiosols and sulfatosols"
+    pages: "307-312"
+    implemented: false
+    references:
+      - {code: "thiosols", name: "thiosols"}
+      - {code: "sulfatosols", name: "sulfatosols"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [TH, U], depth: 60}}]}
+  - code: "veracrisols"
+    name: "Veracrisols"
+    name_en: "Veracrisols"
+    pages: "313-316"
+    implemented: false
+    references:
+      - {code: "veracrisols", name: "veracrisols"}
+    signpost:
+      all_of:
+        - {thickness_rp: {codes: [A], min: 50, from_surface: true}}
+        - {no_horizon_within_rp: {codes: [Ach, Aca, Aci, Ado, Amg, Aso, And, Alu, Avi]}}
+        - {attribute_rp: {attribute: ph_h2o, threshold: 5.5, direction: max, codes: [A], position: first}}
+  - code: "vertisols"
+    name: "Vertisols"
+    name_en: "Vertisols"
+    pages: "317-326"
+    implemented: false
+    references:
+      - {code: "lithovertisols", name: "lithovertisols"}
+      - {code: "topovertisols", name: "topovertisols"}
+      - {code: "paravertisols_hapliques", name: "paravertisols hapliques"}
+      - {code: "paravertisols_planosoliques", name: "paravertisols planosoliques"}
+    signpost: {any_of: [{horizon_within_rp: {codes: [V, SV], depth: 100}}]}
