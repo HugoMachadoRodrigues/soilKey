@@ -241,7 +241,8 @@ test_that("the repairs and Hugo's decisions key as decided, the literal key othe
     list(c("P:25", "BMK:30", "CAT:30", "C:30"), FALSE, "C/CS", "C/CJ"),      # a ploughed CJ soil
     list(c("P:25", "AJ:8", "BCA:40", "C:30"), FALSE, "C/CS", "C/-"),         # AJ-BCA ploughed
     list(c("P:25", "AJ:8", "BM:30", "BCA:40", "C:30"), FALSE, "C/CS", "C/CD"), # AJ-BM-BCA (CJ02) ploughed
-    list(c("H:15", "BAN:40", "C:30"), FALSE, "B/BB", "C/-")                   # BAN is formed in ash
+    list(c("H:15", "BAN:40", "C:30"), FALSE, "B/BB", "C/-"),                  # BAN is formed in ash
+    list(c("BT:40", "C:30"), FALSE, "C/CQ", "C/-")                            # an exposed BT is BI (CQ01)
   )
   for (k in cases) {
     site <- if (k[[2L]]) list(landform = "floodplain") else list()
@@ -864,7 +865,8 @@ test_that("the flattened key agrees with the walker of the book's keys, repairs 
                 "reading: V and CRH are middle horizons at C.5",
                 "reading: C.6 with no exit goes on to C.7",
                 "decision: a ploughed CC or CJ soil is an agrozem",
-                "decision: BAN is formed in volcanic ash")
+                "decision: BAN is formed in volcanic ash",
+                "Q15: an exposed BT counts as BI at C.20")
   seen <- unique(unlist(used[diff]))
   expect_setequal(seen, expected)
   # the space reaches every trunk and division

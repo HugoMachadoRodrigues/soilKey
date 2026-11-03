@@ -284,6 +284,7 @@
   if (!c4) {
     # C.20
     if (.kor_first(pr, c("BI", "BHF", "BFM", "BM", "BPL", "CRM", "BCA", "CAT", "ASN", "BSN", "V"))) return(out("CQ"))
+    if (repaired && .kor_first(pr, "BT")) { fix("Q15: an exposed BT counts as BI at C.20"); return(out("CQ")) }
     return(np("C.20b"))
   }
   # C.5

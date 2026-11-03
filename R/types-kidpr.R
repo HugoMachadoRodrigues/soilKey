@@ -58,6 +58,24 @@
 # chapter 4, natural types first and then the agro types; the entry's test
 # is type_formula_kidpr(). classify_kidpr2008() reorders each list into the
 # order of trial before the generic engine walks it.
+#
+# v0.9.339 adds the types of CK to CT, under the same decisions: the BCA
+# under the solonetz horizon is optional (Q14); the rock R of the lithozems
+# and the gleyed substrate DG of the gley eluvozems are tested where they
+# name the type (`test_terminals`, with the carbonate mark of Rca); the
+# fragments of a TUR are tested, read by .kidpr_ty_fragments() (Q20); S over
+# Q is a gley solonchak, a BT exposed or under PB is BI, the BH of CR07 and
+# CS10 a BHF (Q15). Hugo's decisions of 2026-11-02 on them: in the types of
+# CL an S laid over another horizon is the S of the formula
+# (.kidpr_ty_salt_rows()); an exposed BT is BI at C.20 too (CQ01).
+# After the review (Hugo, 2026-11-02): a type file may close a formula on
+# more horizons (`close`: the middle horizons of C.5 in CT), reject a TUR of
+# some fragments (`reject_fragments`: ASN, BSN in CT01 to CT13) and ask for a
+# horizon directly under the salt horizon (`directly_under`: CL01, CL02),
+# the last two applied to the matcher's results (.kidpr_ty_checks()); on
+# the data route the gley flag of the substrate and the carbonate mark of
+# the rock are read from the data (.kidpr_ty_data_flags()); the
+# post-solonetzic turbozems, TUR on top, are tried with the agro types.
 # =============================================================================
 
 .KIDPR_TY_REF <- "Polevoi opredelitel' pochv Rossii (2008), chapter 4 (the profile formulas of the types)."
@@ -106,6 +124,8 @@
     e$code, e$formula, paste(unlist(e$optional), collapse = ","),
     paste(names(e$near_identity), vapply(e$near_identity %||% list(), paste, "", collapse = "|"), collapse = ";"),
     paste(unlist(e$test_terminals), collapse = ","), paste(unlist(e$ignore), collapse = ","),
+    paste(unlist(e$close), collapse = ","), paste(unlist(e$reject_fragments), collapse = ","),
+    paste(unlist(e$directly_under), collapse = ","),
     sep = "\t"), ""), collapse = "\r")
   hit <- .kidpr_ty_cache[[key]]
   if (!is.null(hit)) return(hit)
@@ -122,15 +142,18 @@
   names(specs) <- codes
   agro <- vapply(specs, function(s) {
     z <- Filter(function(z) identical(z$role, "surface"), s$slots)
-    length(z) > 0L && any(z[[1L]]$codes %in% .KIDPR_DV_AGRO)
+    length(z) > 0L && any(z[[1L]]$codes %in% c(.KIDPR_DV_AGRO, "TUR"))
   }, NA)
   base <- c(which(agro), which(!agro))
   sp <- vapply(specs, function(s) as.numeric(s$specificity[1:2]), c(0, 0))
   trial <- base[order(-sp[1L, base], -sp[2L, base], seq_along(base))]
   voc <- .formula_vocabulary(specs)
-  vocabularies <- stats::setNames(lapply(entries, function(e) setdiff(voc, as.character(unlist(e$ignore)))), codes)
+  vocabularies <- stats::setNames(lapply(entries, function(e)
+    setdiff(union(voc, as.character(unlist(e$close))), as.character(unlist(e$ignore)))), codes)
+  field <- function(k) stats::setNames(lapply(entries, function(e) as.character(unlist(e[[k]]))), codes)
   out <- list(specs = specs[base], codes = codes, trial = codes[trial], agro = agro,
-              vocabulary = voc, vocabularies = vocabularies)
+              vocabulary = voc, vocabularies = vocabularies,
+              reject_fragments = field("reject_fragments"), directly_under = field("directly_under"))
   assign(key, out, envir = .kidpr_ty_cache)
   out
 }
@@ -165,7 +188,7 @@
 # here too. A data-route layer with no horizon may be a transition or loose
 # rock (Hugo, 2026-11-02): it is undecided between no horizon and loose
 # rock, so between two horizons of a formula it leaves the type undecided.
-.kidpr_ty_table <- function(v) {
+.kidpr_ty_table <- function(v, div = NULL) {
   f <- v$f
   rows <- if (v$start <= v$n) seq.int(v$start, v$n) else integer(0)
   if (length(v$dep$rows) && isTRUE(v$dep$thick <= 40)) rows <- setdiff(rows, v$dep$rows)
@@ -195,8 +218,135 @@
   t$features <- Map(function(a, b) unique(c(as.character(a), as.character(b))), t$features, ov)
   t$features_na <- Map(function(a, b) unique(c(as.character(a), as.character(b))), t$features_na, ovna)
   t$overlay <- rep(list(character(0)), length(rows))
+  t$composition <- .kidpr_ty_fragments(v, t)
+  t$flag_missing <- rep(list(character(0)), nrow(t))
+  if (!is.null(div) && div %in% c("CO", "CP")) t <- .kidpr_ty_data_flags(v, t, div)
+  if (identical(div, "CL")) t <- .kidpr_ty_salt_rows(t)
   rownames(t) <- NULL
   t
+}
+
+# The marks the gley eluvozems and the carbolithozems test (Q14), on the data
+# route, where the notation does not write them: the gley flag of the loose
+# substrate under the eluvial horizon (read as the D of the formulas), from
+# a gley colour of the matrix (key 24) or a redox sign recorded (mottles,
+# redoximorphic features, redox segregations, a positive dipyridyl test);
+# the carbonate mark of the hard rock R, from a carbonate rock named
+# (rock_origin, parent_material, of the layer or the site) or effervescence
+# (or CaCO3).
+# Evidence that says neither leaves the flag undecided, so the type is not
+# the non-gley or non-carbonate one by default, and so does a designation
+# that marks the substrate gleyed (Cg, 2Cg) against a colour that is not
+# (Hugo, 2026-11-02).
+.KIDPR_TY_CARB_ROCK <- paste0("limestone|dolomit|marl|chalk|calcar|carbonat|travertin|calcite|",
+                              "\u0438\u0437\u0432\u0435\u0441\u0442\u043d|\u0434\u043e\u043b\u043e\u043c\u0438\u0442|",
+                              "\u043c\u0435\u0440\u0433\u0435\u043b|\u043a\u0430\u0440\u0431\u043e\u043d\u0430\u0442")
+.kidpr_ty_data_flags <- function(v, t, div) {
+  if (is.null(t$rockflag)) t$rockflag <- rep(NA_character_, nrow(t))
+  data <- t$route %in% "data" & t$buried == 0L
+  rows <- which(data & if (div == "CO") t$code %in% c("C", "D") & is.na(t$rockflag) else t$code %in% "R")
+  if (!length(rows) || is.null(v$pedon)) return(t)
+  x <- v$kidpr_x %||% (v$kidpr_x <- .kidpr_profile(v$pedon))
+  for (j in rows) {
+    i <- t$horizon_idx[j]
+    if (is.na(i)) next
+    if (div == "CO") {
+      # the substrate of the eluvozems, D in their formulas
+      t$code[j] <- "D"
+      g <- .kidpr_gley(x, i)$passed
+      p <- if (isTRUE(g) || isTRUE(.kidpr_redox_sign(x, i))) TRUE else if (isFALSE(g)) FALSE else NA
+      # a gleyed substrate by its designation (Cg, 2Cg) with neither a gley
+      # colour nor a redox sign recorded: undecided, not the non-gley type
+      d <- as.character(.kidpr_v(x, i, "designation"))
+      if (isFALSE(p) && !is.na(d) && grepl("^[0-9IVX]*[CD][a-z]*g", d)) p <- NA
+      if (isTRUE(p)) t$rockflag[j] <- "G"
+      else if (is.na(p)) {
+        t$features_na[[j]] <- unique(c(as.character(t$features_na[[j]]), "G"))
+        t$flag_missing[[j]] <- c("munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist", "mottle_colors")
+      }
+    } else {
+      txt <- tolower(paste(c(.kidpr_txt(x, i, "rock_origin"), .kidpr_txt(x, i, "parent_material"),
+                             as.character(v$site$parent_material %||% NA)), collapse = " "))
+      named <- grepl(.KIDPR_TY_CARB_ROCK, txt)
+      eff <- .kidpr_eff_any(x, i)$passed
+      p <- if (named || isTRUE(eff)) TRUE else if (isFALSE(eff)) FALSE else NA
+      if (isTRUE(p)) t$features[[j]] <- unique(c(as.character(t$features[[j]]), "ca"))
+      else if (is.na(p)) {
+        t$features_na[[j]] <- unique(c(as.character(t$features_na[[j]]), "ca"))
+        t$flag_missing[[j]] <- c("rock_origin", "effervescence_class", "caco3_pct")
+      }
+    }
+  }
+  t
+}
+
+# In the types of the halomorphic soils an S or SS laid over another horizon
+# is the S of the formula (Hugo, 2026-11-02: the secondary solonchaks form
+# over any profile, pp. 56, 105): the layer is read as the salt horizon over
+# its host, two rows at the same depths; an overlay the data leave undecided
+# makes the salt row undecided (S or no horizon). Elsewhere the overlay stays
+# a feature of its layer.
+.kidpr_ty_salt_rows <- function(t) {
+  salt <- c("S", "SS")
+  if (!nrow(t)) return(t)
+  dec <- lapply(t$features, function(x) intersect(salt, as.character(x)))
+  und <- lapply(t$features_na, function(x) intersect(salt, as.character(x)))
+  host <- !(t$code %in% salt)
+  add <- host & (lengths(dec) > 0L | lengths(und) > 0L)
+  if (!any(add)) return(t)
+  idx <- unlist(lapply(seq_len(nrow(t)), function(i) if (add[i]) c(i, i) else i))
+  first <- c(TRUE, idx[-1L] != idx[-length(idx)])
+  out <- t[idx, , drop = FALSE]
+  srow <- which(add[idx] & first)
+  for (j in srow) {
+    i <- idx[j]
+    d <- length(dec[[i]]) > 0L
+    out$code[j] <- if (d) dec[[i]][1L] else NA_character_
+    out$passed[j] <- if (d) TRUE else NA
+    out$candidates[[j]] <- if (d) character(0) else c(und[[i]], "")
+    out$missing[[j]] <- if (d) character(0) else out$missing[[j]]
+    for (k in c("features", "features_na", "composition")) out[[k]][[j]] <- character(0)
+    out$small[j] <- FALSE
+    out$transitional[j] <- FALSE
+    if (!is.null(out$rockflag)) out$rockflag[j] <- NA_character_
+    if (!is.null(out$mark)) out$mark[j] <- NA_character_
+    if (!is.null(out$no_horizon)) out$no_horizon[j] <- FALSE
+  }
+  hostrow <- which(add[idx] & !first)
+  for (j in hostrow) {
+    out$features[[j]] <- setdiff(as.character(out$features[[j]]), salt)
+    out$features_na[[j]] <- setdiff(as.character(out$features_na[[j]]), salt)
+  }
+  out
+}
+
+# The fragments of a TUR (Hugo's decision Q20): from the notation
+# (TUR[SEL+ASN]), else from the column turbated_fragments ("SEL;ASN"); with
+# neither, unknown (the solonetzic types undecided) when the TUR has an ESP
+# of 15 % or more, from na_cmol and cec_cmol or esp_pct, and otherwise not
+# the fragments of a formula ("none", which no formula writes).
+.kidpr_ty_fragments <- function(v, t) {
+  comp <- if (is.null(t$composition)) rep(list(character(0)), nrow(t)) else t$composition
+  h <- v$h
+  col <- function(k, i) {
+    if (is.null(h) || is.null(h[[k]]) || is.na(i) || i < 1L || i > nrow(h)) return(NA)
+    h[[k]][i]
+  }
+  for (j in which(t$code %in% "TUR")) {
+    if (length(comp[[j]])) next
+    i <- t$horizon_idx[j]
+    fr <- col("turbated_fragments", i)
+    if (!is.na(fr) && nzchar(trimws(fr))) {
+      x <- toupper(trimws(unlist(strsplit(.formula_normalise(fr), "[;+,]+"))))
+      comp[[j]] <- x[nzchar(x)]
+      next
+    }
+    na <- suppressWarnings(as.numeric(col("na_cmol", i)))
+    cec <- suppressWarnings(as.numeric(col("cec_cmol", i)))
+    esp <- if (!is.na(na) && !is.na(cec) && cec > 0) 100 * na / cec else suppressWarnings(as.numeric(col("esp_pct", i)))
+    if (!isTRUE(esp >= 15)) comp[[j]] <- "none"
+  }
+  comp
 }
 
 # The match of the profile against the formulas of a division, once per
@@ -207,10 +357,11 @@
     entries <- .kidpr_ty_list(v$type_lists %||% .kidpr_ty_installed(), div)
     if (!length(entries)) return(NULL)
     sch <- .kidpr_ty_parse(entries)
-    tab <- .kidpr_ty_table(v)
+    tab <- .kidpr_ty_table(v, div)
     m <- .match_schemes(tab, sch$specs, vocabulary = sch$vocabularies,
                         surface = .KIDPR_DV_NATURAL, agro = .KIDPR_DV_AGRO, agro_remnant = "thickest",
                         pair_gaps_cm = .KIDPR_TY_GAPS)
+    m <- .kidpr_ty_checks(m, tab, sch)
     m$division <- div
     m$schemes <- sch
     m$table <- tab
@@ -218,6 +369,58 @@
                                sch$codes)
     m
   })
+}
+
+# Two tests the matcher does not write (Hugo, 2026-11-02), applied to its
+# results before the pick is made again: a plain TUR (CT01 to CT13,
+# `reject_fragments`) is not a TUR of solonetz fragments (ASN, BSN), and is
+# undecided when its fragments are unknown (Q20); the G or Q of CL01 and
+# CL02 (`directly_under`) lies directly under the salt horizon or its host
+# layer, transitions passed over.
+.kidpr_ty_checks <- function(m, tab, sch) {
+  rej <- sch$reject_fragments; du <- sch$directly_under
+  if (!any(lengths(rej)) && !any(lengths(du))) return(m)
+  live <- which(tab$buried == 0L & !tab$small & !tab$transitional &
+                  !(if (is.null(tab$no_horizon)) FALSE else tab$no_horizon))
+  changed <- FALSE
+  set <- function(k, val, note) {
+    r <- m$results[[k]]
+    if (isFALSE(r$passed) || identical(r$passed, val)) return()
+    r$passed <- if (isTRUE(r$passed)) val else if (isFALSE(val)) FALSE else NA
+    if (isFALSE(r$passed)) r$distance <- max(1, r$distance)
+    r$notes <- unique(c(r$notes, note))
+    m$results[[k]] <<- r
+    changed <<- TRUE
+  }
+  for (k in names(rej)[lengths(rej) > 0L]) {
+    tur <- live[tab$code[live] %in% "TUR"]
+    if (!length(tur)) next
+    comp <- tab$composition[tur]
+    if (any(vapply(comp, function(c) any(rej[[k]] %in% c), NA)))
+      set(k, FALSE, sprintf("the TUR holds fragments of %s: a solonetzic or post-solonetzic soil (Hugo, 2026-11-02)",
+                            paste(rej[[k]], collapse = " or ")))
+    else if (any(lengths(comp) == 0L))
+      set(k, NA, "the fragments of the TUR are not recorded and its ESP is 15 % or more (Hugo, 2026-11-02)")
+  }
+  for (k in names(du)[lengths(du) > 0L]) {
+    s <- live[tab$code[live] %in% c("S", "SS")]
+    if (!length(s)) next
+    s1 <- s[1L]
+    after <- live[live > s1 & tab$horizon_idx[live] != tab$horizon_idx[s1]]
+    host <- live[live > s1 & tab$horizon_idx[live] == tab$horizon_idx[s1]]
+    ok <- if (length(host) && tab$code[host[1L]] %in% du[[k]]) TRUE
+          else if (!length(after)) FALSE
+          else if (is.na(tab$code[after[1L]])) { if (any(du[[k]] %in% tab$candidates[[after[1L]]])) NA else FALSE }
+          else tab$code[after[1L]] %in% du[[k]]
+    if (!isTRUE(ok))
+      set(k, if (is.na(ok)) NA else FALSE,
+          sprintf("%s does not lie directly under the salt horizon (Hugo, 2026-11-02)", paste(du[[k]], collapse = " or ")))
+  }
+  if (!changed) return(m)
+  pick <- .pick_scheme(m$results)
+  for (k in names(pick)) m[[k]] <- pick[[k]]
+  m$nearest <- if (!isTRUE(pick$passed)) .nearest_schemes(m$results, 3L) else NULL
+  m
 }
 
 # The verdict of one type within the pick: TRUE for the type picked; for a
@@ -255,6 +458,10 @@
   tab <- m$table
   und <- which(is.na(tab$code) & !(tab$passed %in% FALSE) & tab$buried == 0L)
   miss <- unique(unlist(tab$missing[und]))
+  # the marks the data leave undecided, and the fragments of a TUR
+  if (!is.null(tab$flag_missing)) miss <- unique(c(miss, unlist(tab$flag_missing[tab$buried == 0L])))
+  tur <- which(tab$code %in% "TUR" & tab$buried == 0L & lengths(tab$composition) == 0L)
+  if (length(tur)) miss <- unique(c(miss, "turbated_fragments"))
   if (!length(miss)) miss <- c("top_cm", "bottom_cm")
   miss
 }
@@ -274,7 +481,8 @@
 # missing, the horizons not in the formula, and a horizon not directly under
 # the one above it (a gap with no diagnostic horizon).
 .kidpr_ty_describe <- function(r) {
-  gap <- grep(" across .* with no diagnostic horizon", r$notes, value = TRUE)
+  gap <- grep(" across .* with no diagnostic horizon|does not lie directly under the salt|the TUR holds fragments of|fragments of the TUR are not recorded",
+              r$notes, value = TRUE)
   parts <- c(if (length(r$missing)) sprintf("missing %s", paste(r$missing, collapse = ", ")),
              if (length(r$extra)) sprintf("not in the formula: %s", paste(r$extra, collapse = ", ")),
              gap)
