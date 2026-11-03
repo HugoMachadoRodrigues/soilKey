@@ -306,3 +306,34 @@ fao_hints:
   - {master: "R", rp: ["R"]}
 # FAO suffix letters that give an RP feature as a hint
 fao_features: {b: "b", g: "g", x: "x", y: "y", "@": "cry", f: "*"}
+
+# The designations an FAO (2006), USDA or Canadian (CSSC) table writes once
+# it is upper-cased (Hugo's decision 2, refined, 2026-11-02): in a profile
+# with no lower-case letter these are not signs of the RP notation, while
+# the codes only the RP writes in capitals (LA, LE, LS, LBT, SV, FS, OX, RT,
+# FE, BP, ND, TH ...) still are. A designation matches when it is an
+# optional Arabic numeral of discontinuity, one master (or a transition),
+# then only suffix letters that master takes in those notations, then
+# sub-horizon digits. The suffixes per master: FAO 2006 (O, H: a, e, i, b,
+# f, p, u; A: b, c, f, g, h, k, p, u, z; E: b, c, f, g, p, u, x; B and C:
+# b, c, d, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v, w, x, y, z; L
+# limnic: c, d, m; R alone), the USDA letters on the same masters (co, di,
+# ma, se, ss, jj, kk, yy, ff), and the Canadian ones (O: f, m, h, c, o; A:
+# e, h, j, p, b, c, g, k, n, s, a, t, u, x, y, z; B and C as FAO with a for
+# ca and sa; L, F and H of the forest floor alone). The OL of the decision
+# is added as named.
+upper_fao:
+  masters:
+    O: "AEIBFPUMHCO"
+    H: "AEIBFPU"
+    A: "BCFGHKPUZEJNSATXY"
+    E: "BCFGPUX"
+    B: "BCDFGHIJKLMNOQRSTUVWXYZAE"
+    C: "BCDFGHIJKLMNOQRSTUVWXYZAE"
+    L: "CDM"
+    R: ""
+    F: ""
+    W: ""
+    I: ""
+  transitions: ["AB", "AE", "AC", "BA", "BC", "BE", "CB", "CA", "EA", "EB", "BR", "CR", "LF", "FH", "LH", "LFH"]
+  named: ["OL"]

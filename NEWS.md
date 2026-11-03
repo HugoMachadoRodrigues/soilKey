@@ -39,7 +39,7 @@ The French Référentiel pédologique 2008 (AFES) writes its reference horizons 
   * The two fields of the plan that were missing: `lateral_cover_pct` (horizon: the share of the ground an O horizon covers, Annex 1) and `rp_paleo` (site: the paleosolum terms declared, pp. 58-63).
 * **New decisions.**
   * An FAO or USDA symbol beside an RP symbol leaves the notation undecided, as a CPCS or Russian symbol does: a B with a lower-case suffix (Bw, Bs, Bt ...), Oh, Oi, Oe, Oa, Cr, AB or BA, and an Arabic numeral of discontinuity (2Cg, 3Bt). The RP transitions A-S, AS and BC are not such symbols.
-  * In a profile written all in capitals the case is lost, and only a declaration recognises the RP notation.
+  * In a profile written all in capitals the case is lost: the designations an upper-cased FAO, USDA or Canadian table also writes (OH, OF, OL, AH, AP, BT, BW, CK, CR ...) stop counting as signs, while the codes only the RP writes in capitals (LA, LE, LS, LBT, SV, FS, OX, RT, FE, BP, ND ...) still count. OH/AH/E/BT/C is not the RP; LA/BT, SV/V and A/FE/C are. This refines the first reading of the decision, under which only a declaration recognised a profile in capitals, which lost 48 of the 308 sequences of the book.
   * A lone g, the redox horizon written alone, is a likely sign of the notation.
   * `site$designation_system` is read by prefix: a value that starts with rp, referentiel or afes declares the RP (AFES 2009, RP08, Référentiel pédologique français), rp1995 or rp95 the RP of 1995. The Russian reader reads its own declarations the same way (a value that starts with kidpr, ru, rfg or rsc); nothing else in it changes.
 

@@ -554,11 +554,25 @@ test_that("Hugo's decisions on the review (2026-11-02)", {
   expect_true(.rpn(c("LA", "Sca", "BC", "C"))$ok)
   expect_true(.rpn(c("LA", "AS", "Sca", "C"))$ok)
   expect_true(.rpn(c("Aca", "II Sca", "II Cca"))$ok)
-  # 2. a profile all in capitals: only a declaration recognises the RP
+  # 2 (refined). In a profile all in capitals the designations an upper-cased
+  # FAO, USDA or Canadian table writes are no signs; the RP-only codes still are
   x <- .rpn(c("OL", "OF", "OH", "A", "BT", "C"))
   expect_false(x$ok)
   expect_identical(x$status, "capitals")
   expect_true(.rpn(c("OL", "OF", "OH", "A", "BT", "C"), list(designation_system = "AFES"))$ok)
+  x <- .rpn(c("OH", "AH", "E", "BT", "C"))
+  expect_false(x$ok)
+  expect_identical(x$status, "capitals")
+  for (p in list(c("LA", "BT"), c("SV", "V"), c("A", "FE", "C"), c("ND", "OX"), c("A", "ND", "F", "RT"),
+                 c("LE", "BT1", "BT2", "C"), c("A", "E", "BP"), c("U", "TH"), c("II A", "II FS")))
+    expect_true(.rpn(p)$ok, info = paste(p, collapse = "/"))
+  up <- function(d) soilKey:::.rp_upper_fao(d)
+  for (d in c("OL", "OF", "OH", "OI", "OE", "OA", "OM", "AH", "AP", "AE", "AG", "BT", "BTG", "BTD",
+              "BW", "BS", "BG", "BK", "BH", "BF", "BC", "CK", "CG", "CR", "2CG", "II BT", "A1", "LFH", "HF"))
+    expect_true(up(d), info = d)
+  for (d in c("LA", "LE", "LS", "LO", "LBT", "LBP", "SV", "FS", "OX", "RT", "FE", "BP", "BPH", "ND",
+              "TH", "SCA", "KC", "HM", "ZO"))
+    expect_false(up(d), info = d)
   # 3. a lone g is likely
   expect_identical(soilKey:::.rp_designations(c("Ah", "g", "C"))$strength[2L], "likely")
   expect_false(.rpn(c("Ah", "g", "Cg"))$ok)

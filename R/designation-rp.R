@@ -22,9 +22,10 @@
 # (a value starting with rp, referentiel or afes), or recognised by one
 # symbol only the RP writes or two kinds that it alone usually writes, with
 # no symbol only the CPCS 1967, the FAO or the USDA writes and no sign of the
-# Russian notation; a profile that mixes them is undecided, and one written
-# all in capitals is the RP only when declared. Never from the country: French data use the CPCS, the
-# FAO letters and the RP. The CPCS and FAO designations give hints, through
+# Russian notation; a profile that mixes them is undecided, and in one
+# written all in capitals the designations an upper-cased FAO, USDA or
+# Canadian table also writes (OH, AH, BT, CK ...) are no signs. Never from
+# the country: French data use the CPCS, the FAO letters and the RP. The CPCS and FAO designations give hints, through
 # Annex 6 and the FAO letters, to the identification on the data; never the
 # RP code by themselves. The CPCS and Russian readers do not change.
 #
@@ -122,7 +123,8 @@
     old = codes[info$source %in% "old"],
     annex6 = ct$annex6,
     fao_hints = ct$fao_hints,
-    fao_features = unlist(ct$fao_features)
+    fao_features = unlist(ct$fao_features),
+    upper_fao = .rp_upper_fao_pattern(ct$upper_fao)
   )
   .rp_cache$vocabulary <- voc
   voc
@@ -804,6 +806,26 @@
   grepl("^(B[a-z]|O[hiea]|Cr|AB([0-9a-z]|$)|BA([0-9a-z]|$))", x)
 }
 
+# The pattern of the designations an upper-cased FAO, USDA or Canadian table
+# writes (horizons.yaml, upper_fao): a numeral, a master and its suffix
+# letters, or a transition, then digits; and the names added as such.
+.rp_upper_fao_pattern <- function(u) {
+  m <- u$masters
+  one <- vapply(names(m), function(k) {
+    l <- as.character(m[[k]])
+    if (nzchar(l)) sprintf("%s[%s]*", k, l) else k
+  }, "")
+  allsuf <- paste(unique(strsplit(paste(unlist(m), collapse = ""), "")[[1L]]), collapse = "")
+  tr <- sprintf("(%s)[%s]*", paste(as.character(unlist(u$transitions)), collapse = "|"), allsuf)
+  named <- paste(as.character(unlist(u$named)), collapse = "|")
+  sprintf("^([2-9])?(%s|%s|%s)[0-9]*$", paste(one, collapse = "|"), tr, named)
+}
+
+# Is a designation one an upper-cased FAO, USDA or Canadian table writes?
+.rp_upper_fao <- function(s, voc = .rp_vocabulary()) {
+  !is.na(s) && grepl(voc$upper_fao, sub("^([IVX]+) +", "", s), perl = TRUE)
+}
+
 # The decision for a profile, from its cleaned designations and their reading.
 .rp_decide <- function(cl, rows, site, desig) {
   voc <- .rp_vocabulary()
@@ -832,6 +854,20 @@
     if (!present[i]) return(NA_character_)
     .rp_row_strength(rows[[i]], voc, any(low[-i]))
   }, "")
+  # a table written all in capitals has lost the case of its letters: the
+  # designations an upper-cased FAO, USDA or Canadian table also writes are
+  # no signs there; the codes only the RP writes in capitals still are
+  # (Hugo's decision 2, refined, 2026-11-02)
+  out$capitals <- !any(low)
+  dropped <- character(0)
+  if (out$capitals) {
+    up <- vapply(s, .rp_upper_fao, NA, voc = voc, USE.NAMES = FALSE)
+    dropped <- unique(s[up & !is.na(st)])
+    ev0 <- length(unique(s[st %in% "strong"])) >= 1L ||
+      length(unique(stats::na.omit(vapply(seq_along(rows), function(i)
+        if (st[i] %in% "likely") .rp_likely_kind(rows[[i]], voc, FALSE) else NA_character_, "")))) >= 2L
+    st[up] <- NA_character_
+  }
   out$strong <- unique(s[st %in% "strong"])
   out$likely <- unique(s[st %in% "likely"])
   kinds <- unique(vapply(seq_along(rows), function(i) {
@@ -848,13 +884,10 @@
   out$russian <- ru
   rp_ev <- length(out$strong) >= 1L || length(kinds) >= 2L
   ev <- c(out$strong, out$likely)
-  # a table written all in capitals has lost the case of its letters: only a
-  # declaration recognises the RP there (Hugo's decision 2, 2026-11-02)
-  out$capitals <- !any(low)
-  if (rp_ev && out$capitals) {
+  if (!rp_ev && out$capitals && ev0) {
     out$status <- "capitals"
-    out$why <- sprintf("%s: a profile written all in capitals, where only a declaration recognises the RP notation",
-                       paste(ev, collapse = ", "))
+    out$why <- sprintf("%s: written all in capitals, where an FAO, USDA or Canadian table writes them too",
+                       paste(dropped, collapse = ", "))
   } else if (rp_ev && (length(out$cpcs) || ru || length(out$fao))) {
     out$ok <- NA
     out$status <- "mixed"
@@ -898,9 +931,12 @@
 #' (A00, A0, (A), (B), Bfe, Can, an A2 used as E) or only the FAO and USDA
 #' write (a B with a lower-case suffix, Oh, Oi, Oe, Oa, Cr, AB, BA, an Arabic
 #' numeral of discontinuity), and the profile is not in the Russian notation.
-#' A profile with both is undecided (ok NA). A profile written all in
-#' capitals is the RP only when declared. The country is never read. FE is
-#' read as Fe in a profile declared rp1995 or written with FEm, FEmp or Ahs.
+#' A profile with both is undecided (ok NA). In a profile written all in
+#' capitals the designations an upper-cased FAO, USDA or Canadian table also
+#' writes (OH, OF, AH, BT, CK ...) are no signs; the codes only the RP writes
+#' in capitals (LA, SV, FS, OX, RT, FE, BP ...) are. The country is never
+#' read. FE is read as Fe in a profile declared rp1995 or written with FEm,
+#' FEmp or Ahs.
 #' @return A list: \code{ok} (TRUE, FALSE or NA), \code{status} (declared,
 #'   recognised, mixed, capitals, other, cpcs, russian, none), \code{why},
 #'   \code{rp1995}, \code{strong}, \code{likely}, \code{cpcs}, \code{fao}
