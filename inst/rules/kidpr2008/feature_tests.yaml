@@ -1,0 +1,152 @@
+# The tests of the genetic features of the Russian soil classification, Field
+# Guide of 2008 (section 3.2, pp. 59-74, and the subtype lists of chapter 4),
+# run by R/diagnostics-kidpr-features.R. One entry per feature of
+# features.yaml (67: the 64 of 3.2 and w, x, rx of the lists; the aliases tu,
+# ko, ag, as, ael, hh, akl and the host forms ELf, Th, Di ... read through
+# features.yaml), so the 73 index forms of the plan.
+#
+# code       the index (features.yaml)
+# fn         the test: the function .kidpr_ft_<fn>()
+# route      data: an attribute that records the same thing (a proxy);
+#            key: the key to horizons 2.1 on the data (small horizons and the
+#            features it ends in), with attributes where they say more;
+#            notation: no attribute records it, the Russian notation only
+# q17        what settles the route: proxy and notation_only (the lists of
+#            Hugo's decision Q17), defined (x, rx, ur of Q17), key (the key to
+#            horizons of 0.9.336), Q19 (pb), soilkey (soilKey's reading,
+#            accepted by Hugo on 2026-11-02: readings.yaml)
+# kind       observed: a field observation, not recorded is absent;
+#            measured: not recorded is undecided (the defaults)
+# hosts      the horizons the test reads it on (features.yaml's hosts, with
+#            the analogies of Q17 and of the lists); groups: humus, organic,
+#            peat, agro, eluvial, middle, hydrogenic, halomorphic, parent,
+#            mineral; any
+# not_on     horizons that are the feature in full (G for g, V for v ...)
+# place      on (the host layers), in (the host and the small horizons
+#            inside it), under / over (the layer directly under or over a
+#            host), near (on, under or over), surface (the top of the soil),
+#            profile (the whole profile)
+# small      it may be a small horizon beside the host
+# attributes what the data route reads
+# The criteria are not reproduced: they are in the Field Guide.
+
+features:
+  # --- 3.2.1 transitional features (23) --------------------------------------
+  - {code: ao, fn: ao, route: key, q17: key, kind: measured, hosts: [O], place: under, small: true,
+     attributes: [plant_residues_pct, loi_pct, oc_pct, munsell_value_dry]}
+  - {code: mr, fn: mr, route: notation, q17: soilkey, kind: observed, hosts: [T, TO, TE, TJ, H, PT], place: "on"}
+  - {code: te, fn: te, route: data, q17: soilkey, kind: measured, hosts: [TO], place: "on", small: true,
+     attributes: [peat_moor_type]}
+  - {code: h, fn: h, route: data, q17: proxy, kind: measured,
+     hosts: [O, T, TO, TE, TJ, PT, AU, AY, AJ, AH, AK, AO], place: "on", small: true,
+     attributes: [peat_decomposition_pct, von_post_index, fiber_content_rubbed_pct]}
+  - {code: e, fn: e, route: key, q17: soilkey, kind: observed, hosts: [humus, organic, middle], place: "on", small: true,
+     attributes: [munsell_value_dry, munsell_chroma_dry, leached_spots]}
+  - {code: el, fn: el, route: key, q17: notation_only, kind: observed, hosts: [AY, AJ, AU, AH, AK, D, G], place: "on", small: true,
+     attributes: [munsell_value_dry, munsell_chroma_dry],
+     note: "On a horizon (bleached grains, skeletans) the notation only (Q17); the band of 5 cm or less of key 52a on the data. The double el of CI and CM by place: in the AU (solodised), under the AU (eluviated)."}
+  - {code: BH, fn: bh, route: data, q17: proxy, kind: measured, hosts: [BHF], place: "on", attributes: [oc_pct]}
+  - {code: BF, fn: bf, route: data, q17: proxy, kind: measured, hosts: [BHF], place: "on", attributes: [oc_pct]}
+  - {code: f, fn: f, route: notation, q17: notation_only, kind: observed, hosts: [E, EL, C, D, BM, CRM, BPL, CR, G], place: "on",
+     note: "The hosts of 3.2 (E, EL, C) and of the lists that name it (CD, CE, CF, CH ...)."}
+  - {code: "[e-hf]", fn: ehf, route: notation, q17: soilkey, kind: observed, hosts: [EL], place: near, small: true,
+     note: "In or beside EL (O-[e-hf]-EL-BEL-BT-C, p. 60)."}
+  - {code: "[akl]", fn: akl, route: notation, q17: soilkey, kind: observed, hosts: [AJ], place: "on"}
+  - {code: i, fn: i, route: data, q17: proxy, kind: observed, hosts: [BM, CRM, C, D, G], place: "on",
+     attributes: [clay_films_amount]}
+  - {code: m, fn: m, route: data, q17: soilkey, kind: observed, hosts: [C], place: "on",
+     attributes: [structure_grade, structure_type, phys_clay_pct, texture_class_ru, clay_pct]}
+  - {code: crm, fn: crm, route: notation, q17: notation_only, kind: observed, hosts: [BT], place: over, small: true}
+  - {code: an, fn: an, route: data, q17: proxy, kind: measured, hosts: [BHF], place: "on", attributes: [fe_ox_pct, al_ox_pct]}
+  - {code: pl, fn: pl, route: notation, q17: notation_only, kind: observed, hosts: [CR, CRM], place: "on",
+     note: "CRM by analogy (Q17)."}
+  - {code: sn, fn: sn, route: data, q17: proxy, kind: observed, hosts: [humus, agro, middle], not_on: [ASN, BSN], place: "on",
+     attributes: [structure_type, structure_type_secondary]}
+  - {code: v, fn: v, route: key, q17: proxy, kind: observed, hosts: [mineral], not_on: [V], place: "on",
+     attributes: [slickensides, slickensides_size, structure_type, clay_pct]}
+  - {code: g, fn: g, route: data, q17: proxy, kind: observed, hosts: [mineral], not_on: [G], place: "on",
+     attributes: [mottle_colors, redoximorphic_features_pct, redox_segregations_location, childs_test]}
+  - {code: q, fn: q, route: data, q17: proxy, kind: observed, hosts: [mineral], not_on: [Q], place: "on", small: true,
+     attributes: [mottle_colors, munsell_hue_moist, munsell_value_moist, munsell_chroma_moist]}
+  - {code: ml, fn: ml, route: data, q17: proxy, kind: observed, hosts: [mineral], not_on: [ML, humus, agro], place: "on",
+     attributes: [secondary_carbonates_form, carbonate_hard_pct, caco3_pct]}
+  - {code: s, fn: s, route: data, q17: proxy, kind: measured, hosts: [any], not_on: [S], place: "on",
+     attributes: [soluble_salts_pct, ec_dS_m, ec_1to5_dS_m]}
+  - {code: tk, fn: tk, route: data, q17: soilkey, kind: observed, hosts: [any], place: surface, small: true,
+     attributes: [surface_crust_type, polygonal_cracks_spacing_cm]}
+  # --- 3.2.2 process features (14) -------------------------------------------
+  - {code: ff, fn: ff, route: notation, q17: notation_only, kind: observed, hosts: [BHF, C], place: "on"}
+  - {code: fn, fn: fn, route: notation, q17: notation_only, kind: observed, hosts: [G, BHF], place: near, small: true}
+  - {code: nn, fn: nn, route: data, q17: proxy, kind: observed, hosts: [EL, E], place: "on", attributes: [ferric_nodules_pct]}
+  - {code: cf, fn: cf, route: notation, q17: soilkey, kind: observed, hosts: [G, CR], place: near, small: true,
+     note: "At the edge of CR by analogy (Q17)."}
+  - {code: ox, fn: ox, route: data, q17: soilkey, kind: observed, hosts: [G], place: "on", small: true,
+     attributes: [redoximorphic_features_pct]}
+  - {code: ek, fn: ek, route: data, q17: soilkey, kind: observed, hosts: [any], place: "on", small: true,
+     attributes: [munsell_value_dry, munsell_chroma_dry, phys_clay_pct, texture_class_ru, clay_pct, designation]}
+  - {code: gr, fn: gr, route: data, q17: soilkey, kind: observed, hosts: [BFM], place: "on", attributes: [structure_type]}
+  - {code: hi, fn: hi, route: notation, q17: notation_only, kind: observed, hosts: [organic], place: under}
+  - {code: mc, fn: mc, route: data, q17: proxy, kind: observed, hosts: [BCA], place: "on", attributes: [secondary_carbonates_form]}
+  - {code: lc, fn: lc, route: data, q17: proxy, kind: observed, hosts: [AU, AJ], place: "on", attributes: [secondary_carbonates_form]}
+  - {code: nc, fn: nc, route: data, q17: proxy, kind: observed, hosts: [BCA], place: "on", attributes: [secondary_carbonates_form]}
+  - {code: dc, fn: dc, route: data, q17: proxy, kind: observed, hosts: [BCA], place: "on", attributes: [secondary_carbonates_form]}
+  - {code: ic, fn: ic, route: notation, q17: notation_only, kind: observed, hosts: [middle, parent], place: "on"}
+  - {code: cs, fn: cs, route: data, q17: proxy, kind: observed, hosts: [any], place: "on", attributes: [gypsum_visible_pct, caso4_pct]}
+  # --- 3.2.3 turbation features (5) ------------------------------------------
+  - {code: tr, fn: tr, route: key, q17: proxy, kind: observed, hosts: [any], place: "on",
+     attributes: [foreign_fragments_pct, mechanical_mixing_depth_cm]}
+  - {code: "@", fn: cryo, route: data, q17: proxy, kind: observed, hosts: [any], place: "on",
+     attributes: [cryoturbation, boundary_topography, frost_regime]}
+  - {code: ocr, fn: ocr, route: notation, q17: notation_only, kind: observed, hosts: [CR], place: "on"}
+  - {code: agr, fn: agr, route: notation, q17: notation_only, kind: observed, hosts: [agro], place: "on"}
+  - {code: pb, fn: pb, route: data, q17: Q19, kind: observed, hosts: [agro], place: "on",
+     attributes: [oc_pct, foreign_fragments_pct, anthropic_truncation, wind_deflation, surface_condition],
+     note: "In CJ (deflated) a natural soil with deflation or truncation recorded (Q19)."}
+  # --- 3.2.4 evolutionary features (10) --------------------------------------
+  - {code: "[hh]", fn: hh, route: data, q17: proxy, kind: measured, hosts: [EL, BEL, BT], place: "on", small: true,
+     attributes: [munsell_value_moist, oc_pct, designation]}
+  - {code: ct, fn: ct, route: notation, q17: soilkey, kind: observed, hosts: [BEL], place: "on"}
+  - {code: "y", fn: "y", route: data, q17: proxy, kind: observed, hosts: [BEL, BT, BHF], place: "on",
+     attributes: [boundary_topography, tongue_vol_pct]}
+  - {code: yu, fn: yu, route: notation, q17: notation_only, kind: observed, hosts: [any], place: "on"}
+  - {code: d, fn: d, route: data, q17: soilkey, kind: observed, hosts: [any], place: surface, small: true,
+     attributes: [structure_type]}
+  - {code: ad, fn: ad, route: notation, q17: notation_only, kind: observed, hosts: [agro], place: "on"}
+  - {code: pa, fn: pa, route: data, q17: soilkey, kind: observed, hosts: [agro, AU, AY, EL], place: "on",
+     attributes: [land_use, designation]}
+  - {code: pr, fn: pr, route: notation, q17: notation_only, kind: observed, hosts: [agro], place: under}
+  - {code: md, fn: md, route: data, q17: soilkey, kind: measured, hosts: [T, TO, TE, PT], place: "on", small: true,
+     attributes: [peat_decomposition_pct, von_post_index, fiber_content_rubbed_pct]}
+  - {code: pir, fn: pir, route: data, q17: soilkey, kind: observed, hosts: [peat], place: over, small: true,
+     attributes: [layer_origin]}
+  # --- 3.2.5 parent-rock features (4) ----------------------------------------
+  - {code: ca, fn: ca, route: key, q17: key, kind: observed, hosts: [any], place: "on",
+     attributes: [effervescence_extent, effervescence_class, caco3_pct, secondary_carbonates_form]}
+  - {code: u, fn: u, route: key, q17: key, kind: measured, place: profile,
+     attributes: [munsell_value_dry, parent_material]}
+  - {code: ro, fn: ro, route: data, q17: proxy, kind: measured, place: profile,
+     attributes: [munsell_hue_moist, munsell_hue_dry]}
+  - {code: "⊥", fn: perm, route: data, q17: proxy, kind: measured, place: profile,
+     attributes: [permafrost_temp_C, ice_pct, ice_form, frost_regime]}
+  # --- 3.2.6 accumulative-substrate features (8) -----------------------------
+  - {code: r, fn: r, route: key, q17: proxy, kind: measured, place: profile,
+     attributes: [layer_origin, stratification_pattern, designation, munsell_value_dry]}
+  - {code: rh, fn: rh, route: key, q17: proxy, kind: measured, place: profile,
+     attributes: [layer_origin, stratification_pattern, designation, munsell_value_dry]}
+  - {code: aq, fn: aq, route: data, q17: soilkey, kind: observed, hosts: [RU, RY, RJ], place: "on", attributes: [layer_origin, rock_origin]}
+  - {code: ae, fn: ae, route: data, q17: soilkey, kind: observed, hosts: [RU, RY, RJ], place: "on", attributes: [layer_origin, rock_origin]}
+  - {code: ur, fn: ur, route: data, q17: defined, kind: observed, place: profile,
+     attributes: [artefacts_pct, artefacts_urbic_pct, artefacts_industrial_pct, designation]}
+  - {code: rr, fn: rr, route: data, q17: proxy, kind: observed, place: profile,
+     attributes: [artefacts_pct, contamination_hazard, contamination_type]}
+  - {code: "TT~~", fn: ttal, route: data, q17: soilkey, kind: observed, place: profile, attributes: [layer_origin, rock_origin]}
+  - {code: "TT\"", fn: ttash, route: data, q17: soilkey, kind: observed, place: profile, attributes: [layer_origin, rock_origin]}
+  # --- indices of the chapter 4 lists only (3) -------------------------------
+  - {code: w, fn: w, route: key, q17: soilkey, kind: observed,
+     hosts: [P, PU, PB, BT, BI, BM, BMK, BHF, BFM, BCA, CAT, ASN, BSN], place: "on",
+     note: "The host is the horizon under the W."}
+  - {code: x, fn: x, route: data, q17: defined, kind: observed, place: profile,
+     attributes: [contamination_hazard, contamination_type, contaminated],
+     note: "Nothing recorded is no X (Q23)."}
+  - {code: rx, fn: rx, route: data, q17: defined, kind: observed, place: profile,
+     attributes: [contamination_hazard, contamination_type, contaminated]}

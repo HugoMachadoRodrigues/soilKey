@@ -1461,6 +1461,8 @@
 #'
 #' @param pedon A PedonRecord.
 #' @param ... Not used.
+#' @param .profile The profile of the readers (.kidpr_profile()) when the
+#'   caller already has it (the feature tests share it, v0.9.344).
 #' @return The frame of identify_horizons(), one row per layer, with the
 #'   columns `modification` (BH, BF of BHF; AV of V), `overlay_na` (overlays
 #'   left undecided), `data_code` (the key's horizon on the data), `key_path`
@@ -1469,7 +1471,7 @@
 #'   descriptor) and `fallbacks` (the readings that used a fallback: dry from
 #'   moist, the USDA texture, the EC for salts, the LOI from carbon ...).
 #' @noRd
-.kidpr_identify <- function(pedon, ...) {
+.kidpr_identify <- function(pedon, ..., .profile = NULL) {
   if (!inherits(pedon, "PedonRecord")) rlang::abort("'pedon' must be a PedonRecord.")
   fr <- .horizon_frame(pedon)
   n <- nrow(fr)
@@ -1480,7 +1482,7 @@
   fr$stand_ins <- rep(list(character(0)), n)
   fr$fallbacks <- rep(list(character(0)), n)
   if (!n) return(fr)
-  x <- .kidpr_profile(pedon)
+  x <- .profile %||% .kidpr_profile(pedon)
   d <- x$des
   for (i in x$ord) {
     k <- .kidpr_data_layer(x, i)
