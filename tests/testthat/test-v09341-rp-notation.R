@@ -132,7 +132,9 @@ test_that("the longest match and the codes with letters of their own", {
   code <- function(d) .rp1(d)$code
   feats <- function(d) .rp1(d)$features
   expect_identical(code("Snd"), "Snd")
-  expect_match(.rp1("Snd")$ambiguous, "Sn + d", fixed = TRUE)
+  # -d is written on BT and S only (BTd, Sd): Snd has no other reading
+  expect_true(is.na(.rp1("Snd")$ambiguous))
+  expect_match(.rp1("Kc")$ambiguous, "K + c", fixed = TRUE)
   expect_identical(code("And"), "And")
   expect_identical(code("Sdo"), "Sdo")
   expect_identical(code("Sal"), "Sal")
@@ -223,12 +225,12 @@ test_that("the notation is declared, recognised, refused or undecided (Q9)", {
   for (ds in c("unknown", "none", "", NA)) {
     expect_true(.rpn(c("OL", "A", "Sca"), list(designation_system = ds))$ok, info = ds)
   }
-  x <- .rpn(c("OL", "OF", "A", "S", "C"))
+  x <- .rpn(c("OL", "OF", "Ah", "S", "C"))
   expect_true(x$ok)
   expect_identical(x$status, "recognised")
-  expect_true(.rpn(c("LA", "E", "BT", "C"))$ok)
+  expect_true(.rpn(c("LA", "Eg", "BT", "C"))$ok)
   expect_true(.rpn(c("A", "Sp", "C"))$ok)
-  expect_true(.rpn(c("A", "E&BT", "C"))$ok)
+  expect_true(.rpn(c("Ah", "E&BT", "C"))$ok)
   expect_true(.rpn(c("A", "Aho", "C"))$ok)
   expect_true(.rpn(c("NaA", "NaS", "NaC"))$ok)
   # two likely symbols, not one
@@ -242,7 +244,7 @@ test_that("the notation is declared, recognised, refused or undecided (Q9)", {
   expect_true(.rpn(c("A", "Hf", "Hm"))$ok)
   # ND (also "not determined") is likely, not strong
   expect_false(.rpn(c("A", "ND", "C"))$ok)
-  expect_true(.rpn(c("A", "ND", "RT"))$ok)
+  expect_true(.rpn(c("Ah", "ND", "RT"))$ok)
   # BT with a lower-case suffix is likely only beside lower case elsewhere
   expect_false(.rpn(c("A", "BTg", "C"))$ok)
   expect_true(.rpn(c("Ae", "BTg", "Sg"))$ok)
@@ -269,10 +271,15 @@ test_that("the notation is declared, recognised, refused or undecided (Q9)", {
   x <- .rpn(c("AP", "BT", "BTG", "BC", "C"))
   expect_false(x$ok)
   expect_identical(x$status, "none")
+  # all in capitals, the case is lost: only a declaration recognises the RP
+  x <- .rpn(c("OL", "OF", "A", "S", "C"))
+  expect_false(x$ok)
+  expect_identical(x$status, "capitals")
+  expect_true(.rpn(c("OL", "OF", "A", "S", "C"), list(designation_system = "rp"))$ok)
   expect_false(.rpn(c("Ap", "Bt", "Btg", "BC", "C"))$ok)
   expect_false(.rpn(c("Oi", "Ah", "Bw", "Bk", "Ck"))$ok)
   # a mixed profile is undecided
-  x <- .rpn(c("OL", "OF", "A1", "A2", "(B)", "C"))
+  x <- .rpn(c("OL", "OFzo", "A1", "A2", "(B)", "C"))
   expect_true(is.na(x$ok))
   expect_identical(x$status, "mixed")
   x <- .rpn(c("OL", "Sca", "AY", "BEL"))
@@ -346,11 +353,11 @@ test_that("the traps of the notation: Cca, A2, G, FE, Ha, -cn", {
 
 test_that("the profile reader: hints in other notations, RP codes in the RP", {
   skip_on_cran()
-  r <- soilKey:::.rp_designations(c("OL", "OFzo", "A", "Bt", "C"))
+  r <- soilKey:::.rp_designations(c("OL", "OFzo", "A", "Ckm", "C"))
   expect_true(r$rp)
   expect_identical(r$code[1:3], c("OL", "OF", "A"))
   expect_false(r$known[4L])
-  expect_setequal(r$hint[[4L]], c("BT", "FSt"))
+  expect_setequal(r$hint[[4L]], c("Ck", "K", "Km"))
   expect_identical(r$strength[1:2], c("strong", "strong"))
   expect_true(r$any_known)
   r <- soilKey:::.rp_designations(c("Ap", "Bw", "Btg", "Ck"))
@@ -360,15 +367,16 @@ test_that("the profile reader: hints in other notations, RP codes in the RP", {
   expect_true("S" %in% r$hint[[2L]])
   expect_identical(r$hint_features[[3L]], "g")
   expect_setequal(r$hint[[4L]], c("Ck", "K"))
-  r <- soilKey:::.rp_designations(c("OL", "OF", "A1", "A2", "(B)", "C"))
+  r <- soilKey:::.rp_designations(c("OL", "OF", "A1g", "A2", "(B)", "C"))
   expect_true(is.na(r$rp))
   expect_true(all(is.na(r$code)))
   expect_identical(r$read_as_rp[1:2], c("OL", "OF"))
   expect_true(.has_note(r$notes[[1L]], "may not be in"))
   expect_true(length(r$hint[[5L]]) > 0L)
   fields <- c("written", "code", "base", "family", "kind", "overlay", "features", "meanings",
-              "lith", "subdiv", "transition", "juxtaposed", "parts", "mark_alone", "old",
-              "variant", "known", "ambiguous", "notes", "strength", "read_as_rp", "hint",
+              "lith", "subdiv", "transition", "juxtaposed", "parts", "part_features",
+              "parts_strong", "mark_alone", "old", "old_codes", "variant", "known",
+              "ambiguous", "notes", "strength", "read_as_rp", "hint",
               "hint_features", "hint_source", "rp", "status", "why", "rp1995", "any_known")
   expect_named(r, fields)
 })
@@ -427,4 +435,149 @@ test_that("the new attributes are documented, naming the RP", {
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-02\\)\\.?\"?$",
                         vapply(rd, `[[`, "", "reading"))))
+})
+
+test_that("the fixes of the review (D1-D7 and the technical points)", {
+  skip_on_cran()
+  code <- function(d) .rp1(d)$code
+  # D1: a lone V or X is a code, not a Roman numeral (SV/V, O/X, OL/OFnoz/X)
+  for (d in c("V", "X")) {
+    expect_identical(code(d), d)
+    expect_identical(.rp1(d)$lith, 1L)
+  }
+  expect_identical(.rp1("III")$lith, 3L)
+  for (sq in c("SV/V", "A|LA/SV/V/C|M|R|K|Yp", "O/X", "OL/OFnoz/X", "OL/OFnoz/OHnoz/X")) {
+    rd <- soilKey:::.rp_read_sequence(sq)
+    last <- rd$slots[[if (grepl("X$", sq)) length(rd$slots) else
+                      which(vapply(rd$slots, function(z) z$alternatives[[1L]]$code %in% "V", NA))]]
+    expect_true(last$alternatives[[1L]]$code %in% c("V", "X"), info = sq)
+    expect_identical(last$alternatives[[1L]]$lith, 1L, info = sq)
+  }
+  # D2: Ap inside a transition is no sign and does not make the profile RP 1995
+  r <- .rp1("Ap/C")
+  expect_identical(r$old_codes, "Ap")
+  x <- .rpn(c("Ap/C", "Bw"))
+  expect_false(isTRUE(x$ok))
+  expect_false(x$rp1995)
+  expect_false(.rpn(c("Ap-C", "Bw", "C"))$rp1995)
+  expect_true(.rpn(c("A", "FE", "FEm-S"))$rp1995)
+  # D3: a juxtaposition is a sign only as E&BT or with a part that is one
+  expect_false(.rpn(c("L&F", "Ah", "Bw1", "C"))$ok %in% TRUE)
+  expect_false(.rpn(c("L", "F&H", "Ah", "Bs"))$ok %in% TRUE)
+  expect_true(.rpn(c("Ah", "Ea&BTg", "C"))$ok)
+  expect_true(.rpn(c("Ah", "OF&OH", "C"))$ok)
+  expect_true(.rp1("Ea&BTg")$juxtaposed)
+  # D4: L only before the A, E, S, O, H, BT and BP families
+  for (d in c("LF", "LC", "LR", "LM", "LD", "LF&H")) expect_false(.rp1(d)$known, info = d)
+  for (d in c("LA", "LE", "LS", "LSp", "LO", "LH", "LBT", "LBP")) expect_true("L" %in% .rp1(d)$overlay, info = d)
+  # D5: -ho is a sign on its own hosts with nothing after it; * is likely
+  expect_true(.rpn(c("Aho", "S", "C"))$ok)
+  expect_true(.rpn(c("Acaho", "Sca", "C"))$ok)
+  x <- .rpn(c("Ahoc", "Bw", "C"))
+  expect_false(isTRUE(x$ok))
+  expect_false(.rpn(c("A*", "Bt", "C"))$ok %in% TRUE)
+  expect_identical(soilKey:::.rp_designations(c("Ahoc", "S", "A*"))$strength, c("likely", NA, "likely"))
+  # D6: a prefix written apart joins its master (p. 296)
+  for (d in c("Na BT", "Sa A", "Na A", "Sa S", "L A", "\u03c0 BT")) {
+    r <- .rp1(d)
+    expect_true(r$known, info = d)
+    expect_length(r$overlay, 1L)
+  }
+  expect_identical(c(code("Na BT"), .rp1("Na BT")$overlay), c("BT", "Na"))
+  rd <- soilKey:::.rp_read_sequence("Na A/Na S/Na C")
+  expect_identical(vapply(rd$slots, function(z) z$alternatives[[1L]]$code, ""), c("A", "S", "C"))
+  # D7: Annex 6 (B)Ca
+  expect_identical(soilKey:::.rp_hint("(B)Ca", TRUE)$hint, "Sk")
+  # sub-horizons from 1; A00 declared stays unread with its Annex 6 hint
+  for (d in c("A0", "A00", "BT0", "S01")) expect_false(.rp1(d)$known, info = d)
+  expect_identical(.rp1("A10")$subdiv, "10")
+  r <- soilKey:::.rp_designations(c("A00", "A1", "S"), list(designation_system = "rp"))
+  expect_false(r$known[1L])
+  expect_identical(r$hint[[1L]], "OL")
+  # Cs is C with -s, not a symbol of the CPCS only
+  expect_false(soilKey:::.rp_cpcs_only("Cs", NA))
+  expect_identical(c(code("Cs"), .rp1("Cs")$features), c("C", "s"))
+  # the Australian A2e is not called CPCS in the explanation
+  x <- .rpn(c("A1", "A2e", "B21", "C"))
+  expect_false(x$ok)
+  expect_false(grepl("CPCS", x$why))
+  # repeated marks, and marks the code already says
+  for (d in c("Sgg", "Rcaca", "Kcc", "OXmc", "Femc", "Xcc")) {
+    r <- .rp1(d)
+    expect_false(r$known, info = d)
+    expect_true(.has_note(r$notes, "written twice"), info = d)
+  }
+  # the hosts of the complete lists
+  for (d in c("St", "Ct", "FSt", "BTd", "Sd", "Ea", "Ga", "ga", "OFnoz", "OHzo", "OFrzo"))
+    expect_true(.rp1(d)$known, info = d)
+  for (d in c("Scat", "Et", "Sndd", "Aa", "OLzo", "OHtanoz")) expect_false(.rp1(d)$known, info = d)
+  # transitions keep their digits and the features of each part
+  r <- .rp1("ACk2")
+  expect_identical(c(r$subdiv, r$part_features), c("2", "", "k"))
+  # "+" written between two horizons: juxtaposed volumes (pp. 229, 315)
+  for (d in c("E+A", "A + E")) expect_true(.rp1(d)$juxtaposed, info = d)
+  # folded characters: thin spaces, the Windows-1252 en dash, capital pi, pi, capital eszett
+  expect_true(.rp1(rawToChar(as.raw(c(0x41, 0x96, 0x53))))$transition)
+  expect_true(.rp1("A\u2009-\u202fS")$transition)
+  expect_identical(.rp1("\u03a0RT")$overlay, .pi)
+  expect_identical(.rp1("piBT")$overlay, .pi)
+  expect_identical(code("BT\u1e9e"), paste0("BT", .ss))
+  # the pages corrected; A1g takes the A1 row of Annex 6
+  i <- soilKey:::.rp_vocabulary()$info
+  expect_identical(c(i["Amg", "code"], i["Alu", "code"], i["OXfr", "code"]), c("Amg", "Alu", "OXfr"))
+  pg <- vapply(soilKey:::.rp_catalogue()$horizons, function(e) as.integer(e$page), 1L)
+  names(pg) <- vapply(soilKey:::.rp_catalogue()$horizons, `[[`, "", "code")
+  expect_identical(unname(pg[c("Amg", "Alu", "OXfr")]), c(12L, 78L, 151L))
+  for (d in c("A1g", "A11g")) expect_true("Aso" %in% soilKey:::.rp_hint(d, TRUE)$hint, info = d)
+  # the iron units and the two attributes of the plan
+  a <- horizon_attribute_spec()
+  expect_identical(a$unit[a$name == "fe_total_pct"], "% Fe2O3")
+  expect_identical(a$unit[a$name == "fe_dcb_pct"], "% Fe")
+  expect_identical(a$unit[a$name == "fe_ffe_pct"], "% Fe")
+  expect_match(a$description[a$name == "fe_total_pct"], "0.6994", fixed = TRUE)
+  expect_true("lateral_cover_pct" %in% a$name)
+  expect_true("rp_paleo" %in% site_attribute_spec()$name)
+})
+
+test_that("Hugo's decisions on the review (2026-11-02)", {
+  skip_on_cran()
+  # 1. FAO and USDA symbols beside an RP symbol leave the notation undecided
+  for (p in list(c("OL", "OF", "Ah", "Bt"), c("LA", "Sca", "Bw", "C"), c("OF", "Ag", "2Oh", "2Cgh"),
+                 c("AG", "2Cg1", "OH", "3Cr"), c("Oi", "OFzo", "Ah"), c("LA", "Sca", "AB", "C"),
+                 c("LA", "Sca", "Cr"))) {
+    x <- .rpn(p)
+    expect_true(is.na(x$ok), info = paste(p, collapse = "/"))
+    expect_identical(x$status, "mixed", info = paste(p, collapse = "/"))
+    expect_true(length(x$fao) > 0L, info = paste(p, collapse = "/"))
+  }
+  # ... the RP transitions are no FAO symbols (A-S, AS, BC)
+  expect_true(.rpn(c("LA", "Sca", "BC", "C"))$ok)
+  expect_true(.rpn(c("LA", "AS", "Sca", "C"))$ok)
+  expect_true(.rpn(c("Aca", "II Sca", "II Cca"))$ok)
+  # 2. a profile all in capitals: only a declaration recognises the RP
+  x <- .rpn(c("OL", "OF", "OH", "A", "BT", "C"))
+  expect_false(x$ok)
+  expect_identical(x$status, "capitals")
+  expect_true(.rpn(c("OL", "OF", "OH", "A", "BT", "C"), list(designation_system = "AFES"))$ok)
+  # 3. a lone g is likely
+  expect_identical(soilKey:::.rp_designations(c("Ah", "g", "C"))$strength[2L], "likely")
+  expect_false(.rpn(c("Ah", "g", "Cg"))$ok)
+  expect_true(.rpn(c("Ah", "g", "Sg"))$ok)
+  # 4. the declaration by prefix, for the RP and for the Russian reader
+  for (ds in c("AFES 2009", "RP08", "referentiel 2008", "R\u00e9f\u00e9rentiel p\u00e9dologique fran\u00e7ais",
+               "RP-2008", "rp")) {
+    x <- .rpn(c("A", "FE", "C"), list(designation_system = ds))
+    expect_true(x$ok, info = ds)
+    expect_false(x$rp1995, info = ds)
+  }
+  expect_true(.rpn(c("A", "S"), list(designation_system = iconv("R\u00e9f\u00e9rentiel", "UTF-8", "latin1")))$ok)
+  for (ds in c("rp 1995", "RP95", "rp1995", "Referentiel pedologique 1995")) {
+    x <- .rpn(c("A", "FE", "C"), list(designation_system = ds))
+    expect_true(x$ok, info = ds)
+    expect_true(x$rp1995, info = ds)
+  }
+  for (ds in c("french", "fr", "cpcs", "fao")) expect_false(.rpn(c("OL", "Sca"), list(designation_system = ds))$ok, info = ds)
+  for (ds in c("Russian 2008", "RU-2008", "kidpr 2008", "rfg2008", "kidpr", "ru"))
+    expect_true(soilKey:::.kidpr_is_declared(ds), info = ds)
+  for (ds in c("fao", "rp", "cpcs", "french")) expect_false(soilKey:::.kidpr_is_declared(ds), info = ds)
 })

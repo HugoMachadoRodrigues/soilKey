@@ -33,6 +33,16 @@
 .KIDPR_DECLARED <- c("kidpr", "kidpr2008", "ru", "ru2004", "ru2008", "russian",
                      "russia", "rfg2008", "rsc2004", "rus", "russian2004", "russian2008")
 
+# A declared value that starts with kidpr, ru, rfg or rsc ("Russian 2008",
+# "RU-2008", "kidpr 2008", "rfg2008") also declares the notation (Hugo's
+# decision 4 on the RP notation, 2026-11-02, applied to the Russian reader).
+.KIDPR_DECLARED_PREFIX <- "^(kidpr|ru|rfg|rsc)"
+
+# Does a declared key name the Russian notation?
+.kidpr_key_is_ru <- function(key) {
+  !is.na(key) && (key %in% .KIDPR_DECLARED || grepl(.KIDPR_DECLARED_PREFIX, key))
+}
+
 # Values of site$designation_system that declare nothing.
 .KIDPR_UNDECLARED <- c("na", "none", "unknown", "nd", "null", "missing", "notrecorded")
 
@@ -179,7 +189,7 @@
 
 # Does a value of designation_system declare the Russian notation?
 .kidpr_is_declared <- function(ds) {
-  .kidpr_declared_key(list(designation_system = ds)) %in% .KIDPR_DECLARED
+  .kidpr_key_is_ru(.kidpr_declared_key(list(designation_system = ds)))
 }
 
 
@@ -883,7 +893,7 @@
   key <- .kidpr_declared_key(site)
   if (!is.na(key)) {
     raw <- as.character(unlist(site[["designation_system"]]))[1L]
-    return(list(ok = key %in% .KIDPR_DECLARED, caps = caps,
+    return(list(ok = .kidpr_key_is_ru(key), caps = caps,
                 why = sprintf("site$designation_system = '%s'", raw)))
   }
   if (!length(sp)) return(list(ok = FALSE, caps = FALSE, why = "no designation"))

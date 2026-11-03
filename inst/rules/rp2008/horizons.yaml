@@ -39,8 +39,8 @@ horizons:
   - {code: "Ado",  family: "A", kind: horizon, source: list, page: 12, detection: strong, name: "A dolomitiques", name_en: "dolomitic A horizon"}
   - {code: "Ae",   family: "A", kind: horizon, source: list, page: 11, detection: ambiguous, name: "A éluviaux", name_en: "eluvial A horizon"}
   - {code: "AG",   family: "A", kind: horizon, source: list, page: 13, detection: ambiguous, name: "A à caractères réductiques", name_en: "A horizon with reductic characters"}
-  - {code: "Alu",  family: "A", kind: horizon, source: list, page: 76, detection: strong, domain: andic, name: "A aluandiques", name_en: "aluandic A horizon"}
-  - {code: "Amg",  family: "A", kind: horizon, source: list, page: 13, detection: strong, name: "A magnésiques", name_en: "magnesic A horizon"}
+  - {code: "Alu",  family: "A", kind: horizon, source: list, page: 78, detection: strong, domain: andic, name: "A aluandiques", name_en: "aluandic A horizon"}
+  - {code: "Amg",  family: "A", kind: horizon, source: list, page: 12, detection: strong, name: "A magnésiques", name_en: "magnesic A horizon"}
   - {code: "An",   family: "A", kind: horizon, source: list, page: 13, detection: ambiguous, name: "A d’anmoor", name_en: "anmoor A horizon"}
   - {code: "And",  family: "A", kind: horizon, source: list, page: 77, detection: strong, domain: andic, name: "A silandiques", name_en: "silandic A horizon"}
   - {code: "Aso",  family: "A", kind: horizon, source: list, page: 13, detection: strong, name: "A sombriques", name_en: "sombric A horizon (dark, unsaturated; not the WRB sombric horizon)", old_codes: ["Ahs"]}
@@ -64,7 +64,7 @@ horizons:
   - {code: "OXm",  family: "OX", kind: horizon, source: list, page: 152, detection: strong, domain: tropical, name: "Horizons pétroxydiques", name_en: "petroxidic horizon (cuirass)"}
   - {code: "OXal", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 150, detection: strong, domain: tropical, name: "OX allitiques", name_en: "allitic oxidic horizon"}
   - {code: "OXfl", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX ferrallitiques", name_en: "ferrallitic oxidic horizon"}
-  - {code: "OXfr", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 150, detection: strong, domain: tropical, name: "OX ferritiques", name_en: "ferritic oxidic horizon"}
+  - {code: "OXfr", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX ferritiques", name_en: "ferritic oxidic horizon"}
   - {code: "OXba", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX bauxitiques", name_en: "bauxitic oxidic horizon"}
   - {code: "OXti", family: "OX", kind: horizon, source: variant, variant_of: "OX", page: 151, detection: strong, domain: tropical, name: "OX titaniques", name_en: "titanic oxidic horizon"}
   - {code: "RT",   family: "RT", kind: horizon, source: list, page: 152, detection: strong, domain: tropical, name: "Horizons réticulés", name_en: "reticulate horizon (retichron, plinthite)"}
@@ -169,8 +169,10 @@ prefixes:
   - {mark: "J",  page: 25, name: "jeune (dans un matériau)", name_en: "young horizon formed in a material", only_before: "Z", examples: ["JZ", "JZtc"], note: "Pages 91 and 94 write J before an anthropic material; Js and Jp too (JsZ, JpZ, p. 90)."}
 
 # Suffixes (pp. 3-5, 139, 318), read as features of the horizon, by the
-# longest match. hosts: the families (or codes) the book allows them on, where
-# it gives a complete list (LC) or restricts them; absent = any horizon.
+# longest match. hosts: the codes the book writes them on, where it gives a
+# complete list (LC) or restricts them, a variant counting as its listed code
+# (OFr as OF); absent = any horizon. A mark is not written twice (Sgg), nor
+# -c or -m after a code that says indurated (Kcc, OXmc).
 # meanings: the reading where it depends on the host.
 suffixes:
   - {mark: "b",   page: 3, name: "horizon enfoui", name_en: "buried under more than 50 cm of deposit"}
@@ -187,9 +189,9 @@ suffixes:
   - {mark: "ho",  page: 3, name: "hémiorganique", name_en: "hemiorganic (8-30 g organic carbon per 100 g)"}
   - {mark: "j",   page: 3, name: "à caractère xanthomorphe", name_en: "xanthomorphic", note: "Not on FS (p. 180)."}
   - {mark: "k",   page: 3, name: "début d’accumulation de calcite secondaire", name_en: "incipient secondary calcite accumulation"}
-  - {mark: "m",   page: 4, name: "fortement induré", name_en: "strongly indurated", hosts: ["Y"], note: "Fem, Km, OXm and Sim are codes of their own (LC, p. 4); m as a suffix only in Ypm (p. 198)."}
+  - {mark: "m",   page: 4, name: "fortement induré", name_en: "strongly indurated", hosts: ["Yp"], note: "Fem, Km, OXm and Sim are codes of their own (LC, p. 4); m as a suffix only in Ypm (p. 198)."}
   - {mark: "nod", page: 4, name: "grande abondance de nodules d’oxydes métalliques", name_en: "many metal-oxide nodules", hosts: ["A", "F", "OX", "RT"]}
-  - {mark: "noz", page: 4, name: "d’origine non zoogène", name_en: "non-zoogenic", hosts: ["O"]}
+  - {mark: "noz", page: 4, name: "d’origine non zoogène", name_en: "non-zoogenic", hosts: ["OF", "OH"]}
   - {mark: "s",   page: 4, name: "à accumulation de sesquioxydes", name_en: "sesquioxide accumulation (not as nodules)"}
   - {mark: "t",   page: 4, name: "illuviation d’argile", name_en: "incipient or marked clay illuviation", hosts: ["S", "C", "FS"]}
   - {mark: "tp",  page: 4, name: "matériau transporté", name_en: "transported pedological or geological material"}
@@ -197,7 +199,7 @@ suffixes:
   - {mark: "x",   page: 4, name: "à caractères fragiques", name_en: "fragic", meanings: {D: "mixed rocks (p. 26)"}}
   - {mark: "y",   page: 4, name: "contenant du gypse", name_en: "with gypsum"}
   - {mark: "z",   page: 4, name: "très anthropisé", name_en: "strongly anthropised"}
-  - {mark: "zo",  page: 4, name: "d’origine zoogène", name_en: "zoogenic", hosts: ["O"]}
+  - {mark: "zo",  page: 4, name: "d’origine zoogène", name_en: "zoogenic", hosts: ["OF", "OH"]}
   - {mark: "cri", page: 5, name: "roches cristallines ou cristallophylliennes dures", name_en: "hard crystalline or crystallophyllian rock", hosts: ["R", "D"]}
   - {mark: "do",  page: 5, name: "roches dolomitiques dures", name_en: "hard dolomitic rock", hosts: ["R", "D"]}
   - {mark: "sch", page: 5, name: "schistes durs", name_en: "hard schist", hosts: ["R", "D", "M"], note: "Msch, soft schist, p. 26."}
@@ -228,7 +230,7 @@ annex6:
   - {cpcs: "A0F",   match: "^(A0|Ao)F", rp: ["OF", "Hf", "Hm"]}
   - {cpcs: "A0H",   match: "^(A0|Ao)H", rp: ["OH", "Hs"]}
   - {cpcs: "[A0]",  match: "^(A0|Ao|AO)$", rp: ["OL", "OF", "OH"], soilkey: true}
-  - {cpcs: "A1",    match: "^A1[0-9]*$", rp: ["A", "Ah", "Aca", "Ach", "Aci", "Ado", "Ae", "Alu", "An", "And", "Aso", "Av", "Avi", "Ha", "Eh", "Js"], slips: ["Ha"], note: "Ha (a drained histic horizon) under A1 is a slip of the table."}
+  - {cpcs: "A1",    match: "^A1[0-9]*([a-z]|$)", rp: ["A", "Ah", "Aca", "Ach", "Aci", "Ado", "Ae", "Alu", "An", "And", "Aso", "Av", "Avi", "Ha", "Eh", "Js"], slips: ["Ha"], note: "Ha (a drained histic horizon) under A1 is a slip of the table."}
   - {cpcs: "Ap",    match: "^Ap", rp: ["L", "LA", "LH", "LO", "LE", "LS", "LBT"]}
   - {cpcs: "A2g",   match: "^A2[0-9]*g", rp: ["Eg", "Ea"]}
   - {cpcs: "A2",    match: "^A2[0-9]*$", rp: ["E", "Ea"]}
@@ -244,7 +246,7 @@ annex6:
   - {cpcs: "B2fe",  match: "^B[0-9]*fe", rp: ["BPs", "FE"], note: "FE here is the 2008 ferruginous horizon, which the 1995 FE (ferric) was not."}
   - {cpcs: "B2h",   match: "^B[0-9]*h", rp: ["BPh"]}
   - {cpcs: "(B)v",  match: "^\\(B\\)v", rp: ["V", "Sp", "SV"], note: "not in the CPCS, used after 1967"}
-  - {cpcs: "(B)Ca", match: "^\\(B\\)C?ca", rp: ["Sk"]}
+  - {cpcs: "(B)Ca", match: "^\\(B\\)C?[Cc]a", rp: ["Sk"]}
   - {cpcs: "(B)",   match: "^\\(B\\)", rp: ["S", "Sa", "Sal", "Sca", "Sci", "Slu", "Sn", "Snd", "Sp", "SV", "FS", "FSj", "NaS", "Jp"], slips: ["FSj"]}
   - {cpcs: "B",     match: "^B[0-9]*$", rp: ["S", "BT", "FS", "SV", "V", "FE", "OX", "F"], note: "FE, OX and F in the intertropical domain."}
   - {cpcs: "Cca",   match: "^C[0-9]*[Cc]a", rp: ["Ck", "K", "Kc", "Km"], note: "the CPCS Cca is a carbonate accumulation; the RP Cca is a calcareous C."}

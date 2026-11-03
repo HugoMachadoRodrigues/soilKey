@@ -167,7 +167,7 @@ attributes:
   - name: fe_dcb_pct
     section: "Iron / aluminum oxides"
     unit: "% Fe"
-    description: "Dithionite-citrate-bicarbonate extractable Fe (free/pedogenic iron oxides)."
+    description: "Dithionite-citrate-bicarbonate extractable Fe (free/pedogenic iron oxides), % Fe (not Fe2O3). Against a total iron given as Fe2O3 (fe_total_pct) the free over total ratio reads fe_dcb_pct / (0.6994 x fe_total_pct)."
   - name: fe_ox_pct
     section: "Iron / aluminum oxides"
     unit: "% Fe"
@@ -1067,15 +1067,15 @@ attributes:
     max: 100
   - name: fe_total_pct
     section: "French system (Référentiel pédologique 2008)"
-    unit: "%"
-    description: "Total iron as Fe2O3 (HF digestion, alkaline fusion or XRF), % of the fine earth. French Référentiel pédologique 2008: the ferruginous FE at most 12 % (p. 171), the ND of the ferruginosols 12-20 % and their OXc and OXm over 20 % (p. 172), the FS by free over total iron (pp. 179-180), the Sn by free over total iron 0.60-0.90 (p. 17). fe2o3_sulfuric_pct is not total iron (Hugo's decision Q23)."
+    unit: "% Fe2O3"
+    description: "Total iron as Fe2O3 (HF digestion, alkaline fusion or XRF), % of the fine earth. French Référentiel pédologique 2008: the ferruginous FE at most 12 % (p. 171), the ND of the ferruginosols 12-20 % and their OXc and OXm over 20 % (p. 172), the FS by free over total iron (pp. 179-180), the Sn by free over total iron 0.60-0.90 (p. 17). The ratios to free iron are read on one basis: Fe = 0.6994 x Fe2O3, so the free over total iron of the Sn (0.60-0.90) and of the FS (above 0.50) is fe_dcb_pct / (0.6994 x fe_total_pct), and FFE over total iron (above 0.20) fe_ffe_pct / (0.6994 x fe_total_pct). fe2o3_sulfuric_pct is not total iron (Hugo's decision Q23)."
     systems: [rp2008]
     min: 0
     max: 100
   - name: fe_ffe_pct
     section: "French system (Référentiel pédologique 2008)"
-    unit: "%"
-    description: "Free iron by the method of Ségalen (FFE), % of the fine earth. The fersiallitic FS of the French Référentiel pédologique 2008 has FFE over total iron above 0.20 (pp. 179-180). Not recorded: fe_dcb_pct over fe_total_pct above 0.50 (about 0.30 on iron-rich parents) is evidence, flagged (Hugo's decision Q23)."
+    unit: "% Fe"
+    description: "Free iron by the method of Ségalen (FFE), % Fe of the fine earth (as fe_dcb_pct, not as Fe2O3). The fersiallitic FS of the French Référentiel pédologique 2008 has FFE over total iron above 0.20 (pp. 179-180), read as fe_ffe_pct / (0.6994 x fe_total_pct) when the total iron is given as Fe2O3. Not recorded: fe_dcb_pct over fe_total_pct above 0.50 (about 0.30 on iron-rich parents) is evidence, flagged (Hugo's decision Q23)."
     systems: [rp2008]
     min: 0
     max: 100
@@ -1169,6 +1169,13 @@ attributes:
     section: "French system (Référentiel pédologique 2008)"
     unit: "%"
     description: "Metal-oxide (sesquioxidic) nodules and concretions, % by weight of the whole soil. French Référentiel pédologique 2008: the nodular ND over 60 % (p. 154), the suffix -nod and Anod 30-60 % (pp. 151, 155), the qualifier nodulaire. Not recorded: ferric_nodules_pct and bauxitic_nodules_pct (by volume), flagged (Hugo's decision Q23)."
+    systems: [rp2008]
+    min: 0
+    max: 100
+  - name: lateral_cover_pct
+    section: "French system (Référentiel pédologique 2008)"
+    unit: "%"
+    description: "Share of the ground surface the horizon covers, %: the lateral continuity of the OL, OF and OH horizons of the French Référentiel pédologique 2008, Annex 1 (a discontinuous horizon is written in parentheses; the hémimoder has an OH on under 10 %). Not recorded: the parentheses of a recorded sequence, else undecided (Hugo's decision Q22)."
     systems: [rp2008]
     min: 0
     max: 100

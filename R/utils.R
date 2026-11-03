@@ -306,7 +306,8 @@ horizon_column_spec <- function() {
     c_pyro_pct                    = "numeric",   # pyrophosphate-extractable organic carbon, %; RP BP
     pyrophosphate_index           = "numeric",   # pyrophosphate index of a peat (Kaila); RP Hf, Hm, Hs, Ha
     s_total_pct                   = "numeric",   # total sulfur, %; RP TH (>= 0.75), U
-    nodules_wt_pct                = "numeric"    # metal-oxide nodules, % by weight; RP ND (> 60), -nod (30-60)
+    nodules_wt_pct                = "numeric",   # metal-oxide nodules, % by weight; RP ND (> 60), -nod (30-60)
+    lateral_cover_pct             = "numeric"    # share of the ground the horizon covers, %; RP Annex 1 O horizons (hemimoder OH < 10)
   )
 }
 
