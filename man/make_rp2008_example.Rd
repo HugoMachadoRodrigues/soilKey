@@ -37,7 +37,12 @@ make_rp2008_example(
     "podzosols_humo_duriques", "podzosols_eluviques", "podzosols_placiques",
     "post_podzosols", "rankosols", "reductisols_typiques", "reductisols_stagniques", 
    
-     "redoxisols")
+     "redoxisols", "regosols", "salisols_chloruro_sulfates", "salisols_carbonates",
+    "sodisols_indifferencies", "sodisols_solonetziques", "sodisols_solodises",
+    "sodisalisols", "salisodisols", "thalassosols_bruts", "thalassosols_juveniles",
+    "thalassosols_polderises", "thiosols", "sulfatosols", "veracrisols",
+    "lithovertisols", "topovertisols", "paravertisols_hapliques",
+    "paravertisols_planosoliques")
 )
 }
 \arguments{
@@ -87,14 +92,22 @@ make_rp2008_example(
 \code{"podzosols_eluviques"}, \code{"podzosols_placiques"},
 \code{"post_podzosols"}, \code{"rankosols"},
 \code{"reductisols_typiques"}, \code{"reductisols_stagniques"},
-\code{"redoxisols"}.}
+\code{"redoxisols"}, \code{"regosols"},
+\code{"salisols_chloruro_sulfates"}, \code{"salisols_carbonates"},
+\code{"sodisols_indifferencies"}, \code{"sodisols_solonetziques"},
+\code{"sodisols_solodises"}, \code{"sodisalisols"},
+\code{"salisodisols"}, \code{"thalassosols_bruts"},
+\code{"thalassosols_juveniles"}, \code{"thalassosols_polderises"},
+\code{"thiosols"}, \code{"sulfatosols"}, \code{"veracrisols"},
+\code{"lithovertisols"}, \code{"topovertisols"},
+\code{"paravertisols_hapliques"}, \code{"paravertisols_planosoliques"}.}
 }
 \value{
 A \code{\link{PedonRecord}}.
 }
 \description{
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 92 of the first twenty-eight GER), in the RP notation
+reference (the 110 of the 34 GER), in the RP notation
 (\code{site$designation_system = "rp2008"}) with the properties their
 tests read. They are not real profiles.
 }

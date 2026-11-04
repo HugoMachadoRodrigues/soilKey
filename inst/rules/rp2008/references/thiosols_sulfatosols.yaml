@@ -1,0 +1,79 @@
+# Thiosols et sulfatosols (pp. 307-312), 2 references: the solums of
+# estuaries and deltas under mangrove (and of temperate coasts, or inland on
+# pyritic schists) whose pedogenesis the sulfur dominates: the acid sulphate
+# soils (p. 307). The sulfidic (thionic) material TH (p. 308): a waterlogged
+# mineral or organo-mineral sediment with 0.75 % total sulfur or more, mostly
+# as sulfides (default 18: at least 0.75 for TH); the sulfated horizon U (p.
+# 309): a pH in water always under 3.5 (1:1, Q12: read as recorded, +/-
+# 0.2), most often jarosite mottles, sulfates, total sulfur over 0.75 %.
+# They come from the notation or the data (.rp_t_TH(), .rp_t_U(); on the
+# data an oxidised layer, with jarosite or a pH under 4, is no TH, the
+# review's D8).
+#
+# The references (p. 309): the thiosols a TH starting within 50 cm (+/- 10;
+# map 5, D8: 50 to 60 cm imperfect) and no U within 50 cm; for the whole
+# solum a fluid to very plastic consistency, n over 1.4 (read on the TH,
+# D12: jarosite with n under 1.4 in the first 50 cm is the qualifier
+# jarositique, not a failure), and the pH falling under 3.5 after drying
+# (maturation_rp, acidification_rp: tested when recorded; not recorded the
+# TH stands for them, soilKey's reading); the sulfatosols a U starting within
+# 50 cm with a sulfidic material directly under it (sulfidic_under_rp; the
+# description ending at the U leaves it undecided) and a consistency n under
+# 1.4 (read on the U). The salique, rubique, alunique and épigypseux are
+# qualifiers (later, with the qualifiers); "8 mS" read as 8 dS/m (D10).
+#
+# Distinctions (pp. 299, 304, 310): in every case sulfur at a shallow depth
+# with a dry pH under 3.5 attaches the solum first to the thiosols or
+# sulfatosols, before the salsodic solums, the réductisols, rédoxisols,
+# thalassosols and fluviosols (precedence.yaml); a salisol with their
+# characters is a sulfatosol (or thiosol) salique (D11); the thalassosols
+# allow TH and U only deeper than 60 cm, the fluviosols not at all (their
+# side tests); a TH deeper than 50 cm is the qualifier bathysulfidique.
+references:
+  - code: "thiosols"
+    ger: "thiosols_sulfatosols"
+    name: "thiosols"
+    name_singular: "thiosol"
+    name_en: "thiosols"
+    name_en_singular: "thiosol"
+    page: "309"
+    sequences: ["(H)-TH"]
+    notes: "A thionic material TH starting within 50 cm; for the whole solum elemental sulfur and iron sulfates, total sulfur over 0.75 %, the pH falling under 3.5 after drying, a fluid to very plastic consistency (n over 1.4), no structure (always flooded), often intercalated H horizons."
+    wrb2006: "Fluvisols or Gleysols (Protothionic)"
+    distinctions:
+      - {with: "sulfatosols", page: "309", by: "no U within 50 cm, n over 1.4 (side test)"}
+      - {with: "salisols, sodisols, réductisols, rédoxisols, thalassosols, fluviosols", page: "299, 310", by: "sulfur at a shallow depth: the thiosol first (precedence.yaml)"}
+      - {with: "histosols", page: "211, 312", by: "H over a TH within 50 cm: a thiosol épihistique (the histic solum admits no TH)"}
+    tests:
+      all_of:
+        - horizon_within_rp: {codes: [TH], depth: 50}
+        - no_horizon_within_rp: {codes: [U], depth: 50}
+        - maturation_rp: {codes: [TH], threshold: 1.4, direction: min}
+        - acidification_rp: {codes: [TH]}
+  - code: "sulfatosols"
+    ger: "thiosols_sulfatosols"
+    name: "sulfatosols"
+    name_singular: "sulfatosol"
+    name_en: "sulfatosols"
+    name_en_singular: "sulfatosol"
+    page: "309"
+    sequences: ["U-TH"]
+    notes: "A sulfated horizon U starting within 50 cm, a sulfidic material directly under it; the consistency n under 1.4."
+    wrb2006: "Fluvisols or Gleysols (Hyperthionic or Orthothionic)"
+    distinctions:
+      - {with: "thiosols", page: "309", by: "a U within 50 cm over the TH, n under 1.4 (side test)"}
+      - {with: "salisols", page: "299", by: "the sulfatosol salique (precedence.yaml)"}
+    tests:
+      all_of:
+        - horizon_within_rp: {codes: [U], depth: 50}
+        - sulfidic_under_rp: {}
+        - maturation_rp: {codes: [U], threshold: 1.4, direction: max}
+    # a U with another layer and no TH under it: the sulfatosol imperfect,
+    # before the reductisol (sulfur first, p. 310; Hugo's decision 3)
+    imperfect:
+      - criterion: "no sulfidic material under the U (decision 3)"
+        page: "309-310"
+        tests:
+          all_of:
+            - horizon_within_rp: {codes: [U], depth: 50}
+            - maturation_rp: {codes: [U], threshold: 1.4, direction: max}

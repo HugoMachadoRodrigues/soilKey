@@ -435,7 +435,7 @@ test_that("the new attributes are documented, naming the RP", {
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   # every reading is Hugo's decision, of 2026-11-02 or of the later releases
   # (0.9.346 and 0.9.348: 2026-11-03; 0.9.349, 0.9.350 and 0.9.351:
-  # 2026-11-04)
+  # 2026-11-04; 0.9.352 confirmed on 2026-11-04, test-v09352)
   expect_true(all(grepl("\\(Hugo, 2026-11-0[234]\\)\\.?\"?$", vapply(rd, `[[`, "", "reading"))))
 })
 

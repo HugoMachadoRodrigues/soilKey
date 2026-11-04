@@ -506,6 +506,11 @@
     z
   })
   if (!r$known && !isTRUE(cl$lith_written)) r$lith <- 1L
+  # the V with sodic or salic properties (VNa, VSa, p. 318) is also the
+  # sodic or salic horizon: the feature is read as the overlay too, so that
+  # the salisols and sodisols see it (0.9.352, the review's D1)
+  if (isTRUE(r$known) && identical(r$code, "V") && any(c("Na", "Sa") %in% r$features))
+    r$overlay <- unique(c(r$overlay, intersect(c("Na", "Sa"), r$features)))
   r
 }
 

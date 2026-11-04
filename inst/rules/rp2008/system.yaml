@@ -24,10 +24,10 @@ citation: >
   Baize D., Girard M.-C. (coord.) (2009). Référentiel pédologique 2008.
   Association française pour l'étude du sol. Éditions Quæ, Versailles. 435 pp.
 version: "Référentiel pédologique 2008 (third edition)"
-implementation_status: "soilKey v0.9.351 -- the 92 references of the first twenty-eight groups of references: the nine of v0.9.346 (alocrisols, andosols, anthroposols, arénosols, brunisols, the calcium and magnesium chapter, chernosols, colluviosols, cryosols), the six of v0.9.348 (ferrallitisols et oxydisols, ferruginosols, fersialsols, fluviosols, grisols, gypsosols), the six of v0.9.349 (histosols, leptismectisols, lithosols, luvisols, nitosols, organosols) and, since v0.9.351, the pélosols, peyrosols, phæosols, planosols, podzosols, rankosols, réductisols et rédoxisols, attached by their sequences of reference horizons, the side tests of each chapter and the tolerances of p. 64; the reference horizons from the RP notation or on the data (v0.9.341, v0.9.343). The 18 references of the other 6 groups are not implemented yet: a profile that shows their horizons is told so, in the candidates, and its name is provisional"
+implementation_status: "soilKey v0.9.352 -- the 110 references of the 34 groups of references: the nine of v0.9.346 (alocrisols, andosols, anthroposols, arénosols, brunisols, the calcium and magnesium chapter, chernosols, colluviosols, cryosols), the six of v0.9.348 (ferrallitisols et oxydisols, ferruginosols, fersialsols, fluviosols, grisols, gypsosols), the six of v0.9.349 (histosols, leptismectisols, lithosols, luvisols, nitosols, organosols), the seven of v0.9.351 (pélosols, peyrosols, phæosols, planosols, podzosols, rankosols, réductisols et rédoxisols) and, since v0.9.352, the régosols, salisols et sodisols, thalassosols, thiosols et sulfatosols, veracrisols and vertisols, attached by their sequences of reference horizons, the side tests of each chapter and the tolerances of p. 64; the reference horizons from the RP notation or on the data (v0.9.341, v0.9.343)"
 source: |
   The definitions of the reference horizons (pp. 6-28), the tolerances
   (p. 64), the rapid key (pp. 66-68) and the chapters of the references
-  (pp. 69-290 in this release). The RP gives no key: every reference is
+  (pp. 69-326). The RP gives no key: every reference is
   tested, and the choice of one main name among those that attach is
   soilKey's (precedence.yaml, doubles.yaml, readings.yaml).

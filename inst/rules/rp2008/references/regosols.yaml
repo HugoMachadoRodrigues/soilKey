@@ -1,0 +1,56 @@
+# Régosols (pp. 291-293), 1 reference: very thin solums with, within 10 cm
+# of the surface (an OL not counted, p. 64), a material unevolved or barely
+# evolved, undifferentiated, with no general pedological structure, loose
+# or slightly hard: coherent, but workable with a spade, a pick or a plough
+# (p. 291). The sequence: one pedological horizon, organo-mineral or
+# holorganic, over an M or D layer or a C horizon (p. 291), the very recent
+# alluvial deposits excepted (the fluviosols bruts: the mode of deposit,
+# the position and the alluvial water table, pp. 188, 291): a recorded
+# recent alluvial origin (alluvial_rp) excludes the régosol outright (the
+# review's D8).
+#
+# soilKey reads the régosol as the lithosol is read (pp. 219, 291; the
+# twin chapter): the first M, D or C starts at 10 cm or less (+/- 5: 10 to
+# 15 cm imperfect), with at most one horizon over it (adjacent layers of one
+# code count as one, A1/A2: the review's D7), organo-mineral or
+# holorganic (an A, a J, an O or H, a ploughed L), the holorganic O
+# horizons counting as one (lithic_obstacle_rp); none over it is allowed,
+# as the lithosol strict. The hardness separates it from the lithosols (p.
+# 292): an M or D, by the notation, by the rupture resistance or by
+# soilKey's continuous_rock() on the data (the horizon frame; not recorded,
+# undecided: map 5, D16).
+#
+# Distinctions (pp. 101, 188, 209, 220, 292): the lithosols have a very
+# hard R (the horizon frame); the arénosols an organo-mineral top of over 10
+# cm with roots and biological activity (precedence.yaml: an A over 10 cm
+# from the surface, the régosol within the tolerance a candidate); the colluviosols yield to any other
+# reference (p. 132); the vitrandosols have a surface horizon of 10 cm or
+# more; H of 10 cm or less over M, D or C is the régosol épihistique, not a
+# histosol leptique (precedence.yaml); the recent alluvium of the fluviosols
+# and the marine one of the thalassosols, bruts and juvéniles, take the
+# solum (precedence.yaml; soilKey's reading).
+references:
+  - code: "regosols"
+    ger: "regosols"
+    name: "régosols"
+    name_singular: "régosol"
+    name_en: "regosols"
+    name_en_singular: "regosol"
+    page: "291"
+    sequences: ["(O|A|H|Js)-M|D|C"]
+    notes: "Within 10 cm (the OL not counted) an M or D layer or a C horizon, loose or slightly hard, under one organo-mineral or holorganic horizon at most; very recent alluvial deposits excepted."
+    wrb2006: "(non Lithic) Leptosols"
+    distinctions:
+      - {with: "lithosols", page: "292", by: "the material below not very hard: an M, D or C, not an R (the horizon frame)"}
+      - {with: "arénosols", page: "101, 292", by: "an organo-mineral top over 10 cm with biological activity: the arénosol (precedence.yaml)"}
+      - {with: "colluviosols", page: "132, 292", by: "the colluviosols yield to any other reference (precedence.yaml)"}
+      - {with: "vitrandosols", page: "84, 292", by: "a surface horizon under 10 cm (side test)"}
+      - {with: "histosols leptiques", page: "209, 211", by: "H of 10 cm or less over M, D or C: the régosol épihistique (precedence.yaml)"}
+      - {with: "fluviosols, thalassosols", page: "188, 291", by: "very recent alluvial or marine deposits: the bruts or juvéniles (precedence.yaml)"}
+    tests:
+      all_of:
+        - lithic_obstacle_rp: {codes: [M, D, C], depth: 10, page: "291", window: true, above_codes: [A, O, H, J, L, "L+"]}
+        # a recorded recent alluvial origin is no regosol (p. 291; the
+        # review's D8)
+        - none_of:
+            - alluvial_rp: {}

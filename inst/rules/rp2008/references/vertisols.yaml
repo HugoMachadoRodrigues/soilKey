@@ -1,0 +1,137 @@
+# Vertisols (pp. 317-326), 4 references: clayey solums, mostly smectitic,
+# that swell and shrink strongly with the dry and wet seasons (p. 317). The
+# SV and V are compulsory, the V starting within 100 cm (strict: 100 is not
+# in the table of p. 64, Q5), the SV above it; both have 40 % clay or more
+# over their whole thickness (p. 318; default 17: "40 %" read as the
+# minimum), the clay smectitic (tested only when the clay mineralogy is
+# recorded, as the leptismectisols: clay_mineral_rp). The SV and V come from
+# the notation or the data (.rp_t_SV(), .rp_t_V(): clay 40 % or more, the
+# shrinkage cracks or prismatic over-structure, the slickensides; a
+# prismatic over-structure alone over a layer that meets the Sp is the Sp of
+# the pélosols, Hugo's decision 1 on the review of 0.9.351). The variants of
+# V (Vk, Vy, Vs, VNa, VSa, Vg) are a V with features.
+#
+# The references (pp. 322-324), in soilKey's order (Q20): the paravertisols
+# planosoliques an E or Eg, thin but clear, between the surface horizon and
+# the SV, with an abrupt lower boundary, the upper horizons clay-depleted
+# and no longer vertic (under 40 % clay; the formula prints Eg, the text E or
+# Eg: both read); the paravertisols hapliques an A or LA no longer vertic,
+# under 40 % clay, directly over the SV; then, with a vertic Av or LAv at
+# the surface (vertic_surface_rp: on the data the vertic characters of the
+# Av read on the surface A, which the fixed order may read Aci or Aso), the
+# topovertisols in low positions (alluvial plains, karstic
+# depressions, gilgai basins), their SV confined, saturated by the bases at
+# a neutral or alkaline pH, against the lithovertisols of the interfluves,
+# fed by the rain only, their SV possibly slightly unsaturated
+# (vertisol_site_rp: an SV recorded unsaturated makes the lithovertisol
+# whatever the landform, else the site when recorded, else the SV, the
+# attachment then provisional; Q20, Hugo's decision 2). The climates
+# and the evolution towards the planosols are reported, not tested.
+#
+# Distinctions (pp. 217-218, 299, 323-325): no V, [Av + SV] 50 cm or less,
+# a leptismectisol (precedence.yaml); the paravertisols planosoliques are a
+# first stage towards the planosols typiques vertiques: while the SV and V
+# hold, the vertisol takes the name before a planosol (precedence.yaml;
+# soilKey's reading); with a VSa or VNa the vertisol salique or sodique, the
+# salisol or sodisol a candidate (Q20); a prolonged waterlogging, the
+# doubles vertisol-réductisol and vertisol-rédoxisol (doubles.yaml); the
+# pélosols have no V and no SV (their side test); a V deeper than 100 cm is
+# the qualifier bathyvertique of another reference.
+scope: &ve_scope
+  all_of:
+    - horizon_within_rp: {codes: [SV]}
+    - horizon_within_rp: {codes: [V], depth: 100}
+    - sequence_rp: {sequences: ["SV-V"]}
+    # the clay tested when recorded: a written SV or V carries it (Hugo's
+    # decision 7)
+    - clay_rp: {codes: [SV, V], min: 40}
+    - clay_mineral_rp: {codes: [SV, V], mineral: smectite}
+vertic_top: &ve_vertic_top
+  vertic_surface_rp: {}
+references:
+  - code: "lithovertisols"
+    ger: "vertisols"
+    name: "lithovertisols"
+    name_singular: "lithovertisol"
+    name_en: "lithovertisols"
+    name_en_singular: "lithovertisol"
+    page: "322"
+    sequences: ["Av|LAv-SV-V"]
+    notes: "The in situ weathering of diverse rocks (basalts, marls, clays) yielding much smectite; interfluve positions of rolling landscapes, fed by the rain only, an external drainage possible; the SV possibly slightly unsaturated; an S between the V and the C possible in the thick ones."
+    wrb2006: "Vertisols"
+    provisional_unless: {all_of: [{vertisol_site_rp: {kind: litho, site: required}}]}
+    provisional_note: "the site (slope_pct, landform) is not recorded: only the SV decides between the litho- and topovertisols (Hugo's decision 2)"
+    distinctions:
+      - {with: "topovertisols", page: "322-323", by: "a slope or an interfluve, or an SV not saturated (side test; Q20)"}
+      - {with: "leptismectisols", page: "217-218, 325", by: "a V within 100 cm (precedence.yaml)"}
+      - {with: "réductisols, rédoxisols", page: "325", by: "the doubles vertisol-réductisol and vertisol-rédoxisol (doubles.yaml)"}
+    tests:
+      all_of:
+        - *ve_scope
+        - sequence_rp: {sequences: ["A-SV-V"]}
+        - *ve_vertic_top
+        - vertisol_site_rp: {kind: litho}
+  - code: "topovertisols"
+    ger: "vertisols"
+    name: "topovertisols"
+    name_singular: "topovertisol"
+    name_en: "topovertisols"
+    name_en_singular: "topovertisol"
+    page: "322-323"
+    sequences: ["Av|LAv-SV-V"]
+    notes: "Low positions (alluvial plains, karstic depressions, gilgai basins), a water regime wetter than the climate; generally thicker than the lithovertisols; the SV confined, saturated by the alkaline and alkaline-earth cations, its pH neutral or alkaline; a self-reinforcing geochemistry."
+    wrb2006: "Vertisols"
+    provisional_unless: {all_of: [{vertisol_site_rp: {kind: topo, site: required}}]}
+    provisional_note: "the site (slope_pct, landform) is not recorded: only the SV decides between the litho- and topovertisols (Hugo's decision 2)"
+    distinctions:
+      - {with: "lithovertisols", page: "322-323", by: "a low or flat position, or a saturated SV at a neutral or alkaline pH (side test; Q20)"}
+      - {with: "fersialsols", page: "325", by: "a catena, the topovertisols in the bottoms (none tested)"}
+    tests:
+      all_of:
+        - *ve_scope
+        - sequence_rp: {sequences: ["A-SV-V"]}
+        - *ve_vertic_top
+        - vertisol_site_rp: {kind: topo}
+  - code: "paravertisols_hapliques"
+    ger: "vertisols"
+    name: "paravertisols hapliques"
+    name_singular: "paravertisol haplique"
+    name_en: "haplic paravertisols"
+    name_en_singular: "haplic paravertisol"
+    page: "323"
+    sequences: ["A|LA-SV-V-C|M|R|K|Yp"]
+    notes: "The SV and V of the vertisols under a surface A or LA clearly poorer in clay (under 40 %) and no longer vertic; intertropical climates over 1 m a year (reported, not tested); a disequilibrium towards the planosols or sodisols."
+    wrb2006: "Vertisols"
+    distinctions:
+      - {with: "lithovertisols, topovertisols", page: "323", by: "the surface A not vertic, under 40 % clay (side test)"}
+      - {with: "paravertisols planosoliques", page: "323", by: "the A directly over the SV (side test; precedence.yaml)"}
+    tests:
+      all_of:
+        - *ve_scope
+        - sequence_rp: {sequences: ["A-SV-V"]}
+        - below_rp: {upper: [A], codes: [SV]}
+        - none_of:
+            - *ve_vertic_top
+        - attribute_rp: {attribute: clay_pct, threshold: 40, direction: max, open: true, codes: [A, L], layers: all}
+  - code: "paravertisols_planosoliques"
+    ger: "vertisols"
+    name: "paravertisols planosoliques"
+    name_singular: "paravertisol planosolique"
+    name_en: "planosolic paravertisols"
+    name_en_singular: "planosolic paravertisol"
+    page: "323-324"
+    sequences: ["A|LA-Eg-SV|SVg-V|Vg-C|M|R|K|Yp", "A|LA-E-SV|SVg-V|Vg-C|M|R|K|Yp"]
+    notes: "The upper horizons clearly depleted in clay and no longer vertic; a thin but clear E or Eg between the surface horizon and the SV, with an abrupt lower boundary, whitish washed silt coatings; the A and Eg often unsaturated (not tested); tropical and subtropical climates with a long dry season (reported); an intergrade towards the planosols typiques vertiques."
+    wrb2006: "Vertisols (Albic)"
+    distinctions:
+      - {with: "paravertisols hapliques", page: "323", by: "an E between the A and the SV (precedence.yaml)"}
+      - {with: "planosols typiques", page: "323, 325", by: "the SV and V still there: the vertisol (precedence.yaml)"}
+    tests:
+      all_of:
+        - *ve_scope
+        - sequence_rp: {sequences: ["A-E-SV-V"]}
+        - below_rp: {upper: [E], codes: [SV]}
+        - boundary_rp: {upper: [E]}
+        - none_of:
+            - *ve_vertic_top
+        - attribute_rp: {attribute: clay_pct, threshold: 40, direction: max, open: true, codes: [A, E, L], layers: all}

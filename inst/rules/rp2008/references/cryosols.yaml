@@ -26,7 +26,7 @@ references:
     distinctions:
       - {with: "podzosols, luvisols", page: "141", by: "cryoturbated: the doubles cryosol minéral-podzosol or -luvisol (doubles.yaml)"}
       - {with: "histosols", page: "142", by: "a peat with no permafrost (side test; later release)"}
-      - {with: "régosols", page: "142", by: "undifferentiated filtering materials with no cryoturbation (side test; later release)"}
+      - {with: "régosols", page: "142", by: "undifferentiated filtering materials with no cryoturbation (side test)"}
     tests:
       all_of:
         - permafrost_rp: {depth: 200}
@@ -51,7 +51,7 @@ references:
     distinctions:
       - {with: "podzosols, luvisols", page: "141", by: "cryoturbated: the doubles cryosol minéral-podzosol or -luvisol (doubles.yaml)"}
       - {with: "histosols", page: "142", by: "a peat with no permafrost (side test; later release)"}
-      - {with: "régosols", page: "142", by: "undifferentiated filtering materials with no cryoturbation (side test; later release)"}
+      - {with: "régosols", page: "142", by: "undifferentiated filtering materials with no cryoturbation (side test)"}
     tests:
       all_of:
         - permafrost_rp: {depth: 200}

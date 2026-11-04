@@ -747,10 +747,15 @@
 .rp_sodic <- function(x, i) {
   st <- .kidpr_structure(x, i)
   na_c <- .rp_num(x, i, "na_cmol")
+  # the Na derived from the ESP and the CEC where only they are recorded
+  # (0.9.352, the review's D4)
+  esp <- .rp_num(x, i, "esp_pct")
+  if (is.na(na_c) && !is.na(esp) && isTRUE(.rp_num(x, i, "cec_cmol") > 0)) na_c <- esp * .rp_num(x, i, "cec_cmol") / 100
   # a columnar, prismatic or coarse structure; a massive one only with 1
-  # cmol+/kg of exchangeable Na or more (the review's D12)
+  # cmol+/kg of exchangeable Na or more (the review's D12), or, the Na not
+  # known, an ESP of 15 % or more as evidence (0.9.352)
   degraded <- isTRUE(grepl("column|prism|coarse", paste(st$type, st$size, st$secondary))) ||
-    (isTRUE(grepl("massive", st$type)) && isTRUE(na_c >= 1))
+    (isTRUE(grepl("massive", st$type)) && (isTRUE(na_c >= 1) || (is.na(na_c) && isTRUE(esp >= 15))))
   nb <- .rp_na_bases(x, i)
   if (!degraded) return(.rp_r(FALSE, note = if (is.na(st$type)) "no degraded structure recorded" else sprintf("structure %s: not degraded", st$type)))
   sal <- .rp_salic(x, i)

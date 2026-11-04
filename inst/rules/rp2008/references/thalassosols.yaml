@@ -1,0 +1,108 @@
+# Thalassosols (pp. 303-306), 3 references: solums of marine or
+# fluvio-marine deposits near sea level, little differentiated, not wholly
+# decarbonated (when calcareous at first) and not brunified, of the low
+# coastal plains (p. 303). The marine or fluvio-marine origin is required
+# (marine_rp: layer_origin, rock_origin within 50 cm, or the parent material;
+# Q14), and only the horizons H, A (or LA), Js, Jp, G, -g, C and Yp may be
+# present, the M of the sequences with them (p. 304): no E, BT, BP, S, Sci
+# or Sca, no Y at the surface; a thionic material and a sulfated, salic or
+# sodic horizon only starting deeper than 60 cm (+/- 10).
+#
+# The references (p. 304), by the horizons first, the site confirming (map
+# 5, D18; Q14): the bruts (the slikke) unweathered M layers with no sign of
+# pedogenesis, covered by the sea at the high tides; the juvéniles (the
+# schorre) a Js over the M (or Js/Jp/M), flooded only by the very high
+# tides; the poldérisés an A over a Jp over the M, desalted and embanked,
+# drained or reclaimed (poldered; not recorded, artificially_drained stands
+# in, flagged). A site that contradicts them fails them (a polder for the
+# bruts and juvéniles, a tidal flooding for the poldérisés); not recorded,
+# the attachment is provisional (tidal_site_rp, `provisional_unless`). On
+# the data the raw marine M is read as a C, or as a G when reduced (the
+# fluviosols bruts' reading, p. 185).
+#
+# Distinctions (pp. 285, 304-306, 310): a salic or sodic horizon within 60
+# cm is the salisols' or sodisols' (the side test); a G within 50 cm
+# continuing at depth, the double réductisol-thalassosol, the G or -g with
+# redox features continuing or intensifying, the double
+# rédoxisol-thalassosol poldérisé (doubles.yaml; Q8); a thionic material or
+# a sulfated horizon within 50 cm the thiosols or sulfatosols (the side
+# test; precedence.yaml, p. 310); the fluviosols have a fluviatile, not a
+# marine, material (alluvial_rp; the rapid key 5a); the régosols yield to
+# the recent marine deposits (precedence.yaml).
+scope: &th_scope
+  all_of:
+    - marine_rp: {}
+    - no_horizon_within_rp: {codes: [E, BT, BP, S, V, FS, F, OX, FE, ND, RT, K, Si, Fe, Ys, Ym]}
+    # the hard rock, the coarse layers and the anthropic materials only
+    # within the solum, read as 100 cm (p. 304; the review's D9)
+    - no_horizon_within_rp: {codes: [R, D, X, Z], depth: 100}
+    - no_horizon_within_rp: {codes: [TH, U, "Sa+", "Na+"], depth: 60}
+    - no_horizon_within_rp: {codes: ["Y"], depth: 10}
+references:
+  - code: "thalassosols_bruts"
+    ger: "thalassosols"
+    name: "thalassosols bruts"
+    name_singular: "thalassosol brut"
+    name_en: "raw thalassosols"
+    name_en_singular: "raw thalassosol"
+    page: "304"
+    sequences: ["M"]
+    notes: "Raw marine or fluvio-marine deposits along the coasts and banks (mudflats, the slikke), often unstable, covered by the sea at every high tide in the high-water periods; no vegetation or a sparse pioneer halophytic one; no sign of pedogenesis; a saline water table near the surface: unweathered M layers. On the data the raw M is a C, or a G when reduced."
+    wrb2006: "Tidalic Fluvisols"
+    provisional_unless: {all_of: [{tidal_site_rp: {kind: tidal, site: required}}]}
+    provisional_note: "the tidal flooding is not recorded (tidal_zone, tidal_inundation, poldered; Q14)"
+    distinctions:
+      - {with: "thalassosols juvéniles", page: "304", by: "no Js (side test)"}
+      - {with: "régosols", page: "291", by: "very recent marine deposits (precedence.yaml)"}
+      - {with: "réductisols", page: "305", by: "a G within 50 cm: the double réductisol-thalassosol (doubles.yaml)"}
+    tests:
+      all_of:
+        - *th_scope
+        - horizon_within_rp: {codes: [M, C, G], depth: 10}
+        - no_horizon_within_rp: {codes: [A, Js, Jp, H, O]}
+        - tidal_site_rp: {kind: tidal}
+  - code: "thalassosols_juveniles"
+    ger: "thalassosols"
+    name: "thalassosols juvéniles"
+    name_singular: "thalassosol juvénile"
+    name_en: "juvenile thalassosols"
+    name_en_singular: "juvenile thalassosol"
+    page: "304"
+    sequences: ["Js-M", "Js-Jp-M"]
+    notes: "Recent marine or fluvio-marine deposits of the upper mudflats (the schorre), flooded only by the very high tides or strong storms, cut by channels, under a low continuous halophytic vegetation (salt meadows); very weakly evolved and differentiated: a Js over the M (or Js/Jp/M)."
+    wrb2006: "Tidalic Fluvisols"
+    provisional_unless: {all_of: [{tidal_site_rp: {kind: tidal, site: required}}]}
+    provisional_note: "the tidal flooding is not recorded (tidal_zone, tidal_inundation, poldered; Q14)"
+    distinctions:
+      - {with: "thalassosols bruts", page: "304", by: "a Js at the surface (side test)"}
+      - {with: "thalassosols poldérisés", page: "304", by: "no A, the sea reaching the site (side test)"}
+      - {with: "régosols", page: "291", by: "recent marine deposits (precedence.yaml)"}
+    tests:
+      all_of:
+        - *th_scope
+        - horizon_within_rp: {codes: [Js], depth: 10}
+        - no_horizon_within_rp: {codes: [A]}
+        - tidal_site_rp: {kind: tidal}
+  - code: "thalassosols_polderises"
+    ger: "thalassosols"
+    name: "thalassosols poldérisés"
+    name_singular: "thalassosol poldérisé"
+    name_en: "poldered thalassosols"
+    name_en_singular: "poldered thalassosol"
+    page: "304"
+    sequences: ["A-Jp-M"]
+    notes: "Only solums desalted enough, in embanked, drained or reclaimed sites: an A (or LA) over a Jp over the M."
+    wrb2006: "Fluvisols"
+    provisional_unless: {all_of: [{tidal_site_rp: {kind: polder, site: required}}]}
+    provisional_note: "the embankment is not recorded (poldered, artificially_drained; Q14)"
+    distinctions:
+      - {with: "thalassosols juvéniles", page: "304", by: "an A over the Jp, an embanked site (side test)"}
+      - {with: "salisols, sodisols", page: "304-306", by: "a salic or sodic horizon within 60 cm (side test)"}
+      - {with: "rédoxisols", page: "285, 305", by: "a g or -g within 50 cm: the double rédoxisol-thalassosol poldérisé (doubles.yaml; Q8)"}
+      - {with: "fluviosols typiques", page: "67, 184", by: "a marine material (alluvial_rp, marine_rp)"}
+    tests:
+      all_of:
+        - *th_scope
+        - horizon_within_rp: {codes: [A], depth: 10}
+        - below_rp: {upper: [A], codes: [Jp]}
+        - tidal_site_rp: {kind: polder}
