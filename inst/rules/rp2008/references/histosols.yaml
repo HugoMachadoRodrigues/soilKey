@@ -1,0 +1,130 @@
+# Histosols (pp. 201-216), 5 references: solums made almost only of histic
+# H horizons (Hf, Hm, Hs, Ha or LH), holorganic, formed under water
+# saturation more than 6 months a year, ash under 50 % (pp. 205-206), with
+# or without thin limnic (Mli) or terric (Mt) materials (p. 207). Under the
+# H horizons only G horizons or M, D or R layers (p. 207 and the figure of
+# p. 209; a C read as the M, soilKey's reading); a cover of other materials
+# of 50 cm at most is the qualifier recouvert (the figure). The H and its
+# kind come from the notation or the data (.rp_t_H(): organic by the loss
+# on ignition, else organic carbon over 30 +/- 5, else the notation; H
+# against O by the designation, then the water, Q19; the kind by the rubbed
+# fibres, Hf 40 % or more, Hm 10 to 40, Hs under 10, then von Post 1-4, 6-7,
+# 9-10, the degrees 5 and 8 between two kinds, D4).
+#
+# The predominant horizon (p. 207): the thickest kind of H, thicknesses
+# cumulated, between 40 and 120 cm, or between 0 and 50 cm when an M, D or R
+# starts within 50 cm; a tie is no kind truly predominant; the Ha and LH
+# count for no kind (D3); the 60 cm of the fibriques and the 40 cm of the
+# mésiques and sapriques are the thickness of that kind in the solum (D1).
+# The figure of p. 209: H over 10 cm on R (else a lithosol épihistique, M or
+# D a régosol épihistique); under 50 cm on M, D or R a histosol leptique;
+# under 50 cm on G a réductisol épihistique (precedence.yaml, the
+# réductisols a later release); over 50 cm the fibriques, mésiques,
+# sapriques or composites. The habitat notes (the water table, H2S, p.
+# 207) are reported, not tested (D18); the "simplest solums" (hapliques) and
+# the kinds of the leptiques are qualifiers (a later release).
+#
+# Distinctions (p. 211): a permafrost within 2 m makes a cryosol histique
+# (precedence.yaml); the organosols are aerated, with O and Aho and no H
+# (the horizon frame, Q19); a double with the réductisols is possible
+# (doubles.yaml, a later release); H over sulfidic materials, the qualifier
+# bathysulfidique.
+scope: &hi_scope
+  all_of:
+    - histic_solum_rp: {}
+    - thickness_rp: {codes: [H], min: 10, open: true}
+deep: &hi_deep
+  all_of:
+    - *hi_scope
+    - thickness_rp: {codes: [H], min: 50, open: true}
+references:
+  - code: "histosols_fibriques"
+    ger: "histosols"
+    name: "histosols fibriques"
+    name_singular: "histosol fibrique"
+    name_en: "fibric histosols"
+    name_en_singular: "fibric histosol"
+    page: "207"
+    sequences: ["Hf (predominant, over 60 cm), H over G, M, D or R"]
+    notes: "One or more predominant Hf, more than 60 cm thick in all (+/- 10). The water table and H2S are habitat notes, not tested (D18)."
+    wrb2006: "Fibric Histosols"
+    distinctions:
+      - {with: "histosols mésiques, sapriques, composites", page: "207-208", by: "the predominant kind of H (side test)"}
+      - {with: "cryosols histiques", page: "211", by: "a permafrost within 2 m (precedence.yaml)"}
+      - {with: "organosols", page: "211", by: "H, not O and Aho, and the ash (the horizon frame, Q19)"}
+    tests:
+      all_of:
+        - *hi_deep
+        - histic_kind_rp: {kind: Hf, min: 60}
+  - code: "histosols_mesiques"
+    ger: "histosols"
+    name: "histosols mésiques"
+    name_singular: "histosol mésique"
+    name_en: "mesic histosols"
+    name_en_singular: "mesic histosol"
+    page: "207"
+    sequences: ["Hm (predominant, over 40 cm), H over G, M, D or R"]
+    notes: "One or more predominant Hm, more than 40 cm thick in all (strict, Q5)."
+    wrb2006: "Hemic Histosols"
+    distinctions:
+      - {with: "histosols fibriques, sapriques, composites", page: "207-208", by: "the predominant kind of H (side test)"}
+      - {with: "cryosols histiques", page: "211", by: "a permafrost within 2 m (precedence.yaml)"}
+    tests:
+      all_of:
+        - *hi_deep
+        - histic_kind_rp: {kind: Hm, min: 40}
+  - code: "histosols_sapriques"
+    ger: "histosols"
+    name: "histosols sapriques"
+    name_singular: "histosol saprique"
+    name_en: "sapric histosols"
+    name_en_singular: "sapric histosol"
+    page: "207-208"
+    sequences: ["Hs (predominant, over 40 cm), H over G, M, D or R"]
+    notes: "One or more predominant Hs, more than 40 cm thick in all (strict, Q5); H2S within 100 cm gives the qualifier à H2S."
+    wrb2006: "Sapric Histosols"
+    distinctions:
+      - {with: "histosols fibriques, mésiques, composites", page: "207-208", by: "the predominant kind of H (side test)"}
+      - {with: "cryosols histiques", page: "211", by: "a permafrost within 2 m (precedence.yaml)"}
+    tests:
+      all_of:
+        - *hi_deep
+        - histic_kind_rp: {kind: Hs, min: 40}
+  - code: "histosols_composites"
+    ger: "histosols"
+    name: "histosols composites"
+    name_singular: "histosol composite"
+    name_en: "composite histosols"
+    name_en_singular: "composite histosol"
+    page: "208"
+    sequences: ["H (no kind truly predominant between 40 and 120 cm) over G, M, D or R"]
+    notes: "No fibric, mesic or sapric horizon truly predominant between 40 and 120 cm, nor one meeting the thicknesses above; the drained Ha and the ploughed LH count for no kind (D3)."
+    wrb2006: "Histosols"
+    distinctions:
+      - {with: "histosols fibriques, mésiques, sapriques", page: "208", by: "a predominant kind of H thick enough (side test)"}
+      - {with: "cryosols histiques", page: "211", by: "a permafrost within 2 m (precedence.yaml)"}
+    tests:
+      all_of:
+        - *hi_deep
+        - none_of:
+            - histic_kind_rp: {kind: Hf, min: 60}
+            - histic_kind_rp: {kind: Hm, min: 40}
+            - histic_kind_rp: {kind: Hs, min: 40}
+  - code: "histosols_leptiques"
+    ger: "histosols"
+    name: "histosols leptiques"
+    name_singular: "histosol leptique"
+    name_en: "leptic histosols"
+    name_en_singular: "leptic histosol"
+    page: "208"
+    sequences: ["H (10 to 50 cm in all) over M, D or R"]
+    notes: "H horizons under 50 cm in all (+/- 10) but over 10 cm (+/- 5), on a soft or hard substrate, an M, D or R layer (a C read as the M); on G a réductisol épihistique (p. 208). The kind of H is a qualifier (fibrique, mésique, saprique)."
+    wrb2006: "Epileptic Histosols"
+    distinctions:
+      - {with: "lithosols, régosols épihistiques", page: "207, 209, 211", by: "H of 10 cm or less over R, or over M or D (precedence.yaml)"}
+      - {with: "réductisols épihistiques", page: "208-209", by: "H under 50 cm over G (precedence.yaml, a later release)"}
+    tests:
+      all_of:
+        - *hi_scope
+        - thickness_rp: {codes: [H], max: 50, open: true}
+        - below_rp: {upper: [H], codes: [M, D, R, C, Mt]}

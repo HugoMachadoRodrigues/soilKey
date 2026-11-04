@@ -108,9 +108,9 @@ test_that("the catalogue has 34 GER and 110 references, the 29 of these nine GER
                                         "eeeaauuoiic", gsub("\u00e6", "ae", r$name)))
     expect_identical(r$code, slug, info = r$code)
   }
-  # every unimplemented GER has a signpost
+  # every unimplemented GER has a signpost (0.9.349: thirteen left)
   later <- Filter(function(g) !isTRUE(g$implemented), rules$ger)
-  expect_length(later, 19L)
+  expect_length(later, 13L)
   expect_true(all(vapply(later, function(g) !is.null(g$signpost), NA)))
   # the tolerance table of p. 64
   tab <- .tolerance_table(rules$tolerances)
@@ -381,8 +381,10 @@ test_that("the doubles of these chapters, in the book's order", {
 
 test_that("nothing attaches: [non rattach\u00e9] with the three nearest references", {
   skip_on_cran()
-  p <- .rp46_mk(list(designation = c("A", "E", "BT", "C"), top_cm = c(0, 20, 45, 100), bottom_cm = c(20, 45, 100, 140),
-                     oc_pct = c(2, 0.5, 0.4, 0.2), clay_pct = c(15, 12, 30, 22), bs_pct = c(60, 55, 70, 80), ph_h2o = 6),
+  # 0.9.349: A-E-BT is a luvisol typique (test-v09349); A-E-BP waits for
+  # the podzosols
+  p <- .rp46_mk(list(designation = c("A", "E", "BP", "C"), top_cm = c(0, 20, 45, 100), bottom_cm = c(20, 45, 100, 140),
+                     oc_pct = c(2, 0.5, 1.2, 0.2), clay_pct = c(15, 12, 14, 12), bs_pct = c(20, 15, 15, 20), ph_h2o = 4.5),
                 site = list(lat = 46, elevation_m = 200))
   r <- .rp46_cl(p)
   expect_identical(r$name, "[non rattach\u00e9]")
@@ -392,12 +394,12 @@ test_that("nothing attaches: [non rattach\u00e9] with the three nearest referenc
   expect_identical(nrow(near), 3L)
   expect_true(all(near$degree == "fail" & nzchar(near$failed)))
   expect_true(all(diff(near$n_failed) >= 0))
-  # the luvisols are not implemented yet: an undecided candidate, said so
-  lu <- r$candidates[r$candidates$code == "luvisols", ]
+  # the podzosols are not implemented yet: an undecided candidate, said so
+  lu <- r$candidates[r$candidates$code == "podzosols", ]
   expect_identical(lu$degree, "undecided")
   expect_false(lu$implemented)
   expect_match(lu$undecided_by, "not implemented yet", fixed = TRUE)
-  expect_true("references:luvisols" %in% r$provisional_because)
+  expect_true("references:podzosols" %in% r$provisional_because)
   expect_true(any(grepl("not implemented yet", r$warnings, fixed = TRUE)))
   expect_true(any(grepl("intergrade", r$warnings, fixed = TRUE)))
 })
@@ -412,9 +414,10 @@ test_that("a GER of a later release makes the name provisional only when it rank
   expect_true("podzosols" %in% r$candidates$code)
   # the brunisols forbid a BP: nothing of these GER attaches
   expect_identical(r$name, "[non rattach\u00e9]")
-  # a chernosol with a BTh: the luvisols (11b) rank after the chernosols (7c)
+  # a chernosol with a BTh: the luvisols (11b) rank after the chernosols
+  # (7c); 0.9.349 tests their references (test-v09349)
   r <- .rp46_cl(.rp46_ex("chernosols_melanoluviques"))
-  expect_true("luvisols" %in% r$candidates$code)
+  expect_identical(r$name, "chernosol m\u00e9lanoluvique")
   expect_identical(r$provisional_because, character(0))
   # g within 50 cm under a brunisol: the redoxisols signpost, before it
   r <- .rp46_cl(.rp46_edit(.rp46_ex("brunisols_eutriques"), 2, designation = "Sg"))
@@ -490,8 +493,10 @@ test_that("the readings of this release are Hugo's decisions; none waits for con
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   txt <- vapply(rd, `[[`, "", "reading")
   # 24 of 0.9.346; 0.9.348 adds its eight readings, confirmed, and three
-  # decisions of its review (test-v09348); none waits for confirmation
+  # decisions of its review (test-v09348), all confirmed
   expect_identical(sum(grepl("(Hugo, 2026-11-03).", txt, fixed = TRUE)), 35L)
+  # 0.9.349 adds its readings, confirmed on 2026-11-04 (test-v09349); none
+  # waits for confirmation
   expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
   # the carbon of a layer over its whole depth: a single Ach 0-45 cm is clinohumic
   p <- .rp46_mk(list(designation = c("Ach", "Ck"), top_cm = c(0, 45), bottom_cm = c(45, 120), oc_pct = c(3, 0.4)))

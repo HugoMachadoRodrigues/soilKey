@@ -13,11 +13,12 @@
 # of the rapid key, Q6), the doubles the book prescribes (Q7), "[non
 # rattache]" with the three nearest references when nothing attaches; and
 # the `candidates` slot with every reference that may attach. This release
-# tests the 53 references of the first fifteen GER (v0.9.346: the first
+# tests the 71 references of the first twenty-one GER (v0.9.346: the first
 # nine; v0.9.348: the ferrallitisols and oxydisols, ferruginosols,
-# fersialsols, fluviosols, grisols and gypsosols); the 57 of the other 19
-# GER come later, and a profile showing their horizons is told so in the
-# candidates (their signposts in key.yaml), its name provisional.
+# fersialsols, fluviosols, grisols and gypsosols; v0.9.349: the histosols,
+# leptismectisols, lithosols, luvisols, nitosols and organosols); the 39 of
+# the other 13 GER come later, and a profile showing their horizons is told
+# so in the candidates (their signposts in key.yaml), its name provisional.
 # =============================================================================
 
 .rp_rules_cache <- new.env(parent = emptyenv())
@@ -205,21 +206,26 @@
 #'
 #' Attaches a \code{\link{PedonRecord}} to the references of the
 #' \emph{Referentiel pedologique} 2008 (AFES; Baize and Girard coord.;
-#' Editions Quae, 2009). \strong{Experimental}: this release tests the 53
-#' references of the first fifteen groups of references (GER): alocrisols
+#' Editions Quae, 2009). \strong{Experimental}: this release tests the 71
+#' references of the first twenty-one groups of references (GER): alocrisols
 #' (2), andosols (6), anthroposols (5), arenosols (1), brunisols (2), the
 #' solums dominated by calcium or magnesium (7: rendosols, calcosols,
 #' dolomitosols, rendisols, calcisols, magnesisols, calcarisols),
 #' chernosols (3), colluviosols (1), cryosols (2), ferrallitisols and
 #' oxydisols (7), ferruginosols (4), fersialsols (4), fluviosols (4),
-#' grisols (3) and gypsosols (2). The 57 references of the other 19 GER come
-#' in later releases: a profile that shows their reference horizons gets
-#' them among the candidates as not implemented yet, and its name is
-#' provisional. The horizons of the intertropical chapters (F, OX, RT, ND,
-#' FE, OXc, OXm) are read only in the intertropical domain, and their
-#' results say that the book calls those chapters a first version (Q18); a
-#' fluviosol needs a recorded alluvial origin and is provisional while the
-#' position in the valley and the water table are not recorded (Q14).
+#' grisols (3), gypsosols (2), histosols (5), leptismectisols (1),
+#' lithosols (1), luvisols (6), nitosols (1) and organosols (4). The 39
+#' references of the other 13 GER come in later releases: a profile that
+#' shows their reference horizons gets them among the candidates as not
+#' implemented yet, and its name is provisional. The horizons of the
+#' intertropical chapters (F, OX, RT, ND, FE, OXc, OXm) are read only in the
+#' intertropical domain, and the results of those chapters and of the
+#' nitosols say that the book calls them a first version (Q18); a fluviosol
+#' needs a recorded alluvial origin and is provisional while the position in
+#' the valley and the water table are not recorded (Q14). The histosols read
+#' their predominant H horizon between 40 and 120 cm, the luvisols their
+#' texture contrast by the bands of the chapter, the organosols the S/CEC of
+#' their Aho as a whole.
 #'
 #' The RP is not a key: a solum attaches to one, two or no reference, simply
 #' or imperfectly (pp. XIV, XVII). Every reference is tested every time:
@@ -518,7 +524,7 @@ classify_rp2008 <- function(pedon, rules = NULL,
 #' Example pedons for the references of the Referentiel pedologique 2008
 #'
 #' Small, plausible profiles written for the tests and examples, one per
-#' reference implemented (the 53 of the first fifteen GER), in the RP notation
+#' reference implemented (the 71 of the first twenty-one GER), in the RP notation
 #' (\code{site$designation_system = "rp2008"}) with the properties their
 #' tests read. They are not real profiles.
 #'
@@ -549,7 +555,15 @@ classify_rp2008 <- function(pedon, rules = NULL,
 #'   \code{"fluviosols_typiques"}, \code{"fluviosols_brunifies"},
 #'   \code{"grisols_eluviques"}, \code{"grisols_degrades"},
 #'   \code{"grisols_hapliques"}, \code{"gypsosols_hapliques"},
-#'   \code{"gypsosols_petrogypsiques"}.
+#'   \code{"gypsosols_petrogypsiques"}, \code{"histosols_fibriques"},
+#'   \code{"histosols_mesiques"}, \code{"histosols_sapriques"},
+#'   \code{"histosols_composites"}, \code{"histosols_leptiques"},
+#'   \code{"leptismectisols"}, \code{"lithosols"}, \code{"neoluvisols"},
+#'   \code{"luvisols_typiques"}, \code{"luvisols_degrades"},
+#'   \code{"luvisols_derniques"}, \code{"luvisols_tronques"},
+#'   \code{"quasi_luvisols"}, \code{"nitosols"},
+#'   \code{"organosols_holorganiques"}, \code{"organosols_calcaires"},
+#'   \code{"organosols_satures"}, \code{"organosols_insatures"}.
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_rp2008(make_rp2008_example("brunisols_eutriques"), on_missing = "silent")$name
@@ -569,7 +583,11 @@ make_rp2008_example <- function(reference = c(
     "ferruginosols_petroxydiques", "fersialsols_carbonates", "fersialsols_calciques",
     "fersialsols_insatures", "fersialsols_eluviques", "fluviosols_bruts", "fluviosols_juveniles",
     "fluviosols_typiques", "fluviosols_brunifies", "grisols_eluviques", "grisols_degrades",
-    "grisols_hapliques", "gypsosols_hapliques", "gypsosols_petrogypsiques")) {
+    "grisols_hapliques", "gypsosols_hapliques", "gypsosols_petrogypsiques",
+    "histosols_fibriques", "histosols_mesiques", "histosols_sapriques", "histosols_composites", "histosols_leptiques",
+    "leptismectisols", "lithosols", "neoluvisols", "luvisols_typiques", "luvisols_degrades", "luvisols_derniques",
+    "luvisols_tronques", "quasi_luvisols", "nitosols", "organosols_holorganiques", "organosols_calcaires",
+    "organosols_satures", "organosols_insatures")) {
   reference <- match.arg(reference)
   mk <- function(h, site = list()) {
     n <- max(lengths(h))
@@ -625,6 +643,20 @@ make_rp2008_example <- function(reference = c(
     base_site = list(country = "RO", lat = 46.6, koppen_climate = "Dfb", land_use = "deciduous forest", parent_material = "loess"))
   gyp <- function(des, top, bot, ...) lay(des, top, bot, oc_pct = c(0.4, rep(0.2, length(des) - 1L)), ...,
     base_site = list(country = "TN", lat = 33.9, lon = 9.5, koppen_climate = "BWh", parent_material = "gypseous marl"))
+  # the profiles of part 6 (v0.9.349): peats of the French plains and
+  # mountains, the Beauce, the loess of the Paris basin, the Antilles, the Jura
+  # and the Vosges
+  peat <- function(des, top, bot, fib, ...) lay(des, top, bot, oc_pct = ifelse(grepl("^H", des), 45, NA),
+    loi_pct = ifelse(grepl("^H", des), 85, NA), fiber_content_rubbed_pct = fib, ...,
+    base_site = list(country = "FR", lat = 47.2, lon = 6.3, elevation_m = 850, koppen_climate = "Cfb",
+                     drainage_class = "very poorly drained", parent_material = "peat"))
+  loess <- function(des, top, bot, clay, ..., site = list()) lay(des, top, bot, clay_pct = clay,
+    oc_pct = c(2.0, rep(0.4, length(des) - 1L)), ph_h2o = c(5.8, rep(6.2, length(des) - 1L)), caco3_pct = 0, ...,
+    site = site, base_site = list(country = "FR", lat = 48.8, lon = 2.9, koppen_climate = "Cfb",
+                                  land_use = "deciduous forest", parent_material = "loess"))
+  mont <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
+    base_site = list(country = "FR", lat = 46.6, lon = 6.1, elevation_m = 1300, koppen_climate = "Dfb",
+                     land_use = "mountain pasture"))
   switch(reference,
     alocrisols_typiques = mk(list(
       designation = c("A", "Sal", "C"), top_cm = c(0, 8, 55), bottom_cm = c(8, 55, 100),
@@ -794,7 +826,51 @@ make_rp2008_example <- function(reference = c(
                               caso4_pct = c(60, 20, 15), caco3_pct = c(8, 10, 12)),
     gypsosols_petrogypsiques = gyp(c("Ym", "Ys", "Cy", "My"), c(0, 10, 40, 90), c(10, 40, 90, 130),
                                    caso4_pct = c(70, 60, 20, 15), caco3_pct = c(6, 8, 10, 12),
-                                   cementation_class = c("indurated", NA, NA, NA), roots_abundance = c("none", "many", "few", NA))
+                                   cementation_class = c("indurated", NA, NA, NA), roots_abundance = c("none", "many", "few", NA)),
+    histosols_fibriques = peat(c("Hf", "Hm", "M"), c(0, 90, 110), c(90, 110, 150), fib = c(60, 25, NA)),
+    histosols_mesiques = peat(c("Hm", "Hs", "D"), c(0, 100, 130), c(100, 130, 160), fib = c(25, 6, NA)),
+    histosols_sapriques = peat(c("Hs", "Hm", "G"), c(0, 90, 110), c(90, 110, 150), fib = c(5, 20, NA)),
+    histosols_composites = peat(c("Hf", "Hm", "Hs", "M"), c(0, 40, 80, 120), c(40, 80, 120, 150), fib = c(55, 20, 5, NA)),
+    histosols_leptiques = peat(c("Hs", "R"), c(0, 35), c(35, 80), fib = c(6, NA)),
+    leptismectisols = lay(c("Av", "SV", "R"), c(0, 18, 40), c(18, 40, 80), clay_pct = c(55, 58, NA),
+                          oc_pct = c(2.2, 1.0, NA), cec_cmol = c(42, 44, NA), ca_cmol = c(38, 40, NA), mg_cmol = c(2.5, 2.5, NA),
+                          bs_pct = c(98, 98, NA), ph_h2o = c(7.6, 7.8, NA), slickensides = c("few", "few", NA),
+                          clay_mineralogy = c("smectite", "smectite", NA),
+                          base_site = list(country = "FR", lat = 48.3, lon = 2.0, koppen_climate = "Cfb",
+                                           parent_material = "Etampes limestone")),
+    lithosols = lay(c("A", "R"), c(0, 6), c(6, 60), oc_pct = c(4, NA), clay_pct = c(25, NA),
+                    base_site = list(country = "FR", lat = 44.3, lon = 3.2, koppen_climate = "Cfb",
+                                     parent_material = "hard limestone")),
+    neoluvisols = loess(c("A", "E", "BT", "C"), c(0, 20, 45, 100), c(20, 45, 100, 150), clay = c(15, 17, 26, 22),
+                        clay_films_amount = c(NA, "few", "common", NA)),
+    luvisols_typiques = loess(c("A", "E", "BT", "C"), c(0, 15, 50, 110), c(15, 50, 110, 150), clay = c(14, 13, 28, 22),
+                              clay_films_amount = c(NA, NA, "many", NA)),
+    luvisols_degrades = loess(c("A", "E", "BTgd", "C"), c(0, 8, 55, 100), c(8, 55, 100, 150), clay = c(13, 12, 30, 24),
+                              clay_films_amount = c(NA, NA, "many", NA), degradation_form = c(NA, NA, "tongues", NA)),
+    luvisols_derniques = loess(c("A", "E", "Ea", "BTd", "C"), c(0, 10, 25, 40, 90), c(10, 25, 40, 90, 140),
+                               clay = c(13, 12, 10, 32, 24), clay_films_amount = c(NA, NA, NA, "many", NA),
+                               site = list(country = "PL", lat = 52.2, lon = 21.0, koppen_climate = "Dfb")),
+    luvisols_tronques = loess(c("A", "BT", "C"), c(0, 10, 80), c(10, 80, 130), clay = c(25, 30, 22),
+                              clay_films_amount = c(NA, "many", NA)),
+    quasi_luvisols = loess(c("LE", "II BT", "II C"), c(0, 35, 90), c(35, 90, 140), clay = c(16, 30, 24),
+                           clay_films_amount = c(NA, "many", NA), site = list(land_use = "cropland")),
+    nitosols = lay(c("A", "Sn", "C"), c(0, 20, 120), c(20, 120, 200), clay_pct = c(45, 65, 40), oc_pct = c(4, 0.9, 0.3),
+                   halloysite_pct = c(NA, 70, NA), pressure_faces = c(NA, "common", NA), clay_films_amount = c(NA, "few", NA),
+                   cec_cmol = c(25, 18, 12), ph_h2o = c(5.6, 5.8, 6.0),
+                   base_site = list(country = "GP", lat = 16.2, lon = -61.6, koppen_climate = "Af",
+                                    parent_material = "andesitic pyroclastic materials")),
+    organosols_holorganiques = mont(c("OL", "OF", "OHta", "R"), c(0, 3, 13, 38), c(3, 13, 38, 80), oc_pct = c(45, 40, 35, NA),
+                                    ph_h2o = c(6.0, 6.2, 6.5, NA), site = list(parent_material = "hard limestone")),
+    organosols_calcaires = mont(c("OF", "OH", "Acaho", "C"), c(0, 8, 15, 45), c(8, 15, 45, 80), oc_pct = c(40, 35, 12, 1),
+                                caco3_pct = c(NA, NA, 15, 60), effervescence_class = c(NA, NA, "strong", "strong"),
+                                ph_h2o = c(7.0, 7.2, 7.8, 8.2), site = list(parent_material = "limestone scree")),
+    organosols_satures = mont(c("OF", "Aho", "C"), c(0, 5, 40), c(5, 40, 80), oc_pct = c(40, 10, 1), caco3_pct = c(NA, 0, 0),
+                              bs_pct = c(NA, 90, 95), ph_h2o = c(6.2, 6.5, 6.8), clay_pct = c(NA, 35, 30),
+                              site = list(parent_material = "marl")),
+    organosols_insatures = mont(c("OF", "OH", "Aho", "C"), c(0, 5, 12, 45), c(5, 12, 45, 90), oc_pct = c(42, 35, 12, 1),
+                                bs_pct = c(NA, NA, 35, 40), ph_h2o = c(4.4, 4.5, 4.8, 5.0), clay_pct = c(NA, NA, 18, 12),
+                                site = list(country = "FR", lat = 48.0, lon = 7.0, elevation_m = 1200, parent_material = "gneiss",
+                                            drainage_class = "well drained"))
   )
 }
 

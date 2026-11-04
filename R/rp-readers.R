@@ -337,6 +337,13 @@
     if (salts >= 50 || isTRUE(grepl("indurat|strong", cem)))
       return(.rp_r(FALSE, note = sprintf("no carbon recorded; %s: a mineral layer",
                                          if (salts >= 50) sprintf("carbonates and gypsum %s %%", format(salts)) else sprintf("cementation %s", cem))))
+    # a designation left unread that writes a mineral master (ASa, SSa) is no
+    # organic horizon (the review of 0.9.349): only one led by O or H (an L or
+    # a Roman numeral before it) may be
+    des <- .rp_des(x, i)
+    if (!is.na(des) && nzchar(trimws(des)) && grepl("^[A-Z]", sub("^[IVX]+ +", "", trimws(des))) &&
+        !grepl("^L?[OH]", sub("^[IVX]+ +", "", trimws(des))))
+      return(.rp_r(FALSE, note = sprintf("no carbon recorded: the designation '%s' names a mineral horizon", des)))
     .rp_r(NA, missing = c("oc_pct", "loi_pct"), note = "organic or mineral: no carbon, loss on ignition or particle size recorded")
   })
 }

@@ -1,0 +1,109 @@
+# Organosols (pp. 238-242), 4 references: every horizon very rich in organic
+# matter, well drained: aerobic organic matter accumulated as OH or OHta
+# (tangel) or in a hemiorganic Aho, in humid mountains (p. 238). The
+# reference horizons OF, OH, OHta and Aho (the OL not counted) together over
+# 10 cm (+/- 5; else a lithosol); O horizons holorganic (organic carbon over
+# 30 +/- 5 %), the Aho hemiorganic (over 8 +/- 2 %); no H (p. 238). Thin
+# organo-mineral horizons (E, S, BP ...) are tolerated, 10 cm or less in all
+# (+/- 5), the organic horizons at least twice as thick (strict); an S over
+# 10 cm fails them, strict: the book's example, an S of 15 cm under 40 cm of
+# OF and OH, goes to another reference (p. 239), the brunisol (Hugo's
+# decision 9, 2026-11-04). A Sal over 10 cm makes an alocrisol humique, under
+# 10 an organosol insaturé, 10 the double (decision 5). O against H by the designation, then the water (Q19): a
+# layer the data leave between the two leaves both GER undecided. The S/CEC
+# is read on the Aho as a whole, the mean of its layers weighted by
+# thickness (p. 239).
+#
+# Distinctions (pp. 240-241 and the figure): the histosols have H horizons
+# (the horizon frame); an S over 10 cm makes a brunisol, an Sca or Sci over
+# 10 cm a calcosol or calcisol, a Sal over 10 cm an alocrisol humique, E and
+# BP over 10 cm a podzosol humique (precedence.yaml); an Acaho or Aciho with
+# OF and OH over 40 cm and no other horizon is an organosol calcaire or
+# saturé (precedence.yaml); the rankosols have no Aho, 35 cm at most over R,
+# coarse elements and no calcareous rock (a later release); a lithosol
+# holorganique has [OF + OH] under 10 cm over R.
+scope: &org_scope
+  all_of:
+    - thickness_rp: {codes: [OF, OH, OHta, Aho], min: 10}
+    - no_horizon_within_rp: {codes: [H]}
+    - organic_dominance_rp: {}
+references:
+  - code: "organosols_holorganiques"
+    ger: "organosols"
+    name: "organosols holorganiques"
+    name_singular: "organosol holorganique"
+    name_en: "holorganic organosols"
+    name_en_singular: "holorganic organosol"
+    page: "239"
+    sequences: ["OF-C|M|R", "OF-OH-C|M|R", "OL-OF-OHta-R"]
+    notes: "Only holorganic OF and/or OH and/or OHta horizons, no Aho; à tangel when the OHta (usually 5 to 45 cm) lies on a hard carbonate or other massive basic rock."
+    wrb2006: "Folic (or Cumulifolic) Histosols"
+    distinctions:
+      - {with: "organosols calcaires, saturés, insaturés", page: "239", by: "no Aho (side test)"}
+      - {with: "lithosols", page: "241", by: "[OF + OH] under 10 cm over R (side test)"}
+    tests:
+      all_of:
+        - *org_scope
+        # OF and/or OH and/or OHta (p. 239; the review of 0.9.349)
+        - horizon_within_rp: {codes: [OF, OH, OHta]}
+        - no_horizon_within_rp: {codes: [A]}
+  - code: "organosols_calcaires"
+    ger: "organosols"
+    name: "organosols calcaires"
+    name_singular: "organosol calcaire"
+    name_en: "calcareous organosols"
+    name_en_singular: "calcareous organosol"
+    page: "239"
+    sequences: ["OF-OH-Acaho-C|M|R", "Acaho-C|M|R"]
+    notes: "A hemiorganic calcareous Aca (Acaho, over 8 % organic carbon), with or without calcareous coarse elements."
+    wrb2006: "Folic Umbrisols (Hyperhumic, Calcaric)"
+    distinctions:
+      - {with: "rendosols, calcosols", page: "241", by: "an Acaho with OF and OH over 40 cm and no other horizon (precedence.yaml); an Sca over 10 cm, the calcosol"}
+    tests:
+      all_of:
+        - *org_scope
+        - horizon_within_rp: {codes: [Acaho]}
+  - code: "organosols_satures"
+    ger: "organosols"
+    name: "organosols saturés"
+    name_singular: "organosol saturé"
+    name_en: "saturated organosols"
+    name_en_singular: "saturated organosol"
+    page: "239"
+    sequences: ["OF-OH-Aho-C|M|R", "Aho-C|M|R"]
+    notes: "Not carbonated; the Aho saturated or subsaturated from the surface (S/CEC over 80 %, +/- 5, the Aho as a whole)."
+    wrb2006: "Folic or Mollic Umbrisols (Hypereutric)"
+    distinctions:
+      - {with: "organosols insaturés", page: "239-240", by: "S/CEC of the Aho over 80 % (side test)"}
+      - {with: "calcisols", page: "241", by: "an Sci over 10 cm (precedence.yaml)"}
+    tests:
+      all_of:
+        - *org_scope
+        - horizon_within_rp: {codes: [Aho]}
+        - no_horizon_within_rp: {codes: [Acaho]}
+        - carbonated_rp: {codes: [Aho], carbonated: false}
+        - attribute_rp: {attribute: bs, threshold: 80, direction: min, kind: bs, open: true, codes: [Aho], layers: weighted}
+  - code: "organosols_insatures"
+    ger: "organosols"
+    name: "organosols insaturés"
+    name_singular: "organosol insaturé"
+    name_en: "unsaturated organosols"
+    name_en_singular: "unsaturated organosol"
+    page: "240"
+    sequences: ["OF-OH-Aho-C|M|R", "Aho-C|M|R"]
+    notes: "S/CEC under 80 % (+/- 5) over at least 20 cm from the surface (the OL not counted): the Aho as a whole, and the O and Aho over 20 cm (+/- 5); no carbonated Acaho; well drained to 50 cm at least (no G or -g within 50 cm, no poor drainage recorded)."
+    wrb2006: "Folic Umbrisols (Hyperhumic)"
+    distinctions:
+      - {with: "alocrisols humiques", page: "241", by: "a Sal over 10 cm (precedence.yaml); the double organosol insaturé-alocrisol humique (doubles.yaml, the type of p. 240)"}
+      - {with: "podzosols humiques", page: "241", by: "E and BP over 10 cm (precedence.yaml, a later release); under 10 cm, the qualifier podzolisé"}
+      - {with: "rankosols", page: "241", by: "no Aho, 35 cm at most over R, coarse elements (a later release)"}
+    tests:
+      all_of:
+        - *org_scope
+        - horizon_within_rp: {codes: [Aho]}
+        - no_horizon_within_rp: {codes: [Acaho]}
+        - attribute_rp: {attribute: bs, threshold: 80, direction: max, kind: bs, open: true, codes: [Aho], layers: weighted}
+        - thickness_rp: {codes: [OF, OH, OHta, Aho], min: 20, from_surface: true}
+        - none_of:
+            - horizon_within_rp: {codes: [G, "-g"], depth: 50}
+            - recorded_rp: {field: drainage_class, pattern: "poor"}

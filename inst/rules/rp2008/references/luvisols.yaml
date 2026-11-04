@@ -1,0 +1,177 @@
+# Luvisols (pp. 221-232), 6 references: clay illuviation within one parent
+# material (no important lithological discontinuity): E horizons depleted
+# in clay and iron over BT horizons enriched in them (p. 221). Unless the
+# solum is truncated, the E (or Eg) and the BT (or BTg) are always there (p.
+# 224). The BT (p. 224): more clay than the A, E, S or C of the solum, 15 cm
+# or more (clay bands over 15 cm in all), many clay coatings; the BTd a BT
+# degraded, diffuse, by interdigitations or by tongues (p. 225); the LBT a
+# ploughed BT at the surface. They come from the notation or the data
+# (.rp_t_BT(): the clay coatings by clay_films_amount, else soilKey's
+# argic(), flagged; the d by degradation_form, the tongues, else soilKey's
+# retic properties). The sequences are read in the first material only (one
+# parent material, p. 221), except for the quasi-luvisols.
+#
+# The texture contrast decides the néoluvisols and the typiques (map 3,
+# D11; luvic_contrast_rp): the clay of the E (with no E, of the ploughed
+# horizon LA or LE, D12) against the most clayey BT, by the three bands of
+# pp. 225-226 (E under 10 %: 3 or 8 points more; 10 to 30 %: the index 1.3
+# to 1.8, or over 1.8; over 30 %: 9 or 24 points more), strict (Q5); the
+# depletion, the colour of the E, the transition and the fine clay are
+# evidence only. The dégradés have a BTd under the E, the derniques an Ea
+# directly on a BTd and the index over 1.8 (D9); the tronqués no E over 10
+# cm under forest (+/- 5), a ploughed horizon of the texture of a BT under
+# crops (D12); the quasi-luvisols an E over a BT of a later material (II
+# BT). The siallitic criteria only against the fersialsols (default 21): the
+# BT fails when its FFE over total iron is measured over 0.20, or when its
+# hue (5YR or redder) or a micro-polyhedral structure is recorded (p. 230;
+# Hugo's decision 6). An h on the E or the BT (Eh, BTh) bars the luvisols
+# (p. 194; decision 7). In the band of 10 to 30 % clay in the E and for the
+# derniques the index is the lexicon's, the most clayey BT over the poorest
+# E or Ae (p. 401; decision 4).
+#
+# Distinctions (p. 230): the brunisols have no BT (their side test) and an
+# index of 1.3 or less; strongly planosolic luvisols are intergrades to the
+# planosols (rapid key 4a); a micro-podzol is a qualifier; a -g within 50 cm
+# of functional waterlogging makes the doubles luvisol typique, dégradé or
+# dernique-rédoxisol (doubles.yaml, the rédoxisols a later release); the
+# fersialsols éluviques by the FFE, a colour of 5YR or redder and a
+# micro-polyhedral structure (the FS of the horizon frame, and the FFE).
+scope: &lu_scope
+  all_of:
+    - iron_release_rp: {codes: [BT], low: true}
+    # a BT of 5YR or redder or micro-polyhedral, when recorded, is fersiallitic
+    # (p. 230; Hugo's decision 6, 2026-11-04)
+    - siallitic_rp: {codes: [BT]}
+    # an h on the E or the BT is the grisols' or chernosols' (p. 194; Hugo's
+    # decision 7, 2026-11-04)
+    - none_of:
+        - horizon_within_rp: {codes: [Eh, BTh]}
+references:
+  - code: "neoluvisols"
+    ger: "luvisols"
+    name: "néoluvisols"
+    name_singular: "néoluvisol"
+    name_en: "neoluvisols"
+    name_en_singular: "neoluvisol"
+    page: "225"
+    sequences: ["A-E-BT", "LA-E-BT", "LA-BT"]
+    notes: "An E moderately depleted, still coloured, fairly structured; a typical BT; a fairly gradual transition (evidence). E clay under 10 %: BT 3 points more; 10 to 30 %: index 1.3 to 1.8; over 30 %: 9 points more; under the typiques' contrast."
+    wrb2006: "Luvic Cambisols"
+    distinctions:
+      - {with: "luvisols typiques", page: "225", by: "a weaker texture contrast (side test)"}
+      - {with: "brunisols", page: "230", by: "a BT and an index over 1.3 (side test)"}
+    tests:
+      all_of:
+        - *lu_scope
+        - sequence_rp: {sequences: ["A-E-BT", "A-BT", "L-BT"], first_material: true}
+        - none_of:
+            - horizon_within_rp: {codes: [BTd]}
+        - luvic_contrast_rp: {level: neo}
+  - code: "luvisols_typiques"
+    ger: "luvisols"
+    name: "luvisols typiques"
+    name_singular: "luvisol typique"
+    name_en: "typical luvisols"
+    name_en_singular: "typical luvisol"
+    page: "225-226"
+    sequences: ["Ae-E-BT", "LA-E-BT", "LE-E-BT", "LA-BT", "LE-BT"]
+    notes: "An E clearly depleted in clay and iron, slightly bleached; a clear transition; redox features at the E/BT contact frequent. E clay under 10 %: BT 8 points more; 10 to 30 %: index over 1.8; over 30 %: 24 points more."
+    wrb2006: "Haplic Luvisols"
+    distinctions:
+      - {with: "néoluvisols", page: "225", by: "a stronger texture contrast (side test)"}
+      - {with: "luvisols dégradés", page: "226", by: "no BTd (side test)"}
+      - {with: "rédoxisols", page: "230", by: "-g within 50 cm: the double luvisol typique-rédoxisol (doubles.yaml, a later release)"}
+    tests:
+      all_of:
+        - *lu_scope
+        - sequence_rp: {sequences: ["A-E-BT", "E-BT", "A-BT", "L-BT"], first_material: true}
+        - none_of:
+            - horizon_within_rp: {codes: [BTd]}
+        - luvic_contrast_rp: {level: typique}
+  - code: "luvisols_degrades"
+    ger: "luvisols"
+    name: "luvisols dégradés"
+    name_singular: "luvisol dégradé"
+    name_en: "degraded luvisols"
+    name_en_singular: "degraded luvisol"
+    page: "226"
+    sequences: ["Ae-E-Eg-BTgd", "LE-Eg-BTgd", "LE-BTgd"]
+    notes: "An E strongly bleached, at least partly albic; a BTgd with tongues or interdigitations continuing the E; the index generally over 1.8 (not a test). The -g horizons belong to the reference; a -g within 50 cm of functional waterlogging makes the double luvisol dégradé-rédoxisol."
+    wrb2006: "Haplic Albeluvisols"
+    distinctions:
+      - {with: "luvisols derniques", page: "226-227", by: "an Ea directly on the BTd and the index over 1.8 (precedence.yaml)"}
+      - {with: "rédoxisols", page: "226, 230", by: "the double luvisol dégradé-rédoxisol (doubles.yaml, a later release)"}
+      - {with: "planosols", page: "227, 230", by: "strongly planosolic ones are intergrades (rapid key 4a)"}
+    tests:
+      all_of:
+        - *lu_scope
+        - sequence_rp: {sequences: ["E-BT"], first_material: true}
+        - horizon_within_rp: {codes: [BTd]}
+        - luvic_contrast_rp: {level: luvic}
+  - code: "luvisols_derniques"
+    ger: "luvisols"
+    name: "luvisols derniques"
+    name_singular: "luvisol dernique"
+    name_en: "dernic luvisols"
+    name_en_singular: "dernic luvisol"
+    page: "226-227"
+    sequences: ["Ae-E-Ea-BTd"]
+    notes: "The E split into an ordinary upper part and a much bleached, albic lower part (Ea) directly on a BTd with many skeletans; the index over 1.8. An Eg within 50 cm of functional waterlogging makes the double luvisol dernique-rédoxisol."
+    wrb2006: "Albeluvisols"
+    distinctions:
+      - {with: "luvisols dégradés", page: "226-227", by: "an Ea directly on the BTd and the index over 1.8 (precedence.yaml, D9)"}
+      - {with: "rédoxisols", page: "227", by: "the double luvisol dernique-rédoxisol (doubles.yaml, a later release)"}
+    tests:
+      all_of:
+        - *lu_scope
+        - sequence_rp: {sequences: ["E-BT"], first_material: true}
+        - below_rp: {upper: [Ea], codes: [BTd]}
+        - luvic_contrast_rp: {level: dernique}
+  - code: "luvisols_tronques"
+    ger: "luvisols"
+    name: "luvisols tronqués"
+    name_singular: "luvisol tronqué"
+    name_en: "truncated luvisols"
+    name_en_singular: "truncated luvisol"
+    page: "227"
+    sequences: ["A-BT", "LBT-BT"]
+    notes: "The E + BT pair (the texture contrast) lost by a partial truncation: under forest no E over 10 cm; under crops the ploughed horizon has the texture and structure of a BT rather than of an E (an LBT, or a ploughed horizon with no texture contrast to the BT, D12)."
+    wrb2006: "(truncated) Luvisols"
+    distinctions:
+      - {with: "néoluvisols, luvisols typiques", page: "225-227", by: "no E over 10 cm, or no texture contrast under the plough (side test)"}
+    tests:
+      all_of:
+        - *lu_scope
+        - sequence_rp: {sequences: ["A-BT", "L-BT", "BT"], first_material: true}
+        - any_of:
+            # under forest: the BT directly under the A (or a thin E), no E
+            # over 10 cm
+            - all_of:
+                - none_of:
+                    - horizon_within_rp: {codes: ["L+", L], depth: 10}
+                - below_rp: {upper: [A, E], codes: [BT]}
+                - thickness_rp: {codes: [E], max: 10}
+            # under crops: an LBT, or a ploughed horizon of the texture of the
+            # BT directly over it
+            - horizon_within_rp: {codes: [LBT], depth: 10}
+            - all_of:
+                - horizon_within_rp: {codes: ["L+", L], depth: 10}
+                - below_rp: {upper: [LA, L], codes: [BT]}
+                - luvic_contrast_rp: {level: flat}
+  - code: "quasi_luvisols"
+    ger: "luvisols"
+    name: "quasi-luvisols"
+    name_singular: "quasi-luvisol"
+    name_en: "quasi-luvisols"
+    name_en_singular: "quasi-luvisol"
+    page: "227-228"
+    sequences: ["E-II BT", "LE-II BT"]
+    notes: "A reference of kinship to the luvisols: a luvisol typique or dégradé truncated through the E and much of the BT, then covered by LE-like material brought from far (some hectometres or more); the residual II BT has the morphology of a deep BT. The discontinuity must be written (a Roman numeral)."
+    wrb2006: "Ruptic Luvisols"
+    distinctions:
+      - {with: "the other luvisols", page: "227", by: "the E in another material than the BT (side test)"}
+    tests:
+      all_of:
+        - *lu_scope
+        - sequence_rp: {sequences: ["E-BT"]}
+        - discontinuity_rp: {upper: [E], lower: [BT]}

@@ -165,7 +165,15 @@ pro_fixture_catalog <- function() {
              "fluviosol typique" = "fluviosols_typiques", "fluviosol brunifi\u00e9" = "fluviosols_brunifies",
              "grisol \u00e9luvique" = "grisols_eluviques", "grisol d\u00e9grad\u00e9" = "grisols_degrades",
              "grisol haplique" = "grisols_hapliques", "gypsosol haplique" = "gypsosols_hapliques",
-             "gypsosol p\u00e9trogypsique" = "gypsosols_petrogypsiques")
+             "gypsosol p\u00e9trogypsique" = "gypsosols_petrogypsiques",
+             "histosol fibrique" = "histosols_fibriques", "histosol m\u00e9sique" = "histosols_mesiques",
+             "histosol saprique" = "histosols_sapriques", "histosol composite" = "histosols_composites",
+             "histosol leptique" = "histosols_leptiques", "leptismectisol" = "leptismectisols",
+             "lithosol" = "lithosols", "n\u00e9oluvisol" = "neoluvisols", "luvisol typique" = "luvisols_typiques",
+             "luvisol d\u00e9grad\u00e9" = "luvisols_degrades", "luvisol dernique" = "luvisols_derniques",
+             "luvisol tronqu\u00e9" = "luvisols_tronques", "quasi-luvisol" = "quasi_luvisols", "nitosol" = "nitosols",
+             "organosol holorganique" = "organosols_holorganiques", "organosol calcaire" = "organosols_calcaires",
+             "organosol satur\u00e9" = "organosols_satures", "organosol insatur\u00e9" = "organosols_insatures")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

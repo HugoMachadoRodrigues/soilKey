@@ -1,0 +1,39 @@
+# Nitosols (pp. 233-237), 1 reference: very clayey solums of tropical or
+# subtropical climates with a short dry season (1,500 to 3,500 mm a year,
+# reported, not tested), from volcanic or basic metamorphic rocks; clays
+# mainly halloysite, Ki under 2.2 and Kr under 1.8 (p. 233). The nitic Sn is
+# compulsory (p. 234): heavy clay (50 to 80 %), a very developed, stable,
+# medium to coarse angular or prismatic structure with shiny pressure faces,
+# few or no clay coatings, halloysite over 50 % of the clay. It comes from
+# the notation or the data (.rp_t_Sn(): the pressure faces, else soilKey's
+# nitic_horizon(); halloysite_pct or clay_mineralogy, else Ki and Kr from
+# the sulfuric attack, else nitic_horizon() for the mineralogy as well,
+# flagged; map 3, D14; halloysite recorded over 50 % confirms, 50 % or less
+# rules the Sn out). The chapter is a first version of the book (p. VI;
+# Q18): the result says so.
+#
+# Distinctions (pp. 235-236 and the figure): the ferrallitisols by an F with
+# kaolinite (CEC of the clay under 16), the fersialsols by an FS with 2:1
+# clays, the brunisols by a typical S (precedence.yaml: the Sn makes the
+# nitosol), the andosols by an Slu or Snd, the vertisols by smectites and a
+# V, the pélosols by inherited 2:1 clays: the horizon frame; some nitosols
+# start an E or a BT over the Sn (closer to the néoluvisols).
+references:
+  - code: "nitosols"
+    ger: "nitosols"
+    name: "nitosols"
+    name_singular: "nitosol"
+    name_en: "nitosols"
+    name_en_singular: "nitosol"
+    page: "234"
+    sequences: ["A|LA|L-Sn-C|M|R", "A|LA|L-Sn-Sng-II RT", "A|LA|L-Sn-Si|Sim"]
+    notes: "The Sn compulsory, under an A, a ploughed LA or L; over C, M or R, or a redox Sng over a deep II RT, or Si or Sim at depth."
+    wrb2006: "Nitisols"
+    distinctions:
+      - {with: "ferrallitisols", page: "157, 235", by: "an F with the Sn: the ferrallitisol polylithique of p. 157 (precedence.yaml)"}
+      - {with: "fersialsols, andosols, vertisols, pélosols", page: "235-236", by: "the Sn against FS, Slu or Snd, V, Sp (the horizon frame)"}
+      - {with: "brunisols", page: "236", by: "an Sn, not a typical S (precedence.yaml)"}
+      - {with: "néoluvisols", page: "236", by: "an E or a BT over the Sn (the texture contrast of the luvisols)"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: ["A-Sn", "L-Sn"]}

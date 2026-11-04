@@ -53,10 +53,6 @@ doubles:
     page: "141"
     status: later
     note: "a reference of the podzosols (the book names the GER)"
-  - codes: [cryosols_mineraux, luvisols]
-    page: "141"
-    status: later
-    note: "a reference of the luvisols (the book names the GER)"
   - codes: [cryosols_mineraux, redoxisols]
     page: "142"
     status: later
@@ -78,3 +74,49 @@ doubles:
   - codes: [peyrosols, fluviosols_bruts]
     page: "188"
     status: later
+  # the pairs of the chapters of part 6 (v0.9.349); the luvisol-cryosol of p.
+  # 141 (cryoturbated luvisols, the book's example "luvisol-cryosol", the GER
+  # named: every reference of the luvisols) and the organosol
+  # insaturé-alocrisol humique of the types of p. 240 are written; the others
+  # wait for the réductisols and rédoxisols (Q8)
+  - codes: [neoluvisols, cryosols_mineraux]
+    page: "141"
+    note: "the book's example luvisol-cryosol (a reference of the luvisols, the GER named)"
+  - codes: [luvisols_typiques, cryosols_mineraux]
+    page: "141"
+    note: "the book's example luvisol-cryosol (a reference of the luvisols, the GER named)"
+  - codes: [luvisols_degrades, cryosols_mineraux]
+    page: "141"
+    note: "the book's example luvisol-cryosol (a reference of the luvisols, the GER named)"
+  - codes: [luvisols_derniques, cryosols_mineraux]
+    page: "141"
+    note: "the book's example luvisol-cryosol (a reference of the luvisols, the GER named)"
+  - codes: [luvisols_tronques, cryosols_mineraux]
+    page: "141"
+    note: "the book's example luvisol-cryosol (a reference of the luvisols, the GER named)"
+  - codes: [quasi_luvisols, cryosols_mineraux]
+    page: "141"
+    note: "the book's example luvisol-cryosol (a reference of the luvisols, the GER named)"
+  - codes: [organosols_insatures, alocrisols_humiques]
+    page: "240-241"
+    note: "the type of p. 240, organosol insaturé-alocrisol humique, only when the Sal is 10 cm thick, between the two sides of p. 241 (Hugo's decision 5, 2026-11-04)"
+    when:
+      all_of:
+        - thickness_rp: {codes: [Sal], min: 10}
+        - thickness_rp: {codes: [Sal], max: 10}
+  - codes: [luvisols_typiques, redoxisols]
+    page: "230, 285"
+    status: later
+    note: "Q8: a -g within 50 cm of functional waterlogging, impérativement"
+  - codes: [luvisols_degrades, redoxisols]
+    page: "226, 230"
+    status: later
+    note: "Q8: a -g within 50 cm of functional waterlogging, impérativement"
+  - codes: [luvisols_derniques, redoxisols]
+    page: "227"
+    status: later
+    note: "Q8: an Eg within 50 cm of functional waterlogging"
+  - codes: [histosols, reductisols]
+    page: "211"
+    status: later
+    note: "H horizons over reductic horizons: a double envisageable (a reference of each GER, the book names the GER)"

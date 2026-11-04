@@ -1,0 +1,38 @@
+# Lithosols (pp. 219-220), 1 reference: very thin solums limited by a
+# coherent, hard and continuous material at 10 cm from the surface or less
+# (an OL not counted, p. 64): an R layer, a Km, Fem (printed FEm) or Sim
+# horizon, a carapace OXc or a cuirasse OXm (p. 219; map 3, D23: the
+# carapace counts, as written). Over it, one pedological horizon
+# (organo-mineral or holorganic), a C, or an M or D layer, under 10 cm, or
+# nothing (the qualifier strict). The obstacle starts at 10 cm or less (+/-
+# 5: 10 to 15 cm imperfect), with at most one horizon over it, the holorganic
+# O horizons counting as one (lithic_obstacle_rp; Hugo's decisions 1 and 2 of
+# 2026-11-04: A-Sal-R at 12 cm is no lithosol). The OXc and OXm are horizons
+# of the intertropical domain (p. 6, Q18).
+#
+# Distinctions (pp. 207, 220, 241): the régosols have the same thinness over
+# a loose M or D (a later release); an H of 10 cm or less over R makes a
+# lithosol épihistique, not a histosol (precedence.yaml); [OF + OH] under 10
+# cm over R a lithosol holorganique, not an organosol (their thickness test).
+references:
+  - code: "lithosols"
+    ger: "lithosols"
+    name: "lithosols"
+    name_singular: "lithosol"
+    name_en: "lithosols"
+    name_en_singular: "lithosol"
+    page: "219"
+    sequences: ["(A|O|C|M|D)-R|Km|Fem|Sim|OXc|OXm"]
+    notes: "A hard, continuous material within 10 cm (the OL not counted): R, Km, Fem, Sim, OXc or OXm."
+    wrb2006: "Lithic Leptosols (strict: Nudilithic Leptosols)"
+    distinctions:
+      - {with: "régosols", page: "220", by: "the hardness of the material below: an M or D (a later release)"}
+      - {with: "histosols leptiques", page: "207, 209", by: "H of 10 cm or less over R (precedence.yaml)"}
+      - {with: "organosols", page: "241", by: "[OF + OH] under 10 cm over R (their thickness test)"}
+    tests:
+      any_of:
+        - lithic_obstacle_rp: {codes: [R, Km, Fem, Sim]}
+        # the carapace and the cuirasse, horizons of the intertropical domain (Q18)
+        - all_of:
+            - lithic_obstacle_rp: {codes: [OXc, OXm]}
+            - tropical_rp: {}

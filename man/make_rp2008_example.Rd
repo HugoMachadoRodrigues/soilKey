@@ -23,7 +23,13 @@ make_rp2008_example(
     
     "fluviosols_bruts", "fluviosols_juveniles", "fluviosols_typiques",
     "fluviosols_brunifies", "grisols_eluviques", "grisols_degrades", "grisols_hapliques",
-    "gypsosols_hapliques", "gypsosols_petrogypsiques")
+    "gypsosols_hapliques", "gypsosols_petrogypsiques", "histosols_fibriques",
+    "histosols_mesiques", "histosols_sapriques", "histosols_composites",
+    "histosols_leptiques", "leptismectisols", "lithosols", "neoluvisols",
+    "luvisols_typiques", "luvisols_degrades", "luvisols_derniques", "luvisols_tronques",
+    "quasi_luvisols", "nitosols", "organosols_holorganiques", 
+    
+    "organosols_calcaires", "organosols_satures", "organosols_insatures")
 )
 }
 \arguments{
@@ -54,14 +60,22 @@ make_rp2008_example(
 \code{"fluviosols_typiques"}, \code{"fluviosols_brunifies"},
 \code{"grisols_eluviques"}, \code{"grisols_degrades"},
 \code{"grisols_hapliques"}, \code{"gypsosols_hapliques"},
-\code{"gypsosols_petrogypsiques"}.}
+\code{"gypsosols_petrogypsiques"}, \code{"histosols_fibriques"},
+\code{"histosols_mesiques"}, \code{"histosols_sapriques"},
+\code{"histosols_composites"}, \code{"histosols_leptiques"},
+\code{"leptismectisols"}, \code{"lithosols"}, \code{"neoluvisols"},
+\code{"luvisols_typiques"}, \code{"luvisols_degrades"},
+\code{"luvisols_derniques"}, \code{"luvisols_tronques"},
+\code{"quasi_luvisols"}, \code{"nitosols"},
+\code{"organosols_holorganiques"}, \code{"organosols_calcaires"},
+\code{"organosols_satures"}, \code{"organosols_insatures"}.}
 }
 \value{
 A \code{\link{PedonRecord}}.
 }
 \description{
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 53 of the first fifteen GER), in the RP notation
+reference implemented (the 71 of the first twenty-one GER), in the RP notation
 (\code{site$designation_system = "rp2008"}) with the properties their
 tests read. They are not real profiles.
 }
