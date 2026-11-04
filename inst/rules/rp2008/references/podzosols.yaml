@@ -1,0 +1,235 @@
+# Podzosols (pp. 265-275), 8 references: solums where podzolisation
+# dominates, an acido-complexolysis, the migration of the organo-metallic
+# complexes and their immobilisation in a podzolic BP (p. 265). Only the
+# podzosols have a BP (p. 272); it is compulsory except in the éluviques,
+# whose BP lies downslope (p. 267). The BP (p. 267): a moist hue of 7.5YR
+# or redder (necessary), more oxalate Al and Fe than the A or E, most of
+# the organic matter extractable by pyrophosphate (or the optical density
+# of the oxalate extract); BPh above, BPs below. It comes from the notation
+# or the data (.rp_t_BP(): the hue, the oxalate Al and Fe, the pyrophosphate
+# carbon; with no oxalate data soilKey's spodic() stands in, flagged; map 4
+# D13). The matcher reads a slot as a run of one code, so the BPh over BPs
+# of the book is read by below_rp, the BP directly under the E or the A.
+# Cemented BP (alios, ortstein) or loose: cemented_rp (written with c,
+# a cementation or an ortstein recorded; not recorded, loose). The humus is
+# a moder or a mor, every mull episolum excluded unless cultivated
+# (podzolic_humus_rp: a mull recorded, or an A at pH 5.0 or more with no O
+# recorded, fails; nothing recorded, no mull; p. 267).
+#
+# The eight references (pp. 268-271) by the E (absent, E, or the dark Eh),
+# the loose or cemented BP and the placic Femp; soilKey's order when two
+# attach (map 4, D11): post-podzosols, placiques, humo-duriques, duriques,
+# humiques, meubles, ocriques, éluviques (precedence.yaml; the tests keep
+# the others apart). An A over a cemented BP with no E (A/BPh induré/C, the
+# podzolisation under a water table of p. 273) fits no reference: a
+# podzosol ocrique, imperfect (D11).
+#
+# Distinctions (pp. 272-274): the alocrisols humiques and organosols
+# insaturés are not podzolised (no BP: the horizon frame); the aluandosols
+# have no E (the horizon frame); over 60 % coarse elements by weight, the
+# double peyrosol-podzosol (doubles.yaml); a rankosol with a BP of 5 to 10
+# cm the double rankosol-podzosol ocrique, under 5 cm the rankosol, 10 cm
+# or more the podzosol (map 4 D14; precedence.yaml, doubles.yaml); an E
+# over 1.20 m in a podzosol no longer functional may be an arénosol; the
+# luvisols typiques podzolisés (no BP), à micropodzol ([A + E + BP] under
+# 20 cm; precedence.yaml) or luvisol typique-podzosol meuble leptique (a
+# double, doubles.yaml); the post-podzols reworked over less than 50 cm and
+# the doubles with the anthroposols transformés; hydromorphic podzosols
+# make doubles with the rédoxisols or réductisols (pp. 273, 285: podzosol
+# meuble-réductisol; doubles.yaml); a cryoturbated podzosol the double
+# cryosol minéral-podzosol (p. 141).
+humus: &pz_humus
+  podzolic_humus_rp: {}
+references:
+  - code: "podzosols_ocriques"
+    ger: "podzosols"
+    name: "podzosols ocriques"
+    name_singular: "podzosol ocrique"
+    name_en: "ochric podzosols"
+    name_en_singular: "ochric podzosol"
+    page: "268"
+    sequences: ["O-A|Ae-BP (loose)-(S)-C|R"]
+    notes: "No E, or a very discontinuous one; a thin A of a moder, often depleted in iron (Ae); a weak, gradual A/BP contrast; the BP mostly a BPs, sometimes under a weak BPh."
+    wrb2006: "Entic Podzols"
+    distinctions:
+      - {with: "podzosols meubles", page: "268", by: "no E (side test)"}
+      - {with: "rankosols", page: "272", by: "a BP of 5 to 10 cm on R: the double rankosol-podzosol ocrique (doubles.yaml)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - horizon_within_rp: {codes: [BP]}
+        - below_rp: {upper: [A], codes: [BP]}
+        - no_horizon_within_rp: {codes: [E]}
+        - none_of:
+            - cemented_rp: {codes: [BP]}
+    imperfect:
+      - criterion: "a mor directly on the BP, no A and no E (pp. 267-268, 272; Hugo's decision 3, 2026-11-04)"
+        page: "267-268"
+        tests:
+          all_of:
+            - *pz_humus
+            - horizon_within_rp: {codes: [BP]}
+            - below_rp: {upper: [O], codes: [BP]}
+            - no_horizon_within_rp: {codes: [A, E]}
+            - none_of:
+                - cemented_rp: {codes: [BP]}
+      - criterion: "an A over a cemented BP and no E (A/BPh induré/C, pp. 273-274; map 4 D11)"
+        page: "273-274"
+        tests:
+          all_of:
+            - *pz_humus
+            - horizon_within_rp: {codes: [BP]}
+            - below_rp: {upper: [A], codes: [BP]}
+            - no_horizon_within_rp: {codes: [E]}
+            - cemented_rp: {codes: [BP]}
+  - code: "podzosols_meubles"
+    ger: "podzosols"
+    name: "podzosols meubles"
+    name_singular: "podzosol meuble"
+    name_en: "loose podzosols"
+    name_en_singular: "loose podzosol"
+    page: "268-269"
+    sequences: ["O-(Ae)-E-BP (loose)-C|R"]
+    notes: "The most frequent: an E over a loose BPh, BPs or BPh/BPs, the E/BP limit easy to see; [A + E + BP] under 20 cm is the qualifier à micropodzol."
+    wrb2006: "Haplic or Albic Podzols"
+    distinctions:
+      - {with: "podzosols humiques", page: "270", by: "an E, not an Eh (side test)"}
+      - {with: "podzosols duriques", page: "269", by: "a loose BP (side test)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - horizon_within_rp: {codes: [BP]}
+        - below_rp: {upper: [E], codes: [BP], layer: any}
+        - none_of:
+            - horizon_within_rp: {codes: [Eh]}
+            - cemented_rp: {codes: [BP]}
+  - code: "podzosols_duriques"
+    ger: "podzosols"
+    name: "podzosols duriques"
+    name_singular: "podzosol durique"
+    name_en: "duric podzosols"
+    name_en_singular: "duric podzosol"
+    page: "269-270"
+    sequences: ["O-(Ae)-E-BP (cemented, alios)-(BP)"]
+    notes: "A mor frequent; a very strong E/BPh contrast and a sharp transition; the BP cemented (alios)."
+    wrb2006: "Ortsteinic Albic Podzols"
+    distinctions:
+      - {with: "podzosols meubles", page: "269", by: "a cemented BP (side test)"}
+      - {with: "podzosols humo-duriques", page: "270", by: "an E, not an Eh (side test)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - horizon_within_rp: {codes: [BP]}
+        - below_rp: {upper: [E], codes: [BP], layer: any}
+        - none_of:
+            - horizon_within_rp: {codes: [Eh]}
+        - cemented_rp: {codes: [BP]}
+  - code: "podzosols_humiques"
+    ger: "podzosols"
+    name: "podzosols humiques"
+    name_singular: "podzosol humique"
+    name_en: "humic podzosols"
+    name_en_singular: "humic podzosol"
+    page: "270"
+    sequences: ["O-(Ae)-Eh-BPh|BPs (loose)-C|R"]
+    notes: "A dark Eh, not an A (its organic matter not biological), micro-aggregated, up to 40-50 cm thick, of low bulk density; the iron loss masked."
+    wrb2006: "Umbric or Entic Podzols"
+    distinctions:
+      - {with: "podzosols meubles", page: "270", by: "an Eh (side test)"}
+      - {with: "alocrisols humiques, organosols insaturés", page: "272", by: "the BP (the horizon frame)"}
+      - {with: "aluandosols", page: "272", by: "an E (the horizon frame)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - horizon_within_rp: {codes: [BP]}
+        - below_rp: {upper: [E], codes: [BP], layer: any}
+        - horizon_within_rp: {codes: [Eh]}
+        - none_of:
+            - cemented_rp: {codes: [BP]}
+  - code: "podzosols_humo_duriques"
+    ger: "podzosols"
+    name: "podzosols humo-duriques"
+    name_singular: "podzosol humo-durique"
+    name_en: "humo-duric podzosols"
+    name_en_singular: "humo-duric podzosol"
+    page: "270"
+    sequences: ["O-(Ae)-Eh-BP (cemented, alios)-(BP)"]
+    notes: "The characters of the humiques and of the duriques: a thick dark Eh over a cemented BP, the cementation sometimes partial (cemented and loose BP superposed); a water table reaching the surface horizons in winter."
+    wrb2006: "Umbric-Ortsteinic Podzols"
+    distinctions:
+      - {with: "podzosols humiques", page: "270", by: "a cemented BP (side test)"}
+      - {with: "podzosols duriques", page: "270", by: "an Eh (side test)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - horizon_within_rp: {codes: [BP]}
+        - below_rp: {upper: [E], codes: [BP], layer: any}
+        - horizon_within_rp: {codes: [Eh]}
+        - cemented_rp: {codes: [BP]}
+  - code: "podzosols_eluviques"
+    ger: "podzosols"
+    name: "podzosols éluviques"
+    name_singular: "podzosol éluvique"
+    name_en: "eluvic podzosols"
+    name_en_singular: "eluvic podzosol"
+    page: "270"
+    sequences: ["O-(Ae)-E-C|R (the BP lateral, downslope)"]
+    notes: "At the top of steep slopes, often on little fissured rocks: the BP is not in the solum but lies downslope (lateral_bp_downslope, Q14: not recorded, a candidate); some organic matter at the base of the E."
+    wrb2006: "Albic Arenosols"
+    distinctions:
+      - {with: "arénosols", page: "272", by: "the position and the humus form; the BP downslope (Q14)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - sequence_rp: {sequences: ["E-(C|R|M)"]}
+        - below_rp: {upper: [O, A], codes: [E]}
+        - below_rp: {upper: [E], codes: [C, R, M]}
+        - no_horizon_within_rp: {codes: [BP, BT]}
+        - site_flag_rp: {field: lateral_bp_downslope}
+  - code: "podzosols_placiques"
+    ger: "podzosols"
+    name: "podzosols placiques"
+    name_singular: "podzosol placique"
+    name_en: "placic podzosols"
+    name_en_singular: "placic podzosol"
+    page: "270"
+    sequences: ["O-Ae-E-Femp-BP", "O-Ae-Femp-BP"]
+    notes: "A placic Femp (1 to 10 mm, cemented by Fe, Fe-Mn or organic matter and Fe) immediately over the BP or inside it; the BP is needed, a placic horizon alone is not enough."
+    wrb2006: "Placic Albic Podzols"
+    distinctions:
+      - {with: "the other podzosols", page: "270", by: "the Femp with the BP (precedence.yaml)"}
+    tests:
+      all_of:
+        - *pz_humus
+        - placic_rp: {}
+  - code: "post_podzosols"
+    ger: "podzosols"
+    name: "post-podzosols"
+    name_singular: "post-podzosol"
+    name_en: "post-podzosols"
+    name_en_singular: "post-podzosol"
+    page: "271"
+    sequences: ["LA-BP", "LE-E-BP"]
+    notes: "After cultivation a recognisable BP, truncated or reworked and sometimes discontinuous, at the base of the ploughed horizon, which took the O, the A and part or all of the E and BP; a cultivated podzosol keeps its BP unreworked (the qualifier cultivé). A ploughed layer directly on the BP, or a written LE over an E over the BP; on the data a ploughed layer over an E over the BP is undecided (LA or LE)."
+    wrb2006: "Aric Podzols"
+    distinctions:
+      - {with: "cultivated podzosols", page: "271", by: "the ploughed layer directly on the BP, or an LE over E over BP (side test; precedence.yaml)"}
+      - {with: "anthroposols transformés", page: "273", by: "reworked over less than 50 cm; a double possible (doubles.yaml)"}
+    tests:
+      all_of:
+        - horizon_within_rp: {codes: ["L+", L], depth: 10}
+        - horizon_within_rp: {codes: [BP]}
+        - any_of:
+            - below_rp: {upper: ["L+", L], codes: [BP]}
+            - all_of:
+                - horizon_within_rp: {codes: [LE], depth: 10}
+                - below_rp: {upper: [LE], codes: [E]}
+                - horizon_within_rp: {codes: [BP]}
+                - below_rp: {upper: [E], codes: [BP], layer: any}
+            # on the data a ploughed layer over an E over the BP: LA or LE
+            # cannot be told, undecided against the cultivated podzosol
+            # (Hugo's decision 9 on the review of 0.9.351, 2026-11-04)
+            - all_of:
+                - below_rp: {upper: ["L+", L], codes: [E]}
+                - below_rp: {upper: [E], codes: [BP], layer: any}
+                - ploughed_kind_rp: {}

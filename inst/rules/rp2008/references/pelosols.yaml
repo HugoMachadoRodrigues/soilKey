@@ -1,0 +1,92 @@
+# Pélosols (pp. 243-248), 3 references: very clayey solums whose clay
+# minerals, inherited and rich in semi-swelling interstratified clays, have
+# changed little, with the pelosolic Sp (p. 243). The Sp (p. 244) is
+# compulsory: more than 30 cm thick (+/- 5), over 45 % clay, a tight
+# angular structure with a coarse prismatic or polyhedral over-structure,
+# never carbonated, its pH never acid. It comes from the notation or the
+# data (.rp_t_Sp(): clay, no carbonates, the over-structure; the structure
+# not recorded leaves it undecided, map 4 D7). soilKey reads "never acid" as
+# a pH in water of 5.0 or more (+/- 0.2) in every Sp layer (the class acide
+# of p. 52 lies under 5.0; map 4 D5), and the Sp starting within 40 cm for
+# the three references (the qualifier "à horizons Sp de profondeur" of p.
+# 246 is for the non-pélosols; D6), strict (40 is not in the table of p.
+# 64, Q5).
+#
+# Distinctions (pp. 246-247): no V and no SV (the vertisols; side test);
+# the brunisols have a non-pelosolic S of notable thickness (their side
+# test forbids the Sp, so the double pélosol brunifié-brunisol eutrique of
+# a perfect intergrade is not written); [Ae + E] or LE over 30 cm makes a
+# planosol (side test of the différenciés); the planosols typiques have no
+# Sp and an abrupt subhorizontal textural change. With redox features from
+# under 50 cm continuing over 50 cm: the double pélosol typique-rédoxisol
+# (p. 285, doubles.yaml); a pélosol différencié includes them, no double
+# (case 4 of p. 285, precedence.yaml).
+scope: &pe_scope
+  all_of:
+    - thickness_rp: {codes: [Sp], min: 30, open: true}
+    - horizon_within_rp: {codes: [Sp], depth: 40}
+    - attribute_rp: {attribute: ph_h2o, threshold: 5.0, direction: min, kind: ph, codes: [Sp], layers: all}
+    - no_horizon_within_rp: {codes: [V, SV]}
+references:
+  - code: "pelosols_typiques"
+    ger: "pelosols"
+    name: "pélosols typiques"
+    name_singular: "pélosol typique"
+    name_en: "typical pelosols"
+    name_en_singular: "typical pelosol"
+    page: "244-245"
+    sequences: ["A|Av-Sp-C", "LSp-Sp-C"]
+    notes: "Clayey in every horizon (often over 45 % in the A or LS and the Sp); under forest a thick dark A, a eumull; the complex saturated or nearly by Ca and Mg, pH over 6 in every horizon (the central concept, not tested); the Sp directly under the A, or ploughed at the surface."
+    wrb2006: "Epistagnic Regosols (Clayic)"
+    distinctions:
+      - {with: "pélosols brunifiés", page: "245", by: "no S over the Sp (side test)"}
+      - {with: "pélosols différenciés", page: "246", by: "no E (side test)"}
+      - {with: "vertisols", page: "246", by: "no V and no SV (side test)"}
+      - {with: "rédoxisols", page: "285", by: "the double pélosol typique-rédoxisol (doubles.yaml)"}
+    tests:
+      all_of:
+        - *pe_scope
+        - sequence_rp: {sequences: ["A-Sp-(C|M|R)", "Sp-(C|M|R)"]}
+        - any_of:
+            - below_rp: {upper: [A], codes: [Sp]}
+            - horizon_within_rp: {codes: [Sp], depth: 10}
+        - no_horizon_within_rp: {codes: ["S=", E]}
+  - code: "pelosols_brunifies"
+    ger: "pelosols"
+    name: "pélosols brunifiés"
+    name_singular: "pélosol brunifié"
+    name_en: "brunified pelosols"
+    name_en_singular: "brunified pelosol"
+    page: "245"
+    sequences: ["A-S-Sp-C", "LS-S-Sp-C"]
+    notes: "A thin S over the Sp, which starts within 40 cm; clayey or silty clay in the A or LS, the S and the Sp; the A and S browned over a small thickness, a mull."
+    wrb2006: "Vertic Cambisols (Clayic)"
+    distinctions:
+      - {with: "pélosols typiques", page: "245", by: "an S over the Sp (side test)"}
+      - {with: "brunisols", page: "247", by: "the S of the brunisols is not pelosolic and thicker (the brunisols forbid the Sp)"}
+    tests:
+      all_of:
+        - *pe_scope
+        - sequence_rp: {sequences: ["A-S-Sp-(C|M|R)", "S-Sp-(C|M|R)"]}
+        - below_rp: {upper: ["S="], codes: [Sp]}
+        - no_horizon_within_rp: {codes: [E]}
+  - code: "pelosols_differencies"
+    ger: "pelosols"
+    name: "pélosols différenciés"
+    name_singular: "pélosol différencié"
+    name_en: "differentiated pelosols"
+    name_en_singular: "differentiated pelosol"
+    page: "246"
+    sequences: ["Ae-E|Eg-Sp-C", "Ae-E|Eg-II Sp-II C", "LE-Sp-II C", "LE-II Sp-II C"]
+    notes: "Silty or silty clay upper horizons (Ae or LE and E) under 30 % clay, [Ae + E] or the LE 30 cm or less, unsaturated, often acid; temporary waterlogging from the base of the Ae, E or LE, redox features there and in the top of the Sp (Spg). The two writings of the book accepted (map 4, the slip of p. 246); on the data the LE of the crops is the ploughed layer L."
+    wrb2006: "Epistagnic Vertic Cambisols or Planosols"
+    distinctions:
+      - {with: "planosols typiques", page: "244, 247", by: "[Ae + E] or LE 30 cm or less over an Sp (side test; precedence.yaml)"}
+      - {with: "rédoxisols", page: "285", by: "the redox horizons are in the reference: no double (precedence.yaml)"}
+    tests:
+      all_of:
+        - *pe_scope
+        - sequence_rp: {sequences: ["E-Sp", "L-Sp"]}
+        - below_rp: {upper: [E, L], codes: [Sp]}
+        - thickness_rp: {codes: [A, E, L], max: 30, from_surface: true}
+        - attribute_rp: {attribute: clay_pct, threshold: 30, direction: max, open: true, codes: [Ae, E, L], layers: all}

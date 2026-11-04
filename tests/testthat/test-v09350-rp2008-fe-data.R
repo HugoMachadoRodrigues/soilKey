@@ -341,6 +341,7 @@ test_that("the readings of this release are Hugo's decisions of 2026-11-04", {
   txt <- vapply(rd, `[[`, "", "reading")
   expect_true(all(.rp50_readings %in% tp))
   expect_true(all(grepl("(Hugo, 2026-11-04).", txt[match(.rp50_readings, tp)], fixed = TRUE)))
-  expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
+  # 0.9.351 adds its readings, confirmed on 2026-11-04 (test-v09351)
+  expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   expect_true(all(nzchar(vapply(rd[match(.rp50_readings, tp)], `[[`, "", "page"))))
 })

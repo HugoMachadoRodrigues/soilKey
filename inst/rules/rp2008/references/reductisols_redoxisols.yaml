@@ -1,0 +1,101 @@
+# Réductisols et rédoxisols (pp. 279-290), 3 references: solums where the
+# oxidation-reduction is judged predominant if not exclusive, their reductic
+# or redox features, always functional, starting within 50 cm and
+# continuing or intensifying over at least 50 cm (p. 279). The reference
+# horizons (pp. 280-281): the reductic G (Gr reduced, Go partly reoxidised,
+# Ga albic), from a permanent waterlogging of at least the lower solum,
+# dominating every other character (no SG, BTG, CG); the redox g or -g, a
+# temporary waterlogging, its oxidation, deferrification or reduction
+# features over 5 % of the horizon (Q17: the chapter, not the 2-20 % of p.
+# 21; 2 to 5 % is only peu tacheté), the -g on another horizon (Eg, BTg,
+# Sg ...). They come from the notation or the data (.rp_t_G(), the redox
+# features of .rp_features()); the printed colours of the mottles are
+# evidence only (map 4 D26). The reductic features are always functional;
+# a redox feature recorded relict (redox_relict) is not, and a drained site
+# keeps the attachment, the qualifier drainé noted (Q13).
+#
+# The attachment (p. 282; hydromorphy_rp): a G or g starting within 50 cm
+# (+/- 10) and functional reductic or redox features over at least 50 cm
+# (+/- 10), the longest run of adjacent G, g and -g layers starting within
+# 50 cm. A G starting within 50 cm makes a réductisol whatever lies above
+# (Hugo's default 20, map 4 D22; precedence.yaml); the typiques against
+# the stagniques by the morphology (reductic_base_rp: the G to the base of
+# the description, or over a C, R or M not reduced; a recorded perched
+# water table decides when the base is not seen, D23). With no G within 50
+# cm, the redox g or -g within 50 cm makes a rédoxisol; a G deeper is the
+# rédoxisol réductique (50 to 80 cm) or à horizon réductique de profondeur
+# (80 to 120 cm), qualifiers of a later release (the depth class is in the
+# trace).
+#
+# Distinctions and doubles (pp. 284-285, 289; Q8): only G or -g horizons,
+# possibly under O, H, A, An, J or S (a C at depth): the simple attachment;
+# with E, BT, BP, S or Sp the double the book names (luvisol typique,
+# dégradé or dernique-rédoxisol, pp. 226-227, 230; podzosol-réductisol or
+# -rédoxisol, pp. 273, 285; pélosol typique-rédoxisol, p. 285; brunisol
+# eutrique or dystrique-rédoxisol with an aerated S over the Sg, p. 107;
+# colluviosol-rédoxisol from 20 to 50 cm, p. 133; cryosol minéral-rédoxisol,
+# p. 142; peyrosol-réductisol, p. 253; doubles.yaml), the other reference
+# in the name for a pair the book does not name (precedence.yaml); in
+# alluvium the rédoxisol fluvique in the name and the double
+# fluviosol-rédoxisol among the candidates (Q8); the planosols typiques and
+# structuraux and the pélosols différenciés include the redox horizons: no
+# double (pp. 263, 285). The GEPPA classes and the wetlands of pp. 287-290
+# are not reported (Q1).
+G50: &rr_G50
+  hydromorphy_rp: {kind: G, within: 50, min: 50}
+references:
+  - code: "reductisols_typiques"
+    ger: "reductisols_redoxisols"
+    name: "réductisols typiques"
+    name_singular: "réductisol typique"
+    name_en: "typical reductisols"
+    name_en_singular: "typical reductisol"
+    page: "282"
+    sequences: ["Ag-Go-Gr", "An-Go-Gr", "H-Gr"]
+    notes: "A G starting within 50 cm; a permanent saturation by deep water at least in the lower solum, possibly fluctuating; the G to the base of the solum (valley bottoms, coastal plains, deltas, depressions, recent alluvium or colluvium). The Gr of the sequences read as any G, the base deciding (soilKey's reading)."
+    wrb2006: "Gleysols"
+    distinctions:
+      - {with: "réductisols stagniques", page: "282", by: "the G to the base, no C, R or M under it (side test)"}
+      - {with: "rédoxisols", page: "282, 289", by: "a G within 50 cm (side test)"}
+      - {with: "histosols", page: "208-209, 211", by: "H under 50 cm over G: the réductisol épihistique (precedence.yaml); H over 50 cm, the histosol, the réductisol a candidate (precedence.yaml, decision 2)"}
+      - {with: "fluviosols", page: "282", by: "an oxygenated, circulating water table nearer the streams (fluviosols.yaml: no G within 50 cm)"}
+    tests:
+      all_of:
+        - *rr_G50
+        - reductic_base_rp: {kind: typique}
+  - code: "reductisols_stagniques"
+    ger: "reductisols_redoxisols"
+    name: "réductisols stagniques"
+    name_singular: "réductisol stagnique"
+    name_en: "stagnic reductisols"
+    name_en_singular: "stagnic reductisol"
+    page: "282"
+    sequences: ["A|An-Gr-C", "H-Gr-C", "H-A-Gr-C"]
+    notes: "A permanent perched water table over a shallow floor: the reducing conditions disappear at depth (a C, R or M under the G); mountains under a cold humid climate, basins or benches, or flooded valley bottoms."
+    wrb2006: "Gleysols"
+    distinctions:
+      - {with: "réductisols typiques", page: "282", by: "a C, R or M not reduced under the G, or a perched water table (side test)"}
+    tests:
+      all_of:
+        - *rr_G50
+        - reductic_base_rp: {kind: stagnique}
+  - code: "redoxisols"
+    ger: "reductisols_redoxisols"
+    name: "rédoxisols"
+    name_singular: "rédoxisol"
+    name_en: "redoxisols"
+    name_en_singular: "redoxisol"
+    page: "282-284"
+    sequences: ["A-g", "A-S-g", "Ag-g-C|II C|II M|II R", "A-g-Go-Gr", "A-g-Sg", "Cg-G"]
+    notes: "Redox features (g or -g) starting within 50 cm and continuing or intensifying over at least 50 cm, from a temporary saturation by rain water (a temporary perched water table); no G within 50 cm (a G deeper: réductique, 50 to 80 cm, or à horizon réductique de profondeur, 80 to 120 cm); the primary rédoxisols with no abrupt textural change and no argillic BT. The nature of the floor (C or Cg, R, M) is to be given."
+    wrb2006: "Stagnosols"
+    distinctions:
+      - {with: "réductisols", page: "282, 289", by: "no G within 50 cm (side test)"}
+      - {with: "planosols typiques, structuraux", page: "263, 285", by: "the planosol, no double (precedence.yaml)"}
+      - {with: "luvisols, podzosols, pélosols, brunisols, colluviosols, cryosols", page: "107, 133, 142, 226-230, 273, 285", by: "the doubles the book names (doubles.yaml); the other reference in the name otherwise (precedence.yaml)"}
+      - {with: "fluviosols", page: "184, 187-188", by: "the rédoxisol fluvique in the name, the double among the candidates (Q8; precedence.yaml)"}
+    tests:
+      all_of:
+        - hydromorphy_rp: {kind: g, within: 50, min: 50}
+        - none_of:
+            - hydromorphy_rp: {kind: G, within: 50}

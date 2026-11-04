@@ -36,7 +36,7 @@ references:
     notes: "A natural solum so transformed by long or intense human activity (sanding, deep turning, organic amendments, small terraces, levelling) that it is unrecognisable, over 50 cm or more. No sequence printed. Read only from rp_anthropic_history with the depth of the transformation (mechanical_mixing_depth_cm), never inferred (Q15)."
     wrb2006: "Anthrosols"
     distinctions:
-      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml)"}
       - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
     tests:
       all_of:
@@ -53,7 +53,7 @@ references:
     notes: "A soil developed in a non-pedological anthropic material (mine or quarry spoil, waste, sludge, slag, rubble) over the top 50 cm or more, the technological material dominant, over half the volume (p. 92: an earthy Ztr or a holorganic ZO makes no artificiel; a Z of no stated kind counts); the natural layers below are buried (II or -b)."
     wrb2006: "Technosols"
     distinctions:
-      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml)"}
       - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
     tests:
       all_of:
@@ -78,7 +78,7 @@ references:
     notes: "Transported, reworked pedological material (topsoil, sometimes geological sand) placed in gardens and parks over the top 50 cm or more; the source, when known, is said with provenant de."
     wrb2006: "not taken into account"
     distinctions:
-      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml)"}
       - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
     tests:
       all_of:
@@ -103,7 +103,7 @@ references:
     notes: "Built on purpose from technological wastes to carry vegetation. The text gives no thickness; the figure of p. 93 gives 50 cm. Read on a technological material Ztc over 50 cm or more (Q15), leptique from 30 to 50 cm as the artificiels and reconstitués (p. 95; soilKey's choice); when an artificiel attaches too, the construction recorded in rp_anthropic_history decides (precedence.yaml), also for a construit leptique."
     wrb2006: "Technosols (Transportic)"
     distinctions:
-      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml)"}
       - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
     tests:
       all_of:
@@ -123,7 +123,7 @@ references:
     notes: "An archaeo-anthropic material Zar (much phosphorus or charcoal, debris and artefacts, structures made by people) over the top 50 cm or more, at least 20 % of the volume; the natural layers below buried."
     wrb2006: "not taken into account"
     distinctions:
-      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "97", by: "coarse anthropic fragments over 60 % by weight: a double (doubles.yaml)"}
       - {with: "every other reference", page: "97", by: "an anthropic material under 50 cm at the surface: the other reference (thickness)"}
     tests:
       all_of:

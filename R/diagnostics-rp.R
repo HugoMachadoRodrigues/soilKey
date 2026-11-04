@@ -189,6 +189,18 @@
   }
   if (!is.na(code)) {
     if (!code %in% spec[["codes"]]) {
+      # a peyric X read on the data whose fine earth also holds an E, BP, FS
+      # or G (its candidates) serves the tests of those horizons: the
+      # peyrosol-podzosol, -fersialsol and -reductisol doubles (p. 253; Hugo's
+      # decisions 6 and 9 on the review of 0.9.351, 2026-11-04)
+      if (code %in% .RP_X_CODES && .rp_x_from_surface(fr, k)) {
+        xc <- intersect(as.character(fr$candidates[[k]]), .rp_x_serves())
+        if (length(xc) && any(xc %in% spec[["codes"]])) {
+          if (length(spec[["features"]]) && !all(spec[["features"]] %in% c(feats, fr$features_na[[k]] %||% character(0))))
+            return(FALSE)
+          return(if (!length(spec[["features"]]) || all(spec[["features"]] %in% feats)) TRUE else NA)
+        }
+      }
       # an H or an O whose kind is open (Hf, Hm or Hs; OL, OF or OH): one of
       # its kinds may be in the set (0.9.349; .rp_kinds_open())
       kv <- .rp_kinds_open(fr, k)
@@ -216,6 +228,29 @@
     return(if (any(cand %in% spec[["codes"]])) NA else FALSE)
   }
   NA
+}
+
+# The peyric codes, and the codes a peyric X of the data may also serve
+# (0.9.351): the E, BP, FS and G families.
+.RP_X_CODES <- c("X", "Xc", "Xp", "Xgr")
+.rp_x_serves <- function() {
+  v <- .rp_spec_memo$x_serves
+  if (is.null(v)) {
+    v <- unique(c(.rp_family_members("E"), .rp_family_members("BP"), "FS", .rp_family_members("G")))
+    assign("x_serves", v, envir = .rp_spec_memo)
+  }
+  v
+}
+
+# Is layer k in the run of peyric X layers from the surface (the holorganic
+# layers above skipped)? Only there does an X serve another horizon's tests:
+# the context of the peyrosols (p. 253).
+.rp_x_from_surface <- function(fr, k) {
+  top <- as.numeric(fr$top_rp %||% fr$top_cm)
+  if (is.na(top[k])) return(FALSE)
+  holo <- c(.rp_family_members("O"), .rp_family_members("H"))
+  above <- which(!is.na(top) & top < top[k] & !(fr$code %in% holo))
+  all(fr$code[above] %in% .RP_X_CODES)
 }
 
 # The kinds an H or an O of the frame may still be when its code is the head
@@ -864,14 +899,26 @@ coarse_rp <- function(pedon, threshold = 60, within = NULL) {
 #'
 #' The clay of the most clayey layer of `lower` over the clay of `upper`
 #' (the mean weighted by thickness), as the lexicon of p. 401 reads it.
-#' Strict: 1.3 is soilKey's boundary of the chernosols (p. 127).
+#' Strict: 1.3 is soilKey's boundary of the chernosols (p. 127). With
+#' `adjacent`, only the run of `lower` layers directly under the upper ones
+#' (a thin E between them skipped): the Sh or BTh of the phaeosols, not a
+#' deeper non-humic BT of an older phase (p. 256; 0.9.351).
 #' @noRd
-idt_rp <- function(pedon, upper, lower, min = NULL, max = NULL, open = FALSE) {
+idt_rp <- function(pedon, upper, lower, min = NULL, max = NULL, open = FALSE, adjacent = FALSE) {
   fr <- .rp_frame(pedon)
   if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
   x <- .rp_view(pedon)
   mu <- .rp_members(fr, upper); ml <- .rp_members(fr, lower)
   ru <- which(mu %in% TRUE); rl <- which(ml %in% TRUE)
+  if (isTRUE(adjacent) && length(ru) && length(rl)) {
+    tp <- .rp_tops(fr); ord <- order(ifelse(is.na(tp), Inf, tp)); ord <- ord[!is.na(tp[ord])]
+    j <- max(match(ru, ord)) + 1L
+    mE <- .rp_members(fr, "E")
+    while (j <= length(ord) && isTRUE(mE[ord[j]]) && !isTRUE(ml[ord[j]])) j <- j + 1L
+    run <- integer(0)
+    while (j <= length(ord) && isTRUE(ml[ord[j]])) { run <- c(run, ord[j]); j <- j + 1L }
+    rl <- run
+  }
   if (!length(ru) || !length(rl))
     return(.rp_answer(if (anyNA(c(mu, ml))) NA else FALSE, missing = .rp_missing_of(fr, which(is.na(c(mu, ml)))),
                       notes = "no upper or lower horizon for the index"))
@@ -1041,7 +1088,8 @@ cryoturbation_rp <- function(pedon, not_recorded = FALSE) {
 #' The layer directly under the deepest layer of `upper` is one of `codes`
 #' (a BT directly under the Ach of a chernosol, p. 127). Three-valued.
 #' @noRd
-below_rp <- function(pedon, upper, codes) {
+below_rp <- function(pedon, upper, codes, layer = c("deepest", "any")) {
+  layer <- match.arg(layer)
   fr <- .rp_frame(pedon)
   if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
   mu <- .rp_members(fr, upper)
@@ -1050,6 +1098,20 @@ below_rp <- function(pedon, upper, codes) {
   ord <- ord[is.na(.rp_bots(fr)[ord]) | .rp_bots(fr)[ord] > 0]
   pos <- which(mu[ord] %in% TRUE)
   if (!length(pos)) return(.rp_answer(if (anyNA(mu)) NA else FALSE, notes = "no upper horizon"))
+  # `layer = "any"`: some layer of `upper`, not only the deepest, has a layer
+  # of `codes` directly under it (the E over the BP of the podzosols under a
+  # deeper E, 0.9.351)
+  if (layer == "any") {
+    mc <- .rp_members(fr, codes)
+    v <- vapply(seq_along(ord)[-length(ord)], function(j)
+      .rp_and3(c(mu[ord[j]], mc[ord[j + 1L]])), NA)
+    p <- .rp_or3(v)
+    return(.rp_answer(p, layers = fr$horizon_idx[ord[which(v %in% TRUE) + 1L]],
+                      missing = .rp_missing_of(fr, ord[c(which(is.na(v)), which(is.na(v)) + 1L)]),
+                      notes = sprintf("%s directly under a %s: %s", paste(unlist(codes), collapse = ", "),
+                                      paste(unlist(upper), collapse = ", "),
+                                      if (isTRUE(p)) "yes" else if (isFALSE(p)) "no" else "undecided")))
+  }
   nxt <- ord[max(pos) + 1L]
   if (is.na(nxt)) return(.rp_answer(FALSE, notes = "nothing under the upper horizons"))
   if (is.na(mu[nxt])) return(.rp_answer(NA, missing = .rp_missing_of(fr, nxt)))
@@ -1893,4 +1955,654 @@ siallitic_rp <- function(pedon, codes = "BT") {
   .rp_answer(p, layers = if (p) fr$horizon_idx[rows] else integer(0),
              notes = if (p) "the BT not fersiallitic by its colour or structure (not recorded: not tested)"
                      else sprintf("the BT fersiallitic: %s (p. 230)", paste(unique(bad), collapse = "; ")))
+}
+
+
+# --- the tests of the chapters of part 7 (v0.9.351) ------------------------------------------------
+# The pelosols, peyrosols, phaeosols, planosols, podzosols, rankosols,
+# reductisols and redoxisols (pp. 243-290).
+
+# The hydromorphic horizons (pp. 280-281): the reductic G (Gr, Go, and an A
+# with reductic characters, AG) and the redox g or -g; the ferric Fe, Fem
+# and Femp that the redistribution of the iron forms inside a run of them
+# (p. 281) continue the run (soilKey's reading).
+.RP_REDUCTIC <- c("G", "AG")
+.RP_REDOX <- c("g", "-g")
+.RP_REDOX_RUN <- c("Fe", "Fem", "Femp")
+
+# The membership of every layer of the frame in the reductic and the
+# functional redox horizons: a redox feature recorded relict (redox_relict,
+# Q13) is not functional, a reductic one always is (p. 281).
+.rp_hydro_members <- function(fr, x) {
+  mG <- .rp_members(fr, .RP_REDUCTIC)
+  mg <- .rp_members(fr, .RP_REDOX)
+  relict <- vapply(fr$horizon_idx, function(i) isTRUE(.rp_lgl(x, i, "redox_relict")), NA)
+  mg[relict & !(mG %in% TRUE)] <- FALSE
+  list(G = mG, g = mg, relict = relict, run = .rp_members(fr, .RP_REDOX_RUN))
+}
+
+#' The hydromorphy of a solum (RP 2008, pp. 279-284; Q8, Q13, Q17)
+#'
+#' The first functional horizon of `kind` (G, the reductic horizons; g, the
+#' redox g or -g, over 5 % redox features, Q17; any, either) starts within
+#' `within` cm (50 +/- 10), and with `min` the reductic or redox features,
+#' always functional, continue over at least `min` cm (50 +/- 10): the
+#' longest run of adjacent G, g and -g layers starting within the window
+#' (the ferric Fe, Fem and Femp inside it counted; soilKey's reading). A
+#' redox feature recorded relict (redox_relict) is not functional (Q13); a
+#' drained site keeps the attachment, noted (drain\u00e9, Q13). A run that
+#' reaches the bottom of the description short of `min` leaves the answer
+#' undecided (the description stops).
+#' @noRd
+hydromorphy_rp <- function(pedon, kind = c("any", "G", "g"), within = NULL, min = NULL) {
+  kind <- match.arg(kind)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  hm <- .rp_hydro_members(fr, x)
+  anyh <- vapply(seq_len(nrow(fr)), function(k) .rp_or3(c(hm$G[k], hm$g[k])), NA)
+  mk <- switch(kind, any = anyh, G = hm$G, g = hm$g)
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & (is.na(bot[ord]) | bot[ord] > 0)]
+  t_to <- if (is.null(within)) Inf else .rule_threshold(within, "depth", "max", .RP_SYSTEM)
+  edge <- 1e-9 * max(1, abs(t_to))
+  inwin <- if (is.infinite(t_to)) rep(TRUE, nrow(fr))
+           else if (!is.null(within) && t_to != within) top <= t_to + edge else top < t_to
+  v <- vapply(seq_len(nrow(fr)), function(k) .rp_and3(c(mk[k], inwin[k])), NA)
+  win <- .rp_or3(v[ord])
+  sel <- function(w) ord[w[ord] %in% TRUE]
+  first_k <- function(m) { r <- sel(m); if (length(r)) top[r[1L]] else NA_real_ }
+  ev <- list(g_top = first_k(hm$g), G_top = first_k(hm$G))
+  p_run <- NA; lo_best <- 0; hi_best <- 0
+  if (!is.null(min)) {
+    member <- vapply(seq_len(nrow(fr)), function(k) .rp_or3(c(anyh[k], hm$run[k])), NA)
+    th <- pmax(0, bot - pmax(top, 0))
+    # the longest run of adjacent members starting within the window: sure
+    # (members only) and possible (members or undecided)
+    runs <- function(ok) {
+      blocks <- list(); cur <- NULL
+      for (j in seq_along(ord)) {
+        k <- ord[j]
+        if (isTRUE(ok[k])) {
+          if (is.null(cur)) cur <- list(start = k, th = 0, last = j)
+          cur$th <- cur$th + (if (is.na(th[k])) 0 else th[k]); cur$last <- j
+        } else if (!is.null(cur)) { blocks[[length(blocks) + 1L]] <- cur; cur <- NULL }
+      }
+      if (!is.null(cur)) blocks[[length(blocks) + 1L]] <- cur
+      keep <- Filter(function(b) isTRUE(inwin[b$start]), blocks)
+      list(best = if (length(keep)) max(vapply(keep, `[[`, 0, "th")) else 0,
+           at_bottom = any(vapply(keep, function(b) b$last == length(ord), NA)))
+    }
+    sure <- runs(member %in% TRUE & !is.na(member))
+    poss <- runs(!(member %in% FALSE))
+    lo_best <- sure$best; hi_best <- poss$best
+    t_min <- min
+    p_run <- if (isTRUE(.rule_check(lo_best, t_min, "depth", "min", .RP_SYSTEM)) && lo_best > 0) TRUE
+             else if (isFALSE(.rule_check(hi_best, t_min, "depth", "min", .RP_SYSTEM)) && !poss$at_bottom) FALSE
+             else NA
+    ev$run <- lo_best
+  }
+  p <- .rp_and3(c(win, if (!is.null(min)) p_run))
+  drained <- isTRUE(.rp_site_lgl(x, "artificially_drained"))
+  rel <- fr$code[hm$relict & !(hm$G %in% TRUE)]
+  what <- switch(kind, any = "reductic or redox features", G = "a reductic G", g = "a redox g or -g")
+  dist <- NA_real_
+  if (isFALSE(win) && !is.null(within)) {
+    tk <- top[ord[mk[ord] %in% TRUE]]
+    if (length(tk)) dist <- .rule_distance(tk, within, "depth", "max", "any", .RP_SYSTEM)
+  } else if (isFALSE(p_run)) dist <- .rule_distance(hi_best, min, "depth", "min", "any", .RP_SYSTEM)
+  .rp_answer(p, layers = fr$horizon_idx[v %in% TRUE],
+             missing = c(.rp_missing_of(fr, which(is.na(mk) | is.na(anyh))), "redoximorphic_features_pct"),
+             evidence = ev,
+             notes = c(sprintf("%s %s%s", what,
+                               if (isTRUE(win)) "starts" else if (isFALSE(win)) "does not start" else "may start",
+                               if (!is.null(within)) sprintf(" within %s cm", format(within)) else ""),
+                       if (!is.null(min)) sprintf("functional hydromorphic features over %s cm from there (%s needed)%s",
+                                                  format(lo_best), format(min),
+                                                  if (is.na(p_run)) ": the description ends or a layer is undecided" else ""),
+                       if (length(rel)) sprintf("redox features recorded relict in %s: not functional (Q13)", paste(unique(stats::na.omit(rel)), collapse = ", ")),
+                       if (drained && isTRUE(p)) "the site is artificially drained: the attachment is kept, the qualifier drain\u00e9 (Q13)"),
+             distance = dist)
+}
+
+# The depth class of the hydromorphy of a solum (pp. 282, 284, 289): the
+# top of the first functional g or -g and of the first G, and the class of
+# the shallower: under 20 cm surredoxique (redox only), under 50 the GER of
+# the reductisols and redoxisols or a double, 50 to 80 the qualifiers
+# redoxique or reductique, 80 to 120 a horizon redoxique or reductique de
+# profondeur, deeper none. NULL when no hydromorphic horizon is read.
+.rp_hydromorphy_class <- function(pedon) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(NULL)
+  hm <- .rp_hydro_members(fr, .rp_view(pedon))
+  top <- .rp_tops(fr)
+  f <- function(m) { k <- which(m %in% TRUE & !is.na(top)); if (length(k)) min(top[k]) else NA_real_ }
+  gt <- f(hm$g); Gt <- f(hm$G)
+  if (is.na(gt) && is.na(Gt)) return(NULL)
+  cls <- function(t, kind) {
+    if (is.na(t)) return(NA_character_)
+    w <- if (kind == "G") "r\u00e9ductique" else "r\u00e9doxique"
+    if (t < 20 && kind == "g") "surr\u00e9doxique (under 20 cm)"
+    else if (t < 50) "within 50 cm: the r\u00e9ductisols and r\u00e9doxisols, or a double"
+    else if (t < 80) sprintf("%s (50 to 80 cm)", w)
+    else if (t < 120) sprintf("\u00e0 horizon %s de profondeur (80 to 120 cm)", w)
+    else "deeper than 120 cm"
+  }
+  data.frame(kind = c("g", "G"), top_cm = c(gt, Gt), class = c(cls(gt, "g"), cls(Gt, "G")),
+             page = "282, 284, 289", stringsAsFactors = FALSE)[!is.na(c(gt, Gt)), , drop = FALSE]
+}
+
+#' The base of the reductic horizons (RP 2008, p. 282; default 20, D23)
+#'
+#' The reductisols typiques have their G to the base of the solum (a deep,
+#' phreatic water table); the stagniques a G over a C, R or M that is not
+#' reduced (a perched water table). Read on the morphology: the run of G
+#' from the first one, then the layer under it; a G reaching the bottom of
+#' the description is typique unless a perched water table is recorded; an R
+#' or M under the G is stagnique; a C or D under it is typique with a phreatic
+#' water table recorded (groundwater_kind observed, apparent or phreatic),
+#' else, as any other horizon under the G, stagnique (Hugo's decision 5 on
+#' the review of 0.9.351, 2026-11-04).
+#' @noRd
+reductic_base_rp <- function(pedon, kind = c("typique", "stagnique")) {
+  kind <- match.arg(kind)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mG <- .rp_members(fr, .RP_REDUCTIC)
+  top <- .rp_tops(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & (is.na(.rp_bots(fr)[ord]) | .rp_bots(fr)[ord] > 0)]
+  j <- which(mG[ord] %in% TRUE)[1L]
+  if (is.na(j)) return(.rp_answer(if (anyNA(mG)) NA else FALSE, missing = .rp_missing_of(fr, which(is.na(mG))),
+                                  notes = "no G horizon"))
+  while (j < length(ord) && isTRUE(mG[ord[j + 1L]])) j <- j + 1L
+  nb <- if (j < length(ord)) ord[j + 1L] else NA_integer_
+  gw <- .rp_site_txt(x, "groundwater_kind")
+  perched <- isTRUE(grepl("perch", gw))
+  phreatic <- isTRUE(grepl("phreat|observed|apparent", gw)) && !isTRUE(grepl("^none", gw))
+  if (!is.na(nb) && is.na(mG[nb]))
+    return(.rp_answer(NA, missing = .rp_missing_of(fr, nb), notes = "the layer under the G is undecided"))
+  # Hugo's decision 5 on the review of 0.9.351 (2026-11-04): an R or M under
+  # the G, or a perched water table, is stagnique; a C or D under it with a
+  # phreatic water table recorded is typique; no water recorded, the base
+  # decides (any horizon under the G stagnique)
+  hard <- !is.na(nb) && isTRUE(.rp_members(fr, c("R", "M"))[nb])
+  loose <- !is.na(nb) && isTRUE(.rp_members(fr, c("C", "D"))[nb])
+  morph <- if (is.na(nb)) "typique" else "stagnique"
+  res <- if (perched || hard) "stagnique" else if (loose && phreatic) "typique" else morph
+  note <- if (is.na(nb)) sprintf("the G reaches the base of the description%s",
+                                 if (perched) "; a perched water table recorded: stagnique (D23)" else "")
+          else sprintf("a %s under the G%s", fr$code[nb] %||% "layer",
+                       if (res == "typique") sprintf(", the groundwater %s recorded: a deep, phreatic water table (typique)", gw)
+                       else ": the reducing conditions stop at depth")
+  .rp_answer(res == kind, evidence = list(base = morph, groundwater_kind = gw), notes = note)
+}
+
+#' An aerated structural S over the redox horizons (RP 2008, p. 107)
+#'
+#' The double brunisol-redoxisol needs an S that is well aerated and well
+#' structured: an S (S=) with no redox feature lies directly over the first
+#' -g, which is an S with -g (Sg; Q8: an S over a g horizon is the simple
+#' redoxisol, case 1 of p. 285; soilKey's reading).
+#' @noRd
+aerated_s_rp <- function(pedon) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  hm <- .rp_hydro_members(fr, x)
+  top <- .rp_tops(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord])]
+  j <- which(!(hm$g[ord] %in% FALSE))[1L]
+  if (is.na(j)) return(.rp_answer(FALSE, notes = "no redox horizon"))
+  if (is.na(hm$g[ord[j]])) return(.rp_answer(NA, missing = .rp_missing_of(fr, ord[j])))
+  if (j == 1L) return(.rp_answer(FALSE, notes = "the redox features start at the surface"))
+  sS <- .rp_members(fr, "S=")
+  up <- ord[j - 1L]; lo <- ord[j]
+  p <- .rp_and3(c(sS[up], !hm$g[up] %in% TRUE, sS[lo]))
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[c(up, lo)] else integer(0),
+             notes = if (isTRUE(p)) "an aerated S over an Sg (p. 107)"
+                     else "no aerated S directly over an Sg: the redoxisol alone (p. 107)")
+}
+
+#' A humic structural or argillic horizon under the Aso (RP 2008, p. 256)
+#'
+#' The layer directly under the deepest layer of `upper` (an E thinner than
+#' `gap` cm between them allowed, p. 256) is one of `codes` and humic, the
+#' Sh, Sth or BTh of the phaeosols: written with h, or, read on the data,
+#' organic carbon over `oc` % in it (0.6, strict) and S/CEC over `bs` %
+#' (80 +/- 5). Three-valued.
+#' @noRd
+humic_under_rp <- function(pedon, codes, upper = "Aso", oc = 0.6, bs = 80, gap = 5) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mu <- .rp_members(fr, upper); mE <- .rp_members(fr, "E")
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & (is.na(bot[ord]) | bot[ord] > 0)]
+  pos <- which(mu[ord] %in% TRUE)
+  if (!length(pos)) return(.rp_answer(if (anyNA(mu)) NA else FALSE, notes = sprintf("no %s", paste(unlist(upper), collapse = ", "))))
+  j <- max(pos) + 1L
+  while (j <= length(ord) && isTRUE(mE[ord[j]]) && isTRUE(bot[ord[j]] - top[ord[j]] < gap)) j <- j + 1L
+  if (j > length(ord)) return(.rp_answer(FALSE, notes = "nothing under the Aso"))
+  k <- ord[j]
+  mc <- .rp_members(fr, codes)[k]
+  what <- paste(unlist(codes), collapse = ", ")
+  if (isFALSE(mc)) return(.rp_answer(FALSE, notes = sprintf("under the %s: %s, not %s", paste(unlist(upper), collapse = ", "),
+                                                             fr$code[k] %||% "undecided", what)))
+  if (is.na(mc)) return(.rp_answer(NA, missing = .rp_missing_of(fr, k)))
+  if ("h" %in% fr$features[[k]]) return(.rp_answer(TRUE, layers = fr$horizon_idx[k], notes = sprintf("%sh written", fr$code[k])))
+  i <- fr$horizon_idx[k]
+  o <- .rp_num(x, i, "oc_pct"); b <- .rp_bs(x, i)$value
+  ok <- c(if (is.na(o)) NA else o > oc, if (is.na(b)) NA else .rp_meets(b, bs, "bs", "min", open = TRUE))
+  p <- .rp_and3(ok)
+  .rp_answer(p, layers = if (isTRUE(p)) i else integer(0), missing = c("oc_pct", "bs_pct", "cec_cmol"),
+             notes = sprintf("under the %s, %s: organic carbon %s %% (over %s), S/CEC %s %% (over %s): %s",
+                             paste(unlist(upper), collapse = ", "), fr$code[k], format(o), format(oc), format(round(b, 1)),
+                             format(bs), if (isTRUE(p)) "humic (p. 256)" else if (isFALSE(p)) "not humic" else "undecided"))
+}
+
+#' The complex of the Aso of a phaeosol (RP 2008, pp. 255-257; D9)
+#'
+#' Under permanent vegetation the Aso has S/CEC 50 to 80 % (+/- 5), read as
+#' the mean of its layers weighted by thickness; cultivated (an L, or a
+#' cultivated land use) the complex is not tested (resaturated, p. 256).
+#' Over 80 % the solum is undecided against the chernosols (D9); with
+#' `dystric`, the first A run of the colour and carbon of the Aso (p. 255:
+#' moist value and chroma under 4, their sum under 6, organic carbon over
+#' 1.2 %) has S/CEC under 50 %: the phaeosol dystrique, imperfect (p. 257).
+#' A written Aso with no S/CEC recorded is the author's reading.
+#' @noRd
+sombric_complex_rp <- function(pedon, dystric = FALSE) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mA <- .rp_members(fr, if (isTRUE(dystric)) "A" else "Aso")
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  holo <- c(.rp_family_members("O"), .rp_family_members("H"))
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & !(fr$code[ord] %in% holo) & (is.na(bot[ord]) | bot[ord] > 0)]
+  run <- integer(0)
+  for (k in ord) { if (isTRUE(mA[k])) run <- c(run, k) else break }
+  if (!length(run)) return(.rp_answer(if (length(ord) && is.na(mA[ord[1L]])) NA else FALSE,
+                                      notes = "no Aso from the surface"))
+  cult <- any(vapply(run, function(k) "L" %in% fr$overlay[[k]], NA)) ||
+    isTRUE(grepl("crop|arable|cultiv|tillage|plough|plow", .rp_site_txt(x, "land_use")))
+  if (cult) return(.rp_answer(!isTRUE(dystric), notes = "cultivated: the complex of the Aso not tested (p. 256)"))
+  hi <- fr$horizon_idx[run]
+  if (isTRUE(dystric)) {
+    # another A code (Ach, Aca, Aci ...) is no A of a phaeosol
+    if (!all(fr$code[run] %in% c("A", "Aso")))
+      return(.rp_answer(FALSE, notes = sprintf("an %s: not the A of a phaeosol", paste(setdiff(fr$code[run], c("A", "Aso")), collapse = ", "))))
+    col <- lapply(hi, function(i) .rp_colour(x, i)); o <- vapply(hi, function(i) .rp_num(x, i, "oc_pct"), 0)
+    dark <- vapply(seq_along(hi), function(j) {
+      if (identical(fr$code[run[j]], "Aso")) return(TRUE)
+      v <- col[[j]]$value; c <- col[[j]]$chroma
+      if (is.na(v) || is.na(c) || is.na(o[j])) NA else v < 4 && c < 4 && v + c < 6 && o[j] > 1.2
+    }, NA)
+    if (any(dark %in% FALSE)) return(.rp_answer(FALSE, notes = "the A has not the colour and carbon of an Aso (p. 255)"))
+    if (anyNA(dark)) return(.rp_answer(NA, missing = c("munsell_value_moist", "munsell_chroma_moist", "oc_pct")))
+  }
+  b <- vapply(hi, function(i) as.numeric(.rp_bs(x, i)$value), 0)
+  th <- pmax(0, bot[run] - pmax(top[run], 0))
+  if (anyNA(b)) {
+    written <- all(fr$route[run] %in% c("notation", "both") & fr$code[run] %in% "Aso")
+    if (written && !isTRUE(dystric)) return(.rp_answer(TRUE, notes = "a written Aso, its S/CEC not recorded: the author's reading"))
+    return(.rp_answer(NA, missing = c("bs_pct", "cec_cmol"), notes = "the S/CEC of the Aso is not recorded"))
+  }
+  m <- if (sum(th) > 0) sum(b * th) / sum(th) else mean(b)
+  if (isTRUE(dystric))
+    return(.rp_answer(isTRUE(.rp_meets(m, 50, "bs", "max", open = TRUE)),
+                      notes = sprintf("S/CEC of the A %s %%: under 50, the phaeosol dystrique (p. 257)", format(round(m, 1)))))
+  lo <- .rp_meets(m, 50, "bs", "min"); hi80 <- .rp_meets(m, 80, "bs", "max")
+  p <- if (!isTRUE(lo)) FALSE else if (!isTRUE(hi80)) NA else TRUE
+  .rp_answer(p,
+             notes = sprintf("S/CEC of the Aso %s %% (50 to 80 under permanent vegetation%s)", format(round(m, 1)),
+                             if (is.na(p)) ": over 80, undecided against the chernosols (D9)" else ""))
+}
+
+#' The lower boundary of a set of horizons (RP 2008)
+#'
+#' The lower boundary of the deepest layer of `upper` matches `pattern`
+#' (boundary_distinctness): the abrupt Aso/BTh transition of the phaeosols
+#' melanoluviques (p. 257). Not recorded, undecided.
+#' @noRd
+boundary_rp <- function(pedon, upper, pattern = "abrupt|sharp") {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mu <- .rp_members(fr, upper)
+  top <- .rp_tops(fr)
+  rows <- which(mu %in% TRUE & !is.na(top))
+  if (!length(rows)) return(.rp_answer(if (anyNA(mu)) NA else FALSE, notes = "no upper horizon"))
+  k <- rows[which.max(top[rows])]
+  b <- .rp_txt(x, fr$horizon_idx[k], "boundary_distinctness")
+  if (is.na(b)) return(.rp_answer(NA, missing = "boundary_distinctness", notes = "the boundary is not recorded"))
+  .rp_answer(grepl(pattern, tolower(b)), notes = sprintf("the lower boundary of the %s: %s", fr$code[k], b))
+}
+
+# The boundary of a layer within 8 cm (the abrupt change of the planosols,
+# p. 259): abrupt (under 2 cm) or clear (2 to 5) yes, diffuse (over 15) no,
+# gradual (5 to 15) or not recorded undecided.
+.rp_sharp_boundary <- function(x, i) {
+  b <- tolower(.rp_txt(x, i, "boundary_distinctness") %||% NA_character_)
+  if (is.na(b)) return(.rp_r(NA, missing = "boundary_distinctness", note = "the lower boundary of the E is not recorded"))
+  if (grepl("abrupt|sharp|clear|net", b)) return(.rp_r(TRUE, note = sprintf("the lower boundary of the E %s: within 8 cm", b)))
+  if (grepl("diffus", b)) return(.rp_r(FALSE, note = sprintf("the lower boundary of the E %s: over 8 cm", b)))
+  .rp_r(NA, missing = "boundary_distinctness", note = sprintf("the lower boundary of the E %s: within 8 cm or not", b))
+}
+
+# A compacted or indurated floor (the planosols structuraux, p. 261): a
+# fragic or indurated layer (x, c), a duripan Sim or Si, a pan Fem or Femp
+# (the grep of the boulbenes), a Km; or a cementation or a pan recorded.
+.rp_tight_floor <- function(fr, x, k) {
+  i <- fr$horizon_idx[k]
+  if (isTRUE(fr$code[k] %in% c("Sim", "Si", "Fem", "Femp", "Km", "OXm")) || any(c("x", "c") %in% fr$features[[k]]))
+    return(.rp_r(TRUE, note = sprintf("a %s floor", fr$composed[k] %||% fr$code[k])))
+  cc <- .rp_txt(x, i, "cementation_class"); pt <- .rp_txt(x, i, "pan_type")
+  if (!is.na(cc) && !grepl("^(none|not|no)", cc)) return(.rp_r(TRUE, note = sprintf("a floor cemented %s", cc)))
+  if (!is.na(pt) && !grepl("^(none|no)", pt)) return(.rp_r(TRUE, note = sprintf("a floor with a %s", pt)))
+  .rp_r(FALSE, note = "no compacted or indurated floor recorded")
+}
+
+#' The planosolic contact (RP 2008, pp. 259-263; D1, D2, D3)
+#'
+#' The upper horizons (the A, E and ploughed layers from the surface) over a
+#' floor, the first layer under them, starting within `within` cm (120 +/-
+#' 20). `kind = "textural"`: the four characters of p. 259: a clay
+#' difference in the solum of 20 points or more (D1), the least clayey E 30
+#' % or less, the most clayey horizon 25 % or more; an abrupt textural
+#' change between the last upper horizon and the floor (under 20 % clay,
+#' more than the double; from 20 %, 20 points more, D2) within 8 cm (its
+#' lower boundary abrupt or clear); a subhorizontal contact (no irregular or
+#' broken boundary, no tongues in the floor); the redox Eg is the
+#' reference's own test. `kind = "structural"`: a compacted or indurated
+#' floor (p. 261) with the abrupt and subhorizontal contact. `truncated`:
+#' the upper horizon is the ploughed LE (or L) alone, directly on an Sg (the
+#' planosols typiques tronques, p. 263). Strict: the clay thresholds are not
+#' in the table of p. 64 (Q5).
+#' @noRd
+planosol_rp <- function(pedon, kind = c("textural", "structural"), truncated = FALSE, within = 120) {
+  kind <- match.arg(kind)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mU <- .rp_members(fr, c("A", "E", "L"))
+  mE <- .rp_members(fr, c("E", "L"))
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  holo <- c(.rp_family_members("O"), .rp_family_members("H"))
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & !(fr$code[ord] %in% holo) & (is.na(bot[ord]) | bot[ord] > 0)]
+  run <- integer(0); j <- 1L
+  while (j <= length(ord)) {
+    k <- ord[j]
+    if (is.na(mU[k])) return(.rp_answer(NA, missing = .rp_missing_of(fr, k), notes = "an upper layer is undecided"))
+    if (!mU[k]) break
+    run <- c(run, k); j <- j + 1L
+  }
+  if (!length(run) || j > length(ord)) return(.rp_answer(FALSE, notes = "no upper horizons over a floor"))
+  fl <- ord[j]; last <- run[length(run)]
+  Ek <- run[mE[run] %in% TRUE]
+  if (!length(Ek)) return(.rp_answer(FALSE, notes = "no E over the floor"))
+  if (isTRUE(truncated)) {
+    sg <- .rp_members(fr, "Sg")[fl]
+    if (length(run) != 1L || !isTRUE("L" %in% c(fr$overlay[[last]], fr$code[last])) || !isTRUE(sg))
+      return(.rp_answer(if (is.na(sg)) NA else FALSE, notes = "no ploughed horizon directly on an Sg (p. 263)"))
+  }
+  w <- .rule_check(top[fl], within, "depth", "max", .RP_SYSTEM)
+  ans <- list(.rp_r(w, note = sprintf("the floor (%s) at %s cm (within %s)", fr$code[fl] %||% "a layer", format(top[fl]), format(within))))
+  bd <- .rp_sharp_boundary(x, fr$horizon_idx[last])
+  bt <- tolower(.rp_txt(x, fr$horizon_idx[last], "boundary_topography") %||% NA_character_)
+  df <- .rp_txt(x, fr$horizon_idx[fl], "degradation_form")
+  sub <- !isTRUE(grepl("irregular|broken", bt)) && !isTRUE(grepl("tongue", df)) && !("d" %in% fr$features[[fl]] && isTRUE(grepl("tongue", df)))
+  ans <- c(ans, list(bd, .rp_r(sub, note = if (sub) "a subhorizontal contact" else "an irregular contact or tongues in the floor (p. 259)")))
+  if (kind == "textural") {
+    clay <- function(k) .rp_clay(x, fr$horizon_idx[k])
+    ce <- vapply(Ek, clay, 0); cl <- clay(last); cf <- clay(fl)
+    mins <- vapply(ord[.rp_mineral_rows(fr)[ord]], clay, 0)
+    if (anyNA(c(ce, cl, cf)) || all(is.na(mins)))
+      return(.rp_answer(NA, missing = "clay_pct", notes = "the clay of the E or of the floor is not recorded"))
+    mx <- max(mins, na.rm = TRUE); mn <- min(ce)
+    c1 <- mx - mn >= 20 && mn <= 30 && mx >= 25
+    jump <- if (cl < 20) cf > 2 * cl else cf - cl >= 20
+    ans <- c(ans, list(.rp_r(c1, note = sprintf("clay difference %s points, the least clayey E %s %%, the most clayey %s %% (p. 259)",
+                                                format(mx - mn), format(mn), format(mx))),
+                       .rp_r(jump, note = sprintf("from %s %% clay to %s %% under it (%s, p. 259)", format(cl), format(cf),
+                                                  if (cl < 20) "more than the double" else "20 points more"))))
+  } else ans <- c(ans, list(.rp_tight_floor(fr, x, fl)))
+  r <- do.call(.rp_all, ans)
+  .rp_answer(r$passed, layers = if (isTRUE(r$passed)) fr$horizon_idx[c(run, fl)] else integer(0),
+             missing = r$missing, evidence = list(floor = fr$code[fl], floor_top = top[fl]),
+             notes = r$note,
+             distance = if (isFALSE(w)) .rule_distance(top[fl], within, "depth", "max", "any", .RP_SYSTEM) else NA_real_)
+}
+
+# The humus forms of the podzosols (p. 267): moder or mor, never a mull.
+.RP_MULL <- "mull"
+.RP_MODER_MOR <- "moder|mor|amphimus|tangel"
+
+#' The humus of a podzosol (RP 2008, p. 267)
+#'
+#' A moder or a mor: every mull episolum is excluded, unless the site is
+#' cultivated (podzolisation stopped by cultivation). FALSE when a mull is
+#' recorded (humus_form); undecided when no OF or OH horizon and no humus
+#' form are recorded and the pH in water of the first A is recorded 5.0 or
+#' more (+/- 0.2; the A of a moder is under 5.0); TRUE otherwise, a mull not
+#' recorded being absent (a field observation; Hugo's decisions on the review
+#' of 0.9.351, 2026-11-04).
+#' @noRd
+podzolic_humus_rp <- function(pedon) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  hf <- tolower(.rp_site_txt(x, "humus_form") %||% NA_character_)
+  cult <- isTRUE(grepl("crop|arable|cultiv|tillage|plough|plow", .rp_site_txt(x, "land_use"))) ||
+    any(vapply(fr$overlay, function(o) "L" %in% o, NA)) || any(fr$code %in% "L")
+  if (!is.na(hf) && grepl(.RP_MULL, hf) && !grepl("amphimus", hf))
+    return(.rp_answer(cult, notes = sprintf("humus form %s: %s", hf, if (cult) "cultivated, the podzolisation stopped (p. 267)"
+                                                              else "a mull episolum is excluded (p. 267)")))
+  if (!is.na(hf) && grepl(.RP_MODER_MOR, hf)) return(.rp_answer(TRUE, notes = sprintf("humus form %s", hf)))
+  mO <- .rp_members(fr, c("OF", "OH", "OHta"))
+  if (any(mO %in% TRUE)) return(.rp_answer(TRUE, notes = "OF or OH horizons: a moder or a mor (p. 267)"))
+  if (cult) return(.rp_answer(TRUE, notes = "cultivated: no O horizon expected (p. 267)"))
+  mA <- .rp_members(fr, "A")
+  top <- .rp_tops(fr)
+  ra <- which(mA %in% TRUE & !is.na(top))
+  ph <- if (length(ra)) .rp_num(x, fr$horizon_idx[ra[which.min(top[ra])]], "ph_h2o") else NA_real_
+  if (!is.na(ph) && isFALSE(.rp_meets(ph, 5.0, "ph", "max", open = TRUE)))
+    return(.rp_answer(NA, missing = c("humus_form"),
+                      notes = sprintf("no O horizon or humus form recorded; the A at pH %s, not under 5.0: the humus undecided (p. 267; Hugo's decision 9, 2026-11-04)", format(ph))))
+  .rp_answer(TRUE, notes = if (!is.na(ph)) sprintf("no O horizon recorded; the A at pH %s: a moder", format(ph))
+                           else "no humus form, O horizon or pH of the A recorded: no mull recorded (soilKey's reading)")
+}
+
+#' A cemented horizon of a set (RP 2008, p. 267)
+#'
+#' A layer of `codes` is cemented, the alios or ortstein of the podzosols
+#' duriques and humo-duriques: written with c, or a cementation recorded
+#' (cementation_class other than none), or an ortstein pan. Not recorded:
+#' loose (a field observation).
+#' @noRd
+cemented_rp <- function(pedon, codes) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  m <- .rp_members(fr, codes)
+  rows <- which(m %in% TRUE)
+  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE, notes = "no layer of the set"))
+  hit <- vapply(rows, function(k) {
+    i <- fr$horizon_idx[k]
+    cc <- .rp_txt(x, i, "cementation_class"); pt <- .rp_txt(x, i, "pan_type")
+    des <- fr$designation[k] %||% NA_character_
+    # an FAO or USDA m (Bhsm, Bsm) of a layer read on the data: cemented
+    # (Hugo's decision 9 on the review of 0.9.351, 2026-11-04)
+    fm <- !identical(fr$route[k], "notation") && isTRUE(grepl("^[0-9]*B[a-z]*m[0-9]*$", des))
+    "c" %in% fr$features[[k]] || (!is.na(cc) && !grepl("^(none|not|no)", cc)) || isTRUE(grepl("ortstein|alios", pt)) || fm
+  }, NA)
+  .rp_answer(any(hit), layers = fr$horizon_idx[rows[hit]],
+             notes = if (any(hit)) sprintf("a cemented %s (alios)", paste(unlist(codes), collapse = ", "))
+                     else sprintf("the %s loose (no cementation recorded)", paste(unlist(codes), collapse = ", ")))
+}
+
+#' A placic horizon with the BP (RP 2008, p. 270)
+#'
+#' A Femp directly above a BP or inside it (a BP directly under it): not
+#' under the BP alone.
+#' @noRd
+placic_rp <- function(pedon) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mF <- .rp_members(fr, "Femp"); mB <- .rp_members(fr, "BP")
+  top <- .rp_tops(fr)
+  ord <- order(ifelse(is.na(top), Inf, top)); ord <- ord[!is.na(top[ord])]
+  # directly above the BP, or inside it (a BP under it, p. 270); a Femp
+  # under the BP only is no placique's (Hugo's decision 9, 2026-11-04)
+  v <- vapply(seq_along(ord), function(j) {
+    k <- ord[j]
+    under <- if (j < length(ord)) mB[ord[j + 1L]] else FALSE
+    .rp_and3(c(mF[k], under))
+  }, NA)
+  p <- .rp_or3(v)
+  .rp_answer(p, layers = fr$horizon_idx[ord[v %in% TRUE]],
+             notes = if (isTRUE(p)) "a placic Femp with the BP (p. 270)" else "no Femp with the BP")
+}
+
+#' Coarse elements by weight in a set of horizons (RP 2008, Q11)
+#'
+#' Every layer of `codes` has coarse elements over `min` % by weight of the
+#' whole soil (and under `max` with it): the more than 25 % of the rankosols
+#' (p. 276). By weight, else the volume converted or its band (Q11; under
+#' 20 % by volume no, for 25); not recorded, none (a field observation), or
+#' undecided with `unrecorded = "undecided"` (the rankosols). Strict (Q5).
+#' @noRd
+coarse_band_rp <- function(pedon, codes, min = NULL, max = NULL, unrecorded = c("none", "undecided")) {
+  unrecorded <- match.arg(unrecorded)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  m <- .rp_members(fr, codes)
+  rows <- which(m %in% TRUE)
+  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE, notes = "no layer of the set"))
+  r <- lapply(fr$horizon_idx[rows], function(i) {
+    # `unrecorded = "undecided"`: no coarse elements recorded leaves the
+    # test undecided (the rankosols, Hugo's decision 7, 2026-11-04)
+    if (unrecorded == "undecided" && all(is.na(vapply(c("coarse_fragments_wt_pct", "gravel_wt_pct", "cobbles_wt_pct",
+                                                        "stones_wt_pct", "boulders_wt_pct", "coarse_fragments_pct"),
+                                                      function(a) .rp_num(x, i, a), 0))))
+      return(list(p = NA, note = "the coarse elements are not recorded: undecided"))
+    a <- if (!is.null(min)) .rp_coarse_wt(x, i, min) else NULL
+    b <- if (!is.null(max)) .rp_coarse_wt(x, i, max) else NULL
+    list(p = .rp_and3(c(if (!is.null(a)) a$passed, if (!is.null(b)) !b$passed)),
+         note = c(a$note, b$note))
+  })
+  p <- .rp_and3(vapply(r, `[[`, NA, "p"))
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[rows] else integer(0),
+             missing = c("coarse_fragments_wt_pct", "bulk_density_g_cm3"),
+             notes = unique(unlist(lapply(r, `[[`, "note"))))
+}
+
+#' A flag recorded at the site (RP 2008)
+#'
+#' The logical site attribute `field` (lateral_bp_downslope: the BP of the
+#' podzosols eluviques downslope, p. 270; Q14): TRUE or FALSE as recorded,
+#' undecided when not recorded (the reference a candidate).
+#' @noRd
+site_flag_rp <- function(pedon, field) {
+  v <- .rp_site_lgl(.rp_view(pedon), field)
+  .rp_answer(v, missing = field, notes = if (is.na(v)) sprintf("%s not recorded (Q14)", field) else sprintf("%s: %s", field, v))
+}
+
+
+#' The peyric horizons from the surface (RP 2008, pp. 250-252; Q11)
+#'
+#' The run from the surface (holorganic layers above skipped) of peyric
+#' horizons: an X (Xc, Xp, Xgr), or a horizon of another code whose coarse
+#' elements are recorded over 60 % by weight (or the volume converted, Q11:
+#' an E or BP of the notation in a scree, the peyrosol-podzosol meuble of p.
+#' 252; Hugo's decision 9 on the review of 0.9.351, 2026-11-04); a layer C,
+#' M, D, R or P is no horizon (D18). Over `min` cm (50 +/- 10); with
+#' `leptic`, over 10 cm (+/- 5) and under 50, directly on an M, R or D.
+#' @noRd
+peyric_rp <- function(pedon, min = 50, leptic = FALSE) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  mX <- .rp_members(fr, "X")
+  layers <- c(.rp_family_members("C"), .rp_family_members("M"), .rp_family_members("D"), .rp_family_members("R"), "P")
+  test <- function(k) {
+    if (!is.na(mX[k]) && mX[k]) return(TRUE)
+    cd <- fr$code[k]
+    if (is.na(cd) || cd %in% layers) return(if (is.na(mX[k])) NA else FALSE)
+    w <- .rp_coarse_wt(x, fr$horizon_idx[k], 60)
+    if (isTRUE(w$passed)) TRUE else if (is.na(mX[k])) NA else FALSE
+  }
+  run <- .rp_run_from_surface(fr, function(k) isTRUE(test(k)))
+  if (is.na(run$thickness)) return(.rp_answer(NA, missing = "bottom_cm"))
+  th <- run$thickness
+  if (!isTRUE(leptic)) {
+    p <- .rp_meets(th, min, "depth", "min", open = TRUE)
+    return(.rp_answer(p, layers = fr$horizon_idx[run$rows],
+                      notes = sprintf("peyric horizons over %s cm from the surface (more than %s)", format(th), format(min)),
+                      distance = if (isFALSE(p)) .rule_distance(th, min, "depth", "min", "any", .RP_SYSTEM) else NA_real_))
+  }
+  t10 <- .rp_meets(th, 10, "depth", "min", open = TRUE)
+  top <- .rp_tops(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  last <- if (length(run$rows)) run$rows[length(run$rows)] else NA_integer_
+  j <- if (is.na(last)) NA_integer_ else match(last, ord) + 1L
+  nb <- if (is.na(j) || j > length(ord)) NA_integer_ else ord[j]
+  on <- if (is.na(nb)) FALSE else .rp_members(fr, c("M", "R", "D"))[nb]
+  p <- .rp_and3(c(t10, on))
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[run$rows] else integer(0),
+             notes = sprintf("peyric horizons %s cm from the surface%s", format(th),
+                             if (isTRUE(on)) " directly on M, R or D" else ", not on M, R or D"))
+}
+
+#' The kind of the ploughed horizon, LA or LE (RP 2008, p. 271)
+#'
+#' The post-podzosols need an LE over the E: written in the notation it is
+#' read (an LA is no LE); a ploughed layer read on the data cannot be told
+#' LA or LE, and the answer is undecided (Hugo's decision 9 on the review of
+#' 0.9.351, 2026-11-04).
+#' @noRd
+ploughed_kind_rp <- function(pedon) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mL <- .rp_members(fr, c("L+", "L"))
+  top <- .rp_tops(fr)
+  k <- which(mL %in% TRUE & !is.na(top))
+  if (!length(k)) return(.rp_answer(FALSE, notes = "no ploughed horizon"))
+  k <- k[which.min(top[k])]
+  if (identical(fr$route[k], "data"))
+    return(.rp_answer(NA, missing = "designation", notes = "a ploughed layer on the data: LA or LE undecided (p. 271)"))
+  .rp_answer(isTRUE(fr$code[k] %in% .rp_family_members("E")),
+             notes = sprintf("the ploughed horizon written %s", fr$composed[k] %||% fr$code[k]))
+}
+
+#' The podzolic episolum of a solum (RP 2008, pp. 271, 273)
+#'
+#' [A + E + BP] (or [A + BP]): from the first mineral layer to the base of the
+#' first run of BP layers, the O not counted; `min` to `max` cm (open as
+#' printed): the micropodzol (under 20 cm) and the podzosol leptique (under
+#' 30 cm) over a luvisol (p. 273). No BP: FALSE.
+#' @noRd
+podzolic_episolum_rp <- function(pedon, min = NULL, max = NULL) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mB <- .rp_members(fr, "BP")
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  holo <- c(.rp_family_members("O"), .rp_family_members("H"))
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & !(fr$code[ord] %in% holo) & (is.na(bot[ord]) | bot[ord] > 0)]
+  j <- which(mB[ord] %in% TRUE)[1L]
+  if (is.na(j)) return(.rp_answer(if (anyNA(mB[ord])) NA else FALSE, notes = "no BP"))
+  while (j < length(ord) && isTRUE(mB[ord[j + 1L]])) j <- j + 1L
+  th <- bot[ord[j]] - max(0, top[ord[1L]])
+  if (is.na(th)) return(.rp_answer(NA, missing = "bottom_cm"))
+  ok <- c(if (!is.null(min)) .rp_meets(th, min, "depth", "min", open = TRUE),
+          if (!is.null(max)) .rp_meets(th, max, "depth", "max", open = TRUE))
+  .rp_answer(.rp_and3(ok), notes = sprintf("the podzolic episolum [A + E + BP] %s cm", format(th)))
 }

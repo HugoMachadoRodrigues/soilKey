@@ -95,8 +95,8 @@ references:
     wrb2006: "Folic Umbrisols (Hyperhumic)"
     distinctions:
       - {with: "alocrisols humiques", page: "241", by: "a Sal over 10 cm (precedence.yaml); the double organosol insaturé-alocrisol humique (doubles.yaml, the type of p. 240)"}
-      - {with: "podzosols humiques", page: "241", by: "E and BP over 10 cm (precedence.yaml, a later release); under 10 cm, the qualifier podzolisé"}
-      - {with: "rankosols", page: "241", by: "no Aho, 35 cm at most over R, coarse elements (a later release)"}
+      - {with: "podzosols humiques", page: "241", by: "E and BP over 10 cm (precedence.yaml); under 10 cm, the qualifier podzolisé"}
+      - {with: "rankosols", page: "241", by: "no Aho, 35 cm at most over R, coarse elements (rankosols.yaml)"}
     tests:
       all_of:
         - *org_scope

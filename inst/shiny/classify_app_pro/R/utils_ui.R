@@ -173,7 +173,18 @@ pro_fixture_catalog <- function() {
              "luvisol d\u00e9grad\u00e9" = "luvisols_degrades", "luvisol dernique" = "luvisols_derniques",
              "luvisol tronqu\u00e9" = "luvisols_tronques", "quasi-luvisol" = "quasi_luvisols", "nitosol" = "nitosols",
              "organosol holorganique" = "organosols_holorganiques", "organosol calcaire" = "organosols_calcaires",
-             "organosol satur\u00e9" = "organosols_satures", "organosol insatur\u00e9" = "organosols_insatures")
+             "organosol satur\u00e9" = "organosols_satures", "organosol insatur\u00e9" = "organosols_insatures",
+             "p\u00e9losol typique" = "pelosols_typiques", "p\u00e9losol brunifi\u00e9" = "pelosols_brunifies",
+             "p\u00e9losol diff\u00e9renci\u00e9" = "pelosols_differencies", "peyrosol" = "peyrosols",
+             "ph\u00e6osol haplique" = "phaeosols_hapliques", "ph\u00e6osol m\u00e9lanoluvique" = "phaeosols_melanoluviques",
+             "planosol typique" = "planosols_typiques", "planosol distal" = "planosols_distaux",
+             "planosol structural" = "planosols_structuraux", "podzosol ocrique" = "podzosols_ocriques",
+             "podzosol meuble" = "podzosols_meubles", "podzosol durique" = "podzosols_duriques",
+             "podzosol humique" = "podzosols_humiques", "podzosol humo-durique" = "podzosols_humo_duriques",
+             "podzosol \u00e9luvique" = "podzosols_eluviques", "podzosol placique" = "podzosols_placiques",
+             "post-podzosol" = "post_podzosols", "rankosol" = "rankosols",
+             "r\u00e9ductisol typique" = "reductisols_typiques", "r\u00e9ductisol stagnique" = "reductisols_stagniques",
+             "r\u00e9doxisol" = "redoxisols")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

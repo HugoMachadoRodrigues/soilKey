@@ -33,7 +33,7 @@
 # index of 1.3 or less; strongly planosolic luvisols are intergrades to the
 # planosols (rapid key 4a); a micro-podzol is a qualifier; a -g within 50 cm
 # of functional waterlogging makes the doubles luvisol typique, dégradé or
-# dernique-rédoxisol (doubles.yaml, the rédoxisols a later release); the
+# dernique-rédoxisol (doubles.yaml, since 0.9.351); the
 # fersialsols éluviques by the FFE, a colour of 5YR or redder and a
 # micro-polyhedral structure (the FS of the horizon frame, and the FFE).
 scope: &lu_scope
@@ -80,7 +80,7 @@ references:
     distinctions:
       - {with: "néoluvisols", page: "225", by: "a stronger texture contrast (side test)"}
       - {with: "luvisols dégradés", page: "226", by: "no BTd (side test)"}
-      - {with: "rédoxisols", page: "230", by: "-g within 50 cm: the double luvisol typique-rédoxisol (doubles.yaml, a later release)"}
+      - {with: "rédoxisols", page: "230", by: "-g within 50 cm: the double luvisol typique-rédoxisol (doubles.yaml)"}
     tests:
       all_of:
         - *lu_scope
@@ -100,7 +100,7 @@ references:
     wrb2006: "Haplic Albeluvisols"
     distinctions:
       - {with: "luvisols derniques", page: "226-227", by: "an Ea directly on the BTd and the index over 1.8 (precedence.yaml)"}
-      - {with: "rédoxisols", page: "226, 230", by: "the double luvisol dégradé-rédoxisol (doubles.yaml, a later release)"}
+      - {with: "rédoxisols", page: "226, 230", by: "the double luvisol dégradé-rédoxisol (doubles.yaml)"}
       - {with: "planosols", page: "227, 230", by: "strongly planosolic ones are intergrades (rapid key 4a)"}
     tests:
       all_of:
@@ -120,7 +120,7 @@ references:
     wrb2006: "Albeluvisols"
     distinctions:
       - {with: "luvisols dégradés", page: "226-227", by: "an Ea directly on the BTd and the index over 1.8 (precedence.yaml, D9)"}
-      - {with: "rédoxisols", page: "227", by: "the double luvisol dernique-rédoxisol (doubles.yaml, a later release)"}
+      - {with: "rédoxisols", page: "227", by: "the double luvisol dernique-rédoxisol (doubles.yaml)"}
     tests:
       all_of:
         - *lu_scope

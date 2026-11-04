@@ -1,0 +1,109 @@
+# Planosols (pp. 259-264), 3 references: a strong contrast between
+# permeable upper horizons, seasonally waterlogged (redox, -g), and a deep
+# horizon of very low permeability, the floor, the contact always sharp and
+# subhorizontal (p. 259). The textural planosols (typiques, distaux) have
+# the four characters of p. 259 (planosol_rp, kind textural): a clay
+# difference in the solum of at least 20, read as points (map 4 D1), the
+# least clayey E at most 30 % clay, the most clayey horizon at least 25 %;
+# an abrupt textural change between the E and the floor within less than 8
+# cm (under 20 % clay in the E more than the double, from 20 % an increase
+# of at least 20 points, the 20 % itself in the second rule, D2), read on
+# the lower boundary of the E (abrupt or clear; gradual or not recorded
+# undecided); a subhorizontal contact (no irregular or broken boundary, no
+# wide tongues in the floor); a perched water table in the E (the Eg, over 5
+# % redox features). The structural planosols (p. 260) have a floor made
+# impermeable by compaction or cementation (a fragipan, a duripan Sim or
+# Si, the grep Fem or Femp, a cementation or a pan recorded) with the same
+# abrupt, subhorizontal contact. The required horizons (p. 260): an Ae or LE
+# and an Eg; [Ae + E + Eg] at least 15 cm (strict, Q5); the floor within
+# 120 cm (+/- 20); the superposition Eg/BP excluded (podzosols).
+#
+# Typiques: the Eg starting within 50 cm (+/- 10); distaux: Ae and E not
+# waterlogged over the Eg, the Eg starting at 50 cm or deeper (the drawing
+# of p. 261, D4); structuraux: the Eg within 50 cm over a compacted or
+# indurated floor. The truncated planosols typiques of p. 263 (an LE
+# directly on the Sg, no Eg, no Sp) attach imperfectly, tronqué (D3: the
+# Eg the book requires is missing).
+#
+# Distinctions (pp. 262-263): the pélosols différenciés ([Ae + E] or LE 30
+# cm or less over an Sp; precedence.yaml); the strongly differentiated
+# clayey solums with a transition horizon of 15 to 20 cm and no abrupt
+# change are rédoxisols or brunisols (the textural test); the planosols
+# typiques and structuraux are redox by definition: no double with the
+# rédoxisols (pp. 263, 285; precedence.yaml); the luvisols dégradés or
+# derniques that have the characters of the textural planosols are
+# planosols (p. 227; precedence.yaml); the phæosols (A/Eg/BThg, IDT over 2,
+# abrupt: a planosol typique mélanoluvique); the many kinships of the
+# diagram of p. 262 are intergrades, not doubles.
+scope: &pl_scope
+  all_of:
+    - thickness_rp: {codes: [Ae, E, L], min: 15}
+    - none_of:
+        - below_rp: {upper: [Eg], codes: [BP]}
+references:
+  - code: "planosols_typiques"
+    ger: "planosols"
+    name: "planosols typiques"
+    name_singular: "planosol typique"
+    name_en: "typical planosols"
+    name_en_singular: "typical planosol"
+    page: "261"
+    sequences: ["Ae|LE-(E)-Eg-S|BT|Sg|Sdg|BTg|II S|II BT"]
+    notes: "The four characters of the textural planosols, the Eg starting within 50 cm; pédomorphe over an S or BT, sédimorphe over a II S or II BT (qualifiers of a later release)."
+    wrb2006: "Mollic, Umbric, Calcic, Petrocalcic, Alic, Acric, Luvic, Lixic or else Haplic Planosols"
+    distinctions:
+      - {with: "planosols distaux", page: "261", by: "the Eg within 50 cm (side test)"}
+      - {with: "pélosols différenciés", page: "244, 263", by: "no Sp under an [Ae + E] of 30 cm or less (precedence.yaml)"}
+      - {with: "rédoxisols", page: "263, 285", by: "redox by definition: no double (precedence.yaml)"}
+      - {with: "luvisols dégradés, derniques", page: "227", by: "the characters of the textural planosols (precedence.yaml)"}
+    tests:
+      all_of:
+        - *pl_scope
+        - planosol_rp: {kind: textural}
+        - horizon_within_rp: {codes: [Eg], depth: 50}
+    imperfect:
+      - qualifier: "tronqué"
+        page: "263"
+        criterion: "cultivated and slightly truncated: the LE directly on the Sg, no Eg (D3)"
+        tests:
+          all_of:
+            - planosol_rp: {kind: textural, truncated: true}
+            - horizon_within_rp: {codes: ["L+", L], depth: 10}
+            - no_horizon_within_rp: {codes: [Sp, Eg]}
+  - code: "planosols_distaux"
+    ger: "planosols"
+    name: "planosols distaux"
+    name_singular: "planosol distal"
+    name_en: "distal planosols"
+    name_en_singular: "distal planosol"
+    page: "261"
+    sequences: ["Ae|LE-E (not waterlogged, 50 cm or more)-Eg-S|BT|II S|II BT"]
+    notes: "The four characters of the textural planosols with a deep waterlogging: the Ae and E over the Eg not waterlogged, more than 50 cm thick (the drawing: the Eg at 50 cm or deeper, D4); the floor within 120 cm."
+    wrb2006: "Mollic, Umbric, Calcic, Petrocalcic, Alic, Acric, Luvic, Lixic or else Haplic Planosols"
+    distinctions:
+      - {with: "planosols typiques", page: "261", by: "the Eg at 50 cm or deeper (side test)"}
+    tests:
+      all_of:
+        - *pl_scope
+        - planosol_rp: {kind: textural}
+        - horizon_within_rp: {codes: [Eg]}
+        - none_of:
+            - horizon_within_rp: {codes: [g, "-g"], depth: 50}
+  - code: "planosols_structuraux"
+    ger: "planosols"
+    name: "planosols structuraux"
+    name_singular: "planosol structural"
+    name_en: "structural planosols"
+    name_en_singular: "structural planosol"
+    page: "260-261"
+    sequences: ["Ae|LE-Eg-compacted or indurated horizon"]
+    notes: "Little or no texture differentiation; the floor impermeable by a strong compaction or a cementation (grep, fragipan, duripan); the structural change abrupt, the contact subhorizontal; the Eg within 50 cm."
+    wrb2006: "Stagnosols"
+    distinctions:
+      - {with: "planosols typiques, distaux", page: "261", by: "a floor compacted or indurated; the textural ones take the name when they hold (precedence.yaml)"}
+      - {with: "rédoxisols", page: "263, 285", by: "redox by definition: no double (precedence.yaml)"}
+    tests:
+      all_of:
+        - *pl_scope
+        - planosol_rp: {kind: structural}
+        - horizon_within_rp: {codes: [Eg], depth: 50}

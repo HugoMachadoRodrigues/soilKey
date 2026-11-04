@@ -33,7 +33,7 @@ references:
       - {with: "luvisols", page: "73", by: "a BT: no BT (side test)"}
       - {with: "rankosols", page: "73", by: "a Sal under 10 cm (thickness)"}
       - {with: "organosols insaturés", page: "73", by: "all horizons hemi- or holorganic, no Sal (later release)"}
-      - {with: "peyrosols", page: "73", by: "a double peyrosol-alocrisol typique (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "73", by: "a double peyrosol-alocrisol typique (doubles.yaml)"}
     tests:
       all_of:
         - sequence_rp: {sequences: *alo_t}
@@ -57,7 +57,7 @@ references:
       - {with: "luvisols", page: "73", by: "a BT: no BT (side test)"}
       - {with: "rankosols", page: "73", by: "a Sal under 10 cm (thickness)"}
       - {with: "organosols insaturés", page: "73", by: "all horizons hemi- or holorganic, no Sal (later release)"}
-      - {with: "peyrosols", page: "73", by: "a double peyrosol-alocrisol typique (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "73", by: "a double peyrosol-alocrisol typique (doubles.yaml)"}
     tests:
       all_of:
         - sequence_rp: {sequences: *alo_h}

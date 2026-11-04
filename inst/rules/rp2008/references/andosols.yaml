@@ -65,7 +65,7 @@ references:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
       - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
       - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
-      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml)"}
     tests:
       all_of:
         - sequence_rp: {sequences: *vitr}
@@ -97,7 +97,7 @@ references:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
       - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
       - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
-      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml)"}
     tests:
       all_of:
         - *sila_core
@@ -121,7 +121,7 @@ references:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
       - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
       - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
-      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml)"}
     tests:
       all_of:
         - *sila_core
@@ -145,7 +145,7 @@ references:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
       - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
       - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
-      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml)"}
     tests:
       all_of:
         - *sila_core
@@ -169,7 +169,7 @@ references:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
       - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
       - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
-      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml)"}
     tests:
       all_of:
         - *alua_core
@@ -192,7 +192,7 @@ references:
       - {with: "régosols", page: "84", by: "Alox + 1/2 Feox under 0.4 %: no Avi (the horizon frame)"}
       - {with: "podzosols", page: "84", by: "Cf/Cpy and the doubling of Alox: BP, not Alu (the horizon frame)"}
       - {with: "brunisols", page: "85", by: "brunisol andique when the andic properties are attenuated (the horizon frame)"}
-      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "84", by: "doubles with the peyrosols (doubles.yaml)"}
     tests:
       all_of:
         - *alua_core

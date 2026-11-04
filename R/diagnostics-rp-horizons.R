@@ -1173,6 +1173,16 @@
   if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   cl <- .rp_vertic_clay(x, i); if (isFALSE(cl$passed)) return(cl)
   ck <- .rp_cracks(x, i)
+  # a prismatic over-structure alone, in a layer that meets the Sp, with no
+  # slickensides and no wedge-shaped aggregates recorded: the Sp of the
+  # pelosols, not an SV (pp. 244, 246; Hugo's decision 1 on the review of
+  # 0.9.351, 2026-11-04)
+  if (isTRUE(ck) && !isTRUE(.rp_num(x, i, "cracks_width_cm") >= 1) && is.na(.rp_num(x, i, "polygonal_cracks_spacing_cm"))) {
+    st <- .kidpr_structure(x, i)
+    wedge <- isTRUE(grepl("wedge|cuneif|lenticul|parallelep", paste(st$type, st$secondary)))
+    if (!isTRUE(.rp_slickensides(x, i) >= 1L) && !wedge && isTRUE(.rp_t_Sp(x, i)$passed))
+      return(.rp_r(FALSE, note = "a prismatic over-structure with no slickensides or wedge-shaped aggregates recorded: an Sp, not an SV (pp. 244, 246)"))
+  }
   s <- if (!is.na(ck)) .rp_r(ck, note = if (ck) "shrinkage cracks or a prismatic over-structure")
        else .rp_stand_in(x, i, "vertic_properties", "the shrinkage cracks")
   if (is.na(ck) && is.na(s$passed)) s$passed <- FALSE

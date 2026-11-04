@@ -25,8 +25,8 @@ references:
     wrb2006: "Colluvic Regosols, or Cambisols or another RSG (Colluvic)"
     distinctions:
       - {with: "fluviosols", page: "133", by: "an alluvial origin and a fluctuating water table (fluviosols.yaml; the colluviosols yield, precedence.yaml)"}
-      - {with: "peyrosols", page: "133", by: "peyric horizons over 50 cm: a peyrosol or a double (doubles.yaml, later release)"}
-      - {with: "rédoxisols", page: "133", by: "redox signs from under 20 cm a rédoxisol colluvial, from 20 to 50 cm the double colluviosol-rédoxisol (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "133", by: "peyric horizons over 50 cm: a peyrosol or a double (doubles.yaml)"}
+      - {with: "rédoxisols", page: "133", by: "redox signs from under 20 cm a rédoxisol colluvial, from 20 to 50 cm the double colluviosol-rédoxisol (doubles.yaml)"}
       - {with: "every other reference", page: "133", by: "the other reference takes the name, with colluvial (precedence.yaml)"}
     tests:
       all_of:

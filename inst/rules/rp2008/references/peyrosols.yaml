@@ -1,0 +1,46 @@
+# Peyrosols (pp. 249-254), 1 reference: solums dominated by coarse
+# elements, over 60 % by weight of the air-dried whole soil (p. 249; Hugo's
+# decision Q11: by weight, else the volume converted with a rock density of
+# 2.65 and the bulk density, else its band). The peyric horizons (p. 250):
+# Xc and Xp (over 50 % of cobbles, stones and boulders, the cobbles or the
+# stones and boulders dominant), Xgr (over 50 % gravel), X (neither); from
+# the notation or the data (.rp_t_X(): over 60 % by weight, a pedogenic
+# sign in the fine earth, else a layer D, map 4 D18), or a horizon of another
+# code with its coarse elements recorded over 60 % by weight (peyric_rp; an
+# E or BP of the notation in a scree, Hugo's decision 9 on the review of
+# 0.9.351). The solum is made of
+# peyric horizons from the surface over more than 50 cm (+/- 10), or, over
+# less than 50 cm, directly on an M, R or D layer: a peyrosol leptique,
+# then over 10 cm (else a lithosol or a régosol, p. 252). The voids between
+# the coarsest elements may be empty or filled with fine earth (holorganic
+# layers above the peyric run are skipped).
+#
+# Distinctions (pp. 253-254): peyric horizons over 50 cm from the surface
+# make the solum a peyrosol, simply or in a double, whatever the context
+# (alluvial, anthropic, calcareous, podzolic, fersiallitic ...;
+# precedence.yaml); the doubles the book names are in doubles.yaml (an
+# alocrisol typique, the anthroposols artificiels and reconstitués, the
+# andosols, a colluviosol, a fluviosol brut, the podzosols and fersialsols,
+# a rankosol); the ND of the ferrallitic domain are no peyric horizons (the
+# horizon frame); a D layer is told from a peyric horizon by the pedogenic
+# signs of its fine earth (the horizon frame, D18).
+references:
+  - code: "peyrosols"
+    ger: "peyrosols"
+    name: "peyrosols"
+    name_singular: "peyrosol"
+    name_en: "peyrosols"
+    name_en_singular: "peyrosol"
+    page: "250"
+    sequences: ["Xp|Xc|Xgr|X (over 50 cm from the surface)", "Xp|Xc|Xgr|X (10 to 50 cm)-M|R|D"]
+    notes: "Peyric horizons from the surface over more than 50 cm, or over 10 to 50 cm directly on M, R or D (leptique). The size qualifier (gravelique, cailloutique, pierrique, mixte) is the type's (a later release)."
+    wrb2006: "Hyperskeletic Leptosols, Hyperskeletic Podzols, or a suffix episkeletic"
+    distinctions:
+      - {with: "every other reference", page: "253", by: "peyric horizons over 50 cm from the surface: the peyrosol, simply or in a double (precedence.yaml, doubles.yaml)"}
+      - {with: "lithosols, régosols", page: "252", by: "peyric horizons of 10 cm or less over M, D or R (side test)"}
+      - {with: "rankosols", page: "276-277", by: "coarse elements 60 % or more: the double rankosol-peyrosol when the rankosol holds (doubles.yaml)"}
+      - {with: "podzosols", page: "253, 272", by: "the double peyrosol-podzosol (doubles.yaml)"}
+    tests:
+      any_of:
+        - peyric_rp: {min: 50}
+        - peyric_rp: {leptic: true}
