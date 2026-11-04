@@ -359,7 +359,7 @@ attributes:
   - name: woody_fragments_pct
     section: "SiBCS Cap 18 Organossolos"
     unit: "%"
-    description: "SiBCS Cap 18 p 288: % volume de galhos/troncos >= 2 cm em horizontes organicos (Organossolos lenhosos / muito lenhosos / extremamente lenhosos)"
+    description: "SiBCS Cap 18 p 288: % volume de galhos/troncos >= 2 cm em horizontes organicos (Organossolos lenhosos / muito lenhosos / extremamente lenhosos). Also read by the humus forms of the French Référentiel pédologique 2008 (Annex 1, p. 340): recognisable woody debris in the O horizons, lignique 35-80 %, xylique over 80 %."
   - name: surface_crust_type
     section: "Tier-3 schema fields for WRB SQ qualifiers"
     unit: "-"
