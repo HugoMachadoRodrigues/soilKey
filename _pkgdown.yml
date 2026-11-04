@@ -206,6 +206,7 @@ reference:
     contents:
       - classify_rp2008
       - make_rp2008_example
+      - humus_form_rp
 
   - title: "Interoperability"
     desc: >

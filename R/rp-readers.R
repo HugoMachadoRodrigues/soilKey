@@ -400,7 +400,7 @@
 # biogenic_aggregate_size. Not recorded: a moderate or strong crumb or
 # granular structure with worm holes or a mull, flagged; else undecided
 # (Hugo's default 21, map 1; Q23). `meso` accepts a biomesostructure too.
-.rp_biomacro <- function(x, i, meso = FALSE) {
+.rp_biomacro <- function(x, i, meso = FALSE, humus = TRUE) {
   pct <- .rp_num(x, i, "biogenic_aggregates_pct")
   sz <- .rp_txt(x, i, "biogenic_aggregate_size")
   ok_size <- if (is.na(sz)) NA else if (meso) sz %in% c("macro", "meso") else sz == "macro"
@@ -421,7 +421,9 @@
   if (!crumb) return(.rp_r(FALSE, note = sprintf("structure %s: not biostructured (Hugo's decision d3)", st$type)))
   wh <- .rp_num(x, i, "worm_holes_pct")
   bt <- .rp_txt(x, i, "bioturbation_density")
-  mull <- isTRUE(grepl("mull", .rp_site_txt(x, "humus_form")))
+  # (not when the humus forms read the A: there the recorded form decides
+  # only where the horizons leave it undecided, Q22; 0.9.353)
+  mull <- humus && isTRUE(grepl("mull", .rp_site_txt(x, "humus_form")))
   act <- isTRUE(wh > 0) || isTRUE(!is.na(bt) && !grepl("^none", bt)) || mull
   if (act)
     return(.rp_r(TRUE, tag = "biomacro_from_structure",

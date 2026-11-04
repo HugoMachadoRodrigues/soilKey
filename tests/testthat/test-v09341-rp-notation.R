@@ -377,7 +377,7 @@ test_that("the profile reader: hints in other notations, RP codes in the RP", {
               "lith", "subdiv", "transition", "juxtaposed", "parts", "part_features",
               "parts_strong", "mark_alone", "old", "old_codes", "variant", "known",
               "ambiguous", "notes", "strength", "read_as_rp", "hint",
-              "hint_features", "hint_source", "rp", "status", "why", "rp1995", "any_known")
+              "hint_features", "hint_source", "discontinuous", "rp", "status", "why", "rp1995", "any_known")
   expect_named(r, fields)
 })
 

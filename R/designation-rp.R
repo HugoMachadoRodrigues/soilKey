@@ -1037,6 +1037,23 @@
   d <- tryCatch(as.character(unlist(desig)), error = function(e) character(0))
   cl <- .rp_clean(d)
   rows <- lapply(cl, .rp_read_clean, voc = voc)
+  # an O horizon written in parentheses is discontinuous (Annex 1, pp. 340,
+  # 352): read the code inside, and keep the discontinuity (0.9.353, the
+  # humus forms); other designations in parentheses, as the CPCS (B), are
+  # read as before
+  disc <- logical(length(rows))
+  for (i in seq_along(rows)) {
+    s1 <- cl[[i]]$s %||% NA_character_
+    if (isTRUE(rows[[i]]$known) || is.na(s1) || !.rp_wrapped(s1)) next
+    c2 <- cl[[i]]
+    c2$s <- substr(s1, 2L, nchar(s1) - 1L)
+    r2 <- .rp_read_clean(c2, voc)
+    if (isTRUE(r2$known) && identical(r2$family, "O")) {
+      r2$notes <- c(r2$notes, "written in parentheses: a discontinuous horizon (Annex 1, p. 340)")
+      rows[[i]] <- r2
+      disc[i] <- TRUE
+    }
+  }
   nt <- .rp_decide(cl, rows, site, d)
   s <- vapply(cl, function(z) z$s %||% NA_character_, "")
   low <- grepl("\\p{Ll}", s, perl = TRUE) & !is.na(s)
@@ -1085,6 +1102,7 @@
     else vapply(v, function(z) as.character(z %||% NA_character_)[1L], "")
   })
   names(out) <- names(proto)
+  out$discontinuous <- disc
   out$rp <- nt$ok
   out$status <- nt$status
   out$why <- nt$why

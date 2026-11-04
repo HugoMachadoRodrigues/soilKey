@@ -349,9 +349,16 @@ classify_rp2008 <- function(pedon, rules = NULL,
       if (is.na(v$passed)) cond[[cd]] <- v
     }
     posn <- .rp_positions_of(rules, pedon, comb$codes)
+    # the humus form of Annex 1 (0.9.353): reported beside the name, not in it
+    humus <- humus_form_rp(pedon)
   })
 
-  .rp_result(pedon, rules, sys, evals, signs, comb, frame, on_missing, prec, excl, cond, posn)
+  res <- .rp_result(pedon, rules, sys, evals, signs, comb, frame, on_missing, prec, excl, cond, posn)
+  if (!is.null(humus)) {
+    res$trace$humus_form <- humus
+    res$humus_form <- .rp_humus_row(humus)
+  }
+  res
 }
 
 # The depth of the first hard or nodular horizon of a reference of the name

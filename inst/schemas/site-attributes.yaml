@@ -151,13 +151,13 @@ attributes:
     section: "Landscape & surface"
     type: "character"
     unit: "-"
-    description: "Land use, as text. Read by the WRB Drainic (artificial drainage), Tidalic (tidal, salt marsh, mangrove) and Escalic (built terraces) qualifiers."
-    systems: [wrb2022, scsj2017, cpcs1967]
+    description: "Land use, as text. Read by the WRB Drainic (artificial drainage), Tidalic (tidal, salt marsh, mangrove) and Escalic (built terraces) qualifiers; the French Référentiel pédologique 2008 reads crops or grassland for the open-land humus forms of Annex 1 (agri-mull, mull de pelouse ...; p. 337)."
+    systems: [wrb2022, scsj2017, cpcs1967, rp2008]
   - name: vegetation
     section: "Landscape & surface"
     type: "character"
     unit: "-"
-    description: "Vegetation, as text. Written by the fixtures and the field-sheet extraction (VLM); no key reads it."
+    description: "Vegetation, as text. Written by the fixtures and the field-sheet extraction (VLM); read only beside land_use by the open-land humus forms of the French Référentiel pédologique 2008 (p. 337)."
 
   # ---- Water, climate & regimes ------------------------------------------------
   - name: drainage_class
@@ -296,9 +296,9 @@ attributes:
     section: "Description & notation"
     type: "character"
     unit: "-"
-    description: "Humus form of the site, as the French and European typologies name it: mull, moder, mor (humus brut), hydromull, hydromoder, hydromor, anmoor, tourbe (peat). Read by the CPCS subgroups of the rankers (II/211-213: mor or moder; not recorded, the subgroup is undecided) and of the humic gley soils (XI/212-214: anmoor or hydromor decides before the C/N). The French Référentiel pédologique 2008 (Annex 1) adds its forms: eumull, mésomull, oligomull, dysmull, hémimoder, eumoder, dysmoder, hémimor, humimor, amphimus, euamphimus, the forms without fine earth (peyromull, lithomoder, peyromoder, lithomor, peyromor, tangel, peyro-amphimus) and of open land (agri-mull, agri-moder, agri-mor); a recorded form prevails where the key of its Figure 2 stays undecided (Hugo's decision Q22)."
-    allowed: ["mull", "moder", "mor", "hydromull", "hydromoder", "hydromor", "anmoor", "tourbe", "eumull", "mésomull", "oligomull", "dysmull", "hémimoder", "eumoder", "dysmoder", "hémimor", "humimor", "amphimus", "euamphimus", "peyromull", "lithomoder", "peyromoder", "lithomor", "peyromor", "tangel", "peyro-amphimus", "agri-mull", "agri-moder", "agri-mor"]
-    systems: [cpcs1967]
+    description: "Humus form of the site, as the French and European typologies name it: mull, moder, mor (humus brut), hydromull, hydromoder, hydromor, anmoor, tourbe (peat). Read by the CPCS subgroups of the rankers (II/211-213: mor or moder; not recorded, the subgroup is undecided) and of the humic gley soils (XI/212-214: anmoor or hydromor decides before the C/N). The French Référentiel pédologique 2008 (Annex 1) adds its forms: eumull, mésomull, oligomull, dysmull, hémimoder, eumoder, dysmoder, hémimor, humimor, amphimus, euamphimus, the forms without fine earth (peyromull, lithomoder, peyromoder, lithomor, peyromor, tangel, peyro-amphimus) and of open land (agri-mull, agri-moder, agri-mor, mull, moder and mor de pelouse, amphimus de pelouse); a recorded form prevails where the horizons leave the form of humus_form_rp() undecided, and a conflict is reported (Hugo's decision Q22)."
+    allowed: ["mull", "moder", "mor", "hydromull", "hydromoder", "hydromor", "anmoor", "tourbe", "eumull", "mésomull", "oligomull", "dysmull", "hémimoder", "eumoder", "dysmoder", "hémimor", "humimor", "amphimus", "euamphimus", "peyromull", "lithomoder", "peyromoder", "lithomor", "peyromor", "tangel", "peyro-amphimus", "agri-mull", "agri-moder", "agri-mor", "mull de pelouse", "moder de pelouse", "mor de pelouse", "amphimus de pelouse"]
+    systems: [cpcs1967, rp2008]
   - name: nasis_diagnostic_features
     section: "Description & notation"
     type: "character"
