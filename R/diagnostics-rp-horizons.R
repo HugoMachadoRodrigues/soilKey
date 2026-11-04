@@ -28,6 +28,15 @@
 # candidates too (Q10, with the Russian rule Q4). With no code, a functional
 # redox feature makes the layer g.
 #
+# In the intertropical domain (0.9.350; Hugo, 2026-11-04) the FE is told
+# from the BT by the clay films, the illuviation cutans of p. 170: with them
+# not recorded, argic() makes no BT of a layer under an FE with no more clay
+# than it, nor of a layer that holds FE at 5YR or redder (undecided at
+# 7.5YR, within the tolerance, or with the FE undecided), a BT mark of
+# another notation kept; a clay CEC of 16 cmol+/kg of clay or less with no
+# mineralogy recorded is no FS. Everywhere the field route of the FS needs an
+# angular blocky structure, strong (moderate: imperfect).
+#
 # A missing field descriptor is read through a soilKey WRB diagnostic,
 # flagged, with a lower grade (default 6): argic() for the clay coatings of
 # BT, spodic() for BP, calcic() and petrocalcic() for K, duric_horizon() and
@@ -1061,14 +1070,77 @@
   })
 }
 
+# FE against BT in the intertropical domain (pp. 17, 170-171; Hugo,
+# 2026-11-04). In the field the illuviation cutans separate the zones of clay
+# illuviation (BT) from those of weathering (FE), and the A over an FE is
+# depleted of clay by sheet runoff, so a clay increase alone makes no BT
+# there. Recorded clay films decide as everywhere (common or many a BT, even
+# in a ferruginous context; none or few no BT), and so does a BT mark of
+# another notation (Bt, B2t). With the clay films not recorded, soilKey's
+# argic() stands in only:
+#  - for a layer under an FE, when it has more clay than that FE: the BT is
+#    more clayey than the A, E, S or C of the solum (p. 17), and the
+#    increase of the FE over the depleted A is not its own (decision 4);
+#  - for a layer that holds FE itself: at 5YR or redder, outside the colours
+#    of the BT of the ferruginosols (10YR to 7.5YR, p. 171), no BT and the
+#    fixed order goes on (FE, or F before it); at 7.5YR, with the FE held
+#    only within the tolerance of p. 64, or with the FE undecided in the
+#    domain, the layer is undecided between FE and BT.
+# Outside the domain, or with the domain not recorded, nothing changes.
+.rp_fe_hold <- function(x, i) {
+  if (i < 1L || !.rp_is_mineral(x, i)) return(FALSE)
+  isTRUE(.rp_t_FE(x, i)$passed)
+}
+.rp_bt_mark <- function(x, i) {
+  if (isTRUE(x$rp) && isTRUE(x$des$known[i])) return(FALSE)
+  hc <- x$hint_codes[[i]]
+  ("BT" %in% hc && !"FE" %in% hc) || isTRUE(grepl("(^|[^A-Za-z])[0-9]*B[0-9]*t", .rp_des(x, i)))
+}
+.rp_bt_fe <- function(x, i, r) {
+  if (isFALSE(r$passed) || !"argic" %in% r$tag) return(r)
+  if (!is.na(.clay_films_class(.kidpr_v(x, i, "clay_films_amount")))) return(r)
+  if (.rp_bt_mark(x, i)) return(r)
+  if (!isTRUE(.rp_tropical(x)$passed)) return(r)
+  # under an FE: more clay than the FE (decision 4)
+  k <- .rp_prev(x, i)
+  while (!is.na(k) && !.rp_is_mineral(x, k)) k <- .rp_prev(x, k)
+  if (!is.na(k) && .rp_fe_hold(x, k)) {
+    mc <- .rp_more_clay(.rp_clay(x, i), .rp_clay(x, k))
+    if (isFALSE(mc))
+      return(.rp_r(FALSE, note = sprintf(paste("under an FE of %s %% clay, %s %%: no more clay than the FE; the clay films",
+                                               "not recorded, no BT (pp. 17, 171); the fixed order goes on"),
+                                         format(.rp_clay(x, k)), format(.rp_clay(x, i)))))
+    if (is.na(mc)) return(.rp_r(NA, missing = c("clay_films_amount", "clay_pct"),
+                                note = "under an FE, the clay not recorded: the BT undecided (p. 17)"))
+  }
+  fe <- .rp_t_FE(x, i)
+  if (isFALSE(fe$passed)) return(r)
+  # FE itself undecided in the domain (a criterion not recorded): FE or BT
+  if (is.na(fe$passed))
+    return(.rp_r(NA, missing = unique(c("clay_films_amount", fe$missing)),
+                 note = "the clay films not recorded and the FE undecided: FE or BT (p. 170)"))
+  col <- .rp_colour(x, i)
+  if (isTRUE(fe$imperfect))
+    return(.rp_r(NA, missing = "clay_films_amount",
+                 note = sprintf("an FE within the tolerance of p. 64 (%s); the clay films not recorded: FE or BT (p. 170)",
+                                .rp_colour_text(col))))
+  if (isTRUE(.rp_hue_in(col, -10, 15)))
+    return(.rp_r(FALSE, note = sprintf(paste("an FE (%s, 5YR or redder: outside the BT colours of the ferruginosols, p. 171);",
+                                             "the clay films not recorded: no BT, the fixed order goes on (p. 170)"),
+                                       .rp_colour_text(col))))
+  .rp_r(NA, missing = "clay_films_amount",
+        note = sprintf(paste("an FE (%s); the clay films not recorded: FE or BT, the illuviation cutans",
+                             "separate them (p. 170)"), .rp_colour_text(col)))
+}
+
 .rp_t_BT <- function(x, i) {
-  r <- .rp_bt_raw(x, i)
+  r <- .rp_bt_fe(x, i, .rp_bt_raw(x, i))
   if (!isTRUE(r$passed)) return(r)
   r$code <- "BT"
   # BTss (p. 18): at the contact of a carbonate rock, under a BT, darker,
   # more clay, twice the organic matter of the BT above
   nx <- .rp_next(x, i); pv <- .rp_prev(x, i)
-  if (!is.na(nx) && !is.na(pv) && isTRUE(.rp_bt_raw(x, pv)$passed)) {
+  if (!is.na(nx) && !is.na(pv) && isTRUE(.rp_bt_fe(x, pv, .rp_bt_raw(x, pv))$passed)) {
     rock <- .rp_hint_in(x, nx, c("R", "M", "D")) || isTRUE(.rp_num(x, nx, "caco3_pct") >= 40)
     calc <- isTRUE(.rp_num(x, nx, "caco3_pct") >= 40) || isTRUE(.rp_carbonates(x, nx)$cold)
     oc2 <- isTRUE(.rp_num(x, i, "oc_pct") >= 2 * .rp_num(x, pv, "oc_pct"))
@@ -1268,20 +1340,55 @@
 # FS (pp. 179-180): matrix or ped faces 5YR or redder with chroma over 3.5;
 # a well developed angular polyhedral structure; Fe free/Fe total over 0.50
 # or FFE/Fe total over 0.20 when recorded (else the field route, map 2);
-# kaolinite dominant excludes it (2:1 clays needed).
+# kaolinite dominant excludes it (2:1 clays needed). On the field route (no
+# FFE measured) the structure must be angular blocky (angular polyhedral or
+# cubic): very well developed and stable (p. 179), not the massive to
+# polyhedral BT of the ferruginosols (p. 171). Of strong grade it makes the
+# FS, of moderate grade the FS imperfect; a recorded subangular, prismatic,
+# granular or massive structure, or a weak grade, is no FS; the grade or the
+# angularity not recorded, undecided (Hugo,
+# 2026-11-04). In the intertropical domain a CEC of 16 cmol+/kg of clay or
+# less, with no clay mineralogy recorded, is a kaolinitic clay, not the 2:1
+# clays of an FS (pp. 150, 179; Hugo, 2026-11-04).
+.rp_fs_angular <- function(type) {
+  if (is.na(type)) return(NA)
+  t <- tolower(type)
+  if (grepl("sub[ -]?angul|subangul|sub-anguleu|subanguleu", t)) return(FALSE)
+  if (grepl("angul|anguleu|cubic|cubiq", t)) return(TRUE)
+  if (grepl("block|polyhed|polyed", t)) return(NA)
+  FALSE
+}
 .rp_t_FS <- function(x, i) {
   if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   col <- .rp_colour(x, i)
   colr <- .rp_r(.kidpr_and(.rp_hue_in(col, -10, 15), if (is.na(col$chroma)) NA else col$chroma > 3.5),
                 missing = col$missing, tag = col$tag, note = .rp_colour_text(col))
   if (isFALSE(colr$passed)) return(colr)
+  ft <- .rp_num(x, i, "fe_total_pct"); ffe <- .rp_num(x, i, "fe_ffe_pct"); fd <- .rp_num(x, i, "fe_dcb_pct")
+  measured <- !is.na(ffe) && isTRUE(ft > 0)
   st <- .kidpr_structure(x, i); gr <- .field_grade_class(st$grade)
-  stru <- .rp_r(if (is.na(st$type)) NA else grepl("angular|polyhed|block|cubic|prism", st$type) && !isTRUE(gr < 2L),
-                missing = c("structure_type", "structure_grade"), note = if (!is.na(st$type)) sprintf("structure %s", st$type))
+  stru <- if (measured)
+    .rp_r(if (is.na(st$type)) NA else grepl("angular|polyhed|block|cubic|prism", st$type) && !isTRUE(gr < 2L),
+          missing = c("structure_type", "structure_grade"), note = if (!is.na(st$type)) sprintf("structure %s", st$type))
+  else {
+    ang <- .rp_fs_angular(st$type)
+    # strong: the FS; moderate: the FS, imperfect (Hugo, 2026-11-04); weak or
+    # structureless: no FS
+    p <- if (isFALSE(ang) || isTRUE(gr < 2L)) FALSE else if (isTRUE(ang) && isTRUE(gr >= 2L)) TRUE else NA
+    imp <- isTRUE(p) && isTRUE(gr == 2L)
+    .rp_r(p, imperfect = imp, missing = c("structure_type", "structure_grade"),
+          note = if (!is.na(st$type)) sprintf("structure %s%s: %s (the field route, p. 179)",
+                                              if (!is.na(st$grade)) paste0(st$grade, " ") else "", st$type,
+                                              if (imp) "angular, moderate: the FS imperfect" else if (isTRUE(p)) "angular, strong"
+                                              else if (isFALSE(p)) "not angular blocky of moderate or strong grade" else "its angularity or grade not recorded"))
+  }
   if (isFALSE(stru$passed)) return(stru)
   cm <- .rp_txt(x, i, "clay_mineralogy")
   if (isTRUE(cm == "kaolinite")) return(.rp_r(FALSE, note = "kaolinite dominant: no 2:1 clays"))
-  ft <- .rp_num(x, i, "fe_total_pct"); ffe <- .rp_num(x, i, "fe_ffe_pct"); fd <- .rp_num(x, i, "fe_dcb_pct")
+  cc <- .rp_cec_clay(x, i)
+  if (is.na(cm) && isTRUE(cc <= 16) && isTRUE(.rp_tropical(x)$passed))
+    return(.rp_r(FALSE, note = sprintf("CEC %s cmol+/kg of clay in the intertropical domain: kaolinitic, no 2:1 clays",
+                                       format(round(cc, 1)))))
   # on one basis: the free iron as Fe, the total as Fe2O3 (Q23; 0.9.348)
   fe <- if (!is.na(ffe) && isTRUE(ft > 0)) .rp_r(ffe / (0.6994 * ft) > 0.2, note = sprintf("FFE/Fe total %s", format(signif(ffe / (0.6994 * ft), 3))))
         else if (!is.na(fd) && isTRUE(ft > 0)) .rp_r(fd / (0.6994 * ft) > 0.5, note = sprintf("Fe free/Fe total %s", format(signif(fd / (0.6994 * ft), 3))))
