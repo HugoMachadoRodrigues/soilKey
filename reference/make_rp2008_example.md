@@ -1,7 +1,7 @@
 # Example pedons for the references of the Referentiel pedologique 2008
 
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 53 of the first fifteen GER), in the RP
+reference implemented (the 71 of the first twenty-one GER), in the RP
 notation (`site$designation_system = "rp2008"`) with the properties
 their tests read. They are not real profiles.
 
@@ -27,7 +27,13 @@ make_rp2008_example(
     
     "fluviosols_bruts", "fluviosols_juveniles", "fluviosols_typiques",
     "fluviosols_brunifies", "grisols_eluviques", "grisols_degrades", "grisols_hapliques",
-    "gypsosols_hapliques", "gypsosols_petrogypsiques")
+    "gypsosols_hapliques", "gypsosols_petrogypsiques", "histosols_fibriques",
+    "histosols_mesiques", "histosols_sapriques", "histosols_composites",
+    "histosols_leptiques", "leptismectisols", "lithosols", "neoluvisols",
+    "luvisols_typiques", "luvisols_degrades", "luvisols_derniques", "luvisols_tronques",
+    "quasi_luvisols", "nitosols", "organosols_holorganiques", 
+    
+    "organosols_calcaires", "organosols_satures", "organosols_insatures")
 )
 ```
 
@@ -60,7 +66,14 @@ make_rp2008_example(
   `"fluviosols_juveniles"`, `"fluviosols_typiques"`,
   `"fluviosols_brunifies"`, `"grisols_eluviques"`, `"grisols_degrades"`,
   `"grisols_hapliques"`, `"gypsosols_hapliques"`,
-  `"gypsosols_petrogypsiques"`.
+  `"gypsosols_petrogypsiques"`, `"histosols_fibriques"`,
+  `"histosols_mesiques"`, `"histosols_sapriques"`,
+  `"histosols_composites"`, `"histosols_leptiques"`,
+  `"leptismectisols"`, `"lithosols"`, `"neoluvisols"`,
+  `"luvisols_typiques"`, `"luvisols_degrades"`, `"luvisols_derniques"`,
+  `"luvisols_tronques"`, `"quasi_luvisols"`, `"nitosols"`,
+  `"organosols_holorganiques"`, `"organosols_calcaires"`,
+  `"organosols_satures"`, `"organosols_insatures"`.
 
 ## Value
 

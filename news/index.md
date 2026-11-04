@@ -1,5 +1,116 @@
 # Changelog
 
+## soilKey 0.9.349 (2026-11-04)
+
+### France: the Référentiel pédologique 2008 attaches 18 more references
+
+[`classify_rp2008()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_rp2008.md)
+now tests the 71 references of twenty-one groups of references (GER):
+the fifteen of 0.9.346 and 0.9.348 and the six chapters that follow in
+the book, pp. 201-242: histosols (5), leptismectisols (1), lithosols
+(1), luvisols (6), nitosols (1) and organosols (4), in
+`inst/rules/rp2008/references/<ger>.yaml`. They are plugged into the
+attachment of 0.9.346 (registry, precedence, doubles, rapid key) as part
+5 was; their signposts leave `key.yaml`. The 39 references of the other
+13 GER come later. Every other classification is unchanged (the fixtures
+of the other systems byte-identical).
+
+- **Histosols** (pp. 201-216). Almost only H horizons (Hf, Hm, Hs, Ha,
+  LH), the first within 50 cm (a cover is the qualifier recouvert), and
+  under them only G, M, D or R, or thin limnic and terric materials
+  (`histic_solum_rp()`; a C read as the M). The predominant horizon is
+  the thickest kind of H, thicknesses cumulated, between 40 and 120 cm,
+  or 0 and 50 cm over an M, D or R within 50 cm; a tie is no kind truly
+  predominant, the Ha and LH count for no kind (D3); the 60 cm of the
+  fibriques and 40 of the mésiques and sapriques are the thickness of
+  that kind in the solum (D1, `histic_kind_rp()`); over 50 cm of H by
+  the figure of p. 209, the composites the remainder; the leptiques 10
+  to 50 cm of H over M, D or R. H of 10 cm or less over R is a lithosol,
+  over M, D or a C read as the M a régosol (a later release), under 50
+  cm over G a réductisol (a later release), with a permafrost within 2 m
+  a cryosol histique (p. 211; `precedence.yaml`). The kinds on the data
+  by the rubbed fibres, then von Post (D4); H against O by the
+  designation, then the water (Q19): an organic layer the data leave
+  between the two leaves both GER undecided. The habitat notes are
+  reported, not tested (D18).
+- **Leptismectisols** (pp. 217-218). Av over SV, \[Av + SV\] 50 cm or
+  less, no V, every horizon 40 % clay or more, the complex saturated
+  over 90 % by Ca and Mg (+/- 5, default 9), over R, Kc, Km or C; the
+  smectites tested only when the clay mineralogy is recorded
+  (`clay_mineral_rp()`). With no V read the leptismectisol takes the
+  name before the signpost of the vertisols.
+- **Lithosols** (pp. 219-220). An R, Km, Fem or Sim at 10 cm or less (10
+  to 15 cm imperfect), the OL not counted, or an OXc or OXm there in the
+  intertropical domain (Q18), with at most one horizon over it, the
+  holorganic O horizons counting as one (`lithic_obstacle_rp()`; Hugo’s
+  decisions 1 and 2: A-Sal-R with the R at 12 cm is an alocrisol
+  typique, imperfect). A cuirasse or carapace of the tropical chapters
+  stays a ferrallitisol, oxydisol or ferruginosol only when an F, OX,
+  ND, RT, FE, Ea or BT lies under it within 120 cm (`under_rp()`; the
+  ferruginosol pétroxydique tronqué of p. 175); without them it is a
+  lithosol pétroxydique or duroxydique (decision 3).
+- **Luvisols** (pp. 221-232). The texture contrast
+  (`luvic_contrast_rp()`): the band set by the mean clay of the E (with
+  no E, the ploughed LA or LE), against the most clayey BT: néoluvisols
+  from 3 points, an index of 1.3 or 9 points more, to under the
+  typiques’ 8 points, index over 1.8 or 24 points (D11); in the band of
+  10 to 30 % and for the derniques the index is the lexicon’s, the most
+  clayey BT over the poorest E or Ae (p. 401; decision 4). When
+  recorded, a BT of 5YR or redder or micro-polyhedral fails them
+  (`siallitic_rp()`, p. 230; decision 6), and an h on the E or the BT
+  bars them (p. 194; decision 7). Dégradés a BTd under the E; derniques
+  an Ea directly on the BTd and the index over 1.8, named before the
+  dégradés (D9); tronqués no E over 10 cm under forest, named before a
+  typique or néoluvisol that also attaches (decision 8), an LBT or a
+  ploughed horizon with no contrast left under crops (D12);
+  quasi-luvisols an E over a II BT (`discontinuity_rp()`), the others
+  read in the first material. The FFE over total iron of the BT over
+  0.20, measured, fails them (p. 230; `iron_release_rp(low = TRUE)`).
+  The grisols come before the néoluvisols and luvisols typiques
+  (p. 194). The doubles with the rédoxisols wait for them (Q8); a
+  cryoturbated luvisol with a permafrost is a luvisol-cryosol (p. 141).
+- **Nitosols** (pp. 233-237). The nitic Sn, under an A or a ploughed
+  horizon; on the data its halloysite recorded decides, else Ki and Kr,
+  else soilKey’s
+  [`nitic_horizon()`](https://hugomachadorodrigues.github.io/soilKey/reference/nitic_horizon.md)
+  stands in for the mineralogy as well, flagged (D14). The nitosol takes
+  the name before the brunisols, whose S slot reads the Sn (p. 236), and
+  yields to a ferrallitisol when an F lies with the Sn (the
+  ferrallitisol meuble polylithique of p. 157). The chapter is a first
+  version of the book (p. VI) and its climate is reported, not tested.
+- **Organosols** (pp. 238-242). OF, OH, OHta and Aho over 10 cm (+/- 5),
+  no H, thin organo-mineral horizons 10 cm or less in all and the
+  organic ones at least twice as thick (`organic_dominance_rp()`); an S
+  over 10 cm fails them, strict, and OF/OH over an S of 15 cm is a
+  brunisol, imperfect, with no A (a new imperfect case of
+  `brunisols.yaml`; decision 9). Holorganiques OF and/or OH and/or OHta
+  and no A; calcaires an Acaho; saturés the Aho over 80 % S/CEC and
+  insaturés under 80 % (no carbonated Acaho), the Aho read as a whole
+  (p. 239), the insaturés with 20 cm of O and Aho from the surface and
+  well drained to 50 cm. An S, an Sca or Sci or E and BP over 10 cm make
+  a brunisol, calcosol or calcisol or podzosol humique; a Sal over 10 cm
+  an alocrisol humique, under 10 an organosol insaturé, the other a
+  candidate, and the double organosol insaturé-alocrisol humique only at
+  10 cm (decision 5); an Acaho with OF and OH over 40 cm an organosol
+  before a rendosol (p. 241).
+- [`make_rp2008_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_rp2008_example.md)
+  gives the 18 new profiles (peats of the Jura, the Beauce, the Causses,
+  the loess of the Paris basin, Poland, Guadeloupe, the Jura and the
+  Vosges), and the Pro app offers them.
+
+#### Readings confirmed, and the review (2026-11-04)
+
+Hugo confirmed the nine readings of this part, amended by his decisions
+on its review: the lithosol obstacle at 10 cm or less, with one horizon
+over it; the tropical references before the lithosols only with their
+horizons under the cuirasse; the index of the lexicon in the middle band
+and for the derniques; the BT of 5YR or redder or micro-polyhedral, and
+an h on the E or the BT, barring the luvisols; the tronqués before the
+typiques; an S over 10 cm under the O barring the organosols; the Sal of
+the organosols and alocrisols humiques. Six entries record those
+decisions. An unread mineral designation (ASa, SSa) is no longer read as
+a possible organic horizon, and an O of undecided kind may be an OHta.
+
 ## soilKey 0.9.348 (2026-11-03)
 
 ### France: the Référentiel pédologique 2008 attaches 24 more references
