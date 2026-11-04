@@ -1,9 +1,9 @@
 # Example pedons for the references of the Referentiel pedologique 2008
 
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 29 of the first nine GER), in the RP notation
-(`site$designation_system = "rp2008"`) with the properties their tests
-read. They are not real profiles.
+reference implemented (the 53 of the first fifteen GER), in the RP
+notation (`site$designation_system = "rp2008"`) with the properties
+their tests read. They are not real profiles.
 
 ## Usage
 
@@ -18,7 +18,16 @@ make_rp2008_example(
     "calcisols", "magnesisols", "calcarisols", "chernosols_hapliques", 
     
     "chernosols_typiques", "chernosols_melanoluviques", "colluviosols",
-    "cryosols_histiques", "cryosols_mineraux")
+    "cryosols_histiques", "cryosols_mineraux", "ferrallitisols_meubles",
+    "ferrallitisols_nodulaires", "ferrallitisols_petroxydiques",
+    "ferrallitisols_duroxydiques", "oxydisols_meubles", "oxydisols_nodulaires",
+    "oxydisols_petroxydiques", "ferruginosols_meubles", "ferruginosols_semiluviques",
+    "ferruginosols_luviques", "ferruginosols_petroxydiques", "fersialsols_carbonates",
+    "fersialsols_calciques", "fersialsols_insatures", "fersialsols_eluviques", 
+    
+    "fluviosols_bruts", "fluviosols_juveniles", "fluviosols_typiques",
+    "fluviosols_brunifies", "grisols_eluviques", "grisols_degrades", "grisols_hapliques",
+    "gypsosols_hapliques", "gypsosols_petrogypsiques")
 )
 ```
 
@@ -39,7 +48,19 @@ make_rp2008_example(
   `"calcisols"`, `"magnesisols"`, `"calcarisols"`,
   `"chernosols_hapliques"`, `"chernosols_typiques"`,
   `"chernosols_melanoluviques"`, `"colluviosols"`,
-  `"cryosols_histiques"`, `"cryosols_mineraux"`.
+  `"cryosols_histiques"`, `"cryosols_mineraux"`,
+  `"ferrallitisols_meubles"`, `"ferrallitisols_nodulaires"`,
+  `"ferrallitisols_petroxydiques"`, `"ferrallitisols_duroxydiques"`,
+  `"oxydisols_meubles"`, `"oxydisols_nodulaires"`,
+  `"oxydisols_petroxydiques"`, `"ferruginosols_meubles"`,
+  `"ferruginosols_semiluviques"`, `"ferruginosols_luviques"`,
+  `"ferruginosols_petroxydiques"`, `"fersialsols_carbonates"`,
+  `"fersialsols_calciques"`, `"fersialsols_insatures"`,
+  `"fersialsols_eluviques"`, `"fluviosols_bruts"`,
+  `"fluviosols_juveniles"`, `"fluviosols_typiques"`,
+  `"fluviosols_brunifies"`, `"grisols_eluviques"`, `"grisols_degrades"`,
+  `"grisols_hapliques"`, `"gypsosols_hapliques"`,
+  `"gypsosols_petrogypsiques"`.
 
 ## Value
 

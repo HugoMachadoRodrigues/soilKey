@@ -4,14 +4,21 @@ Attaches a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 to the references of the *Referentiel pedologique* 2008 (AFES; Baize and
 Girard coord.; Editions Quae, 2009). **Experimental**: this release
-tests the 29 references of the first nine groups of references (GER):
+tests the 53 references of the first fifteen groups of references (GER):
 alocrisols (2), andosols (6), anthroposols (5), arenosols (1), brunisols
 (2), the solums dominated by calcium or magnesium (7: rendosols,
 calcosols, dolomitosols, rendisols, calcisols, magnesisols,
-calcarisols), chernosols (3), colluviosols (1) and cryosols (2). The 81
-references of the other 25 GER come in later releases: a profile that
-shows their reference horizons gets them among the candidates as not
-implemented yet, and its name is provisional.
+calcarisols), chernosols (3), colluviosols (1), cryosols (2),
+ferrallitisols and oxydisols (7), ferruginosols (4), fersialsols (4),
+fluviosols (4), grisols (3) and gypsosols (2). The 57 references of the
+other 19 GER come in later releases: a profile that shows their
+reference horizons gets them among the candidates as not implemented
+yet, and its name is provisional. The horizons of the intertropical
+chapters (F, OX, RT, ND, FE, OXc, OXm) are read only in the
+intertropical domain, and their results say that the book calls those
+chapters a first version (Q18); a fluviosol needs a recorded alluvial
+origin and is provisional while the position in the valley and the water
+table are not recorded (Q14).
 
 ## Usage
 
@@ -57,8 +64,10 @@ simple_or_imperfect, double), every reference that may attach in
 GER, plus `name_en`, `implemented` and `precedence`, the book's
 statements that put a reference of the name before it or exclude it),
 the evaluation of every reference, the horizon frame and the rapid key
-in `trace`, and `provisional_because` (`"references:<code>"`: the
-references or GER that could take the name once their data are known).
+in `trace` (with `trace$position`, the depth of the first ND, OXm or OXc
+of a ferrallitisol or oxydisol and its proximal or distal type), and
+`provisional_because` (`"references:<code>"`: the references or GER that
+could take the name once their data are known).
 
 ## Details
 
