@@ -34,22 +34,30 @@ A \code{\link{ClassificationResult}} with \code{system_id}
   \code{name_en}, \code{implemented} and \code{precedence}, the book's
   statements that put a reference of the name before it or exclude it),
   the evaluation of every
-  reference, the horizon frame and the rapid key in \code{trace}, and
+  reference, the horizon frame and the rapid key in \code{trace} (with
+  \code{trace$position}, the depth of the first ND, OXm or OXc of a
+  ferrallitisol or oxydisol and its proximal or distal type), and
   \code{provisional_because} (\code{"references:<code>"}: the references
   or GER that could take the name once their data are known).
 }
 \description{
 Attaches a \code{\link{PedonRecord}} to the references of the
 \emph{Referentiel pedologique} 2008 (AFES; Baize and Girard coord.;
-Editions Quae, 2009). \strong{Experimental}: this release tests the 29
-references of the first nine groups of references (GER): alocrisols (2),
-andosols (6), anthroposols (5), arenosols (1), brunisols (2), the
+Editions Quae, 2009). \strong{Experimental}: this release tests the 53
+references of the first fifteen groups of references (GER): alocrisols
+(2), andosols (6), anthroposols (5), arenosols (1), brunisols (2), the
 solums dominated by calcium or magnesium (7: rendosols, calcosols,
 dolomitosols, rendisols, calcisols, magnesisols, calcarisols),
-chernosols (3), colluviosols (1) and cryosols (2). The 81 references of
-the other 25 GER come in later releases: a profile that shows their
-reference horizons gets them among the candidates as not implemented
-yet, and its name is provisional.
+chernosols (3), colluviosols (1), cryosols (2), ferrallitisols and
+oxydisols (7), ferruginosols (4), fersialsols (4), fluviosols (4),
+grisols (3) and gypsosols (2). The 57 references of the other 19 GER come
+in later releases: a profile that shows their reference horizons gets
+them among the candidates as not implemented yet, and its name is
+provisional. The horizons of the intertropical chapters (F, OX, RT, ND,
+FE, OXc, OXm) are read only in the intertropical domain, and their
+results say that the book calls those chapters a first version (Q18); a
+fluviosol needs a recorded alluvial origin and is provisional while the
+position in the valley and the water table are not recorded (Q14).
 }
 \details{
 The RP is not a key: a solum attaches to one, two or no reference, simply

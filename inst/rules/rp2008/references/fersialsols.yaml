@@ -1,0 +1,184 @@
+# Fersialsols (pp. 178-182), 4 references. An FS horizon is required (p.
+# 178): reddish (5YR or redder, chroma over 3.5), a fine, very distinct and
+# stable angular structure, 2:1 clays, iron released from the clays. The FS
+# comes from the notation or the data; its iron release is read here as
+# well: FFE over total iron above 0.20 when measured (a luvisol has less, p.
+# 182), else the free over total iron as evidence and the field route
+# (D14, iron_release_rp). The references by the nature of the FS (p. 181):
+# carbonated, calcic (not effervescent but locally, S/CEC over 80 %, Ca/Mg
+# over 5) or unsaturated (S/T under 80 %), or a clear texture
+# differentiation (an E over an FSt, IDT over 1.3). The A the sequences name
+# (Aca, Aci, A) is any A, and the A may be eroded (tronqué): the FS decides
+# (soilKey's reading).
+#
+# Imperfect (D13): a saturated, non-effervescent FS with Ca/Mg 5 or less is a
+# fersialsol calcique, imperfect, calcimagnésique (Ca/Mg 2 to 5) or magnésique
+# (under 2). Carbonatés when the larger part of the FS thickness is
+# carbonated; some FS carbonated but not the larger part, a calcique
+# imperfect, bathycarbonaté (the carbonated FS deeper) or recarbonaté (Hugo's
+# decision D3, 2026-11-03). The t of an FS on the data needs common or many
+# clay films; an FSt with no E is an éluvique imperfect, tronqué, when the
+# index A to FS is over 1.3, else a calcique or insaturé imperfect, luvique,
+# by its saturation (Hugo's decision R1, 2026-11-03).
+# Distinctions (p. 182): the calcosols, calcisols and brunisols forbid an FS
+# (their side tests); the luvisols by the FFE, a hue less red than 5YR and a
+# BT with no micro-polyhedral structure (a later release); the nitosols by
+# halloysite and Ki and Kr (a later release).
+seq3: &fs_seq3
+  sequence_rp: {sequences: ["(A)-FS-(C|M|R)"]}
+ci_core: &ci_core
+  all_of:
+    - *fs_seq3
+    - iron_release_rp: {}
+    - carbonated_rp: {codes: [FS], carbonated: false}
+    - no_horizon_within_rp: {codes: [E, FSt]}
+    - attribute_rp: {attribute: bs, threshold: 80, direction: min, kind: bs, open: true, codes: [FS], layers: weighted}
+bs_sat: &bs_sat
+  attribute_rp: {attribute: bs, threshold: 80, direction: min, kind: bs, open: true, codes: [FS], layers: weighted}
+bs_unsat: &bs_unsat
+  attribute_rp: {attribute: bs, threshold: 80, direction: max, kind: bs, open: true, codes: [FS], layers: weighted}
+# an FSt with no E (R1): truncated over 1.3, else the illuviation is not
+# enough to differentiate the solum
+fst_noE: &fst_noE
+  all_of:
+    - *fs_seq3
+    - iron_release_rp: {}
+    - horizon_within_rp: {codes: [FSt]}
+    - no_horizon_within_rp: {codes: [E]}
+luvique_core: &luvique_core
+  all_of:
+    - *fst_noE
+    - none_of:
+        - idt_rp: {upper: [A], lower: [FS], min: 1.3, open: true}
+        - carbonated_rp: {codes: [FS], carbonated: true}
+references:
+  - code: "fersialsols_carbonates"
+    ger: "fersialsols"
+    name: "fersialsols carbonatés"
+    name_singular: "fersialsol carbonaté"
+    name_en: "carbonated fersialsols"
+    name_en_singular: "carbonated fersialsol"
+    page: "181"
+    sequences: ["Aca-FS-C|M|R"]
+    notes: "The FS carbonated (or recarbonated) in the fine earth."
+    wrb2006: "Haplic Cambisols (Calcaric, Chromic)"
+    distinctions:
+      - {with: "calcosols", page: "182", by: "the FS: reddish, a micro-polyhedral structure (their side test)"}
+    tests:
+      all_of:
+        - *fs_seq3
+        - iron_release_rp: {}
+        - carbonated_rp: {codes: [FS], carbonated: true}
+  - code: "fersialsols_calciques"
+    ger: "fersialsols"
+    name: "fersialsols calciques"
+    name_singular: "fersialsol calcique"
+    name_en: "calcic fersialsols"
+    name_en_singular: "calcic fersialsol"
+    page: "181"
+    sequences: ["Aci-FS-C|M|R"]
+    notes: "The FS not effervescent in the fine earth, or only locally; S/CEC over 80 %, Ca/Mg over 5; no E and no FSt."
+    wrb2006: "Haplic Cambisols (Eutric, Chromic)"
+    distinctions:
+      - {with: "calcisols, brunisols", page: "182", by: "the FS (their side tests)"}
+      - {with: "fersialsols insaturés", page: "181", by: "S/CEC under 80 %"}
+    tests:
+      all_of:
+        - *ci_core
+        - attribute_rp: {attribute: ca_mg, threshold: 5, direction: min, open: true, codes: [FS], layers: weighted}
+    imperfect:
+      - qualifier: "calcimagnésique"
+        page: "181-182"
+        criterion: "Ca/Mg 2 to 5 (D13)"
+        tests:
+          all_of:
+            - *ci_core
+            - attribute_rp: {attribute: ca_mg, threshold: 2, direction: min, codes: [FS], layers: weighted}
+            - attribute_rp: {attribute: ca_mg, threshold: 5, direction: max, codes: [FS], layers: weighted}
+      - qualifier: "magnésique"
+        page: "181-182"
+        criterion: "Ca/Mg under 2 (D13)"
+        tests:
+          all_of:
+            - *ci_core
+            - attribute_rp: {attribute: ca_mg, threshold: 2, direction: max, open: true, codes: [FS], layers: weighted}
+      - qualifier: "bathycarbonaté"
+        page: "181"
+        criterion: "some FS layers carbonated, not the larger part of the FS thickness, the shallowest FS not carbonated (D3)"
+        tests:
+          all_of:
+            - *fs_seq3
+            - iron_release_rp: {}
+            - carbonated_rp: {codes: [FS], partial: true, where: below}
+            - no_horizon_within_rp: {codes: [E, FSt]}
+            - *bs_sat
+      - qualifier: "recarbonaté"
+        page: "181"
+        criterion: "some FS layers carbonated, not the larger part of the FS thickness, the shallowest FS carbonated (D3)"
+        tests:
+          all_of:
+            - *fs_seq3
+            - iron_release_rp: {}
+            - carbonated_rp: {codes: [FS], partial: true, where: above}
+            - no_horizon_within_rp: {codes: [E, FSt]}
+            - *bs_sat
+      - qualifier: "luvique"
+        page: "180-181"
+        criterion: "an FSt with no E and an index A to FS of 1.3 or less; S/CEC over 80 % (R1)"
+        tests:
+          all_of:
+            - *luvique_core
+            - *bs_sat
+  - code: "fersialsols_insatures"
+    ger: "fersialsols"
+    name: "fersialsols insaturés"
+    name_singular: "fersialsol insaturé"
+    name_en: "unsaturated fersialsols"
+    name_en_singular: "unsaturated fersialsol"
+    page: "181"
+    sequences: ["A-FS-C|M|R"]
+    notes: "S/T of the FS under 80 %; no E and no FSt."
+    wrb2006: "Haplic Cambisols (Eutric or Dystric, Chromic)"
+    distinctions:
+      - {with: "brunisols", page: "182", by: "the FS (their side test)"}
+      - {with: "fersialsols calciques", page: "181", by: "S/CEC over 80 %"}
+    tests:
+      all_of:
+        - *fs_seq3
+        - iron_release_rp: {}
+        - no_horizon_within_rp: {codes: [E, FSt]}
+        - attribute_rp: {attribute: bs, threshold: 80, direction: max, kind: bs, open: true, codes: [FS], layers: weighted}
+    imperfect:
+      - qualifier: "luvique"
+        page: "180-181"
+        criterion: "an FSt with no E and an index A to FS of 1.3 or less; S/T under 80 % (R1)"
+        tests:
+          all_of:
+            - *luvique_core
+            - *bs_unsat
+  - code: "fersialsols_eluviques"
+    ger: "fersialsols"
+    name: "fersialsols éluviques"
+    name_singular: "fersialsol éluvique"
+    name_en: "eluvic fersialsols"
+    name_en_singular: "eluvic fersialsol"
+    page: "181"
+    sequences: ["A-E-FSt-C|M|R"]
+    notes: "A clear clay illuviation (an FSt) under an E or LE; texture differentiation index E to FS over 1.3."
+    wrb2006: "Haplic Luvisols (Chromic) or Albic Alisols (Chromic)"
+    distinctions:
+      - {with: "luvisols", page: "182", by: "FFE over total iron above 0.20, a hue of 5YR or redder, a micro-polyhedral structure (iron_release_rp; the luvisols a later release)"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: ["(A)-E-FS-(C|M|R)"]}
+        - iron_release_rp: {}
+        - horizon_within_rp: {codes: [FSt]}
+        - idt_rp: {upper: [E], lower: [FS], min: 1.3, open: true}
+    imperfect:
+      - qualifier: "tronqué"
+        page: "181"
+        criterion: "an FSt with no E (the surface eroded) and an index A to FS over 1.3 (R1)"
+        tests:
+          all_of:
+            - *fst_noE
+            - idt_rp: {upper: [A], lower: [FS], min: 1.3, open: true}

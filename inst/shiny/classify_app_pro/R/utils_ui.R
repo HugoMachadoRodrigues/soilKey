@@ -148,7 +148,24 @@ pro_fixture_catalog <- function() {
              "chernosol typique" = "chernosols_typiques",
              "chernosol m\u00e9lanoluvique" = "chernosols_melanoluviques",
              "colluviosol" = "colluviosols", "cryosol histique" = "cryosols_histiques",
-             "cryosol min\u00e9ral" = "cryosols_mineraux")
+             "cryosol min\u00e9ral" = "cryosols_mineraux",
+             "ferrallitisol meuble" = "ferrallitisols_meubles",
+             "ferrallitisol nodulaire" = "ferrallitisols_nodulaires",
+             "ferrallitisol p\u00e9troxydique" = "ferrallitisols_petroxydiques",
+             "ferrallitisol duroxydique" = "ferrallitisols_duroxydiques",
+             "oxydisol meuble" = "oxydisols_meubles", "oxydisol nodulaire" = "oxydisols_nodulaires",
+             "oxydisol p\u00e9troxydique" = "oxydisols_petroxydiques",
+             "ferruginosol meuble" = "ferruginosols_meubles",
+             "ferruginosol semiluvique" = "ferruginosols_semiluviques",
+             "ferruginosol luvique" = "ferruginosols_luviques",
+             "ferruginosol p\u00e9troxydique" = "ferruginosols_petroxydiques",
+             "fersialsol carbonat\u00e9" = "fersialsols_carbonates", "fersialsol calcique" = "fersialsols_calciques",
+             "fersialsol insatur\u00e9" = "fersialsols_insatures", "fersialsol \u00e9luvique" = "fersialsols_eluviques",
+             "fluviosol brut" = "fluviosols_bruts", "fluviosol juv\u00e9nile" = "fluviosols_juveniles",
+             "fluviosol typique" = "fluviosols_typiques", "fluviosol brunifi\u00e9" = "fluviosols_brunifies",
+             "grisol \u00e9luvique" = "grisols_eluviques", "grisol d\u00e9grad\u00e9" = "grisols_degrades",
+             "grisol haplique" = "grisols_hapliques", "gypsosol haplique" = "gypsosols_hapliques",
+             "gypsosol p\u00e9trogypsique" = "gypsosols_petrogypsiques")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

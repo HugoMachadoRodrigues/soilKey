@@ -1,0 +1,164 @@
+# Ferrallitisols et oxydisols (pp. 146-168), 7 references: four
+# ferrallitisols and three oxydisols, solums of the intertropical domain
+# (Q18: the horizons F, OX, RT, ND, OXc and OXm only in the tropics; the
+# chapter is a first version of the book, p. VI, and the results say so).
+# The reference is set by the hardest or most nodular horizon within 120 cm
+# and by F against OX (p. 157): the hardness precedence OXm (pétroxydiques) >
+# OXc (duroxydiques) > ND (nodulaires) > none (meubles) (D3, precedence.yaml),
+# and the thicker loose horizon within 120 cm, F or OX (their nodular forms
+# included), makes a ferrallitisol or an oxydisol; neither, a ferrallitisol
+# (D4, loose_rp). There is no oxydisol duroxydique: an OX with an OXc and no
+# OXm is a ferrallitisol duroxydique, an ND with it as well (D5; Hugo's
+# decision R2, 2026-11-03: A-OX-ND-OXc, pp. 159-160). OXm and OXc come from the
+# notation or the data (cementation indurated or strongly cemented, OXm;
+# moderately or weakly, OXc; D6); F reads its CEC per kg of clay (Q17).
+#
+# Types (not the reference): the depth of the first ND, OXm or OXc makes a
+# proximal type (0-60 cm, the chapter, Q17), a distal one (80-120 cm); from
+# 60 to 80 cm neither, the reference kept and the depth reported (D2;
+# `position`, in the trace).
+#
+# Distinctions (pp. 162-163): no FE, E or BT (ferruginosols, luvisols, a side
+# test); fersialsols have 2:1 clays and an FS; nitosols an Sn with
+# halloysite (a later release); the andosols rank before by the rapid key.
+scope: &fo_scope
+  all_of:
+    - tropical_rp: {}
+    - no_horizon_within_rp: {codes: [FE, E, BT]}
+references:
+  - code: "ferrallitisols_meubles"
+    ger: "ferrallitisols_oxydisols"
+    name: "ferrallitisols meubles"
+    name_singular: "ferrallitisol meuble"
+    name_en: "loose ferrallitisols"
+    name_en_singular: "loose ferrallitisol"
+    page: "157"
+    sequences: ["A-F-RT-C-R", "A-F-C-R"]
+    notes: "An F is necessary and sufficient; A and RT often present; no ND, OXm or OXc within 120 cm; the F at least as thick as any OX within 120 cm."
+    wrb2006: "Ferralsols, Lixisols"
+    distinctions:
+      - {with: "ferruginosols", page: "162-163", by: "no FE, E or BT (side test)"}
+      - {with: "nitosols", page: "163", by: "kaolinite dominant, CEC under 16 cmol+/kg (later release)"}
+      - {with: "fersialsols", page: "163", by: "no 2:1 clay minerals, no FS (the horizon frame)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - horizon_within_rp: {codes: [F]}
+        - no_horizon_within_rp: {codes: [ND, OXm, OXc], depth: 120}
+        - loose_rp: {kind: F}
+  - code: "ferrallitisols_nodulaires"
+    ger: "ferrallitisols_oxydisols"
+    name: "ferrallitisols nodulaires"
+    name_singular: "ferrallitisol nodulaire"
+    name_en: "nodular ferrallitisols"
+    name_en_singular: "nodular ferrallitisol"
+    page: "158"
+    sequences: ["A|Ae|A-ND-F-RT", "A|Ae|A-F-ND-RT"]
+    notes: "At least one ND within 120 cm, no OXm or OXc before 120 cm (the hardness precedence, D3); not an oxydisol (D4). Proximal: the ND before 60 cm; distal: from 80 to 120 cm."
+    wrb2006: "Ferralic Hyperferric Plinthosols"
+    position: {codes: [ND], within: 120}
+    distinctions:
+      - {with: "ferrallitisols pétroxydiques, duroxydiques", page: "158-159", by: "an OXm or OXc within 120 cm (precedence.yaml)"}
+      - {with: "oxydisols nodulaires", page: "160", by: "the thicker loose horizon OX (loose_rp)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - horizon_within_rp: {codes: [ND], depth: 120}
+        - no_horizon_within_rp: {codes: [OXm, OXc], depth: 120}
+        - loose_rp: {kind: F}
+  - code: "ferrallitisols_petroxydiques"
+    ger: "ferrallitisols_oxydisols"
+    name: "ferrallitisols pétroxydiques"
+    name_singular: "ferrallitisol pétroxydique"
+    name_en: "petroxidic ferrallitisols"
+    name_en_singular: "petroxidic ferrallitisol"
+    page: "159"
+    sequences: ["A-OXm-F-RT", "A-OXm-ND-F-RT", "A-OXm-RT", "A-ND-OXm-F-RT", "A-F-OXm-RT"]
+    notes: "At least one OXm (a cuirasse) within 120 cm, with ND, F, OX, OXc or RT; F not required (A-OXm-RT); not an oxydisol (D4)."
+    wrb2006: "Plinthosols (Petric)"
+    position: {codes: [OXm], within: 120}
+    distinctions:
+      - {with: "oxydisols pétroxydiques", page: "161", by: "the thicker loose horizon OX (loose_rp)"}
+      - {with: "ferruginosols pétroxydiques", page: "175", by: "an E or BT under the cuirasse (side test)"}
+      - {with: "lithosols", page: "219", by: "the cuirasse within 10 cm (later release)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - horizon_within_rp: {codes: [OXm], depth: 120}
+        - loose_rp: {kind: F}
+  - code: "ferrallitisols_duroxydiques"
+    ger: "ferrallitisols_oxydisols"
+    name: "ferrallitisols duroxydiques"
+    name_singular: "ferrallitisol duroxydique"
+    name_en: "duroxidic ferrallitisols"
+    name_en_singular: "duroxidic ferrallitisol"
+    page: "159"
+    sequences: ["A-OXc-RT", "A-ND-OXc-RT", "A-F-OXc-RT", "A-F-OXc-ND-RT"]
+    notes: "At least one OXc (a carapace) within 120 cm and no OXm; F not required, with ND, F, OX or RT. An OX with an OXc is a ferrallitisol duroxydique too, with an ND as well (A-OX-ND-OXc): the book has no oxydisol duroxydique and the hardness precedence sets OXc before ND (D5; Hugo's decision R2, 2026-11-03)."
+    wrb2006: "Plinthosols"
+    position: {codes: [OXc], within: 120}
+    distinctions:
+      - {with: "ferrallitisols pétroxydiques", page: "159", by: "an OXm within 120 cm (precedence.yaml)"}
+      - {with: "oxydisols nodulaires", page: "159-160", by: "an OXc within 120 cm: the hardness precedence, OXc before ND (precedence.yaml; R2)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - horizon_within_rp: {codes: [OXc], depth: 120}
+        - no_horizon_within_rp: {codes: [OXm], depth: 120}
+  - code: "oxydisols_meubles"
+    ger: "ferrallitisols_oxydisols"
+    name: "oxydisols meubles"
+    name_singular: "oxydisol meuble"
+    name_en: "loose oxydisols"
+    name_en_singular: "loose oxydisol"
+    page: "160"
+    sequences: ["A-OX-RT-C-R", "A-OX-C-R"]
+    notes: "An OX thicker than any F within 120 cm; no ND, OXm or OXc within 120 cm (an OXm deeper)."
+    wrb2006: "Ferric Ferralsols (Geric)"
+    distinctions:
+      - {with: "ferrallitisols meubles", page: "157", by: "the thicker loose horizon (loose_rp)"}
+      - {with: "ferrallitisols duroxydiques", page: "159", by: "an OXc within 120 cm (D5)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - loose_rp: {kind: OX}
+        - no_horizon_within_rp: {codes: [ND, OXm, OXc], depth: 120}
+  - code: "oxydisols_nodulaires"
+    ger: "ferrallitisols_oxydisols"
+    name: "oxydisols nodulaires"
+    name_singular: "oxydisol nodulaire"
+    name_en: "nodular oxydisols"
+    name_en_singular: "nodular oxydisol"
+    page: "160-161"
+    sequences: ["A|Ae|A-ND-OX", "A-OX-ND"]
+    notes: "At least one ND within 120 cm and no OXm before 120 cm; the OX thicker than any F."
+    wrb2006: "Hyperferric Plinthosols"
+    position: {codes: [ND], within: 120}
+    distinctions:
+      - {with: "oxydisols pétroxydiques", page: "161", by: "an OXm within 120 cm (precedence.yaml)"}
+      - {with: "ferrallitisols nodulaires", page: "158", by: "the thicker loose horizon (loose_rp)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - horizon_within_rp: {codes: [ND], depth: 120}
+        - no_horizon_within_rp: {codes: [OXm], depth: 120}
+        - loose_rp: {kind: OX}
+  - code: "oxydisols_petroxydiques"
+    ger: "ferrallitisols_oxydisols"
+    name: "oxydisols pétroxydiques"
+    name_singular: "oxydisol pétroxydique"
+    name_en: "petroxidic oxydisols"
+    name_en_singular: "petroxidic oxydisol"
+    page: "161"
+    sequences: ["A-OXm-OX", "A-OXm-OX-ND", "A-ND-OXm-OX", "A-OX-OXm-RT"]
+    notes: "An OXm within 120 cm, with ND or OX; the OX thicker than any F."
+    wrb2006: "Ferric Plinthosols (Petric)"
+    position: {codes: [OXm], within: 120}
+    distinctions:
+      - {with: "ferrallitisols pétroxydiques", page: "159", by: "the thicker loose horizon (loose_rp)"}
+      - {with: "lithosols", page: "219", by: "the cuirasse within 10 cm (later release)"}
+    tests:
+      all_of:
+        - *fo_scope
+        - horizon_within_rp: {codes: [OXm], depth: 120}
+        - loose_rp: {kind: OX}

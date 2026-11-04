@@ -1,0 +1,103 @@
+# Ferruginosols (pp. 169-177), 4 references, formerly the "sols ferrugineux
+# tropicaux": solums of the intertropical domain (Q18; a first version of
+# the book, p. VI). A ferruginosol has an FE (ferruginous, loose, reddish,
+# total Fe 12 % or less), or an E or a BT (BTg) under an OXm or OXc (the
+# pétroxydiques, D10); the climate (a dry season of 4 to 5 months, 400 to
+# 1,400 mm) is reported, not tested. The pétroxydiques accept an OXc (p.
+# 175, D11); "concrétionné" is the qualifier of an OXc (D12), the FEcn and
+# BTcn types keep their book names (later, with the types).
+#
+# Imperfect (p. 173): a ferruginosol meuble with no S horizon (A-FE-C or M),
+# "sans horizon S".
+# Distinctions (pp. 175-176): the ferrallitisols have no FE, E or BT and a
+# total weathering of the primary minerals at the top (their side test);
+# the fersialsols an FS (the rapid key, entry 9); the luvisols no FE (a
+# later release).
+scope: &fg_scope
+  all_of:
+    - tropical_rp: {}
+meu_core: &meu_core
+  all_of:
+    - *fg_scope
+    - no_horizon_within_rp: {codes: [BT, E]}
+references:
+  - code: "ferruginosols_meubles"
+    ger: "ferruginosols"
+    name: "ferruginosols meubles"
+    name_singular: "ferruginosol meuble"
+    name_en: "loose ferruginosols"
+    name_en_singular: "loose ferruginosol"
+    page: "173"
+    sequences: ["A-FE-S-C|M"]
+    notes: "An FE under the A; no BT or E; the solum 1 to 2.5 m deep, clay 5 to 15 % (both growing with age; not tested)."
+    wrb2006: "Lixisols or Acrisols"
+    distinctions:
+      - {with: "ferruginosols semiluviques, luviques", page: "174", by: "a BT, with an E for the luviques (side test)"}
+      - {with: "ferrallitisols", page: "175", by: "an FE (their side test)"}
+    tests:
+      all_of:
+        - *meu_core
+        - sequence_rp: {sequences: ["A-FE-S-(C|M)"]}
+    imperfect:
+      - qualifier: "sans horizon S"
+        page: "173"
+        criterion: "no S under the FE (A-FE-C or M; an imperfect attachment, p. 173)"
+        tests:
+          all_of:
+            - *meu_core
+            - sequence_rp: {sequences: ["A-FE-(C|M)"]}
+            - no_horizon_within_rp: {codes: [S]}
+  - code: "ferruginosols_semiluviques"
+    ger: "ferruginosols"
+    name: "ferruginosols semiluviques"
+    name_singular: "ferruginosol semiluvique"
+    name_en: "semiluvic ferruginosols"
+    name_en_singular: "semiluvic ferruginosol"
+    page: "174"
+    sequences: ["A-FE-BT-C-R"]
+    notes: "An FE over a BT, no E; with or without mottles and concretions (FEcn, BTg, Sg)."
+    wrb2006: "Lixisols or Acrisols"
+    distinctions:
+      - {with: "ferruginosols luviques", page: "174", by: "an E (side test)"}
+      - {with: "luvisols", page: "176", by: "an FE (later release)"}
+    tests:
+      all_of:
+        - *fg_scope
+        - sequence_rp: {sequences: ["A-FE-BT-(C|R)"]}
+        - no_horizon_within_rp: {codes: [E]}
+  - code: "ferruginosols_luviques"
+    ger: "ferruginosols"
+    name: "ferruginosols luviques"
+    name_singular: "ferruginosol luvique"
+    name_en: "luvic ferruginosols"
+    name_en_singular: "luvic ferruginosol"
+    page: "174"
+    sequences: ["A-FE-E-BT-II C"]
+    notes: "An FE over an E (Ea) over a BT; unmottled or mottled, concretioned or cuirassed (the types)."
+    wrb2006: "Lixisols or Acrisols"
+    distinctions:
+      - {with: "ferruginosols semiluviques", page: "174", by: "no E (side test)"}
+      - {with: "luvisols", page: "176", by: "an FE (later release)"}
+    tests:
+      all_of:
+        - *fg_scope
+        - sequence_rp: {sequences: ["A-FE-E-BT"]}
+  - code: "ferruginosols_petroxydiques"
+    ger: "ferruginosols"
+    name: "ferruginosols pétroxydiques"
+    name_singular: "ferruginosol pétroxydique"
+    name_en: "petroxidic ferruginosols"
+    name_en_singular: "petroxidic ferruginosol"
+    page: "175"
+    sequences: ["A-OXm-Ea-BTg-C-R", "A-OXm-Ea-C-R", "OXm-Ea-BTg-Sg-C-R", "A-OXm-BTg-Cg-R"]
+    notes: "An E or a BT (BTg) under an OXm or an OXc (D11), no FE; from coarse leucocratic granites (not tested)."
+    wrb2006: "Plinthosols (Petric)"
+    distinctions:
+      - {with: "ferrallitisols pétroxydiques, duroxydiques", page: "175", by: "the E or BT under the cuirasse or carapace (their side test)"}
+      - {with: "ferruginosols meubles", page: "173", by: "an FE over the cuirasse (side test: no FE)"}
+    tests:
+      all_of:
+        - *fg_scope
+        - sequence_rp: {sequences: ["(A)-(OXm)-(OXc)-E-(BT)", "(A)-(OXm)-(OXc)-BT"]}
+        - horizon_within_rp: {codes: [OXm, OXc]}
+        - no_horizon_within_rp: {codes: [FE]}

@@ -48,7 +48,7 @@ references:
     wrb2006: "Arenosols"
     distinctions:
       - {with: "régosols sableux", page: "101", by: "an organo-mineral top with roots and biological activity (later release)"}
-      - {with: "fluviosols", page: "101", by: "a valley and a fluctuating water table (later release)"}
+      - {with: "fluviosols", page: "101", by: "a valley and a fluctuating water table (fluviosols.yaml; the rapid key, 5a before 6b)"}
       - {with: "brunisols, calcosols, alocrisols, luvisols", page: "101", by: "no S and no BT (side test)"}
       - {with: "podzosols", page: "102", by: "a BP downslope or deep makes a podzosol (later release)"}
       - {with: "salisols and sodisols", page: "102", by: "an arénosol salin is never one (later release)"}

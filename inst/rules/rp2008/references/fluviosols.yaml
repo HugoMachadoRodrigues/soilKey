@@ -1,0 +1,139 @@
+# Fluviosols (pp. 183-191), 4 references: solums of recent fluviatile or
+# lacustrine alluvium, in a low position (the minor and major beds, not the
+# terraces) with an alluvial water table, usually floodable (p. 183). Hugo's
+# decision Q14: the alluvial origin is required (layer_origin, rock_origin
+# within 50 cm, or the parent material); the position (valley_position) and
+# the water table (flood_frequency, groundwater_kind, groundwater_depth_cm)
+# are read when recorded, a terrace or an alluvial fan failing the
+# reference, and the water table only when both the flooding and the
+# groundwater are recorded as none (an embanked valley is not flooded; "none
+# observed" is no record: Hugo's decision D1, 2026-11-03); not recorded, or a
+# valley_position soilKey does not read, the reference attaches
+# provisionally (`provisional_unless`, alluvial_rp).
+#
+# No specific horizon (p. 184). Forbidden: E, BT, BP, a sodic or salic
+# horizon, a sulfated U, a thionic TH; a G or an H starting within 50 cm (a
+# réductisol or a histosol fluvique; S23: any H from the surface excludes).
+# A g or -g within 50 cm continuing over 50 cm leaves the choice between a
+# rédoxisol fluvique and the double fluviosol-rédoxisol (Q8: the rédoxisol
+# fluvique in the name, the double among the candidates): the rédoxisols
+# come later, their signpost makes the name provisional and the pairs wait
+# in doubles.yaml.
+#
+# Distinctions (pp. 188-189): the fluviosols bruts before the régosols in an
+# alluvial setting (precedence.yaml); the colluviosols by a colluvial origin
+# (they yield to every other reference, p. 132); a peyrosol-fluviosol brut
+# double (a later release); the cones of alluvial fans are no fluviosols
+# (valley_position alluvial fan).
+scope: &fl_scope
+  all_of:
+    - no_horizon_within_rp: {codes: [E, BT, BP, "Na+", "Sa+", U, TH]}
+    - no_horizon_within_rp: {codes: [G, H], depth: 50}
+# the M of the typiques: a fine alluvium the notation or the data write C
+# stands for it (A-Jp-C, p. 185; the review of 0.9.348)
+typ1: &fl_typ1
+  all_of:
+    - sequence_rp: {sequences: ["A-Jp-D"]}
+    - no_horizon_within_rp: {codes: [M, C]}
+typ2: &fl_typ2
+  all_of:
+    - sequence_rp: {sequences: ["A-Jp-M|C-(D)"]}
+    - thickness_rp: {codes: [A, Jp, M, C], min: 80, from_surface: true}
+typ_core: &fl_typ_core
+  all_of:
+    - *fl_scope
+    - alluvial_rp: {}
+    - no_horizon_within_rp: {codes: [S, Js]}
+references:
+  - code: "fluviosols_bruts"
+    ger: "fluviosols"
+    name: "fluviosols bruts"
+    name_singular: "fluviosol brut"
+    name_en: "raw fluviosols"
+    name_en_singular: "raw fluviosol"
+    page: "185"
+    sequences: ["M|D"]
+    notes: "Raw, practically unweathered M or D layers (sands and pebbles) of the minor bed, always covered at high water; organic traces only, no pedological structure; a coarse O litter possible. A raw alluvium the data read as a C (no structure) stands for the M (soilKey's reading); a structureless surface layer is no Js (p. 25), so the bruts are reached on the data (the review's D2)."
+    wrb2006: "Fluvisols"
+    provisional_unless: {all_of: [{alluvial_rp: {bed: minor, site: required}}]}
+    distinctions:
+      - {with: "régosols", page: "188", by: "in an alluvial setting the fluviosols bruts (precedence.yaml)"}
+      - {with: "peyrosols", page: "188", by: "the double peyrosol-fluviosol brut (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *fl_scope
+        - alluvial_rp: {bed: minor}
+        - horizon_within_rp: {codes: [M, D, C]}
+        - no_horizon_within_rp: {codes: [A, J, S]}
+  - code: "fluviosols_juveniles"
+    ger: "fluviosols"
+    name: "fluviosols juvéniles"
+    name_singular: "fluviosol juvénile"
+    name_en: "juvenile fluviosols"
+    name_en_singular: "juvenile fluviosol"
+    page: "185"
+    sequences: ["Js-M|D"]
+    notes: "A Js under 30 cm directly on the M or D (the alluvial gravel); no Jp, no A; O horizons frequent."
+    wrb2006: "Fluvisols"
+    provisional_unless: {all_of: [{alluvial_rp: {site: required}}]}
+    distinctions:
+      - {with: "fluviosols bruts", page: "185", by: "the start of humified organic matter in the fine earth (the Js)"}
+      - {with: "fluviosols typiques", page: "185", by: "an A and a Jp"}
+    tests:
+      all_of:
+        - *fl_scope
+        - alluvial_rp: {}
+        - sequence_rp: {sequences: ["Js-M-(D)", "Js-D"]}
+        - thickness_rp: {codes: [Js], max: 30, from_surface: true}
+        - no_horizon_within_rp: {codes: [Jp, A, S]}
+  - code: "fluviosols_typiques"
+    ger: "fluviosols"
+    name: "fluviosols typiques"
+    name_singular: "fluviosol typique"
+    name_en: "typical fluviosols"
+    name_en_singular: "typical fluviosol"
+    page: "185-186"
+    sequences: ["A|LA-Jp-D", "A|LA-Jp-M-D"]
+    notes: "No true S. (1) A or LA over a Jp on the D, [A + Jp] 30 to 80 cm; (2) A or LA over a Jp over a fine M, the solum over 80 cm, the D usually under 1 m; a fine alluvium written or read C stands for the M (soilKey's reading). With the M or D within 30 cm, leptique."
+    wrb2006: "Fluvisols"
+    provisional_unless: {all_of: [{alluvial_rp: {site: required}}]}
+    distinctions:
+      - {with: "fluviosols brunifiés", page: "186", by: "a true S"}
+      - {with: "fluviosols juvéniles", page: "185", by: "an A and a Jp"}
+    tests:
+      all_of:
+        - *fl_typ_core
+        - any_of:
+            - all_of:
+                - *fl_typ1
+                - thickness_rp: {codes: [A, Jp], min: 30, max: 80, from_surface: true}
+            - *fl_typ2
+    imperfect:
+      - qualifier: "leptique"
+        page: "185-187"
+        criterion: "[A + Jp] under 30 cm on the M or D (the figure of p. 186, S22)"
+        tests:
+          all_of:
+            - *fl_typ_core
+            - sequence_rp: {sequences: ["A-Jp-M|C-(D)", "A-Jp-D"]}
+            - thickness_rp: {codes: [A, Jp], max: 30, from_surface: true}
+  - code: "fluviosols_brunifies"
+    ger: "fluviosols"
+    name: "fluviosols brunifiés"
+    name_singular: "fluviosol brunifié"
+    name_en: "brunified fluviosols"
+    name_en_singular: "brunified fluviosol"
+    page: "186-187"
+    sequences: ["A|Aca|Aci|LA-S|Sca|Sci-D", "A|Aca|Aci|LA-S|Sca|Sci-M-D"]
+    notes: "A well structured, biologically active S (or Sca, Sci) under the A, an M possible over the D; the solum 1 m or more. Redox features within 50 cm: the double fluviosol brunifié-rédoxisol or a rédoxisol fluvique (later release)."
+    wrb2006: "Fluvic Cambisols"
+    provisional_unless: {all_of: [{alluvial_rp: {site: required}}]}
+    distinctions:
+      - {with: "brunisols, calcosols, calcisols", page: "107, 187-188", by: "recent floodable alluvium in a valley (the rapid key, entry 5a before 11a and 12)"}
+      - {with: "rédoxisols", page: "187", by: "the double fluviosol brunifié-rédoxisol (doubles.yaml, later release)"}
+    tests:
+      all_of:
+        - *fl_scope
+        - alluvial_rp: {}
+        - sequence_rp: {sequences: ["A-S-(M)-(D)"]}
+        - thickness_rp: {codes: [A, S, M], min: 100, from_surface: true}

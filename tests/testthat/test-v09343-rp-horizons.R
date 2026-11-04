@@ -244,8 +244,10 @@ test_that("the A horizons: An, Ach, Aso, Aca, Ado, Aci, Amg, A, Av, Ae, Js", {
   fr <- .rp_identify(.fr_P(.fr_A(0, 20, clay_pct = 12), e, .fr_S(40, 90, clay_pct = 35, clay_films_amount = "many")))
   expect_identical(fr$code, c("Ae", "E", "BT"))
   expect_true("a" %in% fr$features[[2]])
-  # Js: little organic matter and a weak structure
-  expect_identical(one(.fr_L(0, 15, oc_pct = 0.3, structure_type = "single grain", structure_grade = "structureless")), "Js")
+  # Js: little organic matter and a weak structure; with no pedological
+  # structure (single grain) no Js but a C (p. 25; 0.9.348, the review's D2)
+  expect_identical(one(.fr_L(0, 15, oc_pct = 0.3, structure_type = "granular", structure_grade = "weak")), "Js")
+  expect_identical(one(.fr_L(0, 15, oc_pct = 0.3, structure_type = "single grain", structure_grade = "structureless")), "C")
 })
 
 
@@ -363,7 +365,7 @@ test_that("the other codes: M, Mt, OHta, Femp, OXm, OXc, ND, BP, BTss, Snd, OX, 
   sdo <- .fr_S(20, 60, caco3_pct = 10, mgco3_pct = 12, effervescence_class = "slight", ph_h2o = 8, bs_pct = 100)
   expect_identical(.fr_code(.fr_P(.fr_A(0, 20), sdo, .fr_C(60, 100, caco3_pct = 40)), 20), "Sdo")
   # Jp: under a Js, before the C
-  js <- .fr_L(0, 15, oc_pct = 0.3, structure_type = "single grain", structure_grade = "structureless")
+  js <- .fr_L(0, 15, oc_pct = 0.3, structure_type = "granular", structure_grade = "weak")
   jp <- .fr_L(15, 50, oc_pct = 0.1, structure_type = "massive", structure_grade = "structureless")
   expect_identical(.rp_identify(.fr_P(js, jp, .fr_C(50, 100)))$code[1:2], c("Js", "Jp"))
 })

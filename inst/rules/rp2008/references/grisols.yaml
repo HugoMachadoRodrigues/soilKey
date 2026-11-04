@@ -1,0 +1,106 @@
+# Grisols (pp. 192-195), 3 references: dark solums with an organic matter
+# decreasing slowly with depth (clinohumic), the complex unsaturated in all
+# horizons (S/CEC 50 to 95 %), between the broadleaf forest and the steppe.
+# Compulsory: an Aso and an Eh or a BThd (p. 192). The Aso by the chapter
+# (Q17, D15; sombric_rp): fairly thin (under 30 cm, +/- 5), a moist value
+# under 4.5 and chroma under 4, 4/3 excluded, not calcareous, under
+# permanent vegetation S/CEC 50 to 80 % and pH 5.5 to 6.5; the general
+# definition of p. 13 in the strict pass only (met by the chapter alone, the
+# grisol is imperfect). Cultivated, by an L or the land use (D19), the LAh or
+# LAso of the cultivated sequences, the complex not tested. Clinohumic: 0.6 %
+# organic carbon or more below 40 cm in an A, E or BT (p. 33, as the
+# chernosols); the Eh, BTh and BThd S/CEC under 95 % (p. 193), a deep
+# non-humic BT not tested (the review of 0.9.348). The texture
+# differentiation index, 1.3 itself hapliques (S19): éluviques and dégradés
+# over 1.3 (E to BT), hapliques 1.3 or less (A to BT). The h of BTh and the
+# d of BThd are the features of the BT: BThd needs the degradation (siltans:
+# degradation_form, else soilKey's retic properties, p. 18), BTh is the BT
+# of the clinohumic solum.
+#
+# No entry of the rapid key reaches the grisols: soilKey places them in 7c
+# beside the chernosols and phaeosols (Q6, rapid_key.yaml).
+# Distinctions (p. 194): before the chernosols mélanoluviques and typiques and
+# the phaeosols (precedence.yaml): the Aso not saturated, the LAh thin, an Eh,
+# the degradation of the ped faces; before the néoluvisols and luvisols
+# typiques by the dark, humic Aso, Eh, BTh (the rapid key).
+scope: &gr_scope
+  all_of:
+    - thickness_rp: {codes: [A], max: 30, from_surface: true}
+    - attribute_rp: {attribute: oc_pct, threshold: 0.6, direction: min, codes: [A, E, BT], from: 40, layers: any}
+    # S/CEC under 95 % in the Eh, BTh and BThd (p. 193), not in a deep
+    # non-humic BT: the E, the BT written with h, and the BT starting within
+    # 50 cm (the BTh starts between 30 and 50 cm; the data write no h on a BT)
+    - none_of:
+        - attribute_rp: {attribute: bs, threshold: 95, direction: min, kind: bs, codes: [E, BTh], layers: any}
+        - attribute_rp: {attribute: bs, threshold: 95, direction: min, kind: bs, codes: [BT], within: 50, layers: any}
+    - no_horizon_within_rp: {codes: [Ach, BP, FS]}
+references:
+  - code: "grisols_eluviques"
+    ger: "grisols"
+    name: "grisols éluviques"
+    name_singular: "grisol éluvique"
+    name_en: "eluvic grisols"
+    name_en_singular: "eluvic grisol"
+    page: "193"
+    sequences: ["Aso-Eh-BTh", "LAh-Eh-BTh", "LEh-BTh"]
+    notes: "A clear eluviation of the organo-clay complexes: an Eh much greyer than the humic horizons above and below it, lighter in texture and weakly structured; IDT over 1.3; no degraded BThd."
+    wrb2006: "Greyic Phaeozems (Albic)"
+    distinctions:
+      - {with: "grisols dégradés", page: "194", by: "a BThd (side test)"}
+      - {with: "chernosols mélanoluviques", page: "194", by: "the Aso not saturated, an Eh (precedence.yaml)"}
+    tests:
+      all_of:
+        - *gr_scope
+        - any_of:
+            - all_of:
+                - sombric_rp: {}
+                - sequence_rp: {sequences: ["A-E-BT"]}
+            - all_of:
+                - horizon_within_rp: {codes: [LEh], depth: 10}
+                - sequence_rp: {sequences: ["E-BT"]}
+        - horizon_within_rp: {codes: [Eh]}
+        - none_of:
+            - horizon_within_rp: {codes: [BTd]}
+        - idt_rp: {upper: [E], lower: [BT], min: 1.3, open: true}
+  - code: "grisols_degrades"
+    ger: "grisols"
+    name: "grisols dégradés"
+    name_singular: "grisol dégradé"
+    name_en: "degraded grisols"
+    name_en_singular: "degraded grisol"
+    page: "194"
+    sequences: ["Aso-Eh-BThd", "LAh-Eh-BThd"]
+    notes: "A clear Eh and a BThd with many silty degradation spots (siltans); IDT over 1.3."
+    wrb2006: "Greyic Phaeozems (Glossalbic)"
+    distinctions:
+      - {with: "grisols éluviques", page: "193", by: "no BThd"}
+      - {with: "phæosols", page: "194", by: "an Eh, the degradation (precedence.yaml)"}
+    tests:
+      all_of:
+        - *gr_scope
+        - sombric_rp: {}
+        - sequence_rp: {sequences: ["A-E-BT"]}
+        - horizon_within_rp: {codes: [Eh]}
+        - horizon_within_rp: {codes: [BTd]}
+        - idt_rp: {upper: [E], lower: [BT], min: 1.3, open: true}
+  - code: "grisols_hapliques"
+    ger: "grisols"
+    name: "grisols hapliques"
+    name_singular: "grisol haplique"
+    name_en: "haplic grisols"
+    name_en_singular: "haplic grisol"
+    page: "194"
+    sequences: ["Aso-BThd", "LAh-BThd"]
+    notes: "No true Eh, the horizon under the Aso a little greyer at most, with a fine angular or subangular structure; no significant texture differentiation (IDT under 1.3; 1.3 itself hapliques, S19). Some cultivated ones are truncated grisols dégradés."
+    wrb2006: "Greyic Phaeozems"
+    distinctions:
+      - {with: "grisols dégradés", page: "194", by: "an Eh and an IDT over 1.3"}
+      - {with: "phæosols", page: "194", by: "the degradation, the unsaturation in every horizon (precedence.yaml)"}
+    tests:
+      all_of:
+        - *gr_scope
+        - sombric_rp: {}
+        - sequence_rp: {sequences: ["A-BT"]}
+        - horizon_within_rp: {codes: [BTd]}
+        - no_horizon_within_rp: {codes: [E]}
+        - idt_rp: {upper: [A], lower: [BT], max: 1.3}

@@ -7,7 +7,10 @@
 # the printed names (default 2); names as printed, the plural of the list.
 #
 # The references of the GER marked implemented are tested by
-# classify_rp2008() from references/<ger>.yaml. The others come in later
+# classify_rp2008() from references/<ger>.yaml (15 GER, 53 references since
+# v0.9.348); `first_draft` marks the three tropical chapters the book calls a
+# first version (p. VI; Q18: their results say so), `result_note` what a
+# result of the GER reports and does not test. The others come in later
 # releases: their references are not tested, and their `signpost` (the
 # reference horizons or materials of the chapter, soilKey's, never a test of
 # the reference) puts the GER among the candidates as not implemented yet,
@@ -81,73 +84,54 @@ ger:
     implemented: true
     references: [cryosols_histiques, cryosols_mineraux]
 
-  # --- the GER of later releases ---------------------------------------------------------
   - code: "ferrallitisols_oxydisols"
     name: "Ferrallitisols et oxydisols"
     name_en: "Ferrallitisols and oxydisols"
     pages: "146-168"
-    implemented: false
-    references:
-      - {code: "ferrallitisols_meubles", name: "ferrallitisols meubles"}
-      - {code: "ferrallitisols_nodulaires", name: "ferrallitisols nodulaires"}
-      - {code: "ferrallitisols_petroxydiques", name: "ferrallitisols pétroxydiques"}
-      - {code: "ferrallitisols_duroxydiques", name: "ferrallitisols duroxydiques"}
-      - {code: "oxydisols_meubles", name: "oxydisols meubles"}
-      - {code: "oxydisols_nodulaires", name: "oxydisols nodulaires"}
-      - {code: "oxydisols_petroxydiques", name: "oxydisols pétroxydiques"}
-    signpost: {any_of: [{horizon_within_rp: {codes: [F, OX, ND, RT, OXc, OXm]}}]}
+    chapter_version: "21st version, 9 November 2007"
+    implemented: true
+    first_draft: true
+    references: [ferrallitisols_meubles, ferrallitisols_nodulaires, ferrallitisols_petroxydiques, ferrallitisols_duroxydiques, oxydisols_meubles, oxydisols_nodulaires, oxydisols_petroxydiques]
   - code: "ferruginosols"
     name: "Ferruginosols"
     name_en: "Ferruginosols"
     pages: "169-177"
-    implemented: false
-    references:
-      - {code: "ferruginosols_meubles", name: "ferruginosols meubles"}
-      - {code: "ferruginosols_semiluviques", name: "ferruginosols semiluviques"}
-      - {code: "ferruginosols_luviques", name: "ferruginosols luviques"}
-      - {code: "ferruginosols_petroxydiques", name: "ferruginosols pétroxydiques"}
-    signpost: {any_of: [{horizon_within_rp: {codes: [FE]}}]}
+    chapter_version: "14th version, 2 January 2008"
+    implemented: true
+    first_draft: true
+    result_note: "the climate of the ferruginosols (a dry season of 4 to 5 months, 400 to 1,400 mm a year, p. 169) is reported, not tested (D10)"
+    references: [ferruginosols_meubles, ferruginosols_semiluviques, ferruginosols_luviques, ferruginosols_petroxydiques]
   - code: "fersialsols"
     name: "Fersialsols"
     name_en: "Fersialsols"
     pages: "178-182"
-    implemented: false
-    references:
-      - {code: "fersialsols_carbonates", name: "fersialsols carbonatés"}
-      - {code: "fersialsols_calciques", name: "fersialsols calciques"}
-      - {code: "fersialsols_insatures", name: "fersialsols insaturés"}
-      - {code: "fersialsols_eluviques", name: "fersialsols éluviques"}
-    signpost: {any_of: [{horizon_within_rp: {codes: [FS]}}]}
+    chapter_version: "11th version, 31 December 2007"
+    implemented: true
+    references: [fersialsols_carbonates, fersialsols_calciques, fersialsols_insatures, fersialsols_eluviques]
   - code: "fluviosols"
     name: "Fluviosols"
     name_en: "Fluviosols"
     pages: "183-191"
-    implemented: false
-    references:
-      - {code: "fluviosols_bruts", name: "fluviosols bruts"}
-      - {code: "fluviosols_juveniles", name: "fluviosols juvéniles"}
-      - {code: "fluviosols_typiques", name: "fluviosols typiques"}
-      - {code: "fluviosols_brunifies", name: "fluviosols brunifiés"}
-    signpost: {any_of: [{origin_rp: {pattern: "fluv|alluv", depth: 50}}]}
+    chapter_version: "18th version, 10 November 2007"
+    implemented: true
+    references: [fluviosols_bruts, fluviosols_juveniles, fluviosols_typiques, fluviosols_brunifies]
   - code: "grisols"
     name: "Grisols"
     name_en: "Grisols"
     pages: "192-195"
-    implemented: false
-    references:
-      - {code: "grisols_eluviques", name: "grisols éluviques"}
-      - {code: "grisols_degrades", name: "grisols dégradés"}
-      - {code: "grisols_hapliques", name: "grisols hapliques"}
-    signpost: {all_of: [{horizon_within_rp: {codes: [Aso]}}, {horizon_within_rp: {codes: [BT]}}]}
+    chapter_version: "5th version, 28 December 2007"
+    implemented: true
+    references: [grisols_eluviques, grisols_degrades, grisols_hapliques]
   - code: "gypsosols"
     name: "Gypsosols"
     name_en: "Gypsosols"
     pages: "196-200"
-    implemented: false
-    references:
-      - {code: "gypsosols_hapliques", name: "gypsosols hapliques"}
-      - {code: "gypsosols_petrogypsiques", name: "gypsosols pétrogypsiques"}
-    signpost: {any_of: [{horizon_within_rp: {codes: [Ys, Ym], depth: 20}}]}
+    chapter_version: "9th version, 2 January 2008"
+    implemented: true
+    result_note: "the arid and semi-arid climate of the gypsosols (under 300 mm a year, p. 196) is reported, not tested"
+    references: [gypsosols_hapliques, gypsosols_petrogypsiques]
+
+  # --- the GER of later releases ---------------------------------------------------------
   - code: "histosols"
     name: "Histosols"
     name_en: "Histosols"
@@ -194,6 +178,7 @@ ger:
     name_en: "Nitosols"
     pages: "233-237"
     implemented: false
+    first_draft: true
     references:
       - {code: "nitosols", name: "nitosols"}
     signpost: {any_of: [{horizon_within_rp: {codes: [Sn]}}]}
