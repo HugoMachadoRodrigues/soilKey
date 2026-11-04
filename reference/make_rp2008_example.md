@@ -1,9 +1,9 @@
 # Example pedons for the references of the Referentiel pedologique 2008
 
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 92 of the first twenty-eight GER), in the RP
-notation (`site$designation_system = "rp2008"`) with the properties
-their tests read. They are not real profiles.
+reference (the 110 of the 34 GER), in the RP notation
+(`site$designation_system = "rp2008"`) with the properties their tests
+read. They are not real profiles.
 
 ## Usage
 
@@ -41,7 +41,12 @@ make_rp2008_example(
     "podzosols_humo_duriques", "podzosols_eluviques", "podzosols_placiques",
     "post_podzosols", "rankosols", "reductisols_typiques", "reductisols_stagniques", 
    
-     "redoxisols")
+     "redoxisols", "regosols", "salisols_chloruro_sulfates", "salisols_carbonates",
+    "sodisols_indifferencies", "sodisols_solonetziques", "sodisols_solodises",
+    "sodisalisols", "salisodisols", "thalassosols_bruts", "thalassosols_juveniles",
+    "thalassosols_polderises", "thiosols", "sulfatosols", "veracrisols",
+    "lithovertisols", "topovertisols", "paravertisols_hapliques",
+    "paravertisols_planosoliques")
 )
 ```
 
@@ -90,7 +95,13 @@ make_rp2008_example(
   `"podzosols_humiques"`, `"podzosols_humo_duriques"`,
   `"podzosols_eluviques"`, `"podzosols_placiques"`, `"post_podzosols"`,
   `"rankosols"`, `"reductisols_typiques"`, `"reductisols_stagniques"`,
-  `"redoxisols"`.
+  `"redoxisols"`, `"regosols"`, `"salisols_chloruro_sulfates"`,
+  `"salisols_carbonates"`, `"sodisols_indifferencies"`,
+  `"sodisols_solonetziques"`, `"sodisols_solodises"`, `"sodisalisols"`,
+  `"salisodisols"`, `"thalassosols_bruts"`, `"thalassosols_juveniles"`,
+  `"thalassosols_polderises"`, `"thiosols"`, `"sulfatosols"`,
+  `"veracrisols"`, `"lithovertisols"`, `"topovertisols"`,
+  `"paravertisols_hapliques"`, `"paravertisols_planosoliques"`.
 
 ## Value
 

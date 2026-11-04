@@ -4,19 +4,18 @@ Attaches a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 to the references of the *Referentiel pedologique* 2008 (AFES; Baize and
 Girard coord.; Editions Quae, 2009). **Experimental**: this release
-tests the 92 references of the first twenty-eight groups of references
-(GER): alocrisols (2), andosols (6), anthroposols (5), arenosols (1),
-brunisols (2), the solums dominated by calcium or magnesium (7:
-rendosols, calcosols, dolomitosols, rendisols, calcisols, magnesisols,
+tests the 110 references of the 34 groups of references (GER):
+alocrisols (2), andosols (6), anthroposols (5), arenosols (1), brunisols
+(2), the solums dominated by calcium or magnesium (7: rendosols,
+calcosols, dolomitosols, rendisols, calcisols, magnesisols,
 calcarisols), chernosols (3), colluviosols (1), cryosols (2),
 ferrallitisols and oxydisols (7), ferruginosols (4), fersialsols (4),
 fluviosols (4), grisols (3), gypsosols (2), histosols (5),
 leptismectisols (1), lithosols (1), luvisols (6), nitosols (1),
 organosols (4), pelosols (3), peyrosols (1), phaeosols (2), planosols
-(3), podzosols (8), rankosols (1) and reductisols et redoxisols (3). The
-18 references of the other 6 GER come in later releases: a profile that
-shows their reference horizons gets them among the candidates as not
-implemented yet, and its name is provisional. The horizons of the
+(3), podzosols (8), rankosols (1), reductisols et redoxisols (3),
+regosols (1), salisols et sodisols (7), thalassosols (3), thiosols et
+sulfatosols (2), veracrisols (1) and vertisols (4). The horizons of the
 intertropical chapters (F, OX, RT, ND, FE, OXc, OXm) are read only in
 the intertropical domain, and the results of those chapters and of the
 nitosols say that the book calls them a first version (Q18); a fluviosol
@@ -29,7 +28,13 @@ functional reductic or redox features starting within 50 cm and
 continuing over 50 cm (a G within 50 cm makes a reductisol whatever lies
 above), and their doubles with the luvisols, podzosols, pelosols,
 brunisols, colluviosols, cryosols and histosols are those the book
-names; the depth class of the hydromorphy is in `trace$hydromorphy`.
+names; the depth class of the hydromorphy is in `trace$hydromorphy`. The
+salisols and sodisols read the salic and sodic horizons within 60 cm,
+the thalassosols a recorded marine material (provisional while the tidal
+flooding or the polder is not recorded), the thiosols and sulfatosols,
+first in every case, the sulfur within 50 cm, the veracrisols their
+vermihumic Ah, the vertisols their SV and V, litho against topo by the
+site, else the SV.
 
 ## Usage
 

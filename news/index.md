@@ -1,5 +1,135 @@
 # Changelog
 
+## soilKey 0.9.352 (2026-11-04)
+
+### France: the Référentiel pédologique 2008 attaches its last 18 references
+
+[`classify_rp2008()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_rp2008.md)
+now tests the 110 references of the 34 groups of references (GER): the
+ninety-two of 0.9.346 to 0.9.351 and the six chapters that close the
+book, pp. 291-326: régosols (1), salisols et sodisols (7), thalassosols
+(3), thiosols et sulfatosols (2), veracrisols (1) and vertisols (4), in
+`inst/rules/rp2008/references/<ger>.yaml`. They are plugged into the
+attachment of 0.9.346 as parts 5 to 7 were; their signposts leave
+`key.yaml`, which no longer holds any, and no double or precedence waits
+for a later release. Every other classification is unchanged (the
+fixtures of the other systems byte-identical).
+
+- **Régosols** (pp. 291-293). Within 10 cm (+/- 5; the OL not counted)
+  an M or D layer or a C horizon under one organo-mineral or holorganic
+  horizon at most, the holorganic O counting as one, read as the
+  lithosols are (`lithic_obstacle_rp(window = TRUE)`: an undecided layer
+  deeper than the window is no obstacle); the hardness from the horizon
+  frame (the notation, the rupture resistance, soilKey’s
+  [`continuous_rock()`](https://hugomachadorodrigues.github.io/soilKey/reference/continuous_rock.md);
+  not recorded, undecided). H of 10 cm or less over M, D or C is the
+  régosol épihistique (p. 209); the young alluvial and marine deposits,
+  the fluviosols bruts and juvéniles and the thalassosols bruts and
+  juvéniles, take the name before it (p. 291), and an A over 10 cm makes
+  the arénosol (pp. 101, 292).
+- **Salisols et sodisols** (pp. 294-302). The salic horizon within 60 cm
+  (+/- 10), chloruro-sulfatés in the neutral series and carbonatés in
+  the alkaline one (`salic_series_rp()`: the anions of the salts, else
+  the pH in water standing in for the paste extract, Q12); the sodic
+  horizon within 60 cm with no salic one: indifférenciés with no E and
+  no BT, solonetziques an E over the NaBT, solodisés an Ea or an E at pH
+  5 or less (+/- 0.2) over it; the sodisalisols and salisodisols by the
+  order of the two horizons (`superposed_rp()`). A code written with its
+  Na or Sa (NaBT, SaA) needs the overlay. With a G or g within 50 cm the
+  doubles with the réductisols and rédoxisols (pp. 298-299); too sandy
+  for a paste, an arénosol salin (exclusions).
+- **Thalassosols** (pp. 303-306). A marine or fluvio-marine material
+  recorded (`marine_rp()`, Q14; such a material is no longer an alluvium
+  of the fluviosols), the closed list of horizons of p. 304, no TH, U,
+  salic or sodic horizon within 60 cm; bruts, juvéniles and poldérisés
+  by the horizons, the site confirming (`tidal_site_rp()`: a polder
+  fails the bruts and juvéniles, a tidal flooding the poldérisés,
+  `artificially_drained` stands in for `poldered`; not recorded,
+  provisional). A G within 50 cm makes the double
+  réductisol-thalassosol, a g the rédoxisol-thalassosol poldérisé
+  (pp. 285, 305; Q8).
+- **Thiosols et sulfatosols** (pp. 307-312). A TH within 50 cm (+/- 10)
+  and no U, its consistency n over 1.4 and its pH after drying under 3.5
+  tested when recorded (`maturation_rp()`, `acidification_rp()`); a U
+  within 50 cm with a TH directly under it (`sulfidic_under_rp()`) and n
+  under 1.4. Sulfur at a shallow depth attaches the solum first to them,
+  in every case (p. 310): a salisol with their characters is a
+  sulfatosol or thiosol salique.
+- **Veracrisols** (pp. 313-316). The vermihumic Ah (`vermihumic_rp()`):
+  written Ah, or the dark A layers of the surface run on the data (moist
+  value 3 or less, chroma 2 or less), biomacrostructured; under heath
+  over 50 cm (+/- 10), S/CEC under 30 % and Al/S over 1; under culture
+  an Ah under the LAh or LA with its base deeper than 50 cm; Ah of 30 to
+  50 cm the veracrisol leptique, imperfect (p. 315); with an alocrisol
+  humique the double of p. 316. The climate is reported, not tested.
+- **Vertisols** (pp. 317-326). An SV over a V starting within 100 cm
+  (strict), 40 % clay or more in every SV and V, smectitic when the
+  mineralogy is recorded; in the order of Q20 the paravertisols
+  planosoliques (an E or Eg directly over the SV, abruptly bounded),
+  hapliques (an A under 40 % clay directly over the SV), then the litho-
+  and topovertisols with a vertic surface (`vertic_surface_rp()`: on the
+  data the characters of the Av read on the surface A), told apart by
+  the site, else by the SV (`vertisol_site_rp()`). The vertisols take
+  the name before a salisol or sodisol (VSa, VNa) and a planosol; the
+  doubles with the réductisols and rédoxisols of p. 325 are written.
+- **The rows that waited** (pp. 253, 282, 285): the peyrosols over 50 cm
+  and a G within 50 cm now rank before the régosols, salisols, sodisols,
+  thalassosols, veracrisols and vertisols as before every other
+  reference, the thiosols and sulfatosols kept first; with E, BT, BP or
+  Sp beside the redox features the other reference takes the name before
+  the rédoxisol, the doubles still written.
+- [`make_rp2008_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_rp2008_example.md)
+  gives the 18 new profiles (the chalk of Champagne, a sebkha of
+  Tunisia, the natron of the Kanem, the puszta, the prairies of Alberta
+  and the Riverina, the bay of the Mont-Saint-Michel and the Marais
+  poitevin, the mangroves of the Casamance, the touyas of Béarn, the
+  marls of the Gâtinais, the basalts of Uruguay and the clay plains of
+  the north of Cameroon), and the Pro app offers them. Each of the 110
+  examples attaches simply to its own reference, and the test of this
+  part keeps every candidate of each as a snapshot.
+
+#### The review, and the readings confirmed (2026-11-04)
+
+Hugo confirmed the eleven readings of this part as recommended, amended
+by his decisions on its independent review, and the defects it found are
+fixed:
+
+- **VSa and VNa** are the salic and sodic horizons too (the overlay
+  beside the feature; on the data a V with Na over 15 % of the CEC is a
+  VNa), so the salisols and sodisols are among the candidates of such a
+  vertisol (Q20). A written A, LA or SaA over the SV reads its vertic
+  characters on the data, undecided when they are not recorded; a dark,
+  humic SV under the A run stays an SV candidate; a written SV or V
+  carries its clay, tested only when recorded (decision 7).
+- **The sodic horizon** known by its ESP only (the Na derived with the
+  CEC, or an ESP of 15 % or more as evidence) counts a massive
+  structure. The solodisés need an Ea written, or an E at pH 5 or less
+  (`solodic_e_rp()`: a written E with no pH is none, on the data
+  undecided); an A directly on the NaBT is the sodisol solonetzique
+  imperfect, and a sodic BT names the sodisol before a luvisol; the
+  indifférenciés need no E or BT within 60 cm.
+- **The régosols** count adjacent layers of one code as one horizon
+  (A1/A2; the lithosols too) and exclude a recorded recent alluvium
+  (`alluvial_rp()`).
+- **The thalassosols** forbid R, D, X and Z only within the solum (100
+  cm); a polder, reclaimed, embanked or former tidal land is read before
+  the tidal words, and the marine words are read as words (not
+  submarine, not non-tidal). A provisional thalassosol or vertisol says
+  why.
+- **The veracrisols** whose description ends in the Ah are undecided; a
+  vermihumic Ah of 30 cm or more names the veracrisol before a luvisol
+  tronqué (decision 1).
+- **Hugo’s decisions**: an unsaturated SV makes the lithovertisol even
+  in a low position, and with no site recorded the litho- or
+  topovertisol is provisional (2); a U with no TH under it is the
+  sulfatosol imperfect, before the réductisol (3); only the réductisols
+  typiques make the double with the thalassosols (4); the salsodic
+  doubles need a réductisol that holds strictly (5); the thiosols and
+  sulfatosols come before the peyrosols (6). Seven entries of
+  `readings.yaml` record them.
+- The example fluviosol brut no longer lists the régosol among its
+  candidates (the snapshot of the test updated).
+
 ## soilKey 0.9.351 (2026-11-04)
 
 ### France: the Référentiel pédologique 2008 attaches 21 more references

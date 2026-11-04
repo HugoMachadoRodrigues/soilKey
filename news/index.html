@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.351</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.352</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,46 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.352" id="soilkey-09352-2026-11-04">soilKey 0.9.352 (2026-11-04)<a class="anchor" aria-label="anchor" href="#soilkey-09352-2026-11-04"></a></h2>
+<div class="section level3">
+<h3 id="france-the-référentiel-pédologique-attaches-its-last-references-0-9-352">France: the Référentiel pédologique 2008 attaches its last 18 references<a class="anchor" aria-label="anchor" href="#france-the-r%C3%A9f%C3%A9rentiel-p%C3%A9dologique-attaches-its-last-references-0-9-352"></a></h3>
+<p><code><a href="../reference/classify_rp2008.html">classify_rp2008()</a></code> now tests the 110 references of the 34 groups of references (GER): the ninety-two of 0.9.346 to 0.9.351 and the six chapters that close the book, pp. 291-326: régosols (1), salisols et sodisols (7), thalassosols (3), thiosols et sulfatosols (2), veracrisols (1) and vertisols (4), in <code>inst/rules/rp2008/references/&lt;ger&gt;.yaml</code>. They are plugged into the attachment of 0.9.346 as parts 5 to 7 were; their signposts leave <code>key.yaml</code>, which no longer holds any, and no double or precedence waits for a later release. Every other classification is unchanged (the fixtures of the other systems byte-identical).</p>
+<ul><li>
+<strong>Régosols</strong> (pp. 291-293). Within 10 cm (+/- 5; the OL not counted) an M or D layer or a C horizon under one organo-mineral or holorganic horizon at most, the holorganic O counting as one, read as the lithosols are (<code>lithic_obstacle_rp(window = TRUE)</code>: an undecided layer deeper than the window is no obstacle); the hardness from the horizon frame (the notation, the rupture resistance, soilKey’s <code><a href="../reference/continuous_rock.html">continuous_rock()</a></code>; not recorded, undecided). H of 10 cm or less over M, D or C is the régosol épihistique (p. 209); the young alluvial and marine deposits, the fluviosols bruts and juvéniles and the thalassosols bruts and juvéniles, take the name before it (p. 291), and an A over 10 cm makes the arénosol (pp. 101, 292).</li>
+<li>
+<strong>Salisols et sodisols</strong> (pp. 294-302). The salic horizon within 60 cm (+/- 10), chloruro-sulfatés in the neutral series and carbonatés in the alkaline one (<code>salic_series_rp()</code>: the anions of the salts, else the pH in water standing in for the paste extract, Q12); the sodic horizon within 60 cm with no salic one: indifférenciés with no E and no BT, solonetziques an E over the NaBT, solodisés an Ea or an E at pH 5 or less (+/- 0.2) over it; the sodisalisols and salisodisols by the order of the two horizons (<code>superposed_rp()</code>). A code written with its Na or Sa (NaBT, SaA) needs the overlay. With a G or g within 50 cm the doubles with the réductisols and rédoxisols (pp. 298-299); too sandy for a paste, an arénosol salin (exclusions).</li>
+<li>
+<strong>Thalassosols</strong> (pp. 303-306). A marine or fluvio-marine material recorded (<code>marine_rp()</code>, Q14; such a material is no longer an alluvium of the fluviosols), the closed list of horizons of p. 304, no TH, U, salic or sodic horizon within 60 cm; bruts, juvéniles and poldérisés by the horizons, the site confirming (<code>tidal_site_rp()</code>: a polder fails the bruts and juvéniles, a tidal flooding the poldérisés, <code>artificially_drained</code> stands in for <code>poldered</code>; not recorded, provisional). A G within 50 cm makes the double réductisol-thalassosol, a g the rédoxisol-thalassosol poldérisé (pp. 285, 305; Q8).</li>
+<li>
+<strong>Thiosols et sulfatosols</strong> (pp. 307-312). A TH within 50 cm (+/- 10) and no U, its consistency n over 1.4 and its pH after drying under 3.5 tested when recorded (<code>maturation_rp()</code>, <code>acidification_rp()</code>); a U within 50 cm with a TH directly under it (<code>sulfidic_under_rp()</code>) and n under 1.4. Sulfur at a shallow depth attaches the solum first to them, in every case (p. 310): a salisol with their characters is a sulfatosol or thiosol salique.</li>
+<li>
+<strong>Veracrisols</strong> (pp. 313-316). The vermihumic Ah (<code>vermihumic_rp()</code>): written Ah, or the dark A layers of the surface run on the data (moist value 3 or less, chroma 2 or less), biomacrostructured; under heath over 50 cm (+/- 10), S/CEC under 30 % and Al/S over 1; under culture an Ah under the LAh or LA with its base deeper than 50 cm; Ah of 30 to 50 cm the veracrisol leptique, imperfect (p. 315); with an alocrisol humique the double of p. 316. The climate is reported, not tested.</li>
+<li>
+<strong>Vertisols</strong> (pp. 317-326). An SV over a V starting within 100 cm (strict), 40 % clay or more in every SV and V, smectitic when the mineralogy is recorded; in the order of Q20 the paravertisols planosoliques (an E or Eg directly over the SV, abruptly bounded), hapliques (an A under 40 % clay directly over the SV), then the litho- and topovertisols with a vertic surface (<code>vertic_surface_rp()</code>: on the data the characters of the Av read on the surface A), told apart by the site, else by the SV (<code>vertisol_site_rp()</code>). The vertisols take the name before a salisol or sodisol (VSa, VNa) and a planosol; the doubles with the réductisols and rédoxisols of p. 325 are written.</li>
+<li>
+<strong>The rows that waited</strong> (pp. 253, 282, 285): the peyrosols over 50 cm and a G within 50 cm now rank before the régosols, salisols, sodisols, thalassosols, veracrisols and vertisols as before every other reference, the thiosols and sulfatosols kept first; with E, BT, BP or Sp beside the redox features the other reference takes the name before the rédoxisol, the doubles still written.</li>
+<li>
+<code><a href="../reference/make_rp2008_example.html">make_rp2008_example()</a></code> gives the 18 new profiles (the chalk of Champagne, a sebkha of Tunisia, the natron of the Kanem, the puszta, the prairies of Alberta and the Riverina, the bay of the Mont-Saint-Michel and the Marais poitevin, the mangroves of the Casamance, the touyas of Béarn, the marls of the Gâtinais, the basalts of Uruguay and the clay plains of the north of Cameroon), and the Pro app offers them. Each of the 110 examples attaches simply to its own reference, and the test of this part keeps every candidate of each as a snapshot.</li>
+</ul><div class="section level4">
+<h4 id="the-review-and-the-readings-confirmed-0-9-352">The review, and the readings confirmed (2026-11-04)<a class="anchor" aria-label="anchor" href="#the-review-and-the-readings-confirmed-0-9-352"></a></h4>
+<p>Hugo confirmed the eleven readings of this part as recommended, amended by his decisions on its independent review, and the defects it found are fixed:</p>
+<ul><li>
+<strong>VSa and VNa</strong> are the salic and sodic horizons too (the overlay beside the feature; on the data a V with Na over 15 % of the CEC is a VNa), so the salisols and sodisols are among the candidates of such a vertisol (Q20). A written A, LA or SaA over the SV reads its vertic characters on the data, undecided when they are not recorded; a dark, humic SV under the A run stays an SV candidate; a written SV or V carries its clay, tested only when recorded (decision 7).</li>
+<li>
+<strong>The sodic horizon</strong> known by its ESP only (the Na derived with the CEC, or an ESP of 15 % or more as evidence) counts a massive structure. The solodisés need an Ea written, or an E at pH 5 or less (<code>solodic_e_rp()</code>: a written E with no pH is none, on the data undecided); an A directly on the NaBT is the sodisol solonetzique imperfect, and a sodic BT names the sodisol before a luvisol; the indifférenciés need no E or BT within 60 cm.</li>
+<li>
+<strong>The régosols</strong> count adjacent layers of one code as one horizon (A1/A2; the lithosols too) and exclude a recorded recent alluvium (<code>alluvial_rp()</code>).</li>
+<li>
+<strong>The thalassosols</strong> forbid R, D, X and Z only within the solum (100 cm); a polder, reclaimed, embanked or former tidal land is read before the tidal words, and the marine words are read as words (not submarine, not non-tidal). A provisional thalassosol or vertisol says why.</li>
+<li>
+<strong>The veracrisols</strong> whose description ends in the Ah are undecided; a vermihumic Ah of 30 cm or more names the veracrisol before a luvisol tronqué (decision 1).</li>
+<li>
+<strong>Hugo’s decisions</strong>: an unsaturated SV makes the lithovertisol even in a low position, and with no site recorded the litho- or topovertisol is provisional (2); a U with no TH under it is the sulfatosol imperfect, before the réductisol (3); only the réductisols typiques make the double with the thalassosols (4); the salsodic doubles need a réductisol that holds strictly (5); the thiosols and sulfatosols come before the peyrosols (6). Seven entries of <code>readings.yaml</code> record them.</li>
+<li>The example fluviosol brut no longer lists the régosol among its candidates (the snapshot of the test updated).</li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.351" id="soilkey-09351-2026-11-04">soilKey 0.9.351 (2026-11-04)<a class="anchor" aria-label="anchor" href="#soilkey-09351-2026-11-04"></a></h2>
 <div class="section level3">
