@@ -1,7 +1,7 @@
 # Example pedons for the references of the Referentiel pedologique 2008
 
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 71 of the first twenty-one GER), in the RP
+reference implemented (the 92 of the first twenty-eight GER), in the RP
 notation (`site$designation_system = "rp2008"`) with the properties
 their tests read. They are not real profiles.
 
@@ -33,7 +33,15 @@ make_rp2008_example(
     "luvisols_typiques", "luvisols_degrades", "luvisols_derniques", "luvisols_tronques",
     "quasi_luvisols", "nitosols", "organosols_holorganiques", 
     
-    "organosols_calcaires", "organosols_satures", "organosols_insatures")
+    "organosols_calcaires", "organosols_satures", "organosols_insatures",
+    "pelosols_typiques", "pelosols_brunifies", "pelosols_differencies", "peyrosols",
+    "phaeosols_hapliques", "phaeosols_melanoluviques", "planosols_typiques",
+    "planosols_distaux", "planosols_structuraux", "podzosols_ocriques",
+    "podzosols_meubles", "podzosols_duriques", "podzosols_humiques",
+    "podzosols_humo_duriques", "podzosols_eluviques", "podzosols_placiques",
+    "post_podzosols", "rankosols", "reductisols_typiques", "reductisols_stagniques", 
+   
+     "redoxisols")
 )
 ```
 
@@ -73,7 +81,16 @@ make_rp2008_example(
   `"luvisols_typiques"`, `"luvisols_degrades"`, `"luvisols_derniques"`,
   `"luvisols_tronques"`, `"quasi_luvisols"`, `"nitosols"`,
   `"organosols_holorganiques"`, `"organosols_calcaires"`,
-  `"organosols_satures"`, `"organosols_insatures"`.
+  `"organosols_satures"`, `"organosols_insatures"`,
+  `"pelosols_typiques"`, `"pelosols_brunifies"`,
+  `"pelosols_differencies"`, `"peyrosols"`, `"phaeosols_hapliques"`,
+  `"phaeosols_melanoluviques"`, `"planosols_typiques"`,
+  `"planosols_distaux"`, `"planosols_structuraux"`,
+  `"podzosols_ocriques"`, `"podzosols_meubles"`, `"podzosols_duriques"`,
+  `"podzosols_humiques"`, `"podzosols_humo_duriques"`,
+  `"podzosols_eluviques"`, `"podzosols_placiques"`, `"post_podzosols"`,
+  `"rankosols"`, `"reductisols_typiques"`, `"reductisols_stagniques"`,
+  `"redoxisols"`.
 
 ## Value
 

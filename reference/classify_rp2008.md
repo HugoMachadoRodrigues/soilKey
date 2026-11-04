@@ -4,25 +4,32 @@ Attaches a
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)
 to the references of the *Referentiel pedologique* 2008 (AFES; Baize and
 Girard coord.; Editions Quae, 2009). **Experimental**: this release
-tests the 71 references of the first twenty-one groups of references
+tests the 92 references of the first twenty-eight groups of references
 (GER): alocrisols (2), andosols (6), anthroposols (5), arenosols (1),
 brunisols (2), the solums dominated by calcium or magnesium (7:
 rendosols, calcosols, dolomitosols, rendisols, calcisols, magnesisols,
 calcarisols), chernosols (3), colluviosols (1), cryosols (2),
 ferrallitisols and oxydisols (7), ferruginosols (4), fersialsols (4),
 fluviosols (4), grisols (3), gypsosols (2), histosols (5),
-leptismectisols (1), lithosols (1), luvisols (6), nitosols (1) and
-organosols (4). The 39 references of the other 13 GER come in later
-releases: a profile that shows their reference horizons gets them among
-the candidates as not implemented yet, and its name is provisional. The
-horizons of the intertropical chapters (F, OX, RT, ND, FE, OXc, OXm) are
-read only in the intertropical domain, and the results of those chapters
-and of the nitosols say that the book calls them a first version (Q18);
-a fluviosol needs a recorded alluvial origin and is provisional while
-the position in the valley and the water table are not recorded (Q14).
-The histosols read their predominant H horizon between 40 and 120 cm,
-the luvisols their texture contrast by the bands of the chapter, the
-organosols the S/CEC of their Aho as a whole.
+leptismectisols (1), lithosols (1), luvisols (6), nitosols (1),
+organosols (4), pelosols (3), peyrosols (1), phaeosols (2), planosols
+(3), podzosols (8), rankosols (1) and reductisols et redoxisols (3). The
+18 references of the other 6 GER come in later releases: a profile that
+shows their reference horizons gets them among the candidates as not
+implemented yet, and its name is provisional. The horizons of the
+intertropical chapters (F, OX, RT, ND, FE, OXc, OXm) are read only in
+the intertropical domain, and the results of those chapters and of the
+nitosols say that the book calls them a first version (Q18); a fluviosol
+needs a recorded alluvial origin and is provisional while the position
+in the valley and the water table are not recorded (Q14). The histosols
+read their predominant H horizon between 40 and 120 cm, the luvisols
+their texture contrast by the bands of the chapter, the organosols the
+S/CEC of their Aho as a whole. The reductisols and redoxisols read the
+functional reductic or redox features starting within 50 cm and
+continuing over 50 cm (a G within 50 cm makes a reductisol whatever lies
+above), and their doubles with the luvisols, podzosols, pelosols,
+brunisols, colluviosols, cryosols and histosols are those the book
+names; the depth class of the hydromorphy is in `trace$hydromorphy`.
 
 ## Usage
 
