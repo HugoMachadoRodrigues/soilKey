@@ -1,0 +1,38 @@
+# Leptismectisols (pp. 217-218), 1 reference: thin solums, every horizon
+# clayey (over 40 % clay; 40 % read as the minimum, default 17), smectitic,
+# with vertic properties (p. 22): an Av (or LAv) with a fine, very well
+# developed angular structure when dry, over an SV with a coarser one, and
+# no V (no wedge-shaped structure); [Av + SV] 50 cm or less (+/- 10), over a
+# hard rock R, a calcareous crust Kc or Km, or a C (the sequence of p. 217
+# and its qualifiers lithique, calcarique, altéritique; map 3, D22). The
+# complex saturated over 90 % by Ca and Mg (S/CEC +/- 5 on every S/CEC
+# threshold, default 9). The smectites are read from the clay mineralogy
+# when it is recorded; not recorded, the vertic horizons stand for them
+# (soilKey's reading).
+#
+# Distinctions (p. 218): the lithovertisols have a V (no V here, side test;
+# the vertisols signpost yields when no V is read, precedence.yaml); the
+# pélosols typiques are thicker than 50 cm, with fewer smectites.
+references:
+  - code: "leptismectisols"
+    ger: "leptismectisols"
+    name: "leptismectisols"
+    name_singular: "leptismectisol"
+    name_en: "leptismectisols"
+    name_en_singular: "leptismectisol"
+    page: "217"
+    sequences: ["Av-SV-R|Km|C", "LAv-SV-R|Km|C"]
+    notes: "Every horizon clayey and smectitic, vertic; [Av + SV] 50 cm or less; no V; the complex saturated over 90 % by Ca and Mg; limited by R, Kc, Km or C."
+    wrb2006: "Epileptic Vertisols"
+    distinctions:
+      - {with: "lithovertisols", page: "218", by: "no V horizon (side test; precedence.yaml)"}
+      - {with: "pélosols typiques", page: "218", by: "not thicker than 50 cm, smectites (side test)"}
+    tests:
+      all_of:
+        - sequence_rp: {sequences: ["A-SV-R|Km|Kc|C"]}
+        - horizon_within_rp: {codes: [Av], depth: 10}
+        - thickness_rp: {codes: [A, SV], max: 50}
+        - no_horizon_within_rp: {codes: [V]}
+        - attribute_rp: {attribute: clay_pct, threshold: 40, direction: min, codes: [A, SV], layers: all}
+        - attribute_rp: {attribute: camg_sat, threshold: 90, direction: min, kind: bs, open: true, codes: [A, SV], layers: all}
+        - clay_mineral_rp: {codes: [A, SV], mineral: smectite}

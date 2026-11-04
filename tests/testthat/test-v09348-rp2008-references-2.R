@@ -56,11 +56,12 @@ test_that("fifteen GER and 53 references are implemented; the six of part 5 lose
   skip_on_cran()
   rules <- .rp_rules()
   impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
-  expect_length(impl, 15L)
+  # 0.9.349: six more GER after these (test-v09349)
+  expect_length(impl, 21L)
   six <- c("ferrallitisols_oxydisols", "ferruginosols", "fersialsols", "fluviosols", "grisols", "gypsosols")
   expect_identical(vapply(impl, `[[`, "", "code")[10:15], six)
   expect_identical(unlist(lapply(impl[10:15], function(g) unlist(g$references))), .rp48_refs)
-  expect_length(rules$references, 53L)
+  expect_length(rules$references, 71L)
   expect_identical(names(rules$ref_by_code)[30:53], .rp48_refs)
   for (g in impl[10:15]) expect_null(g$signpost, info = g$code)
   # the tropical chapters are a first version of the book (p. VI, Q18)
@@ -582,6 +583,7 @@ test_that("the readings of part 5 are Hugo's decisions; none waits for his word"
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   tp <- vapply(rd, `[[`, "", "topic")
   txt <- vapply(rd, `[[`, "", "reading")
+  # none waits for Hugo's word (0.9.349 confirmed on 2026-11-04, test-v09349)
   expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
   part5 <- c("The intertropical domain of a profile written in the RP notation",
              "Ferrallitisols and oxydisols: F against OX, the hardness and the types",

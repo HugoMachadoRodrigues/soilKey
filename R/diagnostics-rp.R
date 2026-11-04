@@ -188,7 +188,15 @@
     return(FALSE)
   }
   if (!is.na(code)) {
-    if (!code %in% spec[["codes"]]) return(FALSE)
+    if (!code %in% spec[["codes"]]) {
+      # an H or an O whose kind is open (Hf, Hm or Hs; OL, OF or OH): one of
+      # its kinds may be in the set (0.9.349; .rp_kinds_open())
+      kv <- .rp_kinds_open(fr, k)
+      if (!length(kv) || !any(kv %in% spec[["codes"]])) return(FALSE)
+      if (length(spec[["features"]]) && !all(spec[["features"]] %in% c(feats, fr$features_na[[k]] %||% character(0))))
+        return(FALSE)
+      return(if (all(kv %in% spec[["codes"]]) && !length(spec[["features"]])) TRUE else NA)
+    }
     if (!length(spec[["features"]]) || all(spec[["features"]] %in% feats)) return(TRUE)
     if (all(spec[["features"]] %in% c(feats, fr$features_na[[k]] %||% character(0)))) return(NA)
     return(FALSE)
@@ -199,6 +207,8 @@
   if (length(spec[["features"]]) && !all(spec[["features"]] %in% c(feats, fr$features_na[[k]] %||% character(0))))
     return(FALSE)
   cand <- fr$candidates[[k]]
+  # an undecided H or O may be any of its kinds (0.9.349)
+  if (any(cand %in% names(.RP_KINDS))) cand <- unique(c(cand, unlist(.RP_KINDS[intersect(cand, names(.RP_KINDS))])))
   if (length(cand)) {
     # undecided only between codes of the set (Aci or A, for the A family):
     # the layer is one of them
@@ -206,6 +216,22 @@
     return(if (any(cand %in% spec[["codes"]])) NA else FALSE)
   }
   NA
+}
+
+# The kinds an H or an O of the frame may still be when its code is the head
+# alone (0.9.349): the kinds the data leave open (its `variants`), or, written
+# H or O in the RP notation (p. 2: not to be used alone), the kind the data
+# read, else every kind (Hf, Hm, Hs; OL, OF, OH, OHta: the review of 0.9.349).
+# Empty for any other code.
+.RP_KINDS <- list(H = c("Hf", "Hm", "Hs"), O = c("OL", "OF", "OH", "OHta"))
+.rp_kinds_open <- function(fr, k) {
+  cd <- fr$code[k]
+  if (is.na(cd) || !cd %in% names(.RP_KINDS)) return(character(0))
+  v <- as.character(unlist(fr$variants[[k]] %||% character(0)))
+  if (length(v)) return(v)
+  dc <- fr$data_code[k] %||% NA_character_
+  if (!is.na(dc) && dc %in% .rp_family_members(cd) && dc != cd) return(dc)
+  .RP_KINDS[[cd]]
 }
 
 # The code of a layer read only within tolerance, as the strict pass reads
@@ -622,11 +648,12 @@ no_horizon_within_rp <- function(pedon, codes, depth = NULL, first_material = FA
 #'
 #' The thickness of the layers of `codes` (summed through the solum, or the
 #' run from the surface with `from_surface`), at least `min` and at most
-#' `max` cm. Tolerant: `min` lowered, `max` raised by the tolerance of their
+#' `max` cm (over `min` and under `max` with `open`, as printed: "more than
+#' 10 cm"). Tolerant: `min` lowered, `max` raised by the tolerance of their
 #' value (p. 64; 40 cm and the others the table does not list stay strict).
 #' @noRd
 thickness_rp <- function(pedon, codes, min = NULL, max = NULL, from_surface = FALSE,
-                         cover = NULL, cover_max = NULL, within = NULL) {
+                         cover = NULL, cover_max = NULL, within = NULL, open = FALSE) {
   fr <- .rp_frame(pedon)
   if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
   pos <- !is.null(min) && .rp_strict_positive()
@@ -636,14 +663,15 @@ thickness_rp <- function(pedon, codes, min = NULL, max = NULL, from_surface = FA
                                      notes = "a depth of the set is not recorded"))
   res <- logical(0)
   ds <- numeric(0)
+  chk <- function(v, t, dir) if (isTRUE(open)) .rp_meets(v, t, "depth", dir, open = TRUE) else .rule_check(v, t, "depth", dir, .RP_SYSTEM)
   if (!is.null(min)) {
-    res <- c(res, if (isTRUE(.rule_check(b$lo, min, "depth", "min", .RP_SYSTEM))) TRUE
-                  else if (isFALSE(.rule_check(b$hi, min, "depth", "min", .RP_SYSTEM))) FALSE else NA)
+    res <- c(res, if (isTRUE(chk(b$lo, min, "min"))) TRUE
+                  else if (isFALSE(chk(b$hi, min, "min"))) FALSE else NA)
     ds <- c(ds, .rule_distance(b$hi, min, "depth", "min", "any", .RP_SYSTEM))
   }
   if (!is.null(max)) {
-    res <- c(res, if (isTRUE(.rule_check(b$hi, max, "depth", "max", .RP_SYSTEM))) TRUE
-                  else if (isFALSE(.rule_check(b$lo, max, "depth", "max", .RP_SYSTEM))) FALSE else NA)
+    res <- c(res, if (isTRUE(chk(b$hi, max, "max"))) TRUE
+                  else if (isFALSE(chk(b$lo, max, "max"))) FALSE else NA)
     ds <- c(ds, .rule_distance(b$lo, max, "depth", "max", "any", .RP_SYSTEM))
   }
   dist <- if (all(is.na(ds))) NA_real_ else sum(ds, na.rm = TRUE)
@@ -692,13 +720,19 @@ thickness_ratio_rp <- function(pedon, numerator, denominator, min = NULL, max = 
       if (anyNA(b)) NA_real_ else sum(b)
     },
     caco3_mgco3 = .rp_carbonates(x, i)$ratio,
+    # the saturation of the complex by Ca and Mg, % of the CEC (the
+    # leptismectisols, p. 217)
+    camg_sat = {
+      ca <- .rp_num(x, i, "ca_cmol"); mg <- .rp_num(x, i, "mg_cmol"); cec <- .rp_num(x, i, "cec_cmol")
+      if (is.na(ca) || is.na(mg) || !isTRUE(cec > 0)) NA_real_ else 100 * (ca + mg) / cec
+    },
     .rp_num(x, i, attribute))
 }
 
 .rp_value_attrs <- function(attribute) {
   switch(attribute, bs = c("bs_pct", "cec_cmol"), ca_mg = c("ca_cmol", "mg_cmol"),
          sum_bases = c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol"),
-         caco3_mgco3 = c("caco3_pct", "mgco3_pct"), attribute)
+         caco3_mgco3 = c("caco3_pct", "mgco3_pct"), camg_sat = c("ca_cmol", "mg_cmol", "cec_cmol"), attribute)
 }
 
 # The mineral layers of the frame (no holorganic O or H, no rock R).
@@ -710,7 +744,7 @@ thickness_ratio_rp <- function(pedon, numerator, denominator, min = NULL, max = 
 #' A value of the horizons of a set (RP 2008)
 #'
 #' The value of `attribute` (a recorded attribute, or bs, ca_mg, sum_bases,
-#' caco3_mgco3) in the layers of `codes` (every mineral layer when NULL)
+#' caco3_mgco3, camg_sat) in the layers of `codes` (every mineral layer when NULL)
 #' within the window, against `threshold`: every layer (`layers = "all"`),
 #' one (`"any"`), or the mean weighted by thickness (`"weighted"`); only the
 #' first layer of the set with `position = "first"`. `kind` names the
@@ -781,7 +815,7 @@ attribute_rp <- function(pedon, attribute, threshold, direction = c("min", "max"
 #' perhydric andosols: water at 1500 kPa 100 % or more over 35 cm within 100.
 #' @noRd
 attribute_thickness_rp <- function(pedon, attribute, threshold, direction = c("min", "max"),
-                                   kind = "none", codes = NULL, within = NULL, min = NULL) {
+                                   kind = "none", codes = NULL, within = NULL, min = NULL, open = FALSE) {
   direction <- match.arg(direction)
   fr <- .rp_frame(pedon)
   if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
@@ -793,7 +827,7 @@ attribute_thickness_rp <- function(pedon, attribute, threshold, direction = c("m
   rows <- which(!(m %in% FALSE) & top < lim)
   if (!length(rows)) return(.rp_answer(FALSE, notes = "no layer of the set"))
   v <- vapply(fr$horizon_idx[rows], function(i) as.numeric(.rp_value(x, i, attribute)), 0)
-  ok <- .rp_meets(v, threshold, kind, direction)
+  ok <- .rp_meets(v, threshold, kind, direction, open)
   sure <- m[rows] %in% TRUE & ok %in% TRUE
   maybe <- sure | (is.na(m[rows]) & !(ok %in% FALSE)) | (m[rows] %in% TRUE & is.na(ok))
   lo <- sum(th[rows][sure], na.rm = TRUE); hi <- sum(th[rows][maybe], na.rm = TRUE)
@@ -1332,22 +1366,27 @@ alluvial_rp <- function(pedon, bed = NULL, site = c("lenient", "required")) {
 #' fe_total_pct)); a luvisol has less (p. 182). Not measured, the free over
 #' total iron above 0.50 (fe_dcb_pct) is evidence only, and the field route
 #' of the horizon stands (colour, structure): TRUE, noted. FALSE only when the
-#' FFE is measured and too low.
+#' FFE is measured and too low. With `low` the other side, the BT of the
+#' luvisols (p. 230; 0.9.349): FALSE only when the FFE is measured and over
+#' 0.20 (the siallitic criteria only against the fersialsols, default 21).
 #' @noRd
-iron_release_rp <- function(pedon, codes = "FS") {
+iron_release_rp <- function(pedon, codes = "FS", low = FALSE) {
   fr <- .rp_frame(pedon)
   if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
   x <- .rp_view(pedon)
   m <- .rp_members(fr, codes)
   rows <- which(m %in% TRUE)
-  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE, notes = "no FS horizon"))
+  if (!length(rows)) return(.rp_answer(if (anyNA(m)) NA else FALSE,
+                                       notes = sprintf("no %s horizon", paste(unlist(codes), collapse = ", "))))
   r <- lapply(fr$horizon_idx[rows], function(i) {
     ft <- .rp_num(x, i, "fe_total_pct"); ffe <- .rp_num(x, i, "fe_ffe_pct"); fd <- .rp_num(x, i, "fe_dcb_pct")
-    if (!is.na(ffe) && isTRUE(ft > 0)) { q <- ffe / (0.6994 * ft); list(p = q > 0.2, note = sprintf("FFE/Fe total %s", format(signif(q, 3)))) }
+    if (!is.na(ffe) && isTRUE(ft > 0)) { q <- ffe / (0.6994 * ft)
+      list(p = if (isTRUE(low)) q <= 0.2 else q > 0.2, note = sprintf("FFE/Fe total %s", format(signif(q, 3)))) }
     else if (!is.na(fd) && isTRUE(ft > 0)) { q <- fd / (0.6994 * ft)
       list(p = TRUE, note = sprintf("FFE not measured; Fe free/Fe total %s (evidence%s)", format(signif(q, 3)),
                                     if (q > 0.5) "" else ": under 0.50")) }
-    else list(p = TRUE, note = "the iron release not measured: the field route of the FS (D14)")
+    else list(p = TRUE, note = if (isTRUE(low)) "the iron release not measured: the BT of the frame stands (default 21)"
+                               else "the iron release not measured: the field route of the FS (D14)")
   })
   p <- all(vapply(r, `[[`, NA, "p"))
   .rp_answer(p, layers = fr$horizon_idx[rows], notes = unique(vapply(r, `[[`, "", "note")))
@@ -1475,4 +1514,383 @@ sombric_rp <- function(pedon) {
              notes = c(sprintf("%s: sombric by the chapter (p. 193)", .rp_colour_text(col)),
                        if (isFALSE(gen)) "not by the general definition of p. 13 (value under 4, value + chroma under 6, organic carbon over 1.2 %): imperfect (D15)",
                        if (cult) "cultivated: the complex not tested (D19)"))
+}
+
+
+# --- the tests of the chapters of part 6 (v0.9.349) ------------------------------------------------
+# The histosols, leptismectisols, lithosols, luvisols, nitosols and
+# organosols (pp. 201-242).
+
+# The layers and horizons the histosols allow under their H horizons (p.
+# 207 and the figure of p. 209: only G, M, D or R, with thin limnic or terric
+# materials), and the C, which soilKey reads as the M of a description that
+# writes the weathered substrate so (soilKey's reading).
+.RP_UNDER_H <- c("H", "Mli", "Mt", "G", "M", "D", "R", "C")
+
+#' The solum of a histosol (RP 2008, pp. 207-209)
+#'
+#' The first H horizon (Hf, Hm, Hs, Ha or LH) starts within `cover_max` cm
+#' (50 +/- 10: a cover of other materials of 50 cm at most is the qualifier
+#' recouvert, more makes another reference bathyhistique, the figure of p.
+#' 209), and under it there is nothing but H horizons, limnic or terric
+#' materials, G horizons and M, D, R layers (p. 207; a C read as the M).
+#' @noRd
+histic_solum_rp <- function(pedon, cover_max = 50) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mH <- .rp_members(fr, "H")
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & (is.na(bot[ord]) | bot[ord] > 0)]
+  first <- ord[mH[ord] %in% TRUE][1L]
+  if (is.na(first))
+    return(.rp_answer(if (anyNA(mH[ord])) NA else FALSE, missing = .rp_missing_of(fr, ord[is.na(mH[ord])]),
+                      notes = "no H horizon"))
+  # a cover of 50 cm at most (an undecided layer above that could be an H
+  # could only lift the first H)
+  cov <- .rule_check(top[first], cover_max, "depth", "max", .RP_SYSTEM)
+  above <- ord[seq_len(match(first, ord) - 1L)]
+  if (!isTRUE(cov) && any(is.na(mH[above]) & top[above] <= .rule_threshold(cover_max, "depth", "max", .RP_SYSTEM)))
+    cov <- NA
+  below <- ord[-seq_len(match(first, ord))]
+  ok <- .rp_members(fr, .RP_UNDER_H)[below]
+  bad <- below[ok %in% FALSE]
+  p <- .rp_and3(c(cov, ok))
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[ord[match(first, ord):length(ord)]] else integer(0),
+             missing = .rp_missing_of(fr, c(below[is.na(ok)], above[is.na(mH[above])])),
+             evidence = list(first_h_top = top[first], under = fr$code[below]),
+             notes = c(sprintf("the first H at %s cm%s", format(top[first]),
+                               if (isFALSE(cov)) sprintf(": more than %s cm of other materials over it", format(cover_max)) else ""),
+                       if (length(bad)) sprintf("%s under the H horizons: only G, M, D, R and thin limnic or terric materials (p. 207)",
+                                                paste(unique(fr$code[bad]), collapse = ", "))),
+             distance = if (isFALSE(cov)) .rule_distance(top[first], cover_max, "depth", "max", "any", .RP_SYSTEM) else NA_real_)
+}
+
+# The kinds of H a layer of the frame may be: Hf, Hm, Hs, or Ha for the
+# drained Ha and the ploughed LH, which count for no kind (map 3, D3), and
+# whether the layer is surely an H of that one kind.
+.rp_h_kinds <- function(fr, k, mH) {
+  if (isFALSE(mH[k])) return(NULL)
+  cd <- fr$code[k]
+  ploughed <- "L" %in% (fr$overlay[[k]] %||% character(0))
+  kinds <- if (is.na(cd)) {
+    cc <- as.character(fr$candidates[[k]])
+    unique(unlist(lapply(cc[cc %in% c("H", "Hf", "Hm", "Hs", "Ha")], function(c1) if (c1 == "H") .RP_KINDS$H else c1)))
+  } else if (cd %in% c("Hf", "Hm", "Hs", "Ha")) cd
+  else if (cd == "H") .rp_kinds_open(fr, k)
+  else character(0)
+  if (!length(kinds)) return(NULL)
+  if (ploughed) kinds <- "Ha"
+  list(kinds = kinds, sure = isTRUE(mH[k]) && length(kinds) == 1L)
+}
+
+#' The predominant H horizon of a histosol (RP 2008, pp. 207-208)
+#'
+#' `kind` (Hf, Hm or Hs) is the predominant H horizon: the thickest kind,
+#' thicknesses cumulated, between 40 and 120 cm, or between 0 and 50 cm when
+#' an M, D or R layer starts within 50 cm (p. 207); a tie is no kind truly
+#' predominant (the histosols composites, p. 208); the drained Ha and the
+#' ploughed LH count for no kind (map 3, D3). With `min`, the horizons of
+#' that kind are more than `min` cm thick, cumulated through the solum (the
+#' 60 cm of the fibriques, +/- 10; the 40 cm of the mesiques and sapriques,
+#' strict; map 3, D1). The kinds read on the data by the rubbed fibres, then
+#' von Post (.rp_t_H()); a kind left open leaves the test undecided when it
+#' decides it. The windows are read as printed, strict.
+#' @noRd
+histic_kind_rp <- function(pedon, kind = c("Hf", "Hm", "Hs"), min = NULL) {
+  kind <- match.arg(kind)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mH <- .rp_members(fr, "H")
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  info <- lapply(seq_len(nrow(fr)), function(k) .rp_h_kinds(fr, k, mH))
+  all_k <- c("Hf", "Hm", "Hs", "Ha")
+  bounds <- function(a, b) {
+    lo <- stats::setNames(rep(0, 4), all_k); hi <- lo
+    for (k in seq_len(nrow(fr))) {
+      z <- info[[k]]
+      if (is.null(z) || is.na(top[k])) next
+      th <- max(0, min(if (is.na(bot[k])) top[k] else bot[k], b) - max(top[k], a))
+      if (th <= 0) next
+      if (z$sure) lo[z$kinds] <- lo[z$kinds] + th
+      hi[z$kinds] <- hi[z$kinds] + th
+    }
+    list(lo = lo, hi = hi)
+  }
+  pred_in <- function(a, b) {
+    w <- bounds(a, b)
+    oth <- setdiff(all_k, kind)
+    if (w$hi[[kind]] <= 0 || w$hi[[kind]] <= max(w$lo[oth])) return(FALSE)
+    if (w$lo[[kind]] > max(w$hi[oth])) return(TRUE)
+    NA
+  }
+  # the window: 0-50 cm when an M, D or R starts within 50 cm
+  mdr <- .rp_members(fr, c("M", "D", "R"))
+  shallow <- .rp_or3(ifelse(!is.na(top) & top < 50, mdr, FALSE))
+  pr <- if (isTRUE(shallow)) pred_in(0, 50) else if (isFALSE(shallow)) pred_in(40, 120)
+        else { a <- pred_in(0, 50); b <- pred_in(40, 120); if (identical(a, b)) a else NA }
+  th <- NA
+  tot <- bounds(-Inf, Inf)
+  if (!is.null(min)) {
+    th <- if (isTRUE(.rp_meets(tot$lo[[kind]], min, "depth", "min", open = TRUE))) TRUE
+          else if (isFALSE(.rp_meets(tot$hi[[kind]], min, "depth", "min", open = TRUE))) FALSE else NA
+  }
+  p <- .rp_and3(c(pr, if (!is.null(min)) th))
+  und <- which(vapply(info, function(z) !is.null(z) && !z$sure, NA))
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[vapply(info, function(z) !is.null(z) && identical(z$kinds, kind), NA)] else integer(0),
+             missing = c(.rp_missing_of(fr, und), if (length(und)) c("fiber_content_rubbed_pct", "von_post_index")),
+             evidence = list(kind = kind, window = if (isTRUE(shallow)) "0-50" else "40-120", thickness = tot$lo[[kind]],
+                             thickness_upper = tot$hi[[kind]]),
+             notes = sprintf("%s %s predominant between %s cm%s", kind,
+                             if (isTRUE(pr)) "is" else if (isFALSE(pr)) "is not" else "may be",
+                             if (isTRUE(shallow)) "0 and 50" else "40 and 120",
+                             if (!is.null(min)) sprintf("; %s cm of %s in the solum (more than %s needed)",
+                                                        format(tot$lo[[kind]]), kind, format(min)) else ""),
+             distance = if (isFALSE(th)) .rule_distance(tot$hi[[kind]], min, "depth", "min", "any", .RP_SYSTEM) else NA_real_)
+}
+
+#' The texture contrast of a luvisol (RP 2008, pp. 225-226, 230, 401)
+#'
+#' The clay of the E (the mean of the E layers weighted by their thickness;
+#' with no E, the ploughed horizon LA or LE, map 3 D12) against the clay of
+#' the most clayey BT (the lexicon, p. 401), by the bands of the chapter: with
+#' an E under 10 % clay the BT has 3 points more (neoluvisols) or 8 (luvisols
+#' typiques); 10 to 30 %, the index 1.3 to 1.8 or over 1.8, the index of the
+#' lexicon: the most clayey BT over the poorest E or Ae (Hugo's decision 4,
+#' 2026-11-04); over 30 %, 9 or 24 points more. `level`: "neo" the band of
+#' the neoluvisols (at least their minimum, under the typiques'), "typique"
+#' the typiques', "dernique" the index of the lexicon over 1.8 with no bands
+#' (p. 227), "luvic" at least the neoluvisols' (the luvisols
+#' against the brunisols, p. 230: over 1.3), "flat" under it (no contrast
+#' left: the ploughed horizon of a luvisol tronque, p. 227, D12). Strict
+#' (clay thresholds are not in the table of p. 64, Q5); the layers of the
+#' first material only (one parent material, p. 221).
+#' @noRd
+luvic_contrast_rp <- function(pedon, level = c("neo", "typique", "luvic", "flat", "dernique"), first_material = TRUE) {
+  level <- match.arg(level)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  keep <- if (isTRUE(first_material)) .rp_first_material(fr) else rep(TRUE, nrow(fr))
+  mE <- .rp_members(fr, "E"); mB <- .rp_members(fr, "BT")
+  mE[!keep] <- FALSE; mB[!keep] <- FALSE
+  up <- which(mE %in% TRUE)
+  what <- "E"
+  if (!length(up)) {
+    if (anyNA(mE)) return(.rp_answer(NA, missing = .rp_missing_of(fr, which(is.na(mE))), notes = "an undecided layer could be the E"))
+    mL <- .rp_members(fr, c("L+", "L")); mL[!keep] <- FALSE
+    up <- which(mL %in% TRUE & !(mB %in% TRUE))
+    what <- "ploughed horizon"
+  }
+  lo <- which(mB %in% TRUE)
+  if (!length(up) || !length(lo))
+    return(.rp_answer(if (anyNA(mB)) NA else FALSE, missing = .rp_missing_of(fr, which(is.na(mB))),
+                      notes = "no E (or ploughed horizon) and BT for the texture contrast"))
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  ce <- vapply(fr$horizon_idx[up], function(i) .rp_clay(x, i), 0)
+  cb <- vapply(fr$horizon_idx[lo], function(i) .rp_clay(x, i), 0)
+  th <- pmax(0, bot[up] - pmax(top[up], 0))
+  if (anyNA(ce) || all(is.na(cb)) || anyNA(th) || sum(th) <= 0)
+    return(.rp_answer(NA, missing = "clay_pct", notes = "the clay of the E or of the BT is not recorded"))
+  e <- sum(ce * th) / sum(th); b <- max(cb, na.rm = TRUE)
+  if (e <= 0) return(.rp_answer(NA, missing = "clay_pct", notes = "no clay in the E: no index"))
+  # the index of the lexicon (p. 401): the most clayey BT over the poorest
+  # of the E and Ae layers (Hugo's decision 4 on the review, 2026-11-04)
+  ae <- if (what == "E") which(.rp_members(fr, "Ae") %in% TRUE & keep) else integer(0)
+  cmin <- suppressWarnings(min(c(ce, vapply(fr$horizon_idx[ae], function(i) .rp_clay(x, i), 0)), na.rm = TRUE))
+  if (!is.finite(cmin) || cmin <= 0) return(.rp_answer(NA, missing = "clay_pct", notes = "no clay in the E: no index"))
+  d <- b - e; idt <- b / cmin
+  neo_min <- if (e < 10) d >= 3 else if (e <= 30) idt >= 1.3 else d >= 9
+  typ <- if (e < 10) d >= 8 else if (e <= 30) idt > 1.8 else d >= 24
+  p <- switch(level, neo = neo_min && !typ, typique = typ, luvic = neo_min, flat = !neo_min, dernique = idt > 1.8)
+  band <- if (level == "dernique") sprintf("index %s, BT over the poorest E or Ae (over 1.8 dernique, p. 227)", format(signif(idt, 3)))
+          else if (e < 10) sprintf("E clay under 10 %%: BT %s points more (3 neo, 8 typique)", format(signif(d, 3)))
+          else if (e <= 30) sprintf("E clay 10 to 30 %%: index %s, BT over the poorest E or Ae (1.3 to 1.8 neo, over 1.8 typique)", format(signif(idt, 3)))
+          else sprintf("E clay over 30 %%: BT %s points more (9 neo, 24 typique)", format(signif(d, 3)))
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[c(up, lo)] else integer(0),
+             evidence = list(e_clay = e, bt_clay = b, idt = idt, e_min = cmin, upper = what),
+             notes = sprintf("%s clay %s %%, BT %s %%: %s", what, format(signif(e, 3)), format(b), band))
+}
+
+#' A lithological discontinuity between two sets of horizons (RP 2008)
+#'
+#' A layer of `lower` lies in a later material (a higher Roman numeral) than
+#' the layers of `upper` above it: the E over II BT of the quasi-luvisols (p.
+#' 227). Not recorded (no Roman numeral), none.
+#' @noRd
+discontinuity_rp <- function(pedon, upper, lower) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  lith <- suppressWarnings(as.integer(fr$lith %||% rep(1L, nrow(fr))))
+  lith[is.na(lith)] <- 1L
+  mu <- .rp_members(fr, upper); ml <- .rp_members(fr, lower)
+  top <- .rp_tops(fr)
+  hit <- vapply(seq_len(nrow(fr)), function(k) {
+    if (!isTRUE(ml[k])) return(if (is.na(ml[k])) NA else FALSE)
+    u <- which(!(mu %in% FALSE) & !is.na(top) & top < top[k])
+    if (!length(u)) return(FALSE)
+    v <- ifelse(mu[u] %in% TRUE, lith[u] < lith[k], NA)
+    .rp_or3(v)
+  }, NA)
+  p <- .rp_or3(hit)
+  .rp_answer(p, layers = fr$horizon_idx[hit %in% TRUE],
+             notes = if (isTRUE(p)) sprintf("%s in a later material than the %s above it", paste(unlist(lower), collapse = ", "),
+                                            paste(unlist(upper), collapse = ", "))
+                     else "no lithological discontinuity recorded between them")
+}
+
+# The organic horizons of the organosols (OF, OH, OHta and the hemiorganic
+# A, Aho; the OL is not counted, p. 238) and the organo-mineral horizons they
+# tolerate thin (E, S, BP ..., p. 239).
+.RP_ORGANIC <- c("OF", "OH", "OHta", "Aho")
+.RP_ORGANO_MINERAL <- c("A", "E", "S", "BT", "BP", "FS", "F", "OX", "FE", "V", "Js", "Jp", "L")
+
+#' The organic horizons of an organosol dominate (RP 2008, p. 239)
+#'
+#' The organo-mineral horizons (E, S, BP, an A that is not hemiorganic ...)
+#' are `max_mineral` cm thick at most in all (10, +/- 5: the book's example
+#' of an S of 10 cm tolerated, of 15 cm attached imperfectly), and the
+#' organic horizons [OF + OH + OHta + Aho] at least `ratio` times as thick
+#' (twice: an S of 10 cm needs 20 cm of OF and OH, p. 239; strict); an S
+#' over `s_max` cm fails, strict (a brunisol, p. 240; Hugo's decision 9).
+#' @noRd
+organic_dominance_rp <- function(pedon, max_mineral = 10, ratio = 2, s_max = 10) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mo <- .rp_members(fr, .RP_ORGANIC)
+  mm <- .rp_members(fr, .RP_ORGANO_MINERAL)
+  mm <- ifelse(mo %in% TRUE, FALSE, ifelse(is.na(mo) & mm %in% TRUE, NA, mm))
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  th <- pmax(0, bot - pmax(top, 0))
+  if (any(is.na(th[!(mo %in% FALSE) | !(mm %in% FALSE)])))
+    return(.rp_answer(NA, missing = c("top_cm", "bottom_cm")))
+  m_lo <- sum(th[mm %in% TRUE]); m_hi <- m_lo + sum(th[is.na(mm)])
+  o_lo <- sum(th[mo %in% TRUE]); o_hi <- o_lo + sum(th[is.na(mo)])
+  t1 <- if (isTRUE(.rule_check(m_hi, max_mineral, "depth", "max", .RP_SYSTEM))) TRUE
+        else if (isFALSE(.rule_check(m_lo, max_mineral, "depth", "max", .RP_SYSTEM))) FALSE else NA
+  t2 <- if (o_lo >= ratio * m_hi) TRUE else if (o_hi < ratio * m_lo) FALSE else NA
+  # an S over 10 cm makes a brunisol (p. 240), strict (Hugo's decision 9 on
+  # the review, 2026-11-04)
+  sb <- .rp_thickness_bounds(fr, "S=")
+  t3 <- if (is.na(sb$lo)) NA else if (sb$lo > s_max) FALSE else if (sb$hi > s_max) NA else TRUE
+  p <- .rp_and3(c(t1, t2, t3))
+  .rp_answer(p, missing = .rp_missing_of(fr, which(is.na(mm) | is.na(mo))),
+             evidence = list(organo_mineral = m_lo, organic = o_lo),
+             notes = sprintf("organo-mineral horizons %s cm (%s at most), organic [OF + OH + OHta + Aho] %s cm (%s times as thick needed)",
+                             format(m_lo), format(max_mineral), format(o_lo), format(ratio)),
+             distance = if (isFALSE(t1)) .rule_distance(m_lo, max_mineral, "depth", "max", "any", .RP_SYSTEM) else NA_real_)
+}
+
+#' The dominant clay mineral recorded (RP 2008)
+#'
+#' The layers of `codes` are not recorded with another dominant clay mineral
+#' than `mineral` (clay_mineralogy; or its share, smectite_pct,
+#' halloysite_pct, kaolinite_pct, 50 % or less): the smectites of the
+#' leptismectisols (p. 217). Not recorded, the vertic horizons stand for it
+#' and the test passes, noted (soilKey's reading); FALSE when recorded
+#' otherwise.
+#' @noRd
+clay_mineral_rp <- function(pedon, codes, mineral = c("smectite", "halloysite", "kaolinite")) {
+  mineral <- match.arg(mineral)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  m <- .rp_members(fr, codes)
+  rows <- which(m %in% TRUE)
+  att <- paste0(mineral, "_pct")
+  rec <- vapply(fr$horizon_idx[rows], function(i) {
+    cm <- .rp_txt(x, i, "clay_mineralogy"); sh <- .rp_num(x, i, att)
+    if (!is.na(sh)) sh > 50 else if (!is.na(cm)) identical(cm, mineral) else NA
+  }, NA)
+  if (any(rec %in% FALSE))
+    return(.rp_answer(FALSE, notes = sprintf("a clay mineral other than %s recorded dominant", mineral)))
+  if (any(rec %in% TRUE)) return(.rp_answer(TRUE, layers = fr$horizon_idx[rows[rec %in% TRUE]],
+                                            notes = sprintf("%s dominant, recorded", mineral)))
+  .rp_answer(TRUE, notes = sprintf("the clay mineralogy not recorded: the %s not tested (soilKey's reading)", mineral))
+}
+
+#' The obstacle of a lithosol (RP 2008, pp. 219, 238; the review of 0.9.349)
+#'
+#' The first layer of `codes` starts at `depth` cm or less (10, +/- 5; Hugo's
+#' decision 1: "at 10 cm or less"), the OL not counted, with at most
+#' `max_above` horizon over it (decision 2: "un horizon ... de moins de 10
+#' cm"); the holorganic O horizons over it count as one horizon, the
+#' [OF + OH] of a lithosol holorganique (p. 241).
+#' @noRd
+lithic_obstacle_rp <- function(pedon, codes, depth = 10, max_above = 1) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  m <- .rp_members(fr, codes, strict_pos = .rp_strict_positive())
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  ord <- order(ifelse(is.na(top), Inf, top))
+  ord <- ord[!is.na(top[ord]) & (is.na(bot[ord]) | bot[ord] > 0)]
+  k <- ord[m[ord] %in% TRUE][1L]
+  if (is.na(k)) return(.rp_answer(if (anyNA(m[ord])) NA else FALSE, missing = .rp_missing_of(fr, ord[is.na(m[ord])]),
+                                  notes = "no obstacle"))
+  w <- .rule_check(top[k], depth, "depth", "max", .RP_SYSTEM)
+  above <- ord[seq_len(match(k, ord) - 1L)]
+  holo <- c(.rp_family_members("O"), .rp_family_members("H"))
+  n_above <- sum(!(fr$code[above] %in% holo)) + any(fr$code[above] %in% holo)
+  und <- above[is.na(m[above])]
+  p <- .rp_and3(c(w, n_above <= max_above))
+  if (isFALSE(w) && length(und)) p <- NA
+  .rp_answer(p, layers = if (isTRUE(p)) fr$horizon_idx[k] else integer(0), missing = .rp_missing_of(fr, und),
+             evidence = list(obstacle = fr$code[k], top = top[k], above = length(above)),
+             notes = sprintf("%s at %s cm, %d horizon(s) over it%s", fr$code[k], format(top[k]), n_above,
+                             if (n_above > max_above) sprintf(" (at most %d, p. 219)", max_above) else ""),
+             distance = if (isFALSE(w)) .rule_distance(top[k], depth, "depth", "max", "any", .RP_SYSTEM) else NA_real_)
+}
+
+#' A horizon of a set under another within a depth (RP 2008)
+#'
+#' A layer of `codes` starts below the top of the first layer of `upper` and
+#' within `within` cm: the horizons of the tropical chapters under a cuirasse
+#' or carapace (Hugo's decision 3 on the review of 0.9.349, pp. 159-161,
+#' 219-220).
+#' @noRd
+under_rp <- function(pedon, upper, codes, within = NULL) {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  mu <- .rp_members(fr, upper); m <- .rp_members(fr, codes)
+  top <- .rp_tops(fr)
+  u <- which(mu %in% TRUE & !is.na(top))
+  if (!length(u)) return(.rp_answer(if (anyNA(mu)) NA else FALSE, notes = "no upper horizon"))
+  t0 <- min(top[u])
+  lim <- if (is.null(within)) Inf else within
+  inwin <- !is.na(top) & top > t0 & top < lim
+  v <- ifelse(inwin, m, FALSE)
+  p <- .rp_or3(v)
+  .rp_answer(p, layers = fr$horizon_idx[v %in% TRUE], missing = .rp_missing_of(fr, which(is.na(v))),
+             notes = sprintf("%s under the %s%s", paste(unlist(codes), collapse = ", "), paste(unlist(upper), collapse = ", "),
+                             if (isTRUE(p)) "" else ": none"))
+}
+
+#' The BT of a luvisol is not fersiallitic (RP 2008, p. 230)
+#'
+#' When recorded, a hue of 5YR or redder or a micro-polyhedral structure (a
+#' fine or very fine, strong angular or subangular blocky structure, or
+#' written micropolyedrique) in a layer of `codes` fails it: the fersialsols
+#' eluviques (Hugo's decision 6 on the review of 0.9.349). Not recorded, it
+#' passes (the FFE is read by iron_release_rp()).
+#' @noRd
+siallitic_rp <- function(pedon, codes = "BT") {
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr)) return(.rp_answer(NA, missing = "horizons"))
+  x <- .rp_view(pedon)
+  rows <- which(.rp_members(fr, codes) %in% TRUE)
+  bad <- character(0)
+  for (k in rows) {
+    i <- fr$horizon_idx[k]
+    col <- .rp_colour(x, i)
+    if (isTRUE(.rp_hue_in(col, -10, 15))) bad <- c(bad, sprintf("%s: 5YR or redder", .rp_colour_text(col)))
+    st <- .kidpr_structure(x, i)
+    micro <- isTRUE(grepl("micropoly|micro-poly", tolower(st$type))) ||
+      (isTRUE(grepl("angular|polyhed|block", st$type)) && isTRUE(.field_grade_class(st$grade) >= 3L) &&
+         isTRUE(grepl("^(very fine|fine|tres fin|fin)", tolower(st$size))))
+    if (micro) bad <- c(bad, sprintf("a micro-polyhedral structure (%s)", paste(stats::na.omit(c(st$grade, st$size, st$type)), collapse = " ")))
+  }
+  p <- !length(bad)
+  .rp_answer(p, layers = if (p) fr$horizon_idx[rows] else integer(0),
+             notes = if (p) "the BT not fersiallitic by its colour or structure (not recorded: not tested)"
+                     else sprintf("the BT fersiallitic: %s (p. 230)", paste(unique(bad), collapse = "; ")))
 }

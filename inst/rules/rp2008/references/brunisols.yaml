@@ -36,6 +36,17 @@ core: &brun_core
     - no_horizon_within_rp: {codes: [Ach, Aca, And, Alu, Avi, An, Sca, Sal, Snd, Slu, Sp, SV, BP, BT, FS, E, H, V], first_material: true}
     - no_horizon_within_rp: {codes: [Ado, Sdo], first_material: true}
     - no_horizon_within_rp: {codes: [G], depth: 50}
+# an S over 10 cm under O horizons with no A: a brunisol, imperfect (the
+# sequence has no A), not an organosol (p. 240; Hugo's decision 9 on the
+# review of 0.9.349, 2026-11-04)
+no_a: &brun_no_a
+  all_of:
+    - sequence_rp: {sequences: ["S-(C|M|R)"]}
+    - horizon_within_rp: {codes: [O]}
+    - no_horizon_within_rp: {codes: [A]}
+    - thickness_rp: {codes: ["S="], min: 10, open: true}
+    - no_horizon_within_rp: {codes: [Ach, Aca, And, Alu, Avi, An, Sca, Sal, Snd, Slu, Sp, SV, BP, BT, FS, E, H, V, Ado, Sdo], first_material: true}
+    - no_horizon_within_rp: {codes: [G], depth: 50}
 references:
   - code: "brunisols_eutriques"
     ger: "brunisols"
@@ -58,6 +69,13 @@ references:
       all_of:
         - *brun_core
         - attribute_rp: {attribute: bs, threshold: 50, direction: min, kind: bs, open: true, codes: [S], layers: weighted}
+    imperfect:
+      - criterion: "an S over 10 cm under O horizons, no A (p. 240; Hugo's decision 9, 2026-11-04)"
+        page: "240"
+        tests:
+          all_of:
+            - *brun_no_a
+            - attribute_rp: {attribute: bs, threshold: 50, direction: min, kind: bs, open: true, codes: [S], layers: weighted}
   - code: "brunisols_dystriques"
     ger: "brunisols"
     name: "brunisols dystriques"
@@ -79,3 +97,10 @@ references:
       all_of:
         - *brun_core
         - attribute_rp: {attribute: bs, threshold: 50, direction: max, kind: bs, open: true, codes: [S], layers: weighted}
+    imperfect:
+      - criterion: "an S over 10 cm under O horizons, no A (p. 240; Hugo's decision 9, 2026-11-04)"
+        page: "240"
+        tests:
+          all_of:
+            - *brun_no_a
+            - attribute_rp: {attribute: bs, threshold: 50, direction: max, kind: bs, open: true, codes: [S], layers: weighted}

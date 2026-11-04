@@ -1231,8 +1231,9 @@
 
 # Sn (pp. 16-17, 150): clay 50-80 %; shiny pressure faces (pressure_faces
 # common or many; not recorded, nitic_horizon() stands in); halloysite over
-# 50 % of the clay, else Ki under 2.2 and Kr under 1.8 (map 3); clay films
-# absent or few; CEC 8-30 cmol+/kg of soil.
+# 50 % of the clay, else Ki under 2.2 and Kr under 1.8 (map 3), else
+# nitic_horizon() stands in for the mineralogy as well, flagged (D14,
+# 0.9.349); clay films absent or few; CEC 8-30 cmol+/kg of soil.
 .rp_t_Sn <- function(x, i) {
   if (!.rp_is_mineral(x, i) || .rp_is_first(x, i)) return(.rp_r(FALSE))
   cl <- .rp_between(.rp_clay(x, i), 50, 80, 0, "clay (%)", "clay_pct")
@@ -1251,7 +1252,14 @@
          else if (!is.na(cm)) .rp_r(cm == "halloysite", note = sprintf("clay mineralogy %s", cm))
          else if (!is.na(ki) && !is.na(kr)) .rp_r(ki < 2.2 && kr < 1.8, tag = "ki_kr_for_halloysite",
                                                    note = sprintf("Ki %s, Kr %s (map 3)", format(signif(ki, 3)), format(signif(kr, 3))))
-         else .rp_r(NA, missing = c("halloysite_pct", "clay_mineralogy", "sio2_sulfuric_pct"), note = "the clay mineralogy is not recorded")
+         else {
+           # neither the mineralogy nor Ki and Kr: soilKey's nitic_horizon()
+           # stands in, flagged (map 3, D14; 0.9.349)
+           ni <- .rp_stand_in(x, i, "nitic_horizon", "the halloysite (no clay mineralogy, Ki or Kr recorded)")
+           if (is.na(ni$passed)) .rp_r(NA, missing = c("halloysite_pct", "clay_mineralogy", "sio2_sulfuric_pct"),
+                                       note = "the clay mineralogy is not recorded")
+           else ni
+         }
   if (isFALSE(min$passed)) return(min)
   cec <- .rp_between(.rp_num(x, i, "cec_cmol"), 8, 30, .RP_TOL$cec, "CEC per kg of soil", "cec_cmol")
   .rp_all(cl, fa, min, cec)

@@ -100,6 +100,110 @@ precedence:
     second: [chernosols_melanoluviques, chernosols_typiques, phaeosols]
     page: "194"
     note: "an Aso not saturated, an Eh, the degradation of the ped faces, the unsaturation of the whole solum: a grisol before the chernosols and the phaeosols (Q6)"
+  # --- the GER of part 6 (v0.9.349) ---------------------------------------------------
+  - first: [ferrallitisols_petroxydiques, ferrallitisols_duroxydiques, oxydisols_petroxydiques, ferruginosols_petroxydiques]
+    second: lithosols
+    page: "159-161, 175, 219"
+    note: "a cuirasse or carapace within 10 cm with the horizons of the tropical chapter under it within 120 cm (F, OX, ND, RT, FE, an Ea or a BT; the ferruginosols pétroxydiques tronqués OXm/Ea/BTg of p. 175): the reference of the chapter, not a lithosol pétroxydique or duroxydique (Hugo's decision 3, 2026-11-04)"
+    when: {all_of: [{under_rp: {upper: [OXm, OXc], codes: [F, "OX=", OXal, OXfl, OXfr, OXba, OXti, ND, RT, FE, Ea, BT], within: 120}}]}
+  - first: [ferrallitisols_meubles, ferrallitisols_nodulaires, ferrallitisols_petroxydiques, ferrallitisols_duroxydiques]
+    second: nitosols
+    page: "157, 235-236"
+    note: "an F horizon with the Sn: a ferrallitisol (the type polylithique A/Sn/F/II Sn/II F, rejuvenated by volcanic deposits, p. 157)"
+    when: {all_of: [{horizon_within_rp: {codes: [F]}}]}
+  - first: [grisols_eluviques, grisols_degrades, grisols_hapliques]
+    second: [neoluvisols, luvisols_typiques]
+    page: "194"
+    note: "a dark, humic Aso, an Eh, a BTh: a grisol before the néoluvisols and the luvisols typiques"
+  - first: cryosols_histiques
+    second: [histosols_fibriques, histosols_mesiques, histosols_sapriques, histosols_composites, histosols_leptiques]
+    page: "211"
+    note: "H horizons and a permafrost starting within 2 m: a cryosol histique"
+    when: {all_of: [{permafrost_rp: {depth: 200}}]}
+  - first: lithosols
+    second: histosols_leptiques
+    page: "207, 209, 211"
+    note: "H horizons of 10 cm or less over R: a lithosol épihistique"
+    when:
+      all_of:
+        - thickness_rp: {codes: [H], max: 10}
+        - below_rp: {upper: [H], codes: [R]}
+  - first: regosols
+    second: histosols_leptiques
+    page: "209, 211"
+    note: "H horizons of 10 cm or less over M, D or a C read as the M: a régosol épihistique (a later release)"
+    when:
+      all_of:
+        - thickness_rp: {codes: [H], max: 10}
+        - below_rp: {upper: [H], codes: [M, D, C]}
+  - first: [reductisols_typiques, reductisols_stagniques]
+    second: [histosols_fibriques, histosols_mesiques, histosols_sapriques, histosols_composites, histosols_leptiques]
+    page: "208-209"
+    note: "H horizons under 50 cm over G: a réductisol épihistique (a later release)"
+    when:
+      all_of:
+        - thickness_rp: {codes: [H], max: 50, open: true}
+        - below_rp: {upper: [H], codes: [G]}
+  - first: leptismectisols
+    second: [vertisols, lithovertisols, topovertisols, paravertisols_hapliques, paravertisols_planosoliques]
+    page: "67, 217-218"
+    note: "no V horizon: a leptismectisol, not a vertisol (the lithovertisols have the V; rapid key 6c needs it)"
+    when:
+      none_of:
+        - horizon_within_rp: {codes: [V], depth: 100}
+  - first: luvisols_tronques
+    second: [luvisols_typiques, neoluvisols]
+    page: "227"
+    note: "under forest no E over 10 cm: a luvisol tronqué, the typique or néoluvisol a candidate (Hugo's decision 8, 2026-11-04)"
+    when:
+      all_of:
+        - none_of:
+            - horizon_within_rp: {codes: ["L+", L], depth: 10}
+        - thickness_rp: {codes: [E], max: 10}
+  - first: luvisols_derniques
+    second: luvisols_degrades
+    page: "226-227"
+    note: "an Ea directly on the BTd and the index over 1.8: a luvisol dernique (D9)"
+    when: {all_of: [{below_rp: {upper: [Ea], codes: [BTd]}}]}
+  - first: nitosols
+    second: [brunisols_eutriques, brunisols_dystriques]
+    page: "236"
+    note: "a nitic Sn, not a typical S: a nitosol"
+    when: {all_of: [{horizon_within_rp: {codes: [Sn]}}]}
+  - first: [brunisols_eutriques, brunisols_dystriques]
+    second: [organosols_holorganiques, organosols_calcaires, organosols_satures, organosols_insatures]
+    page: "240"
+    note: "organo-mineral S horizons over 10 cm: a brunisol (hémiorganique)"
+    when: {all_of: [{thickness_rp: {codes: ["S="], min: 10, open: true}}]}
+  - first: [calcosols, calcisols]
+    second: [organosols_holorganiques, organosols_calcaires, organosols_satures, organosols_insatures]
+    page: "241"
+    note: "an Sca or Sci over 10 cm: a calcosol or calcisol (hémiorganique)"
+    when: {all_of: [{thickness_rp: {codes: [Sca, Sci], min: 10, open: true}}]}
+  - first: alocrisols_humiques
+    second: [organosols_holorganiques, organosols_calcaires, organosols_satures, organosols_insatures]
+    page: "241"
+    note: "a Sal over 10 cm under O or Aho: an alocrisol humique, the organosol a candidate (Hugo's decision 5, 2026-11-04)"
+    when: {all_of: [{thickness_rp: {codes: [Sal], min: 10, open: true}}]}
+  - first: organosols_insatures
+    second: alocrisols_humiques
+    page: "241"
+    note: "a Sal under 10 cm under O or Aho: an organosol insaturé, the alocrisol a candidate (Hugo's decision 5, 2026-11-04)"
+    when: {all_of: [{thickness_rp: {codes: [Sal], max: 10, open: true}}]}
+  - first: podzosols_humiques
+    second: [organosols_holorganiques, organosols_calcaires, organosols_satures, organosols_insatures]
+    page: "241"
+    note: "E and BP over 10 cm under O or Aho: a podzosol humique (a later release)"
+    when: {all_of: [{thickness_rp: {codes: [E, BP], min: 10, open: true}}]}
+  - first: [organosols_calcaires, organosols_satures]
+    second: [rendosols, calcosols, rendisols, calcisols]
+    page: "241"
+    note: "an Acaho or Aciho with OF and OH over 40 cm and no other horizon: an organosol calcaire or saturé"
+    when:
+      all_of:
+        - thickness_rp: {codes: [OF, OH, OHta, Acaho, Aciho], min: 40, open: true}
+        - none_of:
+            - horizon_within_rp: {codes: [S, E, BT, BP]}
 exclusions:
   - code: brunisols_eutriques
     by: calcisols
