@@ -64,7 +64,7 @@ references:
       - {with: "alocrisols", page: "107", by: "an S, not a microcrumb Sal (the horizon frame)"}
       - {with: "fluviosols brunifiés", page: "107", by: "recent floodable alluvium (fluviosols.yaml; the rapid key, 5a before 11a)"}
       - {with: "néoluvisols", page: "107", by: "first clay coatings: the qualifier luvique (later release)"}
-      - {with: "réductisols and rédoxisols", page: "107", by: "a G within 50 cm (side test); a -g within 50 cm, the double brunisol-rédoxisol (doubles.yaml, later release)"}
+      - {with: "réductisols and rédoxisols", page: "107", by: "a G within 50 cm (side test); a -g within 50 cm, the double brunisol-rédoxisol with an aerated S over the Sg (doubles.yaml), else the rédoxisol (precedence.yaml)"}
     tests:
       all_of:
         - *brun_core
@@ -92,7 +92,7 @@ references:
       - {with: "alocrisols", page: "107", by: "an S, not a microcrumb Sal (the horizon frame)"}
       - {with: "fluviosols brunifiés", page: "107", by: "recent floodable alluvium (fluviosols.yaml; the rapid key, 5a before 11a)"}
       - {with: "néoluvisols", page: "107", by: "first clay coatings: the qualifier luvique (later release)"}
-      - {with: "réductisols and rédoxisols", page: "107", by: "a G within 50 cm (side test); a -g within 50 cm, the double brunisol-rédoxisol (doubles.yaml, later release)"}
+      - {with: "réductisols and rédoxisols", page: "107", by: "a G within 50 cm (side test); a -g within 50 cm, the double brunisol-rédoxisol with an aerated S over the Sg (doubles.yaml), else the rédoxisol (precedence.yaml)"}
     tests:
       all_of:
         - *brun_core

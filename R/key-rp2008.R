@@ -13,12 +13,14 @@
 # of the rapid key, Q6), the doubles the book prescribes (Q7), "[non
 # rattache]" with the three nearest references when nothing attaches; and
 # the `candidates` slot with every reference that may attach. This release
-# tests the 71 references of the first twenty-one GER (v0.9.346: the first
+# tests the 92 references of the first twenty-eight GER (v0.9.346: the first
 # nine; v0.9.348: the ferrallitisols and oxydisols, ferruginosols,
 # fersialsols, fluviosols, grisols and gypsosols; v0.9.349: the histosols,
-# leptismectisols, lithosols, luvisols, nitosols and organosols); the 39 of
-# the other 13 GER come later, and a profile showing their horizons is told
-# so in the candidates (their signposts in key.yaml), its name provisional.
+# leptismectisols, lithosols, luvisols, nitosols and organosols; v0.9.351:
+# the pelosols, peyrosols, phaeosols, planosols, podzosols, rankosols,
+# reductisols and redoxisols); the 18 of the other 6 GER come later, and a
+# profile showing their horizons is told so in the candidates (their
+# signposts in key.yaml), its name provisional.
 # =============================================================================
 
 .rp_rules_cache <- new.env(parent = emptyenv())
@@ -46,6 +48,7 @@
   r$entry_of <- list()
   for (e in r$rapid_key) for (o in as.character(unlist(e$outcomes)))
     if (is.null(r$entry_of[[o]])) r$entry_of[[o]] <- e$entry
+  r$order_cache <- .rp_order(r)
   r
 }
 
@@ -61,6 +64,8 @@
 # soilKey's 7c), the references of a GER in the book's order; a GER of a
 # later release by its signpost row, before its references would come.
 .rp_order <- function(rules) {
+  # computed once per rules object (the timing of 0.9.351)
+  if (!is.null(rules$order_cache)) return(rules$order_cache)
   rows <- list()
   for (g in rules$ger) {
     rk <- rules$ger_rank[[g$code]] %||% 999L
@@ -77,7 +82,10 @@
 # a precedence pair, an exclusion or a double): TRUE when absent.
 .rp_when <- function(pedon, when) {
   if (is.null(when)) return(TRUE)
-  as.logical(evaluate_rsg_tests(pedon, when)$passed)
+  # the same block is read by several pairs (the doubles of a GER named):
+  # once per profile (0.9.351)
+  .rp_cached(pedon, paste0("when_", paste(deparse(when), collapse = "")),
+             function() as.logical(evaluate_rsg_tests(pedon, when)$passed))
 }
 
 # The explicit precedence pairs among the codes present ("*" for every
@@ -109,12 +117,13 @@
   out
 }
 
-# The doubles of doubles.yaml whose references are all implemented.
+# The doubles of doubles.yaml whose references are all implemented (a pair
+# left to the candidates, `status: candidate`, is not written: 0.9.351).
 .rp_group_rows <- function(rules, pedon, codes, evals = list()) {
   out <- list()
   for (d in rules$doubles) {
     cc <- as.character(unlist(d$codes))
-    if (identical(d$status, "later") || !all(cc %in% codes)) next
+    if (!is.null(d$status) || !all(cc %in% codes)) next
     w <- .rp_when(pedon, d[["when"]])
     # `when_degree`: the degree a member must have for the double (the
     # anthroposol transforme imperfect, the intermediate case of p. 91)
@@ -206,16 +215,18 @@
 #'
 #' Attaches a \code{\link{PedonRecord}} to the references of the
 #' \emph{Referentiel pedologique} 2008 (AFES; Baize and Girard coord.;
-#' Editions Quae, 2009). \strong{Experimental}: this release tests the 71
-#' references of the first twenty-one groups of references (GER): alocrisols
+#' Editions Quae, 2009). \strong{Experimental}: this release tests the 92
+#' references of the first twenty-eight groups of references (GER): alocrisols
 #' (2), andosols (6), anthroposols (5), arenosols (1), brunisols (2), the
 #' solums dominated by calcium or magnesium (7: rendosols, calcosols,
 #' dolomitosols, rendisols, calcisols, magnesisols, calcarisols),
 #' chernosols (3), colluviosols (1), cryosols (2), ferrallitisols and
 #' oxydisols (7), ferruginosols (4), fersialsols (4), fluviosols (4),
 #' grisols (3), gypsosols (2), histosols (5), leptismectisols (1),
-#' lithosols (1), luvisols (6), nitosols (1) and organosols (4). The 39
-#' references of the other 13 GER come in later releases: a profile that
+#' lithosols (1), luvisols (6), nitosols (1), organosols (4), pelosols (3),
+#' peyrosols (1), phaeosols (2), planosols (3), podzosols (8), rankosols (1)
+#' and reductisols et redoxisols (3). The 18
+#' references of the other 6 GER come in later releases: a profile that
 #' shows their reference horizons gets them among the candidates as not
 #' implemented yet, and its name is provisional. The horizons of the
 #' intertropical chapters (F, OX, RT, ND, FE, OXc, OXm) are read only in the
@@ -225,7 +236,12 @@
 #' the valley and the water table are not recorded (Q14). The histosols read
 #' their predominant H horizon between 40 and 120 cm, the luvisols their
 #' texture contrast by the bands of the chapter, the organosols the S/CEC of
-#' their Aho as a whole.
+#' their Aho as a whole. The reductisols and redoxisols read the functional
+#' reductic or redox features starting within 50 cm and continuing over 50
+#' cm (a G within 50 cm makes a reductisol whatever lies above), and their
+#' doubles with the luvisols, podzosols, pelosols, brunisols, colluviosols,
+#' cryosols and histosols are those the book names; the depth class of the
+#' hydromorphy is in \code{trace$hydromorphy}.
 #'
 #' The RP is not a key: a solum attaches to one, two or no reference, simply
 #' or imperfectly (pp. XIV, XVII). Every reference is tested every time:
@@ -320,10 +336,15 @@ classify_rp2008 <- function(pedon, rules = NULL,
     entries <- c(entries, unname(lapply(signs, function(s) s[c("code", "name", "label", "group", "degree",
                                                                  "strict", "undecided_by")])))
     codes <- vapply(entries, `[[`, "", "code")
-    prec <- .rp_precedence_rows(rules, pedon, codes)
+    # the pairs and groups matter only among the references that may attach
+    # (and those an exclusion may list): the others are not read (the timing
+    # of 0.9.351; the result is the same)
+    degs <- vapply(entries, `[[`, "", "degree")
+    live <- codes[degs != "fail" | codes %in% vapply(rules$exclusions, function(e) e$code, "")]
+    prec <- .rp_precedence_rows(rules, pedon, live)
     excl <- .rp_exclusion_rows(rules, pedon, codes)
     comb <- .attach_combine(entries, precedence = prec, order = .rp_order(rules),
-                            groups = .rp_group_rows(rules, pedon, codes, evals), exclusions = excl,
+                            groups = .rp_group_rows(rules, pedon, live, evals), exclusions = excl,
                             n_nearest = length(entries), none_label = "[non rattach\u00e9]", sep = "-")
     # the three nearest references (Q3), and the colluviosols beside them
     # when colluvial material is recorded (the review's minor point)
@@ -349,9 +370,69 @@ classify_rp2008 <- function(pedon, rules = NULL,
       if (is.na(v$passed)) cond[[cd]] <- v
     }
     posn <- .rp_positions_of(rules, pedon, comb$codes)
+    # the depth class of the hydromorphy (pp. 282, 284, 289; 0.9.351)
+    hyd <- .rp_hydromorphy_class(pedon)
+    # the doubles the book leaves to the candidates (status candidate, Q8)
+    cdbl <- .rp_candidate_doubles(rules, pedon, comb)
+    gaps <- .rp_book_gaps(pedon)
   })
 
-  .rp_result(pedon, rules, sys, evals, signs, comb, frame, on_missing, prec, excl, cond, posn)
+  res <- .rp_result(pedon, rules, sys, evals, signs, comb, frame, on_missing, prec, excl, cond, posn, hyd, cdbl)
+  if (length(gaps)) {
+    res$trace$book_gaps <- gaps
+    res$warnings <- c(res$warnings, gaps)
+  }
+  res
+}
+
+# The solums the book places in no reference of the phaeosols and planosols
+# (Hugo's decision 9 on the review of 0.9.351, 2026-11-04): reported in the
+# trace and the warnings, never tested.
+.rp_book_gaps <- function(pedon) {
+  out <- character(0)
+  fr <- .rp_frame(pedon)
+  if (!nrow(fr) || !any(fr$code %in% "Aso")) return(out)
+  top <- .rp_tops(fr); bot <- .rp_bots(fr)
+  ord <- order(ifelse(is.na(top), Inf, top)); ord <- ord[!is.na(top[ord])]
+  j <- max(which(fr$code[ord] %in% "Aso"))
+  nx <- if (j < length(ord)) ord[j + 1L] else NA_integer_
+  nn <- if (j + 1L < length(ord)) ord[j + 2L] else NA_integer_
+  if (!is.na(nx) && isTRUE(.rp_members(fr, "E")[nx]) && !is.na(nn) && isTRUE(.rp_members(fr, "BT")[nn])) {
+    th <- bot[nx] - top[nx]
+    if (isTRUE(th >= 5 && th < 15))
+      out <- c(out, sprintf(paste("An E of %s cm between the Aso and the BT: too thick for the phaeosols (under 5 cm, p. 256),",
+                                  "too thin for the [Ae + E + Eg] of 15 cm of the planosols (p. 260), though p. 258 sends an",
+                                  "Aso/Eg/BThg to the planosols typiques melanoluviques: the book places no reference here."), format(th)))
+  }
+  if (!is.na(nx) && isTRUE(.rp_members(fr, "BT")[nx])) {
+    idt <- idt_rp(pedon, upper = "Aso", lower = "BT", adjacent = TRUE)$evidence$idt
+    ab <- boundary_rp(pedon, upper = "Aso")$passed
+    if (isTRUE(idt > 2 && idt <= 3) && isTRUE(ab))
+      out <- c(out, sprintf(paste("A texture differentiation index of %s with an abrupt Aso/BTh transition: over the 2 of the",
+                                  "phaeosols melanoluviques with an abrupt transition and with no Eg of the planosols (p. 257-258):",
+                                  "the book places no reference here."), format(signif(idt, 3))))
+  }
+  out
+}
+
+# The pairs of doubles.yaml the book leaves to the candidates (`status:
+# candidate`, the fluviosol-redoxisol of Q8): both attach, one is in the
+# name; the other is marked as a possible double. A list of the other code
+# and its note.
+.rp_candidate_doubles <- function(rules, pedon, comb) {
+  out <- list()
+  cand <- comb$candidates
+  att <- cand$code[cand$degree %in% .ATTACHED]
+  for (d in rules$doubles) {
+    if (!identical(d$status, "candidate")) next
+    cc <- as.character(unlist(d$codes))
+    if (!all(cc %in% att) || !any(cc %in% comb$codes)) next
+    if (!isTRUE(.rp_when(pedon, d[["when"]]))) next
+    oth <- setdiff(cc, comb$codes)
+    for (o in oth) out[[o]] <- sprintf("the double %s the book allows, among the candidates: %s (p. %s)",
+                                       paste(cc, collapse = "-"), d$note %||% "", d$page %||% "?")
+  }
+  out
 }
 
 # The depth of the first hard or nodular horizon of a reference of the name
@@ -380,7 +461,8 @@ classify_rp2008 <- function(pedon, rules = NULL,
 
 # The ClassificationResult of an attachment.
 .rp_result <- function(pedon, rules, sys, evals, signs, comb, frame, on_missing,
-                       prec = list(), excl = list(), cond = list(), posn = NULL) {
+                       prec = list(), excl = list(), cond = list(), posn = NULL,
+                       hyd = NULL, cdbl = list()) {
   impl <- names(rules$ref_by_code)
   ref_field <- function(cd, f) {
     r <- rules$ref_by_code[[cd]]
@@ -417,8 +499,10 @@ classify_rp2008 <- function(pedon, rules = NULL,
     p1 <- Filter(function(r) identical(r$second, cd) && isTRUE(r$when) && r$first %in% members, prec)
     e1 <- Filter(function(r) identical(r$code, cd) && isTRUE(r$when) && r$by %in% cand$code[cand$degree %in% .ATTACHED], excl)
     paste(unique(c(vapply(p1, function(r) sprintf("%s first: %s", r$first, r$note), ""),
-                   vapply(e1, function(r) sprintf("excluded by %s: %s", r$by, r$note), ""))), collapse = "; ")
+                   vapply(e1, function(r) sprintf("excluded by %s: %s", r$by, r$note), ""),
+                   cdbl[[cd]])), collapse = "; ")
   }, "", USE.NAMES = FALSE)
+  if (length(cdbl)) cand$double_possible[cand$code %in% names(cdbl)] <- TRUE
 
   # the trace: every reference with its degree, the GER signposts, the
   # horizon frame, the rapid key
@@ -443,6 +527,7 @@ classify_rp2008 <- function(pedon, rules = NULL,
     page = e$page %||% NA_character_, stringsAsFactors = FALSE)))
   trace <- list(references = steps, horizons = frame, rapid_key = rk)
   if (!is.null(posn)) trace$position <- posn
+  if (!is.null(hyd)) trace$hydromorphy <- hyd
 
   attached <- !is.na(comb$degree)
   main <- if (length(members)) members[1L] else NA_character_
@@ -524,7 +609,7 @@ classify_rp2008 <- function(pedon, rules = NULL,
 #' Example pedons for the references of the Referentiel pedologique 2008
 #'
 #' Small, plausible profiles written for the tests and examples, one per
-#' reference implemented (the 71 of the first twenty-one GER), in the RP notation
+#' reference implemented (the 92 of the first twenty-eight GER), in the RP notation
 #' (\code{site$designation_system = "rp2008"}) with the properties their
 #' tests read. They are not real profiles.
 #'
@@ -563,7 +648,18 @@ classify_rp2008 <- function(pedon, rules = NULL,
 #'   \code{"luvisols_derniques"}, \code{"luvisols_tronques"},
 #'   \code{"quasi_luvisols"}, \code{"nitosols"},
 #'   \code{"organosols_holorganiques"}, \code{"organosols_calcaires"},
-#'   \code{"organosols_satures"}, \code{"organosols_insatures"}.
+#'   \code{"organosols_satures"}, \code{"organosols_insatures"},
+#'   \code{"pelosols_typiques"}, \code{"pelosols_brunifies"},
+#'   \code{"pelosols_differencies"}, \code{"peyrosols"},
+#'   \code{"phaeosols_hapliques"}, \code{"phaeosols_melanoluviques"},
+#'   \code{"planosols_typiques"}, \code{"planosols_distaux"},
+#'   \code{"planosols_structuraux"}, \code{"podzosols_ocriques"},
+#'   \code{"podzosols_meubles"}, \code{"podzosols_duriques"},
+#'   \code{"podzosols_humiques"}, \code{"podzosols_humo_duriques"},
+#'   \code{"podzosols_eluviques"}, \code{"podzosols_placiques"},
+#'   \code{"post_podzosols"}, \code{"rankosols"},
+#'   \code{"reductisols_typiques"}, \code{"reductisols_stagniques"},
+#'   \code{"redoxisols"}.
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_rp2008(make_rp2008_example("brunisols_eutriques"), on_missing = "silent")$name
@@ -587,7 +683,12 @@ make_rp2008_example <- function(reference = c(
     "histosols_fibriques", "histosols_mesiques", "histosols_sapriques", "histosols_composites", "histosols_leptiques",
     "leptismectisols", "lithosols", "neoluvisols", "luvisols_typiques", "luvisols_degrades", "luvisols_derniques",
     "luvisols_tronques", "quasi_luvisols", "nitosols", "organosols_holorganiques", "organosols_calcaires",
-    "organosols_satures", "organosols_insatures")) {
+    "organosols_satures", "organosols_insatures",
+    "pelosols_typiques", "pelosols_brunifies", "pelosols_differencies", "peyrosols", "phaeosols_hapliques",
+    "phaeosols_melanoluviques", "planosols_typiques", "planosols_distaux", "planosols_structuraux",
+    "podzosols_ocriques", "podzosols_meubles", "podzosols_duriques", "podzosols_humiques", "podzosols_humo_duriques",
+    "podzosols_eluviques", "podzosols_placiques", "post_podzosols", "rankosols", "reductisols_typiques",
+    "reductisols_stagniques", "redoxisols")) {
   reference <- match.arg(reference)
   mk <- function(h, site = list()) {
     n <- max(lengths(h))
@@ -657,6 +758,26 @@ make_rp2008_example <- function(reference = c(
   mont <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
     base_site = list(country = "FR", lat = 46.6, lon = 6.1, elevation_m = 1300, koppen_climate = "Dfb",
                      land_use = "mountain pasture"))
+  # the profiles of part 7 (v0.9.351): the marls of Lorraine, a scree of the
+  # mont Ventoux, the loess of Uruguay, the Champagne humide and the Sologne,
+  # the sands of the Landes and the Vosges, a granite of the Massif central,
+  # valley bottoms and a clayey colluvium
+  marl <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
+    base_site = list(country = "FR", lat = 48.9, lon = 5.7, koppen_climate = "Cfb", land_use = "deciduous forest",
+                     parent_material = "Keuper marls"))
+  pampa <- function(des, top, bot, ...) lay(des, top, bot, ...,
+    base_site = list(country = "UY", lat = -33.2, lon = -56.5, koppen_climate = "Cfa", land_use = "natural grassland",
+                     parent_material = "loess"))
+  plano <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
+    base_site = list(country = "FR", lat = 48.4, lon = 4.6, koppen_climate = "Cfb", land_use = "deciduous forest",
+                     parent_material = "clayey marine sediments"))
+  podz <- function(des, top, bot, ..., site = list()) lay(des, top, bot,
+    ph_h2o = c(rep(3.8, sum(grepl("^O", des))), rep(4.2, length(des) - sum(grepl("^O", des)))), ..., site = site,
+    base_site = list(country = "FR", lat = 48.2, lon = 6.9, elevation_m = 700, koppen_climate = "Cfb",
+                     land_use = "coniferous forest", parent_material = "Vosges sandstone"))
+  wet <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
+    base_site = list(country = "FR", lat = 47.3, lon = 4.9, koppen_climate = "Cfb", land_use = "meadow",
+                     parent_material = "clayey alluvium and colluvium"))
   switch(reference,
     alocrisols_typiques = mk(list(
       designation = c("A", "Sal", "C"), top_cm = c(0, 8, 55), bottom_cm = c(8, 55, 100),
@@ -870,7 +991,83 @@ make_rp2008_example <- function(reference = c(
     organosols_insatures = mont(c("OF", "OH", "Aho", "C"), c(0, 5, 12, 45), c(5, 12, 45, 90), oc_pct = c(42, 35, 12, 1),
                                 bs_pct = c(NA, NA, 35, 40), ph_h2o = c(4.4, 4.5, 4.8, 5.0), clay_pct = c(NA, NA, 18, 12),
                                 site = list(country = "FR", lat = 48.0, lon = 7.0, elevation_m = 1200, parent_material = "gneiss",
-                                            drainage_class = "well drained"))
+                                            drainage_class = "well drained")),
+    pelosols_typiques = marl(c("A", "Sp", "C"), c(0, 15, 75), c(15, 75, 130), clay_pct = c(48, 56, 52),
+                             oc_pct = c(3.5, 0.8, 0.3), ph_h2o = c(6.6, 7.0, 7.8), bs_pct = c(90, 95, 100),
+                             structure_type = c("subangular blocky", "angular blocky", "massive"),
+                             structure_type_secondary = c(NA, "prismatic", NA), caco3_pct = c(0, 0, 12)),
+    pelosols_brunifies = marl(c("A", "S", "Sp", "C"), c(0, 10, 25, 80), c(10, 25, 80, 130), clay_pct = c(42, 46, 55, 50),
+                              oc_pct = c(3, 1.2, 0.6, 0.3), ph_h2o = c(6.2, 6.4, 6.9, 7.6), caco3_pct = c(0, 0, 0, 10),
+                              structure_type = c("granular", "subangular blocky", "angular blocky", "massive"),
+                              structure_type_secondary = c(NA, NA, "prismatic", NA)),
+    pelosols_differencies = marl(c("Ae", "E", "Sp", "C"), c(0, 8, 25, 85), c(8, 25, 85, 130), clay_pct = c(22, 24, 52, 50),
+                                 oc_pct = c(3, 1, 0.5, 0.3), ph_h2o = c(5.2, 5.4, 6.4, 7.4), caco3_pct = c(0, 0, 0, 8),
+                                 structure_type = c("granular", "subangular blocky", "angular blocky", "massive"),
+                                 structure_type_secondary = c(NA, NA, "prismatic", NA)),
+    peyrosols = lay(c("Xp", "Xc", "C"), c(0, 30, 70), c(30, 70, 120), oc_pct = c(5, 1.5, NA),
+                    coarse_fragments_wt_pct = c(80, 75, 70), stones_wt_pct = c(55, 20, NA), cobbles_wt_pct = c(20, 50, NA),
+                    caco3_pct = c(20, 40, NA), roots_abundance = c("common", "few", NA),
+                    base_site = list(country = "FR", lat = 44.17, lon = 5.28, elevation_m = 1600, koppen_climate = "Dfb",
+                                     land_use = "mountain grassland", parent_material = "limestone scree")),
+    phaeosols_hapliques = pampa(c("Aso", "Sh", "Kc"), c(0, 40, 85), c(40, 85, 130), clay_pct = c(25, 28, 26),
+                                oc_pct = c(2.6, 0.9, 0.3), bs_pct = c(68, 88, 100), ph_h2o = c(6.0, 6.8, 7.9),
+                                munsell_hue_moist = "10YR", munsell_value_moist = c(2, 3, 5), munsell_chroma_moist = c(1, 2, 3),
+                                caco3_pct = c(0, 0, 8)),
+    phaeosols_melanoluviques = pampa(c("Aso", "BTh", "BT", "Kc"), c(0, 35, 80, 115), c(35, 80, 115, 150),
+                                     clay_pct = c(22, 36, 34, 28), oc_pct = c(2.8, 0.9, 0.4, 0.2), bs_pct = c(66, 86, 92, 100),
+                                     ph_h2o = c(6.0, 6.7, 7.2, 8.0), clay_films_amount = c(NA, "many", "many", NA),
+                                     munsell_hue_moist = "10YR", munsell_value_moist = c(2, 3, 4, 5),
+                                     munsell_chroma_moist = c(1, 2, 3, 3), caco3_pct = c(0, 0, 0, 10)),
+    planosols_typiques = plano(c("Ae", "Eg", "Sg", "C"), c(0, 12, 40, 100), c(12, 40, 100, 140), clay_pct = c(12, 11, 42, 38),
+                               oc_pct = c(3, 0.8, 0.5, 0.2), redoximorphic_features_pct = c(NA, 20, 25, 10),
+                               boundary_distinctness = c("clear", "abrupt", "gradual", NA), boundary_topography = c(NA, "smooth", NA, NA)),
+    planosols_distaux = plano(c("Ae", "E", "Eg", "Sg", "C"), c(0, 15, 65, 85, 120), c(15, 65, 85, 120, 150),
+                              clay_pct = c(8, 7, 9, 32, 30), oc_pct = c(2.5, 0.6, 0.4, 0.3, 0.2),
+                              redoximorphic_features_pct = c(NA, NA, 15, 20, 10),
+                              boundary_distinctness = c("clear", "clear", "abrupt", "gradual", NA),
+                              site = list(lat = 46.5, lon = 3.5, parent_material = "sands over sandy clay")),
+    planosols_structuraux = plano(c("LE", "Eg", "Fem", "C"), c(0, 25, 45, 60), c(25, 45, 60, 110), clay_pct = c(18, 19, 22, 24),
+                                  oc_pct = c(1.4, 0.5, 0.3, 0.2), redoximorphic_features_pct = c(NA, 25, NA, NA),
+                                  cementation_class = c(NA, NA, "indurated", NA),
+                                  boundary_distinctness = c("clear", "abrupt", "abrupt", NA),
+                                  site = list(lat = 43.6, lon = 1.2, koppen_climate = "Cfa", land_use = "cropland",
+                                              parent_material = "old alluvium (boulbenes)")),
+    podzosols_ocriques = podz(c("OF", "OH", "A", "BPs", "C"), c(0, 3, 6, 10, 50), c(3, 6, 10, 50, 90),
+                              oc_pct = c(40, 35, 6, 2, 0.3), munsell_hue_moist = c(NA, NA, "10YR", "7.5YR", "10YR"),
+                              site = list(elevation_m = 1100, parent_material = "leucocratic granite")),
+    podzosols_meubles = podz(c("OF", "OH", "Ae", "E", "BPh", "BPs", "C"), c(0, 3, 6, 10, 35, 45, 80), c(3, 6, 10, 35, 45, 80, 120),
+                             oc_pct = c(42, 36, 5, 0.6, 3, 1.2, 0.2)),
+    podzosols_duriques = podz(c("OF", "OH", "Ae", "E", "BPh", "BPs", "C"), c(0, 4, 8, 12, 45, 60, 90), c(4, 8, 12, 45, 60, 90, 130),
+                              oc_pct = c(42, 36, 5, 0.5, 4, 1.5, 0.2), cementation_class = c(NA, NA, NA, NA, "strongly", "moderately", NA),
+                              site = list(lat = 48.4, lon = 2.7, elevation_m = 120, parent_material = "Fontainebleau sands")),
+    podzosols_humiques = podz(c("OF", "OH", "Eh", "BPh", "BPs", "C"), c(0, 4, 9, 45, 60, 95), c(4, 9, 45, 60, 95, 130),
+                              oc_pct = c(42, 36, 2.5, 4, 1.4, 0.2), munsell_value_moist = c(NA, NA, 3, 3, 4, 6),
+                              munsell_chroma_moist = c(NA, NA, 1, 3, 6, 4)),
+    podzosols_humo_duriques = podz(c("OF", "OH", "Eh", "BPh", "BPs", "C"), c(0, 4, 9, 40, 55, 85), c(4, 9, 40, 55, 85, 130),
+                                   oc_pct = c(42, 36, 2.6, 5, 1.6, 0.2), cementation_class = c(NA, NA, NA, "strongly", NA, NA),
+                                   site = list(lat = 44.2, lon = -0.8, elevation_m = 60, koppen_climate = "Cfb",
+                                               parent_material = "Landes sand", groundwater_kind = "observed")),
+    podzosols_eluviques = podz(c("OF", "OH", "Ae", "E", "R"), c(0, 4, 8, 12, 55), c(4, 8, 12, 55, 90),
+                               oc_pct = c(42, 36, 4, 0.5, NA),
+                               site = list(lateral_bp_downslope = TRUE, landform_element = "upper slope")),
+    podzosols_placiques = podz(c("OF", "OH", "Ae", "E", "Femp", "BPs", "C"), c(0, 3, 6, 10, 30, 31, 70),
+                               c(3, 6, 10, 30, 31, 70, 110), oc_pct = c(42, 36, 5, 0.6, 2, 1.5, 0.2),
+                               site = list(elevation_m = 1000)),
+    post_podzosols = podz(c("LA", "BPs", "C"), c(0, 30, 60), c(30, 60, 120), oc_pct = c(2.5, 1.2, 0.2),
+                          site = list(lat = 44.0, lon = -0.9, elevation_m = 50, land_use = "cropland",
+                                      parent_material = "Landes sand")),
+    rankosols = lay(c("A", "R"), c(0, 22), c(22, 60), oc_pct = c(4.5, NA), coarse_fragments_wt_pct = c(40, NA),
+                    ph_h2o = c(5.0, NA), caco3_pct = c(0, NA),
+                    base_site = list(country = "FR", lat = 45.2, lon = 3.1, elevation_m = 1000, koppen_climate = "Cfb",
+                                     land_use = "heath", parent_material = "two-mica granite")),
+    reductisols_typiques = wet(c("Ag", "Go", "Gr"), c(0, 15, 45), c(15, 45, 130), clay_pct = c(35, 40, 42), oc_pct = c(5, 1, 0.5),
+                               site = list(groundwater_kind = "observed", groundwater_depth_cm = 40, landform = "valley bottom")),
+    reductisols_stagniques = wet(c("An", "Gr", "C"), c(0, 15, 75), c(15, 75, 110), clay_pct = c(30, 35, 20), oc_pct = c(12, 1, 0.3),
+                                 site = list(lat = 45.6, lon = 6.2, elevation_m = 1400, koppen_climate = "Dfb",
+                                             groundwater_kind = "perched", parent_material = "granite")),
+    redoxisols = wet(c("A", "g", "C"), c(0, 20, 95), c(20, 95, 140), clay_pct = c(38, 45, 40), oc_pct = c(3, 0.6, 0.3),
+                     redoximorphic_features_pct = c(NA, 25, NA),
+                     site = list(parent_material = "clayey colluvium on granite", groundwater_kind = "perched"))
   )
 }
 

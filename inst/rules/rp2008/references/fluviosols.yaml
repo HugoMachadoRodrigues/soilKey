@@ -16,14 +16,14 @@
 # réductisol or a histosol fluvique; S23: any H from the surface excludes).
 # A g or -g within 50 cm continuing over 50 cm leaves the choice between a
 # rédoxisol fluvique and the double fluviosol-rédoxisol (Q8: the rédoxisol
-# fluvique in the name, the double among the candidates): the rédoxisols
-# come later, their signpost makes the name provisional and the pairs wait
-# in doubles.yaml.
+# fluvique in the name, the double among the candidates; since 0.9.351 the
+# rédoxisol takes the solum when it holds strictly, the pairs of
+# doubles.yaml marked candidate).
 #
 # Distinctions (pp. 188-189): the fluviosols bruts before the régosols in an
 # alluvial setting (precedence.yaml); the colluviosols by a colluvial origin
 # (they yield to every other reference, p. 132); a peyrosol-fluviosol brut
-# double (a later release); the cones of alluvial fans are no fluviosols
+# double (doubles.yaml); the cones of alluvial fans are no fluviosols
 # (valley_position alluvial fan).
 scope: &fl_scope
   all_of:
@@ -58,7 +58,7 @@ references:
     provisional_unless: {all_of: [{alluvial_rp: {bed: minor, site: required}}]}
     distinctions:
       - {with: "régosols", page: "188", by: "in an alluvial setting the fluviosols bruts (precedence.yaml)"}
-      - {with: "peyrosols", page: "188", by: "the double peyrosol-fluviosol brut (doubles.yaml, later release)"}
+      - {with: "peyrosols", page: "188", by: "the double peyrosol-fluviosol brut (doubles.yaml)"}
     tests:
       all_of:
         - *fl_scope
@@ -125,12 +125,12 @@ references:
     name_en_singular: "brunified fluviosol"
     page: "186-187"
     sequences: ["A|Aca|Aci|LA-S|Sca|Sci-D", "A|Aca|Aci|LA-S|Sca|Sci-M-D"]
-    notes: "A well structured, biologically active S (or Sca, Sci) under the A, an M possible over the D; the solum 1 m or more. Redox features within 50 cm: the double fluviosol brunifié-rédoxisol or a rédoxisol fluvique (later release)."
+    notes: "A well structured, biologically active S (or Sca, Sci) under the A, an M possible over the D; the solum 1 m or more. Redox features within 50 cm: the rédoxisol fluvique in the name, the double fluviosol brunifié-rédoxisol among the candidates (Q8)."
     wrb2006: "Fluvic Cambisols"
     provisional_unless: {all_of: [{alluvial_rp: {site: required}}]}
     distinctions:
       - {with: "brunisols, calcosols, calcisols", page: "107, 187-188", by: "recent floodable alluvium in a valley (the rapid key, entry 5a before 11a and 12)"}
-      - {with: "rédoxisols", page: "187", by: "the double fluviosol brunifié-rédoxisol (doubles.yaml, later release)"}
+      - {with: "rédoxisols", page: "187", by: "the rédoxisol fluvique, the double fluviosol brunifié-rédoxisol among the candidates (Q8; doubles.yaml, precedence.yaml)"}
     tests:
       all_of:
         - *fl_scope

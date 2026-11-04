@@ -19,15 +19,16 @@
 # The figure of p. 209: H over 10 cm on R (else a lithosol épihistique, M or
 # D a régosol épihistique); under 50 cm on M, D or R a histosol leptique;
 # under 50 cm on G a réductisol épihistique (precedence.yaml, the
-# réductisols a later release); over 50 cm the fibriques, mésiques,
+# réductisols, 0.9.351); over 50 cm the fibriques, mésiques,
 # sapriques or composites. The habitat notes (the water table, H2S, p.
 # 207) are reported, not tested (D18); the "simplest solums" (hapliques) and
 # the kinds of the leptiques are qualifiers (a later release).
 #
 # Distinctions (p. 211): a permafrost within 2 m makes a cryosol histique
 # (precedence.yaml); the organosols are aerated, with O and Aho and no H
-# (the horizon frame, Q19); a double with the réductisols is possible
-# (doubles.yaml, a later release); H over sulfidic materials, the qualifier
+# (the horizon frame, Q19); over 50 cm of H over a G the histosol, the
+# réductisol a candidate (no double: Hugo's decision 2 on the review of
+# 0.9.351); H over sulfidic materials, the qualifier
 # bathysulfidique.
 scope: &hi_scope
   all_of:
@@ -122,7 +123,7 @@ references:
     wrb2006: "Epileptic Histosols"
     distinctions:
       - {with: "lithosols, régosols épihistiques", page: "207, 209, 211", by: "H of 10 cm or less over R, or over M or D (precedence.yaml)"}
-      - {with: "réductisols épihistiques", page: "208-209", by: "H under 50 cm over G (precedence.yaml, a later release)"}
+      - {with: "réductisols épihistiques", page: "208-209", by: "H under 50 cm over G (precedence.yaml); over 50 cm the histosol, réductique a qualifier (precedence.yaml, decision 2)"}
     tests:
       all_of:
         - *hi_scope

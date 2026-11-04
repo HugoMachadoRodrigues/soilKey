@@ -97,7 +97,7 @@ precedence:
     page: "188"
     note: "in an alluvial setting the fluviosols bruts, not the régosols"
   - first: [grisols_eluviques, grisols_degrades, grisols_hapliques]
-    second: [chernosols_melanoluviques, chernosols_typiques, phaeosols]
+    second: [chernosols_melanoluviques, chernosols_typiques, phaeosols_hapliques, phaeosols_melanoluviques]
     page: "194"
     note: "an Aso not saturated, an Eh, the degradation of the ped faces, the unsaturation of the whole solum: a grisol before the chernosols and the phaeosols (Q6)"
   # --- the GER of part 6 (v0.9.349) ---------------------------------------------------
@@ -139,7 +139,7 @@ precedence:
   - first: [reductisols_typiques, reductisols_stagniques]
     second: [histosols_fibriques, histosols_mesiques, histosols_sapriques, histosols_composites, histosols_leptiques]
     page: "208-209"
-    note: "H horizons under 50 cm over G: a réductisol épihistique (a later release)"
+    note: "H horizons under 50 cm over G: a réductisol épihistique"
     when:
       all_of:
         - thickness_rp: {codes: [H], max: 50, open: true}
@@ -190,10 +190,10 @@ precedence:
     page: "241"
     note: "a Sal under 10 cm under O or Aho: an organosol insaturé, the alocrisol a candidate (Hugo's decision 5, 2026-11-04)"
     when: {all_of: [{thickness_rp: {codes: [Sal], max: 10, open: true}}]}
-  - first: podzosols_humiques
+  - first: [podzosols_ocriques, podzosols_meubles, podzosols_duriques, podzosols_humiques, podzosols_humo_duriques, podzosols_placiques, post_podzosols]
     second: [organosols_holorganiques, organosols_calcaires, organosols_satures, organosols_insatures]
     page: "241"
-    note: "E and BP over 10 cm under O or Aho: a podzosol humique (a later release)"
+    note: "E and BP over 10 cm under O or Aho: a podzosol, whichever attaches (Hugo's decision 8 on the review of 0.9.351, 2026-11-04)"
     when: {all_of: [{thickness_rp: {codes: [E, BP], min: 10, open: true}}]}
   - first: [organosols_calcaires, organosols_satures]
     second: [rendosols, calcosols, rendisols, calcisols]
@@ -204,6 +204,88 @@ precedence:
         - thickness_rp: {codes: [OF, OH, OHta, Acaho, Aciho], min: 40, open: true}
         - none_of:
             - horizon_within_rp: {codes: [S, E, BT, BP]}
+  # --- the GER of part 7 (v0.9.351) ---------------------------------------------------
+  - first: pelosols_differencies
+    second: [planosols_typiques, planosols_distaux, planosols_structuraux]
+    page: "244, 247, 263"
+    note: "[Ae + E] or LE of 30 cm or less over an Sp: a pélosol différencié, not a planosol"
+  - first: [planosols_typiques, planosols_distaux]
+    second: planosols_structuraux
+    page: "260-261"
+    note: "the characters of the textural planosols: typique or distal; structural only with little or no texture differentiation"
+  - first: [planosols_typiques, planosols_distaux]
+    second: [luvisols_degrades, luvisols_derniques]
+    page: "227, 230"
+    note: "luvisols dégradés or derniques very planosolic, with the characters of the textural planosols: planosols"
+  # the podzosols in soilKey's order (map 4, D11): post-podzosols, placiques,
+  # then the others, which their tests keep apart
+  - first: post_podzosols
+    second: [podzosols_ocriques, podzosols_meubles, podzosols_duriques, podzosols_humiques, podzosols_humo_duriques, podzosols_eluviques, podzosols_placiques]
+    page: "271"
+    note: "a ploughed horizon on the BP: a post-podzosol (D11)"
+  - first: podzosols_placiques
+    second: [podzosols_ocriques, podzosols_meubles, podzosols_duriques, podzosols_humiques, podzosols_humo_duriques]
+    page: "270"
+    note: "a placic Femp with the BP: a podzosol placique (D11)"
+  - first: [histosols_fibriques, histosols_mesiques, histosols_sapriques, histosols_composites]
+    second: [reductisols_typiques, reductisols_stagniques]
+    page: "209, 211"
+    note: "H over 50 cm with a G under it: a histosol (réductique, a qualifier, the figure of p. 209), the réductisol a candidate; no double (Hugo's decision 2 on the review of 0.9.351, 2026-11-04)"
+    when: {all_of: [{thickness_rp: {codes: [H], min: 50, open: true}}]}
+  - first: [phaeosols_hapliques, phaeosols_melanoluviques]
+    second: [brunisols_eutriques, brunisols_dystriques]
+    page: "257"
+    note: "an Aso of 30 cm or more: the phæosol, also dystrique or within the tolerance, before a brunisol (Hugo's decision 4 on the review of 0.9.351, 2026-11-04)"
+    when: {all_of: [{thickness_rp: {codes: [A], min: 30, from_surface: true}}]}
+  - first: rankosols
+    second: [podzosols_ocriques, podzosols_meubles, podzosols_duriques, podzosols_humiques, podzosols_humo_duriques, podzosols_placiques, post_podzosols]
+    page: "272, 276"
+    note: "a BP of 5 cm or less in a rankosol is not counted: the rankosol (map 4, D14)"
+    when: {all_of: [{thickness_rp: {codes: [BP], max: 5}}]}
+  - first: luvisols_typiques
+    second: [podzosols_ocriques, podzosols_meubles, podzosols_duriques, podzosols_humiques, podzosols_humo_duriques, podzosols_placiques]
+    page: "273"
+    note: "a podzolic episolum [A + E + BP] under 20 cm over the luvisol: a luvisol typique à micropodzol"
+    when: {all_of: [{podzolic_episolum_rp: {max: 20}}]}
+  # peyric horizons over 50 cm from the surface: the peyrosol whatever the
+  # context, simply or in a double (p. 253)
+  - first: peyrosols
+    second: "*"
+    except: [cryosols_mineraux, cryosols_histiques, regosols, salisols_sodisols, thalassosols, thiosols_sulfatosols, veracrisols, vertisols]
+    page: "253"
+    note: "peyric horizons over 50 cm from the surface: a peyrosol, simply or in a double, whatever the context, a reductic solum too (Hugo's decision 6, 2026-11-04)"
+    when: {all_of: [{peyric_rp: {min: 50}}]}
+  # the hydromorphy (Q8, Q13; Hugo's default 20)
+  - first: [reductisols_typiques, reductisols_stagniques]
+    second: "*"
+    except: [cryosols_mineraux, cryosols_histiques, peyrosols, regosols, salisols_sodisols, thalassosols, thiosols_sulfatosols, veracrisols, vertisols]
+    page: "282, 289; 107"
+    note: "a G starting within 50 cm makes a réductisol whatever lies above (default 20, D22); the doubles of doubles.yaml are still written"
+    when: {all_of: [{hydromorphy_rp: {kind: G, within: 50}}]}
+  - first: [planosols_typiques, planosols_structuraux]
+    second: redoxisols
+    page: "263, 285"
+    note: "the planosols typiques and structuraux are redox by definition: no double with the rédoxisols"
+  - first: pelosols_differencies
+    second: redoxisols
+    page: "285"
+    note: "the pélosols différenciés include the redox horizons within 50 cm: no double"
+  - first: "*"
+    second: redoxisols
+    except: [colluviosols, fluviosols_bruts, fluviosols_juveniles, fluviosols_typiques, fluviosols_brunifies, brunisols_eutriques, brunisols_dystriques, cryosols_mineraux, cryosols_histiques, regosols, salisols_sodisols, thalassosols, thiosols_sulfatosols, veracrisols, vertisols]
+    page: "282, 285"
+    note: "other important horizons (E, BT, BP, Sp) with the redox features: the double the book names (doubles.yaml), else the other reference takes the name and the rédoxisol is a candidate (soilKey's reading of p. 285 under Q7)"
+    when: {all_of: [{horizon_within_rp: {codes: [E, BT, BP, Sp]}}]}
+  - first: redoxisols
+    second: [fluviosols_bruts, fluviosols_juveniles, fluviosols_typiques, fluviosols_brunifies]
+    page: "184, 187-188"
+    note: "redox features from under 50 cm over 50 cm in alluvium: the rédoxisol fluvique in the name, the double fluviosol-rédoxisol among the candidates (Q8)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
+  - first: redoxisols
+    second: [brunisols_eutriques, brunisols_dystriques]
+    page: "107"
+    note: "a -g within 50 cm with no aerated S over it: the rédoxisol (the double brunisol-rédoxisol of doubles.yaml otherwise)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
 exclusions:
   - code: brunisols_eutriques
     by: calcisols

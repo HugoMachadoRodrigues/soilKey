@@ -29,7 +29,15 @@ make_rp2008_example(
     "luvisols_typiques", "luvisols_degrades", "luvisols_derniques", "luvisols_tronques",
     "quasi_luvisols", "nitosols", "organosols_holorganiques", 
     
-    "organosols_calcaires", "organosols_satures", "organosols_insatures")
+    "organosols_calcaires", "organosols_satures", "organosols_insatures",
+    "pelosols_typiques", "pelosols_brunifies", "pelosols_differencies", "peyrosols",
+    "phaeosols_hapliques", "phaeosols_melanoluviques", "planosols_typiques",
+    "planosols_distaux", "planosols_structuraux", "podzosols_ocriques",
+    "podzosols_meubles", "podzosols_duriques", "podzosols_humiques",
+    "podzosols_humo_duriques", "podzosols_eluviques", "podzosols_placiques",
+    "post_podzosols", "rankosols", "reductisols_typiques", "reductisols_stagniques", 
+   
+     "redoxisols")
 )
 }
 \arguments{
@@ -68,14 +76,25 @@ make_rp2008_example(
 \code{"luvisols_derniques"}, \code{"luvisols_tronques"},
 \code{"quasi_luvisols"}, \code{"nitosols"},
 \code{"organosols_holorganiques"}, \code{"organosols_calcaires"},
-\code{"organosols_satures"}, \code{"organosols_insatures"}.}
+\code{"organosols_satures"}, \code{"organosols_insatures"},
+\code{"pelosols_typiques"}, \code{"pelosols_brunifies"},
+\code{"pelosols_differencies"}, \code{"peyrosols"},
+\code{"phaeosols_hapliques"}, \code{"phaeosols_melanoluviques"},
+\code{"planosols_typiques"}, \code{"planosols_distaux"},
+\code{"planosols_structuraux"}, \code{"podzosols_ocriques"},
+\code{"podzosols_meubles"}, \code{"podzosols_duriques"},
+\code{"podzosols_humiques"}, \code{"podzosols_humo_duriques"},
+\code{"podzosols_eluviques"}, \code{"podzosols_placiques"},
+\code{"post_podzosols"}, \code{"rankosols"},
+\code{"reductisols_typiques"}, \code{"reductisols_stagniques"},
+\code{"redoxisols"}.}
 }
 \value{
 A \code{\link{PedonRecord}}.
 }
 \description{
 Small, plausible profiles written for the tests and examples, one per
-reference implemented (the 71 of the first twenty-one GER), in the RP notation
+reference implemented (the 92 of the first twenty-eight GER), in the RP notation
 (\code{site$designation_system = "rp2008"}) with the properties their
 tests read. They are not real profiles.
 }

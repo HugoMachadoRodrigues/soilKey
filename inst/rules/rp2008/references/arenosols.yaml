@@ -50,7 +50,7 @@ references:
       - {with: "régosols sableux", page: "101", by: "an organo-mineral top with roots and biological activity (later release)"}
       - {with: "fluviosols", page: "101", by: "a valley and a fluctuating water table (fluviosols.yaml; the rapid key, 5a before 6b)"}
       - {with: "brunisols, calcosols, alocrisols, luvisols", page: "101", by: "no S and no BT (side test)"}
-      - {with: "podzosols", page: "102", by: "a BP downslope or deep makes a podzosol (later release)"}
+      - {with: "podzosols", page: "102", by: "a BP downslope or deep makes a podzosol (podzosols.yaml)"}
       - {with: "salisols and sodisols", page: "102", by: "an arénosol salin is never one (later release)"}
       - {with: "rédoxisols and réductisols", page: "102", by: "no water excess within 80 cm and no G (side test)"}
     tests:

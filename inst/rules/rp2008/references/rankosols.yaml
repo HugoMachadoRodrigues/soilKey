@@ -1,0 +1,68 @@
+# Rankosols (pp. 276-278), 1 reference: little differentiated, thin solums,
+# neither calcareous nor calcic, on acid hard rock, of erosion or of high
+# altitude or latitude: to the acid rocks what the rendosols and rendisols
+# are to the carbonate rocks (p. 276). The sequence (O optional)/A or LA/R
+# and five compulsory characters (p. 276): the A or LA and the R not
+# carbonated (no carbonate reserve recorded: carbonate_reserve_rp, and no
+# calcareous, calcic or magnesic horizon: the intro's "ni calcaires ni
+# calciques"); abundant non-calcareous coarse elements, over 25 %
+# by weight but under 60 % (Q11: by weight, else the volume converted or
+# its band; not recorded, none); organic carbon in the A under 8 % (+/- 2);
+# [O + (A or LA)], the OL not counted, over 10 cm (else a lithosol) and
+# under 35 cm (+/- 5); no Ag, E, BP, BT, S or g over 5 cm (strict, Q5), no
+# Alu or And.
+#
+# Three readings of the other chapters (map 4, D14, D15; Hugo's defaults):
+# a BP under 10 cm is allowed (5 cm or less the rankosol alone, 5 to 10 cm
+# the double rankosol-podzosol ocrique of p. 272; 10 cm or more a
+# podzosol); a Sal under 10 cm is allowed (the alocrisols chapter, p. 73);
+# coarse elements of 60 % or more make the peyrosol, with the rankosol in
+# the double rankosol-peyrosol of the type of p. 277 when every other
+# character holds (the peyric horizon then stands in the A slot).
+#
+# Distinctions (p. 277): the lithosols are 10 cm thick or less (the
+# thickness); the organosols insaturés leptiques have an Aho and fewer
+# coarse elements (organic carbon and coarse elements); a solum under 35
+# cm with an S over 5 cm is a brunisol dystrique lithique (the S test); the
+# andosols leptiques have an Avi, And + Snd or Alu + Slu (no Alu or And).
+references:
+  - code: "rankosols"
+    ger: "rankosols"
+    name: "rankosols"
+    name_singular: "rankosol"
+    name_en: "rankosols"
+    name_en_singular: "rankosol"
+    page: "276"
+    sequences: ["(O)-A|LA-R"]
+    notes: "An A or LA over 10 and under 35 cm thick with the O (the OL excluded), over 25 % and under 60 % non-calcareous coarse elements by weight, organic carbon under 8 %, on a non-carbonated R; no Ag, E, BT, S or g over 5 cm, a BP or a Sal under 10 cm (pp. 73, 272), no Alu or And."
+    wrb2006: "Umbric Leptosols, or Leptosols (Dystric), or Epileptic Umbrisols"
+    distinctions:
+      - {with: "lithosols", page: "277", by: "over 10 cm thick (side test)"}
+      - {with: "organosols insaturés leptiques", page: "277", by: "no Aho, coarse elements over 25 % (side tests)"}
+      - {with: "brunisols dystriques lithiques", page: "277", by: "no S over 5 cm (side test)"}
+      - {with: "andosols leptiques", page: "277", by: "no Alu or And (side test)"}
+      - {with: "podzosols", page: "272", by: "a BP of 5 to 10 cm: the double rankosol-podzosol ocrique (doubles.yaml); 10 cm or more, a podzosol"}
+      - {with: "peyrosols", page: "276-277", by: "coarse elements 60 % or more: the peyrosol, and the double rankosol-peyrosol (doubles.yaml)"}
+    tests:
+      all_of:
+        - horizon_within_rp: {codes: [A, X, L]}
+        - horizon_within_rp: {codes: [R], depth: 35}
+        - thickness_rp: {codes: [O, A, X, L], min: 10, max: 35, open: true, from_surface: true}
+        # over 25 % and under 60 % in the A (D4); 60 % or more (a peyric X
+        # or A) only for the double rankosol-peyrosol (D15); not recorded,
+        # undecided (Hugo's decision 7 on the review, 2026-11-04)
+        - any_of:
+            - coarse_band_rp: {codes: [A, L], min: 25, max: 60, unrecorded: undecided}
+            - coarse_band_rp: {codes: [A, X, L], min: 60}
+        # the sequence (O)/A/R: no C, M or D (p. 276)
+        - no_horizon_within_rp: {codes: [C, M, D]}
+        - attribute_rp: {attribute: oc_pct, threshold: 8, direction: max, kind: organic_carbon, open: true, codes: [A, X, L], layers: all}
+        - no_horizon_within_rp: {codes: [Alu, And, Aca, Ado, Aci, Amg, Sca, Sdo, Sci, Smg, K]}
+        - none_of:
+            - carbonate_reserve_rp: {}
+        - thickness_rp: {codes: [E], max: 5}
+        - thickness_rp: {codes: [BT], max: 5}
+        - thickness_rp: {codes: ["S=", Sca, Sci, Sdo, Smg, Sp, Sn, Snd, Slu, SV, FS], max: 5}
+        - thickness_rp: {codes: [g, "-g"], max: 5}
+        - thickness_rp: {codes: [Sal], max: 10, open: true}
+        - thickness_rp: {codes: [BP], max: 10, open: true}

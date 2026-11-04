@@ -5,7 +5,12 @@
 # these pairs: one in the name by the precedence, the other in the
 # candidates. A pair with a reference of a GER not implemented yet is
 # listed and waits for it (`status: later`); `when` (a test block, TRUE when
-# absent) must hold for the double to be written.
+# absent) must hold for the double to be written. A pair the book leaves to
+# the candidates (`status: candidate`: the double fluviosol-rédoxisol, Q8)
+# is not written: when both attach and one is in the name, the other is a
+# candidate with double_possible and the pair noted (0.9.351). The doubles
+# with the rédoxisols are written only when the rédoxisol holds strictly,
+# the redox features from under 50 cm over 50 cm (soilKey's reading).
 doubles:
   - codes: [calcisols, calcosols]
     page: "113"
@@ -21,59 +26,65 @@ doubles:
   - codes: [calcosols, anthroposols_transformes]
     page: "91"
     note: "the example of p. 91 (the type of p. 97 writes anthroposol transformé-calcosol; soilKey follows p. 91)"
-  # the pairs of these chapters with references of later releases
+  # the pairs of these chapters with the references of part 7 (0.9.351)
   - codes: [peyrosols, alocrisols_typiques]
     page: "73"
-    status: later
   - codes: [peyrosols, anthroposols_artificiels]
     page: "97"
-    status: later
   - codes: [peyrosols, anthroposols_reconstitues]
     page: "97"
-    status: later
   - codes: [peyrosols, silandosols_eutriques]
     page: "84"
-    status: later
   - codes: [vitrandosols, peyrosols]
     page: "84"
-    status: later
   - codes: [peyrosols, colluviosols]
     page: "133"
-    status: later
   - codes: [colluviosols, redoxisols]
     page: "133"
-    status: later
+    note: "redox signs starting between 20 and 50 cm; from under 20 cm the rédoxisol colluvial alone"
+    when:
+      all_of:
+        - hydromorphy_rp: {kind: g, within: 50, min: 50}
+        - none_of:
+            - hydromorphy_rp: {kind: any, within: 20}
   - codes: [brunisols_eutriques, redoxisols]
     page: "107"
-    status: later
+    note: "an aerated, structured S over the Sg (Q8: an S over a g horizon is the simple rédoxisol)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}, {aerated_s_rp: {}}]}
   - codes: [brunisols_dystriques, redoxisols]
     page: "107"
-    status: later
-  - codes: [cryosols_mineraux, podzosols]
-    page: "141"
-    status: later
-    note: "a reference of the podzosols (the book names the GER)"
+    note: "an aerated, structured S over the Sg (Q8: an S over a g horizon is the simple rédoxisol)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}, {aerated_s_rp: {}}]}
+  # cryoturbated podzosols (p. 141; the GER named: every reference of the
+  # podzosols, as the luvisols of part 6)
+  - {codes: [cryosols_mineraux, podzosols_ocriques], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, podzosols_meubles], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, podzosols_duriques], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, podzosols_humiques], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, podzosols_humo_duriques], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, podzosols_eluviques], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, podzosols_placiques], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
+  - {codes: [cryosols_mineraux, post_podzosols], page: "141", note: "the book's cryosol minéral-podzosol (the GER named)"}
   - codes: [cryosols_mineraux, redoxisols]
     page: "142"
-    status: later
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
   # the pairs of the chapters of part 5 (v0.9.348) with references of later releases:
   # a fluviosol with redox features from under 50 cm continuing over 50 cm is
   # a rédoxisol fluvique, the double among the candidates (Q8)
   - codes: [fluviosols_juveniles, redoxisols]
     page: "184, 188"
-    status: later
+    status: candidate
     note: "Q8: the rédoxisol fluvique in the name, the double fluviosol-rédoxisol among the candidates"
   - codes: [fluviosols_typiques, redoxisols]
     page: "184, 188"
-    status: later
+    status: candidate
     note: "Q8: the rédoxisol fluvique in the name, the double fluviosol-rédoxisol among the candidates"
   - codes: [fluviosols_brunifies, redoxisols]
     page: "187"
-    status: later
+    status: candidate
     note: "Q8: the rédoxisol fluvique in the name, the double fluviosol brunifié-rédoxisol among the candidates"
   - codes: [peyrosols, fluviosols_bruts]
     page: "188"
-    status: later
   # the pairs of the chapters of part 6 (v0.9.349); the luvisol-cryosol of p.
   # 141 (cryoturbated luvisols, the book's example "luvisol-cryosol", the GER
   # named: every reference of the luvisols) and the organosol
@@ -106,17 +117,92 @@ doubles:
         - thickness_rp: {codes: [Sal], max: 10}
   - codes: [luvisols_typiques, redoxisols]
     page: "230, 285"
-    status: later
     note: "Q8: a -g within 50 cm of functional waterlogging, impérativement"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
   - codes: [luvisols_degrades, redoxisols]
-    page: "226, 230"
-    status: later
-    note: "Q8: a -g within 50 cm of functional waterlogging, impérativement"
+    page: "226, 230, 285"
+    note: "Q8: a -g within 50 cm of functional waterlogging, impérativement (the double of p. 285, not the table of p. 289)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
   - codes: [luvisols_derniques, redoxisols]
     page: "227"
-    status: later
     note: "Q8: an Eg within 50 cm of functional waterlogging"
-  - codes: [histosols, reductisols]
-    page: "211"
+    when:
+      all_of:
+        - hydromorphy_rp: {kind: g, within: 50, min: 50}
+        - horizon_within_rp: {codes: [Eg], depth: 50}
+  # --- the pairs of the chapters of part 7 (v0.9.351) ---------------------------------
+  - codes: [pelosols_typiques, redoxisols]
+    page: "285, 289"
+    note: "the type pélosol typique-rédoxisol of p. 285 (case 2: an Sp with the redox features)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
+  - codes: [rankosols, peyrosols]
+    page: "277"
+    note: "the type rankosol-peyrosol cailloutique, leptique: coarse elements 60 % or more with every other character of the rankosol (map 4, D15)"
+  - codes: [rankosols, podzosols_ocriques]
+    page: "272"
+    note: "a BP of over 5 and under 10 cm in a rankosol (map 4, D14)"
+    when:
+      all_of:
+        - thickness_rp: {codes: [BP], min: 5, open: true}
+        - thickness_rp: {codes: [BP], max: 10, open: true}
+  - codes: [luvisols_typiques, podzosols_meubles]
+    page: "273"
+    note: "secondary podzolisation: the double luvisol typique-podzosol meuble leptique, [A + E + BP] from 20 to under 30 cm"
+    when:
+      all_of:
+        - none_of:
+            - podzolic_episolum_rp: {max: 20}
+        - podzolic_episolum_rp: {max: 30}
+  # over 60 % coarse elements (pp. 253, 272: the GER named, the example peyrosol-podzosol meuble)
+  - {codes: [peyrosols, podzosols_ocriques], page: "253, 272"}
+  - {codes: [peyrosols, podzosols_meubles], page: "253, 272"}
+  - {codes: [peyrosols, podzosols_duriques], page: "253, 272"}
+  - {codes: [peyrosols, podzosols_humiques], page: "253, 272"}
+  - {codes: [peyrosols, podzosols_humo_duriques], page: "253, 272"}
+  - {codes: [peyrosols, podzosols_eluviques], page: "253, 272"}
+  - {codes: [peyrosols, podzosols_placiques], page: "253, 272"}
+  - {codes: [peyrosols, post_podzosols], page: "253, 272"}
+  - {codes: [peyrosols, fersialsols_carbonates], page: "253"}
+  - {codes: [peyrosols, fersialsols_calciques], page: "253"}
+  - {codes: [peyrosols, fersialsols_insatures], page: "253"}
+  - {codes: [peyrosols, fersialsols_eluviques], page: "253"}
+  # whatever the context, a reductic solum too (p. 253; Hugo's decision 6 on
+  # the review of 0.9.351, 2026-11-04)
+  - {codes: [peyrosols, reductisols_typiques], page: "253"}
+  - {codes: [peyrosols, reductisols_stagniques], page: "253"}
+  # hydromorphic podzosols (pp. 273, 285: the GER named, every reference but the éluviques; the example podzosol meuble-réductisol)
+  - {codes: [podzosols_ocriques, reductisols_typiques], page: "273, 285"}
+  - {codes: [podzosols_ocriques, reductisols_stagniques], page: "273, 285"}
+  - {codes: [podzosols_ocriques, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [podzosols_meubles, reductisols_typiques], page: "273, 285"}
+  - {codes: [podzosols_meubles, reductisols_stagniques], page: "273, 285"}
+  - {codes: [podzosols_meubles, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [podzosols_duriques, reductisols_typiques], page: "273, 285"}
+  - {codes: [podzosols_duriques, reductisols_stagniques], page: "273, 285"}
+  - {codes: [podzosols_duriques, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [podzosols_humiques, reductisols_typiques], page: "273, 285"}
+  - {codes: [podzosols_humiques, reductisols_stagniques], page: "273, 285"}
+  - {codes: [podzosols_humiques, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [podzosols_humo_duriques, reductisols_typiques], page: "273, 285"}
+  - {codes: [podzosols_humo_duriques, reductisols_stagniques], page: "273, 285"}
+  - {codes: [podzosols_humo_duriques, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [podzosols_placiques, reductisols_typiques], page: "273, 285"}
+  - {codes: [podzosols_placiques, reductisols_stagniques], page: "273, 285"}
+  - {codes: [podzosols_placiques, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [post_podzosols, reductisols_typiques], page: "273, 285"}
+  - {codes: [post_podzosols, reductisols_stagniques], page: "273, 285"}
+  - {codes: [post_podzosols, redoxisols], page: "273", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  # the post-podzols and the anthroposols transformés (p. 273: a double possible, the references of the podzosols)
+  - {codes: [podzosols_ocriques, anthroposols_transformes], page: "273"}
+  - {codes: [podzosols_meubles, anthroposols_transformes], page: "273"}
+  - {codes: [podzosols_duriques, anthroposols_transformes], page: "273"}
+  - {codes: [podzosols_humiques, anthroposols_transformes], page: "273"}
+  - {codes: [podzosols_humo_duriques, anthroposols_transformes], page: "273"}
+  - {codes: [podzosols_eluviques, anthroposols_transformes], page: "273"}
+  - {codes: [podzosols_placiques, anthroposols_transformes], page: "273"}
+  - {codes: [post_podzosols, anthroposols_transformes], page: "273"}
+  # with a GER of a later release
+  - codes: [thalassosols_polderises, redoxisols]
+    page: "285"
     status: later
-    note: "H horizons over reductic horizons: a double envisageable (a reference of each GER, the book names the GER)"
+    note: "case 3 of p. 285, recommended in alluvium (Q8)"

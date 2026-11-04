@@ -56,12 +56,12 @@ test_that("fifteen GER and 53 references are implemented; the six of part 5 lose
   skip_on_cran()
   rules <- .rp_rules()
   impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
-  # 0.9.349: six more GER after these (test-v09349)
-  expect_length(impl, 21L)
+  # 0.9.349 and 0.9.351: thirteen more GER after these (test-v09349, -v09351)
+  expect_length(impl, 28L)
   six <- c("ferrallitisols_oxydisols", "ferruginosols", "fersialsols", "fluviosols", "grisols", "gypsosols")
   expect_identical(vapply(impl, `[[`, "", "code")[10:15], six)
   expect_identical(unlist(lapply(impl[10:15], function(g) unlist(g$references))), .rp48_refs)
-  expect_length(rules$references, 71L)
+  expect_length(rules$references, 92L)
   expect_identical(names(rules$ref_by_code)[30:53], .rp48_refs)
   for (g in impl[10:15]) expect_null(g$signpost, info = g$code)
   # the tropical chapters are a first version of the book (p. VI, Q18)
@@ -82,9 +82,10 @@ test_that("fifteen GER and 53 references are implemented; the six of part 5 lose
   expect_true(all(diff(match(c("fluviosols_bruts", "gypsosols_hapliques", "chernosols_hapliques", "grisols_eluviques",
                                "fersialsols_carbonates", "ferrallitisols_meubles", "ferruginosols_meubles",
                                "brunisols_eutriques"), ord)) > 0))
-  # the doubles of these chapters wait for the redoxisols and peyrosols
-  later <- Filter(function(d) identical(d$status, "later") && any(grepl("^fluviosols", unlist(d$codes))), rules$doubles)
-  expect_length(later, 4L)
+  # the doubles of these chapters with the redoxisols stay among the
+  # candidates (Q8; 0.9.351), the peyrosol-fluviosol brut is written
+  cand <- Filter(function(d) identical(d$status, "candidate") && any(grepl("^fluviosols", unlist(d$codes))), rules$doubles)
+  expect_length(cand, 3L)
 })
 
 
@@ -415,11 +416,11 @@ test_that("the fluviosols: forbidden horizons, the hydromorphy (Q8) and the othe
   q <- .rp48_N(c("A", "Jp", "M", "G"), c(0, 20, 50, 90), c(20, 50, 90, 130), layer_origin = "fluvic",
                site = list(country = "FR", lat = 47.4, valley_position = "major bed", flood_frequency = "annual"))
   expect_identical(.rp48_cl(q)$name, "fluviosol typique")
-  # a g within 50 cm: the fluviosol in the name, provisional by the redoxisols
-  # (a later release: Q8, the redoxisol fluvique will take it)
-  r <- .rp48_cl(e(p, 2, designation = "Jpg"))
-  expect_identical(r$name, "fluviosol typique")
-  expect_true("references:reductisols_redoxisols" %in% r$provisional_because)
+  # a g within 50 cm continuing over 50 cm: the redoxisol fluvique in the
+  # name, the double among the candidates (Q8; 0.9.351, test-v09351)
+  r <- .rp48_cl(e(p, 2:3, designation = c("Jpg", "Cg")))
+  expect_identical(r$name, "r\u00e9doxisol")
+  expect_true(r$candidates$double_possible[r$candidates$code == "fluviosols_typiques"])
   # against the colluviosols: colluvium over alluvium, the fluviosol in the
   # name, the colluviosol a candidate (p. 132)
   r <- .rp48_cl(e(ex("fluviosols_brunifies"), 1:2, layer_origin = "colluvic"))
@@ -446,12 +447,15 @@ test_that("the grisols: the Aso of the chapter, [7c], before the chernosols and 
   skip_on_cran()
   e <- .rp48_edit
   ex <- .rp48_ex
-  # the phaeosols signpost (an Aso) ranks in 7c before the grisols: the
-  # precedence of p. 194 keeps the name firm
+  # the phaeosols (an Aso, 7c, implemented in 0.9.351) yield to the grisols
+  # by the precedence of p. 194; the thin Aso of a grisol is no phaeosol's
   r <- .rp48_cl(ex("grisols_hapliques"))
-  expect_true("phaeosols" %in% r$candidates$code)
+  expect_false("phaeosols" %in% r$candidates$code)
   expect_identical(r$provisional_because, character(0))
-  expect_match(r$candidates$precedence[r$candidates$code == "phaeosols"], "grisols_hapliques first", fixed = TRUE)
+  pq <- ex("grisols_hapliques")
+  pr <- .rp_with_state(pq, .rp_frame_codes(.rp_identify(pq)), .rp_profile(pq),
+                       .rp_precedence_rows(.rp_rules(), pq, c("grisols_hapliques", "phaeosols_hapliques")))
+  expect_identical(c(pr[[1]]$first, pr[[1]]$second), c("grisols_hapliques", "phaeosols_hapliques"))
   rules <- .rp_rules()
   p <- ex("grisols_eluviques")
   fr <- .rp_frame_codes(.rp_identify(p))
@@ -583,8 +587,8 @@ test_that("the readings of part 5 are Hugo's decisions; none waits for his word"
   rd <- yaml::read_yaml(system.file("rules", "rp2008", "readings.yaml", package = "soilKey"))$readings
   tp <- vapply(rd, `[[`, "", "topic")
   txt <- vapply(rd, `[[`, "", "reading")
-  # none waits for Hugo's word (0.9.349 confirmed on 2026-11-04, test-v09349)
-  expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
+  # none waits for his word (0.9.351 confirmed on 2026-11-04, test-v09351)
+  expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   part5 <- c("The intertropical domain of a profile written in the RP notation",
              "Ferrallitisols and oxydisols: F against OX, the hardness and the types",
              "Ferruginosols: the sequences", "Fersialsols: the A, the FSt, the carbonates and the iron",

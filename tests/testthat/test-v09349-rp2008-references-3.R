@@ -67,11 +67,12 @@ test_that("twenty-one GER and 71 references are implemented; the six of part 6 l
   skip_on_cran()
   rules <- .rp_rules()
   impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
-  expect_length(impl, 21L)
+  # 0.9.351: seven more GER after these (test-v09351)
+  expect_length(impl, 28L)
   six <- c("histosols", "leptismectisols", "lithosols", "luvisols", "nitosols", "organosols")
   expect_identical(vapply(impl, `[[`, "", "code")[16:21], six)
   expect_identical(unlist(lapply(impl[16:21], function(g) unlist(g$references))), .rp49_refs)
-  expect_length(rules$references, 71L)
+  expect_length(rules$references, 92L)
   expect_identical(names(rules$ref_by_code)[54:71], .rp49_refs)
   for (g in impl[16:21]) expect_null(g$signpost, info = g$code)
   for (r in rules$references[54:71]) {
@@ -79,8 +80,8 @@ test_that("twenty-one GER and 71 references are implemented; the six of part 6 l
                       "wrb2006") %in% names(r)), info = r$code)
   }
   later <- Filter(function(g) !isTRUE(g$implemented), rules$ger)
-  expect_length(later, 13L)
-  expect_identical(sum(vapply(later, function(g) length(g$references), 0L)), 39L)
+  expect_length(later, 6L)
+  expect_identical(sum(vapply(later, function(g) length(g$references), 0L)), 18L)
   # the nitosols are a first version of the book (p. VI, Q18), their climate
   # and the habitat notes of the histosols are reported, not tested
   expect_true(isTRUE(rules$ger_by_code$nitosols$first_draft))
@@ -100,13 +101,15 @@ test_that("twenty-one GER and 71 references are implemented; the six of part 6 l
   expect_true(all(diff(match(c("lithosols", "histosols_fibriques", "leptismectisols", "nitosols",
                                "organosols_holorganiques", "brunisols_eutriques", "neoluvisols"), ord)) > 0))
   # the doubles: luvisol-cryosol (p. 141) and organosol insature-alocrisol
-  # humique (p. 240) written; those with the redoxisols and reductisols wait
+  # humique (p. 240) written; those with the redoxisols and reductisols
+  # written since 0.9.351 (three luvisols-redoxisol, the luvisol
+  # typique-podzosol meuble; no histosol-reductisol, Hugo's decision 2)
   dd <- rules$doubles
   act <- Filter(function(d) !identical(d$status, "later") && any(unlist(d$codes) %in% .rp49_refs), dd)
-  expect_length(act, 7L)
+  expect_length(act, 11L)
   lat <- Filter(function(d) identical(d$status, "later") &&
                   (any(unlist(d$codes) %in% .rp49_refs) || "histosols" %in% unlist(d$codes)), dd)
-  expect_length(lat, 4L)
+  expect_length(lat, 0L)
   expect_false(any(vapply(dd, function(d) identical(unlist(d$codes), c("cryosols_mineraux", "luvisols")), NA)))
 })
 
@@ -117,7 +120,8 @@ test_that("the readings of part 6 are Hugo's decisions of 2026-11-04; none waits
   txt <- vapply(rd, `[[`, "", "reading")
   expect_true(all(.rp49_readings %in% tp))
   expect_true(all(grepl("(Hugo, 2026-11-04).", txt[match(.rp49_readings, tp)], fixed = TRUE)))
-  expect_false(any(grepl("to confirm", txt, fixed = TRUE)))
+  # none waits for his word (0.9.351 confirmed on 2026-11-04, test-v09351)
+  expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   expect_true(all(nzchar(vapply(rd[match(.rp49_readings, tp)], `[[`, "", "page"))))
 })
 
@@ -241,11 +245,11 @@ test_that("the histosols against the lithosols, r\u00e9gosols, r\u00e9ductisols 
   # over M: the regosols of a later release make the name provisional
   r <- .rp49_cl(H(c("Hs", "M"), c(0, 8), c(8, 60)))
   expect_true("references:regosols" %in% r$provisional_because)
-  # H under 50 cm over G: no histosol leptique; the reductisols epihistiques
-  # (a later release) make the name provisional
+  # H under 50 cm over G: no histosol leptique; a reductisol epihistique
+  # (0.9.351, test-v09351)
   r <- .rp49_cl(H(c("Hs", "G"), c(0, 40), c(40, 100)))
   expect_identical(.rp49_deg_of(r, "histosols_leptiques"), character(0))
-  expect_true("references:reductisols_redoxisols" %in% r$provisional_because)
+  expect_identical(r$name, "r\u00e9ductisol typique")
   # H with a permafrost within 2 m: the cryosol histique (p. 211)
   r <- .rp49_cl(.rp49_edit(.rp49_ex("histosols_fibriques"), site = list(frost_regime = "permafrost")))
   expect_identical(r$name, "cryosol histique")
@@ -406,10 +410,13 @@ test_that("the luvisols on the data, and their doubles with the cryosols and r\u
                            site = list(frost_regime = "permafrost")))
   expect_identical(r$name, "luvisol typique-cryosol min\u00e9ral")
   expect_identical(r$levels$code, c("luvisols_typiques", "cryosols_mineraux"))
-  # a -g within 50 cm: the redoxisols of a later release (Q8), provisional
+  # an Eg within 50 cm over a BT with no redox: no 50 cm of features, no
+  # redoxisol; over a BTg the double luvisol typique-redoxisol (Q8; 0.9.351)
   r <- .rp49_cl(.rp49_edit(.rp49_ex("luvisols_typiques"), 2, designation = "Eg"))
   expect_identical(r$name, "luvisol typique")
-  expect_true("references:reductisols_redoxisols" %in% r$provisional_because)
+  expect_identical(.rp49_deg_of(r, "redoxisols"), character(0))
+  r <- .rp49_cl(.rp49_edit(.rp49_ex("luvisols_typiques"), 2:3, designation = c("Eg", "BTg")))
+  expect_identical(r$name, "luvisol typique-r\u00e9doxisol")
 })
 
 
