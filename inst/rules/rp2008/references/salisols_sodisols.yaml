@@ -1,0 +1,198 @@
+# Salisols et sodisols (pp. 294-302), 7 references: the salsodic solums,
+# defined by two reference horizons of their own (p. 295), alone or
+# superposed. The salic horizon (Sa: SaA, SaS, SaC, SaY ...) holds salts
+# more soluble than gypsum, its saturated paste extract reaching at some
+# time of the year an EC of 15 dS/m at 25 degrees C in the neutral series
+# (chlorides, sulfates, nitrates; the paste extract under pH 8.5) or 8 dS/m
+# in the alkaline series (bicarbonates, carbonates; over pH 8.5), its
+# structure not degraded. The sodic horizon (Na: NaA, NaS, NaBT, NaC) has a
+# degraded, compact structure (continuous, or coarse polyhedral, prismatic
+# or columnar), exchangeable Na 15 % or more of the sum of the exchangeable
+# bases (as printed, Q12; the ESP only where the bases are missing,
+# flagged), and nil or very little soluble salt. They come from the
+# notation (the overlays Sa and Na) or the data (.rp_salic(), .rp_sodic():
+# one measured EC over the threshold passes, D6; a sodic horizon needs an
+# EC under the salic norm of its series, D5; under 15 % with a degraded
+# structure and Mg over Ca, undecided, D4).
+#
+# The references (pp. 296-298): the salisols a salic horizon starting within
+# 60 cm (+/- 10), chloruro-sulfatés in the neutral series, carbonatés in the
+# alkaline one (salic_series_rp: the anions of the salts when recorded, else
+# the pH in water standing in for the pH of the paste extract); the sodisols
+# a sodic horizon starting within 60 cm and almost no soluble salt (no salic
+# horizon within 60 cm): indifférenciés with no vertical migration of clay
+# (NaA/NaS/NaC: no E and no BT), solonetziques an E over the NaBT, its pH
+# near neutral, solodisés an Ea (bleached, the complex desaturated, pH 4 to
+# 5) over the NaBT; the sodisalisols a sodic horizon over a salic one
+# (NaA/SaS), the salisodisols a salic horizon over a sodic one (SaA/NaS),
+# both starting within 60 cm, the order of superposition deciding
+# (superposed_rp). A sodic horizon with Mg dominant (sodisols magnésiens) is
+# a qualifier (later, with the qualifiers).
+#
+# Distinctions (pp. 102, 298-299, 304, 310, 324): too coarse for a saturated
+# paste, an arénosol salin, never a salisol or a sodisol (precedence.yaml,
+# exclusions); with a G or g starting within 50 cm the double with the
+# réductisols or rédoxisols (doubles.yaml), deeper the qualifiers; with the
+# characters of the thiosols or sulfatosols, the sulfur reference with the
+# qualifier salique (p. 299; precedence.yaml, p. 310); the vertisols with
+# VSa or VNa take the name, salique or sodique, the salisol or sodisol a
+# candidate (Q20; precedence.yaml); in the thalassosols and fluviosols the
+# salsodic horizons within 60 cm exclude them (their side tests).
+sal60: &ss_sal60
+  horizon_within_rp: {codes: ["Sa+"], depth: 60}
+sod60: &ss_sod60
+  horizon_within_rp: {codes: ["Na+"], depth: 60}
+nosal60: &ss_nosal60
+  none_of:
+    - horizon_within_rp: {codes: ["Sa+"], depth: 60}
+nosod60: &ss_nosod60
+  none_of:
+    - horizon_within_rp: {codes: ["Na+"], depth: 60}
+# the E of the solodisés directly over the NaBT: written Ea, or its pH 5 or
+# under (+/- 0.2; the complete desaturation of the upper horizons, pH 4 to
+# 5, p. 297); a written E with no pH is none, on the data the pH missing
+# leaves it undecided (solodic_e_rp; the review's D5)
+ea: &ss_ea
+  solodic_e_rp: {}
+references:
+  - code: "salisols_chloruro_sulfates"
+    ger: "salisols_sodisols"
+    name: "salisols chloruro-sulfatés"
+    name_singular: "salisol chloruro-sulfaté"
+    name_en: "chloride-sulfate salisols"
+    name_en_singular: "chloride-sulfate salisol"
+    page: "296"
+    sequences: ["SaA-SaS-C"]
+    notes: "A salic horizon starting within 60 cm, in the neutral series (chlorides, sulfates; the paste extract under pH 8.5), rich in neutral salts of sodium, magnesium or calcium (often marine settings); the structure not degraded."
+    wrb2006: "Solonchaks (Chloridic or Sulphatic)"
+    distinctions:
+      - {with: "salisols carbonatés", page: "296", by: "the neutral series (side test)"}
+      - {with: "sodisalisols, salisodisols", page: "297", by: "no sodic horizon within 60 cm (side test)"}
+      - {with: "arénosols", page: "102, 298", by: "too coarse for a saturated paste: an arénosol salin (precedence.yaml, exclusions)"}
+      - {with: "réductisols, rédoxisols", page: "298-299", by: "a G or g within 50 cm: the double (doubles.yaml)"}
+      - {with: "thiosols, sulfatosols", page: "299, 310", by: "the sulfur reference, salique (precedence.yaml)"}
+      - {with: "vertisols", page: "299, 324", by: "a VSa: the vertisol salique (precedence.yaml; Q20)"}
+    tests:
+      all_of:
+        - *ss_sal60
+        - *ss_nosod60
+        - salic_series_rp: {series: neutral}
+  - code: "salisols_carbonates"
+    ger: "salisols_sodisols"
+    name: "salisols carbonatés"
+    name_singular: "salisol carbonaté"
+    name_en: "carbonate salisols"
+    name_en_singular: "carbonate salisol"
+    page: "296"
+    sequences: ["SaA-SaS-C"]
+    notes: "A salic horizon starting within 60 cm, its salinity dominated by alkaline salts (bicarbonates, carbonates; over pH 8.5; continental settings)."
+    wrb2006: "Solonchaks (Carbonatic)"
+    distinctions:
+      - {with: "salisols chloruro-sulfatés", page: "296", by: "the alkaline series (side test)"}
+      - {with: "sodisalisols, salisodisols", page: "297", by: "no sodic horizon within 60 cm (side test)"}
+    tests:
+      all_of:
+        - *ss_sal60
+        - *ss_nosod60
+        - salic_series_rp: {series: alkaline}
+  - code: "sodisols_indifferencies"
+    ger: "salisols_sodisols"
+    name: "sodisols indifférenciés"
+    name_singular: "sodisol indifférencié"
+    name_en: "undifferentiated sodisols"
+    name_en_singular: "undifferentiated sodisol"
+    page: "297"
+    sequences: ["NaA-NaS-NaC"]
+    notes: "A sodic horizon within 60 cm and almost no soluble salt; the dispersion of the sodic clay only degrades the structure, very massive; no vertical migration of ions or clay (no E, no BT); the pH generally over 8.7 (not tested)."
+    wrb2006: "Solonetz"
+    distinctions:
+      - {with: "sodisols solonetziques, solodisés", page: "297", by: "no E and no BT (side test)"}
+      - {with: "salisols, sodisalisols, salisodisols", page: "297", by: "no salic horizon within 60 cm (side test)"}
+    tests:
+      all_of:
+        - *ss_sod60
+        - *ss_nosal60
+        # no E and no BT within the 60 cm of the GER (a deeper BT is no
+        # vertical migration of this solum; the review's minor point)
+        - no_horizon_within_rp: {codes: [E, BT], depth: 60}
+  - code: "sodisols_solonetziques"
+    ger: "salisols_sodisols"
+    name: "sodisols solonetziques"
+    name_singular: "sodisol solonetzique"
+    name_en: "solonetzic sodisols"
+    name_en_singular: "solonetzic sodisol"
+    page: "297"
+    sequences: ["E-NaBT"]
+    notes: "A partial desaturation in sodium, then a clay eluviation in the upper horizons, their pH near neutral; the lower horizons enriched in sodium and clay, prismatic or columnar: an E over the NaBT."
+    wrb2006: "Haplic Solonetz"
+    distinctions:
+      - {with: "sodisols solodisés", page: "297", by: "an E not bleached, its pH over 5 (side test)"}
+      - {with: "luvisols, planosols", page: "297", by: "the sodic BT (the rapid key, 6i before 11b; the planosols need the Eg)"}
+    tests:
+      all_of:
+        - *ss_sod60
+        - *ss_nosal60
+        - below_rp: {upper: [E], codes: [NaBT]}
+        - none_of:
+            - *ss_ea
+    # an A directly on the NaBT, with no E: the solonetzique imperfect (the
+    # review's D6)
+    imperfect:
+      - criterion: "no E between the A and the NaBT (the review's D6)"
+        page: "297"
+        tests:
+          all_of:
+            - *ss_sod60
+            - *ss_nosal60
+            - below_rp: {upper: [A], codes: [NaBT]}
+  - code: "sodisols_solodises"
+    ger: "salisols_sodisols"
+    name: "sodisols solodisés"
+    name_singular: "sodisol solodisé"
+    name_en: "solodised sodisols"
+    name_en_singular: "solodised sodisol"
+    page: "297"
+    sequences: ["Ea-NaBT"]
+    notes: "A complete desaturation of the upper horizons, pH 4 to 5; the acidity and the redox degrade the clay: a bleached E and the bleached tops of the columns of the NaBT, alkaline (pH 9 to 10)."
+    wrb2006: "Solonetz (Albic)"
+    distinctions:
+      - {with: "sodisols solonetziques", page: "297", by: "an Ea, or an E at pH 5 or under (side test)"}
+    tests:
+      all_of:
+        - *ss_sod60
+        - *ss_nosal60
+        - *ss_ea
+  - code: "sodisalisols"
+    ger: "salisols_sodisols"
+    name: "sodisalisols"
+    name_singular: "sodisalisol"
+    name_en: "sodisalisols"
+    name_en_singular: "sodisalisol"
+    page: "297"
+    sequences: ["NaA-SaS"]
+    notes: "A descending salt dynamics of a former salisol: a desalted but sodic surface horizon, compact when dry or continuous when wet, over a salic horizon; both starting within 60 cm."
+    wrb2006: "Endosalic Solonetz"
+    distinctions:
+      - {with: "salisodisols", page: "297-298", by: "the sodic horizon over the salic one (side test)"}
+    tests:
+      all_of:
+        - *ss_sal60
+        - *ss_sod60
+        - superposed_rp: {upper: ["Na+"], lower: ["Sa+"]}
+  - code: "salisodisols"
+    ger: "salisols_sodisols"
+    name: "salisodisols"
+    name_singular: "salisodisol"
+    name_en: "salisodisols"
+    name_en_singular: "salisodisol"
+    page: "298"
+    sequences: ["SaA-NaS"]
+    notes: "A long ascending salt dynamics, an alkalising water table of high SAR: a salic surface horizon over a desalted sodic horizon; both starting within 60 cm."
+    wrb2006: "Episalic Solonetz"
+    distinctions:
+      - {with: "sodisalisols", page: "297-298", by: "the salic horizon over the sodic one (side test)"}
+    tests:
+      all_of:
+        - *ss_sal60
+        - *ss_sod60
+        - superposed_rp: {upper: ["Sa+"], lower: ["Na+"]}

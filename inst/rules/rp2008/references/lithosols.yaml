@@ -11,7 +11,7 @@
 # of the intertropical domain (p. 6, Q18).
 #
 # Distinctions (pp. 207, 220, 241): the régosols have the same thinness over
-# a loose M or D (a later release); an H of 10 cm or less over R makes a
+# a loose M or D (regosols.yaml); an H of 10 cm or less over R makes a
 # lithosol épihistique, not a histosol (precedence.yaml); [OF + OH] under 10
 # cm over R a lithosol holorganique, not an organosol (their thickness test).
 references:
@@ -26,7 +26,7 @@ references:
     notes: "A hard, continuous material within 10 cm (the OL not counted): R, Km, Fem, Sim, OXc or OXm."
     wrb2006: "Lithic Leptosols (strict: Nudilithic Leptosols)"
     distinctions:
-      - {with: "régosols", page: "220", by: "the hardness of the material below: an M or D (a later release)"}
+      - {with: "régosols", page: "220", by: "the hardness of the material below: an M or D (regosols.yaml)"}
       - {with: "histosols leptiques", page: "207, 209", by: "H of 10 cm or less over R (precedence.yaml)"}
       - {with: "organosols", page: "241", by: "[OF + OH] under 10 cm over R (their thickness test)"}
     tests:

@@ -1689,6 +1689,7 @@
   steps <- .rp_steps()
   ans <- list()
   code <- NA_character_; dec <- NULL; undecided <- FALSE; cands <- character(0); pending <- character(0)
+  und_step_any <- NA_character_
   g_block <- FALSE; dec_step <- NA_character_; extra_notes <- character(0); extra_feats <- character(0); cand_feats_na <- character(0); und_step <- NA_character_
   for (s in names(steps)) {
     rs <- lapply(steps[[s]], function(t) .rp_ask(x, i, s, t))
@@ -1700,7 +1701,7 @@
     if (any(v %in% TRUE)) {
       k <- which(v %in% TRUE)[1L]
       nas <- which(is.na(v[seq_len(k - 1L)]))
-      if (length(nas)) { undecided <- TRUE; cands <- c(lab[nas], lab[k]) }
+      if (length(nas)) { undecided <- TRUE; cands <- c(lab[nas], lab[k]); und_step_any <- s }
       else if (g_block) { undecided <- TRUE; cands <- lab[k] }
       else { code <- lab[k]; dec <- rs[[k]]; dec_step <- s
              cands <- c(lab[-seq_len(k)][v[-seq_len(k)] %in% TRUE | is.na(v[-seq_len(k)])]) }
@@ -1764,6 +1765,13 @@
   if (undecided && identical(und_step, "surface") && isFALSE(.rp_structured(x, i)$passed)) {
     fall <- Filter(function(r) isTRUE(r$passed), ans$subsurface)
     if (length(fall)) cands <- unique(c(cands, fall[[1L]]$code %||% fall[[1L]]$name))
+  }
+  # a layer under the surface left undecided between A codes (a dark,
+  # humic SV continuing the A run) stays an SV or V candidate when that test
+  # holds, whatever its carbon (the vertisols, 0.9.352; the review's D3)
+  if (undecided && (identical(und_step, "surface") || identical(und_step_any, "surface")) && !.rp_is_first(x, i)) {
+    vv <- Filter(function(r) isTRUE(r$passed) && r$name %in% c("SV", "V"), ans$subsurface)
+    if (length(vv)) cands <- unique(c(cands, vapply(vv, function(r) r$code %||% r$name, "")))
   }
   # the other codes that hold, in any step, are candidates too
   all_r <- unlist(ans, recursive = FALSE)
@@ -1832,6 +1840,15 @@
     if (isTRUE(na$passed)) { ov <- c(ov, "Na"); onotes <- c(onotes, na$note); otags <- c(otags, na$tag) } else if (is.na(na$passed)) ov_na <- c(ov_na, "Na")
     if (is.na(sa$passed)) fmiss <- c(fmiss, sa$missing)
     if (is.na(na$passed)) fmiss <- c(fmiss, na$missing)
+    # a V with Na over 15 % of the CEC is a VNa, the sodic horizon of the
+    # vertisols (p. 318; 0.9.352, the review's D1)
+    if (identical(code, "V") && !"Na" %in% ov) {
+      esp <- .rp_num(x, i, "esp_pct")
+      if (is.na(esp)) { nac <- .rp_num(x, i, "na_cmol"); cec <- .rp_num(x, i, "cec_cmol")
+        if (!is.na(nac) && isTRUE(cec > 0)) esp <- 100 * nac / cec }
+      if (isTRUE(esp > 15)) { ov <- c(ov, "Na"); ov_na <- setdiff(ov_na, "Na")
+        onotes <- c(onotes, sprintf("Na %s %% of the CEC: a VNa (p. 318)", format(round(esp, 1)))) }
+    }
   }
   if (isTRUE(code %in% c("Z", "Ztr", "Ztc", "ZO", "Zar")) && .rp_is_surface(x, i) && isTRUE(.rp_num(x, i, "oc_pct") >= 0.5)) {
     ov <- c(ov, "J"); onotes <- c(onotes, "a young horizon formed in the anthropic material (JZ)")
@@ -1857,6 +1874,8 @@
 .rp_compose <- function(code, overlay, features, lith = 1L) {
   if (is.na(code)) return(NA_character_)
   pre <- intersect(c("L", "Na", "Sa", "J", .RP_PI), overlay)
+  # VNa and VSa keep their mark after the V (0.9.352)
+  if (identical(code, "V")) pre <- setdiff(pre, features)
   s <- paste0(paste(pre, collapse = ""), code, paste(features, collapse = ""))
   if (isTRUE(lith > 1L)) paste(as.character(utils::as.roman(lith)), s) else s
 }

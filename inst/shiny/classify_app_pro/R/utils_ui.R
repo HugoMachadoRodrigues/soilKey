@@ -184,7 +184,17 @@ pro_fixture_catalog <- function() {
              "podzosol \u00e9luvique" = "podzosols_eluviques", "podzosol placique" = "podzosols_placiques",
              "post-podzosol" = "post_podzosols", "rankosol" = "rankosols",
              "r\u00e9ductisol typique" = "reductisols_typiques", "r\u00e9ductisol stagnique" = "reductisols_stagniques",
-             "r\u00e9doxisol" = "redoxisols")
+             "r\u00e9doxisol" = "redoxisols", "r\u00e9gosol" = "regosols",
+             "salisol chloruro-sulfat\u00e9" = "salisols_chloruro_sulfates",
+             "salisol carbonat\u00e9" = "salisols_carbonates",
+             "sodisol indiff\u00e9renci\u00e9" = "sodisols_indifferencies",
+             "sodisol solonetzique" = "sodisols_solonetziques", "sodisol solodis\u00e9" = "sodisols_solodises",
+             "sodisalisol" = "sodisalisols", "salisodisol" = "salisodisols",
+             "thalassosol brut" = "thalassosols_bruts", "thalassosol juv\u00e9nile" = "thalassosols_juveniles",
+             "thalassosol pold\u00e9ris\u00e9" = "thalassosols_polderises", "thiosol" = "thiosols",
+             "sulfatosol" = "sulfatosols", "veracrisol" = "veracrisols", "lithovertisol" = "lithovertisols",
+             "topovertisol" = "topovertisols", "paravertisol haplique" = "paravertisols_hapliques",
+             "paravertisol planosolique" = "paravertisols_planosoliques")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

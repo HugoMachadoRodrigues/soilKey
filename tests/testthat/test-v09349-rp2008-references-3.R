@@ -67,21 +67,21 @@ test_that("twenty-one GER and 71 references are implemented; the six of part 6 l
   skip_on_cran()
   rules <- .rp_rules()
   impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
-  # 0.9.351: seven more GER after these (test-v09351)
-  expect_length(impl, 28L)
+  # 0.9.351 and 0.9.352: thirteen more GER after these (test-v09351, -v09352)
+  expect_length(impl, 34L)
   six <- c("histosols", "leptismectisols", "lithosols", "luvisols", "nitosols", "organosols")
   expect_identical(vapply(impl, `[[`, "", "code")[16:21], six)
   expect_identical(unlist(lapply(impl[16:21], function(g) unlist(g$references))), .rp49_refs)
-  expect_length(rules$references, 92L)
+  expect_length(rules$references, 110L)
   expect_identical(names(rules$ref_by_code)[54:71], .rp49_refs)
   for (g in impl[16:21]) expect_null(g$signpost, info = g$code)
   for (r in rules$references[54:71]) {
     expect_true(all(c("code", "ger", "name", "name_singular", "name_en", "name_en_singular", "page", "tests",
                       "wrb2006") %in% names(r)), info = r$code)
   }
+  # none is left since 0.9.352 (test-v09352)
   later <- Filter(function(g) !isTRUE(g$implemented), rules$ger)
-  expect_length(later, 6L)
-  expect_identical(sum(vapply(later, function(g) length(g$references), 0L)), 18L)
+  expect_length(later, 0L)
   # the nitosols are a first version of the book (p. VI, Q18), their climate
   # and the habitat notes of the histosols are reported, not tested
   expect_true(isTRUE(rules$ger_by_code$nitosols$first_draft))
@@ -121,6 +121,7 @@ test_that("the readings of part 6 are Hugo's decisions of 2026-11-04; none waits
   expect_true(all(.rp49_readings %in% tp))
   expect_true(all(grepl("(Hugo, 2026-11-04).", txt[match(.rp49_readings, tp)], fixed = TRUE)))
   # none waits for his word (0.9.351 confirmed on 2026-11-04, test-v09351)
+  # none waits for Hugo's word (0.9.352 confirmed on 2026-11-04, test-v09352)
   expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   expect_true(all(nzchar(vapply(rd[match(.rp49_readings, tp)], `[[`, "", "page"))))
 })
@@ -242,9 +243,9 @@ test_that("the histosols against the lithosols, r\u00e9gosols, r\u00e9ductisols 
   expect_identical(r$name, "lithosol")
   expect_identical(.rp49_deg_of(r, "histosols_leptiques"), "imperfect")
   expect_identical(.rp49_cl(H(c("Hs", "R"), c(0, 12), c(12, 60)))$name, "histosol leptique")
-  # over M: the regosols of a later release make the name provisional
+  # over M: the regosol epihistique (0.9.352, test-v09352)
   r <- .rp49_cl(H(c("Hs", "M"), c(0, 8), c(8, 60)))
-  expect_true("references:regosols" %in% r$provisional_because)
+  expect_identical(r$name, "r\u00e9gosol")
   # H under 50 cm over G: no histosol leptique; a reductisol epihistique
   # (0.9.351, test-v09351)
   r <- .rp49_cl(H(c("Hs", "G"), c(0, 40), c(40, 100)))
@@ -290,14 +291,14 @@ test_that("the leptismectisols: no V, [Av + SV] 50 cm at most, saturated by Ca a
   skip_on_cran()
   ex <- .rp49_ex("leptismectisols")
   e <- .rp49_edit
-  # with no V, before the signpost of the vertisols (rapid key 6c needs a V)
+  # with no V, no vertisol (0.9.352: their references need the V)
   r <- .rp49_cl(ex)
-  expect_true("vertisols" %in% r$candidates$code)
-  expect_match(r$candidates$precedence[r$candidates$code == "vertisols"], "leptismectisols first", fixed = TRUE)
-  # a V: a vertisol of a later release
+  expect_identical(r$name, "leptismectisol")
+  expect_identical(.rp49_deg_of(r, "lithovertisols"), character(0))
+  # a V and no SV: neither a leptismectisol nor a vertisol (0.9.352)
   r <- .rp49_cl(e(ex, 2, designation = "V"))
   expect_identical(r$name, "[non rattach\u00e9]")
-  expect_true("references:vertisols" %in% r$provisional_because)
+  expect_identical(r$provisional_because, character(0))
   # [Av + SV] over 60 cm fails; a recorded kaolinite fails; the saturation not
   # measured leaves it undecided
   expect_identical(.rp49_deg(e(ex, 2:3, bottom_cm = c(70, 100), top_cm = c(18, 70)), "leptismectisols")$degree, "fail")
@@ -660,9 +661,9 @@ test_that("decision 10: the holorganiques, the r\u00e9gosols over C, the insatur
                               site = list(drainage_class = "well drained")))$name, "organosol holorganique")
   expect_identical(.rp49_cl(N(c("OH", "C"), c(0, 25), c(25, 60), oc_pct = c(35, NA),
                               site = list(drainage_class = "well drained", elevation_m = 1300)))$name, "organosol holorganique")
-  # an H of 8 cm over a C read as the M: the regosols epihistiques (a later release)
+  # an H of 8 cm over a C read as the M: the regosol epihistique (0.9.352)
   r <- .rp49_cl(.rp49_H(c("Hm", "C"), c(0, 8), c(8, 100)))
-  expect_true("references:regosols" %in% r$provisional_because)
+  expect_identical(r$name, "r\u00e9gosol")
   # the insatures exclude a carbonated Acaho
   p <- N(c("OF", "Acaho", "C"), c(0, 5, 35), c(5, 35, 70), oc_pct = c(40, 12, 1), caco3_pct = c(NA, 10, 30), bs_pct = c(NA, 60, NA),
          site = list(drainage_class = "well drained"))

@@ -56,12 +56,13 @@ test_that("fifteen GER and 53 references are implemented; the six of part 5 lose
   skip_on_cran()
   rules <- .rp_rules()
   impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
-  # 0.9.349 and 0.9.351: thirteen more GER after these (test-v09349, -v09351)
-  expect_length(impl, 28L)
+  # 0.9.349, 0.9.351 and 0.9.352: nineteen more GER after these
+  # (test-v09349, -v09351, -v09352)
+  expect_length(impl, 34L)
   six <- c("ferrallitisols_oxydisols", "ferruginosols", "fersialsols", "fluviosols", "grisols", "gypsosols")
   expect_identical(vapply(impl, `[[`, "", "code")[10:15], six)
   expect_identical(unlist(lapply(impl[10:15], function(g) unlist(g$references))), .rp48_refs)
-  expect_length(rules$references, 92L)
+  expect_length(rules$references, 110L)
   expect_identical(names(rules$ref_by_code)[30:53], .rp48_refs)
   for (g in impl[10:15]) expect_null(g$signpost, info = g$code)
   # the tropical chapters are a first version of the book (p. VI, Q18)
@@ -434,10 +435,11 @@ test_that("the fluviosols: forbidden horizons, the hydromorphy (Q8) and the othe
   r <- .rp48_cl(e(ex("fluviosols_brunifies"), 1:3, designation = c("Aca", "Sca", "M"), caco3_pct = c(10, 15, 20)))
   expect_identical(r$name, "fluviosol brunifi\u00e9")
   expect_identical(.rp48_deg_of(r, "calcosols"), "simple")
-  # in an alluvial setting the bruts, not the regosols (p. 188)
+  # in an alluvial setting the bruts, not the regosols (p. 188): since
+  # 0.9.352 a recorded recent alluvium excludes the regosol (test-v09352)
   r <- .rp48_cl(ex("fluviosols_bruts"))
-  expect_true("regosols" %in% r$candidates$code)
-  expect_match(r$candidates$precedence[r$candidates$code == "regosols"], "fluviosols_bruts first", fixed = TRUE)
+  expect_identical(r$name, "fluviosol brut")
+  expect_false("regosols" %in% r$candidates$code)
 })
 
 
@@ -588,6 +590,7 @@ test_that("the readings of part 5 are Hugo's decisions; none waits for his word"
   tp <- vapply(rd, `[[`, "", "topic")
   txt <- vapply(rd, `[[`, "", "reading")
   # none waits for his word (0.9.351 confirmed on 2026-11-04, test-v09351)
+  # none waits for Hugo's word (0.9.352 confirmed on 2026-11-04, test-v09352)
   expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   part5 <- c("The intertropical domain of a profile written in the RP notation",
              "Ferrallitisols and oxydisols: F against OX, the hardness and the types",

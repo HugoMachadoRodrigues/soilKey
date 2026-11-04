@@ -3,9 +3,10 @@
 # suggests, each with its page and the order of the names in the book's
 # example, joined with "-" (p. XVIII). Two references attaching outside
 # these pairs: one in the name by the precedence, the other in the
-# candidates. A pair with a reference of a GER not implemented yet is
-# listed and waits for it (`status: later`); `when` (a test block, TRUE when
-# absent) must hold for the double to be written. A pair the book leaves to
+# candidates. A pair with a reference of a GER not implemented yet was
+# listed and waited for it (`status: later`, until 0.9.352: none is left);
+# `when` (a test block, TRUE when absent) must hold for the double to be
+# written. A pair the book leaves to
 # the candidates (`status: candidate`: the double fluviosol-rédoxisol, Q8)
 # is not written: when both attach and one is in the name, the other is a
 # candidate with double_possible and the pair noted (0.9.351). The doubles
@@ -68,7 +69,7 @@ doubles:
   - codes: [cryosols_mineraux, redoxisols]
     page: "142"
     when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
-  # the pairs of the chapters of part 5 (v0.9.348) with references of later releases:
+  # the pairs of the chapters of part 5 (v0.9.348) with references of part 7 (v0.9.351):
   # a fluviosol with redox features from under 50 cm continuing over 50 cm is
   # a rédoxisol fluvique, the double among the candidates (Q8)
   - codes: [fluviosols_juveniles, redoxisols]
@@ -201,8 +202,57 @@ doubles:
   - {codes: [podzosols_eluviques, anthroposols_transformes], page: "273"}
   - {codes: [podzosols_placiques, anthroposols_transformes], page: "273"}
   - {codes: [post_podzosols, anthroposols_transformes], page: "273"}
-  # with a GER of a later release
-  - codes: [thalassosols_polderises, redoxisols]
-    page: "285"
-    status: later
-    note: "case 3 of p. 285, recommended in alluvium (Q8)"
+  # --- the pairs of the chapters of part 8 (v0.9.352) ---------------------------------
+  # the thalassosols (Q8; p. 305: "réductisols et thalassosols", the GER
+  # named, every reference, with the réductisols typiques only, the G
+  # continuing at depth: the stagniques a candidate, Hugo's decision 4; the
+  # rédoxisols only with the poldérisés, case 3 of p. 285, written in the
+  # order of p. 305)
+  - {codes: [reductisols_typiques, thalassosols_bruts], page: "305"}
+  - {codes: [reductisols_typiques, thalassosols_juveniles], page: "305"}
+  - {codes: [reductisols_typiques, thalassosols_polderises], page: "305"}
+  - codes: [redoxisols, thalassosols_polderises]
+    page: "285, 305"
+    note: "a g or -g within 50 cm, the redox features continuing or intensifying: the double rédoxisol-thalassosol poldérisé (Q8)"
+    when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
+  # the salisols and sodisols with a G or g starting within 50 cm (pp.
+  # 298-299: the salsodic reference, then the réductisol or rédoxisol, the
+  # partner holding strictly: Hugo's decision 5)
+  - {codes: [salisols_chloruro_sulfates, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [salisols_chloruro_sulfates, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [salisols_chloruro_sulfates, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [salisols_carbonates, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [salisols_carbonates, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [salisols_carbonates, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [sodisols_indifferencies, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [sodisols_indifferencies, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [sodisols_indifferencies, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [sodisols_solonetziques, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [sodisols_solonetziques, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [sodisols_solonetziques, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [sodisols_solodises, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [sodisols_solodises, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [sodisols_solodises, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [sodisalisols, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [sodisalisols, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [sodisalisols, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [salisodisols, reductisols_typiques], page: "298-299", when_degree: {reductisols_typiques: [simple]}}
+  - {codes: [salisodisols, reductisols_stagniques], page: "298-299", when_degree: {reductisols_stagniques: [simple]}}
+  - {codes: [salisodisols, redoxisols], page: "298-299", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  # the vertisols with a permanent or prolonged waterlogging (p. 325)
+  - {codes: [lithovertisols, reductisols_typiques], page: "325"}
+  - {codes: [lithovertisols, reductisols_stagniques], page: "325"}
+  - {codes: [lithovertisols, redoxisols], page: "325", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [topovertisols, reductisols_typiques], page: "325"}
+  - {codes: [topovertisols, reductisols_stagniques], page: "325"}
+  - {codes: [topovertisols, redoxisols], page: "325", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [paravertisols_hapliques, reductisols_typiques], page: "325"}
+  - {codes: [paravertisols_hapliques, reductisols_stagniques], page: "325"}
+  - {codes: [paravertisols_hapliques, redoxisols], page: "325", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  - {codes: [paravertisols_planosoliques, reductisols_typiques], page: "325"}
+  - {codes: [paravertisols_planosoliques, reductisols_stagniques], page: "325"}
+  - {codes: [paravertisols_planosoliques, redoxisols], page: "325", when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}}
+  # the transition of p. 316
+  - codes: [alocrisols_humiques, veracrisols]
+    page: "316"
+    note: "vermihumic characters with a Sal: the double alocrisol humique-veracrisol"

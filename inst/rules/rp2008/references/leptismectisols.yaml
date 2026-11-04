@@ -11,7 +11,7 @@
 # (soilKey's reading).
 #
 # Distinctions (p. 218): the lithovertisols have a V (no V here, side test;
-# the vertisols signpost yields when no V is read, precedence.yaml); the
+# the vertisols yield when no V is read, precedence.yaml); the
 # pélosols typiques are thicker than 50 cm, with fewer smectites.
 references:
   - code: "leptismectisols"

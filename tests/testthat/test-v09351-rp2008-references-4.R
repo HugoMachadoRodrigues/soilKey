@@ -70,20 +70,20 @@ test_that("twenty-eight GER and 92 references are implemented; the seven of part
   skip_on_cran()
   rules <- .rp_rules()
   impl <- Filter(function(g) isTRUE(g$implemented), rules$ger)
-  expect_length(impl, 28L)
+  # 0.9.352: six more GER after these (test-v09352)
+  expect_length(impl, 34L)
   seven <- c("pelosols", "peyrosols", "phaeosols", "planosols", "podzosols", "rankosols", "reductisols_redoxisols")
   expect_identical(vapply(impl, `[[`, "", "code")[22:28], seven)
   expect_identical(unlist(lapply(impl[22:28], function(g) unlist(g$references))), .rp51_refs)
-  expect_length(rules$references, 92L)
+  expect_length(rules$references, 110L)
   expect_identical(names(rules$ref_by_code)[72:92], .rp51_refs)
   for (g in impl[22:28]) expect_null(g$signpost, info = g$code)
   for (r in rules$references[72:92])
     expect_true(all(c("code", "ger", "name", "name_singular", "name_en", "name_en_singular", "page", "tests",
                       "wrb2006") %in% names(r)), info = r$code)
+  # none is left since 0.9.352 (test-v09352)
   later <- Filter(function(g) !isTRUE(g$implemented), rules$ger)
-  expect_identical(vapply(later, `[[`, "", "code"),
-                   c("regosols", "salisols_sodisols", "thalassosols", "thiosols_sulfatosols", "veracrisols", "vertisols"))
-  expect_identical(sum(vapply(later, function(g) length(g$references), 0L)), 18L)
+  expect_length(later, 0L)
   # the phaeosols report their climate, the reductisols the GEPPA classes
   expect_match(rules$ger_by_code$phaeosols$result_note, "D10", fixed = TRUE)
   expect_match(rules$ger_by_code$reductisols_redoxisols$result_note, "Q1", fixed = TRUE)
@@ -106,7 +106,8 @@ test_that("the later doubles are real now, but those of the GER still missing; t
   impl <- c(names(.rp_rules()$ref_by_code))
   # a later pair only with a GER still missing
   for (d in dd[st == "later"]) expect_false(all(unlist(d$codes) %in% impl), info = paste(unlist(d$codes), collapse = "-"))
-  expect_identical(lapply(dd[st == "later"], function(d) unlist(d$codes)), list(c("thalassosols_polderises", "redoxisols")))
+  # the last one, the thalassosols, written since 0.9.352 (test-v09352)
+  expect_length(dd[st == "later"], 0L)
   # every written pair names implemented references
   for (d in dd[st == ""]) expect_true(all(unlist(d$codes) %in% impl), info = paste(unlist(d$codes), collapse = "-"))
   # the pairs the earlier parts left waiting
@@ -133,9 +134,13 @@ test_that("the readings of part 7 are Hugo's decisions of 2026-11-04; none waits
   mine <- tp[grepl("(0.9.351)", tp, fixed = TRUE)]
   expect_length(mine, 12L)
   expect_setequal(mine, .rp51_pend)
-  dec <- tp[grepl("\\(decision [1-9]\\)$", tp) & seq_along(tp) > max(match(mine, tp))]
+  # the decisions of the review of part 7 (those of part 8 follow them,
+  # test-v09352)
+  dec <- tp[grepl("\\(decision [1-9]\\)$", tp) & seq_along(tp) > max(match(mine, tp)) & !grepl("(0.9.352)", tp, fixed = TRUE)]
+  dec <- dec[seq_len(min(9L, length(dec)))]
   expect_length(dec, 9L)
   expect_true(all(grepl("(Hugo, 2026-11-04).", txt[match(c(mine, dec), tp)], fixed = TRUE)))
+  # none waits for Hugo's word (0.9.352 confirmed on 2026-11-04, test-v09352)
   expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   expect_true(all(nzchar(vapply(rd[match(c(mine, dec), tp)], `[[`, "", "page"))))
 })
@@ -246,7 +251,7 @@ test_that("the pelosols: the Sp within 40 cm, never acid; against the vertisols 
   r <- .rp51_cl(e(ex("pelosols_typiques"), 1:3, ph_h2o = c(NA, NA, NA)))
   expect_identical(.rp51_deg_of(r, "pelosols_typiques"), "undecided")
   expect_true("references:pelosols_typiques" %in% r$provisional_because)
-  # a V: a vertisol of a later release, not a pelosol
+  # a V: no pelosol (the vertisols, 0.9.352)
   expect_identical(.rp51_deg(e(ex("pelosols_typiques"), 2, designation = "V"), "pelosols_typiques")$degree, "fail")
   # the differencies take the name before a planosol, and include their redox
   # horizons: no double (p. 285)

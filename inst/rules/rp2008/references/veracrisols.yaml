@@ -1,0 +1,59 @@
+# Veracrisols (pp. 313-316), 1 reference: the solums of the mild, humid
+# Atlantic climate of the Pays basque, Béarn and Chalosse (1,000 to 1,600
+# mm a year, 12 to 14 degrees C: reported, not tested, map 5 D17), mostly on
+# the silty deposits of the old terraces of the Pyrenean gaves over
+# ferrallitic palaeosols (II F), under a heath of gorse and bracken (p.
+# 313). Their vermihumic épisolum (p. 314): thick, very humic Ah horizons,
+# biomacrostructured by giant anecic earthworms, dark when moist (10YR 3/2
+# or a lower chroma), acid and aluminic under heath (S/CEC under 30 %,
+# Al/S over 1), with no podzolic character. Under heath an Ah over 50 cm
+# thick (+/- 10) is compulsory; under culture an Ah under the LAh or LA,
+# its base deeper than 50 cm, the complex resaturated by the crops
+# (vermihumic_rp: on the data the Ah are the dark A layers of the surface
+# run, moist value 3 or less, chroma 2 or less; soilKey's reading). The
+# leptique, Ah 30 to 50 cm thick, is an imperfect attachment the chapter
+# names (p. 315). The organic carbon (2 to 10 g/100 g at the top), the C/N,
+# the porosity, the density, the pH of 4.0 to 4.9 and the chroma gained on
+# drying are described, not tested (D17).
+#
+# Distinctions (pp. 128, 316): many solums of the region have vermihumic
+# characters too weak for the veracrisols (the qualifiers vermihumique,
+# bathyvermihumique); with an alocrisol humique the double alocrisol
+# humique-veracrisol of p. 316 (doubles.yaml); the luvisols dégradés from
+# which they often derive (paléoluvique: the rapid key, 7b before 11b); the
+# chernosols are saturated, the veracrisols acid and aluminic.
+references:
+  - code: "veracrisols"
+    ger: "veracrisols"
+    name: "veracrisols"
+    name_singular: "veracrisol"
+    name_en: "veracrisols"
+    name_en_singular: "veracrisol"
+    page: "313-315"
+    sequences: ["(OL)-Ah-E|Eg-BTgd-II F", "Ah-BTgd-II F", "Ah-C|II F", "LAh|LA-Ah-E|Eg-BTgd-II F", "LAh|LA-Ah-BTgd-II F", "LAh|LA-Ah-C|II F"]
+    notes: "A vermihumic épisolum: biomacrostructured, dark Ah horizons, under heath over 50 cm thick, acid and aluminic (S/CEC under 30 %, Al/S over 1); under culture an Ah under the LAh or LA, its base deeper than 50 cm; over E or Eg, BTgd, II F or C; no podzolic character."
+    wrb2006: "Vermic Umbrisols"
+    distinctions:
+      - {with: "alocrisols humiques", page: "316", by: "the biomacrostructure of the Ah: the double alocrisol humique-veracrisol (doubles.yaml)"}
+      - {with: "brunisols dystriques", page: "316", by: "vermihumic characters too weak (side test; the rapid key, 7b before 11a)"}
+      - {with: "luvisols dégradés", page: "316", by: "paléoluvique, a qualifier (the rapid key, 7b before 11b)"}
+      - {with: "chernosols", page: "128, 316", by: "acid and aluminic (side test)"}
+      - {with: "podzosols", page: "314", by: "no podzolic character (side test)"}
+    tests:
+      all_of:
+        - vermihumic_rp: {min: 50}
+        # the description ending in the Ah leaves it undecided (the review's D11)
+        - any_of:
+            - sequence_rp: {sequences: ["A-(E)-BT-(F)-(C)", "A-C|F"]}
+            - ends_in_rp: {codes: [A]}
+        - no_horizon_within_rp: {codes: [BP]}
+    imperfect:
+      - qualifier: "leptique"
+        page: "315"
+        tests:
+          all_of:
+            - vermihumic_rp: {min: 30, max: 50}
+            - any_of:
+                - sequence_rp: {sequences: ["A-(E)-BT-(F)-(C)", "A-C|F"]}
+                - ends_in_rp: {codes: [A]}
+            - no_horizon_within_rp: {codes: [BP]}

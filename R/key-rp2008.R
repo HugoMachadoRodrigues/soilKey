@@ -13,14 +13,15 @@
 # of the rapid key, Q6), the doubles the book prescribes (Q7), "[non
 # rattache]" with the three nearest references when nothing attaches; and
 # the `candidates` slot with every reference that may attach. This release
-# tests the 92 references of the first twenty-eight GER (v0.9.346: the first
-# nine; v0.9.348: the ferrallitisols and oxydisols, ferruginosols,
-# fersialsols, fluviosols, grisols and gypsosols; v0.9.349: the histosols,
-# leptismectisols, lithosols, luvisols, nitosols and organosols; v0.9.351:
-# the pelosols, peyrosols, phaeosols, planosols, podzosols, rankosols,
-# reductisols and redoxisols); the 18 of the other 6 GER come later, and a
-# profile showing their horizons is told so in the candidates (their
-# signposts in key.yaml), its name provisional.
+# tests the 110 references of the 34 GER (v0.9.346: the first nine; v0.9.348:
+# the ferrallitisols and oxydisols, ferruginosols, fersialsols, fluviosols,
+# grisols and gypsosols; v0.9.349: the histosols, leptismectisols,
+# lithosols, luvisols, nitosols and organosols; v0.9.351: the pelosols,
+# peyrosols, phaeosols, planosols, podzosols, rankosols, reductisols and
+# redoxisols; v0.9.352: the regosols, salisols and sodisols, thalassosols,
+# thiosols and sulfatosols, veracrisols and vertisols). A GER not
+# implemented would be told in the candidates by its signpost (key.yaml);
+# none is left.
 # =============================================================================
 
 .rp_rules_cache <- new.env(parent = emptyenv())
@@ -215,8 +216,8 @@
 #'
 #' Attaches a \code{\link{PedonRecord}} to the references of the
 #' \emph{Referentiel pedologique} 2008 (AFES; Baize and Girard coord.;
-#' Editions Quae, 2009). \strong{Experimental}: this release tests the 92
-#' references of the first twenty-eight groups of references (GER): alocrisols
+#' Editions Quae, 2009). \strong{Experimental}: this release tests the 110
+#' references of the 34 groups of references (GER): alocrisols
 #' (2), andosols (6), anthroposols (5), arenosols (1), brunisols (2), the
 #' solums dominated by calcium or magnesium (7: rendosols, calcosols,
 #' dolomitosols, rendisols, calcisols, magnesisols, calcarisols),
@@ -224,11 +225,10 @@
 #' oxydisols (7), ferruginosols (4), fersialsols (4), fluviosols (4),
 #' grisols (3), gypsosols (2), histosols (5), leptismectisols (1),
 #' lithosols (1), luvisols (6), nitosols (1), organosols (4), pelosols (3),
-#' peyrosols (1), phaeosols (2), planosols (3), podzosols (8), rankosols (1)
-#' and reductisols et redoxisols (3). The 18
-#' references of the other 6 GER come in later releases: a profile that
-#' shows their reference horizons gets them among the candidates as not
-#' implemented yet, and its name is provisional. The horizons of the
+#' peyrosols (1), phaeosols (2), planosols (3), podzosols (8), rankosols (1),
+#' reductisols et redoxisols (3), regosols (1), salisols et sodisols (7),
+#' thalassosols (3), thiosols et sulfatosols (2), veracrisols (1) and
+#' vertisols (4). The horizons of the
 #' intertropical chapters (F, OX, RT, ND, FE, OXc, OXm) are read only in the
 #' intertropical domain, and the results of those chapters and of the
 #' nitosols say that the book calls them a first version (Q18); a fluviosol
@@ -241,7 +241,12 @@
 #' cm (a G within 50 cm makes a reductisol whatever lies above), and their
 #' doubles with the luvisols, podzosols, pelosols, brunisols, colluviosols,
 #' cryosols and histosols are those the book names; the depth class of the
-#' hydromorphy is in \code{trace$hydromorphy}.
+#' hydromorphy is in \code{trace$hydromorphy}. The salisols and sodisols read
+#' the salic and sodic horizons within 60 cm, the thalassosols a recorded
+#' marine material (provisional while the tidal flooding or the polder is not
+#' recorded), the thiosols and sulfatosols, first in every case, the sulfur
+#' within 50 cm, the veracrisols their vermihumic Ah, the vertisols their SV
+#' and V, litho against topo by the site, else the SV.
 #'
 #' The RP is not a key: a solum attaches to one, two or no reference, simply
 #' or imperfectly (pp. XIV, XVII). Every reference is tested every time:
@@ -558,10 +563,15 @@ classify_rp2008 <- function(pedon, rules = NULL,
   if (length(comb$provisional_because))
     warnings <- c(warnings, sprintf("Provisional: %d reference(s) or group(s) could take the name once their data are known (%s).",
                                     length(comb$provisional_because), paste(comb$provisional_because, collapse = ", ")))
-  for (cd in names(cond))
-    warnings <- c(warnings, sprintf(paste("Provisional: the %s attaches on its alluvial origin; the position in the valley",
-                                          "and the alluvial water table are not recorded (valley_position, flood_frequency,",
-                                          "groundwater_kind; Q14)."), ref_field(cd, "name_singular")))
+  for (cd in names(cond)) {
+    # the note of the reference (0.9.352: the thalassosols, the vertisols),
+    # else that of the fluviosols
+    pn <- rules$ref_by_code[[cd]]$provisional_note
+    warnings <- c(warnings, if (!is.null(pn)) sprintf("Provisional: the %s attaches; %s.", ref_field(cd, "name_singular"), pn)
+                            else sprintf(paste("Provisional: the %s attaches on its alluvial origin; the position in the valley",
+                                               "and the alluvial water table are not recorded (valley_position, flood_frequency,",
+                                               "groundwater_kind; Q14)."), ref_field(cd, "name_singular")))
+  }
   # the GER of the name: the first version of the tropical chapters (p. VI,
   # Q18) and what the chapter reports without testing
   for (g in unique(vapply(members, function(cd) rules$ref_by_code[[cd]]$ger, ""))) {
@@ -609,7 +619,7 @@ classify_rp2008 <- function(pedon, rules = NULL,
 #' Example pedons for the references of the Referentiel pedologique 2008
 #'
 #' Small, plausible profiles written for the tests and examples, one per
-#' reference implemented (the 92 of the first twenty-eight GER), in the RP notation
+#' reference (the 110 of the 34 GER), in the RP notation
 #' (\code{site$designation_system = "rp2008"}) with the properties their
 #' tests read. They are not real profiles.
 #'
@@ -659,7 +669,15 @@ classify_rp2008 <- function(pedon, rules = NULL,
 #'   \code{"podzosols_eluviques"}, \code{"podzosols_placiques"},
 #'   \code{"post_podzosols"}, \code{"rankosols"},
 #'   \code{"reductisols_typiques"}, \code{"reductisols_stagniques"},
-#'   \code{"redoxisols"}.
+#'   \code{"redoxisols"}, \code{"regosols"},
+#'   \code{"salisols_chloruro_sulfates"}, \code{"salisols_carbonates"},
+#'   \code{"sodisols_indifferencies"}, \code{"sodisols_solonetziques"},
+#'   \code{"sodisols_solodises"}, \code{"sodisalisols"},
+#'   \code{"salisodisols"}, \code{"thalassosols_bruts"},
+#'   \code{"thalassosols_juveniles"}, \code{"thalassosols_polderises"},
+#'   \code{"thiosols"}, \code{"sulfatosols"}, \code{"veracrisols"},
+#'   \code{"lithovertisols"}, \code{"topovertisols"},
+#'   \code{"paravertisols_hapliques"}, \code{"paravertisols_planosoliques"}.
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_rp2008(make_rp2008_example("brunisols_eutriques"), on_missing = "silent")$name
@@ -688,7 +706,10 @@ make_rp2008_example <- function(reference = c(
     "phaeosols_melanoluviques", "planosols_typiques", "planosols_distaux", "planosols_structuraux",
     "podzosols_ocriques", "podzosols_meubles", "podzosols_duriques", "podzosols_humiques", "podzosols_humo_duriques",
     "podzosols_eluviques", "podzosols_placiques", "post_podzosols", "rankosols", "reductisols_typiques",
-    "reductisols_stagniques", "redoxisols")) {
+    "reductisols_stagniques", "redoxisols", "regosols", "salisols_chloruro_sulfates", "salisols_carbonates",
+    "sodisols_indifferencies", "sodisols_solonetziques", "sodisols_solodises", "sodisalisols", "salisodisols",
+    "thalassosols_bruts", "thalassosols_juveniles", "thalassosols_polderises", "thiosols", "sulfatosols",
+    "veracrisols", "lithovertisols", "topovertisols", "paravertisols_hapliques", "paravertisols_planosoliques")) {
   reference <- match.arg(reference)
   mk <- function(h, site = list()) {
     n <- max(lengths(h))
@@ -778,6 +799,23 @@ make_rp2008_example <- function(reference = c(
   wet <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
     base_site = list(country = "FR", lat = 47.3, lon = 4.9, koppen_climate = "Cfb", land_use = "meadow",
                      parent_material = "clayey alluvium and colluvium"))
+  # the profiles of part 8 (v0.9.352): the chalk of Champagne, the sebkhas of
+  # Tunisia, the natron of the Kanem, the puszta, the prairies and the
+  # Riverina, the bay of the Mont-Saint-Michel and the Marais poitevin, the
+  # mangroves of the Casamance, the touyas of Bearn, the marls of the
+  # Gatinais, the basalts of Uruguay and the clay plains of the north of
+  # Cameroon
+  sod <- function(des, top, bot, ..., site = list(), base_site) lay(des, top, bot, ..., site = site,
+    base_site = base_site)
+  mar <- function(des, top, bot, ..., site = list()) lay(des, top, bot, layer_origin = "marine", ..., site = site,
+    base_site = list(country = "FR", lat = 48.65, lon = -1.55, koppen_climate = "Cfb",
+                     parent_material = "marine silts (tangue)"))
+  mangrove <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
+    base_site = list(country = "SN", lat = 12.6, lon = -16.3, koppen_climate = "Aw", land_use = "mangrove",
+                     drainage_class = "very poorly drained", parent_material = "estuarine muds"))
+  vert <- function(des, top, bot, ..., site = list()) lay(des, top, bot, ..., site = site,
+    base_site = list(country = "FR", lat = 48.1, lon = 2.6, koppen_climate = "Cfb", land_use = "cropland",
+                     parent_material = "Aquitanian marls"))
   switch(reference,
     alocrisols_typiques = mk(list(
       designation = c("A", "Sal", "C"), top_cm = c(0, 8, 55), bottom_cm = c(8, 55, 100),
@@ -1067,7 +1105,106 @@ make_rp2008_example <- function(reference = c(
                                              groundwater_kind = "perched", parent_material = "granite")),
     redoxisols = wet(c("A", "g", "C"), c(0, 20, 95), c(20, 95, 140), clay_pct = c(38, 45, 40), oc_pct = c(3, 0.6, 0.3),
                      redoximorphic_features_pct = c(NA, 25, NA),
-                     site = list(parent_material = "clayey colluvium on granite", groundwater_kind = "perched"))
+                     site = list(parent_material = "clayey colluvium on granite", groundwater_kind = "perched")),
+    regosols = lay(c("A", "M"), c(0, 6), c(6, 80), oc_pct = c(2.5, NA), clay_pct = c(20, NA), caco3_pct = c(25, 85),
+                   base_site = list(country = "FR", lat = 49.0, lon = 4.2, koppen_climate = "Cfb", land_use = "grassland",
+                                    parent_material = "chalk")),
+    salisols_chloruro_sulfates = sod(c("SaA", "SaS", "SaC"), c(0, 15, 50), c(15, 50, 110), ec_dS_m = c(35, 22, 16),
+                                     ph_h2o = c(8.0, 8.1, 8.2), soluble_salts_chloride_pct = c(65, 60, 55),
+                                     soluble_salts_sulfate_pct = c(25, 30, 35), soluble_salts_carbonate_pct = 5,
+                                     clay_pct = c(25, 28, 26), oc_pct = c(0.8, 0.4, 0.2),
+                                     structure_type = c("granular", "subangular blocky", NA),
+                                     base_site = list(country = "TN", lat = 35.6, lon = 10.1, koppen_climate = "BSh",
+                                                      land_use = "halophytic steppe", parent_material = "sebkha silts")),
+    salisols_carbonates = sod(c("SaA", "SaS", "C"), c(0, 15, 55), c(15, 55, 110), ec_dS_m = c(12, 10, 5),
+                              ph_h2o = c(9.6, 9.4, 9.0), soluble_salts_carbonate_pct = c(70, 65, 50),
+                              soluble_salts_chloride_pct = c(15, 15, 20), soluble_salts_sulfate_pct = c(10, 10, 20),
+                              clay_pct = c(20, 25, 22), oc_pct = c(0.6, 0.3, 0.2),
+                              structure_type = c("granular", "subangular blocky", NA),
+                              base_site = list(country = "TD", lat = 14.0, lon = 14.5, koppen_climate = "BWh",
+                                               land_use = "bare", parent_material = "natron depression deposits")),
+    sodisols_indifferencies = sod(c("NaA", "NaS", "NaC"), c(0, 15, 50), c(15, 50, 100), structure_type = "massive",
+                                  na_cmol = c(5, 7, 6), ca_cmol = c(10, 9, 9), mg_cmol = 4, k_cmol = 0.5,
+                                  ec_dS_m = c(2, 3, 3), ph_h2o = c(9.0, 9.3, 9.2), clay_pct = c(30, 32, 30),
+                                  oc_pct = c(2, 0.6, 0.3),
+                                  base_site = list(country = "HU", lat = 47.5, lon = 21.0, koppen_climate = "Dfb",
+                                                   land_use = "grassland", parent_material = "loess")),
+    sodisols_solonetziques = sod(c("A", "E", "NaBT", "NaC"), c(0, 12, 25, 60), c(12, 25, 60, 110),
+                                 clay_pct = c(18, 15, 38, 32), oc_pct = c(3, 0.8, 0.6, 0.3), ph_h2o = c(6.5, 6.8, 8.6, 8.8),
+                                 structure_type = c("granular", "platy", "columnar", "massive"),
+                                 na_cmol = c(0.5, 0.6, 6, 5), ca_cmol = c(10, 6, 8, 9), mg_cmol = c(3, 2, 5, 5), k_cmol = 0.5,
+                                 ec_dS_m = c(0.5, 0.5, 3, 4), clay_films_amount = c(NA, NA, "common", NA),
+                                 base_site = list(country = "CA", lat = 52.3, lon = -112.5, koppen_climate = "Dfb",
+                                                  land_use = "grassland", parent_material = "glacial till")),
+    sodisols_solodises = sod(c("A", "Ea", "NaBT", "NaC"), c(0, 10, 25, 70), c(10, 25, 70, 110),
+                             clay_pct = c(15, 12, 40, 35), oc_pct = c(2.5, 0.5, 0.5, 0.3), ph_h2o = c(5.0, 4.6, 9.4, 9.6),
+                             structure_type = c("granular", "massive", "columnar", "massive"),
+                             na_cmol = c(0.3, 0.3, 7, 6), ca_cmol = c(3, 1, 6, 6), mg_cmol = c(1.5, 0.8, 6, 6), k_cmol = 0.3,
+                             ec_dS_m = c(0.3, 0.3, 2, 3), clay_films_amount = c(NA, NA, "many", NA),
+                             base_site = list(country = "AU", lat = -35.5, lon = 145.0, koppen_climate = "BSk",
+                                              land_use = "grazing", parent_material = "Riverine Plain clays")),
+    sodisalisols = sod(c("NaA", "SaS", "SaC"), c(0, 20, 60), c(20, 60, 110), structure_type = c("massive", "subangular blocky", "massive"),
+                       na_cmol = c(4, 8, 9), ca_cmol = c(8, 10, 10), mg_cmol = c(3, 5, 5), k_cmol = 0.5,
+                       ec_dS_m = c(3, 18, 16), ph_h2o = c(8.8, 8.2, 8.2), soluble_salts_chloride_pct = c(40, 60, 60),
+                       soluble_salts_sulfate_pct = c(40, 30, 30), soluble_salts_carbonate_pct = c(10, 5, 5),
+                       clay_pct = c(28, 30, 30), oc_pct = c(1, 0.5, 0.3),
+                       base_site = list(country = "MA", lat = 32.4, lon = -6.5, koppen_climate = "BSh",
+                                        land_use = "irrigated perimeter", parent_material = "alluvial silts")),
+    salisodisols = sod(c("SaA", "NaS", "NaC"), c(0, 20, 55), c(20, 55, 110), ec_dS_m = c(25, 4, 3), ph_h2o = c(8.3, 9.0, 9.1),
+                       structure_type = c("granular", "prismatic", "massive"), na_cmol = c(10, 7, 6), ca_cmol = c(10, 8, 8),
+                       mg_cmol = 5, k_cmol = 0.5, soluble_salts_chloride_pct = c(55, 50, 50),
+                       soluble_salts_sulfate_pct = c(35, 30, 30), soluble_salts_carbonate_pct = c(5, 15, 15),
+                       clay_pct = c(25, 30, 28), oc_pct = c(0.8, 0.4, 0.2),
+                       base_site = list(country = "TN", lat = 35.7, lon = 10.0, koppen_climate = "BSh",
+                                        land_use = "halophytic steppe", parent_material = "silts with a saline water table")),
+    thalassosols_bruts = mar("M", 0, 100, clay_pct = 18, caco3_pct = 35,
+                             site = list(tidal_zone = "intertidal", land_use = "bare mudflat")),
+    thalassosols_juveniles = mar(c("Js", "M"), c(0, 10), c(10, 100), oc_pct = c(0.4, 0.3), clay_pct = 30, caco3_pct = 30,
+                                 structure_type = c("subangular blocky", NA), structure_grade = c("weak", NA),
+                                 site = list(tidal_zone = "supratidal", land_use = "salt meadow")),
+    thalassosols_polderises = mar(c("A", "Jp", "M"), c(0, 25, 70), c(25, 70, 130), clay_pct = c(45, 48, 50),
+                                  oc_pct = c(3, 0.8, 0.5), caco3_pct = c(0, 2, 5), ph_h2o = c(7.2, 7.8, 8.0),
+                                  ec_dS_m = c(0.5, 1, 2),
+                                  site = list(lat = 46.3, lon = -1.0, poldered = TRUE, land_use = "grassland",
+                                              parent_material = "bri (old marine clay)")),
+    thiosols = mangrove(c("A", "TH", "TH"), c(0, 15, 50), c(15, 50, 120), oc_pct = c(6, 3, 2), s_total_pct = c(NA, 2.5, 3.0),
+                        ph_h2o = c(6.2, 6.8, 7.0), n_value = c(NA, 2.3, 2.6), incubation_ph = c(NA, 2.9, 2.7),
+                        clay_pct = c(40, 45, 45)),
+    sulfatosols = mangrove(c("A", "U", "TH"), c(0, 15, 45), c(15, 45, 120), oc_pct = c(4, 1.5, 2),
+                           ph_h2o = c(4.5, 3.2, 6.5), jarosite_present = c(NA, TRUE, NA), s_total_pct = c(NA, 1.5, 2.5),
+                           n_value = c(NA, 1.0, 2.2), clay_pct = 45, site = list(land_use = "rice paddies")),
+    veracrisols = lay(c("Ah", "Ah", "BTgd", "II F"), c(0, 30, 75, 120), c(30, 75, 120, 160),
+                      oc_pct = c(7, 3.5, 0.6, 0.3), clay_pct = c(25, 28, 35, 45), munsell_hue_moist = "10YR",
+                      munsell_value_moist = c(2, 3, 5, 5), munsell_chroma_moist = c(1, 2, 6, 6),
+                      biogenic_aggregates_pct = c(60, 50, NA, NA), biogenic_aggregate_size = c("macro", "macro", NA, NA),
+                      bs_pct = c(15, 18, 25, 30), al_kcl_cmol = c(5, 4, 4, 3), ca_cmol = c(1, 0.8, 1, 1),
+                      mg_cmol = c(0.4, 0.3, 0.6, 0.5), k_cmol = 0.2, na_cmol = 0.1, ph_h2o = c(4.5, 4.6, 4.8, 4.9),
+                      redoximorphic_features_pct = c(NA, NA, 20, 15), clay_films_amount = c(NA, NA, "common", NA),
+                      base_site = list(country = "FR", lat = 43.3, lon = -0.37, koppen_climate = "Cfb", land_use = "heath",
+                                       parent_material = "old silts of the terraces of the gave")),
+    lithovertisols = vert(c("Av", "SV", "V", "C"), c(0, 15, 45, 110), c(15, 45, 110, 150), clay_pct = c(50, 55, 58, 50),
+                          slickensides = c(NA, "few", "many", NA), cracks_width_cm = c(2, 3, NA, NA),
+                          structure_type = c("granular", "prismatic", "wedge-shaped", NA), bs_pct = c(85, 88, 95, 100),
+                          ph_h2o = c(7.0, 7.2, 7.8, 8.0), caco3_pct = c(0, 0, 5, 20),
+                          site = list(slope_pct = 5, landform = "interfluve")),
+    topovertisols = vert(c("Av", "SV", "V", "C"), c(0, 20, 55, 130), c(20, 55, 130, 170), clay_pct = c(55, 60, 62, 55),
+                         slickensides = c(NA, "few", "many", NA), cracks_width_cm = c(3, 4, NA, NA),
+                         structure_type = c("granular", "prismatic", "wedge-shaped", NA), bs_pct = 100,
+                         ph_h2o = c(7.4, 7.8, 8.0, 8.2),
+                         site = list(country = "UY", lat = -32.0, lon = -57.0, koppen_climate = "Cfa",
+                                     land_use = "natural grassland", parent_material = "basalt", slope_pct = 1,
+                                     landform = "depression", gilgai_presence = TRUE)),
+    paravertisols_hapliques = vert(c("A", "SV", "V", "C"), c(0, 20, 50, 110), c(20, 50, 110, 150), clay_pct = c(30, 50, 55, 45),
+                                   bs_pct = c(70, 85, 95, 95), ph_h2o = c(6.2, 6.8, 7.2, 7.5),
+                                   slickensides = c(NA, "few", "many", NA),
+                                   site = list(country = "CM", lat = 9.3, lon = 13.4, koppen_climate = "Aw",
+                                               land_use = "savanna", parent_material = "basic gneiss")),
+    paravertisols_planosoliques = vert(c("A", "E", "SV", "V", "C"), c(0, 10, 22, 55, 110), c(10, 22, 55, 110, 150),
+                                       clay_pct = c(18, 14, 50, 55, 48), boundary_distinctness = c("clear", "abrupt", "gradual", "gradual", NA),
+                                       bs_pct = c(65, 55, 85, 95, 95), ph_h2o = c(6.0, 5.8, 7.0, 7.5, 7.8),
+                                       slickensides = c(NA, NA, "few", "many", NA),
+                                       site = list(country = "CM", lat = 10.6, lon = 14.3, koppen_climate = "Aw",
+                                                   land_use = "savanna", parent_material = "lacustrine clays"))
   )
 }
 

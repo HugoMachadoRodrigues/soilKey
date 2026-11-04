@@ -34,7 +34,11 @@
 # -rédoxisol, pp. 273, 285; pélosol typique-rédoxisol, p. 285; brunisol
 # eutrique or dystrique-rédoxisol with an aerated S over the Sg, p. 107;
 # colluviosol-rédoxisol from 20 to 50 cm, p. 133; cryosol minéral-rédoxisol,
-# p. 142; peyrosol-réductisol, p. 253; doubles.yaml), the other reference
+# p. 142; peyrosol-réductisol, p. 253; since 0.9.352 the salisols and
+# sodisols with a G or g within 50 cm, pp. 298-299, the réductisols and
+# thalassosols and the rédoxisol-thalassosol poldérisé, pp. 285, 305, the
+# vertisols, p. 325, the thiosols and sulfatosols first, p. 310;
+# doubles.yaml), the other reference
 # in the name for a pair the book does not name (precedence.yaml); in
 # alluvium the rédoxisol fluvique in the name and the double
 # fluviosol-rédoxisol among the candidates (Q8); the planosols typiques and

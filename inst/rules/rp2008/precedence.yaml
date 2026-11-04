@@ -131,7 +131,7 @@ precedence:
   - first: regosols
     second: histosols_leptiques
     page: "209, 211"
-    note: "H horizons of 10 cm or less over M, D or a C read as the M: a régosol épihistique (a later release)"
+    note: "H horizons of 10 cm or less over M, D or a C read as the M: a régosol épihistique (0.9.352)"
     when:
       all_of:
         - thickness_rp: {codes: [H], max: 10}
@@ -145,7 +145,7 @@ precedence:
         - thickness_rp: {codes: [H], max: 50, open: true}
         - below_rp: {upper: [H], codes: [G]}
   - first: leptismectisols
-    second: [vertisols, lithovertisols, topovertisols, paravertisols_hapliques, paravertisols_planosoliques]
+    second: [lithovertisols, topovertisols, paravertisols_hapliques, paravertisols_planosoliques]
     page: "67, 217-218"
     note: "no V horizon: a leptismectisol, not a vertisol (the lithovertisols have the V; rapid key 6c needs it)"
     when:
@@ -251,14 +251,14 @@ precedence:
   # context, simply or in a double (p. 253)
   - first: peyrosols
     second: "*"
-    except: [cryosols_mineraux, cryosols_histiques, regosols, salisols_sodisols, thalassosols, thiosols_sulfatosols, veracrisols, vertisols]
+    except: [cryosols_mineraux, cryosols_histiques, thiosols, sulfatosols]
     page: "253"
     note: "peyric horizons over 50 cm from the surface: a peyrosol, simply or in a double, whatever the context, a reductic solum too (Hugo's decision 6, 2026-11-04)"
     when: {all_of: [{peyric_rp: {min: 50}}]}
   # the hydromorphy (Q8, Q13; Hugo's default 20)
   - first: [reductisols_typiques, reductisols_stagniques]
     second: "*"
-    except: [cryosols_mineraux, cryosols_histiques, peyrosols, regosols, salisols_sodisols, thalassosols, thiosols_sulfatosols, veracrisols, vertisols]
+    except: [cryosols_mineraux, cryosols_histiques, peyrosols, thiosols, sulfatosols]
     page: "282, 289; 107"
     note: "a G starting within 50 cm makes a réductisol whatever lies above (default 20, D22); the doubles of doubles.yaml are still written"
     when: {all_of: [{hydromorphy_rp: {kind: G, within: 50}}]}
@@ -272,7 +272,7 @@ precedence:
     note: "the pélosols différenciés include the redox horizons within 50 cm: no double"
   - first: "*"
     second: redoxisols
-    except: [colluviosols, fluviosols_bruts, fluviosols_juveniles, fluviosols_typiques, fluviosols_brunifies, brunisols_eutriques, brunisols_dystriques, cryosols_mineraux, cryosols_histiques, regosols, salisols_sodisols, thalassosols, thiosols_sulfatosols, veracrisols, vertisols]
+    except: [colluviosols, fluviosols_bruts, fluviosols_juveniles, fluviosols_typiques, fluviosols_brunifies, brunisols_eutriques, brunisols_dystriques, cryosols_mineraux, cryosols_histiques]
     page: "282, 285"
     note: "other important horizons (E, BT, BP, Sp) with the redox features: the double the book names (doubles.yaml), else the other reference takes the name and the rédoxisol is a candidate (soilKey's reading of p. 285 under Q7)"
     when: {all_of: [{horizon_within_rp: {codes: [E, BT, BP, Sp]}}]}
@@ -286,6 +286,46 @@ precedence:
     page: "107"
     note: "a -g within 50 cm with no aerated S over it: the rédoxisol (the double brunisol-rédoxisol of doubles.yaml otherwise)"
     when: {all_of: [{hydromorphy_rp: {kind: g, within: 50, min: 50}}]}
+  # --- the GER of part 8 (v0.9.352) ---------------------------------------------------
+  # the peyrosols take a solum whatever the context (p. 253), but in every
+  # case sulfur at a shallow depth attaches it first to the thiosols or
+  # sulfatosols (p. 310): they are kept out of the peyrosol and reductisol
+  # rows above, and the pair below puts them first
+  - first: [fluviosols_juveniles, thalassosols_bruts, thalassosols_juveniles]
+    second: regosols
+    page: "188, 291"
+    note: "very recent alluvial or marine deposits are no régosols: the fluviosols juvéniles and the thalassosols bruts or juvéniles (soilKey's reading of p. 291, as the fluviosols bruts of p. 188)"
+  - first: arenosols
+    second: regosols
+    page: "101, 292"
+    note: "an organo-mineral top over 10 cm, with its organic matter and biological activity: an arénosol, not a régosol sableux"
+    when: {all_of: [{thickness_rp: {codes: [A], min: 10, open: true, from_surface: true}}]}
+  - first: [thiosols, sulfatosols]
+    second: [salisols_chloruro_sulfates, salisols_carbonates, sodisols_indifferencies, sodisols_solonetziques, sodisols_solodises, sodisalisols, salisodisols, reductisols_typiques, reductisols_stagniques, redoxisols, thalassosols_bruts, thalassosols_juveniles, thalassosols_polderises, fluviosols_bruts, fluviosols_juveniles, fluviosols_typiques, fluviosols_brunifies, peyrosols]
+    page: "253, 299, 310"
+    note: "sulfur at a shallow depth with a dry pH under 3.5: the thiosols or sulfatosols first, in every case, before the peyrosols too (a salisol with their characters is a sulfatosol or thiosol salique, D11; Hugo's decision 6)"
+  - first: [lithovertisols, topovertisols, paravertisols_hapliques, paravertisols_planosoliques]
+    second: [salisols_chloruro_sulfates, salisols_carbonates, sodisols_indifferencies, sodisols_solonetziques, sodisols_solodises, sodisalisols, salisodisols]
+    page: "299, 318, 324"
+    note: "a vertisol with a VSa or VNa: the vertisol salique or sodique, the salisol or sodisol a candidate (Q20)"
+  - first: [lithovertisols, topovertisols, paravertisols_hapliques, paravertisols_planosoliques]
+    second: [planosols_typiques, planosols_distaux, planosols_structuraux]
+    page: "323, 325"
+    note: "the SV and V still there: the vertisol (a paravertisol planosolique is a first stage towards the planosols typiques vertiques; soilKey's reading)"
+  - first: veracrisols
+    second: luvisols_tronques
+    page: "315-316"
+    note: "a vermihumic Ah of 30 cm or more: the veracrisol, also leptique, before a luvisol tronqué (the paléoluvique veracrisols derive from the luvisols; Hugo's decision 1)"
+    when: {all_of: [{vermihumic_rp: {min: 30}}]}
+  - first: [sodisols_solonetziques, sodisols_solodises, sodisols_indifferencies]
+    second: [neoluvisols, luvisols_typiques, luvisols_degrades, luvisols_derniques, luvisols_tronques, quasi_luvisols]
+    page: "68, 297"
+    note: "a sodic BT: the sodisol, not a luvisol (the rapid key, 6i before 11b; the review's D6)"
+    when: {all_of: [{horizon_within_rp: {codes: [NaBT], depth: 60}}]}
+  - first: paravertisols_planosoliques
+    second: paravertisols_hapliques
+    page: "323"
+    note: "an E or Eg between the surface horizon and the SV: the paravertisol planosolique (Q20: planosolique, haplique, then litho or topo)"
 exclusions:
   - code: brunisols_eutriques
     by: calcisols
@@ -309,3 +349,38 @@ exclusions:
     page: "116"
     note: "a biomacrostructured Ado: a dolomitosol, not an arénosol (the review's D9)"
     when: {all_of: [{biomacro_rp: {codes: [A]}}]}
+  - code: salisols_chloruro_sulfates
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: salisols_carbonates
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: sodisols_indifferencies
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: sodisols_solonetziques
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: sodisols_solodises
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: sodisalisols
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}
+  - code: salisodisols
+    by: arenosols
+    page: "102, 298"
+    note: "too coarse for a saturated paste: an arénosol salin, never a salisol or a sodisol"
+    when: {any_of: [{horizon_within_rp: {codes: ["Sa+", "Na+"], depth: 60}}]}

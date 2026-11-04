@@ -52,7 +52,7 @@ references:
     wrb2006: "Calcic Chernozems"
     distinctions:
       - {with: "phæosols", page: "128", by: "a less black, coarser Aso with S/CEC 50 to 80 % (the horizon frame)"}
-      - {with: "veracrisols", page: "128", by: "acid and aluminic (later release)"}
+      - {with: "veracrisols", page: "128", by: "acid and aluminic (veracrisols.yaml)"}
       - {with: "calcosols, calcisols", page: "116", by: "an Ach excludes the calcium and magnesium GER (side test)"}
     tests:
       all_of:
@@ -74,7 +74,7 @@ references:
     wrb2006: "Voronic Chernozems"
     distinctions:
       - {with: "phæosols", page: "128", by: "a less black, coarser Aso with S/CEC 50 to 80 % (the horizon frame)"}
-      - {with: "veracrisols", page: "128", by: "acid and aluminic (later release)"}
+      - {with: "veracrisols", page: "128", by: "acid and aluminic (veracrisols.yaml)"}
       - {with: "calcosols, calcisols", page: "116", by: "an Ach excludes the calcium and magnesium GER (side test)"}
     tests:
       all_of:
@@ -98,7 +98,7 @@ references:
     wrb2006: "Luvic Chernozems"
     distinctions:
       - {with: "phæosols", page: "128", by: "a less black, coarser Aso with S/CEC 50 to 80 % (the horizon frame)"}
-      - {with: "veracrisols", page: "128", by: "acid and aluminic (later release)"}
+      - {with: "veracrisols", page: "128", by: "acid and aluminic (veracrisols.yaml)"}
       - {with: "calcosols, calcisols", page: "116", by: "an Ach excludes the calcium and magnesium GER (side test)"}
     tests:
       all_of:

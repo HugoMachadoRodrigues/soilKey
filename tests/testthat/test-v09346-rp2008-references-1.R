@@ -108,9 +108,9 @@ test_that("the catalogue has 34 GER and 110 references, the 29 of these nine GER
                                         "eeeaauuoiic", gsub("\u00e6", "ae", r$name)))
     expect_identical(r$code, slug, info = r$code)
   }
-  # every unimplemented GER has a signpost (0.9.351: six left)
+  # every unimplemented GER has a signpost (0.9.352: none is left)
   later <- Filter(function(g) !isTRUE(g$implemented), rules$ger)
-  expect_length(later, 6L)
+  expect_length(later, 0L)
   expect_true(all(vapply(later, function(g) !is.null(g$signpost), NA)))
   # the tolerance table of p. 64
   tab <- .tolerance_table(rules$tolerances)
@@ -374,17 +374,17 @@ test_that("the doubles of these chapters, in the book's order", {
   # two references outside a listed pair: one in the name, the other a candidate
   r <- .rp46_cl(.rp46_ex("calcarisols"))
   expect_false(any(r$candidates$double_with[r$candidates$code == "rendosols"] != ""))
-  # the pairs with references of later releases wait for them (0.9.351:
-  # only the thalassosols are left among the pairs of the book)
+  # the pairs with references of later releases waited for them (0.9.352:
+  # every pair of the book is written, test-v09352)
   later <- Filter(function(d) identical(d$status, "later"), .rp_rules()$doubles)
-  expect_gte(length(later), 1L)
+  expect_length(later, 0L)
 })
 
 test_that("nothing attaches: [non rattach\u00e9] with the three nearest references", {
   skip_on_cran()
   # 0.9.349: A-E-BT is a luvisol typique (test-v09349); 0.9.351: A-E-BP a
-  # podzosol meuble (test-v09351); a V under an A with no clay recorded
-  # waits for the vertisols
+  # podzosol meuble (test-v09351); a V under an A with no SV is no vertisol
+  # (0.9.352, test-v09352)
   p <- .rp46_mk(list(designation = c("A", "V", "C"), top_cm = c(0, 20, 100), bottom_cm = c(20, 100, 140),
                      oc_pct = c(2, 0.5, 0.2), bs_pct = c(90, 95, 100), ph_h2o = 7.5),
                 site = list(lat = 46, elevation_m = 200))
@@ -396,13 +396,11 @@ test_that("nothing attaches: [non rattach\u00e9] with the three nearest referenc
   expect_identical(nrow(near), 3L)
   expect_true(all(near$degree == "fail" & nzchar(near$failed)))
   expect_true(all(diff(near$n_failed) >= 0))
-  # the vertisols are not implemented yet: an undecided candidate, said so
-  lu <- r$candidates[r$candidates$code == "vertisols", ]
-  expect_identical(lu$degree, "undecided")
-  expect_false(lu$implemented)
-  expect_match(lu$undecided_by, "not implemented yet", fixed = TRUE)
-  expect_true("references:vertisols" %in% r$provisional_because)
-  expect_true(any(grepl("not implemented yet", r$warnings, fixed = TRUE)))
+  # every GER is implemented since 0.9.352: no candidate is a signpost
+  expect_true(all(r$candidates$implemented))
+  expect_false(any(grepl("not implemented yet", r$warnings, fixed = TRUE)))
+  lv <- Filter(function(s) s$code == "lithovertisols", r$trace$references)[[1L]]
+  expect_identical(lv$degree, "fail")
   expect_true(any(grepl("intergrade", r$warnings, fixed = TRUE)))
 })
 
@@ -414,15 +412,16 @@ test_that("a GER of a later release makes the name provisional only when it rank
                      oc_pct = c(3, 0.8, 1, 0.3), bs_pct = c(70, 75, 60, 60), ph_h2o = 6))
   r <- .rp46_cl(p)
   expect_false("podzosols" %in% r$candidates$code)
-  expect_identical(r$candidates$degree[r$candidates$code == "brunisols_eutriques"], "fail")
+  br <- Filter(function(s) s$code == "brunisols_eutriques", r$trace$references)[[1L]]
+  expect_identical(br$degree, "fail")
   # a chernosol with a BTh: the luvisols (11b) rank after the chernosols
   # (7c); 0.9.349 tests their references (test-v09349)
   r <- .rp46_cl(.rp46_ex("chernosols_melanoluviques"))
   expect_identical(r$name, "chernosol m\u00e9lanoluvique")
   expect_identical(r$provisional_because, character(0))
-  # a r\u00e9gosol signpost (M within 10 cm) ranks first (entry 1): provisional
+  # an M within 10 cm: the r\u00e9gosols (entry 1), implemented since 0.9.352
   r <- .rp46_cl(.rp46_mk(list(designation = c("A", "M"), top_cm = c(0, 6), bottom_cm = c(6, 60))))
-  expect_true("references:regosols" %in% r$provisional_because)
+  expect_identical(r$name, "r\u00e9gosol")
   # g within 50 cm under a brunisol: 0.9.351 tests the redoxisols (test-v09351)
   r <- .rp46_cl(.rp46_edit(.rp46_ex("brunisols_eutriques"), 2, designation = "Sg"))
   expect_identical(r$name, "r\u00e9doxisol")
@@ -501,6 +500,7 @@ test_that("the readings of this release are Hugo's decisions; none waits for con
   # 0.9.349 adds its readings, confirmed on 2026-11-04 (test-v09349); only
   # none waits for confirmation (0.9.351 confirmed on 2026-11-04, test-v09351)
   tp <- vapply(rd, `[[`, "", "topic")
+  # none waits for Hugo's word (0.9.352 confirmed on 2026-11-04, test-v09352)
   expect_length(tp[grepl("to confirm", txt, fixed = TRUE)], 0L)
   # the carbon of a layer over its whole depth: a single Ach 0-45 cm is clinohumic
   p <- .rp46_mk(list(designation = c("Ach", "Ck"), top_cm = c(0, 45), bottom_cm = c(45, 120), oc_pct = c(3, 0.4)))
