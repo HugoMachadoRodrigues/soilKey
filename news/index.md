@@ -1,5 +1,62 @@
 # Changelog
 
+## soilKey 0.9.350 (2026-11-04)
+
+### France: the FE of the ferruginosols on the data
+
+On the data route the FE horizon of the ferruginosols was read as a BT
+whenever a clay increase over the A let soilKey’s
+[`argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)
+stand in for clay films that were not recorded, so ferruginous tropical
+profiles described without designations went to the fersialsols or the
+luvisols. On the notation route nothing changes.
+
+- **FE against BT** (pp. 17, 170-171). In the intertropical domain the
+  illuviation cutans separate the zones of clay illuviation from those
+  of weathering, and the A over an FE is depleted of clay by sheet
+  runoff. Recorded clay films decide: common or many a BT, even in a
+  ferruginous context, none or few no BT; a BT mark of another notation
+  (Bt, B2t) keeps the BT. With the clay films not recorded, a layer that
+  holds FE is no BT at 5YR or redder (outside the BT colours of the
+  ferruginosols, 10YR to 7.5YR) and the fixed order goes on (an FE, or
+  an F tested before it); it stays undecided between FE and BT at 7.5YR,
+  when the FE holds only within the tolerance of p. 64, or when the FE
+  itself is undecided. A layer under an FE is a BT by
+  [`argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)
+  only with more clay than the FE directly above it: the BT is more
+  clayey than the A, E, S or C of the solum (p. 17), and the increase of
+  the FE over the depleted A is not its own (Hugo’s decision 4); the
+  BTss reads the BT above it the same way. With the domain not recorded
+  nothing changes.
+- **FS against a kaolinitic clay** (pp. 150, 171, 179). In the domain a
+  CEC of 16 cmol+/kg of clay or less, the upper bound of the ferrallitic
+  F, is no FS when no clay mineralogy is recorded (a recorded smectite
+  or other 2:1 clay keeps the FS): the BT under an FE stays the BT of
+  the ferruginosols instead of an FSt.
+- **The field route of the FS** (pp. 171, 179; Hugo’s decision 3,
+  everywhere). With no FFE measured an FS needs an angular blocky (or
+  cubic) structure: of strong grade it makes the FS, of moderate grade
+  the FS imperfect (the fersialsol attaches as imperfect); a recorded
+  subangular, prismatic, granular or massive structure, or a weak grade,
+  is no FS by the field route, and the grade or the angularity not
+  recorded leaves it undecided. With the FFE measured the structure is
+  read as before.
+- Outside the intertropical domain only the field route of the FS
+  changes, and none of the probes of parts 4 to 6 moves. The four
+  ferruginosol probes of part 6 now attach (meubles, semiluviques twice,
+  luviques) and the book’s sequences of pp. 173-174 written as data
+  attach to their references; the tropical fersialsols, luvisols and
+  ferrallitisols of the twins keep theirs. Every other classification is
+  unchanged (the fixtures of the other systems byte-identical).
+
+#### Readings confirmed (2026-11-04)
+
+Hugo confirmed the two readings of this release with the amendments of
+its review (the BT mark of another notation, the FE within the
+tolerance, the clay mineralogy before the CEC), and decided the field
+route of the FS and the clay increase of a BT under an FE; four entries
+of `readings.yaml` record them.
+
 ## soilKey 0.9.349 (2026-11-04)
 
 ### France: the Référentiel pédologique 2008 attaches 18 more references
