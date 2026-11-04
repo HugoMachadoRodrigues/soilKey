@@ -1,0 +1,80 @@
+# The labels of the Référentiel pédologique 1995 that the RP 2008 removed
+# (AFES; Baize D., Girard M.-C. coord.; Éditions Quæ, 2009; the list of
+# p. VII), with the names of 2008 the book gives for such solums. For
+# benchmarks: rp2008_from_label() reads a label of a French dataset, most of
+# which predate 2008, as the references of 2008 (Hugo's decision Q1). A
+# reference of 1995 that keeps its name in 2008 needs no row: it is read as
+# the 2008 reference. Never used by classify_rp2008().
+#
+#   label       the reference of 1995, plural, as p. VII prints it
+#   rp2008      the names of 2008 the solums take, any of them:
+#     name        as the book writes it, in lower case
+#     references  the codes of the references (several: any of them)
+#     ger         the group of references, when no one reference is named
+#     qualifiers  the qualifiers of the name, as printed
+#     note        soilKey's English note
+#   page        printed pages: p. VII and the page that names the 2008 solums
+#   reading     true where the destination is soilKey's reading, not written
+#               by the book (readings.yaml, "The labels of the RP 1995")
+
+edition: "Référentiel pédologique 2008, p. VII (the references removed since the RP 1995)"
+
+labels:
+  - label: "pseudo-luvisols"
+    rp2008:
+      - {name: "brunisols eutriques bilithiques, pseudoluviques", references: [brunisols_eutriques], qualifiers: ["bilithiques", "pseudoluviques"]}
+      - {name: "brunisols dystriques bilithiques, pseudoluviques", references: [brunisols_dystriques], qualifiers: ["bilithiques", "pseudoluviques"]}
+    page: "VII, 108, 228"
+  - label: "brunisols saturés"
+    rp2008:
+      - {name: "brunisols eutriques saturés", references: [brunisols_eutriques], qualifiers: ["saturés"]}
+    page: "VII, 104"
+  - label: "brunisols mésosaturés"
+    rp2008:
+      - {name: "brunisols eutriques mésosaturés", references: [brunisols_eutriques], qualifiers: ["mésosaturés"]}
+    page: "VII, 104"
+  - label: "brunisols oligo-saturés"
+    rp2008:
+      - {name: "brunisols dystriques oligosaturés", references: [brunisols_dystriques], qualifiers: ["oligosaturés"]}
+    page: "VII, 51, 104"
+    reading: true
+  - label: "brunisols resaturés"
+    rp2008:
+      - {name: "brunisols eutriques resaturés", references: [brunisols_eutriques], qualifiers: ["resaturés"]}
+    page: "VII, 104"
+  - label: "peyrosols cailloutiques"
+    rp2008:
+      - {name: "peyrosols cailloutiques", references: [peyrosols], qualifiers: ["cailloutiques"]}
+    page: "VII, 251"
+  - label: "peyrosols pierriques"
+    rp2008:
+      - {name: "peyrosols pierriques", references: [peyrosols], qualifiers: ["pierriques"]}
+    page: "VII, 251"
+  - label: "histosols recouverts"
+    rp2008:
+      - {name: "histosols recouverts par", ger: histosols, references: [histosols_fibriques, histosols_mesiques, histosols_sapriques, histosols_composites, histosols_leptiques], qualifiers: ["recouverts par"]}
+    page: "VII, 45, 208"
+    reading: true
+  - label: "histosols flottants"
+    rp2008:
+      - {name: "histosols fibriques flottants", references: [histosols_fibriques], qualifiers: ["flottants"]}
+    page: "VII, 37, 208"
+  - label: "réductisols dupliques"
+    rp2008:
+      - {name: "rédoxisols réductiques", references: [redoxisols], qualifiers: ["réductiques"]}
+      - {name: "rédoxisols à horizon réductique de profondeur", references: [redoxisols], qualifiers: ["à horizon réductique de profondeur"]}
+    page: "VII, 284"
+  - label: "organosols tangeliques"
+    rp2008:
+      - {name: "organosols holorganiques à tangel", references: [organosols_holorganiques], qualifiers: ["à tangel"]}
+    page: "VII, 239"
+  - label: "aluandosols humiques"
+    rp2008:
+      - {name: "aluandosols", references: [aluandosols_hapliques, aluandosols_perhydriques], note: "the 2008 qualifiers of a humiferous andosol are humique-fulvique and humique-mélanique (the latter for the silandosols only), p. 82"}
+    page: "VII, 82"
+    reading: true
+  - label: "silandosols humiques"
+    rp2008:
+      - {name: "silandosols", references: [silandosols_eutriques, silandosols_dystriques, silandosols_perhydriques], note: "the 2008 qualifiers of a humiferous andosol are humique-fulvique and humique-mélanique (the latter for the silandosols only), p. 82"}
+    page: "VII, 82"
+    reading: true

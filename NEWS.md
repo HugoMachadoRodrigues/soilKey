@@ -41,6 +41,23 @@ The first part of the South African soil classification of 1991 (Soil Classifica
 
 Hugo decided the nine readings of this part with the fixes of its review: soilKey's two-letter short forms (ot, re, ye ...) are not read until checked on a survey sheet; calcrete by its adjective (alone undecided between the soft and the hardpan carbonate horizon); Cr hints at the saprolite, the wet materials, the G horizon and the lithocutanic B; the other six (recognition by name, the gleycutanic B by position, Afrikaans names, words of no diagnostic horizon, the master letter, the declared values) as recommended. `inst/rules/za1991/readings.yaml` records them with the four decisions of 2026-11-04 this part applies.
 
+# soilKey 0.9.354 (2026-11-04)
+
+## France: the correspondence tables of the Référentiel pédologique 2008
+
+The annexes of the RP 2008 that correlate it with other systems, and the labels of the RP of 1995, are shipped as data (Hugo's decision Q1): codes and names as the book prints them, with the page, its doubts ("?") kept as a flag and its slips noted; no sentence of the book. They are notes for display and benchmarks: no classifier reads them, and every classification is unchanged (the fixtures of all systems byte-identical).
+
+* **Annex 5, the WRB 2006** (pp. 378-392; `inst/rules/rp2008/crosswalk_wrb2006.yaml`). The 110 references with their WRB 2006 name (the brunisols eutriques in two rows by their saturation, the lithosols stricts in a row of their own), the 12 reference horizons beside a WRB 2006 diagnostic horizon or FAO letter, the qualifiers (65 rows for the 64 of the book: the row of the calcium chapter, p. 380, holds for that chapter only) and the 15 "faux amis". The WRB is the 2006 edition the book cites, not soilKey's WRB 2022.
+* **Annex 6, the CPCS 1967 horizons** (p. 393; `crosswalk_cpcs_horizons.yaml`). The table row for row, exported as data; the notation reader keeps its own copy in `horizons.yaml` for the hints of Q9, and a test keeps the two equal. BTfe, FSj and the Ha under the A1 are flagged as slips.
+* **Annex 7, the CPCS 1967 categories** (pp. 394-398; `crosswalk_cpcs_classes.yaml`). Each row keyed by the `cpcs1967` code of its category (class, subclass, group or subgroup), its RP entries resolved to reference codes or groups, with their qualifiers, the double attachments and the "???" of the categories with no equivalent; the 14 categories the book calls new.
+* **The labels of the RP 1995** (p. VII; `legacy_rp1995.yaml`). The 13 references removed in 2008 and the names of 2008 the book gives for such solums.
+* `rp2008_crosswalk()` returns each table as a data frame; `rp2008_from_label()` reads labels of French datasets (a reference, a type, a double, a label of 1995) as the references of 2008, for benchmarks.
+* The report and the Pro app show the WRB 2006 names of the references of an RP result (Annex 5) and the RP equivalents of a CPCS result (Annex 7), as notes.
+
+### Readings confirmed (2026-11-04)
+
+Hugo confirmed the readings of this release, with the points of its review: all the tables of Annex 5 shipped; the table of Annex 6 as data beside the reader's copy, FE, OX and F of row B intertropical and BTfe, FSj and the Ha under the A1 flagged as slips; a CPCS result shown the row of the most specific category of its chain; the entries of Annex 7 that name no reference read through their chapter (fersialsols calcaires and saturés as the carbonatés and calciques, luvisols-rédoxisols as the double of any luvisol reference); the brunisols oligo-saturés read as dystriques, the histosols recouverts and the humiferous andosols of 1995 as any reference of their group. Entries of `readings.yaml` record them.
+
 # soilKey 0.9.353 (2026-11-04)
 
 ## France: the humus forms of the Référentiel pédologique 2008 (Annex 1)

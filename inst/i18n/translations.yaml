@@ -685,6 +685,9 @@ en:
   "classify.level_species": "species"
   "classify.levels_species": "Species"
   "classify.kidpr_1977": "1977 analogue (a note, not a class)"
+  # v0.9.354 -- the correspondences of the Referentiel pedologique 2008 (Annexes 5 and 7)
+  "classify.rp_wrb2006": "WRB 2006 (Annex 5 of the RP 2008; a note, not soilKey's WRB 2022):"
+  "classify.rp_cpcs_equivalents": "RP 2008 equivalents (Annex 7; a note, not a class):"
   "classify.provisional": "Provisional:"
   "classify.provisional_summary": "the key could not decide %d class(es) tested before this one."
   "classify.provisional_intro": "The name holds if none of these applies:"
@@ -1496,6 +1499,8 @@ pt:
   "classify.level_species": "espécie"
   "classify.levels_species": "Espécies"
   "classify.kidpr_1977": "Análogo de 1977 (uma nota, não uma classe)"
+  "classify.rp_wrb2006": "WRB 2006 (anexo 5 do RP 2008; uma nota, não o WRB 2022 do soilKey):"
+  "classify.rp_cpcs_equivalents": "Equivalentes no RP 2008 (anexo 7; uma nota, não uma classe):"
   "classify.provisional": "Provisório:"
   "classify.provisional_summary": "a chave não pôde decidir %d classe(s) testada(s) antes desta."
   "classify.provisional_intro": "O nome vale se nenhuma destas se aplicar:"

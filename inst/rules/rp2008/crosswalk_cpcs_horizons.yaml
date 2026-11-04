@@ -1,0 +1,57 @@
+# Annex 6 of the Référentiel pédologique 2008 (AFES; Baize D., Girard M.-C.
+# coord.; Éditions Quæ, 2009), p. 393: the horizons of the CPCS 1967 and the
+# RP 2008 codes the book gives for each. The table as printed, row for row,
+# for rp2008_crosswalk("cpcs_horizons"): exported as data (Hugo's decision
+# Q1).
+#
+# The notation reader keeps its own copy of the table, with soilKey's
+# matching of the CPCS symbols, in horizons.yaml (annex6): there the codes
+# are hints for the identification of the horizons on the data, never the RP
+# code by themselves (Q9). A test checks that the two copies give the same
+# codes for every row.
+#
+#   cpcs          the CPCS symbol as soilKey writes it (the subscripts of the
+#                 book, A₀₀, A₁, B₂fe, written A00, A1, B2fe); -g is the
+#                 suffix written on any horizon
+#   rp            the RP 2008 codes of the row, in the book's order ("ou"
+#                 between them)
+#   intertropical the codes the row adds in the intertropical domain only
+#   after_1967    true for the symbols the book marks "*": not in the CPCS
+#                 1967, sometimes used after it
+#   slips         codes of the row that are not RP 2008 codes or contradict
+#                 its definitions (plan section 9, row 29): kept as printed,
+#                 flagged, never read as a code
+#   note          soilKey's English note
+
+edition: "Référentiel pédologique 2008, Annex 6 (p. 393)"
+page: 393
+
+rows:
+  - {cpcs: "A00",   rp: [OL]}
+  - {cpcs: "A0F",   rp: [OF, Hf, Hm]}
+  - {cpcs: "A0H",   rp: [OH, Hs]}
+  - {cpcs: "A1",    rp: [A, Ah, Aca, Ach, Aci, Ado, Ae, Alu, An, And, Aso, Av, Avi, Ha, Eh, Js], slips: [Ha], note: "Ha is a drained histic horizon, not an A: a slip of the table"}
+  - {cpcs: "Ap",    rp: [L, LA, LH, LO, LE, LS, LBT]}
+  - {cpcs: "A2",    rp: [E, Ea]}
+  - {cpcs: "A2g",   rp: [Eg, Ea]}
+  - {cpcs: "ACs",   rp: [Ys]}
+  - {cpcs: "B",     rp: [S, BT, FS, SV, V], intertropical: [FE, OX, F]}
+  - {cpcs: "BCn",   rp: [BTfe, Fe], slips: [BTfe], note: "the RP 2008 writes no -fe suffix (it writes -cn or -s)"}
+  - {cpcs: "BCs",   rp: [Yp]}
+  - {cpcs: "Bs",    rp: [BPs], after_1967: true}
+  - {cpcs: "Bt",    rp: [BT, FSt]}
+  - {cpcs: "Btg",   rp: [BTg]}
+  - {cpcs: "Btgx",  rp: [BTgx]}
+  - {cpcs: "Btgd",  rp: [BTgd], after_1967: true}
+  - {cpcs: "Bw",    rp: [S, Sp, Sca, Sci, Sa, Na, Snd, Slu, Sal, Jp, SV, FS, FSj], after_1967: true, slips: [FSj], note: "Sa and Na are the salic and sodic horizons of the RP, not the CPCS symbol of salts; FSj contradicts p. 180 (no -j on the FS)"}
+  - {cpcs: "B2fe",  rp: [BPs, FE], note: "FE is the ferruginous horizon of 2008, not the ferric FE of the RP of 1995"}
+  - {cpcs: "B2h",   rp: [BPh]}
+  - {cpcs: "(B)",   rp: [S, Sa, Sal, Sca, Sci, Slu, Sn, Snd, Sp, SV, FS, FSj, NaS, Jp], slips: [FSj], note: "FSj contradicts p. 180 (no -j on the FS)"}
+  - {cpcs: "(B)v",  rp: [V, Sp, SV], after_1967: true}
+  - {cpcs: "(B)Ca", rp: [Sk]}
+  - {cpcs: "C",     rp: [C]}
+  - {cpcs: "Cca",   rp: [Ck, K, Kc, Km], note: "the CPCS Cca is a carbonate accumulation; the RP Cca is a calcareous C"}
+  - {cpcs: "CCs",   rp: [Yp]}
+  - {cpcs: "R",     rp: [M, R, D]}
+  - {cpcs: "G",     rp: [Go, Gr]}
+  - {cpcs: "-g",    rp: ["-g", g]}
