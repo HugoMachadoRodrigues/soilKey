@@ -308,7 +308,18 @@ horizon_column_spec <- function() {
     pyrophosphate_index           = "numeric",   # pyrophosphate index of a peat (Kaila); RP Hf, Hm, Hs, Ha
     s_total_pct                   = "numeric",   # total sulfur, %; RP TH (>= 0.75), U
     nodules_wt_pct                = "numeric",   # metal-oxide nodules, % by weight; RP ND (> 60), -nod (30-60)
-    lateral_cover_pct             = "numeric"    # share of the ground the horizon covers, %; RP Annex 1 O horizons (hemimoder OH < 10)
+    lateral_cover_pct             = "numeric",   # share of the ground the horizon covers, %; RP Annex 1 O horizons (hemimoder OH < 10)
+    # ---- v0.9.355: the South African soil classification of 1991 ----
+    diagnostic_za                 = "character", # name of the 1991 diagnostic horizon or material (orthic A, red apedal B ...); the notation reader
+    plasticity_index              = "numeric",   # Atterberg plasticity index; vertic A (> 32 cup, > 36 cone), melanic A
+    liquid_limit_method           = "character", # liquid limit method: casagrande_cup / bs_cone; picks 32 or 36
+    bedrock_pct                   = "numeric",   # rock in place (fresh or partly weathered), % by volume; hard lithocutanic B or saprolite (> 70)
+    coatings_hue_moist            = "character", # moist Munsell hue of the coatings on ped faces; black cutans (Estcourt families)
+    coatings_chroma_moist         = "numeric",   # moist Munsell chroma of the coatings on ped faces; black cutans (<= 1)
+    coatings_continuity           = "character", # continuity of the coatings: continuous / discontinuous / patchy; black cutans
+    recent_deposit                = "logical",   # a recent aeolian, alluvial or man-made deposit over the soil; burial rule (500 mm)
+    cross_bedding                 = "logical",   # cross bedding in the layer; regic sand (allowed), E horizon (not allowed)
+    sand_grade                    = "character"  # grade of the sand: fine / medium / coarse; the texture in the South African name
   )
 }
 

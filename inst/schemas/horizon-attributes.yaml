@@ -1184,3 +1184,60 @@ attributes:
     systems: [rp2008]
     min: 0
     max: 100
+  - name: diagnostic_za
+    section: "South African system (1991)"
+    unit: "-"
+    description: "Name of the diagnostic horizon or material of the South African soil classification of 1991 (Soil Classification Working Group, 1991) that the surveyor gave the layer, as South African descriptions write it beside the master horizon: one of the 5 topsoil horizons (organic O, humic A, vertic A, melanic A, orthic A) or the 25 subsoil horizons and materials (E horizon, G horizon, red apedal B, yellow-brown apedal B, red structured B, neocutanic B, neocarbonate B, pedocutanic B, prismacutanic B, lithocutanic B, podzol B, placic pan, soft plinthic B, hard plinthic B, soft carbonate horizon, hardpan carbonate horizon, dorbank, saprolite, hard rock, stratified alluvium, regic sand, man-made soil deposit, unconsolidated material with or without signs of wetness, unspecified material with signs of wetness), in any case, with or without 'horizon', E or G alone, or soilKey's token (OA, RAB, SPL ...); 'none' or 'non-diagnostic' for a layer that holds none. A negated name (not, no, without, absent) is not read; one written with doubt (?, possibly, probably) is a candidate only; calcrete is read by its adjective (hardpan calcrete the hardpan carbonate horizon, powder or nodular calcrete the soft carbonate horizon, calcrete alone undecided between them). A name of 1977 is read as its 1991 equivalent, flagged (ferrihumic B: podzol B; gleycutanic B: G horizon under an A or E, unspecified material with signs of wetness under a B; calcareous apedal or neocutanic B: neocarbonate B). The recorded name gives the horizon, the recorded data its properties; not recorded, the names written in designation are read, and the identification on the data decides (Hugo's decision Q5)."
+    systems: [za1991]
+  - name: plasticity_index
+    section: "South African system (1991)"
+    unit: "%"
+    description: "Plasticity index (Atterberg: liquid limit minus plastic limit, % water). South African soil classification of 1991: a vertic A has a plasticity index over 32 with the liquid limit by the South African Casagrande cup, over 36 by the British Standard cone; a melanic A 32 or less (36 or less); the method is liquid_limit_method. Not the field class plasticity. Not recorded: the slickensides decide vertic against melanic, flagged (Hugo's decision Q17)."
+    systems: [za1991]
+    min: 0
+  - name: liquid_limit_method
+    section: "South African system (1991)"
+    unit: "-"
+    description: "Method of the liquid limit behind plasticity_index: casagrande_cup (the South African standard) or bs_cone (British Standard cone). South African soil classification of 1991: it picks the vertic A limit, 32 (cup) or 36 (cone). Not recorded: the Casagrande cup, flagged."
+    systems: [za1991]
+    allowed: ["casagrande_cup", "bs_cone"]
+  - name: bedrock_pct
+    section: "South African system (1991)"
+    unit: "% (vol)"
+    description: "Rock in place, fresh or partly weathered, % by volume of the layer. South African soil classification of 1991, family criterion 14: a hard lithocutanic B or saprolite has more than 70 % rock with a hard consistence dry, moist and wet. Not recorded: coarse_fragments_pct or saprolite_pct over 70 with rupture_resistance hard or harder, flagged, the consistence read in the state recorded (Hugo's decision Q19)."
+    systems: [za1991]
+    min: 0
+    max: 100
+  - name: coatings_hue_moist
+    section: "South African system (1991)"
+    unit: "Munsell"
+    description: "Moist Munsell hue of the clay or clay-organic coatings on ped faces (with coatings_value_moist and coatings_chroma_moist). South African soil classification of 1991: the continuous black cutans of the Estcourt families (family criterion 12) have a moist value of 2 or less and a chroma of 1 or less, or a neutral hue N; also the dark cutans of a wet prismacutanic B."
+    systems: [za1991]
+  - name: coatings_chroma_moist
+    section: "South African system (1991)"
+    unit: "Munsell"
+    description: "Moist Munsell chroma of the clay or clay-organic coatings on ped faces. South African soil classification of 1991: the black cutans of family criterion 12 have chroma 1 or less. Not recorded: coatings_value_moist alone, the chroma undecided."
+    systems: [za1991]
+    min: 0
+  - name: coatings_continuity
+    section: "South African system (1991)"
+    unit: "-"
+    description: "Continuity of the coatings on ped faces: continuous, discontinuous or patchy. South African soil classification of 1991: the black cutans of the Estcourt families (family criterion 12) are continuous on the vertical ped faces. Not recorded: clay_films_amount many, flagged."
+    systems: [za1991]
+    allowed: ["continuous", "discontinuous", "patchy"]
+  - name: recent_deposit
+    section: "South African system (1991)"
+    unit: "-"
+    description: "TRUE when the layer is a recent aeolian, alluvial or man-made deposit over the soil. South African soil classification of 1991, general rules: a recent deposit under 500 mm thick over a classifiable buried soil is set aside and the buried soil classified; 500 mm or thicker, or over material that is not classifiable soil, the deposit is classified. Not recorded: layer_origin (aeolian, fluvic, colluvial, transported), anthropic_material, or a buried horizon marked (suffix b) directly below, flagged; none of them recorded, not a recent deposit (Hugo's decision Q8)."
+    systems: [za1991]
+  - name: cross_bedding
+    section: "South African system (1991)"
+    unit: "-"
+    description: "TRUE when the layer shows cross bedding. South African soil classification of 1991: regic sand may be cross-bedded, an E horizon may not, and cross-bedded aeolian dune sands are regic sand, not an apedal B. Not recorded: stratification_pattern and an aeolian layer_origin, else absent."
+    systems: [za1991]
+  - name: sand_grade
+    section: "South African system (1991)"
+    unit: "-"
+    description: "Grade of the sand of the layer: fine, medium or coarse (the sand grades of 1977, which the 1991 system keeps). South African soil classification of 1991: added to the texture class of the A in the name of a soil (Hu1200 medium sandy loam). Read only for the name; not recorded, the texture class without its grade (Hugo's decision Q23)."
+    systems: [za1991]
+    allowed: ["fine", "medium", "coarse"]

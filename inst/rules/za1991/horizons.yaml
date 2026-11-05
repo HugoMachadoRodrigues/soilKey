@@ -1,0 +1,466 @@
+# The diagnostic horizons and materials of the South African soil
+# classification of 1991 (Soil Classification Working Group, 1991. Soil
+# classification: a taxonomic system for South Africa. Memoirs on the
+# Agricultural Natural Resources of South Africa No. 15. Department of
+# Agricultural Development, Pretoria): the 5 topsoil horizons and the 25
+# subsoil horizons and materials the general rules count, with their names,
+# soilKey's tokens, E and G alone, the names of 1977, other words for the hard
+# and carbonate horizons and the hints of the
+# FAO letters. Read by the notation reader (R/designation-za.R); the tests on
+# the data, the forms and the families come later.
+#
+# The book itself is not available. Names are as the open pages print them
+# (the AGIS key and form pages K, the topsoil pages T, the general rules G,
+# the preface of the second edition P) and as SASRI (1999, S) and van
+# Huyssteen (2020, V) write them; name_en is soilKey's English gloss. The
+# criteria are not reproduced. Pages: K = PDF page of the AGIS pages, T = the
+# topsoil page, S and V = printed pages.
+#
+# horizons    one entry per diagnostic horizon or material:
+#   token     soilKey's internal code (capitals; the formula parser reads it),
+#             shown in brackets beside the printed name
+#   name      the name as printed
+#   name_en   soilKey's English gloss
+#   group     topsoil (the 5 of G) or subsoil (the 25 of G)
+#   kind      horizon or material
+#   master    the master horizon letter the name usually goes with (P):
+#             documentation, and a note when a designation disagrees
+#   detection distinctive (only the South African system writes the name:
+#             it recognises a profile written in it) or generic (another
+#             notation or plain English also writes it: read only in a
+#             profile declared or recognised)
+#   variants  other writings of the name read as it (as K, S or V print
+#             them, or the name without its master letter)
+#   generic_variants  writings that plain English or another system also
+#             uses (humic, vertic, melanic): read as the name, but they never
+#             recognise a profile by themselves
+#   short     E and G alone, read as the E and G horizons only in
+#             diagnostic_za. soilKey's two-letter short forms (ot, re, ye ...)
+#             are not read until checked on a survey sheet (Hugo, 2026-11-04);
+#             soilKey's tokens (OA, RAB ...) are read in diagnostic_za too
+#   in_1977   what the preface (P) says of the horizon in the first edition
+#   pages     where the open sources define or describe it
+
+edition: "Soil classification: a taxonomic system for South Africa (1991)"
+edition_id: za1991
+
+horizons:
+  # --- the topsoil horizons (G; T; S 30-31; V 15-19) ------------------------
+  - token: OO
+    name: "Organic O"
+    name_en: "organic O horizon (peaty topsoil, saturated for long periods)"
+    group: topsoil
+    kind: horizon
+    master: O
+    detection: distinctive
+    variants: ["organic O horizon"]
+    short: []
+    in_1977: "organic O; the thickness required fell from 300 mm to 200 mm in 1991 (P)"
+    pages: "T-organic; S 30; V 15"
+  - token: HA
+    name: "Humic A"
+    name_en: "humic A horizon (organic-rich topsoil of low base status)"
+    group: topsoil
+    kind: horizon
+    master: A
+    detection: distinctive
+    variants: ["humic A horizon"]
+    generic_variants: ["humic"]
+    short: []
+    in_1977: "humic A; widened in 1991 to thin as well as thick low base status A horizons with more than 1.8 % OC (P)"
+    pages: "T-humic; S 30; V 16"
+  - token: VA
+    name: "Vertic A"
+    name_en: "vertic A horizon (swelling and shrinking clay topsoil)"
+    group: topsoil
+    kind: horizon
+    master: A
+    detection: distinctive
+    variants: ["vertic A horizon"]
+    generic_variants: ["vertic"]
+    short: []
+    in_1977: "vertic A; the plasticity index separates it from non-vertic A horizons since 1991 (P)"
+    pages: "T-vertic; S 30; V 17"
+  - token: MA
+    name: "Melanic A"
+    name_en: "melanic A horizon (dark topsoil of high base status)"
+    group: topsoil
+    kind: horizon
+    master: A
+    detection: distinctive
+    variants: ["melanic A horizon"]
+    generic_variants: ["melanic"]
+    short: []
+    in_1977: "melanic A; its boundary with the humic A became a sliding scale with organic carbon in 1991 (P)"
+    pages: "T-melanic; S 30; V 17-18"
+  - token: OA
+    name: "Orthic A"
+    name_en: "orthic A horizon (a topsoil that is none of the other four)"
+    group: topsoil
+    kind: horizon
+    master: A
+    detection: distinctive
+    variants: ["orthic A horizon", "orthic"]
+    short: []
+    in_1977: "orthic A (the name is unchanged)"
+    pages: "T-orthic; S 31; V 19"
+  # --- the apedal and structured B horizons (S 31-32; V 21-29) ---------------
+  - token: RAB
+    name: "Red apedal B"
+    name_en: "red apedal B horizon (uniformly red, structure weaker than moderate)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["red apedal B horizon", "red apedal"]
+    short: []
+    in_1977: "red apedal B; the calcareous ones went to the neocarbonate B in 1991, and red cross-bedded aeolian dune sand to the regic sand (P)"
+    pages: "S 32; V 21-23"
+  - token: YAB
+    name: "Yellow-brown apedal B"
+    name_en: "yellow-brown apedal B horizon (uniformly yellow to yellow-brown, structure weaker than moderate)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["yellow-brown apedal B horizon", "yellow-brown apedal"]
+    short: []
+    in_1977: "yellow-brown apedal B; the calcareous ones went to the neocarbonate B in 1991, and yellow cross-bedded aeolian dune sand to the regic sand (P)"
+    pages: "S 32; V 21; K 4-5"
+  - token: RSB
+    name: "Red structured B"
+    name_en: "red structured B horizon (red, moderate or strong blocky structure)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["red structured B horizon", "red structured"]
+    short: []
+    in_1977: "red structured B (the name is unchanged)"
+    pages: "S 31; V 24"
+  - token: NCU
+    name: "Neocutanic B"
+    name_en: "neocutanic B horizon (weak structure, cutans or variegated colours, young)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["neocutanic B horizon", "neocutanic"]
+    short: []
+    in_1977: "neocutanic B; the calcareous ones went to the neocarbonate B in 1991 (P)"
+    pages: "S 32; V 21"
+  - token: NCA
+    name: "Neocarbonate B"
+    name_en: "neocarbonate B horizon (an apedal or neocutanic B that effervesces with cold dilute HCl)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["neocarbonate B horizon", "neocarbonate horizon", "neocarbonate"]
+    short: []
+    in_1977: "new in 1991: the calcareous red or yellow-brown apedal B and the calcareous neocutanic B of 1977 (P)"
+    pages: "S 32; V 21; K 1-3 (the key writes 'Neocarbonate horizon')"
+  - token: PCU
+    name: "Pedocutanic B"
+    name_en: "pedocutanic B horizon (moderate or strong blocky structure, cutans on the peds)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["pedocutanic B horizon", "pedocutanic"]
+    short: []
+    in_1977: "pedocutanic B (the name is unchanged)"
+    pages: "S 31; V 28; K 53-55"
+  - token: PRC
+    name: "Prismacutanic B"
+    name_en: "prismacutanic B horizon (prismatic or columnar, abrupt change of texture from above)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["prismacutanic B horizon", "prismacutanic"]
+    short: []
+    in_1977: "prismacutanic B (the name is unchanged)"
+    pages: "S 32; V 27"
+  - token: LCU
+    name: "Lithocutanic B"
+    name_en: "lithocutanic B horizon (soil tongues and cutans in weathering rock)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["lithocutanic B horizon", "lithocutanic"]
+    short: []
+    in_1977: "lithocutanic B; the hard ones are accommodated in the forms since 1991 (P)"
+    pages: "S 31; V 29; FC 14; K 9, 72"
+  # --- the eluvial, wet, podzolic and plinthic horizons (S 31-33; V 19-30) ---
+  - token: E
+    name: "E horizon"
+    name_en: "E horizon (grey eluvial horizon, depleted of colloidal matter)"
+    group: subsoil
+    kind: horizon
+    master: E
+    detection: generic
+    variants: []
+    short: ["E"]
+    in_1977: "E horizon; reserved in 1991 for weathered, colloid-depleted grey horizons, not regic sand (P)"
+    pages: "S 33; V 19; FC 4, 6"
+  - token: G
+    name: "G horizon"
+    name_en: "G horizon (grey, low-chroma gley horizon under an A or E)"
+    group: subsoil
+    kind: horizon
+    master: G
+    detection: generic
+    variants: []
+    short: ["G"]
+    in_1977: "G horizon; widened in 1991 to the gleycutanic B of the Kroonstad form (P)"
+    pages: "S 33; V 20; P; K 10, 19, 27, 77"
+  - token: PZB
+    name: "Podzol B"
+    name_en: "podzol B horizon (illuvial humus and sesquioxides)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["podzol B horizon"]
+    short: []
+    in_1977: "the ferrihumic B of 1977, renamed (P)"
+    pages: "V 30; P; K 23-26, 48-51"
+  - token: PLP
+    name: "Placic pan"
+    name_en: "placic pan (thin iron-cemented pan in or under a podzol B)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: generic
+    variants: []
+    short: []
+    in_1977: "new in 1991 (P)"
+    pages: "V 30-32; P; K 23, 48"
+  - token: SPL
+    name: "Soft plinthic B"
+    name_en: "soft plinthic B horizon (iron and manganese mottles or concretions, more than 10 %, with grey colours)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["soft plinthic B horizon", "soft plinthic"]
+    short: []
+    in_1977: "soft plinthic B (the name is unchanged)"
+    pages: "S 33; V 25; K 33"
+  - token: HPL
+    name: "Hard plinthic B"
+    name_en: "hard plinthic B horizon (indurated iron and manganese oxides, ouklip or ferricrete)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["hard plinthic B horizon", "hard plinthic"]
+    short: []
+    in_1977: "hard plinthic B (Glencoe, Wasbank in 1977); hard plinthite directly under the A went with Mispah in 1977 and has its own form since 1991 (P)"
+    pages: "S 31; V 26; P"
+  - token: UMW
+    name: "Unconsolidated material with signs of wetness"
+    name_en: "unconsolidated material with signs of wetness (grey, reduced, under a podzol or pedocutanic B)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: distinctive
+    variants: []
+    short: []
+    in_1977: "new in 1991 (P)"
+    pages: "S 33; K 24, 49, 53"
+  - token: USW
+    name: "Unspecified material with signs of wetness"
+    name_en: "unspecified material with signs of wetness (grey, reduced, under an apedal, neocutanic or neocarbonate B)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: distinctive
+    variants: []
+    short: []
+    in_1977: "new in 1991; replaces the gleycutanic B of the Pinedene form (P)"
+    pages: "S 33; P"
+  # --- the carbonate, cemented and rock materials (S 31; V 32-34; K 70-73) ---
+  - token: SCH
+    name: "Soft carbonate horizon"
+    name_en: "soft carbonate horizon (unconsolidated, dominated by accumulated carbonate)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["soft carbonate", "soft carbonate B"]
+    short: []
+    in_1977: "new in 1991 (P)"
+    pages: "K 72; V 33; P"
+  - token: HCH
+    name: "Hardpan carbonate horizon"
+    name_en: "hardpan carbonate horizon (consolidated carbonate, hardpan calcrete)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: ["hardpan carbonate", "hardpan carbonate B"]
+    short: []
+    in_1977: "new in 1991; in 1977 a hardpan carbonate went with the hard rock of the Mispah form (P)"
+    pages: "K 72; V 33; P"
+  - token: DOR
+    name: "Dorbank"
+    name_en: "dorbank (silica-cemented pan)"
+    group: subsoil
+    kind: horizon
+    master: B
+    detection: distinctive
+    variants: []
+    short: []
+    in_1977: "new in 1991; in 1977 a dorbank went with the hard rock of the Mispah form (P)"
+    pages: "V 32; K 45, 61, 66, 70; P"
+  - token: SAP
+    name: "Saprolite"
+    name_en: "saprolite (weathering rock that keeps the organisation of the parent rock)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: generic
+    variants: ["diagnostic saprolite"]
+    short: []
+    in_1977: "the diagnostic saprolite is accommodated in the forms since 1991 (P)"
+    pages: "S 31; FC 14; K 26, 51, 55"
+  - token: HRK
+    name: "Hard rock"
+    name_en: "hard rock (continuous rock that a spade cannot cut, even wet; also silcrete)"
+    group: subsoil
+    kind: material
+    master: R
+    detection: generic
+    variants: []
+    short: []
+    in_1977: "hard rock; since 1991 the material of the Mispah form is hard rock or silcrete only (P)"
+    pages: "S 31; K 73; P"
+  # --- the transported and unconsolidated materials (S 32-33; K 38, 74-75) ---
+  - token: SAL
+    name: "Stratified alluvium"
+    name_en: "stratified alluvium (unconsolidated, with alluvial or colluvial stratification)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: generic
+    variants: []
+    short: []
+    in_1977: "stratified alluvium; red alluvium has a place in the Dundee form since 1991 (P)"
+    pages: "S 33; K 74; P"
+  - token: RSA
+    name: "Regic sand"
+    name_en: "regic sand (recent, usually aeolian sand with little development)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: distinctive
+    variants: []
+    short: []
+    in_1977: "regic sand; since 1991 also the red or yellow cross-bedded aeolian dune sands that 1977 read as apedal B (P)"
+    pages: "S 33; K 75; P"
+  - token: MMD
+    name: "Man-made soil deposit"
+    name_en: "man-made soil deposit (soil material deposited by people)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: distinctive
+    variants: ["man-made deposit", "manmade soil deposit"]
+    short: []
+    in_1977: "new in 1991 (P)"
+    pages: "S 33; K 38; P"
+  - token: UMN
+    name: "Unconsolidated material without signs of wetness"
+    name_en: "unconsolidated material without signs of wetness (under a podzol or pedocutanic B)"
+    group: subsoil
+    kind: material
+    master: C
+    detection: distinctive
+    variants: []
+    short: []
+    in_1977: "new in 1991 (P)"
+    pages: "S 32; K 25, 50, 54"
+
+# Other words for the hard and carbonate horizons (S 31; P), read by their
+# adjective (Hugo, 2026-11-04): to one token, or candidates the data decide.
+# Generic: they never recognise a profile by themselves.
+words:
+  - {written: "calcrete", to: [SCH, HCH]}
+  - {written: "hardpan calcrete", to: [HCH]}
+  - {written: "powder calcrete", to: [SCH]}
+  - {written: "powdery calcrete", to: [SCH]}
+  - {written: "nodular calcrete", to: [SCH]}
+  - {written: "ouklip", to: [HPL]}
+  - {written: "ferricrete", to: [HPL]}
+  - {written: "hardpan ferricrete", to: [HPL]}
+  - {written: "nodular ferricrete", to: [SPL, HPL]}
+  - {written: "hard plinthite", to: [HPL]}
+  - {written: "silcrete", to: [HRK]}
+
+# The names of the first edition (1977) that the preface (P) says changed,
+# read to their 1991 equivalent and flagged "1977 name" (Hugo's decision Q5).
+# to: one token, or candidates decided by position (by_position).
+names_1977:
+  - name: "Ferrihumic B"
+    to: [PZB]
+    page: "P"
+  - name: "Gleycutanic B"
+    to: [G, USW]
+    by_position:
+      - {above: [OO, HA, VA, MA, OA, E], to: G, note: "the gleycutanic B of the Kroonstad form, under an A or E"}
+      - {above: [RAB, YAB, NCU, NCA], to: USW, note: "the gleycutanic B of the Pinedene form, under a B"}
+    page: "P"
+  - name: "Calcareous red apedal B"
+    to: [NCA]
+    page: "P"
+  - name: "Calcareous yellow-brown apedal B"
+    to: [NCA]
+    page: "P"
+  - name: "Calcareous neocutanic B"
+    to: [NCA]
+    page: "P"
+
+# Words written in diagnostic_za that record no diagnostic horizon (the
+# layer is read, it simply holds none) and words that record nothing.
+no_diagnostic: ["none", "no diagnostic", "not diagnostic", "non diagnostic", "nondiagnostic", "no subsoil", "no diagnostic horizon", "non diagnostic material"]
+not_recorded: ["na", "n a", "nd", "n d", "not recorded", "unknown", "null", "missing"]
+
+# The FAO (2006) and USDA letters of a designation give hints to the
+# identification on the data, never the 1991 name (Hugo's decision Q5): the
+# master letter, and the suffixes in `with` (all of them written). The most
+# specific rows that match give the hint.
+# A suffix is one of the FAO or USDA letters, ss (slickensides, no hint) or ^
+# (human-transported, written before the master); at most three suffixes, so
+# a word (Bleached, Clay, Hutton, Hu1200) gives none.
+fao_hints:
+  - {master: "O", tokens: [OO]}
+  - {master: "H", tokens: [OO]}
+  - {master: "A", tokens: [OA, HA, VA, MA]}
+  - {master: "E", tokens: [E]}
+  - {master: "B", with: ["t"], tokens: [PCU, PRC, RSB, NCU]}
+  - {master: "B", with: ["w"], tokens: [RAB, YAB, NCU]}
+  - {master: "B", with: ["k"], tokens: [NCA, SCH, HCH]}
+  - {master: "B", with: ["k", "m"], tokens: [HCH]}
+  - {master: "B", with: ["h"], tokens: [PZB]}
+  - {master: "B", with: ["s"], tokens: [PZB]}
+  - {master: "B", with: ["h", "s"], tokens: [PZB]}
+  - {master: "B", with: ["s", "m"], tokens: [SPL, HPL, PLP]}
+  - {master: "B", with: ["v"], tokens: [SPL, HPL, PLP]}
+  - {master: "B", with: ["c"], tokens: [SPL, HPL]}
+  - {master: "B", with: ["v", "m"], tokens: [SPL, HPL, PLP]}
+  - {master: "B", with: ["q", "m"], tokens: [DOR]}
+  - {master: "B", with: ["g"], tokens: [G, USW, UMW]}
+  - {master: "C", tokens: [UMN, SAP, SAL, RSA]}
+  - {master: "C", with: ["g"], tokens: [G, USW, UMW]}
+  - {master: "C", with: ["r"], tokens: [SAP, UMW, USW, G, LCU]}
+  - {master: "C", with: ["q", "m"], tokens: [DOR]}
+  - {master: "C", with: ["u"], tokens: [MMD]}
+  - {master: "C", with: ["^"], tokens: [MMD]}
+  - {master: "B", with: ["r"], tokens: [G, USW, UMW]}
+  - {master: "C", with: ["k"], tokens: [SCH, HCH]}
+  - {master: "C", with: ["k", "m"], tokens: [HCH]}
+  - {master: "G", tokens: [G, USW, UMW]}
+  - {master: "R", tokens: [HRK]}

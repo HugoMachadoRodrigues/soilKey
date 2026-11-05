@@ -773,6 +773,36 @@
           },
           "lateral_cover_pct": {
             "type": ["number", "null"]
+          },
+          "diagnostic_za": {
+            "type": ["string", "null"]
+          },
+          "plasticity_index": {
+            "type": ["number", "null"]
+          },
+          "liquid_limit_method": {
+            "type": ["string", "null"]
+          },
+          "bedrock_pct": {
+            "type": ["number", "null"]
+          },
+          "coatings_hue_moist": {
+            "type": ["string", "null"]
+          },
+          "coatings_chroma_moist": {
+            "type": ["number", "null"]
+          },
+          "coatings_continuity": {
+            "type": ["string", "null"]
+          },
+          "recent_deposit": {
+            "type": ["boolean", "null"]
+          },
+          "cross_bedding": {
+            "type": ["boolean", "null"]
+          },
+          "sand_grade": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false
