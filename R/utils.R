@@ -319,7 +319,34 @@ horizon_column_spec <- function() {
     coatings_continuity           = "character", # continuity of the coatings: continuous / discontinuous / patchy; black cutans
     recent_deposit                = "logical",   # a recent aeolian, alluvial or man-made deposit over the soil; burial rule (500 mm)
     cross_bedding                 = "logical",   # cross bedding in the layer; regic sand (allowed), E horizon (not allowed)
-    sand_grade                    = "character"  # grade of the sand: fine / medium / coarse; the texture in the South African name
+    sand_grade                    = "character",  # grade of the sand: fine / medium / coarse; the texture in the South African name
+    # ---- v0.9.360: the German KA5 (Bodenkundliche Kartieranleitung 2005) ----
+    bleached_pct                  = "numeric",   # wet bleaching (rb), % area; KA5 Sw, Sd, Sg
+    reduction_colours_pct         = "numeric",   # reduction colours (rg, rt, rs), % area; KA5 Go, Gro, Gor, Gr, Yr
+    rh_value                      = "numeric",   # rH; KA5 Sw, Gr, Y (<= 19), Gyttja (>= 13)
+    air_capacity_pct              = "numeric",   # air capacity, % vol; KA5 Sd, Sg (< 3)
+    total_porosity_pct            = "numeric",   # total pore volume, % vol; KA5 Bfv (>= 60)
+    muscovite_pct                 = "numeric",   # muscovite, % of the fine earth; KA5 Bv (>= 6, supporting)
+    clay_coatings_thin_section_pct = "numeric",  # clay coatings in thin section, % area; KA5 Bt (> 1)
+    clay_bridges                  = "logical",   # clay bridges between sand grains; KA5 Bt
+    bands_area_pct                = "numeric",   # clay, humus or sesquioxide bands, % area; KA5 Bbt+Bv, Bv+Bbt, Cbtv
+    kultotroph                    = "logical",   # base status changed by fertilising; KA5 Akh, Aka, Hk
+    carbonate_whole_soil_pct      = "numeric",   # carbonate of the whole material, skeleton included, %; KA5 i, e, c
+    rock_diggable                 = "logical",   # diggable with a spade when moist; KA5 l vs m, x
+    parent_rock_ka5               = "character", # rock code of field 47a; KA5 P, T
+    caco3_lithogenic              = "logical",   # lithogenic carbonate in the fine earth; KA5 B, T
+    oc_lithogenic_pct             = "numeric",   # sedimentary organic carbon, %; KA5 prefix o
+    knick_degree                  = "character", # strong / weak; KA5 Sq
+    sand_ffs_pct                  = "numeric",   # finest sand 63-125 um, %; KA5 Sg
+    soil_gas_ch4_co2_pct          = "numeric",   # CH4 and CO2 in the soil air, % vol; KA5 Y (>= 10)
+    horizon_continuity            = "character", # continuous / patchy; KA5 Ai
+    terra_material_pct            = "numeric",   # Terra material, % of the fine soil; KA5 CF-RR (>= 50)
+    ec_soil_solution_dS_m         = "numeric",   # EC of the soil solution, dS/m; KA5 Watt (>= 15)
+    humus_class_ka5               = "character", # h0-h7 (Tab. 15); KA5 Ah minimum, Aa, H
+    carbonate_class_ka5           = "character", # c0-c7 (Tab. 40); KA5 i, e, c
+    texture_class_ka5             = "character", # Bodenart (Tab. 30); KA5 Bv
+    colour_ka5                    = "character", # colour words of Liste 18 (never converted to Munsell)
+    hydromorphic_features_ka5     = "character"  # field 30/31 code string (ed,fl,g3,f4;rb,f6)
   )
 }
 

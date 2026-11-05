@@ -311,7 +311,7 @@ attributes:
   - name: layer_origin
     section: "Completing WRB Ch 3.1 / 3.2 / 3.3 coverage"
     unit: "-"
-    description: "'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating). The French Référentiel pédologique 2008 also reads 'colluvic' (the colluviosols and the qualifier colluvial), 'marine' (the thalassosols) and 'transported' (the anthroposols reconstitués) (Hugo's decisions Q14 and Q15)."
+    description: "'aeolic' / 'fluvic' / 'solimovic' / 'tephric' / 'organic' etc (for material gating). The French Référentiel pédologique 2008 also reads 'colluvic' (the colluviosols and the qualifier colluvial), 'marine' (the thalassosols) and 'transported' (the anthroposols reconstitués) (Hugo's decisions Q14 and Q15). The German KA5 (ka5) reads 'tidal-marine', 'tidal-brackish' and 'tidal-fluvial' (the prefixes tm, tb, tp of the Marschen, Watt and Strand, and the subtype letters n, b, f) and 'limnic' (the subhydric soils)."
   - name: fiber_content_rubbed_pct
     section: "SiBCS pendentes (von Post, Ki/Kr, COLE, sulfuric attack)"
     unit: "%"
@@ -1241,3 +1241,138 @@ attributes:
     description: "Grade of the sand of the layer: fine, medium or coarse (the sand grades of 1977, which the 1991 system keeps). South African soil classification of 1991: added to the texture class of the A in the name of a soil (Hu1200 medium sandy loam). Read only for the name; not recorded, the texture class without its grade (Hugo's decision Q23)."
     systems: [za1991]
     allowed: ["fine", "medium", "coarse"]
+  - name: bleached_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Wet bleaching (Nassbleichung, KA5 code rb), % of the area of the horizon. German KA5 (Bodenkundliche Kartieranleitung, 5th ed., 2005; ka5): with the rust features it gives the 80 % of the Sw and Sg and the 50 % of the Sd, and the transitions Bv-Sw (10 to < 80 %) and Sw-Bv (< 10 %) (pp. 101-103). Read from hydromorphic_features_ka5 when only the field code is recorded (the area class by the lower end for minima). Not recorded: those tests undecided."
+    min: 0
+    max: 100
+  - name: reduction_colours_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Reduction colours (KA5 codes rg, rt, rs, and a reduction-coloured matrix), % of the area of the horizon. German KA5 (ka5): Go < 10, Gro 10 to 50, Gor > 50, Gr > 95 %, and Yr (pp. 104-108). Not recorded: a matrix Munsell colour in the Gr colours reads 100, flagged; else undecided."
+    min: 0
+    max: 100
+  - name: rh_value
+    section: "German system (KA5)"
+    unit: "-"
+    description: "rH value (redox potential with pH). German KA5 (ka5): Sw, Gr, Yo and Yr need rH 19 or less in wet phases (pp. 101-108); the subhydric Gyttja (13 or more), Sapropel (< 13) and Dy (< 19) (p. 256). Not recorded: a positive childs_test (the dipyridyl test) stands in for 'rH 19 or less' only."
+    min: 0
+    max: 42
+  - name: air_capacity_pct
+    section: "German system (KA5)"
+    unit: "% vol"
+    description: "Air capacity (pores > 50 um drained at field capacity), % by volume. German KA5 (ka5): the Sd and the Sg have under 3 % (pp. 102-103). Not recorded: undecided."
+    min: 0
+    max: 100
+  - name: total_porosity_pct
+    section: "German system (KA5)"
+    unit: "% vol"
+    description: "Total pore volume, % by volume. German KA5 (ka5): the loose Bfv of the Lockerbraunerde has 60 % or more (or a dry bulk density under 0.8 g/cm3; p. 95). Not recorded: 100 x (1 - bulk density / 2.65), flagged."
+    min: 0
+    max: 100
+  - name: muscovite_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Muscovite, % of the fine earth. German KA5 (ka5): supporting criterion of the Bv (6 % or more; else the Bu, p. 95). Not recorded: not used."
+    min: 0
+    max: 100
+  - name: clay_coatings_thin_section_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Clay coatings in thin section, % of the area. German KA5 (ka5): a Bt has more than 1 % (p. 97). Not recorded: clay_films_amount, flagged."
+    min: 0
+    max: 100
+  - name: clay_bridges
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Clay bridges between sand grains visible with a hand lens (TRUE / FALSE). German KA5 (ka5): one of the three signs of the Bt (p. 97). Not recorded: clay_films_amount, flagged."
+  - name: bands_area_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Clay, humus or sesquioxide bands, % of the area of the horizon. German KA5 (ka5): Bbt+Bv, Bbh+Bv, Bbs+Bv and Bbt+Cv 10 to < 50 %, Bv+Bbt and lCv+Bbt over 50 %, Cbtv under 10 % (pp. 96-100); the band subtypes LLd and LFd. Not recorded: lamellae_cumulative_cm over the thickness, flagged."
+    min: 0
+    max: 100
+  - name: kultotroph
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Base and nutrient status lastingly changed by regular fertilising (TRUE / FALSE). German KA5 (ka5): the suffix k of Akh, Aka and Hk (pp. 85, 91-94) and the variety ku. Not recorded: undecided."
+  - name: carbonate_whole_soil_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Carbonate (CaCO3 equivalent) of the whole material, skeleton included, % by mass. German KA5 (ka5): the rock classes i (< 2), e (2 to < 75) and c (75 or more) that separate Ranker, Regosol, Pararendzina and Rendzina (pp. 84, 204-211). Not recorded: the prefix written, else caco3_pct of the fine earth, flagged (Hugo's decision Q15)."
+    min: 0
+    max: 100
+  - name: rock_diggable
+    section: "German system (KA5)"
+    unit: "-"
+    description: "The substrate can be dug with a spade when moist (TRUE / FALSE). German KA5 (ka5): the prefixes l (loose) against m and x (pp. 84, 99). Not recorded: cementation_class and rupture_resistance, flagged."
+  - name: parent_rock_ka5
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Rock of the substrate as the KA5 codes it (field 47a). German KA5 (ka5): the P horizon forms from clay or clay-marl stone, the T horizon from carbonate rock (pp. 100-101). Not recorded: site parent_material."
+  - name: caco3_lithogenic
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Lithogenic (primary) carbonate in the fine earth (TRUE / FALSE). German KA5 (ka5): B and T horizons are free of it (pp. 95, 101). Not recorded: caco3_pct 0 reads FALSE, any other value undecided."
+  - name: oc_lithogenic_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Sedimentary (lithogenic) organic carbon, %, the coal classes k1 to k6 of field 45 (Tab. 38). German KA5 (ka5): the prefix o needs 2 % sedimentary organic substance or more (pp. 84, 93, 99). Not recorded: layer_origin with oc_pct, flagged."
+    min: 0
+    max: 100
+  - name: knick_degree
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Degree of the Knick horizon of the Knickmarsch: 'strong' (Knick-Horizont) or 'weak' (knickiger Horizont). German KA5 (ka5): the Sq (p. 103) and the type MK. Not recorded: esp_pct and a columnar or prismatic structure, flagged."
+    allowed: ["strong", "weak"]
+  - name: sand_ffs_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Finest sand (ffS, 63 to < 125 um), % of the fine earth, the KA5 fraction (p. 141); not the USDA very fine sand (50-100 um). German KA5 (ka5): silt plus finest sand 50 % or more in the Sg, the Haftpseudogley and the Haftnaessemarsch. Not recorded: silt 50 % or more reads yes, silt plus sand under 50 % no, the rest undecided (Hugo's decision Q11)."
+    min: 0
+    max: 100
+  - name: soil_gas_ch4_co2_pct
+    section: "German system (KA5)"
+    unit: "% vol"
+    description: "CH4 and CO2 in the soil air, % by volume (the highest measured). German KA5 (ka5): the Y horizons of the Reduktosol have at times 10 % or more (pp. 107-108). Not recorded: site methane_odour, flagged."
+    min: 0
+    max: 100
+  - name: horizon_continuity
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Lateral continuity of the horizon: 'continuous' or 'patchy'. German KA5 (ka5): the Ai is patchy and under 2 cm or continuous with humus below the Ah minimum (p. 93); the Aih of the Syrosem-Ranker is continuous. Not recorded: lateral_cover_pct, else undecided."
+    allowed: ["continuous", "patchy"]
+  - name: terra_material_pct
+    section: "German system (KA5)"
+    unit: "%"
+    description: "Terra material (solution residue of carbonate rock), % of the fine soil. German KA5 (ka5): 50 % or more in the (Bv-)Tv+cCv of the Terra fusca-Rendzina (p. 209). Not recorded: a Tv written in the interfingering horizon."
+    min: 0
+    max: 100
+  - name: ec_soil_solution_dS_m
+    section: "German system (KA5)"
+    unit: "dS/m"
+    description: "Electrical conductivity of the soil solution, dS/m (= mS/cm). German KA5 (ka5): the marine Watt has 15 or more (p. 255), against the estuarine. Not recorded: ec_dS_m of the saturation extract, flagged."
+    min: 0
+  - name: humus_class_ka5
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Humus class of field 29 (Tab. 15, p. 112), % organic substance: h0 0, h1 < 1, h2 1 to < 2, h3 2 to < 4, h4 4 to < 8, h5 8 to < 15, h6 15 to < 30 (anmoorig), h7 30 or more (organic). German KA5 (ka5): the Ah minimum, the Aa and the H when no organic carbon is measured; read by its range (lower end for minima, upper end for maxima)."
+    allowed: ["h0", "h1", "h2", "h3", "h4", "h5", "h6", "h7"]
+  - name: carbonate_class_ka5
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Carbonate class of field 46 (Tab. 40, pp. 168-169), % CaCO3 equivalent of the fine earth: c0 0, c1 < 0.5, c2 0.5 to < 2, c3 2 to < 10 (c3.2 2 to < 4, c3.3 4 to < 7, c3.4 7 to < 10), c4 10 to < 25, c5 25 to < 50, c6 50 to < 75, c7 75 or more. German KA5 (ka5): the classes i, e, c and the decalcification depths when caco3_pct is not measured; read by its range."
+    allowed: ["c0", "c1", "c2", "c3", "c3.2", "c3.3", "c3.4", "c4", "c5", "c6", "c7"]
+  - name: texture_class_ka5
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Texture class (Feinbodenart) of the KA5 (Tab. 30, Abb. 17): Ss, Sl2, Sl3, Sl4, Slu, St2, St3, Su2, Su3, Su4, Ls2, Ls3, Ls4, Lt2, Lt3, Lts, Lu, Uu, Uls, Us, Ut2, Ut3, Ut4, Tt, Tl, Tu2, Tu3, Tu4, Ts2, Ts3, Ts4. German KA5 (ka5): the Bv 'one subgroup more clayey', the pure sand of the Strand and the soil-water tables. Not recorded: clay_pct, silt_pct and sand_pct."
+  - name: colour_ka5
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Colour as the words of Liste 18 code it (bl, bn, ge, gn, ro, gr, sw, we, vi, or, ol, tk, oc; before them h, hh, d, dd, le, fa, sm; after them li; up to three, the last the main colour: roligrbn). German KA5 (ka5): kept as recorded; the book forbids converting the words into Munsell (p. 110), so a Munsell test with only a word recorded stays undecided."
+  - name: hydromorphic_features_ka5
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Hydromorphic features as the KA5 field codes write them (fields 30 and 31, Tab. 16, p. 113; the rules of 5.3, pp. 50-55): kind (e, ed, eh, eo, es oxidative; rb, rg, rt, rs reductive), form, degree g1-g5, area class f1-f9, size; features separated by ';' (ed,fl,g3,f4;rb,f6). German KA5 (ka5): read into bleached_pct, reduction_colours_pct and the rust share (redoximorphic_features_pct) as the ranges of the area classes."
