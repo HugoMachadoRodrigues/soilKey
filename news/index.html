@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.355</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.360</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,24 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.360" id="soilkey-09360-2026-11-05">soilKey 0.9.360 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09360-2026-11-05"></a></h2>
+<div class="section level3">
+<h3 id="germany-ka5-the-horizon-notation-and-the-formulas-0-9-360">Germany (KA5, 2005): the horizon notation and the formulas<a class="anchor" aria-label="anchor" href="#germany-ka5-the-horizon-notation-and-the-formulas-0-9-360"></a></h3>
+<p>The first piece of the German soil systematics of the Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005), used by nothing yet: the notation reader, its catalogue, the formula dialect of the types and subtypes, and the new attributes. Every classification is unchanged (the fixtures of the other systems byte-identical).</p>
+<ul><li>
+<strong>The catalogue</strong> <code>inst/rules/ka5/horizons.yaml</code>: the 15 masters, 23 prefixes, the suffixes with their meaning by host (a, f, k, m, t, v, w), the base-saturation marks, the joiners, Tab. 12 of the permitted combinations, the 166 symbols 5.6.3.3 defines (checked on the page images) and the transitions it names, the KA6 symbols with a one-to-one reading, the field codes that are not horizons and the collisions with the other notations.</li>
+<li>
+<strong>The reader</strong> (<code>R/designation-ka5.R</code>): the last part carries the horizon (Ah-Bv is a Bv, fAh°Sd an Sd in a buried Ah), lower case before the master is a prefix and after it a suffix, Roman numerals, sub-horizon digits, letters in parentheses as sets of readings (B(h)s), the typing slips IC, AI and the degree sign typed o. A profile is in the KA5 notation when declared (ka5, ka4, ka3, kartieranleitung, bodensystematik, agboden, dbg; ka6 through its one-to-one symbols) or recognised by one strong sign or two likely ones, with no symbol only the FAO, USDA, Canadian, RP, CPCS or Russian notation writes; a mixed profile is undecided; never by the country (Hugo’s decisions Q2, Q3, Q4, Q8).</li>
+<li>
+<strong>The formulas</strong> of Liste 31 and of the 223 subtypes (<code>.ka5_parse_formula()</code>) read into the sequence engine’s formula object, with no unknown token; the strings, transcribed from the page images, are in <code>tests/testthat/fixtures/ka5-formulas.tsv</code>.</li>
+<li>
+<strong>New attributes</strong> (Hugo’s decision Q24): 26 horizon columns (<code>bleached_pct</code>, <code>reduction_colours_pct</code>, <code>rh_value</code>, <code>air_capacity_pct</code>, <code>total_porosity_pct</code>, <code>sand_ffs_pct</code>, <code>carbonate_whole_soil_pct</code>, the KA5 field codes <code>humus_class_ka5</code>, <code>carbonate_class_ka5</code>, <code>texture_class_ka5</code>, <code>colour_ka5</code>, <code>hydromorphic_features_ka5</code> …) and 13 site properties (<code>particle_size_scheme</code>, <code>embanked</code>, the groundwater levels of Tab. 59, <code>reductgas_source</code>, <code>deep_cultivation_kind</code> …); the field codes are read into them by their class ranges.</li>
+<li>
+<strong>Matching a profile to a formula</strong> (<code>.ka5_horizon_frame()</code>): the last part carries the horizon and the whole symbol is the engine’s token, so Bv-Ah over Ah stays two horizons; Ap takes a plain Ah; the buried soil of <code>II...</code> runs from the first fossil row of a layer II; a geogenic prefix written in front (a, tb, tm, tp, e, z, s, q, o) holds for the whole horizon, f and r only for their part. Before the engine reads the table, a KA5 formula’s own hook (<code>prepare_table</code>, which no other system carries) lets a master written without suffix (C, G, aG, O) or a slot with commas take a run of rows (Ah/Bv/Cv/Cn is Ah/Bv/C, p. 199), and merges a transitional row into its neighbour with the same carrying code unless the formula names the transition (Al+Bt into the Bt, Go-Bv into the Bv).</li>
+<li>Hugo’s decisions on soilKey’s readings and on the review (2026-11-04) are in <code>inst/rules/ka5/readings.yaml</code>: the strong signs exactly as his card lists them (Btv is none); the Canadian j forms (Btj, Aej) and Ck and Oe written as designations veto the KA5; IIIC is II and lC with no layer II above it; the degree sign typed o only in a KA5 profile.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.355" id="soilkey-09355-2026-11-05">soilKey 0.9.355 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09355-2026-11-05"></a></h2>
 <div class="section level3">
