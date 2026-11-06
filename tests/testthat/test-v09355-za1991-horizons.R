@@ -375,9 +375,11 @@ test_that("the readings: Hugo's decisions and soilKey's readings for him", {
   skip_on_cran()
   rd <- yaml::read_yaml(system.file("rules", "za1991", "readings.yaml", package = "soilKey"))$readings
   r <- vapply(rd, `[[`, "", "reading")
-  # every reading is Hugo's decision of 2026-11-04; none is pending
-  expect_true(all(grepl("\\(Hugo, 2026-11-04\\)\\.?$", r)))
-  expect_length(r, 13L)
+  # the 13 readings of this part are Hugo's decisions of 2026-11-04; a later
+  # part adds its own, all decided (0.9.356)
+  expect_true(all(grepl("\\(Hugo, 2026-11-04\\)\\.?$", r[1:13])))
+  expect_true(all(grepl("\\(Hugo, 2026-11-0[4-9]\\)\\.?$", r)))
+  expect_true(length(r) >= 13L)
   expect_true(all(nzchar(vapply(rd, `[[`, "", "topic"))))
 })
 
