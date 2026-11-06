@@ -98,6 +98,16 @@ the nearest classes when nothing attaches),
 criteria, joined with "; ") and \code{nearest}.
 \code{NULL} for every other system, and then not
 printed. Since v0.9.340.}
+
+\item{\code{humus_form}}{The humus form of the French Referentiel pedologique
+2008 (Annex 1; \code{\link{humus_form_rp}}), a
+one-row \code{data.frame} with \code{form},
+\code{name}, \code{type}, \code{label},
+\code{group}, \code{decided}, \code{route},
+\code{candidates}, \code{recorded},
+\code{conflict} and \code{qualifiers}; the whole
+reading is in \code{trace$humus_form}. \code{NULL}
+for every other system. Since v0.9.353.}
 }
 \if{html}{\out{</div>}}
 }

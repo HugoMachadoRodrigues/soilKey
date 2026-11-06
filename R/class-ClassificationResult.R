@@ -72,6 +72,15 @@
 #'                       criteria, joined with "; ") and \code{nearest}.
 #'                       \code{NULL} for every other system, and then not
 #'                       printed. Since v0.9.340.
+#' @field humus_form     The humus form of the French Referentiel pedologique
+#'                       2008 (Annex 1; \code{\link{humus_form_rp}}), a
+#'                       one-row \code{data.frame} with \code{form},
+#'                       \code{name}, \code{type}, \code{label},
+#'                       \code{group}, \code{decided}, \code{route},
+#'                       \code{candidates}, \code{recorded},
+#'                       \code{conflict} and \code{qualifiers}; the whole
+#'                       reading is in \code{trace$humus_form}. \code{NULL}
+#'                       for every other system. Since v0.9.353.
 #'
 #' @export
 ClassificationResult <- R6::R6Class("ClassificationResult",
@@ -92,6 +101,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     provisional_because = NULL,
     phases         = NULL,
     candidates     = NULL,
+    humus_form     = NULL,
 
     #' @description Build a ClassificationResult.
     #' @param system System name.
@@ -163,6 +173,12 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       }
       if (is.data.frame(self$phases) && nrow(self$phases) > 0L) {
         cli::cli_text("Phases: {paste(self$phases$name, collapse = '; ')}")
+      }
+      # v0.9.353: the humus form of the RP 2008, beside the name
+      if (is.data.frame(self$humus_form) && nrow(self$humus_form) > 0L) {
+        hf <- self$humus_form[1L, ]
+        txt <- if (!is.na(hf$label)) hf$label else sprintf("undecided (%s)", if (nzchar(hf$candidates)) hf$candidates else "no form read")
+        cli::cli_text("Humus form: {txt}")
       }
       # v0.9.340: the classes that may attach the soil, for the systems that
       # are not keys; nothing for the others

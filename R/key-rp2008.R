@@ -380,12 +380,18 @@ classify_rp2008 <- function(pedon, rules = NULL,
     # the doubles the book leaves to the candidates (status candidate, Q8)
     cdbl <- .rp_candidate_doubles(rules, pedon, comb)
     gaps <- .rp_book_gaps(pedon)
+    # the humus form of Annex 1 (0.9.353): reported beside the name, not in it
+    humus <- humus_form_rp(pedon)
   })
 
   res <- .rp_result(pedon, rules, sys, evals, signs, comb, frame, on_missing, prec, excl, cond, posn, hyd, cdbl)
   if (length(gaps)) {
     res$trace$book_gaps <- gaps
     res$warnings <- c(res$warnings, gaps)
+  }
+  if (!is.null(humus)) {
+    res$trace$humus_form <- humus
+    res$humus_form <- .rp_humus_row(humus)
   }
   res
 }

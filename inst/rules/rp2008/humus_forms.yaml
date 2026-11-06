@@ -1,0 +1,125 @@
+# The humus forms of the French Référentiel pédologique 2008, Annex 1
+# ("Typologie des formes d'humus forestières", pp. 327-355), read by
+# humus_form_rp() (R/diagnostics-rp-humus.R). The criteria are paraphrased;
+# no text of the book is shipped. Pages are the printed pages.
+#
+# Order of the reading (Hugo's decision Q22, 2026-11-02): the épisolum with
+# H horizons is the histosols' (p. 351); the tangel (an OHta, p. 349) and
+# the anmoor (an An, p. 351); the forms without fine mineral earth (O over
+# X, R or D, pp. 348-349); the open land by the land use (p. 337); the key
+# of Figure 2 (p. 354) on the O and A horizons, its outcome made
+# hydromorphic when the épisolum is wet (pp. 350-351). A recorded
+# site$humus_form decides where the horizons leave the form undecided; a
+# conflict goes to the trace.
+
+# The four functional types (level 1, pp. 336-337) and the forms (level 2).
+humus_types:
+  - {code: mull, name: "mull", page: "340-343"}
+  - {code: moder, name: "moder", page: "343-345"}
+  - {code: mor, name: "mor", page: "345-347"}
+  - {code: amphimus, name: "amphimus", page: "347-348"}
+
+humus_forms:
+  # aerated forest forms of temperate lowlands: the outcomes of Figure 2 (p. 354)
+  - {code: eumull,      name: "eumull",      type: mull,     group: aerated, page: "341-342", sequence: "(OLn)/A",                 name_en: "eumull (typical mull)"}
+  - {code: mesomull,    name: "mésomull",    type: mull,     group: aerated, page: "342",     sequence: "OLn or (OLv)/A",          name_en: "mesomull"}
+  - {code: oligomull,   name: "oligomull",   type: mull,     group: aerated, page: "342",     sequence: "OLn or OLv or (OFzo)/A",  name_en: "oligomull"}
+  - {code: dysmull,     name: "dysmull",     type: mull,     group: aerated, page: "342-343", sequence: "OL and OFzo/A crumbly",   name_en: "dysmull"}
+  - {code: hemimoder,   name: "hémimoder",   type: moder,    group: aerated, page: "344",     sequence: "OL/OFzo/A",               name_en: "hemimoder"}
+  - {code: eumoder,     name: "eumoder",     type: moder,    group: aerated, page: "344",     sequence: "OL/OFzo/OHzo/A, OH < 1 cm", name_en: "eumoder (moder)"}
+  - {code: dysmoder,    name: "dysmoder",    type: moder,    group: aerated, page: "344",     sequence: "OL/OFzo/OHzo/A, OH >= 1 cm", name_en: "dysmoder"}
+  - {code: hemimor,     name: "hémimor",     type: mor,      group: aerated, page: "352, 354", sequence: "OL/OFnoz, no OH",        name_en: "hemimor"}
+  - {code: humimor,     name: "humimor",     type: mor,      group: aerated, page: "352, 354", sequence: "OL/OFnoz/OH, OFzo or OHzo present", name_en: "humimor"}
+  - {code: mor_typique, name: "mor",         type: mor,      group: aerated, page: "346",     sequence: "OL/OFnoz/OHnoz, no OFzo, no OHzo", name_en: "mor (typical mor)"}
+  - {code: euamphimus,  name: "euamphimus",  type: amphimus, group: aerated, page: "348",     sequence: "OL/OFzo/OHzo/A crumbly",  name_en: "euamphimus (typical amphimus)"}
+  # forms without fine mineral earth (pp. 348-349)
+  - {code: peyromull,   name: "peyromull",   type: mull,     group: no_fine_earth, page: "348", sequence: "OL/Xh",                       name_en: "peyromull (scree mull)"}
+  - {code: lithomoder,  name: "lithomoder",  type: moder,    group: no_fine_earth, page: "349", sequence: "OL/OFzo/(OHzo)/R or D",       name_en: "lithomoder"}
+  - {code: peyromoder,  name: "peyromoder",  type: moder,    group: no_fine_earth, page: "349", sequence: "OL/OFzo/Xh or OL/OFzo/OHzo/Xh", name_en: "peyromoder (scree moder)"}
+  - {code: lithomor,    name: "lithomor",    type: mor,      group: no_fine_earth, page: "349", sequence: "OL/OFnoz/(OHnoz)/R or D",     name_en: "lithomor"}
+  - {code: peyromor,    name: "peyromor",    type: mor,      group: no_fine_earth, page: "349", sequence: "OL/OFnoz/(OHnoz)/X",          name_en: "peyromor"}
+  - {code: tangel,      name: "tangel",      type: amphimus, group: no_fine_earth, page: "349", sequence: "OL/OF/OHzo/OHta/A",           name_en: "tangel (litho-amphimus)"}
+  - {code: peyro_amphimus, name: "peyro-amphimus", type: amphimus, group: no_fine_earth, page: "349", sequence: "OL/OF/OHzo/Xh, the fine earth of the X biomesostructured", name_en: "peyro-amphimus"}
+  # hydromorphic forms (pp. 350-351)
+  - {code: hydromull,   name: "hydromull",   type: mull,     group: hydromorphic, page: "350", sequence: "OL/A with hydromorphic mottles", name_en: "hydromull"}
+  - {code: hydromoder,  name: "hydromoder",  type: moder,    group: hydromorphic, page: "350", sequence: "OL/OFzo/OHzo/A, wet",          name_en: "hydromoder"}
+  - {code: hydromor,    name: "hydromor",    type: mor,      group: hydromorphic, page: "350", sequence: "OL/OFnoz/OHnoz/organo-mineral, wet", name_en: "hydromor"}
+  - {code: anmoor,      name: "anmoor",      type: null,     group: hydromorphic, page: "351", sequence: "(OL)/An",                       name_en: "anmoor"}
+  # open land: agricultural soils, heaths and grasslands (p. 337)
+  - {code: agri_mull,   name: "agri-mull",   type: mull,     group: open_land, page: "337", case: 1, land: crop,  name_en: "agri-mull"}
+  - {code: mull_de_pelouse, name: "mull de pelouse", type: mull, group: open_land, page: "337", case: 1, land: grass, name_en: "grassland mull"}
+  - {code: agri_moder,  name: "agri-moder",  type: moder,    group: open_land, page: "337", case: 2, land: crop,  name_en: "agri-moder"}
+  - {code: moder_de_pelouse, name: "moder de pelouse", type: moder, group: open_land, page: "337", case: 2, land: grass, name_en: "grassland moder"}
+  - {code: agri_mor,    name: "agri-mor",    type: mor,      group: open_land, page: "337", case: 3, land: crop,  name_en: "agri-mor"}
+  - {code: mor_de_pelouse, name: "mor de pelouse", type: mor, group: open_land, page: "337", case: 3, land: grass, name_en: "grassland mor"}
+  - {code: amphimus_de_pelouse, name: "amphimus de pelouse", type: amphimus, group: open_land, page: "337", case: 4, land: any, name_en: "grassland amphimus"}
+
+# The key of Figure 2 (p. 354), for the aerated forms of the lowlands only
+# (not the waterlogged forms nor those without fine mineral earth). The
+# label of the branch "not clearly crumbly" repeats that of its sibling in
+# the printed figure; it is read "not clearly crumbly or A absent". The
+# transitions in millimetres are evidence only (Hugo's default 22): the
+# branches read the zoogenic or non-zoogenic O horizons and the A, as the
+# table of p. 352 does. A position is read by humus_form_rp() with the test
+# of its `test`; `pass` and `fail` name a position or a form (null: no form).
+humus_key:
+  - {id: K1, test: oh_present,     pass: K2, fail: K6,        page: "354", what: "an OH among the O horizons (over OL and OF); an OH covering under 10 % of the ground counts as none (p. 344)"}
+  - {id: K2, test: a_crumbly,      pass: euamphimus, fail: K3,       page: "354", what: "the A biomacro- or biomesostructured"}
+  - {id: K3, test: ofnoz_present,  pass: K4, fail: K5,        page: "354", what: "an OF of the non-zoogenic kind (abrupt passage to an organo-mineral layer); otherwise none, the A massive or particulate below a gradual passage"}
+  - {id: K4, test: zo_present,     pass: humimor, fail: mor_typique,       page: "354", what: "an OF or OH of the zoogenic kind remains"}
+  - {id: K5, test: oh_1cm,         pass: dysmoder, fail: eumoder,   page: "354", what: "the continuous OH reaches 1 cm"}
+  - {id: K6, test: of_present,     pass: K7, fail: K9,        page: "354", what: "an OF under the OL (one with faecal pellets: bleached OLt debris is no OF)"}
+  - {id: K7, test: ofnoz_present,  pass: hemimor, fail: K8,        page: "354", what: "the OF is non-zoogenic, usually thick, over an organo-mineral layer with an abrupt passage"}
+  - {id: K8, test: of_continuous,  pass: K8a, fail: oligomull, page: "354", what: "the zoogenic OF covers the ground; otherwise it is thin and patchy"}
+  - {id: K8a, test: a_crumbly,     pass: dysmull, fail: hemimoder, page: "354", what: "the A biomacro- or biomesostructured; otherwise massive or particulate"}
+  - {id: K9, test: olv_present,    pass: K9a, fail: K9b,       page: "354", what: "an OLv beside the OLn; otherwise the litter of the year alone"}
+  - {id: K9a, test: olv_continuous, pass: oligomull, fail: mesomull, page: "354", what: "the OLv covers the ground; otherwise it is patchy"}
+  - {id: K9b, test: oln_continuous, pass: mesomull, fail: K9c,       page: "354", what: "the OLn covers the ground"}
+  - {id: K9c, test: a_crumbly,     pass: eumull, fail: null,      page: "354", what: "a patchy OLn over an A whose crumb structure is clear and stable"}
+
+# The qualifiers of the humus forms (pp. 338-340), read on the first A
+# horizon. Classes half-open, the lower edge inclusive; pH +/- 0.2 and
+# S/CEC +/- 5 points as the tolerance of an imperfect member (Hugo's default
+# 9); the other thresholds strict (Q5).
+humus_qualifiers:
+  ph:
+    page: "338"
+    tol: 0.2
+    classes:
+      - {name: "hyper-acide",  lo: null, hi: 3.5}
+      - {name: "très acide",   lo: 3.5,  hi: 4.2}
+      - {name: "acide",        lo: 4.2,  hi: 5.0}
+      - {name: "peu acide",    lo: 5.0,  hi: 6.5}
+      - {name: "neutre",       lo: 6.5,  hi: 7.5}
+      - {name: "basique",      lo: 7.5,  hi: 8.7}
+      - {name: "très basique", lo: 8.7,  hi: null}
+  bs:
+    page: "338-339"
+    tol: 5
+    classes:
+      - {name: "désaturée",    lo: null, hi: 20}
+      - {name: "oligosaturée", lo: 20,   hi: 50}
+      - {name: "mésosaturée",  lo: 50,   hi: 80}
+      - {name: "subsaturée",   lo: 80,   hi: 95, not_carbonated: true}
+      - {name: "saturée",      lo: 95,   hi: null, not_carbonated: true}
+  ca_mg:
+    page: "339"
+    note: "a non-carbonated A, saturated or subsaturated; hyper-magnésique under 1/3 here, under 0.2 for the solum qualifier (p. 39): each in its context (Hugo's default 22)"
+    classes:
+      - {name: "hyper-magnésique", lo: null,  hi: 0.3333333}
+      - {name: "magnésique",       lo: 0.3333333, hi: 2}
+      - {name: "calci-magnésique", lo: 2,     hi: 5, hi_closed: true}
+      - {name: "calcique",         lo: 5,     hi: null, lo_open: true}
+  sodisee:
+    page: "339"
+    name: "sodisée"
+    lo: 6
+    hi: 15
+  carbonatee:
+    page: "339"
+    name: "carbonatée"
+  wood:
+    page: "340"
+    classes:
+      - {name: "lignique", lo: 35, hi: 80, hi_closed: true}
+      - {name: "xylique",  lo: 80, hi: null, lo_open: true}

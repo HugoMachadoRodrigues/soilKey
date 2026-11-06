@@ -127,7 +127,16 @@ key_trace_table <- function(x) {
   }
 
   top <- names(trace); if (is.null(top)) top <- rep("", length(trace))
-  for (i in seq_along(trace)) walk(trace[[i]], top[[i]] %||% "")
+  for (i in seq_along(trace)) {
+    # v0.9.353: the humus form of the RP 2008 rides beside the classes
+    # tested, as one row of information
+    if (identical(top[[i]], "humus_form") && is.list(trace[[i]]) && !is.null(trace[[i]]$route)) {
+      h <- trace[[i]]
+      emit("humus_form", "humus_form", if (is.na(h$label %||% NA)) "undecided" else h$label, "info", h$missing)
+      next
+    }
+    walk(trace[[i]], top[[i]] %||% "")
+  }
 
   if (!length(rows)) return(empty)
   out <- do.call(rbind, rows)
