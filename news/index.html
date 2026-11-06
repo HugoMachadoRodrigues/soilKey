@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.353</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.355</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,23 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.355" id="soilkey-09355-2026-11-05">soilKey 0.9.355 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09355-2026-11-05"></a></h2>
+<div class="section level3">
+<h3 id="south-africa-the-diagnostic-horizons-and-their-names-0-9-355">South Africa 1991: the diagnostic horizons and their names<a class="anchor" aria-label="anchor" href="#south-africa-the-diagnostic-horizons-and-their-names-0-9-355"></a></h3>
+<p>The first part of the South African soil classification of 1991 (Soil Classification Working Group, 1991; the “Blue Book”, read from its open pages, SASRI 1999 and van Huyssteen 2020, without the book): the catalogue of its 30 diagnostic horizons and materials, the reader of their names, and the attributes the later parts read. Nothing is classified yet; every other classification is unchanged (the fixtures of the other systems byte-identical).</p>
+<ul><li>
+<strong>The catalogue</strong> (<code>inst/rules/za1991/horizons.yaml</code>): the 5 topsoil horizons (organic O, humic A, vertic A, melanic A, orthic A) and the 25 subsoil horizons and materials, each with its printed name, soilKey’s English gloss, a token in capitals (OA, RAB, SPL …), what the preface says of it in 1977, and its pages; the names of 1977 the preface changed; the other words for the hard and carbonate horizons (calcrete, ferricrete, ouklip, silcrete); the hints of the FAO letters.</li>
+<li>
+<strong>The reader</strong> (<code>R/designation-za.R</code>; Hugo’s decision Q5). A new horizon attribute <code>diagnostic_za</code> holds the name as surveys write it (“red apedal B”, “Soft plinthic B horizon”, “B2 soft carbonate”, “none”), in any case and with or without “horizon”, or soilKey’s token (RAB); E and G alone are the E and G horizons. A 1977 name is read as its 1991 equivalent, flagged (ferrihumic B: podzol B; gleycutanic B: G horizon or unspecified material with signs of wetness by the horizon above; calcareous apedal or neocutanic B: neocarbonate B). A negated name (not red apedal B, E horizon absent) is not read; a non-diagnostic one (saprolite (non-diagnostic)) records no diagnostic horizon; one written with doubt (E?, possibly red apedal B) stays a candidate; calcrete is read by its adjective. The same names written inside <code>designation</code> (“Ap orthic A”, “B1 red apedal”) are read when <code>site$designation_system</code> declares the notation (<code>za</code>, <code>za1991</code>, <code>sat</code>, <code>sat1991</code>, <code>south africa</code> …; <code>SA</code> and <code>RSA</code> declare nothing), when the profile records a name in <code>diagnostic_za</code>, or when a designation holds a name only this system writes; never from the country, never when the site declares another notation. FAO and USDA letters are hints only (Bt: pedocutanic, prismacutanic, red structured or neocutanic B; Cr: saprolite, the wet materials, G or lithocutanic B); a word (Clay, Hutton) gives none.</li>
+<li>
+<strong>New attributes</strong>: on the horizons <code>diagnostic_za</code>, <code>plasticity_index</code>, <code>liquid_limit_method</code>, <code>bedrock_pct</code>, <code>coatings_hue_moist</code>, <code>coatings_chroma_moist</code>, <code>coatings_continuity</code>, <code>recent_deposit</code>, <code>cross_bedding</code> and <code>sand_grade</code>; on the site <code>reference_za_form</code>, <code>reference_za_family</code>, <code>reference_za_raw</code> and <code>reference_za_edition</code> (benchmarks only).</li>
+</ul><div class="section level4">
+<h4 id="readings-decided-on-the-review-0-9-355">Readings decided on the review (2026-11-04)<a class="anchor" aria-label="anchor" href="#readings-decided-on-the-review-0-9-355"></a></h4>
+<p>Hugo decided the nine readings of this part with the fixes of its review: soilKey’s two-letter short forms (ot, re, ye …) are not read until checked on a survey sheet; calcrete by its adjective (alone undecided between the soft and the hardpan carbonate horizon); Cr hints at the saprolite, the wet materials, the G horizon and the lithocutanic B; the other six (recognition by name, the gleycutanic B by position, Afrikaans names, words of no diagnostic horizon, the master letter, the declared values) as recommended. <code>inst/rules/za1991/readings.yaml</code> records them with the four decisions of 2026-11-04 this part applies.</p>
+</div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.353" id="soilkey-09353-2026-11-04">soilKey 0.9.353 (2026-11-04)<a class="anchor" aria-label="anchor" href="#soilkey-09353-2026-11-04"></a></h2>
 <div class="section level3">
