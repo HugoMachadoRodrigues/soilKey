@@ -203,6 +203,8 @@ or identifies the reference horizons on the data. This release tests the
 - [`make_rp2008_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_rp2008_example.md)
   : Example pedons for the references of the Referentiel pedologique
   2008
+- [`humus_form_rp()`](https://hugomachadorodrigues.github.io/soilKey/reference/humus_form_rp.md)
+  : The humus form of the Referentiel pedologique 2008
 
 ## Interoperability
 

@@ -1,5 +1,100 @@
 # Changelog
 
+## soilKey 0.9.353 (2026-11-04)
+
+### France: the humus forms of the Référentiel pédologique 2008 (Annex 1)
+
+The new
+[`humus_form_rp()`](https://hugomachadorodrigues.github.io/soilKey/reference/humus_form_rp.md)
+attaches the épisolum of a profile to a humus form of Annex 1 of the RP
+2008 (pp. 327-355), and
+[`classify_rp2008()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_rp2008.md)
+reports it beside the name: the new field `$humus_form` (one row: the
+form, its name, type, group, the route, the candidates, the recorded
+form and any conflict, the qualifiers) and `$trace$humus_form` (the
+whole reading). The “à
+
+” part of the name waits for the name builder of a later part, so the
+name, the levels and the candidates of the references do not change.
+Every other classification is unchanged (the fixtures of the other
+systems byte-identical).
+
+- **The order of the reading** (Hugo’s decision Q22;
+  `inst/rules/rp2008/humus_forms.yaml`). H horizons at the top leave the
+  épisolum to the histosols, with no form (p. 351); an OHta makes a
+  tangel (p. 349) and an An as the first mineral horizon an anmoor
+  (p. 351), the codes the references read (organosols à tangel,
+  réductisols à anmoor); O horizons directly over an X, R or D give the
+  forms without fine mineral earth, the type read on the O horizons
+  alone (peyromull, lithomoder, peyromoder, lithomor, peyromor,
+  peyro-amphimus; pp. 348-349); the land use or a ploughed L gives the
+  open-land forms (agri-mull, mull de pelouse, agri-moder, moder de
+  pelouse, agri-mor, mor de pelouse, amphimus de pelouse; p. 337); then
+  the key of Figure 2 (p. 354), walked by `.walk_key()` on the O and A
+  horizons to its eleven outcomes (eumull, mésomull, oligomull, dysmull,
+  hémimoder, eumoder, dysmoder, hémimor, humimor, mor, euamphimus); a G,
+  AG or g under the O horizons makes the outcome hydromorphic
+  (hydromull, hydromoder, hydromor; p. 350).
+- **Three-valued.** The key reads the kind of the O horizons (the
+  notation, or `fine_organic_matter_pct`), their zoogenic character (zo,
+  noz, or `o_zoogenic`), their lateral cover (`lateral_cover_pct`, 90 %
+  or more continuous, or the parentheses of the RP notation: an O
+  horizon written in parentheses is now read as that horizon,
+  discontinuous, p. 340), the thickness of the OH and the biological
+  structure of the A. What is not recorded leaves the form undecided
+  among its candidates (when they share a type, the type is decided);
+  with no O horizon recorded the form is undecided.
+- **The recorded form** (Q22). A recorded `site$humus_form` (the forms
+  and types of the annex, accents and case free) decides when the
+  horizons leave the form undecided, a type keeping the candidates of
+  that type; outside the forms the horizons leave possible it still
+  decides, and the conflict is reported; when the horizons decide
+  another form they prevail, the conflict reported. The schema lists the
+  four forms de pelouse.
+- **The qualifiers of the humus forms** (pp. 338-340), read on the first
+  A: the pH and S/CEC classes (half-open, a neighbouring class within
+  the tolerance of p. 64 listed as imperfect), carbonatée, the Ca/Mg
+  classes on a saturated or subsaturated non-carbonated A
+  (hyper-magnésique under 1/3), sodisée, lignique and xylique by the
+  woody debris of the O horizons. They are listed beside the form, not
+  yet in the name.
+- [`print()`](https://rdrr.io/r/base/print.html) of a result of the RP
+  shows the humus form, and
+  [`key_trace_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/key_trace_table.md)
+  gives it one row of information.
+- **An O horizon written in parentheses** (“(OLn)”, “(OHzo)”:
+  discontinuous, p. 340) was an unread designation; it is now read as
+  its code. This also reaches the references: such a profile is now
+  recognised as written in the RP notation, and an “(OLn)” litter is
+  left out of the depths as an OLn is (p. 64), so “(OLn)/A/R” with the R
+  at 12 cm is a lithosol, as “OLn/A/R” was, instead of “\[non
+  rattaché\]”. Other designations in parentheses, as the “(B)” of the
+  CPCS, are read as before.
+
+#### Readings confirmed, and the review (2026-11-04)
+
+Hugo confirmed the eight readings of this release (the order of the
+reading, no O horizon recorded, the continuity of the O horizons, the
+wet épisolum, the open land, the forms without fine earth, the recorded
+form, the qualifiers). An independent review then found the key itself
+right and fourteen defects around it, all fixed: a form is no longer
+decided when the horizons may also fit no form (a dead end of the key, a
+gate with no form after an undecided one, a top layer that may be an H),
+the new `no_form_possible` saying so; the recorded form no longer stands
+in for the biological structure of the A inside the key; the wet test
+reads the layer under the organo-mineral one for a mor only; the forms
+without fine earth keep every type an undecided OH or an undecided R, D
+or X leaves possible; the amphimus de pelouse needs an OHzo; the land
+uses are read as whole words, the present use first (a cleared forest
+now grazed is grassland); a qualifier that needs a non-carbonated A is
+undecided while the carbonates are; the continuity of an O of open kind
+is undecided. Hugo decided its four open points: a continuous OLn gives
+a mésomull as the key does, with a note on the early-winter eumull
+(p. 342); only continuous OH horizons count toward the 1 cm of the
+dysmoder (p. 344); the label of a decided type is the name of the type;
+`woody_fragments_pct` stands in for the woody debris, flagged. Twelve
+entries of `readings.yaml` record them.
+
 ## soilKey 0.9.352 (2026-11-04)
 
 ### France: the Référentiel pédologique 2008 attaches its last 18 references

@@ -108,6 +108,15 @@ biogeographical or prior-based warnings.
   joined with "; ") and `nearest`. `NULL` for every other system, and
   then not printed. Since v0.9.340.
 
+- `humus_form`:
+
+  The humus form of the French Referentiel pedologique 2008 (Annex 1;
+  [`humus_form_rp`](https://hugomachadorodrigues.github.io/soilKey/reference/humus_form_rp.md)),
+  a one-row `data.frame` with `form`, `name`, `type`, `label`, `group`,
+  `decided`, `route`, `candidates`, `recorded`, `conflict` and
+  `qualifiers`; the whole reading is in `trace$humus_form`. `NULL` for
+  every other system. Since v0.9.353.
+
 ## Methods
 
 ### Public methods
