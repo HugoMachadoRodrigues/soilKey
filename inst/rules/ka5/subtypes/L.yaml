@@ -1,0 +1,220 @@
+# The subtypes of the class L, Lessivés (KA5 2005, the type texts pp. 202-237), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "LL":
+    - code: "TT-LL"
+      name: "Tschernosem-Parabraunerde"
+      name_en: "Chernozem-parabraunerde"
+      name_pt: "Tchernossolo-parabraunerde"
+      kind: "transition"
+      page: "p. 218"
+      formulas:
+        - "A(x)h/Axh-Al/Axh-Bt/(e)C"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "TT-LL"}
+      notes: "The A(x)h/Axh-Al/Axh-Bt reaches 4 dm or deeper (p. 218)."
+    - code: "BB-LL"
+      name: "Braunerde-Parabraunerde"
+      name_en: "Brown earth-parabraunerde"
+      name_pt: "Terra parda-parabraunerde"
+      kind: "transition"
+      page: "p. 219"
+      formulas:
+        - "Ah/Bv-Al/(II)B(v)t/(Bv/)C"
+        - formula: "Ah/Al/Bt/Bv/C"
+          windows:
+            - {kind: "last_bottom", of: {pattern: "^Bt$"}, thr: "st_axh_window_cm", side: "range", what: "the Ah/Al/Bt over the Bv"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-LL"}
+      notes: "A Bv-Al over the B(v)t, often across a layer change; or a Bv under the Bt, the Ah/Al/Bt ending at 4 to < 7 dm (second form) (p. 219)."
+    - code: "PP-LL"
+      name: "Podsol-Parabraunerde"
+      name_en: "Podzol-parabraunerde"
+      name_pt: "Podzol-parabraunerde"
+      kind: "transition"
+      page: "p. 219"
+      formulas:
+        - "(Ahe/)Ae/Al-B(s)h,Al-B(h)s/(Al/)Bt/C"
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_part_max_cm", side: "max", what: "the podzol part (its last Bh or Bs)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PP-LL"}
+      notes: "The podzol part (Ahe/Ae/Al-B(h)s) ends above 1.5 dm (p. 219)."
+    - code: "CF-LL"
+      name: "Terra fusca-Parabraunerde"
+      name_en: "Terra fusca-parabraunerde"
+      name_pt: "Terra fusca-parabraunerde"
+      kind: "transition"
+      page: "p. 219"
+      formulas:
+        - "Ah/Al/Bt/IIBt-(r)Tv/(Tv/)cC"
+      windows:
+        - {kind: "first_top", of: {masters: ["T"]}, thr: "st_axh_window_cm", side: "range", what: "the IIBt-Tv under the Ah/Al/Bt"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "CF-LL"}
+      notes: "Loess mixed into the upper profile, its clay translocation overprinting the Terra material; the Ah/Al/Bt ends at 4 to < 7 dm over the IIBt-Tv (p. 219)."
+    - code: "SS-LL"
+      name: "Pseudogley-Parabraunerde"
+      name_en: "Pseudogley-parabraunerde"
+      name_pt: "Pseudogleissolo-parabraunerde"
+      kind: "transition"
+      page: "p. 219"
+      formulas:
+        - "Ah/Al/Al-Sw/Bt-Sd/C"
+        - "Ah/Sw-Al/Sd-Bt/Sd/C"
+      windows:
+        - {kind: "first_top", of: {masters: ["S"]}, thr: "st_s_window_cm", side: "range", what: "the first S horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-LL"}
+      notes: "The S horizons begin 4 to < 8 dm under the GOF (p. 219)."
+    - code: "GG-LL"
+      name: "Gley-Parabraunerde"
+      name_en: "Gley-parabraunerde"
+      name_pt: "Gleissolo-parabraunerde"
+      kind: "transition"
+      page: "p. 219"
+      formulas:
+        - "Ah/Al/(Go-)Bt/(Bt-)Go/G"
+      typical_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-LL"}
+      notes: "The Go begins 4 to < 8 dm under the GOF; the Gr often 13 dm or deeper (p. 219)."
+    - code: "LLd"
+      name: "Bänderparabraunerde"
+      name_en: "Banded parabraunerde"
+      name_pt: "Parabraunerde com bandas"
+      kind: "deviation"
+      page: "p. 218"
+      formulas:
+        - "Ah/Al/Bv+Bbt/(Bv/)(ilCv+Bbt/)C"
+      windows:
+        - {kind: "thickness", parts: "^Bbt$", thr: "st_bands_min_cm", side: "min", what: "the horizons with clay bands (Bbt)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LLd"}
+      notes: "Clay bands (Bbt) alternating with Bv or Cv material; the Bv+Bbt or ilCv+Bbt 10 cm or more (p. 218)."
+    - code: "LLh"
+      name: "Humusparabraunerde"
+      name_en: "Humic parabraunerde"
+      name_pt: "Parabraunerde húmica"
+      kind: "deviation"
+      page: "p. 218"
+      formulas:
+        - "Ah/Alh/(Ah-)B(h)t/(e)C"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LLh"}
+      notes: "The Ah/Alh/Ah-Bt reaches 4 dm or deeper, the Alh and Ah-Bt with the humus minimum of an Ah (p. 218)."
+    - code: "LLn"
+      name: "Normparabraunerde"
+      name_en: "Typical parabraunerde"
+      name_pt: "Parabraunerde típica"
+      kind: "norm"
+      page: "p. 218"
+      formulas:
+        - "Ah/Al/Bt/C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LLn", norm: true}
+      notes: "The fallback of the Parabraunerde (Q21) (p. 218)."
+  "LF":
+    - code: "BB-LF"
+      name: "Braunerde-Fahlerde"
+      name_en: "Brown earth-fahlerde"
+      name_pt: "Terra parda-fahlerde"
+      kind: "transition"
+      page: "p. 220"
+      formulas:
+        - "Ah/Bv-Ael/(II)(Ael/)Ael+Bt/Bt/C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-LF"}
+      notes: "A Bv-Ael over the Ael+Bt (p. 220)."
+    - code: "PP-LF"
+      name: "Podsol-Fahlerde"
+      name_en: "Podzol-fahlerde"
+      name_pt: "Podzol-fahlerde"
+      kind: "transition"
+      page: "p. 221"
+      formulas:
+        - "(Ahe/)Ae/Ael-Bhs/Ael+Bt/Bt/C"
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_part_max_cm", side: "max", what: "the podzol part (its last Bh or Bs)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PP-LF"}
+      notes: "The podzol part (Ahe/Ae/Ael-Bhs) ends above 1.5 dm (p. 221)."
+    - code: "SS-LF"
+      name: "Pseudogley-Fahlerde"
+      name_en: "Pseudogley-fahlerde"
+      name_pt: "Pseudogleissolo-fahlerde"
+      kind: "transition"
+      page: "p. 221"
+      formulas:
+        - "Ah/Ael/Ael-Sw/Bt-Sd/C"
+        - "Ah/(Ael/)Sw-Ael/Sd-Bt/Sd/C"
+      windows:
+        - {kind: "first_top", of: {masters: ["S"]}, thr: "st_s_window_cm", side: "range", what: "the first S horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-LF"}
+      notes: "The S horizons begin 4 to < 8 dm under the GOF (p. 221)."
+    - code: "GG-LF"
+      name: "Gley-Fahlerde"
+      name_en: "Gley-fahlerde"
+      name_pt: "Gleissolo-fahlerde"
+      kind: "transition"
+      page: "p. 221"
+      formulas:
+        - "Ah/Ael/(Go-)Bt/(Bt-)Go/G"
+      typical_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-LF"}
+      notes: "The Go begins 4 to < 8 dm under the GOF; the Gr often 13 dm or deeper (p. 221)."
+    - code: "LFd"
+      name: "Bänderfahlerde"
+      name_en: "Banded fahlerde"
+      name_pt: "Fahlerde com bandas"
+      kind: "deviation"
+      page: "p. 220"
+      formulas:
+        - "Ah/Ael/(Ael+Bt/)Bv+Bbt,lCv+Bbt/(Bbt+lCv/)C"
+      windows:
+        - {kind: "thickness", parts: "^Bbt$", thr: "st_bands_min_cm", side: "min", what: "the horizons with clay bands (Bbt)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LFd"}
+      notes: "Clay bands (Bbt); the Bv+Bbt or lCv+Bbt 10 cm or more (p. 220)."
+    - code: "LFn"
+      name: "Normfahlerde"
+      name_en: "Typical fahlerde"
+      name_pt: "Fahlerde típica"
+      kind: "norm"
+      page: "p. 220"
+      formulas:
+        - "Ah/Ael/Ael+Bt/Bt/C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LFn", norm: true}
+      notes: "The fallback of the Fahlerde (Q21) (p. 220)."

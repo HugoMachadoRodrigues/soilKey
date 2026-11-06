@@ -1,0 +1,160 @@
+# The subtypes of the class T, Schwarzerden (KA5 2005, the type texts pp. 202-237), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "TT":
+    - code: "DD-TT"
+      name: "Pelosol-Tschernosem"
+      name_en: "Pelosol-chernozem"
+      name_pt: "Pelossolo-tchernossolo"
+      kind: "transition"
+      page: "p. 211"
+      formulas:
+        - "(Axh/)P-Axh/P-Axh+lC(c)/C(c)"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "DD-TT"}
+      notes: "A chernozem from clayey substrate with peloturbation under the bioturbation; the P-Axh dark (chroma 2 or less, value 3 or less, typical, p. 211)."
+    - code: "BB-TT"
+      name: "Braunerde-Tschernosem"
+      name_en: "Brown earth-chernozem"
+      name_pt: "Terra parda-tchernossolo"
+      kind: "transition"
+      page: "p. 212"
+      formulas:
+        - "Axh/Bv-Axh/Bv-Axh+Bv/(Bv/)C(c)"
+        - "Axh/Bv-Axh/Axh+lC(c)/C(c)"
+        - formula: "Axh/Bv/C(c)"
+          windows:
+            - {kind: "run_bottom", parts: "^Ac?x", thr: "st_axh_window_cm", side: "range", what: "the Axh"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-TT"}
+      notes: "Browning in the Axh (Bv-Axh), or an Axh of 4 to < 7 dm over a Bv (third form) (p. 212)."
+    - code: "LL-TT"
+      name: "Parabraunerde-Tschernosem"
+      name_en: "Parabraunerde-chernozem"
+      name_pt: "Parabraunerde-tchernossolo"
+      kind: "transition"
+      page: "p. 212"
+      formulas:
+        - "(Axh/)Al-Axh/Bt-Axh/(Axh+Bht,Axh+Bv/)Axh+lC(c)"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-TT"}
+      notes: "Clay translocation in the Axh (Al-Axh over Bt-Axh) (p. 212)."
+    - code: "SS-TT"
+      name: "Pseudogley-Tschernosem"
+      name_en: "Pseudogley-chernozem"
+      name_pt: "Pseudogleissolo-tchernossolo"
+      kind: "transition"
+      page: "p. 212"
+      formulas:
+        - "Axh/(Sw-)Axh/Axh-Sw/(C-)S(c)w/(II)Sd"
+      windows:
+        - {kind: "first_top", of: {masters: ["S"]}, thr: "st_s_window_cm", side: "range", what: "the first S horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-TT"}
+      notes: "The S horizons begin 4 to < 8 dm under the GOF (p. 212)."
+    - code: "GG-TT"
+      name: "Gley-Tschernosem"
+      name_en: "Gley-chernozem"
+      name_pt: "Gleissolo-tchernossolo"
+      kind: "transition"
+      page: "p. 212"
+      formulas:
+        - "Axh/(G(c)o-Axh/)(Axh-G(c)o/)G(c)o/Gr"
+        - "Axh/Axh+lC(c)/(Axh-G(c)o/)G(c)o/Gr"
+      typical_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-TT"}
+      notes: "The G(c)o begins 4 to < 8 dm under the GOF (p. 212)."
+    - code: "TTn"
+      name: "Normtschernosem"
+      name_en: "Typical chernozem"
+      name_pt: "Tchernossolo típico"
+      kind: "norm"
+      page: "p. 211"
+      formulas:
+        - "Axh/Axh+lC(c)/C(kc,c)"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "TTn", norm: true}
+      notes: "The fallback of the Tschernosem (Q21); pedogenic carbonate (kc) in the C written only (p. 211)."
+  "TC":
+    - code: "DD-TC"
+      name: "Pelosol-Kalktschernosem"
+      name_en: "Pelosol-calcareous chernozem"
+      name_pt: "Pelossolo-tchernossolo calcário"
+      kind: "transition"
+      page: "p. 213"
+      formulas:
+        - "(Acxh/)P-Acxh/P-Acxh+elCc/eCc"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "DD-TC"}
+      notes: "As the Pelosol-Tschernosem, with secondary carbonate (p. 213)."
+    - code: "BB-TC"
+      name: "Braunerde-Kalktschernosem"
+      name_en: "Brown earth-calcareous chernozem"
+      name_pt: "Terra parda-tchernossolo calcário"
+      kind: "transition"
+      page: "p. 213"
+      formulas:
+        - "Acxh/Bv-Acxh/(Acxh/)Acxh+elCc/eCc"
+        - formula: "Acxh/Bcv/eCc"
+          windows:
+            - {kind: "run_bottom", parts: "^Acx", thr: "st_axh_window_cm", side: "range", what: "the Acxh"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-TC"}
+      notes: "Browning in the Acxh (Bv-Acxh), or an Acxh of 4 to < 7 dm over a Bcv (second form) (p. 213)."
+    - code: "LL-TC"
+      name: "Parabraunerde-Kalktschernosem"
+      name_en: "Parabraunerde-calcareous chernozem"
+      name_pt: "Parabraunerde-tchernossolo calcário"
+      kind: "transition"
+      page: "p. 213"
+      formulas:
+        - "(Axh/)Al-A(c)xh/Bt-Acxh/Acxh+elCc/eCc"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-TC"}
+      notes: "Clay translocation in the Acxh (Al-A(c)xh over Bt-Acxh) (p. 213)."
+    - code: "GG-TC"
+      name: "Gley-Kalktschernosem"
+      name_en: "Gley-calcareous chernozem"
+      name_pt: "Gleissolo-tchernossolo calcário"
+      kind: "transition"
+      page: "p. 213"
+      formulas:
+        - "Acxh/(eGco-Acxh/)(Acxh-eGco/)eGco/eGr"
+        - "Acxh/Acxh+elCc/eGco/eGr"
+      typical_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-TC"}
+      notes: "The Gco begins 4 to < 8 dm under the GOF (p. 213)."
+    - code: "TCn"
+      name: "Normkalktschernosem"
+      name_en: "Typical calcareous chernozem"
+      name_pt: "Tchernossolo calcário típico"
+      kind: "norm"
+      page: "p. 212"
+      formulas:
+        - "Acxh/Acxh+elCc/eCc"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "TCn", norm: true}
+      notes: "The fallback of the Kalktschernosem (Q21) (p. 212)."

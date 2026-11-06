@@ -1,0 +1,170 @@
+# The subtypes of the class P, Podsole (KA5 2005, the type texts pp. 202-237), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "PP":
+    - code: "BB-PP"
+      name: "Braunerde-Podsol"
+      name_en: "Brown earth-podzol"
+      name_pt: "Terra parda-podzol"
+      kind: "transition"
+      page: "p. 222"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/B(s)v/C"
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_b_bottom_cm", side: "range", what: "the B(h)s"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-PP"}
+      notes: "A Bv under the B(h)s, which ends at 1.5 to < 7 dm (deeper, the Braunerde is dropped from the name) (p. 222)."
+    - code: "LL-PP"
+      name: "Parabraunerde-Podsol"
+      name_en: "Parabraunerde-podzol"
+      name_pt: "Parabraunerde-podzol"
+      kind: "transition"
+      page: "p. 223"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/(Al/)Bt/C"
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_b_bottom_cm", side: "range", what: "the B(h)s"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-PP"}
+      notes: "A Bt under the B(h)s, which ends at 1.5 to < 7 dm (p. 223)."
+    - code: "SS-PP"
+      name: "Pseudogley-Podsol"
+      name_en: "Pseudogley-podzol"
+      name_pt: "Pseudogleissolo-podzol"
+      kind: "transition"
+      page: "p. 223"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/Sw/(II)Sd"
+        - "(Ahe/)(Sw-)Ae/Sw-B(s)h/Sw-B(h)s/(Sw/)(II)Sd"
+      windows:
+        - {kind: "first_top", of: {masters: ["S"]}, thr: "st_s_window_cm", side: "range", what: "the first S horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-PP"}
+      notes: "The S horizons begin 4 to < 8 dm under the GOF (p. 223)."
+    - code: "SG-PP"
+      name: "Stagnogley-Podsol"
+      synonyms: ["Staupodsol"]
+      name_en: "Stagnogley-podzol"
+      name_pt: "Estagnogleissolo-podzol"
+      kind: "transition"
+      page: "p. 223"
+      formulas:
+        - "(Srw-)Ahe/Srw-Ae/Sd-B(h)ms/C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SG-PP"}
+      notes: "The podzol under stagnogley horizons, an Sd-B(h)ms (Staupodsol) (p. 223)."
+    - code: "GG-PP"
+      name: "Gley-Podsol"
+      name_en: "Gley-podzol"
+      name_pt: "Gleissolo-podzol"
+      kind: "transition"
+      page: "p. 223"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/(Go-B(h)s/)(B(h)s-Go/)G"
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-PP"}
+      notes: "The G begins 4 to < 8 dm under the GOF; the Gr often 13 dm or deeper (p. 223)."
+    - code: "YK-PP"
+      name: "Kolluvisol-Podsol"
+      name_en: "Colluvisol-podzol"
+      name_pt: "Coluvissolo-podzol"
+      kind: "transition"
+      page: "p. 223"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/M/II..."
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_b_bottom_cm", side: "range", what: "the B(h)s"}
+        - {kind: "last_bottom", of: {masters: ["M"]}, thr: "st_humic_min_cm", side: "min", what: "the M"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "YK-PP"}
+      notes: "A podzol formed in a colluvium: the M reaches 4 dm or deeper and the B(h)s ends at 1.5 to < 7 dm (p. 223)."
+    - code: "YE-PP"
+      name: "Plaggenesch-Podsol"
+      name_en: "Plaggen soil-podzol"
+      name_pt: "Solo plaggen-podzol"
+      kind: "transition"
+      page: "p. 223"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/E/II..."
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_b_bottom_cm", side: "range", what: "the B(h)s"}
+        - {kind: "last_bottom", of: {masters: ["E"]}, thr: "st_humic_min_cm", side: "min", what: "the E"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "YE-PP"}
+      notes: "A podzol formed in a plaggen layer: the E reaches 4 dm or deeper and the B(h)s ends at 1.5 to < 7 dm (p. 223)."
+    - code: "PPe"
+      name: "Eisenpodsol"
+      name_en: "Iron podzol"
+      name_pt: "Podzol férrico"
+      kind: "deviation"
+      page: "p. 222"
+      formulas:
+        - "(Ahe/)Ae/Bs/C"
+      closed_on: ["Bh", "Bsh", "Bhs"]
+      checks:
+        - {check: "cp_fep", codes: ["Bs"], thr: "bs_cp_fep_max", side: "max"}
+        - {check: "hue", codes: ["Bs"]}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PPe"}
+      notes: "The Bs at least one page of hue redder than the horizon above or below (Q12); Cp/Fep of the Bs under 3 (p. 222); each tested where recorded."
+    - code: "PPh"
+      name: "Humuspodsol"
+      name_en: "Humus podzol"
+      name_pt: "Podzol húmico"
+      kind: "deviation"
+      page: "p. 222"
+      formulas:
+        - "(Ahe/)Ae/Bh/C"
+      closed_on: ["Bs", "Bsh", "Bhs"]
+      checks:
+        - {check: "cp_fep", codes: ["Bh"], thr: "bh_cp_fep_min", side: "min"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PPh"}
+      notes: "Cp/Fep of the Bh 10 or more (p. 222), tested where recorded."
+    - code: "PPd"
+      name: "Bändchenpodsol"
+      name_en: "Thin-iron-pan podzol"
+      name_pt: "Podzol com lâmina férrica"
+      kind: "deviation"
+      page: "p. 222"
+      formulas:
+        - "(Ahe/)Ae/Bh/Bbms/(Bs/)C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PPd"}
+      notes: "A thin iron pan (Bbms), mostly 1 to 2 cm (typical), in cool moist uplands (p. 222)."
+    - code: "PPn"
+      name: "Normpodsol"
+      synonyms: ["Eisenhumuspodsol"]
+      name_en: "Typical (iron-humus) podzol"
+      name_pt: "Podzol típico (ferro-húmico)"
+      kind: "norm"
+      page: "p. 222"
+      formulas:
+        - "(Ahe/)Ae/B(s)h/B(h)s/C"
+        - "(Ahe)/Ae/ixCv+B(s)h/ixCv+B(h)s/ixCv,imC"
+      checks:
+        - {check: "cp_fep", codes: ["Bsh", "Bhs"], thr: "bhs_cp_fep", side: "range"}
+      complement: ["PPe", "PPh"]
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PPn", norm: true}
+      notes: "Cp/Fep of the Bsh and Bhs 3 to < 10 (p. 222); the B(h)s weakly (Orterde) or strongly (Ortstein) cemented. The fallback of the Podsol (Q21): with its formula or this mark not met it holds provisionally, the deviation a candidate (R1)."

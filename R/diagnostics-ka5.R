@@ -674,6 +674,16 @@ ah_c_rock_ka5 <- function(pedon, type = c("RN", "RQ", "RR", "RZ")) {
   th <- a$thickness
   solid <- .kidpr_or(pre("m"), pre("x"))
   loose_th <- sum(pmax(0, fr$bottom_gof[cr] - fr$top_gof[cr]), na.rm = TRUE) + th
+  # a thin loose layer over solid rock (Ah/ilCv/imC, pp. 204-205): the solid
+  # rock that begins under 3 dm makes the Ranker, the loose material of the
+  # Regosol is the part above it (v0.9.363)
+  sol <- cr[vapply(cr, function(i) isTRUE(.kidpr_or(.ka5_rows(v, list(masters = "C", prefixes = "m"))[i],
+                                                      .ka5_rows(v, list(masters = "C", prefixes = "x"))[i])), NA)]
+  if (length(sol) && isFALSE(solid) && isTRUE(pre("l"))) {
+    st <- fr$top_gof[sol[1L]]
+    solid <- if (is.na(st)) NA else st < 30
+    loose_th <- st
+  }
   p <- switch(type,
     RN = .kidpr_and(pre("i"), solid, th < 30),
     RQ = .kidpr_and(pre("i"), .kidpr_or(.kidpr_and(pre("l"), loose_th >= 30), .kidpr_and(solid, th >= 30))),
@@ -791,8 +801,10 @@ deep_cultivation_ka5 <- function(pedon, kind = c("repeated_trenching", "single_d
 stagnic_type_ka5 <- function(pedon, type = c("SS", "SG"), max_cm = 40) {
   type <- match.arg(type)
   v <- .ka5_view(pedon)
-  up <- if (type == "SG") c("Srw", "Serw") else c("Sw", "Sew", "Sdw", "Srw", "Serw")
-  lo <- if (type == "SG") "Srd" else c("Sd", "Srd", "Swd", "Sdg")
+  # the Sw and Sd with secondary carbonate (Scw, Scd) are the Kalkpseudogley's
+  # (p. 227; v0.9.363)
+  up <- if (type == "SG") c("Srw", "Serw") else c("Sw", "Sew", "Sdw", "Srw", "Serw", "Scw", "Secw")
+  lo <- if (type == "SG") "Srd" else c("Sd", "Srd", "Swd", "Sdg", "Scd")
   a <- .ka5_within(v, list(codes = up), max_cm = max_cm)
   b <- .ka5_within(v, list(codes = lo))
   .ka5_p(.kidpr_and(a$passed, b$passed), layers = c(a$rows, b$rows), missing = .ka5_rows_missing(v, c(a$na_rows, b$na_rows)),
@@ -816,30 +828,51 @@ b_over_relict_ka5 <- function(pedon, pattern, min_cm = 15) {
   .ka5_p(isTRUE(fr$bottom_gof[last] >= min_cm), notes = sprintf("the B over a T, P, Bu or Bj reaches %s cm (1.5 dm, Abb. 22)", format(fr$bottom_gof[last])))
 }
 
-#' The Fahlerde (p. 219; C13): an Ael and the clay difference Ael to Bt of 9
-#' or 12 points. Measured and short, no Fahlerde and the conflict reported;
-#' not measured, the Fahlerde holds on the designation, provisionally.
+# The rows of the Fahlerde's clay difference (p. 220; v0.9.363): the Bt is
+# the first row under the first Ael that holds a Bt (carrying it, or as a
+# part: the Bt-Sd of SS-LF) and no Ael part (not the Ael+Bt); the Ael the
+# last row above it with an Ael part that does not carry a Bt; the Ael+Bt
+# rows between them are the interfingering.
+.ka5_fahlerde_rows <- function(v) {
+  fr <- v$frame
+  rows <- .ka5_rows_from_gof(v)
+  am <- .ka5_rows(v, list(codes = "Ael"))
+  parts <- lapply(seq_len(nrow(fr)), function(i) unique(c(fr$carrying[i], sub("^[a-z]*", "", as.character(fr$with[[i]])))))
+  has <- function(i, re) any(grepl(re, parts[[i]]))
+  ael <- rows[am[rows] %in% c(TRUE, NA) | vapply(rows, has, NA, re = "^Ael$")]
+  if (!length(ael)) return(NULL)
+  below <- rows[fr$top_gof[rows] > fr$top_gof[ael[1L]] & !vapply(rows, has, NA, re = "^Ael$")]
+  part_bt <- below[vapply(below, has, NA, re = "^B[bvh]?t$")]
+  lo <- if (length(part_bt)) part_bt[1L] else NA_integer_
+  if (is.na(lo)) return(list(ael = ael, lo = NA_integer_, up = ael[1L], between = integer(0)))
+  cand <- ael[fr$top_gof[ael] < fr$top_gof[lo] & !grepl("^B[bvh]?t$", fr$carrying[ael])]
+  up <- if (length(cand)) cand[length(cand)] else NA_integer_
+  btw <- rows[fr$top_gof[rows] > fr$top_gof[up] & fr$top_gof[rows] < fr$top_gof[lo]]
+  btw <- btw[vapply(btw, function(i) has(i, "^Ael$") && has(i, "^B[bvh]?t$"), NA)]
+  list(ael = ael, lo = lo, up = up, between = btw, am = am)
+}
+
+#' The Fahlerde (pp. 219-220; C13): an Ael and the clay difference Ael to Bt
+#' of 9 or 12 points (the Bt under the Ael+Bt, v0.9.363). Measured and short,
+#' no Fahlerde and the conflict reported; not measured, the Fahlerde holds on
+#' the designation, provisionally.
 #' @noRd
 fahlerde_ka5 <- function(pedon) {
   v <- .ka5_view(pedon)
   fr <- v$frame
-  am <- .ka5_rows(v, list(codes = "Ael"))
-  inwith <- vapply(fr$with, function(w) any(sub("^[a-z]*", "", w) == "Ael"), NA) & !(fr$buried > 0L)
-  ael <- which(am %in% c(TRUE, NA) | inwith)
-  if (!length(ael)) return(.ka5_p(FALSE, notes = "no Ael"))
-  bt <- which(.ka5_rows(v, list(pattern = "^B[bvh]?t$")) %in% TRUE)
-  bt <- bt[fr$top_gof[bt] > fr$top_gof[ael[1L]]]
-  if (!length(bt)) return(.ka5_p(NA, notes = "an Ael with no Bt under it"))
-  up <- ael[!vapply(fr$with[ael], length, 0L)][1L]
-  if (is.na(up)) up <- ael[1L]
+  fz <- .ka5_fahlerde_rows(v)
+  if (is.null(fz)) return(.ka5_p(FALSE, notes = "no Ael"))
+  if (is.na(fz$lo) || is.na(fz$up)) return(.ka5_p(NA, notes = "an Ael with no Bt under it"))
+  up <- fz$up; lo <- fz$lo
+  inwith <- any(sub("^[a-z]*", "", fr$with[[up]]) == "Ael")
   # the Ael itself undecided on the data (Al or Ael, D11)
-  und <- is.na(am[up]) && !inwith[up]
-  cd <- .ka5_clay_diff(v$x, up, bt[1L], "lf")
-  if (is.null(cd$value) || is.na(cd$value)) return(.ka5_p(if (und) NA else TRUE, layers = c(up, bt[1L]), provisional = !und, missing = "clay_pct",
+  und <- is.na(fz$am[up]) && !inwith
+  cd <- .ka5_clay_diff(v$x, up, lo, "lf", between = fz$between)
+  if (is.null(cd$value) || is.na(cd$value)) return(.ka5_p(if (und) NA else TRUE, layers = c(up, lo), provisional = !und, missing = "clay_pct",
                                      notes = "the clay of the Ael and the Bt not recorded: the Fahlerde on the designation, provisionally (C13)"))
-  if (isFALSE(cd$passed)) return(.ka5_p(FALSE, layers = c(up, bt[1L]),
+  if (isFALSE(cd$passed)) return(.ka5_p(FALSE, layers = c(up, lo),
                                         notes = c(cd$note, "the Ael written, but the clay difference is short of the Fahlerde: a conflict of the notation and the data (C13)")))
-  .ka5_p(if (und && isTRUE(cd$passed)) NA else cd$passed, layers = c(up, bt[1L]),
+  .ka5_p(if (und && isTRUE(cd$passed)) NA else cd$passed, layers = c(up, lo),
          missing = c(cd$missing, if (und) unlist(fr$missing[up])),
          notes = c(cd$note, if (und) "the Ael undecided on the data (its colour not recorded)"))
 }

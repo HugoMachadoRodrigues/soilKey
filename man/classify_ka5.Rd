@@ -33,10 +33,24 @@ Keys a \code{\link{PedonRecord}} to the divisions (Abteilungen), classes
 (Klassen) and types (Typen) of the German soil systematics of the
 Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 by its key Tab. 51. \strong{Experimental}: this release keys the 4
-divisions, 21 classes and 56 types; the subtypes of the type texts, the
-overlays ("X ueber Y") and the varieties are not keyed yet.
+divisions, 21 classes and 56 types, and the 138 subtypes of the 28
+terrestrial types from the type texts (pp. 202-237); the subtypes of the
+semiterrestrial, subhydric and Moore types, the overlays ("X ueber Y") and
+the varieties are not keyed yet.
 }
 \details{
+The subtypes (Hugo's decision Q21): inside a type the transitional
+subtypes (X-Y, a subtype of the type Y with the features of X) are tested
+first in printed order, then the deviation subtypes in printed order, the
+Norm subtype last as the fallback; the first that passes names the
+subtype, and every subtype of the type that passes is listed in
+\code{trace$subtypes_passing}. Each subtype is one of its printed
+formulas matched on the horizons (\code{\link{match_horizon_sequence}}),
+its depth windows from the GOF and its numbers (base saturation, clay
+differences, Cp/Fep, slope ...). The Rigosol and the Treposol take an open
+subtype in brackets for the type still recognisable under the R
+("[BB-YY]", Q22); the Treposol has no Norm subtype.
+
 The key reads the horizons of the profile
 (\code{identify_horizons(pedon, "ka5")}): the KA5 notation where the
 profile is written in it (declared with \code{site$designation_system =

@@ -11,7 +11,8 @@ make_ka5_example(
     "YY", "YU", "YO", "SG", "SH", "SS", "PP", "LF", "LL", "BB", "CR", "CF", "DD", "VV",
     "VW"),
   near_miss = FALSE,
-  route = c("notation", "data")
+  route = c("notation", "data"),
+  subtype = NULL
 )
 }
 \arguments{
@@ -32,6 +33,14 @@ Strand, the key's Ue-A), \code{"MR"}, \code{"MC"}, \code{"MO"}, \code{"MK"},
 \item{near_miss}{Return the twin that misses the type's gate.}
 
 \item{route}{\code{"notation"} (default) or \code{"data"}.}
+
+\item{subtype}{The code of a subtype of a terrestrial type, as printed
+(\code{"BBn"}, \code{"GG-BB"}, \code{"LF-YU"} ...; the 138 of pp.
+202-237): the example profile of that subtype, written from one of its
+printed formulas with depths inside its windows (\code{type} and
+\code{near_miss} are then not read). The type examples key to the Norm
+subtype of their type (the Treposol's to an example subtype: it has no
+Norm).}
 }
 \value{
 A \code{\link{PedonRecord}}.
@@ -48,4 +57,5 @@ notation, so that the horizons are read on the data.
 \examples{
 classify_ka5(make_ka5_example("LL"), on_missing = "silent")$name
 classify_ka5(make_ka5_example("LL", route = "data"), on_missing = "silent")$name
+classify_ka5(make_ka5_example(subtype = "GG-BB"), on_missing = "silent")$name
 }

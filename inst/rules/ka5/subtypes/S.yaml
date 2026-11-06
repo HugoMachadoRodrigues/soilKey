@@ -1,0 +1,374 @@
+# The subtypes of the class S, Stauwasserböden (KA5 2005, the type texts pp. 202-237), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "SS":
+    - code: "TT-SS"
+      name: "Tschernosem-Pseudogley"
+      name_en: "Chernozem-pseudogley"
+      name_pt: "Tchernossolo-pseudogleissolo"
+      kind: "transition"
+      page: "p. 228"
+      formulas:
+        - "Axh/Axh-Sw/(Sw/)(II)Sd"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "TT-SS"}
+      notes: "The Axh/Axh-Sw reaches 4 dm or deeper (p. 228)."
+    - code: "DD-SS"
+      name: "Pelosol-Pseudogley"
+      name_en: "Pelosol-pseudogley"
+      name_pt: "Pelossolo-pseudogleissolo"
+      kind: "transition"
+      page: "p. 228"
+      formulas:
+        - "Ah/(P-)Sw/P-Sd"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "DD-SS"}
+      notes: "A P-Sd under the Sw (p. 228)."
+    - code: "BB-SS"
+      name: "Braunerde-Pseudogley"
+      name_en: "Brown earth-pseudogley"
+      name_pt: "Terra parda-pseudogleissolo"
+      kind: "transition"
+      page: "p. 228"
+      formulas:
+        - "Ah/Bv/(Bv-Sw/)Sw/(II)Sd"
+        - "Ah/Bv-Sw/(Sw/)(II)Sd"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-SS"}
+      notes: "A Bv over the Sw or a Bv-Sw (p. 228)."
+    - code: "LL-SS"
+      name: "Parabraunerde-Pseudogley"
+      name_en: "Parabraunerde-pseudogley"
+      name_pt: "Parabraunerde-pseudogleissolo"
+      kind: "transition"
+      page: "p. 228"
+      formulas:
+        - "Ah/(Al/)Al-Sw/(II)Bt-Sd"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-SS"}
+      notes: "An Al-Sw over a Bt-Sd, the Al and Bt features still clear (p. 228)."
+    - code: "LF-SS"
+      name: "Fahlerde-Pseudogley"
+      name_en: "Fahlerde-pseudogley"
+      name_pt: "Fahlerde-pseudogleissolo"
+      kind: "transition"
+      page: "p. 228"
+      formulas:
+        - "Ah/(Ael/)Ael-Sw/(II)Bt-Sd"
+      checks:
+        - {check: "fahlerde"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LF-SS"}
+      notes: "An Ael-Sw over a Bt-Sd, the Ael and Bt features still clear (p. 228); the Fahlerde's clay difference tested where measured (C13)."
+    - code: "PP-SS"
+      name: "Podsol-Pseudogley"
+      name_en: "Podzol-pseudogley"
+      name_pt: "Podzol-pseudogleissolo"
+      kind: "transition"
+      page: "p. 228"
+      formulas:
+        - "(Ahe/)Ae/Bhs/Sw/(II)Sd"
+        - "Ahe/Ae/Bhs-Sw/(Sw/)(II)Sd"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PP-SS"}
+      notes: "A podzol part (Ae/Bhs) over the Sw or a Bhs-Sw (p. 228)."
+    - code: "CF-SS"
+      name: "Terra fusca-Pseudogley"
+      name_en: "Terra fusca-pseudogley"
+      name_pt: "Terra fusca-pseudogleissolo"
+      kind: "transition"
+      page: "p. 229"
+      formulas:
+        - "Ah/(Ah-)Sw/IITv-Sd/cC"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "CF-SS"}
+      notes: "An IITv-Sd under the Sw, from strongly reduced karst drainage (p. 229)."
+    - code: "YK-SS"
+      name: "Kolluvisol-Pseudogley"
+      name_en: "Colluvisol-pseudogley"
+      name_pt: "Coluvissolo-pseudogleissolo"
+      kind: "transition"
+      page: "p. 229"
+      formulas:
+        - "Ah/M/M-Sw/II(Sw/)Sd"
+      windows:
+        - {kind: "run_bottom", parts: "^(A|M)", thr: "st_humic_min_cm", side: "min", what: "the humic and colluvial part (Ah, M and M parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "YK-SS"}
+      notes: "The Ah/M/M-Sw reaches 4 dm or deeper (p. 229)."
+    - code: "YE-SS"
+      name: "Plaggenesch-Pseudogley"
+      name_en: "Plaggen soil-pseudogley"
+      name_pt: "Solo plaggen-pseudogleissolo"
+      kind: "transition"
+      page: "p. 229"
+      formulas:
+        - "Ah/E/E-Sw/II(Sw/)Sd"
+      windows:
+        - {kind: "run_bottom", parts: "^(A|E)", thr: "st_humic_min_cm", side: "min", what: "the humic and plaggen part (Ah, E and E parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "YE-SS"}
+      notes: "The Ah/E/E-Sw reaches 4 dm or deeper (p. 229)."
+    - code: "GG-SS"
+      name: "Gley-Pseudogley"
+      synonyms: ["Amphigley (formerly)"]
+      name_en: "Gley-pseudogley"
+      name_pt: "Gleissolo-pseudogleissolo"
+      kind: "transition"
+      page: "p. 229"
+      formulas:
+        - "Ah/Sw/(II)(Go-)Sd/(Sd-Go/)(III)Go/Gr"
+      typical_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-SS"}
+      notes: "The Go (transitional Go included) begins 4 to < 8 dm under the GOF; the Sd mostly 2 dm or more (typical) (p. 229)."
+    - code: "SSc"
+      name: "Kalkpseudogley"
+      name_en: "Calcareous pseudogley"
+      name_pt: "Pseudogleissolo calcário"
+      kind: "deviation"
+      page: "p. 227"
+      formulas:
+        - "A(c)h/Scw/(II)S(c)d"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SSc"}
+      notes: "Secondary carbonate in the Sw (Scw), only partly to the topsoil (p. 227)."
+    - code: "SSg"
+      name: "Hangpseudogley"
+      name_en: "Slope pseudogley"
+      name_pt: "Pseudogleissolo de encosta"
+      kind: "deviation"
+      page: "p. 227"
+      formulas:
+        - "Ah/sS(e)w/(II)sSd/(C)"
+        - formula: "Ah/S(e)w/(II)Sd/(C)"
+          checks:
+            - {check: "slope"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SSg"}
+      notes: "On slopes of 9 % (5 degrees) or more, the S horizons with the prefix s (p. 227); on the data the slope recorded."
+    - code: "SSh"
+      name: "Humuspseudogley"
+      name_en: "Humic pseudogley"
+      name_pt: "Pseudogleissolo húmico"
+      kind: "deviation"
+      page: "p. 227"
+      formulas:
+        - "Ah/Ah-Sw/(Sw/)(II)Sd"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SSh"}
+      notes: "The Ah/Ah-Sw reaches 4 dm or deeper, the Ah-Sw with the humus minimum of an Ah (p. 227)."
+    - code: "SSm"
+      name: "Anmoorpseudogley"
+      name_en: "Anmoor pseudogley"
+      name_pt: "Pseudogleissolo anmoor"
+      kind: "deviation"
+      page: "p. 227"
+      formulas:
+        - "Sw-Aa/S(e)w/(II)Sd"
+      windows:
+        - {kind: "thickness", parts: "^Aa$", thr: "st_aa_min_cm", side: "min", what: "the Sw-Aa"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SSm"}
+      notes: "An Sw-Aa 1 dm thick or more (thinner: a variety of the SSn) (p. 227)."
+    - code: "SSn"
+      name: "Normpseudogley"
+      name_en: "Typical pseudogley"
+      name_pt: "Pseudogleissolo típico"
+      kind: "norm"
+      page: "p. 227"
+      formulas:
+        - "Ah/S(e)w/(II)Sd"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SSn", norm: true}
+      notes: "The fallback of the Pseudogley (Q21) (p. 227)."
+  "SH":
+    - code: "BB-SH"
+      name: "Braunerde-Haftpseudogley"
+      name_en: "Brown earth-adhesive-water pseudogley"
+      name_pt: "Terra parda-pseudogleissolo de umidade aderente"
+      kind: "transition"
+      page: "p. 230"
+      formulas:
+        - "Ah/Bv/(II)Sg"
+        - "Ah/Bv-Sg/(II)Sg"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-SH"}
+      notes: "A Bv over the Sg or a Bv-Sg (p. 230)."
+    - code: "LL-SH"
+      name: "Parabraunerde-Haftpseudogley"
+      name_en: "Parabraunerde-adhesive-water pseudogley"
+      name_pt: "Parabraunerde-pseudogleissolo de umidade aderente"
+      kind: "transition"
+      page: "p. 230"
+      formulas:
+        - "Ah/Al/Bt/Sg"
+        - "Ah/Al-Sg/Bt-Sg/(Bt)"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-SH"}
+      notes: "An Al/Bt over the Sg, or Al-Sg over Bt-Sg (p. 230)."
+    - code: "LF-SH"
+      name: "Fahlerde-Haftpseudogley"
+      name_en: "Fahlerde-adhesive-water pseudogley"
+      name_pt: "Fahlerde-pseudogleissolo de umidade aderente"
+      kind: "transition"
+      page: "p. 230"
+      formulas:
+        - "Ah/Ael/Bt/(Bt-)Sg"
+        - "Ah/Ael-Sg/Bt-Sg/(Bt)"
+      checks:
+        - {check: "fahlerde"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LF-SH"}
+      notes: "An Ael/Bt over the Sg, or Ael-Sg over Bt-Sg (p. 230); the Fahlerde's clay difference tested where measured (C13)."
+    - code: "GG-SH"
+      name: "Gley-Haftpseudogley"
+      name_en: "Gley-adhesive-water pseudogley"
+      name_pt: "Gleissolo-pseudogleissolo de umidade aderente"
+      kind: "transition"
+      page: "p. 230"
+      formulas:
+        - "Ah/Sg,Go-Sg/(II)Go/(Gr)"
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-SH"}
+      notes: "The Go begins 4 to < 8 dm under the GOF (p. 230)."
+    - code: "SHh"
+      name: "Humushaftpseudogley"
+      name_en: "Humic adhesive-water pseudogley"
+      name_pt: "Pseudogleissolo de umidade aderente húmico"
+      kind: "deviation"
+      page: "p. 230"
+      formulas:
+        - "Ah/Ah-Sg/Sg"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SHh"}
+      notes: "The Ah/Ah-Sg reaches 4 dm or deeper, the Ah-Sg with the humus minimum of an Ah (p. 230)."
+    - code: "SHn"
+      name: "Normhaftpseudogley"
+      name_en: "Typical adhesive-water pseudogley"
+      name_pt: "Pseudogleissolo de umidade aderente típico"
+      kind: "norm"
+      page: "p. 230"
+      formulas:
+        - "Ah/Sg/(II)C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SHn", norm: true}
+      notes: "The Sg under 17 % clay with 50 % or more silt and finest sand (typical; a clayey variety has an Sdg) (p. 230). The fallback of the Haftpseudogley (Q21)."
+  "SG":
+    - code: "HN-SG"
+      name: "Niedermoor-Stagnogley"
+      name_en: "Fen-stagnogley"
+      name_pt: "Turfa baixa-estagnogleissolo"
+      kind: "transition"
+      page: "p. 231"
+      formulas:
+        - "nH/II(Ah-S(e)rw/)S(e)rw/IIISrd"
+      windows:
+        - {kind: "thickness", of: {masters: ["H"], prefixes: ["n"]}, thr: "st_peat_sg_cm", side: "range", what: "the nH"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "HN-SG"}
+      notes: "An nH of 1 to < 3 dm on the stagnogley (under 1 dm: a variety of the SGn; 3 dm or more: a Moor) (p. 231)."
+    - code: "HH-SG"
+      name: "Hochmoor-Stagnogley"
+      name_en: "Raised bog-stagnogley"
+      name_pt: "Turfa alta-estagnogleissolo"
+      kind: "transition"
+      page: "p. 232"
+      formulas:
+        - "hH/II(Ah-S(e)rw/)S(e)rw/IIISrd"
+      windows:
+        - {kind: "thickness", of: {masters: ["H"], prefixes: ["h"]}, thr: "st_peat_sg_cm", side: "range", what: "the hH"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "HH-SG"}
+      notes: "An hH of 1 to < 3 dm on the stagnogley (under 1 dm: a variety of the SGn) (p. 232)."
+    - code: "GG-SG"
+      name: "Gley-Stagnogley"
+      name_en: "Gley-stagnogley"
+      name_pt: "Gleissolo-estagnogleissolo"
+      kind: "transition"
+      page: "p. 232"
+      formulas:
+        - "Sw-Ah/S(e)rw/IISrd/IIIG"
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-SG"}
+      notes: "The G begins 4 to < 8 dm under the GOF (p. 232)."
+    - code: "SGd"
+      name: "Bändchenstagnogley"
+      name_en: "Thin-iron-pan stagnogley"
+      name_pt: "Estagnogleissolo com lâmina férrica"
+      kind: "deviation"
+      page: "p. 231"
+      formulas:
+        - "(Sw-)Ahe/S(e)rw/Srd-Bbms,Bbms-Srd/C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SGd"}
+      notes: "A thin iron pan perching the water (Srd-Bbms), mostly 1 to 2 cm (typical) (p. 231)."
+    - code: "SGm"
+      name: "Anmoorstagnogley"
+      name_en: "Anmoor stagnogley"
+      name_pt: "Estagnogleissolo anmoor"
+      kind: "deviation"
+      page: "p. 231"
+      formulas:
+        - "Sw-Aa/S(e)rw/IISrd"
+      windows:
+        - {kind: "thickness", parts: "^Aa$", thr: "st_aa_min_cm", side: "min", what: "the Sw-Aa"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SGm"}
+      notes: "An Sw-Aa 1 dm thick or more (thinner: a variety of the SGn) (p. 231)."
+    - code: "SGn"
+      name: "Normstagnogley"
+      name_en: "Typical stagnogley"
+      name_pt: "Estagnogleissolo típico"
+      kind: "norm"
+      page: "p. 231"
+      formulas:
+        - "Sw-Ah/S(e)rw/IISrd"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SGn", norm: true}
+      notes: "Strong wet bleaching in the S(e)rw from long waterlogging (typical, p. 231). The fallback of the Stagnogley (Q21)."
