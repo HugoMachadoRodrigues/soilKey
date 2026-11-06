@@ -78,6 +78,20 @@
 </ul></div>
 </div>
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.358" id="soilkey-09358-2026-11-05">soilKey 0.9.358 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09358-2026-11-05"></a></h2>
+<div class="section level3">
+<h3 id="south-africa-the-registry-and-the-soil-forms-0-9-358">South Africa 1991: the registry and the 73 soil forms<a class="anchor" aria-label="anchor" href="#south-africa-the-registry-and-the-soil-forms-0-9-358"></a></h3>
+<p>The South African soil classification of 1991 joins the registry as <code>za1991</code> (aliases <code>za</code>, <code>sat</code>, <code>sat1991</code>, <code>south_africa</code>), experimental and opt-in: <code><a href="../reference/classify_za1991.html">classify_za1991()</a></code> keys a profile to its soil form, <code><a href="../reference/make_za1991_example.html">make_za1991_example()</a></code> gives one synthetic profile per form, and <code>identify_horizons(pedon, "za1991")</code> reads every layer as one of the 30 diagnostic horizons and materials. Every other classification is unchanged (the fixtures of the other systems byte-identical).</p>
+<ul><li>
+<strong>The 73 forms</strong> (<code>inst/rules/za1991/key.yaml</code>, written by <code>data-raw/za1991_key.R</code>) in the order of van Huyssteen (2020), each a sequence of diagnostic horizons and materials with the horizons that would make it another form (Q3: Hutton over hard rock is Hutton, over a soft plinthic B Bainsvlei); Lichtenburg keyed, always provisional (Q1); no form gives the nearest forms, an orthic A under 100 mm over nothing the land class rock and lithosols (Q2).</li>
+<li>
+<strong>The general rules</strong>: 1500 mm (Q7), a recent deposit over a buried soil (Q8), truncated profiles; a description stopping above 1500 mm leaves the longer forms undecided (Q4); the 500 mm rules of the form pages (Valsrivier, Sepane, Swartland, the podzol forms, Witbank, Dundee, Namib).</li>
+<li>
+<strong>Decided by Hugo on the review (2026-11-06)</strong>, in <code>readings.yaml</code>: the saprolite of Swartland, Houwhoek and Groenkop may lie within 500 mm under the B, below unconsolidated material; the match is one pass over the horizons, however many are undecided; a topsoil of several layers is a vertic, melanic or humic A when that covers half of it or its upper 200 mm, for every completion of its undecided layers; a topsoil over a recent deposit is part of the deposit; a red over a yellow-brown apedal layer is one horizon unless each is 20 cm or more; a B reaching 1500 mm reads the layer described below it; registry order 14.</li>
+<li>The form names and soilKey’s glosses in English and Portuguese, and the examples in the Pro app. The families follow in the next part.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.357" id="soilkey-09357-2026-11-05">soilKey 0.9.357 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09357-2026-11-05"></a></h2>
 <div class="section level3">
 <h3 id="south-africa-the-other-horizons-and-materials-on-the-data-0-9-357">South Africa 1991: the other horizons and materials on the data<a class="anchor" aria-label="anchor" href="#south-africa-the-other-horizons-and-materials-on-the-data-0-9-357"></a></h3>

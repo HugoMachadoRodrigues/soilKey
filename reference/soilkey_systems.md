@@ -47,6 +47,7 @@ soilkey_systems()
 #> 10  cpcs1967
 #> 11 kidpr2008
 #> 12    rp2008
+#> 13    za1991
 #>                                                                     name
 #> 1                                                               WRB 2022
 #> 2                                                     SiBCS, 5th edition
@@ -60,6 +61,7 @@ soilkey_systems()
 #> 10                                French soil classification CPCS (1967)
 #> 11                       Russian soil classification (Field Guide, 2008)
 #> 12                                 French Référentiel pédologique (2008)
+#> 13                              South African soil classification (1991)
 #>                                                                                       edition
 #> 1                                                                          4th edition (2022)
 #> 2                                                                          5th edition (2018)
@@ -73,6 +75,7 @@ soilkey_systems()
 #> 10 Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols
 #> 11              Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008
 #> 12                                    Référentiel pédologique 2008, AFES, Éditions Quæ (2009)
+#> 13                            Soil classification: a taxonomic system for South Africa (1991)
 #>          status         classifier
 #> 1        stable   classify_wrb2022
 #> 2        stable     classify_sibcs
@@ -86,17 +89,33 @@ soilkey_systems()
 #> 10 experimental  classify_cpcs1967
 #> 11 experimental classify_kidpr2008
 #> 12 experimental    classify_rp2008
-#>                                            levels               aliases default
-#> 1                                            rsgs                   wrb    TRUE
-#> 2    ordens, subordens, grandes_grupos, subgrupos                 sibcs    TRUE
-#> 3      orders, suborders, great_groups, subgroups                          TRUE
-#> 4                 orders, great_groups, subgroups                  cssc   FALSE
-#> 5      orders, suborders, great_groups, subgroups                   asc   FALSE
-#> 6                       orders, groups, subgroups                  nzsc   FALSE
-#> 7                                           types         hscs, hungary   FALSE
-#> 8                 great_groups, groups, subgroups           scsj, japan   FALSE
-#> 9  great_groups, groups, subgroups, series_groups                  cscj   FALSE
-#> 10         classes, subclasses, groups, subgroups          cpcs, france   FALSE
-#> 11                       trunks, divisions, types kidpr, russia, ru2008   FALSE
-#> 12                                     references       rp, referentiel   FALSE
+#> 13 experimental    classify_za1991
+#>                                            levels
+#> 1                                            rsgs
+#> 2    ordens, subordens, grandes_grupos, subgrupos
+#> 3      orders, suborders, great_groups, subgroups
+#> 4                 orders, great_groups, subgroups
+#> 5      orders, suborders, great_groups, subgroups
+#> 6                       orders, groups, subgroups
+#> 7                                           types
+#> 8                 great_groups, groups, subgroups
+#> 9  great_groups, groups, subgroups, series_groups
+#> 10         classes, subclasses, groups, subgroups
+#> 11                       trunks, divisions, types
+#> 12                                     references
+#> 13                                          forms
+#>                           aliases default
+#> 1                             wrb    TRUE
+#> 2                           sibcs    TRUE
+#> 3                                    TRUE
+#> 4                            cssc   FALSE
+#> 5                             asc   FALSE
+#> 6                            nzsc   FALSE
+#> 7                   hscs, hungary   FALSE
+#> 8                     scsj, japan   FALSE
+#> 9                            cscj   FALSE
+#> 10                   cpcs, france   FALSE
+#> 11          kidpr, russia, ru2008   FALSE
+#> 12                rp, referentiel   FALSE
+#> 13 za, sat, sat1991, south_africa   FALSE
 ```

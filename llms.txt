@@ -1167,6 +1167,20 @@ or identifies the reference horizons on the data. This release tests the
   : Read French soil labels as references of the Referentiel pedologique
   2008
 
+## South African soil classification 1991 (experimental)
+
+The soil forms of the South African soil classification of 1991, read
+without the book from its open pages, SASRI (1999) and van Huyssteen
+(2020). Reads the South African horizon names, or identifies the 30
+diagnostic horizons and materials on the data, with WRB stand-ins
+flagged. This release keys the 73 forms; the families follow.
+
+- [`classify_za1991()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_za1991.md)
+  : Classify a pedon under the South African soil classification (1991)
+- [`make_za1991_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_za1991_example.md)
+  : Example pedons for the soil forms of the South African
+  classification
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:

@@ -104,6 +104,7 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10  cpcs1967</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11 kidpr2008</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12    rp2008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    za1991</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                     name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                               WRB 2022</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                     SiBCS, 5th edition</span>
@@ -117,6 +118,7 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10                                French soil classification CPCS (1967)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11                       Russian soil classification (Field Guide, 2008)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12                                 French Référentiel pédologique (2008)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                              South African soil classification (1991)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                       edition</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                          4th edition (2022)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                          5th edition (2018)</span>
@@ -130,6 +132,7 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11              Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12                                    Référentiel pédologique 2008, AFES, Éditions Quæ (2009)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                            Soil classification: a taxonomic system for South Africa (1991)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          status         classifier</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        stable   classify_wrb2022</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        stable     classify_sibcs</span>
@@ -143,19 +146,35 @@ entry. The <code>id</code> is what <code><a href="load_rules.html">load_rules</a
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 experimental  classify_cpcs1967</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11 experimental classify_kidpr2008</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12 experimental    classify_rp2008</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                            levels               aliases default</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                            rsgs                   wrb    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    ordens, subordens, grandes_grupos, subgrupos                 sibcs    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      orders, suborders, great_groups, subgroups                          TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 orders, great_groups, subgroups                  cssc   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      orders, suborders, great_groups, subgroups                   asc   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                       orders, groups, subgroups                  nzsc   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                           types         hscs, hungary   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                 great_groups, groups, subgroups           scsj, japan   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  great_groups, groups, subgroups, series_groups                  cscj   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10         classes, subclasses, groups, subgroups          cpcs, france   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11                       trunks, divisions, types kidpr, russia, ru2008   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                     references       rp, referentiel   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 experimental    classify_za1991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                            levels</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                            rsgs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    ordens, subordens, grandes_grupos, subgrupos</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      orders, suborders, great_groups, subgroups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 orders, great_groups, subgroups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      orders, suborders, great_groups, subgroups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                       orders, groups, subgroups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                           types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                 great_groups, groups, subgroups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  great_groups, groups, subgroups, series_groups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10         classes, subclasses, groups, subgroups</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                       trunks, divisions, types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                     references</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                                          forms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           aliases default</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                             wrb    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                           sibcs    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                    TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                            cssc   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                             asc   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                            nzsc   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                   hscs, hungary   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                     scsj, japan   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                            cscj   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                   cpcs, france   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11          kidpr, russia, ru2008   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                rp, referentiel   FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 za, sat, sat1991, south_africa   FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
