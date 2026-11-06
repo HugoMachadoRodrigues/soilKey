@@ -1,0 +1,53 @@
+# The readings soilKey makes of the South African soil classification of 1991
+# (Soil Classification Working Group, 1991. Soil classification: a taxonomic
+# system for South Africa. Memoirs on the Agricultural Natural Resources of
+# South Africa No. 15) where the open sources are silent or ambiguous. The
+# book itself is not available: soilKey reads the open AGIS key and form
+# pages (K), the family criteria (FC), the general rules (G), the topsoil
+# pages (T), the preface of the second edition (P), SASRI 1999 (S) and van
+# Huyssteen 2020 (V). An entry ending "(Hugo, 2026-11-04)" is a decision of
+# the owner, in soilKey's words; an entry ending "(soilKey's reading, for
+# Hugo to confirm, <date>)" is soilKey's own and waits for his word. The
+# criteria are paraphrased; no text of the sources is shipped.
+readings:
+  # --- the decisions of 2026-11-04 that this part applies ------------------------
+  - topic: "Registry names and declared notations"
+    page: "-"
+    reading: "The system will be za1991, namespace za, aliases za, sat, sat1991 and south_africa, experimental and opt-in. site$designation_system declares the South African notation with za, za1991, sat, sat1991 or south african; never inferred from the country, since a South African site may be described in the FAO notation. Every stored code and name carries its edition, and a name or code is never resolved between 1977, 1991 and 2018 (defaults 1 and 2) (Hugo, 2026-11-04)."
+  - topic: "The notation: diagnostic_za and the designation"
+    page: "P; S 30-33"
+    reading: "A new horizon attribute diagnostic_za holds the name of the diagnostic horizon or material, the 30 names; the same names written in designation are read too; a name of 1977 is read as its 1991 equivalent, flagged (ferrihumic B is the podzol B). The FAO and USDA letters are hints only (Bt may be a pedocutanic, prismacutanic, red structured or neocutanic B), never the name. The written name gives the horizon, the recorded data its properties (Q5) (Hugo, 2026-11-04)."
+  - topic: "The 1977 names"
+    page: "P"
+    reading: "As the preface of the second edition gives them: the ferrihumic B is the podzol B; the gleycutanic B is the G horizon (the Kroonstad form) or the unspecified material with signs of wetness (the Pinedene form); the calcareous red or yellow-brown apedal B and the calcareous neocutanic B are the neocarbonate B. Each is flagged '1977 name' (Q5) (Hugo, 2026-11-04)."
+  - topic: "The new attributes"
+    page: "-"
+    reading: "diagnostic_za, plasticity_index, liquid_limit_method (the Casagrande cup when not recorded, flagged), bedrock_pct, coatings_hue_moist, coatings_chroma_moist, coatings_continuity, recent_deposit, cross_bedding and sand_grade on the horizons, and reference_za_form, reference_za_family, reference_za_raw and reference_za_edition on the site (benchmarks only, never read to classify). stone_line and stripped_grains are not added: a recorded stone line is evidence, the stripped grains are uncoated_grains_pct (default 21; Q8, Q17, Q19, Q23) (Hugo, 2026-11-04)."
+  # --- the readings of this part, decided on its review (2026-11-04) ---------------
+  - topic: "The short forms"
+    page: "-"
+    reading: "No open source prints abbreviations of the 1991 horizons (S abbreviates only the forms), and none of the 659 South African AfSP profiles writes a diagnostic name in its layers, so soilKey's two-letter short forms (ot, re, ye, sp, hp, ne, pd, pr, li, gh, do) are not read until they are checked on a survey sheet. The full names and soilKey's tokens (OA, RAB, SPL ...) are read in diagnostic_za, and E and G alone keep their meaning there, never inside a designation (reading 1, amended: the short forms dropped) (Hugo, 2026-11-04)."
+  - topic: "Recognising the notation in the designations"
+    page: "-"
+    reading: "Without a declaration, a profile's designations are read as South African names when the profile records a name in diagnostic_za (a word that names nothing does not count) or when one designation holds a name only this system writes (the topsoil names, red apedal, yellow-brown apedal, red structured, neocutanic, neocarbonate, pedocutanic, prismacutanic, lithocutanic, podzol B, soft or hard plinthic, the carbonate horizons, dorbank, regic sand, man-made soil deposit, the materials with or without signs of wetness, and the 1977 ferrihumic and gleycutanic B). The names other writings share (E horizon, G horizon, placic pan, saprolite, hard rock, stratified alluvium; humic, vertic, melanic; calcrete, ferricrete, ouklip, hard plinthite, silcrete) are read only in a profile declared or recognised so: a Cr (saprolite) of a USDA description is not a South African name. A site that declares another notation has none of its designations read as names, and gives no FAO hints unless that notation writes the FAO or USDA letters; diagnostic_za is read whatever the site declares (reading 2) (Hugo, 2026-11-04)."
+  - topic: "The gleycutanic B by position"
+    page: "P"
+    reading: "A gleycutanic B is the G horizon under a topsoil horizon or an E, and the unspecified material with signs of wetness under a red or yellow-brown apedal, neocutanic or neocarbonate B, read on the nearest layer above it that holds a diagnostic horizon (only the layers that hold none are skipped). When that layer is undecided or not read, its candidates, else the hints of its FAO letters, decide when they all lead to one of the two (red or yellow-brown apedal B: the unspecified material; a Bw: the same); anywhere else, or with nothing above, it stays undecided between the two (reading 3, amended after the review) (Hugo, 2026-11-04)."
+  - topic: "Other words for the hard and carbonate horizons"
+    page: "S 31; P"
+    reading: "Read by their adjective: calcrete alone is undecided between the soft carbonate horizon and the hardpan carbonate horizon; hardpan calcrete is the hardpan carbonate horizon; powder (powdery) or nodular calcrete the soft carbonate horizon; ouklip, ferricrete, hardpan ferricrete and hard plinthite the hard plinthic B; nodular ferricrete undecided between the soft and the hard plinthic B; silcrete hard rock (P, Mispah). Ironpan and laterite are left out, as other systems use them otherwise. Each is read with a note and none recognises a profile by itself (reading 4, amended) (Hugo, 2026-11-04)."
+  - topic: "Names in Afrikaans"
+    page: "-"
+    reading: "The 1991 system was also published in Afrikaans and many descriptions are written in it (ortiese A, rooi apedale B ...). No open source gives the Afrikaans names, so soilKey reads the English names only; a name that looks Afrikaans is left unread with a note that says so (reading 5) (Hugo, 2026-11-04)."
+  - topic: "No diagnostic horizon, negations, doubt and two names"
+    page: "S 31; K 1-3"
+    reading: "In diagnostic_za, none, no diagnostic, no subsoil (the key's words), none with a remark (none (lithosol)) and a name marked non-diagnostic or not diagnostic, before or after it (non-diagnostic saprolite, saprolite (non-diagnostic); S 31 speaks of non-diagnostic saprolite), record a layer that holds no diagnostic horizon; NA, nd, '-' and '?' record nothing. A name negated by not, no, non, without, absent or none elsewhere in the text (not red apedal B, E horizon absent; but the name unconsolidated material without signs of wetness is read) is not read, with a note. A name written with doubt (?, possibly, probably, perhaps, maybe) stays a candidate, the token undecided, with a note. Two names in one field (red apedal B / soft plinthic B, '... or ...') leave the layer undecided between them; a name inside other words (B1 red apedal, B2 soft carbonate) is read, with a note, and 'calcareous' written after a name (red apedal B, calcareous) keeps the name, with a note that a calcareous apedal or neocutanic B is the neocarbonate B (reading 6, with the fixes of the review) (Hugo, 2026-11-04)."
+  - topic: "The name against the master letter"
+    page: "P"
+    reading: "When a name, from diagnostic_za or from the designation itself, is a topsoil horizon on a layer designated E, B, C, R or G, or a subsoil horizon on one designated A, O or H, the name is kept and the disagreement noted (Bss vertic); the designation never changes the name (reading 7) (Hugo, 2026-11-04)."
+  - topic: "The hints of the FAO letters"
+    page: "-"
+    reading: "Besides the letters of the plan: A gives the four mineral topsoils; Bkm and Ckm only the hardpan carbonate horizon (cemented), Ck the two carbonate horizons; Bc the soft and the hard plinthic B; Cqm the dorbank; Cu and ^C the man-made soil deposit; Cr the saprolite, the two wet materials, the G horizon and the lithocutanic B (Cr is weathered rock in the USDA notation and a strongly reduced C in the FAO's); Br the G horizon and the wet materials. A suffix is one of the FAO or USDA letters, ss (slickensides, no hint) or ^; at most three suffixes and two digits in a run, so a word (Bleached, Clay, Rock, Calcareous, Hutton, Hu1200) gives no hint. A B, C or transition with no suffix gives no hint beyond its master (B alone none). A master letter alone in diagnostic_za is a hint, never the name, except E and G (reading 8, amended: R2) (Hugo, 2026-11-04)."
+  - topic: "The declared values"
+    page: "-"
+    reading: "designation_system is compared once lower-cased with spaces and punctuation dropped: za, za1991, sat and sat1991, and any value starting with south africa (South Africa, south_africa, South African, South African 1991) declare the notation. SA and RSA name the country, not a notation: they neither declare it nor count as another notation, so the distinctive names in the designations are still read (reading 9, amended) (Hugo, 2026-11-04)."
