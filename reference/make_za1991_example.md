@@ -16,7 +16,7 @@ are not real profiles.
 ## Usage
 
 ``` r
-make_za1991_example(form = "hutton", notation = FALSE)
+make_za1991_example(form = "hutton", notation = FALSE, family = NULL)
 ```
 
 ## Arguments
@@ -30,14 +30,30 @@ make_za1991_example(form = "hutton", notation = FALSE)
   Write the name of each horizon in `diagnostic_za` (the South African
   notation) besides the data (default `FALSE`).
 
+- family:
+
+  Optional family code of the form (`"Hu1200"`, or its four digits
+  `"1200"`); `NULL` (default) for the first family.
+
 ## Value
 
 A
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md).
 
+## Details
+
+Since v0.9.359 each form example also holds the classes of one of its
+families: the first of the form by default (Hu1100 for Hutton), or the
+family named in `family`, made by changing the layer each family
+criterion reads (its colour, clay, cations, structure, carbonates,
+consistence) or adding the layer it reads (rock under the organic O, a
+podzolic layer under the yellow-brown apedal B of Constantia).
+
 ## Examples
 
 ``` r
 classify_za1991(make_za1991_example("clovelly"), on_missing = "silent")$name
-#> [1] "Clovelly"
+#> [1] "Clovelly, Cv1100 Twyfelaar, sandy loam"
+classify_za1991(make_za1991_example("hutton", family = "Hu2200"), on_missing = "silent")$name
+#> [1] "Hutton, Hu2200 Suurbekom, sandy loam"
 ```

@@ -6,8 +6,8 @@ to the soil forms of the South African soil classification of 1991 (Soil
 Classification Working Group, 1991; the "Blue Book"). **Experimental**:
 the book itself is not available to soilKey; the key is read from its
 open pages (the AGIS key and form pages, the general rules, the topsoil
-pages), SASRI (1999) and van Huyssteen (2020). This release keys the 73
-forms; the families follow.
+pages), SASRI (1999) and van Huyssteen (2020). It keys the 73 forms and,
+since v0.9.359, their 404 families.
 
 ## Usage
 
@@ -44,10 +44,14 @@ classify_za1991(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
-with `system_id` `"za1991"`: the form in `name` and `rsg_or_order` (its
-code in `levels`, with `name_en`, soilKey's gloss: the sequence of its
-horizons), the sequence read in `qualifiers$za_sequence` and the
-identified layers in `qualifiers$za_horizons` (with `za_truncated`,
+with `system_id` `"za1991"`: the form in `rsg_or_order`, the full name
+(form, family, texture) in `name`, the form and the family in `levels`
+(with `name_en`, soilKey's gloss of the form: the sequence of its
+horizons), the family read in `qualifiers$za_family` (its code and name,
+the partial code of an undecided family, the texture, and every
+criterion read: its class, the layers read, the stand-ins and the
+attributes missing), the sequence read in `qualifiers$za_sequence` and
+the identified layers in `qualifiers$za_horizons` (with `za_truncated`,
 `za_land_class` and `za_nearest` when they apply), the general rules
 applied, the stand-ins used and the nearest forms in `warnings`, and
 `provisional_because`.
@@ -86,6 +90,18 @@ always provisional. The readings soilKey makes where the open sources
 are silent are in
 `system.file("rules", "za1991", "readings.yaml", package = "soilKey")`.
 
+The families (v0.9.359) are read by the 19 family criteria of the book,
+each on the horizon its family names (the B1 of the red apedal B, the E,
+the upper G, the layer under the placic pan ...), as the form key
+identified it: the first family whose classes all hold is the family;
+with a criterion undecided for lack of data, the result names the
+families left possible and soilKey's partial code, an "x" for each
+undecided digit (`"Hutton, [Hu1x00]"`). The name follows the
+identification of the book: the form, the family code and name, and the
+USDA texture class of the A when its clay, silt and sand are recorded
+(with the sand grade of `sand_grade`):
+`"Hutton, Hu1200 Kelvin, sandy loam"`.
+
 ## References
 
 Soil Classification Working Group (1991). Soil classification: a
@@ -104,7 +120,7 @@ Development, Pretoria.
 ``` r
 res <- classify_za1991(make_za1991_example("hutton"), on_missing = "silent")
 res$name
-#> [1] "Hutton"
+#> [1] "Hutton, Hu1100 Lillieburn, sandy loam"
 res$qualifiers$za_sequence
 #> [1] "OA - RAB"
 ```

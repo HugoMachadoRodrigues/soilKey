@@ -78,6 +78,24 @@
 </ul></div>
 </div>
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.359" id="soilkey-09359-2026-11-06">soilKey 0.9.359 (2026-11-06)<a class="anchor" aria-label="anchor" href="#soilkey-09359-2026-11-06"></a></h2>
+<div class="section level3">
+<h3 id="south-africa-the-families-0-9-359">South Africa 1991: the families<a class="anchor" aria-label="anchor" href="#south-africa-the-families-0-9-359"></a></h3>
+<p><code><a href="../reference/classify_za1991.html">classify_za1991()</a></code> now keys the second and last level of the South African soil classification of 1991: the 404 families of the 73 forms, by the 19 family criteria. The name follows the identification of the book (Q23): the form, the family code and name, and the USDA texture class of the A when its clay, silt and sand are recorded (<code>"Hutton, Hu1200 Kelvin, sandy loam"</code>; the sand grade with <code>sand_grade</code>). Every other classification is unchanged (the fixtures of the other systems byte-identical).</p>
+<ul><li>
+<strong>The families</strong> (<code>inst/rules/za1991/families.yaml</code>, written by <code>data-raw/za1991_families.R</code>): codes of the form and the four printed digits, names as printed, the slips of the key pages read as in the plan (Plooysburg 1000 and 2000, the 1110 headers, the Shortlands 3000 families on the B1, the signs of wetness of the soft carbonate horizon). The first family whose classes all hold is the family; a criterion undecided for lack of data leaves the result provisional, with the families still possible and soilKey’s partial code, an x for each undecided digit (<code>"Hutton, [Hux200]"</code>).</li>
+<li>
+<strong>The 19 criteria</strong> (<code>R/families-za.R</code>), each read once on the horizon its family names, as the form key identified it (the B1 of Q20, the A, the E, the upper G, the upper C, the layer under the placic pan or the podzol B, the profile within 1500 mm): the base status of the B1 (S-value x 100 / clay %), the luvic B1 (Q21), hard lithocutanic B and saprolite (Q19), calcareous (Q22), the colours (Q9-Q12), podzolic character (Q13), the humic A, fibrous O, lamellae, structure, black cutans, ortstein, the consistence of the C and the material under the O. <code>qualifiers$za_family</code> lists every criterion read: its class, the layers, the stand-ins and the attributes missing.</li>
+<li>
+<strong>Examples</strong>: every form example holds the classes of its first family, and <code>make_za1991_example(form, family = "Hu1200")</code> gives a profile of any of the 404 families, by the data and by the notation.</li>
+<li>
+<strong>Decided by Hugo on the review (2026-11-06)</strong>, in <code>readings.yaml</code>: an organic O of unrecorded lower limit no longer stops the key; the absence of wetness or carbonates is undecided on a description that stops above 1500 mm or has nothing under the A; a pale soft carbonate horizon shows signs of wetness only by its mottles or a gley hue; hardness follows the USDA rupture resistance (dry hard, moist very firm, moderately cemented or more); the 500 mm under the organic O is the book’s (K 17); one pair of brackets around a partial code, and none when no class of a digit holds; a redder E is grey; Dundee reads its wetness from the alluvium down; a calcareous part anywhere in the B makes the calcareous Shortlands families; a fibrous O needs one run of 200 mm; the B1 is the upper layer of the first B; on a B of several colours FC 5 takes the larger share of dark or red; the other readings of this part confirmed.</li>
+<li>
+<strong>A diagnostic horizon of several layers</strong> on the data: the lower layers of a red structured B (and of a placic pan) under a layer of the same horizon were read as no horizon, and those of a lithocutanic B as saprolite; they are now read as the horizon, as the other B horizons, the E and the G already were (a layer under a lithocutanic B is saprolite only by its own rock).</li>
+<li>The criteria names in English and Portuguese, the families level in the app and the report.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.358" id="soilkey-09358-2026-11-05">soilKey 0.9.358 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09358-2026-11-05"></a></h2>
 <div class="section level3">
 <h3 id="south-africa-the-registry-and-the-soil-forms-0-9-358">South Africa 1991: the registry and the 73 soil forms<a class="anchor" aria-label="anchor" href="#south-africa-the-registry-and-the-soil-forms-0-9-358"></a></h3>
