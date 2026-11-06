@@ -1,0 +1,290 @@
+# Every number the identification of the South African horizons on the data
+# reads (R/diagnostics-za-horizons.R), in one file: the South African soil
+# classification of 1991 (Soil Classification Working Group, 1991. Soil
+# classification: a taxonomic system for South Africa. Memoirs on the
+# Agricultural Natural Resources of South Africa No. 15).
+#
+# The book itself is not available. Where an open source gives the number it
+# is cited (T = the topsoil pages, S = SASRI 1999 printed page, V = van
+# Huyssteen 2020 printed page, FC = family criterion, K = AGIS page, P = the
+# preface of the second edition, G = the general rules). Where none does,
+# soilKey stands in with a WRB 2022 number or a reading of its own, and the
+# entry says stand_in: true; every test that reads such an entry flags its
+# answer ("stand_in:<name>" in the trace). When the book's numbers are
+# supplied, only this file changes: replace the value, cite the page, set
+# stand_in: false, and the flags drop without a change to the code.
+#
+# Fields:
+#   value     the number, or the list of values
+#   op        how the test compares (">=", ">", "<=", "<")
+#   unit      the unit, or what the number counts
+#   basis     the colour state or the method the number is read in
+#   source    the page tags, or wrb_standin / soilkey
+#   decision  Hugo's decision behind it, when there is one
+#   stand_in  true when the number is not the book's (flagged in the trace)
+#   note      soilKey's words on how it is read
+
+edition_id: za1991
+
+thresholds:
+  # --- general rules (G; read by later parts) ----------------------------------
+  diagnostic_depth:
+    value: 1500
+    unit: "mm, the top of a horizon above it"
+    source: "G; P"
+    decision: "Q7"
+    stand_in: false
+  burial_deposit:
+    value: 500
+    unit: "mm of a recent deposit over a classifiable buried soil"
+    source: "G"
+    decision: "Q8"
+    stand_in: false
+
+  # --- the topsoil horizons (T) ---------------------------------------------------
+  organic_o_oc:
+    value: 10
+    op: ">="
+    unit: "% organic carbon, thickness-weighted over organic_o_depth from the top of the layer"
+    source: "T-organic (i); S 30"
+    stand_in: false
+  organic_o_depth:
+    value: 200
+    unit: "mm, the vertical distance of the average"
+    source: "T-organic (i)"
+    stand_in: false
+  organic_o_saturation_days:
+    value: 30
+    op: ">="
+    unit: "days saturated with water in most years (water_saturation_days)"
+    source: "wrb_standin"
+    decision: "Q18"
+    stand_in: true
+    note: "T-organic (ii) says 'for long periods' with no number; the WRB 2022 histic horizon (saturated 30 consecutive days or more, the folic horizon less) stands in. Not recorded, the saturation is read from its evidence (Q18): the site artificially drained, a water table in the layer or the next one, or signs of wetness below; nothing of it, undecided."
+  organic_o_wetness_cm:
+    value: 50
+    op: "<"
+    unit: "cm below the lower boundary of the O: signs of wetness in a layer starting within it are evidence of saturation"
+    source: "soilkey"
+    decision: "Q18 (Hugo, 2026-11-05)"
+    stand_in: true
+  humic_oc:
+    value: 1.8
+    op: ">"
+    unit: "% organic carbon, in some part of the topsoil"
+    source: "T-humic (i)"
+    stand_in: false
+  base_ratio:
+    value: 4
+    unit: "cmol(+) exchangeable Ca + Mg + K + Na per kg clay, for each 1 % organic carbon"
+    source: "T-humic (ii); T-melanic (iv)"
+    stand_in: false
+    note: "Humic A under the value, melanic A at or over it: the two never both hold. Exchangeable cations; with ec_high, flagged (default 10)."
+  ec_high:
+    value: 4
+    op: ">="
+    unit: "dS/m (ec_dS_m), saline enough that soluble cations may inflate the bases"
+    source: "soilkey"
+    decision: "default 10"
+    stand_in: true
+  uncoated_grains:
+    value: 25
+    op: ">="
+    unit: "% of sand and silt grains with no coating (uncoated_grains_pct)"
+    source: "soilkey"
+    decision: "default 8"
+    stand_in: true
+    note: "T-humic (iii), evidence of stripped sesquioxide coatings, has no number; soilKey's threshold for stripped grains stands in. Not recorded, absent."
+  vertic_structure_grade:
+    value: strong
+    unit: "structure_grade"
+    source: "T-vertic (i)"
+    stand_in: false
+  vertic_slickensides:
+    value: common
+    op: ">="
+    unit: "slickensides amount (absent < few < common < many)"
+    source: "T-vertic (ii); V 17"
+    decision: "Q17"
+    stand_in: false
+    note: "'Clearly visible, regularly occurring slickensides' read as common or more (Q17). Without the plasticity index the slickensides decide vertic against melanic, flagged."
+  plasticity_index_cup:
+    value: 32
+    op: ">"
+    unit: "plasticity index, liquid limit by the South African Casagrande cup"
+    source: "T-vertic (ii); T-melanic (iii)"
+    stand_in: false
+  plasticity_index_cone:
+    value: 36
+    op: ">"
+    unit: "plasticity index, liquid limit by the British Standard cone"
+    source: "T-vertic (ii); T-melanic (iii)"
+    stand_in: false
+  melanic_dry_value:
+    value: 3
+    op: "<="
+    basis: dry
+    unit: "Munsell value"
+    source: "T-melanic (i)"
+    stand_in: false
+  melanic_dry_chroma:
+    value: 3
+    op: "<="
+    basis: dry
+    unit: "Munsell chroma"
+    source: "T-melanic (i)"
+    stand_in: false
+  melanic_excluded_colour:
+    value: "10YR 3/3"
+    basis: dry
+    source: "T-melanic (i)"
+    stand_in: false
+  melanic_excluded_hue:
+    value: "5YR"
+    op: "<="
+    unit: "hues of 5YR or redder are not melanic"
+    basis: dry
+    source: "T-melanic (i)"
+    stand_in: false
+
+  # --- the colours (Q9-Q12) -------------------------------------------------------
+  red_hues:
+    value: ["5YR", "2.5YR", "10R", "7.5R"]
+    basis: moist
+    unit: "Munsell hue of the matrix"
+    source: "FC 5; FC 9; S 32"
+    decision: "Q11"
+    stand_in: false
+    note: "Moist hue; the dry hue only when no moist one is recorded, flagged. A colour yellow dry and red moist is red (S 32)."
+  red_redder_hues:
+    value: true
+    unit: "hues redder than the listed ones (5R, 2.5R, the RP hues) read as red"
+    source: "soilkey"
+    stand_in: true
+  red_greater_part:
+    value: 50
+    op: ">"
+    unit: "% of the thickness of the horizon"
+    source: "FC 9"
+    decision: "Q11"
+    stand_in: false
+    note: "Read by the part that merges the layers of one horizon; each layer is read by its matrix hue."
+  grey_dry:
+    value:
+      - {value_min: 7, chroma_max: 3}
+      - {value_min: 5, chroma_max: 2}
+    basis: dry
+    unit: "Munsell value and chroma, dry (either pair)"
+    source: "wrb_standin"
+    decision: "Q9"
+    stand_in: true
+    note: "The dry part of the WRB 2022 albic material as soilKey tests it, without its moist colour (a yellow E is yellow moist). Read for the E, the bleached orthic A (FC 4), the grey E (FC 6) and the yellow-brown apedal B (not grey dry). Dry colour not recorded: undecided."
+  grey_dry_moist_chroma:
+    value: 4
+    op: ">="
+    basis: moist
+    unit: "Munsell chroma, moist: with the dry colour not recorded, this moist chroma or more is not grey dry"
+    source: "soilkey"
+    decision: "Hugo, 2026-11-05"
+    stand_in: true
+  yellow_brown_hue:
+    value: "7.5YR"
+    op: ">="
+    basis: moist
+    unit: "Munsell hue of the matrix, 7.5YR or yellower (YR and Y hues)"
+    source: "soilkey"
+    decision: "Q10"
+    stand_in: true
+    note: "No open source gives the chart (K 4-5 give only 10YR 3/4 moist, 10YR 4/4 dry). Yellow-brown: this hue or yellower, the moist chroma above low_chroma, and not grey dry (Q9)."
+  low_chroma:
+    value: 2
+    op: "<="
+    basis: moist
+    unit: "Munsell chroma of the dominant matrix (outside the gley hues, at a moist value of low_chroma_value or more)"
+    source: "soilkey"
+    decision: "Q12 (soilKey's reading, Hugo, 2026-11-04)"
+    stand_in: true
+  low_chroma_value:
+    value: 4
+    op: ">="
+    basis: moist
+    unit: "Munsell value: a chroma of 2 or less is grey only at this value or more (the dark colours of FC 5 are not grey)"
+    source: "soilkey"
+    decision: "D4 (Hugo, 2026-11-05)"
+    stand_in: true
+  gley_hues:
+    value: ["N", "GY", "G", "BG", "B", "PB", "10Y"]
+    basis: moist
+    unit: "Munsell hue families (and the hue 10Y) of a reduced matrix: low chroma whatever the chroma"
+    source: "soilkey"
+    decision: "Q12; 10Y added (Hugo, 2026-11-05)"
+    stand_in: true
+  wetness_signs:
+    value: 5
+    op: ">="
+    unit: "% of the layer in the grey low-chroma colours (matrix or mottles)"
+    source: "soilkey"
+    decision: "Q12"
+    stand_in: true
+    note: "Signs of wetness: a low-chroma matrix, or low-chroma mottles on 5 % or more of the layer (redoximorphic_features_pct), the redoximorphic threshold soilKey already uses."
+
+  # --- the apedal and structured B horizons (S 31-32; V 21-29) -------------------
+  apedal_max_grade:
+    value: weak
+    unit: "structure grade, moist: weaker than moderate blocky or prismatic"
+    source: "V 21; S 32"
+    stand_in: false
+  apedal_cec:
+    value: 11
+    op: "<"
+    unit: "cmol(+)/kg soil"
+    basis: "NH4OAc pH 7 (cec_method acetate_ph7)"
+    source: "V 21; P"
+    decision: "default 16"
+    stand_in: false
+    note: "Only when the structure is borderline (weak to moderate). A CEC by another method stands in, flagged; not recorded, read as by ammonium acetate, with a note."
+  plinthic_mottles:
+    value: 10
+    op: ">"
+    unit: "% by volume of mottles and concretions (redoximorphic features; plinthite plus ferric nodules)"
+    source: "S 33; V 25"
+    stand_in: false
+    note: "More than this makes the soft plinthic B; the apedal B horizons hold this much or less (S 32)."
+  calcareous_caco3:
+    value: 1
+    op: ">="
+    unit: "% CaCO3, when no effervescence is recorded"
+    source: "soilkey"
+    decision: "Q22"
+    stand_in: true
+    note: "Calcareous: effervescence recorded (effervescence_class not none, read as with cold 10 % HCl), else caco3_pct at or over this, flagged; neither recorded, not calcareous (an observation not recorded is absent)."
+  prismacutanic_clay:
+    value:
+      low: {above_lt: 20, factor: 2}
+      high: {above_ge: 20, plus: 20}
+    unit: "% clay of the B against the A or E directly above"
+    source: "S 32"
+    decision: "Q21"
+    stand_in: false
+    note: "Under 20 % clay above, the B at least twice as much; 20 % or more above, at least 20 points more (20 % exactly by the second rule: 40 % in both, Q21)."
+  prismacutanic_dark_cutans:
+    value: 3
+    op: "<="
+    basis: moist
+    unit: "Munsell value of the coatings (coatings_value_moist) of a wet prismacutanic B"
+    source: "soilkey"
+    stand_in: true
+    note: "S 32: with signs of wetness the clayskins are uniformly dark; no number."
+  red_structured_clay:
+    value: 35
+    op: ">"
+    unit: "% clay, 'usually' (descriptive, evidence only, never a test)"
+    source: "S 31"
+    stand_in: false
+  lithocutanic_rock:
+    value: 10
+    op: ">="
+    unit: "% by volume of weathering rock in place (bedrock_pct, else saprolite_pct) in a layer that still holds soil"
+    source: "soilkey"
+    stand_in: true
+    note: "S 31: the lithocutanic B merges into weathering rock, soil penetrating it in tongues; no number. Under 100 %: a layer of rock alone is not a B."
