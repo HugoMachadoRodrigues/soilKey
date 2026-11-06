@@ -1,0 +1,318 @@
+# KA5 (2005) horizon formulas of Liste 31 (pp. 199-201) and of the subtypes and overlays of 5.7.1
+# (pp. 202-262), transcribed from the page images (codes and formulas only; notes: depth annotations).
+class	type	unit	kind	page	formula	note
+F	FF	FF	type	199	O/mC	
+F	FS	FS	type	199	xC+O/C	
+O	OO	OO	type	200	Ai/mC	
+O	OL	OL	type	200	Ai/lC	
+R	RN	RN	type	200	Ah/imC,ixC	
+R	RQ	RQ	type	200	Ah/ilC	
+R	RR	RR	type	200	Ah/cC	
+R	RZ	RZ	type	200	Ah/eC	
+T	TT	TT	type	200	Axh/Axh+lC(c)/C(c)	
+T	TC	TC	type	200	Acxh/Acxh+elCc/eCc	
+D	DD	DD	type	200	(P-)Ah/P/C	
+B	BB	BB	type	200	Ah/Bv/C	
+L	LL	LL	type	200	Ah/Al/Bt/C	
+L	LF	LF	type	200	Ah/Ael/Ael+Bt/Bt/C	
+P	PP	PP	type	200	Ahe/Ae/B(s)h/B(h)s/C	
+C	CF	CF	type	200	Ah/Tv/cC	
+C	CR	CR	type	200	Ah/Tu/cC	
+V	VV	VV	type	200	.../IIr,fBj/Cj/Cv	
+V	VW	VW	type	200	.../IIr,fBu/Cj/Cv	
+S	SS	SS	type	200	Ah/S(e)w/(II)Sd	
+S	SH	SH	type	200	Ah/Sg	
+S	SG	SG	type	200	Sw-Ah/S(e)rw/IISrd	
+X	XX	XX	type	200	Ah/Y	
+Y	YK	YK	type	200	Ah/M/II...	
+Y	YE	YE	type	200	Ah/E/II...	
+Y	YO	YO	type	200	Ap/Ex/(Ex-)C	
+Y	YY	YY	type	200	R-Ap/(Ah-)R/C	
+Y	YY	YY	type	200	R/C	
+Y	YU	YU	type	200	R-Ap/R+.../...	
+A	AO	AO	type	201	aAi/alC/aG	
+A	AQ	AQ	type	201	aAh/ailC/aG	
+A	AZ	AZ	type	201	a(e)Ah/aelC/aG	
+A	AT	AT	type	201	aAxh/(aM,alC/)aG	
+A	AB	AB	type	201	aAh/aM/(IIalC/)(II)aG	
+G	GG	GG	type	201	Ah/Go/Gr	
+G	GN	GN	type	201	Go-Ah/Gr	
+G	GM	GM	type	201	Go-Aa/Gr	
+G	GH	GH	type	201	H/IIGr	
+M	MR	MR	type	201	(z)(e)Go-Ah/((z)(e)Go/)(z)(e)Gr	
+M	MC	MC	type	201	(e)Ah/eGo/(z)eGr	
+M	MN	MN	type	201	Ah/Go/(z)(e)Gr	
+M	MH	MH	type	201	Ah/(e)Sg-Go/(z)(e)Gr	
+M	MD	MD	type	201	Ah/Go-Sw/IIfAh°Sd/fGo-°Sd/Go/Gr	
+M	MD	MD	type	252	Ah/Sw/IIfAh°Sd/fGo°Sd/Go/Gr	the type text (p. 252); Liste 31 writes Ah/Go-Sw/...
+M	MK	MK	type	201	Ah/Sw/Sq/Gr	
+M	MO	MO	type	201	oAh/oGo/oGr	
+Ü	ÜA	ÜA	type	201	(z)(e)Ai/((z)(e)lC/)zeG	
+I	IA	IA	type	201	tmz(e)Fw/tmz(e)Fr	
+I	IW	IW	type	201	(z)(e)Fo/(z)(e)Fr	
+J	JP	JP	type	201	Fi/...	
+J	JG	JG	type	201	Fo/...	
+J	JS	JS	type	201	Fr/...	
+J	JD	JD	type	201	Fh/...	
+H	HN	HN	type	201	nH,uH/(IIfF/)...	
+H	HH	HH	type	201	hH/(IInH/)(II,IIIfF/)...	
+K	KV	KV	type	201	nHv/(nHt/)nHw/(nHr/)(IIfF/)...	
+K	KM	KM	type	201	nHm/nHa/nHt/nHw/(nHr/)(IIfF/)...	
+K	KH	KH	type	201	hHv/hHw/(hHr/)(IIuHr/)(II,IIInHr/)(...fF/)...	
+F	FF	FFn	subtype	202	O/mC	
+F	FS	FSn	subtype	203	(O/)xC+O/(xC/)mC,lC	
+O	OO	OOn	subtype	203	Ai/mC	
+O	OO	OOp	subtype	203	mAi/mC	
+O	OL	OLn	subtype	204	Ai/lC	
+R	RN	RNn	subtype	204	Ah</(ilCv/)imC,ixC	
+R	RN	RNr	subtype	205	Ah>/(ilC/)imC,ixC	
+R	RN	OO-RN	subtype	205	Aih/imC,ixC	
+R	RN	OL-RN	subtype	205	Aih/ilCv/imC,ixC	
+R	RN	BB-RN	subtype	205	Ah/(Bv-Ah/)Bv-ilCv/(ilCv/)imC,ixC	alternative 1 of 2
+R	RN	BB-RN	subtype	205	Ah/(Bv-Ah,Bv+Ah/)Bv+ixCv/(ixCv/)imC	alternative 2 of 2
+R	RN	PP-RN	subtype	205	Ahe,Ahe+Ae/(Ae/)B(h)s-ilCv,B(s)h-ilCv/(ilCv/)(ixCv/)imC	alternative 1 of 2
+R	RN	PP-RN	subtype	205	Ahe,Ahe+Ae/(Ae/)B(h)s+ixCv,B(s)h+ixCv/ixCv,imC	alternative 2 of 2
+R	RQ	RQn	subtype	206	Ah</ilC	
+R	RQ	RQr	subtype	206	Ah>/ilC	
+R	RQ	OL-RQ	subtype	206	Aih/ilC	
+R	RQ	BB-RQ	subtype	207	Ah/(Bv-Ah/)Bv-ilCv/ilC	
+R	RQ	PP-RQ	subtype	207	Ahe,Ahe+Ae/(Ae/)B(h)s-ilCv,B(s)h-ilCv/ilC	
+R	RQ	SS-RQ	subtype	207	(Sw-)Ah/(Sw-)ilC/(ilC-)Sw/II(ilC-)Sd	underlined (Sw-)Ah/(Sw-)ilC; depth 4-<8 dm
+R	RQ	GG-RQ	subtype	207	Ah/(Go-)ilC/Go/Gr	underlined Ah/(Go-)ilC; depth 4-<8 dm
+R	RR	RRn	subtype	208	(e)Ah>/cC	
+R	RR	RRs	subtype	208	Ah</cC	
+R	RR	OO-RR	subtype	208	Aih/cmC	
+R	RR	OL-RR	subtype	208	Aih/clC	
+R	RR	BB-RR	subtype	208	Ah/Bv+cCv,Bv-cCv/cC	alternative 1 of 2
+R	RR	BB-RR	subtype	208	Ah/Bv-Ah,Bv+Ah/cCv/cC	alternative 2 of 2
+R	RR	CF-RR	subtype	209	Ah/(Bv-)Tv+cCv/cC	
+R	RR	GG-RR	subtype	209	Ah/(Go-)cCv/Go/Gr	underlined Ah/(Go-)cCv; depth 4-<8 dm
+R	RZ	RZn	subtype	209	(e)Ah>/eC	
+R	RZ	RZs	subtype	210	Ah</eC	
+R	RZ	OO-RZ	subtype	210	Aih/emC	
+R	RZ	OL-RZ	subtype	210	Aih/elC	
+R	RZ	BB-RZ	subtype	210	Ah/Bv+eCv,Bv-eCv/eC	alternative 1 of 2
+R	RZ	BB-RZ	subtype	210	Ah/Bv-Ah,Bv+Ah/eC	alternative 2 of 2
+R	RZ	SS-RZ	subtype	210	(Sw-)Ah/(Sw-)eCv/(C-)Sw/II(C-)Sd	printed with a space after eCv/; underlined (Sw-)Ah/(Sw-)eCv/; depth 4-<8 dm
+R	RZ	GG-RZ	subtype	211	Ah/(Go-)eCv/Go/Gr	underlined Ah/(Go-)eCv; depth 4-<8 dm
+T	TT	TTn	subtype	211	Axh/Axh+lC(c)/C(kc,c)	
+T	TT	DD-TT	subtype	211	(Axh/)P-Axh/P-Axh+lC(c)/C(c)	
+T	TT	BB-TT	subtype	212	Axh/Bv-Axh/Bv-Axh+Bv/(Bv/)C(c)	alternative 1 of 3
+T	TT	BB-TT	subtype	212	Axh/Bv-Axh/Axh+lC(c)/C(c)	alternative 2 of 3
+T	TT	BB-TT	subtype	212	Axh/Bv/C(c)	alternative 3 of 3; printed 'Axh/Bv/C(c) Profil' (space, no hyphen); underlined Axh; depth 4-<7dm
+T	TT	LL-TT	subtype	212	(Axh/)Al-Axh/Bt-Axh/(Axh+Bht,Axh+Bv/)Axh+lC(c)	
+T	TT	SS-TT	subtype	212	Axh/(Sw-)Axh/Axh-Sw/(C-)S(c)w/(II)Sd	underlined Axh/(Sw-)Axh; depth 4-<8 dm
+T	TT	GG-TT	subtype	212	Axh/(G(c)o-Axh/)(Axh-G(c)o/)G(c)o/Gr	alternative 1 of 2; underlined Axh/(G(c)o-Axh/); depth 4-<8 dm
+T	TT	GG-TT	subtype	212	Axh/Axh+lC(c)/(Axh-G(c)o/)G(c)o/Gr	alternative 2 of 2; underlined Axh/Axh+lC(c); depth 4-<8 dm
+T	TC	TCn	subtype	212	Acxh/Acxh+elCc/eCc	
+T	TC	DD-TC	subtype	213	(Acxh/)P-Acxh/P-Acxh+elCc/eCc	
+T	TC	BB-TC	subtype	213	Acxh/Bv-Acxh/(Acxh/)Acxh+elCc/eCc	alternative 1 of 2
+T	TC	BB-TC	subtype	213	Acxh/Bcv/eCc	alternative 2 of 2; underlined Acxh; depth 4-<7 dm
+T	TC	LL-TC	subtype	213	(Axh/)Al-A(c)xh/Bt-Acxh/Acxh+elCc/eCc	
+T	TC	GG-TC	subtype	213	Acxh/(eGco-Acxh/)(Acxh-eGco/)eGco/eGr	alternative 1 of 2; underlined Acxh/(eGco-Acxh/); depth 4-<8 dm
+T	TC	GG-TC	subtype	213	Acxh/Acxh+elCc/eGco/eGr	alternative 2 of 2; underlined Acxh/Acxh+elCc; depth 4-<8 dm
+D	DD	DDn	subtype	214	(P-)Ah/P/i,eC	underlined (P-)Ah/P; depth >=3 dm
+D	DD	DDh	subtype	214	Ah/Ah-P/(P/)i,eC	printed 'i,eC - Profil'; underlined Ah/Ah-P; depth >=4 dm
+D	DD	RN-DD	subtype	214	Ah/ilCv-P/imC	
+D	DD	RQ-DD	subtype	214	Ah/ilCv-P/ilCv(/imC)	alternative 1 of 2; underlined Ah/ilCv-P/ilCv; depth >=3 dm over <3 dm (fraction-like)
+D	DD	RQ-DD	subtype	214	Ah/P/ilCv(/imC)	alternative 2 of 2; underlined Ah/P/ilCv; depth >=3 dm over <3 dm (fraction-like)
+D	DD	RZ-DD	subtype	214	(e)Ah/elCv-P/eC	
+D	DD	BB-DD	subtype	215	Ah/Bv-P/(P/)i,eC	
+D	DD	SS-DD	subtype	215	(Sw-)Ah/Sw-P/(P-Sw/)P-Sd/(P/)i,eC	underlined (Sw-)Ah/Sw-P/; depth 4-<8 dm
+D	DD	GG-DD	subtype	215	Ah/(Go-)P/P-Go,Go/Gr	underlined Ah/(Go-)P/; depth 4-<8 dm
+B	BB	BBn	subtype	215	Ah/Bv/C	
+B	BB	BBc	subtype	216	A(c)h/Bcv/C(c)	
+B	BB	BBh	subtype	216	Ah/Ah-Bv/(Bv/)C	underlined Ah/Ah-Bv; depth >=4 dm
+B	BB	BBl	subtype	216	Ah/(Ah-)Bfv/IIC	IIC = layer numeral II + C (two capital I, same height as caps)
+B	BB	DD-BB	subtype	216	Ah/Bv/IIBv-P/(P/)i,eC	underlined Ah/Bv; depth 1,5-<3 dm
+B	BB	LL-BB	subtype	217	Ah/Al-Bv/(II)Btv/(Bv/)C	
+B	BB	LF-BB	subtype	217	Ah/Bv,Ael-Bv/(Ael/)(II)Ael+Bt/Bt/C	
+B	BB	PP-BB	subtype	217	(Ahe/)Ae/Bsh,Bhs,Bs/(Bhsv/)Bv/C	underlined (Ahe/)Ae/Bsh,Bhs,Bs; depth <1,5 dm
+B	BB	SS-BB	subtype	217	Ah/Bv/(Bv-)Sw/(II)Sd	alternative 1 of 2; underlined Ah/Bv; depth 4-<8 dm
+B	BB	SS-BB	subtype	217	Ah/Sw-Bv/(Sd-Bv/)Sd	alternative 2 of 2; underlined Ah/Sw-Bv/(Sd-Bv/); depth 4-<8 dm
+B	BB	GG-BB	subtype	217	Ah/(Go-)Bv/Bv-Go,Go/Gr	underlined Ah/(Go-)Bv; depth 4-<8 dm
+L	LL	LLn	subtype	218	Ah/Al/Bt/C	
+L	LL	LLd	subtype	218	Ah/Al/Bv+Bbt/(Bv/)(ilCv+Bbt/)C	
+L	LL	LLh	subtype	218	Ah/Alh/(Ah-)B(h)t/(e)C	Ah/Alh/(Ah-) >=4 dm
+L	LL	TT-LL	subtype	218	A(x)h/Axh-Al/Axh-Bt/(e)C	A(x)h/Axh-Al/Axh-Bt >=4 dm
+L	LL	BB-LL	subtype	219	Ah/Bv-Al/(II)B(v)t/(Bv/)C	alternative 1 of 2
+L	LL	BB-LL	subtype	219	Ah/Al/Bt/Bv/C	alternative 2 of 2; Ah/Al/Bt 4-<7 dm
+L	LL	PP-LL	subtype	219	(Ahe/)Ae/Al-B(s)h,Al-B(h)s/(Al/)Bt/C	(Ahe/)Ae/Al-B(s)h,Al-B(h)s <1,5 dm
+L	LL	CF-LL	subtype	219	Ah/Al/Bt/IIBt-(r)Tv/(Tv/)cC	Ah/Al/Bt 4-<7 dm
+L	LL	SS-LL	subtype	219	Ah/Al/Al-Sw/Bt-Sd/C	alternative 1 of 2; Ah/Al 4-<8 dm
+L	LL	SS-LL	subtype	219	Ah/Sw-Al/Sd-Bt/Sd/C	alternative 2 of 2; Ah/Sw-Al/Sd-Bt 4-<8 dm
+L	LL	GG-LL	subtype	219	Ah/Al/(Go-)Bt/(Bt-)Go/G	Ah/Al/(Go-)Bt 4-<8 dm
+L	LF	LFn	subtype	220	Ah/Ael/Ael+Bt/Bt/C	
+L	LF	LFd	subtype	220	Ah/Ael/(Ael+Bt/)Bv+Bbt,lCv+Bbt/(Bbt+lCv/)C	
+L	LF	BB-LF	subtype	220	Ah/Bv-Ael/(II)(Ael/)Ael+Bt/Bt/C	
+L	LF	PP-LF	subtype	221	(Ahe/)Ae/Ael-Bhs/Ael+Bt/Bt/C	(Ahe/)Ae/Ael-Bhs <1,5 dm
+L	LF	SS-LF	subtype	221	Ah/Ael/Ael-Sw/Bt-Sd/C	alternative 1 of 2; Ah/Ael 4-<8 dm
+L	LF	SS-LF	subtype	221	Ah/(Ael/)Sw-Ael/Sd-Bt/Sd/C	alternative 2 of 2; Ah/(Ael/)Sw-Ael/Sd-Bt 4-<8 dm
+L	LF	GG-LF	subtype	221	Ah/Ael/(Go-)Bt/(Bt-)Go/G	Ah/Ael/(Go-)Bt 4-<8 dm
+P	PP	PPn	subtype	222	(Ahe/)Ae/B(s)h/B(h)s/C	alternative 1 of 2
+P	PP	PPn	subtype	222	(Ahe)/Ae/ixCv+B(s)h/ixCv+B(h)s/ixCv,imC	alternative 2 of 2; printed "(Ahe)/" not "(Ahe/)"
+P	PP	PPe	subtype	222	(Ahe/)Ae/Bs/C	
+P	PP	PPh	subtype	222	(Ahe/)Ae/Bh/C	
+P	PP	PPd	subtype	222	(Ahe/)Ae/Bh/Bbms/(Bs/)C	
+P	PP	BB-PP	subtype	222	(Ahe/)Ae/B(s)h/B(h)s/B(s)v/C	(Ahe/)Ae/B(s)h/B(h)s 1,5-<7 dm
+P	PP	LL-PP	subtype	223	(Ahe/)Ae/B(s)h/B(h)s/(Al/)Bt/C	(Ahe/)Ae/B(s)h/B(h)s 1,5-<7 dm
+P	PP	SS-PP	subtype	223	(Ahe/)Ae/B(s)h/B(h)s/Sw/(II)Sd	alternative 1 of 2; (Ahe/)Ae/B(s)h/B(h)s 4-<8 dm
+P	PP	SS-PP	subtype	223	(Ahe/)(Sw-)Ae/Sw-B(s)h/Sw-B(h)s/(Sw/)(II)Sd	alternative 2 of 2; (Ahe/)(Sw-)Ae/Sw-B(s)h/Sw-B(h)s 4-<8 dm
+P	PP	SG-PP	subtype	223	(Srw-)Ahe/Srw-Ae/Sd-B(h)ms/C	
+P	PP	GG-PP	subtype	223	(Ahe/)Ae/B(s)h/B(h)s/(Go-B(h)s/)(B(h)s-Go/)G	(Ahe/)Ae/B(s)h/B(h)s/(Go-B(h)s/) 4-<8 dm
+P	PP	YK-PP	subtype	223	(Ahe/)Ae/B(s)h/B(h)s/M/II...	>=4 dm (up to M); 1,5-<7 dm (up to B(h)s)
+P	PP	YE-PP	subtype	223	(Ahe/)Ae/B(s)h/B(h)s/E/II...	>=4 dm (up to E); 1,5-<7 dm (up to B(h)s)
+C	CF	CFn	subtype	224	Ah/Tv/cC	
+C	CF	CFc	subtype	224	A(c)h/Tcv/cC	
+C	CF	BB-CF	subtype	225	Ah/Bv-Tv/cC	
+C	CF	LL-CF	subtype	225	Ah/Al/(II)Bt-(r)Tv/(Tv/)C	Ah/Al <3 dm; ends in C (not cC)
+C	CF	SS-CF	subtype	225	Ah/Sw-Ah,Sw-Tv/(Tv-Sw/)Tv-Sd/C	Ah/Sw-Ah,Sw-Tv 4-<8 dm
+C	CR	CRn	subtype	225	Ah/Tu/cC	
+S	SS	SSn	subtype	227	Ah/S(e)w/(II)Sd	
+S	SS	SSc	subtype	227	A(c)h/Scw/(II)S(c)d	
+S	SS	SSg	subtype	227	Ah/sS(e)w/(II)sSd/(C)	
+S	SS	SSh	subtype	227	Ah/Ah-Sw/(Sw/)(II)Sd	Ah/Ah-Sw >=4 dm
+S	SS	SSm	subtype	227	Sw-Aa/S(e)w/(II)Sd	Sw-Aa >=1 dm
+S	SS	TT-SS	subtype	228	Axh/Axh-Sw/(Sw/)(II)Sd	Axh/Axh-Sw >=4 dm
+S	SS	DD-SS	subtype	228	Ah/(P-)Sw/P-Sd	
+S	SS	BB-SS	subtype	228	Ah/Bv/(Bv-Sw/)Sw/(II)Sd	alternative 1 of 2
+S	SS	BB-SS	subtype	228	Ah/Bv-Sw/(Sw/)(II)Sd	alternative 2 of 2
+S	SS	LL-SS	subtype	228	Ah/(Al/)Al-Sw/(II)Bt-Sd	
+S	SS	LF-SS	subtype	228	Ah/(Ael/)Ael-Sw/(II)Bt-Sd	
+S	SS	PP-SS	subtype	228	(Ahe/)Ae/Bhs/Sw/(II)Sd	alternative 1 of 2
+S	SS	PP-SS	subtype	228	Ahe/Ae/Bhs-Sw/(Sw/)(II)Sd	alternative 2 of 2
+S	SS	CF-SS	subtype	229	Ah/(Ah-)Sw/IITv-Sd/cC	a browned variety example follows (not a subtype): Ah/Bv-Sw/IITv-Sd/cC
+S	SS	YK-SS	subtype	229	Ah/M/M-Sw/II(Sw/)Sd	Ah/M/M-Sw >=4 dm
+S	SS	YE-SS	subtype	229	Ah/E/E-Sw/II(Sw/)Sd	Ah/E/E-Sw >=4 dm
+S	SS	GG-SS	subtype	229	Ah/Sw/(II)(Go-)Sd/(Sd-Go/)(III)Go/Gr	Ah/Sw/(II)(Go-)Sd 4-<8 dm
+S	SH	SHn	subtype	230	Ah/Sg/(II)C	
+S	SH	SHh	subtype	230	Ah/Ah-Sg/Sg	Ah/Ah-Sg >=4 dm
+S	SH	BB-SH	subtype	230	Ah/Bv/(II)Sg	alternative 1 of 2
+S	SH	BB-SH	subtype	230	Ah/Bv-Sg/(II)Sg	alternative 2 of 2
+S	SH	LL-SH	subtype	230	Ah/Al/Bt/Sg	alternative 1 of 2
+S	SH	LL-SH	subtype	230	Ah/Al-Sg/Bt-Sg/(Bt)	alternative 2 of 2
+S	SH	LF-SH	subtype	230	Ah/Ael/Bt/(Bt-)Sg	alternative 1 of 2
+S	SH	LF-SH	subtype	230	Ah/Ael-Sg/Bt-Sg/(Bt)	alternative 2 of 2
+S	SH	GG-SH	subtype	230	Ah/Sg,Go-Sg/(II)Go/(Gr)	Ah/Sg,Go-Sg 4-<8 dm
+S	SG	SGn	subtype	231	Sw-Ah/S(e)rw/IISrd	
+S	SG	SGd	subtype	231	(Sw-)Ahe/S(e)rw/Srd-Bbms,Bbms-Srd/C	
+S	SG	SGm	subtype	231	Sw-Aa/S(e)rw/IISrd	Sw-Aa >=1 dm
+S	SG	HN-SG	subtype	231	nH/II(Ah-S(e)rw/)S(e)rw/IIISrd	nH 1-<3 dm
+S	SG	HH-SG	subtype	232	hH/II(Ah-S(e)rw/)S(e)rw/IIISrd	hH 1-<3 dm
+S	SG	GG-SG	subtype	232	Sw-Ah/S(e)rw/IISrd/IIIG	Sw-Ah/S(e)rw/IISrd 4-<8 dm
+X	XX	XXn	subtype	232	Ah/Yo/Yr	Ah/Yo <4 dm
+X	XX	XXt	subtype	233	(Yo-)Ai/(Yo/)Yr	
+X	XX	XXx	subtype	233	Ah/Yo/Yr	Ah/Yo >=4 dm
+X	XX	XXu	subtype	233	Ah/Yr	
+Y	YK	YKn	subtype	234	Ah/M/II...	
+Y	YK	PP-YK	subtype	234	(Ahe/)Ae/Bhs/M/II...	(Ahe/)Ae/Bhs <1,5 dm
+Y	YK	SS-YK	subtype	234	Ah/M/(Sw-M/)(M-)Sw/II(Sw/)Sd	Ah/M/(Sw-M/) 4-<8 dm
+Y	YK	GG-YK	subtype	234	Ah/(Go-)M/(M-Go/)IIGo/Gr	Ah/(Go-)M 4-<8 dm
+Y	YE	YEn	subtype	235	Ah/E/II...	
+Y	YE	PP-YE	subtype	235	(Ahe/)Ae/Bhs/E/II...	(Ahe/)Ae/Bhs <1,5 dm
+Y	YE	SS-YE	subtype	235	Ah/(Sw-)E/E-Sw/IISw/Sd	Ah/(Sw-)E 4-<8 dm; printed IISw/Sd (no parentheses)
+Y	YE	GG-YE	subtype	235	Ah/(Go-)E/(E-Go/)IIGo/Gr	Ah/(Go-)E 4-<8 dm
+Y	YO	YOn	subtype	236	Ap/Ex/(Ex-)C	
+Y	YY	YYn	subtype	236	R-Ap/(Ah-)R/C	alternative 1 of 2
+Y	YY	YYn	subtype	236	R/C	alternative 2 of 2
+Y	YU	PP-YU	subtype	237	R-Ap/R+B(h)s,B(s)h/C	example subtype of YU
+Y	YU	LL-YU	subtype	237	R-Ap/R+Bt/C	example subtype of YU
+Y	YU	LF-YU	subtype	237	R-Ap/R+Ael+Bt/C	example subtype of YU
+Y	YU	GG-YU	subtype	237	R-Ap/Go+R/G	example subtype of YU; R-Ap/Go+R 4-<8 dm
+A	AO	AOn	subtype	239	aAi/alC/aG	depth: >= 8 dm under aAi/alC
+A	AO	GG-AO	subtype	239	aAi/alC/(aGo-lC/)aGo/aG	depth: 4 - < 8 dm under aAi/alC/(aGo-lC/)
+A	AQ	AQn	subtype	239	aAh/ailC/aG	depth: >= 8 dm under aAh/ailC
+A	AQ	GG-AQ	subtype	239	aAh/ailC/(aGo-ilC/)aGo/aG	depth: 4 - < 8 dm under aAh/ailC/(aGo-ilC/)
+A	AZ	AZn	subtype	240	a(e)Ah/aelC/aG	depth: >= 8 dm under a(e)Ah/aelC
+A	AZ	GG-AZ	subtype	240	a(e)Ah/aelC/(aGo-elC/)aGo/aG	depth: 4 - < 8 dm under a(e)Ah/aelC/(aGo-elC/)
+A	AT	ATn	subtype	240	aAxh/(aM,alC/)aG	depth: >= 8 dm under aAxh/(aM,alC/)
+A	AT	GG-AT	subtype	241	aAxh/(aM,alC,aGo-lC/)aGo/aG	first of two alternatives (oder); depth: 4 - < 8 dm under aAxh/(aM,alC,aGo-lC/)
+A	AT	GG-AT	subtype	241	aAxh/(aGo-Axh,aAxh-Go/)aG	second alternative; depth: 4 - < 8 dm under aAxh/(aGo-Axh
+A	AB	ABn	subtype	241	aAh/aM/(IIalC/)(II)aG	depth: >= 8 dm under aAh/aM/(IIalC/)
+A	AB	AQ-AB	subtype	241	aAh/(II)ailC/II(III)aM/(ailC/)aG	depth: >= 8 dm under aAh/(II)ailC/II(III)aM/(ailC/)
+A	AB	SS-AB	subtype	241	aAh/aM/(IIalC/)aSw/aSd/aG	first of two alternatives; depth: two lines, >= 8 dm and 4 - < 8 dm
+A	AB	SS-AB	subtype	241	a(Sw-)Ah/aSw-M/a(M-)Sd/aG	second alternative; depth: two lines, >= 8dm and 4 - < 8 dm
+A	AB	GG-AB	subtype	241	aAh/aM/(IIalC/)(II)aG	first of two alternatives; depth: 4 - < 8 dm under aAh/aM/(IIalC/)
+A	AB	GG-AB	subtype	241	aAh/aM/(aGo-M,aM-Go/)(II)aG	second alternative; depth: 4 - < 8 dm under aAh/aM/(aGo-M
+G	GG	GGn	subtype	242	Ah/Go/Gr	depth: 4 - < 8 dm under Ah/Go
+G	GG	GGx	subtype	242	Ah/Go	
+G	GG	GGe	subtype	243	Ah/(Go/)Gso/(Gr)	
+G	GG	GGi	subtype	243	Ah/Gw/Gr	
+G	GG	GGw	subtype	243	Ah/Go/Gor(/Gr)	depth: >= 8 dm under Ah/Go
+G	GG	GGc	subtype	243	A(c)h/Gco/G(c)r	
+G	GG	GGh	subtype	243	Ah/Ah-Go/(Go/)Gr	depth: >= 4 dm under Ah/Ah-Go
+G	GG	GGg	subtype	243	Ah/sGo(/sGr)	
+G	GG	GGq	subtype	244	Ah/qGo/qG(o)r	
+G	GG	GGa	subtype	244	aAh/aGo/aGr	
+G	GG	RQ-GG	subtype	244	Ah/ilC/Go/Gr	
+G	GG	RR-GG	subtype	244	Ah/cC/Go/Gr	
+G	GG	RZ-GG	subtype	244	Ah/eC/Go/Gr	
+G	GG	TT-GG	subtype	244	Axh/Axh-Go/(Go/)Gr	depth: >= 4 dm under Axh/Axh-Go
+G	GG	DD-GG	subtype	244	Ah/P,P-Go/Go/Gr	
+G	GG	BB-GG	subtype	245	Ah/Bv,Bv-Go/Go/Gr	
+G	GG	LL-GG	subtype	245	Ah/Al/Bt,Bt-Go/Go/Gr	
+G	GG	LF-GG	subtype	245	Ah/Ael/Ael+Bt/Bt,Bt-Go/Go/Gr	
+G	GG	PP-GG	subtype	245	(Ahe/)Ae/Bhs,Bhs-Go/Go/Gr	
+G	GG	SS-GG	subtype	245	Ah/Sw/(II)Sd,Sd-Go/(III)(Go/)Gr	first of two alternatives
+G	GG	SS-GG	subtype	245	Ah/Sw-Go/Sd-Go/Gr	second alternative
+G	GG	YK-GG	subtype	245	Ah/M,M-Go/IIGo/Gr	depth: >= 4 dm under Ah/M,M-Go
+G	GG	YE-GG	subtype	245	Ah/E,E-Go/IIGo/Gr	depth: >= 4 dm under Ah/E,E-Go
+G	GG	AO-GG	subtype	246	aAi/alC/aGo/aGr	
+G	GG	AQ-GG	subtype	246	aAh/ailC/aGo/aGr	
+G	GG	AZ-GG	subtype	246	a(e)Ah/aelC/a(e)Go/aGr	
+G	GG	AT-GG	subtype	246	aAxh/aAxh-Go/(aGo/)aGr	depth: >= 4 dm under aAxh/aAxh-Go
+G	GG	AB-GG	subtype	246	aAh/aM,aM-Go/IIaGo/aGr	depth: >= 4 dm under aAh/aM,aM-Go; printed with an en dash before Profil
+G	GN	GNn	subtype	247	Go-Ah,Ah-Go/Gr	
+G	GN	GNc	subtype	247	Gco-Ah,Ah-Gco/Gcr	
+G	GN	GNh	subtype	247	Go-Ah,Ah-Go/Ah-Gr/Gr	depth: >= 4 dm under Go-Ah,Ah-Go/Ah-Gr
+G	GN	GNg	subtype	247	sGo-Ah,Ah-sGo/sGr	
+G	GN	GNq	subtype	247	qGo-Ah,Ah-qGo/qGr	
+G	GM	GMn	subtype	247	Go-Aa,Aa-Go/Gr	
+G	GM	GMc	subtype	248	Gco-Aa,Aa-Gco/G(c)r	
+G	GM	GMg	subtype	248	sGo-Aa,Aa-sGo/sGr	
+G	GM	GMq	subtype	248	qGo-Aa,Aa-qGo/(qGor/)qGr	
+G	GH	GHn	subtype	248	nH/IIGr	
+G	GH	GHh	subtype	248	hH/IIGr	
+G	GH	GHg	subtype	248	H/IIsGr	
+G	GH	GHq	subtype	249	H/IIqGr	
+M	MR	MRn	subtype	249	tm(z)eGo-Ah/(tmzeGo/)tmzeGr	
+M	MR	MRb	subtype	249	tbGo-Ah/(tbGo/)tbGr	formula at foot of p. 249; the unit's text continues on p. 250
+M	MR	MRf	subtype	250	tp(e)Go-Ah/(tp(e)Go/)tp(e)Gr	
+M	MC	MCn	subtype	250	tm(e)Ah/tmeGo/tmzeGr	
+M	MC	MCb	subtype	250	tb(e)Ah/tbeGo/tbeGr	
+M	MC	MCf	subtype	250	tp(e)Ah/tpeGo/tpeGr	
+M	MN	MNn	subtype	251	tmAh/tmGo/tmzeGr	
+M	MN	MNb	subtype	251	tbAh/tbGo/tb(e)Gr	
+M	MN	MNf	subtype	251	tpAh/tpGo/tp(e)Gr	
+M	MH	MHn	subtype	252	tmAh/tm(e)Sg-Go/tmzeGr	
+M	MH	MHb	subtype	252	tbAh/tbSg-Go/tbGr	
+M	MH	MHf	subtype	252	tpAh/tpSg-Go/tpGr	
+M	MD	MDn	subtype	252	tp,tbAh/tp,tbSw/IIftp,tbAh°Sd/ftp,tbGo°Sd/tp,tbGo/tp,tbGr	
+M	MK	MKn	subtype	253	tb,tpAh/tb,tpSw/tb,tpSq/tb,tpGr	
+M	MO	MOn	subtype	253	tmo,tbo,tpoAh/tmo,tbo,tpoGo/tmo,tbo,tpoGr	
+P	PP	MO\PP	overlay	254	tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)IIfAe°Go,fAe°Gr/fBsh°Go,fBsh°Gr/Gr	variety (Beispiele fuer Varietaeten); formula wraps after fAe°Gr/; depth: 1,5 - < 3 dm under tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)
+P	PP	MO/PP	overlay	254	tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)IIfAe°Go,fAe°Gr/fBsh°Go,fBsh°Gr/Gr	variety; formula wraps after fAe°Gr/; depth: 3 - < 7 dm under tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)
+Ü	ÜA	ÜAn	subtype	254	tm(z)(e)Ai/(tm(z)(e)lC/)tmzeG	
+Ü	ÜA	ÜAb	subtype	254	tb(z)(e)Ai/(tb(z)(e)lC/)tbzeG	
+Ü	ÜA	ÜAf	subtype	254	tp(e)Ai/(tp(e)lC/)tp(e)G	
+I	IW	IWn	subtype	256	tmz(e)Fo/tmzeFr	printed without the leading dash before the name
+I	IW	IWb	subtype	256	tbz(e)Fo/tbzeFr	
+I	IW	IWf	subtype	256	tp(e)Fo/tp(e)Fr	
+H	HN	HNn	subtype	258	nHw/(nHr/)(IIfF/)...	
+H	HN	HNc	subtype	259	nHcw/(nHcr/)(nHr/)(IIfF/)...	
+H	HN	HNu	subtype	259	uHw/(uHr/)(IInHr/)(IIIfF/)...	
+H	HN	GG\HN	overlay	259	Ah/Go/(Gr/)IIrnHw/(nHr/)(IIIfF/)...	variety (Ueberlagerung); printed IIrnHw (r then n, checked at 600 dpi), not IInHw; depth: 2 - < 3 dm under Ah/Go/(Gr
+H	HN	GG/HN	overlay	259	Ah/Go/(Gr/)IIrnHw/(nHr/)(IIIfF/)...	variety; printed IIrnHw; depth: 3 - < 4 dm under Ah/Go/(Gr
+H	HN	MO\HN	overlay	259	tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)IIrnH/(IIIfF/)...	variety; printed IIrnH; depth: 2 - < 3 dm under tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)
+H	HN	MO/HN	overlay	259	tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)IIrnH/(IIIfF/)...	variety; printed IIrnH; depth: 3 - < 4 dm under tmo,tbo,tpoAh/tmo,tbo,tpoGo/(tmo,tbo,tpoGr/)
+H	HH	HHn	subtype	260	hHw/(hHr/)(uHr/)(nHr/)(IIfF/)...	
+K	KV	KVn	subtype	261	nHv/(nHt/)(nHw/)(nHr/)(IIfF/)...	
+K	KV	KVc	subtype	261	nHcv/(nHct/)(nHw/)(nHcr/)(IIfF/)...	
+K	KV	KVu	subtype	261	uHv/(uHt/)(uHw/)(uHr/)(nHr/)(IIfF/)III(f)...	
+K	KM	KMn	subtype	261	nHm/nHa/nHt/(nHw/)(nHr/)(IIfF/)...	
+K	KM	KMc	subtype	261	nHcm/nHca/(nHcw/)nHcw/(nHcr/)(IIfF/)...	printed exactly so (nHcw twice, optional then obligatory; no nHct), checked at 600 dpi
+K	KM	KMu	subtype	261	uHm/uHa/uHt/(uHw/)(uHr/)(IInHr/)(II,IIIfF/)...	
+K	KM	KV-KM	subtype	262	nHvm/(nHa/)(nHt/)(nHw/)(nHr/)(IIfF/)...	transitional unit Erdniedermoor-Mulmniedermoor
+K	KM	KVc-KMc	form	262	nHcvm/(nHca/)(nHct/)(nHcw/)(nHcr/)(IIfF/)...	variety (Beispiele fuer Varietaeten)
+K	KM	KVu-KMu	form	262	uHvm/(uHt/)(uHw/)(uHr/)(IInHr/)(II,IIIfF/)...	variety (Beispiele fuer Varietaeten)
+K	KH	KHn	subtype	262	hHv/hHw/(hHr/)(IIuHr/)(II,IIInHr/)(...fF/)...	"..." inside the last group is a prefix placeholder (printed as an ellipsis)

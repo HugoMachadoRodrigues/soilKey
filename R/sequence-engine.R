@@ -1354,6 +1354,9 @@ match_horizon_sequence <- function(table, spec, vocabulary = NULL,
       paste(names(dots), collapse = ", ")))
   if (!inherits(spec, "soilkey_formula"))
     rlang::abort("'spec' must be a profile formula string or a parsed formula.")
+  # a system's own preparation of the table for its formula (v0.9.360: the
+  # KA5 runs of rows one slot takes); none for the others
+  if (is.function(spec$prepare_table)) table <- spec$prepare_table(table, spec)
   tab <- .as_horizon_table(table)
   ctx <- .mhs_context(tab, spec, vocabulary = vocabulary, surface = surface, agro = agro,
                       closure_surface = closure_surface, max_cover_cm = max_cover_cm,
@@ -1435,8 +1438,9 @@ match_horizon_sequence <- function(table, spec, vocabulary = NULL,
             else { vocabulary <- vocabulary %||% union; function(k) vocabulary }
   tab <- .as_horizon_table(table)
   res <- lapply(seq_along(specs), function(i) {
-    ctx <- do.call(.mhs_context, c(list(tab, specs[[i]], vocabulary = voc_of(names(specs)[i])), ma))
-    .mhs_match(tab, ctx)
+    tb <- if (is.function(specs[[i]]$prepare_table)) .as_horizon_table(specs[[i]]$prepare_table(table, specs[[i]])) else tab
+    ctx <- do.call(.mhs_context, c(list(tb, specs[[i]], vocabulary = voc_of(names(specs)[i])), ma))
+    .mhs_match(tb, ctx)
   })
   names(res) <- names(specs)
   pick <- .pick_scheme(res)

@@ -803,6 +803,84 @@
           },
           "sand_grade": {
             "type": ["string", "null"]
+          },
+          "bleached_pct": {
+            "type": ["number", "null"]
+          },
+          "reduction_colours_pct": {
+            "type": ["number", "null"]
+          },
+          "rh_value": {
+            "type": ["number", "null"]
+          },
+          "air_capacity_pct": {
+            "type": ["number", "null"]
+          },
+          "total_porosity_pct": {
+            "type": ["number", "null"]
+          },
+          "muscovite_pct": {
+            "type": ["number", "null"]
+          },
+          "clay_coatings_thin_section_pct": {
+            "type": ["number", "null"]
+          },
+          "clay_bridges": {
+            "type": ["boolean", "null"]
+          },
+          "bands_area_pct": {
+            "type": ["number", "null"]
+          },
+          "kultotroph": {
+            "type": ["boolean", "null"]
+          },
+          "carbonate_whole_soil_pct": {
+            "type": ["number", "null"]
+          },
+          "rock_diggable": {
+            "type": ["boolean", "null"]
+          },
+          "parent_rock_ka5": {
+            "type": ["string", "null"]
+          },
+          "caco3_lithogenic": {
+            "type": ["boolean", "null"]
+          },
+          "oc_lithogenic_pct": {
+            "type": ["number", "null"]
+          },
+          "knick_degree": {
+            "type": ["string", "null"]
+          },
+          "sand_ffs_pct": {
+            "type": ["number", "null"]
+          },
+          "soil_gas_ch4_co2_pct": {
+            "type": ["number", "null"]
+          },
+          "horizon_continuity": {
+            "type": ["string", "null"]
+          },
+          "terra_material_pct": {
+            "type": ["number", "null"]
+          },
+          "ec_soil_solution_dS_m": {
+            "type": ["number", "null"]
+          },
+          "humus_class_ka5": {
+            "type": ["string", "null"]
+          },
+          "carbonate_class_ka5": {
+            "type": ["string", "null"]
+          },
+          "texture_class_ka5": {
+            "type": ["string", "null"]
+          },
+          "colour_ka5": {
+            "type": ["string", "null"]
+          },
+          "hydromorphic_features_ka5": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

@@ -1,0 +1,453 @@
+# The horizon notation of the German soil systematics as the Bodenkundliche
+# Kartieranleitung, 5th edition, writes it (Ad-hoc-AG Boden 2005, KA5:
+# 5.6.3, pp. 81-108; Tab. 12, pp. 86-88; Liste 31, pp. 199-201). Read by the
+# notation reader R/designation-ka5.R; the identification of the horizons on
+# the data, the registry entry and the key come later.
+#
+# Pages are the printed pages of the book (PDF page = printed + 1); every
+# symbol was checked on the page images, because the text layer of the scan
+# reads the suffix c as e (Hcw, Gco, Cc), the lower-case l as a capital I
+# (lC, Al) and the degree sign as o. Names are German as the book prints them
+# or as short German terms; name_en and the definitions are soilKey's
+# paraphrase (numbers kept). The book's text is not reproduced.
+#
+# masters      the 15 master symbols (p. 83)
+# prefixes     the geogenic and anthropogenic prefixes (p. 84), with the
+#              masters they go with (p. 84 and the definitions)
+# suffixes     the pedogenic suffixes (p. 85), with their meaning by host
+#              master where a letter means two things (a, f, k, m, t, v, w)
+# bs_marks     the base-saturation marks and their two scales (pp. 85-86)
+# joiners      the signs that join parts inside one designation (p. 82)
+# combinations Tab. 12, the combinations the book permits per master; in
+#              with_others the letters it brackets (only together with
+#              another suffix)
+# symbols      the 166 symbols 5.6.3.3 defines with an entry of their own
+# named        the transition and interfingering horizons 5.6.3.3 names
+#              without a definition of their own
+# ka6          the KA6 (2024) symbols with a one-to-one KA5 reading (Hugo's
+#              decision Q4, 2026-11-04), read with a flag; ka6_unread the KA6
+#              symbols and prefixes that have none
+# field_codes  KA5 field codes (fields 30, 31 and 34, pp. 113, 116) that look
+#              like designations but are features
+# detection    the signs that recognise an undeclared KA5 profile (Hugo's
+#              decision Q3) and the symbols only other notations write
+# collisions   the same string in the notations soilKey reads (for the
+#              documentation; the reader decides the notation per profile)
+
+edition: "Bodenkundliche Kartieranleitung, 5. Auflage (Ad-hoc-AG Boden, Hannover 2005)"
+
+masters:
+  - {code: "F", page: 83, group: subhydric, name: "F-Horizont", name_en: "horizon at the bottom of water bodies (subaqueous mud)"}
+  - {code: "H", page: 83, group: organic, name: "H-Horizont", name_en: "peat horizon (30 % organic substance or more, from peat-forming plants)"}
+  - {code: "L", page: 83, group: organic, name: "L-Horizont", name_en: "litter (not or little decomposed plant matter at the surface)"}
+  - {code: "O", page: 83, group: organic, name: "O-Horizont", name_en: "organic surface horizon of decomposed plant matter"}
+  - {code: "A", page: 83, group: mineral, name: "A-Horizont", name_en: "mineral topsoil"}
+  - {code: "B", page: 83, group: mineral, name: "B-Horizont", name_en: "mineral subsoil"}
+  - {code: "C", page: 83, group: mineral, name: "C-Horizont", name_en: "mineral substratum (the rock under the solum)"}
+  - {code: "P", page: 83, group: mineral, name: "P-Horizont", name_en: "Pelosol subsoil from clay stone or clay-marl stone"}
+  - {code: "T", page: 83, group: mineral, name: "T-Horizont", name_en: "Terra subsoil from the solution residue of carbonate rock"}
+  - {code: "S", page: 83, group: mineral, name: "S-Horizont", name_en: "subsoil with perched water (Stauwasser)"}
+  - {code: "G", page: 83, group: mineral, name: "G-Horizont", name_en: "horizon with groundwater influence"}
+  - {code: "M", page: 83, group: mineral, name: "M-Horizont", name_en: "sedimented Holocene humous solum material (colluvium)"}
+  - {code: "E", page: 83, group: mineral, name: "E-Horizont (Esch)", name_en: "applied plaggen or compost material (Esch)"}
+  - {code: "R", page: 83, group: mineral, name: "R-Horizont (Rigol)", name_en: "mixed horizon from deep mixing amelioration"}
+  - {code: "Y", page: 83, group: mineral, name: "Y-Horizont", name_en: "horizon shaped by reducing gas (Reduktgas)"}
+
+# Prefixes are matched longest first: tb, tm and tp are one prefix each.
+prefixes:
+  - {mark: "a",  page: 84, hosts: [A, C, S, G, M], name: "Auendynamik", name_en: "floodplain dynamics"}
+  - {mark: "b",  page: 84, hosts: [E, A], name: "braun", name_en: "brown (Plaggenesch of grass sods; brown Ah of Rendzina and Kalkpaternia)"}
+  - {mark: "c",  page: 84, hosts: [C, S, G], name: "carbonatisch", name_en: "carbonate rock (75 % carbonate or more; also gypsum rock)"}
+  - {mark: "e",  page: 84, hosts: [F, H, A, C, P, S, R, M, G, "Y"], name: "mergelig", name_en: "marl (2 to < 75 % carbonate); on H and P primary carbonate-bearing"}
+  - {mark: "f",  page: 84, hosts: [F, H, O, A, B, P, T, S, G], name: "fossil", name_en: "fossil (buried, formation interrupted)"}
+  - {mark: "g",  page: 84, hosts: [E, A], name: "grau", name_en: "grey (Plaggenesch of heath sods; grey Ah of the Kalkpaternia)"}
+  - {mark: "h",  page: 84, hosts: [H], name: "Hochmoor", name_en: "raised-bog peat"}
+  - {mark: "i",  page: 84, hosts: [C], name: "silikatisch", name_en: "siliceous or silicate rock (< 2 % carbonate)"}
+  - {mark: "j",  page: 84, hosts: [H, A, C, S, G, "Y"], name: "anthropogen umgelagertes Natursubstrat", name_en: "natural substrate relocated by people"}
+  - {mark: "l",  page: 84, hosts: [C], name: "Lockersubstrat", name_en: "loose substrate (diggable with a spade)"}
+  - {mark: "m",  page: 84, hosts: [A, C], name: "massiv", name_en: "massive substrate (not diggable even when moist)"}
+  - {mark: "n",  page: 84, hosts: [H], name: "Niedermoor", name_en: "fen peat"}
+  - {mark: "o",  page: 84, hosts: [A, C, G, "Y"], name: "organisch", name_en: "organic (2 % sedimentary organic substance or more)"}
+  - {mark: "q",  page: 84, hosts: [G], name: "Quellwasser", name_en: "spring water"}
+  - {mark: "r",  page: 84, hosts: [F, H, A, B, P, T, S, G], name: "reliktisch", name_en: "relict (features not formed under present conditions)"}
+  - {mark: "s",  page: 84, hosts: [S, G], name: "Hangwasser", name_en: "slope water"}
+  - {mark: "tb", page: 84, hosts: [F, A, C, S, G], name: "brackisch", name_en: "tidal-brackish"}
+  - {mark: "tm", page: 84, hosts: [F, A, C, S, G], name: "marin", name_en: "tidal-marine"}
+  - {mark: "tp", page: 84, hosts: [F, A, C, S, G], name: "perimarin", name_en: "perimarine (tidal-fluvial)"}
+  - {mark: "u",  page: 84, hosts: [H], name: "Übergangsmoor", name_en: "transitional-bog peat"}
+  - {mark: "x",  page: 84, hosts: [C], name: "steinig", name_en: "stony (fine earth < 5 % by volume; counted as not diggable)"}
+  - {mark: "y",  page: 84, hosts: [C, G, "Y"], name: "anthropogen umgelagertes künstliches Substrat", name_en: "artificial substrate relocated by people (rubble, waste, slag)"}
+  - {mark: "z",  page: 84, hosts: [F, H, A, B, C, P, T, S, G, M, E, R, "Y"], name: "salzhaltig", name_en: "saline (EC 0.75 mS/cm or more in the saturation extract)"}
+
+suffixes:
+  - mark: "a"
+    page: 85
+    meanings:
+      - {hosts: [A], name: "anmoorig", name_en: "anmoor (15 to < 30 % organic substance)"}
+      - {hosts: [H], name: "Absonderungsgefüge", name_en: "with separation fabric"}
+  - {mark: "b", page: 85, hosts: [B, C], name: "gebändert", name_en: "banded"}
+  - {mark: "c", page: 85, hosts: [H, A, B, C, T, S, G, M], name: "sekundäres Carbonat", name_en: "secondary carbonate"}
+  - {mark: "d", page: 85, hosts: [S], name: "dicht, wasserstauend", name_en: "dense, stagnating water"}
+  - {mark: "e", page: 85, hosts: [A, S], name: "eluvial", name_en: "eluvial, bleached (acid on A, wet on S)"}
+  - mark: "f"
+    page: 85
+    meanings:
+      - {hosts: [O], name: "Förna-Vermoderung (Förmultningsskiktet)", name_en: "decomposed (fermentation)"}
+      - {hosts: [B], name: "locker", name_en: "loose fabric (the Bv of the Lockerbraunerde)"}
+  - {mark: "g", page: 85, hosts: [S], name: "haftnass", name_en: "adhesive-water wetness"}
+  - {mark: "h", page: 85, hosts: [F, O, A, B, G], name: "humos", name_en: "humous"}
+  - {mark: "i", page: 85, hosts: [F, A], name: "initial", name_en: "initial"}
+  - {mark: "j", page: 85, hosts: [B, C], name: "fersiallitisch", name_en: "fersiallitic"}
+  - mark: "k"
+    page: 85
+    meanings:
+      - {hosts: [A, H], name: "kultotroph", name_en: "base and nutrient status lastingly changed by fertilising"}
+      - {hosts: [B, C, G], name: "konkretioniert", name_en: "with concretions"}
+  - {mark: "l", page: 85, hosts: [A], name: "lessiviert", name_en: "lessivé, clay-depleted"}
+  - mark: "m"
+    page: 85
+    meanings:
+      - {hosts: [B, G], name: "massiv (verfestigt)", name_en: "pedogenically cemented"}
+      - {hosts: [H], name: "vermulmt", name_en: "mulmified (dried peat mould)"}
+  - {mark: "n", page: 85, hosts: [C], name: "neu, frisch", name_en: "fresh, unweathered"}
+  - {mark: "o", page: 85, hosts: [F, G, "Y"], name: "oxidiert", name_en: "oxidised"}
+  - {mark: "p", page: 85, hosts: [H, A], name: "gepflügt", name_en: "ploughed or regularly worked"}
+  - {mark: "q", page: 85, hosts: [S], name: "Knick", name_en: "Knick horizon of the Knickmarsch"}
+  - {mark: "r", page: 85, hosts: [F, H, S, G, "Y"], name: "reduziert", name_en: "reduced"}
+  - {mark: "s", page: 85, hosts: [H, B, G, S], name: "Sesquioxide", name_en: "enriched with sesquioxides"}
+  - mark: "t"
+    page: 85
+    meanings:
+      - {hosts: [H], name: "geschrumpft", name_en: "shrunk (peat shrinkage)"}
+      - {hosts: [B, C], name: "tonangereichert", name_en: "clay-enriched"}
+  - {mark: "u", page: 85, hosts: [B, T], name: "rubefiziert", name_en: "rubefied"}
+  - mark: "v"
+    page: 85
+    meanings:
+      - {hosts: [B, C, T], name: "verwittert, verbraunt, verlehmt", name_en: "weathered, browned, loamified"}
+      - {hosts: [H, O], name: "vererdet", name_en: "earthified peat"}
+  - mark: "w"
+    page: 85
+    meanings:
+      - {hosts: [S], name: "stauwasserleitend", name_en: "conducting perched water"}
+      - {hosts: [F, H, G], name: "zeitweilig wassererfüllt", name_en: "temporarily water-filled"}
+  - {mark: "x", page: 85, hosts: [A, E], name: "biogen durchmischt", name_en: "biogenically mixed"}
+  - {mark: "z", page: 85, hosts: [H, G], name: "salzhaltig", name_en: "saline"}
+
+# After the symbol: Ah>, Bv<<. The scale is the subtype scale on the Ah of an
+# Ah/C soil with an Ah < 4 dm, the variety scale elsewhere (Hugo's decision
+# Q14).
+bs_marks:
+  - {mark: ">",  page: 86, subtype: ">= 50 %", variety: "> 50 %", name_en: "base-rich"}
+  - {mark: "<",  page: 86, subtype: "< 50 %",  variety: "20 to 50 %", name_en: "base-poor"}
+  - {mark: "<<", page: 86, variety: "< 20 %", name_en: "very base-poor"}
+
+joiners:
+  - {mark: "-",  page: 82, name: "Übergangshorizont", name_en: "transition: the last part carries the horizon"}
+  - {mark: "+",  page: 82, name: "Verzahnungshorizont", name_en: "interfingering: the last part carries the horizon"}
+  - {mark: "°",  page: 82, name: "überprägter fossiler oder reliktischer Horizont", name_en: "a horizon formed in a fossil or relict one (fAh°Sd)", written: ["°", "º", "˚"]}
+  - {mark: "-°", page: 201, name_en: "printed once (fGo-°Sd, Liste 31): read as °"}
+
+# Tab. 12 (pp. 86-88). Prefix combinations for A, C and G are incomplete on
+# purpose (p. 88: ail, jel); suffixes listed as printed, the bracketed ones in
+# with_others.
+combinations:
+  A: {page: 86, prefixes: [a, b, e, tbe, tme, tpe, f, g, j, m, o, r, tb, tm, tp, z, tmz], suffixes: [a, ka, e, he, h, ah, ch, eh, ih, lh, kh, xh, cxh, "h<", "h>", i, l, el, hl, p, ap, cp, xp, cxp], with_others: [c, k, x, "<", ">"]}
+  B: {page: 86, prefixes: [f, r, z], suffixes: [h, bh, sh, j, s, bs, hs, ms, bms, hms, vs, t, bt, ht, vt, u, ku, v, cv, fv, hv, sv, hsv, tv], with_others: [b, c, f, k, m]}
+  C: {page: 86, prefixes: [j, yj, l, cl, el, il, ol, zl, m, cm, em, im, om, zm, x, cx, ex, ix, ox, zx, "y", jy], prefixes_with_others: [a, c, e, i, o, tb, tm, tp, z], suffixes: [c, kc, j, "n", v, tv, btv], with_others: [b, k, t]}
+  E: {page: 87, prefixes: [b, gb, g, z], suffixes: [x], with_others: []}
+  F: {page: 87, prefixes: [e, ze, tbe, tbze, tme, tmze, tpe, f, r, tb, tm, tp, z, tbz], suffixes: [h, i, o, r, w], with_others: []}
+  G: {page: 87, prefixes: [a, c, e, ze, tbe, tbze, tme, tmze, tpe, tpze, f, j, o, q, r, s, tb, tm, tp, "y", z, tbz, tmz, tpz], suffixes: [o, co, mco, ho, so, kso, mso, ro, cro, hro, zro, r, cr, hr, or, cor, hor, zr, zor, w], with_others: [c, h, k, m, s, z]}
+  H: {page: 87, prefixes: [e, f, h, j, "n", r, u, z], suffixes: [a, ca, za, k, m, cm, vm, cvm, p, cp, mp, cmp, vp, cvp, r, cr, zr, s, t, ct, zt, v, cv, w, cw, zw], with_others: [c, z]}
+  L: {page: 87, prefixes: [], suffixes: [], with_others: []}
+  M: {page: 87, prefixes: [a, e, ae, z], suffixes: [c], with_others: []}
+  O: {page: 87, prefixes: [f], suffixes: [f, h, vh], with_others: [v]}
+  P: {page: 88, prefixes: [e, f, r, z], suffixes: [], with_others: []}
+  R: {page: 88, prefixes: [e, z], suffixes: [], with_others: []}
+  S: {page: 88, prefixes: [a, c, e, f, j, r, s, tb, tm, tp, z], suffixes: [d, cd, rd, wd, g, dg, q, w, cw, dw, ew, sw, rw, erw], with_others: [c, e, r, s]}
+  T: {page: 88, prefixes: [f, r, z], suffixes: [u, v, cv], with_others: [c]}
+  "Y": {page: 88, prefixes: [e, j, yj, o, "y", jy, z], suffixes: [o, r], with_others: []}
+
+# The 166 symbols with an entry of their own in 5.6.3.3 (pp. 88-108).
+# detection: strong or likely sign of the notation (Hugo's decision Q3);
+# missing = shared with other notations.
+symbols:
+  # --- F, semisubhydric and subhydric (p. 89) ---------------------------------
+  - {code: "F",   master: F, page: 89, name: "F-Horizont", name_en: "subaqueous horizon", definition: "At the bottom of water bodies; organic substance as a rule 1 % or more (in the coastal current zone as a rule < 1 %), unless H."}
+  - {code: "Fi",  master: F, page: 89, name: "initialer F-Horizont", name_en: "initial F", definition: "No visible humus, colonised by micro-organisms."}
+  - {code: "Fh",  master: F, page: 89, name: "humoser F-Horizont", name_en: "humous F", definition: "Enriched with dark brown humic substances; often nutrient-poor."}
+  - {code: "Fw",  master: F, page: 89, name: "zeitweilig wassererfüllter F-Horizont", name_en: "temporarily water-filled F", definition: "Temporarily water-filled, with no oxidation features and no colour pattern."}
+  - {code: "Fo",  master: F, page: 89, name: "oxidierter F-Horizont", name_en: "oxidised F", definition: "Clear oxidation features; olive green, grey or grey-brown."}
+  - {code: "Fr",  master: F, page: 89, name: "reduzierter F-Horizont", name_en: "reduced F", definition: "Mostly black to dark grey from reduction; mostly much organic substance."}
+  # --- H, peat (pp. 89-91) ------------------------------------------------------
+  - {code: "H",    master: H, page: 89, name: "H-Horizont", name_en: "peat horizon", definition: "Peat from remains of peat-forming plants, 30 % organic substance or more; prefixes h, n, u give the peat kind."}
+  - {code: "Hw",   master: H, page: 90, detection: likely, name: "zeitweilig wassererfüllter H-Horizont", name_en: "temporarily water-filled H", definition: "In the fluctuation zone of perched or groundwater, with oxidation features; as a rule darker than the horizon below."}
+  - {code: "Hcw",  master: H, page: 90, name: "Hw mit sekundärem Carbonat", name_en: "Hw with secondary carbonate", definition: "Hw with visible secondary carbonate."}
+  - {code: "Hzw",  master: H, page: 90, name: "Hw mit sekundären Salzen", name_en: "Hw with secondary salts", definition: "Hw with secondary salts."}
+  - {code: "Hs",   master: H, page: 90, name: "H-Horizont mit Sesquioxiden", name_en: "H with sesquioxides", definition: "Diffusely or in nests enriched with uncemented sesquioxides (bog iron)."}
+  - {code: "Hr",   master: H, page: 90, detection: likely, name: "reduzierter H-Horizont", name_en: "reduced H", definition: "Permanently water-filled, reduction features; as a rule lighter than the horizon above, darkening in the air."}
+  - {code: "Hcr",  master: H, page: 90, name: "Hr mit sekundärem Carbonat", name_en: "Hr with secondary carbonate", definition: "Hr with visible secondary carbonate."}
+  - {code: "Hzr",  master: H, page: 90, name: "Hr mit sekundären Salzen", name_en: "Hr with secondary salts", definition: "Hr with secondary salts."}
+  - {code: "Hv",   master: H, page: 90, name: "vererdeter H-Horizont", name_en: "earthified H", definition: "Topsoil of moderately drained or extensively worked bogs, earthified by aerobic mineralisation; crumb to fine subangular fabric."}
+  - {code: "Hcv",  master: H, page: 90, name: "Hv mit sekundärem Carbonat", name_en: "Hv with secondary carbonate", definition: "Hv with visible secondary carbonate."}
+  - {code: "Hm",   master: H, page: 90, detection: likely, name: "vermulmter H-Horizont", name_en: "mulmified H", definition: "Topsoil of strongly drained or intensively worked bogs; black, strongly decomposed, powdery and hard to wet when dry."}
+  - {code: "Hvm",  master: H, page: 90, name: "Übergang Hv-Hm", name_en: "transition from Hv to Hm", definition: "Between the crumb fabric of Hv and the powdery or smeary fabric of Hm."}
+  - {code: "Hcvm", master: H, page: 91, name: "Hvm mit sekundärem Carbonat", name_en: "Hvm with secondary carbonate", definition: "Hvm with visible secondary carbonate."}
+  - {code: "Hcm",  master: H, page: 91, name: "Hm mit sekundärem Carbonat", name_en: "Hm with secondary carbonate", definition: "Hm with visible secondary carbonate."}
+  - {code: "Ha",   master: H, page: 91, name: "H-Horizont mit Absonderungsgefüge", name_en: "H with separation fabric", definition: "Subsoil of strongly drained bogs; coarse to fine subangular blocky separation fabric from shrinking and partial decomposition."}
+  - {code: "Hca",  master: H, page: 91, name: "Ha mit sekundärem Carbonat", name_en: "Ha with secondary carbonate", definition: "Ha with visible secondary carbonate."}
+  - {code: "Hza",  master: H, page: 91, name: "Ha mit sekundären Salzen", name_en: "Ha with secondary salts", definition: "Ha with secondary salts."}
+  - {code: "Ht",   master: H, page: 91, name: "Torfschrumpfungshorizont", name_en: "peat shrinkage horizon", definition: "Leads to the substratum; coarse prismatic crack fabric without horizontal fractures."}
+  - {code: "Hct",  master: H, page: 91, name: "Ht mit sekundärem Carbonat", name_en: "Ht with secondary carbonate", definition: "Ht with visible secondary carbonate."}
+  - {code: "Hzt",  master: H, page: 91, name: "Ht mit sekundären Salzen", name_en: "Ht with secondary salts", definition: "Ht with secondary salts."}
+  - {code: "Hp",   master: H, page: 91, name: "gepflügter H-Horizont", name_en: "ploughed H", definition: "Shaped by regular tillage (includes k)."}
+  - {code: "Hcp",  master: H, page: 91, name: "Hp mit sekundärem Carbonat", name_en: "Hp with secondary carbonate", definition: "Hp with visible secondary carbonate."}
+  - {code: "Hvp",  master: H, page: 91, name: "gepflügter Hv", name_en: "ploughed Hv", definition: "Hv shaped by regular tillage (includes k)."}
+  - {code: "Hcvp", master: H, page: 91, name: "Hvp mit sekundärem Carbonat", name_en: "Hvp with secondary carbonate", definition: "Hvp with visible secondary carbonate."}
+  - {code: "Hmp",  master: H, page: 91, name: "gepflügter Hm", name_en: "ploughed Hm", definition: "Hm shaped by regular tillage (includes k)."}
+  - {code: "Hcmp", master: H, page: 91, name: "Hmp mit sekundärem Carbonat", name_en: "Hmp with secondary carbonate", definition: "Hmp with visible secondary carbonate."}
+  - {code: "Hk",   master: H, page: 91, name: "kultotropher H-Horizont", name_en: "kultotroph H", definition: "Base and nutrient status lastingly changed by regular fertilising."}
+  # --- L, O (p. 92) ---------------------------------------------------------------
+  - {code: "L",   master: L, page: 92, name: "L-Horizont (Förna)", name_en: "litter", definition: "Not or little decomposed plant matter at the surface; fine substance < 10 % by volume."}
+  - {code: "O",   master: O, page: 92, name: "O-Horizont", name_en: "organic surface horizon", definition: "Organic horizon over mineral soil or peat, unless H or F; fine substance as a rule > 10 % by volume; 70 % mineral substance by mass is its limit."}
+  - {code: "Of",  master: O, page: 92, name: "Of-Horizont", name_en: "O with visible fine substance", definition: "Fine substance clearly visible besides plant remains, as a rule 10 to 70 % by volume."}
+  - {code: "Oh",  master: O, page: 92, name: "Oh-Horizont", name_en: "O with dominant fine substance", definition: "Fine substance strongly dominant, as a rule > 70 % by volume (50 % or more at an abrupt Of/Oh contact)."}
+  - {code: "Ovh", master: O, page: 92, name: "Ovh-Horizont", name_en: "Oh in contact with rock or an Ah", definition: "Oh on solid rock, fine-earth-free coarse fragments or an Ah; diagnostic of the Tangel humus form."}
+  # --- A (pp. 92-95) ---------------------------------------------------------------
+  - {code: "A",    master: A, page: 92, name: "A-Horizont", name_en: "mineral topsoil", definition: "Accumulation of organic substance or loss of mineral substance or humus; < 30 % organic substance."}
+  - {code: "Ai",   master: A, page: 93, name: "initialer A-Horizont", name_en: "initial A", definition: "Little accumulation, hardly visible: patchy and < 2 cm with humus as Ah or less, or 2 cm or more with humus below the Ah minimum."}
+  - {code: "Ah",   master: A, page: 93, name: "humoser A-Horizont", name_en: "humous A", definition: "Up to 30 % accumulated humus; minimum organic substance 0.6, 0.9 or 1.2 % by texture."}
+  - {code: "Ah<",  master: A, page: 93, name: "basenarmer Ah", name_en: "Ah with base saturation < 50 %", definition: "Ah with base saturation below 50 %."}
+  - {code: "Ah>",  master: A, page: 93, name: "basenreicher Ah", name_en: "Ah with base saturation 50 % or more", definition: "Ah with base saturation 50 % or more."}
+  - {code: "Axh",  master: A, page: 93, detection: strong, name: "biogen durchmischter Ah", name_en: "bioturbated Ah", definition: "1 dm thick or more, base saturation 50 % or more, stable aggregates, marked bioturbation."}
+  - {code: "Acxh", master: A, page: 93, name: "Axh mit sekundärem Carbonat", name_en: "Axh with secondary carbonate", definition: "Axh visibly enriched with secondary carbonate."}
+  - {code: "Akh",  master: A, page: 93, name: "kultotropher Ah", name_en: "kultotroph Ah", definition: "Base and nutrient status lastingly changed by regular fertilising."}
+  - {code: "Aih",  master: A, page: 93, name: "Übergang Ai-Ah", name_en: "transition from Ai to Ah", definition: "About 2 cm thick; organic substance mainly plant remains."}
+  - {code: "Aah",  master: A, page: 93, name: "Übergang Aa-Ah", name_en: "transition from Aa to Ah", definition: "Humus up to 30 %, dark grey to blackish, from a very humid climate or a former Aa."}
+  - {code: "Alh",  master: A, page: 93, name: "Ah mit Tonverarmung", name_en: "Ah with clay depletion", definition: "Ah depleted in clay."}
+  - {code: "Aeh",  master: A, page: 94, name: "schwach podsolierter Ah", name_en: "weakly podzolised Ah", definition: "Humus inwash, vertically uneven humus, violet tinge."}
+  - {code: "Ach",  master: A, page: 94, name: "Ah mit sekundärem Carbonat", name_en: "Ah with secondary carbonate", definition: "Ah with visible secondary carbonate."}
+  - {code: "Aa",   master: A, page: 94, detection: likely, name: "anmooriger A-Horizont", name_en: "anmoor A", definition: "At the surface under ground- or perched-water influence; 15 to < 30 % organic substance."}
+  - {code: "Aka",  master: A, page: 94, name: "kultotropher Aa", name_en: "kultotroph Aa", definition: "Aa with base and nutrient status changed by fertilising."}
+  - {code: "Ap",   master: A, page: 94, name: "gepflügter A-Horizont", name_en: "ploughed A", definition: "Shaped by regular tillage (includes k)."}
+  - {code: "Acp",  master: A, page: 94, name: "Ap mit sekundärem Carbonat", name_en: "Ap with secondary carbonate", definition: "Ap with visible secondary carbonate."}
+  - {code: "Axp",  master: A, page: 94, name: "gepflügter Axh", name_en: "ploughed Axh", definition: "Axh shaped by tillage (one entry with Acxp)."}
+  - {code: "Acxp", master: A, page: 94, name: "gepflügter Acxh", name_en: "ploughed Acxh", definition: "Acxh shaped by tillage (one entry with Axp)."}
+  - {code: "Aap",  master: A, page: 94, name: "Ap mit Merkmalen des Aa", name_en: "Ap with the features of an Aa", definition: "Ploughed A with the organic substance of an Aa."}
+  - {code: "Ae",   master: A, page: 94, name: "Eluvialhorizont (gebleicht)", name_en: "acid-bleached A", definition: "Podzolised; mostly value moist 4 or more (dry 5 or more) and value/chroma 2.5 or more; mostly over Bh, Bsh, Bs or Bsv."}
+  - {code: "Ahe",  master: A, page: 94, detection: strong, name: "Übergang Ah-Ae", name_en: "transition from Ah to Ae", definition: "Uneven humus with the Ah minimum, humus inwash, diffuse bleached spots."}
+  - {code: "Al",   master: A, page: 94, detection: likely, name: "lessivierter A-Horizont", name_en: "lessivé A", definition: "Clay-depleted over a Bt; lighter than Ah and Bt."}
+  - {code: "Ahl",  master: A, page: 94, name: "Al mit Humus", name_en: "Al with residual humus", definition: "Al with residual humus."}
+  - {code: "Ael",  master: A, page: 94, detection: strong, name: "stark aufgehellter Al", name_en: "strongly bleached Al", definition: "Strong clay and humus depletion and acid bleaching; with Bt as Ael+Bt diagnostic of the Fahlerde."}
+  - {code: "Bt+Al", master: A, page: 95, name: "Al mit Bt-Material", name_en: "Al interfingered with Bt material", definition: "Interfingering: an Al with parts of a Bt."}
+  # --- B (pp. 95-98) ---------------------------------------------------------------
+  - {code: "B",     master: B, page: 95, name: "B-Horizont", name_en: "mineral subsoil", definition: "Changed against the parent rock by weathering, loamification or enrichment; free of lithogenic carbonate in the fine earth; coarse fragments as a rule < 75 %."}
+  - {code: "Bv",    master: B, page: 95, detection: likely, name: "verbraunter, verlehmter B-Horizont", name_en: "weathered, browned B", definition: "Browned and loamified against the horizon below (same layer): redder hue or higher chroma, as a rule more clay and one pH class lower; potential CEC of the clay 16 cmol/kg or more, muscovite 6 % or weatherable minerals 3 % (else Bu)."}
+  - {code: "Bcv",   master: B, page: 95, name: "Bv mit sekundärem Carbonat", name_en: "Bv with secondary carbonate", definition: "Bv with visible secondary carbonate."}
+  - {code: "Bfv",   master: B, page: 95, detection: strong, name: "lockerer Bv", name_en: "loose Bv", definition: "Dry bulk density < 0.8 g/cm3 or pore volume 60 % or more; diagnostic of the Lockerbraunerde."}
+  - {code: "Ah-Bfv", master: B, page: 96, name: "Bfv mit Humus wie Ah", name_en: "Bfv with the Ah humus minimum", definition: "Bfv with humus as an Ah."}
+  - {code: "Bhv",   master: B, page: 96, name: "Bv mit Humusanreicherung", name_en: "Bv with humus enrichment", definition: "Bv with visible humus enrichment."}
+  - {code: "Bsv",   master: B, page: 96, detection: strong, name: "Bv mit Sesquioxidanreicherung", name_en: "Bv with sesquioxide enrichment", definition: "Bv with visible sesquioxide enrichment."}
+  - {code: "Bhsv",  master: B, page: 96, name: "Bv mit Humus- und Sesquioxidanreicherung", name_en: "Bv with humus and sesquioxide enrichment", definition: "Bv with visible humus and sesquioxide enrichment."}
+  - {code: "Ael-Bv", master: B, page: 96, name: "mäßig aufgehellter Bv", name_en: "moderately bleached Bv", definition: "Diagnostic of the Fahlerde-Braunerde."}
+  - {code: "Btv",   master: B, page: 96, name: "Bv mit Tonanreicherung", name_en: "Bv with visible clay enrichment", definition: "Clay difference to the Al smaller than between Al and Bt in the same substrate."}
+  - {code: "Ah-Bv", master: B, page: 96, name: "Bv mit Humus wie Ah", name_en: "Bv with the Ah humus minimum", definition: "Bv with humus as an Ah."}
+  - {code: "Axh-Bv", master: B, page: 96, name: "Bv mit Mullhumus", name_en: "Bv with mull humus", definition: "Bv with mull humus at the Ah minimum."}
+  - {code: "Bbt+Bv", master: B, page: 96, name: "Bv mit Tonbändern", name_en: "Bv with clay bands", definition: "Clay bands mostly < 1 cm, together 10 to < 50 % of the area."}
+  - {code: "Bbh+Bv", master: B, page: 96, name: "Bv mit Humusbändern", name_en: "Bv with humus bands", definition: "Humus bands, together 10 to < 50 % of the area."}
+  - {code: "Bbs+Bv", master: B, page: 96, name: "Bv mit Sesquioxidbändern", name_en: "Bv with sesquioxide bands", definition: "Sesquioxide bands, together 10 to < 50 % of the area."}
+  - {code: "lCv+Bv", master: B, page: 96, name: "Bv mit lCv-Resten", name_en: "Bv with remnants of lCv", definition: "Small colour change against the Cv, more clay but not another texture subgroup."}
+  - {code: "Bh",    master: B, page: 96, name: "Humusanreicherungshorizont", name_en: "humus-illuvial B", definition: "Organic substance up against the Ae; no visible Fe enrichment; Cp:Fep > 10."}
+  - {code: "Bbh",   master: B, page: 96, name: "gebänderter Bh", name_en: "banded Bh", definition: "Thin Bh bands with Bv and lCv."}
+  - {code: "Bsh",   master: B, page: 96, name: "Bh mit Sesquioxiden", name_en: "Bh with sesquioxides", definition: "Bh with visible sesquioxides; Cp:Fep 3 to 10."}
+  - {code: "Bs",    master: B, page: 97, name: "Sesquioxidanreicherungshorizont", name_en: "sesquioxide-illuvial B", definition: "No visible humus enrichment; hue one step redder than the horizons above and below; Cp:Fep < 3."}
+  - {code: "Bbs",   master: B, page: 97, name: "gebänderter Bs", name_en: "banded Bs", definition: "Bs bands mostly < 2 cm with Bv and lCv."}
+  - {code: "Bbms",  master: B, page: 97, name: "verfestigter Bbs (Ortsteinband)", name_en: "cemented Bbs", definition: "Cemented sesquioxide bands."}
+  - {code: "B(h)ms", master: B, page: 97, name: "Ortstein", name_en: "cemented Bs or Bhs", definition: "Cemented Bs or Bhs (Ortstein)."}
+  - {code: "Bhs",   master: B, page: 97, name: "Bs mit Humus", name_en: "Bs with visible humus", definition: "Cp:Fep 3 to 10."}
+  - {code: "Bvs",   master: B, page: 97, name: "Bs mit Bv-Resten", name_en: "Bs with remnant Bv features", definition: "Bs with remnant Bv features."}
+  - {code: "Bt",    master: B, page: 97, name: "Tonanreicherungshorizont", name_en: "clay-illuvial B", definition: "Clay coatings visible by eye or lens, or > 1 % in thin section, or clay bridges; and a clay increase over the Al of 3, 5 or 8 points (by texture) within < 30 cm."}
+  - {code: "Bbt",   master: B, page: 97, detection: strong, name: "gebänderter Bt", name_en: "banded Bt", definition: "Bt bands with Bv or lCv."}
+  - {code: "Bvt",   master: B, page: 97, name: "Bt mit Bv-Resten", name_en: "Bt with remnant Bv features", definition: "Bt with remnant Bv features."}
+  - {code: "Bht",   master: B, page: 97, name: "Bt mit Humus", name_en: "Bt with humus-clay coatings", definition: "Bt with visible humus, mostly humus-clay coatings."}
+  - {code: "Al+Bt", master: B, page: 98, name: "Bt mit Al-Resten", name_en: "Bt interfingered with Al", definition: "Interfingering: a Bt with parts of an Al."}
+  - {code: "Bv+Bbt", master: B, page: 98, name: "Bt als Bänder mit Bv", name_en: "Bt in bands with Bv between", definition: "Single bands mostly 1 to 5 cm, together > 50 % of the area."}
+  - {code: "lCv+Bbt", master: B, page: 98, name: "Bt als Bänder mit lCv", name_en: "Bt in bands with lCv between", definition: "As Bv+Bbt, with lCv between."}
+  - {code: "Bu",    master: B, page: 98, name: "ferrallitischer B-Horizont", name_en: "ferrallitic B", definition: "Only fossil or relict in Germany; no rock structure, weatherable minerals < 3 %, clay > 17 %, CEC of the clay < 16 (potential) and < 10 (effective) cmol/kg."}
+  - {code: "Bku",   master: B, page: 98, name: "Bu mit Konkretionen", name_en: "Bu with sesquioxide crusts or concretions", definition: "Sesquioxide crusts or concretions of 0.5 to 10 cm."}
+  - {code: "Bj",    master: B, page: 98, name: "fersiallitischer B-Horizont", name_en: "fersiallitic B", definition: "Only fossil or relict; largely kaolinised, no rock structure."}
+  # --- C (pp. 98-100) ---------------------------------------------------------------
+  - {code: "C",     master: C, page: 98, name: "C-Horizont", name_en: "mineral substratum", definition: "The rock under the solum; prefixes give carbonate (c, e, i) and consistence (l, m, x)."}
+  - {code: "Cv",    master: C, page: 99, detection: likely, name: "verwitterter C-Horizont", name_en: "weathered C", definition: "Slightly to fully weathered, transition to fresh rock; against Cn less carbonate, roots, physically loosened."}
+  - {code: "Bs-Cv", master: C, page: 99, name: "Cv mit Bs-Merkmalen", name_en: "Cv with Bs features", definition: "Cv with Bs features below the Bs limits."}
+  - {code: "Bv+Cv", master: C, page: 99, name: "Cv mit Bv verzahnt", name_en: "Cv interfingered with Bv", definition: "Interfingering of Cv and Bv."}
+  - {code: "Bv-Cv", master: C, page: 100, name: "Cv mit Bv-Merkmalen", name_en: "Cv with Bv features", definition: "Cv with Bv features below the Bv limits."}
+  - {code: "Bbt+Cv", master: C, page: 100, name: "Cv mit Tonbändern", name_en: "Cv with clay bands", definition: "Clay bands mostly < 1 cm, together 10 to < 50 % of the area."}
+  - {code: "Ctv",   master: C, page: 100, name: "Cv mit schwacher Tonanreicherung", name_en: "Cv with weak clay enrichment", definition: "Weak or diffuse, low-area clay enrichment."}
+  - {code: "Cbtv",  master: C, page: 100, name: "Cv mit Tonbändern unter 10 %", name_en: "Cv with few clay bands", definition: "Clay bands < 1 cm, together < 10 % of the area."}
+  - {code: "Cj",    master: C, page: 100, name: "fersiallitischer C-Horizont (Saprolith)", name_en: "kaolinised fersiallitic C", definition: "With rock structure (saprolite); only fossil in Germany."}
+  - {code: "Cn",    master: C, page: 100, detection: likely, name: "unverwittertes Gestein", name_en: "fresh rock", definition: "Unweathered loose or hard rock."}
+  - {code: "Cc",    master: C, page: 100, name: "C mit sekundärem Carbonat", name_en: "C with secondary carbonate", definition: "Visible secondary carbonate."}
+  - {code: "Ckc",   master: C, page: 100, name: "Cc mit Carbonatkonkretionen", name_en: "Cc with carbonate concretions", definition: "Secondary carbonate concretions (Lösskindel)."}
+  # --- P (pp. 100-101) ---------------------------------------------------------------
+  - {code: "P",     master: P, page: 100, detection: likely, name: "P-Horizont", name_en: "Pelosol subsoil", definition: "From clay or clay-marl stone; coarse prisms and blocks, marked shrink-swell, cracks to > 5 dm; clay as a rule > 45 %; S features at most subordinate."}
+  - {code: "Ah-P",  master: P, page: 100, name: "P mit Humus wie Ah", name_en: "P with the Ah humus minimum", definition: "P with humus as an Ah."}
+  - {code: "Cv-P",  master: P, page: 100, name: "P mit Gesteinsaggregaten", name_en: "P with primary rock aggregates", definition: "More plastic than the C, with visible primary aggregates of the clay stone."}
+  - {code: "Bv-P",  master: P, page: 101, name: "P mit Bv-Merkmalen", name_en: "P with Bv features", definition: "As P but < 45 % clay and with Bv features."}
+  # --- T (p. 101) ---------------------------------------------------------------------
+  - {code: "T",     master: T, page: 101, detection: likely, name: "T-Horizont", name_en: "Terra subsoil", definition: "From the solution residue of carbonate rock; clay 65 % or more (45 to 65 % in transitions); marked subangular blocky; fine earth free of primary carbonate."}
+  - {code: "Tv",    master: T, page: 101, detection: strong, name: "Terra fusca-Horizont", name_en: "yellowish to reddish brown T", definition: "Not redder than 5YR."}
+  - {code: "Tcv",   master: T, page: 101, name: "Tv mit sekundärem Carbonat", name_en: "Tv with secondary carbonate", definition: "Tv with secondary carbonate."}
+  - {code: "Tu",    master: T, page: 101, detection: strong, name: "Terra rossa-Horizont", name_en: "rubefied T", definition: "Redder than 5YR; only fossil or relict in Germany."}
+  # --- S (pp. 101-103) ---------------------------------------------------------------
+  - {code: "S",     master: S, page: 101, name: "S-Horizont", name_en: "perched-water subsoil", definition: "Subsoil with perched-water influence, at times wet."}
+  - {code: "Sw",    master: S, page: 101, detection: strong, name: "Stauwasserleiter", name_en: "perched-water conducting S", definition: "80 % or more of the area with wet bleaching and oxidation features; rH 19 or less or a positive dipyridyl test in wet phases; more permeable than the Sd below."}
+  - {code: "Sdw",   master: S, page: 102, name: "schwach stauender Sw", name_en: "weakly stagnating Sw", definition: "Permeability a little above 10 cm/d."}
+  - {code: "Sew",   master: S, page: 102, detection: strong, name: "stark gebleichter Sw", name_en: "strongly bleached Sw", definition: "Depleted in sesquioxides by wet bleaching; value moist 4 or more, value/chroma 2.5 or more; < 5 % rust."}
+  - {code: "Scw",   master: S, page: 102, name: "Sw mit sekundärem Carbonat", name_en: "Sw with secondary carbonate", definition: "Sw with secondary carbonate."}
+  - {code: "Ssw",   master: S, page: 102, name: "Sw mit Sesquioxidanreicherung", name_en: "Sw enriched with sesquioxides", definition: "Sw enriched with sesquioxides."}
+  - {code: "Srw",   master: S, page: 102, detection: strong, name: "langzeitig nasser Sw", name_en: "long-wet Sw", definition: "Wet about 200 to 300 days a year; reduction features; rust only on root channels."}
+  - {code: "Serw",  master: S, page: 102, name: "gebleichter Srw", name_en: "bleached Srw", definition: "Srw clearly depleted in sesquioxides."}
+  - {code: "Ah-Sw", master: S, page: 102, name: "Sw mit Humus wie Ah", name_en: "Sw with the Ah humus minimum", definition: "Sw with humus as an Ah."}
+  - {code: "Ah-Srw", master: S, page: 102, name: "Srw mit Humus wie Ah", name_en: "Srw with the Ah humus minimum", definition: "Srw with humus as an Ah."}
+  - {code: "Sd",    master: S, page: 102, detection: strong, name: "Staukörper", name_en: "stagnating S", definition: "As a rule 50 to 70 % rust and bleached spots and marbled; less permeable than the Sw above (< 10 cm/d); air capacity < 3 %."}
+  - {code: "Scd",   master: S, page: 103, name: "Sd mit sekundärem Carbonat", name_en: "Sd with secondary carbonate", definition: "Sd with secondary carbonate."}
+  - {code: "Srd",   master: S, page: 103, name: "reduzierter Sd", name_en: "reduced Sd", definition: "Reduction features and permanent air shortage."}
+  - {code: "Swd",   master: S, page: 103, name: "schwach stauwasserleitender Sd", name_en: "weakly conducting Sd", definition: "Permeability mostly a little below 10 cm/d."}
+  - {code: "Sg",    master: S, page: 103, name: "haftnasser S-Horizont", name_en: "adhesive-water wet S", definition: "80 % or more bleaching and oxidation features with Sd features; air shortage at field capacity; high silt and finest sand."}
+  - {code: "Sdg",   master: S, page: 103, name: "toniger Sg", name_en: "Sg with 17 to < 35 % clay", definition: "Sg with 17 to < 35 % clay."}
+  - {code: "Sq",    master: S, page: 103, detection: strong, name: "Knickhorizont", name_en: "Knick horizon", definition: "Stagnating and solonetz-like horizon of the Knickmarsch (strong or weak)."}
+  # --- G (pp. 104-106) ---------------------------------------------------------------
+  - {code: "G",     master: G, page: 104, name: "G-Horizont", name_en: "groundwater-influenced horizon", definition: "Mineral horizon with groundwater influence and, as a rule, hydromorphic features."}
+  - {code: "Go",    master: G, page: 104, name: "Oxidationshorizont", name_en: "oxidised G", definition: "5 % or more rust spots (or rust and carbonate spots), reduction colours < 10 %, in the groundwater fluctuation zone or under oxygen-rich water."}
+  - {code: "Gco",   master: G, page: 104, name: "Go mit sekundärem Carbonat", name_en: "Go with secondary carbonate", definition: "Go with visible secondary carbonate."}
+  - {code: "Gmco",  master: G, page: 104, name: "Go mit verfestigtem Carbonat", name_en: "Go with banked cemented carbonate", definition: "Clear banked cemented carbonate."}
+  - {code: "Gho",   master: G, page: 104, name: "Go mit sekundärem Humus", name_en: "Go with secondary humus", definition: "Go with secondary humus."}
+  - {code: "Gso",   master: G, page: 104, detection: strong, name: "Go mit Raseneisen", name_en: "Go with bog iron", definition: "Clear unconsolidated bog iron."}
+  - {code: "Gkso",  master: G, page: 104, name: "Go mit Raseneisenkonkretionen", name_en: "Go with bog-iron concretions", definition: "Bog-iron concretions."}
+  - {code: "Gmso",  master: G, page: 104, name: "Go mit Raseneisenstein", name_en: "Go with banked bog-iron stone", definition: "Banked bog-iron stone."}
+  - {code: "Gro",   master: G, page: 105, name: "Go mit Reduktionsmerkmalen", name_en: "Go with about equal reducing and oxidising periods", definition: "5 % or more rust spots; reduction colours present, 10 to 50 %."}
+  - {code: "Gcro",  master: G, page: 105, name: "Gro mit sekundärem Carbonat", name_en: "Gro with secondary carbonate", definition: "Gro with secondary carbonate."}
+  - {code: "Ghro",  master: G, page: 105, name: "Gro mit sekundärem Humus", name_en: "Gro with secondary humus", definition: "Gro with secondary humus."}
+  - {code: "Gzro",  master: G, page: 105, name: "Gro mit sekundären Salzen", name_en: "Gro with secondary salts", definition: "Gro with secondary salts."}
+  - {code: "Gw",    master: G, page: 105, name: "zeitweilig grundwassererfüllter G-Horizont", name_en: "temporarily water-filled G without features", definition: "Above a Gr, without the features of other G horizons for lack of colouring material; no positive dipyridyl test."}
+  - {code: "Gr",    master: G, page: 105, name: "Reduktionshorizont", name_en: "reduced G", definition: "Almost always reducing (wet > 300 days); rust < 5 %; reduction colours > 95 %; rH 19 or less or a positive dipyridyl test."}
+  - {code: "Ghr",   master: G, page: 106, name: "Gr mit sekundärem Humus", name_en: "Gr with secondary humus", definition: "Gr with secondary humus."}
+  - {code: "Gcr",   master: G, page: 106, name: "Gr mit sekundärem Carbonat", name_en: "Gr with secondary carbonate", definition: "Gr with secondary carbonate."}
+  - {code: "Gzr",   master: G, page: 106, name: "Gr mit sekundären Salzen", name_en: "Gr with secondary salts", definition: "Gr with secondary salts."}
+  - {code: "Gor",   master: G, page: 106, detection: strong, name: "Gr mit Oxidationsmerkmalen", name_en: "Gr with mostly reducing conditions", definition: "5 % or more rust spots; reduction colours dominant (> 50 %)."}
+  - {code: "Ghor",  master: G, page: 106, name: "Gor mit sekundärem Humus", name_en: "Gor with secondary humus", definition: "Gor with secondary humus."}
+  - {code: "Gcor",  master: G, page: 106, name: "Gor mit sekundärem Carbonat", name_en: "Gor with secondary carbonate", definition: "Gor with secondary carbonate."}
+  - {code: "Gzor",  master: G, page: 106, name: "Gor mit sekundären Salzen", name_en: "Gor with secondary salts", definition: "Gor with secondary salts."}
+  # --- M, E, R, Y (pp. 106-108) ---------------------------------------------------------
+  - {code: "M",     master: M, page: 106, name: "M-Horizont", name_en: "colluvial solum material", definition: "Holocene sedimented solum material: organic substance as an Ah or chroma 3 or more, visible stratification, no dominant features of other horizons."}
+  - {code: "Mc",    master: M, page: 107, name: "M mit sekundärem Carbonat", name_en: "M with secondary carbonate", definition: "M with secondary carbonate."}
+  - {code: "E",     master: E, page: 107, name: "Esch", name_en: "plaggen or compost material", definition: "Applied plaggen or compost material thicker than the plough depth; organic substance as an Ah; cultural remains or raised phosphate."}
+  - {code: "Ex",    master: E, page: 107, detection: strong, name: "biogen durchmischter E-Horizont", name_en: "bioturbated Esch", definition: "E with marked bioturbation (Hortisol)."}
+  - {code: "R",     master: R, page: 107, name: "Rigolhorizont", name_en: "deep-mixing horizon", definition: "Mixed mineral horizon over 4 dm thick from trenching or deep ploughing."}
+  - {code: "Ah-R",  master: R, page: 107, name: "R mit Humus wie Ah", name_en: "R with the Ah humus minimum", definition: "R with humus as an Ah."}
+  - {code: "Y",     master: "Y", page: 107, name: "Reduktgashorizont", name_en: "reducing-gas horizon", definition: "Shaped by CO2, CH4 or H2S; at least at times 10 % or more CH4 or CO2 in the soil air."}
+  - {code: "Yo",    master: "Y", page: 108, name: "oxidierter Y-Horizont", name_en: "oxidised Y", definition: "Oxidation features, red-brown from Fe oxides; rH 19 or less."}
+  - {code: "Yr",    master: "Y", page: 108, name: "reduzierter Y-Horizont", name_en: "reduced Y", definition: "Reduction features and reduction colours; O2-free soil air; rH 19 or less."}
+
+# The transition and interfingering horizons the text names without an entry
+# of their own (5.6.3.3), by the horizon they are listed under.
+named:
+  - {under: Of,  page: 92,  codes: ["mC+Of", "xC+Of"]}
+  - {under: Oh,  page: 92,  codes: ["mC+O(v)h", "xC+O(v)h"]}
+  - {under: Ah,  page: 94,  codes: ["lCv+Ah", "Bv-Ah", "Bv+Ah", "Bv-Axh", "Bv+Axh", "P-Ah", "P-Axh", "P-Acxh", "Sw-Ah", "Go-Ah", "Go-Axh", "Gw-Ah"]}
+  - {under: Aa,  page: 94,  codes: ["Sw-Aa", "Go-Aa", "Gco-Aa"]}
+  - {under: Ae,  page: 94,  codes: ["Ahe+Ae", "Sw-Ae", "Sw-Ahe"]}
+  - {under: Al,  page: 95,  codes: ["Bt+Ael", "Axh-Al", "Bv-Al", "Bv-Ael", "Bv+Al", "Bv+Ael", "Bs-Al", "Bs+Al", "Sw-Al", "Ael+Bt"]}
+  - {under: Bv,  page: 96,  codes: ["Bh+Bv", "Bs+Bv", "Bt+Bv", "Ah+Bv", "Al-Bv", "Sd-Bv", "Sw-Bv", "Go-Bv"]}
+  - {under: Bh,  page: 97,  codes: ["Ae+Bbh", "ixCv+B(s)h", "Sw-B(s)h", "Sd-B(s)h", "Go-B(s)h"]}
+  - {under: Bs,  page: 97,  codes: ["Bh+Bs", "Bv+Bs", "Bv+Bbs", "Bv+Bbms", "Al+Bs", "Al-B(h)s", "ixCv+B(h)s", "Sw-B(h)s", "Sd-B(h)s", "Sd-Bbs", "Sd-Bhms", "Srd-Bbms", "Go-B(h)s"]}
+  - {under: Bt,  page: 98,  codes: ["Ael+Bt", "Bh+Bt", "Bv+Bt", "Axh-B(h)t", "Sd-Bt", "Go-Bt"]}
+  - {under: C,   page: 100, codes: ["Axh+lCc", "Bbh+lCv", "Bbs+lCv", "Bs+Cv", "B(h)s+xCv", "Bt+Cv", "Tv-Cv", "Tv+Cv", "Sd-Cv", "Go-lC", "Bv+xCv"]}
+  - {under: P,   page: 101, codes: ["Sd-P", "Go-P"]}
+  - {under: T,   page: 101, codes: ["Bv-Tv", "Bt-Tv", "Sd-Tv"]}
+  - {under: Sw,  page: 102, codes: ["Sd+Sw", "Aa-Srw", "Ae-Sw", "Al-Sw", "B(s)h-Sw", "B(h)s-Sw", "Bv-Sw", "Cv-Sw", "P-Sw", "M-Sw", "E-Sw", "Go-Sw", "Sw-Bv"]}
+  - {under: Sd,  page: 103, codes: ["Sw+Sd", "fAh°Sd", "Bt+Sd", "Bt-Sd", "B(s)h+Sd", "B(s)h-Sd", "B(h)s+Sd", "B(h)s-Sd", "Bbs+Sd", "Bbs-Sd", "Bbms-Srd", "Bj-Sd", "Bj-Srd", "Cv-Sd", "P-Sd", "Tv-Sd", "M-Sd", "Go-Sd", "Bv-Sd"]}
+  - {under: Sg,  page: 103, codes: ["Al+Sg", "Al-Sg", "Bt+Sg", "Bt-Sg", "Bv+Sg", "Bv-Sg", "Go-Sg", "Sg-Bv"]}
+  - {under: Go,  page: 105, codes: ["Ai-Go", "Ah-Go", "Aa-Go", "Ae-Go", "Al-Go", "Bv-Go", "Bt-Go", "B(s)h-Go", "P-Go", "M-Go", "E-Go", "Sw-Go", "Sg-Go", "Sd-Go", "Sd-Gro"]}
+  - {under: M,   page: 107, codes: ["Sw-M", "Go-M", "Gor-M"]}
+
+# KA6 (2024) symbols with a one-to-one KA5 reading (from the open DBG decks,
+# not the KA6 book; Hugo's decision Q4): read with a flag.
+ka6:
+  - {ka6: "Ol",  ka5: "L"}
+  - {ka6: "Ax",  ka5: "Axh"}
+  - {ka6: "Ee",  ka5: "Ae"}
+  - {ka6: "El",  ka5: "Al"}
+  - {ka6: "Eal", ka5: "Ael"}
+  - {ka6: "Ks",  ka5: "Bs"}
+  - {ka6: "Kh",  ka5: "Bh"}
+  - {ka6: "Kt",  ka5: "Bt"}
+  - {ka6: "Khs", ka5: "Bhs"}
+  - {ka6: "Dj",  ka5: "M"}
+  - {ka6: "De",  ka5: "E"}
+  - {ka6: "Mm",  ka5: "aM"}
+  - {ka6: "Pv",  ka5: "P"}
+# KA6 masters, symbols and prefixes with no KA5 reading: unread, with a note.
+ka6_unread:
+  masters: ["N", V, U, W, D, K]
+  symbols: [Hn, Au]
+  prefixes: [p, t, w, d, k, v]
+
+# Field codes of the KA5 description sheet that look like designations
+# (fields 30 and 31, p. 113; field 34, p. 116): features, never horizons. In a
+# profile not in the KA5 notation, Ck and Oe keep their FAO or USDA meaning.
+field_codes:
+  - {code: "Ck",  field: 34, page: 116, name_en: "secondary carbonate concretions (Lösskindel)"}
+  - {code: "Oe",  field: 34, page: 116, name_en: "Orterde (weakly cemented)"}
+  - {code: "Ost", field: 34, page: 116, name_en: "Ortstein"}
+  - {code: "Cmy", field: 34, page: 116, name_en: "carbonate mycelium"}
+  - {code: "Kw",  field: 34, page: 116, name_en: "lime crust"}
+  - {code: "Sgb", field: 34, page: 116, name_en: "gypsum feature"}
+  - {code: "Hu",  field: 34, page: 114, name_en: "humus feature"}
+  - {code: "Vw",  field: 34, page: 114, name_en: "feature code"}
+  - {code: "Vr",  field: 34, page: 114, name_en: "feature code"}
+
+# Recognising an undeclared profile (Hugo's decision Q3, 2026-11-04): one
+# strong sign, or two likely ones of two kinds, and no symbol only another
+# notation writes. The strong symbols are exactly those of the decision card
+# (Sw, Sd, Srw, Sew, Sq, Tv, Tu, Axh, Ael, Ahe, Bfv, Bsv, Bbt, Gor, Gso, Ex),
+# marked in `symbols`; these are the signs that are not one symbol.
+detection:
+  strong_rules:
+    - "the degree sign joining two parts (fAh°Sd)"
+    - "a lower-case prefix before a capital master (lC, mC, xC, cC, eC, iC, fAh, rGo, aM, aAh, tmGo, jY, yC, oG)"
+    - "a base-saturation mark after a symbol (Ah>, Bv<<)"
+  likely_rules:
+    - "E under an Ah over a layer II"
+    - "M over a layer II"
+  foreign:
+    fao_usda: "a B, C, A, E, H or O with a suffix KA5 does not write on it (Bw, Bk, Bg, Btg, Bss, Bf, Bm, Cr, Cg, Oi, Oa, Ag, Eg, Hi, He), the Canadian j with other letters (Btj, Bmj, Aej), Ck and Oe written as designations, two masters run together (AB, BC, LFH), a slash inside a designation (E/B), or an Arabic layer number (2Bt)"
+    rp: "a code only the RP 2008 writes that KA5 does not define (OL, OF, OH, BP, LA, SV, FS, Sca, Aca, Kc, Js ...)"
+    russian: "a profile the Russian reader recognises (AY, EL, BHF, BCA, PU, TUR ...)"
+    cpcs: "a symbol only the CPCS 1967 writes (A00, A0, (B), Bfe, Can, an A2 used as E)"
+
+# The same string in the notations soilKey reads (pp. 82-88; the KA5 column
+# as the book defines it).
+collisions:
+  - {string: "E",  ka5: "Esch (plaggen or compost)", fao: "eluvial", cpcs: "(A2)", rp: "eluvial", russian: "podzolic eluvial", cssc: "(Ae)"}
+  - {string: "R",  ka5: "Rigol mixing horizon", fao: "hard rock", cpcs: "rock", rp: "hard rock layer", russian: "hard rock", cssc: "bedrock"}
+  - {string: "M",  ka5: "Holocene solum material (colluvium)", fao: "USDA manufactured layer", rp: "loose rock layer"}
+  - {string: "P",  ka5: "Pelosol subsoil", rp: "permafrost layer", russian: "plough horizon"}
+  - {string: "T",  ka5: "Terra subsoil", russian: "peat"}
+  - {string: "S",  ka5: "perched-water subsoil", cpcs: "(Sa saline)", rp: "structural horizon", russian: "saline"}
+  - {string: "Y",  ka5: "reducing-gas horizon", fao: "suffix y: gypsum", rp: "gypsic"}
+  - {string: "L",  ka5: "litter", fao: "FAO 2006 limnic", cpcs: "litter", rp: "ploughed prefix", cssc: "litter"}
+  - {string: "F",  ka5: "subaqueous mud", fao: "(old fermentation layer)", cpcs: "F of Ao", rp: "ferrallitic", russian: "bog iron", cssc: "fermentation"}
+  - {string: "H, Hm, Hs, Ha", ka5: "peat; mulmified; with bog iron; separation fabric", fao: "histic; Ha highly decomposed", cpcs: "H of Ao", rp: "histic; mesic; sapric; drained", russian: "decomposed organic", cssc: "humic layer"}
+  - {string: "Bv, Cv", ka5: "weathered (FAO Bw)", fao: "plinthite"}
+  - {string: "Cn", ka5: "fresh rock", fao: "sodic C"}
+  - {string: "Cc", ka5: "secondary carbonate in C", fao: "concretions", cpcs: "Cca", rp: "Cca calcareous C", cssc: "Cca"}
+  - {string: "Bbt, Bbs", ka5: "banded", fao: "buried"}
+  - {string: "Axh, Ai, Bj, Bu", ka5: "bioturbated; initial; fersiallitic; rubefied", fao: "fragipan; slickensides; jarosite; urban", cssc: "Bj weak"}
+  - {string: "Ach", ka5: "Ah with secondary carbonate", rp: "chernic A (strong RP code)"}
+  - {string: "Ahe", ka5: "transition Ah-Ae", cssc: "eluviated Ah"}
+  - {string: "A-B", ka5: "transition, the last part dominant", fao: "AB, the first dominant", cpcs: "AB", rp: "A-S", cssc: "AB"}
+  - {string: "A/B", ka5: "the sequence separator of formulas", fao: "E/B interfingered parts", rp: "'/' separator"}
+  - {string: "A+B", ka5: "interfingering, the last part dominant", rp: "'&'"}
+  - {string: "II, III", ka5: "layer", fao: "Arabic 2, 3", cpcs: "Roman", rp: "Roman", russian: "Roman", cssc: "Roman"}
