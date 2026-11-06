@@ -190,10 +190,12 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       }
       # v0.9.345: the Russian full name and the formula of the type ride in
       # $qualifiers but are no qualifiers; v0.9.347: nor are the Russian
-      # species, the undecided ones and the 1977 analogue (a note)
+      # species, the undecided ones and the 1977 analogue (a note); v0.9.358:
+      # nor the readings of the South African key (za_*)
       ql <- self$qualifiers
       if (!is.null(names(ql))) ql <- ql[!(names(ql) %in% c("name_native", "subtype_native", "type_formula",
-                                                         "species_native", "species_undecided", "analogue_1977"))]
+                                                         "species_native", "species_undecided", "analogue_1977")) &
+                                         !startsWith(names(ql), "za_")]
       if (length(ql) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(ql), collapse = ', ')}")
       }

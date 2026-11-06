@@ -40,6 +40,13 @@ thresholds:
     source: "G"
     decision: "Q8"
     stand_in: false
+  lithosol_topsoil:
+    value: 100
+    op: "<"
+    unit: "mm, an orthic A thinner than this over nothing diagnostic: the land class rock and lithosols, not a form"
+    source: "G"
+    decision: "Q2"
+    stand_in: false
 
   # --- the topsoil horizons (T) ---------------------------------------------------
   organic_o_oc:
@@ -460,3 +467,16 @@ thresholds:
     decision: "D7 (Hugo, 2026-11-06)"
     stand_in: true
     note: "The form pages say 'usually' under 0.3 %: a descriptive number read as the limit, flagged."
+  topsoil_upper:
+    value: 200
+    unit: "mm, the upper part of a topsoil of several layers: a vertic, melanic or humic A covering it (or half the topsoil or more) is the topsoil"
+    source: "soilkey"
+    decision: "R5 (Hugo, 2026-11-06)"
+    stand_in: true
+  colour_split_thickness:
+    value: 20
+    op: ">="
+    unit: "cm: a red and a yellow-brown apedal layer are two horizons when each is this thick, else one of the colour of the greater thickness"
+    source: "soilkey"
+    decision: "R6 (Hugo, 2026-11-06)"
+    stand_in: true

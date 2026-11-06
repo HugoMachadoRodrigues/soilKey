@@ -1,0 +1,30 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: za1991
+order: 14
+aliases: [za, sat, sat1991, south_africa]
+legacy: false
+default: false
+status: experimental
+namespace: za
+classifier: classify_za1991
+result_slot: za1991
+top_level: forms
+# the families (404, the 19 family criteria) come with the next part
+levels: [forms]
+display:
+  en: "South African soil classification (1991)"
+  pt: "Classificação sul-africana de solos (1991)"
+  native: "Soil Classification: A Taxonomic System for South Africa (1991)"
+  result: "SA 1991"
+edition: "Soil classification: a taxonomic system for South Africa (1991)"
+citation: >
+  Soil Classification Working Group (1991). Soil classification: a taxonomic
+  system for South Africa. Memoirs on the Agricultural Natural Resources of
+  South Africa No. 15. Department of Agricultural Development, Pretoria.
+version: "Second edition (1991); read from the open AGIS key and form pages, the family criteria, the general rules and the topsoil pages, without the book"
+implementation_status: "soilKey v0.9.358 -- the 73 soil forms (and Lichtenburg, outside the AGIS key, provisional), keyed by their sequences of diagnostic horizons and materials in the order of van Huyssteen (2020), with the general rules (1500 mm, burial, truncation) and the 500 mm rules of the form pages; the 30 diagnostic horizons and materials from the South African notation or on the data (v0.9.355-0.9.357). The families follow."
+source: |
+  The key to the 73 forms (AGIS pages), the general rules (1.5 m, burial,
+  500 mm), the five topsoil horizons. The subsoil horizons are read from van
+  Huyssteen (2020) and SASRI (1999); where no open source gives a number, a
+  WRB diagnostic stands in, flagged (readings.yaml, thresholds.yaml).

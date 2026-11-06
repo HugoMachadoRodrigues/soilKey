@@ -194,7 +194,30 @@ pro_fixture_catalog <- function() {
              "thalassosol pold\u00e9ris\u00e9" = "thalassosols_polderises", "thiosol" = "thiosols",
              "sulfatosol" = "sulfatosols", "veracrisol" = "veracrisols", "lithovertisol" = "lithovertisols",
              "topovertisol" = "topovertisols", "paravertisol haplique" = "paravertisols_hapliques",
-             "paravertisol planosolique" = "paravertisols_planosoliques")
+             "paravertisol planosolique" = "paravertisols_planosoliques"),
+  # the South African examples of 1991, one per soil form, labelled by the form
+  za1991 = c("Champagne" = "champagne", "Kranskop" = "kranskop", "Magwa" = "magwa", "Inanda" = "inanda",
+             "Lusiki" = "lusiki", "Sweetwater" = "sweetwater", "Nomanci" = "nomanci",
+             "Rensburg" = "rensburg", "Arcadia" = "arcadia", "Willowbrook" = "willowbrook",
+             "Bonheim" = "bonheim", "Steendal" = "steendal", "Immerpan" = "immerpan", "Mayo" = "mayo",
+             "Milkwood" = "milkwood", "Inhoek" = "inhoek", "Katspruit" = "katspruit",
+             "Kroonstad" = "kroonstad", "Longlands" = "longlands", "Wasbank" = "wasbank",
+             "Constantia" = "constantia", "Tsitsikamma" = "tsitsikamma", "Lamotte" = "lamotte",
+             "Concordia" = "concordia", "Houwhoek" = "houwhoek", "Estcourt" = "estcourt",
+             "Klapmuts" = "klapmuts", "Vilafontes" = "vilafontes", "Kinkelbos" = "kinkelbos",
+             "Cartref" = "cartref", "Fernwood" = "fernwood", "Westleigh" = "westleigh",
+             "Dresden" = "dresden", "Avalon" = "avalon", "Glencoe" = "glencoe", "Pinedene" = "pinedene",
+             "Griffin" = "griffin", "Molopo" = "molopo", "Askham" = "askham", "Clovelly" = "clovelly",
+             "Bainsvlei" = "bainsvlei", "Bloemdal" = "bloemdal", "Kimberly" = "kimberly",
+             "Plooysburg" = "plooysburg", "Garies" = "garies", "Hutton" = "hutton",
+             "Shortlands" = "shortlands", "Jonkersberg" = "jonkersberg", "Witfontein" = "witfontein",
+             "Pinegrove" = "pinegrove", "Groenkop" = "groenkop", "Sterkspruit" = "sterkspruit",
+             "Sepane" = "sepane", "Valsrivier" = "valsrivier", "Swartland" = "swartland",
+             "Tukulu" = "tukulu", "Etosha" = "etosha", "Gamoep" = "gamoep", "Oudtshoorn" = "oudtshoorn",
+             "Oakleaf" = "oakleaf", "Montagu" = "montagu", "Addo" = "addo", "Prieska" = "prieska",
+             "Trawal" = "trawal", "Augrabies" = "augrabies", "Brandvlei" = "brandvlei", "Coega" = "coega",
+             "Knersvlakte" = "knersvlakte", "Glenrosa" = "glenrosa", "Mispah" = "mispah",
+             "Dundee" = "dundee", "Namib" = "namib", "Witbank" = "witbank")
 )
 
 # Resolve a make_*_canonical() name, or a national example written
