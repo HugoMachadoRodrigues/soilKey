@@ -217,7 +217,22 @@ pro_fixture_catalog <- function() {
              "Oakleaf" = "oakleaf", "Montagu" = "montagu", "Addo" = "addo", "Prieska" = "prieska",
              "Trawal" = "trawal", "Augrabies" = "augrabies", "Brandvlei" = "brandvlei", "Coega" = "coega",
              "Knersvlakte" = "knersvlakte", "Glenrosa" = "glenrosa", "Mispah" = "mispah",
-             "Dundee" = "dundee", "Namib" = "namib", "Witbank" = "witbank")
+             "Dundee" = "dundee", "Namib" = "namib", "Witbank" = "witbank"),
+  # the German examples of the KA5 (2005), one per type of Tab. 51, labelled by
+  # the type as printed
+  ka5 = c("Erdniedermoor" = "KV", "Mulmniedermoor" = "KM", "Erdhochmoor" = "KH", "Hochmoor" = "HH",
+          "Niedermoor" = "HN", "Protopedon" = "JP", "Gyttja" = "JG", "Sapropel" = "JS", "Dy" = "JD",
+          "Nassstrand" = "IA", "Watt" = "IW", "Strand" = "UEA", "Rohmarsch" = "MR", "Kalkmarsch" = "MC",
+          "Organomarsch" = "MO", "Knickmarsch" = "MK", "Dwogmarsch" = "MD", "Haftn\u00e4ssemarsch" = "MH",
+          "Kleimarsch" = "MN", "Moorgley" = "GH", "Anmoorgley" = "GM", "Nassgley" = "GN", "Gley" = "GG",
+          "Rambla" = "AO", "Tschernitza" = "AT", "Paternia" = "AQ", "Kalkpaternia" = "AZ", "Vega" = "AB",
+          "Felshumusboden" = "FF", "Skeletthumusboden" = "FS", "Syrosem" = "OO", "Lockersyrosem" = "OL",
+          "Kalktschernosem" = "TC", "Tschernosem" = "TT", "Ranker" = "RN", "Regosol" = "RQ",
+          "Rendzina" = "RR", "Pararendzina" = "RZ", "Reduktosol" = "XX", "Kolluvisol" = "YK",
+          "Plaggenesch" = "YE", "Rigosol" = "YY", "Treposol" = "YU", "Hortisol" = "YO", "Stagnogley" = "SG",
+          "Haftpseudogley" = "SH", "Pseudogley" = "SS", "Podsol" = "PP", "Fahlerde" = "LF",
+          "Parabraunerde" = "LL", "Braunerde" = "BB", "Terra rossa" = "CR", "Terra fusca" = "CF",
+          "Pelosol" = "DD", "... \u00fcber Fersiallit" = "VV", "... \u00fcber Ferrallit" = "VW")
 )
 
 # Resolve a make_*_canonical() name, or a national example written

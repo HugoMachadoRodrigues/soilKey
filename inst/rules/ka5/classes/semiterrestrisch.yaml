@@ -1,0 +1,41 @@
+# The classes of the semiterrestrial soils (Tab. 51, pp. 285-286), in the
+# order of the key: Ue, M, G, A (the Auenboeden with dominant hydromorphy under
+# 4 dm belong to the Gleye: slip 30).
+classes:
+  "[semiterrestrisch]":
+    - code: "Ü"
+      name: "Strandböden"
+      name_en: "Beach soils"
+      name_pt: "Solos de praia"
+      page: "pp. 254, 285"
+      tests:
+        all_of:
+          - strand_ka5: {}
+      notes: "In the tidal zone, a solum of Ai horizons from sandy sediments of the sea, brackish or river water."
+    - code: "M"
+      name: "Marschen"
+      name_en: "Marsh soils"
+      name_pt: "Solos de marisma"
+      page: "pp. 249, 285"
+      tests:
+        all_of:
+          - marsh_ka5: {}
+      notes: "Tide-influenced, redoximorphic features to the surface or under the Ah, from sea, brackish and river sediments (tm, tb, tp)."
+    - code: "G"
+      name: "Gleye"
+      name_en: "Gley soils"
+      name_pt: "Gleissolos"
+      page: "pp. 242, 285"
+      tests:
+        all_of:
+          - horizon_within_ka5: {masters: ["G"], max_cm: 40}
+      notes: "Ground, slope or spring water, a G horizon with its top under 4 dm (the class sentence 'Gr 4 dm or more' holds for the type GG only: slip 8)."
+    - code: "A"
+      name: "Auenböden"
+      name_en: "Floodplain soils"
+      name_pt: "Solos de várzea"
+      page: "pp. 238, 286"
+      tests:
+        all_of:
+          - floodplain_soil_ka5: {}
+      notes: "In a floodplain flooded periodically to episodically, G horizons possible from 4 dm, from Holocene fluvial sediments (aX horizons); no B, P, T, E or R horizon and an S only under an aM (Q5)."

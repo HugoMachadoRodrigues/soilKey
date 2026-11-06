@@ -1,0 +1,293 @@
+# The types of the terrestrial soils (Tab. 51, pp. 286-288; pp. 202-237),
+# with the rock of the Ah/C-Boeden by Q15 (the prefix, the whole soil, the
+# fine earth flagged) and Q18 (an Ah of 3 to < 4 dm on solid rock is a
+# Regosol), the Rigosol and Treposol by Q23, the Hortisol by its Ex (Q6) and
+# the V palaeosols by Q19.
+types:
+  "F":
+    - code: "FF"
+      name: "Felshumusboden"
+      name_en: "Humus soil on rock"
+      name_pt: "Solo húmico sobre rocha"
+      page: "pp. 202, 286"
+      formula: "O/mC"
+      tests:
+        all_of:
+          - oc_soil_ka5: {rock: "m"}
+      notes: "O horizons over solid rock."
+    - code: "FS"
+      name: "Skeletthumusboden"
+      name_en: "Humus soil in block debris"
+      name_pt: "Solo húmico em cascalheira"
+      page: "pp. 203, 286"
+      formula: "xC+O/C"
+      tests:
+        all_of:
+          - oc_soil_ka5: {rock: "x"}
+      notes: "O horizons over or in coarse skeleton (xC+O)."
+  "O":
+    - code: "OO"
+      name: "Syrosem"
+      name_en: "Syrosem"
+      name_pt: "Syrosem"
+      page: "pp. 203, 287"
+      formula: "Ai/mC"
+      tests:
+        all_of:
+          - raw_soil_ka5: {rock: "m"}
+      notes: "An Ai on solid rock."
+    - code: "OL"
+      name: "Lockersyrosem"
+      name_en: "Loose syrosem"
+      name_pt: "Syrosem sobre material solto"
+      page: "pp. 204, 287"
+      formula: "Ai/lC"
+      tests:
+        all_of:
+          - raw_soil_ka5: {rock: "l"}
+      notes: "An Ai on loose rock."
+  "T":
+    - code: "TC"
+      name: "Kalktschernosem"
+      name_en: "Calcareous chernozem"
+      name_pt: "Tchernossolo calcário"
+      page: "pp. 212, 286"
+      formula: "Acxh/Acxh+elCc/eCc"
+      tests:
+        all_of:
+          - carbonate_solum_ka5: {}
+      notes: "Secondary carbonate in the whole solum."
+    - code: "TT"
+      name: "Tschernosem"
+      name_en: "Chernozem"
+      name_pt: "Tchernossolo"
+      page: "pp. 211, 286"
+      formula: "Axh/Axh+lC(c)/C(c)"
+      tests:
+        default: true
+      notes: "The Axh free of secondary carbonate."
+  "R":
+    - code: "RN"
+      name: "Ranker"
+      name_en: "Ranker"
+      name_pt: "Ranker"
+      page: "pp. 204, 287"
+      formula: "Ah/imC,ixC"
+      tests:
+        all_of:
+          - ah_c_rock_ka5: {type: "RN"}
+      notes: "Silicate solid rock or block debris, the Ah under 3 dm."
+    - code: "RQ"
+      name: "Regosol"
+      name_en: "Regosol"
+      name_pt: "Regossolo"
+      page: "pp. 206, 287"
+      formula: "Ah/ilC"
+      tests:
+        all_of:
+          - ah_c_rock_ka5: {type: "RQ"}
+      notes: "Silicate loose rock 3 dm thick or more with the Ah (Q18: also an Ah of 3 to < 4 dm on solid rock)."
+    - code: "RR"
+      name: "Rendzina"
+      name_en: "Rendzina"
+      name_pt: "Rendzina"
+      page: "pp. 207, 287"
+      formula: "Ah/cC"
+      tests:
+        all_of:
+          - ah_c_rock_ka5: {type: "RR"}
+      notes: "Carbonate rock, 75 % or more (Q15)."
+    - code: "RZ"
+      name: "Pararendzina"
+      name_en: "Pararendzina"
+      name_pt: "Pararendzina"
+      page: "pp. 209, 287"
+      formula: "Ah/eC"
+      tests:
+        all_of:
+          - ah_c_rock_ka5: {type: "RZ"}
+      notes: "Marly rock, 2 to < 75 % carbonate (Q15)."
+  "X":
+    - code: "XX"
+      name: "Reduktosol"
+      name_en: "Reductosol"
+      name_pt: "Redutossolo"
+      page: "pp. 232, 287"
+      formula: "Ah/Y"
+      tests:
+        default: true
+      notes: "All variants."
+  "Y":
+    - code: "YK"
+      name: "Kolluvisol"
+      name_en: "Colluvisol"
+      name_pt: "Coluvissolo"
+      page: "pp. 233, 287"
+      formula: "Ah/M/II..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {masters: ["M"], max_cm: 40, reaching_cm: 40}
+      notes: "Relocated humic material, an M reaching deeper than 4 dm (Ah + M 4 dm or more)."
+    - code: "YE"
+      name: "Plaggenesch"
+      name_en: "Plaggen soil"
+      name_pt: "Solo plaggen"
+      page: "pp. 235, 287"
+      formula: "Ah/E/II..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["E"], max_cm: 40, reaching_cm: 40}
+      notes: "Plaggen application, an E reaching deeper than 4 dm (Ah + E 4 dm or more)."
+    - code: "YY"
+      name: "Rigosol"
+      name_en: "Rigosol (trenched soil)"
+      name_pt: "Rigossolo"
+      page: "pp. 236, 287"
+      formula: "R-Ap/(Ah-)R/C"
+      tests:
+        all_of:
+          - deep_cultivation_ka5: {kind: "repeated_trenching"}
+      notes: "Frequent trenching deeper than 4 dm; the kind not recorded, the Rigosol first in the key's order, provisionally, the Treposol a candidate (Q23)."
+    - code: "YU"
+      name: "Treposol"
+      name_en: "Treposol (deep-ploughed soil)"
+      name_pt: "Treposol"
+      page: "pp. 236, 287"
+      formula: "R-Ap/R+.../..."
+      tests:
+        all_of:
+          - deep_cultivation_ka5: {kind: "single_deep_ploughing"}
+      notes: "A single deep ploughing deeper than 4 dm (R+...)."
+    - code: "YO"
+      name: "Hortisol"
+      name_en: "Hortisol (garden soil)"
+      name_pt: "Hortissolo"
+      page: "pp. 236, 287"
+      formula: "Ap/Ex/(Ex-)C"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Ex"], max_cm: 40, reaching_cm: 40}
+      notes: "Long garden cultivation, an Ex reaching deeper than 4 dm (Ap + Ex 4 dm or more; the key's 'R' read Ex, slip 2)."
+  "S":
+    - code: "SG"
+      name: "Stagnogley"
+      name_en: "Stagnogley"
+      name_pt: "Estagnogleissolo"
+      page: "pp. 231, 288"
+      formula: "Sw-Ah/S(e)rw/IISrd"
+      tests:
+        all_of:
+          - stagnic_type_ka5: {type: "SG", max_cm: 40}
+      notes: "An Srw under 4 dm and an Srd."
+    - code: "SH"
+      name: "Haftpseudogley"
+      name_en: "Adhesive-water pseudogley"
+      name_pt: "Pseudogleissolo de umidade aderente"
+      page: "pp. 229, 288"
+      formula: "Ah/Sg"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Sg", "Sdg"], max_cm: 40}
+      notes: "An Sg under 4 dm (Tab. 51 prints the code SS: slip 1)."
+    - code: "SS"
+      name: "Pseudogley"
+      name_en: "Pseudogley"
+      name_pt: "Pseudogleissolo"
+      page: "pp. 227, 288"
+      formula: "Ah/S(e)w/(II)Sd"
+      tests:
+        all_of:
+          - stagnic_type_ka5: {type: "SS", max_cm: 40}
+      notes: "An Sw under 4 dm and an Sd."
+  "P":
+    - code: "PP"
+      name: "Podsol"
+      name_en: "Podzol"
+      name_pt: "Podzol"
+      page: "pp. 221, 287"
+      formula: "Ahe/Ae/B(s)h/B(h)s/C"
+      tests:
+        default: true
+      notes: "All variants."
+  "L":
+    - code: "LF"
+      name: "Fahlerde"
+      name_en: "Pale lessivé (Fahlerde)"
+      name_pt: "Fahlerde"
+      page: "pp. 219, 288"
+      formula: "Ah/Ael/Ael+Bt/Bt/C"
+      tests:
+        all_of:
+          - fahlerde_ka5: {}
+      notes: "An Ael and a strong texture differentiation (clay difference 9 or 12 points, p. 219); measured short of it, no Fahlerde and the conflict reported (C13)."
+    - code: "LL"
+      name: "Parabraunerde"
+      name_en: "Parabraunerde (lessivé)"
+      name_pt: "Parabraunerde"
+      page: "pp. 217, 288"
+      formula: "Ah/Al/Bt/C"
+      tests:
+        default: true
+      notes: "The other Lessives."
+  "B":
+    - code: "BB"
+      name: "Braunerde"
+      name_en: "Brown earth"
+      name_pt: "Terra parda"
+      page: "pp. 215, 288"
+      formula: "Ah/Bv/C"
+      tests:
+        default: true
+      notes: "All variants."
+  "C":
+    - code: "CR"
+      name: "Terra rossa"
+      name_en: "Terra rossa"
+      name_pt: "Terra rossa"
+      page: "pp. 225, 288"
+      formula: "Ah/Tu/cC"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Tu"], max_cm: 30}
+      notes: "A Tu horizon (redder than 5YR)."
+    - code: "CF"
+      name: "Terra fusca"
+      name_en: "Terra fusca"
+      name_pt: "Terra fusca"
+      page: "pp. 224, 288"
+      formula: "Ah/Tv/cC"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Tv", "Tcv"], max_cm: 30}
+      notes: "A Tv horizon (5YR or yellower)."
+  "D":
+    - code: "DD"
+      name: "Pelosol"
+      name_en: "Pelosol"
+      name_pt: "Pelossolo"
+      page: "pp. 213, 288"
+      formula: "(P-)Ah/P/C"
+      tests:
+        default: true
+      notes: "All variants."
+  "V":
+    - code: "VV"
+      name: "... über Fersiallit"
+      name_en: "... over fersiallite"
+      name_pt: "... sobre fersialito"
+      page: "pp. 226, 288"
+      formula: ".../IIr,fBj/Cj/Cv"
+      tests:
+        all_of:
+          - palaeosol_ka5: {codes: ["Bj"]}
+      notes: "A relict or fossil Bj (Q19)."
+    - code: "VW"
+      name: "... über Ferrallit"
+      name_en: "... over ferrallite"
+      name_pt: "... sobre ferralito"
+      page: "pp. 226, 288"
+      formula: ".../IIr,fBu/Cj/Cv"
+      tests:
+        all_of:
+          - palaeosol_ka5: {codes: ["Bu", "Bku"]}
+      notes: "A relict or fossil Bu (Q19)."

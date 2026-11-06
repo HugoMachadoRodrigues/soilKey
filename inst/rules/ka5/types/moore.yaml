@@ -1,0 +1,56 @@
+# The types of the Moore (Tab. 51, p. 284; pp. 258-262). Class K has no
+# fallback row (Q22): an earthified H that no type takes stops at the class.
+types:
+  "K":
+    - code: "KV"
+      name: "Erdniedermoor"
+      name_en: "Earthified fen"
+      name_pt: "Turfa baixa terrificada"
+      page: "pp. 260, 284"
+      formula: "nHv/(nHt/)nHw/(nHr/)(IIfF/)..."
+      tests:
+        all_of:
+          - earthified_moor_ka5: {min_cm: 10, pattern: "^Hc?vp?$", prefixes: ["n", "u"]}
+      notes: "The earthified topsoil an nHv or nHvp (a uHv by the type text, Q22); read on the topsoil (D10)."
+    - code: "KM"
+      name: "Mulmniedermoor"
+      name_en: "Mulmified fen"
+      name_pt: "Turfa baixa pulverulenta"
+      page: "pp. 261, 284"
+      formula: "nHm/nHa/nHt/nHw/(nHr/)(IIfF/)..."
+      tests:
+        all_of:
+          - earthified_moor_ka5: {min_cm: 10, pattern: "^Hc?v?mp?$", prefixes: ["n", "u"]}
+      notes: "The mulmified topsoil an nHm or nHmp (a uHm by the type text, Q22); read on the topsoil (D10)."
+    - code: "KH"
+      name: "Erdhochmoor"
+      name_en: "Earthified bog"
+      name_pt: "Turfa alta terrificada"
+      page: "pp. 262, 284"
+      formula: "hHv/hHw/(hHr/)(IIuHr/)(II,IIInHr/)(...fF/)..."
+      tests:
+        all_of:
+          - earthified_moor_ka5: {min_cm: 10, pattern: "^Hc?(v|vm|m)p?$", prefixes: ["h"]}
+      notes: "The earthified topsoil an hHv or hHvp, not a plain hH or hHp (D10); an hHm, which no type takes, is read here with the note [vermulmt] (Q22)."
+  "H":
+    - code: "HH"
+      name: "Hochmoor"
+      name_en: "Raised bog"
+      name_pt: "Turfa alta"
+      page: "pp. 259, 284"
+      formula: "hH/(IInH/)(II,IIIfF/)..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {masters: ["H"], prefixes: ["h"], max_cm: 40}
+          - value_of_horizon_ka5: {masters: ["H"], prefixes: ["h"], attr: "ph_cacl2", max: 4}
+      notes: "hH horizons with a pH (CaCl2) under 4."
+    - code: "HN"
+      name: "Niedermoor"
+      name_en: "Fen"
+      name_pt: "Turfa baixa"
+      page: "pp. 258, 284"
+      formula: "nH,uH/(IIfF/)..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {masters: ["H"], prefixes: ["n", "u"], max_cm: 40}
+      notes: "nH or uH horizons."

@@ -72,9 +72,12 @@ thresholds:
   gw_zone_above_cm: {value: 100, page: "pp. 104, 311; D12", what: "[soilKey] the fluctuation zone of a recorded water table (MNGW or the depth observed) reaches 1 m above it; above it the redox features are of perched water (Hugo, 2026-11-06)"}
   srd_reduction_min_pct: {value: 10, page: "p. 103; D15", what: "[soilKey] the reduction features of the Srd: reduction colours over 10 area-% (Hugo, 2026-11-06)"}
   srd_days_min: {value: 300, page: "p. 103; D15", what: "[soilKey] the permanent wetness of the Srd: wet over 300 days a year, the Gr's limit (Hugo, 2026-11-06)"}
+  moor_interbed_max_cm: {value: 10, page: "p. 284; D7", what: "[soilKey] a mineral or limnic interbed of 10 cm or less between H horizons does not break the peat body (Hugo, 2026-11-06)"}
   h_topsoil_block_cm: {value: 30, page: "pp. 79, 89; D19", what: "[soilKey] under 30 cm or more of H the run of topsoils does not start (Hugo, 2026-11-06)"}
   gr_chroma_max: {value: 1.5, page: "p. 105", what: "chroma of the Gr colours under 1.5 (5G under 2.5)"}
   # --- M, E, R, Y, C and the prefixes (pp. 84, 98-100, 106-108) ---------------
+  mo_humus_min_pct: {value: 8, page: "p. 253; Q6", what: "humus of the topsoil of the Organomarsch, 8 % or more (the type text)"}
+  mo_clay_min_pct: {value: 45, page: "p. 253; Q6", what: "clay of the topsoil of the Organomarsch, 45 % or more (the type text)"}
   r_min_cm: {value: 40, page: "p. 107", what: "the R horizon is a mixed horizon over 4 dm thick"}
   y_gas_min_pct: {value: 10, page: "p. 108", what: "CH4 and/or CO2 in the soil air of the Y at least at times 10 vol-%"}
   xc_fine_earth_max_pct: {value: 5, page: "p. 99", what: "the xC has fine earth under 5 vol-% (coarse fragments over 95)"}
