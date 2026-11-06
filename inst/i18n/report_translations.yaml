@@ -101,6 +101,8 @@ en:
   "report.rp_crosswalk_wrb2006_desc": "The possible correspondences the Référentiel pédologique 2008 gives with the WRB of 2006 (not soilKey's WRB 2022). A note only: it never changes the classification."
   "report.rp_crosswalk_cpcs": "Equivalents in the Référentiel pédologique 2008 (Annex 7)"
   "report.rp_crosswalk_cpcs_desc": "The possible equivalents the Référentiel pédologique 2008 gives for the CPCS 1967 categories, not identities. A note only: it never changes the classification."
+  "report.cst_correlation": "Approximate equivalents (CST 2001, Tables 4.2 and 4.3)"
+  "report.cst_correlation_desc": "The Chinese Soil Taxonomy gives, for each order, the approximate equivalents in US Soil Taxonomy (1999) and the WRB (1998). A note only: it never changes the classification."
 
 pt:
   "report.no_trace": "(sem rastro)"
@@ -202,3 +204,5 @@ pt:
   "report.rp_crosswalk_wrb2006_desc": "As correspondências possíveis que o Référentiel pédologique 2008 dá com o WRB de 2006 (não o WRB 2022 do soilKey). Apenas uma nota: nunca muda a classificação."
   "report.rp_crosswalk_cpcs": "Equivalentes no Référentiel pédologique 2008 (anexo 7)"
   "report.rp_crosswalk_cpcs_desc": "Os equivalentes possíveis que o Référentiel pédologique 2008 dá para as categorias da CPCS 1967, não identidades. Apenas uma nota: nunca muda a classificação."
+  "report.cst_correlation": "Equivalentes aproximados (CST 2001, Tabelas 4.2 e 4.3)"
+  "report.cst_correlation_desc": "A Taxonomia de Solos da China dá, para cada ordem, os equivalentes aproximados na Soil Taxonomy dos EUA (1999) e na WRB (1998). Apenas uma nota: nunca muda a classificação."

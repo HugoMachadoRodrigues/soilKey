@@ -787,19 +787,23 @@
     ct <- x$thk[1L]; flags <- c(flags, "crust_thickness_from_top_horizon")
   }
   vcrust <- !is.na(ct) && ct >= t$vesicular_crust_min_cm
+  # v0.9.373 (Hugo, 2026-11-06): under an aridic regime a crust not recorded
+  # is undecided, not absent
+  if (is.na(ct) && identical(.cst_moisture_regime(x$pedon)$climatic$regime, "aridic")) vcrust <- NA
   ty <- .cst_t(x, "structure_type")
   k <- seq_len(min(2L, x$n))
   platy <- any(!is.na(ty[k]) & ty[k] == "platy" & !is.na(x$thk[k]) & x$thk[k] <= t$platy_max_cm)
   gyp <- any(.cst_v(x, "caso4_pct")[k] >= t$gypsum_much_pct | .cst_v(x, "gypsum_visible_pct")[k] > 0, na.rm = TRUE)
   col <- .cst_colours(x)
   trans <- x$n && isTRUE(col$vm[1L] < 3.5 & col$vd[1L] < 5.5 & col$cm[1L] < 3.5) && (isTRUE(sand) || bio)
-  i3 <- .cst_or(vcrust && platy, vcrust && gyp, trans)
-  if (is.na(i3)) i3 <- FALSE
+  i3 <- .cst_or(vcrust & platy, vcrust & gyp, isTRUE(trans))
+  if (is.na(i3) && !is.na(vcrust)) i3 <- FALSE
   g <- .cst_and(i1, i2, i3)
   if (x$n) full[1L] <- g
   ans <- .cst_hz_ans(x, full, flags = flags,
                      notes = "the surface features, crusts and platy layers are field observations: not recorded, absent",
-                     missing = if (is.na(g)) c("soluble_salts_pct", "ec_1to1_dS_m"))
+                     missing = if (is.na(g)) c(if (is.na(i2)) c("soluble_salts_pct", "ec_1to1_dS_m"),
+                                               if (is.na(i3)) "surface_crust_thickness_cm"))
   .cst_stand_in(x, ans, list(list(fn = "yermic_properties"), list(fn = "takyric_properties")),
                 eligible = (seq_len(x$n) == 1L) & isTRUE(i2) & unrec1)
 }
@@ -997,14 +1001,34 @@
     (alfe >= t$alfe_min_pct & .cst_shift(alfe, -1L) <= alfe / 2) |
     (odoe >= t$odoe_min & .cst_shift(odoe, -1L) <= odoe / 2)
   cc <- is75 & vm <= 5 & c >= 5 & c <= 6 & c_signs
-  mat <- a & (b | cc)
+  # the materials of the evidence grade: the colours (and signs) as before
+  mat_e <- a & (b | cc)
+  # v0.9.373 (Hugo, 2026-11-06; pp. 32-33 after the KST): the colours alone
+  # count only directly below an albic horizon or an E layer; elsewhere one
+  # of the other signs is needed (cementation, cracked coatings, Alo + 1/2
+  # Feo 0.50 or more with half or less above, ODOE 0.25 or more with half or
+  # less above). Measured Alo + 1/2 Feo without the other signs decides the
+  # signs absent (spodic evidence at most); with neither oxalate measurement
+  # nor ODOE the signs are undecided.
+  alb <- .cst_hz(x, "albic_horizon")$full
+  up_k <- .cst_shift(x$kind, -1L); up_a <- .cst_shift(alb, -1L)
+  below_e <- ifelse(up_k %in% "E" | up_a %in% TRUE, TRUE,
+                    ifelse(is.na(up_k) & is.na(up_a) & seq_len(x$n) > 1L, NA, FALSE))
+  other <- (cem$value & cem$recorded) | (!is.na(cr) & cr >= t$cracked_min_pct)
+  a_s <- ifelse(is.na(alfe), NA, alfe >= t$alfe_min_pct & .cst_shift(alfe, -1L) <= alfe / 2)
+  o_s <- ifelse(is.na(odoe), NA, odoe >= t$odoe_min & .cst_shift(odoe, -1L) <= odoe / 2)
+  sig <- ifelse(other | a_s %in% TRUE | o_s %in% TRUE, TRUE,
+                ifelse((!is.na(alfe) & !(a_s %in% TRUE) & !(o_s %in% TRUE)) |
+                         (is.na(alfe) & o_s %in% FALSE), FALSE, NA))
+  col2 <- b | (is75 & vm <= 5 & c >= 5 & c <= 6)
+  mat <- a & ((b & below_e) | (col2 & sig))
   share <- .cst_v(x, "spodic_materials_pct")
   flags <- c(if (any(!is.na(ph))) "ph_ratio_substitute",
              if (any(is.na(share) & mat %in% TRUE)) "spodic_materials_from_layer")
   sh <- ifelse(is.na(share), 100, share)
   pf <- mat & sh >= t$materials_min_pct & !(x$kind %in% .CST_NOT_B)
   sign <- (!is.na(cr) & cr >= 1) | !is.na(alfe) | !is.na(odoe) | (cem$value & cem$recorded)
-  pe <- mat & sh >= t$evidence_materials_min_pct & sign & !(x$kind %in% .CST_NOT_B)
+  pe <- mat_e & sh >= t$evidence_materials_min_pct & sign & !(x$kind %in% .CST_NOT_B)
   full <- .cst_run_grade(x, pf, t$thick_min_cm)
   evid <- .cst_run_grade(x, pe, 0.1)
   ans <- .cst_hz_ans(x, full, evid, flags = c(flags, col$hue_flag, col$c_flag),
@@ -1370,6 +1394,13 @@
   # the salts decide where measured (the 1:1 EC may still pass the layer),
   # the 1:1 EC where they are not (Q13)
   p <- ifelse(is.na(sal), be, bs | (be %in% TRUE))
+  # v0.9.373 (Hugo, 2026-11-06): salts not measured in a layer with a pH
+  # (H2O) under 5.5, or under a perudic regime, are read as too few for a
+  # salic horizon, flagged
+  ph <- .cst_v(x, "ph_h2o")
+  perud <- identical(.cst_moisture_regime(x$pedon)$climatic$regime, "perudic")
+  ruled <- is.na(p) & ((ph < t$no_salts_ph_max) %in% TRUE | perud)
+  p[ruled] <- FALSE
   r <- .cst_runs(x, p)
   thick <- .cst_thk_ok(r$low, r$high, t$thick_min_cm)
   ps <- .cst_run_sum(x, r, x$thk * .cst_gkg(sal)); pe <- .cst_run_sum(x, r, x$thk * ec)
@@ -1382,7 +1413,8 @@
   es <- band(sal, t$evidence_arid_min_pct, t$evidence_other_min_pct)
   ee <- band(ec, t$evidence_ec_arid_min, t$evidence_ec_other_min)
   evid <- full | ifelse(is.na(sal), ee, es | (ee %in% TRUE))
-  .cst_hz_ans(x, full, evid,
+  evid[ruled & is.na(evid)] <- FALSE
+  .cst_hz_ans(x, full, evid, flags = if (any(ruled)) "salic_ruled_out_by_acidity_or_perudic_regime",
               notes = c(sprintf("arid region: %s (%s)", format(av), arid$source %||% NA),
                         "the saturated-paste EC and the 1:5 EC are not read (Q13)"),
               missing = c(.cst_missing_in(x, which(is.na(full) | is.na(evid)), c("soluble_salts_pct", "ec_1to1_dS_m")),

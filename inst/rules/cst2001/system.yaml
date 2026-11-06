@@ -1,0 +1,32 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+# Order 15: the German KA5 (ka5) is planned at 13 and South Africa (za1991)
+# at 14; the number may shift with the order in which they are merged.
+id: cst2001
+order: 15
+aliases: [cst, china, chinese]
+legacy: false
+default: false
+status: experimental
+namespace: cst
+classifier: classify_cst2001
+result_slot: cst2001
+top_level: orders
+# the groups and the subgroups follow in later parts, read from groups/ and
+# subgroups/ (one file per order) as the levels below are added here
+levels: [orders, suborders]
+display:
+  en: "Chinese Soil Taxonomy (2001, English edition)"
+  pt: "Taxonomia de Solos da China (2001, edição inglesa)"
+  native: "Chinese Soil Taxonomy (2001)"
+  result: "CST 2001"
+edition: "Chinese Soil Taxonomy, English edition, Science Press 2001"
+citation: >
+  Cooperative Research Group on Chinese Soil Taxonomy (2001). Chinese Soil
+  Taxonomy. Science Press, Beijing and New York. ISBN 7-03-008852-2.
+version: "English edition (2001), mostly the 1995 Revised Proposal and the 1999 book; may differ from the Chinese 3rd edition at subgroup level"
+implementation_status: "soilKey v0.9.373 -- the 14 orders (key 5.1, pp. 72-75) and the 39 suborders (key 5.2), with soilKey's residual [E2] [Other Ferralosols]; the 33 diagnostic horizons (v0.9.371) and the 25 diagnostic characteristics (v0.9.372) on the recorded data, the regimes and shared readers of v0.9.370; the correlation of Tables 4.2 and 4.3 as a note. The 138 groups and 588 subgroups are not keyed yet"
+source: |
+  Chapter 3 (diagnostic horizons and characteristics, pp. 18-64), chapter 4
+  (categories, nomenclature, structure of the key, correlation Tables 4.2 and
+  4.3, pp. 65-71), chapter 5 (key to orders, suborders, groups and
+  subgroups, pp. 72-180), Appendix 1 (names, pp. 181-197).

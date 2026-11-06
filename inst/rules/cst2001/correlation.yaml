@@ -1,0 +1,148 @@
+# The approximate equivalents of the orders of the Chinese Soil Taxonomy
+# (2001, English edition) in US Soil Taxonomy (1999), Table 4.2 (pp. 68-69),
+# and in the World Reference Base for Soil Resources (1998), Table 4.3
+# (pp. 69-70), as the book gives them ("wholly", "mostly" or "partly
+# correspond to"). Hugo's decision Q1 (2026-11-04): shown in the result and
+# the report, and a sanity check of the labels of reference profiles; never
+# used to classify and never a crosswalk. Names of the other systems as the
+# tables print them (the WRB of 1998: Albeluvisols).
+tables:
+  us_st_1999: {title: "Table 4.2, US Soil Taxonomy (1999), orders", pages: "68-69"}
+  wrb_1998: {title: "Table 4.3, World Reference Base for Soil Resources (1998), groups", pages: "69-70"}
+correlation:
+  - order: "A"
+    name: "Histosols"
+    us_st_1999:
+      - {degree: mostly, class: Histosols}
+      - {degree: partly, class: Gelisols}
+    wrb_1998:
+      - {degree: wholly, class: Histosols}
+  - order: "B"
+    name: "Anthrosols"
+    us_st_1999:
+      - {degree: partly, class: Inceptisols}
+      - {degree: partly, class: Mollisols}
+      - {degree: partly, class: Alfisols}
+      - {degree: partly, class: Ultisols}
+    wrb_1998:
+      - {degree: wholly, class: Anthrosols}
+  - order: "C"
+    name: "Spodosols"
+    us_st_1999:
+      - {degree: wholly, class: Spodosols}
+    wrb_1998:
+      - {degree: mostly, class: Podzols}
+      - {degree: partly, class: Cryosols}
+  - order: "D"
+    name: "Andosols"
+    us_st_1999:
+      - {degree: wholly, class: Andisols}
+    wrb_1998:
+      - {degree: mostly, class: Andosols}
+      - {degree: partly, class: Cryosols}
+  - order: "E"
+    name: "Ferralosols"
+    us_st_1999:
+      - {degree: wholly, class: Oxisols}
+    wrb_1998:
+      - {degree: mostly, class: Ferralsols}
+      - {degree: partly, class: Plinthosols}
+      - {degree: partly, class: Acrisols}
+      - {degree: partly, class: Lixisols}
+      - {degree: partly, class: Umbrisols}
+      - {degree: partly, class: Cambisols}
+  - order: "F"
+    name: "Vertosols"
+    us_st_1999:
+      - {degree: wholly, class: Vertisols}
+    wrb_1998:
+      - {degree: wholly, class: Vertisols}
+  - order: "G"
+    name: "Aridosols"
+    us_st_1999:
+      - {degree: wholly, class: Aridisols}
+    wrb_1998:
+      - {degree: partly, class: Solonchaks}
+      - {degree: partly, class: Gypsisols}
+      - {degree: partly, class: Calcisols}
+      - {degree: partly, class: Luvisols}
+      - {degree: partly, class: Cambisols}
+  - order: "H"
+    name: "Halosols"
+    us_st_1999:
+      - {degree: partly, class: Aridisols}
+      - {degree: partly, class: Alfisols}
+      - {degree: partly, class: Inceptisols}
+    wrb_1998:
+      - {degree: partly, class: Solonchaks}
+      - {degree: partly, class: Solonetz}
+  - order: "I"
+    name: "Gleyosols"
+    us_st_1999:
+      - {degree: mostly, class: Inceptisols}
+      - {degree: partly, class: Gelisols}
+      - {degree: partly, class: Entisols}
+    wrb_1998:
+      - {degree: mostly, class: Gleysols}
+      - {degree: partly, class: Cryosols}
+  - order: "J"
+    name: "Isohumosols"
+    us_st_1999:
+      - {degree: wholly, class: Mollisols}
+    wrb_1998:
+      - {degree: partly, class: Chernozems}
+      - {degree: partly, class: Kastanozems}
+      - {degree: partly, class: Phaeozems}
+  - order: "K"
+    name: "Ferrosols"
+    us_st_1999:
+      - {degree: mostly, class: Ultisols}
+      - {degree: partly, class: Alfisols}
+      - {degree: partly, class: Inceptisols}
+    wrb_1998:
+      - {degree: mostly, class: Acrisols}
+      - {degree: partly, class: Lixisols}
+      - {degree: partly, class: Umbrisols}
+      - {degree: partly, class: Cambisols}
+      - {degree: partly, class: Plinthosols}
+      - {degree: partly, class: Nitisols}
+  - order: "L"
+    name: "Argosols"
+    us_st_1999:
+      - {degree: mostly, class: Alfisols}
+      - {degree: partly, class: Ultisols}
+      - {degree: partly, class: Mollisols}
+    wrb_1998:
+      - {degree: mostly, class: Luvisols}
+      - {degree: partly, class: Alisols}
+      - {degree: partly, class: Chernozems}
+      - {degree: partly, class: Kastanozems}
+      - {degree: partly, class: Phaeozems}
+      - {degree: partly, class: Calcisols}
+      - {degree: partly, class: Albeluvisols}
+      - {degree: partly, class: Planosols}
+  - order: "M"
+    name: "Cambosols"
+    us_st_1999:
+      - {degree: mostly, class: Inceptisols}
+      - {degree: partly, class: Mollisols}
+      - {degree: partly, class: Gelisols}
+    wrb_1998:
+      - {degree: mostly, class: Cambisols}
+      - {degree: partly, class: Umbrisols}
+      - {degree: partly, class: Chernozems}
+      - {degree: partly, class: Kastanozems}
+      - {degree: partly, class: Phaeozems}
+      - {degree: partly, class: Calcisols}
+      - {degree: partly, class: Cryosols}
+  - order: "N"
+    name: "Primosols"
+    us_st_1999:
+      - {degree: mostly, class: Entisols}
+      - {degree: partly, class: Gelisols}
+    wrb_1998:
+      - {degree: partly, class: Cryosols}
+      - {degree: partly, class: Fluvisols}
+      - {degree: partly, class: Leptosols}
+      - {degree: partly, class: Arenosols}
+      - {degree: partly, class: Regosols}

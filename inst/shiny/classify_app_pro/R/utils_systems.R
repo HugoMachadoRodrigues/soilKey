@@ -197,6 +197,7 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
       shiny::tags$dl(class = "row mb-0 small", .sk_levels_rows(res$levels)),
       .sk_1977_note(res),
       .sk_crosswalk_note(res),
+      .sk_cst_correlation_note(res),
       meta,
       .sk_provisional_note(res)))
 }
@@ -221,6 +222,16 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
              shiny::strong(i18n(if (identical(cw$kind, "wrb2006")) "classify.rp_wrb2006"
                                 else "classify.rp_cpcs_equivalents")), " ",
              paste(cw$lines, collapse = "; "))
+}
+
+# The approximate equivalents of a Chinese order (CST 2001, Tables 4.2 and
+# 4.3), as a note under the levels; NULL for the other systems.
+.sk_cst_correlation_note <- function(res) {
+  cc <- tryCatch(soilKey:::.cst_correlation_lines(res), error = function(e) NULL)
+  if (is.null(cc) || !length(cc)) return(NULL)
+  shiny::div(class = "sk-cst-correlation small text-muted mt-2",
+             shiny::strong(i18n("classify.cst_correlation")), " ",
+             paste(cc, collapse = " "))
 }
 
 # The Hungarian properties table for display: the properties the name carries

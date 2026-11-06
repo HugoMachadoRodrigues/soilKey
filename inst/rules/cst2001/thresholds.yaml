@@ -445,6 +445,7 @@ horizons:
     page: 42
     source: "3.2.3 1; salic evidence"
     thick_min_cm: 15
+    no_salts_ph_max: 5.5              # soilKey (Hugo, 2026-11-06): salts not measured under this pH(H2O) read as too few
     salts_arid_min_pct: 2             # 20 g/kg
     salts_other_min_pct: 1            # 10 g/kg
     ec_arid_min: 30                   # dS/m, 1:1 extract
@@ -598,6 +599,7 @@ characteristics:
   andic:
     page: "60-61"
     source: "3.3 17 (KST 1996)"
+    volcanic_parent_pattern: "volcan|tephr|ash|pumic|cinder|scoria|tuff|basalt|andesit|lava|obsidian|ignimbr|pyroclast"  # soilKey (Hugo, 2026-11-06): any other recorded parent material rules andic out
     oc_max_pct: 25                    # less than
     alfe_min_pct: 2.0
     bd_max: 0.90
@@ -666,3 +668,46 @@ characteristics:
     source: "3.3 25: no number in the book"
     sulfidic_s_min_pct: 0.01          # soilKey: the WRB 2022 number, flagged (no CST number)
     incubation_ph_max: 4.0            # less than: 'the pH may drop below 4' after oxidation
+
+# --- the numbers of the key to orders and suborders (0.9.373) ---------------------------------
+key:
+  andic_window_cm: {value: 60, page: "72-73", source: "5.1 A 1, C 2, D: the upper 60 cm, or to a shallower lithic or paralithic contact"}
+  andic_share: {value: 0.6, page: "72-73", source: "5.1 A 1, C 2, D: 60 percent of the thickness"}
+  histosols:
+    page: 72
+    source: "5.1 A 2 (a)-(d)"
+    fragmental_min_pct: 90            # soilKey: the fragmental class of the KST (default 21 of 2026-11-04)
+    cindery_pyroclastic_min_pct: 35   # soilKey's reading: the share of the Cinderic subgroups, for Hugo to confirm
+    with_cindery_within_cm: 50
+    with_cindery_min_cm: 40
+    two_thirds: 0.6666667
+    mineral_max_cm: 10
+    saturated_days_min: 180           # 6 months
+    top_within_cm: 40
+    moss_min_pct: 75                  # three fourths by volume
+    bd_low_max: 0.1                   # less than 0.1 Mg/m3
+    bd_fibric_max: 0.4
+    thick_moss_cm: 60
+    thick_other_cm: 40
+  isohumosols:
+    page: 74
+    source: "5.1 J 3"
+    depth_cm: 180
+    below_argic_cm: 125
+  humic_spodosols:
+    page: 88
+    source: "5.2 C1"
+    humic_oc_min_gkg: 60
+    humic_thick_min_cm: 10
+  vitric_andosols:
+    page: 89
+    source: "5.2 D2; coarser than silt loam read as the coarse USDA classes, loam excluded (Hugo, 2026-11-06)"
+    window_cm: 100
+    coarser_than_silt_loam: [S, LS, SL]
+  cambosols:
+    page: 75
+    source: "5.1 M 3"
+    clay_max_gkg: 80
+    window_top_cm: 20
+    window_bottom_cm: 50
+    thick_min_cm: 10

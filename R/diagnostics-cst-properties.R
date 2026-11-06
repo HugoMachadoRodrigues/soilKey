@@ -581,19 +581,22 @@ lc_coral_sands_cst     <- function(pedon) lithologic_characters_cst(pedon, "cora
 # The contact by its designation: R (lithic), Cr read as a paralithic contact
 # (.cst_cr_contact()). With no designation recorded, a description that ends
 # above the depth asked leaves it undecided; otherwise not recorded, absent.
-.cst_contact_result <- function(pedon, id, top_max) {
+.cst_contact_result <- function(pedon, id, top_max, datum = "surface") {
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_ch_prof(id, FALSE))
+  # v0.9.373: from the mineral soil surface where the key says so (F 2)
+  s <- if (identical(datum, "mineral")) x$msurf else x$surf
+  if (is.na(s) && !is.null(top_max)) return(.cst_ch_prof(id, NA, missing = c("designation", "oc_pct")))
   d <- .desg_master(as.character(.cst_col(x$h, "designation")))
   cr <- grepl("^C", d)
   hit <- x$kind %in% "R" & (if (id == "lithic_contact") !cr else cr)
   # the upper boundary at the depth asked counts (as top_max of the horizons)
-  if (!is.null(top_max)) hit <- hit & !is.na(x$top) & x$top - x$surf <= top_max
+  if (!is.null(top_max)) hit <- hit & !is.na(x$top) & x$top - s <= top_max
   if (any(hit)) {
     return(.cst_ch_prof(id, TRUE, layers = x$idx[which(hit)],
                         extra = list(contact_cm = x$top[which(hit)[1L]] - x$surf)))
   }
-  lim <- if (is.null(top_max)) Inf else x$surf + top_max
+  lim <- if (is.null(top_max)) Inf else s + top_max
   if (all(is.na(x$kind)) && max(x$bot, na.rm = TRUE) < lim) {
     return(.cst_ch_prof(id, NA, missing = "designation",
                         notes = "no designation recorded and the description ends above the depth asked"))
@@ -605,9 +608,11 @@ lc_coral_sands_cst     <- function(pedon) lithologic_characters_cst(pedon, "cora
 #' Lithic and paralithic contacts of the Chinese Soil Taxonomy (2001), p. 48;
 #' `top_max` the depth of the soil surface within which the contact lies.
 #' @noRd
-lithic_contact_cst <- function(pedon, top_max = NULL) .cst_contact_result(pedon, "lithic_contact", top_max)
+lithic_contact_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral"))
+  .cst_contact_result(pedon, "lithic_contact", top_max, match.arg(datum))
 #' @noRd
-paralithic_contact_cst <- function(pedon, top_max = NULL) .cst_contact_result(pedon, "paralithic_contact", top_max)
+paralithic_contact_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral"))
+  .cst_contact_result(pedon, "paralithic_contact", top_max, match.arg(datum))
 
 
 # --- 5. anthro-silting materials (pp. 48-49) -------------------------------------------------
@@ -765,7 +770,8 @@ vertic_features_cst <- function(pedon, grade = c("full", "evidence", "at_least_e
 #' Anthroturbic layer (pp. 50-51): 3 % or more fragments of former horizons
 #' in a layer between 25 and 100 cm.
 #' @noRd
-anthroturbic_layer_cst <- function(pedon, top_max = NULL) .cst_ch_result(pedon, "anthroturbic_layer", top_max = top_max)
+anthroturbic_layer_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral"))
+  .cst_ch_result(pedon, "anthroturbic_layer", top_max = top_max, datum = match.arg(datum))
 
 
 # --- 9. gleyic features and gleyic evidence (pp. 55-56) --------------------------------------
@@ -876,8 +882,7 @@ gleyic_features_cst <- function(pedon, grade = c("full", "evidence", "at_least_e
   }, NA)
   lim <- ifelse(dark_nb, t$chroma_dark_max, t$chroma_max)
   sat <- .cst_moisture_regime(x$pedon)$saturation
-  dc <- .cst_site_txt(x$pedon$site, "drainage_class")
-  drained <- !is.na(dc) && grepl("^(excessively|somewhat excessively|rapidly|well) drained|^(excessivamente|fortemente|acentuadamente|bem) drenado", dc)
+  drained <- .cst_well_drained(x$pedon$site)
   sat_ok <- if (all(sat$candidates %in% .CST_SATURATION)) TRUE else if (drained) FALSE else NA
   i3 <- !has_mot & cm <= lim & sat_ok
   full <- i1 | i2 | i4 | i3
@@ -917,8 +922,9 @@ redoxic_features_cst <- function(pedon, top_max = NULL, datum = c("surface", "mi
 #' Permafrost layer (p. 57): a layer perennially at or below 0 C; top_max the
 #' depth within which its top lies.
 #' @noRd
-permafrost_layer_cst <- function(pedon, top_max = NULL) {
-  res <- .cst_ch_result(pedon, "permafrost_layer", top_max = top_max)
+permafrost_layer_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral")) {
+  datum <- match.arg(datum)
+  res <- .cst_ch_result(pedon, "permafrost_layer", top_max = top_max, datum = datum)
   if (isFALSE(res$passed)) {
     x <- .cst_ctx(pedon)
     fr <- .cst_site_txt(pedon$site, "frost_regime")
@@ -926,7 +932,7 @@ permafrost_layer_cst <- function(pedon, top_max = NULL) {
     tr <- .cst_temperature_regime(pedon)
     warm <- all(tr$candidates %in% c("frigid", "mesic", "thermic", "hyperthermic"))
     deep <- if (!x$n) -Inf else suppressWarnings(max(x$bot, na.rm = TRUE))
-    lim <- if (is.null(top_max)) -Inf else x$surf + top_max
+    lim <- if (is.null(top_max)) -Inf else (if (datum == "mineral") x$msurf else x$surf) + top_max
     # the description stops above the depth asked and nothing rules
     # permafrost out: undecided
     if (x$n && !no_pf && !warm && (is.na(x$surf) || deep < lim)) {
@@ -936,7 +942,9 @@ permafrost_layer_cst <- function(pedon, top_max = NULL) {
     }
   }
   if (is.na(res$passed)) {
-    si <- tryCatch(permafrost_within_usda(pedon, max_top_cm = top_max %||% 200), error = function(e) NULL)
+    xx <- .cst_ctx(pedon)
+    off <- if (datum == "mineral" && xx$n && !is.na(xx$msurf) && !is.na(xx$surf)) xx$msurf - xx$surf else 0
+    si <- tryCatch(permafrost_within_usda(pedon, max_top_cm = (top_max %||% 200) + off), error = function(e) NULL)
     if (!is.null(si) && isTRUE(si$passed)) {
       res$passed <- TRUE
       res$layers <- si$layers
@@ -1137,7 +1145,14 @@ humic_property_cst <- function(pedon) {
     (alfe >= a0[[1L]] & alfe < a1[[1L]] & gl >= line)
   p2 <- pr >= t$glass_path_p_retention_min_pct & pt >= t$glass_path_particles_min_pct & g
   full <- .cst_v(x, "oc_pct") < t$oc_max_pct & (p1 | p2)
-  ans <- .cst_hz_ans(x, full,
+  # v0.9.373 (Hugo, 2026-11-06): a recorded parent material that is not
+  # volcanic rules the andic property out where the data leave it open,
+  # flagged
+  pm <- .cst_site_txt(x$pedon$site, "parent_material")
+  nonvolc <- !is.na(pm) && !grepl(t$volcanic_parent_pattern, pm)
+  ruled <- is.na(full) & nonvolc
+  full[ruled] <- FALSE
+  ans <- .cst_hz_ans(x, full, flags = if (any(ruled)) "andic_ruled_out_by_parent_material",
                      notes = "the 60 % pyroclastic preamble read as the concept, not a test (default 16)",
                      missing = .cst_missing_in(x, which(is.na(full)),
                                                c("al_ox_pct", "fe_ox_pct", "bulk_density_g_cm3", "phosphate_retention_pct",
