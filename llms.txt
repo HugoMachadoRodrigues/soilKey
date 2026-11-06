@@ -1161,6 +1161,11 @@ or identifies the reference horizons on the data. This release tests the
   2008
 - [`humus_form_rp()`](https://hugomachadorodrigues.github.io/soilKey/reference/humus_form_rp.md)
   : The humus form of the Referentiel pedologique 2008
+- [`rp2008_crosswalk()`](https://hugomachadorodrigues.github.io/soilKey/reference/rp2008_crosswalk.md)
+  : Correspondence tables of the Referentiel pedologique 2008
+- [`rp2008_from_label()`](https://hugomachadorodrigues.github.io/soilKey/reference/rp2008_from_label.md)
+  : Read French soil labels as references of the Referentiel pedologique
+  2008
 
 ## Interoperability
 
