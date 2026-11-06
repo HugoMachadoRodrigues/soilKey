@@ -1,0 +1,152 @@
+# The numbers of the Chinese Soil Taxonomy (Cooperative Research Group on
+# Chinese Soil Taxonomy, ISSAS. Chinese Soil Taxonomy. Science Press, Beijing
+# and New York, 2001; English edition) that soilKey's CST readers use, as
+# printed, with the printed page and the place in the book. The criteria are
+# paraphrased; no text of the book is shipped. Contents are printed in g/kg of
+# the element (Fe, P, K, organic carbon); soilKey stores most of them in % by
+# mass, so the readers divide by 10 once (units: gkg_per_pct). An entry whose
+# source is "soilKey" is a number soilKey adds where the book gives none, with
+# the decision that set it. R/cst-readers.R and R/cst-regimes.R read this file;
+# later parts add the numbers of the diagnostic horizons and characteristics.
+edition: "Chinese Soil Taxonomy, English edition, Science Press 2001"
+
+units:
+  gkg_per_pct:      {value: 10,    page: "21-64", source: "soilKey: the book prints its contents in g/kg throughout chapter 3 (3.1.3 rule 3, p. 20, states them as elements); soilKey stores % by mass"}
+  fe2o3_to_fe:      {value: 0.699, page: 20, source: "3.1.3 rule 3"}
+  p2o5_to_p:        {value: 0.437, page: 20, source: "3.1.3 rule 3"}
+  k2o_to_k:         {value: 0.83,  page: 20, source: "3.1.3 rule 3"}
+  om_to_oc:         {value: 0.58,  page: 20, source: "3.1.3 rule 3"}
+  oc_to_om:         {value: 1.724, page: 58, source: "3.3.14 n value"}
+
+mixed_surface:
+  depth_cm:                {value: 18, page: 21, source: "3.2.1: a disturbed or covered surface read as the weighted mean of the upper 18 cm"}
+  histic_cultivated_cm:    {value: 25, page: 21, source: "3.2.1: 25 cm for a cultivated histic epipedon"}
+
+clay_activity:
+  page: 31
+  source: "3.2.2.4 footnotes: CEC7 and ECEC per kg clay = the value per kg soil x 1000 / clay in g/kg"
+  cec_per_clay: "cec_cmol x 100 / clay_pct (CEC by 1 M NH4OAc at pH 7)"
+  ecec_per_clay: "(Ca + Mg + K + Na by NH4OAc at pH 7 + KCl-extractable Al) x 100 / clay_pct"
+
+storage:
+  page: "58-59"
+  source: "3.3.15 isohumic property, footnote a-d; 3.3.16 humic property, footnote"
+  formula: "kg/m2 = thickness (m) x bulk density (Mg/m3 x 1000) x content (g/kg / 1000)"
+  isohumic_upper_cm:    {value: 20,  page: 58}
+  isohumic_lower_cm:    {value: 100, page: 58}
+  contact_scaled_from_cm: {value: 50, page: 58, source: "a lithic or paralithic contact between 50 and 100 cm scales the depths (75 cm: 15 / 75)"}
+  humic_oc_min_kg_m2:   {value: 12,  page: 59, source: "3.3.16 (2)"}
+  # An O horizon without a measured bulk density: the range of the peaty
+  # histic epipedon (p. 21: under 0.1, 0.1-0.4 Mg/m3), flagged (Hugo's
+  # decision Q3 of 2026-11-05).
+  bulk_density_organic_range: {value: [0.1, 0.4], page: 21, source: "soilKey (Hugo's decision Q3 of 2026-11-05)"}
+  # Default bulk densities (Mg/m3) where none was measured (Hugo's decision
+  # Q10): by the horizon and its texture. The humic footnote (p. 59) omits the
+  # C of loamy soils, which the isohumic one (p. 58) gives; soilKey uses one
+  # table for both.
+  bulk_density_default:
+    page: "58-59"
+    loamy_or_sandier:    {A: 1.2, AB: 1.3, B: 1.4, BC: 1.4, C: 1.4}
+    clay_loamy_or_clayey: {A: 1.3, AB: 1.4, B: 1.5, BC: 1.5}
+    loamy_or_sandier_classes: [S, LS, SL, L, SIL, SI]
+    # the texture is the horizon's own (soilKey's reading, Q4 of 2026-11-05)
+    clay_loamy_or_clayey_classes: [SCL, CL, SICL, SC, SIC, C]
+
+moisture_regimes:
+  page: "51-55"
+  values: [aridic, ustic, udic, perudic, stagnic, anthrostagnic, aquic, peraquic]
+  dry_tension_kpa:          {value: 1500, page: 51}
+  control_section_cm:
+    page: 51
+    fine_loamy_silty_clayey: [10, 30]
+    coarse_loamy:            [20, 60]
+    sandy:                   [30, 90]
+  aridic:
+    page: "51-52"
+    soil_temp_50cm_above_C: 5
+    moist_consecutive_days_max: 90
+    moist_days_soil_temp_above_C: 8
+    aridity_min_exclusive: 3
+  ustic:
+    page: "52-53"
+    mast_C: 22
+    summer_winter_difference_C: 5
+    dry_cumulative_days_min: 90
+    moist_cumulative_days_min_exclusive: 180
+    moist_consecutive_days_min: 90
+    solstice_window_months: 4
+    solstice_days: 45
+    monsoon_rainy_season_months_min: 3
+    aridity_range: [1, 3.5]
+    sub_ustic_crack_days: {udi_ustic: [90, 150], typi_ustic: [150, 210], aridi_ustic_min: 210, page: 53}
+  udic:
+    page: 53
+    dry_cumulative_days_max_exclusive: 90
+    dry_consecutive_days_max_exclusive: 45
+    aridity_max_exclusive: 1
+  perudic:
+    page: 53
+    tension_kpa_rarely_above: 100
+    aridity_max_exclusive: 1
+    every_month_aridity_max_exclusive: 1
+  stagnic:
+    page: 54
+    slow_layer_within_cm: 200
+  anthrostagnic:
+    page: 54
+    saturated_months_min: 3
+    soil_temp_above_C: 5
+  aquic:
+    page: "54-55"
+    soil_temp_above_C: 5
+    oxygenated_below_C: 1
+  penman:
+    page: 52
+    source: "footnote 1: D = ET / P, ET = f x Eo (pan evaporation)"
+    factor_nov_feb: 0.6
+    factor_may_aug: 0.8
+    factor_other_months: 0.7
+    summer_months: [6, 7, 8]
+    winter_months: [12, 1, 2]
+  # The overlap of 3 to 3.5 is read as aridic (Hugo's decision Q14).
+  aridic_wins_overlap: {value: true, source: "soilKey (Hugo's decision Q14)"}
+  # A water table observed this close to the surface, with redox features
+  # recorded above that depth, marks the aquic regime when nothing else is
+  # recorded (Hugo's decision Q5).
+  marker_groundwater_within_cm: {value: 100, source: "soilKey (Hugo's decision Q5; 100 cm itself counts, 2026-11-05)"}
+
+temperature_regimes:
+  page: "56-57"
+  values: [permagelic, gelic, cryic, frigid, mesic, thermic, hyperthermic]
+  depth_cm: {value: 50, page: 56, source: "or a lithic or paralithic contact if shallower"}
+  permagelic_max_C: {value: 0, page: 56, source: "perennially at or below 0 C"}
+  gelic_mast_max_C: {value: 0, page: 56, source: "mean annual soil temperature 0 or lower"}
+  cryic:
+    page: "56-57"
+    mast_C: [0, 8]
+    summer_max_exclusive_C:
+      not_saturated_no_o: 15
+      not_saturated_with_o: 8
+      saturated_no_o: 13
+      saturated_with_o: 6
+  frigid_mast_max_exclusive_C: {value: 8,  page: 57}
+  mesic_mast_C:                {value: [8, 15],  page: 57, source: "8 or higher, lower than 15"}
+  thermic_mast_C:              {value: [15, 22], page: 57}
+  hyperthermic_mast_min_C:     {value: 22, page: 57}
+  coldness_order: [permagelic, gelic, cryic, frigid, mesic, thermic, hyperthermic]
+  # The mean annual soil temperature estimated from the air (Hugo's decision Q6).
+  air_to_soil_offset_C: {value: 1, source: "soilKey (Hugo's decision Q6; the KST convention)"}
+  # Permafrost starting within this depth makes the regime permagelic
+  # (default 8 of 2026-11-04: the soil at the 50 cm control depth is then
+  # perennially frozen).
+  permafrost_within_cm: {value: 50, source: "soilKey (default 8 of 2026-11-04)"}
+
+arid_region:
+  page: "42, 52"
+  source: "the salic horizon reads arid regions; aridity over 3 is aridic"
+  aridity_min_exclusive: {value: 3, page: 52}
+
+shares:
+  # "More than half", "80 % or more" of the horizons to 125 cm are read as
+  # shares of the thickness of the window (Hugo's decision Q22).
+  default_window_cm: {value: 125, page: "93, 124-166"}

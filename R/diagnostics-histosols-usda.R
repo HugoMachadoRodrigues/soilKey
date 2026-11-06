@@ -107,6 +107,23 @@ folist_qualifying_usda <- function(pedon) {
 
 # ---- Soil Moisture / Temperature Regimes ----------------------------
 
+# v0.9.370: the regimes the Chinese Soil Taxonomy 2001 adds to the site
+# vocabulary, as the USDA key reads them. Stagnic (perched water),
+# anthrostagnic (irrigated paddy) and peraquic (water table always at or near
+# the surface) are saturation regimes, read as aquic; permagelic (soil
+# perennially at or below 0 C) is read as gelic. Other values are returned in
+# lower case, unchanged, so no profile recorded before reads differently.
+.usda_smr_value <- function(x) {
+  x <- tolower(as.character(x))
+  x[!is.na(x) & trimws(x) %in% c("stagnic", "anthrostagnic", "peraquic")] <- "aquic"
+  x
+}
+.usda_str_value <- function(x) {
+  x <- tolower(as.character(x))
+  x[!is.na(x) & trimws(x) == "permagelic"] <- "gelic"
+  x
+}
+
 #' Soil moisture regime helper (USDA, KST 13ed Ch 3, pp 50-52)
 #'
 #' Returns TRUE when \code{pedon$site$soil_moisture_regime} matches
@@ -127,7 +144,8 @@ soil_moisture_regime_usda <- function(pedon,
                                                        "perudic", "ustic",
                                                        "xeric")) {
   target <- match.arg(target)
-  smr <- pedon$site$soil_moisture_regime %||% NA_character_
+  smr_recorded <- pedon$site$soil_moisture_regime %||% NA_character_
+  smr <- .usda_smr_value(smr_recorded)
   # Aridic and torric are synonyms in KST 13ed.
   if (target == "aridic") {
     passed <- !is.na(smr) && tolower(smr) %in% c("aridic", "torric")
@@ -139,7 +157,7 @@ soil_moisture_regime_usda <- function(pedon,
   DiagnosticResult$new(
     name = paste0("smr_", target, "_usda"), passed = passed,
     layers = integer(0),
-    evidence = list(soil_moisture_regime = smr, target = target),
+    evidence = list(soil_moisture_regime = smr_recorded, target = target),
     missing = if (is.na(smr)) "site$soil_moisture_regime"
               else character(0),
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 50-52"
@@ -175,12 +193,13 @@ soil_temperature_regime_usda <- function(pedon,
                                                           "isothermic",
                                                           "isohyperthermic")) {
   target <- match.arg(target)
-  str <- pedon$site$soil_temperature_regime %||% NA_character_
+  str_recorded <- pedon$site$soil_temperature_regime %||% NA_character_
+  str <- .usda_str_value(str_recorded)
   passed <- !is.na(str) && tolower(str) == target
   DiagnosticResult$new(
     name = paste0("str_", target, "_usda"), passed = passed,
     layers = integer(0),
-    evidence = list(soil_temperature_regime = str, target = target),
+    evidence = list(soil_temperature_regime = str_recorded, target = target),
     missing = if (is.na(str)) "site$soil_temperature_regime"
               else character(0),
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 53-58"

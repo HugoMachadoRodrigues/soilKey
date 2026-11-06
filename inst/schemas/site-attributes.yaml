@@ -178,8 +178,8 @@ attributes:
     section: "Water, climate & regimes"
     type: "character"
     unit: "-"
-    description: "USDA soil moisture regime, compared in lower case (aridic and torric are the same). Read by the USDA key (the Aridisols, and the ustic, xeric, udic and torric suborders, great groups and subgroups) and by the CSSC key when soil_moisture_subclass is absent (Chernozemic climate, the subhumid Solonetzic subgroups)."
-    allowed: ["aquic", "aridic", "torric", "udic", "perudic", "ustic", "xeric"]
+    description: "USDA soil moisture regime, compared in lower case (aridic and torric are the same). Read by the USDA key (the Aridisols, and the ustic, xeric, udic and torric suborders, great groups and subgroups) and by the CSSC key when soil_moisture_subclass is absent (Chernozemic climate, the subhumid Solonetzic subgroups). The Chinese Soil Taxonomy 2001 adds the stagnic (perched water), anthrostagnic (irrigated paddy) and peraquic (water table always at or near the surface) regimes (pp. 51-55); the USDA key reads all three as aquic."
+    allowed: ["aquic", "aridic", "torric", "udic", "perudic", "ustic", "xeric", "stagnic", "anthrostagnic", "peraquic"]
     systems: [usda, cssc3, cpcs1967]
   - name: soil_moisture_subclass
     section: "Water, climate & regimes"
@@ -192,8 +192,8 @@ attributes:
     section: "Water, climate & regimes"
     type: "character"
     unit: "-"
-    description: "USDA soil temperature regime, compared in lower case. Read by the USDA key (the cryic suborders and great groups, and the family temperature class, which is otherwise estimated from lat and elevation_m) and by the CSSC key when mean_annual_soil_temp_C is absent (Gray Brown Luvisols: mesic or thermic; Chernozemic climate: not pergelic or gelic)."
-    allowed: ["gelic", "cryic", "frigid", "mesic", "thermic", "hyperthermic", "isofrigid", "isomesic", "isothermic", "isohyperthermic", "pergelic"]
+    description: "USDA soil temperature regime, compared in lower case. Read by the USDA key (the cryic suborders and great groups, and the family temperature class, which is otherwise estimated from lat and elevation_m) and by the CSSC key when mean_annual_soil_temp_C is absent (Gray Brown Luvisols: mesic or thermic; Chernozemic climate: not pergelic or gelic). The Chinese Soil Taxonomy 2001 adds the permagelic regime (soil perennially at or below 0 C, p. 56), which the USDA key reads as gelic."
+    allowed: ["gelic", "cryic", "frigid", "mesic", "thermic", "hyperthermic", "isofrigid", "isomesic", "isothermic", "isohyperthermic", "pergelic", "permagelic"]
     systems: [usda, cssc3, scsj2017, cpcs1967]
   - name: frost_regime
     section: "Water, climate & regimes"
@@ -202,6 +202,78 @@ attributes:
     description: "Frost regime of the soil: none, seasonal (frozen for part of the winter), long-seasonal (frozen for most of the year, no permafrost) or permafrost. For the Russian Field Guide of 2008, whose key position 26 asks for long-seasonal or perennial frost in or under the profile (the cryometamorphic, cryogenic, humus-cryometamorphic and pale-metamorphic horizons; the cryo-humus AK with permafrost). Not recorded: permafrost from the horizon data (permafrost_temp_C, ice_pct, ice_form, the permafrost sign of the notation) or a gelic or pergelic soil_temperature_regime; long-seasonal frost is then undecided (Hugo's decision Q24)."
     allowed: ["none", "seasonal", "long-seasonal", "permafrost"]
     systems: [kidpr2008]
+  - name: aridity_index
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "-"
+    description: "Annual aridity by Penman's empirical formula as the Chinese Soil Taxonomy 2001 gives it: D = ET / P, with ET the annual potential evapotranspiration (pan evaporation times 0.6 from November to February, 0.8 from May to August, 0.7 in the other months) and P the annual precipitation (p. 52). Over 3 is the aridic regime (3 to 3.5 too, where the ustic range of 1 to 3.5 overlaps it), 1 to 3 ustic, under 1 udic or perudic. Read by the CST moisture regime when soil_moisture_regime is not recorded, and for the arid regions of the salic horizon (Hugo's decisions Q5 and Q14)."
+  - name: aridity_index_max_month
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "-"
+    description: "The highest monthly Penman aridity of the year (the same formula, month by month). The Chinese Soil Taxonomy 2001 separates the perudic regime (every month under 1) from the udic one (annual aridity under 1, not every month) by it (p. 53); not recorded, an annual aridity under 1 leaves the two undecided (Hugo's decision Q5)."
+  - name: climatic_moisture_regime
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "The moisture regime of the region (the climate), as distinct from the soil's own: aridic (or torric), ustic, udic or perudic. The Chinese Soil Taxonomy 2001 reads arid regions for the salic horizon and some Parasalic subgroups (p. 42) and the ustic region of the F1 groups; read before aridity_index and soil_moisture_regime for the region (Hugo's decision Q14)."
+    allowed: ["aridic", "torric", "ustic", "udic", "perudic"]
+  - name: udic_perudic_border
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "A udic regime bordering on the perudic one (TRUE / FALSE), which the Chinese Soil Taxonomy 2001 asks for in the Xanthi- and Xanthic taxa (E1.2, E1.3.4, K3, L4.4.4, M5.4.4) and does not define. A perudic soil moisture regime also passes; not recorded, the test is undecided (Hugo's decision Q8)."
+  - name: mean_summer_soil_temp_C
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "deg C"
+    description: "Mean soil temperature of the summer (June to August) at 50 cm, or at a lithic or paralithic contact if shallower. The Chinese Soil Taxonomy 2001 separates the cryic regime from the frigid one by it (under 15 C, 8 C with an O horizon; 13 C and 6 C when saturated in summer, p. 57); not recorded, the two are told apart only by a recorded regime (Hugo's decision Q6)."
+  - name: summer_saturated
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "The soil is saturated with water during some period of the summer (TRUE / FALSE), for the cryic regime of the Chinese Soil Taxonomy 2001 (p. 57). Not recorded: the summer temperature decides only where both limits agree."
+  - name: cracks_open_days
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "days per year"
+    description: "Cumulative days per year with cracks 5 mm or more wide through a layer 25 cm or more thick within 50 cm of the mineral soil surface. The Chinese Soil Taxonomy 2001 reads it for the Ustic Vertosols (90 days or more) and the Aridic subgroups (210 days or more, pp. 53, 96-99). Not recorded: a recorded ustic regime with observed cracks passes the 90 days, provisionally; the 210 days only with an aridic regime (Hugo's decision Q15)."
+  - name: irrigated
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "The land is irrigated (TRUE / FALSE). The Chinese Soil Taxonomy 2001 keys the Ustic Cambosols of aridic soils made ustic by irrigation (M3). flood_irrigated TRUE implies it (default 10 of 2026-11-04)."
+  - name: freeze_thaw_days_pct
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "% of days"
+    description: "Days of the year whose air temperature passes through 0 C (diurnal freezing and thawing), % of the days. The Chinese Soil Taxonomy 2001, the frost-thawic features (70 % or more, item 4, p. 57). Not recorded: that item is undecided."
+  - name: surface_crust_thickness_cm
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "cm"
+    description: "Thickness of the surface crust (the vesicular or takyric crust), cm. The Chinese Soil Taxonomy 2001: the aridic epipedon (a vesicular crust of 0.5 cm or more over a platy layer, pp. 27-28) and the takyric features (a crust 1-4 cm thick, G1.4.2, G2.5.4, H1.1). Not recorded: the thickness of the top horizon when it has vesicular pores or cracks, flagged (default 14 of 2026-11-04)."
+  - name: silting_rate_cm_yr
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "cm per year"
+    description: "Rate of deposition of anthropic silt, cm per year. The Chinese Soil Taxonomy 2001, the anthro-silting materials (0.5 cm or more per year by irrigation, 10 cm or more by interception of runoff, pp. 48-49). Not recorded: undecided."
+  - name: silting_kind
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "Kind of anthropic silting: irrigation (sediment-rich irrigation water) or interception (runoff intercepted behind dams or terraces). The Chinese Soil Taxonomy 2001, the anthro-silting materials (pp. 48-49)."
+    allowed: ["irrigation", "interception"]
+  - name: paddy_years_frac
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "fraction"
+    description: "Share of the years under submerged rice cultivation (0 to 1). The Chinese Soil Taxonomy 2001 gives the anthrostagnic evidence to a shorter paddy history than the anthrostagnic epipedon (pp. 26-27). Not recorded: undecided."
+  - name: lithic_contact_extent_pct
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "% of the plane"
+    description: "Share of the horizontal plane at the depth of the lithic contact that the contact occupies, %. The Chinese Soil Taxonomy 2001 asks for a lithic contact in more than half of the plane in the karst taxa (M4.3.1 and others). Not recorded: a recorded contact counts, provisionally (default 22 of 2026-11-04)."
   - name: mean_annual_soil_temp_C
     section: "Water, climate & regimes"
     type: "numeric"

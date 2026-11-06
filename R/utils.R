@@ -346,7 +346,44 @@ horizon_column_spec <- function() {
     carbonate_class_ka5           = "character", # c0-c7 (Tab. 40); KA5 i, e, c
     texture_class_ka5             = "character", # Bodenart (Tab. 30); KA5 Bv
     colour_ka5                    = "character", # colour words of Liste 18 (never converted to Munsell)
-    hydromorphic_features_ka5     = "character"  # field 30/31 code string (ed,fl,g3,f4;rb,f6)
+    hydromorphic_features_ka5     = "character", # field 30/31 code string (ed,fl,g3,f4;rb,f6)
+    # ---- v0.9.370: the Chinese Soil Taxonomy (2001, English edition) ----
+    fine_clay_pct                 = "numeric",   # fine clay (< 0.2 um), % of the fine earth; CST argic horizon (clay >= 60 %)
+    clay_films_thickness_mm       = "numeric",   # thickness of the clay films, mm; CST argic (> 0.5), clay-pan (>= 0.5)
+    humus_clay_films_pct          = "numeric",   # humus-clay films, % of the ped faces and pores; CST agric (>= 5), hydragric
+    humus_clay_films_mm           = "numeric",   # thickness of the humus-clay films, mm; CST agric (>= 0.5)
+    micromorph_argillans_pct      = "numeric",   # oriented clay (argillans) in thin section, % of the area; CST argic (>= 1), clay-pan
+    micromorph_features           = "character", # thin-section features joined by ';' (clay_stripes, pseudomorphs, freeze_thaw_aggregates, vermiform_voids ...)
+    tongue_depth_cm               = "numeric",   # depth of the tongues of albic material into the horizon below, cm; CST albic (< 5), glossic (>= 5)
+    albic_materials_pct           = "numeric",   # albic materials, % by volume; CST albic horizon (>= 85)
+    spodic_materials_pct          = "numeric",   # spodic materials, % by volume; CST spodic horizon (>= 85), evidence (50-85)
+    cracked_coatings_pct          = "numeric",   # sand grains with cracked coatings, %; CST spodic materials
+    odoe                          = "numeric",   # optical density of the oxalate extract; CST spodic materials (>= 0.25)
+    pyrophosphate_color           = "character", # Munsell value/chroma of the sodium pyrophosphate extract on paper (7/2); CST fibric and sapric
+    root_mat_pct                  = "numeric",   # woven live and dead roots, % by volume; CST mattic epipedon (>= 50), mattic material (>= 10)
+    root_mat                      = "logical",   # an elastic mat of interwoven roots; CST mattic epipedon
+    reduced_matrix_pct            = "numeric",   # matrix in the reduced (gley) colours, % by volume; CST gleyic (> 50), evidence (30-50), redoxic (< 30)
+    ferricyanide_test             = "character", # potassium ferricyanide test for ferrous iron: positive / negative; CST gleyic features
+    eh_mv                         = "numeric",   # field redox potential, mV; CST gleyic features (rH = Eh/29 + 2 pH <= 19)
+    humic_infillings              = "logical",   # cracks or pores filled with humic material from above; CST humic property, vertic features
+    humus_coatings                = "character", # humus coatings on ped faces or pore walls: none / few / common / many; CST humic property
+    silting_sieve_test            = "character", # sieve test of irrigation silting: positive / negative; CST siltigic epipedon, anthro-silting materials
+    puddled                       = "logical",   # puddled (wet-tilled) cultivated layer; CST anthrostagnic epipedon
+    p_olsen_mg_kg                 = "numeric",   # Olsen P (0.5 M NaHCO3), mg P/kg; CST fimic epipedon (>= 35), phos-agric horizon (>= 18)
+    p_total_pct                   = "numeric",   # total phosphorus as P, %; CST phosphipan (>= 3), phosphic property (1.5-13)
+    k_total_pct                   = "numeric",   # total potassium as K, % of the fine earth; CST ferralic horizon (< 0.8)
+    ec_1to1_dS_m                  = "numeric",   # electrical conductivity of the 1:1 water extract, dS/m; CST salic horizon (>= 30 arid, >= 15 other)
+    sio2_al2o3_clay               = "numeric",   # SiO2/Al2O3 molar ratio of the clay (alkali fusion); CST allitic property (<= 2.0)
+    sio2_al2o3_naoh               = "numeric",   # SiO2/Al2O3 molar ratio extracted by hot 0.5 M NaOH; CST allitic property (<= 1.0)
+    trb_cmol                      = "numeric",   # total reserve in bases (exchangeable and mineral Ca, Mg, K, Na), cmol(+)/kg soil; CST alic property
+    trb_clay_cmol                 = "numeric",   # the part of trb_cmol held in the clay fraction, cmol(+)/kg soil; CST alic property (>= 80 % of trb_cmol)
+    gravel_carbonate_coating      = "character", # carbonate coating on gravel: none / partial / bottom / complete; CST argic horizon (secondary clayification)
+    plinthite_hardens             = "logical",   # the plinthite hardens irreversibly on repeated wetting and drying; CST plinthic horizon
+    rock_fragment_max_cm          = "numeric",   # largest rock fragments, cm; CST lithologic character of purplish rocks (< 4)
+    shajiang_pct                  = "numeric",   # shajiang (irregular calcareous nodules), % by volume; CST Shajiang groups and subgroups
+    fe_mn_nodules_pct             = "numeric",   # iron-manganese nodules and concretions, % by volume; CST Concretic subgroups (>= 30)
+    pyroclastic_fragments_pct     = "numeric",   # cinders, scoria and pumice, % by volume; CST Histosols order, Cinderic (>= 35)
+    soluble_salts_sodium_pct      = "numeric"    # sodium share of the cations of the water-soluble salts, %; CST Marinic
   )
 }
 

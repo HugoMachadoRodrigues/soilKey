@@ -1376,3 +1376,190 @@ attributes:
     section: "German system (KA5)"
     unit: "-"
     description: "Hydromorphic features as the KA5 field codes write them (fields 30 and 31, Tab. 16, p. 113; the rules of 5.3, pp. 50-55): kind (e, ed, eh, eo, es oxidative; rb, rg, rt, rs reductive), form, degree g1-g5, area class f1-f9, size; features separated by ';' (ed,fl,g3,f4;rb,f6). German KA5 (ka5): read into bleached_pct, reduction_colours_pct and the rust share (redoximorphic_features_pct) as the ranges of the area classes."
+  - name: fine_clay_pct
+    section: "Chinese system (CST 2001)"
+    unit: "%"
+    description: "Fine clay (< 0.2 um), % of the fine earth. Chinese Soil Taxonomy 2001, the argic horizon (pp. 35-36): with 60 % clay or more the illuvial horizon has 8 % more fine clay than the eluvial one. Not recorded: that path stays undecided (Hugo's decision Q20)."
+    min: 0
+    max: 100
+  - name: clay_films_thickness_mm
+    section: "Chinese system (CST 2001)"
+    unit: "mm"
+    description: "Thickness of the clay films (argillans) on ped faces and in pores, mm. Chinese Soil Taxonomy 2001: the argic horizon (films thicker than 0.5 mm on 5 % or more of the faces, p. 35), the clay-pan and the Argosols order (0.5 mm or more, pp. 38, 75). Not recorded: distinct or prominent films (clay_films_strength) read as thicker than 0.5 mm, flagged (Hugo's decision Q20)."
+    min: 0
+  - name: humus_clay_films_pct
+    section: "Chinese system (CST 2001)"
+    unit: "%"
+    description: "Humus-clay films (dark coatings of humus and clay), % of the ped faces and pore walls. Chinese Soil Taxonomy 2001: the agric horizon (5 % or more; evidence 3-5 %, pp. 33-34) and the hydragric horizon. Not recorded: clay_films_amount with a dark coating colour (coatings_value_moist), flagged (Hugo's decision Q20)."
+    min: 0
+    max: 100
+  - name: humus_clay_films_mm
+    section: "Chinese system (CST 2001)"
+    unit: "mm"
+    description: "Thickness of the humus-clay films, mm. Chinese Soil Taxonomy 2001, the agric horizon (0.5 mm or more, p. 33). Not recorded: undecided (Hugo's decision Q20)."
+    min: 0
+  - name: micromorph_argillans_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (area)"
+    description: "Oriented clay (argillans) in thin section, % of the area. Chinese Soil Taxonomy 2001: the argic horizon (1 % or more, p. 36), the clay-pan (item 5, p. 38) and the secondary clayification of the argic horizon. Not recorded: a required thin-section item counts as met, with the result provisional, unless a record contradicts it (Hugo's decision Q17)."
+    min: 0
+    max: 100
+  - name: micromorph_features
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Features seen in thin section, words joined by ';': clay_stripes, pseudomorphs (clay pseudomorphs of weathered minerals), freeze_thaw_aggregates, vermiform_voids, fibrous_oriented_clay, layered_sorting, grain_clusters, humus_clay_films. Chinese Soil Taxonomy 2001: the argic horizon, the clay-pan (item 5), the agric horizon and the frost-thawic features (pp. 33-38, 57). Not recorded: as micromorph_argillans_pct (Hugo's decision Q17)."
+  - name: tongue_depth_cm
+    section: "Chinese system (CST 2001)"
+    unit: "cm"
+    description: "Depth to which tongues of albic material reach into the horizon below, cm. Chinese Soil Taxonomy 2001: the albic horizon (tongues under 5 cm, p. 28), the glossic horizon (5 cm or more, p. 29) and the alkalic horizon (2.5 cm or more, p. 38). Not recorded: no tongues (a field observation not recorded is absent)."
+    min: 0
+  - name: albic_materials_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Albic materials (bleached, uncoated), % by volume of the horizon. Chinese Soil Taxonomy 2001, the albic horizon (85 % or more, p. 28). Not recorded: the horizon's own colours and data read as 100 %, flagged (Hugo's decision Q20)."
+    min: 0
+    max: 100
+  - name: spodic_materials_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Spodic materials, % by volume of the horizon. Chinese Soil Taxonomy 2001, the spodic horizon (85 % or more; evidence 50-85 %, pp. 32-33). Not recorded: the horizon's own colours and data read as 100 %, flagged (Hugo's decision Q20)."
+    min: 0
+    max: 100
+  - name: cracked_coatings_pct
+    section: "Chinese system (CST 2001)"
+    unit: "%"
+    description: "Sand grains with cracked organic-metallic coatings, % of the grains. Chinese Soil Taxonomy 2001, the spodic materials (p. 32). Not recorded: absent."
+    min: 0
+    max: 100
+  - name: odoe
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Optical density of the acid oxalate extract (ODOE). Chinese Soil Taxonomy 2001, the spodic materials (0.25 or more, p. 33). Not recorded: that path stays undecided."
+    min: 0
+  - name: pyrophosphate_color
+    section: "Chinese system (CST 2001)"
+    unit: "Munsell"
+    description: "Munsell value and chroma of the sodium pyrophosphate extract on white chromatographic or filter paper, as value/chroma ('7/2') or with a hue ('10YR 7/2'). Chinese Soil Taxonomy 2001, the fibric and sapric soil materials (Fig. 3.1, pp. 43-45). Not recorded: the rubbed fibre content alone decides (Hugo's decision Q20)."
+  - name: root_mat_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Interwoven live and dead roots, % by volume. Chinese Soil Taxonomy 2001: the mattic epipedon (50 % or more; evidence 10-50 %, pp. 22-23) and mattic soil material (10 % or more, p. 45). Not recorded: undecided."
+    min: 0
+    max: 100
+  - name: root_mat
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "An elastic, felt-like mat of interwoven roots at the surface (TRUE / FALSE). Chinese Soil Taxonomy 2001, the mattic epipedon of alpine meadows (p. 22). Not recorded: absent."
+  - name: reduced_matrix_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Matrix in the reduced (gley) colours of the gleyic features, % by volume of the horizon. Chinese Soil Taxonomy 2001: the gleyic features (more than 50 %, p. 55), the gleyic evidence (30-50 %, p. 55) and the redoxic features (under 30 %, p. 56). Not recorded: the horizon's matrix colour read as 100 %, flagged (Hugo's decision Q20)."
+    min: 0
+    max: 100
+  - name: ferricyanide_test
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Potassium ferricyanide test for ferrous iron on a freshly broken field-wet surface: positive (solid dark blue) or negative. Chinese Soil Taxonomy 2001, the gleyic features (item 3a, p. 55); item 3b, alpha,alpha'-dipyridyl, is childs_test. Not recorded: gley colours without a test give the gleyic features provisionally (Hugo's decision Q11)."
+    allowed: [positive, negative]
+  - name: eh_mv
+    section: "Chinese system (CST 2001)"
+    unit: "mV"
+    description: "Field redox potential (Eh), mV. Chinese Soil Taxonomy 2001, the gleyic features: rH = Eh/29 + 2 pH, 19 or less (item 4); gleyic evidence 20-25 (pp. 55-56). Not recorded: undecided (Hugo's decision Q11)."
+  - name: humic_infillings
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Cracks or pores filled with humic material or films fallen from the horizons above (TRUE / FALSE). Chinese Soil Taxonomy 2001: the humic property (p. 59) and the vertic features (self-swallowing, p. 49). Not recorded: absent."
+  - name: humus_coatings
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Humus coatings on ped faces or pore walls in the B: none, few, common or many. Chinese Soil Taxonomy 2001, the humic property (item 1, p. 59). Not recorded: a dark coating colour on the B faces (coatings_value_moist 3 or less) or humic_infillings, flagged (Hugo's decision Q20)."
+    allowed: [none, few, common, many]
+  - name: silting_sieve_test
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Sieve test of irrigation silting (laminae of silt deposited by irrigation water): positive or negative. Chinese Soil Taxonomy 2001: the siltigic epipedon (pp. 24-25) and the anthro-silting materials (pp. 48-49). Not recorded: absent; the WRB irragric horizon may stand in, flagged (Hugo's decision Q20)."
+    allowed: [positive, negative]
+  - name: puddled
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "The cultivated layer is puddled (tilled under water) for rice (TRUE / FALSE). Chinese Soil Taxonomy 2001, the anthrostagnic epipedon (item 3, p. 26). Not recorded: site$flood_irrigated or a paddy land use, flagged (Hugo's decisions Q12, Q20)."
+  - name: p_olsen_mg_kg
+    section: "Chinese system (CST 2001)"
+    unit: "mg/kg"
+    description: "Olsen phosphorus (0.5 M NaHCO3 at pH 8.5), mg P per kg. Chinese Soil Taxonomy 2001: the fimic epipedon (35 or more; evidence 18-35, pp. 25-26) and the phos-agric horizon (18 or more and much higher than below, p. 34). Mehlich-3 P (p_mehlich3_mg_kg) is never read in its place (Hugo's decision Q16)."
+    min: 0
+  - name: p_total_pct
+    section: "Chinese system (CST 2001)"
+    unit: "%"
+    description: "Total phosphorus as P (not P2O5; P = 0.437 x P2O5), % of the fine earth. Chinese Soil Taxonomy 2001: the phosphipan (30 g/kg or more, p. 41) and the phosphic property (15-130 g/kg; evidence 1.5-15 g/kg, p. 63). Not recorded: undecided."
+    min: 0
+    max: 100
+  - name: k_total_pct
+    section: "Chinese system (CST 2001)"
+    unit: "%"
+    description: "Total potassium as K (not K2O; K = 0.83 x K2O), % of the fine earth. Chinese Soil Taxonomy 2001, the ferralic horizon (under 8 g/kg, item 4, p. 31). Not recorded: the weatherable minerals decide (weatherable_minerals_pct, flagged for its fraction, Hugo's decision Q16)."
+    min: 0
+    max: 100
+  - name: ec_1to1_dS_m
+    section: "Chinese system (CST 2001)"
+    unit: "dS/m"
+    description: "Electrical conductivity of the 1:1 soil:water extract, dS/m. Chinese Soil Taxonomy 2001, the salic horizon (30 or more in arid regions, 15 or more elsewhere; product with the thickness 900 or more, p. 42). The saturated-paste EC (ec_dS_m) and the 1:5 EC are never converted to it (Hugo's decision Q13)."
+    min: 0
+  - name: sio2_al2o3_clay
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "SiO2/Al2O3 molar ratio of the clay fraction (alkali fusion), or of the fine earth by HCl-HNO3-H2SO4 digestion. Chinese Soil Taxonomy 2001, the allitic property (2.0 or less, p. 62). Not recorded: the Ki of the sulfuric attack (sio2_sulfuric_pct, al2o3_sulfuric_pct), flagged (Hugo's decision Q16)."
+    min: 0
+  - name: sio2_al2o3_naoh
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "SiO2/Al2O3 molar ratio extracted from the fine earth by hot 0.5 M NaOH. Chinese Soil Taxonomy 2001, the allitic property (1.0 or less, item 2, p. 62). Not recorded: that path stays undecided."
+    min: 0
+  - name: trb_cmol
+    section: "Chinese system (CST 2001)"
+    unit: "cmol(+)/kg"
+    description: "Total reserve in bases (exchangeable and mineral Ca, Mg, K and Na) of the soil, cmol(+)/kg. Chinese Soil Taxonomy 2001, the alic property (item 2, p. 62), with trb_clay_cmol. Not recorded: the silt/clay ratio path decides."
+    min: 0
+  - name: trb_clay_cmol
+    section: "Chinese system (CST 2001)"
+    unit: "cmol(+)/kg"
+    description: "The part of the total reserve in bases held in the clay fraction, cmol(+) per kg of soil. Chinese Soil Taxonomy 2001, the alic property: 80 % or more of trb_cmol (item 2, p. 62). Not recorded: the silt/clay ratio path decides."
+    min: 0
+  - name: gravel_carbonate_coating
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "Carbonate coating on gravel and stones: none, partial, bottom (pendants under the stones) or complete. Chinese Soil Taxonomy 2001, the argic horizon formed by secondary clayification (p. 37). Not recorded: that item is skipped (Hugo's decision Q20)."
+    allowed: [none, partial, bottom, complete]
+  - name: plinthite_hardens
+    section: "Chinese system (CST 2001)"
+    unit: "-"
+    description: "The plinthite hardens irreversibly on repeated wetting and drying (TRUE / FALSE). Chinese Soil Taxonomy 2001, the plinthic horizon (p. 32). Not recorded: recorded plinthite (plinthite_pct) is read as meeting it."
+  - name: rock_fragment_max_cm
+    section: "Chinese system (CST 2001)"
+    unit: "cm"
+    description: "Size of the largest rock fragments, cm. Chinese Soil Taxonomy 2001, the lithologic character of purplish sandstones and shales (fragments under 4 cm, p. 47). Not recorded: undecided."
+    min: 0
+  - name: shajiang_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Shajiang (irregular calcareous nodules of the North China plains), % by volume. Chinese Soil Taxonomy 2001: the Shajiang groups and subgroups (F1.1.2, L4.3.2, M2.2). Not recorded: hard carbonate concretions (carbonate_hard_pct, or secondary_carbonates_pct with a hard form), flagged (default 13 of 2026-11-04)."
+    min: 0
+    max: 100
+  - name: fe_mn_nodules_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Iron-manganese nodules and concretions, % by volume. Chinese Soil Taxonomy 2001, the Concretic subgroups (30 % or more, L4.1.1). Not recorded: the sum of ferric_nodules_pct and manganiferous_nodules_pct, flagged."
+    min: 0
+    max: 100
+  - name: pyroclastic_fragments_pct
+    section: "Chinese system (CST 2001)"
+    unit: "% (vol)"
+    description: "Cinders, scoria and pumice, % by volume of the layer. Chinese Soil Taxonomy 2001: the cindery and pumiceous materials of the Histosols order (p. 72) and the Cinderic subgroups (35 % or more over 0-25 cm). Not recorded: a tephric layer_origin or volcanic_glass_pct, flagged (default 21 of 2026-11-04)."
+    min: 0
+    max: 100
+  - name: soluble_salts_sodium_pct
+    section: "Chinese system (CST 2001)"
+    unit: "%"
+    description: "Sodium share of the cations of the water-soluble salts, % of the sum of the soluble cations (in charge). Chinese Soil Taxonomy 2001, the Marinic subgroups (chloride the main anion, sodium the main cation, pp. 110-111). Not recorded: na_cmol or esp_pct, flagged (Hugo's decision Q18)."
+    min: 0
+    max: 100
