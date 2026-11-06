@@ -336,14 +336,18 @@ subhydric_ka5 <- function(pedon, kind = NULL) {
 }
 
 # The Auenboeden of the figure (Q5): no B, P, T, E or R horizon; an S only
-# under an aM.
+# under an aM (v0.9.364: an aM anywhere above it, or an M part in it, as the
+# printed Pseudogley-Vega aAh/aM/aSw/aSd and a(Sw-)Ah/aSw-M/a(M-)Sd write it,
+# p. 241).
 .ka5_auen_ok <- function(v) {
   fr <- v$frame
   bad <- .ka5_rows(v, list(masters = c("B", "P", "T", "E", "R")))
   s <- .ka5_rows(v, list(masters = "S"))
+  am <- vapply(seq_len(nrow(fr)), function(j) (isTRUE(fr$carrying[j] == "M") && "a" %in% fr$prefixes[[j]]) ||
+                 any(grepl("M", fr$with[[j]])), NA)
   s_ok <- vapply(which(s %in% c(TRUE, NA)), function(i) {
-    p <- .kidpr_prev(v$x, i)
-    !is.na(p) && (isTRUE(fr$carrying[p] == "M") && "a" %in% fr$prefixes[[p]] || any(grepl("M", fr$with[[i]])))
+    above <- which(!is.na(fr$top_gof) & !is.na(fr$top_gof[i]) & fr$top_gof < fr$top_gof[i])
+    any(grepl("M", fr$with[[i]])) || any(am[above])
   }, NA)
   ok <- .kidpr_and(!bad)
   .kidpr_and(ok, if (length(s_ok)) all(s_ok) else TRUE)
@@ -506,13 +510,36 @@ floodplain_soil_ka5 <- function(pedon) {
 #' @param a_codes The topsoil codes.
 #' @param rock The rock prefix of the C, or NULL.
 #' @noRd
-topsoil_over_c_ka5 <- function(pedon, a_codes = c("Ah", "Ap"), rock = NULL) {
+topsoil_over_c_ka5 <- function(pedon, a_codes = c("Ah", "Ap"), rock = NULL, no_m_below = FALSE) {
   v <- .ka5_view(pedon)
   first <- .ka5_rows_from_gof(v)[1L]
   if (is.na(first)) return(.ka5_p(FALSE))
   a <- .ka5_rows(v, list(codes = a_codes))[first]
   nx <- .kidpr_next(v$x, first)
   c_ok <- if (is.na(nx)) NA else .ka5_rows(v, list(masters = "C", prefixes = rock))[nx]
+  # an aM band in the C (ailC+aM, aM+aelC, p. 239) is the C of the Paternia
+  # (Hugo, 2026-11-06, D1)
+  if (isTRUE(no_m_below) && isFALSE(c_ok) && grepl("+", v$frame$code[nx], fixed = TRUE)) {
+    pt <- v$frame$with[[nx]]
+    cpre <- if (is.null(rock)) "[a-z]*" else sprintf("[a-z]*[%s][a-z]*", paste(unlist(rock), collapse = ""))
+    if (any(grepl(sprintf("^%sC", cpre), pt))) c_ok <- TRUE
+  }
+  # v0.9.364: the Paternia-Vega (aAh/(II)ailC/II(III)aM/..., p. 241) is a
+  # Vega: an aM under the ilC takes the profile out of the Paternia (the gate
+  # mended for the subtypes)
+  # Hugo (2026-11-06, D1): only an aM (prefix a) of the present soil
+  # beginning above 8 dm; aM bands in the ilC (ailC+aM) keep the Paternia,
+  # as the Kalkpaternia's aM+aelC (p. 239)
+  if (isTRUE(no_m_below) && !is.na(nx) && !isFALSE(c_ok)) {
+    fr <- v$frame
+    rows <- .ka5_rows_from_gof(v)
+    under <- rows[!is.na(fr$top_gof[rows]) & fr$top_gof[rows] > (fr$top_gof[nx] %||% Inf) &
+                    fr$top_gof[rows] < .ka5_thr("st_auen_g_min_cm")]
+    m <- .ka5_rows(v, list(masters = "M", prefixes = "a"))[under]
+    band <- vapply(under, function(i) any(grepl("^[a-z]*C", fr$with[[i]])), NA)
+    if (any(m %in% TRUE & !band))
+      return(.ka5_p(FALSE, layers = c(first, nx), notes = "an aM under the ilC: a Paternia-Vega, not a Paternia (p. 241)"))
+  }
   .ka5_p(.kidpr_and(a, c_ok), layers = c(first, nx), missing = if (!is.na(nx)) unlist(v$frame$missing[nx]),
          notes = sprintf("%s over a %sC", paste(a_codes, collapse = "/"), paste(rock, collapse = "")))
 }
@@ -917,7 +944,20 @@ palaeosol_ka5 <- function(pedon, codes = c("Bj", "Bu", "Bku")) {
 #' @noRd
 earthified_moor_ka5 <- function(pedon, min_cm = 10, pattern = NULL, prefixes = NULL) {
   v <- .ka5_view(pedon)
-  r <- .ka5_top_run(v, list(masters = "H", pattern = "^Hc?(v|vm|m)p?$"))
+  spec <- list(masters = "H", pattern = "^Hc?(v|vm|m)p?$")
+  r <- .ka5_top_run(v, spec)
+  # v0.9.364 (Hugo, 2026-11-06, R2): under a mineral cover of less than 4 dm
+  # (Q7) the earthified topsoil is read from the top of the peat
+  if (!length(r$rows)) {
+    fr <- v$frame
+    rows <- .ka5_rows_from_gof(v)
+    h1 <- rows[.ka5_rows(v, list(masters = "H"))[rows] %in% TRUE][1L]
+    if (!is.na(h1) && isTRUE(fr$top_gof[h1] > 0) && isTRUE(fr$top_gof[h1] < .ka5_thr("ov_moor_cm")[3L]) &&
+        !any(fr$master[rows[seq_len(match(h1, rows) - 1L)]] %in% "H")) {
+      r2 <- .ka5_top_run(v, spec, start_max_cm = fr$top_gof[h1] + 1e-9)
+      if (length(r2$rows) && identical(r2$rows[1L], h1)) r <- r2
+    }
+  }
   p <- if (r$thickness >= min_cm) (if (r$undecided) NA else TRUE) else FALSE
   # the types read the earthified topsoil itself (D10, pp. 260-262, 284):
   # its first row of the kind and moor prefix asked
@@ -936,11 +976,18 @@ earthified_moor_ka5 <- function(pedon, min_cm = 10, pattern = NULL, prefixes = N
 #' @param attr The attribute (rh_value, ph_cacl2).
 #' @param min,max The limits (min inclusive, max exclusive).
 #' @noRd
-value_of_horizon_ka5 <- function(pedon, codes = NULL, masters = NULL, prefixes = NULL, attr, min = NULL, max = NULL) {
+value_of_horizon_ka5 <- function(pedon, codes = NULL, masters = NULL, prefixes = NULL, attr, min = NULL, max = NULL,
+                                 prefer_codes = NULL) {
   v <- .ka5_view(pedon)
   w <- .ka5_within(v, list(codes = codes, masters = masters, prefixes = prefixes))
   if (isFALSE(w$passed)) return(.ka5_p(FALSE, notes = "no such horizon"))
   rows <- c(w$rows, w$na_rows)
+  # v0.9.364: the rows of the codes asked first, when there are any (the
+  # hH(w) of the Hochmoor, p. 260; the review's D5)
+  if (!is.null(prefer_codes)) {
+    pc <- rows[v$frame$carrying[rows] %in% unlist(prefer_codes)]
+    if (length(pc)) rows <- pc
+  }
   val <- vapply(rows, function(i) .ka5_num(v$x, i, attr), 0)
   ok <- vapply(val, function(z) if (is.na(z)) NA else (is.null(min) || z >= min) && (is.null(max) || z < max), NA)
   p <- .kidpr_and(w$passed, .kidpr_or(ok))

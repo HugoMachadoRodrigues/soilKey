@@ -1,0 +1,46 @@
+# The subtypes of the class Ü, Strandböden (Ü) (KA5 2005, the type texts p. 254), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "ÜA":
+    - code: "ÜAb"
+      name: "Brackstrand"
+      name_en: "Brackish beach"
+      name_pt: "Praia salobra"
+      kind: "deviation"
+      page: "p. 254"
+      formulas:
+        - "tb(z)(e)Ai/(tb(z)(e)lC/)tbzeG"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "ÜAb"}
+      notes: "Brackish beach sediment (tb) (p. 254)."
+    - code: "ÜAf"
+      name: "Flussstrand"
+      name_en: "River beach"
+      name_pt: "Praia fluvial"
+      kind: "deviation"
+      page: "p. 254"
+      formulas:
+        - "tp(e)Ai/(tp(e)lC/)tp(e)G"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "ÜAf"}
+      notes: "Tidal river beach sediment (tp), no salt prefix printed (p. 254)."
+    - code: "ÜAn"
+      name: "Normstrand"
+      name_en: "Typical beach"
+      name_pt: "Praia típica"
+      kind: "norm"
+      page: "p. 254"
+      formulas:
+        - "tm(z)(e)Ai/(tm(z)(e)lC/)tmzeG"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "ÜAn", norm: true}
+      notes: "Marine beach sediment (tm), the G salty and calcareous (p. 254). The fallback of the Strand (Q21)."

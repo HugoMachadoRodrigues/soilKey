@@ -42,8 +42,8 @@ types:
       tests:
         all_of:
           - horizon_within_ka5: {masters: ["H"], prefixes: ["h"], max_cm: 40}
-          - value_of_horizon_ka5: {masters: ["H"], prefixes: ["h"], attr: "ph_cacl2", max: 4}
-      notes: "hH horizons with a pH (CaCl2) under 4."
+          - value_of_horizon_ka5: {masters: ["H"], prefixes: ["h"], attr: "ph_cacl2", max: 4, prefer_codes: ["H", "Hw"]}
+      notes: "hH horizons with a pH (CaCl2) under 4, read in the hH(w) where there is one (p. 260; the review of 2026-11-06, D5)."
     - code: "HN"
       name: "Niedermoor"
       name_en: "Fen"

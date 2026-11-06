@@ -105,13 +105,14 @@ test_that("the examples key to their type on the data where the data route reach
 test_that("names as printed, glosses, and the result's levels", {
   skip_on_cran()
   r <- .ka5_cls(make_ka5_example("MH"))
-  expect_identical(r$name, "Haftn\u00e4ssemarsch")
-  expect_identical(r$levels$level, c("divisions", "classes", "types"))
-  expect_identical(r$levels$name, c("Semiterrestrische B\u00f6den", "Marschen", "Haftn\u00e4ssemarsch"))
+  # the subtype level of the wet types since v0.9.364
+  expect_identical(r$name, "Normhaftn\u00e4ssemarsch")
+  expect_identical(r$levels$level, c("divisions", "classes", "types", "subtypes"))
+  expect_identical(r$levels$name[1:3], c("Semiterrestrische B\u00f6den", "Marschen", "Haftn\u00e4ssemarsch"))
   expect_identical(r$levels$name_en[3], "Adhesive-water marsh")
   expect_identical(r$rsg_or_order, "Semiterrestrische B\u00f6den")
   expect_identical(r$system_id, "ka5")
-  expect_identical(.ka5_cls(make_ka5_example("UEA"))$name, "Strand")
+  expect_identical(.ka5_cls(make_ka5_example("UEA"))$levels$name[3], "Strand")
   expect_identical(.ka5_cls(make_ka5_example("\u00dcA"))$levels$code[3], "\u00dcA")
   expect_identical(.ka5_cls(make_ka5_example("VV"))$name, "... \u00fcber Fersiallit")
 })
@@ -285,7 +286,7 @@ test_that("D6: a run that reaches the bottom of the description is undecided, no
 
 test_that("D7, D8, D9, D10: the Moor body, the Kalkmarsch, the R bound, the Moore types", {
   skip_on_cran()
-  expect_identical(.tp(.k6(c("nHw", "IIfF", "IIInHr"), c(0, 20, 25), c(20, 25, 120))), "[moore]>H>HN")
+  expect_identical(.tp(.k6(c("nHw", "IIfF", "IIInHr"), c(0, 20, 25), c(20, 25, 120))), "[moore]>H>HN>HNn")
   expect_identical(.ka5_type_of(.k6(c("tmAh", "tmGo", "tmeGo", "tmzeGr"), c(0, 20, 30, 60), c(20, 30, 60, 120))), "MC")
   r <- .k6(c("R-Ap", "R"), c(0, 25), c(25, 40))
   expect_true("classes:Y" %in% r$provisional_because)

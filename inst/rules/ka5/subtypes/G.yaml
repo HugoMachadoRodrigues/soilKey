@@ -1,0 +1,601 @@
+# The subtypes of the class G, Gleye (KA5 2005, the type texts pp. 242-249), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "GG":
+    - code: "RQ-GG"
+      name: "Regosol-Gley"
+      name_en: "Regosol-gley"
+      name_pt: "Regossolo-gleissolo"
+      kind: "transition"
+      page: "p. 244"
+      formulas:
+        - "Ah/ilC/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "RQ-GG"}
+      notes: "An ilC under the Ah; the Go begins above 4 dm, the Gr typically at 8 to 13 dm (p. 244)."
+    - code: "RR-GG"
+      name: "Rendzina-Gley"
+      name_en: "Rendzina-gley"
+      name_pt: "Rendzina-gleissolo"
+      kind: "transition"
+      page: "p. 244"
+      formulas:
+        - "Ah/cC/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "RR-GG"}
+      notes: "A cC under the Ah; the Go above 4 dm, the Gr typically at 8 to 13 dm (p. 244)."
+    - code: "RZ-GG"
+      name: "Pararendzina-Gley"
+      name_en: "Pararendzina-gley"
+      name_pt: "Pararendzina-gleissolo"
+      kind: "transition"
+      page: "p. 244"
+      formulas:
+        - "Ah/eC/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "RZ-GG"}
+      notes: "An eC under the Ah; the Go above 4 dm, the Gr typically at 8 to 13 dm (p. 244)."
+    - code: "TT-GG"
+      name: "Tschernosem-Gley"
+      name_en: "Chernozem-gley"
+      name_pt: "Tchernossolo-gleissolo"
+      kind: "transition"
+      page: "p. 244"
+      formulas:
+        - "Axh/Axh-Go/(Go/)Gr"
+      typical_tail: true
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the Axh/Axh-Go"}
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "TT-GG"}
+      notes: "The Axh/Axh-Go reaches 4 dm or deeper (p. 244)."
+    - code: "DD-GG"
+      name: "Pelosol-Gley"
+      name_en: "Pelosol-gley"
+      name_pt: "Pelossolo-gleissolo"
+      kind: "transition"
+      page: "p. 244"
+      formulas:
+        - "Ah/P,P-Go/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "DD-GG"}
+      notes: "A P or P-Go under the Ah (p. 244)."
+    - code: "BB-GG"
+      name: "Braunerde-Gley"
+      name_en: "Brown earth-gley"
+      name_pt: "Terra parda-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "Ah/Bv,Bv-Go/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BB-GG"}
+      notes: "A Bv or Bv-Go under the Ah (p. 245)."
+    - code: "LL-GG"
+      name: "Parabraunerde-Gley"
+      name_en: "Parabraunerde-gley"
+      name_pt: "Parabraunerde-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "Ah/Al/Bt,Bt-Go/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-GG"}
+      notes: "An Al over a Bt or Bt-Go (p. 245)."
+    - code: "LF-GG"
+      name: "Fahlerde-Gley"
+      name_en: "Fahlerde-gley"
+      name_pt: "Fahlerde-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "Ah/Ael/Ael+Bt/Bt,Bt-Go/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "fahlerde"}
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LF-GG"}
+      notes: "An Ael, Ael+Bt over a Bt or Bt-Go (p. 245); the Fahlerde's clay difference tested where measured (C13)."
+    - code: "PP-GG"
+      name: "Podsol-Gley"
+      name_en: "Podzol-gley"
+      name_pt: "Podzol-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "(Ahe/)Ae/Bhs,Bhs-Go/Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PP-GG"}
+      notes: "A podzol part (Ae over a Bhs or Bhs-Go) over the Go (p. 245)."
+    - code: "SS-GG"
+      name: "Pseudogley-Gley"
+      synonyms: ["Amphigley (formerly)"]
+      name_en: "Pseudogley-gley"
+      name_pt: "Pseudogleissolo-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "Ah/Sw/(II)Sd,Sd-Go/(III)(Go/)Gr"
+        - "Ah/Sw-Go/Sd-Go/Gr"
+      typical_tail: true
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-GG"}
+      notes: "An Sw over an Sd or Sd-Go, or Sw-Go over Sd-Go: Sd-G horizons of low to medium permeability perch the water weakly (formerly Amphigley) (p. 245)."
+    - code: "YK-GG"
+      name: "Kolluvisol-Gley"
+      name_en: "Colluvisol-gley"
+      name_pt: "Coluvissolo-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "Ah/M,M-Go/IIGo/Gr"
+      typical_tail: true
+      windows:
+        - {kind: "run_bottom", parts: "^(A|M)", thr: "st_humic_min_cm", side: "min", what: "the humic and colluvial part (Ah, M and M parts)"}
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "YK-GG"}
+      notes: "The Ah/M/M-Go reaches 4 dm or deeper over a IIGo (p. 245)."
+    - code: "YE-GG"
+      name: "Plaggenesch-Gley"
+      name_en: "Plaggen soil-gley"
+      name_pt: "Solo plaggen-gleissolo"
+      kind: "transition"
+      page: "p. 245"
+      formulas:
+        - "Ah/E,E-Go/IIGo/Gr"
+      typical_tail: true
+      windows:
+        - {kind: "run_bottom", parts: "^(A|E)", thr: "st_humic_min_cm", side: "min", what: "the humic and plaggen part (Ah, E and E parts)"}
+      checks:
+        - {check: "no_prefix", prefix: "a"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "YE-GG"}
+      notes: "The Ah/E/E-Go reaches 4 dm or deeper over a IIGo; lowlands with high groundwater in the Plaggenesch area (p. 245)."
+    - code: "AO-GG"
+      name: "Rambla-Gley"
+      name_en: "Rambla-gley"
+      name_pt: "Rambla-gleissolo"
+      kind: "transition"
+      page: "p. 246"
+      formulas:
+        - "aAi/alC/aGo/aGr"
+      typical_tail: true
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AO-GG"}
+      notes: "An aAi/alC over aGo and aGr (p. 246)."
+    - code: "AQ-GG"
+      name: "Paternia-Gley"
+      name_en: "Paternia-gley"
+      name_pt: "Paternia-gleissolo"
+      kind: "transition"
+      page: "p. 246"
+      formulas:
+        - "aAh/ailC/aGo/aGr"
+      typical_tail: true
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AQ-GG"}
+      notes: "An aAh/ailC over aGo and aGr; without the ilC an Auengley (p. 246)."
+    - code: "AZ-GG"
+      name: "Kalkpaternia-Gley"
+      name_en: "Calcareous paternia-gley"
+      name_pt: "Paternia calcária-gleissolo"
+      kind: "transition"
+      page: "p. 246"
+      formulas:
+        - "a(e)Ah/aelC/a(e)Go/aGr"
+      typical_tail: true
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AZ-GG"}
+      notes: "An a(e)Ah/aelC over a(e)Go and aGr; without the elC an Auengley (p. 246)."
+    - code: "AT-GG"
+      name: "Tschernitza-Gley"
+      name_en: "Tschernitza-gley"
+      name_pt: "Tschernitza-gleissolo"
+      kind: "transition"
+      page: "p. 246"
+      formulas:
+        - "aAxh/aAxh-Go/(aGo/)aGr"
+      typical_tail: true
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the aAxh/aAxh-Go"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AT-GG"}
+      notes: "The aAxh/aAxh-Go reaches 4 dm or deeper (p. 246)."
+    - code: "AB-GG"
+      name: "Vega-Gley"
+      name_en: "Vega-gley"
+      name_pt: "Vega-gleissolo"
+      kind: "transition"
+      page: "p. 246"
+      formulas:
+        - "aAh/aM,aM-Go/IIaGo/aGr"
+      typical_tail: true
+      windows:
+        - {kind: "run_bottom", parts: "^(A|M)", thr: "st_humic_min_cm", side: "min", what: "the aAh/aM part"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AB-GG"}
+      notes: "The aAh/aM/aM-Go reaches 4 dm or deeper over a IIaGo (p. 246)."
+    - code: "GGx"
+      name: "Oxigley"
+      name_en: "Oxygen gley"
+      name_pt: "Gleissolo oxidado"
+      kind: "deviation"
+      page: "p. 242"
+      formulas:
+        - "Ah/Go"
+      checks:
+        - {check: "oxigley"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGx"}
+      notes: "Oxygen-rich groundwater: no Gr, oxidation through the whole profile (p. 242). Read (Q16): groundwater_oxygen_rich TRUE, or no Gr in a profile described to 13 dm or deeper; else undecided between GGn and GGx."
+    - code: "GGe"
+      name: "Brauneisengley"
+      name_en: "Bog-iron gley"
+      name_pt: "Gleissolo com limonita"
+      kind: "deviation"
+      page: "p. 243"
+      formulas:
+        - "Ah/(Go/)Gso/(Gr)"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGe"}
+      notes: "Strong deposits of loose limonite (Gso); cemented bog iron (Gkso, Gmso) is a variety (p. 243)."
+    - code: "GGi"
+      name: "Bleichgley"
+      name_en: "Bleached gley"
+      name_pt: "Gleissolo descorado"
+      kind: "deviation"
+      page: "p. 243"
+      formulas:
+        - "Ah/Gw/Gr"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGi"}
+      notes: "No oxidation features, in iron-free substrates that do not stain (Gw) (p. 243); no number, by the notation or a recorded Gw (Q20)."
+    - code: "GGw"
+      name: "Wechselgley"
+      name_en: "Alternating gley"
+      name_pt: "Gleissolo alternante"
+      kind: "deviation"
+      page: "p. 243"
+      formulas:
+        - "Ah/Go/Gor(/Gr)"
+      checks:
+        - {check: "no_prefix", prefix: "q"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGw"}
+      notes: "Strongly fluctuating groundwater outside the floodplains, the Go may be metres thick: a Gor (typically 8 dm or deeper, Q16), not written with the q of the Quellengley (the review, D3) (p. 243)."
+    - code: "GGc"
+      name: "Kalkgley"
+      name_en: "Calcareous gley"
+      name_pt: "Gleissolo calcário"
+      kind: "deviation"
+      page: "p. 243"
+      formulas:
+        - "A(c)h/Gco/G(c)r"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGc"}
+      notes: "Secondary carbonate (Gco), only partly reaching the topsoil (p. 243)."
+    - code: "GGh"
+      name: "Humusgley"
+      name_en: "Humic gley"
+      name_pt: "Gleissolo húmico"
+      kind: "deviation"
+      page: "p. 243"
+      formulas:
+        - "Ah/Ah-Go/(Go/)Gr"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGh"}
+      notes: "The Ah/Ah-Go reaches 4 dm or deeper, the Ah-Go with the humus minimum of an Ah (p. 243)."
+    - code: "GGg"
+      name: "Hanggley"
+      name_en: "Slope gley"
+      name_pt: "Gleissolo de encosta"
+      kind: "deviation"
+      page: "p. 243"
+      formulas:
+        - "Ah/sGo(/sGr)"
+        - formula: "Ah/Go(/Gr)"
+          checks:
+            - {check: "water_source", source: "slope_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGg"}
+      notes: "Slope water, on slopes of 9 % (5 degrees) or more: the prefix s (p. 243); on the data the source of the water or the slope recorded."
+    - code: "GGq"
+      name: "Quellengley"
+      name_en: "Spring gley"
+      name_pt: "Gleissolo de nascente"
+      kind: "deviation"
+      page: "p. 244"
+      formulas:
+        - "Ah/qGo/qG(o)r"
+        - formula: "Ah/Go/G(o)r"
+          checks:
+            - {check: "water_source", source: "spring_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGq"}
+      notes: "Spring water: the prefix q (p. 244); on the data the source of the water recorded."
+    - code: "GGa"
+      name: "Auengley"
+      name_en: "Floodplain gley"
+      name_pt: "Gleissolo de várzea"
+      kind: "deviation"
+      page: "p. 244"
+      formulas:
+        - "aAh/aGo/aGr"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGa"}
+      notes: "Floodplain dynamics in the whole profile, a large amplitude: aAh/aGo/aGr (p. 244)."
+    - code: "GGn"
+      name: "Normgley"
+      name_en: "Typical gley"
+      name_pt: "Gleissolo típico"
+      kind: "norm"
+      page: "p. 242"
+      formulas:
+        - "Ah/Go/Gr"
+      complement: ["GGx"]
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GGn", norm: true}
+      notes: "The Gr begins typically at 4 to < 8 dm (Q16: typical, not a criterion). The fallback of the Gley (Q21): with its formula not met (no Gr described) it holds provisionally, the Oxigley a candidate (Q16)."
+  "GN":
+    - code: "GNc"
+      name: "Kalknassgley"
+      name_en: "Calcareous wet gley"
+      name_pt: "Gleissolo úmido calcário"
+      kind: "deviation"
+      page: "p. 247"
+      formulas:
+        - "Gco-Ah,Ah-Gco/Gcr"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GNc"}
+      notes: "Secondary carbonate: Gco-Ah or Ah-Gco over a Gcr (p. 247)."
+    - code: "GNh"
+      name: "Humusnassgley"
+      name_en: "Humic wet gley"
+      name_pt: "Gleissolo úmido húmico"
+      kind: "deviation"
+      page: "p. 247"
+      formulas:
+        - "Go-Ah,Ah-Go/Ah-Gr/Gr"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GNh"}
+      notes: "The Go-Ah/Ah-Gr reaches 4 dm or deeper, the Ah-Gr with the humus minimum of an Ah (p. 247)."
+    - code: "GNg"
+      name: "Hangnassgley"
+      name_en: "Slope wet gley"
+      name_pt: "Gleissolo úmido de encosta"
+      kind: "deviation"
+      page: "p. 247"
+      formulas:
+        - "sGo-Ah,Ah-sGo/sGr"
+        - formula: "Go-Ah,Ah-Go/Gr"
+          checks:
+            - {check: "water_source", source: "slope_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GNg"}
+      notes: "Slope water, on slopes of 9 % (5 degrees) or more: the prefix s (p. 247)."
+    - code: "GNq"
+      name: "Quellennassgley"
+      name_en: "Spring wet gley"
+      name_pt: "Gleissolo úmido de nascente"
+      kind: "deviation"
+      page: "p. 247"
+      formulas:
+        - "qGo-Ah,Ah-qGo/qGr"
+        - formula: "Go-Ah,Ah-Go/Gr"
+          checks:
+            - {check: "water_source", source: "spring_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GNq"}
+      notes: "Spring water: the prefix q (p. 247)."
+    - code: "GNn"
+      name: "Normnassgley"
+      name_en: "Typical wet gley"
+      name_pt: "Gleissolo úmido típico"
+      kind: "norm"
+      page: "p. 247"
+      formulas:
+        - "Go-Ah,Ah-Go/Gr"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GNn", norm: true}
+      notes: "The fallback of the Nassgley (Q21) (p. 247)."
+  "GM":
+    - code: "GMc"
+      name: "Kalkanmoorgley"
+      name_en: "Calcareous anmoor gley"
+      name_pt: "Gleissolo anmoor calcário"
+      kind: "deviation"
+      page: "p. 248"
+      formulas:
+        - "Gco-Aa,Aa-Gco/G(c)r"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GMc"}
+      notes: "Secondary carbonate, calcareous up to the topsoil (p. 248)."
+    - code: "GMg"
+      name: "Hanganmoorgley"
+      name_en: "Slope anmoor gley"
+      name_pt: "Gleissolo anmoor de encosta"
+      kind: "deviation"
+      page: "p. 248"
+      formulas:
+        - "sGo-Aa,Aa-sGo/sGr"
+        - formula: "Go-Aa,Aa-Go/Gr"
+          checks:
+            - {check: "water_source", source: "slope_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GMg"}
+      notes: "Slope water near the surface, slopes of 9 % (5 degrees) or more: the prefix s (p. 248)."
+    - code: "GMq"
+      name: "Quellenanmoorgley"
+      name_en: "Spring anmoor gley"
+      name_pt: "Gleissolo anmoor de nascente"
+      kind: "deviation"
+      page: "p. 248"
+      formulas:
+        - "qGo-Aa,Aa-qGo/(qGor/)qGr"
+        - formula: "Go-Aa,Aa-Go/(Gor/)Gr"
+          checks:
+            - {check: "water_source", source: "spring_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GMq"}
+      notes: "Spring water: the prefix q (p. 248)."
+    - code: "GMn"
+      name: "Normanmoorgley"
+      name_en: "Typical anmoor gley"
+      name_pt: "Gleissolo anmoor típico"
+      kind: "norm"
+      page: "p. 247"
+      formulas:
+        - "Go-Aa,Aa-Go/Gr"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GMn", norm: true}
+      notes: "The fallback of the Anmoorgley (Q21) (p. 247)."
+  "GH":
+    - code: "GHg"
+      name: "Hangmoorgley"
+      name_en: "Slope peaty gley"
+      name_pt: "Gleissolo turfoso de encosta"
+      kind: "deviation"
+      page: "p. 248"
+      formulas:
+        - "H/IIsGr"
+        - formula: "H/IIGr"
+          checks:
+            - {check: "water_source", source: "slope_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GHg"}
+      notes: "Slope water, slopes of 9 % (5 degrees) or more: the prefix s on the Gr (p. 248)."
+    - code: "GHq"
+      name: "Quellenmoorgley"
+      name_en: "Spring peaty gley"
+      name_pt: "Gleissolo turfoso de nascente"
+      kind: "deviation"
+      page: "p. 249"
+      formulas:
+        - "H/IIqGr"
+        - formula: "H/IIGr"
+          checks:
+            - {check: "water_source", source: "spring_water"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GHq"}
+      notes: "Spring water: the prefix q on the Gr (p. 249)."
+    - code: "GHh"
+      name: "Hochmoorgley"
+      name_en: "Bog-peat gley"
+      name_pt: "Gleissolo com turfa alta"
+      kind: "deviation"
+      page: "p. 248"
+      formulas:
+        - "hH/IIGr"
+        - formula: "H/IIGr"
+          checks:
+            - {check: "moor_prefix", prefix: "h"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GHh"}
+      notes: "An hH of 1 to < 3 dm over a Gr (p. 248)."
+    - code: "[GHu]"
+      name: "[Übergangsmoorgley]"
+      name_en: "[Transitional-peat gley]"
+      name_pt: "[Gleissolo com turfa de transição]"
+      kind: "deviation"
+      page: "pp. 248-249; Q22"
+      formulas:
+        - "uH/IIGr"
+        - formula: "H/IIGr"
+          checks:
+            - {check: "moor_prefix", prefix: "u"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "[GHu]"}
+      notes: "soilKey's open subtype (Q22): a uH of 1 to < 3 dm over a Gr, which the Moorgley's printed subtypes (Nieder- and Hochmoorgley) do not take; tested after them."
+    - code: "GHn"
+      name: "Niedermoorgley"
+      name_en: "Fen-peat gley"
+      name_pt: "Gleissolo com turfa baixa"
+      kind: "deviation"
+      page: "p. 248"
+      formulas:
+        - "nH/IIGr"
+        - formula: "H/IIGr"
+          checks:
+            - {check: "moor_prefix", prefix: "n"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GHn"}
+      notes: "An nH of 1 to < 3 dm over a Gr; here the letter n means Nieder- (Tab. 49): the Moorgley has no Norm subtype, the GHn tested last as its de facto Norm (Hugo, 2026-11-06, R1); an H whose kind of peat is not known leaves it undecided (D4) (p. 248)."

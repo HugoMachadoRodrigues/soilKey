@@ -24,6 +24,10 @@ test_that("the registry lists the subtypes; 138 printed terrestrial subtypes, in
   v <- soilKey:::.validate_rules("ka5")
   for (k in c("missing", "unsuffixed", "mixed", "malformed", "codes")) expect_identical(v[[k]], character(0), info = k)
   rl <- load_rules("ka5")
+  # the terrestrial types (the wet subtypes of v0.9.364 are tested in test-v09364)
+  rl$subtypes <- rl$subtypes[names(rl$subtypes) %in% c("FF", "FS", "OO", "OL", "RN", "RQ", "RR", "RZ", "TT", "TC", "DD",
+                                                        "BB", "LL", "LF", "PP", "CF", "CR", "SS", "SH", "SG", "XX", "YK",
+                                                        "YE", "YO", "YY", "YU")]
   ent <- unlist(rl$subtypes, recursive = FALSE)
   codes <- vapply(ent, `[[`, "", "code")
   printed <- codes[!startsWith(codes, "[")]
@@ -107,8 +111,8 @@ test_that("the type examples key to their Norm subtype; the levels and glosses",
   # the Treposol has no Norm subtype (Q22): its example is a printed example subtype
   expect_identical(.st_of(.st_cls(make_ka5_example("YU"))), "PP-YU")
   expect_identical(.st_cls(make_ka5_example("YU"))$name, "Treposol aus Podsol")
-  # the palaeosols and the other divisions have no subtype level yet
-  for (t in c("VV", "VW", "GG", "MN", "HN", "JG")) expect_true(is.na(.st_of(.st_cls(make_ka5_example(t)))), info = t)
+  # the palaeosols and the subhydric types have no subtypes (the other divisions' since v0.9.364)
+  for (t in c("VV", "VW", "JG")) expect_true(is.na(.st_of(.st_cls(make_ka5_example(t)))), info = t)
   r <- .st_cls(make_ka5_example(subtype = "GG-BB"))
   expect_identical(r$levels$level, c("divisions", "classes", "types", "subtypes"))
   expect_identical(r$levels$name, c("Terrestrische Böden", "Braunerden", "Braunerde", "Gley-Braunerde"))

@@ -33,10 +33,10 @@ Keys a \code{\link{PedonRecord}} to the divisions (Abteilungen), classes
 (Klassen) and types (Typen) of the German soil systematics of the
 Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 by its key Tab. 51. \strong{Experimental}: this release keys the 4
-divisions, 21 classes and 56 types, and the 138 subtypes of the 28
-terrestrial types from the type texts (pp. 202-237); the subtypes of the
-semiterrestrial, subhydric and Moore types, the overlays ("X ueber Y") and
-the varieties are not keyed yet.
+divisions, 21 classes and 56 types, and the 223 subtypes of the type
+texts (pp. 202-262: 138 of the terrestrial types, 85 of the
+semiterrestrial, subhydric and Moore types); the varieties are not keyed
+yet.
 }
 \details{
 The subtypes (Hugo's decision Q21): inside a type the transitional
@@ -49,7 +49,20 @@ formulas matched on the horizons (\code{\link{match_horizon_sequence}}),
 its depth windows from the GOF and its numbers (base saturation, clay
 differences, Cp/Fep, slope ...). The Rigosol and the Treposol take an open
 subtype in brackets for the type still recognisable under the R
-("[BB-YY]", Q22); the Treposol has no Norm subtype.
+("[BB-YY]", Q22); the Treposol has no Norm subtype, the Moorgley neither
+(an uH over a Gr takes the open "[Uebergangsmoorgley]", an hHm under the
+Erdhochmoor the open "[vermulmtes Erdhochmoor]").
+
+The overlays (Tab. 46 no. 18) are reported in \code{trace$overlay} and the
+warnings; they change neither the levels nor the name. A mineral cover on
+a Moor keeps the Moor (Hugo's decision Q7): under 2 dm it is named as
+substrate only, 2 to < 3 dm "flach X ueber HN" (\code{X\\HN}), 3 to < 4
+dm "X ueber HN" (\code{X/HN}), the cover keyed as the mineral type it would
+be. A fersiallitic or ferrallitic palaeosol (a relict or fossil Bj or Bu)
+under the soil is named "... ueber Fersiallit / Ferrallit" (Q19); a buried
+soil (fossil horizons of a layer II or deeper) is keyed alone from its own
+top and named by the thickness of the soil above (under 3 dm "flach", 3 to
+< 7 dm; 7 dm or more the upper soil alone).
 
 The key reads the horizons of the profile
 (\code{identify_horizons(pedon, "ka5")}): the KA5 notation where the

@@ -4,8 +4,9 @@
 # to the type by Tab. 51 (pp. 283-288): 4 divisions (Abteilungen), 21 classes
 # (Klassen), 56 types (Typen). Experimental and opt-in: classify_all() runs it
 # only when asked. v0.9.363: the 138 subtypes of the 28 terrestrial types
-# (R/subtypes-ka5.R). The other subtypes, the overlays and the varieties
-# follow in later releases.
+# (R/subtypes-ka5.R). v0.9.364: the 85 subtypes of the semiterrestrial,
+# subhydric and Moore types and the overlays (R/overlays-ka5.R). The
+# varieties follow in a later release.
 # =============================================================================
 
 #' Classify a pedon under the German KA5 soil systematics (2005)
@@ -14,10 +15,10 @@
 #' (Klassen) and types (Typen) of the German soil systematics of the
 #' Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 #' by its key Tab. 51. \strong{Experimental}: this release keys the 4
-#' divisions, 21 classes and 56 types, and the 138 subtypes of the 28
-#' terrestrial types from the type texts (pp. 202-237); the subtypes of the
-#' semiterrestrial, subhydric and Moore types, the overlays ("X ueber Y") and
-#' the varieties are not keyed yet.
+#' divisions, 21 classes and 56 types, and the 223 subtypes of the type
+#' texts (pp. 202-262: 138 of the terrestrial types, 85 of the
+#' semiterrestrial, subhydric and Moore types); the varieties are not keyed
+#' yet.
 #'
 #' The subtypes (Hugo's decision Q21): inside a type the transitional
 #' subtypes (X-Y, a subtype of the type Y with the features of X) are tested
@@ -29,7 +30,20 @@
 #' its depth windows from the GOF and its numbers (base saturation, clay
 #' differences, Cp/Fep, slope ...). The Rigosol and the Treposol take an open
 #' subtype in brackets for the type still recognisable under the R
-#' ("[BB-YY]", Q22); the Treposol has no Norm subtype.
+#' ("[BB-YY]", Q22); the Treposol has no Norm subtype, the Moorgley neither
+#' (an uH over a Gr takes the open "[Uebergangsmoorgley]", an hHm under the
+#' Erdhochmoor the open "[vermulmtes Erdhochmoor]").
+#'
+#' The overlays (Tab. 46 no. 18) are reported in \code{trace$overlay} and the
+#' warnings; they change neither the levels nor the name. A mineral cover on
+#' a Moor keeps the Moor (Hugo's decision Q7): under 2 dm it is named as
+#' substrate only, 2 to < 3 dm "flach X ueber HN" (\code{X\\HN}), 3 to < 4
+#' dm "X ueber HN" (\code{X/HN}), the cover keyed as the mineral type it would
+#' be. A fersiallitic or ferrallitic palaeosol (a relict or fossil Bj or Bu)
+#' under the soil is named "... ueber Fersiallit / Ferrallit" (Q19); a buried
+#' soil (fossil horizons of a layer II or deeper) is keyed alone from its own
+#' top and named by the thickness of the soil above (under 3 dm "flach", 3 to
+#' < 7 dm; 7 dm or more the upper soil alone).
 #'
 #' The key reads the horizons of the profile
 #' (\code{identify_horizons(pedon, "ka5")}): the KA5 notation where the
@@ -100,9 +114,24 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
     .ka5_state$view <- prev$view
     .ka5_state$sub_memo <- prev$sub_memo
   }, add = TRUE)
+  core <- .ka5_key_core(pedon, rules, on_missing)
+  res <- core$res
+  res <- .ka5_result_notes(res, view)
+  # the subtypes (v0.9.363 terrestrial, v0.9.364 semiterrestrial, subhydric
+  # and Moore; Q21, Q22)
+  res <- .ka5_subtype_notes(res, pedon, rules)
+  # the overlays: a cover on a Moor, a palaeosol, a buried soil (v0.9.364;
+  # Tab. 46 no. 18, Q7, Q19)
+  res <- .ka5_overlay_notes(res, pedon, rules, view)
+  if (!is.null(core$through)) res$trace$semiterrestrial_attempt <- core$through
+  res
+}
+
+# The key to the type (Tab. 51) on the pedon of the state: a semiterrestrial
+# division that keys no class falls through to the terrestrial soils (D2,
+# Hugo 2026-11-06). list(res, through).
+.ka5_key_core <- function(pedon, rules, on_missing = "silent") {
   res <- classify_hierarchical("ka5", pedon, rules = rules, on_missing = on_missing, gapfill = FALSE)
-  # a semiterrestrial division that keys no class falls through to the
-  # terrestrial soils (D2, Hugo 2026-11-06)
   lv <- res$levels
   through <- NULL
   if (is.data.frame(lv) && nrow(lv) == 1L && identical(lv$code[1L], "[semiterrestrisch]")) {
@@ -116,11 +145,7 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
                                             "the profile is keyed as a terrestrial soil (D2)."))
     }
   }
-  res <- .ka5_result_notes(res, view)
-  # the subtypes of the terrestrial types (v0.9.363, Q21, Q22)
-  res <- .ka5_subtype_notes(res, pedon, rules)
-  if (!is.null(through)) res$trace$semiterrestrial_attempt <- through
-  res
+  list(res = res, through = through)
 }
 
 # Search a test result tree for the predicates that passed only provisionally.
@@ -247,13 +272,15 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
 #'   \code{"VW"} (terrestrial).
 #' @param near_miss Return the twin that misses the type's gate.
 #' @param route \code{"notation"} (default) or \code{"data"}.
-#' @param subtype The code of a subtype of a terrestrial type, as printed
-#'   (\code{"BBn"}, \code{"GG-BB"}, \code{"LF-YU"} ...; the 138 of pp.
-#'   202-237): the example profile of that subtype, written from one of its
-#'   printed formulas with depths inside its windows (\code{type} and
-#'   \code{near_miss} are then not read). The type examples key to the Norm
-#'   subtype of their type (the Treposol's to an example subtype: it has no
-#'   Norm).
+#' @param subtype The code of a subtype, as printed (\code{"BBn"},
+#'   \code{"GG-BB"}, \code{"LF-YU"}, \code{"BB-GG"}, \code{"MRb"},
+#'   \code{"KV-KM"} ...; the 223 of pp. 202-262, the Strand's also as
+#'   \code{"UEAn"}, and the open \code{"[GHu]"} and \code{"[KHm]"}): the
+#'   example profile of that subtype, written from one of its printed formulas
+#'   with depths inside its windows (\code{type} and \code{near_miss} are
+#'   then not read). The type examples key to the Norm subtype of their type
+#'   (the Treposol's to an example subtype, the Moorgley's to the
+#'   Niedermoorgley: they have no Norm).
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_ka5(make_ka5_example("LL"), on_missing = "silent")$name

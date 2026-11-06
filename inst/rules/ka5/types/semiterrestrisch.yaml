@@ -164,8 +164,8 @@ types:
       formula: "aAh/ailC/aG"
       tests:
         all_of:
-          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["i"]}
-      notes: "An Ah over a C under 2 % carbonate (Ah/ilC/G)."
+          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["i"], no_m_below: true}
+      notes: "An Ah over a C under 2 % carbonate (Ah/ilC/G); an aM under the ilC makes the profile a Paternia-Vega (AQ-AB, p. 241), a Vega."
     - code: "AZ"
       name: "Kalkpaternia"
       name_en: "Calcareous paternia"
@@ -184,6 +184,6 @@ types:
       formula: "aAh/aM/(IIalC/)(II)aG"
       tests:
         none_of:
-          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["i"]}
+          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["i"], no_m_below: true}
           - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["e"]}
       notes: "The other Auenboeden (aAh/aM); not reached while the Paternia or Kalkpaternia is undecided (D3)."

@@ -34,13 +34,15 @@ Strand, the key's Ue-A), \code{"MR"}, \code{"MC"}, \code{"MO"}, \code{"MK"},
 
 \item{route}{\code{"notation"} (default) or \code{"data"}.}
 
-\item{subtype}{The code of a subtype of a terrestrial type, as printed
-(\code{"BBn"}, \code{"GG-BB"}, \code{"LF-YU"} ...; the 138 of pp.
-202-237): the example profile of that subtype, written from one of its
-printed formulas with depths inside its windows (\code{type} and
-\code{near_miss} are then not read). The type examples key to the Norm
-subtype of their type (the Treposol's to an example subtype: it has no
-Norm).}
+\item{subtype}{The code of a subtype, as printed (\code{"BBn"},
+\code{"GG-BB"}, \code{"LF-YU"}, \code{"BB-GG"}, \code{"MRb"},
+\code{"KV-KM"} ...; the 223 of pp. 202-262, the Strand's also as
+\code{"UEAn"}, and the open \code{"[GHu]"} and \code{"[KHm]"}): the
+example profile of that subtype, written from one of its printed formulas
+with depths inside its windows (\code{type} and \code{near_miss} are
+then not read). The type examples key to the Norm subtype of their type
+(the Treposol's to an example subtype, the Moorgley's to the
+Niedermoorgley: they have no Norm).}
 }
 \value{
 A \code{\link{PedonRecord}}.
