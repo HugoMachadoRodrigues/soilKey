@@ -34,7 +34,12 @@
 .yab <- function(top, bottom, ...) .za_L(top, bottom, designation = "B", munsell_value_moist = 5,
                                          munsell_chroma_moist = 6, munsell_value_dry = 6, munsell_chroma_dry = 6,
                                          clay_pct = 25, ...)
-.form <- function(p) classify_za1991(p, on_missing = "silent")
+# v0.9.359: the name now carries the family (Q23); these tests read the form
+.form <- function(p) {
+  r <- classify_za1991(p, on_missing = "silent")
+  if (nrow(r$levels)) r$name <- r$levels$name[1L]
+  r
+}
 
 
 test_that("the registry has the South African system of 1991, experimental and opt-in", {
@@ -43,7 +48,7 @@ test_that("the registry has the South African system of 1991, experimental and o
   r <- s[s$id == "za1991", ]
   expect_identical(nrow(r), 1L)
   expect_identical(r$classifier, "classify_za1991")
-  expect_identical(r$levels, "forms")
+  expect_identical(r$levels, "forms, families")
   expect_identical(r$aliases, "za, sat, sat1991, south_africa")
   expect_identical(r$status, "experimental")
   expect_false(r$default)
@@ -98,7 +103,7 @@ test_that("each of the 73 examples keys to its own form, by the data and by the 
     k <- tolower(f$name)
     r1 <- .form(make_za1991_example(k))
     expect_identical(r1$name, f$name, info = k)
-    expect_identical(r1$levels$code, f$code, info = k)
+    expect_identical(r1$levels$code[1L], f$code, info = k)
     expect_identical(r1$provisional_because, character(0), info = k)
     p2 <- make_za1991_example(k, notation = TRUE)
     expect_true("diagnostic_za" %in% names(p2$horizons), info = k)
@@ -237,7 +242,7 @@ test_that("classify_all runs it only when asked", {
   p <- make_za1991_example("hutton")
   a <- classify_all(p, systems = c("wrb2022", "za1991"), on_missing = "silent")
   expect_true("za1991" %in% names(a))
-  expect_identical(a$za1991$name, "Hutton")
+  expect_identical(a$za1991$rsg_or_order, "Hutton")
   expect_false("za1991" %in% names(classify_all(p, on_missing = "silent")))
 })
 

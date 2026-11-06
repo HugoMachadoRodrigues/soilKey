@@ -1617,13 +1617,15 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
 #' carbon under 0.5 % recorded fail it), flagged; a grey E above with
 #' illuvial colours and no oxalate data leaves it undecided.
 #' @noRd
-.za_t_PZB <- function(x, i) {
+.za_t_PZB <- function(x, i, assume_mark = FALSE) {
   if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
   th <- c("podzol_ph", "podzol_alfe", "podzol_oc", "podzol_thickness")
   des <- .za_hint_has(x, i, "PZB")
   a <- .kidpr_prev(x, i)
-  ga <- if (is.na(a)) FALSE else .za_grey_dry(x, a)$passed
+  ga <- if (is.na(a) || assume_mark) FALSE else .za_grey_dry(x, a)$passed
+  # v0.9.359 (FC 17): a layer read as if it lay directly beneath an A or E
   mark <- if (des) .za_r(TRUE, tag = "designation_hint", note = sprintf("'%s': an illuvial B by its letters", .za_des(x, i)))
+          else if (assume_mark) .za_r(TRUE, note = "read as if directly beneath an A or E (FC 17)")
           else if (isTRUE(ga)) .za_r(TRUE, note = "a grey E-like layer directly above")
           else if (is.na(ga)) .za_r(NA, missing = c("munsell_value_dry", "munsell_chroma_dry"), note = "the colour of the layer above not recorded")
           else .za_r(FALSE, note = "no Bh or Bs designation and no grey layer directly above")
@@ -1906,11 +1908,12 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
     else if (is.na(ok)) v[["E"]] <- NA
   }
   # the placic pan only under a podzol B (the key); the red structured B
-  # only under an orthic A (the key)
+  # only under an orthic A (the key); v0.9.359: either also under a layer of
+  # itself (a horizon of several layers)
   for (rule in list(c("PLP", "PZB"), c("RSB", "OA"))) {
     k <- rule[1L]
     if (isFALSE(v[[k]])) next
-    ok <- .za_within(above, rule[2L])
+    ok <- .za_within(above, c(rule[2L], k))
     if (isFALSE(ok)) { if (isTRUE(v[[k]])) notes <- c(notes, sprintf("a %s passes on the data but not under a %s: read on",
                                                                         .za_label(k), .za_label(rule[2L])))
                        v[[k]] <- FALSE }
@@ -1919,11 +1922,14 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
   # lithocutanic B directly under a topsoil horizon or an E; saprolite under
   # a B (default 17)
   under_top <- .za_within(above, c(.ZA_TOPSOILS, "E"))
+  # v0.9.359: a layer under a lithocutanic B may be more of it (a horizon of
+  # several layers); it is saprolite only by its own test (saprolite_rock)
+  under_lcu <- .za_within(above, "LCU")
   if (isTRUE(under_top) && isTRUE(v[["LCU"]]) && !isFALSE(v[["SAP"]])) {
     v[["SAP"]] <- FALSE
     notes <- c(notes, "weathering rock directly under the topsoil or E: the lithocutanic B, not saprolite (default 17)")
   }
-  if (isFALSE(under_top) && !isFALSE(v[["LCU"]])) {
+  if (isFALSE(under_top) && !isTRUE(under_lcu) && !isFALSE(v[["LCU"]])) {
     if (isTRUE(v[["LCU"]]) && !isTRUE(v[["SAP"]])) {
       v[["SAP"]] <- TRUE
       tags <- c(tags, "lithocutanic_under_b_as_saprolite")
