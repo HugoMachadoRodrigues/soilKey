@@ -207,6 +207,8 @@ reference:
       - classify_rp2008
       - make_rp2008_example
       - humus_form_rp
+      - rp2008_crosswalk
+      - rp2008_from_label
 
   - title: "Interoperability"
     desc: >

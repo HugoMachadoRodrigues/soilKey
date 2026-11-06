@@ -94,6 +94,10 @@ en:
   "report.prop_undecided": "undecided"
   "report.kidpr_1977": "Name in the 1977 USSR classification"
   "report.kidpr_1977_desc": "Chapter 6 of the Field Guide of 2008 correlates its types with the classification of 1977. A note only: it never changes the classification."
+  "report.rp_crosswalk_wrb2006": "WRB 2006 correspondence (Annex 5 of the RP 2008)"
+  "report.rp_crosswalk_wrb2006_desc": "The possible correspondences the Référentiel pédologique 2008 gives with the WRB of 2006 (not soilKey's WRB 2022). A note only: it never changes the classification."
+  "report.rp_crosswalk_cpcs": "Equivalents in the Référentiel pédologique 2008 (Annex 7)"
+  "report.rp_crosswalk_cpcs_desc": "The possible equivalents the Référentiel pédologique 2008 gives for the CPCS 1967 categories, not identities. A note only: it never changes the classification."
 
 pt:
   "report.no_trace": "(sem rastro)"
@@ -188,3 +192,7 @@ pt:
   "report.prop_undecided": "indefinida"
   "report.kidpr_1977": "Nome na classificação da URSS de 1977"
   "report.kidpr_1977_desc": "O capítulo 6 do Guia de campo de 2008 correlaciona os seus tipos com a classificação de 1977. Apenas uma nota: nunca muda a classificação."
+  "report.rp_crosswalk_wrb2006": "Correspondência com o WRB 2006 (anexo 5 do RP 2008)"
+  "report.rp_crosswalk_wrb2006_desc": "As correspondências possíveis que o Référentiel pédologique 2008 dá com o WRB de 2006 (não o WRB 2022 do soilKey). Apenas uma nota: nunca muda a classificação."
+  "report.rp_crosswalk_cpcs": "Equivalentes no Référentiel pédologique 2008 (anexo 7)"
+  "report.rp_crosswalk_cpcs_desc": "Os equivalentes possíveis que o Référentiel pédologique 2008 dá para as categorias da CPCS 1967, não identidades. Apenas uma nota: nunca muda a classificação."

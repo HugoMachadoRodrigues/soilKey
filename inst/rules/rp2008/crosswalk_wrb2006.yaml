@@ -1,0 +1,261 @@
+# Annex 5 of the Référentiel pédologique 2008 (AFES; Baize D., Girard M.-C.
+# coord.; Éditions Quæ, 2009), pp. 378-392: the possible correspondences
+# between the references of the RP 2008 and the reference soil groups of the
+# WRB 2006. Codes and names only, as the tables print them; the remarks of
+# the annex are not shipped. Read by rp2008_crosswalk("wrb2006") and shown
+# beside an RP result in the report and the Pro app: a note for display,
+# never evidence and never a test (default 19, Hugo's decision Q1).
+#
+# The WRB is the 2006 edition the book cites, not soilKey's WRB 2022: a name
+# here is the book's, and soilKey bridges nothing between the two editions.
+#
+# references   one row per reference of the list of pp. 402-403 (all 110),
+#              plus the types the tables give a row of their own (brunisols
+#              eutriques by their saturation, p. 380; lithosols stricts,
+#              p. 385):
+#   code       soilKey's code of the reference (key.yaml)
+#   rp         the RP cell as printed, in lower case (a type when it names
+#              qualifiers after the reference)
+#   wrb2006    the WRB 2006 cell as printed; the book's French "ou" is
+#              written "or" ("ou, à défaut," "or, failing that,", p. 387)
+#              and its footnote marks are dropped; null where
+#              the book writes that the WRB does not take the solum into
+#              account
+#   doubtful   true where the book prints "?" in the cell or asks a question
+#              about it in a footnote: shown with the mark, never resolved
+#              (a "?" printed inside the cell is kept there)
+#   note       soilKey's English summary of the footnote or remark that
+#              qualifies the row (never the book's sentence)
+#   page       printed page
+# horizons     the reference horizons the tables put beside a WRB 2006
+#              diagnostic horizon (pp. 380, 383; the FAO and WRB letters of
+#              the H horizons, p. 384)
+# qualifiers   the tables of qualifiers: the anthroposols (p. 379), the
+#              calcium chapter (p. 380; its one row "calcarique ou
+#              pétrocalcarique" written as two), the five histosols (p. 385)
+#              and the general table of pp. 391-392, "most often imperfect":
+#              65 rows for 64 of the book. scope is the GER code of the
+#              chapter whose table holds the row (anthroposols,
+#              calcium_magnesium, histosols: the row holds for that chapter
+#              only, Hugo's decision of 2026-11-04 for p. 380), or in the
+#              general table the group the book names in parentheses, as
+#              printed; wrb2006 as printed
+# faux_amis    the WRB 2006 qualifiers spelled like an RP qualifier but with
+#              another meaning (p. 392): never a stand-in for the RP
+#              qualifier of the same name (default 6)
+
+edition: "Référentiel pédologique 2008, Annex 5 (pp. 378-392)"
+wrb_edition: "World Reference Base for Soil Resources 2006"
+
+references:
+  # --- alocrisols, andosols, anthroposols (p. 379) ---------------------------
+  - {code: alocrisols_typiques, rp: "alocrisols typiques", wrb2006: "Cambisols (Hyperdystric)", page: 379}
+  - {code: alocrisols_humiques, rp: "alocrisols humiques", wrb2006: "Cambic Umbrisols (Hyperdystric)", page: 379}
+  - {code: vitrandosols, rp: "vitrandosols", wrb2006: "Vitric Andosols", page: 379}
+  - {code: silandosols_eutriques, rp: "silandosols eutriques", wrb2006: "Silandic Andosols (Eutric)", page: 379}
+  - {code: silandosols_dystriques, rp: "silandosols dystriques", wrb2006: "Silandic Andosols (Dystric)", page: 379}
+  - {code: silandosols_perhydriques, rp: "silandosols perhydriques", wrb2006: "Hydric Silandic Andosols", page: 379}
+  - {code: aluandosols_hapliques, rp: "aluandosols hapliques", wrb2006: "Aluandic Andosols", page: 379}
+  - {code: aluandosols_perhydriques, rp: "aluandosols perhydriques", wrb2006: "Hydric Aluandic Andosols", page: 379}
+  - {code: anthroposols_transformes, rp: "anthroposols transformés", wrb2006: "Anthrosols", page: 379}
+  - {code: anthroposols_artificiels, rp: "anthroposols artificiels", wrb2006: "Technosols", page: 379}
+  - {code: anthroposols_reconstitues, rp: "anthroposols reconstitués", wrb2006: null, note: "not taken into account by the WRB 2006", page: 379}
+  - {code: anthroposols_construits, rp: "anthroposols construits", wrb2006: "Technosols (transportic)", page: 379}
+  - {code: anthroposols_archeologiques, rp: "anthroposols archéologiques", wrb2006: null, note: "not taken into account by the WRB 2006", page: 379}
+  # --- arénosols, brunisols, the calcium chapter (p. 380) --------------------
+  - {code: arenosols, rp: "arénosols", wrb2006: "Arenosols", page: 380}
+  - {code: brunisols_eutriques, rp: "brunisols eutriques saturés ou resaturés", wrb2006: "Cambisols (Hypereutric)", note: "the WRB 2006 requires the CEC and the base saturation at pH 7", page: 380}
+  - {code: brunisols_eutriques, rp: "brunisols eutriques mésosaturés", wrb2006: "Cambisols (Eutric)", note: "the WRB 2006 requires the CEC and the base saturation at pH 7", page: 380}
+  - {code: brunisols_dystriques, rp: "brunisols dystriques", wrb2006: "Cambisols (Dystric)", note: "the WRB 2006 requires the CEC and the base saturation at pH 7", page: 380}
+  - {code: rendosols, rp: "rendosols", wrb2006: "Rendzic Leptosols or Epileptic Cambisols (Calcaric)", page: 380}
+  - {code: rendisols, rp: "rendisols", wrb2006: "Rendzic Leptosols or Epileptic Cambisols (Hypereutric)", page: 380}
+  - {code: calcosols, rp: "calcosols", wrb2006: "Cambisols (Calcaric)", page: 380}
+  - {code: calcisols, rp: "calcisols", wrb2006: "Cambisols (Hypereutric)", note: "a calcisol of the RP is not a Calcisol of the WRB, which has a calcic or petrocalcic horizon", page: 380}
+  - {code: dolomitosols, rp: "dolomitosols", wrb2006: "Cambisols (Dolomitic)", page: 380}
+  - {code: magnesisols, rp: "magnésisols", wrb2006: "Cambisols (Hypereutric, Magnesic)", page: 380}
+  - {code: calcarisols, rp: "calcarisols", wrb2006: "Epipetric Calcisols", page: 380}
+  # --- chernosols, colluviosols (p. 381), cryosols (p. 382) ------------------
+  - {code: chernosols_hapliques, rp: "chernosols hapliques", wrb2006: "Calcic Chernozems", page: 381}
+  - {code: chernosols_typiques, rp: "chernosols typiques", wrb2006: "Voronic Chernozems", page: 381}
+  - {code: chernosols_melanoluviques, rp: "chernosols mélanoluviques", wrb2006: "Luvic Chernozems", page: 381}
+  - {code: colluviosols, rp: "colluviosols", wrb2006: "Colluvic Regosols or Cambisols or other RSG (Colluvic)", page: 381}
+  - {code: cryosols_histiques, rp: "cryosols histiques", wrb2006: "Histic Cryosols or Cryic Histosols", doubtful: true, page: 382}
+  - {code: cryosols_mineraux, rp: "cryosols minéraux", wrb2006: "Haplic or Umbric or Spodic Cryosols", page: 382}
+  # --- ferrallitisols et oxydisols, ferruginosols, fersialsols (p. 383) ------
+  - {code: ferrallitisols_meubles, rp: "ferrallitisols meubles", wrb2006: "Ferralsols, Lixisols", page: 383}
+  - {code: ferrallitisols_nodulaires, rp: "ferrallitisols nodulaires", wrb2006: "Ferralic Hyperferric Plinthosols", page: 383}
+  - {code: ferrallitisols_petroxydiques, rp: "ferrallitisols pétroxydiques", wrb2006: "Plinthosols (Petric)", page: 383}
+  - {code: ferrallitisols_duroxydiques, rp: "ferrallitisols duroxydiques", wrb2006: "Plinthosols", page: 383}
+  - {code: oxydisols_meubles, rp: "oxydisols meubles", wrb2006: "Ferric Ferralsols (Geric)", page: 383}
+  - {code: oxydisols_nodulaires, rp: "oxydisols nodulaires", wrb2006: "Hyperferric Plinthosols", page: 383}
+  - {code: oxydisols_petroxydiques, rp: "oxydisols pétroxydiques", wrb2006: "Ferric Plinthosols (Petric)", page: 383}
+  - {code: ferruginosols_meubles, rp: "ferruginosols meubles", wrb2006: "Lixisols or Acrisols", note: "the WRB has no place for the ferruginosols: Lixisols when weakly acidified, Acrisols when strongly", page: 383}
+  - {code: ferruginosols_semiluviques, rp: "ferruginosols semiluviques", wrb2006: "Lixisols or Acrisols", note: "the WRB has no place for the ferruginosols: Lixisols when weakly acidified, Acrisols when strongly", page: 383}
+  - {code: ferruginosols_luviques, rp: "ferruginosols luviques", wrb2006: "Lixisols or Acrisols", note: "the WRB has no place for the ferruginosols: Lixisols when weakly acidified, Acrisols when strongly", page: 383}
+  - {code: ferruginosols_petroxydiques, rp: "ferruginosols pétroxydiques", wrb2006: "Plinthosols (Petric)", note: "the WRB has no place for the ferruginosols", page: 383}
+  - {code: fersialsols_carbonates, rp: "fersialsols carbonatés", wrb2006: "Haplic Cambisols (Calcaric, Chromic)", page: 383}
+  - {code: fersialsols_calciques, rp: "fersialsols calciques", wrb2006: "Haplic Cambisols (Eutric, Chromic)", page: 383}
+  - {code: fersialsols_insatures, rp: "fersialsols insaturés", wrb2006: "Haplic Cambisols (Eutric or Dystric, Chromic)", page: 383}
+  - {code: fersialsols_eluviques, rp: "fersialsols éluviques", wrb2006: "Haplic Luvisols (Chromic) or Albic Alisols (Chromic)", page: 383}
+  # --- fluviosols, grisols, gypsosols (p. 384) -------------------------------
+  - {code: fluviosols_bruts, rp: "fluviosols bruts", wrb2006: "Fluvisols", page: 384}
+  - {code: fluviosols_juveniles, rp: "fluviosols juvéniles", wrb2006: "Fluvisols", page: 384}
+  - {code: fluviosols_typiques, rp: "fluviosols typiques", wrb2006: "Fluvisols", page: 384}
+  - {code: fluviosols_brunifies, rp: "fluviosols brunifiés", wrb2006: "Fluvic Cambisols", page: 384}
+  - {code: grisols_eluviques, rp: "grisols éluviques", wrb2006: "Greyic Phaeozems (Albic)", page: 384}
+  - {code: grisols_degrades, rp: "grisols dégradés", wrb2006: "Greyic Phaeozems (Glossalbic)", page: 384}
+  - {code: grisols_hapliques, rp: "grisols hapliques", wrb2006: "Greyic Phaeozems", page: 384}
+  - {code: gypsosols_hapliques, rp: "gypsosols hapliques", wrb2006: "Gypsisols", page: 384}
+  - {code: gypsosols_petrogypsiques, rp: "gypsosols pétrogypsiques", wrb2006: "Epipetric (?) Gypsisols", doubtful: true, page: 384}
+  # --- histosols, leptismectisols, lithosols (p. 385) ------------------------
+  - {code: histosols_fibriques, rp: "histosols fibriques", wrb2006: "Fibric Histosols", page: 385}
+  - {code: histosols_mesiques, rp: "histosols mésiques", wrb2006: "Hemic Histosols", page: 385}
+  - {code: histosols_sapriques, rp: "histosols sapriques", wrb2006: "Sapric Histosols", page: 385}
+  - {code: histosols_composites, rp: "histosols composites", wrb2006: "Histosols", note: "the WRB 2006 has no composite character", page: 385}
+  - {code: histosols_leptiques, rp: "histosols leptiques", wrb2006: "Epileptic Histosols", page: 385}
+  - {code: leptismectisols, rp: "leptismectisols", wrb2006: "Epileptic Vertisols", note: "the WRB 2006 provides no Epileptic for the Vertisols; Vertic Leptosols does not fit (hard rock within 25 cm)", page: 385}
+  - {code: lithosols, rp: "lithosols", wrb2006: "Lithic Leptosols", page: 385}
+  - {code: lithosols, rp: "lithosols stricts", wrb2006: "Nudilithic Leptosols", page: 385}
+  # --- luvisols, nitosols, organosols (p. 386) -------------------------------
+  - {code: neoluvisols, rp: "néoluvisols", wrb2006: "Luvic Cambisols", page: 386}
+  - {code: luvisols_typiques, rp: "luvisols typiques", wrb2006: "Haplic Luvisols", page: 386}
+  - {code: luvisols_degrades, rp: "luvisols dégradés", wrb2006: "Haplic Albeluvisols", page: 386}
+  - {code: luvisols_derniques, rp: "luvisols derniques", wrb2006: "Albeluvisols", page: 386}
+  - {code: luvisols_tronques, rp: "luvisols tronqués", wrb2006: "(truncated) Luvisols", note: "truncated is not a qualifier of the WRB 2006", page: 386}
+  - {code: quasi_luvisols, rp: "quasi-luvisols", wrb2006: "Ruptic Luvisols", page: 386}
+  - {code: nitosols, rp: "nitosols", wrb2006: "Nitisols", note: "the nitic horizon of the WRB 2006 differs from the Sn by its clay limit, its clay minerals, the absence of Ki and Kr and its shiny faces", page: 386}
+  - {code: organosols_holorganiques, rp: "organosols holorganiques", wrb2006: "Folic (or Cumulifolic) Histosols", page: 386}
+  - {code: organosols_calcaires, rp: "organosols calcaires", wrb2006: "Folic Umbrisols (Hyperhumic, Calcaric)", note: "officially an Umbrisol cannot be Calcaric", page: 386}
+  - {code: organosols_satures, rp: "organosols saturés", wrb2006: "Folic or Mollic Umbrisols (Hypereutric)", page: 386}
+  - {code: organosols_insatures, rp: "organosols insaturés", wrb2006: "Folic Umbrisols (Hyperhumic)", page: 386}
+  # --- pélosols, peyrosols, phæosols, planosols (p. 387) ---------------------
+  - {code: pelosols_typiques, rp: "pélosols typiques", wrb2006: "Epistagnic Regosols (clayic)", doubtful: true, note: "the book asks how the pélosols typiques and brunifiés are to be told apart", page: 387}
+  - {code: pelosols_brunifies, rp: "pélosols brunifiés", wrb2006: "Vertic Cambisols (clayic)", doubtful: true, note: "the book asks how the pélosols typiques and brunifiés are to be told apart, and whether they are Cambisols", page: 387}
+  - {code: pelosols_differencies, rp: "pélosols différenciés", wrb2006: "Epistagnic Vertic Cambisols or Planosols", doubtful: true, note: "the book asks how the clay depletion of the surface horizon is to be rendered, and suggests Vertic Planosols with a question mark", page: 387}
+  - {code: peyrosols, rp: "peyrosols", wrb2006: "Hyperskeletic Leptosols, Hyperskeletic Podzols or suffix qualifier episkeletic", note: "the WRB 2006 counts the coarse elements by volume, the RP by weight", page: 387}
+  - {code: phaeosols_hapliques, rp: "phæosols hapliques", wrb2006: "Haplic Phaeozems", page: 387}
+  - {code: phaeosols_melanoluviques, rp: "phæosols mélanoluviques", wrb2006: "Luvic Phaeozems", page: 387}
+  - {code: planosols_typiques, rp: "planosols typiques", wrb2006: "Mollic, Umbric, Calcic, Petrocalcic, Alic, Acric, Luvic, Lixic or, failing that, Haplic Planosols", note: "one row for the planosols typiques and distaux; the qualifier follows the humiferous surface horizons, the deep horizons or other horizons within 100 cm", page: 387}
+  - {code: planosols_distaux, rp: "planosols distaux", wrb2006: "Mollic, Umbric, Calcic, Petrocalcic, Alic, Acric, Luvic, Lixic or, failing that, Haplic Planosols", note: "one row for the planosols typiques and distaux; the qualifier follows the humiferous surface horizons, the deep horizons or other horizons within 100 cm", page: 387}
+  - {code: planosols_structuraux, rp: "planosols structuraux", wrb2006: "Stagnosols", note: "not Planosols in the WRB 2006, which require an abrupt textural change", page: 387}
+  # --- podzosols, rankosols, réductisols et rédoxisols (p. 388) --------------
+  - {code: podzosols_ocriques, rp: "podzosols ocriques", wrb2006: "Entic Podzols", page: 388}
+  - {code: podzosols_meubles, rp: "podzosols meubles", wrb2006: "Haplic or Albic Podzols", page: 388}
+  - {code: podzosols_duriques, rp: "podzosols duriques", wrb2006: "Ortsteinic Albic Podzols", page: 388}
+  - {code: podzosols_humiques, rp: "podzosols humiques", wrb2006: "Umbric or Entic Podzols", page: 388}
+  - {code: podzosols_humo_duriques, rp: "podzosols humo-duriques", wrb2006: "Umbric-Ortsteinic Podzols", page: 388}
+  - {code: podzosols_eluviques, rp: "podzosols éluviques", wrb2006: "Albic Arenosols", page: 388}
+  - {code: podzosols_placiques, rp: "podzosols placiques", wrb2006: "Placic Albic Podzols", page: 388}
+  - {code: post_podzosols, rp: "post-podzosols", wrb2006: "Aric Podzols", page: 388}
+  - {code: rankosols, rp: "rankosols", wrb2006: "Umbric Leptosols, or Leptosols (Dystric) or Epileptic Umbrisols", note: "the Leptosols of the WRB 2006 are under 25 cm thick", page: 388}
+  - {code: reductisols_typiques, rp: "réductisols typiques", wrb2006: "Gleysols", page: 388}
+  - {code: reductisols_stagniques, rp: "réductisols stagniques", wrb2006: "Gleysols", page: 388}
+  - {code: redoxisols, rp: "rédoxisols", wrb2006: "Stagnosols", page: 388}
+  # --- régosols, salisols et sodisols (p. 389) -------------------------------
+  - {code: regosols, rp: "régosols", wrb2006: "(non Lithic) Leptosols", note: "the M layer of a régosol starts within 10 cm; the Leptosols of the WRB 2006 are under 25 cm thick", page: 389}
+  - {code: salisols_chloruro_sulfates, rp: "salisols chloruro-sulfatés", wrb2006: "Solonchaks (Chloridic or Sulphatic)", page: 389}
+  - {code: salisols_carbonates, rp: "salisols carbonatés", wrb2006: "Solonchaks (Carbonatic)", page: 389}
+  - {code: sodisols_indifferencies, rp: "sodisols indifférenciés", wrb2006: "Solonetz", page: 389}
+  - {code: sodisols_solonetziques, rp: "sodisols solonetziques", wrb2006: "Haplic Solonetz", page: 389}
+  - {code: sodisols_solodises, rp: "sodisols solodisés", wrb2006: "Solonetz (Albic)", page: 389}
+  - {code: sodisalisols, rp: "sodisalisols", wrb2006: "Endosalic Solonetz", page: 389}
+  - {code: salisodisols, rp: "salisodisols", wrb2006: "Episalic Solonetz", page: 389}
+  # --- thalassosols, thiosols et sulfatosols, veracrisols, vertisols (p. 390)
+  - {code: thalassosols_bruts, rp: "thalassosols bruts", wrb2006: "Tidalic Fluvisols", page: 390}
+  - {code: thalassosols_juveniles, rp: "thalassosols juvéniles", wrb2006: "Tidalic Fluvisols", page: 390}
+  - {code: thalassosols_polderises, rp: "thalassosols poldérisés", wrb2006: "Fluvisols", page: 390}
+  - {code: thiosols, rp: "thiosols", wrb2006: "Fluvisols or Gleysols (Protothionic)", page: 390}
+  - {code: sulfatosols, rp: "sulfatosols", wrb2006: "Fluvisols or Gleysols (Hyperthionic or Orthothionic)", page: 390}
+  - {code: veracrisols, rp: "veracrisols", wrb2006: "Vermic Umbrisols", note: "Vermic is not officially provided for the Umbrisols", page: 390}
+  - {code: lithovertisols, rp: "lithovertisols", wrb2006: "Vertisols", page: 390}
+  - {code: topovertisols, rp: "topovertisols", wrb2006: "Vertisols", page: 390}
+  - {code: paravertisols_hapliques, rp: "paravertisols hapliques", wrb2006: "Vertisols", page: 390}
+  - {code: paravertisols_planosoliques, rp: "paravertisols planosoliques", wrb2006: "Vertisols (Albic)", page: 390}
+
+horizons:
+  - {codes: [K, Kc], wrb2006: "calcic horizon", page: 380}
+  - {codes: [Km], wrb2006: "petrocalcic horizon", page: 380}
+  - {codes: [F], wrb2006: "Ferralic horizon", page: 383}
+  - {codes: [OX], wrb2006: "Ferric horizon (pro parte)", page: 383}
+  - {codes: [RT], wrb2006: "Plinthic horizon", page: 383}
+  - {codes: [OXm], wrb2006: "Petroplinthic horizon", page: 383}
+  - {codes: [OXc], wrb2006: "Petroplinthic horizon", page: 383}
+  - {codes: [ND], wrb2006: "Pisoplinthic horizon (pro parte)", page: 383}
+  - {codes: [Hf], wrb2006: "Hi", note: "the FAO and WRB 2006 letter of the fibric H", page: 384}
+  - {codes: [Hm], wrb2006: "He", note: "the FAO and WRB 2006 letter of the hemic H", page: 384}
+  - {codes: [Hs], wrb2006: "Ha", note: "the FAO and WRB 2006 letter of the sapric H", page: 384}
+
+qualifiers:
+  # the anthroposols: prefix qualifiers of the WRB 2006 (p. 379)
+  - {rp: "de terrassettes", scope: anthroposols, wrb2006: "Escalic", page: 379}
+  - {rp: "rizicultivé", scope: anthroposols, wrb2006: "Hydragric", page: 379}
+  - {rp: "irragrique", scope: anthroposols, wrb2006: "Irragric", page: 379}
+  - {rp: "plaggique", scope: anthroposols, wrb2006: "Plaggic", page: 379}
+  - {rp: "hortique", scope: anthroposols, wrb2006: "Hortic", page: 379}
+  # the calcium chapter: a reference qualified so is a WRB Calcisol (p. 380)
+  - {rp: "calcarique", scope: calcium_magnesium, wrb2006: "Calcisols", note: "any reference of the chapter qualified calcarique or pétrocalcarique", page: 380}
+  - {rp: "pétrocalcarique", scope: calcium_magnesium, wrb2006: "Calcisols", note: "any reference of the chapter qualified calcarique or pétrocalcarique", page: 380}
+  # the five histosols (p. 385)
+  - {rp: "recouvert", scope: histosols, wrb2006: "Histosol (Novic)", page: 385}
+  - {rp: "à matériau limnique de surface", scope: histosols, wrb2006: "Limnic Histosol", page: 385}
+  - {rp: "flottant", scope: histosols, wrb2006: "Floatic Histosol", page: 385}
+  - {rp: "lithique", scope: histosols, wrb2006: "Epileptic Histosol", page: 385}
+  - {rp: "à contact lithique de profondeur", scope: histosols, wrb2006: "Endoleptic Histosol", page: 385}
+  - {rp: "ombrogène", scope: histosols, wrb2006: "Ombric Histosol", page: 385}
+  - {rp: "soligène", scope: histosols, wrb2006: "Rheic Histosol", page: 385}
+  - {rp: "drainé ou assaini", scope: histosols, wrb2006: "Histosol (Drainic)", page: 385}
+  - {rp: "sulfidique", scope: histosols, wrb2006: "Histosol (Thionic)", page: 385}
+  # the general table, "most often imperfect" (pp. 391-392)
+  - {rp: "agricompacté", wrb2006: "Densic", page: 391}
+  - {rp: "albique", wrb2006: "Albic", page: 391}
+  - {rp: "assaini", wrb2006: "Drainic", page: 391}
+  - {rp: "bicarbonaté", scope: "sols salsodiques", wrb2006: "Carbonatic (Solonchaks)", page: 391}
+  - {rp: "bilithique", wrb2006: "Ruptic", page: 391}
+  - {rp: "à horizon BT en bandes", scope: luvisols, wrb2006: "Lamellic", page: 391}
+  - {rp: "bathyhistique", scope: "non-histosols", wrb2006: "Thaptohistic", page: 391}
+  - {rp: "calcarique", wrb2006: "Calcic", page: 391}
+  - {rp: "carbonaté", wrb2006: "Calcaric", page: 391}
+  - {rp: "colluvionné en surface", wrb2006: "Novic", note: "over less than 50 cm", page: 391}
+  - {rp: "colluvial", wrb2006: "Colluvic", page: 391}
+  - {rp: "chloruro-sulfaté", scope: "sols salsodiques", wrb2006: "Chloridic (Solonchaks)", page: 391}
+  - {rp: "compacté", wrb2006: "Densic", page: 391}
+  - {rp: "cryoturbé", wrb2006: "Turbic", page: 391}
+  - {rp: "à dégradation glossique", wrb2006: "Glossalbic", page: 391}
+  - {rp: "désaturé", wrb2006: "Hyperdystric", page: 391}
+  - {rp: "à duripan", wrb2006: "Petrosilicique", note: "as printed; no WRB 2006 qualifier has this name (the row pétrosilicique gives Petroduric)", page: 391}
+  - {rp: "dystrique", wrb2006: "Dystric", page: 391}
+  - {rp: "eutrique", wrb2006: "Eutric, Orthoeutric", page: 391}
+  - {rp: "flottant", scope: histosols, wrb2006: "Floatic (Histosols)", page: 391}
+  - {rp: "à fragipan", wrb2006: "Fragic", page: 391}
+  - {rp: "glacique", scope: cryosols, wrb2006: "Glacic", page: 391}
+  - {rp: "glossique", wrb2006: "Molliglossic, Umbriglossic, Glossalbic", page: 391}
+  - {rp: "irragrique", wrb2006: "Irragric", page: 391}
+  - {rp: "lamellique", scope: luvisols, wrb2006: "Lamellic", page: 391}
+  - {rp: "à matériau limnique", scope: histosols, wrb2006: "Limnic (Histosols)", page: 391}
+  - {rp: "lithique", wrb2006: "Epileptic", page: 391}
+  - {rp: "nodulaire", scope: "ferrallitisols et oxydisols", wrb2006: "Pisoplinthic", page: 391}
+  - {rp: "ombrogène", scope: histosols, wrb2006: "Ombric (Histosols)", page: 391}
+  - {rp: "oxyaquique", scope: fluviosols, wrb2006: "Oxyaquic", page: 391}
+  - {rp: "à pergélisol", wrb2006: "Gelic", page: 391}
+  - {rp: "pétrocalcarique", wrb2006: "Petrocalcic", page: 391}
+  - {rp: "pétroxydique", scope: "ferrallitisols et oxydisols", wrb2006: "Petroplinthic", page: 391}
+  - {rp: "pétrosilicique", wrb2006: "Petroduric", page: 391}
+  - {rp: "placique", wrb2006: "Placic", page: 391}
+  - {rp: "recouvert par", wrb2006: "Novic", page: 392}
+  - {rp: "rédoxique", wrb2006: "Epistagnic or Endostagnic", note: "by the depth of the redox horizon: 50, 80 and 120 cm in the RP, 50 and 100 cm in the WRB 2006", page: 392}
+  - {rp: "à horizon rédoxique de profondeur", wrb2006: "Endostagnic", page: 392}
+  - {rp: "réductique", wrb2006: "Epigleyic or Endogleyic", note: "by the depth of the reductic horizon: 50, 80 and 120 cm in the RP, 50 and 100 cm in the WRB 2006", page: 392}
+  - {rp: "à horizon réductique de profondeur", wrb2006: "Endogleyic", page: 392}
+  - {rp: "rouge ou rougeâtre", wrb2006: "Chromic or Rhodic", page: 392}
+  - {rp: "saturé", wrb2006: "Hypereutric", page: 392}
+  - {rp: "à horizon silicique", wrb2006: "Duric", page: 392}
+  - {rp: "soligène", scope: histosols, wrb2006: "Rheic (Histosols)", page: 392}
+  - {rp: "subsaturé", wrb2006: "Hypereutric", page: 392}
+  - {rp: "sulfaté", scope: "sols salsodiques", wrb2006: "Sulphatic (Solonchaks)", page: 392}
+  - {rp: "strict", scope: lithosols, wrb2006: "Nudilithic (Leptosols)", page: 392}
+  - {rp: "de terrasses, de terrassettes", wrb2006: "Escalic", page: 392}
+  - {rp: "à matériau terrique", scope: histosols, wrb2006: "Terric", page: 392}
+
+faux_amis:
+  page: 392
+  names: [Andic, Calcaric, Calcic, Ferric, Fibric, Gypsic, Leptic, Lithic, Luvic, Magnesic, Pachic, Reductic, Ruptic, Sapric, Vertic]

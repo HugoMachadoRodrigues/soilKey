@@ -1,0 +1,606 @@
+# Annex 7 of the Référentiel pédologique 2008 (AFES; Baize D., Girard M.-C.
+# coord.; Éditions Quæ, 2009), pp. 394-398: the possible correspondences
+# between the categories of the CPCS 1967 and the RP 2008. The book says
+# there is no one-to-one correspondence, the principles of the two systems
+# differing: these are equivalents, not identities. Codes and names only.
+# Read by rp2008_crosswalk("cpcs_classes") and shown beside a cpcs1967
+# result in the report and the Pro app: a note for display, never evidence
+# and never a test (Hugo's decision Q1).
+#
+# rows      one per row of the book, keyed by soilKey's cpcs1967 code of the
+#           category (class I, subclass I-1, group I/11, subgroup I/111;
+#           inst/rules/cpcs1967/). A cpcs1967 result is shown the row of the
+#           most specific level of its chain that has one.
+#   cpcs        the cpcs1967 code
+#   cpcs_name   the CPCS category as the annex prints it
+#   rp          the RP entries of the row, in the book's order (its "ou" and
+#               its commas alike: any of them may fit):
+#     name        the entry as printed, in lower case (names only)
+#     references  the codes of the references it names (several: any of
+#                 them, as "réductisols" names the réductisols typiques and
+#                 stagniques)
+#     ger         the code of the group of references (GER) it names when it
+#                 names a chapter, not a reference
+#     qualifiers  the qualifiers it adds, as printed
+#     any_reference true when it names no reference (the book's "divers
+#                 solums" with a qualifier)
+#     double      true for a double attachment (the book's "double
+#                 rattachement", written with a hyphen)
+#     scope       soilKey's English note of the book's restriction ("some",
+#                 "all ... etc.", "under tropical climates")
+#     doubtful    true where the book prints "?"
+#   open        true where the book ends the row with "etc."
+#   none        true where the book prints "???": no RP equivalent
+#   page        printed page
+# new_in_rp  the categories of the RP 2008 the book calls completely new with
+#            respect to the CPCS (p. 398), with their codes: a reference
+#            (references) or a group (ger)
+
+edition: "Référentiel pédologique 2008, Annex 7 (pp. 394-398)"
+
+rows:
+  # --- I. Sols minéraux bruts (p. 394) ----------------------------------------
+  - cpcs: "I/111"
+    cpcs_name: "Sols minéraux bruts non climatiques, d'érosion, lithosols"
+    rp:
+      - {name: "lithosols", references: [lithosols]}
+      - {name: "peyrosols", references: [peyrosols]}
+    page: 394
+  - cpcs: "I/112"
+    cpcs_name: "Sols minéraux bruts non climatiques, d'érosion, régosols"
+    rp:
+      - {name: "régosols", references: [regosols]}
+    page: 394
+  - cpcs: "I/12"
+    cpcs_name: "Sols minéraux bruts non climatiques, d'apport alluvial"
+    rp:
+      - {name: "fluviosols bruts", references: [fluviosols_bruts]}
+      - {name: "thalassosols bruts", references: [thalassosols_bruts]}
+      - {name: "thalassosols juvéniles", references: [thalassosols_juveniles]}
+    page: 394
+  - cpcs: "I/13"
+    cpcs_name: "Sols minéraux bruts non climatiques, d'apport colluvial"
+    rp:
+      - {name: "régosols colluviaux", references: [regosols], qualifiers: ["colluviaux"]}
+      - {name: "colluviosols", references: [colluviosols]}
+    open: true
+    page: 394
+  - cpcs: "I/14"
+    cpcs_name: "Sols minéraux bruts non climatiques, d'apport éolien"
+    rp:
+      - {name: "régosols d'apport, dunaires", references: [regosols], qualifiers: ["d'apport", "dunaires"]}
+    page: 394
+  - cpcs: "I/15"
+    cpcs_name: "Sols minéraux bruts non climatiques, d'apport volcanique"
+    rp:
+      - {name: "régosols pyroclastiques", references: [regosols], qualifiers: ["pyroclastiques"]}
+      - {name: "lithosols", references: [lithosols]}
+    page: 394
+  - cpcs: "I-2"
+    cpcs_name: "Sols minéraux bruts des déserts froids"
+    rp:
+      - {name: "cryosols minéraux", references: [cryosols_mineraux]}
+    page: 394
+  - cpcs: "I-3"
+    cpcs_name: "Sols minéraux bruts des déserts chauds"
+    rp:
+      - {name: "lithosols", references: [lithosols]}
+      - {name: "régosols", references: [regosols]}
+      - {name: "peyrosols", references: [peyrosols]}
+    page: 394
+  # --- II. Sols peu évolués (pp. 394-395) -------------------------------------
+  - cpcs: "II-1"
+    cpcs_name: "Sols peu évolués à permagel"
+    rp:
+      - {name: "cryosols", ger: cryosols}
+    page: 394
+  - cpcs: "II/21"
+    cpcs_name: "Sols peu évolués humifères, rankers (tous)"
+    rp:
+      - {name: "rankosols", references: [rankosols]}
+      - {name: "organosols insaturés", references: [organosols_insatures]}
+    page: 394
+  - cpcs: "II/22"
+    cpcs_name: "Sols peu évolués humifères, sols humifères lithocalciques"
+    rp:
+      - {name: "organosols saturés", references: [organosols_satures]}
+      - {name: "organosols holorganiques", references: [organosols_holorganiques]}
+    page: 394
+  - cpcs: "II/23"
+    cpcs_name: "Sols peu évolués humifères, sols peu évolués à allophanes"
+    rp:
+      - {name: "vitrandosols à horizon A humifère", references: [vitrandosols], qualifiers: ["à horizon A humifère"]}
+    page: 394
+  - cpcs: "II/31"
+    cpcs_name: "Sols peu évolués xériques, sols gris"
+    none: true
+    page: 394
+  - cpcs: "II/32"
+    cpcs_name: "Sols peu évolués xériques, xérorankers"
+    rp:
+      - {name: "rankosols peu humifères", references: [rankosols], qualifiers: ["peu humifères"]}
+    page: 394
+  - cpcs: "II/411"
+    cpcs_name: "Sols peu évolués non climatiques, d'érosion, régosolique"
+    rp:
+      - {name: "rendosols d'érosion", references: [rendosols], qualifiers: ["d'érosion"], scope: "some of them, from soft rocks"}
+      - {name: "rendisols d'érosion", references: [rendisols], qualifiers: ["d'érosion"], scope: "some of them, from soft rocks"}
+    page: 394
+  - cpcs: "II/412"
+    cpcs_name: "Sols peu évolués non climatiques, d'érosion, lithique"
+    rp:
+      - {name: "rendosols d'érosion", references: [rendosols], qualifiers: ["d'érosion"], scope: "some of them"}
+      - {name: "rendisols d'érosion", references: [rendisols], qualifiers: ["d'érosion"], scope: "some of them"}
+      - {name: "rankosols d'érosion", references: [rankosols], qualifiers: ["d'érosion"], scope: "some of them"}
+    page: 394
+  - cpcs: "II/42"
+    cpcs_name: "Sols peu évolués non climatiques, d'apport alluvial"
+    rp:
+      - {name: "fluviosols juvéniles", references: [fluviosols_juveniles]}
+      - {name: "fluviosols typiques", references: [fluviosols_typiques]}
+      - {name: "thalassosols poldérisés", references: [thalassosols_polderises]}
+    page: 395
+  - cpcs: "II/43"
+    cpcs_name: "Sols peu évolués non climatiques, d'apport colluvial"
+    rp:
+      - {name: "colluviosols", references: [colluviosols]}
+    page: 395
+  - cpcs: "II/44"
+    cpcs_name: "Sols peu évolués non climatiques, d'apport éolien"
+    rp:
+      - {name: "arénosols dunaires", references: [arenosols], qualifiers: ["dunaires"]}
+    page: 395
+  - cpcs: "II/45"
+    cpcs_name: "Sols peu évolués non climatiques, d'apports volcaniques friables"
+    rp:
+      - {name: "vitrandosols", references: [vitrandosols]}
+    page: 395
+  - cpcs: "II/46"
+    cpcs_name: "Sols peu évolués non climatiques, d'apports anthropiques"
+    rp:
+      - {name: "anthroposols reconstitués", references: [anthroposols_reconstitues]}
+      - {name: "anthroposols construits", references: [anthroposols_construits]}
+    page: 395
+  # --- III. Vertisols, IV. Andosols (p. 395) ----------------------------------
+  - cpcs: "III-1"
+    cpcs_name: "Vertisols à drainage externe nul ou réduit"
+    rp:
+      - {name: "topovertisols", references: [topovertisols]}
+    page: 395
+  - cpcs: "III-2"
+    cpcs_name: "Vertisols à drainage externe possible"
+    rp:
+      - {name: "lithovertisols", references: [lithovertisols]}
+      - {name: "paravertisols", references: [paravertisols_hapliques, paravertisols_planosoliques]}
+    page: 395
+  - cpcs: "IV/11"
+    cpcs_name: "Andosols des pays froids, andosols humifères désaturés"
+    rp:
+      - {name: "andosols", ger: andosols}
+    page: 395
+  - cpcs: "IV/21"
+    cpcs_name: "Andosols des pays tropicaux, saturés"
+    rp:
+      - {name: "silandosols", references: [silandosols_eutriques, silandosols_dystriques, silandosols_perhydriques], doubtful: true}
+    page: 395
+  - cpcs: "IV/22"
+    cpcs_name: "Andosols des pays tropicaux, désaturés"
+    rp:
+      - {name: "aluandosols", references: [aluandosols_hapliques, aluandosols_perhydriques], doubtful: true}
+    page: 395
+  # --- V. Sols calcimagnésiques (p. 395) --------------------------------------
+  - cpcs: "V/111"
+    cpcs_name: "Rendzines très humifères"
+    rp:
+      - {name: "rendosols humiques", references: [rendosols], qualifiers: ["humiques"]}
+    page: 395
+  - cpcs: "V/112"
+    cpcs_name: "Rendzines à très forte effervescence"
+    rp:
+      - {name: "rendosols hypercalcaires", references: [rendosols], qualifiers: ["hypercalcaires"]}
+    page: 395
+  - cpcs: "V/113"
+    cpcs_name: "Rendzines modales"
+    rp:
+      - {name: "rendosols", references: [rendosols]}
+    page: 395
+  - cpcs: "V/114"
+    cpcs_name: "Rendzines pauvres en calcaire fin"
+    rp:
+      - {name: "rendosols hypocalcaires", references: [rendosols], qualifiers: ["hypocalcaires"]}
+    page: 395
+  - cpcs: "V/115"
+    cpcs_name: "Xérorendzines"
+    rp:
+      - {name: "rendosols de climats arides", references: [rendosols], qualifiers: ["de climats arides"], doubtful: true}
+    page: 395
+  - cpcs: "V/121"
+    cpcs_name: "Sols bruns calcaires modaux"
+    rp:
+      - {name: "calcosols", references: [calcosols]}
+    page: 395
+  - cpcs: "V/122"
+    cpcs_name: "Sols bruns calcaires à encroûtement calcaire"
+    rp:
+      - {name: "calcosols calcariques", references: [calcosols], qualifiers: ["calcariques"]}
+    page: 395
+  - cpcs: "V/123"
+    cpcs_name: "Sols bruns calcaires à pseudogley"
+    rp:
+      - {name: "calcosols rédoxiques", references: [calcosols], qualifiers: ["rédoxiques"]}
+    page: 395
+  - cpcs: "V/124"
+    cpcs_name: "Sols bruns calcaires vertiques"
+    rp:
+      - {name: "calcosols vertiques", references: [calcosols], qualifiers: ["vertiques"]}
+    page: 395
+  - cpcs: "V/13"
+    cpcs_name: "Cryptorendzines"
+    rp:
+      - {name: "dolomitosols leptiques", references: [dolomitosols], qualifiers: ["leptiques"]}
+    page: 395
+  - cpcs: "V/211"
+    cpcs_name: "Sols bruns calciques, rendzines brunifiées humifères"
+    rp:
+      - {name: "calcisols humiques", references: [calcisols], qualifiers: ["humiques"]}
+    page: 395
+  - cpcs: "V/212"
+    cpcs_name: "Sols bruns calciques, rendzines brunifiées modales"
+    rp:
+      - {name: "calcisols", references: [calcisols]}
+      - {name: "rendisols", references: [rendisols]}
+    page: 395
+  - cpcs: "V/213"
+    cpcs_name: "Sols bruns calciques épais"
+    rp:
+      - {name: "calcisols", references: [calcisols]}
+      - {name: "calcisols pachiques", references: [calcisols], qualifiers: ["pachiques"]}
+    page: 395
+  - cpcs: "V/221"
+    cpcs_name: "Sols humiques carbonatés modaux"
+    rp:
+      - {name: "organosols saturés", references: [organosols_satures]}
+      - {name: "organosols calcaires", references: [organosols_calcaires]}
+      - {name: "calcosols humiques", references: [calcosols], qualifiers: ["humiques"]}
+    page: 395
+  - cpcs: "V/231"
+    cpcs_name: "Sols calciques mélanisés rendziniformes"
+    rp:
+      - {name: "leptismectisols", references: [leptismectisols]}
+    page: 395
+  - cpcs: "V/232"
+    cpcs_name: "Sols calciques mélanisés à encroûtement calcaire"
+    rp:
+      - {name: "leptismectisols calcarique", references: [leptismectisols], qualifiers: ["calcarique"]}
+      - {name: "leptismectisols pétrocalcarique", references: [leptismectisols], qualifiers: ["pétrocalcarique"]}
+    page: 395
+  - cpcs: "V/31"
+    cpcs_name: "Sols gypseux rendziniformes"
+    rp:
+      - {name: "gypsosols", ger: gypsosols}
+    page: 395
+  - cpcs: "V/321"
+    cpcs_name: "Sols bruns gypseux modaux"
+    rp:
+      - {name: "gypsosols", ger: gypsosols}
+    page: 395
+  - cpcs: "V/322"
+    cpcs_name: "Sols bruns gypseux à encroûtement gypseux"
+    rp:
+      - {name: "gypsosols", ger: gypsosols}
+    page: 395
+  # --- VI. Sols isohumiques (p. 396) ------------------------------------------
+  - cpcs: "VI/11"
+    cpcs_name: "Brunizems"
+    rp:
+      - {name: "phæosols", ger: phaeosols}
+    page: 396
+  - cpcs: "VI/21"
+    cpcs_name: "Chernozems"
+    rp:
+      - {name: "chernosols", ger: chernosols}
+    page: 396
+  - {cpcs: "VI/22", cpcs_name: "Sols châtains", none: true, page: 396}
+  - {cpcs: "VI/23", cpcs_name: "Sols bruns isohumiques", none: true, page: 396}
+  - {cpcs: "VI/31", cpcs_name: "Sols marron", none: true, page: 396}
+  - {cpcs: "VI/32", cpcs_name: "Sierozems", none: true, page: 396}
+  - {cpcs: "VI/41", cpcs_name: "Sols bruns sub-arides", none: true, page: 396}
+  # --- VII. Sols brunifiés (p. 396) -------------------------------------------
+  - cpcs: "VII/111"
+    cpcs_name: "Sols bruns modaux"
+    rp:
+      - {name: "brunisols eutriques", references: [brunisols_eutriques]}
+      - {name: "pélosols", ger: pelosols}
+      - {name: "fluviosols brunifiés", references: [fluviosols_brunifies]}
+    page: 396
+  - cpcs: "VII/112"
+    cpcs_name: "Sols bruns acides"
+    rp:
+      - {name: "brunisols dystriques", references: [brunisols_dystriques]}
+      - {name: "alocrisols", ger: alocrisols}
+    page: 396
+  - cpcs: "VII/113"
+    cpcs_name: "Sols bruns andiques"
+    rp:
+      - {name: "brunisols eutriques andiques", references: [brunisols_eutriques], qualifiers: ["andiques"]}
+      - {name: "brunisols dystriques andiques", references: [brunisols_dystriques], qualifiers: ["andiques"]}
+    page: 396
+  - cpcs: "VII/114"
+    cpcs_name: "Sols bruns faiblement lessivés"
+    rp:
+      - {name: "brunisols eutriques luviques", references: [brunisols_eutriques], qualifiers: ["luviques"]}
+      - {name: "brunisols dystriques luviques", references: [brunisols_dystriques], qualifiers: ["luviques"]}
+    page: 396
+  - cpcs: "VII/121"
+    cpcs_name: "Sols lessivés, bruns lessivés"
+    rp:
+      - {name: "néoluvisols", references: [neoluvisols]}
+    page: 396
+  - cpcs: "VII/122"
+    cpcs_name: "Sols lessivés modaux"
+    rp:
+      - {name: "luvisols typiques", references: [luvisols_typiques]}
+    page: 396
+  - cpcs: "VII/123"
+    cpcs_name: "Sols lessivés acides"
+    rp:
+      - {name: "luvisols typiques dystriques", references: [luvisols_typiques], qualifiers: ["dystriques"]}
+    page: 396
+  - cpcs: "VII/124"
+    cpcs_name: "Sols lessivés faiblement podzoliques"
+    rp:
+      - {name: "luvisols typiques podzolisés", references: [luvisols_typiques], qualifiers: ["podzolisés"]}
+    page: 396
+  - cpcs: "VII/125"
+    cpcs_name: "Sols lessivés hydromorphes"
+    rp:
+      - {name: "luvisols typiques rédoxiques", references: [luvisols_typiques], qualifiers: ["rédoxiques"]}
+      - {name: "luvisols-rédoxisols", ger: luvisols, references: [redoxisols], double: true}
+      - {name: "planosols", ger: planosols}
+    page: 396
+  - cpcs: "VII/126"
+    cpcs_name: "Sols lessivés glossiques"
+    rp:
+      - {name: "luvisols dégradés", references: [luvisols_degrades]}
+      - {name: "luvisols-rédoxisols dégradés", references: [luvisols_degrades, redoxisols], double: true}
+    page: 396
+  - cpcs: "VII/21"
+    cpcs_name: "Sols gris forestiers"
+    rp:
+      - {name: "grisols", ger: grisols}
+    page: 396
+  - cpcs: "VII/22"
+    cpcs_name: "Sols derno-podzoliques"
+    rp:
+      - {name: "luvisols derniques", references: [luvisols_derniques]}
+    page: 396
+  - {cpcs: "VII/31", cpcs_name: "Sols lessivés boréaux", none: true, page: 396}
+  - cpcs: "VII/41"
+    cpcs_name: "Sols bruns eutrophes tropicaux"
+    rp:
+      - {name: "brunisols eutriques saturés", references: [brunisols_eutriques], qualifiers: ["saturés"], scope: "under tropical climates"}
+    page: 396
+  # --- VIII. Sols podzolisés (pp. 396-397) ------------------------------------
+  - cpcs: "VIII/111"
+    cpcs_name: "Podzols humiques"
+    rp: &podzols_temperate
+      - {name: "podzosols meubles", references: [podzosols_meubles]}
+      - {name: "podzosols duriques", references: [podzosols_duriques]}
+      - {name: "podzosols placiques", references: [podzosols_placiques]}
+    page: 396
+  - cpcs: "VIII/112"
+    cpcs_name: "Podzols ferrugineux"
+    rp: *podzols_temperate
+    page: 396
+  - cpcs: "VIII/113"
+    cpcs_name: "Podzols humo-ferrugineux"
+    rp: *podzols_temperate
+    page: 396
+  - cpcs: "VIII/114"
+    cpcs_name: "Podzols humo-cendreux"
+    rp:
+      - {name: "podzosols éluviques", references: [podzosols_eluviques]}
+    page: 396
+  - cpcs: "VIII/115"
+    cpcs_name: "Podzols à hydromorphie profonde"
+    rp:
+      - {name: "podzosols à horizon rédoxique de profondeur", ger: podzosols, qualifiers: ["à horizon rédoxique de profondeur"]}
+      - {name: "podzosols à horizon réductique de profondeur", ger: podzosols, qualifiers: ["à horizon réductique de profondeur"]}
+    page: 396
+  - cpcs: "VIII/121"
+    cpcs_name: "Sols podzoliques modaux"
+    rp:
+      - {name: "podzosols meubles", references: [podzosols_meubles]}
+      - {name: "arénosols podzolisés", references: [arenosols], qualifiers: ["podzolisés"]}
+      - {name: "podzosols juvéniles", ger: podzosols, qualifiers: ["juvéniles"]}
+    page: 396
+  - cpcs: "VIII/122"
+    cpcs_name: "Sols podzoliques à hydromorphie profonde"
+    rp:
+      - {name: "podzosols réductiques", ger: podzosols, qualifiers: ["réductiques"]}
+      - {name: "podzosols rédoxiques", ger: podzosols, qualifiers: ["rédoxiques"]}
+      - {name: "podzosols à horizon réductique de profondeur", ger: podzosols, qualifiers: ["à horizon réductique de profondeur"]}
+      - {name: "podzosols à horizon rédoxique de profondeur", ger: podzosols, qualifiers: ["à horizon rédoxique de profondeur"]}
+    page: 397
+  - cpcs: "VIII/123"
+    cpcs_name: "Sols podzoliques à pseudogley"
+    rp:
+      - {name: "planosols", ger: planosols}
+      - {name: "rédoxisols", references: [redoxisols]}
+    page: 397
+  - cpcs: "VIII/124"
+    cpcs_name: "Sols podzoliques à stagnogley"
+    rp:
+      - {name: "réductisols stagniques", references: [reductisols_stagniques]}
+    page: 397
+  - cpcs: "VIII/125"
+    cpcs_name: "Sols podzoliques anthropomorphes"
+    rp:
+      - {name: "post-podzosols", references: [post_podzosols]}
+    page: 397
+  - cpcs: "VIII/13"
+    cpcs_name: "Sols ocre-podzoliques"
+    rp:
+      - {name: "podzosols ocriques", references: [podzosols_ocriques]}
+    page: 397
+  - cpcs: "VIII/141"
+    cpcs_name: "Sols crypto-podzoliques humifères"
+    rp:
+      - {name: "podzosols humiques", references: [podzosols_humiques]}
+      - {name: "alocrisols humiques podzolisés", references: [alocrisols_humiques], qualifiers: ["podzolisés"]}
+    page: 397
+  - cpcs: "VIII/142"
+    cpcs_name: "Sols crypto-podzoliques bruns"
+    rp:
+      - {name: "alocrisols typiques humifères", references: [alocrisols_typiques], qualifiers: ["humifères"]}
+    page: 397
+  - cpcs: "VIII-2"
+    cpcs_name: "Sols podzolisés de climat froid"
+    rp:
+      - {name: "podzosols arctiques, alpins", ger: podzosols, qualifiers: ["arctiques", "alpins"], scope: "all the arctic and alpine podzosols"}
+    open: true
+    page: 397
+  - cpcs: "VIII-3"
+    cpcs_name: "Sols podzolisés hydromorphes"
+    rp:
+      - {name: "podzosols-réductisols", ger: podzosols, references: [reductisols_typiques, reductisols_stagniques], double: true}
+      - {name: "podzosols-rédoxisols", ger: podzosols, references: [redoxisols], double: true}
+    page: 397
+  # --- IX. Sols à sesquioxydes de fer, X. Sols ferrallitiques (p. 397) --------
+  - cpcs: "IX-1"
+    cpcs_name: "Sols ferrugineux tropicaux"
+    rp:
+      - {name: "ferruginosols", ger: ferruginosols}
+    page: 397
+  - cpcs: "IX/21"
+    cpcs_name: "Sols fersiallitiques à réserve calcique, peu lessivés"
+    rp:
+      - {name: "fersialsols calcaires", references: [fersialsols_carbonates]}
+      - {name: "fersialsols saturés", references: [fersialsols_calciques]}
+    page: 397
+  - cpcs: "IX/22"
+    cpcs_name: "Sols fersiallitiques sans réserve calcique, lessivés"
+    rp:
+      - {name: "fersialsols insaturés", references: [fersialsols_insatures]}
+      - {name: "fersialsols éluviques", references: [fersialsols_eluviques]}
+    page: 397
+  - cpcs: "X"
+    cpcs_name: "Sols ferrallitiques (faiblement, moyennement et fortement désaturés en (B))"
+    rp:
+      - {name: "ferrallitisols et oxydisols", ger: ferrallitisols_oxydisols}
+    page: 397
+  # --- XI. Sols hydromorphes (pp. 397-398) ------------------------------------
+  - cpcs: "XI/11"
+    cpcs_name: "Sols hydromorphes organiques, de tourbe fibreuse"
+    rp:
+      - {name: "histosols fibriques", references: [histosols_fibriques]}
+      - {name: "histosols leptiques", references: [histosols_leptiques]}
+    page: 397
+  - cpcs: "XI/12"
+    cpcs_name: "Sols hydromorphes organiques, de tourbe semi-fibreuse"
+    rp:
+      - {name: "histosols mésiques", references: [histosols_mesiques]}
+      - {name: "histosols leptiques", references: [histosols_leptiques]}
+    page: 397
+  - cpcs: "XI/13"
+    cpcs_name: "Sols hydromorphes organiques, de tourbe altérée"
+    rp:
+      - {name: "histosols sapriques", references: [histosols_sapriques]}
+      - {name: "histosols leptiques", references: [histosols_leptiques]}
+    page: 397
+  - cpcs: "XI/21"
+    cpcs_name: "Sols hydromorphes moyennement organiques, humiques à gley (tous)"
+    rp:
+      - {name: "réductisols humiques", references: [reductisols_typiques, reductisols_stagniques], qualifiers: ["humiques"]}
+      - {name: "réductisols à anmoor", references: [reductisols_typiques, reductisols_stagniques], qualifiers: ["à anmoor"]}
+      - {name: "réductisols épihistiques", references: [reductisols_typiques, reductisols_stagniques], qualifiers: ["épihistiques"]}
+    page: 397
+  - cpcs: "XI/22"
+    cpcs_name: "Sols hydromorphes moyennement organiques, humiques à stagnogley"
+    rp:
+      - {name: "réductisols stagniques humiques", references: [reductisols_stagniques], qualifiers: ["humiques"]}
+    page: 397
+  - cpcs: "XI/311"
+    cpcs_name: "Sols hydromorphes peu humifères à gley peu profond (< 80 cm)"
+    rp:
+      - {name: "réductisols typiques", references: [reductisols_typiques]}
+      - {name: "solums réductiques", any_reference: true, qualifiers: ["réductiques"], scope: "various solums qualified réductique"}
+    page: 397
+  - cpcs: "XI/312"
+    cpcs_name: "Sols hydromorphes peu humifères à gley profond (> 80 cm)"
+    rp:
+      - {name: "solums à horizon réductique de profondeur", any_reference: true, qualifiers: ["à horizon réductique de profondeur"], scope: "various solums"}
+    page: 397
+  - cpcs: "XI/321"
+    cpcs_name: "Sols hydromorphes peu humifères à pseudogley de surface"
+    rp:
+      - {name: "pélosols typiques-rédoxisols", references: [pelosols_typiques, redoxisols], double: true}
+    page: 397
+  - cpcs: "XI/322"
+    cpcs_name: "Sols hydromorphes peu humifères à pseudogley, à nappe perchée"
+    rp:
+      - {name: "rédoxisols", references: [redoxisols]}
+      - {name: "pélosols différenciés", references: [pelosols_differencies]}
+      - {name: "planosols typiques", references: [planosols_typiques]}
+    page: 397
+  - cpcs: "XI/33"
+    cpcs_name: "Sols hydromorphes peu humifères à stagnogley"
+    rp:
+      - {name: "réductisols stagniques", references: [reductisols_stagniques]}
+    page: 398
+  - cpcs: "XI/34"
+    cpcs_name: "Sols hydromorphes peu humifères à amphigley (tous)"
+    rp:
+      - {name: "rédoxisols réductiques", references: [redoxisols], qualifiers: ["réductiques"]}
+    page: 398
+  - cpcs: "XI/35"
+    cpcs_name: "Sols hydromorphes peu humifères à accumulation de fer en carapace et cuirasse"
+    rp:
+      - {name: "rédoxisols pétroferriques", references: [redoxisols], qualifiers: ["pétroferriques"]}
+    page: 398
+  - cpcs: "XI/36"
+    cpcs_name: "Sols hydromorphes peu humifères à redistribution du calcaire et du gypse"
+    rp:
+      - {name: "rédoxisols calcariques", references: [redoxisols], qualifiers: ["calcariques"]}
+      - {name: "rédoxisols gypsiques", references: [redoxisols], qualifiers: ["gypsiques"]}
+    page: 398
+  # --- XII. Sols sodiques (p. 398) --------------------------------------------
+  - cpcs: "XII/11"
+    cpcs_name: "Sols sodiques à structure non dégradée, sols salins à profil AC (solontchaks)"
+    rp:
+      - {name: "salisols chloruro-sulfatés", references: [salisols_chloruro_sulfates]}
+      - {name: "salisols carbonatés", references: [salisols_carbonates]}
+    page: 398
+  - cpcs: "XII/21"
+    cpcs_name: "Sols sodiques à structure dégradée, sols salins à alcalins"
+    rp:
+      - {name: "sodisols indifférenciés", references: [sodisols_indifferencies]}
+    page: 398
+  - cpcs: "XII/22"
+    cpcs_name: "Sols sodiques à structure dégradée, sols sodiques à horizon B (solonetz)"
+    rp:
+      - {name: "sodisols solonetziques", references: [sodisols_solonetziques]}
+    page: 398
+  - cpcs: "XII/23"
+    cpcs_name: "Sols sodiques à structure dégradée, sols sodiques à horizon blanchi (solodisés)"
+    rp:
+      - {name: "sodisols solodisés", references: [sodisols_solodises]}
+    page: 398
+
+new_in_rp:
+  page: 398
+  categories:
+    - {name: "anthroposols", ger: anthroposols}
+    - {name: "arénosols", references: [arenosols]}
+    - {name: "calcarisols", references: [calcarisols]}
+    - {name: "gypsosols", ger: gypsosols}
+    - {name: "magnésisols", references: [magnesisols]}
+    - {name: "organosols", ger: organosols}
+    - {name: "pélosols", ger: pelosols}
+    - {name: "peyrosols", references: [peyrosols]}
+    - {name: "planosols", ger: planosols}
+    - {name: "quasi-luvisols", references: [quasi_luvisols]}
+    - {name: "sulfatosols", references: [sulfatosols]}
+    - {name: "thalassosols", ger: thalassosols}
+    - {name: "thiosols", references: [thiosols]}
+    - {name: "veracrisols", references: [veracrisols]}

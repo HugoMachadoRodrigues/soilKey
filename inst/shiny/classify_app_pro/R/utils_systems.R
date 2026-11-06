@@ -196,6 +196,7 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
                    i18n("ui.no_measured_data_note")),
       shiny::tags$dl(class = "row mb-0 small", .sk_levels_rows(res$levels)),
       .sk_1977_note(res),
+      .sk_crosswalk_note(res),
       meta,
       .sk_provisional_note(res)))
 }
@@ -208,6 +209,18 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
   shiny::div(class = "sk-1977 small text-muted mt-2",
              shiny::strong(i18n("classify.kidpr_1977")), " ",
              paste(k77, collapse = " "))
+}
+
+# The correspondences of the RP 2008 (Annexes 5 and 7), as a note under the
+# levels: the WRB 2006 names of an RP result, the RP equivalents of a CPCS
+# result; NULL for the other systems.
+.sk_crosswalk_note <- function(res) {
+  cw <- tryCatch(soilKey:::.rp_crosswalk_lines(res), error = function(e) NULL)
+  if (is.null(cw) || !length(cw$lines)) return(NULL)
+  shiny::div(class = "sk-crosswalk small text-muted mt-2",
+             shiny::strong(i18n(if (identical(cw$kind, "wrb2006")) "classify.rp_wrb2006"
+                                else "classify.rp_cpcs_equivalents")), " ",
+             paste(cw$lines, collapse = "; "))
 }
 
 # The Hungarian properties table for display: the properties the name carries

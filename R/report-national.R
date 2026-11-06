@@ -133,7 +133,9 @@
 # ---- HTML ---------------------------------------------------------------------
 
 # The sections of a national result's card: the experimental note, the class
-# at each level, the provisional classes, the Hungarian properties. "" for a
+# at each level, the provisional classes, the Hungarian properties, the 1977
+# analogue of a Russian soil, the correspondences of the RP 2008 (the WRB
+# 2006 of an RP result, the RP equivalents of a CPCS result). "" for a
 # result that has none of them (WRB, SiBCS, USDA).
 .html_national_sections <- function(res) {
   out <- character(0)
@@ -201,6 +203,12 @@
                           .html_escape(.report_msg("report.kidpr_1977")),
                           .html_escape(.report_msg("report.kidpr_1977_desc")),
                           paste(sprintf("<li>%s</li>", .html_escape(k77)), collapse = "\n")))
+  cw <- .rp_crosswalk_lines(res)
+  if (!is.null(cw))
+    out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
+                          .html_escape(.report_msg(paste0("report.rp_crosswalk_", cw$kind))),
+                          .html_escape(.report_msg(paste0("report.rp_crosswalk_", cw$kind, "_desc"))),
+                          paste(sprintf("<li>%s</li>", .html_escape(cw$lines)), collapse = "\n")))
   paste(out, collapse = "")
 }
 
@@ -261,5 +269,10 @@
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.kidpr_1977"),
                           .report_msg("report.kidpr_1977_desc")),
              paste0("- ", .md_escape_marks(k77), collapse = "\n"), "\n\n")
+  cw <- .rp_crosswalk_lines(res)
+  if (!is.null(cw))
+    out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg(paste0("report.rp_crosswalk_", cw$kind)),
+                          .report_msg(paste0("report.rp_crosswalk_", cw$kind, "_desc"))),
+             paste0("- ", .md_escape_marks(cw$lines), collapse = "\n"), "\n\n")
   paste(out, collapse = "")
 }
