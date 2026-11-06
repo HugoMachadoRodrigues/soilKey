@@ -24,7 +24,8 @@
 # recorded. The order of the tests over a whole layer (.za_identify(), the
 # position pass, the other seventeen horizons and materials) is the next
 # part; here each horizon has its own test, and the topsoil horizons their
-# fixed order (O, vertic, melanic, humic, orthic; default 7).
+# fixed order (O, vertic, melanic, humic, orthic; default 7). v0.9.357 adds
+# that part at the end of this file.
 # =============================================================================
 
 .ZA_REFERENCE <- paste(
@@ -430,6 +431,14 @@
   .za_r(FALSE, note = "no stratification recorded")
 }
 
+# The mottles and concretions of a layer, % (the largest of the
+# redoximorphic features and plinthite plus ferric nodules), NA when none is
+# recorded.
+.za_mottles <- function(x, i) {
+  pn <- c(.za_num(x, i, "plinthite_pct"), .za_num(x, i, "ferric_nodules_pct"))
+  .za_max(.za_num(x, i, "redoximorphic_features_pct"), if (any(!is.na(pn))) sum(pn, na.rm = TRUE))
+}
+
 #' Mottles and concretions of 10 % or less (S 32-33): more makes the soft
 #' plinthic B. Not recorded, absent.
 #' @noRd
@@ -442,6 +451,18 @@
   thr <- .za_thv("plinthic_mottles")
   .za_r(m <= thr, note = sprintf("mottles and concretions %s %% (plinthic over %s %%)", format(m), format(thr)),
         th = "plinthic_mottles")
+}
+
+#' The mottles of an apedal B (S 32): allowed when not enough for a soft
+#' plinthic B, read as 10 % or less, or more when the layer is not a soft
+#' plinthic B by R3 (Hugo, 2026-11-06).
+#' @noRd
+.za_apedal_mottles <- function(x, i) {
+  f <- .za_few_mottles(x, i)
+  if (!isFALSE(f$passed)) return(f)
+  sp <- .za_t_SPL(x, i)
+  if (isFALSE(sp$passed)) return(.za_r(TRUE, note = c(f$note, "more than 10 % mottles, but not a soft plinthic B (R3)")))
+  .za_not(sp, "mottles of a soft plinthic B", always = TRUE)
 }
 
 #' A uniform colour: no variegated colours recorded; for a red horizon,
@@ -517,6 +538,10 @@
         if (!isFALSE(g)) break
       }
       if (k == 1L) {
+        # v0.9.357: any surface horizon is a topsoil, so a surface layer
+        # designated C starts the run too (Hugo, 2026-11-06)
+        if (isFALSE(top_like) && (is.na(t) || !nzchar(t)) && identical(.za_master(x, i), "C") &&
+            !isTRUE(grepl("^[0-9]*C[a-z]*r", d))) top_like <- TRUE
         if (isFALSE(top_like)) break
         run <- i
       } else if (isTRUE(top_like)) run <- c(run, i) else break
@@ -943,7 +968,7 @@
 #' @noRd
 .za_t_RAB <- function(x, i) {
   if (.za_is_rock(x, i)) return(.za_rock_no())
-  .rp_all(.za_red(x, i), .za_apedal(x, i), .za_uniform(x, i), .za_few_mottles(x, i),
+  .rp_all(.za_red(x, i), .za_apedal(x, i), .za_uniform(x, i), .za_apedal_mottles(x, i),
           .za_not(.za_calcareous(x, i), always = TRUE), .za_not(.za_stratified(x, i), always = TRUE))
 }
 
@@ -955,7 +980,7 @@
   if (.za_is_rock(x, i)) return(.za_rock_no())
   red <- .za_red(x, i)
   if (isTRUE(red$passed)) return(.za_not(red, "red, not yellow-brown", always = TRUE))
-  .rp_all(.za_yellow_brown(x, i), .za_apedal(x, i), .za_uniform(x, i), .za_few_mottles(x, i),
+  .rp_all(.za_yellow_brown(x, i), .za_apedal(x, i), .za_uniform(x, i), .za_apedal_mottles(x, i),
           .za_not(.za_calcareous(x, i), always = TRUE), .za_not(.za_stratified(x, i), always = TRUE))
 }
 
@@ -1234,3 +1259,992 @@ pedocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "pedocut
 prismacutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "prismacutanic_b_za", .za_t_PRC, layers)
 #' @noRd
 lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithocutanic_b_za", .za_t_LCU, layers)
+
+
+# =============================================================================
+# v0.9.357 -- part 3: the other seventeen horizons and materials on the data
+# (the E and G horizons and the wet materials, the podzol B and the placic
+# pan, the soft and hard plinthic B, the soft and hardpan carbonate
+# horizons, the dorbank, saprolite, hard rock, stratified alluvium, regic
+# sand, the man-made soil deposit and the unconsolidated material), the
+# position pass and the identification of every layer, .za_identify(), the
+# registry namespace "za" of identify_horizons().
+#
+# Where no open source gives a number (podzol B, placic pan, dorbank, the
+# carbonate horizons; Q13-Q16) the WRB numbers stand in, in thresholds.yaml,
+# flagged. The fixed order of the tests over one layer and the readings of
+# the position pass are in readings.yaml.
+# =============================================================================
+
+# --- shared readings ---------------------------------------------------------------
+
+#' The cementation of a layer, 0 (none) to 4 (indurated), from
+#' cementation_class; NA when not recorded. A rupture resistance of
+#' indurated or rigid stands in for it, with a note.
+#' @noRd
+.za_cement <- function(x, i) {
+  cc <- .za_txt(x, i, "cementation_class")
+  lev <- if (is.na(cc)) NA_integer_
+         else if (grepl("^(none|non|not|no|un)", cc)) 0L
+         else if (grepl("^(weak|slight)", cc)) 1L
+         else if (grepl("^moder", cc)) 2L
+         else if (grepl("^strong", cc)) 3L
+         else if (grepl("indurat|extrem", cc)) 4L
+         else NA_integer_
+  note <- character(0)
+  if (is.na(cc)) {
+    rr <- .za_txt(x, i, "rupture_resistance")
+    if (!is.na(rr) && grepl("indurat|rigid", rr)) {
+      lev <- 4L
+      note <- sprintf("rupture resistance %s read as indurated", rr)
+    }
+  }
+  list(level = lev, text = cc, note = note)
+}
+# The largest of some values, NA when none is recorded.
+.za_max <- function(...) { v <- c(...); v <- v[!is.na(v)]; if (length(v)) max(v) else NA_real_ }
+.za_cement_word <- function(lev) c("not cemented", "weakly cemented", "moderately cemented",
+                                   "strongly cemented", "indurated")[lev + 1L]
+# The level of a cementation word of thresholds.yaml.
+.za_cement_level <- function(w) match(w, c("none", "weakly", "moderately", "strongly", "indurated")) - 1L
+
+#' The cementing agent of a layer (Q14-Q16): from pan_type when recorded,
+#' else from what the layer holds (duripan_pct, plinthite or ferric nodules,
+#' CaCO3 of 15 % or more, the hints of the FAO letters Bkm, Bqm, Bsm, Bv);
+#' one of rock (silcrete, P), carbonate, soft_carbonate (nodular or powder
+#' calcrete, reading 4), silica, iron or other, or NA (several or none).
+#' @noRd
+.za_agent <- function(x, i) {
+  pan <- .za_txt(x, i, "pan_type")
+  if (!is.na(pan) && !grepl("^(none|no|absent)$", pan)) {
+    a <- if (grepl("silcrete", pan)) "rock"
+         else if (grepl("nodul|powder", pan) && grepl("calcrete|carbonate", pan)) "soft_carbonate"
+         else if (grepl("calcrete|petrocalc|calcic|caliche|carbonate", pan)) "carbonate"
+         else if (grepl("duripan|dorbank|silic|duric", pan)) "silica"
+         else if (grepl("ferricrete|iron|laterit|ouklip|plinth|placic|ortstein|bog ore", pan)) "iron"
+         else "other"
+    return(list(agent = a, note = sprintf("pan type %s", pan)))
+  }
+  hint <- if (!is.null(x$names)) x$names$hint[[i]] else character(0)
+  ev <- character(0)
+  if (isTRUE(.za_num(x, i, "duripan_pct") >= .za_thv("dorbank_duripan"))) ev <- c(ev, "silica")
+  if (isTRUE(.za_num(x, i, "plinthite_pct") > 0) || isTRUE(.za_num(x, i, "ferric_nodules_pct") > 0)) ev <- c(ev, "iron")
+  if (isTRUE(.za_num(x, i, "caco3_pct") >= .za_thv("carbonate_caco3"))) ev <- c(ev, "carbonate")
+  if (!length(ev) && length(hint)) {
+    if (identical(sort(hint), "HCH")) ev <- "carbonate"
+    else if (identical(hint, "DOR")) ev <- "silica"
+    else if (all(hint %in% c("SPL", "HPL", "PLP"))) ev <- "iron"
+  }
+  ev <- unique(ev)
+  if (length(ev) == 1L) return(list(agent = ev, note = sprintf("cementing agent read as %s from what the layer holds", ev)))
+  list(agent = NA_character_, note = if (length(ev)) sprintf("cementing agent undecided (%s)", paste(ev, collapse = ", "))
+                                     else "cementing agent not recorded")
+}
+
+#' A cemented layer of one agent, as the hardpan carbonate horizon, the
+#' dorbank and the hard plinthic B test it: cemented at least `min_level`,
+#' the agent `agent`, at least `min_cm` thick.
+#' @noRd
+.za_pan_test <- function(x, i, agent, min_level, min_cm = NA_real_, th = character(0), what) {
+  cem <- .za_cement(x, i)
+  ag <- .za_agent(x, i)
+  pan_says <- identical(ag$agent, agent) && !is.na(.za_txt(x, i, "pan_type"))
+  if (is.na(cem$level)) {
+    if (pan_says) {
+      lev <- .za_r(TRUE, tag = "cementation_from_pan_type",
+                   note = c(sprintf("%s: a cemented pan, its cementation not recorded: the pan type counts as evidence, flagged (R4)", ag$note), cem$note))
+    } else return(.za_r(FALSE, note = sprintf("no cementation recorded: not a %s", what)))
+  } else {
+    lev <- .za_r(cem$level >= min_level, th = th,
+                 note = c(sprintf("%s (%s needs %s or more)", .za_cement_word(cem$level), what,
+                                  .za_cement_word(min_level)), cem$note))
+    if (isFALSE(lev$passed)) return(lev)
+  }
+  agr <- if (is.na(ag$agent)) .za_r(NA, missing = c("pan_type", "caco3_pct", "duripan_pct"), note = ag$note)
+         else .za_r(ag$agent == agent, note = sprintf("%s: %s", ag$note, if (ag$agent == agent) sprintf("the agent of a %s", what)
+                                                     else sprintf("not the agent of a %s", what)))
+  if (isFALSE(agr$passed)) return(agr)
+  thk <- if (is.na(min_cm)) NULL
+         else if (is.na(x$thick[i])) .za_r(NA, missing = c("top_cm", "bottom_cm"), note = "thickness not recorded")
+         else .za_r(x$thick[i] >= min_cm, th = th,
+                    note = sprintf("%s cm thick (%s cm or more)", format(x$thick[i]), format(min_cm)))
+  .rp_all(lev, agr, thk)
+}
+
+# Is the hint of the FAO letters of a layer this code (and only codes of `set`)?
+.za_hint_has <- function(x, i, code) {
+  !is.null(x$names) && code %in% (x$names$hint[[i]] %||% character(0))
+}
+.za_origin <- function(x, i) .za_txt(x, i, "layer_origin")
+.ZA_AEOLIAN <- "aeol|eolian|eolic|aeolic|wind|dune"
+.ZA_FLUVIAL <- "fluv|alluv|colluv"
+.ZA_MADE <- "anthrop|man.?made|made ground|fill|spoil|technogen|dump|mine"
+
+
+# --- the cemented and rock layers (P; S 31; Q14-Q16, Q19) --------------------------------
+
+#' Man-made soil deposit (S 33; K 38): soil material deposited by people,
+#' with or without rock fragments or artefacts: anthropic_material recorded,
+#' a layer_origin that says so, artefacts of 20 % or more (the WRB
+#' Technosols standing in, flagged) or the u and ^ of the FAO letters
+#' (flagged). Not recorded, absent.
+#' @noRd
+.za_t_MMD <- function(x, i) {
+  am <- .za_txt(x, i, "anthropic_material")
+  if (!is.na(am) && !grepl("^(none|no|absent|natural)", am))
+    return(.za_r(TRUE, note = sprintf("anthropic material %s", am)))
+  lo <- .za_origin(x, i)
+  if (!is.na(lo) && grepl(.ZA_MADE, lo)) return(.za_r(TRUE, note = sprintf("layer origin %s", lo)))
+  af <- .za_max(.za_num(x, i, "artefacts_pct"), .za_num(x, i, "technic_hardmaterial_pct"))
+  if (!is.na(af) && af >= .za_thv("man_made_artefacts"))
+    return(.za_r(TRUE, tag = "artefacts", th = "man_made_artefacts",
+                 note = sprintf("artefacts %s %%: a man-made deposit, flagged", format(af))))
+  if (.za_hint_has(x, i, "MMD"))
+    return(.za_r(TRUE, tag = "designation_hint", note = sprintf("'%s': a human-made layer by its letters, flagged", .za_des(x, i))))
+  .za_r(FALSE, note = "no man-made material recorded")
+}
+
+#' Hard rock (S 31; K 73; P): continuous hard rock, a layer designated R (or
+#' bedrock_pct of 100), or silcrete. Not recorded, absent.
+#' @noRd
+.za_t_HRK <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(TRUE, note = sprintf("'%s': rock", .za_des(x, i) %||% "bedrock 100 %")))
+  ag <- .za_agent(x, i)
+  if (identical(ag$agent, "rock")) return(.za_r(TRUE, note = sprintf("%s: hard rock (P; K 73)", ag$note)))
+  .za_r(FALSE, note = "no hard rock recorded in the layer")
+}
+
+#' Hardpan carbonate horizon (P; K 72; Q16): cemented at least moderately by
+#' carbonate (calcrete recorded, or 15 % CaCO3 or more), 10 cm or more: the
+#' WRB petrocalcic horizon standing in, flagged.
+#' @noRd
+.za_t_HCH <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  .za_pan_test(x, i, "carbonate", .za_cement_level(.za_thv("hardpan_carbonate_cementation")),
+               .za_thv("hardpan_carbonate_thickness"),
+               th = c("hardpan_carbonate_cementation", "hardpan_carbonate_thickness"), what = "hardpan carbonate horizon")
+}
+
+#' Dorbank (V 32; K 45, 60, 66, 70; Q15): cemented at least moderately by
+#' silica (duripan or dorbank recorded, or 10 % duripan material or more),
+#' 10 cm or more: the WRB petroduric horizon standing in, flagged. Silcrete is
+#' hard rock (P).
+#' @noRd
+.za_t_DOR <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  .za_pan_test(x, i, "silica", .za_cement_level(.za_thv("dorbank_cementation")), .za_thv("dorbank_thickness"),
+               th = c("dorbank_cementation", "dorbank_thickness", "dorbank_duripan"), what = "dorbank")
+}
+
+#' Hard plinthic B (S 31; V 26): an indurated layer of iron and manganese
+#' oxides that cannot be cut with a spade when wet, read as strongly
+#' cemented or indurated by iron (ferricrete, ouklip, plinthite or ferric
+#' nodules recorded; flagged), thicker than a placic pan.
+#' @noRd
+.za_t_HPL <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  r <- .za_pan_test(x, i, "iron", .za_cement_level(.za_thv("hard_plinthic_cementation")),
+                    th = "hard_plinthic_cementation", what = "hard plinthic B")
+  if (isFALSE(r$passed)) return(r)
+  thk <- if (is.na(x$thick[i])) .za_r(NA, missing = c("top_cm", "bottom_cm"), note = "thickness not recorded")
+         else .za_r(x$thick[i] >= .za_thv("placic_max_thickness"), th = "placic_max_thickness",
+                    note = sprintf("%s cm thick: %s", format(x$thick[i]),
+                                   if (x$thick[i] >= .za_thv("placic_max_thickness")) "thicker than a placic pan" else "a placic pan, not a hard plinthic B"))
+  .rp_all(r, thk)
+}
+
+#' Placic pan (P; V 30-32; Q14): a layer 0.1 cm to under 2.5 cm thick,
+#' cemented at least weakly by iron (with manganese or organic matter): the
+#' WRB placic horizon standing in, flagged. Iron not recorded: a designation
+#' with s and m (Bsm) says it, flagged; else undecided. Only under a podzol B
+#' (the position pass).
+#' @noRd
+.za_t_PLP <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  cem <- .za_cement(x, i)
+  if (is.na(cem$level) || cem$level < 1L)
+    return(.za_r(FALSE, note = if (is.na(cem$level)) "no cementation recorded: not a placic pan" else "not cemented"))
+  th <- c("placic_min_thickness", "placic_max_thickness")
+  thk <- if (is.na(x$thick[i])) .za_r(NA, missing = c("top_cm", "bottom_cm"), note = "thickness not recorded", th = th)
+         else .za_r(x$thick[i] >= .za_thv("placic_min_thickness") && x$thick[i] < .za_thv("placic_max_thickness"), th = th,
+                    note = sprintf("%s cm thick (a placic pan: %s to under %s cm)", format(x$thick[i]),
+                                   format(.za_thv("placic_min_thickness")), format(.za_thv("placic_max_thickness"))))
+  if (isFALSE(thk$passed)) return(thk)
+  ag <- .za_agent(x, i)
+  agr <- if (identical(ag$agent, "iron")) .za_r(TRUE, note = ag$note, th = "placic_min_thickness")
+         else if (!is.na(ag$agent)) .za_r(FALSE, note = sprintf("%s: not iron", ag$note))
+         else if (.za_hint_has(x, i, "PLP")) .za_r(TRUE, tag = "designation_hint",
+                                                   note = sprintf("'%s': a thin iron pan by its letters, flagged", .za_des(x, i)))
+         else .za_r(NA, missing = "pan_type", note = ag$note)
+  .rp_all(thk, agr)
+}
+
+#' Saprolite (S 31; K 26, 51, 55): weathering rock that keeps the
+#' organisation of the parent rock: weathering_stage saprolite or
+#' moderately (partly, highly) weathered, saprolite_pct or bedrock_pct of 50
+#' % or more (soilKey's reading, flagged), or a C designated r (Cr), flagged.
+#' Not a layer of rock.
+#' @noRd
+.za_t_SAP <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "hard rock, not saprolite"))
+  ws <- .za_txt(x, i, "weathering_stage")
+  if (!is.na(ws)) {
+    if (grepl("saprolit|moderat|partly|partial|highly|strongly", ws))
+      return(.za_r(TRUE, note = sprintf("weathering stage %s", ws)))
+    if (grepl("fresh|slight|unweath|complete", ws))
+      return(.za_r(FALSE, note = sprintf("weathering stage %s: not saprolite", ws)))
+  }
+  sp <- .za_max(.za_num(x, i, "saprolite_pct"), .za_num(x, i, "bedrock_pct"))
+  if (!is.na(sp)) {
+    p <- sp >= .za_thv("saprolite_rock")
+    if (p || !.za_hint_has(x, i, "SAP"))
+      return(.za_r(p, th = "saprolite_rock", note = sprintf("weathering rock in place %s %%", format(sp))))
+  }
+  d <- .za_des(x, i)
+  if (isTRUE(grepl("^[0-9]*C[a-z]*r", d)))
+    return(.za_r(TRUE, tag = "designation_hint", note = sprintf("'%s': weathered rock (Cr), flagged", d)))
+  .za_r(FALSE, note = "no weathering rock recorded")
+}
+
+#' Soft carbonate horizon (P; K 72; Q16): not cemented (or weakly), 15 % CaCO3
+#' or more with secondary carbonates of 5 % or more (soft masses, nodules;
+#' secondary_carbonates_pct, carbonate_soft_pct, carbonate_hard_pct), 15 cm
+#' or more: the WRB calcic horizon standing in, flagged; nodular or powder
+#' calcrete recorded. Secondary carbonates not recorded: absent (an
+#' observation), flagged in the note.
+#' @noRd
+.za_t_SCH <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  cem <- .za_cement(x, i)
+  if (isTRUE(cem$level >= .za_cement_level(.za_thv("hardpan_carbonate_cementation"))))
+    return(.za_r(FALSE, note = sprintf("%s: a hardpan, not soft", .za_cement_word(cem$level))))
+  ag <- .za_agent(x, i)
+  th <- c("carbonate_caco3", "soft_carbonate_secondary", "soft_carbonate_thickness")
+  thk <- if (is.na(x$thick[i])) .za_r(NA, missing = c("top_cm", "bottom_cm"), note = "thickness not recorded")
+         else .za_r(x$thick[i] >= .za_thv("soft_carbonate_thickness"), th = "soft_carbonate_thickness",
+                    note = sprintf("%s cm thick", format(x$thick[i])))
+  if (identical(ag$agent, "soft_carbonate")) return(.rp_all(.za_r(TRUE, note = ag$note), thk))
+  cc <- .za_num(x, i, "caco3_pct")
+  if (is.na(cc)) {
+    ca <- .za_calcareous(x, i)
+    if (isFALSE(ca$passed)) return(.za_r(FALSE, note = "not calcareous"))
+    return(.za_r(NA, missing = "caco3_pct", note = "calcareous, CaCO3 not recorded", th = th))
+  }
+  c1 <- .za_r(cc >= .za_thv("carbonate_caco3"), th = "carbonate_caco3", note = sprintf("CaCO3 %s %%", format(cc)))
+  if (isFALSE(c1$passed)) return(c1)
+  sec <- .za_max(.za_num(x, i, "secondary_carbonates_pct"), .za_num(x, i, "carbonate_soft_pct"),
+                 .za_num(x, i, "carbonate_hard_pct"))
+  c2 <- if (is.na(sec)) .za_r(FALSE, th = th, tag = "secondary_carbonates_not_recorded",
+                                   note = "no secondary carbonates recorded: not an accumulation (an observation not recorded is absent)")
+        else .za_r(sec >= .za_thv("soft_carbonate_secondary"), th = "soft_carbonate_secondary",
+                   note = sprintf("secondary carbonates %s %%", format(sec)))
+  .rp_all(c1, c2, thk)
+}
+
+
+# --- the E, podzol B, plinthic and wet horizons (S 33; V 19-26; Q9, Q12, Q13) ---------
+
+#' E horizon (S 33; V 19; Q9): grey when dry; not more clay than the layer
+#' above it (the loss of colloidal matter; soilKey's reading); no cross
+#' bedding or stratification (S 33); not cemented at least moderately; no
+#' moderate or strong blocky or prismatic structure (a B). Directly under a
+#' topsoil horizon or another E (the position pass).
+#' @noRd
+.za_t_E <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  g <- .za_grey_dry(x, i)
+  if (isFALSE(g$passed) && !isTRUE(.za_low_chroma(x, i)$passed)) return(g)
+  st <- .za_stratified(x, i)
+  if (isTRUE(st$passed)) return(.za_r(FALSE, note = c(st$note, "stratified or cross-bedded: not an E (S 33)")))
+  cem <- .za_cement(x, i)
+  if (isTRUE(cem$level >= 2L)) return(.za_r(FALSE, note = sprintf("%s: not an E", .za_cement_word(cem$level))))
+  s <- .za_struct(x, i)
+  if ((s$blocky || s$prism) && isTRUE(s$grade > .za_apedal_grade()))
+    return(.za_r(FALSE, note = sprintf("structure %s: a B, not an E", .za_struct_text(s))))
+  dep <- .za_e_clay(x, i)
+  if (isFALSE(g$passed) && !isFALSE(dep$passed)) {
+    # D3: grey only by its moist colour (the WRB dry stand-in failing) and
+    # eluvial: an E, flagged (Hugo, 2026-11-06)
+    lc <- .za_low_chroma(x, i)
+    if (isTRUE(lc$passed))
+      g <- .za_r(TRUE, tag = "e_by_moist_colour", th = c("grey_dry", "low_chroma"),
+                 note = c(g$note, "not grey dry by the WRB stand-in, but grey and of low chroma moist and eluvial: an E, flagged"))
+  }
+  .rp_all(g, dep)
+}
+
+#' The clay of an E (Hugo, 2026-11-06, reading R2): less clay than the layer
+#' below, or at most 2 points more than the layer above.
+#' @noRd
+.za_e_clay <- function(x, i) {
+  a <- .kidpr_prev(x, i); b <- .kidpr_next(x, i)
+  if (is.na(a)) return(.za_r(FALSE, note = "nothing above: not an E"))
+  ci <- .za_num(x, i, "clay_pct"); ca <- .za_num(x, a, "clay_pct")
+  cb <- if (is.na(b)) NA_real_ else .za_num(x, b, "clay_pct")
+  # nothing described below: no layer to have lost clay to
+  if (is.na(ci)) return(.za_r(NA, missing = "clay_pct", note = "clay of the layer not recorded"))
+  tol <- .za_thv("e_clay_above")
+  up <- if (is.na(ca)) NA else ci <= ca + tol
+  dn <- if (is.na(b)) FALSE else if (is.na(cb)) NA else ci < cb
+  p <- .kidpr_or(up, dn)
+  .za_r(p, missing = if (is.na(p)) "clay_pct" else character(0), th = "e_clay_above",
+        note = sprintf("clay %s %% (above %s %%, below %s %%): %s", format(ci), if (is.na(ca)) "?" else format(ca),
+                       if (is.na(cb)) "?" else format(cb),
+                       if (isTRUE(p)) "eluvial" else if (isFALSE(p)) "not eluvial" else "undecided"))
+}
+
+# Illuvial colours of a podzol B, moist (the WRB spodic colours standing in,
+# flagged): hue 7.5YR or redder with value and chroma within the first
+# limits, or any hue dark within the second.
+.za_podzol_colour <- function(x, i) {
+  m <- .za_colour(x, i, "moist")
+  lim <- .za_thv("podzol_colour")
+  if (is.na(m$value) || is.na(m$chroma))
+    return(.za_r(NA, missing = c("munsell_value_moist", "munsell_chroma_moist"), note = "moist colour not recorded", th = "podzol_colour"))
+  p <- .rp_hue_pos(m)
+  red <- !is.na(p) && m$family %in% c("R", "YR", "RP") && p <= .rp_hue_pos(.munsell_hue_parts(lim$hue_max)) + 1e-9
+  ok <- (red && m$value <= lim$value_max && m$chroma <= lim$chroma_max) ||
+        (m$value <= lim$dark_value_max && m$chroma <= lim$dark_chroma_max)
+  if (!ok && is.na(m$family)) return(.za_r(NA, missing = "munsell_hue_moist", note = "moist hue not recorded", th = "podzol_colour"))
+  .za_r(ok, th = "podzol_colour", note = sprintf("%s: %s", .za_col_text(m), if (ok) "illuvial colours" else "not the colours of a podzol B"))
+}
+
+#' Podzol B (P; V 30; Q13): the WRB spodic horizon as soilKey tests it,
+#' standing in, flagged: an illuvial mark (a Bh, Bs or Bhs designation, or a
+#' grey E directly above), 2.5 cm or more, pH(H2O) 5.9 or less, and Alox +
+#' 1/2 Feox of 0.5 % or more. Without oxalate data the morphological route:
+#' a Bh, Bs or Bhs designation with illuvial colours (pH over 5.9 or organic
+#' carbon under 0.5 % recorded fail it), flagged; a grey E above with
+#' illuvial colours and no oxalate data leaves it undecided.
+#' @noRd
+.za_t_PZB <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  th <- c("podzol_ph", "podzol_alfe", "podzol_oc", "podzol_thickness")
+  des <- .za_hint_has(x, i, "PZB")
+  a <- .kidpr_prev(x, i)
+  ga <- if (is.na(a)) FALSE else .za_grey_dry(x, a)$passed
+  mark <- if (des) .za_r(TRUE, tag = "designation_hint", note = sprintf("'%s': an illuvial B by its letters", .za_des(x, i)))
+          else if (isTRUE(ga)) .za_r(TRUE, note = "a grey E-like layer directly above")
+          else if (is.na(ga)) .za_r(NA, missing = c("munsell_value_dry", "munsell_chroma_dry"), note = "the colour of the layer above not recorded")
+          else .za_r(FALSE, note = "no Bh or Bs designation and no grey layer directly above")
+  if (isFALSE(mark$passed)) return(mark)
+  ph <- .za_num(x, i, "ph_h2o"); oc <- .za_num(x, i, "oc_pct")
+  al <- .za_num(x, i, "al_ox_pct"); fe <- .za_num(x, i, "fe_ox_pct")
+  thk <- if (is.na(x$thick[i])) .za_r(NA, missing = c("top_cm", "bottom_cm"), note = "thickness not recorded")
+         else .za_r(x$thick[i] >= .za_thv("podzol_thickness"), th = "podzol_thickness", note = sprintf("%s cm thick", format(x$thick[i])))
+  phr <- if (is.na(ph)) NULL else .za_r(ph <= .za_thv("podzol_ph"), th = "podzol_ph", note = sprintf("pH(H2O) %s", format(ph)))
+  if (!is.na(al) || !is.na(fe)) {
+    v <- sum(c(al, 0.5 * fe), na.rm = TRUE)
+    exact <- !is.na(al) && !is.na(fe)
+    ch <- if (v >= .za_thv("podzol_alfe")) .za_r(TRUE, th = "podzol_alfe", note = sprintf("Alox + 1/2 Feox %s %%", format(round(v, 2))))
+          else if (exact) .za_r(FALSE, th = "podzol_alfe", note = sprintf("Alox + 1/2 Feox %s %%: not spodic", format(round(v, 2))))
+          else .za_r(NA, missing = c("al_ox_pct", "fe_ox_pct"), note = "Alox or Feox not recorded")
+    if (is.null(phr)) phr <- .za_r(NA, missing = "ph_h2o", note = "pH(H2O) not recorded")
+    ocx <- if (is.na(oc)) .za_r(NA, missing = "oc_pct", note = "organic carbon not recorded")
+           else .za_r(oc >= .za_thv("podzol_oc"), th = "podzol_oc", note = sprintf("organic carbon %s %%", format(oc)))
+    return(.rp_all(mark, ch, phr, ocx, thk))
+  }
+  # no oxalate data: the morphological route
+  col <- .za_podzol_colour(x, i)
+  if (isFALSE(col$passed)) return(col)
+  if (isFALSE(phr$passed)) return(phr)
+  ocr <- if (!is.na(oc)) .za_r(oc >= .za_thv("podzol_oc"), th = "podzol_oc", note = sprintf("organic carbon %s %%", format(oc)))
+  if (isFALSE(ocr$passed)) return(ocr)
+  if (!des) return(.za_r(NA, missing = c("al_ox_pct", "fe_ox_pct"), th = th,
+                         note = c(mark$note, col$note, "no oxalate data and no Bh or Bs designation: podzol B undecided")))
+  .rp_all(mark, col, phr, ocr, thk, .za_r(TRUE, tag = "podzol_b_morphology", th = th,
+                                         note = "no oxalate data: the morphological route (designation and colours), flagged (Q13)"))
+}
+
+#' Soft plinthic B (S 33; V 25): more than 10 % mottles or concretions of iron
+#' and manganese; grey colours of wetness in the horizon or directly below
+#' (the signs of wetness, Q12); can be cut with a spade when wet (not
+#' strongly cemented). The layer below not described leaves the grey colours
+#' undecided when the layer shows none.
+#' @noRd
+.za_t_SPL <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  cem <- .za_cement(x, i)
+  if (isTRUE(cem$level >= .za_cement_level(.za_thv("hard_plinthic_cementation"))))
+    return(.za_r(FALSE, note = sprintf("%s: too hard for a soft plinthic B", .za_cement_word(cem$level))))
+  mo <- .za_not(.za_few_mottles(x, i), "more than 10 % mottles and concretions")
+  if (!isTRUE(mo$passed)) return(mo)
+  w <- .za_wetness(x, i)
+  if (!isTRUE(w$passed)) {
+    nx <- .kidpr_next(x, i)
+    w2 <- if (is.na(nx)) .za_r(NA, missing = "mottle_colors", note = "no grey colours recorded in the layer and nothing described below it")
+          else {
+            r <- .za_wetness(x, nx); r$note <- c(r$note, "the layer directly below")
+            # R3 (Hugo, 2026-11-06): with no grey of its own, the B1 is soft
+            # plinthic only with mottles at least those of the layer below
+            mine <- .za_mottles(x, i); below <- .za_mottles(x, nx)
+            if (isTRUE(r$passed) && !is.na(below) && !is.na(mine) && mine < below)
+              r <- .za_r(FALSE, note = sprintf("no grey of its own and fewer mottles (%s %%) than the layer below (%s %%): not the soft plinthic B (K 33)",
+                                               format(mine), format(below)))
+            r
+          }
+    w <- .rp_any(w, w2)
+  }
+  .rp_all(mo, w)
+}
+
+#' A grey low-chroma matrix (the G horizon and the materials with signs of
+#' wetness; Q12): the matrix of .za_low_chroma(). Which of the G horizon, the
+#' unspecified or the unconsolidated material with signs of wetness it is
+#' depends on what lies above (the position pass).
+#' @noRd
+.za_t_WET <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  .za_low_chroma(x, i)
+}
+
+
+# --- the transported and unconsolidated materials (S 32-33; P) -------------------------
+
+#' Stratified alluvium (S 33; K 74): stratification recorded and a fluvial or
+#' colluvial origin, or not an aeolian one (a stratified layer of unrecorded
+#' origin, flagged); a fluvial or colluvial origin with no stratification
+#' recorded, soilKey's fluvic_material() standing in, flagged. Cross bedding
+#' alone in a layer not of fluvial origin is left to the regic sand.
+#' @noRd
+.za_t_SAL <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  lo <- .za_origin(x, i)
+  fl <- !is.na(lo) && grepl(.ZA_FLUVIAL, lo)
+  ae <- !is.na(lo) && grepl(.ZA_AEOLIAN, lo)
+  sp <- .za_txt(x, i, "stratification_pattern")
+  strat <- !is.na(sp) && !grepl("^(none|absent|no|lithologic)", sp)
+  if (strat) {
+    if (ae) return(.za_r(FALSE, note = sprintf("stratified, of aeolian origin (%s): not alluvium", lo)))
+    if (fl) return(.za_r(TRUE, note = sprintf("stratification %s, origin %s", sp, lo)))
+    return(.za_r(TRUE, tag = "origin_not_recorded", note = sprintf("stratification %s, origin not recorded: read as alluvium, flagged", sp)))
+  }
+  if (fl) {
+    w <- .kidpr_wrb_layer(x, "fluvic_material", i)
+    if (isTRUE(w)) return(.za_r(TRUE, tag = "fluvic_material", note = sprintf("origin %s; soilKey's fluvic_material() stands in for the stratification, flagged", lo)))
+    return(.za_r(FALSE, note = sprintf("origin %s, no stratification recorded", lo)))
+  }
+  .za_r(FALSE, note = "no stratification or alluvial origin recorded")
+}
+
+#' Regic sand (S 33; P): a recent deposit, usually aeolian: an aeolian
+#' origin, cross bedding or recent_deposit recorded; loamy sand or coarser
+#' (the WRB Arenosol texture standing in, flagged); virtually structureless.
+#' None of the marks recorded: absent (a sandy apedal B stays a B).
+#' @noRd
+.za_t_RSA <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  lo <- .za_origin(x, i)
+  ae <- (!is.na(lo) && grepl(.ZA_AEOLIAN, lo)) || isTRUE(.za_lgl(x, i, "cross_bedding")) ||
+        (isTRUE(.za_lgl(x, i, "recent_deposit")) && !(!is.na(lo) && grepl(.ZA_FLUVIAL, lo)))
+  if (!ae) return(.za_r(FALSE, note = "no aeolian origin, cross bedding or recent deposit recorded"))
+  sa <- .za_num(x, i, "sand_pct"); si <- .za_num(x, i, "silt_pct"); cl <- .za_num(x, i, "clay_pct")
+  lim <- .za_thv("regic_sand_texture")
+  tex <- if (is.na(cl) || (is.na(si) && is.na(sa))) .za_r(NA, missing = c("clay_pct", "silt_pct", "sand_pct"), note = "particle size not recorded")
+         else {
+           si2 <- if (!is.na(si)) si else 100 - sa - cl
+           p <- si2 + 2 * cl < lim
+           .za_r(p, th = "regic_sand_texture", note = sprintf("silt %s %%, clay %s %%: %s", format(si2), format(cl),
+                                                             if (p) "loamy sand or coarser" else "finer than loamy sand"))
+         }
+  s <- .za_struct(x, i)
+  st <- if (isTRUE(s$grade > .za_apedal_grade())) .za_r(FALSE, note = sprintf("structure %s: not virtually structureless", .za_struct_text(s)))
+        else .za_r(TRUE, note = "virtually structureless")
+  .rp_all(.za_r(TRUE, note = "an aeolian or recent deposit"), tex, st)
+}
+
+#' Unconsolidated material (S 32-33; P): a C layer (or the hint of its
+#' letters) that is neither rock nor saprolite. With or without signs of
+#' wetness, and whether it is the material of the key at all, by the
+#' position pass (under a podzol or pedocutanic B). No designation:
+#' undecided.
+#' @noRd
+.za_t_UMN <- function(x, i) {
+  if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
+  m <- .za_master(x, i)
+  if (is.na(m) && !.za_hint_has(x, i, "UMN")) return(.za_r(NA, missing = "designation", note = "no designation: unconsolidated material undecided"))
+  if (!identical(m, "C") && !.za_hint_has(x, i, "UMN")) return(.za_r(FALSE, note = sprintf("'%s': not a C layer", .za_des(x, i))))
+  sap <- .za_t_SAP(x, i)
+  if (isTRUE(sap$passed)) return(.za_r(FALSE, note = c(sap$note, "saprolite, not unconsolidated material")))
+  .za_r(TRUE, note = sprintf("'%s': unconsolidated material", .za_des(x, i)))
+}
+
+
+# --- the identification of a layer and the position pass --------------------------------
+
+# The fixed order of the tests over a layer below the topsoil (readings.yaml;
+# soilKey's): the materials and cemented layers first, then the E, podzol B,
+# plinthic and prismacutanic B, the lithocutanic B, a grey low-chroma matrix,
+# the alluvium and regic sand, then the structured and apedal B horizons, and
+# the unconsolidated material last. WET is a grey low-chroma matrix, the
+# position pass makes it G, USW or UMW.
+.ZA_ORDER <- c("MMD", "HRK", "HCH", "DOR", "HPL", "PLP", "SAP", "SCH", "E", "PZB", "SPL", "PRC", "LCU",
+               "WET", "SAL", "RSA", "PCU", "RSB", "NCA", "NCU", "RAB", "YAB", "UMN")
+.ZA_TESTS <- list(MMD = .za_t_MMD, HRK = .za_t_HRK, HCH = .za_t_HCH, DOR = .za_t_DOR, HPL = .za_t_HPL,
+                  PLP = .za_t_PLP, SAP = .za_t_SAP, SCH = .za_t_SCH, E = .za_t_E, PZB = .za_t_PZB,
+                  SPL = .za_t_SPL, PRC = function(x, i) .za_t_PRC(x, i), LCU = function(x, i) .za_t_LCU(x, i),
+                  WET = .za_t_WET, SAL = .za_t_SAL, RSA = .za_t_RSA, PCU = function(x, i) .za_t_PCU(x, i),
+                  RSB = function(x, i) .za_t_RSB(x, i), NCA = function(x, i) .za_t_NCA(x, i),
+                  NCU = function(x, i) .za_t_NCU(x, i), RAB = function(x, i) .za_t_RAB(x, i),
+                  YAB = function(x, i) .za_t_YAB(x, i), UMN = .za_t_UMN)
+.ZA_TOPSOILS <- c("OO", "VA", "MA", "HA", "OA")
+# The apedal and structured B horizons, which a layer designated C is not.
+.ZA_B_CODES <- c("PRC", "PCU", "RSB", "NCA", "NCU", "RAB", "YAB", "LCU", "PZB")
+# The horizons (besides a topsoil, an E and the same B) under which each
+# apedal or structured B may lie (D2; S 32).
+.ZA_B_ABOVE <- list(RAB = "YAB", YAB = character(0), NCU = character(0), NCA = character(0),
+                    PCU = character(0), PRC = character(0))
+
+# One more sign of wetness than a grey matrix (R1): low-chroma mottles on
+# 5 % or more, a gley hue, or a moist value of 5 or more.
+.za_wet_sign <- function(x, i) {
+  m <- .za_colour(x, i, "moist")
+  gh <- as.character(unlist(.za_thv("gley_hues")))
+  if (!is.na(m$family) && (m$family %in% gh || isTRUE(m$hue %in% gh))) return(TRUE)
+  if (isTRUE(m$value >= .za_thv("g_sign_value"))) return(TRUE)
+  mot <- .munsell_notations(as.character(.kidpr_v(x, i, "mottle_colors")))
+  rf <- .za_num(x, i, "redoximorphic_features_pct")
+  low <- nrow(mot) && any(vapply(seq_len(nrow(mot)), function(k)
+    isTRUE(.za_is_low(mot$family[k], mot$number[k], mot$value[k], mot$chroma[k])), NA))
+  isTRUE(low && rf >= .za_thv("wetness_signs"))
+}
+
+# The first code of `v` (named TRUE / FALSE / NA, in the order of trial)
+# that passes, the codes in `drop` left out: the code, or NA with the
+# candidates (the undecided before the first that passes, and that one; ""
+# when none passes, no diagnostic horizon).
+.za_pick <- function(v, drop = character(0)) {
+  v <- v[!names(v) %in% drop]
+  und <- character(0)
+  for (k in names(v)) {
+    if (isTRUE(v[[k]])) {
+      if (length(und)) return(list(code = NA_character_, candidates = c(und, k)))
+      return(list(code = k, candidates = character(0)))
+    }
+    if (is.na(v[[k]])) und <- c(und, k)
+  }
+  if (length(und)) list(code = NA_character_, candidates = c(und, "")) else list(code = "", candidates = character(0))
+}
+
+# The layers tested as topsoil: the surface run, less a layer of it at 350
+# mm or deeper that is grey when dry (S 33: a light grey topsoil deeper than
+# 350 mm has an E; soilKey's reading, flagged).
+.za_topsoil_layers <- function(x) {
+  .kidpr_memo(x, "za_top_layers", function() {
+    run <- .za_surface_run(x)
+    if (length(run) < 2L) return(run)
+    lim <- .za_thv("e_light_topsoil") / 10
+    keep <- run[1L]
+    for (j in run[-1L]) {
+      if (!is.na(x$top[j]) && x$top[j] >= lim && isTRUE(.za_grey_dry(x, j)$passed)) break
+      keep <- c(keep, j)
+    }
+    keep
+  })
+}
+
+#' Pass 1 on one layer: every test of .ZA_ORDER (or the topsoil order on a
+#' layer of the surface run), memoised.
+#' @noRd
+.za_pass1 <- function(x, i) {
+  .kidpr_memo(x, sprintf("za_p1_%d", i), function() {
+    if (i %in% .za_topsoil_layers(x)) {
+      t <- .za_topsoil(x, i)
+      v <- vapply(t$answers, function(r) r$passed, NA)
+      return(list(topsoil = TRUE, v = v, answers = t$answers))
+    }
+    ans <- lapply(.ZA_ORDER, function(k) .ZA_TESTS[[k]](x, i))
+    names(ans) <- .ZA_ORDER
+    # a layer designated C is no apedal or structured B (soilKey's reading)
+    if (identical(.za_master(x, i), "C")) {
+      for (k in intersect(.ZA_B_CODES, names(ans))) if (!isFALSE(ans[[k]]$passed))
+        ans[[k]] <- .za_r(FALSE, note = sprintf("'%s': a C layer, not a B horizon", .za_des(x, i)))
+    }
+    list(topsoil = FALSE, v = vapply(ans, function(r) r$passed, NA), answers = ans)
+  })
+}
+
+# Is `set` (the code, or the candidates, of the layer above) within
+# `allowed`? TRUE, FALSE or NA.
+.za_within <- function(set, allowed) {
+  set <- set[nzchar(set)]
+  if (!length(set)) return(FALSE)
+  if (all(set %in% allowed)) TRUE else if (any(set %in% allowed)) NA else FALSE
+}
+
+# The wet material a layer with a grey low-chroma matrix is by what lies
+# above it (S 33; P; Q12): the G horizon under a topsoil or an E, the
+# unspecified material with signs of wetness under a red or yellow-brown
+# apedal, neocutanic or neocarbonate B, the unconsolidated material with
+# signs of wetness under a podzol or pedocutanic B; the same as the layer
+# above when that one is a wet material; else none ("").
+.za_wet_by <- function(above) {
+  if (!length(above) || all(!nzchar(above))) return("")
+  vapply(above, function(a)
+    if (a %in% c(.ZA_TOPSOILS, "E")) "G"
+    else if (a %in% c("RAB", "YAB", "NCU", "NCA")) "USW"
+    else if (a %in% c("PZB", "PCU")) "UMW"
+    else if (a %in% c("G", "USW", "UMW")) a
+    else "", "")
+}
+
+#' The position pass on one layer below the topsoil: the codes of pass 1
+#' read with what lies above (`above`: the code, or the candidates, of the
+#' nearest layer above that holds a diagnostic horizon). Returns the code or
+#' the candidates, and the notes and tags of the position.
+#' @noRd
+.za_position <- function(x, i, p1, above, above_top = NA_real_) {
+  v <- p1$v
+  notes <- character(0); tags <- character(0)
+  if (!length(above)) above <- ""
+  # the E only directly under an orthic A or another E (S 33; R2, Hugo,
+  # 2026-11-06)
+  if (!isFALSE(v[["E"]])) {
+    ok <- .za_within(above, c("OA", "E"))
+    if (isFALSE(ok)) { if (isTRUE(v[["E"]])) notes <- c(notes, "grey and eluvial, but not under an orthic A or an E: not an E")
+                       v[["E"]] <- FALSE }
+    else if (is.na(ok)) v[["E"]] <- NA
+  }
+  # the placic pan only under a podzol B (the key); the red structured B
+  # only under an orthic A (the key)
+  for (rule in list(c("PLP", "PZB"), c("RSB", "OA"))) {
+    k <- rule[1L]
+    if (isFALSE(v[[k]])) next
+    ok <- .za_within(above, rule[2L])
+    if (isFALSE(ok)) { if (isTRUE(v[[k]])) notes <- c(notes, sprintf("a %s passes on the data but not under a %s: read on",
+                                                                        .za_label(k), .za_label(rule[2L])))
+                       v[[k]] <- FALSE }
+    else if (is.na(ok)) v[[k]] <- NA
+  }
+  # lithocutanic B directly under a topsoil horizon or an E; saprolite under
+  # a B (default 17)
+  under_top <- .za_within(above, c(.ZA_TOPSOILS, "E"))
+  if (isTRUE(under_top) && isTRUE(v[["LCU"]]) && !isFALSE(v[["SAP"]])) {
+    v[["SAP"]] <- FALSE
+    notes <- c(notes, "weathering rock directly under the topsoil or E: the lithocutanic B, not saprolite (default 17)")
+  }
+  if (isFALSE(under_top) && !isFALSE(v[["LCU"]])) {
+    if (isTRUE(v[["LCU"]]) && !isTRUE(v[["SAP"]])) {
+      v[["SAP"]] <- TRUE
+      tags <- c(tags, "lithocutanic_under_b_as_saprolite")
+      notes <- c(notes, "weathering rock in place under a B: saprolite, not a lithocutanic B (default 17), flagged")
+    }
+    v[["LCU"]] <- FALSE
+  }
+  # D6 (Hugo, 2026-11-06): saprolite directly under the topsoil or an E is
+  # the lithocutanic B, flagged
+  if (isTRUE(under_top) && isTRUE(v[["SAP"]]) && !isTRUE(v[["LCU"]])) {
+    v[["LCU"]] <- TRUE; v[["SAP"]] <- FALSE
+    tags <- c(tags, "saprolite_under_topsoil_as_lithocutanic")
+    notes <- c(notes, "weathering rock directly under the topsoil or an E: the lithocutanic B, not saprolite (default 17), flagged")
+  }
+  # D2 (S 32; K 25, 50; Hugo, 2026-11-06): the apedal and structured B
+  # horizons only under a topsoil, an E or the same B (the red apedal B also
+  # under a yellow-brown apedal B); under a podzol or pedocutanic B a layer
+  # that loses its B name so is unconsolidated material
+  lost <- FALSE
+  for (k in names(.ZA_B_ABOVE)) {
+    if (isFALSE(v[[k]])) next
+    ok <- .za_within(above, c(.ZA_TOPSOILS, "E", k, .ZA_B_ABOVE[[k]]))
+    if (isFALSE(ok)) {
+      if (isTRUE(v[[k]])) { lost <- TRUE; notes <- c(notes, sprintf("a %s on the data, but not under a topsoil, an E or the same B: read on (S 32)", .za_label(k))) }
+      v[[k]] <- FALSE
+    } else if (is.na(ok)) v[[k]] <- NA
+  }
+  if (lost && isTRUE(.za_within(above, c("PZB", "PCU", "UMN", "UMW"))) && !isTRUE(v[["SAP"]]) && !isTRUE(v[["HRK"]]) &&
+      !isTRUE(v[["UMN"]])) {
+    v[["UMN"]] <- TRUE
+    tags <- c(tags, "b_under_podzol_or_pedocutanic_as_material")
+    notes <- c(notes, "under a podzol or pedocutanic B: unconsolidated material (K 25, 50), flagged")
+  }
+  # R1 (Hugo, 2026-11-06): a grey matrix that is also a pedocutanic B is the
+  # G (or a wet material) only with one more sign of wetness: mottles of
+  # wetness, a gley hue or a moist value of 5 or more
+  if (isTRUE(v[["WET"]]) && isTRUE(v[["PCU"]]) && !isTRUE(.za_wet_sign(x, i))) {
+    v[["WET"]] <- FALSE
+    notes <- c(notes, "a grey matrix with no further sign of wetness in a pedocutanic B: the pedocutanic B (R1)")
+  }
+  # D3 (Hugo, 2026-11-06): under a topsoil the G has no less clay than the
+  # layer above (an eluvial grey layer is no G)
+  if (!isFALSE(v[["WET"]]) && isTRUE(.za_within(above, .ZA_TOPSOILS))) {
+    a <- .kidpr_prev(x, i)
+    ca <- if (is.na(a)) NA_real_ else .za_num(x, a, "clay_pct"); ci <- .za_num(x, i, "clay_pct")
+    if (!is.na(ca) && !is.na(ci) && ci < ca) {
+      v[["WET"]] <- FALSE
+      notes <- c(notes, sprintf("a grey layer with less clay (%s %%) than the topsoil above (%s %%): not a G (D3)", format(ci), format(ca)))
+    } else if (is.na(ca) || is.na(ci)) { if (isTRUE(v[["WET"]])) v[["WET"]] <- NA }
+  }
+  # E over a clay horizon that is both G and prismacutanic (K 19, 27): G
+  # when the coarser material above is more than 500 mm thick, prismacutanic
+  # when less; 500 mm exactly undecided
+  if (identical(above, "E") && isTRUE(v[["PRC"]]) && isTRUE(v[["WET"]]) && !is.na(x$top[i])) {
+    lim <- .za_thv("g_or_prismacutanic") / 10
+    if (x$top[i] > lim) { v[["PRC"]] <- FALSE; notes <- c(notes, sprintf("under an E, %s cm of coarser material above: the G horizon (K 19, 27)", format(x$top[i]))) }
+    else if (x$top[i] < lim) { v[["WET"]] <- FALSE; notes <- c(notes, sprintf("under an E, %s cm of coarser material above: the prismacutanic B (K 19, 27)", format(x$top[i]))) }
+    else { notes <- c(notes, "under an E at 500 mm exactly: G or prismacutanic undecided (K 19, 27)")
+           return(list(code = NA_character_, candidates = c("PRC", "G"), v = v, notes = notes, tags = tags)) }
+  }
+  # the wet materials and the unconsolidated material by what lies above
+  wet_to <- unique(.za_wet_by(above))
+  wet_ok <- wet_to[nzchar(wet_to)]
+  w <- if (isTRUE(v[["UMN"]]) || is.na(v[["UMN"]])) .za_wetness(x, i) else NULL
+  um_to <- if (!isFALSE(v[["UMN"]])) vapply(above, function(a)
+             if (a %in% c("PZB", "PCU", "UMN", "UMW")) "UM" else "", "") else ""
+  out_v <- v
+  # expand WET and UMN into the 30 codes
+  expand <- function(v) {
+    res <- logical(0)
+    for (k in names(v)) {
+      if (k == "WET") {
+        if (isFALSE(v[[k]])) next
+        if (!length(wet_ok)) next
+        for (c in wet_ok) res[[c]] <- if (length(wet_to) > 1L && isTRUE(v[[k]])) NA else v[[k]]
+      } else if (k == "UMN") {
+        if (isFALSE(v[[k]]) || !any(um_to == "UM")) next
+        amb <- length(unique(um_to)) > 1L
+        wv <- w$passed
+        if (isTRUE(wv)) res[["UMW"]] <- if (amb) NA else v[[k]]
+        else if (isFALSE(wv)) res[["UMN"]] <- if (amb) NA else v[[k]]
+        else { res[["UMW"]] <- NA; res[["UMN"]] <- NA }
+      } else res[[k]] <- v[[k]]
+    }
+    res
+  }
+  ev <- expand(v)
+  if (!isFALSE(v[["WET"]]) && !length(wet_ok) && isTRUE(v[["WET"]]))
+    notes <- c(notes, "a grey low-chroma matrix not under a topsoil, E or B that names a wet material: signs of wetness (FC 15), read on")
+  pk <- .za_pick(ev)
+  # a grey matrix or an unconsolidated material that holds, split between
+  # two names only by what lies above or by its wetness: one of them, not none
+  sure <- (isTRUE(v[["WET"]]) && length(wet_to) > 1L && all(nzchar(wet_to))) ||
+          (isTRUE(v[["UMN"]]) && all(um_to == "UM"))
+  if (sure && is.na(pk$code)) pk$candidates <- setdiff(pk$candidates, "")
+  list(code = pk$code, candidates = pk$candidates, v = ev, notes = notes, tags = tags)
+}
+
+# The excluded horizons of T-humic (iv) as codes.
+.ZA_HUMIC_EXCLUDED <- c("G", "E", "PLP", "PZB", "SPL", "HPL", "PRC", "RSB", "UMW", "USW")
+
+# The topsoil of a layer of the surface run after the position pass: T-humic
+# (iv) read on the code (or candidates) identified for the first subsoil
+# (default 7, the second pass).
+.za_topsoil_final <- function(x, i, p1, first) {
+  a <- p1$answers
+  v <- p1$v
+  if (any(v[c("OO", "VA", "MA")] %in% TRUE) || is.null(first)) {
+    pk <- .za_pick(v[.ZA_TOPSOILS])
+    return(list(code = pk$code, candidates = setdiff(pk$candidates, ""), notes = character(0)))
+  }
+  h1 <- .za_t_HA(x, i, 1L)$passed
+  ex <- .za_within(first, .ZA_HUMIC_EXCLUDED)
+  ha <- .kidpr_and(h1, .kidpr_not(ex))
+  notes <- character(0)
+  if (isTRUE(h1) && isTRUE(ex)) notes <- "a humic A directly over a horizon T-humic (iv) excludes: orthic (default 7)"
+  vv <- c(v[c("OO", "VA", "MA")], HA = ha)
+  oa <- if (any(vv %in% TRUE)) FALSE else if (all(vv %in% FALSE)) TRUE else NA
+  pk <- .za_pick(c(vv, OA = oa))
+  list(code = pk$code, candidates = setdiff(pk$candidates, ""), notes = notes)
+}
+
+#' The diagnostic horizons of a pedon by the South African classification of
+#' 1991
+#'
+#' The horizon identification of the registry namespace za
+#' (identify_horizons()): every layer read as one of the 30 diagnostic
+#' horizons and materials. Pass 1 runs the tests of each layer in soilKey's
+#' fixed order (the topsoil order on the surface run); the position pass
+#' reads them with what lies above (the E and the placic pan, the red
+#' structured B, lithocutanic against saprolite, the wet materials, the 500
+#' mm rule of K 19 and 27, T-humic (iv)). A layer named in the notation
+#' (diagnostic_za, or the names in the designations) keeps that name (route
+#' "notation", "both" when the data agree); the others are read on the data
+#' (route "data").
+#'
+#' @param pedon A PedonRecord.
+#' @param ... Not used.
+#' @param .profile The profile of the readers (.za_x()) when the caller has it.
+#' @return The frame of identify_horizons() with the columns `data_code` (the
+#'   reading on the data), `za_label` (the printed name with the token),
+#'   `tags` (the stand-ins and fallbacks used, a list column) and `notes` (a
+#'   list column).
+#' @noRd
+.za_identify <- function(pedon, ..., .profile = NULL) {
+  if (!inherits(pedon, "PedonRecord")) rlang::abort("'pedon' must be a PedonRecord.")
+  fr <- .horizon_frame(pedon)
+  n <- nrow(fr)
+  fr$data_code <- rep(NA_character_, n)
+  fr$za_label <- rep(NA_character_, n)
+  fr$tags <- rep(list(character(0)), n)
+  fr$notes <- rep(list(character(0)), n)
+  if (!n) return(fr)
+  x <- .profile %||% .za_x(pedon)
+  nm <- x$names
+  run <- .za_topsoil_layers(x)
+  res <- vector("list", n)
+  # the code (or candidates) a layer gives the layers below it
+  given <- function(r) if (!is.na(r$code)) r$code else r$candidates
+  last <- character(0)
+  for (i in x$ord) {
+    p1 <- .za_pass1(x, i)
+    d <- if (p1$topsoil) {
+      pk <- .za_pick(p1$v[.ZA_TOPSOILS])
+      list(code = pk$code, candidates = setdiff(pk$candidates, ""), v = p1$v, notes = character(0), tags = character(0))
+    } else .za_position(x, i, p1, last)
+    ans <- p1$answers
+    used <- if (!is.na(d$code) && nzchar(d$code)) d$code else d$candidates
+    src <- c(if ("WET" %in% names(ans) && any(used %in% c("G", "USW", "UMW"))) "WET",
+             if ("UMN" %in% names(ans) && any(used %in% c("UMN", "UMW"))) "UMN", intersect(used, names(ans)))
+    tg <- unique(c(d$tags, unlist(lapply(ans[src], `[[`, "tag"))))
+    nt <- unique(c(d$notes, unlist(lapply(ans[src], `[[`, "note"))))
+    ms <- unique(unlist(lapply(ans[names(ans) %in% c(src, if (is.na(d$code)) names(ans))], function(r) if (is.na(r$passed)) r$missing)))
+    r <- list(code = d$code, candidates = d$candidates, tags = tg, notes = nt, missing = ms, data_code = d$code, route = "data")
+    # the name written for the layer
+    if (!is.null(nm) && identical(nm$route[i], "notation")) {
+      t <- nm$token[i]
+      cand <- nm$candidates[[i]]
+      dc <- d$code
+      if (!is.na(t)) {
+        r$route <- if (identical(dc, t)) "both" else "notation"
+        r$notes <- c(sprintf("written %s%s", .za_label(t),
+                             if (identical(dc, t)) "; the data agree"
+                             else if (!is.na(dc)) sprintf("; the data read %s, the name is kept", if (nzchar(dc)) .za_label(dc) else "no diagnostic horizon")
+                             else sprintf("; the data leave it undecided (%s), the name is kept",
+                                          paste(ifelse(nzchar(d$candidates), d$candidates, "none"), collapse = ", "))),
+                     nm$notes[[i]])
+        r$code <- t; r$candidates <- character(0); r$missing <- character(0)
+      } else if (length(cand)) {
+        r$route <- "notation"
+        r$code <- NA_character_; r$candidates <- cand
+        r$notes <- c(sprintf("written as %s, with doubt", paste(cand, collapse = " or ")), nm$notes[[i]])
+      }
+    }
+    res[[i]] <- r
+    g <- given(r)
+    # a layer of no diagnostic horizon is skipped; one that may be none
+    # leaves the layer above it possible too
+    if (!(length(g) == 1L && identical(g, "")))
+      last <- unique(c(g[nzchar(g)], if ("" %in% g) last))
+  }
+  # T-humic (iv) on the code identified for the first subsoil (default 7)
+  if (length(run)) {
+    below <- setdiff(x$ord[x$rank > max(x$rank[run])], integer(0))
+    first <- NULL
+    for (j in below) { g <- given(res[[j]]); if (!(length(g) == 1L && identical(g, ""))) { first <- g; break } }
+    for (i in run) {
+      if (!identical(res[[i]]$route, "data")) next
+      tf <- .za_topsoil_final(x, i, .za_pass1(x, i), first)
+      res[[i]]$code <- tf$code; res[[i]]$candidates <- tf$candidates; res[[i]]$data_code <- tf$code
+      res[[i]]$notes <- unique(c(res[[i]]$notes, tf$notes))
+      ans <- .za_pass1(x, i)$answers
+      use <- if (!is.na(tf$code)) tf$code else tf$candidates
+      res[[i]]$tags <- unique(unlist(lapply(ans[intersect(use, names(ans))], `[[`, "tag")))
+      res[[i]]$notes <- unique(c(res[[i]]$notes, unlist(lapply(ans[intersect(use, names(ans))], `[[`, "note"))))
+      res[[i]]$missing <- if (is.na(tf$code)) unique(unlist(lapply(ans[intersect(tf$candidates, names(ans))], `[[`, "missing"))) else character(0)
+    }
+  }
+  # D7 (K 70 i, K 72 iv, K 73 iii; Hugo, 2026-11-06): a surface layer with
+  # under 0.3 % organic carbon that is a red or yellow-brown apedal or a
+  # neocarbonate B, directly over hard rock, a lithocutanic B or a dorbank,
+  # is that B at the surface (the profile truncated), flagged
+  if (length(run) == 1L && identical(res[[run]]$route, "data")) {
+    i <- run
+    oc <- .za_num(x, i, "oc_pct")
+    nx <- .kidpr_next(x, i)
+    below <- if (is.na(nx)) NA_character_ else res[[nx]]$code
+    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR"))) {
+      for (k in c("RAB", "YAB", "NCA")) {
+        b <- .ZA_TESTS[[k]](x, i)
+        if (isTRUE(b$passed)) {
+          res[[i]]$code <- k; res[[i]]$candidates <- character(0); res[[i]]$data_code <- k
+          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc"))
+          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s: a %s at the surface, the profile truncated (K 70, 72, 73), flagged",
+                                             format(oc), .za_label(below), .za_label(k)), b$note))
+          res[[i]]$missing <- character(0)
+          break
+        }
+      }
+    }
+  }
+  for (i in seq_len(n)) {
+    r <- res[[i]]
+    fr$code[i] <- if (!is.na(r$code) && nzchar(r$code)) r$code else NA_character_
+    fr$passed[i] <- if (is.na(r$code)) NA else nzchar(r$code)
+    fr$candidates[[i]] <- r$candidates
+    fr$missing[[i]] <- if (is.na(r$code)) r$missing %||% character(0) else character(0)
+    fr$route[i] <- r$route
+    fr$data_code[i] <- r$data_code
+    fr$za_label[i] <- if (!is.na(r$code)) .za_label(r$code) else NA_character_
+    fr$tags[[i]] <- r$tags
+    fr$notes[[i]] <- r$notes
+    fr$evidence[i] <- .kidpr_evidence(c(r$notes, if (length(r$tags)) sprintf("flagged: %s", paste(r$tags, collapse = ", "))))
+  }
+  fr
+}
+
+
+# --- the predicates of part 3 over a pedon ----------------------------------------------
+
+# A test over the identified layers of a pedon: TRUE on the layers the
+# identification gives the code, NA where it is a candidate.
+.za_ident_predicate <- function(pedon, name, code) {
+  fr <- .za_identify(pedon)
+  hit <- which(fr$code %in% code)
+  cand <- which(is.na(fr$code) & vapply(fr$candidates, function(cc) any(cc %in% code), NA))
+  passed <- if (length(hit)) TRUE else if (length(cand)) NA else FALSE
+  ev <- lapply(seq_len(nrow(fr)), function(i) list(code = fr$code[i], candidates = fr$candidates[[i]],
+                                                   route = fr$route[i], notes = fr$notes[[i]], tags = fr$tags[[i]]))
+  names(ev) <- sprintf("layer_%d", seq_len(nrow(fr)))
+  tags <- unique(unlist(fr$tags[if (length(hit)) hit else cand]))
+  DiagnosticResult$new(name = name, passed = passed, layers = hit, evidence = ev,
+                       missing = if (is.na(passed)) unique(unlist(fr$missing[cand])) else character(0),
+                       reference = .ZA_REFERENCE,
+                       notes = if (length(tags)) sprintf("flagged: %s", paste(tags, collapse = ", ")) else NA_character_)
+}
+
+#' The diagnostic horizons of the South African classification of 1991
+#' on the data (second part)
+#'
+#' The layer tests of the other seventeen horizons and materials over the
+#' layers below the topsoil (or the `layers` given), and, for the G horizon
+#' and the three wet and unconsolidated materials, which depend on what lies
+#' above, the identification of the whole profile (.za_identify()).
+#' @param pedon A PedonRecord.
+#' @param layers Optional layer indices to test.
+#' @noRd
+e_horizon_za <- function(pedon, layers = NULL) .za_predicate(pedon, "e_horizon_za", .za_t_E, layers)
+#' @noRd
+podzol_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "podzol_b_za", .za_t_PZB, layers)
+#' @noRd
+placic_pan_za <- function(pedon, layers = NULL) .za_predicate(pedon, "placic_pan_za", .za_t_PLP, layers)
+#' @noRd
+soft_plinthic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "soft_plinthic_b_za", .za_t_SPL, layers)
+#' @noRd
+hard_plinthic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "hard_plinthic_b_za", .za_t_HPL, layers)
+#' @noRd
+soft_carbonate_za <- function(pedon, layers = NULL) .za_predicate(pedon, "soft_carbonate_za", .za_t_SCH, layers)
+#' @noRd
+hardpan_carbonate_za <- function(pedon, layers = NULL) .za_predicate(pedon, "hardpan_carbonate_za", .za_t_HCH, layers)
+#' @noRd
+dorbank_za <- function(pedon, layers = NULL) .za_predicate(pedon, "dorbank_za", .za_t_DOR, layers)
+#' @noRd
+saprolite_za <- function(pedon, layers = NULL) .za_predicate(pedon, "saprolite_za", .za_t_SAP, layers)
+#' @noRd
+hard_rock_za <- function(pedon, layers = NULL) .za_predicate(pedon, "hard_rock_za", .za_t_HRK, layers)
+#' @noRd
+stratified_alluvium_za <- function(pedon, layers = NULL) .za_predicate(pedon, "stratified_alluvium_za", .za_t_SAL, layers)
+#' @noRd
+regic_sand_za <- function(pedon, layers = NULL) .za_predicate(pedon, "regic_sand_za", .za_t_RSA, layers)
+#' @noRd
+man_made_deposit_za <- function(pedon, layers = NULL) .za_predicate(pedon, "man_made_deposit_za", .za_t_MMD, layers)
+#' @noRd
+wet_material_za <- function(pedon, layers = NULL) .za_predicate(pedon, "wet_material_za", .za_t_WET, layers)
+#' @noRd
+unconsolidated_material_za <- function(pedon, layers = NULL) .za_predicate(pedon, "unconsolidated_material_za", .za_t_UMN, layers)
+#' @noRd
+g_horizon_za <- function(pedon) .za_ident_predicate(pedon, "g_horizon_za", "G")
+#' @noRd
+unspecified_material_wet_za <- function(pedon) .za_ident_predicate(pedon, "unspecified_material_wet_za", "USW")
+#' @noRd
+unconsolidated_material_wet_za <- function(pedon) .za_ident_predicate(pedon, "unconsolidated_material_wet_za", "UMW")
+#' @noRd
+unconsolidated_material_dry_za <- function(pedon) .za_ident_predicate(pedon, "unconsolidated_material_dry_za", "UMN")
