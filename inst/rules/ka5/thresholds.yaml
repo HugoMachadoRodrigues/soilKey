@@ -1,0 +1,83 @@
+# The numbers of the German KA5 (Bodenkundliche Kartieranleitung, 5th ed.,
+# Ad-hoc-AG Boden, Hannover 2005) that soilKey's key to horizons on the data
+# reads (R/diagnostics-ka5-horizons.R, R/ka5-readers.R). Each entry: the
+# value, the printed page and what it is the limit of, in soilKey's words. A
+# range is read with the owner's rule: the lower end inclusive for a minimum,
+# the upper end exclusive for a maximum. A number marked "[soilKey]" is not
+# printed in the book (a reading of soilKey's, listed in readings.yaml).
+thresholds:
+  # --- organic substance (5.6.5, pp. 89-94, 110-112) -------------------------
+  organic_min_pct: {value: 30, page: "pp. 89, 92", what: "organic substance of the organic horizons (H, L, O); the mineral horizons have less"}
+  os_factor_mineral: {value: 1.72, page: "p. 111", what: "organic substance = organic carbon x 1.72 in mineral horizons"}
+  os_factor_peat: {value: 2, page: "p. 111", what: "organic substance = organic carbon x 2 in peat and the Oh"}
+  ah_min_os_pct: {value: [0.6, 0.9, 1.2], page: "p. 93", what: "minimum organic substance of the Ah: clay < 17 and silt < 50; clay < 17 and silt >= 50, or clay 17 to < 45; clay >= 45 (the 45 in the upper class, slip 15)"}
+  texture_clay_cut: {value: [17, 45], page: "pp. 93, 97", what: "clay limits of the three texture classes of the Ah minimum and of the Bt clay difference"}
+  texture_silt_cut: {value: 50, page: "pp. 93, 97", what: "silt limit (the KA5 silt, 2-63 um) of the same classes"}
+  silt_undecided_band: {value: [45, 50], page: "p. 141; Q11", what: "silt not declared in KA5 fractions: 50 or more counts, under 45 does not, 45 to < 50 undecided (Hugo's decision Q11)"}
+  aa_os_pct: {value: [15, 30], page: "p. 94", what: "organic substance of the Aa (anmoorig)"}
+  ai_patchy_max_cm: {value: 2, page: "p. 92", what: "an Ai with Ah humus is patchy and under 2 cm"}
+  axh_min_cm: {value: 10, page: "p. 93", what: "thickness of the Axh"}
+  axh_min_bs_pct: {value: 50, page: "p. 93", what: "base saturation of the Axh"}
+  ae_value_moist_min: {value: 4, page: "p. 94", what: "Munsell value of the Ae and the Sew, moist (dry 5)"}
+  ae_value_dry_min: {value: 5, page: "p. 94", what: "Munsell value of the Ae, dry"}
+  ae_value_chroma_min: {value: 2.5, page: "p. 94", what: "value / chroma of the Ae and the Sew"}
+  ael_value_moist_min: {value: 6, page: "p. 219", what: "the Ael is mostly pale grey: moist value over 6 with chroma under 4 (dry over 7, under 3)"}
+  ael_chroma_moist_max: {value: 4, page: "p. 219", what: "chroma of the pale Ael, moist"}
+  f_os_min_pct: {value: 1, page: "p. 89", what: "organic substance of the F horizons as a rule (under 1 % in the coastal current zone)"}
+  fine_substance_pct: {value: [10, 70], page: "pp. 90-91", what: "fine substance of the L (< 10), Of (10 to < 70) and Oh (70 or more; 50 at an abrupt Of/Oh contact)"}
+  # --- B, P, T (pp. 95-101) ---------------------------------------------------
+  b_coarse_max_pct: {value: 75, page: "p. 95", what: "coarse fragments of a B horizon as a rule under 75 vol-%"}
+  bv_hue_pages: {value: 1, page: "p. 95; Q12", what: "a Bv is one page of the Munsell chart redder than the horizon below (one step of hue = one page, 2.5 units; Hugo's decision Q12)"}
+  bv_chroma_steps: {value: 2, page: "p. 95; Q12", what: "or two steps of chroma higher"}
+  bt_clay_diff: {value: [3, 5, 8], page: "p. 97", what: "clay difference Al to Bt, % points, by the texture of the Bt: clay < 17 and silt < 50; clay < 17 and silt >= 50 or clay 17 to < 45; clay >= 45"}
+  bt_distance_max_cm: {value: 30, page: "p. 97", what: "the clay difference is reached over less than 30 cm"}
+  bt_thin_section_min_pct: {value: 1, page: "p. 97", what: "clay coatings over 1 % of the area in thin section"}
+  lf_clay_diff: {value: [9, 12], page: "p. 219", what: "clay difference Ael to Bt of the Fahlerde: Bt clay < 17 and silt < 50; else"}
+  bh_cp_fep_min: {value: 10, page: "p. 97", what: "Cp/Fep of the Bh over 10"}
+  bhs_cp_fep: {value: [3, 10], page: "pp. 97, 222", what: "Cp/Fep of the Bsh and Bhs, 3 to 10"}
+  bs_cp_fep_max: {value: 3, page: "p. 97", what: "Cp/Fep of the Bs under 3"}
+  bfv_bd_max: {value: 0.8, page: "p. 95", what: "dry bulk density of the Bfv under 0.8 g/cm3"}
+  bfv_porosity_min_pct: {value: 60, page: "p. 95", what: "or a pore volume of 60 % or more (the horizon definition; the type text says over 60, p. 216, slip 29)"}
+  bu_clay_min_pct: {value: 17, page: "p. 98", what: "clay of the Bu over 17 %"}
+  bu_weatherable_max_pct: {value: 3, page: "p. 98", what: "weatherable minerals of the Bu under 3 %"}
+  bu_cec_clay_max: {value: 16, page: "p. 98", what: "potential CEC of the clay fraction of the Bu under 16 cmolc/kg"}
+  bu_ecec_clay_max: {value: 10, page: "p. 98", what: "effective CEC of the clay fraction of the Bu under 10 cmolc/kg"}
+  bu_rock_max_pct: {value: 5, page: "p. 98", what: "rock remnants of the Bu under 5 vol-%"}
+  bu_hue_pages: {value: 2, page: "p. 98; Q12", what: "the Bu is two pages redder than the horizon further below"}
+  bu_value_moist_max: {value: 4, page: "p. 98", what: "moist value of the Bu 4 or less"}
+  bv_cec_clay_min: {value: 16, page: "p. 95", what: "potential CEC of the clay fraction of the Bv 16 cmolc/kg or more (else Bu), supporting only (Q12)"}
+  bands_area_pct: {value: [10, 50], page: "pp. 96, 98", what: "clay bands of Bbt+Bv 10 to < 50 area-%; Bv+Bbt over 50"}
+  p_clay_min_pct: {value: 45, page: "p. 100", what: "clay of the P mostly over 45 % (the class rule reads 45 in it)"}
+  p_cracks_min_cm: {value: 50, page: "p. 100", what: "drying cracks of the P to more than 5 dm"}
+  t_clay_min_pct: {value: 65, page: "p. 101", what: "clay of the T 65 % or more"}
+  t_hue_tv_min: {value: "5YR", page: "p. 101", what: "the Tv is 5YR or yellower, the Tu redder than 5YR"}
+  # --- S and G (pp. 101-106) --------------------------------------------------
+  sw_shares_min_pct: {value: 80, page: "p. 102", what: "bleaching and oxidation features of the Sw and the Sg, area-%"}
+  sd_shares_min_pct: {value: 50, page: "p. 103", what: "bleached and rust spots of the Sd, as a rule 50-70 % (the lower end, slip 17)"}
+  s_transition_pct: {value: [10, 80], page: "p. 102", what: "Bv-Sw and the like: 10 to < 80 area-% of S features; Sw-Bv under 10"}
+  sd_transition_pct: {value: [10, 50], page: "p. 103", what: "Bv-Sd and the like: 10 to < 50 area-%; Sd-Bv under 10"}
+  ksat_s_mm_h: {value: 4.17, page: "pp. 102-103", what: "kf 10 cm/d (4.17 mm/h): the Sw conducts at least this much, the Sd less"}
+  air_capacity_max_pct: {value: 3, page: "p. 103", what: "air capacity of the Sd and the Sg under 3 vol-%"}
+  rh_max: {value: 19, page: "pp. 102, 105, 108", what: "rH of the Sw, the Gr and the Y horizons 19 or less"}
+  sew_rust_max_pct: {value: 5, page: "p. 102", what: "rust spots of the Sew under 5 area-%"}
+  srw_days: {value: [200, 300], page: "p. 102", what: "the Srw is wet about 200-300 days a year"}
+  sg_silt_ffs_min_pct: {value: 50, page: "p. 103; Q11", what: "silt and finest sand of the Sg 50 % or more (soilKey's reading of 'high silt and very fine sand', Q11)"}
+  sdg_clay_pct: {value: [17, 35], page: "p. 103", what: "clay of the Sdg"}
+  go_rust_min_pct: {value: 5, page: "p. 104", what: "rust spots of the Go, Gro and Gor 5 area-% or more; under 5 in the Gr"}
+  go_reduction_max_pct: {value: 10, page: "p. 104", what: "reduction colours of the Go under 10 area-%"}
+  gro_reduction_pct: {value: [10, 50], page: "p. 105", what: "reduction colours of the Gro 10 to 50 area-%"}
+  gor_reduction_min_pct: {value: 50, page: "p. 105", what: "reduction colours of the Gor over 50 area-%"}
+  gr_reduction_min_pct: {value: 95, page: "p. 105", what: "reduction colours of the Gr over 95 area-%"}
+  gr_days_min: {value: 300, page: "p. 105", what: "the Gr is wet over 300 days a year"}
+  gw_zone_above_cm: {value: 100, page: "pp. 104, 311; D12", what: "[soilKey] the fluctuation zone of a recorded water table (MNGW or the depth observed) reaches 1 m above it; above it the redox features are of perched water (Hugo, 2026-11-06)"}
+  srd_reduction_min_pct: {value: 10, page: "p. 103; D15", what: "[soilKey] the reduction features of the Srd: reduction colours over 10 area-% (Hugo, 2026-11-06)"}
+  srd_days_min: {value: 300, page: "p. 103; D15", what: "[soilKey] the permanent wetness of the Srd: wet over 300 days a year, the Gr's limit (Hugo, 2026-11-06)"}
+  h_topsoil_block_cm: {value: 30, page: "pp. 79, 89; D19", what: "[soilKey] under 30 cm or more of H the run of topsoils does not start (Hugo, 2026-11-06)"}
+  gr_chroma_max: {value: 1.5, page: "p. 105", what: "chroma of the Gr colours under 1.5 (5G under 2.5)"}
+  # --- M, E, R, Y, C and the prefixes (pp. 84, 98-100, 106-108) ---------------
+  r_min_cm: {value: 40, page: "p. 107", what: "the R horizon is a mixed horizon over 4 dm thick"}
+  y_gas_min_pct: {value: 10, page: "p. 108", what: "CH4 and/or CO2 in the soil air of the Y at least at times 10 vol-%"}
+  xc_fine_earth_max_pct: {value: 5, page: "p. 99", what: "the xC has fine earth under 5 vol-% (coarse fragments over 95)"}
+  carbonate_rock_pct: {value: [2, 75], page: "pp. 84, 168", what: "the prefixes i (< 2 %), e (2 to < 75 %) and c (75 % or more) of the rock"}
+  ec_z_dS_m: {value: 0.75, page: "p. 84", what: "the prefix z, EC 0.75 mS/cm (dS/m) or more in the saturation extract"}
+  o_prefix_os_pct: {value: 2, page: "p. 84", what: "the prefix o, 2 % or more of sedimentary organic substance"}
