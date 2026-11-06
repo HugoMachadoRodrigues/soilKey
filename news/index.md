@@ -90,7 +90,46 @@ unchanged (the fixtures of the other systems byte-identical).
   are in `inst/rules/ka5/readings.yaml`: the strong signs exactly as his
   card lists them (Btv is none); the Canadian j forms (Btj, Aej) and Ck
   and Oe written as designations veto the KA5; IIIC is II and lC with no
-  layer II above it; the degree sign typed o only in a KA5 profile.
+  layer II above it; the degree sign typed o only in a KA5 profile. \#
+  soilKey 0.9.356 (2026-11-05)
+
+### South Africa 1991: the topsoils and the B horizons on the data
+
+The second part of the South African soil classification of 1991:
+three-valued tests on the recorded data for the five topsoil horizons
+and the eight apedal and structured B horizons
+(`R/diagnostics-za-horizons.R`). Nothing is classified yet; every other
+classification is unchanged (the fixtures of the other systems
+byte-identical).
+
+- **The topsoils** (organic O, vertic A, melanic A, humic A, orthic A),
+  in that order (default 7): the organic O by 10 % organic carbon over
+  200 mm and its saturation, recorded or by its evidence, flagged (Q18);
+  vertic against melanic by the plasticity index, else the slickensides,
+  flagged (Q17); humic against melanic by the 4 cmol(+) bases per kg
+  clay per 1 % organic carbon; the humic A tested twice, the second time
+  on the layer below it, and orthic when that fails.
+- **The B horizons**: red apedal, yellow-brown apedal, red structured,
+  neocutanic, neocarbonate, pedocutanic, prismacutanic (the clay rule of
+  S 32, 20 % exactly by the +20 rule, Q21) and lithocutanic B, with the
+  CEC under 11 cmol(+)/kg soil only for a borderline structure
+  (default 16) and calcareous by effervescence or CaCO3 (Q22).
+- **The colours** of Hugo’s decisions Q9-Q12: grey dry, yellow-brown,
+  red (moist hue, the dry one flagged) and low chroma.
+- **`inst/rules/za1991/thresholds.yaml`**: every number with its source
+  and a `stand_in` flag; the WRB and soilKey stand-ins are flagged in
+  every answer that reads them (“stand_in:”), so the book’s numbers can
+  replace them without a change to the code. The readings of this part
+  were decided by Hugo on its review (2026-11-05), with his amendments:
+  low chroma outside the gley hues only at a moist value of 4 or more,
+  10Y a gley hue; red not grey (5YR 6/1 is not red); with no dry colour,
+  a moist chroma of 4 or more is not grey; an A2 under an A1 is a
+  candidate E; a borderline grade (weak to moderate) is apedal under 11
+  cmol(+)/kg soil and moderate at 11 or more; no B horizon on rock; the
+  uniform dark brown weak B is neocutanic; red structured and red
+  pedocutanic stay candidates together when the transition is not
+  recorded; a calcareous stratified layer stays the material (Q6).
+  `readings.yaml` records them.
 
 ## soilKey 0.9.355 (2026-11-05)
 
