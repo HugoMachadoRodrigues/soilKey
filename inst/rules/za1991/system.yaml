@@ -9,8 +9,10 @@ namespace: za
 classifier: classify_za1991
 result_slot: za1991
 top_level: forms
-# the families (404, the 19 family criteria) come with the next part
-levels: [forms]
+# the forms (key.yaml) and their 404 families (families.yaml, read as a
+# file of its own: the families of each form under its code)
+levels: [forms, families]
+rule_files: [families]
 display:
   en: "South African soil classification (1991)"
   pt: "Classificação sul-africana de solos (1991)"
@@ -22,7 +24,7 @@ citation: >
   system for South Africa. Memoirs on the Agricultural Natural Resources of
   South Africa No. 15. Department of Agricultural Development, Pretoria.
 version: "Second edition (1991); read from the open AGIS key and form pages, the family criteria, the general rules and the topsoil pages, without the book"
-implementation_status: "soilKey v0.9.358 -- the 73 soil forms (and Lichtenburg, outside the AGIS key, provisional), keyed by their sequences of diagnostic horizons and materials in the order of van Huyssteen (2020), with the general rules (1500 mm, burial, truncation) and the 500 mm rules of the form pages; the 30 diagnostic horizons and materials from the South African notation or on the data (v0.9.355-0.9.357). The families follow."
+implementation_status: "soilKey v0.9.359 -- the 73 soil forms (and Lichtenburg, outside the AGIS key, provisional), keyed by their sequences of diagnostic horizons and materials in the order of van Huyssteen (2020), with the general rules (1500 mm, burial, truncation) and the 500 mm rules of the form pages; the 30 diagnostic horizons and materials from the South African notation or on the data (v0.9.355-0.9.357); since v0.9.359 the 404 families of the forms, by the 19 family criteria, with the partial code of an undecided family (Hu1x00) and the name of Q23 (form, family code and name, texture of the A)."
 source: |
   The key to the 73 forms (AGIS pages), the general rules (1.5 m, burial,
   500 mm), the five topsoil horizons. The subsoil horizons are read from van

@@ -24,9 +24,13 @@ classify_za1991(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"za1991"}: the form in \code{name} and \code{rsg_or_order} (its
-  code in \code{levels}, with \code{name_en}, soilKey's gloss: the
-  sequence of its horizons), the sequence read in
+  \code{"za1991"}: the form in \code{rsg_or_order}, the full name
+  (form, family, texture) in \code{name}, the form and the family in
+  \code{levels} (with \code{name_en}, soilKey's gloss of the form: the
+  sequence of its horizons), the family read in
+  \code{qualifiers$za_family} (its code and name, the partial code of an
+  undecided family, the texture, and every criterion read: its class, the
+  layers read, the stand-ins and the attributes missing), the sequence read in
   \code{qualifiers$za_sequence} and the identified layers in
   \code{qualifiers$za_horizons} (with \code{za_truncated},
   \code{za_land_class} and \code{za_nearest} when they apply),
@@ -39,7 +43,8 @@ soil classification of 1991 (Soil Classification Working Group, 1991;
 the "Blue Book"). \strong{Experimental}: the book itself is not available
 to soilKey; the key is read from its open pages (the AGIS key and form
 pages, the general rules, the topsoil pages), SASRI (1999) and van
-Huyssteen (2020). This release keys the 73 forms; the families follow.
+Huyssteen (2020). It keys the 73 forms and, since v0.9.359, their 404
+families.
 }
 \details{
 Each layer is read as one of the 30 diagnostic horizons and materials
@@ -72,6 +77,18 @@ by van Huyssteen (2020) but not by the AGIS key of 1991: it is keyed,
 always provisional. The readings soilKey makes where the open sources
 are silent are in \code{system.file("rules", "za1991", "readings.yaml",
 package = "soilKey")}.
+
+The families (v0.9.359) are read by the 19 family criteria of the book,
+each on the horizon its family names (the B1 of the red apedal B, the E,
+the upper G, the layer under the placic pan ...), as the form key
+identified it: the first family whose classes all hold is the family;
+with a criterion undecided for lack of data, the result names the
+families left possible and soilKey's partial code, an "x" for each
+undecided digit (\code{"Hutton, [Hu1x00]"}). The name follows the
+identification of the book: the form, the family code and name, and the
+USDA texture class of the A when its clay, silt and sand are recorded
+(with the sand grade of \code{sand_grade}): \code{"Hutton, Hu1200
+Kelvin, sandy loam"}.
 }
 \examples{
 res <- classify_za1991(make_za1991_example("hutton"), on_missing = "silent")

@@ -91,14 +91,24 @@
 #' keys) and \code{"truncated"} (a red apedal B at the surface over a
 #' dorbank: Garies, truncated). They are not real profiles.
 #'
+#' Since v0.9.359 each form example also holds the classes of one of its
+#' families: the first of the form by default (Hu1100 for Hutton), or the
+#' family named in \code{family}, made by changing the layer each family
+#' criterion reads (its colour, clay, cations, structure, carbonates,
+#' consistence) or adding the layer it reads (rock under the organic O, a
+#' podzolic layer under the yellow-brown apedal B of Constantia).
+#'
 #' @param form The form, in lower case, or a special case.
 #' @param notation Write the name of each horizon in \code{diagnostic_za}
 #'   (the South African notation) besides the data (default \code{FALSE}).
+#' @param family Optional family code of the form (\code{"Hu1200"}, or its
+#'   four digits \code{"1200"}); \code{NULL} (default) for the first family.
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_za1991(make_za1991_example("clovelly"), on_missing = "silent")$name
+#' classify_za1991(make_za1991_example("hutton", family = "Hu2200"), on_missing = "silent")$name
 #' @export
-make_za1991_example <- function(form = "hutton", notation = FALSE) {
+make_za1991_example <- function(form = "hutton", notation = FALSE, family = NULL) {
   fs <- .za_forms()
   keys <- tolower(vapply(fs, function(f) f$name, ""))
   specials <- c("lithosol", "undecided", "buried", "truncated")
@@ -166,5 +176,97 @@ make_za1991_example <- function(form = "hutton", notation = FALSE) {
     for (j in seq_along(ls)) if (identical(ls[[j]]$designation, "E")) { ls[[j]]$clay_pct <- 3; ls[[j]]$munsell_chroma_dry <- 1 }
   }
   if (length(s) == 1L) ls[[length(ls) + 1L]] <- layer("NONE", ls[[1L]]$bottom_cm, 150)
+  # v0.9.359: the classes of the family (the first of the form by default)
+  fam <- .za_families_file()$family_digits[[f$code]]
+  if (!is.null(fam)) {
+    dg <- .za_ex_family_digits(f$code, family, length(fam))
+    ls <- .za_ex_family(ls, s, fam, dg, layer)
+  } else if (!is.null(family)) rlang::abort(sprintf("%s has no families.", f$name))
   build(ls, form)
+}
+
+# The digits of a family code ("Hu1200", "1200"), checked against the form;
+# NULL gives the first family of the form.
+.za_ex_family_digits <- function(code, family, n) {
+  if (is.null(family)) return(rep(1L, n))
+  fam <- as.character(family)[1L]
+  if (startsWith(fam, code)) fam <- substring(fam, nchar(code) + 1L)
+  codes <- vapply(.za_families_file()$families[[code]], function(e) e$code, "")
+  if (!(paste0(code, fam) %in% codes))
+    rlang::abort(sprintf("No family %s%s in the form %s (its families: %s).", code, fam, code, paste(codes, collapse = ", ")))
+  as.integer(strsplit(fam, "")[[1]])[seq_len(n)]
+}
+
+#' The layers of an example made to hold the classes of a family: each
+#' condition of each digit changes the layer the criterion reads (its
+#' colour, clay, cations, structure, carbonates, consistence ...), or adds
+#' the layer it reads (rock under an O, a podzolic layer under a
+#' yellow-brown apedal B). Synthetic values, no data of the sources.
+#' @noRd
+.za_ex_family <- function(ls, s, fam, dg, layer) {
+  slot <- function(tok) { j <- match(tok, s); if (is.na(j)) rlang::abort(sprintf("no %s in the example", tok)); j }
+  set <- function(j, ...) { a <- list(...); ls[[j]][names(a)] <<- a }
+  # a new thickness for layer j, the layers below moved with it (a lowest
+  # layer reaching 150 cm keeps that end)
+  resize <- function(j, th) {
+    d <- (ls[[j]]$top_cm + th) - ls[[j]]$bottom_cm
+    ls[[j]]$bottom_cm <<- ls[[j]]$top_cm + th
+    for (k in seq_along(ls)[seq_along(ls) > j]) {
+      ls[[k]]$top_cm <<- ls[[k]]$top_cm + d
+      if (!(k == length(ls) && ls[[k]]$bottom_cm >= 150)) ls[[k]]$bottom_cm <<- ls[[k]]$bottom_cm + d
+    }
+  }
+  wet <- function(j) set(j, mottle_colors = "10YR 6/2", redoximorphic_features_pct = 10)
+  # a red pedocutanic B: cutans of another colour than the red matrix (S 31)
+  red_cutans <- function(j) set(j, coatings_hue_moist = "10YR", coatings_value_moist = 4, coatings_chroma_moist = 3)
+  conds <- unlist(lapply(seq_along(fam), function(p) fam[[p]]$classes[[dg[p]]]), recursive = FALSE)
+  crit <- vapply(conds, function(cn) as.integer(cn$criterion), 0L)
+  # thickness first (FC 2), the luvic clay before the base status (FC 10, 8)
+  conds <- conds[order(match(crit, c(2L, 19L, 17L, 10L)), na.last = TRUE)]
+  for (cn in conds) {
+    cl <- as.character(unlist(cn$class))[1L]
+    h <- cn$horizon
+    j <- if (identical(h, "-")) length(s) else slot(h)
+    switch(as.character(cn$criterion),
+      "1" = set(j, fiber_content_unrubbed_pct = if (cl == "fibrous") 80 else 20),
+      "2" = { resize(j, if (cl == "thick") 50 else 30); set(j, oc_pct = 3) },
+      "3" = if (cl == "dark") set(j, munsell_value_moist = 3, munsell_chroma_moist = 1, munsell_value_dry = 5, munsell_chroma_dry = 1),
+      "4" = if (cl == "bleached") set(j, munsell_value_dry = 7, munsell_chroma_dry = 2),
+      "5" = switch(cl,
+              dark = set(j, munsell_hue_moist = "10YR", munsell_value_moist = 3, munsell_chroma_moist = 1),
+              red = { set(j, munsell_hue_moist = "2.5YR", munsell_value_moist = 3, munsell_chroma_moist = 4,
+                          munsell_hue_dry = "2.5YR", munsell_value_dry = 4, munsell_chroma_dry = 4)
+                      if (h == "PCU") red_cutans(j) },
+              other = set(j, munsell_hue_moist = "10YR", munsell_value_moist = 4, munsell_chroma_moist = 3,
+                          munsell_hue_dry = "10YR", munsell_value_dry = 5, munsell_chroma_dry = 3)),
+      "6" = if (cl == "yellow") set(j, munsell_hue_moist = "10YR", munsell_value_moist = 5, munsell_chroma_moist = 6),
+      "7" = if (cl == "present") set(j, lamellae_cumulative_cm = 3),
+      "8" = { c0 <- ls[[j]]$clay_pct; v <- c(dystrophic = 2, mesotrophic = 10, eutrophic = 25)[[cl]] * c0 / 100
+              set(j, ca_cmol = 0.7 * v, mg_cmol = 0.2 * v, k_cmol = 0.05 * v, na_cmol = 0.05 * v) },
+      "9" = if (cl == "red") { set(j, munsell_hue_moist = "2.5YR", munsell_value_moist = 3, munsell_chroma_moist = 6,
+                                   munsell_hue_dry = "2.5YR", munsell_value_dry = 4, munsell_chroma_dry = 6)
+                               if (h == "PCU") red_cutans(j) }
+            else set(j, munsell_hue_moist = "10YR", munsell_hue_dry = "10YR"),
+      "10" = set(j, clay_pct = ls[[j - 1L]]$clay_pct + if (cl == "luvic") 10 else 2),
+      "11" = if (cl == "medium_coarse") set(j, structure_type = "angular blocky", structure_size = "medium")
+             else set(j, structure_type = "subangular blocky", structure_size = "fine"),
+      "12" = if (cl == "with") set(j, coatings_value_moist = 2, coatings_chroma_moist = 1, coatings_continuity = "continuous"),
+      "13" = if (cl == "hardened") set(j, cementation_class = "weakly"),
+      "14" = if (h == "SAP") set(j, saprolite_pct = 80, rupture_resistance = if (cl == "hard") "very hard" else "slightly hard")
+             else set(j, bedrock_pct = if (cl == "hard") 80 else 40),
+      "15" = if (cl == "present") switch(cn$part, below = wet(j + 1L), wet(j)),
+      "16" = if (cl == "calcareous") {
+               k <- if (cn$part == "with_next") j + 1L else j
+               # slightly calcareous, too little carbonate for a carbonate horizon
+               set(k, effervescence_class = "slight", caco3_pct = 2, secondary_carbonates_pct = 0)
+             },
+      "17" = if (cl == "present") {
+               b <- ls[[j]]$bottom_cm
+               ls[[j]]$bottom_cm <- 110
+               ls <- append(ls, list(layer("PZB", 110, max(b, 150))), after = j)
+             },
+      "18" = set(j, consistence_moist = cl),
+      "19" = if (cl == "rock_or_saprolite") ls[[j + 1L]] <- layer("HRK", ls[[j]]$bottom_cm, ls[[j]]$bottom_cm + 20))
+  }
+  ls
 }

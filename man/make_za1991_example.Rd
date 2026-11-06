@@ -4,13 +4,16 @@
 \alias{make_za1991_example}
 \title{Example pedons for the soil forms of the South African classification}
 \usage{
-make_za1991_example(form = "hutton", notation = FALSE)
+make_za1991_example(form = "hutton", notation = FALSE, family = NULL)
 }
 \arguments{
 \item{form}{The form, in lower case, or a special case.}
 
 \item{notation}{Write the name of each horizon in \code{diagnostic_za}
 (the South African notation) besides the data (default \code{FALSE}).}
+
+\item{family}{Optional family code of the form (\code{"Hu1200"}, or its
+four digits \code{"1200"}); \code{NULL} (default) for the first family.}
 }
 \value{
 A \code{\link{PedonRecord}}.
@@ -29,6 +32,15 @@ over a B whose hue is not recorded: Hutton or Clovelly undecided),
 keys) and \code{"truncated"} (a red apedal B at the surface over a
 dorbank: Garies, truncated). They are not real profiles.
 }
+\details{
+Since v0.9.359 each form example also holds the classes of one of its
+families: the first of the form by default (Hu1100 for Hutton), or the
+family named in \code{family}, made by changing the layer each family
+criterion reads (its colour, clay, cations, structure, carbonates,
+consistence) or adding the layer it reads (rock under the organic O, a
+podzolic layer under the yellow-brown apedal B of Constantia).
+}
 \examples{
 classify_za1991(make_za1991_example("clovelly"), on_missing = "silent")$name
+classify_za1991(make_za1991_example("hutton", family = "Hu2200"), on_missing = "silent")$name
 }

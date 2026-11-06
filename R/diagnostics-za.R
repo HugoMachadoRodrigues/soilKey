@@ -229,8 +229,9 @@
   }
   if (open) notes <- c(notes, sprintf("the description stops at %s cm, above 1500 mm: longer forms stay possible (Q4)",
                                       if (is.na(bot)) "an unrecorded depth" else format(bot)))
+  # v0.9.359: the classes of the family criteria, read once per view (fc)
   list(pedon = pedon, x = x, frame = fr, elements = el, open = open, truncated = truncated,
-       implicit = implicit, notes = notes, tags = unique(tags), bottom = bot)
+       implicit = implicit, notes = notes, tags = unique(tags), bottom = bot, fc = new.env(parent = emptyenv()))
 }
 
 #' The topsoil horizon of a surface run of several layers (D9; R5, Hugo,

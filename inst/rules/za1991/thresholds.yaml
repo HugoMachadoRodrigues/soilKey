@@ -480,3 +480,159 @@ thresholds:
     source: "soilkey"
     decision: "R6 (Hugo, 2026-11-06)"
     stand_in: true
+
+  # --- part 5 (0.9.359): the family criteria (FC 1-19; R/families-za.R) ----------
+  fibrous_fibre:
+    value: 66.7
+    op: ">="
+    unit: "% unrubbed fibre by volume (2/3) of a fibrous organic layer (fiber_content_unrubbed_pct)"
+    source: "V 37"
+    decision: "default 4 (Hugo, 2026-11-04)"
+    stand_in: false
+  fibrous_von_post:
+    value: 4
+    op: "<="
+    unit: "von Post degree (H1 to H4) of a fibrous organic layer, read when the fibre is not recorded"
+    source: "V 37"
+    decision: "default 4 (Hugo, 2026-11-04)"
+    stand_in: false
+  fibrous_thickness:
+    value: 200
+    op: ">="
+    unit: "mm of fibrous layers in the O for the fibrous families"
+    source: "FC 1"
+    stand_in: false
+  humic_thick:
+    value: 450
+    op: ">"
+    unit: "mm, the thickness of a thick humic A"
+    source: "FC 2"
+    stand_in: false
+  humic_thick_sample:
+    value: [250, 450]
+    unit: "mm from the top of the A: the part whose organic carbon (weighted) must be over humic_oc in a thick humic A"
+    source: "FC 2"
+    stand_in: false
+    note: "A thin humic A has over humic_oc as the weighted mean of its whole thickness (FC 2)."
+  dark_a_value:
+    value: 4
+    op: "<="
+    basis: moist
+    unit: "Munsell value of a dark A over the E (Fernwood families)"
+    source: "FC 3"
+    stand_in: false
+  dark_a_chroma:
+    value: 1
+    op: "<="
+    basis: moist
+    unit: "Munsell chroma of a dark A over the E (Fernwood families)"
+    source: "FC 3"
+    stand_in: false
+  fc5_dark_value:
+    value: 4
+    op: "<="
+    basis: moist
+    unit: "Munsell value of a dark vertic A or pedocutanic B (FC 5)"
+    source: "FC 5"
+    stand_in: false
+  fc5_dark_chroma:
+    value: 1
+    op: "<="
+    basis: moist
+    unit: "Munsell chroma of a dark vertic A or pedocutanic B, any hue"
+    source: "FC 5"
+    stand_in: false
+  fc5_dark_chroma_yr:
+    value: 2
+    op: "<="
+    basis: moist
+    unit: "Munsell chroma of a dark vertic A or pedocutanic B with a hue of fc5_dark_hues"
+    source: "FC 5"
+    stand_in: false
+  fc5_dark_hues:
+    value: ["10YR", "7.5YR"]
+    basis: moist
+    unit: "the hues with which a chroma of 2 is still dark"
+    source: "FC 5"
+    stand_in: false
+  yellow_e_hue:
+    value: "5YR"
+    op: ">="
+    basis: moist
+    unit: "Munsell hue, 5YR or yellower (YR and Y hues), of a yellow E, with a moist chroma above low_chroma"
+    source: "soilkey"
+    decision: "Q10 with FC 6; a redder E is grey (R1, Hugo, 2026-11-06)"
+    stand_in: true
+    note: "FC 6: yellow when moist as the yellow-brown apedal B is yellow, occasionally a 5YR hue; grey dry. A redder E with a higher chroma is grey (R1)."
+  dystrophic_max:
+    value: 5
+    op: "<"
+    unit: "cmol(+) exchangeable Ca + Mg + K + Na per kg clay (S-value x 100 / clay %) of a dystrophic B1"
+    source: "FC 8"
+    decision: "plan section 10, slip 16; default 10 (Hugo, 2026-11-04)"
+    stand_in: false
+    note: "5 and 15 exactly are mesotrophic."
+  eutrophic_min:
+    value: 15
+    op: ">"
+    unit: "cmol(+) exchangeable Ca + Mg + K + Na per kg clay of a eutrophic B1 (not calcareous)"
+    source: "FC 8"
+    decision: "default 10 (Hugo, 2026-11-04)"
+    stand_in: false
+  luvic_clay_low:
+    value: 15
+    op: "<="
+    unit: "% clay of any layer of the A or E that calls for the rule of luvic_points (else luvic_ratio)"
+    source: "FC 10"
+    decision: "Q21 (Hugo, 2026-11-04)"
+    stand_in: false
+  luvic_points:
+    value: 5
+    op: ">="
+    unit: "percentage points of clay the B1 holds over the A or E directly above"
+    source: "FC 10"
+    decision: "Q21 (Hugo, 2026-11-04)"
+    stand_in: false
+  luvic_ratio:
+    value: 1.3
+    op: ">="
+    unit: "clay % of the B1 / clay % of the A or E directly above"
+    source: "FC 10"
+    decision: "Q21 (Hugo, 2026-11-04)"
+    stand_in: false
+  black_cutans_value:
+    value: 2
+    op: "<="
+    basis: moist
+    unit: "Munsell value of the coatings (coatings_value_moist) of continuous black cutans"
+    source: "soilkey"
+    decision: "default 5 (Hugo, 2026-11-04)"
+    stand_in: true
+  black_cutans_chroma:
+    value: 1
+    op: "<="
+    basis: moist
+    unit: "Munsell chroma of the coatings (coatings_chroma_moist), or a neutral hue N"
+    source: "soilkey"
+    decision: "default 5 (Hugo, 2026-11-04)"
+    stand_in: true
+  ortstein_cementation:
+    value: weakly
+    unit: "cementation_class of an ortstein podzol B, at least (moist)"
+    source: "FC 13"
+    decision: "default 12 (Hugo, 2026-11-04)"
+    stand_in: false
+  hard_rock_pct:
+    value: 70
+    op: ">"
+    unit: "% by volume of rock in place (bedrock_pct) of a hard lithocutanic B or saprolite; without it, saprolite_pct or coarse_fragments_pct with a rupture resistance of hard or more, flagged"
+    source: "FC 14"
+    decision: "Q19 (Hugo, 2026-11-04)"
+    stand_in: false
+  organic_rock_depth:
+    value: 500
+    op: "<="
+    unit: "mm below the lower limit of the organic O within which rock or saprolite makes the families on rock (and above diagnostic_depth)"
+    source: "K 17"
+    decision: "Champagne, K 17 note (ii): 500 mm, and within 1500 mm (D5, Hugo, 2026-11-06)"
+    stand_in: false

@@ -1617,13 +1617,15 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
 #' carbon under 0.5 % recorded fail it), flagged; a grey E above with
 #' illuvial colours and no oxalate data leaves it undecided.
 #' @noRd
-.za_t_PZB <- function(x, i) {
+.za_t_PZB <- function(x, i, assume_mark = FALSE) {
   if (.za_is_rock(x, i)) return(.za_r(FALSE, note = "a layer of rock"))
   th <- c("podzol_ph", "podzol_alfe", "podzol_oc", "podzol_thickness")
   des <- .za_hint_has(x, i, "PZB")
   a <- .kidpr_prev(x, i)
-  ga <- if (is.na(a)) FALSE else .za_grey_dry(x, a)$passed
+  ga <- if (is.na(a) || assume_mark) FALSE else .za_grey_dry(x, a)$passed
+  # v0.9.359 (FC 17): a layer read as if it lay directly beneath an A or E
   mark <- if (des) .za_r(TRUE, tag = "designation_hint", note = sprintf("'%s': an illuvial B by its letters", .za_des(x, i)))
+          else if (assume_mark) .za_r(TRUE, note = "read as if directly beneath an A or E (FC 17)")
           else if (isTRUE(ga)) .za_r(TRUE, note = "a grey E-like layer directly above")
           else if (is.na(ga)) .za_r(NA, missing = c("munsell_value_dry", "munsell_chroma_dry"), note = "the colour of the layer above not recorded")
           else .za_r(FALSE, note = "no Bh or Bs designation and no grey layer directly above")
