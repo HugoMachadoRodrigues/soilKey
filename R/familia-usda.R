@@ -204,7 +204,7 @@ family_temperature_regime_usda <- function(pedon, infer = TRUE) {
   str <- pedon$site$soil_temperature_regime %||% NA_character_
   if (!is.na(str) && nzchar(str)) {
     return(FamilyAttribute$new(
-      name = "temperature_regime", value = tolower(str),
+      name = "temperature_regime", value = .usda_str_value(str),
       evidence = list(inferred = FALSE,
                       source = "site$soil_temperature_regime"),
       missing = character(0), reference = ref))

@@ -233,7 +233,7 @@ aridisol_qualifying_usda <- function(pedon) {
          else if (length(cand) > 0L && !anyNA(sd)) FALSE else NA
   # (b) "A moisture control section that is dry in some or all parts at
   # some time during normal years".
-  smr <- tolower(as.character(pedon$site$soil_moisture_regime %||% NA_character_)[1L])
+  smr <- .usda_smr_value(as.character(pedon$site$soil_moisture_regime %||% NA_character_)[1L])
   dry <- if (!is.na(smr) && smr %in% c("aridic", "torric", "ustic", "xeric")) TRUE else NA
   # (c) "No sulfuric horizon within 150 cm of the mineral soil surface".
   ms <- .mineral_soil_surface_cm(h)

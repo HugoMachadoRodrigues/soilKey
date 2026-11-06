@@ -881,6 +881,114 @@
           },
           "hydromorphic_features_ka5": {
             "type": ["string", "null"]
+          },
+          "fine_clay_pct": {
+            "type": ["number", "null"]
+          },
+          "clay_films_thickness_mm": {
+            "type": ["number", "null"]
+          },
+          "humus_clay_films_pct": {
+            "type": ["number", "null"]
+          },
+          "humus_clay_films_mm": {
+            "type": ["number", "null"]
+          },
+          "micromorph_argillans_pct": {
+            "type": ["number", "null"]
+          },
+          "micromorph_features": {
+            "type": ["string", "null"]
+          },
+          "tongue_depth_cm": {
+            "type": ["number", "null"]
+          },
+          "albic_materials_pct": {
+            "type": ["number", "null"]
+          },
+          "spodic_materials_pct": {
+            "type": ["number", "null"]
+          },
+          "cracked_coatings_pct": {
+            "type": ["number", "null"]
+          },
+          "odoe": {
+            "type": ["number", "null"]
+          },
+          "pyrophosphate_color": {
+            "type": ["string", "null"]
+          },
+          "root_mat_pct": {
+            "type": ["number", "null"]
+          },
+          "root_mat": {
+            "type": ["boolean", "null"]
+          },
+          "reduced_matrix_pct": {
+            "type": ["number", "null"]
+          },
+          "ferricyanide_test": {
+            "type": ["string", "null"]
+          },
+          "eh_mv": {
+            "type": ["number", "null"]
+          },
+          "humic_infillings": {
+            "type": ["boolean", "null"]
+          },
+          "humus_coatings": {
+            "type": ["string", "null"]
+          },
+          "silting_sieve_test": {
+            "type": ["string", "null"]
+          },
+          "puddled": {
+            "type": ["boolean", "null"]
+          },
+          "p_olsen_mg_kg": {
+            "type": ["number", "null"]
+          },
+          "p_total_pct": {
+            "type": ["number", "null"]
+          },
+          "k_total_pct": {
+            "type": ["number", "null"]
+          },
+          "ec_1to1_dS_m": {
+            "type": ["number", "null"]
+          },
+          "sio2_al2o3_clay": {
+            "type": ["number", "null"]
+          },
+          "sio2_al2o3_naoh": {
+            "type": ["number", "null"]
+          },
+          "trb_cmol": {
+            "type": ["number", "null"]
+          },
+          "trb_clay_cmol": {
+            "type": ["number", "null"]
+          },
+          "gravel_carbonate_coating": {
+            "type": ["string", "null"]
+          },
+          "plinthite_hardens": {
+            "type": ["boolean", "null"]
+          },
+          "rock_fragment_max_cm": {
+            "type": ["number", "null"]
+          },
+          "shajiang_pct": {
+            "type": ["number", "null"]
+          },
+          "fe_mn_nodules_pct": {
+            "type": ["number", "null"]
+          },
+          "pyroclastic_fragments_pct": {
+            "type": ["number", "null"]
+          },
+          "soluble_salts_sodium_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false
