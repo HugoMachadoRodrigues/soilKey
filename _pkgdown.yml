@@ -210,6 +210,17 @@ reference:
       - rp2008_crosswalk
       - rp2008_from_label
 
+  - title: "South African soil classification 1991 (experimental)"
+    desc: >
+      The soil forms of the South African soil classification of 1991, read
+      without the book from its open pages, SASRI (1999) and van Huyssteen
+      (2020). Reads the South African horizon names, or identifies the 30
+      diagnostic horizons and materials on the data, with WRB stand-ins
+      flagged. This release keys the 73 forms; the families follow.
+    contents:
+      - classify_za1991
+      - make_za1991_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

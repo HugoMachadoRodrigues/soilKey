@@ -1944,7 +1944,8 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
   # that loses its B name so is unconsolidated material
   lost <- FALSE
   for (k in names(.ZA_B_ABOVE)) {
-    if (isFALSE(v[[k]])) next
+    # nothing above (a truncated profile): no position to read
+    if (isFALSE(v[[k]]) || !any(nzchar(above))) next
     ok <- .za_within(above, c(.ZA_TOPSOILS, "E", k, .ZA_B_ABOVE[[k]]))
     if (isFALSE(ok)) {
       if (isTRUE(v[[k]])) { lost <- TRUE; notes <- c(notes, sprintf("a %s on the data, but not under a topsoil, an E or the same B: read on (S 32)", .za_label(k))) }
@@ -1964,9 +1965,9 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
     v[["WET"]] <- FALSE
     notes <- c(notes, "a grey matrix with no further sign of wetness in a pedocutanic B: the pedocutanic B (R1)")
   }
-  # D3 (Hugo, 2026-11-06): under a topsoil the G has no less clay than the
-  # layer above (an eluvial grey layer is no G)
-  if (!isFALSE(v[["WET"]]) && isTRUE(.za_within(above, .ZA_TOPSOILS))) {
+  # D3 (Hugo, 2026-11-06): under an orthic A (where an E may lie) the G has
+  # no less clay than the layer above (an eluvial grey layer is no G)
+  if (!isFALSE(v[["WET"]]) && isTRUE(.za_within(above, "OA"))) {
     a <- .kidpr_prev(x, i)
     ca <- if (is.na(a)) NA_real_ else .za_num(x, a, "clay_pct"); ci <- .za_num(x, i, "clay_pct")
     if (!is.na(ca) && !is.na(ci) && ci < ca) {

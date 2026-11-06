@@ -1,0 +1,961 @@
+# The 73 soil forms of the South African soil classification of 1991 (Soil
+# Classification Working Group, 1991), and Lichtenburg (V 5.42, outside the
+# AGIS key; Hugo's decision Q1: keyed, always provisional, no family), in
+# the order of van Huyssteen (2020), which follows the book's (V 9; Q6).
+# Written by data-raw/za1991_key.R; edit there.
+#
+#   code         SASRI (1999), else the 2018 code of the same name; [Ia] and
+#                [Py] are soilKey's (no code in any open source)
+#   name         as printed (Kimberly, Vilafontes; aliases as V and W write them)
+#   name_en      soilKey's gloss: the sequence of printed horizon names
+#   sequence     the tokens of horizons.yaml, from the top
+#   closed_on    the codes that would extend the sequence into another form:
+#                such a code directly below the last horizon of the sequence
+#                makes the form fail (Q3, the longest prefix; Fernwood is
+#                closed on every subsoil code, K 32 note i)
+#   alternatives codes read in place of a slot: the unconsolidated materials
+#                above saprolite within 500 mm (Swartland, Houwhoek, Groenkop;
+#                D1), and hard rock under the pedocutanic B as very weakly
+#                weathered saprolite (Swartland, Q4)
+#   tests        form_sequence_za (the sequence) and the 500 mm rules of K
+#                (below_horizon_za, deposit_thickness_za; plan 3.3)
+
+forms:
+- code: Ch
+  name: Champagne
+  name_en: Organic O
+  code_source: sasri1999
+  sequence: OO
+  pages: K 17; V 5.1
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ch
+- code: Kp
+  name: Kranskop
+  name_en: Humic A / Yellow-brown apedal B / Red apedal B
+  code_source: sasri1999
+  sequence: HA-YAB-RAB
+  pages: K 4; V 5.2
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Kp
+- code: Ma
+  name: Magwa
+  name_en: Humic A / Yellow-brown apedal B
+  code_source: sasri1999
+  sequence: HA-YAB
+  pages: K 5; V 5.3
+  closed_on:
+  - RAB
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ma
+- code: '[Ia]'
+  name: Inanda
+  name_en: Humic A / Red apedal B
+  code_source: soilkey
+  sequence: HA-RAB
+  pages: K 6; V 5.4
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: '[Ia]'
+- code: Lu
+  name: Lusiki
+  name_en: Humic A / Pedocutanic B
+  code_source: sasri1999
+  sequence: HA-PCU
+  pages: K 7; V 5.5
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Lu
+- code: Sr
+  name: Sweetwater
+  name_en: Humic A / Neocutanic B
+  code_source: sasri1999
+  sequence: HA-NCU
+  pages: K 8; V 5.6
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Sr
+- code: 'No'
+  name: Nomanci
+  name_en: Humic A / Lithocutanic B
+  code_source: sasri1999
+  sequence: HA-LCU
+  pages: K 9; V 5.7
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: 'No'
+- code: Rg
+  name: Rensburg
+  name_en: Vertic A / G horizon
+  code_source: sasri1999
+  sequence: VA-G
+  pages: K 77; V 5.8
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Rg
+- code: Ar
+  name: Arcadia
+  name_en: Vertic A
+  code_source: sasri1999
+  sequence: VA
+  pages: K 76; V 5.9
+  closed_on:
+  - G
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ar
+- code: Wo
+  name: Willowbrook
+  name_en: Melanic A / G horizon
+  code_source: sasri1999
+  sequence: MA-G
+  pages: K 10; V 5.10
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Wo
+- code: Bo
+  name: Bonheim
+  name_en: Melanic A / Pedocutanic B
+  code_source: sasri1999
+  sequence: MA-PCU
+  pages: K 16; V 5.11
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Bo
+- code: Sn
+  name: Steendal
+  name_en: Melanic A / Soft carbonate horizon
+  code_source: sat2018
+  sequence: MA-SCH
+  pages: K 15; V 5.12
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Sn
+- code: Im
+  name: Immerpan
+  name_en: Melanic A / Hardpan carbonate horizon
+  code_source: sat2018
+  sequence: MA-HCH
+  pages: K 13; V 5.13
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Im
+- code: My
+  name: Mayo
+  name_en: Melanic A / Lithocutanic B
+  code_source: sasri1999
+  sequence: MA-LCU
+  pages: K 12; V 5.14
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: My
+- code: Mw
+  name: Milkwood
+  name_en: Melanic A / Hard rock
+  code_source: sasri1999
+  sequence: MA-HRK
+  pages: K 14; V 5.15
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Mw
+- code: Ik
+  name: Inhoek
+  name_en: Melanic A
+  code_source: sasri1999
+  sequence: MA
+  pages: K 11; V 5.16
+  closed_on:
+  - G
+  - PCU
+  - SCH
+  - HCH
+  - LCU
+  - HRK
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ik
+- code: Ka
+  name: Katspruit
+  name_en: Orthic A / G horizon
+  code_source: sasri1999
+  sequence: OA-G
+  pages: K 18; V 5.17
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ka
+- code: Kd
+  name: Kroonstad
+  name_en: Orthic A / E horizon / G horizon
+  code_source: sasri1999
+  sequence: OA-E-G
+  pages: K 19; V 5.18
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Kd
+- code: Lo
+  name: Longlands
+  name_en: Orthic A / E horizon / Soft plinthic B
+  code_source: sat2018
+  sequence: OA-E-SPL
+  pages: K 20; V 5.19
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Lo
+- code: Wa
+  name: Wasbank
+  name_en: Orthic A / E horizon / Hard plinthic B
+  code_source: sasri1999
+  sequence: OA-E-HPL
+  pages: K 21; V 5.20
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Wa
+- code: Ct
+  name: Constantia
+  name_en: Orthic A / E horizon / Yellow-brown apedal B
+  code_source: sasri1999
+  sequence: OA-E-YAB
+  pages: K 22; V 5.21
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ct
+- code: Ts
+  name: Tsitsikamma
+  name_en: Orthic A / E horizon / Podzol B / Placic pan
+  code_source: sat2018
+  sequence: OA-E-PZB-PLP
+  pages: K 23; V 5.22
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ts
+- code: Lt
+  name: Lamotte
+  name_en: Orthic A / E horizon / Podzol B / Unconsolidated material with signs of
+    wetness
+  code_source: sat2018
+  sequence: OA-E-PZB-UMW
+  pages: K 24; V 5.23
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Lt
+    - below_horizon_za:
+        horizon: PZB
+        from: B1
+        material: non_saprolite
+        min_cm: 50.0
+- code: Cc
+  name: Concordia
+  name_en: Orthic A / E horizon / Podzol B / Unconsolidated material without signs
+    of wetness
+  code_source: sat2018
+  sequence: OA-E-PZB-UMN
+  pages: K 25; V 5.24
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Cc
+    - below_horizon_za:
+        horizon: PZB
+        from: B1
+        material: non_saprolite
+        min_cm: 50.0
+- code: Hh
+  name: Houwhoek
+  name_en: Orthic A / E horizon / Podzol B / Saprolite
+  code_source: sat2018
+  sequence: OA-E-PZB-SAP
+  pages: K 26; V 5.25
+  closed_on: []
+  alternatives:
+    SAP:
+    - UMN
+    - UMW
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Hh
+    - below_horizon_za:
+        horizon: PZB
+        from: B1
+        material: SAP
+        max_cm: 50.0
+- code: Es
+  name: Estcourt
+  name_en: Orthic A / E horizon / Prismacutanic B
+  code_source: sasri1999
+  sequence: OA-E-PRC
+  pages: K 27; V 5.26
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Es
+- code: Km
+  name: Klapmuts
+  name_en: Orthic A / E horizon / Pedocutanic B
+  code_source: sasri1999
+  sequence: OA-E-PCU
+  pages: K 28; V 5.27
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Km
+- code: Vf
+  name: Vilafontes
+  name_en: Orthic A / E horizon / Neocutanic B
+  code_source: sasri1999
+  sequence: OA-E-NCU
+  pages: K 29; V 5.28
+  closed_on: []
+  aliases:
+  - Villafontes
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Vf
+- code: Kk
+  name: Kinkelbos
+  name_en: Orthic A / E horizon / Neocarbonate B
+  code_source: sat2018
+  sequence: OA-E-NCA
+  pages: K 30; V 5.29
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Kk
+- code: Cf
+  name: Cartref
+  name_en: Orthic A / E horizon / Lithocutanic B
+  code_source: sat2018
+  sequence: OA-E-LCU
+  pages: K 31; V 5.30
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Cf
+- code: Fw
+  name: Fernwood
+  name_en: Orthic A / E horizon
+  code_source: sasri1999
+  sequence: OA-E
+  pages: K 32; V 5.31
+  closed_on:
+  - RAB
+  - YAB
+  - RSB
+  - NCU
+  - NCA
+  - PCU
+  - PRC
+  - LCU
+  - E
+  - G
+  - PZB
+  - PLP
+  - SPL
+  - HPL
+  - UMW
+  - USW
+  - SCH
+  - HCH
+  - DOR
+  - SAP
+  - HRK
+  - SAL
+  - RSA
+  - MMD
+  - UMN
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Fw
+- code: We
+  name: Westleigh
+  name_en: Orthic A / Soft plinthic B
+  code_source: sasri1999
+  sequence: OA-SPL
+  pages: K 33; V 5.32
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: We
+- code: Dr
+  name: Dresden
+  name_en: Orthic A / Hard plinthic B
+  code_source: sasri1999
+  sequence: OA-HPL
+  pages: K 34; V 5.33
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Dr
+- code: Av
+  name: Avalon
+  name_en: Orthic A / Yellow-brown apedal B / Soft plinthic B
+  code_source: sasri1999
+  sequence: OA-YAB-SPL
+  pages: K 35; V 5.34
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Av
+- code: Gc
+  name: Glencoe
+  name_en: Orthic A / Yellow-brown apedal B / Hard plinthic B
+  code_source: sasri1999
+  sequence: OA-YAB-HPL
+  pages: K 35-36; V 5.35
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Gc
+- code: Pn
+  name: Pinedene
+  name_en: Orthic A / Yellow-brown apedal B / Unspecified material with signs of wetness
+  code_source: sasri1999
+  sequence: OA-YAB-USW
+  pages: K 36; V 5.36
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Pn
+- code: Gf
+  name: Griffin
+  name_en: Orthic A / Yellow-brown apedal B / Red apedal B
+  code_source: sasri1999
+  sequence: OA-YAB-RAB
+  pages: K 37; V 5.37
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Gf
+- code: Mp
+  name: Molopo
+  name_en: Orthic A / Yellow-brown apedal B / Soft carbonate horizon
+  code_source: sat2018
+  sequence: OA-YAB-SCH
+  pages: K 39; V 5.38
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Mp
+- code: Ak
+  name: Askham
+  name_en: Orthic A / Yellow-brown apedal B / Hardpan carbonate horizon
+  code_source: sat2018
+  sequence: OA-YAB-HCH
+  pages: K 41; V 5.39
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ak
+- code: Cv
+  name: Clovelly
+  name_en: Orthic A / Yellow-brown apedal B
+  code_source: sasri1999
+  sequence: OA-YAB
+  pages: K 42; V 5.40
+  closed_on:
+  - SPL
+  - HPL
+  - USW
+  - RAB
+  - SCH
+  - HCH
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Cv
+- code: Bv
+  name: Bainsvlei
+  name_en: Orthic A / Red apedal B / Soft plinthic B
+  code_source: sasri1999
+  sequence: OA-RAB-SPL
+  pages: K 43; V 5.41
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Bv
+- code: Lc
+  name: Lichtenburg
+  name_en: Orthic A / Red apedal B / Hard plinthic B
+  code_source: sat2018
+  sequence: OA-RAB-HPL
+  pages: V 5.42
+  closed_on: []
+  outside_1991_key: yes
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Lc
+- code: Bd
+  name: Bloemdal
+  name_en: Orthic A / Red apedal B / Unspecified material with signs of wetness
+  code_source: sasri1999
+  sequence: OA-RAB-USW
+  pages: K 40; V 5.43
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Bd
+- code: Ky
+  name: Kimberly
+  name_en: Orthic A / Red apedal B / Soft carbonate horizon
+  code_source: sat2018
+  sequence: OA-RAB-SCH
+  pages: K 43-44; V 5.44
+  closed_on: []
+  aliases:
+  - Kimberley
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ky
+- code: '[Py]'
+  name: Plooysburg
+  name_en: Orthic A / Red apedal B / Hardpan carbonate horizon
+  code_source: soilkey
+  sequence: OA-RAB-HCH
+  pages: K 44; V 5.45
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: '[Py]'
+- code: Gr
+  name: Garies
+  name_en: Orthic A / Red apedal B / Dorbank
+  code_source: sat2018
+  sequence: OA-RAB-DOR
+  pages: K 45; V 5.46
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Gr
+- code: Hu
+  name: Hutton
+  name_en: Orthic A / Red apedal B
+  code_source: sasri1999
+  sequence: OA-RAB
+  pages: K 46; V 5.47
+  closed_on:
+  - SPL
+  - HPL
+  - USW
+  - SCH
+  - HCH
+  - DOR
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Hu
+- code: Sd
+  name: Shortlands
+  name_en: Orthic A / Red structured B
+  code_source: sasri1999
+  sequence: OA-RSB
+  pages: K 47; V 5.48
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Sd
+- code: Jb
+  name: Jonkersberg
+  name_en: Orthic A / Podzol B / Placic pan
+  code_source: sat2018
+  sequence: OA-PZB-PLP
+  pages: K 48; V 5.49
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Jb
+- code: Wf
+  name: Witfontein
+  name_en: Orthic A / Podzol B / Unconsolidated material with signs of wetness
+  code_source: sat2018
+  sequence: OA-PZB-UMW
+  pages: K 49; V 5.50
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Wf
+    - below_horizon_za:
+        horizon: PZB
+        from: B1
+        material: non_saprolite
+        min_cm: 50.0
+- code: Pg
+  name: Pinegrove
+  name_en: Orthic A / Podzol B / Unconsolidated material without signs of wetness
+  code_source: sat2018
+  sequence: OA-PZB-UMN
+  pages: K 50; V 5.51
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Pg
+    - below_horizon_za:
+        horizon: PZB
+        from: B1
+        material: non_saprolite
+        min_cm: 50.0
+- code: Gk
+  name: Groenkop
+  name_en: Orthic A / Podzol B / Saprolite
+  code_source: sat2018
+  sequence: OA-PZB-SAP
+  pages: K 51; V 5.52
+  closed_on: []
+  alternatives:
+    SAP:
+    - UMN
+    - UMW
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Gk
+    - below_horizon_za:
+        horizon: PZB
+        from: B1
+        material: SAP
+        max_cm: 50.0
+- code: Ss
+  name: Sterkspruit
+  name_en: Orthic A / Prismacutanic B
+  code_source: sasri1999
+  sequence: OA-PRC
+  pages: K 52; V 5.53
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ss
+- code: Se
+  name: Sepane
+  name_en: Orthic A / Pedocutanic B / Unconsolidated material with signs of wetness
+  code_source: sasri1999
+  sequence: OA-PCU-UMW
+  pages: K 53; V 5.54
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Se
+    - below_horizon_za:
+        horizon: PCU
+        material: non_saprolite
+        min_cm: 50.0
+- code: Va
+  name: Valsrivier
+  name_en: Orthic A / Pedocutanic B / Unconsolidated material without signs of wetness
+  code_source: sasri1999
+  sequence: OA-PCU-UMN
+  pages: K 54; V 5.55
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Va
+    - below_horizon_za:
+        horizon: PCU
+        material: non_saprolite
+        min_cm: 50.0
+- code: Sw
+  name: Swartland
+  name_en: Orthic A / Pedocutanic B / Saprolite
+  code_source: sasri1999
+  sequence: OA-PCU-SAP
+  pages: K 55-56; V 5.56
+  closed_on: []
+  alternatives:
+    SAP:
+    - HRK
+    - UMN
+    - UMW
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Sw
+    - below_horizon_za:
+        horizon: PCU
+        material: SAP
+        max_cm: 50.0
+- code: Tu
+  name: Tukulu
+  name_en: Orthic A / Neocutanic B / Unspecified material with signs of wetness
+  code_source: sasri1999
+  sequence: OA-NCU-USW
+  pages: K 57; V 5.57
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Tu
+- code: Et
+  name: Etosha
+  name_en: Orthic A / Neocutanic B / Soft carbonate horizon
+  code_source: sat2018
+  sequence: OA-NCU-SCH
+  pages: K 58; V 5.58
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Et
+- code: Gm
+  name: Gamoep
+  name_en: Orthic A / Neocutanic B / Hardpan carbonate horizon
+  code_source: sat2018
+  sequence: OA-NCU-HCH
+  pages: K 59; V 5.59
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Gm
+- code: Ou
+  name: Oudtshoorn
+  name_en: Orthic A / Neocutanic B / Dorbank
+  code_source: sat2018
+  sequence: OA-NCU-DOR
+  pages: K 60-61; V 5.60
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ou
+- code: Oa
+  name: Oakleaf
+  name_en: Orthic A / Neocutanic B
+  code_source: sasri1999
+  sequence: OA-NCU
+  pages: K 62; V 5.61
+  closed_on:
+  - USW
+  - SCH
+  - HCH
+  - DOR
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Oa
+- code: Mu
+  name: Montagu
+  name_en: Orthic A / Neocarbonate B / Unspecified material with signs of wetness
+  code_source: sat2018
+  sequence: OA-NCA-USW
+  pages: K 62-63; V 5.62
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Mu
+- code: Ad
+  name: Addo
+  name_en: Orthic A / Neocarbonate B / Soft carbonate horizon
+  code_source: sat2018
+  sequence: OA-NCA-SCH
+  pages: K 63-64; V 5.63
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ad
+- code: Pr
+  name: Prieska
+  name_en: Orthic A / Neocarbonate B / Hardpan carbonate horizon
+  code_source: sat2018
+  sequence: OA-NCA-HCH
+  pages: K 65; V 5.64
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Pr
+- code: Tr
+  name: Trawal
+  name_en: Orthic A / Neocarbonate B / Dorbank
+  code_source: sat2018
+  sequence: OA-NCA-DOR
+  pages: K 66; V 5.65
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Tr
+- code: Ag
+  name: Augrabies
+  name_en: Orthic A / Neocarbonate B
+  code_source: sasri1999
+  sequence: OA-NCA
+  pages: K 66-67; V 5.66
+  closed_on:
+  - USW
+  - SCH
+  - HCH
+  - DOR
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ag
+- code: Br
+  name: Brandvlei
+  name_en: Orthic A / Soft carbonate horizon
+  code_source: sat2018
+  sequence: OA-SCH
+  pages: K 68; V 5.67
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Br
+- code: Cg
+  name: Coega
+  name_en: Orthic A / Hardpan carbonate horizon
+  code_source: sat2018
+  sequence: OA-HCH
+  pages: K 69; V 5.68
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Cg
+- code: Kn
+  name: Knersvlakte
+  name_en: Orthic A / Dorbank
+  code_source: sat2018
+  sequence: OA-DOR
+  pages: K 70; V 5.69
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Kn
+- code: Gs
+  name: Glenrosa
+  name_en: Orthic A / Lithocutanic B
+  code_source: sat2018
+  sequence: OA-LCU
+  pages: K 71-72; V 5.70
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Gs
+- code: Ms
+  name: Mispah
+  name_en: Orthic A / Hard rock
+  code_source: sasri1999
+  sequence: OA-HRK
+  pages: K 73; V 5.71
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Ms
+- code: Du
+  name: Dundee
+  name_en: Orthic A / Stratified alluvium
+  code_source: sasri1999
+  sequence: OA-SAL
+  pages: K 74; V 5.72
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Du
+    - deposit_thickness_za:
+        material: SAL
+        min_cm: 50.0
+- code: Nb
+  name: Namib
+  name_en: Orthic A / Regic sand
+  code_source: sasri1999
+  sequence: OA-RSA
+  pages: K 75; V 5.73
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Nb
+    - deposit_thickness_za:
+        material: RSA
+        min_cm: 50.0
+- code: Wb
+  name: Witbank
+  name_en: Orthic A / Man-made soil deposit
+  code_source: sasri1999
+  sequence: OA-MMD
+  pages: K 38; V 5.74
+  closed_on: []
+  tests:
+    all_of:
+    - form_sequence_za:
+        form: Wb
+    - deposit_thickness_za:
+        material: MMD
+        min_cm: 50.0

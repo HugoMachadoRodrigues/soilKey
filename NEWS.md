@@ -17,6 +17,18 @@ The first piece of the German soil systematics of the Bodenkundliche Kartieranle
 * **Matching a profile to a formula** (`.ka5_horizon_frame()`): the last part carries the horizon and the whole symbol is the engine's token, so Bv-Ah over Ah stays two horizons; Ap takes a plain Ah; the buried soil of `II...` runs from the first fossil row of a layer II; a geogenic prefix written in front (a, tb, tm, tp, e, z, s, q, o) holds for the whole horizon, f and r only for their part. Before the engine reads the table, a KA5 formula's own hook (`prepare_table`, which no other system carries) lets a master written without suffix (C, G, aG, O) or a slot with commas take a run of rows (Ah/Bv/Cv/Cn is Ah/Bv/C, p. 199), and merges a transitional row into its neighbour with the same carrying code unless the formula names the transition (Al+Bt into the Bt, Go-Bv into the Bv).
 * Hugo's decisions on soilKey's readings and on the review (2026-11-04) are in `inst/rules/ka5/readings.yaml`: the strong signs exactly as his card lists them (Btv is none); the Canadian j forms (Btj, Aej) and Ck and Oe written as designations veto the KA5; IIIC is II and lC with no layer II above it; the degree sign typed o only in a KA5 profile.
 
+# soilKey 0.9.358 (2026-11-05)
+
+## South Africa 1991: the registry and the 73 soil forms
+
+The South African soil classification of 1991 joins the registry as `za1991` (aliases `za`, `sat`, `sat1991`, `south_africa`), experimental and opt-in: `classify_za1991()` keys a profile to its soil form, `make_za1991_example()` gives one synthetic profile per form, and `identify_horizons(pedon, "za1991")` reads every layer as one of the 30 diagnostic horizons and materials. Every other classification is unchanged (the fixtures of the other systems byte-identical).
+
+* **The 73 forms** (`inst/rules/za1991/key.yaml`, written by `data-raw/za1991_key.R`) in the order of van Huyssteen (2020), each a sequence of diagnostic horizons and materials with the horizons that would make it another form (Q3: Hutton over hard rock is Hutton, over a soft plinthic B Bainsvlei); Lichtenburg keyed, always provisional (Q1); no form gives the nearest forms, an orthic A under 100 mm over nothing the land class rock and lithosols (Q2).
+* **The general rules**: 1500 mm (Q7), a recent deposit over a buried soil (Q8), truncated profiles; a description stopping above 1500 mm leaves the longer forms undecided (Q4); the 500 mm rules of the form pages (Valsrivier, Sepane, Swartland, the podzol forms, Witbank, Dundee, Namib).
+* **Decided by Hugo on the review (2026-11-06)**, in `readings.yaml`: the saprolite of Swartland, Houwhoek and Groenkop may lie within 500 mm under the B, below unconsolidated material; the match is one pass over the horizons, however many are undecided; a topsoil of several layers is a vertic, melanic or humic A when that covers half of it or its upper 200 mm, for every completion of its undecided layers; a topsoil over a recent deposit is part of the deposit; a red over a yellow-brown apedal layer is one horizon unless each is 20 cm or more; a B reaching 1500 mm reads the layer described below it; registry order 14.
+* The form names and soilKey's glosses in English and Portuguese, and the examples in the Pro app. The families follow in the next part.
+
+
 # soilKey 0.9.357 (2026-11-05)
 
 ## South Africa 1991: the other horizons and materials on the data
