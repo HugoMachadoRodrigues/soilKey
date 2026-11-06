@@ -288,3 +288,175 @@ thresholds:
     source: "soilkey"
     stand_in: true
     note: "S 31: the lithocutanic B merges into weathering rock, soil penetrating it in tongues; no number. Under 100 %: a layer of rock alone is not a B."
+
+  # --- part 3 (0.9.357): the other seventeen horizons and materials -------------
+  e_light_topsoil:
+    value: 350
+    op: ">="
+    unit: "mm, the depth from which a grey (dry) layer of the topsoil is read as an E"
+    source: "S 33"
+    stand_in: false
+    note: "S 33: a light grey topsoil deeper than 350 mm that cannot be told from what lies below has an E. A layer of the surface run starting at 350 mm or deeper that is grey when dry is tested as a subsoil layer (an E), with a note."
+  g_or_prismacutanic:
+    value: 500
+    unit: "mm of coarser material above a clay horizon under an E that is both G and prismacutanic"
+    source: "K 19; K 27"
+    stand_in: false
+    note: "More than this, the G horizon (Kroonstad); less, the prismacutanic B (Estcourt); exactly 500 mm undecided (soilKey's reading)."
+  podzol_ph:
+    value: 5.9
+    op: "<="
+    unit: "pH(H2O) of a podzol B"
+    source: "wrb_standin"
+    decision: "Q13"
+    stand_in: true
+    note: "The spodic horizon as soilKey's spodic() tests it stands in for the podzol B, of which no open source gives a definition (P names it the ferrihumic B of 1977)."
+  podzol_alfe:
+    value: 0.5
+    op: ">="
+    unit: "% Alox + 1/2 Feox (acid ammonium oxalate)"
+    source: "wrb_standin"
+    decision: "Q13"
+    stand_in: true
+  podzol_oc:
+    value: 0.5
+    op: ">="
+    unit: "% organic carbon, on the morphological route (no oxalate data)"
+    source: "wrb_standin"
+    decision: "Q13"
+    stand_in: true
+  podzol_thickness:
+    value: 2.5
+    op: ">="
+    unit: "cm"
+    source: "wrb_standin"
+    decision: "Q13"
+    stand_in: true
+  podzol_colour:
+    value: {hue_max: "7.5YR", value_max: 5, chroma_max: 4, dark_value_max: 3, dark_chroma_max: 2}
+    basis: moist
+    unit: "illuvial colours of the morphological route: hue 7.5YR or redder with value and chroma at most value_max, chroma_max; or any hue with value and chroma at most dark_value_max, dark_chroma_max"
+    source: "wrb_standin"
+    decision: "Q13"
+    stand_in: true
+  placic_min_thickness:
+    value: 0.1
+    op: ">="
+    unit: "cm"
+    source: "wrb_standin"
+    decision: "Q14"
+    stand_in: true
+  placic_max_thickness:
+    value: 2.5
+    op: "<"
+    unit: "cm (a placic pan is thinner; a cemented iron layer this thick or more is a hard plinthic B)"
+    source: "wrb_standin"
+    decision: "Q14"
+    stand_in: true
+  hard_plinthic_cementation:
+    value: strongly
+    op: ">="
+    unit: "cementation_class: cannot be cut with a spade when wet (S 31), read as strongly cemented or indurated; a soft plinthic B is less cemented"
+    source: "soilkey"
+    stand_in: true
+  hardpan_carbonate_cementation:
+    value: moderately
+    op: ">="
+    unit: "cementation_class of the hardpan carbonate horizon (the WRB petrocalcic horizon)"
+    source: "wrb_standin"
+    decision: "Q16"
+    stand_in: true
+  hardpan_carbonate_thickness:
+    value: 10
+    op: ">="
+    unit: "cm"
+    source: "wrb_standin"
+    decision: "Q16"
+    stand_in: true
+  carbonate_caco3:
+    value: 15
+    op: ">="
+    unit: "% CaCO3 equivalent of a carbonate horizon (the WRB calcic horizon)"
+    source: "wrb_standin"
+    decision: "Q16"
+    stand_in: true
+  soft_carbonate_secondary:
+    value: 5
+    op: ">="
+    unit: "% by volume of secondary carbonates (secondary_carbonates_pct, carbonate_soft_pct or carbonate_hard_pct)"
+    source: "wrb_standin"
+    decision: "Q16"
+    stand_in: true
+    note: "Not recorded: absent (an observation), so a layer with only a laboratory CaCO3 is not a soft carbonate horizon (soilKey's reading, for Hugo to confirm, 2026-11-05)."
+  soft_carbonate_thickness:
+    value: 15
+    op: ">="
+    unit: "cm"
+    source: "wrb_standin"
+    decision: "Q16"
+    stand_in: true
+  dorbank_cementation:
+    value: moderately
+    op: ">="
+    unit: "cementation_class of the dorbank (the WRB petroduric horizon)"
+    source: "wrb_standin"
+    decision: "Q15"
+    stand_in: true
+  dorbank_thickness:
+    value: 10
+    op: ">="
+    unit: "cm"
+    source: "wrb_standin"
+    decision: "Q15"
+    stand_in: true
+  dorbank_duripan:
+    value: 10
+    op: ">="
+    unit: "% by volume of duripan material (duripan_pct): the cementing agent read as silica"
+    source: "wrb_standin"
+    decision: "Q15"
+    stand_in: true
+  saprolite_rock:
+    value: 50
+    op: ">="
+    unit: "% by volume of weathering rock in place (saprolite_pct, else bedrock_pct) of a saprolite"
+    source: "soilkey"
+    stand_in: true
+    note: "S 31 gives no number; the greater part of the layer (soilKey's reading, for Hugo to confirm, 2026-11-05). weathering_stage, when recorded, decides first."
+  regic_sand_texture:
+    value: 30
+    op: "<"
+    unit: "% silt + 2 x % clay: loamy sand or coarser (the USDA limit of the loamy sand)"
+    source: "wrb_standin"
+    stand_in: true
+    note: "'Little silt or clay' (S 33) has no number; the Arenosol texture (loamy sand or coarser) stands in (V 30)."
+  man_made_artefacts:
+    value: 20
+    op: ">="
+    unit: "% by volume of artefacts (artefacts_pct or technic_hardmaterial_pct)"
+    source: "wrb_standin"
+    stand_in: true
+    note: "With no anthropic_material or layer_origin recorded, artefacts of 20 % or more (the WRB Technosols) make the man-made soil deposit, flagged."
+  e_clay_above:
+    value: 2
+    op: "<="
+    unit: "percentage points of clay an E may hold over the layer above it (else it needs less clay than the layer below)"
+    source: "soilkey"
+    decision: "R2 (Hugo, 2026-11-06)"
+    stand_in: true
+  g_sign_value:
+    value: 5
+    op: ">="
+    basis: moist
+    unit: "Munsell value: with a grey matrix that is also a pedocutanic B, this moist value or more (or a gley hue, or low-chroma mottles on wetness_signs) makes the G"
+    source: "soilkey"
+    decision: "R1 (Hugo, 2026-11-06)"
+    stand_in: true
+  surface_b_oc:
+    value: 0.3
+    op: "<"
+    unit: "% organic carbon of a surface layer read as a B at the surface (an apedal or neocarbonate B over hard rock, a lithocutanic B or a dorbank)"
+    source: "K 70; K 72; K 73"
+    decision: "D7 (Hugo, 2026-11-06)"
+    stand_in: true
+    note: "The form pages say 'usually' under 0.3 %: a descriptive number read as the limit, flagged."

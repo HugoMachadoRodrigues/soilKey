@@ -233,7 +233,11 @@ test_that("red and yellow-brown apedal B", {
   expect_identical(red_apedal_b_za(red())$layers, 2L)
   expect_false(.zp(soilKey:::.za_t_RAB, red(structure_type = "subangular blocky", structure_grade = "moderate"), 2))
   expect_false(.zp(soilKey:::.za_t_RAB, red(effervescence_class = "strong"), 2))
-  expect_false(.zp(soilKey:::.za_t_RAB, red(redoximorphic_features_pct = 20), 2))
+  # more than 10 % mottles: not apedal when the layer is a soft plinthic B
+  # (with grey mottles); undecided when their colours are not recorded (R3,
+  # 0.9.357)
+  expect_false(.zp(soilKey:::.za_t_RAB, red(redoximorphic_features_pct = 20, mottle_colors = "10YR 6/1"), 2))
+  expect_true(is.na(.zp(soilKey:::.za_t_RAB, red(redoximorphic_features_pct = 20), 2)))
   expect_true(is.na(.zp(soilKey:::.za_t_RAB, red(munsell_hue_moist = NA, munsell_hue_dry = NA), 2)))
   # borderline structure: the CEC under 11 cmol(+)/kg soil (V 21)
   bl <- function(...) red(structure_type = "subangular blocky", structure_grade = "weak to moderate", ...)
