@@ -579,16 +579,43 @@ test_that("R2: Dundee reads the signs of wetness from the alluvium down, not in 
 
 test_that("R3: Shortlands, a calcareous middle layer of the B gives Sd3xxx", {
   skip_on_cran()
-  # by the notation (the lower layers of a red structured B on the data are
-  # a question of the horizon key, not of the families)
-  sd <- .ex("shortlands", "Sd1110", notation = TRUE)
+  for (nt in c(FALSE, TRUE)) {
+  sd <- .ex("shortlands", "Sd1110", notation = nt)
   j <- which(as.character(sd$horizons$designation) == "B")[1L]
   t0 <- as.numeric(sd$horizons$top_cm[j])
   p <- .split(sd, j, list(list(bottom_cm = t0 + 35), list(top_cm = t0 + 35, bottom_cm = t0 + 75, effervescence_class = "slight", caco3_pct = 2),
                           list(top_cm = t0 + 75)))
   r <- .cl(p)
-  expect_identical(r$rsg_or_order, "Shortlands")
-  expect_identical(r$levels$code[2L], "Sd3110")
+  expect_identical(r$rsg_or_order, "Shortlands", info = nt)
+  expect_identical(r$levels$code[2L], "Sd3110", info = nt)
+  }
+})
+
+test_that("a diagnostic horizon of several layers on the data: every layer read as it", {
+  skip_on_cran()
+  cases <- list(list("shortlands", "Sd1220", "B", 3L, "RSB"), list("valsrivier", "Va2121", "Bt", 2L, "PCU"),
+                list("clovelly", "Cv2200", "B", 2L, "YAB"), list("hutton", "Hu3200", "B", 3L, "RAB"),
+                list("glenrosa", "Gs2111", "BC", 2L, "LCU"), list("estcourt", "Es2200", "Btn", 2L, "PRC"),
+                list("oakleaf", "Oa2220", "B", 2L, "NCU"), list("augrabies", "Ag1210", "Bk", 2L, "NCA"),
+                list("kroonstad", "Kd2000", "E", 2L, "E"), list("katspruit", "Ka2000", "G", 2L, "G"))
+  for (cs in cases) {
+    p <- .ex(cs[[1]], cs[[2]])
+    j <- which(as.character(p$horizons$designation) == cs[[3]])[1L]
+    t0 <- as.numeric(p$horizons$top_cm[j]); b0 <- as.numeric(p$horizons$bottom_cm[j])
+    cut <- round(seq(t0, b0, length.out = cs[[4]] + 1L))
+    ps <- .split(p, j, lapply(seq_len(cs[[4]]), function(k) list(top_cm = cut[k], bottom_cm = cut[k + 1L])))
+    fr <- identify_horizons(ps, "za1991")
+    expect_identical(fr$code[j + seq_len(cs[[4]]) - 1L], rep(cs[[5]], cs[[4]]), info = cs[[2]])
+    r <- .cl(ps)
+    expect_identical(r$levels$code[2L], cs[[2]], info = cs[[2]])
+    expect_identical(r$provisional_because, character(0), info = cs[[2]])
+  }
+  # under a lithocutanic B a layer with the rock of a saprolite is saprolite
+  gs <- .ex("glenrosa", "Gs1111")
+  j <- which(as.character(gs$horizons$designation) == "BC")[1L]
+  t0 <- as.numeric(gs$horizons$top_cm[j]); b0 <- as.numeric(gs$horizons$bottom_cm[j])
+  ps <- .split(gs, j, list(list(bottom_cm = t0 + 15), list(top_cm = t0 + 15, bedrock_pct = 60)))
+  expect_identical(identify_horizons(ps, "za1991")$code[j + 0:1], c("LCU", "SAP"))
 })
 
 test_that("R4: fibrous is one contiguous run of 200 mm", {

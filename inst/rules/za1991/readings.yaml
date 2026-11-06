@@ -276,3 +276,6 @@ readings:
   - topic: "The fibrous O (FC 1)"
     page: "FC 1; V 37"
     reading: "Fibrous is one contiguous run of fibrous layers of 200 mm or more within the O; fibrous layers are not summed across a humified one (R4) (Hugo, 2026-11-06)."
+  - topic: "A diagnostic horizon of several layers on the data"
+    page: "S 31-33; K 47; default 17"
+    reading: "A layer under a layer of the same horizon is read as that horizon by the position pass: the red structured B under a red structured B (not only under the orthic A), the placic pan under a placic pan, the lithocutanic B under a lithocutanic B (saprolite there only by its own test, saprolite_rock), as the apedal, pedocutanic, prismacutanic, neocutanic and neocarbonate B, the E and the G already were (the part 3 decision: a B only under a topsoil, an E or the same B) (Hugo, 2026-11-06)."

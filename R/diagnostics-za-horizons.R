@@ -1908,11 +1908,12 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
     else if (is.na(ok)) v[["E"]] <- NA
   }
   # the placic pan only under a podzol B (the key); the red structured B
-  # only under an orthic A (the key)
+  # only under an orthic A (the key); v0.9.359: either also under a layer of
+  # itself (a horizon of several layers)
   for (rule in list(c("PLP", "PZB"), c("RSB", "OA"))) {
     k <- rule[1L]
     if (isFALSE(v[[k]])) next
-    ok <- .za_within(above, rule[2L])
+    ok <- .za_within(above, c(rule[2L], k))
     if (isFALSE(ok)) { if (isTRUE(v[[k]])) notes <- c(notes, sprintf("a %s passes on the data but not under a %s: read on",
                                                                         .za_label(k), .za_label(rule[2L])))
                        v[[k]] <- FALSE }
@@ -1921,11 +1922,14 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
   # lithocutanic B directly under a topsoil horizon or an E; saprolite under
   # a B (default 17)
   under_top <- .za_within(above, c(.ZA_TOPSOILS, "E"))
+  # v0.9.359: a layer under a lithocutanic B may be more of it (a horizon of
+  # several layers); it is saprolite only by its own test (saprolite_rock)
+  under_lcu <- .za_within(above, "LCU")
   if (isTRUE(under_top) && isTRUE(v[["LCU"]]) && !isFALSE(v[["SAP"]])) {
     v[["SAP"]] <- FALSE
     notes <- c(notes, "weathering rock directly under the topsoil or E: the lithocutanic B, not saprolite (default 17)")
   }
-  if (isFALSE(under_top) && !isFALSE(v[["LCU"]])) {
+  if (isFALSE(under_top) && !isTRUE(under_lcu) && !isFALSE(v[["LCU"]])) {
     if (isTRUE(v[["LCU"]]) && !isTRUE(v[["SAP"]])) {
       v[["SAP"]] <- TRUE
       tags <- c(tags, "lithocutanic_under_b_as_saprolite")
