@@ -1,5 +1,38 @@
 # Changelog
 
+## soilKey 0.9.370 (2026-11-05)
+
+### China CST 2001: the attributes, the shared readers and the regimes
+
+First part of the Chinese Soil Taxonomy (2001, English edition; system
+id `cst2001`, registered in a later part). New horizon attributes (36,
+section “Chinese system (CST 2001)”, among them `fine_clay_pct`,
+`clay_films_thickness_mm`, `reduced_matrix_pct`, `ferricyanide_test`,
+`eh_mv`, `p_olsen_mg_kg`, `ec_1to1_dS_m`, `shajiang_pct`,
+`pyroclastic_fragments_pct`) and site attributes (14: `aridity_index`,
+`aridity_index_max_month`, `climatic_moisture_regime`,
+`udic_perudic_border`, `mean_summer_soil_temp_C`, `summer_saturated`,
+`cracks_open_days`, `irrigated` and others), each with its fallback.
+`soil_moisture_regime` takes stagnic, anthrostagnic and peraquic, which
+the USDA key reads as aquic; `soil_temperature_regime` takes permagelic,
+read by the USDA key as gelic. The shared readers (`R/cst-readers.R`:
+units, clay activity, free iron, texture and particle-size classes, hue
+ranks, the mixed surface, windows and shares, storage with the book’s
+default bulk densities, the arid region) and the regime readers
+(`R/cst-regimes.R`, each regime with its source in the trace) read the
+numbers of `inst/rules/cst2001/thresholds.yaml`. The moisture regime is
+read on two axes, climatic (aridic, ustic, udic, perudic) and saturation
+(stagnic, anthrostagnic, aquic, peraquic), so a paddy recorded udic is
+anthrostagnic and a value on one axis says nothing of the other;
+permafrost within 50 cm gives the permagelic regime ahead of an estimate
+from the air; Cr is a paralithic contact only with a contact recorded or
+an FAO, WRB or USDA notation declared (otherwise the redox r of the
+Chinese field notation); an O horizon without a measured bulk density
+takes the range 0.1-0.4 Mg/m3, so a storage is a range. Hugo’s decisions
+of 2026-11-04 and 2026-11-05 are in `inst/rules/cst2001/readings.yaml`.
+Every other classification is unchanged (the fixtures of the other
+systems byte-identical).
+
 ## soilKey 0.9.360 (2026-11-05)
 
 ### Germany (KA5, 2005): the horizon notation and the formulas
