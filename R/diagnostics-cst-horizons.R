@@ -391,6 +391,11 @@
   if (!nrow(row) && name == "phos_agric_horizon")
     row <- data.frame(id = name, name = "Phos-agric horizon (the agric horizon by its Olsen P)",
                       page = "33-34", evidence = TRUE, stringsAsFactors = FALSE)
+  # the layer characteristics (0.9.372) are read the same way
+  if (!nrow(row)) {
+    ch <- .cst_characteristic_table()
+    row <- ch[ch$id == name, , drop = FALSE]
+  }
   x <- x %||% .cst_ctx(pedon)
   r <- r %||% .cst_hz(x, name)
   full <- r$full; evid <- r$evid
@@ -1408,14 +1413,23 @@
   r <- .cst_runs(x, p)
   full <- .cst_thk_ok(r$low, r$high, t$thick_min_cm)
   full[r$high == 0] <- FALSE
-  sid <- ss >= t$sulfidic_s_min_pct
+  # the sulfidic materials as the characteristic reads them (0.9.372): the
+  # WRB sulfidic S, an incubation pH under 4, or the WRB stand-ins
+  sm <- .cst_ch(x, "sulfidic_materials")
+  sid <- sm$full
+  # a lower grade only where the layer below rests on the WRB hyper- or
+  # hyposulfidic stand-ins (Hugo, 2026-11-06)
+  si <- rep(NA_character_, x$n)
   for (b in unique(stats::na.omit(r$hi_id))) {
     rows <- which(r$hi_id == b); last <- max(rows)
     below <- if (last < x$n) sid[last + 1L] else NA
     full[rows] <- full[rows] & below
+    if (last < x$n && !is.na(sm$stand_in[last + 1L])) si[rows[full[rows] %in% TRUE]] <- sm$stand_in[last + 1L]
   }
-  ans <- .cst_hz_ans(x, full, flags = if (any(!is.na(.cst_v(x, "ph_h2o")))) "ph_ratio_substitute",
-                     notes = c("jarosite not recorded is absent", "sulfidic materials below read by sulfidic_s_pct 0.01 % (stand-in until the characteristic is read)"),
+  ans <- .cst_hz_ans(x, full, stand_in = si,
+                     flags = c(if (any(!is.na(si))) sprintf("stand_in:%s", unique(stats::na.omit(si))),
+                               if (any(!is.na(.cst_v(x, "ph_h2o")))) "ph_ratio_substitute"),
+                     notes = c("jarosite not recorded is absent", "sulfidic materials below read by the characteristic (sulfidic_materials_cst())"),
                      missing = .cst_missing_in(x, which(is.na(full)), c("sulfidic_s_pct", "sulfate_s_pct", "s_total_pct", "ph_h2o")))
   .cst_stand_in(x, ans, list(list(fn = "thionic"), list(fn = "sulfuric_horizon_usda")),
                 eligible = is.na(jar) & !jar_mot & !(ph %in% FALSE) & !(sulf %in% FALSE))
@@ -1441,7 +1455,9 @@
 #'   (TRUE a horizon, FALSE none, NA undecided), plus the CST columns
 #'   `diagnostics` (every full horizon), `evidences`, `undecided`, `kinds`
 #'   ("<name>: <kind>"), `stand_ins` (the soilKey diagnostics that stood in)
-#'   and `lower_grade` (a stand-in was used).
+#'   and `lower_grade` (a stand-in was used); since 0.9.372 the layer
+#'   characteristics: `characteristics` (those the layer holds, with their
+#'   kind), `characteristic_evidences` and `characteristic_stand_ins`.
 #' @noRd
 .cst_identify <- function(pedon, ...) {
   if (!inherits(pedon, "PedonRecord")) rlang::abort("'pedon' must be a PedonRecord.")
@@ -1450,6 +1466,7 @@
   lst <- rep(list(character(0)), n)
   fr$diagnostics <- lst; fr$evidences <- lst; fr$undecided <- lst; fr$kinds <- lst
   fr$stand_ins <- lst; fr$lower_grade <- rep(FALSE, n)
+  fr$characteristics <- lst; fr$characteristic_evidences <- lst; fr$characteristic_stand_ins <- lst
   if (!n) return(fr)
   x <- .cst_ctx(pedon)
   tab <- .cst_horizon_table()
@@ -1473,6 +1490,25 @@
       }
     }
   }
+  # the layer characteristics (0.9.372): those a layer holds (with their
+  # kind) and their evidences; undecided ones are not listed
+  ch <- .cst_characteristic_table()
+  ch <- ch[ch$scope == "layer", , drop = FALSE]
+  for (k in seq_len(nrow(ch))) {
+    r <- .cst_ch(x, ch$id[k])
+    for (p in seq_len(n)) {
+      i <- x$idx[p]
+      nm <- ch$name[k]
+      if (r$full[p] %in% TRUE) {
+        lab <- if (!is.na(r$kind[p])) sprintf("%s (%s)", nm, r$kind[p]) else nm
+        if (isTRUE(r$prov[p])) lab <- paste(lab, "(provisional)")
+        fr$characteristics[[i]] <- c(fr$characteristics[[i]], lab)
+        if (!is.na(r$stand_in[p])) fr$characteristic_stand_ins[[i]] <- unique(c(fr$characteristic_stand_ins[[i]], r$stand_in[p]))
+      } else if (r$full[p] %in% FALSE && r$evid[p] %in% TRUE) {
+        fr$characteristic_evidences[[i]] <- c(fr$characteristic_evidences[[i]], paste(sub(" (features|property)$", "", nm), "evidence"))
+      }
+    }
+  }
   for (i in seq_len(n)) {
     d <- fr$diagnostics[[i]]
     fr$code[i] <- if (length(d)) d[1L] else NA_character_
@@ -1489,7 +1525,10 @@
                if (length(fr$evidences[[i]])) paste(fr$evidences[[i]], collapse = ", "),
                fr$kinds[[i]],
                if (length(fr$stand_ins[[i]])) sprintf("soilKey's stand-in, flagged: %s",
-                                                      paste0(fr$stand_ins[[i]], "()", collapse = ", ")))
+                                                      paste0(fr$stand_ins[[i]], "()", collapse = ", ")),
+               if (length(c(fr$characteristics[[i]], fr$characteristic_evidences[[i]])))
+                 sprintf("characteristics: %s", paste(c(fr$characteristics[[i]], fr$characteristic_evidences[[i]]),
+                                                      collapse = ", ")))
     fr$evidence[i] <- paste(parts, collapse = "; ")
   }
   fr
