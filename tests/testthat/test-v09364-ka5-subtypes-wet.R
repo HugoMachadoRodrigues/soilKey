@@ -378,6 +378,43 @@ test_that("R2, R3, R4: a covered Erdniedermoor; the Normniedermoor's pH; Marsch 
   expect_true("subtypes:MNn" %in% r$provisional_because)
 })
 
+test_that("the bleached and podzolic horizons on the data (Hugo, 2026-11-06)", {
+  skip_on_cran()
+  # the Podsol-Gley's data twin: Ahe/Ae/Bhs-Go, no longer Ah/Al/Bt-Go
+  r <- .wt_cls(make_ka5_example(subtype = "PP-GG", route = "data"))
+  expect_identical(.wt_of(r), "PP-GG")
+  expect_identical(r$trace$horizons$code[1:3], c("Ahe", "Ae", "Bhs-Go"))
+  # the Podsol, Braunerde-Podsol, Podsol-Braunerde, Parabraunerde and Fahlerde twins key to their subtypes
+  for (cd in c("PPn", "PPe", "PPh", "BB-PP", "PP-BB", "LL-PP", "GG-PP", "YK-PP", "LLn", "LFn", "GG-LL", "GG-LF"))
+    expect_identical(.wt_of(.wt_cls(make_ka5_example(subtype = cd, route = "data"))), cd, info = cd)
+  dat <- function(...) {
+    p <- .wt_mk(..., site = list(designation_system = NULL))
+    p$horizons$designation <- NA_character_
+    p
+  }
+  code3 <- function(p) .wt_cls(p)$trace$horizons$code[3]
+  base <- "X 0-5 / X 5-20 / X 20-45 / X 45-100"
+  args <- list(oc_pct = c(3, 0.3, 1.2, 0.2), clay_pct = c(3, 3, 12, 10), silt_pct = 5,
+               munsell_hue_moist = c("10YR", "10YR", "7.5YR", "10YR"), munsell_value_moist = c(4, 6, 4, 5),
+               munsell_chroma_moist = c(1, 1, 6, 4), rock_diggable = c(NA, NA, NA, TRUE), caco3_pct = 0)
+  # a B under a pale Ae with Cp/Fep of a Bhs: the podzolic B, not a Bt, however much clay it gains
+  p <- do.call(dat, c(list(base), args, list(c_pyro_pct = c(NA, NA, 0.9, NA), fe_pyro_pct = c(NA, NA, 0.2, NA))))
+  expect_false(grepl("Bt", code3(p)))
+  expect_identical(.wt_cls(p)$trace$horizons$code[2], "Ae")
+  # with clay films recorded the Bt stands
+  p <- do.call(dat, c(list(base), args, list(clay_films_amount = c(NA, NA, "many", NA))))
+  expect_true(grepl("Bt", code3(p)))
+  # no podzolic data and illuvial humus under the pale horizon: Bt and podzolic B both candidates, undecided
+  p <- do.call(dat, c(list(base), args))
+  r <- .wt_cls(p)
+  expect_true(is.na(r$trace$horizons$code[3]))
+  expect_true(all(c("Bhs") %in% r$trace$horizons$candidates[[3]]))
+  # a pale horizon over a Bt with no humus gained: the Al/Bt pair unchanged
+  a2 <- args; a2$oc_pct <- c(3, 0.3, 0.3, 0.2); a2$munsell_value_moist <- c(4, 5, 4, 5); a2$munsell_chroma_moist <- c(2, 3, 6, 4)
+  p <- do.call(dat, c(list(base), a2, list(clay_films_amount = c(NA, NA, "common", NA))))
+  expect_identical(.wt_cls(p)$trace$horizons$code[2:3], c("Al", "Bt"))
+})
+
 test_that("the data-route twins key to their subtype where the data route reaches it", {
   skip_on_cran()
   dr <- soilKey:::.KA5_DATA_ROUTE_SUBTYPES_WET

@@ -454,7 +454,11 @@
   if (isTRUE(.ka5_organic(x, i)$passed)) return(.ka5_r(FALSE, note = "organic"))
   top <- .ka5_in_topsoil(x, i)
   first <- identical(i, .ka5_first_mineral(x))
-  if (!top) return(.ka5_r(FALSE, note = "not in the run of topsoils"))
+  # v0.9.364 (Hugo, 2026-11-06): the eluvial Al of a Parabraunerde under a
+  # podzolic B (the Ae/B(h)s/Al/Bt of the Parabraunerde-Podsol, p. 223)
+  pv <- .ka5_prev(x, i)
+  under_pz <- !top && !first && !is.na(pv) && isTRUE(.ka5_t_Bsp(x, pv)$passed)
+  if (!top && !under_pz) return(.ka5_r(FALSE, note = "not in the run of topsoils"))
   if (.ka5_rock_described(x, i)) return(.ka5_r(FALSE, note = "described as rock"))
   os <- .ka5_os(x, i)
   am <- .ka5_ah_min(x, i)
@@ -470,8 +474,15 @@
   pale <- .ka5_pale(x, i)
   nx <- .ka5_next(x, i)
   # Ae: pale, over a Bh or Bs (p. 94)
-  if (!first || isTRUE(pale$passed)) {
+  if (!under_pz && (!first || isTRUE(pale$passed))) {
     bsp <- if (!is.na(nx)) .ka5_t_Bsp(x, nx) else .ka5_r(FALSE)
+    # v0.9.364 (Hugo, 2026-11-06): the first row, pale and humic, over a pale
+    # Ae over a Bh or Bs is the Ahe of the Ahe/Ae/B(h)s (p. 94)
+    if (first && isFALSE(bsp$passed) && !is.na(nx) && isTRUE(.ka5_pale(x, nx)$passed)) {
+      n2 <- .ka5_next(x, nx)
+      b2 <- if (!is.na(n2)) .ka5_t_Bsp(x, n2) else .ka5_r(FALSE)
+      if (isTRUE(b2$passed)) bsp <- .ka5_r(b2$passed, code = sprintf("pale Ae over a %s", b2$code %||% "Bh or Bs"))
+    }
     if (isTRUE(bsp$passed) || is.na(bsp$passed)) {
       p <- .kidpr_and(pale$passed, bsp$passed)
       if (is.na(pale$passed)) {
@@ -503,10 +514,12 @@
                         note = c(sprintf("over a Bt (%s): Al or Ael, the colour not recorded", paste(bt$note, collapse = "; ")), lf$note)))
         return(.ka5_r(p, code = code, missing = c("munsell_value_moist", bt$missing),
                       note = c(sprintf("over a Bt (%s), lighter: %s", paste(bt$note, collapse = "; "), code),
-                               if (code == "Ael") c("pale grey (p. 219)", lf$note))))
+                               if (code == "Ael") c("pale grey (p. 219)", lf$note),
+                               if (under_pz) "under a podzolic B (p. 223)")))
       }
     }
   }
+  if (under_pz) return(.ka5_r(FALSE, note = "under a podzolic B, over no Bt: not an Al"))
   # Axh, Acxh: 1 dm or more, base saturation 50 % or more, marked
   # bioturbation and stable aggregates (p. 93)
   bs <- .ka5_num(x, i, "bs_pct")
@@ -581,6 +594,13 @@
     if (is.na(cp) || is.na(fp) || fp <= 0) {
       w <- .ka5_stand_in(x, i, "spodic", "Cp/Fep")
       p <- if (isTRUE(w$p)) NA else FALSE
+      # v0.9.364 (Hugo, 2026-11-06): humus or oxalate Fe and Al accumulated
+      # under a pale horizon leave a Bh or Bs open without its Cp/Fep
+      films <- .clay_films_class(.kidpr_v(x, i, "clay_films_amount"))
+      if (isFALSE(p) && !isTRUE(films >= 3L) && isTRUE(.ka5_podzolic_signs(x, i)$passed)) {
+        p <- NA
+        w$note <- c(w$note, "podzolic signs under a pale horizon")
+      }
       return(.ka5_r(p, code = paste0("B", if (m == "m") "hms" else "hs"), missing = c("c_pyro_pct", "fe_pyro_pct"), tag = w$tag,
                     note = c(w$note, if (is.na(p)) "a Bh or Bs (a candidate, never decided by the stand-in alone)")))
     }
@@ -602,6 +622,29 @@
            note = sprintf("Cp/Fep %s, under 3, %s: the Bs (p. 97)", format(signif(r, 3)),
                           if (is.na(p)) "a page redder than above and below undecided" else if (p) "a page redder than above and below" else "not redder"))
   })
+}
+
+# The signs of a podzolic illuvial horizon in a B (v0.9.364; Hugo,
+# 2026-11-06): under a pale horizon (the Ae colour, p. 94), humus or oxalate
+# Fe and Al (Al + 1/2 Fe) accumulated against it. TRUE (a sign measured),
+# FALSE (none, or no pale horizon above), NA (the pale horizon above, the
+# signs not measured).
+.ka5_podzolic_signs <- function(x, i) {
+  pr <- .ka5_prev(x, i)
+  pale <- if (is.na(pr)) FALSE else .ka5_pale(x, pr)$passed
+  if (!isTRUE(pale)) return(.ka5_r(FALSE, note = "no pale horizon above: no podzolic signs read"))
+  if (isFALSE(.ka5_b_gate(x, i)$passed)) return(.ka5_r(FALSE, note = "not a B"))
+  ox <- function(j) { a <- .ka5_num(x, j, "al_ox_pct"); f <- .ka5_num(x, j, "fe_ox_pct"); if (is.na(a) || is.na(f)) NA else a + f / 2 }
+  oo <- c(ox(i), ox(pr))
+  # illuvial humus: the B at the humus minimum of an Ah (p. 93), the pale
+  # horizon above under it
+  ha <- .ka5_ah_min(x, i)$passed; hp <- .ka5_ah_min(x, pr)$passed
+  hum <- if (is.na(ha) || is.na(hp)) NA else ha && !hp
+  oxa <- if (anyNA(oo)) NA else oo[1L] > oo[2L]
+  p <- if (isTRUE(hum) || isTRUE(oxa)) TRUE else if (is.na(hum) && is.na(oxa)) NA else FALSE
+  .ka5_r(p, missing = c(if (is.na(hum)) "oc_pct", if (is.na(oxa)) c("al_ox_pct", "fe_ox_pct")),
+         note = sprintf("podzolic signs under the pale horizon above: %s",
+                        if (is.na(p)) "not measured" else if (p) "humus or oxalate Fe and Al accumulated" else "none"))
 }
 
 # Bt: clay coatings (common or many clay films, over 1 % in thin section, or
@@ -627,6 +670,25 @@
     pr <- .ka5_prev(x, i)
     cd <- .ka5_clay_diff(x, pr, i, "bt")
     p <- .kidpr_and(coat, cd$passed, g$passed)
+    # v0.9.364 (Hugo, 2026-11-06): with no clay coatings recorded, a B with
+    # the signs of a podzolic illuvial horizon (a Bh or Bs, or humus or oxalate
+    # Fe and Al accumulated against the pale horizon above) is no Bt; signs
+    # not measured leave the Bt undecided beside the podzolic B
+    if (!isFALSE(p) && !any(obs %in% TRUE)) {
+      bsp <- .ka5_t_Bsp(x, i)
+      if (isTRUE(bsp$passed)) {
+        p <- FALSE
+        cnote <- c(cnote, sprintf("the podzolic %s (p. 97), no clay coatings recorded: no Bt", bsp$code))
+      } else if (!is.na(pr) && isTRUE(.ka5_t_Bsp(x, pr)$passed)) {
+        # the clay difference of the Bt is against the eluvial horizon above
+        # (p. 97): under a podzolic B it is no clay illuviation
+        p <- FALSE
+        cnote <- c(cnote, "under a podzolic B, not an eluvial horizon, no clay coatings recorded: no Bt")
+      } else if (isTRUE(.ka5_podzolic_signs(x, i)$passed)) {
+        p <- NA
+        cnote <- c(cnote, "podzolic signs under a pale horizon, no clay coatings recorded: a Bt or a podzolic B undecided")
+      }
+    }
     code <- if (isTRUE(bands > .ka5_thr("bands_area_pct")[2L])) "Bbt" else "Bt"
     .ka5_r(p, code = code, missing = unique(c("clay_films_amount", cd$missing, g$missing)), tag = tag,
            note = c(cnote, cd$note, if (code == "Bbt") sprintf("clay bands %s area-%%", format(bands))), value = cd$value)
@@ -872,7 +934,9 @@
   if (master %in% c("G", "S")) {
     # a G or S with the Ah humus minimum in the run of topsoils: Ah-Go, Ah-Sw;
     # with a non-hydromorphic horizon that also holds: Bv-Go, Bt-Sd ...
-    if (topsoil && isTRUE(am$passed) && !startsWith(sub("^[a-z]*", "", code), "Gr"))
+    # (v0.9.364: not the illuvial humus of a podzolic B, which gives Bhs-Go;
+    # Hugo, 2026-11-06)
+    if (topsoil && isTRUE(am$passed) && !startsWith(sub("^[a-z]*", "", code), "Gr") && is.na(hold("subsoil", "Bsp")))
       return(list(code = paste0("Ah-", code), note = "the Ah humus minimum: Ah- (p. 105)"))
     other <- hold("subsoil", c("Bt", "Bv", "Bsp"))
     # a Bv against a hydromorphic horizon below is the colour of the redox

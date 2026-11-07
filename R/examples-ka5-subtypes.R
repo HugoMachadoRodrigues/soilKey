@@ -380,6 +380,8 @@
     if (wm == "T") set(clay_pct = max(o$clay_pct %||% 0, 55, na.rm = TRUE))
     if (w == "M") set(layer_origin = "colluvic", stratification_pattern = "continuous")
     if (w == "E") set(p2o5_al_mg_kg = 250)
+    # v0.9.364: a podzolic B part (Bhs-Go): the Cp and Fep of a Bhs, sand
+    if (isTRUE(wet) && grepl("^B[hms]*(h|s)[hms]*$", w)) set(c_pyro_pct = 0.9, fe_pyro_pct = 0.2, oc_pct = max(o$oc_pct, 1), clay_pct = 3, silt_pct = 5)
   }
   if (isTRUE(wet)) o <- .ka5_hz_data_wet(o, car, pre, with, ms)
   if (!is.na(o$clay_pct %||% NA) && !is.na(o$silt_pct %||% NA)) o$sand_pct <- max(0, 100 - o$clay_pct - o$silt_pct)
