@@ -49,6 +49,7 @@ soilkey_systems()
 #> 12    rp2008
 #> 13       ka5
 #> 14    za1991
+#> 15   cst2001
 #>                                                                       name
 #> 1                                                                 WRB 2022
 #> 2                                                       SiBCS, 5th edition
@@ -64,6 +65,7 @@ soilkey_systems()
 #> 12                                   French Référentiel pédologique (2008)
 #> 13 German soil classification (Bodenkundliche Kartieranleitung, KA5, 2005)
 #> 14                                South African soil classification (1991)
+#> 15                           Chinese Soil Taxonomy (2001, English edition)
 #>                                                                                       edition
 #> 1                                                                          4th edition (2022)
 #> 2                                                                          5th edition (2018)
@@ -79,6 +81,7 @@ soilkey_systems()
 #> 12                                    Référentiel pédologique 2008, AFES, Éditions Quæ (2009)
 #> 13                Bodenkundliche Kartieranleitung, 5. Auflage, Ad-hoc-AG Boden, Hannover 2005
 #> 14                            Soil classification: a taxonomic system for South Africa (1991)
+#> 15                                 Chinese Soil Taxonomy, English edition, Science Press 2001
 #>          status         classifier
 #> 1        stable   classify_wrb2022
 #> 2        stable     classify_sibcs
@@ -94,6 +97,7 @@ soilkey_systems()
 #> 12 experimental    classify_rp2008
 #> 13 experimental       classify_ka5
 #> 14 experimental    classify_za1991
+#> 15 experimental   classify_cst2001
 #>                                            levels
 #> 1                                            rsgs
 #> 2    ordens, subordens, grandes_grupos, subgrupos
@@ -109,6 +113,7 @@ soilkey_systems()
 #> 12                                     references
 #> 13            divisions, classes, types, subtypes
 #> 14                                forms, families
+#> 15                              orders, suborders
 #>                                       aliases default
 #> 1                                         wrb    TRUE
 #> 2                                       sibcs    TRUE
@@ -124,4 +129,5 @@ soilkey_systems()
 #> 12                            rp, referentiel   FALSE
 #> 13 germany, kartieranleitung, bodensystematik   FALSE
 #> 14             za, sat, sat1991, south_africa   FALSE
+#> 15                        cst, china, chinese   FALSE
 ```

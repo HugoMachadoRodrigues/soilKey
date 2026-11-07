@@ -1,5 +1,80 @@
 # Changelog
 
+## soilKey 0.9.373 (2026-11-06)
+
+### China CST 2001: the registry, the orders and the suborders
+
+Fourth part of the Chinese Soil Taxonomy (2001, English edition). The
+system is registered as `cst2001` (aliases `cst`, `china`, `chinese`;
+experimental and opt-in; order 15 in the registry, after the German KA5
+and South Africa planned at 13 and 14), with the levels orders and
+suborders for now.
+[`classify_cst2001()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cst2001.md)
+keys a pedon to the 14 orders of key 5.1 (pp. 72-75) and the 39
+suborders of key 5.2, in the book’s order, on the 33 diagnostic horizons
+(0.9.371), the 25 diagnostic characteristics (0.9.372) and the regimes
+(0.9.370), plus the criteria the key defines where it uses them (the
+share of the upper 60 cm with andic property, the organic soil materials
+of the Histosols, an argic horizon above the spodic one, the base
+saturation window of the Isohumosols, the claypan with illuviation
+argillans, the humic spodic subhorizons, the texture of the Vitric
+Andosols, the crack days of the Ustic Vertosols, the low n value or clay
+of the Cambosols, irrigation and anthro-silting within 50 cm).
+Three-valued: an undecided class before the assigned one makes the name
+provisional; a class assigned on a reading the book leaves open (gley
+colours without a test, cracks for their duration) carries a warning.
+soilKey’s residual `[E2] [Other Ferralosols]` closes the suborders of
+the Ferralosols, and E1 takes the udic or perudic regime (Q4). Names in
+English as printed, with soilKey’s Portuguese gloss in `levels$name_pt`;
+the book’s own provisional marks are read from `book_provisional` (none
+falls on an order or suborder). A residual named for the udic regime
+reached under another recorded regime keeps its class, with a note. The
+approximate equivalents of each order in US Soil Taxonomy (1999) and the
+WRB (1998), Tables 4.2 and 4.3, are a note in the result, the report and
+the app (`inst/rules/cst2001/correlation.yaml`; Q1), never a class. The
+horizon panel of `identify_horizons(pedon, "cst2001")` is in the trace
+(phase `horizons`).
+
+[`make_cst2001_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cst2001_example.md)
+gives one profile per suborder (39, each keying to its own suborder, not
+provisionally) and, with `near_miss = TRUE`, fourteen near misses, one
+per order. The app lists China among the national systems with the 39
+examples; `data-raw/cst2001_taxa.csv` holds the 779 names of Appendix 1
+in the canonical spelling of Q2 (with soilKey’s `[E2]`), the other
+printed forms as aliases. A recorded drainage class of well drained or
+better now rules out the saturation regimes of the CST (stagnic,
+anthrostagnic, aquic, peraquic). The readings of this part are in
+`inst/rules/cst2001/readings.yaml`. Every other classification is
+unchanged (the fixtures of the other systems byte-identical).
+
+Decided by Hugo on the review (2026-11-06): soilKey’s readings of this
+part accepted, with these changes. The spodic materials by colour alone
+only directly below an albic horizon or an E layer, elsewhere with a
+sign (cementation, cracked coatings, Alo + 1/2 Feo 0.50 % with half or
+less above, ODOE); measured oxalate without a sign gives spodic evidence
+at most, no data leaves a red B undecided (red Ferralosols, Ferrosols
+and Argosols no longer key as Spodosols). The base saturation of the
+Isohumosols below the description is read as saturated under a
+calcareous lowest horizon, otherwise the window stops at the base of the
+description and the class is provisional. Runs of gleyic and redoxic
+features skip rock and organic layers. The permafrost of the Cambosols
+(M 4), the contacts of the Vertosols (F 2) and the anthroturbic layer
+(N1) are read from the mineral soil surface (`datum = "mineral"` of
+`permafrost_layer_cst()`, `lithic_contact_cst()`,
+`paralithic_contact_cst()`, `anthroturbic_layer_cst()`). The
+anthrostagnic epipedon and the agric horizon on a plain A are ruled out
+when an item fails, instead of undecided. M 3 keeps the printed clay
+under 80 g/kg and reads an unmeasured n value under 0.7 in a layer not
+saturated. The Vitric Andosols take sand, loamy sand and sandy loam
+only. Histosol item b is literal. A recorded non-volcanic parent
+material rules out the andic property; pH(H2O) under 5.5 or a perudic
+regime rules out the salic horizon where salts are not measured; under
+an aridic regime a crust not recorded leaves the aridic epipedon
+undecided. A class assigned on a provisional reading (gley colours
+without a test, Q11) comes with the class the key would reach without
+it, in `candidates` (kind “alternative”), a warning, the trace and the
+printed result, never as the class.
+
 ## soilKey 0.9.372 (2026-11-06)
 
 ### China CST 2001: the diagnostic characteristics

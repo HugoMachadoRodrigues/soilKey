@@ -237,6 +237,20 @@ identified from the data. Subtypes and varieties come later.
 - [`make_ka5_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_ka5_example.md)
   : Example pedons for the types of the German KA5 soil systematics
 
+## Chinese Soil Taxonomy 2001 (experimental)
+
+The 14 orders and 39 suborders of the Chinese Soil Taxonomy (Cooperative
+Research Group on Chinese Soil Taxonomy, 2001, English edition), named
+in English as printed, keyed on the 33 diagnostic horizons and the 25
+diagnostic characteristics of chapter 3 read on the data, with the
+approximate equivalents of Tables 4.2 and 4.3 as a note. The groups and
+subgroups follow in later releases.
+
+- [`classify_cst2001()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cst2001.md)
+  : Classify a pedon under the Chinese Soil Taxonomy (2001)
+- [`make_cst2001_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cst2001_example.md)
+  : Example pedons for the suborders of the Chinese Soil Taxonomy (2001)
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:
