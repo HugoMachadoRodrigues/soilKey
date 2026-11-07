@@ -19,7 +19,8 @@ make_ka5_example(
     "VW"),
   near_miss = FALSE,
   route = c("notation", "data"),
-  subtype = NULL
+  subtype = NULL,
+  variety = NULL
 )
 ```
 
@@ -56,6 +57,13 @@ make_ka5_example(
   type (the Treposol's to an example subtype, the Moorgley's to the
   Niedermoorgley: they have no Norm).
 
+- variety:
+
+  The code of a variety of Tab. 49 (`"p"`, `"g"`, `"eu"`, `"mo"`, `"v"`
+  ...; the 38): an example profile of a subtype Tab. 50 offers it to,
+  with the variety's horizon or record (`type`, `near_miss` and
+  `subtype` are then not read).
+
 ## Value
 
 A
@@ -70,4 +78,6 @@ classify_ka5(make_ka5_example("LL", route = "data"), on_missing = "silent")$name
 #> [1] "Normparabraunerde"
 classify_ka5(make_ka5_example(subtype = "GG-BB"), on_missing = "silent")$name
 #> [1] "Gley-Braunerde"
+classify_ka5(make_ka5_example(variety = "p"), on_missing = "silent")$name
+#> [1] "schwach podsolige Normbraunerde"
 ```

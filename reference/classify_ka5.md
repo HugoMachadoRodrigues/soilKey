@@ -8,7 +8,7 @@ edition (Ad-hoc-AG Boden 2005, KA5), by its key Tab. 51.
 **Experimental**: this release keys the 4 divisions, 21 classes and 56
 types, and the 223 subtypes of the type texts (pp. 202-262: 138 of the
 terrestrial types, 85 of the semiterrestrial, subhydric and Moore
-types); the varieties are not keyed yet.
+types), and the varieties and subvarieties of Tab. 46-50 (pp. 263-282).
 
 ## Usage
 
@@ -66,12 +66,27 @@ open subtype in brackets for the type still recognisable under the R
 neither (an uH over a Gr takes the open "\[Uebergangsmoorgley\]", an hHm
 under the Erdhochmoor the open "\[vermulmtes Erdhochmoor\]").
 
+The varieties (Hugo's decision Q1): an additive level after the subtype,
+rows of level `"variety"` in `levels` (the code of Tab. 49 with the
+digit of its subvariety, the word of the name, the gloss, the full
+symbol in a `symbol` column). A variety is offered where Tab. 50 marks
+the subtype, plus the six of its note 1 (og, c, z, k, v, ku) everywhere;
+each criterion of Tab. 46 is read on the horizons (the symbols written,
+or the recorded data), the humus forms only as recorded; one the data
+leave open is not named but listed in `trace$varieties`. The name
+becomes the full name (adjectives before the subtype's name, nouns in
+brackets before its deciding part: "podsolige Normbraunerde",
+"(Acker)Gley"), the symbol (rules I-VII: `pBBn`, `g4.p2BBn`, `BB-rGG`)
+is in `trace$variety$symbol`. The further subtypes of the type that pass
+join as a combination (Tab. 46 no. 17; Q21: `PP-GG-BB`, `GGh-GGc`).
+
 The overlays (Tab. 46 no. 18) are reported in `trace$overlay` and the
-warnings; they change neither the levels nor the name. A mineral cover
-on a Moor keeps the Moor (Hugo's decision Q7): under 2 dm it is named as
-substrate only, 2 to \< 3 dm "flach X ueber HN" (`X\HN`), 3 to \< 4 dm
-"X ueber HN" (`X/HN`), the cover keyed as the mineral type it would be.
-A fersiallitic or ferrallitic palaeosol (a relict or fossil Bj or Bu)
+warnings, and enter the name as a variety (`YK/BB`, Kolluvisol ueber
+Braunerde); the levels above it do not change. A mineral cover on a Moor
+keeps the Moor (Hugo's decision Q7): under 2 dm it is named as substrate
+only, 2 to \< 3 dm "flach X ueber HN" (`X\HN`), 3 to \< 4 dm "X ueber
+HN" (`X/HN`), the cover keyed as the mineral type it would be. A
+fersiallitic or ferrallitic palaeosol (a relict or fossil Bj or Bu)
 under the soil is named "... ueber Fersiallit / Ferrallit" (Q19); a
 buried soil (fossil horizons of a layer II or deeper) is keyed alone
 from its own top and named by the thickness of the soil above (under 3

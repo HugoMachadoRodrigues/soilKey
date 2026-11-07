@@ -5,15 +5,15 @@ Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 by its key Tab. 51. Experimental: this release keys the 4
 divisions, 21 classes and 56 types, and the 223 subtypes of the type
 texts (pp. 202-262: 138 of the terrestrial types, 85 of the
-semiterrestrial, subhydric and Moore types); the varieties are not keyed
-yet."><meta property="og:description" content="Keys a PedonRecord to the divisions (Abteilungen), classes
+semiterrestrial, subhydric and Moore types), and the varieties and
+subvarieties of Tab. 46-50 (pp. 263-282)."><meta property="og:description" content="Keys a PedonRecord to the divisions (Abteilungen), classes
 (Klassen) and types (Typen) of the German soil systematics of the
 Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 by its key Tab. 51. Experimental: this release keys the 4
 divisions, 21 classes and 56 types, and the 223 subtypes of the type
 texts (pp. 202-262: 138 of the terrestrial types, 85 of the
-semiterrestrial, subhydric and Moore types); the varieties are not keyed
-yet."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+semiterrestrial, subhydric and Moore types), and the varieties and
+subvarieties of Tab. 46-50 (pp. 263-282)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -74,8 +74,8 @@ Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 by its key Tab. 51. <strong>Experimental</strong>: this release keys the 4
 divisions, 21 classes and 56 types, and the 223 subtypes of the type
 texts (pp. 202-262: 138 of the terrestrial types, 85 of the
-semiterrestrial, subhydric and Moore types); the varieties are not keyed
-yet.</p>
+semiterrestrial, subhydric and Moore types), and the varieties and
+subvarieties of Tab. 46-50 (pp. 263-282).</p>
     </div>
 
     <div class="section level2">
@@ -132,8 +132,24 @@ subtype in brackets for the type still recognisable under the R
 ("[BB-YY]", Q22); the Treposol has no Norm subtype, the Moorgley neither
 (an uH over a Gr takes the open "[Uebergangsmoorgley]", an hHm under the
 Erdhochmoor the open "[vermulmtes Erdhochmoor]").</p>
+<p>The varieties (Hugo's decision Q1): an additive level after the subtype,
+rows of level <code>"variety"</code> in <code>levels</code> (the code of Tab. 49 with
+the digit of its subvariety, the word of the name, the gloss, the full
+symbol in a <code>symbol</code> column). A variety is offered where Tab. 50
+marks the subtype, plus the six of its note 1 (og, c, z, k, v, ku)
+everywhere; each criterion of Tab. 46 is read on the horizons (the
+symbols written, or the recorded data), the humus forms only as recorded;
+one the data leave open is not named but listed in
+<code>trace$varieties</code>. The name becomes the full name (adjectives
+before the subtype's name, nouns in brackets before its deciding part:
+"podsolige Normbraunerde", "(Acker)Gley"), the symbol (rules I-VII:
+<code>pBBn</code>, <code>g4.p2BBn</code>, <code>BB-rGG</code>) is in
+<code>trace$variety$symbol</code>. The further subtypes of the type that pass
+join as a combination (Tab. 46 no. 17; Q21: <code>PP-GG-BB</code>,
+<code>GGh-GGc</code>).</p>
 <p>The overlays (Tab. 46 no. 18) are reported in <code>trace$overlay</code> and the
-warnings; they change neither the levels nor the name. A mineral cover on
+warnings, and enter the name as a variety (<code>YK/BB</code>, Kolluvisol
+ueber Braunerde); the levels above it do not change. A mineral cover on
 a Moor keeps the Moor (Hugo's decision Q7): under 2 dm it is named as
 substrate only, 2 to &lt; 3 dm "flach X ueber HN" (<code>X\HN</code>), 3 to &lt; 4
 dm "X ueber HN" (<code>X/HN</code>), the cover keyed as the mineral type it would
