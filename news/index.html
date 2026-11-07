@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.370</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.371</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,13 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.371" id="soilkey-09371-2026-11-06">soilKey 0.9.371 (2026-11-06)<a class="anchor" aria-label="anchor" href="#soilkey-09371-2026-11-06"></a></h2>
+<div class="section level3">
+<h3 id="china-cst-the-diagnostic-horizons-0-9-371">China CST 2001: the diagnostic horizons<a class="anchor" aria-label="anchor" href="#china-cst-the-diagnostic-horizons-0-9-371"></a></h3>
+<p>Second part of the Chinese Soil Taxonomy (2001, English edition; system id <code>cst2001</code>, registered in a later part). The 33 diagnostic horizons of the book (pp. 20-43), each read layer by layer on the data (<code>R/diagnostics-cst-horizons.R</code>, <code>R/diagnostics-cst-anthropic.R</code>): a grade per layer, full, evidence (the book’s weaker grade, for the 15 horizons that have one), none or undecided; readers <code>&lt;horizon&gt;_cst(pedon, grade = "full" | "evidence" | "at_least_evidence", top_max)</code> for the key, <code>phos_agric_horizon_cst()</code> for the phos-agric kind of the agric horizon and <code>argic_horizon_cst(natro = TRUE)</code> for the natro-argic horizon of the Aridosols. A WRB or USDA diagnostic of soilKey stands in only where a CST descriptor is missing, flagged with a lower grade. <code>.cst_identify()</code> gives the horizon panel (the horizons, evidences, kinds and stand-ins of each layer); <code>identify_horizons(pedon, "cst2001")</code> reaches it once the system is registered. The numbers are in <code>inst/rules/cst2001/thresholds.yaml</code> with their pages; soilKey’s readings of this part, for Hugo’s word, in <code>inst/rules/cst2001/readings.yaml</code>. Fixtures of the differences from the WRB 2022: the argic clay increase (+3 / x1.2 / +8 / fine clay +8), plinthite 10 %, the alkalic horizon at ESP 30 and pH 9.0, the salic horizon on salts or the 1:1 EC. Every other classification is unchanged (the fixtures of the other systems byte-identical).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.370" id="soilkey-09370-2026-11-05">soilKey 0.9.370 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09370-2026-11-05"></a></h2>
 <div class="section level3">
