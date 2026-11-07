@@ -170,8 +170,22 @@
     return(.cst_axis(c("aquic", "peraquic"), "site_marker", "aquic_from_water_table",
                      missing = "water_table_cm_above_surface"))
   }
+  # v0.9.373: a recorded drainage class of well drained or better rules the
+  # saturation regimes out (as for the low chroma of the redoxic features,
+  # 0.9.372); soilKey's reading, for Hugo to confirm
+  if (.cst_well_drained(site)) {
+    return(.cst_axis("none", "drainage_class", "no_saturation_regime_from_drainage_class"))
+  }
   .cst_axis(c(.CST_SATURATION, "none"),
-            missing = c("soil_moisture_regime", "groundwater_depth_cm", "groundwater_kind"))
+            missing = c("soil_moisture_regime", "groundwater_depth_cm", "groundwater_kind", "drainage_class"))
+}
+
+# A recorded drainage class of well drained or better (English or
+# Portuguese words).
+.cst_well_drained <- function(site) {
+  dc <- .cst_site_txt(site, "drainage_class")
+  !is.na(dc) && grepl(paste0("^(excessively|somewhat excessively|rapidly|well) drained|",
+                             "^(excessivamente|fortemente|acentuadamente|bem) drenado"), dc)
 }
 
 # Candidates against the regimes asked for: TRUE when every candidate is

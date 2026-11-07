@@ -33,7 +33,8 @@ test_that("the table holds the 25 characteristics and every reader runs on an em
           "The characteristics in the panel")
   expect_true(all(p3 %in% tp))
   expect_true(all(grepl("\\(Hugo, 2026-11-0[46]\\)\\.$", rd[tp %in% p3])))
-  expect_false(any(grepl("for Hugo to confirm", rd)))
+  # the readings of later parts (0.9.373 on) may wait for his word
+  expect_false(any(grepl("for Hugo to confirm, 2026-11-0[45]", rd)))
 })
 
 

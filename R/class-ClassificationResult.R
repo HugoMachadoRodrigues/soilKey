@@ -182,7 +182,11 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       }
       # v0.9.340: the classes that may attach the soil, for the systems that
       # are not keys; nothing for the others
-      if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L) {
+      if (.is_alternative_candidates(self$candidates)) {
+        # v0.9.373: the class a key reaches when a provisional reading fails
+        cd <- self$candidates
+        cli::cli_text("Alternative (if the provisional reading of {paste(cd$instead_of, collapse = ', ')} fails): {paste(cd$code, cd$name, collapse = '; ')}")
+      } else if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L) {
         cd <- self$candidates
         txt <- paste(sprintf("%s (%s%s)", cd$code, cd$degree,
                              ifelse(cd$in_name, ", in the name", "")), collapse = "; ")
@@ -191,10 +195,12 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       # v0.9.345: the Russian full name and the formula of the type ride in
       # $qualifiers but are no qualifiers; v0.9.347: nor are the Russian
       # species, the undecided ones and the 1977 analogue (a note); v0.9.358:
-      # nor the readings of the South African key (za_*)
+      # nor the readings of the South African key (za_*), nor the
+      # Chinese correlation (v0.9.373)
       ql <- self$qualifiers
       if (!is.null(names(ql))) ql <- ql[!(names(ql) %in% c("name_native", "subtype_native", "type_formula",
-                                                         "species_native", "species_undecided", "analogue_1977")) &
+                                                         "species_native", "species_undecided", "analogue_1977",
+                                                         "correlation_cst")) &
                                          !startsWith(names(ql), "za_")]
       if (length(ql) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(ql), collapse = ', ')}")
@@ -241,7 +247,8 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
                      else "classes"
       # v0.9.346: a system that attaches (every class tested, the choice of
       # a name a convention) says so
-      if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L)
+      if (is.data.frame(self$candidates) && nrow(self$candidates) > 0L &&
+          !.is_alternative_candidates(self$candidates))
         cli::cli_text("({n_tested} {tested_what} tested: an attachment, not a key; see $candidates)")
       else
         cli::cli_text("({n_tested} {tested_what} tested before assignment)")
@@ -304,3 +311,9 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
     }
   )
 )
+
+# Candidates that are the alternative of a key's provisional reading
+# (v0.9.373, the Chinese Soil Taxonomy), not the classes of an attachment.
+.is_alternative_candidates <- function(cd) {
+  is.data.frame(cd) && nrow(cd) > 0L && "kind" %in% names(cd) && all(cd$kind %in% "alternative")
+}

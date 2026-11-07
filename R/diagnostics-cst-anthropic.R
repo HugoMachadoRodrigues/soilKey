@@ -221,10 +221,14 @@
   t <- .cst_thr("horizons", "anthrostagnic")
   s <- x$first_min
   cult <- .cst_cultivated(x)
-  if (is.na(s) || is.na(cult[s])) return(.cst_hz_ans(x, rep(NA, x$n), missing = "designation",
-                                                   notes = "the cultivated layer and the plough pan are read from the designations"))
-  if (!cult[s]) return(.cst_hz_ans(x, rep(FALSE, x$n), notes = "no cultivated layer (Ap) at the surface"))
-  run <- .cst_surface_run(x, cult %in% TRUE)
+  if (is.na(s)) return(.cst_hz_ans(x, rep(NA, x$n), missing = "designation",
+                                    notes = "the cultivated layer and the plough pan are read from the designations"))
+  if (isFALSE(cult[s])) return(.cst_hz_ans(x, rep(FALSE, x$n), notes = "no cultivated layer (Ap) at the surface"))
+  # v0.9.373 (Hugo, 2026-11-06): a first mineral layer not known to be
+  # cultivated (a plain A) is read with the core items first; one of them
+  # failing rules the epipedon out, otherwise it stays undecided
+  undecided_cult <- is.na(cult[s])
+  run <- .cst_surface_run(x, if (undecided_cult) seq_len(x$n) == s else cult %in% TRUE)
   rows <- run$lo
   flags <- c("colour_not_submerged")
   # (2) the anthrostagnic regime; a recorded short paddy history gives the
@@ -253,6 +257,12 @@
   pan <- if (length(rows) < 2L) FALSE else ratio >= t$bd_ratio_min
   T_ok <- .cst_range_min(run$T_lo, run$T_hi, t$thick_min_cm)
   core <- .cst_and(reg$passed, puddled, colour, mottles)
+  if (undecided_cult) {
+    if (isFALSE(core)) return(.cst_hz_ans(x, rep(FALSE, x$n),
+                                          notes = "the cultivated layer is not read from the designation, but an item of the core fails"))
+    return(.cst_hz_ans(x, rep(NA, x$n), missing = "designation",
+                       notes = "the cultivated layer and the plough pan are read from the designations"))
+  }
   full_g <- .cst_and(core, T_ok, pan, !short_hist)
   evid_g <- core
   a <- .cst_run_assign(x, run, full_g, evid_g)
@@ -289,11 +299,15 @@
   t <- .cst_thr("horizons", "agric")
   cult <- .cst_cultivated(x)
   s <- x$first_min
-  if (is.na(s) || is.na(cult[s]))
+  if (is.na(s))
     return(.cst_hz_ans(x, rep(NA, x$n), missing = "designation",
                        notes = "the cultivated layer is read from the designations"))
   last <- s
-  if (!cult[s]) return(.cst_hz_ans(x, rep(FALSE, x$n), notes = "no cultivated layer (Ap) at the surface"))
+  if (isFALSE(cult[s])) return(.cst_hz_ans(x, rep(FALSE, x$n), notes = "no cultivated layer (Ap) at the surface"))
+  # v0.9.373 (Hugo, 2026-11-06): a first mineral layer not known to be
+  # cultivated is read as if it were; the horizon is then FALSE only where
+  # the items fail, otherwise undecided
+  undecided_cult <- is.na(cult[s])
   while (last < x$n && isTRUE(cult[last + 1L])) last <- last + 1L
   start <- last + 1L
   if (start > x$n) return(.cst_hz_ans(x, rep(FALSE, x$n), notes = "nothing described under the cultivated layer"))
@@ -319,10 +333,15 @@
   evid <- .cst_run_grade(x, items | (weak & !(alb %in% TRUE) & !(x$kind %in% c("C", "R", "O"))),
                          t$evidence_thick_min_cm, start = start)
   kind <- ifelse((full %in% TRUE | evid %in% TRUE) & phos %in% TRUE, "phos-agric", NA_character_)
+  if (undecided_cult) {
+    full <- ifelse(full %in% FALSE, FALSE, NA); evid <- ifelse(evid %in% FALSE, FALSE, NA)
+    kind[] <- NA_character_
+  }
   .cst_hz_ans(x, full, evid, kind = kind, flags = c(f$flag, col$hue_flag),
               notes = "chromic: the layer below 7.5YR or redder; acid: the layer below under pH 5.5; margins of Q18",
-              missing = .cst_missing_in(x, which(is.na(full)), c("humus_clay_films_mm", "humus_clay_films_pct",
-                                                                 "munsell_value_moist", "ph_h2o", "bs_pct", "p_olsen_mg_kg")))
+              missing = c(.cst_missing_in(x, which(is.na(full)), c("humus_clay_films_mm", "humus_clay_films_pct",
+                                                                   "munsell_value_moist", "ph_h2o", "bs_pct", "p_olsen_mg_kg")),
+                          if (undecided_cult && anyNA(full)) "designation"))
 }
 
 # The phos-agric horizon (p. 34, footnote): the agric horizon by its Olsen P

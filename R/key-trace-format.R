@@ -135,6 +135,12 @@ key_trace_table <- function(x) {
       emit("humus_form", "humus_form", if (is.na(h$label %||% NA)) "undecided" else h$label, "info", h$missing)
       next
     }
+    # v0.9.373: the horizon panel of the Chinese Soil Taxonomy, one row of
+    # information per layer (no class tested), and its alternative class
+    if (isTRUE(attr(trace[[i]], "cst_panel"))) {
+      for (e in trace[[i]]) emit(top[[i]], e$code, e$name, "info", e$missing)
+      next
+    }
     walk(trace[[i]], top[[i]] %||% "")
   }
 

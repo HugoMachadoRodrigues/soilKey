@@ -231,6 +231,18 @@ reference:
       - classify_ka5
       - make_ka5_example
 
+  - title: "Chinese Soil Taxonomy 2001 (experimental)"
+    desc: >
+      The 14 orders and 39 suborders of the Chinese Soil Taxonomy (Cooperative
+      Research Group on Chinese Soil Taxonomy, 2001, English edition), named in
+      English as printed, keyed on the 33 diagnostic horizons and the 25
+      diagnostic characteristics of chapter 3 read on the data, with the
+      approximate equivalents of Tables 4.2 and 4.3 as a note. The groups and
+      subgroups follow in later releases.
+    contents:
+      - classify_cst2001
+      - make_cst2001_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

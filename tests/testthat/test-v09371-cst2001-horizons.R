@@ -335,11 +335,15 @@ test_that("agric horizon and its phos-agric kind; evidence 5-10 cm", {
   expect_false(.cres(mk(), "phos_agric_horizon_cst")$passed)
   expect_false(.cg(mk(pct = 0, mm = 0, p = c(60, 19, 10)), "agric_horizon")$full[2])
   # an A in a profile written with FAO suffixes is no cultivated layer; a
-  # plain A among plain letters cannot be told: undecided (D1)
+  # plain A among plain letters cannot be told: undecided (D1), but only
+  # where the items under it do not fail (0.9.373, Hugo, 2026-11-06)
   h <- mk()$horizons; h$designation <- c("A", "Bw", "C")
   expect_false(any(.cg(.cp(h), "agric_horizon")$full))
   h$designation <- c("A", "B", "C")
-  expect_true(all(is.na(.cg(.cp(h), "agric_horizon")$full)))
+  g <- .cg(.cp(h), "agric_horizon")$full
+  expect_true(is.na(g[2])); expect_false(any(g %in% TRUE))
+  h$humus_clay_films_pct <- 0; h$humus_clay_films_mm <- 0; h$p_olsen_mg_kg <- c(10, 10, 10)
+  expect_false(any(.cg(.cp(h), "agric_horizon")$full))
 })
 
 
@@ -783,8 +787,8 @@ test_that("the horizon panel gives each layer its horizons, evidences and stand-
   h2 <- h; h2$clay_pct[3] <- NA; h2$designation[3] <- "Bt"
   fr2 <- soilKey:::.cst_identify(.cp(h2))
   if (length(fr2$stand_ins[[3]])) expect_true(fr2$lower_grade[3])
-  # the registry entry comes in a later part: identify_horizons() does not reach it yet
-  expect_error(identify_horizons(p, "cst2001"))
+  # the registry entry (0.9.373): identify_horizons() reaches the panel
+  expect_identical(identify_horizons(p, "cst2001")$code[1:3], fr$code[1:3])
 })
 
 test_that("the horizons leave the other systems unchanged", {

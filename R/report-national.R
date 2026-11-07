@@ -57,7 +57,8 @@
 # with candidates, v0.9.346) ranks its references, it does not test them
 # before one.
 .provisional_intro_key <- function(res) {
-  if (is.data.frame(res$candidates) && nrow(res$candidates) > 0L) "report.provisional_intro_attachment"
+  if (is.data.frame(res$candidates) && nrow(res$candidates) > 0L &&
+      !.is_alternative_candidates(res$candidates)) "report.provisional_intro_attachment"
   else "report.provisional_intro"
 }
 
@@ -197,6 +198,12 @@
       .html_escape(.report_msg("report.would_decide")),
       paste(rows, collapse = "\n")))
   }
+  cstc <- .cst_correlation_lines(res)
+  if (!is.null(cstc))
+    out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
+                          .html_escape(.report_msg("report.cst_correlation")),
+                          .html_escape(.report_msg("report.cst_correlation_desc")),
+                          paste(sprintf("<li>%s</li>", .html_escape(cstc)), collapse = "\n")))
   k77 <- .kidpr_1977_lines(res)
   if (!is.null(k77))
     out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
@@ -264,6 +271,11 @@
                      .report_msg("report.status"), .report_msg("report.would_decide")),
              "|---|---|---|---|---|\n", paste(rows, collapse = "\n"), "\n\n")
   }
+  cstc <- .cst_correlation_lines(res)
+  if (!is.null(cstc))
+    out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.cst_correlation"),
+                          .report_msg("report.cst_correlation_desc")),
+             paste0("- ", .md_escape_marks(cstc), collapse = "\n"), "\n\n")
   k77 <- .kidpr_1977_lines(res)
   if (!is.null(k77))
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.kidpr_1977"),

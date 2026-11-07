@@ -126,6 +126,21 @@ pro_fixture_catalog <- function() {
                 "Hydrometamorphic soils" = "CM", "Organo-accumulative soils" = "CN",
                 "Eluvial soils" = "CO", "Lithozems" = "CP", "Abrazems" = "CQ",
                 "Agroabrazems" = "CR", "Agrozems" = "CS", "Turbozems" = "CT", "Chemozems" = "CU"),
+  # the Chinese examples, one per suborder, labelled by the suborder (the
+  # name the result gives)
+  cst2001 = c("Permagelic Histosols" = "A1", "Orthic Histosols" = "A2", "Stagnic Anthrosols" = "B1",
+              "Orthic Anthrosols" = "B2", "Humic Spodosols" = "C1", "Orthic Spodosols" = "C2",
+              "Cryic Andosols" = "D1", "Vitric Andosols" = "D2", "Udic Andosols" = "D3",
+              "Udic Ferralosols" = "E1", "Aquic Vertosols" = "F1", "Ustic Vertosols" = "F2",
+              "Udic Vertosols" = "F3", "Cryic Aridosols" = "G1", "Orthic Aridosols" = "G2",
+              "Alkalic Halosols" = "H1", "Orthic Halosols" = "H2", "Permagelic Gleyosols" = "I1",
+              "Stagnic Gleyosols" = "I2", "Orthic Gleyosols" = "I3", "Lithomorphic Isohumosols" = "J1",
+              "Ustic Isohumosols" = "J2", "Udic Isohumosols" = "J3", "Ustic Ferrosols" = "K1",
+              "Perudic Ferrosols" = "K2", "Udic Ferrosols" = "K3", "Boric Argosols" = "L1",
+              "Ustic Argosols" = "L2", "Perudic Argosols" = "L3", "Udic Argosols" = "L4",
+              "Gelic Cambosols" = "M1", "Aquic Cambosols" = "M2", "Ustic Cambosols" = "M3",
+              "Perudic Cambosols" = "M4", "Udic Cambosols" = "M5", "Anthric Primosols" = "N1",
+              "Sandic Primosols" = "N2", "Alluvic Primosols" = "N3", "Orthic Primosols" = "N4"),
   # the French examples of the Referentiel pedologique 2008, one per reference
   # implemented, labelled by the reference (the singular, as the name gives it)
   rp2008 = c("alocrisol typique" = "alocrisols_typiques",
