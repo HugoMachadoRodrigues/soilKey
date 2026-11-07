@@ -20,7 +20,9 @@
 # or clay of the Cambosols, irrigation and anthro-silting within 50 cm.
 #
 # Experimental and opt-in: classify_all() runs it only when asked. The groups
-# and subgroups follow in later parts. Readings where the text is silent:
+# (v0.9.374) are keyed from inst/rules/cst2001/groups/, with the criteria of
+# R/key-cst-groups.R; the subgroups follow in a later part. Readings where
+# the text is silent:
 # inst/rules/cst2001/readings.yaml.
 # =============================================================================
 
@@ -53,9 +55,12 @@
 # The per-layer reading of a horizon or a layer characteristic, in depth
 # order: full (TRUE / FALSE / NA), the provisional layers, the attributes that
 # would decide it.
-.cst_layer_feature <- function(x, feature) {
+.cst_layer_feature <- function(x, feature, grade = c("full", "at_least_evidence")) {
+  grade <- match.arg(grade)
   r <- if (feature %in% .cst_horizon_table()$id) .cst_hz(x, feature) else .cst_ch(x, feature)
-  list(full = r$full, prov = r$prov %||% rep(FALSE, x$n), missing = r$missing %||% character(0),
+  # v0.9.374: at least the evidence grade where the key asks for an evidence
+  # (Q19), the full grade passing too
+  list(full = if (grade == "full") r$full else r$evid %||% r$full, prov = r$prov %||% rep(FALSE, x$n), missing = r$missing %||% character(0),
        flags = r$flags %||% character(0))
 }
 
@@ -317,12 +322,13 @@ isohumosol_base_saturation_cst <- function(pedon) {
 #' provisional.
 #' @noRd
 layer_run_cst <- function(pedon, feature, min_cm, from_cm = 0, to_cm, total = FALSE,
-                          datum = c("mineral", "surface")) {
+                          datum = c("mineral", "surface"), grade = c("full", "at_least_evidence")) {
   datum <- match.arg(datum)
+  grade <- match.arg(grade)
   nm <- "layer_run_cst"
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_key_result(nm, FALSE))
-  f <- .cst_layer_feature(x, feature)
+  f <- .cst_layer_feature(x, feature, grade)
   s <- if (datum == "mineral") x$msurf else x$surf
   if (is.na(s)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct")))
   a <- s + from_cm; b <- s + to_cm
@@ -605,6 +611,23 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
   any(vapply(kids, .cst_trace_provisional, NA))
 }
 
+# The flags of the key criteria that passed below a trace entry (v0.9.374:
+# the stand-ins of the group keys).
+.cst_trace_flags <- function(node) {
+  if (is.null(node) || !is.list(node)) return(character(0))
+  if (!is.null(node$passed) && !isTRUE(node$passed)) return(character(0))
+  ev <- node$evidence
+  out <- if (is.list(ev) && is.character(ev$flags)) ev$flags else character(0)
+  kids <- if (is.list(ev) && is.null(names(ev))) ev else if (is.list(ev)) ev[vapply(ev, is.list, NA)] else list()
+  unique(c(out, unlist(lapply(kids, .cst_trace_flags))))
+}
+
+# The stand-ins of the group keys that the result names in a warning
+# (Hugo, 2026-11-07), with their wording.
+.CST_KEY_STAND_INS <- c(
+  "stand_in:drainage_class" = "a drainage class of well drained or better for the days of saturation",
+  "stand_in:crust_thickness" = "the thickness of the surface crust for the depth of the cracks")
+
 # The horizon panel (.cst_identify()) as trace entries, one per layer: the
 # designation and depths as the code, the reading as the name.
 .cst_panel_trace <- function(pedon) {
@@ -657,10 +680,12 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 #' edition published by Science Press). \strong{Experimental}: this release
 #' keys the 14 orders (key 5.1: Histosols, Anthrosols, Spodosols, Andosols,
 #' Ferralosols, Vertosols, Aridosols, Halosols, Gleyosols, Isohumosols,
-#' Ferrosols, Argosols, Cambosols and Primosols) and their 39 suborders (key
-#' 5.2), with soilKey's residual \code{[E2] [Other Ferralosols]} where the
-#' book prints none. The 138 groups and 588 subgroups follow in later
-#' releases.
+#' Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
+#' their 138 groups (key 5.2), with soilKey's residuals \code{[E2] [Other
+#' Ferralosols]}, \code{[A1.4] [Other Permagelic Histosols]} and
+#' \code{[A2.5] [Other Orthic Histosols]} where the book prints none (the
+#' name stops there, with a note). The 588 subgroups follow in a later
+#' release.
 #'
 #' The key is read in the book's order, the first class whose criteria pass
 #' assigned, as the book prescribes (each class lacks the properties of the
@@ -684,9 +709,10 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 #' \code{levels$name_pt}. The approximate equivalents of the order in US Soil
 #' Taxonomy (1999) and the WRB (1998), Tables 4.2 and 4.3, are added as a
 #' note (\code{qualifiers$correlation_cst} and a line in \code{warnings});
-#' they never change the classification. A residual suborder named for the
-#' udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
-#' Argosols and Cambosols) reached by a soil whose recorded regime is another
+#' they never change the classification. A residual suborder or group named
+#' for the udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
+#' Argosols and Cambosols, the Udi- groups) or for the aquic one (the
+#' Aqui-Orthic Halosols) reached by a soil whose regime read is another
 #' keeps its class, with a note. The diagnostic horizons and characteristics
 #' of each layer are in the trace (phase \code{horizons}). The readings where
 #' the text is silent are listed in \code{system.file("rules", "cst2001",
@@ -699,8 +725,8 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"cst2001"}, the suborder (or the order, when no suborder could be
-#'   assigned) in \code{name}, the order in \code{rsg_or_order}, the classes
+#'   \code{"cst2001"}, the group (or the deepest class assigned) in
+#'   \code{name}, the order in \code{rsg_or_order}, the classes
 #'   of each level in \code{levels} (with \code{name_pt} and
 #'   \code{book_provisional}), the key trace with the horizon panel,
 #'   \code{provisional_because}, and, when a class was assigned on a
@@ -753,6 +779,15 @@ classify_cst2001 <- function(pedon, rules = NULL,
         "a ferrous-iron test, a measurement or a duration would confirm it."), lv$code[i], lv$name[i]))
     }
   }
+  # a class assigned on a stand-in of a group key (Hugo, 2026-11-07)
+  for (i in seq_len(nrow(lv))) {
+    tr <- res$trace[[lv$level[i]]][[lv$code[i]]]
+    if (is.null(tr) || !isTRUE(tr$passed)) next
+    si <- intersect(names(.CST_KEY_STAND_INS), .cst_trace_flags(list(evidence = tr$evidence)))
+    if (length(si))
+      notes <- c(notes, sprintf("Stand-in: %s %s rests on %s (flagged in the trace).", lv$code[i], lv$name[i],
+                                paste(.CST_KEY_STAND_INS[si], collapse = " and ")))
+  }
   # the class the key would reach if that reading failed (Hugo, 2026-11-06):
   # the key run again with the gate of the first such class set to FALSE,
   # given in $candidates as an alternative, never as the class
@@ -768,18 +803,27 @@ classify_cst2001 <- function(pedon, rules = NULL,
       notes <- c(notes, sprintf("Alternative if that reading fails: %s %s.", alt$code, alt$name))
     }
   }
-  # a residual named for the udic regime, reached under another regime
+  # a residual named for a regime (the udic one; the aquic one for the
+  # Aqui-Orthic Halosols, v0.9.374), reached under another regime
   for (i in seq_len(nrow(lv))) {
     nf <- ents[[i]]$residual_named_for
     if (is.null(nf) || !inherits(pedon, "PedonRecord")) next
-    cl <- tryCatch(.cst_moisture_regime(pedon)$climatic, error = function(e) NULL)
-    cand <- cl$candidates
-    if (length(cand) && !any(cand %in% c("udic", "perudic")))
+    mr <- tryCatch(.cst_moisture_regime(pedon), error = function(e) NULL)
+    ok <- if (identical(nf, "aquic")) c("aquic", "peraquic") else c("udic", "perudic")
+    cand <- if (identical(nf, "aquic")) mr$saturation$candidates else mr$climatic$candidates
+    if (length(cand) && !any(cand %in% ok))
       notes <- c(notes, sprintf(paste(
         "%s %s is the residual of its key, named for the %s regime; the moisture regime read is %s.",
         "The key places the soil here all the same (the class does not change)."),
         lv$code[i], lv$name[i], nf, paste(cand, collapse = " or ")))
   }
+  # soilKey's bracketed residual, where the book prints none (Q4): the name
+  # stops there (v0.9.374)
+  last <- ents[[nrow(lv)]]
+  if (isTRUE(last$bracketed))
+    notes <- c(notes, sprintf(paste(
+      "%s %s is soilKey's residual: the book prints no class for this soil at this level",
+      "(Hugo's decision Q4); the name stops there."), lv$code[nrow(lv)], lv$name[nrow(lv)]))
   # the correlation of the order (Tables 4.2 and 4.3), a note only
   cr <- .cst_order_correlation(lv$code[1L])
   if (!is.null(cr)) {
@@ -816,12 +860,16 @@ classify_cst2001 <- function(pedon, rules = NULL,
                         "L1", "L2", "L3", "L4", "M1", "M2", "M3", "M4", "M5", "N1", "N2", "N3", "N4")
 .CST_NEAR_MISS_CODES <- c("A1", "B2", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J2", "K1", "L1", "M3", "N2")
 
-#' Example pedons for the suborders of the Chinese Soil Taxonomy (2001)
+#' Example pedons for the suborders and groups of the Chinese Soil Taxonomy (2001)
 #'
 #' Small, plausible profiles written for the tests and examples, one per
 #' suborder of the Chinese Soil Taxonomy (2001), with FAO designations, the
 #' regimes on the site and the data the key reads; each keys to its own
-#' suborder, not provisionally. They are not real profiles. With
+#' suborder, not provisionally (with the group it reaches). Since v0.9.374 a
+#' group code (\code{"A1.1"} ... \code{"N4.7"}, and soilKey's
+#' \code{"[A1.4]"} and \code{"[A2.5]"}) gives one profile per group, 140 in
+#' all, each keying to its own group, not provisionally. They are not real
+#' profiles. With
 #' \code{near_miss = TRUE}, fourteen of them (one per order) change one
 #' property so that the profile misses its class and lands in another:
 #' A1 without permafrost (Orthic Histosols), B2 with a cumulic layer of 35 cm
@@ -837,7 +885,7 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' g/kg carbon (Orthic Primosols).
 #'
 #' @param suborder The code of the suborder, as printed (\code{"A1"} ...
-#'   \code{"N4"}).
+#'   \code{"N4"}), or of a group (\code{"A1.1"} ... \code{"N4.7"}).
 #' @param near_miss Give the near miss of the suborder (one per order:
 #'   \code{"A1"}, \code{"B2"}, \code{"C1"}, \code{"D1"}, \code{"E1"},
 #'   \code{"F1"}, \code{"G1"}, \code{"H1"}, \code{"I1"}, \code{"J2"},
@@ -848,8 +896,15 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' p <- make_cst2001_example("E1")
 #' p$horizons[, c("designation", "top_cm", "bottom_cm", "clay_pct", "cec_cmol")]
 #' classify_cst2001(make_cst2001_example("E1", near_miss = TRUE), on_missing = "silent")$name
+#' classify_cst2001(make_cst2001_example("K3.2"), on_missing = "silent")$levels
 #' @export
 make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALSE) {
+  # v0.9.374: a group code gives the example of the group
+  if (length(suborder) == 1L && suborder %in% .CST_GROUP_EXAMPLE_CODES) {
+    if (isTRUE(near_miss)) rlang::abort(sprintf("No near miss for %s; near misses exist for %s.", suborder,
+                                                paste(.CST_NEAR_MISS_CODES, collapse = ", ")))
+    return(.cst_group_example(suborder))
+  }
   suborder <- match.arg(suborder)
   nm <- isTRUE(near_miss)
   if (nm && !suborder %in% .CST_NEAR_MISS_CODES)
@@ -879,7 +934,8 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     munsell_chroma_moist = c(1, 2, 4, 2), mottle_colors = c("7.5YR 5/6", NA, "7.5YR 5/8", NA),
     bulk_density_g_cm3 = c(1.2, 1.45, 1.45, 1.5), fe_dcb_pct = c(1.2, 1.2, 2.1, 1.2),
     humus_clay_films_mm = c(NA, NA, 0.6, NA), structure_type = c("granular", "platy", "prismatic", "massive"),
-    structure_grade = c("weak", "weak", "moderate", NA), ph_h2o = 6.2, cec_cmol = 15, bs_pct = 70),
+    structure_grade = c("weak", "weak", "moderate", NA), ph_h2o = 6.2, cec_cmol = 15, bs_pct = 70,
+    childs_test = c("negative", "negative", "negative", NA)),
     list(flood_irrigated = TRUE, land_use = "paddy rice", soil_moisture_regime = "udic",
          soil_temperature_regime = "thermic", drainage_class = "imperfectly drained")),
   B2 = {
@@ -1084,6 +1140,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     clay_pct = c(40, 50, 50), sand_pct = 25, silt_pct = c(35, 25, 25), oc_pct = c(2.5, 0.5, 0.3),
     cec_cmol = c(14, 10, 10), ca_cmol = 0.6, mg_cmol = 0.3, k_cmol = 0.1, na_cmol = 0.05,
     al_kcl_cmol = 3, bs_pct = 10, ph_h2o = 4.6, fe_dcb_pct = c(2.5, 3, 3), fe_total_pct = c(5, 6, 6),
+    sio2_al2o3_clay = c(NA, 1.7, 1.7),
     munsell_hue_moist = "5YR", munsell_value_moist = c(3, 4, 4), munsell_chroma_moist = c(4, 6, 6),
     munsell_value_dry = c(4, 5, 5), structure_type = c("granular", "subangular blocky", "subangular blocky")),
     list(soil_moisture_regime = "perudic", soil_temperature_regime = "thermic")),
@@ -1092,6 +1149,8 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     clay_pct = c(20, 38, 40), sand_pct = c(45, 30, 30), silt_pct = c(35, 32, 30), oc_pct = c(1.5, 0.5, 0.3),
     cec_cmol = c(8, 8.5, 9), ca_cmol = 1.5, mg_cmol = 0.8, k_cmol = 0.2, na_cmol = 0.1, al_kcl_cmol = 1,
     bs_pct = 30, ph_h2o = 5.0, fe_dcb_pct = c(1.5, 2.2, 2.3), fe_total_pct = c(3, 4, 4),
+    sio2_al2o3_clay = c(NA, 2.4, 2.4), sio2_al2o3_naoh = c(NA, 1.5, 1.5), sio2_sulfuric_pct = c(NA, 20, 20),
+    al2o3_sulfuric_pct = c(NA, 15, 15),
     clay_films_strength = c(NA, "distinct", "distinct"), clay_films_amount = c(NA, "common", "common"),
     munsell_hue_moist = "5YR", munsell_value_moist = c(4, 4, 4), munsell_chroma_moist = c(4, 6, 6),
     munsell_value_dry = c(5, 5, 5), structure_type = c("granular", "subangular blocky", "subangular blocky")),
@@ -1130,6 +1189,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     clay_pct = c(20, 34, 36, 30), silt_pct = c(45, 40, 38, 42), sand_pct = c(35, 26, 26, 28),
     oc_pct = c(1.5, 0.5, 0.3, 0.2), ph_h2o = c(5.8, 6.0, 6.1, 6.3), bs_pct = c(55, 60, 60, 65),
     cec_cmol = c(12, 15, 16, 13), fe_dcb_pct = c(1.5, 2.0, 2.0, 1.8), fe_total_pct = c(3, 3.5, 3.5, 3),
+    ph_kcl = c(5.0, 5.1, 5.2, 5.4), al_kcl_cmol = 0.2, al_sat_pct = 5,
     munsell_hue_moist = "5YR", munsell_value_moist = c(4, 4, 4, 5), munsell_chroma_moist = c(4, 6, 6, 6),
     munsell_value_dry = c(5, 5, 5, 6), clay_films_strength = c(NA, "distinct", "distinct", NA),
     clay_films_amount = c(NA, "common", "common", NA), structure_type = c("granular", "blocky", "blocky", "massive")),
@@ -1142,7 +1202,8 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     munsell_hue_moist = c("10YR", "7.5YR", "10YR"), munsell_value_moist = c(3, 4, 5), munsell_chroma_moist = c(2, 4, 3),
     munsell_value_dry = c(5, 6, 6), structure_type = c("granular", "lenticular", "massive"),
     structure_grade = c("moderate", "moderate", "structureless"), ph_h2o = 6.5, bs_pct = 60, cec_cmol = c(40, 18, 12)),
-    list(soil_moisture_regime = "udic", soil_temperature_regime = "cryic", mean_summer_soil_temp_C = 8)),
+    list(soil_moisture_regime = "udic", soil_temperature_regime = "cryic", mean_summer_soil_temp_C = 8,
+         frost_regime = "seasonal")),
   M2 = mk(list(
     designation = c("Ap", "Bw", "Bg", "C"), top_cm = c(0, 20, 60, 100), bottom_cm = c(20, 60, 100, 130),
     clay_pct = c(20, 22, 20, 18), silt_pct = c(50, 50, 52, 52), sand_pct = c(30, 28, 28, 30),
@@ -1159,7 +1220,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     munsell_hue_moist = c("10YR", "7.5YR", "10YR"), munsell_value_moist = c(4, 5, 5), munsell_chroma_moist = c(3, 6, 3),
     munsell_value_dry = c(6, 6, 7), structure_type = c("granular", "blocky", "massive"),
     structure_grade = c("moderate", "moderate", "structureless"), ph_h2o = 7.2, bs_pct = 90, cec_cmol = 15,
-    caco3_pct = c(0.5, 0.5, 1)),
+    caco3_pct = c(0.5, 0.5, 1), fe_dcb_pct = c(0.8, 0.8, 0.7), fe_total_pct = 3),
     list(soil_moisture_regime = if (nm) "aridic" else "ustic", soil_temperature_regime = "mesic", irrigated = FALSE)),
   M4 = mk(list(
     designation = c("A", "Bw", "C"), top_cm = c(0, 15, 90), bottom_cm = c(15, 90, 130),
@@ -1167,7 +1228,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     munsell_hue_moist = c("10YR", "7.5YR", "10YR"), munsell_value_moist = c(3, 5, 5), munsell_chroma_moist = c(3, 6, 4),
     munsell_value_dry = c(5, 6, 7), structure_type = c("granular", "blocky", "massive"),
     structure_grade = c("moderate", "moderate", "structureless"), ph_h2o = 4.8, bs_pct = 30, cec_cmol = 15,
-    al_kcl_cmol = 2),
+    al_kcl_cmol = 2, ph_kcl = 4.3),
     list(soil_moisture_regime = "perudic", soil_temperature_regime = "thermic")),
   M5 = mk(list(
     designation = c("A", "Bw", "C", "R"), top_cm = c(0, 15, 60, 100), bottom_cm = c(15, 60, 100, 130),

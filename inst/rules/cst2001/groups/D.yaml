@@ -1,0 +1,65 @@
+# The keys to groups of the Andosols (order D) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 89-93, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "D1":
+    - code: "D1.1"
+      name: "Geli-Cryic Andosols"
+      name_pt: "Andossolos críicos gélicos"
+      page: 90
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [gelic]}
+      notes: "A gelic soil temperature regime (the permagelic regime included)."
+    - code: "D1.2"
+      name: "Hapli-Cryic Andosols"
+      name_pt: "Andossolos críicos háplicos"
+      page: 90
+      tests:
+        default: true
+      notes: "Other Cryic Andosols."
+
+  "D2":
+    - code: "D2.1"
+      name: "Usti-Vitric Andosols"
+      name_pt: "Andossolos vítricos ústicos"
+      page: 90
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [ustic]}
+      notes: "An ustic soil moisture regime."
+    - code: "D2.2"
+      name: "Udi-Vitric Andosols"
+      aliases: ["Udic-Vitric Andosols"]
+      name_pt: "Andossolos vítricos údicos"
+      page: 91
+      residual_named_for: udic
+      tests:
+        default: true
+      notes: "Other Vitric Andosols (the key names the group Udic-Vitric)."
+
+  "D3":
+    - code: "D3.1"
+      name: "Humi-Udic Andosols"
+      name_pt: "Andossolos údicos húmicos"
+      page: 92
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "A humic property."
+    - code: "D3.2"
+      name: "Hapli-Udic Andosols"
+      name_pt: "Andossolos údicos háplicos"
+      page: 92
+      tests:
+        default: true
+      notes: "Other Udic Andosols."

@@ -1,0 +1,38 @@
+# The keys to groups of the Ferralosols (order E) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 93-96, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "E1":
+    - code: "E1.1"
+      name: "Rhodi-Udic Ferralosols"
+      name_pt: "Ferralossolos údicos ródicos"
+      page: 93
+      tests:
+        all_of:
+          - colour_share_cst: {rule: rhodic, min: 0.5}
+      notes: "A hue redder than 5YR, a moist value under 4 and a dry value no more than one unit above the moist one, in half or more of the horizons within 125 cm of the mineral soil surface."
+    - code: "E1.2"
+      name: "Xanthi-Udic Ferralosols"
+      name_pt: "Ferralossolos údicos xânticos"
+      page: 93
+      tests:
+        all_of:
+          - udic_perudic_border_cst: {}
+          - colour_share_cst: {rule: xanthic, min: 0.5}
+      notes: "A udic moisture regime bordering on the perudic one, and a hue of 7.5YR or yellower with a moist value of 4 or more and a moist chroma of 5 or more in half or more of the horizons within 125 cm of the mineral soil surface."
+    - code: "E1.3"
+      name: "Hapli-Udic Ferralosols"
+      name_pt: "Ferralossolos údicos háplicos"
+      page: 94
+      tests:
+        default: true
+      notes: "Other Udic Ferralosols."

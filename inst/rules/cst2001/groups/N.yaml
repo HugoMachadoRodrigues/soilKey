@@ -1,0 +1,178 @@
+# The keys to groups of the Primosols (order N) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 167-180, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "N1":
+    - code: "N1.1"
+      name: "Turbi-Anthric Primosols"
+      name_pt: "Primossolos antrópicos antroturbados"
+      page: "167-168"
+      tests:
+        all_of:
+          - anthroturbic_layer_cst: {top_max: 50, datum: mineral}
+      notes: "An anthroturbic layer within 50 cm of the mineral soil surface."
+    - code: "N1.2"
+      name: "Silti-Anthric Primosols"
+      name_pt: "Primossolos antrópicos antrossiltados"
+      page: 168
+      tests:
+        default: true
+      notes: "Other Anthric Primosols (so, by N1, anthro-silting materials within 50 cm)."
+
+  "N2":
+    - code: "N2.1"
+      name: "Geli-Sandic Primosols"
+      aliases: ["Gelic-Sandic Primosols"]
+      name_pt: "Primossolos arênicos gélicos"
+      page: 169
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [cryic], or_colder: true}
+          - frost_thawic_features_cst: {}
+      notes: "A cryic or colder soil temperature regime, and frost-thawic features."
+    - code: "N2.2"
+      name: "Aqui-Sandic Primosols"
+      name_pt: "Primossolos arênicos áquicos"
+      page: 169
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aquic]}
+          - layer_run_cst: {feature: redoxic_features, min_cm: 10, to_cm: 50}
+      notes: "An aquic soil moisture regime, and redoxic features in at least one layer 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "N2.3"
+      name: "Aridi-Sandic Primosols"
+      name_pt: "Primossolos arênicos arídicos"
+      page: 169
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aridic]}
+      notes: "An aridic soil moisture regime."
+    - code: "N2.4"
+      name: "Usti-Sandic Primosols"
+      name_pt: "Primossolos arênicos ústicos"
+      page: 169
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [ustic]}
+      notes: "An ustic soil moisture regime."
+    - code: "N2.5"
+      name: "Udi-Sandic Primosols"
+      name_pt: "Primossolos arênicos údicos"
+      page: 169
+      residual_named_for: udic
+      tests:
+        default: true
+      notes: "Other Sandic Primosols."
+
+  "N3":
+    - code: "N3.1"
+      name: "Geli-Alluvic Primosols"
+      name_pt: "Primossolos flúvicos gélicos"
+      page: 172
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [cryic], or_colder: true}
+          - frost_thawic_features_cst: {}
+      notes: "A cryic or colder soil temperature regime, and frost-thawic features."
+    - code: "N3.2"
+      name: "Aqui-Alluvic Primosols"
+      name_pt: "Primossolos flúvicos áquicos"
+      page: 172
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aquic]}
+          - layer_run_cst: {feature: redoxic_features, min_cm: 10, to_cm: 50}
+      notes: "An aquic soil moisture regime, and redoxic features in at least one layer 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "N3.3"
+      name: "Aridi-Alluvic Primosols"
+      name_pt: "Primossolos flúvicos arídicos"
+      page: 173
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aridic]}
+      notes: "An aridic soil moisture regime."
+    - code: "N3.4"
+      name: "Usti-Alluvic Primosols"
+      name_pt: "Primossolos flúvicos ústicos"
+      page: 173
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [ustic]}
+      notes: "An ustic soil moisture regime."
+    - code: "N3.5"
+      name: "Udi-Alluvic Primosols"
+      name_pt: "Primossolos flúvicos údicos"
+      page: 173
+      residual_named_for: udic
+      tests:
+        default: true
+      notes: "Other Alluvic Primosols."
+
+  "N4":
+    - code: "N4.1"
+      name: "Loessi-Orthic Primosols"
+      name_pt: "Primossolos órticos loéssicos"
+      page: 175
+      tests:
+        all_of:
+          - lc_loess_cst: {}
+      notes: "The lithologic characters of loess and loess-like deposits."
+    - code: "N4.2"
+      name: "Purpli-Orthic Primosols"
+      aliases: ["Purplic-Orthic Primosols"]
+      name_pt: "Primossolos órticos púrpura"
+      page: 175
+      tests:
+        all_of:
+          - lc_purplish_cst: {}
+      notes: "The lithologic characters of purplish sandstones and shales (the name printed 'Purplic-Orthic' here)."
+    - code: "N4.3"
+      name: "Rougi-Orthic Primosols"
+      name_pt: "Primossolos órticos vermelhos"
+      page: 175
+      tests:
+        all_of:
+          - lc_red_beds_cst: {}
+      notes: "The lithologic characters of red sandstones, shales and northern red earths."
+    - code: "N4.4"
+      name: "Geli-Orthic Primosols"
+      name_pt: "Primossolos órticos gélicos"
+      page: 175
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [cryic], or_colder: true}
+          - frost_thawic_features_cst: {}
+      notes: "A cryic or colder soil temperature regime, and frost-thawic features."
+    - code: "N4.5"
+      name: "Aridi-Orthic Primosols"
+      name_pt: "Primossolos órticos arídicos"
+      page: "175-176"
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aridic]}
+      notes: "An aridic soil moisture regime."
+    - code: "N4.6"
+      name: "Usti-Orthic Primosols"
+      name_pt: "Primossolos órticos ústicos"
+      page: 176
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [ustic]}
+      notes: "An ustic soil moisture regime."
+    - code: "N4.7"
+      name: "Udi-Orthic Primosols"
+      name_pt: "Primossolos órticos údicos"
+      page: 176
+      residual_named_for: udic
+      tests:
+        default: true
+      notes: "Other Orthic Primosols."

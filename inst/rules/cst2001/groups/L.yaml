@@ -1,0 +1,155 @@
+# The keys to groups of the Argosols (order L) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 133-146, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "L1":
+    - code: "L1.1"
+      name: "Albi-Boric Argosols"
+      name_pt: "Argissolos bóricos álbicos"
+      page: 134
+      tests:
+        all_of:
+          - albic_above_claypan_cst: {}
+      notes: "An albic horizon above the claypan."
+    - code: "L1.2"
+      name: "Molli-Boric Argosols"
+      name_pt: "Argissolos bóricos mólicos"
+      page: 134
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "L1.3"
+      name: "Hapli-Boric Argosols"
+      name_pt: "Argissolos bóricos háplicos"
+      page: 134
+      tests:
+        default: true
+      notes: "Other Boric Argosols."
+
+  "L2":
+    - code: "L2.1"
+      name: "Carbonati-Ustic Argosols"
+      name_pt: "Argissolos ústicos carbonáticos"
+      page: 137
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks within 125 cm of the mineral soil surface."
+    - code: "L2.2"
+      name: "Calci-Ustic Argosols"
+      name_pt: "Argissolos ústicos cálcicos"
+      page: 137
+      tests:
+        all_of:
+          - horizon_top_between_cst: {horizon: calcic_horizon, top_min: 50, top_max: 125}
+      notes: "A calcic horizon with its upper boundary between 50 and 125 cm below the mineral soil surface."
+    - code: "L2.3"
+      name: "Ferri-Ustic Argosols"
+      name_pt: "Argissolos ústicos férricos"
+      page: 137
+      tests:
+        all_of:
+          - ferric_property_cst: {}
+      notes: "A ferric property throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "L2.4"
+      name: "Hapli-Ustic Argosols"
+      name_pt: "Argissolos ústicos háplicos"
+      page: 137
+      tests:
+        default: true
+      notes: "Other Ustic Argosols (the code printed 'K2.4')."
+
+  "L3":
+    - code: "L3.1"
+      name: "Carbonati-Perudic Argosols"
+      name_pt: "Argissolos perúdicos carbonáticos"
+      page: 139
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them)."
+    - code: "L3.2"
+      name: "Ali-Perudic Argosols"
+      aliases: ["Ai-Perudic Argosols"]
+      name_pt: "Argissolos perúdicos álicos"
+      page: 139
+      tests:
+        all_of:
+          - b_throughout_cst: {test: alic}
+      notes: "An alic property or alic evidence throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "L3.3"
+      name: "Hapli-Perudic Argosols"
+      name_pt: "Argissolos perúdicos háplicos"
+      page: 139
+      tests:
+        default: true
+      notes: "Other Perudic Argosols."
+
+  "L4":
+    - code: "L4.1"
+      name: "Albi-Udic Argosols"
+      name_pt: "Argissolos údicos álbicos"
+      page: 141
+      tests:
+        all_of:
+          - albic_above_claypan_cst: {}
+      notes: "An albic horizon above a claypan."
+    - code: "L4.2"
+      name: "Carbonati-Udic Argosols"
+      aliases: ["Carbonsti-Udic Argosols"]
+      name_pt: "Argissolos údicos carbonáticos"
+      page: 141
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them)."
+    - code: "L4.3"
+      name: "Claypani-Udic Argosols"
+      aliases: ["Calypani-Udic Argosols"]
+      name_pt: "Argissolos údicos com claypan"
+      page: 141
+      tests:
+        all_of:
+          - layer_run_cst: {feature: claypan, min_cm: 10, to_cm: 125}
+      notes: "A claypan 10 cm or more thick within 125 cm of the mineral soil surface."
+    - code: "L4.4"
+      name: "Ali-Udic Argosols"
+      name_pt: "Argissolos údicos álicos"
+      page: 141
+      tests:
+        all_of:
+          - b_throughout_cst: {test: alic}
+      notes: "An alic property or alic evidence throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "L4.5"
+      name: "Acidi-Udic Argosols"
+      name_pt: "Argissolos údicos ácidos"
+      page: 141
+      tests:
+        all_of:
+          - b_throughout_cst: {test: acid_and}
+      notes: "A pH under 5.5 and a base saturation under 50 % in the B horizon within 125 cm of the mineral soil surface (read throughout the B, Q23)."
+    - code: "L4.6"
+      name: "Ferri-Udic Argosols"
+      name_pt: "Argissolos údicos férricos"
+      page: 141
+      tests:
+        all_of:
+          - ferric_property_cst: {}
+      notes: "A ferric property throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "L4.7"
+      name: "Hapli-Udic Argosols"
+      name_pt: "Argissolos údicos háplicos"
+      page: 141
+      tests:
+        default: true
+      notes: "Other Udic Argosols."

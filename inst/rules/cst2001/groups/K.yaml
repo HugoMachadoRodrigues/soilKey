@@ -1,0 +1,98 @@
+# The keys to groups of the Ferrosols (order K) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 123-133, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "K1":
+    - code: "K1.1"
+      name: "Argi-Ustic Ferrosols"
+      name_pt: "Ferrossolos ústicos argílicos"
+      page: 124
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 125, datum: mineral}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface."
+    - code: "K1.2"
+      name: "Hapli-Ustic Ferrosols"
+      name_pt: "Ferrossolos ústicos háplicos"
+      page: 124
+      tests:
+        default: true
+      notes: "Other Ustic Ferrosols."
+
+  "K2":
+    - code: "K2.1"
+      name: "Carbonati-Perudic Ferrosols"
+      name_pt: "Ferrossolos perúdicos carbonáticos"
+      page: 125
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them)."
+    - code: "K2.2"
+      name: "Alliti-Perudic Ferrosols"
+      name_pt: "Ferrossolos perúdicos alíticos"
+      page: 125
+      tests:
+        all_of:
+          - b_subhorizon_cst: {test: allitic, min_cm: 10}
+      notes: "An allitic property in some subhorizon(s) of the B horizon 10 cm or more thick within 125 cm of the mineral soil surface."
+    - code: "K2.3"
+      name: "Hapli-Perudic Ferrosols"
+      name_pt: "Ferrossolos perúdicos háplicos"
+      page: 125
+      tests:
+        default: true
+      notes: "Other Perudic Ferrosols."
+
+  "K3":
+    - code: "K3.1"
+      name: "Carbonati-Udic Ferrosols"
+      name_pt: "Ferrossolos údicos carbonáticos"
+      page: 128
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them)."
+    - code: "K3.2"
+      name: "Hiweatheri-Udic Ferrosols"
+      aliases: ["Hi-weatheri-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos muito intemperizados"
+      page: 128
+      tests:
+        all_of:
+          - b_subhorizon_cst: {test: hiweatheri, min_cm: 10}
+      notes: "A CEC7 under 16 cmol(+)/kg clay, an ECEC under 12 cmol(+)/kg clay and an allitic property, in the same subhorizon(s) of the B horizon 10 cm or more thick within 125 cm of the mineral soil surface."
+    - code: "K3.3"
+      name: "Alliti-Udic Ferrosols"
+      aliases: ["Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos"
+      page: 128
+      tests:
+        all_of:
+          - b_subhorizon_cst: {test: allitic, min_cm: 10}
+      notes: "An allitic property in some subhorizon(s) of the B horizon 10 cm or more thick within 125 cm of the mineral soil surface."
+    - code: "K3.4"
+      name: "Argi-Udic Ferrosols"
+      aliases: ["Agri-Udic Ferrosols", "Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos"
+      page: 128
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 125, datum: mineral}
+      notes: "An argic horizon with its upper boundary within 125 (cm, missing in print) of the mineral soil surface."
+    - code: "K3.5"
+      name: "Hapli-Udic Ferrosols"
+      name_pt: "Ferrossolos údicos háplicos"
+      page: 128
+      tests:
+        default: true
+      notes: "Other Udic Ferrosols."

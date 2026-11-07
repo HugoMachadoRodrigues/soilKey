@@ -1,0 +1,99 @@
+# The keys to groups of the Isohumosols (order J) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 116-123, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "J1":
+    - code: "J1.1"
+      name: "Phosphi-Lithomorphic Isohumosols"
+      name_pt: "Isoumossolos litomórficos fosfáticos"
+      page: 117
+      tests:
+        all_of:
+          - phosphic_property_cst: {}
+          - lc_within_cst: {kind: coral_sands, top_max: 100}
+      notes: "A phosphic property, and the lithologic characters of coral sands in some horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "J1.2"
+      name: "Black-Lithomorphic Isohumosols"
+      name_pt: "Isoumossolos litomórficos pretos"
+      page: 117
+      tests:
+        default: true
+      notes: "Other Lithomorphic Isohumosols."
+
+  "J2":
+    - code: "J2.1"
+      name: "Cryi-Ustic Isohumosols"
+      name_pt: "Isoumossolos ústicos críicos"
+      page: 118
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [cryic]}
+      notes: "A cryic soil temperature regime (the colder ones are not included: Hugo's decision Q7)."
+    - code: "J2.2"
+      name: "Cumuli-Ustic Isohumosols"
+      name_pt: "Isoumossolos ústicos cumúlicos"
+      page: 118
+      tests:
+        all_of:
+          - cumulic_epipedon_cst: {grade: at_least_evidence, top_max: 50, datum: mineral}
+      notes: "Cumulic evidence (a cumulic epipedon too, Q19) with its upper boundary within 50 cm of the mineral soil surface."
+    - code: "J2.3"
+      name: "Pachi-Ustic Isohumosols"
+      name_pt: "Isoumossolos ústicos páquicos"
+      page: 118
+      tests:
+        all_of:
+          - epipedon_thick_cst: {horizon: mollic_epipedon, min_cm: 50}
+      notes: "A mollic epipedon 50 cm or more thick."
+    - code: "J2.4"
+      name: "Calci-Ustic Isohumosols"
+      name_pt: "Isoumossolos ústicos cálcicos"
+      page: 118
+      tests:
+        all_of:
+          - calcic_only_cst: {top_max: 100, datum: mineral}
+      notes: "A calcic horizon with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "J2.5"
+      name: "Hapli-Ustic Isohumosols"
+      name_pt: "Isoumossolos ústicos háplicos"
+      page: 118
+      tests:
+        default: true
+      notes: "Other Ustic Isohumosols."
+
+  "J3":
+    - code: "J3.1"
+      name: "Stagni-Udic Isohumosols"
+      name_pt: "Isoumossolos údicos estágnicos"
+      page: 122
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [stagnic]}
+          - redoxic_features_cst: {top_max: 100, datum: mineral}
+          - gleyic_features_cst: {grade: at_least_evidence, top_max: 100, datum: mineral}
+      notes: "A stagnic soil moisture regime, and redoxic features and gleyic evidence (gleyic features too, Q19) within 100 cm of the mineral soil surface."
+    - code: "J3.2"
+      name: "Argi-Udic Isohumosols"
+      name_pt: "Isoumossolos údicos argílicos"
+      page: 122
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "An argic horizon with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "J3.3"
+      name: "Hapli-Udic Isohumosols"
+      name_pt: "Isoumossolos údicos háplicos"
+      page: 122
+      residual_named_for: udic
+      tests:
+        default: true
+      notes: "Other Udic Isohumosols."
