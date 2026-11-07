@@ -330,6 +330,7 @@ horizon_column_spec <- function() {
     clay_coatings_thin_section_pct = "numeric",  # clay coatings in thin section, % area; KA5 Bt (> 1)
     clay_bridges                  = "logical",   # clay bridges between sand grains; KA5 Bt
     bands_area_pct                = "numeric",   # clay, humus or sesquioxide bands, % area; KA5 Bbt+Bv, Bv+Bbt, Cbtv
+    schwertmannite_present        = "logical",   # schwertmannite present; KA5 the variety sf (with jarosite)
     kultotroph                    = "logical",   # base status changed by fertilising; KA5 Akh, Aka, Hk
     carbonate_whole_soil_pct      = "numeric",   # carbonate of the whole material, skeleton included, %; KA5 i, e, c
     rock_diggable                 = "logical",   # diggable with a spade when moist; KA5 l vs m, x

@@ -328,7 +328,9 @@
       set(clay_pct = 3, silt_pct = 5)
       if (grepl("m", car)) set(cementation_class = "strongly cemented")
     } else if (car == "Bfv") { set(oc_pct = 2, bulk_density_g_cm3 = 0.7, total_porosity_pct = 70); col("7.5YR", 3, 4) }
-    else { set(oc_pct = 0.3); col("7.5YR", 4, 6); if (grepl("c", car)) set(secondary_carbonates_pct = 2, caco3_pct = 3) }
+    # v0.9.365: a Bv of 10YR 4/6, not iron-rich (the variety ei) unless an
+    # example asks for it
+    else { set(oc_pct = 0.3); col("10YR", 4, 6); if (grepl("c", car)) set(secondary_carbonates_pct = 2, caco3_pct = 3) }
   } else if (ms == "C") {
     set(oc_pct = 0.1, clay_pct = 10, rock_diggable = !("m" %in% pre))
     if ("m" %in% pre) set(oc_pct = NA, clay_pct = NA, silt_pct = NA)
@@ -353,7 +355,7 @@
     set(clay_pct = 55, silt_pct = 30, slickensides = "common", structure_type = "prismatic", clay_films_amount = "none")
   } else if (ms == "T") {
     set(clay_pct = 70, silt_pct = 20, structure_type = "subangular blocky", clay_films_amount = "none")
-    col(if (car == "Tu") "2.5YR" else "7.5YR", 4, 6)
+    col(if (car == "Tu") "2.5YR" else "7.5YR", 4, if (car == "Tu") 6 else 4)
     if (grepl("c", car)) set(secondary_carbonates_pct = 2)
   } else if (ms == "M") {
     set(oc_pct = 1.2, layer_origin = "colluvic", stratification_pattern = "continuous")

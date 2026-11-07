@@ -82,7 +82,9 @@
     fl <- unlist(lapply(Filter(function(z) identical(z$type, e$type) && !startsWith(z$code, "["), ents), function(z) z$formulas),
                  recursive = FALSE)
   fs <- vapply(fl, function(fm) if (is.character(fm)) fm else as.character(fm$formula), "")
-  # a letter in parentheses is optional (S(e)w, A(c)h, (e)Go): not written
+  # an optional prefix ((e)Go, a(e)Ah) counts as written (Hugo, 2026-11-07);
+  # an optional letter after the master (S(e)w, A(c)h) does not
+  fs <- gsub("\\(([a-z]+)\\)(?=[A-Z\u00dc])", "\\1", fs, perl = TRUE)
   fs <- gsub("\\([a-z]+\\)", "", fs)
   tok <- unlist(strsplit(gsub("[()<>]", "", fs), "[/,+\u00b0-]"))
   tok <- sub("^(IV|III|II)", "", trimws(tok))
@@ -98,6 +100,10 @@
 #' (s), an aG (a).
 #' @noRd
 .ka5_var_in_formula <- function(sub, code) {
+  # the carbonate of the Kalkpaternia, Pararendzina, Rendzina and
+  # Kalktschernosem is their type's own (Hugo, 2026-11-07)
+  e <- .ka5_subtype_entries()[[sub]]
+  if (identical(code, "c") && isTRUE(e$type %in% c("AZ", "RZ", "RR", "TC"))) return(TRUE)
   tk <- .ka5_var_formula_tokens(sub)
   if (!nrow(tk)) return(FALSE)
   ms <- substr(tk$code, 1L, 1L)
@@ -266,21 +272,31 @@
   rows <- .ka5_var_rows(v)
   ac <- identical(ctx$class, "R")
   ref <- NA_integer_
+  why <- "no horizon under the Ah to read the base saturation in"
   if (ac) {
     run <- .ka5_var_a_run(v)
     if (length(run)) ref <- run[1L]
+  } else if (identical(ctx$class, "F") || identical(ctx$class, "O")) {
+    # the O/C soils and the Rohboeden: the O horizon, else the first horizon
+    # (review D3, Hugo 2026-11-07)
+    all <- v$ord[!(fr$buried[v$ord] > 0L) %in% TRUE]
+    o <- all[fr$master[all] %in% "O"]
+    ref <- if (length(o)) o[1L] else if (length(all)) all[1L] else NA_integer_
+    why <- "no horizon to read the base saturation in"
   } else {
     run <- .ka5_var_a_run(v)
     after <- rows[!rows %in% run & seq_along(rows) > length(run)]
     after <- after[!(fr$master[after] %in% "C")]
     win <- .ka5_var_thr("bs_horizon_cm")
     ov <- after[!is.na(fr$top_gof[after]) & !is.na(fr$bottom_gof[after]) & fr$top_gof[after] < win[2L] & fr$bottom_gof[after] > win[1L]]
-    ref <- if (length(ov)) ov[1L] else if (length(after)) after[1L] else NA_integer_
+    # only a horizon reaching into 2 to < 5 dm (Hugo, 2026-11-07)
+    ref <- if (length(ov)) ov[1L] else NA_integer_
+    if (is.na(ref)) why <- "no horizon under the Ah (not a C) reaches into 2 to < 5 dm: the base saturation is not read"
   }
   out <- list(code = NA_character_, digit = NA_integer_, row = ref, notes = character(0), missing = character(0),
               bs = NA_real_, class = NA_character_, column = NA_character_)
   if (is.na(ref)) {
-    out$notes <- "no horizon under the Ah to read the base saturation in"
+    out$notes <- why
     out$code <- "none"
     ctx$memo$bs <- out
     return(out)
@@ -331,7 +347,7 @@
 
 .ka5_var_base_saturation <- function(v, e, ctx) {
   b <- .ka5_var_bs(v, ctx)
-  if (identical(b$code, "none")) return(.ka5_var_r(FALSE, b$notes))
+  if (identical(b$code, "none")) return(.ka5_var_r(NA, b$notes, "bs_pct"))
   if (is.na(b$code)) return(.ka5_var_r(NA, b$notes, b$missing, layers = b$row))
   if (identical(b$code, "m|dy")) {
     if (e$code == "eu") return(.ka5_var_r(FALSE, b$notes, layers = b$row))
@@ -396,13 +412,13 @@
     if (!length(k)) next
     t <- fr$top_gof[i]
     if (is.na(t)) return(.ka5_var_r(NA, "the depth of the aG not known", "top_cm"))
-    if (t >= lim) return(.ka5_var_r(TRUE, sprintf("the %s begins at %s cm (8 dm or deeper)", fr$code[i], .ka5_var_cm(t)), layers = i))
-    return(.ka5_var_r(FALSE, sprintf("the %s begins at %s cm, above 8 dm", fr$code[i], .ka5_var_cm(t))))
+    # "tiefer als 8 dm": strictly deeper (Hugo, 2026-11-07)
+    if (t > lim) return(.ka5_var_r(TRUE, sprintf("the %s begins at %s cm (deeper than 8 dm)", fr$code[i], .ka5_var_cm(t)), layers = i))
+    return(.ka5_var_r(FALSE, sprintf("the %s begins at %s cm, not deeper than 8 dm", fr$code[i], .ka5_var_cm(t))))
   }
   bt <- .ka5_var_bottom(v)
-  lf <- .ka5_site_txt(v$x, "landform")
-  if (isTRUE(grepl("flood", lf)) && !bt$closed && isTRUE(bt$depth < lim))
-    return(.ka5_var_r(NA, sprintf("a floodplain, the description ends at %s cm", .ka5_var_cm(bt$depth)), "bottom_cm"))
+  if (!bt$closed && isTRUE(bt$depth <= lim))
+    return(.ka5_var_r(NA, sprintf("the description ends at %s cm, not deeper than 8 dm", .ka5_var_cm(bt$depth)), "bottom_cm"))
   .ka5_var_r(FALSE)
 }
 
@@ -440,7 +456,8 @@
 # 13 rewetted (note 4): the record of the site (not recorded: undecided).
 .ka5_var_rewetted <- function(v, e) {
   w <- .ka5_site_lgl(v$x, "rewetted")
-  if (is.na(w)) return(.ka5_var_r(NA, "rewetting not recorded", "rewetted"))
+  # not recorded: absent (Hugo, 2026-11-07)
+  if (is.na(w)) return(.ka5_var_r(FALSE, "rewetting not recorded: absent"))
   .ka5_var_r(w, sprintf("rewetted recorded %s", if (w) "TRUE" else "FALSE"))
 }
 
@@ -460,17 +477,25 @@
   }
   if (ty == "RR" || ty %in% c("AQ", "AZ")) {
     run <- .ka5_var_a_run(v)
-    if (!length(run)) return(.ka5_var_r(FALSE, "no Ah"))
+    if (!length(run)) {
+      rows <- .ka5_var_rows(v)
+      if (length(rows) && is.na(fr$carrying[rows[1L]])) return(.ka5_var_r(NA, "the first horizon is undecided", unlist(fr$missing[rows[1L]])))
+      return(.ka5_var_r(FALSE, "no Ah"))
+    }
     i <- run[1L]
     pk <- pre_kind(paste(fr$prefixes[[i]], collapse = ""))
     if (!is.na(pk)) return(.ka5_var_r(pk == code, sprintf("the %s written", fr$designation[i] %||% fr$code[i]), layers = i))
     if (!identical(fr$route[i], "data")) return(.ka5_var_r(FALSE, "no colour prefix written on the Ah"))
     if (ty == "RR" && code == "b") {
-      os <- .ka5_os(v$x, i)$range[1L]
-      if (is.na(os)) return(.ka5_var_r(NA, "the humus of the Ah not recorded", "oc_pct"))
-      return(.ka5_var_r(os < .ka5_var_thr("rendzina_brown_os_pct"),
-                        sprintf("organic substance of the Ah %s %% (a bAh mostly under 8 %%; on the data soilKey's reading)", format(signif(os, 3))),
-                        layers = i))
+      # on the data only a brown colour recorded names the bAh (a hue of the
+      # YR pages, chroma 3 or more); its humus alone does not (review D4,
+      # Hugo 2026-11-07): otherwise open
+      col <- .ka5_colour(v$x, i)
+      pos <- .rp_hue_pos(col)
+      if (!is.na(pos) && !is.na(col$chroma) && pos >= 10 - 1e-9 && pos <= 20 + 1e-9 && col$chroma >= 3 - 1e-9)
+        return(.ka5_var_r(TRUE, sprintf("the Ah %s: brown", .kidpr_colour_text(col)), layers = i))
+      return(.ka5_var_r(NA, "no brown colour of the Ah recorded (the bAh by the notation, or a brown colour)",
+                        c("designation", "munsell_hue_moist", "munsell_chroma_moist")))
     }
     return(.ka5_var_r(NA, "no numbers for the colour of the Paternia's Ah (by the notation only)", "designation"))
   }
@@ -497,22 +522,26 @@
   .ka5_var_r(FALSE, "Tab. 46 no. 7 gives this colour for the Rendzina, the Plaggenesch and the Kalkpaternia only")
 }
 
-# 7 reddish: a Bt redder than 7.5YR, or 7.5YR with a chroma over 4 (on the
-# Bt only, as printed).
-.ka5_var_reddish <- function(v, e) {
+# 7 reddish: the type's own B or T horizon (the Bt of the Lessives, the Bv
+# of the Braunerde, the Bs of the Podsol, the T of the Terrae calcis; else
+# the first of these) redder than 7.5YR, or 7.5YR with a chroma over 4, the
+# numbers of the Parabraunerde's Bt (Hugo, 2026-11-07).
+.KA5_VAR_RT_HORIZON <- list(L = "^B[a-z]*t", B = "^B[cf]?v$", P = "^B[a-z]*s", C = "^T")
+.ka5_var_reddish <- function(v, e, ctx) {
   fr <- v$frame
+  pat <- .KA5_VAR_RT_HORIZON[[substr(ctx$type, 1L, 1L)]] %||% "^B[a-z]*t|^B[cf]?v$|^B[a-z]*s|^T"
   for (i in .ka5_var_rows(v)) {
     pp <- .ka5_var_parts(fr, i)
-    if (is.null(pp) || !any(grepl("^B[a-z]*t", pp$code))) next
+    if (is.null(pp) || !any(grepl(pat, pp$code))) next
     col <- .ka5_colour(v$x, i)
     pos <- .rp_hue_pos(col)
-    if (identical(col$family, "N")) return(.ka5_var_r(FALSE, "a neutral Bt"))
+    if (identical(col$family, "N")) return(.ka5_var_r(FALSE, sprintf("a neutral %s", fr$code[i])))
     if (is.na(pos) || (abs(pos - 17.5) < 1e-9 && is.na(col$chroma)))
       return(.ka5_var_r(NA, sprintf("the colour of the %s not recorded", fr$code[i]), c("munsell_hue_moist", "munsell_chroma_moist")))
     ok <- pos < 17.5 - 1e-9 || (abs(pos - 17.5) < 1e-9 && col$chroma > 4)
     return(.ka5_var_r(ok, sprintf("the %s %s", fr$code[i], .kidpr_colour_text(col)), layers = i))
   }
-  .ka5_var_r(FALSE, "no Bt (Tab. 46 no. 7 reads the reddish colour on the Bt)")
+  .ka5_var_r(FALSE, "no B or T horizon of the type to read the reddish colour on")
 }
 
 # 8 iron-rich: a Bv of 7.5YR with a chroma of 4 or more, or redder.
@@ -535,8 +564,8 @@
 # 8 sulfate-rich: jarosite (or schwertmannite) recorded.
 .ka5_var_sulfate <- function(v, e) {
   rows <- .ka5_var_rows(v)
-  j <- vapply(rows, function(i) isTRUE(.ka5_lgl(v$x, i, "jarosite_present")), NA)
-  if (any(j)) return(.ka5_var_r(TRUE, "jarosite recorded", layers = rows[j]))
+  j <- vapply(rows, function(i) isTRUE(.ka5_lgl(v$x, i, "jarosite_present")) || isTRUE(.ka5_lgl(v$x, i, "schwertmannite_present")), NA)
+  if (any(j)) return(.ka5_var_r(TRUE, "jarosite or schwertmannite recorded", layers = rows[j]))
   .ka5_var_r(FALSE)
 }
 
@@ -562,7 +591,7 @@
 #' carbonate recorded), z an EC of 0.75 dS/m or more; on the data route a row
 #' with no record leaves it open.
 #' @noRd
-.ka5_var_prefix <- function(v, e) {
+.ka5_var_prefix <- function(v, e, ctx = list()) {
   fr <- v$frame
   p <- e$prefix
   und <- character(0); und_rows <- integer(0)
@@ -574,9 +603,12 @@
     if (any(sol & grepl(p, pp$prefix, fixed = TRUE)))
       return(.ka5_var_r(TRUE, sprintf("the prefix %s on the %s", p, fr$code[i]), layers = i))
     data_row <- identical(fr$route[i], "data")
-    # the data of a row stand in only for a row whose own horizon is of the
-    # solum (not a Bv+cCv, which is a C)
-    if (p != "o" && !sol[length(sol)]) next
+    # the data of a row stand in only for a row with no symbol written (the
+    # data route) whose own horizon is of the solum (not a Bv+cCv, which is a
+    # C); a Tschernosem's carbonate is not geogenic by default (Hugo,
+    # 2026-11-07)
+    if (p != "o" && (!sol[length(sol)] || !data_row)) next
+    if (p == "e" && identical(substr(ctx$type %||% "", 1L, 1L), "T")) next
     if (p == "e") {
       cb <- .ka5_num(v$x, i, "caco3_pct"); sc <- .ka5_num(v$x, i, "secondary_carbonates_pct")
       if (isTRUE(cb >= 2) && !isTRUE(sc > 0))
@@ -642,6 +674,8 @@
     if (is.null(pp)) { if (.ka5_var_cand(fr, i, "^A(he|eh)$")) und <- TRUE; next }
     if (!all(pp$master == "A")) break
     k <- if ("Ahe" %in% pp$code && "Ae" %in% pp$code) 4L else if ("Ahe" %in% pp$code) 3L else if ("Aeh" %in% pp$code) 2L else NA_integer_
+    # a separate Ae under an Ahe is the stark degree too (Hugo, 2026-11-07)
+    if (is.na(k) && identical(pp$code[nrow(pp)], "Ae") && isTRUE(d >= 3L)) k <- 4L
     if (!is.na(k)) { d <- max(d, k, na.rm = TRUE); rows <- c(rows, i) }
   }
   if (!is.na(d)) return(.ka5_var_r(TRUE, sprintf("the %s: %s podsolig", paste(fr$code[rows], collapse = ", "),
@@ -709,8 +743,6 @@
     n <- suppressWarnings(as.integer(sub("^[Ee][Gg]?", "", trimws(eg))))
     if (!is.na(n)) return(.ka5_var_r(n >= 1L, sprintf("degree of erosion %s (Tab. 62)", eg)))
   }
-  if (isTRUE(.ka5_site_lgl(v$x, "anthropic_truncation")))
-    return(.ka5_var_r(TRUE, "the degree of erosion not recorded: the anthropic truncation recorded stands in, flagged"))
   .ka5_var_r(FALSE)
 }
 
@@ -752,11 +784,11 @@
          relict = .ka5_var_relict(v, e, ctx),
          rewetted = .ka5_var_rewetted(v, e),
          colour = .ka5_var_colour(v, e, ctx),
-         reddish = .ka5_var_reddish(v, e),
+         reddish = .ka5_var_reddish(v, e, ctx),
          iron_rich = .ka5_var_iron_rich(v, e),
          sulfate = .ka5_var_sulfate(v, e),
          cemented = .ka5_var_cemented(v, e),
-         prefix = .ka5_var_prefix(v, e),
+         prefix = .ka5_var_prefix(v, e, ctx),
          wet_bleached = .ka5_var_wet_bleached(v, e),
          humus_rich = .ka5_var_humus_rich(v, e),
          podzolic = .ka5_var_podzolic(v, e),
@@ -872,6 +904,9 @@
         if (done) { notes <- c(notes, sprintf("%s-%s not combined: two transitions are joined only once (rule IV)", y, type)); next }
         hx <- x %in% hyd; hy <- y %in% hyd
         if (xor(hx, hy)) { parts <- if (hx) c(y, x) else c(x, y); done <- TRUE }
+        # the hydromorphic type may stand last, as the type (BB-LL-SS; Hugo,
+        # 2026-11-07)
+        else if (!hx && !hy && type %in% hyd) { parts <- c(x, y); done <- TRUE }
         else notes <- c(notes, sprintf("%s-%s and %s-%s not combined: rule IV joins three types only with one hydromorphic type, not first (p. 271)",
                                        x, type, y, type))
       }
@@ -1010,7 +1045,7 @@
   if (is.na(ty)) return(res)
   ov <- res$trace$overlay
   has_ov <- !is.null(ov) && !is.na(ov$code %||% NA_character_)
-  if (is.na(sub) && !has_ov) return(res)
+  if (is.na(sub)) return(res)
   te <- .ka5_type_entries()
   v <- view
   key <- .ka5_var_sub_key(sub)
@@ -1028,6 +1063,7 @@
   tab$kind <- vapply(tab$code, function(cd) as.character(ents[[cd]]$kind), "")
   tab$passed <- NA; tab$digit <- NA_integer_; tab$status <- NA_character_; tab$target <- NA_character_
   tab$notes <- I(rep(list(character(0)), nrow(tab))); tab$missing <- I(rep(list(character(0)), nrow(tab)))
+  tab$layers <- I(rep(list(integer(0)), nrow(tab)))
   # the r of a deep g or s (r.gLFn, rule VI, p. 272) where Tab. 50 does not
   # mark the r but offers the g or s (soilKey's reading)
   kr <- which(tab$code == "r")
@@ -1042,7 +1078,7 @@
     r <- tryCatch(.ka5_var_eval(v, tab$code[k], ctx),
                   error = function(e) .ka5_var_r(NA, paste("error:", conditionMessage(e))))
     tab$passed[k] <- r$passed; tab$digit[k] <- r$digit; tab$target[k] <- r$target
-    tab$notes[[k]] <- r$notes; tab$missing[[k]] <- r$missing
+    tab$notes[[k]] <- r$notes; tab$missing[[k]] <- r$missing; tab$layers[[k]] <- r$layers
     tab$status[k] <- if (isTRUE(r$passed)) "named" else if (isFALSE(r$passed)) "not named" else "undecided"
   }
   if (r_via && isTRUE(tab$passed[kr])) {
@@ -1052,7 +1088,20 @@
       tab$notes[[kr]] <- c(tab$notes[[kr]], "Tab. 50 does not mark the r here: named only on a deep g or s (rule VI)")
     }
   } else if (r_via && is.na(tab$passed[kr])) tab$status[kr] <- "undecided"
+  # a and g on the same deep aGo: only a (Hugo, 2026-11-07)
+  ka <- which(tab$code == "a"); kg <- which(tab$code == "g")
+  if (tab$status[ka] %in% "named" && tab$status[kg] %in% "named" && length(intersect(tab$layers[[ka]], tab$layers[[kg]]))) {
+    tab$status[kg] <- "not named"; tab$passed[kg] <- FALSE
+    tab$notes[[kg]] <- c(tab$notes[[kg]], "the deep G is the aG of the variety a: named once, as a")
+  }
+  # the r qualifies a g or s only when that one is named; else the type (review
+  # D2, Hugo 2026-11-07)
+  if (tab$status[kr] %in% "named" && tab$target[kr] %in% c("g", "s") && !(tab$status[tab$code == tab$target[kr]] %in% "named"))
+    tab$target[kr] <- "T"
   named <- tab[tab$status %in% "named", c("code", "digit", "target"), drop = FALSE]
+  # the base-saturation class goes to the trace only, not to the symbol or the
+  # name (Hugo, 2026-11-07)
+  named$digit[named$code %in% c("eu", "m", "dy")] <- NA_integer_
   und <- tab[tab$status %in% "undecided", , drop = FALSE]
   # the combination with the further subtypes (Q21)
   comb <- NULL
@@ -1075,7 +1124,6 @@
     len <- if (!is.null(lw)) lw[2L] else tolower(te[[ov$lower]]$name_en %||% ov$lower)
     if (identical(ov$kind, "moor_cover")) {
       sym <- ov$code; un <- te[[ov$upper]]$name %||% ov$upper; nm <- ov$name; nen <- ov$name_en
-      base$head_type <- ov$upper
     } else {
       upper_sym <- if (norm || is.na(sub)) ty else base$symbol
       un <- if (norm || is.na(sub)) te[[ty]]$name %||% ty else base$name
@@ -1086,14 +1134,14 @@
       } else sprintf("%s \u00fcber %s", un, ln)
       nen <- sprintf("%s%s over %s", if (identical(ov$symbol, "\\")) "shallow " else "", if (norm || is.na(sub)) tolower(te[[ty]]$name_en %||% ty) else tolower(base$name_en), len)
     }
-    base <- utils::modifyList(base, list(symbol = sym, name = nm, name_en = nen, upper_name = un,
-                                         overlay = list(kind = ov$kind, symbol = ov$symbol, upper = ov$upper, lower = ov$lower)))
-    ov_row <- list(code = sym, name = nm, name_en = nen)
+    # the overlay changes neither the levels, the name nor provisional_because
+    # (Hugo's decision of 0.9.364, confirmed 2026-11-07): trace only
+    ov_row <- list(code = sym, name = nm, name_en = nen, kind = ov$kind)
   }
-  if (!nrow(named) && is.null(ov_row) && (is.null(comb) || is.na(comb$symbol))) {
+  if (!nrow(named) && (is.null(comb) || is.na(comb$symbol))) {
     res$trace$varieties <- tab
     res$trace$variety <- list(symbol = NA_character_, name = NA_character_, named = character(0), undecided = und$code,
-                              combination = comb, base_saturation = ctx$memo$bs,
+                              combination = comb, overlay = ov_row, base_saturation = ctx$memo$bs,
                               development_depth = .ka5_var_development_depth(v, ty))
     if (nrow(und)) res$warnings <- c(res$warnings, .ka5_var_open_note(und))
     if (!is.null(comb$notes) && length(comb$notes)) res$warnings <- c(res$warnings, paste0("Variety (Tab. 46 no. 17): ", comb$notes))
@@ -1111,7 +1159,6 @@
                                       name_en = as.character(e$name_en))
   }
   if (!is.null(comb) && !is.na(comb$symbol)) rows[[length(rows) + 1L]] <- list(code = comb$symbol, name = comb$name, name_en = comb$name_en)
-  if (!is.null(ov_row)) rows[[length(rows) + 1L]] <- ov_row
   add <- lv[rep(NA_integer_, length(rows)), , drop = FALSE]
   add$level <- "variety"
   add$code <- vapply(rows, `[[`, "", "code")
@@ -1314,7 +1361,8 @@
   gr = list(base = "YEn", spec = "Ah 0-30 / gE 30-70 / IIfAh 70-80 / IIBhs 80-100"),
   rt = list(base = "LLn", spec = "Ah 0-25 / Al 25-45 / Bt 45-90 / C 90-130",
             cols = list(munsell_hue_moist = c("10YR", "10YR", "5YR", "10YR"), munsell_chroma_moist = c(2, 4, 6, 4))),
-  ei = list(base = "BBn", spec = "Ah 0-15 / Bv 15-50 / C 50-100"),
+  ei = list(base = "BBn", spec = "Ah 0-15 / Bv 15-50 / C 50-100",
+            cols = list(munsell_hue_moist = c("10YR", "7.5YR", "10YR"), munsell_chroma_moist = c(2, 4, 4))),
   sf = list(base = "MOn", cols = list(jarosite_present = c(NA, TRUE, NA))),
   vf = list(base = "PPn", spec = "Ahe 0-10 / Ae 10-25 / Bsh 25-30 / Bhms 30-50 / C 50-100"),
   og = list(base = "GGn", spec = "oAh 0-25 / Go 25-60 / Gr 60-120"),

@@ -185,11 +185,9 @@ test_that("the Moore covers (Q7): 19/20, 29/30, 39/40 cm", {
   expect_identical(.wt_ov(mo(25))$code, "MO\\HN")
   expect_identical(.wt_ov(mo(25))$name, "flache Organomarsch über Niedermoor")
   expect_identical(.wt_ov(mo(35))$code, "MO/HN")
-  # the overlay does not change the levels or provisional_because; since
-  # v0.9.365 it is a variety and enters the name (rule V)
+  # the overlay does not change the levels, the name or provisional_because
   r <- cv(25)
-  expect_identical(.lv_name(r), "Normniedermoor")
-  expect_identical(r$name, "flacher Gley \u00fcber Niedermoor")
+  expect_identical(r$name, "Normniedermoor")
   expect_length(r$provisional_because, 0L)
 })
 

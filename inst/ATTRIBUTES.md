@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.373)
+# soilKey -- recognised horizon attribute names (v0.9.374)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -431,6 +431,7 @@ and do not warn.
 | `clay_coatings_thin_section_pct` | % | numeric | Clay coatings in thin section, % of the area. German KA5 (ka5): a Bt has more than 1 % (p. 97). Not recorded: clay_films_amount, flagged. | - |
 | `clay_bridges` | - | logical | Clay bridges between sand grains visible with a hand lens (TRUE / FALSE). German KA5 (ka5): one of the three signs of the Bt (p. 97). Not recorded: clay_films_amount, flagged. | - |
 | `bands_area_pct` | % | numeric | Clay, humus or sesquioxide bands, % of the area of the horizon. German KA5 (ka5): Bbt+Bv, Bbh+Bv, Bbs+Bv and Bbt+Cv 10 to < 50 %, Bv+Bbt and lCv+Bbt over 50 %, Cbtv under 10 % (pp. 96-100); the band subtypes LLd and LFd. Not recorded: lamellae_cumulative_cm over the thickness, flagged. | - |
+| `schwertmannite_present` | - | logical | Schwertmannite present in the horizon (TRUE / FALSE). German KA5 (ka5): with jarosite, the sulfate-rich variety sf of the Marschen and Niedermoore (Tab. 46 no. 8, p. 266). Not recorded: jarosite_present. | - |
 | `kultotroph` | - | logical | Base and nutrient status lastingly changed by regular fertilising (TRUE / FALSE). German KA5 (ka5): the suffix k of Akh, Aka and Hk (pp. 85, 91-94) and the variety ku. Not recorded: undecided. | - |
 | `carbonate_whole_soil_pct` | % | numeric | Carbonate (CaCO3 equivalent) of the whole material, skeleton included, % by mass. German KA5 (ka5): the rock classes i (< 2), e (2 to < 75) and c (75 or more) that separate Ranker, Regosol, Pararendzina and Rendzina (pp. 84, 204-211). Not recorded: the prefix written, else caco3_pct of the fine earth, flagged (Hugo's decision Q15). | - |
 | `rock_diggable` | - | logical | The substrate can be dug with a spade when moist (TRUE / FALSE). German KA5 (ka5): the prefixes l (loose) against m and x (pp. 84, 99). Not recorded: cementation_class and rupture_resistance, flagged. | - |
@@ -727,5 +728,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.373._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.374._
 

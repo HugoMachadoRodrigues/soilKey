@@ -140,11 +140,18 @@ test_that("an example profile for each of the 38 variety codes: the variety name
   expect_identical(s("w"), c("wKVn", "aufgestautes Normerdniedermoor"))
   expect_identical(s("rt"), c("rtLLn", "r\u00f6tliche Normparabraunerde"))
   expect_identical(s("gb"), c("gbYEn", "graubrauner Normplaggenesch"))
-  expect_identical(s("vf"), c("vfPPn", "verfestigter Normpodsol"))
+  expect_identical(s("vf"), c("rt.vfPPn", "r\u00f6tlicher verfestigter Normpodsol"))
   expect_identical(s("og"), c("ogGGn", "(Organo)Gley"))
   expect_identical(s("i"), c("iSSn", "nassgebleichter Normpseudogley"))
   expect_identical(s("l"), c("lBBh", "lessivierte Humusbraunerde"))
-  expect_identical(s("ro"), c("roPPn", "(Rohhumus)Podsol"))
+  expect_identical(s("ei"), c("eiBBn", "eisenreiche Normbraunerde"))
+  expect_identical(s("p"), c("p2BBn", "schwach podsolige Normbraunerde"))
+  # the base-saturation class in the trace only (Hugo, 2026-11-07)
+  r <- .vcls(make_ka5_example(variety = "eu"))
+  expect_identical(.vsym(r), "euBBn")
+  expect_identical(r$trace$variety$base_saturation$class, "BS4")
+  # the Bsh of 5YR of the Podsol example is reddish (rt on the Bs, Hugo 2026-11-07)
+  expect_identical(s("ro"), c("rt.roPPn", "r\u00f6tlicher (Rohhumus)Podsol"))
 })
 
 test_that("the variety examples on the data route where the data carry the criterion", {
@@ -243,16 +250,20 @@ test_that("the printed examples keyed on profiles: the symbol of the book", {
   expect_identical(r$name, "Podsol-Gley-Braunerde")
   expect_true("PP-GG-BB" %in% r$levels$code[r$levels$level == "variety"])
   # rule V: the overlays (Tab. 46 no. 18)
+  # the overlays stay out of the levels and the name (Hugo's decision of
+  # 0.9.364, confirmed 2026-11-07): trace$overlay and trace$variety only
   r <- .vcls(.vex("YKn", "Ah 0-20 / M 20-50 / IIfAh 50-70 / IIBv 70-100 / IIC 100-130"))
   expect_identical(.vsub(r), "YKn")
-  expect_true("YK/BB" %in% r$levels$code[r$levels$level == "variety"])
-  expect_identical(.vsym(r), "YK/BB")
-  expect_identical(r$name, "Kolluvisol \u00fcber Braunerde")
+  expect_false(any(grepl("/", r$levels$code[r$levels$level == "variety"], fixed = TRUE)))
+  expect_identical(r$trace$variety$overlay$code, "YK/BB")
+  expect_identical(r$trace$variety$overlay$name, "Kolluvisol \u00fcber Braunerde")
+  expect_false(grepl("\u00fcber", r$name, fixed = TRUE))
   r <- .vcls(.vex("BBn", bv("Ah 0-10 / Bv 10-25 / IIfTv 25-60 / IIcC 60-80", 4)))
-  expect_identical(.vsym(r), "BB\\CF")
-  expect_identical(r$name, "flache Braunerde \u00fcber Terra fusca")
+  expect_identical(r$trace$variety$overlay$code, "BB\\CF")
+  expect_identical(r$trace$variety$overlay$name, "flache Braunerde \u00fcber Terra fusca")
+  expect_identical(r$name, "Normbraunerde")
   r <- .vcls(.vex("BBn", bv("Ah 0-10 / Bv 10-40 / IIfTv 40-70 / IIcC 70-90", 4)))
-  expect_identical(.vsym(r), "BB/CF")
+  expect_identical(r$trace$variety$overlay$code, "BB/CF")
 })
 
 test_that("the combinations of subtypes (Tab. 46 no. 17; rules II-IV; Q21)", {
@@ -267,6 +278,9 @@ test_that("the combinations of subtypes (Tab. 46 no. 17; rules II-IV; Q21)", {
   # two transitions neither or both hydromorphic: not combined
   r <- cb("DD-BB", "LL-BB", "BB")
   expect_true(is.na(r$symbol)); expect_true(any(grepl("rule IV", r$notes)))
+  # a hydromorphic type may stand last (Hugo, 2026-11-07)
+  r <- cb("BB-SS", "LL-SS", "SS")
+  expect_identical(r$symbol, "BB-LL-SS"); expect_identical(r$name, "Braunerde-Parabraunerde-Pseudogley")
   r <- cb("SS-BB", "GG-BB", "BB")
   expect_true(is.na(r$symbol))
   # rule II: a transition and a deviation; rule III: two deviations
@@ -352,20 +366,25 @@ test_that("the base-saturation marks (Q14) and three-valued criteria", {
   r <- .vcls(.vex("BBn", list("Ah 0-15 / Bv> 15-50 / C 50-100", bs_pct = c(NA, 30, NA))))
   expect_true("m" %in% .vnamed(r))
   expect_true(any(grepl("the data decide", unlist(r$trace$varieties$notes), fixed = TRUE)))
-  # w: rewetting not recorded is open (the schema)
+  # w: rewetting not recorded is absent (Hugo, 2026-11-07)
   r <- .vcls(make_ka5_example(subtype = "KVn"))
-  expect_identical(.vstat(r, "w"), "undecided")
+  expect_identical(.vstat(r, "w"), "not named")
   # the humus forms only as recorded
   expect_identical(.vstat(.vcls(make_ka5_example(subtype = "BBn")), "mu"), "not named")
   # c, z: the data for an unwritten prefix; on the data a missing record is open
-  expect_true("c" %in% nm(list("Ah 0-25 / Go 25-60 / Gr 60-120", caco3_pct = c(0, 5, 5)), "GGn"))
+  # on the notation route the data do not stand in for an unwritten e
+  # (Hugo, 2026-11-07); on the data route they do
+  expect_false("c" %in% nm(list("Ah 0-25 / Go 25-60 / Gr 60-120", caco3_pct = c(0, 5, 5)), "GGn"))
+  r <- .vcls(soilKey:::.ka5_subtype_example("GGn", "data", spec = list("Ah 0-25 / Go 25-60 / Gr 60-120", caco3_pct = c(0, 5, 5))))
+  expect_true("c" %in% .vnamed(r))
   r <- .vcls(soilKey:::.ka5_subtype_example("BBn", "data", spec = list("Ah 0-15 / Bv 15-50 / C 50-100", ec_dS_m = NA_real_)))
   expect_identical(.vstat(r, "z"), "undecided")
   # a cC under a Bv+cCv is no solum: no c
   expect_false("c" %in% .vnamed(.vcls(make_ka5_example(subtype = "BB-RR"))))
   # e: the degree of erosion; Eg0 is none
   expect_false("e" %in% nm(list("Ah 0-15 / Bv 15-50 / C 50-100", site = list(erosion_degree = "Eg0"))))
-  expect_true("e" %in% nm(list("Ah 0-15 / Bv 15-50 / C 50-100", site = list(anthropic_truncation = TRUE))))
+  # no anthropic_truncation stand-in (Hugo, 2026-11-07)
+  expect_false("e" %in% nm(list("Ah 0-15 / Bv 15-50 / C 50-100", site = list(anthropic_truncation = TRUE))))
   # thin organic covers: 1 dm or more is no variety
   expect_false("n" %in% nm("nH 0-10 / Go-Ah 10-25 / Gr 25-100", "GNn"))
   # k: an Ah/M of 4 dm or more is the Kolluvisol, no variety
@@ -403,8 +422,8 @@ test_that("the variety level in the result, the trace and the registry", {
   lv <- r$levels
   w <- which(lv$level == "variety")
   expect_true(all(c("code", "name", "name_en", "symbol") %in% names(lv)))
-  expect_identical(lv$code[w], c("ei", "p2"))
-  expect_identical(lv$name[w], c("eisenreiche", "schwach podsolige"))
+  expect_identical(lv$code[w], "p2")
+  expect_identical(lv$name[w], "schwach podsolige")
   expect_identical(r$qualifiers$variety, lv$name[w])
   expect_true(is.data.frame(r$trace$varieties))
   expect_identical(nrow(r$trace$varieties), 38L)
@@ -420,4 +439,66 @@ test_that("the variety level in the result, the trace and the registry", {
   f <- system.file("..", "R", "varieties-ka5.R", package = "soilKey")
   src <- if (file.exists(f)) f else testthat::test_path("..", "..", "R", "varieties-ka5.R")
   if (file.exists(src)) expect_false(any(grepl("[^\\x01-\\x7f]", readLines(src, warn = FALSE), perl = TRUE)))
+})
+
+test_that("the review of 2026-11-07: Hugo's decisions and the defects", {
+  skip_on_cran()
+  # D2: the relict r qualifies the type when no g or s is named
+  r <- .vcls(.vex("MCn", "tmeAh 0-20 / tmeGo 20-50 / tmzeGr 50-85 / tmerGo 85-120"))
+  expect_identical(.vsub(r), "MCn")
+  expect_true("r" %in% .vnamed(r))
+  expect_false("g" %in% .vnamed(r))
+  expect_identical(.vsym(r), "rMCn")
+  expect_true(startsWith(r$name, "reliktische "))
+  r <- .vcls(.vex("ABn", "aAh 0-20 / aM 20-90 / arGo 90-150"))
+  expect_identical(.vsub(r), "ABn")
+  if ("r" %in% .vnamed(r)) {
+    expect_false(grepl("^r\\.", .vsym(r)))
+    expect_true(grepl("rAB", .vsym(r), fixed = TRUE))
+  }
+  # D3: the O/C soils read the O horizon; nothing to read is open, never FALSE
+  r <- .vcls(.vex("FFn", list("O 0-8 / mC 8-30", bs_pct = c(70, NA))))
+  expect_identical(.vsub(r), "FFn")
+  expect_true("eu" %in% .vnamed(r))
+  r <- .vcls(make_ka5_example(subtype = "FFn"))
+  expect_identical(.vstat(r, "eu"), "undecided")
+  # 6: no horizon outside the C reaching into 2 to < 5 dm: open, with a note
+  r <- .vcls(.vex("BBn", list("Ah 0-15 / Bv 15-19 / C 19-100", bs_pct = c(NA, 60, NA))))
+  expect_identical(.vstat(r, "eu"), "undecided")
+  expect_true(any(grepl("2 to < 5 dm", unlist(r$trace$varieties$notes[r$trace$varieties$code == "eu"]), fixed = TRUE)))
+  # D4: b on the data route only with a brown colour; the twins agree
+  rn <- .vcls(make_ka5_example(subtype = "RRn"))
+  rd <- .vcls(make_ka5_example(subtype = "RRn", route = "data"))
+  expect_false("b" %in% .vnamed(rn)); expect_false("b" %in% .vnamed(rd))
+  rb <- .vcls(soilKey:::.ka5_subtype_example("RRn", "data", spec = list("Ah> 0-20 / cmC 20-60", bs_pct = c(90, NA), oc_pct = c(3, NA),
+                                                                        munsell_hue_moist = c("7.5YR", NA), munsell_chroma_moist = c(4, NA))))
+  if (identical(.vsub(rb), "RRn")) expect_true("b" %in% .vnamed(rb))
+  # 5(1): no note-1 c on the carbonate types; an optional (e) counts as written
+  expect_identical(soilKey:::.ka5_var_offer("RZn")$source[soilKey:::.ka5_var_columns() == "c"], "in the formula")
+  expect_identical(soilKey:::.ka5_var_offer("TCn")$source[soilKey:::.ka5_var_columns() == "c"], "in the formula")
+  expect_identical(soilKey:::.ka5_var_offer("RRn")$source[soilKey:::.ka5_var_columns() == "c"], "in the formula")
+  expect_identical(soilKey:::.ka5_var_offer("GG-AZ")$source[soilKey:::.ka5_var_columns() == "c"], "in the formula")
+  expect_true(soilKey:::.ka5_var_in_formula("AZ-GG", "c"))
+  # 5(3): a separate Ae under an Ahe is stark
+  r <- .vcls(.vex("BBn", "Ahe 0-5 / Ae 5-8 / Bv 8-50 / C 50-100"))
+  if (identical(.vsub(r), "BBn")) expect_identical(r$trace$varieties$digit[r$trace$varieties$code == "p"], 4L)
+  # 5(7): a and g on the same deep aGo: only a
+  r <- .vcls(.vex("BBn", "Ah 0-15 / Bv 15-50 / aC 50-90 / aGo 90-150"))
+  expect_true("a" %in% .vnamed(r)); expect_false("g" %in% .vnamed(r))
+  # minor: an aG at 80 cm is not deeper than 8 dm
+  r <- .vcls(.vex("BBn", "Ah 0-15 / Bv 15-50 / aC 50-80 / aGo 80-150"))
+  expect_false("a" %in% .vnamed(r))
+  # minor: the Auen reader open where the description ends above 8 dm
+  expect_identical(.vstat(.vcls(.vex("BBn", "Ah 0-15 / Bv 15-50 / C 50-70")), "a"), "undecided")
+  # minor: schwertmannite
+  r <- .vcls(.vex("MOn", list("tmoAh 0-20 / tmoGo 20-50 / tmoGr 50-120", oc_pct = c(6, 1, 0.5), clay_pct = 50,
+                              schwertmannite_present = c(NA, TRUE, NA))))
+  expect_true("sf" %in% .vnamed(r))
+  # 4: rt on the type's own B or T: the Braunerde's Bv, the Podsol's Bs, the Terra fusca's Tv
+  expect_true("rt" %in% .vnamed(.vcls(.vex("BBn", list("Ah 0-15 / Bv 15-50 / C 50-100", munsell_hue_moist = c("10YR", "5YR", "10YR"))))))
+  r <- .vcls(.vex("CFn", list("Ah 0-10 / Tv 10-45 / cC 45-80", munsell_hue_moist = c("10YR", "5YR", NA))))
+  if (identical(.vsub(r), "CFn")) expect_true("rt" %in% .vnamed(r))
+  # the default Bv of the examples is not iron-rich
+  expect_false("ei" %in% .vnamed(.vcls(make_ka5_example("BB"))))
+  expect_false("ei" %in% .vnamed(.vcls(make_ka5_example(subtype = "BBn"))))
 })
