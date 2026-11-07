@@ -47,21 +47,23 @@ soilkey_systems()
 #> 10  cpcs1967
 #> 11 kidpr2008
 #> 12    rp2008
-#> 13    za1991
-#>                                                                     name
-#> 1                                                               WRB 2022
-#> 2                                                     SiBCS, 5th edition
-#> 3                                                     USDA Soil Taxonomy
-#> 4                    Canadian System of Soil Classification, 3rd edition
-#> 5                            Australian Soil Classification, 3rd edition
-#> 6                           New Zealand Soil Classification, 4th edition
-#> 7  Hungarian diagnostic soil classification (2024, second approximation)
-#> 8                             Soil Classification System of Japan (2017)
-#> 9               Comprehensive Soil Classification System of Japan (2011)
-#> 10                                French soil classification CPCS (1967)
-#> 11                       Russian soil classification (Field Guide, 2008)
-#> 12                                 French Référentiel pédologique (2008)
-#> 13                              South African soil classification (1991)
+#> 13       ka5
+#> 14    za1991
+#>                                                                       name
+#> 1                                                                 WRB 2022
+#> 2                                                       SiBCS, 5th edition
+#> 3                                                       USDA Soil Taxonomy
+#> 4                      Canadian System of Soil Classification, 3rd edition
+#> 5                              Australian Soil Classification, 3rd edition
+#> 6                             New Zealand Soil Classification, 4th edition
+#> 7    Hungarian diagnostic soil classification (2024, second approximation)
+#> 8                               Soil Classification System of Japan (2017)
+#> 9                 Comprehensive Soil Classification System of Japan (2011)
+#> 10                                  French soil classification CPCS (1967)
+#> 11                         Russian soil classification (Field Guide, 2008)
+#> 12                                   French Référentiel pédologique (2008)
+#> 13 German soil classification (Bodenkundliche Kartieranleitung, KA5, 2005)
+#> 14                                South African soil classification (1991)
 #>                                                                                       edition
 #> 1                                                                          4th edition (2022)
 #> 2                                                                          5th edition (2018)
@@ -75,7 +77,8 @@ soilkey_systems()
 #> 10 Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols
 #> 11              Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008
 #> 12                                    Référentiel pédologique 2008, AFES, Éditions Quæ (2009)
-#> 13                            Soil classification: a taxonomic system for South Africa (1991)
+#> 13                Bodenkundliche Kartieranleitung, 5. Auflage, Ad-hoc-AG Boden, Hannover 2005
+#> 14                            Soil classification: a taxonomic system for South Africa (1991)
 #>          status         classifier
 #> 1        stable   classify_wrb2022
 #> 2        stable     classify_sibcs
@@ -89,7 +92,8 @@ soilkey_systems()
 #> 10 experimental  classify_cpcs1967
 #> 11 experimental classify_kidpr2008
 #> 12 experimental    classify_rp2008
-#> 13 experimental    classify_za1991
+#> 13 experimental       classify_ka5
+#> 14 experimental    classify_za1991
 #>                                            levels
 #> 1                                            rsgs
 #> 2    ordens, subordens, grandes_grupos, subgrupos
@@ -103,19 +107,21 @@ soilkey_systems()
 #> 10         classes, subclasses, groups, subgroups
 #> 11                       trunks, divisions, types
 #> 12                                     references
-#> 13                                forms, families
-#>                           aliases default
-#> 1                             wrb    TRUE
-#> 2                           sibcs    TRUE
-#> 3                                    TRUE
-#> 4                            cssc   FALSE
-#> 5                             asc   FALSE
-#> 6                            nzsc   FALSE
-#> 7                   hscs, hungary   FALSE
-#> 8                     scsj, japan   FALSE
-#> 9                            cscj   FALSE
-#> 10                   cpcs, france   FALSE
-#> 11          kidpr, russia, ru2008   FALSE
-#> 12                rp, referentiel   FALSE
-#> 13 za, sat, sat1991, south_africa   FALSE
+#> 13            divisions, classes, types, subtypes
+#> 14                                forms, families
+#>                                       aliases default
+#> 1                                         wrb    TRUE
+#> 2                                       sibcs    TRUE
+#> 3                                                TRUE
+#> 4                                        cssc   FALSE
+#> 5                                         asc   FALSE
+#> 6                                        nzsc   FALSE
+#> 7                               hscs, hungary   FALSE
+#> 8                                 scsj, japan   FALSE
+#> 9                                        cscj   FALSE
+#> 10                               cpcs, france   FALSE
+#> 11                      kidpr, russia, ru2008   FALSE
+#> 12                            rp, referentiel   FALSE
+#> 13 germany, kartieranleitung, bodensystematik   FALSE
+#> 14             za, sat, sat1991, south_africa   FALSE
 ```

@@ -225,6 +225,18 @@ flagged. This release keys the 73 forms; the families follow.
   : Example pedons for the soil forms of the South African
   classification
 
+## German soil systematics, KA5 2005 (experimental)
+
+The German soil systematics of the Bodenkundliche Kartieranleitung (KA5,
+2005), named in German as printed: divisions, classes and the 56 soil
+types of Tab. 51, read on the KA5 horizon notation or on the horizons
+identified from the data. Subtypes and varieties come later.
+
+- [`classify_ka5()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_ka5.md)
+  : Classify a pedon under the German KA5 soil systematics (2005)
+- [`make_ka5_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_ka5_example.md)
+  : Example pedons for the types of the German KA5 soil systematics
+
 ## Interoperability
 
 Conversion to / from the canonical R soil-data ecosystem:
