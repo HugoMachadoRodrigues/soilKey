@@ -189,6 +189,78 @@ of 2026-11-04 and 2026-11-05 are in `inst/rules/cst2001/readings.yaml`.
 Every other classification is unchanged (the fixtures of the other
 systems byte-identical).
 
+## soilKey 0.9.364 (2026-11-06)
+
+### Germany (KA5, 2005): the semiterrestrial, subhydric and Moor subtypes; the overlays
+
+[`classify_ka5()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_ka5.md)
+now keys the subtypes of the semiterrestrial, subhydric and Moore types
+from the type texts (pp. 238-262): 85 subtypes (A 12, G 40, M 15, Ü 3, I
+3, H 4, K 7 and the unit KV-KM; the Nassstrand and the four subhydric
+types of class J have none), in
+`inst/rules/ka5/subtypes/{A,G,M,UE,I,J,H,K}.yaml`, with the order and
+fallback of Q21: the Auenböden by their aGo at 4 to \< 8 dm (Gley-X) or
+their aG at 8 dm or deeper (the Norm, an aG under the description
+allowed); the Gley transitions of the terrestrial and Auen types (the Gr
+typically 8 to 13 dm, not required), the Hang- and Quellen- subtypes by
+the prefix s or q (on the data by `groundwater_source`, the slope for
+the s), the Oxigley by the oxygen-rich groundwater or no Gr in a profile
+described to 13 dm (Q16), the Moorgley with no Norm subtype; the
+Marschen, the Strand and the Watt by their tidal prefixes tm, tb, tp;
+the Niedermoor and Hochmoor by the pH of their peat where measured; the
+Erd- and Mulmmoore by their suffixes, with the transitional unit KV-KM.
+Two open subtypes of Q22, in brackets: “\[Übergangsmoorgley\]” and
+“\[vermulmtes Erdhochmoor\]”. The Rohmarsch keeps Q20: a Go-Ah is a
+Rohmarsch unless the site is embanked or not tidally flooded.
+
+The overlays (Tab. 46 no. 18) are reported in `trace$overlay` and the
+warnings, as varieties that change neither the levels nor the name: a
+mineral cover on a Moor keeps the Moor (Q7), named as substrate only
+under 2 dm, “flacher Gley über Niedermoor” (`GG\HN`) at 2 to \< 3 dm and
+“Gley über Niedermoor” (`GG/HN`) at 3 to \< 4 dm, the cover keyed as the
+mineral soil it would be; a fersiallitic or ferrallitic palaeosol under
+the soil is named “… über Fersiallit / Ferrallit” (Q19); a buried soil
+(fossil horizons of a layer II or deeper) is keyed alone from its own
+top and named by the thickness of the soil above, under 3 dm “flach”, 3
+to \< 7 dm, the Organomarsch over a Podsol by its own steps (1.5 and 3
+dm, p. 254). `make_ka5_example(subtype = ...)` gives a profile for each
+of the 85 subtypes and the two open ones, with a data twin (63 key on
+the data alone); the wet type examples key to their Norm subtype and
+keep their types. The Paternia gate now leaves a Paternia-Vega (an aM
+under the ilC) to the Vega, and the Auenböden take an S under an aM
+anywhere above it (the Pseudogley-Vega). soilKey’s readings are in
+`readings.yaml`. Every other classification is unchanged.
+
+- After the review (Hugo, 2026-11-06): the readings accepted; only an aM
+  (prefix a) beginning above 8 dm takes a profile out of the Paternia,
+  aM bands in the ilC keeping it; the Gley-Rambla, Gley-Paternia and
+  Gley-Kalkpaternia allow their aG under the description; the
+  Wechselgley takes no q; a Moorgley whose peat is of no known kind
+  leaves the subtype undecided, and the Hang-, Quellen- and Hochmoorgley
+  are tested before the Niedermoorgley; the Normhochmoor and the
+  Hochmoor gate read the pH in the hH(w); on the data route a horizon
+  among a row’s candidates, or one the data key does not build (Gso,
+  Hvm, an unrecorded secondary carbonate, a layer II, an A or M part),
+  leaves a subtype undecided rather than failed; a Moor under a cover of
+  less than 4 dm reads its type from the top of the peat (Ah/Go over an
+  nHv: GG/KV).
+
+- The bleached and podzolic horizons on the data (Hugo, 2026-11-06): the
+  order of tests on the data reads a pale first row over a pale Ae over
+  a Bh or Bs as an Ahe; a B with the Cp/Fep of a Bh or Bs is no Bt when
+  no clay coatings are recorded; illuvial humus (the Ah’s humus minimum
+  under a pale horizon without it) or oxalate Fe and Al accumulated
+  under a pale horizon leave the Bt and the podzolic B both undecided;
+  under a podzolic B a clay increase with no clay coatings recorded is
+  no Bt, and the eluvial Al of a Parabraunerde under a podzolic B is
+  read; a G with a podzolic B part is a Bhs-Go, not an Ah-Go. On the
+  data the Podsol-Gley twin now keys PP-GG (it read Ah/Al/Bt-Go before),
+  the Podsol-Braunerde PP-BB (was a Parabraunerde), the Braunerde-Podsol
+  BB-PP (was LL-PP), the Plaggenesch-Podsol a Podsol (was a
+  Parabraunerde); LL-PP, GG-PP and YK-PP keep their subtypes with fewer
+  candidates. The types of the type examples and of the notation route
+  are unchanged.
+
 ## soilKey 0.9.363 (2026-11-06)
 
 ### Germany (KA5, 2005): the subtypes of the 28 terrestrial types

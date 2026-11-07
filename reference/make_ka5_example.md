@@ -47,12 +47,14 @@ make_ka5_example(
 
 - subtype:
 
-  The code of a subtype of a terrestrial type, as printed (`"BBn"`,
-  `"GG-BB"`, `"LF-YU"` ...; the 138 of pp. 202-237): the example profile
-  of that subtype, written from one of its printed formulas with depths
-  inside its windows (`type` and `near_miss` are then not read). The
-  type examples key to the Norm subtype of their type (the Treposol's to
-  an example subtype: it has no Norm).
+  The code of a subtype, as printed (`"BBn"`, `"GG-BB"`, `"LF-YU"`,
+  `"BB-GG"`, `"MRb"`, `"KV-KM"` ...; the 223 of pp. 202-262, the
+  Strand's also as `"UEAn"`, and the open `"[GHu]"` and `"[KHm]"`): the
+  example profile of that subtype, written from one of its printed
+  formulas with depths inside its windows (`type` and `near_miss` are
+  then not read). The type examples key to the Norm subtype of their
+  type (the Treposol's to an example subtype, the Moorgley's to the
+  Niedermoorgley: they have no Norm).
 
 ## Value
 
