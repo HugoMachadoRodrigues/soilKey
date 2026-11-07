@@ -56,7 +56,7 @@ subgroups:
       notes: "Calcium carbonate within 60 cm of the soil surface from anthro-recalcification: its maximum, over 45 g/kg CaCO3 equivalent, in the surface horizon, decreasing gradually downwards within 60 cm (the pattern read; the origin is not tested)."
     - code: "B1.1.5"
       name: "Fe-leachic Gleyi-Stagnic Anthrosols"
-      aliases: ["Fe-leachic Gleyi-Stagnic Anthrosol"]
+      aliases: ["Fe-leachic Gleyi-Stagnic Anthrosol", "Fe-leachic-Gleyi-Stagnic Anthrosols"]
       name_pt: "Antrossolos estágnicos (de arrozal) gleicos ferrolixiviados"
       adjective: "Fe-leachic"
       page: 83

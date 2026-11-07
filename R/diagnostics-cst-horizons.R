@@ -1279,8 +1279,13 @@
   below <- .cst_shift(g, 1L)
   pe <- g >= t$evidence_gypsum_min_pct & g <= t$evidence_gypsum_max_pct & g > below
   evid <- full | pe
-  ans <- .cst_hz_ans(x, full, evid, notes = "visible gypsum not recorded is absent (gypsum_visible_pct)",
-                     missing = .cst_missing_in(x, which(is.na(full) | is.na(evid)), "caso4_pct"))
+  # v0.9.375: an evidence left open by the layer below, not described,
+  # names the gypsum to measure there
+  open_below <- any(is.na(evid) & !is.na(g) & is.na(below))
+  ans <- .cst_hz_ans(x, full, evid, notes = c("visible gypsum not recorded is absent (gypsum_visible_pct)",
+                                              if (open_below) "the gypsum of the layer below is not known"),
+                     missing = c(.cst_missing_in(x, which(is.na(full) | is.na(evid)), "caso4_pct"),
+                                 if (open_below) "caso4_pct"))
   .cst_stand_in(x, ans, list(list(fn = "gypsic"), list(fn = "gypsic_horizon_usda")),
                 eligible = is.na(vis) & g >= t$gypsum_range_pct[1L] & g <= t$gypsum_range_pct[2L])
 }

@@ -101,7 +101,7 @@
                                         paste(attr(tpl, "unknown"), collapse = ", ")))
     }
     attr(tpl, "unknown") <- NULL
-    walk(tpl, where, depth + 1L)
+    one(tpl, where, depth + 1L)
   }
   walk <- function(x, where, depth = 0L) {
     if (!is.list(x)) return(x)
@@ -115,16 +115,32 @@
       if (!is.list(el)) next
       lab <- if (nzchar(nms[i])) nms[i] else if (!is.null(el$code)) as.character(el$code) else as.character(i)
       if (nms[i] %in% .RULE_COMBINATORS) {
-        el <- lapply(el, function(spec) {
-          if (.preset_is_call(spec, presets)) call_preset(spec, paste0(where, "/", lab), depth)
-          else walk(spec, paste0(where, "/", lab), depth)
-        })
+        el <- lapply(el, function(spec) one(spec, paste0(where, "/", lab), depth))
         x[i] <- list(el)
+      } else if (.preset_is_call(el, presets)) {
+        # v0.9.375 (review D3): a preset call written directly as a mapping
+        # (under tests:, in a template); under tests: a predicate becomes
+        # the one test of an all_of block
+        out <- one(el, paste0(where, "/", lab), depth)
+        if (identical(nms[i], "tests") && !any(names(out) %in% c(.RULE_COMBINATORS, "default")))
+          out <- list(all_of = list(out))
+        x[i] <- list(out)
       } else {
         x[i] <- list(walk(el, paste0(where, "/", lab), depth))
       }
     }
     x
+  }
+  # one spec: a preset call (a mapping with more keys than the call is
+  # reported, the extra keys dropped), or anything else walked
+  one <- function(spec, where, depth) {
+    if (!.preset_is_call(spec, presets)) return(walk(spec, where, depth))
+    if (length(spec) > 1L) {
+      problems <<- c(problems, sprintf("%s: the call of preset %s has extra keys %s", where, names(spec)[1L],
+                                        paste(names(spec)[-1L], collapse = ", ")))
+      spec <- spec[1L]
+    }
+    call_preset(spec, where, depth)
   }
   out <- walk(rules, "")
   # every template names only its own parameters, the presets no row calls

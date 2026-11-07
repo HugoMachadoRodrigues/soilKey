@@ -226,8 +226,8 @@ subgroups:
       page: 104
       tests:
         all_of:
-          - gypsic_horizon_cst: {top_max: 100, datum: mineral}
-      notes: "A gypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+          - gypsic_only_cst: {top_max: 100, datum: mineral}
+      notes: "A gypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface (named alone: a hypergypsic horizon does not count, Hugo, 2026-11-07)."
     - code: "G2.1.8"
       name: "Dark Calci-Orthic Aridosols"
       aliases: ["Dark Calci-Orthic Aridosol"]
@@ -271,15 +271,15 @@ subgroups:
       notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
     - code: "G2.2.3"
       name: "Gypsi-panic Sali-Orthic Aridosols"
-      aliases: ["Gypsi-panic Sali-Orthic Aridosol"]
+      aliases: ["Gypsi-panic Sali-Orthic Aridosol", "Gypsi-Panic Sali-Orthic Aridosols"]
       name_pt: "Aridossolos órticos sálicos gípsicos com pã salino"
       adjective: "Gypsi-panic"
       page: 105
       tests:
         all_of:
           - salipan_cst: {top_max: 100, datum: mineral}
-          - gypsic_horizon_cst: {top_max: 100, datum: mineral}
-      notes: "A salipan and a gypsic horizon, their upper boundaries within 100 cm of the mineral soil surface (keyed before its parts)."
+          - gypsic_only_cst: {top_max: 100, datum: mineral}
+      notes: "A salipan and a gypsic horizon, their upper boundaries within 100 cm of the mineral soil surface (keyed before its parts; a hypergypsic horizon is not the gypsic horizon here)."
     - code: "G2.2.4"
       name: "Panic Sali-Orthic Aridosols"
       aliases: ["Panic Sali-Orthic Aridosol"]
@@ -298,8 +298,8 @@ subgroups:
       page: 105
       tests:
         all_of:
-          - gypsic_horizon_cst: {top_max: 100, datum: mineral}
-      notes: "A gypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+          - gypsic_only_cst: {top_max: 100, datum: mineral}
+      notes: "A gypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface (named alone: a hypergypsic horizon does not count, Hugo, 2026-11-07)."
     - code: "G2.2.6"
       name: "Typic Sali-Orthic Aridosols"
       aliases: ["Typic Sali-Orthic Aridosol"]

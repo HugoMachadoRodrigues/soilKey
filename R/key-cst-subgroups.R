@@ -53,10 +53,15 @@
 # min_cm. Returns the answer, the layers and the thickness range.
 .cst_sg_run <- function(x, p, a, b, min_cm, total = FALSE) {
   ov <- .cst_overlap(x, a, b); ov[is.na(ov)] <- 0
+  # the window below the base of the description is undecided, unless the
+  # description ends on rock or a contact (Hugo, 2026-11-07): its thickness
+  # joins the upper bound only; a window with no depth printed is read on
+  # the described profile
+  gap <- .cst_sg_gap(x, a, b)
   if (min_cm <= 0) {
     inw <- ov > 0
-    passed <- if (any(p[inw] %in% TRUE)) TRUE else if (any(is.na(p[inw]))) NA else FALSE
-    return(list(passed = passed, rows = which(inw & p %in% TRUE), low = NA_real_, high = NA_real_))
+    passed <- if (any(p[inw] %in% TRUE)) TRUE else if (any(is.na(p[inw])) || gap > 0) NA else FALSE
+    return(list(passed = passed, rows = which(inw & p %in% TRUE), low = NA_real_, high = NA_real_, gap = gap))
   }
   if (total) {
     lo <- sum(ov[p %in% TRUE]); hi <- sum(ov[!(p %in% FALSE)])
@@ -79,7 +84,29 @@
     lo <- rl$v; hi <- rh$v
     used <- rl$rows[ov[rl$rows] > 0]
   }
-  list(passed = .cst_at_least(lo, hi, min_cm), rows = used, low = lo, high = hi)
+  if (gap > 0) {
+    # a run may go on below the description: the run that reaches its base
+    last <- which.max(x$bot)
+    tail_run <- 0
+    if (!total) {
+      i <- last
+      while (length(i) && i >= 1L && !(p[i] %in% FALSE)) { tail_run <- tail_run + ov[i]; i <- i - 1L }
+    }
+    hi <- if (total) hi + gap else max(hi, tail_run + gap)
+  }
+  list(passed = .cst_at_least(lo, hi, min_cm), rows = used, low = lo, high = hi, gap = gap)
+}
+
+# The thickness of the window [a, b) below the base of the description, 0
+# when the description ends on rock (an R layer) or a contact, or the window
+# has no depth printed (Hugo, 2026-11-07).
+.cst_sg_gap <- function(x, a, b) {
+  if (!x$n || !is.finite(b)) return(0)
+  deep <- suppressWarnings(max(x$bot, na.rm = TRUE))
+  if (!is.finite(deep) || deep >= b) return(0)
+  last <- which(x$bot == deep)[1L]
+  if (x$kind[last] %in% "R" || !is.na(.cst_contact_cm(x$pedon))) return(0)
+  b - max(a, deep)
 }
 
 # "Every horizon of the window meets the test" (Q23), the window cut by the
@@ -272,8 +299,11 @@ terric_cst <- function(pedon, min_cm = 30) {
     if (!is.na(rr$lo_id[i]) && start(rr$lo_id, i) && rr$low[i] >= min_cm) sure <- TRUE
     if (!is.na(rr$hi_id[i]) && rr$high[i] >= min_cm) may <- TRUE
   }
+  # the tier below the base of the description is undecided (Hugo,
+  # 2026-11-07)
+  if (!sure && .cst_sg_gap(x, a, b) > 0) may <- TRUE
   passed <- if (sure) TRUE else if (may) NA else FALSE
-  .cst_key_result(nm, passed, missing = if (is.na(passed)) c("oc_pct", "clay_pct"),
+  .cst_key_result(nm, passed, missing = if (is.na(passed)) c("oc_pct", "clay_pct", "bottom_cm"),
                   evidence = list(subsurface_tier = c(top = a, bottom = b)),
                   notes = sprintf("a mineral layer %s cm thick starting in the subsurface tier (%s-%s cm)",
                                   format(min_cm), format(a), format(b)),
@@ -584,32 +614,47 @@ argic_lime_cst <- function(pedon, top_max = 100, datum = c("surface", "mineral")
 }
 
 #' The order's horizon exposed at the soil surface (Trunic; default 22 of
-#' 2026-11-04): the first mineral layer belongs to it (`horizon` an id of
-#' .cst_horizon_table(), "argic_or_claypan", or "b": a layer designated B or
-#' BC), or site$anthropic_truncation is recorded TRUE; a first mineral layer
-#' designated A, AB, AC or E fails.
+#' 2026-11-04, amended on the review, Hugo, 2026-11-07): the first mineral
+#' layer belongs to it (`horizon` an id of .cst_horizon_table(),
+#' "argic_or_claypan", or "b": a layer designated B or BC, or a transition
+#' dominated by the B, BA or B/A). A first mineral layer designated A, AB,
+#' AC or E fails, before anything else is read; for the ferralic horizon
+#' (the Ferralosols) the horizon test is made on the first layer whatever its
+#' designation. site$anthropic_truncation recorded TRUE passes only when the
+#' designation of the first layer is not known (flagged).
 #' @noRd
 trunic_cst <- function(pedon, horizon = "b") {
   nm <- "trunic_cst"
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_key_result(nm, FALSE, page = "94-99"))
-  if (isTRUE(.cst_site_lgl(pedon$site %||% list(), "anthropic_truncation")))
-    return(.cst_key_result(nm, TRUE, flags = "trunic_from_anthropic_truncation",
-                           notes = "the site records an anthropic truncation", page = "94-99"))
   k <- x$first_min
   if (is.na(k)) return(.cst_key_result(nm, NA, missing = "designation", page = "94-99"))
+  d <- toupper(trimws(as.character(.cst_col(x$h, "designation"))[k]))
+  d <- sub("^([0-9]+|I[IVX]*)(?=[A-Z])", "", d, perl = TRUE)
+  known <- !is.na(d) && nzchar(d)
+  btrans <- known && grepl("^(BA|B/A)", d)
   kd <- x$kind[k]
-  if (kd %in% c("A", "AB", "AC", "E", "O"))
+  trunc <- isTRUE(.cst_site_lgl(pedon$site %||% list(), "anthropic_truncation"))
+  flags <- character(0)
+  if (horizon == "ferralic_horizon") {
+    passed <- .cst_hz(x, "ferralic_horizon")$full[k]
+  } else if (known && !btrans && kd %in% c("A", "AB", "AC", "E", "O")) {
     return(.cst_key_result(nm, FALSE, notes = "an A or E horizon at the mineral soil surface", page = "94-99"))
-  passed <- if (horizon == "b") {
-    if (is.na(kd)) NA else kd %in% c("B", "BC")
+  } else if (horizon == "b") {
+    passed <- if (btrans) TRUE else if (known && !is.na(kd)) kd %in% c("B", "BC") else NA
   } else {
     hz <- if (horizon == "argic_or_claypan") c("argic_horizon", "claypan") else horizon
-    .cst_or(vapply(hz, function(h) .cst_hz(x, h)$full[k], NA))
+    passed <- .cst_or(vapply(hz, function(h) .cst_hz(x, h)$full[k], NA))
   }
-  .cst_key_result(nm, passed, layers = if (isTRUE(passed)) x$idx[k] else integer(0),
+  if (!known && trunc && !isTRUE(passed)) {
+    passed <- TRUE
+    flags <- "trunic_from_anthropic_truncation"
+  }
+  .cst_key_result(nm, passed, layers = if (isTRUE(passed)) x$idx[k] else integer(0), flags = flags,
                   missing = if (is.na(passed)) "designation",
-                  notes = sprintf("the first mineral layer (%s) as the %s", kd %||% "NA", gsub("_", " ", horizon)),
+                  notes = c(sprintf("the first mineral layer (%s) as the %s", if (known) d else "no designation",
+                                    gsub("_", " ", horizon)),
+                            if (length(flags)) "the site records an anthropic truncation"),
                   page = "94-99")
 }
 

@@ -317,6 +317,26 @@ calcic_only_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral
   res
 }
 
+#' A gypsic horizon that is not a hypergypsic horizon, with its upper
+#' boundary within `top_max` cm (v0.9.375: G2.1.7, G2.2.3, G2.2.5; the key
+#' names the gypsic horizon alone, by analogy with the calcic one, Hugo,
+#' 2026-11-07).
+#' @noRd
+gypsic_only_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral")) {
+  datum <- match.arg(datum)
+  x <- .cst_ctx(pedon)
+  r <- NULL
+  if (x$n) {
+    r <- .cst_hz(x, "gypsic_horizon")
+    hy <- .cst_hz(x, "hypergypsic_horizon")$full
+    r$full <- ifelse(hy %in% TRUE, FALSE, ifelse(is.na(hy) & r$full %in% TRUE, NA, r$full))
+    r$evid <- ifelse(r$full %in% TRUE, TRUE, r$evid)
+  }
+  res <- .cst_hz_result(pedon, "gypsic_horizon", top_max = top_max, datum = datum, x = x, r = r)
+  res$notes <- paste(stats::na.omit(c(res$notes, "a hypergypsic horizon does not count")), collapse = "; ")
+  res
+}
+
 #' An epipedon (a run of layers from the surface) `min_cm` thick or more
 #' (J2.3: a mollic epipedon 50 cm or more thick, p. 118).
 #' @noRd
@@ -406,9 +426,12 @@ shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125, from_cm
   a <- x$msurf + from_cm; b <- x$msurf + within
   ov <- .cst_overlap(x, a, b); ov[is.na(ov)] <- 0
   best <- 0; rows <- integer(0); i <- 1L
+  gap <- 0
   if (isTRUE(total)) {
-    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm)
+    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm);
+    # the window below the description undecided (Hugo, 2026-11-07)
     rows <- which(p & ov > 0); best <- sum(ov[rows])
+    gap <- .cst_sg_gap(x, a, b)
   } else while (i <= x$n) {
     if (p[i]) {
       j <- i; while (j < x$n && p[j + 1L]) j <- j + 1L
@@ -416,9 +439,10 @@ shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125, from_cm
       i <- j + 1L
     } else i <- i + 1L
   }
-  passed <- best >= min_cm
+  passed <- if (best >= min_cm) TRUE else if (best + gap >= min_cm) NA else FALSE
   .cst_key_result(nm, passed, layers = x$idx[rows],
-                  flags = if (passed && any(use_fb[rows])) "shajiang_from_hard_carbonates",
+                  flags = if (isTRUE(passed) && any(use_fb[rows])) "shajiang_from_hard_carbonates",
+                  missing = if (is.na(passed)) c("shajiang_pct", "bottom_cm"),
                   notes = "shajiang not recorded is absent (hard carbonate concretions stand in, flagged)",
                   page = 151)
 }

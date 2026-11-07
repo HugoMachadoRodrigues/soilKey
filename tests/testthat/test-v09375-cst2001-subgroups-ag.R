@@ -353,8 +353,9 @@ test_that("Trunic, Xanthic, the hue run and Eutrophic", {
   ex <- function(cd) make_cst2001_example(cd)
   expect_true(.f375("trunic_cst", ex("E1.3.1"), horizon = "ferralic_horizon")$passed)
   expect_false(.f375("trunic_cst", ex("E1.3.8"), horizon = "ferralic_horizon")$passed)
+  # a recorded A first: the truncation flag is not read (review D2)
   p <- ex("E1.3.8"); p$site$anthropic_truncation <- TRUE
-  expect_true(.f375("trunic_cst", p, horizon = "ferralic_horizon")$passed)
+  expect_false(.f375("trunic_cst", p, horizon = "ferralic_horizon")$passed)
   expect_true(.f375("trunic_cst", ex("F2.2.3"), horizon = "b")$passed)
   expect_false(.f375("trunic_cst", ex("F2.2.4"), horizon = "b")$passed)
   p <- ex("F2.2.3"); p$horizons$designation <- NA_character_
@@ -420,4 +421,105 @@ test_that("B1.1.5: the grey subhorizon above the gleyic horizon; shajiang in a w
   expect_false(.f375("shajiang_cst", ex("F1.1.3"), from_cm = 50, within = 100, total = TRUE)$passed)
   # the group reading (a run within 125 cm) unchanged
   expect_identical(.f375("shajiang_cst", ex("F1.1.2"))$passed, TRUE)
+})
+
+# --- decided by Hugo on the review (2026-11-07) ----------------------------------------------------
+
+.cut375 <- function(cd, rows, set = list(), site = list()) {
+  p <- make_cst2001_example(cd); h <- as.data.frame(p$horizons)[rows, , drop = FALSE]
+  for (k in names(set)) h[[k]] <- rep_len(set[[k]], nrow(h))
+  s <- p$site; for (k in names(site)) s[k] <- list(site[[k]])
+  PedonRecord$new(site = s, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
+}
+
+test_that("a window below the base of the description is undecided, unless it ends on rock", {
+  skip_on_cran()
+  # Endogleyic 60-100: the description to 60 or 70 cm leaves it undecided
+  for (p in list(.cut375("B1.4.6", 1:3), .cut375("B1.4.6", 1:4, list(top_cm = c(0, 15, 22, 60), bottom_cm = c(15, 22, 60, 70))))) {
+    r <- .c375(p)
+    expect_identical(r$levels$code[4], "B1.4.6")
+    expect_true("subgroups:B1.4.5" %in% r$provisional_because)
+  }
+  # G2.5.8 to 45 cm: Mottlic (50-100) and Paragypsic undecided
+  r <- .c375(.cut375("G2.5.8", 1:3, list(top_cm = c(0, 5, 25), bottom_cm = c(5, 25, 45))))
+  expect_true(all(c("subgroups:G2.5.2", "subgroups:G2.5.6") %in% r$provisional_because))
+  # A2.2.6 to 90 cm: the tiers below undecided (Hemic, Sapric); to 30 cm, Terric too
+  r <- .c375(.cut375("A2.2.6", 1:2))
+  expect_identical(r$levels$code[4], "A2.2.6")
+  expect_true(all(c("subgroups:A2.2.4", "subgroups:A2.2.5") %in% r$provisional_because))
+  expect_true(is.na(.f375("terric_cst", .cut375("A2.2.6", 1))$passed))
+  # B2.4.5 to 60 cm (to 40 cm it is no longer an Anthrosol): Parasalic within
+  # 100 and Mottlic 50-100 undecided
+  r <- .c375(.cut375("B2.4.5", 1:3))
+  expect_true(all(c("subgroups:B2.4.1", "subgroups:B2.4.3") %in% r$provisional_because))
+  # a feature found in the described part is a firm pass
+  p <- .cut375("G2.5.2", 1:4, list(bottom_cm = c(5, 25, 55, 70)))
+  expect_true(.f375("feature_run_cst", p, features = "redoxic_features", min_cm = 10, from_cm = 50, to_cm = 100,
+                    total = TRUE, grade = "at_least_evidence")$passed)
+  p <- .cut375("G2.5.2", 1:4, list(bottom_cm = c(5, 25, 55, 58)))
+  expect_true(is.na(.f375("feature_run_cst", p, features = "redoxic_features", min_cm = 10, from_cm = 50, to_cm = 100,
+                          total = TRUE, grade = "at_least_evidence")$passed))
+  # a description ending on rock is complete
+  expect_false(.f375("feature_run_cst", make_cst2001_example("D2.1.1"), features = "redoxic_features", min_cm = 10,
+                     from_cm = 50, to_cm = 100)$passed)
+  # shajiang in horizons totalling 10 cm, the window cut
+  p <- .cut375("F1.1.3", 1:3)
+  p$horizons$bottom_cm[3] <- 55
+  expect_true(is.na(.f375("shajiang_cst", p, from_cm = 50, within = 100, total = TRUE)$passed))
+})
+
+test_that("Trunic: a recorded A first, BA and B/A as B, the ferralic test whatever the designation", {
+  skip_on_cran()
+  ex <- function(cd, site = list()) { p <- make_cst2001_example(cd); for (k in names(site)) p$site[[k]] <- site[[k]]; p }
+  expect_identical(.c375(ex("E1.3", list(anthropic_truncation = TRUE)))$levels$code[4], "E1.3.8")
+  expect_identical(.c375(ex("F2.2", list(anthropic_truncation = TRUE)))$levels$code[4], "F2.2.4")
+  p <- ex("E1.3", list(anthropic_truncation = TRUE)); p$horizons$designation <- NA_character_
+  r <- .f375("trunic_cst", p, horizon = "b")
+  expect_true(r$passed); expect_true("trunic_from_anthropic_truncation" %in% r$evidence$flags)
+  r <- .c375(.cut375("F2.2", 2:4, list(designation = c("BA", "Bss2", "BC"), top_cm = c(0, 42, 82), bottom_cm = c(42, 82, 122))))
+  expect_identical(r$levels$code[4], "F2.2.3")
+  r <- .c375(.cut375("E1.3", 2:3, list(designation = c("BA", "Bo"), top_cm = c(0, 65), bottom_cm = c(65, 185))))
+  expect_identical(r$levels$code[4], "E1.3.1")
+  p <- .cut375("F2.2", 2:4, list(designation = c("B/A", "Bss2", "BC"), top_cm = c(0, 42, 82), bottom_cm = c(42, 82, 122)))
+  expect_true(.f375("trunic_cst", p, horizon = "b")$passed)
+})
+
+test_that("the gypsic horizon named alone excludes a hypergypsic one; gypsic evidence names what to measure", {
+  skip_on_cran()
+  p <- make_cst2001_example("G2.1.7"); p$horizons$caso4_pct[4] <- 50
+  expect_true(isTRUE(gypsic_horizon_cst(p, top_max = 100, datum = "mineral")$passed))
+  expect_false(.f375("gypsic_only_cst", p, top_max = 100, datum = "mineral")$passed)
+  expect_false(identical(.c375(p)$levels$code[4], "G2.1.7"))
+  expect_identical(.c375(make_cst2001_example("G2.1.7"))$levels$code[4], "G2.1.7")
+  # gypsic evidence in the lowest layer, the layer below not described
+  p <- make_cst2001_example("G1.4"); p$horizons$caso4_pct <- c(0, 0, 0, 3)
+  r <- .f375("feature_run_cst", p, features = "gypsic_horizon", min_cm = 0, to_cm = 100, datum = "surface",
+             grade = "at_least_evidence")
+  expect_true(is.na(r$passed)); expect_true("caso4_pct" %in% r$missing)
+})
+
+test_that("the expander: direct preset mappings, extra keys; the aliases and readings of the review", {
+  skip_on_cran()
+  pr <- attr(load_rules("cst2001"), "presets")
+  mk <- function(tests) soilKey:::.expand_presets(list(presets = pr, subgroups = list("X1.1" = list(list(code = "X1.1.1",
+                                                    name = "n", tests = tests)))))
+  o <- mk(list(lithic = list(depth = 50)))
+  expect_identical(names(o$subgroups[[1]][[1]]$tests), "all_of")
+  expect_identical(names(o$subgroups[[1]][[1]]$tests$all_of[[1]]), "contact_sg_cst")
+  expect_identical(attr(o, "preset_problems"), character(0))
+  o <- mk(list(all_of = list(list(lithic = list(depth = 50), foo = list()))))
+  expect_true(any(grepl("the call of preset lithic has extra keys foo", attr(o, "preset_problems"))))
+  # a template that is itself a preset mapping
+  pr2 <- c(pr, list(lith50 = list(params = list(), template = list(lithic = list(depth = 50)))))
+  o <- soilKey:::.expand_presets(list(presets = pr2, subgroups = list("X1.1" = list(list(code = "X", name = "n",
+                                      tests = list(any_of = list(list(lith50 = list()))))))))
+  expect_identical(names(o$subgroups[[1]][[1]]$tests$any_of[[1]]), "contact_sg_cst")
+  all <- .sg375(load_rules("cst2001"))
+  expect_true("Fe-leachic-Gleyi-Stagnic Anthrosols" %in% Find(function(e) e$code == "B1.1.5", all)$aliases)
+  expect_true("Gypsi-Panic Sali-Orthic Aridosols" %in% Find(function(e) e$code == "G2.2.3", all)$aliases)
+  rd <- yaml::read_yaml(system.file("rules", "cst2001", "readings.yaml", package = "soilKey"))$readings
+  tp <- vapply(rd, `[[`, "", "topic"); txt <- vapply(rd, `[[`, "", "reading")
+  sub <- grepl("^Subgroups:", tp) & !grepl("prepared for the later orders", tp)
+  expect_false(any(grepl("for Hugo to confirm", txt[sub])))
+  expect_true(any(grepl("gypsic horizon alone", tp)))
 })
