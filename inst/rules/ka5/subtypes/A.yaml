@@ -1,0 +1,199 @@
+# The subtypes of the class A, Auenböden (KA5 2005, the type texts pp. 238-241), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "AO":
+    - code: "GG-AO"
+      name: "Gley-Rambla"
+      name_en: "Gley-rambla"
+      name_pt: "Gleissolo-rambla"
+      kind: "transition"
+      page: "p. 239"
+      formulas:
+        - "aAi/alC/(aGo-lC/)aGo/aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-AO"}
+      notes: "The aGo begins 4 to < 8 dm under the GOF (p. 239)."
+    - code: "AOn"
+      name: "Normrambla"
+      name_en: "Typical rambla"
+      name_pt: "Rambla típica"
+      kind: "norm"
+      page: "p. 239"
+      formulas:
+        - "aAi/alC/aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AOn", norm: true}
+      notes: "The aG begins 8 dm or deeper under the GOF, often deeper than 20 dm (pp. 238-239): read as no G above 8 dm, the aG under the description allowed."
+  "AQ":
+    - code: "GG-AQ"
+      name: "Gley-Paternia"
+      name_en: "Gley-paternia"
+      name_pt: "Gleissolo-paternia"
+      kind: "transition"
+      page: "p. 239"
+      formulas:
+        - "aAh/ailC/(aGo-ilC/)aGo/aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-AQ"}
+      notes: "The aGo begins 4 to < 8 dm under the GOF (p. 239)."
+    - code: "AQn"
+      name: "Normpaternia"
+      name_en: "Typical paternia"
+      name_pt: "Paternia típica"
+      kind: "norm"
+      page: "p. 239"
+      formulas:
+        - "aAh/ailC/aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AQn", norm: true}
+      notes: "The aG begins 8 dm or deeper under the GOF (p. 239)."
+  "AZ":
+    - code: "GG-AZ"
+      name: "Gley-Kalkpaternia"
+      name_en: "Gley-calcareous paternia"
+      name_pt: "Gleissolo-paternia calcária"
+      kind: "transition"
+      page: "p. 240"
+      formulas:
+        - "a(e)Ah/aelC/(aGo-elC/)aGo/aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-AZ"}
+      notes: "The aGo begins 4 to < 8 dm under the GOF (p. 240)."
+    - code: "AZn"
+      name: "Normkalkpaternia"
+      name_en: "Typical calcareous paternia"
+      name_pt: "Paternia calcária típica"
+      kind: "norm"
+      page: "p. 240"
+      formulas:
+        - "a(e)Ah/aelC/aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AZn", norm: true}
+      notes: "The aG begins 8 dm or deeper under the GOF (p. 240)."
+  "AT":
+    - code: "GG-AT"
+      name: "Gley-Tschernitza"
+      name_en: "Gley-tschernitza"
+      name_pt: "Gleissolo-tschernitza"
+      kind: "transition"
+      page: "p. 241"
+      formulas:
+        - "aAxh/(aM,alC,aGo-lC/)aGo/aG"
+        - "aAxh/(aGo-Axh,aAxh-Go/)aG"
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-AT"}
+      notes: "The aGo begins 4 to < 8 dm under the GOF, under the aAxh or in an aGo-Axh, aAxh-Go (p. 241)."
+    - code: "ATn"
+      name: "Normtschernitza"
+      name_en: "Typical tschernitza"
+      name_pt: "Tschernitza típica"
+      kind: "norm"
+      page: "p. 240"
+      formulas:
+        - "aAxh/(aM,alC/)aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "ATn", norm: true}
+      notes: "The aG begins 8 dm or deeper under the GOF (p. 240)."
+  "AB":
+    - code: "AQ-AB"
+      name: "Paternia-Vega"
+      name_en: "Paternia-vega"
+      name_pt: "Paternia-vega"
+      kind: "transition"
+      page: "p. 241"
+      formulas:
+        - "aAh/(II)ailC/II(III)aM/(ailC/)aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "AQ-AB"}
+      notes: "A Paternia-like upper part (aAh/ailC) over an aM; the aG 8 dm or deeper (p. 241)."
+    - code: "SS-AB"
+      name: "Pseudogley-Vega"
+      name_en: "Pseudogley-vega"
+      name_pt: "Pseudogleissolo-vega"
+      kind: "transition"
+      page: "p. 241"
+      formulas:
+        - formula: "aAh/aM/(IIalC/)aSw/aSd/aG"
+          windows:
+            - {kind: "first_top", of: {masters: ["S"]}, thr: "st_s_window_cm", side: "range", what: "the first aS horizon"}
+        - formula: "a(Sw-)Ah/aSw-M/a(M-)Sd/aG"
+          windows:
+            - {kind: "first_top", of: {pattern: "^Sd"}, thr: "st_s_window_cm", side: "range", what: "the a(M-)Sd"}
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-AB"}
+      notes: "aSw and aSd under the aM (or an a(Sw-)Ah/aSw-M/a(M-)Sd), the S beginning 4 to < 8 dm (the aSd in the second form) and the aG 8 dm or deeper (p. 241; the two stacked annotations)."
+    - code: "GG-AB"
+      name: "Gley-Vega"
+      name_en: "Gley-vega"
+      name_pt: "Gleissolo-vega"
+      kind: "transition"
+      page: "p. 241"
+      formulas:
+        - "aAh/aM/(IIalC/)(II)aG"
+        - "aAh/aM/(aGo-M,aM-Go/)(II)aG"
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-AB"}
+      notes: "The aG (aGo-M, aM-Go included by the last symbol) begins 4 to < 8 dm under the GOF (p. 241)."
+    - code: "ABn"
+      name: "Normvega"
+      name_en: "Typical vega"
+      name_pt: "Vega típica"
+      kind: "norm"
+      page: "p. 241"
+      formulas:
+        - "aAh/aM/(IIalC/)(II)aG"
+      open_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_auen_g_min_cm", side: "min", absent_below: true, what: "the first aG"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "ABn", norm: true}
+      notes: "The aG begins 8 dm or deeper under the GOF (p. 241)."

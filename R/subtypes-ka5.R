@@ -94,10 +94,17 @@
 # row (the review of 2026-11-06, D1: the formulas list only the
 # characteristic horizons, p. 199): it is read as optional, and the matcher
 # asks for a row under the formula (`terminal`). Parsed once.
-.ka5_sub_spec <- function(f, typical_tail = FALSE) {
-  key <- paste0(if (typical_tail) "t:" else "f:", f)
+.ka5_sub_spec <- function(f, typical_tail = FALSE, open_tail = FALSE) {
+  key <- paste0(if (typical_tail) "t:" else "f:", if (open_tail) "o:" else "", f)
   if (!is.null(.ka5_sub_cache$specs[[key]])) return(.ka5_sub_cache$specs[[key]])
   s <- gsub("[<>]", "", f)
+  # v0.9.364: the last horizon of the Norm subtypes of the Auenboeden (the aG,
+  # 8 dm or deeper, often deeper than 20 dm, p. 238) may lie under the
+  # description: optional, its depth read by the window (soilKey's reading)
+  if (open_tail) {
+    tl <- .ka5_formula_tail(s)
+    if (nzchar(tl$tail) && endsWith(tl$head, "/")) s <- paste0(sub("/$", "", tl$head), "(/", tl$tail, ")")
+  }
   if (typical_tail) {
     m <- regmatches(s, regexec("^(.*/)(\\(?[a-z]*G[a-z]*\\)?)$", s))[[1L]]
     if (length(m) && grepl("G", m[2L], fixed = TRUE) && !startsWith(m[3L], "("))
@@ -135,7 +142,18 @@
   fr <- v$frame
   vapply(seq_len(nrow(fr)), function(i) {
     if (isTRUE(fr$buried[i] > 0L)) return(FALSE)
-    if (!is.na(fr$carrying[i])) return(any(grepl(parts, .ka5_row_parts(fr, i))))
+    if (!is.na(fr$carrying[i])) {
+      if (any(grepl(parts, .ka5_row_parts(fr, i)))) return(TRUE)
+      # v0.9.364 (D6): on the data route a candidate of the row with such a
+      # part leaves it undecided
+      if (identical(fr$route[i], "data") && length(fr$candidates[[i]]) &&
+          any(grepl(parts, sub("^[a-z]*", "", unlist(fr$candidates[[i]]))))) return(NA)
+      # an M part (a sediment recorded on a row of another horizon), which the
+      # data key does not build
+      if (identical(fr$route[i], "data") && grepl(parts, "M") && !identical(fr$master[i], "M") &&
+          !is.na(.ka5_txt(v$x, i, "stratification_pattern"))) return(NA)
+      return(FALSE)
+    }
     cc <- v$cand[[i]]
     if (!length(cc)) return(FALSE)
     if (any(vapply(cc, function(z) grepl(parts, z$code), NA))) NA else FALSE
@@ -201,6 +219,12 @@
     }
     if (isTRUE(w$absent_ok)) return(res(TRUE, NA, "absent"))
     if (und) return(res(NA, NA, "undecided rows", .ka5_rows_missing(v, which(is.na(m)))))
+    # v0.9.364: a horizon whose top lies at a minimum depth or deeper is met
+    # by its absence from a description reaching that depth, and undecided
+    # when the description ends above it (the aG of the Auenboeden)
+    if (isTRUE(w$absent_below) && side == "min")
+      return(res(if (is.finite(deepest) && deepest >= lim[1L]) TRUE else NA, NA,
+                 sprintf("absent down to %s cm, where the description ends", format(deepest))))
     reach <- switch(side, range = lim[2L], min = Inf, max = lim[1L])
     p <- if (is.finite(deepest) && deepest >= reach) FALSE else if (side == "min") FALSE else NA
     return(res(p, NA, if (is.na(p)) sprintf("absent down to %s cm, where the description ends", format(deepest)) else "absent"))
@@ -405,6 +429,18 @@
   rows <- which(.ka5_sub_rows(v, ck) %in% TRUE)
   what <- ck$what %||% ck$parts %||% paste(unlist(ck$of), collapse = "/")
   if (!length(rows)) return(.ka5_ck(FALSE, sprintf("no %s", what)))
+  # the rows of the codes asked first, when there are any (the hH(w) of the
+  # Normhochmoor, p. 260; the review of 2026-11-06, D5)
+  if (!is.null(ck$prefer_codes)) {
+    pc <- rows[v$frame$carrying[rows] %in% unlist(ck$prefer_codes)]
+    if (length(pc)) rows <- pc
+  }
+  # v0.9.364: the subsoil (the Kalkniedermoor, p. 259): the rows under the
+  # uppermost such row, the uppermost alone when there is no other
+  if (isTRUE(ck$subsoil) && length(rows) > 1L) {
+    rows <- rows[order(v$frame$top_gof[rows])]
+    rows <- rows[-1L]
+  }
   val <- vapply(rows, function(i) .ka5_num(v$x, i, ck$attr), 0)
   if (all(is.na(val))) return(.ka5_ck(TRUE, sprintf("%s not recorded: the designation stands", ck$attr)))
   lim <- .ka5_thr(ck$thr)
@@ -433,8 +469,90 @@
   .ka5_ck(p, sprintf("no %s part: %s", ck$parts, if (is.na(p)) "undecided" else if (p) "none" else "present"))
 }
 
+# The Oxigley (p. 242; Hugo's decision Q16): no Gr; the groundwater recorded
+# oxygen-rich, or no Gr in a profile described to 13 dm or deeper (the mean
+# low groundwater of the Grundwasserstufe 3, p. 311); else undecided between
+# the Normgley and the Oxigley.
+.ka5_ck_oxigley <- function(v, ck) {
+  fr <- v$frame
+  rows <- .ka5_rows_from_gof(v)
+  # a Gr, or a Gor whose reduction colours dominate: no oxidation through the
+  # whole profile (soilKey's reading)
+  gr <- .ka5_rows(v, list(codes = c("Gr", "Ghr", "Gcr", "Gzr", "Gor")))[rows]
+  if (any(gr %in% TRUE)) return(.ka5_ck(FALSE, "a Gr or Gor: no Oxigley"))
+  ox <- .ka5_site_lgl(v$x, "groundwater_oxygen_rich")
+  if (isTRUE(ox)) return(.ka5_ck(TRUE, "the groundwater recorded oxygen-rich (Q16)"))
+  if (isFALSE(ox)) return(.ka5_ck(FALSE, "the groundwater recorded not oxygen-rich (Q16)"))
+  if (any(is.na(gr))) return(.ka5_ck(NA, "a row that could be a Gr undecided", .ka5_rows_missing(v, rows[is.na(gr)])))
+  # the depth the mineral profile is described to: the rows from the GOF
+  # down to the first peat or F horizon (a Gr is not looked for in a peat)
+  org <- which(fr$master[rows] %in% c("H", "F"))
+  if (length(org)) rows <- rows[seq_len(org[1L] - 1L)]
+  deepest <- suppressWarnings(max(fr$bottom_gof[rows], na.rm = TRUE))
+  lim <- .ka5_thr("st_ggx_described_cm")
+  if (is.finite(deepest) && deepest >= lim)
+    return(.ka5_ck(TRUE, sprintf("no Gr in a profile described to %s cm (%s cm or more, Q16)", format(deepest), format(lim))))
+  .ka5_ck(NA, sprintf("no Gr down to %s cm, where the description ends (under %s cm): undecided between the Normgley and the Oxigley (Q16)",
+                      format(deepest), format(lim)), "groundwater_oxygen_rich")
+}
+
+# The source of the groundwater of the Hang- and Quellen- subtypes of the
+# Gleye (pp. 243-249): in the notation by the prefix s or q (a G written
+# without it is none, unless the source recorded, or for the s a slope of 9 %
+# or more, says otherwise, which leaves it undecided, as the Hangpseudogley,
+# R2); on the data by groundwater_source, for the slope water also by the
+# slope of 9 % or more.
+.ka5_ck_source <- function(v, ck) {
+  fr <- v$frame
+  src <- .ka5_site_txt(v$x, "groundwater_source")
+  sl <- .ka5_site_num(v$x, "slope_pct")
+  lim <- .ka5_thr("st_slope_min_pct")
+  want <- ck$source
+  pre <- if (identical(want, "slope_water")) "s" else "q"
+  g <- which(.ka5_rows(v, list(masters = "G")) %in% TRUE)
+  if (length(g) && any(fr$route[g] %in% c("notation", "both"))) {
+    hint <- identical(src, want) || (identical(want, "slope_water") && isTRUE(sl >= lim))
+    if (hint) return(.ka5_ck(NA, sprintf("the G written without the prefix %s, but the record says %s: undecided (R2)", pre,
+                                         if (identical(src, want)) want else sprintf("a slope of %s %%", format(sl)))))
+    return(.ka5_ck(FALSE, sprintf("the G horizons written without the prefix %s", pre)))
+  }
+  if (!is.na(src)) return(.ka5_ck(src == want, sprintf("groundwater_source %s", src)))
+  if (identical(want, "slope_water") && !is.na(sl))
+    return(.ka5_ck(sl >= lim, sprintf("slope %s %% (%s %% or more, p. 243)", format(sl), format(lim))))
+  .ka5_ck(NA, "the source of the groundwater not recorded", c("groundwater_source", if (identical(want, "slope_water")) "slope_pct"))
+}
+
+# No row of the present soil carries the prefix (the transitions of the
+# terrestrial types into the Gley do not take a profile of floodplain
+# horizons, prefix a: the Auen-X-Gley subtypes do, p. 246).
+.ka5_ck_no_prefix <- function(v, ck) {
+  fr <- v$frame
+  rows <- .ka5_rows_from_gof(v)
+  hit <- rows[vapply(rows, function(i) ck$prefix %in% fr$prefixes[[i]] ||
+                       any(startsWith(fr$with[[i]], ck$prefix) & grepl("^[a-z]+[A-Z]", fr$with[[i]])), NA)]
+  .ka5_ck(!length(hit), sprintf("the prefix %s: %s", ck$prefix,
+                                if (length(hit)) sprintf("written on %s (p. 246)", paste(fr$code[hit], collapse = ", ")) else "not written"))
+}
+
+# The moor prefix of the H of the Moorgley (the review of 2026-11-06, D4):
+# TRUE when an H of the present soil carries it, FALSE when they carry
+# another (n, h, u), NA when they carry none (neither written nor recorded).
+.ka5_ck_moor_prefix <- function(v, ck) {
+  fr <- v$frame
+  h <- which(.ka5_rows(v, list(masters = "H")) %in% c(TRUE, NA))
+  if (!length(h)) return(.ka5_ck(FALSE, "no H"))
+  pre <- unique(unlist(lapply(h, function(i) intersect(fr$prefixes[[i]], c("n", "h", "u")))))
+  if (ck$prefix %in% pre) return(.ka5_ck(TRUE, sprintf("the H with the prefix %s", ck$prefix)))
+  if (length(pre)) return(.ka5_ck(FALSE, sprintf("the H with the prefix %s", paste(pre, collapse = ", "))))
+  .ka5_ck(NA, "the kind of peat of the H (n, h, u) neither written nor recorded: undecided", "peat_moor_type")
+}
+
 .ka5_sub_check <- function(v, ck) {
   switch(ck$check,
+         moor_prefix = .ka5_ck_moor_prefix(v, ck),
+         no_prefix = .ka5_ck_no_prefix(v, ck),
+         oxigley = .ka5_ck_oxigley(v, ck),
+         water_source = .ka5_ck_source(v, ck),
          absent = .ka5_ck_absent(v, ck),
          bs = .ka5_ck_bs(v, ck),
          fahlerde = .ka5_ck_fahlerde(v, ck),
@@ -527,7 +645,71 @@
       note <- sprintf("%s: the description ends above its last horizons (%s): undecided", f, paste(r$missing, collapse = ", "))
     }
   }
+  # on the data route a horizon the formula needs may be among a row's
+  # candidates, or one the order of tests on the data does not build (Gso,
+  # Hvm, a secondary carbonate c not recorded): undecided, not failed (the
+  # review of 2026-11-06, D6)
+  if (isFALSE(p)) {
+    hid <- .ka5_data_hidden(v, sp, r$missing)
+    if (length(hid)) {
+      p <- NA
+      note <- sprintf("%s: undecided on the data (%s)", f, paste(hid, collapse = "; "))
+    }
+  }
   .ka5_ck(p, note, if (is.na(p)) unique(unlist(v$frame$missing)))
+}
+
+# The symbols the order of tests on the data does not build, and the data
+# codes that may hide them (v0.9.364, D6).
+.KA5_DATA_HIDDEN <- list(Gso = "Go", Hvm = c("Hv", "Hm"), Gco = "Go", Gcr = "Gr")
+
+# The rows of the data route that may hold a symbol a missing slot of a
+# formula needs: notes, empty when none.
+.ka5_data_hidden <- function(v, sp, missing) {
+  fr <- v$frame
+  if (!length(missing) || !any(fr$route %in% "data")) return(character(0))
+  slots <- Filter(function(z) identical(z$kind, "horizon") && z$written %in% missing, sp$slots)
+  if (!length(slots)) return(character(0))
+  sym <- unique(unlist(lapply(slots, function(z) c(z$codes, unlist(lapply(z$forms, function(fm) c(fm$code, fm$with)))))))
+  sym <- unique(sub("^[a-z]*", "", sym[!is.na(sym)]))
+  rows <- .ka5_rows_from_gof(v)
+  rows <- rows[fr$route[rows] %in% "data"]
+  out <- character(0)
+  forms <- unlist(lapply(slots, `[[`, "forms"), recursive = FALSE)
+  # a horizon of a layer II or deeper: the data rows carry no layer (unless an
+  # Arabic numeral is written)
+  deep <- unique(unlist(lapply(Filter(function(fm) isTRUE(fm$layer > 1L), forms), `[[`, "code")))
+  # a transition with an A part (Ah-Gr): a data row of the carrying horizon
+  # with the humus minimum of an Ah
+  apart <- unique(sub("^[a-z]*", "", unlist(lapply(Filter(function(fm) any(grepl("^[a-z]*A", fm$with)), forms), `[[`, "code"))))
+  osmin <- min(.ka5_thr("ah_min_os_pct")) / .ka5_thr("os_factor_mineral")
+  # a transition with an M part (aM-Go): a data row of the carrying horizon
+  # with a stratification or a fluvial or colluvial origin recorded
+  mpart <- unique(sub("^[a-z]*", "", unlist(lapply(Filter(function(fm) any(grepl("^[a-z]*M$", fm$with)), forms), `[[`, "code"))))
+  for (i in rows) {
+    car0 <- fr$carrying[i]
+    if (isTRUE(fr$code[i] %in% deep)) { out <- c(out, sprintf("the layer of the %s not known on the data", fr$code[i])); next }
+    if (isTRUE(car0 %in% apart) && isTRUE(.ka5_num(v$x, i, "oc_pct") >= osmin)) {
+      out <- c(out, sprintf("the %s holds the humus of an Ah: an A part not built on the data", fr$code[i])); next
+    }
+    if (isTRUE(car0 %in% mpart) && (!is.na(.ka5_txt(v$x, i, "stratification_pattern")) ||
+                                    isTRUE(grepl("fluvi|colluv", .ka5_txt(v$x, i, "layer_origin"))))) {
+      out <- c(out, sprintf("the %s of a sediment: an M part not built on the data", fr$code[i])); next
+    }
+    cc <- unique(sub("^[a-z]*", "", unlist(fr$candidates[[i]])))
+    hit <- intersect(cc[!is.na(cc)], sym)
+    if (length(hit)) { out <- c(out, sprintf("%s a candidate of the %s", hit[1L], fr$code[i])); next }
+    car <- fr$carrying[i]
+    for (s in intersect(sym, names(.KA5_DATA_HIDDEN))) {
+      if (!isTRUE(car %in% .KA5_DATA_HIDDEN[[s]])) next
+      if (s %in% c("Gco", "Gcr")) {
+        cb <- .ka5_num(v$x, i, "caco3_pct"); sc <- .ka5_num(v$x, i, "secondary_carbonates_pct")
+        if (!(isTRUE(cb > 0) && is.na(sc))) next
+        out <- c(out, sprintf("the %s holds carbonate, its secondary carbonate (%s) not recorded", fr$code[i], s))
+      } else out <- c(out, sprintf("the %s may be a %s, which the data key does not build", fr$code[i], s))
+    }
+  }
+  unique(out)
 }
 
 #' A subtype formula on the KA5 horizon frame, three-valued: the sequence
@@ -537,8 +719,8 @@
 #' (D1); a formula that fails only because the description ends above its
 #' last horizons is undecided, not failed.
 #' @noRd
-.ka5_sub_match <- function(v, f, typical_tail = FALSE, closed_on = NULL) {
-  sp <- .ka5_sub_spec(f, typical_tail)
+.ka5_sub_match <- function(v, f, typical_tail = FALSE, closed_on = NULL, open_tail = FALSE) {
+  sp <- .ka5_sub_spec(f, typical_tail, open_tail)
   tab <- .ka5_sub_table(v)
   a <- .ka5_sub_match1(v, tab, sp, f, closed_on)
   if (isTRUE(a$passed)) return(a)
@@ -587,7 +769,7 @@ subtype_ka5 <- function(pedon, code, norm = FALSE) {
   }), recursive = FALSE)
   fp <- if (!length(forms)) TRUE else {
     vals <- vapply(forms, function(fm) {
-      p <- add(.ka5_sub_match(v, fm$formula, tail, unlist(e$closed_on)))
+      p <- add(.ka5_sub_match(v, fm$formula, tail, unlist(e$closed_on), isTRUE(e$open_tail)))
       if (isFALSE(p)) return(FALSE)
       for (w in fm$windows %||% list()) p <- .kidpr_and(p, add(.ka5_sub_window(v, w)))
       for (ck in fm$checks %||% list()) p <- .kidpr_and(p, add(.ka5_sub_check(v, ck)))

@@ -165,6 +165,112 @@
   `GG-YU` = "R-Ap 0-30 / Go+R 30-50 / G 50-100"
 )
 
+# v0.9.364: the example profiles of the 85 subtypes of the semiterrestrial,
+# subhydric and Moore types (pp. 238-262) and of soilKey's two open
+# subtypes of Q22, written as the terrestrial ones; their data come from
+# .ka5_hz_data(wet = TRUE) and their site from the prefixes (tidal, floodplain,
+# slope or spring water, a drained moor).
+.KA5_SUBTYPE_PROFILES_WET <- list(
+  # A: Auenboeden
+  AOn = "aAi 0-3 / alC 3-90 / aG 90-150",
+  `GG-AO` = "aAi 0-3 / alC 3-50 / aGo 50-90 / aG 90-150",
+  AQn = "aAh 0-20 / ailC 20-90 / aG 90-150",
+  `GG-AQ` = "aAh 0-20 / ailC 20-50 / aGo 50-90 / aG 90-150",
+  AZn = "aeAh 0-20 / aelC 20-90 / aG 90-150",
+  `GG-AZ` = "aeAh 0-20 / aelC 20-50 / aGo 50-90 / aG 90-150",
+  ATn = "aAxh 0-50 / aM 50-90 / aG 90-150",
+  `GG-AT` = "aAxh 0-45 / aGo 45-90 / aG 90-150",
+  ABn = "aAh 0-20 / aM 20-90 / aG 90-150",
+  `AQ-AB` = "aAh 0-15 / ailC 15-35 / IIaM 35-90 / IIaG 90-150",
+  `SS-AB` = "aAh 0-20 / aM 20-45 / aSw 45-60 / aSd 60-90 / aG 90-150",
+  `GG-AB` = "aAh 0-20 / aM 20-50 / aGo 50-90 / aG 90-150",
+  # G: Gleye
+  GGn = "Ah 0-25 / Go 25-60 / Gr 60-120",
+  GGx = "Ah 0-25 / Go 25-140",
+  GGe = "Ah 0-25 / Go 25-45 / Gso 45-80 / Gr 80-120",
+  GGi = "Ah 0-25 / Gw 25-60 / Gr 60-120",
+  GGw = "Ah 0-25 / Go 25-90 / Gor 90-130 / Gr 130-150",
+  GGc = "Ah 0-25 / Gco 25-60 / Gcr 60-120",
+  GGh = "Ah 0-25 / Ah-Go 25-45 / Go 45-70 / Gr 70-120",
+  GGg = "Ah 0-25 / sGo 25-60 / sGr 60-120",
+  GGq = "Ah 0-25 / qGo 25-60 / qGr 60-120",
+  GGa = "aAh 0-25 / aGo 25-60 / aGr 60-120",
+  `RQ-GG` = "Ah 0-20 / ilC 20-35 / Go 35-90 / Gr 90-150",
+  `RR-GG` = "Ah 0-20 / cC 20-35 / Go 35-90 / Gr 90-150",
+  `RZ-GG` = "Ah 0-20 / eC 20-35 / Go 35-90 / Gr 90-150",
+  `TT-GG` = "Axh 0-30 / Axh-Go 30-50 / Go 50-90 / Gr 90-150",
+  `DD-GG` = "Ah 0-20 / P-Go 20-45 / Go 45-90 / Gr 90-150",
+  `BB-GG` = "Ah 0-20 / Bv-Go 20-45 / Go 45-90 / Gr 90-150",
+  `LL-GG` = "Ah 0-20 / Al 20-30 / Bt-Go 30-50 / Go 50-90 / Gr 90-150",
+  `LF-GG` = list("Ah 0-15 / Ael 15-25 / Ael+Bt 25-35 / Bt-Go 35-55 / Go 55-90 / Gr 90-150",
+                 clay_pct = c(12, 12, 18, 26, 26, 20), silt_pct = 60),
+  `PP-GG` = "Ahe 0-5 / Ae 5-15 / Bhs-Go 15-40 / Go 40-90 / Gr 90-150",
+  `SS-GG` = "Ah 0-20 / Sw 20-30 / IISd-Go 30-50 / IIGo 50-90 / IIGr 90-150",
+  `YK-GG` = "Ah 0-20 / M-Go 20-45 / IIGo 45-90 / IIGr 90-150",
+  `YE-GG` = "Ah 0-20 / E-Go 20-45 / IIGo 45-90 / IIGr 90-150",
+  `AO-GG` = "aAi 0-3 / alC 3-30 / aGo 30-60 / aGr 60-120",
+  `AQ-GG` = "aAh 0-20 / ailC 20-30 / aGo 30-60 / aGr 60-120",
+  `AZ-GG` = "aeAh 0-20 / aelC 20-30 / aeGo 30-60 / aGr 60-120",
+  `AT-GG` = "aAxh 0-30 / aAxh-Go 30-50 / aGo 50-90 / aGr 90-150",
+  `AB-GG` = "aAh 0-20 / aM-Go 20-45 / IIaGo 45-90 / IIaGr 90-150",
+  GNn = "Go-Ah 0-25 / Gr 25-100",
+  GNc = "Gco-Ah 0-25 / Gcr 25-100",
+  GNh = "Go-Ah 0-25 / Ah-Gr 25-45 / Gr 45-100",
+  GNg = "sGo-Ah 0-25 / sGr 25-100",
+  GNq = "qGo-Ah 0-25 / qGr 25-100",
+  GMn = "Go-Aa 0-20 / Gr 20-100",
+  GMc = "Gco-Aa 0-20 / Gcr 20-100",
+  GMg = "sGo-Aa 0-20 / sGr 20-100",
+  GMq = "qGo-Aa 0-20 / qGr 20-100",
+  GHn = "nH 0-20 / IIGr 20-100",
+  GHh = "hH 0-20 / IIGr 20-100",
+  GHg = "uH 0-20 / IIsGr 20-100",
+  GHq = "uH 0-20 / IIqGr 20-100",
+  `[GHu]` = "uH 0-20 / IIGr 20-100",
+  # M: Marschen
+  MRn = "tmzeGo-Ah 0-10 / tmzeGo 10-30 / tmzeGr 30-100",
+  MRb = "tbGo-Ah 0-10 / tbGo 10-30 / tbGr 30-100",
+  MRf = "tpeGo-Ah 0-10 / tpeGo 10-30 / tpeGr 30-100",
+  MCn = "tmeAh 0-20 / tmeGo 20-50 / tmzeGr 50-120",
+  MCb = "tbeAh 0-20 / tbeGo 20-50 / tbeGr 50-120",
+  MCf = "tpeAh 0-20 / tpeGo 20-50 / tpeGr 50-120",
+  MNn = "tmAh 0-20 / tmGo 20-60 / tmzeGr 60-120",
+  MNb = "tbAh 0-20 / tbGo 20-60 / tbeGr 60-120",
+  MNf = "tpAh 0-20 / tpGo 20-60 / tpeGr 60-120",
+  MHn = "tmAh 0-20 / tmSg-Go 20-60 / tmzeGr 60-120",
+  MHb = "tbAh 0-20 / tbSg-Go 20-60 / tbGr 60-120",
+  MHf = "tpAh 0-20 / tpSg-Go 20-60 / tpGr 60-120",
+  MDn = "tpAh 0-20 / tpSw 20-35 / IIftpAh\u00b0Sd 35-50 / IIftpGo\u00b0Sd 50-70 / IItpGo 70-90 / IItpGr 90-150",
+  MKn = "tbAh 0-20 / tbSw 20-35 / tbSq 35-60 / tbGr 60-120",
+  MOn = list("tmoAh 0-20 / tmoGo 20-50 / tmoGr 50-120", oc_pct = c(6, 1, 0.5), clay_pct = 50),
+  # Ue: Strandboeden
+  "\u00dcAn" = "tmzAi 0-5 / tmzlC 5-40 / tmzeGo 40-100",
+  "\u00dcAb" = "tbzAi 0-5 / tbzlC 5-40 / tbzeGo 40-100",
+  "\u00dcAf" = "tpAi 0-5 / tplC 5-40 / tpGo 40-100",
+  # I: Semisubhydrische Boeden
+  IWn = "tmzeFo 0-15 / tmzeFr 15-80",
+  IWb = "tbzeFo 0-15 / tbzeFr 15-80",
+  IWf = "tpFo 0-15 / tpFr 15-80",
+  # H, K: Moore
+  HNn = "nHw 0-50 / nHr 50-120 / IIfF 120-140",
+  HNc = "nHcw 0-40 / nHcr 40-120 / IIfF 120-140",
+  HNu = "uHw 0-40 / uHr 40-110 / IInHr 110-150",
+  HHn = "hHw 0-40 / hHr 40-150 / IInHr 150-200",
+  KVn = "nHv 0-20 / nHt 20-35 / nHw 35-80 / nHr 80-150",
+  KVc = "nHcv 0-20 / nHct 20-35 / nHw 35-80 / nHcr 80-150",
+  KVu = "uHv 0-20 / uHt 20-35 / uHw 35-80 / uHr 80-120 / IIfF 120-130 / IIIC 130-150",
+  KMn = "nHm 0-15 / nHa 15-30 / nHt 30-45 / nHw 45-100",
+  KMc = "nHcm 0-15 / nHca 15-30 / nHcw 30-100",
+  KMu = "uHm 0-15 / uHa 15-30 / uHt 30-45 / uHw 45-100",
+  `KV-KM` = "nHvm 0-15 / nHa 15-30 / nHt 30-45 / nHw 45-100",
+  KHn = "hHv 0-15 / hHw 15-60 / hHr 60-150",
+  `[KHm]` = "hHm 0-15 / hHw 15-60 / hHr 60-150"
+)
+
+# The types of the wet subtypes (their examples take the wet data and site).
+.KA5_WET_TYPES <- c("AO", "AQ", "AZ", "AT", "AB", "GG", "GN", "GM", "GH", "MR", "MC", "MO", "MK", "MD", "MH", "MN",
+                    "\u00dcA", "IA", "IW", "JP", "JG", "JS", "JD", "HH", "HN", "KV", "KM", "KH")
+
 # The rows of a profile string: designations and depths.
 .ka5_parse_profile_string <- function(s) {
   it <- trimws(strsplit(s, "/", fixed = TRUE)[[1L]])
@@ -180,7 +286,7 @@
 #' the carrying part, then the other parts and the prefixes. Not a rule of
 #' the KA5.
 #' @noRd
-.ka5_hz_data <- function(d) {
+.ka5_hz_data <- function(d, wet = FALSE) {
   r <- .ka5_parse_one(d)
   car <- r$code %||% NA_character_
   pre <- r$prefixes %||% character(0)
@@ -274,14 +380,64 @@
     if (wm == "T") set(clay_pct = max(o$clay_pct %||% 0, 55, na.rm = TRUE))
     if (w == "M") set(layer_origin = "colluvic", stratification_pattern = "continuous")
     if (w == "E") set(p2o5_al_mg_kg = 250)
+    # v0.9.364: a podzolic B part (Bhs-Go): the Cp and Fep of a Bhs, sand
+    if (isTRUE(wet) && grepl("^B[hms]*(h|s)[hms]*$", w)) set(c_pyro_pct = 0.9, fe_pyro_pct = 0.2, oc_pct = max(o$oc_pct, 1), clay_pct = 3, silt_pct = 5)
   }
+  if (isTRUE(wet)) o <- .ka5_hz_data_wet(o, car, pre, with, ms)
   if (!is.na(o$clay_pct %||% NA) && !is.na(o$silt_pct %||% NA)) o$sand_pct <- max(0, 100 - o$clay_pct - o$silt_pct)
+  o
+}
+
+#' soilKey's typical values of the horizons of the wet subtypes (v0.9.364):
+#' the tidal, floodplain, salt, marl and organic prefixes, the kinds of the G,
+#' the H and the F, read by the order of tests on the data. Not a rule of the
+#' KA5.
+#' @noRd
+.ka5_hz_data_wet <- function(o, car, pre, with, ms) {
+  set <- function(...) { a <- list(...); for (k in names(a)) o[[k]] <<- a[[k]] }
+  col <- function(h, v, c) set(munsell_hue_moist = h, munsell_value_moist = v, munsell_chroma_moist = c)
+  tp <- intersect(pre, c("tm", "tb", "tp"))
+  if (length(tp)) set(layer_origin = c(tm = "tidal-marine", tb = "tidal-brackish", tp = "tidal-fluvial")[[tp[1L]]])
+  if ("a" %in% pre || any(startsWith(with, "a"))) set(layer_origin = "fluvic")
+  set(ec_dS_m = if ("z" %in% pre) 5 else 0.3)
+  if ("e" %in% pre && ms %in% c("A", "G", "S", "F")) set(caco3_pct = max(o$caco3_pct, 5))
+  if ("o" %in% pre) set(oc_lithogenic_pct = 3, oc_pct = max(o$oc_pct, 3), clay_pct = 50)
+  if (ms == "G") {
+    if (car == "Gor") { set(redoximorphic_features_pct = 10, reduction_colours_pct = 60); col("5Y", 5, 2) }
+    else if (car == "Gw") { set(redoximorphic_features_pct = 0, reduction_colours_pct = 0, dipyridyl_test = FALSE); col("5Y", 6, 1) }
+    else if (car == "Gso") { set(redoximorphic_features_pct = 40, reduction_colours_pct = 5, ferric_nodules_pct = 20); col("7.5YR", 5, 8) }
+  }
+  if (ms == "S" && car == "Sq") set(knick_degree = "strong", ksat_mm_h = 0.4)
+  if (ms == "M") set(stratification_pattern = "continuous")
+  if (ms == "H") {
+    sfx <- sub("^H", "", car)
+    if ("u" %in% pre) set(peat_moor_type = "transitional")
+    set(munsell_hue_moist = "10YR", munsell_value_moist = 2, munsell_chroma_moist = 1,
+        ph_cacl2 = if (grepl("c", sfx)) 6.5 else if ("h" %in% pre) 3.5 else if ("u" %in% pre) 4.2 else 5.5)
+    if (grepl("c", sfx)) set(secondary_carbonates_pct = 3, caco3_pct = 5)
+    if (grepl("m", sfx)) set(von_post_index = 8, water_repellence = "repellent", structure_type = "single grain")
+    else if (grepl("v", sfx)) set(structure_type = "crumb")
+    else if (grepl("a", sfx)) set(structure_type = "subangular blocky")
+    else if (grepl("t", sfx)) set(structure_type = "prismatic")
+    else if (grepl("w", sfx)) set(redoximorphic_features_pct = 10, water_saturation_days = 200, structure_type = "massive")
+    else if (grepl("r", sfx)) set(water_saturation_days = 365, structure_type = "massive")
+  }
+  if (ms == "F") {
+    set(clay_pct = 20, silt_pct = 40)
+    switch(car,
+      Fo = { set(oc_pct = 2, redoximorphic_features_pct = 10, rh_value = 15); col("5Y", 4, 2) },
+      Fr = { set(oc_pct = 2, rh_value = 10); col("N", 2, 0) },
+      Fw = { set(oc_pct = 0.4); col("2.5Y", 6, 2) },
+      Fh = { set(oc_pct = 8, rh_value = 16); col("7.5YR", 3, 2) },
+      Fi = { set(oc_pct = 0.2); col("2.5Y", 6, 2) },
+      NULL)
+  }
   o
 }
 
 # The site of an example profile from its horizons: the water table under a
 # G, perched water over an S, the record of a deep cultivation or a gas.
-.ka5_example_site <- function(code, des, top) {
+.ka5_example_site <- function(code, des, top, wet = FALSE) {
   car <- vapply(des, function(d) .ka5_parse_one(d)$code %||% NA_character_, "")
   ms <- substr(sub("^[a-z]*", "", car), 1L, 1L)
   parts <- unlist(lapply(des, function(d) c(.ka5_parse_one(d)$code, sub("^[a-z]*", "", .ka5_parse_one(d)$with))))
@@ -297,6 +453,16 @@
   if (ty == "YU") site <- c(site, list(deep_cultivation_kind = "single_deep_ploughing", mechanical_mixing_depth_cm = 60, land_use = "arable"))
   if (ty == "YE") site <- c(site, list(deep_cultivation_kind = "plaggen", mechanical_mixing_depth_cm = 30))
   if (ty == "YO") site <- c(site, list(deep_cultivation_kind = "garden", mechanical_mixing_depth_cm = 30, land_use = "arable"))
+  if (isTRUE(wet)) {
+    pre <- unlist(lapply(des, function(d) .ka5_parse_one(d)$prefixes))
+    if (any(ms %in% "G")) site <- c(site, list(
+      groundwater_source = if ("s" %in% pre) "slope_water" else if ("q" %in% pre) "spring_water" else "groundwater",
+      slope_pct = if ("s" %in% pre) 12 else 2))
+    if ("a" %in% pre) site$landform <- "floodplain"
+    if (length(ms) && ms[1L] %in% "F") site$tidal_zone <- "intertidal"
+    if (ty == "\u00dcA") site$tidal_zone <- "supratidal"
+    if (ty %in% c("KV", "KM", "KH")) site$artificially_drained <- TRUE
+  }
   site
 }
 
@@ -306,12 +472,14 @@
 #' @noRd
 .ka5_subtype_example <- function(code, route = c("notation", "data")) {
   route <- match.arg(route)
-  spec <- .KA5_SUBTYPE_PROFILES[[code]]
-  if (is.null(spec)) rlang::abort(sprintf("No KA5 subtype example '%s' (the terrestrial subtypes have one each).", code))
+  code <- sub("^UEA", "\u00dcA", code)
+  spec <- .KA5_SUBTYPE_PROFILES[[code]] %||% .KA5_SUBTYPE_PROFILES_WET[[code]]
+  if (is.null(spec)) rlang::abort(sprintf("No KA5 subtype example '%s' (every printed subtype has one).", code))
+  wet <- !is.null(.KA5_SUBTYPE_PROFILES_WET[[code]])
   if (is.character(spec)) spec <- list(spec)
   p <- .ka5_parse_profile_string(spec[[1L]])
   n <- length(p$des)
-  rows <- lapply(p$des, .ka5_hz_data)
+  rows <- lapply(p$des, .ka5_hz_data, wet = wet)
   cols <- unique(unlist(lapply(rows, names)))
   h <- list(designation = p$des, top_cm = p$top, bottom_cm = p$bot)
   for (k in cols) {
@@ -325,7 +493,7 @@
   extra$site <- NULL
   for (k in names(extra)) h[[k]] <- if (length(extra[[k]]) == 1L) rep(extra[[k]], n) else extra[[k]]
   site <- utils::modifyList(list(id = paste0("ka5-", code), country = "DE", designation_system = "ka5"),
-                            utils::modifyList(.ka5_example_site(code, p$des, p$top), site_extra))
+                            utils::modifyList(.ka5_example_site(code, p$des, p$top, wet), site_extra))
   if (route == "data") {
     h$designation <- rep(NA_character_, n)
     site$designation_system <- NULL
@@ -342,3 +510,14 @@
                               "PPe", "PPh", "LL-PP", "SS-PP", "GG-PP", "YK-PP", "CFn", "CFc", "CRn", "SSn", "SSc",
                               "SSg", "PP-SS", "SHn", "SHh", "BB-SH", "XXn", "XXt", "XXx", "XXu", "YKn", "PP-YK",
                               "SS-YK", "GG-YK", "YEn", "GG-YE", "YOn", "YYn")
+
+# The wet subtype examples that key to their subtype on the data as well
+# (v0.9.364; the others need the notation: the Gw, Gso, Gco and Gcr, the Sg
+# and Sq of the Marschen, the Dwog, the transitions the data key does not
+# build, the Hvm).
+.KA5_DATA_ROUTE_SUBTYPES_WET <- c("AOn", "GG-AO", "AQn", "GG-AQ", "AZn", "GG-AZ", "ATn", "GG-AT", "ABn", "AQ-AB", "GG-AB",
+                                  "GGn", "GGx", "GGw", "GGh", "GGg", "GGq", "GGa", "RQ-GG", "RR-GG", "RZ-GG", "AO-GG",
+                                  "AQ-GG", "AZ-GG", "GNn", "GNg", "GNq", "GMn", "GMg", "GMq", "GHn", "GHh", "GHg", "GHq",
+                                  "[GHu]", "MRn", "MRb", "MRf", "MCn", "MCb", "MCf", "MNn", "MNb", "MNf", "MOn",
+                                  "\u00dcAn", "\u00dcAb", "\u00dcAf", "IWn", "IWb", "IWf", "HNn", "HNc", "HNu", "HHn", "KVn",
+                                  "KVc", "KVu", "KMn", "KMc", "KMu", "KHn", "[KHm]")

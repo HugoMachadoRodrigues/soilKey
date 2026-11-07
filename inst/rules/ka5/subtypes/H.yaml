@@ -1,0 +1,66 @@
+# The subtypes of the class H, Naturnahe Moore (KA5 2005, the type texts pp. 258-260), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "HH":
+    - code: "HHn"
+      name: "Normhochmoor"
+      name_en: "Typical raised bog"
+      name_pt: "Turfa alta típica"
+      kind: "norm"
+      page: "p. 260"
+      formulas:
+        - "hHw/(hHr/)(uHr/)(nHr/)(IIfF/)..."
+      checks:
+        - {check: "value", of: {masters: ["H"], prefixes: ["h"]}, attr: "ph_cacl2", thr: "st_hhn_ph_max", side: "max", prefer_codes: ["H", "Hw"], what: "the hH(w)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "HHn", norm: true}
+      notes: "pH (CaCl2) under 4 in the hH(w) (the hH or hHw where there is one, else any hH), the H horizons together 3 dm or more (p. 260)."
+  "HN":
+    - code: "HNc"
+      name: "Kalkniedermoor"
+      name_en: "Calcareous fen"
+      name_pt: "Turfa baixa calcária"
+      kind: "deviation"
+      page: "p. 259"
+      formulas:
+        - "nHcw/(nHcr/)(nHr/)(IIfF/)..."
+      checks:
+        - {check: "value", of: {pattern: "^Hc"}, attr: "ph_cacl2", thr: "st_hnc_ph_min", side: "min", subsoil: true, what: "the nHc of the subsoil"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "HNc"}
+      notes: "Calcium carbonate through the peat (nHc); pH (CaCl2) of the subsoil 6 or more (p. 259), tested where measured on the nHc under the uppermost."
+    - code: "HNu"
+      name: "Übergangsmoor"
+      name_en: "Transitional moor"
+      name_pt: "Turfa de transição"
+      kind: "deviation"
+      page: "p. 259"
+      formulas:
+        - "uHw/(uHr/)(IInHr/)(IIIfF/)..."
+      tests:
+        all_of:
+          - subtype_ka5: {code: "HNu"}
+      notes: "Base-poor, acid peat with remains of the less demanding plants of the transitional moor (uH); pH (CaCl2) 4 (to 5), often under 4 (p. 259): typical, not tested."
+    - code: "HNn"
+      name: "Normniedermoor"
+      name_en: "Typical fen"
+      name_pt: "Turfa baixa típica"
+      kind: "norm"
+      page: "p. 258"
+      formulas:
+        - "nHw/(nHr/)(IIfF/)..."
+      checks:
+        - {check: "value", of: {masters: ["H"], prefixes: ["n"]}, attr: "ph_cacl2", thr: "st_hnn_ph", side: "range", what: "the nH"}
+      complement: ["HNc", "HNu"]
+      tests:
+        all_of:
+          - subtype_ka5: {code: "HNn", norm: true}
+      notes: "Peat of fen plants, rich in bases, carbonate-free; pH (CaCl2) (4 to) 5 to 6, read 4 to < 6 where measured (p. 258). The fallback of the Niedermoor (Q21): with its formula or this mark not met it holds provisionally, HNc or HNu a candidate (R1)."
