@@ -36,7 +36,8 @@
 #' materials with cindery, fragmental or pumiceous materials totalling 40 cm
 #' within 50 cm (item b of the order). "A few days": under 30 days of
 #' saturation recorded in the organic layers, or a drainage class of well
-#' drained or better; 30 days or more fails; otherwise undecided. Folic
+#' drained or better, flagged as a stand-in (Hugo, 2026-11-07); 30 days or
+#' more fails; otherwise undecided. Folic
 #' materials: some organic layer of the folic kind (plant residues three
 #' fourths or more).
 #' @noRd
@@ -46,11 +47,16 @@ foli_histosol_cst <- function(pedon) {
   if (!x$n || is.na(x$surf)) return(.cst_key_result(nm, if (x$n) NA else FALSE, page = "76, 78"))
   t <- .cst_thr("key", "groups", "foli")
   r <- .cst_ch(x, "organic_soil_materials")
-  org <- which(!(r$full %in% FALSE))
+  org <- which(r$full %in% TRUE & !(x$kind %in% "R"))
   sat <- .cst_v(x, "water_saturation_days")[org]
+  flags <- character(0)
   dry <- if (length(sat) && any(sat >= t$saturated_days_max, na.rm = TRUE)) FALSE
          else if (length(sat) && !anyNA(sat)) TRUE
-         else if (.cst_well_drained(pedon$site)) TRUE else NA
+         else if (.cst_well_drained(pedon$site)) {
+           # the drainage class stands in for the days of saturation, flagged
+           # (Hugo, 2026-11-07)
+           flags <- c("stand_in:drainage_class", "few_days_from_drainage_class"); TRUE
+         } else NA
   if (isTRUE(.cst_site_lgl(pedon$site, "artificially_drained")) && !isFALSE(dry)) dry <- NA
   k <- r$kind
   fol <- if (any(r$full %in% TRUE & k %in% "folic")) TRUE
@@ -62,7 +68,9 @@ foli_histosol_cst <- function(pedon) {
   passed <- .cst_and(dry, fol, .cst_or(ct, b))
   .cst_key_result(nm, passed, layers = x$idx[which(r$full %in% TRUE & k %in% "folic")],
                   missing = c(if (is.na(dry)) "water_saturation_days", if (is.na(fol)) "plant_residues_pct"),
-                  evidence = list(items = c(few_days = dry, folic = fol, contact = ct, item_b = b)),
+                  flags = if (isTRUE(passed)) flags,
+                  evidence = list(items = c(few_days = dry, folic = fol, contact = ct, item_b = b),
+                                  stand_in = if (isTRUE(passed) && length(flags)) "drainage_class" else character(0)),
                   notes = "a few days of saturation read as under 30 days, or a well-drained record",
                   page = "76, 78")
 }
@@ -176,8 +184,8 @@ mud_cumulic_cst <- function(pedon) {
 #' a moist hue redder than 5YR, a moist value under 4 and a dry value no more
 #' than one unit above the moist; "xanthic" a hue of 7.5YR or yellower, a
 #' moist value of 4 or more and a moist chroma of 5 or more. The window ends
-#' at a shallower contact or at the base of the description (the horizons
-#' described).
+#' at a shallower contact; the depth below the description is undecided, and
+#' a share that passes on the described part only passes provisionally.
 #' @noRd
 colour_share_cst <- function(pedon, rule = c("rhodic", "xanthic"), min = 0.5, within = 125) {
   rule <- match.arg(rule)
@@ -197,19 +205,40 @@ colour_share_cst <- function(pedon, rule = c("rhodic", "xanthic"), min = 0.5, wi
   a <- x$msurf; b <- a + within
   ct <- .cst_contact_cm(pedon)
   if (!is.na(ct) && ct < b) b <- ct
-  deep <- suppressWarnings(max(x$bot, na.rm = TRUE))
-  if (is.finite(deep) && deep < b) b <- deep
   if (b <= a) return(.cst_key_result(nm, FALSE, page = 93))
-  sh <- .cst_window_share(pedon, p, a, b)
-  passed <- .cst_share_at_least(sh, min)
+  sh <- .cst_share_cut(pedon, x, p, a, b, min)
+  passed <- sh$passed
   rows <- which(p %in% TRUE & .cst_overlap(x, a, b) > 0)
-  .cst_key_result(nm, passed, layers = x$idx[rows], flags = col$hue_flag[rows],
+  .cst_key_result(nm, passed, layers = x$idx[rows], flags = c(col$hue_flag[rows], sh$flags),
                   missing = .cst_missing_in(x, which(is.na(p)), c("munsell_hue_moist", "munsell_value_moist",
                                                                   if (rule == "rhodic") "munsell_value_dry" else "munsell_chroma_moist")),
-                  evidence = list(share = sh$value, window = c(top = a, bottom = b), rule = rule),
-                  notes = sprintf("%s colours in %s of %s-%s cm", rule,
-                                  paste(format(round(sh$value, 2)), collapse = " to "), format(a), format(b)),
+                  evidence = list(share = sh$share, window = c(top = a, bottom = b), rule = rule),
+                  notes = c(sprintf("%s colours in %s of %s-%s cm", rule,
+                                    paste(format(round(sh$share, 2)), collapse = " to "), format(a), format(b)),
+                            if (sh$cut) "the depth not described is undecided"),
                   page = 93)
+}
+
+# A share of the thickness of the window [a, b) against a fraction, the
+# window cut by the base of the description (D1 of the review, Hugo,
+# 2026-11-07): read on the whole window, the thickness not described is
+# undecided; when that leaves the share undecided, a share that passes on the
+# described part only passes provisionally (flag
+# window_cut_at_description_base), as the base saturation of the
+# Isohumosols does; otherwise undecided.
+.cst_share_cut <- function(pedon, x, p, a, b, fraction, strict = FALSE) {
+  sh <- .cst_window_share(pedon, p, a, b)
+  passed <- .cst_share_at_least(sh, fraction, strict)
+  deep <- suppressWarnings(max(x$bot, na.rm = TRUE))
+  flags <- character(0)
+  if (is.na(passed) && is.finite(deep) && deep > a && deep < b) {
+    cut <- .cst_share_at_least(.cst_window_share(pedon, p, a, deep), fraction, strict)
+    if (isTRUE(cut)) {
+      passed <- TRUE
+      flags <- c("window_cut_at_description_base", "provisional")
+    }
+  }
+  list(passed = passed, share = sh$value, flags = flags, cut = is.finite(deep) && deep < b)
 }
 
 #' A udic moisture regime bordering on the perudic one (E1.2, p. 93; Q8):
@@ -234,7 +263,7 @@ horizon_top_between_cst <- function(pedon, horizon, top_min, top_max, datum = c(
   nm <- "horizon_top_between_cst"
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_key_result(nm, FALSE))
-  r <- .cst_hz(x, horizon)
+  r <- if (horizon == "calcic_horizon") .cst_calcic_only(x) else .cst_hz(x, horizon)
   s <- if (datum == "mineral") x$msurf else x$surf
   if (is.na(s)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct")))
   d <- x$top - s
@@ -254,6 +283,32 @@ horizon_top_between_cst <- function(pedon, horizon, top_min, top_max, datum = c(
                                   if (datum == "mineral") "mineral soil surface" else "soil surface"))
 }
 
+# --- the calcic horizon alone --------------------------------------------------------------------
+
+# The calcic horizon without its hypercalcic layers, per layer (the key
+# names "a calcic horizon" alone in F1.1, F3.2, G1.1, J2.4 and L2.2: a
+# hypercalcic horizon does not count, Hugo, 2026-11-07).
+.cst_calcic_only <- function(x) {
+  r <- .cst_hz(x, "calcic_horizon")
+  hy <- .cst_hz(x, "hypercalcic_horizon")$full
+  r$full <- ifelse(hy %in% TRUE, FALSE, ifelse(is.na(hy) & r$full %in% TRUE, NA, r$full))
+  r$evid <- ifelse(r$full %in% TRUE, TRUE, r$evid)
+  r
+}
+
+#' A calcic horizon that is not a hypercalcic horizon, with its upper
+#' boundary within `top_max` cm (F1.1, F3.2, G1.1, J2.4, pp. 96-118; the key
+#' names the calcic horizon alone).
+#' @noRd
+calcic_only_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral")) {
+  datum <- match.arg(datum)
+  x <- .cst_ctx(pedon)
+  r <- if (x$n) .cst_calcic_only(x) else NULL
+  res <- .cst_hz_result(pedon, "calcic_horizon", top_max = top_max, datum = datum, x = x, r = r)
+  res$notes <- paste(stats::na.omit(c(res$notes, "a hypercalcic horizon does not count")), collapse = "; ")
+  res
+}
+
 #' An epipedon (a run of layers from the surface) `min_cm` thick or more
 #' (J2.3: a mollic epipedon 50 cm or more thick, p. 118).
 #' @noRd
@@ -265,6 +320,19 @@ epipedon_thick_cst <- function(pedon, horizon = "mollic_epipedon", min_cm = 50) 
   rr <- .cst_runs(x, r$full)
   lo <- if (length(rr$low)) max(rr$low, na.rm = TRUE) else 0
   hi <- if (length(rr$high)) max(rr$high, na.rm = TRUE) else 0
+  # the epipedon read on its layer test (D2 of the review, Hugo,
+  # 2026-11-07): a layer below the sure run that may still belong to it (its
+  # test undecided) counts at the high end, so the thickness is not capped
+  # at the sure run
+  if (horizon %in% c("mollic_epipedon", "umbric_epipedon") && !is.na(x$first_min)) {
+    L <- .cst_humic_layers(x)
+    bs_ok <- if (horizon == "mollic_epipedon") L$bs >= .cst_thr("horizons", "mollic", "bs_min_pct")
+             else L$bs < .cst_thr("horizons", "mollic", "bs_min_pct")
+    lt <- L$dark & L$contrast & L$oc_ok & bs_ok & (if (horizon == "mollic_epipedon") L$st_ok else TRUE)
+    may <- ifelse(r$full %in% TRUE, TRUE, ifelse(lt %in% FALSE, FALSE, NA))
+    mr <- .cst_runs(x, may, start = x$first_min)
+    if (any(r$full %in% TRUE) || any(is.na(r$full))) hi <- max(hi, mr$high[x$first_min], na.rm = TRUE)
+  }
   passed <- .cst_at_least(lo, hi, min_cm)
   .cst_key_result(nm, passed, layers = x$idx[which(r$full %in% TRUE)], missing = r$missing,
                   evidence = list(thickness = c(low = lo, high = hi)),
@@ -346,11 +414,13 @@ shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125) {
 # --- the Halosols (H1) ------------------------------------------------------------------------------
 
 #' The takyric surface of the Halosols (H1.1, p. 108): polygonal cracks 1 cm
-#' or more wide on the soil surface through a surface layer 1-4 cm thick.
-#' The crust: site$surface_crust_thickness_cm, else the top horizon when it
-#' has vesicular pores, flagged; the cracks: polygonal cracks recorded
-#' (polygonal_cracks_spacing_cm) with cracks_width_cm of 1 cm or more, on the
-#' first horizon or the site. Field observations: not recorded, absent.
+#' or more wide on the soil surface, through a thickness of 1-4 cm. The
+#' depth of the cracks: cracks_depth_cm (the first horizon or the site);
+#' not recorded, the thickness of the surface crust stands in, flagged
+#' (site$surface_crust_thickness_cm, else the top horizon when it has
+#' vesicular pores) (Hugo, 2026-11-07); the cracks: polygonal cracks
+#' recorded (polygonal_cracks_spacing_cm) with cracks_width_cm of 1 cm or
+#' more. Field observations: not recorded, absent.
 #' @noRd
 takyric_surface_cst <- function(pedon) {
   nm <- "takyric_surface_cst"
@@ -360,18 +430,21 @@ takyric_surface_cst <- function(pedon) {
   site <- pedon$site %||% list()
   pos1 <- function(name) { v <- .cst_v(x, name)[1L]; if (is.na(v)) .cst_site_num(site, name) else v }
   flags <- character(0)
-  ct <- .cst_site_num(site, "surface_crust_thickness_cm")
-  ves <- .cst_t(x, "vesicular_pores")
-  if (is.na(ct) && !is.na(ves[1L]) && ves[1L] %in% c("few", "common", "many")) {
-    ct <- x$thk[1L]; flags <- "crust_thickness_from_top_horizon"
+  d <- pos1("cracks_depth_cm")
+  if (is.na(d)) {
+    d <- .cst_site_num(site, "surface_crust_thickness_cm")
+    ves <- .cst_t(x, "vesicular_pores")
+    if (is.na(d) && !is.na(ves[1L]) && ves[1L] %in% c("few", "common", "many")) d <- x$thk[1L]
+    if (!is.na(d)) flags <- c("stand_in:crust_thickness", "crack_depth_from_crust_thickness")
   }
-  crust <- !is.na(ct) && ct >= t$crust_cm[1L] && ct <= t$crust_cm[2L]
+  deep <- !is.na(d) && d >= t$crust_cm[1L] && d <= t$crust_cm[2L]
   sp <- pos1("polygonal_cracks_spacing_cm"); cw <- pos1("cracks_width_cm")
   cracks <- !is.na(sp) && sp > 0 && !is.na(cw) && cw >= t$crack_width_min_cm
-  passed <- crust && cracks
+  passed <- deep && cracks
   .cst_key_result(nm, passed, flags = if (passed) flags,
-                  evidence = list(crust_cm = ct, crack_width_cm = cw),
-                  notes = "the crust and the polygonal cracks are field observations: not recorded, absent",
+                  evidence = list(crack_depth_cm = d, crack_width_cm = cw,
+                                  stand_in = if (passed && length(flags)) "crust_thickness" else character(0)),
+                  notes = "the cracks and their depth are field observations: not recorded, absent (the crust thickness stands in for the depth, flagged)",
                   page = 108)
 }
 
@@ -418,11 +491,10 @@ lc_carbonate_share_cst <- function(pedon, more_than = 0.5, within = 100) {
     cb <- lc$evidence$contact_cm
     if (!is.null(cb) && !is.na(cb) && x$surf + cb < b) b <- x$surf + cb
   }
-  deep <- suppressWarnings(max(x$bot, na.rm = TRUE))
-  if (is.finite(deep) && deep < b) b <- deep
-  coral <- if (b <= a) FALSE else .cst_share_at_least(.cst_window_share(pedon, p, a, b), more_than, strict = TRUE)
-  passed <- .cst_or(carb$passed, coral)
+  sh <- if (b <= a) list(passed = FALSE, flags = character(0)) else .cst_share_cut(pedon, x, p, a, b, more_than, strict = TRUE)
+  passed <- .cst_or(carb$passed, sh$passed)
   .cst_key_result(nm, passed, layers = x$idx[which(p %in% TRUE)], missing = c(carb$missing, co$missing),
+                  flags = if (isTRUE(passed) && !isTRUE(carb$passed)) sh$flags,
                   evidence = list(window = c(top = a, bottom = b)),
                   notes = "carbonate rocks or coral sands in more than half of the window, by thickness", page = 161)
 }
@@ -601,7 +673,8 @@ b_throughout_cst <- function(pedon, test = c("alic", "acid_and", "acid_or")) {
                                         munsell_hue_moist = c("7.5YR", "7.5YR", "7.5YR", "10YR"),
                                         munsell_chroma_moist = c(4, 5, 5, 3), structure_type = c("platy", "blocky", "blocky", "massive"))),
   # --- H ---
-  "H1.1" = list(base = "H1", set = list(polygonal_cracks_spacing_cm = c(20, NA, NA, NA), cracks_width_cm = c(1.5, NA, NA, NA)),
+  "H1.1" = list(base = "H1", set = list(polygonal_cracks_spacing_cm = c(20, NA, NA, NA), cracks_width_cm = c(1.5, NA, NA, NA),
+                                        cracks_depth_cm = c(2, NA, NA, NA)),
                 site = list(soil_moisture_regime = "aridic", surface_crust_thickness_cm = 2, irrigated = FALSE)),
   "H1.2" = list(base = "H1", set = list(mottle_colors = c(NA, "7.5YR 5/6", "7.5YR 5/6", NA))),
   "H1.3" = list(base = "H1"),

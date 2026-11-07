@@ -18,7 +18,7 @@ groups:
       page: 96
       tests:
         any_of:
-          - calcic_horizon_cst: {top_max: 100, datum: mineral}
+          - calcic_only_cst: {top_max: 100, datum: mineral}
           - calcipan_cst: {top_max: 100, datum: mineral}
       notes: "A calcic horizon or a calcipan with its upper boundary within 100 cm of the mineral soil surface."
     - code: "F1.2"
@@ -63,7 +63,7 @@ groups:
       page: 99
       tests:
         all_of:
-          - calcic_horizon_cst: {top_max: 100, datum: mineral}
+          - calcic_only_cst: {top_max: 100, datum: mineral}
       notes: "A calcic horizon with its upper boundary within 100 cm of the mineral soil surface."
     - code: "F3.3"
       name: "Hapli-Udic Vertosols"

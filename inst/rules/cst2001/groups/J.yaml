@@ -60,7 +60,7 @@ groups:
       page: 118
       tests:
         all_of:
-          - calcic_horizon_cst: {top_max: 100, datum: mineral}
+          - calcic_only_cst: {top_max: 100, datum: mineral}
       notes: "A calcic horizon with its upper boundary within 100 cm of the mineral soil surface."
     - code: "J2.5"
       name: "Hapli-Ustic Isohumosols"

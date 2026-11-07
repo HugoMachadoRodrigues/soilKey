@@ -55,9 +55,12 @@
 # The per-layer reading of a horizon or a layer characteristic, in depth
 # order: full (TRUE / FALSE / NA), the provisional layers, the attributes that
 # would decide it.
-.cst_layer_feature <- function(x, feature) {
+.cst_layer_feature <- function(x, feature, grade = c("full", "at_least_evidence")) {
+  grade <- match.arg(grade)
   r <- if (feature %in% .cst_horizon_table()$id) .cst_hz(x, feature) else .cst_ch(x, feature)
-  list(full = r$full, prov = r$prov %||% rep(FALSE, x$n), missing = r$missing %||% character(0),
+  # v0.9.374: at least the evidence grade where the key asks for an evidence
+  # (Q19), the full grade passing too
+  list(full = if (grade == "full") r$full else r$evid %||% r$full, prov = r$prov %||% rep(FALSE, x$n), missing = r$missing %||% character(0),
        flags = r$flags %||% character(0))
 }
 
@@ -319,12 +322,13 @@ isohumosol_base_saturation_cst <- function(pedon) {
 #' provisional.
 #' @noRd
 layer_run_cst <- function(pedon, feature, min_cm, from_cm = 0, to_cm, total = FALSE,
-                          datum = c("mineral", "surface")) {
+                          datum = c("mineral", "surface"), grade = c("full", "at_least_evidence")) {
   datum <- match.arg(datum)
+  grade <- match.arg(grade)
   nm <- "layer_run_cst"
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_key_result(nm, FALSE))
-  f <- .cst_layer_feature(x, feature)
+  f <- .cst_layer_feature(x, feature, grade)
   s <- if (datum == "mineral") x$msurf else x$surf
   if (is.na(s)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct")))
   a <- s + from_cm; b <- s + to_cm
@@ -607,6 +611,23 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
   any(vapply(kids, .cst_trace_provisional, NA))
 }
 
+# The flags of the key criteria that passed below a trace entry (v0.9.374:
+# the stand-ins of the group keys).
+.cst_trace_flags <- function(node) {
+  if (is.null(node) || !is.list(node)) return(character(0))
+  if (!is.null(node$passed) && !isTRUE(node$passed)) return(character(0))
+  ev <- node$evidence
+  out <- if (is.list(ev) && is.character(ev$flags)) ev$flags else character(0)
+  kids <- if (is.list(ev) && is.null(names(ev))) ev else if (is.list(ev)) ev[vapply(ev, is.list, NA)] else list()
+  unique(c(out, unlist(lapply(kids, .cst_trace_flags))))
+}
+
+# The stand-ins of the group keys that the result names in a warning
+# (Hugo, 2026-11-07), with their wording.
+.CST_KEY_STAND_INS <- c(
+  "stand_in:drainage_class" = "a drainage class of well drained or better for the days of saturation",
+  "stand_in:crust_thickness" = "the thickness of the surface crust for the depth of the cracks")
+
 # The horizon panel (.cst_identify()) as trace entries, one per layer: the
 # designation and depths as the code, the reading as the name.
 .cst_panel_trace <- function(pedon) {
@@ -757,6 +778,15 @@ classify_cst2001 <- function(pedon, rules = NULL,
         "Provisional: %s %s rests on a reading the book leaves open (see the trace):",
         "a ferrous-iron test, a measurement or a duration would confirm it."), lv$code[i], lv$name[i]))
     }
+  }
+  # a class assigned on a stand-in of a group key (Hugo, 2026-11-07)
+  for (i in seq_len(nrow(lv))) {
+    tr <- res$trace[[lv$level[i]]][[lv$code[i]]]
+    if (is.null(tr) || !isTRUE(tr$passed)) next
+    si <- intersect(names(.CST_KEY_STAND_INS), .cst_trace_flags(list(evidence = tr$evidence)))
+    if (length(si))
+      notes <- c(notes, sprintf("Stand-in: %s %s rests on %s (flagged in the trace).", lv$code[i], lv$name[i],
+                                paste(.CST_KEY_STAND_INS[si], collapse = " and ")))
   }
   # the class the key would reach if that reading failed (Hugo, 2026-11-06):
   # the key run again with the gate of the first such class set to FALSE,

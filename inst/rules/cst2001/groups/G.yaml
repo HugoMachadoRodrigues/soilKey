@@ -18,7 +18,7 @@ groups:
       page: 101
       tests:
         all_of:
-          - calcic_horizon_cst: {top_max: 100, datum: surface}
+          - calcic_only_cst: {top_max: 100, datum: surface}
       notes: "A calcic horizon with its upper boundary within 100 cm of the soil surface."
     - code: "G1.2"
       name: "Gypsi-Cryic Aridosols"

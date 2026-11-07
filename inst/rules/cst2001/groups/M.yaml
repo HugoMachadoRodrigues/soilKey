@@ -158,7 +158,7 @@ groups:
           - moisture_regime_cst: {regimes: [stagnic]}
           - any_of:
               - layer_run_cst: {feature: redoxic_features, min_cm: 10, to_cm: 50}
-              - layer_run_cst: {feature: gleyic_features, min_cm: 10, to_cm: 50}
+              - layer_run_cst: {feature: gleyic_features, min_cm: 10, to_cm: 50, grade: at_least_evidence}
       notes: "A stagnic soil moisture regime, and redoxic features or gleyic evidence (gleyic features too, Q19) in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
     - code: "M4.3"
       name: "Carbonati-Perudic Cambosols"

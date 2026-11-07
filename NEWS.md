@@ -6,6 +6,8 @@ Fifth part of the Chinese Soil Taxonomy (2001, English edition; system id `cst20
 
 `make_cst2001_example()` takes a group code as well and gives one profile per group (140, the two bracketed residuals included), each keying to its own group, not provisionally; the 39 suborder examples still key to their suborder, now with a group (a few were given the measurements their group asks for, so that it is decided). The readings of this part, soilKey's own for Hugo's word, are in `inst/rules/cst2001/readings.yaml`. Every other classification is unchanged (the fixtures of the other systems byte-identical).
 
+Decided by Hugo on the review (2026-11-07): soilKey's readings of this part accepted as proposed (J3.1 and M4.2 included). B1.2 reads the grey colour alone (moist chroma 2 or less, as printed), with no test of the iron. The Foli- groups take a well-drained record for the days of saturation only as a stand-in, flagged in the trace and named in a warning. Where a group names the calcic horizon alone (F1.1, F3.2, G1.1, J2.4, L2.2) a hypercalcic horizon does not count. H1.1 reads the depth of the polygonal cracks (`cracks_depth_cm`, 1-4 cm) first, the crust thickness standing in, flagged. Fixed on the review: the depth below the base of the description is undecided in the colour shares of the Ferralosols and the coral share of M5.2, and a share that passes only on the part described passes provisionally, with the alternative; the thickness of the mollic epipedon (J2.3) is undecided while a layer below it may still belong to it; `layer_run_cst()` takes `grade = "at_least_evidence"`, so gleyic evidence counts in M4.2.
+
 # soilKey 0.9.373 (2026-11-06)
 
 ## China CST 2001: the registry, the orders and the suborders

@@ -199,12 +199,10 @@ test_that("the criteria of the group keys read their edges", {
   # a mollic epipedon 50 cm thick
   expect_true(soilKey:::epipedon_thick_cst(make_cst2001_example("J2.3"))$passed)
   expect_false(soilKey:::epipedon_thick_cst(make_cst2001_example("J2.4"))$passed)
-  # the takyric surface: a crust of 1-4 cm with cracks 1 cm wide
+  # the takyric surface: cracks 1 cm wide through 1-4 cm
   p <- make_cst2001_example("H1.1")
   expect_true(soilKey:::takyric_surface_cst(p)$passed)
-  p$site$surface_crust_thickness_cm <- 5
-  expect_false(soilKey:::takyric_surface_cst(p)$passed)
-  p$site$surface_crust_thickness_cm <- NULL
+  p$horizons$cracks_depth_cm[1] <- 5
   expect_false(soilKey:::takyric_surface_cst(p)$passed)
   # shajiang, with hard carbonate concretions standing in, flagged
   p <- make_cst2001_example("M2")
@@ -243,4 +241,126 @@ test_that("the readings of this part are listed", {
   rd <- yaml::read_yaml(system.file("rules", "cst2001", "readings.yaml", package = "soilKey"))$readings
   topics <- vapply(rd, `[[`, "", "topic")
   expect_true(sum(grepl("^Groups:", topics)) >= 8L)
+})
+
+# ---- the review of 2026-11-07 ----------------------------------------------------------------------
+
+.mk374 <- function(code, f) {
+  p <- make_cst2001_example(code); h <- as.data.frame(p$horizons); r <- f(h, p$site)
+  PedonRecord$new(site = r$s, horizons = ensure_horizon_schema(data.table::as.data.table(r$h)))
+}
+
+test_that("D1: the depth below the description is undecided in the colour and coral shares", {
+  skip_on_cran()
+  # a red Ferralosol described to 50 cm: E1.1 on the part described, provisionally,
+  # with the alternative
+  p <- .mk374("E1", function(h, s) { h <- h[1:2, ]; h$bottom_cm[2] <- 50; list(h = h, s = s) })
+  cs <- soilKey:::colour_share_cst(p, "rhodic")
+  expect_true(cs$passed)
+  expect_true("window_cut_at_description_base" %in% cs$evidence$flags)
+  expect_true(cs$evidence$provisional)
+  r <- .c374(p)
+  expect_identical(r$levels$code[3], "E1.1")
+  expect_true(any(grepl("^Provisional: E1.1 Rhodi-Udic Ferralosols rests on a reading", r$warnings)))
+  expect_identical(r$candidates$instead_of, "E1.1")
+  # yellow in the 50 cm described, the border recorded FALSE: E1.1 undecided
+  p <- .mk374("E1", function(h, s) { h <- h[1:2, ]; h$bottom_cm[2] <- 50; h$munsell_hue_moist <- "7.5YR"
+    s$udic_perudic_border <- FALSE; list(h = h, s = s) })
+  expect_true(is.na(soilKey:::colour_share_cst(p, "rhodic")$passed))
+  r <- .c374(p)
+  expect_identical(r$levels$code[3], "E1.3")
+  expect_true("groups:E1.1" %in% r$provisional_because)
+  # described to 125 cm: decided, no flag
+  cs <- soilKey:::colour_share_cst(make_cst2001_example("E1"), "rhodic")
+  expect_true(cs$passed); expect_false("window_cut_at_description_base" %in% cs$evidence$flags)
+  # coral sands in every layer of a profile described to 60 cm: more than half of 0-100 for sure;
+  # described to 45 cm: on the part described only, provisionally
+  coral <- function(bot) .mk374("J1", function(h, s) { h <- h[1:2, ]; h$caco3_pct <- 60; h$sand_pct <- 85
+    h$silt_pct <- 10; h$clay_pct <- 5; h$top_cm <- c(0, 30); h$bottom_cm <- c(30, bot); list(h = h, s = s) })
+  r <- soilKey:::lc_carbonate_share_cst(coral(60))
+  expect_true(r$passed); expect_false("window_cut_at_description_base" %in% r$evidence$flags)
+  r <- soilKey:::lc_carbonate_share_cst(coral(45))
+  expect_true(r$passed); expect_true("window_cut_at_description_base" %in% r$evidence$flags)
+  expect_true(r$evidence$provisional)
+})
+
+test_that("D2: a possible continuation of the mollic epipedon leaves the Pachi- group undecided", {
+  skip_on_cran()
+  p <- .mk374("J2.3", function(h, s) { h$munsell_value_moist[2] <- NA; list(h = h, s = s) })
+  expect_true(is.na(soilKey:::epipedon_thick_cst(p)$passed))
+  r <- .c374(p)
+  expect_identical(r$levels$code[3], "J2.4")
+  expect_true("groups:J2.3" %in% r$provisional_because)
+  expect_true(soilKey:::epipedon_thick_cst(make_cst2001_example("J2.3"))$passed)
+  expect_false(soilKey:::epipedon_thick_cst(make_cst2001_example("J2.4"))$passed)
+})
+
+test_that("D3: gleyic evidence counts in the Stagni-Perudic Cambosols", {
+  skip_on_cran()
+  p <- .mk374("M4.6", function(h, s) { h$munsell_hue_moist <- c("10YR", "5GY", "10YR"); h$munsell_chroma_moist <- c(3, 3, 4)
+    h$eh_mv <- c(NA, 348, NA); s$soil_moisture_regime <- "stagnic"; s$climatic_moisture_regime <- "perudic"
+    s$drainage_class <- "imperfectly drained"; list(h = h, s = s) })
+  expect_false(soilKey:::layer_run_cst(p, "gleyic_features", min_cm = 10, to_cm = 50)$passed)
+  expect_true(soilKey:::layer_run_cst(p, "gleyic_features", min_cm = 10, to_cm = 50, grade = "at_least_evidence")$passed)
+  r <- .c374(p)
+  expect_identical(r$levels$code[3], "M4.2")
+  expect_false(.prov374(r))
+})
+
+test_that("D4 and the decisions of 2026-11-07 are in the readings", {
+  skip_on_cran()
+  rd <- yaml::read_yaml(system.file("rules", "cst2001", "readings.yaml", package = "soilKey"))$readings
+  tp <- vapply(rd, `[[`, "", "topic"); tx <- vapply(rd, `[[`, "", "reading")
+  g <- tx[grepl("^Groups:", tp)]
+  expect_false(any(grepl("for Hugo to confirm", g)))
+  b12 <- g[grepl("^B1.2", g)]
+  expect_match(b12, "chroma 2 or less, as the print reads", fixed = TRUE)
+  expect_false(grepl("less than 2", b12, fixed = TRUE))
+  expect_true(any(grepl("a hypercalcic horizon does not count", g, fixed = TRUE)))
+  expect_true(any(grepl("read on cracks_depth_cm first", g, fixed = TRUE)))
+})
+
+test_that("decisions: the drainage class and the crust thickness are flagged stand-ins", {
+  skip_on_cran()
+  # Foli-: no days recorded, a well-drained record passes, flagged and named
+  p <- make_cst2001_example("A2.1"); p$horizons$water_saturation_days <- NA_real_
+  p$site$drainage_class <- "well drained"
+  f <- soilKey:::foli_histosol_cst(p)
+  expect_true(f$passed); expect_true("stand_in:drainage_class" %in% f$evidence$flags)
+  r <- .c374(p)
+  expect_identical(r$levels$code[3], "A2.1")
+  expect_true(any(grepl("^Stand-in: A2.1 Foli-Orthic Histosols rests on a drainage class", r$warnings)))
+  # the days recorded: no stand-in
+  expect_false(any(grepl("^Stand-in", .c374(make_cst2001_example("A2.1"))$warnings)))
+  # Takyri-: the crack depth recorded decides; not recorded, the crust stands in, flagged
+  p <- make_cst2001_example("H1.1")
+  expect_false(any(grepl("^Stand-in", .c374(p)$warnings)))
+  p$horizons$cracks_depth_cm <- NA_real_
+  tk <- soilKey:::takyric_surface_cst(p)
+  expect_true(tk$passed); expect_true("stand_in:crust_thickness" %in% tk$evidence$flags)
+  r <- .c374(p)
+  expect_identical(r$levels$code[3], "H1.1")
+  expect_true(any(grepl("^Stand-in: H1.1 Takyri-Alkalic Halosols rests on the thickness of the surface crust", r$warnings)))
+  p$site$surface_crust_thickness_cm <- 6
+  expect_false(soilKey:::takyric_surface_cst(p)$passed)
+  p$site$surface_crust_thickness_cm <- NULL
+  expect_false(soilKey:::takyric_surface_cst(p)$passed)
+})
+
+test_that("decisions: the calcic horizon alone does not take a hypercalcic horizon", {
+  skip_on_cran()
+  p <- make_cst2001_example("G1")
+  expect_true(soilKey:::calcic_only_cst(p, top_max = 100)$passed)
+  p$horizons$caco3_pct[3] <- 50; p$horizons$secondary_carbonates_pct[3] <- 55
+  expect_true(soilKey:::hypercalcic_horizon_cst(p)$passed)
+  expect_false(soilKey:::calcic_only_cst(p, top_max = 100)$passed)
+  expect_false(soilKey:::horizon_top_between_cst(p, "calcic_horizon", 0, 125)$passed)
+  k <- load_rules("cst2001")
+  ids <- function(code) { e <- Find(function(z) z$code == code, unlist(k$groups, recursive = FALSE))
+    unlist(lapply(e$tests[[1]], names)) }
+  for (cd in c("F1.1", "F3.2", "G1.1", "J2.4")) {
+    expect_true("calcic_only_cst" %in% ids(cd), info = cd)
+    expect_false("calcic_horizon_cst" %in% ids(cd), info = cd)
+  }
+  for (cd in c("F2.1", "G2.1")) expect_true("hypercalcic_horizon_cst" %in% ids(cd), info = cd)
 })
