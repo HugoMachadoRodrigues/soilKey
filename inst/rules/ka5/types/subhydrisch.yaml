@@ -1,0 +1,69 @@
+# The types of the subhydric and semisubhydric soils (Tab. 51, p. 284; pp.
+# 255-257). The Gyttja's rH 13 or more is the type text's (Q6); the key's
+# order separates the Sapropel (under 13) and the Dy (under 19).
+types:
+  "J":
+    - code: "JP"
+      name: "Protopedon"
+      name_en: "Protopedon"
+      name_pt: "Protopédon"
+      page: "pp. 256, 284"
+      formula: "Fi/..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Fi"], max_cm: 1}
+      notes: "An Fi horizon at the GOF."
+    - code: "JG"
+      name: "Gyttja"
+      name_en: "Gyttja"
+      name_pt: "Gyttja"
+      page: "pp. 256, 284"
+      formula: "Fo/..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Fo"], max_cm: 1}
+          - value_of_horizon_ka5: {codes: ["Fo"], attr: "rh_value", min: 13}
+      notes: "An Fo horizon, olive from Fe(II/III) oxides, rH 13 or more."
+    - code: "JS"
+      name: "Sapropel"
+      name_en: "Sapropel"
+      name_pt: "Sapropel"
+      page: "pp. 257, 284"
+      formula: "Fr/..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Fr"], max_cm: 1}
+          - value_of_horizon_ka5: {codes: ["Fr"], attr: "rh_value", max: 13}
+      notes: "An Fr horizon, black from sulfides, rH under 13."
+    - code: "JD"
+      name: "Dy"
+      name_en: "Dy"
+      name_pt: "Dy"
+      page: "pp. 257, 284"
+      formula: "Fh/..."
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Fh"], max_cm: 1}
+          - value_of_horizon_ka5: {codes: ["Fh"], attr: "rh_value", max: 19}
+      notes: "An Fh horizon, rH under 19."
+  "I":
+    - code: "IA"
+      name: "Nassstrand"
+      name_en: "Wet beach"
+      name_pt: "Praia úmida"
+      page: "pp. 255, 284"
+      formula: "tmz(e)Fw/tmz(e)Fr"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Fw"], max_cm: 1}
+      notes: "An Fw horizon."
+    - code: "IW"
+      name: "Watt"
+      name_en: "Tidal flat"
+      name_pt: "Planície de maré (Watt)"
+      page: "pp. 255, 284"
+      formula: "(z)(e)Fo/(z)(e)Fr"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Fo"], max_cm: 1}
+      notes: "An Fo horizon."

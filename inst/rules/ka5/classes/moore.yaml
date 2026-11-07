@@ -1,0 +1,20 @@
+# The classes of the Moore (Tab. 51, p. 284).
+classes:
+  "[moore]":
+    - code: "K"
+      name: "Erd- und Mulmmoore"
+      name_en: "Earthified and mulmified peat soils"
+      name_pt: "Turfas terrificadas e pulverulentas"
+      page: "pp. 260, 284"
+      tests:
+        all_of:
+          - earthified_moor_ka5: {min_cm: 10}
+      notes: "An earthified or mulmified H horizon (Hv, Hm, Hvm, tilled or with carbonate) in the topsoil, 1 dm thick or more."
+    - code: "H"
+      name: "Naturnahe Moore"
+      name_en: "Near-natural peat soils"
+      name_pt: "Turfas quase naturais"
+      page: "pp. 258, 284"
+      tests:
+        default: true
+      notes: "The earthified or mulmified topsoil under 1 dm or absent."

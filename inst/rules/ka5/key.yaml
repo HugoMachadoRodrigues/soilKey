@@ -1,0 +1,54 @@
+# The key of the German KA5 (Bodenkundliche Kartieranleitung, 5th ed., Ad-hoc-AG
+# Boden 2005), Tab. 51 (pp. 283-288): the divisions (Abteilungen), the classes
+# (Klassen, classes/<division>.yaml) and the types (Typen, types/<class>.yaml),
+# each a first-match list read by classify_hierarchical() on the horizons of
+# identify_horizons(pedon, "ka5"): the KA5 notation where the profile is written
+# in it, else soilKey's order of tests on the data (v0.9.361). The order is Tab.
+# 51's (Hugo's decision Q5): the Moore, the subhydric soils, the semiterrestrial
+# soils (Ue, M, G, A), the terrestrial soils (F, O, T, R, X, Y, S, P, L, B, C,
+# D, V); the gates take the numbers of the type texts where they differ from
+# the compressed key (Q6) and two rules of the figures (Q5). The source prints
+# no codes for the divisions: soilKey's slugs are in brackets. Names as printed
+# (German), with soilKey's English and Portuguese glosses; the criteria are
+# paraphrased. The predicates are in R/diagnostics-ka5.R.
+
+divisions:
+
+  - code: "[moore]"
+    name: "Moore"
+    name_en: "Peat soils"
+    name_pt: "Solos turfosos (Moore)"
+    page: "p. 284"
+    tests:
+      all_of:
+        - moor_ka5: {min_cm: 30, cover_max_cm: 40}
+    notes: "H horizons 3 dm thick or more at the GOF or under a mineral cover of less than 4 dm (Hugo's decision Q7: a cover under 2 dm is substrate, 2 to < 4 dm an overlay of the Moor)."
+
+  - code: "[subhydrisch]"
+    name: "Semisubhydrische und subhydrische Böden"
+    name_en: "Semi-subaqueous and subaqueous soils"
+    name_pt: "Solos semissubaquáticos e subaquáticos"
+    page: "p. 284"
+    tests:
+      all_of:
+        - subhydric_ka5: {}
+    notes: "At the bottom of waters, or in the tidal zone flooded daily, with a solum of F horizons."
+
+  - code: "[semiterrestrisch]"
+    name: "Semiterrestrische Böden"
+    name_en: "Semi-terrestrial soils"
+    name_pt: "Solos semiterrestres"
+    page: "p. 285"
+    tests:
+      all_of:
+        - semiterrestrial_ka5: {max_cm: 40}
+    notes: "A G horizon (by its last symbol, Q8) with its top under 4 dm below the GOF; or tidal horizons (tm, tb, tp); or the aX horizons of a floodplain with no B, P, T, E or R horizon, an S only under an aM (Q5)."
+
+  - code: "[terrestrisch]"
+    name: "Terrestrische Böden"
+    name_en: "Terrestrial soils"
+    name_pt: "Solos terrestres"
+    page: "p. 286"
+    tests:
+      default: true
+    notes: "No G horizon with its top under 4 dm; S and Y horizons possible. A profile with no horizon differentiation keys to no class (help needed, or a substrate)."

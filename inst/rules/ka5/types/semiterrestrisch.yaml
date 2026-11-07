@@ -1,0 +1,189 @@
+# The types of the semiterrestrial soils (Tab. 51, pp. 285-286; pp. 237-255).
+# The Marschen read the decalcification depth (Entkalkungstiefe) as the top of
+# the first carbonatic row (prefix e or c, or 2 % carbonate or more); the
+# Organomarsch takes the type text's humus 8 % and clay 45 % (Q6); the
+# Rohmarsch needs no record of flooding, a record against it moves it (Q20).
+# The Nassgley is read by its Gr under 4 dm (Q6, slip 7).
+types:
+  "Ü":
+    - code: "ÜA"
+      name: "Strand"
+      name_en: "Beach"
+      name_pt: "Praia"
+      page: "pp. 254, 285"
+      formula: "(z)(e)Ai/((z)(e)lC/)zeG"
+      tests:
+        none_of:
+          - horizon_within_ka5: {masters: ["G"], max_cm: 20}
+      notes: "Mostly no G horizon under 2 dm."
+  "M":
+    - code: "MR"
+      name: "Rohmarsch"
+      name_en: "Raw marsh"
+      name_pt: "Marisma bruta"
+      page: "pp. 249, 285"
+      formula: "(z)(e)Go-Ah/((z)(e)Go/)(z)(e)Gr"
+      tests:
+        all_of:
+          - rohmarsch_ka5: {}
+      notes: "Go features reaching into the Ah (Go-Ah); not behind a dyke (Q20)."
+    - code: "MC"
+      name: "Kalkmarsch"
+      name_en: "Calcareous marsh"
+      name_pt: "Marisma calcária"
+      page: "pp. 250, 285"
+      formula: "(e)Ah/eGo/(z)eGr"
+      tests:
+        all_of:
+          - carbonate_below_ah_ka5: {}
+      notes: "Carbonatic at least below the Ah."
+    - code: "MO"
+      name: "Organomarsch"
+      name_en: "Organic marsh"
+      name_pt: "Marisma orgânica"
+      page: "pp. 253, 285"
+      formula: "oAh/oGo/oGr"
+      tests:
+        all_of:
+          - decalcified_ka5: {min_cm: 70}
+          - organomarsch_ka5: {}
+      notes: "Decalcified 7 dm or more, humus 8 % or more and clay 45 % or more (the type text, Q6)."
+    - code: "MK"
+      name: "Knickmarsch"
+      name_en: "Knick marsh"
+      name_pt: "Marisma com Knick"
+      page: "pp. 251, 285"
+      formula: "Ah/Sw/Sq/Gr"
+      tests:
+        all_of:
+          - decalcified_ka5: {min_cm: 70}
+          - horizon_within_ka5: {codes: ["Sq"], max_cm: 40}
+          - thickness_ka5: {codes: ["Sq"], min_cm: 20}
+      notes: "Decalcified 7 dm or more, a Knick horizon 2 dm thick or more beginning under 4 dm."
+    - code: "MD"
+      name: "Dwogmarsch"
+      name_en: "Dwog marsh"
+      name_pt: "Marisma com Dwog"
+      page: "pp. 252, 285"
+      formula: "Ah/Go-Sw/IIfAh°Sd/fGo°Sd/Go/Gr"
+      tests:
+        all_of:
+          - decalcified_ka5: {min_cm: 70}
+          - dwog_ka5: {max_cm: 40}
+      notes: "Decalcified 7 dm or more, a buried humus or iron horizon (Dwog) of a layer II under 4 dm (slip 31)."
+    - code: "MH"
+      name: "Haftnässemarsch"
+      name_en: "Adhesive-water marsh"
+      name_pt: "Marisma de umidade aderente"
+      page: "pp. 252, 285"
+      formula: "Ah/(e)Sg-Go/(z)(e)Gr"
+      tests:
+        all_of:
+          - decalcified_ka5: {min_cm: 40}
+          - any_of:
+              - horizon_within_ka5: {codes: ["Sg", "Sdg"]}
+              - horizon_within_ka5: {with: ["Sg"]}
+      notes: "Decalcified 4 dm or more, with the features of adhesive water (Sg)."
+    - code: "MN"
+      name: "Kleimarsch"
+      name_en: "Clay marsh"
+      name_pt: "Marisma argilosa"
+      page: "pp. 251, 285"
+      formula: "Ah/Go/(z)(e)Gr"
+      tests:
+        all_of:
+          - decalcified_ka5: {min_cm: 40}
+      notes: "Decalcified 4 dm or more."
+  "G":
+    - code: "GH"
+      name: "Moorgley"
+      name_en: "Peaty gley"
+      name_pt: "Gleissolo turfoso"
+      page: "pp. 248, 285"
+      formula: "H/IIGr"
+      tests:
+        all_of:
+          - thickness_ka5: {masters: ["H"], min_cm: 10, max_cm: 30}
+      notes: "An H horizon 1 to < 3 dm thick."
+    - code: "GM"
+      name: "Anmoorgley"
+      name_en: "Humic gley (anmoorig)"
+      name_pt: "Gleissolo anmoor"
+      page: "pp. 247, 285"
+      formula: "Go-Aa,Aa-Go/Gr"
+      tests:
+        all_of:
+          - thickness_ka5: {codes: ["Aa"], with: ["Aa"], min_cm: 10}
+          - horizon_within_ka5: {codes: ["Gr", "Ghr", "Gcr", "Gzr"], max_cm: 40}
+      notes: "An Aa horizon (Go-Aa, Aa-Go) 1 dm thick or more and a Gr beginning under 4 dm."
+    - code: "GN"
+      name: "Nassgley"
+      name_en: "Wet gley"
+      name_pt: "Gleissolo úmido"
+      page: "pp. 246, 286"
+      formula: "Go-Ah,Ah-Go/Gr"
+      tests:
+        all_of:
+          - horizon_within_ka5: {codes: ["Gr", "Ghr", "Gcr", "Gzr"], max_cm: 40}
+      notes: "A Gr beginning under 4 dm (the type text, Q6; the key's Ah under 4 dm picks the Humusnassgley subtype, slip 7)."
+    - code: "GG"
+      name: "Gley"
+      name_en: "Gley"
+      name_pt: "Gleissolo"
+      page: "pp. 242, 286"
+      formula: "Ah/Go/Gr"
+      tests:
+        default: true
+      notes: "The other Gleye."
+  "A":
+    - code: "AO"
+      name: "Rambla"
+      name_en: "Rambla (raw floodplain soil)"
+      name_pt: "Rambla"
+      page: "pp. 238, 286"
+      formula: "aAi/alC/aG"
+      tests:
+        all_of:
+          - topsoil_over_c_ka5: {a_codes: ["Ai"]}
+      notes: "An Ai over a C (Ai/C/G)."
+    - code: "AT"
+      name: "Tschernitza"
+      name_en: "Tschernitza"
+      name_pt: "Tschernitza"
+      page: "pp. 240, 286"
+      formula: "aAxh/(aM,alC/)aG"
+      tests:
+        all_of:
+          - top_thickness_ka5: {pattern: "^Ac?x(h|p)$", min_cm: 40, start_max_cm: 40}
+      notes: "An Axh 4 dm thick or more (the type text, Q6)."
+    - code: "AQ"
+      name: "Paternia"
+      name_en: "Paternia"
+      name_pt: "Paternia"
+      page: "pp. 239, 286"
+      formula: "aAh/ailC/aG"
+      tests:
+        all_of:
+          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["i"]}
+      notes: "An Ah over a C under 2 % carbonate (Ah/ilC/G)."
+    - code: "AZ"
+      name: "Kalkpaternia"
+      name_en: "Calcareous paternia"
+      name_pt: "Paternia calcária"
+      page: "pp. 239, 286"
+      formula: "a(e)Ah/aelC/aG"
+      tests:
+        all_of:
+          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["e"]}
+      notes: "An Ah over a C with 2 % carbonate or more (Ah/elC/G; 2 % itself here, slip 9)."
+    - code: "AB"
+      name: "Vega"
+      name_en: "Vega (brown floodplain soil)"
+      name_pt: "Vega"
+      page: "pp. 240, 286"
+      formula: "aAh/aM/(IIalC/)(II)aG"
+      tests:
+        none_of:
+          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["i"]}
+          - topsoil_over_c_ka5: {a_codes: ["Ah", "Ap"], rock: ["e"]}
+      notes: "The other Auenboeden (aAh/aM); not reached while the Paternia or Kalkpaternia is undecided (D3)."

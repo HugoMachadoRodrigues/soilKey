@@ -1,0 +1,21 @@
+# The classes of the semisubhydric and subhydric soils (Tab. 51, p. 284).
+classes:
+  "[subhydrisch]":
+    - code: "J"
+      name: "Subhydrische Böden"
+      name_en: "Subaqueous soils"
+      name_pt: "Solos subaquáticos"
+      page: "pp. 256, 284"
+      tests:
+        all_of:
+          - subhydric_ka5: {kind: "inland"}
+      notes: "At the bottom of inland waters, permeated by water all year."
+    - code: "I"
+      name: "Semisubhydrische Böden"
+      name_en: "Semi-subaqueous soils"
+      name_pt: "Solos semissubaquáticos"
+      page: "pp. 255, 284"
+      tests:
+        all_of:
+          - subhydric_ka5: {kind: "tidal"}
+      notes: "In the tidal zone between mean low and mean high water, from sea, brackish and river sediments."

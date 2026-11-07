@@ -221,6 +221,16 @@ reference:
       - classify_za1991
       - make_za1991_example
 
+  - title: "German soil systematics, KA5 2005 (experimental)"
+    desc: >
+      The German soil systematics of the Bodenkundliche Kartieranleitung
+      (KA5, 2005), named in German as printed: divisions, classes and the 56
+      soil types of Tab. 51, read on the KA5 horizon notation or on the
+      horizons identified from the data. Subtypes and varieties come later.
+    contents:
+      - classify_ka5
+      - make_ka5_example
+
   - title: "Interoperability"
     desc: >
       Conversion to / from the canonical R soil-data ecosystem:

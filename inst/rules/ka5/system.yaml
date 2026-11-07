@@ -1,0 +1,30 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+id: ka5
+order: 13
+aliases: [germany, kartieranleitung, bodensystematik]
+legacy: false
+default: false
+status: experimental
+namespace: ka5
+classifier: classify_ka5
+result_slot: ka5
+top_level: divisions
+levels: [divisions, classes, types]
+display:
+  en: "German soil classification (Bodenkundliche Kartieranleitung, KA5, 2005)"
+  pt: "Classificação alemã de solos (Bodenkundliche Kartieranleitung, KA5, 2005)"
+  native: "Deutsche Bodensystematik (KA5, 2005)"
+  result: "KA5"
+edition: "Bodenkundliche Kartieranleitung, 5. Auflage, Ad-hoc-AG Boden, Hannover 2005"
+citation: >
+  Ad-hoc-AG Boden (2005). Bodenkundliche Kartieranleitung. 5. Auflage.
+  Bundesanstalt für Geowissenschaften und Rohstoffe und Staatliche
+  Geologische Dienste, Hannover. 438 pp.
+version: "KA5, 2005 (the Bodensystematik of section 5.7.1, continuing the DBG systematics of 1998)"
+implementation_status: "soilKey v0.9.362 -- the key of Tab. 51 to the type: the 4 divisions, 21 classes and 56 types, read on the horizons of the KA5 notation (v0.9.360) or of soilKey's order of tests on the data (v0.9.361); the 223 subtypes, the overlays and the varieties are not keyed yet"
+source: |
+  The horizon symbols and definitions (5.6.3, pp. 81-108), the system (5.7.1,
+  pp. 190-282), the key Tab. 51 (pp. 283-288). The key stops at the type; the
+  subtypes follow the type texts. Tab. 51 is read with the numbers of the
+  type texts and two rules of the figures Abb. 22 and 23 (Hugo's decisions
+  Q5, Q6, 2026-11-04; see readings.yaml).

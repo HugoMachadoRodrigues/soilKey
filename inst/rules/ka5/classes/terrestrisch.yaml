@@ -1,0 +1,124 @@
+# The classes of the terrestrial soils (Tab. 51, pp. 286-288), in the order of
+# the key: F, O, T, R, X, Y, S, P, L, B, C, D, V. Nothing passing: no horizon
+# differentiation recognisable (help needed, or a substrate).
+classes:
+  "[terrestrisch]":
+    - code: "F"
+      name: "O/C-Böden"
+      name_en: "Organic soils over rock"
+      name_pt: "Solos O/C"
+      page: "pp. 202, 286"
+      tests:
+        all_of:
+          - oc_soil_ka5: {}
+      notes: "Only O horizons and solid rock or coarse skeleton."
+    - code: "O"
+      name: "Terrestrische Rohböden"
+      name_en: "Terrestrial raw soils"
+      name_pt: "Solos brutos terrestres"
+      page: "pp. 203, 287"
+      tests:
+        all_of:
+          - raw_soil_ka5: {max_cm: 30}
+      notes: "Only an Ai horizon under 3 dm and solid or loose rock (an Aih goes to the Ah/C-Boeden, Q18)."
+    - code: "T"
+      name: "Schwarzerden"
+      name_en: "Black earths"
+      name_pt: "Terras negras"
+      page: "pp. 211, 286"
+      tests:
+        all_of:
+          - chernozem_ka5: {min_cm: 40}
+      notes: "An Axh with its top under 4 dm, the Axh 4 dm thick or more (the type text, Q6), black-grey (moist chroma under 3.5, value 4 or less, where recorded); B, S and G possible deeper than 4 dm."
+    - code: "R"
+      name: "Ah/C-Böden"
+      name_en: "Ah/C soils"
+      name_pt: "Solos Ah/C"
+      page: "pp. 204, 287"
+      tests:
+        all_of:
+          - ah_c_soil_ka5: {max_cm: 40}
+      notes: "Only A horizons (Ah, Ahe, Ae, Aih; Q18) under 4 dm over rock, with Bv-Ah, B-C and B+C transitions; S and G only from 4 dm. A fully developed Ah of 4 dm or more that is no Axh is undecided (Q17)."
+    - code: "X"
+      name: "Reduktosole"
+      name_en: "Reductosols"
+      name_pt: "Redutossolos"
+      page: "pp. 232, 287"
+      tests:
+        all_of:
+          - reductosol_ka5: {max_cm: 40}
+      notes: "A redoximorphic Y horizon with its top under 4 dm, the gas not of natural wetness (Q20)."
+    - code: "Y"
+      name: "Terrestrische anthropogene Böden"
+      name_en: "Terrestrial anthropogenic soils"
+      name_pt: "Solos antrópicos terrestres"
+      page: "pp. 233, 287"
+      tests:
+        all_of:
+          - anthropic_soil_ka5: {max_cm: 40}
+      notes: "M, E or R horizons with their top under 4 dm reaching deeper; S and G only from 4 dm; with a podzol sequence of 1.5 dm or more, the Podsole."
+    - code: "S"
+      name: "Stauwasserböden"
+      name_en: "Stagnic soils"
+      name_pt: "Solos de água suspensa"
+      page: "pp. 226, 288"
+      tests:
+        all_of:
+          - horizon_within_ka5: {masters: ["S"], max_cm: 40}
+      notes: "S horizons with their top under 4 dm (the type texts, Q6; Tab. 51 writes 'within 4 dm')."
+    - code: "P"
+      name: "Podsole"
+      name_en: "Podzols"
+      name_pt: "Podzóis"
+      page: "pp. 221, 287"
+      tests:
+        all_of:
+          - podzol_ka5: {min_cm: 15}
+      notes: "An Ae over a Bh or Bs, reaching 1.5 dm when a B, M or E horizon follows."
+    - code: "L"
+      name: "Lessivés"
+      name_en: "Lessivés (clay-illuvial soils)"
+      name_pt: "Solos lessivés"
+      page: "pp. 217, 288"
+      tests:
+        all_of:
+          - horizon_within_ka5: {pattern: "^B[bvh]?t$", max_cm: 80}
+          - b_over_relict_ka5: {pattern: "^B[bvh]?t$", min_cm: 15}
+      notes: "A Bt or Bbt with its top under 8 dm; over a T, P, Bu or Bj it reaches 1.5 dm (Abb. 22, Q5)."
+    - code: "B"
+      name: "Braunerden"
+      name_en: "Brown earths"
+      name_pt: "Terras pardas"
+      page: "pp. 215, 288"
+      tests:
+        all_of:
+          - horizon_within_ka5: {pattern: "^B[a-z]*v$", max_cm: 40}
+          - b_over_relict_ka5: {pattern: "^B[a-z]*v$", min_cm: 15}
+      notes: "A Bv with its top under 4 dm; over a T, P, Bu or Bj it reaches 1.5 dm (Abb. 22, Q5)."
+    - code: "C"
+      name: "Terrae calcis"
+      name_en: "Terrae calcis"
+      name_pt: "Terrae calcis"
+      page: "pp. 224, 288"
+      tests:
+        all_of:
+          - terra_ka5: {max_cm: 30}
+      notes: "A T horizon with its top under 3 dm over limestone."
+    - code: "D"
+      name: "Pelosole"
+      name_en: "Pelosols"
+      name_pt: "Pelossolos"
+      page: "pp. 213, 288"
+      tests:
+        all_of:
+          - horizon_within_ka5: {masters: ["P"], max_cm: 30}
+      notes: "A P horizon with its top under 3 dm."
+    - code: "V"
+      name: "Fersiallitische und ferrallitische Paläoböden"
+      name_en: "Fersiallitic and ferrallitic palaeosols"
+      name_pt: "Paleossolos fersialíticos e ferralíticos"
+      page: "pp. 226, 288"
+      tests:
+        all_of:
+          - palaeosol_ka5: {codes: ["Bj", "Bu", "Bku"]}
+      notes: "A relict or fossil Bj or Bu in the subsoil; a soil above with a class of its own decides, the palaeosol then an overlay (Q19)."
