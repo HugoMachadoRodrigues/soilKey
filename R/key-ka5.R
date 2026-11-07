@@ -3,8 +3,9 @@
 # Kartieranleitung, 5th edition (Ad-hoc-AG Boden, Hannover 2005, KA5), keyed
 # to the type by Tab. 51 (pp. 283-288): 4 divisions (Abteilungen), 21 classes
 # (Klassen), 56 types (Typen). Experimental and opt-in: classify_all() runs it
-# only when asked. The subtypes, overlays and varieties follow in later
-# releases.
+# only when asked. v0.9.363: the 138 subtypes of the 28 terrestrial types
+# (R/subtypes-ka5.R). The other subtypes, the overlays and the varieties
+# follow in later releases.
 # =============================================================================
 
 #' Classify a pedon under the German KA5 soil systematics (2005)
@@ -13,8 +14,22 @@
 #' (Klassen) and types (Typen) of the German soil systematics of the
 #' Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 #' by its key Tab. 51. \strong{Experimental}: this release keys the 4
-#' divisions, 21 classes and 56 types; the subtypes of the type texts, the
-#' overlays ("X ueber Y") and the varieties are not keyed yet.
+#' divisions, 21 classes and 56 types, and the 138 subtypes of the 28
+#' terrestrial types from the type texts (pp. 202-237); the subtypes of the
+#' semiterrestrial, subhydric and Moore types, the overlays ("X ueber Y") and
+#' the varieties are not keyed yet.
+#'
+#' The subtypes (Hugo's decision Q21): inside a type the transitional
+#' subtypes (X-Y, a subtype of the type Y with the features of X) are tested
+#' first in printed order, then the deviation subtypes in printed order, the
+#' Norm subtype last as the fallback; the first that passes names the
+#' subtype, and every subtype of the type that passes is listed in
+#' \code{trace$subtypes_passing}. Each subtype is one of its printed
+#' formulas matched on the horizons (\code{\link{match_horizon_sequence}}),
+#' its depth windows from the GOF and its numbers (base saturation, clay
+#' differences, Cp/Fep, slope ...). The Rigosol and the Treposol take an open
+#' subtype in brackets for the type still recognisable under the R
+#' ("[BB-YY]", Q22); the Treposol has no Norm subtype.
 #'
 #' The key reads the horizons of the profile
 #' (\code{identify_horizons(pedon, "ka5")}): the KA5 notation where the
@@ -76,12 +91,14 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
   .classify_require_horizons(pedon, "classify_ka5")
   rules <- rules %||% load_rules("ka5")
   view <- .ka5_make_view(pedon)
-  prev <- list(pedon = .ka5_state$pedon, view = .ka5_state$view)
+  prev <- list(pedon = .ka5_state$pedon, view = .ka5_state$view, sub_memo = .ka5_state$sub_memo)
   .ka5_state$pedon <- pedon
   .ka5_state$view <- view
+  .ka5_state$sub_memo <- new.env(parent = emptyenv())
   on.exit({
     .ka5_state$pedon <- prev$pedon
     .ka5_state$view <- prev$view
+    .ka5_state$sub_memo <- prev$sub_memo
   }, add = TRUE)
   res <- classify_hierarchical("ka5", pedon, rules = rules, on_missing = on_missing, gapfill = FALSE)
   # a semiterrestrial division that keys no class falls through to the
@@ -100,6 +117,8 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
     }
   }
   res <- .ka5_result_notes(res, view)
+  # the subtypes of the terrestrial types (v0.9.363, Q21, Q22)
+  res <- .ka5_subtype_notes(res, pedon, rules)
   if (!is.null(through)) res$trace$semiterrestrial_attempt <- through
   res
 }
@@ -228,20 +247,29 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
 #'   \code{"VW"} (terrestrial).
 #' @param near_miss Return the twin that misses the type's gate.
 #' @param route \code{"notation"} (default) or \code{"data"}.
+#' @param subtype The code of a subtype of a terrestrial type, as printed
+#'   (\code{"BBn"}, \code{"GG-BB"}, \code{"LF-YU"} ...; the 138 of pp.
+#'   202-237): the example profile of that subtype, written from one of its
+#'   printed formulas with depths inside its windows (\code{type} and
+#'   \code{near_miss} are then not read). The type examples key to the Norm
+#'   subtype of their type (the Treposol's to an example subtype: it has no
+#'   Norm).
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_ka5(make_ka5_example("LL"), on_missing = "silent")$name
 #' classify_ka5(make_ka5_example("LL", route = "data"), on_missing = "silent")$name
+#' classify_ka5(make_ka5_example(subtype = "GG-BB"), on_missing = "silent")$name
 #' @export
 make_ka5_example <- function(type = c("KV", "KM", "KH", "HH", "HN", "JP", "JG", "JS", "JD", "IA", "IW",
                                       "UEA", "MR", "MC", "MO", "MK", "MD", "MH", "MN", "GH", "GM", "GN", "GG",
                                       "AO", "AT", "AQ", "AZ", "AB", "FF", "FS", "OO", "OL", "TC", "TT", "RN",
                                       "RQ", "RR", "RZ", "XX", "YK", "YE", "YY", "YU", "YO", "SG", "SH", "SS",
                                       "PP", "LF", "LL", "BB", "CR", "CF", "DD", "VV", "VW"),
-                             near_miss = FALSE, route = c("notation", "data")) {
+                             near_miss = FALSE, route = c("notation", "data"), subtype = NULL) {
+  route <- match.arg(route)
+  if (!is.null(subtype)) return(.ka5_subtype_example(subtype, route))
   if (identical(type, "\u00dcA")) type <- "UEA"
   type <- match.arg(type)
-  route <- match.arg(route)
   nm <- isTRUE(near_miss)
   gw <- list(groundwater_kind = "observed", groundwater_depth_cm = 30)
   pw <- list(groundwater_kind = "perched")
@@ -395,13 +423,13 @@ make_ka5_example <- function(type = c("KV", "KM", "KH", "HH", "HN", "JP", "JG", 
               structure_type = c("granular", "granular", "massive"), secondary_carbonates_pct = c(0, 0, 5),
               caco3_pct = c(0, 2, 15), rock_diggable = c(NA, NA, TRUE)),
     RN = terr(c("Ah", "imC"), c(0, if (nm) 35 else 20), c(if (nm) 35 else 20, 60), oc = c(4, NA), clay = c(15, NA), silt = c(30, NA),
-              caco3_pct = c(0, 0), rock_diggable = c(NA, FALSE)),
+              caco3_pct = c(0, 0), rock_diggable = c(NA, FALSE), bs_pct = c(30, NA)),
     RQ = terr(c("Ah", if (nm) "elC" else "ilC"), c(0, 20), c(20, 120), oc = c(3, 0.2), clay = c(15, 12),
-              caco3_pct = c(0, if (nm) 15 else 0), rock_diggable = c(NA, TRUE)),
+              caco3_pct = c(0, if (nm) 15 else 0), rock_diggable = c(NA, TRUE), bs_pct = c(30, NA)),
     RR = terr(c("Ah", if (nm) "emC" else "cmC"), c(0, 20), c(20, 60), oc = c(5, NA), clay = c(25, NA), silt = c(40, NA),
-              carbonate_whole_soil_pct = c(NA, if (nm) 40 else 95), rock_diggable = c(NA, FALSE)),
+              carbonate_whole_soil_pct = c(NA, if (nm) 40 else 95), rock_diggable = c(NA, FALSE), bs_pct = c(90, NA)),
     RZ = terr(c("Ah", if (nm) "ilC" else "elC"), c(0, 25), c(25, 150), oc = c(3, 0.2), clay = c(15, 12),
-              caco3_pct = c(1, if (nm) 0 else 15), rock_diggable = c(NA, TRUE)),
+              caco3_pct = c(1, if (nm) 0 else 15), rock_diggable = c(NA, TRUE), bs_pct = c(90, NA)),
     XX = terr(c("Ah", "Yo", "Yr"), c(0, 15, 30), c(15, 30, 100), oc = c(3, 1, 0.5), clay = 15, soil_gas_ch4_co2_pct = c(NA, 20, 40),
               redoximorphic_features_pct = c(0, 10, 0), reduction_colours_pct = c(0, 5, 90),
               site = list(reductgas_source = if (nm) "natural_wetness" else "refuse_sludge_harbour_mud")),

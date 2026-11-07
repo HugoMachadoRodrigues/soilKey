@@ -20,7 +20,8 @@ test_that("the registry has the KA5, experimental and opt-in", {
   r <- s[s$id == "ka5", ]
   expect_identical(nrow(r), 1L)
   expect_identical(r$classifier, "classify_ka5")
-  expect_identical(r$levels, "divisions, classes, types")
+  # v0.9.363: the subtypes level (the terrestrial subtypes of the type texts)
+  expect_identical(r$levels, "divisions, classes, types, subtypes")
   expect_identical(r$aliases, "germany, kartieranleitung, bodensystematik")
   expect_identical(r$status, "experimental")
   expect_false(r$default)
@@ -205,7 +206,9 @@ test_that("the app offers one example per type, each keying to it; the catalogue
   expect_setequal(unname(ex), .ka5_types())
   for (k in seq_along(ex)) {
     r <- .ka5_cls(make_ka5_example(ex[[k]]))
-    expect_identical(r$name, names(ex)[k], info = ex[[k]])
+    # v0.9.363: the name is the subtype's where the type has subtypes; the
+    # catalogue names the type
+    expect_identical(r$levels$name[r$levels$level == "types"], names(ex)[k], info = ex[[k]])
   }
   p <- system.file("i18n", "translations.yaml", package = "soilKey")
   if (!nzchar(p)) p <- testthat::test_path("..", "..", "inst", "i18n", "translations.yaml")
@@ -243,7 +246,7 @@ test_that("D1: a buried soil does not decide the present soil (p. 283)", {
 test_that("D2: tidal prefixes only in the present solum; a semiterrestrial division with no class falls through", {
   skip_on_cran()
   r <- .k6(c("Ah", "Bv", "IItmGo", "IItmGr"), c(0, 10, 80, 110), c(10, 80, 110, 150))
-  expect_identical(.tp(r), "[terrestrisch]>B>BB")
+  expect_identical(.tp(r), "[terrestrisch]>B>BB>BBn")
 })
 
 test_that("D3: a prefix the notation leaves out is filled from the data, or left open (Q15)", {

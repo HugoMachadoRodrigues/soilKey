@@ -84,3 +84,28 @@ thresholds:
   carbonate_rock_pct: {value: [2, 75], page: "pp. 84, 168", what: "the prefixes i (< 2 %), e (2 to < 75 %) and c (75 % or more) of the rock"}
   ec_z_dS_m: {value: 0.75, page: "p. 84", what: "the prefix z, EC 0.75 mS/cm (dS/m) or more in the saturation extract"}
   o_prefix_os_pct: {value: 2, page: "p. 84", what: "the prefix o, 2 % or more of sedimentary organic substance"}
+  # --- v0.9.363: the subtypes of the terrestrial types (pp. 202-237) ----------
+  # The windows are read from the GOF with the range rule (the lower end
+  # inclusive, the upper end exclusive) on the horizon carried by the last
+  # symbol (Q8); the annotation under a formula is the depth of the lower
+  # boundary of the underlined horizons (plan section 4.2).
+  st_g_window_cm: {value: [40, 80], page: "pp. 207, 209, 211-213, 215, 217, 219, 221, 223, 229-230, 232, 234-235, 237", what: "the Gley-X subtypes: the first G horizon (transitional Go included, by its last symbol) begins 4 to < 8 dm under the GOF; the Gr often 13 dm or deeper (typical, not tested)"}
+  st_s_window_cm: {value: [40, 80], page: "pp. 207, 210, 212, 215, 217, 219, 221, 223, 225, 234-235", what: "the Pseudogley-X subtypes: the first S horizon (the Sd in the second forms of SS-BB and SS-LL) begins 4 to < 8 dm under the GOF"}
+  st_podzol_part_max_cm: {value: 15, page: "pp. 217, 219, 221, 234-235", what: "the Podsol-X subtypes: the podzol part (Ahe, Ae and the B(h)s) ends above 1.5 dm"}
+  st_podzol_b_bottom_cm: {value: [15, 70], page: "pp. 222-223", what: "the X-Podsol subtypes with a Bv, Bt, M or E under the podzol B: the B(h)s ends at 1.5 to < 7 dm (deeper, the other type is dropped from the name)"}
+  st_humic_min_cm: {value: 40, page: "pp. 214, 216, 218, 227-230", what: "the humic, chernozemic or anthropogenic part of BBh, DDh, LLh, TT-LL, SSh, TT-SS, SHh, YK-SS, YE-SS, and the M or E of YK-PP and YE-PP, reaches 4 dm or deeper"}
+  st_axh_window_cm: {value: [40, 70], page: "pp. 212-213, 219", what: "the second or third form of BB-TT, BB-TC, BB-LL and the CF-LL: the Axh (Acxh) or the Ah/Al/Bt part ends at 4 to < 7 dm"}
+  st_dd_bb_window_cm: {value: [15, 30], page: "p. 216", what: "the Pelosol-Braunerde: the Ah/Bv of the less clayey layer ends at 1.5 to < 3 dm (3 to < 7 dm: Braunerde ueber Pelosol, an overlay)"}
+  st_rq_dd_cm: {value: 30, page: "p. 214", what: "the Regosol-Pelosol: the P begins under 3 dm, the loose material over a solid rock (imC) reaches 3 dm or more"}
+  st_ll_cf_max_cm: {value: 30, page: "p. 225", what: "the Parabraunerde-Terra fusca: the Ah/Al ends above 3 dm"}
+  st_aa_min_cm: {value: 10, page: "pp. 227, 231", what: "the Sw-Aa of the Anmoorpseudogley and the Anmoorstagnogley is 1 dm thick or more (thinner: a variety of the Norm subtype)"}
+  st_peat_sg_cm: {value: [10, 30], page: "pp. 231-232", what: "the nH or hH of the Niedermoor- and Hochmoor-Stagnogley is 1 to < 3 dm thick (thinner: a variety of the SGn; 3 dm or more: a Moor)"}
+  st_xx_yr_cm: {value: 40, page: "pp. 232-233", what: "the Yr of the Normreduktosol begins under 4 dm, of the Ockerreduktosol at 4 dm or deeper"}
+  st_llbb_band_min: {value: [1, 2, 3], page: "p. 217", what: "the Parabraunerde-Braunerde: the clay difference Al-Bv to Btv, % points, at least 1, 2 or 3 by the texture of the Btv (the classes of bt_clay_diff) and under the Parabraunerde's 3, 5 or 8"}
+  st_bands_min_cm: {value: 10, page: "pp. 218, 220", what: "the Baender- subtypes: the Bv+Bbt or lCv+Bbt horizon is 10 cm thick or more"}
+  st_slope_min_pct: {value: 9, page: "p. 227", what: "the Hangpseudogley lies on slopes of 9 % (5 degrees) or more"}
+  st_terra_material_min_pct: {value: 50, page: "p. 209", what: "the Terra fusca-Rendzina: Terra material 50 % or more of the fine soil of the (Bv-)Tv+cCv"}
+  st_bv_tv_clay_pct: {value: [45, 65], page: "p. 225", what: "the Braunerde-Terra fusca: the Bv-Tv has 45 to < 65 % clay, less than the Tv of the Normterra fusca"}
+  st_ppe_hue_pages: {value: 1, page: "p. 222", what: "the Eisenpodsol: the hue of the Bs is at least one step (one page of the chart, Q12) redder than the horizon above or below"}
+  st_bs_mark_pct: {value: 50, page: "pp. 85-86, 204-210; Q14", what: "the marks of the subtypes of the Ah/C-Boeden: Ah> base saturation 50 % or more, Ah< under 50 % (the subtype scale, Hugo's decision Q14)"}
+  st_ddn_min_cm: {value: 30, page: "p. 214", what: "the Normpelosol: the (P-)Ah/P reaches 3 dm or deeper (the mark of the Norm, R1)"}

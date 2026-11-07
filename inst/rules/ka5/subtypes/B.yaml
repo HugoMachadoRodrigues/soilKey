@@ -1,0 +1,146 @@
+# The subtypes of the class B, Braunerden (KA5 2005, the type texts pp. 202-237), keyed
+# after the type by subtype_ka5() (R/subtypes-ka5.R). Order inside a type: the transitional
+# subtypes in printed order, then the deviation subtypes in printed order, the Norm subtype last
+# as the fallback (Hugo's decision Q21, 2026-11-04). Each formula is a printed alternative as the
+# book writes it (tests/testthat/fixtures/ka5-formulas.tsv, from the page images); the windows
+# are the annotations under the formulas, read from the GOF with the range rule, the numbers in
+# thresholds.yaml; the checks are the numbers of the text, tested where recorded. Names as
+# printed (German), with soilKey's English and Portuguese glosses; the criteria are paraphrased.
+subtypes:
+  "BB":
+    - code: "DD-BB"
+      name: "Pelosol-Braunerde"
+      name_en: "Pelosol-brown earth"
+      name_pt: "Pelossolo-terra parda"
+      kind: "transition"
+      page: "p. 216"
+      formulas:
+        - "Ah/Bv/IIBv-P/(P/)i,eC"
+      windows:
+        - {kind: "first_top", of: {masters: ["P"]}, thr: "st_dd_bb_window_cm", side: "range", what: "the Bv-P under the Ah/Bv"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "DD-BB"}
+      notes: "The Ah/Bv of a less clayey layer ends at 1.5 to < 3 dm over a Bv-P (3 to < 7 dm: Braunerde ueber Pelosol, an overlay, Tab. 46 no. 18) (p. 216)."
+    - code: "LL-BB"
+      name: "Parabraunerde-Braunerde"
+      name_en: "Parabraunerde-brown earth"
+      name_pt: "Parabraunerde-terra parda"
+      kind: "transition"
+      page: "p. 217"
+      formulas:
+        - "Ah/Al-Bv/(II)Btv/(Bv/)C"
+      checks:
+        - {check: "clay_band"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LL-BB"}
+      notes: "A clay difference Al-Bv to Btv of 1 to 3, 2 to 5 or 3 to 8 points by the texture of the Btv, short of a Parabraunerde (p. 217; C14)."
+    - code: "LF-BB"
+      name: "Fahlerde-Braunerde"
+      name_en: "Fahlerde-brown earth"
+      name_pt: "Fahlerde-terra parda"
+      kind: "transition"
+      page: "p. 217"
+      formulas:
+        - "Ah/Bv,Ael-Bv/(Ael/)(II)Ael+Bt/Bt/C"
+      checks:
+        - {check: "fahlerde"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "LF-BB"}
+      notes: "Ael features under the Bv over an Ael+Bt and Bt (p. 217); the Fahlerde's clay difference tested where measured (C13)."
+    - code: "PP-BB"
+      name: "Podsol-Braunerde"
+      name_en: "Podzol-brown earth"
+      name_pt: "Podzol-terra parda"
+      kind: "transition"
+      page: "p. 217"
+      formulas:
+        - "(Ahe/)Ae/Bsh,Bhs,Bs/(Bhsv/)Bv/C"
+      windows:
+        - {kind: "last_bottom", of: {pattern: "^B[hms]*(h|s)[hms]*$"}, thr: "st_podzol_part_max_cm", side: "max", what: "the podzol part (its last Bh or Bs)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "PP-BB"}
+      notes: "The podzol part (Ahe/Ae/B(h)s) ends above 1.5 dm (p. 217)."
+    - code: "SS-BB"
+      name: "Pseudogley-Braunerde"
+      name_en: "Pseudogley-brown earth"
+      name_pt: "Pseudogleissolo-terra parda"
+      kind: "transition"
+      page: "p. 217"
+      formulas:
+        - "Ah/Bv/(Bv-)Sw/(II)Sd"
+        - "Ah/Sw-Bv/(Sd-Bv/)Sd"
+      windows:
+        - {kind: "first_top", of: {masters: ["S"]}, thr: "st_s_window_cm", side: "range", what: "the first S horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "SS-BB"}
+      notes: "The S horizons (the Sd in the second form) begin 4 to < 8 dm under the GOF (p. 217)."
+    - code: "GG-BB"
+      name: "Gley-Braunerde"
+      name_en: "Gley-brown earth"
+      name_pt: "Gleissolo-terra parda"
+      kind: "transition"
+      page: "p. 217"
+      formulas:
+        - "Ah/(Go-)Bv/Bv-Go,Go/Gr"
+      typical_tail: true
+      windows:
+        - {kind: "first_top", of: {masters: ["G"]}, thr: "st_g_window_cm", side: "range", what: "the first G horizon"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "GG-BB"}
+      notes: "The Go (transitional Go included) begins 4 to < 8 dm under the GOF; the Gr often 13 dm or deeper (p. 217)."
+    - code: "BBc"
+      name: "Kalkbraunerde"
+      name_en: "Calcareous brown earth"
+      name_pt: "Terra parda calcária"
+      kind: "deviation"
+      page: "p. 216"
+      formulas:
+        - "A(c)h/Bcv/C(c)"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BBc"}
+      notes: "Secondary carbonate in the Bv (Bcv), not always to the topsoil (p. 216)."
+    - code: "BBh"
+      name: "Humusbraunerde"
+      name_en: "Humic brown earth"
+      name_pt: "Terra parda húmica"
+      kind: "deviation"
+      page: "p. 216"
+      formulas:
+        - "Ah/Ah-Bv/(Bv/)C"
+      windows:
+        - {kind: "run_bottom", parts: "^A", thr: "st_humic_min_cm", side: "min", what: "the humic part (A horizons and A parts)"}
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BBh"}
+      notes: "The Ah/Ah-Bv reaches 4 dm or deeper, the Ah-Bv with the humus minimum of an Ah (p. 216)."
+    - code: "BBl"
+      name: "Lockerbraunerde"
+      name_en: "Loose brown earth"
+      name_pt: "Terra parda solta"
+      kind: "deviation"
+      page: "p. 216"
+      formulas:
+        - "Ah/(Ah-)Bfv/IIC"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BBl"}
+      notes: "A very loose Bfv: dry bulk density under 0.8 g/cm3 or pore volume 60 % or more (the horizon definition, slip 29), read by the Bfv (p. 216)."
+    - code: "BBn"
+      name: "Normbraunerde"
+      name_en: "Typical brown earth"
+      name_pt: "Terra parda típica"
+      kind: "norm"
+      page: "p. 215"
+      formulas:
+        - "Ah/Bv/C"
+      tests:
+        all_of:
+          - subtype_ka5: {code: "BBn", norm: true}
+      notes: "The Bv evenly brown, neutral to very strongly acid (typical, p. 215). The fallback of the Braunerde (Q21)."

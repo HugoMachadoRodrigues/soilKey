@@ -82,9 +82,11 @@ classes:
       page: "pp. 217, 288"
       tests:
         all_of:
-          - horizon_within_ka5: {pattern: "^B[bvh]?t$", max_cm: 80}
+          - any_of:
+              - horizon_within_ka5: {pattern: "^B[bvh]?t$", max_cm: 80}
+              - horizon_within_ka5: {masters: ["S"], with: ["Bt"], max_cm: 80}
           - b_over_relict_ka5: {pattern: "^B[bvh]?t$", min_cm: 15}
-      notes: "A Bt or Bbt with its top under 8 dm; over a T, P, Bu or Bj it reaches 1.5 dm (Abb. 22, Q5)."
+      notes: "A Bt or Bbt with its top under 8 dm, or an S horizon with a Bt part (the Bt-Sd of the first forms of SS-LL and SS-LF, pp. 219, 221; v0.9.363); over a T, P, Bu or Bj it reaches 1.5 dm (Abb. 22, Q5)."
     - code: "B"
       name: "Braunerden"
       name_en: "Brown earths"

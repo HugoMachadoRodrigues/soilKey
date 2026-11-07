@@ -582,8 +582,11 @@
 #' or 12), within one layer and over less than 30 cm (centre to centre).
 #' `kind` "bt" or "lf". TRUE, FALSE or NA, with the difference in `value`.
 #' @noRd
-.ka5_clay_diff <- function(x, upper, lower, kind = c("bt", "lf")) {
+.ka5_clay_diff <- function(x, upper, lower, kind = c("bt", "lf"), between = integer(0)) {
   kind <- match.arg(kind)
+  # rows of `between` (the Ael+Bt interfingering of the Fahlerde, p. 220)
+  # may lie between the two: they are then read as adjacent (v0.9.363)
+  nxt <- function(i) { j <- .ka5_next(x, i); while (!is.na(j) && j %in% between) j <- .ka5_next(x, j); j }
   if (is.na(upper) || is.na(lower)) return(.ka5_r(NA, note = "no eluvial horizon above"))
   cu <- .ka5_num(x, upper, "clay_pct"); cl <- .ka5_num(x, lower, "clay_pct")
   if (is.na(cu) || is.na(cl)) return(.ka5_r(NA, missing = "clay_pct", note = "the clay of the two horizons not recorded"))
@@ -598,10 +601,10 @@
   # two adjacent horizons of one layer: the difference is reached at their
   # boundary, within 30 cm (soilKey's reading, Hugo,
   # 2026-11-06); horizons further apart are not compared
-  if (!isTRUE(.ka5_next(x, upper) == lower)) p <- if (isTRUE(p) && isTRUE(dist < .ka5_thr("bt_distance_max_cm"))) TRUE else if (isFALSE(p)) FALSE else NA
+  if (!isTRUE(nxt(upper) == lower)) p <- if (isTRUE(p) && isTRUE(dist < .ka5_thr("bt_distance_max_cm"))) TRUE else if (isFALSE(p)) FALSE else NA
   .ka5_r(p, missing = if (is.na(p)) c("clay_pct", "silt_pct") else character(0), value = d,
          note = c(tc$note, sprintf("clay %s %% over %s %%: a difference of %s points against %s (%s)",
                                    format(cl), format(cu), format(d), paste(unique(steps), collapse = " or "),
                                    if (kind == "bt") "p. 97" else "the Fahlerde, p. 219"),
-                  if (!isTRUE(.ka5_next(x, upper) == lower)) "the two horizons are not adjacent"))
+                  if (!isTRUE(nxt(upper) == lower)) "the two horizons are not adjacent"))
 }
