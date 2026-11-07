@@ -7,9 +7,11 @@ Soil Taxonomy, 2001, the English edition published by Science Press).
 **Experimental**: this release keys the 14 orders (key 5.1: Histosols,
 Anthrosols, Spodosols, Andosols, Ferralosols, Vertosols, Aridosols,
 Halosols, Gleyosols, Isohumosols, Ferrosols, Argosols, Cambosols and
-Primosols) and their 39 suborders (key 5.2), with soilKey's residual
-`[E2] [Other Ferralosols]` where the book prints none. The 138 groups
-and 588 subgroups follow in later releases.
+Primosols), their 39 suborders and their 138 groups (key 5.2), with
+soilKey's residuals `[E2] [Other Ferralosols]`,
+`[A1.4] [Other Permagelic Histosols]` and
+`[A2.5] [Other Orthic Histosols]` where the book prints none (the name
+stops there, with a note). The 588 subgroups follow in a later release.
 
 ## Usage
 
@@ -46,11 +48,12 @@ classify_cst2001(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
-with `system_id` `"cst2001"`, the suborder (or the order, when no
-suborder could be assigned) in `name`, the order in `rsg_or_order`, the
-classes of each level in `levels` (with `name_pt` and
-`book_provisional`), the key trace with the horizon panel, and
-`provisional_because`.
+with `system_id` `"cst2001"`, the group (or the deepest class assigned)
+in `name`, the order in `rsg_or_order`, the classes of each level in
+`levels` (with `name_pt` and `book_provisional`), the key trace with the
+horizon panel, `provisional_because`, and, when a class was assigned on
+a provisional reading, in `candidates` the class the key would reach
+without it (`kind` "alternative").
 
 ## Details
 
@@ -77,12 +80,13 @@ Histosols"), with soilKey's Portuguese gloss in `levels$name_pt`. The
 approximate equivalents of the order in US Soil Taxonomy (1999) and the
 WRB (1998), Tables 4.2 and 4.3, are added as a note
 (`qualifiers$correlation_cst` and a line in `warnings`); they never
-change the classification. A residual suborder named for the udic regime
-(the Udic Andosols, Vertosols, Isohumosols, Ferrosols, Argosols and
-Cambosols) reached by a soil whose recorded regime is another keeps its
-class, with a note. The diagnostic horizons and characteristics of each
-layer are in the trace (phase `horizons`). The readings where the text
-is silent are listed in
+change the classification. A residual suborder or group named for the
+udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
+Argosols and Cambosols, the Udi- groups) or for the aquic one (the
+Aqui-Orthic Halosols) reached by a soil whose regime read is another
+keeps its class, with a note. The diagnostic horizons and
+characteristics of each layer are in the trace (phase `horizons`). The
+readings where the text is silent are listed in
 `system.file("rules", "cst2001", "readings.yaml", package = "soilKey")`.
 
 ## References
@@ -101,9 +105,14 @@ Taxonomy. Science Press, Beijing and New York.
 ``` r
 res <- classify_cst2001(make_cst2001_example("K3"), on_missing = "silent")
 res$name
-#> [1] "Udic Ferrosols"
+#> [1] "Argi-Udic Ferrosols"
 res$levels
-#>       level code           name                 name_pt book_provisional
-#> 1    orders    K      Ferrosols Ferrossolos (Ferrosols)            FALSE
-#> 2 suborders   K3 Udic Ferrosols      Ferrossolos údicos            FALSE
+#>       level code                name                      name_pt
+#> 1    orders    K           Ferrosols      Ferrossolos (Ferrosols)
+#> 2 suborders   K3      Udic Ferrosols           Ferrossolos údicos
+#> 3    groups K3.4 Argi-Udic Ferrosols Ferrossolos údicos argílicos
+#>   book_provisional
+#> 1            FALSE
+#> 2            FALSE
+#> 3            FALSE
 ```

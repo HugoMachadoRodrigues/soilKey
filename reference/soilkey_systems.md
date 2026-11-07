@@ -113,7 +113,7 @@ soilkey_systems()
 #> 12                                     references
 #> 13            divisions, classes, types, subtypes
 #> 14                                forms, families
-#> 15                              orders, suborders
+#> 15                      orders, suborders, groups
 #>                                       aliases default
 #> 1                                         wrb    TRUE
 #> 2                                       sibcs    TRUE

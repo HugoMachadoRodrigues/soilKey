@@ -1,9 +1,12 @@
-# Example pedons for the suborders of the Chinese Soil Taxonomy (2001)
+# Example pedons for the suborders and groups of the Chinese Soil Taxonomy (2001)
 
 Small, plausible profiles written for the tests and examples, one per
 suborder of the Chinese Soil Taxonomy (2001), with FAO designations, the
 regimes on the site and the data the key reads; each keys to its own
-suborder, not provisionally. They are not real profiles. With
+suborder, not provisionally (with the group it reaches). Since v0.9.374
+a group code (`"A1.1"` ... `"N4.7"`, and soilKey's `"[A1.4]"` and
+`"[A2.5]"`) gives one profile per group, 140 in all, each keying to its
+own group, not provisionally. They are not real profiles. With
 `near_miss = TRUE`, fourteen of them (one per order) change one property
 so that the profile misses its class and lands in another: A1 without
 permafrost (Orthic Histosols), B2 with a cumulic layer of 35 cm (cumulic
@@ -28,7 +31,8 @@ make_cst2001_example(suborder = .CST_EXAMPLE_CODES, near_miss = FALSE)
 
 - suborder:
 
-  The code of the suborder, as printed (`"A1"` ... `"N4"`).
+  The code of the suborder, as printed (`"A1"` ... `"N4"`), or of a
+  group (`"A1.1"` ... `"N4.7"`).
 
 - near_miss:
 
@@ -56,5 +60,14 @@ p$horizons[, c("designation", "top_cm", "bottom_cm", "clay_pct", "cec_cmol")]
 #> 2:         Bo1     15        80       55        6
 #> 3:         Bo2     80       200       55        6
 classify_cst2001(make_cst2001_example("E1", near_miss = TRUE), on_missing = "silent")$name
-#> [1] "Udic Ferrosols"
+#> [1] "Argi-Udic Ferrosols"
+classify_cst2001(make_cst2001_example("K3.2"), on_missing = "silent")$levels
+#>       level code                      name
+#> 1    orders    K                 Ferrosols
+#> 2 suborders   K3            Udic Ferrosols
+#> 3    groups K3.2 Hiweatheri-Udic Ferrosols
+#>                                   name_pt book_provisional
+#> 1                 Ferrossolos (Ferrosols)            FALSE
+#> 2                      Ferrossolos údicos            FALSE
+#> 3 Ferrossolos údicos muito intemperizados            FALSE
 ```

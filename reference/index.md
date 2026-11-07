@@ -249,7 +249,8 @@ subgroups follow in later releases.
 - [`classify_cst2001()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cst2001.md)
   : Classify a pedon under the Chinese Soil Taxonomy (2001)
 - [`make_cst2001_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cst2001_example.md)
-  : Example pedons for the suborders of the Chinese Soil Taxonomy (2001)
+  : Example pedons for the suborders and groups of the Chinese Soil
+  Taxonomy (2001)
 
 ## Interoperability
 

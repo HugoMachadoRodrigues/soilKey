@@ -4,18 +4,22 @@
 edition published by Science Press). Experimental: this release
 keys the 14 orders (key 5.1: Histosols, Anthrosols, Spodosols, Andosols,
 Ferralosols, Vertosols, Aridosols, Halosols, Gleyosols, Isohumosols,
-Ferrosols, Argosols, Cambosols and Primosols) and their 39 suborders (key
-5.2), with soilKey's residual [E2] [Other Ferralosols] where the
-book prints none. The 138 groups and 588 subgroups follow in later
-releases."><meta property="og:description" content="Keys a PedonRecord through the Chinese Soil Taxonomy
+Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
+their 138 groups (key 5.2), with soilKey's residuals [E2] [Other
+Ferralosols], [A1.4] [Other Permagelic Histosols] and
+[A2.5] [Other Orthic Histosols] where the book prints none (the
+name stops there, with a note). The 588 subgroups follow in a later
+release."><meta property="og:description" content="Keys a PedonRecord through the Chinese Soil Taxonomy
 (Cooperative Research Group on Chinese Soil Taxonomy, 2001, the English
 edition published by Science Press). Experimental: this release
 keys the 14 orders (key 5.1: Histosols, Anthrosols, Spodosols, Andosols,
 Ferralosols, Vertosols, Aridosols, Halosols, Gleyosols, Isohumosols,
-Ferrosols, Argosols, Cambosols and Primosols) and their 39 suborders (key
-5.2), with soilKey's residual [E2] [Other Ferralosols] where the
-book prints none. The 138 groups and 588 subgroups follow in later
-releases."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
+their 138 groups (key 5.2), with soilKey's residuals [E2] [Other
+Ferralosols], [A1.4] [Other Permagelic Histosols] and
+[A2.5] [Other Orthic Histosols] where the book prints none (the
+name stops there, with a note). The 588 subgroups follow in a later
+release."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +27,7 @@ releases."><meta property="og:image" content="https://hugomachadorodrigues.githu
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.373</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.374</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,10 +79,12 @@ releases."><meta property="og:image" content="https://hugomachadorodrigues.githu
 edition published by Science Press). <strong>Experimental</strong>: this release
 keys the 14 orders (key 5.1: Histosols, Anthrosols, Spodosols, Andosols,
 Ferralosols, Vertosols, Aridosols, Halosols, Gleyosols, Isohumosols,
-Ferrosols, Argosols, Cambosols and Primosols) and their 39 suborders (key
-5.2), with soilKey's residual <code>[E2] [Other Ferralosols]</code> where the
-book prints none. The 138 groups and 588 subgroups follow in later
-releases.</p>
+Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
+their 138 groups (key 5.2), with soilKey's residuals <code>[E2] [Other
+Ferralosols]</code>, <code>[A1.4] [Other Permagelic Histosols]</code> and
+<code>[A2.5] [Other Orthic Histosols]</code> where the book prints none (the
+name stops there, with a note). The 588 subgroups follow in a later
+release.</p>
     </div>
 
     <div class="section level2">
@@ -116,11 +122,13 @@ releases.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="ClassificationResult.html">ClassificationResult</a></code> with <code>system_id</code>
-  <code>"cst2001"</code>, the suborder (or the order, when no suborder could be
-  assigned) in <code>name</code>, the order in <code>rsg_or_order</code>, the classes
+  <code>"cst2001"</code>, the group (or the deepest class assigned) in
+  <code>name</code>, the order in <code>rsg_or_order</code>, the classes
   of each level in <code>levels</code> (with <code>name_pt</code> and
-  <code>book_provisional</code>), the key trace with the horizon panel, and
-  <code>provisional_because</code>.</p>
+  <code>book_provisional</code>), the key trace with the horizon panel,
+  <code>provisional_because</code>, and, when a class was assigned on a
+  provisional reading, in <code>candidates</code> the class the key would
+  reach without it (<code>kind</code> "alternative").</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -145,9 +153,10 @@ marks provisional is noted as such (<code>levels$book_provisional</code>).</p>
 <code>levels$name_pt</code>. The approximate equivalents of the order in US Soil
 Taxonomy (1999) and the WRB (1998), Tables 4.2 and 4.3, are added as a
 note (<code>qualifiers$correlation_cst</code> and a line in <code>warnings</code>);
-they never change the classification. A residual suborder named for the
-udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
-Argosols and Cambosols) reached by a soil whose recorded regime is another
+they never change the classification. A residual suborder or group named
+for the udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
+Argosols and Cambosols, the Udi- groups) or for the aquic one (the
+Aqui-Orthic Halosols) reached by a soil whose regime read is another
 keeps its class, with a note. The diagnostic horizons and characteristics
 of each layer are in the trace (phase <code>horizons</code>). The readings where
 the text is silent are listed in <code>system.file("rules", "cst2001",
@@ -168,11 +177,16 @@ the text is silent are listed in <code>system.file("rules", "cst2001",
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">classify_cst2001</span><span class="op">(</span><span class="fu"><a href="make_cst2001_example.html">make_cst2001_example</a></span><span class="op">(</span><span class="st">"K3"</span><span class="op">)</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">name</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Udic Ferrosols"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Argi-Udic Ferrosols"</span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">levels</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       level code           name                 name_pt book_provisional</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    orders    K      Ferrosols Ferrossolos (Ferrosols)            FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 suborders   K3 Udic Ferrosols      Ferrossolos údicos            FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       level code                name                      name_pt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    orders    K           Ferrosols      Ferrossolos (Ferrosols)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 suborders   K3      Udic Ferrosols           Ferrossolos údicos</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    groups K3.4 Argi-Udic Ferrosols Ferrossolos údicos argílicos</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   book_provisional</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3            FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

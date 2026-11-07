@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.373</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.374</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.374" id="soilkey-09374-2026-11-07">soilKey 0.9.374 (2026-11-07)<a class="anchor" aria-label="anchor" href="#soilkey-09374-2026-11-07"></a></h2>
+<div class="section level3">
+<h3 id="china-cst-the-groups-0-9-374">China CST 2001: the groups<a class="anchor" aria-label="anchor" href="#china-cst-the-groups-0-9-374"></a></h3>
+<p>Fifth part of the Chinese Soil Taxonomy (2001, English edition; system id <code>cst2001</code>). The registry now names the level groups, and <code><a href="../reference/classify_cst2001.html">classify_cst2001()</a></code> keys a pedon below its suborder to the 138 groups of key 5.2 (pp. 75-176), in the book’s order, one file per order in <code>inst/rules/cst2001/groups/</code> keyed by suborder, with the page, the name as printed (the canonical spelling of Q2, the other printed forms as aliases) and soilKey’s Portuguese gloss in <code>levels$name_pt</code>. Where the book prints no residual, soilKey’s <code>[A1.4] [Other Permagelic Histosols]</code> and <code>[A2.5] [Other Orthic Histosols]</code> close the list (Q4); the result notes that the name stops there, as it now also does for <code>[E2] [Other Ferralosols]</code>, which has no groups. C1.1 and C2.1, all the Spodosols, carry the book’s own provisional mark. The groups read the horizons, characteristics and regimes of the earlier parts and the criteria the group keys define, written in <code>R/key-cst-groups.R</code>: the Foli- groups and the kind that predominates in the surface tier of the Histosols, the grey iron-percoleached subhorizon and the iron accumulation of the Stagnic Anthrosols, the hydromorphic cumulic epipedon, the rhodic and xanthic colours of the Ferralosols by the thickness of the window, the udic regime bordering on the perudic one, a calcic horizon starting between 50 and 125 cm, the thickness of the mollic epipedon, an albic horizon above the claypan, folic histic evidence, shajiang, the takyric surface of the Halosols, coral sands within 100 cm, carbonate rocks or coral sands in more than half of the horizons, and a property in some subhorizon of the B or throughout it (allitic, highly weathered, alic, acid). Every test is three-valued as before: an undecided group before the assigned one makes the name provisional, and a group assigned on a provisional reading comes with the alternative the key would reach. A residual group named for a regime that the soil does not have (the Udi- groups; the Aqui-Orthic Halosols, named for the aquic regime) keeps its class, with a note.</p>
+<p><code><a href="../reference/make_cst2001_example.html">make_cst2001_example()</a></code> takes a group code as well and gives one profile per group (140, the two bracketed residuals included), each keying to its own group, not provisionally; the 39 suborder examples still key to their suborder, now with a group (a few were given the measurements their group asks for, so that it is decided). The readings of this part, soilKey’s own for Hugo’s word, are in <code>inst/rules/cst2001/readings.yaml</code>. Every other classification is unchanged (the fixtures of the other systems byte-identical).</p>
+<p>Decided by Hugo on the review (2026-11-07): soilKey’s readings of this part accepted as proposed (J3.1 and M4.2 included). B1.2 reads the grey colour alone (moist chroma 2 or less, as printed), with no test of the iron. The Foli- groups take a well-drained record for the days of saturation only as a stand-in, flagged in the trace and named in a warning. Where a group names the calcic horizon alone (F1.1, F3.2, G1.1, J2.4, L2.2) a hypercalcic horizon does not count. H1.1 reads the depth of the polygonal cracks (<code>cracks_depth_cm</code>, 1-4 cm) first, the crust thickness standing in, flagged. Fixed on the review: the depth below the base of the description is undecided in the colour shares of the Ferralosols and the coral share of M5.2, and a share that passes only on the part described passes provisionally, with the alternative; the thickness of the mollic epipedon (J2.3) is undecided while a layer below it may still belong to it; <code>layer_run_cst()</code> takes <code>grade = "at_least_evidence"</code>, so gleyic evidence counts in M4.2.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.373" id="soilkey-09373-2026-11-06">soilKey 0.9.373 (2026-11-06)<a class="anchor" aria-label="anchor" href="#soilkey-09373-2026-11-06"></a></h2>
 <div class="section level3">
@@ -8781,7 +8790,7 @@ Warnings       : Subordem 'Argissolos Vermelho-Amarelos' atribuida
 </div>
 <div class="section level3">
 <h3 id="d-real-coverage-measurement-item-0-9-40">D. Real coverage measurement (Item 8)<a class="anchor" aria-label="anchor" href="#d-real-coverage-measurement-item-0-9-40"></a></h3>
-<p>Ran <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
+<p>Ran <code><a href="https://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> locally against the v0.9.39 source tree. Result: <strong>80.5 % statement coverage</strong>.</p>
 <p>README badge updated from the unconfigured Codecov SVG (which rendered as “unknown” because no <code>CODECOV_TOKEN</code> secret was configured) to a static shields.io badge showing 80.5 %. The test-coverage workflow continues to upload to Codecov on every push, so the dynamic Codecov badge will become live as soon as the user adds the <code>CODECOV_TOKEN</code> secret in GitHub repo settings.</p>
 <p>Test count badge bumped 2 908 -&gt; 3 137. Version badge bumped 0.9.27 -&gt; 0.9.40.</p>
 </div>
