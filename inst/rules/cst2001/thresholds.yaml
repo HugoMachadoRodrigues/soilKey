@@ -463,3 +463,206 @@ horizons:
     s_total_min_pct: 0.3              # 3 g/kg
     ph_max: 4.0                       # less than, water 1:1 (1:2.5 stands in, Q16)
     sulfidic_s_min_pct: 0.01          # soilKey: the WRB sulfidic S until the characteristic is read (a later part)
+
+# --- the diagnostic characteristics (0.9.372; pp. 43-64) ----------------------------
+# Read by R/diagnostics-cst-properties.R. Contents in % where the key ends in
+# _pct (the book's g/kg / 10). A number soilKey adds names the decision that
+# set it; "soilKey's reading" marks one decided by Hugo on the review (2026-11-06).
+characteristics:
+  organic:
+    page: "43-46"
+    source: "3.3 1 organic soil materials; the carbon of the organic or mattic epipedon (pp. 21-23)"
+    fibric_fibre_min_pct: 75          # three-fourths, rubbed, by volume
+    fibric_colour_fibre_min_pct: 40   # two-fifths with a light pyrophosphate colour
+    fibric_colours: ["7/1", "7/2", "8/1", "8/2", "8/3"]
+    sapric_fibre_max_pct: 16.6667     # less than one-sixth
+    sapric_excluded_colours: ["5/1", "6/2", "7/3"]   # the line of Fig. 3.1 (p. 44)
+    folic_litter_min_pct: 75          # litter three-fourths or more of the volume
+    mattic_roots_min_pct: 10          # woven roots ten percent by volume (p. 45)
+    von_post_fibric_max: 4            # soilKey: H1-H4 fibric, H5-H6 hemic, H7-H10 sapric (stand-in, flagged)
+    von_post_hemic_max: 6
+    control_cm: 130
+    control_moss_cm: 160              # moss fibres three-fourths or more, or BD under 0.1, to 60 cm
+    moss_window_cm: 60
+    moss_min_pct: 75
+    bd_low_max: 0.1
+    permafrost_below_cm: 25           # the control section ends 25 cm below the top of permafrost
+    surface_tier_cm: 30
+    surface_tier_moss_cm: 60
+    subsurface_tier_cm: 60
+    bottom_tier_cm: 40
+  lithologic:
+    page: "46-48"
+    source: "3.3 2 lithologic characters, within 125 cm"
+    within_cm: 125
+    alluvial_stratification_within_cm: 50
+    alluvial_oc_at_depth_cm: 125
+    alluvial_oc_min_pct: 0.2          # 2 g/kg
+    alluvial_irregular_from_cm: 25
+    sandy_window_cm: 100
+    sandy_classes: [S, LS]            # loamy fine sand or coarser
+    sandy_oc_max_pct: 0.15            # 1.5 g/kg or less, weighted mean of the window (Hugo, 2026-11-06)
+    loess_hue_rank_min: 20            # 10YR or yellower
+    loess_value_dry_min: 7
+    loess_chroma_dry_min: 4
+    loess_silt_fine_sand_min_pct: 50  # soilKey's reading: "predominate" = more than half of the fine earth
+    loess_caco3_min_pct: 8            # 80 g/kg
+    purplish_hue_rank: [-7.5, 0]      # 2.5RP-10RP
+    purplish_fragment_max_cm: 4       # less than
+    red_hue_rank_a: [2.5, 5]          # 2.5R-5R
+    red_value_a: [4, 6]
+    red_chroma_a: [4, 8]
+    red_hue_rank_b: [7.5, 10]         # 7.5R-10R
+    red_value_b: [4, 6]
+    red_chroma_b_min: 6
+    northern_calcareous_min_pct: 1    # soilKey's reading: calcareous = the calcaric 10 g/kg (p. 63)
+    northern_base_saturated_min_pct: 100  # soilKey's reading: base saturated = BS 100 %
+    carbonate_bs_min_pct: 50
+    carbonate_ph_min: 5.5
+    coral_sand_min_pct: 50            # particles over 0.05 mm (USDA sand)
+    coral_caco3_min_pct: 50           # 500 g/kg
+  anthro_silting:
+    page: "48-49"
+    source: "3.3 5"
+    irrigation_rate_min_cm_yr: 0.5
+    interception_rate_min_cm_yr: 10
+  vertic:
+    page: "49-50"
+    source: "3.3 6 vertic features and vertic evidence"
+    surface_cm: 18
+    clay_min_pct: 30                  # 300 g/kg
+    window_cm: 50
+    crack_width_min_cm: 0.5
+    crack_run_min_cm: 25
+    slickenside_run_min_cm: 25
+    slickenside_top_within_cm: 100
+    infillings_within_cm: 100
+    evidence_clay_total_cm: 30
+    evidence_le_min_cm: 6.0
+    evidence_window_cm: 100
+    evidence_contact_from_cm: 50
+    evidence_slickenside_run_min_cm: 15
+  anthroturbic:
+    page: "50-51"
+    source: "3.3 7"
+    fragments_min_pct: 3
+    window_cm: [25, 100]
+  gleyic:
+    page: "55-56"
+    source: "3.3 9 gleyic features and gleyic evidence"
+    matrix_share_min_pct: 50          # more than
+    evidence_share_min_pct: 30        # 30-50 %
+    rh_max: 19
+    evidence_rh_max: 25               # rH over 19 to 25 (the gap 19-20 read as evidence, default 15)
+    rh_eh_divisor: 29
+    hue_greener_than_rank: 27.5       # (a) greener or bluer than 7.5Y
+    hue_5y_rank: [22.5, 27.5]         # (b) 5Y, read as over 2.5Y up to 7.5Y (soilKey's reading)
+    value_5y_min: 4
+    chroma_5y_max: 4
+    hue_25y_rank: [20, 22.5]          # (c) 2.5Y, read as over 10YR up to 2.5Y
+    value_25y_min: 4
+    chroma_25y_max: 3
+    hue_yr_rank: [17.5, 20]           # (d) 7.5YR-10YR
+    value_yr: [4, 7]
+    chroma_yr_max: 2
+    value_red: [4, 7]                 # (e) redder or purpler than 7.5YR
+    chroma_red_max: 1
+  redoxic:
+    page: 56
+    source: "3.3 10"
+    chroma_max: 2
+    chroma_dark_max: 1                # "less 1" read as 1 or less (default 15)
+    reduced_matrix_max_pct: 30        # less than, and more than 0 (default 15)
+    rust_chroma_min: 3                # soilKey's reading: a mottle of chroma 3 or more is a rust mottle
+  frost_thawic:
+    page: 57
+    source: "3.3 13"
+    freeze_thaw_days_min_pct: 70
+  n_value:
+    page: 58
+    source: "3.3 14"
+    critical: 0.7
+    flows_easily_min: 1
+  isohumic:
+    page: "58-59"
+    source: "3.3 15; the printed '4 or less' read as 0.4 (Hugo's decision Q9, 2026-11-04)"
+    rh_max: 0.4
+    rh_printed: 4
+  humic:
+    page: "59-60"
+    source: "3.3 16"
+    oc_storage_min_kg_m2: 12
+    window_cm: 100
+    coating_value_max: 3              # fallback: dark coatings on the B faces (Q20)
+    b_within_cm: 125                  # soilKey: the B of the readings of chapter 3 read to 125 cm (K2 N19)
+  andic:
+    page: "60-61"
+    source: "3.3 17 (KST 1996)"
+    oc_max_pct: 25                    # less than
+    alfe_min_pct: 2.0
+    bd_max: 0.90
+    p_retention_min_pct: 85
+    glass_path_p_retention_min_pct: 25
+    glass_path_particles_min_pct: 30  # 300 g/kg of 0.02-2 mm
+    glass_a_alfe_min_pct: 0.40
+    glass_a_min_pct: 30
+    glass_b_min_pct: 5
+    # Fig. 3.2 (KST 1996 p. 20): the shaded area above the line from 30 %
+    # glass at 0.40 % Alo + 1/2 Feo to 5 % at 2.0 %
+    glass_c_from: [0.40, 30]          # (Alo + 1/2 Feo %, glass %)
+    glass_c_to: [2.0, 5]
+  ferric:
+    page: "61-62"
+    source: "3.3 18, in the whole B"
+    hue_rank_max: 15                  # 5YR or redder
+    fe_dcb_min_pct: 1.4               # 14 g/kg Fe (Fe2O3 20)
+    free_total_min: 0.40
+  allitic:
+    page: 62
+    source: "3.3 19"
+    sio2_al2o3_max: 2.0
+    naoh_ratio_max: 1.0
+    # the Ki of the sulfuric attack (compute_ki(), molar) stands in, flagged (Q16)
+  alic:
+    page: "62-63"
+    source: "3.3 20; alic evidence (the handwritten 5 of the scan ignored, default 16)"
+    cec_clay_min: 24
+    trb_clay_share_min: 0.80
+    silt_clay_max: 0.60
+    ph_kcl_max: 4.0
+    al_clay_min: 12
+    al_cec_share_min: 0.35
+    al_sat_min_pct: 60
+    evidence_items_min: 2
+  phosphic:
+    page: 63
+    source: "3.3 21; phosphic evidence"
+    p_total_min_pct: 1.5              # 15 g/kg P (P2O5 35)
+    p_total_max_pct: 13               # "may reach" 130 g/kg: not a limit (soilKey's reading)
+    evidence_p_total_min_pct: 0.15    # 1.5 g/kg P (P2O5 3.5)
+    reversal_max_rel: 0.10            # soilKey: no reversal of over 10 % between layers (Hugo, 2026-11-06)
+  sodic:
+    page: 63
+    source: "3.3 22; sodic evidence"
+    esp_min: 30
+    na_min_cmol: 2
+    na_mg_share_min: 50
+    evidence_esp_min: 5
+    evidence_esp_max: 30              # 5-29 %, read as 5 or more and under 30
+  calcaric:
+    page: 63
+    source: "3.3 23"
+    caco3_min_pct: 1                  # 10 g/kg
+    within_cm: 50
+    excess_max_pct: 2                 # the excess of a sub-horizon over a neighbour, 20 g/kg at most
+    non_calcaric_ph_max: 6.5          # soilKey: pH(H2O) under 6.5 with nothing recorded is non-calcaric (Hugo, 2026-11-06)
+  base_saturation:
+    page: 64
+    source: "3.3 24 (NH4OAc)"
+    eutric_min_pct: 50
+    eutrophic_min_pct: 35
+  sulfidic:
+    page: 64
+    source: "3.3 25: no number in the book"
+    sulfidic_s_min_pct: 0.01          # soilKey: the WRB 2022 number, flagged (no CST number)
+    incubation_ph_max: 4.0            # less than: 'the pH may drop below 4' after oxidation
