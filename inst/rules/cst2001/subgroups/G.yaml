@@ -1,0 +1,486 @@
+# The keys to subgroups of the Aridosols (order G) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 100-108, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "G1.1":
+    - code: "G1.1.1"
+      name: "Lithic Calci-Cryic Aridosols"
+      aliases: ["Lithic Calci-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos cálcicos líticos"
+      adjective: "Lithic"
+      page: 101
+      tests:
+        all_of:
+          - lithic: {depth: 50, datum: surface}
+      notes: "A lithic or paralithic contact within 50 cm of the soil surface."
+    - code: "G1.1.2"
+      name: "Argic Calci-Cryic Aridosols"
+      aliases: ["Argic Calci-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos cálcicos argílicos"
+      adjective: "Argic"
+      page: 101
+      tests:
+        all_of:
+          - argic_lime_cst: {top_max: 100, datum: surface}
+      notes: "An argic horizon with lime infiltrates within 100 cm of the soil surface."
+    - code: "G1.1.3"
+      name: "Dark Calci-Cryic Aridosols"
+      aliases: ["Dark Calci-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos cálcicos escuros"
+      adjective: "Dark"
+      page: 101
+      tests:
+        all_of:
+          - dark_surface: {}
+      notes: "A moist value of 3.5 or less and a dry (crushed) value of 5.5 or less in the upper 18 cm after mixing."
+    - code: "G1.1.4"
+      name: "Typic Calci-Cryic Aridosols"
+      aliases: ["Typic Calci-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos cálcicos típicos"
+      adjective: "Typic"
+      page: 102
+      tests:
+        default: true
+      notes: "Other Calci-Cryic Aridosols."
+
+  "G1.2":
+    - code: "G1.2.1"
+      name: "Lithic Gypsi-Cryic Aridosols"
+      aliases: ["Lithic Gypsi-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos gípsicos líticos"
+      adjective: "Lithic"
+      page: 102
+      tests:
+        all_of:
+          - lithic: {depth: 50, datum: surface}
+      notes: "A lithic or paralithic contact within 50 cm of the soil surface."
+    - code: "G1.2.2"
+      name: "Typic Gypsi-Cryic Aridosols"
+      aliases: ["Typic Gypsi-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos gípsicos típicos"
+      adjective: "Typic"
+      page: 102
+      tests:
+        default: true
+      notes: "Other Gypsi-Cryic Aridosols."
+
+  "G1.3":
+    - code: "G1.3.1"
+      name: "Dark Argi-Cryic Aridosols"
+      aliases: ["Dark Argi-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos argílicos escuros"
+      adjective: "Dark"
+      page: 102
+      tests:
+        all_of:
+          - dark_surface: {}
+      notes: "A moist value of 3.5 or less and a dry (crushed) value of 5.5 or less in the upper 18 cm after mixing."
+    - code: "G1.3.2"
+      name: "Typic Argi-Cryic Aridosols"
+      aliases: ["Typic Argi-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos argílicos típicos"
+      adjective: "Typic"
+      page: 102
+      tests:
+        default: true
+      notes: "Other Argi-Cryic Aridosols."
+
+  "G1.4":
+    - code: "G1.4.1"
+      name: "Lithic Hapli-Cryic Aridosols"
+      aliases: ["Lithic Hapli-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos háplicos líticos"
+      adjective: "Lithic"
+      page: 102
+      tests:
+        all_of:
+          - lithic: {depth: 50, datum: surface}
+      notes: "A lithic or paralithic contact within 50 cm of the soil surface."
+    - code: "G1.4.2"
+      name: "Takyric Hapli-Cryic Aridosols"
+      aliases: ["Takyric Hapli-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos háplicos taquíricos"
+      adjective: "Takyric"
+      page: 102
+      tests:
+        all_of:
+          - takyric: {}
+      notes: "Polygonal cracks on the soil surface 1 cm or more wide through 1-4 cm."
+    - code: "G1.4.3"
+      name: "Paracalcic Hapli-Cryic Aridosols"
+      aliases: ["Paracalcic Hapli-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos háplicos paracálcicos"
+      adjective: "Paracalcic"
+      page: 103
+      tests:
+        all_of:
+          - calcic_or_evidence: {to: 100, datum: surface}
+      notes: "Calcic evidence within 100 cm of the soil surface."
+    - code: "G1.4.4"
+      name: "Paragypsic Hapli-Cryic Aridosols"
+      aliases: ["Paragypsic Hapli-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos háplicos paragípsicos"
+      adjective: "Paragypsic"
+      page: 103
+      tests:
+        all_of:
+          - paragypsic: {to: 100, datum: surface}
+      notes: "Gypsic evidence within 100 cm of the soil surface."
+    - code: "G1.4.5"
+      name: "Dark Hapli-Cryic Aridosols"
+      aliases: ["Dark Hapli-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos háplicos escuros"
+      adjective: "Dark"
+      page: 103
+      tests:
+        all_of:
+          - dark_surface: {}
+      notes: "A moist value of 3.5 or less and a dry (crushed) value of 5.5 or less in the upper 18 cm after mixing."
+    - code: "G1.4.6"
+      name: "Typic Hapli-Cryic Aridosols"
+      aliases: ["Typic Hapli-Cryic Aridosol"]
+      name_pt: "Aridossolos críicos háplicos típicos"
+      adjective: "Typic"
+      page: 103
+      tests:
+        default: true
+      notes: "Other Hapli-Cryic Aridosols."
+
+  "G2.1":
+    - code: "G2.1.1"
+      name: "Lithic Calci-Orthic Aridosols"
+      aliases: ["Lithic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos líticos"
+      adjective: "Lithic"
+      page: 104
+      tests:
+        all_of:
+          - lithic: {depth: 50}
+      notes: "A lithic or paralithic contact within 50 cm of the mineral soil surface."
+    - code: "G2.1.2"
+      name: "Mottlic Calci-Orthic Aridosols"
+      aliases: ["Mottlic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos mosqueados"
+      adjective: "Mottlic"
+      page: 104
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100, total: true}
+      notes: "Redoxic features in horizons totalling 10 cm or more between 50 and 100 cm of the mineral soil surface."
+    - code: "G2.1.3"
+      name: "Panic Calci-Orthic Aridosols"
+      aliases: ["Panic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos com pã calcário"
+      adjective: "Panic"
+      page: 104
+      tests:
+        all_of:
+          - calcipan_cst: {top_max: 100, datum: mineral}
+      notes: "A calcipan whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.1.4"
+      name: "Hyperic Calci-Orthic Aridosols"
+      aliases: ["Hyperic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos hipercálcicos"
+      adjective: "Hyperic"
+      page: 104
+      tests:
+        all_of:
+          - hypercalcic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "A hypercalcic horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.1.5"
+      name: "Sodic Calci-Orthic Aridosols"
+      aliases: ["Sodic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos sódicos"
+      adjective: "Sodic"
+      page: 104
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "G2.1.6"
+      name: "Argic Calci-Orthic Aridosols"
+      aliases: ["Argic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos argílicos"
+      adjective: "Argic"
+      page: 104
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 100, datum: mineral, natro: true}
+      notes: "An argic horizon (the natro-argic horizon included, p. 37) within 100 cm of the mineral soil surface."
+    - code: "G2.1.7"
+      name: "Gypsic Calci-Orthic Aridosols"
+      aliases: ["Gypsic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos gípsicos"
+      adjective: "Gypsic"
+      page: 104
+      tests:
+        all_of:
+          - gypsic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "A gypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.1.8"
+      name: "Dark Calci-Orthic Aridosols"
+      aliases: ["Dark Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos escuros"
+      adjective: "Dark"
+      page: 105
+      tests:
+        all_of:
+          - dark_surface: {}
+      notes: "A moist value of 3.5 or less and a dry (crushed) value of 5.5 or less in the upper 18 cm after mixing."
+    - code: "G2.1.9"
+      name: "Typic Calci-Orthic Aridosols"
+      aliases: ["Typic Calci-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos cálcicos típicos"
+      adjective: "Typic"
+      page: 105
+      tests:
+        default: true
+      notes: "Other Calci-Orthic Aridosols."
+
+  "G2.2":
+    - code: "G2.2.1"
+      name: "Lithic Sali-Orthic Aridosols"
+      aliases: ["Lithic Sali-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos sálicos líticos"
+      adjective: "Lithic"
+      page: 105
+      tests:
+        all_of:
+          - lithic: {depth: 50}
+      notes: "A lithic or paralithic contact within 50 cm of the mineral soil surface."
+    - code: "G2.2.2"
+      name: "Sodic Sali-Orthic Aridosols"
+      aliases: ["Sodic Sali-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos sálicos sódicos"
+      adjective: "Sodic"
+      page: 105
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "G2.2.3"
+      name: "Gypsi-panic Sali-Orthic Aridosols"
+      aliases: ["Gypsi-panic Sali-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos sálicos gípsicos com pã salino"
+      adjective: "Gypsi-panic"
+      page: 105
+      tests:
+        all_of:
+          - salipan_cst: {top_max: 100, datum: mineral}
+          - gypsic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "A salipan and a gypsic horizon, their upper boundaries within 100 cm of the mineral soil surface (keyed before its parts)."
+    - code: "G2.2.4"
+      name: "Panic Sali-Orthic Aridosols"
+      aliases: ["Panic Sali-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos sálicos com pã salino"
+      adjective: "Panic"
+      page: 105
+      tests:
+        all_of:
+          - salipan_cst: {top_max: 100, datum: mineral}
+      notes: "A salipan whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.2.5"
+      name: "Gypsic Sali-Orthic Aridosols"
+      aliases: ["Gypsic Sali-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos sálicos gípsicos"
+      adjective: "Gypsic"
+      page: 105
+      tests:
+        all_of:
+          - gypsic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "A gypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.2.6"
+      name: "Typic Sali-Orthic Aridosols"
+      aliases: ["Typic Sali-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos sálicos típicos"
+      adjective: "Typic"
+      page: 106
+      tests:
+        default: true
+      notes: "Other Sali-Orthic Aridosols."
+
+  "G2.3":
+    - code: "G2.3.1"
+      name: "Lithic Gypsi-Orthic Aridosols"
+      aliases: ["Lithic Gypsi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos gípsicos líticos"
+      adjective: "Lithic"
+      page: 106
+      tests:
+        all_of:
+          - lithic: {depth: 50}
+      notes: "A lithic or paralithic contact within 50 cm of the mineral soil surface."
+    - code: "G2.3.2"
+      name: "Mottlic Gypsi-Orthic Aridosols"
+      aliases: ["Mottlic Gypsi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos gípsicos mosqueados"
+      adjective: "Mottlic"
+      page: 106
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100, total: true}
+      notes: "Redoxic features in horizons totalling 10 cm or more between 50 and 100 cm of the mineral soil surface."
+    - code: "G2.3.3"
+      name: "Sodic Gypsi-Orthic Aridosols"
+      aliases: ["Sodic Gypsi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos gípsicos sódicos"
+      adjective: "Sodic"
+      page: 106
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "G2.3.4"
+      name: "Hyperic Gypsi-Orthic Aridosols"
+      aliases: ["Hyperic Gypsi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos gípsicos hipergípsicos"
+      adjective: "Hyperic"
+      page: 106
+      tests:
+        all_of:
+          - hypergypsic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "A hypergypsic horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.3.5"
+      name: "Argic Gypsi-Orthic Aridosols"
+      aliases: ["Argic Gypsi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos gípsicos argílicos"
+      adjective: "Argic"
+      page: 106
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 100, datum: mineral, natro: true}
+      notes: "An argic horizon (the natro-argic horizon included, p. 37) whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "G2.3.6"
+      name: "Typic Gypsi-Orthic Aridosols"
+      aliases: ["Typic Gypsi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos gípsicos típicos"
+      adjective: "Typic"
+      page: 106
+      tests:
+        default: true
+      notes: "Other Gypsi-Orthic Aridosols."
+
+  "G2.4":
+    - code: "G2.4.1"
+      name: "Sodic Argi-Orthic Aridosols"
+      aliases: ["Sodic Argi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos argílicos sódicos"
+      adjective: "Sodic"
+      page: 106
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "G2.4.2"
+      name: "Dark Argi-Orthic Aridosols"
+      aliases: ["Dark Argi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos argílicos escuros"
+      adjective: "Dark"
+      page: 107
+      tests:
+        all_of:
+          - dark_surface: {}
+      notes: "A moist value of 3.5 or less and a dry (crushed) value of 5.5 or less in the upper 18 cm after mixing."
+    - code: "G2.4.3"
+      name: "Typic Argi-Orthic Aridosols"
+      aliases: ["Typic Argi-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos argílicos típicos"
+      adjective: "Typic"
+      page: 107
+      tests:
+        default: true
+      notes: "Other Argi-Orthic Aridosols."
+
+  "G2.5":
+    - code: "G2.5.1"
+      name: "Lithic Hapli-Orthic Aridosols"
+      aliases: ["Lithic Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos líticos"
+      adjective: "Lithic"
+      page: 107
+      tests:
+        all_of:
+          - lithic: {depth: 50}
+      notes: "A lithic or paralithic contact within 50 cm of the mineral soil surface."
+    - code: "G2.5.2"
+      name: "Mottlic Hapli-Orthic Aridosols"
+      aliases: ["Mottlic Hapli-Orthic Aridosol", "Redoxic Hapli-Orthic Aridosols"]
+      name_pt: "Aridossolos órticos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 107
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100, total: true}
+      notes: "Redoxic features in horizons totalling 10 cm or more between 50 and 100 cm of the mineral soil surface (the key prints the adjective 'Redoxic', Appendix 1 'Mottlic', Q2)."
+    - code: "G2.5.3"
+      name: "Sodi-takyric Hapli-Orthic Aridosols"
+      aliases: ["Sodi-takyric Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos sódicos taquíricos"
+      adjective: "Sodi-takyric"
+      page: 107
+      tests:
+        all_of:
+          - takyric: {}
+          - sodic: {within: 50}
+      notes: "The takyric surface and the sodic property in some horizon 10 cm or more thick within 50 cm (keyed before its parts)."
+    - code: "G2.5.4"
+      name: "Takyric Hapli-Orthic Aridosols"
+      aliases: ["Takyric Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos taquíricos"
+      adjective: "Takyric"
+      page: 107
+      tests:
+        all_of:
+          - takyric: {}
+      notes: "Polygonal cracks on the soil surface 1 cm or more wide through 1-4 cm."
+    - code: "G2.5.5"
+      name: "Sodic Hapli-Orthic Aridosols"
+      aliases: ["Sodic Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos sódicos"
+      adjective: "Sodic"
+      page: 107
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "G2.5.6"
+      name: "Paragypsic Hapli-Orthic Aridosols"
+      aliases: ["Paragypsic Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos paragípsicos"
+      adjective: "Paragypsic"
+      page: 108
+      tests:
+        all_of:
+          - paragypsic: {to: 100}
+      notes: "Gypsic evidence within 100 cm of the mineral soil surface."
+    - code: "G2.5.7"
+      name: "Dark Hapli-Orthic Aridosols"
+      aliases: ["Dark Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos escuros"
+      adjective: "Dark"
+      page: 108
+      tests:
+        all_of:
+          - dark_surface: {}
+          - calcic_or_evidence: {to: 100}
+      notes: "The dark mixed surface and calcic evidence within 100 cm of the mineral soil surface (the only Dark subgroup that asks for calcic evidence, as printed)."
+    - code: "G2.5.8"
+      name: "Typic Hapli-Orthic Aridosols"
+      aliases: ["Typic Hapli-Orthic Aridosol"]
+      name_pt: "Aridossolos órticos háplicos típicos"
+      adjective: "Typic"
+      page: 108
+      tests:
+        default: true
+      notes: "Other Hapli-Orthic Aridosols."

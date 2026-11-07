@@ -146,8 +146,10 @@
 # (<name>_<namespace>), so that its diagnostics never collide with another
 # system's (a Canadian Chernozemic gate is not WRB's chernozem()); no
 # combinator is written as a mapping; and every class has a quoted code and
-# name, unique within its list.
-# Returns a list(system, n, missing, mixed, unsuffixed, malformed, codes).
+# name, unique within its list; and, for a system with presets, every preset
+# call names its parameters.
+# Returns a list(system, n, missing, mixed, unsuffixed, malformed, codes,
+# presets).
 .validate_rules <- function(system = "wrb2022") {
   system <- .system_resolve(system)
   sys    <- .system_get(system)
@@ -163,5 +165,7 @@
   list(system = system, n = length(preds), missing = preds[!ok],
        mixed = .collect_mixed_blocks(rules), unsuffixed = unsuffixed,
        malformed = .collect_malformed_blocks(rules),
-       codes = .collect_code_problems(rules, sys))
+       codes = .collect_code_problems(rules, sys),
+       # v0.9.375: calls of the presets of a rule set (R/rule-presets.R)
+       presets = attr(rules, "preset_problems") %||% character(0))
 }

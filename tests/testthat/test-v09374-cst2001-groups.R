@@ -4,7 +4,12 @@
 # [A1.4] and [A2.5] (Q4), and one example per group.
 
 .c374 <- function(p, ...) classify_cst2001(p, on_missing = "silent", ...)
-.prov374 <- function(r) length(r$provisional_because) > 0L || any(grepl("^Provisional", r$warnings))
+# v0.9.375: provisional above the subgroups
+.prov374 <- function(r) {
+  any(!grepl("^subgroups:", r$provisional_because)) ||
+    any(grepl("^Provisional: \\S+ .* rests on a reading", r$warnings) &
+          !grepl("^Provisional: \\[?[A-N][0-9]+\\.[0-9]+\\.", r$warnings))
+}
 .SUB374 <- c(A1 = "A1.3", A2 = "A2.3", B1 = "B1.3", B2 = "B2.4", C1 = "C1.1", C2 = "C2.1", D1 = "D1.2",
              D2 = "D2.1", D3 = "D3.2", E1 = "E1.1", F1 = "F1.2", F2 = "F2.1", F3 = "F3.3", G1 = "G1.1",
              G2 = "G2.3", H1 = "H1.3", H2 = "H2.1", I1 = "I1.2", I2 = "I2.2", I3 = "I3.2", J1 = "J1.1",
@@ -15,7 +20,7 @@
 test_that("the registry reaches the groups", {
   skip_on_cran()
   sys <- soilKey:::.system_get("cst2001")
-  expect_identical(sys$levels, c("orders", "suborders", "groups"))
+  expect_identical(sys$levels, c("orders", "suborders", "groups", "subgroups"))
   expect_true(file.exists(system.file("rules", "cst2001", "groups", "M.yaml", package = "soilKey")))
 })
 
@@ -74,7 +79,7 @@ test_that("every group example keys to its own group, not provisionally", {
     expect_identical(p$site$id, paste0("cst2001-", cd))
     r <- .c374(p)
     expect_identical(r$levels$code[3], cd, info = cd)
-    expect_identical(r$levels$level, c("orders", "suborders", "groups"), info = cd)
+    expect_identical(r$levels$level[1:3], c("orders", "suborders", "groups"), info = cd)
     expect_false(.prov374(r), info = cd)
     expect_true(nzchar(r$levels$name_pt[3]), info = cd)
   }
@@ -85,7 +90,7 @@ test_that("the 39 suborder examples key to their suborder and a group, not provi
   skip_on_cran()
   for (cd in names(.SUB374)) {
     r <- .c374(make_cst2001_example(cd))
-    expect_identical(r$levels$code, c(substr(cd, 1, 1), cd, .SUB374[[cd]]), info = cd)
+    expect_identical(r$levels$code[1:3], c(substr(cd, 1, 1), cd, .SUB374[[cd]]), info = cd)
     expect_false(.prov374(r), info = cd)
   }
   # the group example of these groups is the suborder example itself
@@ -96,7 +101,7 @@ test_that("the 39 suborder examples key to their suborder and a group, not provi
 test_that("the book's provisional groups and soilKey's bracketed residuals carry their notes", {
   skip_on_cran()
   r <- .c374(make_cst2001_example("C1"))
-  expect_identical(r$levels$book_provisional, c(FALSE, FALSE, TRUE))
+  expect_identical(r$levels$book_provisional[1:3], c(FALSE, FALSE, TRUE))
   expect_true(any(grepl("C1.1 Hapli-Humic Spodosols is marked provisional in CST 2001", r$warnings, fixed = TRUE)))
   expect_false(.prov374(r))
   # a sapric Permagelic Histosol: no printed group, soilKey's residual
@@ -127,7 +132,7 @@ test_that("an undecided group makes the name provisional; a provisional reading 
   r <- .c374(p)
   expect_identical(r$levels$code[3], "B1.1")
   expect_true(any(grepl("^Provisional: B1.1 Gleyi-Stagnic Anthrosols rests on a reading", r$warnings)))
-  expect_identical(r$candidates$code, "B1.3")
+  expect_match(r$candidates$code, "^B1\\.3(\\.[0-9]+)?$")
   expect_identical(r$candidates$instead_of, "B1.1")
   # the regime not recorded: the climate groups of the Primosols undecided,
   # the Udi- residual provisional

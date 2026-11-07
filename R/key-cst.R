@@ -21,8 +21,11 @@
 #
 # Experimental and opt-in: classify_all() runs it only when asked. The groups
 # (v0.9.374) are keyed from inst/rules/cst2001/groups/, with the criteria of
-# R/key-cst-groups.R; the subgroups follow in a later part. Readings where
-# the text is silent:
+# R/key-cst-groups.R; the subgroups of orders A to G (v0.9.375) from
+# inst/rules/cst2001/subgroups/, their criteria written as presets
+# (presets.yaml, expanded at load time by R/rule-presets.R) on the
+# predicates of R/key-cst-subgroups.R; those of orders H to N follow in a
+# later part. Readings where the text is silent:
 # inst/rules/cst2001/readings.yaml.
 # =============================================================================
 
@@ -684,8 +687,12 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 #' their 138 groups (key 5.2), with soilKey's residuals \code{[E2] [Other
 #' Ferralosols]}, \code{[A1.4] [Other Permagelic Histosols]} and
 #' \code{[A2.5] [Other Orthic Histosols]} where the book prints none (the
-#' name stops there, with a note). The 588 subgroups follow in a later
-#' release.
+#' name stops there, with a note). Since v0.9.375 it keys the subgroups of
+#' orders A to G (176, with \code{[A1.3.x]} Lithic Hemi-Permagelic Histosols,
+#' listed in Appendix 1 only, at its Appendix position); their criteria are
+#' written as presets (\code{inst/rules/cst2001/presets.yaml}), expanded
+#' when the rules are loaded. The groups of orders H to N stop at the group,
+#' with a note, until their subgroups follow in a later release.
 #'
 #' The key is read in the book's order, the first class whose criteria pass
 #' assigned, as the book prescribes (each class lacks the properties of the
@@ -725,7 +732,7 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"cst2001"}, the group (or the deepest class assigned) in
+#'   \code{"cst2001"}, the subgroup (or the deepest class assigned) in
 #'   \code{name}, the order in \code{rsg_or_order}, the classes
 #'   of each level in \code{levels} (with \code{name_pt} and
 #'   \code{book_provisional}), the key trace with the horizon panel,
@@ -824,6 +831,19 @@ classify_cst2001 <- function(pedon, rules = NULL,
     notes <- c(notes, sprintf(paste(
       "%s %s is soilKey's residual: the book prints no class for this soil at this level",
       "(Hugo's decision Q4); the name stops there."), lv$code[nrow(lv)], lv$name[nrow(lv)]))
+  # v0.9.375: a subgroup of Appendix 1 the key does not print ([A1.3.x],
+  # Hugo's decision Q3)
+  if (isTRUE(last$appendix_only))
+    notes <- c(notes, sprintf(paste(
+      "%s %s is listed in Appendix 1 only: the key prints no such subgroup, and soilKey keys it at its",
+      "Appendix position with the test of its analogues (Hugo's decision Q3)."), lv$code[nrow(lv)], lv$name[nrow(lv)]))
+  # v0.9.375: the subgroups of orders H to N follow in a later part; a group
+  # of the book with no subgroup list stops the name there, with a note
+  if (identical(lv$level[nrow(lv)], "groups") && !isTRUE(last$bracketed) &&
+      is.null(rules$subgroups[[lv$code[nrow(lv)]]]))
+    notes <- c(notes, sprintf(paste(
+      "The subgroups of %s %s are not keyed in this release (soilKey keys those of orders A to G);",
+      "the name stops at the group."), lv$code[nrow(lv)], lv$name[nrow(lv)]))
   # the correlation of the order (Tables 4.2 and 4.3), a note only
   cr <- .cst_order_correlation(lv$code[1L])
   if (!is.null(cr)) {
@@ -860,7 +880,7 @@ classify_cst2001 <- function(pedon, rules = NULL,
                         "L1", "L2", "L3", "L4", "M1", "M2", "M3", "M4", "M5", "N1", "N2", "N3", "N4")
 .CST_NEAR_MISS_CODES <- c("A1", "B2", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J2", "K1", "L1", "M3", "N2")
 
-#' Example pedons for the suborders and groups of the Chinese Soil Taxonomy (2001)
+#' Example pedons for the suborders, groups and subgroups of the Chinese Soil Taxonomy (2001)
 #'
 #' Small, plausible profiles written for the tests and examples, one per
 #' suborder of the Chinese Soil Taxonomy (2001), with FAO designations, the
@@ -868,7 +888,10 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' suborder, not provisionally (with the group it reaches). Since v0.9.374 a
 #' group code (\code{"A1.1"} ... \code{"N4.7"}, and soilKey's
 #' \code{"[A1.4]"} and \code{"[A2.5]"}) gives one profile per group, 140 in
-#' all, each keying to its own group, not provisionally. They are not real
+#' all, each keying to its own group, not provisionally; since v0.9.375 a
+#' subgroup code of orders A to G (\code{"A1.1.1"} ... \code{"G2.5.8"}, and
+#' \code{"[A1.3.x]"}) gives one profile per subgroup, 176 in all, each
+#' keying to its own subgroup, not provisionally. They are not real
 #' profiles. With
 #' \code{near_miss = TRUE}, fourteen of them (one per order) change one
 #' property so that the profile misses its class and lands in another:
@@ -885,7 +908,8 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' g/kg carbon (Orthic Primosols).
 #'
 #' @param suborder The code of the suborder, as printed (\code{"A1"} ...
-#'   \code{"N4"}), or of a group (\code{"A1.1"} ... \code{"N4.7"}).
+#'   \code{"N4"}), of a group (\code{"A1.1"} ... \code{"N4.7"}) or of a
+#'   subgroup of orders A to G (\code{"A1.1.1"} ... \code{"G2.5.8"}).
 #' @param near_miss Give the near miss of the suborder (one per order:
 #'   \code{"A1"}, \code{"B2"}, \code{"C1"}, \code{"D1"}, \code{"E1"},
 #'   \code{"F1"}, \code{"G1"}, \code{"H1"}, \code{"I1"}, \code{"J2"},
@@ -897,8 +921,15 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' p$horizons[, c("designation", "top_cm", "bottom_cm", "clay_pct", "cec_cmol")]
 #' classify_cst2001(make_cst2001_example("E1", near_miss = TRUE), on_missing = "silent")$name
 #' classify_cst2001(make_cst2001_example("K3.2"), on_missing = "silent")$levels
+#' classify_cst2001(make_cst2001_example("E1.3.4"), on_missing = "silent")$name
 #' @export
 make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALSE) {
+  # v0.9.375: a subgroup code gives the example of the subgroup
+  if (length(suborder) == 1L && suborder %in% .CST_SUBGROUP_EXAMPLE_CODES) {
+    if (isTRUE(near_miss)) rlang::abort(sprintf("No near miss for %s; near misses exist for %s.", suborder,
+                                                paste(.CST_NEAR_MISS_CODES, collapse = ", ")))
+    return(.cst_subgroup_example(suborder))
+  }
   # v0.9.374: a group code gives the example of the group
   if (length(suborder) == 1L && suborder %in% .CST_GROUP_EXAMPLE_CODES) {
     if (isTRUE(near_miss)) rlang::abort(sprintf("No near miss for %s; near misses exist for %s.", suborder,

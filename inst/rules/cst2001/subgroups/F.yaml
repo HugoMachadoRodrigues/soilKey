@@ -1,0 +1,222 @@
+# The keys to subgroups of the Vertosols (order F) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 96-100, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "F1.1":
+    - code: "F1.1.1"
+      name: "Ustic Calci-Aquic Vertosols"
+      aliases: ["Ustic Calci-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos cálcicos ústicos"
+      adjective: "Ustic"
+      page: 97
+      tests:
+        all_of:
+          - ustic_region: {days: 90}
+      notes: "In a region with an ustic moisture regime and, if not irrigated, cracks 5 mm or more wide through 25 cm or more within 50 cm for 90 or more cumulative days a year."
+    - code: "F1.1.2"
+      name: "Shajiang Calci-Aquic Vertosols"
+      aliases: ["Shajiang Calci-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos cálcicos com shajiang"
+      adjective: "Shajiang"
+      page: 97
+      tests:
+        all_of:
+          - shajiang_cst: {min_pct: 10, min_cm: 10, from_cm: 50, within: 100, total: true}
+      notes: "10 % or more by volume of calcareous nodules or concretions (shajiang) in horizons totalling 10 cm or more between 50 and 100 cm of the mineral soil surface."
+    - code: "F1.1.3"
+      name: "Typic Calci-Aquic Vertosols"
+      aliases: ["Typic Calci-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos cálcicos típicos"
+      adjective: "Typic"
+      page: 97
+      tests:
+        default: true
+      notes: "Other Calci-Aquic Vertosols."
+
+  "F1.2":
+    - code: "F1.2.1"
+      name: "Ustic Hapli-Aquic Vertosols"
+      aliases: ["Ustic Hapli-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos háplicos ústicos"
+      adjective: "Ustic"
+      page: 97
+      tests:
+        all_of:
+          - ustic_region: {days: 90}
+      notes: "As F1.1.1: an ustic region and the cracks for 90 days."
+    - code: "F1.2.2"
+      name: "Gleyic Hapli-Aquic Vertosols"
+      aliases: ["Gleyic Hapli-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos háplicos gleicos"
+      adjective: "Gleyic"
+      page: 97
+      tests:
+        all_of:
+          - gleyic: {from: 50, to: 100, total: true}
+      notes: "Gleyic features in horizons totalling 10 cm or more between 50 and 100 cm of the mineral soil surface."
+    - code: "F1.2.3"
+      name: "Calcaric Hapli-Aquic Vertosols"
+      aliases: ["Calcaric Hapli-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos háplicos calcáricos"
+      adjective: "Calcaric"
+      page: 97
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property."
+    - code: "F1.2.4"
+      name: "Typic Hapli-Aquic Vertosols"
+      aliases: ["Typic Hapli-Aquic Vertosol"]
+      name_pt: "Vertossolos áquicos háplicos típicos"
+      adjective: "Typic"
+      page: 97
+      tests:
+        default: true
+      notes: "Other Hapli-Aquic Vertosols."
+
+  "F2.1":
+    - code: "F2.1.1"
+      name: "Aridic Calci-Ustic Vertosols"
+      aliases: ["Aridic Calci-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos cálcicos arídicos"
+      adjective: "Aridic"
+      page: 98
+      tests:
+        all_of:
+          - crack_days: {days: 210}
+      notes: "If not irrigated, cracks 5 mm or more wide through 25 cm or more within 50 cm for 210 or more cumulative days a year."
+    - code: "F2.1.2"
+      name: "Trunic Calci-Ustic Vertosols"
+      aliases: ["Trunic Calci-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos cálcicos truncados"
+      adjective: "Trunic"
+      page: 98
+      tests:
+        all_of:
+          - trunic: {horizon: b}
+      notes: "A B horizon exposed at the soil surface."
+    - code: "F2.1.3"
+      name: "Typic Calci-Ustic Vertosols"
+      aliases: ["Typic Calci-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos cálcicos típicos"
+      adjective: "Typic"
+      page: 98
+      tests:
+        default: true
+      notes: "Other Calci-Ustic Vertosols."
+
+  "F2.2":
+    - code: "F2.2.1"
+      name: "Aridi-trunic Hapli-Ustic Vertosols"
+      aliases: ["Aridi-trunic Hapli-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos háplicos arídicos truncados"
+      adjective: "Aridi-trunic"
+      page: 98
+      tests:
+        all_of:
+          - crack_days: {days: 210}
+          - trunic: {horizon: b}
+      notes: "The cracks for 210 days and a B horizon exposed at the soil surface (keyed before its parts)."
+    - code: "F2.2.2"
+      name: "Aridic Hapli-Ustic Vertosols"
+      aliases: ["Aridic Hapli-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos háplicos arídicos"
+      adjective: "Aridic"
+      page: 99
+      tests:
+        all_of:
+          - crack_days: {days: 210}
+      notes: "The cracks for 210 days (printed without 'Other'; the first match supplies it)."
+    - code: "F2.2.3"
+      name: "Trunic Hapli-Ustic Vertosols"
+      aliases: ["Trunic Hapli-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos háplicos truncados"
+      adjective: "Trunic"
+      page: 99
+      tests:
+        all_of:
+          - trunic: {horizon: b}
+      notes: "A B horizon exposed at the soil surface."
+    - code: "F2.2.4"
+      name: "Typic Hapli-Ustic Vertosols"
+      aliases: ["Typic Hapli-Ustic Vertosol"]
+      name_pt: "Vertossolos ústicos háplicos típicos"
+      adjective: "Typic"
+      page: 99
+      tests:
+        default: true
+      notes: "Other Hapli-Ustic Vertosols."
+
+  "F3.1":
+    - code: "F3.1.1"
+      name: "Paracalcic Humi-Udic Vertosols"
+      aliases: ["Paracalcic Humi-Udic Vertosol"]
+      name_pt: "Vertossolos údicos húmicos paracálcicos"
+      adjective: "Paracalcic"
+      page: 99
+      tests:
+        all_of:
+          - calcic_or_evidence: {from: 50, to: 100, datum: surface}
+      notes: "Calcic evidence between 50 and 100 cm of the soil surface."
+    - code: "F3.1.2"
+      name: "Typic Humi-Udic Vertosols"
+      aliases: ["Typic Humi-Udic Vertosol"]
+      name_pt: "Vertossolos údicos húmicos típicos"
+      adjective: "Typic"
+      page: 100
+      tests:
+        default: true
+      notes: "Other Humi-Udic Vertosols."
+
+  "F3.2":
+    - code: "F3.2.1"
+      name: "Mottlic Calci-Udic Vertosols"
+      aliases: ["Mottlic Calci-Udic Vertosol"]
+      name_pt: "Vertossolos údicos cálcicos mosqueados"
+      adjective: "Mottlic"
+      page: 100
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100, thick: 0}
+      notes: "Redoxic features between 50 and 100 cm of the mineral soil surface (no thickness printed)."
+    - code: "F3.2.2"
+      name: "Typic Calci-Udic Vertosols"
+      aliases: ["Typic Calci-Udic Vertosol"]
+      name_pt: "Vertossolos údicos cálcicos típicos"
+      adjective: "Typic"
+      page: 100
+      tests:
+        default: true
+      notes: "Other Calci-Udic Vertosols."
+
+  "F3.3":
+    - code: "F3.3.1"
+      name: "Lithic Hapli-Udic Vertosols"
+      aliases: ["Lithic Hapli-Udic Vertosol"]
+      name_pt: "Vertossolos údicos háplicos líticos"
+      adjective: "Lithic"
+      page: 100
+      tests:
+        all_of:
+          - lithic: {from: 50, depth: 100}
+      notes: "A lithic or paralithic contact between 50 and 100 cm of the mineral soil surface."
+    - code: "F3.3.2"
+      name: "Typic Hapli-Udic Vertosols"
+      aliases: ["Typic Hapli-Udic Vertosol"]
+      name_pt: "Vertossolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 100
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Vertosols."

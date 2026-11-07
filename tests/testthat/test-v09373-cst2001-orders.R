@@ -5,7 +5,13 @@
 # and the i18n keys.
 
 .c373 <- function(p, ...) classify_cst2001(p, on_missing = "silent", ...)
-.prov373 <- function(r) length(r$provisional_because) > 0L || any(grepl("^Provisional", r$warnings))
+# v0.9.375: provisional above the subgroups (the subgroups of an example of
+# this part may rest on data it does not carry)
+.prov373 <- function(r) {
+  any(!grepl("^subgroups:", r$provisional_because)) ||
+    any(grepl("^Provisional: \\S+ .* rests on a reading", r$warnings) &
+          !grepl("^Provisional: \\[?[A-N][0-9]+\\.[0-9]+\\.", r$warnings))
+}
 .CODES373 <- c("A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "D3", "E1", "F1", "F2", "F3",
                "G1", "G2", "H1", "H2", "I1", "I2", "I3", "J1", "J2", "J3", "K1", "K2", "K3",
                "L1", "L2", "L3", "L4", "M1", "M2", "M3", "M4", "M5", "N1", "N2", "N3", "N4")
@@ -22,7 +28,7 @@ test_that("the registry entry of cst2001", {
   expect_false(sys$default)
   expect_false(sys$legacy)
   expect_identical(sys$namespace, "cst")
-  expect_identical(sys$levels, c("orders", "suborders", "groups"))
+  expect_identical(sys$levels, c("orders", "suborders", "groups", "subgroups"))
   for (a in c("cst", "china", "chinese", "cst2001"))
     expect_identical(soilKey:::.system_resolve(a), "cst2001")
   expect_false("cst2001" %in% soilKey:::.system_ids(default_only = TRUE))
@@ -400,9 +406,9 @@ test_that("R1-R4: the decisions on the doubtful readings", {
   rd <- vapply(r, `[[`, "", "reading")
   expect_true(any(grepl("KST criterion has 8 % clay or more", rd, fixed = TRUE)))
   # the readings of the parts up to 0.9.373 are all decided (the groups of
-  # 0.9.374 bring their own, for Hugo's word)
+  # 0.9.374 and the subgroups of 0.9.375 bring their own, for Hugo's word)
   tp <- vapply(r, `[[`, "", "topic")
-  expect_false(any(grepl("for Hugo to confirm", rd[!grepl("^Groups:", tp)])))
+  expect_false(any(grepl("for Hugo to confirm", rd[!grepl("^(Groups|Subgroups):", tp)])))
   # R2: the Changbai Andosol (silty clay loam) is not Vitric; loam is not coarse
   andi <- list(designation = c("Ah", "Bw1", "Bw2", "C"), top_cm = c(0, 25, 60, 100), bottom_cm = c(25, 60, 100, 140),
     oc_pct = c(7, 3, 1.5, 0.6), clay_pct = c(25, 28, 25, 20), silt_pct = c(50, 47, 50, 50), sand_pct = c(25, 25, 25, 30),

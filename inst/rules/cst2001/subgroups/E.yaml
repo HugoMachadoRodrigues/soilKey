@@ -1,0 +1,181 @@
+# The keys to subgroups of the Ferralosols (order E) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 93-96, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "E1.1":
+    - code: "E1.1.1"
+      name: "Trunic Rhodi-Udic Ferralosols"
+      aliases: ["Trunic Rhodi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos ródicos truncados"
+      adjective: "Trunic"
+      page: 94
+      tests:
+        all_of:
+          - trunic: {horizon: ferralic_horizon}
+      notes: "The ferralic horizon exposed at the soil surface."
+    - code: "E1.1.2"
+      name: "Humic Rhodi-Udic Ferralosols"
+      aliases: ["Humic Rhodi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos ródicos húmicos"
+      adjective: "Humic"
+      page: 94
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property."
+    - code: "E1.1.3"
+      name: "Anthrostagnic Rhodi-Udic Ferralosols"
+      aliases: ["Anthrostagnic Rhodi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos ródicos antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 94
+      tests:
+        any_of:
+          - anthrostagnic: {}
+          - hydragric_horizon_cst: {grade: at_least_evidence}
+      notes: "Anthrostagnic evidence or hydragric evidence (the full diagnostics pass too, Q19)."
+    - code: "E1.1.4"
+      name: "Typic Rhodi-Udic Ferralosols"
+      aliases: ["Typic Rhodi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos ródicos típicos"
+      adjective: "Typic"
+      page: 94
+      tests:
+        default: true
+      notes: "Other Rhodi-Udic Ferralosols."
+
+  "E1.2":
+    - code: "E1.2.1"
+      name: "Trunic Xanthi-Udic Ferralosols"
+      aliases: ["Trunic Xanthi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos xânticos truncados"
+      adjective: "Trunic"
+      page: 94
+      tests:
+        all_of:
+          - trunic: {horizon: ferralic_horizon}
+      notes: "The ferralic horizon exposed at the soil surface."
+    - code: "E1.2.2"
+      name: "Humic Xanthi-Udic Ferralosols"
+      aliases: ["Humic Xanthi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos xânticos húmicos"
+      adjective: "Humic"
+      page: 94
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property."
+    - code: "E1.2.3"
+      name: "Anthrostagnic Xanthi-Udic Ferralosols"
+      aliases: ["Anthrostagnic Xanthi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos xânticos antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 94
+      tests:
+        any_of:
+          - anthrostagnic: {}
+          - hydragric_horizon_cst: {grade: at_least_evidence}
+      notes: "Anthrostagnic evidence or hydragric evidence (the full diagnostics pass too, Q19)."
+    - code: "E1.2.4"
+      name: "Typic Xanthi-Udic Ferralosols"
+      aliases: ["Typic Xanthi-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos xânticos típicos"
+      adjective: "Typic"
+      page: 94
+      tests:
+        default: true
+      notes: "Other Xanthi-Udic Ferralosols."
+
+  "E1.3":
+    - code: "E1.3.1"
+      name: "Trunic Hapli-Udic Ferralosols"
+      aliases: ["Trunic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos truncados"
+      adjective: "Trunic"
+      page: 95
+      tests:
+        all_of:
+          - trunic: {horizon: ferralic_horizon}
+      notes: "The ferralic horizon exposed at the soil surface."
+    - code: "E1.3.2"
+      name: "Humic Hapli-Udic Ferralosols"
+      aliases: ["Humic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos húmicos"
+      adjective: "Humic"
+      page: 95
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property."
+    - code: "E1.3.3"
+      name: "Anthrostagnic Hapli-Udic Ferralosols"
+      aliases: ["Anthrostagnic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 95
+      tests:
+        any_of:
+          - anthrostagnic: {}
+          - hydragric_horizon_cst: {grade: at_least_evidence}
+      notes: "Anthrostagnic evidence or hydragric evidence (the full diagnostics pass too, Q19)."
+    - code: "E1.3.4"
+      name: "Xanthic Hapli-Udic Ferralosols"
+      aliases: ["Xanthic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos xânticos"
+      adjective: "Xanthic"
+      page: 95
+      tests:
+        all_of:
+          - xanthic: {thick: 10}
+      notes: "A udic regime bordering on the perudic one and a hue of 7.5YR or yellower in the upper part, 10 cm or more, of the B horizon within 125 cm."
+    - code: "E1.3.5"
+      name: "Mottlic Hapli-Udic Ferralosols"
+      aliases: ["Mottlic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 95
+      tests:
+        any_of:
+          - mottlic: {to: 100}
+          - hue_run: {hue: "7.5YR", rule: yellower, to: 100}
+      notes: "Redoxic features or a hue of 7.5YR or yellower in some horizon 10 cm or more thick within 100 cm of the mineral soil surface (as printed: a yellow horizon alone passes)."
+    - code: "E1.3.6"
+      name: "Plinthic Hapli-Udic Ferralosols"
+      aliases: ["Plinthic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos plínticos"
+      adjective: "Plinthic"
+      page: 95
+      tests:
+        all_of:
+          - plinthic_horizon_cst: {top_max: 125, datum: mineral}
+      notes: "A plinthic horizon within 125 cm of the mineral soil surface."
+    - code: "E1.3.7"
+      name: "Eutrophic Hapli-Udic Ferralosols"
+      aliases: ["Eutrophic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos eutróficos"
+      adjective: "Eutrophic"
+      page: 95
+      tests:
+        all_of:
+          - eutrophic: {bs: 35, share: 0.8}
+      notes: "Base saturation (NH4OAc) of 35 % or more in 80 % or more of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "E1.3.8"
+      name: "Typic Hapli-Udic Ferralosols"
+      aliases: ["Typic Hapli-Udic Ferralosol"]
+      name_pt: "Ferralossolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 96
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Ferralosols."

@@ -1,0 +1,151 @@
+# The presets of the keys to subgroups of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001). The same adjective carries different depths,
+# thicknesses and extents in different groups, so each subgroup row of
+# subgroups/{A..N}.yaml calls a preset with the numbers printed for it, and
+# load_rules() expands the call into an ordinary block (R/rule-presets.R):
+# a "$name" in a template is filled with the parameter of the call or the
+# default below; "required" must be given; a null drops the argument. A
+# complex subgroup (Calcari-mottlic, Aridi-trunic, Gypsi-panic, Sodi-takyric
+# ...) is an all_of of two presets, keyed before its simple parts as
+# printed. The criteria are those of R/key-cst-subgroups.R and of the earlier
+# parts; readings in readings.yaml. Datums: "mineral" (the mineral soil
+# surface) or "surface" (the soil surface), as each sentence prints it.
+
+presets:
+
+  # --- contacts ---------------------------------------------------------------------------
+  lithic:
+    note: "A lithic contact (contact: lithic) or a lithic or paralithic contact within `depth` cm (between `from` and `depth` cm when `from` is given); the later orders add the fragments alternative (fragments: more_than_half or half_or_more, 70 % of fragments > 2 mm in the horizons within `depth`) and the extent under the plane (plane: true)."
+    params: {depth: required, contact: lithic_or_paralithic, datum: mineral, from: ~, fragments: none, plane: false}
+    template:
+      contact_sg_cst: {top_max: $depth, kind: $contact, datum: $datum, top_min: $from, fragments: $fragments, plane_extent: $plane}
+
+  # --- a feature in a window --------------------------------------------------------------
+  mottlic:
+    note: "Redoxic features (and the other `features` given, each read on its own run: gleyic_features for 'or gleyic evidence') in some horizon `thick` cm thick between `from` and `to` cm, or in horizons totalling `thick` (total: true); thick 0: anywhere in the window."
+    params: {to: required, from: 0, thick: 10, total: false, datum: mineral, features: [redoxic_features]}
+    template:
+      feature_run_cst: {features: $features, min_cm: $thick, from_cm: $from, to_cm: $to, total: $total, datum: $datum, grade: at_least_evidence}
+
+  gleyic:
+    note: "Gleyic features (grade: at_least_evidence for gleyic evidence) in some horizon `thick` cm thick between `from` and `to` cm, or in horizons totalling `thick` (total: true). Endogleyic is from: 60, to: 100."
+    params: {to: required, from: 0, thick: 10, total: false, datum: mineral, grade: full}
+    template:
+      feature_run_cst: {features: [gleyic_features], min_cm: $thick, from_cm: $from, to_cm: $to, total: $total, datum: $datum, grade: $grade}
+
+  parasalic:
+    note: "Salic evidence (the salic horizon passes too, Q19) in some horizon `thick` cm thick within `within` cm, or in horizons totalling `thick` (total: true)."
+    params: {within: required, thick: 10, total: false, datum: mineral}
+    template:
+      feature_run_cst: {features: [salic_horizon], min_cm: $thick, from_cm: 0, to_cm: $within, total: $total, datum: $datum, grade: at_least_evidence}
+
+  sodic:
+    note: "The sodic property (grade: at_least_evidence for 'or sodic evidence') in some horizon `thick` cm thick within `within` cm (thick 0: anywhere within it)."
+    params: {within: required, thick: 10, datum: mineral, grade: full}
+    template:
+      feature_run_cst: {features: [sodic_property], min_cm: $thick, from_cm: 0, to_cm: $within, datum: $datum, grade: $grade}
+
+  sulfic:
+    note: "Sulfidic materials in some layer `thick` cm thick (horizons totalling it with total: true) within `within` cm, or a sulfuric horizon whose upper boundary lies within `within` cm."
+    params: {within: required, thick: 15, total: false, datum: mineral}
+    template:
+      any_of:
+        - feature_run_cst: {features: [sulfidic_materials], min_cm: $thick, from_cm: 0, to_cm: $within, total: $total, datum: $datum}
+        - sulfuric_horizon_cst: {top_max: $within, datum: $datum}
+
+  calcic_or_evidence:
+    note: "A calcic horizon (without its hypercalcic layers: the key names the calcic horizon alone) or calcic evidence anywhere between `from` and `to` cm (to: ~ for no depth). Paracalcic is the same reading: calcic evidence, the calcic horizon passing too (Q19)."
+    params: {to: required, from: 0, datum: mineral}
+    template:
+      feature_run_cst: {features: [calcic_only], min_cm: 0, from_cm: $from, to_cm: $to, datum: $datum, grade: at_least_evidence}
+
+  paragypsic:
+    note: "Gypsic evidence (the gypsic horizon passes too, Q19) anywhere between `from` and `to` cm."
+    params: {to: required, from: 0, datum: mineral}
+    template:
+      feature_run_cst: {features: [gypsic_horizon], min_cm: 0, from_cm: $from, to_cm: $to, datum: $datum, grade: at_least_evidence}
+
+  # --- base saturation and pH ------------------------------------------------------------
+  dystric:
+    note: "Base saturation under 50 % or pH under 5.5 in every horizon between `from` and `to` cm (mode: some, in a run `thick` cm thick there; scope: b, throughout the B within 125 cm or, mode: some, in a subhorizon of it)."
+    params: {to: required, from: 0, mode: throughout, scope: window, thick: 10, datum: mineral}
+    template:
+      dystric_cst: {from_cm: $from, to_cm: $to, mode: $mode, scope: $scope, min_cm: $thick, datum: $datum}
+
+  eutrophic:
+    note: "Base saturation (NH4OAc) of `bs` % or more in `share` or more of the thickness of the horizons within `within` cm (strict: true for 'more than')."
+    params: {bs: 35, share: 0.8, strict: false, within: 125}
+    template:
+      bs_share_cst: {min_pct: $bs, share: $share, strict: $strict, within: $within}
+
+  # --- horizons at the surface and colours -------------------------------------------------
+  trunic:
+    note: "The order's horizon exposed at the soil surface: ferralic_horizon (E), lac_ferric_horizon (K), argic_or_claypan (L), cambic_horizon (M), or b, a B horizon (F)."
+    params: {horizon: required}
+    template:
+      trunic_cst: {horizon: $horizon}
+
+  hue_run:
+    note: "A hue (`rule`: yellower, redder or redder_than `hue`) in some horizon `thick` cm thick between `from` and `to` cm."
+    params: {hue: required, rule: yellower, thick: 10, from: 0, to: required, datum: mineral, state: moist}
+    template:
+      hue_run_cst: {hue: $hue, rule: $rule, min_cm: $thick, from_cm: $from, to_cm: $to, datum: $datum, state: $state}
+
+  hue_share:
+    note: "A hue in `share` of the horizons within `within` cm (strict: true for 'more than half'), or of the B (scope: b); state: both where the book writes dry and moist."
+    params: {hue: required, rule: redder, share: 0.5, strict: true, within: 125, scope: window, state: moist}
+    template:
+      hue_share_cst: {hue: $hue, rule: $rule, share: $share, strict: $strict, within: $within, scope: $scope, state: $state}
+
+  xanthic:
+    note: "A udic regime bordering on the perudic one and a hue of 7.5YR or yellower in the upper part, `thick` cm or more, of the B within 125 cm."
+    params: {thick: 10}
+    template:
+      all_of:
+        - udic_perudic_border_cst: {}
+        - b_upper_hue_cst: {hue: "7.5YR", rule: yellower, min_cm: $thick}
+
+  dark_surface:
+    note: "A moist value of 3.5 or less and a dry (crushed) value of 5.5 or less in the upper 18 cm after mixing (the Aridosols)."
+    params: {}
+    template:
+      dark_surface_cst: {}
+
+  dark_epipedon:
+    note: "A histic, mollic or umbric epipedon (Dark of the Andosols)."
+    params: {}
+    template:
+      any_of:
+        - histic_epipedon_cst: {}
+        - mollic_epipedon_cst: {}
+        - umbric_epipedon_cst: {}
+
+  takyric:
+    note: "Polygonal cracks on the soil surface 1 cm or more wide through 1-4 cm (the reader of H1.1)."
+    params: {}
+    template:
+      takyric_surface_cst: {}
+
+  # --- regimes and cracks ------------------------------------------------------------------
+  crack_days:
+    note: "If not irrigated, cracks 5 mm or more wide through 25 cm or more within 50 cm of the mineral soil surface for `days` cumulative days a year (Aridic: 210)."
+    params: {days: 210}
+    template:
+      crack_days_cst: {days: $days}
+
+  ustic_region:
+    note: "In a region with an ustic moisture regime (the climatic axis: the recorded climatic regime, the regional climatic_moisture_regime or the aridity index) and, if not irrigated, cracks for `days` days (F1.x.1)."
+    params: {days: 90}
+    template:
+      all_of:
+        - moisture_regime_cst: {regimes: [ustic]}
+        - crack_days_cst: {days: $days}
+
+  # --- anthropic evidences -------------------------------------------------------------------
+  anthrostagnic:
+    note: "Anthrostagnic evidence (the anthrostagnic epipedon passes too, Q19)."
+    params: {}
+    template:
+      anthrostagnic_epipedon_cst: {grade: at_least_evidence}
