@@ -492,9 +492,6 @@ dystric_cst <- function(pedon, from_cm = 0, to_cm = 125, mode = c("throughout", 
   list(p = p, flags = flags)
 }
 
-# Vectorised three-valued AND of two vectors.
-.cst_and_v <- function(a, b) ifelse(a %in% FALSE | b %in% FALSE, FALSE, ifelse(a %in% TRUE & b %in% TRUE, TRUE, NA))
-
 #' A hue in a run of layers `min_cm` thick (or anywhere, `min_cm` 0) in the
 #' window [from_cm, to_cm) (E1.3.5 Mottlic: 7.5YR or yellower in some
 #' horizon 10 cm thick within 100 cm, p. 95).
