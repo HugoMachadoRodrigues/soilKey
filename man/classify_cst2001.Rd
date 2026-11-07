@@ -24,11 +24,13 @@ classify_cst2001(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"cst2001"}, the suborder (or the order, when no suborder could be
-  assigned) in \code{name}, the order in \code{rsg_or_order}, the classes
+  \code{"cst2001"}, the group (or the deepest class assigned) in
+  \code{name}, the order in \code{rsg_or_order}, the classes
   of each level in \code{levels} (with \code{name_pt} and
-  \code{book_provisional}), the key trace with the horizon panel, and
-  \code{provisional_because}.
+  \code{book_provisional}), the key trace with the horizon panel,
+  \code{provisional_because}, and, when a class was assigned on a
+  provisional reading, in \code{candidates} the class the key would
+  reach without it (\code{kind} "alternative").
 }
 \description{
 Keys a \code{\link{PedonRecord}} through the Chinese Soil Taxonomy
@@ -36,10 +38,12 @@ Keys a \code{\link{PedonRecord}} through the Chinese Soil Taxonomy
 edition published by Science Press). \strong{Experimental}: this release
 keys the 14 orders (key 5.1: Histosols, Anthrosols, Spodosols, Andosols,
 Ferralosols, Vertosols, Aridosols, Halosols, Gleyosols, Isohumosols,
-Ferrosols, Argosols, Cambosols and Primosols) and their 39 suborders (key
-5.2), with soilKey's residual \code{[E2] [Other Ferralosols]} where the
-book prints none. The 138 groups and 588 subgroups follow in later
-releases.
+Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
+their 138 groups (key 5.2), with soilKey's residuals \code{[E2] [Other
+Ferralosols]}, \code{[A1.4] [Other Permagelic Histosols]} and
+\code{[A2.5] [Other Orthic Histosols]} where the book prints none (the
+name stops there, with a note). The 588 subgroups follow in a later
+release.
 }
 \details{
 The key is read in the book's order, the first class whose criteria pass
@@ -64,9 +68,10 @@ Names are the English of the book, in the plural of the key
 \code{levels$name_pt}. The approximate equivalents of the order in US Soil
 Taxonomy (1999) and the WRB (1998), Tables 4.2 and 4.3, are added as a
 note (\code{qualifiers$correlation_cst} and a line in \code{warnings});
-they never change the classification. A residual suborder named for the
-udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
-Argosols and Cambosols) reached by a soil whose recorded regime is another
+they never change the classification. A residual suborder or group named
+for the udic regime (the Udic Andosols, Vertosols, Isohumosols, Ferrosols,
+Argosols and Cambosols, the Udi- groups) or for the aquic one (the
+Aqui-Orthic Halosols) reached by a soil whose regime read is another
 keeps its class, with a note. The diagnostic horizons and characteristics
 of each layer are in the trace (phase \code{horizons}). The readings where
 the text is silent are listed in \code{system.file("rules", "cst2001",

@@ -1,0 +1,87 @@
+# The keys to groups of the Histosols (order A) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 75-81, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "A1":
+    - code: "A1.1"
+      name: "Foli-Permagelic Histosols"
+      name_pt: "Organossolos permagélicos fólicos"
+      page: 76
+      tests:
+        all_of:
+          - foli_histosol_cst: {}
+      notes: "Never saturated except for a few days a year, with folic soil materials, and a lithic or paralithic contact within 100 cm of the soil surface or organic soil materials with cindery, fragmental or pumiceous materials totalling 40 cm or more within 50 cm."
+    - code: "A1.2"
+      name: "Fibri-Permagelic Histosols"
+      name_pt: "Organossolos permagélicos fíbricos"
+      page: 76
+      tests:
+        all_of:
+          - histosol_tier_kind_cst: {kind: fibric}
+      notes: "Fibric soil materials predominate in the surface tier (thin mineral layers may occur in it)."
+    - code: "A1.3"
+      name: "Hemi-Permagelic Histosols"
+      name_pt: "Organossolos permagélicos hêmicos"
+      page: 76
+      tests:
+        all_of:
+          - histosol_tier_kind_cst: {kind: hemic}
+      notes: "Hemic soil materials predominate in the surface tier (thin mineral layers may occur in it)."
+    - code: "[A1.4]"
+      name: "[Other Permagelic Histosols]"
+      name_pt: "[Outros Organossolos permagélicos]"
+      bracketed: true
+      tests:
+        default: true
+      notes: "soilKey's residual: the book prints no group for the Permagelic Histosols that are none of the three above (a sapric surface tier, for instance) (Hugo's decision Q4, 2026-11-04); it has no subgroups."
+
+  "A2":
+    - code: "A2.1"
+      name: "Foli-Orthic Histosols"
+      name_pt: "Organossolos órticos fólicos"
+      page: 78
+      tests:
+        all_of:
+          - foli_histosol_cst: {}
+      notes: "Never saturated except for a few days a year, with folic soil materials, and a lithic or paralithic contact within 100 cm of the soil surface or organic soil materials with cindery, fragmental or pumiceous materials totalling 40 cm or more within 50 cm."
+    - code: "A2.2"
+      name: "Fibri-Orthic Histosols"
+      name_pt: "Organossolos órticos fíbricos"
+      page: 78
+      tests:
+        all_of:
+          - histosol_tier_kind_cst: {kind: fibric}
+      notes: "Fibric soil materials predominate in the surface tier (thin mineral layers may occur in it)."
+    - code: "A2.3"
+      name: "Hemi-Orthic Histosols"
+      aliases: ["Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos"
+      page: 78
+      tests:
+        all_of:
+          - histosol_tier_kind_cst: {kind: hemic}
+      notes: "Hemic soil materials predominate in the surface tier (thin mineral layers may occur in it)."
+    - code: "A2.4"
+      name: "Sapri-Orthic Histosols"
+      name_pt: "Organossolos órticos sápricos"
+      page: 78
+      tests:
+        all_of:
+          - histosol_tier_kind_cst: {kind: sapric}
+      notes: "Sapric soil materials (printed 'sarpric') predominate in the surface tier (thin mineral layers may occur in it)."
+    - code: "[A2.5]"
+      name: "[Other Orthic Histosols]"
+      name_pt: "[Outros Organossolos órticos]"
+      bracketed: true
+      tests:
+        default: true
+      notes: "soilKey's residual: the book prints no residual group for the Orthic Histosols (A2.4 Sapri- is conditional) (Hugo's decision Q4, 2026-11-04); it has no subgroups."

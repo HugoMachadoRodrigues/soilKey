@@ -1,0 +1,32 @@
+# The keys to groups of the Spodosols (order C) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 88-89, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "C1":
+    - code: "C1.1"
+      name: "Hapli-Humic Spodosols"
+      name_pt: "Espodossolos húmicos háplicos"
+      page: 88
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Humic Spodosols (marked provisional in the book)."
+
+  "C2":
+    - code: "C2.1"
+      name: "Hapli-Orthic Spodosols"
+      name_pt: "Espodossolos órticos háplicos"
+      page: 89
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Orthic Spodosols (marked provisional in the book)."

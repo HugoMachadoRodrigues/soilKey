@@ -1,0 +1,59 @@
+# The keys to groups of the Halosols (order H) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 108-112, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "H1":
+    - code: "H1.1"
+      name: "Takyri-Alkalic Halosols"
+      name_pt: "Halossolos alcálicos taquíricos"
+      page: 108
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aridic]}
+          - takyric_surface_cst: {}
+      notes: "An aridic soil moisture regime, and polygonal cracks 1 cm or more wide on the soil surface through a surface layer 1-4 cm thick."
+    - code: "H1.2"
+      name: "Aqui-Alkalic Halosols"
+      name_pt: "Halossolos alcálicos áquicos"
+      page: 109
+      tests:
+        any_of:
+          - moisture_regime_cst: {regimes: [aquic]}
+          - layer_run_cst: {feature: redoxic_features, min_cm: 10, to_cm: 100, total: true}
+      notes: "An aquic soil moisture regime, or redoxic features in horizons totalling 10 cm or more within 100 cm of the mineral soil surface."
+    - code: "H1.3"
+      name: "Hapli-Alkalic Halosols"
+      name_pt: "Halossolos alcálicos háplicos"
+      page: 109
+      tests:
+        default: true
+      notes: "Other Alkalic Halosols."
+
+  "H2":
+    - code: "H2.1"
+      name: "Aridi-Orthic Halosols"
+      name_pt: "Halossolos órticos arídicos"
+      page: 110
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aridic]}
+          - none_of:
+              - aridic_epipedon_cst: {}
+      notes: "An aridic soil moisture regime and no aridic epipedon."
+    - code: "H2.2"
+      name: "Aqui-Orthic Halosols"
+      name_pt: "Halossolos órticos áquicos"
+      page: 110
+      residual_named_for: aquic
+      tests:
+        default: true
+      notes: "Other Orthic Halosols."

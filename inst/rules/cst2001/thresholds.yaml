@@ -711,3 +711,32 @@ key:
     window_top_cm: 20
     window_bottom_cm: 50
     thick_min_cm: 10
+  groups:
+    page: "75-176"
+    source: "5.2 the keys to groups (0.9.374)"
+    foli:
+      page: "76, 78"
+      saturated_days_max: 30          # "never saturated except for a few days a year": under 30 days (default 24 of 2026-11-04)
+      contact_within_cm: 100
+    mud_cumulic:
+      page: 85
+      rust_chroma_min: 3              # rust spots of higher chroma (as the redoxic features, p. 56)
+      matrix_chroma_max: 2            # the reduced low-chroma matrix (soilKey's reading)
+    ferralosol_colours:
+      page: 93
+      rhodic_hue_rank_below: 15       # redder than 5YR
+      rhodic_value_moist_below: 4
+      rhodic_dry_above_moist_max: 1
+      xanthic_hue_rank_min: 17.5      # 7.5YR or yellower
+      xanthic_value_moist_min: 4
+      xanthic_chroma_moist_min: 5
+    takyric:
+      page: 108
+      crust_cm: [1, 4]
+      crack_width_min_cm: 1
+    b_horizon:
+      page: "125-162"
+      hiweatheri_cec_clay_below: 16   # cmol(+)/kg clay
+      hiweatheri_ecec_clay_below: 12
+      acid_ph_below: 5.5
+      acid_bs_below: 50

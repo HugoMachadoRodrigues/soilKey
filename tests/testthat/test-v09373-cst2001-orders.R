@@ -22,7 +22,7 @@ test_that("the registry entry of cst2001", {
   expect_false(sys$default)
   expect_false(sys$legacy)
   expect_identical(sys$namespace, "cst")
-  expect_identical(sys$levels, c("orders", "suborders"))
+  expect_identical(sys$levels, c("orders", "suborders", "groups"))
   for (a in c("cst", "china", "chinese", "cst2001"))
     expect_identical(soilKey:::.system_resolve(a), "cst2001")
   expect_false("cst2001" %in% soilKey:::.system_ids(default_only = TRUE))
@@ -60,7 +60,7 @@ test_that("every example keys to its own suborder, not provisionally", {
   skip_on_cran()
   for (cd in .CODES373) {
     r <- .c373(make_cst2001_example(cd))
-    expect_identical(r$levels$code, c(substr(cd, 1, 1), cd), info = cd)
+    expect_identical(r$levels$code[1:2], c(substr(cd, 1, 1), cd), info = cd)
     expect_false(.prov373(r), info = cd)
     expect_identical(r$system_id, "cst2001")
     expect_identical(r$rsg_or_order, r$levels$name[1])
@@ -76,7 +76,10 @@ test_that("the fourteen near misses land where the one change sends them", {
   for (cd in names(want)) {
     r <- .c373(make_cst2001_example(cd, near_miss = TRUE))
     expect_identical(r$levels$code[2], want[[cd]], info = cd)
-    expect_false(.prov373(r), info = cd)
+    # v0.9.374: decided down to the suborder (a near miss is a device of the
+    # suborders; its group may rest on data it does not carry)
+    expect_false(any(grepl("^(orders|suborders):", r$provisional_because)), info = cd)
+    expect_false(any(grepl("^Provisional: [A-N][0-9]? [A-Z]", r$warnings)), info = cd)
   }
   expect_error(make_cst2001_example("A2", near_miss = TRUE), "No near miss")
 })
@@ -84,7 +87,7 @@ test_that("the fourteen near misses land where the one change sends them", {
 test_that("the residual named for the udic regime carries a note, the class unchanged", {
   skip_on_cran()
   r <- .c373(make_cst2001_example("M3", near_miss = TRUE))
-  expect_identical(r$name, "Udic Cambosols")
+  expect_identical(r$levels$name[2], "Udic Cambosols")
   expect_true(any(grepl("residual of its key, named for the udic regime; the moisture regime read is aridic", r$warnings)))
   # a udic soil has no note
   r <- .c373(make_cst2001_example("M5"))
@@ -98,7 +101,7 @@ test_that("an undecided gate makes the name provisional; a gate on no data leave
   p <- make_cst2001_example("M3")
   p$site$soil_moisture_regime <- NULL
   r <- .c373(p)
-  expect_identical(r$name, "Udic Cambosols")
+  expect_identical(r$levels$name[2], "Udic Cambosols")
   expect_true(all(c("suborders:M3", "suborders:M4") %in% r$provisional_because))
   # salts not measured: the Halosols undecided before the Argosols
   p <- make_cst2001_example("L2")
@@ -111,22 +114,22 @@ test_that("an undecided gate makes the name provisional; a gate on no data leave
   p <- make_cst2001_example("K3")
   p$horizons$soluble_salts_pct <- NA_real_
   r <- .c373(p)
-  expect_identical(r$levels$code, c("K", "K3"))
+  expect_identical(r$levels$code[1:2], c("K", "K3"))
   expect_false("orders:H" %in% r$provisional_because)
   # no moisture regime recorded on a poorly drained Gleyosol: the stagnic
   # regime undecided
   p <- make_cst2001_example("I3")
   p$site$soil_moisture_regime <- NULL
   r <- .c373(p)
-  expect_identical(r$name, "Orthic Gleyosols")
+  expect_identical(r$levels$name[2], "Orthic Gleyosols")
   expect_true("suborders:I2" %in% r$provisional_because)
   # the Ferralosols under an ustic regime: soilKey's residual [E2], the name
   # stops there
   p <- make_cst2001_example("E1")
   p$site$soil_moisture_regime <- "ustic"
   r <- .c373(p)
-  expect_identical(r$levels$code, c("E", "[E2]"))
-  expect_identical(r$name, "[Other Ferralosols]")
+  expect_identical(r$levels$code[1:2], c("E", "[E2]"))
+  expect_identical(r$levels$name[2], "[Other Ferralosols]")
   # gley colours without a test: Gleyosols, with the warning of a provisional reading
   p <- make_cst2001_example("I3")
   p$horizons$childs_test <- NA_character_
@@ -193,8 +196,8 @@ test_that("the gates of the key read their windows", {
 test_that("the result: Portuguese glosses, the book's marks, the correlation, the panel", {
   skip_on_cran()
   r <- .c373(make_cst2001_example("K3"))
-  expect_identical(r$levels$name_pt, c("Ferrossolos (Ferrosols)", "Ferrossolos \u00fadicos"))
-  expect_identical(r$levels$book_provisional, c(FALSE, FALSE))
+  expect_identical(r$levels$name_pt[1:2], c("Ferrossolos (Ferrosols)", "Ferrossolos \u00fadicos"))
+  expect_identical(r$levels$book_provisional[1:2], c(FALSE, FALSE))
   cr <- r$qualifiers$correlation_cst
   expect_identical(cr$order, "K")
   expect_identical(cr$us_st_1999$class[cr$us_st_1999$degree == "mostly"], "Ultisols")
@@ -216,7 +219,7 @@ test_that("the result: Portuguese glosses, the book's marks, the correlation, th
   k <- load_rules("cst2001")
   k$suborders$K[[3]]$book_provisional <- TRUE
   r <- classify_cst2001(make_cst2001_example("K3"), rules = k, on_missing = "silent")
-  expect_identical(r$levels$book_provisional, c(FALSE, TRUE))
+  expect_identical(r$levels$book_provisional[1:2], c(FALSE, TRUE))
   expect_true(any(grepl("K3 Udic Ferrosols is marked provisional in CST 2001", r$warnings)))
 })
 
@@ -243,7 +246,7 @@ test_that("the i18n keys and the app examples of China", {
   expect_identical(unname(ex), .CODES373)
   for (i in c(1, 20, 39)) {
     r <- .c373(make_cst2001_example(ex[[i]]))
-    expect_identical(r$name, names(ex)[i])
+    expect_identical(r$levels$name[2], names(ex)[i])
   }
 })
 
@@ -281,7 +284,7 @@ test_that("D1: red acid B horizons are spodic only with a sign or under an E", {
   expect_false(.ns373("spodic_horizon_cst")(p)$passed)
   expect_true(.ns373("spodic_horizon_cst")(p, grade = "evidence")$passed)
   r <- .c373(p)
-  expect_identical(r$levels$code, c("L", "L4"))
+  expect_identical(r$levels$code[1:2], c("L", "L4"))
   # no oxalate data: undecided, not spodic
   h <- red_bt; h$al_ox_pct <- NULL; h$fe_ox_pct <- NULL
   expect_true(is.na(.ns373("spodic_horizon_cst")(.P373(h, site))$passed))
@@ -296,7 +299,7 @@ test_that("D1: red acid B horizons are spodic only with a sign or under an E", {
     munsell_hue_moist = c("5YR", "2.5YR", "2.5YR", "2.5YR"), munsell_value_moist = c(3, 3, 4, 4),
     munsell_chroma_moist = c(4, 6, 6, 6))
   r <- .c373(.P373(bo, list(soil_moisture_regime = "udic", soil_temperature_regime = "hyperthermic")))
-  expect_identical(r$levels$code, c("E", "E1"))
+  expect_identical(r$levels$code[1:2], c("E", "E1"))
   expect_false(isTRUE(.ns373("spodic_horizon_cst")(.P373(bo))$passed))
   bt <- list(designation = c("A", "Bt1", "Bt2", "BC"), top_cm = c(0, 18, 50, 110), bottom_cm = c(18, 50, 110, 160),
     clay_pct = c(28, 40, 44, 38), sand_pct = c(35, 28, 26, 30), silt_pct = c(37, 32, 30, 32), oc_pct = c(1.8, 0.7, 0.4, 0.2),
@@ -308,7 +311,7 @@ test_that("D1: red acid B horizons are spodic only with a sign or under an E", {
     munsell_hue_moist = c("5YR", "2.5YR", "2.5YR", "5YR"), munsell_value_moist = c(4, 4, 4, 5),
     munsell_chroma_moist = c(4, 6, 6, 6))
   r <- .c373(.P373(bt, list(soil_moisture_regime = "udic", soil_temperature_regime = "thermic")))
-  expect_identical(r$levels$code, c("K", "K3"))
+  expect_identical(r$levels$code[1:2], c("K", "K3"))
   expect_false(any(c("orders:C") %in% r$provisional_because))
   # the colour alone still makes spodic materials directly below an E
   e <- list(designation = c("A", "E", "Bs", "C"), top_cm = c(0, 10, 20, 50), bottom_cm = c(10, 20, 50, 90),
@@ -328,7 +331,7 @@ test_that("D2: the Isohumosols described above 180 cm", {
     munsell_hue_moist = "10YR", munsell_value_moist = c(2, 3, 3, 5, 6), munsell_chroma_moist = c(2, 2, 2, 3, 3),
     munsell_value_dry = c(4, 4, 5, 7, 7))
   r <- .c373(.P373(chz, list(soil_moisture_regime = "ustic", soil_temperature_regime = "frigid")))
-  expect_identical(r$levels$code, c("J", "J2"))
+  expect_identical(r$levels$code[1:2], c("J", "J2"))
   expect_false(any(grepl("^Provisional: J", r$warnings)))
   blk <- list(designation = c("Ah1", "Ah2", "AB", "Bw", "C"), top_cm = c(0, 25, 50, 75, 120), bottom_cm = c(25, 50, 75, 120, 170),
     clay_pct = c(28, 29, 30, 31, 28), silt_pct = c(50, 50, 48, 48, 50), sand_pct = c(22, 21, 22, 21, 22),
@@ -338,7 +341,7 @@ test_that("D2: the Isohumosols described above 180 cm", {
     munsell_hue_moist = "10YR", munsell_value_moist = c(2, 2, 3, 4, 5), munsell_chroma_moist = c(1, 2, 2, 3, 3),
     munsell_value_dry = c(3, 3, 4, 6, 6))
   r <- .c373(.P373(blk, list(soil_moisture_regime = "udic", soil_temperature_regime = "frigid")))
-  expect_identical(r$levels$code, c("J", "J3"))
+  expect_identical(r$levels$code[1:2], c("J", "J3"))
   expect_true(any(grepl("^Provisional: J Isohumosols", r$warnings)))
 })
 
@@ -396,7 +399,10 @@ test_that("R1-R4: the decisions on the doubtful readings", {
   r <- yaml::read_yaml(system.file("rules", "cst2001", "readings.yaml", package = "soilKey"))$readings
   rd <- vapply(r, `[[`, "", "reading")
   expect_true(any(grepl("KST criterion has 8 % clay or more", rd, fixed = TRUE)))
-  expect_false(any(grepl("for Hugo to confirm", rd)))
+  # the readings of the parts up to 0.9.373 are all decided (the groups of
+  # 0.9.374 bring their own, for Hugo's word)
+  tp <- vapply(r, `[[`, "", "topic")
+  expect_false(any(grepl("for Hugo to confirm", rd[!grepl("^Groups:", tp)])))
   # R2: the Changbai Andosol (silty clay loam) is not Vitric; loam is not coarse
   andi <- list(designation = c("Ah", "Bw1", "Bw2", "C"), top_cm = c(0, 25, 60, 100), bottom_cm = c(25, 60, 100, 140),
     oc_pct = c(7, 3, 1.5, 0.6), clay_pct = c(25, 28, 25, 20), silt_pct = c(50, 47, 50, 50), sand_pct = c(25, 25, 25, 30),
@@ -405,7 +411,7 @@ test_that("R1-R4: the decisions on the doubtful readings", {
     structure_type = c("granular", "blocky", "blocky", "massive"), munsell_hue_moist = "10YR",
     munsell_value_moist = c(2, 3, 4, 4), munsell_chroma_moist = c(2, 3, 4, 4))
   r <- .c373(.P373(andi, list(soil_moisture_regime = "udic", soil_temperature_regime = "frigid")))
-  expect_identical(r$levels$code, c("D", "D3"))
+  expect_identical(r$levels$code[1:2], c("D", "D3"))
   expect_identical(unlist(soilKey:::.cst_thr("key", "vitric_andosols", "coarser_than_silt_loam")), c("S", "LS", "SL"))
   # R3: Histosol item b, literal: 40 cm of organic materials within 50 cm
   hb <- list(designation = c("Oa", "C"), top_cm = c(0, 45), bottom_cm = c(45, 90), oc_pct = c(30, 0.5),
@@ -433,7 +439,7 @@ test_that("R1-R4: the decisions on the doubtful readings", {
   expect_true(is.na(.ns373("aridic_epipedon_cst")(p)$passed))
   expect_true("orders:G" %in% .c373(p)$provisional_because)
   p$site$surface_crust_thickness_cm <- 1
-  expect_identical(.c373(p)$levels$code, c("G", "G2"))
+  expect_identical(.c373(p)$levels$code[1:2], c("G", "G2"))
 })
 
 test_that("a class on a provisional reading gives the alternative the key would reach (Hugo, 2026-11-06)", {
@@ -446,22 +452,22 @@ test_that("a class on a provisional reading gives the alternative the key would 
     munsell_chroma_moist = c(3, 3, 3, 2), munsell_value_dry = c(6, 7, 7, 7))
   site <- list(soil_moisture_regime = "aquic", soil_temperature_regime = "mesic")
   r <- .c373(.P373(aq, site))
-  expect_identical(r$levels$code, c("I", "I3"))
+  expect_identical(r$levels$code[1:2], c("I", "I3"))
   expect_true(any(grepl("^Provisional: I Gleyosols rests on a reading", r$warnings)))
   expect_identical(r$candidates$kind, "alternative")
-  expect_identical(r$candidates$code, "M2")
+  expect_identical(r$candidates$code, "M2.4")
   expect_identical(r$candidates$instead_of, "I")
   expect_false("orders:M" %in% r$provisional_because)
-  expect_true(any(grepl("Alternative if that reading fails: M2 Aquic Cambosols", r$warnings, fixed = TRUE)))
+  expect_true(any(grepl("Alternative if that reading fails: M2.4 Ochri-Aquic Cambosols", r$warnings, fixed = TRUE)))
   tt <- soilKey:::.flatten_key_trace(r$trace)
-  expect_true(any(tt$phase == "alternative" & tt$code == "M2" & tt$status == "info"))
+  expect_true(any(tt$phase == "alternative" & tt$code == "M2.4" & tt$status == "info"))
   out <- c(utils::capture.output(print(r)), utils::capture.output(print(r), type = "message"))
-  expect_true(any(grepl("Alternative \\(if the provisional reading of I fails\\): M2 Aquic Cambosols", out)))
+  expect_true(any(grepl("Alternative \\(if the provisional reading of I fails\\): M2.4 Ochri-Aquic Cambosols", out)))
   expect_false(any(grepl("an attachment, not a key", out)))
   # a negative dipyridyl test: Aquic Cambosols, no alternative
   aq$childs_test <- "negative"
   r <- .c373(.P373(aq, site))
-  expect_identical(r$levels$code, c("M", "M2"))
+  expect_identical(r$levels$code[1:2], c("M", "M2"))
   expect_null(r$candidates)
   # the examples carry none
   expect_null(.c373(make_cst2001_example("I3"))$candidates)

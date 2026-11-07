@@ -1,0 +1,71 @@
+# The keys to groups of the Gleyosols (order I) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 112-116, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "I1":
+    - code: "I1.1"
+      name: "Histi-Permagelic Gleyosols"
+      name_pt: "Gleissolos permagélicos hísticos"
+      page: 112
+      tests:
+        all_of:
+          - histic_epipedon_cst: {}
+      notes: "A histic epipedon."
+    - code: "I1.2"
+      name: "Hapli-Permagelic Gleyosols"
+      name_pt: "Gleissolos permagélicos háplicos"
+      page: 112
+      tests:
+        default: true
+      notes: "Other Permagelic Gleyosols."
+
+  "I2":
+    - code: "I2.1"
+      name: "Histi-Stagnic Gleyosols"
+      name_pt: "Gleissolos estágnicos hísticos"
+      page: 113
+      tests:
+        all_of:
+          - histic_epipedon_cst: {}
+      notes: "A histic epipedon."
+    - code: "I2.2"
+      name: "Hapli-Stagnic Gleyosols"
+      name_pt: "Gleissolos estágnicos háplicos"
+      page: 113
+      tests:
+        default: true
+      notes: "Other Stagnic Gleyosols."
+
+  "I3":
+    - code: "I3.1"
+      name: "Histi-Orthic Gleyosols"
+      name_pt: "Gleissolos órticos hísticos"
+      page: 114
+      tests:
+        all_of:
+          - histic_epipedon_cst: {}
+      notes: "A histic epipedon (printed 'Other Orthic Gleyosols that ...', a slip: it is the first group)."
+    - code: "I3.2"
+      name: "Molli-Orthic Gleyosols"
+      name_pt: "Gleissolos órticos mólicos"
+      page: 114
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "I3.3"
+      name: "Hapli-Orthic Gleyosols"
+      name_pt: "Gleissolos órticos háplicos"
+      page: 114
+      tests:
+        default: true
+      notes: "Other Orthic Gleyosols."

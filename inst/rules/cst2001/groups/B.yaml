@@ -1,0 +1,79 @@
+# The keys to groups of the Anthrosols (order B) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 81-88, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "B1":
+    - code: "B1.1"
+      name: "Gleyi-Stagnic Anthrosols"
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos"
+      page: 81
+      tests:
+        all_of:
+          - layer_run_cst: {feature: gleyic_features, min_cm: 10, to_cm: 60, datum: surface}
+      notes: "Gleyic features in some layer 10 cm or more thick within 60 cm of the soil surface."
+    - code: "B1.2"
+      name: "Fe-leachi-Stagnic Anthrosols"
+      name_pt: "Antrossolos estágnicos (de arrozal) ferrolixiviados"
+      page: 82
+      tests:
+        all_of:
+          - fe_percoleached_cst: {}
+      notes: "An iron-percoleached greyish subhorizon immediately beneath the anthrostagnic epipedon."
+    - code: "B1.3"
+      name: "Fe-accumuli-Stagnic Anthrosols"
+      name_pt: "Antrossolos estágnicos (de arrozal) ferriacumúlicos"
+      page: 82
+      tests:
+        all_of:
+          - fe_accumulation_cst: {ratio: 1.5}
+      notes: "DCB-extractable iron in the hydragric horizon at least 1.5 times that of the anthrostagnic epipedon."
+    - code: "B1.4"
+      name: "Hapli-Stagnic Anthrosols"
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos"
+      page: 82
+      tests:
+        default: true
+      notes: "Other Stagnic Anthrosols."
+
+  "B2":
+    - code: "B2.1"
+      name: "Fimi-Orthic Anthrosols"
+      name_pt: "Antrossolos órticos fímicos"
+      page: 85
+      tests:
+        all_of:
+          - fimic_epipedon_cst: {}
+          - phos_agric_horizon_cst: {}
+      notes: "A fimic epipedon and a phos-agric horizon."
+    - code: "B2.2"
+      name: "Siltigi-Orthic Anthrosols"
+      name_pt: "Antrossolos órticos siltígicos"
+      page: 85
+      tests:
+        all_of:
+          - siltigic_epipedon_cst: {}
+      notes: "A siltigic epipedon (the name printed 'Anhrosols')."
+    - code: "B2.3"
+      name: "Mud-cumuli-Orthic Anthrosols"
+      name_pt: "Antrossolos órticos cumúlicos lamacentos"
+      page: 85
+      tests:
+        all_of:
+          - mud_cumulic_cst: {}
+      notes: "A cumulic epipedon with hydromorphic features: rust spots or streaks of higher chroma on a reduced low-chroma matrix, or relics of aquatic organisms such as shells."
+    - code: "B2.4"
+      name: "Earth-cumuli-Orthic Anthrosols"
+      name_pt: "Antrossolos órticos cumúlicos terrosos"
+      page: 85
+      tests:
+        default: true
+      notes: "Other Orthic Anthrosols (the name printed 'Eeath-cumuli')."

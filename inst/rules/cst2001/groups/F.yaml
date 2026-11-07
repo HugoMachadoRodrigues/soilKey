@@ -1,0 +1,74 @@
+# The keys to groups of the Vertosols (order F) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 96-100, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "F1":
+    - code: "F1.1"
+      name: "Calci-Aquic Vertosols"
+      name_pt: "Vertossolos áquicos cálcicos"
+      page: 96
+      tests:
+        any_of:
+          - calcic_horizon_cst: {top_max: 100, datum: mineral}
+          - calcipan_cst: {top_max: 100, datum: mineral}
+      notes: "A calcic horizon or a calcipan with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "F1.2"
+      name: "Hapli-Aquic Vertosols"
+      name_pt: "Vertossolos áquicos háplicos"
+      page: 96
+      tests:
+        default: true
+      notes: "Other Aquic Vertosols."
+
+  "F2":
+    - code: "F2.1"
+      name: "Calci-Ustic Vertosols"
+      name_pt: "Vertossolos ústicos cálcicos"
+      page: 98
+      tests:
+        any_of:
+          - calcic_horizon_cst: {top_max: 100, datum: mineral}
+          - hypercalcic_horizon_cst: {top_max: 100, datum: mineral}
+          - calcipan_cst: {top_max: 100, datum: mineral}
+      notes: "A calcic or hypercalcic horizon or a calcipan with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "F2.2"
+      name: "Hapli-Ustic Vertosols"
+      name_pt: "Vertossolos ústicos háplicos"
+      page: 98
+      tests:
+        default: true
+      notes: "Other Ustic Vertosols."
+
+  "F3":
+    - code: "F3.1"
+      name: "Humi-Udic Vertosols"
+      name_pt: "Vertossolos údicos húmicos"
+      page: 99
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "A humic property."
+    - code: "F3.2"
+      name: "Calci-Udic Vertosols"
+      name_pt: "Vertossolos údicos cálcicos"
+      page: 99
+      tests:
+        all_of:
+          - calcic_horizon_cst: {top_max: 100, datum: mineral}
+      notes: "A calcic horizon with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "F3.3"
+      name: "Hapli-Udic Vertosols"
+      name_pt: "Vertossolos údicos háplicos"
+      page: 99
+      tests:
+        default: true
+      notes: "Other Udic Vertosols."

@@ -1,0 +1,252 @@
+# The keys to groups of the Cambosols (order M) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 146-167, keyed by suborder, in the book's
+# order. Each group after the first is "other ... that", so a gate tests only
+# its own criteria. Names as printed (the canonical spelling of Q2, the other
+# printed forms as aliases); name_pt is soilKey's Portuguese gloss; soilKey's
+# additions in brackets. The criteria are paraphrased in the notes; the
+# predicates are those of R/diagnostics-cst-*.R, R/cst-regimes.R, R/key-cst.R
+# and R/key-cst-groups.R. Readings: readings.yaml.
+
+groups:
+
+  "M1":
+    - code: "M1.1"
+      name: "Permi-Gelic Cambosols"
+      name_pt: "Cambissolos gélicos permagélicos"
+      page: 147
+      tests:
+        any_of:
+          - temperature_regime_cst: {regimes: [permagelic]}
+          - permafrost_layer_cst: {top_max: 200, datum: mineral}
+      notes: "A permagelic soil temperature regime, or a permafrost layer within 200 cm of the mineral soil surface."
+    - code: "M1.2"
+      name: "Aqui-Gelic Cambosols"
+      name_pt: "Cambissolos gélicos áquicos"
+      page: 147
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [aquic]}
+          - layer_run_cst: {feature: redoxic_features, min_cm: 10, to_cm: 50}
+      notes: "An aquic soil moisture regime, and redoxic features in at least one horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "M1.3"
+      name: "Matti-Gelic Cambosols"
+      name_pt: "Cambissolos gélicos máticos"
+      page: 147
+      tests:
+        all_of:
+          - mattic_epipedon_cst: {}
+      notes: "A mattic epipedon."
+    - code: "M1.4"
+      name: "Molli-Gelic Cambosols"
+      aliases: ["Molli Gelic Cambosols", "Mollic-Gelic Cambosols"]
+      name_pt: "Cambissolos gélicos mólicos"
+      page: 147
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon (the name printed 'Mollic-Gelic' here)."
+    - code: "M1.5"
+      name: "Umbri-Gelic Cambosols"
+      name_pt: "Cambissolos gélicos úmbricos"
+      page: 147
+      tests:
+        all_of:
+          - umbric_epipedon_cst: {}
+      notes: "An umbric epipedon."
+    - code: "M1.6"
+      name: "Hapli-Gelic Cambosols"
+      name_pt: "Cambissolos gélicos háplicos"
+      page: 147
+      tests:
+        default: true
+      notes: "Other Gelic Cambosols."
+
+  "M2":
+    - code: "M2.1"
+      name: "Litteri-Aquic Cambosols"
+      name_pt: "Cambissolos áquicos de serapilheira"
+      page: 151
+      tests:
+        all_of:
+          - histic_littery_cst: {}
+      notes: "Folic histic evidence (a histic epipedon of litter too, Q19)."
+    - code: "M2.2"
+      name: "Shajiang-Aquic Cambosols"
+      name_pt: "Cambissolos áquicos com shajiang"
+      page: 151
+      tests:
+        all_of:
+          - shajiang_cst: {min_pct: 10, min_cm: 10}
+      notes: "10 % or more by volume of irregular calcareous nodules or concretions (shajiang) in at least one horizon 10 cm or more thick within 125 cm of the mineral soil surface."
+    - code: "M2.3"
+      name: "Dark-Aquic Cambosols"
+      aliases: ["Dark Aquic Cambosols"]
+      name_pt: "Cambissolos áquicos escuros"
+      page: 151
+      tests:
+        any_of:
+          - mollic_epipedon_cst: {}
+          - umbric_epipedon_cst: {}
+      notes: "A mollic or an umbric epipedon (the name printed 'Dark Aquic')."
+    - code: "M2.4"
+      name: "Ochri-Aquic Cambosols"
+      name_pt: "Cambissolos áquicos ócricos"
+      page: 151
+      tests:
+        default: true
+      notes: "Other Aquic Cambosols."
+
+  "M3":
+    - code: "M3.1"
+      name: "Siltigi-Ustic Cambosols"
+      aliases: ["Siltigi Ustic Cambosols"]
+      name_pt: "Cambissolos ústicos siltígicos"
+      page: 154
+      tests:
+        all_of:
+          - siltigic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Siltigic evidence (a siltigic epipedon too, Q19)."
+    - code: "M3.2"
+      name: "Ferri-Ustic Cambosols"
+      name_pt: "Cambissolos ústicos férricos"
+      page: 154
+      tests:
+        all_of:
+          - ferric_property_cst: {}
+      notes: "A ferric property throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "M3.3"
+      name: "Endorusti-Ustic Cambosols"
+      name_pt: "Cambissolos ústicos endorredóxicos"
+      page: 154
+      tests:
+        all_of:
+          - layer_run_cst: {feature: redoxic_features, min_cm: 10, from_cm: 50, to_cm: 100}
+      notes: "Redoxic features in at least one horizon 10 cm or more thick between 50 and 100 cm below the mineral soil surface."
+    - code: "M3.4"
+      name: "Molli-Ustic Cambosols"
+      name_pt: "Cambissolos ústicos mólicos"
+      page: 154
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "M3.5"
+      name: "Hapli-Ustic Cambosols"
+      name_pt: "Cambissolos ústicos háplicos"
+      page: 154
+      tests:
+        default: true
+      notes: "Other Ustic Cambosols."
+
+  "M4":
+    - code: "M4.1"
+      name: "Bori-Perudic Cambosols"
+      name_pt: "Cambissolos perúdicos bóricos"
+      page: 157
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [frigid]}
+      notes: "A frigid soil temperature regime."
+    - code: "M4.2"
+      name: "Stagni-Perudic Cambosols"
+      name_pt: "Cambissolos perúdicos estágnicos"
+      page: 157
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [stagnic]}
+          - any_of:
+              - layer_run_cst: {feature: redoxic_features, min_cm: 10, to_cm: 50}
+              - layer_run_cst: {feature: gleyic_features, min_cm: 10, to_cm: 50}
+      notes: "A stagnic soil moisture regime, and redoxic features or gleyic evidence (gleyic features too, Q19) in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "M4.3"
+      name: "Carbonati-Perudic Cambosols"
+      aliases: ["Calci-Perudic Cambosols"]
+      name_pt: "Cambissolos perúdicos carbonáticos"
+      page: 157
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them; Appendix 1 prints the name Calci-Perudic)."
+    - code: "M4.4"
+      name: "Ali-Perudic Cambosols"
+      name_pt: "Cambissolos perúdicos álicos"
+      page: 157
+      tests:
+        all_of:
+          - b_throughout_cst: {test: alic}
+      notes: "An alic property or alic evidence throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "M4.5"
+      name: "Acidi-Perudic Cambosols"
+      name_pt: "Cambissolos perúdicos ácidos"
+      page: 157
+      tests:
+        all_of:
+          - b_throughout_cst: {test: acid_or}
+      notes: "A base saturation under 50 % or a pH under 5.5 throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "M4.6"
+      name: "Hapli-Perudic Cambosols"
+      name_pt: "Cambissolos perúdicos háplicos"
+      page: 158
+      tests:
+        default: true
+      notes: "Other Perudic Cambosols."
+
+  "M5":
+    - code: "M5.1"
+      name: "Bori-Udic Cambosols"
+      name_pt: "Cambissolos údicos bóricos"
+      page: 161
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [frigid]}
+      notes: "A frigid soil temperature regime."
+    - code: "M5.2"
+      name: "Carbonati-Udic Cambosols"
+      name_pt: "Cambissolos údicos carbonáticos"
+      page: 161
+      tests:
+        all_of:
+          - lc_carbonate_share_cst: {}
+      notes: "The lithologic characters of carbonate rocks or of coral sands in more than half of the horizons within 100 cm of the soil surface or above a shallower lithic contact."
+    - code: "M5.3"
+      name: "Purpli-Udic Cambosols"
+      name_pt: "Cambissolos údicos púrpura"
+      page: 162
+      tests:
+        all_of:
+          - lc_purplish_cst: {}
+      notes: "The lithologic characters of purplish sandstones and shales within 125 cm of the mineral soil surface."
+    - code: "M5.4"
+      name: "Ali-Udic Cambosols"
+      name_pt: "Cambissolos údicos álicos"
+      page: 162
+      tests:
+        all_of:
+          - b_throughout_cst: {test: alic}
+      notes: "An alic property or alic evidence throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "M5.5"
+      name: "Ferri-Udic Cambosols"
+      name_pt: "Cambissolos údicos férricos"
+      page: 162
+      tests:
+        all_of:
+          - ferric_property_cst: {}
+      notes: "A ferric property throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "M5.6"
+      name: "Acidi-Udic Cambosols"
+      name_pt: "Cambissolos údicos ácidos"
+      page: 162
+      tests:
+        all_of:
+          - b_throughout_cst: {test: acid_or}
+      notes: "A base saturation under 50 % or a pH under 5.5 throughout the B horizon within 125 cm of the mineral soil surface."
+    - code: "M5.7"
+      name: "Hapli-Udic Cambosols"
+      name_pt: "Cambissolos údicos háplicos"
+      page: 162
+      residual_named_for: udic
+      tests:
+        default: true
+      notes: "Other Udic Cambosols."
