@@ -232,7 +232,8 @@ test_that("the KA5 key sources are ASCII", {
 # ---- the review of 2026-11-06 (Hugo: "Corrigir os 19") ------------------------------------
 
 .k6 <- function(des, top, bot, ..., site = list()) .ka5_cls(.mk6(c(list(designation = des, top_cm = top, bottom_cm = bot), list(...)), site))
-.tp <- function(r) paste(r$levels$code, collapse = ">")
+# the levels above the variety (v0.9.365: the varieties are an additive level)
+.tp <- function(r) paste(r$levels$code[r$levels$level != "variety"], collapse = ">")
 
 test_that("D1: a buried soil does not decide the present soil (p. 283)", {
   skip_on_cran()

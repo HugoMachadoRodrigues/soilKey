@@ -470,10 +470,10 @@
 #' @param code The subtype code as printed (BBn, GG-BB ...).
 #' @param route "notation" or "data".
 #' @noRd
-.ka5_subtype_example <- function(code, route = c("notation", "data")) {
+.ka5_subtype_example <- function(code, route = c("notation", "data"), spec = NULL, id = NULL) {
   route <- match.arg(route)
   code <- sub("^UEA", "\u00dcA", code)
-  spec <- .KA5_SUBTYPE_PROFILES[[code]] %||% .KA5_SUBTYPE_PROFILES_WET[[code]]
+  spec <- spec %||% .KA5_SUBTYPE_PROFILES[[code]] %||% .KA5_SUBTYPE_PROFILES_WET[[code]]
   if (is.null(spec)) rlang::abort(sprintf("No KA5 subtype example '%s' (every printed subtype has one).", code))
   wet <- !is.null(.KA5_SUBTYPE_PROFILES_WET[[code]])
   if (is.character(spec)) spec <- list(spec)
@@ -492,7 +492,7 @@
   site_extra <- extra$site %||% list()
   extra$site <- NULL
   for (k in names(extra)) h[[k]] <- if (length(extra[[k]]) == 1L) rep(extra[[k]], n) else extra[[k]]
-  site <- utils::modifyList(list(id = paste0("ka5-", code), country = "DE", designation_system = "ka5"),
+  site <- utils::modifyList(list(id = paste0("ka5-", id %||% code), country = "DE", designation_system = "ka5"),
                             utils::modifyList(.ka5_example_site(code, p$des, p$top, wet), site_extra))
   if (route == "data") {
     h$designation <- rep(NA_character_, n)

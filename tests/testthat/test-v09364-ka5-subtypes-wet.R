@@ -24,6 +24,10 @@
                IA = "I", IW = "I", JP = "J", JG = "J", JS = "J", JD = "J", HH = "H", HN = "H", KV = "K", KM = "K",
                KH = "K")
 
+# v0.9.365: the varieties are an additive level that joins the name; the
+# name of the subtype is the deepest level above the variety
+.lv_name <- function(r) { lv <- r$levels; k <- which(lv$level != "variety"); lv$name[k[length(k)]] }
+
 test_that("85 printed wet subtypes, by class, in the order of Q21; two open subtypes of Q22", {
   skip_on_cran()
   rl <- load_rules("ka5")
@@ -86,7 +90,7 @@ test_that("each wet subtype example keys to its type and subtype by the notation
     r <- .wt_cls(p)
     expect_identical(.wt_type(r), ent[[cd]]$type, info = cd)
     expect_identical(.wt_of(r), cd, info = cd)
-    expect_identical(r$name, ent[[cd]]$name, info = cd)
+    expect_identical(.lv_name(r), ent[[cd]]$name, info = cd)
     expect_length(r$provisional_because, 0L)
     expect_true(cd %in% r$trace$subtypes_passing$code[r$trace$subtypes_passing$passed %in% TRUE], info = cd)
   }
@@ -181,9 +185,11 @@ test_that("the Moore covers (Q7): 19/20, 29/30, 39/40 cm", {
   expect_identical(.wt_ov(mo(25))$code, "MO\\HN")
   expect_identical(.wt_ov(mo(25))$name, "flache Organomarsch über Niedermoor")
   expect_identical(.wt_ov(mo(35))$code, "MO/HN")
-  # the overlay does not change the levels, the name or provisional_because
+  # the overlay does not change the levels or provisional_because; since
+  # v0.9.365 it is a variety and enters the name (rule V)
   r <- cv(25)
-  expect_identical(r$name, "Normniedermoor")
+  expect_identical(.lv_name(r), "Normniedermoor")
+  expect_identical(r$name, "flacher Gley \u00fcber Niedermoor")
   expect_length(r$provisional_because, 0L)
 })
 
