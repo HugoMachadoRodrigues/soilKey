@@ -561,6 +561,16 @@ lc_carbonate_share_cst <- function(pedon, more_than = 0.5, within = 100) {
       list(p = ifelse(ph %in% TRUE | bs %in% TRUE, TRUE, ifelse(ph %in% FALSE & bs %in% FALSE, FALSE, NA)),
            missing = c("ph_h2o", "bs_pct"))
     },
+    # v0.9.376: the layer test of the ferric property (p. 61) and spodic
+    # evidence (the spodic horizon passing too), for the subgroups
+    ferric = {
+      tf <- .cst_cthr("ferric")
+      col <- .cst_colours(x)
+      list(p = .cst_hue_le(col, tf$hue_rank_max) | .cst_v(x, "fe_dcb_pct") >= tf$fe_dcb_min_pct |
+             .cst_fe_free_total(x$h) >= tf$free_total_min,
+           missing = c("munsell_hue_moist", "fe_dcb_pct", "fe_total_pct"))
+    },
+    spodic = list(p = .cst_hz(x, "spodic_horizon")$evid, missing = .cst_hz(x, "spodic_horizon")$missing),
     rlang::abort(sprintf("Unknown B horizon test '%s'.", test)))
 }
 
@@ -569,9 +579,11 @@ lc_carbonate_share_cst <- function(pedon, more_than = 0.5, within = 100) {
 #' layers that meet `test` ("allitic"; "hiweatheri": a CEC7 under 16 and an
 #' ECEC under 12 cmol(+)/kg clay and the allitic property in the same layers;
 #' v0.9.375, for the subgroups: "alic", the alic property or alic evidence,
-#' D3.1.2; "acid_or", base saturation under 50 % or pH under 5.5).
+#' D3.1.2; "acid_or", base saturation under 50 % or pH under 5.5; v0.9.376:
+#' "ferric", the layer test of the ferric property, M4.5.4; "spodic", spodic
+#' evidence, M4.1.2). `min_cm` 0: any B layer (L3.3.2, L4.5.1).
 #' @noRd
-b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "acid_or"), min_cm = 10) {
+b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "acid_or", "ferric", "spodic"), min_cm = 10) {
   test <- match.arg(test)
   nm <- "b_subhorizon_cst"
   x <- .cst_ctx(pedon)

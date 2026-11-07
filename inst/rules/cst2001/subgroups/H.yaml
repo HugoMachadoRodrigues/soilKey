@@ -1,0 +1,200 @@
+# The keys to subgroups of the Halosols (order H) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 108-112, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly (v0.9.376). Readings: readings.yaml.
+
+subgroups:
+
+  "H1.1":
+    - code: "H1.1.1"
+      name: "Parasalic Takyri-Alkalic Halosols"
+      aliases: ["Parasalic Takyri-Alkalic Halosol"]
+      name_pt: "Halossolos alcálicos taquíricos parassálicos"
+      adjective: "Parasalic"
+      page: 109
+      tests:
+        all_of:
+          - parasalic: {within: 50, total: true}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in horizons totalling 10 cm or more within 50 cm of the mineral soil surface."
+    - code: "H1.1.2"
+      name: "Typic Takyri-Alkalic Halosols"
+      aliases: ["Typic Takyri-Alkalic Halosol"]
+      name_pt: "Halossolos alcálicos taquíricos típicos"
+      adjective: "Typic"
+      page: 109
+      tests:
+        default: true
+      notes: "Other Takyri-Alkalic Halosols."
+
+  "H1.2":
+    - code: "H1.2.1"
+      name: "Parasalic Aqui-Alkalic Halosols"
+      aliases: ["Parasalic Aqui-Alkalic Halosol"]
+      name_pt: "Halossolos alcálicos áquicos parassálicos"
+      adjective: "Parasalic"
+      page: 109
+      tests:
+        all_of:
+          - parasalic: {within: 50, total: true}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in horizons totalling 10 cm or more within 50 cm of the mineral soil surface."
+    - code: "H1.2.2"
+      name: "Typic Aqui-Alkalic Halosols"
+      aliases: ["Typic Aqui-Alkalic Halosol"]
+      name_pt: "Halossolos alcálicos áquicos típicos"
+      adjective: "Typic"
+      page: 109
+      tests:
+        default: true
+      notes: "Other Aqui-Alkalic Halosols."
+
+  "H1.3":
+    - code: "H1.3.1"
+      name: "Parasalic Hapli-Alkalic Halosols"
+      aliases: ["Parasalic Hapli-Alkalic Halosol"]
+      name_pt: "Halossolos alcálicos háplicos parassálicos"
+      adjective: "Parasalic"
+      page: 109
+      tests:
+        all_of:
+          - parasalic: {within: 50, total: true}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in horizons totalling 10 cm or more within 50 cm of the mineral soil surface."
+    - code: "H1.3.2"
+      name: "Typic Hapli-Alkalic Halosols"
+      aliases: ["Typic Hapli-Alkalic Halosol"]
+      name_pt: "Halossolos alcálicos háplicos típicos"
+      adjective: "Typic"
+      page: 110
+      tests:
+        default: true
+      notes: "Other Hapli-Alkalic Halosols."
+
+  "H2.1":
+    - code: "H2.1.1"
+      name: "Dilluvic Aridi-Orthic Halosols"
+      aliases: ["Dilluvic Aridi-Orthic Halosol", "Diluvic Aridi-Orthic Halosols"]
+      name_pt: "Halossolos órticos arídicos diluviais"
+      adjective: "Dilluvic"
+      page: 110
+      tests:
+        all_of:
+          - dilluvic_cst: {}
+      notes: "Within 200 cm of the mineral soil surface, horizons of uneven particle size and a salt content that varies irregularly with depth, from torrential floods: a torrential origin recorded and soluble salts that rise and fall over three or more measured layers (Q18)."
+    - code: "H2.1.2"
+      name: "Gypsi-salipanic Aridi-Orthic Halosols"
+      aliases: ["Gypsi-sali panic Aridi-Orthic Halosols", "Gypsi-salipan Aridi-Orthic Halosols", "Gypsi-salipanic Aridi-Orthic Halosol"]
+      name_pt: "Halossolos órticos arídicos gípsicos com pã salino"
+      adjective: "Gypsi-salipanic"
+      page: 110
+      tests:
+        all_of:
+          - gypsic_only_cst: {top_max: 100, datum: mineral}
+          - salipan_cst: {top_max: 100, datum: mineral}
+      notes: "A gypsic horizon (named alone: a hypergypsic horizon does not count) and a salipan, both with the upper boundary within 100 cm of the mineral soil surface (keyed before Gypsic)."
+    - code: "H2.1.3"
+      name: "Gypsic Aridi-Orthic Halosols"
+      aliases: ["Gypsic Aridi-Orthic Halosol"]
+      name_pt: "Halossolos órticos arídicos gípsicos"
+      adjective: "Gypsic"
+      page: 110
+      tests:
+        all_of:
+          - gypsic_only_cst: {top_max: 100, datum: mineral}
+      notes: "A gypsic horizon (named alone) with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "H2.1.4"
+      name: "Typic Aridi-Orthic Halosols"
+      aliases: ["Typic Aridi-Orthic Halosol"]
+      name_pt: "Halossolos órticos arídicos típicos"
+      adjective: "Typic"
+      page: 111
+      tests:
+        default: true
+      notes: "Other Aridi-Orthic Halosols."
+
+  "H2.2":
+    - code: "H2.2.1"
+      name: "Gelic Aqui-Orthic Halosols"
+      aliases: ["Gelic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos gélicos"
+      adjective: "Gelic"
+      page: 111
+      tests:
+        all_of:
+          - gelic_frost: {}
+      notes: "A cryic or colder soil temperature regime and frost-thawic features."
+    - code: "H2.2.2"
+      name: "Sulfic Aqui-Orthic Halosols"
+      aliases: ["Sulfic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos sulfídicos"
+      adjective: "Sulfic"
+      page: 111
+      tests:
+        all_of:
+          - sulfic: {within: 100, total: true}
+      notes: "A sulfuric horizon with its upper boundary within 100 cm of the mineral soil surface, or sulfidic materials in horizons totalling 15 cm or more within that depth."
+    - code: "H2.2.3"
+      name: "Marinic Aqui-Orthic Halosols"
+      aliases: ["Marinic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos marinhos"
+      adjective: "Marinic"
+      page: 111
+      tests:
+        all_of:
+          - marinic_cst: {}
+      notes: "Influenced by seawater: Cl the main anion and Na the main cation of the salts of the salic horizon, and a distinct stratification of the deposits (Q18; the likeness of the salt contents of texture-alike subsoil and substratum is not tested)."
+    - code: "H2.2.4"
+      name: "Crustic Aqui-Orthic Halosols"
+      aliases: ["Crustic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos com crosta salina"
+      adjective: "Crustic"
+      page: 111
+      tests:
+        all_of:
+          - salic_crust_cst: {}
+      notes: "A salic crust on the mineral soil surface."
+    - code: "H2.2.5"
+      name: "Para-alkalic Aqui-Orthic Halosols"
+      aliases: ["Para-alkalic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos paralcálicos"
+      adjective: "Para-alkalic"
+      page: 111
+      tests:
+        all_of:
+          - para_alkalic: {within: 50}
+      notes: "Alkalic evidence (the alkalic horizon passes too, Q19) in some horizon whose upper boundary lies within 50 cm of the mineral soil surface."
+    - code: "H2.2.6"
+      name: "Gleyic Aqui-Orthic Halosols"
+      aliases: ["Gleyic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos gleicos"
+      adjective: "Gleyic"
+      page: 111
+      tests:
+        all_of:
+          - gleyic: {to: 100, total: true, grade: at_least_evidence}
+      notes: "Gleyic features or gleyic evidence in horizons totalling 10 cm or more within 100 cm of the mineral soil surface."
+    - code: "H2.2.7"
+      name: "Mollic Aqui-Orthic Halosols"
+      aliases: ["Mollic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos mólicos"
+      adjective: "Mollic"
+      page: 112
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "H2.2.8"
+      name: "Typic Aqui-Orthic Halosols"
+      aliases: ["Typic Aqui-Orthic Halosol"]
+      name_pt: "Halossolos órticos áquicos típicos"
+      adjective: "Typic"
+      page: 112
+      tests:
+        default: true
+      notes: "Other Aqui-Orthic Halosols."

@@ -149,3 +149,94 @@ presets:
     params: {}
     template:
       anthrostagnic_epipedon_cst: {grade: at_least_evidence}
+
+  # --- v0.9.376: orders H to N ----------------------------------------------------------------
+  albic:
+    note: "The albic horizon, or a glossic horizon or glossic evidence (features: albic_glossic; albic for the albic horizon alone; glossic for the glossic horizon or evidence alone), in some layer anywhere, below the mollic epipedon (position: below_mollic) or above the argic horizon (position: above_argic), with its top within `within` cm when given."
+    params: {features: albic_glossic, position: anywhere, within: ~, datum: mineral}
+    template:
+      albic_sg_cst: {features: $features, position: $position, within: $within, datum: $datum}
+
+  calcic:
+    note: "The calcic horizon named alone (kinds: [calcic_only]), with soft powdery lime (soft_lime), or with the hypercalcic horizon and the calcipan (hypercalcic_horizon, calcipan), with its upper boundary within `to` cm, or between `from` and `to` cm."
+    params: {to: required, from: ~, kinds: [calcic_only], datum: mineral}
+    template:
+      calcic_sg_cst: {kinds: $kinds, top_min: $from, top_max: $to, datum: $datum}
+
+  eutric:
+    note: "The converse tests: base saturation 50 % or more or pH 5.5 or more (test: eutric_or) in every horizon between `from` and `to` cm (N4.3.2), or pH 7.0 or more (test: ph_7) throughout the argic horizon or claypan (scope: argic_or_claypan, L4.3.3)."
+    params: {test: eutric_or, to: 125, from: 0, scope: window, datum: mineral}
+    template:
+      layer_test_cst: {test: $test, from_cm: $from, to_cm: $to, scope: $scope, mode: throughout, datum: $datum}
+
+  leachic:
+    note: "pH under 6.5 in more than half (`share`, strict) of the thickness of the horizons within `within` cm or a shallower contact."
+    params: {within: 125, share: 0.5, strict: true}
+    template:
+      layer_test_cst: {test: leachic, to_cm: $within, scope: window, mode: share, share: $share, strict: $strict}
+
+  ferric:
+    note: "The layer test of the ferric property throughout a scope: the argic horizon or claypan (scope: argic_or_claypan, L4.1.2) or the B within 125 cm (scope: b, L4.5.3); in a B subhorizon 10 cm thick, the b_subhorizon preset (test: ferric)."
+    params: {scope: b}
+    template:
+      layer_test_cst: {test: ferric, scope: $scope, mode: throughout}
+
+  b_subhorizon:
+    note: "A property in some subhorizon(s) of the B within 125 cm, a run of B layers `thick` cm thick (0: any B layer): test allitic (Intensic), alic (the alic property or alic evidence), ferric, spodic (spodic evidence)."
+    params: {test: required, thick: 10}
+    template:
+      b_subhorizon_cst: {test: $test, min_cm: $thick}
+
+  feature_share:
+    note: "Features (at least their evidence) in `share` (strict: more than) of the thickness of the horizons within `within` cm of the soil surface or a shallower contact (M5.2.1)."
+    params: {features: required, within: required, share: 0.5, strict: true, grade: at_least_evidence, datum: surface}
+    template:
+      feature_share_cst: {features: $features, grade: $grade, share: $share, strict: $strict, within: $within, datum: $datum}
+
+  feature_every:
+    note: "Features (at least their evidence) in every layer between `from` and `to` cm (Epigleyic of N2.1.2: gleyic evidence at least between 20 and 50 cm)."
+    params: {features: [gleyic_features], from: required, to: required, grade: at_least_evidence, datum: mineral}
+    template:
+      feature_every_cst: {features: $features, grade: $grade, from_cm: $from, to_cm: $to, datum: $datum}
+
+  parasalic_duration:
+    note: "Salic evidence in some horizon `thick` cm thick (0: anywhere) within `within` cm for a month or more a year in most years (site$salic_months_per_year; not recorded, provisional, Q15)."
+    params: {within: required, thick: 10, total: false, datum: mineral}
+    template:
+      salic_duration_cst: {within: $within, min_cm: $thick, total: $total, datum: $datum}
+
+  para_alkalic:
+    note: "Alkalic evidence (the alkalic horizon passing too, Q19) in some horizon whose upper boundary lies within `within` cm."
+    params: {within: required}
+    template:
+      alkalic_horizon_cst: {grade: at_least_evidence, top_max: $within, datum: mineral}
+
+  stagnic_perched:
+    note: "Gleyic evidence of seasonal perched water in some horizon `thick` cm thick within `within` cm (K2.2.5, K2.3.5)."
+    params: {within: 50, thick: 10}
+    template:
+      stagnic_perched_cst: {within: $within, min_cm: $thick}
+
+  xanthic_sub:
+    note: "A udic regime bordering on the perudic one and a hue of 7.5YR or yellower in a subhorizon `thick` cm thick in the upper half of the B within 125 cm (M5.4.4)."
+    params: {thick: 10}
+    template:
+      all_of:
+        - udic_perudic_border_cst: {}
+        - b_upper_hue_cst: {hue: "7.5YR", rule: yellower, min_cm: $thick, part: upper_half}
+
+  permic:
+    note: "A permagelic temperature regime, or a permafrost layer within `within` cm of the mineral soil surface."
+    params: {within: 200}
+    template:
+      any_of:
+        - temperature_regime_cst: {regimes: [permagelic]}
+        - permafrost_layer_cst: {top_max: $within, datum: mineral}
+
+  gelic_frost:
+    note: "A cryic or colder temperature regime and frost-thawic features (H2.2.1)."
+    params: {}
+    template:
+      all_of:
+        - temperature_regime_cst: {regimes: [cryic], or_colder: true}
+        - frost_thawic_features_cst: {}

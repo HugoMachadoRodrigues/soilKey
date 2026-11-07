@@ -759,3 +759,29 @@ key:
       depth_cm: 18                    # the upper 18 cm after mixing
       value_moist_max: 3.5
       value_dry_max: 5.5              # crushed
+    # v0.9.376: orders H to N
+    layer_tests:
+      page: "115-177"
+      eutric_bs_min_pct: 50           # N4.3.2: base saturation 50 % or more ...
+      eutric_ph_min: 5.5              # ... or pH 5.5 or more, within 25 cm
+      argic_ph_min: 7.0               # L4.3.3: pH 7.0 or more in the argic horizon or claypan
+      leachic_ph_below: 6.5           # K2.1.2, K3.1.3, M5.2.4: pH under 6.5
+    salic_duration:
+      page: "152, 156"
+      months_min: 1                   # one month or more a year, in most years (6 of 10)
+    concretic:
+      page: 142
+      nodules_min_pct: 30             # Fe-Mn nodules and concretions, by volume
+      thick_min_cm: 5                 # an indurated subhorizon 5 cm or more thick
+    cinderic:
+      page: "177, 179"
+      pyroclastic_min_pct: 35         # cinders or other pyroclastic materials
+      depth_cm: 25                    # within 25 cm (the weighted mean, default 21)
+    grayic:
+      page: 176
+      oc_min_gkg: 6                   # organic carbon, weighted average
+      depth_cm: 20
+    marinic:
+      page: 111
+      main_share_pct: 50              # over half of the anions or cations: surely the main one
+      cation_floor_pct: 25            # under a quarter of four cations: never the main one (soilKey)
