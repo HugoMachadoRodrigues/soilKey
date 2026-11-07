@@ -1,3 +1,9 @@
+# soilKey 0.9.371 (2026-11-06)
+
+## China CST 2001: the diagnostic horizons
+
+Second part of the Chinese Soil Taxonomy (2001, English edition; system id `cst2001`, registered in a later part). The 33 diagnostic horizons of the book (pp. 20-43), each read layer by layer on the data (`R/diagnostics-cst-horizons.R`, `R/diagnostics-cst-anthropic.R`): a grade per layer, full, evidence (the book's weaker grade, for the 15 horizons that have one), none or undecided; readers `<horizon>_cst(pedon, grade = "full" | "evidence" | "at_least_evidence", top_max)` for the key, `phos_agric_horizon_cst()` for the phos-agric kind of the agric horizon and `argic_horizon_cst(natro = TRUE)` for the natro-argic horizon of the Aridosols. A WRB or USDA diagnostic of soilKey stands in only where a CST descriptor is missing, flagged with a lower grade. `.cst_identify()` gives the horizon panel (the horizons, evidences, kinds and stand-ins of each layer); `identify_horizons(pedon, "cst2001")` reaches it once the system is registered. The numbers are in `inst/rules/cst2001/thresholds.yaml` with their pages; soilKey's readings of this part, for Hugo's word, in `inst/rules/cst2001/readings.yaml`. Fixtures of the differences from the WRB 2022: the argic clay increase (+3 / x1.2 / +8 / fine clay +8), plinthite 10 %, the alkalic horizon at ESP 30 and pH 9.0, the salic horizon on salts or the 1:1 EC. Every other classification is unchanged (the fixtures of the other systems byte-identical).
+
 # soilKey 0.9.370 (2026-11-05)
 
 ## China CST 2001: the attributes, the shared readers and the regimes

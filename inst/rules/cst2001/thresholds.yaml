@@ -7,7 +7,8 @@
 # mass, so the readers divide by 10 once (units: gkg_per_pct). An entry whose
 # source is "soilKey" is a number soilKey adds where the book gives none, with
 # the decision that set it. R/cst-readers.R and R/cst-regimes.R read this file;
-# later parts add the numbers of the diagnostic horizons and characteristics.
+# the diagnostic horizons (0.9.371) are read by R/diagnostics-cst-horizons.R
+# and R/diagnostics-cst-anthropic.R; a later part adds the characteristics.
 edition: "Chinese Soil Taxonomy, English edition, Science Press 2001"
 
 units:
@@ -150,3 +151,315 @@ shares:
   # "More than half", "80 % or more" of the horizons to 125 cm are read as
   # shares of the thickness of the window (Hugo's decision Q22).
   default_window_cm: {value: 125, page: "93, 124-166"}
+
+# --- the diagnostic horizons (0.9.371; pp. 20-43) -----------------------------------
+# Numbers as printed; contents written here in % (the book's g/kg / 10) where
+# the key ends in _pct, in g/kg where it ends in _gkg. Each section gives its
+# page; a number soilKey adds names the decision that set it. Hue ranks are
+# those of .cst_hue_rank() (5YR 15, 7.5YR 17.5, 10YR 20, 2.5Y 22.5, 7.5Y 27.5).
+horizons:
+  histic:
+    page: "21-22"
+    source: "3.2.1.1 (1) peaty, (2) littery, histic evidence"
+    saturated_days_min: 30            # one month a year
+    thick_min_cm: 20
+    peaty_thick_max_cm: 40            # b(b): under 75 % sphagnum, hemic or sapric, BD 0.1-0.4
+    peaty_thick_max_sphagnum_cm: 60   # b(a): 75 % sphagnum or more, or BD under 0.1
+    sphagnum_min_pct: 75
+    bd_low_max: 0.1
+    total_window_cm: 50               # b(c): 40 cm in total within the upper 50 cm
+    total_min_cm: 40
+    peaty_oc_base_pct: 12             # c(a): 120 g/kg with no clay
+    peaty_oc_clay_slope: 0.1          #       + 0.1 x clay (g/kg)
+    peaty_oc_cap_pct: 18              #       180 g/kg at 600 g/kg clay or more
+    ap_oc_base_pct: 8                 # c(b): mixed to 25 cm, 80 g/kg with no clay
+    ap_oc_clay_slope: 0.1333333       #       + clay (g/kg) / 7.5
+    ap_oc_cap_pct: 16                 #       160 g/kg at 600 g/kg clay or more
+    littery_oc_min_pct: 20            # 200 g/kg, litter (O) included
+    littery_thick_min_cm: 20
+    evidence_min_cm: 5
+    evidence_min_arid_cm: 3
+  mattic:
+    page: "22-23"
+    source: "3.2.1.1 2; mattic evidence"
+    thick_min_cm: 5
+    roots_min_pct: 50                 # printed "50 percent", read as 50 or more (reading 5)
+    hue_rank_min: 17.5                # 7.5YR
+    hue_rank_max: 20                  # 10YR
+    value_moist_max: 3.5              # less than
+    value_dry_max: 5.5                # less than
+    chroma_moist_max: 3.5             # less than
+    cn_min: 14
+    cn_max: 20
+    bd_min: 0.5
+    bd_max: 1.1
+    evidence_thick_min_cm: 2
+    evidence_roots_min_pct: 10
+  mollic:
+    page: "23-24"
+    source: "3.2.1.2 1 (the umbric and ochric epipedons, p. 24, read the same colours and carbon)"
+    on_contact_min_cm: 10
+    thick_min_cm: 18                  # and more than a third of a solum under 75 cm
+    deep_solum_cm: 75
+    thick_deep_solum_cm: 25
+    value_moist_max: 3.5              # less than
+    value_dry_max: 5.5                # less than
+    chroma_moist_max: 3.5             # less than
+    c_value_diff: 1
+    c_chroma_diff: 2
+    oc_min_pct: 0.6                   # 6 g/kg
+    bs_min_pct: 50
+  homogeneous:
+    page: "24-25"
+    source: "soilKey (Hugo's decision Q18, 2026-11-06): homogeneous = neighbouring texture classes, moist value or chroma within one unit, CaCO3 within 20 g/kg (the calcaric tolerance, p. 63)"
+    value_units: 1
+    chroma_units: 1
+    caco3_gkg: 20
+  siltigic:
+    page: "24-25"
+    source: "3.2.1.3 1; siltigic evidence"
+    thick_min_cm: 50
+    evidence_thick_min_cm: 20
+    oc_window_cm: 50
+    oc_mean_min_gkg: 4.5
+    oc_base_min_gkg: 3
+  cumulic:
+    page: 25
+    source: "3.2.1.3 2; cumulic evidence"
+    thick_min_cm: 50
+    evidence_thick_min_cm: 20
+  fimic:
+    page: "25-26"
+    source: "3.2.1.3 3; fimic evidence (P printed Mg/kg, read mg/kg: reading 6)"
+    thick_min_cm: 25
+    oc_min_gkg: 6
+    p_olsen_min_mg_kg: 35
+    worm_holes_min_pct: 50
+    evidence_thick_min_cm: 18
+    evidence_p_olsen_min_mg_kg: 18
+    evidence_oc_min_gkg: 4.5
+  anthrostagnic:
+    page: "26-27"
+    source: "3.2.1.3 4; anthrostagnic evidence"
+    thick_min_cm: 18
+    value_moist_max: 4
+    chroma_moist_max: 2
+    hue_rank_min: 17.5                # 7.5YR or yellower (GY, B, BG too)
+    bd_ratio_min: 1.10
+    evidence_paddy_years_max: 0.5     # half or fewer of ten years
+  aridic:
+    page: "27-28"
+    source: "3.2.1.4 1"
+    crack_width_max_cm: 1
+    crack_depth_cm: [1, 4]
+    vesicular_crust_min_cm: 0.5
+    platy_max_cm: 10
+    gypsum_much_pct: 5                # soilKey: "much gypsum" read at the gypsic horizon's 50 g/kg (Hugo, 2026-11-06)
+  salic_crust:
+    page: 28
+    source: "3.2.1.4 2"
+    thick_min_cm: 2
+    salts_min_pct: 10                 # 100 g/kg
+  albic:
+    page: "28-29"
+    source: "3.2.2 1"
+    thick_min_cm: 1
+    tongue_max_cm: 5                  # less than
+    materials_min_pct: 85
+    uncoated_grains_min_pct: 50       # soilKey: uncoated grains read as half the grains or more (Hugo, 2026-11-06)
+  glossic:
+    page: "29-30"
+    source: "3.2.2 2 and Table 3.1"
+    tongue_min_cm: 5
+    vol_range_pct: [15, 85]
+    width_clayey_mm: 5
+    width_clay_loamy_mm: 10
+    width_loamy_mm: 15
+    evidence_width_min_mm: 2
+  cambic:
+    page: "29-31"
+    source: "3.2.2 3"
+    thick_min_cm: 10
+    thick_min_thin_cm: 5              # aridic moisture, cryic or frigid temperature regime
+    base_min_cm: 25
+    carbonate_parent_min_pct: 1       # soilKey: a calcareous horizon below, 10 g/kg (the calcaric property, p. 63; Hugo, 2026-11-06)
+    carbonate_removed_min_pct: 1      # soilKey: 10 g/kg less than below (Hugo, 2026-11-06)
+  ferralic:
+    page: 31
+    source: "3.2.2 4"
+    thick_min_cm: 30
+    clay_min_pct: 8                   # 80 g/kg
+    cec_clay_max: 16                  # less than, cmol(+)/kg clay
+    ecec_clay_max: 12                 # less than
+    weatherable_max_pct: 10           # less than, of 50-200 um (20-200 um stands in, Q16)
+    k_total_max_pct: 0.8              # less than 8 g/kg K
+    rock_structure_max_pct: 5         # less than
+  lac_ferric:
+    page: 31
+    source: "3.2.2 5"
+    thick_min_cm: 30
+    fe_dcb_min_pct: 1.4               # 14 g/kg Fe
+    free_total_min: 0.40
+    cec_clay_max: 24                  # less than
+    cec_part_min_cm: 10
+  plinthic:
+    page: 32
+    source: "3.2.2 6; plinthic evidence"
+    thick_min_cm: 15
+    plinthite_min_pct: 10
+    evidence_thick_min_cm: 5
+    evidence_plinthite_min_pct: 5
+  spodic:
+    page: "32-33"
+    source: "3.2.2 7; spodic evidence"
+    thick_min_cm: 2.5
+    materials_min_pct: 85
+    evidence_materials_min_pct: 50
+    ph_max: 5.9                       # water 1:1 (1:2.5 stands in, Q16)
+    oc_min_pct: 0.6
+    cracked_min_pct: 10
+    alfe_min_pct: 0.50
+    odoe_min: 0.25
+  agric:
+    page: "33-34"
+    source: "3.2.2 8; agric evidence; the phos-agric horizon (footnote)"
+    thick_min_cm: 10
+    films_min_mm: 0.5
+    films_min_pct: 5
+    evidence_thick_min_cm: 5
+    evidence_films_min_pct: 3
+    phos_p_olsen_min_mg_kg: 18
+    phos_much_higher_ratio: 2         # soilKey (Hugo's decision Q18): "much higher" = twice
+    ph_higher_units: 0.5              # soilKey (Q18)
+    bs_higher_points: 10              # soilKey (Q18)
+    acid_ph_max: 5.5                  # soilKey: an acid soil, the layer below under pH 5.5 (Hugo, 2026-11-06)
+    chromic_hue_rank_max: 17.5        # soilKey: a chromic soil, the layer below 7.5YR or redder (Hugo, 2026-11-06)
+    hue_yellower_max_steps: 2.5       # soilKey: "a little yellower" = one hue step (Hugo, 2026-11-06)
+  hydragric:
+    page: "34-35"
+    source: "3.2.2 9; hydragric evidence"
+    thick_min_cm: 20
+    evidence_thick_min_cm: 5
+    grey_hue_rank: [20, 27.5]         # 10YR-7.5Y
+    grey_value_moist: [5, 6]
+    grey_chroma_max: 2
+    fe_dcb_ratio_min: 1.5
+    films_min_mm: 0.5
+  argic:
+    page: "35-38"
+    source: "3.2.2 10"
+    thick_min_cm: 7.5                 # loamy or clayey
+    thick_min_sandy_cm: 15            # sand or loamy sand
+    thin_section_min_pct: 1
+    eluvial_within_cm: 30             # item 2b: the increase within 30 cm (the eluvial layers' base within 30 cm above the layer, D2)
+    clay_increase:
+      low_below_pct: 15               # eluvial under 15 %: 3 points more
+      low_plus_points: 3
+      mid_below_pct: 40               # 15-40 %: 1.2 times
+      mid_ratio: 1.2
+      high_below_pct: 60              # 40-60 %: 8 points more
+      high_plus_points: 8
+      fine_plus_points: 8             # 60 % or more: 8 points more fine clay
+    secondary_thick_min_cm: 10
+    secondary_thick_min_arid_cm: 5
+    ki_same_rel: 0.10                 # soilKey: "almost the same" Ki within 10 % (Hugo, 2026-11-06)
+    sodic:                            # the sodic property (p. 63), item e
+      esp_min: 30
+      na_min_cmol: 2
+      na_mg_share_min: 50
+      alkaline_ph_min: 8.5            # soilKey: sodium not measured is absent below this pH (Hugo, 2026-11-06)
+  claypan:
+    page: 38
+    source: "3.2.2 11"
+    thick_min_cm: 10
+    albic_clay_ratio: 2
+    argillan_min_mm: 0.5
+  alkalic:
+    page: "38-39"
+    source: "3.2.2 12; alkalic evidence"
+    tongue_min_cm: 2.5
+    esp_min: 30
+    ph_min: 9.0
+    within_cm: 40
+    surface_salts_max_pct: 0.5        # less than 5 g/kg
+    evidence_esp_min: 5
+  hypersalic:
+    page: 39
+    source: "3.2.2 13"
+    thick_min_cm: 15
+    salts_min_pct: 50                 # 500 g/kg
+  salipan:
+    page: 39
+    source: "3.2.2 14"
+    thick_min_cm: 5
+    salts_min_pct: 20                 # 200 g/kg
+  gypsic:
+    page: 39
+    source: "3.2.2 15; gypsic evidence"
+    thick_min_cm: 15
+    gypsum_range_pct: [5, 50]         # 50-500 g/kg
+    visible_min_pct: 1
+    product_min: 1500                 # cm x g/kg
+    evidence_gypsum_min_pct: 1        # 10-49 g/kg
+    evidence_gypsum_max_pct: 4.9      # 49 g/kg as printed
+  hypergypsic:
+    page: 40
+    source: "3.2.2 16"
+    thick_min_cm: 15
+    gypsum_min_pct: 50
+  calcic:
+    page: "40-41"
+    source: "3.2.2 17; calcic evidence"
+    thick_min_cm: 15
+    caco3_high_range_pct: [15, 50]    # 150-500 g/kg
+    caco3_low_range_pct: [5, 15]      # 50-150 g/kg
+    a_plus_pct: 5                     # 50 g/kg more than above or below
+    b_secondary_min_pct: 5            # % by volume
+    c_clay_max_pct: 18                # less than 180 g/kg
+    c_secondary_plus_pct: 5           # 50 g/kg, read on the volume (flagged)
+    d_secondary_plus_pct: 10          # 100 g/kg or 10 % by volume
+    evidence_thick_min_cm: 5
+    evidence_plus_pct: 2              # 20-50 g/kg more
+    evidence_secondary_min_pct: 2     # 2-5 % by volume
+  hypercalcic:
+    page: 41
+    source: "3.2.2 18"
+    thick_min_cm: 15
+    caco3_min_pct: 50
+    secondary_min_pct: 50             # more than
+    plus_pct: 5
+    secondary_plus_pct: 5
+  calcipan:
+    page: 41
+    source: "3.2.2 19"
+    thick_min_cm: 10
+    product_min: 2000                 # cm x g/kg
+  phosphipan:
+    page: "41-42"
+    source: "3.2.2 20"
+    top_min_cm: 10
+    thick_min_cm: 10
+    p_total_min_pct: 3                # 30 g/kg P
+    caco3_min_pct: 50
+  salic:
+    page: 42
+    source: "3.2.3 1; salic evidence"
+    thick_min_cm: 15
+    salts_arid_min_pct: 2             # 20 g/kg
+    salts_other_min_pct: 1            # 10 g/kg
+    ec_arid_min: 30                   # dS/m, 1:1 extract
+    ec_other_min: 15
+    salt_product_min: 600             # g/kg x cm
+    ec_product_min: 900               # dS/m x cm
+    evidence_arid_min_pct: 0.5        # 5 g/kg
+    evidence_other_min_pct: 0.2       # 2 g/kg
+    evidence_ec_arid_min: 7.5         # soilKey's convention (R10, Hugo, 2026-11-06): the 1:1 EC of the evidence in the ratio of the full limits (30 dS/m : 20 g/kg)
+    evidence_ec_other_min: 3          # soilKey's convention (R10, Hugo, 2026-11-06): 15 dS/m : 10 g/kg
+  sulfuric:
+    page: 43
+    source: "3.2.3 2"
+    thick_min_cm: 15
+    sulfate_s_min_pct: 0.0167         # 0.5 g/kg sulfate as SO4 = 0.0167 % S (default 16)
+    s_total_min_pct: 0.3              # 3 g/kg
+    ph_max: 4.0                       # less than, water 1:1 (1:2.5 stands in, Q16)
+    sulfidic_s_min_pct: 0.01          # soilKey: the WRB sulfidic S until the characteristic is read (a later part)

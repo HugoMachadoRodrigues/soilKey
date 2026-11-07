@@ -48,7 +48,7 @@
       rlang::abort(sprintf("thresholds.yaml has no entry %s.", paste(path, collapse = "$")))
     }
   }
-  if (is.list(x) && !is.null(x$value)) x$value else x
+  if (is.list(x) && !is.null(x[["value"]])) x[["value"]] else x
 }
 
 # A reader's answer.
