@@ -60,6 +60,14 @@
 </div>
 </div>
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.361" id="soilkey-09361-2026-11-06">soilKey 0.9.361 (2026-11-06)<a class="anchor" aria-label="anchor" href="#soilkey-09361-2026-11-06"></a></h2>
+<div class="section level3">
+<h3 id="germany-ka5-the-horizons-on-the-data-0-9-361">Germany (KA5, 2005): the horizons on the data<a class="anchor" aria-label="anchor" href="#germany-ka5-the-horizons-on-the-data-0-9-361"></a></h3>
+<p>The KA5 horizons read on the recorded data, used by nothing yet: <code>.ka5_identify()</code> (the identification <code>identify_horizons(pedon, "ka5")</code> will reach once the system is registered) reads every layer by soilKey’s fixed order of tests (Hugo’s decision Q9: F, H and O, Y, R, E, M, G, S, A, B with T and P, C, then the prefixes and suffixes and the transitions Bv-Sw, Sw-Bv, Bv-Go, Go-Bv, Ah-Bv, Ah-Go). Every test is three-valued: an undecided one gives candidates and the attributes that would decide them. A layer written in the KA5 notation keeps its horizon and the data’s reading goes to the evidence. The readers (<code>R/ka5-readers.R</code>): the depth datum GOF (p. 79), organic substance with the 15 to &lt; 17.4 % band (Q10), the Ah minimum with the silt of other fractions (Q11), the Munsell pages (Q12), the area classes and field codes, the carbonate of the rock (Q15), the clay differences of the Bt and the Fahlerde. The numbers are in <code>inst/rules/ka5/thresholds.yaml</code> with their pages; soilKey’s new readings, for Hugo to confirm, in <code>readings.yaml</code>. Every classification is unchanged.</p>
+<ul><li>After the review (Hugo, 2026-11-06): a recorded water table makes a horizon G only within its fluctuation zone; a notation C or H without its prefix takes it from the data or leaves it open; the Ael without colour is undecided against the Al; no topsoil under 30 cm of peat; the Srd and Srw conventions and the F colour cuts (a lower grade) recorded.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.360" id="soilkey-09360-2026-11-05">soilKey 0.9.360 (2026-11-05)<a class="anchor" aria-label="anchor" href="#soilkey-09360-2026-11-05"></a></h2>
 <div class="section level3">
 <h3 id="germany-ka5-the-horizon-notation-and-the-formulas-0-9-360">Germany (KA5, 2005): the horizon notation and the formulas<a class="anchor" aria-label="anchor" href="#germany-ka5-the-horizon-notation-and-the-formulas-0-9-360"></a></h3>

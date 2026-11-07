@@ -33,6 +33,34 @@ of 2026-11-04 and 2026-11-05 are in `inst/rules/cst2001/readings.yaml`.
 Every other classification is unchanged (the fixtures of the other
 systems byte-identical).
 
+## soilKey 0.9.361 (2026-11-06)
+
+### Germany (KA5, 2005): the horizons on the data
+
+The KA5 horizons read on the recorded data, used by nothing yet:
+`.ka5_identify()` (the identification `identify_horizons(pedon, "ka5")`
+will reach once the system is registered) reads every layer by soilKey’s
+fixed order of tests (Hugo’s decision Q9: F, H and O, Y, R, E, M, G, S,
+A, B with T and P, C, then the prefixes and suffixes and the transitions
+Bv-Sw, Sw-Bv, Bv-Go, Go-Bv, Ah-Bv, Ah-Go). Every test is three-valued:
+an undecided one gives candidates and the attributes that would decide
+them. A layer written in the KA5 notation keeps its horizon and the
+data’s reading goes to the evidence. The readers (`R/ka5-readers.R`):
+the depth datum GOF (p. 79), organic substance with the 15 to \< 17.4 %
+band (Q10), the Ah minimum with the silt of other fractions (Q11), the
+Munsell pages (Q12), the area classes and field codes, the carbonate of
+the rock (Q15), the clay differences of the Bt and the Fahlerde. The
+numbers are in `inst/rules/ka5/thresholds.yaml` with their pages;
+soilKey’s new readings, for Hugo to confirm, in `readings.yaml`. Every
+classification is unchanged.
+
+- After the review (Hugo, 2026-11-06): a recorded water table makes a
+  horizon G only within its fluctuation zone; a notation C or H without
+  its prefix takes it from the data or leaves it open; the Ael without
+  colour is undecided against the Al; no topsoil under 30 cm of peat;
+  the Srd and Srw conventions and the F colour cuts (a lower grade)
+  recorded.
+
 ## soilKey 0.9.360 (2026-11-05)
 
 ### Germany (KA5, 2005): the horizon notation and the formulas
