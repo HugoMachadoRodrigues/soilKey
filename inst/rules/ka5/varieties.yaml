@@ -1,0 +1,431 @@
+# The varieties (Varietaeten) and subvarieties (Subvarietaeten) of the German
+# soil systematics of the Bodenkundliche Kartieranleitung, 5th edition
+# (Ad-hoc-AG Boden, Hannover 2005, KA5), section 5.7.1.4 (pp. 263-282), keyed
+# after the subtype by R/varieties-ka5.R (v0.9.365). Hugo's decision Q1
+# (2026-11-04): the varieties are an additive level after the subtypes, the
+# subvarieties digits on the variety letter; a variety is offered only where
+# Tab. 50 marks the subtype, plus the six of its note 1 (og, c, z, k, v, ku)
+# everywhere; the humus forms only as recorded. Q14: the base-saturation
+# marks keep their two scales. Q21: the further subtypes that pass join the
+# name by the combination rules of Tab. 46 no. 17 and the symbol rules II-IV.
+#
+# Names and codes as printed (Tab. 49, p. 273); the criteria of Tab. 46
+# (pp. 264-269) are paraphrased, with their numbers; English and Portuguese
+# glosses are soilKey's. Pages are the printed pages of the book (PDF page =
+# printed + 1). No text of the book is shipped.
+
+source: "Ad-hoc-AG Boden (2005), KA5, 5.7.1.4 (pp. 263-282): Tab. 46 (criteria, pp. 264-269), Tab. 47 (development depth, p. 269), Tab. 48 (base saturation, p. 270), the symbol rules I-VII (pp. 270-272), Tab. 49 (codes, p. 273), Tab. 50 (the varieties of the subtypes, pp. 274-282)."
+
+# The 38 variety codes in the column order of Tab. 50 (p. 274), which is the
+# order of the criteria of Tab. 46.
+columns: ["mu", "mo", "ro", "ta", "mf", "md", "mr", "o", "n", "u", "h", "eu", "m", "dy", "s", "g", "a", "r", "w", "b", "gb", "gr", "rt", "ei", "sf", "vf", "og", "c", "z", "i", "x", "p", "l", "d", "k", "e", "v", "ku"]
+
+# Tab. 50, note 1: the varieties that "can occur in almost all subtypes"
+# (offered everywhere, Q1, except in the rows Tab. 50 prints empty and where
+# the subtype's own formula already writes the feature); note 2: the varieties
+# split into subvarieties by a digit; note 3: under 1 dm the Anmoor and peat
+# covers are named as a variety of the humus form; note 4: w is the raising
+# of ground or perched water.
+notes:
+  everywhere: {codes: ["og", "c", "z", "k", "v", "ku"], page: "pp. 274, 282 (note 1)"}
+  subvarieties: {codes: ["eu", "m", "dy", "s", "g", "p"], page: "pp. 274, 282 (note 2)"}
+  thin_organic: {codes: ["o", "n", "u", "h"], page: "pp. 274, 282 (note 3)"}
+  rewetting: {codes: ["w"], page: "pp. 274, 282 (note 4)"}
+
+# The rows of Tab. 50 printed without a mark (the Rohmarsch subtypes; the
+# subhydric types have no subtype): no variety offered there, the note-1
+# varieties included (soilKey's reading).
+empty_rows: ["MRn", "MRb", "MRf"]
+
+# Tab. 49 (p. 273), the left column: the variety codes, with the criterion of
+# Tab. 46 (number and page). kind: adjective (before the name, declined) or
+# noun (in brackets before the name or its deciding part, p. 264). word: the
+# word of the name (the stem of an adjective, declined by the gender of the
+# type; a noun as printed). reader: the test of R/varieties-ka5.R.
+codes:
+  - {code: "mu", printed: "Mull...", kind: noun, word: "Mull", group: "Humusform", criterion: 1, page: "p. 264", reader: humus_form, values: ["mull", "l-mull", "f-mull"], name_en: "mull", name_pt: "mull", what: "the humus form mull, as recorded (an Axh of 1 dm or more, base saturation 50 % or more, stable aggregates, bioturbation)"}
+  - {code: "mo", printed: "Moder...", kind: noun, word: "Moder", group: "Humusform", criterion: 1, page: "p. 264", reader: humus_form, values: ["moder"], name_en: "moder", name_pt: "moder", what: "the humus form moder, as recorded (L/Of/Oh over an Ah, Aeh or Ahe, diffuse boundaries)"}
+  - {code: "ro", printed: "Rohhumus...", kind: noun, word: "Rohhumus", group: "Humusform", criterion: 1, page: "p. 264", reader: humus_form, values: ["mor"], name_en: "mor", name_pt: "mor", what: "the humus form Rohhumus (mor, with the mor-like moder), as recorded (L/Of/Oh over an Ahe, sharp boundaries)"}
+  - {code: "ta", printed: "Tangel...", kind: noun, word: "Tangel", group: "Humusform", criterion: 1, page: "p. 264", reader: humus_form, values: ["tangel"], name_en: "tangel", name_pt: "tangel", what: "the humus form Tangel, as recorded (thick Of and Oh, mostly 2 dm or more, over an Ovh)"}
+  - {code: "mf", printed: "Feuchtmull...", kind: noun, word: "Feuchtmull", group: "Humusform", criterion: 1, page: "p. 264", reader: humus_form, values: ["hydromull"], name_en: "hydromull", name_pt: "hidromull", what: "the humus form Feuchtmull, as recorded (an Ah about 1 to 2 dm thick with 8 to < 15 % organic substance)"}
+  - {code: "md", printed: "Feuchtmoder...", kind: noun, word: "Feuchtmoder", group: "Humusform", criterion: 1, page: "p. 264", reader: humus_form, values: ["hydromoder"], name_en: "hydromoder", name_pt: "hidromoder", what: "the humus form Feuchtmoder, as recorded (a smeary, base-poor Oh)"}
+  - {code: "mr", printed: "Feuchtrohhumus...", kind: noun, word: "Feuchtrohhumus", group: "Humusform", criterion: 1, page: "p. 265", reader: humus_form, values: ["hydromor"], name_en: "hydromor", name_pt: "hidromor", what: "the humus form Feuchtrohhumus, as recorded (a smeary, base-poor Oh)"}
+  - {code: "o", printed: "Anmoor...", kind: noun, word: "Anmoor", group: "Humusform", criterion: 1, page: "p. 265", reader: thin_organic, horizon: "Aa", name_en: "anmoor", name_pt: "anmoor", what: "an Aa at the surface thinner than 1 dm (note 3)"}
+  - {code: "n", printed: "Niedermoor...", kind: noun, word: "Niedermoor", group: "Humusform", criterion: 1, page: "p. 265", reader: thin_organic, horizon: "nH", name_en: "fen peat", name_pt: "turfa de pântano baixo", what: "an nH at the surface thinner than 1 dm (note 3)"}
+  - {code: "u", printed: "Übergangsmoor...", kind: noun, word: "Übergangsmoor", group: "Humusform", criterion: 1, page: "p. 265", reader: thin_organic, horizon: "uH", name_en: "transitional peat", name_pt: "turfa de transição", what: "a uH at the surface thinner than 1 dm (note 3)"}
+  - {code: "h", printed: "Hochmoor...", kind: noun, word: "Hochmoor", group: "Humusform", criterion: 1, page: "p. 265", reader: thin_organic, horizon: "hH", name_en: "bog peat", name_pt: "turfa de turfeira alta", what: "an hH at the surface thinner than 1 dm (note 3)"}
+  - {code: "eu", printed: "basenreiche(r) („eutrophe(r)“)", kind: adjective, word: "basenreich", group: "Basizität", criterion: 2, page: "p. 265", reader: base_saturation, name_en: "base-rich", name_pt: "rico em bases", what: "base saturation 50 % or more (mark >) in the horizon under the Ah or Aa at 2 to 5 dm; in the Ah/C soils in the Ah"}
+  - {code: "m", printed: "mittelbasische(r) („mesotrophe(r)“)", kind: adjective, word: "mittelbasisch", group: "Basizität", criterion: 2, page: "p. 265", reader: base_saturation, name_en: "medium-base", name_pt: "mesotrófico", what: "base saturation 20 to < 50 % (mark <) in the same horizon"}
+  - {code: "dy", printed: "basenarme(r) („dystrophe(r)“)", kind: adjective, word: "basenarm", group: "Basizität", criterion: 2, page: "p. 265", reader: base_saturation, name_en: "base-poor", name_pt: "pobre em bases", what: "base saturation under 20 % (mark <<) in the same horizon"}
+  - {code: "s", printed: "pseudovergleyte(r)", kind: adjective, word: "pseudovergleyt", group: "Wasserhaushalt", criterion: 3, page: "p. 265", reader: depth_hydromorphy, master: "S", name_en: "pseudogleyed (deep)", name_pt: "pseudogleizado (profundo)", what: "the top of an Sw or a transitional Sw 8 dm or deeper under the GOF, or a very weak one above 8 dm written as a transition Sw-... or Sd-...; subvarieties flach (8 to < 13 dm) and tief (13 dm or more)"}
+  - {code: "g", printed: "vergleyte(r)", kind: adjective, word: "vergleyt", group: "Wasserhaushalt", criterion: 4, page: "p. 266", reader: depth_hydromorphy, master: "G", name_en: "gleyed (deep)", name_pt: "gleizado (profundo)", what: "the top of a Go or a transitional Go 8 dm or deeper under the GOF; subvarieties flach (8 to < 13 dm) and tief (13 dm or more)"}
+  - {code: "a", printed: "Auen...", kind: noun, word: "Auen", group: "Wasserhaushalt", criterion: 5, page: "p. 266", reader: auen, name_en: "floodplain", name_pt: "aluvial", what: "the groundwater dynamics of a floodplain under a terrestrial soil: an aG deeper than 8 dm under the GOF"}
+  - {code: "r", printed: "reliktische(r), (entwässerte(r))", kind: adjective, word: "reliktisch", group: "Wasserhaushalt", criterion: 12, page: "p. 267", reader: relict, name_en: "relict (drained)", name_pt: "relíquia (drenado)", what: "the hydromorphic horizons of a semiterrestrial soil or a Pseudogley changed by drainage: rG, rSw, rSd; the r stands before the letter it qualifies (rule VI, p. 272)"}
+  - {code: "w", printed: "aufgestaute(r)", kind: adjective, word: "aufgestaut", group: "Wasserhaushalt", criterion: 13, page: "p. 267", reader: rewetted, name_en: "rewetted", name_pt: "reumedecido", what: "a drowned soil: the present ground or perched water raised again decides (Go/Gr or Sw/Sd; note 4)"}
+  - {code: "b", printed: "braune(r)", kind: adjective, word: "braun", group: "Färbung", criterion: 7, page: "p. 266", reader: colour, name_en: "brown", name_pt: "pardo", what: "Rendzina: a bAh, its humus mostly under 8 %; Plaggenesch: a bE, 7.5YR to 10YR 3/3 to 5/4; Kalkpaternia (and Paternia): a baAh"}
+  - {code: "gb", printed: "graubraune(r)", kind: adjective, word: "graubraun", group: "Färbung", criterion: 7, page: "p. 266", reader: colour, name_en: "greyish brown", name_pt: "pardo-acinzentado", what: "Plaggenesch: a gbE, 7.5YR to 10YR 3/2 to 4/2"}
+  - {code: "gr", printed: "graue(r)", kind: adjective, word: "grau", group: "Färbung", criterion: 7, page: "p. 266", reader: colour, name_en: "grey", name_pt: "cinzento", what: "Plaggenesch: a gE, 7.5YR to 10YR 3/1 to 4/1; Kalkpaternia (and Paternia): a gaAh"}
+  - {code: "rt", printed: "rötliche(r)", kind: adjective, word: "rötlich", group: "Färbung", criterion: 7, page: "p. 266", reader: reddish, name_en: "reddish", name_pt: "avermelhado", what: "a Bt redder than 7.5YR by haematite, or 7.5YR with a chroma over 4"}
+  - {code: "ei", printed: "eisenreiche(r)", kind: adjective, word: "eisenreich", group: "Ausfällungen", criterion: 8, page: "p. 266", reader: iron_rich, name_en: "iron-rich (ferritic)", name_pt: "rico em ferro", what: "a Bv of 7.5YR with a chroma of 4 or more, or redder than 7.5YR"}
+  - {code: "sf", printed: "sulfatreiche(r)", kind: adjective, word: "sulfatreich", group: "Ausfällungen", criterion: 8, page: "p. 266", reader: sulfate, name_en: "sulfate-rich", name_pt: "rico em sulfato", what: "jarosite or schwertmannite (in Marschen and Niedermoore)"}
+  - {code: "vf", printed: "verfestigte(r)", kind: adjective, word: "verfestigt", group: "Ausfällungen", criterion: 8, page: "p. 267", reader: cemented, name_en: "cemented", name_pt: "cimentado", what: "an Ortstein B(h)ms, bog-iron concretions or banks (Gkso, Gmso), cemented carbonate in a Gley (Gkco, Gmco) or a Kalkniedermoor (Hkcw, Hmcw)"}
+  - {code: "og", printed: "Organo...", kind: noun, word: "Organo", group: "geogen", criterion: 10, page: "p. 267", reader: prefix, prefix: "o", masters: ["A"], name_en: "organo (lithogenic organic matter)", name_pt: "organo (matéria orgânica litogênica)", what: "an oAh: the humus of an Ah formed mainly from the organic matter of the parent material (oC, yoC)"}
+  - {code: "c", printed: "kalkhaltige(r) (geogen)", kind: adjective, word: "kalkhaltig", group: "geogen", criterion: 11, page: "p. 267", reader: prefix, prefix: "e", name_en: "calcareous (geogenic)", name_pt: "calcário (geogênico)", what: "the geogenic prefix e on a horizon of the solum (eP, eSd, eGo)"}
+  - {code: "z", printed: "salzhaltige(r) (geogen)", kind: adjective, word: "salzhaltig", group: "geogen", criterion: 11, page: "p. 267", reader: prefix, prefix: "z", name_en: "saline (geogenic)", name_pt: "salino (geogênico)", what: "the geogenic prefix z on a horizon of the solum (zAh, zGo; 0.75 mS/cm or more in the saturation extract, p. 84)"}
+  - {code: "i", printed: "nassgebleichte(r)", kind: adjective, word: "nassgebleicht", group: "weitere pedogene Merkmale", criterion: 22, page: "p. 269", reader: wet_bleached, name_en: "wet-bleached", name_pt: "descorado por umidade", what: "a clear depletion of sesquioxides in the Sw by lateral removal near the surface: an Sew (in Pseudogleye and Stagnogleye)"}
+  - {code: "x", printed: "humusreiche(r)", kind: adjective, word: "humusreich", group: "weitere pedogene Merkmale", criterion: 9, page: "p. 267", reader: humus_rich, name_en: "humus-rich", name_pt: "rico em húmus", what: "an Ah or Ap with 8 % to over 15 % organic substance down to 1 dm or deeper"}
+  - {code: "p", printed: "podsolige(r)", kind: adjective, word: "podsolig", group: "weitere pedogene Merkmale", criterion: 6, page: "p. 266", reader: podzolic, name_en: "podzolic", name_pt: "podzolizado", what: "the pre-stage of the Podsol: O/Aeh (schwach), O/Ahe (mäßig) or O/Ahe+Ae (stark)"}
+  - {code: "l", printed: "lessivierte(r)", kind: adjective, word: "lessiviert", group: "weitere pedogene Merkmale", criterion: 20, page: "p. 269", reader: illuvial_c, name_en: "lessivated", name_pt: "lessivado", what: "no compact Bt: a C(b)tv with very weak or diffuse clay accumulation"}
+  - {code: "d", printed: "verfahlte(r)", kind: adjective, word: "verfahlt", group: "weitere pedogene Merkmale", criterion: 21, page: "p. 269", reader: illuvial_c, name_en: "with clay bands (verfahlt)", name_pt: "com bandas de argila", what: "fewer or thinner clay bands than a Bänderfahlerde: a Cbtv with sharp Bt bands under 10 % of the area"}
+  - {code: "k", printed: "kolluviale(r)", kind: adjective, word: "kolluvial", group: "weitere pedogene Merkmale", criterion: 16, page: "p. 268", reader: colluvial, name_en: "colluvial", name_pt: "coluvial", what: "a colluvial cover Ah/M thinner than 4 dm"}
+  - {code: "e", printed: "erodierte(r)", kind: adjective, word: "erodiert", group: "Erosion", criterion: 19, page: "p. 268", reader: eroded, name_en: "eroded", name_pt: "erodido", what: "the profile shortened against an uneroded reference profile without changing the unit (the degree of erosion Eg1 to Eg5, Tab. 62, pp. 315-316); the e stands before the letter it qualifies (rule VI, p. 272)"}
+  - {code: "v", printed: "Acker...", kind: noun, word: "Acker", group: "Nutzung", criterion: 14, page: "p. 267", reader: arable, name_en: "arable", name_pt: "lavoura", what: "an Ap (arable use; it includes kultotroph)"}
+  - {code: "ku", printed: "kultotrophe(r)", kind: adjective, word: "kultotroph", group: "Nutzung", criterion: 15, page: "p. 267", reader: cultotrophic, name_en: "cultotrophic", name_pt: "cultotrófico", what: "farmland not ploughed, mainly grassland, regularly fertilised: no Ap, an Akh (Aka, Hk) of 1 dm or more with the humus minimum of an Ah"}
+
+# Tab. 49 (p. 273), the right column: the letters after the type in the
+# subtype symbols (for the names of the combinations, rules II and III).
+subtype_suffixes:
+  "a": "Auen... (only GGa)"
+  "b": "Brack..."
+  "c": "Kalk... (pedogenic)"
+  "d": "Bänder.../Bändchen..."
+  "e": "Brauneisen.../Eisen..."
+  "f": "Fluss..."
+  "g": "Hang..."
+  "h": "Humus..., Hoch... (only GH)"
+  "i": "Bleich..."
+  "l": "Locker..."
+  "m": "Anmoor..."
+  "n": "Norm..., Nieder... (only GH)"
+  "o": "Moor..."
+  "p": "Proto..."
+  "q": "Quellen..."
+  "r": "Eu... (eutrophic, base-rich)"
+  "s": "Sauer... (dystrophic)"
+  "t": "Roh..."
+  "u": "Fahl..., Übergangs..."
+  "w": "Wechsel..."
+  "x": "Oxi..., Ocker..."
+
+# The numbers of the criteria (Tab. 46), the range rule: lower end inclusive,
+# upper end exclusive.
+thresholds:
+  deep_hydromorphy_cm: {value: [80, 130], page: "pp. 265-266", what: "s and g: the top of the Sw or Go 8 dm or deeper; flach 8 to < 13 dm, tief 13 dm or more"}
+  auen_cm: {value: 80, page: "p. 266", what: "a: an aG deeper than 8 dm"}
+  thin_organic_cm: {value: 10, page: "p. 265", what: "o, n, u, h: the Aa or H at the surface under 1 dm"}
+  bs_pct: {value: [20, 50], page: "p. 265", what: "eu 50 % or more, m 20 to < 50 %, dy under 20 % (base saturation on the potential CEC)"}
+  bs_horizon_cm: {value: [20, 50], page: "p. 265", what: "the horizon under the Ah or Aa at 2 to 5 dm"}
+  humus_rich_os_pct: {value: 8, page: "p. 267", what: "x: 8 % or more organic substance in the Ah or Ap"}
+  humus_rich_depth_cm: {value: 10, page: "p. 267", what: "x: down to 1 dm or deeper"}
+  colluvial_max_cm: {value: 40, page: "p. 268", what: "k: the Ah/M under 4 dm (4 dm or more: the Kolluvisol)"}
+  cultotrophic_min_cm: {value: 10, page: "p. 267", what: "ku: an Akh of 1 dm or more"}
+  rendzina_brown_os_pct: {value: 8, page: "p. 266", what: "b of the Rendzina: the humus of the bAh mostly under 8 % (on the data: soilKey's reading)"}
+  bands_area_max_pct: {value: 10, page: "p. 269", what: "d: the Bt bands of the Cbtv under 10 % of the area"}
+
+# Subvarieties (rule VII, p. 272): a digit after the variety letter by the
+# classes of Tab. 3 (p. 50: 1 very weak, 2 weak or shallow, 3 medium, 4 strong
+# or deep, 5 very strong).
+subvarieties:
+  depth: {codes: ["s", "g"], page: "pp. 265-266, 272", classes: [{digit: 2, word: "flach", range: [80, 130]}, {digit: 4, word: "tief", range: [130, null]}]}
+  podzolic: {codes: ["p"], page: "pp. 266, 272", classes: [{digit: 2, word: "schwach", horizon: "Aeh"}, {digit: 3, word: "mäßig", horizon: "Ahe"}, {digit: 4, word: "stark", horizon: "Ahe+Ae"}]}
+  # Tab. 48 (p. 270): the base-saturation classes on the potential and on the
+  # effective CEC; no conversion between the two (its note 1). The digit is
+  # the class number (BS1-BS5), on the variety eu, m or dy whose range holds
+  # it (soilKey's reading).
+  base_saturation:
+    page: "p. 270"
+    classes:
+      - {class: BS1, digit: 1, name: "sehr basenarm", name_en: "very base-poor", potential: [0, 5], effective: [0, 7], variety: "dy"}
+      - {class: BS2, digit: 2, name: "basenarm", name_en: "base-poor", potential: [5, 20], effective: [7, 20], variety: "dy"}
+      - {class: BS3, digit: 3, name: "mittelbasisch", name_en: "medium-base", potential: [20, 50], effective: [20, 50], variety: "m"}
+      - {class: BS4, digit: 4, name: "basenreich", name_en: "base-rich", potential: [50, 80], effective: [50, 85], variety: "eu"}
+      - {class: BS5, digit: 5, name: "sehr basenreich bis basengesättigt", name_en: "very base-rich to base-saturated", potential: [80, 101], effective: [85, 101], variety: "eu"}
+    potential_methods: ["bacl2", "acetate_ph7"]
+    effective_methods: ["nh4cl", "kcl", "cobaltihexammine"]
+  # Tab. 47 (p. 269): the development depth (solum thickness, to the top of
+  # the C; in hydromorphic soils with a deep C the bottom of the Sd or Go; the
+  # Gr is no part of the solum, p. 316). No letter is printed for it: soilKey
+  # reports the class in the trace only.
+  development_depth:
+    page: "pp. 269, 316"
+    b_soils: {types: ["BB", "LL", "LF", "PP", "CF"], classes: [{digit: 1, name: "sehr gering", range: [0, 15]}, {digit: 2, name: "gering", range: [15, 30]}, {digit: 3, name: "mittel", range: [30, 70]}, {digit: 4, name: "groß", range: [70, 120]}, {digit: 5, name: "sehr groß", range: [120, null]}]}
+    ac_soils: {types: ["RN", "RQ", "RR", "RZ"], classes: [{digit: 2, name: "gering", range: [0, 15]}, {digit: 3, name: "mittel", range: [15, 30]}, {digit: 4, name: "groß", range: [30, 40]}]}
+
+# The symbol rules (pp. 270-272), paraphrased.
+symbol_rules:
+  - {rule: "I", page: "p. 270", what: "the variety letters stand before the subtype symbol, several in alphabetical order separated by a point; the codes of the noun varieties stand directly before the subtype symbol, out of the order; the trailing n of a Norm subtype is needed only in databases (soilKey keeps it)"}
+  - {rule: "II", page: "pp. 270-271", what: "a Norm subtype with a deviation subtype: the subtype symbols joined, the n dropped; brackets in the name mark the variety level (BB-GGe, GGi-RQ)"}
+  - {rule: "III", page: "p. 271", what: "two deviation subtypes, of the same type too, joined in the order of the weight of the deviations (BBh-GGe, GGh-GGc)"}
+  - {rule: "IV", page: "p. 271", what: "three Norm subtypes only with a hydromorphic type symbol, which may not stand first (PP-GG-BB, LL-SS-TT)"}
+  - {rule: "V", page: "p. 271", what: "two Norm subtypes one over the other: the type symbols joined by \\ or / as in the substrate system, the lower soil buried (YK/BB, GG\\HN; Tab. 46 no. 18)"}
+  - {rule: "VI", page: "p. 272", what: "r (relict, drained; only for hydromorphic pedogenesis) and e (eroded) stand directly before the letter they qualify (BB-rGG, r.gLFn, g.rGGn, LF-eBB)"}
+  - {rule: "VII", page: "p. 272", what: "subvarieties: a digit after the variety letter, by the classes of Tab. 3 (g4BB, p2RQ, g4.p2BB)"}
+
+# The hydromorphic types of rule IV (soilKey's list: the Gleye, the
+# Stauwasserboeden and the Moorgley).
+hydromorphic_types: ["GG", "GN", "GM", "GH", "SS", "SH", "SG"]
+
+# The printed examples (pp. 268-272), the name fixtures of the tests:
+# `symbol` and `name` as printed, read back by .ka5_var_read_symbol();
+# `name_soilkey` where soilKey writes the name otherwise (the r always
+# "reliktisch", Tab. 49's first word; no comma between the adjectives).
+examples:
+  - {symbol: "pBBn", name: "podsolige Normbraunerde", rule: "I", page: "p. 270"}
+  - {symbol: "p.sBBn", name: "podsolige pseudovergleyte Normbraunerde", rule: "I", page: "p. 270"}
+  - {symbol: "pGG-BB", name: "podsolige Gley-Braunerde", rule: "I", page: "p. 270"}
+  - {symbol: "gLF-BB", name: "vergleyte Fahlerde-Braunerde", rule: "I", page: "p. 270"}
+  - {symbol: "lBBh", name: "lessivierte Humusbraunerde", rule: "I", page: "p. 270"}
+  - {symbol: "vGGn", name: "(Acker)Gley", rule: "I", page: "p. 270"}
+  - {symbol: "vSSg", name: "(Acker)Hangpseudogley", rule: "I", page: "p. 270"}
+  - {symbol: "g.vBB", name: "vergleyte (Acker)Braunerde", rule: "I", page: "p. 270"}
+  - {symbol: "p.moBB", name: "podsolige (Moder)Braunerde", rule: "I", page: "p. 270"}
+  - {symbol: "BB-GGe", name: "Braunerde-(Brauneisen)Gley", rule: "II", page: "p. 271"}
+  - {symbol: "GGi-RQ", name: "(Bleich)Gley-Regosol", rule: "II", page: "p. 271"}
+  - {symbol: "BBh-GGe", name: "(Humus)Braunerde-(Brauneisen)Gley", rule: "III", page: "p. 271"}
+  - {symbol: "GGh-GGc", name: "(Humus)Kalkgley", rule: "III", page: "p. 271"}
+  - {symbol: "PP-GG-BB", name: "Podsol-Gley-Braunerde", rule: "IV", page: "p. 271"}
+  - {symbol: "LL-SS-TT", name: "Parabraunerde-Pseudogley-Tschernosem", rule: "IV", page: "p. 271"}
+  - {symbol: "YK/BB", name: "Kolluvisol über Braunerde", rule: "V", page: "p. 271"}
+  - {symbol: "GG\\HN", name: "flacher Gley über Niedermoor", rule: "V", page: "p. 271"}
+  - {symbol: "BB\\CF", name: "flache Braunerde über Terra fusca", rule: "V", page: "p. 268"}
+  - {symbol: "BB/CF", name: "Braunerde über Terra fusca", rule: "V", page: "p. 268"}
+  - {symbol: "BB/VW", name: "Braunerde über Ferrallit", rule: "V", page: "p. 268"}
+  - {symbol: "HH/PP", name: "Hochmoor über Podsol", rule: "V", page: "p. 268"}
+  - {symbol: "BB-rGG", name: "entwässerter Braunerde-Gley", rule: "VI", page: "p. 272", name_soilkey: "reliktischer Braunerde-Gley"}
+  - {symbol: "r.gLFn", name: "reliktisch vergleyte Normfahlerde", rule: "VI", page: "p. 272"}
+  - {symbol: "g.rGGn", name: "vergleyter reliktischer Normgley", rule: "VI", page: "p. 272"}
+  - {symbol: "LF-eBB", name: "erodierte Fahlerde-Braunerde", rule: "VI", page: "p. 272"}
+  - {symbol: "g4BB", name: "tiefvergleyte Braunerde", rule: "VII", page: "p. 272"}
+  - {symbol: "p2RQ", name: "schwach podsoliger Regosol", rule: "VII", page: "p. 272"}
+  - {symbol: "g4.p2BB", name: "tiefvergleyte, schwach podsolige Braunerde", rule: "VII", page: "p. 272", name_soilkey: "tiefvergleyte schwach podsolige Braunerde"}
+
+# Tab. 50 (pp. 274-282), read from the page images (2026-11-07): the varieties marked for each
+# subtype, in the column order of the table. The terrestrial rows (pp. 274-279) were read for this
+# release; the rows of the wet subtypes (pp. 279-282) agree with the map of 2026-11-04. The type
+# rows carry no marks, except the Erdhochmoor's (KH, p. 282), kept apart in `type_rows`.
+allowed:
+  "FFn": {page: 274, codes: ["mo", "ro", "ta", "md", "mr", "eu", "m", "dy", "c", "k"]}
+  "FSn": {page: 274, codes: ["mo", "ro", "ta", "md", "mr", "eu", "m", "dy", "c", "k", "e"]}
+  "OOn": {page: 274, codes: ["mu", "mo", "ro", "ta", "eu", "m", "dy", "c", "k"]}
+  "OOp": {page: 274, codes: ["ta", "eu", "m", "dy", "c"]}
+  "OLn": {page: 274, codes: ["eu", "m", "dy", "c", "k", "e"]}
+  "RNn": {page: 274, codes: ["mo", "ro", "ta", "m", "dy", "x", "p", "k", "e", "v", "ku"]}
+  "RNr": {page: 274, codes: ["mu", "mo", "ta", "eu", "m", "og", "x", "k", "e", "v", "ku"]}
+  "OO-RN": {page: 274, codes: ["mo", "ro", "ta", "m", "dy"]}
+  "OL-RN": {page: 274, codes: ["mo", "ro", "ta", "m", "dy", "k"]}
+  "BB-RN": {page: 274, codes: ["mo", "ro", "ta", "m", "dy", "og", "x", "p", "k", "v", "ku"]}
+  "PP-RN": {page: 274, codes: ["mo", "ro", "ta", "m", "dy", "k"]}
+  "RQn": {page: 274, codes: ["mo", "ro", "m", "dy", "s", "g", "og", "z", "x", "k", "v", "ku"]}
+  "RQr": {page: 274, codes: ["mu", "mo", "eu", "m", "s", "g", "og", "z", "x", "l", "d", "k", "v", "ku"]}
+  "OL-RQ": {page: 274, codes: ["mo", "eu", "m", "dy", "s", "g", "z", "k"]}
+  "BB-RQ": {page: 274, codes: ["mo", "ro", "eu", "m", "dy", "s", "g", "z", "x", "p", "l", "d", "k", "v", "ku"]}
+  "PP-RQ": {page: 274, codes: ["mo", "ro", "m", "dy", "s", "g", "z", "d", "k"]}
+  "SS-RQ": {page: 274, codes: ["mo", "ro", "eu", "m", "dy", "g", "r", "og", "z", "x", "p", "v", "ku"]}
+  "GG-RQ": {page: 274, codes: ["mo", "ro", "eu", "m", "dy", "r", "og", "z", "x", "p", "v", "ku"]}
+  "RRn": {page: 275, codes: ["mu", "mo", "ta", "eu", "m", "s", "g", "b", "og", "x", "k", "v", "ku"]}
+  "RRs": {page: 275, codes: ["mo", "ta", "m", "dy", "s", "g", "b", "og", "x", "k", "v", "ku"]}
+  "OO-RR": {page: 275, codes: ["mu", "mo", "ta", "eu", "m", "s", "g"]}
+  "OL-RR": {page: 275, codes: ["mu", "mo", "ta", "eu", "m", "s", "g"]}
+  "BB-RR": {page: 275, codes: ["mu", "mo", "ta", "eu", "m", "s", "g", "og", "x", "k", "v", "ku"]}
+  "CF-RR": {page: 275, codes: ["mu", "mo", "ta", "eu", "m", "g", "og", "x", "k", "v", "ku"]}
+  "GG-RR": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "r", "vf", "og", "z", "k", "v", "ku"]}
+  "RZn": {page: 275, codes: ["mu", "mo", "ta", "eu", "m", "s", "g", "z", "k", "v", "ku"]}
+  "RZs": {page: 275, codes: ["mo", "ta", "m", "dy", "s", "g", "z", "k", "v", "ku"]}
+  "OO-RZ": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "g", "z"]}
+  "OL-RZ": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "g", "z"]}
+  "BB-RZ": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "g", "og", "z", "x", "l", "k", "v", "ku"]}
+  "SS-RZ": {page: 275, codes: ["mu", "mo", "eu", "m", "g", "r", "og", "z", "x", "k", "v", "ku"]}
+  "GG-RZ": {page: 275, codes: ["mu", "mo", "eu", "m", "r", "vf", "og", "z", "x", "k", "v", "ku"]}
+  "TTn": {page: 275, codes: ["mu", "s", "g", "a", "z", "l", "k", "e", "v", "ku"]}
+  "DD-TT": {page: 275, codes: ["mu", "s", "g", "a", "z", "l", "k", "e", "v", "ku"]}
+  "BB-TT": {page: 275, codes: ["mu", "eu", "m", "s", "g", "a", "z", "l", "d", "k", "e", "v", "ku"]}
+  "LL-TT": {page: 275, codes: ["mu", "eu", "m", "s", "g", "a", "z", "k", "e", "v", "ku"]}
+  "SS-TT": {page: 275, codes: ["mu", "eu", "m", "g", "a", "r", "z", "k", "v", "ku"]}
+  "GG-TT": {page: 275, codes: ["mu", "eu", "m", "s", "r", "vf", "z", "k", "e", "v", "ku"]}
+  "TCn": {page: 275, codes: ["mu", "s", "g", "a", "z", "k", "e", "v", "ku"]}
+  "DD-TC": {page: 275, codes: ["mu", "s", "g", "a", "z", "k", "e", "v", "ku"]}
+  "BB-TC": {page: 275, codes: ["mu", "s", "g", "a", "z", "l", "d", "k", "e", "v", "ku"]}
+  "LL-TC": {page: 275, codes: ["mu", "s", "g", "a", "r", "z", "k", "e", "v", "ku"]}
+  "GG-TC": {page: 275, codes: ["mu", "s", "r", "vf", "z", "k", "e", "v", "ku"]}
+  "DDn": {page: 275, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "og", "c", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "DDh": {page: 275, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "og", "c", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "RN-DD": {page: 275, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "og", "z", "x", "p", "k", "e", "v", "ku"]}
+  "RQ-DD": {page: 275, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "og", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "RZ-DD": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "g", "og", "c", "z", "k", "v", "ku"]}
+  "BB-DD": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "g", "og", "c", "z", "p", "l", "k", "e", "v", "ku"]}
+  "SS-DD": {page: 275, codes: ["mu", "mo", "eu", "m", "g", "a", "r", "og", "c", "z", "x", "p", "k", "e", "v", "ku"]}
+  "GG-DD": {page: 275, codes: ["mu", "mo", "eu", "m", "s", "a", "r", "og", "c", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "BBn": {page: 275, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "rt", "ei", "og", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "BBc": {page: 275, codes: ["mu", "mo", "eu", "s", "g", "vf", "og", "z", "x", "k", "e", "v", "ku"]}
+  "BBh": {page: 276, codes: ["mu", "mo", "eu", "m", "s", "g", "a", "og", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "BBl": {page: 276, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "ei", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "DD-BB": {page: 276, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "rt", "og", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "LL-BB": {page: 276, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "rt", "z", "p", "k", "e", "v", "ku"]}
+  "LF-BB": {page: 276, codes: ["ro", "m", "dy", "s", "g", "z", "p", "k", "e", "v", "ku"]}
+  "PP-BB": {page: 276, codes: ["mo", "ro", "m", "dy", "s", "g", "a", "rt", "vf", "z", "l", "d", "k", "e", "v", "ku"]}
+  "SS-BB": {page: 276, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "GG-BB": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "a", "r", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "LLn": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "rt", "z", "p", "k", "e", "v", "ku"]}
+  "LLd": {page: 276, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "z", "p", "k", "e", "v", "ku"]}
+  "LLh": {page: 276, codes: ["mu", "mo", "eu", "m", "s", "g", "a", "z", "p", "k", "e", "v", "ku"]}
+  "TT-LL": {page: 276, codes: ["mu", "mo", "eu", "m", "s", "g", "z", "k", "e", "v", "ku"]}
+  "BB-LL": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "z", "p", "k", "e", "v", "ku"]}
+  "PP-LL": {page: 276, codes: ["mo", "ro", "m", "dy", "s", "g", "a", "rt", "z", "k", "e", "v", "ku"]}
+  "CF-LL": {page: 276, codes: ["mu", "mo", "eu", "m", "s", "z", "p", "k", "e", "v", "ku"]}
+  "SS-LL": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "g", "a", "r", "z", "p", "k", "e", "v", "ku"]}
+  "GG-LL": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "a", "r", "z", "p", "k", "e", "v", "ku"]}
+  "LFn": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "z", "p", "k", "e", "v", "ku"]}
+  "LFd": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "z", "p", "k", "e", "v", "ku"]}
+  "BB-LF": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "a", "z", "p", "k", "e", "v", "ku"]}
+  "PP-LF": {page: 276, codes: ["mo", "ro", "m", "dy", "s", "g", "a", "z", "k", "e", "v", "ku"]}
+  "SS-LF": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "g", "a", "r", "z", "x", "p", "k", "e", "v", "ku"]}
+  "GG-LF": {page: 276, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "a", "r", "z", "x", "p", "k", "e", "v", "ku"]}
+  "PPn": {page: 277, codes: ["mo", "ro", "ta", "s", "g", "a", "rt", "vf", "z", "k", "e", "v", "ku"]}
+  "PPe": {page: 277, codes: ["mo", "ro", "s", "g", "a", "rt", "vf", "z", "k", "e", "v", "ku"]}
+  "PPh": {page: 277, codes: ["mo", "ro", "s", "g", "a", "vf", "z", "k", "e", "v", "ku"]}
+  "PPd": {page: 277, codes: ["mo", "ro", "s", "g", "vf", "z", "k", "e", "v", "ku"]}
+  "BB-PP": {page: 277, codes: ["mo", "ro", "m", "dy", "s", "g", "a", "rt", "vf", "z", "l", "d", "k", "e", "v", "ku"]}
+  "LL-PP": {page: 277, codes: ["mo", "ro", "m", "dy", "s", "g", "a", "vf", "z", "k", "e", "v", "ku"]}
+  "SS-PP": {page: 277, codes: ["mo", "ro", "m", "dy", "g", "a", "r", "w", "vf", "z", "k", "e", "v", "ku"]}
+  "SG-PP": {page: 277, codes: ["md", "mr", "o", "u", "h", "m", "dy", "g", "r", "w", "vf", "z", "i", "k", "e", "ku"]}
+  "GG-PP": {page: 277, codes: ["mo", "ro", "m", "dy", "a", "r", "w", "vf", "z", "k", "e", "v", "ku"]}
+  "YK-PP": {page: 277, codes: ["mo", "ro", "m", "dy", "s", "g", "vf", "z", "l", "d", "e", "v", "ku"]}
+  "YE-PP": {page: 277, codes: ["mo", "ro", "m", "dy", "s", "g", "gb", "gr", "vf", "z", "k", "e", "v", "ku"]}
+  "CFn": {page: 277, codes: ["mu", "mo", "ta", "eu", "m", "s", "rt", "c", "z", "x", "k", "e", "v", "ku"]}
+  "CFc": {page: 277, codes: ["mu", "mo", "eu", "m", "s", "rt", "c", "z", "x", "k", "e", "v", "ku"]}
+  "BB-CF": {page: 277, codes: ["mu", "mo", "eu", "m", "s", "c", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "LL-CF": {page: 277, codes: ["mu", "mo", "eu", "m", "s", "z", "x", "p", "k", "e", "v", "ku"]}
+  "SS-CF": {page: 277, codes: ["mu", "mo", "eu", "m", "r", "x", "k", "e", "v", "ku"]}
+  "CRn": {page: 277, codes: ["mu", "mo", "eu", "m", "s", "c", "e"]}
+  "SSn": {page: 277, codes: ["mu", "mo", "ro", "mf", "md", "mr", "o", "u", "h", "eu", "m", "dy", "g", "a", "r", "w", "og", "c", "z", "i", "x", "p", "k", "e", "ku"]}
+  "SSc": {page: 277, codes: ["mu", "mo", "mf", "md", "o", "n", "eu", "g", "a", "r", "w", "vf", "og", "c", "z", "i", "x", "k", "e", "ku"]}
+  "SSg": {page: 277, codes: ["mu", "mo", "ro", "mf", "md", "o", "n", "u", "h", "eu", "m", "dy", "g", "r", "w", "og", "c", "z", "i", "x", "p", "k", "e", "v", "ku"]}
+  "SSh": {page: 277, codes: ["mu", "mo", "mf", "md", "o", "n", "u", "h", "eu", "m", "g", "a", "r", "w", "c", "z", "i", "x", "k", "e", "ku"]}
+  "SSm": {page: 277, codes: ["n", "u", "h", "eu", "m", "dy", "g", "a", "r", "w", "og", "c", "z", "i", "k", "e", "ku"]}
+  "TT-SS": {page: 277, codes: ["mu", "eu", "m", "g", "a", "r", "w", "c", "z", "p", "k", "e", "v", "ku"]}
+  "DD-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "g", "a", "r", "w", "og", "c", "z", "x", "l", "k", "e", "ku"]}
+  "BB-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "w", "og", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "LL-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "w", "og", "z", "x", "p", "k", "e", "v", "ku"]}
+  "LF-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "w", "z", "p", "k", "e", "v", "ku"]}
+  "PP-SS": {page: 277, codes: ["mo", "ro", "m", "dy", "g", "r", "w", "vf", "z", "k", "e", "v", "ku"]}
+  "CF-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "r", "c", "z", "x", "k", "e", "v", "ku"]}
+  "YK-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "w", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "YE-SS": {page: 277, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "w", "c", "z", "x", "p", "k", "v", "ku"]}
+  "GG-SS": {page: 277, codes: ["mu", "mo", "mf", "md", "o", "n", "u", "h", "eu", "m", "dy", "a", "r", "w", "vf", "og", "c", "z", "i", "x", "p", "k", "e", "ku"]}
+  "SHn": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "og", "c", "z", "x", "p", "k", "e", "ku"]}
+  "SHh": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "og", "c", "z", "x", "p", "k", "e", "ku"]}
+  "BB-SH": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "og", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "LL-SH": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "g", "a", "r", "og", "c", "z", "x", "p", "k", "e", "v", "ku"]}
+  "LF-SH": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "og", "c", "z", "p", "k", "e", "v", "ku"]}
+  "GG-SH": {page: 278, codes: ["mu", "mo", "mf", "md", "eu", "m", "dy", "a", "r", "og", "c", "z", "x", "p", "k", "e", "ku"]}
+  "SGn": {page: 278, codes: ["mf", "md", "mr", "o", "n", "u", "h", "eu", "m", "dy", "g", "a", "r", "w", "ei", "og", "c", "z", "i", "x", "k", "e", "ku"]}
+  "SGd": {page: 278, codes: ["md", "mr", "o", "n", "u", "h", "g", "r", "ei", "vf", "og", "z", "i", "x", "k", "ku"]}
+  "SGm": {page: 278, codes: ["n", "u", "h", "eu", "m", "dy", "g", "a", "r", "w", "ei", "og", "c", "z", "i", "k", "e", "ku"]}
+  "GG-SG": {page: 278, codes: ["mf", "md", "mr", "o", "n", "u", "h", "eu", "m", "dy", "a", "r", "w", "ei", "og", "c", "z", "i", "x", "k", "e", "ku"]}
+  "HN-SG": {page: 278, codes: ["n", "u", "eu", "m", "a", "r", "ei", "c"]}
+  "HH-SG": {page: 278, codes: ["h", "dy", "r", "ei"]}
+  "XXn": {page: 278, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "w", "og", "c", "z", "k", "e", "v", "ku"]}
+  "XXt": {page: 278, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "w", "og", "c", "z", "k", "e", "v", "ku"]}
+  "XXx": {page: 278, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "w", "og", "c", "z", "k", "e", "v", "ku"]}
+  "XXu": {page: 278, codes: ["mu", "mo", "ro", "eu", "m", "dy", "s", "g", "w", "og", "c", "z", "i", "k", "e", "v", "ku"]}
+  "YKn": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "c", "z", "x", "p", "l", "d", "e", "v", "ku"]}
+  "PP-YK": {page: 278, codes: ["mo", "ro", "m", "dy", "s", "g", "z", "l", "d", "e", "v", "ku"]}
+  "SS-YK": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "w", "c", "z", "x", "p", "l", "d", "e", "v", "ku"]}
+  "GG-YK": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "w", "c", "z", "x", "p", "l", "d", "e", "v", "ku"]}
+  "YEn": {page: 278, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "b", "gb", "gr", "z", "x", "p", "e"]}
+  "PP-YE": {page: 278, codes: ["mo", "ro", "m", "dy", "s", "g", "b", "gb", "gr", "z", "e"]}
+  "SS-YE": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "w", "b", "gb", "gr", "z", "x", "p", "e"]}
+  "GG-YE": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "w", "b", "gb", "gr", "z", "p", "e"]}
+  "YOn": {page: 279, codes: ["mu", "mo", "eu", "m", "s", "g", "a", "r", "c", "z", "p", "l", "d", "e"]}
+  "YYn": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "c", "z", "p", "e", "v", "ku"]}
+  "PP-YU": {page: 279, codes: ["mu", "mo", "m", "dy", "s", "g", "a", "z", "p", "e", "v", "ku"]}
+  "LL-YU": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "z", "p", "e", "v", "ku"]}
+  "LF-YU": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "z", "p", "e", "v", "ku"]}
+  "GG-YU": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "a", "r", "w", "c", "z", "p", "e", "v", "ku"]}
+  "AOn": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "c", "z", "e"]}
+  "GG-AO": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "c", "z", "e"]}
+  "AQn": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "r", "b", "gb", "gr", "z", "x", "l", "d", "e", "v", "ku"]}
+  "GG-AQ": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "b", "gb", "gr", "z", "x", "l", "d", "e", "v", "ku"]}
+  "AZn": {page: 279, codes: ["mu", "mo", "eu", "m", "s", "g", "r", "b", "gb", "gr", "z", "x", "e", "v", "ku"]}
+  "GG-AZ": {page: 279, codes: ["mu", "mo", "eu", "m", "s", "r", "b", "gb", "gr", "z", "x", "e", "v", "ku"]}
+  "ATn": {page: 279, codes: ["mu", "mo", "eu", "m", "s", "g", "r", "c", "z", "l", "e", "v", "ku"]}
+  "GG-AT": {page: 279, codes: ["mu", "mo", "eu", "m", "s", "r", "c", "z", "l", "e", "v", "ku"]}
+  "ABn": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "r", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "AQ-AB": {page: 279, codes: ["mu", "eu", "m", "s", "r", "og", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "SS-AB": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "g", "r", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "GG-AB": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "GGn": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "og", "c", "z", "x", "p", "k", "e", "ku"]}
+  "GGx": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "c", "z", "x", "p", "k", "e", "ku"]}
+  "GGe": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "vf", "z", "x", "p", "k", "e", "ku"]}
+  "GGi": {page: 279, codes: ["mo", "ro", "m", "dy", "s", "r", "z", "x", "p", "k", "e", "ku"]}
+  "GGw": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "z", "x", "p", "k", "e", "v", "ku"]}
+  "GGc": {page: 279, codes: ["mu", "eu", "m", "s", "a", "r", "vf", "z", "x", "p", "k", "e", "ku"]}
+  "GGh": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "c", "z", "x", "p", "k", "e", "ku"]}
+  "GGg": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "c", "z", "x", "p", "k", "e", "ku"]}
+  "GGq": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "vf", "c", "z", "x", "p", "k", "e", "ku"]}
+  "GGa": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "og", "c", "z", "x", "p", "k", "e", "ku"]}
+  "RQ-GG": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "z", "x", "p", "k", "e", "v", "ku"]}
+  "RR-GG": {page: 279, codes: ["mu", "eu", "m", "s", "r", "z", "x", "k", "e", "ku"]}
+  "RZ-GG": {page: 279, codes: ["mu", "s", "a", "r", "z", "x", "k", "e", "ku"]}
+  "TT-GG": {page: 279, codes: ["mu", "mo", "eu", "m", "s", "r", "vf", "c", "z", "x", "l", "k", "e", "v", "ku"]}
+  "DD-GG": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "c", "z", "x", "l", "k", "e", "ku"]}
+  "BB-GG": {page: 279, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "LL-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "z", "x", "p", "k", "e", "v", "ku"]}
+  "LF-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "z", "p", "k", "e", "v", "ku"]}
+  "PP-GG": {page: 280, codes: ["mu", "mo", "ro", "m", "dy", "s", "a", "r", "vf", "z", "k", "e", "v", "ku"]}
+  "SS-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "a", "r", "vf", "c", "z", "x", "p", "l", "k", "e", "ku"]}
+  "YK-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "c", "z", "x", "p", "l", "d", "k", "e", "v", "ku"]}
+  "YE-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "s", "a", "r", "vf", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "AO-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "r", "og", "c", "z", "x", "p", "ku"]}
+  "AQ-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "og", "c", "z", "x", "p", "k", "e", "ku"]}
+  "AZ-GG": {page: 280, codes: ["mu", "eu", "s", "r", "vf", "og", "z", "x", "k", "e", "ku"]}
+  "AT-GG": {page: 280, codes: ["mu", "eu", "s", "r", "og", "c", "z", "x", "k", "e", "ku"]}
+  "AB-GG": {page: 280, codes: ["mu", "mo", "eu", "m", "dy", "s", "r", "og", "c", "z", "x", "p", "l", "k", "e", "v", "ku"]}
+  "GNn": {page: 280, codes: ["mf", "md", "o", "n", "u", "eu", "m", "dy", "a", "r", "og", "c", "z", "x", "k", "e", "ku"]}
+  "GNc": {page: 280, codes: ["mf", "o", "n", "eu", "m", "a", "r", "vf", "c", "z", "x", "k", "e", "ku"]}
+  "GNh": {page: 280, codes: ["mf", "md", "o", "n", "u", "eu", "m", "dy", "a", "r", "og", "c", "z", "x", "k", "e", "ku"]}
+  "GNg": {page: 280, codes: ["mf", "md", "o", "n", "u", "eu", "m", "dy", "r", "og", "c", "z", "x", "k", "e", "ku"]}
+  "GNq": {page: 280, codes: ["mf", "md", "o", "n", "u", "eu", "m", "dy", "r", "c", "z", "x", "k", "e", "ku"]}
+  "GMn": {page: 280, codes: ["mf", "md", "n", "u", "eu", "m", "dy", "a", "r", "c", "z", "k", "e", "ku"]}
+  "GMc": {page: 280, codes: ["mf", "md", "n", "eu", "m", "a", "r", "vf", "z", "k", "e", "ku"]}
+  "GMg": {page: 280, codes: ["mf", "md", "n", "u", "eu", "m", "dy", "r", "c", "z", "k", "e", "ku"]}
+  "GMq": {page: 280, codes: ["mf", "md", "n", "u", "eu", "m", "dy", "a", "r", "c", "z", "k", "e", "ku"]}
+  "GHn": {page: 280, codes: ["eu", "m", "dy", "a", "r", "c", "z", "e", "ku"]}
+  "GHh": {page: 280, codes: ["r", "z", "e", "ku"]}
+  "GHg": {page: 280, codes: ["n", "u", "h", "eu", "m", "dy", "r", "c", "z", "e", "ku"]}
+  "GHq": {page: 280, codes: ["n", "u", "h", "eu", "m", "dy", "r", "c", "z", "e", "ku"]}
+  "MRn": {page: 281, codes: []}
+  "MRb": {page: 281, codes: []}
+  "MRf": {page: 281, codes: []}
+  "MCn": {page: 281, codes: ["r", "ku"]}
+  "MCb": {page: 281, codes: ["r", "ku"]}
+  "MCf": {page: 281, codes: ["r", "ku"]}
+  "MNn": {page: 281, codes: ["eu", "m", "r", "ku"]}
+  "MNb": {page: 281, codes: ["eu", "m", "r", "ku"]}
+  "MNf": {page: 281, codes: ["eu", "m", "r", "ku"]}
+  "MHn": {page: 281, codes: ["eu", "m", "dy", "r", "ku"]}
+  "MHb": {page: 281, codes: ["eu", "m", "dy", "r", "ku"]}
+  "MHf": {page: 281, codes: ["eu", "m", "dy", "r", "ku"]}
+  "MDn": {page: 281, codes: ["eu", "m", "dy", "r", "ku"]}
+  "MKn": {page: 281, codes: ["eu", "m", "dy", "r", "ku"]}
+  "MOn": {page: 281, codes: ["r", "ei", "sf", "ku"]}
+  "ÜAn": {page: 281, codes: ["eu", "m"]}
+  "ÜAb": {page: 281, codes: ["eu", "m", "c"]}
+  "ÜAf": {page: 281, codes: ["eu", "m", "c", "z"]}
+  "IWn": {page: 281, codes: ["eu", "m", "r", "c", "z"]}
+  "IWb": {page: 281, codes: ["eu", "m", "r", "c", "z"]}
+  "IWf": {page: 281, codes: ["eu", "m", "r", "c", "z"]}
+  "HNn": {page: 282, codes: ["eu", "m", "dy", "r", "z", "e"]}
+  "HNc": {page: 282, codes: ["eu", "r", "vf", "z", "e"]}
+  "HNu": {page: 282, codes: ["m", "dy", "r", "z", "e"]}
+  "HHn": {page: 282, codes: ["dy", "r", "z", "e"]}
+  "KVn": {page: 282, codes: ["mu", "mo", "mf", "md", "eu", "m", "dy", "g", "r", "w", "z", "e", "v", "ku"]}
+  "KVc": {page: 282, codes: ["mu", "mf", "eu", "g", "r", "w", "vf", "z", "e", "v", "ku"]}
+  "KVu": {page: 282, codes: ["mo", "ro", "md", "mr", "dy", "g", "r", "w", "z", "e", "v", "ku"]}
+  "KMn": {page: 282, codes: ["mu", "eu", "m", "s", "g", "r", "w", "ei", "z", "v", "ku"]}
+  "KMc": {page: 282, codes: ["mu", "eu", "m", "s", "g", "r", "w", "vf", "z", "e", "v", "ku"]}
+  "KMu": {page: 282, codes: ["mo", "ro", "m", "dy", "s", "g", "r", "w", "z", "e", "v", "ku"]}
+  "KV-KM": {page: 282, codes: ["mu", "mo", "eu", "m", "dy", "s", "g", "r", "w", "z"]}
+  "KHn": {page: 282, codes: ["mo", "ro", "md", "mr", "dy", "g", "r", "z", "e", "v"]}
+type_rows:
+  "KH": {page: 282, codes: ["mo", "ro", "md", "mr", "u"], to: "KHn"}

@@ -24,6 +24,10 @@
                IA = "I", IW = "I", JP = "J", JG = "J", JS = "J", JD = "J", HH = "H", HN = "H", KV = "K", KM = "K",
                KH = "K")
 
+# v0.9.365: the varieties are an additive level that joins the name; the
+# name of the subtype is the deepest level above the variety
+.lv_name <- function(r) { lv <- r$levels; k <- which(lv$level != "variety"); lv$name[k[length(k)]] }
+
 test_that("85 printed wet subtypes, by class, in the order of Q21; two open subtypes of Q22", {
   skip_on_cran()
   rl <- load_rules("ka5")
@@ -86,7 +90,7 @@ test_that("each wet subtype example keys to its type and subtype by the notation
     r <- .wt_cls(p)
     expect_identical(.wt_type(r), ent[[cd]]$type, info = cd)
     expect_identical(.wt_of(r), cd, info = cd)
-    expect_identical(r$name, ent[[cd]]$name, info = cd)
+    expect_identical(.lv_name(r), ent[[cd]]$name, info = cd)
     expect_length(r$provisional_because, 0L)
     expect_true(cd %in% r$trace$subtypes_passing$code[r$trace$subtypes_passing$passed %in% TRUE], info = cd)
   }

@@ -5,8 +5,8 @@
 # (Klassen), 56 types (Typen). Experimental and opt-in: classify_all() runs it
 # only when asked. v0.9.363: the 138 subtypes of the 28 terrestrial types
 # (R/subtypes-ka5.R). v0.9.364: the 85 subtypes of the semiterrestrial,
-# subhydric and Moore types and the overlays (R/overlays-ka5.R). The
-# varieties follow in a later release.
+# subhydric and Moore types and the overlays (R/overlays-ka5.R). v0.9.365:
+# the varieties and subvarieties (R/varieties-ka5.R).
 # =============================================================================
 
 #' Classify a pedon under the German KA5 soil systematics (2005)
@@ -17,8 +17,8 @@
 #' by its key Tab. 51. \strong{Experimental}: this release keys the 4
 #' divisions, 21 classes and 56 types, and the 223 subtypes of the type
 #' texts (pp. 202-262: 138 of the terrestrial types, 85 of the
-#' semiterrestrial, subhydric and Moore types); the varieties are not keyed
-#' yet.
+#' semiterrestrial, subhydric and Moore types), and the varieties and
+#' subvarieties of Tab. 46-50 (pp. 263-282).
 #'
 #' The subtypes (Hugo's decision Q21): inside a type the transitional
 #' subtypes (X-Y, a subtype of the type Y with the features of X) are tested
@@ -34,8 +34,25 @@
 #' (an uH over a Gr takes the open "[Uebergangsmoorgley]", an hHm under the
 #' Erdhochmoor the open "[vermulmtes Erdhochmoor]").
 #'
+#' The varieties (Hugo's decision Q1): an additive level after the subtype,
+#' rows of level \code{"variety"} in \code{levels} (the code of Tab. 49 with
+#' the digit of its subvariety, the word of the name, the gloss, the full
+#' symbol in a \code{symbol} column). A variety is offered where Tab. 50
+#' marks the subtype, plus the six of its note 1 (og, c, z, k, v, ku)
+#' everywhere; each criterion of Tab. 46 is read on the horizons (the
+#' symbols written, or the recorded data), the humus forms only as recorded;
+#' one the data leave open is not named but listed in
+#' \code{trace$varieties}. The name becomes the full name (adjectives
+#' before the subtype's name, nouns in brackets before its deciding part:
+#' "podsolige Normbraunerde", "(Acker)Gley"), the symbol (rules I-VII:
+#' \code{pBBn}, \code{g4.p2BBn}, \code{BB-rGG}) is in
+#' \code{trace$variety$symbol}. The further subtypes of the type that pass
+#' join as a combination (Tab. 46 no. 17; Q21: \code{PP-GG-BB},
+#' \code{GGh-GGc}).
+#'
 #' The overlays (Tab. 46 no. 18) are reported in \code{trace$overlay} and the
-#' warnings; they change neither the levels nor the name. A mineral cover on
+#' warnings, and enter the name as a variety (\code{YK/BB}, Kolluvisol
+#' ueber Braunerde); the levels above it do not change. A mineral cover on
 #' a Moor keeps the Moor (Hugo's decision Q7): under 2 dm it is named as
 #' substrate only, 2 to < 3 dm "flach X ueber HN" (\code{X\\HN}), 3 to < 4
 #' dm "X ueber HN" (\code{X/HN}), the cover keyed as the mineral type it would
@@ -123,6 +140,8 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
   # the overlays: a cover on a Moor, a palaeosol, a buried soil (v0.9.364;
   # Tab. 46 no. 18, Q7, Q19)
   res <- .ka5_overlay_notes(res, pedon, rules, view)
+  # the varieties and subvarieties (v0.9.365; Tab. 46-50, Q1, Q14, Q21)
+  res <- .ka5_variety_notes(res, pedon, rules, view)
   if (!is.null(core$through)) res$trace$semiterrestrial_attempt <- core$through
   res
 }
@@ -281,19 +300,25 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
 #'   then not read). The type examples key to the Norm subtype of their type
 #'   (the Treposol's to an example subtype, the Moorgley's to the
 #'   Niedermoorgley: they have no Norm).
+#' @param variety The code of a variety of Tab. 49 (\code{"p"}, \code{"g"},
+#'   \code{"eu"}, \code{"mo"}, \code{"v"} ...; the 38): an example profile of
+#'   a subtype Tab. 50 offers it to, with the variety's horizon or record
+#'   (\code{type}, \code{near_miss} and \code{subtype} are then not read).
 #' @return A \code{\link{PedonRecord}}.
 #' @examples
 #' classify_ka5(make_ka5_example("LL"), on_missing = "silent")$name
 #' classify_ka5(make_ka5_example("LL", route = "data"), on_missing = "silent")$name
 #' classify_ka5(make_ka5_example(subtype = "GG-BB"), on_missing = "silent")$name
+#' classify_ka5(make_ka5_example(variety = "p"), on_missing = "silent")$name
 #' @export
 make_ka5_example <- function(type = c("KV", "KM", "KH", "HH", "HN", "JP", "JG", "JS", "JD", "IA", "IW",
                                       "UEA", "MR", "MC", "MO", "MK", "MD", "MH", "MN", "GH", "GM", "GN", "GG",
                                       "AO", "AT", "AQ", "AZ", "AB", "FF", "FS", "OO", "OL", "TC", "TT", "RN",
                                       "RQ", "RR", "RZ", "XX", "YK", "YE", "YY", "YU", "YO", "SG", "SH", "SS",
                                       "PP", "LF", "LL", "BB", "CR", "CF", "DD", "VV", "VW"),
-                             near_miss = FALSE, route = c("notation", "data"), subtype = NULL) {
+                             near_miss = FALSE, route = c("notation", "data"), subtype = NULL, variety = NULL) {
   route <- match.arg(route)
+  if (!is.null(variety)) return(.ka5_variety_example(variety, route))
   if (!is.null(subtype)) return(.ka5_subtype_example(subtype, route))
   if (identical(type, "\u00dcA")) type <- "UEA"
   type <- match.arg(type)
@@ -495,8 +520,8 @@ make_ka5_example <- function(type = c("KV", "KM", "KH", "HH", "HN", "JP", "JG", 
                    clay = c(15, 15, 15, 30), redoximorphic_features_pct = c(0, 0, 30, 40), bleached_pct = c(0, 0, 55, 30),
                    ksat_mm_h = c(NA, NA, 20, 1), air_capacity_pct = c(NA, NA, 8, 2), rh_value = c(NA, NA, 17, NA), site = pw),
     PP = if (!nm) terr(c("Ahe", "Ae", "Bsh", "Bhs", "C"), c(0, 10, 25, 30, 50), c(10, 25, 30, 50, 100), oc = c(3, 0.3, 2, 1, 0.1),
-                       clay = 3, silt = 5, hue = c("10YR", "10YR", "5YR", "7.5YR", "10YR"), value = c(4, 6, 3, 4, 6),
-                       chroma = c(1, 1, 3, 6, 4), c_pyro_pct = c(NA, NA, 1.5, 0.9, NA), fe_pyro_pct = c(NA, NA, 0.3, 0.2, NA),
+                       clay = 3, silt = 5, hue = c("10YR", "10YR", "7.5YR", "7.5YR", "10YR"), value = c(4, 6, 3, 4, 6),
+                       chroma = c(1, 1, 3, 4, 4), c_pyro_pct = c(NA, NA, 1.5, 0.9, NA), fe_pyro_pct = c(NA, NA, 0.3, 0.2, NA),
                        rock_diggable = c(NA, NA, NA, NA, TRUE), caco3_pct = 0)
          else terr(c("Ahe", "Ae", "Bhs", "Bv", "C"), c(0, 5, 8, 12, 50), c(5, 8, 12, 50, 100), oc = c(3, 0.3, 1, 0.3, 0.1),
                    clay = 3, silt = 5, hue = c("10YR", "10YR", "7.5YR", "7.5YR", "10YR"), value = c(4, 6, 4, 4, 6),
@@ -513,7 +538,7 @@ make_ka5_example <- function(type = c("KV", "KM", "KH", "HH", "HN", "JP", "JG", 
                    silt = 60, hue = c("10YR", "10YR", "7.5YR", "10YR"), value = c(3, 5, 4, 5), chroma = c(2, 4, 6, 4),
                    clay_films_amount = c(NA, NA, "few", NA), caco3_pct = c(0, 0, 0, 10), rock_diggable = c(NA, NA, NA, TRUE)),
     BB = if (!nm) terr(c("Ah", "Bv", "C"), c(0, 15, 50), c(15, 50, 100), oc = c(2.5, 0.3, 0.1), clay = c(12, 15, 10),
-                       hue = c("10YR", "7.5YR", "10YR"), value = c(3, 4, 5), chroma = c(2, 6, 4), caco3_pct = 0,
+                       hue = c("10YR", "10YR", "10YR"), value = c(3, 4, 5), chroma = c(2, 6, 4), caco3_pct = 0,
                        rock_diggable = c(NA, NA, TRUE))
          else terr(c("Ah", "Bv", "Tv", "cC"), c(0, 8, 12, 45), c(8, 12, 45, 60), oc = c(5, 0.6, 0.5, NA), clay = c(40, 45, 70, NA),
                    hue = c("10YR", "7.5YR", "7.5YR", NA), value = c(3, 4, 4, NA), chroma = c(2, 6, 6, NA),
@@ -524,7 +549,7 @@ make_ka5_example <- function(type = c("KV", "KM", "KH", "HH", "HN", "JP", "JG", 
               structure_type = c("granular", "subangular blocky", NA), clay_films_amount = c(NA, "none", NA), caco3_pct = c(0, 0, NA),
               carbonate_whole_soil_pct = c(NA, NA, 95), rock_diggable = c(NA, NA, FALSE)),
     CF = terr(c("Ah", "Tv", "cC"), c(0, if (nm) 35 else 10, if (nm) 60 else 45), c(if (nm) 35 else 10, if (nm) 60 else 45, 80),
-              oc = c(5, 0.5, NA), clay = c(40, 70, NA), hue = c("10YR", "7.5YR", NA), value = c(3, 4, NA), chroma = c(2, 6, NA),
+              oc = c(5, 0.5, NA), clay = c(40, 70, NA), hue = c("10YR", "7.5YR", NA), value = c(3, 4, NA), chroma = c(2, 4, NA),
               structure_type = c("granular", "subangular blocky", NA), clay_films_amount = c(NA, "none", NA), caco3_pct = c(0, 0, NA),
               carbonate_whole_soil_pct = c(NA, NA, 95), rock_diggable = c(NA, NA, FALSE)),
     DD = terr(c("Ah", "P", "eC"), c(0, if (nm) 35 else 15, 60), c(if (nm) 35 else 15, 60, 100), oc = c(3, 0.4, 0.2), clay = c(40, 55, 50),

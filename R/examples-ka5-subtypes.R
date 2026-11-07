@@ -328,7 +328,9 @@
       set(clay_pct = 3, silt_pct = 5)
       if (grepl("m", car)) set(cementation_class = "strongly cemented")
     } else if (car == "Bfv") { set(oc_pct = 2, bulk_density_g_cm3 = 0.7, total_porosity_pct = 70); col("7.5YR", 3, 4) }
-    else { set(oc_pct = 0.3); col("7.5YR", 4, 6); if (grepl("c", car)) set(secondary_carbonates_pct = 2, caco3_pct = 3) }
+    # v0.9.365: a Bv of 10YR 4/6, not iron-rich (the variety ei) unless an
+    # example asks for it
+    else { set(oc_pct = 0.3); col("10YR", 4, 6); if (grepl("c", car)) set(secondary_carbonates_pct = 2, caco3_pct = 3) }
   } else if (ms == "C") {
     set(oc_pct = 0.1, clay_pct = 10, rock_diggable = !("m" %in% pre))
     if ("m" %in% pre) set(oc_pct = NA, clay_pct = NA, silt_pct = NA)
@@ -353,7 +355,7 @@
     set(clay_pct = 55, silt_pct = 30, slickensides = "common", structure_type = "prismatic", clay_films_amount = "none")
   } else if (ms == "T") {
     set(clay_pct = 70, silt_pct = 20, structure_type = "subangular blocky", clay_films_amount = "none")
-    col(if (car == "Tu") "2.5YR" else "7.5YR", 4, 6)
+    col(if (car == "Tu") "2.5YR" else "7.5YR", 4, if (car == "Tu") 6 else 4)
     if (grepl("c", car)) set(secondary_carbonates_pct = 2)
   } else if (ms == "M") {
     set(oc_pct = 1.2, layer_origin = "colluvic", stratification_pattern = "continuous")
@@ -470,10 +472,10 @@
 #' @param code The subtype code as printed (BBn, GG-BB ...).
 #' @param route "notation" or "data".
 #' @noRd
-.ka5_subtype_example <- function(code, route = c("notation", "data")) {
+.ka5_subtype_example <- function(code, route = c("notation", "data"), spec = NULL, id = NULL) {
   route <- match.arg(route)
   code <- sub("^UEA", "\u00dcA", code)
-  spec <- .KA5_SUBTYPE_PROFILES[[code]] %||% .KA5_SUBTYPE_PROFILES_WET[[code]]
+  spec <- spec %||% .KA5_SUBTYPE_PROFILES[[code]] %||% .KA5_SUBTYPE_PROFILES_WET[[code]]
   if (is.null(spec)) rlang::abort(sprintf("No KA5 subtype example '%s' (every printed subtype has one).", code))
   wet <- !is.null(.KA5_SUBTYPE_PROFILES_WET[[code]])
   if (is.character(spec)) spec <- list(spec)
@@ -492,7 +494,7 @@
   site_extra <- extra$site %||% list()
   extra$site <- NULL
   for (k in names(extra)) h[[k]] <- if (length(extra[[k]]) == 1L) rep(extra[[k]], n) else extra[[k]]
-  site <- utils::modifyList(list(id = paste0("ka5-", code), country = "DE", designation_system = "ka5"),
+  site <- utils::modifyList(list(id = paste0("ka5-", id %||% code), country = "DE", designation_system = "ka5"),
                             utils::modifyList(.ka5_example_site(code, p$des, p$top, wet), site_extra))
   if (route == "data") {
     h$designation <- rep(NA_character_, n)

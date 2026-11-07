@@ -9,7 +9,7 @@ namespace: ka5
 classifier: classify_ka5
 result_slot: ka5
 top_level: divisions
-levels: [divisions, classes, types, subtypes]
+levels: [divisions, classes, types, subtypes]   # the varieties: an additive level "variety" after the subtypes (v0.9.365, Q1)
 display:
   en: "German soil classification (Bodenkundliche Kartieranleitung, KA5, 2005)"
   pt: "Classificação alemã de solos (Bodenkundliche Kartieranleitung, KA5, 2005)"
@@ -21,7 +21,7 @@ citation: >
   Bundesanstalt für Geowissenschaften und Rohstoffe und Staatliche
   Geologische Dienste, Hannover. 438 pp.
 version: "KA5, 2005 (the Bodensystematik of section 5.7.1, continuing the DBG systematics of 1998)"
-implementation_status: "soilKey v0.9.363 -- the key of Tab. 51 to the type: the 4 divisions, 21 classes and 56 types, read on the horizons of the KA5 notation (v0.9.360) or of soilKey's order of tests on the data (v0.9.361), keyed to the type in v0.9.362; the 138 subtypes of the 28 terrestrial types from the type texts (v0.9.363, Q21, Q22); the 85 subtypes of the semiterrestrial, subhydric and Moore types, the Moore covers, the palaeosols and the overlays (v0.9.364, Q7, Q16, Q19, Q20); the varieties are not keyed yet"
+implementation_status: "soilKey v0.9.363 -- the key of Tab. 51 to the type: the 4 divisions, 21 classes and 56 types, read on the horizons of the KA5 notation (v0.9.360) or of soilKey's order of tests on the data (v0.9.361), keyed to the type in v0.9.362; the 138 subtypes of the 28 terrestrial types from the type texts (v0.9.363, Q21, Q22); the 85 subtypes of the semiterrestrial, subhydric and Moore types, the Moore covers, the palaeosols and the overlays (v0.9.364, Q7, Q16, Q19, Q20); the varieties and subvarieties of Tab. 46-50, an additive level after the subtypes, with the combinations of the subtypes and the overlays as varieties (v0.9.365, Q1, Q14, Q21)"
 source: |
   The horizon symbols and definitions (5.6.3, pp. 81-108), the system (5.7.1,
   pp. 190-282), the key Tab. 51 (pp. 283-288). The key stops at the type; the

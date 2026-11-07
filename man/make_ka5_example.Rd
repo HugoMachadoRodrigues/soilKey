@@ -12,7 +12,8 @@ make_ka5_example(
     "VW"),
   near_miss = FALSE,
   route = c("notation", "data"),
-  subtype = NULL
+  subtype = NULL,
+  variety = NULL
 )
 }
 \arguments{
@@ -43,6 +44,11 @@ with depths inside its windows (\code{type} and \code{near_miss} are
 then not read). The type examples key to the Norm subtype of their type
 (the Treposol's to an example subtype, the Moorgley's to the
 Niedermoorgley: they have no Norm).}
+
+\item{variety}{The code of a variety of Tab. 49 (\code{"p"}, \code{"g"},
+\code{"eu"}, \code{"mo"}, \code{"v"} ...; the 38): an example profile of
+a subtype Tab. 50 offers it to, with the variety's horizon or record
+(\code{type}, \code{near_miss} and \code{subtype} are then not read).}
 }
 \value{
 A \code{\link{PedonRecord}}.
@@ -60,4 +66,5 @@ notation, so that the horizons are read on the data.
 classify_ka5(make_ka5_example("LL"), on_missing = "silent")$name
 classify_ka5(make_ka5_example("LL", route = "data"), on_missing = "silent")$name
 classify_ka5(make_ka5_example(subtype = "GG-BB"), on_missing = "silent")$name
+classify_ka5(make_ka5_example(variety = "p"), on_missing = "silent")$name
 }

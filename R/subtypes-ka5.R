@@ -577,6 +577,11 @@
   if (!is.null(memo) && !is.null(memo[[".table"]])) return(memo[[".table"]])
   tab <- v$frame
   if (!is.null(tab$transitional)) tab$transitional <- FALSE
+  # v0.9.365: an Aeh, Ahe (the podzolic varieties, Tab. 46 no. 6) or an Akh,
+  # Aka (the cultotrophic variety, no. 15) takes a formula's plain Ah slot, as
+  # the Ap does (p. 199): the variety does not change the subtype
+  k <- which(tab$carrying %in% c("Aeh", "Ahe", "Akh", "Aka"))
+  for (i in k) tab$overlay[[i]] <- unique(c(tab$overlay[[i]], "Ah"))
   if (!is.null(memo)) memo[[".table"]] <- tab
   tab
 }

@@ -831,6 +831,9 @@
           "bands_area_pct": {
             "type": ["number", "null"]
           },
+          "schwertmannite_present": {
+            "type": ["boolean", "null"]
+          },
           "kultotroph": {
             "type": ["boolean", "null"]
           },

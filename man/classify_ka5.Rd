@@ -35,8 +35,8 @@ Bodenkundliche Kartieranleitung, 5th edition (Ad-hoc-AG Boden 2005, KA5),
 by its key Tab. 51. \strong{Experimental}: this release keys the 4
 divisions, 21 classes and 56 types, and the 223 subtypes of the type
 texts (pp. 202-262: 138 of the terrestrial types, 85 of the
-semiterrestrial, subhydric and Moore types); the varieties are not keyed
-yet.
+semiterrestrial, subhydric and Moore types), and the varieties and
+subvarieties of Tab. 46-50 (pp. 263-282).
 }
 \details{
 The subtypes (Hugo's decision Q21): inside a type the transitional
@@ -53,8 +53,25 @@ subtype in brackets for the type still recognisable under the R
 (an uH over a Gr takes the open "[Uebergangsmoorgley]", an hHm under the
 Erdhochmoor the open "[vermulmtes Erdhochmoor]").
 
+The varieties (Hugo's decision Q1): an additive level after the subtype,
+rows of level \code{"variety"} in \code{levels} (the code of Tab. 49 with
+the digit of its subvariety, the word of the name, the gloss, the full
+symbol in a \code{symbol} column). A variety is offered where Tab. 50
+marks the subtype, plus the six of its note 1 (og, c, z, k, v, ku)
+everywhere; each criterion of Tab. 46 is read on the horizons (the
+symbols written, or the recorded data), the humus forms only as recorded;
+one the data leave open is not named but listed in
+\code{trace$varieties}. The name becomes the full name (adjectives
+before the subtype's name, nouns in brackets before its deciding part:
+"podsolige Normbraunerde", "(Acker)Gley"), the symbol (rules I-VII:
+\code{pBBn}, \code{g4.p2BBn}, \code{BB-rGG}) is in
+\code{trace$variety$symbol}. The further subtypes of the type that pass
+join as a combination (Tab. 46 no. 17; Q21: \code{PP-GG-BB},
+\code{GGh-GGc}).
+
 The overlays (Tab. 46 no. 18) are reported in \code{trace$overlay} and the
-warnings; they change neither the levels nor the name. A mineral cover on
+warnings, and enter the name as a variety (\code{YK/BB}, Kolluvisol
+ueber Braunerde); the levels above it do not change. A mineral cover on
 a Moor keeps the Moor (Hugo's decision Q7): under 2 dm it is named as
 substrate only, 2 to < 3 dm "flach X ueber HN" (\code{X\\HN}), 3 to < 4
 dm "X ueber HN" (\code{X/HN}), the cover keyed as the mineral type it would

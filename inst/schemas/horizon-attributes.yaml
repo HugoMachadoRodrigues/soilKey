@@ -1302,6 +1302,11 @@ attributes:
     systems: [ka5]
     min: 0
     max: 100
+  - name: schwertmannite_present
+    section: "German system (KA5)"
+    unit: "-"
+    description: "Schwertmannite present in the horizon (TRUE / FALSE). German KA5 (ka5): with jarosite, the sulfate-rich variety sf of the Marschen and Niedermoore (Tab. 46 no. 8, p. 266). Not recorded: jarosite_present."
+    systems: [ka5]
   - name: kultotroph
     section: "German system (KA5)"
     unit: "-"

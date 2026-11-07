@@ -17,6 +17,10 @@
 }
 .st_codes <- function() names(soilKey:::.KA5_SUBTYPE_PROFILES)
 
+# v0.9.365: the varieties are an additive level that joins the name; the
+# name of the subtype is the deepest level above the variety
+.lv_name <- function(r) { lv <- r$levels; k <- which(lv$level != "variety"); lv$name[k[length(k)]] }
+
 test_that("the registry lists the subtypes; 138 printed terrestrial subtypes, in the order of Q21", {
   skip_on_cran()
   s <- soilkey_systems()
@@ -89,7 +93,7 @@ test_that("each of the 138 subtype examples keys to its type and subtype by the 
     r <- .st_cls(p)
     expect_identical(.st_type(r), ent[[cd]]$type, info = cd)
     expect_identical(.st_of(r), cd, info = cd)
-    expect_identical(r$name, ent[[cd]]$name, info = cd)
+    expect_identical(.lv_name(r), ent[[cd]]$name, info = cd)
     # provisional only where the Fahlerde's clay difference cannot be measured (C13)
     if (identical(cd, "LF-YU")) expect_identical(r$provisional_because, "subtypes:LF-YU")
     else expect_length(r$provisional_because, 0L)
@@ -110,14 +114,14 @@ test_that("the type examples key to their Norm subtype; the levels and glosses",
   }
   # the Treposol has no Norm subtype (Q22): its example is a printed example subtype
   expect_identical(.st_of(.st_cls(make_ka5_example("YU"))), "PP-YU")
-  expect_identical(.st_cls(make_ka5_example("YU"))$name, "Treposol aus Podsol")
+  expect_identical(.lv_name(.st_cls(make_ka5_example("YU"))), "Treposol aus Podsol")
   # the palaeosols and the subhydric types have no subtypes (the other divisions' since v0.9.364)
   for (t in c("VV", "VW", "JG")) expect_true(is.na(.st_of(.st_cls(make_ka5_example(t)))), info = t)
   r <- .st_cls(make_ka5_example(subtype = "GG-BB"))
   expect_identical(r$levels$level, c("divisions", "classes", "types", "subtypes"))
   expect_identical(r$levels$name, c("Terrestrische Böden", "Braunerden", "Braunerde", "Gley-Braunerde"))
   expect_identical(r$levels$name_en[4], "Gley-brown earth")
-  expect_identical(.st_cls(make_ka5_example(subtype = "LLd"))$name, "Bänderparabraunerde")
+  expect_identical(.lv_name(.st_cls(make_ka5_example(subtype = "LLd"))), "Bänderparabraunerde")
   # the i18n of the level
   p <- system.file("i18n", "translations.yaml", package = "soilKey")
   if (!nzchar(p)) p <- testthat::test_path("..", "..", "inst", "i18n", "translations.yaml")
@@ -267,7 +271,7 @@ test_that("the open subtypes of the Rigosol and the Treposol (Q22)", {
   r <- .st_cls(.st_mk("R-Ap 0-30 / R 30-70 / Bv 70-100 / C 100-130", site = yy))
   expect_identical(.st_type(r), "YY")
   expect_identical(.st_of(r), "[BB-YY]")
-  expect_identical(r$name, "[Braunerde-Rigosol]")
+  expect_identical(.lv_name(r), "[Braunerde-Rigosol]")
   expect_identical(r$levels$name_en[4], "[Rigosol (trenched soil) from brown earth]")
   expect_identical(.st_of(.st_cls(.st_mk("R-Ap 0-30 / R 30-70 / Sw 70-90 / Sd 90-130", site = yy))), "[SS-YY]")
   # a G beginning at 8 dm or deeper names nothing (soilKey's reading)
@@ -278,7 +282,7 @@ test_that("the open subtypes of the Rigosol and the Treposol (Q22)", {
     expect_identical(.st_of(.st_cls(make_ka5_example(subtype = cd))), cd)
   r <- .st_cls(.st_mk("R-Ap 0-30 / R+Bv 30-60 / C 60-100", site = yu))
   expect_identical(.st_of(r), "[BB-YU]")
-  expect_identical(r$name, "[Treposol aus Braunerde]")
+  expect_identical(.lv_name(r), "[Treposol aus Braunerde]")
   # nothing recognisable: no Norm, the name stops at the type
   r <- .st_cls(.st_mk("R-Ap 0-30 / R 30-60 / C 60-100", site = yu))
   expect_identical(.st_type(r), "YU")
