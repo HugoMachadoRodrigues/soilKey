@@ -1,25 +1,26 @@
 # =============================================================================
 # soilKey -- Chinese Soil Taxonomy (2001): reading a CST name written by hand.
 #
-# v0.9.378. Reference profiles often carry a Chinese Soil Taxonomy name as a
-# free-text label (ISRIC's ISIS gives "Haplic latosol; Hapli-Udic Ferrosol",
-# the 1991 first-proposal name beside the CST one). .cst_match_label() finds
-# the CST part of such a label and the taxon of the key it names, at whatever
-# level the label stops (order, suborder, group or subgroup). It serves the
-# offline ISIS benchmark (inst/benchmarks/cst2001_isis.R) and never changes a
-# classification.
+# v0.9.378. Reference profiles often carry a Chinese Soil Taxonomy name in a
+# free-text label, beside the genetic name of the profile (the Genetic Soil
+# Classification of China): "<genetic name>; Hapli-Udic Ferrosol".
+# .cst_match_label() finds the CST part of such a label and the taxon of the
+# key it names, at whatever level the label stops (order, suborder, group or
+# subgroup). It serves the offline ISIS benchmark
+# (inst/benchmarks/cst2001_isis.R) and never changes a classification.
 #
 # How a name is matched (soilKey's reading, readings.yaml):
-#   1. the label is split at ";" and "|"; each part is tried, and the deepest
-#      match wins (a 1991 name matches nothing);
+#   1. the label is split at ";" and "|" and each part is tried;
 #   2. a name and the table are compared on a key: lower case, letters only
 #      (hyphens and spaces dropped, so "Hi-weatheri" is "Hiweatheri"), a final
 #      "s" dropped (singular and plural alike);
-#   3. the table holds every name of the key (14 orders, 40 suborders, 140
-#      groups, 588 subgroups) with its aliases (the other printed forms);
-#   4. failing an exact key, a name one letter off a single taxon is matched
-#      as a typo ("Acidi-Undic", "Isohumisol"), flagged "typo"; two taxa as
-#      close leave it unmatched.
+#   3. the table holds the 779 names of the key (14 orders, 39 suborders, 138
+#      groups, 588 subgroups; soilKey's bracketed residuals left out) with the
+#      book's aliases (the other printed forms);
+#   4. among the parts that match exactly, the deepest wins; only when no part
+#      matches exactly are the caller's spelling variants tried (an explicit
+#      list, `variants`, of regular expressions and replacements), the match
+#      then flagged "variant". There is no generic tolerance of misspellings.
 # =============================================================================
 
 # The match key of a name: lower case, letters only, one final "s" dropped.
@@ -28,12 +29,14 @@
   sub("s$", "", k)
 }
 
-# The table of the names of the key: one row per name or alias.
+# The table of the names of the key: one row per name or alias, soilKey's
+# bracketed residuals ([E2], [A1.4], [A2.5]) left out.
 .cst_label_table <- function(rules = NULL) {
   if (is.null(rules) && !is.null(.cst_cache$label_table)) return(.cst_cache$label_table)
   r <- rules %||% load_rules("cst2001")
   rows <- list()
   add <- function(level, e) {
+    if (isTRUE(e$bracketed)) return(invisible(NULL))
     nm <- as.character(e$name)
     al <- as.character(unlist(e$aliases %||% character(0)))
     rows[[length(rows) + 1L]] <<- data.frame(
@@ -52,51 +55,60 @@
   tab
 }
 
-# One name against the table: a one-row data frame (code NA when unmatched).
+# One name against the table, exactly: a one-row data frame (code NA when
+# unmatched or when the key names two taxa).
 .cst_match_one <- function(part, tab) {
   none <- data.frame(level = NA_character_, code = NA_character_, name = NA_character_,
                      matched_by = NA_character_, stringsAsFactors = FALSE)
   k <- .cst_label_key(part)
-  if (is.na(k) || nchar(k) < 6L) return(none)
+  if (is.na(k) || !nzchar(k)) return(none)
   hit <- tab[tab$key == k, , drop = FALSE]
-  by <- NULL
-  if (nrow(hit)) {
-    by <- if (any(hit$by == "name")) "name" else "alias"
-  } else {
-    d <- as.vector(utils::adist(k, tab$key))
-    hit <- tab[d == 1L, , drop = FALSE]
-    by <- "typo"
-  }
   if (!nrow(hit) || length(unique(hit$code)) != 1L) return(none)
   data.frame(level = hit$level[1], code = hit$code[1], name = hit$name[1],
-             matched_by = by, stringsAsFactors = FALSE)
+             matched_by = if (any(hit$by == "name")) "name" else "alias",
+             stringsAsFactors = FALSE)
 }
 
 #' Match a hand-written Chinese Soil Taxonomy name to a taxon of the key
 #'
-#' @param x Character vector of labels (e.g. ISIS \code{classificationName}).
+#' @param x Character vector of labels.
 #' @param rules Optional \code{load_rules("cst2001")}.
+#' @param variants Optional named character vector of spelling variants
+#'   tried only when no part of a label matches exactly: names are regular
+#'   expressions (case ignored), values their replacements.
 #' @return A data frame, one row per label: \code{label}, \code{part} (the
 #'   part of the label matched), \code{level}, \code{code}, \code{name} (the
-#'   canonical name) and \code{matched_by} ("name", "alias" or "typo"); NA
+#'   canonical name) and \code{matched_by} ("name", "alias" or "variant"); NA
 #'   where no part names a CST taxon.
 #' @keywords internal
 #' @noRd
-.cst_match_label <- function(x, rules = NULL) {
+.cst_match_label <- function(x, rules = NULL, variants = NULL) {
   tab <- .cst_label_table(rules)
   depth <- c(orders = 1L, suborders = 2L, groups = 3L, subgroups = 4L)
-  out <- lapply(as.character(x), function(lab) {
-    parts <- if (is.na(lab)) character(0) else trimws(strsplit(lab, "[;|]")[[1]])
-    parts <- parts[nzchar(parts)]
+  deepest <- function(parts, fix = identity) {
     best <- NULL; best_part <- NA_character_
     for (p in parts) {
-      m <- .cst_match_one(p, tab)
+      m <- .cst_match_one(fix(p), tab)
       if (!is.na(m$code) && (is.null(best) || depth[[m$level]] > depth[[best$level]])) {
         best <- m; best_part <- p
       }
     }
-    if (is.null(best)) best <- .cst_match_one(NA_character_, tab)
-    cbind(data.frame(label = lab, part = best_part, stringsAsFactors = FALSE), best)
+    list(m = best, part = best_part)
+  }
+  fix_variants <- function(p) {
+    for (k in seq_along(variants)) p <- gsub(names(variants)[k], variants[[k]], p, ignore.case = TRUE, perl = TRUE)
+    p
+  }
+  out <- lapply(as.character(x), function(lab) {
+    parts <- if (is.na(lab)) character(0) else trimws(strsplit(lab, "[;|]")[[1]])
+    parts <- parts[nzchar(parts)]
+    b <- deepest(parts)
+    if (is.null(b$m) && length(variants)) {
+      b <- deepest(parts, fix_variants)
+      if (!is.null(b$m)) b$m$matched_by <- "variant"
+    }
+    if (is.null(b$m)) b$m <- .cst_match_one(NA_character_, tab)
+    cbind(data.frame(label = lab, part = b$part, stringsAsFactors = FALSE), b$m)
   })
   res <- do.call(rbind, out)
   rownames(res) <- NULL

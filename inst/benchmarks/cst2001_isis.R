@@ -3,9 +3,9 @@
 # ISIS reference profiles from China (v0.9.378).
 #
 # ISRIC's ISIS holds 51 profiles from China (CN001-CN051). Their local
-# classification gives the 1991 first-proposal name and, beside it, a name in
-# the Chinese Soil Taxonomy ("Haplic latosol; Hapli-Udic Ferrosol"), mostly at
-# group level. The labels were given by ISSAS, probably on the Chinese
+# classification gives the genetic name of the profile (the Genetic Soil
+# Classification of China) and, beside it, a name in the Chinese Soil
+# Taxonomy ("<genetic name>; Hapli-Udic Ferrosol"), mostly at group level. The labels were given by ISSAS, probably on the Chinese
 # edition, so the group is the fair target; soilKey keys the English edition
 # of 2001 (classify_cst2001()).
 #
@@ -28,16 +28,31 @@
 #   b <- cst2001_isis_benchmark(cache = "profiles.rds", out = "report.md")
 #
 # Scoring. The CST part of each label is matched to a taxon of the key by
-# soilKey:::.cst_match_label() (singular or plural, the printed aliases, and
-# names one letter off a single taxon, flagged as typos). A level is scored
-# only on the profiles whose label reaches it (the order on every matched
-# label, the subgroup on the one subgroup label). Agreement carries a Wilson
-# 95 % interval. The class soilKey assigns at a level is provisional when a
-# class tested before it at that level or above could not be decided, rests
-# on a reading the book leaves open, or rests on a stand-in of a group key.
+# soilKey:::.cst_match_label(): exact names only (singular or plural, case and
+# hyphenation alike) and the book's aliases. Only when no part of a label
+# matches exactly are the spelling variants of .cst_isis_variants tried, an
+# explicit list of the known slips of the ISIS labels; such matches are
+# flagged in the report. A level is scored only on the profiles whose label
+# reaches it (the order on every matched label, the subgroup on the one
+# subgroup label). Agreement carries a Wilson 95 % interval. A profile keyed
+# to one of soilKey's bracketed residuals ([E2] [Other Ferralosols], ...)
+# counts as a disagreement at that level and below, and is reported apart.
+# The class soilKey assigns at a level is provisional when a class tested
+# before it at that level or above could not be decided, rests on a reading
+# the book leaves open, or rests on a stand-in of a group key. The book's own
+# provisional marks (levels$book_provisional) are not counted as provisional.
 # =============================================================================
 
 .cst_isis_levels <- c("orders", "suborders", "groups", "subgroups")
+
+# The known slips of the CST names in the ISIS labels (regular expression,
+# case ignored = replacement), tried only when no part of a label matches
+# exactly:
+#   * "Acidi-Undic" for the group Acidi-Udic Cambosols (M5.6);
+#   * "Isohumisol(s)", the order name of the 1991 and 1995 proposals, read as
+#     the Isohumosols (J) of 2001.
+.cst_isis_variants <- c("Acidi-Undic" = "Acidi-Udic",
+                        "\\bIsohumisols?\\b" = "Isohumosols")
 
 .cst_isis_wilson <- function(k, n, z = stats::qnorm(0.975)) {
   if (!n) return(c(NA_real_, NA_real_))
@@ -61,8 +76,9 @@ cst2001_isis_cache <- function(cache = NULL) {
 }
 
 cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
-  if (!"soilKey" %in% loadedNamespaces())
-    suppressPackageStartupMessages(requireNamespace("soilKey"))
+  if (!"soilKey" %in% loadedNamespaces() &&
+      !suppressPackageStartupMessages(requireNamespace("soilKey", quietly = TRUE)))
+    stop("This script needs the soilKey package (0.9.378 or later); install it first.", call. = FALSE)
   ns <- asNamespace("soilKey")
   if (!exists(".cst_match_label", envir = ns, inherits = FALSE))
     stop("This script needs soilKey 0.9.378 or later.", call. = FALSE)
@@ -80,7 +96,7 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     v <- unlist(lapply(lc, function(z) z$classificationName))
     if (length(v)) paste(v, collapse = " | ") else NA_character_
   }, "")
-  m <- match_label(lab)
+  m <- match_label(lab, variants = .cst_isis_variants)
   m$profile <- codes
   rules <- soilKey::load_rules("cst2001")
   sk <- lapply(seq_along(cn), function(i) {
@@ -90,6 +106,10 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     tryCatch(suppressWarnings(soilKey::classify_cst2001(p, rules = rules, on_missing = "silent")),
              error = function(e) NULL)
   })
+  # soilKey's bracketed residuals (the book prints no class there)
+  resid <- character(0)
+  for (lst in c(list(rules$orders), unlist(rules[c("suborders", "groups", "subgroups")], recursive = FALSE)))
+    for (e in lst) if (isTRUE(e$bracketed)) resid <- c(resid, as.character(e$code))
   # soilKey's class and its status at each level
   depth <- stats::setNames(seq_along(.cst_isis_levels), .cst_isis_levels)
   rows <- lapply(seq_along(cn), function(i) {
@@ -111,6 +131,8 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
       out[[paste0("open_", L)]] <- any(lvl_of(open_codes) %in% upto)
       out[[paste0("standin_", L)]] <- any(lvl_of(stand_codes) %in% upto)
     }
+    out$residual <- nrow(lv) > 0L && lv$code[nrow(lv)] %in% resid
+    out$pb_orders <- paste(sub("^orders:", "", grep("^orders:", pb, value = TRUE)), collapse = " ")
     out$sk_name <- if (nrow(lv)) paste(lv$code[nrow(lv)], lv$name[nrow(lv)]) else NA_character_
     out$alternative <- if (!is.null(r) && is.data.frame(r$candidates) && nrow(r$candidates))
       paste(r$candidates$code, r$candidates$name, collapse = "; ") else NA_character_
@@ -133,7 +155,8 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     data.frame(level = L, n = n, agree = k, pct = if (n) 100 * k / n else NA_real_,
                lo = 100 * ci[1], hi = 100 * ci[2],
                n_firm = sum(firm), agree_firm = sum(a[firm]),
-               stopped_above = sum(s & is.na(d[[paste0("sk_", L)]])),
+               residual = sum(s & d$residual & (is.na(d[[paste0("sk_", L)]]) | d[[paste0("sk_", L)]] %in% resid)),
+               stopped_above = sum(s & !d$residual & is.na(d[[paste0("sk_", L)]])),
                provisional = sum(pv), stringsAsFactors = FALSE)
   }))
   status <- do.call(rbind, lapply(.cst_isis_levels, function(L) {
@@ -144,6 +167,8 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
                stand_in = sum(d[[paste0("standin_", L)]][ok]),
                any_provisional = sum(d[[paste0("prov_", L)]][ok]), stringsAsFactors = FALSE)
   }))
+  und <- unlist(strsplit(d$pb_orders[!d$error], " ", fixed = TRUE))
+  undecided_orders <- sort(table(und[nzchar(und)]), decreasing = TRUE)
   ord_names <- vapply(rules$orders, function(e) as.character(e$name), "")
   names(ord_names) <- vapply(rules$orders, function(e) as.character(e$code), "")
   so <- !is.na(d$lab_orders)
@@ -153,7 +178,8 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   conf <- conf[rowSums(conf) > 0, colSums(conf) > 0, drop = FALSE]
   res <- list(profiles = d, score = score, status = status, confusion = conf,
               unmatched = d[is.na(d$code), c("profile", "label")],
-              typos = d[!is.na(d$matched_by) & d$matched_by == "typo", c("profile", "part", "code", "name")],
+              variants = d[!is.na(d$matched_by) & d$matched_by == "variant", c("profile", "part", "code", "name")],
+              undecided_orders = undecided_orders,
               version = as.character(utils::packageVersion("soilKey")), n_china = length(cn),
               cache = basename(path))
   md <- .cst_isis_report(res)
@@ -179,12 +205,14 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     "",
     "## Agreement",
     "",
-    "| Level | n | Agree | % | 95 % CI | Firm n | Agree among firm | soilKey stops above | Provisional |",
-    "|---|--:|--:|--:|---|--:|--:|--:|--:|")
+    "| Level | n | Agree | % | 95 % CI | Firm n | Agree among firm | soilKey residual | soilKey stops above | Provisional |",
+    "|---|--:|--:|--:|---|--:|--:|--:|--:|--:|")
   for (i in seq_len(nrow(sc)))
-    lines <- c(lines, sprintf("| %s | %d | %d | %s | %s-%s | %d | %d | %d | %d |",
+    lines <- c(lines, sprintf("| %s | %d | %d | %s | %s-%s | %d | %d | %d | %d | %d |",
                               sc$level[i], sc$n[i], sc$agree[i], f1(sc$pct[i]), f1(sc$lo[i]), f1(sc$hi[i]),
-                              sc$n_firm[i], sc$agree_firm[i], sc$stopped_above[i], sc$provisional[i]))
+                              sc$n_firm[i], sc$agree_firm[i], sc$residual[i], sc$stopped_above[i], sc$provisional[i]))
+  lines <- c(lines, "", paste("A profile keyed to one of soilKey's bracketed residuals (the book prints no class",
+                              "there) counts as a disagreement at that level and below (column soilKey residual)."))
   lines <- c(lines, "", "## Provisional classes (all profiles classified)", "",
              "Cumulative: a class is counted at a level when the reason lies at that level or above.", "",
              "| Level | Classified | Class undecided before | Open reading | Stand-in | Any |",
@@ -192,15 +220,19 @@ cst2001_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   for (i in seq_len(nrow(st)))
     lines <- c(lines, sprintf("| %s | %d | %d | %d | %d | %d |", st$level[i], st$classified[i],
                               st$undecided_before[i], st$open_reading[i], st$stand_in[i], st$any_provisional[i]))
+  uo <- res$undecided_orders
+  lines <- c(lines, "", "Orders left undecided before the assigned one (profiles): ",
+             if (length(uo)) paste(sprintf("%s %d", names(uo), as.integer(uo)), collapse = ", ") else "none.",
+             "", "The book's own provisional marks (levels$book_provisional) are not counted here.")
   cf <- res$confusion
   lines <- c(lines, "", "## Order confusion (rows: label; columns: soilKey)", "",
              paste0("| | ", paste(colnames(cf), collapse = " | "), " |"),
              paste0("|---|", paste(rep("--:", ncol(cf)), collapse = "|"), "|"))
   for (i in seq_len(nrow(cf)))
     lines <- c(lines, paste0("| ", rownames(cf)[i], " | ", paste(cf[i, ], collapse = " | "), " |"))
-  lines <- c(lines, "", "## Labels matched as typos", "")
-  lines <- c(lines, if (nrow(res$typos)) sprintf("- %s: \"%s\" read as %s %s", res$typos$profile, res$typos$part,
-                                                  res$typos$code, res$typos$name) else "None.")
+  lines <- c(lines, "", "## Labels matched through a spelling variant (.cst_isis_variants)", "")
+  lines <- c(lines, if (nrow(res$variants)) sprintf("- %s: \"%s\" read as %s %s", res$variants$profile, res$variants$part,
+                                                     res$variants$code, res$variants$name) else "None.")
   lines <- c(lines, "", "## Labels with no CST taxon", "")
   lines <- c(lines, if (nrow(res$unmatched)) sprintf("- %s: \"%s\"", res$unmatched$profile, res$unmatched$label) else "None.")
   lines <- c(lines, "", "## Profiles", "",

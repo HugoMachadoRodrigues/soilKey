@@ -1,16 +1,28 @@
 # v0.9.378: the CST label matcher (.cst_match_label) and the offline ISIS
 # benchmark of the Chinese Soil Taxonomy (inst/benchmarks/cst2001_isis.R).
+# The labels are synthetic, built from the book's CST names.
 
 .m378 <- function(x, ...) soilKey:::.cst_match_label(x, ...)
+.script378 <- function() {
+  e <- new.env()
+  sys.source(system.file("benchmarks", "cst2001_isis.R", package = "soilKey"), envir = e)
+  e
+}
 
-test_that("every name and alias of the key matches its own taxon", {
+test_that("every name and alias of the key matches its own taxon; the bracketed residuals are left out", {
   skip_on_cran()
   tab <- soilKey:::.cst_label_table()
-  expect_identical(length(unique(tab$code)), 14L + 40L + 140L + 588L)
+  lv <- tapply(tab$code, tab$level, function(z) length(unique(z)))
+  expect_identical(as.integer(lv[c("orders", "suborders", "groups", "subgroups")]), c(14L, 39L, 138L, 588L))
+  expect_identical(length(unique(tab$code)), 779L)
+  expect_false(any(grepl("^\\[(E2|A1\\.4|A2\\.5)\\]$", tab$code)))
+  expect_true("[A1.3.x]" %in% tab$code)   # listed in Appendix 1, not a residual
   expect_false(any(duplicated(tab$key)))
   m <- .m378(tab$form)
   expect_identical(m$code, tab$code)
   expect_true(all(m$matched_by %in% c("name", "alias")))
+  expect_true(is.na(.m378("Other Ferralosols")$code))
+  expect_true(is.na(.m378("[Other Ferralosols]")$code))
 })
 
 test_that("singular and plural, hyphens and case are the same name", {
@@ -33,27 +45,32 @@ test_that("the printed aliases are matched, flagged as aliases", {
   expect_identical(m$name[1:3], c("Hiweatheri-Udic Ferrosols", "Hiweatheri-Udic Ferrosols", "Udi-Vitric Andosols"))
 })
 
-test_that("a name one letter off a single taxon is a typo; two taxa as close leave it unmatched", {
+test_that("misspellings match only through the explicit variant list, and an exact match wins", {
   skip_on_cran()
-  m <- .m378(c("Haplic latored-yellow soil; Acidi-Undic Cambosol", "Haplic brown limestone soil; Isohumisol"))
-  expect_identical(m$code, c("M5.6", "J"))
-  expect_identical(m$level, c("groups", "orders"))
-  expect_identical(m$matched_by, c("typo", "typo"))
-  expect_identical(m$part, c("Acidi-Undic Cambosol", "Isohumisol"))
-  rules <- list(orders = list(list(code = "A", name = "Abcdefosols"), list(code = "B", name = "Abcdegosols")),
-                suborders = list(), groups = list(), subgroups = list())
-  expect_true(is.na(.m378("Abcdehosol", rules = rules)$code))
-  expect_identical(.m378("Abcdefosol", rules = rules)$code, "A")
-  expect_identical(.m378("Abcdxfosol", rules = rules)$code, "A")
+  v <- .script378()$.cst_isis_variants
+  labs <- c("Some genetic name; Acidi-Undic Cambosol", "Some genetic name; Isohumisol",
+            "Some genetic name; Isohumisols")
+  # no generic tolerance: one letter off is unmatched without the list
+  expect_true(all(is.na(.m378(labs)$code)))
+  expect_true(is.na(.m378("Some genetic name; Acidi-Udik Cambosol", variants = v)$code))
+  m <- .m378(labs, variants = v)
+  expect_identical(m$code, c("M5.6", "J", "J"))
+  expect_identical(m$level, c("groups", "orders", "orders"))
+  expect_identical(m$matched_by, rep("variant", 3))
+  expect_identical(m$part[1], "Acidi-Undic Cambosol")
+  # an exact match beats a variant, whatever the depth
+  m2 <- .m378("Isohumosols; Acidi-Undic Cambosol", variants = v)
+  expect_identical(m2$code, "J")
+  expect_identical(m2$matched_by, "name")
 })
 
-test_that("ISIS label forms: the CST part, a missing part, a 1991 name, a subgroup", {
+test_that("label forms: the CST part, a missing part, a genetic name only, a subgroup", {
   skip_on_cran()
-  m <- .m378(c("Haplic latosol; Hapli-Udic Ferrosol",
-               "Earth-cumuli-Orthic Anthrosol;Old local classification: irrigated cultivated oasis soil or grey desert soil.",
-               "Argillic red soil;",
-               "Haplic latosol",
-               "Salipanic brown desert soil; Panic Sali-Orthic Aridosol",
+  m <- .m378(c("Some genetic name; Hapli-Udic Ferrosol",
+               "Earth-cumuli-Orthic Anthrosol;Old local classification: y",
+               "Some genetic name;",
+               "Some genetic name",
+               "Some genetic name; Panic Sali-Orthic Aridosol",
                "Ferri-Udic Cambosol",
                NA, ""))
   expect_identical(m$code, c("K3.5", "B2.4", NA, NA, "G2.2.4", "M5.5", NA, NA))
@@ -74,8 +91,7 @@ test_that(".cst_code_at gives the code at each level, NA below the label", {
 
 test_that("the benchmark script stops clearly without a cache", {
   skip_on_cran()
-  e <- new.env()
-  sys.source(system.file("benchmarks", "cst2001_isis.R", package = "soilKey"), envir = e)
+  e <- .script378()
   old <- Sys.getenv("SOILKEY_ISIS_CACHE", NA)
   on.exit(if (is.na(old)) Sys.unsetenv("SOILKEY_ISIS_CACHE") else Sys.setenv(SOILKEY_ISIS_CACHE = old), add = TRUE)
   Sys.setenv(SOILKEY_ISIS_CACHE = tempfile(fileext = ".rds"))
@@ -89,10 +105,9 @@ test_that("the benchmark script stops clearly without a cache", {
 test_that("the benchmark runs end to end on the ISIS cache (skipped without it)", {
   skip_on_cran()
   cache <- Sys.getenv("SOILKEY_ISIS_CACHE", "")
-  if (!nzchar(cache)) cache <- path.expand("~/soilKey-work/isis/profiles.rds")
+  if (!nzchar(cache)) cache <- file.path(tools::R_user_dir("soilKey", "cache"), "isis", "profiles.rds")
   skip_if_not(file.exists(cache))
-  e <- new.env()
-  sys.source(system.file("benchmarks", "cst2001_isis.R", package = "soilKey"), envir = e)
+  e <- .script378()
   out <- tempfile(fileext = ".md")
   b <- e$cst2001_isis_benchmark(cache = cache, out = out, verbose = FALSE)
   expect_identical(b$n_china, 51L)
@@ -101,9 +116,10 @@ test_that("the benchmark runs end to end on the ISIS cache (skipped without it)"
   # the denominators follow the labels: 50 matched, CN049 at order level, CN014 at subgroup level
   expect_identical(b$score$n, c(50L, 49L, 49L, 1L))
   expect_identical(b$unmatched$profile, "CN043")
-  expect_setequal(b$typos$profile, c("CN008", "CN049"))
+  expect_setequal(b$variants$profile, c("CN008", "CN049"))
   expect_false(any(b$profiles$error))
   expect_true(all(b$score$agree <= b$score$n))
+  expect_true(all(b$score$residual + b$score$stopped_above <= b$score$n - b$score$agree))
   expect_identical(sum(b$confusion), 50L)
   md <- readLines(out)
   expect_true(any(grepl("^## Agreement", md)))
