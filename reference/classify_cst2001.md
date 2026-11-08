@@ -110,14 +110,16 @@ Taxonomy. Science Press, Beijing and New York.
 ``` r
 res <- classify_cst2001(make_cst2001_example("K3"), on_missing = "silent")
 res$name
-#> [1] "Argi-Udic Ferrosols"
+#> [1] "Typic Argi-Udic Ferrosols"
 res$levels
-#>       level code                name                      name_pt
-#> 1    orders    K           Ferrosols      Ferrossolos (Ferrosols)
-#> 2 suborders   K3      Udic Ferrosols           Ferrossolos údicos
-#> 3    groups K3.4 Argi-Udic Ferrosols Ferrossolos údicos argílicos
-#>   book_provisional
-#> 1            FALSE
-#> 2            FALSE
-#> 3            FALSE
+#>       level   code                      name
+#> 1    orders      K                 Ferrosols
+#> 2 suborders     K3            Udic Ferrosols
+#> 3    groups   K3.4       Argi-Udic Ferrosols
+#> 4 subgroups K3.4.7 Typic Argi-Udic Ferrosols
+#>                                name_pt book_provisional
+#> 1              Ferrossolos (Ferrosols)            FALSE
+#> 2                   Ferrossolos údicos            FALSE
+#> 3         Ferrossolos údicos argílicos            FALSE
+#> 4 Ferrossolos údicos argílicos típicos            FALSE
 ```
