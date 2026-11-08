@@ -614,11 +614,13 @@ test_that("alkalic horizon: ESP 30 and pH 9.0 (the WRB natric takes ESP 15)", {
   expect_false(.cg(mk(), "argic_horizon")$full[2])
   # ESP 29: evidence only; 5: evidence; 4.9: none
   g <- .cg(mk(esp = 29), "alkalic_horizon"); expect_equal(c(g$full[2], g$evid[2]), c(FALSE, TRUE))
-  # v0.9.376 (Hugo on the review, 2026-11-08): the evidence on its printed
-  # items, the alkalic structure or an ESP of 5 or more within 40 cm
-  expect_false(.cg(mk(esp = 4.9, st = "blocky", esp_c = 4), "alkalic_horizon")$evid[2])
-  expect_true(.cg(mk(esp = 4.9, esp_c = 4), "alkalic_horizon")$evid[2])        # the structure
-  expect_true(.cg(mk(esp = 4.9, st = "blocky"), "alkalic_horizon")$evid[2])    # ESP 20 within 40 cm
+  # v0.9.376 (Hugo on the review, 2026-11-08; p. 39): the evidence on its
+  # printed items, the alkalic structure and an ESP of 5 or more within 40 cm
+  expect_false(.cg(mk(esp = 4.9, esp_c = 4), "alkalic_horizon")$evid[2])        # no ESP 5 within 40 cm
+  expect_false(.cg(mk(esp = 10, st = "blocky"), "alkalic_horizon")$evid[2])     # no alkalic structure
+  expect_true(.cg(mk(esp = 4.9), "alkalic_horizon")$evid[2])                   # ESP 20 within 40 cm
+  expect_true(is.na(.cg(mk(esp = 10, st = NA), "alkalic_horizon")$evid[2]))    # structure not recorded
+  expect_false(.cg(mk(esp = 4.9, st = NA, esp_c = 4), "alkalic_horizon")$evid[2])
   # pH 8.9: not alkalic
   expect_false(.cg(mk(ph = 8.9), "alkalic_horizon")$full[2])
   # salts 5 g/kg in the surface layer: not alkalic
