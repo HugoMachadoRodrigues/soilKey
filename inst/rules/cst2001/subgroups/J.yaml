@@ -75,8 +75,8 @@ subgroups:
       page: 118
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 50, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "J2.1.2"
       name: "Calcic Cryi-Ustic Isohumosols"
       aliases: ["Calcic Cryi-Ustic Isohumosol"]
@@ -138,8 +138,8 @@ subgroups:
       tests:
         all_of:
           - mottlic: {to: 150, from: 50}
-          - argic_horizon_cst: {top_max: 50, datum: mineral}
-      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface; and an argic horizon with its upper boundary within 50 cm of the mineral soil surface (keyed before its parts)."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface; and an argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact) (keyed before its parts)."
     - code: "J2.3.2"
       name: "Mottli-calcic Pachi-Ustic Isohumosols"
       aliases: ["Mottli-calcic Pachi-Ustic Isohumosol", "Mottlic-calcic Pachi-Ustic Isohumosols"]
@@ -160,8 +160,8 @@ subgroups:
       tests:
         all_of:
           - calcic: {to: 100, kinds: [calcic_only, soft_lime]}
-          - argic_horizon_cst: {top_max: 50, datum: mineral}
-      notes: "A calcic horizon, or a horizon with soft powdery lime concentrations (calcic evidence, or soft powdery carbonates recorded, flagged; C17), with its upper boundary within 100 cm of the mineral soil surface; and an argic horizon with its upper boundary within 50 cm of the mineral soil surface (keyed before its parts)."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "A calcic horizon, or a horizon with soft powdery lime concentrations (calcic evidence, or soft powdery carbonates recorded, flagged; C17), with its upper boundary within 100 cm of the mineral soil surface; and an argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact) (keyed before its parts)."
     - code: "J2.3.4"
       name: "Argic Pachi-Ustic Isohumosols"
       aliases: ["Argic Pachi-Ustic Isohumosol"]
@@ -170,8 +170,8 @@ subgroups:
       page: 120
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 50, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "J2.3.5"
       name: "Calcic Pachi-Ustic Isohumosols"
       aliases: ["Calcic Pachi-Ustic Isohumosol"]
@@ -211,8 +211,8 @@ subgroups:
       page: 120
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 50, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "J2.4.3"
       name: "Glossi-para-alkalic Calci-Ustic Isohumosols"
       aliases: ["Glossi-para-alkalic Calci-Ustic Isohumosol"]
@@ -253,8 +253,8 @@ subgroups:
       page: 121
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 50, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "J2.5.2"
       name: "Glossi-para-alkalic Hapli-Ustic Isohumosols"
       aliases: ["Glossi-para-alkalic Hapli-Ustic Isohumosol"]

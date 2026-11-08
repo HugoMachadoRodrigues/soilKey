@@ -781,9 +781,18 @@ classify_cst2001 <- function(pedon, rules = NULL,
     tr <- res$trace[[lv$level[i]]][[lv$code[i]]]
     if (!is.null(tr) && isTRUE(tr$passed) && .cst_trace_provisional(list(evidence = tr$evidence))) {
       prov_i <- c(prov_i, i)
-      notes <- c(notes, sprintf(paste(
-        "Provisional: %s %s rests on a reading the book leaves open (see the trace):",
-        "a ferrous-iron test, a measurement or a duration would confirm it."), lv$code[i], lv$name[i]))
+      # v0.9.376 (Hugo on the review, 2026-11-08): the remedy named by the
+      # flags of the reading
+      fl <- .cst_trace_flags(list(evidence = tr$evidence))
+      rem <- c(if (any(grepl("gleyic_without_test", fl))) "a ferrous-iron test",
+               if ("window_cut_at_description_base" %in% fl) "a deeper description",
+               if ("contact_extent_not_recorded" %in% fl) "the extent of the contact under the plane",
+               if ("salic_duration_not_recorded" %in% fl) "the months a year with salic evidence",
+               if (any(grepl("crack|days", fl))) "the duration of the cracks")
+      if (!length(rem)) rem <- c("a ferrous-iron test", "a measurement", "a duration")
+      rem_txt <- if (length(rem) == 1L) rem else paste(paste(rem[-length(rem)], collapse = ", "), "or", rem[length(rem)])
+      notes <- c(notes, sprintf("Provisional: %s %s rests on a reading the book leaves open (see the trace): %s would confirm it.",
+                                lv$code[i], lv$name[i], rem_txt))
     }
   }
   # a class assigned on a stand-in of a group key (Hugo, 2026-11-07)
@@ -884,10 +893,8 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' all, each keying to its own group, not provisionally; since v0.9.375 a
 #' subgroup code (\code{"A1.1.1"} ... \code{"N4.7.6"}, and
 #' \code{"[A1.3.x]"}) gives one profile per subgroup (orders A to G since
-#' v0.9.375, H to N since v0.9.376), 580 in all, each keying to its own
-#' subgroup, not provisionally; the eight subgroups no profile reaches under
-#' the readings in force (J2.4.3, J2.4.4, J2.5.2, J2.5.3, M2.2.1, M2.3.1,
-#' M2.4.1, N2.4.4) have none. They are not real profiles. With
+#' v0.9.375, H to N since v0.9.376), 588 in all, each keying to its own
+#' subgroup, not provisionally. They are not real profiles. With
 #' \code{near_miss = TRUE}, fourteen of them (one per order) change one
 #' property so that the profile misses its class and lands in another:
 #' A1 without permafrost (Orthic Histosols), B2 with a cumulic layer of 35 cm
@@ -920,10 +927,6 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' classify_cst2001(make_cst2001_example("L4.2.1"), on_missing = "silent")$name
 #' @export
 make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALSE) {
-  # v0.9.376: the subgroups no profile reaches under the readings in force
-  if (length(suborder) == 1L && suborder %in% names(.CST_SUBGROUP_UNREACHABLE))
-    rlang::abort(sprintf("No example for %s: under the readings in force no profile reaches it (%s).", suborder,
-                         .CST_SUBGROUP_UNREACHABLE[[suborder]]))
   # v0.9.375: a subgroup code gives the example of the subgroup
   if (length(suborder) == 1L && suborder %in% .CST_SUBGROUP_EXAMPLE_CODES) {
     if (isTRUE(near_miss)) rlang::abort(sprintf("No near miss for %s; near misses exist for %s.", suborder,

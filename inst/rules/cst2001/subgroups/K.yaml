@@ -76,7 +76,7 @@ subgroups:
       tests:
         all_of:
           - leachic: {}
-      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower contact (Q22)."
+      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
     - code: "K2.1.3"
       name: "Argic Carbonati-Perudic Ferrosols"
       aliases: ["Argic Carbonati-Perudic Ferrosol"]
@@ -85,8 +85,8 @@ subgroups:
       page: 125
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K2.1.4"
       name: "Typic Carbonati-Perudic Ferrosols"
       aliases: ["Typic Carbonati-Perudic Ferrosol"]
@@ -147,7 +147,7 @@ subgroups:
       tests:
         all_of:
           - stagnic_perched: {}
-      notes: "Gleyic evidence (gleyic features pass too) linked to seasonal saturation by perched water in some horizon 10 cm or more thick within 50 cm of the mineral soil surface: groundwater_kind perched or a stagnic regime (default 22)."
+      notes: "Gleyic evidence (gleyic features pass too) linked to seasonal saturation by perched water in some horizon 10 cm or more thick within 50 cm of the mineral soil surface: groundwater_kind perched or a stagnic regime (default 22); a groundwater table observed or apparent fails, flooded or none recorded leaves it undecided."
     - code: "K2.2.6"
       name: "Mottlic Alliti-Perudic Ferrosols"
       aliases: ["Mottlic Alliti-Perudic Ferrosol"]
@@ -176,8 +176,8 @@ subgroups:
       page: 126-127
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K2.2.9"
       name: "Typic Alliti-Perudic Ferrosols"
       aliases: ["Typic Alliti-Perudic Ferrosol"]
@@ -238,7 +238,7 @@ subgroups:
       tests:
         all_of:
           - stagnic_perched: {}
-      notes: "Gleyic evidence (gleyic features pass too) linked to seasonal saturation by perched water in some horizon 10 cm or more thick within 50 cm of the mineral soil surface: groundwater_kind perched or a stagnic regime (default 22)."
+      notes: "Gleyic evidence (gleyic features pass too) linked to seasonal saturation by perched water in some horizon 10 cm or more thick within 50 cm of the mineral soil surface: groundwater_kind perched or a stagnic regime (default 22); a groundwater table observed or apparent fails, flooded or none recorded leaves it undecided."
     - code: "K2.3.6"
       name: "Mottlic Hapli-Perudic Ferrosols"
       aliases: ["Mottlic Hapli-Perudic Ferrosol"]
@@ -299,7 +299,7 @@ subgroups:
       tests:
         all_of:
           - leachic: {}
-      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower contact (Q22)."
+      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
     - code: "K3.1.4"
       name: "Argic Carbonati-Udic Ferrosols"
       aliases: ["Argic Carbonati-Udic Ferrosol"]
@@ -308,8 +308,8 @@ subgroups:
       page: 129
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K3.1.5"
       name: "Brown Carbonati-Udic Ferrosols"
       aliases: ["Brown Carbonati-Udic Ferrosol"]
@@ -319,7 +319,7 @@ subgroups:
       tests:
         all_of:
           - hue_share: {hue: "5YR", rule: yellower}
-      notes: "A hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower contact (Q22)."
+      notes: "A hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
     - code: "K3.1.6"
       name: "Typic Carbonati-Udic Ferrosols"
       aliases: ["Typic Carbonati-Udic Ferrosol"]
@@ -359,8 +359,8 @@ subgroups:
       page: 130
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K3.2.4"
       name: "Typic Hiweatheri-Udic Ferrosols"
       aliases: ["Typic Hi-weatheri-Udic Ferrosols", "Typic Hiweatheri-Udic Ferrosol"]
@@ -430,8 +430,8 @@ subgroups:
       page: 131
       tests:
         all_of:
-          - plinthic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K3.3.7"
       name: "Rhodic Alliti-Udic Ferrosols"
       aliases: ["Rhodic Alliti-Udic Ferrosol", "Rhodic Allitic-Udic Ferrosols"]
@@ -460,8 +460,8 @@ subgroups:
       page: 131
       tests:
         all_of:
-          - argic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K3.3.10"
       name: "Typic Alliti-Udic Ferrosols"
       aliases: ["Typic Alliti-Udic Ferrosol", "Typic Allitic-Udic Ferrosols"]
@@ -521,8 +521,8 @@ subgroups:
       page: 132
       tests:
         all_of:
-          - plinthic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K3.4.6"
       name: "Eutrophic Argi-Udic Ferrosols"
       aliases: ["Eutrophic Agri-Udic Ferrosols", "Eutrophic Argi-Udic Ferrosol", "Eutrophic Argic-Udic Ferrosols"]
@@ -612,8 +612,8 @@ subgroups:
       page: 133
       tests:
         all_of:
-          - plinthic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "K3.5.8"
       name: "Rhodic Hapli-Udic Ferrosols"
       aliases: ["Rhodic Hapli-Udic Ferrosol"]

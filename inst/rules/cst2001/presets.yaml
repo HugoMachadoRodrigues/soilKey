@@ -48,12 +48,12 @@ presets:
       feature_run_cst: {features: [sodic_property], min_cm: $thick, from_cm: 0, to_cm: $within, datum: $datum, grade: $grade}
 
   sulfic:
-    note: "Sulfidic materials in some layer `thick` cm thick (horizons totalling it with total: true) within `within` cm, or a sulfuric horizon whose upper boundary lies within `within` cm."
+    note: "Sulfidic materials in some layer `thick` cm thick (horizons totalling it with total: true) within `within` cm, or a sulfuric horizon whose upper boundary lies within `within` cm (v0.9.376: undecided when the description ends above that depth, not on rock or a contact)."
     params: {within: required, thick: 15, total: false, datum: mineral}
     template:
       any_of:
         - feature_run_cst: {features: [sulfidic_materials], min_cm: $thick, from_cm: 0, to_cm: $within, total: $total, datum: $datum}
-        - sulfuric_horizon_cst: {top_max: $within, datum: $datum}
+        - upper_within_cst: {horizon: sulfuric_horizon, top_max: $within, datum: $datum}
 
   calcic_or_evidence:
     note: "A calcic horizon (without its hypercalcic layers: the key names the calcic horizon alone) or calcic evidence anywhere between `from` and `to` cm (to: ~ for no depth). Paracalcic is the same reading: calcic evidence, the calcic horizon passing too (Q19)."
@@ -69,8 +69,8 @@ presets:
 
   # --- base saturation and pH ------------------------------------------------------------
   dystric:
-    note: "Base saturation under 50 % or pH under 5.5 in every horizon between `from` and `to` cm (mode: some, in a run `thick` cm thick there; scope: b, throughout the B within 125 cm or, mode: some, in a subhorizon of it)."
-    params: {to: required, from: 0, mode: throughout, scope: window, thick: 10, datum: mineral}
+    note: "Base saturation under 50 % or pH under 5.5 in every horizon between `from` and `to` cm (mode: some, in a run `thick` cm thick there; scope: b, throughout the B within 125 cm or, mode: some, in a subhorizon of it; v0.9.376: scope claypan or argic_or_claypan, throughout those horizons, `to` then not read)."
+    params: {to: 125, from: 0, mode: throughout, scope: window, thick: 10, datum: mineral}
     template:
       dystric_cst: {from_cm: $from, to_cm: $to, mode: $mode, scope: $scope, min_cm: $thick, datum: $datum}
 
@@ -209,7 +209,7 @@ presets:
     note: "Alkalic evidence (the alkalic horizon passing too, Q19) in some horizon whose upper boundary lies within `within` cm."
     params: {within: required}
     template:
-      alkalic_horizon_cst: {grade: at_least_evidence, top_max: $within, datum: mineral}
+      upper_within_cst: {horizon: alkalic_horizon, grade: at_least_evidence, top_max: $within, datum: mineral}
 
   stagnic_perched:
     note: "Gleyic evidence of seasonal perched water in some horizon `thick` cm thick within `within` cm (K2.2.5, K2.3.5)."

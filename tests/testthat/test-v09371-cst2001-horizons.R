@@ -603,10 +603,10 @@ test_that("clay-pan: firm prisms, twice the albic clay, the thin section met unl
 
 test_that("alkalic horizon: ESP 30 and pH 9.0 (the WRB natric takes ESP 15)", {
   skip_on_cran()
-  mk <- function(esp = 35, ph = 9.2, salts = 0.2, st = "columnar") {
+  mk <- function(esp = 35, ph = 9.2, salts = 0.2, st = "columnar", esp_c = 20) {
     .cp(data.frame(top_cm = c(0, 15, 45), bottom_cm = c(15, 45, 90), designation = c("A", "Btn", "C"),
                    clay_pct = c(15, 30, 25), silt_pct = 40, sand_pct = c(45, 30, 35),
-                   esp_pct = c(5, esp, 20), ph_h2o = c(8.5, ph, 9), soluble_salts_pct = c(salts, 0.5, 0.6),
+                   esp_pct = c(5, esp, esp_c), ph_h2o = c(8.5, ph, 9), soluble_salts_pct = c(salts, 0.5, 0.6),
                    structure_type = c("platy", st, "massive")))
   }
   g <- .cg(mk(), "alkalic_horizon")
@@ -614,7 +614,11 @@ test_that("alkalic horizon: ESP 30 and pH 9.0 (the WRB natric takes ESP 15)", {
   expect_false(.cg(mk(), "argic_horizon")$full[2])
   # ESP 29: evidence only; 5: evidence; 4.9: none
   g <- .cg(mk(esp = 29), "alkalic_horizon"); expect_equal(c(g$full[2], g$evid[2]), c(FALSE, TRUE))
-  expect_false(.cg(mk(esp = 4.9), "alkalic_horizon")$evid[2])
+  # v0.9.376 (Hugo on the review, 2026-11-08): the evidence on its printed
+  # items, the alkalic structure or an ESP of 5 or more within 40 cm
+  expect_false(.cg(mk(esp = 4.9, st = "blocky", esp_c = 4), "alkalic_horizon")$evid[2])
+  expect_true(.cg(mk(esp = 4.9, esp_c = 4), "alkalic_horizon")$evid[2])        # the structure
+  expect_true(.cg(mk(esp = 4.9, st = "blocky"), "alkalic_horizon")$evid[2])    # ESP 20 within 40 cm
   # pH 8.9: not alkalic
   expect_false(.cg(mk(ph = 8.9), "alkalic_horizon")$full[2])
   # salts 5 g/kg in the surface layer: not alkalic

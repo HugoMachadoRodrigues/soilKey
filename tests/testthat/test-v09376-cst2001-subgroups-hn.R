@@ -11,7 +11,7 @@
 .f376 <- function(fn, p, ...) get(fn, envir = asNamespace("soilKey"))(p, ...)
 .hn376 <- function(codes) substr(gsub("^\\[", "", codes), 1, 1) %in% LETTERS[8:14]
 .sg376 <- function(k) unname(unlist(k$subgroups, recursive = FALSE))
-.UNREACH376 <- c("J2.4.3", "J2.4.4", "J2.5.2", "J2.5.3", "M2.2.1", "M2.3.1", "M2.4.1", "N2.4.4")
+.ONCE376 <- c("J2.4.3", "J2.4.4", "J2.5.2", "J2.5.3", "M2.2.1", "M2.3.1", "M2.4.1", "N2.4.4")
 
 test_that("the new presets are expanded and the rules validate", {
   skip_on_cran()
@@ -121,15 +121,15 @@ test_that("every Appendix 1 name resolves to exactly one subgroup row (588)", {
   expect_false(any(duplicated(every)))
 })
 
-test_that("every reachable subgroup example of H to N keys to its own subgroup, not provisionally", {
+test_that("every subgroup example of H to N keys to its own subgroup, not provisionally", {
   skip_on_cran()
   k <- load_rules("cst2001")
   codes <- soilKey:::.CST_SUBGROUP_EXAMPLE_CODES
-  expect_equal(length(codes), 580L)
+  expect_equal(length(codes), 588L)
   hc <- codes[.hn376(codes)]
-  expect_equal(length(hc), 404L)
+  expect_equal(length(hc), 412L)
   keyed <- vapply(.sg376(k), `[[`, "", "code")
-  expect_identical(c(hc, .UNREACH376)[order(match(c(hc, .UNREACH376), keyed))], keyed[.hn376(keyed)])
+  expect_identical(hc, keyed[.hn376(keyed)])
   for (cd in hc) {
     p <- make_cst2001_example(cd)
     expect_identical(p$site$id, paste0("cst2001-", cd))
@@ -140,20 +140,28 @@ test_that("every reachable subgroup example of H to N keys to its own subgroup, 
   }
 })
 
-test_that("the eight subgroups no profile reaches have no example, and their profiles key earlier", {
+test_that("the subgroups the first reading left unreachable are reached (Hugo, 2026-11-08)", {
   skip_on_cran()
-  expect_identical(names(soilKey:::.CST_SUBGROUP_UNREACHABLE), .UNREACH376)
-  for (cd in .UNREACH376) expect_error(make_cst2001_example(cd), "No example for")
-  # alkalic evidence within 50 cm is an argic horizon: Argic keys first
-  p <- make_cst2001_example("J2.5.4")
-  p$horizons$clay_pct <- c(18, 30, 24, 20); p$horizons$esp_pct <- c(2, 10, 8, 4)
+  expect_null(get0(".CST_SUBGROUP_UNREACHABLE", envir = asNamespace("soilKey"), inherits = FALSE))
+  for (cd in .ONCE376) expect_identical(.c376(make_cst2001_example(cd))$levels$code[4], cd, info = cd)
+  # alkalic evidence on its printed items: an ESP of 10 in a B that is not argic
+  p <- make_cst2001_example("J2.5.3")
   expect_true(alkalic_horizon_cst(p, grade = "at_least_evidence", top_max = 50, datum = "mineral")$passed)
-  expect_identical(.c376(p)$levels$code[4], "J2.5.1")
-  # a paddy history in an Aquic Cambosol: the anthrostagnic regime is not
-  # recorded beside the aquic one, so the evidence fails
-  p <- make_cst2001_example("M2.4.5")
-  p$site$land_use <- "paddy rice"; p$site$paddy_years_frac <- 0.4
-  expect_false(anthrostagnic_epipedon_cst(p, grade = "at_least_evidence")$passed)
+  expect_false(argic_horizon_cst(p, top_max = 50, datum = "mineral")$passed)
+  # anthrostagnic evidence on a short paddy history beside the aquic regime
+  p <- make_cst2001_example("M2.4.1")
+  expect_true(moisture_regime_cst(p, "aquic")$passed)
+  expect_true(anthrostagnic_epipedon_cst(p, grade = "at_least_evidence")$passed)
+  expect_false(anthrostagnic_epipedon_cst(p)$passed)
+  # the litter of N2.4.4 is not parent material: the sandy deposits hold
+  expect_true(lc_sandy_cst(make_cst2001_example("N2.4.4"))$passed)
+  # L4.3.1: the claypan exposed by its argillans (item 4)
+  p <- make_cst2001_example("L4.3.1")
+  x <- soilKey:::.cst_ctx(p)
+  expect_true(soilKey:::.cst_hz(x, "claypan")$full[1])
+  expect_true(.f376("trunic_cst", p, horizon = "argic_or_claypan")$passed)
+  # M3.3.2: alkalic evidence in a Cambosol
+  expect_identical(.c376(make_cst2001_example("M3.3.2"))$levels$code[4], "M3.3.2")
 })
 
 test_that("the group and suborder examples of H to N reach a subgroup and keep their classes", {
@@ -359,7 +367,9 @@ test_that("Dilluvic and Marinic", {
   p <- ex("H2.1.1"); p$site$parent_material <- NULL
   expect_false(dl(p))                                   # the origin is a field record
   p <- ex("H2.1.1"); p$horizons$soluble_salts_pct <- c(2.8, 1.5, 0.6)
-  expect_false(dl(p))                                   # decreasing with depth: regular
+  expect_true(is.na(dl(p)))                             # regular to 110 cm, 200 not described (2026-11-08)
+  p$horizons$bottom_cm[3] <- 210
+  expect_false(dl(p))                                   # decreasing with depth to 210 cm: regular
   p$horizons$soluble_salts_pct <- c(2.8, NA, 0.6)
   expect_true(is.na(dl(p)))
   mr <- function(p) .f376("marinic_cst", p)$passed
@@ -392,4 +402,105 @@ test_that("Xanthic of M5.4.4 reads a subhorizon in the upper half of the B", {
   expect_false(bu(p))
   # the regime: border recorded FALSE fails the subgroup
   expect_false(isTRUE(.c376(ex("M5.4.8"))$levels$code[4] == "M5.4.4"))
+})
+
+
+# --- the decisions of the review (Hugo, 2026-11-08) -------------------------------------------------
+
+.mod376 <- function(code, rows = NULL, set = list(), site = list()) {
+  p <- make_cst2001_example(code); h <- as.data.frame(p$horizons)
+  if (!is.null(rows)) h <- h[rows, , drop = FALSE]
+  for (k in names(set)) h[[k]] <- rep_len(set[[k]], nrow(h))
+  s <- p$site; for (k in names(site)) s[k] <- list(site[[k]])
+  soilKey:::.cst_ex_build(h, s)
+}
+
+test_that("review 1: the nine defects fixed", {
+  skip_on_cran()
+  # 1. shajiang in a run: a description ending at 60 cm leaves 50-100 open
+  q <- .mod376("L4.3.5", rows = 1:2)
+  expect_true(is.na(.f376("shajiang_cst", q, min_pct = 10, min_cm = 10, from_cm = 50, within = 100)$passed))
+  # 2. phosphic evidence of N4.7.1 from the mineral soil surface
+  p0 <- make_cst2001_example("N4.7.1"); h <- as.data.frame(p0$horizons)
+  h$top_cm <- c(0, 20); h$bottom_cm <- c(20, 100); h$p_total_pct <- c(0.01, 0.5)
+  o <- h[1, ]; o[] <- NA; o$top_cm <- 0; o$bottom_cm <- 10; o$designation <- "Oi"; o$oc_pct <- 30
+  h2 <- h; h2$top_cm <- h2$top_cm + 10; h2$bottom_cm <- h2$bottom_cm + 10
+  p <- soilKey:::.cst_ex_build(rbind(o, h2), p0$site)
+  expect_false(isTRUE(phosphic_property_cst(p, "at_least_evidence", top_max = 25)$passed))
+  expect_true(phosphic_property_cst(p, "at_least_evidence", top_max = 25, datum = "mineral")$passed)
+  # 3. the upper half of the B: capped at 125 cm, open when the B goes on below the description
+  mk <- function(d, top, bot, hue) soilKey:::.cst_ex_build(list(designation = d, top_cm = top, bottom_cm = bot, munsell_hue_moist = hue,
+                                                                  clay_pct = 25, coarse_fragments_pct = 0), make_cst2001_example("M5.4.4")$site)
+  bu <- function(p) .f376("b_upper_hue_cst", p, part = "upper_half")$passed
+  expect_true(is.na(bu(mk(c("A", "Bw1"), c(0, 15), c(15, 50), c("10YR", "5YR")))))
+  expect_true(bu(mk(c("A", "Bw1", "Bw2", "Bw3"), c(0, 15, 50, 90), c(15, 50, 90, 200), c("10YR", "5YR", "7.5YR", "5YR"))))
+  expect_false(bu(mk(c("A", "Bw1", "Bw2", "Bw3"), c(0, 15, 75, 90), c(15, 75, 90, 200), c("10YR", "5YR", "7.5YR", "5YR"))))
+  # 4. a B subhorizon measured within 125 cm, a description ending in the B open
+  p <- mk(c("A", "Bw1"), c(0, 15), c(15, 70), c("10YR", "10YR")); p$horizons$fe_dcb_pct <- 0.8; p$horizons$fe_total_pct <- 3
+  expect_true(is.na(.f376("b_subhorizon_cst", p, test = "ferric")$passed))
+  p <- mk(c("A", "Bw1", "Bw2"), c(0, 15, 120), c(15, 120, 160), "10YR")
+  p$horizons$fe_dcb_pct <- c(0.8, 0.8, 2.0); p$horizons$fe_total_pct <- 3
+  expect_false(.f376("b_subhorizon_cst", p, test = "ferric")$passed)            # 5 cm inside 125 cm
+  p <- .mod376("M5.1.2", set = list(bottom_cm = c(15, 60, 100, 130)))
+  expect_true(.f376("dystric_cst", p, scope = "b")$passed)                       # ends on rock at 100
+  # 5. Dilluvic: a layer not measured leaves a regular profile open
+  p <- .mod376("H2.1.1", rows = c(1, 2, 3, 3), set = list(top_cm = c(0, 25, 60, 110), bottom_cm = c(25, 60, 110, 210),
+                                                          soluble_salts_pct = c(2.8, NA, 1.5, 0.6)))
+  expect_true(is.na(.f376("dilluvic_cst", p)$passed))
+  # 6. Marinic, the carbonate not measured
+  mr <- function(cl, so) .f376("marinic_cst", .mod376("H2.2.3", set = list(soluble_salts_chloride_pct = cl, soluble_salts_sulfate_pct = so)))$passed
+  expect_true(is.na(mr(40, 15))); expect_true(mr(40, 20)); expect_false(mr(30, 40))
+  # 7. M1.6.2: a calcic horizon starting at 100 cm
+  p <- .mod376("M1.6.2", set = list(top_cm = c(0, 8, 100), bottom_cm = c(8, 100, 130)))
+  expect_identical(.c376(p)$levels$code[4], "M1.6.2")
+  # 8. Verti-lithic: a feature layer starting at 25 cm is not within 25 cm
+  p <- .mod376("N4.7.4", rows = c(1, 3), set = list(top_cm = c(0, 25), bottom_cm = c(25, 45), slickensides = c(NA, NA),
+                                                    cracks_width_cm = c(NA, NA)))
+  expect_false(.f376("vertic_within_cst", p, within = 25)$passed)
+  # 9. a contact or a horizon below the base of the description: undecided
+  q <- .mod376("K3.5.10", rows = 1:2, set = list(bottom_cm = c(15, 40)))
+  expect_true(is.na(.f376("contact_sg_cst", q, top_max = 50, kind = "lithic")$passed))
+  q <- .mod376("G1.1.4", rows = 1:2)
+  expect_true(is.na(.f376("contact_sg_cst", q, top_max = 50, datum = "surface")$passed))   # an A-G Lithic row
+  q <- .mod376("H2.1.4", rows = 1:2, set = list(bottom_cm = c(25, 60)))
+  expect_true(is.na(.f376("upper_within_cst", q, horizon = "gypsic_only", top_max = 100)$passed))
+  expect_true(is.na(.f376("upper_within_cst", q, horizon = "salipan", top_max = 100)$passed))
+  q <- .mod376("H2.2.8", rows = 1:2, set = list(bottom_cm = c(25, 50)))
+  expect_true(is.na(.f376("upper_within_cst", q, horizon = "sulfuric_horizon", top_max = 100)$passed))
+  q <- .mod376("H2.2.8", rows = 1, set = list(bottom_cm = 30))
+  expect_true(is.na(.f376("upper_within_cst", q, horizon = "alkalic_horizon", top_max = 50, grade = "at_least_evidence")$passed))
+  expect_false(.f376("upper_within_cst", .mod376("J2.1.3"), horizon = "argic_horizon", top_max = 50)$passed)
+})
+
+test_that("review 2-6: the readings decided", {
+  skip_on_cran()
+  # the saturation axis: a short paddy history gives no anthrostagnic regime
+  p <- .mod376("M2.4.5", site = list(soil_moisture_regime = NULL, land_use = "paddy rice", paddy_years_frac = 0.4))
+  expect_false(identical(soilKey:::.cst_moisture_regime(p)$saturation$candidates, "anthrostagnic"))
+  p$site$paddy_years_frac <- NULL
+  expect_identical(soilKey:::.cst_moisture_regime(p)$saturation$candidates, "anthrostagnic")
+  # Stagnic: a flooded record leaves it undecided
+  expect_true(is.na(.f376("stagnic_perched_cst", .mod376("K2.2.5", site = list(groundwater_kind = "flooded")))$passed))
+  # Concretic: strongly cemented is not indurated; very hard neither
+  expect_false(.f376("concretic_cst", .mod376("L4.1.1", set = list(cementation_class = c(NA, NA, "strongly", NA, NA))))$passed)
+  expect_true(.f376("concretic_cst", .mod376("L4.1.1", set = list(cementation_class = NA, rupture_resistance = c(NA, NA, "extremely hard", NA, NA))))$passed)
+  # Recalcaric: a description ending above 100 cm is open
+  q <- .mod376("L2.4.3", rows = 1:2, set = list(bottom_cm = c(20, 40)))
+  expect_true(is.na(.f376("recalcaric_cst", q, within = 100, datum = "mineral")$passed))
+  # L1.1.4 / L4.3.4 read no window
+  k <- load_rules("cst2001")
+  l114 <- Find(function(e) e$code == "L1.1.4", k$subgroups[["L1.1"]])$tests$all_of[[1]]$dystric_cst
+  expect_identical(l114$scope, "claypan")
+  # the remedies named in the provisional warning
+  p <- make_cst2001_example("M2.2.3"); p$site$salic_months_per_year <- NULL
+  expect_true(any(grepl("the months a year with salic evidence would confirm it", .c376(p)$warnings)))
+  p <- make_cst2001_example("M5.2.2"); p$site$lithic_contact_extent_pct <- NULL
+  expect_true(any(grepl("the extent of the contact under the plane would confirm it", .c376(p)$warnings)))
+  p <- make_cst2001_example("E1.3.7"); p$horizons$bottom_cm[3] <- 100; p$horizons$bs_pct <- c(20, 40, 40)
+  expect_true(any(grepl("a deeper description would confirm it", .c376(p)$warnings)))
+  # the readings of H to N are all decided
+  rd <- yaml::read_yaml(system.file("rules", "cst2001", "readings.yaml", package = "soilKey"))$readings
+  hn <- Filter(function(r) grepl("^Subgroups: H to N", r$topic), rd)
+  expect_gte(length(hn), 14L)
+  expect_false(any(vapply(hn, function(r) grepl("for Hugo to confirm", r$reading), NA)))
 })

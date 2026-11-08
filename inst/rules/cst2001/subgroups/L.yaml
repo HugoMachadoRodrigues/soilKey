@@ -52,7 +52,7 @@ subgroups:
       page: 135
       tests:
         all_of:
-          - dystric: {to: 125, scope: claypan}
+          - dystric: {scope: claypan}
       notes: "Base saturation under 50 % or pH (water) under 5.5 throughout the claypan."
     - code: "L1.1.5"
       name: "Typic Albi-Boric Argosols"
@@ -300,7 +300,7 @@ subgroups:
       tests:
         all_of:
           - recalcaric_cst: {within: 100, datum: mineral}
-      notes: "Free calcium carbonate in the fine earth decreasing with depth within 100 cm of the mineral soil surface: the CaCO3 pattern of the Recalcaric Anthrosols (over 45 g/kg at the surface, never rising downwards), read to 100 cm (default 23)."
+      notes: "Free calcium carbonate in the fine earth decreasing with depth within 100 cm of the mineral soil surface: the CaCO3 pattern of the Recalcaric Anthrosols (over 45 g/kg at the surface, never rising downwards), read to 100 cm (default 23), undecided when the description ends above 100 cm, not on rock or a contact."
     - code: "L2.4.4"
       name: "Mottlic Hapli-Ustic Argosols"
       aliases: ["Mottlic Hapli-Ustic Argosol"]
@@ -414,7 +414,7 @@ subgroups:
       tests:
         all_of:
           - concretic_cst: {}
-      notes: "An indurated subhorizon 5 cm or more thick below the albic horizon with 30 % or more by volume of Fe-Mn nodules and concretions."
+      notes: "An indurated subhorizon (cementation indurated or rupture resistance extremely hard) 5 cm or more thick below the base of the albic horizon with 30 % or more by volume of Fe-Mn nodules and concretions."
     - code: "L4.1.2"
       name: "Ferric Albi-Udic Argosols"
       aliases: ["Ferric Albi-Udic Argosol"]
@@ -446,7 +446,7 @@ subgroups:
         all_of:
           - humic_property_cst: {}
           - hue_share: {hue: "5YR", rule: yellower}
-      notes: "The humic property (p. 59); and a hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower contact (Q22) (keyed before its parts)."
+      notes: "The humic property (p. 59); and a hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22) (keyed before its parts)."
     - code: "L4.2.2"
       name: "Humic Carbonati-Udic Argosols"
       aliases: ["Humic Carbonati-Udic Argosol", "Humic Carbonsti-Udic Argosols"]
@@ -506,7 +506,7 @@ subgroups:
       page: 143
       tests:
         all_of:
-          - dystric: {to: 125, scope: argic_or_claypan}
+          - dystric: {scope: argic_or_claypan}
       notes: "Base saturation under 50 % or pH (water) under 5.5 throughout the argic horizon or the claypan."
     - code: "L4.3.5"
       name: "Typic Claypani-Udic Argosols"

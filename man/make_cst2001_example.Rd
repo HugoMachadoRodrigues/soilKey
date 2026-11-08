@@ -29,10 +29,8 @@ group code (\code{"A1.1"} ... \code{"N4.7"}, and soilKey's
 all, each keying to its own group, not provisionally; since v0.9.375 a
 subgroup code (\code{"A1.1.1"} ... \code{"N4.7.6"}, and
 \code{"[A1.3.x]"}) gives one profile per subgroup (orders A to G since
-v0.9.375, H to N since v0.9.376), 580 in all, each keying to its own
-subgroup, not provisionally; the eight subgroups no profile reaches under
-the readings in force (J2.4.3, J2.4.4, J2.5.2, J2.5.3, M2.2.1, M2.3.1,
-M2.4.1, N2.4.4) have none. They are not real profiles. With
+v0.9.375, H to N since v0.9.376), 588 in all, each keying to its own
+subgroup, not provisionally. They are not real profiles. With
 \code{near_miss = TRUE}, fourteen of them (one per order) change one
 property so that the profile misses its class and lands in another:
 A1 without permafrost (Orthic Histosols), B2 with a cumulic layer of 35 cm

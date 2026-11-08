@@ -1207,7 +1207,11 @@
   mf <- .cst_t(x, "micromorph_features"); arg <- .cst_v(x, "micromorph_argillans_pct")
   i5 <- ifelse(is.na(mf) & is.na(arg), TRUE,
                ifelse(is.na(mf), arg < 1, grepl("clay_stripes|fibrous_oriented_clay", mf)))
-  p <- st & (i3 | i4) & i5 & seq_len(x$n) > (if (is.na(s)) x$n else s)
+  # v0.9.376 (Hugo on the review, 2026-11-08): item 4 (argillans 0.5 mm or
+  # more) qualifies the first mineral layer too, item 3 only a layer below it
+  below <- seq_len(x$n) > (if (is.na(s)) x$n else s)
+  first <- !is.na(s) & seq_len(x$n) == s
+  p <- st & ifelse(below, i3 | i4, ifelse(first, i4, FALSE)) & i5
   full <- .cst_run_grade(x, p, t$thick_min_cm)
   flags <- if (any(full %in% TRUE & is.na(mf) & is.na(arg))) "thin_section_assumed" else character(0)
   ans <- .cst_hz_ans(x, full, flags = flags,
@@ -1231,13 +1235,22 @@
     .cst_or(test[j])
   }, NA)
   e_full <- within(esp >= t$esp_min & ph >= t$ph_min)
-  e_evid <- within(esp >= t$evidence_esp_min)
   s <- x$first_min
   surf_salt <- if (is.na(s)) NA else .cst_v(x, "soluble_salts_pct")[s] < t$surface_salts_max_pct
   full <- A$core & st & e_full & surf_salt
-  evid <- A$core & e_evid
+  # v0.9.376 (Hugo on the review, 2026-11-08): the evidence read on its
+  # printed items only (p. 39), without the argic items 2a-d: a subsurface
+  # layer (below the first mineral layer, not an O, A, E, C or R) with the
+  # structure of the alkalic horizon, or an ESP of 5 or more within 40 cm of
+  # its top
+  sub <- seq_len(x$n) > (if (is.na(s)) x$n else s) & !(x$kind %in% .CST_NOT_B)
+  e_ev2 <- vapply(seq_len(x$n), function(i) {
+    j <- which(seq_len(x$n) >= i & !is.na(x$top) & x$top < x$top[i] + t$within_cm & !(x$kind %in% "R"))
+    .cst_or((esp >= t$evidence_esp_min)[j])
+  }, NA)
+  evid <- sub & .cst_or_v(st, e_ev2)
   ans <- .cst_hz_ans(x, full, evid,
-                     notes = "evidence read on the ESP and the argic items 2a-d; its weak structure and pH are not required (Hugo, 2026-11-06)",
+                     notes = "evidence read on its printed items: the alkalic structure or an ESP of 5 or more within 40 cm, in a subsurface layer (Hugo, 2026-11-08)",
                      missing = .cst_missing_in(x, which(is.na(full)), c("esp_pct", "na_cmol", "cec_cmol", "ph_h2o",
                                                                        "soluble_salts_pct", "clay_pct")))
   .cst_stand_in(x, ans, list(list(fn = "natric_horizon", args = list(min_esp = t$esp_min, min_pH_h2o = t$ph_min))),

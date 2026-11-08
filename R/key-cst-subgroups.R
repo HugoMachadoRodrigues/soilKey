@@ -165,6 +165,11 @@ contact_sg_cst <- function(pedon, top_max, kind = c("lithic", "lithic_or_paralit
   rows <- unlist(lapply(rs, function(r) if (isTRUE(r$passed)) match(r$layers, x$idx) else integer(0)))
   if (!is.null(top_min)) rows <- rows[!is.na(x$top[rows]) & x$top[rows] - s >= top_min]
   ct <- if (length(rows)) TRUE else if (any(vapply(rs, function(r) is.na(r$passed), NA))) NA else FALSE
+  # v0.9.376 (Hugo on the review, 2026-11-08): no contact in a description
+  # that ends above the depth, not on rock or a contact, is undecided, as
+  # for the feature windows
+  gap <- .cst_sg_gap(x, s + (top_min %||% 0), s + top_max)
+  if (isFALSE(ct) && gap > 0) ct <- NA
   flags <- character(0)
   if (isTRUE(ct) && isTRUE(plane_extent)) {
     ext <- .cst_site_num(pedon$site %||% list(), "lithic_contact_extent_pct")
@@ -183,7 +188,8 @@ contact_sg_cst <- function(pedon, top_max, kind = c("lithic", "lithic_or_paralit
     passed <- .cst_or(ct, sh$passed)
   }
   .cst_key_result(nm, passed, layers = x$idx[rows], flags = flags,
-                  missing = c(unlist(lapply(rs, `[[`, "missing")), if (fragments != "none") "coarse_fragments_pct"),
+                  missing = c(unlist(lapply(rs, `[[`, "missing")), if (fragments != "none") "coarse_fragments_pct",
+                              if (gap > 0) "bottom_cm"),
                   notes = sprintf("%s contact %s%s cm of the %s%s", gsub("_", " ", kind),
                                   if (is.null(top_min)) "within " else sprintf("between %s and ", format(top_min)),
                                   format(top_max), if (datum == "mineral") "mineral soil surface" else "soil surface",
@@ -386,6 +392,10 @@ recalcaric_cst <- function(pedon, within = 60, surface_min_pct = NULL, datum = c
             else if (length(known) >= 2L && any(diff(known) > 0)) FALSE
             else if (length(known) >= 2L && !is.na(first) && known[length(known)] >= first) FALSE
             else if (is.na(first) || length(known) < 2L || anyNA(v)) NA
+            # v0.9.376 (Hugo on the review, 2026-11-08): the depth below the
+            # description may rise again, undecided unless it ends on rock or
+            # a contact
+            else if (.cst_sg_gap(x, s, s + within) > 0) NA
             else TRUE
   .cst_key_result(nm, passed, layers = x$idx[rows],
                   missing = if (is.na(passed)) "caco3_pct",
@@ -569,17 +579,47 @@ b_upper_hue_cst <- function(pedon, hue = "7.5YR", rule = c("yellower", "redder",
   if (is.na(k)) return(.cst_key_result(nm, FALSE, flags = B$flag, notes = "no B horizon", page = 95))
   if (is.na(B$b[k])) return(.cst_key_result(nm, NA, missing = "designation", flags = B$flag, page = 95))
   h <- .cst_sg_hue(x, hue, rule)
-  # v0.9.376 (M5.4.4, p. 165): a run of B layers `min_cm` thick with the hue
-  # inside the upper half of the B within 125 cm
+  # v0.9.376 (M5.4.4, p. 165; Hugo on the review, 2026-11-08): a run of B
+  # layers `min_cm` thick with the hue whose top lies in the upper half of
+  # the B, the B cut at 125 cm below the mineral soil surface; a B that may
+  # go on below the base of the description leaves its half, and a run
+  # reaching that base, open
   if (part == "upper_half") {
+    if (is.na(x$msurf)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct"), page = 165))
+    cap <- x$msurf + .cst_cthr("humic", "b_within_cm")
     rows <- which(B$b %in% TRUE)
-    a <- x$top[k]; b <- max(x$bot[rows]); mid <- a + (b - a) / 2
-    q <- ifelse(B$b %in% TRUE, h$p, FALSE)
-    rr <- .cst_sg_run(x, q, a, mid, min_cm)
-    return(.cst_key_result(nm, rr$passed, layers = x$idx[rr$rows], flags = c(B$flag, stats::na.omit(h$flags[rr$rows])),
-                           missing = if (is.na(rr$passed)) "munsell_hue_moist",
-                           notes = sprintf("hue %s %s in a B subhorizon %s cm thick within the upper half of the B (%s-%s cm)",
-                                           hue, rule, format(min_cm), format(a), format(mid)),
+    a <- x$top[k]; b_lo <- min(max(x$bot[rows]), cap)
+    cut <- .cst_b_cut(x, B)
+    b_hi <- if (cut) cap else b_lo
+    mid_lo <- a + (b_lo - a) / 2; mid_hi <- a + (b_hi - a) / 2
+    ov <- .cst_overlap(x, a, cap); ov[is.na(ov)] <- 0
+    gap <- if (cut) .cst_sg_gap(x, a, cap) else 0
+    last <- which.max(x$bot)
+    runs <- function(q, extend) {
+      out <- list(); i <- 1L
+      while (i <= x$n) {
+        if (q[i]) {
+          j <- i; while (j < x$n && q[j + 1L]) j <- j + 1L
+          th <- sum(ov[i:j]) + (if (extend && j == last) gap else 0)
+          out[[length(out) + 1L]] <- c(top = x$top[i], thick = th, i = i, j = j)
+          i <- j + 1L
+        } else i <- i + 1L
+      }
+      out
+    }
+    q_lo <- B$b %in% TRUE & h$p %in% TRUE
+    q_hi <- !(B$b %in% FALSE) & !(h$p %in% FALSE)
+    sure <- Filter(function(r) r[["thick"]] >= min_cm - 1e-9 && r[["top"]] < mid_lo, runs(q_lo, FALSE))
+    may <- Filter(function(r) r[["thick"]] >= min_cm - 1e-9 && r[["top"]] < mid_hi, runs(q_hi, TRUE))
+    # the B below the base of the description may hold the run
+    deep <- max(x$bot, na.rm = TRUE)
+    open_run <- cut && deep < mid_hi && gap >= min_cm - 1e-9
+    passed <- if (length(sure)) TRUE else if (length(may) || open_run) NA else FALSE
+    lay <- if (length(sure)) unlist(lapply(sure, function(r) seq(r[["i"]], r[["j"]]))) else integer(0)
+    return(.cst_key_result(nm, passed, layers = x$idx[lay], flags = c(B$flag, stats::na.omit(h$flags[lay])),
+                           missing = if (is.na(passed)) c("munsell_hue_moist", if (cut) "bottom_cm"),
+                           notes = sprintf("hue %s %s in a B subhorizon %s cm thick starting in the upper half of the B (%s-%s cm)",
+                                           hue, rule, format(min_cm), format(a), format(mid_lo)),
                            page = 165))
   }
   ev <- .cst_every_cut(pedon, x, h$p, x$top[k], x$top[k] + min_cm)
@@ -1046,7 +1086,7 @@ bs_share_cst <- function(pedon, min_pct = 35, share = 0.8, strict = FALSE, withi
   "I3.3.4", "I3.3.5", "I3.3.6",
   "J1.1.1", "J1.1.2", "J1.1.3", "J1.1.4", "J1.2.1",
   "J2.1.1", "J2.1.2", "J2.1.3", "J2.2.1", "J2.2.2", "J2.2.3", "J2.3.1", "J2.3.2", "J2.3.3", "J2.3.4", "J2.3.5",
-  "J2.3.6", "J2.4.1", "J2.4.2", "J2.4.5", "J2.5.1", "J2.5.4",
+  "J2.3.6", "J2.4.1", "J2.4.2", "J2.4.3", "J2.4.4", "J2.4.5", "J2.5.1", "J2.5.2", "J2.5.3", "J2.5.4",
   "J3.1.1", "J3.1.2", "J3.1.3", "J3.2.1", "J3.2.2", "J3.2.3", "J3.2.4", "J3.3.1", "J3.3.2",
   "K1.1.1", "K1.2.1", "K1.2.2", "K1.2.3",
   "K2.1.1", "K2.1.2", "K2.1.3", "K2.1.4", "K2.2.1", "K2.2.2", "K2.2.3", "K2.2.4", "K2.2.5", "K2.2.6", "K2.2.7",
@@ -1066,8 +1106,8 @@ bs_share_cst <- function(pedon, min_pct = 35, share = 0.8, strict = FALSE, withi
   "M1.1.1", "M1.1.2", "M1.2.1", "M1.2.2", "M1.2.3", "M1.2.4", "M1.3.1", "M1.3.2", "M1.3.3", "M1.3.4", "M1.4.1",
   "M1.4.2", "M1.4.3", "M1.4.4", "M1.4.5", "M1.5.1", "M1.5.2", "M1.5.3", "M1.5.4", "M1.5.5", "M1.5.6", "M1.6.1",
   "M1.6.2", "M1.6.3", "M1.6.4", "M1.6.5", "M1.6.6",
-  "M2.1.1", "M2.1.2", "M2.1.3", "M2.1.4", "M2.2.2", "M2.2.3", "M2.2.4", "M2.2.5", "M2.2.6",
-  "M2.3.2", "M2.3.3", "M2.3.4", "M2.4.2", "M2.4.3", "M2.4.4", "M2.4.5",
+  "M2.1.1", "M2.1.2", "M2.1.3", "M2.1.4", "M2.2.1", "M2.2.2", "M2.2.3", "M2.2.4", "M2.2.5", "M2.2.6", "M2.3.1",
+  "M2.3.2", "M2.3.3", "M2.3.4", "M2.4.1", "M2.4.2", "M2.4.3", "M2.4.4", "M2.4.5",
   "M3.1.1", "M3.1.2", "M3.1.3", "M3.1.4", "M3.1.5", "M3.1.6", "M3.2.1", "M3.2.2", "M3.2.3", "M3.2.4", "M3.3.1",
   "M3.3.2", "M3.3.3", "M3.3.4", "M3.3.5", "M3.4.1", "M3.4.2", "M3.5.1",
   "M4.1.1", "M4.1.2", "M4.1.3", "M4.1.4", "M4.1.5", "M4.2.1", "M4.2.2", "M4.2.3", "M4.2.4", "M4.3.1", "M4.3.2",
@@ -1079,7 +1119,7 @@ bs_share_cst <- function(pedon, min_pct = 35, share = 0.8, strict = FALSE, withi
   "M5.6.4", "M5.7.1", "M5.7.2", "M5.7.3", "M5.7.4",
   "N1.1.1", "N1.1.2", "N1.1.3", "N1.2.1", "N1.2.2", "N1.2.3", "N1.2.4", "N1.2.5",
   "N2.1.1", "N2.1.2", "N2.1.3", "N2.1.4", "N2.1.5", "N2.2.1", "N2.2.2", "N2.2.3", "N2.2.4", "N2.3.1", "N2.3.2",
-  "N2.3.3", "N2.3.4", "N2.3.5", "N2.4.1", "N2.4.2", "N2.4.3", "N2.4.5", "N2.5.1", "N2.5.2", "N2.5.3",
+  "N2.3.3", "N2.3.4", "N2.3.5", "N2.4.1", "N2.4.2", "N2.4.3", "N2.4.4", "N2.4.5", "N2.5.1", "N2.5.2", "N2.5.3",
   "N3.1.1", "N3.1.2", "N3.1.3", "N3.2.1", "N3.2.2", "N3.2.3", "N3.3.1", "N3.3.2", "N3.3.3", "N3.4.1", "N3.4.2",
   "N3.4.3", "N3.5.1", "N3.5.2", "N3.5.3",
   "N4.1.1", "N4.1.2", "N4.2.1", "N4.2.2", "N4.2.3", "N4.3.1", "N4.3.2", "N4.3.3", "N4.4.1", "N4.4.2", "N4.4.3",

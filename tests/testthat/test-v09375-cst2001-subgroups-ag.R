@@ -526,8 +526,7 @@ test_that("the expander: direct preset mappings, extra keys; the aliases and rea
   expect_true("Gypsi-Panic Sali-Orthic Aridosols" %in% Find(function(e) e$code == "G2.2.3", all)$aliases)
   rd <- yaml::read_yaml(system.file("rules", "cst2001", "readings.yaml", package = "soilKey"))$readings
   tp <- vapply(rd, `[[`, "", "topic"); txt <- vapply(rd, `[[`, "", "reading")
-  # v0.9.376: the readings of H to N wait for Hugo's word
-  sub <- grepl("^Subgroups:", tp) & !grepl("prepared for the later orders|^Subgroups: H to N", tp)
+  sub <- grepl("^Subgroups:", tp) & !grepl("prepared for the later orders", tp)
   expect_false(any(grepl("for Hugo to confirm", txt[sub])))
   expect_true(any(grepl("gypsic horizon alone", tp)))
 })

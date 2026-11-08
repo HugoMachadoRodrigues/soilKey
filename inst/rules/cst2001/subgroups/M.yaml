@@ -250,8 +250,8 @@ subgroups:
       page: 150
       tests:
         all_of:
-          - calcic_or_evidence: {to: 100}
-      notes: "A calcic horizon or calcic evidence with its upper boundary within 100 cm of the mineral soil surface."
+          - calcic: {to: 100, kinds: [calcic_only, calcic_evidence]}
+      notes: "A calcic horizon or calcic evidence with its upper boundary within 100 cm of the mineral soil surface (100 cm itself included, as in M1.3.1)."
     - code: "M1.6.3"
       name: "Calcaric Hapli-Gelic Cambosols"
       aliases: ["Calcaric Hapli-Gelic Cambosol"]
@@ -1032,7 +1032,7 @@ subgroups:
       tests:
         all_of:
           - leachic: {}
-      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower contact (Q22)."
+      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
     - code: "M5.2.5"
       name: "Humic Carbonati-Udic Cambosols"
       aliases: ["Humic Carbonati-Udic Cambosol"]
@@ -1164,7 +1164,7 @@ subgroups:
       tests:
         all_of:
           - xanthic_sub: {}
-      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in at least one subhorizon 10 cm or more thick in the upper part of the B, read as its upper half within 125 cm."
+      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in at least one subhorizon 10 cm or more thick in the upper part of the B: a run whose top lies in the upper half of the B within 125 cm."
     - code: "M5.4.5"
       name: "Mottlic Ali-Udic Cambosols"
       aliases: ["Mottlic Ali-Udic Cambosol"]
@@ -1183,8 +1183,8 @@ subgroups:
       page: 165
       tests:
         all_of:
-          - plinthic_horizon_cst: {top_max: 125, datum: mineral}
-      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface."
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
     - code: "M5.4.7"
       name: "Vertic Ali-Udic Cambosols"
       aliases: ["Vertic Ali-Udic Cambosol"]

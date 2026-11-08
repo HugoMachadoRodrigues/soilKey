@@ -117,6 +117,38 @@ albic_sg_cst <- function(pedon, features = c("albic_glossic", "albic", "glossic"
 }
 
 
+# --- a horizon with its upper boundary within a depth ------------------------------------------------
+
+#' A diagnostic horizon (`horizon` the id of its reader: argic_horizon,
+#' alkalic_horizon, sulfuric_horizon, salipan, plinthic_horizon, or
+#' gypsic_only for the gypsic horizon named alone) with its upper boundary
+#' within `top_max` cm, as its reader reads it; a fail is undecided when
+#' the description ends above that depth and not on rock or a contact, as
+#' for the feature windows (v0.9.376, Hugo on the review, 2026-11-08).
+#' @noRd
+upper_within_cst <- function(pedon, horizon, top_max, datum = c("mineral", "surface"),
+                             grade = c("full", "at_least_evidence"), natro = FALSE) {
+  datum <- match.arg(datum); grade <- match.arg(grade)
+  nm <- "upper_within_cst"
+  fn <- get(paste0(horizon, "_cst"), envir = asNamespace("soilKey"), mode = "function")
+  args <- list(pedon, top_max = top_max, datum = datum)
+  if ("grade" %in% names(formals(fn))) args$grade <- grade
+  if (isTRUE(natro)) args$natro <- TRUE
+  r <- do.call(fn, args)
+  passed <- r$passed
+  x <- .cst_ctx(pedon)
+  s <- .cst_sg_datum(x, datum)
+  gap <- if (x$n && !is.na(s)) .cst_sg_gap(x, s, s + top_max) else 0
+  if (isFALSE(passed) && gap > 0) passed <- NA
+  .cst_key_result(nm, passed, layers = r$layers, flags = r$evidence$flags,
+                  missing = c(r$missing, if (is.na(passed) && gap > 0) "bottom_cm"),
+                  evidence = list(grade = r$evidence$grade, kind = r$evidence$kind),
+                  notes = c(sprintf("%s with its upper boundary within %s cm of the %s", gsub("_", " ", horizon), format(top_max),
+                                    if (datum == "mineral") "mineral soil surface" else "soil surface"),
+                            if (gap > 0) "the description stops above that depth"))
+}
+
+
 # --- the Calcic subgroups -------------------------------------------------------------------------
 
 #' The calcic horizon and its kin with the upper boundary within `top_max` cm
@@ -141,6 +173,7 @@ calcic_sg_cst <- function(pedon, kinds = "calcic_only", top_min = NULL, top_max 
   flags <- character(0)
   one <- function(k) switch(k,
     calcic_only = co$full,
+    calcic_evidence = co$evid,
     soft_lime = {
       form <- .cst_t(x, "secondary_carbonates_form")
       pw <- !is.na(form) & grepl("powder", form)
@@ -253,11 +286,19 @@ layer_test_cst <- function(pedon, test, from_cm = 0, to_cm = 125, scope = c("win
     return(.cst_key_result(nm, FALSE, flags = sc$flag, notes = sprintf("no %s", scope), page = "115-177"))
   if (mode == "throughout") {
     passed <- if (any(inS)) .cst_and(c(p[inS], ifelse(p[maybe] %in% TRUE, TRUE, NA))) else NA
+    # the B may go on below the base of the description (Hugo on the review,
+    # 2026-11-08)
+    if (scope == "b" && isTRUE(passed) && .cst_b_cut(x, list(b = m))) passed <- NA
     rows <- which(inS)
   } else if (mode == "some") {
     q <- ifelse(m %in% FALSE, FALSE, ifelse(is.na(m), ifelse(p %in% FALSE, FALSE, NA), p))
-    g <- .cst_run_grade(x, q, max(min_cm, 1e-9))
-    passed <- .cst_any3(g); rows <- which(g %in% TRUE)
+    if (scope == "b" && !is.na(x$msurf)) {
+      rr <- .cst_sg_run(x, q, x$msurf, x$msurf + .cst_cthr("humic", "b_within_cm"), min_cm)
+      passed <- rr$passed; rows <- rr$rows
+    } else {
+      g <- .cst_run_grade(x, q, max(min_cm, 1e-9))
+      passed <- .cst_any3(g); rows <- which(g %in% TRUE)
+    }
   } else {
     rows <- which(inS)
     if (!length(rows)) passed <- NA
@@ -380,9 +421,9 @@ salic_duration_cst <- function(pedon, within, min_cm = 10, total = FALSE, datum 
 #' Gleyic evidence (gleyic features passing too) linked to seasonal
 #' saturation by perched water, in some horizon `min_cm` thick within
 #' `within` cm (Stagnic of K2.2.5, K2.3.5, p. 126; default 22): perched water
-#' is site$groundwater_kind "perched" or the stagnic regime; a recorded
-#' groundwater table of another kind, the regime not stagnic, fails; neither
-#' recorded, undecided.
+#' is site$groundwater_kind "perched" or the stagnic regime; a groundwater
+#' table recorded as observed or apparent, the regime not stagnic, fails;
+#' "flooded" or nothing recorded, undecided (Hugo on the review, 2026-11-08).
 #' @noRd
 stagnic_perched_cst <- function(pedon, within = 50, min_cm = 10) {
   nm <- "stagnic_perched_cst"
@@ -391,7 +432,7 @@ stagnic_perched_cst <- function(pedon, within = 50, min_cm = 10) {
   gk <- .cst_site_txt(pedon$site %||% list(), "groundwater_kind")
   st <- moisture_regime_cst(pedon, "stagnic")$passed
   perched <- if (identical(gk, "perched") || isTRUE(st)) TRUE
-             else if (!is.na(gk) && gk %in% c("observed", "apparent", "flooded") && isFALSE(st)) FALSE
+             else if (!is.na(gk) && gk %in% c("observed", "apparent") && isFALSE(st)) FALSE
              else NA
   .cst_key_result(nm, perched, layers = g$layers, flags = g$evidence$flags,
                   missing = if (is.na(perched)) c("groundwater_kind", "soil_moisture_regime"),
@@ -414,7 +455,7 @@ vertic_within_cst <- function(pedon, within = 25) {
   pos <- match(r$layers, x$idx)
   pos <- pos[!is.na(pos)]
   s <- if (is.na(x$msurf)) x$surf else x$msurf
-  ok <- pos[!is.na(x$top[pos]) & x$top[pos] - s <= within]
+  ok <- pos[!is.na(x$top[pos]) & x$top[pos] - s < within]
   .cst_key_result(nm, length(ok) > 0L, layers = x$idx[ok],
                   notes = sprintf("vertic evidence with its features within %s cm", format(within)), page = 179)
 }
@@ -450,8 +491,8 @@ histic_kind_cst <- function(pedon, kind = c("fibric", "hemic", "sapric")) {
 #' with Fe-Mn nodules and concretions `min_pct` % or more by volume
 #' (Concretic, L4.1.1, p. 142): fe_mn_nodules_pct, or the sum of
 #' ferric_nodules_pct and manganiferous_nodules_pct (flagged); induration a
-#' cementation class strongly or indurated, or a rupture resistance very
-#' hard or harder. Field observations: not recorded, absent.
+#' cementation class indurated or a rupture resistance extremely hard, below
+#' the base of the albic run. Field observations: not recorded, absent.
 #' @noRd
 concretic_cst <- function(pedon, min_pct = NULL, min_cm = NULL) {
   t <- .cst_sgthr("concretic")
@@ -463,14 +504,19 @@ concretic_cst <- function(pedon, min_pct = NULL, min_cm = NULL) {
   k <- which(al %in% TRUE)
   if (!length(k)) return(.cst_key_result(nm, if (any(is.na(al))) NA else FALSE, missing = .cst_hz(x, "albic_horizon")$missing,
                                          notes = "no albic horizon", page = 142))
-  base <- x$bot[k[1L]]
+  # below the base of the albic run (Hugo on the review, 2026-11-08)
+  j <- k[1L]
+  while (j < x$n && isTRUE(al[j + 1L])) j <- j + 1L
+  base <- x$bot[j]
   fm <- .cst_v(x, "fe_mn_nodules_pct")
   sum2 <- rowSums(cbind(.cst_v(x, "ferric_nodules_pct"), .cst_v(x, "manganiferous_nodules_pct")), na.rm = TRUE)
   any2 <- !is.na(.cst_v(x, "ferric_nodules_pct")) | !is.na(.cst_v(x, "manganiferous_nodules_pct"))
   fb <- is.na(fm) & any2
   v <- ifelse(is.na(fm), ifelse(any2, sum2, 0), fm)
   cem <- .cst_t(x, "cementation_class"); rup <- .cst_t(x, "rupture_resistance")
-  ind <- (!is.na(cem) & cem %in% c("strongly", "indurated")) | (!is.na(rup) & rup %in% c("very hard", "extremely hard"))
+  # indurated: a cementation class indurated or a rupture resistance
+  # extremely hard only (Hugo on the review, 2026-11-08)
+  ind <- (!is.na(cem) & cem %in% "indurated") | (!is.na(rup) & rup %in% "extremely hard")
   p <- v >= min_pct & ind & !is.na(x$top) & x$top >= base - 1e-9
   p[x$kind %in% "R"] <- FALSE
   g <- .cst_run_grade(x, p, min_cm)
@@ -553,12 +599,14 @@ dilluvic_cst <- function(pedon, within = 200) {
   origin <- any(!is.na(txt) & grepl(pat, txt))
   if (!origin) return(.cst_key_result(nm, FALSE, notes = "no torrential origin recorded", page = 110))
   rows <- which(!is.na(x$top) & x$top < x$msurf + within & !(x$kind %in% c("R", "O")))
-  v <- .cst_v(x, "soluble_salts_pct")[rows]
-  v <- v[!is.na(v)]
-  passed <- if (length(v) < 3L) NA else {
-    d <- sign(diff(v)); d <- d[d != 0]
-    length(d) >= 2L && any(diff(d) != 0)
-  }
+  va <- .cst_v(x, "soluble_salts_pct")[rows]
+  v <- va[!is.na(va)]
+  irregular <- function(v) { d <- sign(diff(v)); d <- d[d != 0]; length(d) >= 2L && any(diff(d) != 0) }
+  # a layer not measured, or the description ending above 200 cm (not on
+  # rock or a contact), leaves a regular profile undecided (Hugo on the
+  # review, 2026-11-08)
+  open_end <- anyNA(va) || .cst_sg_gap(x, x$msurf, x$msurf + within) > 0
+  passed <- if (length(v) >= 3L && irregular(v)) TRUE else if (open_end || length(v) < 3L) NA else FALSE
   .cst_key_result(nm, passed, missing = if (is.na(passed)) "soluble_salts_pct",
                   notes = sprintf("torrential origin recorded; soluble salts %s %%", paste(format(v), collapse = ", ")),
                   page = 110)
@@ -587,8 +635,11 @@ marinic_cst <- function(pedon) {
   t <- .cst_sgthr("marinic")
   cl <- .cst_v(x, "soluble_salts_chloride_pct"); so <- .cst_v(x, "soluble_salts_sulfate_pct")
   co <- .cst_v(x, "soluble_salts_carbonate_pct")
+  # the carbonate not measured: chloride passes only when it is at least the
+  # rest of the anions (Hugo on the review, 2026-11-08)
   cl_ok <- ifelse(is.na(cl), NA, ifelse(cl > t$main_share_pct, TRUE,
-                  ifelse(is.na(so), NA, cl > so & (is.na(co) | cl > co))))
+                  ifelse(is.na(so), NA, ifelse(!is.na(co), cl > so & cl > co,
+                                               ifelse(cl <= so, FALSE, ifelse(cl >= 100 - cl - so, TRUE, NA))))))
   na <- .cst_v(x, "soluble_salts_sodium_pct")
   ex <- .cst_v(x, "na_cmol") / rowSums(cbind(.cst_v(x, "na_cmol"), .cst_v(x, "ca_cmol"), .cst_v(x, "mg_cmol"), .cst_v(x, "k_cmol")))
   ex <- ex * 100
@@ -607,24 +658,6 @@ marinic_cst <- function(pedon) {
 
 # --- the examples of the subgroups of orders H to N --------------------------------------------------
 
-# The subgroups no profile can reach under the readings in force (readings.yaml,
-# part 0.9.376, for Hugo's word): alkalic evidence is read on the argic items
-# (0.9.371), so it is always an argic horizon, and the Argic subgroup (an
-# argic horizon within 50 cm) is keyed before it in J2.4 and J2.5; the
-# anthrostagnic evidence asks for the anthrostagnic regime, which the
-# saturation axis cannot hold beside the aquic regime of the Aquic Cambosols
-# (M2); the lithologic character of sandy deposits reads the carbon of the
-# upper 100 cm from the soil surface, which a litter layer of histic
-# evidence always exceeds. They have no example.
-.CST_SUBGROUP_UNREACHABLE <- c(
-  "J2.4.3" = "alkalic evidence is an argic horizon (0.9.371), and Argic (J2.4.2) is keyed first",
-  "J2.4.4" = "alkalic evidence is an argic horizon (0.9.371), and Argic (J2.4.2) is keyed first",
-  "J2.5.2" = "alkalic evidence is an argic horizon (0.9.371), and Argic (J2.5.1) is keyed first",
-  "J2.5.3" = "alkalic evidence is an argic horizon (0.9.371), and Argic (J2.5.1) is keyed first",
-  "M2.2.1" = "anthrostagnic evidence asks for the anthrostagnic regime, the Aquic Cambosols for the aquic one",
-  "M2.3.1" = "anthrostagnic evidence asks for the anthrostagnic regime, the Aquic Cambosols for the aquic one",
-  "M2.4.1" = "anthrostagnic evidence asks for the anthrostagnic regime, the Aquic Cambosols for the aquic one",
-  "N2.4.4" = "the sandy deposits allow 1.5 g/kg carbon over 0-100 cm from the soil surface, below any histic evidence")
 
 # The profile of each subgroup example of orders H to N, as
 # .cst_subgroup_example_spec() reads it (R/key-cst-subgroups.R): a group,
@@ -706,7 +739,7 @@ marinic_cst <- function(pedon) {
   "I3.2.2" = list(base = "I3.2.5", set = list(ph_h2o = c(5.0, 5.0, 7))),
   "I3.2.3" = list(base = "I3.2.5", set = list(soluble_salts_pct = c(0.05, 0.5, 0.05))),
   "I3.2.4" = list(base = "I3.2.5", set = list(caco3_pct = c(2, 2, 1), ph_h2o = 7.8)),
-  "I3.2.5" = list(base = "I3.2", set = nosulf),
+  "I3.2.5" = list(base = "I3.2", set = c(nosulf, list(bottom_cm = c(30, 70, 130)))),
   "I3.3.1" = list(base = "I3.3.6", set = list(designation = c("Ah", "Bg", "R"), top_cm = c(0, 30, 45), bottom_cm = c(30, 45, 65))),
   "I3.3.2" = list(base = "I3.3.6", set = list(munsell_value_moist = c(2, 5, 5), munsell_value_dry = c(4, 6, 6),
                                               oc_pct = c(3, 0.5, 0.3), bs_pct = c(30, 80, 80))),
@@ -745,9 +778,15 @@ marinic_cst <- function(pedon) {
   "J2.4.1" = list(base = "J2.4", set = list(mottle_colors = c(NA, NA, "7.5YR 5/6", NA))),
   "J2.4.2" = list(base = "J2.4", set = list(designation = c("Ah", "Bt", "Bk", "C"), clay_pct = c(22, 32, 24, 20), munsell_chroma_moist = 3,
                                             clay_films_strength = c(NA, "distinct", NA, NA), clay_films_amount = c(NA, "common", NA, NA))),
+  "J2.4.3" = list(base = "J2.4.4", set = list(tongue_depth_cm = c(NA, 8, NA, NA), tongue_width_mm = c(NA, 5, NA, NA),
+                                              tongue_vol_pct = c(NA, 20, NA, NA))),
+  "J2.4.4" = list(base = "J2.4", set = list(esp_pct = c(2, 10, 8, 4))),
   "J2.4.5" = list(base = "J2.4"),
   "J2.5.1" = list(base = "J2.5", set = list(designation = c("Ah", "Bt", "Bw", "C"), clay_pct = c(22, 32, 24, 20), munsell_chroma_moist = 3,
                                             clay_films_strength = c(NA, "distinct", NA, NA), clay_films_amount = c(NA, "common", NA, NA))),
+  "J2.5.2" = list(base = "J2.5.3", set = list(tongue_depth_cm = c(NA, 8, NA, NA), tongue_width_mm = c(NA, 5, NA, NA),
+                                              tongue_vol_pct = c(NA, 20, NA, NA))),
+  "J2.5.3" = list(base = "J2.5", set = list(esp_pct = c(2, 10, 8, 4))),
   "J2.5.4" = list(base = "J2.5"),
   "J3.1.1" = list(base = "J3.1", rows = c(1L, 2L, 2L, 3L, 4L),
                   set = list(top_cm = c(0, 35, 45, 60, 130), bottom_cm = c(35, 45, 60, 130, 180),
@@ -781,7 +820,7 @@ marinic_cst <- function(pedon) {
                                               clay_films_strength = c(NA, "distinct", NA), clay_films_amount = c(NA, "common", NA))),
   "K2.1.4" = list(base = "K2.1", set = list(ph_h2o = c(6.8, 6.6, NA), clay_pct = c(46, 50, NA), silt_pct = c(29, 25, NA))),
   "K2.2.1" = list(base = "K2.2.9", set = lith3(c("A", "Bw1", "R"))),
-  "K2.2.2" = list(base = "K2.2.9", rows = c(2L, 3L), set = list(top_cm = c(0, 45), bottom_cm = c(45, 115))),
+  "K2.2.2" = list(base = "K2.2.9", rows = c(2L, 3L), set = list(top_cm = c(0, 45), bottom_cm = c(45, 130))),
   "K2.2.3" = list(base = "K2.2.9", set = agr3(c("Ap", "Bw1", "Bw2"))),
   "K2.2.4" = list(base = "K2.2.9", set = hum3(c(3.5, 1.2, 0.6))),
   "K2.2.5" = list(base = "K2.2.9", set = stag3, site = perched),
@@ -790,7 +829,7 @@ marinic_cst <- function(pedon) {
   "K2.2.8" = list(base = "K2.2", set = cf0),
   "K2.2.9" = list(base = "K2.2", set = c(cf0, list(clay_pct = c(46, 50, 50), silt_pct = c(29, 25, 25)))),
   "K2.3.1" = list(base = "K2.3.8", set = lith3(c("A", "Bw1", "R"))),
-  "K2.3.2" = list(base = "K2.3.8", rows = c(2L, 3L), set = list(top_cm = c(0, 45), bottom_cm = c(45, 115))),
+  "K2.3.2" = list(base = "K2.3.8", rows = c(2L, 3L), set = list(top_cm = c(0, 45), bottom_cm = c(45, 130))),
   "K2.3.3" = list(base = "K2.3.8", set = agr3(c("Ap", "Bw1", "Bw2"))),
   "K2.3.4" = list(base = "K2.3.8", set = hum3(c(3.5, 1.2, 0.6))),
   "K2.3.5" = list(base = "K2.3.8", set = stag3, site = perched),
@@ -813,7 +852,7 @@ marinic_cst <- function(pedon) {
                                             sand_pct = c(30, 30, 30, 30), silt_pct = c(34, 32, 30, 30),
                                             clay_films_strength = NA, clay_films_amount = NA)),
   "K3.3.1" = list(base = "K3.3.10", set = lith3(c("A", "Bw1", "R"))),
-  "K3.3.2" = list(base = "K3.3.10", rows = c(2L, 3L), set = list(top_cm = c(0, 40), bottom_cm = c(40, 110))),
+  "K3.3.2" = list(base = "K3.3.10", rows = c(2L, 3L), set = list(top_cm = c(0, 40), bottom_cm = c(40, 130))),
   "K3.3.3" = list(base = "K3.3.10", set = hum3(c(3.0, 1.2, 0.6))),
   "K3.3.4" = list(base = "K3.3.10", set = list(munsell_hue_moist = "7.5YR"), site = xan),
   "K3.3.5" = list(base = "K3.3.10", set = mot3),
@@ -824,7 +863,7 @@ marinic_cst <- function(pedon) {
   "K3.3.10" = list(base = "K3.3", set = c(cf0, list(designation = c("A", "Bw1", "Bw2"), clay_pct = c(36, 38, 40),
                                                     silt_pct = c(34, 32, 30), sand_pct = 30,
                                                     clay_films_strength = NA, clay_films_amount = NA))),
-  "K3.4.1" = list(base = "K3.4.7", rows = c(2L, 3L), set = list(top_cm = c(0, 40), bottom_cm = c(40, 110))),
+  "K3.4.1" = list(base = "K3.4.7", rows = c(2L, 3L), set = list(top_cm = c(0, 40), bottom_cm = c(40, 130))),
   "K3.4.2" = list(base = "K3.4.7", set = hum3(c(3.0, 1.2, 0.6))),
   "K3.4.3" = list(base = "K3.4.7", set = list(munsell_hue_moist = "7.5YR"), site = xan),
   "K3.4.4" = list(base = "K3.4.7", set = mot3),
@@ -832,7 +871,7 @@ marinic_cst <- function(pedon) {
   "K3.4.6" = list(base = "K3.4.7", set = list(bs_pct = 40)),
   "K3.4.7" = list(base = "K3.4"),
   "K3.5.1" = list(base = "K3.5.10", set = lith3(c("A", "Bw1", "R"))),
-  "K3.5.2" = list(base = "K3.5.10", rows = c(2L, 3L), set = list(top_cm = c(0, 40), bottom_cm = c(40, 110))),
+  "K3.5.2" = list(base = "K3.5.10", rows = c(2L, 3L), set = list(top_cm = c(0, 40), bottom_cm = c(40, 130))),
   "K3.5.3" = list(base = "K3.5.10", set = agr3(c("Ap", "Bw1", "Bw2"))),
   "K3.5.4" = list(base = "K3.5.10", set = hum3(c(3.0, 1.2, 0.6))),
   "K3.5.5" = list(base = "K3.5.10", set = list(munsell_hue_moist = "7.5YR"), site = xan),
@@ -909,7 +948,7 @@ marinic_cst <- function(pedon) {
   "L4.1.1" = list(base = "L4.1.3", rows = c(1L, 2L, 3L, 3L, 4L),
                   set = list(top_cm = c(0, 20, 60, 68, 100), bottom_cm = c(20, 60, 68, 100, 140),
                              designation = c("A", "E", "Btc", "Bt", "C"), fe_mn_nodules_pct = c(NA, NA, 35, NA, NA),
-                             cementation_class = c(NA, NA, "strongly", NA, NA))),
+                             cementation_class = c(NA, NA, "indurated", NA, NA))),
   "L4.1.2" = list(base = "L4.1"),
   "L4.1.3" = list(base = "L4.1", set = list(fe_dcb_pct = 0.8, fe_total_pct = 3)),
   "L4.2.1" = list(base = "L4.2.3", set = list(oc_pct = c(3.0, 1.2, 0.6, NA), bulk_density_g_cm3 = c(1.0, 1.2, 1.3, NA),
@@ -917,12 +956,11 @@ marinic_cst <- function(pedon) {
   "L4.2.2" = list(base = "L4.2.1", set = list(munsell_hue_moist = "2.5YR")),
   "L4.2.3" = list(base = "L4.2"),
   "L4.3.1" = list(base = "L4.3.5", rows = c(2L, 2L, 3L, 4L),
-                  set = list(top_cm = c(0, 20, 60, 100), bottom_cm = c(20, 60, 100, 140), designation = c("Bt1", "Bt2", "Bt3", "C"),
-                             clay_pct = c(30, 45, 40, 30), silt_pct = c(42, 35, 38, 42), sand_pct = c(28, 20, 22, 28),
-                             structure_type = c("blocky", "prismatic", "blocky", "massive"),
-                             micromorph_features = c(NA, "clay_stripes", NA, NA),
-                             clay_films_strength = c("distinct", "distinct", "distinct", NA),
-                             clay_films_amount = c("common", "common", "common", NA))),
+                  set = list(top_cm = c(0, 20, 60, 100), bottom_cm = c(20, 60, 100, 140), designation = c("Btg1", "Btg2", "Bt3", "C"),
+                             clay_pct = c(40, 40, 36, 30), silt_pct = c(38, 38, 38, 42), sand_pct = c(22, 22, 26, 28),
+                             structure_type = c("prismatic", "prismatic", "blocky", "massive"), consistence_moist = c("firm", "firm", NA, NA),
+                             micromorph_features = c("clay_stripes", "clay_stripes", NA, NA),
+                             clay_films_thickness_mm = c(1, 1, NA, NA))),
   "L4.3.2" = list(base = "L4.3.5", set = list(shajiang_pct = c(NA, NA, 15, NA))),
   "L4.3.3" = list(base = "L4.3.5", set = list(ph_h2o = c(6.5, 7.2, 7.3, 7.5))),
   "L4.3.4" = list(base = "L4.3.5", set = list(bs_pct = c(55, 40, 40, 65))),
@@ -1024,6 +1062,10 @@ marinic_cst <- function(pedon) {
   "M2.1.2" = list(base = "M2.1.4", set = list(esp_pct = c(2, 35, 2, 2, 2), na_cmol = c(0.2, 3, 0.2, 0.2, 0.2))),
   "M2.1.3" = list(base = "M2.1.4", set = list(soluble_salts_pct = c(0.05, 0.05, 0.5, 0.05, 0.05))),
   "M2.1.4" = list(base = "M2.1", set = list(na_cmol = 0.2, mg_cmol = 1)),
+  "M2.2.1" = list(base = "M2.2.6", set = list(munsell_value_moist = c(4, 4, 5, 5), munsell_chroma_moist = c(2, 2, 3, 3),
+                                              mottle_colors = c("7.5YR 5/6", "7.5YR 5/6", "7.5YR 5/8", NA),
+                                              childs_test = c("negative", "negative", "negative", NA)),
+                  site = list(land_use = "paddy rice", paddy_years_frac = 0.4)),
   "M2.2.2" = list(base = "M2.2.6", set = list(esp_pct = c(35, 2, 2, 2), na_cmol = c(3, 0.2, 0.2, 0.2))),
   "M2.2.3" = list(base = "M2.2.6", set = list(soluble_salts_pct = c(0.5, 0.05, 0.05, 0.05)), site = list(salic_months_per_year = 2)),
   "M2.2.4" = list(base = "M2.2.6", rows = c(1L, 2L, 2L, 3L, 4L),
@@ -1035,6 +1077,9 @@ marinic_cst <- function(pedon) {
   "M2.2.5" = list(base = "M2.2.6", set = list(clay_pct = c(32, 35, 35, 30), silt_pct = c(45, 42, 42, 45), sand_pct = c(23, 23, 23, 25),
                                               cracks_width_cm = c(0.6, 0.6, NA, NA), slickensides = c(NA, "few", "few", NA))),
   "M2.2.6" = list(base = "M2.2", set = list(na_cmol = 0.2, mg_cmol = 1)),
+  "M2.3.1" = list(base = "M2.3.4", set = list(munsell_chroma_moist = c(2, 2, 3, 3), mottle_colors = c("7.5YR 5/6", "7.5YR 5/6", "7.5YR 5/8", NA),
+                                              childs_test = c("negative", "negative", "negative", NA)),
+                  site = list(land_use = "paddy rice", paddy_years_frac = 0.4)),
   "M2.3.2" = list(base = "M2.3.4", rows = c(1L, 2L, 2L, 3L, 4L),
                   set = list(top_cm = c(0, 30, 40, 60, 100), bottom_cm = c(30, 40, 60, 100, 130),
                              designation = c("Ap", "E", "Bw", "Bg", "C"), munsell_hue_moist = c("10YR", "10YR", "7.5YR", "10YR", "10YR"),
@@ -1043,6 +1088,10 @@ marinic_cst <- function(pedon) {
                              oc_pct = c(2.5, 0.5, 0.5, 0.3, 0.2), bulk_density_g_cm3 = c(1.1, 1.3, 1.35, 1.4, 1.45))),
   "M2.3.3" = list(base = "M2.3.4", set = list(ph_h2o = c(5.0, 5.0, 6.8, 6.8))),
   "M2.3.4" = list(base = "M2.3"),
+  "M2.4.1" = list(base = "M2.4.5", set = list(munsell_value_moist = c(4, 4, 5, 5), munsell_chroma_moist = c(2, 2, 3, 3),
+                                              mottle_colors = c("7.5YR 5/6", "7.5YR 5/6", "7.5YR 5/8", NA),
+                                              childs_test = c("negative", "negative", "negative", NA)),
+                  site = list(land_use = "paddy rice", paddy_years_frac = 0.4)),
   "M2.4.2" = list(base = "M2.4.5", set = list(soluble_salts_pct = c(0.05, 0.5, 0.05, 0.05))),
   "M2.4.3" = list(base = "M2.4.5", set = list(caco3_pct = 2, ph_h2o = 7.8)),
   "M2.4.4" = list(base = "M2.4.5", set = list(ph_h2o = c(5.0, 5.0, 6.8, 6.8))),
@@ -1223,6 +1272,11 @@ marinic_cst <- function(pedon) {
   "N2.4.1" = list(base = "N2.4.5", site = list(soil_temperature_regime = "hyperthermic")),
   "N2.4.2" = list(base = "N2.4.5", set = list(mottle_colors = c(NA, "7.5YR 5/6"))),
   "N2.4.3" = list(base = "N2.4"),
+  "N2.4.4" = list(base = "N2.4.5", rows = c(1L, 1L, 2L),
+                  set = list(top_cm = c(0, 6, 46), bottom_cm = c(6, 46, 136), designation = c("Oi", "C1", "C2"),
+                             oc_pct = c(30, 0.1, 0.06), plant_residues_pct = c(85, NA, NA), water_saturation_days = c(10, NA, NA),
+                             clay_pct = c(NA, 3, 3), silt_pct = c(NA, 5, 5), sand_pct = c(NA, 92, 92),
+                             bulk_density_g_cm3 = c(0.15, NA, NA))),
   "N2.4.5" = list(base = "N2.4", set = list(caco3_pct = 0)),
   "N2.5.1" = list(base = "N2.5"),
   "N2.5.2" = list(base = "N2.5.3", rows = c(1L, 1L, 2L),

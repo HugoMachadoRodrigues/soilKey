@@ -426,12 +426,12 @@ shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125, from_cm
   a <- x$msurf + from_cm; b <- x$msurf + within
   ov <- .cst_overlap(x, a, b); ov[is.na(ov)] <- 0
   best <- 0; rows <- integer(0); i <- 1L
-  gap <- 0
+  # the window below the description undecided (Hugo, 2026-11-07; the run
+  # branch too since v0.9.376, Hugo on the review, 2026-11-08)
+  gap <- .cst_sg_gap(x, a, b)
   if (isTRUE(total)) {
-    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm);
-    # the window below the description undecided (Hugo, 2026-11-07)
+    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm)
     rows <- which(p & ov > 0); best <- sum(ov[rows])
-    gap <- .cst_sg_gap(x, a, b)
   } else while (i <= x$n) {
     if (p[i]) {
       j <- i; while (j < x$n && p[j + 1L]) j <- j + 1L
@@ -591,12 +591,25 @@ b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "a
   B <- .cst_b_layers(x)
   bt <- .cst_b_test(x, test)
   p <- ifelse(B$b %in% FALSE, FALSE, ifelse(is.na(B$b), ifelse(bt$p %in% FALSE, FALSE, NA), bt$p))
-  g <- .cst_run_grade(x, p, min_cm)
-  passed <- if (any(g %in% TRUE)) TRUE else if (any(is.na(g))) NA else FALSE
-  .cst_key_result(nm, passed, layers = x$idx[which(g %in% TRUE)],
+  # v0.9.376 (Hugo on the review, 2026-11-08): the run measured inside
+  # [msurf, msurf + 125), the depth below the description undecided unless
+  # it ends on rock or a contact (.cst_sg_run())
+  if (is.na(x$msurf)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct"), page = "125, 128"))
+  rr <- .cst_sg_run(x, p, x$msurf, x$msurf + .cst_cthr("humic", "b_within_cm"), min_cm)
+  passed <- rr$passed
+  .cst_key_result(nm, passed, layers = x$idx[rr$rows],
                   missing = c(bt$missing, if (any(is.na(B$b))) "designation"), flags = B$flag,
                   notes = sprintf("%s in a run of B layers %s cm thick within 125 cm", test, format(min_cm)),
                   page = "125, 128")
+}
+
+# v0.9.376: the B may go on below the base of the description within 125
+# cm of the mineral soil surface: the deepest layer may be of the B and the
+# description stops above 125 cm, not on rock or a contact (.cst_sg_gap()).
+.cst_b_cut <- function(x, B) {
+  if (!x$n || is.na(x$msurf)) return(FALSE)
+  last <- which.max(x$bot)
+  !(B$b[last] %in% FALSE) && .cst_sg_gap(x, x$msurf, x$msurf + .cst_cthr("humic", "b_within_cm")) > 0
 }
 
 #' A property throughout the B horizon within 125 cm (L3.2, L4.4, L4.5,
@@ -617,6 +630,10 @@ b_throughout_cst <- function(pedon, test = c("alic", "acid_and", "acid_or")) {
   if (!any(inB) && !any(maybe))
     return(.cst_key_result(nm, FALSE, flags = B$flag, notes = "no B horizon", page = "139-162"))
   passed <- if (any(inB)) .cst_and(c(bt$p[inB], ifelse(bt$p[maybe] %in% TRUE, TRUE, NA))) else NA
+  # v0.9.376 (Hugo on the review, 2026-11-08): a B that may go on below the
+  # base of the description within 125 cm (not on rock or a contact) leaves
+  # a pass undecided
+  if (isTRUE(passed) && .cst_b_cut(x, B)) passed <- NA
   rows <- which(inB)
   .cst_key_result(nm, passed, layers = x$idx[rows], flags = B$flag,
                   missing = c(.cst_missing_in(x, rows[is.na(bt$p[rows])], bt$missing), if (any(maybe)) "designation"),

@@ -711,8 +711,8 @@ subgroups:
       tests:
         all_of:
           - lc_coral_sands_cst: {}
-          - phosphic_property_cst: {grade: at_least_evidence, top_max: 25}
-      notes: "The lithologic characters of coral sands, and phosphic evidence (the phosphic property passes too, Q19) in some horizon starting within 25 cm."
+          - phosphic_property_cst: {grade: at_least_evidence, top_max: 25, datum: mineral}
+      notes: "The lithologic characters of coral sands, and phosphic evidence (the phosphic property passes too, Q19) in some horizon starting within 25 cm of the mineral soil surface."
     - code: "N4.7.2"
       name: "Cinderic Udi-Orthic Primosols"
       aliases: ["Cinderic Udi-Orthic Primosol"]
