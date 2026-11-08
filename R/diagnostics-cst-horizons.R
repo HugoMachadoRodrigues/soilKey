@@ -448,6 +448,7 @@
   pv <- if (grade != "full" && !is.null(r$prov_evid)) r$prov_evid else r$prov
   if (!is.null(pv) && isTRUE(passed) && length(pos) && all(pv[pos] %in% TRUE)) {
     ev$provisional <- TRUE
+    if (!is.null(r$prov_flag)) ev$provisional_fine_clay <- TRUE
     ev$flags <- unique(c(ev$flags, r$prov_flag, "provisional"))
   }
   DiagnosticResult$new(
@@ -1100,9 +1101,16 @@
     # in both and not higher, it fails; not measured, the total-clay
     # increase passes provisionally (as gley colours without a test, Q11).
     # The fine-clay ratio a third higher is "normally", not required.
+    # The eluvial layers compared are those of the same material whose
+    # total clay the layer exceeds by the increase (under 60 %): it fails
+    # when every one with fine clay measured has as much or more, and is
+    # provisional when none has it measured (F6, Hugo, 2026-11-08).
     if (isTRUE(incr[i]) && clay[j] < t$clay_increase$high_below_pct) {
-      if (!is.na(fine[i]) && !is.na(fine[j])) incr[i] <- fine[i] > fine[j]
-      else fine_prov[i] <- TRUE
+      el <- same[!is.na(clay[same]) & clay[same] < t$clay_increase$high_below_pct]
+      el <- el[.cst_clay_increase(rep(clay[i], length(el)), clay[el]) %in% TRUE]
+      em <- el[!is.na(fine[el])]
+      if (is.na(fine[i]) || !length(em)) fine_prov[i] <- TRUE
+      else incr[i] <- any(fine[i] > fine[em])
     }
   }
   micro <- .cst_v(x, "micromorph_argillans_pct") >= t$thin_section_min_pct
@@ -1298,7 +1306,7 @@
                        eligible = is.na(ty) & A$core %in% TRUE & e_full %in% TRUE & isTRUE(surf_salt))
   # v0.9.377: the argic items 2a-d met only by a total-clay increase without
   # fine clay (item 2b) give the alkalic horizon provisionally
-  ans$prov <- (ans$full %in% TRUE) & A$prov
+  ans$prov <- (ans$full %in% TRUE) & A$prov & is.na(ans$stand_in)
   # the evidence grade, read on its own printed items, stays firm
   ans$prov_evid <- ans$prov & !(evid %in% TRUE)
   ans$prov_flag <- "argic_increase_without_fine_clay"

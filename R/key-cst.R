@@ -607,12 +607,15 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 # v0.9.377: an any_of block (`any_of`, or a node whose test_name is
 # any_of) is provisional only when every test of it that passed is: one firm
 # alternative makes it firm.
+# A result provisional only by an argic increase without fine clay (its
+# flags name it) is left to the rerun of classify_cst2001() (v0.9.377).
 .cst_trace_provisional <- function(node, any_of = FALSE) {
   if (is.null(node) || !is.list(node)) return(FALSE)
   if (isTRUE(node$provisional)) return(TRUE)
   if (!is.null(node$passed) && !isTRUE(node$passed)) return(FALSE)
   ev <- node$evidence
-  if (is.list(ev) && isTRUE(ev$provisional)) return(TRUE)
+  if (is.list(ev) && isTRUE(ev$provisional))
+    return(!("argic_increase_without_fine_clay" %in% as.character(unlist(ev$flags))))
   kids <- if (is.list(ev) && is.null(names(ev))) ev else if (is.list(ev)) ev[vapply(ev, is.list, NA)] else list()
   if (isTRUE(any_of) || identical(node$test_name, "any_of")) {
     ok <- Filter(function(k) is.list(k) && isTRUE(k$passed), kids)
@@ -657,19 +660,24 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
   out
 }
 
+# v0.9.377: the key run again with every argic increase without fine clay
+# failing (`.cst_cache$argic_firm`, read when the contexts are built), when
+# some argic layer rests on one; NULL otherwise.
+.cst_fine_clay_rerun <- function(pedon, rules, gapfill = FALSE) {
+  x <- .cst_ctx(pedon)
+  if (!x$n || !any(.cst_argic_core(x)$prov %in% TRUE)) return(NULL)
+  old <- .cst_cache$argic_firm
+  .cst_cache$argic_firm <- TRUE
+  on.exit(.cst_cache$argic_firm <- old, add = TRUE)
+  tryCatch(classify_hierarchical("cst2001", pedon, rules = rules, on_missing = "silent", gapfill = gapfill),
+           error = function(e) NULL)
+}
+
 # The class the key reaches when the gate of the class at row `i` of the
 # levels (assigned on a provisional reading) is set to FALSE: a one-row data
 # frame (kind "alternative", the level and class replaced, the deepest class
 # reached), or NULL when nothing is reached.
-.cst_alternative <- function(pedon, rules, lv, i, gapfill = FALSE, argic_firm = FALSE) {
-  # v0.9.377: a class resting on an argic increase without fine clay is
-  # keyed again with that increase failing, so that the layer is read for
-  # the horizons it would be without it (a cambic horizon)
-  if (isTRUE(argic_firm)) {
-    old <- .cst_cache$argic_firm
-    .cst_cache$argic_firm <- TRUE
-    on.exit(.cst_cache$argic_firm <- old, add = TRUE)
-  }
+.cst_alternative <- function(pedon, rules, lv, i, gapfill = FALSE) {
   r2 <- rules
   never <- list(any_of = list())
   if (lv$level[i] == "orders") {
@@ -791,7 +799,7 @@ classify_cst2001 <- function(pedon, rules = NULL,
     notes <- c(notes, sprintf("%s %s is marked provisional in CST 2001 (the book's own mark).",
                               lv$code[i], lv$name[i]))
   # a class assigned on a provisional reading
-  prov_i <- integer(0); prov_fl <- list()
+  prov_i <- integer(0)
   for (i in seq_len(nrow(lv))) {
     tr <- res$trace[[lv$level[i]]][[lv$code[i]]]
     if (!is.null(tr) && isTRUE(tr$passed) &&
@@ -800,13 +808,11 @@ classify_cst2001 <- function(pedon, rules = NULL,
       # v0.9.376 (Hugo on the review, 2026-11-08): the remedy named by the
       # flags of the reading
       fl <- .cst_trace_flags(list(evidence = tr$evidence))
-      prov_fl[[length(prov_i)]] <- fl
       rem <- c(if (any(grepl("gleyic_without_test", fl))) "a ferrous-iron test",
                if ("window_cut_at_description_base" %in% fl) "a deeper description",
                if ("contact_extent_not_recorded" %in% fl) "the extent of the contact under the plane",
                if ("salic_duration_not_recorded" %in% fl) "the months a year with salic evidence",
-               if (any(grepl("crack|days", fl))) "the duration of the cracks",
-               if ("argic_increase_without_fine_clay" %in% fl) "the fine clay of the argic and eluvial layers")
+               if (any(grepl("crack|days", fl))) "the duration of the cracks")
       if (!length(rem)) rem <- c("a ferrous-iron test", "a measurement", "a duration")
       rem_txt <- if (length(rem) == 1L) rem else paste(paste(rem[-length(rem)], collapse = ", "), "or", rem[length(rem)])
       notes <- c(notes, sprintf("Provisional: %s %s rests on a reading the book leaves open (see the trace): %s would confirm it.",
@@ -826,8 +832,7 @@ classify_cst2001 <- function(pedon, rules = NULL,
   # the key run again with the gate of the first such class set to FALSE,
   # given in $candidates as an alternative, never as the class
   if (length(prov_i) && inherits(pedon, "PedonRecord")) {
-    alt <- .cst_alternative(pedon, rules, lv, prov_i[1L], gapfill,
-                            argic_firm = "argic_increase_without_fine_clay" %in% prov_fl[[1L]])
+    alt <- .cst_alternative(pedon, rules, lv, prov_i[1L], gapfill)
     if (!is.null(alt)) {
       res$candidates <- alt
       tr_alt <- list(list(code = alt$code, name = sprintf("%s (alternative if the reading of %s fails)", alt$name, alt$instead_of),
@@ -836,6 +841,39 @@ classify_cst2001 <- function(pedon, rules = NULL,
       attr(tr_alt, "cst_panel") <- TRUE
       res$trace$alternative <- tr_alt
       notes <- c(notes, sprintf("Alternative if that reading fails: %s %s.", alt$code, alt$name))
+    }
+  }
+  # v0.9.377 (Hugo, 2026-11-08): an argic layer resting on a total-clay
+  # increase without fine clay (item 2b, p. 36). The whole key is run again
+  # with those increases failing, no gate switched off; the first level
+  # whose class differs carries the warning, even when it was assigned
+  # firmly (an argic layer may also block an earlier class), and the class
+  # of that run is the alternative.
+  if (inherits(pedon, "PedonRecord")) {
+    fr <- .cst_fine_clay_rerun(pedon, rules, gapfill)
+    lv2 <- if (!is.null(fr)) fr$levels else NULL
+    if (is.data.frame(lv2) && nrow(lv2)) {
+      n <- max(nrow(lv), nrow(lv2))
+      d <- which(vapply(seq_len(n), function(k) !identical(lv$code[k], lv2$code[k]), NA))[1L]
+      if (!is.na(d)) {
+        i <- min(d, nrow(lv))
+        m <- nrow(lv2)
+        alt <- data.frame(kind = "alternative", level = lv2$level[m], code = lv2$code[m], name = lv2$name[m],
+                          path = paste(lv2$code, collapse = " > "), instead_of = lv$code[i],
+                          provisional = length(fr$provisional_because) > 0L, stringsAsFactors = FALSE)
+        res$candidates <- if (is.data.frame(res$candidates) && nrow(res$candidates)) rbind(res$candidates, alt) else alt
+        tr_alt <- list(list(code = alt$code, name = sprintf("%s (alternative if the argic increase without fine clay fails at %s)",
+                                                            alt$name, alt$instead_of), missing = character(0)))
+        names(tr_alt) <- alt$code
+        old <- res$trace$alternative
+        tr_alt <- c(if (!is.null(old)) unclass(old), tr_alt)
+        attr(tr_alt, "cst_panel") <- TRUE
+        res$trace$alternative <- tr_alt
+        notes <- c(notes,
+                   sprintf("Provisional: %s %s rests on a reading the book leaves open (see the trace): the fine clay of the argic and eluvial layers would confirm it.",
+                           lv$code[i], lv$name[i]),
+                   sprintf("Alternative if that reading fails: %s %s.", alt$code, alt$name))
+      }
     }
   }
   # a residual named for a regime (the udic one; the aquic one for the

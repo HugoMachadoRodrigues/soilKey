@@ -181,3 +181,113 @@ test_that("the argic and alkalic examples keep their names, firm on their fine c
   r <- .c377(make_cst2001_example("M3.3.2"))
   expect_false(any(grepl("fine clay", r$warnings)))
 })
+
+# --- the review of 0.9.377 (Hugo, 2026-11-08) ---------------------------------------------------
+
+test_that("drainage ranges take their worst class; hyphens and underscores are spaces (F4)", {
+  skip_on_cran()
+  for (dc in c("Well-drained", "well_drained", "Somewhat-excessively-drained", "excessively  well drained"))
+    expect_true(.wd377(dc), info = dc)
+  for (dc in c("well drained to moderately well drained", "well drained (somewhat poorly in places)",
+               "well-drained to imperfectly drained", "bem drenado a moderadamente drenado"))
+    expect_false(.wd377(dc), info = dc)
+  # a range keeps the colour-only gleyic reading, provisionally
+  r <- .f377("gleyic_features_cst", .gp377(site = list(drainage_class = "well drained to moderately well drained")))
+  expect_true(r$passed)
+  expect_false(.f377("gleyic_features_cst", .gp377(site = list(drainage_class = "Well-drained")))$passed)
+})
+
+test_that("redox features are read per layer: none values, g and r suffixes (F5)", {
+  skip_on_cran()
+  g <- function(p) .f377("gleyic_features_cst", p)
+  # a mottle recorded as none is no redox feature: the guard holds
+  for (v in c("none", "absent", "nil", "-", "0", " None "))
+    expect_false(g(.gp377(extra = list(mottle_colors = c(v, NA, NA))))$passed, info = v)
+  expect_false(soilKey:::.cst_mottles_recorded("none"))
+  expect_true(soilKey:::.cst_mottles_recorded("7.5YR 5/8"))
+  # and beside a shallow water table it is no redox sign either
+  h <- data.frame(designation = c("A", "Bw"), top_cm = c(0, 30), bottom_cm = c(30, 80), mottle_colors = c("none", NA))
+  p <- PedonRecord$new(site = list(id = "r"), horizons = h)
+  expect_false(isTRUE(soilKey:::.cst_redox_above(p, 50)))
+  h$mottle_colors <- c("10YR 5/6", NA)
+  p <- PedonRecord$new(site = list(id = "r"), horizons = h)
+  expect_true(soilKey:::.cst_redox_above(p, 50))
+  # a g or r suffix is a recorded redox feature of that layer: provisional
+  expect_identical(soilKey:::.cst_redox_suffix(c("Bg", "Btg1", "2Cg", "Cr", "Apg", "Ap", "Bw", "A2", "R", NA)),
+                   c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE))
+  p <- .gp377(extra = list(designation = c("Ag", "Bw", "C")))
+  r <- g(p)
+  expect_true(r$passed)
+  expect_true(isTRUE(r$evidence$provisional))
+  # per layer: mottles in the C do not protect the A
+  r <- g(.gp377(extra = list(mottle_colors = c(NA, NA, "7.5YR 5/8"))))
+  expect_false(r$passed)
+})
+
+test_that("the fine clay is compared with the eluvial layers the total clay increases over (F6)", {
+  skip_on_cran()
+  p <- make_cst2001_example("M5")$clone(deep = TRUE)
+  h <- as.data.frame(p$horizons)[c(1, 1, 2, 3), ]
+  h$designation <- c("A1", "A2", "Bw", "C"); h$top_cm <- c(0, 10, 20, 60); h$bottom_cm <- c(10, 20, 60, 100)
+  h$clay_pct <- c(18, 19, 23, 20); h$fine_clay_pct <- c(NA, 8, 8, NA)
+  p$horizons <- h
+  expect_false(.f377("argic_horizon_cst", p)$passed)
+  # higher than the one measured: firm
+  h$fine_clay_pct <- c(NA, 8, 9, NA); p$horizons <- h
+  r <- .f377("argic_horizon_cst", p)
+  expect_true(r$passed)
+  expect_false(isTRUE(r$evidence$provisional))
+  # the only layer measured is not one the total clay increases over (20 to 23: 1.15 times): provisional
+  h$clay_pct <- c(18, 20, 23, 20); h$fine_clay_pct <- c(NA, 8, 8, NA); p$horizons <- h
+  r <- .f377("argic_horizon_cst", p)
+  expect_true(r$passed)
+  expect_true(isTRUE(r$evidence$provisional))
+})
+
+test_that("the fine-clay alternative comes from the whole key run again (F1, F2, F3, F8)", {
+  skip_on_cran()
+  # F1: an Aridosol whose argic horizon is provisional
+  g <- make_cst2001_example("G2"); h <- g$horizons
+  h$caso4_pct <- 0.5; h$gypsum_visible_pct <- 0; h$caco3_pct <- 1; h$secondary_carbonates_pct <- 0; h$fine_clay_pct <- NA_real_
+  p <- g$clone(deep = TRUE); p$horizons <- h
+  r <- .c377(p)
+  expect_identical(r$name, "Typic Argi-Orthic Aridosols")
+  expect_identical(.alt377(r), "Typic Hapli-Orthic Aridosols")
+  expect_identical(r$candidates$instead_of[1], "G2.4")
+  expect_true(any(grepl("^Provisional: G2.4 Argi-Orthic Aridosols .*fine clay", r$warnings)))
+  expect_false(any(grepl("^Provisional: G Aridosols", r$warnings)))
+  h$fine_clay_pct <- 4; p$horizons <- h
+  expect_identical(.c377(p)$name, "Typic Hapli-Orthic Aridosols")
+  # F2: a provisional argic horizon blocks the Spodosols of a profile keyed firmly as Gleyosols
+  p0 <- make_cst2001_example("C2")
+  h <- as.data.frame(p0$horizons)[c(1, 2, 2, 3), ]
+  h$designation <- c("E", "Bt", "Bs", "C"); h$top_cm <- c(0, 12, 30, 60); h$bottom_cm <- c(12, 30, 60, 100)
+  h$clay_pct <- c(4, 7.5, 6, 3); h$fe_ox_pct[2] <- 0.1; h$al_ox_pct[2] <- 0.1; h$oc_pct[2] <- 0.5
+  h$ferricyanide_test <- c("positive", NA, NA, NA)
+  mk <- function(h) PedonRecord$new(site = utils::modifyList(p0$site, list(id = "e4")), horizons = h)
+  r <- .c377(mk(h))
+  expect_identical(r$rsg_or_order, "Gleyosols")
+  expect_true(any(grepl("^Provisional: I Gleyosols .*fine clay", r$warnings)))
+  expect_match(.alt377(r), "Spodosols$")
+  h$fine_clay_pct <- c(2, 2, 2, 1)
+  r <- .c377(mk(h))
+  expect_identical(r$rsg_or_order, "Spodosols")
+  expect_false(any(grepl("fine clay", r$warnings)))
+  # F3: argic with lime infiltrates passes the flags of the argic horizon
+  p <- make_cst2001_example("G1.1.2")$clone(deep = TRUE); h <- as.data.frame(p$horizons)
+  h$fine_clay_pct <- NA_real_; h$clay_films_amount <- NA; h$clay_films_strength <- NA
+  p$horizons <- h
+  a <- .f377("argic_lime_cst", p)
+  expect_true(a$passed)
+  expect_true(isTRUE(a$evidence$provisional))
+  expect_true("argic_increase_without_fine_clay" %in% a$evidence$flags)
+  r <- .c377(p)
+  expect_identical(r$name, "Argic Calci-Cryic Aridosols")
+  expect_identical(.alt377(r), "Typic Calci-Cryic Aridosols")
+  h$fine_clay_pct <- 5; p$horizons <- h
+  expect_identical(.c377(p)$name, "Typic Calci-Cryic Aridosols")
+  # F8: a class provisional only by gley colour gets no fine-clay rerun or remedy
+  r <- .c377(.gp377(site = list()))
+  expect_false(any(grepl("fine clay", r$warnings)))
+  expect_true(any(grepl("ferrous-iron test", r$warnings)))
+})

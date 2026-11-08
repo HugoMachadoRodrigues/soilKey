@@ -77,8 +77,23 @@
   rd <- .cst_num(h, "redoximorphic_features_pct")[rows]
   fn <- .cst_num(h, "ferric_nodules_pct")[rows]
   mn <- .cst_num(h, "manganiferous_nodules_pct")[rows]
-  mc <- trimws(as.character(.cst_col(h, "mottle_colors")[rows]))
-  any(rd > 0, fn > 0, mn > 0, !is.na(mc) & nzchar(mc), na.rm = TRUE)
+  mc <- .cst_mottles_recorded(.cst_col(h, "mottle_colors")[rows])
+  any(rd > 0, fn > 0, mn > 0, mc, na.rm = TRUE)
+}
+
+# Mottle colours recorded, per layer: a value that says there are none
+# ("none", "absent", "nil", "-", "0") is no mottle (v0.9.377).
+.cst_mottles_recorded <- function(mc) {
+  mc <- tolower(trimws(as.character(mc)))
+  !is.na(mc) & nzchar(mc) & !(mc %in% c("none", "absent", "nil", "-", "0", "na", "nan", "null"))
+}
+
+# A designation whose suffix carries g or r (Bg, Btg, Cr, 2Cg1): a recorded
+# redox feature of that layer (v0.9.377, Hugo, 2026-11-08).
+.cst_redox_suffix <- function(desg) {
+  d <- trimws(as.character(desg))
+  suf <- sub("[0-9].*$", "", sub("^[0-9]*[A-Z/]+", "", d))
+  !is.na(d) & grepl("^[0-9]*[A-Z]", d) & grepl("[gr]", suf)
 }
 
 .CST_CLIMATIC <- c("aridic", "ustic", "udic", "perudic")
@@ -187,10 +202,18 @@
 # A recorded drainage class of well drained or better (English or
 # Portuguese words). v0.9.377: "excessively well drained" and "somewhat
 # excessively well drained" (the ISIS wordings) read as excessively drained.
+# v0.9.377 (Hugo, 2026-11-08): hyphens and underscores read as spaces
+# ("Well-drained"); a range or a qualified class takes its worst class, so
+# "well drained to moderately well drained" or "well drained (somewhat
+# poorly in places)" is not well drained or better.
 .cst_well_drained <- function(site) {
   dc <- .cst_site_txt(site, "drainage_class")
-  !is.na(dc) && grepl(paste0("^((somewhat )?excessively( well)?|rapidly|well) drained|",
-                             "^(excessivamente|fortemente|acentuadamente|bem) drenado"), dc)
+  if (is.na(dc)) return(FALSE)
+  dc <- gsub("\\s+", " ", gsub("[-_]", " ", dc))
+  good <- grepl(paste0("^((somewhat )?excessively( well)?|rapidly|well) drained|",
+                       "^(excessivamente|fortemente|acentuadamente|bem) drenado"), dc)
+  worse <- grepl("moderate|imperfect|poor|mal drenado|moderadamente|imperfeitamente", dc)
+  good && !worse
 }
 
 # Candidates against the regimes asked for: TRUE when every candidate is

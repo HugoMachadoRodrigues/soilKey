@@ -817,9 +817,11 @@ anthroturbic_layer_cst <- function(pedon, top_max = NULL, datum = c("surface", "
   # by colour alone not in an E or albic layer, unless redox features or a
   # saturation regime are recorded (Hugo, 2026-11-06)
   pale <- x$kind %in% "E" | .cst_hz(x, "albic_horizon")$full %in% TRUE
-  mc <- as.character(.cst_col(x$h, "mottle_colors"))
-  redox <- (!is.na(mc) & nzchar(trimws(mc))) | (.cst_v(x, "redoximorphic_features_pct") > 0) %in% TRUE |
-    (.cst_v(x, "ferric_nodules_pct") > 0) %in% TRUE | (.cst_v(x, "manganiferous_nodules_pct") > 0) %in% TRUE
+  # per layer (v0.9.377): mottles recorded as none are none, and a g or r
+  # suffix of the designation is a recorded redox feature (Hugo, 2026-11-08)
+  redox <- .cst_mottles_recorded(.cst_col(x$h, "mottle_colors")) | (.cst_v(x, "redoximorphic_features_pct") > 0) %in% TRUE |
+    (.cst_v(x, "ferric_nodules_pct") > 0) %in% TRUE | (.cst_v(x, "manganiferous_nodules_pct") > 0) %in% TRUE |
+    .cst_redox_suffix(.cst_col(x$h, "designation"))
   sat <- .cst_moisture_regime(x$pedon)$saturation
   sat_rec <- all(sat$candidates %in% .CST_SATURATION)
   # v0.9.377 (Hugo, 2026-11-08): nor in any layer of a profile whose
