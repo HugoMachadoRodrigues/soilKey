@@ -865,7 +865,9 @@ gleyic_features_cst <- function(pedon, grade = c("full", "evidence", "at_least_e
   # (1) rust mottles: a mottle colour of chroma 3 or more (or a mottle not
   # read as a colour), or redox concentrations recorded
   mc <- as.character(.cst_col(x$h, "mottle_colors"))
-  has_mot <- !is.na(mc) & nzchar(trimws(mc))
+  # v0.9.377: a mottle recorded as none ("none", "absent", "nil", "-", "0")
+  # is no mottle
+  has_mot <- .cst_mottles_recorded(mc)
   rust <- vapply(seq_len(x$n), function(i) {
     if (!has_mot[i]) return(FALSE)
     m <- .munsell_notations(mc[i])

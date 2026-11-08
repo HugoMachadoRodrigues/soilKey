@@ -291,3 +291,14 @@ test_that("the fine-clay alternative comes from the whole key run again (F1, F2,
   expect_false(any(grepl("fine clay", r$warnings)))
   expect_true(any(grepl("ferrous-iron test", r$warnings)))
 })
+
+test_that("the redoxic features read a mottle recorded as none as no mottle (item 3)", {
+  skip_on_cran()
+  rx <- function(v) .f377("redoxic_features_cst", .gp377(site = list(soil_moisture_regime = "aquic"),
+                                                           extra = list(mottle_colors = c(v, NA, NA))))
+  # a low chroma without mottles under a saturation regime: redoxic
+  expect_true(rx(NA)$passed)
+  for (v in c("none", "absent", "nil", "-", "0")) expect_true(rx(v)$passed, info = v)
+  # a real grey mottle (chroma under 3) is a mottle: item 3 fails, item 1 too
+  expect_false(rx("10YR 6/1")$passed)
+})
