@@ -185,10 +185,11 @@
 }
 
 # A recorded drainage class of well drained or better (English or
-# Portuguese words).
+# Portuguese words). v0.9.377: "excessively well drained" and "somewhat
+# excessively well drained" (the ISIS wordings) read as excessively drained.
 .cst_well_drained <- function(site) {
   dc <- .cst_site_txt(site, "drainage_class")
-  !is.na(dc) && grepl(paste0("^(excessively|somewhat excessively|rapidly|well) drained|",
+  !is.na(dc) && grepl(paste0("^((somewhat )?excessively( well)?|rapidly|well) drained|",
                              "^(excessivamente|fortemente|acentuadamente|bem) drenado"), dc)
 }
 

@@ -48,7 +48,7 @@
 # in place), so the readers of the key and the panel share one (D13).
 .cst_ctx <- function(pedon) {
   cache <- .cst_cache$ctx %||% list()
-  key <- rlang::hash(list(pedon$horizons, pedon$site))
+  key <- rlang::hash(list(pedon$horizons, pedon$site, isTRUE(.cst_cache$argic_firm)))
   for (e in cache) {
     if (identical(e$pedon, pedon) && identical(e$key, key)) return(e$x)
   }
@@ -75,6 +75,9 @@
   x$msurf <- if (n) .cst_surface_cm(pedon, "mineral") else NA_real_
   x$first_min <- if (n && !is.na(x$msurf)) which(!is.na(x$top) & x$top >= x$msurf)[1L] else NA_integer_
   x$memo <- new.env(parent = emptyenv())
+  # v0.9.377: the run of the alternative, where an argic increase without
+  # fine clay fails (.cst_alternative())
+  x$argic_firm <- isTRUE(.cst_cache$argic_firm)
   x
 }
 
@@ -439,6 +442,14 @@
     layer_grade = lg,
     has_evidence_grade = isTRUE(row$evidence[1L]),
     page = row$page[1L]))
+  # v0.9.377: a pass resting on provisional layers only (r$prov, the argic
+  # increase without fine clay; r$prov_evid for the evidence grades) is
+  # provisional
+  pv <- if (grade != "full" && !is.null(r$prov_evid)) r$prov_evid else r$prov
+  if (!is.null(pv) && isTRUE(passed) && length(pos) && all(pv[pos] %in% TRUE)) {
+    ev$provisional <- TRUE
+    ev$flags <- unique(c(ev$flags, r$prov_flag, "provisional"))
+  }
   DiagnosticResult$new(
     name = paste0(name, "_cst"),
     passed = passed,
@@ -1068,7 +1079,7 @@
   mat <- .desg_material_number(as.character(.cst_col(x$h, "designation")))
   lo <- .cst_t(x, "layer_origin")
   films <- .cst_clay_films(x)
-  incr <- rep(FALSE, x$n); ref <- rep(NA_integer_, x$n)
+  incr <- rep(FALSE, x$n); ref <- rep(NA_integer_, x$n); fine_prov <- rep(FALSE, x$n)
   for (i in seq_len(x$n)) {
     if (is.na(s) || i <= s) next
     up <- seq.int(s, i - 1L)
@@ -1084,34 +1095,58 @@
     j <- same[which.min(cl)]
     ref[i] <- j
     incr[i] <- .cst_clay_increase(clay[i], clay[j], fine[i], fine[j])
+    # v0.9.377 (Hugo, 2026-11-08, p. 36): under 60 % clay item 2b asks more
+    # fine clay than the eluvial layer as well as more total clay; measured
+    # in both and not higher, it fails; not measured, the total-clay
+    # increase passes provisionally (as gley colours without a test, Q11).
+    # The fine-clay ratio a third higher is "normally", not required.
+    if (isTRUE(incr[i]) && clay[j] < t$clay_increase$high_below_pct) {
+      if (!is.na(fine[i]) && !is.na(fine[j])) incr[i] <- fine[i] > fine[j]
+      else fine_prov[i] <- TRUE
+    }
   }
   micro <- .cst_v(x, "micromorph_argillans_pct") >= t$thin_section_min_pct
   micro[is.na(micro)] <- FALSE
-  illuv <- films$value | incr | micro
-  # a subsurface horizon: below the first mineral layer, not an O, A, E, C
-  # or R (Hugo, 2026-11-06); a B exposed at the surface by erosion may pass
-  # by its clay films or thin section (items 2a, 2c), never by item 2b (D8,
-  # Hugo, 2026-11-06, pp. 35, 37-38)
-  eroded <- !is.na(s) & seq_len(x$n) == s & x$kind %in% "B"
-  illuv[eroded] <- films$value[eroded] | micro[eroded]
-  illuv[(seq_len(x$n) <= (if (is.na(s)) x$n else s) & !eroded) | x$kind %in% .CST_NOT_B] <- FALSE
   # (1) not a sedimentary clay layer: a recorded stratification or a fluvial,
   # marine or lacustrine layer of its own (Hugo, 2026-11-06)
   strat <- .cst_t(x, "stratification_pattern")
   sed <- (!is.na(strat) & !strat %in% c("none", "absent")) |
     (!is.na(lo) & grepl("fluv|marine|lacustr|alluv", lo))
-  # (2d) thickness: a tenth of the layers above, 7.5 cm (15 cm sandy)
   tex <- .cst_texture_class(x$h)
-  r <- .cst_runs(x, illuv & !sed)
   min_t <- ifelse(tex %in% c("S", "LS"), t$thick_min_sandy_cm, t$thick_min_cm)
-  top_run <- vapply(seq_len(x$n), function(i) {
-    id <- r$hi_id[i]; if (is.na(id)) NA_real_ else min(x$top[which(r$hi_id == id)])
-  }, numeric(1))
-  need <- pmax(min_t, (top_run - x$surf) / 10)
-  d_ok <- .cst_thk_ok(r$low, r$high, need)
-  d_ok[r$high == 0] <- FALSE
-  out <- list(incr = incr, ref = ref, films = films, micro = micro, illuv = illuv, sed = sed,
-              core = (illuv & !sed) & d_ok, d_ok = d_ok)
+  # items 2a-d on an increase vector: the illuvial layers, their thickness
+  # and the core
+  items <- function(incr) {
+    illuv <- films$value | incr | micro
+    # a subsurface horizon: below the first mineral layer, not an O, A, E, C
+    # or R (Hugo, 2026-11-06); a B exposed at the surface by erosion may pass
+    # by its clay films or thin section (items 2a, 2c), never by item 2b (D8,
+    # Hugo, 2026-11-06, pp. 35, 37-38)
+    eroded <- !is.na(s) & seq_len(x$n) == s & x$kind %in% "B"
+    illuv[eroded] <- films$value[eroded] | micro[eroded]
+    illuv[(seq_len(x$n) <= (if (is.na(s)) x$n else s) & !eroded) | x$kind %in% .CST_NOT_B] <- FALSE
+    # (2d) thickness: a tenth of the layers above, 7.5 cm (15 cm sandy)
+    r <- .cst_runs(x, illuv & !sed)
+    top_run <- vapply(seq_len(x$n), function(i) {
+      id <- r$hi_id[i]; if (is.na(id)) NA_real_ else min(x$top[which(r$hi_id == id)])
+    }, numeric(1))
+    need <- pmax(min_t, (top_run - x$surf) / 10)
+    d_ok <- .cst_thk_ok(r$low, r$high, need)
+    d_ok[r$high == 0] <- FALSE
+    list(illuv = illuv, d_ok = d_ok, core = (illuv & !sed) & d_ok)
+  }
+  # the alternative of a provisional class reads those increases as failing
+  if (isTRUE(x$argic_firm)) incr[fine_prov] <- FALSE
+  it <- items(incr)
+  # the layers whose core rests on an increase without fine clay: the core
+  # read again with those increases failing
+  prov <- rep(FALSE, x$n)
+  if (any(fine_prov) && !isTRUE(x$argic_firm)) {
+    firm <- items(ifelse(fine_prov, FALSE, incr))
+    prov <- it$core %in% TRUE & !(firm$core %in% TRUE)
+  }
+  out <- list(incr = incr, ref = ref, films = films, micro = micro, illuv = it$illuv, sed = sed,
+              core = it$core, d_ok = it$d_ok, prov = prov, fine_prov = fine_prov)
   x$memo$argic_core <- out
   out
 }
@@ -1178,10 +1213,15 @@
                                                                                "na_cmol", "cec_cmol", "top_cm", "bottom_cm")),
                      sub = list(natro_layers = x$idx[natro]))
   ans$natro <- natro
-  .cst_stand_in(x, ans, list(list(fn = "argic"), list(fn = "argillic_usda")),
-                eligible = (is.na(full_strict) | (full_strict %in% FALSE & !A$films$recorded & is.na(A$incr) &
-                                                    seq_len(x$n) > (x$first_min %||% x$n))) &
-                  !is.na(sodic) & !is.na(alk))
+  ans <- .cst_stand_in(x, ans, list(list(fn = "argic"), list(fn = "argillic_usda")),
+                       eligible = (is.na(full_strict) | (full_strict %in% FALSE & !A$films$recorded & is.na(A$incr) &
+                                                           seq_len(x$n) > (x$first_min %||% x$n))) &
+                         !is.na(sodic) & !is.na(alk))
+  # v0.9.377: a layer argic only by a total-clay increase without fine clay
+  # (item 2b) is argic provisionally, unless secondary clayification holds
+  ans$prov <- (full %in% TRUE) & A$prov & !(sec %in% TRUE) & is.na(ans$stand_in)
+  ans$prov_flag <- "argic_increase_without_fine_clay"
+  ans
 }
 
 .cst_hz_claypan <- function(x) {
@@ -1254,8 +1294,15 @@
                      notes = "evidence read on its printed items: the alkalic structure and an ESP of 5 or more within 40 cm, in a subsurface layer (Hugo, 2026-11-08)",
                      missing = .cst_missing_in(x, which(is.na(full) | is.na(evid)), c("esp_pct", "na_cmol", "cec_cmol", "ph_h2o",
                                                                                      "soluble_salts_pct", "clay_pct")))
-  .cst_stand_in(x, ans, list(list(fn = "natric_horizon", args = list(min_esp = t$esp_min, min_pH_h2o = t$ph_min))),
-                eligible = is.na(ty) & A$core %in% TRUE & e_full %in% TRUE & isTRUE(surf_salt))
+  ans <- .cst_stand_in(x, ans, list(list(fn = "natric_horizon", args = list(min_esp = t$esp_min, min_pH_h2o = t$ph_min))),
+                       eligible = is.na(ty) & A$core %in% TRUE & e_full %in% TRUE & isTRUE(surf_salt))
+  # v0.9.377: the argic items 2a-d met only by a total-clay increase without
+  # fine clay (item 2b) give the alkalic horizon provisionally
+  ans$prov <- (ans$full %in% TRUE) & A$prov
+  # the evidence grade, read on its own printed items, stays firm
+  ans$prov_evid <- ans$prov & !(evid %in% TRUE)
+  ans$prov_flag <- "argic_increase_without_fine_clay"
+  ans
 }
 
 

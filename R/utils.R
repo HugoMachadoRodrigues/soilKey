@@ -349,7 +349,7 @@ horizon_column_spec <- function() {
     colour_ka5                    = "character", # colour words of Liste 18 (never converted to Munsell)
     hydromorphic_features_ka5     = "character", # field 30/31 code string (ed,fl,g3,f4;rb,f6)
     # ---- v0.9.370: the Chinese Soil Taxonomy (2001, English edition) ----
-    fine_clay_pct                 = "numeric",   # fine clay (< 0.2 um), % of the fine earth; CST argic horizon (clay >= 60 %)
+    fine_clay_pct                 = "numeric",   # fine clay (< 0.2 um), % of the fine earth; CST argic horizon item 2b
     clay_films_thickness_mm       = "numeric",   # thickness of the clay films, mm; CST argic (> 0.5), clay-pan (>= 0.5)
     humus_clay_films_pct          = "numeric",   # humus-clay films, % of the ped faces and pores; CST agric (>= 5), hydragric
     humus_clay_films_mm           = "numeric",   # thickness of the humus-clay films, mm; CST agric (>= 0.5)

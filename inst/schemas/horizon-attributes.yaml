@@ -1410,7 +1410,7 @@ attributes:
   - name: fine_clay_pct
     section: "Chinese system (CST 2001)"
     unit: "%"
-    description: "Fine clay (< 0.2 um), % of the fine earth. Chinese Soil Taxonomy 2001, the argic horizon (pp. 35-36): with 60 % clay or more the illuvial horizon has 8 % more fine clay than the eluvial one. Not recorded: that path stays undecided (Hugo's decision Q20)."
+    description: "Fine clay (< 0.2 um), % of the fine earth. Chinese Soil Taxonomy 2001, the argic horizon (pp. 35-36): with 60 % clay or more the illuvial horizon has 8 % more fine clay than the eluvial one, not recorded that path stays undecided (Hugo's decision Q20); under 60 % it must also be higher than in the eluvial one, not recorded in both the clay increase passes provisionally (v0.9.377)."
     min: 0
     max: 100
   - name: clay_films_thickness_mm

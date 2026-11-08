@@ -604,13 +604,20 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 # Every DiagnosticResult evidence below a trace entry marked provisional
 # (a reading the book's text leaves open: gley colours without a test, cracks
 # for their duration ...).
-.cst_trace_provisional <- function(node) {
+# v0.9.377: an any_of block (`any_of`, or a node whose test_name is
+# any_of) is provisional only when every test of it that passed is: one firm
+# alternative makes it firm.
+.cst_trace_provisional <- function(node, any_of = FALSE) {
   if (is.null(node) || !is.list(node)) return(FALSE)
   if (isTRUE(node$provisional)) return(TRUE)
   if (!is.null(node$passed) && !isTRUE(node$passed)) return(FALSE)
   ev <- node$evidence
   if (is.list(ev) && isTRUE(ev$provisional)) return(TRUE)
   kids <- if (is.list(ev) && is.null(names(ev))) ev else if (is.list(ev)) ev[vapply(ev, is.list, NA)] else list()
+  if (isTRUE(any_of) || identical(node$test_name, "any_of")) {
+    ok <- Filter(function(k) is.list(k) && isTRUE(k$passed), kids)
+    return(length(ok) > 0L && all(vapply(ok, .cst_trace_provisional, NA)))
+  }
   any(vapply(kids, .cst_trace_provisional, NA))
 }
 
@@ -654,7 +661,15 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
 # levels (assigned on a provisional reading) is set to FALSE: a one-row data
 # frame (kind "alternative", the level and class replaced, the deepest class
 # reached), or NULL when nothing is reached.
-.cst_alternative <- function(pedon, rules, lv, i, gapfill = FALSE) {
+.cst_alternative <- function(pedon, rules, lv, i, gapfill = FALSE, argic_firm = FALSE) {
+  # v0.9.377: a class resting on an argic increase without fine clay is
+  # keyed again with that increase failing, so that the layer is read for
+  # the horizons it would be without it (a cambic horizon)
+  if (isTRUE(argic_firm)) {
+    old <- .cst_cache$argic_firm
+    .cst_cache$argic_firm <- TRUE
+    on.exit(.cst_cache$argic_firm <- old, add = TRUE)
+  }
   r2 <- rules
   never <- list(any_of = list())
   if (lv$level[i] == "orders") {
@@ -776,19 +791,22 @@ classify_cst2001 <- function(pedon, rules = NULL,
     notes <- c(notes, sprintf("%s %s is marked provisional in CST 2001 (the book's own mark).",
                               lv$code[i], lv$name[i]))
   # a class assigned on a provisional reading
-  prov_i <- integer(0)
+  prov_i <- integer(0); prov_fl <- list()
   for (i in seq_len(nrow(lv))) {
     tr <- res$trace[[lv$level[i]]][[lv$code[i]]]
-    if (!is.null(tr) && isTRUE(tr$passed) && .cst_trace_provisional(list(evidence = tr$evidence))) {
+    if (!is.null(tr) && isTRUE(tr$passed) &&
+        .cst_trace_provisional(list(evidence = tr$evidence), any_of = !is.null(ents[[i]]$tests$any_of))) {
       prov_i <- c(prov_i, i)
       # v0.9.376 (Hugo on the review, 2026-11-08): the remedy named by the
       # flags of the reading
       fl <- .cst_trace_flags(list(evidence = tr$evidence))
+      prov_fl[[length(prov_i)]] <- fl
       rem <- c(if (any(grepl("gleyic_without_test", fl))) "a ferrous-iron test",
                if ("window_cut_at_description_base" %in% fl) "a deeper description",
                if ("contact_extent_not_recorded" %in% fl) "the extent of the contact under the plane",
                if ("salic_duration_not_recorded" %in% fl) "the months a year with salic evidence",
-               if (any(grepl("crack|days", fl))) "the duration of the cracks")
+               if (any(grepl("crack|days", fl))) "the duration of the cracks",
+               if ("argic_increase_without_fine_clay" %in% fl) "the fine clay of the argic and eluvial layers")
       if (!length(rem)) rem <- c("a ferrous-iron test", "a measurement", "a duration")
       rem_txt <- if (length(rem) == 1L) rem else paste(paste(rem[-length(rem)], collapse = ", "), "or", rem[length(rem)])
       notes <- c(notes, sprintf("Provisional: %s %s rests on a reading the book leaves open (see the trace): %s would confirm it.",
@@ -808,7 +826,8 @@ classify_cst2001 <- function(pedon, rules = NULL,
   # the key run again with the gate of the first such class set to FALSE,
   # given in $candidates as an alternative, never as the class
   if (length(prov_i) && inherits(pedon, "PedonRecord")) {
-    alt <- .cst_alternative(pedon, rules, lv, prov_i[1L], gapfill)
+    alt <- .cst_alternative(pedon, rules, lv, prov_i[1L], gapfill,
+                            argic_firm = "argic_increase_without_fine_clay" %in% prov_fl[[1L]])
     if (!is.null(alt)) {
       res$candidates <- alt
       tr_alt <- list(list(code = alt$code, name = sprintf("%s (alternative if the reading of %s fails)", alt$name, alt$instead_of),
@@ -1082,7 +1101,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
   G2 = mk(list(
     designation = c("Av", "Bw", "By", "C"), top_cm = c(0, 5, 25, 55), bottom_cm = c(5, 25, 55, 100),
     desert_pavement_pct = c(40, NA, NA, NA), structure_type = c("platy", "blocky", "massive", "massive"),
-    clay_pct = c(10, 14, 12, 10), sand_pct = c(60, 52, 55, 62), silt_pct = c(30, 34, 33, 28),
+    clay_pct = c(10, 14, 12, 10), fine_clay_pct = c(4, 6, 5, 4), sand_pct = c(60, 52, 55, 62), silt_pct = c(30, 34, 33, 28),
     oc_pct = c(0.3, 0.2, 0.1, 0.1), caco3_pct = c(5, 6, 6, 5), caso4_pct = c(0.5, 1, 12, 3),
     gypsum_visible_pct = c(0, 0, 3, 0), soluble_salts_pct = c(0.1, 0.1, 0.3, 0.2), ph_h2o = 8.2, bs_pct = 100,
     cec_cmol = 6, munsell_hue_moist = "7.5YR", munsell_value_moist = c(5, 5, 6, 6), munsell_chroma_moist = 4,
@@ -1091,7 +1110,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
          irrigated = FALSE)),
   H1 = mk(list(
     designation = c("A", "Btn", "Bk", "C"), top_cm = c(0, 15, 45, 90), bottom_cm = c(15, 45, 90, 130),
-    clay_pct = c(15, 30, 25, 20), silt_pct = 40, sand_pct = c(45, 30, 35, 40),
+    clay_pct = c(15, 30, 25, 20), fine_clay_pct = c(6, 14, 11, 8), silt_pct = 40, sand_pct = c(45, 30, 35, 40),
     esp_pct = c(5, if (nm) 22 else 38, 20, 15), ph_h2o = c(8.5, 9.3, 9.0, 8.8),
     soluble_salts_pct = c(0.2, 0.4, 0.5, 0.4), oc_pct = c(1.0, 0.5, 0.3, 0.1),
     caco3_pct = c(2, 3, 12, 6), secondary_carbonates_pct = c(0, 0, 5, 1), na_cmol = c(0.6, if (nm) 4 else 7, 4, 2), mg_cmol = 2,
@@ -1163,7 +1182,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     list(soil_moisture_regime = "udic", soil_temperature_regime = "mesic")),
   K1 = mk(list(
     designation = c("A", "Bw1", "Bw2"), top_cm = c(0, 15, 60), bottom_cm = c(15, 60, 130),
-    clay_pct = c(40, 50, 50), sand_pct = 25, silt_pct = c(35, 25, 25), oc_pct = c(1.5, 0.5, 0.3),
+    clay_pct = c(40, 50, 50), fine_clay_pct = c(20, 30, 30), sand_pct = 25, silt_pct = c(35, 25, 25), oc_pct = c(1.5, 0.5, 0.3),
     cec_cmol = c(12, if (nm) 13 else 9.5, if (nm) 13 else 9.5), ca_cmol = 2, mg_cmol = 1, k_cmol = 0.2, na_cmol = 0.1,
     al_kcl_cmol = 0.5, bs_pct = 40, ph_h2o = 5.5, fe_dcb_pct = c(3, 4, 4), fe_total_pct = c(6, 7, 7),
     munsell_hue_moist = "2.5YR", munsell_value_moist = c(3, 4, 4), munsell_chroma_moist = c(4, 6, 6),
@@ -1171,7 +1190,7 @@ make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALS
     list(soil_moisture_regime = "ustic", soil_temperature_regime = "thermic")),
   K2 = mk(list(
     designation = c("A", "Bw1", "Bw2"), top_cm = c(0, 15, 60), bottom_cm = c(15, 60, 130),
-    clay_pct = c(40, 50, 50), sand_pct = 25, silt_pct = c(35, 25, 25), oc_pct = c(2.5, 0.5, 0.3),
+    clay_pct = c(40, 50, 50), fine_clay_pct = c(20, 30, 30), sand_pct = 25, silt_pct = c(35, 25, 25), oc_pct = c(2.5, 0.5, 0.3),
     cec_cmol = c(14, 10, 10), ca_cmol = 0.6, mg_cmol = 0.3, k_cmol = 0.1, na_cmol = 0.05,
     al_kcl_cmol = 3, bs_pct = 10, ph_h2o = 4.6, fe_dcb_pct = c(2.5, 3, 3), fe_total_pct = c(5, 6, 6),
     sio2_al2o3_clay = c(NA, 1.7, 1.7),

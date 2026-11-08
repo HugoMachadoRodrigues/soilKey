@@ -822,7 +822,12 @@ anthroturbic_layer_cst <- function(pedon, top_max = NULL, datum = c("surface", "
     (.cst_v(x, "ferric_nodules_pct") > 0) %in% TRUE | (.cst_v(x, "manganiferous_nodules_pct") > 0) %in% TRUE
   sat <- .cst_moisture_regime(x$pedon)$saturation
   sat_rec <- all(sat$candidates %in% .CST_SATURATION)
-  red_ok[prov & pale & !redox & !sat_rec] <- FALSE
+  # v0.9.377 (Hugo, 2026-11-08): nor in any layer of a profile whose
+  # recorded drainage class is well drained or better (the definition's
+  # long-term saturation), with the same exceptions; moderately well
+  # drained does not rule it out
+  drained <- .cst_well_drained(x$pedon$site)
+  red_ok[prov & (pale | drained) & !redox & !sat_rec] <- FALSE
   full <- share_full & red_ok
   rh_ev <- (rh > t$rh_max & rh <= t$evidence_rh_max) %in% TRUE
   evid <- (share_ev & red_ok) | (share_full & rh_ev)
