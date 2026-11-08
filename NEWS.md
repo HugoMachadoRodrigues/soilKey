@@ -1,3 +1,13 @@
+# soilKey 0.9.378 (2026-11-08)
+
+## China CST 2001: an offline benchmark on the ISIS profiles from China
+
+Eighth part of the Chinese Soil Taxonomy (2001, English edition; system id `cst2001`). A new script, `inst/benchmarks/cst2001_isis.R`, keys the 51 ISIS reference profiles from China (CN001-CN051) with `classify_cst2001()` and scores them against the CST name of their local classification. It downloads nothing: it reads a saved list of raw ISIS profiles from its first argument, the environment variable `SOILKEY_ISIS_CACHE` or `tools::R_user_dir("soilKey", "cache")/isis/profiles.rds`, and stops if there is none. The markdown report goes where the second argument says; ISIS data are not shipped.
+
+The labels carry the 1991 first-proposal name beside the CST one ("Haplic latosol; Hapli-Udic Ferrosol"). A new internal matcher, `.cst_match_label()`, finds the CST part and its taxon at any level: singular and plural, case and hyphenation alike, the printed aliases, and a name one letter off a single taxon read as a typo (ISIS "Acidi-Undic Cambosol" and "Isohumisol"). 50 labels match: 48 at group level, one at subgroup level (CN014 Panic Sali-Orthic Aridosols) and one at order level (CN049); CN043 gives the 1991 name only. Each level is scored on the labels that reach it, with a Wilson 95 % interval.
+
+First run (soilKey 0.9.378): order 26 of 50 (52.0 %, 38.5-65.2), suborder 22 of 49 (44.9 %, 31.9-58.7), group 14 of 49 (28.6 %, 17.8-42.4), the one subgroup label not reached. The Ferralosols agree 7 of 7, the Argosols 6 of 7 and the Primosols 3 of 3; the four Anthrosols and the two Aridosols are missed (keyed as Ferrosols, Argosols, Cambosols or Primosols), three of the five Isohumosols go to the Primosols, three of the seven Ferrosols to the Ferralosols, and the Cambosols agree 5 of 13. Most names are provisional: at the order 46 of the 51 profiles have a class tested before theirs that could not be decided, and 48 at the group. The labels were given by ISSAS, probably on the Chinese edition, so the group is the fair target and differences below it are not errors by themselves. The 1991 names have no automatic crosswalk to the 2001 system and are not scored; WoSIS was not queried (no national classification field is known in its schema). Every classification is unchanged (the fixtures of the other systems byte-identical).
+
 # soilKey 0.9.377 (2026-11-08)
 
 ## China CST 2001: gley colours in well-drained soils and the fine clay of the argic horizon
