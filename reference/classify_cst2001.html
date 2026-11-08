@@ -8,8 +8,12 @@ Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
 their 138 groups (key 5.2), with soilKey's residuals [E2] [Other
 Ferralosols], [A1.4] [Other Permagelic Histosols] and
 [A2.5] [Other Orthic Histosols] where the book prints none (the
-name stops there, with a note). The 588 subgroups follow in a later
-release."><meta property="og:description" content="Keys a PedonRecord through the Chinese Soil Taxonomy
+name stops there, with a note). Since v0.9.375 it keys the subgroups of
+orders A to G (176, with [A1.3.x] Lithic Hemi-Permagelic Histosols,
+listed in Appendix 1 only, at its Appendix position); their criteria are
+written as presets (inst/rules/cst2001/presets.yaml), expanded
+when the rules are loaded. The groups of orders H to N stop at the group,
+with a note, until their subgroups follow in a later release."><meta property="og:description" content="Keys a PedonRecord through the Chinese Soil Taxonomy
 (Cooperative Research Group on Chinese Soil Taxonomy, 2001, the English
 edition published by Science Press). Experimental: this release
 keys the 14 orders (key 5.1: Histosols, Anthrosols, Spodosols, Andosols,
@@ -18,8 +22,12 @@ Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
 their 138 groups (key 5.2), with soilKey's residuals [E2] [Other
 Ferralosols], [A1.4] [Other Permagelic Histosols] and
 [A2.5] [Other Orthic Histosols] where the book prints none (the
-name stops there, with a note). The 588 subgroups follow in a later
-release."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+name stops there, with a note). Since v0.9.375 it keys the subgroups of
+orders A to G (176, with [A1.3.x] Lithic Hemi-Permagelic Histosols,
+listed in Appendix 1 only, at its Appendix position); their criteria are
+written as presets (inst/rules/cst2001/presets.yaml), expanded
+when the rules are loaded. The groups of orders H to N stop at the group,
+with a note, until their subgroups follow in a later release."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +35,7 @@ release."><meta property="og:image" content="https://hugomachadorodrigues.github
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.374</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.375</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,8 +91,12 @@ Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
 their 138 groups (key 5.2), with soilKey's residuals <code>[E2] [Other
 Ferralosols]</code>, <code>[A1.4] [Other Permagelic Histosols]</code> and
 <code>[A2.5] [Other Orthic Histosols]</code> where the book prints none (the
-name stops there, with a note). The 588 subgroups follow in a later
-release.</p>
+name stops there, with a note). Since v0.9.375 it keys the subgroups of
+orders A to G (176, with <code>[A1.3.x]</code> Lithic Hemi-Permagelic Histosols,
+listed in Appendix 1 only, at its Appendix position); their criteria are
+written as presets (<code>inst/rules/cst2001/presets.yaml</code>), expanded
+when the rules are loaded. The groups of orders H to N stop at the group,
+with a note, until their subgroups follow in a later release.</p>
     </div>
 
     <div class="section level2">
@@ -122,7 +134,7 @@ release.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code><a href="ClassificationResult.html">ClassificationResult</a></code> with <code>system_id</code>
-  <code>"cst2001"</code>, the group (or the deepest class assigned) in
+  <code>"cst2001"</code>, the subgroup (or the deepest class assigned) in
   <code>name</code>, the order in <code>rsg_or_order</code>, the classes
   of each level in <code>levels</code> (with <code>name_pt</code> and
   <code>book_provisional</code>), the key trace with the horizon panel,

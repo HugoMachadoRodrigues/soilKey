@@ -11,7 +11,12 @@ Primosols), their 39 suborders and their 138 groups (key 5.2), with
 soilKey's residuals `[E2] [Other Ferralosols]`,
 `[A1.4] [Other Permagelic Histosols]` and
 `[A2.5] [Other Orthic Histosols]` where the book prints none (the name
-stops there, with a note). The 588 subgroups follow in a later release.
+stops there, with a note). Since v0.9.375 it keys the subgroups of
+orders A to G (176, with `[A1.3.x]` Lithic Hemi-Permagelic Histosols,
+listed in Appendix 1 only, at its Appendix position); their criteria are
+written as presets (`inst/rules/cst2001/presets.yaml`), expanded when
+the rules are loaded. The groups of orders H to N stop at the group,
+with a note, until their subgroups follow in a later release.
 
 ## Usage
 
@@ -48,12 +53,12 @@ classify_cst2001(
 
 A
 [`ClassificationResult`](https://hugomachadorodrigues.github.io/soilKey/reference/ClassificationResult.md)
-with `system_id` `"cst2001"`, the group (or the deepest class assigned)
-in `name`, the order in `rsg_or_order`, the classes of each level in
-`levels` (with `name_pt` and `book_provisional`), the key trace with the
-horizon panel, `provisional_because`, and, when a class was assigned on
-a provisional reading, in `candidates` the class the key would reach
-without it (`kind` "alternative").
+with `system_id` `"cst2001"`, the subgroup (or the deepest class
+assigned) in `name`, the order in `rsg_or_order`, the classes of each
+level in `levels` (with `name_pt` and `book_provisional`), the key trace
+with the horizon panel, `provisional_because`, and, when a class was
+assigned on a provisional reading, in `candidates` the class the key
+would reach without it (`kind` "alternative").
 
 ## Details
 

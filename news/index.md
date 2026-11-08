@@ -1,5 +1,82 @@
 # Changelog
 
+## soilKey 0.9.375 (2026-11-07)
+
+### China CST 2001: the subgroups of orders A to G
+
+Sixth part of the Chinese Soil Taxonomy (2001, English edition; system
+id `cst2001`). The registry now names the level subgroups, and
+[`classify_cst2001()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_cst2001.md)
+keys a pedon of orders A to G (Histosols, Anthrosols, Spodosols,
+Andosols, Ferralosols, Vertosols, Aridosols) below its group to the 176
+subgroups of key 5.2 (pp. 76-108), in the book’s order, one file per
+order in `inst/rules/cst2001/subgroups/` keyed by group, with the page,
+the name as printed (the canonical spelling of Q2, the other printed
+forms and the singular as aliases), the adjective and soilKey’s
+Portuguese gloss in `levels$name_pt`. Typic, the residual of each list,
+passes by default. `[A1.3.x]` Lithic Hemi-Permagelic Histosols, listed
+in Appendix 1 but not in the key, is keyed at its Appendix position with
+the test of A1.2.3 (Q3), and the result notes it. C1.1.1 and D1.1.1
+carry the book’s own provisional mark. The groups of orders H to N stop
+at the group, with a note, until their subgroups follow in the next
+part.
+
+The same adjective carries different depths, thicknesses and extents in
+different groups, so each subgroup row calls a preset of the new
+`inst/rules/cst2001/presets.yaml` with the numbers printed for it
+(Lithic, Mottlic, Gleyic, Parasalic, Sodic, Sulfic, Dystric, Eutrophic,
+Trunic, Xanthic, Dark, Takyric, the cracks of the Aridic and Ustic
+subgroups …).
+[`load_rules()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_rules.md)
+expands the calls into ordinary blocks when the rules are loaded
+(`R/rule-presets.R`), so the rule engine does not change; a complex
+subgroup (Calcari-mottlic, Aridi-trunic, Gypsi-panic, Sodi-takyric) is
+both of its parts and is keyed before them, as printed.
+`.validate_rules()` reports a preset called with an unknown parameter or
+without a required one. The criteria the subgroup keys define are
+written in `R/key-cst-subgroups.R`: a lithic contact within or between
+depths (with the fragments and plane-extent alternatives of the later
+orders), a feature in a run of layers, in layers totalling a thickness
+or anywhere in a window, the Buric and Terric mineral layers and the
+tier kinds of the Histosols, a lithic contact within the control
+section, the carbonate pattern of anthro-recalcification, the soluble
+salts of the Parasalic Siltigi-Orthic Anthrosols, base saturation or pH
+in a window, base saturation in a share of it, hues in a run, a share or
+the upper part of the B, the order’s horizon at the surface, the dark
+mixed surface of the Aridosols and an argic horizon with lime
+infiltrates. Every test is three-valued as before: an undecided subgroup
+before the assigned one makes the name provisional, and a subgroup
+assigned on a provisional reading (gley colours without a test, a window
+cut by the base of the description) comes with the alternative the key
+would reach.
+
+[`make_cst2001_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_cst2001_example.md)
+takes a subgroup code of orders A to G as well and gives one profile per
+subgroup (176), each keying to its own subgroup, not provisionally; the
+suborder and group examples keep their order, suborder and group. The
+readings of this part, soilKey’s own for Hugo’s word, are in
+`inst/rules/cst2001/readings.yaml`. Every other classification is
+unchanged (the fixtures of the other systems byte-identical).
+
+Decided by Hugo on the review (2026-11-07): a window that runs below the
+base of the description is undecided there unless the description ends
+on rock or a contact; the thickness not described joins the upper bound
+only, so a feature already found above is a firm pass and otherwise the
+subgroup is undecided and the name provisional (Mottlic, Endogleyic,
+Gleyic, Sulfic, Parasalic, Sodic, Paracalcic, Paragypsic, Calcic,
+Shajiang, and the tiers of the Histosols). soilKey’s other readings of
+this part accepted as proposed. Trunic: a recorded A, AB, AC or E at the
+mineral soil surface fails before anything else, and the anthropic
+truncation flag is read only when the first layer has no designation; BA
+and B/A count as a B; the ferralic horizon is tested on the first layer
+whatever its designation. Where a subgroup names the gypsic horizon
+alone (G2.1.7, G2.2.3, G2.2.5) a hypergypsic horizon does not count. The
+preset expander also expands a preset written directly as a mapping and
+reports a call with extra keys. New aliases Fe-leachic-Gleyi-Stagnic
+Anthrosols (p. 83) and Gypsi-Panic Sali-Orthic Aridosols (p. 105).
+Gypsic evidence left open by an undescribed layer below now names the
+gypsum to measure.
+
 ## soilKey 0.9.374 (2026-11-07)
 
 ### China CST 2001: the groups
