@@ -33,7 +33,7 @@
 #
 # Pages are the printed pages of the KA5 (PDF page = printed + 1), or of the
 # sources named. `reading: soilKey` marks a row the sources do not state, a
-# reading recorded in readings.yaml for Hugo to confirm. Names as printed;
+# reading recorded in readings.yaml with Hugo's decision. Names as printed;
 # no text of the sources is shipped.
 
 modifiers:
