@@ -406,9 +406,10 @@ test_that("R1-R4: the decisions on the doubtful readings", {
   rd <- vapply(r, `[[`, "", "reading")
   expect_true(any(grepl("KST criterion has 8 % clay or more", rd, fixed = TRUE)))
   # the readings of the parts up to 0.9.373 are all decided (the groups of
-  # 0.9.374 and the subgroups of 0.9.375 bring their own, for Hugo's word)
+  # 0.9.374, the subgroups of 0.9.375 and the benchmark of 0.9.378 bring
+  # their own, for Hugo's word)
   tp <- vapply(r, `[[`, "", "topic")
-  expect_false(any(grepl("for Hugo to confirm", rd[!grepl("^(Groups|Subgroups):", tp)])))
+  expect_false(any(grepl("for Hugo to confirm", rd[!grepl("^(Groups|Subgroups):", tp) & tp != "Benchmark: hand-written CST names (ISIS)"])))
   # R2: the Changbai Andosol (silty clay loam) is not Vitric; loam is not coarse
   andi <- list(designation = c("Ah", "Bw1", "Bw2", "C"), top_cm = c(0, 25, 60, 100), bottom_cm = c(25, 60, 100, 140),
     oc_pct = c(7, 3, 1.5, 0.6), clay_pct = c(25, 28, 25, 20), silt_pct = c(50, 47, 50, 50), sand_pct = c(25, 25, 25, 30),
