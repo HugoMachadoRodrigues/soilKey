@@ -1,5 +1,65 @@
 # Changelog
 
+## soilKey 0.9.377 (2026-11-08)
+
+### China CST 2001: gley colours in well-drained soils and the fine clay of the argic horizon
+
+Two order-level fixes of the Chinese Soil Taxonomy (2001; system id
+`cst2001`), decided by Hugo on 2026-11-08.
+
+Gley colours without a ferrous-iron test or Eh gave the gleyic features
+provisionally (Q11) in any layer but an E or albic one, so a humus-grey
+A horizon (10YR 4/2, 4/1, 5/1) of a well-drained profile keyed as
+Gleyosols. A recorded drainage class of well drained or better, with no
+saturation regime recorded, now rules the colour-only reading out in
+every layer without redox features of its own, as it already did for the
+low chroma of the redoxic features. Moderately well drained does not.
+Redox features are read per layer: mottles (a mottle recorded as none,
+absent, nil, - or 0 is none), redox concentrations, nodules, or a g or r
+suffix of the designation (Bg, Cr). A positive test or rH 19 or less
+still gives the features in any layer. With no drainage class recorded,
+such an A stays provisional Gleyosols with the alternative in
+`$candidates`. The drainage reader now also takes “excessively well
+drained” and “somewhat excessively well drained” (the ISIS wordings) as
+well drained or better, reads hyphens and underscores as spaces
+(“Well-drained”), and takes the worst class of a range (“well drained to
+moderately well drained” is not well drained); it serves the saturation
+regimes, the redoxic features and the Foli- groups too. A mottle
+recorded as none no longer counts as a redox sign beside a shallow water
+table, nor as a mottle in item 3 of the redoxic features.
+
+Item 2b of the argic horizon (p. 36) asks more total clay and more fine
+clay than the eluvial horizon; soilKey read the fine clay only at 60 %
+clay or more. Now, in the lower bands, the fine clay is compared with
+the eluvial layers the total clay increases over: if every one with fine
+clay measured has as much or more, item 2b fails; if the fine clay is
+not measured in both layers (in one or neither), the total-clay increase
+passes provisionally. The whole key is then run again with that increase
+failing, no gate switched off: the first level whose class differs names
+the fine clay as what would confirm it, even when it was assigned firmly
+(an argic layer can block an earlier class, the Spodosols for instance),
+and the class of that run is the alternative (a 1.2 times increase with
+no clay films: Argosols, provisional, with Cambosols as the
+alternative). The clay-pan and secondary clayification keep the total
+clay alone. Clay films and the thin section remain alternatives to the
+increase, as printed, and the fine-clay ratio a third higher stays a
+“normally”. The alkalic horizon reads the same items, so it follows the
+argic horizon; its evidence grade, read on its own items, is unaffected.
+A block of alternatives in the key (any_of) is now provisional only when
+every alternative that passed is.
+
+Names are unchanged except the H2.2 example, a well-drained Halosol that
+was Gleyic on colours alone and is now Typic Aqui-Orthic Halosols. The
+suborder examples G2, H1, K1 and K2, whose argic or alkalic horizon
+rests on item 2b, now record their fine clay, so they and the group and
+subgroup examples built on them (the Alkalic Halosols, the Argi- and
+Argic Ferrosols, the Argic Aridosols) keep their names, not
+provisionally. On the 51 ISIS profiles from China no name changes; seven
+Argosols, Ferrosols and Isohumosols with an argic horizon by the clay
+increase alone now carry the fine-clay warning and an alternative. Every
+other classification is unchanged (the fixtures of the other systems
+byte-identical).
+
 ## soilKey 0.9.376 (2026-11-07)
 
 ### China CST 2001: the subgroups of orders H to N
