@@ -619,8 +619,9 @@ test_that("alkalic horizon: ESP 30 and pH 9.0 (the WRB natric takes ESP 15)", {
   expect_false(.cg(mk(esp = 4.9, esp_c = 4), "alkalic_horizon")$evid[2])        # no ESP 5 within 40 cm
   expect_false(.cg(mk(esp = 10, st = "blocky"), "alkalic_horizon")$evid[2])     # no alkalic structure
   expect_true(.cg(mk(esp = 4.9), "alkalic_horizon")$evid[2])                   # ESP 20 within 40 cm
-  expect_true(is.na(.cg(mk(esp = 10, st = NA), "alkalic_horizon")$evid[2]))    # structure not recorded
-  expect_false(.cg(mk(esp = 4.9, st = NA, esp_c = 4), "alkalic_horizon")$evid[2])
+  expect_false(.cg(mk(esp = 10, st = NA), "alkalic_horizon")$evid[2])          # structure not recorded: absent
+  expect_true(is.na(.cg(mk(esp = NA, esp_c = NA), "alkalic_horizon")$evid[2])) # ESP not measured: undecided
+  expect_false(.cg(mk(esp = NA, esp_c = NA, st = "blocky"), "alkalic_horizon")$evid[2])
   # pH 8.9: not alkalic
   expect_false(.cg(mk(ph = 8.9), "alkalic_horizon")$full[2])
   # salts 5 g/kg in the surface layer: not alkalic

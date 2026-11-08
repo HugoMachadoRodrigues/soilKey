@@ -1242,20 +1242,18 @@
   # its printed items only, without the argic items 2a-d: a subsurface
   # layer (below the first mineral layer, not an O, A, E, C or R) with the
   # weakly developed structure of the alkalic horizon and an ESP of 5 or
-  # more within 40 cm of its top; a structure not recorded leaves it
-  # undecided unless the ESP fails
+  # more within 40 cm of its top; the structure is a field observation, not
+  # recorded absent (as for the full horizon), the ESP a measurement
   sub <- seq_len(x$n) > (if (is.na(s)) x$n else s) & !(x$kind %in% .CST_NOT_B)
-  st_ev <- ifelse(is.na(ty), NA, st)
   e_ev2 <- vapply(seq_len(x$n), function(i) {
     j <- which(seq_len(x$n) >= i & !is.na(x$top) & x$top < x$top[i] + t$within_cm & !(x$kind %in% "R"))
     .cst_or((esp >= t$evidence_esp_min)[j])
   }, NA)
-  evid <- sub & .cst_and_v(st_ev, e_ev2)
+  evid <- sub & .cst_and_v(st, e_ev2)
   ans <- .cst_hz_ans(x, full, evid,
                      notes = "evidence read on its printed items: the alkalic structure and an ESP of 5 or more within 40 cm, in a subsurface layer (Hugo, 2026-11-08)",
-                     missing = c(.cst_missing_in(x, which(is.na(full)), c("esp_pct", "na_cmol", "cec_cmol", "ph_h2o",
-                                                                         "soluble_salts_pct", "clay_pct")),
-                                 if (any(is.na(evid))) "structure_type"))
+                     missing = .cst_missing_in(x, which(is.na(full) | is.na(evid)), c("esp_pct", "na_cmol", "cec_cmol", "ph_h2o",
+                                                                                     "soluble_salts_pct", "clay_pct")))
   .cst_stand_in(x, ans, list(list(fn = "natric_horizon", args = list(min_esp = t$esp_min, min_pH_h2o = t$ph_min))),
                 eligible = is.na(ty) & A$core %in% TRUE & e_full %in% TRUE & isTRUE(surf_salt))
 }
