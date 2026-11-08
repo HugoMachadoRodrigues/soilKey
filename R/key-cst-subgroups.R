@@ -671,6 +671,7 @@ argic_lime_cst <- function(pedon, top_max = 100, datum = c("surface", "mineral")
                  ifelse((cc <= 0) %in% TRUE | eff %in% "none", FALSE, NA))
   passed <- .cst_or(lime)
   .cst_key_result(nm, passed, layers = x$idx[rows[lime %in% TRUE]], missing = if (is.na(passed)) "caco3_pct",
+                  flags = ar$evidence$flags,
                   notes = "lime infiltrates: CaCO3, secondary carbonates or effervescence in the argic horizon",
                   page = 101)
 }

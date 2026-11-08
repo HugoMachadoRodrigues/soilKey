@@ -817,12 +817,19 @@ anthroturbic_layer_cst <- function(pedon, top_max = NULL, datum = c("surface", "
   # by colour alone not in an E or albic layer, unless redox features or a
   # saturation regime are recorded (Hugo, 2026-11-06)
   pale <- x$kind %in% "E" | .cst_hz(x, "albic_horizon")$full %in% TRUE
-  mc <- as.character(.cst_col(x$h, "mottle_colors"))
-  redox <- (!is.na(mc) & nzchar(trimws(mc))) | (.cst_v(x, "redoximorphic_features_pct") > 0) %in% TRUE |
-    (.cst_v(x, "ferric_nodules_pct") > 0) %in% TRUE | (.cst_v(x, "manganiferous_nodules_pct") > 0) %in% TRUE
+  # per layer (v0.9.377): mottles recorded as none are none, and a g or r
+  # suffix of the designation is a recorded redox feature (Hugo, 2026-11-08)
+  redox <- .cst_mottles_recorded(.cst_col(x$h, "mottle_colors")) | (.cst_v(x, "redoximorphic_features_pct") > 0) %in% TRUE |
+    (.cst_v(x, "ferric_nodules_pct") > 0) %in% TRUE | (.cst_v(x, "manganiferous_nodules_pct") > 0) %in% TRUE |
+    .cst_redox_suffix(.cst_col(x$h, "designation"))
   sat <- .cst_moisture_regime(x$pedon)$saturation
   sat_rec <- all(sat$candidates %in% .CST_SATURATION)
-  red_ok[prov & pale & !redox & !sat_rec] <- FALSE
+  # v0.9.377 (Hugo, 2026-11-08): nor in any layer of a profile whose
+  # recorded drainage class is well drained or better (the definition's
+  # long-term saturation), with the same exceptions; moderately well
+  # drained does not rule it out
+  drained <- .cst_well_drained(x$pedon$site)
+  red_ok[prov & (pale | drained) & !redox & !sat_rec] <- FALSE
   full <- share_full & red_ok
   rh_ev <- (rh > t$rh_max & rh <= t$evidence_rh_max) %in% TRUE
   evid <- (share_ev & red_ok) | (share_full & rh_ev)
@@ -858,7 +865,9 @@ gleyic_features_cst <- function(pedon, grade = c("full", "evidence", "at_least_e
   # (1) rust mottles: a mottle colour of chroma 3 or more (or a mottle not
   # read as a colour), or redox concentrations recorded
   mc <- as.character(.cst_col(x$h, "mottle_colors"))
-  has_mot <- !is.na(mc) & nzchar(trimws(mc))
+  # v0.9.377: a mottle recorded as none ("none", "absent", "nil", "-", "0")
+  # is no mottle
+  has_mot <- .cst_mottles_recorded(mc)
   rust <- vapply(seq_len(x$n), function(i) {
     if (!has_mot[i]) return(FALSE)
     m <- .munsell_notations(mc[i])
