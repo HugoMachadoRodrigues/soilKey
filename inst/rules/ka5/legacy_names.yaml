@@ -11,16 +11,25 @@
 #   1. the names of the key itself (classes, types, subtypes; soilKey's
 #      bracketed codes left out) and the rows of `names` below are compared
 #      exactly, on a key: lower case, the umlauts written ae, oe, ue and the
-#      sharp s as ss, letters only;
-#   2. a name written of two or more type names joined by hyphens (a
-#      transition) is read with the rows marked `part: true` put in for their
+#      sharp s as ss, single spaces, a hyphen with spaces around it one
+#      hyphen; a name with brackets, a slash, a comma, a full stop or a digit
+#      is not read, but for the modifier "(Acker)";
+#   2. a name of exactly two type names joined by a hyphen (a transition;
+#      Hugo, 2026-11-08: three or more parts are not read) is read with the rows marked `part: true` put in for their
 #      KA5 type name (Chernozem-Parabraunerde = Tschernosem-Parabraunerde);
 #      when the joined name is a subtype of the key it is that subtype; when it
 #      is not, it is the type of its last part, the subtype left unscored (the
 #      last-named type decides, p. 191);
 #   3. only when the name as a whole is not read, one leading word of
-#      `modifiers` is taken off and the rest is read as in 1 and 2.
-# A name that is still not read is unmatched (NA), never guessed.
+#      `modifiers` is taken off and the rest is read as in 1 and 2: Typischer
+#      gives the Norm subtype only of a name that stands for a type (a type
+#      name of the key or a row marked `part: true`), Primaerer is dropped
+#      only before a Pseudogley (`only_types`).
+# A name that is still not read is unmatched (NA), never guessed. The names
+# under `excluded` are left out on purpose (printed for two classes or types).
+# Two older names of the ISIS labels with no printed source (a soil like a
+# Schwarzerde, a Braunerde of low base content) are not here: the benchmark
+# script reads them through its explicit variant list (Hugo, 2026-11-08).
 #
 # Pages are the printed pages of the KA5 (PDF page = printed + 1), or of the
 # sources named. `reading: soilKey` marks a row the sources do not state, a
@@ -37,13 +46,14 @@ modifiers:
   - words: ["Typischer", "Typische", "Typisches"]
     joined: false
     effect: norm
-    page: "pp. 191, 249-253"
-    source: "KA5: the Norm subtype has the horizon sequence of the type; the older names of the Norm subtypes of the Marschen are printed as Typische Kalkmarsch, Typische Knickmarsch, Typische Organomarsch"
+    page: "pp. 191, 238, 249-253"
+    source: "KA5: the Norm subtype has the horizon sequence of the type; the older names of the Norm subtypes are printed as Typische Kalkmarsch, Typische Knickmarsch, Typische Humusmarsch and Typische Organomarsch (pp. 250-253) and Typische Rambla (p. 238); the exceptions (Typische Kleimarsch under MNn, MNb and MNf; Typische Flussmarsch under MNf) are rows of their own"
   - words: ["Primärer", "Primäre", "Primäres"]
     joined: false
     effect: drop
+    only_types: ["SS"]
     page: "pp. 227-230"
-    reading: soilKey
+    decided: "Hugo, 2026-11-08: dropped only before a Pseudogley (SS); elsewhere the name is not read"
     source: "The older systematics told a primary pseudogley (stagnant water over a dense parent material) from a secondary one (over an illuviated Bt). The KA5 has no such class: the word is dropped and the rest is read."
 
 names:
@@ -52,7 +62,7 @@ names:
   # Baden-Wuerttemberg) use the same names.
   - {name: "Schwarzerde", code: "TT", part: true, source: "Mitt. DBG 86 (1998)", page: "contents, p. 54 (Typ: Tschernosem, Schwarzerde); BK50 Niedersachsen, Tschernosem (Schwarzerde)"}
   - {name: "Kalkschwarzerde", code: "TC", part: true, source: "Mitt. DBG 86 (1998)", page: "contents, p. 56 (Typ: Kalktschernosem, Kalkschwarzerde)"}
-  - {name: "Haftnässepseudogley", code: "SH", part: true, source: "Mitt. DBG 86 (1998)", page: "contents, p. 84 (Typ: Haftpseudogley (Haftnässepseudogley)); LGRB Symbolschlüssel, SH"}
+  - {name: "Haftnässepseudogley", code: "SH", part: true, source: "KA5; Mitt. DBG 86 (1998)", page: "KA5 p. 313 and the index (p. 429; Braunerde-, Fahlerde-, Gley-Haftnässepseudogley p. 230); DBG contents p. 84 (Typ: Haftpseudogley (Haftnässepseudogley)); LGRB Symbolschlüssel, SH"}
   - {name: "Auenlockersyrosem", code: "AO", part: true, source: "Mitt. DBG 86 (1998)", page: "contents, p. 96 (Typ: Rambla (Auenlockersyrosem))"}
   - {name: "Auenregosol", code: "AQ", part: true, source: "Mitt. DBG 86 (1998)", page: "contents, p. 96 (Typ: Paternia (Auenregosol)); LGRB Symbolschlüssel, AQ"}
   - {name: "Auenpararendzina", code: "AZ", part: true, source: "Mitt. DBG 86 (1998)", page: "contents, p. 97 (Typ: Kalkpaternia (Auenpararendzina)); KA5 p. 238"}
@@ -64,11 +74,13 @@ names:
   - {name: "Stagnosole", code: "S", source: "Mitt. DBG 86 (1998)", page: "contents, p. 79 (Klasse: Stauwasserböden (Stagnosole))"}
   - {name: "Terra calcis", code: "C", source: "Mitt. DBG 86 (1998)", page: "contents, p. 75 (Klasse: Terra calcis)"}
   - {name: "Plastosole", code: "V", source: "KA5", page: "p. 226 (class V, formerly Plastosole and Latosole)"}
+  - {name: "Latosole", code: "V", source: "KA5", page: "p. 226 (class V, formerly Plastosole and Latosole)"}
 
   # The KA5 itself: older names it prints beside its own.
+  - {name: "basenarme Braunerde", code: "BB", variety: "dy", source: "KA5 (the variety named before the type, as basenreiche Braunerde)", page: "p. 265"}
   - {name: "Rosterde", code: "BB-PP", variety: "v", source: "KA5", page: "p. 222 (the (Acker)Braunerde-Podsol is the Rosterde, a variety, Tab. 50)"}
-  - {name: "Amphigley", code: "SS-GG", source: "KA5", page: "p. 245 (Pseudogley-Gley, formerly also Amphigley)"}
   - {name: "Terra fusca-Braunerde", code: "BBn", source: "KA5", page: "p. 268 (a shallow Braunerde over Terra fusca, BB\\CF, a variety of the Normbraunerde, formerly Terra fusca-Braunerde)"}
+  - {name: "Typische Rambla", code: "AOn", source: "KA5", page: "p. 238 (the Auensilikatrohboden, Typische Rambla, now in the Normrambla)"}
   - {name: "Auensilikatrohboden", code: "AOn", source: "KA5", page: "p. 238 (with the Auencarbonatrohboden merged into the Normrambla since 1994)"}
   - {name: "Auencarbonatrohboden", code: "AOn", source: "KA5", page: "p. 238"}
   - {name: "Auenkarbonatrohboden", code: "AOn", source: "LGRB Symbolschlüssel (AC); KA5", page: "p. 238"}
@@ -80,8 +92,8 @@ names:
   - {name: "Auenparabraunerde", code: "LL", source: "KA5", page: "p. 238"}
   - {name: "Auenpseudogley", code: "SS", source: "KA5", page: "p. 238"}
   # the older names of the Marschen subtypes (KA5, in parentheses under each
-  # subtype); a name printed under two types (Typische Seemarsch,
-  # Uebergangsbrackmarsch) is left out, one printed under three subtypes of one
+  # subtype); a name printed under two types is read at their common level,
+  # the class M (Hugo, 2026-11-08), one printed under three subtypes of one
   # type (Typische Kleimarsch) is read as the type
   - {name: "Salzmarsch", code: "MRn", source: "KA5", page: "p. 249"}
   - {name: "Unentwickelte Marsch", code: "MRn", source: "KA5", page: "p. 249"}
@@ -95,6 +107,9 @@ names:
   - {name: "Kalk-Flussmarsch", code: "MCf", source: "KA5", page: "p. 250"}
   - {name: "Typische Kleimarsch", code: "MN", source: "KA5", page: "p. 251 (printed under MNn, MNb and MNf)"}
   - {name: "Typische Flussmarsch", code: "MNf", source: "KA5", page: "p. 251"}
+  - {name: "Typische Seemarsch", code: "M", source: "KA5", page: "pp. 250, 251 (printed under MCn and MNn)"}
+  - {name: "Übergangsbrackmarsch", code: "M", source: "KA5", page: "pp. 251, 252 (printed under MNb, and as Übergangs-Brackmarsch under MDn)"}
+  - {name: "Übergangs-Brackmarsch", code: "M", source: "KA5", page: "pp. 251, 252"}
   - {name: "Haftnasse Kleimarsch", code: "MHn", source: "KA5", page: "p. 252"}
   - {name: "Haftnasse Seemarsch", code: "MHn", source: "KA5", page: "p. 252"}
   - {name: "Haftnasse Brackmarsch", code: "MHb", source: "KA5", page: "p. 252"}
@@ -106,9 +121,8 @@ names:
   - {name: "Typische Humusmarsch", code: "MOn", source: "KA5", page: "p. 253"}
   - {name: "Typische Organomarsch", code: "MOn", source: "KA5", page: "p. 253"}
 
-  # soilKey's readings (readings.yaml, for Hugo to confirm)
+  # soilKey's reading (readings.yaml)
   - {name: "Chernozem", code: "TT", part: true, reading: soilKey, source: "the English and FAO spelling of Tschernosem (the KA5 prints it in its WRB hints, p. 211)", page: "p. 211"}
-  - {name: "Braunerde mit geringem Basengehalt", code: "BB", variety: "dy", reading: soilKey, source: "a Braunerde poor in bases; the KA5 variety basenarm (dy)", page: "p. 265"}
-  - {name: "Braunerde geringen Basengehalts", code: "BB", variety: "dy", reading: soilKey, source: "as above", page: "p. 265"}
-  - {name: "basenarme Braunerde", code: "BB", variety: "dy", source: "KA5 (the variety named before the type, as basenreiche Braunerde)", page: "p. 265"}
-  - {name: "Schwarzerdeähnlicher Boden", code: "T", reading: soilKey, source: "a soil like a Schwarzerde: read as the class Schwarzerden, no type named", page: "p. 211"}
+
+excluded:
+  - {name: "Amphigley", pages: "pp. 229, 245", why: "printed as a former name of the Gley-Pseudogley (GG-SS, class S, p. 229) and of the Pseudogley-Gley (SS-GG, class G, p. 245)"}

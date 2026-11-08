@@ -28,7 +28,7 @@
 #
 # Scoring. Each label is read by soilKey:::.ka5_match_label(): the names of
 # the KA5 key and the older names of inst/rules/ka5/legacy_names.yaml, exactly
-# (case, umlaut spelling and hyphens alike), with the leading modifiers Acker-,
+# (case, umlaut spelling and the spacing of hyphens alike), with the leading modifiers Acker-,
 # Typischer and Primaerer. Only when a label is not read are the spelling
 # variants of .ka5_isis_variants tried, an explicit list kept here; such
 # matches are flagged in the report. A label not read is unmatched, never
@@ -43,12 +43,17 @@
 
 .ka5_isis_levels <- c("classes", "types", "subtypes")
 
-# The forms of the ISIS labels the legacy table does not hold as written
-# (regular expression, case ignored = replacement), tried only when a label
-# is not read:
-#   * a "Braunerde" named "of low base content" with the preposition "mit"
-#     left out, read as "Braunerde mit geringem Basengehalt" (BB, variety dy).
-.ka5_isis_variants <- c("^Braunerde geringem Basengehalt$" = "Braunerde mit geringem Basengehalt")
+# The forms of the ISIS labels the legacy table does not hold (regular
+# expression, case ignored = replacement), tried only when a label is not
+# read; older names with no printed source, kept here and not in
+# legacy_names.yaml (Hugo, 2026-11-08):
+#   * a soil "like a Schwarzerde" (umlaut or ae), read as the class
+#     Schwarzerden (T) only, its type not scored;
+#   * a Braunerde "of low base content" (with or without "mit", dative or
+#     genitive), read as "basenarme Braunerde": type BB, the variety dy noted
+#     and not scored (the base content could also be mesotroph, p. 265).
+.ka5_isis_variants <- c("^Schwarzerde(\u00e4|ae)hnlicher Boden$" = "Schwarzerden",
+                        "^Braunerde (mit )?geringe[mn] Basengehalt(e?s)?$" = "basenarme Braunerde")
 
 .ka5_isis_wilson <- function(k, n, z = stats::qnorm(0.975)) {
   if (!n) return(c(NA_real_, NA_real_))
@@ -193,7 +198,7 @@ ka5_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   for (i in seq_len(nrow(st)))
     lines <- c(lines, sprintf("| %s | %d | %d | %d |", st$level[i], st$classified[i], st$reached[i], st$undecided[i]))
   uc <- res$undecided_classes
-  lines <- c(lines, "", "Classes left undecided (profiles): ",
+  lines <- c(lines, "", "Classes left undecided (profiles, of all those classified): ",
              if (length(uc)) paste(sprintf("%s %d", names(uc), as.integer(uc)), collapse = ", ") else "none.",
              sprintf("Profiles that could not be classified (no horizons): %d.", sum(d$error)))
   lines <- c(lines, "", "## Labels read through a spelling variant (.ka5_isis_variants)", "")

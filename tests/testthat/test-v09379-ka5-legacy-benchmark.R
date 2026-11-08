@@ -69,52 +69,89 @@ test_that("older type names read alone and inside joined names", {
   expect_true(all(is.na(.m379(c("Gley-Irgendwas", "Moder-Gley"))$code)))
 })
 
-test_that("the modifiers: Acker- gives the variety, Typischer the Norm subtype, Primaerer is dropped", {
+test_that("the modifiers: Acker- gives the variety, Typischer the Norm subtype, Primaerer only before a Pseudogley", {
   skip_on_cran()
-  m <- .m379(c("Acker-Gley", "(Acker)Gley", "Ackergley", "Acker Gley-Podsol", "Acker-Schwarzerde-Gley"))
-  expect_identical(m$code, c("GG", "GG", "GG", "GG-PP", "TT-GG"))
-  expect_identical(m$variety, rep("v", 5))
-  expect_identical(m$modifier, rep("Acker", 5))
+  m <- .m379(c("Acker-Gley", "(Acker)Gley", "Ackergley", "Acker Gley-Podsol", "Acker-Schwarzerde-Gley",
+               "(Acker)Rosterde"))
+  expect_identical(m$code, c("GG", "GG", "GG", "GG-PP", "TT-GG", "BB-PP"))
+  expect_identical(m$variety, rep("v", 6))   # one v, not "v;v"
+  expect_identical(m$modifier, rep("Acker", 6))
   n <- .m379(c("Typischer Pseudogley", "Typische Rambla", "Typisches Kolluvisol", "Typischer Haftnässepseudogley",
-               "Typischer Gley-Podsol", "Typischer Moder", "Typischer"))
-  expect_identical(n$code, c("SSn", "AOn", "YKn", "SHn", NA, NA, NA))
-  expect_identical(n$level[1:4], rep("subtypes", 4))
-  p <- .m379(c("Primäre Rendzina", "Primärer Gley-Pseudogley", "Primaerer Pseudogley-Gley"))
-  expect_identical(p$code, c("RR", "GG-SS", "SS-GG"))
-  expect_true(all(p$reading))
-  expect_identical(p$modifier, rep("Primärer", 3))
-  # an older name printed as such wins over the modifier rule
-  k <- .m379(c("Typische Kleimarsch", "Typische Kalkmarsch", "Typische Seemarsch"))
-  expect_identical(k$code, c("MN", "MCn", NA))
-  expect_identical(k$level[1:2], c("types", "subtypes"))
-  expect_identical(k$matched_by[1:2], c("legacy", "legacy"))
+               "Typische Schwarzerde", "Typischer Gley-Podsol", "Typischer Moder", "Typischer",
+               "Typische Chernozem-Braunerde", "Typischer Auenpelosol", "Typische Borowina", "Typischer Normgley"))
+  expect_identical(n$code, c("SSn", "AOn", "YKn", "SHn", "TTn", rep(NA, 7)))
+  expect_identical(n$level[1:5], rep("subtypes", 5))
+  p <- .m379(c("Primärer Pseudogley-Gley", "Primäre Rendzina", "Primärer Gley",
+               "Primärer Gley-Pseudogley", "Primaerer Braunerde-Pseudogley"))
+  expect_identical(p$code, c(NA, NA, NA, "GG-SS", "BB-SS"))
+  expect_identical(p$reading[4:5], c(FALSE, FALSE))
+  expect_identical(p$modifier[4:5], rep("Primärer", 2))
+  # an older name printed as such wins over the modifier rule; the KA5's own exceptions
+  k <- .m379(c("Typische Kleimarsch", "Typische Flussmarsch", "Typische Kalkmarsch", "Typische Seemarsch",
+               "Übergangsbrackmarsch", "Übergangs-Brackmarsch"))
+  expect_identical(k$code, c("MN", "MNf", "MCn", "M", "M", "M"))
+  expect_identical(k$level, c("types", "subtypes", "subtypes", "classes", "classes", "classes"))
+  expect_identical(k$matched_by, rep("legacy", 6))
 })
 
-test_that("Rosterde, the low-base Braunerde and the soil like a Schwarzerde", {
+test_that("Rosterde, Latosole, and the names left to the script's variants", {
   skip_on_cran()
-  m <- .m379(c("Rosterde; Kartiereinheit 3", "Braunerde mit geringem Basengehalt", "Braunerde geringen Basengehalts",
-               "basenarme Braunerde", "Schwarzerdeähnlicher Boden", "Schwarzerdeaehnlicher Boden"))
-  expect_identical(m$code, c("BB-PP", "BB", "BB", "BB", "T", "T"))
-  expect_identical(m$variety, c("v", "dy", "dy", "dy", NA, NA))
-  expect_identical(m$level, c("subtypes", "types", "types", "types", "classes", "classes"))
+  m <- .m379(c("Rosterde; Kartiereinheit", "basenarme Braunerde", "Latosole", "Plastosole"))
+  expect_identical(m$code, c("BB-PP", "BB", "V", "V"))
+  expect_identical(m$variety, c("v", "dy", NA, NA))
   expect_identical(m$part[1], "Rosterde")
-  expect_identical(m$reading, c(FALSE, TRUE, TRUE, FALSE, TRUE, TRUE))
+  v <- .script379()$.ka5_isis_variants
+  labs <- c("Braunerde mit geringem Basengehalt", "Braunerde geringen Basengehalts",
+            "Schwarzerdeähnlicher Boden", "Schwarzerdeaehnliche Boden")
+  expect_true(all(is.na(.m379(labs)$code)))
+  w <- .m379(labs, variants = v)
+  expect_identical(w$code, c("BB", "BB", "T", NA))
+  expect_identical(w$variety, c("dy", "dy", NA, NA))
+  expect_identical(w$level[1:3], c("types", "types", "classes"))
+  expect_identical(w$matched_by[1:3], rep("variant", 3))
 })
 
 test_that("no generic tolerance: misspellings are unmatched unless the explicit variant list reads them", {
   skip_on_cran()
   v <- .script379()$.ka5_isis_variants
-  expect_true(all(is.na(.m379(c("Parabraunerd", "Parabraunerde x", "Braunerde geringem Basengehalt", "Gley Podsol x",
+  expect_true(all(is.na(.m379(c("Parabraunerd", "Parabraunerde x", "Braunerde geringem Basengehalt",
                                  NA, "", ";"))$code)))
   m <- .m379("Braunerde geringem Basengehalt", variants = v)
   expect_identical(m$code, "BB")
   expect_identical(m$variety, "dy")
   expect_identical(m$matched_by, "variant")
-  # an exact match beats a variant; the deepest part wins
-  m2 <- .m379("Braunerde | Gley-Podsol", variants = v)
+  # an exact match beats a variant
+  m2 <- .m379("Podsol | Gley-Podsol", variants = v)
   expect_identical(m2$code, "GG-PP")
   expect_identical(m2$matched_by, "name")
   expect_identical(m2$part, "Gley-Podsol")
+})
+
+test_that("punctuation, digits, a space for a hyphen and three-part names are not read (review D1, D8)", {
+  skip_on_cran()
+  bad <- c("Braunerde (Pseudogley)", "Parabraunerde/Pseudogley", "Parabraunerde, Pseudogley", "Podsol, Braunerde",
+           "Braunerde 2", "Braunerde.", "Gley Podsol", "Gley-Braunerde-Podsol", "Acker-Gley-Braunerde-Podsol",
+           "Braunerde-", "-Braunerde", "(Gley)Podsol", "Gley--Podsol x")
+  expect_true(all(is.na(.m379(bad)$code)))
+  ok <- .m379(c("Gley--Podsol", "Gley - Podsol", "  Gley-Podsol  ", "Terra  fusca"))
+  expect_identical(ok$code, c("GG-PP", "GG-PP", "GG-PP", "CF"))
+})
+
+test_that("Amphigley, printed for two classes, is excluded (review D3)", {
+  skip_on_cran()
+  lg <- yaml::read_yaml(system.file("rules", "ka5", "legacy_names.yaml", package = "soilKey"))
+  expect_true("Amphigley" %in% vapply(lg$excluded, `[[`, "", "name"))
+  expect_false("Amphigley" %in% vapply(lg$names, `[[`, "", "name"))
+  expect_true(is.na(.m379("Amphigley")$code))
+})
+
+test_that("labels of several parts: the deepest when the others are its ancestors, else the common ancestor (review D4)", {
+  skip_on_cran()
+  m <- .m379(c("Podsol | Gley-Podsol", "Podsole; Gley-Podsol", "Braunerde | Gley-Podsol", "Gley | Nassgley",
+               "Gley-Podsol | Braunerde-Podsol", "Kalkmarsch | Kleimarsch", "Gley-Podsol | Unbekannt"))
+  expect_identical(m$code, c("GG-PP", "GG-PP", NA, "G", "PP", "M", "GG-PP"))
+  expect_identical(m$matched_by, c("name", "name", NA, "ancestor", "ancestor", "ancestor", "name"))
+  expect_identical(m$part[5], "Gley-Podsol | Braunerde-Podsol")
 })
 
 test_that(".ka5_code_at gives the code at each level, NA below the label", {
@@ -131,7 +168,7 @@ test_that("the readings of this part are recorded", {
   rd <- yaml::read_yaml(system.file("rules", "ka5", "readings.yaml", package = "soilKey"))$readings
   tp <- vapply(rd, `[[`, "", "topic")
   expect_identical(sum(startsWith(tp, "Older German names")), 8L)
-  expect_true(all(grepl("for Hugo to confirm, 2026-11-08", vapply(rd[startsWith(tp, "Older German names")], `[[`, "", "reading"))))
+  expect_true(all(grepl("2026-11-08", vapply(rd[startsWith(tp, "Older German names")], `[[`, "", "reading"))))
 })
 
 test_that("the source of the matcher is ASCII", {
@@ -169,7 +206,7 @@ test_that("the benchmark runs end to end on the ISIS cache (skipped without it)"
   expect_identical(b$score$labelled, c(16L, 15L, 6L))
   expect_identical(nrow(b$unmatched), 0L)
   expect_length(b$unlabelled, 8L)
-  expect_identical(b$variants$profile, "DE011")
+  expect_identical(b$variants$profile, c("DE008", "DE011"))
   expect_identical(b$profiles$lab_types[b$profiles$profile == "DE004"], "PP")
   expect_true(all(b$score$agree <= b$score$n))
   expect_true(all(b$score$n <= b$score$labelled))
