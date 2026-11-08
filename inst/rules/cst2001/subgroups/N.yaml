@@ -1,0 +1,765 @@
+# The keys to subgroups of the Primosols (order N) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 167-180, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly (v0.9.376). Readings: readings.yaml.
+
+subgroups:
+
+  "N1.1":
+    - code: "N1.1.1"
+      name: "Calcaric Turbi-Anthric Primosols"
+      aliases: ["Calcaric Turbi-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antroturbados calcáricos"
+      adjective: "Calcaric"
+      page: 168
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N1.1.2"
+      name: "Dystric Turbi-Anthric Primosols"
+      aliases: ["Dystric Turbi-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antroturbados distróficos"
+      adjective: "Dystric"
+      page: 168
+      tests:
+        all_of:
+          - dystric: {to: 50}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon within 50 cm of the mineral soil surface (Q23)."
+    - code: "N1.1.3"
+      name: "Typic Turbi-Anthric Primosols"
+      aliases: ["Typic Turbi-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antroturbados típicos"
+      adjective: "Typic"
+      page: 168
+      tests:
+        default: true
+      notes: "Other Turbi-Anthric Primosols."
+
+  "N1.2":
+    - code: "N1.2.1"
+      name: "Parasalic Silti-Anthric Primosols"
+      aliases: ["Parasalic Silti-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antrossiltados parassálicos"
+      adjective: "Parasalic"
+      page: 168
+      tests:
+        all_of:
+          - parasalic: {within: 75, thick: 15}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 15 cm or more thick within 75 cm of the mineral soil surface."
+    - code: "N1.2.2"
+      name: "Mottlic Silti-Anthric Primosols"
+      aliases: ["Mottlic Silti-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antrossiltados mosqueados"
+      adjective: "Mottlic"
+      page: 168
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "N1.2.3"
+      name: "Calcaric Silti-Anthric Primosols"
+      aliases: ["Calcaric Silti-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antrossiltados calcáricos"
+      adjective: "Calcaric"
+      page: 168
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N1.2.4"
+      name: "Dystric Silti-Anthric Primosols"
+      aliases: ["Dystric Silti-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antrossiltados distróficos"
+      adjective: "Dystric"
+      page: 169
+      tests:
+        all_of:
+          - dystric: {to: 50, from: 20}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon at least between 20 and 50 cm of the mineral soil surface (Q23)."
+    - code: "N1.2.5"
+      name: "Typic Silti-Anthric Primosols"
+      aliases: ["Typic Silti-Anthric Primosol"]
+      name_pt: "Primossolos antrópicos antrossiltados típicos"
+      adjective: "Typic"
+      page: 169
+      tests:
+        default: true
+      notes: "Other Silti-Anthric Primosols."
+
+  "N2.1":
+    - code: "N2.1.1"
+      name: "Permic Geli-Sandic Primosols"
+      aliases: ["Permic Geli-Sandic Primosol", "Permic Gelic-Sandic Primosols"]
+      name_pt: "Primossolos arênicos gélicos permagélicos"
+      adjective: "Permic"
+      page: 169-170
+      tests:
+        all_of:
+          - permic: {}
+      notes: "A permagelic soil temperature regime, or a permafrost layer within 200 cm of the mineral soil surface."
+    - code: "N2.1.2"
+      name: "Epigleyic Geli-Sandic Primosols"
+      aliases: ["Epigleyic Geli-Sandic Primosol", "Epigleyic Gelic-Sandic Primosols"]
+      name_pt: "Primossolos arênicos gélicos epigleicos"
+      adjective: "Epigleyic"
+      page: 170
+      tests:
+        all_of:
+          - feature_every: {from: 20, to: 50}
+      notes: "Gleyic evidence (gleyic features pass too) at least between 20 and 50 cm of the mineral soil surface: in every layer of that depth (Q23)."
+    - code: "N2.1.3"
+      name: "Dystric Geli-Sandic Primosols"
+      aliases: ["Dystric Geli-Sandic Primosol", "Dystric Gelic-Sandic Primosols"]
+      name_pt: "Primossolos arênicos gélicos distróficos"
+      adjective: "Dystric"
+      page: 170
+      tests:
+        all_of:
+          - dystric: {to: 25}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon within 25 cm of the mineral soil surface (Q23)."
+    - code: "N2.1.4"
+      name: "Calcaric Geli-Sandic Primosols"
+      aliases: ["Calcaric Geli-Sandic Primosol", "Calcaric Gelic-Sandic Primosols"]
+      name_pt: "Primossolos arênicos gélicos calcáricos"
+      adjective: "Calcaric"
+      page: 170
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N2.1.5"
+      name: "Typic Geli-Sandic Primosols"
+      aliases: ["Typic Geli-Sandic Primosol", "Typic Gelic-Sandic Primosols"]
+      name_pt: "Primossolos arênicos gélicos típicos"
+      adjective: "Typic"
+      page: 170
+      tests:
+        default: true
+      notes: "Other Geli-Sandic Primosols."
+
+  "N2.2":
+    - code: "N2.2.1"
+      name: "Calcaric Aqui-Sandic Primosols"
+      aliases: ["Calcaric Aqui-Sandic Primosol"]
+      name_pt: "Primossolos arênicos áquicos calcáricos"
+      adjective: "Calcaric"
+      page: 170
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N2.2.2"
+      name: "Sodic Aqui-Sandic Primosols"
+      aliases: ["Sodic Aqui-Sandic Primosol"]
+      name_pt: "Primossolos arênicos áquicos sódicos"
+      adjective: "Sodic"
+      page: 170
+      tests:
+        all_of:
+          - sodic: {within: 50, grade: at_least_evidence}
+      notes: "The sodic property or sodic evidence in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "N2.2.3"
+      name: "Parasalic Aqui-Sandic Primosols"
+      aliases: ["Parasalic Aqui-Sandic Primosol"]
+      name_pt: "Primossolos arênicos áquicos parassálicos"
+      adjective: "Parasalic"
+      page: 170
+      tests:
+        all_of:
+          - parasalic: {within: 75}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 10 cm or more thick within 75 cm of the mineral soil surface."
+    - code: "N2.2.4"
+      name: "Typic Aqui-Sandic Primosols"
+      aliases: ["Typic Aqui-Sandic Primosol"]
+      name_pt: "Primossolos arênicos áquicos típicos"
+      adjective: "Typic"
+      page: 170
+      tests:
+        default: true
+      notes: "Other Aqui-Sandic Primosols."
+
+  "N2.3":
+    - code: "N2.3.1"
+      name: "Mottlic Aridi-Sandic Primosols"
+      aliases: ["Mottlic Aridi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos arídicos mosqueados"
+      adjective: "Mottlic"
+      page: 171
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N2.3.2"
+      name: "Calcaric Aridi-Sandic Primosols"
+      aliases: ["Calcaric Aridi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos arídicos calcáricos"
+      adjective: "Calcaric"
+      page: 171
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N2.3.3"
+      name: "Sodic Aridi-Sandic Primosols"
+      aliases: ["Sodic Aridi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos arídicos sódicos"
+      adjective: "Sodic"
+      page: 171
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "N2.3.4"
+      name: "Parasalic Aridi-Sandic Primosols"
+      aliases: ["Parasalic Aridi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos arídicos parassálicos"
+      adjective: "Parasalic"
+      page: 171
+      tests:
+        all_of:
+          - parasalic: {within: 75}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 10 cm or more thick within 75 cm of the mineral soil surface."
+    - code: "N2.3.5"
+      name: "Typic Aridi-Sandic Primosols"
+      aliases: ["Typic Aridi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos arídicos típicos"
+      adjective: "Typic"
+      page: 171
+      tests:
+        default: true
+      notes: "Other Aridi-Sandic Primosols."
+
+  "N2.4":
+    - code: "N2.4.1"
+      name: "Hy-thermic Usti-Sandic Primosols"
+      aliases: ["Hy-themic Usti-Sandic Primosols", "Hy-thermic Usti-Sandic Primosol"]
+      name_pt: "Primossolos arênicos ústicos hipertérmicos"
+      adjective: "Hy-thermic"
+      page: 171
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [hyperthermic]}
+      notes: "A hyperthermic soil temperature regime."
+    - code: "N2.4.2"
+      name: "Mottlic Usti-Sandic Primosols"
+      aliases: ["Mottlic Usti-Sandic Primosol"]
+      name_pt: "Primossolos arênicos ústicos mosqueados"
+      adjective: "Mottlic"
+      page: 171-172
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N2.4.3"
+      name: "Calcaric Usti-Sandic Primosols"
+      aliases: ["Calcaric Usti-Sandic Primosol"]
+      name_pt: "Primossolos arênicos ústicos calcáricos"
+      adjective: "Calcaric"
+      page: 172
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N2.4.4"
+      name: "Litteric Usti-Sandic Primosols"
+      aliases: ["Litteric Usti-Sandic Primosol"]
+      name_pt: "Primossolos arênicos ústicos de serapilheira"
+      adjective: "Litteric"
+      page: 172
+      tests:
+        all_of:
+          - histic_littery_cst: {}
+      notes: "Folic histic evidence: histic evidence (or a histic epipedon) of litter, at the surface (no depth printed; default 24)."
+    - code: "N2.4.5"
+      name: "Typic Usti-Sandic Primosols"
+      aliases: ["Typic Usti-Sandic Primosol"]
+      name_pt: "Primossolos arênicos ústicos típicos"
+      adjective: "Typic"
+      page: 172
+      tests:
+        default: true
+      notes: "Other Usti-Sandic Primosols."
+
+  "N2.5":
+    - code: "N2.5.1"
+      name: "Calcaric Udi-Sandic Primosols"
+      aliases: ["Calcaric Udi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos údicos calcáricos"
+      adjective: "Calcaric"
+      page: 172
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N2.5.2"
+      name: "Siltigic Udi-Sandic Primosols"
+      aliases: ["Siltigic Udi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos údicos siltígicos"
+      adjective: "Siltigic"
+      page: 172
+      tests:
+        all_of:
+          - siltigic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Siltigic evidence (the siltigic epipedon passes too, Q19; no depth printed)."
+    - code: "N2.5.3"
+      name: "Typic Udi-Sandic Primosols"
+      aliases: ["Typic Udi-Sandic Primosol"]
+      name_pt: "Primossolos arênicos údicos típicos"
+      adjective: "Typic"
+      page: 172
+      tests:
+        default: true
+      notes: "Other Udi-Sandic Primosols."
+
+  "N3.1":
+    - code: "N3.1.1"
+      name: "Permic Geli-Alluvic Primosols"
+      aliases: ["Permic Geli-Alluvic Primosol", "Permic-Geli-Alluvic Primosols"]
+      name_pt: "Primossolos flúvicos gélicos permagélicos"
+      adjective: "Permic"
+      page: 173
+      tests:
+        all_of:
+          - permic: {}
+      notes: "A permagelic soil temperature regime, or a permafrost layer within 200 cm of the mineral soil surface."
+    - code: "N3.1.2"
+      name: "Mottlic Geli-Alluvic Primosols"
+      aliases: ["Mottlic Geli-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos gélicos mosqueados"
+      adjective: "Mottlic"
+      page: 173
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "N3.1.3"
+      name: "Typic Geli-Alluvic Primosols"
+      aliases: ["Typic Geli-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos gélicos típicos"
+      adjective: "Typic"
+      page: 173
+      tests:
+        default: true
+      notes: "Other Geli-Alluvic Primosols."
+
+  "N3.2":
+    - code: "N3.2.1"
+      name: "Gleyic Aqui-Alluvic Primosols"
+      aliases: ["Gleyic Aqui-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos áquicos gleicos"
+      adjective: "Gleyic"
+      page: 173
+      tests:
+        all_of:
+          - gleyic: {to: 100, from: 50}
+      notes: "Gleyic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N3.2.2"
+      name: "Calcaric Aqui-Alluvic Primosols"
+      aliases: ["Calcaric Aqui-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos áquicos calcáricos"
+      adjective: "Calcaric"
+      page: 173-174
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N3.2.3"
+      name: "Typic Aqui-Alluvic Primosols"
+      aliases: ["Typic Aqui-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos áquicos típicos"
+      adjective: "Typic"
+      page: 174
+      tests:
+        default: true
+      notes: "Other Aqui-Alluvic Primosols."
+
+  "N3.3":
+    - code: "N3.3.1"
+      name: "Mottlic Aridi-Alluvic Primosols"
+      aliases: ["Mottlic Aridi-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos arídicos mosqueados"
+      adjective: "Mottlic"
+      page: 174
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N3.3.2"
+      name: "Parasalic Aridi-Alluvic Primosols"
+      aliases: ["Parasalic Aridi-Alluvic Primosol", "Parasalic Aridic-Alluvic Primosols"]
+      name_pt: "Primossolos flúvicos arídicos parassálicos"
+      adjective: "Parasalic"
+      page: 174
+      tests:
+        all_of:
+          - parasalic: {within: 75}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 10 cm or more thick within 75 cm of the mineral soil surface."
+    - code: "N3.3.3"
+      name: "Typic Aridi-Alluvic Primosols"
+      aliases: ["Typic Aridi-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos arídicos típicos"
+      adjective: "Typic"
+      page: 174
+      tests:
+        default: true
+      notes: "Other Aridi-Alluvic Primosols."
+
+  "N3.4":
+    - code: "N3.4.1"
+      name: "Mottlic Usti-Alluvic Primosols"
+      aliases: ["Mottlic Usti-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos ústicos mosqueados"
+      adjective: "Mottlic"
+      page: 174
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N3.4.2"
+      name: "Calcaric Usti-Alluvic Primosols"
+      aliases: ["Calcaric Usti-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos ústicos calcáricos"
+      adjective: "Calcaric"
+      page: 174
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N3.4.3"
+      name: "Typic Usti-Alluvic Primosols"
+      aliases: ["Typic Usti-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos ústicos típicos"
+      adjective: "Typic"
+      page: 174
+      tests:
+        default: true
+      notes: "Other Usti-Alluvic Primosols."
+
+  "N3.5":
+    - code: "N3.5.1"
+      name: "Mottlic Udi-Alluvic Primosols"
+      aliases: ["Mottlic Udi-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos údicos mosqueados"
+      adjective: "Mottlic"
+      page: 175
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N3.5.2"
+      name: "Dystric Udi-Alluvic Primosols"
+      aliases: ["Dystric Udi-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos údicos distróficos"
+      adjective: "Dystric"
+      page: 175
+      tests:
+        all_of:
+          - dystric: {to: 50, from: 20}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon at least between 20 and 50 cm of the mineral soil surface (Q23)."
+    - code: "N3.5.3"
+      name: "Typic Udi-Alluvic Primosols"
+      aliases: ["Typic Udi-Alluvic Primosol"]
+      name_pt: "Primossolos flúvicos údicos típicos"
+      adjective: "Typic"
+      page: 175
+      tests:
+        default: true
+      notes: "Other Udi-Alluvic Primosols."
+
+  "N4.1":
+    - code: "N4.1.1"
+      name: "Grayic Loessi-Orthic Primosols"
+      aliases: ["Gray Loessi-Orthic Primosols", "Grayic Loessi-Orthic Primosol"]
+      name_pt: "Primossolos órticos loéssicos acinzentados"
+      adjective: "Grayic"
+      page: 176
+      tests:
+        all_of:
+          - oc_weighted_cst: {}
+      notes: "Organic carbon 6 g/kg or more as the thickness-weighted mean of the upper 20 cm of the mineral soil."
+    - code: "N4.1.2"
+      name: "Typic Loessi-Orthic Primosols"
+      aliases: ["Typic Loessi-Orthic Primosol"]
+      name_pt: "Primossolos órticos loéssicos típicos"
+      adjective: "Typic"
+      page: 176
+      tests:
+        default: true
+      notes: "Other Loessi-Orthic Primosols."
+
+  "N4.2":
+    - code: "N4.2.1"
+      name: "Calcaric Purpli-Orthic Primosols"
+      aliases: ["Calcaric Purpli-Orthic Primosol", "Calcaric Purplic-Orthic Primosols"]
+      name_pt: "Primossolos órticos púrpura calcáricos"
+      adjective: "Calcaric"
+      page: 176
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N4.2.2"
+      name: "Dystric Purpli-Orthic Primosols"
+      aliases: ["Dystric Purpli-Orthic Primosol", "Dystric Purplic-Orthic Primosols"]
+      name_pt: "Primossolos órticos púrpura distróficos"
+      adjective: "Dystric"
+      page: 176
+      tests:
+        all_of:
+          - dystric: {to: 25}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon within 25 cm of the mineral soil surface (Q23)."
+    - code: "N4.2.3"
+      name: "Typic Purpli-Orthic Primosols"
+      aliases: ["Typic Purpli-Orthic Primosol", "Typic Purplic-Orthic Primosols"]
+      name_pt: "Primossolos órticos púrpura típicos"
+      adjective: "Typic"
+      page: 176
+      tests:
+        default: true
+      notes: "Other Purpli-Orthic Primosols."
+
+  "N4.3":
+    - code: "N4.3.1"
+      name: "Calcaric Rougi-Orthic Primosols"
+      aliases: ["Calcaric Rougi-Orthic Primosol"]
+      name_pt: "Primossolos órticos vermelhos calcáricos"
+      adjective: "Calcaric"
+      page: 177
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N4.3.2"
+      name: "Eutric Rougi-Orthic Primosols"
+      aliases: ["Eutric Rougi-Orthic Primosol"]
+      name_pt: "Primossolos órticos vermelhos êutricos"
+      adjective: "Eutric"
+      page: 177
+      tests:
+        all_of:
+          - eutric: {to: 25}
+      notes: "Base saturation 50 % or more or pH (water) 5.5 or more in every horizon within 25 cm of the mineral soil surface (Q23; the converse of Dystric)."
+    - code: "N4.3.3"
+      name: "Typic Rougi-Orthic Primosols"
+      aliases: ["Typic Rougi-Orthic Primosol"]
+      name_pt: "Primossolos órticos vermelhos típicos"
+      adjective: "Typic"
+      page: 177
+      tests:
+        default: true
+      notes: "Other Rougi-Orthic Primosols."
+
+  "N4.4":
+    - code: "N4.4.1"
+      name: "Permic Geli-Orthic Primosols"
+      aliases: ["Permic Geli-Orthic Primosol"]
+      name_pt: "Primossolos órticos gélicos permagélicos"
+      adjective: "Permic"
+      page: 177
+      tests:
+        all_of:
+          - permic: {}
+      notes: "A permagelic soil temperature regime, or a permafrost layer within 200 cm of the mineral soil surface."
+    - code: "N4.4.2"
+      name: "Cinderic Geli-Orthic Primosols"
+      aliases: ["Cinderic Geli-Orthic Primosol"]
+      name_pt: "Primossolos órticos gélicos cineríticos"
+      adjective: "Cinderic"
+      page: 177
+      tests:
+        all_of:
+          - pyroclastic_cst: {}
+      notes: "35 % or more cinders or other pyroclastic materials within 25 cm of the mineral soil surface (the thickness-weighted mean of 0-25 cm, default 21)."
+    - code: "N4.4.3"
+      name: "Lithic Geli-Orthic Primosols"
+      aliases: ["Lithic Geli-Orthic Primosol"]
+      name_pt: "Primossolos órticos gélicos líticos"
+      adjective: "Lithic"
+      page: 177
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "N4.4.4"
+      name: "Calcaric Geli-Orthic Primosols"
+      aliases: ["Calcaric Geli-Orthic Primosol"]
+      name_pt: "Primossolos órticos gélicos calcáricos"
+      adjective: "Calcaric"
+      page: 177
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N4.4.5"
+      name: "Typic Geli-Orthic Primosols"
+      aliases: ["Typic Geli-Orthic Primosol"]
+      name_pt: "Primossolos órticos gélicos típicos"
+      adjective: "Typic"
+      page: 178
+      tests:
+        default: true
+      notes: "Other Geli-Orthic Primosols."
+
+  "N4.5":
+    - code: "N4.5.1"
+      name: "Mottlic Aridi-Orthic Primosols"
+      aliases: ["Mottlic Aridi-Orthic Primosol"]
+      name_pt: "Primossolos órticos arídicos mosqueados"
+      adjective: "Mottlic"
+      page: 178
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "N4.5.2"
+      name: "Calcaric Aridi-Orthic Primosols"
+      aliases: ["Calcaric Aridi-Orthic Primosol"]
+      name_pt: "Primossolos órticos arídicos calcáricos"
+      adjective: "Calcaric"
+      page: 178
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N4.5.3"
+      name: "Sodic Aridi-Orthic Primosols"
+      aliases: ["Sodic Aridi-Orthic Primosol"]
+      name_pt: "Primossolos órticos arídicos sódicos"
+      adjective: "Sodic"
+      page: 178
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "N4.5.4"
+      name: "Parasalic Aridi-Orthic Primosols"
+      aliases: ["Parasalic Aridi-Orthic Primosol"]
+      name_pt: "Primossolos órticos arídicos parassálicos"
+      adjective: "Parasalic"
+      page: 178
+      tests:
+        all_of:
+          - parasalic: {within: 75}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 10 cm or more thick within 75 cm of the mineral soil surface."
+    - code: "N4.5.5"
+      name: "Typic Aridi-Orthic Primosols"
+      aliases: ["Typic Aridi-Orthic Primosol"]
+      name_pt: "Primossolos órticos arídicos típicos"
+      adjective: "Typic"
+      page: 178
+      tests:
+        default: true
+      notes: "Other Aridi-Orthic Primosols."
+
+  "N4.6":
+    - code: "N4.6.1"
+      name: "Carbonatic Usti-Orthic Primosols"
+      aliases: ["Carbonatic Usti-Orthic Primosol"]
+      name_pt: "Primossolos órticos ústicos carbonáticos"
+      adjective: "Carbonatic"
+      page: 178
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them)."
+    - code: "N4.6.2"
+      name: "Lithic Usti-Orthic Primosols"
+      aliases: ["Lithic Usti-Orthic Primosol"]
+      name_pt: "Primossolos órticos ústicos líticos"
+      adjective: "Lithic"
+      page: 178-179
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "N4.6.3"
+      name: "Calcaric Usti-Orthic Primosols"
+      aliases: ["Calcaric Usti-Orthic Primosol"]
+      name_pt: "Primossolos órticos ústicos calcáricos"
+      adjective: "Calcaric"
+      page: 179
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "N4.6.4"
+      name: "Typic Usti-Orthic Primosols"
+      aliases: ["Typic Usti-Orthic Primosol"]
+      name_pt: "Primossolos órticos ústicos típicos"
+      adjective: "Typic"
+      page: 179
+      tests:
+        default: true
+      notes: "Other Usti-Orthic Primosols."
+
+  "N4.7":
+    - code: "N4.7.1"
+      name: "Phosphic Udi-Orthic Primosols"
+      aliases: ["Phosphic Udi-Orthic Primosol"]
+      name_pt: "Primossolos órticos údicos fosfáticos"
+      adjective: "Phosphic"
+      page: 179
+      tests:
+        all_of:
+          - lc_coral_sands_cst: {}
+          - phosphic_property_cst: {grade: at_least_evidence, top_max: 25, datum: mineral}
+      notes: "The lithologic characters of coral sands, and phosphic evidence (the phosphic property passes too, Q19) in some horizon starting within 25 cm of the mineral soil surface."
+    - code: "N4.7.2"
+      name: "Cinderic Udi-Orthic Primosols"
+      aliases: ["Cinderic Udi-Orthic Primosol"]
+      name_pt: "Primossolos órticos údicos cineríticos"
+      adjective: "Cinderic"
+      page: 179
+      tests:
+        all_of:
+          - pyroclastic_cst: {}
+      notes: "35 % or more cinders or other pyroclastic materials within 25 cm of the mineral soil surface (the thickness-weighted mean of 0-25 cm, default 21)."
+    - code: "N4.7.3"
+      name: "Carbonatic Udi-Orthic Primosols"
+      aliases: ["Carbonatic Udi-Orthic Primosol"]
+      name_pt: "Primossolos órticos údicos carbonáticos"
+      adjective: "Carbonatic"
+      page: 179
+      tests:
+        all_of:
+          - lc_carbonate_rocks_cst: {}
+      notes: "The lithologic characters of carbonate rocks (within 125 cm, as chapter 3 defines them)."
+    - code: "N4.7.4"
+      name: "Verti-lithic Udi-Orthic Primosols"
+      aliases: ["Verti-lithic Udi-Orthic Primosol"]
+      name_pt: "Primossolos órticos údicos vérticos líticos"
+      adjective: "Verti-lithic"
+      page: 179
+      tests:
+        all_of:
+          - lithic: {depth: 25}
+          - vertic_within_cst: {within: 25}
+      notes: "A lithic or paralithic contact and vertic evidence, both within 25 cm of the mineral soil surface (keyed before Lithic)."
+    - code: "N4.7.5"
+      name: "Lithic Udi-Orthic Primosols"
+      aliases: ["Lithic Udi-Orthic Primosol"]
+      name_pt: "Primossolos órticos údicos líticos"
+      adjective: "Lithic"
+      page: 179-180
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "N4.7.6"
+      name: "Typic Udi-Orthic Primosols"
+      aliases: ["Typic Udi-Orthic Primosol"]
+      name_pt: "Primossolos órticos údicos típicos"
+      adjective: "Typic"
+      page: 180
+      tests:
+        default: true
+      notes: "Other Udi-Orthic Primosols."

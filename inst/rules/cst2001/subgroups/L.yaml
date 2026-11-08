@@ -1,0 +1,743 @@
+# The keys to subgroups of the Argosols (order L) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 133-146, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly (v0.9.376). Readings: readings.yaml.
+
+subgroups:
+
+  "L1.1":
+    - code: "L1.1.1"
+      name: "Histic Albi-Boric Argosols"
+      aliases: ["Histic Albi-Boric Argosol"]
+      name_pt: "Argissolos bóricos álbicos hísticos"
+      adjective: "Histic"
+      page: 134
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence, top_max: 0}
+      notes: "Histic evidence (the histic epipedon passes too, Q19) in the surface horizon."
+    - code: "L1.1.2"
+      name: "Gleyic Albi-Boric Argosols"
+      aliases: ["Gleyic Albi-Boric Argosol"]
+      name_pt: "Argissolos bóricos álbicos gleicos"
+      adjective: "Gleyic"
+      page: 134
+      tests:
+        all_of:
+          - feature_below_cst: {features: [gleyic_features], horizon: claypan, to_cm: 100, min_cm: 10}
+      notes: "Gleyic evidence (gleyic features pass too) in some subhorizon 10 cm or more thick within 100 cm below the upper boundary of the claypan."
+    - code: "L1.1.3"
+      name: "Mollic Albi-Boric Argosols"
+      aliases: ["Mollic Albi-Boric Argosol"]
+      name_pt: "Argissolos bóricos álbicos mólicos"
+      adjective: "Mollic"
+      page: 135
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "L1.1.4"
+      name: "Dystric Albi-Boric Argosols"
+      aliases: ["Dystric Albi-Boric Argosol"]
+      name_pt: "Argissolos bóricos álbicos distróficos"
+      adjective: "Dystric"
+      page: 135
+      tests:
+        all_of:
+          - dystric: {scope: claypan}
+      notes: "Base saturation under 50 % or pH (water) under 5.5 throughout the claypan."
+    - code: "L1.1.5"
+      name: "Typic Albi-Boric Argosols"
+      aliases: ["Typic Albi-Boric Argosol"]
+      name_pt: "Argissolos bóricos álbicos típicos"
+      adjective: "Typic"
+      page: 135
+      tests:
+        default: true
+      notes: "Other Albi-Boric Argosols."
+
+  "L1.2":
+    - code: "L1.2.1"
+      name: "Lithic Molli-Boric Argosols"
+      aliases: ["Lithic Molli-Boric Argosol"]
+      name_pt: "Argissolos bóricos mólicos líticos"
+      adjective: "Lithic"
+      page: 135
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "L1.2.2"
+      name: "Calcic Molli-Boric Argosols"
+      aliases: ["Calcic Molli-Boric Argosol"]
+      name_pt: "Argissolos bóricos mólicos cálcicos"
+      adjective: "Calcic"
+      page: 135
+      tests:
+        all_of:
+          - calcic: {to: 125, from: 50}
+      notes: "A calcic horizon (named alone: a hypercalcic horizon does not count), with its upper boundary between 50 and 125 cm of the mineral soil surface."
+    - code: "L1.2.3"
+      name: "Albic Molli-Boric Argosols"
+      aliases: ["Albic Molli-Boric Argosol"]
+      name_pt: "Argissolos bóricos mólicos álbicos"
+      adjective: "Albic"
+      page: 135
+      tests:
+        all_of:
+          - albic: {position: above_argic}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence above the argic horizon."
+    - code: "L1.2.4"
+      name: "Epigleyic Molli-Boric Argosols"
+      aliases: ["Epigleyic Molli-Boric Argosol"]
+      name_pt: "Argissolos bóricos mólicos epigleicos"
+      adjective: "Epigleyic"
+      page: 135
+      tests:
+        all_of:
+          - gleyic_features_cst: {grade: at_least_evidence, top_max: 0, datum: mineral}
+      notes: "Gleyic evidence (gleyic features pass too) in the surface horizon (the first mineral layer)."
+    - code: "L1.2.5"
+      name: "Mottlic Molli-Boric Argosols"
+      aliases: ["Mottlic Molli-Boric Argosol"]
+      name_pt: "Argissolos bóricos mólicos mosqueados"
+      adjective: "Mottlic"
+      page: 135
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L1.2.6"
+      name: "Typic Molli-Boric Argosols"
+      aliases: ["Typic Molli-Boric Argosol"]
+      name_pt: "Argissolos bóricos mólicos típicos"
+      adjective: "Typic"
+      page: 136
+      tests:
+        default: true
+      notes: "Other Molli-Boric Argosols."
+
+  "L1.3":
+    - code: "L1.3.1"
+      name: "Lithic Hapli-Boric Argosols"
+      aliases: ["Lithic Hapli-Boric Argosol"]
+      name_pt: "Argissolos bóricos háplicos líticos"
+      adjective: "Lithic"
+      page: 136
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "L1.3.2"
+      name: "Gleyic Hapli-Boric Argosols"
+      aliases: ["Gleyic Hapli-Boric Argosol"]
+      name_pt: "Argissolos bóricos háplicos gleicos"
+      adjective: "Gleyic"
+      page: 136
+      tests:
+        all_of:
+          - gleyic: {to: 100, from: 50}
+      notes: "Gleyic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "L1.3.3"
+      name: "Mottli-albic Hapli-Boric Argosols"
+      aliases: ["Mottli-albic Hapli-Boric Argosol"]
+      name_pt: "Argissolos bóricos háplicos mosqueados álbicos"
+      adjective: "Mottli-albic"
+      page: 136
+      tests:
+        all_of:
+          - albic: {position: above_argic}
+          - mottlic: {to: 100, thick: 0}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence above the argic horizon; and redoxic features in some layer within 100 cm of the mineral soil surface (no thickness printed) (keyed before its parts)."
+    - code: "L1.3.4"
+      name: "Albic Hapli-Boric Argosols"
+      aliases: ["Albic Hapli-Boric Argosol"]
+      name_pt: "Argissolos bóricos háplicos álbicos"
+      adjective: "Albic"
+      page: 136
+      tests:
+        all_of:
+          - albic: {position: above_argic}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence above the argic horizon."
+    - code: "L1.3.5"
+      name: "Mottlic Hapli-Boric Argosols"
+      aliases: ["Mottlic Hapli-Boric Argosol"]
+      name_pt: "Argissolos bóricos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 136
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L1.3.6"
+      name: "Typic Hapli-Boric Argosols"
+      aliases: ["Typic Hapli-Boric Argosol"]
+      name_pt: "Argissolos bóricos háplicos típicos"
+      adjective: "Typic"
+      page: 137
+      tests:
+        default: true
+      notes: "Other Hapli-Boric Argosols."
+
+  "L2.1":
+    - code: "L2.1.1"
+      name: "Mollic Carbonati-Ustic Argosols"
+      aliases: ["Mollic Carbonati-Ustic Argosol"]
+      name_pt: "Argissolos ústicos carbonáticos mólicos"
+      adjective: "Mollic"
+      page: 137
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "L2.1.2"
+      name: "Rhodic Carbonati-Ustic Argosols"
+      aliases: ["Rhodic Carbonati-Ustic Argosol"]
+      name_pt: "Argissolos ústicos carbonáticos ródicos"
+      adjective: "Rhodic"
+      page: 137
+      tests:
+        all_of:
+          - hue_share: {hue: "5YR", rule: redder_than}
+      notes: "A hue redder than 5YR (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower contact (Q22)."
+    - code: "L2.1.3"
+      name: "Typic Carbonati-Ustic Argosols"
+      aliases: ["Typic Carbonati-Ustic Argosol"]
+      name_pt: "Argissolos ústicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 137
+      tests:
+        default: true
+      notes: "Other Carbonati-Ustic Argosols."
+
+  "L2.2":
+    - code: "L2.2.1"
+      name: "Mottlic Calci-Ustic Argosols"
+      aliases: ["Mottlic Calci-Ustic Argosol"]
+      name_pt: "Argissolos ústicos cálcicos mosqueados"
+      adjective: "Mottlic"
+      page: 138
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L2.2.2"
+      name: "Typic Calci-Ustic Argosols"
+      aliases: ["Typic Calci-Ustic Argosol"]
+      name_pt: "Argissolos ústicos cálcicos típicos"
+      adjective: "Typic"
+      page: 138
+      tests:
+        default: true
+      notes: "Other Calci-Ustic Argosols."
+
+  "L2.3":
+    - code: "L2.3.1"
+      name: "Trunic Ferri-Ustic Argosols"
+      aliases: ["Trunic Ferri-Ustic Argosol"]
+      name_pt: "Argissolos ústicos férricos truncados"
+      adjective: "Trunic"
+      page: 138
+      tests:
+        all_of:
+          - trunic: {horizon: argic_horizon}
+      notes: "The argic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "L2.3.2"
+      name: "Mottlic Ferri-Ustic Argosols"
+      aliases: ["Mottlic Ferri-Ustic Argosol"]
+      name_pt: "Argissolos ústicos férricos mosqueados"
+      adjective: "Mottlic"
+      page: 138
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L2.3.3"
+      name: "Typic Ferri-Ustic Argosols"
+      aliases: ["Typic Ferri-Ustic Argosol"]
+      name_pt: "Argissolos ústicos férricos típicos"
+      adjective: "Typic"
+      page: 138
+      tests:
+        default: true
+      notes: "Other Ferri-Ustic Argosols."
+
+  "L2.4":
+    - code: "L2.4.1"
+      name: "Lithic Hapli-Ustic Argosols"
+      aliases: ["Lithic Hapli-Ustic Argosol"]
+      name_pt: "Argissolos ústicos háplicos líticos"
+      adjective: "Lithic"
+      page: 138
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "L2.4.2"
+      name: "Cumulic Hapli-Ustic Argosols"
+      aliases: ["Cumulic Hapli-Ustic Argosol"]
+      name_pt: "Argissolos ústicos háplicos cumúlicos"
+      adjective: "Cumulic"
+      page: 139
+      tests:
+        all_of:
+          - cumulic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Cumulic evidence (the cumulic epipedon passes too, Q19; no depth printed)."
+    - code: "L2.4.3"
+      name: "Recalcaric Hapli-Ustic Argosols"
+      aliases: ["Recalcaric Hapli-Ustic Argosol"]
+      name_pt: "Argissolos ústicos háplicos recalcáricos"
+      adjective: "Recalcaric"
+      page: 139
+      tests:
+        all_of:
+          - recalcaric_cst: {within: 100, datum: mineral}
+      notes: "Free calcium carbonate in the fine earth decreasing with depth within 100 cm of the mineral soil surface: the CaCO3 pattern of the Recalcaric Anthrosols (over 45 g/kg at the surface, never rising downwards), read to 100 cm (default 23), undecided when the description ends above 100 cm, not on rock or a contact."
+    - code: "L2.4.4"
+      name: "Mottlic Hapli-Ustic Argosols"
+      aliases: ["Mottlic Hapli-Ustic Argosol"]
+      name_pt: "Argissolos ústicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 139
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L2.4.5"
+      name: "Typic Hapli-Ustic Argosols"
+      aliases: ["Typic Hapli-Ustic Argosol"]
+      name_pt: "Argissolos ústicos háplicos típicos"
+      adjective: "Typic"
+      page: 139
+      tests:
+        default: true
+      notes: "Other Hapli-Ustic Argosols."
+
+  "L3.1":
+    - code: "L3.1.1"
+      name: "Humic Carbonati-Perudic Argosols"
+      aliases: ["Humic Carbonati-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos carbonáticos húmicos"
+      adjective: "Humic"
+      page: 140
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "L3.1.2"
+      name: "Typic Carbonati-Perudic Argosols"
+      aliases: ["Typic Carbonati-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 140
+      tests:
+        default: true
+      notes: "Other Carbonati-Perudic Argosols."
+
+  "L3.2":
+    - code: "L3.2.1"
+      name: "Intensic Ali-Perudic Argosols"
+      aliases: ["Intensic Ai-Perudic Argosols", "Intensic Ali-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos álicos intensamente intemperizados"
+      adjective: "Intensic"
+      page: 140
+      tests:
+        all_of:
+          - b_subhorizon: {test: allitic}
+      notes: "The allitic property in some subhorizon(s) of the B, 10 cm or more thick, within 125 cm of the mineral soil surface."
+    - code: "L3.2.2"
+      name: "Humic Ali-Perudic Argosols"
+      aliases: ["Humic Ai-Perudic Argosols", "Humic Ali-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos álicos húmicos"
+      adjective: "Humic"
+      page: 140
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "L3.2.3"
+      name: "Typic Ali-Perudic Argosols"
+      aliases: ["Typic Ai-Perudic Argosols", "Typic Ali-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos álicos típicos"
+      adjective: "Typic"
+      page: 140
+      tests:
+        default: true
+      notes: "Other Ali-Perudic Argosols."
+
+  "L3.3":
+    - code: "L3.3.1"
+      name: "Humic Hapli-Perudic Argosols"
+      aliases: ["Humic Hapli-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos háplicos húmicos"
+      adjective: "Humic"
+      page: 140
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "L3.3.2"
+      name: "Alic Hapli-Perudic Argosols"
+      aliases: ["Alic Hapli-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos háplicos álicos"
+      adjective: "Alic"
+      page: 140
+      tests:
+        all_of:
+          - b_subhorizon: {test: alic, thick: 0}
+      notes: "Alic evidence (the alic property passes too, Q19) in some subhorizon(s) of the B within 125 cm (no thickness printed)."
+    - code: "L3.3.3"
+      name: "Typic Hapli-Perudic Argosols"
+      aliases: ["Typic Hapli-Perudic Argosol"]
+      name_pt: "Argissolos perúdicos háplicos típicos"
+      adjective: "Typic"
+      page: 140
+      tests:
+        default: true
+      notes: "Other Hapli-Perudic Argosols."
+
+  "L4.1":
+    - code: "L4.1.1"
+      name: "Concretic Albi-Udic Argosols"
+      aliases: ["Concretic Albi-Udic Argosol"]
+      name_pt: "Argissolos údicos álbicos concrecionários"
+      adjective: "Concretic"
+      page: 142
+      tests:
+        all_of:
+          - concretic_cst: {}
+      notes: "An indurated subhorizon (cementation indurated or rupture resistance extremely hard) 5 cm or more thick below the base of the albic horizon with 30 % or more by volume of Fe-Mn nodules and concretions."
+    - code: "L4.1.2"
+      name: "Ferric Albi-Udic Argosols"
+      aliases: ["Ferric Albi-Udic Argosol"]
+      name_pt: "Argissolos údicos álbicos férricos"
+      adjective: "Ferric"
+      page: 142
+      tests:
+        all_of:
+          - ferric: {scope: argic_or_claypan}
+      notes: "The ferric property (its layer test, p. 61) throughout the argic horizon or the claypan (Q23)."
+    - code: "L4.1.3"
+      name: "Typic Albi-Udic Argosols"
+      aliases: ["Typic Albi-Udic Argosol"]
+      name_pt: "Argissolos údicos álbicos típicos"
+      adjective: "Typic"
+      page: 142
+      tests:
+        default: true
+      notes: "Other Albi-Udic Argosols."
+
+  "L4.2":
+    - code: "L4.2.1"
+      name: "Humi-brown Carbonati-Udic Argosols"
+      aliases: ["Humi-brown Carbonati-Udic Argosol", "Humi-brown Carbonsti-Udic Argosols"]
+      name_pt: "Argissolos údicos carbonáticos húmicos brunos"
+      adjective: "Humi-brown"
+      page: 142
+      tests:
+        all_of:
+          - humic_property_cst: {}
+          - hue_share: {hue: "5YR", rule: yellower}
+      notes: "The humic property (p. 59); and a hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22) (keyed before its parts)."
+    - code: "L4.2.2"
+      name: "Humic Carbonati-Udic Argosols"
+      aliases: ["Humic Carbonati-Udic Argosol", "Humic Carbonsti-Udic Argosols"]
+      name_pt: "Argissolos údicos carbonáticos húmicos"
+      adjective: "Humic"
+      page: 142
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "L4.2.3"
+      name: "Typic Carbonati-Udic Argosols"
+      aliases: ["Typic Carbonati-Udic Argosol", "Typic Carbonsti-Udic Argosols"]
+      name_pt: "Argissolos údicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 142
+      tests:
+        default: true
+      notes: "Other Carbonati-Udic Argosols."
+
+  "L4.3":
+    - code: "L4.3.1"
+      name: "Trunic Claypani-Udic Argosols"
+      aliases: ["Trunic Calypani-Udic Argosols", "Trunic Claypani-Udic Argosol"]
+      name_pt: "Argissolos údicos com claypan truncados"
+      adjective: "Trunic"
+      page: 142
+      tests:
+        all_of:
+          - trunic: {horizon: argic_or_claypan}
+      notes: "The argic horizon or the claypan directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "L4.3.2"
+      name: "Shajiang Claypani-Udic Argosols"
+      aliases: ["Shajiang Calypani-Udic Argosols", "Shajiang Claypani-Udic Argosol"]
+      name_pt: "Argissolos údicos com claypan com shajiang"
+      adjective: "Shajiang"
+      page: 143
+      tests:
+        all_of:
+          - shajiang_cst: {min_pct: 10, min_cm: 10, from_cm: 50, within: 100}
+      notes: "10 % or more by volume of irregular calcareous nodules or concretions (shajiang) in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface (hard carbonate concretions stand in, flagged)."
+    - code: "L4.3.3"
+      name: "Eutric Claypani-Udic Argosols"
+      aliases: ["Eutric Calypani-Udic Argosols", "Eutric Claypani-Udic Argosol"]
+      name_pt: "Argissolos údicos com claypan êutricos"
+      adjective: "Eutric"
+      page: 143
+      tests:
+        all_of:
+          - eutric: {test: ph_7, scope: argic_or_claypan}
+      notes: "pH (water) 7.0 or more throughout the argic horizon or the claypan (Q23)."
+    - code: "L4.3.4"
+      name: "Dystric Claypani-Udic Argosols"
+      aliases: ["Dystric Calypani-Udic Argosols", "Dystric Claypani-Udic Argosol"]
+      name_pt: "Argissolos údicos com claypan distróficos"
+      adjective: "Dystric"
+      page: 143
+      tests:
+        all_of:
+          - dystric: {scope: argic_or_claypan}
+      notes: "Base saturation under 50 % or pH (water) under 5.5 throughout the argic horizon or the claypan."
+    - code: "L4.3.5"
+      name: "Typic Claypani-Udic Argosols"
+      aliases: ["Typic Calypani-Udic Argosols", "Typic Claypani-Udic Argosol"]
+      name_pt: "Argissolos údicos com claypan típicos"
+      adjective: "Typic"
+      page: 143
+      tests:
+        default: true
+      notes: "Other Claypani-Udic Argosols."
+
+  "L4.4":
+    - code: "L4.4.1"
+      name: "Intensic Ali-Udic Argosols"
+      aliases: ["Intensic Ali-Udic Argosol"]
+      name_pt: "Argissolos údicos álicos intensamente intemperizados"
+      adjective: "Intensic"
+      page: 143
+      tests:
+        all_of:
+          - b_subhorizon: {test: allitic}
+      notes: "The allitic property in some subhorizon(s) of the B, 10 cm or more thick, within 125 cm of the mineral soil surface."
+    - code: "L4.4.2"
+      name: "Lithic Ali-Udic Argosols"
+      aliases: ["Lithic Ali-Udic Argosol"]
+      name_pt: "Argissolos údicos álicos líticos"
+      adjective: "Lithic"
+      page: 143
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "L4.4.3"
+      name: "Humic Ali-Udic Argosols"
+      aliases: ["Humic Ali-Udic Argosol"]
+      name_pt: "Argissolos údicos álicos húmicos"
+      adjective: "Humic"
+      page: 143
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "L4.4.4"
+      name: "Xanthic Ali-Udic Argosols"
+      aliases: ["Xanthic Ali-Udic Argosol"]
+      name_pt: "Argissolos údicos álicos xânticos"
+      adjective: "Xanthic"
+      page: 143
+      tests:
+        all_of:
+          - xanthic: {}
+      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in the upper part, 10 cm or more thick, of the B within 125 cm."
+    - code: "L4.4.5"
+      name: "Typic Ali-Udic Argosols"
+      aliases: ["Typic Ali-Udic Argosol"]
+      name_pt: "Argissolos údicos álicos típicos"
+      adjective: "Typic"
+      page: 144
+      tests:
+        default: true
+      notes: "Other Ali-Udic Argosols."
+
+  "L4.5":
+    - code: "L4.5.1"
+      name: "Alic Acidi-Udic Argosols"
+      aliases: ["Alic Acidi-Udic Argosol"]
+      name_pt: "Argissolos údicos ácidos álicos"
+      adjective: "Alic"
+      page: 144
+      tests:
+        all_of:
+          - b_subhorizon: {test: alic, thick: 0}
+      notes: "The alic property or alic evidence in some subhorizon(s) of the B within 125 cm (no thickness printed)."
+    - code: "L4.5.2"
+      name: "Red Acidi-Udic Argosols"
+      aliases: ["Red Acidi-Udic Argosol"]
+      name_pt: "Argissolos údicos ácidos vermelhos"
+      adjective: "Red"
+      page: 144
+      tests:
+        all_of:
+          - hue_share: {hue: "5YR", rule: redder, scope: b}
+      notes: "A hue of 5YR or redder (moist, Q21) in more than half of the thickness of the B within 125 cm (Q22)."
+    - code: "L4.5.3"
+      name: "Ferric Acidi-Udic Argosols"
+      aliases: ["Ferric Acidi-Udic Argosol"]
+      name_pt: "Argissolos údicos ácidos férricos"
+      adjective: "Ferric"
+      page: 144
+      tests:
+        all_of:
+          - ferric: {scope: b}
+      notes: "The ferric property (its layer test) in the B within 125 cm, read throughout (Q23)."
+    - code: "L4.5.4"
+      name: "Mottlic Acidi-Udic Argosols"
+      aliases: ["Mottlic Acidi-Udic Argosol"]
+      name_pt: "Argissolos údicos ácidos mosqueados"
+      adjective: "Mottlic"
+      page: 144
+      tests:
+        all_of:
+          - mottlic: {to: 100, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L4.5.5"
+      name: "Typic Acidi-Udic Argosols"
+      aliases: ["Typic Acidi-Udic Argosol"]
+      name_pt: "Argissolos údicos ácidos típicos"
+      adjective: "Typic"
+      page: 144
+      tests:
+        default: true
+      notes: "Other Acidi-Udic Argosols."
+
+  "L4.6":
+    - code: "L4.6.1"
+      name: "Lithic Ferri-Udic Argosols"
+      aliases: ["Lithic Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos líticos"
+      adjective: "Lithic"
+      page: 145
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "L4.6.2"
+      name: "Humic Ferri-Udic Argosols"
+      aliases: ["Humic Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos húmicos"
+      adjective: "Humic"
+      page: 145
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "L4.6.3"
+      name: "Agric Ferri-Udic Argosols"
+      aliases: ["Agric Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos ágricos"
+      adjective: "Agric"
+      page: 145
+      tests:
+        all_of:
+          - agric_horizon_cst: {}
+      notes: "An agric horizon (no depth printed)."
+    - code: "L4.6.4"
+      name: "Albic Ferri-Udic Argosols"
+      aliases: ["Albic Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos álbicos"
+      adjective: "Albic"
+      page: 145
+      tests:
+        all_of:
+          - albic: {position: above_argic}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence above the argic horizon."
+    - code: "L4.6.5"
+      name: "Red Ferri-Udic Argosols"
+      aliases: ["Red Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos vermelhos"
+      adjective: "Red"
+      page: 145
+      tests:
+        all_of:
+          - hue_share: {hue: "5YR", rule: redder, scope: b}
+      notes: "A hue of 5YR or redder (moist, Q21) in more than half of the thickness of the B within 125 cm (Q22)."
+    - code: "L4.6.6"
+      name: "Mottlic Ferri-Udic Argosols"
+      aliases: ["Mottlic Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos mosqueados"
+      adjective: "Mottlic"
+      page: 145
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L4.6.7"
+      name: "Typic Ferri-Udic Argosols"
+      aliases: ["Typic Ferri-Udic Argosol"]
+      name_pt: "Argissolos údicos férricos típicos"
+      adjective: "Typic"
+      page: 145
+      tests:
+        default: true
+      notes: "Other Ferri-Udic Argosols."
+
+  "L4.7":
+    - code: "L4.7.1"
+      name: "Lithic Hapli-Udic Argosols"
+      aliases: ["Lithic Hapli-Udic Argosol"]
+      name_pt: "Argissolos údicos háplicos líticos"
+      adjective: "Lithic"
+      page: 145
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "L4.7.2"
+      name: "Agric Hapli-Udic Argosols"
+      aliases: ["Agric Hapli-Udic Argosol"]
+      name_pt: "Argissolos údicos háplicos ágricos"
+      adjective: "Agric"
+      page: 146
+      tests:
+        all_of:
+          - agric_horizon_cst: {}
+      notes: "An agric horizon (no depth printed)."
+    - code: "L4.7.3"
+      name: "Albic Hapli-Udic Argosols"
+      aliases: ["Albic Hapli-Udic Argosol"]
+      name_pt: "Argissolos údicos háplicos álbicos"
+      adjective: "Albic"
+      page: 146
+      tests:
+        all_of:
+          - albic: {position: above_argic}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence above the argic horizon."
+    - code: "L4.7.4"
+      name: "Mottlic Hapli-Udic Argosols"
+      aliases: ["Mottlic Hapli-Udic Argosol"]
+      name_pt: "Argissolos údicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 146
+      tests:
+        all_of:
+          - mottlic: {to: 100}
+      notes: "Redoxic features in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "L4.7.5"
+      name: "Typic Hapli-Udic Argosols"
+      aliases: ["Typic Hapli-Udic Argosol"]
+      name_pt: "Argissolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 146
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Argosols."

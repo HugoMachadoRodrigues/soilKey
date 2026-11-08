@@ -145,14 +145,14 @@ test_that("an undecided group makes the name provisional; a provisional reading 
 test_that("the residual named for a regime reached under another one carries a note", {
   skip_on_cran()
   r <- .c374(make_cst2001_example("H2.2"))
-  expect_identical(r$name, "Aqui-Orthic Halosols")
+  expect_identical(r$levels$name[3], "Aqui-Orthic Halosols")  # v0.9.376: a subgroup follows
   expect_true(any(grepl("H2.2 Aqui-Orthic Halosols is the residual of its key, named for the aquic regime", r$warnings,
                         fixed = TRUE)))
   # under an aquic regime, no note
   p <- make_cst2001_example("H2.2"); p$site$soil_moisture_regime <- "aquic"; p$site$climatic_moisture_regime <- "ustic"
   p$site$drainage_class <- "poorly drained"
   r <- .c374(p)
-  expect_identical(r$name, "Aqui-Orthic Halosols")
+  expect_identical(r$levels$name[3], "Aqui-Orthic Halosols")  # v0.9.376: a subgroup follows
   expect_false(any(grepl("named for the aquic regime", r$warnings)))
   # a Udi- residual reached under the udic regime: no note
   expect_false(any(grepl("residual of its key", .c374(make_cst2001_example("N2.5"))$warnings)))

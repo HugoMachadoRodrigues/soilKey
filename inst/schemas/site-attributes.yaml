@@ -274,6 +274,11 @@ attributes:
     type: "numeric"
     unit: "% of the plane"
     description: "Share of the horizontal plane at the depth of the lithic contact that the contact occupies, %. The Chinese Soil Taxonomy 2001 asks for a lithic contact in more than half of the plane in the karst taxa (M4.3.1 and others). Not recorded: a recorded contact counts, provisionally (default 22 of 2026-11-04)."
+  - name: salic_months_per_year
+    section: "Water, climate & regimes"
+    type: "numeric"
+    unit: "months per year"
+    description: "Months a year, in most years (6 years in 10 or more), during which the salic evidence the key names is present. The Chinese Soil Taxonomy 2001 asks for one month or more in the Parasalic Shajiang-Aquic Cambosols (salic evidence within 25 cm, M2.2.3) and the Parasalic Endorusti-Ustic Cambosols (M3.3.1, pp. 152, 156). Not recorded: the salic evidence observed in the profile passes, provisionally (Hugo's decision Q15)."
   - name: mean_annual_soil_temp_C
     section: "Water, climate & regimes"
     type: "numeric"

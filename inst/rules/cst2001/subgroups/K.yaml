@@ -1,0 +1,645 @@
+# The keys to subgroups of the Ferrosols (order K) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 123-133, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly (v0.9.376). Readings: readings.yaml.
+
+subgroups:
+
+  "K1.1":
+    - code: "K1.1.1"
+      name: "Typic Argi-Ustic Ferrosols"
+      aliases: ["Typic Argi-Ustic Ferrosol"]
+      name_pt: "Ferrossolos ústicos argílicos típicos"
+      adjective: "Typic"
+      page: 124
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Argi-Ustic Ferrosols (the book marks it provisional)."
+
+  "K1.2":
+    - code: "K1.2.1"
+      name: "Lithic Hapli-Ustic Ferrosols"
+      aliases: ["Lithic Hapli-Ustic Ferrosol"]
+      name_pt: "Ferrossolos ústicos háplicos líticos"
+      adjective: "Lithic"
+      page: 124
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "K1.2.2"
+      name: "Trunic Hapli-Ustic Ferrosols"
+      aliases: ["Trunic Hapli-Ustic Ferrosol"]
+      name_pt: "Ferrossolos ústicos háplicos truncados"
+      adjective: "Trunic"
+      page: 124
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K1.2.3"
+      name: "Typic Hapli-Ustic Ferrosols"
+      aliases: ["Typic Hapli-Ustic Ferrosol"]
+      name_pt: "Ferrossolos ústicos háplicos típicos"
+      adjective: "Typic"
+      page: 124
+      tests:
+        default: true
+      notes: "Other Hapli-Ustic Ferrosols."
+
+  "K2.1":
+    - code: "K2.1.1"
+      name: "Humic Carbonati-Perudic Ferrosols"
+      aliases: ["Humic Carbonati-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos carbonáticos húmicos"
+      adjective: "Humic"
+      page: 125
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K2.1.2"
+      name: "Leachic Carbonati-Perudic Ferrosols"
+      aliases: ["Leachic Carbonati-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos carbonáticos lixiviados"
+      adjective: "Leachic"
+      page: 125
+      tests:
+        all_of:
+          - leachic: {}
+      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
+    - code: "K2.1.3"
+      name: "Argic Carbonati-Perudic Ferrosols"
+      aliases: ["Argic Carbonati-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos carbonáticos argílicos"
+      adjective: "Argic"
+      page: 125
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K2.1.4"
+      name: "Typic Carbonati-Perudic Ferrosols"
+      aliases: ["Typic Carbonati-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 125
+      tests:
+        default: true
+      notes: "Other Carbonati-Perudic Ferrosols."
+
+  "K2.2":
+    - code: "K2.2.1"
+      name: "Lithic Alliti-Perudic Ferrosols"
+      aliases: ["Lithic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos líticos"
+      adjective: "Lithic"
+      page: 126
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "K2.2.2"
+      name: "Trunic Alliti-Perudic Ferrosols"
+      aliases: ["Trunic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos truncados"
+      adjective: "Trunic"
+      page: 126
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K2.2.3"
+      name: "Agric Alliti-Perudic Ferrosols"
+      aliases: ["Agric Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos ágricos"
+      adjective: "Agric"
+      page: 126
+      tests:
+        all_of:
+          - agric_horizon_cst: {}
+      notes: "An agric horizon (no depth printed)."
+    - code: "K2.2.4"
+      name: "Humic Alliti-Perudic Ferrosols"
+      aliases: ["Humic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos húmicos"
+      adjective: "Humic"
+      page: 126
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K2.2.5"
+      name: "Stagnic Alliti-Perudic Ferrosols"
+      aliases: ["Stagnic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos estágnicos"
+      adjective: "Stagnic"
+      page: 126
+      tests:
+        all_of:
+          - stagnic_perched: {}
+      notes: "Gleyic evidence (gleyic features pass too) linked to seasonal saturation by perched water in some horizon 10 cm or more thick within 50 cm of the mineral soil surface: groundwater_kind perched or a stagnic regime (default 22); a groundwater table observed or apparent fails, flooded or none recorded leaves it undecided."
+    - code: "K2.2.6"
+      name: "Mottlic Alliti-Perudic Ferrosols"
+      aliases: ["Mottlic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos mosqueados"
+      adjective: "Mottlic"
+      page: 126
+      tests:
+        all_of:
+          - mottlic: {to: 100, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "K2.2.7"
+      name: "Eutrophic Alliti-Perudic Ferrosols"
+      aliases: ["Eutrophic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos eutróficos"
+      adjective: "Eutrophic"
+      page: 126
+      tests:
+        all_of:
+          - eutrophic: {}
+      notes: "Base saturation (NH4OAc) of 35 % or more in 80 % or more of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K2.2.8"
+      name: "Argic Alliti-Perudic Ferrosols"
+      aliases: ["Argic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos argílicos"
+      adjective: "Argic"
+      page: 126-127
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K2.2.9"
+      name: "Typic Alliti-Perudic Ferrosols"
+      aliases: ["Typic Alliti-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos alíticos típicos"
+      adjective: "Typic"
+      page: 127
+      tests:
+        default: true
+      notes: "Other Alliti-Perudic Ferrosols."
+
+  "K2.3":
+    - code: "K2.3.1"
+      name: "Lithic Hapli-Perudic Ferrosols"
+      aliases: ["Lithic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos líticos"
+      adjective: "Lithic"
+      page: 127
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "K2.3.2"
+      name: "Trunic Hapli-Perudic Ferrosols"
+      aliases: ["Trunic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos truncados"
+      adjective: "Trunic"
+      page: 127
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K2.3.3"
+      name: "Agric Hapli-Perudic Ferrosols"
+      aliases: ["Agric Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos ágricos"
+      adjective: "Agric"
+      page: 127
+      tests:
+        all_of:
+          - agric_horizon_cst: {}
+      notes: "An agric horizon (no depth printed)."
+    - code: "K2.3.4"
+      name: "Humic Hapli-Perudic Ferrosols"
+      aliases: ["Humic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos húmicos"
+      adjective: "Humic"
+      page: 127
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K2.3.5"
+      name: "Stagnic Hapli-Perudic Ferrosols"
+      aliases: ["Stagnic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos estágnicos"
+      adjective: "Stagnic"
+      page: 127
+      tests:
+        all_of:
+          - stagnic_perched: {}
+      notes: "Gleyic evidence (gleyic features pass too) linked to seasonal saturation by perched water in some horizon 10 cm or more thick within 50 cm of the mineral soil surface: groundwater_kind perched or a stagnic regime (default 22); a groundwater table observed or apparent fails, flooded or none recorded leaves it undecided."
+    - code: "K2.3.6"
+      name: "Mottlic Hapli-Perudic Ferrosols"
+      aliases: ["Mottlic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 127
+      tests:
+        all_of:
+          - mottlic: {to: 100, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "K2.3.7"
+      name: "Eutrophic Hapli-Perudic Ferrosols"
+      aliases: ["Eutrophic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos eutróficos"
+      adjective: "Eutrophic"
+      page: 128
+      tests:
+        all_of:
+          - eutrophic: {strict: true}
+      notes: "Base saturation (NH4OAc) of 35 % or more in more than 80 % of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K2.3.8"
+      name: "Typic Hapli-Perudic Ferrosols"
+      aliases: ["Typic Hapli-Perudic Ferrosol"]
+      name_pt: "Ferrossolos perúdicos háplicos típicos"
+      adjective: "Typic"
+      page: 128
+      tests:
+        default: true
+      notes: "Other Hapli-Perudic Ferrosols."
+
+  "K3.1":
+    - code: "K3.1.1"
+      name: "Trunic Carbonati-Udic Ferrosols"
+      aliases: ["Trunic Carbonati-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos carbonáticos truncados"
+      adjective: "Trunic"
+      page: 129
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K3.1.2"
+      name: "Humic Carbonati-Udic Ferrosols"
+      aliases: ["Humic Carbonati-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos carbonáticos húmicos"
+      adjective: "Humic"
+      page: 129
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K3.1.3"
+      name: "Leachic Carbonati-Udic Ferrosols"
+      aliases: ["Leachic Carbonati-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos carbonáticos lixiviados"
+      adjective: "Leachic"
+      page: 129
+      tests:
+        all_of:
+          - leachic: {}
+      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
+    - code: "K3.1.4"
+      name: "Argic Carbonati-Udic Ferrosols"
+      aliases: ["Argic Carbonati-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos carbonáticos argílicos"
+      adjective: "Argic"
+      page: 129
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K3.1.5"
+      name: "Brown Carbonati-Udic Ferrosols"
+      aliases: ["Brown Carbonati-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos carbonáticos brunos"
+      adjective: "Brown"
+      page: 129
+      tests:
+        all_of:
+          - hue_share: {hue: "5YR", rule: yellower}
+      notes: "A hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
+    - code: "K3.1.6"
+      name: "Typic Carbonati-Udic Ferrosols"
+      aliases: ["Typic Carbonati-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 129
+      tests:
+        default: true
+      notes: "Other Carbonati-Udic Ferrosols."
+
+  "K3.2":
+    - code: "K3.2.1"
+      name: "Trunic Hiweatheri-Udic Ferrosols"
+      aliases: ["Trunic Hi-weatheri-Udic Ferrosols", "Trunic Hiweatheri-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos muito intemperizados truncados"
+      adjective: "Trunic"
+      page: 129-130
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K3.2.2"
+      name: "Humic Hiweatheri-Udic Ferrosols"
+      aliases: ["Humic Hi-weatheri-Udic Ferrosols", "Humic Hiweatheri-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos muito intemperizados húmicos"
+      adjective: "Humic"
+      page: 130
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K3.2.3"
+      name: "Argic Hiweatheri-Udic Ferrosols"
+      aliases: ["Argic Hi-weatheri-Udic Ferrosols", "Argic Hiweatheri-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos muito intemperizados argílicos"
+      adjective: "Argic"
+      page: 130
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K3.2.4"
+      name: "Typic Hiweatheri-Udic Ferrosols"
+      aliases: ["Typic Hi-weatheri-Udic Ferrosols", "Typic Hiweatheri-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos muito intemperizados típicos"
+      adjective: "Typic"
+      page: 130
+      tests:
+        default: true
+      notes: "Other Hiweatheri-Udic Ferrosols."
+
+  "K3.3":
+    - code: "K3.3.1"
+      name: "Lithic Alliti-Udic Ferrosols"
+      aliases: ["Lithic Alliti-Udic Ferrosol", "Lithic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos líticos"
+      adjective: "Lithic"
+      page: 130
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: half_or_more}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in half or more of the horizons within that depth (by thickness, Q22)."
+    - code: "K3.3.2"
+      name: "Trunic Alliti-Udic Ferrosols"
+      aliases: ["Trunic Alliti-Udic Ferrosol", "Trunic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos truncados"
+      adjective: "Trunic"
+      page: 130
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K3.3.3"
+      name: "Humic Alliti-Udic Ferrosols"
+      aliases: ["Humic Alliti-Udic Ferrosol", "Humic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos húmicos"
+      adjective: "Humic"
+      page: 130
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K3.3.4"
+      name: "Xanthic Alliti-Udic Ferrosols"
+      aliases: ["Xanthic Alliti-Udic Ferrosol", "Xanthic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos xânticos"
+      adjective: "Xanthic"
+      page: 130
+      tests:
+        all_of:
+          - xanthic: {}
+      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in the upper part, 10 cm or more thick, of the B within 125 cm."
+    - code: "K3.3.5"
+      name: "Mottlic Alliti-Udic Ferrosols"
+      aliases: ["Mottlic Alliti-Udic Ferrosol", "Mottlic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos mosqueados"
+      adjective: "Mottlic"
+      page: 131
+      tests:
+        all_of:
+          - mottlic: {to: 100, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "K3.3.6"
+      name: "Plinthic Alliti-Udic Ferrosols"
+      aliases: ["Plinthic Alliti-Udic Ferrosol", "Plinthic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos plínticos"
+      adjective: "Plinthic"
+      page: 131
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K3.3.7"
+      name: "Rhodic Alliti-Udic Ferrosols"
+      aliases: ["Rhodic Alliti-Udic Ferrosol", "Rhodic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos ródicos"
+      adjective: "Rhodic"
+      page: 131
+      tests:
+        all_of:
+          - hue_share: {hue: "2.5YR", rule: redder, state: both}
+      notes: "A hue of 2.5YR or redder, dry and moist, in more than half of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K3.3.8"
+      name: "Eutrophic Alliti-Udic Ferrosols"
+      aliases: ["Eutrophic Alliti-Udic Ferrosol", "Eutrophic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos eutróficos"
+      adjective: "Eutrophic"
+      page: 131
+      tests:
+        all_of:
+          - eutrophic: {}
+      notes: "Base saturation (NH4OAc) of 35 % or more in 80 % or more of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K3.3.9"
+      name: "Argic Alliti-Udic Ferrosols"
+      aliases: ["Argic Alliti-Udic Ferrosol", "Argic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos argílicos"
+      adjective: "Argic"
+      page: 131
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 125}
+      notes: "An argic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K3.3.10"
+      name: "Typic Alliti-Udic Ferrosols"
+      aliases: ["Typic Alliti-Udic Ferrosol", "Typic Allitic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos alíticos típicos"
+      adjective: "Typic"
+      page: 131
+      tests:
+        default: true
+      notes: "Other Alliti-Udic Ferrosols."
+
+  "K3.4":
+    - code: "K3.4.1"
+      name: "Trunic Argi-Udic Ferrosols"
+      aliases: ["Trunic Agri-Udic Ferrosols", "Trunic Argi-Udic Ferrosol", "Trunic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos truncados"
+      adjective: "Trunic"
+      page: 131
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K3.4.2"
+      name: "Humic Argi-Udic Ferrosols"
+      aliases: ["Humic Agri-Udic Ferrosols", "Humic Argi-Udic Ferrosol", "Humic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos húmicos"
+      adjective: "Humic"
+      page: 131
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K3.4.3"
+      name: "Xanthic Argi-Udic Ferrosols"
+      aliases: ["Xanthic Agri-Udic Ferrosols", "Xanthic Argi-Udic Ferrosol", "Xanthic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos xânticos"
+      adjective: "Xanthic"
+      page: 132
+      tests:
+        all_of:
+          - xanthic: {}
+      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in the upper part, 10 cm or more thick, of the B within 125 cm."
+    - code: "K3.4.4"
+      name: "Mottlic Argi-Udic Ferrosols"
+      aliases: ["Mottlic Agri-Udic Ferrosols", "Mottlic Argi-Udic Ferrosol", "Mottlic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos mosqueados"
+      adjective: "Mottlic"
+      page: 132
+      tests:
+        all_of:
+          - mottlic: {to: 100, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "K3.4.5"
+      name: "Plinthic Argi-Udic Ferrosols"
+      aliases: ["Plinthic Agri-Udic Ferrosols", "Plinthic Argi-Udic Ferrosol", "Plinthic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos plínticos"
+      adjective: "Plinthic"
+      page: 132
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K3.4.6"
+      name: "Eutrophic Argi-Udic Ferrosols"
+      aliases: ["Eutrophic Agri-Udic Ferrosols", "Eutrophic Argi-Udic Ferrosol", "Eutrophic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos eutróficos"
+      adjective: "Eutrophic"
+      page: 132
+      tests:
+        all_of:
+          - eutrophic: {}
+      notes: "Base saturation (NH4OAc) of 35 % or more in 80 % or more of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K3.4.7"
+      name: "Typic Argi-Udic Ferrosols"
+      aliases: ["Typic Agri-Udic Ferrosols", "Typic Argi-Udic Ferrosol", "Typic Argic-Udic Ferrosols"]
+      name_pt: "Ferrossolos údicos argílicos típicos"
+      adjective: "Typic"
+      page: 132
+      tests:
+        default: true
+      notes: "Other Argi-Udic Ferrosols."
+
+  "K3.5":
+    - code: "K3.5.1"
+      name: "Lithic Hapli-Udic Ferrosols"
+      aliases: ["Lithic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos líticos"
+      adjective: "Lithic"
+      page: 132
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: half_or_more}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in half or more of the horizons within that depth (by thickness, Q22)."
+    - code: "K3.5.2"
+      name: "Trunic Hapli-Udic Ferrosols"
+      aliases: ["Trunic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos truncados"
+      adjective: "Trunic"
+      page: 132
+      tests:
+        all_of:
+          - trunic: {horizon: lac_ferric_horizon}
+      notes: "The LAC-ferric horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "K3.5.3"
+      name: "Agric Hapli-Udic Ferrosols"
+      aliases: ["Agric Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos ágricos"
+      adjective: "Agric"
+      page: 133
+      tests:
+        all_of:
+          - agric_horizon_cst: {}
+      notes: "An agric horizon (no depth printed)."
+    - code: "K3.5.4"
+      name: "Humic Hapli-Udic Ferrosols"
+      aliases: ["Humic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos húmicos"
+      adjective: "Humic"
+      page: 133
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "K3.5.5"
+      name: "Xanthic Hapli-Udic Ferrosols"
+      aliases: ["Xanthic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos xânticos"
+      adjective: "Xanthic"
+      page: 133
+      tests:
+        all_of:
+          - xanthic: {}
+      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in the upper part, 10 cm or more thick, of the B within 125 cm."
+    - code: "K3.5.6"
+      name: "Mottlic Hapli-Udic Ferrosols"
+      aliases: ["Mottlic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 133
+      tests:
+        all_of:
+          - mottlic: {to: 100, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "K3.5.7"
+      name: "Plinthic Hapli-Udic Ferrosols"
+      aliases: ["Plinthic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos plínticos"
+      adjective: "Plinthic"
+      page: 133
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "K3.5.8"
+      name: "Rhodic Hapli-Udic Ferrosols"
+      aliases: ["Rhodic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos ródicos"
+      adjective: "Rhodic"
+      page: 133
+      tests:
+        all_of:
+          - hue_share: {hue: "2.5YR", rule: redder, state: both}
+      notes: "A hue of 2.5YR or redder, dry and moist, in more than half of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K3.5.9"
+      name: "Eutrophic Hapli-Udic Ferrosols"
+      aliases: ["Eutrophic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos eutróficos"
+      adjective: "Eutrophic"
+      page: 133
+      tests:
+        all_of:
+          - eutrophic: {}
+      notes: "Base saturation (NH4OAc) of 35 % or more in 80 % or more of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "K3.5.10"
+      name: "Typic Hapli-Udic Ferrosols"
+      aliases: ["Typic Hapli-Udic Ferrosol"]
+      name_pt: "Ferrossolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 133
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Ferrosols."

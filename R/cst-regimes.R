@@ -151,7 +151,11 @@
   site <- pedon$site %||% list()
   if (!is.na(rec) && rec %in% .CST_SATURATION) return(.cst_axis(rec, "recorded"))
   pad <- .cst_paddy(site)
-  if (isTRUE(pad$value)) {
+  # v0.9.376 (Hugo on the review, 2026-11-08): a short paddy history (half
+  # of the years or fewer) does not give the anthrostagnic regime
+  pyf <- .cst_site_num(site, "paddy_years_frac")
+  short <- !is.na(pyf) && pyf <= .cst_thr("horizons", "anthrostagnic", "evidence_paddy_years_max")
+  if (isTRUE(pad$value) && !short) {
     return(.cst_axis("anthrostagnic", "site_marker", paste0("anthrostagnic_from_", pad$source)))
   }
   tz <- .cst_site_txt(site, "tidal_zone")

@@ -257,14 +257,19 @@
   pan <- if (length(rows) < 2L) FALSE else ratio >= t$bd_ratio_min
   T_ok <- .cst_range_min(run$T_lo, run$T_hi, t$thick_min_cm)
   core <- .cst_and(reg$passed, puddled, colour, mottles)
+  # v0.9.376 (Hugo on the review, 2026-11-08, pp. 27, 54): with a short paddy
+  # history recorded, the regime item of the evidence passes on the paddy
+  # record whatever the saturation regime; the epipedon keeps the regime
+  reg_ev <- if (short_hist && isTRUE(.cst_paddy(x$pedon$site)$value)) TRUE else reg$passed
+  core_ev <- .cst_and(reg_ev, puddled, colour, mottles)
   if (undecided_cult) {
-    if (isFALSE(core)) return(.cst_hz_ans(x, rep(FALSE, x$n),
+    if (isFALSE(core_ev)) return(.cst_hz_ans(x, rep(FALSE, x$n),
                                           notes = "the cultivated layer is not read from the designation, but an item of the core fails"))
     return(.cst_hz_ans(x, rep(NA, x$n), missing = "designation",
                        notes = "the cultivated layer and the plough pan are read from the designations"))
   }
   full_g <- .cst_and(core, T_ok, pan, !short_hist)
-  evid_g <- core
+  evid_g <- core_ev
   a <- .cst_run_assign(x, run, full_g, evid_g)
   ans <- .cst_hz_ans(x, a$full, a$evid, flags = c(flags, reg$evidence$flags),
                      notes = c("rust mottles not recorded are absent", if (length(rows) < 2L) "no plough pan below the cultivated layer"),

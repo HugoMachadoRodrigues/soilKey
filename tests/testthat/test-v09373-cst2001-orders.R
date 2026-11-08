@@ -461,14 +461,14 @@ test_that("a class on a provisional reading gives the alternative the key would 
   expect_identical(r$levels$code[1:2], c("I", "I3"))
   expect_true(any(grepl("^Provisional: I Gleyosols rests on a reading", r$warnings)))
   expect_identical(r$candidates$kind, "alternative")
-  expect_identical(r$candidates$code, "M2.4")
+  expect_identical(r$candidates$code, "M2.4.3")  # v0.9.376: the alternative reaches its subgroup
   expect_identical(r$candidates$instead_of, "I")
   expect_false("orders:M" %in% r$provisional_because)
-  expect_true(any(grepl("Alternative if that reading fails: M2.4 Ochri-Aquic Cambosols", r$warnings, fixed = TRUE)))
+  expect_true(any(grepl("Alternative if that reading fails: M2.4.3 Calcaric Ochri-Aquic Cambosols", r$warnings, fixed = TRUE)))
   tt <- soilKey:::.flatten_key_trace(r$trace)
-  expect_true(any(tt$phase == "alternative" & tt$code == "M2.4" & tt$status == "info"))
+  expect_true(any(tt$phase == "alternative" & tt$code == "M2.4.3" & tt$status == "info"))
   out <- c(utils::capture.output(print(r)), utils::capture.output(print(r), type = "message"))
-  expect_true(any(grepl("Alternative \\(if the provisional reading of I fails\\): M2.4 Ochri-Aquic Cambosols", out)))
+  expect_true(any(grepl("Alternative \\(if the provisional reading of I fails\\): M2.4.3 Calcaric", out)))
   expect_false(any(grepl("an attachment, not a key", out)))
   # a negative dipyridyl test: Aquic Cambosols, no alternative
   aq$childs_test <- "negative"

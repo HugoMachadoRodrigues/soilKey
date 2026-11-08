@@ -9,7 +9,12 @@
 .prov375 <- function(r) length(r$provisional_because) > 0L || any(grepl("^Provisional", r$warnings))
 .cp375 <- function(h, site = list()) soilKey:::.cst_ex_build(h, c(list(id = "cst375"), site))
 .f375 <- function(fn, p, ...) get(fn, envir = asNamespace("soilKey"))(p, ...)
-.sg375 <- function(k) unname(unlist(k$subgroups, recursive = FALSE))
+# v0.9.376: the subgroups of orders A to G (H to N follow in test-v09376)
+.ag375 <- function(codes) substr(gsub("^\\[", "", codes), 1, 1) %in% LETTERS[1:7]
+.sg375 <- function(k) {
+  l <- unname(unlist(k$subgroups, recursive = FALSE))
+  l[.ag375(vapply(l, `[[`, "", "code"))]
+}
 
 test_that("the registry reaches the subgroups and the presets are expanded at load time", {
   skip_on_cran()
@@ -76,10 +81,10 @@ test_that("the keys to subgroups of A to G: 176 rows in the book's order, Typic 
   skip_on_cran()
   k <- load_rules("cst2001")
   ag <- unlist(lapply(k$groups[substr(names(k$groups), 1, 1) %in% LETTERS[1:7]], function(l) vapply(l, `[[`, "", "code")))
-  # every group of A-G of the book has its list; soilKey's residuals and H-N none
-  expect_setequal(names(k$subgroups), setdiff(ag, c("[A1.4]", "[A2.5]")))
-  hn <- unlist(lapply(k$groups[substr(names(k$groups), 1, 1) %in% LETTERS[8:14]], function(l) vapply(l, `[[`, "", "code")))
-  expect_false(any(hn %in% names(k$subgroups)))
+  # every group of A-G of the book has its list; soilKey's residuals none
+  # (v0.9.376: the groups of H to N have theirs too)
+  expect_setequal(intersect(names(k$subgroups), ag), setdiff(ag, c("[A1.4]", "[A2.5]")))
+  expect_false(any(c("[A1.4]", "[A2.5]") %in% names(k$subgroups)))
   all <- .sg375(k)
   codes <- vapply(all, `[[`, "", "code")
   expect_equal(length(codes), 176L)
@@ -90,10 +95,10 @@ test_that("the keys to subgroups of A to G: 176 rows in the book's order, Typic 
     sg <- csv[csv$level == "subgroup" & substr(gsub("^\\[", "", csv$code), 1, 1) %in% LETTERS[1:7], ]
     expect_identical(codes, sg$code)
     expect_identical(vapply(all, `[[`, "", "name"), sg$name)
-    for (g in names(k$subgroups))
+    for (g in intersect(names(k$subgroups), ag))
       expect_true(all(sg$parent[sg$code %in% vapply(k$subgroups[[g]], `[[`, "", "code")] == g), info = g)
   }
-  for (g in names(k$subgroups)) {
+  for (g in intersect(names(k$subgroups), ag)) {
     l <- k$subgroups[[g]]
     expect_true(isTRUE(l[[length(l)]]$tests$default), info = g)
     expect_equal(sum(vapply(l, function(e) isTRUE(e$tests$default), NA)), 1L, info = g)
@@ -155,6 +160,7 @@ test_that("every Appendix 1 name of orders A to G resolves to exactly one subgro
 test_that("every subgroup example keys to its own subgroup, not provisionally", {
   skip_on_cran()
   codes <- soilKey:::.CST_SUBGROUP_EXAMPLE_CODES
+  codes <- codes[.ag375(codes)]   # v0.9.376: H to N in test-v09376
   expect_equal(length(codes), 176L)
   k <- load_rules("cst2001")
   expect_identical(codes, vapply(.sg375(k), `[[`, "", "code"))
@@ -178,17 +184,18 @@ test_that("the group and suborder examples keep their order, suborder and group"
     r <- .c375(make_cst2001_example(cd), rules = k)
     expect_identical(r$levels$code[3], cd, info = cd)
     expect_false(any(grepl("^(orders|suborders|groups):", r$provisional_because)), info = cd)
-    # orders A to G reach a subgroup; H to N and soilKey's residuals stop at the group
-    hn <- substr(cd, 1, 1) %in% LETTERS[8:14] || grepl("^\\[", cd)
-    expect_identical(nrow(r$levels), if (hn) 3L else 4L, info = cd)
+    # every group of the book reaches a subgroup (v0.9.376: H to N too);
+    # soilKey's residuals stop at the group
+    expect_identical(nrow(r$levels), if (grepl("^\\[", cd)) 3L else 4L, info = cd)
   }
 })
 
-test_that("the notes: H to N stop at the group, [A1.3.x], the book's provisional subgroups", {
+test_that("the notes: [A1.3.x], the book's provisional subgroups (H to N keyed since v0.9.376)", {
   skip_on_cran()
   r <- .c375(make_cst2001_example("K3.2"))
-  expect_identical(r$levels$code, c("K", "K3", "K3.2"))
-  expect_true(any(grepl("The subgroups of K3.2 .* are not keyed in this release", r$warnings)))
+  expect_identical(r$levels$code[1:3], c("K", "K3", "K3.2"))
+  expect_identical(nrow(r$levels), 4L)
+  expect_false(any(grepl("are not keyed in this release", r$warnings)))
   # a bracketed residual keeps its own note only
   r <- .c375(make_cst2001_example("[A2.5]"))
   expect_false(any(grepl("are not keyed in this release", r$warnings)))

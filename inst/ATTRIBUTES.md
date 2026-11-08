@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.375)
+# soilKey -- recognised horizon attribute names (v0.9.376)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -564,6 +564,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `silting_kind` | - | character | Kind of anthropic silting: irrigation (sediment-rich irrigation water) or interception (runoff intercepted behind dams or terraces). The Chinese Soil Taxonomy 2001, the anthro-silting materials (pp. 48-49). | `irrigation`, `interception` | - |
 | `paddy_years_frac` | fraction | numeric | Share of the years under submerged rice cultivation (0 to 1). The Chinese Soil Taxonomy 2001 gives the anthrostagnic evidence to a shorter paddy history than the anthrostagnic epipedon (pp. 26-27). Not recorded: undecided. | - | - |
 | `lithic_contact_extent_pct` | % of the plane | numeric | Share of the horizontal plane at the depth of the lithic contact that the contact occupies, %. The Chinese Soil Taxonomy 2001 asks for a lithic contact in more than half of the plane in the karst taxa (M4.3.1 and others). Not recorded: a recorded contact counts, provisionally (default 22 of 2026-11-04). | - | - |
+| `salic_months_per_year` | months per year | numeric | Months a year, in most years (6 years in 10 or more), during which the salic evidence the key names is present. The Chinese Soil Taxonomy 2001 asks for one month or more in the Parasalic Shajiang-Aquic Cambosols (salic evidence within 25 cm, M2.2.3) and the Parasalic Endorusti-Ustic Cambosols (M3.3.1, pp. 152, 156). Not recorded: the salic evidence observed in the profile passes, provisionally (Hugo's decision Q15). | - | - |
 | `mean_annual_soil_temp_C` | deg C | numeric | Mean annual soil temperature. Read by the CSSC key: the Chernozemic climate (0 degrees or more) and the Gray Brown Luvisols (8 degrees or more). Filled by npdb_scenario() for NPDB pedons. | - | `cssc3`, `scsj2017` |
 | `soil_temp_30cm_C` | deg C | numeric | Mean annual soil temperature at 30 cm from the mineral soil surface. Read by the NZSC Hydrothermal Recent and Raw Soils (2.5 degrees or more above the mean annual air temperature). | - | `nzsc4` |
 | `mean_annual_air_temp_C` | deg C | numeric | Mean annual air temperature. Read by the NZSC Hydrothermal Recent and Raw Soils, against soil_temp_30cm_C. | - | `nzsc4` |
@@ -728,5 +729,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.375._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.376._
 

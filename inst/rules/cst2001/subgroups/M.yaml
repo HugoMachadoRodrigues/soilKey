@@ -1,0 +1,1329 @@
+# The keys to subgroups of the Cambosols (order M) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 146-167, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly (v0.9.376). Readings: readings.yaml.
+
+subgroups:
+
+  "M1.1":
+    - code: "M1.1.1"
+      name: "Histic Permi-Gelic Cambosols"
+      aliases: ["Histic Permi-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos permagélicos hísticos"
+      adjective: "Histic"
+      page: 147
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Histic evidence (the histic epipedon passes too, Q19)."
+    - code: "M1.1.2"
+      name: "Typic Permi-Gelic Cambosols"
+      aliases: ["Typic Permi-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos permagélicos típicos"
+      adjective: "Typic"
+      page: 147
+      tests:
+        default: true
+      notes: "Other Permi-Gelic Cambosols."
+
+  "M1.2":
+    - code: "M1.2.1"
+      name: "Histic Aqui-Gelic Cambosols"
+      aliases: ["Histic Aqui-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos áquicos hísticos"
+      adjective: "Histic"
+      page: 148
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "A histic epipedon or histic evidence."
+    - code: "M1.2.2"
+      name: "Dark Aqui-Gelic Cambosols"
+      aliases: ["Dark Aqui-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos áquicos escuros"
+      adjective: "Dark"
+      page: 148
+      tests:
+        all_of:
+          - any_of:
+              - mollic_epipedon_cst: {}
+              - umbric_epipedon_cst: {}
+      notes: "A mollic or umbric epipedon."
+    - code: "M1.2.3"
+      name: "Gleyic Aqui-Gelic Cambosols"
+      aliases: ["Gleyic Aqui-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos áquicos gleicos"
+      adjective: "Gleyic"
+      page: 148
+      tests:
+        all_of:
+          - gleyic: {to: 100, from: 50}
+      notes: "Gleyic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M1.2.4"
+      name: "Typic Aqui-Gelic Cambosols"
+      aliases: ["Typic Aqui-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos áquicos típicos"
+      adjective: "Typic"
+      page: 148
+      tests:
+        default: true
+      notes: "Other Aqui-Gelic Cambosols."
+
+  "M1.3":
+    - code: "M1.3.1"
+      name: "Calcic Matti-Gelic Cambosols"
+      aliases: ["Calcic Matti-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos máticos cálcicos"
+      adjective: "Calcic"
+      page: 148
+      tests:
+        all_of:
+          - calcic: {to: 100}
+      notes: "A calcic horizon (named alone: a hypercalcic horizon does not count), with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "M1.3.2"
+      name: "Calcaric Matti-Gelic Cambosols"
+      aliases: ["Calcaric Matti-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos máticos calcáricos"
+      adjective: "Calcaric"
+      page: 148
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "M1.3.3"
+      name: "Dystric Matti-Gelic Cambosols"
+      aliases: ["Dystric Matti-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos máticos distróficos"
+      adjective: "Dystric"
+      page: 148
+      tests:
+        all_of:
+          - dystric: {to: 50, from: 20}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon at least between 20 and 50 cm of the mineral soil surface (Q23)."
+    - code: "M1.3.4"
+      name: "Typic Matti-Gelic Cambosols"
+      aliases: ["Typic Matti-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos máticos típicos"
+      adjective: "Typic"
+      page: 149
+      tests:
+        default: true
+      notes: "Other Matti-Gelic Cambosols."
+
+  "M1.4":
+    - code: "M1.4.1"
+      name: "Histic Molli-Gelic Cambosols"
+      aliases: ["Histic Molli Gelic Cambosols", "Histic Molli-Gelic Cambosol", "Histic Mollic-Gelic Cambosols"]
+      name_pt: "Cambissolos gélicos mólicos hísticos"
+      adjective: "Histic"
+      page: 149
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Histic evidence (the histic epipedon passes too, Q19)."
+    - code: "M1.4.2"
+      name: "Calcic Molli-Gelic Cambosols"
+      aliases: ["Calcic Molli Gelic Cambosols", "Calcic Molli-Gelic Cambosol", "Calcic Mollic-Gelic Cambosols"]
+      name_pt: "Cambissolos gélicos mólicos cálcicos"
+      adjective: "Calcic"
+      page: 149
+      tests:
+        all_of:
+          - calcic: {to: 100}
+      notes: "A calcic horizon (named alone: a hypercalcic horizon does not count), with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "M1.4.3"
+      name: "Calcaric Molli-Gelic Cambosols"
+      aliases: ["Calcaric Molli Gelic Cambosols", "Calcaric Molli-Gelic Cambosol", "Calcaric Mollic-Gelic Cambosols"]
+      name_pt: "Cambissolos gélicos mólicos calcáricos"
+      adjective: "Calcaric"
+      page: 149
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "M1.4.4"
+      name: "Mottlic Molli-Gelic Cambosols"
+      aliases: ["Mottlic Molli Gelic Cambosols", "Mottlic Molli-Gelic Cambosol", "Mottlic Mollic-Gelic Cambosols"]
+      name_pt: "Cambissolos gélicos mólicos mosqueados"
+      adjective: "Mottlic"
+      page: 149
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M1.4.5"
+      name: "Typic Molli-Gelic Cambosols"
+      aliases: ["Typic Molli Gelic Cambosols", "Typic Molli-Gelic Cambosol", "Typic Mollic-Gelic Cambosols"]
+      name_pt: "Cambissolos gélicos mólicos típicos"
+      adjective: "Typic"
+      page: 149
+      tests:
+        default: true
+      notes: "Other Molli-Gelic Cambosols."
+
+  "M1.5":
+    - code: "M1.5.1"
+      name: "Histic Umbri-Gelic Cambosols"
+      aliases: ["Histic Umbri-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos úmbricos hísticos"
+      adjective: "Histic"
+      page: 149
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Histic evidence (the histic epipedon passes too, Q19)."
+    - code: "M1.5.2"
+      name: "Spodic Umbri-Gelic Cambosols"
+      aliases: ["Spodic Umbri-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos úmbricos espódicos"
+      adjective: "Spodic"
+      page: 149
+      tests:
+        all_of:
+          - feature_run_cst: {features: [spodic_horizon], min_cm: 10, from_cm: 0, to_cm: 60, grade: at_least_evidence}
+      notes: "Spodic evidence (the spodic horizon passes too) in some horizon 10 cm or more thick within 60 cm of the mineral soil surface."
+    - code: "M1.5.3"
+      name: "Stagnic Umbri-Gelic Cambosols"
+      aliases: ["Stagnic Umbri-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos úmbricos estágnicos"
+      adjective: "Stagnic"
+      page: 150
+      tests:
+        all_of:
+          - moisture_regime_cst: {regimes: [stagnic]}
+          - mottlic: {to: 100, thick: 0}
+      notes: "A stagnic soil moisture regime and redoxic features within 100 cm of the mineral soil surface (no thickness printed)."
+    - code: "M1.5.4"
+      name: "Albic Umbri-Gelic Cambosols"
+      aliases: ["Albic Umbri-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos úmbricos álbicos"
+      adjective: "Albic"
+      page: 150
+      tests:
+        all_of:
+          - albic: {}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence (no depth printed)."
+    - code: "M1.5.5"
+      name: "Mottlic Umbri-Gelic Cambosols"
+      aliases: ["Mottlic Umbri-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos úmbricos mosqueados"
+      adjective: "Mottlic"
+      page: 150
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M1.5.6"
+      name: "Typic Umbri-Gelic Cambosols"
+      aliases: ["Typic Umbri-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos úmbricos típicos"
+      adjective: "Typic"
+      page: 150
+      tests:
+        default: true
+      notes: "Other Umbri-Gelic Cambosols."
+
+  "M1.6":
+    - code: "M1.6.1"
+      name: "Trunic Hapli-Gelic Cambosols"
+      aliases: ["Trunic Hapli-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos háplicos truncados"
+      adjective: "Trunic"
+      page: 150
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M1.6.2"
+      name: "Calcic Hapli-Gelic Cambosols"
+      aliases: ["Calcic Hapli-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos háplicos cálcicos"
+      adjective: "Calcic"
+      page: 150
+      tests:
+        all_of:
+          - calcic: {to: 100, kinds: [calcic_only, calcic_evidence]}
+      notes: "A calcic horizon or calcic evidence with its upper boundary within 100 cm of the mineral soil surface (100 cm itself included, as in M1.3.1)."
+    - code: "M1.6.3"
+      name: "Calcaric Hapli-Gelic Cambosols"
+      aliases: ["Calcaric Hapli-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos háplicos calcáricos"
+      adjective: "Calcaric"
+      page: 150
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "M1.6.4"
+      name: "Albic Hapli-Gelic Cambosols"
+      aliases: ["Albic Hapli-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos háplicos álbicos"
+      adjective: "Albic"
+      page: 150
+      tests:
+        all_of:
+          - albic: {}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence (no depth printed)."
+    - code: "M1.6.5"
+      name: "Mottlic Hapli-Gelic Cambosols"
+      aliases: ["Mottlic Hapli-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 151
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M1.6.6"
+      name: "Typic Hapli-Gelic Cambosols"
+      aliases: ["Typic Hapli-Gelic Cambosol"]
+      name_pt: "Cambissolos gélicos háplicos típicos"
+      adjective: "Typic"
+      page: 151
+      tests:
+        default: true
+      notes: "Other Hapli-Gelic Cambosols."
+
+  "M2.1":
+    - code: "M2.1.1"
+      name: "Gleyic Litteri-Aquic Cambosols"
+      aliases: ["Gleyic Litteri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos de serapilheira gleicos"
+      adjective: "Gleyic"
+      page: 151
+      tests:
+        all_of:
+          - gleyic: {to: 100, from: 50}
+      notes: "Gleyic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M2.1.2"
+      name: "Sodic Litteri-Aquic Cambosols"
+      aliases: ["Sodic Litteri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos de serapilheira sódicos"
+      adjective: "Sodic"
+      page: 152
+      tests:
+        all_of:
+          - sodic: {within: 25, thick: 0}
+      notes: "The sodic property in some layer within 25 cm of the mineral soil surface."
+    - code: "M2.1.3"
+      name: "Parasalic Litteri-Aquic Cambosols"
+      aliases: ["Parasalic Litteri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos de serapilheira parassálicos"
+      adjective: "Parasalic"
+      page: 152
+      tests:
+        all_of:
+          - parasalic: {within: 100}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "M2.1.4"
+      name: "Typic Litteri-Aquic Cambosols"
+      aliases: ["Typic Litteri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos de serapilheira típicos"
+      adjective: "Typic"
+      page: 152
+      tests:
+        default: true
+      notes: "Other Litteri-Aquic Cambosols."
+
+  "M2.2":
+    - code: "M2.2.1"
+      name: "Anthrostagnic Shajiang-Aquic Cambosols"
+      aliases: ["Anthrostagnic Shajiang-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos com shajiang antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 152
+      tests:
+        all_of:
+          - anthrostagnic: {}
+      notes: "Anthrostagnic evidence (the anthrostagnic epipedon passes too, Q19)."
+    - code: "M2.2.2"
+      name: "Sodic Shajiang-Aquic Cambosols"
+      aliases: ["Sodic Shajiang-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos com shajiang sódicos"
+      adjective: "Sodic"
+      page: 152
+      tests:
+        all_of:
+          - sodic: {within: 25, thick: 0}
+      notes: "The sodic property in some layer within 25 cm of the mineral soil surface."
+    - code: "M2.2.3"
+      name: "Parasalic Shajiang-Aquic Cambosols"
+      aliases: ["Parasalic Shajiang-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos com shajiang parassálicos"
+      adjective: "Parasalic"
+      page: 152
+      tests:
+        all_of:
+          - parasalic_duration: {within: 25, thick: 0}
+      notes: "Salic evidence within 25 cm of the mineral soil surface for one month or more a year in 6 or more years out of 10 (salic_months_per_year; not recorded, the evidence observed passes provisionally, Q15)."
+    - code: "M2.2.4"
+      name: "Albic Shajiang-Aquic Cambosols"
+      aliases: ["Albic Shajiang-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos com shajiang álbicos"
+      adjective: "Albic"
+      page: 152
+      tests:
+        all_of:
+          - albic: {}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence (no depth printed)."
+    - code: "M2.2.5"
+      name: "Vertic Shajiang-Aquic Cambosols"
+      aliases: ["Vertic Shajiang-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos com shajiang vérticos"
+      adjective: "Vertic"
+      page: 152
+      tests:
+        all_of:
+          - vertic_features_cst: {grade: at_least_evidence}
+      notes: "Vertic evidence (vertic features pass too, Q19)."
+    - code: "M2.2.6"
+      name: "Typic Shajiang-Aquic Cambosols"
+      aliases: ["Typic Shajiang-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos com shajiang típicos"
+      adjective: "Typic"
+      page: 153
+      tests:
+        default: true
+      notes: "Other Shajiang-Aquic Cambosols."
+
+  "M2.3":
+    - code: "M2.3.1"
+      name: "Anthrostagnic Dark-Aquic Cambosols"
+      aliases: ["Anthrostagnic Dark Aquic Cambosols", "Anthrostagnic Dark-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos escuros antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 153
+      tests:
+        all_of:
+          - anthrostagnic: {}
+      notes: "Anthrostagnic evidence (the anthrostagnic epipedon passes too, Q19)."
+    - code: "M2.3.2"
+      name: "Albic Dark-Aquic Cambosols"
+      aliases: ["Albic Dark Aquic Cambosols", "Albic Dark-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos escuros álbicos"
+      adjective: "Albic"
+      page: 153
+      tests:
+        all_of:
+          - albic: {}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence (no depth printed)."
+    - code: "M2.3.3"
+      name: "Dystric Dark-Aquic Cambosols"
+      aliases: ["Dystric Dark Aquic Cambosols", "Dystric Dark-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos escuros distróficos"
+      adjective: "Dystric"
+      page: 153
+      tests:
+        all_of:
+          - dystric: {to: 50, from: 20}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon at least between 20 and 50 cm of the mineral soil surface (Q23)."
+    - code: "M2.3.4"
+      name: "Typic Dark-Aquic Cambosols"
+      aliases: ["Typic Dark Aquic Cambosols", "Typic Dark-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos escuros típicos"
+      adjective: "Typic"
+      page: 153
+      tests:
+        default: true
+      notes: "Other Dark-Aquic Cambosols."
+
+  "M2.4":
+    - code: "M2.4.1"
+      name: "Anthrostagnic Ochri-Aquic Cambosols"
+      aliases: ["Anthrostagnic Ochri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos ócricos antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 153
+      tests:
+        all_of:
+          - anthrostagnic: {}
+      notes: "Anthrostagnic evidence (the anthrostagnic epipedon passes too, Q19)."
+    - code: "M2.4.2"
+      name: "Parasalic Ochri-Aquic Cambosols"
+      aliases: ["Parasalic Ochri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos ócricos parassálicos"
+      adjective: "Parasalic"
+      page: 153
+      tests:
+        all_of:
+          - parasalic: {within: 100}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some horizon 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "M2.4.3"
+      name: "Calcaric Ochri-Aquic Cambosols"
+      aliases: ["Calcaric Ochri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos ócricos calcáricos"
+      adjective: "Calcaric"
+      page: 153
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "M2.4.4"
+      name: "Dystric Ochri-Aquic Cambosols"
+      aliases: ["Dystric Ochri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos ócricos distróficos"
+      adjective: "Dystric"
+      page: 154
+      tests:
+        all_of:
+          - dystric: {to: 50, from: 20}
+      notes: "Base saturation (NH4OAc) under 50 % or pH (water) under 5.5 in every horizon at least between 20 and 50 cm of the mineral soil surface (Q23)."
+    - code: "M2.4.5"
+      name: "Typic Ochri-Aquic Cambosols"
+      aliases: ["Typic Ochri-Aquic Cambosol"]
+      name_pt: "Cambissolos áquicos ócricos típicos"
+      adjective: "Typic"
+      page: 154
+      tests:
+        default: true
+      notes: "Other Ochri-Aquic Cambosols."
+
+  "M3.1":
+    - code: "M3.1.1"
+      name: "Anthrostagnic Siltigi-Ustic Cambosols"
+      aliases: ["Anthrostagnic Siltigi Ustic Cambosols", "Anthrostagnic Siltigi-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos siltígicos antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 154
+      tests:
+        all_of:
+          - anthrostagnic: {}
+      notes: "Anthrostagnic evidence (the anthrostagnic epipedon passes too, Q19)."
+    - code: "M3.1.2"
+      name: "Calcic Siltigi-Ustic Cambosols"
+      aliases: ["Calcic Siltigi Ustic Cambosols", "Calcic Siltigi-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos siltígicos cálcicos"
+      adjective: "Calcic"
+      page: 155
+      tests:
+        all_of:
+          - calcic: {to: 125, kinds: [calcic_only, hypercalcic_horizon, calcipan]}
+      notes: "A calcic or hypercalcic horizon or a calcipan, with its upper boundary within 125 cm of the mineral soil surface."
+    - code: "M3.1.3"
+      name: "Sodic Siltigi-Ustic Cambosols"
+      aliases: ["Sodic Siltigi Ustic Cambosols", "Sodic Siltigi-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos siltígicos sódicos"
+      adjective: "Sodic"
+      page: 155
+      tests:
+        all_of:
+          - sodic: {within: 50}
+      notes: "The sodic property in some horizon 10 cm or more thick within 50 cm of the mineral soil surface."
+    - code: "M3.1.4"
+      name: "Parasalic Siltigi-Ustic Cambosols"
+      aliases: ["Parasalic Siltigi Ustic Cambosols", "Parasalic Siltigi-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos siltígicos parassálicos"
+      adjective: "Parasalic"
+      page: 155
+      tests:
+        all_of:
+          - parasalic: {within: 25, thick: 0}
+      notes: "Salic evidence (the salic horizon passes too, Q19) in some layer within 25 cm of the mineral soil surface."
+    - code: "M3.1.5"
+      name: "Mottlic Siltigi-Ustic Cambosols"
+      aliases: ["Mottlic Siltigi Ustic Cambosols", "Mottlic Siltigi-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos siltígicos mosqueados"
+      adjective: "Mottlic"
+      page: 155
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M3.1.6"
+      name: "Typic Siltigi-Ustic Cambosols"
+      aliases: ["Typic Siltigi Ustic Cambosols", "Typic Siltigi-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos siltígicos típicos"
+      adjective: "Typic"
+      page: 155
+      tests:
+        default: true
+      notes: "Other Siltigi-Ustic Cambosols."
+
+  "M3.2":
+    - code: "M3.2.1"
+      name: "Lithic Ferri-Ustic Cambosols"
+      aliases: ["Lithic Ferri-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos férricos líticos"
+      adjective: "Lithic"
+      page: 155
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "M3.2.2"
+      name: "Trunic Ferri-Ustic Cambosols"
+      aliases: ["Trunic Ferri-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos férricos truncados"
+      adjective: "Trunic"
+      page: 155
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M3.2.3"
+      name: "Dystric Ferri-Ustic Cambosols"
+      aliases: ["Dystric Ferri-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos férricos distróficos"
+      adjective: "Dystric"
+      page: 155
+      tests:
+        all_of:
+          - dystric: {to: 125, scope: b, mode: some}
+      notes: "Base saturation under 50 % or pH (water) under 5.5 in some subhorizon(s) of the B, 10 cm or more thick, within 125 cm."
+    - code: "M3.2.4"
+      name: "Typic Ferri-Ustic Cambosols"
+      aliases: ["Typic Ferri-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos férricos típicos"
+      adjective: "Typic"
+      page: 156
+      tests:
+        default: true
+      notes: "Other Ferri-Ustic Cambosols."
+
+  "M3.3":
+    - code: "M3.3.1"
+      name: "Parasalic Endorusti-Ustic Cambosols"
+      aliases: ["Parasalic Endorusti-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos endorredóxicos parassálicos"
+      adjective: "Parasalic"
+      page: 156
+      tests:
+        all_of:
+          - parasalic_duration: {within: 100}
+      notes: "Salic evidence in some horizon 10 cm or more thick within 100 cm of the mineral soil surface for one month or more a year in most years (salic_months_per_year; not recorded, the evidence observed passes provisionally, Q15)."
+    - code: "M3.3.2"
+      name: "Para-alkalic Endorusti-Ustic Cambosols"
+      aliases: ["Para-alkalic Endorusti-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos endorredóxicos paralcálicos"
+      adjective: "Para-alkalic"
+      page: 156
+      tests:
+        all_of:
+          - para_alkalic: {within: 100}
+      notes: "Alkalic evidence (the alkalic horizon passes too, Q19) in some horizon whose upper boundary lies within 100 cm of the mineral soil surface."
+    - code: "M3.3.3"
+      name: "Calcaric Endorusti-Ustic Cambosols"
+      aliases: ["Calcaric Endorusti-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos endorredóxicos calcáricos"
+      adjective: "Calcaric"
+      page: 156
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "M3.3.4"
+      name: "Mollic Endorusti-Ustic Cambosols"
+      aliases: ["Mollic Endorusti-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos endorredóxicos mólicos"
+      adjective: "Mollic"
+      page: 156
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "M3.3.5"
+      name: "Typic Endorusti-Ustic Cambosols"
+      aliases: ["Typic Endorusti-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos endorredóxicos típicos"
+      adjective: "Typic"
+      page: 156
+      tests:
+        default: true
+      notes: "Other Endorusti-Ustic Cambosols."
+
+  "M3.4":
+    - code: "M3.4.1"
+      name: "Calcic Molli-Ustic Cambosols"
+      aliases: ["Calcic Molli-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos mólicos cálcicos"
+      adjective: "Calcic"
+      page: 156
+      tests:
+        all_of:
+          - calcic: {to: 100, kinds: [calcic_only, hypercalcic_horizon, calcipan]}
+      notes: "A calcic or hypercalcic horizon or a calcipan, with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "M3.4.2"
+      name: "Typic Molli-Ustic Cambosols"
+      aliases: ["Typic Molli-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos mólicos típicos"
+      adjective: "Typic"
+      page: 157
+      tests:
+        default: true
+      notes: "Other Molli-Ustic Cambosols."
+
+  "M3.5":
+    - code: "M3.5.1"
+      name: "Typic Hapli-Ustic Cambosols"
+      aliases: ["Typic Hapli-Ustic Cambosol"]
+      name_pt: "Cambissolos ústicos háplicos típicos"
+      adjective: "Typic"
+      page: 157
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Hapli-Ustic Cambosols (the book marks it provisional)."
+
+  "M4.1":
+    - code: "M4.1.1"
+      name: "Humic Bori-Perudic Cambosols"
+      aliases: ["Humic Bori-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos bóricos húmicos"
+      adjective: "Humic"
+      page: 158
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M4.1.2"
+      name: "Spodic Bori-Perudic Cambosols"
+      aliases: ["Spodic Bori-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos bóricos espódicos"
+      adjective: "Spodic"
+      page: 158
+      tests:
+        all_of:
+          - b_subhorizon: {test: spodic}
+      notes: "Spodic evidence (the spodic horizon passes too) in some subhorizon of the B, 10 cm or more thick, within 125 cm of the mineral soil surface."
+    - code: "M4.1.3"
+      name: "Albic Bori-Perudic Cambosols"
+      aliases: ["Albic Bori-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos bóricos álbicos"
+      adjective: "Albic"
+      page: 158
+      tests:
+        all_of:
+          - albic: {within: 125}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence within 125 cm of the mineral soil surface."
+    - code: "M4.1.4"
+      name: "Alic Bori-Perudic Cambosols"
+      aliases: ["Alic Bori-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos bóricos álicos"
+      adjective: "Alic"
+      page: 158
+      tests:
+        all_of:
+          - feature_run_cst: {features: [alic_property], min_cm: 10, from_cm: 0, to_cm: 125, grade: at_least_evidence}
+      notes: "The alic property or alic evidence in some horizon 10 cm or more thick within 125 cm of the mineral soil surface."
+    - code: "M4.1.5"
+      name: "Typic Bori-Perudic Cambosols"
+      aliases: ["Typic Bori-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos bóricos típicos"
+      adjective: "Typic"
+      page: 158
+      tests:
+        default: true
+      notes: "Other Bori-Perudic Cambosols."
+
+  "M4.2":
+    - code: "M4.2.1"
+      name: "Albic Stagni-Perudic Cambosols"
+      aliases: ["Albic Stagni-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos estágnicos álbicos"
+      adjective: "Albic"
+      page: 158
+      tests:
+        all_of:
+          - albic: {features: albic, within: 50}
+      notes: "An albic horizon within 50 cm of the mineral soil surface."
+    - code: "M4.2.2"
+      name: "Histic Stagni-Perudic Cambosols"
+      aliases: ["Histic Stagni-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos estágnicos hísticos"
+      adjective: "Histic"
+      page: 159
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "A histic horizon (epipedon) or histic evidence."
+    - code: "M4.2.3"
+      name: "Dark Stagni-Perudic Cambosols"
+      aliases: ["Dark Stagni-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos estágnicos escuros"
+      adjective: "Dark"
+      page: 159
+      tests:
+        all_of:
+          - any_of:
+              - mollic_epipedon_cst: {}
+              - umbric_epipedon_cst: {}
+      notes: "A mollic or umbric epipedon."
+    - code: "M4.2.4"
+      name: "Typic Stagni-Perudic Cambosols"
+      aliases: ["Typic Stagni-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos estágnicos típicos"
+      adjective: "Typic"
+      page: 159
+      tests:
+        default: true
+      notes: "Other Stagni-Perudic Cambosols."
+
+  "M4.3":
+    - code: "M4.3.1"
+      name: "Lithic Carbonati-Perudic Cambosols"
+      aliases: ["Lithic Calci-Perudic Cambosols", "Lithic Carbonati-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos carbonáticos líticos"
+      adjective: "Lithic"
+      page: 159
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, plane: true}
+      notes: "A lithic contact under more than half of the horizontal plane within 50 cm of the mineral soil surface (no fragments alternative)."
+    - code: "M4.3.2"
+      name: "Humic Carbonati-Perudic Cambosols"
+      aliases: ["Humic Calci-Perudic Cambosols", "Humic Carbonati-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos carbonáticos húmicos"
+      adjective: "Humic"
+      page: 159
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M4.3.3"
+      name: "Typic Carbonati-Perudic Cambosols"
+      aliases: ["Typic Calci-Perudic Cambosols", "Typic Carbonati-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 159
+      tests:
+        default: true
+      notes: "Other Carbonati-Perudic Cambosols."
+
+  "M4.4":
+    - code: "M4.4.1"
+      name: "Lithic Ali-Perudic Cambosols"
+      aliases: ["Lithic Ali-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos álicos líticos"
+      adjective: "Lithic"
+      page: 159
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "M4.4.2"
+      name: "Histic Ali-Perudic Cambosols"
+      aliases: ["Histic Ali-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos álicos hísticos"
+      adjective: "Histic"
+      page: 160
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Histic evidence (the histic epipedon passes too, Q19)."
+    - code: "M4.4.3"
+      name: "Humic Ali-Perudic Cambosols"
+      aliases: ["Humic Ali-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos álicos húmicos"
+      adjective: "Humic"
+      page: 160
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M4.4.4"
+      name: "Mottlic Ali-Perudic Cambosols"
+      aliases: ["Mottlic Ali-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos álicos mosqueados"
+      adjective: "Mottlic"
+      page: 160
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50, features: [redoxic_features, gleyic_features]}
+      notes: "Redoxic features or gleyic evidence (each read on its own run) in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M4.4.5"
+      name: "Typic Ali-Perudic Cambosols"
+      aliases: ["Typic Ali-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos álicos típicos"
+      adjective: "Typic"
+      page: 160
+      tests:
+        default: true
+      notes: "Other Ali-Perudic Cambosols."
+
+  "M4.5":
+    - code: "M4.5.1"
+      name: "Histic Acidi-Perudic Cambosols"
+      aliases: ["Histic Acidi-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos ácidos hísticos"
+      adjective: "Histic"
+      page: 160
+      tests:
+        all_of:
+          - histic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Histic evidence (the histic epipedon passes too, Q19)."
+    - code: "M4.5.2"
+      name: "Humic Acidi-Perudic Cambosols"
+      aliases: ["Humic Acidi-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos ácidos húmicos"
+      adjective: "Humic"
+      page: 160
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M4.5.3"
+      name: "Alic Acidi-Perudic Cambosols"
+      aliases: ["Alic Acidi-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos ácidos álicos"
+      adjective: "Alic"
+      page: 160
+      tests:
+        all_of:
+          - b_subhorizon: {test: alic}
+      notes: "The alic property or alic evidence in some subhorizon(s) of the B, 10 cm or more thick, within 125 cm of the mineral soil surface."
+    - code: "M4.5.4"
+      name: "Ferric Acidi-Perudic Cambosols"
+      aliases: ["Ferric Acidi-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos ácidos férricos"
+      adjective: "Ferric"
+      page: 160
+      tests:
+        all_of:
+          - b_subhorizon: {test: ferric}
+      notes: "The ferric property (its layer test) in some subhorizon of the B, 10 cm or more thick, within 125 cm of the mineral soil surface."
+    - code: "M4.5.5"
+      name: "Typic Acidi-Perudic Cambosols"
+      aliases: ["Typic Acidi-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos ácidos típicos"
+      adjective: "Typic"
+      page: 161
+      tests:
+        default: true
+      notes: "Other Acidi-Perudic Cambosols."
+
+  "M4.6":
+    - code: "M4.6.1"
+      name: "Lithic Hapli-Perudic Cambosols"
+      aliases: ["Lithic Hapli-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos háplicos líticos"
+      adjective: "Lithic"
+      page: 161
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 50 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "M4.6.2"
+      name: "Humic Hapli-Perudic Cambosols"
+      aliases: ["Humic Hapli-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos háplicos húmicos"
+      adjective: "Humic"
+      page: 161
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M4.6.3"
+      name: "Ferric Hapli-Perudic Cambosols"
+      aliases: ["Ferric Hapli-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos háplicos férricos"
+      adjective: "Ferric"
+      page: 161
+      tests:
+        all_of:
+          - b_subhorizon: {test: ferric}
+      notes: "The ferric property (its layer test) in some subhorizon of the B, 10 cm or more thick, within 125 cm of the mineral soil surface."
+    - code: "M4.6.4"
+      name: "Typic Hapli-Perudic Cambosols"
+      aliases: ["Typic Hapli-Perudic Cambosol"]
+      name_pt: "Cambissolos perúdicos háplicos típicos"
+      adjective: "Typic"
+      page: 161
+      tests:
+        default: true
+      notes: "Other Hapli-Perudic Cambosols."
+
+  "M5.1":
+    - code: "M5.1.1"
+      name: "Albic Bori-Udic Cambosols"
+      aliases: ["Albic Bori-Udic Cambosol"]
+      name_pt: "Cambissolos údicos bóricos álbicos"
+      adjective: "Albic"
+      page: 162
+      tests:
+        all_of:
+          - albic: {within: 125}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence within 125 cm of the mineral soil surface."
+    - code: "M5.1.2"
+      name: "Dystric Bori-Udic Cambosols"
+      aliases: ["Dystric Bori-Udic Cambosol"]
+      name_pt: "Cambissolos údicos bóricos distróficos"
+      adjective: "Dystric"
+      page: 162
+      tests:
+        all_of:
+          - dystric: {to: 125, scope: b}
+      notes: "Base saturation under 50 % or pH (water) under 5.5 throughout the B horizon within 125 cm (Q23)."
+    - code: "M5.1.3"
+      name: "Mollic Bori-Udic Cambosols"
+      aliases: ["Mollic Bori-Udic Cambosol"]
+      name_pt: "Cambissolos údicos bóricos mólicos"
+      adjective: "Mollic"
+      page: 162
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon (printed 'mollic horizon')."
+    - code: "M5.1.4"
+      name: "Mottlic Bori-Udic Cambosols"
+      aliases: ["Mottlic Bori-Udic Cambosol"]
+      name_pt: "Cambissolos údicos bóricos mosqueados"
+      adjective: "Mottlic"
+      page: 163
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M5.1.5"
+      name: "Typic Bori-Udic Cambosols"
+      aliases: ["Typic Bori-Udic Cambosol"]
+      name_pt: "Cambissolos údicos bóricos típicos"
+      adjective: "Typic"
+      page: 163
+      tests:
+        default: true
+      notes: "Other Bori-Udic Cambosols."
+
+  "M5.2":
+    - code: "M5.2.1"
+      name: "Phosphic Carbonati-Udic Cambosols"
+      aliases: ["Phosphic Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos fosfáticos"
+      adjective: "Phosphic"
+      page: 163
+      tests:
+        all_of:
+          - lc_coral_sands_cst: {}
+          - feature_share: {features: [phosphic_property], within: 100}
+      notes: "The lithologic characters of coral sands, and the phosphic property or phosphic evidence in more than half of the thickness of the horizons within 100 cm of the soil surface or above a shallower contact (Q22)."
+    - code: "M5.2.2"
+      name: "Lithic Carbonati-Udic Cambosols"
+      aliases: ["Lithic Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos líticos"
+      adjective: "Lithic"
+      page: 163
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic, plane: true}
+      notes: "A lithic contact under more than half of the horizontal plane within 50 cm of the mineral soil surface (no fragments alternative)."
+    - code: "M5.2.3"
+      name: "Trunic Carbonati-Udic Cambosols"
+      aliases: ["Trunic Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos truncados"
+      adjective: "Trunic"
+      page: 163
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M5.2.4"
+      name: "Leachic Carbonati-Udic Cambosols"
+      aliases: ["Leachic Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos lixiviados"
+      adjective: "Leachic"
+      page: 163
+      tests:
+        all_of:
+          - leachic: {}
+      notes: "pH (water) under 6.5 in more than half of the thickness of the horizons within 125 cm of the mineral soil surface or above a shallower lithic or paralithic contact (Q22)."
+    - code: "M5.2.5"
+      name: "Humic Carbonati-Udic Cambosols"
+      aliases: ["Humic Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos húmicos"
+      adjective: "Humic"
+      page: 163
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M5.2.6"
+      name: "Brown Carbonati-Udic Cambosols"
+      aliases: ["Brown Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos brunos"
+      adjective: "Brown"
+      page: 163
+      tests:
+        all_of:
+          - hue_share: {hue: "5YR", rule: yellower}
+      notes: "A hue of 5YR or yellower (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "M5.2.7"
+      name: "Typic Carbonati-Udic Cambosols"
+      aliases: ["Typic Carbonati-Udic Cambosol"]
+      name_pt: "Cambissolos údicos carbonáticos típicos"
+      adjective: "Typic"
+      page: 164
+      tests:
+        default: true
+      notes: "Other Carbonati-Udic Cambosols."
+
+  "M5.3":
+    - code: "M5.3.1"
+      name: "Calcaric Purpli-Udic Cambosols"
+      aliases: ["Calcaric Purpli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos púrpura calcáricos"
+      adjective: "Calcaric"
+      page: 164
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, 50 cm, p. 63)."
+    - code: "M5.3.2"
+      name: "Dystric Purpli-Udic Cambosols"
+      aliases: ["Dystric Purpli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos púrpura distróficos"
+      adjective: "Dystric"
+      page: 164
+      tests:
+        all_of:
+          - dystric: {to: 125, scope: b}
+      notes: "Base saturation under 50 % or pH (water) under 5.5 in the B within 125 cm, read throughout (Q23)."
+    - code: "M5.3.3"
+      name: "Trunic Purpli-Udic Cambosols"
+      aliases: ["Trunic Purpli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos púrpura truncados"
+      adjective: "Trunic"
+      page: 164
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M5.3.4"
+      name: "Agric Purpli-Udic Cambosols"
+      aliases: ["Agric Purpli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos púrpura ágricos"
+      adjective: "Agric"
+      page: 164
+      tests:
+        all_of:
+          - agric_horizon_cst: {}
+      notes: "An agric horizon (no depth printed)."
+    - code: "M5.3.5"
+      name: "Mottlic Purpli-Udic Cambosols"
+      aliases: ["Mottlic Purpli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos púrpura mosqueados"
+      adjective: "Mottlic"
+      page: 164
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M5.3.6"
+      name: "Typic Purpli-Udic Cambosols"
+      aliases: ["Typic Purpli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos púrpura típicos"
+      adjective: "Typic"
+      page: 164
+      tests:
+        default: true
+      notes: "Other Purpli-Udic Cambosols."
+
+  "M5.4":
+    - code: "M5.4.1"
+      name: "Lithic Ali-Udic Cambosols"
+      aliases: ["Lithic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos líticos"
+      adjective: "Lithic"
+      page: 164
+      tests:
+        all_of:
+          - lithic: {depth: 100, contact: lithic, fragments: more_than_half}
+      notes: "A lithic contact within 100 cm of the mineral soil surface, or, with none, 70 % or more by volume of gravels or rock fragments over 2 mm in more than half of the horizons within that depth (by thickness, Q22)."
+    - code: "M5.4.2"
+      name: "Trunic Ali-Udic Cambosols"
+      aliases: ["Trunic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos truncados"
+      adjective: "Trunic"
+      page: 165
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M5.4.3"
+      name: "Humic Ali-Udic Cambosols"
+      aliases: ["Humic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos húmicos"
+      adjective: "Humic"
+      page: 165
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M5.4.4"
+      name: "Xanthic Ali-Udic Cambosols"
+      aliases: ["Xanthic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos xânticos"
+      adjective: "Xanthic"
+      page: 165
+      tests:
+        all_of:
+          - xanthic_sub: {}
+      notes: "A udic regime bordering on the perudic one (Q8) and a hue of 7.5YR or yellower (moist, Q21) in at least one subhorizon 10 cm or more thick in the upper part of the B: a run whose top lies in the upper half of the B within 125 cm."
+    - code: "M5.4.5"
+      name: "Mottlic Ali-Udic Cambosols"
+      aliases: ["Mottlic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos mosqueados"
+      adjective: "Mottlic"
+      page: 165
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M5.4.6"
+      name: "Plinthic Ali-Udic Cambosols"
+      aliases: ["Plinthic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos plínticos"
+      adjective: "Plinthic"
+      page: 165
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: plinthic_horizon, top_max: 125}
+      notes: "A plinthic horizon with its upper boundary within 125 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "M5.4.7"
+      name: "Vertic Ali-Udic Cambosols"
+      aliases: ["Vertic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos vérticos"
+      adjective: "Vertic"
+      page: 165
+      tests:
+        all_of:
+          - vertic_features_cst: {grade: at_least_evidence}
+      notes: "Vertic evidence (vertic features pass too, Q19)."
+    - code: "M5.4.8"
+      name: "Typic Ali-Udic Cambosols"
+      aliases: ["Typic Ali-Udic Cambosol"]
+      name_pt: "Cambissolos údicos álicos típicos"
+      adjective: "Typic"
+      page: 165
+      tests:
+        default: true
+      notes: "Other Ali-Udic Cambosols."
+
+  "M5.5":
+    - code: "M5.5.1"
+      name: "Trunic Ferri-Udic Cambosols"
+      aliases: ["Trunic Ferri-Udic Cambosol"]
+      name_pt: "Cambissolos údicos férricos truncados"
+      adjective: "Trunic"
+      page: 166
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M5.5.2"
+      name: "Red Ferri-Udic Cambosols"
+      aliases: ["Red Ferri-Udic Cambosol"]
+      name_pt: "Cambissolos údicos férricos vermelhos"
+      adjective: "Red"
+      page: 166
+      tests:
+        all_of:
+          - hue_share: {hue: "5YR", rule: redder}
+      notes: "A hue of 5YR or redder (moist, Q21) in more than half of the thickness of the horizons within 125 cm of the mineral soil surface (Q22)."
+    - code: "M5.5.3"
+      name: "Mollic Ferri-Udic Cambosols"
+      aliases: ["Mollic Ferri-Udic Cambosol"]
+      name_pt: "Cambissolos údicos férricos mólicos"
+      adjective: "Mollic"
+      page: 166
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "M5.5.4"
+      name: "Typic Ferri-Udic Cambosols"
+      aliases: ["Typic Ferri-Udic Cambosol"]
+      name_pt: "Cambissolos údicos férricos típicos"
+      adjective: "Typic"
+      page: 166
+      tests:
+        default: true
+      notes: "Other Ferri-Udic Cambosols."
+
+  "M5.6":
+    - code: "M5.6.1"
+      name: "Trunic Acidi-Udic Cambosols"
+      aliases: ["Trunic Acidi-Udic Cambosol"]
+      name_pt: "Cambissolos údicos ácidos truncados"
+      adjective: "Trunic"
+      page: 166
+      tests:
+        all_of:
+          - trunic: {horizon: cambic_horizon}
+      notes: "The cambic horizon directly exposed at the soil surface (the first mineral layer; an A, AB, AC or E there fails)."
+    - code: "M5.6.2"
+      name: "Albic Acidi-Udic Cambosols"
+      aliases: ["Albic Acidi-Udic Cambosol"]
+      name_pt: "Cambissolos údicos ácidos álbicos"
+      adjective: "Albic"
+      page: 166
+      tests:
+        all_of:
+          - albic: {within: 125}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence within 125 cm of the mineral soil surface."
+    - code: "M5.6.3"
+      name: "Humic Acidi-Udic Cambosols"
+      aliases: ["Humic Acidi-Udic Cambosol"]
+      name_pt: "Cambissolos údicos ácidos húmicos"
+      adjective: "Humic"
+      page: 166
+      tests:
+        all_of:
+          - humic_property_cst: {}
+      notes: "The humic property (p. 59)."
+    - code: "M5.6.4"
+      name: "Typic Acidi-Udic Cambosols"
+      aliases: ["Typic Acidi-Udic Cambosol"]
+      name_pt: "Cambissolos údicos ácidos típicos"
+      adjective: "Typic"
+      page: 166
+      tests:
+        default: true
+      notes: "Other Acidi-Udic Cambosols."
+
+  "M5.7":
+    - code: "M5.7.1"
+      name: "Albic Hapli-Udic Cambosols"
+      aliases: ["Albic Hapli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos háplicos álbicos"
+      adjective: "Albic"
+      page: 167
+      tests:
+        all_of:
+          - albic: {within: 125}
+      notes: "An albic horizon, or a glossic horizon or glossic evidence within 125 cm of the mineral soil surface."
+    - code: "M5.7.2"
+      name: "Mollic Hapli-Udic Cambosols"
+      aliases: ["Mollic Hapli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos háplicos mólicos"
+      adjective: "Mollic"
+      page: 167
+      tests:
+        all_of:
+          - mollic_epipedon_cst: {}
+      notes: "A mollic epipedon."
+    - code: "M5.7.3"
+      name: "Mottlic Hapli-Udic Cambosols"
+      aliases: ["Mottlic Hapli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 167
+      tests:
+        all_of:
+          - mottlic: {to: 100, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "M5.7.4"
+      name: "Typic Hapli-Udic Cambosols"
+      aliases: ["Typic Hapli-Udic Cambosol"]
+      name_pt: "Cambissolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 167
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Cambosols."

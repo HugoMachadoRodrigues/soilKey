@@ -781,9 +781,18 @@ classify_cst2001 <- function(pedon, rules = NULL,
     tr <- res$trace[[lv$level[i]]][[lv$code[i]]]
     if (!is.null(tr) && isTRUE(tr$passed) && .cst_trace_provisional(list(evidence = tr$evidence))) {
       prov_i <- c(prov_i, i)
-      notes <- c(notes, sprintf(paste(
-        "Provisional: %s %s rests on a reading the book leaves open (see the trace):",
-        "a ferrous-iron test, a measurement or a duration would confirm it."), lv$code[i], lv$name[i]))
+      # v0.9.376 (Hugo on the review, 2026-11-08): the remedy named by the
+      # flags of the reading
+      fl <- .cst_trace_flags(list(evidence = tr$evidence))
+      rem <- c(if (any(grepl("gleyic_without_test", fl))) "a ferrous-iron test",
+               if ("window_cut_at_description_base" %in% fl) "a deeper description",
+               if ("contact_extent_not_recorded" %in% fl) "the extent of the contact under the plane",
+               if ("salic_duration_not_recorded" %in% fl) "the months a year with salic evidence",
+               if (any(grepl("crack|days", fl))) "the duration of the cracks")
+      if (!length(rem)) rem <- c("a ferrous-iron test", "a measurement", "a duration")
+      rem_txt <- if (length(rem) == 1L) rem else paste(paste(rem[-length(rem)], collapse = ", "), "or", rem[length(rem)])
+      notes <- c(notes, sprintf("Provisional: %s %s rests on a reading the book leaves open (see the trace): %s would confirm it.",
+                                lv$code[i], lv$name[i], rem_txt))
     }
   }
   # a class assigned on a stand-in of a group key (Hugo, 2026-11-07)
@@ -837,13 +846,6 @@ classify_cst2001 <- function(pedon, rules = NULL,
     notes <- c(notes, sprintf(paste(
       "%s %s is listed in Appendix 1 only: the key prints no such subgroup, and soilKey keys it at its",
       "Appendix position with the test of its analogues (Hugo's decision Q3)."), lv$code[nrow(lv)], lv$name[nrow(lv)]))
-  # v0.9.375: the subgroups of orders H to N follow in a later part; a group
-  # of the book with no subgroup list stops the name there, with a note
-  if (identical(lv$level[nrow(lv)], "groups") && !isTRUE(last$bracketed) &&
-      is.null(rules$subgroups[[lv$code[nrow(lv)]]]))
-    notes <- c(notes, sprintf(paste(
-      "The subgroups of %s %s are not keyed in this release (soilKey keys those of orders A to G);",
-      "the name stops at the group."), lv$code[nrow(lv)], lv$name[nrow(lv)]))
   # the correlation of the order (Tables 4.2 and 4.3), a note only
   cr <- .cst_order_correlation(lv$code[1L])
   if (!is.null(cr)) {
@@ -889,10 +891,10 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' group code (\code{"A1.1"} ... \code{"N4.7"}, and soilKey's
 #' \code{"[A1.4]"} and \code{"[A2.5]"}) gives one profile per group, 140 in
 #' all, each keying to its own group, not provisionally; since v0.9.375 a
-#' subgroup code of orders A to G (\code{"A1.1.1"} ... \code{"G2.5.8"}, and
-#' \code{"[A1.3.x]"}) gives one profile per subgroup, 176 in all, each
-#' keying to its own subgroup, not provisionally. They are not real
-#' profiles. With
+#' subgroup code (\code{"A1.1.1"} ... \code{"N4.7.6"}, and
+#' \code{"[A1.3.x]"}) gives one profile per subgroup (orders A to G since
+#' v0.9.375, H to N since v0.9.376), 588 in all, each keying to its own
+#' subgroup, not provisionally. They are not real profiles. With
 #' \code{near_miss = TRUE}, fourteen of them (one per order) change one
 #' property so that the profile misses its class and lands in another:
 #' A1 without permafrost (Orthic Histosols), B2 with a cumulic layer of 35 cm
@@ -909,7 +911,7 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #'
 #' @param suborder The code of the suborder, as printed (\code{"A1"} ...
 #'   \code{"N4"}), of a group (\code{"A1.1"} ... \code{"N4.7"}) or of a
-#'   subgroup of orders A to G (\code{"A1.1.1"} ... \code{"G2.5.8"}).
+#'   subgroup (\code{"A1.1.1"} ... \code{"N4.7.6"}).
 #' @param near_miss Give the near miss of the suborder (one per order:
 #'   \code{"A1"}, \code{"B2"}, \code{"C1"}, \code{"D1"}, \code{"E1"},
 #'   \code{"F1"}, \code{"G1"}, \code{"H1"}, \code{"I1"}, \code{"J2"},
@@ -922,6 +924,7 @@ classify_cst2001 <- function(pedon, rules = NULL,
 #' classify_cst2001(make_cst2001_example("E1", near_miss = TRUE), on_missing = "silent")$name
 #' classify_cst2001(make_cst2001_example("K3.2"), on_missing = "silent")$levels
 #' classify_cst2001(make_cst2001_example("E1.3.4"), on_missing = "silent")$name
+#' classify_cst2001(make_cst2001_example("L4.2.1"), on_missing = "silent")$name
 #' @export
 make_cst2001_example <- function(suborder = .CST_EXAMPLE_CODES, near_miss = FALSE) {
   # v0.9.375: a subgroup code gives the example of the subgroup

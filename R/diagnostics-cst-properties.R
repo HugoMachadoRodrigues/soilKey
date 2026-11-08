@@ -390,7 +390,10 @@ organic_soil_materials_cst <- function(pedon, kind = NULL, top_max = NULL,
 
 .cst_lc_sandy <- function(x) {
   t <- .cst_cthr("lithologic")
-  s <- x$surf
+  # v0.9.376 (Hugo on the review, 2026-11-08, p. 46): items a and c read
+  # from the mineral soil surface, the O layers left out (litter is not
+  # parent material)
+  s <- if (is.na(x$msurf)) x$surf else x$msurf
   ct <- .cst_contact_cm(x$pedon)
   bot <- s + t$sandy_window_cm
   if (!is.na(ct) && ct < bot) bot <- ct
@@ -398,7 +401,7 @@ organic_soil_materials_cst <- function(pedon, kind = NULL, top_max = NULL,
   sp <- .cst_t(x, "stratification_pattern")
   p <- (tex %in% t$sandy_classes | ifelse(is.na(tex), NA, FALSE)) & .cst_single_grain(x) &
     !(!is.na(sp) & sp != "none")
-  p[x$kind %in% "R"] <- TRUE
+  p[x$kind %in% c("R", "O")] <- TRUE
   w <- .cst_window_every(x$pedon, p, s, bot)
   # the carbon as the weighted mean of the window (Hugo, 2026-11-06)
   oc <- .cst_weighted(x$pedon, "oc_pct", s, bot)$value <= t$sandy_oc_max_pct
@@ -1293,8 +1296,11 @@ alic_property_cst <- function(pedon, grade = c("full", "evidence", "at_least_evi
 
 #' Phosphic property and phosphic evidence (p. 63), per layer.
 #' @noRd
-phosphic_property_cst <- function(pedon, grade = c("full", "evidence", "at_least_evidence"), top_max = NULL) {
-  .cst_ch_result(pedon, "phosphic_property", grade = match.arg(grade), top_max = top_max)
+phosphic_property_cst <- function(pedon, grade = c("full", "evidence", "at_least_evidence"), top_max = NULL,
+                                  datum = c("surface", "mineral")) {
+  # v0.9.376: `datum` (N4.7.1 reads the mineral soil surface, Hugo on the
+  # review, 2026-11-08)
+  .cst_ch_result(pedon, "phosphic_property", grade = match.arg(grade), top_max = top_max, datum = match.arg(datum))
 }
 
 

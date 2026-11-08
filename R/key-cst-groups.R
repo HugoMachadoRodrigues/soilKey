@@ -426,12 +426,12 @@ shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125, from_cm
   a <- x$msurf + from_cm; b <- x$msurf + within
   ov <- .cst_overlap(x, a, b); ov[is.na(ov)] <- 0
   best <- 0; rows <- integer(0); i <- 1L
-  gap <- 0
+  # the window below the description undecided (Hugo, 2026-11-07; the run
+  # branch too since v0.9.376, Hugo on the review, 2026-11-08)
+  gap <- .cst_sg_gap(x, a, b)
   if (isTRUE(total)) {
-    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm);
-    # the window below the description undecided (Hugo, 2026-11-07)
+    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm)
     rows <- which(p & ov > 0); best <- sum(ov[rows])
-    gap <- .cst_sg_gap(x, a, b)
   } else while (i <= x$n) {
     if (p[i]) {
       j <- i; while (j < x$n && p[j + 1L]) j <- j + 1L
@@ -561,6 +561,16 @@ lc_carbonate_share_cst <- function(pedon, more_than = 0.5, within = 100) {
       list(p = ifelse(ph %in% TRUE | bs %in% TRUE, TRUE, ifelse(ph %in% FALSE & bs %in% FALSE, FALSE, NA)),
            missing = c("ph_h2o", "bs_pct"))
     },
+    # v0.9.376: the layer test of the ferric property (p. 61) and spodic
+    # evidence (the spodic horizon passing too), for the subgroups
+    ferric = {
+      tf <- .cst_cthr("ferric")
+      col <- .cst_colours(x)
+      list(p = .cst_hue_le(col, tf$hue_rank_max) | .cst_v(x, "fe_dcb_pct") >= tf$fe_dcb_min_pct |
+             .cst_fe_free_total(x$h) >= tf$free_total_min,
+           missing = c("munsell_hue_moist", "fe_dcb_pct", "fe_total_pct"))
+    },
+    spodic = list(p = .cst_hz(x, "spodic_horizon")$evid, missing = .cst_hz(x, "spodic_horizon")$missing),
     rlang::abort(sprintf("Unknown B horizon test '%s'.", test)))
 }
 
@@ -569,9 +579,11 @@ lc_carbonate_share_cst <- function(pedon, more_than = 0.5, within = 100) {
 #' layers that meet `test` ("allitic"; "hiweatheri": a CEC7 under 16 and an
 #' ECEC under 12 cmol(+)/kg clay and the allitic property in the same layers;
 #' v0.9.375, for the subgroups: "alic", the alic property or alic evidence,
-#' D3.1.2; "acid_or", base saturation under 50 % or pH under 5.5).
+#' D3.1.2; "acid_or", base saturation under 50 % or pH under 5.5; v0.9.376:
+#' "ferric", the layer test of the ferric property, M4.5.4; "spodic", spodic
+#' evidence, M4.1.2). `min_cm` 0: any B layer (L3.3.2, L4.5.1).
 #' @noRd
-b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "acid_or"), min_cm = 10) {
+b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "acid_or", "ferric", "spodic"), min_cm = 10) {
   test <- match.arg(test)
   nm <- "b_subhorizon_cst"
   x <- .cst_ctx(pedon)
@@ -579,12 +591,25 @@ b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "a
   B <- .cst_b_layers(x)
   bt <- .cst_b_test(x, test)
   p <- ifelse(B$b %in% FALSE, FALSE, ifelse(is.na(B$b), ifelse(bt$p %in% FALSE, FALSE, NA), bt$p))
-  g <- .cst_run_grade(x, p, min_cm)
-  passed <- if (any(g %in% TRUE)) TRUE else if (any(is.na(g))) NA else FALSE
-  .cst_key_result(nm, passed, layers = x$idx[which(g %in% TRUE)],
+  # v0.9.376 (Hugo on the review, 2026-11-08): the run measured inside
+  # [msurf, msurf + 125), the depth below the description undecided unless
+  # it ends on rock or a contact (.cst_sg_run())
+  if (is.na(x$msurf)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct"), page = "125, 128"))
+  rr <- .cst_sg_run(x, p, x$msurf, x$msurf + .cst_cthr("humic", "b_within_cm"), min_cm)
+  passed <- rr$passed
+  .cst_key_result(nm, passed, layers = x$idx[rr$rows],
                   missing = c(bt$missing, if (any(is.na(B$b))) "designation"), flags = B$flag,
                   notes = sprintf("%s in a run of B layers %s cm thick within 125 cm", test, format(min_cm)),
                   page = "125, 128")
+}
+
+# v0.9.376: the B may go on below the base of the description within 125
+# cm of the mineral soil surface: the deepest layer may be of the B and the
+# description stops above 125 cm, not on rock or a contact (.cst_sg_gap()).
+.cst_b_cut <- function(x, B) {
+  if (!x$n || is.na(x$msurf)) return(FALSE)
+  last <- which.max(x$bot)
+  !(B$b[last] %in% FALSE) && .cst_sg_gap(x, x$msurf, x$msurf + .cst_cthr("humic", "b_within_cm")) > 0
 }
 
 #' A property throughout the B horizon within 125 cm (L3.2, L4.4, L4.5,
@@ -605,6 +630,10 @@ b_throughout_cst <- function(pedon, test = c("alic", "acid_and", "acid_or")) {
   if (!any(inB) && !any(maybe))
     return(.cst_key_result(nm, FALSE, flags = B$flag, notes = "no B horizon", page = "139-162"))
   passed <- if (any(inB)) .cst_and(c(bt$p[inB], ifelse(bt$p[maybe] %in% TRUE, TRUE, NA))) else NA
+  # v0.9.376 (Hugo on the review, 2026-11-08): a B that may go on below the
+  # base of the description within 125 cm (not on rock or a contact) leaves
+  # a pass undecided
+  if (isTRUE(passed) && .cst_b_cut(x, B)) passed <- NA
   rows <- which(inB)
   .cst_key_result(nm, passed, layers = x$idx[rows], flags = B$flag,
                   missing = c(.cst_missing_in(x, rows[is.na(bt$p[rows])], bt$missing), if (any(maybe)) "designation"),

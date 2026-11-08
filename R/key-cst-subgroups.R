@@ -165,6 +165,11 @@ contact_sg_cst <- function(pedon, top_max, kind = c("lithic", "lithic_or_paralit
   rows <- unlist(lapply(rs, function(r) if (isTRUE(r$passed)) match(r$layers, x$idx) else integer(0)))
   if (!is.null(top_min)) rows <- rows[!is.na(x$top[rows]) & x$top[rows] - s >= top_min]
   ct <- if (length(rows)) TRUE else if (any(vapply(rs, function(r) is.na(r$passed), NA))) NA else FALSE
+  # v0.9.376 (Hugo on the review, 2026-11-08): no contact in a description
+  # that ends above the depth, not on rock or a contact, is undecided, as
+  # for the feature windows
+  gap <- .cst_sg_gap(x, s + (top_min %||% 0), s + top_max)
+  if (isFALSE(ct) && gap > 0) ct <- NA
   flags <- character(0)
   if (isTRUE(ct) && isTRUE(plane_extent)) {
     ext <- .cst_site_num(pedon$site %||% list(), "lithic_contact_extent_pct")
@@ -183,7 +188,8 @@ contact_sg_cst <- function(pedon, top_max, kind = c("lithic", "lithic_or_paralit
     passed <- .cst_or(ct, sh$passed)
   }
   .cst_key_result(nm, passed, layers = x$idx[rows], flags = flags,
-                  missing = c(unlist(lapply(rs, `[[`, "missing")), if (fragments != "none") "coarse_fragments_pct"),
+                  missing = c(unlist(lapply(rs, `[[`, "missing")), if (fragments != "none") "coarse_fragments_pct",
+                              if (gap > 0) "bottom_cm"),
                   notes = sprintf("%s contact %s%s cm of the %s%s", gsub("_", " ", kind),
                                   if (is.null(top_min)) "within " else sprintf("between %s and ", format(top_min)),
                                   format(top_max), if (datum == "mineral") "mineral soil surface" else "soil surface",
@@ -386,6 +392,10 @@ recalcaric_cst <- function(pedon, within = 60, surface_min_pct = NULL, datum = c
             else if (length(known) >= 2L && any(diff(known) > 0)) FALSE
             else if (length(known) >= 2L && !is.na(first) && known[length(known)] >= first) FALSE
             else if (is.na(first) || length(known) < 2L || anyNA(v)) NA
+            # v0.9.376 (Hugo on the review, 2026-11-08): the depth below the
+            # description may rise again, undecided unless it ends on rock or
+            # a contact
+            else if (.cst_sg_gap(x, s, s + within) > 0) NA
             else TRUE
   .cst_key_result(nm, passed, layers = x$idx[rows],
                   missing = if (is.na(passed)) "caco3_pct",
@@ -429,12 +439,21 @@ soluble_salt_band_cst <- function(pedon) {
 #' the window stops at a shallower contact and is cut by the base of the
 #' description as .cst_every_cut() reads it), or with `mode` "some" in a run
 #' of `min_cm` there; `scope` "b" throughout the B within 125 cm or in some
-#' subhorizon of it `min_cm` thick.
+#' subhorizon of it `min_cm` thick; v0.9.376: "claypan" and
+#' "argic_or_claypan", throughout the layers of those horizons.
 #' @noRd
 dystric_cst <- function(pedon, from_cm = 0, to_cm = 125, mode = c("throughout", "some"),
-                        scope = c("window", "b"), min_cm = 10, datum = c("mineral", "surface")) {
+                        scope = c("window", "b", "argic_or_claypan", "claypan"), min_cm = 10,
+                        datum = c("mineral", "surface")) {
   mode <- match.arg(mode); scope <- match.arg(scope); datum <- match.arg(datum)
   nm <- "dystric_cst"
+  # v0.9.376: throughout the claypan (L1.1.4) or the argic horizon or
+  # claypan (L4.3.4), read by layer_test_cst()
+  if (scope %in% c("argic_or_claypan", "claypan")) {
+    r <- layer_test_cst(pedon, test = "acid_or", scope = scope, mode = mode, min_cm = min_cm)
+    return(.cst_key_result(nm, r$passed, layers = r$layers, missing = r$missing,
+                           flags = r$evidence$flags, notes = r$notes))
+  }
   if (scope == "b") {
     r <- if (mode == "throughout") b_throughout_cst(pedon, test = "acid_or")
          else b_subhorizon_cst(pedon, test = "acid_or", min_cm = min_cm)
@@ -545,10 +564,13 @@ hue_share_cst <- function(pedon, hue, rule = c("yellower", "redder", "redder_tha
 
 #' A hue in the upper part, `min_cm` thick or more, of the B horizon within
 #' 125 cm (Xanthic, E1.3.4, p. 95): every layer of the first `min_cm` of the
-#' B meets it (the B as .cst_b_layers() reads it).
+#' B meets it (the B as .cst_b_layers() reads it); v0.9.376, `part`
+#' "upper_half": a subhorizon `min_cm` thick in the upper half of the B
+#' (M5.4.4).
 #' @noRd
-b_upper_hue_cst <- function(pedon, hue = "7.5YR", rule = c("yellower", "redder", "redder_than"), min_cm = 10) {
-  rule <- match.arg(rule)
+b_upper_hue_cst <- function(pedon, hue = "7.5YR", rule = c("yellower", "redder", "redder_than"), min_cm = 10,
+                            part = c("top", "upper_half")) {
+  rule <- match.arg(rule); part <- match.arg(part)
   nm <- "b_upper_hue_cst"
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_key_result(nm, FALSE, page = 95))
@@ -557,6 +579,49 @@ b_upper_hue_cst <- function(pedon, hue = "7.5YR", rule = c("yellower", "redder",
   if (is.na(k)) return(.cst_key_result(nm, FALSE, flags = B$flag, notes = "no B horizon", page = 95))
   if (is.na(B$b[k])) return(.cst_key_result(nm, NA, missing = "designation", flags = B$flag, page = 95))
   h <- .cst_sg_hue(x, hue, rule)
+  # v0.9.376 (M5.4.4, p. 165; Hugo on the review, 2026-11-08): a run of B
+  # layers `min_cm` thick with the hue whose top lies in the upper half of
+  # the B, the B cut at 125 cm below the mineral soil surface; a B that may
+  # go on below the base of the description leaves its half, and a run
+  # reaching that base, open
+  if (part == "upper_half") {
+    if (is.na(x$msurf)) return(.cst_key_result(nm, NA, missing = c("designation", "oc_pct"), page = 165))
+    cap <- x$msurf + .cst_cthr("humic", "b_within_cm")
+    rows <- which(B$b %in% TRUE)
+    a <- x$top[k]; b_lo <- min(max(x$bot[rows]), cap)
+    cut <- .cst_b_cut(x, B)
+    b_hi <- if (cut) cap else b_lo
+    mid_lo <- a + (b_lo - a) / 2; mid_hi <- a + (b_hi - a) / 2
+    ov <- .cst_overlap(x, a, cap); ov[is.na(ov)] <- 0
+    gap <- if (cut) .cst_sg_gap(x, a, cap) else 0
+    last <- which.max(x$bot)
+    runs <- function(q, extend) {
+      out <- list(); i <- 1L
+      while (i <= x$n) {
+        if (q[i]) {
+          j <- i; while (j < x$n && q[j + 1L]) j <- j + 1L
+          th <- sum(ov[i:j]) + (if (extend && j == last) gap else 0)
+          out[[length(out) + 1L]] <- c(top = x$top[i], thick = th, i = i, j = j)
+          i <- j + 1L
+        } else i <- i + 1L
+      }
+      out
+    }
+    q_lo <- B$b %in% TRUE & h$p %in% TRUE
+    q_hi <- !(B$b %in% FALSE) & !(h$p %in% FALSE)
+    sure <- Filter(function(r) r[["thick"]] >= min_cm - 1e-9 && r[["top"]] < mid_lo, runs(q_lo, FALSE))
+    may <- Filter(function(r) r[["thick"]] >= min_cm - 1e-9 && r[["top"]] < mid_hi, runs(q_hi, TRUE))
+    # the B below the base of the description may hold the run
+    deep <- max(x$bot, na.rm = TRUE)
+    open_run <- cut && deep < mid_hi && gap >= min_cm - 1e-9
+    passed <- if (length(sure)) TRUE else if (length(may) || open_run) NA else FALSE
+    lay <- if (length(sure)) unlist(lapply(sure, function(r) seq(r[["i"]], r[["j"]]))) else integer(0)
+    return(.cst_key_result(nm, passed, layers = x$idx[lay], flags = c(B$flag, stats::na.omit(h$flags[lay])),
+                           missing = if (is.na(passed)) c("munsell_hue_moist", if (cut) "bottom_cm"),
+                           notes = sprintf("hue %s %s in a B subhorizon %s cm thick starting in the upper half of the B (%s-%s cm)",
+                                           hue, rule, format(min_cm), format(a), format(mid_lo)),
+                           page = 165))
+  }
   ev <- .cst_every_cut(pedon, x, h$p, x$top[k], x$top[k] + min_cm)
   .cst_key_result(nm, ev$passed, layers = x$idx[ev$rows], flags = c(B$flag, ev$flags, stats::na.omit(h$flags[ev$rows])),
                   missing = if (is.na(ev$passed)) "munsell_hue_moist",
@@ -681,7 +746,8 @@ bs_share_cst <- function(pedon, min_pct = 35, share = 0.8, strict = FALSE, withi
 
 # --- the examples of the subgroups ------------------------------------------------------------
 
-# The profile of each subgroup example (orders A to G): a group, suborder or
+# The profile of each subgroup example (orders A to G; H to N in
+# R/key-cst-subgroups-hn.R): a group, suborder or
 # subgroup example (`base`) with some of its layers (`rows`, which may repeat
 # one) and some columns replaced (`set`, whole columns, recycled) and some
 # site fields (`site`), or a profile of its own (`h`, `site`). The subgroups
@@ -986,7 +1052,8 @@ bs_share_cst <- function(pedon, min_pct = 35, share = 0.8, strict = FALSE, withi
   "G2.5.7" = list(base = "G2.5.8", set = list(munsell_value_moist = c(3, 3, 6, 6), munsell_value_dry = c(5, 5, 7, 7),
                                               caco3_pct = c(5, 6, 9, 5))),
   "G2.5.8" = list(base = "G2.5", set = list(na_cmol = 0.2, mg_cmol = 1, caco3_pct = 5)),
-  NULL)
+  # v0.9.376: orders H to N
+  .cst_subgroup_example_spec_hn(code))
 }
 
 .CST_SUBGROUP_EXAMPLE_CODES <- c(
@@ -1008,7 +1075,56 @@ bs_share_cst <- function(pedon, min_pct = 35, share = 0.8, strict = FALSE, withi
   "G1.4.1", "G1.4.2", "G1.4.3", "G1.4.4", "G1.4.5", "G1.4.6",
   "G2.1.1", "G2.1.2", "G2.1.3", "G2.1.4", "G2.1.5", "G2.1.6", "G2.1.7", "G2.1.8", "G2.1.9",
   "G2.2.1", "G2.2.2", "G2.2.3", "G2.2.4", "G2.2.5", "G2.2.6", "G2.3.1", "G2.3.2", "G2.3.3", "G2.3.4", "G2.3.5", "G2.3.6",
-  "G2.4.1", "G2.4.2", "G2.4.3", "G2.5.1", "G2.5.2", "G2.5.3", "G2.5.4", "G2.5.5", "G2.5.6", "G2.5.7", "G2.5.8")
+  "G2.4.1", "G2.4.2", "G2.4.3", "G2.5.1", "G2.5.2", "G2.5.3", "G2.5.4", "G2.5.5", "G2.5.6", "G2.5.7", "G2.5.8",
+  # v0.9.376: orders H to N
+  "H1.1.1", "H1.1.2", "H1.2.1", "H1.2.2", "H1.3.1", "H1.3.2",
+  "H2.1.1", "H2.1.2", "H2.1.3", "H2.1.4", "H2.2.1", "H2.2.2", "H2.2.3", "H2.2.4", "H2.2.5", "H2.2.6", "H2.2.7",
+  "H2.2.8",
+  "I1.1.1", "I1.1.2", "I1.2.1", "I1.2.2", "I1.2.3", "I1.2.4",
+  "I2.1.1", "I2.1.2", "I2.2.1", "I2.2.2", "I2.2.3",
+  "I3.1.1", "I3.1.2", "I3.1.3", "I3.2.1", "I3.2.2", "I3.2.3", "I3.2.4", "I3.2.5", "I3.3.1", "I3.3.2", "I3.3.3",
+  "I3.3.4", "I3.3.5", "I3.3.6",
+  "J1.1.1", "J1.1.2", "J1.1.3", "J1.1.4", "J1.2.1",
+  "J2.1.1", "J2.1.2", "J2.1.3", "J2.2.1", "J2.2.2", "J2.2.3", "J2.3.1", "J2.3.2", "J2.3.3", "J2.3.4", "J2.3.5",
+  "J2.3.6", "J2.4.1", "J2.4.2", "J2.4.3", "J2.4.4", "J2.4.5", "J2.5.1", "J2.5.2", "J2.5.3", "J2.5.4",
+  "J3.1.1", "J3.1.2", "J3.1.3", "J3.2.1", "J3.2.2", "J3.2.3", "J3.2.4", "J3.3.1", "J3.3.2",
+  "K1.1.1", "K1.2.1", "K1.2.2", "K1.2.3",
+  "K2.1.1", "K2.1.2", "K2.1.3", "K2.1.4", "K2.2.1", "K2.2.2", "K2.2.3", "K2.2.4", "K2.2.5", "K2.2.6", "K2.2.7",
+  "K2.2.8", "K2.2.9", "K2.3.1", "K2.3.2", "K2.3.3", "K2.3.4", "K2.3.5", "K2.3.6", "K2.3.7", "K2.3.8",
+  "K3.1.1", "K3.1.2", "K3.1.3", "K3.1.4", "K3.1.5", "K3.1.6", "K3.2.1", "K3.2.2", "K3.2.3", "K3.2.4", "K3.3.1",
+  "K3.3.2", "K3.3.3", "K3.3.4", "K3.3.5", "K3.3.6", "K3.3.7", "K3.3.8", "K3.3.9", "K3.3.10", "K3.4.1", "K3.4.2",
+  "K3.4.3", "K3.4.4", "K3.4.5", "K3.4.6", "K3.4.7", "K3.5.1", "K3.5.2", "K3.5.3", "K3.5.4", "K3.5.5", "K3.5.6",
+  "K3.5.7", "K3.5.8", "K3.5.9", "K3.5.10",
+  "L1.1.1", "L1.1.2", "L1.1.3", "L1.1.4", "L1.1.5", "L1.2.1", "L1.2.2", "L1.2.3", "L1.2.4", "L1.2.5", "L1.2.6",
+  "L1.3.1", "L1.3.2", "L1.3.3", "L1.3.4", "L1.3.5", "L1.3.6",
+  "L2.1.1", "L2.1.2", "L2.1.3", "L2.2.1", "L2.2.2", "L2.3.1", "L2.3.2", "L2.3.3", "L2.4.1", "L2.4.2", "L2.4.3",
+  "L2.4.4", "L2.4.5",
+  "L3.1.1", "L3.1.2", "L3.2.1", "L3.2.2", "L3.2.3", "L3.3.1", "L3.3.2", "L3.3.3",
+  "L4.1.1", "L4.1.2", "L4.1.3", "L4.2.1", "L4.2.2", "L4.2.3", "L4.3.1", "L4.3.2", "L4.3.3", "L4.3.4", "L4.3.5",
+  "L4.4.1", "L4.4.2", "L4.4.3", "L4.4.4", "L4.4.5", "L4.5.1", "L4.5.2", "L4.5.3", "L4.5.4", "L4.5.5", "L4.6.1",
+  "L4.6.2", "L4.6.3", "L4.6.4", "L4.6.5", "L4.6.6", "L4.6.7", "L4.7.1", "L4.7.2", "L4.7.3", "L4.7.4", "L4.7.5",
+  "M1.1.1", "M1.1.2", "M1.2.1", "M1.2.2", "M1.2.3", "M1.2.4", "M1.3.1", "M1.3.2", "M1.3.3", "M1.3.4", "M1.4.1",
+  "M1.4.2", "M1.4.3", "M1.4.4", "M1.4.5", "M1.5.1", "M1.5.2", "M1.5.3", "M1.5.4", "M1.5.5", "M1.5.6", "M1.6.1",
+  "M1.6.2", "M1.6.3", "M1.6.4", "M1.6.5", "M1.6.6",
+  "M2.1.1", "M2.1.2", "M2.1.3", "M2.1.4", "M2.2.1", "M2.2.2", "M2.2.3", "M2.2.4", "M2.2.5", "M2.2.6", "M2.3.1",
+  "M2.3.2", "M2.3.3", "M2.3.4", "M2.4.1", "M2.4.2", "M2.4.3", "M2.4.4", "M2.4.5",
+  "M3.1.1", "M3.1.2", "M3.1.3", "M3.1.4", "M3.1.5", "M3.1.6", "M3.2.1", "M3.2.2", "M3.2.3", "M3.2.4", "M3.3.1",
+  "M3.3.2", "M3.3.3", "M3.3.4", "M3.3.5", "M3.4.1", "M3.4.2", "M3.5.1",
+  "M4.1.1", "M4.1.2", "M4.1.3", "M4.1.4", "M4.1.5", "M4.2.1", "M4.2.2", "M4.2.3", "M4.2.4", "M4.3.1", "M4.3.2",
+  "M4.3.3", "M4.4.1", "M4.4.2", "M4.4.3", "M4.4.4", "M4.4.5", "M4.5.1", "M4.5.2", "M4.5.3", "M4.5.4", "M4.5.5",
+  "M4.6.1", "M4.6.2", "M4.6.3", "M4.6.4",
+  "M5.1.1", "M5.1.2", "M5.1.3", "M5.1.4", "M5.1.5", "M5.2.1", "M5.2.2", "M5.2.3", "M5.2.4", "M5.2.5", "M5.2.6",
+  "M5.2.7", "M5.3.1", "M5.3.2", "M5.3.3", "M5.3.4", "M5.3.5", "M5.3.6", "M5.4.1", "M5.4.2", "M5.4.3", "M5.4.4",
+  "M5.4.5", "M5.4.6", "M5.4.7", "M5.4.8", "M5.5.1", "M5.5.2", "M5.5.3", "M5.5.4", "M5.6.1", "M5.6.2", "M5.6.3",
+  "M5.6.4", "M5.7.1", "M5.7.2", "M5.7.3", "M5.7.4",
+  "N1.1.1", "N1.1.2", "N1.1.3", "N1.2.1", "N1.2.2", "N1.2.3", "N1.2.4", "N1.2.5",
+  "N2.1.1", "N2.1.2", "N2.1.3", "N2.1.4", "N2.1.5", "N2.2.1", "N2.2.2", "N2.2.3", "N2.2.4", "N2.3.1", "N2.3.2",
+  "N2.3.3", "N2.3.4", "N2.3.5", "N2.4.1", "N2.4.2", "N2.4.3", "N2.4.4", "N2.4.5", "N2.5.1", "N2.5.2", "N2.5.3",
+  "N3.1.1", "N3.1.2", "N3.1.3", "N3.2.1", "N3.2.2", "N3.2.3", "N3.3.1", "N3.3.2", "N3.3.3", "N3.4.1", "N3.4.2",
+  "N3.4.3", "N3.5.1", "N3.5.2", "N3.5.3",
+  "N4.1.1", "N4.1.2", "N4.2.1", "N4.2.2", "N4.2.3", "N4.3.1", "N4.3.2", "N4.3.3", "N4.4.1", "N4.4.2", "N4.4.3",
+  "N4.4.4", "N4.4.5", "N4.5.1", "N4.5.2", "N4.5.3", "N4.5.4", "N4.5.5", "N4.6.1", "N4.6.2", "N4.6.3", "N4.6.4",
+  "N4.7.1", "N4.7.2", "N4.7.3", "N4.7.4", "N4.7.5", "N4.7.6")
 
 # Build the example of a subgroup from its spec.
 .cst_subgroup_example <- function(code) {

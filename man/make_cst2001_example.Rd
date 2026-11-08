@@ -9,7 +9,7 @@ make_cst2001_example(suborder = .CST_EXAMPLE_CODES, near_miss = FALSE)
 \arguments{
 \item{suborder}{The code of the suborder, as printed (\code{"A1"} ...
 \code{"N4"}), of a group (\code{"A1.1"} ... \code{"N4.7"}) or of a
-subgroup of orders A to G (\code{"A1.1.1"} ... \code{"G2.5.8"}).}
+subgroup (\code{"A1.1.1"} ... \code{"N4.7.6"}).}
 
 \item{near_miss}{Give the near miss of the suborder (one per order:
 \code{"A1"}, \code{"B2"}, \code{"C1"}, \code{"D1"}, \code{"E1"},
@@ -27,10 +27,10 @@ suborder, not provisionally (with the group it reaches). Since v0.9.374 a
 group code (\code{"A1.1"} ... \code{"N4.7"}, and soilKey's
 \code{"[A1.4]"} and \code{"[A2.5]"}) gives one profile per group, 140 in
 all, each keying to its own group, not provisionally; since v0.9.375 a
-subgroup code of orders A to G (\code{"A1.1.1"} ... \code{"G2.5.8"}, and
-\code{"[A1.3.x]"}) gives one profile per subgroup, 176 in all, each
-keying to its own subgroup, not provisionally. They are not real
-profiles. With
+subgroup code (\code{"A1.1.1"} ... \code{"N4.7.6"}, and
+\code{"[A1.3.x]"}) gives one profile per subgroup (orders A to G since
+v0.9.375, H to N since v0.9.376), 588 in all, each keying to its own
+subgroup, not provisionally. They are not real profiles. With
 \code{near_miss = TRUE}, fourteen of them (one per order) change one
 property so that the profile misses its class and lands in another:
 A1 without permafrost (Orthic Histosols), B2 with a cumulic layer of 35 cm
@@ -51,6 +51,7 @@ p$horizons[, c("designation", "top_cm", "bottom_cm", "clay_pct", "cec_cmol")]
 classify_cst2001(make_cst2001_example("E1", near_miss = TRUE), on_missing = "silent")$name
 classify_cst2001(make_cst2001_example("K3.2"), on_missing = "silent")$levels
 classify_cst2001(make_cst2001_example("E1.3.4"), on_missing = "silent")$name
+classify_cst2001(make_cst2001_example("L4.2.1"), on_missing = "silent")$name
 }
 \seealso{
 \code{\link{classify_cst2001}}.

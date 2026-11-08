@@ -1,0 +1,380 @@
+# The keys to subgroups of the Isohumosols (order J) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 116-123, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly (v0.9.376). Readings: readings.yaml.
+
+subgroups:
+
+  "J1.1":
+    - code: "J1.1.1"
+      name: "Fimic Phosphi-Lithomorphic Isohumosols"
+      aliases: ["Fimic Phosphi-Lithomorphic Isohumosol"]
+      name_pt: "Isoumossolos litomórficos fosfáticos fímicos"
+      adjective: "Fimic"
+      page: 117
+      tests:
+        all_of:
+          - fimic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Fimic evidence (the fimic epipedon passes too, Q19)."
+    - code: "J1.1.2"
+      name: "Gleyic Phosphi-Lithomorphic Isohumosols"
+      aliases: ["Gleyic Phosphi-Lithomorphic Isohumosol"]
+      name_pt: "Isoumossolos litomórficos fosfáticos gleicos"
+      adjective: "Gleyic"
+      page: 117
+      tests:
+        all_of:
+          - gleyic: {to: 100, from: 50}
+      notes: "Gleyic features in some horizon 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "J1.1.3"
+      name: "Panic Phosphi-Lithomorphic Isohumosols"
+      aliases: ["Panic Phosphi-Lithomorphic Isohumosol"]
+      name_pt: "Isoumossolos litomórficos fosfáticos com pã fosfático"
+      adjective: "Panic"
+      page: 117
+      tests:
+        all_of:
+          - phosphipan_cst: {}
+      notes: "A phosphipan (no depth printed)."
+    - code: "J1.1.4"
+      name: "Typic Phosphi-Lithomorphic Isohumosols"
+      aliases: ["Typic Phosphi-Lithomorphic Isohumosol"]
+      name_pt: "Isoumossolos litomórficos fosfáticos típicos"
+      adjective: "Typic"
+      page: 117
+      tests:
+        default: true
+      notes: "Other Phosphi-Lithomorphic Isohumosols."
+
+  "J1.2":
+    - code: "J1.2.1"
+      name: "Typic Black-Lithomorphic Isohumosols"
+      aliases: ["Typic Black-Lithomorphic Isohumosol"]
+      name_pt: "Isoumossolos litomórficos pretos típicos"
+      adjective: "Typic"
+      page: 118
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Black-Lithomorphic Isohumosols (the book marks it provisional)."
+
+  "J2.1":
+    - code: "J2.1.1"
+      name: "Argic Cryi-Ustic Isohumosols"
+      aliases: ["Argic Cryi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos críicos argílicos"
+      adjective: "Argic"
+      page: 118
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "J2.1.2"
+      name: "Calcic Cryi-Ustic Isohumosols"
+      aliases: ["Calcic Cryi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos críicos cálcicos"
+      adjective: "Calcic"
+      page: 118
+      tests:
+        all_of:
+          - calcic: {to: 100}
+      notes: "A calcic horizon (named alone: a hypercalcic horizon does not count), with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "J2.1.3"
+      name: "Typic Cryi-Ustic Isohumosols"
+      aliases: ["Typic Cryi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos críicos típicos"
+      adjective: "Typic"
+      page: 119
+      tests:
+        default: true
+      notes: "Other Cryi-Ustic Isohumosols."
+
+  "J2.2":
+    - code: "J2.2.1"
+      name: "Mottlic Cumuli-Ustic Isohumosols"
+      aliases: ["Mottlic Cumuli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cumúlicos mosqueados"
+      adjective: "Mottlic"
+      page: 119
+      tests:
+        all_of:
+          - mottlic: {to: 150, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface."
+    - code: "J2.2.2"
+      name: "Calcic Cumuli-Ustic Isohumosols"
+      aliases: ["Calcic Cumuli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cumúlicos cálcicos"
+      adjective: "Calcic"
+      page: 119
+      tests:
+        all_of:
+          - calcic: {to: 100}
+      notes: "A calcic horizon (named alone: a hypercalcic horizon does not count), with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "J2.2.3"
+      name: "Typic Cumuli-Ustic Isohumosols"
+      aliases: ["Typic Cumuli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cumúlicos típicos"
+      adjective: "Typic"
+      page: 119
+      tests:
+        default: true
+      notes: "Other Cumuli-Ustic Isohumosols."
+
+  "J2.3":
+    - code: "J2.3.1"
+      name: "Mottli-argic Pachi-Ustic Isohumosols"
+      aliases: ["Mottli-argic Cumuli-Ustic Isohumosols", "Mottli-argic Pachi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos páquicos mosqueados argílicos"
+      adjective: "Mottli-argic"
+      page: 119
+      tests:
+        all_of:
+          - mottlic: {to: 150, from: 50}
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface; and an argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact) (keyed before its parts)."
+    - code: "J2.3.2"
+      name: "Mottli-calcic Pachi-Ustic Isohumosols"
+      aliases: ["Mottli-calcic Pachi-Ustic Isohumosol", "Mottlic-calcic Pachi-Ustic Isohumosols"]
+      name_pt: "Isoumossolos ústicos páquicos mosqueados cálcicos"
+      adjective: "Mottli-calcic"
+      page: 119
+      tests:
+        all_of:
+          - mottlic: {to: 150, from: 50}
+          - calcic: {to: 100, kinds: [calcic_only, soft_lime]}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface; and a calcic horizon, or a horizon with soft powdery lime concentrations (calcic evidence, or soft powdery carbonates recorded, flagged; C17), with its upper boundary within 100 cm of the mineral soil surface (keyed before its parts)."
+    - code: "J2.3.3"
+      name: "Calci-argic Pachi-Ustic Isohumosols"
+      aliases: ["Calci-argic Pachi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos páquicos cálcicos argílicos"
+      adjective: "Calci-argic"
+      page: 120
+      tests:
+        all_of:
+          - calcic: {to: 100, kinds: [calcic_only, soft_lime]}
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "A calcic horizon, or a horizon with soft powdery lime concentrations (calcic evidence, or soft powdery carbonates recorded, flagged; C17), with its upper boundary within 100 cm of the mineral soil surface; and an argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact) (keyed before its parts)."
+    - code: "J2.3.4"
+      name: "Argic Pachi-Ustic Isohumosols"
+      aliases: ["Argic Pachi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos páquicos argílicos"
+      adjective: "Argic"
+      page: 120
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "J2.3.5"
+      name: "Calcic Pachi-Ustic Isohumosols"
+      aliases: ["Calcic Pachi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos páquicos cálcicos"
+      adjective: "Calcic"
+      page: 120
+      tests:
+        all_of:
+          - calcic: {to: 100, kinds: [calcic_only, soft_lime]}
+      notes: "A calcic horizon, or a horizon with soft powdery lime concentrations (calcic evidence, or soft powdery carbonates recorded, flagged; C17), with its upper boundary within 100 cm of the mineral soil surface."
+    - code: "J2.3.6"
+      name: "Typic Pachi-Ustic Isohumosols"
+      aliases: ["Typic Pachi-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos páquicos típicos"
+      adjective: "Typic"
+      page: 120
+      tests:
+        default: true
+      notes: "Other Pachi-Ustic Isohumosols."
+
+  "J2.4":
+    - code: "J2.4.1"
+      name: "Mottlic Calci-Ustic Isohumosols"
+      aliases: ["Mottlic Calci-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cálcicos mosqueados"
+      adjective: "Mottlic"
+      page: 120
+      tests:
+        all_of:
+          - mottlic: {to: 150, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface."
+    - code: "J2.4.2"
+      name: "Argic Calci-Ustic Isohumosols"
+      aliases: ["Argic Calci-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cálcicos argílicos"
+      adjective: "Argic"
+      page: 120
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "J2.4.3"
+      name: "Glossi-para-alkalic Calci-Ustic Isohumosols"
+      aliases: ["Glossi-para-alkalic Calci-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cálcicos glóssicos paralcálicos"
+      adjective: "Glossi-para-alkalic"
+      page: 120
+      tests:
+        all_of:
+          - albic: {features: glossic}
+          - para_alkalic: {within: 50}
+      notes: "A glossic horizon or glossic evidence (no depth printed); and alkalic evidence (the alkalic horizon passes too, Q19) in some horizon whose upper boundary lies within 50 cm of the mineral soil surface (keyed before its parts)."
+    - code: "J2.4.4"
+      name: "Para-alkalic Calci-Ustic Isohumosols"
+      aliases: ["Para-alkalic Calci-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cálcicos paralcálicos"
+      adjective: "Para-alkalic"
+      page: 121
+      tests:
+        all_of:
+          - para_alkalic: {within: 50}
+      notes: "Alkalic evidence (the alkalic horizon passes too, Q19) in some horizon whose upper boundary lies within 50 cm of the mineral soil surface."
+    - code: "J2.4.5"
+      name: "Typic Calci-Ustic Isohumosols"
+      aliases: ["Typic Calci-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos cálcicos típicos"
+      adjective: "Typic"
+      page: 121
+      tests:
+        default: true
+      notes: "Other Calci-Ustic Isohumosols."
+
+  "J2.5":
+    - code: "J2.5.1"
+      name: "Argic Hapli-Ustic Isohumosols"
+      aliases: ["Argic Hapli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos háplicos argílicos"
+      adjective: "Argic"
+      page: 121
+      tests:
+        all_of:
+          - upper_within_cst: {horizon: argic_horizon, top_max: 50}
+      notes: "An argic horizon with its upper boundary within 50 cm of the mineral soil surface (undecided when the description ends above that depth, not on rock or a contact)."
+    - code: "J2.5.2"
+      name: "Glossi-para-alkalic Hapli-Ustic Isohumosols"
+      aliases: ["Glossi-para-alkalic Hapli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos háplicos glóssicos paralcálicos"
+      adjective: "Glossi-para-alkalic"
+      page: 121
+      tests:
+        all_of:
+          - albic: {features: glossic}
+          - para_alkalic: {within: 50}
+      notes: "A glossic horizon or glossic evidence (no depth printed); and alkalic evidence (the alkalic horizon passes too, Q19) in some horizon whose upper boundary lies within 50 cm of the mineral soil surface (keyed before its parts)."
+    - code: "J2.5.3"
+      name: "Para-alkalic Hapli-Ustic Isohumosols"
+      aliases: ["Para-alkalic Hapli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos háplicos paralcálicos"
+      adjective: "Para-alkalic"
+      page: 121
+      tests:
+        all_of:
+          - para_alkalic: {within: 50}
+      notes: "Alkalic evidence (the alkalic horizon passes too, Q19) in some horizon whose upper boundary lies within 50 cm of the mineral soil surface."
+    - code: "J2.5.4"
+      name: "Typic Hapli-Ustic Isohumosols"
+      aliases: ["Typic Hapli-Ustic Isohumosol"]
+      name_pt: "Isoumossolos ústicos háplicos típicos"
+      adjective: "Typic"
+      page: 121
+      tests:
+        default: true
+      notes: "Other Hapli-Ustic Isohumosols."
+
+  "J3.1":
+    - code: "J3.1.1"
+      name: "Albic Stagni-Udic Isohumosols"
+      aliases: ["Albic Stagni-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos estágnicos álbicos"
+      adjective: "Albic"
+      page: 122
+      tests:
+        all_of:
+          - albic: {features: albic, position: below_mollic}
+      notes: "An albic horizon below the mollic epipedon."
+    - code: "J3.1.2"
+      name: "Pachic Stagni-Udic Isohumosols"
+      aliases: ["Pachic Stagni-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos estágnicos páquicos"
+      adjective: "Pachic"
+      page: 122
+      tests:
+        all_of:
+          - epipedon_thick_cst: {horizon: mollic_epipedon, min_cm: 50}
+      notes: "A mollic epipedon 50 cm or more thick."
+    - code: "J3.1.3"
+      name: "Typic Stagni-Udic Isohumosols"
+      aliases: ["Typic Stagni-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos estágnicos típicos"
+      adjective: "Typic"
+      page: 122
+      tests:
+        default: true
+      notes: "Other Stagni-Udic Isohumosols."
+
+  "J3.2":
+    - code: "J3.2.1"
+      name: "Albic Argi-Udic Isohumosols"
+      aliases: ["Albic Argi-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos argílicos álbicos"
+      adjective: "Albic"
+      page: 122
+      tests:
+        all_of:
+          - albic: {features: albic, position: below_mollic}
+      notes: "An albic horizon below the mollic epipedon."
+    - code: "J3.2.2"
+      name: "Mottlic Argi-Udic Isohumosols"
+      aliases: ["Mottlic Argi-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos argílicos mosqueados"
+      adjective: "Mottlic"
+      page: 123
+      tests:
+        all_of:
+          - mottlic: {to: 150, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface."
+    - code: "J3.2.3"
+      name: "Pachic Argi-Udic Isohumosols"
+      aliases: ["Pachic Argi-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos argílicos páquicos"
+      adjective: "Pachic"
+      page: 123
+      tests:
+        all_of:
+          - epipedon_thick_cst: {horizon: mollic_epipedon, min_cm: 50}
+      notes: "A mollic epipedon 50 cm or more thick."
+    - code: "J3.2.4"
+      name: "Typic Argi-Udic Isohumosols"
+      aliases: ["Typic Argi-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos argílicos típicos"
+      adjective: "Typic"
+      page: 123
+      tests:
+        default: true
+      notes: "Other Argi-Udic Isohumosols."
+
+  "J3.3":
+    - code: "J3.3.1"
+      name: "Mottlic Hapli-Udic Isohumosols"
+      aliases: ["Mottlic Hapli-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos háplicos mosqueados"
+      adjective: "Mottlic"
+      page: 123
+      tests:
+        all_of:
+          - mottlic: {to: 150, from: 50}
+      notes: "Redoxic features in some horizon 10 cm or more thick between 50 and 150 cm of the mineral soil surface."
+    - code: "J3.3.2"
+      name: "Typic Hapli-Udic Isohumosols"
+      aliases: ["Typic Hapli-Udic Isohumosol"]
+      name_pt: "Isoumossolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 123
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Isohumosols."
