@@ -115,6 +115,11 @@ load_rules <- function(system = "wrb2022",
     for (nm in names(content)) if (nm == key || is.null(rules[[nm]])) rules[[nm]] <- content[[nm]]
   }
 
+  # v0.9.375: a rule set with a presets block (the Chinese Soil Taxonomy)
+  # has its preset calls expanded into ordinary blocks (R/rule-presets.R);
+  # no other system has one, so their rules are read as before.
+  if (!is.null(rules$presets)) rules <- .expand_presets(rules)
+
   rules
 }
 

@@ -24,7 +24,7 @@ classify_cst2001(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"cst2001"}, the group (or the deepest class assigned) in
+  \code{"cst2001"}, the subgroup (or the deepest class assigned) in
   \code{name}, the order in \code{rsg_or_order}, the classes
   of each level in \code{levels} (with \code{name_pt} and
   \code{book_provisional}), the key trace with the horizon panel,
@@ -42,8 +42,12 @@ Ferrosols, Argosols, Cambosols and Primosols), their 39 suborders and
 their 138 groups (key 5.2), with soilKey's residuals \code{[E2] [Other
 Ferralosols]}, \code{[A1.4] [Other Permagelic Histosols]} and
 \code{[A2.5] [Other Orthic Histosols]} where the book prints none (the
-name stops there, with a note). The 588 subgroups follow in a later
-release.
+name stops there, with a note). Since v0.9.375 it keys the subgroups of
+orders A to G (176, with \code{[A1.3.x]} Lithic Hemi-Permagelic Histosols,
+listed in Appendix 1 only, at its Appendix position); their criteria are
+written as presets (\code{inst/rules/cst2001/presets.yaml}), expanded
+when the rules are loaded. The groups of orders H to N stop at the group,
+with a note, until their subgroups follow in a later release.
 }
 \details{
 The key is read in the book's order, the first class whose criteria pass

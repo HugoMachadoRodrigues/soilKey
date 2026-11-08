@@ -1,0 +1,342 @@
+# The keys to subgroups of the Histosols (order A) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 75-81, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "A1.1":
+    - code: "A1.1.1"
+      name: "Lithic Foli-Permagelic Histosols"
+      aliases: ["Lithic Foli-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fólicos líticos"
+      adjective: "Lithic"
+      page: 76
+      tests:
+        all_of:
+          - lithic: {depth: 100, datum: surface}
+      notes: "A lithic or paralithic contact within 100 cm of the soil surface."
+    - code: "A1.1.2"
+      name: "Typic Foli-Permagelic Histosols"
+      aliases: ["Typic Foli-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fólicos típicos"
+      adjective: "Typic"
+      page: 76
+      tests:
+        default: true
+      notes: "Other Foli-Permagelic Histosols."
+
+  "A1.2":
+    - code: "A1.2.1"
+      name: "Buric Fibri-Permagelic Histosols"
+      aliases: ["Buric Fibri-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fíbricos búricos"
+      adjective: "Buric"
+      page: 77
+      tests:
+        all_of:
+          - buric_cst: {max_cm: 40}
+      notes: "A mineral layer less than 40 cm thick from the soil surface (over the organic soil materials)."
+    - code: "A1.2.2"
+      name: "Terric Fibri-Permagelic Histosols"
+      aliases: ["Terric Fibri-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fíbricos térricos"
+      adjective: "Terric"
+      page: 77
+      tests:
+        all_of:
+          - terric_cst: {min_cm: 30}
+      notes: "A mineral layer 30 cm or more thick whose upper boundary lies within the subsurface tier."
+    - code: "A1.2.3"
+      name: "Lithic Fibri-Permagelic Histosols"
+      aliases: ["Lithic Fibri-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fíbricos líticos"
+      adjective: "Lithic"
+      page: 77
+      tests:
+        all_of:
+          - histosol_lithic_cs_cst: {}
+      notes: "A lithic contact within the control section."
+    - code: "A1.2.4"
+      name: "Hemic Fibri-Permagelic Histosols"
+      aliases: ["Hemic Fibri-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fíbricos hêmicos"
+      adjective: "Hemic"
+      page: 77
+      tests:
+        all_of:
+          - histosol_tier_layers_cst: {kind: hemic, min_cm: 25}
+      notes: "Layers of hemic soil materials totalling 25 cm or more within the subsurface or bottom tier."
+    - code: "A1.2.5"
+      name: "Sapric Fibri-Permagelic Histosols"
+      aliases: ["Sapric Fibri-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fíbricos sápricos"
+      adjective: "Sapric"
+      page: 77
+      tests:
+        all_of:
+          - histosol_tier_layers_cst: {kind: sapric, min_cm: 12.5}
+      notes: "Layers of sapric soil materials totalling 12.5 cm or more within the subsurface or bottom tier."
+    - code: "A1.2.6"
+      name: "Typic Fibri-Permagelic Histosols"
+      aliases: ["Typic Fibri-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos fíbricos típicos"
+      adjective: "Typic"
+      page: 77
+      tests:
+        default: true
+      notes: "Other Fibri-Permagelic Histosols."
+
+  "A1.3":
+    - code: "A1.3.1"
+      name: "Buric Hemi-Permagelic Histosols"
+      aliases: ["Buric Hemi-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos hêmicos búricos"
+      adjective: "Buric"
+      page: 77
+      tests:
+        all_of:
+          - buric_cst: {max_cm: 40}
+      notes: "A mineral layer less than 40 cm thick from the soil surface (over the organic soil materials)."
+    - code: "A1.3.2"
+      name: "Terric Hemi-Permagelic Histosols"
+      aliases: ["Terric Hemi-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos hêmicos térricos"
+      adjective: "Terric"
+      page: 78
+      tests:
+        all_of:
+          - terric_cst: {min_cm: 30}
+      notes: "A mineral layer 30 cm or more thick whose upper boundary lies within the subsurface tier."
+    - code: "[A1.3.x]"
+      name: "Lithic Hemi-Permagelic Histosols"
+      aliases: ["Lithic Hemi-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos hêmicos líticos"
+      adjective: "Lithic"
+      page: 181
+      appendix_only: true
+      tests:
+        all_of:
+          - histosol_lithic_cs_cst: {}
+      notes: "Appendix 1 only (p. 181): the key (pp. 77-78) prints no Lithic subgroup here; soilKey keys it at its Appendix position with the test of A1.2.3, a lithic contact within the control section (Hugo's decision Q3)."
+    - code: "A1.3.3"
+      name: "Sapric Hemi-Permagelic Histosols"
+      aliases: ["Sapric Hemi-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos hêmicos sápricos"
+      adjective: "Sapric"
+      page: 78
+      tests:
+        all_of:
+          - histosol_tier_layers_cst: {kind: sapric, min_cm: 12.5}
+      notes: "Layers of sapric soil materials totalling 12.5 cm or more within the subsurface or bottom tier."
+    - code: "A1.3.4"
+      name: "Typic Hemi-Permagelic Histosols"
+      aliases: ["Typic Hemi-Permagelic Histosol"]
+      name_pt: "Organossolos permagélicos hêmicos típicos"
+      adjective: "Typic"
+      page: 78
+      tests:
+        default: true
+      notes: "Other Hemi-Permagelic Histosols."
+
+  "A2.1":
+    - code: "A2.1.1"
+      name: "Lithic Foli-Orthic Histosols"
+      aliases: ["Lithic Foli-Orthic Histosol"]
+      name_pt: "Organossolos órticos fólicos líticos"
+      adjective: "Lithic"
+      page: 79
+      tests:
+        all_of:
+          - lithic: {depth: 100, contact: lithic, datum: surface}
+      notes: "A lithic contact within 100 cm of the soil surface (lithic only, as printed; A1.1.1 takes a paralithic one too)."
+    - code: "A2.1.2"
+      name: "Typic Foli-Orthic Histosols"
+      aliases: ["Typic Foli-Orthic Histosol"]
+      name_pt: "Organossolos órticos fólicos típicos"
+      adjective: "Typic"
+      page: 79
+      tests:
+        default: true
+      notes: "Other Foli-Orthic Histosols."
+
+  "A2.2":
+    - code: "A2.2.1"
+      name: "Buric Fibri-Orthic Histosols"
+      aliases: ["Buric Fibri-Orthic Histosol"]
+      name_pt: "Organossolos órticos fíbricos búricos"
+      adjective: "Buric"
+      page: 79
+      tests:
+        all_of:
+          - buric_cst: {max_cm: 40}
+      notes: "A mineral layer less than 40 cm thick from the soil surface (over the organic soil materials)."
+    - code: "A2.2.2"
+      name: "Terric Fibri-Orthic Histosols"
+      aliases: ["Terric Fibri-Orthic Histosol"]
+      name_pt: "Organossolos órticos fíbricos térricos"
+      adjective: "Terric"
+      page: 79
+      tests:
+        all_of:
+          - terric_cst: {min_cm: 30}
+      notes: "A mineral layer 30 cm or more thick whose upper boundary lies within the subsurface tier."
+    - code: "A2.2.3"
+      name: "Lithic Fibri-Orthic Histosols"
+      aliases: ["Lithic Fibri-Orthic Histosol"]
+      name_pt: "Organossolos órticos fíbricos líticos"
+      adjective: "Lithic"
+      page: 79
+      tests:
+        all_of:
+          - histosol_lithic_cs_cst: {}
+      notes: "A lithic contact within the control section."
+    - code: "A2.2.4"
+      name: "Hemic Fibri-Orthic Histosols"
+      aliases: ["Hemic Fibri-Orthic Histosol"]
+      name_pt: "Organossolos órticos fíbricos hêmicos"
+      adjective: "Hemic"
+      page: 79
+      tests:
+        all_of:
+          - histosol_tier_layers_cst: {kind: hemic, min_cm: 25}
+      notes: "Layers of hemic soil materials totalling 25 cm or more within the subsurface or bottom tier."
+    - code: "A2.2.5"
+      name: "Sapric Fibri-Orthic Histosols"
+      aliases: ["Sapric Fibri-Orthic Histosol"]
+      name_pt: "Organossolos órticos fíbricos sápricos"
+      adjective: "Sapric"
+      page: 79
+      tests:
+        all_of:
+          - histosol_tier_layers_cst: {kind: sapric, min_cm: 12.5}
+      notes: "Layers of sapric soil materials totalling 12.5 cm or more within the subsurface or bottom tier."
+    - code: "A2.2.6"
+      name: "Typic Fibri-Orthic Histosols"
+      aliases: ["Typic Fibri-Orthic Histosol"]
+      name_pt: "Organossolos órticos fíbricos típicos"
+      adjective: "Typic"
+      page: 80
+      tests:
+        default: true
+      notes: "Other Fibri-Orthic Histosols."
+
+  "A2.3":
+    - code: "A2.3.1"
+      name: "Buric Hemi-Orthic Histosols"
+      aliases: ["Buric Hemi-Orthic Histosol", "Buric Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos búricos"
+      adjective: "Buric"
+      page: 80
+      tests:
+        all_of:
+          - buric_cst: {max_cm: 40}
+      notes: "A mineral layer less than 40 cm thick from the soil surface (over the organic soil materials)."
+    - code: "A2.3.2"
+      name: "Terric Hemi-Orthic Histosols"
+      aliases: ["Terric Hemi-Orthic Histosol", "Terric Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos térricos"
+      adjective: "Terric"
+      page: 80
+      tests:
+        all_of:
+          - terric_cst: {min_cm: 30}
+      notes: "A mineral layer 30 cm or more thick whose upper boundary lies within the subsurface tier."
+    - code: "A2.3.3"
+      name: "Lithic Hemi-Orthic Histosols"
+      aliases: ["Lithic Hemi-Orthic Histosol", "Lithic Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos líticos"
+      adjective: "Lithic"
+      page: 80
+      tests:
+        all_of:
+          - histosol_lithic_cs_cst: {}
+      notes: "A lithic contact within the control section."
+    - code: "A2.3.4"
+      name: "Sapric Hemi-Orthic Histosols"
+      aliases: ["Sapric Hemi-Orthic Histosol", "Sapric Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos sápricos"
+      adjective: "Sapric"
+      page: 80
+      tests:
+        all_of:
+          - histosol_tier_layers_cst: {kind: sapric, min_cm: 12.5}
+      notes: "Layers of sapric soil materials totalling 12.5 cm or more within the subsurface or bottom tier."
+    - code: "A2.3.5"
+      name: "Parasalic Hemi-Orthic Histosols"
+      aliases: ["Parasalic Hemi-Orthic Histosol", "Parasalic Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos parassálicos"
+      adjective: "Parasalic"
+      page: 80
+      tests:
+        all_of:
+          - parasalic: {within: 50, thick: 10, datum: surface}
+      notes: "Salic evidence in some layer 10 cm or more thick within 50 cm of the soil surface (the name printed 'Parasalic Hemic-Orthic', an alias)."
+    - code: "A2.3.6"
+      name: "Typic Hemi-Orthic Histosols"
+      aliases: ["Typic Hemi-Orthic Histosol", "Typic Hemic-Orthic Histosols"]
+      name_pt: "Organossolos órticos hêmicos típicos"
+      adjective: "Typic"
+      page: 80
+      tests:
+        default: true
+      notes: "Other Hemi-Orthic Histosols."
+
+  "A2.4":
+    - code: "A2.4.1"
+      name: "Buric Sapri-Orthic Histosols"
+      aliases: ["Buric Sapri-Orthic Histosol"]
+      name_pt: "Organossolos órticos sápricos búricos"
+      adjective: "Buric"
+      page: 80
+      tests:
+        all_of:
+          - buric_cst: {max_cm: 40}
+      notes: "A mineral layer less than 40 cm thick from the soil surface (over the organic soil materials)."
+    - code: "A2.4.2"
+      name: "Terric Sapri-Orthic Histosols"
+      aliases: ["Terric Sapri-Orthic Histosol"]
+      name_pt: "Organossolos órticos sápricos térricos"
+      adjective: "Terric"
+      page: 81
+      tests:
+        all_of:
+          - terric_cst: {min_cm: 30}
+      notes: "A mineral layer 30 cm or more thick whose upper boundary lies within the subsurface tier."
+    - code: "A2.4.3"
+      name: "Lithic Sapri-Orthic Histosols"
+      aliases: ["Lithic Sapri-Orthic Histosol"]
+      name_pt: "Organossolos órticos sápricos líticos"
+      adjective: "Lithic"
+      page: 81
+      tests:
+        all_of:
+          - histosol_lithic_cs_cst: {}
+      notes: "A lithic contact within the control section."
+    - code: "A2.4.4"
+      name: "Parasalic Sapri-Orthic Histosols"
+      aliases: ["Parasalic Sapri-Orthic Histosol"]
+      name_pt: "Organossolos órticos sápricos parassálicos"
+      adjective: "Parasalic"
+      page: 81
+      tests:
+        all_of:
+          - parasalic: {within: 50, thick: 10, datum: surface}
+      notes: "Salic evidence in some layer 10 cm or more thick within 50 cm of the soil surface."
+    - code: "A2.4.5"
+      name: "Typic Sapri-Orthic Histosols"
+      aliases: ["Typic Sapri-Orthic Histosol"]
+      name_pt: "Organossolos órticos sápricos típicos"
+      adjective: "Typic"
+      page: 81
+      tests:
+        default: true
+      notes: "Other Sapri-Orthic Histosols."

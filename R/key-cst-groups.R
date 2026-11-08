@@ -101,9 +101,10 @@ histosol_tier_kind_cst <- function(pedon, kind = c("fibric", "hemic", "sapric"))
 #' epipedon (B1.2, p. 82; the subhorizon of the hydragric horizon, item 2d,
 #' p. 35): the layer whose top is the base of the epipedon, not an albic
 #' horizon, with a hue of 10YR to 7.5Y, a moist value of 5-6 and a moist
-#' chroma of 2 or less (the hydragric reader's grey).
+#' chroma of 2 or less (the hydragric reader's grey). v0.9.375: with
+#' `above_gleyic`, a layer with gleyic features lies below it (B1.1.5, p. 83).
 #' @noRd
-fe_percoleached_cst <- function(pedon) {
+fe_percoleached_cst <- function(pedon, above_gleyic = FALSE) {
   nm <- "fe_percoleached_cst"
   x <- .cst_ctx(pedon)
   if (!x$n) return(.cst_key_result(nm, FALSE, page = 82))
@@ -119,6 +120,13 @@ fe_percoleached_cst <- function(pedon) {
     col$vm >= t$grey_value_moist[1L] & col$vm <= t$grey_value_moist[2L] & col$c_any <= t$grey_chroma_max
   alb <- .cst_hz(x, "albic_horizon")$full
   passed <- .cst_and(grey[k], .cst_not(alb[k]))
+  # v0.9.375 (B1.1.5): between the epipedon and the horizon with gleyic
+  # features, which lies below the grey subhorizon
+  if (isTRUE(above_gleyic) && !isFALSE(passed)) {
+    gl <- .cst_ch(x, "gleyic_features")$full
+    below <- if (k < x$n) gl[(k + 1L):x$n] else logical(0)
+    passed <- .cst_and(passed, if (any(below %in% TRUE)) TRUE else if (any(is.na(below))) NA else FALSE)
+  }
   .cst_key_result(nm, passed, layers = if (isTRUE(passed)) x$idx[k] else integer(0),
                   missing = .cst_missing_in(x, k, c("munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist")),
                   flags = col$hue_flag[k], page = 82)
@@ -309,6 +317,26 @@ calcic_only_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral
   res
 }
 
+#' A gypsic horizon that is not a hypergypsic horizon, with its upper
+#' boundary within `top_max` cm (v0.9.375: G2.1.7, G2.2.3, G2.2.5; the key
+#' names the gypsic horizon alone, by analogy with the calcic one, Hugo,
+#' 2026-11-07).
+#' @noRd
+gypsic_only_cst <- function(pedon, top_max = NULL, datum = c("surface", "mineral")) {
+  datum <- match.arg(datum)
+  x <- .cst_ctx(pedon)
+  r <- NULL
+  if (x$n) {
+    r <- .cst_hz(x, "gypsic_horizon")
+    hy <- .cst_hz(x, "hypergypsic_horizon")$full
+    r$full <- ifelse(hy %in% TRUE, FALSE, ifelse(is.na(hy) & r$full %in% TRUE, NA, r$full))
+    r$evid <- ifelse(r$full %in% TRUE, TRUE, r$evid)
+  }
+  res <- .cst_hz_result(pedon, "gypsic_horizon", top_max = top_max, datum = datum, x = x, r = r)
+  res$notes <- paste(stats::na.omit(c(res$notes, "a hypergypsic horizon does not count")), collapse = "; ")
+  res
+}
+
 #' An epipedon (a run of layers from the surface) `min_cm` thick or more
 #' (J2.3: a mollic epipedon 50 cm or more thick, p. 118).
 #' @noRd
@@ -378,9 +406,11 @@ histic_littery_cst <- function(pedon) {
 #' volume in some horizon 10 cm or more thick within 125 cm of the mineral
 #' soil surface (M2.2, p. 151): shajiang_pct; not recorded, hard carbonate
 #' concretions stand in, flagged (carbonate_hard_pct, or
-#' secondary_carbonates_pct with a hard form); none recorded, absent.
+#' secondary_carbonates_pct with a hard form); none recorded, absent. v0.9.375:
+#' `from_cm` starts the window deeper and `total` asks for horizons totalling
+#' min_cm (F1.1.2, p. 97).
 #' @noRd
-shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125) {
+shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125, from_cm = 0, total = FALSE) {
   nm <- "shajiang_cst"
   x <- .cst_ctx(pedon)
   if (!x$n || is.na(x$msurf)) return(.cst_key_result(nm, if (x$n) NA else FALSE, page = 151))
@@ -393,19 +423,26 @@ shajiang_cst <- function(pedon, min_pct = 10, min_cm = 10, within = 125) {
   v <- ifelse(is.na(sj), fb, sj)
   p <- (v >= min_pct) %in% TRUE
   p[x$kind %in% c("O", "R")] <- FALSE
-  a <- x$msurf; b <- a + within
+  a <- x$msurf + from_cm; b <- x$msurf + within
   ov <- .cst_overlap(x, a, b); ov[is.na(ov)] <- 0
   best <- 0; rows <- integer(0); i <- 1L
-  while (i <= x$n) {
+  gap <- 0
+  if (isTRUE(total)) {
+    # v0.9.375: horizons totalling min_cm (F1.1.2, between 50 and 100 cm);
+    # the window below the description undecided (Hugo, 2026-11-07)
+    rows <- which(p & ov > 0); best <- sum(ov[rows])
+    gap <- .cst_sg_gap(x, a, b)
+  } else while (i <= x$n) {
     if (p[i]) {
       j <- i; while (j < x$n && p[j + 1L]) j <- j + 1L
       s <- sum(ov[i:j]); if (s > best) { best <- s; rows <- i:j }
       i <- j + 1L
     } else i <- i + 1L
   }
-  passed <- best >= min_cm
+  passed <- if (best >= min_cm) TRUE else if (best + gap >= min_cm) NA else FALSE
   .cst_key_result(nm, passed, layers = x$idx[rows],
-                  flags = if (passed && any(use_fb[rows])) "shajiang_from_hard_carbonates",
+                  flags = if (isTRUE(passed) && any(use_fb[rows])) "shajiang_from_hard_carbonates",
+                  missing = if (is.na(passed)) c("shajiang_pct", "bottom_cm"),
                   notes = "shajiang not recorded is absent (hard carbonate concretions stand in, flagged)",
                   page = 151)
 }
@@ -530,9 +567,11 @@ lc_carbonate_share_cst <- function(pedon, more_than = 0.5, within = 100) {
 #' A property in some subhorizon(s) of the B horizon 10 cm or more thick
 #' within 125 cm (K2.2, K3.2, K3.3, pp. 125, 128): a run of contiguous B
 #' layers that meet `test` ("allitic"; "hiweatheri": a CEC7 under 16 and an
-#' ECEC under 12 cmol(+)/kg clay and the allitic property in the same layers).
+#' ECEC under 12 cmol(+)/kg clay and the allitic property in the same layers;
+#' v0.9.375, for the subgroups: "alic", the alic property or alic evidence,
+#' D3.1.2; "acid_or", base saturation under 50 % or pH under 5.5).
 #' @noRd
-b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri"), min_cm = 10) {
+b_subhorizon_cst <- function(pedon, test = c("allitic", "hiweatheri", "alic", "acid_or"), min_cm = 10) {
   test <- match.arg(test)
   nm <- "b_subhorizon_cst"
   x <- .cst_ctx(pedon)

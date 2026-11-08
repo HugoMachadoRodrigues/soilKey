@@ -740,3 +740,22 @@ key:
       hiweatheri_ecec_clay_below: 12
       acid_ph_below: 5.5
       acid_bs_below: 50
+  subgroups:
+    page: "76-180"
+    source: "5.2 the keys to subgroups (0.9.375: orders A to G); the depths, thicknesses and shares of each subgroup are the parameters of its row (presets.yaml)"
+    lithic:
+      page: "123-176"
+      fragments_min_pct: 70           # 70 % or more by volume of fragments larger than 2 mm (the later orders)
+      plane_extent_more_than_pct: 50  # the contact under more than half of the plane (M4.3.1, M5.2.2)
+    recalcaric:
+      page: "82-84"
+      surface_min_gkg: 45             # CaCO3 equivalent exceeding 45 g/kg in the surface horizon
+    parasalic_salts:
+      page: 86
+      arid_gkg: [5, 20]               # soluble salts, regions with arid climates
+      other_gkg: [1.5, 10]            # the other regions
+    dark:
+      page: "101-108"
+      depth_cm: 18                    # the upper 18 cm after mixing
+      value_moist_max: 3.5
+      value_dry_max: 5.5              # crushed

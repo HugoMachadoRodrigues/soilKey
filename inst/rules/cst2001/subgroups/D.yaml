@@ -1,0 +1,211 @@
+# The keys to subgroups of the Andosols (order D) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 89-93, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "D1.1":
+    - code: "D1.1.1"
+      name: "Typic Geli-Cryic Andosols"
+      aliases: ["Typic Geli-Cryic Andosol"]
+      name_pt: "Andossolos críicos gélicos típicos"
+      adjective: "Typic"
+      page: 90
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Geli-Cryic Andosols (the book marks it provisional)."
+
+  "D1.2":
+    - code: "D1.2.1"
+      name: "Vitric Hapli-Cryic Andosols"
+      aliases: ["Vitric Hapli-Cryic Andosol"]
+      name_pt: "Andossolos críicos háplicos vítricos"
+      adjective: "Vitric"
+      page: 90
+      tests:
+        all_of:
+          - vitric_texture_cst: {}
+      notes: "A particle-size distribution, by weighted average, coarser than silt loam within 100 cm of the mineral soil surface or above a lithic contact (as D2)."
+    - code: "D1.2.2"
+      name: "Dark Hapli-Cryic Andosols"
+      aliases: ["Dark Hapli-Cryic Andosol"]
+      name_pt: "Andossolos críicos háplicos escuros"
+      adjective: "Dark"
+      page: 90
+      tests:
+        all_of:
+          - dark_epipedon: {}
+      notes: "A histic, mollic or umbric epipedon."
+    - code: "D1.2.3"
+      name: "Lithic Hapli-Cryic Andosols"
+      aliases: ["Lithic Hapli-Cryic Andosol"]
+      name_pt: "Andossolos críicos háplicos líticos"
+      adjective: "Lithic"
+      page: 90
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic}
+      notes: "A lithic contact within 50 cm of the mineral soil surface."
+    - code: "D1.2.4"
+      name: "Typic Hapli-Cryic Andosols"
+      aliases: ["Typic Hapli-Cryic Andosol"]
+      name_pt: "Andossolos críicos háplicos típicos"
+      adjective: "Typic"
+      page: 90
+      tests:
+        default: true
+      notes: "Other Hapli-Cryic Andosols."
+
+  "D2.1":
+    - code: "D2.1.1"
+      name: "Lithic Usti-Vitric Andosols"
+      aliases: ["Lithic Usti-Vitric Andosol"]
+      name_pt: "Andossolos vítricos ústicos líticos"
+      adjective: "Lithic"
+      page: 91
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic}
+      notes: "A lithic contact within 50 cm of the mineral soil surface."
+    - code: "D2.1.2"
+      name: "Dark Usti-Vitric Andosols"
+      aliases: ["Dark Usti-Vitric Andosol"]
+      name_pt: "Andossolos vítricos ústicos escuros"
+      adjective: "Dark"
+      page: 91
+      tests:
+        all_of:
+          - dark_epipedon: {}
+      notes: "A histic, mollic or umbric epipedon."
+    - code: "D2.1.3"
+      name: "Typic Usti-Vitric Andosols"
+      aliases: ["Typic Usti-Vitric Andosol"]
+      name_pt: "Andossolos vítricos ústicos típicos"
+      adjective: "Typic"
+      page: 91
+      tests:
+        default: true
+      notes: "Other Usti-Vitric Andosols."
+
+  "D2.2":
+    - code: "D2.2.1"
+      name: "Lithic Udi-Vitric Andosols"
+      aliases: ["Lithic Udi-Vitric Andosol", "Lithic Udic-Vitric Andosols"]
+      name_pt: "Andossolos vítricos údicos líticos"
+      adjective: "Lithic"
+      page: 91
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic}
+      notes: "A lithic contact within 50 cm of the mineral soil surface (printed 'with 50 cm')."
+    - code: "D2.2.2"
+      name: "Dark Udi-Vitric Andosols"
+      aliases: ["Dark Udi-Vitric Andosol", "Dark Udic-Vitric Andosols"]
+      name_pt: "Andossolos vítricos údicos escuros"
+      adjective: "Dark"
+      page: 91
+      tests:
+        all_of:
+          - dark_epipedon: {}
+      notes: "A histic, mollic or umbric epipedon."
+    - code: "D2.2.3"
+      name: "Typic Udi-Vitric Andosols"
+      aliases: ["Typic Udi-Vitric Andosol", "Typic Udic-Vitric Andosols"]
+      name_pt: "Andossolos vítricos údicos típicos"
+      adjective: "Typic"
+      page: 91
+      tests:
+        default: true
+      notes: "Other Udi-Vitric Andosols."
+
+  "D3.1":
+    - code: "D3.1.1"
+      name: "Lithic Humi-Udic Andosols"
+      aliases: ["Lithic Humi-Udic Andosol"]
+      name_pt: "Andossolos údicos húmicos líticos"
+      adjective: "Lithic"
+      page: 92
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic}
+      notes: "A lithic contact within 50 cm of the mineral soil surface."
+    - code: "D3.1.2"
+      name: "Alic Humi-Udic Andosols"
+      aliases: ["Alic Humi-Udic Andosol"]
+      name_pt: "Andossolos údicos húmicos álicos"
+      adjective: "Alic"
+      page: 92
+      tests:
+        all_of:
+          - b_subhorizon_cst: {test: alic, min_cm: 10}
+      notes: "The alic property or alic evidence in some subhorizon 10 cm or more thick of the B horizon within 125 cm."
+    - code: "D3.1.3"
+      name: "Argic Humi-Udic Andosols"
+      aliases: ["Argic Humi-Udic Andosol"]
+      name_pt: "Andossolos údicos húmicos argílicos"
+      adjective: "Argic"
+      page: 92
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 125, datum: mineral}
+      notes: "An argic horizon whose upper boundary lies within 125 cm of the mineral soil surface."
+    - code: "D3.1.4"
+      name: "Typic Humi-Udic Andosols"
+      aliases: ["Typic Humi-Udic Andosol"]
+      name_pt: "Andossolos údicos húmicos típicos"
+      adjective: "Typic"
+      page: 92
+      tests:
+        default: true
+      notes: "Other Humi-Udic Andosols."
+
+  "D3.2":
+    - code: "D3.2.1"
+      name: "Lithic Hapli-Udic Andosols"
+      aliases: ["Lithic Hapli-Udic Andosol"]
+      name_pt: "Andossolos údicos háplicos líticos"
+      adjective: "Lithic"
+      page: 92
+      tests:
+        all_of:
+          - lithic: {depth: 50, contact: lithic}
+      notes: "A lithic contact within 50 cm of the mineral soil surface."
+    - code: "D3.2.2"
+      name: "Alic Hapli-Udic Andosols"
+      aliases: ["Alic Hapli-Udic Andosol"]
+      name_pt: "Andossolos údicos háplicos álicos"
+      adjective: "Alic"
+      page: 92
+      tests:
+        all_of:
+          - b_subhorizon_cst: {test: alic, min_cm: 10}
+      notes: "The alic property or alic evidence in some subhorizon 10 cm or more thick of the B horizon within 125 cm."
+    - code: "D3.2.3"
+      name: "Argic Hapli-Udic Andosols"
+      aliases: ["Argic Hapli-Udic Andosol"]
+      name_pt: "Andossolos údicos háplicos argílicos"
+      adjective: "Argic"
+      page: 93
+      tests:
+        all_of:
+          - argic_horizon_cst: {top_max: 125, datum: mineral}
+      notes: "An argic horizon whose upper boundary lies within 125 cm of the mineral soil surface."
+    - code: "D3.2.4"
+      name: "Typic Hapli-Udic Andosols"
+      aliases: ["Typic Hapli-Udic Andosol"]
+      name_pt: "Andossolos údicos háplicos típicos"
+      adjective: "Typic"
+      page: 93
+      tests:
+        default: true
+      notes: "Other Hapli-Udic Andosols."

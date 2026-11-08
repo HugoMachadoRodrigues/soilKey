@@ -1,0 +1,423 @@
+# The keys to subgroups of the Anthrosols (order B) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 81-88, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "B1.1":
+    - code: "B1.1.1"
+      name: "Vertic Gleyi-Stagnic Anthrosols"
+      aliases: ["Vertic Gleyi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos vérticos"
+      adjective: "Vertic"
+      page: 82
+      tests:
+        all_of:
+          - vertic_features_cst: {grade: at_least_evidence}
+      notes: "Vertic evidence (vertic features pass too, Q19; no depth printed)."
+    - code: "B1.1.2"
+      name: "Sulfic Gleyi-Stagnic Anthrosols"
+      aliases: ["Sulfic Gleyi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos sulfídicos"
+      adjective: "Sulfic"
+      page: 82
+      tests:
+        all_of:
+          - sulfic: {within: 60, thick: 15}
+      notes: "Sulfidic materials in some layer 15 cm or more thick within 60 cm of the mineral soil surface, or a sulfuric horizon within 60 cm."
+    - code: "B1.1.3"
+      name: "Parasalic Gleyi-Stagnic Anthrosols"
+      aliases: ["Parasalic Gleyi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos parassálicos"
+      adjective: "Parasalic"
+      page: 82
+      tests:
+        all_of:
+          - parasalic: {within: 60, thick: 15}
+      notes: "Salic evidence in some layer 15 cm or more thick within 60 cm of the mineral soil surface (15 cm as printed; B1.4.2 has 10 cm)."
+    - code: "B1.1.4"
+      name: "Recalcaric Gleyi-Stagnic Anthrosols"
+      aliases: ["Recalcaric Gleyi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos recalcáricos"
+      adjective: "Recalcaric"
+      page: 82
+      tests:
+        all_of:
+          - recalcaric_cst: {within: 60, datum: surface}
+      notes: "Calcium carbonate within 60 cm of the soil surface from anthro-recalcification: its maximum, over 45 g/kg CaCO3 equivalent, in the surface horizon, decreasing gradually downwards within 60 cm (the pattern read; the origin is not tested)."
+    - code: "B1.1.5"
+      name: "Fe-leachic Gleyi-Stagnic Anthrosols"
+      aliases: ["Fe-leachic Gleyi-Stagnic Anthrosol", "Fe-leachic-Gleyi-Stagnic Anthrosols"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos ferrolixiviados"
+      adjective: "Fe-leachic"
+      page: 83
+      tests:
+        all_of:
+          - fe_percoleached_cst: {above_gleyic: true}
+      notes: "An iron-percoleached greyish subhorizon between the anthrostagnic epipedon and the horizon with gleyic features."
+    - code: "B1.1.6"
+      name: "Fe-accumulic Gleyi-Stagnic Anthrosols"
+      aliases: ["Fe-accumulic Gleyi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos ferriacumúlicos"
+      adjective: "Fe-accumulic"
+      page: 83
+      tests:
+        all_of:
+          - fe_accumulation_cst: {ratio: 1.5}
+      notes: "The hydragric horizon has 1.5 times or more the DCB-extractable Fe of the anthrostagnic epipedon."
+    - code: "B1.1.7"
+      name: "Typic Gleyi-Stagnic Anthrosols"
+      aliases: ["Typic Gleyi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) gleicos típicos"
+      adjective: "Typic"
+      page: 83
+      tests:
+        default: true
+      notes: "Other Gleyi-Stagnic Anthrosols."
+
+  "B1.2":
+    - code: "B1.2.1"
+      name: "Vertic Fe-leachi-Stagnic Anthrosols"
+      aliases: ["Vertic Fe-leachi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferrolixiviados vérticos"
+      adjective: "Vertic"
+      page: 83
+      tests:
+        all_of:
+          - vertic_features_cst: {grade: at_least_evidence}
+      notes: "Vertic evidence (vertic features pass too, Q19)."
+    - code: "B1.2.2"
+      name: "Albic Fe-leachi-Stagnic Anthrosols"
+      aliases: ["Albic Fe-leachi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferrolixiviados álbicos"
+      adjective: "Albic"
+      page: 83
+      tests:
+        all_of:
+          - albic_horizon_cst: {top_max: 60, datum: mineral}
+      notes: "An albic horizon within 60 cm of the mineral soil surface."
+    - code: "B1.2.3"
+      name: "Endogleyic Fe-leachi-Stagnic Anthrosols"
+      aliases: ["Endogleyic Fe-leachi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferrolixiviados endogleicos"
+      adjective: "Endogleyic"
+      page: 83
+      tests:
+        all_of:
+          - gleyic: {from: 60, to: 100}
+      notes: "Gleyic features in some layer 10 cm or more thick between 60 and 100 cm of the mineral soil surface."
+    - code: "B1.2.4"
+      name: "Typic Fe-leachi-Stagnic Anthrosols"
+      aliases: ["Typic Fe-leachi-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferrolixiviados típicos"
+      adjective: "Typic"
+      page: 83
+      tests:
+        default: true
+      notes: "Other Fe-leachi-Stagnic Anthrosols."
+
+  "B1.3":
+    - code: "B1.3.1"
+      name: "Vertic Fe-accumuli-Stagnic Anthrosols"
+      aliases: ["Vertic Fe-accumuli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferriacumúlicos vérticos"
+      adjective: "Vertic"
+      page: 84
+      tests:
+        all_of:
+          - vertic_features_cst: {grade: at_least_evidence}
+      notes: "Vertic evidence (vertic features pass too, Q19)."
+    - code: "B1.3.2"
+      name: "Albic Fe-accumuli-Stagnic Anthrosols"
+      aliases: ["Albic Fe-accumuli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferriacumúlicos álbicos"
+      adjective: "Albic"
+      page: 84
+      tests:
+        all_of:
+          - albic_horizon_cst: {top_max: 60, datum: mineral}
+      notes: "An albic horizon within 60 cm of the mineral soil surface."
+    - code: "B1.3.3"
+      name: "Endogleyic Fe-accumuli-Stagnic Anthrosols"
+      aliases: ["Endogleyic Fe-accumuli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferriacumúlicos endogleicos"
+      adjective: "Endogleyic"
+      page: 84
+      tests:
+        all_of:
+          - gleyic: {from: 60, to: 100}
+      notes: "Gleyic features in some layer 10 cm or more thick between 60 and 100 cm of the mineral soil surface."
+    - code: "B1.3.4"
+      name: "Typic Fe-accumuli-Stagnic Anthrosols"
+      aliases: ["Typic Fe-accumuli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) ferriacumúlicos típicos"
+      adjective: "Typic"
+      page: 84
+      tests:
+        default: true
+      notes: "Other Fe-accumuli-Stagnic Anthrosols."
+
+  "B1.4":
+    - code: "B1.4.1"
+      name: "Vertic Hapli-Stagnic Anthrosols"
+      aliases: ["Vertic Hapli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos vérticos"
+      adjective: "Vertic"
+      page: 84
+      tests:
+        all_of:
+          - vertic_features_cst: {grade: at_least_evidence}
+      notes: "Vertic evidence (vertic features pass too, Q19)."
+    - code: "B1.4.2"
+      name: "Parasalic Hapli-Stagnic Anthrosols"
+      aliases: ["Parasalic Hapli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos parassálicos"
+      adjective: "Parasalic"
+      page: 84
+      tests:
+        all_of:
+          - parasalic: {within: 60, thick: 10}
+      notes: "Salic evidence in some layer 10 cm or more thick within 60 cm of the mineral soil surface."
+    - code: "B1.4.3"
+      name: "Recalcaric Hapli-Stagnic Anthrosols"
+      aliases: ["Recalcaric Hapli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos recalcáricos"
+      adjective: "Recalcaric"
+      page: 84
+      tests:
+        all_of:
+          - recalcaric_cst: {within: 60, datum: surface}
+      notes: "As B1.1.4: carbonate of anthro-recalcification, over 45 g/kg at the surface and decreasing within 60 cm."
+    - code: "B1.4.4"
+      name: "Albic Hapli-Stagnic Anthrosols"
+      aliases: ["Albic Hapli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos álbicos"
+      adjective: "Albic"
+      page: 84
+      tests:
+        all_of:
+          - albic_horizon_cst: {top_max: 60, datum: mineral}
+      notes: "An albic horizon within 60 cm of the mineral soil surface."
+    - code: "B1.4.5"
+      name: "Endogleyic Hapli-Stagnic Anthrosols"
+      aliases: ["Endogleyic Hapli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos endogleicos"
+      adjective: "Endogleyic"
+      page: 85
+      tests:
+        all_of:
+          - gleyic: {from: 60, to: 100}
+      notes: "Gleyic features in some layer 10 cm or more thick between 60 and 100 cm of the mineral soil surface."
+    - code: "B1.4.6"
+      name: "Typic Hapli-Stagnic Anthrosols"
+      aliases: ["Typic Hapli-Stagnic Anthrosol"]
+      name_pt: "Antrossolos estágnicos (de arrozal) háplicos típicos"
+      adjective: "Typic"
+      page: 85
+      tests:
+        default: true
+      notes: "Other Hapli-Stagnic Anthrosols."
+
+  "B2.1":
+    - code: "B2.1.1"
+      name: "Siltigic Fimi-Orthic Anthrosols"
+      aliases: ["Siltigic Fimi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos fímicos siltígicos"
+      adjective: "Siltigic"
+      page: 85
+      tests:
+        all_of:
+          - siltigic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Siltigic evidence (the siltigic epipedon passes too, Q19)."
+    - code: "B2.1.2"
+      name: "Calcari-mottlic Fimi-Orthic Anthrosols"
+      aliases: ["Calcari-mottlic Fimi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos fímicos calcáricos mosqueados"
+      adjective: "Calcari-mottlic"
+      page: 86
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+          - mottlic: {from: 50, to: 100}
+      notes: "The calcaric property and redoxic features in some layer 10 cm or more thick between 50 and 100 cm of the mineral soil surface (keyed before its parts)."
+    - code: "B2.1.3"
+      name: "Mottlic Fimi-Orthic Anthrosols"
+      aliases: ["Mottlic Fimi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos fímicos mosqueados"
+      adjective: "Mottlic"
+      page: 86
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100}
+      notes: "Redoxic features in some layer 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "B2.1.4"
+      name: "Calcaric Fimi-Orthic Anthrosols"
+      aliases: ["Calcaric Fimi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos fímicos calcáricos"
+      adjective: "Calcaric"
+      page: 86
+      tests:
+        all_of:
+          - calcaric_property_cst: {}
+      notes: "The calcaric property (its own depth, p. 63)."
+    - code: "B2.1.5"
+      name: "Dystric Fimi-Orthic Anthrosols"
+      aliases: ["Dystric Fimi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos fímicos distróficos"
+      adjective: "Dystric"
+      page: 86
+      tests:
+        all_of:
+          - dystric: {from: 25, to: 50}
+      notes: "Base saturation under 50 % or pH under 5.5 between 25 and 50 cm of the mineral soil surface, in every horizon there (Q23)."
+    - code: "B2.1.6"
+      name: "Typic Fimi-Orthic Anthrosols"
+      aliases: ["Typic Fimi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos fímicos típicos"
+      adjective: "Typic"
+      page: 86
+      tests:
+        default: true
+      notes: "Other Fimi-Orthic Anthrosols."
+
+  "B2.2":
+    - code: "B2.2.1"
+      name: "Cryic Siltigi-Orthic Anthrosols"
+      aliases: ["Cryic Siltigi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos siltígicos críicos"
+      adjective: "Cryic"
+      page: 86
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [cryic]}
+      notes: "A cryic soil temperature regime (the colder ones do not count, Q7)."
+    - code: "B2.2.2"
+      name: "Parasalic Siltigi-Orthic Anthrosols"
+      aliases: ["Parasalic Siltigi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos siltígicos parassálicos"
+      adjective: "Parasalic"
+      page: 86
+      tests:
+        all_of:
+          - soluble_salt_band_cst: {}
+      notes: "Soluble salts of 5-20 g/kg in arid regions, 1.5-10 g/kg elsewhere, in the cultivated horizon or the upper part of the pedon."
+    - code: "B2.2.3"
+      name: "Fimic Siltigi-Orthic Anthrosols"
+      aliases: ["Fimic Siltigi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos siltígicos fímicos"
+      adjective: "Fimic"
+      page: 86
+      tests:
+        all_of:
+          - fimic_epipedon_cst: {grade: at_least_evidence}
+      notes: "A fimic epipedon or fimic evidence."
+    - code: "B2.2.4"
+      name: "Anthrostagnic Siltigi-Orthic Anthrosols"
+      aliases: ["Anthrostagnic Siltigi-Orthic Anthrosol", "Anthrostagnic-Siltigi-Orthic Anthrosols"]
+      name_pt: "Antrossolos órticos siltígicos antroestágnicos"
+      adjective: "Anthrostagnic"
+      page: 87
+      tests:
+        all_of:
+          - anthrostagnic: {}
+      notes: "Anthrostagnic evidence (the epipedon passes too, Q19; the name printed with a hyphen, an alias)."
+    - code: "B2.2.5"
+      name: "Mottlic Siltigi-Orthic Anthrosols"
+      aliases: ["Mottlic Siltigi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos siltígicos mosqueados"
+      adjective: "Mottlic"
+      page: 87
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100}
+      notes: "Redoxic features in some layer 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "B2.2.6"
+      name: "Typic Siltigi-Orthic Anthrosols"
+      aliases: ["Typic Siltigi-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos siltígicos típicos"
+      adjective: "Typic"
+      page: 87
+      tests:
+        default: true
+      notes: "Other Siltigi-Orthic Anthrosols."
+
+  "B2.3":
+    - code: "B2.3.1"
+      name: "Dystric Mud-cumuli-Orthic Anthrosols"
+      aliases: ["Dystric Mud-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos lamacentos distróficos"
+      adjective: "Dystric"
+      page: 87
+      tests:
+        all_of:
+          - dystric: {from: 25, to: 50}
+      notes: "Base saturation under 50 % or pH under 5.5 at least between 25 and 50 cm of the mineral soil surface, in every horizon there (Q23)."
+    - code: "B2.3.2"
+      name: "Typic Mud-cumuli-Orthic Anthrosols"
+      aliases: ["Typic Mud-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos lamacentos típicos"
+      adjective: "Typic"
+      page: 87
+      tests:
+        default: true
+      notes: "Other Mud-cumuli-Orthic Anthrosols."
+
+  "B2.4":
+    - code: "B2.4.1"
+      name: "Parasalic Earth-cumuli-Orthic Anthrosols"
+      aliases: ["Parasalic Earth-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos terrosos parassálicos"
+      adjective: "Parasalic"
+      page: 87
+      tests:
+        all_of:
+          - parasalic: {within: 100, thick: 10}
+      notes: "Salic evidence in some layer 10 cm or more thick within 100 cm of the mineral soil surface."
+    - code: "B2.4.2"
+      name: "Fimic Earth-cumuli-Orthic Anthrosols"
+      aliases: ["Fimic Earth-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos terrosos fímicos"
+      adjective: "Fimic"
+      page: 87
+      tests:
+        all_of:
+          - fimic_epipedon_cst: {grade: at_least_evidence}
+      notes: "Fimic evidence (the fimic epipedon passes too, Q19)."
+    - code: "B2.4.3"
+      name: "Mottlic Earth-cumuli-Orthic Anthrosols"
+      aliases: ["Mottlic Earth-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos terrosos mosqueados"
+      adjective: "Mottlic"
+      page: 88
+      tests:
+        all_of:
+          - mottlic: {from: 50, to: 100}
+      notes: "Redoxic features in some layer 10 cm or more thick between 50 and 100 cm of the mineral soil surface."
+    - code: "B2.4.4"
+      name: "Calcic Earth-cumuli-Orthic Anthrosols"
+      aliases: ["Calcic Earth-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos terrosos cálcicos"
+      adjective: "Calcic"
+      page: 88
+      tests:
+        all_of:
+          - calcic_or_evidence: {to: ~}
+      notes: "A calcic horizon or calcic evidence (no depth printed; the calcic horizon named alone, a hypercalcic one is not a calcic horizon here)."
+    - code: "B2.4.5"
+      name: "Typic Earth-cumuli-Orthic Anthrosols"
+      aliases: ["Typic Earth-cumuli-Orthic Anthrosol"]
+      name_pt: "Antrossolos órticos cumúlicos terrosos típicos"
+      adjective: "Typic"
+      page: 88
+      tests:
+        default: true
+      notes: "Other Earth-cumuli-Orthic Anthrosols."

@@ -11,9 +11,13 @@ namespace: cst
 classifier: classify_cst2001
 result_slot: cst2001
 top_level: orders
-# the groups are read from groups/ (one file per order, keyed by suborder);
-# the subgroups follow in a later part, read from subgroups/
-levels: [orders, suborders, groups]
+# the groups are read from groups/ (one file per order, keyed by suborder),
+# the subgroups from subgroups/ (keyed by group): v0.9.375 has the files of
+# orders A to G; the groups of orders H to N have no subgroup list yet, so
+# their names stop at the group (with a note) until the next part
+levels: [orders, suborders, groups, subgroups]
+# the presets of the subgroup keys, expanded at load time (R/rule-presets.R)
+rule_files: [presets]
 display:
   en: "Chinese Soil Taxonomy (2001, English edition)"
   pt: "Taxonomia de Solos da China (2001, edição inglesa)"
@@ -24,7 +28,7 @@ citation: >
   Cooperative Research Group on Chinese Soil Taxonomy (2001). Chinese Soil
   Taxonomy. Science Press, Beijing and New York. ISBN 7-03-008852-2.
 version: "English edition (2001), mostly the 1995 Revised Proposal and the 1999 book; may differ from the Chinese 3rd edition at subgroup level"
-implementation_status: "soilKey v0.9.374 -- the 14 orders (key 5.1, pp. 72-75) and the 39 suborders (key 5.2), with soilKey's residual [E2] [Other Ferralosols], and the 138 groups (v0.9.374, key 5.2) with soilKey's residuals [A1.4] and [A2.5]; the 33 diagnostic horizons (v0.9.371) and the 25 diagnostic characteristics (v0.9.372) on the recorded data, the regimes and shared readers of v0.9.370; the correlation of Tables 4.2 and 4.3 as a note. The 588 subgroups are not keyed yet"
+implementation_status: "soilKey v0.9.375 -- the 14 orders (key 5.1, pp. 72-75) and the 39 suborders (key 5.2), with soilKey's residual [E2] [Other Ferralosols], and the 138 groups (v0.9.374, key 5.2) with soilKey's residuals [A1.4] and [A2.5]; the 33 diagnostic horizons (v0.9.371) and the 25 diagnostic characteristics (v0.9.372) on the recorded data, the regimes and shared readers of v0.9.370; the correlation of Tables 4.2 and 4.3 as a note; the 176 subgroups of orders A to G (v0.9.375, key 5.2, with the [A1.3.x] Lithic Hemi-Permagelic Histosols of Appendix 1), their criteria written as presets. The subgroups of orders H to N follow in a later part"
 source: |
   Chapter 3 (diagnostic horizons and characteristics, pp. 18-64), chapter 4
   (categories, nomenclature, structure of the key, correlation Tables 4.2 and

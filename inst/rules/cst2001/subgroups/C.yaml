@@ -1,0 +1,47 @@
+# The keys to subgroups of the Spodosols (order C) of the Chinese Soil Taxonomy
+# (Cooperative Research Group on Chinese Soil Taxonomy, ISSAS. Chinese Soil
+# Taxonomy. Science Press, Beijing and New York, 2001; the English edition,
+# system id cst2001), key 5.2, pp. 88-89, keyed by group, in the book's order.
+# Each subgroup after the first is "other ... that", so a row tests only its
+# own criteria; Typic, the residual, passes by default. A complex subgroup is
+# keyed before its simple parts, as printed. Names as printed (the canonical
+# spelling of Q2; the other printed forms and the singular as aliases);
+# name_pt is soilKey's Portuguese gloss; soilKey's additions in brackets. The
+# criteria are paraphrased in the notes; the tests call the presets of
+# presets.yaml (expanded at load time) or the predicates of R/key-cst*.R and
+# R/diagnostics-cst-*.R directly. Readings: readings.yaml.
+
+subgroups:
+
+  "C1.1":
+    - code: "C1.1.1"
+      name: "Typic Hapli-Humic Spodosols"
+      aliases: ["Typic Hapli-Humic Spodosol"]
+      name_pt: "Espodossolos húmicos háplicos típicos"
+      adjective: "Typic"
+      page: 88
+      book_provisional: true
+      tests:
+        default: true
+      notes: "All Hapli-Humic Spodosols (the book marks it provisional)."
+
+  "C2.1":
+    - code: "C2.1.1"
+      name: "Gelic Hapli-Orthic Spodosols"
+      aliases: ["Gelic Hapli-Orthic Spodosol"]
+      name_pt: "Espodossolos órticos háplicos gélicos"
+      adjective: "Gelic"
+      page: 89
+      tests:
+        all_of:
+          - temperature_regime_cst: {regimes: [gelic]}
+      notes: "A gelic soil temperature regime (the permagelic one included, Q7)."
+    - code: "C2.1.2"
+      name: "Typic Hapli-Orthic Spodosols"
+      aliases: ["Typic Hapli-Orthic Spodosol"]
+      name_pt: "Espodossolos órticos háplicos típicos"
+      adjective: "Typic"
+      page: 89
+      tests:
+        default: true
+      notes: "Other Hapli-Orthic Spodosols."
