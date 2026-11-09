@@ -52,39 +52,82 @@
        flags = if (length(bd)) sprintf("b_designation_for_%s", kind))
 }
 
-# The drainage recorded at the site (drainage, then drainage_class; English
-# or Portuguese) as a class: "very_poor", "wet" (poorly, somewhat poorly,
-# imperfectly), "moderate" (moderately well) or "well" (well and better);
-# NA when not recorded or not read.
-.f88_drainage_class <- function(x) {
+# A per-layer answer `fun(layers)` (TRUE / FALSE / NA) read on the upper
+# diagnostic B of a kind starting within `to_cm` (p. 42: the upper B
+# decides). The uppermost unit is read; when it is undecided and a sure B
+# lies below it, the sure B is read too, and the answer stands only when
+# both agree (else NA, the undecided B above deciding). An undecided B alone
+# turns a TRUE into NA. With no such B, the layers designated B, flagged
+# (plan section 4.2), the same way.
+.f88_b_eval <- function(x, kind = .F88_B_KINDS, to_cm = 125, fun) {
+  kind <- match.arg(kind)
+  clip <- function(L) L[!is.na(x$top[L]) & x$top[L] <= to_cm]
+  u <- Filter(function(z) !is.na(z$top) && z$top <= to_cm, .f88_b_units(x, kind))
+  if (!length(u)) {
+    bd <- which(!is.na(x$master) & grepl("^B", x$master) & !x$rock & !is.na(x$top) & x$top <= to_cm)
+    if (!length(bd)) return(list(value = FALSE, layers = integer(0), flags = character(0), none = TRUE))
+    v <- fun(bd)
+    return(list(value = if (isTRUE(v)) NA else v, layers = bd,
+                flags = sprintf("b_designation_for_%s", kind), none = FALSE))
+  }
+  u <- u[order(vapply(u, function(z) z$top, 0))]
+  up <- u[[1L]]
+  L1 <- clip(up$layers)
+  v1 <- fun(L1)
+  if (isTRUE(up$status)) return(list(value = v1, layers = L1, flags = character(0), none = FALSE))
+  sure <- Filter(function(z) isTRUE(z$status), u)
+  if (!length(sure))
+    return(list(value = if (isTRUE(v1)) NA else v1, layers = L1, flags = character(0), none = FALSE))
+  L2 <- clip(sure[[1L]]$layers)
+  v2 <- fun(L2)
+  same <- identical(as.logical(v1), as.logical(v2))
+  list(value = if (same) v2 else NA, layers = if (same) L2 else c(L1, L2),
+       flags = if (!same) "undecided_b_above_decides", none = FALSE)
+}
+
+# The drainage recorded at the site (drainage, then drainage_class) as the
+# two ends of its class on the eight classes of soilKey's reader
+# (.drainage_class(): 1 excessively ... 4 well, 5 moderately well, 6
+# imperfectly or somewhat poorly, 7 poorly, 8 very poorly; English or
+# Portuguese; a range "imperfectly to very poorly drained" gives 6 and 8).
+# The codes E, SE, W, MW, I, SP, P, VP and "undrained" / "not drained"
+# (very poorly) are read too. NA when not recorded or not read.
+.f88_drainage_ends <- function(x) {
   d <- .f88_site(x, "drainage")
   if (is.na(d) || !nzchar(trimws(as.character(d)))) d <- .f88_site(x, "drainage_class")
-  if (is.na(d) || !nzchar(trimws(as.character(d)))) return(NA_character_)
-  d <- .field_term(as.character(d))
-  if (grepl("very poor|muito mal|excessivamente mal", d)) return("very_poor")
-  if (grepl("moderately well|moderadamente", d)) return("moderate")
-  if (grepl("poor|imperfect|mal drenad|imperfeit", d)) return("wet")
-  if (grepl("well|excessiv|bem drenad|acentuad|fortemente drenad", d)) return("well")
-  NA_character_
+  if (is.na(d) || !nzchar(trimws(as.character(d)))) return(c(drier = NA_integer_, wetter = NA_integer_))
+  t <- trimws(as.character(d))
+  codes <- c(E = "excessively drained", SE = "somewhat excessively drained", W = "well drained",
+             MW = "moderately well drained", I = "imperfectly drained", SP = "somewhat poorly drained",
+             P = "poorly drained", VP = "very poorly drained")
+  if (toupper(t) %in% names(codes)) t <- codes[[toupper(t)]]
+  if (grepl("^(un|not |non[- ]?|nao )drained|^undrain|^nao drenad", tolower(t))) t <- "very poorly drained"
+  c(drier = .drainage_class(t, "drier"), wetter = .drainage_class(t, "wetter"))
 }
 
 
 # --- Histosols (p. 75) ---------------------------------------------------------------------------
 
-# The drainage of the Folic and Fibric Histosols (soilKey's reading, for
-# Hugo to confirm): "well" (HSl, well drained and never saturated for more
+# The drainage of the Folic and Fibric Histosols (Hugo, 2026-11-09): "well" (HSl, well drained and never saturated for more
 # than a few days) is a site recorded well drained or better and not
 # artificially drained; "very_poor" (HSf, very poor drainage or undrained)
-# is a site recorded very poorly drained and not artificially drained. Not
-# recorded: undecided (both units hinge on it).
+# is a site recorded very poorly drained (or undrained) and not
+# artificially drained. A range is read by both ends: undecided when it
+# spans the limit. Not recorded: undecided (both units hinge on it).
 drainage_fao88 <- function(pedon, class = c("well", "very_poor")) {
   class <- match.arg(class)
   x <- .f88_ctx(pedon)
   pg <- "75"
   if (!x$n) return(.f88_key_result(x, "drainage", FALSE, pg))
-  dc <- .f88_drainage_class(x)
+  e <- .f88_drainage_ends(x)
   art <- isTRUE(.f88_site_lgl(x, "artificially_drained"))
-  value <- if (art) FALSE else if (is.na(dc)) NA else identical(dc, class)
+  # both ends of a range must meet the class; a range across it is undecided
+  value <- if (art) FALSE else if (anyNA(e)) NA else if (class == "well") {
+    if (e[["wetter"]] <= 4L) TRUE else if (e[["drier"]] >= 5L) FALSE else NA
+  } else {
+    if (e[["drier"]] == 8L) TRUE else if (e[["wetter"]] < 8L) FALSE else NA
+  }
+  dc <- if (anyNA(e)) NA_character_ else paste(unique(e), collapse = "-")
   .f88_key_result(x, "drainage", value, pg,
                   missing = if (is.na(value)) "drainage_class",
                   flags = if (art) "artificially_drained",
@@ -96,7 +139,7 @@ drainage_fao88 <- function(pedon, class = c("well", "very_poor")) {
 # Taxonomy that the legend cites: rubbed fibre content (fiber_content_rubbed_pct)
 # 40 % or more; else a von Post index of 4 or less, flagged; a rubbed fibre
 # content below 40 %, or a von Post index of 5 or more, is not fibric; none
-# recorded, undecided (soilKey's reading, for Hugo to confirm). A mineral
+# recorded, undecided (soilKey's reading, accepted by Hugo on 2026-11-09). A mineral
 # layer in the window fails.
 fibric_fao88 <- function(pedon, depth = 35) {
   x <- .f88_ctx(pedon)
@@ -135,19 +178,19 @@ aric_fao88 <- function(pedon) {
 
 # Cumulic (ATc): fine sediments more than `min_cm` thick from long irrigation
 # or a man-made raising of the surface. A layer is such a sediment when its
-# layer_origin names irrigation sediment or a raised surface (irrigation,
-# irragric, terric, raised, man-made), or its silting_sieve_test is positive;
+# layer_origin names man-made sediments in the shared vocabulary of the
+# anthropic record (.F88_MAN_SEDIMENT_RE: irrigation, irragric, terric,
+# raised, man-made), or its silting_sieve_test is positive;
 # the run of such layers from the surface must be more than `min_cm` thick
 # and every layer of it sandy loam or finer (the number of ch. VI p. 61 for
-# "fine"; soilKey's reading, for Hugo to confirm). Not recorded: absent.
+# "fine"; soilKey's reading, accepted by Hugo on 2026-11-09). Not recorded: absent.
 cumulic_fao88 <- function(pedon, min_cm = 50) {
   x <- .f88_ctx(pedon)
   pg <- "76"
   if (!x$n) return(.f88_key_result(x, "cumulic", FALSE, pg))
   lo <- .f88_chr(x, "layer_origin")
   st <- .f88_chr(x, "silting_sieve_test")
-  sed <- (!is.na(lo) & grepl("irrig|irragric|terric|raised|man-made|man made|aterro agricola", lo)) |
-    (!is.na(st) & grepl("^pos", st))
+  sed <- (!is.na(lo) & grepl(.F88_MAN_SEDIMENT_RE, lo)) | (!is.na(st) & grepl("^pos", st))
   sed[x$rock] <- FALSE
   first <- which(!is.na(x$top))[1L]
   run <- Filter(function(r) r$layers[1L] == first, .f88_run_list(x, sed))
@@ -182,7 +225,7 @@ lithic_fao88 <- function(pedon, depth = 10) {
 
 # Rendzic (LPk): a mollic A that contains, or lies directly on, calcareous
 # material with a CaCO3 equivalent above `cce_gt` %: a layer of the A, or the
-# layer right below it (not rock).
+# layer right below it, a calcareous rock included.
 rendzic_fao88 <- function(pedon, cce_gt = 40) {
   x <- .f88_ctx(pedon)
   pg <- "76"
@@ -192,13 +235,26 @@ rendzic_fao88 <- function(pedon, cce_gt = 40) {
   if (isFALSE(mo) || is.null(a))
     return(.f88_key_result(x, "rendzic", FALSE, pg, notes = "no mollic A"))
   k <- max(a$layers) + 1L
-  zone <- c(a$layers, if (k <= x$n && !x$rock[k]) k)
+  zone <- c(a$layers, if (k <= x$n) k)
   cc <- .f88_caco3(x)
-  calc <- .f88_any(.f88_cmp(cc$value[zone], ">", cce_gt))
+  cv <- .f88_cmp(cc$value, ">", cce_gt)
+  # a calcareous rock right below the A (Hugo, 2026-11-09): CaCO3 measured on
+  # it, else limestone, chalk, marble or dolomite recorded as its rock or the
+  # site's parent material, flagged
+  rock_flag <- character(0)
+  if (k <= x$n && x$rock[k] && is.na(cv[k])) {
+    rt <- c(.f88_chr(x, "rock_type")[k], .f88_chr(x, "parent_material")[k],
+            tolower(as.character(.f88_site(x, "parent_material"))), tolower(as.character(.f88_site(x, "rock_type"))))
+    calc_rock <- any(!is.na(rt) & grepl("limestone|chalk|marble|dolomit|calcar|calc\u00e1r|marmore|m\u00e1rmore|giz", rt))
+    # a rock type not recorded is absent (a field observation)
+    cv[k] <- calc_rock
+    if (calc_rock) rock_flag <- "calcareous_rock_from_record"
+  }
+  calc <- .f88_any(cv[zone])
   value <- .fao_and(mo, calc)
   .f88_key_result(x, "rendzic", value, pg, layers = zone,
                   missing = c(if (is.na(calc)) "caco3_pct", if (is.na(mo)) .f88_hz_dark_a(x, FALSE)$missing),
-                  flags = .f88_flags(cc$flags, zone),
+                  flags = c(.f88_flags(cc$flags, zone), rock_flag),
                   evidence = list(mollic_a = mo, calcareous_gt = calc, cce_gt = cce_gt))
 }
 
@@ -236,14 +292,13 @@ b_bs_below_fao88 <- function(pedon, kind = .F88_B_KINDS, lt = 50, to_cm = 125) {
   x <- .f88_ctx(pedon)
   pg <- "82-89"
   if (!x$n) return(.f88_key_result(x, "b_bs_below", FALSE, pg))
-  b <- .f88_b_layers_kind(x, kind, to_cm)
-  L <- b$layers
-  if (!length(L)) return(.f88_key_result(x, "b_bs_below", FALSE, pg, notes = sprintf("no %s", kind)))
   bs <- .f88_bs(x)
-  value <- .f88_any(.f88_cmp(bs$value[L], "<", lt))
-  if (isTRUE(value) && is.na(b$status)) value <- NA
+  b <- .f88_b_eval(x, kind, to_cm, function(L) .f88_any(.f88_cmp(bs$value[L], "<", lt)))
+  L <- b$layers
+  if (b$none) return(.f88_key_result(x, "b_bs_below", FALSE, pg, notes = sprintf("no %s", kind)))
+  value <- b$value
   .f88_key_result(x, "b_bs_below", value, pg, layers = L,
-                  missing = if (is.na(value)) c("bs_pct", if (is.na(b$status)) "diagnostic_b"),
+                  missing = if (is.na(value)) c("bs_pct", "diagnostic_b"),
                   flags = c(b$flags, .f88_flags(bs$flags, L)),
                   evidence = list(kind = kind, lt = lt, to_cm = to_cm, bs = bs$value[L]))
 }
@@ -253,18 +308,23 @@ b_bs_below_fao88 <- function(pedon, kind = .F88_B_KINDS, lt = 50, to_cm = 125) {
 
 # Vitric (ANz): lacking a smeary consistence, or lacking a texture of silt
 # loam or finer as the weighted average of the horizons within `depth` cm, or
-# both. Smeary: smeary_fao88() in a layer starting within `depth` cm (not
-# recorded, absent, as decided in 0.9.381). The texture: the USDA class of
+# both. Smeary: smeary_fao88() in a layer starting within `depth` cm; with
+# no smeary record in those layers the smeary item is undecided, so the unit
+# passes only on a texture coarser than silt loam (Hugo, 2026-11-09). The
+# texture: the USDA class of
 # the thickness-weighted clay and sand of the mineral layers over 0-`depth`
-# cm; silt loam or finer is SIL, SI, SCL, CL, SICL, SC, SIC or C (soilKey's
-# reading, for Hugo to confirm: S, LS, SL and L are coarser).
+# cm; silt loam or finer is SIL, SI, SCL, CL, SICL, SC, SIC or C (S, LS,
+# SL and L are coarser; Hugo, 2026-11-09).
 .F88_SILT_LOAM_OR_FINER <- c("SIL", "SI", "SCL", "CL", "SICL", "SC", "SIC", "C")
 vitric_fao88 <- function(pedon, depth = 100) {
   x <- .f88_ctx(pedon)
   pg <- "79"
   if (!x$n) return(.f88_key_result(x, "vitric", FALSE, pg))
   sm <- smeary_fao88(pedon, max_top_cm = depth)
-  no_smeary <- .f88_not(sm$passed)
+  sc <- .fao_col(x$h, "smeary_consistence", "logical"); ti <- .f88_num(x, "thixotropic_index")
+  rec <- any((!is.na(sc) | !is.na(ti)) & !is.na(x$top) & x$top <= depth)
+  # not recorded: undecided, unless the texture alone decides (Hugo, 2026-11-09)
+  no_smeary <- if (isTRUE(sm$passed)) FALSE else if (rec) TRUE else NA
   ho <- !is.na(x$master) & grepl("^(H|O)", x$master)
   hm <- x$h[!ho, , drop = FALSE]
   p <- .fao_psd(hm)
@@ -305,7 +365,7 @@ albic_e_thick_fao88 <- function(pedon, min_cm = 50, max_top_cm = 125) {
 # Luvic (ARl): a clay increase of `increase` points or more (default 10: per
 # cent points), or lamellae of clay accumulation, within `max_top_cm` cm. The
 # increase is that of a mineral layer starting within `max_top_cm` cm over a
-# mineral layer above it (soilKey's reading, for Hugo to confirm: no vertical
+# mineral layer above it (soilKey's reading, accepted by Hugo on 2026-11-09: no vertical
 # distance is printed). Lamellae: lamellae_cumulative_cm above 0, or a
 # designation with lamellae (E&Bt, the lamellae suffix), flagged; not
 # recorded, absent.
@@ -385,16 +445,15 @@ carbic_fao88 <- function(pedon) {
   x <- .f88_ctx(pedon)
   pg <- "81"
   if (!x$n) return(.f88_key_result(x, "carbic", FALSE, pg))
-  b <- .f88_b_layers_kind(x, "spodic_b", 125)
-  L <- b$layers
-  if (!length(L)) return(.f88_key_result(x, "carbic", FALSE, pg, notes = "no spodic B"))
   oc <- .f88_num(x, "oc_pct")
   hs <- !is.na(x$desg) & grepl("^B[a-z]*h", x$desg)
   dom <- ifelse(!is.na(oc), oc > 0, ifelse(hs, TRUE, NA))
   ig <- .fao_ignition_redder(x$h)
   v <- .f88_and(dom, .f88_not(ig$value))
-  value <- .f88_any(v[L])
-  if (isTRUE(value) && is.na(b$status)) value <- NA
+  b <- .f88_b_eval(x, "spodic_b", 125, function(L) .f88_any(v[L]))
+  L <- b$layers
+  if (b$none) return(.f88_key_result(x, "carbic", FALSE, pg, notes = "no spodic B"))
+  value <- b$value
   .f88_key_result(x, "carbic", value, pg, layers = L[v[L] %in% TRUE],
                   missing = if (is.na(value)) c(ig$missing, "oc_pct"),
                   flags = c(b$flags, .f88_flags(ig$flags, L)))
@@ -406,13 +465,14 @@ spodic_fe_oc_fao88 <- function(pedon, min = 6) {
   x <- .f88_ctx(pedon)
   pg <- "81"
   if (!x$n) return(.f88_key_result(x, "spodic_fe_oc", FALSE, pg))
-  b <- .f88_b_layers_kind(x, "spodic_b", 125)
-  L <- b$layers
-  if (!length(L)) return(.f88_key_result(x, "spodic_fe_oc", FALSE, pg, notes = "no spodic B"))
   fe <- .f88_num(x, "fe_dcb_pct"); oc <- .f88_num(x, "oc_pct")
-  r <- ifelse(!is.na(fe) & !is.na(oc) & oc > 0, fe / oc, ifelse(!is.na(fe) & !is.na(oc) & oc == 0 & fe > 0, Inf, NA_real_))
-  value <- .f88_all(.f88_cmpr(r[L], ">=", min))
-  if (isTRUE(value) && is.na(b$status)) value <- NA
+  # both recorded: oc 0 with iron is an infinite ratio, 0 / 0 no ratio (fails)
+  r <- ifelse(is.na(fe) | is.na(oc), NA_real_,
+              ifelse(oc > 0, fe / oc, ifelse(fe > 0, Inf, 0)))
+  b <- .f88_b_eval(x, "spodic_b", 125, function(L) .f88_all(.f88_cmpr(r[L], ">=", min)))
+  L <- b$layers
+  if (b$none) return(.f88_key_result(x, "spodic_fe_oc", FALSE, pg, notes = "no spodic B"))
+  value <- b$value
   .f88_key_result(x, "spodic_fe_oc", value, pg, layers = L,
                   missing = if (is.na(value)) c("fe_dcb_pct", "oc_pct"),
                   flags = b$flags, evidence = list(ratio = r[L], min = min))
@@ -487,13 +547,12 @@ property_in_b_fao88 <- function(pedon, property = c("geric", "ferralic"), kind =
   x <- .f88_ctx(pedon)
   pg <- if (property == "geric") "82" else "89"
   if (!x$n) return(.f88_key_result(x, "property_in_b", FALSE, pg))
-  b <- .f88_b_layers_kind(x, kind, to_cm)
-  L <- b$layers
-  if (!length(L)) return(.f88_key_result(x, "property_in_b", FALSE, pg, notes = sprintf("no %s", kind)))
   r <- if (property == "geric") geric_properties_fao88(pedon) else ferralic_properties_fao88(pedon)
   v <- .f88_values(r, x$n)
-  value <- .f88_any(v[L])
-  if (isTRUE(value) && is.na(b$status)) value <- NA
+  b <- .f88_b_eval(x, kind, to_cm, function(L) .f88_any(v[L]))
+  L <- b$layers
+  if (b$none) return(.f88_key_result(x, "property_in_b", FALSE, pg, notes = sprintf("no %s", kind)))
+  value <- b$value
   .f88_key_result(x, "property_in_b", value, pg, layers = L[v[L] %in% TRUE],
                   missing = if (is.na(value)) r$missing,
                   flags = c(b$flags, r$evidence$flags),
@@ -502,11 +561,10 @@ property_in_b_fao88 <- function(pedon, property = c("geric", "ferralic"), kind =
 
 # The rubbed colour of a B (Q24: munsell_*_rubbed, else the moist colour,
 # flagged), in every layer of the upper B of `kind` starting within 125 cm
-# (soilKey's reading, for Hugo to confirm: "a red B" read as the B as a
-# whole):
+# (Hugo, 2026-11-09: "a red B" read as the B as a whole):
 #   rhodic (FRr, NTr): hue redder than 5YR, moist value below 4, dry value
-#     no more than one unit above the moist one (a dry value not recorded is
-#     the moist value + 1, flagged, as for the mollic A);
+#     no more than one unit above the moist one (a dry value not recorded
+#     leaves it undecided, flagged; Hugo, 2026-11-09);
 #   xanthic (FRx): hue 7.5YR or yellower, moist value 4 or more, moist
 #     chroma 5 or more;
 #   chromic (LVx, CMx): hue 7.5YR with a chroma above 4, or a hue redder
@@ -516,17 +574,15 @@ b_colour_fao88 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), ki
   x <- .f88_ctx(pedon)
   pg <- switch(colour, rhodic = "82, 86", xanthic = "82", chromic = "88-89")
   if (!x$n) return(.f88_key_result(x, "b_colour", FALSE, pg))
-  b <- .f88_b_layers_kind(x, kind, 125)
-  L <- b$layers
-  if (!length(L)) return(.f88_key_result(x, "b_colour", FALSE, pg, notes = sprintf("no %s", kind)))
   rb <- .fao_colour_rubbed(x$h)
   col <- .f88_colours(x)
   hue <- rb$hue; val <- rb$value; chr <- rb$chroma
   dry_flag <- character(0)
   v <- switch(colour,
     rhodic = {
-      dry <- col$vd_or_inferred
-      if (any(is.na(col$vd[L]) & !is.na(dry[L]))) dry_flag <- "dry_value_from_moist_plus_1"
+      # a dry value not recorded leaves the item undecided (Hugo, 2026-11-09)
+      dry <- col$vd
+      dry_flag <- "dry_value_not_recorded"
       .f88_and(.fao_hue_cmp(hue, "5YR", "redder"), .f88_cmp(val, "<", 4),
                .f88_cmp(dry - val, "<=", 1))
     },
@@ -536,8 +592,11 @@ b_colour_fao88 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), ki
       eq <- .fao_hue_rank(hue) == .fao_hue_rank("7.5YR")
       .f88_or(.f88_and(eq, .f88_cmp(chr, ">", 4)), .fao_hue_cmp(hue, "7.5YR", "redder"))
     })
-  value <- .f88_all(v[L])
-  if (isTRUE(value) && is.na(b$status)) value <- NA
+  b <- .f88_b_eval(x, kind, 125, function(L) .f88_all(v[L]))
+  L <- b$layers
+  if (b$none) return(.f88_key_result(x, "b_colour", FALSE, pg, notes = sprintf("no %s", kind)))
+  value <- b$value
+  if (!any(is.na(col$vd[L]))) dry_flag <- character(0)
   .f88_key_result(x, "b_colour", value, pg, layers = L,
                   missing = if (is.na(value)) c("munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist",
                                                 if (colour == "rhodic") "munsell_value_dry"),
@@ -551,7 +610,7 @@ b_colour_fao88 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), ki
 # Dystric (PLd): base saturation (NH4OAc) below `lt` % in at least a part of
 # the slowly permeable horizon within `to_cm` cm: the layer below the E that
 # the Planosols gate found, with the adjoining layers below it of the same
-# master horizon (B, C ...), starting within `to_cm` cm (soilKey's reading).
+# master horizon (B, C ...), starting within `to_cm` cm (soilKey's reading, accepted by Hugo on 2026-11-09).
 slow_horizon_bs_fao88 <- function(pedon, lt = 50, to_cm = 125) {
   x <- .f88_ctx(pedon)
   pg <- "83"
@@ -579,49 +638,13 @@ slow_horizon_bs_fao88 <- function(pedon, lt = 50, to_cm = 125) {
 }
 
 
-# --- Anthrosols: the fimic A of manuring -------------------------------------------------------
-
-# A fimic A that rests only on fills, wastes or irrigation sediments (ATf;
-# soilKey's reading, for Hugo to confirm): the fimic A of 0.9.382 reads any
-# anthropic record (artefacts, anthropic material, an anthropic layer_origin)
-# as manuring, so a soil of mine wastes or town refuse, or of irrigation
-# sediments, would key as Fimic before the Cumulic and Urbic units. TRUE when
-# the layers of the fimic A carry artefacts or a layer_origin naming fills,
-# wastes, refuse, rubble, spoil or irrigation sediment, and none of them
-# shows manuring (citric P2O5 above 250 mg/kg, a plaggen, manure, midden,
-# kitchen, hortic or compost record, or a WRB plaggic, hortic or terric
-# horizon standing in); FALSE otherwise (the unit file reads it negated).
-fimic_not_manured_fao88 <- function(pedon) {
-  x <- .f88_ctx(pedon)
-  pg <- "75"
-  if (!x$n) return(.f88_key_result(x, "fimic_not_manured", FALSE, pg))
-  fm <- fimic_a_fao88(pedon)
-  L <- .f88_ctx_rows(x, fm)
-  if (!isTRUE(fm$passed) || !length(L))
-    return(.f88_key_result(x, "fimic_not_manured", FALSE, pg, notes = "no fimic A"))
-  p <- .f88_num(x, "p2o5_citric_mg_kg")
-  lo <- .f88_chr(x, "layer_origin"); am <- .f88_chr(x, "anthropic_material")
-  art <- .f88_num(x, "artefacts_pct")
-  man_re <- "plaggen|manur|midden|kitchen|hortic|compost|dung"
-  manured <- any(!is.na(p[L]) & p[L] > 250) || any(!is.na(lo[L]) & grepl(man_re, lo[L])) ||
-    any(!is.na(am[L]) & grepl(man_re, am[L])) || length(fm$evidence$stand_in) > 0L
-  other_re <- "fill|waste|refuse|rubble|spoil|garbage|landfill|mine|urban|irrig|dredg|raised"
-  other <- any(!is.na(art[L]) & art[L] > 0) || any(!is.na(lo[L]) & grepl(other_re, lo[L]))
-  value <- other && !manured
-  .f88_key_result(x, "fimic_not_manured", value, pg, layers = L,
-                  flags = if (value) "fimic_a_of_fills_or_sediments_not_manured",
-                  evidence = list(manured = manured, fills_or_sediments = other))
-}
-
-
 # --- examples of the units ---------------------------------------------------------------------
 
 # The units whose gate has a printed number (a depth, a thickness, a
 # percentage, a ratio, a Munsell limit), each with a near miss that crosses
-# it (make_fao_example(code, near_miss = TRUE)). The Gelic Leptosols have none:
-# a Leptosol is too shallow for permafrost below 200 cm.
+# it (make_fao_example(code, near_miss = TRUE)).
 .F88_UNIT_NEAR_MISS <- c(
-  "HSi", "HSt", "HSf", "ATc", "LPq", "LPk", "LPd", "VRy", "VRk", "VRd", "FLt", "FLs", "FLc", "FLd",
+  "HSi", "HSt", "HSf", "ATc", "LPq", "LPi", "LPk", "LPd", "VRy", "VRk", "VRd", "FLt", "FLs", "FLc", "FLd",
   "SCi", "SCg", "SCy", "SCk", "SCn", "GLi", "GLt", "GLk", "GLd", "ANi", "ANg", "ANz", "ARg", "ARa",
   "ARc", "ARl", "ARo", "RGi", "RGy", "RGc", "RGd", "PZi", "PZg", "PZf", "PZb", "PTu", "PTd", "FRp",
   "FRg", "FRu", "FRr", "FRx", "PLi", "PLd", "SNg", "SNj", "SNy", "SNk", "GRg", "CHg", "PHg", "PHj",
@@ -748,7 +771,8 @@ fimic_not_manured_fao88 <- function(pedon) {
     ATu = b,
     # --- Leptosols
     LPq = E(b, rows = c(1, 3), top_cm = c(0, if (nm) 11 else 10), bottom_cm = c(if (nm) 11 else 10, 60)),
-    LPi = S(b, 2, permafrost_temp_C = -1),
+    # a deep Leptosol (less than 20 % fine earth to 75 cm), permafrost at 200 cm
+    LPi = perma(E(b, rows = c(1, 2), top_cm = c(0, 15), bottom_cm = c(15, 200), coarse_fragments_pct = 85)),
     LPk = E(b, munsell_value_moist = c(3, 6, NA), munsell_chroma_moist = c(2, 3, NA), munsell_value_dry = c(5, 7, NA),
             oc_pct = c(3, 0.4, NA), caco3_pct = c(20, if (nm) 40 else 60, NA), ph_h2o = 8, cec_cmol = c(25, 9, NA),
             structure_grade = c("strong", "structureless", NA), top_cm = c(0, 20, 28), bottom_cm = c(20, 28, 60)),

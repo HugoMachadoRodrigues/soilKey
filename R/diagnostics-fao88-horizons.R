@@ -372,20 +372,35 @@
   })
 }
 
+# The shared vocabulary of the anthropic record (v0.9.385, one list for the
+# Anthrosols gate, the fimic A and the Cumulic and Urbic Anthrosols):
+# manuring (plaggen, hortic, manure, compost, midden, kitchen garden; the
+# sign the fimic A asks), fills and wastes (fill, waste, refuse, spoil,
+# rubble, garbage, landfill, mine as a word, dredged material) and man-made
+# sediments (irrigation sediments, irragric, terric, a raised surface).
+# English and Portuguese terms.
+.F88_MANURE_RE <- "plaggen|plagg|hortic|manur|compost|midden|kitchen|dung|esterco|estrume|adubad|adubo organico|composto|horta\\b|terra preta"
+.F88_FILL_RE <- "\\bfills?\\b|waste|refuse|spoil|rubble|garbage|landfill|\\bmines?\\b|mining|dredg|\\baterro\\b|entulho|rejeito|\\blixo"
+.F88_MAN_SEDIMENT_RE <- "irrig|irragric|terric|raised|man-made|man made|sedimento de irrigac|alteamento"
+.F88_ANTHROPIC_RE <- paste("anthrop|antrop", .F88_MANURE_RE, .F88_FILL_RE, .F88_MAN_SEDIMENT_RE, sep = "|")
+
 # Anthropic layers that the citric P2O5 limit of the mollic and umbric A
 # (p. 27) is meant to remove, as recorded in the field (Q14): artefacts,
-# anthropic material, a layer_origin naming anthropic, midden or plaggen
-# material, or an overthickened A recorded at the site. Not recorded: absent.
+# anthropic material, a layer_origin in the shared vocabulary above
+# (.F88_ANTHROPIC_RE), a positive silting sieve test (irrigation silt), or
+# an overthickened A recorded at the site. Not recorded: absent.
 .f88_anthropic <- function(x) {
   .f88_memo(x, "anthropic", function() {
     art <- .f88_num(x, "artefacts_pct")
     am <- .f88_chr(x, "anthropic_material")
     amp <- .f88_num(x, "anthropic_material_pct")
     lo <- .f88_chr(x, "layer_origin")
+    sst <- .f88_chr(x, "silting_sieve_test")
     v <- (!is.na(art) & art > 0) | (!is.na(am) & !(am %in% c("none", "no", "false"))) |
-      (!is.na(amp) & amp > 0) | (!is.na(lo) & grepl("anthrop|midden|plaggen|manur|kitchen", lo))
+      (!is.na(amp) & amp > 0) | (!is.na(lo) & grepl(.F88_ANTHROPIC_RE, lo)) |
+      (!is.na(sst) & grepl("^pos", sst))
     if (isTRUE(.f88_site_lgl(x, "overthickened_a"))) v[!is.na(x$master) & grepl("^A", x$master)] <- TRUE
-    rec <- !is.na(art) | !is.na(am) | !is.na(amp) | !is.na(lo)
+    rec <- !is.na(art) | !is.na(am) | !is.na(amp) | !is.na(lo) | !is.na(sst)
     list(value = v, recorded = rec)
   })
 }
@@ -723,52 +738,68 @@ umbric_a_fao88 <- function(pedon) {
 }
 
 # The fimic A (p. 27): a man-made surface layer 50 cm or more thick from long
-# manuring. A layer is manured when its citric P2O5 is above 250 mg/kg or the
-# field record names anthropic material (.f88_anthropic()). Where neither P2O5
-# nor any anthropic attribute is recorded in the surface layers, the WRB
-# plaggic, hortic and terric horizons stand in, flagged. A layer that meets
-# the mollic or umbric A with citric P2O5 measured at 250 or less is that A,
-# not fimic.
+# manuring. The layer is the run from the surface of layers with an
+# anthropic record (.f88_anthropic(): the shared vocabulary), citric P2O5
+# above 250 mg/kg, a manuring term, or a WRB plaggic or hortic horizon; it
+# is fimic only with a sign of manuring (Hugo, 2026-11-09): citric P2O5
+# above 250 mg/kg in a layer of it, a manuring term (.F88_MANURE_RE) in its
+# layer_origin, anthropic_material or designation or in the site's
+# land_use, or the WRB plaggic() or hortic() passing (always tried; a
+# stand-in, flagged). A manuring land use marks the run of A layers at the
+# surface as the man-made layer, flagged. Artefacts neither make nor exclude it: fills, wastes
+# and man-made sediments without manuring are not fimic (the Anthrosols
+# gate still reads them, and they key to the Cumulic or Urbic units). A
+# layer that meets the mollic or umbric A with citric P2O5 measured at 250
+# or less is that A, not fimic. Nothing recorded: absent.
 .f88_hz_fimic_a <- function(x) {
   .f88_memo(x, "fimic_a", function() {
     if (!x$n) return(list(units = list()))
     p <- .f88_num(x, "p2o5_citric_mg_kg")
     an <- .f88_anthropic(x)
-    man <- (!is.na(p) & p > 250) | an$value
-    man <- .f88_unburied(x, man)
+    lo <- .f88_chr(x, "layer_origin"); am <- .f88_chr(x, "anthropic_material")
+    dsg <- tolower(.fao_col(x$h, "designation", "character"))
+    term <- (!is.na(lo) & grepl(.F88_MANURE_RE, lo)) | (!is.na(am) & grepl(.F88_MANURE_RE, am)) |
+      (!is.na(dsg) & grepl(.F88_MANURE_RE, dsg))
+    lu <- .f88_site(x, "land_use")
+    site_term <- !is.na(lu) && grepl(.F88_MANURE_RE, tolower(as.character(lu)))
+    # the WRB plaggic and hortic horizons, always tried
+    wrb <- list(plaggic = plaggic(x$pedon), hortic = hortic(x$pedon))
+    wrb_l <- rep(FALSE, x$n); stand_in <- character(0)
+    for (k in names(wrb)) {
+      if (isTRUE(wrb[[k]]$passed)) {
+        i <- match(wrb[[k]]$layers, x$idx); i <- i[!is.na(i)]
+        wrb_l[i] <- TRUE; stand_in <- c(stand_in, k)
+      }
+    }
+    hp <- !is.na(p) & p > 250
+    # a manuring land use recorded at the site marks the A at the surface
+    # (its run of A layers, AB included) as the man-made layer, flagged
+    lu_l <- rep(FALSE, x$n)
+    if (site_term) { a <- .f88_a_run(x); if (!is.null(a)) lu_l[a$layers] <- TRUE }
+    sign <- hp | term | wrb_l | lu_l
+    man <- .f88_unburied(x, hp | an$value | term | wrb_l | lu_l)
     first <- which(!is.na(x$top))[1L]
     run <- Filter(function(r) r$layers[1L] == first, .f88_run_list(x, man))
-    flags <- character(0); stand_in <- character(0)
-    if (length(run)) {
-      u <- run[[1L]]
-      st <- u$thickness >= 50
-      if (st && any(!is.na(p[u$layers]) & p[u$layers] <= 250) &&
-          (isTRUE(.f88_status(.f88_hz_dark_a(x, FALSE))) ||
-           isTRUE(.f88_status(.f88_hz_dark_a(x, TRUE))))) {
-        st <- FALSE
-      }
-      if (any(is.na(p[u$layers]))) flags <- "fimic_from_anthropic_record"
-      if (st) return(list(units = list(c(u, list(status = TRUE))), flags = flags))
+    if (!length(run) || run[[1L]]$thickness < 50) {
+      none <- !any(an$recorded) && all(is.na(p)) && !any(wrb_l)
+      return(list(units = list(), flags = if (none) "anthropic_layer_not_recorded_absent"))
     }
-    # no 1988 descriptor in the surface layers: the WRB stand-ins
-    top50 <- which(!is.na(x$top) & x$top < 50)
-    if (all(is.na(p[top50])) && !any(an$recorded[top50])) {
-      res <- list(plaggic = plaggic(x$pedon), hortic = hortic(x$pedon), terric = terric(x$pedon))
-      lay <- integer(0)
-      for (k in names(res)) {
-        if (isTRUE(res[[k]]$passed)) { lay <- c(lay, match(res[[k]]$layers, x$idx)); stand_in <- c(stand_in, k) }
-      }
-      sel <- rep(FALSE, x$n); sel[lay] <- TRUE
-      run <- Filter(function(r) r$layers[1L] == first, .f88_run_list(x, .f88_unburied(x, sel)))
-      if (length(run) && run[[1L]]$thickness >= 50) {
-        return(list(units = list(c(run[[1L]], list(status = TRUE))), stand_in = stand_in,
-                    flags = "wrb_anthropic_horizon_for_fimic"))
-      }
-      # the stand-ins can only make it pass; otherwise the man-made layer is
-      # a field observation not recorded, absent
-      return(list(units = list(), flags = "anthropic_layer_not_recorded_absent"))
-    }
-    list(units = list(), flags = flags)
+    u <- run[[1L]]
+    manured <- any(sign[u$layers]) || site_term
+    if (!manured)
+      return(list(units = list(), flags = "anthropic_layers_without_manuring_not_fimic"))
+    if (any(!is.na(p[u$layers]) & p[u$layers] <= 250) &&
+        (isTRUE(.f88_status(.f88_hz_dark_a(x, FALSE))) ||
+         isTRUE(.f88_status(.f88_hz_dark_a(x, TRUE)))))
+      return(list(units = list(), flags = "dark_a_with_p2o5_measured_not_fimic"))
+    used_wrb <- !any(hp[u$layers] | term[u$layers]) && !site_term
+    if (site_term && any(lu_l[u$layers] & !(hp | term | an$value | wrb_l)[u$layers]))
+      used_wrb <- FALSE
+    list(units = list(c(u, list(status = TRUE))),
+         stand_in = if (used_wrb) stand_in[vapply(wrb[stand_in], function(r) any(match(r$layers, x$idx) %in% u$layers), NA)],
+         flags = c(if (any(is.na(p[u$layers]))) "fimic_from_manuring_record",
+                   if (any(lu_l[u$layers])) "fimic_layers_from_manuring_land_use",
+                   if (used_wrb) "wrb_anthropic_horizon_for_fimic"))
   })
 }
 

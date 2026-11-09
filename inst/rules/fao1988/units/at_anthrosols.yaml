@@ -25,9 +25,7 @@ units:
       tests:
         all_of:
           - fimic_a_fao88: {}
-          - none_of:
-              - fimic_not_manured_fao88: {}
-      notes: "A fimic A horizon (a man-made layer of manuring: not one made only of fills, wastes or irrigation sediments; soilKey's reading)."
+      notes: "A fimic A horizon (a man-made surface layer with a sign of manuring; Hugo, 2026-11-09)."
 
     - code: "ATc"
       name: "Cumulic Anthrosols"

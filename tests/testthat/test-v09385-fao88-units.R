@@ -128,7 +128,7 @@ test_that("every unit example keys to its own unit, not provisionally", {
 test_that("one near miss per unit gate with a printed number, each failing that gate decided", {
   skip_on_cran()
   nmc <- soilKey:::.F88_UNIT_NEAR_MISS
-  expect_equal(length(nmc), 86L)
+  expect_equal(length(nmc), 87L)
   expect_true(all(nmc %in% .UNITS385))
   k <- load_rules("fao1988")
   for (cd in nmc) {
@@ -222,29 +222,91 @@ test_that("an undecided unit before the assigned one makes the unit provisional"
   expect_identical(names(r2$trace$units), c("HSi", "HSt", "HSl", "HSf", "HSs"))
 })
 
-test_that("the readings of this part: Fimic of fills, Vitric without smeary record, B colours", {
+test_that("Hugo's decisions of 2026-11-09 on the readings of this part", {
   skip_on_cran()
-  # a fimic A of urban fill is Urbic, not Fimic; of plaggen, Fimic
+  E <- soilKey:::.f88x_edit
+  # A. the fimic A needs a sign of manuring; artefacts neither make nor exclude it
+  expect_identical(.f385(make_anthrosol_canonical())$levels$code, c("AT", "ATf"))
+  ac <- make_anthrosol_canonical(); ac$horizons$artefacts_pct <- 0
+  expect_identical(.f385(ac)$levels$code, c("AT", "ATf"))
   expect_identical(.f385(make_fao_example("AT"))$levels$code[2], "ATu")
-  expect_true(soilKey:::fimic_not_manured_fao88(make_fao_example("ATu"))$passed)
-  expect_false(soilKey:::fimic_not_manured_fao88(make_fao_example("ATf"))$passed)
-  # an Andosol without a smeary record is Vitric (the record is a field observation)
+  fm <- soilKey:::fimic_a_fao88(make_fao_example("AT"))
+  expect_false(fm$passed)
+  expect_true("anthropic_layers_without_manuring_not_fimic" %in% fm$evidence$flags)
+  expect_true(soilKey:::fimic_a_fao88(make_fao_example("ATf"))$passed)
+  expect_false(exists("fimic_not_manured_fao88", envir = asNamespace("soilKey")))
+  # B. Rhodic: a dry value not recorded leaves it undecided, flagged
+  fr <- E(make_fao_example("FRr"), munsell_value_dry = NA_real_)
+  rc <- soilKey:::b_colour_fao88(fr, "rhodic", "ferralic_b")
+  expect_true(is.na(rc$passed))
+  expect_true("dry_value_not_recorded" %in% rc$evidence$flags)
+  r <- .f385(fr)
+  expect_identical(r$levels$code[1], "FR")
+  expect_true("units:FRr" %in% r$provisional_because)
+  # C. Vitric: smeary not recorded is undecided on silt loam, absent on loam
   an <- make_fao_example("ANu")
-  expect_identical(.f385(.edit385(an, smeary_consistence = NA))$levels$code[2], "ANz")
   v <- soilKey:::vitric_fao88(an)
   expect_false(v$passed)
   expect_identical(v$evidence$texture_class_0_100, "SIL")
-  # a loam is coarser than silt loam: Vitric
-  expect_true(soilKey:::vitric_fao88(.edit385(an, silt_pct = 40, sand_pct = 40))$passed)
-  # the colour of the B is read in every layer of it
+  expect_true(is.na(soilKey:::vitric_fao88(E(an, smeary_consistence = NA))$passed))
+  expect_true("units:ANz" %in% .f385(E(an, smeary_consistence = NA))$provisional_because)
+  expect_true(soilKey:::vitric_fao88(E(an, smeary_consistence = NA, silt_pct = 40, sand_pct = 40))$passed)
+  expect_identical(.f385(make_fao_example("AN"))$levels$code[2], "ANz")
+  # D. Rendzic: a mollic A directly on limestone
+  lp <- make_fao_example("LPk")
+  q <- E(lp, rows = c(1, 3), designation = c("Ah", "R"), top_cm = c(0, 20), bottom_cm = c(20, 60),
+         caco3_pct = c(20, NA))
+  expect_false(soilKey:::rendzic_fao88(q)$passed)
+  q$site$parent_material <- "limestone"
+  rz <- soilKey:::rendzic_fao88(q)
+  expect_true(rz$passed)
+  expect_true("calcareous_rock_from_record" %in% rz$evidence$flags)
+  expect_identical(.f385(q)$levels$code, c("LP", "LPk"))
+  # E. the colour of the B is read in every layer of it
   lv <- make_fao_example("LVx")
-  expect_false(soilKey:::b_colour_fao88(.edit385(lv, munsell_hue_moist = c("10YR", "10YR", "5YR", "10YR", "5YR")),
+  expect_false(soilKey:::b_colour_fao88(E(lv, munsell_hue_moist = c("10YR", "10YR", "5YR", "10YR", "5YR")),
                                          "chromic", "argic_b")$passed)
-  # a dry value not recorded is the moist value + 1, flagged
-  fr <- .edit385(make_fao_example("FRr"), munsell_value_dry = NA_real_)
-  rc <- soilKey:::b_colour_fao88(fr, "rhodic", "ferralic_b")
-  expect_true(rc$passed)
-  expect_true("dry_value_from_moist_plus_1" %in% rc$evidence$flags)
+})
+
+test_that("review fixes: the shared anthropic vocabulary, drainage ranges, the upper B, 0/0", {
+  skip_on_cran()
+  E <- soilKey:::.f88x_edit
+  # 2. Cumulic Anthrosols from plain sediment terms or the silting test alone
+  atc <- make_fao_example("ATc")
+  for (lo in c("irrigation sediment", "irragric", "terric", "raised surface (man-made)"))
+    expect_identical(.f385(E(atc, layer_origin = c(lo, lo, NA, NA)))$levels$code, c("AT", "ATc"), info = lo)
+  expect_identical(.f385(E(atc, layer_origin = NA_character_, silting_sieve_test = c("positive", "positive", NA, NA)))$levels$code,
+                   c("AT", "ATc"))
+  x <- soilKey:::.f88_ctx(E(atc, layer_origin = c("mineral soil", "mineral fill", "mine spoil", NA)))
+  expect_identical(soilKey:::.f88_anthropic(x)$value, c(FALSE, TRUE, TRUE, FALSE))
+  # 3. drainage: both ends of a range; codes, Portuguese, undrained
+  hs <- make_fao_example("HSf")
+  dr <- function(d, cl) { p <- hs; p$site$drainage_class <- d; soilKey:::drainage_fao88(p, cl)$passed }
+  expect_true(is.na(dr("imperfectly to very poorly drained", "very_poor")))
+  expect_false(dr("imperfectly to very poorly drained", "well"))
+  expect_true(dr("VP", "very_poor")); expect_false(dr("P", "very_poor")); expect_true(dr("W", "well"))
+  expect_true(dr("muito mal drenado", "very_poor")); expect_true(dr("bem drenado", "well"))
+  expect_true(dr("undrained", "very_poor")); expect_true(dr("not drained", "very_poor"))
+  expect_true(is.na(dr("well to moderately well drained", "well")))
+  p <- hs; p$site$drainage_class <- "imperfectly to very poorly drained"
+  expect_true("units:HSf" %in% .f385(p)$provisional_because)
+  # 4. an undecided upper B decides when the answers differ
+  x <- soilKey:::.f88_ctx(make_fao_example("CMd"))
+  testthat::local_mocked_bindings(.f88_b_units = function(x, kind) list(
+    list(top = 20, layers = 2L, status = NA), list(top = 60, layers = 3L, status = TRUE)), .package = "soilKey")
+  expect_true(is.na(soilKey:::.f88_b_eval(x, "cambic_b", 125, function(L) L[1] == 3L)$value))
+  expect_true(soilKey:::.f88_b_eval(x, "cambic_b", 125, function(L) TRUE)$value)
+  expect_false(soilKey:::.f88_b_eval(x, "cambic_b", 125, function(L) FALSE)$value)
+})
+
+test_that("review fixes: Gelic Leptosols near miss at 201 cm, Fe/C of 0/0 fails", {
+  skip_on_cran()
+  expect_true(soilKey:::permafrost_fao88(make_fao_example("LPi"), max_top_cm = 200)$passed)
+  q <- make_fao_example("LPi", near_miss = TRUE)
+  expect_false(soilKey:::permafrost_fao88(q, max_top_cm = 200)$passed)
+  expect_identical(.f385(q)$levels$code[1], "LP")
+  pz <- soilKey:::.f88x_edit(make_fao_example("PZf"), fe_dcb_pct = c(0.2, 0.1, 0, 0, 0.2), oc_pct = c(2, 0.4, 0, 0, 0.2))
+  expect_false(soilKey:::spodic_fe_oc_fao88(pz)$passed)
 })
 
 test_that("the grouping level of the 56 examples of 0.9.384 is unchanged", {
@@ -286,8 +348,7 @@ test_that("i18n, thresholds, readings and the ASCII of the new R file", {
   mine <- Filter(function(e) identical(e$version, "0.9.385"), rd)
   expect_true(length(mine) >= 12L)
   expect_true(all(vapply(mine, function(e) nzchar(e$page %||% ""), NA)))
-  expect_true(all(vapply(mine, function(e) grepl("(Hugo, 2026-11-08)", e$reading, fixed = TRUE) ||
-                           grepl("for Hugo to confirm", e$reading, fixed = TRUE), NA)))
+  expect_true(all(vapply(mine, function(e) grepl("\\(Hugo, 2026-11-0[89]\\)", e$reading), NA)))
   f <- .src385("R", "key-fao-units.R")
   skip_if_not(file.exists(f))
   txt <- readLines(f, warn = FALSE)

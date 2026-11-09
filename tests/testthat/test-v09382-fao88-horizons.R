@@ -177,8 +177,13 @@ test_that("fimic A: 50 cm of manured surface layers; the WRB stand-ins only make
   skip_on_cran()
   f <- function(b, ...) .p88(top_cm = c(0, b), bottom_cm = c(b, 120), designation = c("Ap", "C"),
                               clay_pct = 20, silt_pct = 40, sand_pct = 40, oc_pct = c(2, 0.3), ...)
-  expect_true(.ok(fimic_a_fao88(f(50, artefacts_pct = c(2, 0)))))
-  expect_false(.ok(fimic_a_fao88(f(49, artefacts_pct = c(2, 0)))))
+  # Hugo, 2026-11-09 (0.9.385): a sign of manuring is needed; artefacts
+  # neither make nor exclude the fimic A
+  expect_true(.ok(fimic_a_fao88(f(50, layer_origin = c("plaggen", NA)))))
+  expect_false(.ok(fimic_a_fao88(f(49, layer_origin = c("plaggen", NA)))))
+  r <- fimic_a_fao88(f(50, artefacts_pct = c(2, 0)))
+  expect_false(.ok(r)); expect_true("anthropic_layers_without_manuring_not_fimic" %in% r$evidence$flags)
+  expect_true(.ok(fimic_a_fao88(f(50, artefacts_pct = c(2, 0), layer_origin = c("manured garden soil", NA)))))
   expect_true(.ok(fimic_a_fao88(f(55, p2o5_citric_mg_kg = c(1200, 50)))))
   expect_false(.ok(fimic_a_fao88(f(55, p2o5_citric_mg_kg = c(250, 50)))))
   r <- fimic_a_fao88(f(60))
