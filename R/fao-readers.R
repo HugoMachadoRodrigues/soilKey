@@ -662,6 +662,21 @@
 }
 
 
+# --- boundaries ------------------------------------------------------------------------
+
+# A lower boundary over less than 5 cm (the abrupt textural change, 1988 p.
+# 34, and the abrupt transition of argic item 6, p. 28; default 5): a
+# boundary_distinctness recorded abrupt or clear (abrupta, clara), in English
+# or Portuguese (.field_term()). Gradual, diffuse and other terms are not;
+# not recorded, absent, flagged (a field observation; Hugo, 2026-11-09).
+.fao_boundary_sharp <- function(h) {
+  bd <- .field_term(.fao_col(h, "boundary_distinctness", "character"))
+  rec <- !is.na(bd) & nzchar(bd)
+  list(value = rec & grepl("abrupt|clear|clara", bd),
+       flags = ifelse(rec, NA_character_, "boundary_distinctness_not_recorded_absent"))
+}
+
+
 # --- new attributes with their fallbacks (Q19) ------------------------------------------
 
 # A field observation recorded as a logical column: TRUE / FALSE as recorded;
