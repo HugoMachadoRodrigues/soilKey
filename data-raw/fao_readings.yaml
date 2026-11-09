@@ -260,4 +260,4 @@ readings:
     edition: [1988]
     page: "p. 33"
     version: "0.9.382"
-    reading: "With the dry value taken as the moist value + 1, a dry chroma not recorded is the moist chroma, flagged dry_chroma_from_moist, so that the chroma rule ('either dry or moist') is decided by the moist chroma alone (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "With the dry value taken as the moist value + 1, a dry chroma not recorded is the moist chroma, flagged dry_chroma_from_moist, so that the chroma rule ('either dry or moist') is decided by the moist chroma alone (Hugo, 2026-11-09)."
