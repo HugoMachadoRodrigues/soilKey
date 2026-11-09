@@ -1,0 +1,182 @@
+level,code,name,parent,key_position,page_key,page_def,notes
+grouping,HS,HISTOSOLS,,1,75,60,
+unit,HSi,Gelic Histosols,HS,1.1,75,61,
+unit,HSt,Thionic Histosols,HS,1.2,75,61,
+unit,HSl,Folic Histosols,HS,1.3,75,60,"OCR 'HSI'/'HS!'/'HS]' = HSl (lower-case L), checked on images p.75, p.140"
+unit,HSf,Fibric Histosols,HS,1.4,75,61,"key spells 'fiber', ch. VI 'fibre'"
+unit,HSs,Terric Histosols,HS,1.5,75,60,"key residual, worded as a description"
+grouping,AT,ANTHROSOLS,,2,75-76,61,
+unit,ATa,Aric Anthrosols,AT,2.1,75,61,
+unit,ATf,Fimic Anthrosols,AT,2.2,75,61,"key order Fimic before Cumulic; lists Aric, Cumulic, Fimic, Urbic"
+unit,ATc,Cumulic Anthrosols,AT,2.3,76,61,OCR 'ATec'/'ATe' in lists = ATc (image p.140)
+unit,ATu,Urbic Anthrosols,AT,2.4,76,61,"key residual, worded as a description"
+grouping,LP,LEPTOSOLS,,3,76,45-46,
+unit,LPq,Lithic Leptosols,LP,3.1,76,46,
+unit,LPi,Gelic Leptosols,LP,3.2,76,46,
+unit,LPk,Rendzic Leptosols,LP,3.3,76,46,
+unit,LPm,Mollic Leptosols,LP,3.4,76,46,
+unit,LPu,Umbric Leptosols,LP,3.5,76,46,
+unit,LPd,Dystric Leptosols,LP,3.6,76,45,
+unit,LPe,Eutric Leptosols,LP,3.7,76,45,key residual
+grouping,VR,VERTISOLS,,4,77,48,
+unit,VRy,Gypsic Vertisols,VR,4.1,77,48,
+unit,VRk,Calcic Vertisols,VR,4.2,77,48,
+unit,VRd,Dystric Vertisols,VR,4.3,77,48,
+unit,VRe,Eutric Vertisols,VR,4.4,77,48,key residual
+grouping,FL,FLUVISOLS,,5,77-78,43,
+unit,FLt,Thionic Fluvisols,FL,5.1,77,43,
+unit,FLs,Salic Fluvisols,FL,5.2,77,43,
+unit,FLm,Mollic Fluvisols,FL,5.3,77,43,
+unit,FLc,Calcaric Fluvisols,FL,5.4,77,43,OCR 'FLe' in both lists = FLc (image p.137)
+unit,FLu,Umbric Fluvisols,FL,5.5,77,43,
+unit,FLd,Dystric Fluvisols,FL,5.6,78,43,OCR 'SO percent' = 50 (image p.78)
+unit,FLe,Eutric Fluvisols,FL,5.7,78,43,key residual; 'Other Fluvisols' printed without full stop
+grouping,SC,SOLONCHAKS,,6,78,51-52,
+unit,SCi,Gelic Solonchaks,SC,6.1,78,52,OCR 'Selonchaks' = Solonchaks
+unit,SCg,Gleyic Solonchaks,SC,6.2,78,51,
+unit,SCm,Mollic Solonchaks,SC,6.3,78,51,
+unit,SCy,Gypsic Solonchaks,SC,6.4,78,51,
+unit,SCk,Calcic Solonchaks,SC,6.5,78,51,key: calcic only; ch. VI adds soft powdery lime
+unit,SCn,Sodic Solonchaks,SC,6.6,78,51,
+unit,SCh,Haplic Solonchaks,SC,6.7,78,51,key residual
+grouping,GL,GLEYSOLS,,7,78-79,44,
+unit,GLi,Gelic Gleysols,GL,7.1,78,44,key 'within 200 cm from the surface'
+unit,GLt,Thionic Gleysols,GL,7.2,79,44,
+unit,GLa,Andic Gleysols,GL,7.3,79,44,
+unit,GLm,Mollic Gleysols,GL,7.4,79,44,
+unit,GLu,Umbric Gleysols,GL,7.5,79,44,
+unit,GLk,Calcic Gleysols,GL,7.6,79,44,key: calcic only; ch. VI calcic or gypsic
+unit,GLd,Dystric Gleysols,GL,7.7,79,44,
+unit,GLe,Eutric Gleysols,GL,7.8,79,44,key residual
+grouping,AN,ANDOSOLS,,8,79,47-48,
+unit,ANi,Gelic Andosols,AN,8.1,79,48,
+unit,ANg,Gleyic Andosols,AN,8.2,79,48,
+unit,ANz,Vitric Andosols,AN,8.3,79,48,
+unit,ANm,Mollic Andosols,AN,8.4,79,47,
+unit,ANu,Umbric Andosols,AN,8.5,79,47,
+unit,ANh,Haplic Andosols,AN,8.6,79,47,key residual
+grouping,AR,ARENOSOLS,,9,80,46-47,
+unit,ARg,Gleyic Arenosols,AR,9.1,80,47,
+unit,ARa,Albic Arenosols,AR,9.2,80,47,
+unit,ARc,Calcaric Arenosols,AR,9.3,80,47,OCR 'ARe' in ch. III list = ARc (image p.137)
+unit,ARl,Luvic Arenosols,AR,9.4,80,47,OCR 'ARI' = ARl (lower-case L)
+unit,ARo,Ferralic Arenosols,AR,9.5,80,47,
+unit,ARb,Cambic Arenosols,AR,9.6,80,46,
+unit,ARh,Haplic Arenosols,AR,9.7,80,46,key residual
+grouping,RG,REGOSOLS,,10,80-81,45,RG gate: 'lacking soft powdery lime' printed in italics
+unit,RGi,Gelic Regosols,RG,10.1,80,45,
+unit,RGu,Umbric Regosols,RG,10.2,80,45,
+unit,RGy,Gypsiric Regosols,RG,10.3,80,45,name: key p.80 and ch. VI p.45 'Gypsiric'; ch. III list p.16 and final list p.137 'Gypsic Regosols' (checked on image)
+unit,RGc,Calcaric Regosols,RG,10.4,80,45,
+unit,RGd,Dystric Regosols,RG,10.5,81,45,
+unit,RGe,Eutric Regosols,RG,10.6,81,45,key residual
+grouping,PZ,PODZOLS,,11,81,56-57,
+unit,PZi,Gelic Podzols,PZ,11.1,81,57,
+unit,PZg,Gleyic Podzols,PZ,11.2,81,56,OCR 'Gileyic' in ch. III list
+unit,PZc,Carbic Podzols,PZ,11.3,81,56,OCR 'PZe'/'PZce' in lists = PZc (image p.139)
+unit,PZf,Ferric Podzols,PZ,11.4,81,56,
+unit,PZb,Cambic Podzols,PZ,11.5,81,56,
+unit,PZh,Haplic Podzols,PZ,11.6,81,56,key residual
+grouping,PT,PLINTHOSOLS,,12,81-82,60,
+unit,PTa,Albic Plinthosols,PT,12.1,81,60,
+unit,PTu,Humic Plinthosols,PT,12.2,81,60,
+unit,PTd,Dystric Plinthosols,PT,12.3,82,60,
+unit,PTe,Eutric Plinthosols,PT,12.4,82,60,key residual
+grouping,FR,FERRALSOLS,,13,82,59-60,
+unit,FRp,Plinthic Ferralsols,FR,13.1,82,60,
+unit,FRg,Geric Ferralsols,FR,13.2,82,60,
+unit,FRu,Humic Ferralsols,FR,13.3,82,59,
+unit,FRr,Rhodic Ferralsols,FR,13.4,82,59,
+unit,FRx,Xanthic Ferralsols,FR,13.5,82,59,
+unit,FRh,Haplic Ferralsols,FR,13.6,82,59,key residual; 'Other Ferralsols' without full stop
+grouping,PL,PLANOSOLS,,14,82-83,55,
+unit,PLi,Gelic Planosols,PL,14.1,82,55,
+unit,PLm,Mollic Planosols,PL,14.2,82,55,
+unit,PLu,Umbric Planosols,PL,14.3,83,55,
+unit,PLd,Dystric Planosols,PL,14.4,83,55,
+unit,PLe,Eutric Planosols,PL,14.5,83,55,"key residual; both lists print 'Planosolss' (printing slip, p.18 and p.139)"
+grouping,SN,SOLONETZ,,15,83,50-51,
+unit,SNg,Gleyic Solonetz,SN,15.1,83,51,
+unit,SNj,Stagnic Solonetz,SN,15.2,83,51,
+unit,SNm,Mollic Solonetz,SN,15.3,83,51,
+unit,SNy,Gypsic Solonetz,SN,15.4,83,51,
+unit,SNk,Calcic Solonetz,SN,15.5,83,51,'or soft powdery lime' printed in italics in the key
+unit,SNh,Haplic Solonetz,SN,15.6,83,50,key residual
+grouping,GR,GREYZEMS,,16,83,53-54,
+unit,GRg,Gleyic Greyzems,GR,16.1,83,54,
+unit,GRh,Haplic Greyzems,GR,16.2,83,54,key residual
+grouping,CH,CHERNOZEMS,,17,84,52-53,
+unit,CHg,Gleyic Chernozems,CH,17.1,84,53,
+unit,CHl,Luvic Chernozems,CH,17.2,84,52,OCR 'CHI' = CHl
+unit,CHw,Glossic Chernozems,CH,17.3,84,53,
+unit,CHk,Calcic Chernozems,CH,17.4,84,52,
+unit,CHh,Haplic Chernozems,CH,17.5,84,52,key residual
+grouping,KS,KASTANOZEMS,,18,84,52,
+unit,KSy,Gypsic Kastanozems,KS,18.1,84,52,
+unit,KSl,Luvic Kastanozems,KS,18.2,84,52,OCR 'KSI'/'KS]' = KSl
+unit,KSk,Calcic Kastanozems,KS,18.3,84,52,
+unit,KSh,Haplic Kastanozems,KS,18.4,84,52,key residual
+grouping,PH,PHAEOZEMS,,19,84-85,53,
+unit,PHg,Gleyic Phaeozems,PH,19.1,84,53,
+unit,PHj,Stagnic Phaeozems,PH,19.2,85,53,OCR 'Phacozems' in lists
+unit,PHl,Luvic Phaeozems,PH,19.3,85,53,OCR 'PHI' = PHl
+unit,PHc,Calcaric Phaeozems,PH,19.4,85,53,OCR 'PHe' in lists = PHc (image p.139)
+unit,PHh,Haplic Phaeozems,PH,19.5,85,53,key residual
+grouping,PD,PODZOLUVISOLS,,20,85,55-56,
+unit,PDi,Gelic Podzoluvisols,PD,20.1,85,56,
+unit,PDg,Gleyic Podzoluvisols,PD,20.2,85,56,
+unit,PDj,Stagnic Podzoluvisols,PD,20.3,85,55,
+unit,PDd,Dystric Podzoluvisols,PD,20.4,85,55,
+unit,PDe,Eutric Podzoluvisols,PD,20.5,85,55,key residual
+grouping,GY,GYPSISOLS,,21,85-86,50,
+unit,GYp,Petric Gypsisols,GY,21.1,85,50,
+unit,GYk,Calcic Gypsisols,GY,21.2,86,50,
+unit,GYl,Luvic Gypsisols,GY,21.3,86,50,OCR 'GY]'/'GYI1'/'GY1' = GYl
+unit,GYh,Haplic Gypsisols,GY,21.4,86,50,key residual
+grouping,CL,CALCISOLS,,22,86,50,
+unit,CLp,Petric Calcisols,CL,22.1,86,50,
+unit,CLl,Luvic Calcisols,CL,22.2,86,50,OCR 'CLI' = CLl
+unit,CLh,Haplic Calcisols,CL,22.3,86,50,key residual
+grouping,NT,NITISOLS,,23,86,59,
+unit,NTu,Humic Nitisols,NT,23.1,86,59,
+unit,NTr,Rhodic Nitisols,NT,23.2,86,59,
+unit,NTh,Haplic Nitisols,NT,23.3,86,59,key residual
+grouping,AL,ALISOLS,,24,87,58,
+unit,ALp,Plinthic Alisols,AL,24.1,87,58,
+unit,ALg,Gleyic Alisols,AL,24.2,87,58,
+unit,ALj,Stagnic Alisols,AL,24.3,87,58,
+unit,ALu,Humic Alisols,AL,24.4,87,58,
+unit,ALf,Ferric Alisols,AL,24.5,87,58,
+unit,ALh,Haplic Alisols,AL,24.6,87,58,key residual
+grouping,AC,ACRISOLS,,25,87,57-58,
+unit,ACp,Plinthic Acrisols,AC,25.1,87,58,
+unit,ACg,Gleyic Acrisols,AC,25.2,87,58,
+unit,ACu,Humic Acrisols,AC,25.3,87,58,
+unit,ACf,Ferric Acrisols,AC,25.4,87,58,
+unit,ACh,Haplic Acrisols,AC,25.5,87,57,key residual
+grouping,LV,LUVISOLS,,26,88,54-55,
+unit,LVg,Gleyic Luvisols,LV,26.1,88,55,
+unit,LVj,Stagnic Luvisols,LV,26.2,88,54,
+unit,LVa,Albic Luvisols,LV,26.3,88,54,
+unit,LVv,Vertic Luvisols,LV,26.4,88,54,OCR 'LWv'/'LVWv' in lists = LVv
+unit,LVk,Calcic Luvisols,LV,26.5,88,54,
+unit,LVf,Ferric Luvisols,LV,26.6,88,54,
+unit,LVx,Chromic Luvisols,LV,26.7,88,54,
+unit,LVh,Haplic Luvisols,LV,26.8,88,54,key residual; printed 'Luvisols(LVh)' without space
+grouping,LX,LIXISOLS,,27,88-89,57,
+unit,LXp,Plinthic Lixisols,LX,27.1,88,57,
+unit,LXg,Gleyic Lixisols,LX,27.2,88,57,
+unit,LXj,Stagnic Lixisols,LX,27.3,88,57,
+unit,LXa,Albic Lixisols,LX,27.4,88,57,
+unit,LXf,Ferric Lixisols,LX,27.5,89,57,
+unit,LXh,Haplic Lixisols,LX,27.6,89,57,key residual
+grouping,CM,CAMBISOLS,,28,89,48-50,
+unit,CMi,Gelic Cambisols,CM,28.1,89,50,
+unit,CMg,Gleyic Cambisols,CM,28.2,89,50,
+unit,CMv,Vertic Cambisols,CM,28.3,89,49,OCR 'CMy'/'CMyv' in lists = CMv (image p.138)
+unit,CMu,Humic Cambisols,CM,28.4,89,49,'in at least some part of the B horizon' printed in italics in the key
+unit,CMc,Calcaric Cambisols,CM,28.5,89,49,OCR 'Calearic' = Calcaric
+unit,CMo,Ferralic Cambisols,CM,28.6,89,49,
+unit,CMd,Dystric Cambisols,CM,28.7,89,49,
+unit,CMx,Chromic Cambisols,CM,28.8,89,49,
+unit,CMe,Eutric Cambisols,CM,28.9,89,49,key residual

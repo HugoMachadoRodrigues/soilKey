@@ -9,9 +9,10 @@
 # it (data-raw/fao_readings.yaml). Organic carbon (OC) and CEC per kg of clay
 # are the units of this edition.
 #
-# 0.9.381 holds this table in data-raw/; the registry part of the 1988 legend
-# copies it to inst/rules/fao1988/thresholds.yaml. The defaults of the
-# readers in R/fao-readers.R are these numbers (test-v09381-fao-readers.R).
+# The copy of data-raw/fao_thresholds_1988.yaml (0.9.381) that the registry
+# part of the 1988 legend (0.9.384) ships with the rules; the two are kept
+# identical (test-v09384-fao88-groupings.R). The defaults of the readers in
+# R/fao-readers.R are these numbers (test-v09381-fao-readers.R).
 edition: "FAO-Unesco Revised Legend, World Soil Resources Report 60 (1988), text of the ISRIC reprint 1997"
 
 general:

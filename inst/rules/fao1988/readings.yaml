@@ -1,0 +1,428 @@
+# The readings soilKey makes of the FAO-Unesco Revised Legend (FAO 1988,
+# World Soil Resources Report 60; the text of the ISRIC reprint of 1997,
+# Technical Paper 20; PDF page = printed + 5), system id fao1988, where the
+# text is silent or ambiguous: the entries of data-raw/fao_readings.yaml
+# that concern the 1988 edition (the shared module reads both editions;
+# fao1974 gets its own file with its key). Pages are printed pages; "74 p."
+# is the 1974 legend. An entry ending "(Hugo, 2026-11-08)" or "(Hugo,
+# 2026-11-09)" is a decision of the owner, in soilKey's words; an entry
+# ending "(soilKey's reading, for Hugo to confirm, <date>)" is soilKey's own
+# and waits for his word. The criteria are paraphrased; no text of the book
+# is shipped. 0.9.381 holds the shared readers; 0.9.382 the diagnostic
+# horizons; 0.9.383 the diagnostic properties; 0.9.384 the registry and the
+# 28 major soil groupings.
+readings:
+  # --- the decisions of 2026-11-08 that this part applies -----------------------------
+  - topic: "One module, two editions"
+    edition: [1988, 1974]
+    page: "pp. 75-89; 74 pp. 43-53"
+    reading: "One module with an edition switch; two registry ids (fao1988, fao1974) in a later part, thin wrappers of one classify_fao(). The shared readers take the edition as an argument; no site attribute carries it (Q1, default 19) (Hugo, 2026-11-08)."
+  - topic: "Depth datum"
+    edition: [1988, 1974]
+    page: "pp. 25-42, 75; 74 pp. 32, 43"
+    reading: "Depths are read from the soil surface as the texts write it: the top of the first recorded horizon, H and O horizons included; a profile written with its O above 0 is read from the top of the O (.fao_depths()) (Q9) (Hugo, 2026-11-08)."
+  - topic: "Depths not written; texture of the 125 / 90 / 75 cm rule; coarse textured materials"
+    edition: [1988, 1974]
+    page: "p. 42, 80; 74 pp. 5, 29, 49-53"
+    reading: "A diagnostic with no depth in the key is read within 125 cm in both editions. The 1974 rule of 125, 90 and 75 cm for coarse, medium and fine textures reads the texture class of the upper 30 cm with the 1974 classes (.fao_texture_upper30(), .fao_depth_by_texture()). The coarse textured materials of the 1988 Gleysols are materials coarser than sandy loam (.fao_coarser_than_sandy_loam()) (Q10) (Hugo, 2026-11-08)."
+  - topic: "pH ratios, CEC, ECEC and base saturation"
+    edition: [1988, 1974]
+    page: "pp. 31-32, 39, 130; 74 pp. 24, 27-29, 41, 47"
+    reading: "Values as reported, flagged where the method is known to differ. The new ph_h2o_1to1 and ph_h2o_1to5 are read first, ph_h2o after them, flagged (.fao_ph()). The NH4Cl CEC is cec_cmol with cec_method nh4cl, else ecec_cmol, flagged (.fao_cec_clay(method = 'nh4cl')); the NH4OAc CEC is cec_cmol, flagged when cec_method names another method. The ECEC of 1988 is item 3 of the ferralic B: NH4OAc bases plus 1 M KCl exchangeable acidity (exch_acidity_kcl_cmol); the ECEC of 1974 is bases plus KCl aluminium (.fao_ecec_clay()). Base saturation is bs_pct by NH4OAc (.fao_bs()) (Q12) (Hugo, 2026-11-08)."
+  - topic: "New attributes"
+    edition: [1988, 1974]
+    page: "pp. 25-41, 67-71; 74 pp. 20-32"
+    reading: "All the attributes of plan section 10 are added, with the fallbacks written in their descriptions: horizon p2o5_citric_mg_kg, extractable_acidity_ph82_cmol, cec_ph82_cmol, al_dcb_pct, exch_acidity_kcl_cmol, ph_h2o_1to1, ph_h2o_1to5, rock_structure_pct, smeary_consistence, bleached_ped_coatings, ignition_redder, spodic_pellets, skeletans_pct, skeletan_thickness_mm, carbonate_coatings_faces_pct, nodule_size_max_cm, dta_low_endotherm, munsell_hue_rubbed, munsell_value_rubbed, munsell_chroma_rubbed, pitted_quartz_pct, palygorskite_pct, aeolian_crack_infill; site flooding_days_growing_period, rudic_recorded, reference_fao74. No other system reads them (Q19) (Hugo, 2026-11-08)."
+  - topic: "Rubbed colours and the limits between Munsell chips"
+    edition: [1988, 1974]
+    page: "pp. 26, 82-89; 74 pp. 24, 47-53"
+    reading: "The rubbed colour is munsell_*_rubbed where recorded, else the moist colour read as rubbed, flagged moist_colour_for_rubbed (.fao_colour_rubbed()); Chromic reads the moist colour. The limits 'less than 3.5' and '5.5' are compared with the recorded number: whole chips of 3 and 5 pass, a value recorded as 3.5 fails (Q24) (Hugo, 2026-11-08)."
+  - topic: "'Many' coarse mottles of the ferric properties"
+    edition: [1988, 1974]
+    page: "p. 35; 74 p. 28"
+    reading: "'Many' is 15 % or more and 'coarse' more than 20 mm, the classes of the 1990 Guidelines (fao_thresholds_*.yaml) (Q22) (Hugo, 2026-11-08)."
+  - topic: "Technical defaults of the questions file"
+    edition: [1988, 1974]
+    page: "pp. 25-42; 74 pp. 25, 32"
+    reading: "CEC per kg clay = cec_cmol x 100 / clay_pct, no deduction for organic matter (default 1); clay as reported (3); 'within X cm' = the upper boundary of the feature at or above X, 'between 20 and 50 cm' = every layer overlapping 20-50 cm, 'in some part' = one layer, two diagnostic B horizons within 125 cm: the upper one decides (11); the clay increase by .fao_clay_increase() with the bands 3 / 1.2 / 8 and the breaks 15 and 40 as arguments, equal to the usda branch of test_clay_increase_argic(), the exact 15 and 40 of 1974 read in the same way (< 15; 15 to < 40; >= 40) (12, 18) (Hugo, 2026-11-08)."
+
+  # --- the readings of this part (0.9.381), decided on the review --------------------------
+  - topic: "Texture classes at the printed boundaries"
+    edition: [1988, 1974]
+    page: "p. 107; 74 p. 5"
+    reading: "Both texts leave a clay content of exactly 35 % and a sand content of exactly 70 % (1988) or 65 % (1974) with less than 15 (18) % clay unassigned. soilKey reads both as medium textured: coarse is clay below 15 (18) % and sand above 70 (65) %, fine is clay above 35 %, medium the rest (.fao_texture_class()). The 1974 case is plan section 12 item 25; the 1988 one is the same gap (Hugo, 2026-11-08)."
+  - topic: "The solum"
+    edition: [1988, 1974]
+    page: "p. 26; 74 p. 24"
+    reading: "The solum of the mollic A rule is the A, E and B horizons with their transitions (AB, BA, AE, EB, BC, AC, A/B); CB, C, R, H and O are not. Its base is the base of the deepest such horizon, measured from the soil surface of Q9, so an O or H horizon on top counts in its depth; a description that ends in the solum gives a lower bound (.fao_solum()). AC is counted because the mollic A of both editions counts AC as part of the A (Hugo, 2026-11-08)."
+  - topic: "The solum with undesignated horizons"
+    edition: [1988, 1974]
+    page: "p. 26; 74 p. 24"
+    reading: "A horizon without a designation above the last A, E or B does not matter. One between the last A, E or B and the first C or R below it (or below it with no C or R after) leaves the base of the solum undecided, with the designation named as missing (Hugo, 2026-11-09)."
+  - topic: "Buried horizons"
+    edition: [1988, 1974]
+    page: "p. 42; 74 p. 32"
+    reading: "A buried horizon is one whose designation has the suffix b (Ab, 2Btb); the new material is all that lies above the first of them, its thickness the depth of that horizon. When the mantle is 50 cm or more (1988 also 35 cm or more over an andic mantle) that horizon and every horizon below it are not diagnostic; with the andic reading of the mantle undecided between 35 and 50 cm the answer is undecided (.fao_buried()) (Hugo, 2026-11-08)."
+  - topic: "Vertical distance of the clay increase"
+    edition: [1988, 1974]
+    page: "p. 28 item 4; 74 p. 25"
+    reading: "'The increase must be reached within a vertical distance of 30 (15) cm' is read as the gap between the base of the coarser overlying layer and the top of the layer compared: the layers in between add up to no more than 30 (15) cm. A pair across a lithological discontinuity (a different material number in the designation) is undecided, not failed (.fao_clay_increase(distance =)) (Hugo, 2026-11-08)."
+  - topic: "ECEC of 1988 without the KCl acidity"
+    edition: [1988]
+    page: "pp. 31, 130"
+    reading: "Without exch_acidity_kcl_cmol the ECEC of the ferralic B reads al_kcl_cmol, then al_cmol (KCl aluminium, the acidity of most acid soils), flagged; without the bases, ecec_cmol as recorded, flagged ecec_as_recorded (Hugo, 2026-11-08)."
+  - topic: "Base saturation not recorded"
+    edition: [1988, 1974]
+    page: "pp. 26-27, 75-89; 74 pp. 24, 43-53"
+    reading: "Where bs_pct is not recorded and the four bases and cec_cmol are, the base saturation is 100 x bases / CEC (at most 100), flagged bs_computed (Hugo, 2026-11-08)."
+  - topic: "Continuous rock in the readers"
+    edition: [1988, 1974]
+    page: "p. 35; 74 p. 32"
+    reading: "A layer is rock for the windows and the weighted means when its designation is R (2R, R/Cr), or when bedrock_pct is 90 or more together with a hard rupture resistance recorded (hard, very hard, extremely hard or rigid: continuous hard rock, p. 35); bedrock_pct alone is not rock. A window that ends on rock is complete, and a weighted mean over it averages the soil above the rock, except the strongly humic mean of 1988, which counts the depth below the soil as zero (p. 40). The key's own test of continuous hard rock follows with the diagnostics (Hugo, 2026-11-09)."
+  - topic: "Strongly humic in soils shallower than 50 cm"
+    edition: [1988]
+    page: "p. 40"
+    reading: "The text gives the 100 cm average for soils 50 to 100 cm deep. A soil shallower than 50 cm over rock is read the same way: the carbon is divided by 100 cm, the depth below the soil counting as zero, flagged zero_below_rock_soil_shallower_than_50cm (Hugo, 2026-11-09)."
+  - topic: "Windows with gaps or overlaps"
+    edition: [1988, 1974]
+    page: "p. 42; 74 p. 32"
+    reading: "A window is described only when the clipped thicknesses of its soil layers fill it from its top to its base or to the rock: a gap in the depths, a layer without depths or a description that stops above the base leaves a test over it undecided (missing top_cm and bottom_cm); layers that overlap in depth are flagged overlapping_layers and a mean over them undecided. 'Within X cm' fails only when the description is filled to below X, or to rock at or above X (Hugo, 2026-11-09)."
+  - topic: "Neutral hues"
+    edition: [1988, 1974]
+    page: "pp. 32-35; 74 pp. 27-28"
+    reading: "A neutral hue (N) is neither redder nor yellower than any hue: 'redder than 7.5YR' and '2.5Y or more' fail on it (.fao_hue_cmp()) (Hugo, 2026-11-08)."
+  - topic: "The ignition test from free iron, both ways"
+    edition: [1988, 1974]
+    page: "p. 81; 74 pp. 39, 47"
+    reading: "Without ignition_redder, free iron (fe_dcb_pct) below 0.5 % of the fine earth reads as not turning redder, flagged (Q23); 0.5 % or more leaves the test undecided, because the footnote gives only the first direction (Hugo, 2026-11-09)."
+  - topic: "Texture of the upper 30 cm under an organic surface"
+    edition: [1988, 1974]
+    page: "p. 107; 74 p. 5"
+    reading: "Under H or O horizons (or an undesignated layer of 20 % organic carbon or more) the upper 30 cm of the texture class are measured from the top of the first mineral horizon, flagged texture_from_mineral_surface: the class of the map symbol describes the mineral soil (.fao_texture_upper30()) (Hugo, 2026-11-09)."
+
+  # --- soilKey's readings of the code, for Hugo's word ------------------------------------------
+  - topic: "Palygorskite named in the clay mineralogy"
+    edition: [1988]
+    page: "p. 70"
+    reading: "Without palygorskite_pct, a clay_mineralogy naming palygorskite (or attapulgite), the dominant clay mineral, is read as 100 % of the clay, flagged; not named, absent (.fao_palygorskite()) (Hugo, 2026-11-09)."
+  - topic: "Hue families beyond Y and RP"
+    edition: [1988, 1974]
+    page: "pp. 32, 35; 74 pp. 27-28"
+    reading: "On the hue rank from red to blue, the GY, G, BG, B and PB hues count as '2.5Y or more' (the jarosite mottles), and RP hues as redder than 7.5YR (the ferric mottles) (.fao_hue_cmp()) (Hugo, 2026-11-09)."
+  - topic: "Texture groups of tonguing"
+    edition: [1988, 1974]
+    page: "p. 41; 74 p. 31"
+    reading: "One grouping serves both editions: fine (clay, silty clay, sandy clay), moderately fine (sandy clay loam, clay loam, silty clay loam) and medium or coarser (silt loam, loam, sandy loam and coarser, and silt, which neither text names). The very fine sandy loam that 1974 adds falls in the sandy loams, as soilKey records no very fine sand (.fao_tonguing_texture()) (Hugo, 2026-11-09)."
+
+  # --- 0.9.382 (the diagnostic horizons of 1988, R/diagnostics-fao88-horizons.R) ----------
+  # Hugo's decisions of 2026-11-08 that this part applies.
+  - topic: "Clay skins of the argic B"
+    edition: [1988]
+    page: "p. 28 items 4 and 6"
+    version: "0.9.382"
+    reading: "Clay skins or oriented clay on 1 % or more: clay_films_amount few or more, or micromorph_argillans_pct or clay_coatings_thin_section_pct of 1 % or more; not recorded, a B designated with the suffix t counts as the observation, flagged bt_designation_for_clay_skins; else absent (Q13) (Hugo, 2026-11-08)."
+  - topic: "Citric P2O5 of the mollic and umbric A"
+    edition: [1988]
+    page: "p. 27 item 6"
+    version: "0.9.382"
+    reading: "A measured P2O5 decides (250 mg/kg or more fails, unless it increases below the A); not measured, the anthropic layers the limit is meant to remove decide: recorded artefacts, anthropic material, a layer_origin naming anthropic, midden or plaggen material or an overthickened A at the site fail, flagged p2o5_exclusion_from_anthropic_record; none recorded passes, flagged p2o5_not_recorded_no_anthropic_layer (Q14) (Hugo, 2026-11-08)."
+  - topic: "Eutric and dystric histic H; organic soil materials"
+    edition: [1988]
+    page: "pp. 25-26, 39; 74 p. 24"
+    version: "0.9.382"
+    reading: "histic_h_fao88(base = 'eutric') asks pH (H2O 1:5) 5.5 or more throughout the H, 'dystric' below 5.5 in some part (ph_h2o stands in, flagged). Organic soil materials: 20 % OC or more pass; below the saturated limit (12 + 0.1 x clay %, at most 18; 12 without clay) fail; between, the drainage recorded at the site decides, else undecided (Q15) (Hugo, 2026-11-08)."
+  - topic: "Ferralic B clay and weatherable minerals"
+    edition: [1988]
+    page: "pp. 29-31, 41"
+    version: "0.9.382"
+    reading: "The ferralic B asks 8 % clay; weatherable_minerals_pct (20-200 um) is read for the 50-200 um fraction of the cambic and ferralic B, flagged weatherable_minerals_20_200um_for_50_200um (Q16) (Hugo, 2026-11-08)."
+  - topic: "Spodic B chemistry and its stand-ins"
+    edition: [1988]
+    page: "pp. 30-31"
+    version: "0.9.382"
+    reading: "The extractable iron of item 3a is pyrophosphate iron (fe_pyro_pct). Where the 1975 chemistry leaves the horizon undecided, spodic_horizon_usda() and then the WRB spodic() stand in, flagged stand_in_for_spodic_chemistry_1975, with the result marked as a lower grade (Q17) (Hugo, 2026-11-08)."
+  - topic: "Sulfuric horizon"
+    edition: [1988]
+    page: "p. 32"
+    version: "0.9.382"
+    reading: "pH (H2O 1:1) below 3.5 over 15 cm or more decides; jarosite mottles are reported, not required (Q18) (Hugo, 2026-11-08)."
+  - topic: "Defaults applied to the horizons"
+    edition: [1988]
+    page: "pp. 26, 28, 32, 34, 42"
+    version: "0.9.382"
+    reading: "A solum of exactly 75 cm takes the rule of more than 25 cm (default 2); the petrocalcic and petrogypsic horizons have no minimum thickness (4); the abrupt textural transition of argic item 6 is a lower boundary recorded abrupt or clear, as the abrupt textural change (5); runs and windows as default 11; the clay increase by .fao_clay_increase() (18). The subsurface horizons have their upper limit within 125 cm (p. 42; argument max_top_cm) (Hugo, 2026-11-08)."
+
+  # soilKey's readings of this part, decided by Hugo on the review (2026-11-09).
+  - topic: "Upper bound of the histic H"
+    edition: [1988]
+    page: "pp. 25, 42"
+    version: "0.9.382"
+    reading: "The histic H is more than 20 cm thick; its printed upper bound (less than 40 cm, 60 cm if sphagnum or very light) only separates the Histosols, whose gate the key reads first, and is reported as evidence, not tested. A plough layer is a surface run of layers designated A, H or O with the suffix p (Hugo, 2026-11-09)."
+  - topic: "Saturation of the organic soil materials from the drainage class"
+    edition: [1988]
+    page: "p. 39"
+    version: "0.9.382"
+    reading: "Saturated for long periods: very poorly, poorly, somewhat poorly or imperfectly drained, or an artificially drained site; never saturated for more than a few days: well drained or better. Moderately well drained leaves it undecided. Portuguese classes read likewise (Hugo, 2026-11-09)."
+  - topic: "Mixing the 18 cm of the mollic A"
+    edition: [1988]
+    page: "p. 26"
+    version: "0.9.382"
+    reading: "The A is the run of A layers (AB, AE, AC included; undesignated layers flagged) from the first mineral layer; an O or H above it is not mixed into it. Its upper 18 cm are mixed (thickness-weighted means of moist value and chroma, dry value, OC, base saturation and CaCO3), and every A layer whose base lies below 18 cm, one that straddles 18 cm included, is also read on its own values. A dry value not recorded is the moist value + 1, flagged. The thickness of the A and the solum it is compared with are both measured from the mineral soil surface (the top of the A) (Hugo, 2026-11-09)."
+  - topic: "Lime waiver of the mollic A"
+    edition: [1988]
+    page: "p. 26 items 2 and 4"
+    version: "0.9.382"
+    reading: "The colour and carbon pass either as printed (chroma and moist value below 3.5, dry value below 5.5, 0.6 % OC) or, with more than 40 % CaCO3 equivalent, with a moist value of 5 or less and 2.5 % OC, the dry value waived. CaCO3 not measured leaves the waiver undecided unless an HCl reaction recorded as none or a water pH below 6.5 reads it as absent, flagged (Hugo, 2026-11-09)."
+  - topic: "Colour contrast and phosphate exceptions of the mollic A"
+    edition: [1988]
+    page: "pp. 26-27"
+    version: "0.9.382"
+    reading: "The mixed A is compared with the first C below it, else the layer right below; with rock right below the A the contrast cannot be read and is taken as met, flagged rock_below_a_contrast_not_read. Strongly humic waives it (p. 40). Dark parent material (the other waiver) and phosphate nodules (the exception to the P2O5 limit) are field observations soilKey does not record: absent. Massive and hard (hard, very hard or extremely hard) when dry is read per layer; not recorded, absent (Hugo, 2026-11-09)."
+  - topic: "Fimic A"
+    edition: [1988]
+    page: "p. 27"
+    version: "0.9.382"
+    reading: "A layer is manured when its citric P2O5 is above 250 mg/kg or the record names anthropic material (as for the mollic A). Where neither is recorded in the upper 50 cm, the WRB plaggic, hortic and terric horizons stand in and can only make it pass; otherwise the man-made layer is absent. A layer meeting the mollic or umbric A with P2O5 measured at 250 or less is that A (Hugo, 2026-11-09)."
+  - topic: "Fresh alluvium is not an ochric A"
+    edition: [1988]
+    page: "p. 27"
+    version: "0.9.382"
+    reading: "Finely stratified fresh alluvium: a stratification recorded in the surface layer together with recent_deposit or a fluvial layer_origin (Hugo, 2026-11-09)."
+  - topic: "Layers that can hold a B horizon"
+    edition: [1988]
+    page: "pp. 27-31"
+    version: "0.9.382"
+    reading: "The argic, natric, cambic, spodic and ferralic B are not read in rock, in a layer designated A, E, H, O or C (CB, Cr), nor in the first layer of an undesignated surface; a B inside an E (E&Bt, E/B) is a B, and its t suffix records clay skins as a Bt does (Hugo, 2026-11-09)."
+  - topic: "Extent of the argic B"
+    edition: [1988]
+    page: "p. 28 items 3, 5, 6"
+    version: "0.9.382"
+    reading: "The B is the layer where the increase is reached and the adjoining layers below it that keep the texture and the increase over the same coarser layer. Item 5 reads its thickness from the soil surface of Q9 (one tenth of the overlying horizons); lamellae, when lamellae_cumulative_cm is above 0 in every layer of the B, need 15 cm combined. The coarser overlying horizon of item 6 is the run of layers right above with less clay; a missing clay on that walk leaves item 6 undecided. 'Eroded' is read from anthropic_truncation only (Hugo, 2026-11-09)."
+  - topic: "Tongues of the natric B"
+    edition: [1988]
+    page: "p. 29 item 1"
+    version: "0.9.382"
+    reading: "Blocky structure with tongues: tongue_depth_cm above 2.5 in the B or the layer above it; the tongue is taken to carry uncoated grains unless uncoated_grains_pct is recorded as 0. ESP not recorded is Na / CEC x 100, flagged (Hugo, 2026-11-09)."
+  - topic: "Alteration of the cambic B"
+    edition: [1988]
+    page: "p. 30 item 5"
+    version: "0.9.382"
+    reading: "'The underlying horizon' of 5a is the layer right below (rock: not compared). The carbonate removal of 5b is read only over sure calcic layers below. The parent material of 5c is the C layers below, else the layers from the B down (Hugo, 2026-11-09)."
+  - topic: "Carbonate and gypsum not measured"
+    edition: [1988]
+    page: "pp. 30-32"
+    version: "0.9.382"
+    reading: "caco3_pct not recorded: an HCl reaction recorded as none, or a water pH below 6.5, reads as no free carbonate, flagged; caso4_pct not recorded: an ECe below 2 dS/m reads as no gypsum, flagged. Else undecided (Hugo, 2026-11-09)."
+  - topic: "Calcic and petrocalcic details"
+    edition: [1988]
+    page: "pp. 31-32"
+    version: "0.9.382"
+    reading: "The calcic '5 percent more than a deeper horizon' is in points. Resting on 40 % CaCO3 or more, the calcic horizon needs secondary carbonate recorded (secondary_carbonates_pct, carbonate_soft_pct, secondary_carbonates_form or the suffix k). The deepest layer of 15 % or more, with no deeper layer described, is undecided. The petrocalcic (petrogypsic) horizon is a cemented layer of 15 % CaCO3 or more (the gypsum of the gypsic horizon): cementation_class moderately cemented or harder, else a designation with k (y) and m, flagged; a silica pan (qm) is not read as theirs; the enrichment not asked (Hugo, 2026-11-09)."
+  - topic: "Gypsic horizon compared with the C"
+    edition: [1988]
+    page: "p. 32"
+    version: "0.9.382"
+    reading: "The underlying C is the first layer designated C below; with no C designated, the layer right below, flagged no_c_horizon_layer_below_compared. The product is the thickness times the thickness-weighted gypsum % (Hugo, 2026-11-09)."
+  - topic: "Spodic B without the chemistry"
+    edition: [1988]
+    page: "pp. 30-31"
+    version: "0.9.382"
+    reading: "Item 2: sandy or coarse-loamy is clay below 18 %; pellets and cracked coatings are field observations. Item 1: the cementing agent is read from an h, s or the older ir suffix. A layer with free carbonate or a water pH of 7.0 or more is not spodic, flagged; a missing chemistry is not otherwise read as absent. The stand-ins decide only the chemistry (item 3), both ways when they decide, and are recorded only then; the units of items 1 and 2 stay as read (Hugo, 2026-11-09)."
+  - topic: "Volcanic glass not recorded"
+    edition: [1988]
+    page: "pp. 31, 34"
+    version: "0.9.382"
+    reading: "Item 7 of the ferralic B reads the andic properties of p. 34 itself until the diagnostic properties follow. Volcanic glass not recorded is none, flagged volcanic_glass_not_recorded_none, and andic properties left undecided are absent, flagged andic_absent_no_volcanic_material, unless the site's parent material, a layer_origin or pyroclastic fragments name volcanic material, where they stay undecided (Hugo, 2026-11-09)."
+  - topic: "Albic E colours"
+    edition: [1988]
+    page: "pp. 32-33"
+    version: "0.9.382"
+    reading: "A layer designated E (EB, E/B, the A2 of the older notation); an undesignated layer is read by colour only, flagged, where it lies below a surface layer and above a layer designated B or C, else it is undecided. 'Closer to 2 than to 3' is a chroma below 2.5. Where both value classes apply (a dry value of 7 and a moist value of 5), the lighter one governs (chroma 3 or less). A dry value not recorded is the moist value + 1, flagged. The parent material of the 5YR rule is the first C below (Hugo, 2026-11-09)."
+  - topic: "Code readings confirmed on the review"
+    edition: [1988]
+    page: "pp. 26-32"
+    version: "0.9.382"
+    reading: "The spodic B may start at any depth below an A or E (12.5 cm only without them); 'extremely hard' counts as hard for the massive and hard mollic A; the spodic index of accumulation is summed over every subhorizon of the profile that meets items 3a and 3b; 'moderately cemented' suffices for the petro horizons (Hugo, 2026-11-09)."
+  - topic: "Dry chroma of the albic E not recorded"
+    edition: [1988]
+    page: "p. 33"
+    version: "0.9.382"
+    reading: "With the dry value taken as the moist value + 1, a dry chroma not recorded is the moist chroma, flagged dry_chroma_from_moist, so that the chroma rule ('either dry or moist') is decided by the moist chroma alone (Hugo, 2026-11-09)."
+
+  # --- 0.9.383 (the diagnostic properties of 1988, R/diagnostics-fao88-properties.R) --------
+  # Hugo's decisions of 2026-11-08 that this part applies.
+  - topic: "Gleyic and stagnic properties"
+    edition: [1988]
+    page: "pp. 36-37"
+    version: "0.9.383"
+    reading: "Without a recorded reduction test (rH, ferricyanide, dipyridyl) the colour pattern counts as evidence of reduction, flagged reduction_from_colour_pattern; gleyic = two of the three signs (reduction, groundwater, gley colours in more than 95 % of the matrix); stagnic within 50 cm = reduction with the mottling pattern of item 3b (mottled) or 3c (not mottled); item 3d, the chroma increasing with depth, is reported as support, not required (Q21) (Hugo, 2026-11-08)."
+  - topic: "'Many' coarse mottles of the ferric properties"
+    edition: [1988]
+    page: "p. 35"
+    version: "0.9.383"
+    reading: "redoximorphic_features_pct of 15 or more and mottle_size_class coarse (more than 20 mm), with a mottle colour of hue redder than 7.5YR or chroma above 5 (Q22) (Hugo, 2026-11-08)."
+  - topic: "Defaults applied to the properties"
+    edition: [1988]
+    page: "pp. 34-41"
+    version: "0.9.383"
+    reading: "The abrupt textural change over less than 5 cm is a boundary recorded abrupt or clear, gradual and diffuse fail, and its two items are either-or by the clay of the upper layer (default 5); fluvic properties: the organic carbon and stratification criteria decide, the fluviatile, marine or lacustrine origin read where recorded (6); nitic properties: 30 % clay and the structure decide, oxalate and DCB iron read only where measured (7); vertic properties: clayey is 30 % clay or more (8); the geric 'plus' read (20); windows and depths as default 11 (Hugo, 2026-11-08)."
+
+  # Hugo's decisions on the readings of this part and the review (2026-11-09).
+  - topic: "Boundary distinctness not recorded"
+    edition: [1988]
+    page: "pp. 28, 34"
+    version: "0.9.383"
+    reading: "A boundary over less than 5 cm is one recorded abrupt or clear (abrupta, clara), read by one reader for the abrupt textural change and argic item 6 (.fao_boundary_sharp()); not recorded, absent, flagged boundary_distinctness_not_recorded_absent (a field observation). A layer starting less than 5 cm below the base of the upper one, across a thin transitional layer, is also compared, the distance read from the depths. An argic start that fails item 6 because the boundary is not recorded keeps the flag in the evidence (Hugo, 2026-11-09)."
+  - topic: "Calcareous without CaCO3"
+    edition: [1988]
+    page: "p. 35"
+    version: "0.9.383"
+    reading: "Without caco3_pct strong effervescence (strong, very strong, violent; effervescence_class read for the 10 % HCl, flagged) in most of the fine earth decides, as calcareous, and a water pH (ph_h2o) below 6.5 reads as not calcareous, flagged no_carbonate_at_ph_below_6.5, as the horizons read it; both recorded conflict and leave it undecided, flagged; any other effervescence, none recorded, or no record leaves it undecided (a reaction recorded as none is not read here) (Hugo, 2026-11-09)."
+  - topic: "Fluvic properties: irregular decrease and thin sand strata"
+    edition: [1988]
+    page: "p. 35"
+    version: "0.9.383"
+    reading: "Organic carbon decreasing irregularly with depth is an increase of more than 0.2 points from one layer to the next deeper one within 125 cm (oc_increase_min = 0.2, strict). A thin stratum of sand is a sand or loamy sand layer; it is exempt from the 0.20 % when a finer layer below it within 125 cm, not a buried A, has more. The origin is read where recorded (a parent material naming rock, residuum, loess, till or colluvium is not a fluvic sediment; a floodplain, levee, delta, tidal or backswamp landform is one); not recorded, the criteria decide, flagged sediment_origin_not_recorded_criteria_decide (Hugo, 2026-11-09)."
+  - topic: "Groundwater with its capillary fringe at the surface"
+    edition: [1988]
+    page: "p. 36 item 2b"
+    version: "0.9.383"
+    reading: "A water table recorded at or above the surface, flooded, or not perched within 100 cm of the surface; perched, none observed or deeper is not the sign; not recorded, absent, flagged. The dye test is not recorded (Hugo, 2026-11-09)."
+  - topic: "Reduction from tests and colour"
+    edition: [1988]
+    page: "pp. 36-37"
+    version: "0.9.383"
+    reading: "The three tests (rH 19 or less, ferricyanide, dipyridyl) are read as an OR: a negative test with the others not made is undecided, not a refutation. The colour confirms but never refutes: a matrix of moist value 4 or more with chroma 2 or less or a hue N, GY, BG, G or B, or a reduced matrix recorded, gives reduction, flagged reduction_from_colour_pattern, even beside a negative test; any other colour leaves it undecided; an E or albic E layer never takes the colour route. The same gley matrix may count for signs a and c of the gleyic properties (Hugo, 2026-11-09)."
+  - topic: "The andic mantle of p. 42"
+    edition: [1988]
+    page: "p. 42"
+    version: "0.9.383"
+    reading: "A mantle of new material 35 to 50 cm thick over buried horizons has andic properties when every layer of it has them (three-valued) (Hugo, 2026-11-09)."
+  - topic: "Burial of the properties"
+    edition: [1988]
+    page: "p. 42"
+    version: "0.9.383"
+    reading: "Below the first buried horizon under a thick enough mantle only the properties bound to a horizon are removed (ferralic, ferric, nitic, tonguing, interfingering); the properties of the present state (gleyic, stagnic, permafrost, salic, sodic, calcareous, sulfidic and the others) are read in the buried layers too (Hugo, 2026-11-09)."
+  - topic: "Nitic properties"
+    edition: [1988]
+    page: "p. 38"
+    version: "0.9.383"
+    reading: "An angular blocky structure, moderate or strong, with no second-level structure recorded leaves the nitic properties undecided; a polyhedral or nutty structure_type is the flat-edged element itself; a structure, grade or shiny faces not recorded are absent. The oxalate iron of the text is Fe2O3: its 0.2 % is compared with fe_ox_pct (Fe) as 0.2 x 0.6994 = 0.14 % Fe; the ratio to DCB iron is the same in either form (Hugo, 2026-11-09)."
+  - topic: "Depths of the properties"
+    edition: [1988]
+    page: "p. 42"
+    version: "0.9.383"
+    reading: "A property with no depth in the key is read in the layers starting within 125 cm, as the horizons of 0.9.382 are, without asking the description to reach 125 cm; a depth printed in a definition (salic 30 cm, stagnic 50 cm, fluvic 125 cm, strongly humic 100 cm, calcaric 20-50 cm) or passed by the key follows the fill rule of 2026-11-09. Strongly humic passes where the carbon of the layers described above 100 cm already exceeds 1.4 x 100. Permafrost is absent unless recorded, never undecided because the description stops above 200 cm, flagged (Hugo, 2026-11-09)."
+  - topic: "Sulfidic materials"
+    edition: [1988]
+    page: "p. 40"
+    version: "0.9.383"
+    reading: "The waterlogged state is reported (the site's drainage), not tested; the pH is ph_h2o (else ph_h2o_1to1); without s_total_pct, sulfidic_s_pct plus sulfate_s_pct is a lower bound that can make it pass, and a CaCO3 of three times that bound then leaves it undecided (Hugo, 2026-11-09)."
+  - topic: "Frozen and plinthite suffixes"
+    edition: [1988]
+    page: "pp. 39, 96-103"
+    version: "0.9.383"
+    reading: "The frozen suffix is read by the notation the site declares (.frozen_designation_pattern(): f in the FAO, WRB and USDA notations or none declared, z in the Canadian one); an f in another declared notation (SiBCS, KA5 ...) leaves permafrost undecided, flagged. The suffix v is plinthite of unknown amount, flagged, only in the FAO notation or none declared; in another notation it leaves plinthite undecided. Recorded ice is permafrost, flagged (Hugo, 2026-11-09)."
+  - topic: "Field observations of the properties"
+    edition: [1988]
+    page: "pp. 35-41"
+    version: "0.9.383"
+    reading: "Stagnic: mottles recorded without colours are of higher chroma, flagged; ped-surface colours not recorded are absent. Ferric: mottles without their amount, size or colour leave the mottle path undecided; the enriched exteriors of nodules are taken as met and nodules of unrecorded size accepted, flagged; Fe-Mn nodules alone leave it undecided, flagged. Soft powdery lime: coatings, soft concretions or powdery forms named without an amount leave it undecided, flagged. Tonguing: read on the receiving layer, else on the layer above, flagged; Chernozem tongues without a width are undecided. Interfingering: skeletans not recorded are absent, flagged. Slickensides: any presence recorded that is not none passes. Continuous hard rock: a cemented pan (suffix m, petrocalcic or petrogypsic) is never rock. Ferralic properties: the horizon right below the A is the first layer after the run of A layers. Andic item 2: volcaniclastic material not recorded is absent (Hugo, 2026-11-09)."
+
+  # soilKey's readings of the registry and the 28 major soil groupings (0.9.384),
+  # for Hugo to confirm.
+  - topic: "Organic layers of the Histosols"
+    edition: [1988]
+    page: "p. 75"
+    version: "0.9.384"
+    reading: "An H or O horizon is a layer of organic soil materials (p. 39, .f88_organic()); where the carbon leaves that undecided, a layer designated H or O counts, flagged organic_layer_from_designation. The 60 cm limit applies when a layer of the run has sphagnum_fibres_pct of 75 or more or a bulk density below 0.1. A description that stops above 80 cm leaves the cumulative path undecided when the depth not described could still complete it (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Thinner H or O horizon over rock or fragmental material"
+    edition: [1988]
+    page: "p. 75"
+    version: "0.9.384"
+    reading: "No minimum thickness is printed: organic layers from the surface that rest directly on continuous rock, or on fragmental material (coarse_fragments_pct of 90 or more, soilKey's number) whose fine earth is organic, make a Histosol at any thickness, flagged organic_layers_on_rock_thinner (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Profound modification of the Anthrosols"
+    edition: [1988]
+    page: "p. 75"
+    version: "0.9.384"
+    reading: "Read on the field record: a fimic A (0.9.382); anthropic layers (artefacts, anthropic material, a fill, midden or plaggen layer_origin) from the surface 50 cm thick or more, the thickness of the units ATc and ATu; or deep cultivation recorded at the site (deep_cultivation_kind, or mechanical_mixing_depth_cm of 50 or more). A truncation by people recorded alone does not make an Anthrosol. Nothing recorded: absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Highly calcareous material of the Leptosols"
+    edition: [1988]
+    page: "p. 76"
+    version: "0.9.384"
+    reading: "The material that limits the depth: a layer that is not an A, E, B, H or O (a C, or an undesignated layer below the first, flagged) starting within 30 cm with a CaCO3 equivalent above 40 % (CaCO3 not recorded read as for the calcic horizon). A calcareous A or B above deeper material does not count (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Fine earth of the Leptosols"
+    edition: [1988]
+    page: "p. 76"
+    version: "0.9.384"
+    reading: "Less than 20 % fine earth over 75 cm is the thickness-weighted fine earth (100 minus coarse_fragments_pct) of 0-75 cm, rock counting as no fine earth; coarse fragments not recorded are none, flagged (a field observation). A description that stops above 75 cm decides where the bounds already do (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Cracks and slickensides of the Vertisols"
+    edition: [1988]
+    page: "p. 77"
+    version: "0.9.384"
+    reading: "Cracks 1 cm wide (cracks_width_cm) that reach 50 cm (cracks_depth_cm, or recorded in a layer whose base is at 50 cm or deeper); on an irrigated site the cracks are waived, flagged. Any slickensides recorded are read as intersecting, flagged; wedge-shaped, parallelepiped or lenticular structure_type counts in a layer overlapping 25-100 cm. Not recorded: absent. A soil on rock above 50 cm fails the 50 cm of clay (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "No diagnostic horizons other than ..."
+    edition: [1988]
+    page: "pp. 42, 77-86"
+    version: "0.9.384"
+    reading: "The 16 horizons of chapter IV, read by their predicates: buried horizons and B horizons starting below 125 cm do not count (p. 42); one of the others undecided leaves the gate undecided. 'An A horizon' of the Gleysols is any A (mollic, umbric, ochric or fimic). The gypsic or calcic horizon that defines the Gypsisols or Calcisols is allowed in its own gate. Sulfidic material is a material, not a horizon (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Coarse textured materials of the Gleysols"
+    edition: [1988]
+    page: "pp. 78, 80"
+    version: "0.9.384"
+    reading: "The test of the Arenosols: coarser than sandy loam in every mineral layer to 100 cm (Q10 decided the texture; the depth is soilKey's reading). H and O layers are not read; a soil on rock above 100 cm is not coarse textured (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Andic properties to 35 cm"
+    edition: [1988]
+    page: "p. 79"
+    version: "0.9.384"
+    reading: "Every layer overlapping 0-35 cm has andic properties (window 0-35 cm, throughout) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Argic B permeated with gypsum or CaCO3; calcareous argic B"
+    edition: [1988]
+    page: "pp. 85-86"
+    version: "0.9.384"
+    reading: "Gypsisols: every layer of the argic B is calcareous or gypsiferous (5 % gypsum or more, p. 38). Calcisols: every layer of the argic B is calcareous (p. 35). One layer failing makes the argic B another horizon, and the gate fails (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Gleyic clause of the Plinthosols"
+    edition: [1988]
+    page: "p. 81"
+    version: "0.9.384"
+    reading: "Plinthite within 125 cm counts under an albic E or under a layer with stagnic properties starting within 50 cm (the layer above the plinthite), or where the soil shows gleyic properties within 100 cm (the clause read for the soil, not for a horizon above the plinthite) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "E and slowly permeable horizon of the Planosols"
+    edition: [1988]
+    page: "p. 82"
+    version: "0.9.384"
+    reading: "The E is a run of layers designated E or meeting the albic E; stagnic properties in any of its layers. The slowly permeable horizon is the layer right below it with an abrupt textural change (p. 34); or a fragipan (suffix x) under an abrupt or clear boundary of the E, flagged; or a measured ksat_mm_h below 4 under such a boundary, flagged (default 14; 4 mm/h is soilKey's number, the slowly permeable layer of soilKey's NZSC) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Chroma of the mollic A to 15 cm"
+    edition: [1988]
+    page: "pp. 83-84"
+    version: "0.9.384"
+    reading: "The moist chroma is read in every layer from the top of the A (the mineral soil surface, as the mollic A of 0.9.382 measures its thickness) to 15 cm below it, each layer on its own value; a mixed chroma that falls on both sides of 2 fits neither the Chernozems nor the Kastanozems and goes on in the key (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Uncoated grains of the Greyzems"
+    edition: [1988]
+    page: "p. 83"
+    version: "0.9.384"
+    reading: "bleached_ped_coatings in any layer starting within 125 cm (p. 42); without it, uncoated_grains_pct above 0, flagged; not recorded, absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Base saturation throughout the upper 125 cm"
+    edition: [1988]
+    page: "p. 84"
+    version: "0.9.384"
+    reading: "Every mineral layer overlapping 0-125 cm (rock closes the window); H and O layers are not read, flagged; a description that stops above 125 cm leaves the Phaeozems undecided (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Irregular upper boundary of the Podzoluvisols"
+    edition: [1988]
+    page: "p. 85"
+    version: "0.9.384"
+    reading: "Tonguing of the E into the argic B (tonguing_fao88(), p. 41), or iron nodules larger than 2 cm (nodule_size_max_cm) in the first layer of the argic B or the layer above, their enriched, redder exteriors taken as met, flagged. The boundary topography recorded is not asked besides: the two causes decide (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Clay distribution and boundaries of the Nitisols"
+    edition: [1988]
+    page: "p. 86"
+    version: "0.9.384"
+    reading: "No layer from the layer of maximum clay (at or below the top of the argic B) to 150 cm has less than 0.8 x the maximum (default 13); a description that stops above 150 cm (not on rock) leaves it undecided. The lower boundary of every layer from the A down to the argic B is gradual or diffuse; a boundary not recorded is absent, as decided for the boundaries on 2026-11-09, so the Nitisols then fail (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "CEC of the argic B (Alisols, Acrisols, Luvisols, Lixisols)"
+    edition: [1988]
+    page: "pp. 87-88"
+    version: "0.9.384"
+    reading: "The CEC (NH4OAc) per kg clay of the argic B is the thickness-weighted mean over the layers of the upper argic B starting within 125 cm, each clipped at 125 cm: one value for the horizon, so that the four groupings share the argic soils without a gap; a layer without CEC or clay leaves it undecided. The base saturation is read on the same layers: below 50 % in one of them (AL, AC), 50 % or more in all of them (LV, LX) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Names of the result when no grouping passes"
+    edition: [1988]
+    page: "pp. 75-89"
+    version: "0.9.384"
+    reading: "With every gate failed the name is '[Not classified in the FAO-Unesco Revised Legend (1988)]' and the warnings list the 28 codes (Q5); with no gate passed and some undecided, '[Undecided in the FAO-Unesco Revised Legend (1988): <candidates>, or not classified]'. The headings of the key are printed in capitals; the names are written as the text writes them elsewhere (Luvisols) (soilKey's reading, for Hugo to confirm, 2026-11-09)."

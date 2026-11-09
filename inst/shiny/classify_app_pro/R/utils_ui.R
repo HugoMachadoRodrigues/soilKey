@@ -141,6 +141,15 @@ pro_fixture_catalog <- function() {
               "Gelic Cambosols" = "M1", "Aquic Cambosols" = "M2", "Ustic Cambosols" = "M3",
               "Perudic Cambosols" = "M4", "Udic Cambosols" = "M5", "Anthric Primosols" = "N1",
               "Sandic Primosols" = "N2", "Alluvic Primosols" = "N3", "Orthic Primosols" = "N4"),
+  # the examples of the FAO-Unesco Revised Legend (1988), one per major soil
+  # grouping, labelled by the grouping (the name the result gives)
+  fao1988 = c("Histosols" = "HS", "Anthrosols" = "AT", "Leptosols" = "LP", "Vertisols" = "VR",
+              "Fluvisols" = "FL", "Solonchaks" = "SC", "Gleysols" = "GL", "Andosols" = "AN",
+              "Arenosols" = "AR", "Regosols" = "RG", "Podzols" = "PZ", "Plinthosols" = "PT",
+              "Ferralsols" = "FR", "Planosols" = "PL", "Solonetz" = "SN", "Greyzems" = "GR",
+              "Chernozems" = "CH", "Kastanozems" = "KS", "Phaeozems" = "PH", "Podzoluvisols" = "PD",
+              "Gypsisols" = "GY", "Calcisols" = "CL", "Nitisols" = "NT", "Alisols" = "AL",
+              "Acrisols" = "AC", "Luvisols" = "LV", "Lixisols" = "LX", "Cambisols" = "CM"),
   # the French examples of the Referentiel pedologique 2008, one per reference
   # implemented, labelled by the reference (the singular, as the name gives it)
   rp2008 = c("alocrisol typique" = "alocrisols_typiques",
