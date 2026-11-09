@@ -1,5 +1,66 @@
 # Changelog
 
+## soilKey 0.9.379 (2026-11-08)
+
+### Germany KA5: older German names and an offline benchmark on the ISIS profiles from Germany
+
+Eighth part of the German soil systematics of the KA5 (Bodenkundliche
+Kartieranleitung, 5th ed., 2005; system id `ka5`). A new file,
+`inst/rules/ka5/legacy_names.yaml`, maps older German soil names to KA5
+codes, for benchmarks only: the second names of the DBG systematics of
+1998 (Schwarzerde, Kalkschwarzerde, Braunauenboden, Auenregosol,
+Tiefumbruchboden and others), Haftnässepseudogley (the KA5’s own word
+for the Haftpseudogley, p. 313), the older names the KA5 prints beside
+its own (Rosterde, Borowina, Latosole, the Marschen subtypes such as
+Typische Kalkmarsch), and Chernozem. Every row names its source and page
+and resolves to a class, type or subtype of the key. A name the KA5
+prints under two types (Typische Seemarsch, Übergangsbrackmarsch) is
+read at the class M; Amphigley, printed for two classes (pp. 229, 245),
+is excluded. Three leading modifiers are read: Acker- (the variety v,
+p. 267), Typischer (the Norm subtype of a type name, pp. 191, 238,
+250-253; the KA5’s own exceptions, Typische Kleimarsch and Typische
+Flussmarsch, are rows of their own) and Primärer (dropped before a
+Pseudogley only). A name of exactly two type names joined by a hyphen is
+read with the older names put in; one the key does not print is the type
+of its last part (p. 191).
+
+A new internal matcher, `.ka5_match_label()`, reads a label against the
+names of the key (21 classes, 54 types with a name, 223 subtypes;
+soilKey’s bracketed codes left out) and the legacy file: exact names
+only, with case, umlaut spelling, the sharp s and the spacing around a
+hyphen alike. A name with brackets (but the modifier “(Acker)”), a
+slash, a comma, a full stop or a digit, two names joined by a space and
+names of three or more parts are not read. There is no generic tolerance
+of misspellings; a name not read is NA, never a guess. In a label of
+several parts the deepest part wins when the others are its ancestors,
+else their common ancestor. A new script, `inst/benchmarks/ka5_isis.R`,
+keys the 24 ISIS profiles from Germany with
+[`classify_ka5()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_ka5.md)
+and scores them at the class, the type and, where both sides give one,
+the subtype, with Wilson 95 % intervals. It downloads nothing: it reads
+the saved ISIS profiles from its first argument, `SOILKEY_ISIS_CACHE` or
+`tools::R_user_dir("soilKey", "cache")/isis/profiles.rds`, and stops if
+there is none. Its explicit variant list reads two names of the labels
+with no printed source, flagged: a soil like a Schwarzerde as the class
+T only (DE008), and a Braunerde of low base content as the type BB with
+the variety dy noted (DE011). ISIS data are not shipped.
+
+First run (soilKey 0.9.379): all 16 local names are read (one at class
+level, nine at type level, six at subtype level); 8 profiles have no
+local name and 6 have no horizons. Class 2 of 16 (12.5 %, 3.5-36.0),
+type 1 of 15 (6.7 %, 1.2-29.8), subtype 0 of the 1 profile where both
+sides give one. The low figures come from how far soilKey keys, not from
+disagreements: on the data route 13 of the 16 labelled profiles stop at
+the division, the class test of the Ah/C-Böden undecided in 11 of them
+and that of the Braunerden in 8, because the FAO-style E and Bt horizons
+are mostly left unread or read as Ah or lC. Only DE001 (Parabraunerde,
+keyed Normparabraunerde), DE005 (Nassgley, keyed Normgley: the class
+agrees) and DE004 reach a type. DE004 is a Gley-Podsol in its label and
+a Luvisol in ISIS’s WRB; soilKey keys it as a Normgley. The label is
+kept and scored as printed, a disagreement. Hugo’s decisions on the
+readings of this part are in `readings.yaml`. Every classification is
+unchanged (the fixtures of the other systems byte-identical).
+
 ## soilKey 0.9.378 (2026-11-08)
 
 ### China CST 2001: an offline benchmark on the ISIS profiles from China
