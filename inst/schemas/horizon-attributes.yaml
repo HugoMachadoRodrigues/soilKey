@@ -1649,7 +1649,7 @@ attributes:
   - name: ignition_redder
     section: "FAO-Unesco legend (1988 and 1974)"
     unit: "logical"
-    description: "The sample turns redder on ignition, a test for iron in the Carbic Podzols of 1988 (PZc, p. 81) and the Podzols of 1974 (p. 47). Not recorded: free iron (fe_dcb_pct) below 0.5 % of the fine earth is read as not turning redder, and 0.5 % or more as turning redder, flagged (the footnote of the 1974 Humic Podzols, p. 39; Hugo's decision Q23)."
+    description: "The sample turns redder on ignition, a test for iron in the Carbic Podzols of 1988 (PZc, p. 81) and the Podzols of 1974 (p. 47). Not recorded: free iron (fe_dcb_pct) below 0.5 % of the fine earth is read as not turning redder, flagged (the footnote of the 1974 Humic Podzols, p. 39; Hugo's decision Q23); 0.5 % or more leaves it undecided (Hugo, 2026-11-09)."
   - name: spodic_pellets
     section: "FAO-Unesco legend (1988 and 1974)"
     unit: "logical"
@@ -1674,7 +1674,7 @@ attributes:
   - name: nodule_size_max_cm
     section: "FAO-Unesco legend (1988 and 1974)"
     unit: "cm"
-    description: "Diameter of the largest iron nodules of the layer, cm. The ferric properties take nodules up to 2 cm (1988 p. 35; 1974 p. 28); the Podzoluvisols nodules larger than 2 cm (1988 p. 85; 1974 2 to 5 cm, p. 50). Not recorded: recorded nodules are accepted, flagged."
+    description: "Diameter of the largest iron nodules of the layer, cm. The ferric properties take nodules up to 2 cm (1988 p. 35; 1974 p. 28); the Podzoluvisols nodules larger than 2 cm (1988 p. 85; 1974: 2 to 5 cm, up to 30 cm in diameter, p. 50). Not recorded: recorded nodules are accepted, flagged."
     min: 0
   - name: dta_low_endotherm
     section: "FAO-Unesco legend (1988 and 1974)"

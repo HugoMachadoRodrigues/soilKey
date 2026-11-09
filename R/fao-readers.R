@@ -37,10 +37,11 @@
 # --- answers, three values ----------------------------------------------------------
 
 # A reader's answer: the value, the attributes that would decide it when it
-# is undecided, the fallbacks used and a note.
+# is (or, for a vector, one of its elements is) undecided, the fallbacks used
+# and a note.
 .fao_ans <- function(value = NA, missing = character(0), flags = character(0),
                      note = character(0), ...) {
-  undecided <- length(value) == 1L && is.atomic(value) && is.na(value)
+  undecided <- is.atomic(value) && (length(value) == 0L || anyNA(value))
   c(list(value = value,
          flags = unique(as.character(flags[!is.na(flags)])),
          missing = if (undecided) unique(as.character(missing)) else character(0),
@@ -95,29 +96,58 @@
   list(top = top - z, bottom = bot - z)
 }
 
-# Continuous rock by the designation (R, 2R, R/Cr; .WRB_ROCK_DESIGNATION) or
-# bedrock_pct of 90 or more. Plan section 4.4; the key's own test of
-# continuous hard rock (1988 p. 35) follows with the diagnostics.
+# Continuous rock (Hugo, 2026-11-09): an R designation (R, 2R, R/Cr;
+# .WRB_ROCK_DESIGNATION), or bedrock_pct of 90 or more together with a hard
+# rupture resistance recorded (hard, very hard, extremely hard or rigid: the
+# continuous hard rock that a spade cannot dig, 1988 p. 35). bedrock_pct
+# alone is not rock. The key's own test of continuous hard rock follows with
+# the diagnostics.
 .fao_is_rock <- function(h) {
   d <- trimws(.fao_col(h, "designation", "character"))
   r <- !is.na(d) & grepl(.WRB_ROCK_DESIGNATION, d)
   b <- .fao_col(h, "bedrock_pct")
-  r | (!is.na(b) & b >= 90)
+  rr <- tolower(trimws(.fao_col(h, "rupture_resistance", "character")))
+  hard <- !is.na(rr) & rr %in% c("hard", "very hard", "extremely hard", "rigid")
+  r | (!is.na(b) & b >= 90 & hard)
 }
 
 # The layers of a window [top, bottom) and whether the description covers
 # it: every layer that overlaps the window ("at least between 20 and 50 cm"
-# and "throughout" read on each of them; "in some part" on any); the
-# description covers the window when it reaches its base or ends on rock
-# above it (the rock is not soil and closes the window).
+# and "throughout" read on each of them; "in some part" on any). The first
+# rock layer closes the window: the soil is read down to its top, and the
+# window counts as described below it. The window is covered only when the
+# clipped thicknesses of its soil layers fill it from its top to its base
+# (or to the rock): a gap in the depths, a layer without depths or a
+# description that stops above the base leaves it uncovered (`gap`), and
+# layers that overlap fill more than the window (`overlap`).
 .fao_window <- function(h, top, bottom) {
   d <- .fao_depths(h)
   rock <- .fao_is_rock(h)
-  idx <- which(!is.na(d$top) & !is.na(d$bottom) & d$top < bottom & d$bottom > top & !rock)
-  deepest <- suppressWarnings(max(d$bottom, na.rm = TRUE))
-  on_rock <- any(rock & !is.na(d$top) & d$top < bottom)
-  covered <- is.finite(deepest) && (deepest >= bottom || on_rock)
-  list(layers = idx, covered = covered, on_rock = on_rock)
+  rtop <- d$top[rock & !is.na(d$top)]
+  rock_top <- if (length(rtop)) min(rtop) else Inf
+  on_rock <- rock_top < bottom
+  eff <- min(bottom, rock_top)
+  need <- max(eff - top, 0)
+  ok <- !is.na(d$top) & !is.na(d$bottom) & !rock
+  th <- rep(0, nrow(h))
+  th[ok] <- pmax(pmin(d$bottom[ok], eff) - pmax(d$top[ok], top), 0)
+  idx <- which(th > 0)
+  tot <- sum(th)
+  tol <- 1e-6
+  overlap <- tot > need + tol
+  gap <- tot < need - tol
+  list(layers = idx, thickness = th[idx], covered = !gap && !overlap,
+       gap = gap, overlap = overlap, on_rock = on_rock, soil_bottom = eff)
+}
+
+# What an uncovered window asks for.
+.fao_window_missing <- function(w) {
+  if (isTRUE(w$overlap)) {
+    return(list(missing = c("top_cm", "bottom_cm"), flags = "overlapping_layers",
+                note = "layers overlap in depth"))
+  }
+  list(missing = c("top_cm", "bottom_cm"), flags = character(0),
+       note = "the depths leave part of the window undescribed")
 }
 
 # A per-layer test read over a window: "throughout" (every layer that
@@ -133,38 +163,37 @@
   w <- .fao_window(h, top, bottom)
   if (!is.null(subset)) w$layers <- w$layers[as.logical(subset)[w$layers] %in% TRUE]
   v <- as.logical(test)[w$layers]
+  wm <- if (w$covered) list(missing = character(0), flags = character(0), note = character(0))
+        else .fao_window_missing(w)
   if (mode == "throughout") {
     if (any(v %in% FALSE)) return(.fao_ans(FALSE, layers = w$layers[v %in% FALSE]))
     if (!length(v) && w$covered) return(.fao_ans(FALSE, layers = integer(0),
                                                  note = "no layer in the window"))
     if (length(v) && all(v %in% TRUE) && w$covered) return(.fao_ans(TRUE, layers = w$layers))
-    .fao_ans(NA, missing = if (!w$covered) "bottom_cm" else character(0),
-             note = if (!w$covered) "the description ends above the window" else character(0),
-             layers = w$layers[is.na(v)])
   } else {
     if (any(v %in% TRUE)) return(.fao_ans(TRUE, layers = w$layers[v %in% TRUE]))
     if (all(v %in% FALSE) && w$covered) return(.fao_ans(FALSE, layers = integer(0)))
-    .fao_ans(NA, missing = if (!w$covered) "bottom_cm" else character(0),
-             note = if (!w$covered) "the description ends above the window" else character(0),
-             layers = w$layers[is.na(v)])
   }
+  .fao_ans(NA, missing = wm$missing, flags = wm$flags, note = wm$note,
+           layers = w$layers[is.na(v)])
 }
 
 # "Within X cm of the surface": a layer whose upper boundary is at or above
 # X cm passes (plan section 4.2, the same reading as soilKey's other
-# systems). FALSE when every such layer fails and the description reaches X
-# or ends on rock.
+# systems). FALSE when every such layer fails and the description covers
+# the profile, without gaps, to below X (a layer could start at X itself),
+# or to rock at or above X.
 .fao_within <- function(h, test, depth) {
   d <- .fao_depths(h)
   rock <- .fao_is_rock(h)
   idx <- which(!is.na(d$top) & d$top <= depth & !rock)
   v <- as.logical(test)[idx]
   if (any(v %in% TRUE)) return(.fao_ans(TRUE, layers = idx[v %in% TRUE]))
-  deepest <- suppressWarnings(max(d$bottom, na.rm = TRUE))
-  covered <- is.finite(deepest) && (deepest >= depth || any(rock & !is.na(d$top) & d$top <= depth))
-  if (all(v %in% FALSE) && covered) return(.fao_ans(FALSE, layers = integer(0)))
-  .fao_ans(NA, missing = if (!covered) "bottom_cm" else character(0),
-           note = if (!covered) "the description ends above the depth asked" else character(0),
+  w <- .fao_window(h, 0, depth + 1e-3)
+  if (all(v %in% FALSE) && w$covered) return(.fao_ans(FALSE, layers = integer(0)))
+  wm <- if (w$covered) list(missing = character(0), flags = character(0), note = character(0))
+        else .fao_window_missing(w)
+  .fao_ans(NA, missing = wm$missing, flags = wm$flags, note = wm$note,
            layers = idx[is.na(v)])
 }
 
@@ -173,29 +202,33 @@
 
 # The thickness-weighted mean of a column over [top, bottom), each layer
 # clipped to the window. Undecided when a layer of the window has no value or
-# the description stops above the base; where the soil ends on rock above
-# the base, `zero_below_rock = TRUE` counts the depth below the soil as zero
-# (strongly humic, 1988 p. 40: the same 100 cm average for a soil 50 to 100
-# cm deep) and `zero_below_rock = FALSE` averages the soil above the rock.
+# the depths do not fill the window (a gap, a layer without depths, a
+# description that stops above the base: missing top_cm / bottom_cm);
+# overlapping layers are flagged overlapping_layers and undecided. Where the
+# soil ends on rock above the base, `zero_below_rock = TRUE` counts the
+# depth below the soil as zero (strongly humic, 1988 p. 40: the same 100 cm
+# average for a soil 50 to 100 cm deep; for a soil shallower than
+# `zero_from_cm` too, flagged, Hugo's decision of 2026-11-09) and
+# `zero_below_rock = FALSE` averages the soil above the rock.
 .fao_weighted <- function(h, var, top, bottom, zero_below_rock = FALSE,
-                          values = NULL) {
+                          values = NULL, zero_from_cm = 50) {
   x <- if (is.null(values)) .fao_col(h, var) else as.numeric(values)
-  d <- .fao_depths(h)
   w <- .fao_window(h, top, bottom)
   if (!w$covered) {
-    return(.fao_ans(NA, missing = "bottom_cm",
-                    note = sprintf("the description ends above %s cm", bottom)))
+    wm <- .fao_window_missing(w)
+    return(.fao_ans(NA, missing = wm$missing, flags = wm$flags, note = wm$note))
   }
   i <- w$layers
   if (!length(i)) return(.fao_ans(NA, missing = var))
   if (anyNA(x[i])) return(.fao_ans(NA, missing = var, layers = i[is.na(x[i])]))
-  th <- pmin(d$bottom[i], bottom) - pmax(d$top[i], top)
-  th <- pmax(th, 0)
+  th <- w$thickness
   soil <- sum(th)
   if (soil <= 0) return(.fao_ans(NA, missing = var))
   if (w$on_rock && soil < bottom - top) {
     if (isTRUE(zero_below_rock)) {
+      shallow <- w$soil_bottom < zero_from_cm
       return(.fao_ans(sum(x[i] * th) / (bottom - top),
+                      flags = if (shallow) "zero_below_rock_soil_shallower_than_50cm" else character(0),
                       note = "the depth below the soil counts as zero", layers = i))
     }
     return(.fao_ans(sum(x[i] * th) / soil,
@@ -221,7 +254,7 @@
 # as a conversion. Vectorised over `oc`.
 .fao_om <- function(oc, edition = "1974", factor = 1.724) {
   edition <- .fao_edition(edition)
-  .fao_ans(as.numeric(oc) * factor, flags = "om_from_oc_x1.724",
+  .fao_ans(as.numeric(oc) * factor, flags = "om_from_oc_x1.724", missing = "oc_pct",
            note = sprintf("organic matter = organic carbon x %s (FAO %s)", factor, edition))
 }
 
@@ -327,7 +360,9 @@
   comp <- is.na(bs) & !is.na(bases) & !is.na(cec) & cec > 0
   bs[comp] <- pmin(100 * bases[comp] / cec[comp], 100)
   flag[comp] <- "bs_computed"
-  flag[other & !is.na(bs)] <- paste0("bs_by_cec_", m[other & !is.na(bs)])
+  o <- other & !is.na(bs)
+  flag[o] <- ifelse(is.na(flag[o]), paste0("bs_by_cec_", m[o]),
+                    paste(flag[o], paste0("bs_by_cec_", m[o]), sep = "; "))
   list(value = bs, flags = flag, missing = "bs_pct")
 }
 
@@ -383,18 +418,37 @@
 # The texture class of the upper 30 cm, from the thickness-weighted clay and
 # sand of 0-30 cm (1988 p. 107; 1974 p. 5): the class of the map symbol and,
 # in 1974, the class of the 125 / 90 / 75 cm rule (Q10).
+#
+# Under an organic surface (H or O horizons, or an undesignated layer of 20 %
+# organic carbon or more) the 30 cm are measured from the top of the first
+# mineral horizon, flagged texture_from_mineral_surface: the class of the map
+# symbol describes the mineral soil (Hugo's decision of 2026-11-09).
 .fao_texture_upper30 <- function(h, edition = "1988", depth = 30) {
+  if (nrow(h)) {
+    m <- .fao_master(h)
+    oc <- .fao_col(h, "oc_pct")
+    organic <- (!is.na(m) & grepl("^(O|H)", m)) | (is.na(m) & !is.na(oc) & oc >= 20)
+    first_min <- which(!organic)[1L]
+    flags <- character(0)
+    if (is.na(first_min)) return(.fao_ans(NA, missing = "clay_pct", note = "no mineral horizon"))
+    if (first_min > 1L) {
+      h <- h[seq.int(first_min, nrow(h)), , drop = FALSE]
+      flags <- "texture_from_mineral_surface"
+    }
+  } else flags <- character(0)
   p <- .fao_psd(h)
   cl <- .fao_weighted(h, "clay_pct", 0, depth, values = p$clay)
   sa <- .fao_weighted(h, "sand_pct", 0, depth, values = p$sand)
   cls <- .fao_texture_class_pct(cl$value, sa$value, edition)
   .fao_ans(cls, missing = c(cl$missing, sa$missing),
+           flags = c(flags, cl$flags, sa$flags),
            clay = cl$value, sand = sa$value)
 }
 
 # The depth of the 1974 rule "within 125 cm for coarse, 90 cm for medium, 75
 # cm for fine textures" (the calcic and gypsic horizons of C, K, H, L, B and
-# high salinity, 1974 pp. 29, 49-53), by the class of the upper 30 cm (Q10).
+# high salinity, 1974 pp. 29, 49-53; the Xerosols and Yermosols, footnote 1
+# of p. 50), by the class of the upper 30 cm (Q10).
 .fao_depth_by_texture <- function(h, depths = c(coarse = 125, medium = 90, fine = 75)) {
   t <- .fao_texture_upper30(h, "1974")
   if (is.na(t$value)) return(.fao_ans(NA, missing = t$missing))
@@ -445,11 +499,12 @@
 
 # The solum: the A, E and B horizons (AB, BA, EB, BE, BC, A/B, B/C ...; not
 # CB, C, R, H or O). Its base is the base of the deepest such horizon
-# (soilKey's reading, data-raw/fao_readings.yaml; the mollic A of both
-# editions compares its thickness with the solum, 1988 p. 26, 1974 p. 24).
-# Where some horizons have no designation, the top of the first C or R
-# horizon below the last A, E or B stands in, flagged. Where the description
-# ends in the solum, the value is a lower bound (`open = TRUE`).
+# (Hugo, 2026-11-08; data-raw/fao_readings.yaml; the mollic A of both
+# editions compares its thickness with the solum, 1988 p. 26, 1974 p. 24),
+# measured from the soil surface of Q9, so an O or H on top counts in it.
+# A horizon without a designation below the last A, E or B and above the
+# first C or R leaves it undecided. Where the description ends in the
+# solum, the value is a lower bound (`open = TRUE`).
 .fao_solum <- function(h) {
   d <- .fao_depths(h)
   m <- .fao_master(h)
@@ -459,18 +514,17 @@
   if (!any(sol)) return(.fao_ans(0, note = "no A, E or B horizon"))
   last <- max(which(sol))
   base <- d$bottom[last]
-  flags <- character(0)
-  if (anyNA(m)) {
-    below <- which(cr & seq_along(m) > last)
-    if (length(below)) {
-      base <- d$top[below[1L]]
-      flags <- "solum_from_top_of_c_or_r"
-    } else {
-      return(.fao_ans(NA, missing = "designation",
-                      note = "horizons without a designation below the last A, E or B"))
-    }
+  # An undesignated layer above the last A, E or B does not matter; one
+  # between it and the first C or R below it (or below it with no C or R
+  # after) leaves the base undecided (Hugo's decision of 2026-11-09).
+  first_cr <- which(cr & seq_along(m) > last)[1L]
+  stop_at <- if (is.na(first_cr)) nrow(h) else first_cr - 1L
+  if (stop_at > last && anyNA(m[seq.int(last + 1L, stop_at)])) {
+    return(.fao_ans(NA, missing = "designation",
+                    note = "a horizon without a designation below the last A, E or B"))
   }
-  open <- last == nrow(h) && !any(cr)
+  flags <- character(0)
+  open <- last == nrow(h)
   .fao_ans(base, flags = flags, open = open,
            note = if (open) "the description ends in the solum: a lower bound" else character(0))
 }
@@ -491,7 +545,7 @@
   out <- rep(FALSE, n)
   d <- .fao_depths(h)
   desg <- .desg_master(.fao_col(h, "designation", "character"))
-  b <- !is.na(desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z]*b", desg)
+  b <- !is.na(desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*b", desg)
   if (!any(b)) return(.fao_ans(out, buried_from = NA_integer_))
   first <- min(which(b))
   mantle <- d$top[first]
@@ -636,23 +690,26 @@
 
 # Turns redder on ignition (1988 PZc, p. 81; 74 Podzols, p. 47):
 # ignition_redder; else free iron (fe_dcb_pct) below 0.5 % of the fine earth
-# is FALSE and 0.5 % or more TRUE, flagged (the footnote of the 1974 Humic
-# Podzols, 74 p. 39; Q23); else undecided.
+# is FALSE, flagged (the footnote of the 1974 Humic Podzols, 74 p. 39; Q23);
+# 0.5 % or more, or no iron recorded, undecided.
 .fao_ignition_redder <- function(h, fe_min_pct = 0.5) {
   v <- .fao_col(h, "ignition_redder", "logical")
   fe <- .fao_col(h, "fe_dcb_pct")
   flag <- rep(NA_character_, nrow(h))
   use_fe <- is.na(v) & !is.na(fe)
-  v[use_fe] <- fe[use_fe] >= fe_min_pct
-  flag[use_fe] <- "free_iron_for_ignition"
+  # Fe below the limit: does not turn redder; at or above it: undecided (the
+  # footnote gives one direction only; Hugo's decision of 2026-11-09)
+  low <- use_fe & fe < fe_min_pct
+  v[low] <- FALSE
+  flag[low] <- "free_iron_for_ignition"
   list(value = v, flags = flag, missing = c("ignition_redder", "fe_dcb_pct"))
 }
 
 # Rock structure, % by volume (the cambic B, 1988 p. 30, 74 p. 26; the
 # ferralic B, p. 31; the oxic B, 74 p. 27): rock_structure_pct; else
 # saprolite_pct, flagged; else a Cr or BC horizon has some rock structure of
-# unknown amount (NA, flagged); else none (a field observation not recorded
-# is absent), with a flag.
+# unknown amount (NA, flagged); a rock layer (.fao_is_rock()) is 100; else
+# none (a field observation not recorded is absent), with a flag.
 .fao_rock_structure <- function(h) {
   v <- .fao_col(h, "rock_structure_pct")
   sap <- .fao_col(h, "saprolite_pct")
@@ -662,6 +719,9 @@
   use_sap <- is.na(v) & !is.na(sap)
   v[use_sap] <- sap[use_sap]; flag[use_sap] <- "saprolite_for_rock_structure"
   crbc <- is.na(v) & !is.na(d) & (grepl("^Cr", d) | grepl("^(BC|B/C)", m))
+  rk <- .fao_is_rock(h) & is.na(v)
+  v[rk] <- 100; flag[rk] <- NA_character_
+  crbc <- crbc & !rk
   flag[crbc] <- "rock_structure_from_designation"
   none <- is.na(v) & !crbc
   v[none] <- 0; flag[none] <- "rock_structure_not_recorded_absent"

@@ -80,7 +80,7 @@ test_that("edition, depths, windows and 'within' read the plan's conventions", {
   # a window below the description is undecided, a window below rock fails
   short <- .fao_h(top_cm = c(0, 20), bottom_cm = c(20, 40), designation = c("A", "Bw"))
   r <- soilKey:::.fao_in_window(short, c(TRUE, TRUE), 20, 50, "throughout")
-  expect_true(is.na(r$value)); expect_identical(r$missing, "bottom_cm")
+  expect_true(is.na(r$value)); expect_identical(r$missing, c("top_cm", "bottom_cm"))
   rocky <- .fao_h(top_cm = c(0, 15), bottom_cm = c(15, 40), designation = c("A", "R"))
   expect_false(soilKey:::.fao_in_window(rocky, c(TRUE, NA), 20, 50, "throughout")$value)
   # subset: throughout the B to 125 cm
@@ -153,6 +153,10 @@ test_that("organic matter, pH, CEC, ECEC and base saturation by method", {
                                  k_cmol = c(0, 0, 0, 0), na_cmol = c(0, 0, 0, 0)))
   expect_equal(bs$value, c(50, 20, 80, NA))
   expect_identical(bs$flags, c("bs_computed", "bs_by_cec_nh4cl", NA, NA))
+  # defect 8: both flags when the computed value rests on another CEC method
+  bs2 <- soilKey:::.fao_bs(.fao_h(bs_pct = NA_real_, cec_cmol = 10, cec_method = "kcl",
+                                  ca_cmol = 4, mg_cmol = 1, k_cmol = 0, na_cmol = 0))
+  expect_identical(bs2$flags, "bs_computed; bs_by_cec_kcl")
 })
 
 test_that("the texture classes of both editions and the texture groups", {
@@ -204,11 +208,21 @@ test_that("the solum and buried horizons", {
   q <- .fao_h(top_cm = c(0, 10, 40, 70), bottom_cm = c(10, 40, 70, 100),
               designation = c("Oe", "A", "AC", "CB"))
   expect_identical(soilKey:::.fao_solum(q)$value, 70)
-  # undesignated layers: the top of the first C or R below the last A, E or B
-  r <- .fao_h(top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 90),
-              designation = c("A", NA, "C"))
+  # decision E (2026-11-09): an undesignated layer between the last A, E or B
+  # and the first C is undecided; one above the last B does not matter
+  r <- .fao_h(top_cm = c(0, 25, 60, 80), bottom_cm = c(25, 60, 80, 100),
+              designation = c("A", "Bw", NA, "C"))
   s3 <- soilKey:::.fao_solum(r)
-  expect_identical(s3$value, 60); expect_identical(s3$flags, "solum_from_top_of_c_or_r")
+  expect_true(is.na(s3$value)); expect_identical(s3$missing, "designation")
+  r2 <- .fao_h(top_cm = c(0, 25, 60, 80), bottom_cm = c(25, 60, 80, 100),
+               designation = c("A", NA, "Bw", "C"))
+  expect_identical(soilKey:::.fao_solum(r2)$value, 80)
+  r3 <- .fao_h(top_cm = c(0, 25, 60, 80), bottom_cm = c(25, 60, 80, 100),
+               designation = c("A", "Bw", "C", NA))
+  expect_identical(soilKey:::.fao_solum(r3)$value, 60)
+  # the Q9 datum: an O on top counts in the depth of the solum
+  o <- .fao_h(top_cm = c(0, 10, 30), bottom_cm = c(10, 30, 60), designation = c("Oe", "A", "C"))
+  expect_identical(soilKey:::.fao_solum(o)$value, 30)
   expect_true(is.na(soilKey:::.fao_solum(.fao_h(top_cm = 0, bottom_cm = 20))$value))
   # buried by 50 cm or more of new material (1988 p. 42; 74 p. 32)
   b <- .fao_h(top_cm = c(0, 30, 55, 80), bottom_cm = c(30, 55, 80, 120),
@@ -317,13 +331,17 @@ test_that("the new attributes are read with their fallbacks", {
                                "thixotropic_index_for_smeary",
                                "smeary_consistence_not_recorded_absent"))
   ig <- soilKey:::.fao_ignition_redder(h)
-  expect_identical(ig$value, c(FALSE, TRUE, TRUE, NA))
-  expect_identical(ig$flags, c("free_iron_for_ignition", NA, "free_iron_for_ignition", NA))
+  # decision C (2026-11-09): Fe >= 0.5 % leaves the test undecided
+  expect_identical(ig$value, c(FALSE, TRUE, NA, NA))
+  expect_identical(ig$flags, c("free_iron_for_ignition", NA, NA, NA))
   rs <- soilKey:::.fao_rock_structure(h)
   expect_identical(rs$value, c(0, 10, NA, NA))
   expect_identical(rs$flags, c("rock_structure_not_recorded_absent", NA,
                                "rock_structure_from_designation",
                                "rock_structure_from_designation"))
+  # defect 9: a rock layer is 100 % rock structure, not absent
+  rr <- .fao_h(top_cm = c(0, 30), bottom_cm = c(30, 60), designation = c("A", "R"))
+  expect_identical(soilKey:::.fao_rock_structure(rr)$value, c(0, 100))
   h$saprolite_pct[4] <- 70
   expect_identical(soilKey:::.fao_rock_structure(h)$value[4], 70)
   pa <- soilKey:::.fao_palygorskite(h)
@@ -367,6 +385,91 @@ test_that("the readers' defaults are the numbers of the threshold tables", {
   expect_true(length(r) >= 10L)
   expect_true(all(vapply(r, function(x) all(c("topic", "edition", "page", "reading") %in% names(x)),
                          logical(1))))
-  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-08\\)\\.$",
+  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-0[89]\\)\\.$",
                         vapply(r, `[[`, "", "reading"))))
+})
+
+test_that("the review of 2026-11-09: gaps, overlaps, coverage and vector answers", {
+  skip_on_cran()
+  # defect 1: a gap in the depths (A 0-20, C 40-80) leaves the window open
+  g <- .fao_h(top_cm = c(0, 40), bottom_cm = c(20, 80), designation = c("A", "C"),
+              clay_pct = c(10, 30))
+  r <- soilKey:::.fao_weighted(g, "clay_pct", 0, 60)
+  expect_true(is.na(r$value)); expect_identical(r$missing, c("top_cm", "bottom_cm"))
+  expect_true(is.na(soilKey:::.fao_in_window(g, c(TRUE, TRUE), 0, 60)$value))
+  expect_true(is.na(soilKey:::.fao_within(g, c(FALSE, FALSE), 50)$value))
+  expect_false(soilKey:::.fao_in_window(g, c(TRUE, FALSE), 0, 60)$value)
+  expect_equal(soilKey:::.fao_weighted(g, "clay_pct", 0, 20)$value, 10)
+  # a layer without depths
+  n <- .fao_h(top_cm = c(0, NA, 40), bottom_cm = c(20, 40, 80),
+              designation = c("A", "Bw", "C"), clay_pct = c(10, 20, 30))
+  expect_true(is.na(soilKey:::.fao_weighted(n, "clay_pct", 0, 60)$value))
+  # defect 10: overlapping layers are flagged and undecided
+  o <- .fao_h(top_cm = c(0, 10), bottom_cm = c(30, 50), designation = c("A", "B"),
+              clay_pct = c(10, 30))
+  ro <- soilKey:::.fao_weighted(o, "clay_pct", 0, 30)
+  expect_true(is.na(ro$value)); expect_identical(ro$flags, "overlapping_layers")
+  # defect 7: 'within 40' fails only when the description goes below 40,
+  # or reaches rock at 40
+  s40 <- .fao_h(top_cm = c(0, 20), bottom_cm = c(20, 40), designation = c("A", "B"))
+  expect_true(is.na(soilKey:::.fao_within(s40, c(FALSE, FALSE), 40)$value))
+  expect_false(soilKey:::.fao_within(s40, c(FALSE, FALSE), 39)$value)
+  r40 <- .fao_h(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 60), designation = c("A", "B", "R"))
+  expect_false(soilKey:::.fao_within(r40, c(FALSE, FALSE, NA), 40)$value)
+  # defect 2: a vector answer with NA keeps what would decide it
+  expect_identical(soilKey:::.fao_om(c(1, NA))$missing, "oc_pct")
+  t <- .fao_h(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100),
+              designation = c("A", "BA", "Bt"), clay_pct = c(10, NA, 20))
+  expect_identical(soilKey:::.fao_clay_increase(t)$missing, "clay_pct")
+  b40 <- .fao_h(top_cm = c(0, 40), bottom_cm = c(40, 70), designation = c("A", "Ab"))
+  expect_identical(soilKey:::.fao_buried(b40, "1988")$missing, "andic properties of the mantle")
+  expect_identical(soilKey:::.fao_om(1)$missing, character(0))
+  # defect 6: buried suffixes after figures (Bt2b, Ap2b)
+  b <- .fao_h(top_cm = c(0, 50, 70), bottom_cm = c(50, 70, 100),
+              designation = c("C", "Ap2b", "Bt2b"))
+  expect_identical(soilKey:::.fao_buried(b)$value, c(FALSE, TRUE, TRUE))
+})
+
+test_that("the decisions of 2026-11-09: rock, strongly humic, organic surface", {
+  skip_on_cran()
+  # D: bedrock_pct >= 90 is rock only with a hard rupture resistance
+  h <- .fao_h(top_cm = c(0, 30), bottom_cm = c(30, 60), designation = c("A", "C"),
+              bedrock_pct = c(NA, 95), rupture_resistance = c(NA, "soft"))
+  expect_identical(soilKey:::.fao_is_rock(h), c(FALSE, FALSE))
+  h$rupture_resistance[2] <- "very hard"
+  expect_identical(soilKey:::.fao_is_rock(h), c(FALSE, TRUE))
+  h$bedrock_pct[2] <- 80
+  expect_identical(soilKey:::.fao_is_rock(h), c(FALSE, FALSE))
+  expect_identical(soilKey:::.fao_is_rock(.fao_h(designation = c("A", "2R", "R/Cr"))),
+                   c(FALSE, TRUE, TRUE))
+  # B: strongly humic in a soil shallower than 50 cm: divided by 100, flagged
+  sh <- .fao_h(top_cm = c(0, 30), bottom_cm = c(30, 40), designation = c("A", "R"),
+               oc_pct = c(3, NA))
+  r <- soilKey:::.fao_weighted(sh, "oc_pct", 0, 100, zero_below_rock = TRUE)
+  expect_equal(r$value, 0.9)
+  expect_identical(r$flags, "zero_below_rock_soil_shallower_than_50cm")
+  deep <- .fao_h(top_cm = c(0, 60), bottom_cm = c(60, 80), designation = c("A", "R"),
+                 oc_pct = c(2, NA))
+  r2 <- soilKey:::.fao_weighted(deep, "oc_pct", 0, 100, zero_below_rock = TRUE)
+  expect_equal(r2$value, 1.2); expect_identical(r2$flags, character(0))
+  # A: the upper 30 cm under an organic surface start at the first mineral horizon
+  org <- .fao_h(top_cm = c(0, 20, 50), bottom_cm = c(20, 50, 90),
+                designation = c("Oa", "A", "Bw"), oc_pct = c(30, 2, 1),
+                clay_pct = c(NA, 10, 20), silt_pct = c(NA, 15, 30), sand_pct = c(NA, 75, 50))
+  u <- soilKey:::.fao_texture_upper30(org, "1988")
+  # the A alone (20-50 cm), not the O and the top of the A
+  expect_equal(u$clay, 10); expect_identical(u$value, "coarse")
+  expect_true("texture_from_mineral_surface" %in% u$flags)
+  expect_identical(soilKey:::.fao_texture_upper30(org[2:3], "1988")$flags, character(0))
+  und <- .fao_h(top_cm = c(0, 20), bottom_cm = c(20, 60), oc_pct = c(25, 1),
+                clay_pct = c(NA, 10), sand_pct = c(NA, 75))
+  expect_identical(soilKey:::.fao_texture_upper30(und, "1988")$value, "coarse")
+  # the 1974 D nodules: a diameter of 2 to 30 cm
+  root <- testthat::test_path("..", "..", "data-raw")
+  skip_if_not(file.exists(file.path(root, "fao_thresholds_1974.yaml")))
+  t74 <- yaml::read_yaml(file.path(root, "fao_thresholds_1974.yaml"))
+  expect_identical(unlist(t74$key$D$nodule_diameter_cm), c(2L, 30L))
+  expect_null(t74$key$D$nodules_within_cm)
+  expect_identical(t74$key$X$depth_by_class_cm, t74$key$C$depth_by_class_cm)
+  expect_identical(t74$general$two_b_horizons_within_cm$page, 32L)
 })

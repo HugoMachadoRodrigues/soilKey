@@ -24,7 +24,7 @@ general:
   mineral_soil_h_cumulative_cm:  {value: 80, page: 32}
   lithosols_rock_within_cm:      {value: 10, page: 32, source: "every definition but the Lithosols implies no continuous hard rock within 10 cm"}
   diagnostic_upper_limit_cm:     {value: 125, page: "43-53", source: "soilKey: the 1974 text has no general rule; 125 cm, the window of the whole key, where a depth is not written (Hugo's decision Q10)"}
-  two_b_horizons_within_cm:      {value: 125, page: 32, source: "soilKey reads the upper B, as 1988 p. 42 (default 11)"}
+  two_b_horizons_within_cm:      {value: 125, page: 32, source: "of two diagnostic B horizons within 125 cm the upper one decides, as printed (74 p. 32; 1988 p. 42)"}
   depth_datum: {value: "soil surface", page: "32, 43", source: "soilKey: the top of the first recorded horizon, H and O included (Q9)"}
 
 units:
@@ -307,9 +307,9 @@ key:
   M: {page: 48, chroma_moist_max: 2, chroma_depth_min_cm: 15}
   C: {page: 49, chroma_moist_max: 2, chroma_depth_min_cm: 15, depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}}
   K: {page: 49, chroma_moist_gt: 2, chroma_depth_min_cm: 15, depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}}
-  D: {page: 50, nodules_cm: [2, 5], nodules_within_cm: 30}
-  X: {page: 50, permafrost_not_within_cm: 200}
-  Y: {page: 50, permafrost_not_within_cm: 200}
+  D: {page: 50, nodule_diameter_cm: [2, 30], nodule_diameter_typical_cm: [2, 5], source: "nodules of 2 to 5 cm, up to 30 cm in diameter"}
+  X: {page: 50, permafrost_not_within_cm: 200, depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}, depth_page: "50, footnote 1"}
+  Y: {page: 50, permafrost_not_within_cm: 200, depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}, depth_page: "50, footnote 1"}
   N: {page: 51, clay_decrease_max_fraction: 0.2, depth_cm: 150, plinthite_not_within_cm: 125}
   A: {page: 51, bs_lt_pct: 50, within_cm: 125}
   B: {page: "52-53", umbric_gt_cm: 25}
