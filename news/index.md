@@ -1,5 +1,92 @@
 # Changelog
 
+## soilKey 0.9.382 (2026-11-09)
+
+### FAO-Unesco legend: the diagnostic horizons of 1988
+
+Second part of the FAO-Unesco soil legend (the Revised Legend of 1988,
+read in the ISRIC reprint of 1997). A new file,
+`R/diagnostics-fao88-horizons.R`, reads the 16 diagnostic horizons of
+chapter IV (pp. 25-33) as internal predicates, each returning a
+`DiagnosticResult` that passes, fails or stays undecided, with the
+layers, what would decide it, the fallbacks used and any stand-in:
+`histic_h_fao88()` (with `base = "eutric"` or `"dystric"`),
+`mollic_a_fao88()`, `fimic_a_fao88()`, `umbric_a_fao88()`,
+`ochric_a_fao88()`, `argic_b_fao88()`, `natric_b_fao88()`,
+`cambic_b_fao88()`, `spodic_b_fao88()`, `ferralic_b_fao88()`,
+`calcic_fao88()`, `petrocalcic_fao88()`, `gypsic_fao88()`,
+`petrogypsic_fao88()`, `sulfuric_fao88()` and `albic_e_fao88()`. They
+build on the readers of 0.9.381: depths from the soil surface, H and O
+included; horizons buried under 50 cm of new material are not
+diagnostic; the subsurface horizons have their upper limit within 125 cm
+(p. 42, argument `max_top_cm`). Nothing is registered or classified yet.
+
+The numbers are the printed ones. The histic H is more than 20 cm of
+organic soil material within 40 cm, or a thin surface layer or a plough
+layer that, mixed to 25 cm, has at least 8 + 8 x clay / 60 % organic
+carbon. The mollic and umbric A mix their upper 18 cm and ask a moist
+chroma and value below 3.5, a dry value below 5.5, a value one unit
+darker than the C (waived when strongly humic), 0.6 % organic carbon
+(2.5 % with more than 40 % lime), a base saturation of 50 % or more (the
+umbric A less), and a thickness of 10 cm on rock or a cemented pan, else
+18 cm and a third of a solum under 75 cm, or more than 25 cm. The argic
+B asks sandy loam or finer with 8 % clay, the increase of 3 points, a
+ratio of 1.2 or 8 points (breaks at 15 and 40 %) within 30 cm with clay
+skins and 15 cm without, one tenth of the overlying horizons and 7.5 cm
+(lamellae 15 cm), and without clay skins a coarser horizon of 18 cm
+above it (5 cm over an abrupt transition); it is not ferralic and not
+natric. The natric B adds columnar or prismatic structure and more than
+15 % exchangeable sodium in its upper 40 cm. The ferralic B asks a CEC
+of 16 or an ECEC of 12 cmol(+)/kg clay or less, 30 cm, under 10 %
+weatherable minerals and water-dispersible clay, a silt/clay ratio of
+0.2 or less, no andic properties and under 5 % rock structure. The
+spodic B reads the pyrophosphate chemistry of Soil Taxonomy 1975 with
+its index of accumulation of 65. The calcic, gypsic and sulfuric
+horizons ask 15 cm; the petrocalcic and petrogypsic horizons have no
+minimum thickness.
+
+Hugo’s decisions of 2026-11-08 are applied: a recorded Bt designation
+counts as the clay-skin observation, flagged, and “few” clay films are 1
+% (Q13); the citric P2O5 of the mollic and umbric A decides when
+measured, else the anthropic layers it targets do, absent if not
+recorded (Q14); the eutric and dystric histic H by pH (1:5) 5.5, and
+organic soil materials undecided between the saturated limit and 20 %
+unless the drainage is recorded (Q15); the ferralic B asks 8 % clay and
+reads the 20-200 um weatherable minerals, flagged (Q16); without the
+1975 spodic chemistry, `spodic_horizon_usda()` and then the WRB
+[`spodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/spodic.md)
+stand in, flagged (Q17); the sulfuric horizon does not ask for jarosite
+(Q18). soilKey’s own readings of this part (among them: the mixing of
+the mollic A, the layers that can hold a B, carbonate and gypsum read as
+absent from the pH, the HCl reaction or the ECe when not measured,
+volcanic glass read as none unless volcanic material is recorded, and
+the albic E read on its moist colour when no dry colour is recorded) are
+in `data-raw/fao_readings.yaml` for his word. Every classification is
+unchanged (the fixtures of the other systems byte-identical).
+
+Decided by Hugo on the review (2026-11-09). soilKey’s readings of this
+part are accepted, with these changes. The spodic B is ruled out without
+its chemistry only by free carbonate or a water pH of 7 or more; a
+designation without h or s no longer rules it out, the older suffix ir
+counts as an illuvial sign, and the stand-ins now decide only the
+chemistry and are recorded only when they decide. An albic E without a
+dry colour takes the moist value + 1 as its dry value, flagged; an
+undesignated layer is read as albic only below a surface layer and above
+a B or C. Andic properties left undecided are absent, flagged, unless
+volcanic material is recorded. The thickness of the mollic A and its
+solum are both measured from the mineral surface. Moderately well
+drained leaves the saturation of organic materials undecided. The review
+also fixed these defects: an A layer straddling 18 cm is now read on its
+own values; the lime waiver of the mollic A is an alternative to the
+printed colour, with 2.5 % organic carbon on its branch only, and
+undecided when CaCO3 is not known; a plough layer may be an Hp or Op;
+lamellae count only when recorded above 0; argic item 6 is undecided
+when a clay on the way up is missing; an A no more than a third of an
+open solum fails; “closer to 2 than to 3” is a chroma below 2.5; the
+petrocalcic and petrogypsic horizons read their cementing agent (km, ym)
+from the designation; and the Bt of an E&Bt counts as a clay-skin
+observation.
+
 ## soilKey 0.9.381 (2026-11-08)
 
 ### FAO-Unesco legend: the attributes and the shared readers
