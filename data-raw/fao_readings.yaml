@@ -117,12 +117,12 @@ readings:
   - topic: "Palygorskite named in the clay mineralogy"
     edition: [1988]
     page: "p. 70"
-    reading: "Without palygorskite_pct, a clay_mineralogy naming palygorskite (or attapulgite), the dominant clay mineral, is read as 100 % of the clay, flagged; not named, absent (.fao_palygorskite()) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "Without palygorskite_pct, a clay_mineralogy naming palygorskite (or attapulgite), the dominant clay mineral, is read as 100 % of the clay, flagged; not named, absent (.fao_palygorskite()) (Hugo, 2026-11-09)."
   - topic: "Hue families beyond Y and RP"
     edition: [1988, 1974]
     page: "pp. 32, 35; 74 pp. 27-28"
-    reading: "On the hue rank from red to blue, the GY, G, BG, B and PB hues count as '2.5Y or more' (the jarosite mottles), and RP hues as redder than 7.5YR (the ferric mottles) (.fao_hue_cmp()) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "On the hue rank from red to blue, the GY, G, BG, B and PB hues count as '2.5Y or more' (the jarosite mottles), and RP hues as redder than 7.5YR (the ferric mottles) (.fao_hue_cmp()) (Hugo, 2026-11-09)."
   - topic: "Texture groups of tonguing"
     edition: [1988, 1974]
     page: "p. 41; 74 p. 31"
-    reading: "One grouping serves both editions: fine (clay, silty clay, sandy clay), moderately fine (sandy clay loam, clay loam, silty clay loam) and medium or coarser (silt loam, loam, sandy loam and coarser, and silt, which neither text names). The very fine sandy loam that 1974 adds falls in the sandy loams, as soilKey records no very fine sand (.fao_tonguing_texture()) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "One grouping serves both editions: fine (clay, silty clay, sandy clay), moderately fine (sandy clay loam, clay loam, silty clay loam) and medium or coarser (silt loam, loam, sandy loam and coarser, and silt, which neither text names). The very fine sandy loam that 1974 adds falls in the sandy loams, as soilKey records no very fine sand (.fao_tonguing_texture()) (Hugo, 2026-11-09)."
