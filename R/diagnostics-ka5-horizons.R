@@ -568,8 +568,9 @@
     # (with the Ah minimum: Ah-Bv), not an Ah
     if (!first) {
       bb <- vapply(list(.ka5_t_Bsp(x, i), .ka5_t_Bt(x, i), .ka5_t_Bv(x, i)), function(r) r$passed, NA)
-      # an FAO A (not AB, BA, AC ...) is no B horizon (v0.9.380)
-      if (.ka5_fao_excludes(x, i, "Bv") && .ka5_fao_excludes(x, i, "Bt") && .ka5_fao_excludes(x, i, "Bs")) bb[] <- FALSE
+      # an FAO A (not AB, BA, AC ...) answers the open question: no B
+      # horizon; a B measured on the row stays (a conflict, H3; v0.9.380)
+      if (.ka5_fao_excludes(x, i, "Bv") && .ka5_fao_excludes(x, i, "Bt") && .ka5_fao_excludes(x, i, "Bs")) bb[is.na(bb)] <- FALSE
       if (any(bb %in% TRUE))
         return(.ka5_r(FALSE, code = "Ah", note = c(am$note, "a B horizon with the Ah humus minimum, not an Ah")))
       if (any(is.na(bb)))
@@ -680,7 +681,7 @@
       # the FAO t states clay coatings, lamellae or bridges (WRB 2022 Annex
       # 3, p. 227): the field observation of the Bt where none is recorded
       # (v0.9.380)
-      coat <- TRUE; cnote <- "no clay coatings recorded: the FAO t states them"
+      coat <- TRUE; cnote <- "no clay coatings recorded: the FAO t states them present (not their strength, p. 97); the clay difference decides"
     } else if (is.na(coat)) {
       w <- .ka5_stand_in(x, i, "argic", "the clay coatings")
       # a field observation not recorded is absent; soilKey's argic horizon
@@ -691,10 +692,12 @@
     bands <- .ka5_num(x, i, "bands_area_pct")
     # a sub-horizon of an FAO Bt (Bt2 under Bt1) has the clay difference of
     # the run's first row against the eluvial horizon above (v0.9.380)
+    # (its own clay against the eluvial horizon above the run: the
+    # enrichment runs through the whole Bt, p. 97; D4)
     top <- .ka5_fao_run_top(x, i)
     pr <- .ka5_prev(x, top)
-    cd <- .ka5_clay_diff(x, pr, top, "bt")
-    if (top != i) cd$note <- c(cd$note, sprintf("a sub-horizon of the FAO %s: the clay difference at its top", .ka5_fao_at(x, i)$stem))
+    cd <- .ka5_clay_diff(x, pr, i, "bt")
+    if (top != i) cd$note <- c(cd$note, sprintf("a sub-horizon of the FAO %s: its clay against the eluvial horizon above the run", .ka5_fao_at(x, i)$stem))
     p <- .kidpr_and(coat, cd$passed, g$passed)
     # v0.9.364 (Hugo, 2026-11-06): with no clay coatings recorded, a B with
     # the signs of a podzolic illuvial horizon (a Bh or Bs, or humus or oxalate
@@ -772,11 +775,11 @@
     if (isFALSE(g$passed)) return(.ka5_r(FALSE, code = "Bv", note = g$note))
     # a sub-horizon of an FAO Bw (Bw1 over Bw2) is compared with the horizon
     # under the run (v0.9.380)
-    nx <- .ka5_next(x, .ka5_fao_run_bottom(x, i))
     # the FAO w states the change of colour (or structure) against the
     # material below (WRB 2022 Annex 3, p. 227): the browning of the Bv
     # where the colours do not decide it (v0.9.380)
     fao_w <- .ka5_fao_has(x, i, "w", "B")
+    nx <- if (fao_w) .ka5_next(x, .ka5_fao_run_bottom(x, i)) else .ka5_next(x, i)
     if (fao_w && (is.na(nx) || !.ka5_same_layer(x, i, nx)))
       return(.ka5_r(g$passed, code = "Bv", missing = g$missing,
                     note = c("no horizon below in the same layer: the browning stated by the FAO w", g$note)))
@@ -1093,13 +1096,19 @@
     pre_na <- as.character(cc[[1L]]$value$prefix_options %||% character(0))
   all_tags <- unique(c(tags, unlist(lapply(Filter(function(r) isTRUE(r$passed), all_r), `[[`, "tag"))))
   r <- list(code = code, carrying = if (!is.null(rd)) rd$code else NA_character_, row = rd, passed = passed,
-            candidates = setdiff(cands, code), missing = unique(missing), notes = unique(notes[nzchar(notes)]),
-            stand_ins = intersect(c(tags, if (!is.na(code)) dec$tag), .KA5_STAND_INS),
+            candidates = as.character(setdiff(cands, code)), missing = as.character(unique(missing)), notes = unique(notes[nzchar(notes)]),
+            stand_ins = as.character(intersect(c(tags, if (!is.na(code)) dec$tag), .KA5_STAND_INS)),
             tags = all_tags, prefixes_na = if (length(pre_na) > 1L) pre_na else character(0), answers = ans,
             fao = if (!is.null(fz)) fz$kind else NA_character_)
   # a stand-in, or the F kind read from soilKey's colour cuts (R3), lowers the
   # grade
   r$lower_grade <- length(r$stand_ins) > 0L || (!is.na(code) && "f_colour_cut" %in% c(tags, dec$tag))
+  # a row the FAO letter decides (the data leave only its translation open)
+  # has a lower grade, which the key reports (H2, D13)
+  if (identical(r$fao, "fao")) {
+    r$lower_grade <- TRUE
+    r$tags <- unique(c(r$tags, "fao_designation"))
+  }
   assign(key, r, envir = x$cache)
   r
 }

@@ -39,7 +39,9 @@
 # above a level counts as a disagreement at that level (the type, the class).
 # Agreement carries a Wilson 95 % interval. The class soilKey assigns at a
 # level is provisional when a test at that level or above was left undecided
-# (provisional_because); varieties are not scored.
+# (provisional_because), or when a horizon rests on a lower grade of
+# evidence (provisional_because "horizons:", v0.9.380); varieties are not
+# scored.
 # =============================================================================
 
 .ka5_isis_levels <- c("classes", "types", "subtypes")
@@ -120,7 +122,10 @@ ka5_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     for (L in .ka5_isis_levels) {
       j <- match(L, lv$level)
       out[[paste0("sk_", L)]] <- if (is.na(j)) NA_character_ else lv$code[j]
-      out[[paste0("undecided_", L)]] <- any(pb_lv %in% above[[L]])
+      # a horizon read on a lower grade of evidence (a WRB stand-in, or
+      # the FAO designation where the data leave it open; v0.9.380) makes
+      # every level provisional
+      out[[paste0("undecided_", L)]] <- any(pb_lv %in% c(above[[L]], "horizons"))
     }
     out$undecided_classes_list <- paste(sub("^classes:", "", grep("^classes:", pb, value = TRUE)), collapse = " ")
     out$sk_division <- { j <- match("divisions", lv$level); if (is.na(j)) NA_character_ else lv$code[j] }

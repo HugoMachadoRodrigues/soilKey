@@ -27,18 +27,22 @@
 # The row is then read three-valued within the family: the first test of the
 # order that holds gives the horizon when no test before it in the family
 # is undecided; undecided tests leave the row undecided between the
-# family's candidates, unless all of them are one horizon, which is then
-# taken as the FAO letter's translation (as a KA5 designation would be);
-# when no horizon of the family holds or is undecided, the FAO letter and
-# the measured data are in conflict and the row is undecided between the
-# letter's translations and the data's reading. Rows with no designation, or
-# one that does not parse, are read on the data as before; a profile in the
-# KA5 notation is unchanged.
+# family's candidates, unless all of them are one horizon, the letter's
+# translation, and the open question is one the letter answers (not the
+# groundwater or perched water, Q13; not the organic band of Q10; not the
+# origin of a measured carbonate in a B, H1): the FAO letter then reads it,
+# a lower grade of evidence the key reports (D13). The FAO letter and the
+# data are in conflict, the row undecided, when no horizon of the family
+# holds or is undecided on the measured data, or when a horizon outside the
+# family (the C fallback excepted) holds before the family is reached. Rows
+# with no designation, or one that does not parse (or the A1, A2, B3 of the
+# 1977 numbering), are read on the data as before; a profile in the KA5
+# notation is unchanged.
 #
-# Sub-horizons (Bt1, Bt2: the same FAO stem, numbered) are one horizon: the
-# clay difference of a Bt sub-horizon is that of the run's first row
-# against the eluvial horizon above the run (p. 97: the enrichment has
-# penetrated the whole Bt).
+# Numbered rows of one layer with the same masters and defining letters (t,
+# w, s, h; Bt1/Btg2) are one horizon: each Bt sub-horizon shows the clay
+# enrichment on its own clay against the eluvial horizon above the run
+# (p. 97); a Bw sub-horizon is compared with the horizon under the run.
 # =============================================================================
 
 .KA5_FAO_TRANSITIONAL <- c("AB", "AE", "AC", "EA", "EB", "BA", "BE", "BC", "CB", "CA", "CR", "BR")
@@ -55,6 +59,10 @@
   if (nchar(ml) == 2L && !ml %in% .KA5_FAO_TRANSITIONAL) return(NULL)
   if (nchar(ml) == 1L && !ml %in% .KA5_FAO_MASTERS) return(NULL)
   suf <- m[4L]
+  # A or B followed by digits alone (A1, A2, A21, B1, B3) may be the
+  # numbering of the FAO 1977 Guidelines (A2 eluvial, B1 and B3
+  # transitional), not sub-horizons: no FAO reading, the data alone (D6)
+  if (ml %in% c("A", "B") && !nzchar(suf) && nzchar(m[5L])) return(NULL)
   # letters in parentheses (weakly expressed) are not read
   weak <- regmatches(suf, gregexpr("\\([^)]*\\)", suf))[[1L]]
   suf <- gsub("\\([^)]*\\)", "", suf)
@@ -111,11 +119,12 @@
   # p on an A: the tillage of the Ap (or the Esch and Rigol the FAO writes Ap)
   if ("A" %in% masters && "p" %in% suf) req <- c(req, list(c("^[a-z]*A[a-z]*p$", "^[a-z]*[ER]")))
   # the redox letters open the perched-water and groundwater horizons
+  prim <- unique(def)
   if ("g" %in% redox) { allow <- c(allow, "^[a-z]*S", "^[a-z]*G"); def <- c(def, "Sw", "Sd", "Go") }
   if ("l" %in% redox) { allow <- c(allow, "^[a-z]*G"); def <- c(def, "Go") }
   if ("r" %in% redox) { allow <- c(allow, "^[a-z]*G"); def <- c(def, "Gr") }
   def <- unique(def)
-  list(allow = unique(allow), excl = unique(excl), req = req, defaults = def, letters = suf,
+  list(allow = unique(allow), excl = unique(excl), req = req, defaults = def, primary = prim, letters = suf,
        masters = masters, written = written,
        pair = sprintf("the FAO %s: KA5 %s", written, paste(def, collapse = " or ")))
 }
@@ -133,7 +142,12 @@
     s <- sub("\\?+$", "", sub("[[:space:]].*$", "", enc2utf8(d)))
     comps <- lapply(strsplit(s, "/", fixed = TRUE)[[1L]], .ka5_fao_component)
     if (!length(comps) || any(vapply(comps, is.null, NA))) return(NULL)
-    list(comps = comps, rule = .ka5_fao_rule(comps, d), stem = paste(vapply(comps, `[[`, "", "stem"), collapse = "/"),
+    # the group of numbered sub-horizons: the layer, the masters and the
+    # defining letters t, w, s, h (Bt1/Btg2, Bw1/Bwg2 one horizon; D5)
+    grp <- paste(vapply(comps, function(cc) paste0(cc$layer, paste(cc$masters, collapse = ""), ":",
+                                                    paste(sort(intersect(cc$suffixes, c("t", "w", "s", "h"))), collapse = "")), ""),
+                 collapse = "/")
+    list(comps = comps, rule = .ka5_fao_rule(comps, d), stem = paste(vapply(comps, `[[`, "", "stem"), collapse = "/"), group = grp,
          letters = unique(unlist(lapply(comps, `[[`, "suffixes"))),
          masters = unique(unlist(lapply(comps, `[[`, "masters"))))
   })
@@ -197,7 +211,7 @@
   repeat {
     p <- .ka5_prev(x, j)
     fp <- .ka5_fao_at(x, p)
-    if (is.na(p) || is.null(fp) || !identical(fp$stem, f$stem) || !.ka5_same_layer(x, p, j)) break
+    if (is.na(p) || is.null(fp) || !identical(fp$group, f$group) || !.ka5_same_layer(x, p, j)) break
     j <- p
   }
   j
@@ -211,7 +225,7 @@
   repeat {
     nx <- .ka5_next(x, j)
     fn <- .ka5_fao_at(x, nx)
-    if (is.na(nx) || is.null(fn) || !identical(fn$stem, f$stem) || !.ka5_same_layer(x, nx, j)) break
+    if (is.na(nx) || is.null(fn) || !identical(fn$group, f$group) || !.ka5_same_layer(x, nx, j)) break
     j <- nx
   }
   j
@@ -232,48 +246,107 @@
   j
 }
 
+# A question the FAO letter does not answer, left open on a row (D2): the
+# groundwater or perched water of a G or S (Q13), the organic substance in
+# the band of Q10, the origin of a measured carbonate in a B (H1). The note,
+# or NULL.
+.ka5_fao_open_question <- function(x, i, r) {
+  if (is.na(.ka5_organic(x, i)$passed) && !is.na(.ka5_num(x, i, "oc_pct")))
+    return("the organic substance lies in the band of Q10 (H or Aa), which the FAO letter does not decide")
+  if (isTRUE(r$name %in% c("G", "S")) && is.na(.ka5_groundwater(x, i)$passed))
+    return("groundwater or perched water (Q13) is not recorded, and the FAO letter does not say which")
+  if (isTRUE(r$name %in% c("Bt", "Bv", "Bfv", "Bu", "T", "P", "Bsp")) && is.na(.ka5_no_lithogenic_carbonate(x, i)$passed) &&
+      isTRUE(.ka5_num(x, i, "caco3_pct") > 0))
+    return("carbonate measured in the fine earth, lithogenic or secondary open (H1), which the FAO letter does not decide")
+  NULL
+}
+
+# The KA5 code of a part's carrying horizon (prefixes off).
+.ka5_fao_carry <- function(code) {
+  pp <- strsplit(code, "[-+\u00b0]")[[1L]]
+  sub("^[a-z]*", "", pp[length(pp)])
+}
+
+# The translations of the FAO letters the measured data exclude (H5): the
+# redox translations (Sw, Sd, Go, Gr) whose S or G test fails on the data.
+.ka5_fao_defaults <- function(rule, ans) {
+  fail <- function(nm) any(vapply(unlist(ans, recursive = FALSE), function(r) identical(r$name, nm) && isFALSE(r$passed), NA))
+  d <- rule$defaults
+  prim <- rule$primary %||% d
+  keep <- vapply(d, function(z) {
+    if (z %in% prim) return(TRUE)
+    m <- substr(z, 1L, 1L)
+    !((m == "S" && fail("S")) || (m == "G" && fail("G")))
+  }, NA)
+  d[keep]
+}
+
 # The reading of an FAO row within its family, from the answers of the order
 # of tests (.ka5_data_layer()): list(code, dec, tr, cands, kind, note).
-# kind: "both" (a test of the family holds), "fao" (the data leave it
-# undecided, the family is one horizon), "undecided", "conflict".
+# kind: "both" (a test of the family holds), "fao" (the data leave only the
+# letter's translation open: the letter decides, a lower grade), "undecided",
+# "conflict" (no horizon of the family holds, or a horizon outside it holds
+# on the measured data before the family, D1).
 .ka5_fao_combine <- function(x, i, ans, f, data_code, data_cands) {
   rule <- f$rule
   items <- list()
+  add <- function(...) items[[length(items) + 1L]] <<- list(...)
   for (s in names(ans)) for (r in ans[[s]]) {
     if (!length(r$passed) || isFALSE(r$passed)) next
     codes <- if (is.na(r$passed) && is.character(r$value) && length(r$value)) r$value else r$code %||% r$name
+    # an undecided G with its kind open: the G kinds, never a bare G (D7)
+    if (identical(r$name, "G")) codes <- unique(unlist(lapply(codes, function(z) if (identical(z, "G")) c("Go", "Gr") else z)))
     for (cc in unique(codes[!is.na(codes)])) {
       tr <- .ka5_transition(x, i, cc, ans)
       full <- .ka5_suffix_c(x, i, .ka5_prefixes(x, i, tr$code))
       base <- .ka5_suffix_c(x, i, .ka5_prefixes(x, i, cc))
-      if (.ka5_fao_compatible(rule, full)) {
-        items[[length(items) + 1L]] <- list(code = cc, tr = tr, shown = full, passed = r$passed, r = r)
-        next
-      }
+      if (.ka5_fao_compatible(rule, full)) { add(code = cc, tr = tr, shown = full, passed = r$passed, r = r, fam = TRUE, step = s); next }
       if (.ka5_fao_compatible(rule, base)) {
-        items[[length(items) + 1L]] <- list(code = cc, tr = list(code = cc, note = character(0)), shown = base,
-                                            passed = r$passed, r = r)
+        add(code = cc, tr = list(code = cc, note = character(0)), shown = base, passed = r$passed, r = r, fam = TRUE, step = s)
         next
       }
       # a G or S with a B the data leave undecided (Bt-Sd when the Bt is
       # undecided): each such B part, undecided
+      found <- FALSE
       if (grepl("^[a-z]*[GS]", tr$code)) for (b in ans$subsoil) {
         if (!is.na(b$passed) || is.null(b$code)) next
         alt <- paste0(b$code, "-", tr$code)
-        if (.ka5_fao_compatible(rule, alt))
-          items[[length(items) + 1L]] <- list(code = cc, tr = list(code = alt, note = sprintf("the %s undecided: %s", b$code, alt)),
-                                              shown = .ka5_suffix_c(x, i, .ka5_prefixes(x, i, alt)), passed = NA, r = r)
+        if (.ka5_fao_compatible(rule, alt)) {
+          found <- TRUE
+          add(code = cc, tr = list(code = alt, note = sprintf("the %s undecided: %s", b$code, alt)),
+              shown = .ka5_suffix_c(x, i, .ka5_prefixes(x, i, alt)), passed = NA, r = r, fam = TRUE, step = s)
+        }
       }
+      if (!found) add(code = cc, tr = tr, shown = full, passed = r$passed, r = r, fam = FALSE, step = s)
     }
   }
-  if (!length(items)) {
-    dat <- unique(c(data_code[!is.na(data_code)], data_cands))
-    return(list(code = NA_character_, dec = NULL, tr = NULL, kind = "conflict",
-                cands = unique(c(rule$defaults, dat)),
-                note = sprintf("%s; no horizon of that family holds on the measured data%s: the FAO designation and the data in conflict, undecided",
-                               rule$pair, if (length(dat)) sprintf(" (the data read %s)", paste(dat, collapse = ", ")) else "")))
-  }
+  fam <- vapply(items, `[[`, NA, "fam")
   pas <- vapply(items, function(z) z$passed, NA)
+  # the C is the fallback of the order of tests: outside the family it is
+  # no evidence against it
+  fallback <- vapply(items, function(z) identical(z$step, "substratum"), NA)
+  defs <- .ka5_fao_defaults(rule, ans)
+  conflict <- function(why, extra) {
+    list(code = NA_character_, dec = NULL, tr = NULL, kind = "conflict",
+         cands = unique(c(defs, extra)),
+         note = sprintf("%s; %s: the FAO designation and the data in conflict, undecided", rule$pair, why))
+  }
+  first_fam <- which(fam)[1L]
+  # D1: a horizon outside the family holds on the measured data before the
+  # family's first item
+  out_true <- which(!fam & !fallback & pas %in% TRUE)
+  out_true <- out_true[is.na(first_fam) | out_true < first_fam]
+  if (length(out_true)) {
+    sh <- unique(vapply(items[out_true], `[[`, "", "shown"))
+    return(conflict(sprintf("the data hold %s, outside that family", paste(sh, collapse = ", ")),
+                    c(sh, if (!is.na(first_fam)) unique(vapply(items[fam], `[[`, "", "shown")))))
+  }
+  if (is.na(first_fam)) {
+    dat <- unique(c(data_code[!is.na(data_code)], data_cands))
+    return(conflict(sprintf("no horizon of that family holds on the measured data%s",
+                            if (length(dat)) sprintf(" (the data read %s)", paste(dat, collapse = ", ")) else ""), dat))
+  }
+  items <- items[fam]; pas <- pas[fam]
   k <- which(pas %in% TRUE)[1L]
   if (identical(k, 1L))
     return(list(code = items[[1L]]$code, dec = items[[1L]]$r, tr = items[[1L]]$tr, kind = "both", cands = character(0),
@@ -281,19 +354,20 @@
   pool <- if (is.na(k)) items else items[seq_len(k)]
   shown <- unique(vapply(pool, `[[`, "", "shown"))
   # one horizon of the family left undecided: the FAO designation reads it
-  # when it is the letter's translation (Bt for Bt, Bv for Bw), as a KA5
-  # designation would be read; a finer KA5 horizon the letter does not name
-  # (an Axp for an FAO Ap) stays undecided beside the translation
-  carry <- function(code) { pp <- strsplit(code, "[-+\u00b0]")[[1L]]; sub("^[a-z]*", "", pp[length(pp)]) }
-  defs <- unique(vapply(rule$defaults, carry, ""))
-  if (length(shown) == 1L && carry(shown) %in% defs) {
+  # when it is the letter's translation (Bt for Bt, Bv for Bw) and the open
+  # question is one the letter answers (D2), a lower grade (H2); a finer KA5
+  # horizon the letter does not name (an Axp for an FAO Ap) stays undecided
+  # beside the translation
+  tdefs <- unique(vapply(rule$defaults, .ka5_fao_carry, ""))
+  open <- unique(unlist(lapply(pool, function(z) if (is.na(z$passed)) .ka5_fao_open_question(x, i, z$r))))
+  if (length(shown) == 1L && .ka5_fao_carry(shown) %in% tdefs && !length(open)) {
     z <- pool[[length(pool)]]
     return(list(code = z$code, dec = z$r, tr = z$tr, kind = "fao", cands = character(0),
-                note = sprintf("%s; the data leave the %s undecided, the FAO designation reads it (as a KA5 designation would be read)",
+                note = sprintf("%s; the data leave the %s undecided, the FAO designation reads it (as a KA5 designation would be read; a lower grade)",
                                rule$pair, z$shown)))
   }
-  if (length(shown) == 1L)
-    shown <- unique(c(shown, rule$defaults[vapply(rule$defaults, function(d) .ka5_fao_compatible(rule, d), NA)]))
+  if (length(shown) == 1L && !length(open))
+    shown <- unique(c(shown, defs[vapply(defs, function(d) .ka5_fao_compatible(rule, d), NA)]))
   list(code = NA_character_, dec = NULL, tr = NULL, kind = "undecided", cands = shown,
-       note = sprintf("%s; the data leave it undecided between %s", rule$pair, paste(shown, collapse = ", ")))
+       note = c(sprintf("%s; the data leave it undecided between %s", rule$pair, paste(shown, collapse = ", ")), open))
 }

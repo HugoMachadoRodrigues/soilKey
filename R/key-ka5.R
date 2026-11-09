@@ -210,6 +210,7 @@ classify_ka5 <- function(pedon, rules = NULL, on_missing = c("warn", "silent", "
     prov <- c(prov, sprintf("horizons:%s", fr$code[si]))
     notes <- c(notes, sprintf("Horizon %s (%s) rests on %s: a lower grade of evidence (D13).", fr$code[si], fr$designation[si] %||% "",
                               vapply(si, function(i) if (length(fr$stand_ins[[i]])) paste0("soilKey's WRB ", paste0(fr$stand_ins[[i]], "()", collapse = ", "))
+                                     else if (isTRUE(grepl("the FAO designation reads it", fr$evidence[i], fixed = TRUE))) "its FAO designation, the data leaving it open"
                                      else "soilKey's colour cuts of the F kinds", "")))
   }
   if (length(prov)) res$provisional_because <- unique(c(res$provisional_because, prov))
