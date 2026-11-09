@@ -18,8 +18,8 @@
 #   * a horizon N cm thick is a run of adjoining layers that meet the
 #     per-layer criteria;
 #   * horizons buried under 50 cm or more of new material are not diagnostic
-#     (p. 42; .fao_buried(); the andic mantle of 35 cm is undecided until the
-#     andic properties are read);
+#     (p. 42; .fao_buried(); the andic mantle of 35 cm is read with the
+#     andic properties of R/diagnostics-fao88-properties.R since 0.9.383);
 #   * the subsurface horizons have their upper limit within 125 cm unless the
 #     text says otherwise (p. 42; argument max_top_cm);
 #   * a WRB or USDA function of soilKey is called only where the 1988
@@ -75,14 +75,20 @@
     x$master <- .fao_master(hh)
     x$desg <- .desg_master(.fao_col(hh, "designation", "character"))
     x$rock <- .fao_is_rock(hh)
+    x$memo <- new.env(parent = emptyenv())
     b <- .fao_buried(hh, "1988")
+    # a mantle of 35 to 50 cm buries the horizons below it when it has andic
+    # properties (p. 42), read since 0.9.383 (.f88_mantle_andic())
+    if (anyNA(b$value)) {
+      b <- .fao_buried(hh, "1988", mantle_andic = .f88_mantle_andic(x, b$buried_from %||% NA_integer_))
+    }
     x$buried <- as.logical(b$value)
     x$buried_missing <- b$missing
   } else {
     x$top <- x$bot <- numeric(0); x$master <- x$desg <- character(0)
     x$rock <- x$buried <- logical(0); x$buried_missing <- character(0)
   }
-  x$memo <- new.env(parent = emptyenv())
+  if (is.null(x$memo)) x$memo <- new.env(parent = emptyenv())
   x
 }
 
@@ -442,56 +448,8 @@
   .f88_and(.fao_sandy_loam_or_finer(x$h), .f88_cmp(.f88_num(x, "clay_pct"), ">=", 8))
 }
 
-# Andic properties (p. 34), per layer, as far as the ferralic B (item 7)
-# needs them; the full predicate comes with the diagnostic properties.
-# (1) Alox + 1/2 Feox >= 2.0 %, bulk density <= 0.9 and P retention > 85 %;
-# (2) more than 60 % volcaniclastic material coarser than 2 mm
-#     (pyroclastic_fragments_pct; a field observation, absent if not
-#     recorded) and Alox + 1/2 Feox >= 0.4 %;
-# (3) the 0.02-2 mm fraction 30 % or more of the fine earth (sand_pct of 30
-#     or more suffices) with volcanic glass from 30 % (Alox + 1/2 Feox 0.4 or
-#     less) to 5 % (2.0 or more), proportional between. Volcanic glass not
-#     recorded is read as none, flagged, unless the record names volcanic
-#     material, where it stays undecided (soilKey's reading).
-.f88_andic_layer <- function(x) {
-  .f88_memo(x, "andic", function() {
-    alfe <- .f88_num(x, "al_ox_pct") + 0.5 * .f88_num(x, "fe_ox_pct")
-    bd <- .f88_num(x, "bulk_density_g_cm3"); pr <- .f88_num(x, "phosphate_retention_pct")
-    p1 <- .f88_and(.f88_cmp(alfe, ">=", 2), .f88_cmp(bd, "<=", 0.9), .f88_cmp(pr, ">", 85))
-    vol <- .f88_num(x, "pyroclastic_fragments_pct"); vol[is.na(vol)] <- 0
-    p2 <- .f88_and(vol > 60, .f88_cmp(alfe, ">=", 0.4))
-    fr <- .f88_num(x, "particles_002_2mm_pct"); sa <- .f88_num(x, "sand_pct")
-    frac <- ifelse(!is.na(fr), fr >= 30, ifelse(!is.na(sa) & sa >= 30, TRUE, NA))
-    gl <- .f88_num(x, "volcanic_glass_pct")
-    flag <- rep(NA_character_, x$n)
-    # volcanic glass not recorded: none, flagged, unless the record names
-    # volcanic material (the site's parent material, a tephric layer origin
-    # or pyroclastic fragments), where it stays undecided (soilKey's reading)
-    volc_re <- "volcan|tephr|ash|pumic|cinder|scoria|lava|andesit|dacit|rhyolit|obsidian|tuff|ignimbrit|pyroclast|cinza"
-    pm <- .f88_site(x, "parent_material")
-    pm_volc <- !is.na(pm) && grepl(volc_re, .field_term(as.character(pm)))
-    lo <- .f88_chr(x, "layer_origin")
-    pf <- .f88_num(x, "pyroclastic_fragments_pct")
-    volc <- pm_volc | (!is.na(lo) & grepl(volc_re, lo)) | (!is.na(pf) & pf > 0)
-    use <- is.na(gl) & !volc
-    gl[use] <- 0; flag[use] <- "volcanic_glass_not_recorded_none"
-    need <- ifelse(is.na(alfe), NA, ifelse(alfe <= 0.4, 30, ifelse(alfe >= 2, 5,
-                   30 - (alfe - 0.4) / 1.6 * 25)))
-    g_ok <- ifelse(!is.na(need), gl >= need,
-            ifelse(!is.na(gl) & gl >= 30, TRUE, ifelse(!is.na(gl) & gl < 5, FALSE, NA)))
-    p3 <- .f88_and(frac, as.logical(g_ok))
-    v <- .f88_or(p1, p2, p3)
-    # undecided with no volcanic material recorded: absent, flagged (Hugo,
-    # 2026-11-09)
-    ab <- is.na(v) & !volc
-    v[ab] <- FALSE
-    flag[ab] <- ifelse(is.na(flag[ab]), "andic_absent_no_volcanic_material",
-                       paste(flag[ab], "andic_absent_no_volcanic_material", sep = "; "))
-    list(value = v, flags = flag,
-         missing = c("al_ox_pct", "fe_ox_pct", "bulk_density_g_cm3", "phosphate_retention_pct",
-                     "volcanic_glass_pct"))
-  })
-}
+# The andic properties of p. 34 (item 7 of the ferralic B) are read by
+# .f88_andic_layer() in R/diagnostics-fao88-properties.R (0.9.383).
 
 
 # --- histic H (pp. 25-26) -------------------------------------------------------------
