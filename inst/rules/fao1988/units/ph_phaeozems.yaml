@@ -1,0 +1,54 @@
+# The soil units of the Phaeozems (PH), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 84-85,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  PH:
+    - code: "PHg"
+      name: "Gleyic Phaeozems"
+      name_pt: "Feozems Gleicos (Gleyic Phaeozems)"
+      page: 84
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "PHj"
+      name: "Stagnic Phaeozems"
+      name_pt: "Feozems Estágnicos (Stagnic Phaeozems)"
+      page: 85
+      tests:
+        all_of:
+          - stagnic_properties_fao88: {max_top_cm: 50}
+      notes: "Stagnic properties within 50 cm of the surface."
+
+    - code: "PHl"
+      name: "Luvic Phaeozems"
+      name_pt: "Feozems Lúvicos (Luvic Phaeozems)"
+      page: 85
+      tests:
+        all_of:
+          - argic_b_fao88: {}
+      notes: "An argic B horizon."
+
+    - code: "PHc"
+      name: "Calcaric Phaeozems"
+      name_pt: "Feozems Calcáricos (Calcaric Phaeozems)"
+      page: 85
+      tests:
+        all_of:
+          - calcaric_fao88: {}
+      notes: "Calcareous at least between 20 and 50 cm from the surface."
+
+    - code: "PHh"
+      name: "Haplic Phaeozems"
+      name_pt: "Feozems Háplicos (Haplic Phaeozems)"
+      page: 85
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

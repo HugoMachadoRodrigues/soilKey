@@ -15,8 +15,8 @@
 # the book is shipped. The predicates are those of
 # R/diagnostics-fao88-horizons.R (0.9.382), R/diagnostics-fao88-properties.R
 # (0.9.383) and R/key-fao.R; the numbers those of thresholds.yaml, the
-# readings those of readings.yaml. The soil units follow in units/ in a
-# later part.
+# readings those of readings.yaml. The 153 soil units are in units/, one
+# file per grouping (0.9.385).
 
 major_groups:
 

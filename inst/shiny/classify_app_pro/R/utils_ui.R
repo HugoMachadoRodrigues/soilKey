@@ -142,7 +142,7 @@ pro_fixture_catalog <- function() {
               "Perudic Cambosols" = "M4", "Udic Cambosols" = "M5", "Anthric Primosols" = "N1",
               "Sandic Primosols" = "N2", "Alluvic Primosols" = "N3", "Orthic Primosols" = "N4"),
   # the examples of the FAO-Unesco Revised Legend (1988), one per major soil
-  # grouping, labelled by the grouping (the name the result gives)
+  # grouping, labelled by the grouping (the first level the result gives)
   fao1988 = c("Histosols" = "HS", "Anthrosols" = "AT", "Leptosols" = "LP", "Vertisols" = "VR",
               "Fluvisols" = "FL", "Solonchaks" = "SC", "Gleysols" = "GL", "Andosols" = "AN",
               "Arenosols" = "AR", "Regosols" = "RG", "Podzols" = "PZ", "Plinthosols" = "PT",

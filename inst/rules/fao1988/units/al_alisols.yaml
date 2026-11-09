@@ -1,0 +1,63 @@
+# The soil units of the Alisols (AL), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 87,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  AL:
+    - code: "ALp"
+      name: "Plinthic Alisols"
+      name_pt: "Alissolos Plínticos (Plinthic Alisols)"
+      page: 87
+      tests:
+        all_of:
+          - plinthite_fao88: {max_top_cm: 125}
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "ALg"
+      name: "Gleyic Alisols"
+      name_pt: "Alissolos Gleicos (Gleyic Alisols)"
+      page: 87
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "ALj"
+      name: "Stagnic Alisols"
+      name_pt: "Alissolos Estágnicos (Stagnic Alisols)"
+      page: 87
+      tests:
+        all_of:
+          - stagnic_properties_fao88: {max_top_cm: 50}
+      notes: "Stagnic properties within 50 cm of the surface."
+
+    - code: "ALu"
+      name: "Humic Alisols"
+      name_pt: "Alissolos Húmicos (Humic Alisols)"
+      page: 87
+      tests:
+        all_of:
+          - strongly_humic_fao88: {}
+      notes: "Strongly humic (the key; ch. VI adds an umbric or mollic A, not added, Q6)."
+
+    - code: "ALf"
+      name: "Ferric Alisols"
+      name_pt: "Alissolos Férricos (Ferric Alisols)"
+      page: 87
+      tests:
+        all_of:
+          - ferric_properties_fao88: {}
+      notes: "Ferric properties (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "ALh"
+      name: "Haplic Alisols"
+      name_pt: "Alissolos Háplicos (Haplic Alisols)"
+      page: 87
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

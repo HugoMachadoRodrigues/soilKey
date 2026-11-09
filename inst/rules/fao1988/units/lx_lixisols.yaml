@@ -1,0 +1,63 @@
+# The soil units of the Lixisols (LX), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 88-89,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  LX:
+    - code: "LXp"
+      name: "Plinthic Lixisols"
+      name_pt: "Lixissolos Plínticos (Plinthic Lixisols)"
+      page: 88
+      tests:
+        all_of:
+          - plinthite_fao88: {max_top_cm: 125}
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "LXg"
+      name: "Gleyic Lixisols"
+      name_pt: "Lixissolos Gleicos (Gleyic Lixisols)"
+      page: 88
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "LXj"
+      name: "Stagnic Lixisols"
+      name_pt: "Lixissolos Estágnicos (Stagnic Lixisols)"
+      page: 88
+      tests:
+        all_of:
+          - stagnic_properties_fao88: {max_top_cm: 50}
+      notes: "Stagnic properties within 50 cm of the surface."
+
+    - code: "LXa"
+      name: "Albic Lixisols"
+      name_pt: "Lixissolos Álbicos (Albic Lixisols)"
+      page: 88
+      tests:
+        all_of:
+          - albic_e_fao88: {}
+      notes: "An albic E horizon."
+
+    - code: "LXf"
+      name: "Ferric Lixisols"
+      name_pt: "Lixissolos Férricos (Ferric Lixisols)"
+      page: 89
+      tests:
+        all_of:
+          - ferric_properties_fao88: {}
+      notes: "Ferric properties (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "LXh"
+      name: "Haplic Lixisols"
+      name_pt: "Lixissolos Háplicos (Haplic Lixisols)"
+      page: 89
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

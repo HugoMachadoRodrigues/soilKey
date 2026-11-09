@@ -37,7 +37,8 @@ test_that("the registry entry of fao1988", {
   expect_false(sys$default)
   expect_false(sys$legacy)
   expect_identical(sys$namespace, "fao88")
-  expect_identical(sys$levels, "major_groups")
+  # the soil units are the second level since 0.9.385
+  expect_identical(sys$levels, c("major_groups", "units"))
   expect_identical(sys$top_level, "major_groups")
   for (a in c("fao", "fao88", "revised_legend", "fao1988"))
     expect_identical(soilKey:::.system_resolve(a), "fao1988")
@@ -45,7 +46,7 @@ test_that("the registry entry of fao1988", {
   # classify_all() reaches it by its alias, and only when asked
   p <- make_fao_example("LV")
   ca <- classify_all(p, systems = c("wrb", "fao"), on_missing = "silent")
-  expect_identical(ca$fao1988$name, "Luvisols")
+  expect_identical(ca$fao1988$rsg_or_order, "Luvisols")
   expect_false("fao1988" %in% names(classify_all(p, on_missing = "silent")))
 })
 
@@ -80,19 +81,19 @@ test_that("every example keys to its own grouping, not provisionally", {
   skip_on_cran()
   for (cd in .CODES384) {
     r <- .f384(make_fao_example(cd))
-    expect_identical(r$levels$code, cd, info = cd)
-    expect_identical(r$name, .NAMES384[match(cd, .CODES384)], info = cd)
-    expect_identical(r$rsg_or_order, r$name)
-    expect_length(r$provisional_because, 0L)
+    # the grouping level (the soil units follow since 0.9.385)
+    expect_identical(r$levels$code[1], cd, info = cd)
+    expect_identical(r$rsg_or_order, .NAMES384[match(cd, .CODES384)], info = cd)
+    expect_false(any(grepl("^major_groups:", r$provisional_because)))
     expect_identical(r$system_id, "fao1988")
     expect_identical(r$system, "FAO 1988")
-    expect_true(nzchar(r$levels$name_pt))
-    expect_identical(r$levels$page, as.character(soilKey:::.F88_GROUPINGS$page[match(cd, .CODES384)]))
+    expect_true(all(nzchar(r$levels$name_pt)))
+    expect_identical(r$levels$page[1], as.character(soilKey:::.F88_GROUPINGS$page[match(cd, .CODES384)]))
   }
   # the wrapper is the same classification
   p <- make_fao_example("CM")
   expect_identical(classify_fao1988(p, on_missing = "silent")$name, .f384(p)$name)
-  expect_identical(classify_fao(p, edition = "88", on_missing = "silent")$name, "Cambisols")
+  expect_identical(classify_fao(p, edition = "88", on_missing = "silent")$rsg_or_order, "Cambisols")
 })
 
 test_that("the 28 near misses land where the one change sends them", {
@@ -105,9 +106,9 @@ test_that("the 28 near misses land where the one change sends them", {
   rules <- load_rules("fao1988")
   for (cd in names(want)) {
     r <- .f384(make_fao_example(cd, near_miss = TRUE))
-    expect_identical(r$levels$code, want[[cd]], info = cd)
-    expect_false(identical(r$levels$code, cd))
-    expect_length(r$provisional_because, 0L)
+    expect_identical(r$levels$code[1], want[[cd]], info = cd)
+    expect_false(identical(r$levels$code[1], cd))
+    expect_false(any(grepl("^major_groups:", r$provisional_because)))
     # the gate of the grouping itself fails on the crossed number, decided,
     # evaluated directly (the key may stop before it)
     g <- Find(function(e) identical(e$code, cd), rules$major_groups)
@@ -123,17 +124,17 @@ test_that("an undecided gate before the assigned one makes the result provisiona
   # no conductivity: the salic properties, and the Solonchaks gate, undecided
   p <- .edit384(make_fao_example("CM"), ec_dS_m = NA_real_)
   r <- .f384(p)
-  expect_identical(r$name, "Cambisols")
+  expect_identical(r$rsg_or_order, "Cambisols")
   expect_true("major_groups:SC" %in% r$provisional_because)
   expect_true(is.na(r$trace$major_groups$SC$passed))
   expect_true("ec_dS_m" %in% r$trace$major_groups$SC$missing)
   expect_true(any(grepl("^Provisional", r$warnings)))
   # a gate that fails on another criterion is decided all the same
   r2 <- .f384(.edit384(make_fao_example("LV"), ec_dS_m = NA_real_))
-  expect_identical(r2$name, "Luvisols")
+  expect_identical(r2$rsg_or_order, "Luvisols")
   expect_false("major_groups:SC" %in% r2$provisional_because)
-  # the 1988 names stop at the grouping
-  expect_identical(r$levels$level, "major_groups")
+  # the soil unit follows the grouping (0.9.385)
+  expect_identical(r$levels$level, c("major_groups", "units"))
 })
 
 test_that("no residual grouping: the fall-through of Q5", {
@@ -360,7 +361,7 @@ test_that("review fixes: plinthite runs, cracks of one record, the Planosols tra
   # the NT example records only attributes soilKey reads
   expect_no_warning(nt <- make_fao_example("NT"))
   expect_true(soilKey:::nitic_properties_fao88(nt, max_top_cm = 125)$passed)
-  expect_identical(.f384(nt)$levels$code, "NT")
+  expect_identical(.f384(nt)$levels$code[1], "NT")
 })
 
 test_that("Hugo's decisions of 2026-11-09 on the readings of this part", {
@@ -377,7 +378,7 @@ test_that("Hugo's decisions of 2026-11-09 on the readings of this part", {
   expect_false(soilKey:::upper_b_fao88(fr, "ferralic_b")$passed)
   r <- .f384(fr)
   expect_false(isTRUE(r$trace$major_groups$FR$passed))
-  expect_identical(r$levels$code, "AL")
+  expect_identical(r$levels$code[1], "AL")
   cm <- .edit384(make_fao_example("LV"), rows = c(1, 3, 4, 5), designation = c("A", "Bw", "Bt", "C"),
                  top_cm = c(0, 20, 60, 110), bottom_cm = c(20, 60, 110, 150), clay_pct = c(18, 20, 34, 30),
                  silt_pct = c(40, 40, 30, 30), sand_pct = c(42, 40, 36, 40), cec_cmol = c(10, 8, 10, 9),
@@ -387,12 +388,12 @@ test_that("Hugo's decisions of 2026-11-09 on the readings of this part", {
   expect_true(soilKey:::cambic_b_fao88(cm)$passed)
   expect_true(soilKey:::argic_b_fao88(cm)$passed)
   expect_false(soilKey:::upper_b_fao88(cm, "argic_b")$passed)
-  expect_identical(.f384(cm)$levels$code, "CM")
+  expect_identical(.f384(cm)$levels$code[1], "CM")
   # B. the CEC of the argic B per layer: 32, 20, 20 -> Lixisols
   lx <- .edit384(make_fao_example("LV"), cec_cmol = c(8, 6, 0.32 * 32, 0.20 * 34, 0.20 * 28))
   expect_false(soilKey:::argic_cec_clay_fao88(lx, min = 24)$passed)
   expect_true(soilKey:::argic_cec_clay_fao88(lx, lt = 24)$passed)
-  expect_identical(.f384(lx)$levels$code, "LX")
+  expect_identical(.f384(lx)$levels$code[1], "LX")
   # D. a 45 cm peat without bulk density: 40 cm, flagged
   hs <- .edit384(make_fao_example("HS"), bulk_density_g_cm3 = NA_real_)
   g <- soilKey:::histosols_gate_fao88(hs)
@@ -425,10 +426,10 @@ test_that("Hugo's decisions of 2026-11-09 on the readings of this part", {
                  munsell_chroma_moist = c(2, 3, 3, 3, 3))
   expect_false(soilKey:::mollic_chroma_fao88(ch, max = 2)$passed)
   expect_true(soilKey:::mollic_chroma_fao88(ch, gt = 2)$passed)
-  expect_identical(.f384(ch)$levels$code, "KS")
+  expect_identical(.f384(ch)$levels$code[1], "KS")
   # H. Nitisols: only the A-to-B boundary; a clear boundary deeper does not matter
   nt <- make_fao_example("NT")
-  expect_identical(.f384(.edit384(nt, boundary_distinctness = c("gradual", "gradual", "clear", "clear", NA)))$levels$code, "NT")
+  expect_identical(.f384(.edit384(nt, boundary_distinctness = c("gradual", "gradual", "clear", "clear", NA)))$levels$code[1], "NT")
   expect_false(soilKey:::nitisols_gate_fao88(.edit384(nt, boundary_distinctness = c("gradual", "clear", "diffuse", "diffuse", NA)))$passed)
   # I. cracks with a depth but no width: undecided, the Vertisols provisional
   v2 <- .edit384(make_fao_example("VR"), cracks_width_cm = NA_real_)

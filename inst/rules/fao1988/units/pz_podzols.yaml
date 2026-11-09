@@ -1,0 +1,63 @@
+# The soil units of the Podzols (PZ), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 81,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  PZ:
+    - code: "PZi"
+      name: "Gelic Podzols"
+      name_pt: "Podzóis Gélicos (Gelic Podzols)"
+      page: 81
+      tests:
+        all_of:
+          - permafrost_fao88: {max_top_cm: 200}
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "PZg"
+      name: "Gleyic Podzols"
+      name_pt: "Podzóis Gleicos (Gleyic Podzols)"
+      page: 81
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "PZc"
+      name: "Carbic Podzols"
+      name_pt: "Podzóis Cárbicos (Carbic Podzols)"
+      page: 81
+      tests:
+        all_of:
+          - carbic_fao88: {}
+      notes: "A subhorizon of the B with dispersed organic matter and too little free iron to turn redder on ignition."
+
+    - code: "PZf"
+      name: "Ferric Podzols"
+      name_pt: "Podzóis Férricos (Ferric Podzols)"
+      page: 81
+      tests:
+        all_of:
+          - spodic_fe_oc_fao88: {min: 6}
+      notes: "Free iron / organic carbon (per cent / per cent) of 6 or more in all subhorizons of the B."
+
+    - code: "PZb"
+      name: "Cambic Podzols"
+      name_pt: "Podzóis Câmbicos (Cambic Podzols)"
+      page: 81
+      tests:
+        all_of:
+          - podzol_cambic_fao88: {albic_max_cm: 2}
+      notes: "No albic E horizon, or only a thin (2 cm or less) and discontinuous one; no subhorizon of the B visibly more enriched in organic carbon."
+
+    - code: "PZh"
+      name: "Haplic Podzols"
+      name_pt: "Podzóis Háplicos (Haplic Podzols)"
+      page: 81
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

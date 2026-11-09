@@ -1,0 +1,47 @@
+# The soil units of the Gypsisols (GY), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 85-86,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  GY:
+    - code: "GYp"
+      name: "Petric Gypsisols"
+      name_pt: "Gipsissolos Pétricos (Petric Gypsisols)"
+      page: 85
+      tests:
+        all_of:
+          - petrogypsic_fao88: {max_top_cm: 100}
+      notes: "A petrogypsic horizon whose upper part is within 100 cm of the surface."
+
+    - code: "GYk"
+      name: "Calcic Gypsisols"
+      name_pt: "Gipsissolos Cálcicos (Calcic Gypsisols)"
+      page: 86
+      tests:
+        all_of:
+          - any_of:
+              - calcic_fao88: {max_top_cm: 125}
+              - petrocalcic_fao88: {max_top_cm: 125}
+      notes: "A calcic or petrocalcic horizon (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "GYl"
+      name: "Luvic Gypsisols"
+      name_pt: "Gipsissolos Lúvicos (Luvic Gypsisols)"
+      page: 86
+      tests:
+        all_of:
+          - argic_b_fao88: {}
+      notes: "An argic B horizon."
+
+    - code: "GYh"
+      name: "Haplic Gypsisols"
+      name_pt: "Gipsissolos Háplicos (Haplic Gypsisols)"
+      page: 86
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

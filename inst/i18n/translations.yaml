@@ -695,6 +695,7 @@ en:
   # v0.9.347 -- the species of the Russian Field Guide (ch. 5.1) and its 1977 analogue (ch. 6)
   "classify.level_species": "species"
   "classify.level_major_groups": "Major soil grouping"
+  "classify.level_units": "Soil unit"
   "classify.levels_species": "Species"
   "classify.kidpr_1977": "1977 analogue (a note, not a class)"
   # v0.9.354 -- the correspondences of the Referentiel pedologique 2008 (Annexes 5 and 7)
@@ -1653,6 +1654,7 @@ pt:
   "classify.levels_variety": "Variedades"
   "classify.level_species": "espécie"
   "classify.level_major_groups": "Grupamento principal de solos"
+  "classify.level_units": "Unidade de solo"
   "classify.levels_species": "Espécies"
   "classify.kidpr_1977": "Análogo de 1977 (uma nota, não uma classe)"
   "classify.rp_wrb2006": "WRB 2006 (anexo 5 do RP 2008; uma nota, não o WRB 2022 do soilKey):"

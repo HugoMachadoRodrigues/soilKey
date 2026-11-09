@@ -4,8 +4,9 @@
 # a thin wrapper) and the key to the 28 major soil groupings of the Revised
 # Legend (FAO 1988, World Soil Resources Report 60; the text of the ISRIC
 # reprint of 1997, Technical Paper 20), chapter X, pp. 75-89. The soil units
-# (0.9.385), the phases (0.9.386) and the Legend of 1974 (fao1974, from
-# 0.9.389) follow in later parts.
+# (0.9.385) are in inst/rules/fao1988/units/ and R/key-fao-units.R; the
+# phases (0.9.386) and the Legend of 1974 (fao1974, from 0.9.389) follow in
+# later parts.
 #
 # The gates read the 16 diagnostic horizons of 0.9.382
 # (R/diagnostics-fao88-horizons.R) and the 27 diagnostic properties of
@@ -703,20 +704,26 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' Map of the World. \strong{Experimental}: this release keys the 28 major
 #' soil groupings of the Revised Legend (FAO 1988, World Soil Resources
 #' Report 60; the text of the ISRIC reprint of 1997, Technical Paper 20),
-#' chapter X, pp. 75-89, in the key's order (Histosols, Anthrosols,
+#' chapter X, pp. 75-89, and their 153 soil units, in the key's order
+#' (Histosols, Anthrosols,
 #' Leptosols, Vertisols, Fluvisols, Solonchaks, Gleysols, Andosols,
 #' Arenosols, Regosols, Podzols, Plinthosols, Ferralsols, Planosols,
 #' Solonetz, Greyzems, Chernozems, Kastanozems, Phaeozems, Podzoluvisols,
 #' Gypsisols, Calcisols, Nitisols, Alisols, Acrisols, Luvisols, Lixisols,
 #' Cambisols), on the 16 diagnostic horizons and 27 diagnostic properties of
-#' chapters IV and V read on the data. The soil units, the phases and the
-#' Legend of 1974 follow in later releases; \code{edition = "1974"} stops
-#' with a message until then.
+#' chapters IV and V read on the data. Under its grouping a soil keys to
+#' the first soil unit whose gate passes, in the key's order; the last unit
+#' of each grouping is the key's "Other ..." residual (Haplic, Eutric, and
+#' the Terric Histosols and Urbic Anthrosols, whose descriptions are shown,
+#' not tested). The phases and the Legend of 1974 follow in later releases;
+#' \code{edition = "1974"} stops with a message until then.
 #'
 #' The tests are three-valued: a measurement not recorded leaves its
 #' criterion undecided, a field observation not recorded is absent. A
-#' grouping tested before the assigned one that the data leave undecided
-#' makes the result provisional (\code{provisional_because}). The key has no
+#' grouping or unit tested before the assigned one that the data leave
+#' undecided makes the result provisional (\code{provisional_because},
+#' \code{"major_groups:<code>"} or \code{"units:<code>"}: the candidates).
+#' The key has no
 #' residual grouping after the Cambisols: a soil that no gate takes is
 #' \code{"[Not classified in the FAO-Unesco Revised Legend (1988)]"}, in
 #' brackets because the name is soilKey's, with the gates that failed in the
@@ -735,10 +742,12 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"fao1988"}; \code{name} and \code{rsg_or_order} hold the major
-#'   soil grouping as printed ("Luvisols"); \code{levels} has its code
-#'   ("LV"), name, page of the key and soilKey's Portuguese gloss
-#'   (\code{name_pt}); the key trace and \code{provisional_because}.
+#'   \code{"fao1988"}; \code{name} holds the soil unit as printed ("Haplic
+#'   Luvisols") and \code{rsg_or_order} the major soil grouping
+#'   ("Luvisols"); \code{levels} has one row per level (\code{major_groups},
+#'   \code{units}) with the code ("LV", "LVh"), name, page of the key and
+#'   soilKey's Portuguese gloss (\code{name_pt}); the key trace of both
+#'   levels and \code{provisional_because}.
 #' @references FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend,
 #'   with corrections and updates. World Soil Resources Report 60, FAO,
 #'   Rome. Reprinted with updates as Technical Paper 20, ISRIC, Wageningen,
@@ -748,6 +757,7 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' @examples
 #' res <- classify_fao(make_fao_example("LV"), on_missing = "silent")
 #' res$name
+#' res$rsg_or_order
 #' res$levels
 #' @export
 classify_fao <- function(pedon, edition = c("1988", "1974"), rules = NULL,
@@ -791,8 +801,12 @@ classify_fao1988 <- function(pedon, rules = NULL,
   lv <- res$levels
   tr <- res$trace$major_groups %||% list()
   if (is.data.frame(lv) && nrow(lv)) {
-    ent <- lapply(seq_len(nrow(lv)), function(i)
-      Find(function(z) identical(as.character(z$code), lv$code[i]), rules[[lv$level[i]]]))
+    # the units (v0.9.385) are listed under the code of their grouping
+    ent <- lapply(seq_len(nrow(lv)), function(i) {
+      lst <- rules[[lv$level[i]]]
+      if (i > 1L) lst <- lst[[lv$code[i - 1L]]]
+      Find(function(z) identical(as.character(z$code), lv$code[i]), lst)
+    })
     lv$name_pt <- vapply(ent, function(e) as.character(e$name_pt %||% NA_character_), "")
     lv$page <- vapply(ent, function(e) as.character(e$page %||% NA_character_), "")
     res$levels <- lv
@@ -827,17 +841,21 @@ classify_fao1988 <- function(pedon, rules = NULL,
 #' Example pedons for the FAO-Unesco legend
 #'
 #' Small synthetic profiles written for the tests and examples, one per
-#' major soil grouping of the Revised Legend (FAO 1988), built from the
-#' key's numbers (no profile of the book is copied). Each keys to its own
-#' grouping without an undecided gate before it. With \code{near_miss =
-#' TRUE}, the same profile with one printed number of its gate crossed (a
-#' Luvisol with a base saturation of 45 \% in its lower B, a Histosol with
-#' 35 cm of peat), which keys elsewhere. They are not real profiles.
+#' major soil grouping and one per soil unit of the Revised Legend (FAO
+#' 1988), built from the key's numbers (no profile of the book is copied).
+#' A grouping's example keys to its own grouping without an undecided gate
+#' before it; a unit's example (built on its grouping's) keys to its own
+#' unit without an undecided grouping or unit before it. With
+#' \code{near_miss = TRUE}, the same profile with one printed number of its
+#' gate crossed (a Luvisol with a base saturation of 45 \% in its lower B, a
+#' Histosol with 35 cm of peat, a Lithic Leptosol with its rock at 11 cm),
+#' which keys elsewhere; a unit whose gate has no printed number has no near
+#' miss. They are not real profiles.
 #'
 #' @param code The code of a major soil grouping of 1988 ("HS", "AT", "LP",
 #'   "VR", "FL", "SC", "GL", "AN", "AR", "RG", "PZ", "PT", "FR", "PL", "SN",
 #'   "GR", "CH", "KS", "PH", "PD", "GY", "CL", "NT", "AL", "AC", "LV", "LX",
-#'   "CM").
+#'   "CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...).
 #' @param edition \code{"1988"}; the examples of 1974 follow with its key.
 #' @param near_miss \code{TRUE} for the near miss of the grouping.
 #' @return A \code{\link{PedonRecord}}.
@@ -845,16 +863,20 @@ classify_fao1988 <- function(pedon, rules = NULL,
 #' @examples
 #' p <- make_fao_example("PH")
 #' p$horizons[, c("designation", "top_cm", "bottom_cm", "bs_pct")]
+#' classify_fao(make_fao_example("LVx"), on_missing = "silent")$name
 #' @export
-make_fao_example <- function(code = c("HS", "AT", "LP", "VR", "FL", "SC", "GL", "AN", "AR", "RG", "PZ", "PT", "FR", "PL",
-                                      "SN", "GR", "CH", "KS", "PH", "PD", "GY", "CL", "NT", "AL", "AC", "LV",
-                                      "LX", "CM"),
-                             edition = c("1988", "1974"), near_miss = FALSE) {
-  code <- match.arg(code)
+make_fao_example <- function(code = "HS", edition = c("1988", "1974"), near_miss = FALSE) {
+  code <- as.character(code)[1L]
   edition <- .fao_edition(match.arg(as.character(edition)[1L], c("1988", "1974")))
   if (edition == "1974")
     rlang::abort("The examples of the FAO-Unesco Legend of 1974 follow with its key in a later release.")
-  .fao88_example(code, isTRUE(near_miss))
+  if (code %in% .F88_GROUPINGS$code) return(.fao88_example(code, isTRUE(near_miss)))
+  if (!code %in% .f88_unit_codes())
+    rlang::abort(sprintf(paste("'%s' is not a code of the FAO-Unesco Revised Legend (1988): use a major",
+                               "soil grouping (\"LV\") or a soil unit (\"LVx\")."), code))
+  if (isTRUE(near_miss) && !code %in% .F88_UNIT_NEAR_MISS)
+    rlang::abort(sprintf("The soil unit %s has no printed number in its gate, so no near miss.", code))
+  .fao88_unit_example(code, isTRUE(near_miss))
 }
 
 # The registry's example function for the app (make_<id>_example).

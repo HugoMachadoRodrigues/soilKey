@@ -28,31 +28,39 @@ classify_fao(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"fao1988"}; \code{name} and \code{rsg_or_order} hold the major
-  soil grouping as printed ("Luvisols"); \code{levels} has its code
-  ("LV"), name, page of the key and soilKey's Portuguese gloss
-  (\code{name_pt}); the key trace and \code{provisional_because}.
+  \code{"fao1988"}; \code{name} holds the soil unit as printed ("Haplic
+  Luvisols") and \code{rsg_or_order} the major soil grouping
+  ("Luvisols"); \code{levels} has one row per level (\code{major_groups},
+  \code{units}) with the code ("LV", "LVh"), name, page of the key and
+  soilKey's Portuguese gloss (\code{name_pt}); the key trace of both
+  levels and \code{provisional_because}.
 }
 \description{
 Keys a \code{\link{PedonRecord}} through the FAO-Unesco legend of the Soil
 Map of the World. \strong{Experimental}: this release keys the 28 major
 soil groupings of the Revised Legend (FAO 1988, World Soil Resources
 Report 60; the text of the ISRIC reprint of 1997, Technical Paper 20),
-chapter X, pp. 75-89, in the key's order (Histosols, Anthrosols,
+chapter X, pp. 75-89, and their 153 soil units, in the key's order
+(Histosols, Anthrosols,
 Leptosols, Vertisols, Fluvisols, Solonchaks, Gleysols, Andosols,
 Arenosols, Regosols, Podzols, Plinthosols, Ferralsols, Planosols,
 Solonetz, Greyzems, Chernozems, Kastanozems, Phaeozems, Podzoluvisols,
 Gypsisols, Calcisols, Nitisols, Alisols, Acrisols, Luvisols, Lixisols,
 Cambisols), on the 16 diagnostic horizons and 27 diagnostic properties of
-chapters IV and V read on the data. The soil units, the phases and the
-Legend of 1974 follow in later releases; \code{edition = "1974"} stops
-with a message until then.
+chapters IV and V read on the data. Under its grouping a soil keys to
+the first soil unit whose gate passes, in the key's order; the last unit
+of each grouping is the key's "Other ..." residual (Haplic, Eutric, and
+the Terric Histosols and Urbic Anthrosols, whose descriptions are shown,
+not tested). The phases and the Legend of 1974 follow in later releases;
+\code{edition = "1974"} stops with a message until then.
 }
 \details{
 The tests are three-valued: a measurement not recorded leaves its
 criterion undecided, a field observation not recorded is absent. A
-grouping tested before the assigned one that the data leave undecided
-makes the result provisional (\code{provisional_because}). The key has no
+grouping or unit tested before the assigned one that the data leave
+undecided makes the result provisional (\code{provisional_because},
+\code{"major_groups:<code>"} or \code{"units:<code>"}: the candidates).
+The key has no
 residual grouping after the Cambisols: a soil that no gate takes is
 \code{"[Not classified in the FAO-Unesco Revised Legend (1988)]"}, in
 brackets because the name is soilKey's, with the gates that failed in the
@@ -65,6 +73,7 @@ and O horizons included. The readings where the text is silent are in
 \examples{
 res <- classify_fao(make_fao_example("LV"), on_missing = "silent")
 res$name
+res$rsg_or_order
 res$levels
 }
 \references{

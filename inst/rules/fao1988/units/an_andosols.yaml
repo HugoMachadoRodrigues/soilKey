@@ -1,0 +1,63 @@
+# The soil units of the Andosols (AN), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 79,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  AN:
+    - code: "ANi"
+      name: "Gelic Andosols"
+      name_pt: "Andossolos Gélicos (Gelic Andosols)"
+      page: 79
+      tests:
+        all_of:
+          - permafrost_fao88: {max_top_cm: 200}
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "ANg"
+      name: "Gleyic Andosols"
+      name_pt: "Andossolos Gleicos (Gleyic Andosols)"
+      page: 79
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "ANz"
+      name: "Vitric Andosols"
+      name_pt: "Andossolos Vítricos (Vitric Andosols)"
+      page: 79
+      tests:
+        all_of:
+          - vitric_fao88: {depth: 100}
+      notes: "Lacking a smeary consistence, or lacking a texture of silt loam or finer as the weighted average of the horizons within 100 cm, or both."
+
+    - code: "ANm"
+      name: "Mollic Andosols"
+      name_pt: "Andossolos Mólicos (Mollic Andosols)"
+      page: 79
+      tests:
+        all_of:
+          - mollic_a_fao88: {}
+      notes: "A mollic A horizon."
+
+    - code: "ANu"
+      name: "Umbric Andosols"
+      name_pt: "Andossolos Úmbricos (Umbric Andosols)"
+      page: 79
+      tests:
+        all_of:
+          - umbric_a_fao88: {}
+      notes: "An umbric A horizon."
+
+    - code: "ANh"
+      name: "Haplic Andosols"
+      name_pt: "Andossolos Háplicos (Haplic Andosols)"
+      page: 79
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

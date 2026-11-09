@@ -13,9 +13,9 @@ namespace: fao88
 classifier: classify_fao1988
 result_slot: fao1988
 top_level: major_groups
-# the soil units follow in a later part, read from units/ (one file per
-# grouping) as the level is added here
-levels: [major_groups]
+# the 153 soil units (v0.9.385) are read from units/ (one file per
+# grouping, the units of each grouping under its code, in the key's order)
+levels: [major_groups, units]
 display:
   en: "FAO-Unesco Revised Legend (1988)"
   pt: "Legenda Revisada FAO-Unesco (1988)"
@@ -27,7 +27,7 @@ citation: >
   and updates. World Soil Resources Report 60, FAO, Rome. Reprinted with updates
   as Technical Paper 20, ISRIC, Wageningen, 1997. ISBN 90-6672-057-3.
 version: "Text of the 1997 ISRIC reprint (Hugo's decision Q4): the corrections of 1990 and the updates of 1997 cannot be told apart"
-implementation_status: "soilKey v0.9.384 -- the 28 major soil groupings of the key (ch. X, pp. 75-89), in the key's order, on the 16 diagnostic horizons (v0.9.382) and the 27 diagnostic properties (v0.9.383) read on the data, with the shared readers of v0.9.381; no residual grouping (a soil no gate takes is [not classified], Q5). The 153 soil units, the 16 phases and the Legend of 1974 are not keyed yet"
+implementation_status: "soilKey v0.9.385 -- the 28 major soil groupings of the key (ch. X, pp. 75-89), in the key's order, on the 16 diagnostic horizons (v0.9.382) and the 27 diagnostic properties (v0.9.383) read on the data, with the shared readers of v0.9.381; no residual grouping (a soil no gate takes is [not classified], Q5); and, since v0.9.385, the 153 soil units of the key under their groupings, in the key's order, each grouping closed by its Other ... residual. The 16 phases and the Legend of 1974 are not keyed yet"
 source: |
   Ch. IV diagnostic horizons (pp. 25-33), ch. V diagnostic properties (pp. 34-41),
   ch. VI rules (p. 42), ch. VIII phases (pp. 67-71), ch. X key (pp. 75-89),

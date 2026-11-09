@@ -1,0 +1,72 @@
+# The soil units of the Solonchaks (SC), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 78,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  SC:
+    - code: "SCi"
+      name: "Gelic Solonchaks"
+      name_pt: "Solonchaks Gélicos (Gelic Solonchaks)"
+      page: 78
+      tests:
+        all_of:
+          - permafrost_fao88: {max_top_cm: 200}
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "SCg"
+      name: "Gleyic Solonchaks"
+      name_pt: "Solonchaks Gleicos (Gleyic Solonchaks)"
+      page: 78
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "SCm"
+      name: "Mollic Solonchaks"
+      name_pt: "Solonchaks Mólicos (Mollic Solonchaks)"
+      page: 78
+      tests:
+        all_of:
+          - mollic_a_fao88: {}
+      notes: "A mollic A horizon."
+
+    - code: "SCy"
+      name: "Gypsic Solonchaks"
+      name_pt: "Solonchaks Gípsicos (Gypsic Solonchaks)"
+      page: 78
+      tests:
+        all_of:
+          - gypsic_fao88: {max_top_cm: 125}
+      notes: "A gypsic horizon within 125 cm of the surface."
+
+    - code: "SCk"
+      name: "Calcic Solonchaks"
+      name_pt: "Solonchaks Cálcicos (Calcic Solonchaks)"
+      page: 78
+      tests:
+        all_of:
+          - calcic_fao88: {max_top_cm: 125}
+      notes: "A calcic horizon within 125 cm of the surface."
+
+    - code: "SCn"
+      name: "Sodic Solonchaks"
+      name_pt: "Solonchaks Sódicos (Sodic Solonchaks)"
+      page: 78
+      tests:
+        all_of:
+          - sodic_properties_fao88: {window_cm: [20, 50]}
+      notes: "Sodic properties at least between 20 and 50 cm from the surface."
+
+    - code: "SCh"
+      name: "Haplic Solonchaks"
+      name_pt: "Solonchaks Háplicos (Haplic Solonchaks)"
+      page: 78
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

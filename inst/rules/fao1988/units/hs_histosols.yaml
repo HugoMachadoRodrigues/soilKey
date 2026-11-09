@@ -1,0 +1,58 @@
+# The soil units of the Histosols (HS), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 75,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  HS:
+    - code: "HSi"
+      name: "Gelic Histosols"
+      name_pt: "Histossolos Gélicos (Gelic Histosols)"
+      page: 75
+      tests:
+        all_of:
+          - permafrost_fao88: {max_top_cm: 200}
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "HSt"
+      name: "Thionic Histosols"
+      name_pt: "Histossolos Tiônicos (Thionic Histosols)"
+      page: 75
+      tests:
+        all_of:
+          - any_of:
+              - sulfuric_fao88: {max_top_cm: 125}
+              - sulfidic_materials_fao88: {max_top_cm: 125}
+      notes: "A sulfuric horizon or sulfidic material (or both) at less than 125 cm from the surface."
+
+    - code: "HSl"
+      name: "Folic Histosols"
+      name_pt: "Histossolos Fólicos (Folic Histosols)"
+      page: 75
+      tests:
+        all_of:
+          - drainage_fao88: {class: well}
+      notes: "Well drained and never saturated with water for more than a few days (the site's drainage class; soilKey's reading)."
+
+    - code: "HSf"
+      name: "Fibric Histosols"
+      name_pt: "Histossolos Fíbricos (Fibric Histosols)"
+      page: 75
+      tests:
+        all_of:
+          - fibric_fao88: {depth: 35}
+          - drainage_fao88: {class: very_poor}
+      notes: "Raw or weakly decomposed organic material, fibre content dominant to 35 cm or more from the surface; very poorly drained or undrained."
+
+    - code: "HSs"
+      name: "Terric Histosols"
+      name_pt: "Histossolos Térricos (Terric Histosols)"
+      page: 75
+      tests:
+        default: true
+      notes: "Other Histosols (the key's residual)."
+      description: "Described in the key as highly decomposed organic material with few visible fibres, very dark grey to black to 35 cm or more, imperfect to very poor drainage; shown as information, not tested (default 9)."

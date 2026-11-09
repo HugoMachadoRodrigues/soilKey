@@ -1,0 +1,48 @@
+# The soil units of the Anthrosols (AT), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 75-76,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  AT:
+    - code: "ATa"
+      name: "Aric Anthrosols"
+      name_pt: "Antrossolos Áricos (Aric Anthrosols)"
+      page: 75
+      tests:
+        all_of:
+          - aric_fao88: {}
+      notes: "Remnants of diagnostic horizons from deep cultivation (the deep cultivation recorded at the site)."
+
+    - code: "ATf"
+      name: "Fimic Anthrosols"
+      name_pt: "Antrossolos Fímicos (Fimic Anthrosols)"
+      page: 75
+      tests:
+        all_of:
+          - fimic_a_fao88: {}
+          - none_of:
+              - fimic_not_manured_fao88: {}
+      notes: "A fimic A horizon (a man-made layer of manuring: not one made only of fills, wastes or irrigation sediments; soilKey's reading)."
+
+    - code: "ATc"
+      name: "Cumulic Anthrosols"
+      name_pt: "Antrossolos Cumúlicos (Cumulic Anthrosols)"
+      page: 76
+      tests:
+        all_of:
+          - cumulic_fao88: {min_cm: 50}
+      notes: "Fine sediments thicker than 50 cm from long-continued irrigation or a man-made raising of the surface."
+
+    - code: "ATu"
+      name: "Urbic Anthrosols"
+      name_pt: "Antrossolos Úrbicos (Urbic Anthrosols)"
+      page: 76
+      tests:
+        default: true
+      notes: "Other Anthrosols (the key's residual)."
+      description: "Described in the key as more than 50 cm of mine wastes, town refuse, urban fills and the like; shown as information, not tested (default 9)."

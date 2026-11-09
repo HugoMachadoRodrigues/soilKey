@@ -1,0 +1,73 @@
+# The soil units of the Arenosols (AR), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 80,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  AR:
+    - code: "ARg"
+      name: "Gleyic Arenosols"
+      name_pt: "Arenossolos Gleicos (Gleyic Arenosols)"
+      page: 80
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "ARa"
+      name: "Albic Arenosols"
+      name_pt: "Arenossolos Álbicos (Albic Arenosols)"
+      page: 80
+      tests:
+        all_of:
+          - albic_e_thick_fao88: {min_cm: 50, max_top_cm: 125}
+      notes: "An albic E horizon at least 50 cm thick within 125 cm of the surface."
+
+    - code: "ARc"
+      name: "Calcaric Arenosols"
+      name_pt: "Arenossolos Calcáricos (Calcaric Arenosols)"
+      page: 80
+      tests:
+        all_of:
+          - calcaric_fao88: {}
+      notes: "Calcareous at least between 20 and 50 cm from the surface."
+
+    - code: "ARl"
+      name: "Luvic Arenosols"
+      name_pt: "Arenossolos Lúvicos (Luvic Arenosols)"
+      page: 80
+      tests:
+        all_of:
+          - clay_increase_or_lamellae_fao88: {increase: 3, max_top_cm: 125}
+      notes: "A clay increase of 3 % (points) or more, or lamellae of clay accumulation, within 125 cm of the surface."
+
+    - code: "ARo"
+      name: "Ferralic Arenosols"
+      name_pt: "Arenossolos Ferrálicos (Ferralic Arenosols)"
+      page: 80
+      tests:
+        all_of:
+          - ferralic_properties_fao88: {max_top_cm: 125}
+          - below_a_colour_fao88: {chroma_min: 5, hue: 10YR}
+      notes: "Ferralic properties within 125 cm, and the horizon right below the A with a chroma of 5 or more or a hue redder than 10YR."
+
+    - code: "ARb"
+      name: "Cambic Arenosols"
+      name_pt: "Arenossolos Câmbicos (Cambic Arenosols)"
+      page: 80
+      tests:
+        all_of:
+          - cambic_alteration_fao88: {}
+      notes: "The colouring or alteration of a cambic B horizon (in the horizon right below the A)."
+
+    - code: "ARh"
+      name: "Haplic Arenosols"
+      name_pt: "Arenossolos Háplicos (Haplic Arenosols)"
+      page: 80
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

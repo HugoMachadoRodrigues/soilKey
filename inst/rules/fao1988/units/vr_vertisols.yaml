@@ -1,0 +1,47 @@
+# The soil units of the Vertisols (VR), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 77,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  VR:
+    - code: "VRy"
+      name: "Gypsic Vertisols"
+      name_pt: "Vertissolos Gípsicos (Gypsic Vertisols)"
+      page: 77
+      tests:
+        all_of:
+          - gypsic_fao88: {max_top_cm: 125}
+      notes: "A gypsic horizon within 125 cm of the surface."
+
+    - code: "VRk"
+      name: "Calcic Vertisols"
+      name_pt: "Vertissolos Cálcicos (Calcic Vertisols)"
+      page: 77
+      tests:
+        all_of:
+          - any_of:
+              - calcic_fao88: {max_top_cm: 125}
+              - soft_powdery_lime_fao88: {max_top_cm: 125}
+      notes: "A calcic horizon or concentrations of soft powdery lime within 125 cm of the surface."
+
+    - code: "VRd"
+      name: "Dystric Vertisols"
+      name_pt: "Vertissolos Distróficos (Dystric Vertisols)"
+      page: 77
+      tests:
+        all_of:
+          - bs_below_fao88: {lt: 50, top: 20, bottom: 50}
+      notes: "Base saturation (NH4OAc) below 50 % at least from 20 to 50 cm (every layer overlapping 20-50 cm)."
+
+    - code: "VRe"
+      name: "Eutric Vertisols"
+      name_pt: "Vertissolos Eutróficos (Eutric Vertisols)"
+      page: 77
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."
