@@ -53,7 +53,11 @@
 #'                       CSCJ 2011: temperature and man-made phases), a
 #'                       \code{data.frame} with \code{kind}, \code{code},
 #'                       \code{name}, \code{name_native} and \code{basis};
-#'                       \code{NULL} otherwise. Since v0.9.324.
+#'                       \code{NULL} otherwise. Since v0.9.324. The
+#'                       FAO-Unesco Revised Legend (since v0.9.386) gives
+#'                       every phase three-valued, with \code{status},
+#'                       \code{present} and \code{criterion}, and the
+#'                       classes of the map symbol (\code{\link{classify_fao}}).
 #' @field candidates     For the systems that attach a soil to several
 #'                       classes rather than key it to one (the French
 #'                       Referentiel pedologique 2008, since v0.9.346,
@@ -172,7 +176,14 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
         cli::cli_text("Provisional: undecided before it, {paste(self$provisional_because, collapse = ', ')}")
       }
       if (is.data.frame(self$phases) && nrow(self$phases) > 0L) {
-        cli::cli_text("Phases: {paste(self$phases$name, collapse = '; ')}")
+        if ("status" %in% names(self$phases)) {
+          # v0.9.386: phases read three-valued (the FAO-Unesco legend), with
+          # the classes of the map symbol
+          pl <- .fao_phase_print_lines(self$phases)
+          for (k in names(pl)) cli::cli_text("{k}: {pl[[k]]}")
+        } else {
+          cli::cli_text("Phases: {paste(self$phases$name, collapse = '; ')}")
+        }
       }
       # v0.9.353: the humus form of the RP 2008, beside the name
       if (is.data.frame(self$humus_form) && nrow(self$humus_form) > 0L) {

@@ -33,7 +33,14 @@ A \code{\link{ClassificationResult}} with \code{system_id}
   ("Luvisols"); \code{levels} has one row per level (\code{major_groups},
   \code{units}) with the code ("LV", "LVh"), name, page of the key and
   soilKey's Portuguese gloss (\code{name_pt}); the key trace of both
-  levels and \code{provisional_because}.
+  levels and \code{provisional_because}; and \code{phases}, a
+  \code{data.frame} with one row per phase and one per class of the map
+  symbol (\code{kind} \code{"phase"}, \code{"texture_class"},
+  \code{"slope_class"}), its \code{status} (\code{"present"},
+  \code{"absent"}, \code{"undecided"}, or \code{"not shown"} for a
+  unit the text excludes), \code{present} and \code{criterion}
+  (\code{TRUE}, \code{FALSE}, \code{NA}), page, basis, flags and the
+  attributes that would decide an undecided phase (\code{missing}).
 }
 \description{
 Keys a \code{\link{PedonRecord}} through the FAO-Unesco legend of the Soil
@@ -51,7 +58,10 @@ chapters IV and V read on the data. Under its grouping a soil keys to
 the first soil unit whose gate passes, in the key's order; the last unit
 of each grouping is the key's "Other ..." residual (Haplic, Eutric, and
 the Terric Histosols and Urbic Anthrosols, whose descriptions are shown,
-not tested). The phases and the Legend of 1974 follow in later releases;
+not tested). Since v0.9.386 the result also gives the 16 phases of
+chapter VIII (pp. 67-71) and the texture and slope classes of the map
+symbol (Appendix 2, p. 107) in \code{$phases}, beside the unit, which
+they never change. The Legend of 1974 follows in a later release;
 \code{edition = "1974"} stops with a message until then.
 }
 \details{
@@ -75,6 +85,7 @@ res <- classify_fao(make_fao_example("LV"), on_missing = "silent")
 res$name
 res$rsg_or_order
 res$levels
+res$phases[res$phases$status != "absent", c("kind", "code", "name", "status")]
 }
 \references{
 FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend,

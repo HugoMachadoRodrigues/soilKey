@@ -10,7 +10,7 @@
 # and waits for his word. The criteria are paraphrased; no text of the book
 # is shipped. 0.9.381 holds the shared readers; 0.9.382 the diagnostic
 # horizons; 0.9.383 the diagnostic properties; 0.9.384 the registry and the
-# 28 major soil groupings; 0.9.385 the 153 soil units.
+# 28 major soil groupings; 0.9.385 the 153 soil units; 0.9.386 the phases.
 readings:
   # --- the decisions of 2026-11-08 that this part applies -----------------------------
   - topic: "One module, two editions"
@@ -499,3 +499,64 @@ readings:
     page: "p. 83"
     version: "0.9.385"
     reading: "The slowly permeable horizon is the layer below the E that the Planosols gate found, with the adjoining layers below it of the same master horizon, starting within 125 cm; a base saturation below 50 % in one of them suffices ('in at least a part') (Hugo, 2026-11-09)."
+  # The readings of the phases and the map symbol (0.9.386).
+  - topic: "The phases beside the unit; the decisions applied"
+    edition: [1988]
+    page: "pp. 67-71, 107"
+    version: "0.9.386"
+    reading: "The 16 phases of ch. VIII are given in $phases of the classify_fao() result, beside the unit, each three-valued (present, absent, undecided, or not shown for a unit the text excludes); they never change the unit (p. 67). Field-only phases (gelundic, gilgai, rudic, takyric, the desert features of the yermic phase) are absent when not recorded, with no substitute threshold; a measurement not recorded (ECe, ESP, the water table, the days of flooding, the organic carbon) leaves its phase undecided (Q25, default 16). The duripan, fragipan, petroferric and placic phases read soilKey's USDA predicates (Soil Taxonomy 1975, p. 67) with the depths of the legend, the WRB horizons only as stand-ins, flagged (default 17). The phreatic phase is a water table within 500 cm with no gleyic properties, not shown for the Fluvisols and Gleysols (Q25). The texture class (1, 2, 3) of the upper 30 cm and the slope class (a, b, c) of the map symbol are given as two more rows (Q3) (Hugo, 2026-11-08)."
+  - topic: "Phases not shown for some units"
+    edition: [1988]
+    page: "pp. 68-70"
+    version: "0.9.386"
+    reading: "As printed for 1988: the salic phase is not shown for the Solonchaks (all their units; the Salic Fluvisols keep it, the text names only the Solonchaks); the sodic phase is not shown for the units whose definition holds a natric B or sodic properties, read as every unit of the Solonetz and the Sodic Solonchaks (SCn), not for any soil that happens to have them; the phreatic phase is not shown for the Fluvisols and Gleysols. The lithic phase has no exclusion in 1988 (the 1974 rule 'not for Lithosols' is not carried over), so it is shown for Leptosols too. When an excluded grouping or unit is only a candidate (undecided before the one assigned), a phase whose criterion is met is undecided (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Anthraquic phase: the irrigation history"
+    edition: [1988]
+    page: "p. 67"
+    version: "0.9.386"
+    reading: "Stagnic properties within 50 cm (stagnic_properties_fao88()) and a site history of long continued irrigation with surface waterlogging: flood_irrigated TRUE, paddy_years_frac above 0, or a land_use naming rice or paddy. irrigated TRUE without the kind of irrigation leaves the phase undecided (needs flood_irrigated); flood_irrigated or irrigated FALSE, or paddy_years_frac 0, rule it out; nothing recorded, absent, flagged (a site history is a field record). 'Long continued' has no number and is not tested (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Duripan, fragipan, petroferric and placic phases: what is read"
+    edition: [1988]
+    page: "pp. 67-69"
+    version: "0.9.386"
+    reading: "Each is a layer whose top is within 100 cm of the soil surface by one of: the USDA predicate (duripan_usda(), fragipan_usda() with its NASIS feature, petroferric_contact_usda(), placic_horizon_usda()); the kind of pan recorded in the field (pan_type: duripan or silcrete; fragipan; ferricrete or ironstone; thin ironpan), flagged; a designation with qm (duripan) or with the suffix x (fragipan) in the FAO notation or none declared, flagged; else the WRB petroduric, fragic and petroplinthic horizons as stand-ins, flagged, only in layers where the attributes the USDA predicate reads are not recorded (a stand-in never overrules the 1975 definition). A pan none of them shows is absent (a field observation), flagged. The spacing of fractures (10 cm) and the organic matter of the petroferric layer are not recorded by soilKey and not tested (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Phreatic phase: the gleyic properties"
+    edition: [1988]
+    page: "p. 69"
+    version: "0.9.386"
+    reading: "'Not reflected in the morphology' is read as no gleyic properties starting within 125 cm (gleyic_properties_fao88() with the depth of p. 42); gleyic properties rule the phase out whatever the depth of the water table, and undecided gleyic properties leave a water table within 500 cm undecided (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Salic and sodic phases: the measurements"
+    edition: [1988]
+    page: "pp. 69-70"
+    version: "0.9.386"
+    reading: "Salic: ec_dS_m above 4 in a layer starting within 100 cm; ec_max_dS_m (an upper bound) of 4 or less rules the layer out; an EC of 1:5 is not converted (undecided). Sodic: esp_pct above 6, else na_cmol / cec_cmol x 100, flagged, in a layer starting within 100 cm. A description that stops above 100 cm with no layer passing leaves either undecided (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Skeletic phase"
+    edition: [1988]
+    page: "p. 70"
+    version: "0.9.386"
+    reading: "A run of adjoining layers each with coarse_fragments_pct of 40 or more (any hard fragments: the text lists oxidic concretions, hardened plinthite, ironstone 'or other hard materials'), 25 cm thick or more, its top within 50 cm; rock and layers recorded strongly cemented or indurated are not part of it (not continuously cemented). A run thinner than 25 cm that reaches the base of the description is undecided (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Takyric phase: heavy texture, polygons and crust"
+    edition: [1988]
+    page: "p. 70"
+    version: "0.9.386"
+    reading: "Read on the first mineral layer: 'heavy textured' is clay above 35 % (the fine class of the map symbol, p. 107; the text has no number); cracking into polygons is polygonal_cracks_spacing_cm recorded above 0; the platy or massive crust is a platy or massive structure_type of that layer. Cracks or structure not recorded, absent; clay not recorded, undecided when the rest is present (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Yermic phase: carbon, texture and the desert features"
+    edition: [1988]
+    page: "pp. 70-71"
+    version: "0.9.386"
+    reading: "Organic carbon mixed over 0-18 cm below 0.6 %, or below 0.20 % where the 0-18 cm (thickness-weighted) is coarser than sandy loam (silt + 2 x clay below 30); the carbon condition is waived when the salic phase criterion is met, also in a Solonchak where the salic phase is not shown. The features: (1) ventifact_pct or varnish_pct above 0 in the first mineral layer (a pavement alone does not count); (2) pitted_quartz_pct 10 or more there; (3) palygorskite 2 % or more of the clay in a layer starting within 50 cm (palygorskite_pct, else a clay_mineralogy naming it, flagged); (4) aeolian_crack_infill TRUE in any layer; (5) a platy structure_type of the first mineral layer; (6) an aeolian_morphology of that layer naming sand or dunes (the 'stable surface' is not tested). A feature not recorded is absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Gelundic and gilgai phases"
+    edition: [1988]
+    page: "p. 68"
+    version: "0.9.386"
+    reading: "Gelundic: patterned_ground naming polygons (circles, nets, stripes, hummocks alone do not). Gilgai: gilgai_presence; else a microrelief_form of the site or of the surface layer naming gilgai (another recorded microrelief rules it out), flagged; the ridge heights of the text are descriptive, not a threshold. Not recorded, absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Slope class of the map symbol"
+    edition: [1988]
+    page: "p. 107"
+    version: "0.9.386"
+    reading: "The printed ranges share their ends (0-8, 8-30, over 30 %): 8 % is class a and 30 % class b, as 'over 30' makes c open below. The slope_pct of the site stands for the dominant slope of the map unit (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Slips of the phase chapter"
+    edition: [1988]
+    page: "pp. 67, 114"
+    version: "0.9.386"
+    reading: "The introduction of ch. VIII (p. 67) still says that the petrocalcic and petrogypsic horizons are shown as phases: the 1974 text carried over; in 1988 they are diagnostic horizons and those phases are deleted (App. 4, pp. 113-114), so soilKey has no petrocalcic or petrogypsic phase. App. 4 (p. 114) says the salic phase replaces the 'salic phase': read 'saline phase' (default 20) (Hugo, 2026-11-08)."

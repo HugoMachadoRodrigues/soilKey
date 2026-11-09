@@ -78,7 +78,11 @@ is firm or the classifier does not report it.}
 CSCJ 2011: temperature and man-made phases), a
 \code{data.frame} with \code{kind}, \code{code},
 \code{name}, \code{name_native} and \code{basis};
-\code{NULL} otherwise. Since v0.9.324.}
+\code{NULL} otherwise. Since v0.9.324. The
+FAO-Unesco Revised Legend (since v0.9.386) gives
+every phase three-valued, with \code{status},
+\code{present} and \code{criterion}, and the
+classes of the map symbol (\code{\link{classify_fao}}).}
 
 \item{\code{candidates}}{For the systems that attach a soil to several
 classes rather than key it to one (the French

@@ -715,7 +715,10 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' the first soil unit whose gate passes, in the key's order; the last unit
 #' of each grouping is the key's "Other ..." residual (Haplic, Eutric, and
 #' the Terric Histosols and Urbic Anthrosols, whose descriptions are shown,
-#' not tested). The phases and the Legend of 1974 follow in later releases;
+#' not tested). Since v0.9.386 the result also gives the 16 phases of
+#' chapter VIII (pp. 67-71) and the texture and slope classes of the map
+#' symbol (Appendix 2, p. 107) in \code{$phases}, beside the unit, which
+#' they never change. The Legend of 1974 follows in a later release;
 #' \code{edition = "1974"} stops with a message until then.
 #'
 #' The tests are three-valued: a measurement not recorded leaves its
@@ -747,7 +750,14 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #'   ("Luvisols"); \code{levels} has one row per level (\code{major_groups},
 #'   \code{units}) with the code ("LV", "LVh"), name, page of the key and
 #'   soilKey's Portuguese gloss (\code{name_pt}); the key trace of both
-#'   levels and \code{provisional_because}.
+#'   levels and \code{provisional_because}; and \code{phases}, a
+#'   \code{data.frame} with one row per phase and one per class of the map
+#'   symbol (\code{kind} \code{"phase"}, \code{"texture_class"},
+#'   \code{"slope_class"}), its \code{status} (\code{"present"},
+#'   \code{"absent"}, \code{"undecided"}, or \code{"not shown"} for a
+#'   unit the text excludes), \code{present} and \code{criterion}
+#'   (\code{TRUE}, \code{FALSE}, \code{NA}), page, basis, flags and the
+#'   attributes that would decide an undecided phase (\code{missing}).
 #' @references FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend,
 #'   with corrections and updates. World Soil Resources Report 60, FAO,
 #'   Rome. Reprinted with updates as Technical Paper 20, ISRIC, Wageningen,
@@ -759,6 +769,7 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' res$name
 #' res$rsg_or_order
 #' res$levels
+#' res$phases[res$phases$status != "absent", c("kind", "code", "name", "status")]
 #' @export
 classify_fao <- function(pedon, edition = c("1988", "1974"), rules = NULL,
                          on_missing = c("warn", "silent", "error"),
@@ -770,7 +781,11 @@ classify_fao <- function(pedon, edition = c("1988", "1974"), rules = NULL,
       "The FAO-Unesco Legend of 1974 is not yet available in soilKey: its key follows in a later release.",
       "Use edition = \"1988\" for the Revised Legend."))
   }
-  .classify_fao1988_impl(pedon, rules = rules, on_missing = on_missing, gapfill = gapfill)
+  res <- .classify_fao1988_impl(pedon, rules = rules, on_missing = on_missing, gapfill = gapfill)
+  # v0.9.386: the phases and the classes of the map symbol, beside the unit
+  # (ch. VIII, pp. 67-71; Appendix 2, p. 107); they never change it (Q25)
+  if (inherits(pedon, "PedonRecord")) res$phases <- .fao88_phases(pedon, res)
+  res
 }
 
 #' Classify a pedon in the FAO-Unesco Revised Legend (1988)
