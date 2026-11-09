@@ -202,7 +202,7 @@ test_that("the solum and buried horizons", {
   s <- soilKey:::.fao_solum(p)
   expect_identical(s$value, 90); expect_false(s$open)
   # a description that ends in the B gives a lower bound
-  s2 <- soilKey:::.fao_solum(p[1:3])
+  s2 <- soilKey:::.fao_solum(p[1:3, ])
   expect_identical(s2$value, 90); expect_true(s2$open)
   # AC counts, CB does not; H and O do not
   q <- .fao_h(top_cm = c(0, 10, 40, 70), bottom_cm = c(10, 40, 70, 100),
@@ -460,7 +460,7 @@ test_that("the decisions of 2026-11-09: rock, strongly humic, organic surface", 
   # the A alone (20-50 cm), not the O and the top of the A
   expect_equal(u$clay, 10); expect_identical(u$value, "coarse")
   expect_true("texture_from_mineral_surface" %in% u$flags)
-  expect_identical(soilKey:::.fao_texture_upper30(org[2:3], "1988")$flags, character(0))
+  expect_identical(soilKey:::.fao_texture_upper30(org[2:3, ], "1988")$flags, character(0))
   und <- .fao_h(top_cm = c(0, 20), bottom_cm = c(20, 60), oc_pct = c(25, 1),
                 clay_pct = c(NA, 10), sand_pct = c(NA, 75))
   expect_identical(soilKey:::.fao_texture_upper30(und, "1988")$value, "coarse")
