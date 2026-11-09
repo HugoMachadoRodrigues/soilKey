@@ -1,5 +1,76 @@
 # Changelog
 
+## soilKey 0.9.380 (2026-11-08)
+
+### Germany KA5: FAO horizon designations read on the data route
+
+Ninth part of the German soil systematics of the KA5 (Bodenkundliche
+Kartieranleitung, 5th ed., 2005; system id `ka5`). A profile that
+declares the FAO notation in `site$designation_system` (as
+[`isis_profile_to_pedon()`](https://hugomachadorodrigues.github.io/soilKey/reference/isis_profile_to_pedon.md)
+does) was read on the data alone: its FAO letters were thrown away, so
+an E was often read as an Ah, a Bt or a Bw as a loose C, and the class
+tests of the Ah/C-Böden and the Braunerden stayed undecided. A new file,
+`R/ka5-fao.R`, keeps the letters where an FAO letter and a KA5 symbol
+mean the same (the KA5 prints no correlation of horizon symbols; the
+pairs are read from the two definitions, KA5 pp. 92-105 and WRB 2022
+Annex 3, pp. 225-228). Each FAO designation bounds the KA5 horizons its
+row may be: an E is an eluvial A (Al, Ael, Ae, Ahe), an A an A that is
+not eluvial, a Bt a horizon with a Bt part, a Bw one with a Bv part, a
+Bs or Bh one with a Bs or Bh part, a plain B a B, P or T, a C a C, an R
+a solid rock (mC), an O an L, Of or Oh; the redox letters open the S and
+G horizons (g both, by the water regime the KA5 asks; l and r the G).
+Where a field descriptor is not recorded, a letter states what its
+definition names: t the clay coatings of the Bt, w the browning of the
+Bv, p the tillage of the Ap, k the secondary carbonate, g and l redox
+mottling present with its share open. Measured data come first and
+decide against a letter: recorded clay films, the clay difference,
+Munsell colours.
+
+Within the family the order of tests decides three-valued. When the data
+leave one horizon undecided, it is the letter’s own translation (Bt for
+Bt, Bv for Bw) and the open question is one the letter answers, the FAO
+designation reads it, as a KA5 designation would be read; such a row has
+a lower grade of evidence, listed in `provisional_because` as
+`horizons:<code>`. The letter does not answer whether water is
+groundwater or perched water (Q13), the organic band of Q10 (H or Aa),
+or the origin of carbonate measured in a B: those rows stay undecided. A
+finer horizon the letter does not name (an Axp for an FAO Ap) stays
+undecided beside it. The letter and the data are in conflict, and the
+row undecided with a note, when no horizon of the family holds on the
+measured data (an FAO Bt with few clay films, an FAO E not lighter than
+its Bt), or when a horizon outside the family holds on the measured data
+first (an FAO C browner than the C below, an FAO Bw with the coatings
+and clay of a Bt, an FAO Bt with a measured Sd or Go, an FAO A over a
+measured Ah-Bv); the redox translations the data rule out are dropped
+from the candidates. Numbered sub-horizons with the same defining letter
+are one horizon (Bt1/Btg2, Bw1/Bwg2): each Bt sub-horizon must show the
+clay enrichment on its own clay against the eluvial horizon above, a Bw1
+is compared with the horizon under the Bw, an E looks for its Bt under
+its sub-horizons and an EB. The A1, A2 and B3 of the 1977 numbering get
+no FAO reading. Rows with no designation, profiles that do not declare
+the FAO notation and profiles in the KA5 notation are read as before.
+Hugo confirmed the readings (`readings.yaml`); the reading of the 1977
+numbering is soilKey’s, for him to confirm.
+
+On the ISIS profiles from Germany (`inst/benchmarks/ka5_isis.R`, which
+now also counts a level as provisional when a horizon rests on a lower
+grade of evidence): class 2 of 16 (12.5 %, 3.5-36.0) becomes 4 of 16
+(25.0 %, 10.2-49.5) and type 1 of 15 (6.7 %, 1.2-29.8) becomes 3 of 15
+(20.0 %, 7.0-45.2); one class and one type are firm, the rest
+provisional. Profiles that stop at the division fall from 13 to 9 of the
+16 labelled; DE007 (Parabraunerde) and DE011 (Braunerde) now key to
+their type. DE002 (a Pseudogley in its label) keys as a
+Normparabraunerde, its S class now closed by the measured rust; DE009
+(Rosterde) as a Normbraunerde. The nine that still stop do so on what
+the data do not say: groundwater or perched water (DE003, DE006, DE019),
+bioturbation for an Axh (DE013, DE014, Q17), the origin of the carbonate
+measured in the Bt (DE015, DE016), a clay difference under the Bt
+minimum (DE012), the Bg of DE008. One expectation of
+`test-v09361-ka5-data-key.R` changes: an FAO Ap in a profile declared
+fao2006 is now read Ap, not Ah. Every other KA5 test and every
+classification of the other systems is unchanged (byte-identical).
+
 ## soilKey 0.9.379 (2026-11-08)
 
 ### Germany KA5: older German names and an offline benchmark on the ISIS profiles from Germany
