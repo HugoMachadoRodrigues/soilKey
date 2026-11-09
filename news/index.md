@@ -1,6 +1,60 @@
 # Changelog
 
-## soilKey 0.9.380 (2026-11-08)
+## soilKey 0.9.381 (2026-11-08)
+
+### FAO-Unesco legend: the attributes and the shared readers
+
+First part of the FAO-Unesco soil legend in its two editions, the
+Revised Legend of 1988 (World Soil Resources Report 60, read in the
+ISRIC reprint of 1997) and the Legend of 1974 (Soil Map of the World,
+Vol. I). Both will be one module with an edition switch, registered as
+two systems in a later part; nothing is registered or classified yet.
+
+New horizon attributes, from the plan’s list as Hugo decided (Q19,
+2026-11-08): `p2o5_citric_mg_kg`, `extractable_acidity_ph82_cmol`,
+`cec_ph82_cmol`, `al_dcb_pct`, `exch_acidity_kcl_cmol`, `ph_h2o_1to1`,
+`ph_h2o_1to5`, `rock_structure_pct`, `smeary_consistence`,
+`bleached_ped_coatings`, `ignition_redder`, `spodic_pellets`,
+`skeletans_pct`, `skeletan_thickness_mm`,
+`carbonate_coatings_faces_pct`, `nodule_size_max_cm`,
+`dta_low_endotherm`, the rubbed moist colour (`munsell_hue_rubbed`,
+`munsell_value_rubbed`, `munsell_chroma_rubbed`), `pitted_quartz_pct`,
+`palygorskite_pct` and `aeolian_crack_infill`. New site attributes:
+`flooding_days_growing_period`, `rudic_recorded` and `reference_fao74`.
+Each names the criterion it serves, with its page, and its fallback when
+not recorded. `inst/ATTRIBUTES.md` and `inst/schemas/pedon-schema.json`
+are regenerated.
+
+A new file, `R/fao-readers.R`, holds the internal readers the
+diagnostics of both editions will share, all three-valued, each saying
+what it read, what would decide it and the fallbacks it used: depths
+from the literal soil surface, H and O horizons included (Q9); windows
+read “throughout” or “in some part”, and “within X cm” by the top of the
+feature; thickness-weighted means and the mixed surface, with the depth
+below a shallow soil counted as zero where the strongly humic test of
+1988 says so; organic matter as organic carbon x 1.724, flagged (Q11);
+pH at 1:1 and 1:5, the CEC per kg clay by NH4OAc or NH4Cl, the effective
+CEC of each edition and the base saturation, each flagged where the
+method differs (Q12); the three texture classes of the map symbol in
+each edition, the class of the upper 30 cm and the 1974 depth of 125, 90
+or 75 cm by that class (Q10), sandy loam or finer and the texture groups
+of tonguing; the solum, buried horizons under 50 cm of new material (35
+cm over an andic mantle in 1988); the clay increase in three bands with
+its numbers as arguments, equal to the USDA branch of
+`test_clay_increase_argic()` on a grid of clay contents, within a
+vertical distance and undecided across a lithological discontinuity; the
+hue rank and hue comparisons; the rubbed colour, the moist colour
+standing in, flagged (Q24); and the fallbacks of smeary consistence, the
+ignition test, rock structure and palygorskite.
+
+The numbers of both editions, with their pages, are in
+`data-raw/fao_thresholds_1988.yaml` and
+`data-raw/fao_thresholds_1974.yaml`, and the readings in
+`data-raw/fao_readings.yaml` (Hugo’s decisions of 2026-11-08 and
+2026-11-09, his word on every reading of this part); the later parts
+move them to the rule folders. No text of the books is shipped. Every
+classification is unchanged (the fixtures of the other systems
+byte-identical). \# soilKey 0.9.380 (2026-11-08)
 
 ### Germany KA5: FAO horizon designations read on the data route
 
@@ -70,6 +124,23 @@ minimum (DE012), the Bg of DE008. One expectation of
 `test-v09361-ka5-data-key.R` changes: an FAO Ap in a profile declared
 fao2006 is now read Ap, not Ah. Every other KA5 test and every
 classification of the other systems is unchanged (byte-identical).
+
+Decided by Hugo on the review (2026-11-08 and 2026-11-09). soilKey’s
+readings of this part are accepted, with these choices: rock is an R
+designation, or 90 % bedrock or more with a hard rupture resistance
+recorded (bedrock alone is not rock); free iron below 0.5 % reads as not
+turning redder on ignition, 0.5 % or more leaves the test undecided; the
+texture of the upper 30 cm under an organic surface starts at the first
+mineral horizon, flagged; the strongly humic mean of a soil shallower
+than 50 cm over rock is divided by 100 cm, flagged; and a horizon
+without a designation between the last A, E or B and the first C leaves
+the solum undecided. A window is read only where the depths fill it: a
+gap or a layer without depths leaves it undecided, overlapping layers
+are flagged, and “within X cm” fails only when the description goes
+below X or reaches rock at X. A vector answer with an undecided element
+now names what would decide it, buried horizons are read after a figure
+(Bt2b), a rock layer has full rock structure, and a base saturation
+computed over another CEC method carries both flags.
 
 ## soilKey 0.9.379 (2026-11-08)
 
