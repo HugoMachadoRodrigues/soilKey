@@ -16,7 +16,11 @@
 #   * three values: a measurement not recorded leaves its criterion
 #     undecided, a field observation not recorded is absent;
 #   * layers buried under 50 cm or more of new material (35 cm or more of an
-#     andic mantle, read here) are not diagnostic (p. 42);
+#     andic mantle, read here) are not diagnostic (p. 42) for the properties
+#     bound to a horizon (ferralic, ferric, nitic, tonguing, interfingering);
+#     the properties of the present state (gleyic, stagnic, permafrost,
+#     salic, sodic, calcareous, sulfidic and the others) are read in them
+#     too (Hugo, 2026-11-09);
 #   * a property with no depth in the key has its upper limit within 125 cm
 #     (p. 42; `max_top_cm = NULL`); a depth printed or passed by the caller
 #     is read as "within X cm" by the rule of 2026-11-09 (it fails only when
@@ -142,11 +146,21 @@
   ifelse(sel, ifelse(is.na(f), lab, paste(f, lab, sep = "; ")), f)
 }
 
-# A per-layer answer with the buried layers and rock taken out.
-.f88_pr_clean <- function(x, v) {
-  v <- .f88_unburied(x, as.logical(v))
+# A per-layer answer with rock taken out and, for the properties bound to a
+# horizon (`bury = TRUE`), the buried layers (p. 42; Hugo, 2026-11-09).
+.f88_pr_clean <- function(x, v, bury = FALSE) {
+  v <- as.logical(v)
+  if (bury) v <- .f88_unburied(x, v)
   v[x$rock] <- FALSE
   v
+}
+
+# Whether the site's designations are in the FAO notation (or the WRB or
+# USDA one, which write the suffixes f and v alike), or in no declared
+# notation: then the suffixes f (frozen) and v (plinthite) are read.
+.f88_fao_notation <- function(x) {
+  ds <- tolower(trimws(as.character(x$site$designation_system %||% NA)[1L]))
+  is.na(ds) || !nzchar(ds) || grepl("^(fao|wrb|usda|kst|soil taxonomy|guidelines)", ds)
 }
 
 # Membership of the layers in the units of a horizon reader (TRUE in a sure
@@ -161,29 +175,42 @@
 # than 20 %, or 20 points more where it has 20 % or more (the two items are
 # joined by "and" in the print; read as either-or by the upper clay, default
 # 5). "Over less than 5 cm" is the lower boundary of the upper layer recorded
-# abrupt or clear; gradual and diffuse fail; not recorded, undecided (plan
-# D14 a; soilKey's reading). Answered on the lower layer, whose top is the
-# depth of the change.
+# abrupt or clear (.fao_boundary_sharp(), the reader of argic item 6 too);
+# gradual and diffuse fail; not recorded, absent, flagged (Hugo,
+# 2026-11-09). A layer whose top is less than 5 cm below the base of the
+# upper one, across a thin transitional layer, is compared too, the
+# distance read from the depths. Answered on the lower layer, whose top is
+# the depth of the change.
 .f88_abrupt_v <- function(x) {
   .f88_memo(x, "pr_abrupt", function() {
     n <- x$n
     clay <- .f88_num(x, "clay_pct")
-    bd <- .field_term(.fao_col(x$h, "boundary_distinctness", "character"))
-    v <- rep(FALSE, n)
-    for (i in seq_len(n)[-1L]) {
-      j <- i - 1L
-      if (x$rock[i] || x$rock[j]) next
-      inc <- if (is.na(clay[j]) || is.na(clay[i])) NA
-             else if (clay[j] < 20) clay[i] > clay[j] && clay[i] >= 2 * clay[j]
-             else clay[i] - clay[j] >= 20
-      adj <- !is.na(x$bot[j]) && !is.na(x$top[i]) && abs(x$top[i] - x$bot[j]) <= 0.5
-      dist <- if (!adj || is.na(bd[j]) || !nzchar(bd[j])) NA
-              else if (grepl("abrupt|clear|clara", bd[j])) TRUE
-              else if (grepl("gradual|diffuse|difusa", bd[j])) FALSE
-              else NA
-      v[i] <- .fao_and(inc, dist)
+    sharp <- .fao_boundary_sharp(x$h)
+    v <- rep(FALSE, n); flag <- rep(NA_character_, n)
+    inc_of <- function(j, i) {
+      if (is.na(clay[j]) || is.na(clay[i])) NA
+      else if (clay[j] < 20) clay[i] > clay[j] && clay[i] >= 2 * clay[j]
+      else clay[i] - clay[j] >= 20
     }
-    list(value = .f88_pr_clean(x, v), missing = c("clay_pct", "boundary_distinctness"))
+    for (i in seq_len(n)[-1L]) {
+      if (x$rock[i] || is.na(x$top[i])) next
+      res <- logical(0)
+      for (j in seq_len(i - 1L)) {
+        if (x$rock[j] || is.na(x$bot[j])) next
+        gap <- x$top[i] - x$bot[j]
+        if (j == i - 1L && abs(gap) <= 0.5) {
+          inc <- inc_of(j, i)
+          r <- .fao_and(inc, sharp$value[j])
+          if (!isFALSE(inc) && !is.na(sharp$flags[j])) flag[i] <- sharp$flags[j]
+        } else if (gap > 0.5 && gap < 5) {
+          r <- inc_of(j, i)
+          if (isTRUE(r)) flag[i] <- .f88_addf(flag[i], TRUE, "change_across_thin_layer")
+        } else next
+        res <- c(res, r)
+      }
+      v[i] <- if (length(res)) .fao_or(res) else FALSE
+    }
+    list(value = .f88_pr_clean(x, v), flags = flag, missing = "clay_pct")
   })
 }
 
@@ -266,15 +293,13 @@ andic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # --- calcareous and calcaric (p. 35) ------------------------------------------------------------
 
 # Calcareous: strong effervescence with 10 % HCl in most of the fine earth,
-# or more than 2 % CaCO3 equivalent. caco3_pct decides (not recorded: an HCl
-# reaction recorded as none, or a water pH below 6.5, is no carbonate, as
-# for the horizons). soilKey's effervescence_class is read with 1 M HCl,
-# flagged: strong or very strong in most of the fine earth (an extent
-# recorded as local does not count) passes; without caco3_pct the class is
-# read by the calcareousness classes of the 1990 Guidelines the reprint cites
-# (slight 0-2 %, moderate 2-10 %, strong 10-25 %, extreme over 25 %): none or
-# slight is not calcareous, moderate or stronger is, flagged (soilKey's
-# reading). Not recorded: undecided.
+# or more than 2 % CaCO3 equivalent. caco3_pct decides (the reading of the
+# carbonate from the pH or an HCl reaction recorded as none, made
+# for the horizons is not read here). soilKey's effervescence_class (1 M
+# HCl) is read for the 10 % HCl, flagged: strong, very strong or violent in
+# most of the fine earth (an extent recorded as local does not count)
+# passes. Without caco3_pct only that decides; any other effervescence, or
+# none recorded, leaves it undecided (Hugo, 2026-11-09).
 .f88_effervescence_class <- function(x) {
   e <- .field_term(.fao_col(x$h, "effervescence_class", "character"))
   out <- rep(NA_integer_, length(e))
@@ -283,23 +308,22 @@ andic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
   out[is.na(out) & grepl("^(moderate|moderada)", e)] <- 2L
   out[is.na(out) & grepl("^(very strong|violent|extreme|muito forte|extremamente)", e)] <- 4L
   out[is.na(out) & grepl("^(strong|forte)", e)] <- 3L
+  out[is.na(out) & grepl("^(strongly|fortemente)", e)] <- 3L
   out
 }
 
 .f88_calcareous_v <- function(x) {
   .f88_memo(x, "pr_calcareous", function() {
-    cc <- .f88_caco3(x)
+    cce <- .f88_num(x, "caco3_pct")
     cls <- .f88_effervescence_class(x)
     ext <- .f88_chr(x, "effervescence_extent")
     most <- is.na(ext) | !grepl("^local", ext)
-    flag <- cc$flags
+    flag <- rep(NA_character_, x$n)
     strong <- !is.na(cls) & cls >= 3L & most
-    by_cce <- .f88_cmp(cc$value, ">", 2)
-    inf <- is.na(by_cce) & !is.na(cls) & most
-    by_cce[inf] <- cls[inf] >= 2L
-    flag <- .f88_addf(flag, inf, "cce_from_effervescence_class")
-    flag <- .f88_addf(flag, strong | inf, "effervescence_1m_hcl_for_10pct_hcl")
-    v <- .f88_or(by_cce, strong)
+    by_cce <- .f88_cmp(cce, ">", 2)
+    # strong effervescence passes; anything else decides nothing
+    v <- ifelse(strong, TRUE, by_cce)
+    flag <- .f88_addf(flag, strong & !(by_cce %in% TRUE), "effervescence_1m_hcl_for_10pct_hcl")
     list(value = .f88_pr_clean(x, v), flags = flag,
          missing = c("caco3_pct", "effervescence_class"))
   })
@@ -332,7 +356,13 @@ continuous_hard_rock_fao88 <- function(pedon, max_top_cm = NULL) {
   b <- .f88_num(x, "bedrock_pct"); dg <- .f88_lgl(x, "rock_diggable")
   extra <- !rk & !is.na(b) & b >= 90 & dg %in% FALSE
   suf <- ifelse(is.na(x$desg), NA_character_, sub("^[A-Z]+(/[A-Z]+)?", "", x$desg))
-  pan <- !is.na(suf) & grepl("m", suf) & !rk
+  # a cemented pan is not rock, even where the rock reader counts it (a Bkm of
+  # 90 % 'bedrock' recorded very hard): a suffix m, or a petrocalcic or
+  # petrogypsic horizon
+  r_desg <- !is.na(x$desg) & grepl(.WRB_ROCK_DESIGNATION, x$desg)
+  petro <- .f88_member(x, .f88_hz_petro(x, "calcic")$units) %in% TRUE |
+    .f88_member(x, .f88_hz_petro(x, "gypsic")$units) %in% TRUE
+  pan <- !r_desg & ((!is.na(suf) & grepl("m", suf)) | petro)
   v <- (rk | extra) & !pan
   flag <- ifelse(extra & !pan, "rock_from_bedrock_not_diggable", NA_character_)
   lim <- if (is.null(max_top_cm)) 125 else max_top_cm
@@ -372,7 +402,7 @@ ferralic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
     v <- .f88_and(where, low)
     flag <- ifelse(is.na(cc$flags), cs$flags, cc$flags)
     flag <- .f88_addf(flag, below_a & !(cb %in% TRUE), "horizon_below_a")
-    list(value = .f88_pr_clean(x, v), flags = flag, missing = c("cec_cmol", "clay_pct"),
+    list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag, missing = c("cec_cmol", "clay_pct"),
          evidence = list(cambic = cb, below_a = below_a))
   }, max_top_cm)
 }
@@ -405,8 +435,8 @@ ferralic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
 # Many coarse mottles with hues redder than 7.5YR or chromas above 5, or
 # both ("many" 15 % or more, "coarse" more than 20 mm, Q22); or discrete
 # nodules up to 2 cm with enriched, cemented exteriors redder or stronger in
-# chroma than the interiors (ferric_nodules_pct above 0, else
-# fe_mn_nodules_pct, flagged; nodule_size_max_cm 2 or less, not recorded
+# chroma than the interiors (ferric_nodules_pct above 0; fe_mn_nodules_pct
+# alone leaves it undecided, flagged; nodule_size_max_cm 2 or less, not recorded
 # accepted, flagged; the exteriors are not recorded and are taken as such).
 # Field observations: not recorded, absent; mottles recorded without their
 # amount, size or colour leave the mottle path undecided.
@@ -429,15 +459,17 @@ ferralic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
     mott <- .f88_and(many, coarse, colour)
     nod <- .f88_num(x, "ferric_nodules_pct"); flag <- rep(NA_character_, n)
     fm <- .f88_num(x, "fe_mn_nodules_pct")
-    use_fm <- is.na(nod) & !is.na(fm)
-    nod[use_fm] <- fm[use_fm]
-    flag <- .f88_addf(flag, use_fm & fm > 0, "fe_mn_nodules_for_ferric_nodules")
+    # Fe-Mn nodules recorded without ferric nodules: undecided, flagged (Hugo,
+    # 2026-11-09)
+    use_fm <- is.na(nod) & !is.na(fm) & fm > 0
+    flag <- .f88_addf(flag, use_fm, "fe_mn_nodules_not_read_as_ferric")
     sz <- .f88_num(x, "nodule_size_max_cm")
     has_nod <- !is.na(nod) & nod > 0
     nod_ok <- has_nod & (is.na(sz) | sz <= 2)
+    nod_ok[use_fm] <- NA
     flag <- .f88_addf(flag, has_nod & is.na(sz), "nodule_size_not_recorded_accepted")
     v <- .f88_or(mott, nod_ok)
-    list(value = .f88_pr_clean(x, v), flags = flag,
+    list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag,
          missing = c("redoximorphic_features_pct", "mottle_size_class", "mottle_colors"),
          evidence = list(mottles = data.frame(layer = x$idx, many = many, coarse = coarse,
                                               colour = colour, nodules = nod_ok)))
@@ -475,14 +507,14 @@ ferric_properties_fao88 <- function(pedon, max_top_cm = NULL) {
 
 # Fluviatile, marine or lacustrine sediments receiving fresh material, with
 # one or both of: (1) organic carbon that decreases irregularly with depth
-# (an increase from one layer to the next deeper one within 125 cm, by more
-# than `oc_increase_min` points, soilKey's reading) or stays above 0.20 % to
+# (an increase of more than `oc_increase_min`, 0.2 points, from one layer to
+# the next deeper one within 125 cm; Hugo, 2026-11-09) or stays above 0.20 % to
 # 125 cm (a sand or loamy sand stratum with less is exempt where a finer
 # layer below it within 125 cm, not a buried A, has more than 0.20 %); (2)
 # stratification (stratification_pattern recorded) in 25 % or more of the
 # soil volume within 125 cm. The origin is read where it is recorded; where
 # it is not, the two criteria decide, flagged (default 6).
-fluvic_properties_fao88 <- function(pedon, oc_increase_min = 0) {
+fluvic_properties_fao88 <- function(pedon, oc_increase_min = 0.2) {
   x <- .f88_ctx(pedon)
   id <- "fluvic_properties"
   if (!x$n) return(.f88_pr_result(x, id, list(value = FALSE, layers = integer(0))))
@@ -496,7 +528,7 @@ fluvic_properties_fao88 <- function(pedon, oc_increase_min = 0) {
   inc <- vapply(seq_along(L)[-1L], function(k) {
     i <- L[k]; j <- L[k - 1L]
     if (abs(x$top[i] - x$bot[j]) > 0.5) return(NA)
-    .f88_cmp(oc[i] - oc[j], ">", oc_increase_min)
+    .f88_cmpr(oc[i] - oc[j], ">", oc_increase_min)
   }, NA)
   c1a <- if (any(inc %in% TRUE)) TRUE else if (length(inc) && all(inc %in% FALSE) && w$covered) FALSE
          else if (!length(inc) && w$covered) FALSE else NA
@@ -558,12 +590,13 @@ geric_properties_fao88 <- function(pedon, max_top_cm = NULL) {
 
 # Reduction (item 1): rH = Eh / 29 + 2 pH of 19 or less (rh_value; else
 # eh_mv with ph_h2o, flagged), a positive ferricyanide test or a positive
-# dipyridyl test (childs_test); the tests recorded decide, a test not made
-# is not read when another was. Without any of them recorded, the colour
-# pattern counts as evidence of reduction, flagged (Q21): a matrix of moist
-# value 4 or more with chroma 2 or less or a hue N, GY, BG, G or B, or
-# reduced_matrix_pct / reduction_colours_pct above 0; the value of 4 keeps
-# dark humus-stained layers out (soilKey's reading).
+# dipyridyl test (childs_test), read as an OR over the three: a negative test
+# with the others not made is undecided, not a refutation (Hugo, 2026-11-09).
+# The colour pattern confirms reduction but never refutes it (Q21; Hugo,
+# 2026-11-09): a matrix of moist value 4 or more with chroma 2 or less or a
+# hue N, GY, BG, G or B, or reduced_matrix_pct / reduction_colours_pct above
+# 0, is reduction, flagged; any other colour leaves it undecided; an E or
+# albic E layer never takes the colour route.
 .f88_gley_hue <- function(hue) {
   vapply(as.character(hue), function(h) {
     p <- .munsell_hue_parts(h)
@@ -580,25 +613,24 @@ geric_properties_fao88 <- function(pedon, max_top_cm = NULL) {
     calc <- is.na(rh) & !is.na(eh) & !is.na(ph)
     rh[calc] <- eh[calc] / 29 + 2 * ph[calc]
     flag <- .f88_addf(flag, calc, "rh_from_eh_and_ph")
-    t_rh <- .f88_cmp(rh, "<=", 19)
+    t_rh <- .f88_cmpr(rh, "<=", 19)
     pos <- function(v) ifelse(is.na(v), NA, ifelse(grepl("^pos", v), TRUE, ifelse(grepl("^neg", v), FALSE, NA)))
     fc <- pos(.f88_chr(x, "ferricyanide_test")); dp <- pos(.f88_chr(x, "childs_test"))
-    tested <- !is.na(t_rh) | !is.na(fc) | !is.na(dp)
-    # the tests recorded decide (a test not made is not read when another was)
-    v <- ifelse(tested, (t_rh %in% TRUE) | (fc %in% TRUE) | (dp %in% TRUE), NA)
-    # the colour pattern where no test is recorded (Q21)
+    tests <- .f88_or(t_rh, fc, dp)
+    # the colour route: confirms only
     col <- .f88_colours(x)
     gh <- .f88_gley_hue(col$hue)
     rm <- .f88_num(x, "reduced_matrix_pct"); rc <- .f88_num(x, "reduction_colours_pct")
-    by_col <- ifelse(is.na(col$vm), NA,
-              ifelse(col$vm < 4, FALSE,
-              ifelse(gh %in% TRUE, TRUE, ifelse(is.na(col$cm), NA, col$cm <= 2))))
-    by_col[(!is.na(rm) & rm > 0) | (!is.na(rc) & rc > 0)] <- TRUE
-    v[!tested] <- by_col[!tested]
-    flag <- .f88_addf(flag, !tested & !is.na(by_col), "reduction_from_colour_pattern")
-    list(value = as.logical(v), tested = tested, flags = flag,
-         missing = c("rh_value", "ferricyanide_test", "childs_test", "munsell_value_moist",
-                     "munsell_chroma_moist"))
+    gley_col <- (!is.na(col$vm) & col$vm >= 4 & ((gh %in% TRUE) | (!is.na(col$cm) & col$cm <= 2))) |
+      (!is.na(rm) & rm > 0) | (!is.na(rc) & rc > 0)
+    e_layer <- (!is.na(x$master) & grepl("^E", x$master)) |
+      (.f88_member(x, .f88_hz_albic_e(x)$units) %in% TRUE)
+    use <- !(tests %in% TRUE) & gley_col & !e_layer
+    v <- tests
+    v[use] <- TRUE
+    flag <- .f88_addf(flag, use, "reduction_from_colour_pattern")
+    list(value = as.logical(v), flags = flag,
+         missing = c("rh_value", "ferricyanide_test", "childs_test"))
   })
 }
 
@@ -730,6 +762,11 @@ gleyic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
     unm <- .f88_or(.f88_cmp(col$cm, "<=", 1), cc1)
     pattern <- ifelse(mo$present | conc, b, unm)
     v <- .f88_and(red$value, pattern)
+    # the Podzol route of item 4 (grains free of iron in or right below the
+    # spodic B) shows stagnic as well as gleyic properties
+    pod <- .f88_gley_colours(x)$podzol
+    v[pod %in% TRUE] <- TRUE
+    flag <- .f88_addf(flag, pod %in% TRUE, "podzol_grains_free_of_iron_ignition")
     # item 3d, support only: the chroma of a deeper layer above that of the layer
     d <- vapply(seq_len(n), function(i) {
       deeper <- which(seq_len(n) > i & !x$rock)
@@ -768,8 +805,8 @@ gypsiferous_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # for tonguing, as skeletans (clean silt or sand coatings) more than 1 mm
 # thick on the ped faces (skeletan_thickness_mm, the coating on each face;
 # more than 2 mm across two faces) making more than 15 % of the volume of
-# the subhorizon (skeletans_pct). Not recorded: undecided (the attribute's
-# reading). No grouping or unit of 1988 uses it.
+# the subhorizon (skeletans_pct). Not recorded: absent, flagged (a field
+# observation; Hugo, 2026-11-09). No grouping or unit of 1988 uses it.
 interfingering_fao88 <- function(pedon, max_top_cm = NULL) {
   .f88_pr_layers(pedon, "interfingering", function(x) {
     bt <- .f88_or(.f88_in_units(x, .f88_hz_argic_natric(x, FALSE)),
@@ -779,10 +816,14 @@ interfingering_fao88 <- function(pedon, max_top_cm = NULL) {
       if (i == 1L) return(FALSE)
       .f88_any(ae[seq_len(i - 1L)])
     }, NA)
-    sk <- .f88_and(.f88_cmp(.f88_num(x, "skeletans_pct"), ">", 15),
-                   .f88_cmp(.f88_num(x, "skeletan_thickness_mm"), ">", 1))
+    sp <- .f88_num(x, "skeletans_pct"); st <- .f88_num(x, "skeletan_thickness_mm")
+    sk <- .f88_and(.f88_cmp(sp, ">", 15), .f88_cmp(st, ">", 1))
+    none <- is.na(sp) & is.na(st)
+    sk[none] <- FALSE
     v <- .f88_and(bt, above, sk)
-    list(value = .f88_pr_clean(x, v), missing = c("skeletans_pct", "skeletan_thickness_mm"))
+    flag <- ifelse(none & !(.f88_and(bt, above) %in% FALSE), "skeletans_not_recorded_absent", NA_character_)
+    list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag,
+         missing = c("skeletans_pct", "skeletan_thickness_mm"))
   }, max_top_cm)
 }
 
@@ -795,9 +836,12 @@ interfingering_fao88 <- function(pedon, max_top_cm = NULL) {
 # coatings or pressure faces, few or more). Field observations: a structure,
 # grade or shiny faces not recorded are absent; but, as soilKey's WRB nitic
 # horizon reads it, an angular blocky structure with no second-level
-# structure recorded leaves the property undecided (soilKey's reading). Oxalate Fe above 0.2 % and at
-# least 5 % of the DCB Fe are read only where measured, and can reject
-# (default 7).
+# structure recorded leaves the
+# property undecided (Hugo, 2026-11-09). Oxalate iron above 0.2 % and at
+# least 5 % of the DCB iron are read only where measured, and can reject
+# (default 7); the text gives them as Fe2O3, so the 0.2 % is compared with
+# fe_ox_pct (Fe) as 0.2 x 0.6994 = 0.14 % Fe (the ratio is the same in
+# either form).
 .f88_nitic_v <- function(x) {
   .f88_memo(x, "pr_nitic", function() {
     n <- x$n
@@ -815,10 +859,10 @@ interfingering_fao88 <- function(pedon, max_top_cm = NULL) {
     struct <- ifelse(poly, TRUE, .f88_and(blocky, poly2))
     morph <- .f88_and(.f88_cmp(clay, ">=", 30), grade, struct, shiny)
     fo <- .f88_num(x, "fe_ox_pct"); fd <- .f88_num(x, "fe_dcb_pct")
-    lab <- ifelse(is.na(fo), TRUE, ifelse(fo <= 0.2, FALSE,
+    lab <- ifelse(is.na(fo), TRUE, ifelse(fo <= 0.2 * 0.6994, FALSE,
                   ifelse(is.na(fd) | fd <= 0, TRUE, fo / fd >= 0.05)))
     v <- .f88_and(morph, lab)
-    list(value = .f88_pr_clean(x, v),
+    list(value = .f88_pr_clean(x, v, bury = TRUE),
          missing = c("clay_pct", "structure_type_secondary", "fe_dcb_pct"))
   })
 }
@@ -844,8 +888,8 @@ organic_soil_materials_fao88 <- function(pedon, max_top_cm = NULL) {
 # --- permafrost (p. 39) ----------------------------------------------------------------------------
 
 # A layer perennially at or below 0 C: permafrost_temp_C of 0 or less; else a
-# designation with the suffix f (frozen) or ice recorded (ice_pct above 0),
-# flagged. Not recorded: absent, flagged (a field observation; as the USDA
+# designation with the frozen suffix of its notation or ice recorded
+# (ice_pct above 0), flagged. Not recorded: absent, flagged (a field observation; as the USDA
 # permafrost of soilKey). The depth is read without the coverage rule: a
 # description that ends above `max_top_cm` is not undecided (soilKey's
 # reading).
@@ -854,23 +898,34 @@ permafrost_fao88 <- function(pedon, max_top_cm = NULL) {
   id <- "permafrost"
   if (!x$n) return(.f88_pr_result(x, id, list(value = FALSE, layers = integer(0))))
   t <- .f88_num(x, "permafrost_temp_C")
-  suf <- ifelse(is.na(x$desg), NA_character_, sub("^[A-Z]+(/[A-Z]+)?", "", x$desg))
-  fz <- !is.na(suf) & grepl("f", suf)
+  # the frozen suffix by the notation the site declares
+  # (.frozen_designation_pattern(): f in the FAO, WRB and USDA notations, z
+  # in the Canadian one); in another declared notation an f is not read and
+  # leaves the layer undecided (Hugo, 2026-11-09)
+  own <- .f88_fao_notation(x) ||
+    !identical(.frozen_designation_pattern(x$site), .frozen_designation_pattern(list()))
+  pat <- .frozen_designation_pattern(if (own) x$site else list())
+  fz <- !is.na(x$desg) & grepl(pat, x$desg)
   ice <- .f88_num(x, "ice_pct")
-  v <- ifelse(!is.na(t), t <= 0, fz | (!is.na(ice) & ice > 0))
+  icey <- !is.na(ice) & ice > 0
+  v <- ifelse(!is.na(t), t <= 0, ifelse(icey | (fz & own), TRUE, ifelse(fz, NA, FALSE)))
   flag <- rep(NA_character_, x$n)
-  flag <- .f88_addf(flag, is.na(t) & fz, "permafrost_from_designation_f")
-  flag <- .f88_addf(flag, is.na(t) & !fz & !is.na(ice) & ice > 0, "permafrost_from_ice")
+  flag <- .f88_addf(flag, is.na(t) & fz & own, "permafrost_from_designation")
+  flag <- .f88_addf(flag, is.na(t) & fz & !own & !icey, "frozen_suffix_other_notation_not_read")
+  flag <- .f88_addf(flag, is.na(t) & !(fz & own) & icey, "permafrost_from_ice")
   v <- .f88_pr_clean(x, v)
   lim <- if (is.null(max_top_cm)) 125 else max_top_cm
-  hit <- which(v %in% TRUE & !is.na(x$top) & x$top <= lim)
-  fl <- .f88_flags(flag, hit)
+  cand <- !is.na(x$top) & x$top <= lim
+  hit <- which(v %in% TRUE & cand)
+  und <- which(is.na(v) & cand)
+  fl <- .f88_flags(flag, c(hit, und))
   if (!length(hit)) {
-    fl <- c(fl, if (all(is.na(t))) "permafrost_not_recorded_absent")
+    if (!length(und)) fl <- c(fl, if (all(is.na(t))) "permafrost_not_recorded_absent")
     deepest <- suppressWarnings(max(x$bot, na.rm = TRUE))
     if (is.finite(deepest) && deepest < lim) fl <- c(fl, "description_ends_above_depth")
   }
-  st <- list(value = length(hit) > 0L, layers = hit)
+  st <- list(value = if (length(hit)) TRUE else if (length(und)) NA else FALSE,
+             layers = if (length(hit)) hit else und)
   .f88_pr_result(x, id, st, flags = fl, values = v, max_top_cm = max_top_cm,
                  evidence = list(temperature_regime_rules_out = .str_rules_out_permafrost(x$site)))
 }
@@ -881,8 +936,8 @@ permafrost_fao88 <- function(pedon, max_top_cm = NULL) {
 # Iron-rich, humus-poor material that hardens irreversibly on repeated
 # wetting and drying; the amount is set by the key. plinthite_pct above 0
 # (`min_pct` NULL) or at least `min_pct`; not recorded, a designation with
-# the suffix v (plinthite) is present with its amount unknown, flagged (an
-# amount asked is then undecided); plinthite_hardens recorded FALSE is not
+# the suffix v (plinthite, in the FAO notation or none declared) is present
+# with its amount unknown, flagged (an amount asked is then undecided); plinthite_hardens recorded FALSE is not
 # plinthite. `min_thickness_cm` asks for a run of such layers that thick.
 # Field observations: not recorded, absent.
 plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top_cm = NULL) {
@@ -890,11 +945,15 @@ plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top
     p <- .f88_num(x, "plinthite_pct")
     suf <- ifelse(is.na(x$desg), NA_character_, sub("^[A-Z]+(/[A-Z]+)?", "", x$desg))
     vd <- !is.na(suf) & grepl("v", suf)
+    own <- .f88_fao_notation(x)
     v <- if (is.null(min_pct)) p > 0 else p >= min_pct
     dv <- is.na(p) & vd
-    v[dv] <- if (is.null(min_pct)) TRUE else NA
+    # the suffix v is plinthite only in the FAO notation (or none declared);
+    # in another notation it leaves the layer undecided (Hugo, 2026-11-09)
+    v[dv] <- if (is.null(min_pct) && own) TRUE else NA
     v[is.na(p) & !vd] <- FALSE
-    flag <- ifelse(dv, "plinthite_from_designation_v", NA_character_)
+    flag <- ifelse(dv, if (own) "plinthite_from_designation_v" else "suffix_v_other_notation_not_read",
+                   NA_character_)
     hd <- .f88_lgl(x, "plinthite_hardens")
     v[hd %in% FALSE] <- FALSE
     v <- .f88_pr_clean(x, v)
@@ -935,13 +994,15 @@ salic_properties_fao88 <- function(pedon, max_top_cm = 30) {
 
 # --- slickensides and smeary consistence (p. 39) ----------------------------------------------------
 
-# Slickensides recorded few or more (or continuous, present); none or absent:
-# no; not recorded: absent, flagged.
+# Slickensides: any presence recorded (very few, few, distinct, yes ...)
+# passes; none, absent, no or 0 does not; not recorded, absent, flagged
+# (Hugo, 2026-11-09).
+.F88_NONE_RE <- "^(none|absent|no|nenhum|nenhuma|ausente|ausentes|sem|0|false|f|nil|-)$"
 slickensides_fao88 <- function(pedon, max_top_cm = NULL) {
   .f88_pr_layers(pedon, "slickensides", function(x) {
     s <- .fao_col(x$h, "slickensides", "character")
     rec <- !is.na(s) & nzchar(trimws(s))
-    v <- rec & .amount_at_least(s, c("few", "continuous", "present", "TRUE", "true"))
+    v <- rec & !grepl(.F88_NONE_RE, .field_term(s))
     flag <- ifelse(rec, NA_character_, "slickensides_not_recorded_absent")
     list(value = .f88_pr_clean(x, v), flags = flag)
   }, max_top_cm)
@@ -981,10 +1042,10 @@ sodic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # --- soft powdery lime (p. 40) -------------------------------------------------------------------
 
 # Soft secondary lime related to the structure: coatings on 50 % or more of
-# the structural faces (carbonate_coatings_faces_pct; not recorded, coatings
-# named in secondary_carbonates_form pass, flagged), or soft nodules 5 % or
-# more by volume (carbonate_soft_pct; soft concretions or powdery forms named
-# without the amount leave it undecided). Pseudomycelia never count. Field
+# the structural faces (carbonate_coatings_faces_pct), or soft nodules 5 % or
+# more by volume (carbonate_soft_pct); coatings, soft concretions or powdery
+# forms named in secondary_carbonates_form without the amount leave it
+# undecided, flagged (Hugo, 2026-11-09). Pseudomycelia never count. Field
 # observations: nothing recorded, absent, flagged.
 .f88_spl_v <- function(x) {
   .f88_memo(x, "pr_spl", function() {
@@ -995,8 +1056,8 @@ sodic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
     coat_form <- !is.na(form) & grepl("coating", form) & !pseudo
     soft_form <- !is.na(form) & grepl("soft|powder", form) & !pseudo
     flag <- rep(NA_character_, x$n)
-    c1 <- ifelse(!is.na(cf), cf >= 50, ifelse(coat_form, TRUE, FALSE))
-    flag <- .f88_addf(flag, is.na(cf) & coat_form, "coatings_from_secondary_carbonates_form")
+    c1 <- ifelse(!is.na(cf), cf >= 50, ifelse(coat_form, NA, FALSE))
+    flag <- .f88_addf(flag, is.na(cf) & coat_form, "coatings_named_without_amount")
     c2 <- ifelse(!is.na(sn), sn >= 5, ifelse(soft_form, NA, FALSE))
     v <- .f88_or(c1, c2)
     none <- is.na(cf) & is.na(sn) & is.na(form)
@@ -1020,8 +1081,22 @@ strongly_humic_fao88 <- function(pedon) {
   id <- "strongly_humic"
   if (!x$n) return(.f88_pr_result(x, id, list(value = FALSE, layers = integer(0))))
   w <- .fao_weighted(x$h, "oc_pct", 0, 100, zero_below_rock = TRUE)
-  v <- .f88_cmp(w$value, ">", 1.4)
-  st <- list(value = v, layers = w$layers %||% integer(0))
+  v <- .f88_cmpr(w$value, ">", 1.4)
+  lay <- w$layers %||% integer(0)
+  if (is.na(v)) {
+    # a description that stops above 100 cm passes when the carbon of the
+    # layers described already exceeds 1.4 % x 100 cm (the rest counts 0 or
+    # more)
+    oc <- .f88_num(x, "oc_pct")
+    th <- pmax(pmin(x$bot, 100) - pmax(x$top, 0), 0)
+    ok <- !is.na(th) & th > 0 & !x$rock & !is.na(oc)
+    if (round(sum(oc[ok] * th[ok]), 6) > 140) {
+      v <- TRUE; lay <- which(ok)
+      w$flags <- c(w$flags, "carbon_sum_exceeds_140_before_100cm")
+      w$missing <- character(0)
+    }
+  }
+  st <- list(value = v, layers = lay)
   .f88_pr_result(x, id, st, flags = w$flags, missing = w$missing,
                  evidence = list(oc_weighted_0_100 = w$value), notes = w$note,
                  window_cm = c(0, 100))
@@ -1034,7 +1109,8 @@ strongly_humic_fao88 <- function(pedon) {
 # sulfate_s_pct as a lower bound, flagged), less than three times as much
 # CaCO3 equivalent as sulfur (caco3_pct, read as for the horizons) and a pH
 # above 3.5 (ph_h2o; the ratio is not printed). The waterlogged state is
-# reported (the site's drainage), not tested (soilKey's reading).
+# reported (the site's drainage), not tested (Hugo, 2026-11-09). With only
+# the lower bound of S, CaCO3 of three times it leaves the test undecided.
 .f88_sulfidic_v <- function(x) {
   .f88_memo(x, "pr_sulfidic", function() {
     s <- .f88_num(x, "s_total_pct")
@@ -1048,6 +1124,8 @@ strongly_humic_fao88 <- function(pedon) {
     sv <- ifelse(!is.na(s), s, lb)
     cc <- .f88_caco3(x)
     c_ok <- ifelse(is.na(cc$value) | is.na(sv), NA, round(cc$value - 3 * sv, 6) < 0)
+    # with only the lower bound of S, a CCE of three times it does not refute
+    c_ok[use_lb & c_ok %in% FALSE] <- NA
     ph <- .f88_num(x, "ph_h2o"); p1 <- .fao_ph(x$h, "1to1")
     ph[is.na(ph)] <- p1$value[is.na(ph)]
     v <- .f88_and(s_ok, as.logical(c_ok), .f88_cmp(ph, ">", 3.5))
@@ -1116,13 +1194,12 @@ tonguing_fao88 <- function(pedon, kind = c("albic", "chernozem"), max_top_cm = N
     vol2 <- rd(vol); wd2 <- rd(wd); dp2 <- rd(dp)
     rec <- !is.na(vol2) | !is.na(wd2) | !is.na(dp2)
     deeper <- ifelse(is.na(dp2) | is.na(wd2), NA, dp2 * 10 > wd2)
-    if (kind == "chernozem") deeper[is.na(wd2) & !is.na(dp2) & dp2 > 0] <- TRUE
     wide <- if (kind == "albic") .f88_cmp(wd2, ">=", need) else rep(TRUE, n)
     tg <- .f88_and(.f88_cmp(vol2, ">", 15), deeper, wide)
     tg[!rec] <- FALSE
     flag <- .f88_addf(flag, !rec & !(target %in% FALSE), "tongues_not_recorded_absent")
     v <- .f88_and(target, tg)
-    list(value = .f88_pr_clean(x, v), flags = flag,
+    list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag,
          missing = c("tongue_vol_pct", "tongue_width_mm", "tongue_depth_cm"),
          evidence = list(kind = kind))
   }, max_top_cm)
@@ -1143,7 +1220,7 @@ tonguing_fao88 <- function(pedon, kind = c("albic", "chernozem"), max_top_cm = N
     s <- .fao_col(x$h, "slickensides", "character")
     st <- .field_term(.fao_col(x$h, "structure_type", "character"))
     feat <- (!is.na(cw) & cw > 0) |
-      (!is.na(s) & .amount_at_least(s, c("few", "continuous", "present", "TRUE", "true"))) |
+      (!is.na(s) & nzchar(trimws(s)) & !grepl(.F88_NONE_RE, .field_term(s))) |
       (!is.na(st) & grepl("wedge|parallelepiped|parallelipiped|lenticular|cunei", st))
     v <- .f88_and(.f88_cmp(clay, ">=", 30), feat)
     list(value = .f88_pr_clean(x, v), missing = "clay_pct")

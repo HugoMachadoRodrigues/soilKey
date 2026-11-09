@@ -826,7 +826,7 @@ ochric_a_fao88 <- function(pedon) {
     inc15 <- .fao_clay_increase(h, distance = 15)
     sk <- .f88_clay_skins(x)
     mat <- .desg_material_number(.fao_col(h, "designation", "character"))
-    bd <- .f88_chr(x, "boundary_distinctness")
+    sharp <- .fao_boundary_sharp(x$h)
     lam <- .f88_num(x, "lamellae_cumulative_cm")
     trunc <- isTRUE(.f88_site_lgl(x, "anthropic_truncation"))
     starts <- list()
@@ -877,8 +877,9 @@ ochric_a_fao88 <- function(pedon) {
         }
         thc <- x$top[i] - topc
         # an abrupt transition: over less than 5 cm, a boundary recorded
-        # abrupt or clear (default 5)
-        abrupt <- !is.na(bd[i - 1L]) && grepl("abrupt|clear", bd[i - 1L])
+        # abrupt or clear (default 5); not recorded, absent, flagged (Hugo,
+        # 2026-11-09; the reader of the abrupt textural change)
+        abrupt <- isTRUE(sharp$value[i - 1L])
         ok <- thc >= if (abrupt) 5 else 18
         ms <- mat[seq_len(maybe[length(maybe)])]
         disc <- length(unique(ms[!is.na(ms)])) > 1L
@@ -895,7 +896,8 @@ ochric_a_fao88 <- function(pedon) {
         start = i, upper = up, sure = sure, maybe = maybe, status = status,
         skins = sk_s, items = c(texture = tex[i], not_ferralic = .f88_not(ferr[i]),
                                 clay_increase = inc, thickness = thick, no_skins_rule = item6),
-        flags = .f88_flags(sk$flags, maybe))
+        flags = c(.f88_flags(sk$flags, maybe),
+                  if (!sk_s && i > 1L && !is.na(sharp$flags[i - 1L])) sharp$flags[i - 1L]))
     }
     list(starts = starts,
          missing = c("clay_pct", "silt_pct", "sand_pct", "clay_films_amount"))

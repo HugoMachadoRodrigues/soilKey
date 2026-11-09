@@ -280,54 +280,64 @@ readings:
     version: "0.9.383"
     reading: "The abrupt textural change over less than 5 cm is a boundary recorded abrupt or clear, gradual and diffuse fail, and its two items are either-or by the clay of the upper layer (default 5); fluvic properties: the organic carbon and stratification criteria decide, the fluviatile, marine or lacustrine origin read where recorded (6); nitic properties: 30 % clay and the structure decide, oxalate and DCB iron read only where measured (7); vertic properties: clayey is 30 % clay or more (8); the geric 'plus' read (20); windows and depths as default 11 (Hugo, 2026-11-08)."
 
-  # soilKey's readings of this part, for Hugo's word.
-  - topic: "Boundary distinctness not recorded (abrupt textural change)"
+  # Hugo's decisions on the readings of this part and the review (2026-11-09).
+  - topic: "Boundary distinctness not recorded"
     edition: [1988]
-    page: "p. 34"
+    page: "pp. 28, 34"
     version: "0.9.383"
-    reading: "A clay jump that meets the numbers with no boundary distinctness recorded leaves the abrupt textural change undecided (plan D14 a), where item 6 of the argic B reads an unrecorded boundary as not abrupt (soilKey's reading, for Hugo to confirm, 2026-11-09)."
-  - topic: "Calcareous from the effervescence class"
+    reading: "A boundary over less than 5 cm is one recorded abrupt or clear (abrupta, clara), read by one reader for the abrupt textural change and argic item 6 (.fao_boundary_sharp()); not recorded, absent, flagged boundary_distinctness_not_recorded_absent (a field observation). A layer starting less than 5 cm below the base of the upper one, across a thin transitional layer, is also compared, the distance read from the depths (Hugo, 2026-11-09)."
+  - topic: "Calcareous without CaCO3"
     edition: [1988]
     page: "p. 35"
     version: "0.9.383"
-    reading: "soilKey's effervescence_class is read for the 10 % HCl of the text, flagged; strong or very strong in most of the fine earth passes. Without caco3_pct, the class is read by the calcareousness classes of the 1990 Guidelines (none or slight 0-2 %: not calcareous; moderate 2-10 % or stronger: calcareous), flagged cce_from_effervescence_class; an extent recorded as local does not count (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "Without caco3_pct only strong effervescence (strong, very strong, violent; effervescence_class read for the 10 % HCl, flagged) in most of the fine earth decides, as calcareous; any other effervescence, none recorded, or no record leaves it undecided. The readings of the carbonate from the pH or a reaction recorded as none, made for the horizons, are not applied here (Hugo, 2026-11-09)."
   - topic: "Fluvic properties: irregular decrease and thin sand strata"
     edition: [1988]
     page: "p. 35"
     version: "0.9.383"
-    reading: "Organic carbon decreasing irregularly with depth is any increase from one layer to the next deeper one within 125 cm (argument oc_increase_min = 0). A thin stratum of sand is a sand or loamy sand layer of any thickness; it is exempt from the 0.20 % when a finer layer below it within 125 cm, not a buried A, has more. A recorded parent material naming rock, residuum, loess, till or colluvium is not a fluvic sediment; a floodplain, levee, delta, tidal or backswamp landform names one (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "Organic carbon decreasing irregularly with depth is an increase of more than 0.2 points from one layer to the next deeper one within 125 cm (oc_increase_min = 0.2, strict). A thin stratum of sand is a sand or loamy sand layer; it is exempt from the 0.20 % when a finer layer below it within 125 cm, not a buried A, has more. The origin is read where recorded (a parent material naming rock, residuum, loess, till or colluvium is not a fluvic sediment; a floodplain, levee, delta, tidal or backswamp landform is one); not recorded, the criteria decide, flagged sediment_origin_not_recorded_criteria_decide (Hugo, 2026-11-09)."
   - topic: "Groundwater with its capillary fringe at the surface"
     edition: [1988]
     page: "p. 36 item 2b"
     version: "0.9.383"
-    reading: "A water table recorded at or above the surface, flooded, or not perched within 100 cm (soilKey's number) of the surface; perched, none observed or deeper is not the sign; not recorded, absent, flagged. The dye test is not recorded (soilKey's reading, for Hugo to confirm, 2026-11-09)."
-  - topic: "Reduction from colour"
+    reading: "A water table recorded at or above the surface, flooded, or not perched within 100 cm of the surface; perched, none observed or deeper is not the sign; not recorded, absent, flagged. The dye test is not recorded (Hugo, 2026-11-09)."
+  - topic: "Reduction from tests and colour"
     edition: [1988]
     page: "pp. 36-37"
     version: "0.9.383"
-    reading: "The colour pattern read as reduction (Q21) is a matrix of moist value 4 or more with chroma 2 or less or a hue N, GY, BG, G or B, or a reduced matrix recorded; the value of 4 keeps dark humus-stained A horizons out. The same gley matrix can give sign a (by colour) and sign c of the gleyic properties, so a gley matrix with no test recorded passes, flagged. The tests recorded decide: one negative test with no other is no reduction (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "The three tests (rH 19 or less, ferricyanide, dipyridyl) are read as an OR: a negative test with the others not made is undecided, not a refutation. The colour confirms but never refutes: a matrix of moist value 4 or more with chroma 2 or less or a hue N, GY, BG, G or B, or a reduced matrix recorded, gives reduction, flagged reduction_from_colour_pattern, even beside a negative test; any other colour leaves it undecided; an E or albic E layer never takes the colour route. The same gley matrix may count for signs a and c of the gleyic properties (Hugo, 2026-11-09)."
   - topic: "The andic mantle of p. 42"
     edition: [1988]
     page: "p. 42"
     version: "0.9.383"
-    reading: "A mantle of new material 35 to 50 cm thick over buried horizons has andic properties when every layer of it has them (three-valued); its burial of the horizons below is now read for every 1988 diagnostic (soilKey's reading, for Hugo to confirm, 2026-11-09)."
-  - topic: "Nitic structure not recorded"
+    reading: "A mantle of new material 35 to 50 cm thick over buried horizons has andic properties when every layer of it has them (three-valued) (Hugo, 2026-11-09)."
+  - topic: "Burial of the properties"
+    edition: [1988]
+    page: "p. 42"
+    version: "0.9.383"
+    reading: "Below the first buried horizon under a thick enough mantle only the properties bound to a horizon are removed (ferralic, ferric, nitic, tonguing, interfingering); the properties of the present state (gleyic, stagnic, permafrost, salic, sodic, calcareous, sulfidic and the others) are read in the buried layers too (Hugo, 2026-11-09)."
+  - topic: "Nitic properties"
     edition: [1988]
     page: "p. 38"
     version: "0.9.383"
-    reading: "An angular blocky structure, moderate or strong, with no second-level structure recorded leaves the nitic properties undecided, as soilKey's WRB nitic horizon reads it; a polyhedral or nutty structure_type is the flat-edged element itself. A structure, grade or shiny faces (clay films or pressure faces, few or more) not recorded are absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "An angular blocky structure, moderate or strong, with no second-level structure recorded leaves the nitic properties undecided; a polyhedral or nutty structure_type is the flat-edged element itself; a structure, grade or shiny faces not recorded are absent. The oxalate iron of the text is Fe2O3: its 0.2 % is compared with fe_ox_pct (Fe) as 0.2 x 0.6994 = 0.14 % Fe; the ratio to DCB iron is the same in either form (Hugo, 2026-11-09)."
   - topic: "Depths of the properties"
     edition: [1988]
     page: "p. 42"
     version: "0.9.383"
-    reading: "A property with no depth in the key is read in the layers starting within 125 cm, as the horizons of 0.9.382 are, without asking the description to reach 125 cm; a depth printed in a definition (salic 30 cm, stagnic 50 cm, fluvic 125 cm, strongly humic 100 cm, calcaric 20-50 cm) or passed by the key is read by the rule of 2026-11-09 (it fails only when the description reaches below it). Permafrost is a field observation: absent unless recorded, never undecided because the description stops above 200 cm, flagged (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "A property with no depth in the key is read in the layers starting within 125 cm, as the horizons of 0.9.382 are, without asking the description to reach 125 cm; a depth printed in a definition (salic 30 cm, stagnic 50 cm, fluvic 125 cm, strongly humic 100 cm, calcaric 20-50 cm) or passed by the key follows the fill rule of 2026-11-09. Strongly humic passes where the carbon of the layers described above 100 cm already exceeds 1.4 x 100. Permafrost is absent unless recorded, never undecided because the description stops above 200 cm, flagged (Hugo, 2026-11-09)."
   - topic: "Sulfidic materials"
     edition: [1988]
     page: "p. 40"
     version: "0.9.383"
-    reading: "The waterlogged state of the definition is reported (the site's drainage), not tested; the pH, whose ratio is not printed, is ph_h2o, else ph_h2o_1to1; without s_total_pct, sulfidic_s_pct plus sulfate_s_pct is a lower bound that can only make it pass (soilKey's reading, for Hugo to confirm, 2026-11-09)."
-  - topic: "Other readings of the properties"
+    reading: "The waterlogged state is reported (the site's drainage), not tested; the pH is ph_h2o (else ph_h2o_1to1); without s_total_pct, sulfidic_s_pct plus sulfate_s_pct is a lower bound that can make it pass, and a CaCO3 of three times that bound then leaves it undecided (Hugo, 2026-11-09)."
+  - topic: "Frozen and plinthite suffixes"
+    edition: [1988]
+    page: "pp. 39, 96-103"
+    version: "0.9.383"
+    reading: "The frozen suffix is read by the notation the site declares (.frozen_designation_pattern(): f in the FAO, WRB and USDA notations or none declared, z in the Canadian one); an f in another declared notation (SiBCS, KA5 ...) leaves permafrost undecided, flagged. The suffix v is plinthite of unknown amount, flagged, only in the FAO notation or none declared; in another notation it leaves plinthite undecided. Recorded ice is permafrost, flagged (Hugo, 2026-11-09)."
+  - topic: "Field observations of the properties"
     edition: [1988]
     page: "pp. 35-41"
     version: "0.9.383"
-    reading: "Stagnic: mottles recorded without colours are taken as of higher chroma, flagged; ped-surface colours not recorded are absent. Ferric: mottles recorded without their amount, size or colour leave the mottle path undecided; the enriched exteriors of nodules are taken as met. Ferralic properties: the horizon right below the A is the first layer after the run of A layers. Soft powdery lime: soft concretions or powdery forms named without an amount leave it undecided. Tonguing: read on the receiving layer, else on the layer above, flagged; the upper part of the argic B is its first layer, under an albic E. Plinthite: a v suffix is plinthite of unknown amount, flagged. Permafrost: a suffix f or ice recorded, flagged. Andic item 2: volcaniclastic material not recorded is absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "Stagnic: mottles recorded without colours are of higher chroma, flagged; ped-surface colours not recorded are absent. Ferric: mottles without their amount, size or colour leave the mottle path undecided; the enriched exteriors of nodules are taken as met and nodules of unrecorded size accepted, flagged; Fe-Mn nodules alone leave it undecided, flagged. Soft powdery lime: coatings, soft concretions or powdery forms named without an amount leave it undecided, flagged. Tonguing: read on the receiving layer, else on the layer above, flagged; Chernozem tongues without a width are undecided. Interfingering: skeletans not recorded are absent, flagged. Slickensides: any presence recorded that is not none passes. Continuous hard rock: a cemented pan (suffix m, petrocalcic or petrogypsic) is never rock. Ferralic properties: the horizon right below the A is the first layer after the run of A layers. Andic item 2: volcaniclastic material not recorded is absent (Hugo, 2026-11-09)."
