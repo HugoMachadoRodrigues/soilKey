@@ -98,7 +98,7 @@ major_groups:
     page: 79
     tests:
       all_of:
-        - andic_properties_fao88: {window_cm: [0, 35]}
+        - andic_to_35_fao88: {}
         - any_of:
             - mollic_a_fao88: {}
             - umbric_a_fao88: {}
@@ -137,7 +137,8 @@ major_groups:
     tests:
       all_of:
         - spodic_b_fao88: {}
-    notes: "A spodic B horizon."
+        - upper_b_fao88: {kind: spodic_b}
+    notes: "A spodic B horizon (the uppermost diagnostic B, p. 42)."
 
   - code: "PT"
     name: "Plinthosols"
@@ -155,7 +156,8 @@ major_groups:
     tests:
       all_of:
         - ferralic_b_fao88: {}
-    notes: "A ferralic B horizon."
+        - upper_b_fao88: {kind: ferralic_b}
+    notes: "A ferralic B horizon (the uppermost diagnostic B, p. 42)."
 
   - code: "PL"
     name: "Planosols"
@@ -176,7 +178,8 @@ major_groups:
     tests:
       all_of:
         - natric_b_fao88: {}
-    notes: "A natric B horizon."
+        - upper_b_fao88: {kind: natric_b}
+    notes: "A natric B horizon (the uppermost diagnostic B, p. 42)."
 
   - code: "GR"
     name: "Greyzems"
@@ -187,6 +190,7 @@ major_groups:
         - mollic_chroma_fao88: {max: 2, depth: 15}
         - uncoated_grains_fao88: {}
         - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
     notes: "A mollic A with a moist chroma of 2 or less to 15 cm at least; uncoated silt and sand grains on the structural ped surfaces; an argic B."
 
   - code: "CH"
@@ -233,6 +237,7 @@ major_groups:
     tests:
       all_of:
         - podzoluvisols_gate_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
     notes: "An argic B whose upper boundary is irregular or broken by deep tonguing of the E into it, or by discrete nodules larger than 2 cm with iron-enriched, cemented, redder exteriors."
 
   - code: "GY"
@@ -267,6 +272,7 @@ major_groups:
     tests:
       all_of:
         - nitisols_gate_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
     notes: "An argic B whose clay does not fall by more than 20 % (relative) from its maximum within 150 cm; gradual to diffuse boundaries between the A and the B; nitic properties in some subhorizon within 125 cm."
 
   - code: "AL"
@@ -276,6 +282,7 @@ major_groups:
     tests:
       all_of:
         - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
         - argic_cec_clay_fao88: {min: 24}
         - argic_bs_fao88: {lt: 50}
     notes: "An argic B with a CEC of 24 cmol(+)/kg clay or more and a base saturation (NH4OAc) below 50 % in at least some part of the B within 125 cm."
@@ -287,6 +294,7 @@ major_groups:
     tests:
       all_of:
         - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
         - argic_cec_clay_fao88: {lt: 24}
         - argic_bs_fao88: {lt: 50}
     notes: "An argic B with a CEC below 24 cmol(+)/kg clay and a base saturation (NH4OAc) below 50 % in at least some part of the B within 125 cm."
@@ -298,6 +306,7 @@ major_groups:
     tests:
       all_of:
         - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
         - argic_cec_clay_fao88: {min: 24}
         - argic_bs_fao88: {min: 50}
     notes: "An argic B with a CEC of 24 cmol(+)/kg clay or more and a base saturation (NH4OAc) of 50 % or more throughout the B to 125 cm."
@@ -309,6 +318,7 @@ major_groups:
     tests:
       all_of:
         - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
         - argic_cec_clay_fao88: {lt: 24}
         - argic_bs_fao88: {min: 50}
     notes: "An argic B with a CEC below 24 cmol(+)/kg clay and a base saturation (NH4OAc) of 50 % or more throughout the B to 125 cm."
@@ -320,4 +330,5 @@ major_groups:
     tests:
       all_of:
         - cambic_b_fao88: {}
-    notes: "A cambic B horizon."
+        - upper_b_fao88: {kind: cambic_b}
+    notes: "A cambic B horizon (the uppermost diagnostic B, p. 42)."

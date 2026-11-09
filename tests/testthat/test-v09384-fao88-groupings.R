@@ -192,10 +192,12 @@ test_that("the gates read their printed numbers", {
   expect_true(hs(mk(designation = c("H1", "C1", "H2", "C2"), top_cm = c(0, 25, 50, 70),
                     bottom_cm = c(25, 50, 70, 100), oc_pct = c(30, 1, 30, 1), clay_pct = c(NA, 20, NA, 20))))
   # thinner on rock
-  r <- soilKey:::histosols_gate_fao88(mk(designation = c("H", "R"), top_cm = c(0, 15),
-                                         bottom_cm = c(15, 50), oc_pct = c(30, NA)))
+  r <- soilKey:::histosols_gate_fao88(mk(designation = c("H", "R"), top_cm = c(0, 25),
+                                         bottom_cm = c(25, 50), oc_pct = c(30, NA)))
   expect_true(r$passed)
   expect_true("organic_layers_on_rock_thinner" %in% r$evidence$flags)
+  # more than 20 cm, the minimum of the histic H (Hugo, 2026-11-09)
+  expect_false(hs(mk(designation = c("H", "R"), top_cm = c(0, 20), bottom_cm = c(20, 50), oc_pct = c(30, NA))))
   # Leptosols: rock at 30 cm passes, at 31 fails; fine earth below 20 % over 75 cm
   lp <- function(p) soilKey:::leptosols_gate_fao88(p)$passed
   rk <- function(d) mk(designation = c("A", "C", "R"), top_cm = c(0, 10, d), bottom_cm = c(10, d, 80),
@@ -220,7 +222,7 @@ test_that("the gates read their printed numbers", {
   # the CEC of the argic B is one thickness-weighted value: 24 is the line
   lv <- make_fao_example("LV")
   cec <- function(p) soilKey:::argic_cec_clay_fao88(p, min = 24)
-  expect_equal(cec(lv)$evidence$cec_per_kg_clay, 30)
+  expect_equal(cec(lv)$evidence$cec_per_kg_clay, c(30, 30, 30))
   expect_true(cec(.edit384(lv, cec_cmol = c(8, 6, 0.24 * 32, 0.24 * 34, 0.24 * 28)))$passed)
   expect_false(cec(.edit384(lv, cec_cmol = c(8, 6, 0.23 * 32, 0.23 * 34, 0.23 * 28)))$passed)
   expect_true(is.na(cec(.edit384(lv, cec_cmol = c(8, 6, NA, 0.30 * 34, 9)))$passed))
@@ -313,7 +315,7 @@ test_that("the rule folder: thresholds and readings", {
   expect_true(all(vapply(rd, function(e) nzchar(e$page %||% ""), NA)))
   mine <- Filter(function(e) identical(e$version, "0.9.384"), rd)
   expect_true(length(mine) >= 15L)
-  expect_true(all(vapply(mine, function(e) grepl("for Hugo to confirm", e$reading, fixed = TRUE), NA)))
+  expect_true(all(vapply(mine, function(e) grepl("(Hugo, 2026-11-09)", e$reading, fixed = TRUE), NA)))
 })
 
 test_that("review fixes: plinthite runs, cracks of one record, the Planosols trace, the NT example", {
@@ -359,4 +361,77 @@ test_that("review fixes: plinthite runs, cracks of one record, the Planosols tra
   expect_no_warning(nt <- make_fao_example("NT"))
   expect_true(soilKey:::nitic_properties_fao88(nt, max_top_cm = 125)$passed)
   expect_identical(.f384(nt)$levels$code, "NT")
+})
+
+test_that("Hugo's decisions of 2026-11-09 on the readings of this part", {
+  skip_on_cran()
+  # A. the uppermost diagnostic B decides: an argic B over a ferralic B is
+  # no Ferralsol, a cambic B over an argic B no Luvisol
+  fr <- .edit384(make_fao_example("FR"), designation = c("A", "Bt", "Bo2", "Bo3"),
+                 clay_pct = c(20, 45, 58, 58), sand_pct = c(72, 48, 36, 36),
+                 cec_cmol = c(8, 12, 5.5, 5), ca_cmol = c(1, 5, 0.4, 0.3), mg_cmol = c(0.4, 2, 0.2, 0.2),
+                 exch_acidity_kcl_cmol = c(1, 3, 0.6, 0.5), water_dispersible_clay_pct = c(20, 20, 1, 1),
+                 clay_films_amount = c(NA, "common", NA, NA), boundary_distinctness = c("clear", "clear", "diffuse", NA))
+  expect_true(soilKey:::ferralic_b_fao88(fr)$passed)
+  expect_true(soilKey:::argic_b_fao88(fr)$passed)
+  expect_false(soilKey:::upper_b_fao88(fr, "ferralic_b")$passed)
+  r <- .f384(fr)
+  expect_false(isTRUE(r$trace$major_groups$FR$passed))
+  expect_identical(r$levels$code, "AL")
+  cm <- .edit384(make_fao_example("LV"), rows = c(1, 3, 4, 5), designation = c("A", "Bw", "Bt", "C"),
+                 top_cm = c(0, 20, 60, 110), bottom_cm = c(20, 60, 110, 150), clay_pct = c(18, 20, 34, 30),
+                 silt_pct = c(40, 40, 30, 30), sand_pct = c(42, 40, 36, 40), cec_cmol = c(10, 8, 10, 9),
+                 bs_pct = 70, ph_h2o = 6.5, clay_films_amount = c(NA, NA, "common", NA),
+                 munsell_hue_moist = c("10YR", "7.5YR", "7.5YR", "10YR"), munsell_chroma_moist = c(3, 6, 6, 4),
+                 boundary_distinctness = c("clear", "clear", "gradual", NA))
+  expect_true(soilKey:::cambic_b_fao88(cm)$passed)
+  expect_true(soilKey:::argic_b_fao88(cm)$passed)
+  expect_false(soilKey:::upper_b_fao88(cm, "argic_b")$passed)
+  expect_identical(.f384(cm)$levels$code, "CM")
+  # B. the CEC of the argic B per layer: 32, 20, 20 -> Lixisols
+  lx <- .edit384(make_fao_example("LV"), cec_cmol = c(8, 6, 0.32 * 32, 0.20 * 34, 0.20 * 28))
+  expect_false(soilKey:::argic_cec_clay_fao88(lx, min = 24)$passed)
+  expect_true(soilKey:::argic_cec_clay_fao88(lx, lt = 24)$passed)
+  expect_identical(.f384(lx)$levels$code, "LX")
+  # D. a 45 cm peat without bulk density: 40 cm, flagged
+  hs <- .edit384(make_fao_example("HS"), bulk_density_g_cm3 = NA_real_)
+  g <- soilKey:::histosols_gate_fao88(hs)
+  expect_true(g$passed)
+  expect_true("bulk_density_not_measured_read_0.1_or_more" %in% g$evidence$flags)
+  expect_false("bulk_density_not_measured_read_0.1_or_more" %in% soilKey:::histosols_gate_fao88(make_fao_example("HS"))$evidence$flags)
+  # E. gleyic properties of the plinthite itself do not make the deep path
+  pt <- make_fao_example("PT")
+  deep <- .edit384(pt, top_cm = c(0, 60, 80, 110), bottom_cm = c(60, 80, 110, 150),
+                   munsell_hue_moist = c("10YR", "5GY", "5GY", "5Y"), munsell_value_moist = c(4, 5, 5, 5),
+                   munsell_chroma_moist = c(3, 1, 1, 1), mottle_colors = NA_character_,
+                   redoximorphic_features_pct = 0)
+  expect_false(soilKey:::plinthosols_gate_fao88(deep)$passed)
+  above <- .edit384(deep, munsell_hue_moist = c("5GY", "5GY", "5GY", "5Y"), munsell_value_moist = c(5, 5, 5, 5),
+                    munsell_chroma_moist = c(1, 1, 1, 1), designation = c("Ag", "Bv1", "Bv2", "C"))
+  expect_true(soilKey:::plinthosols_gate_fao88(above)$passed)
+  # F. andic depth from the mineral surface under an O
+  an <- make_fao_example("AN")
+  h <- as.data.frame(an$horizons)
+  h <- rbind(h[1, , drop = FALSE], h)
+  h$designation[1] <- "Oi"; h$oc_pct[1] <- 40; h$clay_pct[1] <- NA
+  h$top_cm <- c(0, 10, 35, 70); h$bottom_cm <- c(10, 35, 70, 140)
+  ano <- PedonRecord$new(site = an$site, horizons = ensure_horizon_schema(data.table::as.data.table(h)))
+  a35 <- soilKey:::andic_to_35_fao88(ano)
+  expect_true(a35$passed)
+  expect_true("andic_depth_from_mineral_surface" %in% a35$evidence$flags)
+  # G. Kastanozems: any layer of the upper 15 cm with chroma above 2
+  ch <- .edit384(make_fao_example("CH"), rows = c(1, 1, 2, 3, 4), designation = c("Ah1", "Ah2", "Ah3", "Bk", "Ck"),
+                 top_cm = c(0, 10, 25, 50, 90), bottom_cm = c(10, 25, 50, 90, 150),
+                 munsell_chroma_moist = c(2, 3, 3, 3, 3))
+  expect_false(soilKey:::mollic_chroma_fao88(ch, max = 2)$passed)
+  expect_true(soilKey:::mollic_chroma_fao88(ch, gt = 2)$passed)
+  expect_identical(.f384(ch)$levels$code, "KS")
+  # H. Nitisols: only the A-to-B boundary; a clear boundary deeper does not matter
+  nt <- make_fao_example("NT")
+  expect_identical(.f384(.edit384(nt, boundary_distinctness = c("gradual", "gradual", "clear", "clear", NA)))$levels$code, "NT")
+  expect_false(soilKey:::nitisols_gate_fao88(.edit384(nt, boundary_distinctness = c("gradual", "clear", "diffuse", "diffuse", NA)))$passed)
+  # I. cracks with a depth but no width: undecided, the Vertisols provisional
+  v2 <- .edit384(make_fao_example("VR"), cracks_width_cm = NA_real_)
+  expect_true(is.na(soilKey:::vertisols_gate_fao88(v2)$passed))
+  expect_true("major_groups:VR" %in% .f384(v2)$provisional_because)
 })

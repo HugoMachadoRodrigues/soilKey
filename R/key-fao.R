@@ -95,7 +95,8 @@
 # the upper 80 cm; thinner when it rests on rock, or on fragmental material
 # (coarse_fragments_pct 90 or more, soilKey's number) with organic matter in
 # its interstices: then every layer above it is organic (soilKey's reading,
-# no minimum printed).
+# Hugo, 2026-11-09: more than 20 cm, the minimum of the histic H). A bulk
+# density not measured is read as 0.1 or more, flagged.
 histosols_gate_fao88 <- function(pedon) {
   x <- .f88_ctx(pedon)
   pg <- "75"
@@ -119,7 +120,10 @@ histosols_gate_fao88 <- function(pedon) {
     b <- cum >= need
     # thinner on rock or on fragmental material filled with organic matter
     base <- which(x$rock | (!is.na(cf) & cf >= 90 & o))[1L]
-    c <- !is.na(base) && base > 1L && isTRUE(x$top[base] > 0) && all(o[seq_len(base - 1L)])
+    # thinner on rock or fragmental material: more than 20 cm of organic
+    # material, the minimum of the histic H (p. 25; Hugo, 2026-11-09)
+    c <- !is.na(base) && base > 1L && isTRUE(x$top[base] > 0) && all(o[seq_len(base - 1L)]) &&
+      sum(th[seq_len(base - 1L)]) > 20
     list(any = a || b || c, a = a, b = b, c = c, cum = cum, need = need)
   }
   sure <- test(org %in% TRUE)
@@ -129,10 +133,15 @@ histosols_gate_fao88 <- function(pedon) {
     (maybe$cum + (80 - deepest)) >= maybe$need
   value <- if (sure$any) TRUE else if (maybe$any || open) NA else FALSE
   lay <- which(org %in% TRUE)
+  # a bulk density not measured is read as 0.1 or more (the 40 cm limit),
+  # flagged where it matters: an organic run of 40 to 60 cm (Hugo, 2026-11-09)
+  bd_flag <- isTRUE(value) && sure$need == 40 && !any(light[lay]) && any(is.na(bd[lay])) &&
+    max(if (sure$a) sum(th[lay]) else 0, sure$cum) < 60
   .f88_key_result(x, "histosols_gate", value, pg,
                   layers = if (isTRUE(value)) lay else which(!(org %in% FALSE)),
                   missing = c(ol$missing, if (open) c("top_cm", "bottom_cm")),
-                  flags = c(.f88_flags(ol$flags, lay), if (isTRUE(sure$c) && !sure$a && !sure$b) "organic_layers_on_rock_thinner"),
+                  flags = c(.f88_flags(ol$flags, lay), if (isTRUE(sure$c) && !sure$a && !sure$b) "organic_layers_on_rock_thinner",
+                            if (bd_flag) "bulk_density_not_measured_read_0.1_or_more"),
                   evidence = list(organic_cm_within_80 = sure$cum, thickness_needed_cm = sure$need,
                                   from_surface = sure$a, cumulative = sure$b, on_rock = sure$c))
 }
@@ -341,8 +350,8 @@ coarse_fragments_fao88 <- function(pedon, lt = 35, to_cm = 100) {
                   evidence = list(lt = lt, to_cm = to_cm))
 }
 
-# A mollic A whose moist chroma is `max` or less (or more than `gt`) in
-# every layer from the top of the A (the mineral soil surface, as the
+# A mollic A whose moist chroma is `max` or less in every layer (or more
+# than `gt` in any layer) from the top of the A (the mineral soil surface, as the
 # mollic A of 0.9.382 measures it) to `depth` cm below it: the Greyzems,
 # Chernozems and Kastanozems (pp. 83-84).
 mollic_chroma_fao88 <- function(pedon, max = NULL, gt = NULL, depth = 15) {
@@ -358,7 +367,13 @@ mollic_chroma_fao88 <- function(pedon, max = NULL, gt = NULL, depth = 15) {
   ok <- if (!is.null(max)) .f88_cmp(cm, "<=", max) else .f88_cmp(cm, ">", gt)
   sel <- !x$rock & !is.na(x$top) & !is.na(x$bot) & x$bot > t0 & x$top < t0 + depth
   v <- ok[sel]
-  ch <- if (any(v %in% FALSE)) FALSE else if (length(v) && all(v %in% TRUE)) TRUE else NA
+  # Chernozems (max): every layer of the upper 15 cm; Kastanozems (gt): any
+  # layer, the exact complement (Hugo, 2026-11-09)
+  ch <- if (!is.null(max)) {
+    if (any(v %in% FALSE)) FALSE else if (length(v) && all(v %in% TRUE)) TRUE else NA
+  } else {
+    if (any(v %in% TRUE)) TRUE else if (length(v) && all(v %in% FALSE)) FALSE else NA
+  }
   value <- .fao_and(mo, ch)
   .f88_key_result(x, "mollic_chroma", value, pg, layers = which(sel),
                   missing = c(if (is.na(ch)) "munsell_chroma_moist", if (is.na(mo)) .f88_hz_dark_a(x, FALSE)$missing),
@@ -406,8 +421,9 @@ base_saturation_fao88 <- function(pedon, min = 50, top = 0, bottom = 125) {
 # Plinthosols (p. 81): a horizon 15 cm or more thick with 25 % plinthite or
 # more (plinthite_fao88()) within 50 cm; or within 125 cm where it lies
 # below an albic E, or below a layer with stagnic properties starting within
-# 50 cm, or where the soil shows gleyic properties within 100 cm (soilKey's
-# reading of the last clause). "Within" by the rule of 2026-11-09.
+# 50 cm, or below a layer with gleyic or stagnic properties starting within
+# 100 cm (ch. VI p. 60; Hugo, 2026-11-09). "Within" by the rule of
+# 2026-11-09.
 plinthosols_gate_fao88 <- function(pedon) {
   x <- .f88_ctx(pedon)
   pg <- "81"
@@ -418,14 +434,20 @@ plinthosols_gate_fao88 <- function(pedon) {
   runs <- .f88_run_list(x, !(pv %in% FALSE))
   ae <- .f88_member(x, .f88_hz_albic_e(x)$units)
   sg <- .f88_stagnic_v(x)$value
-  gl <- gleyic_properties_fao88(pedon, max_top_cm = 100)$passed
+  gv <- .f88_gleyic_v(x)$value
   deep <- rep(FALSE, x$n)
   for (r in runs) {
     above <- which(!is.na(x$bot) & x$bot <= r$top + 0.5)
     e_above <- .f88_any(ae[above])
     s_above <- .f88_any(sg[above[!is.na(x$top[above]) & x$top[above] <= 50]])
-    if (!length(above)) { e_above <- FALSE; s_above <- FALSE }
-    cond <- .fao_or(e_above, s_above, gl)
+    # gleyic or stagnic properties in a horizon above the plinthite, within
+    # 100 cm (ch. VI p. 60); the mottling of the plinthite itself does not
+    # count (Hugo, 2026-11-09)
+    w100 <- above[!is.na(x$top[above]) & x$top[above] <= 100]
+    g_above <- .f88_any(.f88_or(gv[w100], sg[w100]))
+    if (!length(above)) { e_above <- FALSE; s_above <- FALSE; g_above <- FALSE }
+    if (!length(w100)) g_above <- FALSE
+    cond <- .fao_or(e_above, s_above, g_above)
     deep[r$layers] <- .f88_and(pv[r$layers], cond)
   }
   b <- .fao_within(x$h, deep, 125)
@@ -435,7 +457,7 @@ plinthosols_gate_fao88 <- function(pedon) {
                   missing = unique(c(pl$missing, a$missing, b$missing)),
                   flags = c(pl$evidence$flags, a$flags, b$flags),
                   evidence = list(within_50 = a$value, within_125_under_e_stagnic_or_gleyic = b$value,
-                                  gleyic_within_100 = gl))
+                                  gleyic_or_stagnic_above_within_100 = any(gv %in% TRUE)))
 }
 
 # Planosols (p. 82): an E horizon (a layer designated E, or an albic E)
@@ -512,10 +534,9 @@ podzoluvisols_gate_fao88 <- function(pedon) {
 # Nitisols (p. 86): an argic B; a clay content that does not fall by more
 # than 20 % (relative) from its maximum within 150 cm (default 13: no layer
 # below the maximum and within 150 cm under 0.8 x the maximum); gradual to
-# diffuse boundaries between the A and the B (the lower boundary of every
-# layer from the A down to the top of the argic B; boundary_distinctness not
-# recorded, absent, as the boundaries of 2026-11-09); nitic properties in
-# some subhorizon within 125 cm.
+# diffuse boundaries between the A and the B (the A-to-B transition only;
+# boundary_distinctness not recorded, absent, as the boundaries of
+# 2026-11-09); nitic properties in some subhorizon within 125 cm.
 nitisols_gate_fao88 <- function(pedon) {
   x <- .f88_ctx(pedon)
   pg <- "86"
@@ -537,13 +558,16 @@ nitisols_gate_fao88 <- function(pedon) {
   deepest <- suppressWarnings(max(x$bot[!x$rock], na.rm = TRUE))
   open <- !(is.finite(rtop) && rtop <= 150) && is.finite(deepest) && deepest < 150
   if (isTRUE(dec) && open) dec <- NA
-  # boundaries from the A down to the argic B
+  # the A-to-B transition only: the lower boundary of the last A (or AB)
+  # layer, gradual or diffuse and with no abrupt textural change below it
+  # (Hugo, 2026-11-09)
   bd <- .field_term(.fao_col(x$h, "boundary_distinctness", "character"))
   a <- .f88_a_run(x)
-  from <- if (is.null(a)) NA_integer_ else a$first
-  zone <- if (is.na(from) || min(L) <= from) integer(0) else seq.int(from, min(L) - 1L)
+  zone <- if (is.null(a)) integer(0) else max(a$layers)
+  nxt <- zone + 1L
   gd <- !is.na(bd[zone]) & grepl("gradual|diffuse|difusa", bd[zone])
-  bnd <- if (!length(zone)) FALSE else all(gd)
+  atc <- if (length(zone) && nxt <= x$n) .f88_abrupt_v(x)$value[nxt] else FALSE
+  bnd <- if (!length(zone)) FALSE else .fao_and(all(gd), .f88_not(atc))
   nit <- nitic_properties_fao88(pedon, max_top_cm = 125)
   value <- .fao_and(ar$passed, dec, bnd, nit$passed)
   .f88_key_result(x, "nitisols_gate", value, pg, layers = L,
@@ -568,11 +592,10 @@ nitisols_gate_fao88 <- function(pedon) {
   L[!is.na(x$top[L]) & x$top[L] <= to_cm]
 }
 
-# The CEC (NH4OAc) per kg clay of the argic B (AL, AC, LV, LX): the
-# thickness-weighted mean over its layers starting within `to_cm`, each
-# clipped at `to_cm` (soilKey's reading of "an argic B which has a CEC of
-# ...": one value for the horizon, so that the four groupings share the
-# argic soils without a gap); undecided when a layer lacks CEC or clay.
+# The CEC (NH4OAc) per kg clay of the argic B (AL, AC, LV, LX), per layer
+# of the upper argic B starting within `to_cm` (ch. VI p. 52; Hugo,
+# 2026-11-09): `min` or more in every layer, or below `lt` in at least one
+# (exact complements).
 argic_cec_clay_fao88 <- function(pedon, min = NULL, lt = NULL, to_cm = 125) {
   x <- .f88_ctx(pedon)
   pg <- "87-88"
@@ -580,14 +603,15 @@ argic_cec_clay_fao88 <- function(pedon, min = NULL, lt = NULL, to_cm = 125) {
   L <- .f88_argic_layers(x, to_cm)
   if (!length(L)) return(.f88_key_result(x, "argic_cec_clay", FALSE, pg, notes = "no argic B"))
   cc <- .fao_cec_clay(x$h, "nh4oac", "clay")
-  v <- cc$value[L]
-  th <- pmax(pmin(x$bot[L], to_cm) - x$top[L], 0)
-  mean_v <- if (anyNA(v) || anyNA(th) || sum(th) <= 0) NA_real_ else sum(v * th) / sum(th)
-  value <- if (is.na(mean_v)) NA else if (!is.null(min)) round(mean_v, 6) >= min else round(mean_v, 6) < lt
+  v <- round(cc$value[L], 6)
+  # per layer (ch. VI p. 52; Hugo, 2026-11-09): `min` in every layer of the
+  # argic B within 125 cm (AL, LV), below `lt` in at least one (AC, LX)
+  value <- if (!is.null(min)) .f88_all(v >= min) else .f88_any(v < lt)
+  mean_v <- if (anyNA(v)) NA_real_ else mean(v)
   .f88_key_result(x, "argic_cec_clay", value, pg, layers = L,
                   missing = if (is.na(value)) c("cec_cmol", "clay_pct"),
                   flags = .f88_flags(cc$flags, L),
-                  evidence = list(cec_per_kg_clay = mean_v, min = min, lt = lt))
+                  evidence = list(cec_per_kg_clay = v, mean = mean_v, min = min, lt = lt))
 }
 
 # The base saturation (NH4OAc) of the argic B (AL, AC, LV, LX): below `lt`
@@ -606,6 +630,68 @@ argic_bs_fao88 <- function(pedon, lt = NULL, min = NULL, to_cm = 125) {
                   missing = if (is.na(value)) "bs_pct",
                   flags = .f88_flags(bs$flags, L),
                   evidence = list(bs = v, lt = lt, min = min))
+}
+
+
+# The uppermost diagnostic B decides (p. 42; Hugo, 2026-11-09): of the
+# argic, natric, cambic, spodic and ferralic B starting within 125 cm, the
+# gate of a grouping defined by one of them passes only when that B is the
+# uppermost one. FALSE when another B surely starts above it, NA when an
+# undecided one does; TRUE when none does (the gate itself decides whether
+# the B is present).
+.F88_B_KINDS <- c("argic_b", "natric_b", "cambic_b", "spodic_b", "ferralic_b")
+.f88_b_units <- function(x, kind) {
+  r <- switch(kind,
+              argic_b = .f88_hz_argic_natric(x, natric = FALSE),
+              natric_b = .f88_hz_argic_natric(x, natric = TRUE),
+              cambic_b = .f88_hz_cambic_b(x),
+              spodic_b = .f88_hz_spodic_b(x),
+              ferralic_b = .f88_hz_ferralic_b(x))
+  Filter(function(u) !is.na(u$top) && u$top <= 125, r$units)
+}
+upper_b_fao88 <- function(pedon, kind = .F88_B_KINDS) {
+  kind <- match.arg(kind)
+  x <- .f88_ctx(pedon)
+  pg <- "42"
+  if (!x$n) return(.f88_key_result(x, "upper_b", FALSE, pg))
+  mine <- .f88_b_units(x, kind)
+  if (!length(mine)) return(.f88_key_result(x, "upper_b", TRUE, pg, notes = sprintf("no %s", kind)))
+  tops <- function(u, sure) vapply(Filter(function(z) identical(isTRUE(z$status), sure), u), function(z) z$top, 0)
+  ts <- tops(mine, TRUE)
+  t0 <- if (length(ts)) min(ts) else min(vapply(mine, function(z) z$top, 0))
+  above_sure <- character(0); above_und <- character(0)
+  for (k in setdiff(.F88_B_KINDS, kind)) {
+    u <- .f88_b_units(x, k)
+    if (any(tops(u, TRUE) < t0)) above_sure <- c(above_sure, k)
+    else if (any(tops(u, FALSE) < t0)) above_und <- c(above_und, k)
+  }
+  value <- if (length(above_sure)) FALSE else if (length(above_und)) NA else TRUE
+  .f88_key_result(x, "upper_b", value, pg,
+                  missing = if (is.na(value)) "diagnostic_b_above",
+                  notes = c(if (length(above_sure)) sprintf("%s lies above the %s and decides (p. 42)", paste(above_sure, collapse = ", "), kind),
+                            if (length(above_und)) sprintf("undecided above the %s: %s", kind, paste(above_und, collapse = ", "))),
+                  evidence = list(kind = kind, top_cm = t0, above = above_sure, above_undecided = above_und))
+}
+
+# Andic properties to 35 cm (the Andosols, p. 79): every layer from the top
+# of the mineral soil to 35 cm below it, an O or H on top skipped, flagged
+# (Hugo, 2026-11-09).
+andic_to_35_fao88 <- function(pedon, depth = 35) {
+  x <- .f88_ctx(pedon)
+  pg <- "79"
+  if (!x$n) return(.f88_key_result(x, "andic_to_35", FALSE, pg))
+  org <- .f88_organic_layers(x)$value
+  ho <- (!is.na(x$master) & grepl("^(H|O)", x$master)) | (org %in% TRUE)
+  m <- which(!ho & !x$rock & !is.na(x$top))[1L]
+  if (is.na(m)) return(.f88_key_result(x, "andic_to_35", FALSE, pg, notes = "no mineral soil"))
+  m0 <- x$top[m]
+  an <- andic_properties_fao88(pedon)
+  v <- .f88_values(an, x$n)
+  w <- .fao_in_window(x$h, v, m0, m0 + depth, "throughout", subset = !ho)
+  .f88_key_result(x, "andic_to_35", w$value, pg, layers = w$layers %||% integer(0),
+                  missing = c(w$missing, if (is.na(w$value)) an$missing),
+                  flags = c(w$flags, an$evidence$flags, if (m0 > 0) "andic_depth_from_mineral_surface"),
+                  evidence = list(mineral_top_cm = m0))
 }
 
 
