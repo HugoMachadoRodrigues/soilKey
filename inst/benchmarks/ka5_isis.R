@@ -6,7 +6,8 @@
 # classification gives a German name, in the usage before the KA5 (the KA4,
 # the DBG systematics of 1998: "Schwarzerde", "Typischer Gley", "Acker-"
 # names). soilKey keys the KA5 (classify_ka5()). The ISIS designations are
-# FAO style (Ah1, E, Bt), so soilKey reads the horizons from the data.
+# FAO style (Ah1, E, Bt), so soilKey reads the horizons from the data; since
+# v0.9.380 within the KA5 horizons their FAO letters allow (R/ka5-fao.R).
 #
 # OFFLINE. This script downloads nothing and queries no service. It reads a
 # cache of raw ISIS profiles (the list of profiles as the ISIS GraphQL server
@@ -38,7 +39,9 @@
 # above a level counts as a disagreement at that level (the type, the class).
 # Agreement carries a Wilson 95 % interval. The class soilKey assigns at a
 # level is provisional when a test at that level or above was left undecided
-# (provisional_because); varieties are not scored.
+# (provisional_because), or when a horizon rests on a lower grade of
+# evidence (provisional_because "horizons:", v0.9.380); varieties are not
+# scored.
 # =============================================================================
 
 .ka5_isis_levels <- c("classes", "types", "subtypes")
@@ -119,7 +122,10 @@ ka5_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     for (L in .ka5_isis_levels) {
       j <- match(L, lv$level)
       out[[paste0("sk_", L)]] <- if (is.na(j)) NA_character_ else lv$code[j]
-      out[[paste0("undecided_", L)]] <- any(pb_lv %in% above[[L]])
+      # a horizon read on a lower grade of evidence (a WRB stand-in, or
+      # the FAO designation where the data leave it open; v0.9.380) makes
+      # every level provisional
+      out[[paste0("undecided_", L)]] <- any(pb_lv %in% c(above[[L]], "horizons"))
     }
     out$undecided_classes_list <- paste(sub("^classes:", "", grep("^classes:", pb, value = TRUE)), collapse = " ")
     out$sk_division <- { j <- match("divisions", lv$level); if (is.na(j)) NA_character_ else lv$code[j] }
@@ -182,7 +188,7 @@ ka5_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     "",
     sprintf("Offline run on the cache `%s`: %d profiles from Germany, %d with a local name, %d of them read as a KA5 class, type or subtype.",
             res$cache, res$n_germany, sum(!is.na(d$label)), sum(!is.na(d$code))),
-    "The local names are older German usage, read through inst/rules/ka5/legacy_names.yaml; the designations are FAO style, so soilKey reads the horizons from the data.",
+    "The local names are older German usage, read through inst/rules/ka5/legacy_names.yaml; the designations are FAO style, so soilKey reads the horizons from the data, within the KA5 horizons the FAO letters allow.",
     "A level is scored on the profiles whose label reaches it; the subtype only where soilKey gives one too. 95 % intervals are Wilson intervals.",
     "",
     "## Agreement",

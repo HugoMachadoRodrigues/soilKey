@@ -102,6 +102,9 @@
     m <- regmatches(d, regexec("^\\s*([2-9])[A-Z]", d))[[1L]]
     if (length(m)) as.integer(m[2L]) else 1L
   }, 1L)
+  # the FAO designations of a profile that declares the FAO notation
+  # (v0.9.380, R/ka5-fao.R)
+  x$fao <- .ka5_fao_rows(x)
   .ka5_gof(x)
   x
 }
@@ -421,6 +424,11 @@
       NULL
     }
     rust <- one("redoximorphic_features_pct", "rust", "rust")
+    # the FAO g or l states redox mottling (WRB 2022 Annex 3, p. 227): the
+    # oxidation features present, their share not recorded (v0.9.380)
+    if (is.null(rust) && (.ka5_fao_has(x, i, "g") || .ka5_fao_has(x, i, "l"))) {
+      rust <- c(1, 100); notes <- c(notes, "no oxidation features recorded: present by the FAO g or l, their share open")
+    }
     if (is.null(rust)) { rust <- c(0, 0); notes <- c(notes, "no oxidation features recorded: absent") }
     bl <- one("bleached_pct", "bleached", "wet bleaching")
     if (is.null(bl)) { bl <- c(0, 0); notes <- c(notes, "no wet bleaching recorded: absent") }
