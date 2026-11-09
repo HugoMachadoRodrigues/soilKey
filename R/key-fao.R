@@ -1048,7 +1048,7 @@ make_fao1988_example <- function(code, near_miss = FALSE) {
       structure_grade = c("weak", "weak", "strong", "moderate", "structureless"),
       structure_type = c("granular", "platy", "columnar", "prismatic", "massive"))),
     GR = mk(list(
-      designation = c("A1", "A2", "Bt", "BC", "C"), top_cm = c(0, 15, 35, 80, 110),
+      designation = c("Ah1", "Ah2", "Bt", "BC", "C"), top_cm = c(0, 15, 35, 80, 110),
       bottom_cm = c(15, 35, 80, 110, 150),
       clay_pct = c(20, 21, 32, 28, 24), silt_pct = c(55, 55, 48, 50, 52), sand_pct = c(25, 24, 20, 22, 24),
       oc_pct = c(3.5, 2, 0.6, 0.4, 0.2), cec_cmol = c(30, 26, 26, 22, 18), bs_pct = c(75, 70, 70, 75, 80),
@@ -1058,7 +1058,7 @@ make_fao1988_example <- function(code, near_miss = FALSE) {
       structure_grade = c("strong", "moderate", "moderate", "weak", "structureless"),
       structure_type = c("granular", "subangular blocky", "subangular blocky", "subangular blocky", "massive"))),
     CH = mk(list(
-      designation = c("A1", "A2", "Bk", "Ck"), top_cm = c(0, 25, 50, 90), bottom_cm = c(25, 50, 90, 150),
+      designation = c("Ah1", "Ah2", "Bk", "Ck"), top_cm = c(0, 25, 50, 90), bottom_cm = c(25, 50, 90, 150),
       clay_pct = c(25, 25, 24, 22), silt_pct = c(55, 55, 56, 58), sand_pct = c(20, 20, 20, 20),
       oc_pct = c(3, 1.8, 0.6, 0.3), cec_cmol = c(35, 30, 24, 20), bs_pct = c(95, 98, 100, 100),
       caco3_pct = c(0, 1, 22, 12), ph_h2o = c(7.0, 7.3, 8.0, 8.2),
@@ -1067,7 +1067,7 @@ make_fao1988_example <- function(code, near_miss = FALSE) {
       structure_grade = c("strong", "moderate", "weak", "structureless"),
       structure_type = c("granular", "granular", "subangular blocky", "massive"))),
     KS = mk(list(
-      designation = c("A1", "A2", "Bk", "Ck"), top_cm = c(0, 20, 40, 90), bottom_cm = c(20, 40, 90, 150),
+      designation = c("Ah1", "Ah2", "Bk", "Ck"), top_cm = c(0, 20, 40, 90), bottom_cm = c(20, 40, 90, 150),
       clay_pct = c(22, 22, 22, 20), silt_pct = c(50, 50, 52, 54), sand_pct = c(28, 28, 26, 26),
       oc_pct = c(1.8, 1.0, 0.4, 0.2), cec_cmol = c(25, 22, 18, 15), bs_pct = c(95, 98, 100, 100),
       caco3_pct = c(0, 1, if (nm) 14 else 20, if (nm) 10 else 12), ph_h2o = c(7.2, 7.5, 8.1, 8.3),
@@ -1076,7 +1076,7 @@ make_fao1988_example <- function(code, near_miss = FALSE) {
       structure_grade = c("moderate", "moderate", "weak", "structureless"),
       structure_type = c("granular", "subangular blocky", "subangular blocky", "massive"))),
     PH = mk(list(
-      designation = c("A1", "A2", "Bw", "C"), top_cm = c(0, 20, 40, 90), bottom_cm = c(20, 40, 90, 140),
+      designation = c("Ah1", "Ah2", "Bw", "C"), top_cm = c(0, 20, 40, 90), bottom_cm = c(20, 40, 90, 140),
       clay_pct = c(24, 25, 27, 25), silt_pct = c(45, 45, 43, 45), sand_pct = c(31, 30, 30, 30),
       oc_pct = c(3, 1.8, 0.5, 0.2), cec_cmol = c(28, 25, 20, 17),
       bs_pct = c(70, 65, 60, if (nm) 45 else 60), ph_h2o = 6.0,
