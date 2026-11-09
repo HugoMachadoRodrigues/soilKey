@@ -43,7 +43,9 @@ test_that("the sixteen predicates exist and return DiagnosticResults of the 1988
     expect_match(r$reference, "Revised Legend")
     expect_identical(r$evidence$edition, "1988")
   }
-  src <- readLines(test_path("..", "..", "R", "diagnostics-fao88-horizons.R"), warn = FALSE)
+  src <- test_path("..", "..", "R", "diagnostics-fao88-horizons.R")
+  skip_if_not(file.exists(src))
+  src <- readLines(src, warn = FALSE)
   expect_false(any(grepl("[^\\x01-\\x7F]", src, perl = TRUE)))
 })
 
