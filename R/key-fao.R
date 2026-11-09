@@ -781,7 +781,10 @@ classify_fao <- function(pedon, edition = c("1988", "1974"), rules = NULL,
       "The FAO-Unesco Legend of 1974 is not yet available in soilKey: its key follows in a later release.",
       "Use edition = \"1988\" for the Revised Legend."))
   }
-  res <- .classify_fao1988_impl(pedon, rules = rules, on_missing = on_missing, gapfill = gapfill)
+  # gap-fill once, so that the key and the phases read the same pedon
+  if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(pedon, gapfill)
+  res <- .classify_fao1988_impl(pedon, rules = rules, on_missing = on_missing,
+                                gapfill = if (inherits(pedon, "PedonRecord")) FALSE else gapfill)
   # v0.9.386: the phases and the classes of the map symbol, beside the unit
   # (ch. VIII, pp. 67-71; Appendix 2, p. 107); they never change it (Q25)
   if (inherits(pedon, "PedonRecord")) res$phases <- .fao88_phases(pedon, res)

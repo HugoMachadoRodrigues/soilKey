@@ -33,7 +33,7 @@ phases:
     nature: "horizon and site history"
     criterion: "Stagnic properties within 50 cm of the surface, from surface waterlogging under long continued irrigation, mainly of rice."
     stagnic_within_cm: 50
-    reads: "stagnic_properties_fao88() within 50 cm; the irrigation history of the site: flood_irrigated, paddy_years_frac, land_use naming rice or paddy; irrigated alone leaves it undecided."
+    reads: "stagnic_properties_fao88() within 50 cm; the irrigation history of the site: flood_irrigated, paddy_years_frac, land_use naming rice or paddy (flagged); irrigation recorded FALSE rules it out; irrigated alone leaves it undecided."
 
   - id: duripan
     name: "Duripan phase"
@@ -51,7 +51,7 @@ phases:
     nature: "horizon"
     criterion: "The upper level of a fragipan (loamy, dense, hard when dry, brittle when moist, dry fragments slake in water) within 100 cm of the surface."
     within_cm: 100
-    reads: "fragipan_usda(); pan_type fragipan; a designation with x (FAO notation), flagged; the WRB fragic horizon as a stand-in, flagged."
+    reads: "pan_type fragipan or a designation with x (FAO notation, E/Bx too), flagged; the firm layers of fragipan_usda() only with a second sign (very or extremely firm and massive, or a bulk density of 1.65 g/cm3 or more), else undecided; the WRB fragic horizon as a stand-in where the rupture resistance is not recorded, flagged."
 
   - id: gelundic
     name: "Gelundic phase"
@@ -94,7 +94,7 @@ phases:
     nature: "horizon"
     criterion: "The upper part of a continuous layer indurated by iron, with little or no organic matter (fractures, if any, 10 cm or more apart), within 100 cm of the surface."
     within_cm: 100
-    reads: "petroferric_contact_usda(); pan_type ferricrete or ironstone; the WRB petroplinthic horizon as a stand-in, flagged. The spacing of fractures is not recorded by soilKey and not tested."
+    reads: "petroferric_contact_usda() with iron shown (plinthite_pct 50 or more, pan_type ironstone or ferricrete, or a designation with m and v, c or s); pan_type ferricrete or ironstone; a designation with m and v, c or s thicker than 2.5 cm, flagged; layers cemented by carbonates, gypsum or silica (km, ym, qm, calcrete, gypcrete, silcrete) excluded; the WRB petroplinthic horizon as a stand-in, flagged. The spacing of fractures is not recorded by soilKey and not tested."
 
   - id: phreatic
     name: "Phreatic phase"
@@ -135,6 +135,7 @@ phases:
     reads: "ec_dS_m; ec_max_dS_m of 4 or less rules a layer out; not recorded, undecided."
     not_shown_for:
       groupings: [SC]
+      units: [FLs]
 
   - id: skeletic
     name: "Skeletic phase"
@@ -145,7 +146,7 @@ phases:
     coarse_min_pct_vol: 40
     thickness_min_cm: 25
     within_cm: 50
-    reads: "coarse_fragments_pct of each layer; rock and strongly cemented or indurated layers are not skeletic."
+    reads: "coarse_fragments_pct of each layer (not recorded, absent, flagged); rock and strongly cemented or indurated layers are not skeletic."
 
   - id: sodic
     name: "Sodic phase"
@@ -166,8 +167,7 @@ phases:
     page: 70
     nature: "field"
     criterion: "Heavy textured soils that crack into polygons when dry and form a platy or massive surface crust."
-    heavy_clay_gt_pct: 35
-    reads: "the first mineral layer: clay above 35 % (soilKey's reading of heavy textured), polygonal_cracks_spacing_cm recorded, structure_type platy or massive; cracks or crust not recorded, absent."
+    reads: "heavy textured = the fine class (3) of the upper 30 cm (p. 107); in the first mineral layer polygonal_cracks_spacing_cm recorded and structure_type platy or massive; cracks or crust not recorded, absent."
 
   - id: yermic
     name: "Yermic phase"

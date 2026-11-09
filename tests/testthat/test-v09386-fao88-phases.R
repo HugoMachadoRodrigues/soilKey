@@ -124,7 +124,9 @@ test_that("salic phase: ECe above 4 dS/m within 100 cm; not shown for Solonchaks
   # Solonchaks: not shown, whatever the unit; the Salic Fluvisols keep it
   expect_identical(.st386(make_fao_example("SCh"), "salic"), "not shown")
   expect_identical(.st386(make_fao_example("SCn"), "salic"), "not shown")
-  expect_identical(.st386(make_fao_example("FLs"), "salic"), "present")
+  # the Salic Fluvisols too (Hugo, 2026-11-09)
+  expect_identical(.st386(make_fao_example("FLs"), "salic"), "not shown")
+  expect_identical(.st386(make_fao_example("FLe"), "salic"), "absent")
 })
 
 test_that("sodic phase: ESP above 6 within 100 cm; not shown for Solonetz and Sodic Solonchaks", {
@@ -161,11 +163,16 @@ test_that("skeletic phase: 40 % coarse fragments, 25 cm thick, top within 50 cm"
   expect_true(.cr386(sk(40, 50, 75), "skeletic"))
   expect_false(.cr386(sk(40, 51, 76), "skeletic"))
   expect_false(.cr386(sk(40, 40, 65, cem = "indurated"), "skeletic"))
-  expect_true(is.na(.cr386(.cm386(coarse_fragments_pct = NA_real_), "skeletic")))
+  # coarse fragments not recorded: absent, flagged (Hugo, 2026-11-09)
+  expect_false(.cr386(.cm386(coarse_fragments_pct = NA_real_), "skeletic"))
+  expect_match(.fl386(.cm386(coarse_fragments_pct = NA_real_), "skeletic"),
+               "coarse_fragments_not_recorded_absent")
   # a run thinner than 25 cm at the base of the description is undecided
   p <- .cm386(rows = c(1, 2), top_cm = c(0, 20), bottom_cm = c(20, 40), designation = c("A", "Bw"),
               coarse_fragments_pct = c(5, 60))
   expect_true(is.na(.cr386(p, "skeletic")))
+  ph <- .ph386(p)
+  expect_identical(ph$missing[ph$code %in% "skeletic"], "bottom_cm")
 })
 
 test_that("inundic and phreatic phases: days of flooding and the water table", {
@@ -211,8 +218,15 @@ test_that("anthraquic phase: stagnic properties within 50 cm under irrigation", 
   expect_false(.cr386(p, "anthraquic"))
   q <- p$clone(deep = TRUE); q$site$flood_irrigated <- TRUE
   expect_identical(.st386(q, "anthraquic"), "present")
+  # a rice land use alone: present, flagged (Hugo, 2026-11-09)
   q <- p$clone(deep = TRUE); q$site$land_use <- "paddy rice"
   expect_true(.cr386(q, "anthraquic"))
+  expect_match(.fl386(q, "anthraquic"), "rice_land_use_for_irrigation")
+  # a recorded "not irrigated" decides before the land use
+  q$site$irrigated <- FALSE
+  expect_false(.cr386(q, "anthraquic"))
+  q <- p$clone(deep = TRUE); q$site$land_use <- "rice"; q$site$flood_irrigated <- FALSE
+  expect_false(.cr386(q, "anthraquic"))
   q <- p$clone(deep = TRUE); q$site$paddy_years_frac <- 0.8
   expect_true(.cr386(q, "anthraquic"))
   q <- p$clone(deep = TRUE); q$site$irrigated <- TRUE
@@ -240,10 +254,36 @@ test_that("duripan, fragipan, petroferric and placic phases: within 100 cm", {
   # the USDA predicates
   expect_true(.cr386(pan(90, cementation_class = "indurated", duripan_pct = 60), "duripan"))
   expect_false(.cr386(pan(90, cementation_class = "indurated", duripan_pct = 40), "duripan"))
-  expect_true(.cr386(pan(80, rupture_resistance = "very firm"), "fragipan"))
+  # firm alone is a sign only: undecided, flagged; a second sign makes it
+  # (Hugo, 2026-11-09)
+  vf <- pan(80, rupture_resistance = "very firm", structure_type = "subangular blocky",
+            bulk_density_g_cm3 = NA_real_)
+  expect_true(is.na(.cr386(vf, "fragipan")))
+  expect_match(.fl386(vf, "fragipan"), "usda_fragipan_rupture_resistance_only")
+  expect_true(.cr386(pan(80, rupture_resistance = "very firm", structure_type = "massive"), "fragipan"))
+  expect_true(.cr386(pan(80, rupture_resistance = "firm", structure_type = "subangular blocky",
+                         bulk_density_g_cm3 = 1.65), "fragipan"))
+  expect_true(is.na(.cr386(pan(80, rupture_resistance = "firm", structure_type = "subangular blocky",
+                               bulk_density_g_cm3 = 1.64), "fragipan")))
+  # a firm layer too thin for fragipan_usda() is no fragipan
+  thin <- .cm386(rows = c(1, 2, 2, 3), top_cm = c(0, 20, 30, 35), bottom_cm = c(20, 30, 35, 130),
+                 designation = c("A", "Bw1", "Bw2", "C"),
+                 rupture_resistance = c(NA, NA, "very firm", NA), structure_type = c(NA, NA, "massive", NA))
+  expect_false(.cr386(thin, "fragipan"))
+  expect_true(.cr386(pan(60, designation = "E/Bx"), "fragipan"))
   expect_true(.cr386(pan(90, cementation_class = "indurated", plinthite_pct = 60), "petroferric"))
   expect_false(.cr386(pan(90, cementation_class = "indurated", plinthite_pct = 40,
                           coarse_fragments_pct = 10), "petroferric"))
+  # iron must be shown; carbonate, gypsum or silica cement excluded (Hugo,
+  # 2026-11-09)
+  bk <- .cm386(rows = c(1, 2, 2, 3), top_cm = c(0, 20, 40, 70), bottom_cm = c(20, 40, 70, 130),
+               designation = c("A", "Bw", "Bkm", "C"), cementation_class = c(NA, NA, "indurated", NA),
+               coarse_fragments_pct = c(5, 5, 60, 5), caco3_pct = c(0, 0, 40, 0))
+  expect_false(.cr386(bk, "petroferric"))
+  expect_false(.cr386(pan(90, cementation_class = "indurated", plinthite_pct = 10,
+                          coarse_fragments_pct = 60), "petroferric"))
+  expect_true(.cr386(pan(90, designation = "Bsm"), "petroferric"))
+  expect_false(.cr386(pan(90, designation = "Bkm", pan_type = "ferricrete"), "petroferric"))
   pl <- .cm386(rows = c(1, 2, 2, 3), top_cm = c(0, 20, 40, 40.5), bottom_cm = c(20, 40, 40.5, 130),
                designation = c("A", "Bw", "Bsm", "C"), cementation_class = c(NA, NA, "strongly", NA))
   expect_true(.cr386(pl, "placic"))
@@ -265,7 +305,8 @@ test_that("duripan, fragipan, petroferric and placic phases: within 100 cm", {
 
 test_that("takyric phase: heavy texture, polygonal cracks and a platy or massive crust", {
   skip_on_cran()
-  tk <- function(clay, sp = 15, st = "platy") .cm386(clay_pct = c(clay, 22, 20), sand_pct = c(20, 38, 40),
+  # heavy textured: the fine class of the upper 30 cm (Hugo, 2026-11-09)
+  tk <- function(clay, sp = 15, st = "platy") .cm386(clay_pct = c(clay, clay, 20), sand_pct = c(20, 20, 40),
                                                    polygonal_cracks_spacing_cm = c(sp, NA, NA),
                                                    structure_type = c(st, "blocky", "massive"))
   expect_true(.cr386(tk(36), "takyric"))
@@ -386,4 +427,54 @@ test_that("the readings of this part are recorded for Hugo; the R source is ASCI
   skip_if_not(file.exists(src))
   txt <- readLines(src, warn = FALSE)
   expect_false(any(grepl("[^\\x01-\\x7F]", txt, perl = TRUE)))
+})
+
+test_that("review of 2026-11-09: defects of the first draft", {
+  skip_on_cran()
+  # yermic: carbon fails, salic undecided -> undecided, needs ec_dS_m
+  p <- .cm386(oc_pct = c(1.5, 0.3, 0.2), varnish_pct = c(10, NA, NA), ec_dS_m = NA_real_)
+  expect_true(is.na(.cr386(p, "yermic")))
+  ph <- .ph386(p)
+  expect_match(ph$missing[ph$code %in% "yermic"], "ec_dS_m")
+  expect_false(.cr386(.cm386(oc_pct = c(1.5, 0.3, 0.2), varnish_pct = c(10, NA, NA)), "yermic"))
+  # yermic feature 6: a sand sheet, not a dune, shifting sand or a negation
+  ae <- function(a) .cm386(oc_pct = c(0.3, 0.2, 0.1), aeolian_morphology = c(a, NA, NA))
+  expect_true(.cr386(ae("sandsheet"), "yermic"))
+  for (a in c("active dune", "shifting sand", "no sand")) expect_false(.cr386(ae(a), "yermic"))
+  # features recorded FALSE: no "not recorded" flag
+  r <- .cm386(oc_pct = c(0.3, 0.2, 0.1), structure_type = c("granular", "blocky", "massive"))
+  expect_false(grepl("yermic_features_not_recorded_absent", .fl386(r, "yermic")))
+  expect_match(.fl386(.cm386(oc_pct = c(0.3, 0.2, 0.1), structure_type = NA_character_), "yermic"),
+               "yermic_features_not_recorded_absent")
+  # a pan undecided by a short description has no "absent" flag
+  sh <- .cm386(rows = c(1, 2), top_cm = c(0, 20), bottom_cm = c(20, 40), designation = c("A", "Bw"))
+  expect_true(is.na(.cr386(sh, "duripan")))
+  expect_false(grepl("not_recorded_absent", .fl386(sh, "duripan")))
+  # a NASIS fragipan feature without its depth: undecided, needs top_cm
+  nf <- .cm386(site = list(nasis_diagnostic_features = "Fragipan"))
+  if (isTRUE(fragipan_usda(nf)$passed)) {
+    ph <- .ph386(nf)
+    expect_true(is.na(ph$criterion[ph$code %in% "fragipan"]))
+    expect_match(ph$missing[ph$code %in% "fragipan"], "top_cm")
+    expect_match(ph$flags[ph$code %in% "fragipan"], "nasis_feature_no_depth")
+  }
+  # gap-fill once: the key and the phases read the same pedon
+  g <- .cm386(ec_dS_m = c(1, NA, 9), esp_pct = c(2, NA, 9))
+  rg <- classify_fao(g, on_missing = "silent", gapfill = TRUE)
+  expect_identical(rg$phases, soilKey:::.fao88_phases(soilKey:::.classify_apply_gapfill(g, TRUE), rg))
+  expect_identical(rg$name, soilKey:::.classify_fao1988_impl(g, on_missing = "silent", gapfill = TRUE)$name)
+  # a "not shown for" grouping only a candidate: the candidate is in missing
+  s5 <- .cm386(ec_dS_m = c(0.4, 5, 0.4))
+  rc <- .f386(s5)
+  rc$provisional_because <- "major_groups:SC"
+  ph <- soilKey:::.fao88_phases(s5, rc)
+  expect_identical(ph$status[ph$code %in% "salic"], "undecided")
+  expect_match(ph$missing[ph$code %in% "salic"], "major_groups:SC", fixed = TRUE)
+  expect_match(ph$note[ph$code %in% "salic"], "candidate")
+  # the slope row for a pedon with no horizons
+  p0 <- suppressWarnings(PedonRecord$new(site = list(id = "e", slope_pct = 12),
+                                         horizons = make_empty_horizons(0)))
+  ph0 <- soilKey:::.fao88_phases(p0, rc)
+  expect_identical(ph0$code[ph0$kind == "slope_class"], "b")
+  expect_true(is.na(ph0$code[ph0$kind == "texture_class"]))
 })

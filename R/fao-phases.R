@@ -87,40 +87,52 @@
 # predicate reads are not recorded. A pan not recorded is absent (a field
 # observation).
 .f88ph_pan <- function(x, id, depth, usda_fun, pan_re, desg_re = NULL, wrb_fun = NULL,
-                       wrb_name = NULL, open = NULL) {
+                       wrb_name = NULL, open = NULL, usda_check = NULL, exclude = NULL,
+                       missing = character(0)) {
   if (!x$n) return(.f88ph_ans(FALSE))
   v <- rep(FALSE, x$n)
   flag <- rep(NA_character_, x$n)
   u <- tryCatch(usda_fun(x$pedon, max_top_cm = 1e6), error = function(e) NULL)
   nasis <- FALSE
-  if (!is.null(u)) {
-    v[match(u$layers, x$idx, nomatch = 0L)] <- TRUE
-    nasis <- isTRUE(u$passed) && !length(u$layers)
+  # the USDA layers count only when the predicate passes (a firm layer too
+  # thin for a fragipan is no fragipan)
+  if (!is.null(u) && isTRUE(u$passed)) {
+    sel <- match(u$layers, x$idx, nomatch = 0L)
+    if (is.null(usda_check)) v[sel] <- TRUE
+    else { ck <- usda_check(x, sel); v[sel] <- ck$value; flag[sel] <- ck$flag }
+    nasis <- !length(u$layers)
   }
   pan <- .f88_chr(x, "pan_type")
-  vp <- !is.na(pan) & grepl(pan_re, pan) & !v
+  vp <- !is.na(pan) & grepl(pan_re, pan) & !(v %in% TRUE)
   v[vp] <- TRUE; flag[vp] <- paste0("pan_type_", id)
   if (!is.null(desg_re) && .f88_fao_notation(x)) {
     d <- .fao_col(x$h, "designation", "character")
-    vd <- !is.na(d) & grepl(desg_re, d) & !v
+    hit <- if (is.function(desg_re)) desg_re(x) else !is.na(d) & grepl(desg_re, d)
+    vd <- hit %in% TRUE & !(v %in% TRUE)
     v[vd] <- TRUE; flag[vd] <- paste0(id, "_from_designation")
   }
-  if (nasis && !any(v)) {
-    return(.f88ph_ans(TRUE, flags = "nasis_feature_no_depth",
-                      note = "a NASIS diagnostic feature, depth not read"))
+  if (!is.null(exclude)) { ex <- exclude(x) %in% TRUE; v[ex] <- FALSE }
+  if (nasis && !any(v %in% TRUE)) {
+    # a NASIS feature without its depth: present, but within 100 cm or not
+    # is not known
+    return(.f88ph_ans(NA, flags = "nasis_feature_no_depth", missing = "top_cm",
+                      note = "a NASIS diagnostic feature, depth not recorded"))
   }
-  if (!any(v) && !is.null(wrb_fun)) {
+  if (!any(v %in% TRUE) && !is.null(wrb_fun)) {
     w <- tryCatch(wrb_fun(x$pedon), error = function(e) NULL)
     if (!is.null(w) && isTRUE(w$passed)) {
       vw <- match(w$layers, x$idx, nomatch = 0L)
       # only in layers where the USDA predicate's own attributes are not
       # recorded: a stand-in never overrules the definition of 1975
       if (!is.null(open)) vw <- vw[open(x)[vw] %in% TRUE]
+      if (!is.null(exclude)) vw <- vw[!(exclude(x)[vw] %in% TRUE)]
       v[vw] <- TRUE; flag[vw] <- paste0("wrb_", wrb_name, "_stand_in")
     }
   }
-  if (!any(v)) flag[] <- paste0(id, "_not_recorded_absent")
-  .f88ph_within(x, v, depth, flags = flag)
+  r <- .f88ph_within(x, v, depth, flags = flag, missing = missing)
+  # nothing shows the pan: absent, flagged, when the description decides it
+  if (!any(v %in% c(TRUE, NA)) && isFALSE(r$value)) r$flags <- unique(c(r$flags, paste0(id, "_not_recorded_absent")))
+  r
 }
 
 
@@ -138,9 +150,12 @@
   lu <- .f88ph_site_txt(x, "land_use")
   rice <- !is.na(lu) && grepl("rice|paddy|arroz|sawah", lu)
   fl <- character(0); miss <- character(0)
-  irr <- if (isTRUE(fi) || (!is.na(py) && py > 0) || rice) TRUE
-         else if (isTRUE(ir) && !isFALSE(fi)) { miss <- "flood_irrigated"; NA }
-         else if (isFALSE(fi) || isFALSE(ir) || (!is.na(py) && py == 0)) FALSE
+  # a recorded "not irrigated" or "not flood irrigated" decides first
+  irr <- if (isFALSE(ir) || isFALSE(fi)) FALSE
+         else if (isTRUE(fi) || (!is.na(py) && py > 0)) TRUE
+         else if (rice) { fl <- "rice_land_use_for_irrigation"; TRUE }
+         else if (isTRUE(ir)) { miss <- "flood_irrigated"; NA }
+         else if (!is.na(py) && py == 0) FALSE
          else { fl <- "irrigation_history_not_recorded_absent"; FALSE }
   v <- .fao_and(st$passed, irr)
   .f88ph_ans(v, layers = if (isTRUE(v)) st$layers else integer(0),
@@ -154,18 +169,60 @@
              open = function(x) is.na(.f88_chr(x, "cementation_class")) | is.na(.f88_num(x, "duripan_pct")))
 }
 
-.f88ph_fragipan <- function(x, a) {
+# Fragipan (pp. 67-68; Hugo, 2026-11-09): the firm layers of
+# fragipan_usda() are a sign only (flagged
+# usda_fragipan_rupture_resistance_only, undecided) unless a second sign holds
+# in the layer: very or extremely firm with a massive structure, or a bulk
+# density of `bd_min` g/cm3 or more (the high bulk density of p. 67 has no
+# number; 1.65 is the number of soilKey's WRB fragic(), the fragic horizon
+# of WRB 2022, Ch. 3.1.10). A designation with x (E/Bx too) or pan_type
+# fragipan is a fragipan by itself.
+.f88ph_fragipan <- function(x, a, bd_min = 1.65) {
+  check <- function(x, sel) {
+    rr <- .f88_chr(x, "rupture_resistance")[sel]
+    st <- paste(.f88_chr(x, "structure_type")[sel], .f88_chr(x, "structure_grade")[sel])
+    bd <- .f88_num(x, "bulk_density_g_cm3")[sel]
+    second <- (rr %in% c("very firm", "extremely firm") & grepl("massive", st)) |
+      (!is.na(bd) & bd >= bd_min)
+    list(value = ifelse(second, TRUE, NA),
+         flag = ifelse(second, NA_character_, "usda_fragipan_rupture_resistance_only"))
+  }
   .f88ph_pan(x, "fragipan", a$within_cm, fragipan_usda, "fragipan",
-             desg_re = "^[0-9]*[A-Z]+[a-z]*x", wrb_fun = fragic, wrb_name = "fragic",
-             open = function(x) is.na(.f88_chr(x, "rupture_resistance")))
+             desg_re = "(^|[/&])[0-9]*[A-Z]+[a-z]*x", wrb_fun = fragic, wrb_name = "fragic",
+             open = function(x) is.na(.f88_chr(x, "rupture_resistance")),
+             usda_check = check, missing = c("bulk_density_g_cm3", "structure_type"))
 }
 
+# Petroferric (p. 68; Hugo, 2026-11-09): iron must be shown: plinthite_pct
+# of 50 or more, pan_type ironstone or ferricrete, or a designation with m
+# and v, c or s (thicker than a placic pan of 2.5 cm); a layer cemented by
+# carbonates, gypsum or silica (designation km, ym, qm, or pan_type calcrete,
+# gypcrete, silcrete, duripan) is not petroferric.
+.f88ph_iron_desg <- function(x) {
+  suf <- sub("^[0-9]*[A-Z]+(/[A-Z]+)?", "", .fao_col(x$h, "designation", "character"))
+  th <- x$bot - x$top
+  !is.na(suf) & grepl("m", suf) & grepl("[vcs]", suf) & !grepl("[kyq]", suf) &
+    !is.na(th) & th > 2.5
+}
 .f88ph_petroferric <- function(x, a) {
-  .f88ph_pan(x, "petroferric", a$within_cm, petroferric_contact_usda,
-             "ferricrete|ironstone|petroferric|laterite crust|canga",
-             wrb_fun = petroplinthic, wrb_name = "petroplinthic",
+  iron_pan <- "ferricrete|ironstone|petroferric|laterite crust|canga"
+  check <- function(x, sel) {
+    pl <- .f88_num(x, "plinthite_pct")[sel]
+    pan <- .f88_chr(x, "pan_type")[sel]
+    iron <- (!is.na(pl) & pl >= 50) | (!is.na(pan) & grepl(iron_pan, pan)) | .f88ph_iron_desg(x)[sel]
+    list(value = iron, flag = ifelse(iron, NA_character_, "petroferric_without_iron"))
+  }
+  excl <- function(x) {
+    suf <- sub("^[0-9]*[A-Z]+(/[A-Z]+)?", "", .fao_col(x$h, "designation", "character"))
+    pan <- .f88_chr(x, "pan_type")
+    (!is.na(suf) & grepl("m", suf) & grepl("[kyq]", suf)) |
+      (!is.na(pan) & grepl("calcrete|gypcrete|silcrete|duripan|petrocalcic|petrogypsic", pan))
+  }
+  .f88ph_pan(x, "petroferric", a$within_cm, petroferric_contact_usda, iron_pan,
+             desg_re = .f88ph_iron_desg, wrb_fun = petroplinthic, wrb_name = "petroplinthic",
              open = function(x) is.na(.f88_chr(x, "cementation_class")) |
-               (is.na(.f88_num(x, "plinthite_pct")) & is.na(.f88_num(x, "coarse_fragments_pct"))))
+               (is.na(.f88_num(x, "plinthite_pct")) & is.na(.f88_num(x, "coarse_fragments_pct"))),
+             usda_check = check, exclude = excl)
 }
 
 .f88ph_placic <- function(x, a) {
@@ -253,6 +310,9 @@
   cf <- .f88_num(x, "coarse_fragments_pct")
   cem <- .f88_chr(x, "cementation_class")
   ok <- cf >= a$coarse_min_pct_vol
+  # coarse fragments not recorded: absent, flagged (Hugo, 2026-11-09)
+  nrec <- is.na(cf) & !x$rock
+  ok[nrec] <- FALSE
   ok[!is.na(cem) & cem %in% c("strongly", "indurated")] <- FALSE
   ok[x$rock] <- FALSE
   base <- suppressWarnings(max(x$bot, na.rm = TRUE))
@@ -265,12 +325,18 @@
   }
   units <- .f88_units(x, ok, test_run)
   sure <- Filter(function(u) isTRUE(u$status), units)
+  nfl <- if (any(nrec)) "coarse_fragments_not_recorded_absent" else character(0)
   if (length(sure)) return(.f88ph_ans(TRUE, layers = x$idx[sure[[1L]]$layers]))
   if (length(units)) {
-    return(.f88ph_ans(NA, layers = x$idx[unique(unlist(lapply(units, `[[`, "layers")))],
-                      missing = c("coarse_fragments_pct", "bottom_cm")))
+    lay <- unique(unlist(lapply(units, `[[`, "layers")))
+    # coarse fragments not recorded, or a sure run open at the base of the
+    # description
+    open_run <- any(vapply(units, function(u) all(ok[u$layers] %in% TRUE), NA))
+    return(.f88ph_ans(NA, layers = x$idx[lay],
+                      missing = c(if (anyNA(ok[lay])) "coarse_fragments_pct",
+                                  if (open_run) "bottom_cm"), flags = nfl))
   }
-  .f88ph_ans(FALSE)
+  .f88ph_ans(FALSE, flags = nfl)
 }
 
 # Sodic (p. 70): more than 6 % exchangeable sodium within 100 cm (esp_pct,
@@ -295,11 +361,13 @@
   st <- .f88_chr(x, "structure_type")[s]
   crust <- !is.na(st) && grepl("platy|massive|laminar|maci", st)
   if (is.na(st)) fl <- c(fl, "surface_structure_not_recorded_absent")
-  cl <- .f88_num(x, "clay_pct")[s]
-  heavy <- if (is.na(cl)) NA else cl > a$heavy_clay_gt_pct
+  # heavy textured: the fine class (3) of the upper 30 cm (p. 107; Hugo,
+  # 2026-11-09)
+  t <- .fao_texture_upper30(x$h, "1988")
+  heavy <- if (is.na(t$value)) NA else identical(t$value, "fine")
   v <- .fao_and(poly, crust, heavy)
-  .f88ph_ans(v, layers = if (isTRUE(v)) x$idx[s] else integer(0), flags = fl,
-             missing = "clay_pct")
+  .f88ph_ans(v, layers = if (isTRUE(v)) x$idx[s] else integer(0), flags = c(fl, t$flags),
+             missing = c("clay_pct", "sand_pct", t$missing))
 }
 
 # Yermic (pp. 70-71): the organic carbon of the surface 18 cm mixed below 0.6
@@ -324,6 +392,8 @@
              else if (o >= a$oc_lt_pct) FALSE
              else if (is.na(coarse)) NA else !coarse
     if (is.na(oc_ok)) miss <- c(miss, if (is.na(o)) c("oc_pct", oc$missing) else c("clay_pct", "silt_pct", "sand_pct"))
+    # the carbon fails, but an undecided salic criterion could waive it
+    if (isFALSE(oc_ok) && is.na(salic)) { oc_ok <- NA; miss <- c(miss, "ec_dS_m") }
   }
   # (b) the six features
   s <- .f88ph_surface(x)
@@ -337,7 +407,11 @@
     st <- .f88_chr(x, "structure_type")[s]
     f["platy"] <- !is.na(st) && grepl("platy|laminar", st)
     ae <- .f88_chr(x, "aeolian_morphology")[s]
-    f["blown_sand"] <- !is.na(ae) && grepl("sand|dune|duna|areia", ae)
+    # blown sand on a stable surface: a sand sheet or cover sand, not a dune
+    # or shifting sand, and not a negation
+    f["blown_sand"] <- !is.na(ae) &&
+      grepl("sand ?sheet|blown sand|cover ?sand|aeolian sand|eolian sand|areia e[o\u00f3]lica", ae) &&
+      !grepl("dune|duna|shifting|mobile|\\bno\\b|\\bnot\\b|none|absent|without|\\bsem\\b|\\bn\u00e3o\\b", ae)
   }
   pg <- .fao_palygorskite(x$h)
   near <- !is.na(x$top) & x$top <= a$palygorskite_within_cm & !x$rock
@@ -347,7 +421,11 @@
   ci <- .fao_field_obs(x$h, "aeolian_crack_infill")
   f["cracks"] <- any(ci$value %in% TRUE)
   feat <- any(f)
-  if (!feat) fl <- c(fl, "yermic_features_not_recorded_absent")
+  rec <- function(nm) any(!is.na(.fao_col(x$h, nm, "character")))
+  recorded <- any(vapply(c("ventifact_pct", "varnish_pct", "pitted_quartz_pct", "palygorskite_pct",
+                           "clay_mineralogy", "aeolian_crack_infill", "structure_type",
+                           "aeolian_morphology"), rec, NA))
+  if (!feat && !recorded) fl <- c(fl, "yermic_features_not_recorded_absent")
   v <- .fao_and(oc_ok, feat)
   .f88ph_ans(v, flags = fl, missing = miss,
              note = if (feat) paste("features:", paste(names(f)[f], collapse = ", ")) else character(0))
@@ -408,8 +486,10 @@
   if (is.null(rule)) return(FALSE)
   gs <- as.character(unlist(rule$groupings)); us <- as.character(unlist(rule$units))
   if (asg$grouping %in% gs || asg$unit %in% us) return(TRUE)
-  if (any(asg$cand_groupings %in% gs) || any(asg$cand_units %in% us) ||
-      any(substr(asg$cand_units, 1L, 2L) %in% gs)) return(NA)
+  cg <- asg$cand_groupings[asg$cand_groupings %in% gs]
+  cu <- asg$cand_units[asg$cand_units %in% us | substr(asg$cand_units, 1L, 2L) %in% gs]
+  cand <- c(if (length(cg)) paste0("major_groups:", cg), if (length(cu)) paste0("units:", cu))
+  if (length(cand)) return(structure(NA, candidates = cand))
   FALSE
 }
 
@@ -422,7 +502,9 @@
 # (the English name, the legend's language), name_pt, status ("present",
 # "absent", "undecided", "not shown"), present (TRUE / FALSE / NA, after the
 # "not shown for" rules), criterion (TRUE / FALSE / NA, the criterion alone),
-# page, basis, flags, missing and layers ("; " lists).
+# page, basis, flags, missing (an attribute, or the candidate unit that
+# leaves a "not shown for" rule open, as major_groups:SC), layers and note
+# ("; " lists).
 .fao88_phases <- function(pedon, res) {
   rules <- .fao88_phase_rules()
   x <- .f88_ctx(pedon)
@@ -433,7 +515,7 @@
     fun <- get(paste0(".f88ph_", id), mode = "function")
     a <- tryCatch(
       if (id == "yermic") fun(x, ph, salic = ans$salic$value) else fun(x, ph),
-      error = function(e) .f88ph_ans(NA, missing = character(0),
+      error = function(e) .f88ph_ans(NA, flags = sprintf("phase_not_read: %s", conditionMessage(e)),
                                      note = sprintf("not read: %s", conditionMessage(e))))
     ans[[id]] <- a
   }
@@ -450,14 +532,19 @@
                name_pt = ph$name_pt, status = status, present = present, criterion = crit,
                page = as.character(ph$page), basis = ph$criterion,
                flags = paste(a$flags, collapse = "; "),
-               missing = paste(if (is.na(present)) a$missing else character(0), collapse = "; "),
+               missing = paste(if (is.na(present))
+                                 unique(c(a$missing, if (isTRUE(crit)) attr(ex, "candidates")))
+                               else character(0), collapse = "; "),
                layers = paste(sort(unique(a$layers)), collapse = "; "),
+               note = paste(c(a$note, if (is.na(present) && isTRUE(crit) && length(attr(ex, "candidates")))
+                 "not shown for a candidate unit tested before the one assigned"), collapse = "; "),
                stringsAsFactors = FALSE)
   })
   m <- rules$map_symbol
-  if (x$n) {
-    for (k in list(list("texture_class", .f88ph_texture(x, m)),
-                   list("slope_class", .f88ph_slope(x, m)))) {
+  tex <- if (x$n) .f88ph_texture(x, m)
+         else list(code = NA_character_, flags = character(0), missing = "clay_pct", basis = "")
+  # the slope is a site record: given even for a pedon with no horizons
+  for (k in list(list("texture_class", tex), list("slope_class", .f88ph_slope(x, m)))) {
       r <- k[[2L]]
       ok <- !is.na(r$code)
       rows[[length(rows) + 1L]] <- data.frame(
@@ -470,8 +557,7 @@
         basis = if (ok) sprintf("%s (%s)", r$class$criterion, r$basis) else "",
         flags = paste(r$flags, collapse = "; "),
         missing = paste(if (ok) character(0) else r$missing, collapse = "; "),
-        layers = "", stringsAsFactors = FALSE)
-    }
+        layers = "", note = "", stringsAsFactors = FALSE)
   }
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
