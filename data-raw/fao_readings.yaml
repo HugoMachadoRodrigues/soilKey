@@ -1,0 +1,98 @@
+# The readings soilKey makes of the FAO-Unesco soil legend, in its two
+# editions: the Revised Legend (FAO 1988, World Soil Resources Report 60;
+# the text of the ISRIC reprint of 1997, Technical Paper 20; PDF page =
+# printed + 5) and the Legend of 1974 (FAO-Unesco, Soil Map of the World,
+# Vol. I, Unesco Paris; PDF page = printed + 7 to p. 41, + 6 from the key).
+# Pages are printed pages; "74 p." is the 1974 legend. An entry ending
+# "(Hugo, 2026-11-08)" is a decision of the owner, in soilKey's words; an
+# entry ending "(soilKey's reading, for Hugo to confirm, 2026-11-08)" is
+# soilKey's own and waits for his word. The criteria are paraphrased; no text
+# of the books is shipped.
+#
+# 0.9.381 (the attributes and the shared readers, R/fao-readers.R) holds this
+# file in data-raw/; the registry parts move it to inst/rules/fao1988/ and
+# inst/rules/fao1974/ (readings.yaml) with the entries of each edition.
+readings:
+  # --- the decisions of 2026-11-08 that this part applies -----------------------------
+  - topic: "One module, two editions"
+    edition: [1988, 1974]
+    page: "pp. 75-89; 74 pp. 43-53"
+    reading: "One module with an edition switch; two registry ids (fao1988, fao1974) in a later part, thin wrappers of one classify_fao(). The shared readers take the edition as an argument; no site attribute carries it (Q1, default 19) (Hugo, 2026-11-08)."
+  - topic: "Depth datum"
+    edition: [1988, 1974]
+    page: "pp. 25-42, 75; 74 pp. 32, 43"
+    reading: "Depths are read from the soil surface as the texts write it: the top of the first recorded horizon, H and O horizons included; a profile written with its O above 0 is read from the top of the O (.fao_depths()) (Q9) (Hugo, 2026-11-08)."
+  - topic: "Depths not written; texture of the 125 / 90 / 75 cm rule; coarse textured materials"
+    edition: [1988, 1974]
+    page: "p. 42, 80; 74 pp. 5, 29, 49-53"
+    reading: "A diagnostic with no depth in the key is read within 125 cm in both editions. The 1974 rule of 125, 90 and 75 cm for coarse, medium and fine textures reads the texture class of the upper 30 cm with the 1974 classes (.fao_texture_upper30(), .fao_depth_by_texture()). The coarse textured materials of the 1988 Gleysols are materials coarser than sandy loam (.fao_coarser_than_sandy_loam()) (Q10) (Hugo, 2026-11-08)."
+  - topic: "Organic matter"
+    edition: [1974]
+    page: "74 pp. 21, 24, 32"
+    reading: "Organic matter is organic carbon x 1.724, always flagged om_from_oc_x1.724 (.fao_om()) (Q11) (Hugo, 2026-11-08)."
+  - topic: "pH ratios, CEC, ECEC and base saturation"
+    edition: [1988, 1974]
+    page: "pp. 31-32, 39, 130; 74 pp. 24, 27-29, 41, 47"
+    reading: "Values as reported, flagged where the method is known to differ. The new ph_h2o_1to1 and ph_h2o_1to5 are read first, ph_h2o after them, flagged (.fao_ph()). The NH4Cl CEC is cec_cmol with cec_method nh4cl, else ecec_cmol, flagged (.fao_cec_clay(method = 'nh4cl')); the NH4OAc CEC is cec_cmol, flagged when cec_method names another method. The ECEC of 1988 is item 3 of the ferralic B: NH4OAc bases plus 1 M KCl exchangeable acidity (exch_acidity_kcl_cmol); the ECEC of 1974 is bases plus KCl aluminium (.fao_ecec_clay()). Base saturation is bs_pct by NH4OAc (.fao_bs()) (Q12) (Hugo, 2026-11-08)."
+  - topic: "New attributes"
+    edition: [1988, 1974]
+    page: "pp. 25-41, 67-71; 74 pp. 20-32"
+    reading: "All the attributes of plan section 10 are added, with the fallbacks written in their descriptions: horizon p2o5_citric_mg_kg, extractable_acidity_ph82_cmol, cec_ph82_cmol, al_dcb_pct, exch_acidity_kcl_cmol, ph_h2o_1to1, ph_h2o_1to5, rock_structure_pct, smeary_consistence, bleached_ped_coatings, ignition_redder, spodic_pellets, skeletans_pct, skeletan_thickness_mm, carbonate_coatings_faces_pct, nodule_size_max_cm, dta_low_endotherm, munsell_hue_rubbed, munsell_value_rubbed, munsell_chroma_rubbed, pitted_quartz_pct, palygorskite_pct, aeolian_crack_infill; site flooding_days_growing_period, rudic_recorded, reference_fao74. No other system reads them (Q19) (Hugo, 2026-11-08)."
+  - topic: "Rubbed colours and the limits between Munsell chips"
+    edition: [1988, 1974]
+    page: "pp. 26, 82-89; 74 pp. 24, 47-53"
+    reading: "The rubbed colour is munsell_*_rubbed where recorded, else the moist colour read as rubbed, flagged moist_colour_for_rubbed (.fao_colour_rubbed()); Chromic reads the moist colour. The limits 'less than 3.5' and '5.5' are compared with the recorded number: whole chips of 3 and 5 pass, a value recorded as 3.5 fails (Q24) (Hugo, 2026-11-08)."
+  - topic: "'Many' coarse mottles of the ferric properties"
+    edition: [1988, 1974]
+    page: "p. 35; 74 p. 28"
+    reading: "'Many' is 15 % or more and 'coarse' more than 20 mm, the classes of the 1990 Guidelines (fao_thresholds_*.yaml) (Q22) (Hugo, 2026-11-08)."
+  - topic: "Numbers of 1988 in 1974"
+    edition: [1974]
+    page: "p. 35, 40, 113-114; 74 pp. 30-31, 39"
+    reading: "Calcareous (more than 2 % CCE or strong effervescence) and soft powdery lime (50 % of the faces, 5 % soft nodules) of 1988 are read in 1974, flagged; plinthite present = recorded above 0 % within 125 cm; the ignition test by its record, else free iron below 0.5 % of the fine earth, flagged (the footnote of the 1974 Humic Podzols, 74 p. 39) (Q23) (Hugo, 2026-11-08)."
+  - topic: "Technical defaults of the questions file"
+    edition: [1988, 1974]
+    page: "pp. 25-42; 74 pp. 25, 32"
+    reading: "CEC per kg clay = cec_cmol x 100 / clay_pct, no deduction for organic matter (default 1); clay as reported (3); 'within X cm' = the upper boundary of the feature at or above X, 'between 20 and 50 cm' = every layer overlapping 20-50 cm, 'in some part' = one layer, two diagnostic B horizons within 125 cm: the upper one decides (11); the clay increase by .fao_clay_increase() with the bands 3 / 1.2 / 8 and the breaks 15 and 40 as arguments, equal to the usda branch of test_clay_increase_argic(), the exact 15 and 40 of 1974 read in the same way (< 15; 15 to < 40; >= 40) (12, 18) (Hugo, 2026-11-08)."
+
+  # --- soilKey's readings of this part (0.9.381) -----------------------------------------
+  - topic: "Texture classes at the printed boundaries"
+    edition: [1988, 1974]
+    page: "p. 107; 74 p. 5"
+    reading: "Both texts leave a clay content of exactly 35 % and a sand content of exactly 70 % (1988) or 65 % (1974) with less than 15 (18) % clay unassigned. soilKey reads both as medium textured: coarse is clay below 15 (18) % and sand above 70 (65) %, fine is clay above 35 %, medium the rest (.fao_texture_class()). The 1974 case is plan section 12 item 25; the 1988 one is the same gap (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "The solum"
+    edition: [1988, 1974]
+    page: "p. 26; 74 p. 24"
+    reading: "The solum of the mollic A rule is the A, E and B horizons with their transitions (AB, BA, AE, EB, BC, AC, A/B); CB, C, R, H and O are not. Its base is the base of the deepest such horizon; where horizons lack a designation, the top of the first C or R below the last A, E or B, flagged; a description that ends in the solum gives a lower bound (.fao_solum()). AC is counted because the mollic A of both editions counts AC as part of the A (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "Buried horizons"
+    edition: [1988, 1974]
+    page: "p. 42; 74 p. 32"
+    reading: "A buried horizon is one whose designation has the suffix b (Ab, 2Btb); the new material is all that lies above the first of them, its thickness the depth of that horizon. When the mantle is 50 cm or more (1988 also 35 cm or more over an andic mantle) that horizon and every horizon below it are not diagnostic; with the andic reading of the mantle undecided between 35 and 50 cm the answer is undecided (.fao_buried()) (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "Vertical distance of the clay increase"
+    edition: [1988, 1974]
+    page: "p. 28 item 4; 74 p. 25"
+    reading: "'The increase must be reached within a vertical distance of 30 (15) cm' is read as the gap between the base of the coarser overlying layer and the top of the layer compared: the layers in between add up to no more than 30 (15) cm. A pair across a lithological discontinuity (a different material number in the designation) is undecided, not failed (.fao_clay_increase(distance =)) (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "NH4Cl CEC when neither it nor the ECEC is recorded"
+    edition: [1974]
+    page: "74 pp. 27-28, 47"
+    reading: "Without a CEC by NH4Cl and without ecec_cmol, the NH4Cl CEC is undecided; the CEC at pH 7 (NH4OAc) is not read in its place, because it runs higher in the variable-charge soils the 24 and 10 me limits separate (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "ECEC of 1988 without the KCl acidity"
+    edition: [1988]
+    page: "pp. 31, 130"
+    reading: "Without exch_acidity_kcl_cmol the ECEC of the ferralic B reads al_kcl_cmol, then al_cmol (KCl aluminium, the acidity of most acid soils), flagged; without the bases, ecec_cmol as recorded, flagged ecec_as_recorded (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "Base saturation not recorded"
+    edition: [1988, 1974]
+    page: "pp. 26-27, 75-89; 74 pp. 24, 43-53"
+    reading: "Where bs_pct is not recorded and the four bases and cec_cmol are, the base saturation is 100 x bases / CEC (at most 100), flagged bs_computed (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "Continuous rock in the readers"
+    edition: [1988, 1974]
+    page: "p. 35; 74 p. 32"
+    reading: "A layer is rock for the windows and the weighted means when its designation is R (2R, R/Cr) or bedrock_pct is 90 or more; a window that ends on rock is complete, and a weighted mean over it averages the soil above the rock, except the strongly humic mean of 1988, which counts the depth below the soil as zero (p. 40). The key's own test of continuous hard rock follows with the diagnostics (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "Neutral hues"
+    edition: [1988, 1974]
+    page: "pp. 32-35; 74 pp. 27-28"
+    reading: "A neutral hue (N) is neither redder nor yellower than any hue: 'redder than 7.5YR' and '2.5Y or more' fail on it (.fao_hue_cmp()) (soilKey's reading, for Hugo to confirm, 2026-11-08)."
+  - topic: "The ignition test from free iron, both ways"
+    edition: [1988, 1974]
+    page: "p. 81; 74 pp. 39, 47"
+    reading: "Without ignition_redder, free iron (fe_dcb_pct) below 0.5 % of the fine earth reads as not turning redder (Q23), and 0.5 % or more as turning redder, both flagged; the footnote gives only the first direction (soilKey's reading, for Hugo to confirm, 2026-11-08)."

@@ -1,0 +1,315 @@
+# The numbers of the FAO-Unesco Legend of 1974 that soilKey's FAO readers
+# and diagnostics use, as printed, with the printed page. Source: FAO-Unesco
+# (1974). Soil Map of the World 1:5 000 000, Volume I, Legend. Unesco, Paris
+# (PDF page = printed + 7 up to p. 41; p. 42 is missing from the PDF, so from
+# the key on PDF page = printed + 6). The criteria are paraphrased in
+# soilKey's words; no text of the book is shipped. An entry whose source is
+# "soilKey" is a number or a reading soilKey adds where the text gives none,
+# with the decision that set it (data-raw/fao_readings.yaml). Organic matter
+# (OM) and me per 100 g of clay are the units of this edition: soilKey reads
+# OM as organic carbon x 1.724, flagged (Hugo's decision Q11), and me per
+# 100 g as cmol(+)/kg (the same number).
+#
+# 0.9.381 holds this table in data-raw/; the registry part of the 1974 legend
+# copies it to inst/rules/fao1974/thresholds.yaml. The defaults of the
+# readers in R/fao-readers.R are these numbers (test-v09381-fao-readers.R).
+edition: "FAO-Unesco Soil Map of the World 1:5 000 000, Vol. I Legend, Unesco Paris 1974"
+
+general:
+  page: 32
+  buried_new_material_cm:        {value: 50, page: 32, source: "definitions of soil units: horizons buried by 50 cm or more of new material are not diagnostic"}
+  units_upper_boundary_cm:       {value: 50, page: 32}
+  mineral_soil_h_max_cm:         {value: 40, page: 32}
+  mineral_soil_h_sphagnum_cm:    {value: 60, page: 32}
+  mineral_soil_h_cumulative_cm:  {value: 80, page: 32}
+  lithosols_rock_within_cm:      {value: 10, page: 32, source: "every definition but the Lithosols implies no continuous hard rock within 10 cm"}
+  diagnostic_upper_limit_cm:     {value: 125, page: "43-53", source: "soilKey: the 1974 text has no general rule; 125 cm, the window of the whole key, where a depth is not written (Hugo's decision Q10)"}
+  two_b_horizons_within_cm:      {value: 125, page: 32, source: "soilKey reads the upper B, as 1988 p. 42 (default 11)"}
+  depth_datum: {value: "soil surface", page: "32, 43", source: "soilKey: the top of the first recorded horizon, H and O included (Q9)"}
+
+units:
+  om_from_oc_factor: {value: 1.724, page: "21, 24, 32", source: "soilKey: Van Bemmelen's factor of the US SCS methods the text cites (Q11)"}
+  me_per_100g_is_cmol_per_kg: {value: 1, page: "-", source: "the same number"}
+  methods: {value: "US SCS 1967", page: "24, 32"}
+  cec_method: {value: "NH4OAc pH 7", page: "24, 26-27", source: "the ferralic and ferric properties and the Acric Ferralsols read NH4Cl (pp. 28, 47): cec_cmol with cec_method nh4cl, else ecec_cmol, flagged (Q12)"}
+  ecec_oxic: {value: "NH4OAc bases + 1 N KCl aluminium", page: 27}
+
+master_horizons:
+  page: 21
+  h_om_min_pct_at_clay_gt_60: 30
+  h_om_min_pct_at_clay_0: 20
+  h_clay_line_pct: 60
+  o_om_min_pct: 35
+
+texture_classes:
+  page: 5
+  source: "the class of the upper 30 cm (Q10: also the class of the 125 / 90 / 75 cm rule)"
+  coarse:  {clay_lt: 18, sand_gt: 65}
+  medium:  {clay_lt: 35, sand_lt: 65, sand_max_with_clay_18: 82}
+  fine:    {clay_gt: 35}
+  upper_cm: {value: 30, page: 5}
+  unassigned: {value: "clay exactly 35 %; sand exactly 65 % with clay < 18 %", source: "soilKey reads both as medium (readings; plan section 12, item 25)"}
+  depth_by_class_cm: {value: {coarse: 125, medium: 90, fine: 75}, page: "29, 49-53"}
+
+slope_classes:
+  page: 5
+  a: {min_pct: 0, max_pct: 8}
+  b: {min_pct: 8, max_pct: 30}
+  c: {min_pct: 30}
+
+horizons:
+  histic_h:
+    page: 24
+    thickness_gt_cm: 20
+    thickness_lt_cm: 40
+    thickness_lt_cm_sphagnum_or_light: 60
+    sphagnum_min_pct_vol: 75
+    bulk_density_lt: 0.1
+    thin_surface_lt_cm: 25
+    mixed_depth_cm: 25
+    om_min_pct_at_clay_gt_60: 28
+    om_min_pct_at_clay_0: 14
+    clay_line_pct: 60
+    plough_layer_min_cm: 25
+    eutric_ph_1to5_min: 5.5
+    eutric_throughout: true
+  mollic_a:
+    page: 24
+    mixed_depth_cm: 18
+    prism_massive_gt_cm: 30
+    chroma_moist_lt: 3.5
+    value_moist_lt: 3.5
+    value_dry_lt: 5.5
+    contrast_value_units_min: 1
+    lime_waiver_gt_pct: 40
+    lime_waiver_value_moist_max: 5
+    bs_min_pct: 50
+    om_min_pct: 1
+    om_min_pct_lime_waiver: 4
+    thickness_on_rock_min_cm: 10
+    thickness_min_cm: 18
+    solum_fraction_gt: "1/3"
+    solum_break_cm: 75
+    thickness_gt_cm_deep_solum: 25
+    p2o5_citric_lt_ppm: 250
+  umbric_a:
+    page: 24
+    bs_lt_pct: 50
+    note: "as the mollic A otherwise; the massive-and-hard restriction only where the horizon dries; plaggen A horizons excluded"
+  ochric_a:
+    page: 25
+    grades_window_cm: 40
+    very_weak_om_lt_pct_at_sand_clay_1: 1
+    very_weak_om_lt_pct_at_sand_clay_13: 0.5
+    sand_clay_ratio_low: 1
+    sand_clay_ratio_high: 13
+    shallow_pan_window_cm: [18, 40]
+    shallow_surface_cm: 18
+    shallow_very_weak_om_lt_pct: [1.2, 0.6]
+  argillic_b:
+    page: "25-26"
+    thickness_fraction_of_overlying_min: 0.1
+    thickness_gt_cm_thick_profile: 15
+    thick_profile_gt_cm: 150
+    thickness_min_cm_sandy: 15
+    thickness_min_cm_loamy_clayey: 7.5
+    lamella_min_cm: 1
+    lamellae_combined_min_cm: 15
+    distance_cm: 30
+    clay_increase:
+      breaks_pct: [15, 40]
+      steps: [3, 1.2, 8]
+      source: "item 2; printed '< 15', 'more than 15 and less than 40', 'more than 40': the exact 15 and 40 read by soilKey's usda convention (default 12)"
+    oriented_clay_min_pct: 1
+    fine_clay_ratio_greater_by: "1/3"
+    fine_clay_more_points: 8
+    kaolinitic_surface_clay_gt_pct: 40
+  natric_b:
+    page: 26
+    tongues_gt_cm: 2.5
+    esp_gt_pct: 15
+    upper_part_cm: 40
+    esp_somewhere_within_cm: 200
+  cambic_b:
+    page: 26
+    texture: "very fine sand, loamy very fine sand or finer"
+    rock_structure_absent_min_fraction: 0.5
+    cec_clay_gt: 16
+    weatherable_minerals_gt_pct: 3
+    muscovite_gt_pct: 6
+    base_min_cm: 25
+    reduction_chroma_mottled_max: 2
+    reduction_chroma_unmottled_lt_at_value_lt_4: 1
+    reduction_chroma_unmottled_max_at_value_4: 1
+    reduction_hue_no_bluer_than: "10Y"
+  spodic_b:
+    page: 26
+    below_cm: 12.5
+    cemented_gt_cm: 2.5
+    extractable_fe_line_pct: 0.1
+    pyro_fe_al_over_clay_min: 0.2
+    pyro_over_dithionite_min: 0.5
+    index_min: 65
+  oxic_b:
+    page: 27
+    thickness_min_cm: 30
+    nh4cl_retention_max_per_100g_clay: 10
+    ecec_lt_per_100g_clay: 10
+    cec_nh4oac_max_per_100g_clay: 16
+    clay_gt_pct: 15
+    texture: "sandy loam or finer"
+    rock_structure_lt_pct: 5
+  calcic:
+    page: 27
+    thickness_min_cm: 15
+    cce_min_pct: 15
+    cce_more_than_c_min_pct: 5
+    very_calcareous_below_min_pct: 40
+  gypsic:
+    page: 27
+    thickness_gt_cm: 15
+    gypsum_more_than_c_min_pct: 5
+    thickness_x_pct_min: 150
+    gypsum_me_weight: 0.086
+  sulfuric:
+    page: 27
+    ph_1to1_lt: 3.5
+    jarosite_hue_min: "2.5Y"
+    jarosite_chroma_min: 6
+    jarosite_required: {value: true, source: "'and jarosite mottles' (Q18)"}
+  albic_e:
+    page: 27
+    value_moist_min: 4
+    value_dry_min: 5
+    chroma_max_at_value_dry_7_or_moist_6: 3
+    chroma_max_at_value_dry_5_6_or_moist_4_5: {value: null, source: "no chroma limit printed at these values (plan section 12, item 26)"}
+    red_parent_hue: "5YR"
+    red_parent_chroma_moist_max: 3
+
+properties:
+  abrupt_textural_change:
+    page: "27-28"
+    distance_max_cm: 8
+    upper_clay_break_pct: 20
+    ratio_min_below_break: 2
+    increase_min_from_break: 20
+    doubling_somewhere_below_from_break: true
+  amorphous_complex:
+    page: 28
+    cec_ph82_clay_gt: 150
+    nap_ph_gt: 9.4
+    nap_water_15bar_min_pct: 20
+    water_15bar_over_clay_gt: 1.0
+    oc_gt_pct: 0.6
+    bulk_density_lt_g_cm3: 0.85
+  aridic_regime:
+    page: 28
+    source: "the Soil Taxonomy moisture control section rule; control section 10-30 / 20-60 / 30-90 cm by texture, soil temperature at 50 cm above 5 and 8 C, 90 and 60 days, mean annual below 22 C, seasonal difference 5 C"
+  ferralic_properties:
+    page: 28
+    cec_nh4cl_clay_lt: 24
+  ferric_properties:
+    page: 28
+    hue_redder_than: "7.5YR"
+    chroma_gt: 5
+    nodule_max_cm: 2
+    cec_nh4cl_clay_lt: 24
+  high_om_in_b:
+    page: "28-29"
+    om_weighted_min_pct: 1.35
+    depth_cm: 100
+    acrisols_upper_b_om_min_pct: 1.5
+  high_salinity:
+    page: 29
+    ece_gt_mmhos: 15
+    depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}
+    ece_gt_mmhos_alkaline: 4
+    alkaline_within_cm: 25
+    ph_1to1_gt: 8.5
+  hydromorphic:
+    page: "29-30"
+    source: "groundwater with the capillary fringe at the surface; a histic H; hues N or bluer than 10Y; the colour branches 4.1 to 4.5 (Q22)"
+    calcic_intervening_within_cm: 75
+    oxic_plinthite_within_cm: 30
+    oxic_mottles_within_cm: 50
+  interfingering:
+    page: 30
+    skeletan_gt_mm: 1
+    skeletan_total_gt_mm: 2
+    skeletans_gt_pct_vol: 15
+  permafrost:
+    page: 30
+    temperature_max_c: 0
+  soft_powdery_lime:
+    page: 31
+    coatings_thickness_mm: [1, 5]
+    numbers_of_1988: {value: {coatings_faces_min_pct: 50, soft_nodules_min_pct_vol: 5}, page: "1988 p. 40", source: "soilKey: the 1988 numbers, flagged (Q23)"}
+  sulfidic_materials:
+    page: 31
+    s_min_pct: 0.75
+    cce_lt_times_s: 3
+  thin_iron_pan:
+    page: 31
+    thickness_mm: [2, 10]
+    thickness_extreme_mm: [1, 40]
+    within_mineral_cm: 50
+  tonguing:
+    page: 31
+    width_min_mm_fine: 5
+    width_min_mm_moderately_fine: 10
+    width_min_mm_medium_or_coarser: 15
+    upper_argillic_gt_pct_mass: 15
+  vertic_properties:
+    page: 31
+    cracks_min_cm: 1
+    within_cm_of_b_top: 50
+  recent_alluvial_deposits:
+    page: 32
+    om_gt_pct: 0.35
+    depth_cm: 125
+    sulfidic_within_cm: 125
+  calcareous:
+    page: "1988 p. 35"
+    cce_gt_pct: {value: 2, source: "soilKey: the 1988 definition, flagged (Q23)"}
+
+phases:
+  page: "5-7"
+  lithic_rock_within_cm: {value: 50, page: 6}
+  petric_coarse_min_pct_vol: {value: 40, page: 6}
+  petric_thickness_min_cm: {value: 25, page: 6}
+  petric_within_cm: {value: 100, page: 6}
+  petrocalcic_within_cm: {value: 100, page: 6}
+  petrogypsic_within_cm: {value: 100, page: 6}
+  petrogypsic_gypsum_usual_gt_pct: {value: 60, page: 6}
+  petroferric_within_cm: {value: 100, page: 6}
+  petroferric_fracture_spacing_min_cm: {value: 10, page: 6}
+  phreatic_water_table_cm: {value: [300, 500], page: 6}
+  fragipan_within_cm: {value: 100, page: 6}
+  duripan_within_cm: {value: 100, page: 7}
+  saline_ece_gt_mmhos: {value: 4, page: 7}
+  saline_within_cm: {value: 100, page: 7}
+  sodic_esp_gt_pct: {value: 6, page: 7}
+  sodic_within_cm: {value: 100, page: 7}
+  stony_gravel_max_cm: {value: 7.5, page: 5}
+
+key:
+  page: "43-53"
+  source: "the gate numbers of the 26 major soil groups (plan section 1.3); unit numbers follow with the units"
+  O: {page: 43, h_min_cm: 40, h_min_cm_sphagnum: 60, cumulative_within_cm: 80, bulk_density_lt: 0.1}
+  I: {page: 43, rock_within_cm: 10}
+  V: {page: 43, mixed_cm: 20, clay_min_pct: 30, clay_depth_min_cm: 50, cracks_min_cm: 1, cracks_at_cm: 50, slickensides_window_cm: [25, 100]}
+  G: {page: 44, hydromorphic_within_cm: 50}
+  T: {page: 45, depth_min_cm: 35, bulk_density_lt_g_cm3: 0.85, vitric_min_pct: 60}
+  Q: {page: "45-46", albic_material_min_cm: 50}
+  U: {page: 46, umbric_max_cm: 25}
+  E: {page: 46, cce_gt_pct: 40}
+  W: {page: 48, slowly_permeable_within_cm: 125}
+  M: {page: 48, chroma_moist_max: 2, chroma_depth_min_cm: 15}
+  C: {page: 49, chroma_moist_max: 2, chroma_depth_min_cm: 15, depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}}
+  K: {page: 49, chroma_moist_gt: 2, chroma_depth_min_cm: 15, depth_by_class_cm: {coarse: 125, medium: 90, fine: 75}}
+  D: {page: 50, nodules_cm: [2, 5], nodules_within_cm: 30}
+  X: {page: 50, permafrost_not_within_cm: 200}
+  Y: {page: 50, permafrost_not_within_cm: 200}
+  N: {page: 51, clay_decrease_max_fraction: 0.2, depth_cm: 150, plinthite_not_within_cm: 125}
+  A: {page: 51, bs_lt_pct: 50, within_cm: 125}
+  B: {page: "52-53", umbric_gt_cm: 25}

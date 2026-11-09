@@ -992,6 +992,75 @@
           },
           "soluble_salts_sodium_pct": {
             "type": ["number", "null"]
+          },
+          "p2o5_citric_mg_kg": {
+            "type": ["number", "null"]
+          },
+          "extractable_acidity_ph82_cmol": {
+            "type": ["number", "null"]
+          },
+          "cec_ph82_cmol": {
+            "type": ["number", "null"]
+          },
+          "al_dcb_pct": {
+            "type": ["number", "null"]
+          },
+          "exch_acidity_kcl_cmol": {
+            "type": ["number", "null"]
+          },
+          "ph_h2o_1to1": {
+            "type": ["number", "null"]
+          },
+          "ph_h2o_1to5": {
+            "type": ["number", "null"]
+          },
+          "rock_structure_pct": {
+            "type": ["number", "null"]
+          },
+          "smeary_consistence": {
+            "type": ["boolean", "null"]
+          },
+          "bleached_ped_coatings": {
+            "type": ["boolean", "null"]
+          },
+          "ignition_redder": {
+            "type": ["boolean", "null"]
+          },
+          "spodic_pellets": {
+            "type": ["boolean", "null"]
+          },
+          "skeletans_pct": {
+            "type": ["number", "null"]
+          },
+          "skeletan_thickness_mm": {
+            "type": ["number", "null"]
+          },
+          "carbonate_coatings_faces_pct": {
+            "type": ["number", "null"]
+          },
+          "nodule_size_max_cm": {
+            "type": ["number", "null"]
+          },
+          "dta_low_endotherm": {
+            "type": ["boolean", "null"]
+          },
+          "munsell_hue_rubbed": {
+            "type": ["string", "null"]
+          },
+          "munsell_value_rubbed": {
+            "type": ["number", "null"]
+          },
+          "munsell_chroma_rubbed": {
+            "type": ["number", "null"]
+          },
+          "pitted_quartz_pct": {
+            "type": ["number", "null"]
+          },
+          "palygorskite_pct": {
+            "type": ["number", "null"]
+          },
+          "aeolian_crack_infill": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false

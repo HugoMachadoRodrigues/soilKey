@@ -384,7 +384,31 @@ horizon_column_spec <- function() {
     shajiang_pct                  = "numeric",   # shajiang (irregular calcareous nodules), % by volume; CST Shajiang groups and subgroups
     fe_mn_nodules_pct             = "numeric",   # iron-manganese nodules and concretions, % by volume; CST Concretic subgroups (>= 30)
     pyroclastic_fragments_pct     = "numeric",   # cinders, scoria and pumice, % by volume; CST Histosols order, Cinderic (>= 35)
-    soluble_salts_sodium_pct      = "numeric"    # sodium share of the cations of the water-soluble salts, %; CST Marinic
+    soluble_salts_sodium_pct      = "numeric",   # sodium share of the cations of the water-soluble salts, %; CST Marinic
+    # ---- v0.9.381: the FAO-Unesco legend (Revised Legend 1988, Legend 1974) ----
+    p2o5_citric_mg_kg             = "numeric",   # P2O5 soluble in 1 % citric acid, mg/kg soil; FAO mollic and umbric A (< 250), fimic A
+    extractable_acidity_ph82_cmol = "numeric",   # extractable acidity, BaCl2-TEA at pH 8.2, cmol(+)/kg; FAO natric B (Mg + Na path)
+    cec_ph82_cmol                 = "numeric",   # CEC at pH 8.2, cmol(+)/kg soil; FAO spodic B index of accumulation, 1974 amorphous complex
+    al_dcb_pct                    = "numeric",   # dithionite-citrate extractable Al, %; FAO spodic B item 3b
+    exch_acidity_kcl_cmol         = "numeric",   # exchangeable acidity (H + Al) in 1 M KCl, cmol(+)/kg; FAO 1988 ferralic B ECEC, geric properties
+    ph_h2o_1to1                   = "numeric",   # pH in water 1:1; FAO sulfuric horizon, salic properties, 1974 high salinity
+    ph_h2o_1to5                   = "numeric",   # pH in water 1:5; FAO 1974 eutric and dystric histic H
+    rock_structure_pct            = "numeric",   # rock structure, % by volume; FAO cambic B (half), ferralic B (< 5)
+    smeary_consistence            = "logical",   # thixotropic, smeary consistence; FAO Andosols units
+    bleached_ped_coatings         = "logical",   # bleached coatings (uncoated silt and sand) on ped surfaces; FAO Greyzems
+    ignition_redder               = "logical",   # the sample turns redder on ignition; FAO PZc, 1974 Podzols
+    spodic_pellets                = "logical",   # distinct dark pellets of coarse silt size or larger, or cracked coatings on sand; FAO spodic B item 2
+    skeletans_pct                 = "numeric",   # skeletans (clean silt or sand ped coatings), % by volume; FAO interfingering (> 15)
+    skeletan_thickness_mm         = "numeric",   # thickness of the skeletans on vertical ped faces, mm; FAO interfingering (> 1)
+    carbonate_coatings_faces_pct  = "numeric",   # soft carbonate coatings, % of the structural faces; FAO soft powdery lime (>= 50)
+    nodule_size_max_cm            = "numeric",   # diameter of the largest iron nodules, cm; FAO ferric properties (<= 2), Podzoluvisols (> 2)
+    dta_low_endotherm             = "logical",   # differential thermal analysis shows a low-temperature endotherm; FAO 1974 amorphous complex
+    munsell_hue_rubbed            = "character", # Munsell hue of the rubbed soil, moist; FAO Rhodic, Xanthic, Chromic units
+    munsell_value_rubbed          = "numeric",   # Munsell value of the rubbed soil, moist
+    munsell_chroma_rubbed         = "numeric",   # Munsell chroma of the rubbed soil, moist
+    pitted_quartz_pct             = "numeric",   # pitted and rounded quartz grains, % of the sand >= 0.25 mm; FAO yermic phase (>= 10)
+    palygorskite_pct              = "numeric",   # palygorskite, % of the clay fraction; FAO yermic phase (>= 2)
+    aeolian_crack_infill          = "logical"    # surface cracks filled with in-blown sand or silt; FAO yermic phase
   )
 }
 

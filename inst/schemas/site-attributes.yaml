@@ -475,6 +475,11 @@ attributes:
     type: "character"
     unit: "-"
     description: "FAO 1988 class of an AfSP profile. Written by load_afsp_pedons()."
+  - name: reference_fao74
+    section: "Reference classes & provenance (stored, read by no key)"
+    type: "character"
+    unit: "-"
+    description: "Soil unit of the FAO-Unesco Legend of 1974 given for the profile (e.g. 'Chromic Luvisol', 'Lc'), beside reference_fao88 for the Revised Legend. Stored for benchmarks; read by no key."
   - name: reference_wrb_from_usda
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
@@ -1048,3 +1053,13 @@ attributes:
     description: "Kind of deep cultivation: 'repeated_trenching' (Rigosol), 'single_deep_ploughing' (Treposol), 'plaggen', 'garden', 'peat_sand_culture'. German KA5: separates YY from YU, and the cultivated Moore (pp. 236-237, 262-263; Hugo's decision Q23). Not recorded: mechanical_mixing_purpose; else YY and YU both candidates."
     allowed: ["repeated_trenching", "single_deep_ploughing", "plaggen", "garden", "peat_sand_culture"]
     systems: [ka5]
+  - name: flooding_days_growing_period
+    section: "FAO-Unesco legend (1988 and 1974)"
+    type: "numeric"
+    unit: "days"
+    description: "Days in the growing period with standing or flowing water on the soil surface. The inundic phase of the Revised Legend of 1988: more than 10 days (p. 68). Not recorded: undecided."
+  - name: rudic_recorded
+    section: "FAO-Unesco legend (1988 and 1974)"
+    type: "logical"
+    unit: "logical"
+    description: "Gravel, stones, boulders or rock outcrops in the surface layers or at the surface make mechanized agricultural equipment impracticable: the rudic phase of 1988 (p. 69), which replaces the stony phase of 1974 (p. 5). A field observation: not recorded, absent."
