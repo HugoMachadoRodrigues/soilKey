@@ -234,10 +234,16 @@ vertisols_gate_fao88 <- function(pedon) {
   cw <- .f88_num(x, "cracks_width_cm"); cdp <- .f88_num(x, "cracks_depth_cm")
   rec <- !is.na(cw) | !is.na(cdp)
   wide <- !is.na(cw) & cw >= 1
-  reach <- (!is.na(cdp) & cdp >= 50) | (wide & !is.na(x$bot) & x$bot >= 50)
-  c2 <- if (any(wide) && any(reach)) TRUE
+  # width and depth of the same record (layer): a crack 1 cm wide that
+  # reaches 50 cm (its depth recorded, or recorded in a layer whose base is
+  # at 50 cm or deeper)
+  reach <- ifelse(!is.na(cdp), cdp >= 50, !is.na(x$bot) & x$bot >= 50)
+  # undecided: a wide crack of a shallow layer without its depth, or a deep
+  # crack without its width
+  open <- (wide & is.na(cdp) & !reach) | (is.na(cw) & !is.na(cdp) & cdp >= 50)
+  c2 <- if (any(wide & reach)) TRUE
         else if (!any(rec)) FALSE
-        else if (any(wide) && all(is.na(cdp))) NA else FALSE
+        else if (any(open)) NA else FALSE
   irr <- isTRUE(.f88_site_lgl(x, "irrigated"))
   c2_flag <- character(0)
   if (!isTRUE(c2) && irr) { c2 <- TRUE; c2_flag <- "cracks_waived_irrigated" }
@@ -420,7 +426,7 @@ plinthosols_gate_fao88 <- function(pedon) {
     s_above <- .f88_any(sg[above[!is.na(x$top[above]) & x$top[above] <= 50]])
     if (!length(above)) { e_above <- FALSE; s_above <- FALSE }
     cond <- .fao_or(e_above, s_above, gl)
-    deep[r$layers] <- .fao_and(pv[r$layers], cond)
+    deep[r$layers] <- .f88_and(pv[r$layers], cond)
   }
   b <- .fao_within(x$h, deep, 125)
   value <- .fao_or(a$value, b$value)
@@ -450,7 +456,8 @@ planosols_gate_fao88 <- function(pedon) {
   ab <- .f88_abrupt_v(x)$value
   sharp <- .fao_boundary_sharp(x$h)$value
   ks <- .f88_num(x, "ksat_mm_h")
-  out <- FALSE; lay <- integer(0); flags <- character(0)
+  out <- FALSE; lay <- integer(0); flags <- character(0); miss <- character(0)
+  sg_miss <- .f88_stagnic_v(x)$missing; ab_miss <- .f88_abrupt_v(x)$missing
   for (r in .f88_run_list(x, is_e)) {
     k <- max(r$layers) + 1L
     if (k > x$n || x$rock[k] || is.na(x$top[k]) || x$top[k] > 125) next
@@ -464,10 +471,15 @@ planosols_gate_fao88 <- function(pedon) {
       flags <- c(if (frag && !isTRUE(ab[k])) "fragipan_from_designation", if (kslow && !isTRUE(ab[k])) "ksat_below_4mm_h")
       break
     }
-    if (is.na(s)) { out <- if (isFALSE(out)) NA else out; lay <- c(lay, r$layers, k) }
+    if (is.na(s)) {
+      out <- if (isFALSE(out)) NA else out; lay <- c(lay, r$layers, k)
+      # what would decide it: the readers left undecided
+      if (is.na(stag)) miss <- c(miss, sg_miss)
+      if (is.na(slow)) miss <- c(miss, ab_miss, if (is.na(sharp[max(r$layers)])) "boundary_distinctness")
+    }
   }
   .f88_key_result(x, "planosols_gate", out, pg, layers = lay,
-                  missing = c("clay_pct", "rh_value", "mottle_colors"), flags = flags)
+                  missing = unique(miss), flags = flags)
 }
 
 # Podzoluvisols (p. 85): an argic B whose upper boundary is irregular or
@@ -1014,7 +1026,7 @@ make_fao1988_example <- function(code, near_miss = FALSE) {
       sand_pct = c(40, 34, 25, 24, if (nm) 39 else 26),
       oc_pct = c(2, 1.2, 0.6, 0.4, 0.2), cec_cmol = c(12, 12, 12, 12, 11), bs_pct = c(40, 35, 30, 30, 30),
       fe_dcb_pct = 9, fe_ox_pct = c(0.8, 0.7, 0.6, 0.5, 0.4), ph_h2o = 5.2,
-      clay_films_amount = c(NA, NA, "many", "many", "common"), shiny_ped_faces = c(NA, NA, "many", "many", "common"),
+      clay_films_amount = c(NA, NA, "many", "many", "common"), pressure_faces = c(NA, NA, "many", "many", "common"),
       boundary_distinctness = c("gradual", "gradual", "diffuse", "diffuse", NA),
       munsell_hue_moist = c("2.5YR", "2.5YR", "10R", "10R", "10R"),
       munsell_value_moist = c(3, 3, 3, 3, 3), munsell_chroma_moist = c(4, 4, 6, 6, 6),

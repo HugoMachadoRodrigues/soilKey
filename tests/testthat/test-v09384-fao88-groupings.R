@@ -102,15 +102,19 @@ test_that("the 28 near misses land where the one change sends them", {
             SN = "LV", GR = "PH", CH = "KS", KS = "PH", PH = "CM", PD = "LV", GY = "CM",
             CL = "CM", NT = "AC", AL = "AC", AC = "LX", LV = "AL", LX = "LV", CM = "RG")
   expect_identical(names(want), .CODES384)
+  rules <- load_rules("fao1988")
   for (cd in names(want)) {
     r <- .f384(make_fao_example(cd, near_miss = TRUE))
     expect_identical(r$levels$code, want[[cd]], info = cd)
     expect_false(identical(r$levels$code, cd))
     expect_length(r$provisional_because, 0L)
-    # the gate of the grouping fails on the crossed number, decided (when
-    # the soil lands after it; before it, the gate is not reached)
-    g <- r$trace$major_groups[[cd]]
-    if (!is.null(g)) expect_true(isFALSE(g$passed), info = cd)
+    # the gate of the grouping itself fails on the crossed number, decided,
+    # evaluated directly (the key may stop before it)
+    g <- Find(function(e) identical(e$code, cd), rules$major_groups)
+    ev <- soilKey:::evaluate_rsg_tests(make_fao_example(cd, near_miss = TRUE), g$tests)
+    expect_true(isFALSE(ev$passed), info = cd)
+    # and passes, decided, on the example
+    expect_true(isTRUE(soilKey:::evaluate_rsg_tests(make_fao_example(cd), g$tests)$passed), info = cd)
   }
 })
 
@@ -310,4 +314,49 @@ test_that("the rule folder: thresholds and readings", {
   mine <- Filter(function(e) identical(e$version, "0.9.384"), rd)
   expect_true(length(mine) >= 15L)
   expect_true(all(vapply(mine, function(e) grepl("for Hugo to confirm", e$reading, fixed = TRUE), NA)))
+})
+
+test_that("review fixes: plinthite runs, cracks of one record, the Planosols trace, the NT example", {
+  skip_on_cran()
+  mkp <- function(h) {
+    base <- list(ec_dS_m = 0.4, caso4_pct = 0, caco3_pct = 0, coarse_fragments_pct = 0,
+                 munsell_hue_moist = "10YR", structure_grade = "moderate",
+                 structure_type = "subangular blocky", boundary_distinctness = "clear",
+                 ph_h2o = 5, na_cmol = 0.1)
+    h <- utils::modifyList(base, h); n <- max(lengths(h))
+    h <- lapply(h, function(v) if (length(v) == 1L) rep(v, n) else v)
+    PedonRecord$new(site = list(id = "r384", drainage_class = "well drained", parent_material = "granite"),
+                    horizons = ensure_horizon_schema(data.table::as.data.table(data.frame(h, stringsAsFactors = FALSE))))
+  }
+  # an albic E 10-60 over 20 cm of 35 % plinthite at 60-80, plinthite not
+  # recorded at 80-100: the sure part of the run is element-wise TRUE
+  pt <- mkp(list(designation = c("A", "E", "Bv1", "Bv2", "C"), top_cm = c(0, 10, 60, 80, 100),
+                 bottom_cm = c(10, 60, 80, 100, 150), clay_pct = c(10, 8, 35, 38, 35),
+                 silt_pct = c(20, 20, 20, 18, 20), sand_pct = c(70, 72, 45, 44, 45),
+                 oc_pct = c(1, 0.3, 0.3, 0.2, 0.1), plinthite_pct = c(0, 0, 35, NA, 0),
+                 munsell_value_moist = c(4, 7, 5, 5, 5), munsell_chroma_moist = c(2, 1, 6, 6, 6),
+                 munsell_value_dry = c(5, 8, 6, 6, 6), munsell_chroma_dry = c(2, 1, 6, 6, 6)))
+  g <- soilKey:::plinthosols_gate_fao88(pt)
+  expect_true(g$passed)
+  expect_true(g$evidence$within_125_under_e_stagnic_or_gleyic)
+  # Vertisols: the 1 cm width and the 50 cm depth of the same crack
+  vr <- make_fao_example("VR")
+  vg <- function(p) soilKey:::vertisols_gate_fao88(p)$evidence$cracks
+  expect_true(vg(vr))
+  expect_false(vg(.edit384(vr, cracks_width_cm = c(2, 0.3, NA, NA), cracks_depth_cm = c(10, 70, NA, NA))))
+  expect_true(is.na(vg(.edit384(vr, cracks_width_cm = NA_real_))))
+  expect_true(is.na(vg(.edit384(vr, cracks_width_cm = c(2, NA, NA, NA), cracks_depth_cm = NA_real_))))
+  expect_true(vg(.edit384(vr, cracks_width_cm = c(NA, 1.5, NA, NA), cracks_depth_cm = NA_real_)))
+  # Planosols: what is missing comes from the readers left undecided
+  pl <- make_fao_example("PL")
+  q <- .edit384(pl, clay_pct = c(15, 12, NA, 30), rh_value = NA_real_)
+  r <- soilKey:::planosols_gate_fao88(q)
+  expect_true(is.na(r$passed))
+  expect_true("clay_pct" %in% r$missing)
+  expect_false("mottle_colors" %in% r$missing && !("mottle_colors" %in% soilKey:::.f88_stagnic_v(soilKey:::.f88_ctx(q))$missing))
+  expect_length(soilKey:::planosols_gate_fao88(pl)$missing, 0L)
+  # the NT example records only attributes soilKey reads
+  expect_no_warning(nt <- make_fao_example("NT"))
+  expect_true(soilKey:::nitic_properties_fao88(nt, max_top_cm = 125)$passed)
+  expect_identical(.f384(nt)$levels$code, "NT")
 })
