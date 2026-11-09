@@ -44,7 +44,9 @@ test_that("the 27 predicates exist and return DiagnosticResults of chapter V", {
   }
   e <- .p88(top_cm = numeric(0), bottom_cm = numeric(0))
   expect_false(.ok(calcareous_fao88(e)))
-  src <- readLines(test_path("..", "..", "R", "diagnostics-fao88-properties.R"), warn = FALSE)
+  src <- test_path("..", "..", "R", "diagnostics-fao88-properties.R")
+  skip_if_not(file.exists(src))
+  src <- readLines(src, warn = FALSE)
   expect_false(any(grepl("[^\\x01-\\x7F]", src, perl = TRUE)))
 })
 
