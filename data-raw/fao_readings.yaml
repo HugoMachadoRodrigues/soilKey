@@ -285,12 +285,12 @@ readings:
     edition: [1988]
     page: "pp. 28, 34"
     version: "0.9.383"
-    reading: "A boundary over less than 5 cm is one recorded abrupt or clear (abrupta, clara), read by one reader for the abrupt textural change and argic item 6 (.fao_boundary_sharp()); not recorded, absent, flagged boundary_distinctness_not_recorded_absent (a field observation). A layer starting less than 5 cm below the base of the upper one, across a thin transitional layer, is also compared, the distance read from the depths (Hugo, 2026-11-09)."
+    reading: "A boundary over less than 5 cm is one recorded abrupt or clear (abrupta, clara), read by one reader for the abrupt textural change and argic item 6 (.fao_boundary_sharp()); not recorded, absent, flagged boundary_distinctness_not_recorded_absent (a field observation). A layer starting less than 5 cm below the base of the upper one, across a thin transitional layer, is also compared, the distance read from the depths. An argic start that fails item 6 because the boundary is not recorded keeps the flag in the evidence (Hugo, 2026-11-09)."
   - topic: "Calcareous without CaCO3"
     edition: [1988]
     page: "p. 35"
     version: "0.9.383"
-    reading: "Without caco3_pct only strong effervescence (strong, very strong, violent; effervescence_class read for the 10 % HCl, flagged) in most of the fine earth decides, as calcareous; any other effervescence, none recorded, or no record leaves it undecided. The readings of the carbonate from the pH or a reaction recorded as none, made for the horizons, are not applied here (Hugo, 2026-11-09)."
+    reading: "Without caco3_pct strong effervescence (strong, very strong, violent; effervescence_class read for the 10 % HCl, flagged) in most of the fine earth decides, as calcareous, and a water pH (ph_h2o) below 6.5 reads as not calcareous, flagged no_carbonate_at_ph_below_6.5, as the horizons read it; both recorded conflict and leave it undecided, flagged; any other effervescence, none recorded, or no record leaves it undecided (a reaction recorded as none is not read here) (Hugo, 2026-11-09)."
   - topic: "Fluvic properties: irregular decrease and thin sand strata"
     edition: [1988]
     page: "p. 35"

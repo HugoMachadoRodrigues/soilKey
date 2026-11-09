@@ -829,7 +829,7 @@ ochric_a_fao88 <- function(pedon) {
     sharp <- .fao_boundary_sharp(x$h)
     lam <- .f88_num(x, "lamellae_cumulative_cm")
     trunc <- isTRUE(.f88_site_lgl(x, "anthropic_truncation"))
-    starts <- list()
+    starts <- list(); dropped <- character(0)
     for (i in seq_len(n)[-1L]) {
       st0 <- .f88_and(sub[i], tex[i], .f88_not(ferr[i]), .f88_or(inc30$value[i], inc15$value[i]))
       if (isFALSE(st0) || is.na(x$top[i]) || is.na(x$bot[i])) next
@@ -891,7 +891,12 @@ ochric_a_fao88 <- function(pedon) {
       item6 <- if (sk_s) TRUE else if (is.na(clay[i])) NA else if (isTRUE(r6)) TRUE
                else if (sk_m || is.na(r6)) NA else FALSE
       status <- .f88_and(st0, inc, thick, item6)
-      if (isFALSE(status)) next
+      if (isFALSE(status)) {
+        # a start discarded because the boundary was not recorded keeps the flag
+        if (isFALSE(item6) && !sk_s && i > 1L && !is.na(sharp$flags[i - 1L]))
+          dropped <- c(dropped, sharp$flags[i - 1L])
+        next
+      }
       starts[[length(starts) + 1L]] <- list(
         start = i, upper = up, sure = sure, maybe = maybe, status = status,
         skins = sk_s, items = c(texture = tex[i], not_ferralic = .f88_not(ferr[i]),
@@ -899,7 +904,7 @@ ochric_a_fao88 <- function(pedon) {
         flags = c(.f88_flags(sk$flags, maybe),
                   if (!sk_s && i > 1L && !is.na(sharp$flags[i - 1L])) sharp$flags[i - 1L]))
     }
-    list(starts = starts,
+    list(starts = starts, dropped_flags = unique(dropped),
          missing = c("clay_pct", "silt_pct", "sand_pct", "clay_films_amount"))
   })
 }
@@ -933,7 +938,7 @@ ochric_a_fao88 <- function(pedon) {
 .f88_hz_argic_natric <- function(x, natric = FALSE) {
   .f88_memo(x, if (natric) "natric_b" else "argic_b", function() {
     core <- .f88_argic_core(x)
-    units <- list(); flags <- character(0); miss <- core$missing; ev <- list()
+    units <- list(); flags <- core$dropped_flags %||% character(0); miss <- core$missing; ev <- list()
     for (s in core$starts) {
       nx <- .f88_natric_extra(x, s)
       st <- if (natric) .f88_and(s$status, nx$status) else .f88_and(s$status, .f88_not(nx$status))

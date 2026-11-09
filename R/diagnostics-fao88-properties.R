@@ -293,13 +293,15 @@ andic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # --- calcareous and calcaric (p. 35) ------------------------------------------------------------
 
 # Calcareous: strong effervescence with 10 % HCl in most of the fine earth,
-# or more than 2 % CaCO3 equivalent. caco3_pct decides (the reading of the
-# carbonate from the pH or an HCl reaction recorded as none, made
-# for the horizons is not read here). soilKey's effervescence_class (1 M
+# or more than 2 % CaCO3 equivalent. caco3_pct decides (an HCl reaction
+# recorded as none, read as no carbonate for the horizons, is not read
+# here). soilKey's effervescence_class (1 M
 # HCl) is read for the 10 % HCl, flagged: strong, very strong or violent in
 # most of the fine earth (an extent recorded as local does not count)
-# passes. Without caco3_pct only that decides; any other effervescence, or
-# none recorded, leaves it undecided (Hugo, 2026-11-09).
+# passes. Without caco3_pct that decides, and a water pH below 6.5 reads as
+# not calcareous, flagged; both recorded conflict (undecided, flagged); any
+# other effervescence, or none recorded, leaves it undecided (Hugo,
+# 2026-11-09).
 .f88_effervescence_class <- function(x) {
   e <- .field_term(.fao_col(x$h, "effervescence_class", "character"))
   out <- rep(NA_integer_, length(e))
@@ -321,9 +323,18 @@ andic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
     flag <- rep(NA_character_, x$n)
     strong <- !is.na(cls) & cls >= 3L & most
     by_cce <- .f88_cmp(cce, ">", 2)
-    # strong effervescence passes; anything else decides nothing
+    # strong effervescence passes; without CaCO3 a water pH below 6.5 is not
+    # calcareous, flagged (Hugo, 2026-11-09, as for the horizons); both
+    # recorded conflict and leave it undecided, flagged; anything else
+    # decides nothing
+    ph <- .f88_num(x, "ph_h2o")
+    acid <- is.na(cce) & !is.na(ph) & ph < 6.5
     v <- ifelse(strong, TRUE, by_cce)
-    flag <- .f88_addf(flag, strong & !(by_cce %in% TRUE), "effervescence_1m_hcl_for_10pct_hcl")
+    v[acid & !strong] <- FALSE
+    v[acid & strong] <- NA
+    flag <- .f88_addf(flag, strong & !acid & !(by_cce %in% TRUE), "effervescence_1m_hcl_for_10pct_hcl")
+    flag <- .f88_addf(flag, acid & !strong, "no_carbonate_at_ph_below_6.5")
+    flag <- .f88_addf(flag, acid & strong, "strong_effervescence_at_ph_below_6.5_conflict")
     list(value = .f88_pr_clean(x, v), flags = flag,
          missing = c("caco3_pct", "effervescence_class"))
   })
