@@ -44,8 +44,11 @@
 # the order of tests runs on its data as well, and when it reaches the same
 # horizon the route is "both", otherwise its reading goes to the evidence
 # (the written designation gives the horizon, the data the properties: the
-# Russian and RP rule). .ka5_identify() is the identification of the
-# namespace ka5 (identify_horizons(pedon, "ka5") once the registry has it).
+# Russian and RP rule). A row of a profile that declares the FAO notation
+# is read within the KA5 horizons its FAO letters allow, with the field
+# observations they state (v0.9.380, R/ka5-fao.R). .ka5_identify() is the
+# identification of the namespace ka5 (identify_horizons(pedon, "ka5") once
+# the registry has it).
 # =============================================================================
 
 .KA5_STAND_INS <- c("argic", "spodic", "albic", "gleyic_properties", "stagnic_properties", "mollic",
@@ -444,10 +447,17 @@
   hth <- sum(vapply(hrows, function(j) if (!isFALSE(.ka5_peat(x, j)$passed) && isTRUE(.ka5_organic(x, j)$passed)) x$thick[j] %||% 0 else 0, 0), na.rm = TRUE)
   if (hth >= .ka5_thr("h_topsoil_block_cm")) return(FALSE)
   if (identical(i, f)) return(TRUE)
+  # an FAO A or E at the GOF (under an FAO O) starts the run; under an FAO
+  # A or E of the run, an undecided row is still in it (v0.9.380)
+  fi <- .ka5_fao_at(x, i)
+  if (!is.null(fi) && any(fi$masters %in% c("A", "E")) && identical(i, x$gof_row)) return(TRUE)
   p <- .ka5_prev(x, i)
   if (is.na(p) || !.ka5_same_layer(x, i, p) || x$rank[p] < x$rank[f]) return(FALSE)
   pc <- .ka5_data_layer(x, p)
-  isTRUE(substr(pc$carrying %||% "", 1L, 1L) == "A")
+  if (isTRUE(substr(pc$carrying %||% "", 1L, 1L) == "A")) return(TRUE)
+  fp <- .ka5_fao_at(x, p)
+  !is.null(fi) && !is.null(fp) && all(fp$masters %in% c("A", "E")) && any(fi$masters %in% c("A", "E")) &&
+    .ka5_in_topsoil(x, p)
 }
 
 .ka5_t_A <- function(x, i) {
@@ -457,7 +467,7 @@
   # v0.9.364 (Hugo, 2026-11-06): the eluvial Al of a Parabraunerde under a
   # podzolic B (the Ae/B(h)s/Al/Bt of the Parabraunerde-Podsol, p. 223)
   pv <- .ka5_prev(x, i)
-  under_pz <- !top && !first && !is.na(pv) && isTRUE(.ka5_t_Bsp(x, pv)$passed)
+  under_pz <- !top && !first && !is.na(pv) && isTRUE(.ka5_fao_gate(x, pv, .ka5_t_Bsp(x, pv))$passed)
   if (!top && !under_pz) return(.ka5_r(FALSE, note = "not in the run of topsoils"))
   if (.ka5_rock_described(x, i)) return(.ka5_r(FALSE, note = "described as rock"))
   os <- .ka5_os(x, i)
@@ -472,15 +482,17 @@
                            if (!wet) "ground or perched water not recorded")))
   }
   pale <- .ka5_pale(x, i)
-  nx <- .ka5_next(x, i)
+  # under an FAO E: the horizon below its sub-horizons and the E-B
+  # transitions (E1/E2/EB/Bt: the Bt; v0.9.380)
+  nx <- .ka5_fao_under_eluvial(x, i)
   # Ae: pale, over a Bh or Bs (p. 94)
   if (!under_pz && (!first || isTRUE(pale$passed))) {
-    bsp <- if (!is.na(nx)) .ka5_t_Bsp(x, nx) else .ka5_r(FALSE)
+    bsp <- if (!is.na(nx)) .ka5_fao_gate(x, nx, .ka5_t_Bsp(x, nx)) else .ka5_r(FALSE)
     # v0.9.364 (Hugo, 2026-11-06): the first row, pale and humic, over a pale
     # Ae over a Bh or Bs is the Ahe of the Ahe/Ae/B(h)s (p. 94)
     if (first && isFALSE(bsp$passed) && !is.na(nx) && isTRUE(.ka5_pale(x, nx)$passed)) {
       n2 <- .ka5_next(x, nx)
-      b2 <- if (!is.na(n2)) .ka5_t_Bsp(x, n2) else .ka5_r(FALSE)
+      b2 <- if (!is.na(n2)) .ka5_fao_gate(x, n2, .ka5_t_Bsp(x, n2)) else .ka5_r(FALSE)
       if (isTRUE(b2$passed)) bsp <- .ka5_r(b2$passed, code = sprintf("pale Ae over a %s", b2$code %||% "Bh or Bs"))
     }
     if (isTRUE(bsp$passed) || is.na(bsp$passed)) {
@@ -498,7 +510,7 @@
   }
   # Al, Ael: over a Bt, lighter than it (p. 95)
   if (!first && !is.na(nx)) {
-    bt <- .ka5_t_Bt(x, nx)
+    bt <- .ka5_fao_gate(x, nx, .ka5_t_Bt(x, nx))
     if (!isFALSE(bt$passed)) {
       cn <- .ka5_colour(x, i); cb <- .ka5_colour(x, nx)
       lighter <- if (is.na(cn$value) || is.na(cb$value)) NA else cn$value > cb$value
@@ -536,6 +548,9 @@
                     bioturb, stable)
   lu <- .ka5_site_txt(x, "land_use")
   ploughed <- first && isTRUE(grepl("arable|crop|acker|tillage|cultivat", lu))
+  # the FAO p states the tillage of the Ap (WRB 2022 Annex 3, p. 227), on
+  # any row of the topsoil (v0.9.380)
+  if (.ka5_fao_has(x, i, "p", "A")) ploughed <- TRUE
   sc <- isTRUE(.ka5_num(x, i, "secondary_carbonates_pct") > 0)
   if (!isFALSE(axh) && (isTRUE(bioturb) || is.na(bioturb))) {
     code <- paste0("A", if (sc) "c" else "", "x", if (ploughed) "p" else "h")
@@ -553,6 +568,8 @@
     # (with the Ah minimum: Ah-Bv), not an Ah
     if (!first) {
       bb <- vapply(list(.ka5_t_Bsp(x, i), .ka5_t_Bt(x, i), .ka5_t_Bv(x, i)), function(r) r$passed, NA)
+      # an FAO A (not AB, BA, AC ...) is no B horizon (v0.9.380)
+      if (.ka5_fao_excludes(x, i, "Bv") && .ka5_fao_excludes(x, i, "Bt") && .ka5_fao_excludes(x, i, "Bs")) bb[] <- FALSE
       if (any(bb %in% TRUE))
         return(.ka5_r(FALSE, code = "Ah", note = c(am$note, "a B horizon with the Ah humus minimum, not an Ah")))
       if (any(is.na(bb)))
@@ -659,7 +676,12 @@
     # one of the three recorded decides; the others not recorded are absent
     coat <- if (any(obs %in% TRUE)) TRUE else if (any(obs %in% FALSE)) FALSE else NA
     tag <- character(0); cnote <- character(0)
-    if (is.na(coat)) {
+    if (is.na(coat) && .ka5_fao_has(x, i, "t", "B")) {
+      # the FAO t states clay coatings, lamellae or bridges (WRB 2022 Annex
+      # 3, p. 227): the field observation of the Bt where none is recorded
+      # (v0.9.380)
+      coat <- TRUE; cnote <- "no clay coatings recorded: the FAO t states them"
+    } else if (is.na(coat)) {
       w <- .ka5_stand_in(x, i, "argic", "the clay coatings")
       # a field observation not recorded is absent; soilKey's argic horizon
       # stands in for it, flagged, beside the measured clay difference
@@ -667,8 +689,12 @@
       cnote <- if (isTRUE(w$p)) w$note else "no clay coatings recorded: absent"
     } else cnote <- if (coat) "clay coatings recorded" else "no clay coatings recorded"
     bands <- .ka5_num(x, i, "bands_area_pct")
-    pr <- .ka5_prev(x, i)
-    cd <- .ka5_clay_diff(x, pr, i, "bt")
+    # a sub-horizon of an FAO Bt (Bt2 under Bt1) has the clay difference of
+    # the run's first row against the eluvial horizon above (v0.9.380)
+    top <- .ka5_fao_run_top(x, i)
+    pr <- .ka5_prev(x, top)
+    cd <- .ka5_clay_diff(x, pr, top, "bt")
+    if (top != i) cd$note <- c(cd$note, sprintf("a sub-horizon of the FAO %s: the clay difference at its top", .ka5_fao_at(x, i)$stem))
     p <- .kidpr_and(coat, cd$passed, g$passed)
     # v0.9.364 (Hugo, 2026-11-06): with no clay coatings recorded, a B with
     # the signs of a podzolic illuvial horizon (a Bh or Bs, or humus or oxalate
@@ -679,7 +705,7 @@
       if (isTRUE(bsp$passed)) {
         p <- FALSE
         cnote <- c(cnote, sprintf("the podzolic %s (p. 97), no clay coatings recorded: no Bt", bsp$code))
-      } else if (!is.na(pr) && isTRUE(.ka5_t_Bsp(x, pr)$passed)) {
+      } else if (!is.na(pr) && isTRUE(.ka5_fao_gate(x, pr, .ka5_t_Bsp(x, pr))$passed)) {
         # the clay difference of the Bt is against the eluvial horizon above
         # (p. 97): under a podzolic B it is no clay illuviation
         p <- FALSE
@@ -744,7 +770,16 @@
   .ka5_memo(x, sprintf("bv_%d", i), function() {
     g <- .ka5_b_gate(x, i)
     if (isFALSE(g$passed)) return(.ka5_r(FALSE, code = "Bv", note = g$note))
-    nx <- .ka5_next(x, i)
+    # a sub-horizon of an FAO Bw (Bw1 over Bw2) is compared with the horizon
+    # under the run (v0.9.380)
+    nx <- .ka5_next(x, .ka5_fao_run_bottom(x, i))
+    # the FAO w states the change of colour (or structure) against the
+    # material below (WRB 2022 Annex 3, p. 227): the browning of the Bv
+    # where the colours do not decide it (v0.9.380)
+    fao_w <- .ka5_fao_has(x, i, "w", "B")
+    if (fao_w && (is.na(nx) || !.ka5_same_layer(x, i, nx)))
+      return(.ka5_r(g$passed, code = "Bv", missing = g$missing,
+                    note = c("no horizon below in the same layer: the browning stated by the FAO w", g$note)))
     if (is.na(nx) || !.ka5_same_layer(x, i, nx)) {
       w <- .ka5_stand_in(x, i, "cambic", "the horizon below in the same layer")
       return(.ka5_r(if (isFALSE(g$passed)) FALSE else NA, code = "Bv", missing = g$missing, tag = if (isTRUE(w$p)) w$tag,
@@ -752,7 +787,10 @@
     }
     br <- .ka5_browner(x, i, nx)
     tag <- br$tag; note <- br$note
-    if (is.na(br$passed)) {
+    if (is.na(br$passed) && fao_w) {
+      br$passed <- TRUE
+      note <- c(note, "the browning stated by the FAO w")
+    } else if (is.na(br$passed)) {
       w <- .ka5_stand_in(x, i, "cambic", "the colours")
       if (isTRUE(w$p)) tag <- c(tag, w$tag)
       note <- c(note, w$note)
@@ -840,7 +878,8 @@
   carb <- .ka5_carbonate(x, i)
   pre <- .ka5_carbonate_prefix(carb$range)
   ws <- .ka5_txt(x, i, "weathering_stage")
-  suf <- if (isTRUE(.ka5_num(x, i, "secondary_carbonates_pct") > 0)) "c"
+  sc2 <- .ka5_num(x, i, "secondary_carbonates_pct")
+  suf <- if (isTRUE(sc2 > 0) || (is.na(sc2) && .ka5_fao_has(x, i, "k"))) "c"
          else if (isTRUE(grepl("fresh", ws))) "n" else if (isTRUE(grepl("weathered|saprolite", ws))) "v" else ""
   code <- paste0(if (is.na(pre)) "" else pre, if (is.na(lmx)) "" else lmx, "C", suf)
   .ka5_r(TRUE, code = code, tag = carb$tag, value = list(prefix_options = attr(pre, "options"), lmx = lmx),
@@ -910,7 +949,10 @@
 # The secondary carbonate suffix c on the A, B, G, S, H and T (step 9): after
 # the master (Bcv, Gco, Scw, Hcw, Tcv); the A and C codes carry it already.
 .ka5_suffix_c <- function(x, i, code) {
-  if (!isTRUE(.ka5_num(x, i, "secondary_carbonates_pct") > 0)) return(code)
+  sc <- .ka5_num(x, i, "secondary_carbonates_pct")
+  # the FAO k states an accumulation of pedogenic carbonates (WRB 2022
+  # Annex 3, p. 227): the KA5 c where none is recorded (v0.9.380)
+  if (!isTRUE(sc > 0) && !(is.na(sc) && .ka5_fao_has(x, i, "k"))) return(code)
   m <- regmatches(code, regexec("^([a-z]*)([BGSHT])([a-z]*)$", code))[[1L]]
   if (!length(m) || grepl("c", m[4L], fixed = TRUE)) return(code)
   paste0(m[2L], m[3L], "c", m[4L])
@@ -1013,18 +1055,28 @@
     }
   }
   if (block && !undecided && is.na(code)) undecided <- TRUE
+  # an FAO designation bounds the horizons the row may be (v0.9.380,
+  # R/ka5-fao.R): the row is read within its family
+  fao <- .ka5_fao_at(x, i)
+  fz <- NULL
+  if (!is.null(fao)) {
+    fz <- .ka5_fao_combine(x, i, ans, fao, code, unique(c(cands, pending)))
+    code <- fz$code; dec <- fz$dec; pending <- character(0)
+    cands <- fz$cands; undecided <- is.na(code)
+  }
   notes <- character(0); missing <- character(0); tags <- character(0)
   all_r <- unlist(ans, recursive = FALSE)
   if (!is.na(code)) {
-    tr <- .ka5_transition(x, i, code, ans)
+    tr <- if (!is.null(fz)) fz$tr else .ka5_transition(x, i, code, ans)
     code <- .ka5_suffix_c(x, i, .ka5_prefixes(x, i, tr$code))
-    notes <- c(dec$note, tr$note); tags <- dec$tag
+    notes <- c(dec$note, tr$note, fz$note); tags <- dec$tag
     holds <- unique(vapply(Filter(function(r) isTRUE(r$passed) && r$name != "C", all_r), function(r) r$code, ""))
+    if (!is.null(fao)) holds <- holds[vapply(holds, function(h) .ka5_fao_compatible(fao$rule, h), NA)]
     cands <- unique(c(pending, setdiff(holds, c(dec$code, sub("^[a-z]*", "", code)))))
   } else {
     nr <- Filter(function(r) is.na(r$passed) || (isTRUE(r$passed) && r$code %in% cands), all_r)
     missing <- unique(unlist(lapply(nr, `[[`, "missing")))
-    notes <- unique(unlist(lapply(nr, `[[`, "note")))
+    notes <- unique(c(fz$note, unlist(lapply(nr, `[[`, "note"))))
     tags <- unique(unlist(lapply(nr, `[[`, "tag")))
     cands <- unique(c(cands, pending))
   }
@@ -1043,7 +1095,8 @@
   r <- list(code = code, carrying = if (!is.null(rd)) rd$code else NA_character_, row = rd, passed = passed,
             candidates = setdiff(cands, code), missing = unique(missing), notes = unique(notes[nzchar(notes)]),
             stand_ins = intersect(c(tags, if (!is.na(code)) dec$tag), .KA5_STAND_INS),
-            tags = all_tags, prefixes_na = if (length(pre_na) > 1L) pre_na else character(0), answers = ans)
+            tags = all_tags, prefixes_na = if (length(pre_na) > 1L) pre_na else character(0), answers = ans,
+            fao = if (!is.null(fz)) fz$kind else NA_character_)
   # a stand-in, or the F kind read from soilKey's colour cuts (R3), lowers the
   # grade
   r$lower_grade <- length(r$stand_ins) > 0L || (!is.na(code) && "f_colour_cut" %in% c(tags, dec$tag))

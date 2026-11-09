@@ -6,7 +6,8 @@
 # classification gives a German name, in the usage before the KA5 (the KA4,
 # the DBG systematics of 1998: "Schwarzerde", "Typischer Gley", "Acker-"
 # names). soilKey keys the KA5 (classify_ka5()). The ISIS designations are
-# FAO style (Ah1, E, Bt), so soilKey reads the horizons from the data.
+# FAO style (Ah1, E, Bt), so soilKey reads the horizons from the data; since
+# v0.9.380 within the KA5 horizons their FAO letters allow (R/ka5-fao.R).
 #
 # OFFLINE. This script downloads nothing and queries no service. It reads a
 # cache of raw ISIS profiles (the list of profiles as the ISIS GraphQL server
@@ -182,7 +183,7 @@ ka5_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     "",
     sprintf("Offline run on the cache `%s`: %d profiles from Germany, %d with a local name, %d of them read as a KA5 class, type or subtype.",
             res$cache, res$n_germany, sum(!is.na(d$label)), sum(!is.na(d$code))),
-    "The local names are older German usage, read through inst/rules/ka5/legacy_names.yaml; the designations are FAO style, so soilKey reads the horizons from the data.",
+    "The local names are older German usage, read through inst/rules/ka5/legacy_names.yaml; the designations are FAO style, so soilKey reads the horizons from the data, within the KA5 horizons the FAO letters allow.",
     "A level is scored on the profiles whose label reaches it; the subtype only where soilKey gives one too. 95 % intervals are Wilson intervals.",
     "",
     "## Agreement",

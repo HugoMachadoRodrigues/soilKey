@@ -322,7 +322,8 @@ test_that("the notation against the data: the written horizon is kept, the data 
   h$designation <- c("Ap", "E", "Bt", "C")
   f <- .idf(.mk5(h, list(designation_system = "fao2006")))
   expect_identical(f$route, rep("data", 4L))
-  expect_identical(f$code[1:3], c("Ah", "Al", "Bt"))
+  # (v0.9.380: the FAO p states the tillage, so the FAO Ap is read Ap)
+  expect_identical(f$code[1:3], c("Ap", "Al", "Bt"))
   # the frame is what the sequence engine reads: a KA5 formula matches it
   m <- match_horizon_sequence(f, soilKey:::.ka5_parse_formula("Ah/Al/Bt/C"))
   expect_true(isTRUE(m$passed))
