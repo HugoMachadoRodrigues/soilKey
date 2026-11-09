@@ -1594,3 +1594,120 @@ attributes:
     description: "Sodium share of the cations of the water-soluble salts, % of the sum of the soluble cations (in charge). Chinese Soil Taxonomy 2001, the Marinic subgroups (chloride the main anion, sodium the main cation, pp. 110-111). Not recorded: na_cmol or esp_pct, flagged (Hugo's decision Q18)."
     min: 0
     max: 100
+  - name: p2o5_citric_mg_kg
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "mg/kg"
+    description: "P2O5 soluble in 1 % citric acid, mg per kg of soil. The FAO-Unesco legend excludes from the mollic and umbric A horizons a layer with 250 mg/kg or more (Revised Legend 1988, pp. 26-27; Legend 1974, p. 24), and the fimic A horizon of 1988 is told from them by more than 250 (p. 27). Not recorded: the exclusion is read from the field records it aims at (artefacts, an anthropic or plaggen layer, a midden), absent if not recorded, with a note (Hugo's decision Q14 of 2026-11-08)."
+    min: 0
+  - name: extractable_acidity_ph82_cmol
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "cmol(+)/kg"
+    description: "Extractable acidity by a BaCl2-TEA buffer at pH 8.2, cmol(+)/kg soil (Revised Legend 1988, Appendix 5, p. 130). The natric B horizon of both editions compares exchangeable Mg plus Na with Ca plus this acidity in the upper 40 cm of the horizon (1988 p. 29; 1974 p. 26). Not recorded: that path of the natric B is undecided; the sodium-saturation path is read alone."
+    min: 0
+  - name: cec_ph82_cmol
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "cmol(+)/kg"
+    description: "Cation exchange capacity at pH 8.2, cmol(+)/kg soil. The index of accumulation of amorphous material of the spodic B horizon (1988 pp. 30-31; 1974 p. 26) and the amorphous exchange complex of the 1974 Andosols (more than 150 per kg clay, 1974 p. 28). Not recorded: undecided."
+    min: 0
+  - name: al_dcb_pct
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "%"
+    description: "Aluminium extractable by dithionite-citrate, % of the fine earth (fe_dcb_pct holds the iron). The spodic B horizon asks pyrophosphate-extractable Fe plus Al to be half or more of the dithionite-extractable Fe plus Al (1988 p. 31; 1974 p. 26). Not recorded: undecided."
+    min: 0
+    max: 100
+  - name: exch_acidity_kcl_cmol
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "cmol(+)/kg"
+    description: "Exchangeable acidity (H + Al) in unbuffered 1 M KCl, cmol(+)/kg soil (1988 Appendix 5, p. 130). The effective CEC of the ferralic B horizon of 1988 is the NH4OAc bases plus this acidity (p. 31, item 3), and the geric properties read it (p. 36). Not recorded: al_kcl_cmol, then al_cmol, flagged."
+    min: 0
+  - name: ph_h2o_1to1
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "-"
+    description: "pH in water at a soil:water ratio of 1:1. The sulfuric horizon (below 3.5) and the salic properties (above 8.5) of 1988 (pp. 32, 39), the sulfuric horizon and high salinity of 1974 (pp. 27, 29). Not recorded: ph_h2o, flagged (Hugo's decision Q12 of 2026-11-08)."
+    min: 0
+    max: 14
+  - name: ph_h2o_1to5
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "-"
+    description: "pH in water at a soil:water ratio of 1:5. The eutric (5.5 or more throughout) and dystric histic H horizon of 1974 (p. 24), read in both editions (Hugo's decision Q15). Not recorded: ph_h2o, flagged (Q12)."
+    min: 0
+    max: 14
+  - name: rock_structure_pct
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "% (vol)"
+    description: "Share of the horizon, % by volume, that still shows the structure of the rock. The cambic B horizon needs rock structure absent in at least half of it (1988 p. 30; 1974 p. 26), the ferralic B of 1988 and the oxic B of 1974 less than 5 % (1988 p. 31; 1974 p. 27). Not recorded: saprolite_pct, flagged; else a Cr or BC designation is read as some rock structure, flagged."
+    min: 0
+    max: 100
+  - name: smeary_consistence
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "logical"
+    description: "The material is thixotropic: under pressure or rubbing it turns from a plastic solid to a liquid and back, and smears between the fingers (1988 p. 39; 1974 p. 31). A field observation: not recorded, absent, unless thixotropic_index is recorded (50 or more passes, flagged)."
+  - name: bleached_ped_coatings
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "logical"
+    description: "Bleached coatings on ped surfaces: uncoated silt and sand grains on the faces of the peds (the Greyzems, 1988 p. 83; 1974 p. 48, and the exclusions of the Gleysols, Chernozems and Phaeozems of 1974). bleached_pct is the wet bleaching of the German KA5, not this. A field observation: not recorded, coatings_value_moist with uncoated_grains_pct are read, flagged; else absent."
+  - name: ignition_redder
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "logical"
+    description: "The sample turns redder on ignition, a test for iron in the Carbic Podzols of 1988 (PZc, p. 81) and the Podzols of 1974 (p. 47). Not recorded: free iron (fe_dcb_pct) below 0.5 % of the fine earth is read as not turning redder, flagged (the footnote of the 1974 Humic Podzols, p. 39; Hugo's decision Q23); 0.5 % or more leaves it undecided (Hugo, 2026-11-09)."
+  - name: spodic_pellets
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "logical"
+    description: "Distinct dark pellets of coarse silt size or larger, or sand grains with cracked coatings of organic matter and aluminium, in a sandy or coarse-loamy layer: item 2 of the spodic B horizon (1988 p. 30; 1974 p. 26). A field observation: not recorded, absent."
+  - name: skeletans_pct
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "% (vol)"
+    description: "Skeletans (ped coatings of clean silt or sand), % by volume of the subhorizon. Interfingering asks for more than 15 % (1988 p. 38; 1974 p. 30); no grouping or unit of either key uses it. Not recorded: undecided."
+    min: 0
+    max: 100
+  - name: skeletan_thickness_mm
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "mm"
+    description: "Thickness of the skeletans on the vertical ped faces, mm. Interfingering: more than 1 mm (more than 2 mm in all where each ped has a coating over 1 mm; 1988 p. 38; 1974 p. 30). Not recorded: undecided."
+    min: 0
+  - name: carbonate_coatings_faces_pct
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "% of the faces"
+    description: "Soft carbonate coatings, visible when moist, % of the structural faces. Soft powdery lime: 50 % or more of the faces, or soft nodules of 5 % or more by volume (1988 p. 40; the same numbers in 1974, Hugo's decision Q23). Not recorded: coatings recorded in secondary_carbonates_form are read, flagged; pseudomycelia never count."
+    min: 0
+    max: 100
+  - name: nodule_size_max_cm
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "cm"
+    description: "Diameter of the largest iron nodules of the layer, cm. The ferric properties take nodules up to 2 cm (1988 p. 35; 1974 p. 28); the Podzoluvisols nodules larger than 2 cm (1988 p. 85; 1974: 2 to 5 cm, up to 30 cm in diameter, p. 50). Not recorded: recorded nodules are accepted, flagged."
+    min: 0
+  - name: dta_low_endotherm
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "logical"
+    description: "Differential thermal analysis shows a low-temperature endotherm, one of the marks of an exchange complex dominated by amorphous material in the 1974 legend (p. 28). Not recorded: undecided (Hugo's decision Q20: the bulk density and one other mark)."
+  - name: munsell_hue_rubbed
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "Munsell"
+    description: "Munsell hue of the rubbed soil, moist. The Rhodic, Xanthic and Chromic units read the rubbed colour (1988 FRr, FRx, NTr, LVx, CMx, pp. 82-89; 1974 Fr, Fx, Lc, Bc, pp. 47-53). Not recorded: the moist colour is read as rubbed, flagged (Hugo's decision Q24)."
+  - name: munsell_value_rubbed
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "Munsell"
+    description: "Munsell value of the rubbed soil, moist (the Rhodic, Xanthic and Chromic units, 1988 pp. 82-89; 1974 pp. 47-53). Not recorded: munsell_value_moist, flagged (Q24)."
+    min: 0
+    max: 10
+  - name: munsell_chroma_rubbed
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "Munsell"
+    description: "Munsell chroma of the rubbed soil, moist (the Rhodic, Xanthic and Chromic units, 1988 pp. 82-89; 1974 pp. 47-53). Not recorded: munsell_chroma_moist, flagged (Q24)."
+    min: 0
+  - name: pitted_quartz_pct
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "% of the sand"
+    description: "Pitted and rounded quartz grains with a matte surface, % of the sand of 0.25 mm or more of the surface horizon. Feature 2 of the yermic phase of 1988 (10 % or more, p. 70). A field or laboratory observation: not recorded, absent."
+    min: 0
+    max: 100
+  - name: palygorskite_pct
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "% of the clay"
+    description: "Palygorskite, % of the clay fraction. Feature 3 of the yermic phase of 1988 (2 % or more in some subhorizon within 50 cm, p. 70). Not recorded: a clay_mineralogy naming palygorskite counts; else absent."
+    min: 0
+    max: 100
+  - name: aeolian_crack_infill
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "logical"
+    description: "Surface cracks filled with in-blown sand or silt, feature 4 of the yermic phase of 1988 (p. 71). A field observation: not recorded, absent."

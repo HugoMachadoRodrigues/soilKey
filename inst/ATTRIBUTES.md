@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.377)
+# soilKey -- recognised horizon attribute names (v0.9.381)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -491,6 +491,34 @@ and do not warn.
 | `pyroclastic_fragments_pct` | % (vol) | numeric | Cinders, scoria and pumice, % by volume of the layer. Chinese Soil Taxonomy 2001: the cindery and pumiceous materials of the Histosols order (p. 72) and the Cinderic subgroups (35 % or more over 0-25 cm). Not recorded: a tephric layer_origin or volcanic_glass_pct, flagged (default 21 of 2026-11-04). | - |
 | `soluble_salts_sodium_pct` | % | numeric | Sodium share of the cations of the water-soluble salts, % of the sum of the soluble cations (in charge). Chinese Soil Taxonomy 2001, the Marinic subgroups (chloride the main anion, sodium the main cation, pp. 110-111). Not recorded: na_cmol or esp_pct, flagged (Hugo's decision Q18). | - |
 
+## FAO-Unesco legend (1988 and 1974)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `p2o5_citric_mg_kg` | mg/kg | numeric | P2O5 soluble in 1 % citric acid, mg per kg of soil. The FAO-Unesco legend excludes from the mollic and umbric A horizons a layer with 250 mg/kg or more (Revised Legend 1988, pp. 26-27; Legend 1974, p. 24), and the fimic A horizon of 1988 is told from them by more than 250 (p. 27). Not recorded: the exclusion is read from the field records it aims at (artefacts, an anthropic or plaggen layer, a midden), absent if not recorded, with a note (Hugo's decision Q14 of 2026-11-08). | - |
+| `extractable_acidity_ph82_cmol` | cmol(+)/kg | numeric | Extractable acidity by a BaCl2-TEA buffer at pH 8.2, cmol(+)/kg soil (Revised Legend 1988, Appendix 5, p. 130). The natric B horizon of both editions compares exchangeable Mg plus Na with Ca plus this acidity in the upper 40 cm of the horizon (1988 p. 29; 1974 p. 26). Not recorded: that path of the natric B is undecided; the sodium-saturation path is read alone. | - |
+| `cec_ph82_cmol` | cmol(+)/kg | numeric | Cation exchange capacity at pH 8.2, cmol(+)/kg soil. The index of accumulation of amorphous material of the spodic B horizon (1988 pp. 30-31; 1974 p. 26) and the amorphous exchange complex of the 1974 Andosols (more than 150 per kg clay, 1974 p. 28). Not recorded: undecided. | - |
+| `al_dcb_pct` | % | numeric | Aluminium extractable by dithionite-citrate, % of the fine earth (fe_dcb_pct holds the iron). The spodic B horizon asks pyrophosphate-extractable Fe plus Al to be half or more of the dithionite-extractable Fe plus Al (1988 p. 31; 1974 p. 26). Not recorded: undecided. | - |
+| `exch_acidity_kcl_cmol` | cmol(+)/kg | numeric | Exchangeable acidity (H + Al) in unbuffered 1 M KCl, cmol(+)/kg soil (1988 Appendix 5, p. 130). The effective CEC of the ferralic B horizon of 1988 is the NH4OAc bases plus this acidity (p. 31, item 3), and the geric properties read it (p. 36). Not recorded: al_kcl_cmol, then al_cmol, flagged. | - |
+| `ph_h2o_1to1` | - | numeric | pH in water at a soil:water ratio of 1:1. The sulfuric horizon (below 3.5) and the salic properties (above 8.5) of 1988 (pp. 32, 39), the sulfuric horizon and high salinity of 1974 (pp. 27, 29). Not recorded: ph_h2o, flagged (Hugo's decision Q12 of 2026-11-08). | - |
+| `ph_h2o_1to5` | - | numeric | pH in water at a soil:water ratio of 1:5. The eutric (5.5 or more throughout) and dystric histic H horizon of 1974 (p. 24), read in both editions (Hugo's decision Q15). Not recorded: ph_h2o, flagged (Q12). | - |
+| `rock_structure_pct` | % (vol) | numeric | Share of the horizon, % by volume, that still shows the structure of the rock. The cambic B horizon needs rock structure absent in at least half of it (1988 p. 30; 1974 p. 26), the ferralic B of 1988 and the oxic B of 1974 less than 5 % (1988 p. 31; 1974 p. 27). Not recorded: saprolite_pct, flagged; else a Cr or BC designation is read as some rock structure, flagged. | - |
+| `smeary_consistence` | logical | logical | The material is thixotropic: under pressure or rubbing it turns from a plastic solid to a liquid and back, and smears between the fingers (1988 p. 39; 1974 p. 31). A field observation: not recorded, absent, unless thixotropic_index is recorded (50 or more passes, flagged). | - |
+| `bleached_ped_coatings` | logical | logical | Bleached coatings on ped surfaces: uncoated silt and sand grains on the faces of the peds (the Greyzems, 1988 p. 83; 1974 p. 48, and the exclusions of the Gleysols, Chernozems and Phaeozems of 1974). bleached_pct is the wet bleaching of the German KA5, not this. A field observation: not recorded, coatings_value_moist with uncoated_grains_pct are read, flagged; else absent. | - |
+| `ignition_redder` | logical | logical | The sample turns redder on ignition, a test for iron in the Carbic Podzols of 1988 (PZc, p. 81) and the Podzols of 1974 (p. 47). Not recorded: free iron (fe_dcb_pct) below 0.5 % of the fine earth is read as not turning redder, flagged (the footnote of the 1974 Humic Podzols, p. 39; Hugo's decision Q23); 0.5 % or more leaves it undecided (Hugo, 2026-11-09). | - |
+| `spodic_pellets` | logical | logical | Distinct dark pellets of coarse silt size or larger, or sand grains with cracked coatings of organic matter and aluminium, in a sandy or coarse-loamy layer: item 2 of the spodic B horizon (1988 p. 30; 1974 p. 26). A field observation: not recorded, absent. | - |
+| `skeletans_pct` | % (vol) | numeric | Skeletans (ped coatings of clean silt or sand), % by volume of the subhorizon. Interfingering asks for more than 15 % (1988 p. 38; 1974 p. 30); no grouping or unit of either key uses it. Not recorded: undecided. | - |
+| `skeletan_thickness_mm` | mm | numeric | Thickness of the skeletans on the vertical ped faces, mm. Interfingering: more than 1 mm (more than 2 mm in all where each ped has a coating over 1 mm; 1988 p. 38; 1974 p. 30). Not recorded: undecided. | - |
+| `carbonate_coatings_faces_pct` | % of the faces | numeric | Soft carbonate coatings, visible when moist, % of the structural faces. Soft powdery lime: 50 % or more of the faces, or soft nodules of 5 % or more by volume (1988 p. 40; the same numbers in 1974, Hugo's decision Q23). Not recorded: coatings recorded in secondary_carbonates_form are read, flagged; pseudomycelia never count. | - |
+| `nodule_size_max_cm` | cm | numeric | Diameter of the largest iron nodules of the layer, cm. The ferric properties take nodules up to 2 cm (1988 p. 35; 1974 p. 28); the Podzoluvisols nodules larger than 2 cm (1988 p. 85; 1974: 2 to 5 cm, up to 30 cm in diameter, p. 50). Not recorded: recorded nodules are accepted, flagged. | - |
+| `dta_low_endotherm` | logical | logical | Differential thermal analysis shows a low-temperature endotherm, one of the marks of an exchange complex dominated by amorphous material in the 1974 legend (p. 28). Not recorded: undecided (Hugo's decision Q20: the bulk density and one other mark). | - |
+| `munsell_hue_rubbed` | Munsell | character | Munsell hue of the rubbed soil, moist. The Rhodic, Xanthic and Chromic units read the rubbed colour (1988 FRr, FRx, NTr, LVx, CMx, pp. 82-89; 1974 Fr, Fx, Lc, Bc, pp. 47-53). Not recorded: the moist colour is read as rubbed, flagged (Hugo's decision Q24). | - |
+| `munsell_value_rubbed` | Munsell | numeric | Munsell value of the rubbed soil, moist (the Rhodic, Xanthic and Chromic units, 1988 pp. 82-89; 1974 pp. 47-53). Not recorded: munsell_value_moist, flagged (Q24). | - |
+| `munsell_chroma_rubbed` | Munsell | numeric | Munsell chroma of the rubbed soil, moist (the Rhodic, Xanthic and Chromic units, 1988 pp. 82-89; 1974 pp. 47-53). Not recorded: munsell_chroma_moist, flagged (Q24). | - |
+| `pitted_quartz_pct` | % of the sand | numeric | Pitted and rounded quartz grains with a matte surface, % of the sand of 0.25 mm or more of the surface horizon. Feature 2 of the yermic phase of 1988 (10 % or more, p. 70). A field or laboratory observation: not recorded, absent. | - |
+| `palygorskite_pct` | % of the clay | numeric | Palygorskite, % of the clay fraction. Feature 3 of the yermic phase of 1988 (2 % or more in some subhorizon within 50 cm, p. 70). Not recorded: a clay_mineralogy naming palygorskite counts; else absent. | - |
+| `aeolian_crack_infill` | logical | logical | Surface cracks filled with in-blown sand or silt, feature 4 of the yermic phase of 1988 (p. 71). A field observation: not recorded, absent. | - |
+
 # Site properties
 
 The named elements of `PedonRecord$site` that soilKey recognises. Give them in
@@ -617,6 +645,7 @@ the last section are stored by the loaders and reports and read by no key.
 | `reference_usda_edition` | - | character | Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon(). read_nsd_pedons() writes 'before 1990 (Andepts)' for a great group of the Andepts, Inceptisols until Soil Taxonomy created the Andisols. | - | - |
 | `reference_wrb06_full` | - | character | Full WRB 2006 name of an AfSP profile. Written by load_afsp_pedons(). | - | - |
 | `reference_fao88` | - | character | FAO 1988 class of an AfSP profile. Written by load_afsp_pedons(). | - | - |
+| `reference_fao74` | - | character | Soil unit of the FAO-Unesco Legend of 1974 given for the profile (e.g. 'Chromic Luvisol', 'Lc'), beside reference_fao88 for the Revised Legend. Stored for benchmarks; read by no key. | - | - |
 | `reference_wrb_from_usda` | - | character | WRB Reference Soil Group derived from reference_usda and reference_usda_suborder by annotate_wrb_from_usda(); read by benchmark_wrb_vs_usda() and copied into reference_wrb when that is missing. | - | - |
 | `wosis_rsg` | - | character | WRB Reference Soil Group that WoSIS reports for the profile; copied into reference_wrb when that is missing. | - | - |
 | `reference_usda` | - | character | Published USDA Soil Taxonomy class (the order, or a subgroup or series name, depending on the loader). Written by the KSSL, FEBR and AfSP loaders; read by the benchmarks and annotate_wrb_from_usda(). | - | - |
@@ -727,7 +756,14 @@ the last section are stored by the loaders and reports and read by no key.
 | `reductgas_source` | - | character | Source of the reducing gas of the Y horizons: 'mofette', 'pipeline_leak', 'refuse_sludge_harbour_mud' or 'natural_wetness'. German KA5: a written Y gives the Reduktosol unless the source is natural wetness (pp. 232-233; Hugo's decision Q20). | `mofette`, `pipeline_leak`, `refuse_sludge_harbour_mud`, `natural_wetness` | `ka5` |
 | `deep_cultivation_kind` | - | character | Kind of deep cultivation: 'repeated_trenching' (Rigosol), 'single_deep_ploughing' (Treposol), 'plaggen', 'garden', 'peat_sand_culture'. German KA5: separates YY from YU, and the cultivated Moore (pp. 236-237, 262-263; Hugo's decision Q23). Not recorded: mechanical_mixing_purpose; else YY and YU both candidates. | `repeated_trenching`, `single_deep_ploughing`, `plaggen`, `garden`, `peat_sand_culture` | `ka5` |
 
+## FAO-Unesco legend (1988 and 1974)
+
+| Property | Unit | Type | Description | Values | Read by |
+|----------|------|------|-------------|--------|---------|
+| `flooding_days_growing_period` | days | numeric | Days in the growing period with standing or flowing water on the soil surface. The inundic phase of the Revised Legend of 1988: more than 10 days (p. 68). Not recorded: undecided. | - | - |
+| `rudic_recorded` | logical | logical | Gravel, stones, boulders or rock outcrops in the surface layers or at the surface make mechanized agricultural equipment impracticable: the rudic phase of 1988 (p. 69), which replaces the stony phase of 1974 (p. 5). A field observation: not recorded, absent. | - | - |
+
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.377._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.381._
 
