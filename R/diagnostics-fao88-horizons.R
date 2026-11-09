@@ -279,15 +279,17 @@
 # long periods or artificially drained" from the drainage recorded at the
 # site (drainage, then drainage_class; English or Portuguese), TRUE for very
 # poorly, poorly, somewhat poorly and imperfectly drained or an artificially
-# drained site, FALSE for moderately well drained and better; NA otherwise.
+# drained site, FALSE for well drained and better; moderately well drained and
+# anything else NA (Hugo, 2026-11-09).
 .f88_saturated <- function(x) {
   if (isTRUE(.f88_site_lgl(x, "artificially_drained"))) return(TRUE)
   d <- .f88_site(x, "drainage")
   if (is.na(d) || !nzchar(trimws(as.character(d)))) d <- .f88_site(x, "drainage_class")
   if (is.na(d)) return(NA)
   d <- .field_term(as.character(d))
+  if (grepl("moderately well|moderadamente drenad", d)) return(NA)
   wet <- grepl("poorly|imperfect|mal drenad|imperfeit", d)
-  dry <- grepl("well|excessiv|bem drenad|moderadamente drenad|acentuad|fortemente drenad", d)
+  dry <- grepl("well|excessiv|bem drenad|acentuad|fortemente drenad", d)
   if (wet && !dry) TRUE else if (dry && !wet) FALSE else NA
 }
 
@@ -332,8 +334,10 @@
     v[rec] <- .amount_at_least(amt[rec], "few")
     v[!is.na(ts) & ts >= 1] <- TRUE
     v[is.na(v) & !is.na(ts)] <- FALSE
-    bt <- is.na(v) & !is.na(x$desg) & grepl("B", x$master) &
-      grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*t", x$desg)
+    # a Bt, and the Bt of an E&Bt or E/Bt (the B inside an E)
+    bt <- is.na(v) & !is.na(x$desg) &
+      ((grepl("B", x$master) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*t", x$desg)) |
+         grepl("[&/]B[a-z0-9]*t", x$desg))
     v[bt] <- TRUE; flag[bt] <- "bt_designation_for_clay_skins"
     none <- is.na(v)
     v[none] <- FALSE; flag[none] <- "clay_skins_not_recorded_absent"
@@ -341,15 +345,20 @@
   })
 }
 
-# Cemented layers: cementation_class moderately cemented or harder; not
-# recorded, a designation with the suffix m (Bkm, Bym, Bqm, Bsm), flagged;
-# else not cemented (a field observation).
-.f88_cemented <- function(x) {
-  .f88_memo(x, "cemented", function() {
+# Cemented layers: cementation_class moderately cemented or harder ("moderately
+# cemented" suffices, Hugo 2026-11-09); not recorded, a designation with the
+# suffix m (Bkm, Bym, Bqm, Bsm), flagged; else not cemented (a field
+# observation). `agent` asks the designation for the cementing agent too: "k"
+# (carbonate, km), "y" (gypsum, ym); a q-only cementation (qm) is then not
+# read as theirs.
+.f88_cemented <- function(x, agent = NULL) {
+  .f88_memo(x, paste0("cemented", agent %||% ""), function() {
     cem <- .f88_chr(x, "cementation_class")
     v <- ifelse(is.na(cem), NA, cem %in% c("moderately", "strongly", "indurated"))
     flag <- rep(NA_character_, x$n)
-    dm <- is.na(v) & !is.na(x$desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*m", x$desg)
+    suf <- ifelse(is.na(x$desg), NA_character_, sub("^[A-Z]+(/[A-Z]+)?", "", x$desg))
+    dm <- is.na(v) & !is.na(suf) & grepl("m", suf)
+    if (!is.null(agent)) dm <- dm & grepl(agent, suf)
     v[dm] <- TRUE; flag[dm] <- "cementation_from_designation"
     none <- is.na(v)
     v[none] <- FALSE; flag[none] <- "cementation_not_recorded_absent"
@@ -471,7 +480,14 @@
     g_ok <- ifelse(!is.na(need), gl >= need,
             ifelse(!is.na(gl) & gl >= 30, TRUE, ifelse(!is.na(gl) & gl < 5, FALSE, NA)))
     p3 <- .f88_and(frac, as.logical(g_ok))
-    list(value = .f88_or(p1, p2, p3), flags = flag,
+    v <- .f88_or(p1, p2, p3)
+    # undecided with no volcanic material recorded: absent, flagged (Hugo,
+    # 2026-11-09)
+    ab <- is.na(v) & !volc
+    v[ab] <- FALSE
+    flag[ab] <- ifelse(is.na(flag[ab]), "andic_absent_no_volcanic_material",
+                       paste(flag[ab], "andic_absent_no_volcanic_material", sep = "; "))
+    list(value = v, flags = flag,
          missing = c("al_ox_pct", "fe_ox_pct", "bulk_density_g_cm3", "phosphate_retention_pct",
                      "volcanic_glass_pct"))
   })
@@ -484,9 +500,10 @@
 # cm and more than 20 cm thick; the text's upper bound (less than 40 cm, 60
 # cm if sphagnum or very light) only separates the Histosols, whose gate is
 # read first in the key, and is reported as evidence (soilKey's reading);
-# (b) a surface layer of organic material less than 25 cm thick that, mixed
-# to 25 cm, has OC >= 8 + 8 x clay / 60 % (8 % without clay, 16 % at more
-# than 60 % clay); (c) the same of a plough layer (Ap) 25 cm or more thick.
+# (b) an organic layer at the surface, thinner than 25 cm, whose mixture over
+# 0-25 cm holds OC >= 8 + 8 x clay / 60 % (8 % without clay, 16 % at more
+# than 60 % clay); (c) that test read on a surface plough layer (Ap, Hp, Op)
+# of 25 cm or more.
 .f88_hz_histic_h <- function(x) {
   .f88_memo(x, "histic_h", function() {
     if (!x$n) return(list(units = list()))
@@ -513,7 +530,7 @@
         s <- .f88_and(.f88_all(ok[sr[[1L]]$layers]), line())
         if (!isFALSE(s)) thin <- c(sr[[1L]], list(status = if (isTRUE(s)) TRUE else NA))
       }
-      ap <- !is.na(x$desg) & grepl("^A[a-z0-9]*p", x$desg) & !(x$buried %in% TRUE)
+      ap <- !is.na(x$desg) & grepl("^[AHO][a-z0-9]*p", x$desg) & !(x$buried %in% TRUE)
       pr <- Filter(function(r) r$layers[1L] == first, .f88_run_list(x, ap))
       if (length(pr) && pr[[1L]]$thickness >= 25) {
         s <- line()
@@ -595,42 +612,52 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     mix <- function(var, values = NULL) .fao_weighted(h, var, t0, t0 + 18, values = values)
     m_vm <- mix("munsell_value_moist"); m_cm <- mix("munsell_chroma_moist")
     m_vd <- mix("munsell_value_dry", col$vd_or_inferred)
-    m_oc <- mix("oc_pct"); m_bs <- mix("bs_pct", bs$value); m_cc <- mix("caco3_pct")
+    m_oc <- mix("oc_pct"); m_bs <- mix("bs_pct", bs$value)
     m_cl <- mix("clay_pct")
     win <- .fao_window(h, t0, t0 + 18)$layers
     flags <- c(.f88_flags(col$flags, win), .f88_flags(bs$flags, win),
                if (a$undesignated) "a_horizon_partly_undesignated")
     missing <- character(0)
-    # criterion 2 with the lime waiver: more than 40 % finely divided lime
-    lime <- .f88_cmp(m_cc$value, ">", 40); lime[is.na(m_cc$value)] <- FALSE
-    colour_mix <- if (isTRUE(lime)) .f88_and(m_cm$value < 3.5, m_vm$value <= 5)
-                  else .f88_and(m_cm$value < 3.5, m_vm$value < 3.5, m_vd$value < 5.5)
-    if (is.na(colour_mix)) missing <- c(missing, "munsell_value_moist", "munsell_chroma_moist", "munsell_value_dry")
-    oc_min <- if (isTRUE(lime)) 2.5 else 0.6
-    oc_mix <- .f88_cmp(m_oc$value, ">=", oc_min)
+    # criteria 2 and 4 with the lime waiver (more than 40 % finely divided
+    # lime): the colour of the text with 0.6 % OC, or, with the lime, a moist
+    # value of 5 or less (the dry value waived) with 2.5 % OC. CaCO3 not
+    # measured leaves the waiver undecided unless .f88_caco3() reads it as
+    # absent (no HCl reaction, pH below 6.5, flagged).
+    cc_l <- .f88_caco3(x)
+    m_cc <- mix("caco3_pct", cc_l$value)
+    flags <- c(flags, .f88_flags(cc_l$flags, win))
+    col_oc <- function(vm, cm, vd, oc, lime) {
+      strict <- .f88_and(cm < 3.5, vm < 3.5, vd < 5.5, .f88_cmp(oc, ">=", 0.6))
+      relaxed <- .f88_and(lime, cm < 3.5, vm <= 5, .f88_cmp(oc, ">=", 2.5))
+      .f88_or(strict, relaxed)
+    }
+    lime <- .f88_cmp(m_cc$value, ">", 40)
+    colour_mix <- col_oc(m_vm$value, m_cm$value, m_vd$value, m_oc$value, lime)
+    if (is.na(colour_mix)) missing <- c(missing, "munsell_value_moist", "munsell_chroma_moist",
+                                        "munsell_value_dry", "oc_pct", "caco3_pct")
     not_org <- .f88_not(.f88_organic_v(m_oc$value, m_cl$value, sat))
-    if (is.na(oc_mix) || is.na(not_org)) missing <- c(missing, "oc_pct")
+    if (is.na(not_org)) missing <- c(missing, "oc_pct")
     bs_mix <- if (umbric) .f88_cmp(m_bs$value, "<", 50) else .f88_cmp(m_bs$value, ">=", 50)
     if (is.na(bs_mix)) missing <- c(missing, "bs_pct")
     mh <- .f88_massive_hard(x)
     struct_mix <- !any(mh[intersect(win, a$layers)])
-    # the layers of the A below the mixed 18 cm, each on its own
-    below <- a$layers[x$top[a$layers] >= t0 + 18]
+    # every A layer whose base lies below the mixed 18 cm (one that straddles
+    # 18 cm included) is also read on its own values (Hugo, 2026-11-09)
+    below <- a$layers[x$bot[a$layers] > t0 + 18]
     per <- rep(TRUE, x$n)
+    occ <- .f88_num(x, "oc_pct")
     for (i in below) {
-      lm <- !is.na(caco3[i]) && caco3[i] > 40
-      cl <- if (lm) .f88_and(col$cm[i] < 3.5, col$vm[i] <= 5)
-            else .f88_and(col$cm[i] < 3.5, col$vm[i] < 3.5, col$vd_or_inferred[i] < 5.5)
+      cl <- col_oc(col$vm[i], col$cm[i], col$vd_or_inferred[i], occ[i],
+                   .f88_cmp(cc_l$value[i], ">", 40))
       bsi <- if (umbric) bs$value[i] < 50 else bs$value[i] >= 50
-      per[i] <- .f88_and(cl, .f88_cmp(.f88_num(x, "oc_pct")[i], ">=", if (lm) 2.5 else 0.6),
-                         .f88_not(org$value[i]), as.logical(bsi), !mh[i])
-      flags <- c(flags, .f88_flags(col$flags, i), .f88_flags(bs$flags, i))
+      per[i] <- .f88_and(cl, .f88_not(org$value[i]), as.logical(bsi), !mh[i])
+      flags <- c(flags, .f88_flags(col$flags, i), .f88_flags(bs$flags, i), .f88_flags(cc_l$flags, i))
     }
     if (anyNA(per[below])) missing <- c(missing, "oc_pct", "bs_pct", "munsell_value_moist",
-                                        "munsell_chroma_moist")
+                                        "munsell_chroma_moist", "caco3_pct")
     per <- .f88_unburied(x, per)
-    # thickness of the A: the mixed 18 cm stand for the layers they cover;
-    # the run continues below while each layer passes
+    # thickness of the A: the layers wholly within the mixed 18 cm, then each
+    # layer below while it passes
     sure <- setdiff(a$layers, below); maybe <- sure
     stop_sure <- FALSE
     for (i in below) {
@@ -645,31 +672,36 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     cem <- .f88_cemented(x)$value
     dp <- .f88_num(x, "duripan_pct")
     duri <- cem & ((!is.na(dp) & dp > 0) | (!is.na(x$desg) & grepl("^[A-Z]+[a-z0-9]*qm", x$desg)))
+    # the solum and the A both measured from the mineral soil surface, the
+    # top of the A (Hugo, 2026-11-09)
     solum <- .fao_solum(h)
+    S <- solum$value - t0
     th_ok <- function(layers) {
+      if (!length(layers)) return(FALSE)
       last <- layers[length(layers)]
       T <- x$bot[last] - t0
       nxt <- last + 1L
       hard <- if (nxt <= x$n) .f88_or(x$rock[nxt], pc[nxt], pg[nxt], duri[nxt]) else FALSE
-      S <- solum$value
       rule <- if (T > 25) TRUE else if (T < 18) FALSE
               else if (is.na(S)) NA
               else if (S >= 75) FALSE
+              else if (T <= S / 3) FALSE      # an open solum is only deeper
               else if (isTRUE(solum$open)) NA
-              else T > S / 3
+              else TRUE
       .f88_or(.f88_and(hard, T >= 10), rule)
     }
     # the A may end at the base of the sure layers or of any undecided layer
     # after them
     th_sure <- th_ok(sure)
-    th_any <- vapply(seq.int(length(sure), length(maybe)), function(k) th_ok(maybe[seq_len(k)]), NA)
+    ks <- if (length(maybe)) seq.int(max(length(sure), 1L), length(maybe)) else integer(0)
+    th_any <- vapply(ks, function(k) th_ok(maybe[seq_len(k)]), NA)
     thick <- if (isTRUE(th_sure)) TRUE else if (any(th_any %in% TRUE) || anyNA(th_any)) NA else FALSE
     if (is.na(thick)) missing <- c(missing, "designation", "munsell_value_moist")
     # the colour contrast with the C, or the horizon right below the A; waived
-    # when strongly humic (p. 40) or on dark parent material (not recorded:
-    # absent); with rock right below the A it cannot be read and is taken as
+    # when strongly humic (p. 40) or on dark parent material (a field
+    # observation soilKey does not record: absent); with rock right below the A it cannot be read and is taken as
     # met, flagged (soilKey's reading)
-    last <- maybe[length(maybe)]
+    last <- if (length(maybe)) maybe[length(maybe)] else a$first
     cbelow <- which(seq_len(x$n) > last & !is.na(x$master) & grepl("^C", x$master) & !x$rock)[1L]
     ref <- if (!is.na(cbelow)) cbelow else if (last < x$n) last + 1L else NA_integer_
     sh <- .fao_weighted(h, "oc_pct", 0, 100, zero_below_rock = TRUE)
@@ -681,8 +713,9 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     contrast <- .f88_or(contrast, humic)
     if (is.na(contrast)) missing <- c(missing, "munsell_value_moist", "munsell_value_dry", "oc_pct")
     # criterion 6, citric P2O5 below 250 mg/kg (Q14): measured decides (not
-    # when it increases below the A); else the anthropic layers it targets,
-    # absent if not recorded
+    # when it increases below the A; phosphate nodules, the other exception,
+    # are a field observation that soilKey does not record: absent); else the
+    # anthropic layers it targets, absent if not recorded
     p <- .f88_num(x, "p2o5_citric_mg_kg")
     an <- .f88_anthropic(x)
     al <- maybe
@@ -700,11 +733,11 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
                         else "p2o5_not_recorded_no_anthropic_layer")
     }
     p_all <- all(p_ok)
-    crit <- list(structure = struct_mix, colour = colour_mix, contrast = contrast,
-                 base_saturation = bs_mix, organic_carbon = .f88_and(oc_mix, not_org),
+    crit <- list(structure = struct_mix, contrast = contrast,
+                 base_saturation = bs_mix, colour_and_carbon = colour_mix, not_organic = not_org,
                  thickness = thick, p2o5 = p_all, lime_waiver = lime,
                  strongly_humic = humic)
-    status <- .f88_and(struct_mix, colour_mix, contrast, bs_mix, oc_mix, not_org, thick, p_all)
+    status <- .f88_and(struct_mix, colour_mix, contrast, bs_mix, not_org, thick, p_all)
     lay <- if (isTRUE(status)) sure else maybe
     flags <- c(flags, m_vm$flags, m_oc$flags, m_bs$flags)
     out <- .f88_one(status, if (isFALSE(status)) integer(0) else lay, x,
@@ -713,8 +746,8 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
                                     mixed_18cm = c(value_moist = m_vm$value, chroma_moist = m_cm$value,
                                                    value_dry = m_vd$value, oc = m_oc$value,
                                                    bs = m_bs$value, caco3 = m_cc$value),
-                                    solum_cm = solum$value, solum_open = isTRUE(solum$open),
-                                    thickness_cm = x$bot[sure[length(sure)]] - t0),
+                                    solum_cm = S, solum_open = isTRUE(solum$open),
+                                    thickness_cm = if (length(sure)) x$bot[sure[length(sure)]] - t0 else 0),
                     notes = "the surface 18 cm of the A are mixed; the layers below are read each on its own")
     if (any(x$buried[a$layers] %in% TRUE)) out$units <- list()
     out
@@ -867,7 +900,7 @@ ochric_a_fao88 <- function(pedon) {
       # cm combined
       need <- max(7.5, 0.1 * x$top[i])
       th_of <- function(L) {
-        if (all(!is.na(lam[L]))) {
+        if (all(!is.na(lam[L]) & lam[L] > 0)) {
           s <- sum(lam[L]); return(s >= 15 && s >= 0.1 * x$top[i])
         }
         (x$bot[L[length(L)]] - x$top[i]) >= need
@@ -879,7 +912,9 @@ ochric_a_fao88 <- function(pedon) {
       # a plough layer only
       i6 <- function() {
         k <- i - 1L; topc <- x$top[i]
-        while (k >= 1L && !x$rock[k] && !is.na(clay[k]) && !is.na(clay[i]) && clay[k] < clay[i]) {
+        while (k >= 1L && !x$rock[k] && !is.na(clay[i])) {
+          if (is.na(clay[k])) return(NA)          # the walk stops on a missing clay
+          if (clay[k] >= clay[i]) break
           topc <- x$top[k]; k <- k - 1L
         }
         thc <- x$top[i] - topc
@@ -893,7 +928,9 @@ ochric_a_fao88 <- function(pedon) {
         plough_only <- all(!is.na(x$desg[above]) & grepl("^A[a-z0-9]*p", x$desg[above]))
         ok && !disc && !plough_only && !trunc
       }
-      item6 <- if (sk_s) TRUE else if (is.na(clay[i])) NA else if (i6()) TRUE else if (sk_m) NA else FALSE
+      r6 <- if (sk_s || is.na(clay[i])) NA else i6()
+      item6 <- if (sk_s) TRUE else if (is.na(clay[i])) NA else if (isTRUE(r6)) TRUE
+               else if (sk_m || is.na(r6)) NA else FALSE
       status <- .f88_and(st0, inc, thick, item6)
       if (isFALSE(status)) next
       starts[[length(starts) + 1L]] <- list(
@@ -1074,7 +1111,9 @@ cambic_b_fao88 <- function(pedon, max_top_cm = 125) {
     }, logical(1))
     pos <- .f88_unburied(x, pos)
     cem <- .f88_cemented(x)$value
-    hs <- !is.na(x$desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*[hs]", x$desg)
+    # the illuvial humus or sesquioxides of the designation: h, s, or the
+    # older ir (Hugo, 2026-11-09)
+    hs <- !is.na(x$desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*([hs]|ir)", x$desg)
     thk <- x$bot - x$top
     i1 <- cem & hs & !is.na(thk) & thk > 2.5
     clay <- .f88_num(x, "clay_pct")
@@ -1087,20 +1126,12 @@ cambic_b_fao88 <- function(pedon, max_top_cm = 125) {
     a <- ifelse(is.na(fep), NA, ifelse(fep >= 0.1, ratio(fep + alp), ratio(alp + oc)))
     b <- .f88_cmp(fep + alp, ">=", 0.5 * (fed + ald))
     # a layer with free carbonates or a water pH of 7.0 or more holds no
-    # spodic accumulation of amorphous material (soilKey's reading, flagged)
+    # spodic accumulation of amorphous material, flagged (Hugo, 2026-11-09)
     cc0 <- .f88_num(x, "caco3_pct"); eff <- .f88_chr(x, "effervescence_class")
     ph <- .f88_num(x, "ph_h2o")
     alk <- (!is.na(cc0) & cc0 > 0) | (!is.na(eff) & grepl("^(slight|moderate|strong|very strong|violent)", eff)) |
       (!is.na(ph) & ph >= 7)
     a[alk] <- FALSE
-    # without the chemistry, a layer whose recorded designation shows no
-    # illuvial humus or sesquioxides (no h or s suffix) and that has no albic
-    # E above it is not spodic, flagged (the illuvial signature soilKey's WRB
-    # spodic horizon asks for; soilKey's reading)
-    alb <- .f88_member(x, .f88_hz_albic_e(x)$units)
-    alb_above <- vapply(seq_len(n), function(i) any(alb[seq_len(i - 1L)] %in% TRUE), logical(1))
-    nosig <- !is.na(x$desg) & !hs & !alb_above & (is.na(a) | is.na(b))
-    a[nosig] <- FALSE
     ab <- .f88_and(pos, a, b)
     c82 <- .f88_num(x, "cec_ph82_cmol")
     idx <- ifelse(!is.na(clay) & clay > 0 & !is.na(c82) & !is.na(thk),
@@ -1110,38 +1141,47 @@ cambic_b_fao88 <- function(pedon, max_top_cm = 125) {
     hi <- sum(pmax(idx[!(ab %in% FALSE)], 0), na.rm = TRUE)
     i3 <- if (any(ab %in% TRUE) && !anyNA(idx[ab %in% TRUE]) && lo >= 65) TRUE
           else if (!any(!(ab %in% FALSE)) || (!hi_na && hi < 65)) FALSE else NA
-    per <- .f88_or(.f88_and(pos, i1), .f88_and(pos, i2),
-                   if (isTRUE(i3)) ab else if (isFALSE(i3)) rep(FALSE, n) else ifelse(ab %in% FALSE, FALSE, NA))
-    units <- lapply(.f88_run_list(x, per %in% TRUE), function(r) c(r, list(status = TRUE)))
-    for (r in .f88_run_list(x, !(per %in% FALSE))) {
-      if (!all(per[r$layers] %in% TRUE)) units[[length(units) + 1L]] <- c(r, list(status = NA))
+    mk_units <- function(per) {
+      u <- lapply(.f88_run_list(x, per %in% TRUE), function(r) c(r, list(status = TRUE)))
+      for (r in .f88_run_list(x, !(per %in% FALSE))) {
+        if (!all(per[r$layers] %in% TRUE)) u[[length(u) + 1L]] <- c(r, list(status = NA))
+      }
+      u
     }
-    sp_flags <- c(if (any(alk & !(per %in% TRUE) & pos %in% TRUE)) "not_spodic_calcareous_or_ph_7",
-                  if (any(nosig & !alk & pos %in% TRUE)) "not_spodic_no_illuvial_signature")
+    item12 <- .f88_or(.f88_and(pos, i1), .f88_and(pos, i2))
+    per <- .f88_or(item12, if (isTRUE(i3)) ab else if (isFALSE(i3)) rep(FALSE, n)
+                           else ifelse(ab %in% FALSE, FALSE, NA))
+    units <- mk_units(per)
+    sp_flags <- if (any(alk & !(per %in% TRUE) & pos %in% TRUE)) "not_spodic_calcareous_or_ph_7"
     ev <- list(cemented = which(i1), pellets_or_coatings = i2, pyro_ratio = a,
                pyro_over_dithionite = b, accumulation_index = c(sure = lo, possible = hi))
+    miss <- c("fe_pyro_pct", "al_pyro_pct", "fe_dcb_pct", "al_dcb_pct", "cec_ph82_cmol")
     sure_unit <- any(vapply(units, function(u) isTRUE(u$status), logical(1)))
     if (!sure_unit && is.na(i3)) {
-      # the 1975 chemistry undecided: the stand-ins of Q17
+      # the 1975 chemistry undecided: the stand-ins of Q17, which decide only
+      # the chemistry; the units of items 1 and 2 stay as they are
       si <- spodic_horizon_usda(x$pedon); who <- "spodic_horizon_usda"
-      if (is.na(si$passed)) { si <- spodic(x$pedon); who <- c(who, "spodic") }
-      if (!is.na(si$passed)) {
+      if (is.na(si$passed)) { si <- spodic(x$pedon); who <- "spodic" }
+      if (isTRUE(si$passed)) {
         lay <- match(si$layers, x$idx)
         lay <- lay[!is.na(lay) & !(x$buried[lay] %in% TRUE)]
-        if (isTRUE(si$passed) && length(lay)) {
-          return(list(units = list(list(layers = lay, top = x$top[min(lay)], bottom = x$bot[max(lay)],
-                                        thickness = x$bot[max(lay)] - x$top[min(lay)], status = TRUE)),
-                      stand_in = who, flags = "stand_in_for_spodic_chemistry_1975", evidence = ev))
+        sel <- item12 %in% TRUE; sel[lay] <- TRUE
+        if (length(lay)) {
+          return(list(units = mk_units(ifelse(sel, TRUE, item12)), stand_in = who, evidence = ev,
+                      flags = c(sp_flags, "stand_in_for_spodic_chemistry_1975")))
         }
-        return(list(units = list(), stand_in = who, flags = "stand_in_for_spodic_chemistry_1975",
-                    evidence = ev))
       }
-      return(list(units = units, stand_in = who, evidence = ev,
-                  missing = unique(c("fe_pyro_pct", "al_pyro_pct", "fe_dcb_pct", "al_dcb_pct",
-                                     "cec_ph82_cmol", si$missing))))
+      if (isFALSE(si$passed) || (isTRUE(si$passed))) {
+        # the stand-in rules the chemistry out: items 1 and 2 decide
+        return(list(units = mk_units(item12), stand_in = who, evidence = ev,
+                    flags = c(sp_flags, "stand_in_for_spodic_chemistry_1975"),
+                    missing = c("clay_pct", "spodic_pellets")))
+      }
+      return(list(units = units, evidence = ev, flags = sp_flags,
+                  notes = "the stand-ins for the 1975 chemistry are undecided too",
+                  missing = unique(c(miss, si$missing))))
     }
-    list(units = units, evidence = ev, flags = sp_flags,
-         missing = c("fe_pyro_pct", "al_pyro_pct", "fe_dcb_pct", "al_dcb_pct", "cec_ph82_cmol"))
+    list(units = units, evidence = ev, flags = sp_flags, missing = miss)
   })
 }
 
@@ -1327,7 +1367,7 @@ gypsic_fao88 <- function(pedon, max_top_cm = 125) {
   kind <- match.arg(kind)
   .f88_memo(x, paste0("petro", kind), function() {
     if (!x$n) return(list(units = list()))
-    cem <- .f88_cemented(x)
+    cem <- .f88_cemented(x, if (kind == "calcic") "k" else "y")
     mat <- if (kind == "calcic") .f88_cmp(.f88_caco3(x)$value, ">=", 15)
            else .f88_gypsic_layer(x)$value
     ok <- .f88_unburied(x, .f88_and(mat, cem$value))
@@ -1379,23 +1419,26 @@ sulfuric_fao88 <- function(pedon, max_top_cm = 125) {
 # --- albic E (pp. 32-33) ------------------------------------------------------------------
 
 # A layer designated E (EB, E/B; the A2 of the older notation), or an
-# undesignated one read by its colour only, flagged: value moist 4 or more or
-# value dry 5 or more; chroma (dry or moist) 3 or less where the value dry is
-# 7 or more or the value moist 6 or more, 2 or less ("closer to 2 than to
-# 3") where the value dry is 5 or 6 or the value moist 4 or 5; where both
-# apply, the lighter class governs (soilKey's reading). On a parent material
-# (the first C below) of hue 5YR or redder a moist chroma of 3 is allowed,
-# flagged. No minimum thickness.
+# undesignated one below a surface layer and above a B or C, read by its
+# colour only, flagged: value moist 4 or more or value dry 5 or more; chroma
+# (dry or moist) 3 or less where the value dry is 7 or more or the value
+# moist 6 or more, below 2.5 ("closer to 2 than to 3") where the value dry is
+# 5 or 6 or the value moist 4 or 5; where both apply, the lighter class
+# governs (Hugo, 2026-11-09). On a parent material (the first C below) of hue
+# 5YR or redder a moist chroma of 3 is allowed, flagged. No minimum
+# thickness.
 .f88_hz_albic_e <- function(x) {
   .f88_memo(x, "albic_e", function() {
     if (!x$n) return(list(units = list()))
     n <- x$n
     col <- .f88_colours(x)
-    vm <- col$vm; vd <- col$vd; cm <- col$cm; cd <- col$cd
-    # a dry colour not recorded is not read: the moist colour decides,
-    # flagged (soilKey's reading)
-    dry_na <- is.na(vd) & is.na(cd) & !is.na(vm)
-    vd[dry_na] <- -Inf; cd[dry_na] <- Inf
+    vm <- col$vm; cm <- col$cm; cd <- col$cd
+    # a dry value not recorded is the moist value + 1, flagged, as for the
+    # mollic A (Hugo, 2026-11-09); a dry chroma not recorded is the moist
+    # chroma, flagged (soilKey's reading)
+    vd <- col$vd_or_inferred
+    dry_c <- is.na(cd) & !is.na(cm)
+    cd[dry_c] <- cm[dry_c]
     m <- x$master
     is_e <- !is.na(m) & grepl("^E", m)
     undes <- is.na(m)
@@ -1404,7 +1447,8 @@ sulfuric_fao88 <- function(pedon, max_top_cm = 125) {
     mid <- .f88_or(.f88_and(.f88_cmp(vd, ">=", 5), .f88_cmp(vd, "<=", 6)),
                    .f88_and(.f88_cmp(vm, ">=", 4), .f88_cmp(vm, "<=", 5)))
     le3 <- .f88_or(.f88_cmp(cd, "<=", 3), .f88_cmp(cm, "<=", 3))
-    le2 <- .f88_or(.f88_cmp(cd, "<=", 2), .f88_cmp(cm, "<=", 2))
+    # "closer to 2 than to 3": below 2.5
+    le2 <- .f88_or(.f88_cmp(cd, "<", 2.5), .f88_cmp(cm, "<", 2.5))
     flag <- rep(NA_character_, n)
     red <- rep(FALSE, n)
     for (i in seq_len(n)) {
@@ -1413,20 +1457,26 @@ sulfuric_fao88 <- function(pedon, max_top_cm = 125) {
     }
     le2r <- .f88_or(le2, red & !is.na(cm) & cm == 3)
     flag[red & !(le2 %in% TRUE) & !is.na(cm) & cm == 3] <- "chroma_3_on_red_parent_material"
+    addf <- function(f, sel, lab) ifelse(sel, ifelse(is.na(f), lab, paste(f, lab, sep = "; ")), f)
+    flag <- addf(flag, !is.na(col$flags), "dry_value_from_moist_plus_1")
+    flag <- addf(flag, dry_c, "dry_chroma_from_moist")
     chroma <- ifelse(high %in% TRUE, le3, ifelse(mid %in% TRUE, le2r,
                      ifelse(high %in% FALSE & mid %in% FALSE, FALSE, NA)))
     colour <- .f88_and(light, as.logical(chroma))
-    ok <- ifelse(is_e | undes, colour, FALSE)
+    # an undesignated layer: read by colour only where it lies below a surface
+    # layer and above a layer designated B or C; elsewhere undecided when the
+    # colour passes (Hugo, 2026-11-09)
+    bc <- !is.na(m) & grepl("^(B|C)", m)
+    placed <- vapply(seq_len(n), function(i) i > 1L && any(bc[seq_len(n) > i]), logical(1))
+    ok <- ifelse(is_e, colour, ifelse(undes, ifelse(placed, colour, ifelse(colour %in% FALSE, FALSE, NA)),
+                                      FALSE))
     ok <- .f88_unburied(x, ok)
     ok[x$rock] <- FALSE
-    flag[undes & ok %in% TRUE] <- "albic_by_colour_only"
-    mo <- dry_na & ok %in% TRUE
-    flag[mo] <- ifelse(is.na(flag[mo]), "albic_moist_colour_only",
-                       paste(flag[mo], "albic_moist_colour_only", sep = "; "))
+    flag <- addf(flag, undes & ok %in% TRUE, "albic_by_colour_only")
     units <- .f88_units(x, ok, function(r) TRUE)
     list(units = units, flags = .f88_flags(flag, which(!(ok %in% FALSE))),
          missing = c("munsell_value_moist", "munsell_value_dry", "munsell_chroma_moist",
-                     "munsell_chroma_dry"))
+                     "munsell_chroma_dry", if (any(undes & is.na(ok))) "designation"))
   })
 }
 

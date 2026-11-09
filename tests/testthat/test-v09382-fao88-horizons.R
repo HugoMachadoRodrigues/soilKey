@@ -120,7 +120,9 @@ test_that("mollic and umbric A: colour, carbon, base saturation and the solum ru
   p <- .mollic88(bs_pct = c(45, 40, 40))
   expect_false(.ok(mollic_a_fao88(p))); expect_true(.ok(umbric_a_fao88(p)))
   # value moist below 3.5: a 3.5 fails (Q24), a 4 fails
-  expect_false(.ok(mollic_a_fao88(.mollic88(munsell_value_moist = c(4, 4, 5)))))
+  expect_false(.ok(mollic_a_fao88(.mollic88(munsell_value_moist = c(4, 4, 5), caco3_pct = 0))))
+  # ... without CaCO3 the lime waiver (value 5 or less with 2.5 % OC) is open
+  expect_true(is.na(.ok(mollic_a_fao88(.mollic88(munsell_value_moist = c(4, 4, 5))))))
   expect_true(.ok(mollic_a_fao88(.mollic88(munsell_value_moist = c(3, 4, 5)))))
   # the colour contrast with the C: one unit
   expect_false(.ok(mollic_a_fao88(.mollic88(munsell_value_moist = c(3, 4, 3.5), oc_pct = c(1, 0.3, 0.2)))))
@@ -334,7 +336,8 @@ test_that("natric B: columnar or prismatic structure and ESP above 15 % in its u
                munsell_hue_moist = "10YR", munsell_value_moist = c(4, 5, 5),
                munsell_chroma_moist = c(3, 6, 4), munsell_value_dry = c(6, 6, 7),
                structure_type = c("granular", "subangular blocky", "massive"),
-               structure_grade = c("weak", "moderate", NA))
+               structure_grade = c("weak", "moderate", NA),
+               fe_pyro_pct = 0.05, al_pyro_pct = 0.05)   # no spodic B
   a <- list(...)
   base[names(a)] <- a
   do.call(.p88, base)
@@ -572,16 +575,136 @@ test_that("profiles without depths are undecided; the canonical fixtures read wi
                                        oc_pct = c(2, NA), clay_pct = c(20, NA)))))
   expected <- list(chernozem = "mollic_a", podzol = "spodic_b", solonetz = "natric_b",
                    calcisol = "calcic", gypsisol = "gypsic", histosol = "histic_h",
-                   luvisol = "argic_b", umbrisol = "umbric_a", cambisol = "cambic_b",
-                   planosol = "albic_e")
+                   luvisol = "argic_b", umbrisol = "umbric_a", planosol = "albic_e")
   for (k in names(expected)) {
     p <- get(paste0("make_", k, "_canonical"))()
     expect_true(.ok(get(paste0(expected[[k]], "_fao88"))(p)), info = k)
   }
+  # without the spodic chemistry the cambic B of the Cambisol stays undecided
+  # (Hugo, 2026-11-09: the missing measurement is not read as absent)
+  p <- make_cambisol_canonical()
+  expect_true(is.na(spodic_b_fao88(p)$passed)); expect_true(is.na(cambic_b_fao88(p)$passed))
   for (f in c("make_ferralsol_canonical", "make_vertisol_canonical", "make_leptosol_canonical")) {
     p <- get(f)()
     for (id in .F88_HZ$id) expect_no_error(get(paste0(id, "_fao88"))(p))
   }
+})
+
+test_that("the review of 2026-11-09: mollic A (defects 1-3, 9; decisions B and mixing)", {
+  skip_on_cran()
+  base <- list(clay_pct = 20, silt_pct = 40, sand_pct = 40, bs_pct = 80, p2o5_citric_mg_kg = 10)
+  mk <- function(...) { a <- list(...); b <- base; b[names(a)] <- a; do.call(.p88, b) }
+  # 1: a layer straddling 18 cm is read on its own values
+  p <- mk(top_cm = c(0, 15, 60), bottom_cm = c(15, 60, 120), designation = c("A1", "A2", "C"),
+          oc_pct = c(4, 0.3, 0.2), munsell_value_moist = c(2, 5, 6), munsell_chroma_moist = c(1, 4, 4),
+          munsell_value_dry = c(3, 6, 7))
+  r <- mollic_a_fao88(p)
+  expect_false(.ok(r)); expect_equal(r$evidence$thickness_cm, 15)
+  # 2: the strict colour with 0.6 % OC passes even with more than 40 % lime
+  p <- mk(top_cm = c(0, 30), bottom_cm = c(30, 100), designation = c("A", "C"), oc_pct = c(1, 0.2),
+          bs_pct = 100, caco3_pct = c(45, 60), munsell_value_moist = c(3, 6),
+          munsell_chroma_moist = c(2, 3), munsell_value_dry = c(5, 8))
+  expect_true(.ok(mollic_a_fao88(p)))
+  # 3: CaCO3 not recorded leaves the waiver open; a pH below 6.5 reads it absent
+  lw <- function(...) mk(top_cm = c(0, 30), bottom_cm = c(30, 100), designation = c("A", "C"),
+                         oc_pct = c(3, 0.2), munsell_value_moist = c(4, 7), munsell_chroma_moist = c(2, 3),
+                         munsell_value_dry = c(6, 8), ...)
+  expect_true(is.na(.ok(mollic_a_fao88(lw()))))
+  r <- mollic_a_fao88(lw(ph_h2o = c(6, 6)))
+  expect_false(.ok(r))
+  expect_true(.ok(mollic_a_fao88(lw(caco3_pct = c(45, 50)))))
+  # 9: an open solum (the description ends in the B): FALSE when the A is no
+  # more than a third of its lower bound
+  op <- function(b) mk(top_cm = c(0, 20), bottom_cm = c(20, b), designation = c("A", "Bw"),
+                       oc_pct = c(3, 0.5), munsell_value_moist = c(2, 5), munsell_chroma_moist = c(1, 4),
+                       munsell_value_dry = c(3, 6))
+  expect_false(.ok(mollic_a_fao88(op(70))))         # 20 <= 70 / 3
+  expect_true(is.na(.ok(mollic_a_fao88(op(55)))))   # 20 > 55 / 3, the solum may be deeper
+  # B: the A and the solum from the mineral surface, an O on top left out
+  p <- mk(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120), designation = c("Oa", "A", "Bw", "C"),
+          clay_pct = c(NA, 20, 20, 20), oc_pct = c(30, 3, 0.5, 0.2), munsell_value_moist = c(2, 2, 5, 6),
+          munsell_chroma_moist = c(1, 1, 4, 4), munsell_value_dry = c(3, 3, 6, 7))
+  r <- mollic_a_fao88(p)
+  expect_true(.ok(r)); expect_equal(r$evidence$solum_cm, 50)
+})
+
+test_that("the review of 2026-11-09: histic, argic, cementation, albic and the stand-ins", {
+  skip_on_cran()
+  # 4: a plough layer may be an Hp or Op
+  p <- .p88(top_cm = c(0, 30), bottom_cm = c(30, 100), designation = c("Hp", "Cg"), oc_pct = c(14, 1),
+            clay_pct = 30, silt_pct = 40, sand_pct = 30, site = list(id = "w", drainage_class = "poorly drained"))
+  expect_true(.ok(histic_h_fao88(p)))
+  # F: moderately well drained leaves the organic material undecided
+  om <- function(d) .p88(top_cm = c(0, 30), bottom_cm = c(30, 80), designation = c("H", "C"),
+                         oc_pct = c(15, 1), clay_pct = 20, silt_pct = 40, sand_pct = 40,
+                         site = list(id = "o", drainage_class = d))
+  expect_true(is.na(.ok(histic_h_fao88(om("moderately well drained")))))
+  expect_true(.ok(histic_h_fao88(om("imperfectly drained"))))
+  expect_false(.ok(histic_h_fao88(om("well drained"))))
+  # 5: lamellae_cumulative_cm of 0 is no lamellae: the 7.5 cm rule
+  lam0 <- .luvic88(lamellae_cumulative_cm = c(0, 0, 0, 0))
+  expect_true(.ok(argic_b_fao88(lam0)))
+  # 8: no clay skins and a missing clay on the way up: undecided
+  r <- argic_b_fao88(.luvic88(designation = c("A", "E", "Bw", "C"), clay_films_amount = NA,
+                              clay_pct = c(12, NA, 25, 22), silt_pct = c(20, NA, 25, 25),
+                              sand_pct = c(68, NA, 50, 53)))
+  expect_true(is.na(r$passed))
+  # 13: the Bt of an E&Bt counts as the clay-skin observation
+  r <- argic_b_fao88(.luvic88(designation = c("A", "E", "E&Bt", "C"), clay_films_amount = NA))
+  expect_true(.ok(r)); expect_true("bt_designation_for_clay_skins" %in% r$evidence$flags)
+  # 7: petrocalcic needs k with m in the designation; a silica pan is not it
+  pc <- function(d) .p88(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 120), designation = c("A", d, "C"),
+                         caco3_pct = c(2, 20, 10))
+  expect_false(.ok(petrocalcic_fao88(pc("Bqm"))))
+  expect_true(.ok(petrocalcic_fao88(pc("Bkm"))))
+  expect_false(.ok(petrogypsic_fao88(.p88(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 120),
+                                          designation = c("A", "Bkm", "C"), caso4_pct = c(0, 20, 2)))))
+  expect_true(.ok(petrogypsic_fao88(.p88(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 120),
+                                         designation = c("A", "Bym", "C"), caso4_pct = c(0, 20, 2)))))
+  # 10: "closer to 2 than to 3" is below 2.5; a dry value not recorded is the
+  # moist value + 1, flagged
+  al <- function(ch) .p88(top_cm = c(0, 10, 30), bottom_cm = c(10, 30, 100), designation = c("A", "E", "Bt"),
+                          munsell_value_moist = c(2, 5, 4), munsell_chroma_moist = c(1, ch, 4))
+  r <- albic_e_fao88(al(2.4))
+  expect_true(.ok(r)); expect_true("dry_value_from_moist_plus_1" %in% r$evidence$flags)
+  expect_false(.ok(albic_e_fao88(al(2.5))))
+  # C: an undesignated pale layer is read only below a surface layer and above a B or C
+  un <- function(d) .p88(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 150), designation = d,
+                         munsell_value_moist = c(3, 6, 5), munsell_chroma_moist = c(2, 2, 4),
+                         munsell_value_dry = c(4, 7, 6), munsell_chroma_dry = c(2, 2, 4))
+  expect_true(is.na(.ok(albic_e_fao88(un(c(NA, NA, NA))))))
+  r <- albic_e_fao88(un(c("A", NA, "Bt")))
+  expect_true(.ok(r)); expect_true("albic_by_colour_only" %in% r$evidence$flags)
+  # A: andic properties absent, flagged, without volcanic material recorded
+  r <- ferralic_b_fao88(.ferralic88(al_ox_pct = NA, fe_ox_pct = NA))
+  expect_true(.ok(r)); expect_true("andic_absent_no_volcanic_material" %in% r$evidence$flags)
+  r <- ferralic_b_fao88(.ferralic88(al_ox_pct = NA, fe_ox_pct = NA, site = list(id = "v", parent_material = "volcanic ash")))
+  expect_true(is.na(r$passed))
+})
+
+test_that("the review of 2026-11-09: the spodic B (defects 6 and 11)", {
+  skip_on_cran()
+  # the older suffix ir records the illuvial sesquioxides of a cemented layer
+  p <- .p88(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 100), designation = c("E", "Birm", "C"),
+            clay_pct = 3, silt_pct = 7, sand_pct = 90, cementation_class = c(NA, "strongly", NA))
+  expect_true(.ok(spodic_b_fao88(p)))
+  # without the chemistry a Bw is undecided, not ruled out by its designation
+  p <- .p88(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120), designation = c("A", "Bw1", "Bw2", "C"),
+            clay_pct = c(5, 6, 6, 4), silt_pct = 5, sand_pct = c(90, 89, 89, 91), oc_pct = c(2, 0.5, 0.3, 0.1),
+            ph_h2o = c(4.5, 4.6, 4.8, 5))
+  r <- spodic_b_fao88(p)
+  expect_true(is.na(r$passed))
+  expect_length(r$evidence$stand_in, 0L); expect_false(r$evidence$lower_grade)
+  # a stand-in that rules the chemistry out leaves the undecided item-2 unit
+  # (pellets in a layer of unknown clay) undecided, and is recorded
+  p <- .p88(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120), designation = c("A", "E", "Bhs", "C"),
+            clay_pct = c(5, 3, NA, 4), silt_pct = c(5, 5, NA, 5), sand_pct = c(90, 92, NA, 91),
+            oc_pct = c(2, 0.3, 1, 0.1), spodic_pellets = c(NA, NA, TRUE, NA), ph_h2o = c(4.5, 4.6, 4.8, 5),
+            al_ox_pct = 0.05, fe_ox_pct = 0.05)
+  expect_false(spodic_horizon_usda(p)$passed)
+  r <- spodic_b_fao88(p)
+  expect_true(is.na(r$passed))
+  expect_identical(r$evidence$stand_in, "spodic_horizon_usda"); expect_true(r$evidence$lower_grade)
 })
 
 test_that("the readings soilKey adds are recorded for Hugo in data-raw/fao_readings.yaml", {
@@ -591,5 +714,9 @@ test_that("the readings soilKey adds are recorded for Hugo in data-raw/fao_readi
   y <- yaml::read_yaml(f)
   topics <- vapply(y$readings, `[[`, "", "topic")
   expect_true(any(grepl("0.9.382", vapply(y$readings, function(r) paste(r$reading, r$version %||% ""), ""))))
-  expect_true(all(c("Mixing the 18 cm of the mollic A", "Volcanic glass not recorded") %in% topics))
+  expect_true(all(c("Mixing the 18 cm of the mollic A", "Volcanic glass not recorded",
+                    "Code readings confirmed on the review") %in% topics))
+  r382 <- Filter(function(r) identical(r$version, "0.9.382"), y$readings)
+  expect_true(all(grepl("\\(Hugo, 2026-11-0[89]\\)\\.$", vapply(r382, `[[`, "", "reading")) |
+                  grepl("for Hugo to confirm", vapply(r382, `[[`, "", "reading"))))
 })
