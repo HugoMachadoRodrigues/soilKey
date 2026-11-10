@@ -28,8 +28,9 @@
 #     cutans recorded with no abundance are few, and so are cutans of no kind in
 #     a horizon whose designation has t. Cutans of kind slickensides are the
 #     slickensides, common when patchy, broken or of no recorded abundance.
-#   * Cracks: the profile's cracking (large or small) or, without it, gilgai
-#     give cracks of 0.5 cm or more in the horizons starting above 100 cm.
+#   * Cracks: the profile's cracking or, without it, gilgai give cracks in the
+#     horizons starting above 100 cm: large cracks and gilgai of 1 cm or more,
+#     small cracks of 0.5 cm or more (v0.9.392, Hugo, 2026-11-10).
 #     v0.9.315: else its surface cracks (cracksSurface): medium cracks are 1 cm;
 #     "no cracks observed" is no cracks only in a profile described dry at the
 #     surface (dryfrom 0), and unknown otherwise.
@@ -536,14 +537,21 @@ isis_citation <- function(accessed = Sys.Date()) {
   out$pressure_faces <- unname(ifelse(pr, ifelse(is.na(a), "few", a), NA_character_))
   note("pressure_faces", which(pr), "ISIS cutans of kind pressure faces (patchy few, broken common, continuous many; no abundance read as few)")
   # cracks: the profile's cracking (L large, C small) or, without it, gilgai,
-  # in every horizon starting above 100 cm; the width of 0.5 cm is inferred
+  # in every horizon starting above 100 cm. ISIS gives the cracking no width.
+  # v0.9.392 (Hugo, 2026-11-10): large cracks and gilgai are cracks of 1 cm
+  # or more, the lower limit of the medium surface cracks (1-2 cm) of the FAO
+  # field guidelines' classes that ISIS's own cracksSurface uses (fine < 1 cm,
+  # medium 1-2 cm); small cracks keep 0.5 cm, since a small crack may be a
+  # fine one (< 1 cm). Before, all three were 0.5 cm.
   cr <- if (!is.na(cracking) && cracking %in% c("L", "C")) cracking else if (isTRUE(gilgai)) "gilgai" else NA_character_
   if (!is.na(cr)) {
     rows <- which(out$top_cm < 100)
+    w <- if (cr == "C") 0.5 else 1
     out$cracks_width_cm <- NA_real_
-    out$cracks_width_cm[rows] <- 0.5
-    note("cracks_width_cm", rows, sprintf("inferred from the profile's %s: cracks of 0.5 cm or more",
-      switch(cr, L = "cracking (large cracks)", C = "cracking (small cracks)", gilgai = "gilgai microrelief")))
+    out$cracks_width_cm[rows] <- w
+    note("cracks_width_cm", rows, sprintf("inferred from the profile's %s: cracks of %s cm or more",
+      switch(cr, L = "cracking (large cracks)", C = "cracking (small cracks)", gilgai = "gilgai microrelief"),
+      format(w)))
   }
   # v0.9.315 (Hugo, 2026-10-30): the surface cracks of the profile. Medium
   # cracks (1-2 cm) are cracks of 1 cm. "No cracks observed" reads as no cracks

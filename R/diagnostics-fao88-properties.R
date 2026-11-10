@@ -240,7 +240,8 @@ abrupt_textural_change_fao88 <- function(pedon, max_top_cm = NULL) {
 # Volcanic glass not recorded is none, flagged, and andic properties left
 # undecided are absent, flagged, unless the record names volcanic material
 # (the site's parent material, a layer_origin, pyroclastic fragments), where
-# they stay undecided (Hugo, 2026-11-09). Item 7 of the ferralic B reads this
+# they stay undecided (Hugo, 2026-11-09), or unless item (1) is met but for
+# the P retention not measured (Hugo, 2026-11-10). Item 7 of the ferralic B reads this
 # function.
 .f88_andic_layer <- function(x) {
   .f88_memo(x, "andic", function() {
@@ -267,7 +268,13 @@ abrupt_textural_change_fao88 <- function(pedon, max_top_cm = NULL) {
             ifelse(!is.na(gl) & gl >= 30, TRUE, ifelse(!is.na(gl) & gl < 5, FALSE, NA)))
     p3 <- .f88_and(frac, as.logical(g_ok))
     v <- .f88_or(p1, p2, p3)
-    ab <- is.na(v) & !volc
+    # v0.9.392 (Hugo, 2026-11-10): item 1 met but for the P retention, which
+    # is not measured, keeps the layer undecided, volcanic material recorded
+    # or not; the rule "undecided is absent" applies only when fewer
+    # criteria are met
+    p1_open <- .f88_cmpr(alfe, ">=", 2) %in% TRUE & .f88_cmp(bd, "<=", 0.9) %in% TRUE & is.na(pr)
+    flag <- .f88_addf(flag, is.na(v) & p1_open, "andic_undecided_p_retention_not_measured")
+    ab <- is.na(v) & !volc & !p1_open
     v[ab] <- FALSE
     flag <- .f88_addf(flag, ab, "andic_absent_no_volcanic_material")
     list(value = v, flags = flag, items = data.frame(item1 = p1, item2 = p2, item3 = p3),

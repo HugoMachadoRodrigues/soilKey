@@ -1315,14 +1315,20 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
 
 # Gypsum of each layer: caso4_pct; not recorded, an electrical conductivity of
 # the saturation extract below 2 dS/m (a solution saturated with gypsum has
-# about 2.2) reads as no gypsum (0), flagged (soilKey's reading).
+# about 2.2) reads as no gypsum (0), flagged (soilKey's reading). v0.9.392
+# (Hugo, 2026-11-10): with no ECe either, an upper bound of the ECe
+# (ec_max_dS_m, as the ISIS reader derives from an EC 1:2.5) below 2 dS/m
+# also reads as no gypsum, flagged. Shared by the 1974 gypsic horizon.
 .f88_gypsum <- function(x) {
   .f88_memo(x, "gypsum", function() {
     g <- .f88_num(x, "caso4_pct")
     ec <- .f88_num(x, "ec_dS_m")
+    em <- .f88_num(x, "ec_max_dS_m")
     flag <- rep(NA_character_, x$n)
     z <- is.na(g) & !is.na(ec) & ec < 2
     g[z] <- 0; flag[z] <- "no_gypsum_at_ece_below_2"
+    zm <- is.na(g) & is.na(ec) & !is.na(em) & em < 2
+    g[zm] <- 0; flag[zm] <- "no_gypsum_at_ece_upper_bound_below_2"
     list(value = g, flags = flag)
   })
 }

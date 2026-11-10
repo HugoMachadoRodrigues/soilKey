@@ -371,3 +371,19 @@ readings:
     page: "p. 26; 74 p. 24"
     version: "0.9.390"
     reading: "With more than 40 % finely divided lime, 'the limits of colour value dry are waived' (the same words in both editions): the dry value of the A and its dry contrast with the C (or the horizon below the A) are both waived; the moist contrast of one unit is still asked. A correction to the mollic and umbric A of 0.9.382 (1988) and 0.9.387 (1974); no example of 1988 changes (Hugo, 2026-11-10)."
+  # v0.9.392: decisions of 2026-11-10 on the ISIS benchmark
+  - topic: "ISIS cracks: large cracks and gilgai"
+    edition: [1988, 1974]
+    page: "pp. 37, 77; 74 pp. 31, 43"
+    version: "0.9.392"
+    reading: "The ISIS reader (R/isis-graphql.R) reads the profile's large cracking and, without a cracking record, gilgai as cracks of 1 cm or more in the horizons starting above 100 cm, the lower limit of the medium surface cracks (1-2 cm) of the FAO field guidelines' classes that ISIS's own cracksSurface uses; small cracking stays 0.5 cm, since a small crack may be a fine one (< 1 cm). ISIS gives the cracking itself no width (Hugo, 2026-11-10)."
+  - topic: "Gypsum from an upper bound of the ECe"
+    edition: [1988, 1974]
+    page: "pp. 31-32; 74 p. 27"
+    version: "0.9.392"
+    reading: "With neither caso4_pct nor ec_dS_m recorded, an upper bound of the ECe (ec_max_dS_m, which the ISIS reader derives from an EC 1:2.5) below 2 dS/m reads as no gypsum, flagged no_gypsum_at_ece_upper_bound_below_2, the same rule as an ECe below 2 (.f88_gypsum(), shared by the gypsic horizon of 1974) (Hugo, 2026-11-10)."
+  - topic: "Oxic B of 1974 with few clay films"
+    edition: [1974]
+    page: "74 pp. 25-26; Q13"
+    version: "0.9.392"
+    reading: "Q13 stands as decided: clay films recorded (few included) are evidence of illuviation for the argillic B, which the oxic B of 1974 excludes. In the ISIS benchmark this keys some Ferralsols of the labels as Acrisols or Luvisols; a known cause, not changed (Hugo, 2026-11-10)."

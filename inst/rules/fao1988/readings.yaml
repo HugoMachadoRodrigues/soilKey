@@ -590,7 +590,7 @@ readings:
     version: "0.9.391"
     reading: "Where a group comment sends part of a 1974 group elsewhere, the rows carry soilKey's alternative targets in brackets (`also`, `also_when`): the Luvisol units to the Lixisol unit of the same name, else Haplic (Lc, Lk, Lv to LXh), when the argic B has a CEC below 24 cmol(+)/kg clay (p. 122); a condition may be given per target, and a 1988 result shows the alternatives of the unit rows that name its unit, else those of the group rows that name its grouping (a unit row that names a grouping only when the result stops at the grouping); the Acrisol units to the Alisol unit of the same name (Ah to ALu) at 24 or more (p. 124); Bk to the Calcisols or Gypsisols (p. 118); Kk to the Gypsic Kastanozems (p. 120); Gp, Fp and Lp to the Plinthosols (pp. 116, 122, 125); the Gleysols to the Arenosols and Fluvisols and the Regosols to the Arenosols and Leptosols (p. 116) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
   - topic: "Crosswalk: the units of the Xerosols and Yermosols"
-    edition: [1974]
+    edition: [1988, 1974]
     page: "p. 115"
     version: "0.9.391"
     reading: "The appendix deletes the two groups (note 1: incorporated in other groups, with a yermic phase) and prints no unit row. soilKey brackets targets by the unit's name: Haplic to the Cambisols, Regosols or Arenosols; Calcic to the Calcisols; Gypsic to the Gypsisols; Luvic to the Luvic Calcisols or Gypsisols, the Luvisols or Lixisols; Takyric Yermosols to no class (the takyric phase) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
@@ -620,3 +620,19 @@ readings:
     page: "Q5, Q27"
     version: "0.9.392"
     reading: "Offline, on the cached ISIS profiles, the reader unchanged (Q27). Grouping and unit agreement with Wilson 95 % intervals; a fall-through (no gate passed: candidates undecided, or not classified, Q5) counts as a disagreement. Provisional = a class tested before the assigned one left undecided at that level or above; stand-in = a passed test of the assigned class resting on a USDA or WRB stand-in; firm = neither. A labelled phase is scored against soilKey's status of that phase; phases are not required to be exhaustive in the labels, so a phase soilKey finds present and the label omits is reported, not scored as an error (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  # --- decisions of 2026-11-10 on the causes the ISIS benchmark showed --------------------
+  - topic: "ISIS cracks: large cracks and gilgai"
+    edition: [1988, 1974]
+    page: "pp. 37, 77; 74 pp. 31, 43"
+    version: "0.9.392"
+    reading: "The ISIS reader (R/isis-graphql.R) reads the profile's large cracking and, without a cracking record, gilgai as cracks of 1 cm or more in the horizons starting above 100 cm, the lower limit of the medium surface cracks (1-2 cm) of the FAO field guidelines' classes that ISIS's own cracksSurface uses; small cracking stays 0.5 cm, since a small crack may be a fine one (< 1 cm). ISIS gives the cracking itself no width (Hugo, 2026-11-10)."
+  - topic: "Gypsum from an upper bound of the ECe"
+    edition: [1988, 1974]
+    page: "pp. 31-32; 74 p. 27"
+    version: "0.9.392"
+    reading: "With neither caso4_pct nor ec_dS_m recorded, an upper bound of the ECe (ec_max_dS_m, which the ISIS reader derives from an EC 1:2.5) below 2 dS/m reads as no gypsum, flagged no_gypsum_at_ece_upper_bound_below_2, the same rule as an ECe below 2 (.f88_gypsum(), shared by the gypsic horizon of 1974) (Hugo, 2026-11-10)."
+  - topic: "Andic properties with the P retention not measured"
+    edition: [1988]
+    page: "p. 34"
+    version: "0.9.392"
+    reading: "When Alox + 1/2 Feox is 2 % or more and the bulk density 0.9 or less, and the P retention is not measured, the andic properties are undecided (flagged andic_undecided_p_retention_not_measured), volcanic material recorded or not; the rule that undecided andic properties are absent unless volcanic material is recorded applies only when fewer criteria are met. The amorphous complex of 1974 has no 'absent' rule: undecided stays undecided, then the stand-ins (Hugo, 2026-11-10)."
