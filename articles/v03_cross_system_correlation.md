@@ -212,6 +212,61 @@ data.frame(
   andic). Inspecting the disagreement is a fast way to find data-entry
   errors or to identify ambiguous profiles that deserve a closer look.
 
+## 7. Two editions of one legend: FAO-Unesco 1974 and 1988
+
+The FAO-Unesco soil legend exists in two editions that `soilKey` keys
+separately: the Legend of 1974 (`classify_fao(edition = "1974")`) and
+the Revised Legend of 1988
+([`classify_fao()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao.md)).
+Appendix 4 of the Revised Legend gives the official correspondence
+between them;
+[`fao_crosswalk()`](https://hugomachadorodrigues.github.io/soilKey/reference/fao_crosswalk.md)
+returns it, with soilKey’s additions in brackets, and the result of
+either edition prints the other one as a note. The table is for reading
+and comparing names only: it never classifies.
+
+``` r
+
+fao_crosswalk(c("Lo", "Gc", "Vp"))[, c("code_1974", "code_1988", "relation", "also")]
+#>   code_1974          code_1988        relation also
+#> 1        Gc                GLk renamed_amended     
+#> 2        Vp VRe, VRd, VRk, VRy           split     
+#> 3        Lo                LVh renamed_amended  LXh
+fao_crosswalk("LXh", from = "1988")[, c("code_1974", "name_1974", "relation", "also_when")]
+#>   code_1974        name_1974        relation
+#> 1        Lo  Orthic Luvisols renamed_amended
+#> 2        Lc Chromic Luvisols            same
+#> 3        Lk  Calcic Luvisols            same
+#> 4        Lv  Vertic Luvisols            same
+#> 5      <NA>             <NA>             new
+#>                                                                                                                                           also_when
+#> 1                                                                                                    an argic B with a CEC below 24 cmol(+)/kg clay
+#> 2                                                                                                    an argic B with a CEC below 24 cmol(+)/kg clay
+#> 3 LXh: an argic B with a CEC below 24 cmol(+)/kg clay; CLl: a calcic or petrocalcic horizon, the Luvic Calcisols keyed before the Luvisols (p. 119)
+#> 4                                                                                                    an argic B with a CEC below 24 cmol(+)/kg clay
+#> 5
+```
+
+Both editions can be checked against the FAO-Unesco names ISRIC gave its
+reference profiles (ISIS). The benchmark script reads a local cache of
+the ISIS profiles and downloads nothing; ISIS data are not shipped with
+the package.
+
+``` r
+
+source(system.file("benchmarks", "fao_isis.R", package = "soilKey"))
+b <- fao_isis_benchmark(cache = "path/to/isis/profiles.rds", out = "fao_isis.md")
+b$score
+```
+
+On the cache of 2026-10-29 (814 profiles, 803 labels of 1974 and 712 of
+the Revised Legend) every label is read. The grouping agrees on 34.7 %
+of the 796 labels of 1974 and 26.3 % of the 706 revised labels scored,
+and on 49 % of both where soilKey names a grouping. Many profiles stop
+before a grouping because a measurement the key needs, most often the
+gypsum content, is not recorded: soilKey then names the candidates
+instead of guessing.
+
 The next vignette (`v04_vlm_extraction`) shows how the `PedonRecord`
 itself can be assembled from PDFs and field photos via vision-language
 extraction, so the cross-system pass can run on freshly-described

@@ -269,6 +269,8 @@ diagnostic horizons and properties of its edition read on the data.
   : Classify a pedon in the FAO-Unesco Legend of 1974
 - [`make_fao_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_fao_example.md)
   : Example pedons for the FAO-Unesco legend
+- [`fao_crosswalk()`](https://hugomachadorodrigues.github.io/soilKey/reference/fao_crosswalk.md)
+  : The correspondence between the FAO-Unesco legends of 1974 and 1988
 
 ## Interoperability
 

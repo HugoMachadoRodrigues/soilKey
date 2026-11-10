@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.390</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.392</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -408,6 +408,53 @@ threshold (CEC/clay, BS, andic). Inspecting the disagreement is a fast
 way to find data-entry errors or to identify ambiguous profiles that
 deserve a closer look.</p></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="two-editions-of-one-legend-fao-unesco-1974-and-1988">7. Two editions of one legend: FAO-Unesco 1974 and 1988<a class="anchor" aria-label="anchor" href="#two-editions-of-one-legend-fao-unesco-1974-and-1988"></a>
+</h2>
+<p>The FAO-Unesco soil legend exists in two editions that
+<code>soilKey</code> keys separately: the Legend of 1974
+(<code>classify_fao(edition = "1974")</code>) and the Revised Legend of
+1988 (<code><a href="../reference/classify_fao.html">classify_fao()</a></code>). Appendix 4 of the Revised Legend
+gives the official correspondence between them;
+<code><a href="../reference/fao_crosswalk.html">fao_crosswalk()</a></code> returns it, with soilKey’s additions in
+brackets, and the result of either edition prints the other one as a
+note. The table is for reading and comparing names only: it never
+classifies.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fao_crosswalk.html">fao_crosswalk</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Lo"</span>, <span class="st">"Gc"</span>, <span class="st">"Vp"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"code_1974"</span>, <span class="st">"code_1988"</span>, <span class="st">"relation"</span>, <span class="st">"also"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   code_1974          code_1988        relation also</span></span>
+<span><span class="co">#&gt; 1        Gc                GLk renamed_amended     </span></span>
+<span><span class="co">#&gt; 2        Vp VRe, VRd, VRk, VRy           split     </span></span>
+<span><span class="co">#&gt; 3        Lo                LVh renamed_amended  LXh</span></span>
+<span><span class="fu"><a href="../reference/fao_crosswalk.html">fao_crosswalk</a></span><span class="op">(</span><span class="st">"LXh"</span>, from <span class="op">=</span> <span class="st">"1988"</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"code_1974"</span>, <span class="st">"name_1974"</span>, <span class="st">"relation"</span>, <span class="st">"also_when"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   code_1974        name_1974        relation</span></span>
+<span><span class="co">#&gt; 1        Lo  Orthic Luvisols renamed_amended</span></span>
+<span><span class="co">#&gt; 2        Lc Chromic Luvisols            same</span></span>
+<span><span class="co">#&gt; 3        Lk  Calcic Luvisols            same</span></span>
+<span><span class="co">#&gt; 4        Lv  Vertic Luvisols            same</span></span>
+<span><span class="co">#&gt; 5      &lt;NA&gt;             &lt;NA&gt;             new</span></span>
+<span><span class="co">#&gt;                                                                                                                                           also_when</span></span>
+<span><span class="co">#&gt; 1                                                                                                    an argic B with a CEC below 24 cmol(+)/kg clay</span></span>
+<span><span class="co">#&gt; 2                                                                                                    an argic B with a CEC below 24 cmol(+)/kg clay</span></span>
+<span><span class="co">#&gt; 3 LXh: an argic B with a CEC below 24 cmol(+)/kg clay; CLl: a calcic or petrocalcic horizon, the Luvic Calcisols keyed before the Luvisols (p. 119)</span></span>
+<span><span class="co">#&gt; 4                                                                                                    an argic B with a CEC below 24 cmol(+)/kg clay</span></span>
+<span><span class="co">#&gt; 5</span></span></code></pre></div>
+<p>Both editions can be checked against the FAO-Unesco names ISRIC gave
+its reference profiles (ISIS). The benchmark script reads a local cache
+of the ISIS profiles and downloads nothing; ISIS data are not shipped
+with the package.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"benchmarks"</span>, <span class="st">"fao_isis.R"</span>, package <span class="op">=</span> <span class="st">"soilKey"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">fao_isis_benchmark</span><span class="op">(</span>cache <span class="op">=</span> <span class="st">"path/to/isis/profiles.rds"</span>, out <span class="op">=</span> <span class="st">"fao_isis.md"</span><span class="op">)</span></span>
+<span><span class="va">b</span><span class="op">$</span><span class="va">score</span></span></code></pre></div>
+<p>On the cache of 2026-10-29 (814 profiles, 803 labels of 1974 and 712
+of the Revised Legend) every label is read. The grouping agrees on 34.7
+% of the 796 labels of 1974 and 26.3 % of the 706 revised labels scored,
+and on 49 % of both where soilKey names a grouping. Many profiles stop
+before a grouping because a measurement the key needs, most often the
+gypsum content, is not recorded: soilKey then names the candidates
+instead of guessing.</p>
 <p>The next vignette (<code>v04_vlm_extraction</code>) shows how the
 <code>PedonRecord</code> itself can be assembled from PDFs and field
 photos via vision-language extraction, so the cross-system pass can run
