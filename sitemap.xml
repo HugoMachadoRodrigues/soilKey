@@ -96,6 +96,8 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_cssc3.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_cst2001.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_csv.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao1988.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_documents.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_from_photos.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/classify_hscs2024.html</loc></url>
@@ -259,6 +261,7 @@
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_durisol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_empty_horizons.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_espodossolo_canonical.html</loc></url>
+<url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_fao_example.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_ferralsol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_fluvisol_canonical.html</loc></url>
 <url><loc>https://hugomachadorodrigues.github.io/soilKey/reference/make_gleissolo_canonical.html</loc></url>

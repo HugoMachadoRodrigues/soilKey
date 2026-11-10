@@ -50,6 +50,7 @@ soilkey_systems()
 #> 13       ka5
 #> 14    za1991
 #> 15   cst2001
+#> 16   fao1988
 #>                                                                       name
 #> 1                                                                 WRB 2022
 #> 2                                                       SiBCS, 5th edition
@@ -66,22 +67,24 @@ soilkey_systems()
 #> 13 German soil classification (Bodenkundliche Kartieranleitung, KA5, 2005)
 #> 14                                South African soil classification (1991)
 #> 15                           Chinese Soil Taxonomy (2001, English edition)
-#>                                                                                       edition
-#> 1                                                                          4th edition (2022)
-#> 2                                                                          5th edition (2018)
-#> 3                                                                         13th edition (2022)
-#> 4                                                                          3rd edition (1998)
-#> 5                               3rd edition (2021), online version with errata (25 June 2026)
-#> 6                                         4th edition (2026), Quarto source of 7 October 2026
-#> 7                                                       Second approximation (Útmutató, 2024)
-#> 8                    Soil Classification System of Japan (2017), Japanese Society of Pedology
-#> 9        Comprehensive Soil Classification System of Japan, First Approximation (2011), NIAES
-#> 10 Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols
-#> 11              Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008
-#> 12                                    Référentiel pédologique 2008, AFES, Éditions Quæ (2009)
-#> 13                Bodenkundliche Kartieranleitung, 5. Auflage, Ad-hoc-AG Boden, Hannover 2005
-#> 14                            Soil classification: a taxonomic system for South Africa (1991)
-#> 15                                 Chinese Soil Taxonomy, English edition, Science Press 2001
+#> 16                                        FAO-Unesco Revised Legend (1988)
+#>                                                                                              edition
+#> 1                                                                                 4th edition (2022)
+#> 2                                                                                 5th edition (2018)
+#> 3                                                                                13th edition (2022)
+#> 4                                                                                 3rd edition (1998)
+#> 5                                      3rd edition (2021), online version with errata (25 June 2026)
+#> 6                                                4th edition (2026), Quarto source of 7 October 2026
+#> 7                                                              Second approximation (Útmutató, 2024)
+#> 8                           Soil Classification System of Japan (2017), Japanese Society of Pedology
+#> 9               Comprehensive Soil Classification System of Japan, First Approximation (2011), NIAES
+#> 10        Classification des sols, édition 1967, Commission de Pédologie et de Cartographie des Sols
+#> 11                     Полевой определитель почв России, Почвенный институт им. В.В. Докучаева, 2008
+#> 12                                           Référentiel pédologique 2008, AFES, Éditions Quæ (2009)
+#> 13                       Bodenkundliche Kartieranleitung, 5. Auflage, Ad-hoc-AG Boden, Hannover 2005
+#> 14                                   Soil classification: a taxonomic system for South Africa (1991)
+#> 15                                        Chinese Soil Taxonomy, English edition, Science Press 2001
+#> 16 World Soil Resources Report 60, FAO 1988; corrected reprint 1990; ISRIC Technical Paper 20 (1997)
 #>          status         classifier
 #> 1        stable   classify_wrb2022
 #> 2        stable     classify_sibcs
@@ -98,6 +101,7 @@ soilkey_systems()
 #> 13 experimental       classify_ka5
 #> 14 experimental    classify_za1991
 #> 15 experimental   classify_cst2001
+#> 16 experimental   classify_fao1988
 #>                                            levels
 #> 1                                            rsgs
 #> 2    ordens, subordens, grandes_grupos, subgrupos
@@ -114,6 +118,7 @@ soilkey_systems()
 #> 13            divisions, classes, types, subtypes
 #> 14                                forms, families
 #> 15           orders, suborders, groups, subgroups
+#> 16                            major_groups, units
 #>                                       aliases default
 #> 1                                         wrb    TRUE
 #> 2                                       sibcs    TRUE
@@ -130,4 +135,5 @@ soilkey_systems()
 #> 13 germany, kartieranleitung, bodensystematik   FALSE
 #> 14             za, sat, sat1991, south_africa   FALSE
 #> 15                        cst, china, chinese   FALSE
+#> 16                 fao, fao88, revised_legend   FALSE
 ```

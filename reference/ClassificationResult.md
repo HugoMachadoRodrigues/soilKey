@@ -92,7 +92,10 @@ biogeographical or prior-based warnings.
   Soil phases of the systems that have them (the SCSJ 2017: temperature,
   man-made and forest phases; the CSCJ 2011: temperature and man-made
   phases), a `data.frame` with `kind`, `code`, `name`, `name_native` and
-  `basis`; `NULL` otherwise. Since v0.9.324.
+  `basis`; `NULL` otherwise. Since v0.9.324. The FAO-Unesco Revised
+  Legend (since v0.9.386) gives every phase three-valued, with `status`,
+  `present` and `criterion`, and the classes of the map symbol
+  ([`classify_fao`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao.md)).
 
 - `candidates`:
 
