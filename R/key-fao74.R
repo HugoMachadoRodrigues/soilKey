@@ -1184,8 +1184,8 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
 # percentage, a ratio, a Munsell limit), each with a near miss that crosses
 # it (make_fao_example(code, edition = "1974", near_miss = TRUE)).
 .F74_UNIT_NEAR_MISS <- c(
-  "Ox", "Od", "Vp", "Jt", "Jc", "Jd", "Zg", "Gx", "Gp", "Gc", "Gd", "Qa", "Rx", "Rc", "Rd",
-  "Pg", "Pf", "Pl", "Fp", "Fa", "Fr", "Fx", "Wx", "Ws", "Wd", "Sg", "Mg", "Hg", "Hc", "Dg",
+  "Ox", "Od", "Vp", "Jt", "Jc", "Jd", "Zg", "Gx", "Gp", "Gc", "Gd", "To", "Qa", "Rx", "Rc", "Rd",
+  "Pg", "Pf", "Pl", "Fp", "Fh", "Fa", "Fr", "Fx", "Wx", "Ws", "Wd", "Sg", "Mg", "Hg", "Hc", "Dg",
   "Dd", "Xy", "Xk", "Yy", "Yk", "Nh", "Nd", "Ap", "Ag", "Ah", "Lp", "Lg", "Lk", "Lc", "Bx",
   "Bg", "Bk", "Bf", "Bd", "Bc")
 
@@ -1253,10 +1253,12 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     Th = b,
     To = , Tv = E(b, munsell_value_moist = c(4, 4, 4), munsell_chroma_moist = c(3, 4, 4),
                   munsell_value_dry = c(5, 5, 5), oc_pct = c(1.5, 1, 0.5),
-                  smeary_consistence = code == "To",
-                  clay_pct = if (code == "To") c(20, 22, 18) else c(8, 8, 6),
-                  silt_pct = if (code == "To") c(55, 53, 57) else c(20, 20, 14),
-                  sand_pct = if (code == "To") 25 else c(72, 72, 80)),
+                  smeary_consistence = code == "To" && !nm,
+                  # the near miss of To: no smeary consistence and a sandy
+                  # loam over 0-100 cm, coarser than silt loam
+                  clay_pct = if (code == "To" && !nm) c(20, 22, 18) else if (code == "To") c(10, 12, 8) else c(8, 8, 6),
+                  silt_pct = if (code == "To" && !nm) c(55, 53, 57) else if (code == "To") c(30, 30, 30) else c(20, 20, 14),
+                  sand_pct = if (code == "To" && !nm) 25 else if (code == "To") c(60, 58, 62) else c(72, 72, 80)),
     # --- Arenosols (A 0-20, C1 20-80, C2 80-150); a dark A (value 3, dry
     # 4) is no albic material, its chroma 4 no mollic A
     Qa = if (nm) E(b, rows = c(1, 2, 2, 3), designation = c("A", "C1", "C2", "C3"),
@@ -1289,7 +1291,8 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     # --- Ferralsols (A 0-20, Bo1 20-60, Bo2 60-110, Bo3 110-180); `lo` has
     # too little carbon for the Humic unit and a rhodic B (2.5YR 3/6, dry 4)
     Fp = plinth_at(b, 125),
-    Fh = b,
+    # the near miss: a base saturation of 50 % in the B within 100 cm
+    Fh = if (nm) E(b, bs_pct = c(20, 50, 50, 10), munsell_value_dry = c(4, 4, 4, 4)) else b,
     Fa = , Fr = , Fx = , Fo = {
       lo <- E(b, oc_pct = c(1.0, 0.3, 0.2, 0.1), munsell_value_dry = c(4, 4, 4, 4))
       switch(code,

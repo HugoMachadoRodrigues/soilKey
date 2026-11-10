@@ -143,7 +143,7 @@ test_that("every unit example keys to its own unit, not provisionally", {
 test_that("every unit near miss crosses its number and keys to another unit", {
   skip_on_cran()
   nm <- soilKey:::.F74_UNIT_NEAR_MISS
-  expect_length(nm, 50L)
+  expect_length(nm, 52L)
   expect_true(all(nm %in% soilKey:::.f74_unit_codes()))
   for (u in nm) {
     r <- .f389(.ex389(u, TRUE))
@@ -152,6 +152,8 @@ test_that("every unit near miss crosses its number and keys to another unit", {
   expect_identical(.last389(.f389(.ex389("Ox", TRUE))), "Od")   # permafrost at 201 cm
   expect_identical(.last389(.f389(.ex389("Od", TRUE))), "Oe")   # pH 5.5
   expect_identical(.last389(.f389(.ex389("Fa", TRUE))), "Fr")   # 1.64 me per 100 g clay
+  expect_identical(.last389(.f389(.ex389("Fh", TRUE))), "Fr")   # base saturation 50 % in the B to 100 cm
+  expect_identical(.last389(.f389(.ex389("To", TRUE))), "Tv")   # sandy loam to 100 cm, not smeary
   expect_identical(.last389(.f389(.ex389("Lc", TRUE))), "Lo")   # 7.5YR chroma 4
   expect_identical(.last389(.f389(.ex389("Bf", TRUE))), "Bc")   # 24.1 me per 100 g clay
   expect_error(make_fao_example("Oe", edition = "1974", near_miss = TRUE), "no printed number")
@@ -208,9 +210,19 @@ test_that("the gates read their printed numbers", {
   # Lithosols: rock at 8 cm passes, at 11 cm fails
   expect_true(soilKey:::continuous_rock_fao74(.ex389("I"))$passed)
   expect_false(soilKey:::continuous_rock_fao74(.ex389("I", TRUE))$passed)
-  # Vertisols mix the upper 20 cm
-  expect_identical(soilKey:::vertisols_gate_fao74(.ex389("V"))$evidence$clay_mixed_20cm,
-                   (45 * 20) / 20)
+  # Vertisols mix the upper 20 cm (1988: 18 cm): 25 % clay over 0-18 cm and
+  # 75 % over 18-25 cm mix to 30 % over 20 cm (passes) but 25 % over 18 cm
+  v <- .ex389("V")
+  vm <- .edit389(v, rows = c(1, 1, 2, 3, 4), designation = c("A1", "A2", "Bss1", "Bss2", "C"),
+                 top_cm = c(0, 18, 25, 60, 110), bottom_cm = c(18, 25, 60, 110, 150),
+                 clay_pct = c(25, 75, 50, 52, 48), sand_pct = c(45, 5, 22, 20, 22),
+                 silt_pct = c(30, 20, 28, 28, 30))
+  g74 <- soilKey:::vertisols_gate_fao74(vm)
+  expect_equal(g74$evidence$clay_mixed_20cm, 30)
+  expect_true(g74$passed)
+  g88 <- soilKey:::vertisols_gate_fao88(vm)
+  expect_equal(g88$evidence$clay_mixed_18cm, 25)
+  expect_false(g88$passed)
   # Rankers: 20 cm passes, 26 cm fails
   expect_true(soilKey:::umbric_thickness_fao74(.ex389("U"), max = 25)$passed)
   expect_false(soilKey:::umbric_thickness_fao74(.ex389("U", TRUE), max = 25)$passed)
@@ -236,6 +248,27 @@ test_that("the gates read their printed numbers", {
   # the uppermost B decides: a cambic B above an argillic B is no Luvisol
   l <- .ex389("L")
   expect_true(soilKey:::upper_b_fao74(l, kind = "argillic_b")$passed)
+  cb <- .edit389(.ex389("Lo"), designation = c("A", "Bw", "Bt1", "Bt2", "BC"),
+                 munsell_hue_moist = c("10YR", "7.5YR", "10YR", "10YR", "10YR"),
+                 munsell_chroma_moist = c(3, 6, 4, 4, 4), clay_pct = c(15, 15, 32, 34, 20),
+                 sand_pct = c(50, 50, 38, 38, 48), silt_pct = c(35, 35, 30, 28, 32),
+                 clay_films_amount = c(NA, NA, "common", "common", "few"))
+  expect_true(soilKey:::argillic_b_fao74(cb)$passed)
+  expect_true(soilKey:::cambic_b_fao74(cb)$passed)
+  expect_false(soilKey:::upper_b_fao74(cb, kind = "argillic_b")$passed)
+  expect_true(soilKey:::upper_b_fao74(cb, kind = "cambic_b")$passed)
+  rcb <- .f389(cb)
+  expect_identical(rcb$rsg_or_order, "Cambisols")
+  expect_false("L" %in% rcb$levels$code)
+  # Rendzinas: the lime waiver of the mollic A (74 p. 24) waives the dry
+  # value, its contrast with the C included: A 10YR 5/2 (dry 7) with 3 % OC
+  # and 50 % CaCO3 over a Ck of 60 % (dry 7)
+  e2 <- .edit389(.ex389("E"), munsell_value_moist = c(5, 6), munsell_value_dry = c(7, 7),
+                 caco3_pct = c(50, 60))
+  expect_true(soilKey:::mollic_a_fao74(e2)$passed)
+  expect_identical(.f389(e2)$name, "Rendzinas")
+  # without the lime the dry contrast is asked: no mollic A
+  expect_false(isTRUE(soilKey:::mollic_a_fao74(.edit389(e2, caco3_pct = c(10, 60)))$passed))
   # Nitosols: a clay fall below 0.8 x the maximum
   expect_true(soilKey:::nitosols_gate_fao74(.ex389("N"))$passed)
   expect_false(soilKey:::nitosols_gate_fao74(.ex389("N", TRUE))$passed)

@@ -715,6 +715,13 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     humic <- .f88_cmp(sh$value, ">", 1.4)
     contrast <- if (is.na(ref)) NA
       else if (x$rock[ref]) { flags <- c(flags, "rock_below_a_contrast_not_read"); TRUE }
+      else if (e74) {
+        # 1974 (74 p. 24): more than 40 % finely divided lime waives the
+        # limits of the dry value, the dry contrast with the C included
+        # (v0.9.390, the review of 2026-11-09)
+        .f88_and(m_vm$value <= col$vm[ref] - 1,
+                 .f88_or(m_vd$value <= col$vd_or_inferred[ref] - 1, lime))
+      }
       else .f88_and(m_vm$value <= col$vm[ref] - 1, m_vd$value <= col$vd_or_inferred[ref] - 1)
     if (!is.na(ref) && !x$rock[ref]) flags <- c(flags, .f88_flags(col$flags, ref))
     # the strongly humic waiver is of 1988 (p. 26); 1974 has none (74 p. 24)
