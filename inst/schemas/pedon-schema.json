@@ -804,6 +804,9 @@
           "sand_grade": {
             "type": ["string", "null"]
           },
+          "mottles_present": {
+            "type": ["boolean", "null"]
+          },
           "bleached_pct": {
             "type": ["number", "null"]
           },

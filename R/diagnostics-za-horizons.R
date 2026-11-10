@@ -280,9 +280,20 @@
   .rp_all(hue, ch, .za_not(.za_low_chroma(x, i), always = TRUE), .za_not(.za_grey_dry(x, i), always = TRUE))
 }
 
+# Mottles recorded only as present or absent (mottles_present, the AfSP
+# Mottling field; MP1): TRUE, FALSE or NA.
+.za_mottles_present <- function(x, i) {
+  v <- .kidpr_v(x, i, "mottles_present")
+  if (length(v) != 1L || is.na(v)) return(NA)
+  if (is.logical(v)) return(v)
+  t <- tolower(trimws(as.character(v)))
+  if (t %in% c("true", "yes", "y", "1")) TRUE else if (t %in% c("false", "no", "n", "0")) FALSE else NA
+}
+
 #' Signs of wetness (Q12; FC 15): a grey low-chroma matrix, or low-chroma
 #' mottles on 5 % or more of the layer (redoximorphic_features_pct); flagged.
-#' Redoximorphic features recorded without their colours leave it undecided.
+#' Redoximorphic features recorded without their colours, or mottles recorded
+#' only as present (mottles_present, MP1), leave it undecided.
 #' @noRd
 .za_wetness <- function(x, i) {
   .kidpr_memo(x, sprintf("za_wet_%d", i), function() {
@@ -300,6 +311,9 @@
     } else if (!nrow(mot) && isTRUE(rf >= thr)) {
       .za_r(NA, missing = "mottle_colors", note = sprintf("redoximorphic features on %s %%, their colours not recorded", format(rf)),
             th = "wetness_signs")
+    } else if (!nrow(mot) && is.na(rf) && isTRUE(.za_mottles_present(x, i))) {
+      .za_r(NA, missing = c("mottle_colors", "redoximorphic_features_pct"), th = "wetness_signs",
+            note = "mottles recorded as present, their colours and amount not recorded")
     } else .za_r(FALSE, note = "no low-chroma mottles recorded")
     .rp_any(lc, mo)
   })
@@ -440,11 +454,17 @@
 }
 
 #' Mottles and concretions of 10 % or less (S 32-33): more makes the soft
-#' plinthic B. Not recorded, absent.
+#' plinthic B. Not recorded, absent; recorded only as present
+#' (mottles_present TRUE, the AfSP Mottling), only the amount of the mottles
+#' (redoximorphic_features_pct) decides, else undecided (MP1).
 #' @noRd
 .za_few_mottles <- function(x, i) {
   rf <- .za_num(x, i, "redoximorphic_features_pct")
   pn <- c(.za_num(x, i, "plinthite_pct"), .za_num(x, i, "ferric_nodules_pct"))
+  # mottles recorded as present (MP1): only their amount decides, the
+  # plinthite and ferric nodules do not stand in for it
+  if (isTRUE(.za_mottles_present(x, i)) && is.na(rf))
+    return(.za_r(NA, missing = "redoximorphic_features_pct", note = "mottles recorded as present, their amount not recorded"))
   vals <- c(rf, if (any(!is.na(pn))) sum(pn, na.rm = TRUE))
   if (all(is.na(vals))) return(.za_r(TRUE, note = "no mottles or concretions recorded"))
   m <- max(vals, na.rm = TRUE)
@@ -669,9 +689,27 @@
        note = if (is.na(m) && !is.na(pi)) "liquid_limit_method not recorded: the Casagrande cup, flagged (default 18)" else character(0))
 }
 
+#' No plasticity index and no diagnostic slickensides (B1s, Hugo, 2026-11-10):
+#' a measurement not recorded is undecided, so vertic A (ii) is undecided where
+#' the vertic A could hold, a strong structure (or none recorded) and clay of
+#' vertic_pi_clay or more (or none recorded); elsewhere NULL, and Q17 stands.
+#' @noRd
+.za_vertic_no_pi <- function(x, i) {
+  clay <- .za_num(x, i, "clay_pct")
+  thr <- .za_thv("vertic_pi_clay")
+  if (!is.na(clay) && clay < thr) return(NULL)
+  s <- .za_struct(x, i)
+  if (!is.na(s$grade) && s$grade < .field_grade_class(.za_thv("vertic_structure_grade"))) return(NULL)
+  .za_r(NA, missing = "plasticity_index", tag = "plasticity_index_undecided", th = "vertic_pi_clay",
+        note = sprintf("no plasticity index, structure %s and clay %s: vertic (ii) undecided, a measurement not recorded (B1s, Q17 revised)",
+                       if (is.na(s$grade)) "not recorded" else .za_struct_text(s),
+                       if (is.na(clay)) "not recorded" else sprintf("%s %%", format(clay))))
+}
+
 #' Vertic A (ii): slickensides regularly occurring (common or more, Q17), or
 #' a plasticity index over 32 (cup) or 36 (cone). Without the plasticity
-#' index the slickensides decide, flagged. Slickensides recorded with no
+#' index the slickensides decide, flagged, except where .za_vertic_no_pi()
+#' leaves it undecided (B1s). Slickensides recorded with no
 #' amount leave it undecided unless the plasticity index passes (the review's
 #' D1).
 #' @noRd
@@ -688,6 +726,8 @@
   }
   if (is.na(sl$p)) return(.za_r(NA, missing = c("slickensides", "plasticity_index"),
                                 note = sprintf("slickensides %s, amount not recorded, no plasticity index", sl$text)))
+  np <- .za_vertic_no_pi(x, i)
+  if (!is.null(np)) return(np)
   .za_r(FALSE, tag = "slickensides_decide", th = "vertic_slickensides",
         note = sprintf("no plasticity index: the slickensides (%s) decide, not vertic, flagged (Q17)", sl$text))
 }
@@ -884,8 +924,9 @@
 
 #' Melanic A (ii) and (iii): no slickensides diagnostic of vertic and a
 #' plasticity index of 32 or less (cup) or 36 or less (cone). Without the
-#' plasticity index the slickensides decide, flagged (Q17); slickensides
-#' recorded with no amount leave it undecided (the review's D1).
+#' plasticity index the slickensides decide, flagged (Q17), except where
+#' .za_vertic_no_pi() leaves it undecided (B1s); slickensides recorded with
+#' no amount leave it undecided (the review's D1).
 #' @noRd
 .za_ma_not_vertic <- function(x, i) {
   sl <- .za_slickensides(x, i)
@@ -900,6 +941,8 @@
   }
   if (is.na(sl$p)) return(.za_r(NA, missing = c("slickensides", "plasticity_index"),
                                 note = sprintf("slickensides %s, amount not recorded, no plasticity index", sl$text)))
+  np <- .za_vertic_no_pi(x, i)
+  if (!is.null(np)) return(.za_not(np, "vertic (ii) undecided", always = TRUE))
   .za_r(TRUE, tag = "slickensides_decide", th = "vertic_slickensides",
         note = sprintf("no plasticity index: the slickensides (%s) decide, not vertic, flagged (Q17)", sl$text))
 }

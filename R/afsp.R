@@ -111,6 +111,68 @@ wrb06_code_to_rsg <- function(code) {
   structure_size  = list(field = "StrSize",  codes = .AFSP_STR_SIZE))
 
 
+# v0.9.397: the other AfSP class codes soilKey reads (AfSP dictionary
+# AfSP012Qry_DictioClassValues). Mottling holds presence only: Y is
+# mottles_present TRUE (amount and colours not recorded), N FALSE.
+.AFSP_MOTTLING <- c(Y = TRUE, N = FALSE)
+# ClyMinera to the clay_mineralogy words; chloritic, sesquioxidic,
+# allophane, a kaolinite-illite mixture and gibbsite have no clay_mineralogy
+# word and are read as not recorded. ClyMinera is an estimate (a dominant
+# clay mineral given to the layer, not a measurement of it): its provenance
+# is inferred_prior, so the evidence grade of a result drops to C.
+.AFSP_CLAY_MINERALOGY <- c(MO = "smectite", SM = "smectite", KA = "kaolinite", IL = "illite",
+                           VE = "vermiculite", IN = "interstratified")
+.AFSP_CLAY_MINERALOGY_UNREAD <- c(CH = "chloritic", SE = "sesquioxidic", AL = "allophane",
+                                  "KA/IL" = "kaolinite and illite", GI = "gibbsite")
+.AFSP_CLAY_MINERALOGY_CONFIDENCE <- 0.5
+# Sticknss (FAO 2006: non sticky, slightly sticky, sticky, very sticky) to
+# the stickiness words; "sticky" is the third class, moderately sticky.
+.AFSP_STICKINESS <- c(NST = "non-sticky", SST = "slightly sticky",
+                      ST = "moderately sticky", VST = "very sticky")
+
+# The horizon codes beside the structure: Mottling, ClyMinera, Sticknss, as
+# columns of the raw layers (`raw`, the AfSP field values) read into the
+# horizons `hz`; each code read or not read goes to the provenance.
+.afsp_decode_layer_codes <- function(hz, raw) {
+  prov <- list()
+  add <- function(idx, attr, notes, conf, source = "measured") {
+    if (length(idx)) prov[[length(prov) + 1L]] <<- data.frame(
+      horizon_idx = idx, attribute = attr, source = source, confidence = conf,
+      notes = notes, stringsAsFactors = FALSE)
+  }
+  code <- function(f) {
+    v <- if (is.null(raw[[f]])) rep(NA_character_, nrow(hz)) else trimws(as.character(raw[[f]]))
+    v[!is.na(v) & (v %in% c("", "NA", "-9999"))] <- NA_character_
+    v
+  }
+  mo <- code("Mottling")
+  k <- which(mo %in% names(.AFSP_MOTTLING))
+  hz$mottles_present <- unname(.AFSP_MOTTLING[mo])
+  add(k, rep("mottles_present", length(k)),
+      sprintf("AfSP Mottling %s: mottles %s, amount and colours not recorded", mo[k],
+              ifelse(mo[k] == "Y", "present", "absent")), 1)
+  k <- which(!is.na(mo) & !mo %in% names(.AFSP_MOTTLING))
+  add(k, rep("mottles_present", length(k)), sprintf("AfSP Mottling code %s not read", mo[k]), NA_real_)
+  cm <- code("ClyMinera")
+  hz$clay_mineralogy <- unname(.AFSP_CLAY_MINERALOGY[cm])
+  k <- which(cm %in% names(.AFSP_CLAY_MINERALOGY))
+  add(k, rep("clay_mineralogy", length(k)),
+      sprintf("AfSP ClyMinera %s, read as %s: an estimate, not a measurement", cm[k], .AFSP_CLAY_MINERALOGY[cm[k]]),
+      .AFSP_CLAY_MINERALOGY_CONFIDENCE, source = "inferred_prior")
+  k <- which(!is.na(cm) & !cm %in% names(.AFSP_CLAY_MINERALOGY))
+  add(k, rep("clay_mineralogy", length(k)),
+      sprintf("AfSP ClyMinera %s (%s) has no clay_mineralogy word: read as not recorded", cm[k],
+              ifelse(cm[k] %in% names(.AFSP_CLAY_MINERALOGY_UNREAD), .AFSP_CLAY_MINERALOGY_UNREAD[cm[k]], "not in the dictionary")),
+      NA_real_)
+  st <- code("Sticknss")
+  hz$stickiness <- unname(.AFSP_STICKINESS[st])
+  k <- which(st %in% names(.AFSP_STICKINESS))
+  add(k, rep("stickiness", length(k)), sprintf("AfSP Sticknss %s, read as %s", st[k], .AFSP_STICKINESS[st[k]]), 1)
+  k <- which(!is.na(st) & !st %in% names(.AFSP_STICKINESS))
+  add(k, rep("stickiness", length(k)), sprintf("AfSP Sticknss code %s not read", st[k]), NA_real_)
+  list(horizons = hz, provenance = if (length(prov)) do.call(rbind, prov) else NULL)
+}
+
 #' Read the AfSP structure codes into soilKey's words
 #'
 #' A value that is a code (one or two capital letters) becomes the words of
@@ -229,12 +291,20 @@ wrb06_code_to_rsg <- function(code) {
     )
   })
   hz <- data.table::rbindlist(hz_list, fill = TRUE)
+  # v0.9.397: Mottling, ClyMinera and Sticknss, in the order of the layers
+  lc <- .afsp_decode_layer_codes(hz, layer_rows)
+  hz <- lc$horizons
+  ord <- if ("top_cm" %in% colnames(hz)) order(hz$top_cm) else seq_len(nrow(hz))
   # Sort by depth
-  if ("top_cm" %in% colnames(hz))
-    hz <- hz[order(hz$top_cm), ]
+  hz <- hz[ord, ]
   hz <- ensure_horizon_schema(hz)
   dec <- .afsp_decode_structure(hz)
   hz <- dec$horizons
+  if (!is.null(lc$provenance)) {
+    lp <- lc$provenance
+    lp$horizon_idx <- match(lp$horizon_idx, ord)
+    dec$provenance <- rbind(dec$provenance, lp)
+  }
 
   PedonRecord$new(
     provenance = if (nrow(dec$provenance)) data.table::as.data.table(dec$provenance),
@@ -267,6 +337,16 @@ wrb06_code_to_rsg <- function(code) {
 #' (\code{AfSP012Qry_DictioClassValues}) into soilKey's words: a range of grades
 #' by its lower end, a range of sizes with both ends, and a code the dictionary
 #' does not define as not recorded. Each code goes to the provenance.
+#'
+#' Since v0.9.397 the loader also reads, as recorded: \code{Mottling} into
+#' \code{mottles_present} (Y \code{TRUE}, N \code{FALSE}; the amount and the
+#' colours of the mottles are not recorded by AfSP), \code{ClyMinera} into
+#' \code{clay_mineralogy} (montmorillonitic and SM as smectite, kaolinitic,
+#' illitic, vermiculitic, interstratified; chloritic, sesquioxidic, allophane,
+#' KA/IL and gibbsite have no \code{clay_mineralogy} word and are read as not
+#' recorded; the value is an estimate, recorded with the provenance
+#' \code{inferred_prior}, so the evidence grade of a result drops to C),
+#' and \code{Sticknss} into \code{stickiness} (sticky as moderately sticky).
 #'
 #' @param afsp_dir Directory containing the extracted AfSP DBase
 #'        tables (\code{AfSP012Qry_Profiles.dbf},

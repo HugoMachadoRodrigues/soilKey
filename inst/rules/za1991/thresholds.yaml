@@ -127,6 +127,14 @@ thresholds:
     unit: "plasticity index, liquid limit by the British Standard cone"
     source: "T-vertic (ii); T-melanic (iii)"
     stand_in: false
+  vertic_pi_clay:
+    value: 30
+    op: ">="
+    unit: "% clay of the topsoil layer"
+    source: "V 17"
+    decision: "B1s"
+    stand_in: true
+    note: "With no plasticity index recorded and no diagnostic slickensides, a strongly structured topsoil layer with this much clay or more (or no clay recorded) leaves vertic A (ii), and so the melanic A, undecided: a measurement not recorded is undecided. All 71 vertic A of the land type survey have 30 % clay or more (V 17). Below it, or with a structure weaker than strong, the slickensides decide (Q17)."
   melanic_dry_value:
     value: 3
     op: "<="
