@@ -288,3 +288,6 @@ readings:
   - topic: "The 1977 humic A in the AfSP benchmark (A1)"
     page: "T-humic; P; van Huyssteen (2020)"
     reading: "The key is not changed: the humic A of 1991 is thin or thick. The AfSP benchmark adds a second figure, flagged, beside the main one: for labels from surveys before 1991, soilKey's humic form whose humic A is 450 mm thick or less (humic_thick; the humic A of 1977 had to be thicker) is scored as its orthic counterpart (Inanda as Hutton, Magwa as Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf, Nomanci as Glenrosa). The organic carbon is not corrected for the method (Hugo, 2026-11-10)."
+  - topic: "No dry colour and a light moist colour: not melanic (M1)"
+    page: "T-melanic (i); default 9"
+    reading: "Amended (M1): the melanic A needs a dry value and chroma of 3 or less; the dry value is never darker than the moist, so a layer with no dry value recorded and a moist value over 3 is refused the melanic colour, flagged. With a moist value of 3 or less the colour stays undecided, the moist colour + 1 value evidence only (default 9). The window of the organic O below a description that ends in rock is not changed (O1 not adopted) (Hugo, 2026-11-10)."

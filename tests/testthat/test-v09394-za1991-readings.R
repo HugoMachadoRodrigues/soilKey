@@ -178,6 +178,33 @@ test_that("A1: the AfSP benchmark gives the second figure, the main figure uncha
   expect_false(any(grepl("[^\\x01-\\x7F]", md, perl = TRUE)))
 })
 
+test_that("M1: no dry colour and a moist value over 3 refuse the melanic colour, flagged", {
+  skip_on_cran()
+  ma <- function(p) soilKey:::.za_t_MA(soilKey:::.za_x(p), 1)
+  one <- function(...) .P394(.melA(...), .blkB(30, 150, clay_films_amount = "many"))
+  nodry <- list(munsell_hue_dry = NA, munsell_value_dry = NA, munsell_chroma_dry = NA)
+  # moist value 4, no dry colour: refused, flagged
+  r <- ma(do.call(one, c(nodry, list(munsell_value_moist = 4, munsell_chroma_moist = 2))))
+  expect_false(r$passed)
+  expect_true(any(grepl("dry_value_from_moist", r$tag, fixed = TRUE)))
+  expect_true(any(grepl("never darker", r$note, fixed = TRUE)))
+  # moist value 3, no dry colour: undecided (default 9)
+  r <- ma(do.call(one, c(nodry, list(munsell_value_moist = 3, munsell_chroma_moist = 2))))
+  expect_true(is.na(r$passed))
+  expect_true(any(grepl("dry_from_moist_evidence", r$tag, fixed = TRUE)))
+  expect_false(any(grepl("dry_value_from_moist", r$tag, fixed = TRUE)))
+  # a dry colour recorded rules, whatever the moist colour
+  r <- ma(one(munsell_value_moist = 5, munsell_value_dry = 3, munsell_chroma_dry = 1))
+  expect_true(isTRUE(r$passed))
+  expect_false(any(grepl("dry_value_from_moist", r$tag, fixed = TRUE)))
+  expect_false(ma(one(munsell_value_moist = 2, munsell_value_dry = 4, munsell_chroma_dry = 1))$passed)
+  # the key: a thin, carbon-poor brown A on hard rock is Mispah
+  p <- .P394(.L394(0, 5, designation = "A", munsell_hue_dry = NA, munsell_value_dry = NA, munsell_chroma_dry = NA,
+                   munsell_value_moist = 4, munsell_chroma_moist = 4, oc_pct = 0.1),
+             .L394(5, 30, designation = "R"))
+  expect_identical(.form394(p), "Ms")
+})
+
 test_that("the readings of 0.9.394 are in readings.yaml, with Hugo's date", {
   skip_on_cran()
   f <- system.file("rules", "za1991", "readings.yaml", package = "soilKey")
@@ -185,7 +212,7 @@ test_that("the readings of 0.9.394 are in readings.yaml, with Hugo's date", {
   rd <- yaml::read_yaml(f)$readings
   tp <- vapply(rd, `[[`, "", "topic")
   for (t in c("A red or yellow B at the surface: its thickness (B1)", "Cutans not recorded in a structured B (C1)",
-              "The 1977 humic A in the AfSP benchmark (A1)")) {
+              "The 1977 humic A in the AfSP benchmark (A1)", "No dry colour and a light moist colour: not melanic (M1)")) {
     j <- match(t, tp)
     expect_false(is.na(j), info = t)
     expect_true(grepl("\\(Hugo, 2026-11-10\\)\\.$", rd[[j]]$reading), info = t)

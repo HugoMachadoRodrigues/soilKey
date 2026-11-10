@@ -832,7 +832,9 @@
 #' compared by number: 10.0YR is 10YR), the hue not 5YR or redder. With no
 #' dry hue, the moist hue stands in, flagged. Dry value or chroma not
 #' recorded: undecided, the moist colour + 1 value given as evidence only
-#' (default 9).
+#' (default 9); but a moist value over 3 with no dry value refuses the
+#' colour, flagged, since the dry value is never darker (M1, Hugo,
+#' 2026-11-10).
 #' @noRd
 .za_ma_colour <- function(x, i) {
   d <- .za_colour(x, i, "dry")
@@ -858,6 +860,14 @@
   if (length(fails)) return(.za_r(FALSE, tag = tag, note = c(sprintf("%s: not melanic (%s)", .za_col_text(d), paste(fails, collapse = ", ")), note)))
   if (is.na(d$value) || is.na(d$chroma) || is.na(redish(d))) {
     m <- .za_colour(x, i, "moist")
+    # M1 (Hugo, 2026-11-10): no dry value and a moist value over the dry
+    # limit: the dry value is never darker than the moist, so the melanic
+    # colour is refused, flagged; a moist value of 3 or less stays undecided
+    # (default 9)
+    if (is.na(d$value) && !is.na(m$value) && m$value > vmax)
+      return(.za_r(FALSE, tag = c(tag, "dry_value_from_moist"),
+                   note = c(sprintf("no dry value recorded; moist %s: the dry value is never darker than the moist, so over %s: not melanic, flagged (M1)",
+                                    .za_col_text(m), format(vmax)), note)))
     ev <- if (!is.na(m$value)) sprintf("evidence only: the moist %s gives a dry value of about %s (default 9)",
                                        .za_col_text(m), format(min(10, m$value + 1))) else character(0)
     return(.za_r(NA, missing = c("munsell_value_dry", "munsell_chroma_dry", "munsell_hue_dry"),
