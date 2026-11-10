@@ -703,6 +703,8 @@ en:
   # v0.9.354 -- the correspondences of the Referentiel pedologique 2008 (Annexes 5 and 7)
   "classify.rp_wrb2006": "WRB 2006 (Annex 5 of the RP 2008; a note, not soilKey's WRB 2022):"
   "classify.rp_cpcs_equivalents": "RP 2008 equivalents (Annex 7; a note, not a class):"
+  # v0.9.391 -- the other edition of the FAO-Unesco legend (Appendix 4 of 1988)
+  "classify.fao_crosswalk": "Other edition (Appendix 4 of 1988; a note, not a class):"
   # v0.9.373 -- the Chinese Soil Taxonomy (2001): correlation and the book's own marks
   "classify.cst_correlation": "US Soil Taxonomy and WRB equivalents (a note, not a class)"
   "classify.cst_book_provisional": "marked provisional in CST 2001"
@@ -1663,6 +1665,7 @@ pt:
   "classify.kidpr_1977": "Análogo de 1977 (uma nota, não uma classe)"
   "classify.rp_wrb2006": "WRB 2006 (anexo 5 do RP 2008; uma nota, não o WRB 2022 do soilKey):"
   "classify.rp_cpcs_equivalents": "Equivalentes no RP 2008 (anexo 7; uma nota, não uma classe):"
+  "classify.fao_crosswalk": "Outra edição (apêndice 4 de 1988; uma nota, não uma classe):"
   # v0.9.373 -- a Taxonomia de Solos da China (2001): correlação e as marcas do próprio livro
   "classify.cst_correlation": "Equivalentes na Soil Taxonomy e na WRB (uma nota, não uma classe)"
   "classify.cst_book_provisional": "marcado como provisório na CST 2001"

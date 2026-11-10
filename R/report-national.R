@@ -135,7 +135,7 @@
 
 # The sections of a national result's card: the experimental note, the class
 # at each level, the provisional classes, the Hungarian properties, the
-# phases of the FAO-Unesco legend (v0.9.386), the 1977 analogue of a Russian
+# phases of the FAO-Unesco legend (v0.9.386) and its other edition (v0.9.391), the 1977 analogue of a Russian
 # soil, the correspondences of the RP 2008 (the WRB
 # 2006 of an RP result, the RP equivalents of a CPCS result). "" for a
 # result that has none of them (WRB, SiBCS, USDA).
@@ -211,6 +211,12 @@
                           .html_escape(.report_msg("report.fao_phases")),
                           .html_escape(.report_msg("report.fao_phases_desc")),
                           paste(sprintf("<li>%s</li>", .html_escape(fph)), collapse = "\n")))
+  fel <- .fao_edition_lines(res)
+  if (!is.null(fel))
+    out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
+                          .html_escape(.report_msg("report.fao_crosswalk")),
+                          .html_escape(.report_msg("report.fao_crosswalk_desc")),
+                          paste(sprintf("<li>%s</li>", .html_escape(fel)), collapse = "\n")))
   k77 <- .kidpr_1977_lines(res)
   if (!is.null(k77))
     out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
@@ -288,6 +294,11 @@
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.fao_phases"),
                           .report_msg("report.fao_phases_desc")),
              paste0("- ", .md_escape_marks(fph), collapse = "\n"), "\n\n")
+  fel <- .fao_edition_lines(res)
+  if (!is.null(fel))
+    out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.fao_crosswalk"),
+                          .report_msg("report.fao_crosswalk_desc")),
+             paste0("- ", .md_escape_marks(fel), collapse = "\n"), "\n\n")
   k77 <- .kidpr_1977_lines(res)
   if (!is.null(k77))
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.kidpr_1977"),

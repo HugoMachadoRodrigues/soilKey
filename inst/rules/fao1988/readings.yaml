@@ -10,7 +10,8 @@
 # and waits for his word. The criteria are paraphrased; no text of the book
 # is shipped. 0.9.381 holds the shared readers; 0.9.382 the diagnostic
 # horizons; 0.9.383 the diagnostic properties; 0.9.384 the registry and the
-# 28 major soil groupings; 0.9.385 the 153 soil units; 0.9.386 the phases.
+# 28 major soil groupings; 0.9.385 the 153 soil units; 0.9.386 the phases;
+# 0.9.391 the crosswalk of Appendix 4 (crosswalk.yaml).
 readings:
   # --- the decisions of 2026-11-08 that this part applies -----------------------------
   - topic: "One module, two editions"
@@ -566,3 +567,34 @@ readings:
     page: "p. 26; 74 p. 24"
     version: "0.9.390"
     reading: "With more than 40 % finely divided lime, 'the limits of colour value dry are waived' (the same words in both editions): the dry value of the A and its dry contrast with the C (or the horizon below the A) are both waived; the moist contrast of one unit is still asked. A correction to the mollic and umbric A of 0.9.382 (1988) and 0.9.387 (1974); no example of 1988 changes (Hugo, 2026-11-10)."
+  # --- 0.9.391: the crosswalk 1974 -> 1988 (Appendix 4, pp. 113-126) -------------------
+  - topic: "Crosswalk: the 1974 side of each row"
+    edition: [1988, 1974]
+    page: "pp. 115-126; 74 pp. 12-13"
+    version: "0.9.391"
+    reading: "Appendix 4 prints only the 1988 groupings and units with a comment; the 1974 class of each row is read from the 1974 list by the same name, or by the 'formerly' the appendix prints (Orthic, Ochric, Humic, Leptic, Acric); a 1988 unit with the same name and no comment is 'same' (a new code only). Display and label reading only, never a classification (Q8) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Crosswalk: comments printed between two rows"
+    edition: [1988]
+    page: "pp. 119-120, 123"
+    version: "0.9.391"
+    reading: "'Lacking gleyic or stagnic properties' printed on the row of the Mollic Solonchaks (SCm) is read as SCm's own comment (amended), not a continuation of the Haplic Solonchaks' 'formerly Orthic'; the comment of the Eutric Podzoluvisols that runs onto the row of the Dystric ones is read as PDe's only, PDd 'same' (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Crosswalk: alternatives read from the group comments"
+    edition: [1988, 1974]
+    page: "pp. 116-125"
+    version: "0.9.391"
+    reading: "Where a group comment sends part of a 1974 group elsewhere, the rows carry soilKey's alternative targets in brackets (`also`, `also_when`): the Luvisol units to the Lixisol unit of the same name, else Haplic (Lc, Lk, Lv to LXh), when the argic B has a CEC below 24 cmol(+)/kg clay (p. 122); the Acrisol units to the Alisol unit of the same name (Ah to ALu) at 24 or more (p. 124); Bk to the Calcisols or Gypsisols (p. 118); Kk to the Gypsic Kastanozems (p. 120); Gp, Fp and Lp to the Plinthosols (pp. 116, 122, 125); the Gleysols to the Arenosols and Fluvisols and the Regosols to the Arenosols and Leptosols (p. 116) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Crosswalk: the units of the Xerosols and Yermosols"
+    edition: [1974]
+    page: "p. 115"
+    version: "0.9.391"
+    reading: "The appendix deletes the two groups (note 1: incorporated in other groups, with a yermic phase) and prints no unit row. soilKey brackets targets by the unit's name: Haplic to the Cambisols, Regosols or Arenosols; Calcic to the Calcisols; Gypsic to the Gypsisols; Luvic to the Luvic Calcisols or Gypsisols, the Luvisols or Lixisols; Takyric Yermosols to no class (the takyric phase) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Crosswalk: the three changes Appendix 4 does not flag"
+    edition: [1988, 1974]
+    page: "pp. 79, 116, 122, 126"
+    version: "0.9.391"
+    reading: "Bracketed rows: Calcaric Gleysols (Gc) to Calcic Gleysols (GLk) is a renaming with a change of definition (calcareous material in 1974, a calcic or gypsic horizon in 1988, p. 79); the Plinthic Luvisols (Lp) are deleted with no 1988 row (the Luvisols comment sends soils with plinthite to the Plinthosols, p. 122); the Thionic Histosols (HSt) are new (p. 126) (Q8) (Hugo, 2026-11-08)."
+  - topic: "Slips of Appendix 4"
+    edition: [1988]
+    page: "pp. 115, 124"
+    version: "0.9.391"
+    reading: "On p. 115 the comment of the Fluvisols grouping is set one column to the right (its second line runs under the units); read as the grouping's comment. On p. 124 the Acrisols' ''lacking an aridic moisture regime' deleted' runs into the comment of the Gleyic Acrisols; read as the grouping's comment, the Gleyic Acrisols' own being the 0-100 cm of the gleyic properties (soilKey's reading, for Hugo to confirm, 2026-11-09)."
