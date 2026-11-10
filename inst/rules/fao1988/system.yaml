@@ -1,0 +1,34 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+# The FAO-Unesco legend is one module with two editions (Hugo's decision Q1):
+# one user function classify_fao(pedon, edition), two registry ids, fao1988
+# (here, order 16) and fao1974 (order 17, in a later part), each a thin
+# wrapper with its own rule folder.
+id: fao1988
+order: 16
+aliases: [fao, fao88, revised_legend]
+legacy: false
+default: false
+status: experimental
+namespace: fao88
+classifier: classify_fao1988
+result_slot: fao1988
+top_level: major_groups
+# the 153 soil units (v0.9.385) are read from units/ (one file per
+# grouping, the units of each grouping under its code, in the key's order)
+levels: [major_groups, units]
+display:
+  en: "FAO-Unesco Revised Legend (1988)"
+  pt: "Legenda Revisada FAO-Unesco (1988)"
+  native: "FAO-Unesco Soil Map of the World, Revised Legend"
+  result: "FAO 1988"
+edition: "World Soil Resources Report 60, FAO 1988; corrected reprint 1990; ISRIC Technical Paper 20 (1997)"
+citation: >
+  FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend, with corrections
+  and updates. World Soil Resources Report 60, FAO, Rome. Reprinted with updates
+  as Technical Paper 20, ISRIC, Wageningen, 1997. ISBN 90-6672-057-3.
+version: "Text of the 1997 ISRIC reprint (Hugo's decision Q4): the corrections of 1990 and the updates of 1997 cannot be told apart"
+implementation_status: "soilKey v0.9.386 -- the 28 major soil groupings of the key (ch. X, pp. 75-89), in the key's order, on the 16 diagnostic horizons (v0.9.382) and the 27 diagnostic properties (v0.9.383) read on the data, with the shared readers of v0.9.381; no residual grouping (a soil no gate takes is [not classified], Q5); and, since v0.9.385, the 153 soil units of the key under their groupings, in the key's order, each grouping closed by its Other ... residual; since v0.9.386, the 16 phases of ch. VIII (pp. 67-71) and the texture and slope classes of the map symbol (App. 2, p. 107) beside the unit, never changing it. The Legend of 1974 is not keyed yet"
+source: |
+  Ch. IV diagnostic horizons (pp. 25-33), ch. V diagnostic properties (pp. 34-41),
+  ch. VI rules (p. 42), ch. VIII phases (pp. 67-71), ch. X key (pp. 75-89),
+  Appendix 4 changes (pp. 113-126), Appendix 5 methods (pp. 127-131).

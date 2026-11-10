@@ -1,0 +1,68 @@
+# The soil units of the Ferralsols (FR), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 82,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  FR:
+    - code: "FRp"
+      name: "Plinthic Ferralsols"
+      name_pt: "Ferralsolos Plínticos (Plinthic Ferralsols)"
+      page: 82
+      tests:
+        all_of:
+          - plinthite_fao88: {max_top_cm: 125}
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "FRg"
+      name: "Geric Ferralsols"
+      name_pt: "Ferralsolos Géricos (Geric Ferralsols)"
+      page: 82
+      tests:
+        all_of:
+          - property_in_b_fao88: {property: geric, kind: ferralic_b, to_cm: 125}
+      notes: "Geric properties in at least some part of the ferralic B horizon within 125 cm of the surface."
+
+    - code: "FRu"
+      name: "Humic Ferralsols"
+      name_pt: "Ferralsolos Húmicos (Humic Ferralsols)"
+      page: 82
+      tests:
+        all_of:
+          - strongly_humic_fao88: {}
+          - any_of:
+              - umbric_a_fao88: {}
+              - all_of:
+                  - mollic_a_fao88: {}
+                  - b_bs_below_fao88: {kind: ferralic_b, lt: 50, to_cm: 100}
+      notes: "Strongly humic, with an umbric A horizon, or a mollic A horizon and a base saturation (NH4OAc) below 50 % in at least a part of the B within 100 cm."
+
+    - code: "FRr"
+      name: "Rhodic Ferralsols"
+      name_pt: "Ferralsolos Ródicos (Rhodic Ferralsols)"
+      page: 82
+      tests:
+        all_of:
+          - b_colour_fao88: {colour: rhodic, kind: ferralic_b}
+      notes: "A red to dusky red B: rubbed hue redder than 5YR, moist value below 4, dry value no more than one unit above the moist one."
+
+    - code: "FRx"
+      name: "Xanthic Ferralsols"
+      name_pt: "Ferralsolos Xânticos (Xanthic Ferralsols)"
+      page: 82
+      tests:
+        all_of:
+          - b_colour_fao88: {colour: xanthic, kind: ferralic_b}
+      notes: "A yellow to pale yellow B: rubbed hue 7.5YR or yellower, moist value 4 or more, moist chroma 5 or more."
+
+    - code: "FRh"
+      name: "Haplic Ferralsols"
+      name_pt: "Ferralsolos Háplicos (Haplic Ferralsols)"
+      page: 82
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

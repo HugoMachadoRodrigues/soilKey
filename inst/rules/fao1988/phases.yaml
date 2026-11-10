@@ -1,0 +1,200 @@
+# The phases of the FAO-Unesco Revised Legend (FAO 1988, World Soil Resources
+# Report 60; the text of the ISRIC reprint of 1997, Technical Paper 20),
+# chapter VIII, pp. 67-71, and the texture and slope classes of the map
+# symbol (Appendix 2, p. 107). Read by R/fao-phases.R (v0.9.386).
+#
+# Phases are features of the land that may limit its use; they cut across the
+# soil units and never define one (p. 67). soilKey gives them beside the unit,
+# in `$phases` of the classify_fao() result, each three-valued (present,
+# absent, undecided) and never changing the unit (Hugo's decision Q25 of
+# 2026-11-08). A phase the text does not show for some units ("not shown
+# for") is `not shown` there, whatever its criterion gives. Field-only
+# phases follow the standing rule: a field observation not recorded is
+# absent; a measurement not recorded leaves the phase undecided.
+#
+# Fields: id, name (as printed, with "phase"), name_pt (soilKey's gloss),
+# page, nature (horizon, site, field), criterion (soilKey's words; no text of
+# the book is shipped), the numbers (the same as the `phases` block of
+# thresholds.yaml), reads (what soilKey reads), not_shown_for (major soil
+# groupings and soil units, by code). The duripan, fragipan, petroferric and
+# placic phases take their definitions from Soil Taxonomy 1975 (p. 67): they
+# read soilKey's USDA predicates with the depths of the legend, the pan kind
+# recorded in the field, and the WRB horizons only as stand-ins, flagged
+# (default 17 of 2026-11-08). The readings are in readings.yaml.
+
+edition: "FAO-Unesco Revised Legend, World Soil Resources Report 60 (1988), text of the ISRIC reprint 1997"
+page: "67-71"
+
+phases:
+  - id: anthraquic
+    name: "Anthraquic phase"
+    name_pt: "Fase antráquica"
+    page: 67
+    nature: "horizon and site history"
+    criterion: "Stagnic properties within 50 cm of the surface, from surface waterlogging under long continued irrigation, mainly of rice."
+    stagnic_within_cm: 50
+    reads: "stagnic_properties_fao88() within 50 cm; the irrigation history of the site: flood_irrigated, paddy_years_frac, land_use naming rice or paddy (flagged); irrigation recorded FALSE rules it out; irrigated alone leaves it undecided."
+
+  - id: duripan
+    name: "Duripan phase"
+    name_pt: "Fase duripã"
+    page: 67
+    nature: "horizon"
+    criterion: "The upper level of a duripan (silica-cemented; dry fragments do not slake in water or HCl) within 100 cm of the surface."
+    within_cm: 100
+    reads: "duripan_usda(); pan_type duripan or silcrete; a designation with qm (FAO notation), flagged; the WRB petroduric horizon as a stand-in, flagged."
+
+  - id: fragipan
+    name: "Fragipan phase"
+    name_pt: "Fase fragipã"
+    page: "67-68"
+    nature: "horizon"
+    criterion: "The upper level of a fragipan (loamy, dense, hard when dry, brittle when moist, dry fragments slake in water) within 100 cm of the surface."
+    within_cm: 100
+    reads: "pan_type fragipan or a designation with x (FAO notation, E/Bx too), flagged; the firm layers of fragipan_usda() only with a second sign (very or extremely firm and massive, or a bulk density of 1.65 g/cm3 or more), else undecided; the WRB fragic horizon as a stand-in where the rupture resistance is not recorded, flagged."
+
+  - id: gelundic
+    name: "Gelundic phase"
+    name_pt: "Fase gelúndica"
+    page: 68
+    nature: "field"
+    criterion: "Polygons formed on the surface by frost heaving."
+    reads: "patterned_ground naming polygons; not recorded, absent."
+
+  - id: gilgai
+    name: "Gilgai phase"
+    name_pt: "Fase gilgai"
+    page: 68
+    nature: "field"
+    criterion: "Gilgai microrelief of clayey soils with a high coefficient of expansion."
+    reads: "gilgai_presence; else microrelief_form naming gilgai; not recorded, absent."
+
+  - id: inundic
+    name: "Inundic phase"
+    name_pt: "Fase inúndica"
+    page: 68
+    nature: "site"
+    criterion: "Standing or flowing water on the surface for more than 10 days in the growing period."
+    days_gt: 10
+    reads: "flooding_days_growing_period; not recorded, undecided."
+
+  - id: lithic
+    name: "Lithic phase"
+    name_pt: "Fase lítica"
+    page: 68
+    nature: "horizon"
+    criterion: "Continuous hard rock within 50 cm of the surface."
+    within_cm: 50
+    reads: "continuous_hard_rock_fao88() within 50 cm."
+
+  - id: petroferric
+    name: "Petroferric phase"
+    name_pt: "Fase petroférrica"
+    page: 68
+    nature: "horizon"
+    criterion: "The upper part of a continuous layer indurated by iron, with little or no organic matter (fractures, if any, 10 cm or more apart), within 100 cm of the surface."
+    within_cm: 100
+    reads: "petroferric_contact_usda() with iron shown (plinthite_pct 50 or more, pan_type ironstone or ferricrete, or a designation with m and v, c or s); pan_type ferricrete or ironstone; a designation with m and v, c or s thicker than 2.5 cm, flagged; layers cemented by carbonates, gypsum or silica (km, ym, qm, calcrete, gypcrete, silcrete) excluded; the WRB petroplinthic horizon as a stand-in, flagged. The spacing of fractures is not recorded by soilKey and not tested."
+
+  - id: phreatic
+    name: "Phreatic phase"
+    name_pt: "Fase freática"
+    page: 69
+    nature: "site"
+    criterion: "A groundwater table within 5 m of the surface that the morphology of the soil does not reflect."
+    within_cm: 500
+    reads: "groundwater_depth_cm of 500 or less, with no gleyic properties (gleyic_properties_fao88()); not recorded, undecided."
+    not_shown_for:
+      groupings: [FL, GL]
+
+  - id: placic
+    name: "Placic phase"
+    name_pt: "Fase plácica"
+    page: 69
+    nature: "horizon"
+    criterion: "A thin iron pan (black to dark reddish, cemented by iron, iron and manganese or an iron-organic complex, generally 2 to 10 mm) within 100 cm of the surface."
+    within_cm: 100
+    reads: "placic_horizon_usda(); pan_type thin ironpan or placic."
+
+  - id: rudic
+    name: "Rudic phase"
+    name_pt: "Fase rúdica"
+    page: 69
+    nature: "field"
+    criterion: "Gravel, stones, boulders or rock outcrops in the surface layers or at the surface make mechanised agriculture impracticable."
+    reads: "rudic_recorded; not recorded, absent (no percentage stands in)."
+
+  - id: salic
+    name: "Salic phase"
+    name_pt: "Fase sálica"
+    page: "69-70"
+    nature: "horizon"
+    criterion: "An electrical conductivity of the saturation extract above 4 dS/m at 25 C in some horizon within 100 cm of the surface."
+    ece_gt_ds_m: 4
+    within_cm: 100
+    reads: "ec_dS_m; ec_max_dS_m of 4 or less rules a layer out; not recorded, undecided."
+    not_shown_for:
+      groupings: [SC]
+      units: [FLs]
+
+  - id: skeletic
+    name: "Skeletic phase"
+    name_pt: "Fase esquelética"
+    page: 70
+    nature: "horizon"
+    criterion: "A layer of 40 % or more by volume of hard coarse fragments (oxidic concretions, hardened plinthite, ironstone or other hard materials), at least 25 cm thick, its upper part within 50 cm of the surface, not continuously cemented."
+    coarse_min_pct_vol: 40
+    thickness_min_cm: 25
+    within_cm: 50
+    reads: "coarse_fragments_pct of each layer (not recorded, absent, flagged); rock and strongly cemented or indurated layers are not skeletic."
+
+  - id: sodic
+    name: "Sodic phase"
+    name_pt: "Fase sódica"
+    page: 70
+    nature: "horizon"
+    criterion: "More than 6 % of the exchange complex saturated with sodium in some horizon within 100 cm of the surface."
+    esp_gt_pct: 6
+    within_cm: 100
+    reads: "esp_pct, else na_cmol / cec_cmol x 100, flagged."
+    not_shown_for:
+      groupings: [SN]
+      units: [SCn]
+
+  - id: takyric
+    name: "Takyric phase"
+    name_pt: "Fase takírica"
+    page: 70
+    nature: "field"
+    criterion: "Heavy textured soils that crack into polygons when dry and form a platy or massive surface crust."
+    reads: "heavy textured = the fine class (3) of the upper 30 cm (p. 107); in the first mineral layer polygonal_cracks_spacing_cm recorded and structure_type platy or massive; cracks or crust not recorded, absent."
+
+  - id: yermic
+    name: "Yermic phase"
+    name_pt: "Fase yérmica"
+    page: "70-71"
+    nature: "horizon and field"
+    criterion: "Less than 0.6 % organic carbon in the surface 18 cm mixed (less than 0.20 % if coarser than sandy loam; waived when the salic phase criterion is met), and one or more desert features: wind-shaped or varnished gravel or stones at the surface; pitted matte quartz 10 % or more of the sand of 0.25 mm or more; 2 % or more palygorskite in the clay within 50 cm; surface cracks filled with blown sand or silt; a platy surface horizon; blown sand on a stable surface."
+    oc_lt_pct: 0.6
+    oc_lt_pct_coarse: 0.20
+    mixed_cm: 18
+    pitted_quartz_min_pct: 10
+    palygorskite_min_pct: 2
+    palygorskite_within_cm: 50
+    reads: "oc_pct mixed over 0-18 cm and the texture of the same depth; ventifact_pct, varnish_pct, pitted_quartz_pct, structure_type and aeolian_morphology of the first mineral layer; palygorskite_pct (else clay_mineralogy, flagged); aeolian_crack_infill; a feature not recorded, absent."
+
+map_symbol:
+  page: 107
+  texture:
+    upper_cm: 30
+    reads: "the clay and sand of the upper 30 cm, thickness-weighted (.fao_texture_upper30(); from the mineral surface under an organic layer, flagged)"
+    classes:
+      - {code: "1", id: coarse, name: "Coarse textured", name_pt: "Textura grossa", criterion: "clay below 15 % and sand above 70 %"}
+      - {code: "2", id: medium, name: "Medium textured", name_pt: "Textura média", criterion: "clay below 35 % and not coarse (sand up to 85 % with 15 % clay or more)"}
+      - {code: "3", id: fine, name: "Fine textured", name_pt: "Textura fina", criterion: "clay above 35 %"}
+  slope:
+    reads: "slope_pct of the site (the dominant slope of the map unit, read on the profile's slope)"
+    classes:
+      - {code: "a", name: "Level to gently undulating", name_pt: "Plano a suave ondulado", max_pct: 8, criterion: "0 to 8 %"}
+      - {code: "b", name: "Rolling to hilly", name_pt: "Ondulado a forte ondulado", max_pct: 30, criterion: "more than 8 to 30 %"}
+      - {code: "c", name: "Steeply dissected to mountainous", name_pt: "Fortemente dissecado a montanhoso", criterion: "more than 30 %"}

@@ -1,0 +1,49 @@
+# The soil units of the Plinthosols (PT), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 81-82,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  PT:
+    - code: "PTa"
+      name: "Albic Plinthosols"
+      name_pt: "Plintossolos Álbicos (Albic Plinthosols)"
+      page: 81
+      tests:
+        all_of:
+          - albic_e_fao88: {}
+      notes: "An albic E horizon."
+
+    - code: "PTu"
+      name: "Humic Plinthosols"
+      name_pt: "Plintossolos Húmicos (Humic Plinthosols)"
+      page: 81
+      tests:
+        all_of:
+          - any_of:
+              - umbric_a_fao88: {}
+              - histic_h_fao88: {base: dystric}
+          - strongly_humic_fao88: {}
+      notes: "An umbric A horizon or a dystric histic H horizon, and strongly humic (the key; ch. VI also allows a mollic A, not added, Q6)."
+
+    - code: "PTd"
+      name: "Dystric Plinthosols"
+      name_pt: "Plintossolos Distróficos (Dystric Plinthosols)"
+      page: 82
+      tests:
+        all_of:
+          - ochric_a_fao88: {}
+          - plinthite_bs_fao88: {lt: 50, depth: 50}
+      notes: "An ochric A horizon and a base saturation (NH4OAc) below 50 % throughout the upper 50 cm of the plinthite horizon."
+
+    - code: "PTe"
+      name: "Eutric Plinthosols"
+      name_pt: "Plintossolos Eutróficos (Eutric Plinthosols)"
+      page: 82
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

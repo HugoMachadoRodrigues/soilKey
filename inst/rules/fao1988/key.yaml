@@ -1,0 +1,334 @@
+# The key to the major soil groupings of the FAO-Unesco Revised Legend (FAO
+# 1988, World Soil Resources Report 60; the text of the ISRIC reprint of
+# 1997, Technical Paper 20), chapter X, pp. 75-89, in the key's order (not
+# the order of the lists of chapters III and VI). Every grouping after the
+# Histosols is "other soils that ...", so a gate tests only its own
+# requirements: the key's order supplies the exclusions (Hugo's decision Q6:
+# the key governs, the descriptions of chapter VI are not added). There is
+# no residual grouping after the Cambisols (Q5): R/key-fao.R names a soil
+# that no gate takes "[Not classified ...]".
+#
+# Codes and names as printed (the headings of the key are in capitals;
+# the names are written as the text writes them elsewhere); name_pt is
+# soilKey's Portuguese gloss, with the printed name beside it, never a
+# SiBCS class. The criteria are summarised in soilKey's words; no text of
+# the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R (0.9.382), R/diagnostics-fao88-properties.R
+# (0.9.383) and R/key-fao.R; the numbers those of thresholds.yaml, the
+# readings those of readings.yaml. The 153 soil units are in units/, one
+# file per grouping (0.9.385).
+
+major_groups:
+
+  - code: "HS"
+    name: "Histosols"
+    name_pt: "Histossolos (Histosols)"
+    page: 75
+    tests:
+      all_of:
+        - histosols_gate_fao88: {}
+    notes: "An H or O horizon 40 cm or more thick (60 cm when mainly sphagnum or moss, or with a bulk density below 0.1), from the surface or cumulative within the upper 80 cm; thinner over rock or over fragmental material filled with organic matter."
+
+  - code: "AT"
+    name: "Anthrosols"
+    name_pt: "Antrossolos (Anthrosols)"
+    page: 75
+    tests:
+      all_of:
+        - anthrosols_gate_fao88: {}
+    notes: "People have profoundly modified or buried the original horizons: removal or disturbance of the surface horizons, cuts and fills, additions of organic material over centuries, long irrigation."
+
+  - code: "LP"
+    name: "Leptosols"
+    name_pt: "Leptossolos (Leptosols)"
+    page: 76
+    tests:
+      all_of:
+        - leptosols_gate_fao88: {}
+    notes: "Within 30 cm, continuous hard rock, highly calcareous material (CaCO3 equivalent above 40 %) or a continuous cemented layer; or less than 20 % fine earth over 75 cm. Diagnostic horizons may be present."
+
+  - code: "VR"
+    name: "Vertisols"
+    name_pt: "Vertissolos (Vertisols)"
+    page: 77
+    tests:
+      all_of:
+        - vertisols_gate_fao88: {}
+    notes: "After mixing the upper 18 cm, 30 % clay or more in all horizons to 50 cm at least; cracks 1 cm wide or more from the surface to 50 cm in most years unless irrigated; intersecting slickensides or wedge-shaped or parallelepiped aggregates somewhere between 25 and 100 cm."
+
+  - code: "FL"
+    name: "Fluvisols"
+    name_pt: "Fluvissolos (Fluvisols)"
+    page: 77
+    tests:
+      all_of:
+        - fluvic_properties_fao88: {}
+        - only_horizons_fao88: {allowed: [ochric_a, mollic_a, umbric_a, histic_h, sulfuric]}
+    notes: "Fluvic properties; no diagnostic horizons but an ochric, mollic or umbric A, a histic H or a sulfuric horizon (sulfidic material within 125 cm is allowed too)."
+
+  - code: "SC"
+    name: "Solonchaks"
+    name_pt: "Solonchaks (Solonchaks)"
+    page: 78
+    tests:
+      all_of:
+        - salic_properties_fao88: {}
+        - only_horizons_fao88: {allowed: [ochric_a, umbric_a, mollic_a, histic_h, cambic_b, calcic, gypsic]}
+    notes: "Salic properties; no diagnostic horizons but an ochric, umbric or mollic A, a histic H, a cambic B, a calcic or a gypsic horizon."
+
+  - code: "GL"
+    name: "Gleysols"
+    name_pt: "Gleissolos (Gleysols)"
+    page: 78
+    tests:
+      all_of:
+        - any_of:
+            - histic_h_fao88: {}
+            - none_of:
+                - coarse_texture_fao88: {to_cm: 100}
+        - gleyic_properties_fao88: {max_top_cm: 50}
+        - only_horizons_fao88: {allowed: [a_horizon, histic_h, cambic_b, sulfuric, calcic, gypsic]}
+        - none_of:
+            - plinthite_fao88: {max_top_cm: 125}
+    notes: "Not coarse textured unless a histic H is present; gleyic properties within 50 cm; no diagnostic horizons but an A, a histic H, a cambic B, a sulfuric, a calcic or a gypsic horizon; no plinthite within 125 cm."
+
+  - code: "AN"
+    name: "Andosols"
+    name_pt: "Andossolos (Andosols)"
+    page: 79
+    tests:
+      all_of:
+        - andic_to_35_fao88: {}
+        - any_of:
+            - mollic_a_fao88: {}
+            - umbric_a_fao88: {}
+            - all_of:
+                - ochric_a_fao88: {}
+                - cambic_b_fao88: {}
+        - only_horizons_fao88: {allowed: [mollic_a, umbric_a, ochric_a, cambic_b]}
+    notes: "Andic properties to 35 cm or more; a mollic or umbric A, possibly over a cambic B, or an ochric A and a cambic B; no other diagnostic horizons."
+
+  - code: "AR"
+    name: "Arenosols"
+    name_pt: "Arenossolos (Arenosols)"
+    page: 80
+    tests:
+      all_of:
+        - coarse_texture_fao88: {to_cm: 100}
+        - coarse_fragments_fao88: {lt: 35, to_cm: 100}
+        - only_horizons_fao88: {allowed: [ochric_a, albic_e]}
+    notes: "Coarser than sandy loam to 100 cm at least; less than 35 % rock or other coarse fragments in every subhorizon within 100 cm; no diagnostic horizons but an ochric A or an albic E."
+
+  - code: "RG"
+    name: "Regosols"
+    name_pt: "Regossolos (Regosols)"
+    page: 80
+    tests:
+      all_of:
+        - only_horizons_fao88: {allowed: [ochric_a, umbric_a]}
+        - none_of:
+            - soft_powdery_lime_fao88: {}
+    notes: "No diagnostic horizons but an ochric or umbric A; lacking soft powdery lime (the last clause in italics in the 1997 text, applied as printed, Q4)."
+
+  - code: "PZ"
+    name: "Podzols"
+    name_pt: "Podzóis (Podzols)"
+    page: 81
+    tests:
+      all_of:
+        - spodic_b_fao88: {}
+        - upper_b_fao88: {kind: spodic_b}
+    notes: "A spodic B horizon (the uppermost diagnostic B, p. 42)."
+
+  - code: "PT"
+    name: "Plinthosols"
+    name_pt: "Plintossolos (Plinthosols)"
+    page: 81
+    tests:
+      all_of:
+        - plinthosols_gate_fao88: {}
+    notes: "25 % plinthite or more by volume in a horizon at least 15 cm thick within 50 cm; or within 125 cm under an albic E, or under a horizon with stagnic properties within 50 cm, or with gleyic properties within 100 cm."
+
+  - code: "FR"
+    name: "Ferralsols"
+    name_pt: "Ferralsolos (Ferralsols)"
+    page: 82
+    tests:
+      all_of:
+        - ferralic_b_fao88: {}
+        - upper_b_fao88: {kind: ferralic_b}
+    notes: "A ferralic B horizon (the uppermost diagnostic B, p. 42)."
+
+  - code: "PL"
+    name: "Planosols"
+    name_pt: "Planossolos (Planosols)"
+    page: 82
+    tests:
+      all_of:
+        - planosols_gate_fao88: {}
+        - none_of:
+            - natric_b_fao88: {}
+            - spodic_b_fao88: {}
+    notes: "An E horizon with stagnic properties in at least part of it, abruptly over a slowly permeable horizon within 125 cm; no natric or spodic B."
+
+  - code: "SN"
+    name: "Solonetz"
+    name_pt: "Solonetz (Solonetz)"
+    page: 83
+    tests:
+      all_of:
+        - natric_b_fao88: {}
+        - upper_b_fao88: {kind: natric_b}
+    notes: "A natric B horizon (the uppermost diagnostic B, p. 42)."
+
+  - code: "GR"
+    name: "Greyzems"
+    name_pt: "Greyzems (Greyzems)"
+    page: 83
+    tests:
+      all_of:
+        - mollic_chroma_fao88: {max: 2, depth: 15}
+        - uncoated_grains_fao88: {}
+        - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+    notes: "A mollic A with a moist chroma of 2 or less to 15 cm at least; uncoated silt and sand grains on the structural ped surfaces; an argic B."
+
+  - code: "CH"
+    name: "Chernozems"
+    name_pt: "Chernozems (Chernozems)"
+    page: 84
+    tests:
+      all_of:
+        - mollic_chroma_fao88: {max: 2, depth: 15}
+        - any_of:
+            - calcic_fao88: {}
+            - petrocalcic_fao88: {}
+            - soft_powdery_lime_fao88: {max_top_cm: 125}
+    notes: "A mollic A with a moist chroma of 2 or less to 15 cm at least; a calcic or petrocalcic horizon, or concentrations of soft powdery lime, within 125 cm."
+
+  - code: "KS"
+    name: "Kastanozems"
+    name_pt: "Kastanozems (Kastanozems)"
+    page: 84
+    tests:
+      all_of:
+        - mollic_chroma_fao88: {gt: 2, depth: 15}
+        - any_of:
+            - calcic_fao88: {}
+            - petrocalcic_fao88: {}
+            - gypsic_fao88: {}
+            - soft_powdery_lime_fao88: {max_top_cm: 125}
+    notes: "A mollic A with a moist chroma of more than 2 to 15 cm at least; one or more of a calcic, petrocalcic or gypsic horizon, or concentrations of soft powdery lime, within 125 cm."
+
+  - code: "PH"
+    name: "Phaeozems"
+    name_pt: "Feozems (Phaeozems)"
+    page: 84
+    tests:
+      all_of:
+        - mollic_a_fao88: {}
+        - base_saturation_fao88: {min: 50, top: 0, bottom: 125}
+    notes: "A mollic A; a base saturation (NH4OAc) of 50 % or more throughout the upper 125 cm."
+
+  - code: "PD"
+    name: "Podzoluvisols"
+    name_pt: "Podzoluvissolos (Podzoluvisols)"
+    page: 85
+    tests:
+      all_of:
+        - podzoluvisols_gate_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+    notes: "An argic B whose upper boundary is irregular or broken by deep tonguing of the E into it, or by discrete nodules larger than 2 cm with iron-enriched, cemented, redder exteriors."
+
+  - code: "GY"
+    name: "Gypsisols"
+    name_pt: "Gipsissolos (Gypsisols)"
+    page: 85
+    tests:
+      all_of:
+        - any_of:
+            - gypsic_fao88: {}
+            - petrogypsic_fao88: {}
+        - only_horizons_fao88: {allowed: [ochric_a, cambic_b, argic_b_permeated, calcic, petrocalcic, gypsic, petrogypsic]}
+    notes: "A gypsic or petrogypsic horizon within 125 cm; no diagnostic horizons but an ochric A, a cambic B, an argic B permeated with gypsum or calcium carbonate, a calcic or a petrocalcic horizon."
+
+  - code: "CL"
+    name: "Calcisols"
+    name_pt: "Calcissolos (Calcisols)"
+    page: 86
+    tests:
+      all_of:
+        - any_of:
+            - calcic_fao88: {}
+            - petrocalcic_fao88: {}
+            - soft_powdery_lime_fao88: {max_top_cm: 125}
+        - only_horizons_fao88: {allowed: [ochric_a, cambic_b, argic_b_calcareous, calcic, petrocalcic]}
+    notes: "A calcic or petrocalcic horizon, or a concentration of soft powdery lime, within 125 cm; no diagnostic horizons but an ochric A, a cambic B or a calcareous argic B."
+
+  - code: "NT"
+    name: "Nitisols"
+    name_pt: "Nitissolos (Nitisols)"
+    page: 86
+    tests:
+      all_of:
+        - nitisols_gate_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+    notes: "An argic B whose clay does not fall by more than 20 % (relative) from its maximum within 150 cm; gradual to diffuse boundaries between the A and the B; nitic properties in some subhorizon within 125 cm."
+
+  - code: "AL"
+    name: "Alisols"
+    name_pt: "Alissolos (Alisols)"
+    page: 87
+    tests:
+      all_of:
+        - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+        - argic_cec_clay_fao88: {min: 24}
+        - argic_bs_fao88: {lt: 50}
+    notes: "An argic B with a CEC of 24 cmol(+)/kg clay or more and a base saturation (NH4OAc) below 50 % in at least some part of the B within 125 cm."
+
+  - code: "AC"
+    name: "Acrisols"
+    name_pt: "Acrissolos (Acrisols)"
+    page: 87
+    tests:
+      all_of:
+        - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+        - argic_cec_clay_fao88: {lt: 24}
+        - argic_bs_fao88: {lt: 50}
+    notes: "An argic B with a CEC below 24 cmol(+)/kg clay and a base saturation (NH4OAc) below 50 % in at least some part of the B within 125 cm."
+
+  - code: "LV"
+    name: "Luvisols"
+    name_pt: "Luvissolos (Luvisols)"
+    page: 88
+    tests:
+      all_of:
+        - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+        - argic_cec_clay_fao88: {min: 24}
+        - argic_bs_fao88: {min: 50}
+    notes: "An argic B with a CEC of 24 cmol(+)/kg clay or more and a base saturation (NH4OAc) of 50 % or more throughout the B to 125 cm."
+
+  - code: "LX"
+    name: "Lixisols"
+    name_pt: "Lixissolos (Lixisols)"
+    page: 88
+    tests:
+      all_of:
+        - argic_b_fao88: {}
+        - upper_b_fao88: {kind: argic_b}
+        - argic_cec_clay_fao88: {lt: 24}
+        - argic_bs_fao88: {min: 50}
+    notes: "An argic B with a CEC below 24 cmol(+)/kg clay and a base saturation (NH4OAc) of 50 % or more throughout the B to 125 cm."
+
+  - code: "CM"
+    name: "Cambisols"
+    name_pt: "Cambissolos (Cambisols)"
+    page: 89
+    tests:
+      all_of:
+        - cambic_b_fao88: {}
+        - upper_b_fao88: {kind: cambic_b}
+    notes: "A cambic B horizon (the uppermost diagnostic B, p. 42)."

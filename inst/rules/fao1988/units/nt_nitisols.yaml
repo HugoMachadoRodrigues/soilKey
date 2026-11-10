@@ -1,0 +1,41 @@
+# The soil units of the Nitisols (NT), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 86,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  NT:
+    - code: "NTu"
+      name: "Humic Nitisols"
+      name_pt: "Nitissolos Húmicos (Humic Nitisols)"
+      page: 86
+      tests:
+        all_of:
+          - strongly_humic_fao88: {}
+          - any_of:
+              - umbric_a_fao88: {}
+              - all_of:
+                  - mollic_a_fao88: {}
+                  - b_bs_below_fao88: {kind: argic_b, lt: 50, to_cm: 125}
+      notes: "Strongly humic, with an umbric A horizon, or a mollic A horizon and a base saturation (NH4OAc) below 50 % in at least a part of the B within 125 cm."
+
+    - code: "NTr"
+      name: "Rhodic Nitisols"
+      name_pt: "Nitissolos Ródicos (Rhodic Nitisols)"
+      page: 86
+      tests:
+        all_of:
+          - b_colour_fao88: {colour: rhodic, kind: argic_b}
+      notes: "A red to dusky red argic B: rubbed hue redder than 5YR, moist value below 4, dry value no more than one unit above the moist one."
+
+    - code: "NTh"
+      name: "Haplic Nitisols"
+      name_pt: "Nitissolos Háplicos (Haplic Nitisols)"
+      page: 86
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

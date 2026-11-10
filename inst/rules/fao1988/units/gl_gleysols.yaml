@@ -1,0 +1,87 @@
+# The soil units of the Gleysols (GL), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 78-79,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  GL:
+    - code: "GLi"
+      name: "Gelic Gleysols"
+      name_pt: "Gleissolos Gélicos (Gelic Gleysols)"
+      page: 78
+      tests:
+        all_of:
+          - permafrost_fao88: {max_top_cm: 200}
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "GLt"
+      name: "Thionic Gleysols"
+      name_pt: "Gleissolos Tiônicos (Thionic Gleysols)"
+      page: 79
+      tests:
+        all_of:
+          - any_of:
+              - sulfuric_fao88: {max_top_cm: 125}
+              - sulfidic_materials_fao88: {max_top_cm: 125}
+      notes: "A sulfuric horizon or sulfidic material (or both) at less than 125 cm from the surface."
+
+    - code: "GLa"
+      name: "Andic Gleysols"
+      name_pt: "Gleissolos Ândicos (Andic Gleysols)"
+      page: 79
+      tests:
+        all_of:
+          - andic_properties_fao88: {}
+      notes: "Andic properties (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "GLm"
+      name: "Mollic Gleysols"
+      name_pt: "Gleissolos Mólicos (Mollic Gleysols)"
+      page: 79
+      tests:
+        all_of:
+          - any_of:
+              - mollic_a_fao88: {}
+              - histic_h_fao88: {base: eutric}
+      notes: "A mollic A horizon, or a eutric histic H horizon (pH 1:5 of 5.5 or more, Q15)."
+
+    - code: "GLu"
+      name: "Umbric Gleysols"
+      name_pt: "Gleissolos Úmbricos (Umbric Gleysols)"
+      page: 79
+      tests:
+        all_of:
+          - any_of:
+              - umbric_a_fao88: {}
+              - histic_h_fao88: {base: dystric}
+      notes: "An umbric A horizon, or a dystric histic H horizon (pH 1:5 below 5.5, Q15)."
+
+    - code: "GLk"
+      name: "Calcic Gleysols"
+      name_pt: "Gleissolos Cálcicos (Calcic Gleysols)"
+      page: 79
+      tests:
+        all_of:
+          - calcic_fao88: {max_top_cm: 125}
+      notes: "A calcic horizon within 125 cm of the surface."
+
+    - code: "GLd"
+      name: "Dystric Gleysols"
+      name_pt: "Gleissolos Distróficos (Dystric Gleysols)"
+      page: 79
+      tests:
+        all_of:
+          - bs_below_fao88: {lt: 50, top: 20, bottom: 50}
+      notes: "Base saturation (NH4OAc) below 50 % at least from 20 to 50 cm (every layer overlapping 20-50 cm)."
+
+    - code: "GLe"
+      name: "Eutric Gleysols"
+      name_pt: "Gleissolos Eutróficos (Eutric Gleysols)"
+      page: 79
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

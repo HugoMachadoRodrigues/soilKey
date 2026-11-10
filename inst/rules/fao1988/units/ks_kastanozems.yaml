@@ -1,0 +1,47 @@
+# The soil units of the Kastanozems (KS), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 84,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  KS:
+    - code: "KSy"
+      name: "Gypsic Kastanozems"
+      name_pt: "Kastanozems Gípsicos (Gypsic Kastanozems)"
+      page: 84
+      tests:
+        all_of:
+          - gypsic_fao88: {max_top_cm: 125}
+      notes: "A gypsic horizon (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "KSl"
+      name: "Luvic Kastanozems"
+      name_pt: "Kastanozems Lúvicos (Luvic Kastanozems)"
+      page: 84
+      tests:
+        all_of:
+          - argic_b_fao88: {}
+      notes: "An argic B horizon (a calcic horizon may lie below it)."
+
+    - code: "KSk"
+      name: "Calcic Kastanozems"
+      name_pt: "Kastanozems Cálcicos (Calcic Kastanozems)"
+      page: 84
+      tests:
+        all_of:
+          - any_of:
+              - calcic_fao88: {max_top_cm: 125}
+              - petrocalcic_fao88: {max_top_cm: 125}
+      notes: "A calcic or petrocalcic horizon (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "KSh"
+      name: "Haplic Kastanozems"
+      name_pt: "Kastanozems Háplicos (Haplic Kastanozems)"
+      page: 84
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

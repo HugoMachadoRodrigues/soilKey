@@ -134,8 +134,9 @@
 # ---- HTML ---------------------------------------------------------------------
 
 # The sections of a national result's card: the experimental note, the class
-# at each level, the provisional classes, the Hungarian properties, the 1977
-# analogue of a Russian soil, the correspondences of the RP 2008 (the WRB
+# at each level, the provisional classes, the Hungarian properties, the
+# phases of the FAO-Unesco legend (v0.9.386), the 1977 analogue of a Russian
+# soil, the correspondences of the RP 2008 (the WRB
 # 2006 of an RP result, the RP equivalents of a CPCS result). "" for a
 # result that has none of them (WRB, SiBCS, USDA).
 .html_national_sections <- function(res) {
@@ -204,6 +205,12 @@
                           .html_escape(.report_msg("report.cst_correlation")),
                           .html_escape(.report_msg("report.cst_correlation_desc")),
                           paste(sprintf("<li>%s</li>", .html_escape(cstc)), collapse = "\n")))
+  fph <- .fao_phase_lines(res)
+  if (!is.null(fph))
+    out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
+                          .html_escape(.report_msg("report.fao_phases")),
+                          .html_escape(.report_msg("report.fao_phases_desc")),
+                          paste(sprintf("<li>%s</li>", .html_escape(fph)), collapse = "\n")))
   k77 <- .kidpr_1977_lines(res)
   if (!is.null(k77))
     out <- c(out, sprintf("<h3>%s</h3><p class=\"muted\">%s</p><ul>%s</ul>\n",
@@ -276,6 +283,11 @@
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.cst_correlation"),
                           .report_msg("report.cst_correlation_desc")),
              paste0("- ", .md_escape_marks(cstc), collapse = "\n"), "\n\n")
+  fph <- .fao_phase_lines(res)
+  if (!is.null(fph))
+    out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.fao_phases"),
+                          .report_msg("report.fao_phases_desc")),
+             paste0("- ", .md_escape_marks(fph), collapse = "\n"), "\n\n")
   k77 <- .kidpr_1977_lines(res)
   if (!is.null(k77))
     out <- c(out, sprintf("### %s\n\n%s\n\n", .report_msg("report.kidpr_1977"),

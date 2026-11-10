@@ -1,0 +1,65 @@
+# The soil units of the Solonetz (SN), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 83,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  SN:
+    - code: "SNg"
+      name: "Gleyic Solonetz"
+      name_pt: "Solonetz Gleicos (Gleyic Solonetz)"
+      page: 83
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "SNj"
+      name: "Stagnic Solonetz"
+      name_pt: "Solonetz Estágnicos (Stagnic Solonetz)"
+      page: 83
+      tests:
+        all_of:
+          - stagnic_properties_fao88: {max_top_cm: 50}
+      notes: "Stagnic properties within 50 cm of the surface."
+
+    - code: "SNm"
+      name: "Mollic Solonetz"
+      name_pt: "Solonetz Mólicos (Mollic Solonetz)"
+      page: 83
+      tests:
+        all_of:
+          - mollic_a_fao88: {}
+      notes: "A mollic A horizon."
+
+    - code: "SNy"
+      name: "Gypsic Solonetz"
+      name_pt: "Solonetz Gípsicos (Gypsic Solonetz)"
+      page: 83
+      tests:
+        all_of:
+          - gypsic_fao88: {max_top_cm: 125}
+      notes: "A gypsic horizon within 125 cm of the surface."
+
+    - code: "SNk"
+      name: "Calcic Solonetz"
+      name_pt: "Solonetz Cálcicos (Calcic Solonetz)"
+      page: 83
+      tests:
+        all_of:
+          - any_of:
+              - calcic_fao88: {max_top_cm: 125}
+              - soft_powdery_lime_fao88: {max_top_cm: 125}
+      notes: "A calcic horizon or concentrations of soft powdery lime within 125 cm of the surface (\"or soft powdery lime\" printed in italics in the 1997 text, applied as printed, Q4)."
+
+    - code: "SNh"
+      name: "Haplic Solonetz"
+      name_pt: "Solonetz Háplicos (Haplic Solonetz)"
+      page: 83
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

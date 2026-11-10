@@ -1,0 +1,83 @@
+# The soil units of the Luvisols (LV), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 88,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  LV:
+    - code: "LVg"
+      name: "Gleyic Luvisols"
+      name_pt: "Luvissolos Gleicos (Gleyic Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - gleyic_properties_fao88: {max_top_cm: 100}
+      notes: "Gleyic properties within 100 cm of the surface."
+
+    - code: "LVj"
+      name: "Stagnic Luvisols"
+      name_pt: "Luvissolos Estágnicos (Stagnic Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - stagnic_properties_fao88: {max_top_cm: 50}
+      notes: "Stagnic properties within 50 cm of the surface."
+
+    - code: "LVa"
+      name: "Albic Luvisols"
+      name_pt: "Luvissolos Álbicos (Albic Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - albic_e_fao88: {}
+      notes: "An albic E horizon."
+
+    - code: "LVv"
+      name: "Vertic Luvisols"
+      name_pt: "Luvissolos Vérticos (Vertic Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - vertic_properties_fao88: {}
+      notes: "Vertic properties (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "LVk"
+      name: "Calcic Luvisols"
+      name_pt: "Luvissolos Cálcicos (Calcic Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - any_of:
+              - calcic_fao88: {max_top_cm: 125}
+              - soft_powdery_lime_fao88: {max_top_cm: 125}
+      notes: "A calcic horizon or concentrations of soft powdery lime within 125 cm of the surface."
+
+    - code: "LVf"
+      name: "Ferric Luvisols"
+      name_pt: "Luvissolos Férricos (Ferric Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - ferric_properties_fao88: {}
+      notes: "Ferric properties (no depth in the key: within 125 cm, p. 42)."
+
+    - code: "LVx"
+      name: "Chromic Luvisols"
+      name_pt: "Luvissolos Crômicos (Chromic Luvisols)"
+      page: 88
+      tests:
+        all_of:
+          - b_colour_fao88: {colour: chromic, kind: argic_b}
+      notes: "A strong brown to red B: rubbed hue 7.5YR with a chroma above 4, or a hue redder than 7.5YR."
+
+    - code: "LVh"
+      name: "Haplic Luvisols"
+      name_pt: "Luvissolos Háplicos (Haplic Luvisols)"
+      page: 88
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

@@ -1,0 +1,78 @@
+# The soil units of the Fluvisols (FL), FAO-Unesco Revised Legend (FAO 1988, World
+# Soil Resources Report 60; the text of the ISRIC reprint of 1997), ch. X, p. 77-78,
+# in the key's order; the last unit is the key's "Other ..." residual
+# (default: true). Codes and names as printed; name_pt is soilKey's
+# Portuguese gloss. The criteria are summarised in soilKey's words; no text
+# of the book is shipped. The predicates are those of
+# R/diagnostics-fao88-horizons.R, R/diagnostics-fao88-properties.R,
+# R/key-fao.R and R/key-fao-units.R; the readings in readings.yaml.
+
+units:
+  FL:
+    - code: "FLt"
+      name: "Thionic Fluvisols"
+      name_pt: "Fluvissolos Tiônicos (Thionic Fluvisols)"
+      page: 77
+      tests:
+        all_of:
+          - any_of:
+              - sulfuric_fao88: {max_top_cm: 125}
+              - sulfidic_materials_fao88: {max_top_cm: 125}
+      notes: "A sulfuric horizon or sulfidic material (or both) at less than 125 cm from the surface."
+
+    - code: "FLs"
+      name: "Salic Fluvisols"
+      name_pt: "Fluvissolos Sálicos (Salic Fluvisols)"
+      page: 77
+      tests:
+        all_of:
+          - salic_properties_fao88: {}
+      notes: "Salic properties (no depth in the key; those of ch. V, within 30 cm)."
+
+    - code: "FLm"
+      name: "Mollic Fluvisols"
+      name_pt: "Fluvissolos Mólicos (Mollic Fluvisols)"
+      page: 77
+      tests:
+        all_of:
+          - any_of:
+              - mollic_a_fao88: {}
+              - histic_h_fao88: {base: eutric}
+      notes: "A mollic A horizon, or a eutric histic H horizon (pH 1:5 of 5.5 or more, Q15)."
+
+    - code: "FLc"
+      name: "Calcaric Fluvisols"
+      name_pt: "Fluvissolos Calcáricos (Calcaric Fluvisols)"
+      page: 77
+      tests:
+        all_of:
+          - calcaric_fao88: {}
+      notes: "Calcareous at least between 20 and 50 cm from the surface."
+
+    - code: "FLu"
+      name: "Umbric Fluvisols"
+      name_pt: "Fluvissolos Úmbricos (Umbric Fluvisols)"
+      page: 77
+      tests:
+        all_of:
+          - any_of:
+              - umbric_a_fao88: {}
+              - histic_h_fao88: {base: dystric}
+      notes: "An umbric A horizon, or a dystric histic H horizon (pH 1:5 below 5.5, Q15)."
+
+    - code: "FLd"
+      name: "Dystric Fluvisols"
+      name_pt: "Fluvissolos Distróficos (Dystric Fluvisols)"
+      page: 78
+      tests:
+        all_of:
+          - bs_below_fao88: {lt: 50, top: 20, bottom: 50}
+      notes: "Base saturation (NH4OAc) below 50 % at least from 20 to 50 cm (every layer overlapping 20-50 cm)."
+
+    - code: "FLe"
+      name: "Eutric Fluvisols"
+      name_pt: "Fluvissolos Eutróficos (Eutric Fluvisols)"
+      page: 78
+      tests:
+        default: true
+      notes: "Other soils of the grouping (the key's residual)."

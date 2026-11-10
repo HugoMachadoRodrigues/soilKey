@@ -9,9 +9,10 @@
 # it (data-raw/fao_readings.yaml). Organic carbon (OC) and CEC per kg of clay
 # are the units of this edition.
 #
-# 0.9.381 holds this table in data-raw/; the registry part of the 1988 legend
-# copies it to inst/rules/fao1988/thresholds.yaml. The defaults of the
-# readers in R/fao-readers.R are these numbers (test-v09381-fao-readers.R).
+# The copy of data-raw/fao_thresholds_1988.yaml (0.9.381) that the registry
+# part of the 1988 legend (0.9.384) ships with the rules; the two are kept
+# identical (test-v09384-fao88-groupings.R). The defaults of the readers in
+# R/fao-readers.R are these numbers (test-v09381-fao-readers.R).
 edition: "FAO-Unesco Revised Legend, World Soil Resources Report 60 (1988), text of the ISRIC reprint 1997"
 
 general:
@@ -352,3 +353,31 @@ key:
   AC: {page: 87, cec_clay_lt: 24, bs_lt_pct: 50, within_cm: 125}
   LV: {page: 88, cec_clay_min: 24, bs_min_pct: 50, to_cm: 125}
   LX: {page: 88, cec_clay_lt: 24, bs_min_pct: 50, to_cm: 125}
+
+unit_key:
+  page: "75-89"
+  source: "chapter X; the numbers of the gates of the 153 soil units (0.9.385); a unit adjective with no depth in the key is read within 125 cm (p. 42)"
+  gelic: {permafrost_within_cm: 200, page: "75-89"}
+  thionic: {sulfuric_or_sulfidic_lt_cm: 125, page: "75, 77, 79"}
+  gleyic: {within_cm: 100, page: "78-89"}
+  stagnic: {within_cm: 50, page: "83-88"}
+  plinthic: {within_cm: 125, page: "82, 87-88"}
+  calcic_gypsic: {within_cm: 125, page: "77-88"}
+  dystric: {bs_lt_pct: 50, window_cm: [20, 50], page: "77-81"}
+  calcaric_gypsiric: {window_cm: [20, 50], page: "77, 80, 85, 89"}
+  sodic: {window_cm: [20, 50], page: 78}
+  HS: {page: 75, fibric_depth_cm: 35}
+  AT: {page: 76, cumulic_sediments_gt_cm: 50}
+  LP: {page: 76, lithic_within_cm: 10, rendzic_cce_gt_pct: 40, dystric_bs_lt_pct: 50}
+  AN: {page: 79, vitric_texture_depth_cm: 100, vitric_texture: "silt loam or finer"}
+  AR: {page: 80, albic_min_cm: 50, albic_within_cm: 125, luvic_clay_increase_pct: 3, luvic_within_cm: 125, ferralic_within_cm: 125, ferralic_chroma_min: 5, ferralic_hue_redder_than: "10YR"}
+  PZ: {page: 81, ferric_fe_oc_min: 6, cambic_albic_max_cm: 2}
+  PT: {page: 82, dystric_bs_lt_pct: 50, dystric_plinthite_upper_cm: 50}
+  FR: {page: 82, geric_within_cm: 125, humic_bs_lt_pct: 50, humic_b_within_cm: 100, rhodic_hue_redder_than: "5YR", rhodic_value_moist_lt: 4, rhodic_dry_minus_moist_max: 1, xanthic_hue_as_yellow: "7.5YR", xanthic_value_moist_min: 4, xanthic_chroma_moist_min: 5}
+  PL: {page: 83, dystric_bs_lt_pct: 50, slowly_permeable_within_cm: 125}
+  PD: {page: 85, dystric_bs_lt_pct: 50, b_within_cm: 125}
+  GY: {page: 85, petric_within_cm: 100}
+  CL: {page: 86, petric_within_cm: 100}
+  NT: {page: 86, humic_bs_lt_pct: 50, humic_b_within_cm: 125}
+  LV: {page: 88, chromic_hue: "7.5YR", chromic_chroma_gt: 4, chromic_hue_redder_than: "7.5YR"}
+  CM: {page: 89, humic_bs_lt_pct: 50, dystric_bs_lt_pct: 50, chromic_hue: "7.5YR", chromic_chroma_gt: 4}
