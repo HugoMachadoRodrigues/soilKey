@@ -198,6 +198,7 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
       .sk_1977_note(res),
       .sk_crosswalk_note(res),
       .sk_fao_edition_note(res),
+      .sk_fao_phase_note(res),
       .sk_cst_correlation_note(res),
       meta,
       .sk_provisional_note(res)))
@@ -225,20 +226,44 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
              paste(cw$lines, collapse = "; "))
 }
 
+# Run a package helper that writes in the report language (.report_msg())
+# in the session's language, so a note of the card reads as the rest of it
+# (v0.9.398).
+.sk_in_report_lang <- function(expr) {
+  old <- options(soilKey.report_lang = .sk_app_lang())
+  on.exit(options(old), add = TRUE)
+  force(expr)
+}
+
 # The other edition of the FAO-Unesco legend (Appendix 4 of 1988), as a
 # note under the levels; NULL for the other systems.
 .sk_fao_edition_note <- function(res) {
-  fel <- tryCatch(soilKey:::.fao_edition_lines(res), error = function(e) NULL)
+  fel <- .sk_in_report_lang(
+    tryCatch(soilKey:::.fao_edition_lines(res), error = function(e) NULL))
   if (is.null(fel) || !length(fel)) return(NULL)
   shiny::div(class = "sk-fao-edition small text-muted mt-2",
              shiny::strong(i18n("classify.fao_crosswalk")), " ",
              paste(fel, collapse = " "))
 }
 
+# The phases and the map symbol of a FAO-Unesco result (chapter VIII and
+# Appendix 2 of 1988; the phases and the map symbol of 1974), as the report
+# gives them: one line per phase present or undecided and per map class
+# (v0.9.398); NULL for the other systems and for a result with none.
+.sk_fao_phase_note <- function(res) {
+  fph <- .sk_in_report_lang(
+    tryCatch(soilKey:::.fao_phase_lines(res), error = function(e) NULL))
+  if (is.null(fph) || !length(fph)) return(NULL)
+  shiny::div(class = "sk-fao-phases small text-muted mt-2",
+             shiny::strong(i18n("classify.fao_phases")),
+             shiny::tags$ul(class = "mb-0 ps-3", lapply(fph, shiny::tags$li)))
+}
+
 # The approximate equivalents of a Chinese order (CST 2001, Tables 4.2 and
 # 4.3), as a note under the levels; NULL for the other systems.
 .sk_cst_correlation_note <- function(res) {
-  cc <- tryCatch(soilKey:::.cst_correlation_lines(res), error = function(e) NULL)
+  cc <- .sk_in_report_lang(
+    tryCatch(soilKey:::.cst_correlation_lines(res), error = function(e) NULL))
   if (is.null(cc) || !length(cc)) return(NULL)
   shiny::div(class = "sk-cst-correlation small text-muted mt-2",
              shiny::strong(i18n("classify.cst_correlation")), " ",

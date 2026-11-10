@@ -381,3 +381,100 @@ test_that("a loaded example without coordinates clears those of the profile befo
   expect_false(is.na(suppressWarnings(as.numeric(sent$lat$value))))
   expect_true(nzchar(sent$pm$value))
 })
+
+
+# ---- every national system of the registry (v0.9.398) ---------------------------------
+
+# Does a result name the class an example is labelled with? The label is the
+# class at the level the examples of a system are drawn from (the order, the
+# type, the form, the reference ...), so it is read among the name and the
+# names of every level, case aside.
+.nat_names_label <- function(r, label) {
+  lv <- r$levels
+  txt <- tolower(c(r$name, if (is.data.frame(lv)) c(lv$name, lv$name_en)))
+  any(grepl(tolower(label), txt, fixed = TRUE))
+}
+
+test_that("every national system of the registry has its examples on the Pedon tab", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  withr::local_options(soilKey.app_lang = "en")
+  cat <- env$pro_fixture_catalog()
+  nat <- env$.sk_national_systems()
+  expect_true(nrow(nat) >= 14L)
+  for (id in nat$id) {
+    grp <- cat[[env$.sk_system_label(id)]]
+    expect_true(length(grp) >= 10L, info = id)
+    expect_true(all(vapply(grp, env$pro_fixture_system, "") == id), info = id)
+    # the first, a middle and the last example load and key to their class
+    # with the registry's classifier (every example is checked by the tests
+    # of each system)
+    fn <- get(soilKey:::.system_get(id)$classifier, asNamespace("soilKey"))
+    for (k in unique(c(1L, ceiling(length(grp) / 2), length(grp)))) {
+      p <- env$pro_load_fixture(grp[[k]])
+      expect_true(inherits(p, "PedonRecord"), info = grp[[k]])
+      r <- fn(p, on_missing = "silent")
+      expect_true(.nat_names_label(r, names(grp)[k]), info = grp[[k]])
+    }
+  }
+})
+
+test_that("a FAO card shows the phases and the map symbol, in the session's language", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  r <- classify_fao1988(make_fao1988_example("FR"), on_missing = "silent")
+  report_lang <- getOption("soilKey.report_lang")
+  withr::local_options(soilKey.app_lang = "en")
+  html <- as.character(env$pro_national_card(r, "FAO 1988 (Revised Legend)"))
+  expect_match(html, "sk-fao-phases", fixed = TRUE)
+  expect_match(html, "Phases and map symbol", fixed = TRUE)
+  expect_match(html, "Texture class (upper 30 cm): 3 Fine textured, p. 107.", fixed = TRUE)
+  expect_match(html, "Legend of 1974: Fo Orthic Ferralsols (renamed, App. 4 p. 125).", fixed = TRUE)
+  withr::local_options(soilKey.app_lang = "pt")
+  html <- as.character(env$pro_national_card(r, "FAO 1988 (Legenda Revisada)"))
+  expect_match(html, "Fases e s\u00edmbolo do mapa", fixed = TRUE)
+  expect_match(html, "Classe textural (30 cm superiores): 3 Textura fina, p. 107.", fixed = TRUE)
+  expect_match(html, "Legenda de 1974: Fo Orthic Ferralsols (renomeada, Ap. 4 p. 125).", fixed = TRUE)
+  # the card leaves the report language as it found it
+  expect_identical(getOption("soilKey.report_lang"), report_lang)
+  # no phases for a system without them
+  n <- classify_nzsc4(make_ferralsol_canonical(), on_missing = "silent")
+  expect_null(env$.sk_fao_phase_note(n))
+})
+
+test_that("a CST card gives its equivalents in the session's language", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  r <- classify_cst2001(make_cst2001_example("L4"), on_missing = "silent")
+  withr::local_options(soilKey.app_lang = "en")
+  html <- as.character(env$pro_national_card(r, "China (CST 2001)"))
+  expect_match(html, "Argosols, US Soil Taxonomy (1999), Table 4.2: mostly Alfisols; partly Ultisols, Mollisols.",
+               fixed = TRUE)
+  withr::local_options(soilKey.app_lang = "pt")
+  html <- as.character(env$pro_national_card(r, "China (CST 2001)"))
+  expect_match(html, "Argosols, Soil Taxonomy dos EUA (1999), Tabela 4.2: na maior parte Alfisols; em parte Ultisols, Mollisols.",
+               fixed = TRUE)
+})
+
+test_that("the Thanks tab credits every national system of the registry by its citation", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  for (lang in c("en", "pt")) {
+    withr::local_options(soilKey.app_lang = lang)
+    html <- as.character(env$acknowledgements_ui("thanks"))
+    nat <- env$.sk_national_systems()
+    expect_match(html, env$i18n("thanks.s_national"), fixed = TRUE)
+    for (id in nat$id) {
+      cit <- trimws(gsub("[[:space:]]+", " ", soilKey:::.system_get(id)$citation))
+      expect_match(html, htmltools::htmlEscape(substr(cit, 1, 40)), fixed = TRUE, info = id)
+      expect_match(html, htmltools::htmlEscape(env$i18n("thanks.c_national", env$.sk_system_label(id))),
+                   fixed = TRUE, info = id)
+    }
+    expect_identical(lengths(regmatches(html, gregexpr("sk-exp-badge", html))),
+                     sum(nat$status == "experimental"))
+  }
+})

@@ -707,6 +707,7 @@ en:
   "classify.fao_crosswalk": "Other edition (Appendix 4 of 1988; a note, not a class):"
   # v0.9.373 -- the Chinese Soil Taxonomy (2001): correlation and the book's own marks
   "classify.cst_correlation": "US Soil Taxonomy and WRB equivalents (a note, not a class)"
+  "classify.fao_phases": "Phases and map symbol (they never change the class):"
   "classify.cst_book_provisional": "marked provisional in CST 2001"
   "classify.provisional": "Provisional:"
   "classify.provisional_summary": "the key could not decide %d class(es) tested before this one."
@@ -794,6 +795,8 @@ en:
   "thanks.c_glenn": "Colorimetry corrections to the spectra-to-Munsell path (chromatic adaptation and rounding)."
   "thanks.l_cran": "CRAN and Uwe Ligges."
   "thanks.c_cran": "Package review and publication."
+  "thanks.s_national": "National classification systems"
+  "thanks.c_national": "%s: the key and the diagnostics soilKey reads from this book."
   # v0.9.210 -- Report tab (downloads in the body; PDF only where LaTeX exists)
   "report.desc_section": "Build a shareable report of the classification and download it."
   "report.help_title": "A heading printed at the top of the report -- use the site, profile, or project name."
@@ -1668,6 +1671,7 @@ pt:
   "classify.fao_crosswalk": "Outra edição (apêndice 4 de 1988; uma nota, não uma classe):"
   # v0.9.373 -- a Taxonomia de Solos da China (2001): correlação e as marcas do próprio livro
   "classify.cst_correlation": "Equivalentes na Soil Taxonomy e na WRB (uma nota, não uma classe)"
+  "classify.fao_phases": "Fases e símbolo do mapa (nunca mudam a classe):"
   "classify.cst_book_provisional": "marcado como provisório na CST 2001"
   "classify.provisional": "Provisório:"
   "classify.provisional_summary": "a chave não pôde decidir %d classe(s) testada(s) antes desta."
@@ -1755,6 +1759,8 @@ pt:
   "thanks.c_glenn": "Correções de colorimetria no caminho de espectro para Munsell (adaptação cromática e arredondamento)."
   "thanks.l_cran": "O CRAN e Uwe Ligges."
   "thanks.c_cran": "Revisão e publicação do pacote."
+  "thanks.s_national": "Sistemas nacionais de classificação"
+  "thanks.c_national": "%s: a chave e os diagnósticos que o soilKey lê deste livro."
   # v0.9.210 -- Report tab (downloads in the body; PDF only where LaTeX exists)
   "report.desc_section": "Monte um relatório da classificação para compartilhar e baixe-o."
   "report.help_title": "Um título impresso no topo do relatório; use o nome do local, do perfil ou do projeto."

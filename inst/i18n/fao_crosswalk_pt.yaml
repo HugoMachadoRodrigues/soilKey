@@ -1,0 +1,24 @@
+# soilKey -- the conditions of the FAO-Unesco crosswalk (inst/rules/fao1988/
+# crosswalk.yaml, `also_when`) in Brazilian Portuguese (v0.9.398), for the
+# edition line of a report or of the app in Portuguese. Keys are the English
+# texts of crosswalk.yaml, verbatim; a text missing here stays in English.
+"coarse textured materials (a gleyic unit of the Arenosols)": "materiais de textura grossa (uma unidade gleica dos Arenosols)"
+"alluvial deposits with fluvic properties": "depósitos aluviais com propriedades flúvicas"
+"plinthite within 125 cm": "plintita até 125 cm"
+"coarse textured materials": "materiais de textura grossa"
+"very stony materials": "materiais muito pedregosos"
+"a calcic horizon": "um horizonte cálcico"
+"a gypsic horizon": "um horizonte gípsico"
+"an argic B with a CEC below 24 cmol(+)/kg clay": "um B árgico com CTC abaixo de 24 cmol(+)/kg de argila"
+"plinthite": "plintita"
+"an argic B with a CEC of 24 cmol(+)/kg clay or more (Alisols)": "um B árgico com CTC de 24 cmol(+)/kg de argila ou mais (Alisols)"
+"by their morphology, with a yermic phase where appropriate": "pela sua morfologia, com uma fase yérmica quando for o caso"
+"a calcic horizon (group comment)": "um horizonte cálcico (comentário do grupo)"
+"a gypsic horizon (group comment)": "um horizonte gípsico (comentário do grupo)"
+"a calcic or petrocalcic horizon, the Luvic Calcisols keyed before the Luvisols (p. 119)": "um horizonte cálcico ou petrocálcico, os Luvic Calcisols chaveados antes dos Luvisols (p. 119)"
+"a low activity argic B with plinthite deeper than the Plinthosols ask": "um B árgico de baixa atividade com plintita mais profunda do que pedem os Plinthosols"
+"an argic B with a CEC of 24 cmol(+)/kg clay or more": "um B árgico com CTC de 24 cmol(+)/kg de argila ou mais"
+"a red B (Rhodic Nitisols, no 1974 unit)": "um B vermelho (Rhodic Nitisols, sem unidade de 1974)"
+"plinthite as the Plinthosols ask": "plintita como pedem os Plinthosols"
+"by their morphology": "pela sua morfologia"
+"by their morphology, with a yermic phase": "pela sua morfologia, com uma fase yérmica"

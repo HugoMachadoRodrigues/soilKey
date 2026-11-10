@@ -1,7 +1,8 @@
 # =============================================================================
 # soilKey Pro -- Acknowledgements & references tab (v0.9.166).
 #
-# A static credits page: the classification standards soilKey implements, the R
+# A credits page: the classification standards soilKey implements (the
+# national systems listed from the registry since v0.9.398), the R
 # packages it builds on, the data sources that test it, and the people whose
 # review shaped it -- each with the specific contribution it is thanked for.
 # Content is drawn from verifiable sources (package authorship, the published
@@ -16,6 +17,25 @@
     class = "sk-ack-item",
     shiny::tags$span(class = "sk-ack-lead", lead),
     shiny::tags$span(class = "sk-ack-contrib", contribution))
+}
+
+# v0.9.398: the national systems, one item per registry entry, in registry
+# order: the book (the registry's citation, whitespace folded) and what
+# soilKey reads from it, with the experimental pill while the registry says so.
+# A system added to the registry is credited here without a code change.
+.ack_national_items <- function() {
+  nat <- .sk_national_systems()
+  lapply(seq_len(nrow(nat)), function(i) {
+    e <- tryCatch(soilKey:::.system_get(nat$id[i]), error = function(e) NULL)
+    cit <- trimws(gsub("[[:space:]]+", " ", e$citation %||% nat$name[i]))
+    shiny::tags$li(
+      class = "sk-ack-item",
+      shiny::tags$span(class = "sk-ack-lead", cit),
+      shiny::tags$span(class = "sk-ack-contrib",
+                       i18n("thanks.c_national", .sk_system_label(nat$id[i], nat$name[i])),
+                       if (identical(nat$status[i], "experimental"))
+                         shiny::tagList(" ", sk_experimental_badge())))
+  })
 }
 
 .ack_card <- function(title, icon_name, ...) {
@@ -50,6 +70,11 @@ acknowledgements_ui <- function(id) {
         .ack_item(
           "Santos, H.G. dos, Jacomine, P.K.T., Anjos, L.H.C. dos, et al. (2018). Sistema Brasileiro de Classificacao de Solos (SiBCS), 5th edition. Embrapa, Brasilia.",
           i18n("thanks.c_sibcs"))),
+
+      # ---- 1b. National classification systems (the registry) -----------
+      .ack_card(
+        i18n("thanks.s_national"), "earth-americas",
+        .ack_national_items()),
 
       # ---- 2. R packages soilKey builds on --------------------------------
       .ack_card(

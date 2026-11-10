@@ -6,8 +6,8 @@
 #                 from scratch, with an interactive horizon editor.
 #   * Classify -- run WRB 2022 / SiBCS 5 / USDA ST 13 side-by-side, with the
 #                 full deterministic key trace and missing-data hints; the
-#                 national systems (Canada, Australia, New Zealand, Hungary)
-#                 when ticked, marked experimental.
+#                 national systems of the registry (soilkey_systems()) when
+#                 ticked, marked experimental.
 #   * Photo    -- VLM extraction of Munsell colour and site metadata from
 #                 field photographs (mock provider by default; no data leaves
 #                 the machine unless a live provider is configured).

@@ -1,3 +1,16 @@
+# soilKey 0.9.398 (2026-11-10)
+
+## soilKey Pro: the national systems added since 0.9.337 in the app
+
+The systems added since the last published app (Germany KA5, South Africa 1991, China CST 2001, the FAO-Unesco legends of 1988 and 1974) were already offered on the Classify and Pedon tabs; four gaps are closed.
+
+* **The FAO phases and map symbol on the card.** The card of a FAO-Unesco result now lists the phases present or undecided and the texture and slope classes of the map symbol, as the report's section "Phases and map symbol" does (the same helper, `.fao_phase_lines()`), in the session's language.
+* **The FAO edition line and the CST equivalents in Portuguese.** In a Portuguese report, and on a card of the app in Portuguese, the words around the codes and class names are translated: "Legenda de 1974", "Legenda Revisada (1988)", the kind of change ("renomeada", "definição alterada" ...), "Ap. 4 p.", "na maior parte", "em parte", "inteiramente", "Tabela 4.2". The conditions of the crosswalk (`also_when` of `inst/rules/fao1988/crosswalk.yaml`) are translated in a new file, `inst/i18n/fao_crosswalk_pt.yaml`. Class names stay as the books print them. In English every line is the one of before, byte for byte; the words now come from `inst/i18n/report_translations.yaml` (22 new keys in each language).
+* **The Thanks tab credits every national system.** A new card, "National classification systems", lists each national system of the registry by the citation of its `system.yaml`, with what soilKey reads from it and the experimental pill while the registry marks it so; a system added to the registry is credited without a change to the app.
+* **The app test covers every national system.** `test-app-national-systems.R` now checks that every national system of the registry has its examples on the Pedon tab and that a sample of them (first, middle, last) loads and keys to its class with the registry's classifier; new tests cover the FAO phases on the card, the Portuguese notes, and the Thanks card in both languages.
+
+Every classification is unchanged.
+
 # soilKey 0.9.395 (2026-11-10)
 
 ## The declared notation decides how the older designations are read
@@ -40,6 +53,7 @@ The AfSP run of 2026-11-10 (641 scored), with all four readings:
 * Main figure: 139 of 641 agree, 21.7 % (Wilson 95 % 18.7-25.0; 0.9.393: 122, 19.0 %). soilKey names a form for 216 (coverage 33.7 %, 30.1-37.4; was 196, 30.6 %), and among those the form agrees for 64.4 % (57.8-70.4; was 62.2 %). 423 stop with forms undecided and the label's form is among them for 315 (74.5 %; was 316 of 442, 71.5 %). The confusions Mispah to Clovelly (5) and Bonheim to Inhoek (5) are gone; Mispah now agrees for 8 of 18 (was 2).
 * Without M1 (B1, C1 and A1 only) the main figure was 123 of 641 (19.2 %), 186 decided (29.0 %), 66.1 % of them.
 * Second figure, the humic A of 1977 (surveys before 1991 or 1977 binomials): 154 of 641 agree, 24.0 % (20.9-27.5); 71.3 % of the decided (64.9-76.9). 25 profiles are read so; 19 agreements gained (Hutton read as Inanda 8, Clovelly as Magwa 6, Griffin as Kranskop 5) and 4 lost: binomials of surveys of 1999-2000 whose surveyors wrote a thin humic A as humic (Kranskop 3, Inanda 1). Left: a Griffin of 1982 whose humic A is 500 mm.
+
 
 # soilKey 0.9.393 (2026-11-10)
 

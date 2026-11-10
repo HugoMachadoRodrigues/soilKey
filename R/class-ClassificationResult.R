@@ -187,7 +187,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       }
       # v0.9.391: the other edition of the FAO-Unesco legend (Appendix 4 of
       # 1988), a note only
-      fel <- tryCatch(.fao_edition_lines(self), error = function(e) NULL)
+      fel <- tryCatch(.in_report_lang("en", .fao_edition_lines(self)), error = function(e) NULL)
       for (l in fel) cli::cli_text("Other edition: {l}")
       # v0.9.353: the humus form of the RP 2008, beside the name
       if (is.data.frame(self$humus_form) && nrow(self$humus_form) > 0L) {

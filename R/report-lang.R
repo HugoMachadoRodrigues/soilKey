@@ -34,6 +34,15 @@
   if (length(lang) != 1L || !lang %in% c("en", "pt")) "en" else lang
 }
 
+# Evaluate `expr` with the report language set to `lang` (v0.9.398): the
+# text a classifier stores in a result, and print(), stay in English whatever
+# the language of a report being written around them.
+.in_report_lang <- function(lang, expr) {
+  old <- options(soilKey.report_lang = lang)
+  on.exit(options(old), add = TRUE)
+  force(expr)
+}
+
 #' Look up a fixed report label in the current report language.
 #'
 #' Falls back to English, then to the key itself. \code{...} are passed to
