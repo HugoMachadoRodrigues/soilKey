@@ -485,7 +485,23 @@ read_wosis_layers_graphql <- function(profile_id, timeout = 30, max_layers = 40L
     if (length(page) < page_size || length(layers) >= n_layers) break
   }
   if (!length(layers)) return(fail("this WoSIS profile has no layer data", 0L))
+  .wosis_layers_to_horizons(layers, n_layers = n_layers, map = map)
+}
 
+#' WoSIS layers, as the GraphQL endpoint returns them, in the soilKey horizon
+#' schema (v0.9.396).
+#'
+#' The conversion step of read_wosis_layers_graphql(), factored out so that a
+#' saved copy of the layers (the offline FAO-Unesco benchmark,
+#' inst/benchmarks/fao_wosis.R) is read exactly as the live path reads them.
+#' No network. `layers` is a list of layers (non-empty), each with upperDepth,
+#' lowerDepth, layerName, licence, datasetId and the <field>Values lists of
+#' .wosis_layer_map(); a property absent from a layer reads as not measured.
+#' @return A data.frame with attributes "provenance", "licence", "dataset",
+#'   "n_layers" and "depth_shift_cm", as read_wosis_layers_graphql().
+#' @noRd
+.wosis_layers_to_horizons <- function(layers, n_layers = length(layers),
+                                      map = .wosis_layer_map()) {
   num <- function(x) if (is.null(x)) NA_real_ else suppressWarnings(as.numeric(x)[1])
   up  <- vapply(layers, function(l) num(l$upperDepth), numeric(1))
   lo  <- vapply(layers, function(l) num(l$lowerDepth), numeric(1))

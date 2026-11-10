@@ -62,7 +62,6 @@ The systems added since the last published app (Germany KA5, South Africa 1991, 
 
 Every classification is unchanged.
 
-
 # soilKey 0.9.397 (2026-11-10)
 
 ## South African classification 1991: the vertic A without a plasticity index, and the AfSP loader reads mottles, clay mineralogy and stickiness
@@ -91,6 +90,24 @@ The AfSP run of the South African benchmark (641 scored) with the profiles of th
 * Second figure, the humic A of 1977: 151 of 641 agree (was 154).
 * The 73 form examples, the 404 family examples and the special cases (555 runs) keep their names and provisional status.
 
+# soilKey 0.9.396 (2026-11-10)
+
+## FAO-Unesco legend: the WoSIS benchmark
+
+A second offline benchmark of the FAO-Unesco legends, `inst/benchmarks/fao_wosis.R`, compares both editions with the FAO-Unesco names of ISRIC's WoSIS profiles (fields `faoMajorGroup`, `faoSoilUnit`, `faoPublicationYear`): a label of 1974 with `classify_fao(edition = "1974")`, a label of the year 1997 (ISRIC's reprint of the Revised Legend, read as fao1988, Hugo's decision Q1) with `classify_fao()`. Like the ISIS benchmark it downloads nothing: it reads a cache folder saved by the user (`listing.rds`, the profile records; `raw/<profileId>.rds`, the layers of each profile; optionally `manifest.csv`) from its first argument, the option `soilKey.wosis_fao_cache`, `SOILKEY_WOSIS_FAO_CACHE` or the user cache folder, and run as a script with no cache found says so and exits cleanly. WoSIS data are not shipped; the report cites them as ISRIC asks (`wosis_citation()`, Batjes, Calisto and de Sousa 2024) with the date of the download.
+
+The layers of the cache are read exactly as the live reader reads them: the conversion step of `read_wosis_layers_graphql()` (depth order, the shift of an organic surface to 0 cm, units, provenance, the most restrictive licence of the layers) is now an internal function, `.wosis_layers_to_horizons()`, which the live reader calls after its download. The live path is unchanged: on synthetic replies and on 300 saved profiles its output is byte-identical before and after.
+
+How the labels are scored (Hugo's decisions of 2026-11-10). A label "<unit> <group>" is read by `.fao_match_label()` in the edition of its year, exact names only. A unit that is no unit of its edition (the national adaptations: "Chromic Regosol" of 1974, "Plinthic Calcisol" of 1997) is scored at grouping level only and listed as an unmatched unit (Q3). Records of 1974 whose group code is one of 1988 (SC, KS) are scored by their 1974 names and reported apart (Q2). Profiles of the dataset WD-ISIS are left out, since the ISIS benchmark scores them (Q7). All licences are scored, with the figures on the CC BY profiles beside them (Q4). The Legend of 1974 is also given for Mexico and for the rest, since most of its WoSIS labels come from one Mexican dataset. The headline gives four figures together (Q6): agreement over all labels (a fall-through counts as a disagreement), coverage (soilKey names a grouping), agreement among the covered labels, and "not contradicted" (the grouping agrees, or soilKey stops undecided with the label's grouping among its candidates), each with a Wilson 95 % interval.
+
+The run of 2026-11-10 on a stratified sample of WoSIS (3,000 profiles with layers per edition, drawn by country and major group, proportional with at least one per stratum, fixed seed; 38,695 profiles carry an FAO-Unesco label, 33,203 with layers; the sample was read with the 12 properties the keys use, and no profile had more than 40 layers); 139 WD-ISIS profiles left out, 5,861 scored:
+
+- Revised Legend, 2,925 labels: grouping 100 agree, 3.4 % (2.8-4.1); soilKey names a grouping for 296, 10.1 % (9.1-11.3), and among those it agrees for 33.8 % (28.6-39.3); not contradicted 1,705, 58.3 % (56.5-60.1). Unit 45 of 2,514, 1.8 % (1.3-2.4), 51.1 % (40.9-61.3) where the grouping agrees. CC BY only (1,824): agreement 4.2 % (3.3-5.2), coverage 13.3 %, among covered 31.4 %, not contradicted 57.7 %.
+- Legend of 1974, 2,755 labels with 1974 group codes: grouping 227 agree, 8.2 % (7.3-9.3); coverage 686, 24.9 % (23.3-26.5); among covered 33.1 % (29.7-36.7); not contradicted 1,491, 54.1 % (52.3-56.0). Unit 137 of 2,290, 6.0 % (5.1-7.0), 73.3 % (66.5-79.1) where the grouping agrees. Mexico (2,531): agreement 8.7 %, coverage 25.7 %, among covered 33.7 %; outside Mexico (224): 3.6 %, 16.1 %, 22.2 %. The 181 records with 1988 group codes, apart: agreement 37.0 % (30.3-44.3), among covered 84.8 %. No CC BY profile of 1974 remains once WD-ISIS is left out.
+- Labels: every group name is read; 61 labels of 1997 and 418 of 1974 name a unit outside their edition (Chromic Regosol 155, Chromic Phaeozem 41, Vitric Gleysol 40 of 1974; Luvic Regosol, Plinthic Calcisol and Sodic Cambisol 6 each of 1997).
+
+Almost every disagreement is a fall-through, not a wrong class: WoSIS serves no base saturation, Munsell colour, Fe and Al fractions or gypsum, often no horizon designation and no carbonate, so most tests stay undecided as Hugo's rule asks and the soil names its candidates (the Gypsisols are a candidate in 2,300 of the 2,629 revised fall-throughs). The figure that measures the keys on these data is the agreement among the covered labels, about one in three in both editions. The real misclassifications are few (1974: Rendzinas, Phaeozems and Lithosols keyed as Regosols, 55, 46 and 43). Every classification is unchanged.
+
 # soilKey 0.9.395 (2026-11-10)
 
 ## The declared notation decides how the older designations are read
@@ -116,7 +133,6 @@ Measured on 2026-11-10, before and after:
 - SALI, Queensland (5,716 profiles, `asc`): readings change in 34; names change on 20 profiles (22 names): the FAO 1988 candidates of 18 undecided profiles, WRB on 2 (a Cambic qualifier gained) and SiBCS on 2. The SALI benchmark (ASC key) is unchanged.
 - NSD (1,330 profiles, now `nz_legacy`): no reading changes, and all 1,330 profiles give the same names under the 17 keys as before (22,610 names; the 183 profiles with no horizons stop with the same error before and after).
 
-
 # soilKey 0.9.394 (2026-11-10)
 
 ## South African classification 1991: four readings after the AfSP benchmark
@@ -134,7 +150,6 @@ The AfSP run of 2026-11-10 (641 scored), with all four readings:
 * Main figure: 139 of 641 agree, 21.7 % (Wilson 95 % 18.7-25.0; 0.9.393: 122, 19.0 %). soilKey names a form for 216 (coverage 33.7 %, 30.1-37.4; was 196, 30.6 %), and among those the form agrees for 64.4 % (57.8-70.4; was 62.2 %). 423 stop with forms undecided and the label's form is among them for 315 (74.5 %; was 316 of 442, 71.5 %). The confusions Mispah to Clovelly (5) and Bonheim to Inhoek (5) are gone; Mispah now agrees for 8 of 18 (was 2).
 * Without M1 (B1, C1 and A1 only) the main figure was 123 of 641 (19.2 %), 186 decided (29.0 %), 66.1 % of them.
 * Second figure, the humic A of 1977 (surveys before 1991 or 1977 binomials): 154 of 641 agree, 24.0 % (20.9-27.5); 71.3 % of the decided (64.9-76.9). 25 profiles are read so; 19 agreements gained (Hutton read as Inanda 8, Clovelly as Magwa 6, Griffin as Kranskop 5) and 4 lost: binomials of surveys of 1999-2000 whose surveyors wrote a thin humic A as humic (Kranskop 3, Inanda 1). Left: a Griffin of 1982 whose humic A is 500 mm.
-
 
 # soilKey 0.9.393 (2026-11-10)
 
