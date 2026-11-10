@@ -27,7 +27,7 @@ miss. They are not real profiles."><meta property="og:image" content="https://hu
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.388</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.390</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,11 +100,15 @@ miss. They are not real profiles.</p>
 <dd><p>The code of a major soil grouping of 1988 ("HS", "AT", "LP",
 "VR", "FL", "SC", "GL", "AN", "AR", "RG", "PZ", "PT", "FR", "PL", "SN",
 "GR", "CH", "KS", "PH", "PD", "GY", "CL", "NT", "AL", "AC", "LV", "LX",
-"CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...).</p></dd>
+"CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...); with
+<code>edition = "1974"</code>, of a major soil group of 1974 ("O", "I", "V",
+"J", "Z", "G", "T", "Q", "R", "U", "E", "P", "F", "W", "S", "M", "C",
+"K", "H", "D", "X", "Y", "N", "A", "L", "B") or of one of its 106 soil
+units ("Ox", "Lc", "Be" ...).</p></dd>
 
 
 <dt id="arg-edition">edition<a class="anchor" aria-label="anchor" href="#arg-edition"></a></dt>
-<dd><p><code>"1988"</code>; the examples of 1974 follow with its key.</p></dd>
+<dd><p><code>"1988"</code> (default) or <code>"1974"</code> (since v0.9.389).</p></dd>
 
 
 <dt id="arg-near-miss">near_miss<a class="anchor" aria-label="anchor" href="#arg-near-miss"></a></dt>
@@ -132,6 +136,9 @@ miss. They are not real profiles.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4:           C     90       140     60</span>
 <span class="r-in"><span><span class="fu"><a href="classify_fao.html">classify_fao</a></span><span class="op">(</span><span class="fu">make_fao_example</span><span class="op">(</span><span class="st">"LVx"</span><span class="op">)</span>, on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Chromic Luvisols"</span>
+<span class="r-in"><span><span class="fu"><a href="classify_fao.html">classify_fao</a></span><span class="op">(</span><span class="fu">make_fao_example</span><span class="op">(</span><span class="st">"Fx"</span>, edition <span class="op">=</span> <span class="st">"1974"</span><span class="op">)</span>, edition <span class="op">=</span> <span class="st">"1974"</span>,</span></span>
+<span class="r-in"><span>             on_missing <span class="op">=</span> <span class="st">"silent"</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Xanthic Ferralsols"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -26,11 +26,14 @@ make_fao_example(code = "HS", edition = c("1988", "1974"), near_miss = FALSE)
   "FL", "SC", "GL", "AN", "AR", "RG", "PZ", "PT", "FR", "PL", "SN",
   "GR", "CH", "KS", "PH", "PD", "GY", "CL", "NT", "AL", "AC", "LV",
   "LX", "CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe"
-  ...).
+  ...); with `edition = "1974"`, of a major soil group of 1974 ("O",
+  "I", "V", "J", "Z", "G", "T", "Q", "R", "U", "E", "P", "F", "W", "S",
+  "M", "C", "K", "H", "D", "X", "Y", "N", "A", "L", "B") or of one of
+  its 106 soil units ("Ox", "Lc", "Be" ...).
 
 - edition:
 
-  `"1988"`; the examples of 1974 follow with its key.
+  `"1988"` (default) or `"1974"` (since v0.9.389).
 
 - near_miss:
 
@@ -58,4 +61,7 @@ p$horizons[, c("designation", "top_cm", "bottom_cm", "bs_pct")]
 #> 4:           C     90       140     60
 classify_fao(make_fao_example("LVx"), on_missing = "silent")$name
 #> [1] "Chromic Luvisols"
+classify_fao(make_fao_example("Fx", edition = "1974"), edition = "1974",
+             on_missing = "silent")$name
+#> [1] "Xanthic Ferralsols"
 ```

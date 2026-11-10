@@ -255,16 +255,18 @@ subgroups follow in later releases.
 ## FAO-Unesco soil legend (experimental)
 
 The legend of the FAO-Unesco Soil Map of the World, one module with two
-editions. This release keys the 28 major soil groupings of the Revised
-Legend (FAO 1988, World Soil Resources Report 60; the text of the ISRIC
-reprint of 1997) in the key’s order, on the diagnostic horizons and
-properties of chapters IV and V read on the data. The soil units, the
-phases and the Legend of 1974 follow in later releases.
+editions: the Revised Legend (FAO 1988, World Soil Resources Report 60;
+the text of the ISRIC reprint of 1997), its 28 major soil groupings, 153
+soil units and 16 phases, and the Legend of 1974 (Unesco, Paris), its 26
+major soil groups and 106 soil units, each in its key’s order, on the
+diagnostic horizons and properties of its edition read on the data.
 
 - [`classify_fao()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao.md)
   : Classify a pedon in the FAO-Unesco soil legend
 - [`classify_fao1988()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao1988.md)
   : Classify a pedon in the FAO-Unesco Revised Legend (1988)
+- [`classify_fao1974()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao1974.md)
+  : Classify a pedon in the FAO-Unesco Legend of 1974
 - [`make_fao_example()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_fao_example.md)
   : Example pedons for the FAO-Unesco legend
 

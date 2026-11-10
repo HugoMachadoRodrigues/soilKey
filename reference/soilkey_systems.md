@@ -51,6 +51,7 @@ soilkey_systems()
 #> 14    za1991
 #> 15   cst2001
 #> 16   fao1988
+#> 17   fao1974
 #>                                                                       name
 #> 1                                                                 WRB 2022
 #> 2                                                       SiBCS, 5th edition
@@ -68,6 +69,7 @@ soilkey_systems()
 #> 14                                South African soil classification (1991)
 #> 15                           Chinese Soil Taxonomy (2001, English edition)
 #> 16                                        FAO-Unesco Revised Legend (1988)
+#> 17                                                FAO-Unesco Legend (1974)
 #>                                                                                              edition
 #> 1                                                                                 4th edition (2022)
 #> 2                                                                                 5th edition (2018)
@@ -85,6 +87,7 @@ soilkey_systems()
 #> 14                                   Soil classification: a taxonomic system for South Africa (1991)
 #> 15                                        Chinese Soil Taxonomy, English edition, Science Press 2001
 #> 16 World Soil Resources Report 60, FAO 1988; corrected reprint 1990; ISRIC Technical Paper 20 (1997)
+#> 17                               Soil Map of the World 1:5 000 000, Vol. I Legend, Unesco Paris 1974
 #>          status         classifier
 #> 1        stable   classify_wrb2022
 #> 2        stable     classify_sibcs
@@ -102,6 +105,7 @@ soilkey_systems()
 #> 14 experimental    classify_za1991
 #> 15 experimental   classify_cst2001
 #> 16 experimental   classify_fao1988
+#> 17 experimental   classify_fao1974
 #>                                            levels
 #> 1                                            rsgs
 #> 2    ordens, subordens, grandes_grupos, subgrupos
@@ -119,6 +123,7 @@ soilkey_systems()
 #> 14                                forms, families
 #> 15           orders, suborders, groups, subgroups
 #> 16                            major_groups, units
+#> 17                            major_groups, units
 #>                                       aliases default
 #> 1                                         wrb    TRUE
 #> 2                                       sibcs    TRUE
@@ -136,4 +141,5 @@ soilkey_systems()
 #> 14             za, sat, sat1991, south_africa   FALSE
 #> 15                        cst, china, chinese   FALSE
 #> 16                 fao, fao88, revised_legend   FALSE
+#> 17                     fao74, fao_unesco_1974   FALSE
 ```

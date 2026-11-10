@@ -24,7 +24,8 @@ classify_fao1988(
 
 - rules:
 
-  Optional pre-loaded rule set (`load_rules("fao1988")`).
+  Optional pre-loaded rule set (`load_rules("fao1988")`, or
+  `load_rules("fao1974")` with `edition = "1974"`).
 
 - on_missing:
 
