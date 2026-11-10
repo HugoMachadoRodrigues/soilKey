@@ -160,9 +160,10 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     if (is.null(peds[[key]]))
       peds[[key]] <- tryCatch(soilKey::isis_profile_to_pedon(raw[[i]]), error = function(e) NA)
     p <- peds[[key]]
-    res[[j]] <- if (identical(p, NA)) NULL else
+    # res[j] <- list(): assigning NULL with [[ ]] would drop the element
+    res[j] <- list(if (identical(p, NA)) NULL else
       tryCatch(suppressWarnings(soilKey::classify_fao(p, edition = todo$edition[j], on_missing = "silent")),
-               error = function(e) NULL)
+               error = function(e) NULL))
   }
   rk <- paste(todo$idx, todo$edition)
   dk <- paste(d$idx, d$edition)
@@ -200,11 +201,13 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
     one <- function(level, a, prov, stdin, sub = rep(TRUE, length(a))) {
       s <- !is.na(a) & sub
       k <- sum(a[s]); n <- sum(s); ci <- .fao_isis_wilson(k, n)
-      firm <- s & !prov %in% TRUE & !stdin %in% TRUE
+      named <- x$fall_through %in% "no"
+      # firm: soilKey names a class, not provisional, no stand-in
+      firm <- s & named & !prov %in% TRUE & !stdin %in% TRUE
       data.frame(edition = e, level = level, n = n, agree = k, pct = if (n) 100 * k / n else NA_real_,
                  lo = 100 * ci[1], hi = 100 * ci[2], n_firm = sum(firm), agree_firm = sum(a[firm]),
                  pct_firm = if (sum(firm)) 100 * sum(a[firm]) / sum(firm) else NA_real_,
-                 provisional = sum(s & prov %in% TRUE), stand_in = sum(s & stdin %in% TRUE),
+                 provisional = sum(s & named & prov %in% TRUE), stand_in = sum(s & named & stdin %in% TRUE),
                  fall_through = sum(s & x$fall_through %in% c("undecided", "not_classified")),
                  stringsAsFactors = FALSE)
     }
@@ -280,14 +283,16 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
                               st$error[i], st$classified[i], st$undecided[i], st$not_classified[i],
                               st$provisional_group[i], st$stand_in_group[i]))
   lines <- c(lines, "", "## Agreement", "",
-             "| Edition | Level | n | Agree | % | 95 % CI | Firm n | Agree among firm | % firm | Provisional | Stand-in | Fall-through |",
+             "| Edition | Level | n | Agree | % | 95 % CI | Firm n | Agree among firm | % firm | Provisional (classified) | Stand-in (classified) | Fall-through |",
              "|---|---|--:|--:|--:|---|--:|--:|--:|--:|--:|--:|")
   for (i in seq_len(nrow(sc)))
     lines <- c(lines, sprintf("| %s | %s | %d | %d | %s | %s-%s | %d | %d | %s | %d | %d | %d |",
                               sc$edition[i], sc$level[i], sc$n[i], sc$agree[i], f1(sc$pct[i]), f1(sc$lo[i]),
                               f1(sc$hi[i]), sc$n_firm[i], sc$agree_firm[i], f1(sc$pct_firm[i]),
                               sc$provisional[i], sc$stand_in[i], sc$fall_through[i]))
-  lines <- c(lines, "", "Firm: neither provisional (a class tested before it left undecided) nor resting on a stand-in.")
+  lines <- c(lines, "", paste("Firm: soilKey names a class that is neither provisional (a class tested before it left undecided)",
+                                    "nor resting on a stand-in. Provisional and stand-in are counted among the labels soilKey",
+                                    "classifies; the fall-throughs are counted apart."))
   for (e in names(res$undecided)) {
     u <- res$undecided[[e]]
     lines <- c(lines, "", sprintf("Candidates left undecided in the fall-throughs of %s (labels): %s", e,

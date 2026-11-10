@@ -4,6 +4,16 @@
 
 .m392 <- function(x, ed, ...) soilKey:::.fao_match_label(x, ed, ...)
 .sing392 <- function(x) sub("s$", "", x)
+# the benchmark script: installed (R CMD check), else the source tree
+.script392 <- function() {
+  f <- system.file("benchmarks", "fao_isis.R", package = "soilKey")
+  if (!nzchar(f)) f <- testthat::test_path("..", "..", "inst", "benchmarks", "fao_isis.R")
+  skip_if_not(file.exists(f))
+  e <- new.env()
+  sys.source(f, envir = e)
+  attr(e, "file") <- f
+  e
+}
 
 test_that("the edition is read from a code or a publication year", {
   skip_on_cran()
@@ -90,10 +100,8 @@ test_that("exact names only; a variant list is tried only on an unread label", {
 
 test_that("the benchmark script parses and keeps the third-party data out", {
   skip_on_cran()
-  f <- testthat::test_path("..", "..", "inst", "benchmarks", "fao_isis.R")
-  skip_if_not(file.exists(f))
-  env <- new.env()
-  sys.source(f, envir = env)
+  env <- .script392()
+  f <- attr(env, "file")
   expect_true(is.function(env$fao_isis_benchmark))
   expect_length(env$.fao_isis_variants, 0L)
   expect_equal(env$.fao_isis_wilson(0, 0), c(NA_real_, NA_real_))
@@ -116,10 +124,7 @@ test_that("the benchmark script parses and keeps the third-party data out", {
 
 test_that("the stand-in finder and the result reader of the script", {
   skip_on_cran()
-  f <- testthat::test_path("..", "..", "inst", "benchmarks", "fao_isis.R")
-  skip_if_not(file.exists(f))
-  env <- new.env()
-  sys.source(f, envir = env)
+  env <- .script392()
   expect_false(env$.fao_isis_stand_in(list(list(evidence = list(stand_in = character(0))))))
   expect_true(env$.fao_isis_stand_in(list(list(evidence = list(stand_in = "argillic_usda")))))
   r <- classify_fao(make_fao_example("LVh"), on_missing = "silent")
@@ -128,4 +133,52 @@ test_that("the stand-in finder and the result reader of the script", {
   r <- classify_fao(make_fao_example("I", edition = "1974"), edition = "1974", on_missing = "silent")
   expect_identical(env$.fao_isis_result(r)$sk_unit, "I")
   expect_true(is.na(env$.fao_isis_result(NULL)$sk_group))
+})
+
+# A small synthetic ISIS-like cache (no third-party data): three profiles
+# with two horizons each and soilKey-made labels, and one without layers.
+.cache392 <- function() {
+  lay <- function(top, bot, nm, clay, ...) c(list(upperDepth = top, lowerDepth = bot, layerName = nm,
+                                                 clay = list(as.character(clay))), list(...))
+  prof <- function(code, labels, layers = list(lay(0L, 20L, "A", 20), lay(20L, 100L, "B", 30))) list(
+    profileCode = code, countryCode = "XX", profileId = 1L,
+    layers = layers,
+    faoClassifications = lapply(labels, function(l) list(publicationYear = l[1], faoClassification = l[2])))
+  list(prof("XX001", list(c("1974", "Orthic Luvisol"), c("1997", "Ferri-Haplic Luvisol"))),
+       prof("XX002", list(c("1974", "Eutric Cambisol petric"), c("1997", "Eutric Cambisol skeletic"))),
+       prof("XX003", list(c("1997", "Haplic Nitisol"))),
+       prof("XX004", list(c("1974", "Dystric Regosol")), layers = list()))
+}
+
+test_that("the benchmark runs end to end on a synthetic cache", {
+  skip_on_cran()
+  env <- .script392()
+  f <- tempfile(fileext = ".rds")
+  saveRDS(.cache392(), f)
+  out <- tempfile(fileext = ".md")
+  b <- env$fao_isis_benchmark(cache = f, out = out, verbose = FALSE)
+  expect_identical(b$n_profiles, 4L)
+  expect_identical(nrow(b$records), 6L)
+  expect_identical(b$status$edition, c("1974", "1988"))
+  expect_identical(b$status$labels, c(3L, 3L))
+  expect_identical(b$status$read_unit, c(3L, 3L))
+  expect_identical(b$status$with_subunit, c(0L, 1L))
+  expect_identical(b$status$error, c(1L, 0L))
+  sc <- b$score
+  expect_identical(unique(sc$level), c("grouping", "unit", "unit | grouping agrees"))
+  expect_identical(sc$n[sc$level == "grouping"], c(2L, 3L))
+  expect_true(all(sc$agree <= sc$n & sc$n_firm <= sc$n))
+  # firm, provisional and stand-in count only labels soilKey classifies
+  for (e in c("1974", "1988")) {
+    x <- b$records[b$records$edition == e & !b$records$error, ]
+    g <- sc[sc$edition == e & sc$level == "grouping", ]
+    expect_identical(g$fall_through, sum(x$fall_through != "no"))
+    expect_true(g$n_firm + g$provisional <= g$n - g$fall_through + g$stand_in)
+    expect_identical(g$provisional, sum(x$fall_through == "no" & x$prov_group))
+  }
+  expect_true(all(c("petric", "skeletic") %in% b$phases$phase))
+  md <- readLines(out)
+  for (h in c("^## Labels read", "^## Agreement", "^## Phases", "^## Grouping confusion, 1974"))
+    expect_true(any(grepl(h, md)), info = h)
+  expect_identical(env$.fao_isis_report(b), md)
 })

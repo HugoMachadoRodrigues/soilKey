@@ -175,6 +175,6 @@ b <- fao_isis_benchmark(cache = "path/to/isis/profiles.rds", out = "fao_isis.md"
 b$score
 ```
 
-On the cache of 2026-10-29 (814 profiles, 803 labels of 1974 and 712 of the Revised Legend) every label is read, and the grouping agrees on 47 % of the 1974 labels and 44 % of the 1988 labels where soilKey names a grouping. Many profiles stop before a grouping because a measurement the key needs, most often the gypsum content, is not recorded: soilKey then names the candidates instead of guessing.
+On the cache of 2026-10-29 (814 profiles, 803 labels of 1974 and 712 of the Revised Legend) every label is read. The grouping agrees on 31.4 % of the 796 labels of 1974 and 22.0 % of the 706 revised labels scored, and on 47 % and 44 % of those where soilKey names a grouping. Many profiles stop before a grouping because a measurement the key needs, most often the gypsum content, is not recorded: soilKey then names the candidates instead of guessing.
 
 The next vignette (`v04_vlm_extraction`) shows how the `PedonRecord` itself can be assembled from PDFs and field photos via vision-language extraction, so the cross-system pass can run on freshly-described profiles without manual data entry.

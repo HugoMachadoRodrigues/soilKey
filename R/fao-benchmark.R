@@ -93,7 +93,7 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
     data.frame(level = level, code_1974 = as.character(e$from), name_1974 = unname(n74[as.character(e$from)]),
                code_1988 = paste(to, collapse = ", "), name_1988 = nm(to, n88),
                relation = as.character(e$relation),
-               also = paste(al, collapse = ", "), also_when = as.character(e$also_when %||% ""),
+               also = paste(al, collapse = ", "), also_when = .fao_cw_when(e$also_when),
                page = as.integer(e$page), bracketed = isTRUE(e$bracketed),
                note = as.character(e$note %||% ""), stringsAsFactors = FALSE)
   }
@@ -121,6 +121,16 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
   tab
 }
 
+# The condition of soilKey's alternative targets of a row: one text for all,
+# or one per target code (a named list). With `target`, the text of that
+# target; without, all of them ("LX: ...; PT: ...").
+.fao_cw_when <- function(w, target = NULL) {
+  if (is.null(w) || !length(w)) return("")
+  if (!is.list(w)) return(as.character(w)[1L])
+  if (!is.null(target) && !is.null(w[[target]])) return(as.character(w[[target]]))
+  paste(sprintf("%s: %s", names(w), unlist(w)), collapse = "; ")
+}
+
 # The edition line of a FAO-Unesco result (display only, never a class):
 # for a 1974 result, the 1988 classes of its unit (or group); for a 1988
 # result, the 1974 classes that went to its unit (or grouping). A character
@@ -132,55 +142,63 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
   if (!is.data.frame(lv) || !nrow(lv) || !"code" %in% names(lv)) return(NULL)
   codes <- rev(as.character(stats::na.omit(lv$code)))
   if (!length(codes)) return(NULL)
-  rel <- function(r) {
-    s <- .FAO_CW_RELATION[[r$relation]]
-    sprintf("%s, App. 4 p. %d", s, r$page)
-  }
+  cw <- .fao_cw_read()
+  n74 <- .fao_code_names("1974")
+  n88 <- .fao_code_names("1988")
+  rel <- function(e) sprintf("%s, App. 4 p. %d", .FAO_CW_RELATION[[e$relation]], as.integer(e$page))
+  to_of <- function(e) as.character(unlist(e$to %||% character(0)))
+  also_of <- function(e) as.character(unlist(e$also %||% character(0)))
   if (id == "fao1974") {
-    tab <- fao_crosswalk()
     # a code that is both a group and a unit (the Lithosols, Rankers and
     # Rendzinas) reads its unit row
-    tab <- tab[order(tab$level != "unit"), , drop = FALSE]
-    hit <- codes[codes %in% tab$code_1974][1]
+    rows <- c(cw$units, cw$groups)
+    from <- vapply(rows, function(e) as.character(e$from), "")
+    hit <- codes[codes %in% from][1]
     if (is.na(hit)) return(NULL)
-    r <- tab[match(hit, tab$code_1974), ]
-    main <- if (nzchar(r$code_1988)) {
-      to <- strsplit(r$code_1988, ", ", fixed = TRUE)[[1]]
-      sprintf("%s (%s)", paste(sprintf("%s %s", to, .fao_code_names("1988")[to]), collapse = " or "), rel(r))
-    } else sprintf("no class of 1988 (%s)", rel(r))
-    alt <- if (nzchar(r$also)) {
-      al <- strsplit(r$also, ", ", fixed = TRUE)[[1]]
-      sprintf(" [or %s: %s]", paste(sprintf("%s %s", al, .fao_code_names("1988")[al]), collapse = ", "), r$also_when)
-    } else ""
+    e <- rows[[match(hit, from)]]
+    to <- to_of(e)
+    main <- if (length(to))
+      sprintf("%s (%s)", paste(sprintf("%s %s", to, n88[to]), collapse = " or "), rel(e))
+    else sprintf("no class of 1988 (%s)", rel(e))
+    al <- also_of(e)
+    alt <- if (!length(al)) "" else if (is.list(e$also_when))
+      sprintf(" [or %s]", paste(sprintf("%s %s: %s", al, n88[al],
+                                        vapply(al, function(a) .fao_cw_when(e$also_when, a), "")), collapse = "; "))
+    else sprintf(" [or %s: %s]", paste(sprintf("%s %s", al, n88[al]), collapse = ", "), .fao_cw_when(e$also_when))
     return(sprintf("Revised Legend (1988): %s%s.", main, alt))
   }
-  tab <- fao_crosswalk(from = "1988")
-  on_side <- function(x, cd) vapply(strsplit(x, ", ", fixed = TRUE), function(v) cd %in% v, NA)
-  # the 1974 classes of the deepest code that has a row; the 1974 classes
-  # that soilKey's alternatives send to that code or to the codes above it
-  main <- tab[0, , drop = FALSE]
+  deepest <- codes[1L]
+  grouping <- codes[length(codes)]
+  # the 1974 classes of the deepest code that has a row
+  main <- list(); newr <- NULL
   for (cd in codes) {
-    main <- tab[on_side(tab$code_1988, cd), , drop = FALSE]
-    if (nrow(main)) break
+    main <- Filter(function(e) cd %in% to_of(e), c(cw$units, cw$groups))
+    nw <- Filter(function(e) identical(as.character(e$to), cd), c(cw$new_units, cw$new_groups))
+    if (length(nw)) newr <- nw[[1L]]
+    if (length(main) || length(nw)) break
   }
-  alt <- tab[0, , drop = FALSE]
-  for (cd in codes) {
-    a <- tab[on_side(tab$also, cd) & !tab$code_1974 %in% main$code_1974, , drop = FALSE]
-    if (any(a$level == "unit")) a <- a[a$level == "unit", , drop = FALSE]
-    if (nrow(a)) { alt <- a; break }
+  main_from <- vapply(main, function(e) as.character(e$from), "")
+  # soilKey's alternatives: the unit rows that name the unit; failing those,
+  # the group rows that name the grouping, and the unit rows that name the
+  # grouping only when the result stops at the grouping
+  pick <- function(rows, cd) Filter(function(e) cd %in% also_of(e) && !as.character(e$from) %in% main_from, rows)
+  alt <- if (deepest != grouping) pick(cw$units, deepest) else list()
+  target <- deepest
+  if (!length(alt)) {
+    alt <- c(pick(cw$groups, grouping), if (deepest == grouping) pick(cw$units, grouping))
+    target <- grouping
   }
-  if (!nrow(main) && !nrow(alt)) return(NULL)
-  newr <- main[main$relation == "new", , drop = FALSE]
-  main <- main[main$relation != "new", , drop = FALSE]
+  if (!length(main) && is.null(newr) && !length(alt)) return(NULL)
   parts <- character(0)
-  if (nrow(main)) {
-    ms <- vapply(seq_len(nrow(main)), function(i) rel(main[i, ]), "")
-    parts <- c(parts, paste(sprintf("%s %s (%s)", main$code_1974, main$name_1974, ms), collapse = "; "))
-  }
-  if (nrow(newr)) parts <- c(parts, sprintf("new in 1988, no class of 1974 (App. 4 p. %d)%s", newr$page[1],
-                                            if (isTRUE(newr$bracketed[1])) " [not flagged in App. 4]" else ""))
-  if (nrow(alt)) {
-    by_when <- split(sprintf("%s %s", alt$code_1974, alt$name_1974), factor(alt$also_when, unique(alt$also_when)))
+  if (length(main))
+    parts <- c(parts, paste(vapply(main, function(e) sprintf("%s %s (%s)", e$from, n74[[as.character(e$from)]], rel(e)), ""),
+                            collapse = "; "))
+  if (!is.null(newr)) parts <- c(parts, sprintf("new in 1988, no class of 1974 (App. 4 p. %d)%s", as.integer(newr$page),
+                                                if (isTRUE(newr$bracketed)) " [not flagged in App. 4]" else ""))
+  if (length(alt)) {
+    who <- vapply(alt, function(e) sprintf("%s %s", e$from, n74[[as.character(e$from)]]), "")
+    when <- vapply(alt, function(e) .fao_cw_when(e$also_when, target), "")
+    by_when <- split(who, factor(when, unique(when)))
     parts <- c(parts, sprintf("[some %s]", paste(vapply(names(by_when), function(w)
       sprintf("%s, %s", paste(by_when[[w]], collapse = ", "), w), ""), collapse = "; ")))
   }

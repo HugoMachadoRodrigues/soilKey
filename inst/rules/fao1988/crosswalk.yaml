@@ -27,7 +27,8 @@
 # also:             soilKey's alternative targets, read from a group comment
 #                   of the appendix (Lixisols, Alisols, Plinthosols,
 #                   Calcisols, Gypsisols); [bracketed] in the display, with
-#                   the condition in `also_when`.
+#                   the condition in `also_when` (one text for all, or one
+#                   per target code).
 # bracketed: true   a row the appendix does not print (soilKey's addition).
 
 source: "FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend. World Soil Resources Report 60; ISRIC reprint 1997, Appendix 4, pp. 113-126."
@@ -35,29 +36,29 @@ source: "FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend. World Soi
 # --- the 26 major soil groups of 1974 -----------------------------------------------------
 groups:
   - {from: "J", to: ["FL"], relation: "amended", page: 115, note: "Mollic or umbric A allowed; fluvic properties replace recent alluvial deposits; salic properties allowed."}
-  - {from: "G", to: ["GL"], relation: "amended", page: 116, also: ["AR", "FL", "PT"], also_when: "coarse textured materials (Gleyic Arenosols), alluvium with fluvic properties (Fluvisols), plinthite within 125 cm (Plinthosols)", note: "Coarse textured materials and alluvium with fluvic properties excluded; plinthite within 125 cm not allowed."}
-  - {from: "R", to: ["RG"], relation: "amended", page: 116, also: ["AR", "LP"], also_when: "coarse textured (Arenosols) or very stony materials (Leptosols)", note: "Coarse textured and very stony materials excluded."}
+  - {from: "G", to: ["GL"], relation: "amended", page: 116, also: ["AR", "FL", "PT"], also_when: {AR: "coarse textured materials (a gleyic unit of the Arenosols)", FL: "alluvial deposits with fluvic properties", PT: "plinthite within 125 cm"}, note: "Coarse textured materials and alluvium with fluvic properties excluded; plinthite within 125 cm not allowed."}
+  - {from: "R", to: ["RG"], relation: "amended", page: 116, also: ["AR", "LP"], also_when: {AR: "coarse textured materials", LP: "very stony materials"}, note: "Coarse textured and very stony materials excluded."}
   - {from: "I", to: ["LP"], relation: "merged", page: 115, note: "Lithosols, Rendzinas and Rankers grouped in the new Leptosols."}
   - {from: "E", to: ["LP"], relation: "merged", page: 115, note: "Lithosols, Rendzinas and Rankers grouped in the new Leptosols."}
   - {from: "U", to: ["LP"], relation: "merged", page: 115, note: "Lithosols, Rendzinas and Rankers grouped in the new Leptosols."}
   - {from: "Q", to: ["AR"], relation: "amended", page: 117, note: "Fluvic and andic properties excluded; the albic material and B characteristics clause deleted; albic E allowed."}
   - {from: "T", to: ["AN"], relation: "amended", page: 118, note: "Defined by andic properties instead of bulk density and vitric material."}
-  - {from: "V", to: ["VR"], relation: "amended", page: 118, note: "Subdivisions changed: base saturation and calcic or gypsic horizons replace the chroma split."}
-  - {from: "B", to: ["CM"], relation: "amended", page: 118, also: ["CL", "GY"], also_when: "a calcic or gypsic horizon (Calcisols, Gypsisols)", note: "Calcic or gypsic horizon deleted from the definition (such soils now Calcisols or Gypsisols); 'lacking an aridic moisture regime' deleted."}
+  - {from: "V", to: ["VR"], relation: "same", page: 118}
+  - {from: "B", to: ["CM"], relation: "amended", page: 118, also: ["CL", "GY"], also_when: {CL: "a calcic horizon", GY: "a gypsic horizon"}, note: "Calcic or gypsic horizon deleted from the definition (such soils now Calcisols or Gypsisols); 'lacking an aridic moisture regime' deleted."}
   - {from: "S", to: ["SN"], relation: "amended", page: 119, note: "The clause on an albic E with hydromorphic properties and an abrupt textural change deleted."}
   - {from: "Z", to: ["SC"], relation: "amended", page: 120, note: "Defined by salic properties: salinity within the upper 30 cm at least part of the year."}
   - {from: "K", to: ["KS"], relation: "same", page: 120}
   - {from: "C", to: ["CH"], relation: "amended", page: 120, note: "Gypsic horizon deleted from the definition."}
   - {from: "H", to: ["PH"], relation: "amended", page: 121, note: "Base saturation (NH4OAc) of 50 % or more throughout the upper 125 cm added."}
   - {from: "M", to: ["GR"], relation: "amended", page: 121, note: "Uncoated silt and sand grains replace bleached coatings; an argic B required."}
-  - {from: "L", to: ["LV"], relation: "amended", page: 122, also: ["LX", "PT"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay (Lixisols); plinthite (Plinthosols)", note: "Argic B with a CEC of 24 cmol(+)/kg clay or more; soils with plinthite to the Plinthosols; 'lacking an aridic moisture regime' deleted."}
+  - {from: "L", to: ["LV"], relation: "amended", page: 122, also: ["LX", "PT"], also_when: {LX: "an argic B with a CEC below 24 cmol(+)/kg clay", PT: "plinthite"}, note: "Argic B with a CEC of 24 cmol(+)/kg clay or more; soils with plinthite to the Plinthosols; 'lacking an aridic moisture regime' deleted."}
   - {from: "W", to: ["PL"], relation: "same", page: 123}
   - {from: "D", to: ["PD"], relation: "same", page: 123}
   - {from: "P", to: ["PZ"], relation: "amended", page: 124, note: "Thin iron pan deleted from the definition (now the placic phase)."}
   - {from: "A", to: ["AC"], relation: "amended", page: 124, also: ["AL"], also_when: "an argic B with a CEC of 24 cmol(+)/kg clay or more (Alisols)", note: "Argic B with a CEC below 24 cmol(+)/kg clay; 'lacking an aridic moisture regime' deleted."}
   - {from: "N", to: ["NT"], relation: "renamed_amended", page: 125, note: "Formerly Nitosols; requirements on horizon boundaries, clay content and nitic properties added; 'lacking an aridic moisture regime' deleted."}
-  - {from: "F", to: ["FR"], relation: "amended", page: 125, also: ["PT"], also_when: "plinthite (Plinthosols, soils previously grouped with the Ferralsols or Gleysols)", note: "Ferralic B replaces oxic B."}
-  - {from: "O", to: ["HS"], relation: "amended", page: 126, note: "Units by the decomposition of the plant materials and by drainage instead of Eutric and Dystric."}
+  - {from: "F", to: ["FR"], relation: "amended", page: 125, also: ["PT"], also_when: "plinthite", note: "Ferralic B replaces oxic B."}
+  - {from: "O", to: ["HS"], relation: "same", page: 126}
   - {from: "X", to: [], relation: "deleted", page: 115, also: ["CL", "GY", "CM", "LV", "LX", "RG", "AR"], also_when: "by their morphology, with a yermic phase where appropriate", note: "Classified on an aridic moisture regime; now incorporated in other groups, with a yermic phase where appropriate."}
   - {from: "Y", to: [], relation: "deleted", page: 115, also: ["CL", "GY", "CM", "LV", "LX", "RG", "AR"], also_when: "by their morphology, with a yermic phase where appropriate", note: "Classified on an aridic moisture regime; now incorporated in other groups, with a yermic phase where appropriate."}
 
@@ -92,9 +93,9 @@ units:
   - {from: "Rd", to: ["RGd"], relation: "same", page: 116}
   - {from: "Rx", to: ["RGi"], relation: "same", page: 116}
   # Lithosols, Rendzinas, Rankers (p. 117): single units of 1974
-  - {from: "I", to: ["LPq"], relation: "merged", page: 117, note: "Formerly Lithosols."}
-  - {from: "E", to: ["LPk"], relation: "merged", page: 117, note: "Formerly Rendzinas."}
-  - {from: "U", to: ["LPu"], relation: "merged", page: 117, note: "Formerly Rankers."}
+  - {from: "I", to: ["LPq"], relation: "renamed", page: 117, note: "Formerly Lithosols."}
+  - {from: "E", to: ["LPk"], relation: "renamed", page: 117, note: "Formerly Rendzinas."}
+  - {from: "U", to: ["LPu"], relation: "renamed", page: 117, note: "Formerly Rankers."}
   # Arenosols (p. 117)
   - {from: "Qc", to: ["ARb"], relation: "same", page: 117}
   - {from: "Ql", to: ["ARl"], relation: "amended", page: 117, note: "A clay increase without lamellae also qualifies."}
@@ -112,7 +113,7 @@ units:
   - {from: "Be", to: ["CMe"], relation: "same", page: 118}
   - {from: "Bd", to: ["CMd"], relation: "same", page: 118}
   - {from: "Bh", to: ["CMu"], relation: "same", page: 118}
-  - {from: "Bk", to: ["CMc"], relation: "renamed", page: 118, also: ["CL", "GY"], also_when: "a calcic or gypsic horizon (group comment)", note: "Calcaric Cambisols: formerly in Calcic Cambisols."}
+  - {from: "Bk", to: ["CMc"], relation: "split", page: 118, also: ["CL", "GY"], also_when: {CL: "a calcic horizon (group comment)", GY: "a gypsic horizon (group comment)"}, note: "Calcaric Cambisols: formerly in Calcic Cambisols."}
   - {from: "Bc", to: ["CMx"], relation: "same", page: 118}
   - {from: "Bv", to: ["CMv"], relation: "same", page: 118}
   - {from: "Bf", to: ["CMo"], relation: "same", page: 118}
@@ -148,11 +149,11 @@ units:
   - {from: "Lo", to: ["LVh"], relation: "renamed_amended", page: 122, also: ["LXh"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay", note: "Formerly Orthic Luvisols; lacking gleyic properties between 0 and 100 cm (was 0-50 cm)."}
   - {from: "Lf", to: ["LVf"], relation: "same", page: 122, also: ["LXf"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay"}
   - {from: "Lc", to: ["LVx"], relation: "same", page: 122, also: ["LXh"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay"}
-  - {from: "Lk", to: ["LVk"], relation: "same", page: 122, also: ["LXh"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay"}
+  - {from: "Lk", to: ["LVk"], relation: "same", page: 122, also: ["LXh", "CLl"], also_when: {LXh: "an argic B with a CEC below 24 cmol(+)/kg clay", CLl: "a calcic or petrocalcic horizon, the Luvic Calcisols keyed before the Luvisols (p. 119)"}}
   - {from: "Lv", to: ["LVv"], relation: "same", page: 122, also: ["LXh"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay"}
   - {from: "La", to: ["LVa"], relation: "same", page: 122, also: ["LXa"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay"}
   - {from: "Lg", to: ["LVg"], relation: "amended", page: 122, also: ["LXg"], also_when: "an argic B with a CEC below 24 cmol(+)/kg clay", note: "Gleyic properties between 0 and 100 cm (was 0-50 cm)."}
-  - {from: "Lp", to: [], relation: "deleted", page: 122, bracketed: true, also: ["PT", "LXp"], also_when: "plinthite (Plinthosols); a low activity argic B with plinthite deeper than the Plinthosols ask (Plinthic Lixisols)", note: "[Not printed in Appendix 4: the Plinthic Luvisols have no 1988 row; the Luvisols comment sends soils with plinthite to the Plinthosols.]"}
+  - {from: "Lp", to: [], relation: "deleted", page: 122, bracketed: true, also: ["PT", "LXp"], also_when: {PT: "plinthite", LXp: "a low activity argic B with plinthite deeper than the Plinthosols ask"}, note: "[Not printed in Appendix 4: the Plinthic Luvisols have no 1988 row; the Luvisols comment sends soils with plinthite to the Plinthosols.]"}
   # Planosols (p. 123)
   - {from: "We", to: ["PLe"], relation: "same", page: 123}
   - {from: "Wd", to: ["PLd"], relation: "same", page: 123}
@@ -162,7 +163,7 @@ units:
   - {from: "Ws", to: [], relation: "deleted", page: 123, note: "Deleted."}
   # Podzoluvisols (p. 123)
   - {from: "De", to: ["PDe"], relation: "amended", page: 123, note: "Lacking gleyic properties between 0 and 100 cm (was 0-50 cm)."}
-  - {from: "Dd", to: ["PDd"], relation: "same", page: 123}
+  - {from: "Dd", to: ["PDd"], relation: "amended", page: 123, note: "Lacking gleyic properties between 0 and 100 cm (was 0-50 cm): the second line of the comment is printed on the row of the Dystric Podzoluvisols, and the Gleyic ones are keyed before them."}
   - {from: "Dg", to: ["PDg"], relation: "amended", page: 123, note: "Gleyic properties between 0 and 100 cm (was 0-50 cm)."}
   # Podzols (p. 124)
   - {from: "Po", to: ["PZh"], relation: "renamed", page: 124, note: "Formerly Orthic Podzols."}
@@ -178,8 +179,8 @@ units:
   - {from: "Ap", to: ["ACp"], relation: "same", page: 124, also: ["ALp"], also_when: "an argic B with a CEC of 24 cmol(+)/kg clay or more"}
   - {from: "Ag", to: ["ACg"], relation: "amended", page: 124, also: ["ALg"], also_when: "an argic B with a CEC of 24 cmol(+)/kg clay or more", note: "Gleyic properties between 0 and 100 cm (was 0-50 cm)."}
   # Nitosols (p. 125)
-  - {from: "Ne", to: ["NTh"], relation: "merged", page: 125, note: "Haplic Nitisols substitute the former Eutric and Dystric Nitosols."}
-  - {from: "Nd", to: ["NTh"], relation: "merged", page: 125, note: "Haplic Nitisols substitute the former Eutric and Dystric Nitosols."}
+  - {from: "Ne", to: ["NTh"], relation: "merged", page: 125, also: ["NTr"], also_when: "a red B (Rhodic Nitisols, no 1974 unit)", note: "Haplic Nitisols substitute the former Eutric and Dystric Nitosols."}
+  - {from: "Nd", to: ["NTh"], relation: "merged", page: 125, also: ["NTr"], also_when: "a red B (Rhodic Nitisols, no 1974 unit)", note: "Haplic Nitisols substitute the former Eutric and Dystric Nitosols."}
   - {from: "Nh", to: ["NTu"], relation: "amended", page: 125, note: "Definition revised."}
   # Ferralsols (p. 125)
   - {from: "Fo", to: ["FRh"], relation: "renamed", page: 125, note: "Formerly Orthic Ferralsols."}
@@ -255,7 +256,7 @@ new_units:
   - {to: "ALp", page: 124}
   - {to: "ALj", page: 124}
   - {to: "ALg", page: 124}
-  - {to: "NTr", page: 125}
+  - {to: "NTr", page: 125, bracketed: true, note: "[Appendix 4 prints no comment; no Rhodic Nitosols in 1974.]"}
   - {to: "PTe", page: 125}
   - {to: "PTd", page: 125}
   - {to: "PTu", page: 125}

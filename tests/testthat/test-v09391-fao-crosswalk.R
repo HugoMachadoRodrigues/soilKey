@@ -116,18 +116,59 @@ test_that("the edition line: 1974 to 1988 and 1988 to 1974, display only", {
   expect_match(out, "Other edition: Legend of 1974", fixed = TRUE)
 })
 
-test_that("every example keys as before and gets an edition line", {
+test_that("the edition line on constructed results and a sample of examples", {
   skip_on_cran()
-  for (cd in c(soilKey:::.F88_GROUPINGS$code, soilKey:::.f88_unit_codes())) {
+  mk <- function(id, codes) list(system_id = id, levels = data.frame(
+    level = c("major_groups", "units")[seq_along(codes)], code = codes, stringsAsFactors = FALSE))
+  el <- function(id, codes) soilKey:::.fao_edition_lines(mk(id, codes))
+  # 1974 -> 1988: the unit row of a single-unit group; per-target conditions
+  expect_match(el("fao1974", "I"), "LPq Lithic Leptosols (renamed", fixed = TRUE)
+  l <- el("fao1974", c("L", "Lk"))
+  expect_match(l, "LXh Haplic Lixisols: an argic B", fixed = TRUE)
+  expect_match(l, "CLl Luvic Calcisols: a calcic", fixed = TRUE)
+  expect_match(el("fao1974", c("B", "Bk")), "CMc Calcaric Cambisols (split", fixed = TRUE)
+  expect_match(el("fao1974", c("N", "Ne")), "[or NTr Rhodic Nitisols", fixed = TRUE)
+  # 1988 -> 1974: group-level alternatives only from the group rows, or
+  # from unit rows when the result stops at the grouping
+  l <- el("fao1988", c("CM", "CMc"))
+  expect_match(l, "Bk Calcic Cambisols (split", fixed = TRUE)
+  expect_false(grepl("Xh|Yh", l))
+  l <- el("fao1988", c("FL", "FLe"))
+  expect_match(l, "G Gleysols, alluvial deposits with fluvic properties]", fixed = TRUE)
+  expect_false(grepl("plinthite|coarse", l))
+  l <- el("fao1988", c("LX", "LXh"))
+  expect_match(l, "Lo Orthic Luvisols, Lc Chromic Luvisols, Lk Calcic Luvisols, Lv Vertic Luvisols", fixed = TRUE)
+  expect_false(grepl("\\bL Luvisols", l))
+  expect_match(el("fao1988", "CM"), "Xh Haplic Xerosols", fixed = TRUE)
+  expect_match(el("fao1988", c("NT", "NTr")), "[not flagged in App. 4]", fixed = TRUE)
+  expect_match(el("fao1988", c("HS", "HSt")), "[not flagged in App. 4]", fixed = TRUE)
+  expect_null(el("fao1988", character(0)))
+  # a sample of classified examples keys as before and gets a line
+  for (cd in c("LVh", "CMc", "FLe", "HSi", "ATa")) {
     r <- classify_fao(make_fao_example(cd), on_missing = "silent")
     expect_true(cd %in% r$levels$code, info = cd)
     expect_false(is.null(soilKey:::.fao_edition_lines(r)), info = cd)
   }
-  for (cd in c(soilKey:::.F74_GROUPS$code, soilKey:::.f74_unit_codes())) {
+  for (cd in c("Lo", "U", "Yk", "Fa")) {
     r <- classify_fao(make_fao_example(cd, edition = "1974"), edition = "1974", on_missing = "silent")
     expect_true(cd %in% r$levels$code, info = cd)
     expect_false(is.null(soilKey:::.fao_edition_lines(r)), info = cd)
   }
+})
+
+test_that("the relations the review settled", {
+  skip_on_cran()
+  cw <- fao_crosswalk()
+  r <- function(cd, lv = "unit") cw[cw$code_1974 == cd & cw$level == lv, ]
+  for (cd in c("I", "E", "U")) expect_identical(r(cd)$relation, "renamed")
+  for (cd in c("V", "O")) expect_identical(r(cd, "group")$relation, "same")
+  expect_identical(r("Dd")$relation, "amended")
+  expect_identical(r("Zm")$relation, "amended")
+  expect_identical(r("Bk")$relation, "split")
+  expect_identical(r("Lk")$also, "LXh, CLl")
+  expect_identical(r("Ne")$also, "NTr")
+  expect_true(fao_crosswalk("NTr", from = "1988")$bracketed[fao_crosswalk("NTr", from = "1988")$relation == "new"])
+  expect_match(r("G", "group")$also_when, "FL: alluvial deposits with fluvic properties", fixed = TRUE)
 })
 
 test_that("the reports carry the edition section in both languages", {
