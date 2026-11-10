@@ -167,7 +167,9 @@ test_that("melanic A against humic A: the ratio of 4 per 1 % OC", {
   # melanic colour: 10YR 3/3 and 5YR excluded; no dry colour undecided (default 9)
   expect_false(.zp(soilKey:::.za_t_MA, m(munsell_chroma_dry = 3, munsell_value_dry = 3), 1))
   expect_false(.zp(soilKey:::.za_t_MA, m(munsell_hue_dry = "5YR"), 1))
-  r <- .za_t(soilKey:::.za_t_MA, m(munsell_value_dry = NA, munsell_chroma_dry = NA, munsell_hue_dry = NA), 1)
+  # (a moist value of 3: over 3 the colour is refused, M1 of 0.9.394)
+  r <- .za_t(soilKey:::.za_t_MA, m(munsell_value_dry = NA, munsell_chroma_dry = NA, munsell_hue_dry = NA,
+                                   munsell_value_moist = 3), 1)
   expect_true(is.na(r$passed)); expect_true(.has_tag(r, "dry_from_moist_evidence"))
   # common slickensides: vertic, not melanic
   expect_false(.zp(soilKey:::.za_t_MA, m(slickensides = "common"), 1))

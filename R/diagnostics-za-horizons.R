@@ -832,7 +832,9 @@
 #' compared by number: 10.0YR is 10YR), the hue not 5YR or redder. With no
 #' dry hue, the moist hue stands in, flagged. Dry value or chroma not
 #' recorded: undecided, the moist colour + 1 value given as evidence only
-#' (default 9).
+#' (default 9); but a moist value over 3 with no dry value refuses the
+#' colour, flagged, since the dry value is never darker (M1, Hugo,
+#' 2026-11-10).
 #' @noRd
 .za_ma_colour <- function(x, i) {
   d <- .za_colour(x, i, "dry")
@@ -858,6 +860,14 @@
   if (length(fails)) return(.za_r(FALSE, tag = tag, note = c(sprintf("%s: not melanic (%s)", .za_col_text(d), paste(fails, collapse = ", ")), note)))
   if (is.na(d$value) || is.na(d$chroma) || is.na(redish(d))) {
     m <- .za_colour(x, i, "moist")
+    # M1 (Hugo, 2026-11-10): no dry value and a moist value over the dry
+    # limit: the dry value is never darker than the moist, so the melanic
+    # colour is refused, flagged; a moist value of 3 or less stays undecided
+    # (default 9)
+    if (is.na(d$value) && !is.na(m$value) && m$value > vmax)
+      return(.za_r(FALSE, tag = c(tag, "dry_value_from_moist"),
+                   note = c(sprintf("no dry value recorded; moist %s: the dry value is never darker than the moist, so over %s: not melanic, flagged (M1)",
+                                    .za_col_text(m), format(vmax)), note)))
     ev <- if (!is.na(m$value)) sprintf("evidence only: the moist %s gives a dry value of about %s (default 9)",
                                        .za_col_text(m), format(min(10, m$value + 1))) else character(0)
     return(.za_r(NA, missing = c("munsell_value_dry", "munsell_chroma_dry", "munsell_hue_dry"),
@@ -1091,7 +1101,9 @@
 #' Pedocutanic B (S 31; K 53-55): moderate or strong blocky (prismatic when
 #' the transition from above is not the abrupt change of a prismacutanic B);
 #' prominent cutans on most ped faces (clay films common or more; not
-#' recorded, soilKey's argic() stands in, flagged); for a red B, the cutans
+#' recorded, soilKey's argic() stands in, flagged, but only one way: argic
+#' not holding leaves the cutans undecided, as the pedocutanic B needs no
+#' clay increase; C1, Hugo, 2026-11-10); for a red B, the cutans
 #' giving variegated colours or an abrupt transition from above (S 31,
 #' .za_red_cutanic()), else it is the red structured B.
 #' @noRd
@@ -1104,6 +1116,17 @@
         } else .za_blocky(x, i)
   if (isFALSE(st$passed)) return(st)
   cut <- .kidpr_cutans(x, i)
+  # C1 (Hugo, 2026-11-10): clay films not recorded and soilKey's argic
+  # horizon not holding is no evidence against cutans (S 31 asks no clay
+  # increase): undecided. Only the decision by argic is read so (its tag,
+  # and the layer not argic); the other refusals of .kidpr_cutans() (no
+  # peds, carbonate neoformations, outside the zone of the clay maximum)
+  # stand. Only here; .kidpr_cutans() is shared with other systems and stays
+  # as it is.
+  if (is.na(.clay_films_class(.kidpr_v(x, i, "clay_films_amount"))) && isFALSE(cut$passed) &&
+      "argic" %in% cut$tag && isFALSE(.kidpr_wrb_layer(x, "argic", i)))
+    cut <- .za_r(NA, missing = "clay_films_amount", tag = cut$tag,
+                 note = c(cut$note, "clay films not recorded: the pedocutanic B needs no clay increase, so argic not holding leaves the cutans undecided (C1)"))
   red <- .za_red(x, i)
   col <- if (isFALSE(red$passed)) .za_r(TRUE, note = "not red: the cutans give the variegation")
          else {
@@ -2152,20 +2175,34 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
   # D7 (K 70 i, K 72 iv, K 73 iii; Hugo, 2026-11-06): a surface layer with
   # under 0.3 % organic carbon that is a red or yellow-brown apedal or a
   # neocarbonate B, directly over hard rock, a lithocutanic B or a dorbank,
-  # is that B at the surface (the profile truncated), flagged
+  # is that B at the surface (the profile truncated), flagged. B1 (Hugo,
+  # 2026-11-10): only when the layer is more than 100 mm thick
+  # (surface_b_thick); a thinner one is not read as a B at the surface; the
+  # thickness not recorded, undecided (D)
   if (length(run) == 1L && identical(res[[run]]$route, "data")) {
     i <- run
     oc <- .za_num(x, i, "oc_pct")
     nx <- .kidpr_next(x, i)
     below <- if (is.na(nx)) NA_character_ else res[[nx]]$code
-    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR"))) {
+    thick_ok <- x$thick[i] * 10 > .za_thv("surface_b_thick")
+    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR")) && !isFALSE(thick_ok)) {
       for (k in c("RAB", "YAB", "NCA")) {
         b <- .ZA_TESTS[[k]](x, i)
+        # D (Hugo, 2026-11-10): the thickness not recorded leaves the
+        # layer undecided between the orthic A and the B at the surface
+        if (isTRUE(b$passed) && is.na(thick_ok)) {
+          res[[i]]$code <- NA_character_; res[[i]]$candidates <- c("OA", k); res[[i]]$data_code <- NA_character_
+          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc", "stand_in:surface_b_thick"))
+          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s, thickness not recorded: the orthic A or a %s at the surface (B1), undecided",
+                                             format(oc), .za_label(below), .za_label(k)), b$note))
+          res[[i]]$missing <- c("top_cm", "bottom_cm")
+          break
+        }
         if (isTRUE(b$passed)) {
           res[[i]]$code <- k; res[[i]]$candidates <- character(0); res[[i]]$data_code <- k
-          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc"))
-          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s: a %s at the surface, the profile truncated (K 70, 72, 73), flagged",
-                                             format(oc), .za_label(below), .za_label(k)), b$note))
+          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc", "stand_in:surface_b_thick"))
+          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s, %s mm thick: a %s at the surface, the profile truncated (K 70, 72, 73), flagged",
+                                             format(oc), .za_label(below), format(x$thick[i] * 10), .za_label(k)), b$note))
           res[[i]]$missing <- character(0)
           break
         }

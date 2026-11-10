@@ -333,6 +333,10 @@ test_that("D7: a red apedal surface layer with little carbon over rock or a dorb
   expect_true(r$qualifiers$za_truncated)
   dor <- .za_L(30, 60, designation = "Bqm", cementation_class = "strongly", pan_type = "duripan")
   expect_identical(.nm(.rab(0, 30, designation = NA, oc_pct = 0.2), dor), "Garies")
+  # B1 (0.9.394): 100 mm or less over hard rock is the orthic A, Mispah
+  expect_identical(.form(.za_P(.rab(0, 10, designation = "A", oc_pct = 0.2), .L0(10, 30, designation = "R")))$name, "Mispah")
+  expect_identical(.form(.za_P(.yab(0, 10, designation = "A", oc_pct = 0.2), .L0(10, 30, designation = "R")))$name, "Mispah")
+  expect_identical(.form(.za_P(.yab(0, 15, designation = "A", oc_pct = 0.2), .L0(15, 30, designation = "R")))$name, "Clovelly")
 })
 
 test_that("D8: the topsoil over a deposit is part of the deposit", {

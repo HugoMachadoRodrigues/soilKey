@@ -186,7 +186,8 @@ test_that("partial codes: an x for each undecided digit", {
   p3 <- .mod(.ex("valsrivier", "Va2122"), 2, structure_size = NA)
   expect_identical(.cl(p3)$qualifiers$za_family$partial, "Va21x2")
   # an A whose dry colour is not recorded may be melanic: no form, no family
-  p4 <- .mod(.ex("valsrivier", "Va2122"), 1, munsell_value_dry = NA, munsell_chroma_dry = NA)
+  # (a moist value of 3: over 3 the colour is refused, M1 of 0.9.394)
+  p4 <- .mod(.ex("valsrivier", "Va2122"), 1, munsell_value_dry = NA, munsell_chroma_dry = NA, munsell_value_moist = 3)
   expect_null(.cl(p4)$qualifiers$za_family)
   # Lichtenburg has no family
   lc <- .cl(.ex("lichtenburg"))

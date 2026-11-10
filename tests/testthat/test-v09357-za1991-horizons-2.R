@@ -495,6 +495,12 @@ test_that("D7: a red apedal surface layer with little carbon over rock or a dorb
   expect_identical(soilKey:::.za_identify(.za_P(.rabL(0, 30, designation = NA, oc_pct = 0.2), dor))$code, c("RAB", "DOR"))
   # with 1 % organic carbon it stays the orthic A
   expect_identical(soilKey:::.za_identify(.za_P(.rabL(0, 30, designation = "A", oc_pct = 1), .za_L(30, 50, designation = "R")))$code[1], "OA")
+  # B1 (0.9.394): only a layer more than 100 mm thick; 100 mm or less stays the orthic A
+  expect_true("stand_in:surface_b_thick" %in% f$tags[[1]])
+  expect_identical(soilKey:::.za_identify(.za_P(.rabL(0, 10, designation = "A", oc_pct = 0.2), .za_L(10, 30, designation = "R")))$code,
+                   c("OA", "HRK"))
+  expect_identical(soilKey:::.za_identify(.za_P(.rabL(0, 11, designation = "A", oc_pct = 0.2), .za_L(11, 30, designation = "R")))$code,
+                   c("RAB", "HRK"))
 })
 
 test_that("R9: a surface layer designated C is a topsoil", {
