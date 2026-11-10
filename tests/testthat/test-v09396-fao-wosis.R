@@ -96,13 +96,43 @@ test_that("the benchmark script finds no cache, says so and downloads nothing", 
   expect_equal(env$.fao_wosis_wilson(0, 0), c(NA_real_, NA_real_))
   ci <- env$.fao_wosis_wilson(50, 100)
   expect_true(ci[1] < 0.5 && ci[2] > 0.5)
-  nofile <- file.path(tempdir(), "no-such-wosis-cache-396")
+  # no cache anywhere: an empty user cache folder, no option, no variable
+  withr::local_envvar(R_USER_CACHE_DIR = file.path(tempdir(), "empty-user-cache-396"),
+                      SOILKEY_WOSIS_FAO_CACHE = "")
   withr::local_options(soilKey.wosis_fao_cache = NULL)
-  withr::local_envvar(SOILKEY_WOSIS_FAO_CACHE = "")
-  if (!file.exists(file.path(tools::R_user_dir("soilKey", "cache"), "wosis_fao", "listing.rds"))) {
-    expect_message(expect_null(env$fao_wosis_cache(nofile, must = FALSE)), "downloads nothing")
-    expect_error(env$fao_wosis_cache(nofile), "downloads nothing")
-  }
+  expect_message(expect_null(env$fao_wosis_cache(NULL, must = FALSE)), "downloads nothing")
+  expect_error(env$fao_wosis_cache(NULL), "downloads nothing")
+  # an explicit path that holds no cache stops, even with must = FALSE
+  nofile <- file.path(tempdir(), "no-such-wosis-cache-396")
+  expect_error(env$fao_wosis_cache(nofile, must = FALSE), "does not exist")
+})
+
+test_that("weighted proportions, the undecided groupings and the baseline", {
+  skip_on_cran()
+  env <- .script396()
+  p <- env$.fao_wosis_prop(c(TRUE, FALSE), c(3, 1))
+  expect_equal(unname(p[c("n", "pct")]), c(2, 75))
+  expect_equal(unname(p[c("lo", "hi")]), 100 * env$.fao_wosis_wilson(0.75 * 1.6, 1.6))
+  expect_equal(unname(env$.fao_wosis_prop(c(TRUE, FALSE, TRUE))["pct"]), 200 / 3)
+  # a provisional covered result names the groupings tested before it
+  r <- list(levels = data.frame(level = "major_groups", code = "CM", stringsAsFactors = FALSE),
+            provisional_because = c("major_groups:GY", "major_groups:VR"), system_id = "fao1988",
+            trace = list(major_groups = list(CM = list(evidence = list()))))
+  s <- env$.fao_wosis_result(r)
+  expect_identical(s$fall_through, "no")
+  expect_true(s$prov_group)
+  expect_identical(s$candidates, "GY VR")
+  r$levels <- data.frame(level = character(0), code = character(0))
+  expect_identical(env$.fao_wosis_result(r)$fall_through, "undecided")
+  # the baseline: fixed seed, the caller's random numbers untouched
+  x <- data.frame(group_code = c("A", "B", "C", "A"), sk_group = c("A", NA, "B", NA),
+                  candidates = c("", "B C", "", "A"), stringsAsFactors = FALSE)
+  set.seed(1); u1 <- stats::runif(1)
+  set.seed(1); b1 <- env$.fao_wosis_baseline(x, rep(1, 4), B = 50L); u2 <- stats::runif(1)
+  expect_identical(u1, u2)
+  expect_identical(b1, env$.fao_wosis_baseline(x, rep(1, 4), B = 50L))
+  expect_true(all(b1 >= 0 & b1 <= 100))
+  expect_equal(b1[["mean"]], b1[["mean_w"]])
 })
 
 test_that("the benchmark runs end to end on a synthetic cache", {
@@ -111,50 +141,70 @@ test_that("the benchmark runs end to end on a synthetic cache", {
   dir <- file.path(tempdir(), "wosis-fao-396")
   unlink(dir, recursive = TRUE)
   dir.create(file.path(dir, "raw"), recursive = TRUE)
-  prof <- function(id, country, dataset, gc, g, uc, u, year)
+  prof <- function(id, country, dataset, gc, g, uc, u, year, layers = TRUE)
     list(profileId = id, profileCode = paste0("XX-", id), datasetCode = dataset, countryName = country,
          latitude = 1, longitude = 2, faoMajorGroupCode = gc, faoMajorGroup = g,
-         faoSoilUnitCode = uc, faoSoilUnit = u, faoPublicationYear = year)
+         faoSoilUnitCode = uc, faoSoilUnit = u, faoPublicationYear = year,
+         layers = if (layers) list(list(licence = .by396)) else list())
   listing <- list(
     prof(1L, "Testland", "XX-A", "CM", "Cambisol", "d", "Dystric", 1997L),
     prof(2L, "Testland", "XX-A", "CL", "Calcisol", "p", "Plinthic", 1997L),   # no unit of 1988
     prof(3L, "Mexico", "XX-B", "R", "Regosol", "c", "Chromic", 1974L),        # no unit of 1974
-    prof(4L, "Mexico", "XX-B", "SC", "Solonchak", "o", "Orthic", 1974L),      # a 1988 group code
+    prof(4L, "Mexico", "XX-B", "SC", "Solonchak", "o", "Orthic", 1974L),      # WoSIS codes Z as SC
     prof(5L, "Testland", "WD-ISIS", "B", "Cambisol", "d", "Dystric", 1974L),  # left out (ISIS)
-    prof(6L, "Testland", "XX-A", "LV", "Luvisol", NULL, NULL, 1997L),         # no layers
-    prof(7L, "Testland", "XX-A", "B", "Cambisol", "e", "Eutric", 1974L))
+    prof(6L, "Testland", "XX-A", "LV", "Luvisol", NULL, NULL, 1997L, FALSE),  # no layers
+    prof(7L, "Testland", "XX-A", "B", "Cambisol", "e", "Eutric", 1974L),
+    prof(8L, "Testland", "XX-A", "CM", "Cambisol", "e", "Eutric", 1997L),     # listed, not sampled
+    prof(9L, "Testland", "XX-A", "CM", "Cambisol", "h", "Haplic", 1997L),     # listed, not sampled
+    prof(10L, "Testland", "XX-A", "LV", "Luvisol", "h", "Haplic", 2006L))     # another year
   saveRDS(listing, file.path(dir, "listing.rds"))
-  for (id in c(1L, 2L, 3L, 4L, 5L, 7L))
+  for (id in c(1L, 2L, 3L, 4L, 5L, 7L, 10L))
     saveRDS(.layers396(if (id %in% c(3L, 4L)) .nc396 else .by396), file.path(dir, "raw", paste0(id, ".rds")))
-  man <- data.frame(profile_id = 1:7, edition = c("1988", "1988", "1974", "1974", "1974", "1988", "1974"),
-                    downloaded = "2026-11-10 12:00:00", n_layers = c(3, 3, 3, 3, 3, 0, 3),
-                    status = c("ok", "ok", "ok", "ok", "ok", "no_layers", "ok"), licences = "")
+  man <- data.frame(profile_id = c(1:7, 10L), downloaded = "2026-11-10 12:00:00",
+                    n_layers = c(3, 3, 3, 3, 3, 0, 3, 3),
+                    status = c("ok", "ok", "ok", "ok", "ok", "no_layers", "ok", "ok"), licences = "")
   utils::write.csv(man, file.path(dir, "manifest.csv"), row.names = FALSE)
   out <- file.path(dir, "report.md")
-  res <- env$fao_wosis_benchmark(cache = dir, out = out, verbose = FALSE)
+  res <- env$fao_wosis_benchmark(cache = dir, out = out, verbose = FALSE, permutations = 20L)
   ac <- stats::setNames(res$accounting$n, res$accounting$item)
-  expect_equal(unname(ac[c("profiles listed with an FAO-Unesco label", "downloaded with layers", "no layers",
-                           "left out: dataset excluded", "scored")]), c(7, 6, 1, 1, 5))
+  expect_equal(unname(ac[c("profiles listed with an FAO-Unesco label",
+                           "of which with a year other than 1974 or 1997 (not scored)",
+                           "downloaded with layers", "no layers", "left out: dataset excluded",
+                           "left out: year other than 1974 or 1997", "scored")]), c(10, 1, 7, 1, 1, 1, 5))
   r <- res$records
-  expect_false("5" %in% r$profile_id)
-  expect_identical(r$edition[match(c("1", "3"), r$profile_id)], c("1988", "1974"))
-  expect_true(r$code_1988_in_1974[r$profile_id == "4"])
+  expect_false(any(c("5", "10") %in% r$profile_id))
+  expect_identical(r$edition[match(c("1", "3", "4"), r$profile_id)], c("1988", "1974", "1974"))
+  # the Solonchak coded SC is a 1974 Solonchak, scored with the rest of 1974
   expect_identical(r$group_code[r$profile_id == "4"], "Z")
   expect_true(all(r$unit_outside[r$profile_id %in% c("2", "3")]))
   expect_identical(r$unit_code[r$profile_id == "1"], "CMd")
   expect_identical(r$cc_by[match(c("1", "3"), r$profile_id)], c(TRUE, FALSE))
   expect_setequal(res$unmatched$label, c("Plinthic Calcisol", "Chromic Regosol"))
+  # the design: profile 1 stands for its stratum of 3 listed profiles
+  expect_true(res$weighted)
+  expect_equal(r$weight[match(c("1", "2", "3", "4", "7"), r$profile_id)], c(3, 1, 1, 1, 1))
   sc <- res$score
-  expect_identical(sc$subset[sc$edition == "1974"],
-                   c("all (1974 group codes)", "CC BY only", "Mexico", "outside Mexico",
-                     "records with 1988 group codes (apart)"))
-  expect_equal(sc$n[sc$edition == "1974"], c(2, 1, 1, 1, 1))
+  expect_identical(sc$subset[sc$edition == "1974"], c("all", "CC BY only", "Mexico", "outside Mexico"))
+  expect_equal(sc$n[sc$edition == "1974"], c(3, 1, 2, 1))
   expect_equal(sc$n[sc$edition == "1988"], c(2, 2))
-  expect_true(all(sc$covered + sc$undecided + sc$not_classified == sc$n))
-  expect_true(all(sc$agree <= sc$not_contradicted))
+  expect_true(all(sc$k_cov + sc$undecided + sc$not_classified == sc$n))
+  expect_true(all(sc$k_agree <= sc$k_nc))
+  expect_true(all(sc$k_cov - sc$k_agree == sc$covered_wrong))
+  expect_true(all(c("w_agree", "w_nc", "base", "base_w", "agree_firm") %in% names(sc)))
+  expect_true("Z" %in% res$by_group$group)
+  expect_true("Z" %in% rownames(res$confusion[["1974"]]))
   md <- readLines(out)
   expect_true(any(grepl("Batjes NH, Calisto L and de Sousa LM, 2024", md, fixed = TRUE)))
   expect_true(any(grepl("Date downloaded: 2026-11-10", md, fixed = TRUE)))
+  expect_true(any(grepl("Grouping, weighted (headline)", md, fixed = TRUE)))
+  expect_true(any(grepl("Shuffled-label baseline", md, fixed = TRUE)))
   expect_true(any(grepl("Unmatched units", md, fixed = TRUE)))
   expect_true(all(!grepl("[^ -~]", md)))
+  # without the layers field in the listing there is no design: unweighted
+  listing <- lapply(listing, function(p) { p$layers <- NULL; p })
+  saveRDS(listing, file.path(dir, "listing.rds"))
+  res2 <- env$fao_wosis_benchmark(cache = dir, verbose = FALSE, permutations = 5L)
+  expect_false(res2$weighted)
+  expect_true(all(res2$records$weight == 1))
+  expect_equal(res2$score$agree, res2$score$w_agree)
 })
