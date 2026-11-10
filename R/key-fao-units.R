@@ -677,7 +677,7 @@ slow_horizon_bs_fao88 <- function(pedon, lt = 50, to_cm = 125) {
   v <- list(...)
   for (k in names(v)) {
     if (!k %in% names(h)) h[[k]] <- NA
-    if (is.logical(h[[k]]) && !is.logical(v[[k]])) h[[k]] <- methods::as(h[[k]], class(v[[k]])[1L])
+    if (is.logical(h[[k]]) && !is.logical(v[[k]])) h[[k]] <- as.vector(h[[k]], class(v[[k]])[1L])
     h[[k]][i] <- v[[k]]
   }
   PedonRecord$new(site = utils::modifyList(p$site, site),
@@ -698,7 +698,7 @@ slow_horizon_bs_fao88 <- function(pedon, lt = 50, to_cm = 125) {
   for (k in names(v)) {
     if (!k %in% names(h)) { h[[k]] <- NA; new[[k]] <- NA }
     if (is.logical(new[[k]]) && !is.logical(v[[k]])) {
-      h[[k]] <- methods::as(h[[k]], class(v[[k]])[1L]); new[[k]] <- methods::as(new[[k]], class(v[[k]])[1L])
+      h[[k]] <- as.vector(h[[k]], class(v[[k]])[1L]); new[[k]] <- as.vector(new[[k]], class(v[[k]])[1L])
     }
     new[[k]] <- v[[k]]
   }
