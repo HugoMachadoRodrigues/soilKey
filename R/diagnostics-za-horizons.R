@@ -1091,7 +1091,9 @@
 #' Pedocutanic B (S 31; K 53-55): moderate or strong blocky (prismatic when
 #' the transition from above is not the abrupt change of a prismacutanic B);
 #' prominent cutans on most ped faces (clay films common or more; not
-#' recorded, soilKey's argic() stands in, flagged); for a red B, the cutans
+#' recorded, soilKey's argic() stands in, flagged, but only one way: argic
+#' not holding leaves the cutans undecided, as the pedocutanic B needs no
+#' clay increase; C1, Hugo, 2026-11-10); for a red B, the cutans
 #' giving variegated colours or an abrupt transition from above (S 31,
 #' .za_red_cutanic()), else it is the red structured B.
 #' @noRd
@@ -1104,6 +1106,13 @@
         } else .za_blocky(x, i)
   if (isFALSE(st$passed)) return(st)
   cut <- .kidpr_cutans(x, i)
+  # C1 (Hugo, 2026-11-10): clay films not recorded and soilKey's argic
+  # horizon not holding is no evidence against cutans (S 31 asks no clay
+  # increase): undecided. Only here; .kidpr_cutans() is shared with other
+  # systems and stays as it is.
+  if (is.na(.clay_films_class(.kidpr_v(x, i, "clay_films_amount"))) && isFALSE(cut$passed))
+    cut <- .za_r(NA, missing = "clay_films_amount", tag = cut$tag,
+                 note = c(cut$note, "clay films not recorded: the pedocutanic B needs no clay increase, so argic not holding leaves the cutans undecided (C1)"))
   red <- .za_red(x, i)
   col <- if (isFALSE(red$passed)) .za_r(TRUE, note = "not red: the cutans give the variegation")
          else {
@@ -2152,20 +2161,24 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
   # D7 (K 70 i, K 72 iv, K 73 iii; Hugo, 2026-11-06): a surface layer with
   # under 0.3 % organic carbon that is a red or yellow-brown apedal or a
   # neocarbonate B, directly over hard rock, a lithocutanic B or a dorbank,
-  # is that B at the surface (the profile truncated), flagged
+  # is that B at the surface (the profile truncated), flagged. B1 (Hugo,
+  # 2026-11-10): only when the layer is more than 100 mm thick
+  # (surface_b_thick, the limit of the lithosol rule); a thinner one is the
+  # orthic A (Mispah over hard rock)
   if (length(run) == 1L && identical(res[[run]]$route, "data")) {
     i <- run
     oc <- .za_num(x, i, "oc_pct")
     nx <- .kidpr_next(x, i)
     below <- if (is.na(nx)) NA_character_ else res[[nx]]$code
-    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR"))) {
+    thick_ok <- isTRUE(x$thick[i] * 10 > .za_thv("surface_b_thick"))
+    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR")) && thick_ok) {
       for (k in c("RAB", "YAB", "NCA")) {
         b <- .ZA_TESTS[[k]](x, i)
         if (isTRUE(b$passed)) {
           res[[i]]$code <- k; res[[i]]$candidates <- character(0); res[[i]]$data_code <- k
-          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc"))
-          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s: a %s at the surface, the profile truncated (K 70, 72, 73), flagged",
-                                             format(oc), .za_label(below), .za_label(k)), b$note))
+          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc", "stand_in:surface_b_thick"))
+          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s, %s mm thick: a %s at the surface, the profile truncated (K 70, 72, 73), flagged",
+                                             format(oc), .za_label(below), format(x$thick[i] * 10), .za_label(k)), b$note))
           res[[i]]$missing <- character(0)
           break
         }

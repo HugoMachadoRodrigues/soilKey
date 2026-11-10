@@ -1,7 +1,8 @@
 # =============================================================================
 # soilKey -- offline benchmark of the South African soil classification of
 # 1991 (za1991) on the South African profiles of the Africa Soil Profiles
-# database (AfSP 1.2, ISRIC) (v0.9.393).
+# database (AfSP 1.2, ISRIC) (v0.9.393; the second figure of the 1977 humic
+# A, v0.9.394).
 #
 # AfSP gives most South African profiles their local classification (field
 # LocalCls of AfSP012Qry_Profiles.dbf): a binomial of 1977 ("<Form>
@@ -56,6 +57,13 @@
 #   * Family: scored only where the label is a 1991 label naming a family
 #     of its form and soilKey reaches a family. Series of 1977 are not
 #     scored.
+#   * The humic A of 1977 (A1, Hugo's decision of 2026-11-10): a second
+#     figure beside the main one, which is not changed. For a label from a
+#     survey before 1991, soilKey's humic form with a humic A of 450 mm or
+#     less is scored as its orthic counterpart (Inanda as Hutton, Magwa as
+#     Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf, Nomanci as
+#     Glenrosa; soilKey:::.za_humic_1977()): the humic A of 1977 had to be
+#     thicker than 450 mm, the thin one came in 1991. Flagged in the report.
 # =============================================================================
 
 # Misspellings of the AfSP labels (regular expression, case ignored =
@@ -161,11 +169,12 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
                                   verbose = TRUE) {
   if (!"soilKey" %in% loadedNamespaces() &&
       !suppressPackageStartupMessages(requireNamespace("soilKey", quietly = TRUE)))
-    stop("This script needs the soilKey package (0.9.393 or later); install it first.", call. = FALSE)
+    stop("This script needs the soilKey package (0.9.394 or later); install it first.", call. = FALSE)
   ns <- asNamespace("soilKey")
-  if (!exists(".za_match_label", envir = ns, inherits = FALSE))
-    stop("This script needs soilKey 0.9.393 or later.", call. = FALSE)
+  if (!exists(".za_match_label", envir = ns, inherits = FALSE) || !exists(".za_humic_1977", envir = ns, inherits = FALSE))
+    stop("This script needs soilKey 0.9.394 or later.", call. = FALSE)
   match_label <- get(".za_match_label", envir = ns)
+  humic_1977 <- get(".za_humic_1977", envir = ns)
   form_name <- get(".za_form_name", envir = ns)
   if (is.null(labels) || is.null(pedons)) {
     path <- za1991_afsp_dir(afsp_dir)
@@ -187,21 +196,32 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
   d$pedon <- match(d$id, ids)
   todo <- which(d$read & !is.na(d$pedon))
   res <- vector("list", nrow(d))
+  h77 <- data.frame(sk_form_1977 = rep(NA_character_, nrow(d)), humic_mm = NA_real_, humic_thin = FALSE,
+                    stringsAsFactors = FALSE)
   for (j in seq_along(todo)) {
     k <- todo[j]
     if (verbose && (j %% 50L == 0L || j == length(todo))) message(sprintf("[%d/%d]", j, length(todo)))
     # res[k] <- list(): assigning NULL with [[ ]] would drop the element
     res[k] <- list(tryCatch(suppressWarnings(soilKey::classify_za1991(pedons[[d$pedon[k]]], on_missing = "silent")),
                             error = function(e) NULL))
+    if (!is.null(res[[k]])) {
+      hm <- humic_1977(res[[k]], pedons[[d$pedon[k]]])
+      h77$sk_form_1977[k] <- hm$form; h77$humic_mm[k] <- hm$humic_mm; h77$humic_thin[k] <- hm$mapped
+    }
   }
   st <- do.call(rbind, lapply(res, function(r) as.data.frame(.za_afsp_result(r), stringsAsFactors = FALSE)))
-  d <- cbind(d, st)
+  d <- cbind(d, st, h77)
   d$error <- seq_len(nrow(d)) %in% todo & vapply(res, is.null, NA)
   d$scored <- seq_len(nrow(d)) %in% todo & !d$error
   d$agree_form <- ifelse(d$scored, !is.na(d$sk_form) & d$sk_form == d$form_code, NA)
   d$cand_hit <- ifelse(d$scored & nzchar(d$candidates),
                        vapply(seq_len(nrow(d)), function(i)
                          d$form_code[i] %in% strsplit(d$candidates[i], " ", fixed = TRUE)[[1]], NA), NA)
+  # the humic A of 1977 (A1): only for labels from surveys before 1991
+  d$before_1991 <- !is.na(d$year) & d$year < 1991
+  d$mapped_1977 <- d$scored & d$before_1991 & d$humic_thin
+  d$form_1977 <- ifelse(d$mapped_1977, d$sk_form_1977, d$sk_form)
+  d$agree_1977 <- ifelse(d$scored, !is.na(d$form_1977) & d$form_1977 == d$form_code, NA)
   d$family_scored <- d$scored & d$era %in% "1991" & !is.na(d$family_code) & !is.na(d$sk_family)
   d$agree_family <- ifelse(d$family_scored, d$sk_family == d$family_code, NA)
   pct <- function(k, n) if (n) 100 * k / n else NA_real_
@@ -226,6 +246,18 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
   score <- rbind(score_row("All", sc),
                  do.call(rbind, lapply(eras, function(e) score_row(era_name[[e]], sc[sc$era == e, , drop = FALSE]))),
                  score_row("Read by a listed misspelling", sc[sc$matched_by %in% "variant", , drop = FALSE]))
+  s77 <- sc
+  s77$agree_form <- s77$agree_1977
+  mp <- sc[sc$mapped_1977, , drop = FALSE]
+  h77res <- list(score = score_row("All, the humic A of 1977 for surveys before 1991", s77),
+                     mapped = nrow(mp), gained = sum(mp$agree_1977 & !mp$agree_form),
+                     lost = sum(!mp$agree_1977 & mp$agree_form),
+                     changes = if (nrow(mp)) {
+                       t <- as.data.frame(table(label = mp$form_code, soilKey = mp$sk_form, read_1977 = mp$form_1977),
+                                          stringsAsFactors = FALSE)
+                       t <- t[t$Freq > 0, , drop = FALSE]
+                       t[order(-t$Freq, t$label), , drop = FALSE]
+                     } else NULL)
   status <- data.frame(
     profiles = nrow(d), labelled = sum(d$has_label), read = sum(d$read),
     variant = sum(d$matched_by %in% "variant"), unmatched = sum(d$has_label & !d$read),
@@ -298,7 +330,7 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
   out_res <- list(records = d, score = score, status = status, by_era = by_era, years = years,
                   family = family, era91 = era91, candidates = candidates,
                   family_unread = sort(unique(d$family_unread[d$scored & !is.na(d$family_unread)])),
-                  per_form = per_form, confusion = confusion, undecided = undecided,
+                  per_form = per_form, confusion = confusion, undecided = undecided, humic_1977 = h77res,
                   era_name = era_all, form_name = form_name,
                   version = as.character(utils::packageVersion("soilKey")))
   md <- .za_afsp_report(out_res)
@@ -398,6 +430,29 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
   }
   lines <- c(lines, sprintf(paste("Not in the rate: %d of the %d decided disagreements have the label's form among the forms",
                                   "left undecided before the one assigned."), cd$decided_disagree_hit, cd$decided_disagree))
+  h7 <- res$humic_1977
+  if (!is.null(h7)) {
+    s7 <- h7$score
+    lines <- c(lines, "", "## Second figure: the humic A of 1977 (flagged)", "",
+               paste("The key is not changed and the main figure above stands. The humic A of 1977 had to be thicker",
+                     "than 450 mm; the thin humic A came with the second edition (1991). Here, for labels from surveys",
+                     "before 1991, soilKey's humic form with a humic A of 450 mm or less is scored as its orthic",
+                     "counterpart (Inanda as Hutton, Magwa as Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf,",
+                     "Nomanci as Glenrosa). The organic carbon is not corrected."), "",
+               "| Labels | n | Agree | % | 95 % CI | Decided | Coverage % | Agree among decided | % decided | 95 % CI |",
+               "|---|--:|--:|--:|---|--:|--:|--:|--:|---|",
+               sprintf("| %s | %d | %d | %s | %s | %d | %s | %d | %s | %s |", s7$group, s7$n, s7$agree, f1(s7$pct),
+                       ci(s7$lo, s7$hi), s7$decided, f1(s7$coverage), s7$agree_decided, f1(s7$pct_decided),
+                       ci(s7$dec_lo, s7$dec_hi)), "",
+               sprintf("Profiles read so: %d; agreement gained %d, lost %d.", h7$mapped, h7$gained, h7$lost))
+    if (!is.null(h7$changes) && nrow(h7$changes)) {
+      lines <- c(lines, "", "| Label | soilKey (1991) | Read with the humic A of 1977 | n |", "|---|---|---|--:|")
+      ch <- h7$changes
+      for (i in seq_len(nrow(ch)))
+        lines <- c(lines, sprintf("| %s | %s | %s | %d |", fname(ch$label[i]), fname(ch$soilKey[i]),
+                                  fname(ch$read_1977[i]), ch$Freq[i]))
+    }
+  }
   lines <- c(lines, "", "## Family agreement (1991 labels only)", "",
              paste("Scored only where the label names a family of its form (inst/rules/za1991/families.yaml) and",
                    "soilKey reaches a family; the series of the 1977 binomials are not scored."), "",

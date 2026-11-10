@@ -132,3 +132,36 @@
   rownames(res) <- NULL
   res
 }
+
+# v0.9.394 (A1, Hugo, 2026-11-10): the humic A of 1977. The key of 1991 has
+# thin and thick humic A horizons; the preface of the second edition says the
+# humic A was widened in 1991 to thin ones, and van Huyssteen (2020) gives
+# the humic A of 1977 as thicker than 450 mm. For the second figure of the
+# AfSP benchmark, a humic form whose humic A is 450 mm thick or less
+# (humic_thick) is read as its orthic counterpart. The key is not changed.
+.ZA_HUMIC_ORTHIC <- c(Kp = "Gf", Ma = "Cv", "[Ia]" = "Hu", Sr = "Oa", No = "Gs")
+
+# The form of a result of classify_za1991() read with the humic A of 1977:
+# a list with the form (the orthic counterpart when mapped), `mapped`, the
+# thickness of the humic A in mm (NA when not a humic form of the list, or a
+# topsoil layer is undecided for the humic A) and soilKey's form.
+.za_humic_1977 <- function(res, pedon) {
+  lv <- res$levels
+  form <- if (is.data.frame(lv) && nrow(lv)) as.character(lv$code[lv$level == "forms"][1]) else NA_character_
+  out <- list(form = form, mapped = FALSE, humic_mm = NA_real_, sk_form = form)
+  if (is.na(form) || !form %in% names(.ZA_HUMIC_ORTHIC)) return(out)
+  fr <- res$qualifiers$za_horizons$frame
+  if (is.null(fr) || !nrow(fr)) return(out)
+  und <- is.na(fr$code) & vapply(fr$candidates, function(cc) "HA" %in% cc, NA)
+  if (any(und)) return(out)
+  ii <- fr$horizon_idx[fr$code %in% "HA"]
+  h <- pedon$horizons
+  if (!length(ii)) return(out)
+  mm <- sum(h$bottom_cm[ii] - h$top_cm[ii]) * 10
+  out$humic_mm <- mm
+  if (!is.na(mm) && mm <= .za_thv("humic_thick")) {
+    out$form <- .ZA_HUMIC_ORTHIC[[form]]
+    out$mapped <- TRUE
+  }
+  out
+}

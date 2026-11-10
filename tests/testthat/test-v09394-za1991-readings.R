@@ -1,0 +1,193 @@
+# v0.9.394: three readings of the South African classification of 1991 after
+# the AfSP benchmark (Hugo's decisions of 2026-11-10): B1, a carbon-poor
+# surface layer over hard rock is a B at the surface only when more than
+# 100 mm thick; C1, clay films not recorded and soilKey's argic horizon not
+# holding leave the cutans of the pedocutanic B undecided; A1, the second
+# figure of the AfSP benchmark reads the humic A of 1977. Synthetic profiles
+# only; no AfSP profile or label is shipped.
+
+.L394 <- function(top, bottom, ...) {
+  d <- list(top_cm = top, bottom_cm = bottom, munsell_hue_moist = "10YR", munsell_value_moist = 5,
+            munsell_chroma_moist = 4, munsell_hue_dry = "10YR", munsell_value_dry = 6,
+            munsell_chroma_dry = 4, structure_type = "massive", structure_grade = "structureless",
+            clay_pct = 20, silt_pct = 20, sand_pct = 60, oc_pct = 0.3, effervescence_class = "none",
+            clay_films_amount = "none")
+  a <- list(...)
+  d[names(a)] <- a
+  d
+}
+.P394 <- function(...) {
+  ls <- list(...)
+  nm <- unique(unlist(lapply(ls, names)))
+  h <- as.data.frame(lapply(stats::setNames(nm, nm), function(k)
+    unlist(lapply(ls, function(l) if (is.null(l[[k]])) NA else l[[k]]))), stringsAsFactors = FALSE)
+  old <- options(soilKey.warn_unrecognised = FALSE)
+  on.exit(options(old))
+  PedonRecord$new(site = list(id = "za394", lat = -29, lon = 30), horizons = h)
+}
+.cl394 <- function(p) classify_za1991(p, on_missing = "silent")
+.form394 <- function(p) {
+  lv <- .cl394(p)$levels
+  if (nrow(lv)) lv$code[lv$level == "forms"][1] else NA_character_
+}
+# a dark, base-rich melanic A (dry colour recorded) over a strong blocky,
+# non-red B with no clay increase
+.melA <- function(...) .L394(0, 30, designation = "A", munsell_value_moist = 2, munsell_chroma_moist = 1,
+                             munsell_value_dry = 3, munsell_chroma_dry = 1, structure_type = "subangular blocky",
+                             structure_grade = "moderate", slickensides = "none", clay_pct = 45, oc_pct = 2,
+                             ca_cmol = 15, mg_cmol = 8, k_cmol = 0.5, na_cmol = 0.3, ...)
+.blkB <- function(top, bottom, ...) .L394(top, bottom, designation = "B", munsell_hue_moist = "7.5YR",
+                                          munsell_value_moist = 4, munsell_chroma_moist = 4,
+                                          munsell_hue_dry = "7.5YR", munsell_value_dry = 5, munsell_chroma_dry = 4,
+                                          structure_type = "angular blocky", structure_grade = "strong",
+                                          clay_pct = 46, ...)
+
+test_that("B1: a carbon-poor surface layer over hard rock is a B only when more than 100 mm thick", {
+  skip_on_cran()
+  th <- soilKey:::.za_thresholds()$surface_b_thick
+  expect_identical(as.numeric(th$value), 100)
+  expect_identical(th$op, ">")
+  expect_true(th$stand_in)
+  yb <- function(b) .P394(.L394(0, b, designation = "A", munsell_value_moist = 5, munsell_chroma_moist = 6,
+                                munsell_value_dry = 6, munsell_chroma_dry = 6, oc_pct = 0.2),
+                          .L394(b, b + 20, designation = "R"))
+  # 50 and 100 mm: the orthic A on hard rock, Mispah
+  for (b in c(5, 10)) {
+    f <- identify_horizons(yb(b), "za1991")
+    expect_identical(f$code, c("OA", "HRK"), info = b)
+    expect_identical(.form394(yb(b)), "Ms", info = b)
+  }
+  # 110 mm: a yellow-brown apedal B at the surface, Clovelly, flagged
+  f <- identify_horizons(yb(11), "za1991")
+  expect_identical(f$code, c("YAB", "HRK"))
+  expect_true(all(c("surface_b_low_oc", "stand_in:surface_b_oc", "stand_in:surface_b_thick") %in% f$tags[[1]]))
+  r <- .cl394(yb(11))
+  expect_identical(r$levels$code[1], "Cv")
+  expect_true(r$qualifiers$za_truncated)
+  # with more carbon it stays the orthic A whatever the thickness
+  p <- .P394(.L394(0, 30, designation = "A", munsell_value_moist = 5, munsell_chroma_moist = 6,
+                   munsell_value_dry = 6, munsell_chroma_dry = 6, oc_pct = 1), .L394(30, 50, designation = "R"))
+  expect_identical(identify_horizons(p, "za1991")$code[1], "OA")
+})
+
+test_that("C1: clay films not recorded and argic not holding leave the pedocutanic B undecided", {
+  skip_on_cran()
+  pcu <- function(p, i) soilKey:::.za_t_PCU(soilKey:::.za_x(p), i)
+  # no clay increase: argic does not hold
+  p <- .P394(.melA(), .blkB(30, 150, clay_films_amount = NA))
+  expect_false(isTRUE(argic(p)$passed))
+  r <- pcu(p, 2)
+  expect_true(is.na(r$passed))
+  expect_true("clay_films_amount" %in% r$missing)
+  expect_true(any(grepl("argic", r$tag, fixed = TRUE)))
+  expect_true(any(grepl("needs no clay increase", r$note, fixed = TRUE)))
+  # the key: Bonheim stays a candidate, Inhoek is not given
+  res <- .cl394(p)
+  expect_false(identical(res$levels$code[1], "Ik"))
+  expect_true("forms:Bo" %in% res$provisional_because)
+  # clay films recorded decide as before
+  expect_true(isTRUE(pcu(.P394(.melA(), .blkB(30, 150, clay_films_amount = "many")), 2)$passed))
+  expect_false(pcu(.P394(.melA(), .blkB(30, 150, clay_films_amount = "few")), 2)$passed)
+  expect_identical(.form394(.P394(.melA(), .blkB(30, 150, clay_films_amount = "many"))), "Bo")
+  # a clear clay increase: argic holds and still stands in for the cutans
+  p2 <- .P394(.melA(clay_pct = 20, sand_pct = 60), .blkB(30, 150, clay_films_amount = NA, clay_pct = 45))
+  if (isTRUE(argic(p2)$passed)) {
+    r2 <- pcu(p2, 2)
+    expect_true(isTRUE(r2$passed))
+    expect_true(any(grepl("argic", r2$tag, fixed = TRUE)))
+  }
+  # a weak structure is no pedocutanic B, recorded or not
+  expect_false(pcu(.P394(.melA(), .blkB(30, 150, clay_films_amount = NA, structure_grade = "weak")), 2)$passed)
+  # the shared reader of cutans is unchanged: argic not holding is still no cutans there
+  x <- soilKey:::.za_x(p)
+  expect_false(soilKey:::.kidpr_cutans(x, 2)$passed)
+})
+
+test_that("A1: the humic A of 1977 reads a thin humic form as its orthic counterpart", {
+  skip_on_cran()
+  map <- soilKey:::.ZA_HUMIC_ORTHIC
+  expect_identical(unname(map[c("Kp", "Ma", "[Ia]", "Sr", "No")]), c("Gf", "Cv", "Hu", "Oa", "Gs"))
+  for (k in c("inanda", "magwa", "kranskop", "sweetwater", "nomanci")) {
+    p <- make_za1991_example(k)
+    r <- .cl394(p)
+    h <- soilKey:::.za_humic_1977(r, p)
+    expect_identical(h$sk_form, r$levels$code[1], info = k)
+    expect_true(h$mapped, info = k)
+    expect_identical(h$form, unname(map[[h$sk_form]]), info = k)
+    expect_true(h$humic_mm <= 450, info = k)
+  }
+  # a thick humic A (over 450 mm) is the humic A of 1977 too
+  p <- make_za1991_example("inanda")
+  hz <- as.data.frame(p$horizons)
+  d <- 50 - (hz$bottom_cm[1] - hz$top_cm[1])
+  hz$bottom_cm[1] <- hz$bottom_cm[1] + d
+  hz$top_cm[-1] <- hz$top_cm[-1] + d
+  hz$bottom_cm[-1] <- hz$bottom_cm[-1] + d
+  old <- options(soilKey.warn_unrecognised = FALSE)
+  on.exit(options(old), add = TRUE)
+  p2 <- PedonRecord$new(site = p$site, horizons = ensure_horizon_schema(data.table::as.data.table(hz)))
+  r2 <- .cl394(p2)
+  skip_if_not(identical(r2$levels$code[1], "[Ia]"))
+  h2 <- soilKey:::.za_humic_1977(r2, p2)
+  expect_false(h2$mapped)
+  expect_identical(h2$form, "[Ia]")
+  expect_equal(h2$humic_mm, 500)
+  # not a humic form, or no form: unchanged
+  ph <- make_za1991_example("hutton")
+  h3 <- soilKey:::.za_humic_1977(.cl394(ph), ph)
+  expect_identical(c(h3$form, h3$sk_form), c("Hu", "Hu"))
+  expect_false(h3$mapped)
+  pu <- make_za1991_example("undecided")
+  expect_true(is.na(soilKey:::.za_humic_1977(.cl394(pu), pu)$form))
+})
+
+test_that("A1: the AfSP benchmark gives the second figure, the main figure unchanged", {
+  skip_on_cran()
+  f <- system.file("benchmarks", "za1991_afsp.R", package = "soilKey")
+  if (!nzchar(f)) f <- testthat::test_path("..", "..", "inst", "benchmarks", "za1991_afsp.R")
+  skip_if_not(file.exists(f))
+  env <- new.env()
+  sys.source(f, envir = env)
+  ex <- c("inanda", "inanda", "magwa", "hutton", "kranskop")
+  peds <- lapply(seq_along(ex), function(i) {
+    p <- make_za1991_example(ex[i])
+    p$site$id <- paste0("H", i)
+    p
+  })
+  labels <- data.frame(id = paste0("H", 1:5),
+                       label = c("Hutton Xseries", "Hutton Xseries", "Clovelly Xseries", "Hutton Xseries", "Kranskop Xseries"),
+                       year = c(1975L, 1999L, 1980L, 1980L, 1985L), stringsAsFactors = FALSE)
+  out <- tempfile(fileext = ".md")
+  b <- env$za1991_afsp_benchmark(pedons = peds, labels = labels, out = out, verbose = FALSE)
+  a <- b$score[b$score$group == "All", ]
+  # main figure: the Hutton and the Kranskop examples agree
+  expect_identical(c(a$n, a$agree, a$decided), c(5L, 2L, 5L))
+  h <- b$humic_1977
+  # H1 (1975) and H3 (1980) are read as Hutton and Clovelly and agree; H2 is
+  # surveyed in 1999 and not read so; H5 (1985) Kranskop is read as Griffin
+  # and no longer agrees with its Kranskop label
+  expect_identical(c(h$mapped, h$gained, h$lost), c(3L, 2L, 1L))
+  expect_identical(c(h$score$n, h$score$agree, h$score$decided), c(5L, 3L, 5L))
+  rec <- b$records
+  expect_identical(rec$form_1977[rec$id == "H2"], "[Ia]")
+  expect_identical(rec$form_1977[rec$id == "H5"], "Gf")
+  expect_false(rec$agree_1977[rec$id == "H5"])
+  md <- readLines(out)
+  expect_true(any(grepl("^## Second figure: the humic A of 1977 \\(flagged\\)", md)))
+  expect_true(any(grepl("^Profiles read so: 3; agreement gained 2, lost 1\\.", md)))
+  expect_false(any(grepl("[^\\x01-\\x7F]", md, perl = TRUE)))
+})
+
+test_that("the readings of 0.9.394 are in readings.yaml, with Hugo's date", {
+  skip_on_cran()
+  f <- system.file("rules", "za1991", "readings.yaml", package = "soilKey")
+  skip_if_not(file.exists(f))
+  rd <- yaml::read_yaml(f)$readings
+  tp <- vapply(rd, `[[`, "", "topic")
+  for (t in c("A red or yellow B at the surface: its thickness (B1)", "Cutans not recorded in a structured B (C1)",
+              "The 1977 humic A in the AfSP benchmark (A1)")) {
+    j <- match(t, tp)
+    expect_false(is.na(j), info = t)
+    expect_true(grepl("\\(Hugo, 2026-11-10\\)\\.$", rd[[j]]$reading), info = t)
+  }
+})

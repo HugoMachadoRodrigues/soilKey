@@ -378,7 +378,7 @@ test_that("the readings: Hugo's decisions and soilKey's readings for him", {
   # the 13 readings of this part are Hugo's decisions of 2026-11-04; a later
   # part adds its own, decided by Hugo or waiting for his word (0.9.357)
   expect_true(all(grepl("\\(Hugo, 2026-11-04\\)\\.?$", r[1:13])))
-  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-0[4-9]\\)\\.?$", r)))
+  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-(0[4-9]|1[0-9])\\)\\.?$", r)))
   expect_true(length(r) >= 13L)
   expect_true(all(nzchar(vapply(rd, `[[`, "", "topic"))))
 })

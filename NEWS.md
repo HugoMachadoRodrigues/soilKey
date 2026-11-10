@@ -1,3 +1,18 @@
+# soilKey 0.9.394 (2026-11-10)
+
+## South African classification 1991: three readings after the AfSP benchmark
+
+Three readings examined on the AfSP benchmark of 0.9.393 and decided by Hugo (2026-11-10). They are recorded in `inst/rules/za1991/readings.yaml`; the 73 form examples, the 404 family examples and the special cases (555 runs) keep their names and provisional status.
+
+* **B1: a B at the surface needs more than 100 mm.** The reading D7 (a red or yellow-brown apedal or neocarbonate surface layer with under 0.3 % organic carbon directly over hard rock, a lithocutanic B or a dorbank is that B, the profile truncated) now holds only when the layer is more than 100 mm thick (`surface_b_thick` in `thresholds.yaml`, flagged; the limit of the lithosol rule of the general rules). A thinner layer stays the orthic A, so a thin carbon-poor topsoil on hard rock is Mispah, as the surveyors wrote it. On AfSP, D7 fired on 6 profiles: the 5 labelled Mispah (A of 50-100 mm, read as Clovelly) and one labelled Hutton (300 mm, red), which keeps its Hutton. Of the 5, one is now Mispah and 4 stop with Mispah among the forms left undecided (their A stays undecided as organic O or melanic A; examined apart, for Hugo).
+* **C1: cutans not recorded leave the pedocutanic B undecided.** When clay films are not recorded, soilKey's argic horizon stood in for the cutans both ways; but the pedocutanic B asks for prominent cutans, not a clay increase, so argic not holding refused the B. Now, in the pedocutanic test only, argic not holding leaves the cutans undecided; argic holding still stands in, flagged. The shared reader of cutans used by the other national systems is unchanged. On AfSP (no layer records clay films), the 5 Bonheim keyed as Inhoek now stop with Bonheim among the candidates; one Rensburg keyed as Willowbrook stops too, and 12 Swartland and Valsrivier profiles that stopped now have their label among the candidates.
+* **A1: the humic A of 1977 in the benchmark (the key unchanged).** The thin humic A came with the second edition; the humic A of 1977 had to be thicker than 450 mm. The AfSP report gives a second figure, flagged, beside the main one: for labels from surveys before 1991, soilKey's humic form with a humic A of 450 mm or less is scored as its orthic counterpart (Inanda as Hutton, Magwa as Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf, Nomanci as Glenrosa; internal `.za_humic_1977()` in `R/za-benchmark.R`). The organic carbon is not corrected: AfSP gives no method for the South African SOTER profiles, their values read as reported by the laboratory, and the same institute's WISE profiles are coded Walkley-Black.
+
+The AfSP run of 2026-11-10 (641 scored):
+
+* Main figure: 123 of 641 agree, 19.2 % (Wilson 95 % 16.3-22.4; 0.9.393: 122, 19.0 %). soilKey names a form for 186 (coverage 29.0 %, 25.6-32.6; was 196, 30.6 %), and among those the form agrees for 66.1 % (59.1-72.5; was 62.2 %). 453 stop with forms undecided and the label's form is among them for 337 (74.4 %; was 316 of 442, 71.5 %). The confusions Mispah to Clovelly (5) and Bonheim to Inhoek (5) are gone.
+* Second figure, the humic A of 1977 for surveys before 1991: 139 of 641 agree, 21.7 % (18.7-25.0); 74.7 % of the decided (68.0-80.4). 18 profiles are read so; 16 agreements gained (Hutton read as Inanda 7, Clovelly as Magwa 5, Griffin as Kranskop 4), none lost. Left: one each of Hutton, Clovelly and Griffin from surveys of 1998-2000, and a Griffin of 1982 whose humic A is 500 mm.
+
 # soilKey 0.9.393 (2026-11-10)
 
 ## South African classification 1991: the AfSP benchmark

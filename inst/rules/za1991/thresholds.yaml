@@ -467,6 +467,14 @@ thresholds:
     decision: "D7 (Hugo, 2026-11-06)"
     stand_in: true
     note: "The form pages say 'usually' under 0.3 %: a descriptive number read as the limit, flagged."
+  surface_b_thick:
+    value: 100
+    op: ">"
+    unit: "mm, the thickness a surface layer must exceed to be read as an apedal or neocarbonate B at the surface (surface_b_oc); 100 mm or less over hard rock it is the orthic A (Mispah)"
+    source: "soilkey"
+    decision: "B1 (Hugo, 2026-11-10)"
+    stand_in: true
+    note: "The limit of the lithosol rule of the general rules (lithosol_topsoil), read here as the least thickness of a B exposed by truncation; no open page gives a number. On the AfSP profiles it keeps the 300 mm red layer labelled Hutton and returns the 50-100 mm layers labelled Mispah to the orthic A."
   topsoil_upper:
     value: 200
     unit: "mm, the upper part of a topsoil of several layers: a vertic, melanic or humic A covering it (or half the topsoil or more) is the topsoil"
