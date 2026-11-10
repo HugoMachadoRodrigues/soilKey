@@ -232,6 +232,7 @@ properties:
     page: "29-30"
     source: "groundwater with the capillary fringe at the surface; a histic H; hues N or bluer than 10Y; the colour branches 4.1 to 4.5 (Q22)"
     calcic_intervening_within_cm: 75
+    plinthite_continuous_phase_min_pct: {value: 50, source: "soilKey: a 'continuous phase' of plinthite read as half the volume (0.9.388 reading)"}
     oxic_plinthite_within_cm: 30
     oxic_mottles_within_cm: 50
   interfingering:

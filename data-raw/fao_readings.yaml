@@ -638,3 +638,69 @@ readings:
     page: "74 p. 23; plan section 6"
     version: "0.9.387"
     reading: "Where a 1974 horizon stays undecided, soilKey's USDA reader stands in for the whole horizon, then the WRB one (histic_epipedon_usda / histic_horizon, mollic_epipedon_usda / mollic, umbric_epipedon_usda / umbric_horizon, argillic_usda / argic, natric_horizon_usda / natric_horizon, cambic, oxic_horizon_usda / ferralic, calcic_horizon_usda / calcic, gypsic_horizon_usda / gypsic, sulfuric_horizon_usda / thionic, albic_horizon_usda / albic); the first decided answer is taken, marked as a stand-in (lower grade, flag stand_in_<name>), with the undecided 1974 criteria kept in evidence. A decided 1974 answer is never replaced. The spodic chemistry keeps its own stand-ins (Q17); the ochric A follows the mollic and umbric results (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+
+  # --- 0.9.388 (the diagnostic properties of 1974, R/diagnostics-fao74.R) ------------------
+  # Hugo's decisions that this part applies: Q10 (no depth printed: 125 cm;
+  # the 125 / 90 / 75 cm rule by the texture of the upper 30 cm), Q11, Q12,
+  # Q20 (the amorphous complex: bulk density and one other mark), Q22 (the
+  # hydromorphic test of the text, its stand-ins aquic_conditions_usda() and
+  # the WRB gleyic and stagnic properties; "many" = 15 %, coarse = 20 mm),
+  # Q23 (calcareous and soft powdery lime by the numbers of 1988, flagged;
+  # plinthite present = recorded above 0 %), Q26 (the aridic regime by the
+  # regime recorded), default 14 (heavy clay = 60 % clay, flagged). soilKey's
+  # own readings follow.
+  - topic: "Abrupt textural change of 1974: 8 cm and the lower horizon"
+    edition: [1974]
+    page: "74 pp. 27-28"
+    version: "0.9.388"
+    reading: "'Within 8 cm or less' is the lower boundary of the A or E recorded abrupt or clear (up to 5 cm); gradual (5 to 15 cm) leaves it undecided; diffuse fails; not recorded, absent, flagged (as the 1988 reading at 5 cm). A layer 8 cm or less below the A or E, across a thin layer, is compared from the depths. 'Some part of the lower horizon' with double the clay is the layer below and its adjoining layers of the same master horizon. An undesignated upper layer may be an A or E: undecided where the clay passes (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Albic material and albic E of 1974: no chroma limit at the middle values"
+    edition: [1974]
+    page: "74 pp. 27-28"
+    version: "0.9.388"
+    reading: "As printed (plan section 12, item 26): a moist value of 4 or 5 or a dry value of 5 or 6 passes at any chroma, so a brown or yellowish sand of moist value 4 or 5 is albic material (the Albic Arenosols, 74 p. 46). The 1988 text adds a chroma limit there (below 2.5) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Exchange complex dominated by amorphous material: the marks read"
+    edition: [1974]
+    page: "74 p. 28"
+    version: "0.9.388"
+    reading: "bulk_density_g_cm3 is read as the 1/3-bar density, flagged. The NaF pH is read where the 15-bar water is 20 % or more, or not recorded; below 20 % that mark does not apply. The CEC at pH 8.2 and the 15-bar water are per measured clay (cec_ph82_cmol x 100 / clay_pct; water_content_1500kpa / clay_pct) (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "High organic matter in the B of 1974"
+    edition: [1974]
+    page: "74 pp. 28-29"
+    version: "0.9.388"
+    reading: "The 100 cm start below an O horizon (the O excluded); the depth below a soil on rock counts as zero, as for the strongly humic soils of 1988 (p. 40). 'The upper part of the B' of the Acrisols is the first layer of the argillic B (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "High salinity of 1974 without a texture class"
+    edition: [1974]
+    page: "74 p. 29"
+    version: "0.9.388"
+    reading: "When the texture class of the upper 30 cm is undecided, an ECe above 15 dS/m in a layer within 75 cm passes, none within 125 cm fails, and anything else is undecided. ec_max_dS_m rules a layer out where ec_dS_m is not recorded, as in 1988 (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Hydromorphic properties of 1974: how the colour branches are read"
+    edition: [1974]
+    page: "74 pp. 29-30"
+    version: "0.9.388"
+    reading: "The saturation named in item 4 is not tested: the colours are its evidence (as Q21 for 1988). The kind of soil is the first that applies, in the printed order: a spodic B, a mollic A, an argillic B right below an Ap or an A of rubbed moist value below 3.5, an oxic B, other soils; an argillic B elsewhere falls to 'other soils'. A spodic, argillic or oxic B left undecided chooses its branch only where a B designation shows it (h or s, t, o or ws), else the soil is read as not of that kind, flagged; any other undecided kind is read both ways and a layer is decided where both agree. 'Distinct or prominent' is mottle_contrast (mottles without it are read as not distinct); 'high chroma' mottles are chroma above 2; 'nearest to 2.5Y' is a hue between 1.25Y and 3.75Y; a plinthite 'continuous phase' is plinthite_pct of 50 or more [soilKey's number]; Fe-Mn concretions of unrecorded size are accepted, flagged. Not read: the waivers for red parent materials, the colours of uncoated grains, and the 'no iron coatings' path of 4.1 (c) (its 'fine or medium mottles right below the spodic B' path is read). Groundwater with its capillary fringe at the surface is the water table within 100 cm of the 1988 reading (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Recent alluvial deposits of 1974"
+    edition: [1974]
+    page: "74 p. 32"
+    version: "0.9.388"
+    reading: "The origin as for the fluvic properties of 1988, colluvium added. 'Decreasing irregularly' is an increase of more than 0.2 points of organic carbon from a layer to the next (the 1988 reading); 0.35 % organic matter is 0.35 / 1.724 % OC. Fresh material at regular intervals or fine stratification: a stratification_pattern recorded within 125 cm, or a flood_frequency recorded other than none (no 25 % volume rule in 1974). Sulfidic materials within 125 cm: where sulfur is measured nowhere and no marine, tidal or brackish setting is recorded, absent, flagged (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Sulfidic materials and thin iron pan of 1974"
+    edition: [1974]
+    page: "74 p. 31"
+    version: "0.9.388"
+    reading: "Sulfidic: 0.75 % S and CaCO3 below three times the S, and no jarosite mottles (which make a sulfuric horizon); the waterlogged state and the pH before drainage are reported, not tested (1988 asks a pH above 3.5). Thin iron pan: pan_type naming a thin iron pan or placic pan; else a cemented layer designated with sm or ms (or placic) and 4 cm thick or less, flagged; not recorded, absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Vertic properties of 1974"
+    edition: [1974]
+    page: "74 p. 31"
+    version: "0.9.388"
+    reading: "Cracks of 1 cm or more (cracks_width_cm) in a layer overlapping the 50 cm below the top of the first B layer; they reach the upper part of the B when cracks_top_cm is at or above the base of that first B layer, or when the cracked layer is that layer or above it. Not recorded, absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Bleached coatings on ped surfaces"
+    edition: [1974]
+    page: "74 pp. 33, 48"
+    version: "0.9.388"
+    reading: "bleached_ped_coatings decides; not recorded, ped coatings at least one moist value lighter than the matrix (coatings_value_moist) with uncoated grains recorded (uncoated_grains_pct above 0) count, flagged; else absent (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Weatherable minerals of 1974: the default limit"
+    edition: [1974]
+    page: "74 pp. 26, 32"
+    version: "0.9.388"
+    reading: "weatherable_minerals_fao74() takes min_pct = 3 by default, the line of the cambic B; the 20-200 um column is the 0.02-0.2 mm fraction of the 1974 text, so no flag (soilKey's reading, for Hugo to confirm, 2026-11-09)."
