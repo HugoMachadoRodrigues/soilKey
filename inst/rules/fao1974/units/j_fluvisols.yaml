@@ -1,0 +1,44 @@
+# The soil units of the Fluvisols (J), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 44, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "J":
+    - code: "Jt"
+      name: "Thionic Fluvisols"
+      name_pt: "Fluvissolos Tiônicos (Thionic Fluvisols)"
+      page: 44
+      tests:
+        any_of:
+          - sulfuric_fao74: {max_top_cm: 125}
+          - sulfidic_materials_fao74: {max_top_cm: 125}
+      notes: "A sulfuric horizon or sulfidic material, or both, at less than 125 cm (read within 125 cm)."
+
+    - code: "Jc"
+      name: "Calcaric Fluvisols"
+      name_pt: "Fluvissolos Calcáricos (Calcaric Fluvisols)"
+      page: 44
+      tests:
+        all_of: [{calcareous_fao74: {window_cm: [20, 50]}}]
+      notes: "Calcareous at least between 20 and 50 cm."
+
+    - code: "Jd"
+      name: "Dystric Fluvisols"
+      name_pt: "Fluvissolos Distróficos (Dystric Fluvisols)"
+      page: 44
+      tests:
+        all_of: [{bs_window_fao74: {lt: 50, top: 20, bottom: 50, mode: some}}]
+      notes: "A base saturation (NH4OAc) below 50 % in at least some part of the soil between 20 and 50 cm."
+
+    - code: "Je"
+      name: "Eutric Fluvisols"
+      name_pt: "Fluvissolos Eutróficos (Eutric Fluvisols)"
+      page: 44
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

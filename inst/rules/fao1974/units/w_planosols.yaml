@@ -1,0 +1,62 @@
+# The soil units of the Planosols (W), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 48, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "W":
+    - code: "Wx"
+      name: "Gelic Planosols"
+      name_pt: "Planossolos Gélicos (Gelic Planosols)"
+      page: 48
+      tests:
+        all_of: [{permafrost_fao74: {max_top_cm: 200}}]
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "Ws"
+      name: "Solodic Planosols"
+      name_pt: "Planossolos Solódicos (Solodic Planosols)"
+      page: 48
+      tests:
+        all_of: [{slow_horizon_fao74: {test: sodium, gt: 6, to_cm: 125}}]
+      notes: "More than 6 % sodium in the exchange complex of the slowly permeable horizon."
+
+    - code: "Wm"
+      name: "Mollic Planosols"
+      name_pt: "Planossolos Mólicos (Mollic Planosols)"
+      page: 48
+      tests:
+        any_of:
+          - mollic_a_fao74: {}
+          - histic_h_fao74: {base: eutric}
+      notes: "A mollic A horizon or a eutric histic H horizon."
+
+    - code: "Wh"
+      name: "Humic Planosols"
+      name_pt: "Planossolos Húmicos (Humic Planosols)"
+      page: 48
+      tests:
+        any_of:
+          - umbric_a_fao74: {}
+          - histic_h_fao74: {base: dystric}
+      notes: "An umbric A horizon or a dystric histic H horizon."
+
+    - code: "Wd"
+      name: "Dystric Planosols"
+      name_pt: "Planossolos Distróficos (Dystric Planosols)"
+      page: 48
+      tests:
+        all_of: [{slow_horizon_fao74: {test: bs, lt: 50, to_cm: 125}}]
+      notes: "A base saturation (NH4OAc) below 50 % in at least a part of the slowly permeable horizon within 125 cm."
+
+    - code: "We"
+      name: "Eutric Planosols"
+      name_pt: "Planossolos Eutróficos (Eutric Planosols)"
+      page: 48
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

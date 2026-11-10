@@ -10,9 +10,13 @@ make_fao_example(code = "HS", edition = c("1988", "1974"), near_miss = FALSE)
 \item{code}{The code of a major soil grouping of 1988 ("HS", "AT", "LP",
 "VR", "FL", "SC", "GL", "AN", "AR", "RG", "PZ", "PT", "FR", "PL", "SN",
 "GR", "CH", "KS", "PH", "PD", "GY", "CL", "NT", "AL", "AC", "LV", "LX",
-"CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...).}
+"CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...); with
+\code{edition = "1974"}, of a major soil group of 1974 ("O", "I", "V",
+"J", "Z", "G", "T", "Q", "R", "U", "E", "P", "F", "W", "S", "M", "C",
+"K", "H", "D", "X", "Y", "N", "A", "L", "B") or of one of its 106 soil
+units ("Ox", "Lc", "Be" ...).}
 
-\item{edition}{\code{"1988"}; the examples of 1974 follow with its key.}
+\item{edition}{\code{"1988"} (default) or \code{"1974"} (since v0.9.389).}
 
 \item{near_miss}{\code{TRUE} for the near miss of the grouping.}
 }
@@ -36,6 +40,8 @@ miss. They are not real profiles.
 p <- make_fao_example("PH")
 p$horizons[, c("designation", "top_cm", "bottom_cm", "bs_pct")]
 classify_fao(make_fao_example("LVx"), on_missing = "silent")$name
+classify_fao(make_fao_example("Fx", edition = "1974"), edition = "1974",
+             on_missing = "silent")$name
 }
 \seealso{
 \code{\link{classify_fao}}.

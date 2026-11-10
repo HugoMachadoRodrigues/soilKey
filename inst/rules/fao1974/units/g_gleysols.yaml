@@ -1,0 +1,73 @@
+# The soil units of the Gleysols (G), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 44-45, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "G":
+    - code: "Gx"
+      name: "Gelic Gleysols"
+      name_pt: "Gleissolos Gélicos (Gelic Gleysols)"
+      page: 44
+      tests:
+        all_of: [{permafrost_fao74: {max_top_cm: 200}}]
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "Gp"
+      name: "Plinthic Gleysols"
+      name_pt: "Gleissolos Plínticos (Plinthic Gleysols)"
+      page: 44
+      tests:
+        all_of: [{plinthite_fao74: {max_top_cm: 125}}]
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "Gm"
+      name: "Mollic Gleysols"
+      name_pt: "Gleissolos Mólicos (Mollic Gleysols)"
+      page: 45
+      tests:
+        any_of:
+          - mollic_a_fao74: {}
+          - histic_h_fao74: {base: eutric}
+      notes: "A mollic A horizon or a eutric histic H horizon."
+
+    - code: "Gh"
+      name: "Humic Gleysols"
+      name_pt: "Gleissolos Húmicos (Humic Gleysols)"
+      page: 45
+      tests:
+        any_of:
+          - umbric_a_fao74: {}
+          - histic_h_fao74: {base: dystric}
+      notes: "An umbric A horizon or a dystric histic H horizon."
+
+    - code: "Gc"
+      name: "Calcaric Gleysols"
+      name_pt: "Gleissolos Calcáricos (Calcaric Gleysols)"
+      page: 45
+      tests:
+        any_of:
+          - calcic_fao74: {max_top_cm: 125}
+          - gypsic_fao74: {max_top_cm: 125}
+          - calcareous_fao74: {window_cm: [20, 50]}
+      notes: "A calcic or a gypsic horizon within 125 cm of the surface, or calcareous at least between 20 and 50 cm."
+
+    - code: "Gd"
+      name: "Dystric Gleysols"
+      name_pt: "Gleissolos Distróficos (Dystric Gleysols)"
+      page: 45
+      tests:
+        all_of: [{bs_window_fao74: {lt: 50, top: 20, bottom: 50, mode: some}}]
+      notes: "A base saturation (NH4OAc) below 50 % in at least some part of the soil between 20 and 50 cm."
+
+    - code: "Ge"
+      name: "Eutric Gleysols"
+      name_pt: "Gleissolos Eutróficos (Eutric Gleysols)"
+      page: 45
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

@@ -316,3 +316,32 @@ key:
   N: {page: 51, clay_decrease_max_fraction: 0.2, depth_cm: 150, plinthite_not_within_cm: 125}
   A: {page: 51, bs_lt_pct: 50, within_cm: 125}
   B: {page: "52-53", umbric_gt_cm: 25}
+
+unit_key:
+  page: "43-53"
+  source: "the numbers of the 106 unit gates (0.9.389), as printed; soilKey's readings in readings.yaml"
+  gelic_permafrost_within_cm:   {value: 200, page: "43-53", units: [Ox, Gx, Rx, Wx, Bx]}
+  dystric_histosols_ph_1to5_lt: {value: 5.5, page: 43, window_cm: [20, 50]}
+  pellic_chroma_moist_lt:       {value: 1.5, page: 43, depth_cm: 30}
+  thionic_within_cm:            {value: 125, page: 44, source: "'at less than 125 cm', read within 125 cm"}
+  calcareous_window_cm:         {value: [20, 50], page: "44-50", units: [Jc, Gc, Rc, Hc, Bk]}
+  dystric_bs_lt_pct:            {value: 50, page: "44-53", window_cm: [20, 50], units: [Jd, Gd, Rd]}
+  hydromorphic_within_cm:       {value: 50, page: "44-52", source: "Bg: 100 cm (p. 53)"}
+  gleyic_cambisols_within_cm:   {value: 100, page: 53}
+  plinthite_within_cm:          {value: 125, page: "44-52", units: [Gp, Fp, Ap, Lp]}
+  calcic_gypsic_within_cm:      {value: 125, page: "45, 49", units: [Gc, Ck, Kk]}
+  andosol_texture_depth_cm:     {value: 100, page: 45, source: "silt loam or finer, weighted average within 100 cm (To)"}
+  albic_material_depth_cm:      {value: 50, page: "34, 46"}
+  lamellae_within_cm:           {value: 125, page: 34}
+  podzol_fe_c_ratio_min:        {value: 6, page: 47}
+  leptic_albic_max_cm:          {value: 2, page: 47}
+  ferralsol_humic_bs_lt_pct:    {value: 50, page: 47, within_cm: 100}
+  acric_cec_nh4cl_max_me_100g_clay: {value: 1.5, page: 47, within_cm: 125}
+  rhodic: {page: 47, hue_redder_than: "5YR", value_moist_lt: 4, dry_minus_moist_max: 1}
+  xanthic: {page: 47, hue_as_yellow_as: "7.5YR", value_moist_min: 4, chroma_moist_min: 5}
+  chromic: {page: "52-53", hue: "7.5YR", chroma_gt: 4, or_hue_redder_than: "7.5YR"}
+  solodic_na_gt_pct:            {value: 6, page: 48}
+  planosol_bs_lt_pct:           {value: 50, page: 48, within_cm: 125}
+  b_bs_lt_pct:                  {value: 50, page: "50-53", within_cm: 125, units: [Dd, Nh, Nd, Bd]}
+  depth_by_class_cm:            {value: {coarse: 125, medium: 90, fine: 75}, page: "49-53", units: [Lk, Bk, Xy, Xk, Yy, Yk]}
+  high_om_b_pct:                {value: 1.35, page: "28-29", units: [Fh, Nh, Ah], source: "Ah also 1.5 % in the upper B"}

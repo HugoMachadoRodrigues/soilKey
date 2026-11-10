@@ -16,9 +16,10 @@ classify_fao(
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
 \item{edition}{\code{"1988"} (the Revised Legend, default) or
-\code{"1974"} (not yet available).}
+\code{"1974"} (the Legend of 1974).}
 
-\item{rules}{Optional pre-loaded rule set (\code{load_rules("fao1988")}).}
+\item{rules}{Optional pre-loaded rule set (\code{load_rules("fao1988")},
+or \code{load_rules("fao1974")} with \code{edition = "1974"}).}
 
 \item{on_missing}{One of \code{"warn"} (default), \code{"silent"},
 \code{"error"}.}
@@ -28,7 +29,8 @@ classify_fao(
 }
 \value{
 A \code{\link{ClassificationResult}} with \code{system_id}
-  \code{"fao1988"}; \code{name} holds the soil unit as printed ("Haplic
+  \code{"fao1988"} (\code{"fao1974"} for the Legend of 1974);
+  \code{name} holds the soil unit as printed ("Haplic
   Luvisols") and \code{rsg_or_order} the major soil grouping
   ("Luvisols"); \code{levels} has one row per level (\code{major_groups},
   \code{units}) with the code ("LV", "LVh"), name, page of the key and
@@ -61,8 +63,16 @@ the Terric Histosols and Urbic Anthrosols, whose descriptions are shown,
 not tested). Since v0.9.386 the result also gives the 16 phases of
 chapter VIII (pp. 67-71) and the texture and slope classes of the map
 symbol (Appendix 2, p. 107) in \code{$phases}, beside the unit, which
-they never change. The Legend of 1974 follows in a later release;
-\code{edition = "1974"} stops with a message until then.
+they never change. Since v0.9.389, \code{edition = "1974"} keys the
+Legend of 1974 (FAO-Unesco, Soil Map of the World, Vol. I, Unesco Paris),
+pp. 43-53: its 26 major soil groups in the key's order (Histosols,
+Lithosols, Vertisols, Fluvisols, Solonchaks, Gleysols, Andosols,
+Arenosols, Regosols, Rankers, Rendzinas, Podzols, Ferralsols, Planosols,
+Solonetz, Greyzems, Chernozems, Kastanozems, Phaeozems, Podzoluvisols,
+Xerosols, Yermosols, Nitosols, Acrisols, Luvisols, Cambisols) and their
+106 soil units (the Lithosols, Rankers and Rendzinas are single units),
+on the diagnostic horizons and properties of 1974 read on the data; its
+registry id is \code{fao1974} (\code{\link{classify_fao1974}}).
 }
 \details{
 The tests are three-valued: a measurement not recorded leaves its
@@ -86,6 +96,8 @@ res$name
 res$rsg_or_order
 res$levels
 res$phases[res$phases$status != "absent", c("kind", "code", "name", "status")]
+classify_fao(make_fao_example("Lc", edition = "1974"), edition = "1974",
+             on_missing = "silent")$name
 }
 \references{
 FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend,
@@ -94,6 +106,6 @@ FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend,
   1997.
 }
 \seealso{
-\code{\link{classify_fao1988}}, \code{\link{make_fao_example}},
-  \code{\link{soilkey_systems}}.
+\code{\link{classify_fao1988}}, \code{\link{classify_fao1974}},
+  \code{\link{make_fao_example}}, \code{\link{soilkey_systems}}.
 }

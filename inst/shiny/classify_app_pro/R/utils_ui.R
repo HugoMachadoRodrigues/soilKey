@@ -150,6 +150,15 @@ pro_fixture_catalog <- function() {
               "Chernozems" = "CH", "Kastanozems" = "KS", "Phaeozems" = "PH", "Podzoluvisols" = "PD",
               "Gypsisols" = "GY", "Calcisols" = "CL", "Nitisols" = "NT", "Alisols" = "AL",
               "Acrisols" = "AC", "Luvisols" = "LV", "Lixisols" = "LX", "Cambisols" = "CM"),
+  # the examples of the FAO-Unesco Legend of 1974, one per major soil group,
+  # labelled by the group (the first level the result gives)
+  fao1974 = c("Histosols" = "O", "Lithosols" = "I", "Vertisols" = "V", "Fluvisols" = "J",
+              "Solonchaks" = "Z", "Gleysols" = "G", "Andosols" = "T", "Arenosols" = "Q",
+              "Regosols" = "R", "Rankers" = "U", "Rendzinas" = "E", "Podzols" = "P",
+              "Ferralsols" = "F", "Planosols" = "W", "Solonetz" = "S", "Greyzems" = "M",
+              "Chernozems" = "C", "Kastanozems" = "K", "Phaeozems" = "H", "Podzoluvisols" = "D",
+              "Xerosols" = "X", "Yermosols" = "Y", "Nitosols" = "N", "Acrisols" = "A",
+              "Luvisols" = "L", "Cambisols" = "B"),
   # the French examples of the Referentiel pedologique 2008, one per reference
   # implemented, labelled by the reference (the singular, as the name gives it)
   rp2008 = c("alocrisol typique" = "alocrisols_typiques",

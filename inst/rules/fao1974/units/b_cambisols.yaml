@@ -1,0 +1,84 @@
+# The soil units of the Cambisols (B), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 52-53, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "B":
+    - code: "Bx"
+      name: "Gelic Cambisols"
+      name_pt: "Cambissolos Gélicos (Gelic Cambisols)"
+      page: 52
+      tests:
+        all_of: [{permafrost_fao74: {max_top_cm: 200}}]
+      notes: "Permafrost within 200 cm of the surface."
+
+    - code: "Bg"
+      name: "Gleyic Cambisols"
+      name_pt: "Cambissolos Gleicos (Gleyic Cambisols)"
+      page: 53
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 100}}]
+      notes: "Hydromorphic properties within 100 cm of the surface."
+
+    - code: "Bv"
+      name: "Vertic Cambisols"
+      name_pt: "Cambissolos Vérticos (Vertic Cambisols)"
+      page: 53
+      tests:
+        all_of: [{vertic_properties_fao74: {}}]
+      notes: "Vertic properties."
+
+    - code: "Bk"
+      name: "Calcic Cambisols"
+      name_pt: "Cambissolos Cálcicos (Calcic Cambisols)"
+      page: 53
+      tests:
+        any_of:
+          - lime_by_texture_fao74: {kinds: [calcic, gypsic, soft_powdery_lime]}
+          - calcareous_fao74: {window_cm: [20, 50]}
+      notes: "A calcic or gypsic horizon or soft powdery lime within 125, 90 or 75 cm for a coarse, medium or fine weighted texture; or calcareous at least between 20 and 50 cm (an alternative, default 15)."
+
+    - code: "Bh"
+      name: "Humic Cambisols"
+      name_pt: "Cambissolos Húmicos (Humic Cambisols)"
+      page: 53
+      tests:
+        all_of: [{umbric_a_fao74: {}}]
+      notes: "An umbric A horizon, more than 25 cm thick when a cambic B is lacking (the group gate has already asked that thickness)."
+
+    - code: "Bf"
+      name: "Ferralic Cambisols"
+      name_pt: "Cambissolos Ferrálicos (Ferralic Cambisols)"
+      page: 53
+      tests:
+        all_of: [{ferralic_properties_fao74: {kind: cambisol}}]
+      notes: "A cambic B horizon with ferralic properties."
+
+    - code: "Bd"
+      name: "Dystric Cambisols"
+      name_pt: "Cambissolos Distróficos (Dystric Cambisols)"
+      page: 53
+      tests:
+        all_of: [{b_bs_below_fao74: {kind: cambic_b, lt: 50, to_cm: 125}}]
+      notes: "A base saturation (NH4OAc) below 50 % in at least some part of the B (no depth in the key: within 125 cm, Q10)."
+
+    - code: "Bc"
+      name: "Chromic Cambisols"
+      name_pt: "Cambissolos Crômicos (Chromic Cambisols)"
+      page: 53
+      tests:
+        all_of: [{b_colour_fao74: {colour: chromic, kind: cambic_b}}]
+      notes: "A strong brown to red B: rubbed hue 7.5YR with a chroma above 4, or a hue redder than 7.5YR."
+
+    - code: "Be"
+      name: "Eutric Cambisols"
+      name_pt: "Cambissolos Eutróficos (Eutric Cambisols)"
+      page: 53
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

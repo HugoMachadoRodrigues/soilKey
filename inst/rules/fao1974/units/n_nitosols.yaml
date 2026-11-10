@@ -1,0 +1,38 @@
+# The soil units of the Nitosols (N), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 51, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "N":
+    - code: "Nh"
+      name: "Humic Nitosols"
+      name_pt: "Nitossolos Húmicos (Humic Nitosols)"
+      page: 51
+      tests:
+        all_of:
+          - b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125}
+          - any_of:
+              - umbric_a_fao74: {}
+              - high_om_b_fao74: {kind: ferralsol_nitosol}
+      notes: "A base saturation (NH4OAc) below 50 % in at least a part of the B within 125 cm; an umbric A or a high organic matter content in the B, or both."
+
+    - code: "Nd"
+      name: "Dystric Nitosols"
+      name_pt: "Nitossolos Distróficos (Dystric Nitosols)"
+      page: 51
+      tests:
+        all_of: [{b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125}}]
+      notes: "A base saturation (NH4OAc) below 50 % in at least a part of the B within 125 cm."
+
+    - code: "Ne"
+      name: "Eutric Nitosols"
+      name_pt: "Nitossolos Eutróficos (Eutric Nitosols)"
+      page: 51
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

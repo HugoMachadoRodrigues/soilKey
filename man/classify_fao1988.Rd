@@ -14,7 +14,8 @@ classify_fao1988(
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
 
-\item{rules}{Optional pre-loaded rule set (\code{load_rules("fao1988")}).}
+\item{rules}{Optional pre-loaded rule set (\code{load_rules("fao1988")},
+or \code{load_rules("fao1974")} with \code{edition = "1974"}).}
 
 \item{on_missing}{One of \code{"warn"} (default), \code{"silent"},
 \code{"error"}.}

@@ -1,0 +1,133 @@
+level,code,name,parent,key_position,page_key,page_def,notes
+group,O,Histosols,,1,43,41,legend list position 26
+unit,Ox,Gelic Histosols,O,1,43,41,
+unit,Od,Dystric Histosols,O,2,43,41,
+unit,Oe,Eutric Histosols,O,3,43,41,residual
+group,I,Lithosols,,2,43,34,legend list position 4; single unit; group = unit
+unit,I,Lithosols,I,1,43,34,group without subdivision; counted as one of the 106 units
+group,V,Vertisols,,3,43,35,legend list position 9
+unit,Vp,Pellic Vertisols,V,1,43,35,
+unit,Vc,Chromic Vertisols,V,2,43,35,residual
+group,J,Fluvisols,,4,44,32,"legend list position 1; key says 'an H horizon', definition 'a histic H horizon'"
+unit,Jt,Thionic Fluvisols,J,1,44,33,
+unit,Jc,Calcaric Fluvisols,J,2,44,33,
+unit,Jd,Dystric Fluvisols,J,3,44,33,
+unit,Je,Eutric Fluvisols,J,4,44,32-33,residual
+group,Z,Solonchaks,,5,44,35,"legend list position 10; key says 'an H horizon', definition 'a histic H horizon'"
+unit,Zg,Gleyic Solonchaks,Z,1,44,35,
+unit,Zt,Takyric Solonchaks,Z,2,44,35,
+unit,Zm,Mollic Solonchaks,Z,3,44,35,
+unit,Zo,Orthic Solonchaks,Z,4,44,35,residual
+group,G,Gleysols,,6,44,33,"legend list position 2; definition excludes mollic dark soils with bleached ped coatings (to Gleyic Greyzems, fn 8 p33); the key does not"
+unit,Gx,Gelic Gleysols,G,1,44,33,
+unit,Gp,Plinthic Gleysols,G,2,44,33,
+unit,Gm,Mollic Gleysols,G,3,45,33,
+unit,Gh,Humic Gleysols,G,4,45,33,
+unit,Gc,Calcaric Gleysols,G,5,45,33,
+unit,Gd,Dystric Gleysols,G,6,45,33,
+unit,Ge,Eutric Gleysols,G,7,45,33,residual
+group,T,Andosols,,7,45,34,legend list position 8
+unit,Tm,Mollic Andosols,T,1,45,34,key drops the smeary/silt-loam condition of the definition
+unit,Th,Humic Andosols,T,2,45,35,key drops the smeary/silt-loam condition of the definition
+unit,To,Ochric Andosols,T,3,45,34,
+unit,Tv,Vitric Andosols,T,4,45,35,residual; definition wording 'lacking smeary and/or coarser' is a slip
+group,Q,Arenosols,,8,45-46,34,legend list position 5
+unit,Qa,Albic Arenosols,Q,1,46,34,
+unit,Ql,Luvic Arenosols,Q,2,46,34,code is Q + lower-case L
+unit,Qf,Ferralic Arenosols,Q,3,46,34,
+unit,Qc,Cambic Arenosols,Q,4,46,34,residual
+group,R,Regosols,,9,46,33,legend list position 3; key gate looser than definition; order does the rest
+unit,Rx,Gelic Regosols,R,1,46,34,
+unit,Rc,Calcaric Regosols,R,2,46,34,definition lacks the no-permafrost clause
+unit,Rd,Dystric Regosols,R,3,46,34,
+unit,Re,Eutric Regosols,R,4,46,33,residual
+group,U,Rankers,,10,46,34,legend list position 7; single unit
+unit,U,Rankers,U,1,46,34,group without subdivision; counted as one of the 106 units
+group,E,Rendzinas,,11,46,34,legend list position 6; single unit
+unit,E,Rendzinas,E,1,46,34,group without subdivision; counted as one of the 106 units
+group,P,Podzols,,12,47,39,legend list position 21
+unit,Pp,Placic Podzols,P,1,47,39,
+unit,Pg,Gleyic Podzols,P,2,47,39,
+unit,Ph,Humic Podzols,P,3,47,39,
+unit,Pf,Ferric Podzols,P,4,47,39,
+unit,Pl,Leptic Podzols,P,5,47,39,code is P + lower-case L
+unit,Po,Orthic Podzols,P,6,47,39,residual
+group,F,Ferralsols,,13,47,41,legend list position 25
+unit,Fp,Plinthic Ferralsols,F,1,47,41,
+unit,Fh,Humic Ferralsols,F,2,47,41,
+unit,Fa,Acric Ferralsols,F,3,47,41,
+unit,Fr,Rhodic Ferralsols,F,4,47,41,
+unit,Fx,Xanthic Ferralsols,F,5,47,41,
+unit,Fo,Orthic Ferralsols,F,6,47,41,residual
+group,W,Planosols,,14,48,39,legend list position 22
+unit,Wx,Gelic Planosols,W,1,48,40,
+unit,Ws,Solodic Planosols,W,2,48,40,
+unit,Wm,Mollic Planosols,W,3,48,40,
+unit,Wh,Humic Planosols,W,4,48,40,
+unit,Wd,Dystric Planosols,W,5,48,39-40,
+unit,We,Eutric Planosols,W,6,48,39,residual
+group,S,Solonetz,,15,48,35,legend list position 11
+unit,Sg,Gleyic Solonetz,S,1,48,35,
+unit,Sm,Mollic Solonetz,S,2,48,35,
+unit,So,Orthic Solonetz,S,3,48,35,residual
+group,M,Greyzems,,16,48,37,legend list position 17
+unit,Mg,Gleyic Greyzems,M,1,48,37,
+unit,Mo,Orthic Greyzems,M,2,48,37,residual
+group,C,Chernozems,,17,49,36,legend list position 15
+unit,Cl,Luvic Chernozems,C,1,49,36,code is C + lower-case L
+unit,Cg,Glossic Chernozems,C,2,49,36,
+unit,Ck,Calcic Chernozems,C,3,49,36,
+unit,Ch,Haplic Chernozems,C,4,49,36,residual
+group,K,Kastanozems,,18,49,36,legend list position 14
+unit,Kl,Luvic Kastanozems,K,1,49,36,code is K + lower-case L
+unit,Kk,Calcic Kastanozems,K,2,49,36,
+unit,Kh,Haplic Kastanozems,K,3,49,36,residual
+group,H,Phaeozems,,19,49,36-37,legend list position 16
+unit,Hg,Gleyic Phaeozems,H,1,49,37,
+unit,Hl,Luvic Phaeozems,H,2,49,37,code is H + lower-case L
+unit,Hc,Calcaric Phaeozems,H,3,50,37,
+unit,Hh,Haplic Phaeozems,H,4,50,37,residual
+group,D,Podzoluvisols,,20,50,39,legend list position 20
+unit,Dg,Gleyic Podzoluvisols,D,1,50,39,
+unit,Dd,Dystric Podzoluvisols,D,2,50,39,
+unit,De,Eutric Podzoluvisols,D,3,50,39,residual
+group,X,Xerosols,,21,50,36,legend list position 13; key gate looser than definition (no B or calcic/gypsic required)
+unit,Xl,Luvic Xerosols,X,1,50,36,code is X + lower-case L
+unit,Xy,Gypsic Xerosols,X,2,50,36,key puts gypsic before calcic; footnote: nearest to surface decides
+unit,Xk,Calcic Xerosols,X,3,50,36,
+unit,Xh,Haplic Xerosols,X,4,50,36,residual
+group,Y,Yermosols,,22,50,35,legend list position 12; key gate looser than definition
+unit,Yt,Takyric Yermosols,Y,1,50,36,
+unit,Yl,Luvic Yermosols,Y,2,51,36,code is Y + lower-case L
+unit,Yy,Gypsic Yermosols,Y,3,51,35,footnote 13 p35: nearest to surface decides
+unit,Yk,Calcic Yermosols,Y,4,51,35,
+unit,Yh,Haplic Yermosols,Y,5,51,35,residual
+group,N,Nitosols,,23,51,40,legend list position 24; key omits the definition's 'lacking an albic E horizon'
+unit,Nh,Humic Nitosols,N,1,51,40,
+unit,Nd,Dystric Nitosols,N,2,51,40,
+unit,Ne,Eutric Nitosols,N,3,51,40,residual
+group,A,Acrisols,,24,51,40,legend list position 23; key: BS<50 in some part of B within 125 cm; definition: in at least the lower part of the B within 125 cm
+unit,Ap,Plinthic Acrisols,A,1,51,40,
+unit,Ag,Gleyic Acrisols,A,2,51,40,
+unit,Ah,Humic Acrisols,A,3,52,40,
+unit,Af,Ferric Acrisols,A,4,52,40,
+unit,Ao,Orthic Acrisols,A,5,52,40,residual
+group,L,Luvisols,,25,52,38,legend list position 19; residual of all argillic soils; definition BS>=50 in at least the lower part of the B within 125 cm
+unit,Lp,Plinthic Luvisols,L,1,52,38,
+unit,Lg,Gleyic Luvisols,L,2,52,38,
+unit,La,Albic Luvisols,L,3,52,38,
+unit,Lv,Vertic Luvisols,L,4,52,38,
+unit,Lk,Calcic Luvisols,L,5,52,38,calcic horizon or soft powdery lime only (no gypsic)
+unit,Lf,Ferric Luvisols,L,6,52,38,
+unit,Lc,Chromic Luvisols,L,7,52,38,
+unit,Lo,Orthic Luvisols,L,8,52,38,residual
+group,B,Cambisols,,26,52,37,legend list position 18; last group of the key; no catch-all after it
+unit,Bx,Gelic Cambisols,B,1,52,37,
+unit,Bg,Gleyic Cambisols,B,2,53,37,
+unit,Bv,Vertic Cambisols,B,3,53,38,
+unit,Bk,Calcic Cambisols,B,4,53,38,key reads calcareous 20-50 as one of the options; definition ambiguous
+unit,Bh,Humic Cambisols,B,5,53,37,
+unit,Bf,Ferralic Cambisols,B,6,53,38,
+unit,Bd,Dystric Cambisols,B,7,53,37,key: BS<50 in some part of the B; definition: BS<50 between 20 and 50 cm
+unit,Bc,Chromic Cambisols,B,8,53,38,
+unit,Be,Eutric Cambisols,B,9,53,37,residual

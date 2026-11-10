@@ -1,0 +1,50 @@
+# The soil units of the Yermosols (Y), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 50-51, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "Y":
+    - code: "Yt"
+      name: "Takyric Yermosols"
+      name_pt: "Yermossolos Takíricos (Takyric Yermosols)"
+      page: 50
+      tests:
+        all_of: [{takyric_features_fao74: {}}]
+      notes: "Takyric features."
+
+    - code: "Yl"
+      name: "Luvic Yermosols"
+      name_pt: "Yermossolos Lúvicos (Luvic Yermosols)"
+      page: 51
+      tests:
+        all_of: [{argillic_b_fao74: {}}]
+      notes: "An argillic B horizon; a calcic or gypsic horizon may underlie it."
+
+    - code: "Yy"
+      name: "Gypsic Yermosols"
+      name_pt: "Yermossolos Gípsicos (Gypsic Yermosols)"
+      page: 51
+      tests:
+        all_of: [{aridic_lime_fao74: {kind: gypsic}}]
+      notes: "A gypsic horizon within 125 cm (125, 90 or 75 cm by texture, footnote 1; the shallower of a calcic and a gypsic horizon decides)."
+
+    - code: "Yk"
+      name: "Calcic Yermosols"
+      name_pt: "Yermossolos Cálcicos (Calcic Yermosols)"
+      page: 51
+      tests:
+        all_of: [{aridic_lime_fao74: {kind: calcic}}]
+      notes: "A calcic horizon within 125 cm (125, 90 or 75 cm by texture, footnote 1)."
+
+    - code: "Yh"
+      name: "Haplic Yermosols"
+      name_pt: "Yermossolos Háplicos (Haplic Yermosols)"
+      page: 51
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

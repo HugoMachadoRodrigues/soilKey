@@ -1,0 +1,62 @@
+# The soil units of the Ferralsols (F), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 47, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "F":
+    - code: "Fp"
+      name: "Plinthic Ferralsols"
+      name_pt: "Ferralsolos Plínticos (Plinthic Ferralsols)"
+      page: 47
+      tests:
+        all_of: [{plinthite_fao74: {max_top_cm: 125}}]
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "Fh"
+      name: "Humic Ferralsols"
+      name_pt: "Ferralsolos Húmicos (Humic Ferralsols)"
+      page: 47
+      tests:
+        all_of:
+          - b_bs_below_fao74: {kind: oxic_b, lt: 50, to_cm: 100}
+          - any_of:
+              - umbric_a_fao74: {}
+              - high_om_b_fao74: {kind: ferralsol_nitosol}
+      notes: "A base saturation (NH4OAc) below 50 % in at least a part of the B within 100 cm; an umbric A or a high organic matter content in the B, or both."
+
+    - code: "Fa"
+      name: "Acric Ferralsols"
+      name_pt: "Ferralsolos Ácricos (Acric Ferralsols)"
+      page: 47
+      tests:
+        all_of: [{property_in_b_fao74: {property: acric, kind: oxic_b, to_cm: 125}}]
+      notes: "A CEC (from NH4Cl) of 1.5 me or less per 100 g clay in at least some part of the B within 125 cm."
+
+    - code: "Fr"
+      name: "Rhodic Ferralsols"
+      name_pt: "Ferralsolos Ródicos (Rhodic Ferralsols)"
+      page: 47
+      tests:
+        all_of: [{b_colour_fao74: {colour: rhodic, kind: oxic_b}}]
+      notes: "A red to dusky red B: rubbed hue redder than 5YR, moist value below 4, dry value no more than one unit above the moist one."
+
+    - code: "Fx"
+      name: "Xanthic Ferralsols"
+      name_pt: "Ferralsolos Xânticos (Xanthic Ferralsols)"
+      page: 47
+      tests:
+        all_of: [{b_colour_fao74: {colour: xanthic, kind: oxic_b}}]
+      notes: "A yellow to pale yellow B: rubbed hue 7.5YR or yellower, moist value 4 or more, moist chroma 5 or more."
+
+    - code: "Fo"
+      name: "Orthic Ferralsols"
+      name_pt: "Ferralsolos Órticos (Orthic Ferralsols)"
+      page: 47
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

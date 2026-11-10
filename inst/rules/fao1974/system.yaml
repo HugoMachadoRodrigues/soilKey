@@ -1,0 +1,34 @@
+# Registry entry for this classification system (read by R/systems-registry.R).
+# The FAO-Unesco legend is one module with two editions (Hugo's decision Q1):
+# one user function classify_fao(pedon, edition), two registry ids, fao1988
+# (order 16) and fao1974 (here, order 17), each a thin wrapper with its own
+# rule folder.
+id: fao1974
+order: 17
+aliases: [fao74, fao_unesco_1974]
+legacy: false
+default: false
+status: experimental
+namespace: fao74
+classifier: classify_fao1974
+result_slot: fao1974
+top_level: major_groups
+# the 106 soil units are read from units/ (one file per major soil group,
+# the units of each group under its code, in the key's order); the
+# Lithosols, Rankers and Rendzinas are single units and have no list
+levels: [major_groups, units]
+display:
+  en: "FAO-Unesco Legend (1974)"
+  pt: "Legenda FAO-Unesco (1974)"
+  native: "FAO-Unesco Soil Map of the World, Legend"
+  result: "FAO 1974"
+edition: "Soil Map of the World 1:5 000 000, Vol. I Legend, Unesco Paris 1974"
+citation: >
+  FAO-Unesco (1974). Soil Map of the World 1:5 000 000. Volume I, Legend.
+  Unesco, Paris.
+version: "The printed text of 1974 (PDF page = printed + 7 up to p. 41, + 6 from the key on)"
+implementation_status: "soilKey v0.9.389 -- the 26 major soil groups of the key (pp. 43-53), in the key's order, on the diagnostic horizons (v0.9.387) and properties (v0.9.388) of 1974 read on the data; no residual group (a soil no gate takes is [not classified], Q5); the 106 soil units under their groups, in the key's order, each group closed by its Other ... residual (the Lithosols, Rankers and Rendzinas are single units)"
+source: |
+  Horizon designations (pp. 20-23), diagnostic horizons (23-27), diagnostic
+  properties (27-32), definitions (32-41), key (43-53); phases, texture and
+  slope classes (pp. 4-9).
