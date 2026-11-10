@@ -691,7 +691,7 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
   if (is.na(ds) || !nzchar(ds)) return("^[A-Z][a-z]*f($|[0-9])|^Cf|perma")
   if (ds %in% c("cssc", "cssc3", "canadian", "canada")) return("^[IVX]*[A-Z]+[a-z]*z|perma")
   if (.kidpr_is_declared(ds)) return("\u22a5|\uf05e|perma")
-  if (ds %in% c("nzsc", "nzsc4", "nz", "new zealand", "asc", "asc3", "australian",
+  if (ds %in% c("nzsc", "nzsc4", "nz", "new zealand", "nz_legacy", "asc", "asc3", "australian",
                 "field handbook", "nchs", "australian field handbook")) return("perma")
   "^[A-Z][a-z]*f($|[0-9])|^Cf|perma"
 }

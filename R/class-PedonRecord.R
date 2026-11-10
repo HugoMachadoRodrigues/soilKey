@@ -265,6 +265,14 @@ PedonRecord <- R6::R6Class("PedonRecord",
         }
       }
 
+      # 11. v0.9.395: a value of site$designation_system that soilKey does
+      # not know (Hugo's decision Q7, 2026-11-10): the older notation is
+      # then judged from the designations, and the profile is told so.
+      if (!is.null(self$site)) {
+        note <- .desg_notation_note(self$site)
+        if (!is.na(note)) warnings <- c(warnings, note)
+      }
+
       result <- list(
         valid      = length(errors) == 0,
         errors     = errors,

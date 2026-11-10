@@ -1,3 +1,28 @@
+# soilKey 0.9.395 (2026-11-10)
+
+## The declared notation decides how the older designations are read
+
+Since 0.9.240, 0.9.250 and 0.9.256 the WRB, SiBCS, FAO-Unesco and Chinese diagnostics read the older notation of the horizon designations (in use until about 1990: the A2 is the eluvial horizon, the E of today; the B3 the transition to the C, the BC of today; the "(B)" the B incipiente, the Bi of today) when a profile shows a mark of it (a B followed by a number, an A or a C followed by two figures, a "(B)", "ir" in a B, "pl" in a B or C). The reading took no account of a notation declared in `site$designation_system`, so a profile declared in the FAO notation of 2006, which writes "B1, B2, B3" for three parts of a B, had its A2 read as E and its B3 as BC, and "(Bw)R" read as "BiwR". Found while building the FAO-Unesco module.
+
+As Hugo decided (Q1 to Q9, 2026-11-10), a declared notation now decides before the marks (`.desg_declared_notation()`, `R/utils-wrb-ch3-v09220.R`):
+
+- a declared older notation has its A2, B3 and "(B)" read, marks or not: the Australian Field Handbook of the ASC (`asc` and its aliases: A1, A2, A3, B1, B21, B3), the French CPCS of 1967 (`cpcs`, `cpcs1967`, `french`, `fr`), the FAO Guidelines of 1977 (`fao1977`, the only older one among the FAO values), the USDA Soil Survey Manual of 1951 and its supplement of 1962 (`usda1951`, `ssm1951`, `usda1962`) and the Brazilian notation in use until 1988 (`br_pre1988`);
+- a declared present notation has none of them read, whatever the marks: `fao`, `fao2006`, `wrb` and its editions, `usda`, `kst`, `sibcs` (the notation of Santos et al., 2015), and the national notations soilKey reads (CSSC, NZSC, SCSJ, South Africa 1991, KA5, the Russian notation of 2008, the RP). The "(B)" to "Bi" reading is gated the same way;
+- with no declaration, a value that declares nothing (`NA`, `none`, `SA` ...), `nz_legacy` or a value soilKey does not know, the marks decide as before; `PedonRecord$validate()` notes a value it does not know.
+
+The site reaches every reader as an explicit argument: `.desg_master()`, `.desg_old_notation()` and `.h_master()` take `site`, and so do the helpers that received only the horizons (the FAO readers of the master, the solum, the buried horizons, the rock structure and the texture, the WRB plough, subsurface, cemented and secondary carbonate and gypsum readers, the SiBCS readers of the B in the first 100 cm, the abrupt textural change, the histic and organic layers and the textural ratio, the Chinese horizon kind). The readers that read one designation at a time now read it with the notation of its whole profile: the cemented layers of the WRB qualifiers (each part of "Bt/Cr" read with the parts of the profile) and the plough designation of the Brunic qualifier.
+
+The NSD reader (`read_nsd_pedons()`) now declares `designation_system = "nz_legacy"` (it declared `"nzsc"`): the National Soils Database surveys are written in the New Zealand notation, many of them in its older form (A11, A12, B21, B22, B3 beside Bw). The NZSC key reads `nz_legacy` as New Zealand designations, as it read `nzsc`, and the older-notation reading is judged from each profile's own marks. The ISIS reader keeps `fao2006` (Q6). `inst/schemas/site-attributes.yaml` lists the values the code compares (`fao`, `fao2006`, `wrb` and its editions, `usda`, `sibcs`, `fao1977`, `usda1951`, `ssm1951`, `usda1962`, `br_pre1988`, `nz_legacy`) and `inst/ATTRIBUTES.md` is regenerated.
+
+Measured on 2026-11-10, before and after:
+
+- Every example and fixture keeps its names: 1,302 profiles (the canonical WRB and SiBCS fixtures, every `make_*_example()` choice and near miss, the FAO 1988 and 1974 examples, the ZA forms and the 225 KA5 subtypes) under 17 keys, 22,134 names identical.
+- BDsolos, FEBR, Redape, AfSP, WoSIS, KSSL and LUCAS: their loaders declare no notation, so nothing changes.
+- ISIS (974 profiles, `fao2006`): readings change in 8 profiles (present-notation designations such as "Ah, B1, B2, B3, B4", "A1, A2, BA, Bt1, Bt2, B3" and "(Bw)R" no longer read as the older notation); names change for 3: SiBCS on 2 (CL006 Argissolos Bruno-Acinzentados to Neossolos Fluvicos, GH008 Cambissolos Haplicos to Neossolos Regoliticos) and the candidates of 1 undecided FAO 1988 profile. WRB, USDA and FAO 1974 unchanged, so the ISIS benchmarks of 0.9.392 are unchanged.
+- NatSoil (9,703 profiles, `asc`): readings change in 437 (an Australian A2 read as E, a B3 as BC, where the profile has no other mark); names change on 306 profiles: the FAO 1988 candidates of 300 undecided profiles (299 stay undecided with another list, 1 becomes not classified), SiBCS on 10 (mostly Neossolos Regoliticos to Argissolos, 2 to Espodossolos) and WRB on 4. The ASC key does not read these designations, so the NatSoil benchmark is unchanged.
+- SALI, Queensland (5,716 profiles, `asc`): readings change in 34; names change on 20 profiles (22 names): the FAO 1988 candidates of 18 undecided profiles, WRB on 2 (a Cambic qualifier gained) and SiBCS on 2. The SALI benchmark (ASC key) is unchanged.
+- NSD (1,330 profiles, now `nz_legacy`): no reading changes; the NZSC key reads them as before.
+
 # soilKey 0.9.394 (2026-11-10)
 
 ## South African classification 1991: four readings after the AfSP benchmark
@@ -38,6 +63,7 @@ The run of 2026-11-10 on AfSP 1.2: 659 South African profiles, 646 labelled, all
 * Family: 10 of the 13 labels of 1991 name a family of their form; soilKey reaches a family for 2 of them, and neither agrees (in both the form differs). Of the 3 family names not read, 2 (Glengazi, Cleveland) are 1977 series names and 1 (Greendal) looks like a misspelling of Greendale (Rg1000); it is not read (no family misspelling list, Hugo's decision).
 
 The main loss is the profiles that stop: most AfSP descriptions do not record what the key needs to separate the forms (the matrix colour of the lower B, cutans, slickensides, signs of wetness). Among the decided disagreements, the most frequent are a humic A where the label has an orthic A (Hutton to Inanda 8, Clovelly to Magwa 6, Griffin to Kranskop 6), Oakleaf read as Hutton (6), Bonheim keyed as Inhoek (5; in 4 of them Bonheim, tested before, was left undecided), and a thin, carbon-poor A on hard rock read as a truncated profile, Mispah to Clovelly (5).
+
 
 # soilKey 0.9.392 (2026-11-09)
 

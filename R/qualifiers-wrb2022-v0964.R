@@ -938,7 +938,7 @@ qual_differentic <- function(pedon) {
       passed = if (is.na(arg$passed) || is.na(nat$passed)) NA else FALSE,
       layers = integer(0), evidence = list(argic = arg, natric = nat),
       missing = unique(c(arg$missing, nat$missing)), reference = ref))
-  ci <- test_clay_increase_argic(h, system = "wrb2022")
+  ci <- test_clay_increase_argic(h, system = "wrb2022", site = pedon$site)
   hit <- intersect(hz, ci$layers)
   clay_known <- !anyNA(h$clay_pct[seq_len(max(hz))])
   passed <- if (length(hit)) TRUE else if (clay_known) FALSE else NA

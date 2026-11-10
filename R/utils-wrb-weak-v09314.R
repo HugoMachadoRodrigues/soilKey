@@ -129,7 +129,7 @@
   n <- nrow(h)
   ref <- "IUSS Working Group WRB (2022), Chapter 3.1.5, Cambic horizon (p. 39-40)"
   d <- as.character(h$designation %||% rep(NA_character_, n))
-  sub <- !.wrb_not_subsurface(h) & .wrb_mineral_layer(h) &
+  sub <- !.wrb_not_subsurface(h, site = pedon$site) & .wrb_mineral_layer(h) &
          !(!is.na(d) & grepl(.WRB_ROCK_DESIGNATION, d)) &
          !is.na(h$top_cm) & !is.na(h$bottom_cm)
   if (!is.null(min_top_cm)) sub <- sub & h$top_cm >= min_top_cm
@@ -363,10 +363,10 @@ cambisol <- function(pedon) {
 # suffix k of the designation ("Accumulation of secondary carbonates", WRB
 # 2022 Ch 10.2, Table 10.2, p. 227). A k does not say how much, so it is not
 # read as protocalcic properties (>= 5% of the exposed area) in calcic().
-.wrb_has_secondary_carbonates <- function(h, idx) {
+.wrb_has_secondary_carbonates <- function(h, idx, site = NULL) {
   n <- nrow(h)
   sc <- h$secondary_carbonates_pct %||% rep(NA_real_, n)
-  d <- .desg_master(h$designation %||% rep(NA_character_, n))
+  d <- .desg_master(h$designation %||% rep(NA_character_, n), site = site)
   k <- !is.na(d) & grepl("^[A-Z]+[a-z]*k", d)
   vapply(idx, function(i) if (k[i] || (!is.na(sc[i]) && sc[i] > 0)) TRUE
                           else if (!is.na(sc[i])) FALSE else NA, NA)
@@ -375,10 +375,10 @@ cambisol <- function(pedon) {
 # The same for secondary gypsum: visible gypsum of pedogenic origin
 # (gypsum_visible_pct) or the suffix y ("Accumulation of secondary gypsum",
 # WRB 2022 Ch 10.2, Table 10.2, p. 228).
-.wrb_has_secondary_gypsum <- function(h, idx) {
+.wrb_has_secondary_gypsum <- function(h, idx, site = NULL) {
   n <- nrow(h)
   gv <- h$gypsum_visible_pct %||% rep(NA_real_, n)
-  d <- .desg_master(h$designation %||% rep(NA_character_, n))
+  d <- .desg_master(h$designation %||% rep(NA_character_, n), site = site)
   y <- !is.na(d) & grepl("^[A-Z]+[a-z]*y", d)
   vapply(idx, function(i) if (y[i] || (!is.na(gv[i]) && gv[i] > 0)) TRUE
                           else if (!is.na(gv[i])) FALSE else NA, NA)
@@ -438,7 +438,8 @@ cambisol <- function(pedon) {
 #' @noRd
 gypsisol <- function(pedon) {
   contains <- function(h, idx) {
-    g <- .wrb_has_secondary_gypsum(h, idx); k <- .wrb_has_secondary_carbonates(h, idx)
+    g <- .wrb_has_secondary_gypsum(h, idx, site = pedon$site)
+    k <- .wrb_has_secondary_carbonates(h, idx, site = pedon$site)
     ifelse(g %in% TRUE | k %in% TRUE, TRUE, ifelse(g %in% FALSE & k %in% FALSE, FALSE, NA))
   }
   .wrb_accumulation_gate(pedon, gypsic(pedon), petrogypsic(pedon), contains,
@@ -598,7 +599,7 @@ fluvisol <- function(pedon) {
   runs <- .wrb_runs(h, fm$layers)
   ok1 <- Filter(function(r) r$top - ms <= 25 && r$bottom - max(r$top, ms) >= 25, runs)
   # 2. below a plough layer (an Ap from the mineral soil surface) <= 40 cm thick
-  d <- .desg_master(h$designation %||% rep(NA_character_, nrow(h)))
+  d <- .desg_master(h$designation %||% rep(NA_character_, nrow(h)), site = pedon$site)
   ap <- Filter(function(r) r$top <= ms + 1e-6,
                .wrb_runs(h, which(!is.na(d) & grepl("^Ap", d))))
   ap_bot <- if (length(ap)) ap[[1L]]$bottom else NA_real_

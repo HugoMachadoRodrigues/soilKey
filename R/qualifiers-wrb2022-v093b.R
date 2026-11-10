@@ -43,7 +43,7 @@ qual_aric <- function(pedon) {
   if (!length(ok)) return(res(NA, missing = c("top_cm", "bottom_cm")))
   ok <- ok[order(h$top_cm[ok])]
   surface <- h$top_cm[ok[1L]]
-  plough <- .wrb_plough_designation(h$designation %||% rep(NA_character_, nrow(h)))
+  plough <- .wrb_plough_designation(h$designation %||% rep(NA_character_, nrow(h)), site = pedon$site)
   run <- integer(0); edge <- surface; nxt <- NA_integer_
   for (i in ok) {
     if (h$top_cm[i] > edge + 0.5 || !isTRUE(plough[i])) { nxt <- i; break }

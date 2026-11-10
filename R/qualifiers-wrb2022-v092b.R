@@ -55,7 +55,7 @@
   h <- pedon$horizons
   layers <- unique(c(unlist(lapply(list(rk, pc, pd, pg, pp, th),
                                    function(d) if (isTRUE(d$passed)) d$layers else integer(0))),
-                     if (other_cemented) which(.wrb_cemented_limiting(h) %in% TRUE)))
+                     if (other_cemented) which(.wrb_cemented_limiting(h, site = pedon$site) %in% TRUE)))
   sort(layers[!is.na(h$top_cm[layers])])
 }
 
@@ -83,7 +83,7 @@
 #    aggregates and >= 50% of the volume of the aggregated soil are not
 #    cemented" (fragic horizon, Ch 3.1.13, p. 46), so it is FALSE whatever
 #    its class.
-.wrb_cemented_limiting <- function(h) {
+.wrb_cemented_limiting <- function(h, site = NULL) {
   n <- nrow(h)
   if (!n) return(logical(0))
   cc <- tolower(trimws(as.character(h$cementation_class %||% rep(NA_character_, n))))
@@ -94,10 +94,13 @@
   by_class <- ifelse(cc_yes, TRUE, ifelse(cc_no, FALSE, NA))
   d <- as.character(h$designation %||% rep(NA_character_, n))
   d[!is.na(d) & !nzchar(trimws(d))] <- NA_character_
+  # v0.9.395: each designation is read with the notation of the whole
+  # profile (its parts, "Bt/Cr", one by one) and the declared one
+  all_parts <- trimws(unlist(strsplit(d[!is.na(d)], "/", fixed = TRUE)))
   m_sfx <- vapply(d, function(x) {
     if (is.na(x)) return(NA)
     parts <- strsplit(x, "/", fixed = TRUE)[[1]]
-    parts <- .desg_master(trimws(parts))
+    parts <- .desg_master(trimws(parts), profile = all_parts, site = site)
     parts <- parts[nzchar(parts)]
     if (!length(parts)) return(NA)
     all(grepl("^[A-Z]+[a-z0-9']*[klqsvyz]m", parts))

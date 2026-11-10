@@ -636,7 +636,7 @@ mollic_chroma_fao74 <- function(pedon, max = NULL, gt = NULL, depth = 15) {
 # and anything else is undecided (the reading of high salinity, Hugo
 # 2026-11-09).
 .f74_by_texture <- function(x, f) {
-  d <- .fao_depth_by_texture(x$h)
+  d <- .fao_depth_by_texture(x$h, site = x$site)
   if (!is.na(d$value)) return(list(value = f(d$value), depth = d$value, class = d$class, missing = character(0)))
   a75 <- f(75); a125 <- f(125)
   v <- if (isTRUE(a75)) TRUE else if (isFALSE(a125)) FALSE else NA

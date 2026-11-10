@@ -123,7 +123,7 @@ neossolo <- function(pedon) {
   vh <- horizonte_vertico(pedon)
   vert_below_a <- FALSE
   if (isTRUE(vh$passed) && length(vh$layers) > 0L) {
-    dmv <- .desg_master(h$designation)
+    dmv <- .desg_master(h$designation, site = pedon$site)
     if (all(is.na(dmv) | !nzchar(dmv))) {
       vert_below_a <- any(h$top_cm[vh$layers] <= 50, na.rm = TRUE)
     } else {
@@ -195,7 +195,7 @@ vertissolo <- function(pedon) {
   surface_clay_ok <- !is.na(surface_clay) && surface_clay >= 30
   # Cracks tested via vertic_horizon's internal sub-test
   shallow_30 <- which(!is.na(h$top_cm) & h$top_cm <= 30)
-  has_lithic_petric <- any(grepl("^R|^Cr", .desg_master(h$designation)[shallow_30])) ||
+  has_lithic_petric <- any(grepl("^R|^Cr", .desg_master(h$designation, site = pedon$site)[shallow_30])) ||
                          any(!is.na(h$cementation_class[shallow_30]) &
                                 h$cementation_class[shallow_30] %in%
                                   c("strongly", "indurated"))
@@ -336,7 +336,7 @@ gleissolo <- function(pedon) {
     first <- g$layers[which.min(h$top_cm[g$layers])]
     pos <- match(first, o)
     above <- if (!is.na(pos) && pos > 1L)
-      .desg_master(h$designation[o[pos - 1L]], profile = h$designation)
+      .desg_master(h$designation[o[pos - 1L]], profile = h$designation, site = pedon$site)
     else NA_character_
     in_150 <- !is.na(above) && grepl("^[AEHO]", above)
   }
@@ -550,7 +550,7 @@ cambissolo <- function(pedon) {
   if (isTRUE(gl$passed) && any(h$top_cm[gl$layers] < top, na.rm = TRUE)) return(TRUE)
   if (is.na(pos) || pos < 2L) return(FALSE)
   above <- o[pos - 1L]
-  d <- .desg_master(h$designation[above], profile = h$designation)
+  d <- .desg_master(h$designation[above], profile = h$designation, site = pedon$site)
   if (!is.na(d) && grepl("^[AE]", d)) return(TRUE)
   # mottles: abundant, and of a colour that satisfies (a) or (b) when the
   # sheet records their colours

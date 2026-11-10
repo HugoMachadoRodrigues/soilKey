@@ -12,13 +12,13 @@
 #' at the surface or an A horizon is not part of them. Transitional horizons
 #' (AB, AE, A/B) are not excluded. Logical, one per layer.
 #' @noRd
-.wrb_not_subsurface <- function(h) {
+.wrb_not_subsurface <- function(h, site = NULL) {
   n <- nrow(h)
   if (!n) return(logical(0))
   ms <- .q_mineral_surface_cm(h)
   surface <- if (is.na(ms)) rep(FALSE, n)
              else !is.na(h$top_cm) & h$top_cm <= ms + 1e-6
-  d <- .desg_master(h$designation %||% rep(NA_character_, n))
+  d <- .desg_master(h$designation %||% rep(NA_character_, n), site = site)
   a_horizon <- !is.na(d) & grepl("^A[a-z0-9]*$", d)
   surface | a_horizon
 }

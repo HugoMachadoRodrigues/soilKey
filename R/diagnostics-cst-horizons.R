@@ -136,7 +136,7 @@
 # cannot be identified (no designation, or a plain A in a profile with no
 # suffixes) (D1, Hugo, 2026-11-06).
 .cst_cultivated <- function(x) {
-  d <- .desg_master(as.character(.cst_col(x$h, "designation")))
+  d <- .desg_master(as.character(.cst_col(x$h, "designation")), site = x$pedon$site)
   n <- length(d)
   out <- rep(NA, n)
   if (!n) return(logical(0))

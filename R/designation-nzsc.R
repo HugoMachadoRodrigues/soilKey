@@ -47,13 +47,15 @@
 # this parser reads? Declared in site$designation_system, otherwise yes.
 # `nz` when the notation is the New Zealand one (declared, or a site in New
 # Zealand): a Cr is then a reductimorphic C, as the NZSC reads r; elsewhere a
-# Cr is weathered rock (FAO/USDA).
+# Cr is weathered rock (FAO/USDA). v0.9.395: "nz_legacy", the older New
+# Zealand notation read_nsd_pedons() declares, is the New Zealand notation
+# here too.
 .nzsc_notation <- function(designation, site = list()) {
   declared <- tolower(as.character(site$designation_system %||% NA)[1L])
   country <- toupper(as.character(site$country %||% NA)[1L])
   if (!is.na(declared) && nzchar(declared) && declared %in% c("asc", "australian", "cssc", "canadian"))
     return(list(ok = FALSE, nz = FALSE, why = sprintf("declared: %s", declared)))
-  nz <- (!is.na(declared) && declared %in% c("nzsc", "nz", "new zealand")) ||
+  nz <- (!is.na(declared) && declared %in% c("nzsc", "nz", "new zealand", "nz_legacy")) ||
         ((is.na(declared) || !nzchar(declared)) && !is.na(country) && country %in% c("NZ", "NZL", "NEW ZEALAND"))
   list(ok = TRUE, nz = nz, why = if (is.na(declared)) "New Zealand or FAO notation" else sprintf("declared: %s", declared))
 }

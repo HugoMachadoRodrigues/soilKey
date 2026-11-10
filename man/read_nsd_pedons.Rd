@@ -53,7 +53,13 @@ dithionite and pyrophosphate Fe and Al, particle size, bulk density,
 volcanic glass in the sand, stones, CaCO3, EC of a 1:5 extract, water at
 1500 kPa, COLE), with the NSD table and column of every value in the
 provenance. Codes are decoded through the survey's \code{cl_concept}
-table. The site holds the surveyor's classes: \code{reference_nzsc} (the
+table. The site declares \code{designation_system = "nz_legacy"}
+(v0.9.395): the surveys are written in the New Zealand notation, many of
+them in its older form (A11, A12, B21, B22, B3 beside Bw), so the NZSC
+key reads them as New Zealand designations while the older-notation
+reading of the WRB and SiBCS diagnostics (A2 = E, B3 = BC) is judged from
+each profile's own designations.
+The site holds the surveyor's classes: \code{reference_nzsc} (the
 NZSC code, e.g. \code{"MOT"}, recoded to the 4th edition where the 4th
 edition renamed it), \code{reference_nzsc_name}, the order, group and
 subgroup codes (\code{reference_nzsc_order}, \code{_group},

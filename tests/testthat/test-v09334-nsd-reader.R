@@ -115,7 +115,7 @@ test_that("read_nsd_pedons() reads the site, the classes and the provenance", {
   p <- read_nsd_pedons(d)
   expect_named(p, c("SB1", "SB2", "SB3"))
   s <- p$SB1$site
-  expect_identical(s$designation_system, "nzsc")
+  expect_identical(s$designation_system, "nz_legacy")
   expect_identical(s$country, "NZ")
   expect_equal(s$lat, -38.66418, tolerance = 1e-5)
   expect_equal(s$lon, 175.82910, tolerance = 1e-5)

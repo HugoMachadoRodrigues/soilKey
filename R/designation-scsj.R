@@ -57,7 +57,8 @@
 # the Australian, Canadian and New Zealand notations are not read. `fao` when
 # the FAO notation is declared (a Cr is then a reduced C).
 .SCSJ_OTHER_NOTATIONS <- c("asc", "australian", "fieldhandbook", "nchs", "australianfieldhandbook",
-                           "cssc", "cssc3", "canadian", "canada", "nzsc", "nzsc4", "nz", "newzealand")
+                           "cssc", "cssc3", "canadian", "canada", "nzsc", "nzsc4", "nz", "newzealand",
+                           "nzlegacy")
 
 .scsj_notation <- function(site = list()) {
   declared <- tolower(as.character(site$designation_system %||% NA)[1L])

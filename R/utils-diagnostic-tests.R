@@ -148,6 +148,8 @@ ecec_per_clay <- function(ecec_cmol, clay_pct) {
 #'        layer (Ap) is not compared at all: that Ap is either the coarser
 #'        layer directly above or its lowermost sublayer, not a transitional
 #'        horizon.
+#' @param site v0.9.395. The site of the profile, for the notation declared
+#'        in \code{site$designation_system} (\code{.desg_master()}).
 #' @return Sub-test result list.
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.3, Argic
 #'   horizon, criteria 2.a.iii-vi (p. 36); Soil Survey Staff (2022),
@@ -158,7 +160,8 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
                                      max_transition_cm = NULL,
                                      exclude = NULL,
                                      lithic_data = FALSE,
-                                     plough_layer = FALSE) {
+                                     plough_layer = FALSE,
+                                     site = NULL) {
   system <- match.arg(system)
   # v0.9.220: with lithic_aware = TRUE (the WRB argic), a layer is not compared
   # with a coarser layer of another material (WRB 2022 Ch 3.1.3, criterion
@@ -186,7 +189,7 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
   # v0.9.317: criterion 2.a.i from the data (3.2.7) and criterion 2.a.ii.
   ld <- if (lithic_aware && isTRUE(lithic_data)) .wrb_lithic_discontinuity_above(h)
         else list(at = rep(FALSE, nrow(h)), criterion = rep(NA_character_, nrow(h)))
-  plough <- if (isTRUE(plough_layer)) .wrb_plough_layer(h) else rep(FALSE, nrow(h))
+  plough <- if (isTRUE(plough_layer)) .wrb_plough_layer(h, site = site) else rep(FALSE, nrow(h))
 
   # v0.9.23: KST 13ed Ch 3 (argillic horizon, p 4) and WRB 2022
   # Ch 3.1.3 (argic horizon, p 36) define the clay-increase test
@@ -340,13 +343,15 @@ test_clay_increase_argic <- function(h, system = c("wrb2022", "usda"),
 #' \\< 150 g/kg.
 #'
 #' @param h A horizons \code{data.table} (\code{\link{ensure_horizon_schema}}).
+#' @param site v0.9.395. The site of the profile, for the notation declared
+#'   in \code{site$designation_system} (\code{.desg_master()}).
 #' @return A subtest result list (\code{passed}, \code{layers}, \code{missing},
 #'   \code{details}).
 #' @noRd
-test_ratio_textural_sibcs <- function(h) {
+test_ratio_textural_sibcs <- function(h, site = NULL) {
   # v0.9.241: the designations are read by .desg_master() ("IIBt", "(B)21"),
   # and BC is the transitional horizon, not any "c" after a "B" ("Btc").
-  desig <- .desg_master(h$designation)
+  desig <- .desg_master(h$designation, site = site)
   has_d <- !is.na(desig)
   a_idx <- which(has_d & grepl("^A", desig))
   b_idx <- which(has_d & grepl("^B", desig) & !grepl("^B/?C", desig))

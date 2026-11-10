@@ -192,7 +192,7 @@ argic <- function(pedon, min_thickness = 7.5,
   # v0.9.310: "An argic horizon ... is a subsurface horizon" (WRB 2022 Ch 3.1.3,
   # p. 35). The layer at the mineral soil surface and the A horizons (Ah2, Ap2)
   # are not part of it (Hugo's reading, 2026-10-29).
-  not_sub <- if (wrb2022_text) .wrb_not_subsurface(h) else rep(FALSE, nrow(h))
+  not_sub <- if (wrb2022_text) .wrb_not_subsurface(h, site = pedon$site) else rep(FALSE, nrow(h))
   # v0.9.310: criterion 2.a.iii, a transitional horizon of <= 15 cm at most
   # between the coarser-textured layer and the argic horizon (p. 36).
   max_transition <- if (wrb2022_text) 15 else NULL
@@ -208,7 +208,8 @@ argic <- function(pedon, min_thickness = 7.5,
                                                   max_transition_cm = max_transition,
                                                   exclude = not_sub,
                                                   lithic_data = wrb2022_text,
-                                                  plough_layer = wrb2022_text)
+                                                  plough_layer = wrb2022_text,
+                                                  site = pedon$site)
   # v0.9.220: WRB 2022 Ch 3.1.3, criterion 2.a.i. A clay increase across a
   # lithic discontinuity (Ap over 2Bt) is not an argic horizon unless "illuvial
   # clay is evidenced" (criterion 2.b; WRB: "if the soil shows a lithic
@@ -219,7 +220,8 @@ argic <- function(pedon, min_thickness = 7.5,
     across <- setdiff(test_clay_increase_argic(h, system = system,
                                                max_transition_cm = max_transition,
                                                exclude = not_sub,
-                                               plough_layer = wrb2022_text)$layers,
+                                               plough_layer = wrb2022_text,
+                                               site = pedon$site)$layers,
                       tests$clay_increase$layers)
     if (length(across)) {
       films <- .clay_films_class(h$clay_films_amount %||% rep(NA_character_, nrow(h)))
@@ -462,7 +464,7 @@ ferralic <- function(pedon,
       h, min_cm = min_thickness,
       candidate_layers = setdiff(intersect(tests$texture$layers,
                                            tests$cec_per_clay$layers),
-                                 which(.wrb_not_subsurface(h))),
+                                 which(.wrb_not_subsurface(h, site = pedon$site))),
       adjoining = TRUE)
   else test_ferralic_thickness(h, min_cm = min_thickness)
 
@@ -554,7 +556,7 @@ mollic <- function(pedon,
   }
   # v0.9.314: criteria 1-3 in every layer (WRB 2022 Ch 2.1, p. 23); the
   # horizon is the run of such layers from the mineral soil surface
-  ls  <- .wrb_mollic_layer_status(h, umbric = FALSE, min_oc = min_oc)
+  ls  <- .wrb_mollic_layer_status(h, umbric = FALSE, min_oc = min_oc, site = pedon$site)
   run <- .wrb_mollic_run(h, ls$status, ls$missing, surface_top_cm = surface_top_cm)
   L <- run$layers
   thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
@@ -1390,7 +1392,7 @@ umbric_horizon <- function(pedon,
   # rule 3, p. 23).
   # v0.9.314: criteria 1-3 in every layer (WRB 2022 Ch 2.1, p. 23); the
   # horizon is the run of such layers from the mineral soil surface
-  ls    <- .wrb_mollic_layer_status(h, umbric = TRUE, min_oc = min_oc)
+  ls    <- .wrb_mollic_layer_status(h, umbric = TRUE, min_oc = min_oc, site = pedon$site)
   stack <- .wrb_mollic_run(h, ls$status, ls$missing, surface_top_cm = surface_top_cm)
   L <- stack$layers
   thk <- function(x) sum(pmax(h$bottom_cm[x] - h$top_cm[x], 0), na.rm = TRUE)
@@ -1892,7 +1894,7 @@ nitic_horizon <- function(pedon, min_clay = 30, min_fe_dcb = 4,
   # v0.9.310: "A nitic horizon ... is a clay-rich subsurface horizon" (WRB 2022
   # Ch 3.1.22, p. 55): not the layer at the mineral soil surface nor an A
   # horizon (Hugo's reading, as for the argic horizon).
-  subsurface <- !.wrb_not_subsurface(h)
+  subsurface <- !.wrb_not_subsurface(h, site = pedon$site)
   status <- vapply(seq_len(n), function(i)
     .and3(c1[i], c2[i], c3[i], c4[i], subsurface[i]), logical(1))
   # 5. >= 30 cm, as one horizon (contiguous layers)

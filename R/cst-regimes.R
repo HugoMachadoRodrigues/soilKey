@@ -326,7 +326,7 @@ moisture_regime_cst <- function(pedon, regimes) {
   }
   sat <- .cst_site_lgl(site, "summer_saturated")
   h <- .cst_ordered(pedon)
-  first <- if (!is.null(h) && nrow(h)) .cst_horizon_kind(h$designation[1L]) else NA_character_
+  first <- if (!is.null(h) && nrow(h)) .cst_horizon_kind(h$designation[1L], site = pedon$site) else NA_character_
   o <- if (is.na(first)) NA else first == "O"
   lims <- .cst_thr("temperature_regimes", "cryic", "summer_max_exclusive_C")
   cases <- expand.grid(sat = if (is.na(sat)) c(FALSE, TRUE) else sat,
