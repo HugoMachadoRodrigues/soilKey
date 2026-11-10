@@ -1,0 +1,26 @@
+# The soil units of the Greyzems (M), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 48, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "M":
+    - code: "Mg"
+      name: "Gleyic Greyzems"
+      name_pt: "Greyzems Gleicos (Gleyic Greyzems)"
+      page: 48
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 50}}]
+      notes: "Hydromorphic properties within 50 cm of the surface."
+
+    - code: "Mo"
+      name: "Orthic Greyzems"
+      name_pt: "Greyzems Órticos (Orthic Greyzems)"
+      page: 48
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

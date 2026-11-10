@@ -1,0 +1,26 @@
+# The soil units of the Vertisols (V), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 43, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "V":
+    - code: "Vp"
+      name: "Pellic Vertisols"
+      name_pt: "Vertissolos Pélicos (Pellic Vertisols)"
+      page: 43
+      tests:
+        all_of: [{chroma_window_fao74: {lt: 1.5, top: 0, bottom: 30}}]
+      notes: "A moist chroma below 1.5 dominant in the soil matrix throughout the upper 30 cm."
+
+    - code: "Vc"
+      name: "Chromic Vertisols"
+      name_pt: "Vertissolos Crômicos (Chromic Vertisols)"
+      page: 43
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

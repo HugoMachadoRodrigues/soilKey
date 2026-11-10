@@ -165,10 +165,10 @@ test_that("no residual grouping: the fall-through of Q5", {
   expect_false(any(grepl("^Provisional: [0-9]", r2$warnings)))
 })
 
-test_that("the edition switch: 1974 is not yet available", {
+test_that("the edition switch (the Legend of 1974 keyed since 0.9.389)", {
   skip_on_cran()
   p <- make_fao_example("LV")
-  expect_error(classify_fao(p, edition = "1974"), "not yet available")
+  expect_identical(classify_fao(p, edition = "1974", on_missing = "silent")$system_id, "fao1974")
   expect_error(classify_fao(p, edition = "1999"))
   expect_error(make_fao_example("LV", edition = "1974"), "1974")
   expect_identical(classify_fao(p, on_missing = "silent")$system_id, "fao1988")

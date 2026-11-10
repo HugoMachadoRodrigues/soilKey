@@ -715,7 +715,11 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     humic <- .f88_cmp(sh$value, ">", 1.4)
     contrast <- if (is.na(ref)) NA
       else if (x$rock[ref]) { flags <- c(flags, "rock_below_a_contrast_not_read"); TRUE }
-      else .f88_and(m_vm$value <= col$vm[ref] - 1, m_vd$value <= col$vd_or_inferred[ref] - 1)
+      # more than 40 % finely divided lime waives the limits of the dry
+      # value, the dry contrast with the C included (1988 p. 26 and 74 p.
+      # 24, the same words; Hugo, 2026-11-10; a correction to 0.9.382)
+      else .f88_and(m_vm$value <= col$vm[ref] - 1,
+                    .f88_or(m_vd$value <= col$vd_or_inferred[ref] - 1, lime))
     if (!is.na(ref) && !x$rock[ref]) flags <- c(flags, .f88_flags(col$flags, ref))
     # the strongly humic waiver is of 1988 (p. 26); 1974 has none (74 p. 24)
     if (!e74) contrast <- .f88_or(contrast, humic)
@@ -1510,13 +1514,15 @@ sulfuric_fao88 <- function(pedon, max_top_cm = 125) {
     }
     le2r <- .f88_or(le2, red & !is.na(cm) & cm == 3)
     flag[red & !(le2 %in% TRUE) & !is.na(cm) & cm == 3] <- "chroma_3_on_red_parent_material"
-    if (identical(x$edition, "1974")) {
-      # 1974 (74 p. 27): no chroma limit at a dry value of 5 or 6 or a moist
-      # value of 4 or 5 (as printed); the chroma 3 of red parent materials
-      # falls within the limit of 3 at the higher values
-      le2r <- rep(TRUE, n); flag <- rep(NA_character_, n)
-    }
     addf <- function(f, sel, lab) ifelse(sel, ifelse(is.na(f), lab, paste(f, lab, sep = "; ")), f)
+    e74 <- identical(x$edition, "1974")
+    if (e74) {
+      # 1974 (74 p. 27): the text prints no chroma limit at a dry value of 5
+      # or 6 or a moist value of 4 or 5, yet allows a chroma of 3 on red
+      # parent materials, which presupposes one: the chroma below 2.5 of
+      # Soil Taxonomy 1975 and of 1988 is read (Hugo, 2026-11-10), flagged
+      flag <- addf(flag, mid %in% TRUE & !(high %in% TRUE), "albic_middle_values_chroma_below_2.5")
+    }
     flag <- addf(flag, !is.na(col$flags), "dry_value_from_moist_plus_1")
     flag <- addf(flag, dry_c, "dry_chroma_from_moist")
     chroma <- ifelse(high %in% TRUE, le3, ifelse(mid %in% TRUE, le2r,
@@ -1533,6 +1539,31 @@ sulfuric_fao88 <- function(pedon, max_top_cm = 125) {
     ok[x$rock] <- FALSE
     flag <- addf(flag, undes & ok %in% TRUE, "albic_by_colour_only")
     units <- .f88_units(x, ok, function(r) TRUE)
+    if (e74 && length(units)) {
+      # 1974 (74 p. 27; Hugo, 2026-11-10): an albic E overlies one of the
+      # kinds the text names: a spodic, argillic or natric B, a fragipan
+      # (a designation with x, or pan_type fragipan) or an impervious layer
+      # (rock, a cemented layer, a pan recorded); with none of them below it
+      # the layers are albic material, not an albic E (albic_material_fao74())
+      sp <- .f88_member(x, .f88_hz_spodic_b(x)$units)
+      ar <- .f88_member(x, .f74_hz_argillic_natric(x, FALSE)$units)
+      na <- .f88_member(x, .f74_hz_argillic_natric(x, TRUE)$units)
+      pan <- .f88_chr(x, "pan_type")
+      frag <- (!is.na(x$desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*x", x$desg)) |
+        (!is.na(pan) & grepl("fragipan", pan))
+      imp <- x$rock | (.f88_cemented(x)$value %in% TRUE) | (!is.na(pan) & !grepl("^(none|no)$", pan))
+      kind <- .f88_or(sp, ar, na, frag | imp)
+      units <- lapply(units, function(u) {
+        below <- seq_len(n)[seq_len(n) > max(u$layers)]
+        kb <- if (length(below)) .f88_any(kind[below]) else FALSE
+        u$status <- .f88_and(u$status, kb)
+        if (is.na(u$status)) u$status <- NA
+        u
+      })
+      dropped <- unlist(lapply(Filter(function(u) isFALSE(u$status), units), `[[`, "layers"))
+      units <- Filter(function(u) !isFALSE(u$status), units)
+      flag <- addf(flag, seq_len(n) %in% dropped, "e_without_spodic_argillic_natric_fragipan_or_impervious_below")
+    }
     list(units = units, flags = .f88_flags(flag, which(!(ok %in% FALSE))),
          missing = c("munsell_value_moist", "munsell_value_dry", "munsell_chroma_moist",
                      "munsell_chroma_dry", if (any(undes & is.na(ok))) "designation"))

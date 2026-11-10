@@ -1,0 +1,42 @@
+# The soil units of the Andosols (T), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 45, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "T":
+    - code: "Tm"
+      name: "Mollic Andosols"
+      name_pt: "Andossolos Mólicos (Mollic Andosols)"
+      page: 45
+      tests:
+        all_of: [{mollic_a_fao74: {}}]
+      notes: "A mollic A horizon."
+
+    - code: "Th"
+      name: "Humic Andosols"
+      name_pt: "Andossolos Húmicos (Humic Andosols)"
+      page: 45
+      tests:
+        all_of: [{umbric_a_fao74: {}}]
+      notes: "An umbric A horizon."
+
+    - code: "To"
+      name: "Ochric Andosols"
+      name_pt: "Andossolos Ócricos (Ochric Andosols)"
+      page: 45
+      tests:
+        all_of: [{smeary_or_fine_fao74: {depth: 100}}]
+      notes: "A smeary consistence, or a texture of silt loam or finer on the weighted average of all horizons within 100 cm, or both."
+
+    - code: "Tv"
+      name: "Vitric Andosols"
+      name_pt: "Andossolos Vítricos (Vitric Andosols)"
+      page: 45
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

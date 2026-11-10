@@ -1,0 +1,42 @@
+# The soil units of the Solonchaks (Z), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 44, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "Z":
+    - code: "Zg"
+      name: "Gleyic Solonchaks"
+      name_pt: "Solonchaks Gleicos (Gleyic Solonchaks)"
+      page: 44
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 50}}]
+      notes: "Hydromorphic properties within 50 cm of the surface."
+
+    - code: "Zt"
+      name: "Takyric Solonchaks"
+      name_pt: "Solonchaks Takíricos (Takyric Solonchaks)"
+      page: 44
+      tests:
+        all_of: [{takyric_features_fao74: {}}]
+      notes: "Takyric features."
+
+    - code: "Zm"
+      name: "Mollic Solonchaks"
+      name_pt: "Solonchaks Mólicos (Mollic Solonchaks)"
+      page: 44
+      tests:
+        all_of: [{mollic_a_fao74: {}}]
+      notes: "A mollic A horizon."
+
+    - code: "Zo"
+      name: "Orthic Solonchaks"
+      name_pt: "Solonchaks Órticos (Orthic Solonchaks)"
+      page: 44
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

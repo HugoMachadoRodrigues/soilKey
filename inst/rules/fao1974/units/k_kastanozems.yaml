@@ -1,0 +1,36 @@
+# The soil units of the Kastanozems (K), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 49, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "K":
+    - code: "Kl"
+      name: "Luvic Kastanozems"
+      name_pt: "Kastanozems Lúvicos (Luvic Kastanozems)"
+      page: 49
+      tests:
+        all_of: [{argillic_b_fao74: {}}]
+      notes: "An argillic B horizon; a calcic or gypsic horizon may underlie it."
+
+    - code: "Kk"
+      name: "Calcic Kastanozems"
+      name_pt: "Kastanozems Cálcicos (Calcic Kastanozems)"
+      page: 49
+      tests:
+        any_of:
+          - calcic_fao74: {max_top_cm: 125}
+          - gypsic_fao74: {max_top_cm: 125}
+      notes: "A calcic or a gypsic horizon (no depth in the key: within 125 cm, Q10)."
+
+    - code: "Kh"
+      name: "Haplic Kastanozems"
+      name_pt: "Kastanozems Háplicos (Haplic Kastanozems)"
+      page: 49
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

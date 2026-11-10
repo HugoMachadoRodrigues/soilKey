@@ -1,0 +1,58 @@
+# The soil units of the Podzols (P), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 47, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "P":
+    - code: "Pp"
+      name: "Placic Podzols"
+      name_pt: "Podzóis Plácicos (Placic Podzols)"
+      page: 47
+      tests:
+        all_of: [{thin_pan_spodic_fao74: {}}]
+      notes: "A thin iron pan in or over the spodic B horizon."
+
+    - code: "Pg"
+      name: "Gleyic Podzols"
+      name_pt: "Podzóis Gleicos (Gleyic Podzols)"
+      page: 47
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 50}}]
+      notes: "Hydromorphic properties within 50 cm of the surface."
+
+    - code: "Ph"
+      name: "Humic Podzols"
+      name_pt: "Podzóis Húmicos (Humic Podzols)"
+      page: 47
+      tests:
+        all_of: [{humic_podzol_fao74: {}}]
+      notes: "A subhorizon of the B with dispersed organic matter and too little free iron to turn redder on ignition."
+
+    - code: "Pf"
+      name: "Ferric Podzols"
+      name_pt: "Podzóis Férricos (Ferric Podzols)"
+      page: 47
+      tests:
+        all_of: [{spodic_fe_oc_fao74: {min: 6}}]
+      notes: "A ratio of free iron to carbon of 6 or more in all subhorizons of the B."
+
+    - code: "Pl"
+      name: "Leptic Podzols"
+      name_pt: "Podzóis Lépticos (Leptic Podzols)"
+      page: 47
+      tests:
+        all_of: [{leptic_podzol_fao74: {albic_max_cm: 2}}]
+      notes: "No albic E, or only a thin (2 cm or less) and discontinuous one; no subhorizon of the B visibly more enriched with carbon."
+
+    - code: "Po"
+      name: "Orthic Podzols"
+      name_pt: "Podzóis Órticos (Orthic Podzols)"
+      page: 47
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

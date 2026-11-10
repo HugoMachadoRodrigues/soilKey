@@ -1,0 +1,52 @@
+# The soil units of the Acrisols (A), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 51-52, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "A":
+    - code: "Ap"
+      name: "Plinthic Acrisols"
+      name_pt: "Acrissolos Plínticos (Plinthic Acrisols)"
+      page: 51
+      tests:
+        all_of: [{plinthite_fao74: {max_top_cm: 125}}]
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "Ag"
+      name: "Gleyic Acrisols"
+      name_pt: "Acrissolos Gleicos (Gleyic Acrisols)"
+      page: 51
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 50}}]
+      notes: "Hydromorphic properties within 50 cm of the surface."
+
+    - code: "Ah"
+      name: "Humic Acrisols"
+      name_pt: "Acrissolos Húmicos (Humic Acrisols)"
+      page: 52
+      tests:
+        any_of:
+          - umbric_a_fao74: {}
+          - high_om_b_fao74: {kind: acrisol}
+      notes: "An umbric A horizon or a high organic matter content in the B, or both."
+
+    - code: "Af"
+      name: "Ferric Acrisols"
+      name_pt: "Acrissolos Férricos (Ferric Acrisols)"
+      page: 52
+      tests:
+        all_of: [{ferric_properties_fao74: {}}]
+      notes: "Ferric properties (no depth in the key: within 125 cm, Q10)."
+
+    - code: "Ao"
+      name: "Orthic Acrisols"
+      name_pt: "Acrissolos Órticos (Orthic Acrisols)"
+      page: 52
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

@@ -718,8 +718,20 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' not tested). Since v0.9.386 the result also gives the 16 phases of
 #' chapter VIII (pp. 67-71) and the texture and slope classes of the map
 #' symbol (Appendix 2, p. 107) in \code{$phases}, beside the unit, which
-#' they never change. The Legend of 1974 follows in a later release;
-#' \code{edition = "1974"} stops with a message until then.
+#' they never change. Since v0.9.389, \code{edition = "1974"} keys the
+#' Legend of 1974 (FAO-Unesco, Soil Map of the World, Vol. I, Unesco Paris),
+#' pp. 43-53: its 26 major soil groups in the key's order (Histosols,
+#' Lithosols, Vertisols, Fluvisols, Solonchaks, Gleysols, Andosols,
+#' Arenosols, Regosols, Rankers, Rendzinas, Podzols, Ferralsols, Planosols,
+#' Solonetz, Greyzems, Chernozems, Kastanozems, Phaeozems, Podzoluvisols,
+#' Xerosols, Yermosols, Nitosols, Acrisols, Luvisols, Cambisols) and their
+#' 106 soil units (the Lithosols, Rankers and Rendzinas are single units),
+#' on the diagnostic horizons and properties of 1974 read on the data; its
+#' registry id is \code{fao1974} (\code{\link{classify_fao1974}}). Since
+#' v0.9.390 its result gives in \code{$phases} the 12 phases of 1974 (pp.
+#' 5-7: stony, lithic, petric, petrocalcic, petrogypsic, petroferric,
+#' phreatic, fragipan, duripan, saline, sodic, cerrado) and the texture and
+#' slope classes of its map symbol (pp. 4-5), in the same form.
 #'
 #' The tests are three-valued: a measurement not recorded leaves its
 #' criterion undecided, a field observation not recorded is absent. A
@@ -738,14 +750,16 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param edition \code{"1988"} (the Revised Legend, default) or
-#'   \code{"1974"} (not yet available).
-#' @param rules Optional pre-loaded rule set (\code{load_rules("fao1988")}).
+#'   \code{"1974"} (the Legend of 1974).
+#' @param rules Optional pre-loaded rule set (\code{load_rules("fao1988")},
+#'   or \code{load_rules("fao1974")} with \code{edition = "1974"}).
 #' @param on_missing One of \code{"warn"} (default), \code{"silent"},
 #'        \code{"error"}.
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}} with \code{system_id}
-#'   \code{"fao1988"}; \code{name} holds the soil unit as printed ("Haplic
+#'   \code{"fao1988"} (\code{"fao1974"} for the Legend of 1974);
+#'   \code{name} holds the soil unit as printed ("Haplic
 #'   Luvisols") and \code{rsg_or_order} the major soil grouping
 #'   ("Luvisols"); \code{levels} has one row per level (\code{major_groups},
 #'   \code{units}) with the code ("LV", "LVh"), name, page of the key and
@@ -762,27 +776,33 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #'   with corrections and updates. World Soil Resources Report 60, FAO,
 #'   Rome. Reprinted with updates as Technical Paper 20, ISRIC, Wageningen,
 #'   1997.
-#' @seealso \code{\link{classify_fao1988}}, \code{\link{make_fao_example}},
-#'   \code{\link{soilkey_systems}}.
+#' @seealso \code{\link{classify_fao1988}}, \code{\link{classify_fao1974}},
+#'   \code{\link{make_fao_example}}, \code{\link{soilkey_systems}}.
 #' @examples
 #' res <- classify_fao(make_fao_example("LV"), on_missing = "silent")
 #' res$name
 #' res$rsg_or_order
 #' res$levels
 #' res$phases[res$phases$status != "absent", c("kind", "code", "name", "status")]
+#' classify_fao(make_fao_example("Lc", edition = "1974"), edition = "1974",
+#'              on_missing = "silent")$name
 #' @export
 classify_fao <- function(pedon, edition = c("1988", "1974"), rules = NULL,
                          on_missing = c("warn", "silent", "error"),
                          gapfill = FALSE) {
   edition <- .fao_edition(match.arg(as.character(edition)[1L], c("1988", "1974", "88", "74")))
   on_missing <- match.arg(on_missing)
-  if (edition == "1974") {
-    rlang::abort(paste(
-      "The FAO-Unesco Legend of 1974 is not yet available in soilKey: its key follows in a later release.",
-      "Use edition = \"1988\" for the Revised Legend."))
-  }
   # gap-fill once, so that the key and the phases read the same pedon
   if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(pedon, gapfill)
+  # v0.9.389: the Legend of 1974 (pp. 43-53), its own registry id fao1974
+  if (edition == "1974") {
+    res <- .classify_fao1974_impl(pedon, rules = rules, on_missing = on_missing,
+                                  gapfill = if (inherits(pedon, "PedonRecord")) FALSE else gapfill)
+    # v0.9.390: the phases of 1974 and the classes of its map symbol (pp.
+    # 4-7), beside the unit, which they never change (Q25)
+    if (inherits(pedon, "PedonRecord")) res$phases <- .fao74_phases(pedon, res)
+    return(res)
+  }
   res <- .classify_fao1988_impl(pedon, rules = rules, on_missing = on_missing,
                                 gapfill = if (inherits(pedon, "PedonRecord")) FALSE else gapfill)
   # v0.9.386: the phases and the classes of the map symbol, beside the unit
@@ -808,6 +828,28 @@ classify_fao1988 <- function(pedon, rules = NULL,
                              gapfill = FALSE) {
   on_missing <- match.arg(on_missing)
   classify_fao(pedon, edition = "1988", rules = rules, on_missing = on_missing, gapfill = gapfill)
+}
+
+#' Classify a pedon in the FAO-Unesco Legend of 1974
+#'
+#' The registry's classifier of \code{fao1974} (aliases \code{fao74},
+#' \code{fao_unesco_1974}): \code{classify_fao(pedon, edition = "1974")}.
+#' Experimental and opt-in. See \code{\link{classify_fao}}.
+#'
+#' @inheritParams classify_fao
+#' @return A \code{\link{ClassificationResult}}, as \code{\link{classify_fao}},
+#'   with \code{system_id} \code{"fao1974"}.
+#' @references FAO-Unesco (1974). Soil Map of the World 1:5 000 000. Volume
+#'   I, Legend. Unesco, Paris.
+#' @seealso \code{\link{classify_fao}}, \code{\link{make_fao_example}}.
+#' @examples
+#' classify_fao1974(make_fao_example("L", edition = "1974"), on_missing = "silent")$name
+#' @export
+classify_fao1974 <- function(pedon, rules = NULL,
+                             on_missing = c("warn", "silent", "error"),
+                             gapfill = FALSE) {
+  on_missing <- match.arg(on_missing)
+  classify_fao(pedon, edition = "1974", rules = rules, on_missing = on_missing, gapfill = gapfill)
 }
 
 .FAO88_NOT_CLASSIFIED <- "[Not classified in the FAO-Unesco Revised Legend (1988)]"
@@ -873,8 +915,12 @@ classify_fao1988 <- function(pedon, rules = NULL,
 #' @param code The code of a major soil grouping of 1988 ("HS", "AT", "LP",
 #'   "VR", "FL", "SC", "GL", "AN", "AR", "RG", "PZ", "PT", "FR", "PL", "SN",
 #'   "GR", "CH", "KS", "PH", "PD", "GY", "CL", "NT", "AL", "AC", "LV", "LX",
-#'   "CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...).
-#' @param edition \code{"1988"}; the examples of 1974 follow with its key.
+#'   "CM"), or of one of its 153 soil units ("HSi", "LVx", "CMe" ...); with
+#'   \code{edition = "1974"}, of a major soil group of 1974 ("O", "I", "V",
+#'   "J", "Z", "G", "T", "Q", "R", "U", "E", "P", "F", "W", "S", "M", "C",
+#'   "K", "H", "D", "X", "Y", "N", "A", "L", "B") or of one of its 106 soil
+#'   units ("Ox", "Lc", "Be" ...).
+#' @param edition \code{"1988"} (default) or \code{"1974"} (since v0.9.389).
 #' @param near_miss \code{TRUE} for the near miss of the grouping.
 #' @return A \code{\link{PedonRecord}}.
 #' @seealso \code{\link{classify_fao}}.
@@ -882,12 +928,13 @@ classify_fao1988 <- function(pedon, rules = NULL,
 #' p <- make_fao_example("PH")
 #' p$horizons[, c("designation", "top_cm", "bottom_cm", "bs_pct")]
 #' classify_fao(make_fao_example("LVx"), on_missing = "silent")$name
+#' classify_fao(make_fao_example("Fx", edition = "1974"), edition = "1974",
+#'              on_missing = "silent")$name
 #' @export
 make_fao_example <- function(code = "HS", edition = c("1988", "1974"), near_miss = FALSE) {
   code <- as.character(code)[1L]
   edition <- .fao_edition(match.arg(as.character(edition)[1L], c("1988", "1974")))
-  if (edition == "1974")
-    rlang::abort("The examples of the FAO-Unesco Legend of 1974 follow with its key in a later release.")
+  if (edition == "1974") return(.fao74_make_example(code, isTRUE(near_miss)))
   if (code %in% .F88_GROUPINGS$code) return(.fao88_example(code, isTRUE(near_miss)))
   if (!code %in% .f88_unit_codes())
     rlang::abort(sprintf(paste("'%s' is not a code of the FAO-Unesco Revised Legend (1988): use a major",
@@ -900,6 +947,9 @@ make_fao_example <- function(code = "HS", edition = c("1988", "1974"), near_miss
 # The registry's example function for the app (make_<id>_example).
 make_fao1988_example <- function(code, near_miss = FALSE) {
   make_fao_example(code, "1988", near_miss)
+}
+make_fao1974_example <- function(code, near_miss = FALSE) {
+  make_fao_example(code, "1974", near_miss)
 }
 
 .fao88_example <- function(code, nm) {

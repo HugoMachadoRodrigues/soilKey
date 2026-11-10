@@ -1,0 +1,34 @@
+# The soil units of the Podzoluvisols (D), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 50, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "D":
+    - code: "Dg"
+      name: "Gleyic Podzoluvisols"
+      name_pt: "Podzoluvissolos Gleicos (Gleyic Podzoluvisols)"
+      page: 50
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 50}}]
+      notes: "Hydromorphic properties within 50 cm of the surface."
+
+    - code: "Dd"
+      name: "Dystric Podzoluvisols"
+      name_pt: "Podzoluvissolos Distróficos (Dystric Podzoluvisols)"
+      page: 50
+      tests:
+        all_of: [{b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125}}]
+      notes: "A base saturation (NH4OAc) below 50 % in at least a part of the B within 125 cm."
+
+    - code: "De"
+      name: "Eutric Podzoluvisols"
+      name_pt: "Podzoluvissolos Eutróficos (Eutric Podzoluvisols)"
+      page: 50
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

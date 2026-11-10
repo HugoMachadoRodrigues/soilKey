@@ -1001,30 +1001,52 @@ abrupt_textural_change_fao74 <- function(pedon, max_top_cm = NULL) {
 
 # --- albic material (p. 28) --------------------------------------------------------------------
 
-# The colours of the albic E in a layer that is not an E: a moist value of 4
-# or more or a dry value of 5 or more; chroma 3 or less where the dry value is
-# 7 or more or the moist value 6 or more; no limit otherwise (as the albic E
-# of 1974). A dry value not recorded is the moist value + 1, a dry chroma the
-# moist chroma, flagged (the readings of the albic E).
+# The colours of the albic E in a layer that is not an albic E: a moist value
+# of 4 or more or a dry value of 5 or more; chroma 3 or less where the dry
+# value is 7 or more or the moist value 6 or more; below 2.5 at the middle
+# values (a dry value of 5 or 6, a moist value of 4 or 5), 3 allowed over a
+# parent material of hue 5YR or redder (Hugo, 2026-11-10: the 1974 text
+# prints no limit there, but its 5YR clause presupposes this one, that of
+# Soil Taxonomy 1975 and of 1988), flagged. A dry value not recorded is the
+# moist value + 1, a dry chroma the moist chroma, flagged (the readings of
+# the albic E).
 .f74_albic_colour <- function(x) {
   col <- .f88_colours(x)
   vm <- col$vm; cm <- col$cm; cd <- col$cd; vd <- col$vd_or_inferred
   dc <- is.na(cd) & !is.na(cm); cd[dc] <- cm[dc]
+  m <- x$master
   light <- .f88_or(.f88_cmp(vm, ">=", 4), .f88_cmp(vd, ">=", 5))
   high <- .f88_or(.f88_cmp(vd, ">=", 7), .f88_cmp(vm, ">=", 6))
+  mid <- .f88_or(.f88_and(.f88_cmp(vd, ">=", 5), .f88_cmp(vd, "<=", 6)),
+                 .f88_and(.f88_cmp(vm, ">=", 4), .f88_cmp(vm, "<=", 5)))
   le3 <- .f88_or(.f88_cmp(cd, "<=", 3), .f88_cmp(cm, "<=", 3))
-  chroma <- ifelse(high %in% TRUE, le3, ifelse(high %in% FALSE, TRUE, ifelse(le3 %in% TRUE, TRUE, NA)))
+  le2 <- .f88_or(.f88_cmp(cd, "<", 2.5), .f88_cmp(cm, "<", 2.5))
+  red <- vapply(seq_len(x$n), function(i) {
+    cb <- which(seq_len(x$n) > i & !is.na(m) & grepl("^C", m) & !x$rock)[1L]
+    !is.na(cb) && isTRUE(.fao_hue_cmp(col$hue[cb], "5YR", "as_red"))
+  }, logical(1))
+  le2r <- .f88_or(le2, red & !is.na(cm) & cm == 3)
+  chroma <- ifelse(high %in% TRUE, le3, ifelse(mid %in% TRUE, le2r,
+                   ifelse(high %in% FALSE & mid %in% FALSE, FALSE, NA)))
   flag <- rep(NA_character_, x$n)
   flag <- .f88_addf(flag, !is.na(col$flags), "dry_value_from_moist_plus_1")
   flag <- .f88_addf(flag, dc, "dry_chroma_from_moist")
+  flag <- .f88_addf(flag, mid %in% TRUE & !(high %in% TRUE), "albic_middle_values_chroma_below_2.5")
+  flag <- .f88_addf(flag, red & !(le2 %in% TRUE) & !is.na(cm) & cm == 3 & mid %in% TRUE,
+                    "chroma_3_on_red_parent_material")
   list(value = .f88_and(light, as.logical(chroma)), flags = flag)
 }
 
+# Albic material: the colours above in a layer that is not part of an albic E
+# (an E with none of the kinds of 74 p. 27 below it is albic material, Hugo
+# 2026-11-10; an E whose albic E is undecided leaves it undecided).
 albic_material_fao74 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
   .f74_pr_layers(pedon, "albic_material", function(x) {
     a <- .f74_albic_colour(x)
-    e <- !is.na(x$master) & grepl("^E", x$master)
-    v <- a$value; v[e] <- FALSE
+    ae <- .f88_member(x, .f88_hz_albic_e(x)$units)
+    v <- a$value
+    v[ae %in% TRUE] <- FALSE
+    v[is.na(ae) & v %in% TRUE] <- NA
     list(value = .f88_pr_clean(x, v), flags = a$flags,
          missing = c("munsell_value_moist", "munsell_value_dry", "munsell_chroma_moist"))
   }, max_top_cm, window_cm)

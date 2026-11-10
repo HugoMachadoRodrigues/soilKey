@@ -1,0 +1,42 @@
+# The soil units of the Arenosols (Q), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 46, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "Q":
+    - code: "Qa"
+      name: "Albic Arenosols"
+      name_pt: "Arenossolos Álbicos (Albic Arenosols)"
+      page: 46
+      tests:
+        all_of: [{albic_material_fao74: {window_cm: [0, 50]}}]
+      notes: "Consisting of albic material (to 50 cm at least, the definition)."
+
+    - code: "Ql"
+      name: "Luvic Arenosols"
+      name_pt: "Arenossolos Lúvicos (Luvic Arenosols)"
+      page: 46
+      tests:
+        all_of: [{lamellae_fao74: {max_top_cm: 125}}]
+      notes: "Lamellae of clay accumulation (within 125 cm, the definition)."
+
+    - code: "Qf"
+      name: "Ferralic Arenosols"
+      name_pt: "Arenossolos Ferrálicos (Ferralic Arenosols)"
+      page: 46
+      tests:
+        all_of: [{ferralic_properties_fao74: {kind: arenosol}}]
+      notes: "Ferralic properties (in the horizon right below the A)."
+
+    - code: "Qc"
+      name: "Cambic Arenosols"
+      name_pt: "Arenossolos Câmbicos (Cambic Arenosols)"
+      page: 46
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

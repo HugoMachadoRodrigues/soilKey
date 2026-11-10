@@ -1,0 +1,42 @@
+# The soil units of the Xerosols (X), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 50, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "X":
+    - code: "Xl"
+      name: "Luvic Xerosols"
+      name_pt: "Xerossolos Lúvicos (Luvic Xerosols)"
+      page: 50
+      tests:
+        all_of: [{argillic_b_fao74: {}}]
+      notes: "An argillic B horizon; a calcic or gypsic horizon may underlie it."
+
+    - code: "Xy"
+      name: "Gypsic Xerosols"
+      name_pt: "Xerossolos Gípsicos (Gypsic Xerosols)"
+      page: 50
+      tests:
+        all_of: [{aridic_lime_fao74: {kind: gypsic}}]
+      notes: "A gypsic horizon at less than 125, 90 or 75 cm by texture (footnote 1, strictly; the shallower of a calcic and a gypsic horizon decides)."
+
+    - code: "Xk"
+      name: "Calcic Xerosols"
+      name_pt: "Xerossolos Cálcicos (Calcic Xerosols)"
+      page: 50
+      tests:
+        all_of: [{aridic_lime_fao74: {kind: calcic}}]
+      notes: "A calcic horizon at less than 125, 90 or 75 cm by texture (footnote 1, strictly)."
+
+    - code: "Xh"
+      name: "Haplic Xerosols"
+      name_pt: "Xerossolos Háplicos (Haplic Xerosols)"
+      page: 50
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

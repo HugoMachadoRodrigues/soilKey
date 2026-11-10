@@ -99,10 +99,16 @@ test_that("albic material: the albic colours outside an E", {
                                          silt_pct = 3)
   expect_true(.ok(albic_material_fao74(am("C1", 6, 3, 7))))
   expect_false(.ok(albic_material_fao74(am("C1", 6, 4, 7))))
-  expect_true(.ok(albic_material_fao74(am("C1", 5, 6, 6))))      # no limit at the middle values
+  # middle values: a chroma below 2.5 (Hugo, 2026-11-10; the reading "no
+  # limit" of 0.9.388 is superseded)
+  expect_false(.ok(albic_material_fao74(am("C1", 5, 6, 6))))
+  expect_true(.ok(albic_material_fao74(am("C1", 5, 2, 6))))
   expect_false(.ok(albic_material_fao74(am("C1", 3, 2, 4))))
+  # an E over C (none of the kinds of 74 p. 27 below it) is albic material,
+  # not an albic E (Hugo, 2026-11-10)
   r <- albic_material_fao74(am("E", 6, 3, 7))
-  expect_false(isTRUE(1L %in% r$layers))                         # an E is not albic material
+  expect_true(isTRUE(1L %in% r$layers))
+  expect_false(.ok(albic_e_fao74(am("E", 6, 3, 7))))
   expect_true(.ok(albic_material_fao74(am("C1", 6, 3, 7), window_cm = c(0, 50))))
 })
 

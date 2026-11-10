@@ -1,0 +1,74 @@
+# The soil units of the Luvisols (L), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 52, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "L":
+    - code: "Lp"
+      name: "Plinthic Luvisols"
+      name_pt: "Luvissolos Plínticos (Plinthic Luvisols)"
+      page: 52
+      tests:
+        all_of: [{plinthite_fao74: {max_top_cm: 125}}]
+      notes: "Plinthite within 125 cm of the surface."
+
+    - code: "Lg"
+      name: "Gleyic Luvisols"
+      name_pt: "Luvissolos Gleicos (Gleyic Luvisols)"
+      page: 52
+      tests:
+        all_of: [{hydromorphic_properties_fao74: {max_top_cm: 50}}]
+      notes: "Hydromorphic properties within 50 cm of the surface."
+
+    - code: "La"
+      name: "Albic Luvisols"
+      name_pt: "Luvissolos Álbicos (Albic Luvisols)"
+      page: 52
+      tests:
+        all_of: [{albic_e_fao74: {}}]
+      notes: "An albic E horizon (no depth in the key: within 125 cm, Q10)."
+
+    - code: "Lv"
+      name: "Vertic Luvisols"
+      name_pt: "Luvissolos Vérticos (Vertic Luvisols)"
+      page: 52
+      tests:
+        all_of: [{vertic_properties_fao74: {}}]
+      notes: "Vertic properties."
+
+    - code: "Lk"
+      name: "Calcic Luvisols"
+      name_pt: "Luvissolos Cálcicos (Calcic Luvisols)"
+      page: 52
+      tests:
+        all_of: [{lime_by_texture_fao74: {kinds: [calcic, soft_powdery_lime]}}]
+      notes: "A calcic horizon or soft powdery lime within 125, 90 or 75 cm for a coarse, medium or fine weighted texture."
+
+    - code: "Lf"
+      name: "Ferric Luvisols"
+      name_pt: "Luvissolos Férricos (Ferric Luvisols)"
+      page: 52
+      tests:
+        all_of: [{ferric_properties_fao74: {}}]
+      notes: "Ferric properties (no depth in the key: within 125 cm, Q10)."
+
+    - code: "Lc"
+      name: "Chromic Luvisols"
+      name_pt: "Luvissolos Crômicos (Chromic Luvisols)"
+      page: 52
+      tests:
+        all_of: [{b_colour_fao74: {colour: chromic, kind: argillic_b}}]
+      notes: "A strong brown to red B: rubbed hue 7.5YR with a chroma above 4, or a hue redder than 7.5YR."
+
+    - code: "Lo"
+      name: "Orthic Luvisols"
+      name_pt: "Luvissolos Órticos (Orthic Luvisols)"
+      page: 52
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

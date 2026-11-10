@@ -1,0 +1,44 @@
+# The soil units of the Phaeozems (H), FAO-Unesco Legend of the Soil Map of the
+# World (FAO-Unesco 1974, Vol. I Legend), key p. 49-50, in the key's order;
+# the last unit is the key's "Other ..." residual (default: true). Codes and
+# names as printed; name_pt is soilKey's Portuguese gloss. The criteria are
+# summarised in soilKey's words; no text of the book is shipped. The
+# predicates are those of R/diagnostics-fao74.R and R/key-fao74.R; the
+# readings in readings.yaml.
+
+units:
+  "H":
+    - code: "Hg"
+      name: "Gleyic Phaeozems"
+      name_pt: "Feozems Gleicos (Gleyic Phaeozems)"
+      page: 49
+      tests:
+        all_of:
+          - argillic_b_fao74: {}
+          - hydromorphic_properties_fao74: {max_top_cm: 50}
+      notes: "An argillic B horizon and hydromorphic properties within 50 cm of the surface."
+
+    - code: "Hl"
+      name: "Luvic Phaeozems"
+      name_pt: "Feozems Lúvicos (Luvic Phaeozems)"
+      page: 49
+      tests:
+        all_of: [{argillic_b_fao74: {}}]
+      notes: "An argillic B horizon."
+
+    - code: "Hc"
+      name: "Calcaric Phaeozems"
+      name_pt: "Feozems Calcáricos (Calcaric Phaeozems)"
+      page: 50
+      tests:
+        all_of: [{calcareous_fao74: {window_cm: [20, 50]}}]
+      notes: "Calcareous at least between 20 and 50 cm."
+
+    - code: "Hh"
+      name: "Haplic Phaeozems"
+      name_pt: "Feozems Háplicos (Haplic Phaeozems)"
+      page: 50
+      tests:
+        default: true
+      notes: "Other soils of the group (the key's residual)."
+

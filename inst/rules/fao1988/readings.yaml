@@ -560,3 +560,9 @@ readings:
     page: "pp. 67, 114"
     version: "0.9.386"
     reading: "The introduction of ch. VIII (p. 67) still says that the petrocalcic and petrogypsic horizons are shown as phases: the 1974 text carried over; in 1988 they are diagnostic horizons and those phases are deleted (App. 4, pp. 113-114), so soilKey has no petrocalcic or petrogypsic phase. App. 4 (p. 114) says the salic phase replaces the 'salic phase': read 'saline phase' (default 20) (Hugo, 2026-11-08)."
+  # A decision of 2026-11-10 shared by both editions.
+  - topic: "Lime waiver of the mollic A: the dry contrast with the C"
+    edition: [1988, 1974]
+    page: "p. 26; 74 p. 24"
+    version: "0.9.390"
+    reading: "With more than 40 % finely divided lime, 'the limits of colour value dry are waived' (the same words in both editions): the dry value of the A and its dry contrast with the C (or the horizon below the A) are both waived; the moist contrast of one unit is still asked. A correction to the mollic and umbric A of 0.9.382 (1988) and 0.9.387 (1974); no example of 1988 changes (Hugo, 2026-11-10)."
