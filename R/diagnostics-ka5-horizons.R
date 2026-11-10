@@ -803,6 +803,12 @@
   })
 }
 
+# A parent rock of clay or clay-marl stone (v0.9.399: whole words, so that
+# limestone, sandstone, siltstone, ironstone and tonalite are not read as
+# Ton; German compounds such as Tonstein, Tonschiefer and Geschiebemergel
+# are).
+.KA5_CLAY_ROCK_RE <- "\\bton(stein|schiefer|mergel|mergelstein)?\\b|\\bclay|mergel|\\bmarl|\\bshale|schiefer|\\bpelit"
+
 # P: clay 45 % or more, prisms or blocks with slickensides or deep cracks,
 # from clay or clay-marl stone, S features subordinate (p. 100).
 .ka5_t_P <- function(x, i) {
@@ -812,7 +818,7 @@
   pm0 <- paste(c(pr0, .ka5_site_txt(x, "parent_material")), collapse = " ")
   # clay not recorded: a P candidate only on a recorded clay or clay-marl
   # stone (soilKey's reading, Hugo 2026-11-06)
-  if (is.na(cl)) return(.ka5_r(if (grepl("ton|clay|mergel|marl|shale|schiefer|pelit", pm0, ignore.case = TRUE)) NA else FALSE,
+  if (is.na(cl)) return(.ka5_r(if (grepl(.KA5_CLAY_ROCK_RE, pm0, ignore.case = TRUE)) NA else FALSE,
                                code = "P", missing = "clay_pct", note = "clay not recorded"))
   if (cl < .ka5_thr("p_clay_min_pct")) return(.ka5_r(FALSE, code = "P", note = sprintf("clay %s %%: under 45", format(cl))))
   sl <- .ka5_txt(x, i, "slickensides"); cr <- .ka5_num(x, i, "cracks_depth_cm"); st <- .ka5_txt(x, i, "structure_type")
@@ -825,7 +831,7 @@
   struct <- if (is.na(st)) NA else grepl("prism|angular|block|wedge", st)
   pr <- .ka5_v_raw(x, i, "parent_rock_ka5")
   pm <- paste(c(pr, .ka5_site_txt(x, "parent_material")), collapse = " ")
-  rock <- if (all(is.na(c(pr, .ka5_site_txt(x, "parent_material"))))) NA else grepl("ton|clay|mergel|marl|shale|schiefer|pelit", pm, ignore.case = TRUE)
+  rock <- if (all(is.na(c(pr, .ka5_site_txt(x, "parent_material"))))) NA else grepl(.KA5_CLAY_ROCK_RE, pm, ignore.case = TRUE)
   below <- x$ord[x$rank > x$rank[i]]
   if (is.na(rock) && length(below) &&
       any(vapply(below, function(j) isTRUE(.ka5_at_least(.ka5_carbonate(x, j)$range, .ka5_thr("carbonate_rock_pct")[2L])), NA)))

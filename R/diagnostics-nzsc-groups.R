@@ -256,7 +256,10 @@
   own <- gsub("\\bna\\b", "", own, ignore.case = TRUE)
   site_pm <- tolower(as.character(.nzsc_site1(pedon, "parent_material") %|NA|% ""))
   org <- ifelse(grepl("[a-z]", own), own, site_pm)
-  word <- grepl("tephra|tephric|pyroclast|volcanic ash|\\bash\\b|lapilli|scoria|pumice|volcanogenic", org) |
+  # v0.9.399: a pyroclastic breccia or another consolidated pyroclastic rock
+  # is rock, not tephra
+  word <- (grepl("tephra|tephric|pyroclast|volcanic ash|\\bash\\b|lapilli|scoria|pumice|volcanogenic", org) &
+           !grepl("breccia|consolidated", org)) |
           (grepl("ignimbrite", org) & (!grepl("welded", org) | grepl("non[- ]?welded", org)))
   known <- grepl("[a-z]", org)
   vg <- h$volcanic_glass_pct %||% rep(NA_real_, n)

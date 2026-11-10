@@ -56,6 +56,15 @@ KA/IL and gibbsite have no \code{clay_mineralogy} word and are read as not
 recorded; the value is an estimate, recorded with the provenance
 \code{inferred_prior}, so the evidence grade of a result drops to C),
 and \code{Sticknss} into \code{stickiness} (sticky as moderately sticky).
+Since v0.9.399 it reads on the site \code{Drain} into
+\code{drainage_class}, and \code{ParMat} and \code{LndForm} into
+\code{parent_material} and \code{landform} by the words of the AfSP
+dictionary when \code{AfSP012Qry_DictioClassValues.dbf} is in
+\code{afsp_dir}: a parent material with the words of its ancestors
+("volcanic rocks, acid"; "clayey, fluvial, calcareous"), the codes of the
+unconsolidated deposits the dictionary does not list decoded by its
+pattern; only the landforms that say something of the origin of the
+material (depression, low-gradient footslope, valley floor).
 }
 \section{References}{
 

@@ -110,7 +110,9 @@
                           "volcanic ejecta|volcanic sand|",
                           "\u706b\u5c71\u7070|\u706b\u5c71\u792b|\u8efd\u77f3|\u30b9\u30b3\u30ea\u30a2|",
                           "\u30c6\u30d5\u30e9|\u706b\u7815|\u706b\u5c71\u653e\u51fa\u7269")
-.SCSJ_NOT_EJECTA_RE <- paste0("non-?volcanic|\\brock\\b|lava|andesit|basalt|rhyolit|dacit|tuff|",
+# v0.9.399: a pyroclastic breccia or another consolidated pyroclastic rock
+# is rock, not ejecta
+.SCSJ_NOT_EJECTA_RE <- paste0("non-?volcanic|\\brock\\b|lava|andesit|basalt|rhyolit|dacit|tuff|breccia|consolidated|",
                               "\u5ca9|\u6eb6\u5ca9|\u7802\u4e18|dune")
 # alluvial deposits: Holocene fluvial, marine or lacustrine unconsolidated
 # deposits; not rock, terrace, Pleistocene or older, glacial
