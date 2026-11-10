@@ -197,6 +197,7 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
       shiny::tags$dl(class = "row mb-0 small", .sk_levels_rows(res$levels)),
       .sk_1977_note(res),
       .sk_crosswalk_note(res),
+      .sk_fao_edition_note(res),
       .sk_cst_correlation_note(res),
       meta,
       .sk_provisional_note(res)))
@@ -222,6 +223,16 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
              shiny::strong(i18n(if (identical(cw$kind, "wrb2006")) "classify.rp_wrb2006"
                                 else "classify.rp_cpcs_equivalents")), " ",
              paste(cw$lines, collapse = "; "))
+}
+
+# The other edition of the FAO-Unesco legend (Appendix 4 of 1988), as a
+# note under the levels; NULL for the other systems.
+.sk_fao_edition_note <- function(res) {
+  fel <- tryCatch(soilKey:::.fao_edition_lines(res), error = function(e) NULL)
+  if (is.null(fel) || !length(fel)) return(NULL)
+  shiny::div(class = "sk-fao-edition small text-muted mt-2",
+             shiny::strong(i18n("classify.fao_crosswalk")), " ",
+             paste(fel, collapse = " "))
 }
 
 # The approximate equivalents of a Chinese order (CST 2001, Tables 4.2 and

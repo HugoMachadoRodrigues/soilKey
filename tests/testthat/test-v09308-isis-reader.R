@@ -287,6 +287,6 @@ test_that("cracks, slickensides, inclusions, plinthite and g-horizon mottles", {
   # gilgai alone, with no cracking recorded
   q <- .v09308_profile2(); q$cracking <- NULL
   h2 <- as.data.frame(isis_profile_to_pedon(q)$horizons)
-  expect_equal(h2$cracks_width_cm[1], 0.5)
+  expect_equal(h2$cracks_width_cm[1], 1)    # gilgai: cracks of 1 cm or more (v0.9.392, Hugo, 2026-11-10)
   expect_true(any(grepl("gilgai", isis_profile_to_pedon(q)$provenance$notes)))
 })
