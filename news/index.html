@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.392</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.393</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,29 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.393" id="soilkey-09393-2026-11-10">soilKey 0.9.393 (2026-11-10)<a class="anchor" aria-label="anchor" href="#soilkey-09393-2026-11-10"></a></h2>
+<div class="section level3">
+<h3 id="south-african-classification-the-afsp-benchmark-0-9-393">South African classification 1991: the AfSP benchmark<a class="anchor" aria-label="anchor" href="#south-african-classification-the-afsp-benchmark-0-9-393"></a></h3>
+<p>A new script, <code>inst/benchmarks/za1991_afsp.R</code>, compares <code><a href="../reference/classify_za1991.html">classify_za1991()</a></code> with the local classification of the South African profiles of the Africa Soil Profiles database (AfSP 1.2, ISRIC; field <code>LocalCls</code> of <code>AfSP012Qry_Profiles.dbf</code>). The script is offline: it reads the AfSP DBF files from the directory given as its first argument, the option <code>soilKey.afsp_dir</code> or the environment variable <code>SOILKEY_AFSP_DIR</code>, stops (from R) or exits cleanly (as a script) when there is none, and downloads nothing. AfSP is CC BY-NC; no profile or label of it is shipped with soilKey, and the tests use synthetic labels and profiles only. Every classification is unchanged.</p>
+<p>The labels are read by a new internal reader, <code>.za_match_label()</code> in <code>R/za-benchmark.R</code>, as Hugo decided (2026-11-10):</p>
+<ul><li>
+<strong>The era from the shape of the label, not the survey year.</strong> A binomial <code>"&lt;Form&gt; &lt;Series&gt;"</code> (with or without a comma after the form) is a label of 1977 and is scored at the form level as its 1991 namesake; <code>"&lt;Form&gt; Form, &lt;Family&gt; Family"</code> is a label of 1991; a form named alone is reported apart. The report gives the agreement overall and by era, and notes that some forms were redefined in 1991.</li>
+<li>
+<strong>Exact names only.</strong> The form word is matched to a form name of <code>inst/rules/za1991/key.yaml</code> and the family to a family name of that form in <code>families.yaml</code> (case ignored). The script’s explicit list of misspellings (Avanlon, Houhoek, Houwbroek and Kraanskop, with or without a comma) is tried only when a label is not read as it stands, and such matches are flagged; anything else is unmatched, never guessed.</li>
+<li>
+<strong>No form counts as a disagreement</strong> in the main figure, as in the other benchmarks. The report also gives the agreement among the profiles soilKey decides, the coverage, the provisional share among them, and how often the label’s form is among the forms left undecided (the <code>forms:&lt;code&gt;</code> entries of <code>provisional_because</code>).</li>
+<li>
+<strong>Families</strong> are scored only where a 1991 label names a family of its form and soilKey reaches a family; the series of 1977 are not scored.</li>
+</ul><p>The run of 2026-11-10 on AfSP 1.2: 659 South African profiles, 646 labelled, all 646 read (4 by the listed misspellings), 641 scored (5 labelled profiles have no WRB 2006 group and are not built by <code><a href="../reference/load_afsp_pedons.html">load_afsp_pedons()</a></code>). 624 are binomials of 1977, 13 labels of 1991 and 4 forms named alone; 108 of the binomials were surveyed in 1991 or later, and all 13 labels in the 1991 shape come from surveys before 1991 (converted to the 1991 system later, by the compilers).</p>
+<ul><li>Form: 122 of 641 agree, 19.0 % (Wilson 95 % 16.2-22.3); 1977 binomials 19.6 % (16.6-22.8, n 624), 1991 labels 0 of 13, forms named alone 0 of 4.</li>
+<li>soilKey names a form for 196 profiles (coverage 30.6 %, 27.1-34.3), and among those the form agrees for 62.2 % (55.3-68.7); 121 of the 196 are provisional (104 at the form level). 442 stop with forms undecided, and the label’s form is among them for 316 (71.5 %); 3 get no form at all (nothing undecided).</li>
+<li>Candidates: the lists of forms left undecided hold a median of 8.5 forms. With the labels shuffled across the 442 profiles that stop (1000 permutations, fixed seed) the hit rate is 40.9 % (95 % range 38.0-44.1); by size of the list, 56 of 103 with 1-5 forms (54.4 %), 116 of 158 with 6-20 (73.4 %), none with 21-40, 144 of 181 with over 40 (79.6 %). Not in the rate: 8 of the 74 decided disagreements have the label’s form among the forms left undecided before the one assigned.</li>
+<li>Hutton, the largest class, agrees for 84 of 185 labels (84 of the 93 soilKey decides).</li>
+<li>Family: 10 of the 13 labels of 1991 name a family of their form; soilKey reaches a family for 2 of them, and neither agrees (in both the form differs). Of the 3 family names not read, 2 (Glengazi, Cleveland) are 1977 series names and 1 (Greendal) looks like a misspelling of Greendale (Rg1000); it is not read (no family misspelling list, Hugo’s decision).</li>
+</ul><p>The main loss is the profiles that stop: most AfSP descriptions do not record what the key needs to separate the forms (the matrix colour of the lower B, cutans, slickensides, signs of wetness). Among the decided disagreements, the most frequent are a humic A where the label has an orthic A (Hutton to Inanda 8, Clovelly to Magwa 6, Griffin to Kranskop 6), Oakleaf read as Hutton (6), Bonheim keyed as Inhoek (5; in 4 of them Bonheim, tested before, was left undecided), and a thin, carbon-poor A on hard rock read as a truncated profile, Mispah to Clovelly (5).</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.392" id="soilkey-09392-2026-11-09">soilKey 0.9.392 (2026-11-09)<a class="anchor" aria-label="anchor" href="#soilkey-09392-2026-11-09"></a></h2>
 <div class="section level3">
