@@ -5,16 +5,19 @@
 test_that("declared values are read as old, present or undeclared", {
   skip_on_cran()
   dn <- function(v) .desg_declared_notation(list(designation_system = v))
-  for (v in c("asc", "ASC", "australian", "Field Handbook", "cpcs", "CPCS 1967", "french",
-              "fr", "fao1977", "FAO 1977", "usda1951", "ssm1951", "usda1962", "br_pre1988",
-              "BR pre-1988"))
+  for (v in c("asc", "ASC", "asc3", "asc4", "ASC 2021", "asc2009", "australian", "Field Handbook",
+              "cpcs", "CPCS 1967", "french", "fr", "fao1974", "fao1977", "FAO 1977", "usda1951",
+              "ssm1951", "Soil Survey Manual 1951", "usda1962", "ssm1962", "soilsurveymanual1962",
+              "br_pre1988", "BR pre-1988"))
     expect_identical(dn(v), "old", info = v)
   for (v in c("fao", "fao2006", "FAO 2006", "wrb", "WRB 2022", "wrb2014", "usda", "kst",
               "sibcs", "cssc", "nzsc", "New Zealand", "scsj", "za", "ka5", "KA 6", "kidpr",
-              "ru", "rp2008", "afes", "dbg-wrb"))
+              "ru", "rp2008", "afes", "kst13", "usda1975", "kst1975", "soviet1977", "russian1977",
+              "sat1991", "South Africa", "dbg", "bodensystematik", "fao1988"))
     expect_identical(dn(v), "present", info = v)
   for (v in list(NULL, NA, NA_character_, "", "NA", "none", "unknown", "SA", "RSA",
-                 "nz_legacy", "NZ legacy", "kanadisch", "xyz"))
+                 "nz_legacy", "NZ legacy", "kanadisch", "xyz", "dbg-wrb", "zambia", "satellite",
+                 "fao-ish notation", "ascii"))
     expect_true(is.na(dn(v)), info = paste(v))
   expect_true(is.na(.desg_declared_notation(NULL)))
   expect_true(is.na(.desg_declared_notation("asc")))
@@ -43,12 +46,15 @@ test_that("a declared present notation reads no A2, B3 or (B), whatever the mark
   expect_false(.desg_old_notation(d, site = fao))
   expect_identical(.desg_master(d, site = fao), d)
   expect_identical(.desg_master(d)[c(2L, 5L)], c("E", "BC"))
-  # (B) is read Bi only in an older or undeclared notation
-  p <- c("Ah", "Bw", "(Bw)R", "3(Bb)C")
-  expect_identical(.desg_master(p, site = fao), p)
-  expect_identical(.desg_master(p)[3:4], c("BiwR", "BibC"))
+  # (B) is read Bi only in an older or undeclared notation; in a declared
+  # present notation the parentheses are dropped
+  p <- c("Ah", "Bw", "(Bw)R", "3(Bb)C", "(B)km", "(B)p")
+  expect_identical(.desg_master(p, site = fao), c("Ah", "Bw", "BwR", "BbC", "Bkm", "Bp"))
+  expect_identical(.desg_master(p)[3:6], c("BiwR", "BibC", "Bikm", "Bip"))
+  expect_identical(.desg_master(p, site = list(designation_system = "cpcs"))[3:6],
+                   c("BiwR", "BibC", "Bikm", "Bip"))
   expect_identical(.desg_master(c("A", "(B)", "C"), site = list(designation_system = "sibcs")),
-                   c("A", "(B)", "C"))
+                   c("A", "B", "C"))
   # the material number is still taken off
   expect_identical(.desg_master(c("2Bt1", "IIBt"), site = fao), c("Bt1", "Bt"))
 })
@@ -90,16 +96,62 @@ test_that("the readers of one designation at a time take the profile and the sit
   # the plough reading (qualifiers of the WRB) and the cemented reading
   fao <- list(designation_system = "fao2006")
   expect_true(.wrb_plough_designation("(B)p"))
-  expect_false(.wrb_plough_designation("(B)p", site = fao))
+  expect_true(.wrb_plough_designation("(B)p", site = fao))
   expect_identical(.wrb_plough_designation(c("Ap", "A2"), profile = c("Ap", "A2", "B21"), site = fao),
                    c(TRUE, FALSE))
   h <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60), designation = c("Ah", "(B)km"))
   expect_identical(.wrb_cemented_limiting(h), c(FALSE, TRUE))
-  expect_identical(.wrb_cemented_limiting(h, site = fao), c(FALSE, FALSE))
-  # a profile whose single A2 is read with the B21 of another horizon
+  expect_identical(.wrb_cemented_limiting(h, site = fao), c(FALSE, TRUE))
+  # each designation is read with the whole profile and the site: the
+  # profile and site .desg_master() receives are recorded
+  seen <- new.env()
+  real <- .desg_master
+  local_mocked_bindings(.desg_master = function(d, profile = d, site = NULL) {
+    seen$profile <- c(seen$profile, list(profile)); seen$site <- c(seen$site, list(site))
+    real(d, profile = profile, site = site)
+  })
   h2 <- data.frame(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 80),
-                   designation = c("A1", "A2", "B21km"))
-  expect_identical(.wrb_cemented_limiting(h2), c(FALSE, FALSE, TRUE))
+                   designation = c("A1", "A2", "B21km/Cr"))
+  asc <- list(designation_system = "asc")
+  expect_identical(.wrb_cemented_limiting(h2, site = asc), c(FALSE, FALSE, FALSE))
+  expect_length(seen$profile, 3L)
+  for (pr in seen$profile) expect_identical(pr, c("A1", "A2", "B21km", "Cr"))
+  for (st in seen$site) expect_identical(st, asc)
+  seen$profile <- NULL; seen$site <- NULL
+  .wrb_plough_designation("A2", profile = c("A1", "A2", "B21"), site = asc)
+  expect_identical(seen$profile[[1L]], c("A1", "A2", "B21"))
+  expect_identical(seen$site[[1L]], asc)
+})
+
+test_that("every reader treats nz_legacy as it treats nzsc", {
+  skip_on_cran()
+  for (v in c("nz_legacy", "NZ legacy", "nz-legacy")) {
+    leg <- list(designation_system = v, country = "NZ"); nz <- list(designation_system = "nzsc", country = "NZ")
+    expect_identical(.nzsc_notation(c("A11", "Bw"), leg)$nz, .nzsc_notation(c("A11", "Bw"), nz)$nz)
+    expect_identical(.nzsc_notation(c("A11", "Bw"), leg)$ok, .nzsc_notation(c("A11", "Bw"), nz)$ok)
+    expect_identical(.scsj_notation(leg)$ok, .scsj_notation(nz)$ok)
+    expect_identical(.frozen_designation_pattern(leg), .frozen_designation_pattern(nz))
+    expect_identical(.cssc_notation(c("A", "Bf"), leg)$ok, .cssc_notation(c("A", "Bf"), nz)$ok)
+    expect_identical(.asc_notation(c("A1", "B21"), leg)$ok, .asc_notation(c("A1", "B21"), nz)$ok)
+    expect_identical(.cpcs_notation(c("A", "Bhf", "C"), leg), .cpcs_notation(c("A", "Bhf", "C"), nz))
+    x_leg <- list(site = leg); x_nz <- list(site = nz)
+    expect_identical(.f88_fao_notation(x_leg), .f88_fao_notation(x_nz))
+    # the CPCS reads f on a B of a New Zealand profile as iron, not frozen
+    a <- .cpcs_designations(c("A", "Bhf", "Bf", "C"), leg)
+    b <- .cpcs_designations(c("A", "Bhf", "Bf", "C"), nz)
+    expect_identical(a, b)
+    expect_false(any(a$frozen))
+    expect_true(all(a$fe[2:3]))
+  }
+})
+
+test_that("an ASC declaration with an edition is the Australian notation", {
+  skip_on_cran()
+  for (v in c("asc", "asc3", "asc4", "ASC 2021", "asc2009", "Australian Field Handbook"))
+    expect_true(.asc_notation(c("A1", "B2"), list(designation_system = v))$ok, info = v)
+  expect_false(.asc_notation(c("A1", "B2"), list(designation_system = "ascii"))$ok)
+  expect_false(.nzsc_notation(c("A1", "B2"), list(designation_system = "asc2021"))$ok)
+  expect_identical(.frozen_designation_pattern(list(designation_system = "asc2021")), "perma")
 })
 
 test_that("the NSD reader declares nz_legacy, read by the NZSC key as New Zealand", {

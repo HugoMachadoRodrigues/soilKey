@@ -158,7 +158,8 @@
   # frozen
   ds <- tolower(as.character((site %||% list())$designation_system %||% NA)[1L])
   ct <- toupper(trimws(as.character((site %||% list())$country %||% NA)[1L]))
-  other <- (!is.na(ds) && grepl("cssc|canad|nzsc|new zealand|^nz$|asc|austral|field handbook|nchs", ds)) ||
+  other <- (!is.na(ds) && (grepl("cssc|canad|nzsc|new zealand|^nz$|asc|austral|field handbook|nchs", ds) ||
+                            .nz_key_is_nz(.notation_key(ds)))) ||
     ((is.na(ds) || !nzchar(ds) || ds == "na") && !is.na(ct) &&
        ct %in% c("CA", "CAN", "CANADA", "NZ", "NZL", "NEW ZEALAND", "AU", "AUS", "AUSTRALIA"))
   if (other && !cpcs) {

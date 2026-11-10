@@ -79,6 +79,14 @@
 .ASC_ROLES <- c("O1", "O2", "P", "A1", "A2", "A3", "AB", "BA", "A/B", "B/A", "AC", "CA",
                 "B1", "B2", "B3", "BC", "CB", "B/C", "C/B", "C", "D", "R")
 
+# v0.9.395: the declared values of the Australian notation, compared as keys
+# (.notation_key()): "asc" with or without an edition number (asc3, asc4,
+# asc2009, asc2021) and the names of the Field Handbook (Hugo, 2026-11-10).
+.ASC_DECLARED_ALIASES <- c("australian", "fieldhandbook", "nchs", "australianfieldhandbook")
+.asc_key_is_asc <- function(key) {
+  !is.na(key) && (grepl("^asc[0-9]*$", key) || key %in% .ASC_DECLARED_ALIASES)
+}
+
 # Is a set of designations written in the Australian notation? Declared in
 # site$designation_system ("asc" or another notation), otherwise yes when a
 # master is followed directly by its subdivision digit (A1, A2, B21, B2t), or
@@ -90,7 +98,7 @@
   d <- gsub("\\s+", "", as.character(designation))
   d <- d[!is.na(d) & nzchar(d)]
   if (!is.na(declared) && nzchar(declared)) {
-    ok <- declared %in% c("asc", "australian", "field handbook", "nchs", "australian field handbook")
+    ok <- .asc_key_is_asc(.notation_key(declared))
     return(list(ok = ok, why = sprintf("declared: %s", declared)))
   }
   if (length(d) == 0L) return(list(ok = FALSE, why = "no designations"))

@@ -63,7 +63,7 @@
 .scsj_notation <- function(site = list()) {
   declared <- tolower(as.character(site$designation_system %||% NA)[1L])
   key <- gsub("[^a-z0-9]", "", declared)
-  if (!is.na(declared) && key %in% .SCSJ_OTHER_NOTATIONS)
+  if (!is.na(declared) && (key %in% .SCSJ_OTHER_NOTATIONS || .asc_key_is_asc(key) || .nz_key_is_nz(key)))
     return(list(ok = FALSE, fao = FALSE, why = sprintf("declared: %s", declared)))
   list(ok = TRUE, fao = !is.na(declared) && .cssc_fao_declared(declared),
        why = if (is.na(declared)) "Japanese or FAO/USDA notation" else sprintf("declared: %s", declared))
