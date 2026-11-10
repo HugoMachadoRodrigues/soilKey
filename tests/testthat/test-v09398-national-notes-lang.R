@@ -22,7 +22,7 @@ test_that("the FAO edition lines are in Portuguese in a Portuguese report", {
   expect_identical(l74, "Legenda Revisada (1988): FRu Humic Ferralsols (defini\u00e7\u00e3o alterada, Ap. 4 p. 125).")
   lx <- .fao_edition_lines(classify_fao1988(make_fao1988_example("LX"), on_missing = "silent"))
   expect_identical(lx, paste0("Legenda de 1974: nova em 1988, sem classe de 1974 (Ap. 4 p. 122); ",
-                              "[em parte La Albic Luvisols, um B \u00e1rgico com CTC abaixo de 24 cmol(+)/kg de argila]."))
+                              "[parte dos La Albic Luvisols, um B \u00e1rgico com CTC abaixo de 24 cmol(+)/kg de argila]."))
 })
 
 test_that("every condition of the crosswalk has its Portuguese", {
@@ -59,4 +59,34 @@ test_that("the result itself stays in English whatever the report language", {
   out <- paste(c(std, msg), collapse = "\n")
   expect_match(out, "Legend of 1974: Fo Orthic Ferralsols (renamed, App. 4 p. 125).", fixed = TRUE)
   expect_identical(getOption("soilKey.report_lang"), "pt")
+})
+
+test_that("every registry system has a short citation", {
+  skip_on_cran()
+  for (id in soilkey_systems()$id) {
+    v <- .system_get(id)$citation_short
+    expect_true(is.character(v) && length(v) == 1L && !is.na(v) && nzchar(trimws(v)), info = id)
+    expect_false(grepl("\n", v, fixed = TRUE), info = id)
+  }
+})
+
+test_that("a report does not repeat the CST correlation as a warning", {
+  skip_on_cran()
+  p <- make_cst2001_example("L4")
+  r <- classify_cst2001(p, on_missing = "silent")
+  # the result keeps its warning, in English
+  expect_true(any(startsWith(r$warnings, .CST_CORRELATION_NOTE)))
+  expect_false(any(startsWith(.report_warnings(r), .CST_CORRELATION_NOTE)))
+  expect_identical(.report_warnings(r), setdiff(r$warnings, r$warnings[startsWith(r$warnings, .CST_CORRELATION_NOTE)]))
+  for (lang in c("en", "pt")) {
+    f <- withr::local_tempfile(fileext = ".html")
+    report_html(p, file = f, lang = lang, systems = c("wrb2022", "cst2001"))
+    h <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    expect_false(grepl("Correlation (a note, never a class)", h, fixed = TRUE), info = lang)
+    expect_match(h, if (lang == "en") "Table 4.2: mostly Alfisols" else "Tabela 4.2: na maior parte Alfisols",
+                 fixed = TRUE)
+  }
+  # a result of another system keeps every warning
+  w <- classify_ka5(make_ka5_example("BB"), on_missing = "silent")
+  expect_identical(.report_warnings(w), as.character(w$warnings %||% character()))
 })

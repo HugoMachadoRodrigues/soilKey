@@ -230,9 +230,7 @@ pro_national_card <- function(res, label, edition = NULL, experimental = TRUE) {
 # in the session's language, so a note of the card reads as the rest of it
 # (v0.9.398).
 .sk_in_report_lang <- function(expr) {
-  old <- options(soilKey.report_lang = .sk_app_lang())
-  on.exit(options(old), add = TRUE)
-  force(expr)
+  soilKey:::.in_report_lang(.sk_app_lang(), expr)
 }
 
 # The other edition of the FAO-Unesco legend (Appendix 4 of 1988), as a

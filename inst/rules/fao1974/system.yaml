@@ -26,6 +26,7 @@ edition: "Soil Map of the World 1:5 000 000, Vol. I Legend, Unesco Paris 1974"
 citation: >
   FAO-Unesco (1974). Soil Map of the World 1:5 000 000. Volume I, Legend.
   Unesco, Paris.
+citation_short: "FAO-Unesco (1974). Soil Map of the World 1:5 000 000, Volume I, Legend. Unesco, Paris."
 version: "The printed text of 1974 (PDF page = printed + 7 up to p. 41, + 6 from the key on)"
 implementation_status: "soilKey v0.9.389 -- the 26 major soil groups of the key (pp. 43-53), in the key's order, on the diagnostic horizons (v0.9.387) and properties (v0.9.388) of 1974 read on the data; no residual group (a soil no gate takes is [not classified], Q5); the 106 soil units under their groups, in the key's order, each group closed by its Other ... residual (the Lithosols, Rankers and Rendzinas are single units)"
 source: |

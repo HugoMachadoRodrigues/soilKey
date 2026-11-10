@@ -273,9 +273,9 @@ report_pdf <- function(x,
                paste(res$missing_data, collapse = ", "),
                "\n\n")
       else "",
-    if (length(res$warnings %||% character()) > 0)
+    if (length(.report_warnings(res)) > 0)
       paste0(sprintf("### %s\n\n", .report_msg("report.warnings")),
-               paste(vapply(res$warnings, function(w)
+               paste(vapply(.report_warnings(res), function(w)
                  sprintf("- %s", w),
                  character(1)), collapse = "\n"),
                "\n\n")

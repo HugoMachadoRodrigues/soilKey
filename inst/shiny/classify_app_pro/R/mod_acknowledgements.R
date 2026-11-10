@@ -19,15 +19,26 @@
     shiny::tags$span(class = "sk-ack-contrib", contribution))
 }
 
+# The reference of a registry system for the Thanks tab: its short citation
+# (authors, year, title, publisher), else its full citation, else its name;
+# whitespace folded. The report keeps the full citation.
+.ack_reference <- function(e, name) {
+  for (v in list(e$citation_short, e$citation)) {
+    v <- if (is.character(v) && length(v) == 1L && !is.na(v)) trimws(gsub("[[:space:]]+", " ", v)) else ""
+    if (nzchar(v)) return(v)
+  }
+  name
+}
+
 # v0.9.398: the national systems, one item per registry entry, in registry
-# order: the book (the registry's citation, whitespace folded) and what
-# soilKey reads from it, with the experimental pill while the registry says so.
-# A system added to the registry is credited here without a code change.
+# order: the book (.ack_reference()) and what soilKey reads from it, with the
+# experimental pill while the registry says so. A system added to the
+# registry is credited here without a code change.
 .ack_national_items <- function() {
   nat <- .sk_national_systems()
   lapply(seq_len(nrow(nat)), function(i) {
     e <- tryCatch(soilKey:::.system_get(nat$id[i]), error = function(e) NULL)
-    cit <- trimws(gsub("[[:space:]]+", " ", e$citation %||% nat$name[i]))
+    cit <- .ack_reference(e, nat$name[i])
     shiny::tags$li(
       class = "sk-ack-item",
       shiny::tags$span(class = "sk-ack-lead", cit),

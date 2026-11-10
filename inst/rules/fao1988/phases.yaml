@@ -189,7 +189,7 @@ map_symbol:
     upper_cm: 30
     reads: "the clay and sand of the upper 30 cm, thickness-weighted (.fao_texture_upper30(); from the mineral surface under an organic layer, flagged)"
     classes:
-      - {code: "1", id: coarse, name: "Coarse textured", name_pt: "Textura grossa", criterion: "clay below 15 % and sand above 70 %"}
+      - {code: "1", id: coarse, name: "Coarse textured", name_pt: "Textura arenosa", criterion: "clay below 15 % and sand above 70 %"}
       - {code: "2", id: medium, name: "Medium textured", name_pt: "Textura média", criterion: "clay below 35 % and not coarse (sand up to 85 % with 15 % clay or more)"}
       - {code: "3", id: fine, name: "Fine textured", name_pt: "Textura fina", criterion: "clay above 35 %"}
   slope:

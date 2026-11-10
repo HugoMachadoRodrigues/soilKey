@@ -585,6 +585,11 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
        us_st_1999 = df(e$us_st_1999), wrb_1998 = df(e$wrb_1998))
 }
 
+# The start of the warning that carries the correlation in a result (English,
+# whatever the report language); the report leaves that warning out where its
+# own section shows the correlation (v0.9.398).
+.CST_CORRELATION_NOTE <- "Correlation (a note, never a class): "
+
 # The correlation of a result as lines for the report and the app ("US Soil
 # Taxonomy (1999), Table 4.2: mostly Histosols; partly Gelisols"); NULL for a
 # result without it. The words around the class names follow the report
@@ -912,8 +917,8 @@ classify_cst2001 <- function(pedon, rules = NULL,
   cr <- .cst_order_correlation(lv$code[1L])
   if (!is.null(cr)) {
     res$qualifiers$correlation_cst <- cr
-    notes <- c(notes, sprintf("Correlation (a note, never a class): %s",
-                              paste(.in_report_lang("en", .cst_correlation_lines(res)), collapse = " ")))
+    notes <- c(notes, paste0(.CST_CORRELATION_NOTE,
+                             paste(.in_report_lang("en", .cst_correlation_lines(res)), collapse = " ")))
   }
   res$warnings <- c(res$warnings, notes)
   if (inherits(pedon, "PedonRecord")) res$trace$horizons <- .cst_panel_trace(pedon)

@@ -39,10 +39,6 @@
   nm
 }
 
-.FAO_CW_RELATION <- c(same = "same name", renamed = "renamed", amended = "amended",
-                      renamed_amended = "renamed and amended", merged = "merged",
-                      split = "split", deleted = "deleted", new = "new")
-
 #' The correspondence between the FAO-Unesco legends of 1974 and 1988
 #'
 #' The official correspondence of Appendix 4 of the Revised Legend (FAO

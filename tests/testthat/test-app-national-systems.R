@@ -459,7 +459,7 @@ test_that("a CST card gives its equivalents in the session's language", {
                fixed = TRUE)
 })
 
-test_that("the Thanks tab credits every national system of the registry by its citation", {
+test_that("the Thanks tab credits every national system of the registry by its short citation", {
   skip_on_cran()
   .nat_skip_unless_app_deps()
   env <- .nat_app_env()
@@ -469,7 +469,7 @@ test_that("the Thanks tab credits every national system of the registry by its c
     nat <- env$.sk_national_systems()
     expect_match(html, env$i18n("thanks.s_national"), fixed = TRUE)
     for (id in nat$id) {
-      cit <- trimws(gsub("[[:space:]]+", " ", soilKey:::.system_get(id)$citation))
+      cit <- trimws(gsub("[[:space:]]+", " ", soilKey:::.system_get(id)$citation_short))
       expect_match(html, htmltools::htmlEscape(substr(cit, 1, 40)), fixed = TRUE, info = id)
       expect_match(html, htmltools::htmlEscape(env$i18n("thanks.c_national", env$.sk_system_label(id))),
                    fixed = TRUE, info = id)
@@ -477,4 +477,16 @@ test_that("the Thanks tab credits every national system of the registry by its c
     expect_identical(lengths(regmatches(html, gregexpr("sk-exp-badge", html))),
                      sum(nat$status == "experimental"))
   }
+})
+
+
+test_that("the Thanks tab falls back to the full citation, then to the name", {
+  skip_on_cran()
+  .nat_skip_unless_app_deps()
+  env <- .nat_app_env()
+  expect_identical(env$.ack_reference(list(citation_short = "A (2000). B.", citation = "Long."), "N"), "A (2000). B.")
+  expect_identical(env$.ack_reference(list(citation_short = "  ", citation = "Long\n  text."), "N"), "Long text.")
+  expect_identical(env$.ack_reference(list(citation_short = NULL, citation = ""), "N"), "N")
+  expect_identical(env$.ack_reference(NULL, "N"), "N")
+  expect_identical(env$.ack_reference(list(citation = NA_character_), "N"), "N")
 })

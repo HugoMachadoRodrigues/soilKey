@@ -26,6 +26,7 @@ citation: >
   FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend, with corrections
   and updates. World Soil Resources Report 60, FAO, Rome. Reprinted with updates
   as Technical Paper 20, ISRIC, Wageningen, 1997. ISBN 90-6672-057-3.
+citation_short: "FAO (1988). FAO/Unesco Soil Map of the World, Revised Legend. World Soil Resources Report 60. FAO, Rome."
 version: "Text of the 1997 ISRIC reprint (Hugo's decision Q4): the corrections of 1990 and the updates of 1997 cannot be told apart"
 implementation_status: "soilKey v0.9.386 -- the 28 major soil groupings of the key (ch. X, pp. 75-89), in the key's order, on the 16 diagnostic horizons (v0.9.382) and the 27 diagnostic properties (v0.9.383) read on the data, with the shared readers of v0.9.381; no residual grouping (a soil no gate takes is [not classified], Q5); and, since v0.9.385, the 153 soil units of the key under their groupings, in the key's order, each grouping closed by its Other ... residual; since v0.9.386, the 16 phases of ch. VIII (pp. 67-71) and the texture and slope classes of the map symbol (App. 2, p. 107) beside the unit, never changing it. The Legend of 1974 is the registry id fao1974 (v0.9.389)"
 source: |
