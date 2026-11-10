@@ -1118,9 +1118,13 @@
   cut <- .kidpr_cutans(x, i)
   # C1 (Hugo, 2026-11-10): clay films not recorded and soilKey's argic
   # horizon not holding is no evidence against cutans (S 31 asks no clay
-  # increase): undecided. Only here; .kidpr_cutans() is shared with other
-  # systems and stays as it is.
-  if (is.na(.clay_films_class(.kidpr_v(x, i, "clay_films_amount"))) && isFALSE(cut$passed))
+  # increase): undecided. Only the decision by argic is read so (its tag,
+  # and the layer not argic); the other refusals of .kidpr_cutans() (no
+  # peds, carbonate neoformations, outside the zone of the clay maximum)
+  # stand. Only here; .kidpr_cutans() is shared with other systems and stays
+  # as it is.
+  if (is.na(.clay_films_class(.kidpr_v(x, i, "clay_films_amount"))) && isFALSE(cut$passed) &&
+      "argic" %in% cut$tag && isFALSE(.kidpr_wrb_layer(x, "argic", i)))
     cut <- .za_r(NA, missing = "clay_films_amount", tag = cut$tag,
                  note = c(cut$note, "clay films not recorded: the pedocutanic B needs no clay increase, so argic not holding leaves the cutans undecided (C1)"))
   red <- .za_red(x, i)
@@ -2173,17 +2177,27 @@ lithocutanic_b_za <- function(pedon, layers = NULL) .za_predicate(pedon, "lithoc
   # neocarbonate B, directly over hard rock, a lithocutanic B or a dorbank,
   # is that B at the surface (the profile truncated), flagged. B1 (Hugo,
   # 2026-11-10): only when the layer is more than 100 mm thick
-  # (surface_b_thick, the limit of the lithosol rule); a thinner one is the
-  # orthic A (Mispah over hard rock)
+  # (surface_b_thick); a thinner one is not read as a B at the surface; the
+  # thickness not recorded, undecided (D)
   if (length(run) == 1L && identical(res[[run]]$route, "data")) {
     i <- run
     oc <- .za_num(x, i, "oc_pct")
     nx <- .kidpr_next(x, i)
     below <- if (is.na(nx)) NA_character_ else res[[nx]]$code
-    thick_ok <- isTRUE(x$thick[i] * 10 > .za_thv("surface_b_thick"))
-    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR")) && thick_ok) {
+    thick_ok <- x$thick[i] * 10 > .za_thv("surface_b_thick")
+    if (!is.na(oc) && oc < .za_thv("surface_b_oc") && isTRUE(below %in% c("HRK", "LCU", "DOR")) && !isFALSE(thick_ok)) {
       for (k in c("RAB", "YAB", "NCA")) {
         b <- .ZA_TESTS[[k]](x, i)
+        # D (Hugo, 2026-11-10): the thickness not recorded leaves the
+        # layer undecided between the orthic A and the B at the surface
+        if (isTRUE(b$passed) && is.na(thick_ok)) {
+          res[[i]]$code <- NA_character_; res[[i]]$candidates <- c("OA", k); res[[i]]$data_code <- NA_character_
+          res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc", "stand_in:surface_b_thick"))
+          res[[i]]$notes <- unique(c(sprintf("organic carbon %s %% over %s, thickness not recorded: the orthic A or a %s at the surface (B1), undecided",
+                                             format(oc), .za_label(below), .za_label(k)), b$note))
+          res[[i]]$missing <- c("top_cm", "bottom_cm")
+          break
+        }
         if (isTRUE(b$passed)) {
           res[[i]]$code <- k; res[[i]]$candidates <- character(0); res[[i]]$data_code <- k
           res[[i]]$tags <- unique(c(b$tag, "surface_b_low_oc", "stand_in:surface_b_oc", "stand_in:surface_b_thick"))

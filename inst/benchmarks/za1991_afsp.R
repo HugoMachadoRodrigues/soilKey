@@ -59,11 +59,14 @@
 #     scored.
 #   * The humic A of 1977 (A1, Hugo's decision of 2026-11-10): a second
 #     figure beside the main one, which is not changed. For a label from a
-#     survey before 1991, soilKey's humic form with a humic A of 450 mm or
-#     less is scored as its orthic counterpart (Inanda as Hutton, Magwa as
-#     Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf, Nomanci as
-#     Glenrosa; soilKey:::.za_humic_1977()): the humic A of 1977 had to be
-#     thicker than 450 mm, the thin one came in 1991. Flagged in the report.
+#     survey before 1991 or written as a 1977 binomial (a label with
+#     neither is not read so), soilKey's humic form with a humic A of 450
+#     mm or less is scored as its orthic counterpart (Inanda as Hutton,
+#     Magwa as Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf, Nomanci
+#     as Glenrosa; soilKey:::.za_humic_1977()): the humic A of 1977 had to
+#     be thicker than 450 mm, the thin one came in 1991. Lusiki is left out
+#     (no single orthic counterpart: Valsrivier or Swartland by what lies
+#     below). Flagged in the report.
 # =============================================================================
 
 # Misspellings of the AfSP labels (regular expression, case ignored =
@@ -217,8 +220,9 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
   d$cand_hit <- ifelse(d$scored & nzchar(d$candidates),
                        vapply(seq_len(nrow(d)), function(i)
                          d$form_code[i] %in% strsplit(d$candidates[i], " ", fixed = TRUE)[[1]], NA), NA)
-  # the humic A of 1977 (A1): only for labels from surveys before 1991
-  d$before_1991 <- !is.na(d$year) & d$year < 1991
+  # the humic A of 1977 (A1): labels from a survey before 1991 or in the
+  # 1977 binomial shape
+  d$before_1991 <- (!is.na(d$year) & d$year < 1991) | d$era %in% "1977"
   d$mapped_1977 <- d$scored & d$before_1991 & d$humic_thin
   d$form_1977 <- ifelse(d$mapped_1977, d$sk_form_1977, d$sk_form)
   d$agree_1977 <- ifelse(d$scored, !is.na(d$form_1977) & d$form_1977 == d$form_code, NA)
@@ -249,7 +253,7 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
   s77 <- sc
   s77$agree_form <- s77$agree_1977
   mp <- sc[sc$mapped_1977, , drop = FALSE]
-  h77res <- list(score = score_row("All, the humic A of 1977 for surveys before 1991", s77),
+  h77res <- list(score = score_row("All, the humic A of 1977 (surveys before 1991 or 1977 binomials)", s77),
                      mapped = nrow(mp), gained = sum(mp$agree_1977 & !mp$agree_form),
                      lost = sum(!mp$agree_1977 & mp$agree_form),
                      changes = if (nrow(mp)) {
@@ -435,10 +439,12 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
     s7 <- h7$score
     lines <- c(lines, "", "## Second figure: the humic A of 1977 (flagged)", "",
                paste("The key is not changed and the main figure above stands. The humic A of 1977 had to be thicker",
-                     "than 450 mm; the thin humic A came with the second edition (1991). Here, for labels from surveys",
-                     "before 1991, soilKey's humic form with a humic A of 450 mm or less is scored as its orthic",
-                     "counterpart (Inanda as Hutton, Magwa as Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf,",
-                     "Nomanci as Glenrosa). The organic carbon is not corrected."), "",
+                     "than 450 mm; the thin humic A came with the second edition (1991). Here, for labels from a survey",
+                     "before 1991 or written as a 1977 binomial (a label with neither is not read so), soilKey's humic",
+                     "form with a humic A of 450 mm or less is scored as its orthic counterpart (Inanda as Hutton,",
+                     "Magwa as Clovelly, Kranskop as Griffin, Sweetwater as Oakleaf, Nomanci as Glenrosa). Lusiki is",
+                     "left out: it has no single orthic counterpart (Valsrivier or Swartland by what lies below the",
+                     "pedocutanic B). The organic carbon is not corrected."), "",
                "| Labels | n | Agree | % | 95 % CI | Decided | Coverage % | Agree among decided | % decided | 95 % CI |",
                "|---|--:|--:|--:|---|--:|--:|--:|--:|---|",
                sprintf("| %s | %d | %d | %s | %s | %d | %s | %d | %s | %s |", s7$group, s7$n, s7$agree, f1(s7$pct),

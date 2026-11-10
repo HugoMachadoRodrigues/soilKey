@@ -1,10 +1,12 @@
-# v0.9.394: three readings of the South African classification of 1991 after
+# v0.9.394: four readings of the South African classification of 1991 after
 # the AfSP benchmark (Hugo's decisions of 2026-11-10): B1, a carbon-poor
 # surface layer over hard rock is a B at the surface only when more than
-# 100 mm thick; C1, clay films not recorded and soilKey's argic horizon not
-# holding leave the cutans of the pedocutanic B undecided; A1, the second
-# figure of the AfSP benchmark reads the humic A of 1977. Synthetic profiles
-# only; no AfSP profile or label is shipped.
+# 100 mm thick (thickness not recorded: undecided); C1, clay films not
+# recorded and soilKey's argic horizon not holding leave the cutans of the
+# pedocutanic B undecided; A1, the second figure of the AfSP benchmark reads
+# the humic A of 1977; M1, no dry colour and a moist value over 3 refuse
+# the melanic colour. Synthetic profiles only; no AfSP profile or label is
+# shipped.
 
 .L394 <- function(top, bottom, ...) {
   d <- list(top_cm = top, bottom_cm = bottom, munsell_hue_moist = "10YR", munsell_value_moist = 5,
@@ -64,7 +66,16 @@ test_that("B1: a carbon-poor surface layer over hard rock is a B only when more 
   r <- .cl394(yb(11))
   expect_identical(r$levels$code[1], "Cv")
   expect_true(r$qualifiers$za_truncated)
-  # with more carbon it stays the orthic A whatever the thickness
+  # D: the thickness not recorded leaves it undecided, the orthic A or the B
+  pd <- .P394(.L394(0, NA, designation = "A", munsell_value_moist = 5, munsell_chroma_moist = 6,
+                    munsell_value_dry = 6, munsell_chroma_dry = 6, oc_pct = 0.2),
+              .L394(NA, 30, designation = "R"))
+  fd <- identify_horizons(pd, "za1991")
+  expect_true(is.na(fd$code[1]))
+  expect_setequal(fd$candidates[[1]], c("OA", "YAB"))
+  expect_true(any(grepl("thickness not recorded", fd$notes[[1]], fixed = TRUE)))
+  expect_true(is.na(.form394(pd)))
+  # with more carbon it is not read as a B, whatever the thickness
   p <- .P394(.L394(0, 30, designation = "A", munsell_value_moist = 5, munsell_chroma_moist = 6,
                    munsell_value_dry = 6, munsell_chroma_dry = 6, oc_pct = 1), .L394(30, 50, designation = "R"))
   expect_identical(identify_horizons(p, "za1991")$code[1], "OA")
@@ -91,11 +102,21 @@ test_that("C1: clay films not recorded and argic not holding leave the pedocutan
   expect_identical(.form394(.P394(.melA(), .blkB(30, 150, clay_films_amount = "many"))), "Bo")
   # a clear clay increase: argic holds and still stands in for the cutans
   p2 <- .P394(.melA(clay_pct = 20, sand_pct = 60), .blkB(30, 150, clay_films_amount = NA, clay_pct = 45))
-  if (isTRUE(argic(p2)$passed)) {
-    r2 <- pcu(p2, 2)
-    expect_true(isTRUE(r2$passed))
-    expect_true(any(grepl("argic", r2$tag, fixed = TRUE)))
-  }
+  expect_true(isTRUE(argic(p2)$passed))
+  r2 <- pcu(p2, 2)
+  expect_true(isTRUE(r2$passed))
+  expect_true(any(grepl("argic", r2$tag, fixed = TRUE)))
+  # the other refusals of the cutans reader stand: carbonate neoformations
+  p3 <- .P394(.melA(), .blkB(30, 150, clay_films_amount = NA, secondary_carbonates_form = "pseudomycelium"))
+  expect_true(any(grepl("carbonate neoformations", soilKey:::.kidpr_cutans(soilKey:::.za_x(p3), 2)$note)))
+  expect_false(pcu(p3, 2)$passed)
+  # and outside the zone of the clay maximum of an argic horizon
+  p4 <- .P394(.melA(clay_pct = 15, sand_pct = 65), .blkB(30, 60, clay_films_amount = NA, clay_pct = 45),
+              .blkB(60, 150, clay_films_amount = NA, clay_pct = 30))
+  k4 <- soilKey:::.kidpr_cutans(soilKey:::.za_x(p4), 3)
+  expect_false(k4$passed)
+  expect_true(any(grepl("outside the zone of the clay maximum", k4$note)))
+  expect_false(pcu(p4, 3)$passed)
   # a weak structure is no pedocutanic B, recorded or not
   expect_false(pcu(.P394(.melA(), .blkB(30, 150, clay_films_amount = NA, structure_grade = "weak")), 2)$passed)
   # the shared reader of cutans is unchanged: argic not holding is still no cutans there
@@ -148,33 +169,36 @@ test_that("A1: the AfSP benchmark gives the second figure, the main figure uncha
   skip_if_not(file.exists(f))
   env <- new.env()
   sys.source(f, envir = env)
-  ex <- c("inanda", "inanda", "magwa", "hutton", "kranskop")
+  ex <- c("inanda", "inanda", "magwa", "hutton", "kranskop", "inanda")
   peds <- lapply(seq_along(ex), function(i) {
     p <- make_za1991_example(ex[i])
     p$site$id <- paste0("H", i)
     p
   })
-  labels <- data.frame(id = paste0("H", 1:5),
-                       label = c("Hutton Xseries", "Hutton Xseries", "Clovelly Xseries", "Hutton Xseries", "Kranskop Xseries"),
-                       year = c(1975L, 1999L, 1980L, 1980L, 1985L), stringsAsFactors = FALSE)
+  labels <- data.frame(id = paste0("H", 1:6),
+                       label = c("Hutton Xseries", "Hutton Form, Lillieburn Family", "Clovelly Xseries", "Hutton Xseries",
+                                 "Kranskop Xseries", "Hutton Xseries"),
+                       year = c(1975L, 1999L, 1980L, 1980L, 1985L, 1999L), stringsAsFactors = FALSE)
   out <- tempfile(fileext = ".md")
   b <- env$za1991_afsp_benchmark(pedons = peds, labels = labels, out = out, verbose = FALSE)
   a <- b$score[b$score$group == "All", ]
   # main figure: the Hutton and the Kranskop examples agree
-  expect_identical(c(a$n, a$agree, a$decided), c(5L, 2L, 5L))
+  expect_identical(c(a$n, a$agree, a$decided), c(6L, 2L, 6L))
   h <- b$humic_1977
-  # H1 (1975) and H3 (1980) are read as Hutton and Clovelly and agree; H2 is
-  # surveyed in 1999 and not read so; H5 (1985) Kranskop is read as Griffin
-  # and no longer agrees with its Kranskop label
-  expect_identical(c(h$mapped, h$gained, h$lost), c(3L, 2L, 1L))
-  expect_identical(c(h$score$n, h$score$agree, h$score$decided), c(5L, 3L, 5L))
+  # H1 (1975) and H3 (1980) are read as Hutton and Clovelly and agree; H6 is
+  # surveyed in 1999 but written as a 1977 binomial, read so and agrees; H2
+  # is neither (a 1991 label of 1999) and is not read so; H5 (1985) Kranskop
+  # is read as Griffin and no longer agrees with its Kranskop label
+  expect_identical(c(h$mapped, h$gained, h$lost), c(4L, 3L, 1L))
+  expect_identical(c(h$score$n, h$score$agree, h$score$decided), c(6L, 4L, 6L))
   rec <- b$records
   expect_identical(rec$form_1977[rec$id == "H2"], "[Ia]")
   expect_identical(rec$form_1977[rec$id == "H5"], "Gf")
+  expect_identical(rec$form_1977[rec$id == "H6"], "Hu")
   expect_false(rec$agree_1977[rec$id == "H5"])
   md <- readLines(out)
   expect_true(any(grepl("^## Second figure: the humic A of 1977 \\(flagged\\)", md)))
-  expect_true(any(grepl("^Profiles read so: 3; agreement gained 2, lost 1\\.", md)))
+  expect_true(any(grepl("^Profiles read so: 4; agreement gained 3, lost 1\\.", md)))
   expect_false(any(grepl("[^\\x01-\\x7F]", md, perl = TRUE)))
 })
 

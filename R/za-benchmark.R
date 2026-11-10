@@ -139,6 +139,8 @@
 # the humic A of 1977 as thicker than 450 mm. For the second figure of the
 # AfSP benchmark, a humic form whose humic A is 450 mm thick or less
 # (humic_thick) is read as its orthic counterpart. The key is not changed.
+# Lusiki (humic A / pedocutanic B) is left out: it has no single orthic
+# counterpart (Valsrivier or Swartland by what lies below the B).
 .ZA_HUMIC_ORTHIC <- c(Kp = "Gf", Ma = "Cv", "[Ia]" = "Hu", Sr = "Oa", No = "Gs")
 
 # The form of a result of classify_za1991() read with the humic A of 1977:
