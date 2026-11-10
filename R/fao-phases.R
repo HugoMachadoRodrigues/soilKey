@@ -481,13 +481,14 @@
 }
 
 # TRUE when the phase is not shown for the soil assigned, NA when it is not
-# shown for a candidate, FALSE otherwise.
-.f88ph_excluded <- function(rule, asg) {
+# shown for a candidate, FALSE otherwise. `glen`: the length of the group
+# code at the head of a unit code (2 in 1988, "LVx"; 1 in 1974, "Lc").
+.f88ph_excluded <- function(rule, asg, glen = 2L) {
   if (is.null(rule)) return(FALSE)
   gs <- as.character(unlist(rule$groupings)); us <- as.character(unlist(rule$units))
   if (asg$grouping %in% gs || asg$unit %in% us) return(TRUE)
   cg <- asg$cand_groupings[asg$cand_groupings %in% gs]
-  cu <- asg$cand_units[asg$cand_units %in% us | substr(asg$cand_units, 1L, 2L) %in% gs]
+  cu <- asg$cand_units[asg$cand_units %in% us | substr(asg$cand_units, 1L, glen) %in% gs]
   cand <- c(if (length(cg)) paste0("major_groups:", cg), if (length(cu)) paste0("units:", cu))
   if (length(cand)) return(structure(NA, candidates = cand))
   FALSE
@@ -563,6 +564,152 @@
   rownames(out) <- NULL
   out
 }
+
+# =============================================================================
+# v0.9.390 -- the phases of the FAO-Unesco Legend of 1974 (Soil Map of the
+# World, Vol. I, Unesco Paris), pp. 5-7, and the texture and slope classes of
+# its map symbol (pp. 4-5), in inst/rules/fao1974/phases.yaml. Twelve
+# phases: stony, lithic, petric, petrocalcic, petrogypsic, petroferric,
+# phreatic, fragipan, duripan, saline, sodic and cerrado (the list of p. 5
+# prints "stony lithic" without a comma). The readers of 1988 above run on
+# the 1974 context where the two texts define the same phase (lithic,
+# petroferric, fragipan, duripan; the saline and sodic numbers; the petric
+# phase is the skeletic reader with its own depth of 100 cm); the stony,
+# petrocalcic, petrogypsic, phreatic and cerrado phases are read here. Not
+# shown: lithic for the Lithosols, saline for the Solonchaks, sodic for the
+# Solonetz (pp. 6-7). The conventions are those of 1988.
+# =============================================================================
+
+.fao74_phase_rules <- function() {
+  if (is.null(.f88ph_cache$rules74)) {
+    f <- system.file("rules", "fao1974", "phases.yaml", package = "soilKey")
+    .f88ph_cache$rules74 <- yaml::read_yaml(f)
+  }
+  .f88ph_cache$rules74
+}
+
+# Stony (p. 5): the condition of the rudic phase of 1988, recorded as
+# rudic_recorded; not recorded, absent.
+.f74ph_stony <- function(x, a) {
+  r <- .f88_site_lgl(x, "rudic_recorded")
+  if (is.na(r)) return(.f88ph_ans(FALSE, flags = "stony_not_recorded_absent"))
+  .f88ph_ans(r, flags = "rudic_recorded_for_stony")
+}
+
+.f74ph_lithic <- function(x, a) .f88ph_lithic(x, a)
+.f74ph_petric <- function(x, a) .f88ph_skeletic(x, a)
+.f74ph_petroferric <- function(x, a) .f88ph_petroferric(x, a)
+.f74ph_fragipan <- function(x, a) .f88ph_fragipan(x, a)
+.f74ph_duripan <- function(x, a) .f88ph_duripan(x, a)
+.f74ph_saline <- function(x, a) .f88ph_salic(x, a)
+.f74ph_sodic <- function(x, a) .f88ph_sodic(x, a)
+
+# Petrocalcic and petrogypsic (p. 6): the cemented calcic or gypsic horizon
+# of the shared reader (.f88_hz_petro(): Soil Taxonomy's horizon, the
+# petrocalcic and petrogypsic horizons of 1988), or a pan recorded as
+# calcrete / petrocalcic (gypcrete / petrogypsic), flagged; its top within
+# 100 cm.
+.f74ph_petro <- function(x, a, kind) {
+  if (!x$n) return(.f88ph_ans(FALSE))
+  v <- .f88_member(x, .f88_hz_petro(x, kind)$units)
+  pan <- .f88_chr(x, "pan_type")
+  re <- if (kind == "calcic") "calcrete|petrocalcic" else "gypcrete|petrogypsic"
+  vp <- !is.na(pan) & grepl(re, pan) & !(v %in% TRUE)
+  v[vp] <- TRUE
+  flag <- ifelse(vp, paste0("pan_type_petro", kind), NA_character_)
+  .f88ph_within(x, v, a$within_cm, flags = flag,
+                missing = if (kind == "calcic") c("caco3_pct", "cementation_class") else c("caso4_pct", "cementation_class"))
+}
+.f74ph_petrocalcic <- function(x, a) .f74ph_petro(x, a, "calcic")
+.f74ph_petrogypsic <- function(x, a) .f74ph_petro(x, a, "gypsic")
+
+# Phreatic (p. 6): a groundwater table between 300 and 500 cm, both ends
+# included (soilKey's reading); not recorded, undecided. The text's "not
+# normally reflected in the morphology" describes the depth, not a test.
+.f74ph_phreatic <- function(x, a) {
+  gw <- .f88ph_site_num(x, "groundwater_depth_cm")
+  .f88ph_ans(if (is.na(gw)) NA else gw >= a$min_cm && gw <= a$max_cm, missing = "groundwater_depth_cm")
+}
+
+# Cerrado (p. 7): the vegetation of the site (vegetation, else land_cover)
+# naming cerrado; another vegetation recorded rules it out; not recorded,
+# absent.
+.f74ph_cerrado <- function(x, a) {
+  v <- .f88ph_site_txt(x, "vegetation")
+  if (is.na(v)) v <- .f88ph_site_txt(x, "land_cover")
+  if (is.na(v)) return(.f88ph_ans(FALSE, flags = "vegetation_not_recorded_absent"))
+  .f88ph_ans(grepl("cerrad", v))
+}
+
+# The texture class of the upper 30 cm with the classes of 1974 (p. 5).
+.f74ph_texture <- function(x, m) {
+  t <- .fao_texture_upper30(x$h, "1974", depth = m$texture$upper_cm)
+  cls <- Find(function(k) identical(k$id, t$value), m$texture$classes)
+  list(code = if (is.null(cls)) NA_character_ else cls$code, class = cls,
+       flags = t$flags, missing = t$missing,
+       basis = if (is.null(cls)) "" else sprintf("clay %.1f %%, sand %.1f %% in the upper %d cm",
+                                                t$clay, t$sand, as.integer(m$texture$upper_cm)))
+}
+
+# The phases of a pedon and its classify_fao(edition = "1974") result: the
+# data.frame of .fao88_phases(), with the 12 phases of 1974 and the classes
+# of its map symbol.
+.fao74_phases <- function(pedon, res) {
+  rules <- .fao74_phase_rules()
+  x <- .f74_ctx(pedon)
+  asg <- .f88ph_assigned(res)
+  ans <- list()
+  for (ph in rules$phases) {
+    id <- ph$id
+    fun <- get(paste0(".f74ph_", id), mode = "function")
+    ans[[id]] <- tryCatch(fun(x, ph),
+      error = function(e) .f88ph_ans(NA, flags = sprintf("phase_not_read: %s", conditionMessage(e)),
+                                     note = sprintf("not read: %s", conditionMessage(e))))
+  }
+  rows <- lapply(rules$phases, function(ph) {
+    a <- ans[[ph$id]]
+    ex <- .f88ph_excluded(ph$not_shown_for, asg, glen = 1L)
+    crit <- a$value
+    present <- if (isFALSE(crit) || isTRUE(ex)) FALSE
+               else if (isTRUE(crit) && isFALSE(ex)) TRUE else NA
+    status <- if (isTRUE(present)) "present"
+              else if (isTRUE(ex) && !isFALSE(crit)) "not shown"
+              else if (isFALSE(present)) "absent" else "undecided"
+    data.frame(kind = "phase", code = ph$id, name = ph$name, name_native = ph$name,
+               name_pt = ph$name_pt, status = status, present = present, criterion = crit,
+               page = as.character(ph$page), basis = ph$criterion,
+               flags = paste(a$flags, collapse = "; "),
+               missing = paste(if (is.na(present))
+                                 unique(c(a$missing, if (isTRUE(crit)) attr(ex, "candidates")))
+                               else character(0), collapse = "; "),
+               layers = paste(sort(unique(a$layers)), collapse = "; "),
+               note = paste(c(a$note, if (is.na(present) && isTRUE(crit) && length(attr(ex, "candidates")))
+                 "not shown for a candidate unit tested before the one assigned"), collapse = "; "),
+               stringsAsFactors = FALSE)
+  })
+  m <- rules$map_symbol
+  tex <- if (x$n) .f74ph_texture(x, m)
+         else list(code = NA_character_, flags = character(0), missing = "clay_pct", basis = "")
+  for (k in list(list("texture_class", tex), list("slope_class", .f88ph_slope(x, m)))) {
+    r <- k[[2L]]
+    ok <- !is.na(r$code)
+    rows[[length(rows) + 1L]] <- data.frame(
+      kind = k[[1L]], code = r$code,
+      name = if (ok) r$class$name else NA_character_,
+      name_native = if (ok) r$class$name else NA_character_,
+      name_pt = if (ok) r$class$name_pt else NA_character_,
+      status = if (ok) "present" else "undecided", present = if (ok) TRUE else NA,
+      criterion = if (ok) TRUE else NA, page = as.character(m$page),
+      basis = if (ok) sprintf("%s (%s)", r$class$criterion, r$basis) else "",
+      flags = paste(r$flags, collapse = "; "),
+      missing = paste(if (ok) character(0) else r$missing, collapse = "; "),
+      layers = "", note = "", stringsAsFactors = FALSE)
+  }
+  out <- do.call(rbind, rows)
+  rownames(out) <- NULL
+  out
+}
+
 
 # The lines print() and the reports show for phases read three-valued (the
 # FAO-Unesco legend): the phases present, those undecided, those not shown

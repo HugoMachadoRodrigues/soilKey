@@ -797,3 +797,35 @@ readings:
     page: "74 pp. 45, 47, 51-52"
     version: "0.9.389"
     reading: "Ochric Andosols: a smeary consistence within 100 cm or a weighted texture of silt loam or finer over 0-100 cm; with no smeary record the smeary item is undecided, as Hugo decided for the Vitric Andosols of 1988. Placic Podzols: a thin iron pan whose top lies above the base of the spodic B ('in or over'). Humic, Ferric and Leptic Podzols read as the Carbic, Ferric and Cambic Podzols of 1988 (dispersed organic matter that does not turn redder on ignition, Q23; free iron / carbon of 6 in every layer of the B; no albic E or a thin, discontinuous one and no h in a designation of the B). Humic Ferralsols and Nitosols: a base saturation below 50 % in a part of the B within 100 or 125 cm and an umbric A or a high organic matter content in the B (high_om_b_fao74()); Humic Acrisols: an umbric A or the high organic matter of the Acrisols (1.5 % in the upper B or 1.35 % over 100 cm). The Acric CEC is read in some part of the oxic B within 125 cm (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+
+  # The readings of the phases of 1974 and its map symbol (0.9.390).
+  - topic: "The phases of 1974 beside the unit; the decisions applied"
+    edition: [1974]
+    page: "74 pp. 4-7, 9"
+    version: "0.9.390"
+    reading: "The 12 phases of pp. 5-7 (stony, lithic, petric, petrocalcic, petrogypsic, petroferric, phreatic, fragipan, duripan, saline, sodic, cerrado; 'stony lithic' of p. 5 read as two phases, default 20) are given in $phases of the classify_fao(edition = '1974') result, beside the unit, each three-valued (present, absent, undecided, or not shown); they never change the unit. Field-only phases (stony, cerrado) are absent when not recorded, with no substitute threshold; a measurement not recorded (ECe, ESP, the water table) leaves its phase undecided (Q25, default 16). The fragipan, duripan and petroferric phases read the readers of the same phases of 1988 (soilKey's USDA predicates with the depths of the legend, the WRB horizons only as stand-ins, flagged; default 17); the cerrado phase reads the vegetation recorded (Q25). The texture class (1, 2, 3) of the upper 30 cm with the classes of 1974 (p. 5) and the slope class (a, b, c) of the map symbol are given as two more rows (Q3); the climatic variants (p. 7) are not phases and are not given (Hugo, 2026-11-08)."
+  - topic: "Stony phase of 1974: the rudic record"
+    edition: [1974]
+    page: "74 p. 5; p. 69"
+    version: "0.9.390"
+    reading: "The stony phase is the condition the rudic phase of 1988 describes in the same words (fragments or outcrops that make mechanised equipment impracticable), read on the same site record, rudic_recorded, flagged rudic_recorded_for_stony; not recorded, absent. The 7.5 cm of p. 5 names gravel and is not a test (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Petric, petrocalcic and petrogypsic phases of 1974"
+    edition: [1974]
+    page: "74 pp. 5-6"
+    version: "0.9.390"
+    reading: "Petric: the reader of the skeletic phase of 1988 (40 % or more coarse fragments by volume over a run of layers 25 cm thick or more, not continuously cemented; coarse fragments not recorded, absent, flagged) with the depth of 1974, its top within 100 cm. Petrocalcic and petrogypsic: the cemented calcic and gypsic horizons of the shared reader (the petrocalcic and petrogypsic horizons of 1988, Soil Taxonomy's definition, which p. 5 cites), or a pan recorded as calcrete or petrocalcic (gypcrete or petrogypsic), flagged, the top within 100 cm (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Phreatic phase of 1974: 3 to 5 m"
+    edition: [1974]
+    page: "74 p. 6"
+    version: "0.9.390"
+    reading: "A groundwater_depth_cm from 300 to 500 cm, both ends included; not recorded, undecided. 'Not normally reflected in the morphology' describes that depth and is not tested (unlike 1988, where it is read as no gleyic properties), and the phase has no 'not shown for' rule in 1974 (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Cerrado phase: the vegetation record"
+    edition: [1974]
+    page: "74 p. 7"
+    version: "0.9.390"
+    reading: "The site's vegetation (else its land_cover) naming cerrado makes the phase present; another vegetation recorded rules it out; nothing recorded, absent, flagged (a field observation). No soil criterion is read (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Phases not shown in 1974"
+    edition: [1974]
+    page: "74 pp. 6-7"
+    version: "0.9.390"
+    reading: "As printed: the lithic phase is not shown for the Lithosols, the saline phase for the Solonchaks (all their units), the sodic phase for the Solonetz (all their units). Unlike the reading of 1988, no unit of another group is excluded (the 1974 text gives the reason for the group only). When an excluded group is only a candidate (undecided before the one assigned), a phase whose criterion is met is undecided, with the candidate in its missing column (soilKey's reading, for Hugo to confirm, 2026-11-09)."

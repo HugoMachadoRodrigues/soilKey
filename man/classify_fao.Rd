@@ -72,7 +72,11 @@ Solonetz, Greyzems, Chernozems, Kastanozems, Phaeozems, Podzoluvisols,
 Xerosols, Yermosols, Nitosols, Acrisols, Luvisols, Cambisols) and their
 106 soil units (the Lithosols, Rankers and Rendzinas are single units),
 on the diagnostic horizons and properties of 1974 read on the data; its
-registry id is \code{fao1974} (\code{\link{classify_fao1974}}).
+registry id is \code{fao1974} (\code{\link{classify_fao1974}}). Since
+v0.9.390 its result gives in \code{$phases} the 12 phases of 1974 (pp.
+5-7: stony, lithic, petric, petrocalcic, petrogypsic, petroferric,
+phreatic, fragipan, duripan, saline, sodic, cerrado) and the texture and
+slope classes of its map symbol (pp. 4-5), in the same form.
 }
 \details{
 The tests are three-valued: a measurement not recorded leaves its

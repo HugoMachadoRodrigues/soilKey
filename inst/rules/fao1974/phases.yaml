@@ -1,0 +1,168 @@
+# The phases of the FAO-Unesco Legend of the Soil Map of the World
+# (FAO-Unesco 1974, Vol. I Legend, Unesco Paris), pp. 5-7, and the texture
+# and slope classes of the map symbol (pp. 4-5). Read by R/fao-phases.R
+# (v0.9.390).
+#
+# Phases are subdivisions of the soil units by characteristics significant
+# for the use or management of the land, not diagnostic for the units
+# themselves (p. 5). soilKey gives them beside the unit, in `$phases` of the
+# classify_fao(edition = "1974") result, each three-valued (present, absent,
+# undecided) and never changing the unit (Hugo's decision Q25 of 2026-11-08).
+# A phase the text does not show for some units ("not shown for") is `not
+# shown` there, whatever its criterion gives. Field-only phases follow the
+# standing rule: a field observation not recorded is absent; a measurement
+# not recorded leaves the phase undecided. The list of p. 5 prints "stony
+# lithic" without a comma: two phases (plan section 12, item 34). The
+# climatic variants (p. 7) are not phases and are not given.
+#
+# Fields: id, name (as printed, with "phase"), name_pt (soilKey's gloss),
+# page, nature (horizon, site, field), criterion (soilKey's words; no text of
+# the book is shipped), the numbers (the same as the `phases` block of
+# thresholds.yaml), reads (what soilKey reads), not_shown_for (major soil
+# groups and soil units, by code). The petrocalcic and petrogypsic
+# horizons, the petroferric contact, the fragipan and the duripan take their
+# definitions from Soil Taxonomy (1974) (p. 5): the fragipan, duripan and
+# petroferric phases read the readers of the same phases of 1988 (soilKey's
+# USDA predicates with the depths of the legend, the pan kind recorded in
+# the field, the WRB horizons only as stand-ins, flagged; default 17), the
+# petrocalcic and petrogypsic phases the cemented calcic and gypsic horizons
+# of the 1988 reader (Soil Taxonomy's definition). The readings are in
+# readings.yaml.
+
+edition: "FAO-Unesco Soil Map of the World 1:5 000 000, Vol. I Legend, Unesco Paris 1974"
+page: "5-7"
+
+phases:
+  - id: stony
+    name: "Stony phase"
+    name_pt: "Fase pedregosa"
+    page: 5
+    nature: "field"
+    criterion: "Gravel, stones, boulders or rock outcrops in the surface layers or at the surface make mechanised agricultural equipment impracticable (gravel up to 7.5 cm in diameter; larger fragments are stones or boulders)."
+    gravel_max_cm: 7.5
+    reads: "rudic_recorded (the same condition, the rudic phase of 1988); not recorded, absent (no percentage stands in)."
+
+  - id: lithic
+    name: "Lithic phase"
+    name_pt: "Fase lítica"
+    page: 6
+    nature: "horizon"
+    criterion: "Continuous coherent and hard rock within 50 cm of the surface."
+    within_cm: 50
+    reads: "continuous_hard_rock_fao88() within 50 cm (the rock reader shared by both editions)."
+    not_shown_for:
+      groupings: [I]
+
+  - id: petric
+    name: "Petric phase"
+    name_pt: "Fase pétrica"
+    page: 6
+    nature: "horizon"
+    criterion: "A layer at least 25 cm thick, its upper part within 100 cm of the surface, of 40 % or more by volume of oxidic concretions, hardened plinthite, ironstone or other coarse fragments, not continuously cemented (that is the petroferric phase)."
+    coarse_min_pct_vol: 40
+    thickness_min_cm: 25
+    within_cm: 100
+    reads: "coarse_fragments_pct of each layer (not recorded, absent, flagged), as the skeletic phase of 1988; rock and strongly cemented or indurated layers are not part of it."
+
+  - id: petrocalcic
+    name: "Petrocalcic phase"
+    name_pt: "Fase petrocálcica"
+    page: 6
+    nature: "horizon"
+    criterion: "The upper part of a petrocalcic horizon (a calcic horizon continuously cemented or indurated by carbonates, dry fragments that do not slake in water, roots cannot enter) within 100 cm of the surface."
+    within_cm: 100
+    reads: "the cemented calcic horizon of the shared reader (.f88_hz_petro(), Soil Taxonomy's petrocalcic horizon); pan_type calcrete or petrocalcic, flagged."
+
+  - id: petrogypsic
+    name: "Petrogypsic phase"
+    name_pt: "Fase petrogípsica"
+    page: 6
+    nature: "horizon"
+    criterion: "The upper part of a petrogypsic horizon (a gypsic horizon so cemented with gypsum that dry fragments do not slake in water and roots cannot enter; gypsum usually above 60 %) within 100 cm of the surface."
+    within_cm: 100
+    reads: "the cemented gypsic horizon of the shared reader (.f88_hz_petro(), Soil Taxonomy's petrogypsic horizon); pan_type gypcrete or petrogypsic, flagged."
+
+  - id: petroferric
+    name: "Petroferric phase"
+    name_pt: "Fase petroférrica"
+    page: 6
+    nature: "horizon"
+    criterion: "The upper part of a petroferric horizon (a continuous indurated layer in which iron is an important cement and organic matter is absent or in traces; fractures, if any, 10 cm or more apart) within 100 cm of the surface."
+    within_cm: 100
+    reads: "the reader of the petroferric phase of 1988: petroferric_contact_usda() with iron shown, pan_type ironstone or ferricrete, a designation with m and v, c or s, flagged; layers cemented by carbonates, gypsum or silica excluded; the WRB petroplinthic horizon as a stand-in, flagged."
+
+  - id: phreatic
+    name: "Phreatic phase"
+    name_pt: "Fase freática"
+    page: 6
+    nature: "site"
+    criterion: "A groundwater table between 3 and 5 m from the surface."
+    min_cm: 300
+    max_cm: 500
+    reads: "groundwater_depth_cm from 300 to 500 (both ends included); not recorded, undecided."
+
+  - id: fragipan
+    name: "Fragipan phase"
+    name_pt: "Fase fragipã"
+    page: "6-7"
+    nature: "horizon"
+    criterion: "The upper level of a fragipan (loamy, dense, hard when dry, brittle when moist, dry fragments slake or fracture in water) within 100 cm of the surface."
+    within_cm: 100
+    reads: "the reader of the fragipan phase of 1988 (pan_type fragipan or a designation with x, flagged; the firm layers of fragipan_usda() with a second sign; the WRB fragic horizon as a stand-in, flagged)."
+
+  - id: duripan
+    name: "Duripan phase"
+    name_pt: "Fase duripã"
+    page: 7
+    nature: "horizon"
+    criterion: "The upper level of a duripan (cemented by silica; dry fragments do not slake in prolonged soaking in water or HCl) within 100 cm of the surface."
+    within_cm: 100
+    reads: "the reader of the duripan phase of 1988 (duripan_usda(); pan_type duripan or silcrete; a designation with qm, flagged; the WRB petroduric horizon as a stand-in, flagged)."
+
+  - id: saline
+    name: "Saline phase"
+    name_pt: "Fase salina"
+    page: 7
+    nature: "horizon"
+    criterion: "An electrical conductivity of the saturation extract above 4 mmhos/cm at 25 C in some horizon within 100 cm of the surface."
+    ece_gt_ds_m: 4
+    within_cm: 100
+    reads: "ec_dS_m (dS/m = mmhos/cm); ec_max_dS_m of 4 or less rules a layer out; not recorded, undecided."
+    not_shown_for:
+      groupings: [Z]
+
+  - id: sodic
+    name: "Sodic phase"
+    name_pt: "Fase sódica"
+    page: 7
+    nature: "horizon"
+    criterion: "More than 6 % saturation with exchangeable sodium in some horizon within 100 cm of the surface."
+    esp_gt_pct: 6
+    within_cm: 100
+    reads: "esp_pct, else na_cmol / cec_cmol x 100, flagged."
+    not_shown_for:
+      groupings: [S]
+
+  - id: cerrado
+    name: "Cerrado phase"
+    name_pt: "Fase cerrado"
+    page: 7
+    nature: "field"
+    criterion: "The cerrado vegetation (open tropical savanna of tall grasses and low contorted trees of central Brazil), an indicator of strongly depleted soils."
+    reads: "the vegetation or land_cover recorded at the site naming cerrado (another vegetation recorded rules it out); not recorded, absent."
+
+map_symbol:
+  page: "4-5"
+  texture:
+    upper_cm: 30
+    reads: "the clay and sand of the upper 30 cm, thickness-weighted (.fao_texture_upper30(edition = '1974'); from the mineral surface under an organic layer, flagged)"
+    classes:
+      - {code: "1", id: coarse, name: "Coarse textured", name_pt: "Textura grossa", criterion: "clay below 18 % and sand above 65 %"}
+      - {code: "2", id: medium, name: "Medium textured", name_pt: "Textura média", criterion: "clay below 35 % and not coarse (sand up to 82 % with 18 % clay or more)"}
+      - {code: "3", id: fine, name: "Fine textured", name_pt: "Textura fina", criterion: "clay above 35 %"}
+  slope:
+    reads: "slope_pct of the site (the dominant slope of the map unit, read on the profile's slope)"
+    classes:
+      - {code: "a", name: "Level to gently undulating", name_pt: "Plano a suave ondulado", max_pct: 8, criterion: "0 to 8 %"}
+      - {code: "b", name: "Rolling to hilly", name_pt: "Ondulado a forte ondulado", max_pct: 30, criterion: "more than 8 to 30 %"}
+      - {code: "c", name: "Steeply dissected to mountainous", name_pt: "Fortemente dissecado a montanhoso", criterion: "more than 30 %"}

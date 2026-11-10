@@ -727,7 +727,11 @@ andic_to_35_fao88 <- function(pedon, depth = 35) {
 #' Xerosols, Yermosols, Nitosols, Acrisols, Luvisols, Cambisols) and their
 #' 106 soil units (the Lithosols, Rankers and Rendzinas are single units),
 #' on the diagnostic horizons and properties of 1974 read on the data; its
-#' registry id is \code{fao1974} (\code{\link{classify_fao1974}}).
+#' registry id is \code{fao1974} (\code{\link{classify_fao1974}}). Since
+#' v0.9.390 its result gives in \code{$phases} the 12 phases of 1974 (pp.
+#' 5-7: stony, lithic, petric, petrocalcic, petrogypsic, petroferric,
+#' phreatic, fragipan, duripan, saline, sodic, cerrado) and the texture and
+#' slope classes of its map symbol (pp. 4-5), in the same form.
 #'
 #' The tests are three-valued: a measurement not recorded leaves its
 #' criterion undecided, a field observation not recorded is absent. A
@@ -792,8 +796,12 @@ classify_fao <- function(pedon, edition = c("1988", "1974"), rules = NULL,
   if (inherits(pedon, "PedonRecord")) pedon <- .classify_apply_gapfill(pedon, gapfill)
   # v0.9.389: the Legend of 1974 (pp. 43-53), its own registry id fao1974
   if (edition == "1974") {
-    return(.classify_fao1974_impl(pedon, rules = rules, on_missing = on_missing,
-                                  gapfill = if (inherits(pedon, "PedonRecord")) FALSE else gapfill))
+    res <- .classify_fao1974_impl(pedon, rules = rules, on_missing = on_missing,
+                                  gapfill = if (inherits(pedon, "PedonRecord")) FALSE else gapfill)
+    # v0.9.390: the phases of 1974 and the classes of its map symbol (pp.
+    # 4-7), beside the unit, which they never change (Q25)
+    if (inherits(pedon, "PedonRecord")) res$phases <- .fao74_phases(pedon, res)
+    return(res)
   }
   res <- .classify_fao1988_impl(pedon, rules = rules, on_missing = on_missing,
                                 gapfill = if (inherits(pedon, "PedonRecord")) FALSE else gapfill)
