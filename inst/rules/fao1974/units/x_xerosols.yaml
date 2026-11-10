@@ -22,7 +22,7 @@ units:
       page: 50
       tests:
         all_of: [{aridic_lime_fao74: {kind: gypsic}}]
-      notes: "A gypsic horizon within 125 cm (125, 90 or 75 cm by texture, footnote 1; the shallower of a calcic and a gypsic horizon decides)."
+      notes: "A gypsic horizon at less than 125, 90 or 75 cm by texture (footnote 1, strictly; the shallower of a calcic and a gypsic horizon decides)."
 
     - code: "Xk"
       name: "Calcic Xerosols"
@@ -30,7 +30,7 @@ units:
       page: 50
       tests:
         all_of: [{aridic_lime_fao74: {kind: calcic}}]
-      notes: "A calcic horizon within 125 cm (125, 90 or 75 cm by texture, footnote 1)."
+      notes: "A calcic horizon at less than 125, 90 or 75 cm by texture (footnote 1, strictly)."
 
     - code: "Xh"
       name: "Haplic Xerosols"

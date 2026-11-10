@@ -385,7 +385,7 @@ test_that("the readers' defaults are the numbers of the threshold tables", {
   expect_true(length(r) >= 10L)
   expect_true(all(vapply(r, function(x) all(c("topic", "edition", "page", "reading") %in% names(x)),
                          logical(1))))
-  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-0[89]\\)\\.$",
+  expect_true(all(grepl("\\((Hugo|soilKey's reading, for Hugo to confirm), 2026-11-(0[89]|10)\\)\\.$",
                         vapply(r, `[[`, "", "reading"))))
 })
 

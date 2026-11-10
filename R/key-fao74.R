@@ -278,22 +278,23 @@ andosol_material_fao74 <- function(pedon, depth = 35) {
 # --- Q Arenosols (pp. 45-46) -------------------------------------------------------------
 
 # Coarse texture: every mineral layer (H and O not read) overlapping 0 to
-# `to_cm` cm is in the coarse class of 74 p. 5 (clay below 18 % and sand
-# above 65 %); a soil on rock above `to_cm` fails, as for 1988.
+# `to_cm` cm, or to the rock where it is shallower (Hugo, 2026-11-10), is in
+# the coarse class of 74 p. 5 (clay below 18 % and sand above 65 %).
 coarse_texture_fao74 <- function(pedon, to_cm = 100) {
   x <- .f74_ctx(pedon)
   pg <- "5, 45"
   if (!x$n) return(.f74_key_result(x, "coarse_texture", FALSE, pg))
   rtop <- suppressWarnings(min(x$top[x$rock], na.rm = TRUE))
-  if (is.finite(rtop) && rtop < to_cm)
-    return(.f74_key_result(x, "coarse_texture", FALSE, pg, notes = sprintf("rock above %s cm", to_cm)))
+  base <- if (is.finite(rtop) && rtop < to_cm) rtop else to_cm
+  if (base <= 0) return(.f74_key_result(x, "coarse_texture", FALSE, pg, notes = "rock at the surface"))
   mineral <- !.f74_ho(x) & !(.f74_organic(x)$value %in% TRUE)
   cls <- .fao_texture_class(x$h, "1974")
-  w <- .fao_in_window(x$h, ifelse(is.na(cls), NA, cls == "coarse"), 0, to_cm, "throughout",
+  w <- .fao_in_window(x$h, ifelse(is.na(cls), NA, cls == "coarse"), 0, base, "throughout",
                       subset = mineral)
   .f74_key_result(x, "coarse_texture", w$value, pg, layers = w$layers %||% integer(0),
                   missing = c(w$missing, if (is.na(w$value)) c("clay_pct", "sand_pct")),
-                  flags = w$flags, notes = w$note, evidence = list(to_cm = to_cm))
+                  flags = c(w$flags, if (base < to_cm) "coarse_texture_to_the_rock"), notes = w$note,
+                  evidence = list(to_cm = to_cm, read_to_cm = base))
 }
 
 # Lamellae of clay accumulation (Luvic Arenosols, within 125 cm, the
@@ -681,8 +682,10 @@ aridic_lime_fao74 <- function(pedon, kind = c("gypsic", "calcic")) {
   if (!x$n) return(.f74_key_result(x, "aridic_lime", FALSE, pg))
   top_of <- function(r) { L <- .f88_ctx_rows(x, r); if (length(L)) min(x$top[L]) else NA_real_ }
   keep <- list()
+  # "less than 125, 90, 75 cm" (footnote 1, p. 50): strictly above that
+  # depth (Hugo, 2026-11-10)
   f <- function(d) {
-    gy <- gypsic_fao74(pedon, max_top_cm = d); ca <- calcic_fao74(pedon, max_top_cm = d)
+    gy <- gypsic_fao74(pedon, max_top_cm = d - 1e-6); ca <- calcic_fao74(pedon, max_top_cm = d - 1e-6)
     keep[[as.character(d)]] <<- list(gy = gy, ca = ca)
     me <- if (kind == "gypsic") gy else ca
     ot <- if (kind == "gypsic") ca else gy
@@ -768,6 +771,25 @@ nitosols_gate_fao74 <- function(pedon) {
                   missing = unique(c(ar$missing, if (is.na(dec)) c("clay_pct", "bottom_cm"))),
                   flags = c(ar$evidence$flags, if (open) "description_ends_above_150cm"),
                   evidence = list(argillic_b = ar$passed, clay_no_decrease_20pct = dec))
+}
+
+
+# --- unit gates: Thionic Fluvisols (p. 44) -----------------------------------------------------
+
+# A sulfuric horizon or sulfidic material, or both, "at less than 125 cm":
+# the top strictly above `lt_cm` (Hugo, 2026-11-10).
+thionic_fao74 <- function(pedon, lt_cm = 125) {
+  x <- .f74_ctx(pedon)
+  pg <- "44"
+  if (!x$n) return(.f74_key_result(x, "thionic", FALSE, pg))
+  su <- sulfuric_fao74(pedon, max_top_cm = lt_cm - 1e-6)
+  sd <- sulfidic_materials_fao74(pedon, max_top_cm = lt_cm - 1e-6)
+  value <- .fao_or(su$passed, sd$passed)
+  lay <- unlist(lapply(list(su, sd), function(r) if (!isFALSE(r$passed)) .f88_ctx_rows(x, r)))
+  .f74_key_result(x, "thionic", value, pg, layers = lay %||% integer(0),
+                  missing = unique(c(if (is.na(su$passed)) su$missing, if (is.na(sd$passed)) sd$missing)),
+                  flags = c(su$evidence$flags, sd$evidence$flags),
+                  evidence = list(sulfuric = su$passed, sulfidic = sd$passed, lt_cm = lt_cm))
 }
 
 
@@ -1135,8 +1157,9 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     Z = b88("SC", FALSE, ec_dS_m = c(if (nm) 14 else 20, 12, 8)),
     G = b88("GL", nm),
     T = b88("AN", nm),
+    # white sand: albic colours (chroma 2 at the middle values) to 50 cm
     Q = b88("AR", FALSE, clay_pct = c(4, 3, if (nm) 20 else 3), silt_pct = c(6, 5, if (nm) 20 else 4),
-            sand_pct = c(90, 92, if (nm) 60 else 93)),
+            sand_pct = c(90, 92, if (nm) 60 else 93), munsell_chroma_moist = c(2, 2, 4)),
     # a BC whose CEC (1.5 cmol/kg, 8 me per 100 g clay) fails the 16 me of
     # the cambic B; the near miss has 9.6 (53 me) and is a Cambisol
     R = b88("RG", FALSE, designation = c("A", "BC", "C"), caco3_pct = 0, carbonate_soft_pct = 0,
@@ -1224,7 +1247,7 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     Vp = E(b, munsell_chroma_moist = c(1, if (nm) 1.5 else 1, 2, 3)),
     Vc = b,
     # --- Fluvisols
-    Jt = deep(b, 125, designation = "Cr", s_total_pct = 1.2, ph_h2o = 6),
+    Jt = deep(b, 124, designation = "Cr", s_total_pct = 1.2, ph_h2o = 6),
     Jc = E(b, caco3_pct = c(0, if (nm) 2 else 5, 5, 5, 5), ph_h2o = 7.8),
     Jd = E(b, bs_pct = c(60, 60, if (nm) 50 else 40, 60, 60), ph_h2o = 5.5),
     Je = b,
@@ -1264,7 +1287,7 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     Qa = if (nm) E(b, rows = c(1, 2, 2, 3), designation = c("A", "C1", "C2", "C3"),
                    top_cm = c(0, 20, 49, 80), bottom_cm = c(20, 49, 80, 150),
                    munsell_value_moist = c(4, 5, 3, 6), munsell_value_dry = c(5, 6, 4, 7),
-                   munsell_chroma_moist = c(3, 4, 4, 4)) else b,
+                   munsell_chroma_moist = c(2, 2, 4, 4)) else b,
     Ql = , Qf = , Qc = {
       d <- E(b, munsell_value_moist = c(3, 5, 6), munsell_value_dry = c(4, 6, 7),
              munsell_chroma_moist = c(4, 4, 4))
@@ -1354,8 +1377,9 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     # texture: the 90 cm of the rule)
     Xl = , Yl = E(b, designation = c("A", "Btk", "Ck"), clay_pct = c(15, 30, 22), silt_pct = c(45, 40, 43),
                   sand_pct = c(40, 30, 35), clay_films_amount = c(NA, "common", NA)),
-    Xy = , Yy = gypsic_at(arid0(b), 90),
-    Xk = , Yk = calcic_at(arid0(b), 90),
+    # "less than 90 cm" for a medium texture: 89 cm, the near miss at 90
+    Xy = , Yy = gypsic_at(arid0(b), 89),
+    Xk = , Yk = calcic_at(arid0(b), 89),
     Xh = , Yh = arid0(b),
     Yt = E(b, clay_pct = c(42, 40, 38), sand_pct = c(18, 20, 22), silt_pct = c(40, 40, 40),
            polygonal_cracks_spacing_cm = c(20, NA, NA), structure_type = c("platy", "subangular blocky", "massive")),

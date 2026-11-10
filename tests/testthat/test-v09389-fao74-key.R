@@ -197,8 +197,27 @@ test_that("no residual group after the Cambisols (Q5)", {
   r2 <- .f389(.edit389(cl, site = list(soil_moisture_regime = NA)))
   expect_match(r2$name, "^\\[Undecided in the FAO-Unesco Legend \\(1974\\): X Xerosols")
   expect_true("major_groups:X" %in% r2$provisional_because)
-  # an albic E over C (the Podzol near miss)
-  expect_identical(.f389(.ex389("P", TRUE))$name, "[Not classified in the FAO-Unesco Legend (1974)]")
+})
+
+test_that("an E with nothing below it is albic material, whatever its letter (Hugo, 2026-11-10)", {
+  skip_on_cran()
+  # white sand: A / E / C keys as A / C1 / C2 does
+  q <- .ex389("Q")
+  qe <- .edit389(q, designation = c("A", "E", "C"))
+  expect_false(isTRUE(soilKey:::albic_e_fao74(qe)$passed))
+  expect_identical(.f389(qe)$name, "Albic Arenosols")
+  expect_identical(.f389(qe)$name, .f389(q)$name)
+  # a wet profile: A / Eg / Cg keys as A / Cg1 / Cg2 (Gleysols)
+  g1 <- .edit389(.ex389("G"), designation = c("A", "Eg", "Cg"), munsell_hue_moist = c("10YR", "10YR", "5GY"),
+                 munsell_value_moist = c(4, 6, 5), munsell_chroma_moist = c(2, 1, 1),
+                 munsell_value_dry = c(5, 7, 6), munsell_chroma_dry = c(2, 1, 1))
+  g2 <- .edit389(g1, designation = c("A", "Cg1", "Cg2"))
+  expect_identical(.f389(g1)$rsg_or_order, "Gleysols")
+  expect_identical(.f389(g1)$name, .f389(g2)$name)
+  # an E over an argillic B stays an albic E (the Albic Luvisols)
+  expect_true(soilKey:::albic_e_fao74(.ex389("La"))$passed)
+  # 1988 is unchanged: its albic E asks nothing below it
+  expect_true(isTRUE(soilKey:::albic_e_fao88(qe)$passed))
 })
 
 test_that("the gates read their printed numbers", {
@@ -269,12 +288,38 @@ test_that("the gates read their printed numbers", {
   expect_identical(.f389(e2)$name, "Rendzinas")
   # without the lime the dry contrast is asked: no mollic A
   expect_false(isTRUE(soilKey:::mollic_a_fao74(.edit389(e2, caco3_pct = c(10, 60)))$passed))
+  # 1988 (p. 26, the same words): the same waiver of the dry contrast, a
+  # correction to 0.9.382 (Hugo, 2026-11-10)
+  expect_true(soilKey:::mollic_a_fao88(e2)$passed)
+  expect_false(isTRUE(soilKey:::mollic_a_fao88(.edit389(e2, caco3_pct = c(10, 60)))$passed))
   # Nitosols: a clay fall below 0.8 x the maximum
   expect_true(soilKey:::nitosols_gate_fao74(.ex389("N"))$passed)
   expect_false(soilKey:::nitosols_gate_fao74(.ex389("N", TRUE))$passed)
   # Arenosols: the coarse class of 74 p. 5 (clay below 18 %, sand above 65 %)
   expect_true(soilKey:::coarse_texture_fao74(.ex389("Q"))$passed)
   expect_false(soilKey:::coarse_texture_fao74(.ex389("Q", TRUE))$passed)
+  # ... to 100 cm or to the rock where it is shallower (Hugo, 2026-11-10)
+  qr <- .edit389(.ex389("Q"), designation = c("A", "C", "R"), top_cm = c(0, 20, 60),
+                 bottom_cm = c(20, 60, 100))
+  ct <- soilKey:::coarse_texture_fao74(qr)
+  expect_true(ct$passed)
+  expect_true("coarse_texture_to_the_rock" %in% ct$evidence$flags)
+  expect_false(soilKey:::coarse_texture_fao88(qr, to_cm = 100)$passed)
+  # Nitosols lack ferric properties as printed, the CEC by NH4Cl below 24
+  # me per 100 g clay in the argillic B included (Hugo, 2026-11-10)
+  nf <- .edit389(.ex389("N"), ecec_cmol = c(12, 12, 5, 5, 5))
+  fe <- soilKey:::ferric_properties_fao74(nf)
+  expect_true(fe$passed)
+  expect_true("ferric_by_nh4cl_cec_in_argillic_b" %in% fe$evidence$flags)
+  expect_false(identical(.f389(nf)$levels$code[1L], "N"))
+  # "at less than": strictly (Hugo, 2026-11-10): the Thionic Fluvisols at 124
+  # cm, not at 125; the Gypsic and Calcic Xerosols at 89 cm, not at 90 (a
+  # medium texture)
+  expect_true(soilKey:::thionic_fao74(.ex389("Jt"))$passed)
+  expect_false(soilKey:::thionic_fao74(.ex389("Jt", TRUE))$passed)
+  expect_identical(.last389(.f389(.ex389("Jt", TRUE))), "Je")
+  expect_identical(.last389(.f389(.ex389("Xk", TRUE))), "Xh")
+  expect_identical(.last389(.f389(.ex389("Yy", TRUE))), "Yh")
   # Planosols: the slowly permeable horizon under the albic E
   w <- soilKey:::planosols_gate_fao74(.ex389("W"))
   expect_true(w$passed)
@@ -307,7 +352,7 @@ test_that("the rule folder: thresholds and readings", {
   expect_true(all(vapply(rd, function(e) "1974" %in% as.character(unlist(e$edition)), NA)))
   r389 <- Filter(function(e) identical(e$version, "0.9.389"), rd)
   expect_gte(length(r389), 15L)
-  expect_true(all(vapply(r389, function(e) grepl("(Hugo, 2026-11-08)|for Hugo to confirm", e$reading), NA)))
+  expect_true(all(vapply(r389, function(e) grepl("(Hugo, 2026-11-(08|10))|for Hugo to confirm", e$reading), NA)))
   f2 <- .src389("data-raw", "fao_readings.yaml")
   skip_if_not(!is.na(f2))
   d389 <- Filter(function(e) identical(e$version, "0.9.389"), yaml::read_yaml(f2)$readings)

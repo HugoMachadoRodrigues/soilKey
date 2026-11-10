@@ -13,10 +13,9 @@ units:
       name_pt: "Fluvissolos Tiônicos (Thionic Fluvisols)"
       page: 44
       tests:
-        any_of:
-          - sulfuric_fao74: {max_top_cm: 125}
-          - sulfidic_materials_fao74: {max_top_cm: 125}
-      notes: "A sulfuric horizon or sulfidic material, or both, at less than 125 cm (read within 125 cm)."
+        all_of:
+          - thionic_fao74: {lt_cm: 125}
+      notes: "A sulfuric horizon or sulfidic material, or both, at less than 125 cm (strictly, Hugo 2026-11-10)."
 
     - code: "Jc"
       name: "Calcaric Fluvisols"

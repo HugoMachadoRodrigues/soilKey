@@ -658,7 +658,7 @@ readings:
     edition: [1974]
     page: "74 pp. 27-28"
     version: "0.9.388"
-    reading: "As printed (plan section 12, item 26): a moist value of 4 or 5 or a dry value of 5 or 6 passes at any chroma, so a brown or yellowish sand of moist value 4 or 5 is albic material (the Albic Arenosols, 74 p. 46). The 1988 text adds a chroma limit there (below 2.5) (soilKey's reading, accepted on the review) (Hugo, 2026-11-09)."
+    reading: "Superseded on 2026-11-10 (the entry 'Albic E and albic material of 1974: the middle values and what lies below'). As printed (plan section 12, item 26): a moist value of 4 or 5 or a dry value of 5 or 6 passes at any chroma, so a brown or yellowish sand of moist value 4 or 5 is albic material (the Albic Arenosols, 74 p. 46). The 1988 text adds a chroma limit there (below 2.5) (soilKey's reading, accepted on the review) (Hugo, 2026-11-09)."
   - topic: "Exchange complex dominated by amorphous material: the marks read"
     edition: [1974]
     page: "74 p. 28"
@@ -721,7 +721,7 @@ readings:
     edition: [1974]
     page: "74 pp. 4, 12-13, 43, 46"
     version: "0.9.389"
-    reading: "The Lithosols (I), Rankers (U) and Rendzinas (E) are both group and unit, with the capital as their only code: they have no unit list, so the result has one level (the group) and the name is the group's (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "The Lithosols (I), Rankers (U) and Rendzinas (E) are both group and unit, with the capital as their only code: they have no unit list, so the result has one level (the group) and the name is the group's accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "H horizon of the Histosols of 1974"
     edition: [1974]
     page: "74 pp. 21, 43"
@@ -741,12 +741,12 @@ readings:
     edition: [1974]
     page: "74 pp. 28, 45"
     version: "0.9.389"
-    reading: "Every layer from the top of the mineral soil to 35 cm below it (an O or H skipped, flagged, as for 1988) has (a) the exchange complex dominated by amorphous material with its bulk density below 0.85 (amorphous_complex_fao74() per layer, Q20), or (b) 60 % or more vitric material: volcanic_glass_pct, else pyroclastic_fragments_pct. As Hugo decided for the andic properties of 1988, volcanic glass not recorded is none and a layer left undecided is absent, flagged, unless the record names volcanic material (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "Every layer from the top of the mineral soil to 35 cm below it (an O or H skipped, flagged, as for 1988) has (a) the exchange complex dominated by amorphous material with its bulk density below 0.85 (amorphous_complex_fao74() per layer, Q20), or (b) 60 % or more vitric material: volcanic_glass_pct, else pyroclastic_fragments_pct. As Hugo decided for the andic properties of 1988, volcanic glass not recorded is none and a layer left undecided is absent, flagged, unless the record names volcanic material accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "Arenosols of 1974: coarse texture, albic material and the B characteristics"
     edition: [1974]
     page: "74 pp. 5, 34, 45-46"
     version: "0.9.389"
-    reading: "'Coarse texture' is the coarse class of p. 5 (clay below 18 % and sand above 65 %) in every mineral layer overlapping 0-100 cm (the depth of the Arenosols of 1988; a soil on rock above 100 cm fails). 'Albic material over a depth of at least 50 cm from the surface' (the Albic Arenosols: 'to a depth of at least 50 cm') is albic material (albic_material_fao74(), the colours of the albic E of 1974 in a layer that is not an E) in every layer overlapping 0-50 cm, the A included. 'Characteristics of argillic, cambic or oxic B horizons that fail only on texture' are the features the three other units name: lamellae of clay accumulation within 125 cm, ferralic properties in the horizon right below the A, or the colouring or alteration of a cambic B (item 4 of the cambic B of 1974, its texture not asked) in the layer right below the A, not a C (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "'Coarse texture' is the coarse class of p. 5 (clay below 18 % and sand above 65 %) in every mineral layer overlapping 0-100 cm, or to the rock where it is shallower (Hugo, 2026-11-10). 'Albic material over a depth of at least 50 cm from the surface' (the Albic Arenosols: 'to a depth of at least 50 cm') is albic material (albic_material_fao74(), the colours of the albic E of 1974 in a layer that is not an E) in every layer overlapping 0-50 cm, the A included. 'Characteristics of argillic, cambic or oxic B horizons that fail only on texture' are the features the three other units name: lamellae of clay accumulation within 125 cm, ferralic properties in the horizon right below the A, or the colouring or alteration of a cambic B (item 4 of the cambic B of 1974, its texture not asked) in the layer right below the A, not a C accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "Rankers and Humic Cambisols: the thickness of the umbric A"
     edition: [1974]
     page: "74 pp. 34, 46, 52-53"
@@ -761,17 +761,17 @@ readings:
     edition: [1974]
     page: "74 p. 32"
     version: "0.9.389"
-    reading: "Of the argillic, natric, cambic, spodic and oxic B of 1974 starting within 125 cm, the uppermost decides at the key, as Hugo decided for the same rule of 1988 (p. 42): the gates of the Podzols, Ferralsols, Solonetz, Podzoluvisols, Nitosols, Acrisols, Luvisols and Cambisols pass only when their B is that uppermost one, and are undecided when an undecided B starts above it (upper_b_fao74()). 'The B horizon' of the unit gates is the upper B of the group's kind (oxic for F, argillic for D, N, A, L, cambic for B; spodic for P), within 125 cm or 100 cm where printed, read as in 1988 (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "Of the argillic, natric, cambic, spodic and oxic B of 1974 starting within 125 cm, the uppermost decides at the key, as Hugo decided for the same rule of 1988 (p. 42): the gates of the Podzols, Ferralsols, Solonetz, Podzoluvisols, Nitosols, Acrisols, Luvisols and Cambisols pass only when their B is that uppermost one, and are undecided when an undecided B starts above it (upper_b_fao74()). 'The B horizon' of the unit gates is the upper B of the group's kind (oxic for F, argillic for D, N, A, L, cambic for B; spodic for P), within 125 cm or 100 cm where printed, read as in 1988 accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "Planosols of 1974: the E and the slowly permeable horizon"
     edition: [1974]
     page: "74 p. 48"
     version: "0.9.389"
-    reading: "The E is an albic E of 1974 (albic_e_fao74()); the slowly permeable horizon is the layer right below it, its top within 125 cm, with an abrupt textural change at the contact (the argillic or natric B of the text's example is not asked besides, as for the Planosols of 1988), or a heavy clay (60 % clay or more, soilKey's number, default 14, flagged), or a fragipan (designation with x under an abrupt or clear boundary, flagged), or a measured ksat below 4 mm/h under such a boundary, flagged; hydromorphic properties (hydromorphic_properties_fao74()) in at least one layer of the E. The Solodic and Dystric Planosols read the slowly permeable horizon with the adjoining layers below it of the same master horizon, as for 1988 (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "The E is an albic E of 1974 (albic_e_fao74()); the slowly permeable horizon is the layer right below it, its top within 125 cm, with an abrupt textural change at the contact (the argillic or natric B of the text's example is not asked besides, as for the Planosols of 1988), or a heavy clay (60 % clay or more, soilKey's number, default 14, flagged), or a fragipan (designation with x under an abrupt or clear boundary, flagged), or a measured ksat below 4 mm/h under such a boundary, flagged; hydromorphic properties (hydromorphic_properties_fao74()) in at least one layer of the E. The Solodic and Dystric Planosols read the slowly permeable horizon with the adjoining layers below it of the same master horizon, as for 1988 accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "Chernozems and Kastanozems of 1974: the chroma to 15 cm"
     edition: [1974]
     page: "74 pp. 48-49"
     version: "0.9.389"
-    reading: "The Greyzems and Chernozems ask a moist chroma of 2 or less in every layer of the upper 15 cm of the mollic A; the Kastanozems are their exact complement (a chroma above 2 in any layer), as Hugo decided for the same words of 1988, so that a mollic A of mixed chroma is a Kastanozem, not left to the Phaeozems (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "The Greyzems and Chernozems ask a moist chroma of 2 or less in every layer of the upper 15 cm of the mollic A; the Kastanozems are their exact complement (a chroma above 2 in any layer), as Hugo decided for the same words of 1988, so that a mollic A of mixed chroma is a Kastanozem, not left to the Phaeozems accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "The 125 / 90 / 75 cm rule in the key"
     edition: [1974]
     page: "74 pp. 5, 49-53"
@@ -781,7 +781,7 @@ readings:
     edition: [1974]
     page: "74 pp. 35-36, 50"
     version: "0.9.389"
-    reading: "The gypsic or calcic horizon within 125, 90 or 75 cm by texture (footnote 1, p. 50); where both are present the one nearer the surface decides (Q26, Hugo 2026-11-08); at the same depth the key's order, gypsic first (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "The gypsic or calcic horizon at less than 125, 90 or 75 cm by texture (footnote 1, p. 50; strictly, Hugo 2026-11-10); where both are present the one nearer the surface decides (Q26, Hugo 2026-11-08); at the same depth the key's order, gypsic first (soilKey's reading, for Hugo to confirm, 2026-11-09)."
   - topic: "Podzoluvisols and Nitosols of 1974"
     edition: [1974]
     page: "74 pp. 50-51"
@@ -808,7 +808,7 @@ readings:
     edition: [1974]
     page: "74 p. 5; p. 69"
     version: "0.9.390"
-    reading: "The stony phase is the condition the rudic phase of 1988 describes in the same words (fragments or outcrops that make mechanised equipment impracticable), read on the same site record, rudic_recorded, flagged rudic_recorded_for_stony; not recorded, absent. The 7.5 cm of p. 5 names gravel and is not a test (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+    reading: "The stony phase is the condition the rudic phase of 1988 describes in the same words (fragments or outcrops that make mechanised equipment impracticable), read on the same site record, rudic_recorded, flagged rudic_recorded_for_stony; not recorded, absent. The 7.5 cm of p. 5 names gravel and is not a test accepted by Hugo (Hugo, 2026-11-10)."
   - topic: "Petric, petrocalcic and petrogypsic phases of 1974"
     edition: [1974]
     page: "74 pp. 5-6"
@@ -829,3 +829,35 @@ readings:
     page: "74 pp. 6-7"
     version: "0.9.390"
     reading: "As printed: the lithic phase is not shown for the Lithosols, the saline phase for the Solonchaks (all their units), the sodic phase for the Solonetz (all their units). Unlike the reading of 1988, no unit of another group is excluded (the 1974 text gives the reason for the group only). When an excluded group is only a candidate (undecided before the one assigned), a phase whose criterion is met is undecided, with the candidate in its missing column (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+
+  # Hugo's decisions on the review of parts 9 and 10 (2026-11-10).
+  - topic: "Albic E and albic material of 1974: the middle values and what lies below"
+    edition: [1974]
+    page: "74 pp. 27-28"
+    version: "0.9.390"
+    reading: "Supersedes the reading 'as printed' of 0.9.387-0.9.388. At a moist value of 4 or 5 or a dry value of 5 or 6 the chroma is below 2.5 (3 allowed over a parent material of hue 5YR or redder), the limit of Soil Taxonomy 1975 and of 1988 that the 5YR clause of 74 p. 27 presupposes, flagged albic_middle_values_chroma_below_2.5. In 1974 only, an E with none of the kinds p. 27 names below it (a spodic, argillic or natric B, a fragipan, an impervious layer: rock, a cemented layer, a pan recorded) is albic material, not an albic E, flagged, so that the result does not depend on the letter: a white sand A / E / C is an Albic Arenosol as A / C1 / C2 is, a wet A / Eg / Cg a Gleysol. 1988 is unchanged (Hugo, 2026-11-10)."
+  - topic: "Nitosols of 1974: lacking ferric properties"
+    edition: [1974]
+    page: "74 pp. 28, 51"
+    version: "0.9.390"
+    reading: "As printed: the ferric properties the Nitosols lack include a CEC (from NH4Cl) below 24 me per 100 g clay in some subhorizon of the argillic B, flagged ferric_by_nh4cl_cec_in_argillic_b (Hugo, 2026-11-10)."
+  - topic: "'At less than' X cm in 1974"
+    edition: [1974]
+    page: "74 pp. 44, 50"
+    version: "0.9.390"
+    reading: "'At less than 125 cm' of the Thionic Fluvisols (thionic_fao74()) and 'less than 125, 90 or 75 cm' of footnote 1 of p. 50 (the Gypsic and Calcic Xerosols and Yermosols) are strict: the top of the horizon or material above that depth, not at it. 'Within' elsewhere keeps the reading 'at or above' (Hugo, 2026-11-10)."
+  - topic: "Aridic moisture regime not recorded"
+    edition: [1974]
+    page: "74 pp. 28, 50"
+    version: "0.9.390"
+    reading: "Without a soil_moisture_regime recorded the aridic regime is undecided, so the Xerosols and Yermosols stay candidates and a soil keyed after them is provisional (major_groups:X, Y); no climate proxy stands in (Q26) (Hugo, 2026-11-10)."
+  - topic: "The uppermost B at unit level in 1974"
+    edition: [1974]
+    page: "74 pp. 32, 49-52"
+    version: "0.9.390"
+    reading: "As for 1988, the rule that the upper diagnostic B decides is read at the key only: the Luvic units (Cl, Kl, Hl, Hg, Xl, Yl) accept any argillic B within 125 cm, uppermost or not (Hugo, 2026-11-10)."
+  - topic: "Lime waiver of the mollic A: the dry contrast with the C"
+    edition: [1988, 1974]
+    page: "p. 26; 74 p. 24"
+    version: "0.9.390"
+    reading: "With more than 40 % finely divided lime, 'the limits of colour value dry are waived' (the same words in both editions): the dry value of the A and its dry contrast with the C (or the horizon below the A) are both waived; the moist contrast of one unit is still asked. A correction to the mollic and umbric A of 0.9.382 (1988) and 0.9.387 (1974); no example of 1988 changes (Hugo, 2026-11-10)."

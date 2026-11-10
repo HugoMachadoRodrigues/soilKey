@@ -536,15 +536,19 @@ test_that("sulfuric horizon: pH (1:1) below 3.5 and jarosite mottles (1974)", {
   expect_false(.ok(sulfuric_fao88(su(3.4, t = 10))))
 })
 
-test_that("albic E: no chroma limit at the middle values in 1974", {
+test_that("albic E: a chroma below 2.5 at the middle values in 1974 (Hugo, 2026-11-10)", {
   skip_on_cran()
   al <- function(vm, cm, vd) .lu74(munsell_value_moist = c(4, vm, 4, 5),
                                    munsell_chroma_moist = c(3, cm, 6, 4),
                                    munsell_value_dry = c(6, vd, 5, 6),
                                    munsell_chroma_dry = c(3, cm, 6, 4))
+  # the reading "as printed" of 0.9.387 (no limit there) is superseded
   p <- al(5, 3, 6)
   expect_false(.ok(albic_e_fao88(p)))
-  expect_true(.ok(albic_e_fao74(p)))
+  expect_false(.ok(albic_e_fao74(p)))
+  r <- albic_e_fao74(al(5, 2, 6))
+  expect_true(.ok(r))
+  expect_true("albic_middle_values_chroma_below_2.5" %in% r$evidence$flags)
   expect_true(.ok(albic_e_fao74(al(6, 3, 7))))
   expect_false(.ok(albic_e_fao74(al(6, 4, 7))))
   expect_false(.ok(albic_e_fao74(al(3, 2, 4))))       # too dark
