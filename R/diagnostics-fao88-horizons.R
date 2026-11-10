@@ -56,7 +56,7 @@
   x
 }
 
-.f88_ctx_build <- function(pedon) {
+.f88_ctx_build <- function(pedon, edition = "1988") {
   h <- pedon$horizons
   n <- if (is.null(h)) 0L else nrow(h)
   hh <- if (is.null(h)) data.frame() else as.data.frame(h)
@@ -69,6 +69,10 @@
   x$n <- n
   x$idx <- ord
   x$site <- pedon$site %||% list()
+  # the edition of the context (0.9.387): "1974" for the predicates of
+  # R/diagnostics-fao74.R, which share the readers below where the 1974 text
+  # equals the 1988 one (Appendix 4 "unchanged") and branch where it differs
+  x$edition <- edition
   if (n) {
     d <- .fao_depths(hh)
     x$top <- d$top; x$bot <- d$bottom
@@ -76,10 +80,11 @@
     x$desg <- .desg_master(.fao_col(hh, "designation", "character"))
     x$rock <- .fao_is_rock(hh)
     x$memo <- new.env(parent = emptyenv())
-    b <- .fao_buried(hh, "1988")
+    # 1974 (74 p. 32): buried by 50 cm or more of new material, no andic rule
+    b <- .fao_buried(hh, edition)
     # a mantle of 35 to 50 cm buries the horizons below it when it has andic
     # properties (p. 42), read since 0.9.383 (.f88_mantle_andic())
-    if (anyNA(b$value)) {
+    if (edition == "1988" && anyNA(b$value)) {
       b <- .fao_buried(hh, "1988", mantle_andic = .f88_mantle_andic(x, b$buried_from %||% NA_integer_))
     }
     x$buried <- as.logical(b$value)
@@ -319,6 +324,8 @@
 }
 
 .f88_organic <- function(x) {
+  # 1974: the H and O horizons of 74 p. 21, in organic matter (0.9.387)
+  if (identical(x$edition, "1974")) return(.f74_organic(x))
   .f88_memo(x, "organic", function() {
     v <- .f88_organic_v(.f88_num(x, "oc_pct"), .f88_num(x, "clay_pct"), .f88_saturated(x))
     v[x$rock] <- FALSE
@@ -482,17 +489,27 @@
     if (!x$n) return(list(units = list()))
     org <- .f88_organic(x)
     ok <- .f88_unburied(x, org$value)
-    units <- .f88_units(x, ok, function(r) {
-      if (r$top > 40) return(FALSE)
+    e74 <- identical(x$edition, "1974")
+    # 1974 (74 p. 24): an H horizon (saturated or drained, p. 21; .f74_h_v())
+    # more than 20 cm thick, no depth printed (the upper limit of 125 cm is
+    # applied by the caller, Q10); the thin surface and plough layer paths
+    # below read the organic layers
+    okh <- if (e74) .f88_unburied(x, .f74_h_v(x)) else ok
+    units <- .f88_units(x, okh, function(r) {
+      if (!e74 && r$top > 40) return(FALSE)
       r$thickness > 20
     })
     # mixed to 25 cm
     oc25 <- .fao_mixed(x$h, "oc_pct", 25)
     cl25 <- .fao_mixed(x$h, "clay_pct", 25)
+    # 1988: OC 8 + 8 x clay / 60 (8 to 16 %); 1974: organic matter 14 + 14 x
+    # clay / 60 (14 to 28 %), OM = OC x 1.724 (Q11)
+    k <- if (e74) 14 else 8
+    m25 <- if (e74) .fao_om(oc25$value)$value else oc25$value
     line <- function() {
-      if (is.na(oc25$value)) return(NA)
-      if (!is.na(cl25$value)) return(oc25$value >= 8 + 8 * min(cl25$value, 60) / 60)
-      if (oc25$value >= 16) TRUE else if (oc25$value < 8) FALSE else NA
+      if (is.na(m25)) return(NA)
+      if (!is.na(cl25$value)) return(m25 >= k + k * min(cl25$value, 60) / 60)
+      if (m25 >= 2 * k) TRUE else if (m25 < k) FALSE else NA
     }
     first <- which(!is.na(x$top) & x$top == 0)[1L]
     thin <- NULL; plough <- NULL
@@ -520,7 +537,7 @@
                }, logical(1)))
     list(units = c(units, if (!is.null(thin)) list(thin), if (!is.null(plough)) list(plough)),
          missing = unique(c(org$missing, oc25$missing, cl25$missing)),
-         flags = c(oc25$flags, cl25$flags), evidence = ev,
+         flags = c(oc25$flags, cl25$flags, if (e74) "om_from_oc_x1.724"), evidence = ev,
          notes = "the upper bound of 40 (60) cm separates the Histosols and is not tested here")
   })
 }
@@ -599,20 +616,37 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     cc_l <- .f88_caco3(x)
     m_cc <- mix("caco3_pct", cc_l$value)
     flags <- c(flags, .f88_flags(cc_l$flags, win))
+    # 1974 (74 p. 24): organic matter 1 % (4 % with the lime waiver), OM =
+    # OC x 1.724 (Q11)
+    e74 <- identical(x$edition, "1974")
     col_oc <- function(vm, cm, vd, oc, lime) {
+      if (e74) {
+        om <- .fao_om(oc)$value
+        strict <- .f88_and(cm < 3.5, vm < 3.5, vd < 5.5, .f88_cmp(om, ">=", 1))
+        relaxed <- .f88_and(lime, cm < 3.5, vm <= 5, .f88_cmp(om, ">=", 4))
+        return(.f88_or(strict, relaxed))
+      }
       strict <- .f88_and(cm < 3.5, vm < 3.5, vd < 5.5, .f88_cmp(oc, ">=", 0.6))
       relaxed <- .f88_and(lime, cm < 3.5, vm <= 5, .f88_cmp(oc, ">=", 2.5))
       .f88_or(strict, relaxed)
     }
+    if (e74) flags <- c(flags, "om_from_oc_x1.724")
     lime <- .f88_cmp(m_cc$value, ">", 40)
     colour_mix <- col_oc(m_vm$value, m_cm$value, m_vd$value, m_oc$value, lime)
     if (is.na(colour_mix)) missing <- c(missing, "munsell_value_moist", "munsell_chroma_moist",
                                         "munsell_value_dry", "oc_pct", "caco3_pct")
-    not_org <- .f88_not(.f88_organic_v(m_oc$value, m_cl$value, sat))
+    not_org <- .f88_not(if (e74) .f74_organic_v(m_oc$value, m_cl$value, sat)
+                        else .f88_organic_v(m_oc$value, m_cl$value, sat))
     if (is.na(not_org)) missing <- c(missing, "oc_pct")
     bs_mix <- if (umbric) .f88_cmp(m_bs$value, "<", 50) else .f88_cmp(m_bs$value, ">=", 50)
     if (is.na(bs_mix)) missing <- c(missing, "bs_pct")
     mh <- .f88_massive_hard(x)
+    # 1974 umbric A (74 p. 24): the massive-and-hard restriction applies only
+    # to an A that becomes dry: not to one in a perudic or peraquic moisture
+    # regime recorded at the site (soilKey's reading)
+    if (e74 && umbric && .f74_always_moist(x)) {
+      mh <- rep(FALSE, x$n); flags <- c(flags, "umbric_always_moist_no_consistence_restriction")
+    }
     struct_mix <- !any(mh[intersect(win, a$layers)])
     # every A layer whose base lies below the mixed 18 cm (one that straddles
     # 18 cm included) is also read on its own values (Hugo, 2026-11-09)
@@ -683,7 +717,8 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
       else if (x$rock[ref]) { flags <- c(flags, "rock_below_a_contrast_not_read"); TRUE }
       else .f88_and(m_vm$value <= col$vm[ref] - 1, m_vd$value <= col$vd_or_inferred[ref] - 1)
     if (!is.na(ref) && !x$rock[ref]) flags <- c(flags, .f88_flags(col$flags, ref))
-    contrast <- .f88_or(contrast, humic)
+    # the strongly humic waiver is of 1988 (p. 26); 1974 has none (74 p. 24)
+    if (!e74) contrast <- .f88_or(contrast, humic)
     if (is.na(contrast)) missing <- c(missing, "munsell_value_moist", "munsell_value_dry", "oc_pct")
     # criterion 6, citric P2O5 below 250 mg/kg (Q14): measured decides (not
     # when it increases below the A; phosphate nodules, the other exception,
@@ -706,6 +741,13 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
                         else "p2o5_not_recorded_no_anthropic_layer")
     }
     p_all <- all(p_ok)
+    # 1974 umbric A (74 p. 24): plaggen A horizons, built by slow additions
+    # under cultivation, are excluded: a manuring record in a layer of the A
+    # (.F88_MANURE_RE) or a WRB plaggic horizon; not recorded, absent
+    if (e74 && umbric) {
+      pl <- .f74_plaggen(x, al)
+      if (isTRUE(pl)) { p_all <- FALSE; flags <- c(flags, "plaggen_a_not_umbric") }
+    }
     crit <- list(structure = struct_mix, contrast = contrast,
                  base_saturation = bs_mix, colour_and_carbon = colour_mix, not_organic = not_org,
                  thickness = thick, p2o5 = p_all, lime_waiver = lime,
@@ -824,6 +866,8 @@ fimic_a_fao88 <- function(pedon) {
     lo <- .f88_chr(x, "layer_origin")[i]
     fresh <- !is.na(strat) && !(strat %in% c("none", "no")) &&
       (isTRUE(rec) || (!is.na(lo) && grepl("fluv|alluv", lo)))
+    # the fresh-alluvium exclusion is of 1988 (p. 27); 1974 has none (74 p. 25)
+    if (identical(x$edition, "1974")) fresh <- FALSE
     status <- if (fresh) FALSE else .f88_not(dark)
     status <- .f88_and(status, !any(x$buried[a$layers] %in% TRUE))
     .f88_one(status, a$layers, x, missing = unique(c(mo$missing, um$missing)),
@@ -1105,6 +1149,17 @@ cambic_b_fao88 <- function(pedon, max_top_cm = 125) {
       if (any(ae[seq_len(i - 1L)])) return(TRUE)
       !is.na(x$top[i]) && x$top[i] >= 12.5
     }, logical(1))
+    if (identical(x$edition, "1974")) {
+      # 1974 (74 p. 26): the requirements met below 12.5 cm and, when an Ap
+      # is present, below the Ap: the deeper of the two (soilKey's reading);
+      # a layer that reaches below that depth counts
+      ap <- !is.na(x$desg) & grepl("^A[a-z0-9]*p", x$desg)
+      last_ap <- if (any(ap)) max(which(ap)) else 0L
+      lim <- max(12.5, if (last_ap) x$bot[last_ap] else 0, na.rm = TRUE)
+      pos <- vapply(seq_len(n), function(i) {
+        bl[i] && i > last_ap && !is.na(x$bot[i]) && x$bot[i] > lim
+      }, logical(1))
+    }
     pos <- .f88_unburied(x, pos)
     cem <- .f88_cemented(x)$value
     # the illuvial humus or sesquioxides of the designation: h, s, or the
@@ -1338,8 +1393,10 @@ calcic_fao88 <- function(pedon, max_top_cm = 125) {
     if (!x$n) return(list(units = list()))
     gl <- .f88_gypsic_layer(x)
     g <- .f88_gypsum(x)$value
+    # 1988 (p. 32) 15 cm or more; 1974 (74 p. 27) more than 15 cm
+    e74 <- identical(x$edition, "1974")
     units <- .f88_units(x, gl$value, function(r) {
-      if (r$thickness < 15) return(FALSE)
+      if (r$thickness < 15 || (e74 && r$thickness <= 15)) return(FALSE)
       th <- pmin(x$bot[r$layers], r$bottom) - pmax(x$top[r$layers], r$top)
       if (anyNA(g[r$layers])) return(NA)
       sum(g[r$layers] * th) >= 150
@@ -1453,6 +1510,12 @@ sulfuric_fao88 <- function(pedon, max_top_cm = 125) {
     }
     le2r <- .f88_or(le2, red & !is.na(cm) & cm == 3)
     flag[red & !(le2 %in% TRUE) & !is.na(cm) & cm == 3] <- "chroma_3_on_red_parent_material"
+    if (identical(x$edition, "1974")) {
+      # 1974 (74 p. 27): no chroma limit at a dry value of 5 or 6 or a moist
+      # value of 4 or 5 (as printed); the chroma 3 of red parent materials
+      # falls within the limit of 3 at the higher values
+      le2r <- rep(TRUE, n); flag <- rep(NA_character_, n)
+    }
     addf <- function(f, sel, lab) ifelse(sel, ifelse(is.na(f), lab, paste(f, lab, sep = "; ")), f)
     flag <- addf(flag, !is.na(col$flags), "dry_value_from_moist_plus_1")
     flag <- addf(flag, dry_c, "dry_chroma_from_moist")

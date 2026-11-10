@@ -159,6 +159,7 @@ horizons:
     clay_gt_pct: 15
     texture: "sandy loam or finer"
     rock_structure_lt_pct: 5
+    primary_minerals_traces_max_pct: {value: 3, source: "soilKey: 'no more than traces' read as the cambic B's line of significant amounts, 3 % weatherable minerals (74 p. 26), flagged (0.9.387 reading)"}
   calcic:
     page: 27
     thickness_min_cm: 15
@@ -177,6 +178,7 @@ horizons:
     jarosite_hue_min: "2.5Y"
     jarosite_chroma_min: 6
     jarosite_required: {value: true, source: "'and jarosite mottles' (Q18)"}
+    thickness_min_cm: {value: null, source: "none printed; none asked (0.9.387 reading; 1988 asks 15 cm)"}
   albic_e:
     page: 27
     value_moist_min: 4
@@ -230,6 +232,7 @@ properties:
     page: "29-30"
     source: "groundwater with the capillary fringe at the surface; a histic H; hues N or bluer than 10Y; the colour branches 4.1 to 4.5 (Q22)"
     calcic_intervening_within_cm: 75
+    plinthite_continuous_phase_min_pct: {value: 50, source: "soilKey: a 'continuous phase' of plinthite read as half the volume (0.9.388 reading)"}
     oxic_plinthite_within_cm: 30
     oxic_mottles_within_cm: 50
   interfingering:

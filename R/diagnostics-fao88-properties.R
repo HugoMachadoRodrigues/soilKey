@@ -80,6 +80,12 @@
 .f88_pr_result <- function(x, id, st, flags = character(0), missing = character(0),
                            evidence = list(), notes = character(0), stand_in = character(0),
                            values = NULL, max_top_cm = NULL, window_cm = NULL) {
+  # a context of the 1974 legend (0.9.388): its own table, names and pages
+  if (identical(x$edition, "1974")) {
+    return(.f74_pr_result(x, id, st, flags = flags, missing = missing, evidence = evidence,
+                          notes = notes, stand_in = stand_in, values = values,
+                          max_top_cm = max_top_cm, window_cm = window_cm))
+  }
   info <- .F88_PR[.F88_PR$id == id, , drop = FALSE]
   passed <- st$value
   if (length(passed) != 1L) passed <- NA
@@ -120,8 +126,9 @@
 
 # A property read per layer: `reader(x)` gives list(value, flags (one per
 # layer, "; " lists), missing, evidence).
-.f88_pr_layers <- function(pedon, id, reader, max_top_cm = NULL, window_cm = NULL) {
-  x <- .f88_ctx(pedon)
+.f88_pr_layers <- function(pedon, id, reader, max_top_cm = NULL, window_cm = NULL,
+                           ctx = .f88_ctx) {
+  x <- ctx(pedon)
   if (!x$n) return(.f88_pr_result(x, id, list(value = FALSE, layers = integer(0))))
   r <- reader(x)
   v <- as.logical(r$value)
@@ -819,9 +826,17 @@ gypsiferous_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # the subhorizon (skeletans_pct). Not recorded: absent, flagged (a field
 # observation; Hugo, 2026-11-09). No grouping or unit of 1988 uses it.
 interfingering_fao88 <- function(pedon, max_top_cm = NULL) {
-  .f88_pr_layers(pedon, "interfingering", function(x) {
-    bt <- .f88_or(.f88_in_units(x, .f88_hz_argic_natric(x, FALSE)),
-                  .f88_in_units(x, .f88_hz_argic_natric(x, TRUE)))
+  .f88_pr_layers(pedon, "interfingering", .f88_interfingering_v, max_top_cm)
+}
+
+# The reader, shared with 1974 (74 p. 30, unchanged; the argillic and natric
+# B of 1974 in a context of that edition).
+.f88_interfingering_v <- function(x) {
+    e74 <- identical(x$edition, "1974")
+    bt <- if (e74) .f88_or(.f88_in_units(x, .f74_hz_argillic_natric(x, FALSE)),
+                           .f88_in_units(x, .f74_hz_argillic_natric(x, TRUE)))
+          else .f88_or(.f88_in_units(x, .f88_hz_argic_natric(x, FALSE)),
+                       .f88_in_units(x, .f88_hz_argic_natric(x, TRUE)))
     ae <- .f88_in_units(x, .f88_hz_albic_e(x))
     above <- vapply(seq_len(x$n), function(i) {
       if (i == 1L) return(FALSE)
@@ -835,7 +850,6 @@ interfingering_fao88 <- function(pedon, max_top_cm = NULL) {
     flag <- ifelse(none & !(.f88_and(bt, above) %in% FALSE), "skeletans_not_recorded_absent", NA_character_)
     list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag,
          missing = c("skeletans_pct", "skeletan_thickness_mm"))
-  }, max_top_cm)
 }
 
 
@@ -905,7 +919,11 @@ organic_soil_materials_fao88 <- function(pedon, max_top_cm = NULL) {
 # description that ends above `max_top_cm` is not undecided (soilKey's
 # reading).
 permafrost_fao88 <- function(pedon, max_top_cm = NULL) {
-  x <- .f88_ctx(pedon)
+  .f88_permafrost_x(.f88_ctx(pedon), max_top_cm)
+}
+
+# The reader on a context, shared with 1974 (74 p. 30, unchanged).
+.f88_permafrost_x <- function(x, max_top_cm = NULL) {
   id <- "permafrost"
   if (!x$n) return(.f88_pr_result(x, id, list(value = FALSE, layers = integer(0))))
   t <- .f88_num(x, "permafrost_temp_C")
@@ -952,7 +970,11 @@ permafrost_fao88 <- function(pedon, max_top_cm = NULL) {
 # plinthite. `min_thickness_cm` asks for a run of such layers that thick.
 # Field observations: not recorded, absent.
 plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top_cm = NULL) {
-  .f88_pr_layers(pedon, "plinthite", function(x) {
+  .f88_pr_layers(pedon, "plinthite", function(x) .f88_plinthite_v(x, min_pct, min_thickness_cm),
+                 max_top_cm)
+}
+
+.f88_plinthite_v <- function(x, min_pct = NULL, min_thickness_cm = 0) {
     p <- .f88_num(x, "plinthite_pct")
     suf <- ifelse(is.na(x$desg), NA_character_, sub("^[A-Z]+(/[A-Z]+)?", "", x$desg))
     vd <- !is.na(suf) & grepl("v", suf)
@@ -973,7 +995,6 @@ plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top
       v <- .f88_member(x, units)
     }
     list(value = v, flags = flag, missing = "plinthite_pct")
-  }, max_top_cm)
 }
 
 
@@ -1010,22 +1031,26 @@ salic_properties_fao88 <- function(pedon, max_top_cm = 30) {
 # (Hugo, 2026-11-09).
 .F88_NONE_RE <- "^(none|absent|no|nenhum|nenhuma|ausente|ausentes|sem|0|false|f|nil|-)$"
 slickensides_fao88 <- function(pedon, max_top_cm = NULL) {
-  .f88_pr_layers(pedon, "slickensides", function(x) {
+  .f88_pr_layers(pedon, "slickensides", .f88_slickensides_v, max_top_cm)
+}
+
+.f88_slickensides_v <- function(x) {
     s <- .fao_col(x$h, "slickensides", "character")
     rec <- !is.na(s) & nzchar(trimws(s))
     v <- rec & !grepl(.F88_NONE_RE, .field_term(s))
     flag <- ifelse(rec, NA_character_, "slickensides_not_recorded_absent")
     list(value = .f88_pr_clean(x, v), flags = flag)
-  }, max_top_cm)
 }
 
 # Smeary (thixotropic) consistence: smeary_consistence; else a
 # thixotropic_index of 50 or more, flagged; else absent (.fao_smeary()).
 smeary_fao88 <- function(pedon, max_top_cm = NULL) {
-  .f88_pr_layers(pedon, "smeary", function(x) {
+  .f88_pr_layers(pedon, "smeary", .f88_smeary_v, max_top_cm)
+}
+
+.f88_smeary_v <- function(x) {
     s <- .fao_smeary(x$h)
     list(value = .f88_pr_clean(x, s$value), flags = s$flags)
-  }, max_top_cm)
 }
 
 
@@ -1165,14 +1190,20 @@ sulfidic_materials_fao88 <- function(pedon, max_top_cm = NULL) {
 # part, undecided.
 tonguing_fao88 <- function(pedon, kind = c("albic", "chernozem"), max_top_cm = NULL) {
   kind <- match.arg(kind)
-  .f88_pr_layers(pedon, "tonguing", function(x) {
+  .f88_pr_layers(pedon, "tonguing", function(x) .f88_tonguing_v(x, kind), max_top_cm)
+}
+
+# The reader, shared with 1974 (74 p. 31, the same numbers; the argillic and
+# cambic B of 1974 in a context of that edition).
+.f88_tonguing_v <- function(x, kind) {
+    e74 <- identical(x$edition, "1974")
     n <- x$n
     vol <- .f88_num(x, "tongue_vol_pct"); wd <- .f88_num(x, "tongue_width_mm")
     dp <- .f88_num(x, "tongue_depth_cm")
     flag <- rep(NA_character_, n)
     target <- rep(FALSE, n)
     if (kind == "albic") {
-      ar <- .f88_hz_argic_natric(x, FALSE)
+      ar <- if (e74) .f74_hz_argillic_natric(x, FALSE) else .f88_hz_argic_natric(x, FALSE)
       ae <- .f88_in_units(x, .f88_hz_albic_e(x))
       for (u in ar$units) {
         i <- u$layers[1L]
@@ -1184,7 +1215,7 @@ tonguing_fao88 <- function(pedon, kind = c("albic", "chernozem"), max_top_cm = N
                      ifelse(tex == "medium or coarser", 15, NA_real_)))
     } else {
       a <- .f88_a_run(x)
-      cb <- .f88_in_units(x, .f88_hz_cambic_b(x))
+      cb <- .f88_in_units(x, if (e74) .f74_hz_cambic(x) else .f88_hz_cambic_b(x))
       if (!is.null(a)) {
         k <- max(a$layers) + 1L
         if (k <= n && !x$rock[k]) {
@@ -1213,7 +1244,6 @@ tonguing_fao88 <- function(pedon, kind = c("albic", "chernozem"), max_top_cm = N
     list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag,
          missing = c("tongue_vol_pct", "tongue_width_mm", "tongue_depth_cm"),
          evidence = list(kind = kind))
-  }, max_top_cm)
 }
 
 
@@ -1252,12 +1282,15 @@ vertic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
 # Al-interlayered chlorite; sepiolite, talc, glauconite) are reported from
 # clay_mineralogy, not counted in the per cent.
 weatherable_minerals_fao88 <- function(pedon, min_pct = 10, max_top_cm = NULL) {
-  .f88_pr_layers(pedon, "weatherable_minerals", function(x) {
+  .f88_pr_layers(pedon, "weatherable_minerals", function(x) .f88_weatherable_v(x, min_pct),
+                 max_top_cm)
+}
+
+.f88_weatherable_v <- function(x, min_pct) {
     wm <- .f88_num(x, "weatherable_minerals_pct")
     cm <- .f88_chr(x, "clay_mineralogy")
     two1 <- !is.na(cm) & grepl("smectit|illit|vermicul|interstrat|mixed|montmor|sepiol|talc|glauconit", cm)
     list(value = .f88_pr_clean(x, .f88_cmp(wm, ">=", min_pct)),
          missing = "weatherable_minerals_pct",
          evidence = list(weatherable_clays = data.frame(layer = x$idx, two_to_one = two1)))
-  }, max_top_cm)
 }
