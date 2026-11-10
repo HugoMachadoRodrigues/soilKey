@@ -892,3 +892,19 @@ readings:
     page: "pp. 115, 124"
     version: "0.9.391"
     reading: "On p. 115 the comment of the Fluvisols grouping is set one column to the right (its second line runs under the units); read as the grouping's comment. On p. 124 the Acrisols' ''lacking an aridic moisture regime' deleted' runs into the comment of the Gleyic Acrisols; read as the grouping's comment, the Gleyic Acrisols' own being the 0-100 cm of the gleyic properties (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  # --- 0.9.392: reading FAO-Unesco labels and the offline ISIS benchmark ------------------
+  - topic: "Labels: edition from the publication year"
+    edition: [1988, 1974]
+    page: "title page; 74 Vol. I"
+    version: "0.9.392"
+    reading: "A label of 1974 is read in fao1974; one of 1988, 1990 or 1997 (the printings of the Revised Legend; ISIS stores the revised names under the ISRIC reprint of 1997) in fao1988. Any other year is not read (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "Labels: singular, Nitosol and Nitisol, subunits, phases"
+    edition: [1988, 1974]
+    page: "pp. 63-66; 74 pp. 12-13"
+    version: "0.9.392"
+    reading: "A group word is read singular or plural, case alike, exact names only. The 1974 'Nitosol' and the 1988 'Nitisol' are read in the other edition too, flagged nitosol_nitisol. A hyphenated prefix of the unit adjective is ISRIC's third level ('Ferri-Haplic'), cut off and reported, never scored (the legend defines no list of subunits, p. 66). Words after the group are matched to the phase ids of the edition; others are reported apart. A single-unit group of 1974 named alone is its own unit (soilKey's reading, for Hugo to confirm, 2026-11-09)."
+  - topic: "ISIS benchmark: what counts"
+    edition: [1988, 1974]
+    page: "Q5, Q27"
+    version: "0.9.392"
+    reading: "Offline, on the cached ISIS profiles, the reader unchanged (Q27). Grouping and unit agreement with Wilson 95 % intervals; a fall-through (no gate passed: candidates undecided, or not classified, Q5) counts as a disagreement. Provisional = a class tested before the assigned one left undecided at that level or above; stand-in = a passed test of the assigned class resting on a USDA or WRB stand-in; firm = neither. A labelled phase is scored against soilKey's status of that phase; phases are not required to be exhaustive in the labels, so a phase soilKey finds present and the label omits is reported, not scored as an error (soilKey's reading, for Hugo to confirm, 2026-11-09)."

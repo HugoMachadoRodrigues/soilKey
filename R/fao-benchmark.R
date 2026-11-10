@@ -186,3 +186,157 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
   }
   sprintf("Legend of 1974: %s.", paste(parts, collapse = "; "))
 }
+
+
+# --- reading a FAO-Unesco label (v0.9.392) -------------------------------------------------
+#
+# Reference profiles carry FAO-Unesco names written as names, not codes, in
+# the singular and in title case, with an optional third-level subunit
+# prefixed to the unit adjective and optional phases after the group:
+# "[<Subunit>-]<Unit> <Group>[ <phase> ...]", e.g. "Orthi-Gleyic Acrisol",
+# "Gleyic Cambisol petroferric". .fao_match_label() reads such a label in one
+# edition and returns the codes of its grouping and unit; it serves the
+# offline ISIS benchmark (inst/benchmarks/fao_isis.R) and never classifies.
+#
+# How a label is read (soilKey's readings, readings.yaml):
+#   1. the edition: "1974" (fao1974) or "1988" (fao1988); a publication year
+#      is accepted (1974 -> 1974; 1988, 1990 and 1997, the reprints of the
+#      Revised Legend, -> 1988);
+#   2. the group: the word that names a group of the edition, singular or
+#      plural (case alike); the 1974 "Nitosol" and the 1988 "Nitisol" are
+#      read in the other edition too, flagged "nitosol_nitisol";
+#   3. the words after the group are phases, each matched to a phase of the
+#      edition (phases.yaml ids); a word that is not one is reported apart;
+#   4. the words before the group are the unit adjective; a hyphenated
+#      prefix (ISRIC's third level, "Orthi-", "Abrupti-") is cut off and
+#      reported as the subunit; the unit is "<adjective> <group plural>"
+#      matched exactly to a unit name of that group; a single-unit group of
+#      1974 (Lithosols, Rankers, Rendzinas) named alone is its own unit;
+#   5. exact names only: no other spelling is accepted unless the caller's
+#      `variants` (regular expression = replacement, case ignored) rewrite
+#      the label first, and such a match is flagged "variant".
+
+.fao_label_edition <- function(edition) {
+  e <- as.character(edition)
+  out <- rep(NA_character_, length(e))
+  out[e %in% c("1974", "74", "fao1974")] <- "1974"
+  out[e %in% c("1988", "88", "1990", "1997", "fao1988")] <- "1988"
+  out
+}
+
+.fao_label_tables <- function(edition) {
+  key <- paste0("labels_", edition)
+  if (!is.null(.fao_cw_cache[[key]])) return(.fao_cw_cache[[key]])
+  if (edition == "1974") {
+    g <- .F74_GROUPS; u <- load_rules("fao1974")$units
+    ph <- vapply(.fao74_phase_rules()$phases, function(p) as.character(p$id), "")
+    single <- .F74_SINGLE
+  } else {
+    g <- .F88_GROUPINGS; u <- load_rules("fao1988")$units
+    ph <- vapply(.fao88_phase_rules()$phases, function(p) as.character(p$id), "")
+    single <- character(0)
+  }
+  units <- do.call(rbind, lapply(names(u), function(gc) data.frame(
+    group = gc, code = vapply(u[[gc]], function(e) as.character(e$code), ""),
+    name = vapply(u[[gc]], function(e) as.character(e$name), ""), stringsAsFactors = FALSE)))
+  tab <- list(groups = data.frame(code = g$code, name = g$name, key = .fao_group_key(g$name),
+                                  stringsAsFactors = FALSE),
+              units = units, phases = ph, single = single)
+  assign(key, tab, envir = .fao_cw_cache)
+  tab
+}
+
+# A group word as a key: lower case, letters only, one final "s" dropped
+# ("Solonetz" has none to drop).
+.fao_group_key <- function(x) sub("s$", "", gsub("[^a-z]", "", tolower(as.character(x))))
+
+#' Read a FAO-Unesco label in one edition
+#'
+#' @param x Character vector of labels ("Orthi-Gleyic Acrisol",
+#'   "Gleyic Cambisol petroferric", "Lithosol").
+#' @param edition The edition of each label (recycled): "1974" or "1988",
+#'   or a publication year (1974; 1988, 1990 or 1997 for the Revised
+#'   Legend).
+#' @param variants Optional named character vector: regular expressions
+#'   (case ignored) and their replacements, applied only to a label that is
+#'   not read as it stands.
+#' @return A data frame, one row per label: \code{label}, \code{edition},
+#'   \code{subunit} (the hyphenated prefix cut off, or NA),
+#'   \code{group_code}, \code{group_name}, \code{unit_code},
+#'   \code{unit_name} (NA where not read), \code{phases} (the phase ids
+#'   read, joined by ", "), \code{phases_unread} (words after the group that
+#'   are no phase of the edition), \code{matched_by} ("name", "variant" or
+#'   NA) and \code{flags} ("nitosol_nitisol", "single_unit_group").
+#' @keywords internal
+#' @noRd
+.fao_match_label <- function(x, edition, variants = NULL) {
+  x <- as.character(x)
+  ed <- rep_len(.fao_label_edition(edition), length(x))
+  one <- function(lab, e) {
+    out <- data.frame(label = lab, edition = e, subunit = NA_character_,
+                      group_code = NA_character_, group_name = NA_character_,
+                      unit_code = NA_character_, unit_name = NA_character_,
+                      phases = "", phases_unread = "", matched_by = NA_character_,
+                      flags = "", stringsAsFactors = FALSE)
+    if (is.na(lab) || is.na(e) || !nzchar(trimws(lab))) return(out)
+    tab <- .fao_label_tables(e)
+    read <- function(s) {
+      w <- strsplit(trimws(gsub("\\s+", " ", s)), " ", fixed = TRUE)[[1]]
+      k <- .fao_group_key(w)
+      gk <- tab$groups$key
+      flags <- character(0)
+      # the other edition's spelling of the Nitosols / Nitisols
+      alt <- c(nitosol = "nitisol", nitisol = "nitosol")
+      gi <- which(k %in% gk)
+      if (!length(gi)) {
+        gi <- which(k %in% names(alt) & alt[k] %in% gk)
+        if (length(gi)) { k[gi] <- alt[k[gi]]; flags <- "nitosol_nitisol" }
+      }
+      if (length(gi) != 1L) return(NULL)
+      g <- tab$groups[match(k[gi], gk), ]
+      res <- list(group_code = g$code, group_name = g$name, flags = flags,
+                  subunit = NA_character_, unit_code = NA_character_, unit_name = NA_character_)
+      after <- if (gi < length(w)) tolower(w[(gi + 1L):length(w)]) else character(0)
+      res$phases <- paste(after[after %in% tab$phases], collapse = ", ")
+      res$phases_unread <- paste(after[!after %in% tab$phases], collapse = ", ")
+      before <- if (gi > 1L) w[seq_len(gi - 1L)] else character(0)
+      if (!length(before)) {
+        if (g$code %in% tab$single) {
+          res$unit_code <- g$code; res$unit_name <- g$name
+          res$flags <- c(res$flags, "single_unit_group")
+        }
+        return(res)
+      }
+      adj <- paste(before, collapse = " ")
+      if (grepl("-", adj, fixed = TRUE)) {
+        res$subunit <- sub("-[^-]*$", "", adj)
+        adj <- sub("^.*-", "", adj)
+      }
+      cand <- tab$units[tab$units$group == g$code, , drop = FALSE]
+      hit <- which(tolower(cand$name) == tolower(paste(adj, g$name)))
+      if (length(hit) == 1L) {
+        res$unit_code <- cand$code[hit]; res$unit_name <- cand$name[hit]
+      }
+      res
+    }
+    r <- read(lab)
+    by <- "name"
+    if ((is.null(r) || is.na(r$unit_code)) && length(variants)) {
+      s <- lab
+      for (i in seq_along(variants)) s <- gsub(names(variants)[i], variants[[i]], s, ignore.case = TRUE, perl = TRUE)
+      if (!identical(s, lab)) {
+        r2 <- read(s)
+        if (!is.null(r2) && (is.null(r) || !is.na(r2$unit_code))) { r <- r2; by <- "variant" }
+      }
+    }
+    if (is.null(r)) return(out)
+    for (f in c("subunit", "group_code", "group_name", "unit_code", "unit_name", "phases", "phases_unread"))
+      out[[f]] <- r[[f]]
+    out$matched_by <- by
+    out$flags <- paste(r$flags, collapse = ", ")
+    out
+  }
+  res <- do.call(rbind, Map(one, x, ed))
+  rownames(res) <- NULL
+  res
+}
