@@ -490,9 +490,12 @@
     org <- .f88_organic(x)
     ok <- .f88_unburied(x, org$value)
     e74 <- identical(x$edition, "1974")
-    # 1974 (74 p. 24): an H horizon more than 20 cm thick, no depth printed
-    # (the upper limit of 125 cm is applied by the caller, Q10)
-    units <- .f88_units(x, ok, function(r) {
+    # 1974 (74 p. 24): an H horizon (saturated or drained, p. 21; .f74_h_v())
+    # more than 20 cm thick, no depth printed (the upper limit of 125 cm is
+    # applied by the caller, Q10); the thin surface and plough layer paths
+    # below read the organic layers
+    okh <- if (e74) .f88_unburied(x, .f74_h_v(x)) else ok
+    units <- .f88_units(x, okh, function(r) {
       if (!e74 && r$top > 40) return(FALSE)
       r$thickness > 20
     })
@@ -1147,12 +1150,14 @@ cambic_b_fao88 <- function(pedon, max_top_cm = 125) {
       !is.na(x$top[i]) && x$top[i] >= 12.5
     }, logical(1))
     if (identical(x$edition, "1974")) {
-      # 1974 (74 p. 26): below 12.5 cm and, when an Ap is present, below the
-      # Ap: the deeper of the two (soilKey's reading)
+      # 1974 (74 p. 26): the requirements met below 12.5 cm and, when an Ap
+      # is present, below the Ap: the deeper of the two (soilKey's reading);
+      # a layer that reaches below that depth counts
       ap <- !is.na(x$desg) & grepl("^A[a-z0-9]*p", x$desg)
       last_ap <- if (any(ap)) max(which(ap)) else 0L
+      lim <- max(12.5, if (last_ap) x$bot[last_ap] else 0, na.rm = TRUE)
       pos <- vapply(seq_len(n), function(i) {
-        bl[i] && i > last_ap && !is.na(x$top[i]) && x$top[i] >= 12.5
+        bl[i] && i > last_ap && !is.na(x$bot[i]) && x$bot[i] > lim
       }, logical(1))
     }
     pos <- .f88_unburied(x, pos)

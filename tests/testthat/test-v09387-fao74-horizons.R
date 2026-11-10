@@ -349,7 +349,8 @@ test_that("argillic B: the 3 / 1.2 / 8 increase within 30 cm and illuviation req
   r <- argillic_b_fao74(sw(25))   # 25 / 45 = 0.56 vs 10 / 35 = 0.29
   expect_true(.ok(r))
   expect_true("pressure_faces_of_2to1_clays" %in% r$evidence$flags)
-  expect_false(.ok(argillic_b_fao74(sw(13))))
+  # the evidence of pressure is an alternative of its own (p. 25 item 4)
+  expect_true(.ok(argillic_b_fao74(sw(13))))
 })
 
 test_that("natric B: argillic items 1-5, columnar structure and ESP above 15 %", {
@@ -418,7 +419,7 @@ test_that("spodic B: below 12.5 cm and below an Ap (1974) versus below an A (198
                                    fe_dcb_pct = c(NA, 1, NA), al_dcb_pct = c(NA, 0.8, NA),
                                    cec_ph82_cmol = c(NA, 10, NA), ph_h2o = 4.5)
   expect_true(.ok(spodic_b_fao88(sp("A", 8))))
-  expect_false(.ok(spodic_b_fao74(sp("A", 8))))       # top at 8 cm
+  expect_true(.ok(spodic_b_fao74(sp("A", 8))))        # 8-40 cm: counts by its part below 12.5
   expect_true(.ok(spodic_b_fao74(sp("A", 13))))
   expect_true(.ok(spodic_b_fao74(sp("Ap", 20))))
   # the index of accumulation 65: (CEC 8.2 x 100 / clay - clay / 2) x thickness
@@ -610,4 +611,82 @@ test_that("the numbers of the 1974 table and the readings of this part are recor
   expect_true(all(vapply(r387, function(r) identical(r$edition, 1974L), NA)))
   expect_true(all(grepl("for Hugo to confirm|\\(Hugo, 2026-11-0[89]\\)\\.$",
                         vapply(r387, `[[`, "", "reading"))))
+})
+
+test_that("review fixes: histic H, swelling clays, spodic depth, natric exclusion, stand-in layers, cambic CEC", {
+  skip_on_cran()
+  # the histic H of 1974 is an H horizon: saturated (a well-drained O is not)
+  oh <- function(desg, drain) .p74(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 120),
+    designation = c(desg, "Bw", "C"), oc_pct = c(30, 1, 0.3), clay_pct = c(NA, 20, 18),
+    silt_pct = c(NA, 40, 40), sand_pct = c(NA, 40, 42), site = list(id = "o", drainage_class = drain))
+  expect_false(.ok(h_horizon_fao74(oh("O", "well drained"))))
+  expect_false(.ok(histic_h_fao74(oh("O", "well drained"))))
+  expect_true(.ok(histic_h_fao74(oh("H", "well drained"))))
+  expect_true(.ok(histic_h_fao74(oh(NA, "poorly drained"))))
+  # swelling 2:1 clays: pressure, a third more fine clay or 8 points more,
+  # each an alternative (p. 25 item 4)
+  sw <- function(slick = NA, fc = c(5, 30, 20)) .p74(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 120),
+    designation = c("A", "B", "C"), clay_pct = c(30, 45, 40), fine_clay_pct = fc,
+    silt_pct = c(30, 25, 25), sand_pct = c(40, 30, 35), smectite_pct = c(60, 70, 70),
+    slickensides = slick, oc_pct = c(1, 0.5, 0.2))
+  expect_true(.ok(argillic_b_fao74(sw())))                         # fine clay ratio, no slickensides
+  expect_true(.ok(argillic_b_fao74(sw("common", fc = NA))))        # pressure, fine clay not recorded
+  ill <- .f74_illuviation(.f74_ctx(sw(NA, fc = NA)))$value
+  expect_true(is.na(ill[2]))                                        # fine clay not recorded: undecided
+  expect_false(.f74_illuviation(.f74_ctx(sw(NA, fc = c(10, 13, 12))))$value[2])
+  # spodic B of 1974: a layer reaching below 12.5 cm counts by its part below
+  pz <- function(etop, bbot = 50) .p74(top_cm = c(0, etop, bbot), bottom_cm = c(etop, bbot, 120),
+    designation = c("E", "Bhs", "C"), clay_pct = c(3, 8, 4), silt_pct = 5, sand_pct = c(92, 87, 91),
+    oc_pct = c(0.5, 2, 0.2), fe_pyro_pct = c(0.05, 1, 0.05), al_pyro_pct = c(0.05, 1, 0.05),
+    fe_dcb_pct = c(0.1, 1.2, 0.1), al_dcb_pct = c(0.1, 1.2, 0.1), cec_ph82_cmol = c(2, 15, 1),
+    ph_h2o = 4.5)
+  expect_true(.ok(spodic_b_fao74(pz(8))))
+  expect_false(.ok(spodic_b_fao74(pz(5, 12))))                       # wholly above 12.5 cm
+  ap <- .p74(top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 120), designation = c("Ap", "Bhs", "C"),
+             clay_pct = c(3, 8, 4), silt_pct = 5, sand_pct = c(92, 87, 91), oc_pct = c(2, 2, 0.2),
+             fe_pyro_pct = c(NA, 1, NA), al_pyro_pct = c(NA, 1, NA), fe_dcb_pct = c(NA, 1.2, NA),
+             al_dcb_pct = c(NA, 1.2, NA), cec_ph82_cmol = c(NA, 15, NA), ph_h2o = 4.5)
+  expect_true(.ok(spodic_b_fao74(ap)))
+  fake <- function(passed, name, lay = integer(0)) function(pedon)
+    DiagnosticResult$new(name = name, passed = passed, layers = if (isTRUE(passed)) lay else integer(0),
+                         evidence = list(), missing = character(0), reference = "test")
+  # only the natric exclusion undecided (prismatic Bt, no ESP): the natric
+  # stand-ins decide it alone; argillic_usda never answers the horizon
+  pr <- .lu74(structure_type = c("granular", "platy", "prismatic", "massive"))
+  local({
+    testthat::local_mocked_bindings(natric_horizon_usda = fake(FALSE, "natric_horizon_usda"),
+                                    argillic_usda = fake(FALSE, "argillic_usda"))
+    r <- argillic_b_fao74(pr)
+    expect_true(.ok(r))
+    expect_identical(r$layers, 3L)
+    expect_identical(r$evidence$stand_in, "natric_horizon_usda")
+  })
+  pr <- .lu74(structure_type = c("granular", "platy", "prismatic", "massive"), oc_pct = c(1.4, 0.4, 0.4, 0.2))
+  local({
+    testthat::local_mocked_bindings(natric_horizon_usda = fake(NA, "natric_horizon_usda"),
+                                    natric_horizon = fake(NA, "natric_horizon"),
+                                    argillic_usda = fake(TRUE, "argillic_usda", 3L))
+    r <- argillic_b_fao74(pr)
+    expect_true(is.na(.ok(r)))
+    expect_length(r$evidence$stand_in, 0L)
+  })
+  # stand-in layers held to max_top_cm
+  lp <- .p74(top_cm = c(0, 20, 30, 100), bottom_cm = c(20, 30, 100, 150), designation = c("A", "E", "Bt", "C"),
+             clay_pct = c(12, 12, NA, 20), silt_pct = 20, sand_pct = c(68, 68, NA, 60),
+             oc_pct = c(1.5, .4, .3, .2), clay_films_amount = c(NA, NA, "common", NA))
+  local({
+    testthat::local_mocked_bindings(argillic_usda = fake(TRUE, "argillic_usda", 4L),
+                                    argic = fake(NA, "argic"))
+    expect_true(is.na(.ok(argillic_b_fao74(lp, max_top_cm = 35))))
+    expect_true(.ok(argillic_b_fao74(lp)))
+  })
+  # cambic: a CEC by NH4Cl above 16 decides, 16 or less leaves it undecided
+  cb <- function(cec) .p74(top_cm = c(0, 15, 25), bottom_cm = c(15, 25, 120), designation = c("A", "Bw", "C"),
+    clay_pct = 20, silt_pct = 40, sand_pct = 40, oc_pct = c(0.8, 0.3, 0.1), cec_cmol = c(8, cec, 5),
+    cec_method = "nh4cl", bs_pct = 80, munsell_hue_moist = c("10YR", "7.5YR", "10YR"),
+    munsell_value_moist = 5, munsell_chroma_moist = c(3, 6, 4), munsell_value_dry = 6,
+    munsell_chroma_dry = c(3, 6, 4), structure_type = c("granular", "subangular blocky", "massive"),
+    structure_grade = c("weak", "moderate", NA), ph_h2o = 7)
+  expect_true(.f74_hz_cambic(.f74_ctx(cb(3.3)))$evidence$criteria$weatherable[2])
+  expect_true(is.na(.f74_hz_cambic(.f74_ctx(cb(3.2)))$evidence$criteria$weatherable[2]))
 })

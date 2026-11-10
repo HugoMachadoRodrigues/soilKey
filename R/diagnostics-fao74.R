@@ -103,12 +103,21 @@
              else character(0)
   layers <- x$idx[lay]
   # the stand-ins, only where the 1974 answer is undecided
-  if (is.na(passed) && stand_in && nzchar(info$stand_in[1L])) {
+  if (is.na(passed) && stand_in && !isTRUE(r$no_stand_in) && nzchar(info$stand_in[1L])) {
     for (fn in strsplit(info$stand_in[1L], ",", fixed = TRUE)[[1L]]) {
       si <- tryCatch(get(fn, mode = "function")(x$pedon), error = function(e) NULL)
       if (is.null(si) || !inherits(si, "DiagnosticResult") || is.na(si$passed)) next
+      sl <- as.integer(si$layers)
+      if (isTRUE(si$passed)) {
+        # the stand-in's layers held to the upper limit, buried layers out
+        pos <- match(sl, x$idx)
+        keep <- !is.na(pos) & !is.na(x$top[pos]) & x$top[pos] <= max_top_cm &
+          !(x$buried[pos] %in% TRUE)
+        sl <- sl[keep]
+        if (!length(sl)) next
+      }
       passed <- isTRUE(si$passed)
-      layers <- if (passed) as.integer(si$layers) else integer(0)
+      layers <- if (passed) sl else integer(0)
       ev$stand_in <- unique(c(ev$stand_in, fn))
       ev$lower_grade <- TRUE
       ev$flags <- unique(c(ev$flags, paste0("stand_in_", fn)))
@@ -177,7 +186,20 @@
   })
 }
 
-# The H horizon itself: organic matter at or above the line and saturated.
+# The H horizon itself: organic matter at or above the line and saturated;
+# per layer (.f74_h_v()) and as units.
+.f74_h_v <- function(x) {
+  .f88_memo(x, "h_layer", function() {
+    om <- .fao_om(.f88_num(x, "oc_pct"))$value
+    line <- .f74_h_line(.f88_num(x, "clay_pct"))
+    enough <- ifelse(is.na(om), NA, ifelse(om >= 30, TRUE, ifelse(om < 20, FALSE,
+                     ifelse(is.na(line), NA, om >= line))))
+    v <- .f88_and(enough, .f74_saturated(x))
+    v[x$rock] <- FALSE
+    v
+  })
+}
+
 .f74_hz_h <- function(x) {
   .f88_memo(x, "h_horizon", function() {
     if (!x$n) return(list(units = list()))
@@ -186,8 +208,7 @@
     sat <- .f74_saturated(x)
     enough <- ifelse(is.na(om), NA, ifelse(om >= 30, TRUE, ifelse(om < 20, FALSE,
                      ifelse(is.na(line), NA, om >= line))))
-    v <- .f88_and(enough, sat)
-    v[x$rock] <- FALSE
+    v <- .f74_h_v(x)
     units <- .f88_units(x, v, function(r) TRUE)
     list(units = units, flags = "om_from_oc_x1.724",
          missing = c("oc_pct", "clay_pct", if (anyNA(sat[!(enough %in% FALSE)])) "drainage_class"),
@@ -380,10 +401,12 @@ ochric_grade_fao74 <- function(pedon) {
 # The illuviation evidence of a layer (items 3 to 5, 74 p. 25): clay skins or
 # oriented clay (.f88_clay_skins(): clay films few or more, 1 % in thin
 # section, or a Bt designation, flagged, Q13), clay bridges between the sand
-# grains, or, in a clayey (35 % clay or more) B of swelling 2:1 clays, the
-# evidence of pressure (slickensides recorded) with a fine/total clay ratio a
-# third higher than, or more than 8 points of fine clay over, the layer above
-# or below. The clauses on where the skins must lie (the lower part under a
+# grains, or, in a clayey (35 % clay or more) B of swelling 2:1 clays, one of
+# the alternatives of item 4 (p. 25): the evidence of pressure (slickensides
+# recorded, or a wavy upper boundary with uncoated grains recorded in the
+# layer above), a fine/total clay ratio a third higher than the layer above
+# or below, or more than 8 points of fine clay over it (the fine-clay tests
+# undecided where fine clay is not recorded). The clauses on where the skins must lie (the lower part under a
 # broken boundary or a clayey surface; some part over a discontinuity or under
 # an Ap) are met by skins in any layer of the B (soilKey's reading).
 .f74_illuviation <- function(x) {
@@ -396,14 +419,20 @@ ochric_grade_fao74 <- function(pedon) {
     rt <- ifelse(!is.na(clay) & clay > 0, fc / clay, NA_real_)
     n <- x$n
     two <- .f74_two_to_one(x)
+    bt <- .field_term(.fao_col(x$h, "boundary_topography", "character"))
+    ug <- .f88_num(x, "uncoated_grains_pct")
     pressure <- vapply(seq_len(n), function(i) {
-      if (!isTRUE(clay[i] >= 35) || !two[i] || !slick[i]) return(FALSE)
+      if (!isTRUE(clay[i] >= 35) || !two[i]) return(FALSE)
       adj <- c(i - 1L, i + 1L); adj <- adj[adj >= 1L & adj <= n]
-      any((rt[i] >= rt[adj] * 4 / 3) %in% TRUE | (fc[i] - fc[adj] > 8) %in% TRUE)
-    }, logical(1))
-    v <- sk$value | (br %in% TRUE) | pressure
+      wavy <- i > 1L && !is.na(bt[i - 1L]) && grepl("wavy|ondulad", bt[i - 1L]) &&
+        isTRUE(ug[i - 1L] > 0)
+      ratio <- .f88_any(rt[i] >= rt[adj] * 4 / 3)
+      more <- .f88_any(fc[i] - fc[adj] > 8)
+      .f88_or(slick[i] || wavy, ratio, more)
+    }, NA)
+    v <- .f88_or(sk$value, br %in% TRUE, pressure)
     flag <- sk$flags
-    flag[pressure & !(sk$value %in% TRUE)] <- "pressure_faces_of_2to1_clays"
+    flag[pressure %in% TRUE & !(sk$value %in% TRUE)] <- "pressure_faces_of_2to1_clays"
     list(value = v, flags = flag)
   })
 }
@@ -458,7 +487,8 @@ ochric_grade_fao74 <- function(pedon) {
       }
       ts <- th_of(sure); tm <- th_of(maybe)
       thick <- if (isTRUE(ts)) TRUE else if (isFALSE(tm) && isFALSE(ts)) FALSE else NA
-      il <- if (any(ill$value[sure])) TRUE else if (any(ill$value[maybe])) NA else FALSE
+      il <- if (any(ill$value[sure] %in% TRUE)) TRUE
+            else if (any(!(ill$value[maybe] %in% FALSE))) NA else FALSE
       status <- .f88_and(st0, fine, thick, il)
       if (isFALSE(status)) next
       starts[[length(starts) + 1L]] <- list(
@@ -480,9 +510,23 @@ ochric_grade_fao74 <- function(pedon) {
   .f88_memo(x, if (natric) "natric74" else "argillic74", function() {
     core <- .f74_argillic_core(x)
     units <- list(); flags <- character(0); miss <- core$missing; ev <- list()
+    only_natric <- TRUE; nat_si <- character(0)
     for (s in core$starts) {
       nx <- .f88_natric_extra(x, s)
       st <- if (natric) .f88_and(s$status, nx$status) else .f88_and(s$status, .f88_not(nx$status))
+      # the argillic B with only its natric exclusion (item 6, p. 26)
+      # undecided: natric_horizon_usda(), then the WRB natric_horizon(),
+      # decide the exclusion alone, flagged; the 1974 layers are kept
+      if (!natric && isTRUE(s$status) && is.na(nx$status)) {
+        for (fn in c("natric_horizon_usda", "natric_horizon")) {
+          si <- tryCatch(get(fn, mode = "function")(x$pedon), error = function(e) NULL)
+          if (is.null(si) || !inherits(si, "DiagnosticResult") || is.na(si$passed)) next
+          st <- !isTRUE(si$passed); nat_si <- c(nat_si, fn)
+          flags <- c(flags, paste0("stand_in_", fn, "_for_natric_exclusion"))
+          break
+        }
+      }
+      if (is.na(st) && !(isTRUE(s$status) && is.na(nx$status))) only_natric <- FALSE
       flags <- c(flags, s$flags, nx$flags)
       if (is.na(nx$status)) miss <- c(miss, nx$missing)
       ev[[length(ev) + 1L]] <- c(list(start = x$idx[s$start], upper = x$idx[s$upper],
@@ -494,7 +538,8 @@ ochric_grade_fao74 <- function(pedon) {
                                           thickness = x$bot[L[length(L)]] - x$top[L[1L]],
                                           status = if (isTRUE(st)) TRUE else NA)
     }
-    list(units = units, flags = unique(flags), missing = unique(miss), evidence = list(starts = ev))
+    list(units = units, flags = unique(flags), missing = unique(miss), evidence = list(starts = ev),
+         stand_in = unique(nat_si), no_stand_in = !natric && only_natric)
   })
 }
 
@@ -546,7 +591,12 @@ natric_b_fao74 <- function(pedon, max_top_cm = 125) {
     wm <- .f88_num(x, "weatherable_minerals_pct"); mu <- .f88_num(x, "muscovite_pct")
     other <- ifelse(is.na(wm), NA_real_, ifelse(is.na(mu), wm, pmax(wm - mu, 0)))
     flag <- .f88_addf(flag, !is.na(wm) & is.na(mu) & wm > 3, "weatherable_minerals_muscovite_not_separated")
-    c3 <- .f88_or(.f88_cmp(cc$value, ">", 16), .f88_cmp(other, ">", 3), .f88_cmp(mu, ">", 6))
+    # a CEC by NH4Cl above 16 decides; 16 or less leaves the NH4OAc CEC
+    # undecided (as the oxic B)
+    mth <- .fao_cec_method(x$h)
+    cecv <- .f88_cmp(cc$value, ">", 16)
+    cecv[!is.na(mth) & mth == "nh4cl" & cecv %in% FALSE] <- NA
+    c3 <- .f88_or(cecv, .f88_cmp(other, ">", 3), .f88_cmp(mu, ">", 6))
     caco3 <- .f88_caco3(x)$value
     calc <- .f88_member(x, .f88_hz_calcic(x)$units)
     gc <- .f88_chr(x, "gravel_carbonate_coating")
@@ -739,7 +789,8 @@ sulfuric_fao74 <- function(pedon, max_top_cm = 125) {
 
 # --- albic E (p. 27) ----------------------------------------------------------------------
 
-# The albic E of 1988 (Appendix 4: unchanged) read as printed in 1974: a
+# The albic E of 1988 (Appendix 4: amended, 1988 p. 113) read as printed in
+# 1974, with the colour reader of 1988 and its 1974 branch: a
 # moist value of 4 or more or a dry value of 5 or more; chroma 3 or less
 # where the dry value is 7 or more or the moist value 6 or more; no chroma
 # limit at the middle values (74 p. 27, checked on the page image).
@@ -890,8 +941,9 @@ albic_e_fao74 <- function(pedon, max_top_cm = 125) {
 # more, it increases by 20 points and some part of the lower horizon (the
 # layer and its adjoining layers of the same master horizon) has at least
 # double the clay of the A or E; within 8 cm or less. "Within 8 cm" is a
-# boundary recorded abrupt or clear (FAO 2006: up to 5 cm); gradual (5 to 15
-# cm) leaves it undecided; diffuse fails; not recorded, absent, flagged (the
+# boundary recorded abrupt or clear (the classes of the 1967 Guidelines the
+# text uses, 74 p. 24: abrupt below 2.5 cm, clear 2.5 to 6.5 cm); gradual
+# (6.5 to 12.5 cm) leaves it undecided; diffuse fails; not recorded, absent, flagged (the
 # reading of 1988 at 5 cm, Hugo 2026-11-09). A layer whose top is 8 cm or
 # less below the base of the A or E, across a thin layer, is compared too.
 # An undesignated upper layer may be an A or E (undecided where the clay
@@ -1032,15 +1084,17 @@ amorphous_complex_fao74 <- function(pedon, max_top_cm = NULL, window_cm = NULL) 
 
 # --- ferralic and ferric properties (p. 28) ------------------------------------------------
 
-# Ferralic: CEC (NH4Cl) below 24 me per 100 g clay in some subhorizon of the
-# cambic B (of 1974) or in the horizon right below the A (Q12: ecec_cmol for
-# the NH4Cl CEC, flagged).
-ferralic_properties_fao74 <- function(pedon, max_top_cm = NULL) {
+# Ferralic: CEC (NH4Cl) below 24 me per 100 g clay (Q12: ecec_cmol for the
+# NH4Cl CEC, flagged), "respectively" (p. 28; Hugo, 2026-11-09): in some
+# subhorizon of the cambic B (of 1974) for the Cambisols (kind "cambisol"),
+# in the horizon right below the A for the Arenosols (kind "arenosol").
+ferralic_properties_fao74 <- function(pedon, kind = c("cambisol", "arenosol"), max_top_cm = NULL) {
+  kind <- match.arg(kind)
   .f74_pr_layers(pedon, "ferralic_properties", function(x) {
-    cb <- .f88_in_units(x, .f74_hz_cambic(x))
+    cb <- if (kind == "cambisol") .f88_in_units(x, .f74_hz_cambic(x)) else rep(FALSE, x$n)
     below_a <- rep(FALSE, x$n)
     a <- .f88_a_run(x)
-    if (!is.null(a)) {
+    if (kind == "arenosol" && !is.null(a)) {
       k <- max(a$layers) + 1L
       if (k <= x$n && !x$rock[k]) below_a[k] <- TRUE
     }
@@ -1048,7 +1102,7 @@ ferralic_properties_fao74 <- function(pedon, max_top_cm = NULL) {
     v <- .f88_and(.f88_or(cb, below_a), .f88_cmpr(cc$value, "<", 24))
     flag <- .f88_addf(cc$flags, below_a & !(cb %in% TRUE), "horizon_below_a")
     list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag, missing = cc$missing,
-         evidence = list(cambic = cb, below_a = below_a))
+         evidence = list(kind = kind, cambic = cb, below_a = below_a))
   }, max_top_cm)
 }
 
@@ -1222,14 +1276,6 @@ high_salinity_fao74 <- function(pedon) {
     } else placed <- FALSE
     ox <- .f88_member(x, .f74_hz_oxic(x)$units)
     k4 <- .f88_any(ox)
-    # a spodic, argillic or oxic B left undecided chooses its branch only
-    # where a B designation shows it (h or s; t; o or ws); else the soil is
-    # read as not of that kind, flagged (soilKey's reading)
-    bdes <- function(re) any(!is.na(x$desg) & grepl(paste0("^B[A-Za-z]*[a-z0-9]*", re), x$desg))
-    kflags <- character(0)
-    if (is.na(k1) && !bdes("[hs]")) { k1 <- FALSE; kflags <- c(kflags, "spodic_b_undecided_no_bh_bs_designation") }
-    if (is.na(placed) && !bdes("t")) { placed <- FALSE; kflags <- c(kflags, "argillic_b_undecided_no_bt_designation") }
-    if (is.na(k4) && !bdes("(o|ws)")) { k4 <- FALSE; kflags <- c(kflags, "oxic_b_undecided_no_bo_designation") }
     # 4.1 spodic soils
     b41 <- rep(FALSE, n)
     ae <- .f88_member(x, .f88_hz_albic_e(x)$units)
@@ -1260,13 +1306,17 @@ high_salinity_fao74 <- function(pedon) {
     if (length(mu)) {
       L <- max(mu[[1L]]$layers)
       cl <- cm[L]
-      below <- if (L < n) L + 1L else NA_integer_
+      below0 <- if (L < n) L + 1L else NA_integer_
+      below <- below0
+      # "or within 75 cm if a calcic horizon intervenes": the chroma 1 or
+      # less branch only
       calc <- .f88_member(x, .f88_hz_calcic(x)$units)
       if (!is.na(below) && isTRUE(calc[below])) {
         nxt <- which(seq_len(n) > L & !(calc %in% TRUE) & !x$rock & !is.na(x$top) & x$top <= 75)[1L]
         below <- nxt
       }
       ok_below <- !is.na(below) && !x$rock[below]
+      ok_below0 <- !is.na(below0) && !x$rock[below0]
       if (is.na(cl)) {
         b42[L] <- NA
       } else if (cl <= 1) {
@@ -1274,16 +1324,16 @@ high_salinity_fao74 <- function(pedon) {
         if (ok_below) {
           i <- below; r <- hr[i]; c <- cm[i]
           v <- if (neutral[i]) TRUE else if (is.na(r) || is.na(c)) NA
-               else if (r <= 20) (if (mo[i]) c < 1.5 else c < 1)
-               else if (r < 23.75) (if (dp[i]) c <= 2 else c <= 1)
+               else if (r < 21.25) (if (mo[i]) c < 1.5 else c < 1)
+               else if (r >= 21.25 && r < 23.75) (if (dp[i]) c <= 2 else c <= 1)
                else if (r <= 30) (if (dp[i]) c <= 3 else c <= 2)
                else TRUE
           if (!isFALSE(v)) b42[i] <- v
         }
       } else if (cl <= 2) {
         if (dp[L]) b42[L] <- TRUE
-        if (ok_below) {
-          i <- below
+        if (ok_below0) {
+          i <- below0
           mt <- mtab[[i]]
           low_m <- nrow(mt) > 0 && any((mt$value >= 4 & mt$chroma < 2) %in% TRUE)
           high_m <- nrow(mt) > 0 && any((mt$chroma > 2) %in% TRUE)
@@ -1334,8 +1384,10 @@ high_salinity_fao74 <- function(pedon) {
              ifelse(red45 %in% FALSE, FALSE, NA)))
     b45 <- ifelse(coarse %in% FALSE, fine45, ifelse(coarse %in% TRUE, crs45, NA))
     b45 <- as.logical(b45)
-    # the first kind that applies chooses the branch; an undecided kind is
-    # read both ways and a layer is decided where every reading agrees
+    # the first kind that applies chooses the branch; an undecided kind (a
+    # spodic, argillic or oxic B or a mollic A left undecided) is read both
+    # ways and a layer is decided where every reading agrees, else undecided
+    # (Hugo, 2026-11-09)
     bl <- list(as.logical(b41), as.logical(b42), as.logical(b43), as.logical(b44), as.logical(b45))
     ks <- c(k1, k2, placed, k4)
     opts <- lapply(ks, function(k) if (is.na(k)) c(TRUE, FALSE) else k)
@@ -1345,7 +1397,8 @@ high_salinity_fao74 <- function(pedon) {
     i4 <- apply(vals, 1L, function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA)
     v <- .f88_or(i1, i2, i3, i4)
     flag <- .f88_addf(flag, i4 %in% TRUE & !(i1 | i2 %in% TRUE), "colours_read_as_evidence_of_saturation")
-    if (length(kflags)) flag <- .f88_addf(flag, !(v %in% FALSE), paste(kflags, collapse = "; "))
+    if (length(branches) > 1L)
+      flag <- .f88_addf(flag, !(v %in% FALSE), "kind_of_soil_undecided_branches_read_both_ways")
     kind <- if (length(branches) == 1L) c("spodic", "mollic", "argillic", "oxic", "other")[branches]
             else NA_character_
     list(value = .f88_pr_clean(x, v), flags = flag,
@@ -1493,9 +1546,12 @@ takyric_features_fao74 <- function(pedon) {
 .f74_hz_thin_pan <- function(x) {
   .f88_memo(x, "thin_pan74", function() {
     pt <- .f88_chr(x, "pan_type")
-    v <- !is.na(pt) & grepl("thin iron|ironpan|iron pan|placic", pt)
-    cem <- .f88_cemented(x)$value
     thk <- x$bot - x$top
+    # a thin iron or placic pan as recorded; an "iron pan" of another kind
+    # within the limit of 40 mm
+    v <- !is.na(pt) & (grepl("thin iron|placic", pt) |
+                         (grepl("ironpan|iron pan", pt) & !is.na(thk) & thk <= 4))
+    cem <- .f88_cemented(x)$value
     dsg <- !is.na(x$desg) & (grepl("^[A-Z]+[a-z0-9]*(sm|ms)", x$desg) | grepl("placic", tolower(x$desg)))
     alt <- !v & cem & dsg & !is.na(thk) & thk <= 4
     v <- v | alt

@@ -151,6 +151,7 @@ test_that("ferralic and ferric properties: CEC (NH4Cl) below 24 me per 100 g cla
                                                designation = c("A", "Bw", "C"), clay_pct = 20,
                                                silt_pct = 40, sand_pct = 40, cec_cmol = c(8, cec, 5),
                                                cec_method = method, bs_pct = 80, ph_h2o = 7,
+                                               oc_pct = c(0.8, 0.3, 0.1),
                                                munsell_hue_moist = c("10YR", "7.5YR", "10YR"),
                                                munsell_value_moist = 5, munsell_chroma_moist = c(3, 6, 4),
                                                munsell_value_dry = 6, munsell_chroma_dry = c(3, 6, 4),
@@ -158,10 +159,21 @@ test_that("ferralic and ferric properties: CEC (NH4Cl) below 24 me per 100 g cla
                                                structure_grade = c("weak", "moderate", NA))
   expect_true(.ok(ferralic_properties_fao74(cb(4.7))))    # 23.5
   expect_false(.ok(ferralic_properties_fao74(cb(4.8))))   # 24
+  # "respectively" (Hugo, 2026-11-09): the cambic B for the Cambisols, the
+  # horizon right below the A for the Arenosols
+  expect_identical(ferralic_properties_fao74(cb(4.7))$evidence$kind, "cambisol")
+  ar <- .q74(top_cm = c(0, 15, 40), bottom_cm = c(15, 40, 120), designation = c("A", "C1", "C2"),
+             clay_pct = c(5, 5, 5), silt_pct = 5, sand_pct = 90, cec_cmol = c(3, c(1.1, 3)),
+             cec_method = "nh4cl")
+  expect_true(.ok(ferralic_properties_fao74(ar, kind = "arenosol")))     # 22 below the A
+  expect_false(.ok(ferralic_properties_fao74(ar)))                       # no cambic B
+  ar2 <- .q74(top_cm = c(0, 15, 40), bottom_cm = c(15, 40, 120), designation = c("A", "C1", "C2"),
+              clay_pct = 5, silt_pct = 5, sand_pct = 90, cec_cmol = c(3, 1.2, 1), cec_method = "nh4cl")
+  expect_false(.ok(ferralic_properties_fao74(ar2, kind = "arenosol")))   # 24 below the A
   # the NH4Cl CEC from ecec_cmol, flagged (Q12)
   p <- .q74(top_cm = c(0, 15, 40), bottom_cm = c(15, 40, 120), designation = c("A", "Bw", "C"),
             clay_pct = 20, silt_pct = 40, sand_pct = 40, ecec_cmol = c(8, 4, 5))
-  r <- ferralic_properties_fao74(p)
+  r <- ferralic_properties_fao74(p, kind = "arenosol")
   expect_true(.ok(r))
   expect_true("ecec_for_nh4cl_cec" %in% r$evidence$flags)
   # ferric: in a subhorizon of the argillic B (25 % clay: 6.0 is 24)
@@ -228,7 +240,8 @@ test_that("hydromorphic properties: groundwater, histic H, bluish hues and colou
          munsell_hue_moist = c("10YR", hue), munsell_value_moist = c(4, vm),
          munsell_chroma_moist = c(3, cm), munsell_value_dry = c(5, vm + 1),
          munsell_chroma_dry = c(3, cm), mottle_colors = c(NA, mott),
-         mottle_contrast = c(NA, contrast), oc_pct = c(0.5, 0.2), bs_pct = 60, site = site)
+         mottle_contrast = c(NA, contrast), oc_pct = c(0.5, 0.2), bs_pct = 60, ph_h2o = 7,
+         cec_cmol = 20, site = site)
   expect_true(.ok(hydromorphic_properties_fao74(ot(5, 1))))
   expect_false(.ok(hydromorphic_properties_fao74(ot(5, 2))))
   expect_true(.ok(hydromorphic_properties_fao74(ot(5, 2, "7.5YR 5/8"))))
@@ -275,7 +288,7 @@ test_that("hydromorphic properties: groundwater, histic H, bluish hues and colou
                                  bottom_cm = c(20, 30, 90, 150), munsell_value_moist = c(3, 4, 5, 5),
                                  munsell_chroma_moist = c(2, 3, cm, 4), munsell_hue_moist = "10YR",
                                  mottle_colors = c(NA, NA, mott, NA),
-                                 clay_pct = c(12, 13, 25, 22))
+                                 clay_pct = c(12, 13, 25, 22), ph_h2o = 7)
   r <- hydromorphic_properties_fao74(ar(2, "7.5YR 5/8"))
   expect_identical(r$evidence$kind_of_soil, "other")    # the AB stands between the Ap and the B
   ap <- function(cm, mott) .q74(top_cm = c(0, 25, 80), bottom_cm = c(25, 80, 150),
@@ -283,7 +296,8 @@ test_that("hydromorphic properties: groundwater, histic H, bluish hues and colou
                                 silt_pct = c(20, 25, 25), sand_pct = c(68, 50, 53),
                                 clay_films_amount = c(NA, "common", NA), munsell_hue_moist = "10YR",
                                 munsell_value_moist = c(4, 5, 5), munsell_chroma_moist = c(3, cm, 4),
-                                munsell_value_dry = c(6, 6, 6), mottle_colors = c(NA, mott, NA))
+                                munsell_value_dry = c(6, 6, 6), mottle_colors = c(NA, mott, NA),
+                                ph_h2o = 7, cec_cmol = 10)
   r <- hydromorphic_properties_fao74(ap(2, "7.5YR 5/8"))
   expect_identical(r$evidence$kind_of_soil, "argillic")
   expect_true(.ok(r))
@@ -443,4 +457,37 @@ test_that("the readings of this part are recorded for Hugo and the 1974 table ho
   expect_gte(length(r388), 8L)
   expect_true(all(grepl("for Hugo to confirm|\\(Hugo, 2026-11-0[89]\\)\\.$",
                         vapply(r388, `[[`, "", "reading"))))
+})
+
+test_that("review fixes: hydromorphic 4.2 and undecided kinds, thin iron pan thickness", {
+  skip_on_cran()
+  # 4.2, lower mollic A of chroma 2: read right below the A even when a calcic
+  # horizon intervenes (the 75 cm shift belongs to the chroma 1 branch)
+  m42 <- function(cm_a) .q74(top_cm = c(0, 30, 50), bottom_cm = c(30, 50, 120), designation = c("A", "Bk", "C"),
+    clay_pct = 25, silt_pct = 35, sand_pct = 40, oc_pct = c(2, 0.4, 0.2), bs_pct = 100, cec_cmol = 20,
+    caco3_pct = c(0, 25, 5), munsell_hue_moist = "10YR", munsell_value_moist = c(3, 6, 4),
+    munsell_chroma_moist = c(cm_a, 3, 0), munsell_value_dry = c(4, 7, 5), munsell_chroma_dry = c(cm_a, 3, 0),
+    structure_type = c("granular", "subangular blocky", "massive"), structure_grade = c("moderate", "weak", NA),
+    ph_h2o = 7.5)
+  expect_true(isTRUE(calcic_fao74(m42(2))$passed))
+  r <- hydromorphic_properties_fao74(m42(2), max_top_cm = 125)
+  expect_identical(r$evidence$kind_of_soil, "mollic")
+  expect_false(.ok(r))
+  expect_true(.ok(hydromorphic_properties_fao74(m42(1), max_top_cm = 125)))   # chroma 1: within 75 cm
+  # an undecided spodic B with no designation showing it: read both ways
+  # (Hugo, 2026-11-09); the spodic branch fails, other soils pass: undecided
+  sp <- .q74(top_cm = c(0, 30), bottom_cm = c(30, 80), designation = c("A", "Bg"), clay_pct = 5,
+             sand_pct = 90, silt_pct = 5, munsell_hue_moist = c("10YR", "2.5Y"), munsell_value_moist = c(4, 5),
+             munsell_chroma_moist = c(3, 3), mottle_colors = c(NA, "7.5YR 5/8"),
+             mottle_contrast = c(NA, "distinct"), oc_pct = c(0.5, 0.2), ph_h2o = 4.5)
+  r <- hydromorphic_properties_fao74(sp)
+  expect_true(is.na(.ok(r)) || length(r$evidence$stand_in) == 1L)
+  x <- .f74_ctx(sp)
+  expect_true(is.na(.f74_hydro_v(x)$value[2]))
+  expect_true(is.na(.f74_hydro_v(x)$evidence$kind_of_soil))
+  # an "iron pan" of another kind asks the 40 mm limit
+  ip <- function(t) .q74(top_cm = c(0, 20, 20 + t), bottom_cm = c(20, 20 + t, 100),
+                         designation = c("E", "Bs", "C"), pan_type = c(NA, "iron pan", NA))
+  expect_true(.ok(thin_iron_pan_fao74(ip(1))))
+  expect_false(.ok(thin_iron_pan_fao74(ip(5))))
 })
