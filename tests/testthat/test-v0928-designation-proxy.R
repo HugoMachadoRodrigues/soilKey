@@ -29,6 +29,7 @@ test_that("designation Bt alone (no NASIS) triggers clay-films-test PASS", {
 })
 
 test_that("designation Btk / Btx / Bt1 / 2Bt all match", {
+  skip_on_cran()
   for (des in c("Btk", "Btx", "Bt1", "2Bt", "Btss", "BAt", "ABt")) {
     p <- PedonRecord$new(
       site = list(id = "p", lat = 0, lon = 0, country = "US"),

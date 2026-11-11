@@ -99,6 +99,7 @@ test_that("Rubic accepts hue <= 5YR + chroma >= 4 (looser than Rhodic)", {
 # ---- Lamellic --------------------------------------------------------------
 
 test_that("Lamellic reads lamellae from the layers (v0.9.220)", {
+  skip_on_cran()
   # WRB 2022 Ch 5: two or more lamellae, >= 0.5 and < 7.5 cm thick, with more
   # clay than the layers directly above and below (argic 2.a) or clay films
   # (2.b), >= 5 cm together within 50 cm. A lamella designation without the

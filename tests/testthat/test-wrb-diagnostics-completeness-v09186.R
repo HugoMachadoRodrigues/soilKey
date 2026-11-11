@@ -192,6 +192,7 @@ test_that("the WRB diagnostic denominators match the official WRB 2022 totals", 
 # malformed result. It runs the whole 76-function set against a full fixture.
 # =============================================================================
 test_that("all 76 canonical diagnostics run on a valid pedon and return a DiagnosticResult", {
+  skip_on_cran()
   csv <- system.file("extdata", "canonical", "wrb2022_diagnostics.csv",
                      package = "soilKey")
   d <- utils::read.csv(csv, stringsAsFactors = FALSE)

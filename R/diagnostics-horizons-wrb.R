@@ -1807,7 +1807,7 @@ natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
       # the deepest end that passes; else the whole run, which records why not
       best <- if (any(ok %in% TRUE)) ends[[max(which(ok %in% TRUE))]] else ends[[length(ends)]]
       best$passed <- if (any(ok %in% TRUE)) TRUE else if (anyNA(ok)) NA else FALSE
-      if (is.na(best$passed)) best <- modifyList(ends[[which(is.na(ok))[1]]], list(passed = NA))
+      if (is.na(best$passed)) best <- utils::modifyList(ends[[which(is.na(ok))[1]]], list(passed = NA))
       starts[[length(starts) + 1L]] <- best
     }
   }

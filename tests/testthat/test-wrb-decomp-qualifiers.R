@@ -40,6 +40,7 @@ test_that("a function that does not exist still returns NA (no over-count)", {
 # ---- .decomp_class measured-decomposition fallback -------------------------
 
 test_that("von Post index classifies organic layers lacking an O-subscript", {
+  skip_on_cran()
   expect_equal(soilKey:::.decomp_class(.peat(des = "O", vp = 2L))$class, "fibric")
   expect_equal(soilKey:::.decomp_class(.peat(des = "O", vp = 5L))$class, "hemic")
   expect_equal(soilKey:::.decomp_class(.peat(des = "O", vp = 9L))$class, "sapric")

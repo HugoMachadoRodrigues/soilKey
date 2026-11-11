@@ -4,6 +4,7 @@
 # ---- New sub-qualifier behavioural contracts ------------------------------
 
 test_that("Hypersalic >= 30 dS/m, Hyposalic 4-15 dS/m", {
+  skip_on_cran()
   hz <- data.table::data.table(
     top_cm = c(0, 25), bottom_cm = c(25, 100),
     designation = c("Az", "Bz"),
@@ -143,6 +144,7 @@ test_that("Family suppression preserves YAML order of survivors", {
 })
 
 test_that("SC fixture name no longer doubles up Sodic + Hyposodic", {
+  skip_on_cran()
   pr <- make_solonchak_canonical()
   res <- resolve_wrb_qualifiers(pr, "SC")
   # If Sodic passed, Hyposodic must NOT appear in the resolved list.

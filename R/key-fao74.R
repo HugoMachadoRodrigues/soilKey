@@ -1146,7 +1146,7 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
     if (length(list(...))) p <- E(p, ...)
     p
   }
-  out <- switch(code,
+  out <- switch(EXPR = code,
     O = b88("HS", nm),
     I = E(.fao88_example("LP", FALSE), rows = c(1, 3), top_cm = c(0, if (nm) 11 else 8),
           bottom_cm = c(if (nm) 11 else 8, 60), site = list(soil_moisture_regime = "udic")),
@@ -1238,7 +1238,7 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
   # the arid profiles of X and Y without carbonate, for the gypsic and calcic
   # horizons placed by the 125 / 90 / 75 cm rule (medium texture: 90 cm)
   arid0 <- function(p) E(p, designation = c("A", "Bw", "C"), caco3_pct = 0, ph_h2o = 7.2)
-  out <- switch(code,
+  out <- switch(EXPR = code,
     # --- Histosols (H1 0-20, H2 20-45)
     Ox = perma(b),
     Od = E(b, top_cm = c(0, 20, 45), bottom_cm = c(20, 45, 130), ph_h2o = c(5.0, if (nm) 5.5 else 5.4, 6.0)),

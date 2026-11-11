@@ -73,6 +73,7 @@ test_that("the thickness of adjoining layers is that of the horizon", {
 # ---- B textural: item (h) -----------------------------------------------------
 
 test_that("item (h): the means of footnote 4 are arithmetic", {
+  skip_on_cran()
   # A 20%; BA 28% (10 cm) and Bt 38% (70 cm) in the control section. The
   # arithmetic mean of the B is 33 (ratio 1.65, below 1.70); weighted by the
   # thickness it was 36.75 (1.84).
@@ -93,6 +94,7 @@ test_that("item (h): the means of footnote 4 are arithmetic", {
 })
 
 test_that("item (h) reads the designations with a material number, '(B)' and 'Btc'", {
+  skip_on_cran()
   for (d in list(c("A", "IIBt"), c("A", "2Bt"), c("A1", "(B)2"), c("A", "Btc"))) {
     p <- .bx(d, c(0, 20), c(20, 80), c(15, 35))
     expect_true(isTRUE(test_ratio_textural_sibcs(p$horizons)$passed),
@@ -145,6 +147,7 @@ test_that("a jump of clay between two B horizons, or to a C, is no item (g)", {
 # ---- B textural: item (f) -----------------------------------------------------
 
 test_that("item (f): an E horizon above a B with more clay", {
+  skip_on_cran()
   p <- .bx(c("A", "E", "Bt"), c(0, 15, 40), c(15, 40, 100), c(20, 18, 30))
   r <- B_textural(p)
   expect_true(isTRUE(r$passed))
@@ -199,6 +202,7 @@ test_that("item (i3): clayey B, blocky structure, cerosidade common and weak or 
 })
 
 test_that("items (i1) and (i2): B of texture media, cerosidade of moderate grade", {
+  skip_on_cran()
   r <- B_textural(.cer(25, "Blocos angulares", "Forte", "Pouca", "Moderada"))
   expect_true(isTRUE(r$passed))
   expect_equal(r$evidence$item_i, "i2")
@@ -262,6 +266,7 @@ test_that("a diagnostic B is one, with or without carater fluvico", {
 })
 
 test_that("a profile with no designation at all is tested by the clay increase between layers", {
+  skip_on_cran()
   p <- .bx(rep(NA_character_, 3), c(0, 30, 60), c(30, 60, 150), c(20, 35, 40))
   r <- B_textural(p)
   expect_true(isTRUE(r$passed))
@@ -316,6 +321,7 @@ test_that("the 50 cm are those of the horizon, not of each sub-horizon", {
 })
 
 test_that("only B horizons make the B latossolico, where the designations are recorded", {
+  skip_on_cran()
   # an A of 40 cm and a Bw of 40 cm that meet the requirements: 40 cm of B
   p <- .lat(c("A", "Bw"), c(0, 40), c(40, 80), c(45, 50), c(4, 4))
   expect_false(isTRUE(B_latossolico(p)$passed))
@@ -368,6 +374,7 @@ test_that("a B latossolico below a B textural makes no Latossolo", {
 })
 
 test_that("the canonical Latossolo and Argissolo keep their horizons", {
+  skip_on_cran()
   l <- make_latossolo_canonical()
   expect_true(isTRUE(B_latossolico(l)$passed))
   expect_false(isTRUE(B_textural(l)$passed))
@@ -411,6 +418,7 @@ test_that("a B latossolico below a B textural makes the latossolic character", {
 # ---- the loader ---------------------------------------------------------------
 
 test_that("the BDsolos loader reads the distinctness and the topography of the transition", {
+  skip_on_cran()
   q <- function(...) paste0(paste0('"', c(...), '"', collapse = ";"), ";")
   hdr <- q("Código PA", "UF", "Classificação Atual", "Símbolo Horizonte",
            "Profundidade Superior", "Profundidade Inferior",

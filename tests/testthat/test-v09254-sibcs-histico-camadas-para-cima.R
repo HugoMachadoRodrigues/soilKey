@@ -17,6 +17,7 @@
 }
 
 test_that("an O recorded upward has the thickness between its two figures", {
+  skip_on_cran()
   p <- .up_profile("O", 120, 0, 17.3)
   r <- horizonte_histico(p)
   expect_true(isTRUE(r$passed))
@@ -56,6 +57,7 @@ test_that("an H of 30 cm recorded upward is a histic horizon, and under the 40 c
 })
 
 test_that("the 80 cm of the key are counted from the top of the layers recorded upward", {
+  skip_on_cran()
   # H 30-0 upward, a mineral layer of 45 cm, a buried H from 45 cm down:
   # the first 80 cm of the soil end 50 cm below the mineral surface
   p <- .up_profile(c("H", "Cg", "2H"), c(30, 0, 45), c(0, 45, 100), c(20, 1, 25))

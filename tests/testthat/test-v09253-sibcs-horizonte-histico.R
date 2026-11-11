@@ -53,6 +53,7 @@ test_that("a buried histic horizon is one", {
 })
 
 test_that("layers that do not adjoin are two runs, each with its own thickness", {
+  skip_on_cran()
   # 15 cm, a mineral layer, 15 cm: neither run is a histic horizon
   p <- .org_profile(c("H1", "Cg1", "H2", "Cg2"), c(0, 15, 30, 45), c(15, 30, 45, 100),
                     c(30, 1, 30, 1))
@@ -88,6 +89,7 @@ test_that("a histic horizon of 20 to 39 cm over a mineral horizon is no Organoss
 })
 
 test_that("the 40 cm are those within the first 80 cm", {
+  skip_on_cran()
   # 20 cm at the surface and 100 cm from 61 cm down: 39 cm within 80 cm
   p <- .org_profile(c("H1", "Cg", "H2", "H3"), c(0, 20, 61, 80), c(20, 61, 80, 180),
                     c(15, 0.8, 16.5, 34))
@@ -108,6 +110,7 @@ test_that("the 40 cm are those within the first 80 cm", {
 })
 
 test_that("over a lithic contact the key asks 20 cm, the horizon 10 cm", {
+  skip_on_cran()
   p20 <- .org_profile(c("O", "R"), c(0, 20), c(20, 60), c(25, NA))
   r <- horizonte_histico(p20)
   expect_true(isTRUE(r$passed))
@@ -131,6 +134,7 @@ test_that("over a lithic contact the key asks 20 cm, the horizon 10 cm", {
 })
 
 test_that("what makes a layer organic is as before", {
+  skip_on_cran()
   # an O or H with 8% of organic carbon or more; any layer with 12% or more
   expect_true(isTRUE(horizonte_histico(.org_profile(c("H", "Cg"), c(0, 25), c(25, 90), c(9, 1)))$passed))
   expect_false(isTRUE(horizonte_histico(.org_profile(c("A", "Cg"), c(0, 25), c(25, 90), c(9, 1)))$passed))

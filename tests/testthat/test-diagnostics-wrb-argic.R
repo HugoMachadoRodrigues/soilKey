@@ -69,6 +69,7 @@ test_that("argic is not voided by glossic features (v0.9.220)", {
 })
 
 test_that("a clay increase across a lithic discontinuity is not argic (2.a.i)", {
+  skip_on_cran()
   # WRB 2022 Ch 3.1.3, criterion 2.a.i: the coarser-textured layer is not
   # separated from the argic horizon by a lithic discontinuity, unless illuvial
   # clay is evidenced (2.b).

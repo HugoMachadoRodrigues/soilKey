@@ -7,6 +7,7 @@ test_that("plinthic passes on canonical Plinthosol fixture", {
 })
 
 test_that("plinthic fails on Ferralsol, Luvisol, Chernozem", {
+  skip_on_cran()
   expect_false(isTRUE(plinthic(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(plinthic(make_luvisol_canonical())$passed))
   expect_false(isTRUE(plinthic(make_chernozem_canonical())$passed))

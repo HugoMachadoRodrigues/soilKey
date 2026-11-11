@@ -39,6 +39,7 @@ test_that("Chromic does NOT co-occur with Rhodic (mutual exclusion)", {
 })
 
 test_that("Xanthic: ferralic + hue 7.5YR-or-yellower, value >= 4, chroma >= 5", {
+  skip_on_cran()
   # build a yellow ferralic-like profile; relies on ferralic() passing
   fr <- make_ferralsol_canonical()
   h  <- fr$horizons

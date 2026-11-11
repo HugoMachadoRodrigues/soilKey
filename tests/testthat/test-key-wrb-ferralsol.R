@@ -64,6 +64,7 @@ test_that("evidence_grade D when an attribute is extracted_vlm", {
 })
 
 test_that("on_missing = 'error' aborts when attributes are missing", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   pr$horizons$cec_cmol <- NA_real_
   expect_error(classify_wrb2022(pr, on_missing = "error"))

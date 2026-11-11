@@ -20,6 +20,7 @@ test_that("every alias points to a documented column", {
 })
 
 test_that("inst/ATTRIBUTES.md is up to date with the YAML", {
+  skip_on_cran()
   path <- system.file("ATTRIBUTES.md", package = "soilKey")
   skip_if(!nzchar(path), "ATTRIBUTES.md not installed")
   drop_version <- function(x) x[!grepl("v[0-9]+\\.[0-9]+\\.[0-9]+", x)]

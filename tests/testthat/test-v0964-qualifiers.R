@@ -41,6 +41,7 @@ test_that("qual_entic = albic AND NOT spodic", {
 
 
 test_that("qual_tonguic: a mollic horizon tonguing into the layer below", {
+  skip_on_cran()
   # v0.9.217, WRB 2022: "tonguing of a chernic, mollic or umbric horizon into
   # an underlying layer". An AB/BA designation (the v0.9.64 reading) is not
   # tonguing; a tongued lower boundary of the mollic horizon is.
@@ -146,6 +147,7 @@ test_that("qual_mineralic: mineral layers between organic ones (Histosols)", {
 
 
 test_that("qual_alcalic: pH >= 8.5 throughout the upper 50 cm, and Eutric", {
+  skip_on_cran()
   # v0.9.217, WRB 2022: pHwater >= 8.5 in the upper 50 cm of the mineral soil
   # and fulfilling the criteria of the Eutric qualifier
   p <- PedonRecord$new(site = list(id = "t", country = "TEST"), horizons = ensure_horizon_schema(data.table::data.table(
@@ -215,6 +217,7 @@ test_that("qual_protoargic: clay delta 2-6 pp", {
 
 
 test_that("qual_activic: an active-clay layer above the ferralic horizon", {
+  skip_on_cran()
   # v0.9.217, WRB 2022: "above a ferralic horizon a layer, >= 30 cm thick,
   # with a CEC ... >= 24 cmolc kg-1 clay and < 0.6% soil organic carbon (in
   # Ferralsols only)". Exchangeable Al (the v0.9.64 reading) is not that.

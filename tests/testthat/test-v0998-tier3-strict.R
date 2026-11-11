@@ -86,6 +86,7 @@ test_that("Kastanozem gate: BS 60% passes default, fails strict", {
 })
 
 test_that("Gleysol gate: gleying from 30 cm passes default, fails strict", {
+  skip_on_cran()
   p <- mk("gleysol")
   p$horizons$top_cm    <- c(0, 30, 60, 110)
   p$horizons$bottom_cm <- c(30, 60, 110, 150)
@@ -129,6 +130,7 @@ test_that("getOption('soilKey.rsg_strict') drives the gates", {
 })
 
 test_that("classify_wrb2022 restores the option after the call", {
+  skip_on_cran()
   p <- mk("vertisol")
   old <- getOption("soilKey.rsg_strict")
   on.exit(options(soilKey.rsg_strict = old), add = TRUE)

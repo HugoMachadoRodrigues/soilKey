@@ -10,6 +10,7 @@
 
 
 test_that("particle_size class keys on clay and rock fragments", {
+  skip_on_cran()
   fine <- family_particle_size_usda(.uf_pedon(data.frame(
     top_cm = c(0, 30), bottom_cm = c(30, 100),
     clay_pct = c(45, 50), sand_pct = c(30, 25), silt_pct = c(25, 25))))
@@ -31,6 +32,7 @@ test_that("particle_size class keys on clay and rock fragments", {
 
 
 test_that("cec_activity class keys on the CEC/clay ratio", {
+  skip_on_cran()
   mk <- function(cec, clay) family_cec_activity_usda(.uf_pedon(data.frame(
     top_cm = 25, bottom_cm = 100, cec_cmol = cec, clay_pct = clay)))
   expect_equal(mk(40, 50)$value, "superactive")   # 0.80

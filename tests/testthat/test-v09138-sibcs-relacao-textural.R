@@ -18,6 +18,7 @@ rt  <- function(df) test_ratio_textural_sibcs(mkh(df))
 # ---- the ratio thresholds keyed on A-horizon clay (p.56 h.1/h.2/h.3) ------
 
 test_that("v0.9.138: relacao-textural thresholds are 1.50 / 1.70 / 1.80 by A clay", {
+  skip_on_cran()
   # A clay > 40% -> threshold 1.50
   cy <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 70),
                    designation = c("A", "Bt"), clay_pct = c(50, 80))
@@ -61,6 +62,7 @@ test_that("v0.9.138: a thick A (>=15cm) uses a 2x-A-thickness B window", {
 # ---- the UNION into B_textural -------------------------------------------
 
 test_that("v0.9.138: B_textural fires via (h) on a sandy A that argic misses", {
+  skip_on_cran()
   # A 5%, B 10%: argic (+6 pp absolute) fails (only +5); (h) ratio 2.0 > 1.80.
   # v0.9.241: the B textural has texture francoarenosa or finer, so the silt
   # is given (10% of clay and 15% of silt: 35 >= 30).

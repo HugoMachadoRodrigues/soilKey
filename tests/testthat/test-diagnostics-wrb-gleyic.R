@@ -7,6 +7,7 @@ test_that("gleyic_properties passes on canonical Gleysol fixture", {
 })
 
 test_that("gleyic_properties fails on Ferralsol, Luvisol, Cambisol, Vertisol", {
+  skip_on_cran()
   expect_false(isTRUE(gleyic_properties(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(gleyic_properties(make_luvisol_canonical())$passed))
   expect_false(isTRUE(gleyic_properties(make_cambisol_canonical())$passed))

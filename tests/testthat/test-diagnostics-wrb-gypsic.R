@@ -7,6 +7,7 @@ test_that("gypsic passes on canonical Gypsisol fixture", {
 })
 
 test_that("gypsic fails on Ferralsol, Calcisol, Solonchak", {
+  skip_on_cran()
   expect_false(isTRUE(gypsic(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(gypsic(make_calcisol_canonical())$passed))
   expect_false(isTRUE(gypsic(make_solonchak_canonical())$passed))

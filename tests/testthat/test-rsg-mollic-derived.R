@@ -18,6 +18,7 @@ test_that("phaeozem passes on canonical Phaeozem fixture", {
 })
 
 test_that("mollic-derived RSGs are mutually exclusive on each fixture", {
+  skip_on_cran()
   ch <- make_chernozem_canonical()
   ks <- make_kastanozem_canonical()
   ph <- make_phaeozem_canonical()

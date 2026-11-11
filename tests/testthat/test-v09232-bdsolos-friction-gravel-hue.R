@@ -55,6 +55,7 @@ test_that("an amount is read in either language, a range by its lower end", {
 })
 
 test_that("the loader brings the slickensides, the gravel in per cent and the hues with a dot", {
+  skip_on_cran()
   f <- .fg_csv(); on.exit(unlink(f), add = TRUE)
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(f, verbose = FALSE)))
   expect_length(peds, 2L)

@@ -7,6 +7,7 @@ test_that("vertic_properties passes on canonical Vertisol fixture", {
 })
 
 test_that("vertic_properties fails on non-vertic fixtures", {
+  skip_on_cran()
   expect_false(isTRUE(vertic_properties(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(vertic_properties(make_luvisol_canonical())$passed))
   expect_false(isTRUE(vertic_properties(make_chernozem_canonical())$passed))

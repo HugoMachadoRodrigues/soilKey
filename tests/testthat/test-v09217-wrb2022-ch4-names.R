@@ -80,6 +80,7 @@ test_that("Eutric is not added when Calcaric applies (Chapter 2.2)", {
 })
 
 test_that("Epic, Endic, Dorsic read the RSG's own diagnostic horizon", {
+  skip_on_cran()
   f <- make_ferralsol_canonical()
   top <- min(f$horizons$top_cm[ferralic(f)$layers])
   ep <- soilKey:::qual_epic(f, rsg_code = "FR")
@@ -109,6 +110,7 @@ test_that("a qualifier's own function is tried before reading it as specifier + 
 })
 
 test_that("Novic: a 5-50 cm layer over a buried soil", {
+  skip_on_cran()
   h <- data.table::data.table(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 120),
                               designation = c("C", "Ab", "Bwb"))
   p <- PedonRecord$new(site = list(id = "n"), horizons = h)

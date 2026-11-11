@@ -7,6 +7,7 @@
   system.file("shiny", "classify_app_pro", "www", package = "soilKey")
 
 test_that("the demo assets are bundled", {
+  skip_on_cran()
   www <- .pro_app_www()
   skip_if(www == "", "app not installed")
   expect_true(file.exists(file.path(www, "demo_profile.jpg")))

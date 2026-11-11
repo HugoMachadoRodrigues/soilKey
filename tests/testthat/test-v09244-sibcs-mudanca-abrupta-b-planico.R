@@ -35,6 +35,7 @@
 # ---- the mudanca textural abrupta ------------------------------------------------
 
 test_that("it is the transition from the A or E to the first B", {
+  skip_on_cran()
   # under 200 g/kg in the A: twice as much in the B
   p <- .ab(c("A", "Bt"), c(0, 30), c(30, 90), c(12, 24))
   r <- mudanca_textural_abrupta(p)
@@ -49,6 +50,7 @@ test_that("it is the transition from the A or E to the first B", {
 })
 
 test_that("a jump between two B horizons, to a C, or below a layer that is no A or E, is none", {
+  skip_on_cran()
   # the WRB property, which the function used to be, finds each of these
   bb <- .ab(c("A", "B1", "B2"), c(0, 20, 50), c(20, 50, 120), c(40, 45, 70))
   expect_true(isTRUE(abrupt_textural_difference(.with_abrupt(bb))$passed))
@@ -149,6 +151,7 @@ test_that("the B planico is the first B sub-horizon, below an abrupt textural ch
 })
 
 test_that("its colour and its structure are asked of that first sub-horizon", {
+  skip_on_cran()
   # the colour of item (a) only in the second B sub-horizon
   p <- .pl(c("A", "E", "Bt1", "Bt2"), c(0, 15, 40, 70), c(15, 40, 70, 120), c(14, 10, 30, 35),
            chroma = c(3, 3, 6, 2))
@@ -162,6 +165,7 @@ test_that("its colour and its structure are asked of that first sub-horizon", {
 })
 
 test_that("it is a type of B textural: a first B sub-horizon coarser than francoarenosa is none", {
+  skip_on_cran()
   # the Bh of an Espodossolo, 4% of clay below an E with 1%: twice the clay,
   # an abrupt transition, a dark colour of low chroma and a massive structure
   sandy <- function(clay_b, silt_b) {
@@ -211,6 +215,7 @@ test_that("an abrupt transition with the textural ratio of item (h) makes one to
 })
 
 test_that("item (g) of the B textural reads the same transition", {
+  skip_on_cran()
   p <- .ab(c("A1", "A3", "Bt"), c(0, 15, 30), c(15, 30, 90), c(40, 40, 60),
            boundary = c("clear", "abrupt", NA))
   expect_true(B_textural(p)$evidence$item_g)

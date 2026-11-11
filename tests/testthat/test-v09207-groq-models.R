@@ -57,6 +57,7 @@ test_that("nothing suitable on offer gives NA, not a made-up name", {
 })
 
 test_that("an explicit choice wins only while Groq still offers it", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .groq_env()
   e$.groq_available_models <- function(key, ttl = 3600) .oct_2026
@@ -84,6 +85,7 @@ test_that("if the list cannot be read, the explicit choice or last good default 
 })
 
 test_that("Groq's retirement error is recognised; other errors are not", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .groq_env()
   # the exact message the Photo tab showed on 2026-10-07
@@ -133,6 +135,7 @@ test_that("the Assistant samples cool and caps its output", {
 })
 
 test_that("the model list is read once an hour, and again after a retirement", {
+  skip_on_cran()
   skip_if_not_installed("shiny"); skip_if_not_installed("httr")
   e <- .groq_env()
   calls <- 0L
@@ -167,6 +170,7 @@ test_that("a failed listing is not cached", {
 })
 
 test_that("the status names the model in use", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .groq_env()
   expect_match(e$i18n("chat.backend_groq", "openai/gpt-oss-120b", lang = "en"),

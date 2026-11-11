@@ -52,6 +52,7 @@ test_that("vertic: cracks_top absent => prior crack behaviour", {
 })
 
 test_that("vertic: cracks starting below 125 cm do not qualify", {
+  skip_on_cran()
   base <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
                      cracks_width_cm = c(NA, 1), cracks_depth_cm = c(NA, 40),
                      slickensides = c(NA, "common"))

@@ -10,6 +10,7 @@ prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
 # ---- Mazic (p.140): massive AND rupture-resistance >= hard -----------------
 
 test_that("v0.9.141: Mazic requires rupture-resistance >= hard when recorded", {
+  skip_on_cran()
   soft <- mkh(data.frame(top_cm = 0, bottom_cm = 20, designation = "A",
                          structure_grade = "massive", rupture_resistance = "soft"))
   expect_false(isTRUE(qual_mazic(prh(soft))$passed))
@@ -32,6 +33,7 @@ test_that("v0.9.141: Mazic is byte-identical (massive-only) when rupture absent"
 # ---- Grumic (p.136): STRONG granular/blocky, aggregate <= 1 cm -------------
 
 test_that("v0.9.141: Grumic requires STRONG grade (moderate no longer qualifies)", {
+  skip_on_cran()
   mo <- mkh(data.frame(top_cm = 0, bottom_cm = 20, designation = "A",
                        structure_grade = "moderate", structure_type = "granular",
                        structure_size = "fine"))

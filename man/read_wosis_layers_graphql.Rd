@@ -60,11 +60,16 @@ raise it deliberately.
 
 \examples{
 \donttest{
-# Requires network access to ISRIC.
-p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 1)
-if (nrow(p)) {
-  h <- read_wosis_layers_graphql(p$profile_id[1])
-  h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
+# Needs network access; skipped offline and in batch checks.
+online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+  !inherits(try(httr::HEAD("https://graphql.isric.org", httr::timeout(5)),
+                silent = TRUE), "try-error")
+if (online) {
+  p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 1)
+  if (nrow(p)) {
+    h <- read_wosis_layers_graphql(p$profile_id[1])
+    h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
+  }
 }
 }
 }

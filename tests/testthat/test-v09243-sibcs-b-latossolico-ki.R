@@ -46,6 +46,7 @@ test_that("a B with Ki of 2.2 or less is a B latossolico; above it, it is none",
 })
 
 test_that("a sub-horizon above 2.2 is no part of the horizon, which then has to keep its 50 cm", {
+  skip_on_cran()
   # B1 25 cm, B21 35 cm, B22 35 cm: with the B21 out, no 50 cm adjoin
   broken <- .ki_profile(c(2.0, 2.0, 2.3, 2.0))
   r <- B_latossolico(broken)

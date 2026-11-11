@@ -64,9 +64,14 @@ profile from a single topsoil sample before loading it.
 
 \examples{
 \donttest{
-# Requires network access to ISRIC.
-p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
-if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
+# Needs network access; skipped offline and in batch checks.
+online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+  !inherits(try(httr::HEAD("https://graphql.isric.org", httr::timeout(5)),
+                silent = TRUE), "try-error")
+if (online) {
+  p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
+  if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
+}
 }
 }
 \seealso{

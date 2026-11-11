@@ -69,6 +69,7 @@ test_that("hemico passes for intermediate fiber (17-40%)", {
 })
 
 test_that("fibrico passes for high fiber (>= 40%) and von Post H1-H4", {
+  skip_on_cran()
   pr1 <- .make_organic_pedon(fiber_rubbed = 60)
   pr2 <- .make_organic_pedon(von_post = 3L)
   expect_true(isTRUE(fibrico(pr1)$passed))

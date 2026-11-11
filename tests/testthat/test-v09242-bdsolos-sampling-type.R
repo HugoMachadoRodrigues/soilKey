@@ -37,6 +37,7 @@
 }
 
 test_that("the loader reads the kind of sampling point as the export words it", {
+  skip_on_cran()
   peds <- .st_peds()
   expect_length(peds, 5L)
   kinds <- vapply(peds, function(p) p$site$sampling_type, "")

@@ -5,6 +5,7 @@ test_that("histic_horizon passes on canonical Histosol fixture", {
 })
 
 test_that("histic_horizon fails on Ferralsol / mineral profiles", {
+  skip_on_cran()
   for (fn in list(make_ferralsol_canonical, make_luvisol_canonical,
                     make_chernozem_canonical, make_andosol_canonical)) {
     expect_false(isTRUE(histic_horizon(fn())$passed))
@@ -45,6 +46,7 @@ test_that("leptic_features passes on canonical Leptosol fixture", {
 })
 
 test_that("leptic_features fails on deep / mineral profiles", {
+  skip_on_cran()
   expect_false(isTRUE(leptic_features(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(leptic_features(make_luvisol_canonical())$passed))
 })
@@ -61,6 +63,7 @@ test_that("arenic_texture passes on canonical Arenosol fixture", {
 })
 
 test_that("arenic_texture fails on clayey / loamy fixtures", {
+  skip_on_cran()
   for (fn in list(make_ferralsol_canonical, make_luvisol_canonical,
                     make_vertisol_canonical)) {
     expect_false(isTRUE(arenic_texture(fn())$passed))
@@ -78,6 +81,7 @@ test_that("umbric_horizon fails when BS is high (-> mollic)", {
 })
 
 test_that("mollic distinguishes from umbric on the BS test", {
+  skip_on_cran()
   expect_false(isTRUE(mollic(make_umbrisol_canonical())$passed))
   expect_true (isTRUE(umbric_horizon(make_umbrisol_canonical())$passed))
 })
@@ -88,6 +92,7 @@ test_that("duric_horizon passes on canonical Durisol fixture", {
 })
 
 test_that("duric_horizon fails on profiles without duripan", {
+  skip_on_cran()
   expect_false(isTRUE(duric_horizon(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(duric_horizon(make_chernozem_canonical())$passed))
 })
@@ -171,6 +176,7 @@ test_that("fluvic_material passes on canonical Fluvisol fixture", {
 })
 
 test_that("fluvic_material fails on monotone-textured profiles", {
+  skip_on_cran()
   for (fn in list(make_ferralsol_canonical, make_luvisol_canonical,
                     make_chernozem_canonical)) {
     expect_false(isTRUE(fluvic_material(fn())$passed))

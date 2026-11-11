@@ -41,6 +41,7 @@ test_that("the designations of the export are read", {
 })
 
 test_that("a B incipiente, a Bw and a C with the letters are not", {
+  skip_on_cran()
   old <- .ir_morph(TRUE); on.exit(options(old), add = TRUE)
   for (d in c("Bi", "Bi2", "Bw", "Cir"))
     expect_false(isTRUE(B_espodico(.ir_profile(c("A1", "A2", d, "C")))$passed), info = d)

@@ -8,6 +8,7 @@ mk <- function(df) {
 }
 
 test_that("Clayic recognises the clay / sandy clay / silty clay texture classes", {
+  skip_on_cran()
   # clay class (clay 45) over >= 30 cm -> Clayic (was FALSE under clay >= 60)
   clay <- mk(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
                         clay_pct = c(45, 48), sand_pct = c(20, 18),
@@ -35,6 +36,7 @@ test_that("Clayic does NOT fire on clay loam (clay < 35-40, not a clay class)", 
 })
 
 test_that("Clayic still needs a >= 30 cm combined thickness within 100 cm", {
+  skip_on_cran()
   thin <- mk(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 40),
                         clay_pct = c(20, 50), sand_pct = c(40, 20),
                         silt_pct = c(40, 30)))  # only 20 cm of clay

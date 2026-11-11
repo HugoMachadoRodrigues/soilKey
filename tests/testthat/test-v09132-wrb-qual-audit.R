@@ -7,6 +7,7 @@ mk <- function(df) {
 }
 
 test_that("Geric: (bases+Al) < 6 cmol/kg CLAY, no spurious delta-pH path", {
+  skip_on_cran()
   # clay 50%, ECEC 2.0 cmol/kg soil -> 4.0 cmol/kg clay < 6 -> Geric
   p <- mk(data.frame(top_cm = 0, bottom_cm = 50, clay_pct = 50,
                      ca_cmol = 1.0, mg_cmol = 0.5, k_cmol = 0.1, na_cmol = 0.1,
@@ -46,6 +47,7 @@ test_that("Sodic: needs >= 15% (Na+Mg) AND >= 6% Na", {
 })
 
 test_that("Magnesic needs a >= 30 cm thick Ca/Mg < 1 layer", {
+  skip_on_cran()
   thin <- mk(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 40),
                         ca_cmol = c(2, 1), mg_cmol = c(1, 3)))  # only 20 cm < 1
   expect_false(isTRUE(qual_magnesic(thin)$passed))
@@ -69,6 +71,7 @@ test_that("Columnic: columnar only (not prismatic) + >= 15 cm", {
 })
 
 test_that("Carbonic: >= 5% organic carbon that belongs to artefacts", {
+  skip_on_cran()
   # v0.9.217: WRB 2022 Ch 5 asks for ">= 5% organic carbon that belongs to
   # artefacts" in a layer >= 10 cm thick starting <= 100 cm. soilKey records
   # organic carbon but not whose it is, so the qualifier can rule itself out

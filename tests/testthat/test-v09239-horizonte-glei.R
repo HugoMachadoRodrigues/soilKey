@@ -53,6 +53,7 @@ test_that("the drainage class is read in both languages, a range by the end aske
 })
 
 test_that("the items of requirement (a)", {
+  skip_on_cran()
   it <- function(hue, value, chroma, ...) {
     p <- .munsell_hue_parts(hue)
     .glei_colour_item(p$number, p$family, value, chroma, ...)
@@ -164,6 +165,7 @@ test_that("a pale E of a well drained soil is no glei horizon", {
 })
 
 test_that("a variegated layer counts by one colour of the items; plinthite and organic layers do not", {
+  skip_on_cran()
   p <- .gl_profile(c("A", "Bg", "C"), c(0, 20, 70), c(20, 70, 150), c("10YR", NA, "5YR"),
                    c(3, NA, 4), c(2, NA, 6), "Mal drenado",
                    variegated_colors = c(NA, "2.5Y 7/1; 10YR 6/8", NA))

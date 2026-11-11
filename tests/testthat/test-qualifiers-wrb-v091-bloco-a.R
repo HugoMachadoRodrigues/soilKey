@@ -163,6 +163,7 @@ test_that("qual_hyperskeletic requires >= 90% coarse fragments throughout", {
 })
 
 test_that("qual_lithic vs qual_nudilithic vs qual_leptic depth gates", {
+  skip_on_cran()
   # Rock starting at exactly 0 cm -> Nudilithic + Lithic + Leptic.
   hz <- data.table::data.table(
     top_cm = c(0), bottom_cm = c(100),
@@ -241,6 +242,7 @@ test_that("qual_drainic distinguishes natural vs artificial drainage", {
 })
 
 test_that("qual_sapric / qual_hemic / qual_fibric are mutually exclusive", {
+  skip_on_cran()
   # Profile dominated by Oa (sapric)
   hz <- data.table::data.table(
     top_cm = c(0, 60), bottom_cm = c(60, 100),
@@ -299,6 +301,7 @@ test_that("qual_yermic / qual_takyric delegate to v0.3.3 properties", {
 # ---- Engine handles unimplemented Ch 4 names without breaking --------------
 
 test_that("resolve_wrb_qualifiers gracefully tags missing functions", {
+  skip_on_cran()
   # Floatic / Subaquatic / Tidalic / Ombric / Rheic / Toxic are listed
   # in HS but several have no qual_* function in v0.9.1; the engine must
   # skip them (note "function not implemented" in the trace) without

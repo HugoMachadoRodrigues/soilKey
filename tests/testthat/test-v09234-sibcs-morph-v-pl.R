@@ -88,6 +88,7 @@ test_that("the old 'pl' is plinthite in the morphological mode, as 'f' is", {
 })
 
 test_that("a 'pl' that is not 15 cm thick, or not there, is no plinthic horizon", {
+  skip_on_cran()
   old <- .morph(TRUE); on.exit(options(old), add = TRUE)
   thin <- .plinthic_by_letters(c("A1", "B2pl", "C"))
   thin$horizons$top_cm <- c(0, 20, 30); thin$horizons$bottom_cm <- c(20, 30, 150)

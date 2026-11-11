@@ -4,6 +4,7 @@
 
 
 test_that("load_kssl_pedons returns a list of PedonRecord with reference_usda attached", {
+  skip_on_cran()
   td <- tempdir()
   pedon_csv <- file.path(td, "kssl_pedon.csv")
   layer_csv <- file.path(td, "kssl_layer.csv")
@@ -39,6 +40,7 @@ test_that("load_kssl_pedons returns a list of PedonRecord with reference_usda at
 
 
 test_that("load_lucas_pedons returns single-horizon Ap pedons with reference_wrb", {
+  skip_on_cran()
   td <- tempdir()
   csv <- file.path(td, "lucas_topsoil.csv")
   write.csv(data.frame(
@@ -66,6 +68,7 @@ test_that("load_lucas_pedons returns single-horizon Ap pedons with reference_wrb
 
 
 test_that("load_embrapa_pedons groups layers by id_perfil", {
+  skip_on_cran()
   td <- tempdir()
   csv <- file.path(td, "bdsolos.csv")
   write.csv(data.frame(

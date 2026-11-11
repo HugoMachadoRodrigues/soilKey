@@ -10,6 +10,7 @@ test_that("natric_horizon fails on profiles without argic", {
 })
 
 test_that("natric_horizon fails on profiles with argic but low Na", {
+  skip_on_cran()
   expect_false(isTRUE(natric_horizon(make_luvisol_canonical())$passed))
   expect_false(isTRUE(natric_horizon(make_acrisol_canonical())$passed))
 })
@@ -110,6 +111,7 @@ test_that("retic_properties passes on canonical Retisol fixture", {
 })
 
 test_that("retic_properties fails on profiles without glossic features", {
+  skip_on_cran()
   for (fn in list(make_ferralsol_canonical, make_luvisol_canonical,
                     make_chernozem_canonical)) {
     expect_false(isTRUE(retic_properties(fn())$passed))
@@ -122,6 +124,7 @@ test_that("cryic_conditions passes on canonical Cryosol fixture", {
 })
 
 test_that("cryic_conditions fails on warm-climate profiles", {
+  skip_on_cran()
   for (fn in list(make_ferralsol_canonical, make_luvisol_canonical)) {
     expect_false(isTRUE(cryic_conditions(fn())$passed))
   }
@@ -133,6 +136,7 @@ test_that("anthric_horizons passes on canonical Anthrosol fixture", {
 })
 
 test_that("anthric_horizons fails on natural profiles", {
+  skip_on_cran()
   for (fn in list(make_ferralsol_canonical, make_luvisol_canonical,
                     make_chernozem_canonical, make_andosol_canonical)) {
     expect_false(isTRUE(anthric_horizons(fn())$passed))

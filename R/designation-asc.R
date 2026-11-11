@@ -156,7 +156,7 @@
       s <- c(sfx[[i]], dec)
       role[i] <- if (nzchar(m[4L])) paste0(sub("E", "A", a), "/", sub("E", "A", b))
                  else if (nzchar(b)) paste0(sub("E", "A", a), sub("E", "A", b))
-                 else switch(a, A = "A1", E = "A2", B = "B2", C = "C", R = "R",
+                 else switch(EXPR = a, A = "A1", E = "A2", B = "B2", C = "C", R = "R",
                              O = if (any(s %in% c("a", "e"))) "O2" else "O1",
                              H = "P", L = "O1", W = "other", "other")
       # an AE, EA or A/E holds the E: read as an A2

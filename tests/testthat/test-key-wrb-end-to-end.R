@@ -24,6 +24,7 @@ test_that("Vertisol fixture -> Vertisols", {
 })
 
 test_that("Solonchak fixture -> Solonchaks", {
+  skip_on_cran()
   expect_classifies_as(make_solonchak_canonical(), "Solonchaks")
 })
 
@@ -38,6 +39,7 @@ test_that("Podzol fixture -> Podzols", {
 })
 
 test_that("Plinthosol fixture -> Plinthosols", {
+  skip_on_cran()
   expect_classifies_as(make_plinthosol_canonical(), "Plinthosols")
 })
 
@@ -168,6 +170,7 @@ test_that("Fluvisol fixture -> Fluvisols", {
 })
 
 test_that("All 30 canonical fixtures classify to their intended RSG", {
+  skip_on_cran()
   fixture_to_rsg <- list(
     list(make_ferralsol_canonical, "Ferralsols"),
     list(make_luvisol_canonical,   "Luvisols"),

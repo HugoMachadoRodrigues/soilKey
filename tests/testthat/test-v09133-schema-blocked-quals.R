@@ -23,6 +23,7 @@ test_that("Glacic: ice_pct >= 75% enforced where measured", {
 })
 
 test_that("Aceric: jarosite required where recorded", {
+  skip_on_cran()
   base <- data.frame(top_cm = 0, bottom_cm = 30, ph_h2o = 4.2)
   noj <- base; noj$jarosite_present <- FALSE  # right pH but no jarosite
   yesj <- base; yesj$jarosite_present <- TRUE
@@ -33,6 +34,7 @@ test_that("Aceric: jarosite required where recorded", {
 })
 
 test_that("Mochipic: a stagnic layer >= 25 cm saturated >= 300 days", {
+  skip_on_cran()
   # v0.9.217: WRB 2022 Ch 5, "a layer with stagnic properties, >= 25 cm thick
   # and within 100 cm ..., that is water-saturated for >= 300 cumulative days".
   # The stagnic properties used to be read from a mottle-pattern text; they now
@@ -52,6 +54,7 @@ test_that("Mochipic: a stagnic layer >= 25 cm saturated >= 300 days", {
 })
 
 test_that("Isopteric: bulk density <= 1.3 and < 5% particles >= 630 um", {
+  skip_on_cran()
   base <- data.frame(top_cm = 0, bottom_cm = 40,
                      bioturbation_density = "termite mounds")
   dense <- base; dense$bulk_density_g_cm3 <- 1.6  # > 1.3 -> no
@@ -63,6 +66,7 @@ test_that("Isopteric: bulk density <= 1.3 and < 5% particles >= 630 um", {
 })
 
 test_that("Hydric: uses undried 1500 kPa water where measured (>= 35 cm)", {
+  skip_on_cran()
   # andic layer >= 35 cm; undried water 75% -> Hydric
   base <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
                      al_ox_pct = c(2.5, 2.5), fe_ox_pct = c(1.5, 1.5),

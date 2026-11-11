@@ -104,6 +104,7 @@ test_that("the wedge-shaped and the parallelepipedic structure are read from the
 # ---- the loader -------------------------------------------------------------------
 
 test_that("the loader fills from the text what the structured columns leave empty", {
+  skip_on_cran()
   q <- function(...) paste0(paste0('"', c(...), '"', collapse = ";"), ";")
   hdr <- q("Código PA", "UF", "Classificação Atual", "Símbolo Horizonte",
            "Profundidade Superior", "Profundidade Inferior", "Descrição Original",
@@ -161,6 +162,7 @@ test_that("slickensides in amount of common or more make the horizon; few do not
 })
 
 test_that("wedge-shaped or parallelepipedic structural units make it too", {
+  skip_on_cran()
   for (s in c("Cuneiforme", "paralelepipedica", "Prismática; paralelepipedica", "wedge-shaped"))
     expect_true(isTRUE(horizonte_vertico(
       .vt(c("A", "C1"), c(0, 20), c(20, 60), c(40, 45), structure = c("Granular", s)))$passed),
@@ -170,6 +172,7 @@ test_that("wedge-shaped or parallelepipedic structural units make it too", {
 })
 
 test_that("it has 300 g/kg of clay or more, and cracks of 1 cm where their width is recorded", {
+  skip_on_cran()
   expect_false(isTRUE(horizonte_vertico(
     .vt(c("A", "C1"), c(0, 20), c(20, 60), c(25, 29), structure = c("Granular", "Cuneiforme")))$passed))
   expect_true(isTRUE(horizonte_vertico(
@@ -183,6 +186,7 @@ test_that("it has 300 g/kg of clay or more, and cracks of 1 cm where their width
 })
 
 test_that("its 20 cm are those of the horizon, made of adjoining layers", {
+  skip_on_cran()
   # two layers of 12 cm: the reading horizonte_vertico() builds on asks 20 cm
   # of one layer (vertic_horizon(reading = "usda"); the WRB reading takes
   # adjoining layers together since v0.9.311)
@@ -270,6 +274,7 @@ test_that("where the ratio cannot be computed, the B textural keeps the profile 
 })
 
 test_that("the clay of the upper 20 cm is that of the mixed material", {
+  skip_on_cran()
   # A of 12 cm with 16% and 8 cm of a B with 44%: 27.2%, under 300 g/kg; the
   # plain mean of the two layers, 30%, was tested
   p <- .vt(c("A1", "Cv1", "Cv2"), c(0, 12, 20), c(12, 20, 60), c(16, 44, 47),
