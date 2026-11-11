@@ -82,7 +82,7 @@ modal class), `entropy` (Shannon entropy of the posterior, natural log),
 ``` r
 # \donttest{
 p <- make_ferralsol_canonical()
-u <- classify_with_uncertainty(p, n = 50, system = "wrb2022")
+u <- classify_with_uncertainty(p, n = 5, system = "wrb2022")
 u$posterior   # P(RSG = x)
 #> Ferralsols 
 #>          1 

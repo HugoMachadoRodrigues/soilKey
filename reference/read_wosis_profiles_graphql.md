@@ -85,14 +85,13 @@ with its horizons.
 
 ``` r
 # \donttest{
-# Requires network access to ISRIC.
-p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
-if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
-#>      profile_code   wrb_rsg n_layers licence_short
-#> 1        AR SC.P7   Luvisol        4     CC BY 3.0
-#> 2        AR SJ.87 Solonchak        1     CC BY 3.0
-#> 3     AR RN.C.331  Calcisol        4     CC BY 3.0
-#> 4   AR SE.BBAJADA  Solonetz        3     CC BY 3.0
-#> 5 AR SE.VFIGUEROA  Fluvisol        3     CC BY 3.0
+# Needs network access; skipped offline and in batch checks.
+online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+  !inherits(try(httr::HEAD("https://graphql.isric.org", httr::timeout(5)),
+                silent = TRUE), "try-error")
+if (online) {
+  p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
+  if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
+}
 # }
 ```

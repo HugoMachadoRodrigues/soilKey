@@ -79,16 +79,16 @@ depth increments (some have 90 one-centimetre layers) exceed
 
 ``` r
 # \donttest{
-# Requires network access to ISRIC.
-p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 1)
-if (nrow(p)) {
-  h <- read_wosis_layers_graphql(p$profile_id[1])
-  h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
+# Needs network access; skipped offline and in batch checks.
+online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+  !inherits(try(httr::HEAD("https://graphql.isric.org", httr::timeout(5)),
+                silent = TRUE), "try-error")
+if (online) {
+  p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 1)
+  if (nrow(p)) {
+    h <- read_wosis_layers_graphql(p$profile_id[1])
+    h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
+  }
 }
-#>   top_cm bottom_cm designation clay_pct oc_pct
-#> 1      0         7           A       20   0.97
-#> 2      7        23          2B       53   1.19
-#> 3     23        45         3C1       54   1.40
-#> 4     45       100         3C2       39   0.68
 # }
 ```

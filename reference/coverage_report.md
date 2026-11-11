@@ -79,27 +79,13 @@ cov$overall
 # \donttest{
 # The USDA axes read the KST 13th edition from ncss-tech/SoilKnowledgeBase,
 # downloaded on first use, so they need a connection the first time.
-usda <- try(coverage_report("usda_subgroup"), silent = TRUE)
-#> 
-#> ── Coverage: usda subgroup ──
-#> 
-#> ℹ 2049 / 2715 canonical subgroups registered (75.5%); 666 missing.
-#>        group canonical_n covered_n missing_n   pct
-#>     Gelisols         129       129         0 100.0
-#>    Histosols          75        75         0 100.0
-#>    Spodosols         121       121         0 100.0
-#>      Oxisols         213       190        23  89.2
-#>     Andisols         218       189        29  86.7
-#>    Vertisols         158       136        22  86.1
-#>  Inceptisols         349       262        87  75.1
-#>     Ultisols         215       161        54  74.9
-#>     Alfisols         352       247       105  70.2
-#>    Mollisols         376       257       119  68.4
-#>     Entisols         239       157        82  65.7
-#>    Aridisols         270       125       145  46.3
-if (!inherits(usda, "try-error")) head(usda$missing)
-#> [1] "Abruptic Argiaquolls"             "Abruptic Argicryolls"            
-#> [3] "Abruptic Argiduridic Durixerolls" "Abruptic Argidurids"             
-#> [5] "Abruptic Argiudolls"              "Abruptic Durixeralfs"            
+# Needs network access; skipped offline and in batch checks.
+online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+  !inherits(try(httr::HEAD("https://raw.githubusercontent.com", httr::timeout(5)),
+                silent = TRUE), "try-error")
+if (online) {
+  usda <- try(coverage_report("usda_subgroup"), silent = TRUE)
+  if (!inherits(usda, "try-error")) head(usda$missing)
+}
 # }
 ```
