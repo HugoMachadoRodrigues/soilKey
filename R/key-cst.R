@@ -585,20 +585,30 @@ anthro_silting_within_cst <- function(pedon, top_max = 50) {
        us_st_1999 = df(e$us_st_1999), wrb_1998 = df(e$wrb_1998))
 }
 
+# The start of the warning that carries the correlation in a result (English,
+# whatever the report language); the report leaves that warning out where its
+# own section shows the correlation (v0.9.398).
+.CST_CORRELATION_NOTE <- "Correlation (a note, never a class): "
+
 # The correlation of a result as lines for the report and the app ("US Soil
 # Taxonomy (1999), Table 4.2: mostly Histosols; partly Gelisols"); NULL for a
-# result without it.
+# result without it. The words around the class names follow the report
+# language (v0.9.398); in English they are those of before, byte for byte.
 .cst_correlation_lines <- function(res) {
   cr <- tryCatch(res$qualifiers$correlation_cst, error = function(e) NULL)
   if (!is.list(cr) || is.null(cr$order)) return(NULL)
+  degree <- function(g) {
+    v <- .report_msg(paste0("report.cst_degree_", g))
+    if (startsWith(v, "report.")) g else v
+  }
   one <- function(d) {
     if (!is.data.frame(d) || !nrow(d)) return("")
     deg <- unique(d$degree)
-    paste(vapply(deg, function(g) sprintf("%s %s", g, paste(d$class[d$degree == g], collapse = ", ")), ""),
+    paste(vapply(deg, function(g) sprintf("%s %s", degree(g), paste(d$class[d$degree == g], collapse = ", ")), ""),
           collapse = "; ")
   }
-  c(sprintf("%s, US Soil Taxonomy (1999), Table 4.2: %s.", cr$name, one(cr$us_st_1999)),
-    sprintf("%s, World Reference Base (1998), Table 4.3: %s.", cr$name, one(cr$wrb_1998)))
+  c(.report_msg("report.cst_corr_us", cr$name, one(cr$us_st_1999)),
+    .report_msg("report.cst_corr_wrb", cr$name, one(cr$wrb_1998)))
 }
 
 # Every DiagnosticResult evidence below a trace entry marked provisional
@@ -907,8 +917,8 @@ classify_cst2001 <- function(pedon, rules = NULL,
   cr <- .cst_order_correlation(lv$code[1L])
   if (!is.null(cr)) {
     res$qualifiers$correlation_cst <- cr
-    notes <- c(notes, sprintf("Correlation (a note, never a class): %s",
-                              paste(.cst_correlation_lines(res), collapse = " ")))
+    notes <- c(notes, paste0(.CST_CORRELATION_NOTE,
+                             paste(.in_report_lang("en", .cst_correlation_lines(res)), collapse = " ")))
   }
   res$warnings <- c(res$warnings, notes)
   if (inherits(pedon, "PedonRecord")) res$trace$horizons <- .cst_panel_trace(pedon)

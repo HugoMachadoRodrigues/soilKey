@@ -36,6 +36,17 @@
   do.call(fn, args)
 }
 
+# The warnings of a result as a report lists them: those stored in the
+# result, less the CST correlation warning when the national section already
+# shows the correlation (v0.9.398: in a Portuguese report it would repeat the
+# section in English). The result's own warnings are unchanged.
+.report_warnings <- function(res) {
+  w <- as.character(res$warnings %||% character())
+  if (length(w) && length(tryCatch(.cst_correlation_lines(res), error = function(e) NULL)))
+    w <- w[!startsWith(w, .CST_CORRELATION_NOTE)]
+  w
+}
+
 # Is the result's system marked experimental in the registry?
 .result_is_experimental <- function(res) {
   id <- res$system_id

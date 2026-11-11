@@ -27,6 +27,7 @@ edition: "Chinese Soil Taxonomy, English edition, Science Press 2001"
 citation: >
   Cooperative Research Group on Chinese Soil Taxonomy (2001). Chinese Soil
   Taxonomy. Science Press, Beijing and New York. ISBN 7-03-008852-2.
+citation_short: "Cooperative Research Group on Chinese Soil Taxonomy (2001). Chinese Soil Taxonomy. Science Press, Beijing and New York."
 version: "English edition (2001), mostly the 1995 Revised Proposal and the 1999 book; may differ from the Chinese 3rd edition at subgroup level"
 implementation_status: "soilKey v0.9.376 -- the 14 orders (key 5.1, pp. 72-75) and the 39 suborders (key 5.2), with soilKey's residual [E2] [Other Ferralosols], and the 138 groups (v0.9.374, key 5.2) with soilKey's residuals [A1.4] and [A2.5]; the 33 diagnostic horizons (v0.9.371) and the 25 diagnostic characteristics (v0.9.372) on the recorded data, the regimes and shared readers of v0.9.370; the correlation of Tables 4.2 and 4.3 as a note; the 588 subgroups of key 5.2, their criteria written as presets: the 176 of orders A to G (v0.9.375, with the [A1.3.x] Lithic Hemi-Permagelic Histosols of Appendix 1) and the 412 of orders H to N (v0.9.376)"
 source: |

@@ -23,6 +23,7 @@ citation: >
   Soil Classification Working Group (1991). Soil classification: a taxonomic
   system for South Africa. Memoirs on the Agricultural Natural Resources of
   South Africa No. 15. Department of Agricultural Development, Pretoria.
+citation_short: "Soil Classification Working Group (1991). Soil classification: a taxonomic system for South Africa. Department of Agricultural Development, Pretoria."
 version: "Second edition (1991); read from the open AGIS key and form pages, the family criteria, the general rules and the topsoil pages, without the book"
 implementation_status: "soilKey v0.9.359 -- the 73 soil forms (and Lichtenburg, outside the AGIS key, provisional), keyed by their sequences of diagnostic horizons and materials in the order of van Huyssteen (2020), with the general rules (1500 mm, burial, truncation) and the 500 mm rules of the form pages; the 30 diagnostic horizons and materials from the South African notation or on the data (v0.9.355-0.9.357); since v0.9.359 the 404 families of the forms, by the 19 family criteria, with the partial code of an undecided family (Hu1x00) and the name of Q23 (form, family code and name, texture of the A)."
 source: |

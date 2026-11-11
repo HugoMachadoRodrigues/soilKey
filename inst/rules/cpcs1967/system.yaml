@@ -21,6 +21,7 @@ citation: >
   Classification des sols. ENSA, Grignon. 87 pp. Digitised by the
   Association Française pour l'Étude du Sol (2011), with corrections by
   D. Baize.
+citation_short: "Commission de Pédologie et de Cartographie des Sols (1967). Classification des sols. ENSA, Grignon."
 version: "Classification des sols, édition 1967 (AFES digitisation of 2011)"
 implementation_status: "soilKey v0.9.333 -- the 12 classes, keyed in an order built from the text's statements of precedence, their 35 sub-classes (the climatic ones from the Koppen climate or the USDA regimes), their 101 groups and their 276 subgroups"
 source: |

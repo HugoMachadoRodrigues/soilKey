@@ -23,6 +23,7 @@ citation: >
   Australian Soil Classification. 3rd edition. CSIRO Publishing, Melbourne.
   Online version: Soil Science Australia, www.soilscienceaustralia.org.au/asc
   (last update 25 June 2026; Appendix 8 errata of 5 November 2025).
+citation_short: "Isbell, R.F. and the National Committee on Soil and Terrain (2021). The Australian Soil Classification, 3rd edition. CSIRO Publishing, Melbourne."
 version: "The Australian Soil Classification, 3rd edition (2021), online version of 25 June 2026"
 implementation_status: "soilKey v0.9.292 -- 15/15 orders, the suborders of all 15, the great groups of the 14 orders that have them (the Anthroposols have none), and the subgroups of the 14 orders that have great groups (the Rudosolic and Tenosolic great groups of the Redoxic and Oxyaquic Hydrosols by the Rudosol and Tenosol lists); the families of the 14 orders that have them (include_family = TRUE)"
 source: |

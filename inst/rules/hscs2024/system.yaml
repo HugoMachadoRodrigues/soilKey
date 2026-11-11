@@ -21,6 +21,7 @@ citation: >
   (2024). A diagnosztikus szemléletű hazai talajosztályozási rendszer.
   Útmutató. Második közelítés. Magyar Agrár- és Élettudományi Egyetem,
   Gödöllő.
+citation_short: "Michéli E. et al. (2024). A diagnosztikus szemléletű hazai talajosztályozási rendszer. Útmutató. Második közelítés. Magyar Agrár- és Élettudományi Egyetem, Gödöllő."
 version: "Second approximation, Gödöllő 2024 (talaj.hu)"
 implementation_status: "soilKey v0.9.316 -- the 15 types of the key (section 7), their subtype and variety properties (8.5, 8.6) and the modifiers of 8.7"
 source: |

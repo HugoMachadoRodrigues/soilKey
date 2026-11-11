@@ -20,6 +20,7 @@ citation: >
   Manaaki Whenua - Landcare Research (2026). New Zealand Soil
   Classification. 4th edition. Landcare Research Science Series.
   https://doi.org/10.7931/dl1-lrss-4-2026
+citation_short: "Manaaki Whenua - Landcare Research (2026). New Zealand Soil Classification, 4th edition. Landcare Research Science Series."
 version: "New Zealand Soil Classification, 4th edition (2026); source github.com/manaakiwhenua/nzsc_v4 at commit 4c559ca2 (2026-10-07)"
 implementation_status: "soilKey v0.9.302 -- 15/15 orders (Key to Soil Orders), 77/77 groups (keys to groups), and 336/336 subgroups (keys to subgroups; 70 groups, the other seven have none); the Cryic Soils of the appendix are not keyed"
 source: |

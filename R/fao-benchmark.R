@@ -39,10 +39,6 @@
   nm
 }
 
-.FAO_CW_RELATION <- c(same = "same name", renamed = "renamed", amended = "amended",
-                      renamed_amended = "renamed and amended", merged = "merged",
-                      split = "split", deleted = "deleted", new = "new")
-
 #' The correspondence between the FAO-Unesco legends of 1974 and 1988
 #'
 #' The official correspondence of Appendix 4 of the Revised Legend (FAO
@@ -131,10 +127,25 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
   paste(sprintf("%s: %s", names(w), unlist(w)), collapse = "; ")
 }
 
+# A condition of the crosswalk in the report language: the Portuguese of
+# inst/i18n/fao_crosswalk_pt.yaml when the report is in Portuguese (v0.9.398),
+# else the English of crosswalk.yaml, unchanged.
+.fao_cw_when_lang <- function(txt) {
+  if (!identical(.report_lang(), "pt") || !nzchar(txt)) return(txt)
+  if (is.null(.fao_cw_cache$when_pt)) {
+    f <- system.file("i18n", "fao_crosswalk_pt.yaml", package = "soilKey")
+    if (!nzchar(f)) f <- file.path("inst", "i18n", "fao_crosswalk_pt.yaml")  # dev tree
+    assign("when_pt", if (file.exists(f)) yaml::read_yaml(f) else list(), envir = .fao_cw_cache)
+  }
+  .fao_cw_cache$when_pt[[txt]] %||% txt
+}
+
 # The edition line of a FAO-Unesco result (display only, never a class):
 # for a 1974 result, the 1988 classes of its unit (or group); for a 1988
 # result, the 1974 classes that went to its unit (or grouping). A character
-# vector of lines; NULL for any other result or one with no class.
+# vector of lines; NULL for any other result or one with no class. The words
+# around the codes follow the report language (v0.9.398); in English they are
+# those of before, byte for byte.
 .fao_edition_lines <- function(res) {
   id <- tryCatch(res$system_id, error = function(e) NULL)
   lv <- tryCatch(res$levels, error = function(e) NULL)
@@ -145,7 +156,9 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
   cw <- .fao_cw_read()
   n74 <- .fao_code_names("1974")
   n88 <- .fao_code_names("1988")
-  rel <- function(e) sprintf("%s, App. 4 p. %d", .FAO_CW_RELATION[[e$relation]], as.integer(e$page))
+  rel <- function(e) .report_msg("report.fao_cw_rel", .report_msg(paste0("report.fao_cw_", e$relation)),
+                                 as.integer(e$page))
+  when <- function(w, target = NULL) .fao_cw_when_lang(.fao_cw_when(w, target))
   to_of <- function(e) as.character(unlist(e$to %||% character(0)))
   also_of <- function(e) as.character(unlist(e$also %||% character(0)))
   if (id == "fao1974") {
@@ -158,14 +171,15 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
     e <- rows[[match(hit, from)]]
     to <- to_of(e)
     main <- if (length(to))
-      sprintf("%s (%s)", paste(sprintf("%s %s", to, n88[to]), collapse = " or "), rel(e))
-    else sprintf("no class of 1988 (%s)", rel(e))
+      sprintf("%s (%s)", paste(sprintf("%s %s", to, n88[to]), collapse = .report_msg("report.fao_cw_or")), rel(e))
+    else .report_msg("report.fao_cw_no_1988", rel(e))
     al <- also_of(e)
     alt <- if (!length(al)) "" else if (is.list(e$also_when))
-      sprintf(" [or %s]", paste(sprintf("%s %s: %s", al, n88[al],
-                                        vapply(al, function(a) .fao_cw_when(e$also_when, a), "")), collapse = "; "))
-    else sprintf(" [or %s: %s]", paste(sprintf("%s %s", al, n88[al]), collapse = ", "), .fao_cw_when(e$also_when))
-    return(sprintf("Revised Legend (1988): %s%s.", main, alt))
+      .report_msg("report.fao_cw_or_alt", paste(sprintf("%s %s: %s", al, n88[al],
+                                        vapply(al, function(a) when(e$also_when, a), "")), collapse = "; "))
+    else .report_msg("report.fao_cw_or_alt", sprintf("%s: %s", paste(sprintf("%s %s", al, n88[al]), collapse = ", "),
+                                                     when(e$also_when)))
+    return(.report_msg("report.fao_cw_line_1988", main, alt))
   }
   deepest <- codes[1L]
   grouping <- codes[length(codes)]
@@ -193,16 +207,16 @@ fao_crosswalk <- function(code = NULL, from = c("1974", "1988")) {
   if (length(main))
     parts <- c(parts, paste(vapply(main, function(e) sprintf("%s %s (%s)", e$from, n74[[as.character(e$from)]], rel(e)), ""),
                             collapse = "; "))
-  if (!is.null(newr)) parts <- c(parts, sprintf("new in 1988, no class of 1974 (App. 4 p. %d)%s", as.integer(newr$page),
-                                                if (isTRUE(newr$bracketed)) " [not flagged in App. 4]" else ""))
+  if (!is.null(newr)) parts <- c(parts, .report_msg("report.fao_cw_new_1988", as.integer(newr$page),
+                                                    if (isTRUE(newr$bracketed)) .report_msg("report.fao_cw_not_flagged") else ""))
   if (length(alt)) {
     who <- vapply(alt, function(e) sprintf("%s %s", e$from, n74[[as.character(e$from)]]), "")
-    when <- vapply(alt, function(e) .fao_cw_when(e$also_when, target), "")
-    by_when <- split(who, factor(when, unique(when)))
-    parts <- c(parts, sprintf("[some %s]", paste(vapply(names(by_when), function(w)
+    whens <- vapply(alt, function(e) when(e$also_when, target), "")
+    by_when <- split(who, factor(whens, unique(whens)))
+    parts <- c(parts, .report_msg("report.fao_cw_some", paste(vapply(names(by_when), function(w)
       sprintf("%s, %s", paste(by_when[[w]], collapse = ", "), w), ""), collapse = "; ")))
   }
-  sprintf("Legend of 1974: %s.", paste(parts, collapse = "; "))
+  .report_msg("report.fao_cw_line_1974", paste(parts, collapse = "; "))
 }
 
 

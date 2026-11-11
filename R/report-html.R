@@ -352,12 +352,13 @@ report <- function(x,
               paste(.html_escape(res$missing_data), collapse = ", "))
   }
 
-  warn_html <- if (length(res$warnings %||% character()) == 0) {
+  warns <- .report_warnings(res)
+  warn_html <- if (length(warns) == 0) {
     ""
   } else {
     paste0(
       sprintf("<h3>%s</h3><ul>", .report_msg("report.warnings")),
-      paste(vapply(res$warnings, function(w)
+      paste(vapply(warns, function(w)
         sprintf("<li>%s</li>", .html_escape(w)),
         character(1)), collapse = "\n"),
       "</ul>"
