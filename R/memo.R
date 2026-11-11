@@ -65,7 +65,8 @@
 
 # The memo of one pedon in the open scope, or NULL (no scope, or not a
 # PedonRecord). A pedon whose horizon table or site is not the one it had when
-# first seen gets an empty memo.
+# first seen gets an empty memo. The slot keeps a copy of the horizon table,
+# so a table changed in place (data.table::set(), :=) is seen by its content.
 .memo_slot <- function(pedon) {
   slots <- .memo_state$slots
   if (is.null(slots) || !inherits(pedon, "PedonRecord")) return(NULL)
@@ -73,8 +74,8 @@
   site <- pedon$site
   for (s in slots) {
     if (identical(s$pedon, pedon)) {
-      if (!identical(s$h, h) || !identical(s$site, site)) {
-        s$h <- h
+      if (!identical(s$h, .memo_content(h)) || !identical(s$site, site)) {
+        s$h <- .memo_snapshot(h)
         s$site <- site
         s$memo <- new.env(parent = emptyenv())
       }
@@ -83,7 +84,7 @@
   }
   s <- new.env(parent = emptyenv())
   s$pedon <- pedon
-  s$h <- h
+  s$h <- .memo_snapshot(h)
   s$site <- site
   s$memo <- new.env(parent = emptyenv())
   if (length(slots) >= .MEMO_MAX_SLOTS) slots <- slots[-1L]
@@ -98,9 +99,53 @@
   o[startsWith(names(o), "soilKey.")]
 }
 
+# The content of a horizon table, to compare with identical(): its columns
+# and its class, in a copy that an edit in place of the pedon's own table does
+# not reach. The other attributes are left out: a data.table keeps a pointer
+# to itself (.internal.selfref) that differs between a table and its copy, and
+# is empty in a table read from a file.
+.memo_snapshot <- function(h) {
+  if (!is.list(h)) return(h)
+  if (data.table::is.data.table(h)) h <- data.table::copy(h)
+  .memo_content(h)
+}
+
+.memo_content <- function(h) {
+  if (!is.list(h)) return(h)
+  cls <- class(h)
+  nm <- names(h)
+  attributes(h) <- NULL
+  list(class = cls, names = nm, columns = h)
+}
+
 # A copy for the caller: a new R6 object for an R6 result, the value
-# otherwise.
-.memo_copy <- function(v) if (inherits(v, "R6")) v$clone() else v
+# otherwise. The R6 objects inside it (the DiagnosticResults a diagnostic
+# keeps in its evidence, in lists at any depth) are copied too, so a caller
+# that changes a nested result changes only its own copy. An object met twice
+# (the USDA orders keep the same earlier orders in their evidence) is copied
+# once, so the copy keeps the shape of the original.
+.memo_copy <- function(v, seen = new.env(parent = emptyenv())) {
+  if (inherits(v, "R6")) {
+    key <- data.table::address(v)
+    done <- seen[[key]]
+    if (!is.null(done)) return(done)
+    out <- v$clone()
+    assign(key, out, envir = seen)
+    if ("evidence" %in% names(out) && is.list(out$evidence))
+      out$evidence <- .memo_copy(out$evidence, seen)
+    return(out)
+  }
+  if (is.list(v) && !is.data.frame(v)) {
+    for (i in seq_along(v)) {
+      x <- v[[i]]
+      if (inherits(x, "R6") || (is.list(x) && !is.data.frame(x))) {
+        y <- .memo_copy(x, seen)
+        if (!identical(x, y)) v[[i]] <- y
+      }
+    }
+  }
+  v
+}
 
 # The value of `expr` (a promise, evaluated only when needed) for `pedon`,
 # memoised in the open scope under `id` and the argument list `args`.

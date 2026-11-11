@@ -5,7 +5,7 @@
 The classifiers do less repeated work; no name, code, qualifier, trace, evidence, warning or other part of a result changes.
 
 * **Rule sets read once.** `load_rules()` reads the YAML files of a system once per session, and `resolve_wrb_qualifiers()` its qualifier lists (`qualifiers.yaml`) likewise; before, every classification read them again (and looked for them on disk). A rule set is an R list, so a caller that changes its copy does not change the cache.
-* **A memo for one classification.** `classify_wrb2022()`, `classify_usda()`, `classify_sibcs()`, the national keys (through `classify_hierarchical()`), `run_taxonomic_key()`, `run_taxa_list()`, `resolve_wrb_qualifiers()` and the family functions open a memo for the length of their call. Inside it, the diagnostics that the keys call again and again are computed once per pedon, arguments and `soilKey.*` options: the twelve USDA orders (each order calls every order before it, so a USDA classification called `gelisol_usda()` 512 times), `cryic_conditions()`, `spodic()`, `albic()`, `.argic_impl()`, `mollic()`, `ferralic()`, the WRB limiting layers (`.wrb_limiting_layers()`, read by many qualifiers) and the diagnostics they rest on, and the SiBCS B horizons and attributes that its levels call several times. The memo keeps the horizon table and the site each pedon had: a pedon whose horizons or site are replaced inside the call starts afresh, and the memo is dropped when the call returns, so a pedon modified after a classification is read anew by the next one. A diagnostic called on its own is not memoised. Each call still gets a new `DiagnosticResult` (a copy), as the keys change some results they receive, and the warnings and messages of the first call are given again at each later one.
+* **A memo for one classification.** `classify_wrb2022()`, `classify_usda()`, `classify_sibcs()`, the national keys (through `classify_hierarchical()`), `run_taxonomic_key()`, `run_taxa_list()`, `resolve_wrb_qualifiers()` and the family functions open a memo for the length of their call. Inside it, the diagnostics that the keys call again and again are computed once per pedon, arguments and `soilKey.*` options: the twelve USDA orders (each order calls every order before it, so a USDA classification called `gelisol_usda()` 512 times), `cryic_conditions()`, `spodic()`, `albic()`, `.argic_impl()`, `mollic()`, `ferralic()`, the WRB limiting layers (`.wrb_limiting_layers()`, read by many qualifiers) and the diagnostics they rest on, and the SiBCS B horizons and attributes that its levels call several times. The memo keeps a copy of the horizon table and the site each pedon had: a pedon whose horizons or site are replaced or changed in place inside the call starts afresh, and the memo is dropped when the call returns, so a pedon modified after a classification is read anew by the next one. A diagnostic called on its own is not memoised. Each call still gets a new `DiagnosticResult` (a copy, with the results nested in its evidence copied too), as the keys change some results they receive, and the warnings and messages of the first call are given again at each later one.
 * **Designations read once.** The reading of the horizon designations (`.desg_master()`, the older notation, the declared `designation_system`) is kept in a bounded session cache, each entry checked against the designations and the notation it was read with.
 * **`classify_with_uncertainty()`** perturbs each column in a plain vector written back once, with the same random draws in the same order, instead of writing each cell into the horizon table.
 
@@ -17,12 +17,12 @@ CPU time per profile (this Mac, the same load for both):
 
 | | 0.9.399 | 0.9.400 |
 |---|--:|--:|
-| WRB 2022, the 31 canonical WRB profiles | 0.124 s | 0.051 s |
-| USDA, the same | 0.498 s | 0.022 s |
-| SiBCS, the same | 0.090 s | 0.019 s |
-| `classify_with_uncertainty()`, Ferralsol, n = 10 | 27.7 s | 12.8 s |
-| the 17 keys on the 974 ISIS profiles | 3,216 s | 1,943 s |
-| the test suite as CRAN runs it (sum over the tests) | 52.7 s | 43.8 s |
+| WRB 2022, the 31 canonical WRB profiles | 0.118 s | 0.052 s |
+| USDA, the same | 0.468 s | 0.036 s |
+| SiBCS, the same | 0.088 s | 0.027 s |
+| `classify_with_uncertainty()`, Ferralsol, n = 10 | 24.7 s | 13.9 s |
+| the 17 keys on the 974 ISIS profiles (first version of the memo) | 3,216 s | 1,943 s |
+| the test suite as CRAN runs it (sum over the tests) | 51.4 s | 43.1 s |
 
 The national keys gain less: their own readers do most of their work.
 

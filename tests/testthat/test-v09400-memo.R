@@ -125,3 +125,36 @@ test_that("rule sets are read once and a changed copy does not change them", {
   expect_identical(load_rules("wrb"), load_rules("wrb2022"))
   expect_error(load_rules("wrb2022", package = "stats"), "Rule file not found")
 })
+
+test_that("a horizon table changed in place inside a scope is seen", {
+  ns <- asNamespace("soilKey")
+  p <- make_podzol_canonical()
+  expect_true(ns$.memo_open())
+  on.exit(ns$.memo_close(), add = TRUE)
+  before <- spodic(p)
+  data.table::set(p$horizons, j = "ph_h2o", value = rep(8.5, nrow(p$horizons)))
+  after <- spodic(p)
+  expect_identical(after$passed, ns$.spodic_uncached(p)$passed)
+  expect_false(identical(before$passed, after$passed))
+})
+
+test_that("a nested result changed by a caller does not reach the next call", {
+  ns <- asNamespace("soilKey")
+  p <- make_luvisol_canonical()
+  expect_true(ns$.memo_open())
+  on.exit(ns$.memo_close(), add = TRUE)
+  r1 <- alfisol_usda(p)
+  nested <- Filter(function(x) inherits(x, "R6"), r1$evidence)
+  expect_true(length(nested) > 0L)
+  k <- names(nested)[1L]
+  original <- r1$evidence[[k]]$passed
+  r1$evidence[[k]]$passed <- "changed"
+  r2 <- alfisol_usda(p)
+  expect_identical(r2$evidence[[k]]$passed, original)
+  # nested lists of results are copied as well
+  v <- list(a = list(b = DiagnosticResult$new(name = "x", passed = TRUE)), n = 1)
+  w <- ns$.memo_copy(v)
+  w$a$b$passed <- FALSE
+  expect_true(v$a$b$passed)
+  expect_identical(ns$.memo_copy(list(1, "a")), list(1, "a"))
+})
