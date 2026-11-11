@@ -125,6 +125,24 @@ argic <- function(pedon, min_thickness = 7.5,
                         require_t = NULL,
                         lithic_discontinuity = NULL,
                         wrb2022_text = FALSE) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, ".argic_impl",
+        list(min_thickness, system, engine, require_t, lithic_discontinuity,
+             wrb2022_text),
+        .argic_impl_uncached(pedon = pedon, min_thickness = min_thickness,
+                             system = system, engine = engine,
+                             require_t = require_t,
+                             lithic_discontinuity = lithic_discontinuity,
+                             wrb2022_text = wrb2022_text))
+}
+
+# The computation of .argic_impl().
+.argic_impl_uncached <- function(pedon, min_thickness = 7.5,
+                        system = c("wrb2022", "usda"),
+                        engine = NULL,
+                        require_t = NULL,
+                        lithic_discontinuity = NULL,
+                        wrb2022_text = FALSE) {
   system <- match.arg(system)
   # v0.9.220: WRB 2022 criterion 2.a.i (see below) for the WRB argic only; the
   # SiBCS B textural (item j) and the USDA keys call this with FALSE.
@@ -416,6 +434,19 @@ ferralic <- function(pedon,
                        max_cec       = NULL,
                        engine        = NULL,
                        cec_inclusive = FALSE) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "ferralic", list(min_thickness, max_cec, engine, cec_inclusive),
+        .ferralic_uncached(pedon = pedon, min_thickness = min_thickness,
+                           max_cec = max_cec, engine = engine,
+                           cec_inclusive = cec_inclusive))
+}
+
+# The computation of ferralic().
+.ferralic_uncached <- function(pedon,
+                       min_thickness = 30,
+                       max_cec       = NULL,
+                       engine        = NULL,
+                       cec_inclusive = FALSE) {
   .ferralic_impl(pedon, min_thickness = min_thickness, max_cec = max_cec,
                  engine = engine, cec_inclusive = cec_inclusive,
                  wrb2022_text = TRUE)
@@ -543,6 +574,19 @@ ferralic <- function(pedon,
 #'
 #' @export
 mollic <- function(pedon,
+                     min_thickness  = 20,
+                     min_oc         = 0.6,
+                     min_bs         = 50,
+                     surface_top_cm = 5) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "mollic", list(min_thickness, min_oc, min_bs, surface_top_cm),
+        .mollic_uncached(pedon = pedon, min_thickness = min_thickness,
+                         min_oc = min_oc, min_bs = min_bs,
+                         surface_top_cm = surface_top_cm))
+}
+
+# The computation of mollic().
+.mollic_uncached <- function(pedon,
                      min_thickness  = 20,
                      min_oc         = 0.6,
                      min_bs         = 50,
@@ -1004,6 +1048,14 @@ cambic <- function(pedon, min_thickness = 15, min_top_cm = 5,
 #'   horizon.
 #' @export
 plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "plinthic", list(min_thickness, min_plinthite_pct),
+        .plinthic_uncached(pedon = pedon, min_thickness = min_thickness,
+                           min_plinthite_pct = min_plinthite_pct))
+}
+
+# The computation of plinthic().
+.plinthic_uncached <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
   h <- pedon$horizons
   n <- nrow(h)
 
@@ -1156,6 +1208,21 @@ plinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15) {
 #' @references IUSS Working Group WRB (2022), Chapter 3, Spodic horizon.
 #' @export
 spodic <- function(pedon,
+                     min_thickness = 2.5,
+                     min_alfe      = 0.5,
+                     max_ph        = 5.9,
+                     min_oc_in_b   = 0.5,
+                     engine        = NULL) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "spodic",
+        list(min_thickness, min_alfe, max_ph, min_oc_in_b, engine),
+        .spodic_uncached(pedon = pedon, min_thickness = min_thickness,
+                         min_alfe = min_alfe, max_ph = max_ph,
+                         min_oc_in_b = min_oc_in_b, engine = engine))
+}
+
+# The computation of spodic().
+.spodic_uncached <- function(pedon,
                      min_thickness = 2.5,
                      min_alfe      = 0.5,
                      max_ph        = 5.9,
@@ -1382,6 +1449,20 @@ umbric_horizon <- function(pedon,
                               min_oc         = 0.6,
                               max_bs         = 50,
                               surface_top_cm = 5) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "umbric_horizon",
+        list(min_thickness, min_oc, max_bs, surface_top_cm),
+        .umbric_horizon_uncached(pedon = pedon, min_thickness = min_thickness,
+                                 min_oc = min_oc, max_bs = max_bs,
+                                 surface_top_cm = surface_top_cm))
+}
+
+# The computation of umbric_horizon().
+.umbric_horizon_uncached <- function(pedon,
+                              min_thickness  = 20,
+                              min_oc         = 0.6,
+                              max_bs         = 50,
+                              surface_top_cm = 5) {
   h <- pedon$horizons
   ref <- "IUSS Working Group WRB (2022), Chapter 3.1.39, Umbric horizon (pp. 69-70)"
 
@@ -1539,6 +1620,16 @@ natric_horizon <- function(pedon, min_esp = 15, min_pH_h2o = 7.0) {
 #' (argic + ESP >= 15 in an argic layer), kept for the USDA keys.
 #' @noRd
 .natric_horizon_impl <- function(pedon, min_esp = 15, min_pH_h2o = 7.0,
+                                 wrb2022_text = FALSE) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, ".natric_horizon_impl", list(min_esp, min_pH_h2o, wrb2022_text),
+        .natric_horizon_impl_uncached(pedon = pedon, min_esp = min_esp,
+                                      min_pH_h2o = min_pH_h2o,
+                                      wrb2022_text = wrb2022_text))
+}
+
+# The computation of .natric_horizon_impl().
+.natric_horizon_impl_uncached <- function(pedon, min_esp = 15, min_pH_h2o = 7.0,
                                  wrb2022_text = FALSE) {
   arg <- if (wrb2022_text) argic(pedon) else .argic_impl(pedon)
   designation_inference_enabled <- isTRUE(

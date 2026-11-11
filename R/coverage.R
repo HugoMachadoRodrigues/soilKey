@@ -197,7 +197,9 @@
   # v0.9.314: calcic(), cambic() and fluvic_material() delegate to their WRB
   # 2022 readings, .<name>_wrb2022(); v0.9.311: vertic_horizon() to
   # .vertic_horizon_wrb() and .vertic_horizon_usda().
-  m <- regmatches(b, regexpr("\\.[a-z_]+_(impl|wrb2022|wrb|usda)(?=\\s*\\(\\s*pedon)", b, perl = TRUE))
+  # v0.9.400: a diagnostic memoised within a classification delegates to
+  # .<name>_uncached() (R/memo.R).
+  m <- regmatches(b, regexpr("\\.[A-Za-z0-9_]+_(impl|wrb2022|wrb|usda|uncached)(?=\\s*\\(\\s*pedon)", b, perl = TRUE))
   ns <- asNamespace("soilKey")
   length(m) == 1L && exists(m, envir = ns, mode = "function", inherits = FALSE) &&
     .diagnostic_body_is_real(get(m, envir = ns))

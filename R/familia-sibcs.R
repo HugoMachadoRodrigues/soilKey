@@ -576,6 +576,8 @@ classify_sibcs_familia <- function(pedon,
                                        sg_code      = NULL,
                                        max_depth_cm = 200,
                                        nome_superior = NULL) {
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   if (is.null(ordem_code) && !is.null(sg_code)) {
     ordem_code <- substr(sg_code, 1L, 1L)
   }

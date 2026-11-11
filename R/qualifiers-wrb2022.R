@@ -1088,6 +1088,20 @@ qual_haplic <- function(pedon) {
                           missing = res$missing %||% character(0)))
 }
 
+# The qualifier lists of WRB 2022 (inst/rules/wrb2022/qualifiers.yaml), read
+# once per session (v0.9.400; R/memo.R); NULL when the file is not found.
+.wrb_qualifier_rules <- function() {
+  cached <- .rules_cache[["wrb2022\rqualifiers"]]
+  if (!is.null(cached)) return(cached)
+  qfile <- system.file("rules/wrb2022/qualifiers.yaml",
+                          package = "soilKey")
+  if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
+  if (!file.exists(qfile)) return(NULL)
+  qrules <- yaml::read_yaml(qfile)
+  assign("wrb2022\rqualifiers", qrules, envir = .rules_cache)
+  qrules
+}
+
 #' Resolve WRB 2022 qualifiers for a Reference Soil Group
 #'
 #' Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
@@ -1127,14 +1141,13 @@ qual_haplic <- function(pedon) {
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
                                    specifiers = FALSE) {
   rules <- rules %||% load_rules("wrb2022")
-  qfile <- system.file("rules/wrb2022/qualifiers.yaml",
-                          package = "soilKey")
-  if (!nzchar(qfile)) qfile <- "inst/rules/wrb2022/qualifiers.yaml"
-  if (!file.exists(qfile)) {
+  # v0.9.400: one memo scope for the qualifiers of one call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
+  qrules <- .wrb_qualifier_rules()
+  if (is.null(qrules)) {
     return(list(principal = character(0), supplementary = character(0),
                   trace = list(), note = "qualifiers.yaml not found"))
   }
-  qrules <- yaml::read_yaml(qfile)
   per_rsg <- qrules$rsg_qualifiers[[rsg_code]]
   if (is.null(per_rsg)) {
     return(list(principal = character(0), supplementary = character(0),

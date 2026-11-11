@@ -294,6 +294,8 @@ classify_usda_family <- function(pedon, order_code = NULL,
                                  subgroup_code = NULL,
                                  infer_temperature = TRUE) {
   dims <- .family_dims_por_order_usda(order_code)
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   out  <- list()
   if ("particle_size" %in% dims)
     out$particle_size <- family_particle_size_usda(pedon)

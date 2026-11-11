@@ -190,6 +190,8 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
   id  <- .system_resolve(system)
   sys <- .system_get(id)
   .classify_require_horizons(pedon, sys$classifier)
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   rules <- rules %||% load_rules(id)
   pedon <- .classify_apply_gapfill(pedon, gapfill)
 

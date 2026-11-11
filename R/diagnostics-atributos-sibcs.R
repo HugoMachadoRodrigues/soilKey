@@ -51,6 +51,13 @@
 #' @param min_ta Numeric threshold or option (see Details).
 #' @noRd
 atividade_argila_alta <- function(pedon, min_ta = 27) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "atividade_argila_alta", list(min_ta),
+        .atividade_argila_alta_uncached(pedon = pedon, min_ta = min_ta))
+}
+
+# The computation of atividade_argila_alta().
+.atividade_argila_alta_uncached <- function(pedon, min_ta = 27) {
   h <- pedon$horizons
   ref <- "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 30"
   sec <- .sibcs_b_first_100(h, site = pedon$site)
@@ -267,6 +274,14 @@ distrofico <- function(pedon, max_v = 50) {
 #' @param max_v Numeric threshold or option (see Details).
 #' @noRd
 carater_alitico <- function(pedon, min_al = 4, min_al_sat = 50, max_v = 50) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "carater_alitico", list(min_al, min_al_sat, max_v),
+        .carater_alitico_uncached(pedon = pedon, min_al = min_al,
+                                  min_al_sat = min_al_sat, max_v = max_v))
+}
+
+# The computation of carater_alitico().
+.carater_alitico_uncached <- function(pedon, min_al = 4, min_al_sat = 50, max_v = 50) {
   h <- pedon$horizons
   candidates <- which(!is.na(h$designation) &
                         grepl("^B|^C", .desg_master(h$designation, site = pedon$site)))
@@ -643,6 +658,13 @@ carater_salino <- function(pedon, min_ec = 4, max_ec = 7,
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 mudanca_textural_abrupta <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "mudanca_textural_abrupta", list(),
+        .mudanca_textural_abrupta_uncached(pedon = pedon))
+}
+
+# The computation of mudanca_textural_abrupta().
+.mudanca_textural_abrupta_uncached <- function(pedon) {
   d <- pedon$horizons$designation
   if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
     res <- abrupt_textural_difference(pedon)

@@ -48,6 +48,14 @@
 # The layers that are a limiting layer (Ch 2.1, rule 8, p. 23), with a
 # recorded upper limit.
 .wrb_limiting_layers <- function(pedon, other_cemented = TRUE) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, ".wrb_limiting_layers", list(other_cemented),
+        .wrb_limiting_layers_uncached(pedon = pedon,
+                                      other_cemented = other_cemented))
+}
+
+# The computation of .wrb_limiting_layers().
+.wrb_limiting_layers_uncached <- function(pedon, other_cemented = TRUE) {
   rk <- continuous_rock(pedon)
   pc <- petrocalcic(pedon); pd <- petroduric(pedon)
   pg <- petrogypsic(pedon); pp <- petroplinthic(pedon)

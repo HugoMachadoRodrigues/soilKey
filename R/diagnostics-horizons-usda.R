@@ -43,6 +43,13 @@
 #'   Horizons; oxic.
 #' @export
 oxic_usda <- function(pedon, ...) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "oxic_usda", list(...),
+        .oxic_usda_uncached(pedon = pedon, ...))
+}
+
+# The computation of oxic_usda().
+.oxic_usda_uncached <- function(pedon, ...) {
   args <- list(...)
   if (is.null(args$cec_inclusive)) args$cec_inclusive <- TRUE
   # v0.9.310: the reading before the WRB ferralic took its sub-horizons together

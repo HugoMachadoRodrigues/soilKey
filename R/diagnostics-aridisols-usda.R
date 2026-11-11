@@ -42,6 +42,13 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 aridisol_qualifying_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "aridisol_qualifying_usda", list(),
+        .aridisol_qualifying_usda_uncached(pedon = pedon))
+}
+
+# The computation of aridisol_qualifying_usda().
+.aridisol_qualifying_usda_uncached <- function(pedon) {
   smr <- smr_aridic_usda(pedon)
   # Key to Soil Orders, item G.1.a (KST 13 p 69): "An aridic soil moisture
   # regime". KST 13 p 48 defines it by the moisture control section in

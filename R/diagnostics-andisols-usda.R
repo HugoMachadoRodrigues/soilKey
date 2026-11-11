@@ -36,6 +36,13 @@
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 32.
 #' @noRd
 andic_soil_properties_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "andic_soil_properties_usda", list(),
+        .andic_soil_properties_usda_uncached(pedon = pedon))
+}
+
+# The computation of andic_soil_properties_usda().
+.andic_soil_properties_usda_uncached <- function(pedon) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {
     return(DiagnosticResult$new(
@@ -98,6 +105,13 @@ andic_soil_properties_usda <- function(pedon) {
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 6, p 117.
 #' @noRd
 andisol_qualifying_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "andisol_qualifying_usda", list(),
+        .andisol_qualifying_usda_uncached(pedon = pedon))
+}
+
+# The computation of andisol_qualifying_usda().
+.andisol_qualifying_usda_uncached <- function(pedon) {
   h <- pedon$horizons
   asp <- andic_soil_properties_usda(pedon)
   passing <- intersect(asp$layers,

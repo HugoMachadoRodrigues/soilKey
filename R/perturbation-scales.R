@@ -70,6 +70,11 @@ get_perturbation_scale <- function(grade = c("A", "B", "C", "D", "E")) {
     if (col %in% skip) next
     vals <- h[[col]]
     if (!is.numeric(vals)) next
+    # v0.9.400: the cells are perturbed in the same order with the same
+    # draws as before, in a plain vector written back once per column
+    # (writing each cell into the table copied the table at every cell)
+    out <- vals
+    changed <- FALSE
     for (i in seq_along(vals)) {
       v <- vals[i]
       if (is.na(v)) next
@@ -83,8 +88,10 @@ get_perturbation_scale <- function(grade = c("A", "B", "C", "D", "E")) {
                } else {
                  v * stats::runif(1L, -sc$pct, sc$pct)
                }
-      h[[col]][i] <- max(0, v + noise)
+      out[i] <- max(0, v + noise)
+      changed <- TRUE
     }
+    if (changed) h[[col]] <- out
   }
   PedonRecord$new(site = pedon$site, horizons = h)
 }

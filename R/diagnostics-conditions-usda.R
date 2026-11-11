@@ -392,6 +392,13 @@ glacic_layer_usda <- function(pedon,
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, p 47.
 #' @noRd
 permafrost_within_usda <- function(pedon, max_top_cm = 100) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "permafrost_within_usda", list(max_top_cm),
+        .permafrost_within_usda_uncached(pedon = pedon, max_top_cm = max_top_cm))
+}
+
+# The computation of permafrost_within_usda().
+.permafrost_within_usda_uncached <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
   if (nrow(h) == 0L) {
     return(DiagnosticResult$new(

@@ -33,6 +33,13 @@
 #' @references Soil Survey Staff (2022), KST 13ed, Ch. 2, pp 7-9.
 #' @noRd
 histosol_qualifying_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "histosol_qualifying_usda", list(),
+        .histosol_qualifying_usda_uncached(pedon = pedon))
+}
+
+# The computation of histosol_qualifying_usda().
+.histosol_qualifying_usda_uncached <- function(pedon) {
   h <- pedon$horizons
   org <- which(!is.na(h$designation) & grepl("^[OH]", h$designation) &
                    !is.na(h$top_cm) & h$top_cm < 100)

@@ -48,6 +48,17 @@
 load_rules <- function(system = "wrb2022",
                          package = "soilKey") {
   system <- .system_resolve(system)
+  # v0.9.400: the files of a system are read once per session (R/memo.R)
+  key <- paste(system, package, sep = "\r")
+  cached <- .rules_cache[[key]]
+  if (!is.null(cached)) return(cached)
+  rules <- .load_rules_read(system, package)
+  assign(key, rules, envir = .rules_cache)
+  rules
+}
+
+# The reading of load_rules() from the files.
+.load_rules_read <- function(system, package) {
   path <- system.file("rules", system, "key.yaml", package = package)
   if (path == "" || !file.exists(path)) {
     rlang::abort(sprintf(
@@ -146,6 +157,8 @@ load_rules <- function(system = "wrb2022",
 #'         taxon) and \code{trace} (one entry per taxon tested).
 #' @export
 run_taxonomic_key <- function(pedon, rules, level_key) {
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   taxa <- rules[[level_key]]
   if (is.null(taxa) || length(taxa) == 0L) {
     rlang::abort(sprintf("Rule set has no '%s' list", level_key))
@@ -177,6 +190,8 @@ run_taxonomic_key <- function(pedon, rules, level_key) {
 #'         or NULL when \code{taxa} was empty) and \code{trace}.
 #' @export
 run_taxa_list <- function(pedon, taxa) {
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   if (is.null(taxa) || length(taxa) == 0L) {
     return(list(assigned = NULL, trace = list()))
   }

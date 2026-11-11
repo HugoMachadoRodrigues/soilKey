@@ -79,6 +79,13 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 gelisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "gelisol_usda", list(),
+        .gelisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of gelisol_usda().
+.gelisol_usda_uncached <- function(pedon) {
   h <- pedon$horizons
   cr <- cryic_conditions(pedon)
   cold <- if ("permafrost_temp_C" %in% names(h))
@@ -102,6 +109,13 @@ gelisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 histosol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "histosol_usda", list(),
+        .histosol_usda_uncached(pedon = pedon))
+}
+
+# The computation of histosol_usda().
+.histosol_usda_uncached <- function(pedon) {
   hi <- histosol_qualifying_usda(pedon)
   # v0.9.21: NASIS tie-breaker -- Histic / Folistic / Hemic / Sapric
   # / Fibric surveyor identification flips an NA histosol_qualifying
@@ -127,6 +141,13 @@ histosol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 spodosol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "spodosol_usda", list(),
+        .spodosol_usda_uncached(pedon = pedon))
+}
+
+# The computation of spodosol_usda().
+.spodosol_usda_uncached <- function(pedon) {
   sp <- spodic(pedon)
   # v0.9.21: NASIS tie-breaker -- "Spodic horizon" or "Spodic
   # materials" surveyor identification flips an NA spodic to TRUE.
@@ -150,6 +171,13 @@ spodosol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 andisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "andisol_usda", list(),
+        .andisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of andisol_usda().
+.andisol_usda_uncached <- function(pedon) {
   # Refined v0.8.6: uses andisol_qualifying_usda which enforces the
   # 60% / 60 cm rule (KST 13ed, Ch 6 p 117) instead of just any
   # andic-property layer.
@@ -193,6 +221,13 @@ andisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 oxisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "oxisol_usda", list(),
+        .oxisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of oxisol_usda().
+.oxisol_usda_uncached <- function(pedon) {
   h <- pedon$horizons
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
@@ -251,6 +286,13 @@ oxisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 vertisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "vertisol_usda", list(),
+        .vertisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of vertisol_usda().
+.vertisol_usda_uncached <- function(pedon) {
   # v0.9.311: the USDA reading (slickensides and cracks, or the KST 13 LE
   # path); vertic_horizon() itself now follows WRB 2022 Ch 3.1.40.
   vh <- vertic_horizon(pedon, reading = "usda")
@@ -284,6 +326,13 @@ vertisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 aridisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "aridisol_usda", list(),
+        .aridisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of aridisol_usda().
+.aridisol_usda_uncached <- function(pedon) {
   # Refined v0.8.9: uses aridisol_qualifying_usda which enforces
   # aridic SMR + a diagnostic subsurface horizon (KST 13ed Ch 7
   # p 137). v0.9.315: no fallback to aridity proxies when the regime
@@ -327,6 +376,13 @@ aridisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 ultisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "ultisol_usda", list(),
+        .ultisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of ultisol_usda().
+.ultisol_usda_uncached <- function(pedon) {
   ar <- .argic_impl(pedon, lithic_discontinuity = FALSE)
   # v0.9.21: NASIS tie-breaker for argic when canonical gate is NA.
   ar <- .apply_nasis_tiebreaker(ar, pedon,
@@ -363,6 +419,13 @@ ultisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 mollisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "mollisol_usda", list(),
+        .mollisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of mollisol_usda().
+.mollisol_usda_uncached <- function(pedon) {
   # v0.9.10: switched the mollic gate from the WRB `mollic()` (a v0.2
   # scaffold leftover) to the USDA-native `mollic_epipedon_usda()`,
   # which carries the artefact-rich exclusion in v0.9.10 and the
@@ -405,6 +468,13 @@ mollisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 alfisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "alfisol_usda", list(),
+        .alfisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of alfisol_usda().
+.alfisol_usda_uncached <- function(pedon) {
   ar <- argillic_usda(pedon)
   # v0.9.21: NASIS tie-breaker -- argillic / kandic / natric horizon
   # surveyor identification flips an NA argillic_usda to TRUE.
@@ -444,6 +514,13 @@ alfisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 inceptisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "inceptisol_usda", list(),
+        .inceptisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of inceptisol_usda().
+.inceptisol_usda_uncached <- function(pedon) {
   cb <- .cambic_impl(pedon)   # v0.9.310: argic and ferralic read as before (USDA)
   # v0.9.21: NASIS tie-breaker -- cambic horizon surveyor
   # identification flips an NA cambic to TRUE.
@@ -479,6 +556,13 @@ inceptisol_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 entisol_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "entisol_usda", list(),
+        .entisol_usda_uncached(pedon = pedon))
+}
+
+# The computation of entisol_usda().
+.entisol_usda_uncached <- function(pedon) {
   DiagnosticResult$new(
     name = "entisol_usda", passed = TRUE,
     layers = seq_len(nrow(pedon$horizons)),

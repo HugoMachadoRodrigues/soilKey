@@ -35,6 +35,13 @@
 #' @references IUSS Working Group WRB (2022), Ch 3.1 -- Albic horizon.
 #' @export
 albic <- function(pedon, min_thickness = 1) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "albic", list(min_thickness),
+        .albic_uncached(pedon = pedon, min_thickness = min_thickness))
+}
+
+# The computation of albic().
+.albic_uncached <- function(pedon, min_thickness = 1) {
   h <- pedon$horizons
   tests <- list()
   tests$claric <- test_claric_munsell(h)
@@ -158,6 +165,14 @@ ferric <- function(pedon, min_thickness = 15, min_nodules_pct = 5) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 petrocalcic <- function(pedon, min_thickness = 10, min_caco3_pct = 15) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "petrocalcic", list(min_thickness, min_caco3_pct),
+        .petrocalcic_uncached(pedon = pedon, min_thickness = min_thickness,
+                              min_caco3_pct = min_caco3_pct))
+}
+
+# The computation of petrocalcic().
+.petrocalcic_uncached <- function(pedon, min_thickness = 10, min_caco3_pct = 15) {
   h <- pedon$horizons
   tests <- list()
   tests$caco3      <- test_caco3_concentration(h, min_pct = min_caco3_pct)
@@ -183,6 +198,14 @@ petrocalcic <- function(pedon, min_thickness = 10, min_caco3_pct = 15) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 petroduric <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "petroduric", list(min_thickness, min_duripan_pct),
+        .petroduric_uncached(pedon = pedon, min_thickness = min_thickness,
+                             min_duripan_pct = min_duripan_pct))
+}
+
+# The computation of petroduric().
+.petroduric_uncached <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
   h <- pedon$horizons
   tests <- list()
   tests$duripan    <- test_duripan_concentration(h, min_pct = min_duripan_pct)
@@ -205,6 +228,14 @@ petroduric <- function(pedon, min_thickness = 10, min_duripan_pct = 10) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 petrogypsic <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "petrogypsic", list(min_thickness, min_gypsum_pct),
+        .petrogypsic_uncached(pedon = pedon, min_thickness = min_thickness,
+                              min_gypsum_pct = min_gypsum_pct))
+}
+
+# The computation of petrogypsic().
+.petrogypsic_uncached <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
   h <- pedon$horizons
   tests <- list()
   tests$gypsum     <- test_caso4_concentration(h, min_pct = min_gypsum_pct)
@@ -270,6 +301,14 @@ petrogypsic <- function(pedon, min_thickness = 10, min_gypsum_pct = 5) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 petroplinthic <- function(pedon, min_thickness = 10, min_plinthite_pct = 15) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "petroplinthic", list(min_thickness, min_plinthite_pct),
+        .petroplinthic_uncached(pedon = pedon, min_thickness = min_thickness,
+                                min_plinthite_pct = min_plinthite_pct))
+}
+
+# The computation of petroplinthic().
+.petroplinthic_uncached <- function(pedon, min_thickness = 10, min_plinthite_pct = 15) {
   h <- pedon$horizons
   r <- .petroplinthic_run(h, min_thickness, min_plinthite_pct)
   DiagnosticResult$new(
@@ -380,6 +419,23 @@ pisoplinthic <- function(pedon, min_thickness = 15, min_plinthite_pct = 15,
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 vertic_horizon <- function(pedon, min_clay = 30, min_thickness = 25,
+                              min_le_cm = 6, le_max_depth_cm = 100,
+                              min_crack_width_cm = 0.5,
+                              reading = c("wrb2022", "usda")) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "vertic_horizon",
+        list(min_clay, min_thickness, min_le_cm, le_max_depth_cm,
+             min_crack_width_cm, reading),
+        .vertic_horizon_uncached(pedon = pedon, min_clay = min_clay,
+                                 min_thickness = min_thickness,
+                                 min_le_cm = min_le_cm,
+                                 le_max_depth_cm = le_max_depth_cm,
+                                 min_crack_width_cm = min_crack_width_cm,
+                                 reading = reading))
+}
+
+# The computation of vertic_horizon().
+.vertic_horizon_uncached <- function(pedon, min_clay = 30, min_thickness = 25,
                               min_le_cm = 6, le_max_depth_cm = 100,
                               min_crack_width_cm = 0.5,
                               reading = c("wrb2022", "usda")) {
