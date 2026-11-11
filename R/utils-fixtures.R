@@ -59,7 +59,13 @@ make_ferralsol_canonical <- function() {
     bs_pct                = c(24,   17,   14,   13,   13),
     al_sat_pct            = c(26,   38,   43,   41,   43),
     fe_dcb_pct            = c(8.0,  8.5,  9.0,  9.5,  9.5),
-    bulk_density_g_cm3    = c(1.20, 1.25, 1.20, 1.10, 1.10)
+    bulk_density_g_cm3    = c(1.20, 1.25, 1.20, 1.10, 1.10),
+    # v0.9.402: weatherable minerals (% of the 0.05-0.2 mm fraction) and
+    # water-dispersible clay (% of the fine earth), as a Latossolo has
+    # them: few weatherable minerals, clay flocculated in the B. The
+    # ferralic B of the FAO-Unesco legend of 1988 asks for both.
+    weatherable_minerals_pct   = c(2,  2,  1,  1,  1),
+    water_dispersible_clay_pct = c(20, 12, 4,  0,  0)
   )
 
   hz <- ensure_horizon_schema(hz)

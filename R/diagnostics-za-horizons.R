@@ -693,6 +693,10 @@
 #' a measurement not recorded is undecided, so vertic A (ii) is undecided where
 #' the vertic A could hold, a strong structure (or none recorded) and clay of
 #' vertic_pi_clay or more (or none recorded); elsewhere NULL, and Q17 stands.
+#' Since v0.9.402 (Hugo, 2026-11-11) only a blocky (angular or subangular),
+#' prismatic or columnar structure, or one whose type is not recorded, leaves
+#' it undecided: a granular or crumb structure (any other type recorded)
+#' refuses the vertic A, and the slickensides decide (Q17).
 #' @noRd
 .za_vertic_no_pi <- function(x, i) {
   clay <- .za_num(x, i, "clay_pct")
@@ -700,6 +704,11 @@
   if (!is.na(clay) && clay < thr) return(NULL)
   s <- .za_struct(x, i)
   if (!is.na(s$grade) && s$grade < .field_grade_class(.za_thv("vertic_structure_grade"))) return(NULL)
+  # v0.9.402: the type of the structure. Blocky, prismatic or columnar: the
+  # rule applies. A type not recorded keeps the rule of B1s (undecided, as
+  # before 0.9.402). Granular, crumb or another recorded type: not vertic
+  # by its structure, the slickensides decide.
+  if (isTRUE(s$other)) return(NULL)
   .za_r(NA, missing = "plasticity_index", tag = "plasticity_index_undecided", th = "vertic_pi_clay",
         note = sprintf("no plasticity index, structure %s and clay %s: vertic (ii) undecided, a measurement not recorded (B1s, Q17 revised)",
                        if (is.na(s$grade)) "not recorded" else .za_struct_text(s),
