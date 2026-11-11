@@ -130,7 +130,10 @@ test_that("vertic A: slickensides decide without the plasticity index (Q17)", {
   v <- function(...) .za_P(.za_L(0, 40, designation = "A", structure_type = "angular blocky",
                                  structure_grade = "strong", clay_pct = 55, ...), .za_L(40, 80))
   expect_true(.zp(soilKey:::.za_t_VA, v(slickensides = "common"), 1))
+  # v0.9.397 (B1s): strong and 30 % clay or more, no PI: undecided; less clay, Q17
   r <- .za_t(soilKey:::.za_t_VA, v(slickensides = "few"), 1)
+  expect_true(is.na(r$passed)); expect_true(.has_tag(r, "plasticity_index_undecided"))
+  r <- .za_t(soilKey:::.za_t_VA, v(slickensides = "few", clay_pct = 25), 1)
   expect_false(r$passed); expect_true(.has_tag(r, "slickensides_decide"))
   # the plasticity index over 32 (cup, by default flagged) or 36 (cone)
   r <- .za_t(soilKey:::.za_t_VA, v(plasticity_index = 35), 1)

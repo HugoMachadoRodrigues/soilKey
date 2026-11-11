@@ -320,6 +320,7 @@ horizon_column_spec <- function() {
     recent_deposit                = "logical",   # a recent aeolian, alluvial or man-made deposit over the soil; burial rule (500 mm)
     cross_bedding                 = "logical",   # cross bedding in the layer; regic sand (allowed), E horizon (not allowed)
     sand_grade                    = "character",  # grade of the sand: fine / medium / coarse; the texture in the South African name
+    mottles_present               = "logical",   # mottles recorded as present (TRUE) or absent (FALSE), their amount and colours not; za1991 soft plinthic B and signs of wetness (undecided when TRUE)
     # ---- v0.9.360: the German KA5 (Bodenkundliche Kartieranleitung 2005) ----
     bleached_pct                  = "numeric",   # wet bleaching (rb), % area; KA5 Sw, Sd, Sg
     reduction_colours_pct         = "numeric",   # reduction colours (rg, rt, rs), % area; KA5 Go, Gro, Gor, Gr, Yr

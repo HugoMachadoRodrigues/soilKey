@@ -1241,6 +1241,11 @@ attributes:
     description: "Grade of the sand of the layer: fine, medium or coarse (the sand grades of 1977, which the 1991 system keeps). South African soil classification of 1991: added to the texture class of the A in the name of a soil (Hu1200 medium sandy loam). Read only for the name; not recorded, the texture class without its grade (Hugo's decision Q23)."
     systems: [za1991]
     allowed: ["fine", "medium", "coarse"]
+  - name: mottles_present
+    section: "South African system (1991)"
+    unit: "-"
+    description: "Mottles recorded only as present (TRUE) or absent (FALSE), with neither their amount nor their colours, as the AfSP field Mottling (Y or N). South African soil classification of 1991: TRUE with no redoximorphic_features_pct leaves the soft plinthic B (more than 10 % mottles), the low-chroma mottles of the signs of wetness and the signs of wetness of a soft carbonate horizon undecided (plinthite_pct and ferric_nodules_pct do not stand in for the amount of the mottles); FALSE or not recorded, no mottles. A recorded amount or colour decides over it."
+    systems: [za1991]
   - name: bleached_pct
     section: "German system (KA5)"
     unit: "%"

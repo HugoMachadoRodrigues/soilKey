@@ -537,6 +537,8 @@
   if (!is.na(rf)) return(.za_r(rf >= thr, th = "wetness_signs", tag = "sch_mottles_only",
                                note = sprintf("mottles on %s %% of the soft carbonate horizon (its pale matrix not read, D3)", format(rf))))
   if (nrow(mot)) return(.za_r(NA, missing = "redoximorphic_features_pct", note = "mottles recorded, their extent not recorded"))
+  if (isTRUE(.za_mottles_present(x, i)))
+    return(.za_r(NA, missing = "redoximorphic_features_pct", note = "mottles recorded as present, their extent not recorded"))
   .za_r(FALSE, tag = "sch_mottles_only", note = "no mottles or gley hue in the soft carbonate horizon (its pale matrix not read, D3), flagged")
 }
 

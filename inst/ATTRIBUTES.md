@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.395)
+# soilKey -- recognised horizon attribute names (v0.9.398)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -417,6 +417,7 @@ and do not warn.
 | `recent_deposit` | - | logical | TRUE when the layer is a recent aeolian, alluvial or man-made deposit over the soil. South African soil classification of 1991, general rules: a recent deposit under 500 mm thick over a classifiable buried soil is set aside and the buried soil classified; 500 mm or thicker, or over material that is not classifiable soil, the deposit is classified. Not recorded: layer_origin (aeolian, fluvic, colluvial, transported), anthropic_material, or a buried horizon marked (suffix b) directly below, flagged; none of them recorded, not a recent deposit (Hugo's decision Q8). | - |
 | `cross_bedding` | - | logical | TRUE when the layer shows cross bedding. South African soil classification of 1991: regic sand may be cross-bedded, an E horizon may not, and cross-bedded aeolian dune sands are regic sand, not an apedal B. Not recorded: stratification_pattern and an aeolian layer_origin, else absent. | - |
 | `sand_grade` | - | character | Grade of the sand of the layer: fine, medium or coarse (the sand grades of 1977, which the 1991 system keeps). South African soil classification of 1991: added to the texture class of the A in the name of a soil (Hu1200 medium sandy loam). Read only for the name; not recorded, the texture class without its grade (Hugo's decision Q23). | - |
+| `mottles_present` | - | logical | Mottles recorded only as present (TRUE) or absent (FALSE), with neither their amount nor their colours, as the AfSP field Mottling (Y or N). South African soil classification of 1991: TRUE with no redoximorphic_features_pct leaves the soft plinthic B (more than 10 % mottles), the low-chroma mottles of the signs of wetness and the signs of wetness of a soft carbonate horizon undecided (plinthite_pct and ferric_nodules_pct do not stand in for the amount of the mottles); FALSE or not recorded, no mottles. A recorded amount or colour decides over it. | - |
 
 ## German system (KA5)
 
@@ -765,5 +766,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.395._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.398._
 
