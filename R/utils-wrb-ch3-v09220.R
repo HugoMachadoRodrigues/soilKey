@@ -52,9 +52,19 @@
 #' marks decide, as before.
 #' @noRd
 .desg_master <- function(d, profile = d, site = NULL) {
-  d <- trimws(as.character(d))
+  d <- as.character(d)
   declared <- .desg_declared_notation(site)
   old <- .desg_old_notation(profile, site = site)
+  # v0.9.400: a pure function of d, the declared notation and the reading of
+  # the profile, kept in the session cache of R/memo.R
+  .desg_memo("master", list(d, declared, if (old) "old" else "present"),
+             function() .desg_master_read(d, declared, old))
+}
+
+# The reading of .desg_master() for designations d, a declared notation and
+# whether the profile is in the older notation.
+.desg_master_read <- function(d, declared, old) {
+  d <- trimws(d)
   # "(B)" is the B incipiente (Bi) of the older notation; in a declared
   # present notation the parentheses are dropped and the B kept as written
   # ("(Bw)R" is "BwR", "(B)km" is "Bkm"; Hugo, 2026-11-10)
@@ -93,13 +103,16 @@
   declared <- .desg_declared_notation(site)
   if (identical(declared, "old")) return(TRUE)
   if (identical(declared, "present")) return(FALSE)
-  d <- trimws(as.character(d))
-  d <- d[!is.na(d)]
-  if (length(d) == 0L) return(FALSE)
-  m <- sub("^(?:[0-9]+(?=[A-Z(])|[IVX]+(?=[A-HJ-UWYZ(]))", "", d, perl = TRUE)
-  any(grepl("^\\(\\s*B", m) | grepl("^B[0-9]", m) |
-        grepl("^[AC][0-9][0-9]", m) |
-        grepl("^B[^A-Z]*ir", m) | grepl("^[BC][^A-Z]*pl", m))
+  d <- as.character(d)
+  .desg_memo("old", list(d), function() {
+    d <- trimws(d)
+    d <- d[!is.na(d)]
+    if (length(d) == 0L) return(FALSE)
+    m <- sub("^(?:[0-9]+(?=[A-Z(])|[IVX]+(?=[A-HJ-UWYZ(]))", "", d, perl = TRUE)
+    any(grepl("^\\(\\s*B", m) | grepl("^B[0-9]", m) |
+          grepl("^[AC][0-9][0-9]", m) |
+          grepl("^B[^A-Z]*ir", m) | grepl("^[BC][^A-Z]*pl", m))
+  })
 }
 
 #' The horizons with their designations read by .desg_master(), for the tests
@@ -181,6 +194,16 @@
 #' value, Hugo's decision Q7, 2026-11-10). Never an error.
 #' @noRd
 .desg_declared_notation <- function(site) {
+  # v0.9.400: read once per value (the session cache of R/memo.R)
+  if (!is.list(site)) return(NA_character_)
+  ds <- site[["designation_system"]]
+  if (is.null(ds)) return(NA_character_)
+  if (is.character(ds) && length(ds) == 1L)
+    return(.desg_memo("declared", list(ds), function() .desg_declared_notation_read(site)))
+  .desg_declared_notation_read(site)
+}
+
+.desg_declared_notation_read <- function(site) {
   k <- .desg_declared_key(site)
   if (is.na(k)) return(NA_character_)
   if (k %in% .DESG_OLD_DECLARED || .asc_key_is_asc(k)) return("old")

@@ -527,6 +527,13 @@ solimovic_material <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 technic_hard_material <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "technic_hard_material", list(),
+        .technic_hard_material_uncached(pedon = pedon))
+}
+
+# The computation of technic_hard_material().
+.technic_hard_material_uncached <- function(pedon) {
   # v0.9.220: WRB 2022 Ch 3.3.18, "1. is consolidated material resulting from
   # industrial or artisanal processes; and 2. has properties substantially
   # different from those of natural materials; and 3. is continuous or has

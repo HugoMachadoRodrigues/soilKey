@@ -316,6 +316,23 @@ andic_properties <- function(pedon,
                                 min_p_retention  = 70,
                                 min_oc_proxy     = 4.0,
                                 max_bd_proxy     = 0.9) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "andic_properties",
+        list(min_alfe, max_bd, min_p_retention, min_oc_proxy, max_bd_proxy),
+        .andic_properties_uncached(pedon = pedon, min_alfe = min_alfe,
+                                   max_bd = max_bd,
+                                   min_p_retention = min_p_retention,
+                                   min_oc_proxy = min_oc_proxy,
+                                   max_bd_proxy = max_bd_proxy))
+}
+
+# The computation of andic_properties().
+.andic_properties_uncached <- function(pedon,
+                                min_alfe         = 2.0,
+                                max_bd           = 0.9,
+                                min_p_retention  = 70,
+                                min_oc_proxy     = 4.0,
+                                max_bd_proxy     = 0.9) {
   h <- pedon$horizons
 
   alfe_test <- test_andic_alfe(h, min_pct = min_alfe)
@@ -729,6 +746,14 @@ retic_properties <- function(pedon, pattern = "glossic|retic|albeluvic") {
 #' @references IUSS Working Group WRB (2022), Chapter 5, Cryosols.
 #' @export
 cryic_conditions <- function(pedon, max_top_cm = 100, max_temp_C = 0) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "cryic_conditions", list(max_top_cm, max_temp_C),
+        .cryic_conditions_uncached(pedon = pedon, max_top_cm = max_top_cm,
+                                   max_temp_C = max_temp_C))
+}
+
+# The computation of cryic_conditions().
+.cryic_conditions_uncached <- function(pedon, max_top_cm = 100, max_temp_C = 0) {
   h <- pedon$horizons
 
   paths <- list()

@@ -134,6 +134,13 @@ albeluvic_glossae <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 continuous_rock <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "continuous_rock", list(),
+        .continuous_rock_uncached(pedon = pedon))
+}
+
+# The computation of continuous_rock().
+.continuous_rock_uncached <- function(pedon) {
   h <- pedon$horizons
   tests <- list()
   # v0.9.220: R, RCr and R/Cr only (also below a lithic discontinuity, 2R).
@@ -464,6 +471,18 @@ takyric_properties <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 vitric_properties <- function(pedon, min_glass_pct = 5,
+                                 min_alfe = 0.4,
+                                 min_p_retention = 25) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "vitric_properties",
+        list(min_glass_pct, min_alfe, min_p_retention),
+        .vitric_properties_uncached(pedon = pedon, min_glass_pct = min_glass_pct,
+                                    min_alfe = min_alfe,
+                                    min_p_retention = min_p_retention))
+}
+
+# The computation of vitric_properties().
+.vitric_properties_uncached <- function(pedon, min_glass_pct = 5,
                                  min_alfe = 0.4,
                                  min_p_retention = 25) {
   h <- pedon$horizons

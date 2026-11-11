@@ -577,6 +577,13 @@ horizonte_A_moderado <- function(pedon) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_textural <- function(pedon, ...) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "B_textural", list(...),
+        .B_textural_uncached(pedon = pedon, ...))
+}
+
+# The computation of B_textural().
+.B_textural_uncached <- function(pedon, ...) {
   d <- pedon$horizons$designation
   if (!any(!is.na(d) & nzchar(trimws(as.character(d))))) {
     res <- .argic_impl(pedon, lithic_discontinuity = FALSE, ...)
@@ -803,6 +810,18 @@ B_textural <- function(pedon, ...) {
 B_latossolico <- function(pedon, min_thickness = 50,
                               max_cec_per_clay = NULL,
                               engine = NULL, ...) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "B_latossolico",
+        list(min_thickness, max_cec_per_clay, engine, ...),
+        .B_latossolico_uncached(pedon = pedon, min_thickness = min_thickness,
+                                max_cec_per_clay = max_cec_per_clay,
+                                engine = engine, ...))
+}
+
+# The computation of B_latossolico().
+.B_latossolico_uncached <- function(pedon, min_thickness = 50,
+                              max_cec_per_clay = NULL,
+                              engine = NULL, ...) {
   if (is.null(engine))
     engine <- getOption("soilKey.diagnostic_engine", "soilkey")
   engine <- match.arg(engine, c("soilkey", "aqp"))
@@ -987,6 +1006,13 @@ B_latossolico <- function(pedon, min_thickness = 50,
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_incipiente <- function(pedon, min_thickness = 10) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "B_incipiente", list(min_thickness),
+        .B_incipiente_uncached(pedon = pedon, min_thickness = min_thickness))
+}
+
+# The computation of B_incipiente().
+.B_incipiente_uncached <- function(pedon, min_thickness = 10) {
   h <- pedon$horizons
   # v0.9.10: extended designation pattern to cover the full set of
   # "weakly developed B" suffixes used in canonical descriptions:
@@ -1100,6 +1126,19 @@ B_incipiente <- function(pedon, min_thickness = 10) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
+                        max_b_a_ratio = 1.5,
+                        min_cerosidade = c("common","many","abundant","strong")) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "B_nitico",
+        list(min_thickness, min_clay_pct, max_b_a_ratio, min_cerosidade),
+        .B_nitico_uncached(pedon = pedon, min_thickness = min_thickness,
+                           min_clay_pct = min_clay_pct,
+                           max_b_a_ratio = max_b_a_ratio,
+                           min_cerosidade = min_cerosidade))
+}
+
+# The computation of B_nitico().
+.B_nitico_uncached <- function(pedon, min_thickness = 30, min_clay_pct = 35,
                         max_b_a_ratio = 1.5,
                         min_cerosidade = c("common","many","abundant","strong")) {
   h <- pedon$horizons
@@ -1381,6 +1420,13 @@ B_espodico <- function(pedon, ...) {
 #' @return A \code{\link{DiagnosticResult}} recording whether the diagnostic is present, the qualifying layers, and the supporting evidence.
 #' @export
 B_planico <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "B_planico", list(),
+        .B_planico_uncached(pedon = pedon))
+}
+
+# The computation of B_planico().
+.B_planico_uncached <- function(pedon) {
   h <- pedon$horizons
   abrupt <- mudanca_textural_abrupta(pedon)
   described <- any(!is.na(h$designation) &
@@ -1512,6 +1558,16 @@ horizonte_E_albico <- function(pedon, ...) {
 #' @noRd
 horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
                                   min_thickness = 15) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "horizonte_plintico", list(min_plinthite_pct, min_thickness),
+        .horizonte_plintico_uncached(pedon = pedon,
+                                     min_plinthite_pct = min_plinthite_pct,
+                                     min_thickness = min_thickness))
+}
+
+# The computation of horizonte_plintico().
+.horizonte_plintico_uncached <- function(pedon, min_plinthite_pct = 15,
+                                  min_thickness = 15) {
   res <- plinthic(pedon, min_thickness = min_thickness,
                     min_plinthite_pct = min_plinthite_pct)
   # v0.9.234: the Brazilian surveys before the present notation wrote
@@ -1641,6 +1697,13 @@ horizonte_litoplintico <- function(pedon, min_thickness = 10) {
 #'   15); since v0.9.246 that of its adjoining layers.
 #' @noRd
 horizonte_glei <- function(pedon, min_thickness = 15) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "horizonte_glei", list(min_thickness),
+        .horizonte_glei_uncached(pedon = pedon, min_thickness = min_thickness))
+}
+
+# The computation of horizonte_glei().
+.horizonte_glei_uncached <- function(pedon, min_thickness = 15) {
   h <- pedon$horizons
   colour <- .glei_colour_layers(pedon)
   term <- pedon$site[["drainage"]] %||% pedon$site[["drainage_class"]] %||%
@@ -1860,6 +1923,13 @@ horizonte_sulfurico <- function(pedon, ...) {
 #' @param ... Reserved for future arguments.
 #' @noRd
 horizonte_vertico <- function(pedon, ...) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "horizonte_vertico", list(...),
+        .horizonte_vertico_uncached(pedon = pedon, ...))
+}
+
+# The computation of horizonte_vertico().
+.horizonte_vertico_uncached <- function(pedon, ...) {
   # v0.9.137: SiBCS Cap 2 p.73 requires cracks ">= 1 cm" wide (vs the WRB/USDA
   # 0.5 cm). Pass min_crack_width_cm = 1.0 so the SiBCS vertico is stricter on
   # the field-crack path; the COLE and 'v'-designation paths are unaffected, so

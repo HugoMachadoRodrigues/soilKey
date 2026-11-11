@@ -148,6 +148,13 @@
 #' material").
 #' @noRd
 .wrb_redox_layers <- function(pedon, min_redox_pct = 5) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, ".wrb_redox_layers", list(min_redox_pct),
+        .wrb_redox_layers_uncached(pedon = pedon, min_redox_pct = min_redox_pct))
+}
+
+# The computation of .wrb_redox_layers().
+.wrb_redox_layers_uncached <- function(pedon, min_redox_pct = 5) {
   h <- pedon$horizons
   n <- nrow(h)
   col <- function(v, d = NA) if (is.null(h[[v]])) rep(d, n) else h[[v]]

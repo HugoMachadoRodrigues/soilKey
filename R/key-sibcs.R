@@ -216,6 +216,8 @@ classify_sibcs <- function(pedon,
                              gapfill    = FALSE) {
   on_missing <- match.arg(on_missing)
   .classify_require_horizons(pedon, "classify_sibcs")
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   rules      <- rules %||% load_rules("sibcs5")
 
   # Opt-in within-pedon gap-fill (default off => byte-identical). Deep copy,

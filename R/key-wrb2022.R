@@ -100,6 +100,8 @@ classify_wrb2022 <- function(pedon,
                                gapfill         = FALSE) {
   on_missing <- match.arg(on_missing)
   .classify_require_horizons(pedon, "classify_wrb2022")
+  # v0.9.400: one memo scope for the length of this call (R/memo.R)
+  if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   rules      <- rules %||% load_rules("wrb2022")
 
   # Opt-in within-pedon gap-fill (default off => byte-identical). Operates on a

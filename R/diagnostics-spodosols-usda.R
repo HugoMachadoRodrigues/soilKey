@@ -244,6 +244,13 @@ duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 kandic_horizon_usda <- function(pedon) {
+  # v0.9.400: memoised within a classification (R/memo.R)
+  .memo(pedon, "kandic_horizon_usda", list(),
+        .kandic_horizon_usda_uncached(pedon = pedon))
+}
+
+# The computation of kandic_horizon_usda().
+.kandic_horizon_usda_uncached <- function(pedon) {
   ref <- "Soil Survey Staff (2022), KST 13ed, Ch. 3, kandic horizon (pp. 26-27)"
   h <- pedon$horizons
   if (is.null(h) || nrow(h) < 2L)
