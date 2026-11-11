@@ -69,6 +69,14 @@ allophane, KA/IL and gibbsite have no `clay_mineralogy` word and are
 read as not recorded; the value is an estimate, recorded with the
 provenance `inferred_prior`, so the evidence grade of a result drops to
 C), and `Sticknss` into `stickiness` (sticky as moderately sticky).
+Since v0.9.399 it reads on the site `Drain` into `drainage_class`, and
+`ParMat` and `LndForm` into `parent_material` and `landform` by the
+words of the AfSP dictionary when `AfSP012Qry_DictioClassValues.dbf` is
+in `afsp_dir`: a parent material with the words of its ancestors
+("volcanic rocks, acid"; "clayey, fluvial, calcareous"), the codes of
+the unconsolidated deposits the dictionary does not list decoded by its
+pattern; only the landforms that say something of the origin of the
+material (depression, low-gradient footslope, valley floor).
 
 ## References
 

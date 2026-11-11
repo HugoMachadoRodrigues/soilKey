@@ -1,5 +1,100 @@
 # Changelog
 
+## soilKey 0.9.399 (2026-11-10)
+
+### The AfSP loader reads drainage, parent material and landform; two old regular expressions fixed
+
+[`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+now reads the site fields of AfSP by the words of its dictionary
+(`AfSP012Qry_DictioClassValues.dbf`, when it is in `afsp_dir`; without
+it ParMat and LndForm are not read):
+
+- `Drain` into `drainage_class` (excessively, somewhat excessively,
+  well, moderately well, imperfectly, poorly, very poorly drained).
+- `ParMat` into `parent_material`, the words of the code composed with
+  those of its ancestors (“volcanic rocks, acid”; “clayey, fluvial,
+  calcareous”; an ancestor whose words the next one repeats is left out,
+  so MA1 is “acid metamorphic rocks, quartzite”). The codes of the
+  unconsolidated deposits that the dictionary does not list (U: U00C,
+  U00L, U00M, U00FC, US00, Ux0F, U02F, UT00, UY2 …) are decoded by the
+  dictionary’s own pattern; “unknown” and “unspecified” are left out. Of
+  the 8082 AfSP profiles that record a ParMat, 40 stay unread (A, Hilly,
+  IS1C, MI1, U000, UC0F, UF02, UQUC, US11, UY2A, UYOC); of the 1752 that
+  also have a WRB 2006 group (the profiles
+  [`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+  returns), 2 (A, U000).
+- `LndForm` into `landform`, only the forms that say something of the
+  origin of the material: depression (LD), low-gradient footslope (LF)
+  and valley floor (LV). The general relief classes (level, sloping and
+  steep land, plain, plateau, dissected plain, hill, mountain,
+  escarpment zone, valley) are not read: 295 of the 2739 profiles with a
+  WRB 2006 group and a landform recorded.
+
+Two regular expressions that read the parent material are fixed:
+
+- **KA5, the P horizon** (`R/diagnostics-ka5-horizons.R`): “ton” matched
+  inside limestone, sandstone, siltstone, ironstone and plutonic rocks.
+  The clay and clay-marl stone is now read by whole words (Ton,
+  Tonstein, Tonschiefer, Geschiebemergel, clay, claystone, marl, shale,
+  pelite). On the AfSP profiles below it no longer matches 42 parent
+  materials (plutonic rocks, sandstone, limestone, ironstone) and
+  changes no KA5 name.
+- **SCSJ and NZSC, volcanic ejecta and tephra** (`R/diagnostics-scsj.R`,
+  `R/diagnostics-nzsc-groups.R`, `R/diagnostics-nzsc-subgroups-zlme.R`):
+  a pyroclastic breccia or another consolidated pyroclastic rock is
+  rock, not ejecta or tephra. On AfSP this changes 2 SCSJ names
+  (Allophanic Andosols to Calcareous Eutrosols), the same 2 CSCJ names
+  (which share the SCSJ reader) and 1 NZSC name (Typic Tephric Recent to
+  Weathered Orthic Recent Soils).
+
+The 926 example and canonical profiles of the package (the 31 canonical
+WRB profiles, the examples of every national key and the 503 FAO
+examples) keep their names under KA5, SCSJ and NZSC.
+
+Measured on AfSP (offline; the 1149 profiles of 0.9.397: all 649 South
+African profiles with a WRB 2006 group and 500 others from 31 countries,
+seed 397), 0.9.397 against 0.9.399, names changed per key. The field
+that drives each change was found by removing the drainage, the parent
+material or the landform from the new profiles one at a time; the
+landform drives none.
+
+| Key | Names changed | Of them South African | What drives it |
+|----|---:|---:|----|
+| WRB 2022 | 2 | 0 | parent material (the Fluvic qualifier) |
+| SiBCS | 34 | 21 | drainage (23 to Gleissolos, 9 gleissolicos) |
+| USDA | 0 | 0 |  |
+| FAO 1988 | 51 | 4 | parent material (the lists of groups left undecided) |
+| FAO 1974 | 64 | 15 | drainage 33, parent material 22, the two together 9 |
+| CPCS 1967 | 7 | 0 | parent material (5 to alluvial or volcanic apport soils) |
+| RP 2008 | 26 | 5 | drainage 24, parent material 2 |
+| CSSC | 0 | 0 |  |
+| ASC | 39 | 8 | drainage: 22 to Hydrosols, 17 Podosols (13 aquic or semiaquic, 4 aeric) |
+| NZSC | 4 | 3 | parent material 3, drainage 1 |
+| SCSJ 2017 | 27 | 1 | parent material (23 to Fluvic soils or Andosols) |
+| CSCJ 2011 | 24 | 1 | parent material (19 to Lowland soils or Andosols) |
+| CST 2001 | 45 | 26 | drainage 43 (26 Gleyosols no longer read so), parent material 2 |
+| Russia 2008 | 2 | 0 | parent material |
+| KA5 | 1 | 1 | drainage |
+| HSCS 2024 | 17 | 0 | parent material |
+| ZA 1991 | 0 | 0 |  |
+
+Agreement with the AfSP labels at the level of the reference group
+(major soil group for FAO; the AfSP label codes read by the unit and
+group codes of the edition), the same 1149 profiles, Wilson 95 %
+intervals:
+
+| Key | Labels | Agree before | Agree after | Decided before | Decided after | Agree among decided, before | after |
+|----|---:|---:|---:|---:|---:|---:|---:|
+| WRB 2022 RSG vs WRB06rg | 1149 | 333, 29.0 % (26.4-31.7) | 333, 29.0 % (26.4-31.7) | 1149 | 1149 | 29.0 % | 29.0 % |
+| FAO 1988 group vs FAO88 | 1145 | 210, 18.3 % (16.2-20.7) | 210, 18.3 % (16.2-20.7) | 477 (41.7 %) | 477 (41.7 %) | 44.0 % (39.6-48.5) | 44.0 % (39.6-48.5) |
+| FAO 1974 group vs FAO74 | 404 | 102, 25.2 % (21.3-29.7) | 102, 25.2 % (21.3-29.7) | 239 (59.2 %) | 240 (59.4 %) | 42.7 % (36.6-49.0) | 42.5 % (36.4-48.8) |
+
+No WRB reference group changes. The FAO 1988 grouping changes on 2
+profiles (labelled Vertisols and Cambisols: Fluvisols to Regosols), the
+FAO 1974 grouping on 3 (unlabelled: Fluvisols to Regosols; labelled
+Podzols: none to Cambisols; labelled Cambisols: Fluvisols to Regosols);
+none agrees before or after.
+
 ## soilKey 0.9.398 (2026-11-10)
 
 ### soilKey Pro: the national systems added since 0.9.337 in the app

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.398</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.399</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,132 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.399" id="soilkey-09399-2026-11-10">soilKey 0.9.399 (2026-11-10)<a class="anchor" aria-label="anchor" href="#soilkey-09399-2026-11-10"></a></h2>
+<div class="section level3">
+<h3 id="the-afsp-loader-reads-drainage-parent-material-and-landform-two-old-regular-expressions-fixed-0-9-399">The AfSP loader reads drainage, parent material and landform; two old regular expressions fixed<a class="anchor" aria-label="anchor" href="#the-afsp-loader-reads-drainage-parent-material-and-landform-two-old-regular-expressions-fixed-0-9-399"></a></h3>
+<p><code><a href="../reference/load_afsp_pedons.html">load_afsp_pedons()</a></code> now reads the site fields of AfSP by the words of its dictionary (<code>AfSP012Qry_DictioClassValues.dbf</code>, when it is in <code>afsp_dir</code>; without it ParMat and LndForm are not read):</p>
+<ul><li>
+<code>Drain</code> into <code>drainage_class</code> (excessively, somewhat excessively, well, moderately well, imperfectly, poorly, very poorly drained).</li>
+<li>
+<code>ParMat</code> into <code>parent_material</code>, the words of the code composed with those of its ancestors (“volcanic rocks, acid”; “clayey, fluvial, calcareous”; an ancestor whose words the next one repeats is left out, so MA1 is “acid metamorphic rocks, quartzite”). The codes of the unconsolidated deposits that the dictionary does not list (U<texture><carbonates><origin>: U00C, U00L, U00M, U00FC, US00, Ux0F, U02F, UT00, UY2 …) are decoded by the dictionary’s own pattern; “unknown” and “unspecified” are left out. Of the 8082 AfSP profiles that record a ParMat, 40 stay unread (A, Hilly, IS1C, MI1, U000, UC0F, UF02, UQUC, US11, UY2A, UYOC); of the 1752 that also have a WRB 2006 group (the profiles <code><a href="../reference/load_afsp_pedons.html">load_afsp_pedons()</a></code> returns), 2 (A, U000).</origin></carbonates></texture></li>
+<li>
+<code>LndForm</code> into <code>landform</code>, only the forms that say something of the origin of the material: depression (LD), low-gradient footslope (LF) and valley floor (LV). The general relief classes (level, sloping and steep land, plain, plateau, dissected plain, hill, mountain, escarpment zone, valley) are not read: 295 of the 2739 profiles with a WRB 2006 group and a landform recorded.</li>
+</ul><p>Two regular expressions that read the parent material are fixed:</p>
+<ul><li>
+<strong>KA5, the P horizon</strong> (<code>R/diagnostics-ka5-horizons.R</code>): “ton” matched inside limestone, sandstone, siltstone, ironstone and plutonic rocks. The clay and clay-marl stone is now read by whole words (Ton, Tonstein, Tonschiefer, Geschiebemergel, clay, claystone, marl, shale, pelite). On the AfSP profiles below it no longer matches 42 parent materials (plutonic rocks, sandstone, limestone, ironstone) and changes no KA5 name.</li>
+<li>
+<strong>SCSJ and NZSC, volcanic ejecta and tephra</strong> (<code>R/diagnostics-scsj.R</code>, <code>R/diagnostics-nzsc-groups.R</code>, <code>R/diagnostics-nzsc-subgroups-zlme.R</code>): a pyroclastic breccia or another consolidated pyroclastic rock is rock, not ejecta or tephra. On AfSP this changes 2 SCSJ names (Allophanic Andosols to Calcareous Eutrosols), the same 2 CSCJ names (which share the SCSJ reader) and 1 NZSC name (Typic Tephric Recent to Weathered Orthic Recent Soils).</li>
+</ul><p>The 926 example and canonical profiles of the package (the 31 canonical WRB profiles, the examples of every national key and the 503 FAO examples) keep their names under KA5, SCSJ and NZSC.</p>
+<p>Measured on AfSP (offline; the 1149 profiles of 0.9.397: all 649 South African profiles with a WRB 2006 group and 500 others from 31 countries, seed 397), 0.9.397 against 0.9.399, names changed per key. The field that drives each change was found by removing the drainage, the parent material or the landform from the new profiles one at a time; the landform drives none.</p>
+<table class="table"><colgroup><col width="25%"><col width="25%"><col width="25%"><col width="25%"></colgroup><thead><tr><th>Key</th>
+<th align="right">Names changed</th>
+<th align="right">Of them South African</th>
+<th>What drives it</th>
+</tr></thead><tbody><tr><td>WRB 2022</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td>parent material (the Fluvic qualifier)</td>
+</tr><tr><td>SiBCS</td>
+<td align="right">34</td>
+<td align="right">21</td>
+<td>drainage (23 to Gleissolos, 9 gleissolicos)</td>
+</tr><tr><td>USDA</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td></td>
+</tr><tr><td>FAO 1988</td>
+<td align="right">51</td>
+<td align="right">4</td>
+<td>parent material (the lists of groups left undecided)</td>
+</tr><tr><td>FAO 1974</td>
+<td align="right">64</td>
+<td align="right">15</td>
+<td>drainage 33, parent material 22, the two together 9</td>
+</tr><tr><td>CPCS 1967</td>
+<td align="right">7</td>
+<td align="right">0</td>
+<td>parent material (5 to alluvial or volcanic apport soils)</td>
+</tr><tr><td>RP 2008</td>
+<td align="right">26</td>
+<td align="right">5</td>
+<td>drainage 24, parent material 2</td>
+</tr><tr><td>CSSC</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td></td>
+</tr><tr><td>ASC</td>
+<td align="right">39</td>
+<td align="right">8</td>
+<td>drainage: 22 to Hydrosols, 17 Podosols (13 aquic or semiaquic, 4 aeric)</td>
+</tr><tr><td>NZSC</td>
+<td align="right">4</td>
+<td align="right">3</td>
+<td>parent material 3, drainage 1</td>
+</tr><tr><td>SCSJ 2017</td>
+<td align="right">27</td>
+<td align="right">1</td>
+<td>parent material (23 to Fluvic soils or Andosols)</td>
+</tr><tr><td>CSCJ 2011</td>
+<td align="right">24</td>
+<td align="right">1</td>
+<td>parent material (19 to Lowland soils or Andosols)</td>
+</tr><tr><td>CST 2001</td>
+<td align="right">45</td>
+<td align="right">26</td>
+<td>drainage 43 (26 Gleyosols no longer read so), parent material 2</td>
+</tr><tr><td>Russia 2008</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td>parent material</td>
+</tr><tr><td>KA5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td>drainage</td>
+</tr><tr><td>HSCS 2024</td>
+<td align="right">17</td>
+<td align="right">0</td>
+<td>parent material</td>
+</tr><tr><td>ZA 1991</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td></td>
+</tr></tbody></table><p>Agreement with the AfSP labels at the level of the reference group (major soil group for FAO; the AfSP label codes read by the unit and group codes of the edition), the same 1149 profiles, Wilson 95 % intervals:</p>
+<table class="table"><colgroup><col width="12%"><col width="12%"><col width="12%"><col width="12%"><col width="12%"><col width="12%"><col width="12%"><col width="12%"></colgroup><thead><tr><th>Key</th>
+<th align="right">Labels</th>
+<th align="right">Agree before</th>
+<th align="right">Agree after</th>
+<th align="right">Decided before</th>
+<th align="right">Decided after</th>
+<th align="right">Agree among decided, before</th>
+<th align="right">after</th>
+</tr></thead><tbody><tr><td>WRB 2022 RSG vs WRB06rg</td>
+<td align="right">1149</td>
+<td align="right">333, 29.0 % (26.4-31.7)</td>
+<td align="right">333, 29.0 % (26.4-31.7)</td>
+<td align="right">1149</td>
+<td align="right">1149</td>
+<td align="right">29.0 %</td>
+<td align="right">29.0 %</td>
+</tr><tr><td>FAO 1988 group vs FAO88</td>
+<td align="right">1145</td>
+<td align="right">210, 18.3 % (16.2-20.7)</td>
+<td align="right">210, 18.3 % (16.2-20.7)</td>
+<td align="right">477 (41.7 %)</td>
+<td align="right">477 (41.7 %)</td>
+<td align="right">44.0 % (39.6-48.5)</td>
+<td align="right">44.0 % (39.6-48.5)</td>
+</tr><tr><td>FAO 1974 group vs FAO74</td>
+<td align="right">404</td>
+<td align="right">102, 25.2 % (21.3-29.7)</td>
+<td align="right">102, 25.2 % (21.3-29.7)</td>
+<td align="right">239 (59.2 %)</td>
+<td align="right">240 (59.4 %)</td>
+<td align="right">42.7 % (36.6-49.0)</td>
+<td align="right">42.5 % (36.4-48.8)</td>
+</tr></tbody></table><p>No WRB reference group changes. The FAO 1988 grouping changes on 2 profiles (labelled Vertisols and Cambisols: Fluvisols to Regosols), the FAO 1974 grouping on 3 (unlabelled: Fluvisols to Regosols; labelled Podzols: none to Cambisols; labelled Cambisols: Fluvisols to Regosols); none agrees before or after.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.398" id="soilkey-09398-2026-11-10">soilKey 0.9.398 (2026-11-10)<a class="anchor" aria-label="anchor" href="#soilkey-09398-2026-11-10"></a></h2>
 <div class="section level3">

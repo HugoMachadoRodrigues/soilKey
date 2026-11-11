@@ -19,7 +19,7 @@ the total 18,533)."><meta property="og:image" content="https://hugomachadorodrig
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.398</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.399</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,7 +134,16 @@ illitic, vermiculitic, interstratified; chloritic, sesquioxidic, allophane,
 KA/IL and gibbsite have no <code>clay_mineralogy</code> word and are read as not
 recorded; the value is an estimate, recorded with the provenance
 <code>inferred_prior</code>, so the evidence grade of a result drops to C),
-and <code>Sticknss</code> into <code>stickiness</code> (sticky as moderately sticky).</p>
+and <code>Sticknss</code> into <code>stickiness</code> (sticky as moderately sticky).
+Since v0.9.399 it reads on the site <code>Drain</code> into
+<code>drainage_class</code>, and <code>ParMat</code> and <code>LndForm</code> into
+<code>parent_material</code> and <code>landform</code> by the words of the AfSP
+dictionary when <code>AfSP012Qry_DictioClassValues.dbf</code> is in
+<code>afsp_dir</code>: a parent material with the words of its ancestors
+("volcanic rocks, acid"; "clayey, fluvial, calcareous"), the codes of the
+unconsolidated deposits the dictionary does not list decoded by its
+pattern; only the landforms that say something of the origin of the
+material (depression, low-gradient footslope, valley floor).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
