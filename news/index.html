@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.399</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.400</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,47 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.400" id="soilkey-09400-2026-11-10">soilKey 0.9.400 (2026-11-10)<a class="anchor" aria-label="anchor" href="#soilkey-09400-2026-11-10"></a></h2>
+<div class="section level3">
+<h3 id="faster-classifiers-with-the-same-results-0-9-400">Faster classifiers, with the same results<a class="anchor" aria-label="anchor" href="#faster-classifiers-with-the-same-results-0-9-400"></a></h3>
+<p>The classifiers do less repeated work; no name, code, qualifier, trace, evidence, warning or other part of a result changes.</p>
+<ul><li>
+<strong>Rule sets read once.</strong> <code><a href="../reference/load_rules.html">load_rules()</a></code> reads the YAML files of a system once per session, and <code><a href="../reference/resolve_wrb_qualifiers.html">resolve_wrb_qualifiers()</a></code> its qualifier lists (<code>qualifiers.yaml</code>) likewise; before, every classification read them again (and looked for them on disk). A rule set is an R list, so a caller that changes its copy does not change the cache.</li>
+<li>
+<strong>A memo for one classification.</strong> <code><a href="../reference/classify_wrb2022.html">classify_wrb2022()</a></code>, <code><a href="../reference/classify_usda.html">classify_usda()</a></code>, <code><a href="../reference/classify_sibcs.html">classify_sibcs()</a></code>, the national keys (through <code>classify_hierarchical()</code>), <code><a href="../reference/run_taxonomic_key.html">run_taxonomic_key()</a></code>, <code><a href="../reference/run_taxa_list.html">run_taxa_list()</a></code>, <code><a href="../reference/resolve_wrb_qualifiers.html">resolve_wrb_qualifiers()</a></code> and the family functions open a memo for the length of their call. Inside it, the diagnostics that the keys call again and again are computed once per pedon, arguments and <code>soilKey.*</code> options: the twelve USDA orders (each order calls every order before it, so a USDA classification called <code>gelisol_usda()</code> 512 times), <code><a href="../reference/cryic_conditions.html">cryic_conditions()</a></code>, <code><a href="../reference/spodic.html">spodic()</a></code>, <code><a href="../reference/albic.html">albic()</a></code>, <code>.argic_impl()</code>, <code><a href="../reference/mollic.html">mollic()</a></code>, <code><a href="../reference/ferralic.html">ferralic()</a></code>, the WRB limiting layers (<code>.wrb_limiting_layers()</code>, read by many qualifiers) and the diagnostics they rest on, and the SiBCS B horizons and attributes that its levels call several times. The memo keeps a copy of the horizon table and the site each pedon had: a pedon whose horizons or site are replaced or changed in place inside the call starts afresh, and the memo is dropped when the call returns, so a pedon modified after a classification is read anew by the next one. A diagnostic called on its own is not memoised. Each call still gets a new <code>DiagnosticResult</code> (a copy, with the results nested in its evidence copied too), as the keys change some results they receive, and the warnings and messages of the first call are given again at each later one.</li>
+<li>
+<strong>Designations read once.</strong> The reading of the horizon designations (<code>.desg_master()</code>, the older notation, the declared <code>designation_system</code>) is kept in a bounded session cache, each entry checked against the designations and the notation it was read with.</li>
+<li>
+<strong><code><a href="../reference/classify_with_uncertainty.html">classify_with_uncertainty()</a></code></strong> perturbs each column in a plain vector written back once, with the same random draws in the same order, instead of writing each cell into the horizon table.</li>
+</ul><p>All in <code>R/memo.R</code>, except the perturbation. <code><a href="../reference/coverage_report.html">coverage_report()</a></code> follows a memoised diagnostic to its <code>.&lt;name&gt;_uncached()</code> computation, so the coverage it reports is unchanged.</p>
+<p>The results were compared before and after, the whole result object of each classification (with its trace, evidence, warnings and messages) serialised: 29,738 results, 0 differences: the 44 canonical profiles under every key (with the WRB specifiers and the USDA and SiBCS families, 880), every example of every key (1,252), <code><a href="../reference/classify_with_uncertainty.html">classify_with_uncertainty()</a></code> on five profiles under three systems (15), the 974 ISIS reference profiles under the 17 keys (16,558) and 649 AfSP profiles under the 17 keys (11,033). The memo has its own tests (<code>test-v09400-memo.R</code>): a pedon modified after a classification, or whose declared notation changes, is classified as a new one.</p>
+<p>CPU time per profile (this Mac, the same load for both):</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th></th>
+<th align="right">0.9.399</th>
+<th align="right">0.9.400</th>
+</tr></thead><tbody><tr><td>WRB 2022, the 31 canonical WRB profiles</td>
+<td align="right">0.118 s</td>
+<td align="right">0.052 s</td>
+</tr><tr><td>USDA, the same</td>
+<td align="right">0.468 s</td>
+<td align="right">0.036 s</td>
+</tr><tr><td>SiBCS, the same</td>
+<td align="right">0.088 s</td>
+<td align="right">0.027 s</td>
+</tr><tr><td>
+<code><a href="../reference/classify_with_uncertainty.html">classify_with_uncertainty()</a></code>, Ferralsol, n = 10</td>
+<td align="right">24.7 s</td>
+<td align="right">13.9 s</td>
+</tr><tr><td>the 17 keys on the 974 ISIS profiles (first version of the memo)</td>
+<td align="right">3,216 s</td>
+<td align="right">1,943 s</td>
+</tr><tr><td>the test suite as CRAN runs it (sum over the tests)</td>
+<td align="right">51.4 s</td>
+<td align="right">43.1 s</td>
+</tr></tbody></table><p>The national keys gain less: their own readers do most of their work.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.399" id="soilkey-09399-2026-11-10">soilKey 0.9.399 (2026-11-10)<a class="anchor" aria-label="anchor" href="#soilkey-09399-2026-11-10"></a></h2>
 <div class="section level3">
