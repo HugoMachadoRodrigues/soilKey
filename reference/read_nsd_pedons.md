@@ -70,16 +70,22 @@ oxalate, dithionite and pyrophosphate Fe and Al, particle size, bulk
 density, volcanic glass in the sand, stones, CaCO3, EC of a 1:5 extract,
 water at 1500 kPa, COLE), with the NSD table and column of every value
 in the provenance. Codes are decoded through the survey's `cl_concept`
-table. The site holds the surveyor's classes: `reference_nzsc` (the NZSC
-code, e.g. `"MOT"`, recoded to the 4th edition where the 4th edition
-renamed it), `reference_nzsc_name`, the order, group and subgroup codes
-(`reference_nzsc_order`, `_group`, `_subgroup`), the record as written
-(`reference_nzsc_raw`), `reference_usda` (the Soil Taxonomy order of the
-recorded name), `reference_usda_grtgroup`, `reference_usda_subgroup`,
-the NZ Genetic class and series; and the drainage class, the parent
-material (the soil note "PARENT ROCK"), the landform, whether the land
-is drained, the mean annual air temperature, latitude and longitude
-(from NZTM2000), the licence and the citation
+table. The site declares `designation_system = "nz_legacy"` (v0.9.395):
+the surveys are written in the New Zealand notation, many of them in its
+older form (A11, A12, B21, B22, B3 beside Bw), so the NZSC key reads
+them as New Zealand designations while the older-notation reading of the
+WRB and SiBCS diagnostics (A2 = E, B3 = BC) is judged from each
+profile's own designations. The site holds the surveyor's classes:
+`reference_nzsc` (the NZSC code, e.g. `"MOT"`, recoded to the 4th
+edition where the 4th edition renamed it), `reference_nzsc_name`, the
+order, group and subgroup codes (`reference_nzsc_order`, `_group`,
+`_subgroup`), the record as written (`reference_nzsc_raw`),
+`reference_usda` (the Soil Taxonomy order of the recorded name),
+`reference_usda_grtgroup`, `reference_usda_subgroup`, the NZ Genetic
+class and series; and the drainage class, the parent material (the soil
+note "PARENT ROCK"), the landform, whether the land is drained, the mean
+annual air temperature, latitude and longitude (from NZTM2000), the
+licence and the citation
 ([`nsd_citation`](https://hugomachadorodrigues.github.io/soilKey/reference/nsd_citation.md)).
 The header of `R/nsd.R` lists every reading.
 

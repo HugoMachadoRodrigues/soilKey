@@ -15,7 +15,7 @@ zips (or from unzipped folders); nothing is written to disk."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.394</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.395</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,13 @@ dithionite and pyrophosphate Fe and Al, particle size, bulk density,
 volcanic glass in the sand, stones, CaCO3, EC of a 1:5 extract, water at
 1500 kPa, COLE), with the NSD table and column of every value in the
 provenance. Codes are decoded through the survey's <code>cl_concept</code>
-table. The site holds the surveyor's classes: <code>reference_nzsc</code> (the
+table. The site declares <code>designation_system = "nz_legacy"</code>
+(v0.9.395): the surveys are written in the New Zealand notation, many of
+them in its older form (A11, A12, B21, B22, B3 beside Bw), so the NZSC
+key reads them as New Zealand designations while the older-notation
+reading of the WRB and SiBCS diagnostics (A2 = E, B3 = BC) is judged from
+each profile's own designations.
+The site holds the surveyor's classes: <code>reference_nzsc</code> (the
 NZSC code, e.g. <code>"MOT"</code>, recoded to the 4th edition where the 4th
 edition renamed it), <code>reference_nzsc_name</code>, the order, group and
 subgroup codes (<code>reference_nzsc_order</code>, <code>_group</code>,
