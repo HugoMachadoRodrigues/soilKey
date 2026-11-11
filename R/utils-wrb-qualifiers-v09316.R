@@ -38,9 +38,11 @@
 #' designation): a "p" suffix ("Ap", "Ap1", "Apk", "A(p)", "Ap/C", the older
 #' "A11p"; FAO 2006 Guidelines and KST 13). The "pl" of the plinthite in the
 #' older Brazilian notation ("Apl", "B1pl") is not a p suffix.
+#' v0.9.395: \code{profile} gives the designations of the whole profile when
+#' \code{d} is only some of them, and \code{site} its declared notation.
 #' @noRd
-.wrb_plough_designation <- function(d) {
-  m <- .desg_master(d)
+.wrb_plough_designation <- function(d, profile = d, site = NULL) {
+  m <- .desg_master(d, profile = profile, site = site)
   ifelse(is.na(m) | !nzchar(trimws(m)), NA,
          grepl("^[A-Z]+[^A-Z/]*p(?!l)", m, perl = TRUE))
 }

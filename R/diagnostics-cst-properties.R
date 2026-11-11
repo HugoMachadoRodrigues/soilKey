@@ -496,7 +496,7 @@ organic_soil_materials_cst <- function(pedon, kind = NULL, top_max = NULL,
   t <- .cst_cthr("lithologic")
   # carbonate ROCK nouns only (D2): not a calcareous sediment, not karst
   carb <- .cst_pm_has(x$pedon, "limestone|dolomit|marl|chalk|travertine|tufa|carbonate rock")
-  d <- .desg_master(as.character(.cst_col(x$h, "designation")))
+  d <- .desg_master(as.character(.cst_col(x$h, "designation")), site = x$pedon$site)
   lith <- x$kind %in% "R" & !grepl("^C", d) & .cst_within(x, t$within_cm)
   cf <- .cst_v(x, "coarse_fragments_pct")
   frag <- (cf > 0) %in% TRUE & .cst_within(x, t$within_cm)
@@ -590,7 +590,7 @@ lc_coral_sands_cst     <- function(pedon) lithologic_characters_cst(pedon, "cora
   # v0.9.373: from the mineral soil surface where the key says so (F 2)
   s <- if (identical(datum, "mineral")) x$msurf else x$surf
   if (is.na(s) && !is.null(top_max)) return(.cst_ch_prof(id, NA, missing = c("designation", "oc_pct")))
-  d <- .desg_master(as.character(.cst_col(x$h, "designation")))
+  d <- .desg_master(as.character(.cst_col(x$h, "designation")), site = pedon$site)
   cr <- grepl("^C", d)
   hit <- x$kind %in% "R" & (if (id == "lithic_contact") !cr else cr)
   # the upper boundary at the depth asked counts (as top_max of the horizons)

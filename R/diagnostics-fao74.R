@@ -585,7 +585,7 @@ natric_b_fao74 <- function(pedon, max_top_cm = 125) {
     c1 <- ifelse(is.na(tex), NA, !(tex %in% c("S", "LS")))
     flag <- ifelse(tex %in% c("S", "LS"), "sand_or_loamy_sand_read_as_coarser_than_very_fine_sand",
                    NA_character_)
-    rs <- .fao_rock_structure(x$h)
+    rs <- .fao_rock_structure(x$h, site = x$site)
     c2 <- .f88_or(.f88_structure_present(x), .f88_cmp(rs$value, "<=", 50))
     cc <- .fao_cec_clay(x$h, "nh4oac")
     wm <- .f88_num(x, "weatherable_minerals_pct"); mu <- .f88_num(x, "muscovite_pct")
@@ -689,7 +689,7 @@ spodic_b_fao74 <- function(pedon, max_top_cm = 125) {
     wm <- .f88_num(x, "weatherable_minerals_pct")
     c4 <- .f88_cmp(wm, "<=", 3)
     c5 <- .f88_and(.fao_sandy_loam_or_finer(x$h), .f88_cmp(clay, ">", 15))
-    rs <- .fao_rock_structure(x$h)
+    rs <- .fao_rock_structure(x$h, site = x$site)
     c7 <- .f88_cmp(rs$value, "<", 5)
     ok <- .f88_unburied(x, .f88_and(.f88_b_layer(x), .f88_not(excl), c2, c3, c4, c5, c7))
     bd <- .field_term(.fao_col(x$h, "boundary_distinctness", "character"))
@@ -1218,7 +1218,7 @@ high_salinity_fao74 <- function(pedon) {
   ph <- .fao_ph(x$h, "1to1")
   e4 <- .f88_and(.f88_cmp(ec, ">", 4), .f88_cmp(ph$value, ">", 8.5)); e4[ub & em <= 4] <- FALSE
   e15 <- .f88_pr_clean(x, e15); e4 <- .f88_pr_clean(x, e4)
-  d <- .fao_depth_by_texture(x$h)
+  d <- .fao_depth_by_texture(x$h, site = x$site)
   if (!is.na(d$value)) {
     a <- .fao_within(x$h, e15, d$value)
   } else {
@@ -1550,7 +1550,7 @@ takyric_features_fao74 <- function(pedon) {
   st <- .f88_chr(x, "structure_type")[s]
   crust <- !is.na(st) && grepl("platy|massive|laminar|maci", st)
   if (is.na(st)) fl <- c(fl, "surface_structure_not_recorded_absent")
-  t <- .fao_texture_upper30(x$h, "1974")
+  t <- .fao_texture_upper30(x$h, "1974", site = x$site)
   heavy <- if (is.na(t$value)) NA else identical(t$value, "fine")
   v <- .fao_and(poly, crust, heavy)
   .f74_pr_result(x, id, list(value = v, layers = if (!isFALSE(v)) s else integer(0)),

@@ -299,9 +299,9 @@
 # 2026-11-05); the older Chinese paddy notation P (plough pan) as A, W and G
 # (the waterlogged and gley horizons) as B; "other" for anything else, NA
 # when no designation is recorded.
-.cst_horizon_kind <- function(d, cr_contact = FALSE) {
+.cst_horizon_kind <- function(d, cr_contact = FALSE, site = NULL) {
   cr_contact <- rep_len(as.logical(cr_contact), length(d))
-  d <- .desg_master(as.character(d))
+  d <- .desg_master(as.character(d), site = site)
   d <- gsub("[[:space:]]", "", d)
   out <- rep(NA_character_, length(d))
   set <- function(pat, kind) {
@@ -346,7 +346,7 @@
 # with the Cr read by .cst_cr_contact()).
 .cst_kinds <- function(pedon, h = .cst_ordered(pedon)) {
   if (is.null(h) || !nrow(h)) return(character(0))
-  .cst_horizon_kind(h$designation, .cst_cr_contact(h, pedon$site))
+  .cst_horizon_kind(h$designation, .cst_cr_contact(h, pedon$site), site = pedon$site)
 }
 
 # The horizons in depth order.

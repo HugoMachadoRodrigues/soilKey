@@ -423,9 +423,9 @@
 # organic carbon or more) the 30 cm are measured from the top of the first
 # mineral horizon, flagged texture_from_mineral_surface: the class of the map
 # symbol describes the mineral soil (Hugo's decision of 2026-11-09).
-.fao_texture_upper30 <- function(h, edition = "1988", depth = 30) {
+.fao_texture_upper30 <- function(h, edition = "1988", depth = 30, site = NULL) {
   if (nrow(h)) {
-    m <- .fao_master(h)
+    m <- .fao_master(h, site = site)
     oc <- .fao_col(h, "oc_pct")
     organic <- (!is.na(m) & grepl("^(O|H)", m)) | (is.na(m) & !is.na(oc) & oc >= 20)
     first_min <- which(!organic)[1L]
@@ -449,8 +449,8 @@
 # cm for fine textures" (the calcic and gypsic horizons of C, K, H, L, B and
 # high salinity, 1974 pp. 29, 49-53; the Xerosols and Yermosols, footnote 1
 # of p. 50), by the class of the upper 30 cm (Q10).
-.fao_depth_by_texture <- function(h, depths = c(coarse = 125, medium = 90, fine = 75)) {
-  t <- .fao_texture_upper30(h, "1974")
+.fao_depth_by_texture <- function(h, depths = c(coarse = 125, medium = 90, fine = 75), site = NULL) {
+  t <- .fao_texture_upper30(h, "1974", site = site)
   if (is.na(t$value)) return(.fao_ans(NA, missing = t$missing))
   .fao_ans(unname(depths[t$value]), class = t$value)
 }
@@ -491,9 +491,9 @@
 
 # The master letters of each designation, the material number taken off
 # (.desg_master(): "2Bt1" is "Bt1"; the older notation A2 = E, B3 = BC).
-.fao_master <- function(h) {
+.fao_master <- function(h, site = NULL) {
   d <- .fao_col(h, "designation", "character")
-  m <- .desg_master(d)
+  m <- .desg_master(d, site = site)
   sub("^([A-Z]+(?:/[A-Z]+)?).*$", "\\1", m, perl = TRUE)
 }
 
@@ -505,9 +505,9 @@
 # A horizon without a designation below the last A, E or B and above the
 # first C or R leaves it undecided. Where the description ends in the
 # solum, the value is a lower bound (`open = TRUE`).
-.fao_solum <- function(h) {
+.fao_solum <- function(h, site = NULL) {
   d <- .fao_depths(h)
-  m <- .fao_master(h)
+  m <- .fao_master(h, site = site)
   if (all(is.na(m))) return(.fao_ans(NA, missing = "designation"))
   sol <- !is.na(m) & grepl("^(A|E|B)", m) & !grepl("^(CB|C/B)", m)
   cr <- !is.na(m) & grepl("^(C|R)", m) & !grepl("^(C/B)", m) | .fao_is_rock(h)
@@ -539,12 +539,12 @@
 # and everything below it once the mantle is thick enough, NA where the
 # answer rests on an undecided andic mantle (1988, 35 to < 50 cm).
 .fao_buried <- function(h, edition = "1988", mantle_andic = NA,
-                        min_cm = 50, min_andic_cm = 35) {
+                        min_cm = 50, min_andic_cm = 35, site = NULL) {
   edition <- .fao_edition(edition)
   n <- nrow(h)
   out <- rep(FALSE, n)
   d <- .fao_depths(h)
-  desg <- .desg_master(.fao_col(h, "designation", "character"))
+  desg <- .desg_master(.fao_col(h, "designation", "character"), site = site)
   b <- !is.na(desg) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*b", desg)
   if (!any(b)) return(.fao_ans(out, buried_from = NA_integer_))
   first <- min(which(b))
@@ -725,11 +725,11 @@
 # saprolite_pct, flagged; else a Cr or BC horizon has some rock structure of
 # unknown amount (NA, flagged); a rock layer (.fao_is_rock()) is 100; else
 # none (a field observation not recorded is absent), with a flag.
-.fao_rock_structure <- function(h) {
+.fao_rock_structure <- function(h, site = NULL) {
   v <- .fao_col(h, "rock_structure_pct")
   sap <- .fao_col(h, "saprolite_pct")
-  m <- .fao_master(h)
-  d <- .desg_master(.fao_col(h, "designation", "character"))
+  m <- .fao_master(h, site = site)
+  d <- .desg_master(.fao_col(h, "designation", "character"), site = site)
   flag <- rep(NA_character_, nrow(h))
   use_sap <- is.na(v) & !is.na(sap)
   v[use_sap] <- sap[use_sap]; flag[use_sap] <- "saprolite_for_rock_structure"

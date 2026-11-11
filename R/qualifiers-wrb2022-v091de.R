@@ -129,7 +129,7 @@ qual_brunic <- function(pedon) {
     c3 <- ifelse(cand %in% sf$layers, TRUE, NA)
     # criterion 4
     part <- .wrb_cambic_part_of_other(pedon, cand)
-    c4 <- !(part$excluded[cand] | .wrb_plough_designation(d[cand]) %in% TRUE)
+    c4 <- !(part$excluded[cand] | .wrb_plough_designation(d[cand], profile = d, site = pedon$site) %in% TRUE)
     # not claric material
     cl <- test_claric_munsell(h, candidate_layers = cand)
     claric <- vapply(cand, function(i) cl$details[[as.character(i)]]$passed %||% NA, NA)

@@ -47,13 +47,19 @@
 # this parser reads? Declared in site$designation_system, otherwise yes.
 # `nz` when the notation is the New Zealand one (declared, or a site in New
 # Zealand): a Cr is then a reductimorphic C, as the NZSC reads r; elsewhere a
-# Cr is weathered rock (FAO/USDA).
+# Cr is weathered rock (FAO/USDA). v0.9.395: "nz_legacy", the older New
+# Zealand notation read_nsd_pedons() declares, is the New Zealand notation
+# here too.
+.NZ_DECLARED <- c("nz", "newzealand", "nzlegacy")
+.nz_key_is_nz <- function(key) !is.na(key) && (grepl("^nzsc[0-9]*$", key) || key %in% .NZ_DECLARED)
+
 .nzsc_notation <- function(designation, site = list()) {
   declared <- tolower(as.character(site$designation_system %||% NA)[1L])
+  key <- .notation_key(declared)
   country <- toupper(as.character(site$country %||% NA)[1L])
-  if (!is.na(declared) && nzchar(declared) && declared %in% c("asc", "australian", "cssc", "canadian"))
+  if (!is.na(declared) && nzchar(declared) && (.asc_key_is_asc(key) || key %in% c("cssc", "canadian")))
     return(list(ok = FALSE, nz = FALSE, why = sprintf("declared: %s", declared)))
-  nz <- (!is.na(declared) && declared %in% c("nzsc", "nz", "new zealand")) ||
+  nz <- .nz_key_is_nz(key) ||
         ((is.na(declared) || !nzchar(declared)) && !is.na(country) && country %in% c("NZ", "NZL", "NEW ZEALAND"))
   list(ok = TRUE, nz = nz, why = if (is.na(declared)) "New Zealand or FAO notation" else sprintf("declared: %s", declared))
 }

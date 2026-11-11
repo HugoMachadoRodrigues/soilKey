@@ -97,12 +97,12 @@
 #'   per layer, and `missing` per layer.
 #' @noRd
 .wrb_mollic_layer_status <- function(h, umbric = FALSE, min_oc = 0.6,
-                                     reading = .WRB_MOLLIC_COLOUR_READING) {
+                                     reading = .WRB_MOLLIC_COLOUR_READING, site = NULL) {
   n <- nrow(h)
   oc <- suppressWarnings(as.numeric(h$oc_pct %||% rep(NA_real_, n)))
   colour0 <- .wrb_mollic_colour_layers(h, umbric = umbric, reading = reading)
   colour <- as.logical(colour0)
-  plough <- .wrb_plough_layer(h)
+  plough <- .wrb_plough_layer(h, site = site)
   ord <- order(h$top_cm)
   for (k in rev(seq_along(ord))) {
     i <- ord[k]

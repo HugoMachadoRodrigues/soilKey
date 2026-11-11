@@ -76,16 +76,17 @@
   if (n) {
     d <- .fao_depths(hh)
     x$top <- d$top; x$bot <- d$bottom
-    x$master <- .fao_master(hh)
-    x$desg <- .desg_master(.fao_col(hh, "designation", "character"))
+    x$master <- .fao_master(hh, site = pedon$site)
+    x$desg <- .desg_master(.fao_col(hh, "designation", "character"), site = pedon$site)
     x$rock <- .fao_is_rock(hh)
     x$memo <- new.env(parent = emptyenv())
     # 1974 (74 p. 32): buried by 50 cm or more of new material, no andic rule
-    b <- .fao_buried(hh, edition)
+    b <- .fao_buried(hh, edition, site = pedon$site)
     # a mantle of 35 to 50 cm buries the horizons below it when it has andic
     # properties (p. 42), read since 0.9.383 (.f88_mantle_andic())
     if (edition == "1988" && anyNA(b$value)) {
-      b <- .fao_buried(hh, "1988", mantle_andic = .f88_mantle_andic(x, b$buried_from %||% NA_integer_))
+      b <- .fao_buried(hh, "1988", mantle_andic = .f88_mantle_andic(x, b$buried_from %||% NA_integer_),
+                      site = pedon$site)
     }
     x$buried <- as.logical(b$value)
     x$buried_missing <- b$missing
@@ -681,7 +682,7 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     duri <- cem & ((!is.na(dp) & dp > 0) | (!is.na(x$desg) & grepl("^[A-Z]+[a-z0-9]*qm", x$desg)))
     # the solum and the A both measured from the mineral soil surface, the
     # top of the A (Hugo, 2026-11-09)
-    solum <- .fao_solum(h)
+    solum <- .fao_solum(h, site = x$site)
     S <- solum$value - t0
     th_ok <- function(layers) {
       if (!length(layers)) return(FALSE)
@@ -1065,7 +1066,7 @@ natric_b_fao88 <- function(pedon, max_top_cm = 125) {
     # 3: structure at least moderate, or rock structure absent in at least
     # half the volume
     gr <- .field_grade_class(.fao_col(x$h, "structure_grade", "character"))
-    rs <- .fao_rock_structure(x$h)
+    rs <- .fao_rock_structure(x$h, site = x$site)
     c3 <- .f88_or(!is.na(gr) & gr >= 2L, .f88_cmp(rs$value, "<=", 50))
     # 4: not ferralic in at least one way
     cc <- .fao_cec_clay(x$h, "nh4oac")
@@ -1268,7 +1269,7 @@ spodic_b_fao88 <- function(pedon, max_top_cm = 125) {
     c6 <- .f88_cmp(sc, "<=", 0.2)
     an <- .f88_andic_layer(x)
     c7 <- .f88_not(an$value)
-    rs <- .fao_rock_structure(x$h)
+    rs <- .fao_rock_structure(x$h, site = x$site)
     c8 <- .f88_cmp(rs$value, "<", 5)
     ok <- .f88_unburied(x, .f88_and(.f88_b_layer(x), c1, c3, c4, c5, c6, c7, c8))
     units <- .f88_units(x, ok, function(r) r$thickness >= 30)

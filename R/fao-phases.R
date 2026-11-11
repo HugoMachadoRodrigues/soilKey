@@ -363,7 +363,7 @@
   if (is.na(st)) fl <- c(fl, "surface_structure_not_recorded_absent")
   # heavy textured: the fine class (3) of the upper 30 cm (p. 107; Hugo,
   # 2026-11-09)
-  t <- .fao_texture_upper30(x$h, "1988")
+  t <- .fao_texture_upper30(x$h, "1988", site = x$site)
   heavy <- if (is.na(t$value)) NA else identical(t$value, "fine")
   v <- .fao_and(poly, crust, heavy)
   .f88ph_ans(v, layers = if (isTRUE(v)) x$idx[s] else integer(0), flags = c(fl, t$flags),
@@ -436,7 +436,7 @@
 
 # The texture class of the upper 30 cm: 1 coarse, 2 medium, 3 fine.
 .f88ph_texture <- function(x, m) {
-  t <- .fao_texture_upper30(x$h, "1988", depth = m$texture$upper_cm)
+  t <- .fao_texture_upper30(x$h, "1988", depth = m$texture$upper_cm, site = x$site)
   cls <- Find(function(k) identical(k$id, t$value), m$texture$classes)
   list(code = if (is.null(cls)) NA_character_ else cls$code, class = cls,
        flags = t$flags, missing = t$missing,
@@ -643,7 +643,7 @@
 
 # The texture class of the upper 30 cm with the classes of 1974 (p. 5).
 .f74ph_texture <- function(x, m) {
-  t <- .fao_texture_upper30(x$h, "1974", depth = m$texture$upper_cm)
+  t <- .fao_texture_upper30(x$h, "1974", depth = m$texture$upper_cm, site = x$site)
   cls <- Find(function(k) identical(k$id, t$value), m$texture$classes)
   list(code = if (is.null(cls)) NA_character_ else cls$code, class = cls,
        flags = t$flags, missing = t$missing,

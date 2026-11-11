@@ -488,7 +488,7 @@ gleysol <- function(pedon, strict = NULL) {
   one <- function(res, umbric) {
     none <- list(passed = FALSE, layers = integer(0), missing = character(0))
     if (isFALSE(res$passed)) return(none)
-    ls  <- .wrb_mollic_layer_status(h, umbric = umbric)
+    ls  <- .wrb_mollic_layer_status(h, umbric = umbric, site = pedon$site)
     run <- .wrb_mollic_run(h, ls$status, ls$missing)
     nL <- length(run$layers); nM <- length(run$maybe)
     if (!nM) return(none)

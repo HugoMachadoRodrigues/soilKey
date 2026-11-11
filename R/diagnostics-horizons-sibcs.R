@@ -71,7 +71,7 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   # checked oc_pct >= 8 %, which falsely matched mineral A horizons of
   # high-OC andic profiles (canonical Andosol with Ah of 8 % OC was
   # being routed into Organossolos).
-  desg <- .desg_master(h$designation)
+  desg <- .desg_master(h$designation, site = pedon$site)
   is_organic_designation <- !is.na(desg) &
                               grepl("^[OH][a-z]?", desg)
   is_dominantly_organic  <- !is.na(h$oc_pct) & h$oc_pct >= 12
@@ -175,7 +175,7 @@ horizonte_A_chernozemico <- function(pedon,
   candidates <- integer(0); prev_bot <- 0
   for (i in ord) {
     if (is.na(h$top_cm[i])) next
-    is_A <- grepl("^[0-9]*A", .desg_master(h$designation)[i] %||% "")
+    is_A <- grepl("^[0-9]*A", .desg_master(h$designation, site = pedon$site)[i] %||% "")
     if (length(candidates) == 0L) {
       if (h$top_cm[i] <= 5 && is_A) {
         candidates <- i
@@ -237,7 +237,7 @@ horizonte_A_chernozemico <- function(pedon,
   #   - >= 25 cm, when the solum >= 75 cm.
   # min_thickness_cm (default 18) is retained as the fallback used only when
   # the solum depth cannot be established (no designation / bottom data).
-  desig_all <- .desg_master(h$designation %||% rep(NA_character_, nrow(h)))
+  desig_all <- .desg_master(h$designation %||% rep(NA_character_, nrow(h)), site = pedon$site)
   is_B    <- !is.na(desig_all) & grepl("^[0-9]*B", desig_all)
   is_rock <- !is.na(desig_all) & grepl("^[0-9]*(R|Cr|Cd)", desig_all)
   a_bottom <- if (length(passing) > 0L)
@@ -308,7 +308,7 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
     }
     # Stop accumulating at a clear B horizon.
     if (!is.na(h$designation[candidates[k]]) &&
-        grepl("^B", .desg_master(h$designation)[candidates[k]])) {
+        grepl("^B", .desg_master(h$designation, site = pedon$site)[candidates[k]])) {
       a_layers <- candidates[seq_len(k - 1L)]
       break
     }
@@ -595,7 +595,7 @@ B_textural <- function(pedon, ...) {
 #' @noRd
 .b_textural_sibcs <- function(pedon) {
   h   <- pedon$horizons
-  dm  <- .desg_master(h$designation)
+  dm  <- .desg_master(h$designation, site = pedon$site)
   ref <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 54-57"
   hm  <- data.table::copy(h); hm$designation <- dm
   out <- function(passed, layers = integer(0), evidence = list(),
@@ -644,7 +644,7 @@ B_textural <- function(pedon, ...) {
   above <- which((is_a | is_e) & !is.na(h$top_cm) & h$top_cm < b_top)
 
   # (h) relacao textural
-  rt <- test_ratio_textural_sibcs(h)
+  rt <- test_ratio_textural_sibcs(h, site = pedon$site)
   item_h <- isTRUE(rt$passed)
   ratio  <- rt$details$ratio %||% NA_real_
 
@@ -654,7 +654,7 @@ B_textural <- function(pedon, ...) {
   # below (abrupt, under 2.5 cm; clear, 2.5 to 7.5 cm); where it is recorded
   # as gradual or diffuse there is no abrupt change, and where it is not
   # recorded the two layers are compared.
-  item_g <- isTRUE(.mudanca_abrupta_a_b(h)$passed)
+  item_g <- isTRUE(.mudanca_abrupta_a_b(h, site = pedon$site)$passed)
 
   # (f) an E horizon above the B
   item_f <- FALSE
@@ -829,7 +829,7 @@ B_latossolico <- function(pedon, min_thickness = 50,
                                  not_latossolic = integer(0),
                                  B_textural = NULL) {
   h  <- pedon$horizons
-  dm <- .desg_master(h$designation)
+  dm <- .desg_master(h$designation, site = pedon$site)
   tropical <- .pedon_is_tropical(pedon)
   tests <- list()
   tests$texture      <- test_ferralic_texture(h, tropical = tropical)
@@ -999,7 +999,7 @@ B_incipiente <- function(pedon, min_thickness = 10) {
   # calcic / saline B horizons and is what made the canonical
   # chernozem fixture fall through chernossolo() (no Bi nor Bt
   # path) into Neossolos.
-  desg_match <- test_pattern_match(.h_master(h), "designation", "^B[wikvgnzj]")
+  desg_match <- test_pattern_match(.h_master(h, site = pedon$site), "designation", "^B[wikvgnzj]")
   candidates <- desg_match$layers
   # Exclusoes
   # v0.9.241: item (a), "nao satisfazer aos requisitos estabelecidos para
@@ -1105,7 +1105,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   h <- pedon$horizons
   # Step 1: textura argilosa em B
   b_layers <- which(!is.na(h$designation) &
-                      grepl("^B", .desg_master(h$designation)))
+                      grepl("^B", .desg_master(h$designation, site = pedon$site)))
   if (length(b_layers) == 0L) {
     return(DiagnosticResult$new(
       name = "B_nitico", passed = FALSE,
@@ -1117,7 +1117,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   clay_ok <- b_layers[!is.na(h$clay_pct[b_layers]) &
                         h$clay_pct[b_layers] >= min_clay_pct]
   # Step 2: pequeno incremento de argila B/A
-  a_layers <- which(!is.na(h$designation) & grepl("^A", .desg_master(h$designation)))
+  a_layers <- which(!is.na(h$designation) & grepl("^A", .desg_master(h$designation, site = pedon$site)))
   ratio <- if (length(a_layers) > 0L && length(clay_ok) > 0L)
              mean(h$clay_pct[clay_ok], na.rm = TRUE) /
                mean(h$clay_pct[a_layers], na.rm = TRUE)
@@ -1168,7 +1168,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   # Step 5: thickness. SiBCS Cap 2 p.62 (a): >= 30 cm, EXCEPT >= 15 cm when a
   # lithic / lithic-fragmentary contact occurs within the first 50 cm.
   contact_shallow <- any(!is.na(h$designation) &
-                           grepl("^[0-9]*(R|Cr|Cd)", .desg_master(h$designation)) &
+                           grepl("^[0-9]*(R|Cr|Cd)", .desg_master(h$designation, site = pedon$site)) &
                            !is.na(h$top_cm) & h$top_cm <= 50)
   eff_min_thick <- if (contact_shallow) 15 else min_thickness
   # v0.9.246: the thickness of the horizon, made of adjoining sub-horizons
@@ -1250,7 +1250,7 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
 B_espodico <- function(pedon, ...) {
   res <- spodic(pedon, ...)
   if (!isTRUE(res$passed)) {
-    it <- .b_espodico_item_a(pedon$horizons)
+    it <- .b_espodico_item_a(pedon$horizons, site = pedon$site)
     if (length(it$layers) > 0L) {
       ev <- res$evidence
       ev$item_a <- it
@@ -1260,7 +1260,7 @@ B_espodico <- function(pedon, ...) {
     }
   }
   if (.morph_inference_enabled() && !isTRUE(res$passed)) {
-    dm <- .desg_master(pedon$horizons$designation)
+    dm <- .desg_master(pedon$horizons$designation, site = pedon$site)
     ir <- which(!is.na(dm) & grepl("^B[^A-Z]*ir", dm))
     if (length(ir) > 0L) {
       ev <- res$evidence
@@ -1287,10 +1287,10 @@ B_espodico <- function(pedon, ...) {
 #' them, and have no cerosidade recorded. Returns the layers and, for each,
 #' the E it was compared with and the two carbon contents.
 #' @noRd
-.b_espodico_item_a <- function(h) {
+.b_espodico_item_a <- function(h, site = NULL) {
   none <- list(layers = integer(0), e_above = integer(0),
                oc_pct = numeric(0), oc_e_pct = numeric(0))
-  dm <- .desg_master(h$designation)
+  dm <- .desg_master(h$designation, site = site)
   known <- !is.na(dm) & !is.na(h$top_cm)
   e <- which(known & grepl("^E", dm))
   b <- which(known & grepl("^B", dm) & !grepl("^B/?C", dm))
@@ -1385,8 +1385,8 @@ B_planico <- function(pedon) {
   abrupt <- mudanca_textural_abrupta(pedon)
   described <- any(!is.na(h$designation) &
                      nzchar(trimws(as.character(h$designation))))
-  ab <- if (described) .mudanca_abrupta_a_b(h) else NULL
-  b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
+  ab <- if (described) .mudanca_abrupta_a_b(h, site = pedon$site) else NULL
+  b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation, site = pedon$site)))
   cor_ok <- integer(0)
   cor_item <- character(0)
   for (i in b_layers) {
@@ -1524,7 +1524,7 @@ horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
   # "p1" is the first of a series. "Ap1" is a ploughed layer.
   if (.morph_inference_enabled() && !isTRUE(res$passed)) {
     h  <- pedon$horizons
-    d  <- .desg_master(h$designation)
+    d  <- .desg_master(h$designation, site = pedon$site)
     numbered <- any(!is.na(d) & grepl("^[BC][a-z0-9]*p[2-9]", d))
     pl <- which(!is.na(d) & (grepl("^[A-Z][a-z0-9]*pl", d) |
                                (!numbered & grepl("^[BC][a-z0-9]*p1", d))))
@@ -1558,7 +1558,7 @@ horizonte_concrecionario <- function(pedon, min_petroplinthite_pct = 50,
                                         min_thickness = 30) {
   h <- pedon$horizons
   # plinthite_pct as proxy for petroplintita; refine via designation Ac/Bc/Cc
-  desg <- test_pattern_match(.h_master(h), "designation", "^[ABCE]c|c[g]?[fr]?$")
+  desg <- test_pattern_match(.h_master(h, site = pedon$site), "designation", "^[ABCE]c|c[g]?[fr]?$")
   pp <- test_numeric_above(h, "plinthite_pct",
                               threshold = min_petroplinthite_pct,
                               candidate_layers = desg$layers)
@@ -1656,7 +1656,7 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
   }
   by_letter <- integer(0)
   if (.morph_inference_enabled()) {
-    d <- .desg_master(h$designation)
+    d <- .desg_master(h$designation, site = pedon$site)
     by_letter <- which(!is.na(d) & grepl("^[A-Z][a-z0-9]*g", d))
     layers <- union(layers, by_letter)
   }
@@ -1716,7 +1716,7 @@ horizonte_glei <- function(pedon, min_thickness = 15) {
   if (n == 0L) return(list(layers = integer(0), items = character(0),
                            mottled = logical(0)))
   o <- order(h$top_cm)
-  d <- .desg_master(h$designation)
+  d <- .desg_master(h$designation, site = pedon$site)
   item <- rep(NA_character_, n)
   has_mottles <- (!is.na(h$redoximorphic_features_pct) &
                     h$redoximorphic_features_pct > 0) | !is.na(h$mottle_colors)

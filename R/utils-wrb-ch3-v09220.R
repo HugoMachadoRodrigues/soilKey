@@ -41,11 +41,25 @@
 #' figures ("A11", "A21", "C11") and by the suffixes "ir" in a B and "pl" in
 #' a B or a C, so that "A1, A21, A22, Bhir" and "A1, A2, Bh, Bhir" have their
 #' E read.
+#'
+#' v0.9.395: \code{site} is the site of the profile. A notation declared in
+#' \code{site$designation_system} decides before the marks
+#' (\code{.desg_declared_notation()}): a declared older notation has its A2,
+#' B3 and "(B)" read, a declared present notation none of them, whatever
+#' its designations look like (FAO 2006 writes "B1, B2, B3" for three parts
+#' of a B and "(Bw)R" for a B in the cracks of a rock: there the
+#' parentheses are dropped, "(Bw)R" is read "BwR"). With no declaration the
+#' marks decide, as before.
 #' @noRd
-.desg_master <- function(d, profile = d) {
+.desg_master <- function(d, profile = d, site = NULL) {
   d <- trimws(as.character(d))
-  old <- .desg_old_notation(profile)
-  d <- sub("^([0-9]*|[IVX]*)\\(\\s*B\\s*([0-9a-z]*)\\s*\\)\\s*", "\\1Bi\\2", d)
+  declared <- .desg_declared_notation(site)
+  old <- .desg_old_notation(profile, site = site)
+  # "(B)" is the B incipiente (Bi) of the older notation; in a declared
+  # present notation the parentheses are dropped and the B kept as written
+  # ("(Bw)R" is "BwR", "(B)km" is "Bkm"; Hugo, 2026-11-10)
+  d <- sub("^([0-9]*|[IVX]*)\\(\\s*B\\s*([0-9a-z]*)\\s*\\)\\s*",
+           if (identical(declared, "present")) "\\1B\\2" else "\\1Bi\\2", d)
   out <- sub("^(?:[0-9]+(?=[A-Z])|[IVX]+(?=[A-HJ-UWYZ]))", "", d, perl = TRUE)
   if (old) {
     out <- sub("^A2", "E", out)
@@ -71,8 +85,14 @@
 #' The suffix "cn" of the concretions is not taken for a mark: it is found in
 #' profiles otherwise written in the present notation ("A1, A2, AB, BA, Bw1,
 #' Bw2, BC, C1, Ccn"), where the A2 is the second part of the A.
+#'
+#' Since v0.9.395 a notation declared in \code{site$designation_system}
+#' decides before the marks (\code{.desg_declared_notation()}).
 #' @noRd
-.desg_old_notation <- function(d) {
+.desg_old_notation <- function(d, site = NULL) {
+  declared <- .desg_declared_notation(site)
+  if (identical(declared, "old")) return(TRUE)
+  if (identical(declared, "present")) return(FALSE)
   d <- trimws(as.character(d))
   d <- d[!is.na(d)]
   if (length(d) == 0L) return(FALSE)
@@ -85,10 +105,99 @@
 #' The horizons with their designations read by .desg_master(), for the tests
 #' that take the name of a column.
 #' @noRd
-.h_master <- function(h) {
+.h_master <- function(h, site = NULL) {
   h <- data.table::copy(h)
-  h$designation <- .desg_master(h$designation)
+  h$designation <- .desg_master(h$designation, site = site)
   h
+}
+
+# --- the notation declared in site$designation_system (v0.9.395) ---------------
+
+# Declared values (lower-cased, accents folded, all but letters and digits
+# dropped) of a notation in which the A2 is the eluvial horizon (the E of
+# today), the B3 the transition to the C (the BC of today) and the "(B)" the
+# B incipiente: the Australian Field Handbook of the ASC (A1, A2, A3, B1,
+# B21, B3; "asc" with any edition number, .asc_key_is_asc()), the French
+# CPCS of 1967 (A1, A2, B2, B3, (B)), the FAO-Unesco Legend of 1974 and the
+# FAO Guidelines of 1977, the USDA Soil Survey Manual of 1951 and its
+# supplement of 1962, and the Brazilian notation in use until 1988
+# ("br_pre1988"; Larach et al., 1988, replaced it). Hugo's decisions Q1 and
+# Q2, 2026-11-10; the USDA of 1975 and the Soviet notation of 1977 are not
+# old here.
+.DESG_OLD_DECLARED <- c("cpcs", "cpcs1967", "french", "francaise", "fr", "fao1974", "fao1977",
+                        "usda1951", "ssm1951", "soilsurveymanual1951", "usda1962", "ssm1962",
+                        "soilsurveymanual1962", "brpre1988")
+
+# Declared values of a notation of today: the FAO Guidelines (and the WRB
+# that repeats them), the USDA (Soil Survey Manual, KST, NASIS), the SiBCS
+# (Santos et al., 2015, the notation of Larach et al., 1988), the CSSC, the
+# NZSC, the SCSJ and CSCJ, the Chinese and Hungarian fields and the Soviet
+# notation (a name, optionally followed by an edition or a year); the South
+# African, German, Russian and French notations are read by their own
+# readers' predicates (.desg_declared_notation()). A value that is none of
+# these is not known: the marks decide. Hugo's decisions Q3 and Q4,
+# 2026-11-10.
+.DESG_PRESENT_DECLARED_RE <- paste0(
+  "^((fao|faowrb|wrbfao|faoguidelines|guidelines|wrb)([0-9]{4})?|",
+  "(usda|kst|soiltaxonomy|keystosoiltaxonomy|nasis|ncss|ssm|soilsurveymanual)([0-9]{1,4})?|",
+  "(sibcs|santos)([0-9]{1,4})?|cssc[0-9]*|canadian|canada|nzsc[0-9]*|nz|newzealand|",
+  "(scsj|cscj)[0-9]*|cst[0-9]*|hscs[0-9]*|(soviet|ussr)[0-9]*)$")
+
+# Declared values that declare nothing, so that the marks decide: the
+# missing-value words, SA and RSA (the country, not a notation), and
+# "nz_legacy", the older New Zealand notation of the National Soils Database
+# surveys (A11, A12, B21, B22, B3 beside Bw), written by read_nsd_pedons()
+# so that each profile's own marks decide (Hugo's decision Q5, 2026-11-10).
+.DESG_UNDECLARED <- c("na", "none", "unknown", "nd", "null", "missing", "notrecorded",
+                      "sa", "rsa", "nzlegacy")
+
+# A value of site$designation_system as a key: lower-cased, accents folded,
+# all but letters and digits dropped ("NZ legacy" -> "nzlegacy"); a value
+# that is not UTF-8 is read as CP1252, as the RP and KA5 readers do. NA when
+# nothing is recorded or the value cannot be read.
+.notation_key <- function(ds) {
+  v <- tryCatch(as.character(unlist(ds)), error = function(e) character(0))
+  if (!length(v) || is.na(v[1L])) return(NA_character_)
+  v <- v[1L]
+  if (!validUTF8(v)) v <- suppressWarnings(iconv(v, "CP1252", "UTF-8"))
+  if (is.na(v) || !validUTF8(v)) return(NA_character_)
+  k <- gsub("[^a-z0-9]", "", .rp_fold_accents(tolower(v)))
+  if (!nzchar(k)) NA_character_ else k
+}
+
+# The declared value as a key, or NA when the site declares nothing.
+.desg_declared_key <- function(site) {
+  if (!is.list(site)) return(NA_character_)
+  k <- .notation_key(tryCatch(site[["designation_system"]], error = function(e) NULL))
+  if (is.na(k) || k %in% .DESG_UNDECLARED) return(NA_character_)
+  k
+}
+
+#' What site$designation_system says of the older notation of the horizon
+#' designations: "old" (the A2 is read E, the B3 BC and the "(B)" Bi),
+#' "present" (none of them is), or NA (nothing declared, "nz_legacy", or a
+#' value soilKey does not know: the marks of the designations decide, see
+#' \code{.desg_old_notation()}; PedonRecord$validate() notes an unknown
+#' value, Hugo's decision Q7, 2026-11-10). Never an error.
+#' @noRd
+.desg_declared_notation <- function(site) {
+  k <- .desg_declared_key(site)
+  if (is.na(k)) return(NA_character_)
+  if (k %in% .DESG_OLD_DECLARED || .asc_key_is_asc(k)) return("old")
+  if (grepl(.DESG_PRESENT_DECLARED_RE, k) || .za_key_is_za(k) || .ka5_key_is_ka5(k) ||
+      .ka5_key_is_ka6(k) || .kidpr_key_is_ru(k) || .rp_key_is_rp(k)) return("present")
+  NA_character_
+}
+
+#' The note on a value of site$designation_system that soilKey does not
+#' know, or NA.
+#' @noRd
+.desg_notation_note <- function(site) {
+  k <- .desg_declared_key(site)
+  if (is.na(k) || !is.na(.desg_declared_notation(site))) return(NA_character_)
+  sprintf(paste("site$designation_system = '%s' is not a notation soilKey knows:",
+                "the older notation (A2 = E, B3 = BC, (B) = Bi) is judged from the",
+                "designations"), as.character(unlist(site[["designation_system"]]))[1L])
 }
 
 #' Designations of continuous rock (FAO 2006 Guidelines and KST 13: R is hard

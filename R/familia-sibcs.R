@@ -157,7 +157,7 @@ FamilyAttribute <- R6::R6Class("FamilyAttribute",
 #'             Cap 18, p. 281.
 #' @noRd
 familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
-  h <- .mineral_horizons(pedon$horizons)
+  h <- .mineral_horizons(pedon$horizons, site = pedon$site)
   clay <- .weighted_avg_in_depth(h, "clay_pct", max_depth_cm = max_depth_cm)
   sand <- .weighted_avg_in_depth(h, "sand_pct", max_depth_cm = max_depth_cm)
   if (is.na(clay) || is.na(sand)) {
@@ -221,7 +221,7 @@ familia_grupamento_textural <- function(pedon, max_depth_cm = 200) {
 #' @references Embrapa (2018), SiBCS 5a ed., Cap 18, p. 283.
 #' @noRd
 familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
-  h <- .mineral_horizons(pedon$horizons)
+  h <- .mineral_horizons(pedon$horizons, site = pedon$site)
   clay <- .weighted_avg_in_depth(h, "clay_pct", max_depth_cm = max_depth_cm)
   sand <- .weighted_avg_in_depth(h, "sand_pct", max_depth_cm = max_depth_cm)
   silt <- .weighted_avg_in_depth(h, "silt_pct", max_depth_cm = max_depth_cm)
@@ -279,7 +279,7 @@ familia_subgrupamento_textural <- function(pedon, max_depth_cm = 200) {
 #'             p 284.
 #' @noRd
 familia_distribuicao_cascalhos <- function(pedon, max_depth_cm = 200) {
-  h <- .mineral_horizons(pedon$horizons)
+  h <- .mineral_horizons(pedon$horizons, site = pedon$site)
   cf <- .weighted_avg_in_depth(h, "coarse_fragments_pct",
                                   max_depth_cm = max_depth_cm)
   if (is.na(cf)) {
@@ -325,7 +325,7 @@ familia_distribuicao_cascalhos <- function(pedon, max_depth_cm = 200) {
 #'             p 284.
 #' @noRd
 familia_constituicao_esqueletica <- function(pedon, max_depth_cm = 200) {
-  h <- .mineral_horizons(pedon$horizons)
+  h <- .mineral_horizons(pedon$horizons, site = pedon$site)
   cf <- .weighted_avg_in_depth(h, "coarse_fragments_pct",
                                   max_depth_cm = max_depth_cm)
   if (is.na(cf)) {
@@ -811,7 +811,7 @@ familia_saturacao_aluminio <- function(pedon,
                                           min_al_cmol = 0.5) {
   h <- pedon$horizons
   layers_b <- which(!is.na(h$designation) &
-                       grepl("^B|^C", .desg_master(h$designation)))
+                       grepl("^B|^C", .desg_master(h$designation, site = pedon$site)))
   if (length(layers_b) == 0L) {
     return(FamilyAttribute$new(
       name = "saturacao_aluminio", value = NULL,
@@ -1176,7 +1176,7 @@ familia_atividade_argila <- function(pedon, max_depth_cm = 150) {
 #' @noRd
 familia_oxidos_ferro <- function(pedon, max_depth_cm = 150) {
   h <- pedon$horizons
-  b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation)))
+  b_layers <- which(!is.na(h$designation) & grepl("^B", .desg_master(h$designation, site = pedon$site)))
   if (length(b_layers) == 0L) {
     return(FamilyAttribute$new(
       name = "oxidos_ferro", value = NULL,
@@ -1270,8 +1270,8 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
 
 # Helper: identifica camadas orgânicas no perfil via designation
 # H/O (horizontes organicos no SiBCS Cap 14).
-.organic_layers <- function(h) {
-  is_org <- !is.na(h$designation) & grepl("^[HO]", .desg_master(h$designation))
+.organic_layers <- function(h, site = NULL) {
+  is_org <- !is.na(h$designation) & grepl("^[HO]", .desg_master(h$designation, site = site))
   which(is_org)
 }
 
@@ -1280,8 +1280,8 @@ familia_andico <- function(pedon, max_db = 0.9, min_pret = 85,
 # constitution describe mineral soil material (Cap 1, p 46-48), so an H or
 # O horizon does not enter their averages, in any order (Hugo's decision,
 # 2026-10-28).
-.mineral_horizons <- function(h) {
-  org <- .organic_layers(h)
+.mineral_horizons <- function(h, site = NULL) {
+  org <- .organic_layers(h, site = site)
   if (!length(org)) return(h)
   keep <- setdiff(seq_len(nrow(h)), org)
   h[keep, , drop = FALSE]
@@ -1312,7 +1312,7 @@ familia_organossolo_material_subjacente <- function(pedon,
     ))
   }
   ord <- order(h$top_cm, na.last = TRUE)
-  org <- .organic_layers(h)
+  org <- .organic_layers(h, site = pedon$site)
   # Primeira camada nao-organica DEPOIS da ultima organica
   org_in_order <- ord[ord %in% org]
   if (length(org_in_order) == 0L) {
@@ -1377,7 +1377,7 @@ familia_organossolo_material_subjacente <- function(pedon,
 #' @noRd
 familia_organossolo_espessura <- function(pedon, min_cm = 100) {
   h <- pedon$horizons
-  org <- .organic_layers(h)
+  org <- .organic_layers(h, site = pedon$site)
   if (length(org) == 0L) {
     return(FamilyAttribute$new(
       name = "espessura_organica", value = NULL,
@@ -1417,7 +1417,7 @@ familia_organossolo_espessura <- function(pedon, min_cm = 100) {
 #' @noRd
 familia_organossolo_lenhosidade <- function(pedon) {
   h <- pedon$horizons
-  org <- .organic_layers(h)
+  org <- .organic_layers(h, site = pedon$site)
   if (length(org) == 0L) {
     return(FamilyAttribute$new(
       name = "lenhosidade", value = NULL,

@@ -74,9 +74,9 @@
 #' Plough layers: horizons whose designation has the suffix p (Ap, Ap2, 2Apk),
 #' FAO (2006) Guidelines: a mineral horizon disturbed by ploughing is an Ap.
 #' @noRd
-.wrb_plough_layer <- function(h) {
+.wrb_plough_layer <- function(h, site = NULL) {
   n <- nrow(h)
-  d <- .desg_master(h$designation %||% rep(NA_character_, n))
+  d <- .desg_master(h$designation %||% rep(NA_character_, n), site = site)
   !is.na(d) & grepl("^A[a-z]*p", d)
 }
 
