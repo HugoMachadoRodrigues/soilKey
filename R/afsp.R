@@ -129,6 +129,11 @@ wrb06_code_to_rsg <- function(code) {
 # the stickiness words; "sticky" is the third class, moderately sticky.
 .AFSP_STICKINESS <- c(NST = "non-sticky", SST = "slightly sticky",
                       ST = "moderately sticky", VST = "very sticky")
+# v0.9.399: Drain (profile) to drainage_class.
+.AFSP_DRAINAGE <- c(E = "excessively drained", S = "somewhat excessively drained",
+                    W = "well drained", M = "moderately well drained",
+                    I = "imperfectly drained", P = "poorly drained",
+                    V = "very poorly drained")
 
 # The horizon codes beside the structure: Mottling, ClyMinera, Sticknss, as
 # columns of the raw layers (`raw`, the AfSP field values) read into the
@@ -172,6 +177,102 @@ wrb06_code_to_rsg <- function(code) {
   add(k, rep("stickiness", length(k)), sprintf("AfSP Sticknss code %s not read", st[k]), NA_real_)
   list(horizons = hz, provenance = if (length(prov)) do.call(rbind, prov) else NULL)
 }
+
+# One field of an AfSP row as a trimmed string, NA when absent or empty (v0.9.399).
+.afsp_field <- function(row, name) {
+  v <- row[[name]]
+  if (is.null(v) || !length(v) || is.na(v[1L])) return(NA_character_)
+  v <- trimws(as.character(v[1L]))
+  if (!nzchar(v) || v %in% c("NA", "-9999")) NA_character_ else v
+}
+
+# The words of an AfSP dictionary code of a property: the description
+# without its leading code; NA when the code or the dictionary is missing.
+.afsp_dict_words <- function(dict, property, code) {
+  code <- trimws(as.character(code))
+  if (is.null(dict) || length(code) != 1L || is.na(code) || !nzchar(code) || code %in% c("NA", "-9999"))
+    return(NA_character_)
+  d <- dict[dict$ProprtyCod == property & trimws(dict$ValueCode) == code, , drop = FALSE]
+  if (!nrow(d)) return(NA_character_)
+  w <- trimws(as.character(d$ValueDescr[1L]))
+  w <- trimws(sub(sprintf("^%s\\s+", code), "", w))
+  if (!nzchar(w)) NA_character_ else w
+}
+
+# v0.9.399: the parent material of an AfSP ParMat code, the words of the code
+# composed with those of its ancestors (VA "volcanic rocks, acid"; UY2F
+# "clayey, fluvial, calcareous"). The unconsolidated deposits U<texture>
+# <carbonates><origin> are decoded by the dictionary's own pattern when the
+# code itself is not in it (U00C colluvial, US00 sandy, UT2 silty, loamy,
+# calcareous); the words "unknown" and "unspecified" are left out. NA when
+# nothing is read.
+.afsp_parmat_words <- function(dict, code) {
+  code <- trimws(as.character(code))
+  if (is.null(dict) || length(code) != 1L || is.na(code) || !nzchar(code) || code %in% c("NA", "-9999"))
+    return(NA_character_)
+  w <- function(k) .afsp_dict_words(dict, "ParMat", k)
+  keep <- function(v) { v <- trimws(v[!is.na(v)]); v[nzchar(v) & !grepl("unknown|unspecified", v)] }
+  if (grepl("^U", code)) {
+    m <- regmatches(code, regexec("^U([A-Z0x])?([0-9x])?([A-Z0x]*)$", code))[[1L]]
+    if (!length(m)) return(NA_character_)
+    # an origin needs the carbonate digit before it (UQUC is no code)
+    if (grepl("^U[QSTUY0x]", code) && nzchar(m[4L]) && !nzchar(m[3L])) return(NA_character_)
+    if (identical(code, "U")) return(w("U"))
+    # UA, UI, UL, UO, UP, UR, UX ...: the dictionary's words with their parent
+    d <- w(code)
+    if (!grepl("^U[QSTUY0x]([0-9x]|$)", code)) {
+      parent <- if (nchar(code) > 2L) w(substr(code, 1L, 2L)) else NA_character_
+      v <- keep(c(parent, d))
+      return(if (length(v)) paste(v, collapse = ", ") else NA_character_)
+    }
+    tex <- m[2L]; calc <- m[3L]; org <- m[4L]
+    tw <- if (nzchar(tex) && tex %in% c("Q", "S", "T", "U", "Y")) w(paste0("U", tex)) else NA_character_
+    cw <- if (identical(calc, "1")) "not calcareous" else if (identical(calc, "2")) "calcareous" else NA_character_
+    ow <- NA_character_
+    if (nzchar(org) && !org %in% c("0", "X", "x")) {
+      ow <- .afsp_parmat_origin(dict, org)
+      if (is.na(ow)) return(NA_character_)
+    }
+    v <- keep(c(tw, ow, cw))
+    return(if (length(v)) paste(v, collapse = ", ") else NA_character_)
+  }
+  d <- w(code)
+  if (is.na(d)) return(NA_character_)
+  anc <- unique(c(substr(code, 1L, 1L), substr(code, 1L, 2L)))
+  anc <- anc[anc != code]
+  v <- keep(c(vapply(anc, w, ""), d))
+  # an ancestor whose words the next one repeats ("acid metamorphic rocks"
+  # after "metamorphic rocks") is left out
+  if (length(v) > 1L) v <- v[c(!vapply(seq_len(length(v) - 1L), function(k) grepl(v[k], v[k + 1L], fixed = TRUE), NA), TRUE)]
+  if (length(v)) paste(v, collapse = ", ") else NA_character_
+}
+
+# The origin words of the unconsolidated deposits, by the letters the
+# dictionary gives them (U<texture><carbonates><origin>: C colluvial, F
+# fluvial, CF collo-fluvial ...); letters not given together are read one by
+# one ("FC": fluvial and colluvial).
+.afsp_parmat_origin <- function(dict, org) {
+  d <- dict[dict$ProprtyCod == "ParMat" & grepl("^U[QSTUY0][0-9]", dict$ValueCode), , drop = FALSE]
+  ow <- function(o) {
+    k <- d[sub("^U[QSTUY0][0-9]", "", d$ValueCode) == o, , drop = FALSE]
+    if (!nrow(k)) return(NA_character_)
+    t <- sub("^\\S+\\s+", "", trimws(k$ValueDescr[1L]))
+    t <- sub(",.*$", "", t)
+    trimws(sub("^subgroup unknown\\s+", "", t))
+  }
+  one <- ow(org)
+  if (!is.na(one)) return(one)
+  parts <- vapply(strsplit(org, "")[[1L]], ow, "")
+  if (any(is.na(parts))) NA_character_ else paste(parts, collapse = " and ")
+}
+
+# v0.9.399: the AfSP landforms read into landform, only those that say
+# something of the origin of the material (depositional or receiving
+# positions): a depression, a low-gradient footslope, a valley floor. The
+# general relief classes (level, sloping, steep land, plain, plateau,
+# dissected plain, hill, mountain, escarpment zone, valley) say nothing of it
+# and are not read.
+.AFSP_LANDFORM_READ <- c("LD", "LF", "LV")
 
 #' Read the AfSP structure codes into soilKey's words
 #'
@@ -231,7 +332,7 @@ wrb06_code_to_rsg <- function(code) {
 
 #' Build a soilKey PedonRecord from AfSP Profiles + Layers rows
 #' @noRd
-.afsp_to_pedon <- function(profile_row, layer_rows) {
+.afsp_to_pedon <- function(profile_row, layer_rows, dict = NULL) {
   # Map AfSP Layers fields -> soilKey horizon schema
   hz_list <- lapply(seq_len(nrow(layer_rows)), function(i) {
     L <- layer_rows[i, ]
@@ -315,7 +416,12 @@ wrb06_code_to_rsg <- function(code) {
       reference_wrb06_full     = as.character(profile_row$WRB06),
       reference_fao88          = as.character(profile_row$FAO88),
       reference_usda           = as.character(profile_row$USDA),
-      reference_source         = "ISRIC AfSP v1.2 (Leenaars et al. 2014)"
+      reference_source         = "ISRIC AfSP v1.2 (Leenaars et al. 2014)",
+      # v0.9.399: drainage, parent material and landform as recorded
+      drainage_class           = unname(.AFSP_DRAINAGE[.afsp_field(profile_row, "Drain")]),
+      parent_material          = .afsp_parmat_words(dict, .afsp_field(profile_row, "ParMat")),
+      landform                 = if (.afsp_field(profile_row, "LndForm") %in% .AFSP_LANDFORM_READ)
+                                   .afsp_dict_words(dict, "LndForm", .afsp_field(profile_row, "LndForm")) else NA_character_
     ),
     horizons = hz
   )
@@ -347,6 +453,15 @@ wrb06_code_to_rsg <- function(code) {
 #' recorded; the value is an estimate, recorded with the provenance
 #' \code{inferred_prior}, so the evidence grade of a result drops to C),
 #' and \code{Sticknss} into \code{stickiness} (sticky as moderately sticky).
+#' Since v0.9.399 it reads on the site \code{Drain} into
+#' \code{drainage_class}, and \code{ParMat} and \code{LndForm} into
+#' \code{parent_material} and \code{landform} by the words of the AfSP
+#' dictionary when \code{AfSP012Qry_DictioClassValues.dbf} is in
+#' \code{afsp_dir}: a parent material with the words of its ancestors
+#' ("volcanic rocks, acid"; "clayey, fluvial, calcareous"), the codes of the
+#' unconsolidated deposits the dictionary does not list decoded by its
+#' pattern; only the landforms that say something of the origin of the
+#' material (depression, low-gradient footslope, valley floor).
 #'
 #' @param afsp_dir Directory containing the extracted AfSP DBase
 #'        tables (\code{AfSP012Qry_Profiles.dbf},
@@ -405,11 +520,14 @@ load_afsp_pedons <- function(afsp_dir,
 
   if (isTRUE(verbose)) cat(sprintf("[afsp] building %d PedonRecords ...\n",
                                       nrow(prof)))
+  # v0.9.399: the dictionary decodes ParMat and LndForm (when it is there)
+  dict_path <- file.path(afsp_dir, "AfSP012Qry_DictioClassValues.dbf")
+  dict <- if (file.exists(dict_path)) foreign::read.dbf(dict_path, as.is = TRUE) else NULL
   pedons <- vector("list", nrow(prof))
   for (i in seq_len(nrow(prof))) {
     p_row <- prof[i, ]
     l_rows <- lay[lay$ProfileID == p_row$ProfileID, ]
-    pedons[[i]] <- tryCatch(.afsp_to_pedon(p_row, l_rows),
+    pedons[[i]] <- tryCatch(.afsp_to_pedon(p_row, l_rows, dict = dict),
                               error = function(e) NULL)
   }
   pedons <- pedons[!vapply(pedons, is.null, logical(1))]

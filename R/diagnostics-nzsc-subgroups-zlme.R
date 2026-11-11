@@ -449,7 +449,7 @@ compacted_ignimbrite_nzsc <- function(pedon) {
   pre <- .nzsc_sub_ms_or_na(x, "compacted_ignimbrite_nzsc", "M, MIMC/MIC", miss); if (!is.null(pre)) return(pre)
   org <- .nzsc_origin_text(pedon, x)
   ign <- ifelse(grepl("ignimbrite", org), TRUE,
-         ifelse(grepl("pumice|tephra|pyroclast", org) | !grepl("[a-z]", org), NA, FALSE))
+         ifelse((grepl("pumice|tephra|pyroclast", org) & !grepl("breccia|consolidated", org)) | !grepl("[a-z]", org), NA, FALSE))
   pk <- .nzsc_packing_index(h$packing_degree %||% rep(NA, n))
   str <- .nzsc_class_index(h$strength_moist %||% rep(NA, n), "strength")
   compact <- ifelse((!is.na(pk) & pk >= 3) | (!is.na(str) & str >= 4), TRUE,

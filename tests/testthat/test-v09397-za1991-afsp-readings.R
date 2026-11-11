@@ -123,10 +123,7 @@ test_that("the AfSP loader reads Mottling, ClyMinera and Sticknss", {
   expect_identical(h$mottles_present, c(FALSE, TRUE))
   expect_identical(h$clay_mineralogy, c("smectite", NA))
   expect_identical(h$stickiness, c("moderately sticky", "very sticky"))
-  # the site fields Drain, ParMat and LndForm are not read in this version
-  expect_null(p$site$drainage_class)
-  expect_null(p$site$parent_material)
-  expect_null(p$site$landform)
+  # the site fields: test-v09399-afsp-site-fields.R
   pr <- as.data.frame(p$provenance)
   expect_true(any(pr$attribute == "clay_mineralogy" & pr$horizon_idx == 2 &
                     grepl("sesquioxidic", pr$notes)))
