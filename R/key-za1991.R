@@ -38,7 +38,10 @@
 #' is not one that would make another form (Hutton over hard rock is
 #' Hutton; Hutton over a soft plinthic B is Bainsvlei). A description that
 #' stops above 1500 mm leaves the longer forms undecided, so the shorter
-#' one is provisional. The 500 mm rules of the form pages are tested too
+#' one is provisional. When no form passes and some are undecided, the
+#' name lists them in the order of the key, provisional (\code{"[Undecided
+#' in the South African soil classification (1991): Inanda ([Ia]), Arcadia
+#' (Ar), or not classified]"}, v0.9.402). The 500 mm rules of the form pages are tested too
 #' (Valsrivier, Sepane, Swartland, the podzol forms; Witbank, Dundee,
 #' Namib over a buried soil). A sequence no form has gives no form, with
 #' the nearest forms in the warnings; an orthic A under 100 mm thick over

@@ -134,7 +134,7 @@ thresholds:
     source: "V 17"
     decision: "B1s"
     stand_in: true
-    note: "With no plasticity index recorded and no diagnostic slickensides, a strongly structured topsoil layer with this much clay or more (or no clay recorded) leaves vertic A (ii), and so the melanic A, undecided: a measurement not recorded is undecided. All 71 vertic A of the land type survey have 30 % clay or more (V 17). Below it, or with a structure weaker than strong, the slickensides decide (Q17)."
+    note: "With no plasticity index recorded and no diagnostic slickensides, a strongly structured topsoil layer with this much clay or more (or no clay recorded) leaves vertic A (ii), and so the melanic A, undecided: a measurement not recorded is undecided. All 71 vertic A of the land type survey have 30 % clay or more (V 17). Below it, or with a structure weaker than strong, the slickensides decide (Q17). Since v0.9.402 only a blocky (angular or subangular), prismatic or columnar structure, or one whose type is not recorded, leaves it undecided: a granular or crumb structure refuses the vertic A, and the slickensides decide (Hugo, 2026-11-11)."
   melanic_dry_value:
     value: 3
     op: "<="
