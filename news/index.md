@@ -244,6 +244,117 @@ profiles of the new loader:
 - The 73 form examples, the 404 family examples and the special cases
   (555 runs) keep their names and provisional status.
 
+## soilKey 0.9.396 (2026-11-10)
+
+### FAO-Unesco legend: the WoSIS benchmark
+
+A second offline benchmark of the FAO-Unesco legends,
+`inst/benchmarks/fao_wosis.R`, compares both editions with the
+FAO-Unesco names of ISRIC’s WoSIS profiles (fields `faoMajorGroup`,
+`faoSoilUnit`, `faoPublicationYear`): a label of 1974 with
+`classify_fao(edition = "1974")`, a label of the year 1997 (ISRIC’s
+reprint of the Revised Legend, read as fao1988, Hugo’s decision Q1) with
+[`classify_fao()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_fao.md).
+Like the ISIS benchmark it downloads nothing: it reads a cache folder
+saved by the user (`listing.rds`, the profile records;
+`raw/<profileId>.rds`, the layers of each profile; optionally
+`manifest.csv`) from its first argument, the option
+`soilKey.wosis_fao_cache`, `SOILKEY_WOSIS_FAO_CACHE` or the user cache
+folder. Run with no cache found it says so and exits cleanly; a cache
+path given explicitly that does not exist stops with an error. WoSIS
+data are not shipped; the report cites them as ISRIC asks
+([`wosis_citation()`](https://hugomachadorodrigues.github.io/soilKey/reference/wosis_citation.md),
+Batjes, Calisto and de Sousa 2024) with the date of the download.
+
+The layers of the cache are read exactly as the live reader reads them:
+the conversion step of
+[`read_wosis_layers_graphql()`](https://hugomachadorodrigues.github.io/soilKey/reference/read_wosis_layers_graphql.md)
+(depth order, the shift of an organic surface to 0 cm, units,
+provenance, the most restrictive licence of the layers) is now an
+internal function, `.wosis_layers_to_horizons()`, which the live reader
+calls after its download. The live path is unchanged: on synthetic
+replies and on 300 saved profiles its output is byte-identical before
+and after.
+
+How the labels are scored (Hugo’s decisions of 2026-11-10). A label “”
+is read by `.fao_match_label()` in the edition of its year, exact names
+only; a label of another year is counted and not scored. A unit that is
+no unit of its edition (the national adaptations: “Chromic Regosol” of
+1974, “Plinthic Calcisol” of 1997) is scored at grouping level only and
+listed as an unmatched unit (Q3). WoSIS codes every Kastanozem of 1974
+“KS” and every Solonchak “SC”, the codes of 1988, under names that are
+valid 1974 names: they are read by name as K and Z and scored with the
+rest of 1974. Profiles of the dataset WD-ISIS are left out, since the
+ISIS benchmark scores them (Q7). All licences are scored, with the
+figures on the CC BY profiles beside them (Q4). The Legend of 1974 is
+also given for Mexico and for the rest. The headline gives four figures
+together (Q6): agreement over all labels (a fall-through counts as a
+disagreement), coverage (soilKey names a grouping), agreement among the
+covered labels, and “not contradicted”: the grouping agrees, or the
+label’s grouping is one soilKey left undecided, the candidates of a
+fall-through or a grouping tested before a provisional class. Beside it,
+a shuffled-label baseline (the same rate with the labels permuted within
+the subset, 200 permutations, fixed seed, the caller’s random numbers
+untouched), and the agreement among firm classifications (covered and
+not provisional).
+
+The sample was drawn proportionally with a minimum of one profile per
+stratum (edition x country x group code), which over-represents the
+small strata: in 1988 the 996 strata that owe their one profile to the
+minimum make 33 % of the sample but 12 % of the profiles with layers.
+The benchmark reads the design back from the cache and weighs each
+profile N_h / n_h; the weighted figures are the headline, with Wilson
+intervals on Kish’s effective sample size (an approximation), and the
+unweighted figures beside them.
+
+The run of 2026-11-10 on 6,000 WoSIS profiles with layers, 3,000 per
+edition (38,695 profiles carry an FAO-Unesco label, 33,203 with layers;
+no profile of the sample had more than 40 layers), read with the 15
+properties of soilKey’s WoSIS map that the keys use (pH KCl, P retention
+and the 1500 kPa water content added to the first download; no profile
+of the sample has the last); 139 WD-ISIS profiles left out, 5,861
+scored. Weighted (unweighted in brackets):
+
+- Revised Legend, 2,925 labels: agreement 2.4 % (1.8-3.1) \[3.4 %\];
+  coverage 7.7 % (6.6-8.9) \[10.1 %\]; among covered 30.9 % (25.0-37.5)
+  \[33.8 %\]; not contradicted 62.3 % (60.2-64.4) \[60.9 %\] against a
+  shuffled-label baseline of 34.2 % \[32.9 %\]; among the 99 firm
+  classifications 60.4 % (48.2-71.5) \[64.6 %\]. Unit 45 of 2,514 (1.8
+  %), 51.1 % where the grouping agrees. CC BY only (1,824): agreement
+  3.1 %, coverage 10.6 %, among covered 28.9 %, not contradicted 63.1 %
+  (baseline 31.3 %).
+- Legend of 1974, 2,936 labels: agreement 10.0 % (9.0-11.1) \[10.0 %\];
+  coverage 26.0 % (24.5-27.6) \[26.1 %\]; among covered 38.5 %
+  (35.1-42.0) \[38.4 %\]; not contradicted 62.1 % (60.3-63.8) \[62.2 %\]
+  against a baseline of 39.8 %; only 13 classifications are firm, 5 of
+  them agree. Unit 178 of 2,471 (7.2 %), 70.1 % where the grouping
+  agrees. Mexico (2,712): agreement 10.5 %, coverage 26.9 %, among
+  covered 39.2 %; outside Mexico (224): 3.6 %, 15.4 %, 23.6 %. By group,
+  the Solonchaks (Z, coded SC) agree on 67 of 111 (98.5 % of the 68
+  covered), the Kastanozems (K, coded KS) on none of 70 (11 covered). No
+  CC BY profile of 1974 remains once WD-ISIS is left out.
+- Labels: every group name is read; 61 labels of 1997 and 418 of 1974
+  name a unit outside their edition (Chromic Regosol 155, Chromic
+  Phaeozem 41, Vitric Gleysol 40 of 1974; Luvic Regosol, Plinthic
+  Calcisol and Sodic Cambisol 6 each of 1997).
+
+Most disagreements are fall-throughs: WoSIS serves no base saturation,
+Munsell colour, Fe and Al fractions or gypsum, often no horizon
+designation and no carbonate, so most tests stay undecided as Hugo’s
+rule asks and the soil names its candidates (the Gypsisols are a
+candidate in 2,300 of the 2,629 revised fall-throughs). But where
+soilKey names a grouping it is more often wrong than right: 196 of the
+296 covered revised labels and 471 of the 765 covered labels of 1974
+disagree. In 1988 the wrong ones are mostly Cambisols for Vertisols
+(24), Chernozems (20), Phaeozems (16), Calcisols and Fluvisols (12
+each), and Regosols for Leptosols (11); in 1974 Regosols for Rendzinas
+(55), Phaeozems (46) and Lithosols (43), Phaeozems for Rendzinas (41),
+and Luvisols for Xerosols (35) and Acrisols (29). Almost all covered
+classifications are provisional (a grouping tested before them was left
+undecided); among the firm ones the revised groupings agree for about 60
+%, while 1974 has too few (13) to say. Every classification is
+unchanged.
+
 ## soilKey 0.9.395 (2026-11-10)
 
 ### The declared notation decides how the older designations are read
