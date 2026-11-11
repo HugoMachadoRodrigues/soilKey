@@ -122,3 +122,16 @@ test_that("vertic A (ii) with no plasticity index: granular refuses, blocky or n
   p <- .za402_set(base, 1:2, structure_type = "granular", slickensides = "common")
   expect_true(vertic_a_za(p, layers = 1L)$passed)
 })
+
+
+test_that("v0.9.402: the canonical Ferralsol keys in both FAO-Unesco legends", {
+  skip_on_cran()
+  p <- make_ferralsol_canonical()
+  expect_equal(p$horizons$weatherable_minerals_pct, c(2, 2, 1, 1, 1))
+  expect_equal(p$horizons$water_dispersible_clay_pct, c(20, 12, 4, 0, 0))
+  r88 <- suppressWarnings(classify_fao1988(p, on_missing = "silent"))
+  expect_equal(r88$name, "Haplic Ferralsols")
+  expect_equal(r88$rsg_or_order, "Ferralsols")
+  r74 <- suppressWarnings(classify_fao1974(p, on_missing = "silent"))
+  expect_equal(r74$name, "Humic Ferralsols")
+})
