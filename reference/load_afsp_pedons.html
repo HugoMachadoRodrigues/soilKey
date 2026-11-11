@@ -126,6 +126,15 @@ FAO 2006). Since v0.9.312 they are read by the AfSP dictionary
 (<code>AfSP012Qry_DictioClassValues</code>) into soilKey's words: a range of grades
 by its lower end, a range of sizes with both ends, and a code the dictionary
 does not define as not recorded. Each code goes to the provenance.</p>
+<p>Since v0.9.397 the loader also reads, as recorded: <code>Mottling</code> into
+<code>mottles_present</code> (Y <code>TRUE</code>, N <code>FALSE</code>; the amount and the
+colours of the mottles are not recorded by AfSP), <code>ClyMinera</code> into
+<code>clay_mineralogy</code> (montmorillonitic and SM as smectite, kaolinitic,
+illitic, vermiculitic, interstratified; chloritic, sesquioxidic, allophane,
+KA/IL and gibbsite have no <code>clay_mineralogy</code> word and are read as not
+recorded; the value is an estimate, recorded with the provenance
+<code>inferred_prior</code>, so the evidence grade of a result drops to C),
+and <code>Sticknss</code> into <code>stickiness</code> (sticky as moderately sticky).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

@@ -52,6 +52,103 @@ closed.
 
 Every classification is unchanged.
 
+## soilKey 0.9.397 (2026-11-10)
+
+### South African classification 1991: the vertic A without a plasticity index, and the AfSP loader reads mottles, clay mineralogy and stickiness
+
+Three confusions of the AfSP benchmark of 0.9.394 were examined and
+decided by Hugo (2026-11-10). The decisions are recorded in
+`inst/rules/za1991/readings.yaml`.
+
+- **B1s: Q17 revised for the vertic A.** AfSP records neither
+  slickensides nor a plasticity index, so Q17 (without the plasticity
+  index the slickensides decide) refused the vertic A on every profile,
+  and Arcadia and Rensburg (0 of 29) were not even among the forms left
+  undecided. A measurement not recorded is undecided, so now, with no
+  plasticity index and no diagnostic slickensides, criterion (ii) of the
+  vertic A, and with it (ii)-(iii) of the melanic A, is undecided when
+  the layer has a strong structure (or none recorded) and 30 % clay or
+  more (or none recorded). The 30 % is `vertic_pi_clay` in
+  `thresholds.yaml`, flagged as a stand-in (all 71 vertic A of the land
+  type survey have 30 % clay or more; van Huyssteen 2020). Elsewhere Q17
+  stands, and a plasticity index recorded decides as before. Without the
+  structure gate the melanic A of the 35 melanic-form examples became
+  undecided; with it the examples are unchanged.
+- **A-i: D8 kept for the neocutanic B.** A uniform red or yellow-brown
+  layer with a weak blocky structure stays an apedal B. Reading it as a
+  neocutanic B cost 19 Huttons for 6 Oakleafs on AfSP; reading it so
+  only when the layer is not red gained 4 Oakleafs, lost a Kranskop and
+  moved Avalon profiles to Oakleaf. AfSP records no variegation, cutans
+  or origin that could evidence the neocutanic B, so Oakleaf read as
+  Hutton (6) stays.
+- **MP1: mottles recorded only as present.** The soft plinthic B needs
+  more than 10 % mottles; AfSP records mottles only as present or absent
+  (field `Mottling`, 99 South African layers, none in the 5 Bainsvlei
+  profiles), and the loader did not read it. A new horizon attribute,
+  `mottles_present` (logical), holds it: `TRUE` with no amount or colour
+  leaves the soft plinthic B, the low-chroma mottles of the signs of
+  wetness and the signs of wetness of a soft carbonate horizon (FC 15)
+  undecided, and then only the amount of the mottles
+  (`redoximorphic_features_pct`) decides: plinthite or ferric nodules
+  recorded, even as 0, do not stand in for it. `FALSE` or not recorded,
+  no mottles. The key is not changed; Bainsvlei stays unreached from the
+  AfSP data.
+
+[`load_afsp_pedons()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_pedons.md)
+now reads: `Mottling` into `mottles_present`; `ClyMinera` into
+`clay_mineralogy` (montmorillonitic and SM as smectite, kaolinitic,
+illitic, vermiculitic, interstratified; chloritic, sesquioxidic,
+allophane, KA/IL and gibbsite have no `clay_mineralogy` word and are
+read as not recorded, with a provenance note); and `Sticknss` into
+`stickiness` (sticky as moderately sticky). Each code read goes to the
+provenance. ClyMinera is an estimate (a dominant clay mineral given to
+the layer), not a measurement: it is recorded with the provenance
+`inferred_prior` (confidence 0.5), so the evidence grade of a result on
+such a profile drops to C, as for the other estimated values; the names
+are not changed by it (383 of the 1149 profiles below carry it). The
+site fields `Drain`, `ParMat` and `LndForm` are not read in this
+version. `inst/schemas/horizon-attributes.yaml`,
+`inst/schemas/pedon-schema.json` and `inst/ATTRIBUTES.md` carry the new
+attribute.
+
+Measured on AfSP (offline; 1149 profiles: all 649 South African profiles
+with a WRB 2006 group and 500 others from 31 countries, sampled with
+seed 397), classified with the 17 keys before and after: names change
+only in three keys.
+
+| Key | Names changed | Of them South African | Cause |
+|----|---:|---:|----|
+| FAO 1974 | 9 | 8 | clay mineralogy (Chromic Cambisols and Orthic Solonchaks to Orthic Luvisols 2 each, Haplic to Luvic Phaeozems 2, Chromic to Eutric Cambisols 1, Eutric Cambisols to Orthic Luvisols 1, an undecided profile to Eutric Nitosols 1) |
+| RP 2008 | 12 | 7 | clay mineralogy (fersialsol insature to non rattache 8, to brunisol dystrique or eutrique 3; non rattache to brunisol dystrique 1) |
+| ZA 1991 | 13 | 6 | B1s 9, mottles present 4 |
+
+WRB 2022, SiBCS, USDA, FAO 1988, CPCS, CSSC, ASC, NZSC, SCSJ, CSCJ, CST,
+the Russian, KA5 and HSCS keys give the same names. Recorded as an
+estimate, the clay mineralogy changes the same names (the FAO 1974
+Luvisols included): the provenance lowers the evidence grade, it does
+not change a test. The soft carbonate horizon and the rule on plinthite
+with mottles present change no name on these profiles. The AfSP
+benchmark row of the suite
+([`benchmark_afsp()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_afsp.md)
+on
+[`load_afsp_sample()`](https://hugomachadorodrigues.github.io/soilKey/reference/load_afsp_sample.md))
+reads a snapshot built by the loader of v0.9.77, so the loader change
+does not reach it.
+
+The AfSP run of the South African benchmark (641 scored) with the
+profiles of the new loader:
+
+- Main figure: 138 of 641 agree, 21.5 % (0.9.394: 139, 21.7 %). soilKey
+  names a form for 210 (was 216), and among those the form agrees for
+  65.7 % (was 64.4 %). 429 stop with forms undecided and the label’s
+  form is among them for 340 (was 315 of 423): Arcadia now for 15 of 19
+  and Rensburg for 8 of 10 (both 0 before). Two Arcadia keyed as Inhoek
+  and one Milkwood keyed right now stop with the vertic A undecided.
+  Mottles recorded as present change no South African form.
+- Second figure, the humic A of 1977: 151 of 641 agree (was 154).
+- The 73 form examples, the 404 family examples and the special cases
+  (555 runs) keep their names and provisional status.
+
 ## soilKey 0.9.395 (2026-11-10)
 
 ### The declared notation decides how the older designations are read

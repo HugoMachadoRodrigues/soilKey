@@ -60,6 +60,16 @@ by its lower end, a range of sizes with both ends, and a code the
 dictionary does not define as not recorded. Each code goes to the
 provenance.
 
+Since v0.9.397 the loader also reads, as recorded: `Mottling` into
+`mottles_present` (Y `TRUE`, N `FALSE`; the amount and the colours of
+the mottles are not recorded by AfSP), `ClyMinera` into
+`clay_mineralogy` (montmorillonitic and SM as smectite, kaolinitic,
+illitic, vermiculitic, interstratified; chloritic, sesquioxidic,
+allophane, KA/IL and gibbsite have no `clay_mineralogy` word and are
+read as not recorded; the value is an estimate, recorded with the
+provenance `inferred_prior`, so the evidence grade of a result drops to
+C), and `Sticknss` into `stickiness` (sticky as moderately sticky).
+
 ## References
 
 Leenaars, J. G. B., van Oostrum, A. J. M., & Ruiperez Gonzalez, M.
