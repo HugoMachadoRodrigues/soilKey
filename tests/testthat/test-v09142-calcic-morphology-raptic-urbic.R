@@ -59,6 +59,7 @@ test_that("v0.9.142: SiBCS calcico accepts the by-volume secondary-carbonate pat
 # ---- Raptic layer_origin exclusion -----------------------------------------
 
 test_that("v0.9.142: Raptic excludes a fluvic/aeolic/tephric/solimovic discontinuity", {
+  skip_on_cran()
   rp <- mkh(data.frame(top_cm = c(0, 40), bottom_cm = c(40, 90),
                        designation = c("A", "2C"),
                        stratification_pattern = c(NA, "lithologic_break"),

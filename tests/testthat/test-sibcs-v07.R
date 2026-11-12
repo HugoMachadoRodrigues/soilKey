@@ -73,6 +73,7 @@ test_that("organossolo passa para fixture Organossolo", {
 })
 
 test_that("neossolo passa para fixture Neossolo (raso, sem B)", {
+  skip_on_cran()
   pr <- make_neossolo_canonical()
   res <- neossolo(pr)
   expect_true(isTRUE(res$passed))
@@ -112,6 +113,7 @@ test_that("argissolo passa para fixture Argissolo (catch-all)", {
 # ---- end-to-end: classify_sibcs com cada fixture --------------------------
 
 test_that("classify_sibcs atribui cada fixture canonica a sua ordem alvo", {
+  skip_on_cran()
   expected <- list(
     O = "Organossolos",
     R = "Neossolos",

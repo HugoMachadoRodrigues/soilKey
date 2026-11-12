@@ -7,6 +7,7 @@ mk <- function(df) {
 }
 
 test_that("carater_acrico: pH-KCl >= 5.0 OR delta-pH >= 0 (OR, not delta only)", {
+  skip_on_cran()
   # low ECEC/clay; pH-KCl 5.2 but delta-pH negative -> still acrico via pH-KCl
   p <- mk(data.frame(top_cm = 0, bottom_cm = 50, designation = "Bw",
                      clay_pct = 60, ecec_cmol = 0.7, ph_kcl = 5.2, ph_h2o = 5.6))
@@ -45,6 +46,7 @@ test_that("luvissolo_cromico: criterion (c) restricted to 2.5Y-5Y, not all yello
 })
 
 test_that("carater_argiluvico: requires prismatic/blocky structure where recorded", {
+  skip_on_cran()
   base <- data.frame(top_cm = c(0, 25), bottom_cm = c(25, 90),
                      designation = c("A", "Bt"),
                      clay_pct = c(15, 30), silt_pct = c(40, 30), sand_pct = c(45, 40),

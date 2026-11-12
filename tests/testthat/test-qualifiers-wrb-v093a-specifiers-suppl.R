@@ -4,6 +4,7 @@
 # ---- New specifier detection -----------------------------------------------
 
 test_that(".detect_specifier handles Kato / Amphi / Poly / Supra / Thapto", {
+  skip_on_cran()
   for (sp in c("Kato", "Amphi", "Poly", "Supra", "Thapto")) {
     s <- soilKey:::.detect_specifier(paste0(sp, "Gleyic"))
     expect_equal(s$prefix, sp,
@@ -135,6 +136,7 @@ test_that("Polyalbic requires >= 2 disjoint contiguous albic runs", {
 # ---- Thapto- (in a buried soil) -------------------------------------------
 
 test_that("Thapto- filters base layers by buried-soil 'b' designation", {
+  skip_on_cran()
   # Profile with a buried Bwb that meets cambic. Designations 'b'
   # suffix marks the buried portion; the Thapto- filter retains those
   # layers and drops the active soil. Note: layer 2 has clay 16 to

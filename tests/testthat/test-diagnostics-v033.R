@@ -219,6 +219,7 @@ test_that("protocalcic_properties separates from calcic", {
 })
 
 test_that("vitric_properties requires glass + Al/Fe + P retention", {
+  skip_on_cran()
   pr <- build_pedon(
     top_cm = c(0, 30), bottom_cm = c(30, 80),
     volcanic_glass_pct = c(15, 8),
@@ -372,6 +373,7 @@ test_that("tsitelic catches a red, formed horizon (Mediterranean / basaltic)", {
 })
 
 test_that("panpaic detects a buried surface horizon by the WRB 2022 criteria", {
+  skip_on_cran()
   # WRB 2022 Ch 3.1.23: a buried surface horizon with >= 0.2% SOC, >= 25%
   # (relative) and >= 0.2% (absolute) more than the layer above, a lithic
   # discontinuity at its upper limit, >= 5 cm thick. v0.9.220: until v0.9.219
@@ -420,6 +422,7 @@ test_that("limonic catches meadow-redox horizon", {
 })
 
 test_that("protovertic catches weak vertic without strict cracks", {
+  skip_on_cran()
   pr <- build_pedon(
     top_cm = c(0, 25, 80), bottom_cm = c(25, 80, 150),
     designation = c("A", "Bw", "C"),

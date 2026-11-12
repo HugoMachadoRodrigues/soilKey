@@ -10,6 +10,7 @@
 # fe2o3_sulfuric_pct stayed empty.
 
 test_that("BDsolos: CDB Fe to fe_dcb_pct, sulfuric Fe2O3 to fe2o3_sulfuric_pct, in %", {
+  skip_on_cran()
   dir <- tempfile("bdsolos_v09221_"); dir.create(dir)
   csv <- file.path(dir, "bdsolos_fe.csv")
   hdr <- paste("id_perfil", "horizonte", "limite_sup", "limite_inf",

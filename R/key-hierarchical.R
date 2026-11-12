@@ -178,7 +178,9 @@
 #' @param gapfill Opt-in within-pedon gap-fill, as in
 #'        \code{\link{classify_usda}}.
 #' @return A \code{\link{ClassificationResult}}: \code{name} is the deepest
-#'   class assigned (\code{NA} when no class of the top level passed),
+#'   class assigned; when no class of the top level passed, the candidates
+#'   left undecided ("[Undecided in the <system>: <name> (<code>), ..., or
+#'   not classified]", since v0.9.402), or \code{NA} when every one failed;
 #'   \code{levels} the class assigned at each level, \code{trace} one phase
 #'   per level tested, and \code{provisional_because} the undecided classes
 #'   tested before the assigned ones.
@@ -289,6 +291,13 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
                                  character(1), USE.NAMES = FALSE)
   top_class <- chosen[[top]]
   name <- if (nrow(levels) > 0L) levels$name[nrow(levels)] else NA_character_
+  # v0.9.402 (Hugo, 2026-11-11): no class of the top level passed but some
+  # were left undecided: the name lists them, in the order of the key, as
+  # the FAO-Unesco legends do ("[Undecided in ...: <name> (<code>), ..., or
+  # not classified]"); the levels stay empty and the result is provisional.
+  # "Not classified" (name NA) only when every class of the top level failed.
+  top_und <- if (is.null(top_class)) .undecided_top(trace[[top]]) else NULL
+  if (length(top_und$code)) name <- .undecided_name(sys, top_und)
 
   top_trace    <- trace[[top]]
   ambiguities  <- find_ambiguities(top_trace,
@@ -298,13 +307,19 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
 
   warnings <- character(0)
   if (is.na(grade)) warnings <- c(warnings, .NO_PROPERTIES_WARNING)
-  if (is.null(top_class)) {
+  if (is.null(top_class) && length(top_und$code)) {
+    warnings <- c(warnings, sprintf(paste(
+      "No class of the %s key passed, and the data leave %d undecided: %s. The key cannot",
+      "decide between these candidates; if they all fail, the profile is not classified;",
+      "see $trace and $missing_data."), top, length(top_und$code),
+      paste(sprintf("%s (%s)", top_und$name, top_und$code), collapse = ", ")))
+  } else if (is.null(top_class)) {
     warnings <- c(warnings, sprintf(
       "No class of the %s key passed, so the profile is not classified; %s",
       top, "see $trace and $missing_data."))
   }
   warnings <- c(warnings, stopped)
-  if (length(provisional) > 0L) {
+  if (length(provisional) > 0L && !is.null(top_class)) {
     warnings <- c(warnings, sprintf(
       "Provisional: %d class(es) tested before the assigned one could not be decided (%s).",
       length(provisional), paste(provisional, collapse = ", ")))
@@ -333,4 +348,22 @@ classify_hierarchical <- function(system, pedon, rules = NULL,
     levels         = levels,
     provisional_because = provisional
   )
+}
+
+
+# The classes of a level left undecided, in the order of the key (the trace
+# keeps it): their codes and names. v0.9.402.
+.undecided_top <- function(tr) {
+  tr <- tr %||% list()
+  und <- vapply(tr, function(e) { p <- e$passed; length(p) == 1L && is.na(p) }, NA)
+  list(code = vapply(tr[und], function(e) as.character(e$code), "", USE.NAMES = FALSE),
+       name = vapply(tr[und], function(e) as.character(e$name %||% e$code), "", USE.NAMES = FALSE))
+}
+
+# The name of a result whose top level is undecided between candidates
+# (v0.9.402): "[Undecided in the <system>: <name> (<code>), ..., or not
+# classified]", the system as its registry entry names it in English.
+.undecided_name <- function(sys, und) {
+  sprintf("[Undecided in the %s: %s, or not classified]", sys$display$en %||% sys$id,
+          paste(sprintf("%s (%s)", und$name, und$code), collapse = ", "))
 }

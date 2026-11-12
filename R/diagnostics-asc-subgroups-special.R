@@ -37,7 +37,7 @@
   if ((length(above) + 1) * (length(below) + 1) > 500) return(list(NA))
   sets <- list()
   for (j in 0:length(above)) for (k in 0:length(below))
-    sets[[length(sets) + 1L]] <- sort(c(lo, head(above, j), head(below, k)))
+    sets[[length(sets) + 1L]] <- sort(c(lo, utils::head(above, j), utils::head(below, k)))
   sets
 }
 

@@ -85,6 +85,7 @@ test_that("the loader fills each cell that is empty, and keeps the cells that ar
 })
 
 test_that("the cerosidade read from the text reaches the horizons that ask for it", {
+  skip_on_cran()
   # a clayey B with a textural ratio under item (h): a B textural by its
   # cerosidade, common and moderate (item i), and no B latossolico (item h
   # of that horizon: at most few and weak)

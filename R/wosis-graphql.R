@@ -173,9 +173,14 @@ wosis_citation <- function(accessed = Sys.Date()) {
 #'   \code{\link{PedonRecord}} with its horizons.
 #' @examples
 #' \donttest{
-#' # Requires network access to ISRIC.
-#' p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
-#' if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
+#' # Needs network access; skipped offline and in batch checks.
+#' online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+#'   !inherits(try(httr::HEAD("https://graphql.isric.org", httr::timeout(5)),
+#'                 silent = TRUE), "try-error")
+#' if (online) {
+#'   p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 5)
+#'   if (nrow(p)) p[, c("profile_code", "wrb_rsg", "n_layers", "licence_short")]
+#' }
 #' }
 #' @export
 read_wosis_profiles_graphql <- function(country = NULL,
@@ -421,11 +426,16 @@ read_wosis_profiles_graphql <- function(country = NULL,
 #' @seealso \code{\link{wosis_profile_to_pedon}}, \code{\link{wosis_citation}}.
 #' @examples
 #' \donttest{
-#' # Requires network access to ISRIC.
-#' p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 1)
-#' if (nrow(p)) {
-#'   h <- read_wosis_layers_graphql(p$profile_id[1])
-#'   h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
+#' # Needs network access; skipped offline and in batch checks.
+#' online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+#'   !inherits(try(httr::HEAD("https://graphql.isric.org", httr::timeout(5)),
+#'                 silent = TRUE), "try-error")
+#' if (online) {
+#'   p <- read_wosis_profiles_graphql(country = "Argentina", n_max = 1)
+#'   if (nrow(p)) {
+#'     h <- read_wosis_layers_graphql(p$profile_id[1])
+#'     h[, c("top_cm", "bottom_cm", "designation", "clay_pct", "oc_pct")]
+#'   }
 #' }
 #' }
 #' @export

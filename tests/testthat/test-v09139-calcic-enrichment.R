@@ -17,6 +17,7 @@ prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
 # ---- the shared calcic() core stays absolute-only (byte-identical) --------
 
 test_that("v0.9.139: calcic() core is byte-identical when morphology is absent", {
+  skip_on_cran()
   # a uniform calcareous profile is still calcic at the WRB/USDA core level: the
   # protocalcic OR-path (secondary_carbonates_pct, v0.9.142) is indeterminate and
   # so the enrichment criterion is not disproven (refine-when-present).

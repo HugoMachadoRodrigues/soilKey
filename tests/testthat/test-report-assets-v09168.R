@@ -8,6 +8,7 @@
 }
 
 test_that(".report_pedon_points keeps only finite coordinates", {
+  skip_on_cran()
   p1 <- .mk_pedon("A", -22.5, -43.7)
   p2 <- .mk_pedon("B", NA, NA)
   pts <- soilKey:::.report_pedon_points(list(p1, p2))

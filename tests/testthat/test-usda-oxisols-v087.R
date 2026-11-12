@@ -105,6 +105,7 @@ test_that("acric_oxisol_usda passes for low ECEC/clay AND pH(KCl) >= 5", {
 })
 
 test_that("WRB / earlier orders unchanged after Oxisols", {
+  skip_on_cran()
   pr_fr <- make_ferralsol_canonical()
   expect_equal(classify_wrb2022(pr_fr, on_missing = "silent")$rsg_or_order,
                  "Ferralsols")

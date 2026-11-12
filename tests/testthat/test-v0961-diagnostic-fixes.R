@@ -145,6 +145,7 @@ test_that("test_gleyic_features returns NA when both paths unobservable", {
 
 
 test_that("B_latossolico passes when clay films are weak/absent (Latossolo)", {
+  skip_on_cran()
   p <- .make_latossolo_pedon(clay_films = NA, argic_strong = FALSE)
   expect_true(isTRUE(B_latossolico(p)$passed))
   p2 <- .make_latossolo_pedon(clay_films = "Pouca", argic_strong = FALSE)

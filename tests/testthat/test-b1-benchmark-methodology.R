@@ -20,6 +20,7 @@
 # ---- Step 1: filter-then-cap ----------------------------------------------
 
 test_that(".benchmark_has_reference detects only a usable label", {
+  skip_on_cran()
   has <- soilKey:::.benchmark_has_reference
   expect_true(has(.b1_mk_pedon("p", "reference_usda", "Hapludox"), "usda"))
   expect_false(has(.b1_mk_pedon("p"), "usda"))                       # no field

@@ -44,6 +44,7 @@ test_that("a B below an E, with the colour and the carbon, is a B espodico", {
 })
 
 test_that("the organic carbon of the B: 0.5% or more and twice that of the E", {
+  skip_on_cran()
   # twice the E, under 0.5%
   expect_false(isTRUE(B_espodico(.esp_profile(oc = c(1.2, 0.1, 0.4, 0.1)))$passed))
   # 0.5% or more, under twice the E
@@ -108,6 +109,7 @@ test_that("a B with cerosidade is no B espodico by this item", {
 })
 
 test_that("no E above, a B under 2.5 cm, or a transition to the C: not the item", {
+  skip_on_cran()
   expect_false(isTRUE(B_espodico(.esp_profile(designation = c("A1", "A2", "B", "C")))$passed))
   thin <- .esp_profile(top = c(0, 20, 60, 62), bottom = c(20, 60, 62, 150))
   expect_false(isTRUE(B_espodico(thin)$passed))

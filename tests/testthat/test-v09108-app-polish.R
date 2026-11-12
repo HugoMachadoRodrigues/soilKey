@@ -38,6 +38,7 @@ test_that("pro_spectrum_plot returns a plotly widget for a matrix and for NULL",
 })
 
 test_that("pro_spectrum_plot tolerates non-numeric column names", {
+  skip_on_cran()
   skip_if_not_installed("plotly")
   env <- .source_pro_app()
   m <- matrix(stats::runif(2 * 3), nrow = 2,
@@ -46,6 +47,7 @@ test_that("pro_spectrum_plot tolerates non-numeric column names", {
 })
 
 test_that(".photo_confidence_grade maps confidence onto the A-E ladder", {
+  skip_on_cran()
   env <- .source_pro_app()
   expect_equal(env$.photo_confidence_grade(0.95), "A")
   expect_equal(env$.photo_confidence_grade(0.75), "B")
@@ -57,6 +59,7 @@ test_that(".photo_confidence_grade maps confidence onto the A-E ladder", {
 })
 
 test_that(".photo_mean_confidence reads munsell rows from the provenance ledger", {
+  skip_on_cran()
   env <- .source_pro_app()
   # No pedon / no provenance -> NA.
   expect_true(is.na(env$.photo_mean_confidence(NULL)))

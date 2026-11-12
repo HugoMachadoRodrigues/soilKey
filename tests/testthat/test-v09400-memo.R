@@ -73,6 +73,7 @@ test_that("a pedon whose declared notation changes is classified anew", {
 })
 
 test_that("the memo is held only inside a classification and follows the pedon", {
+  skip_on_cran()
   ns <- asNamespace("soilKey")
   p <- make_podzol_canonical()
   expect_null(ns$.memo_state$slots)
@@ -139,6 +140,7 @@ test_that("a horizon table changed in place inside a scope is seen", {
 })
 
 test_that("a nested result changed by a caller does not reach the next call", {
+  skip_on_cran()
   ns <- asNamespace("soilKey")
   p <- make_luvisol_canonical()
   expect_true(ns$.memo_open())

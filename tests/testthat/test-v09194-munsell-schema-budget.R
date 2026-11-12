@@ -39,6 +39,7 @@ test_that("the slim schema is materially smaller than the full one", {
 })
 
 test_that("a colour-only response validates against the slim schema", {
+  skip_on_cran()
   ok <- paste0(
     '{"horizons":[{"top_cm":0,"bottom_cm":30,"designation":"A",',
     '"munsell_moist":{"hue":"10YR","value":2,"chroma":1,"confidence":0.6}}]}')

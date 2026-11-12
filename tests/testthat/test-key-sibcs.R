@@ -1,4 +1,5 @@
 test_that("load_rules le o conjunto SiBCS na ordem canonica do Cap 4", {
+  skip_on_cran()
   rules <- load_rules("sibcs5")
   expect_equal(length(rules$ordens), 13L)
   codes <- vapply(rules$ordens, function(o) o$code, character(1))

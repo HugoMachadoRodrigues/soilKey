@@ -42,6 +42,7 @@ test_that("without workers a job runs here and still hands back a promise", {
 })
 
 test_that("a job carries its arguments and the soilKey options, not its closure", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   e <- .async_env()
   secret <- "captured"            # a local the job must not see

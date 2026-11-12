@@ -58,7 +58,7 @@ inputs that placed it there actually are.
 \examples{
 \donttest{
 p <- make_ferralsol_canonical()
-u <- classify_with_uncertainty(p, n = 50, system = "wrb2022")
+u <- classify_with_uncertainty(p, n = 5, system = "wrb2022")
 u$posterior   # P(RSG = x)
 u$entropy     # near 0 for a robust profile
 }

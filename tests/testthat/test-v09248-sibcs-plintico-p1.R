@@ -39,6 +39,7 @@ test_that("the default mode does not read it", {
 })
 
 test_that("a ploughed layer, and the first of a numbered series, are not plinthite", {
+  skip_on_cran()
   old <- .p1_morph(TRUE); on.exit(options(old), add = TRUE)
   # "Ap1" is a ploughed layer
   expect_false(isTRUE(horizonte_plintico(.p1_profile(c("Ap1", "Bt", "C")))$passed))

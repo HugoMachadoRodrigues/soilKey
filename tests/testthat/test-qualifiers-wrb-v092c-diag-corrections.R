@@ -48,6 +48,7 @@ test_that("cambic still fires when the candidate layer is subsurface", {
 })
 
 test_that("Brunic respects cambic's depth-gate fix on A-over-C profiles", {
+  skip_on_cran()
   # An A over C with no Bw -> cambic FAILS (subsurface gate) -> Brunic
   # FAILS too. Earlier (v0.9.1) Brunic could still fire because cambic
   # passed on the A horizon.

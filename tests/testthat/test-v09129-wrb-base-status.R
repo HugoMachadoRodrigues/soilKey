@@ -29,6 +29,7 @@ test_that("Dystric = Al > bases in >= half; Eutric = bases >= Al in major part",
 })
 
 test_that("Hyperdystric needs Al > 4x bases (al_sat > 80) in the major part", {
+  skip_on_cran()
   # al_sat 70-80: Al-dominated throughout but NOT > 4x bases -> not Hyperdystric
   weak <- mk(data.frame(top_cm = c(0, 25, 60), bottom_cm = c(25, 60, 100),
                         al_sat_pct = c(70, 75, 80)))
@@ -60,6 +61,7 @@ test_that("strict: base saturation alone (no Al data) yields NA, not a fallback"
 })
 
 test_that("Epi/Endo variants restrict the Al criterion to the upper/lower part", {
+  skip_on_cran()
   # WRB 2022 Ch 2.3.1, rule 3: Epi-/Endo- Dystric or Eutric means present in
   # the major part of 20-50 (Epi) or 50-100 cm (Endo) AND absent in the major
   # part of 20-100 cm; they go with the predominant qualifier ("Epidystric
@@ -82,6 +84,7 @@ test_that("Epi/Endo variants restrict the Al criterion to the upper/lower part",
 })
 
 test_that("organic layers use the WRB Histosol pH branch", {
+  skip_on_cran()
   # peat: pH 4.0 -> dystric-side; pH 6.0 -> eutric-side
   acid <- mk(data.frame(top_cm = c(0, 30), bottom_cm = c(30, 80),
                         oc_pct = c(30, 30), ph_h2o = c(4.0, 4.2)))

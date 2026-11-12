@@ -12,6 +12,7 @@ test_that("load_rules reads the USDA rule set with 12 orders in canonical key or
 })
 
 test_that("classify_usda assigns Oxisols to canonical Ferralsol fixture", {
+  skip_on_cran()
   pr <- make_ferralsol_canonical()
   res <- classify_usda(pr, on_missing = "silent")
   expect_s3_class(res, "ClassificationResult")
@@ -20,6 +21,7 @@ test_that("classify_usda assigns Oxisols to canonical Ferralsol fixture", {
 })
 
 test_that("classify_usda assigns Alfisols to argic + high-BS fixture (Luvisol)", {
+  skip_on_cran()
   # WRB Luvisol = USDA Alfisol (argillic + BS >= 35%).
   pr <- make_luvisol_canonical()
   res <- classify_usda(pr, on_missing = "silent")
@@ -27,6 +29,7 @@ test_that("classify_usda assigns Alfisols to argic + high-BS fixture (Luvisol)",
 })
 
 test_that("classify_usda assigns Mollisols to mollic + high-BS fixture (Chernozem)", {
+  skip_on_cran()
   # WRB Chernozem ~ USDA Mollisol (mollic epipedon, dark + base-rich).
   pr <- make_chernozem_canonical()
   res <- classify_usda(pr, on_missing = "silent")
@@ -34,6 +37,7 @@ test_that("classify_usda assigns Mollisols to mollic + high-BS fixture (Chernoze
 })
 
 test_that("classify_usda assigns Aridisols to a salic / saline fixture (Solonchak)", {
+  skip_on_cran()
   # WRB Solonchak (salic horizon + dry surface) ~ USDA Aridisol via the
   # aridic + salic / calcic path.
   # v0.9.315: the key needs the aridic regime itself (KST 13 p 69, item
@@ -46,6 +50,7 @@ test_that("classify_usda assigns Aridisols to a salic / saline fixture (Soloncha
 })
 
 test_that("classify_usda assigns Inceptisols to cambic-only fixture (Cambisol)", {
+  skip_on_cran()
   # WRB Cambisol = USDA Inceptisol via cambic horizon.
   pr <- make_cambisol_canonical()
   res <- classify_usda(pr, on_missing = "silent")
@@ -59,6 +64,7 @@ test_that("classify_usda assigns Histosols to a peat-rich fixture", {
 })
 
 test_that("classify_usda assigns Vertisols to slickensides fixture", {
+  skip_on_cran()
   pr <- make_vertisol_canonical()
   res <- classify_usda(pr, on_missing = "silent")
   expect_equal(res$rsg_or_order, "Vertisols")
@@ -83,6 +89,7 @@ test_that("classify_usda assigns Gelisols to a cryic-conditions fixture", {
 })
 
 test_that("classify_usda assigns Ultisols to argic + low-BS fixture (Acrisol)", {
+  skip_on_cran()
   # WRB Acrisol ~ USDA Ultisol (argillic + base saturation < 35%).
   pr <- make_acrisol_canonical()
   res <- classify_usda(pr, on_missing = "silent")

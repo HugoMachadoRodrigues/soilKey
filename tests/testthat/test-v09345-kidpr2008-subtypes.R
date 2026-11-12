@@ -245,6 +245,7 @@
 # --- the lists ------------------------------------------------------------------------
 
 test_that("26 lists, 558 entries, in the order and with the counts of the book", {
+  skip_on_cran()
   L <- .kidpr_st_rules()$lists
   counts <- c(AA = 15L, AB = 10L, BA = 22L, BB = 12L, BC = 14L, DA = 19L, CA = 35L, CB = 30L, CC = 16L,
               CD = 24L, CE = 16L, CF = 17L, CG = 15L, CH = 27L, CI = 27L, CJ = 18L, CK = 16L, CL = 11L,

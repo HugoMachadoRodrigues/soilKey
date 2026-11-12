@@ -219,6 +219,7 @@ test_that("Pachic fires only when mollic OR umbric thickness >= 50 cm", {
 })
 
 test_that("Pellic / Grumic / Mazic key on surface structure & color", {
+  skip_on_cran()
   base <- function(v1, c1, v2, c2, grade1, type1, grade2 = "strong",
                    type2 = "wedge-shaped") {
     data.table::data.table(
@@ -337,6 +338,7 @@ test_that("Eutrosilic requires silandic + sum of bases >= 15 cmol/kg (WRB 2022)"
 })
 
 test_that("Plaggic anthropic-evidence gate: rejects mollic-only A horizons", {
+  skip_on_cran()
   # Thick OC-rich A with no anthropic evidence (no P, no artefacts,
   # no Apl-family designation) -> Plaggic must NOT fire even though
   # the v0.3.3 plaggic diagnostic itself would pass.

@@ -92,6 +92,7 @@ test_that("v0.9.136: a thick A (100 cm) over a deep solum still qualifies", {
 # ---- A antropico artefacts gate (mandatory, refine-when-present) -----------
 
 test_that("v0.9.136: A antropico requires artefacts when they are RECORDED", {
+  skip_on_cran()
   # passes hortic (thick>=20, oc>=0.6, P>=30, surface) -- only artefacts differ.
   base <- data.frame(top_cm = 0, bottom_cm = 30, designation = "Ap",
                      oc_pct = 2, p_mehlich3_mg_kg = 120, munsell_value_moist = 3)

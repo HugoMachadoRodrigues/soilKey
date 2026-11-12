@@ -119,6 +119,7 @@ test_that("ferralsol exception path: argic with low WDC saves the FR claim", {
 # ---- chernozem_strict ------------------------------------------------------
 
 test_that("chernozem_strict passes on canonical Chernozem fixture", {
+  skip_on_cran()
   pr <- make_chernozem_canonical()
   res <- chernozem_strict(pr)
   expect_true(isTRUE(res$passed))

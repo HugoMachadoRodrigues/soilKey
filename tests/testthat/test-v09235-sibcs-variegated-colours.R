@@ -102,6 +102,7 @@ test_that("items (a) and (b) of the definition of Plintossolos", {
 }
 
 test_that("the BDsolos loader joins the three cells of each list of colours", {
+  skip_on_cran()
   f <- .vc_csv(); on.exit(unlink(f), add = TRUE)
   peds <- suppressMessages(suppressWarnings(load_bdsolos_csv(f, verbose = FALSE)))
   expect_length(peds, 1L)

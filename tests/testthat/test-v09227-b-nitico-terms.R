@@ -98,6 +98,7 @@ test_that("the type of structure is matched with or without its accent", {
 })
 
 test_that("`min_cerosidade` sets the threshold by its lowest term", {
+  skip_on_cran()
   p <- make_nitossolo_canonical()
   comum <- .with_amount(p, "Comum"); abund <- .with_amount(p, "Abundante")
   # the default threshold is "common"

@@ -1,6 +1,7 @@
 # Tests for the simple CSV entry point: read_pedon_csv() / classify_csv().
 
 test_that("read_pedon_csv() reads the bundled template into a PedonRecord", {
+  skip_on_cran()
   f <- system.file("extdata", "perfil_exemplo.csv", package = "soilKey")
   skip_if(f == "" || !file.exists(f))
   p <- read_pedon_csv(f)
@@ -25,6 +26,7 @@ test_that("classify_csv() returns a one-row WRB/SiBCS/USDA data.frame", {
 })
 
 test_that("read_pedon_csv() works on an in-memory CSV without site + honours a site", {
+  skip_on_cran()
   tmp <- tempfile(fileext = ".csv")
   utils::write.csv(data.frame(
     top_cm = c(0, 20), bottom_cm = c(20, 90),

@@ -1,4 +1,5 @@
 test_that("cambic passes on canonical Cambisol fixture", {
+  skip_on_cran()
   pr <- make_cambisol_canonical()
   res <- cambic(pr)
   expect_s3_class(res, "DiagnosticResult")

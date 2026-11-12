@@ -54,6 +54,7 @@ test_that("B nitico: two adjoining sub-horizons of 18 cm make its 30 cm", {
 })
 
 test_that("horizonte glei: two adjoining sub-horizons of 8 cm make its 15 cm", {
+  skip_on_cran()
   mk <- function(designation, top, bottom, glei) {
     n <- length(designation)
     hz <- data.table::data.table(
@@ -77,6 +78,7 @@ test_that("horizonte glei: two adjoining sub-horizons of 8 cm make its 15 cm", {
 })
 
 test_that("horizonte concrecionario: two adjoining sub-horizons of 16 cm make its 30 cm", {
+  skip_on_cran()
   mk <- function(designation, top, bottom, pp) {
     hz <- data.table::data.table(designation = designation, top_cm = top,
                                  bottom_cm = bottom, clay_pct = 30, plinthite_pct = pp)
@@ -109,6 +111,7 @@ test_that("horizonte sulfurico with jarosite: two adjoining sub-horizons of 8 cm
 })
 
 test_that("horizonte sulfurico with sulfidic material: the same, and the WRB thionic horizon as before", {
+  skip_on_cran()
   mk <- function(designation, top, bottom, ph, s) {
     hz <- data.table::data.table(designation = designation, top_cm = top,
                                  bottom_cm = bottom, clay_pct = 30, ph_h2o = ph,
@@ -130,6 +133,7 @@ test_that("horizonte sulfurico with sulfidic material: the same, and the WRB thi
 })
 
 test_that("the canonical profiles keep their horizons", {
+  skip_on_cran()
   expect_true(isTRUE(B_incipiente(make_cambissolo_canonical())$passed))
   expect_true(isTRUE(B_nitico(make_nitossolo_canonical())$passed))
   expect_true(isTRUE(horizonte_glei(make_gleissolo_canonical())$passed))

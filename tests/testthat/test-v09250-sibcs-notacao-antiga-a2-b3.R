@@ -85,6 +85,7 @@ test_that("a B3 is no first B sub-horizon, as a BC is not", {
 })
 
 test_that("the canonical profiles, written in the present notation, keep their class", {
+  skip_on_cran()
   for (f in c("make_argissolo_canonical", "make_latossolo_canonical", "make_planossolo_canonical",
               "make_cambissolo_canonical", "make_espodossolo_canonical")) {
     p <- get(f)()

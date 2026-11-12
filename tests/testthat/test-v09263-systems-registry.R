@@ -15,6 +15,7 @@ test_that("the registry lists the three systems in run order", {
 })
 
 test_that("every registered system has a classifier and a key file", {
+  skip_on_cran()
   for (id in soilkey_systems()$id) {
     sys <- soilKey:::.system_get(id)
     expect_true(exists(sys$classifier, envir = asNamespace("soilKey"),

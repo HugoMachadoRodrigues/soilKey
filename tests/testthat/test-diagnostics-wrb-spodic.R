@@ -7,6 +7,7 @@ test_that("spodic passes on canonical Podzol fixture", {
 })
 
 test_that("spodic fails on Ferralsol, Luvisol, Chernozem", {
+  skip_on_cran()
   expect_false(isTRUE(spodic(make_ferralsol_canonical())$passed))
   expect_false(isTRUE(spodic(make_luvisol_canonical())$passed))
   expect_false(isTRUE(spodic(make_chernozem_canonical())$passed))

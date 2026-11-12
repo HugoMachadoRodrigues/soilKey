@@ -51,3 +51,4 @@
 ^\.RData$
 ^[^/]*\.txt$
 ^[^/]*\.png$
+^NEWS-archive\.md$

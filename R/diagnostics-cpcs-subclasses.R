@@ -18,7 +18,7 @@
   if (is.na(k) || !nzchar(k)) return(NA_character_)
   k <- toupper(gsub("[^A-Za-z]", "", k))
   if (!nzchar(k)) return(NA_character_)
-  k <- switch(substr(k, 1L, 1L),
+  k <- switch(EXPR = substr(k, 1L, 1L),
               B = paste0(substr(k, 1L, 2L), tolower(substring(k, 3L))),
               E = k,
               paste0(substr(k, 1L, 1L), tolower(substring(k, 2L))))

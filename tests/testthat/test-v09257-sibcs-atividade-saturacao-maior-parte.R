@@ -24,6 +24,7 @@
 }
 
 test_that("the section is the first 100 cm of the B, with the BA and without the BC", {
+  skip_on_cran()
   p <- .mp_profile(c("A", "BA", "Bt1", "Bt2", "BC", "C"), c(0, 20, 40, 80, 150, 200),
                    c(20, 40, 80, 150, 200, 250), 30, 5, 40)
   s <- .sibcs_b_first_100(p$horizons)
@@ -84,6 +85,7 @@ test_that("the activity of the clay is that of most of the first 100 cm of the B
 })
 
 test_that("a layer of areia or areia franca is left out; the franco-arenosa is not", {
+  skip_on_cran()
   # Bt1 areia franca (5% of clay, 5% of silt) with a high ratio, Bt2 Tb
   p <- .mp_profile(c("A", "Bt1", "Bt2"), c(0, 20, 70), c(20, 70, 120), clay = c(4, 5, 30),
                    cec = c(2, 3, 5), bs = 40, silt = 5)

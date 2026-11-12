@@ -154,6 +154,7 @@ test_that("FR canonical fixture resolves to a Geric Rhodic Ferralsol", {
 # ---- Behavioural contracts of new qual_* functions -------------------------
 
 test_that("Hyperspodic, Carbic, Rustic split spodic illuviation styles", {
+  skip_on_cran()
   base <- function(al, fe, oc) data.table::data.table(
     top_cm = c(0, 5, 30), bottom_cm = c(5, 30, 80),
     designation = c("Oa", "E", "Bs"),
@@ -303,6 +304,7 @@ test_that("Hyperalic requires argic horizon + Al saturation >= 50%", {
 })
 
 test_that("Hyperalbic accumulates only contiguous eluvial-evidence albic", {
+  skip_on_cran()
   # Giant tropical white-sand Podzol: deep contiguous E with very high
   # value, very low chroma, sand-rich; spodic Bs only at the very bottom.
   hz <- data.table::data.table(

@@ -18,6 +18,7 @@ prh <- function(hz) PedonRecord$new(site = list(id = "t"), horizons = hz)
 # ---- B_nitico structure-grade + cerosidade-grade --------------------------
 
 test_that("v0.9.137: B_nitico requires structure GRADE moderate/strong", {
+  skip_on_cran()
   base <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
                      designation = c("A", "Bt"), clay_pct = c(40, 50),
                      structure_type = c("granular", "blocks"),
@@ -32,6 +33,7 @@ test_that("v0.9.137: B_nitico requires structure GRADE moderate/strong", {
 })
 
 test_that("v0.9.137: B_nitico requires cerosidade GRADE moderate/strong", {
+  skip_on_cran()
   base <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
                      designation = c("A", "Bt"), clay_pct = c(40, 50),
                      structure_type = c("granular", "blocks"),
@@ -56,6 +58,7 @@ test_that("v0.9.137: B_nitico honours the thickness exception (>=15cm over rock 
 })
 
 test_that("v0.9.137: B_nitico drops the non-verbatim ferric short-circuit", {
+  skip_on_cran()
   # high-activity clay (Ta = cec_cmol*100/clay >= 27), high Fe-DCB, NOT aluminic:
   # before v0.9.137 the ferri path rescued it; now criterion (d) rejects it.
   fer <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
@@ -81,6 +84,7 @@ test_that("v0.9.137: the canonical Nitossolo still classifies as Nitossolos", {
 # ---- B_incipiente exclusions (duripa/petrocalcico/fragipa/plintita/glei) ----
 
 test_that("v0.9.137: B_incipiente excludes a gleyed layer", {
+  skip_on_cran()
   gl <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 60),
                    designation = c("A", "Bg"), clay_pct = c(20, 25),
                    munsell_hue_moist = c("10YR", "10Y"),
@@ -116,6 +120,7 @@ test_that("v0.9.137: B_incipiente is byte-identical on a plain cambic Bw", {
 # ---- horizonte_vertico crack >= 1 cm (SiBCS strict) -----------------------
 
 test_that("v0.9.137: SiBCS vertico needs cracks >= 1cm; WRB stays at 0.5cm", {
+  skip_on_cran()
   vt <- data.frame(top_cm = 0, bottom_cm = 40, designation = "Bv",
                    clay_pct = 50, slickensides = "common", cracks_width_cm = 0.7)
   expect_false(isTRUE(horizonte_vertico(prh(mkh(vt)))$passed))  # 0.7 < 1.0
@@ -128,6 +133,7 @@ test_that("v0.9.137: SiBCS vertico needs cracks >= 1cm; WRB stays at 0.5cm", {
 # ---- horizonte_sulfurico jarosite OR-path ---------------------------------
 
 test_that("v0.9.137: sulfurico fires via the jarosite path (no sulfidic-S)", {
+  skip_on_cran()
   sf <- data.frame(top_cm = 0, bottom_cm = 20, designation = "Bj",
                    ph_h2o = 3.2, jarosite_present = TRUE)
   expect_true(isTRUE(horizonte_sulfurico(prh(mkh(sf)))$passed))

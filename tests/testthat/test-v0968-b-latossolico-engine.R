@@ -74,6 +74,7 @@ test_that("v0.9.68: explicit max_cec_per_clay overrides the engine default", {
 
 
 test_that("v0.9.68: low-CEC Latossolo (CEC/clay=8) passes under both engines", {
+  skip_on_cran()
   pr <- .borderline_latossolo(cec_per_clay = 8)
   expect_true(isTRUE(B_latossolico(pr, engine = "soilkey")$passed))
   expect_true(isTRUE(B_latossolico(pr, engine = "aqp")$passed))

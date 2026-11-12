@@ -391,8 +391,14 @@
 #' \donttest{
 #' # The USDA axes read the KST 13th edition from ncss-tech/SoilKnowledgeBase,
 #' # downloaded on first use, so they need a connection the first time.
-#' usda <- try(coverage_report("usda_subgroup"), silent = TRUE)
-#' if (!inherits(usda, "try-error")) head(usda$missing)
+#' # Needs network access; skipped offline and in batch checks.
+#' online <- interactive() && requireNamespace("httr", quietly = TRUE) &&
+#'   !inherits(try(httr::HEAD("https://raw.githubusercontent.com", httr::timeout(5)),
+#'                 silent = TRUE), "try-error")
+#' if (online) {
+#'   usda <- try(coverage_report("usda_subgroup"), silent = TRUE)
+#'   if (!inherits(usda, "try-error")) head(usda$missing)
+#' }
 #' }
 #'
 #' @export

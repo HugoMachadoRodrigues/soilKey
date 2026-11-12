@@ -147,7 +147,9 @@ test_that("a description that stops above 1500 mm: the shorter form provisional"
   pcu <- .za_L(25, 70, designation = "Bt", structure_type = "angular blocky", structure_grade = "moderate",
                clay_films_amount = "many", clay_pct = 35)
   r2 <- .form(.za_P(.za_A(), pcu))
-  expect_true(is.na(r2$name))
+  # v0.9.402: no form passed, some undecided: the candidates are named
+  expect_match(r2$name, "^\\[Undecided in the South African soil classification \\(1991\\): ")
+  expect_identical(nrow(r2$levels), 0L)
   expect_true(all(c("forms:Se", "forms:Va", "forms:Sw") %in% r2$provisional_because))
   # the B reaches 1500 mm: the material below read as unconsolidated (Q4)
   pcu2 <- pcu; pcu2$bottom_cm <- 160
@@ -218,7 +220,9 @@ test_that("the general rules: 1500 mm, burial, truncation, the land class", {
 test_that("provisional and undecided results", {
   skip_on_cran()
   u <- .form(make_za1991_example("undecided"))
-  expect_true(is.na(u$name))
+  # v0.9.402: no form passed, some undecided: the candidates are named
+  expect_match(u$name, "^\\[Undecided in the South African soil classification \\(1991\\): ")
+  expect_identical(nrow(u$levels), 0L)
   expect_setequal(u$provisional_because, c("forms:Cv", "forms:Hu"))
   expect_true("munsell_hue_moist" %in% u$missing_data)
   # the Kroonstad and Estcourt switch at 500 mm under the E
@@ -231,7 +235,9 @@ test_that("provisional and undecided results", {
   expect_identical(.form(mk(70))$name, "Kroonstad")
   expect_identical(.form(mk(40))$name, "Estcourt")
   r <- .form(mk(50))
-  expect_true(is.na(r$name))
+  # v0.9.402: no form passed, some undecided: the candidates are named
+  expect_match(r$name, "^\\[Undecided in the South African soil classification \\(1991\\): ")
+  expect_identical(nrow(r$levels), 0L)
   expect_setequal(r$provisional_because, c("forms:Kd", "forms:Es"))
   # stand-ins named in the warnings
   expect_true(any(grepl("stand-ins for numbers of the 1991 book", .form(make_za1991_example("lamotte"))$warnings)))
@@ -308,7 +314,9 @@ test_that("D4: one pass over the horizons, however many undecided layers", {
   b5 <- c(list(.za_A(bottom_cm = 10)), lapply(1:5, function(k) .za_L(k * 10, (k + 1) * 10, designation = "B", munsell_hue_moist = NA,
                                                                     munsell_hue_dry = NA, structure_type = NA, structure_grade = NA)))
   r <- .form(do.call(.za_P, b5))
-  expect_true(is.na(r$name))
+  # v0.9.402: no form passed, some undecided: the candidates are named
+  expect_match(r$name, "^\\[Undecided in the South African soil classification \\(1991\\): ")
+  expect_identical(nrow(r$levels), 0L)
   pv <- sub("^forms:", "", r$provisional_because)
   # the candidates are the forms of an orthic A, the B undecided
   expect_true(all(c("Hu", "Cv", "Sd") %in% pv))

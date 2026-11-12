@@ -102,6 +102,7 @@ test_that("inference does not fire without a diagnostic B/E designation", {
 
 # --- 5. the same mechanism reaches spodic / gleyic / plinthic ----------------
 test_that("inference ON reaches spodic (Bh), gleyic (Bg) and plinthic (Bf)", {
+  skip_on_cran()
   old <- options(soilKey.morphological_inference = TRUE); on.exit(options(old))
 
   sp <- mk(data.frame(designation = c("E", "Bh"), top_cm = c(0, 20),

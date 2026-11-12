@@ -94,6 +94,7 @@ test_that("v0.9.66: traditional R/Cr-designation path still works (engine=aqp)",
 
 
 test_that("v0.9.66: soilkey engine (default) is unaffected by the v0.9.66 tightening", {
+  skip_on_cran()
   # The thin-topsoil path is aqp-only. Strict soilkey engine still
   # requires R-designation OR cfvo >= 90.
   pr <- .lucas_topsoil_pedon(designation = "Ap", cfvo = NA_real_)
