@@ -490,6 +490,11 @@ za1991_afsp_benchmark <- function(afsp_dir = NULL, out = NULL, pedons = NULL, la
     for (i in seq_len(min(nrow(cf), 25L)))
       lines <- c(lines, sprintf("| %s | %s | %d |", fname(cf$label[i]), fname(cf$soilKey[i]), cf$Freq[i]))
   } else lines <- c(lines, "None.")
+  if (nrow(cf) && any(cf$label == "Oa" & cf$soilKey == "Hu"))
+    lines <- c(lines, "", paste("Oakleaf -> Hutton is a limit of the data, not of the key: AfSP records no variegated",
+                                "colours, cutans or origin of the layers, so a uniform red B with a weak structure is",
+                                "an apedal B (V 21) and the neocutanic B cannot be evidenced (readings.yaml, Weak",
+                                "blocky structure in the AfSP profiles)."))
   u <- res$undecided
   lines <- c(lines, "", sprintf("Forms left undecided in the profiles that stop (profiles): %s",
                                 if (length(u)) paste(sprintf("%s %d", fname(names(u)), as.integer(u)), collapse = ", ") else "none."))
