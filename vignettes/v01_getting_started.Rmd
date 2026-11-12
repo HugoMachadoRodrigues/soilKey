@@ -8,9 +8,13 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+# On CRAN the code is shown but not run (check time limit); the
+# vignette shipped with the package was built with every chunk run.
+.sk_eval <- identical(Sys.getenv("NOT_CRAN"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment  = "#>"
+  comment  = "#>",
+  eval     = .sk_eval
 )
 ```
 
@@ -196,7 +200,7 @@ classify_wrb2022(ferralsol_w)$evidence_grade
 
 `PedonRecord$to_aqp()` returns an `aqp::SoilProfileCollection`, allowing soilKey to plug into aqp's plotting and aggregation tooling without owning that infrastructure:
 
-```{r to-aqp, eval = requireNamespace("aqp", quietly = TRUE)}
+```{r to-aqp, eval = .sk_eval && requireNamespace("aqp", quietly = TRUE)}
 spc <- ferralsol$to_aqp()
 class(spc)
 aqp::profile_id(spc)

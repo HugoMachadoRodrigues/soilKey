@@ -8,9 +8,13 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+# On CRAN the code is shown but not run (check time limit); the
+# vignette shipped with the package was built with every chunk run.
+.sk_eval <- identical(Sys.getenv("NOT_CRAN"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment  = "#>",
+  eval     = .sk_eval,
   fig.width  = 6,
   fig.height = 4
 )
