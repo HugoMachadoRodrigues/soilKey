@@ -21,8 +21,12 @@ problems" takes longer. To stay within the time limit:
 * The vignettes run their code only off CRAN. The vignettes in the tarball
   were built with every chunk run.
 
-The win-builder check of the tarball of 0.9.403 (R-devel, 2026-11-12) took
-479 s, Status OK: R code 272 s, examples 39 s, tests 12 s, vignettes 12 s.
+The win-builder checks of the tarball of 0.9.403 (2026-11-12), Status OK
+on both:
+
+* R-devel: 479 s (R code 272 s, examples 39 s, tests 12 s, vignettes 12 s).
+* R-release: 527 s (R code 258 s, examples 45 s, tests 12 s, vignettes
+  11 s, HTML manual 80 s).
 
 As for earlier versions:
 
@@ -49,7 +53,7 @@ non-additive way; 208 functions are added, mostly the `classify_*()` and
 
 ## R CMD check --as-cran results
 
-win-builder R-devel: Status OK (no notes).
+win-builder R-devel and R-release: Status OK (no notes).
 
 On macOS: **0 errors | 0 warnings | 1 note**, local only:
 
