@@ -8,9 +8,13 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+# On CRAN the code is shown but not run (check time limit); the
+# vignette shipped with the package was built with every chunk run.
+.sk_eval <- identical(Sys.getenv("NOT_CRAN"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment  = "#>"
+  comment  = "#>",
+  eval     = .sk_eval
 )
 library(soilKey)
 ```
@@ -32,7 +36,7 @@ class(mock)
 
 VLM responses are constrained by a JSON Schema (Draft-07). The schema for horizon extraction is shipped at `inst/schemas/horizon.json`; the rendered prompt template lives at `inst/prompts/extract_horizons.md`.
 
-```{r schema-peek, eval = requireNamespace("jsonlite", quietly = TRUE)}
+```{r schema-peek, eval = .sk_eval && requireNamespace("jsonlite", quietly = TRUE)}
 sch <- jsonlite::fromJSON(soilKey:::load_schema("horizon"),
                             simplifyVector = FALSE)
 length(sch$properties$horizons$items$properties)
@@ -72,7 +76,7 @@ horizon_json <- '{
 
 Wire the mock provider to return this JSON, send a prompt through `validate_or_retry`, and watch the loop:
 
-```{r validate-or-retry, eval = requireNamespace("jsonlite", quietly = TRUE) && requireNamespace("jsonvalidate", quietly = TRUE)}
+```{r validate-or-retry, eval = .sk_eval && requireNamespace("jsonlite", quietly = TRUE) && requireNamespace("jsonvalidate", quietly = TRUE)}
 mock <- MockVLMProvider$new(responses = list(horizon_json))
 
 res <- soilKey:::validate_or_retry(
@@ -91,7 +95,7 @@ The returned `res$data` is the parsed (validated) R object. `res$attempts == 1` 
 
 `apply_horizons_extraction()` consumes the parsed JSON and merges it into a `PedonRecord`, recording each value in the provenance log with `source = "extracted_vlm"`.
 
-```{r apply, eval = requireNamespace("jsonlite", quietly = TRUE) && requireNamespace("jsonvalidate", quietly = TRUE)}
+```{r apply, eval = .sk_eval && requireNamespace("jsonlite", quietly = TRUE) && requireNamespace("jsonvalidate", quietly = TRUE)}
 pr <- PedonRecord$new(
   site = list(id = "VLM-demo", lat = -22.5, lon = -43.7,
                 country = "BR", parent_material = "gneiss"),
@@ -111,7 +115,7 @@ pr$horizons[, .(top_cm, bottom_cm, designation,
 
 Every value that came from the VLM carries `source = "extracted_vlm"` in the provenance log. The classification's evidence grade reacts:
 
-```{r grade, eval = requireNamespace("jsonlite", quietly = TRUE) && requireNamespace("jsonvalidate", quietly = TRUE)}
+```{r grade, eval = .sk_eval && requireNamespace("jsonlite", quietly = TRUE) && requireNamespace("jsonvalidate", quietly = TRUE)}
 prov <- pr$provenance
 head(prov[, .(horizon_idx, attribute, source, confidence)])
 ```

@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # The vignettes run their code only where NOT_CRAN is "true".
+      NOT_CRAN: "true"
     permissions:
       contents: write
     steps:
