@@ -1,5 +1,20 @@
 # Changelog
 
+## soilKey 0.9.403
+
+- CRAN check time. The CRAN check runs a smoke set of tests: one profile
+  through each key of the registry, the fixture tests of the WRB 2022,
+  SiBCS, USDA, CSSC and ASC keys, the `PedonRecord` class, the registry
+  and
+  [`classify_all()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_all.md).
+  The full suite still runs wherever `NOT_CRAN` is `"true"` (devtools
+  and the GitHub checks).
+- The vignettes run their code only where `NOT_CRAN` is `"true"`. The
+  vignettes shipped with the package and on the website are built with
+  every chunk run; the CRAN check rebuilds them without running the
+  code.
+- No classification changes.
+
 ## soilKey 0.9.402 (2026-11-11)
 
 ### Undecided first levels are named; granular structure and the vertic A
