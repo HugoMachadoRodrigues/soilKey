@@ -131,8 +131,8 @@ isis_citation <- function(accessed = Sys.Date()) {
     "profileCode countryCode profileId geog { latitude longitude }",
     "moistureRegimeSoil temperatureRegimeSoil drainageClass siteElevation",
     "depthGroundwater groundwaterTop groundwaterKind",
-    "slopeGradientNumeric lithologyParmat lithologyParmatDeposition",
-    "lithologyParmatDeposition2 cracking cracksSurface dryfrom microreliefKind",
+    "slopeGradientNumeric lithologyParmat lithologyParmat2 lithologyParmatDeposition",
+    "lithologyParmatDeposition2 lithologyParmatXxx lithologyParmatXx2 cracking cracksSurface dryfrom microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
     "layers(first: 100, orderBy: [UPPER_DEPTH_ASC]) { layerNumber upperDepth lowerDepth layerName",
@@ -156,6 +156,31 @@ isis_citation <- function(accessed = Sys.Date()) {
 .isis_desc <- function(x) {
   if (is.null(x) || !is.list(x) || is.null(x$description)) return(NA_character_)
   as.character(x$description)[1]
+}
+# v0.9.406 (Hugo, 2026-11-13): the parent material is every lithology field
+# ISIS records, as written, joined by "; " in this order: the parent material
+# (lithologyParmat, lithologyParmat2), its deposition (lithologyParmatDeposition,
+# lithologyParmatDeposition2, such as "Ejecta ash") and its specific lithology
+# (lithologyParmatXxx, lithologyParmatXx2, such as "Basic ash" or "Tuff").
+# The water depositions (F, M, L of .ISIS_WATER_DEPOSITION) are left out:
+# they are read as the rock_origin of the layers (v0.9.314,
+# .isis_water_deposition()), and as text the keys that read the parent
+# material took old marine and lacustrine deposits for lowland alluvium
+# (Hugo, 2026-11-13). Until 0.9.405 only lithologyParmat was read, which
+# most profiles record as "Unconsolidated and unspecified deposits".
+.ISIS_PARENT_MATERIAL_FIELDS <- c("lithologyParmat", "lithologyParmat2",
+                                  "lithologyParmatDeposition", "lithologyParmatDeposition2",
+                                  "lithologyParmatXxx", "lithologyParmatXx2")
+.isis_parent_material <- function(profile) {
+  v <- vapply(.ISIS_PARENT_MATERIAL_FIELDS, function(k) {
+    z <- profile[[k]]
+    if (k %in% c("lithologyParmatDeposition", "lithologyParmatDeposition2") &&
+        .isis_code(z) %in% names(.ISIS_WATER_DEPOSITION)) return(NA_character_)
+    .isis_desc(z)
+  }, character(1), USE.NAMES = FALSE)
+  v <- trimws(v[!is.na(v)])
+  v <- unique(v[nzchar(v)])
+  if (!length(v)) NA_character_ else paste(v, collapse = "; ")
 }
 .isis_lookup <- function(table, code) {
   if (is.na(code) || !code %in% names(table)) NA_character_ else unname(table[[code]])
@@ -740,7 +765,7 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
   gw <- .isis_groundwater(profile)
   if (!is.na(gw$kind)) site$groundwater_kind <- gw$kind
   if (!is.na(gw$depth)) site$groundwater_depth_cm <- gw$depth
-  pm <- .isis_desc(profile$lithologyParmat); if (!is.na(pm)) site$parent_material <- pm
+  pm <- .isis_parent_material(profile); if (!is.na(pm)) site$parent_material <- pm
   if (gil) site$gilgai_presence <- TRUE
   smr <- .isis_regime(profile, "moistureRegimeSoil", "moistureRegime")
   if (!is.null(smr)) site$soil_moisture_regime <- smr

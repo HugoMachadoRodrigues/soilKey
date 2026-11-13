@@ -254,7 +254,7 @@ abrupt_textural_change_fao88 <- function(pedon, max_top_cm = NULL) {
     frac <- ifelse(!is.na(fr), fr >= 30, ifelse(!is.na(sa) & sa >= 30, TRUE, NA))
     gl <- .f88_num(x, "volcanic_glass_pct")
     flag <- rep(NA_character_, x$n)
-    volc_re <- "volcan|tephr|ash|pumic|cinder|scoria|lava|andesit|dacit|rhyolit|obsidian|tuff|ignimbrit|pyroclast|cinza"
+    volc_re <- "volcan|tephr|\\bash|pumic|cinder|scoria|lava|andesit|dacit|rhyolit|obsidian|tuff|ignimbrit|pyroclast|cinza"
     pm <- .f88_site(x, "parent_material")
     pm_volc <- !is.na(pm) && grepl(volc_re, .field_term(as.character(pm)))
     lo <- .f88_chr(x, "layer_origin")
@@ -509,8 +509,14 @@ ferric_properties_fao88 <- function(pedon, max_top_cm = NULL) {
 # --- fluvic properties (p. 35) ------------------------------------------------------------------
 
 .F88_SEDIMENT_RE <- "alluvi|aluvi|fluvi|fluvial|marin|lacustr|limnic|estuar|delta|tidal|lagoon|lagun|backswamp|floodplain|flood plain|levee|varzea|sedimentos? (fluvia|marinh|lacustr)"
-.F88_NOT_SEDIMENT_RE <- "granit|basalt|gneiss|gnaiss|schist|xisto|quartzit|limeston|calcari|dolomit|sandston|arenito|shale|folhelho|slate|ardosia|residu|saprolit|loess|aeolian|eolic|eolian|dune|duna|till|moraine|glacial|colluv|coluvi|volcan|tephr|marl|mudston|siltston|argilit|peridot|serpentin|gabbro|diabas|andesit|rhyolit|granodior|migmat|phyllit|filit"
+.F88_NOT_SEDIMENT_RE <- "granit|basalt|gneiss|gnaiss|schist|xisto|quartzit|limeston|calcari|dolomit|sandston|arenito|shale|folhelho|slate|ardosia|residu|saprolit|loess|aeolian|eolic|eolian|dune|duna|till|moraine|glacial|colluv|coluvi|volcan|tephr|marl|mudston|siltston|argilit|peridot|serpentin|gabbro|diabas|andesit|rhyolit|granodior|migmat|phyllit|filit|\\bash|ejecta|pumic|cinder|scoria|\\blava|obsidian|tuff|ignimbrit|pyroclast|lapilli"
 
+# v0.9.406 (Hugo, 2026-11-13): the volcanic materials the ISIS records name
+# (ash as a whole word, so "Slope wash" is not read as ash; ejecta, pumice,
+# cinders, scoria, lava, obsidian, tuff, ignimbrite, pyroclastic, lapilli)
+# are not fluviatile, marine or lacustrine sediments, as volcan and tephr
+# were: tephra with buried A horizons is not read as fluvic by its organic
+# carbon.
 # The origin of the sediments, as recorded: TRUE where the parent material,
 # a layer_origin of the upper 125 cm or the landform names fluviatile, marine
 # or lacustrine sediments; FALSE where the parent material names something

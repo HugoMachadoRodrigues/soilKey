@@ -1341,6 +1341,26 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
   })
 }
 
+# The record names gypsum (v0.9.406, Hugo, 2026-11-13): a caso4_pct above 0 or
+# a gypsum_visible_pct above 0 in some layer, a designation with the suffix y
+# (FAO and WRB: accumulation of gypsum), a horizon text field naming gypsum
+# (gyps, gesso, yeso: inclusions, concretions, notes), or a parent material
+# naming gypsum, anhydrite or evaporites.
+.fao_gypsum_named <- function(x) {
+  if (!x$n) return(FALSE)
+  gre <- "gyps|gesso|yeso|anhydrit|evaporit"
+  if (any(.f88_num(x, "caso4_pct") > 0, na.rm = TRUE)) return(TRUE)
+  if (any(.f88_num(x, "gypsum_visible_pct") > 0, na.rm = TRUE)) return(TRUE)
+  d <- sub("^([0-9]+|[IVX]+)\\s*", "", x$desg)
+  if (any(!is.na(d) & grepl("^[A-Z]+(/[A-Z]+)?[a-z0-9]*y", d))) return(TRUE)
+  h <- as.data.frame(x$h)
+  txt <- unlist(lapply(h[vapply(h, is.character, logical(1))], function(v) v[!is.na(v)]),
+                use.names = FALSE)
+  if (length(txt) && any(grepl(gre, .field_term(txt)))) return(TRUE)
+  pm <- .f88_site(x, "parent_material")
+  !is.na(pm) && grepl(gre, .field_term(as.character(pm)))
+}
+
 # Gypsum of each layer: caso4_pct; not recorded, an electrical conductivity of
 # the saturation extract below 2 dS/m (a solution saturated with gypsum has
 # about 2.2) reads as no gypsum (0), flagged (soilKey's reading). v0.9.392
@@ -1357,6 +1377,12 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
     g[z] <- 0; flag[z] <- "no_gypsum_at_ece_below_2"
     zm <- is.na(g) & is.na(ec) & !is.na(em) & em < 2
     g[zm] <- 0; flag[zm] <- "no_gypsum_at_ece_upper_bound_below_2"
+    # v0.9.406 (Hugo, 2026-11-13): still not decided, the gypsum is none
+    # unless the record names gypsum somewhere in the profile
+    nn <- is.na(g)
+    if (any(nn) && !.fao_gypsum_named(x)) {
+      g[nn] <- 0; flag[nn] <- "gypsum_not_measured_none_named"
+    }
     list(value = g, flags = flag)
   })
 }
