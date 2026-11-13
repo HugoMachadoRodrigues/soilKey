@@ -255,7 +255,7 @@ andosol_material_fao74 <- function(pedon, depth = 35) {
   m0 <- x$top[m]
   a <- .f74_amorphous_v(x)
   gl <- .f88_num(x, "volcanic_glass_pct"); pf <- .f88_num(x, "pyroclastic_fragments_pct")
-  volc_re <- "volcan|tephr|ash|pumic|cinder|scoria|lava|andesit|dacit|rhyolit|obsidian|tuff|ignimbrit|pyroclast|cinza"
+  volc_re <- "volcan|tephr|\\bash|pumic|cinder|scoria|lava|andesit|dacit|rhyolit|obsidian|tuff|ignimbrit|pyroclast|cinza"
   pm <- .f88_site(x, "parent_material")
   pm_volc <- !is.na(pm) && grepl(volc_re, .field_term(as.character(pm)))
   lo <- .f88_chr(x, "layer_origin")

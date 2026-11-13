@@ -412,3 +412,13 @@ readings:
     page: "pp. 31, 35; 74 p. 27"
     version: "0.9.405"
     reading: "Amends the reading of 2026-11-09: without caco3_pct, a water pH below 7 (was 6.5) reads as no free carbonate for the calcic horizons and as not calcareous, flagged no_carbonate_at_ph_below_7; strong effervescence below pH 7 is a conflict, flagged strong_effervescence_at_ph_below_7_conflict (Hugo, 2026-11-12)."
+  - topic: "Gypsum not measured and not named"
+    edition: [1988, 1974]
+    page: "p. 32; 74 p. 27"
+    version: "0.9.406"
+    reading: "Amends the reading of 2026-11-09 (and 2026-11-10): where caso4_pct is not recorded and no electrical conductivity decides, the gypsum of a layer is none, flagged gypsum_not_measured_none_named, unless the record names gypsum somewhere in the profile: caso4_pct or gypsum_visible_pct above 0 in some layer, a designation with the suffix y, a horizon text field naming gypsum (gypsum, gesso, yeso), or a parent material naming gypsum, anhydrite or evaporites; then it stays undecided. It applies to the gypsic and petrogypsic horizons and to every test that reads the gypsum of a layer (Hugo, 2026-11-13)."
+  - topic: "Volcanic parent materials are not alluvial sediments"
+    edition: [1988, 1974]
+    page: "pp. 34-35; 74 pp. 43-45"
+    version: "0.9.406"
+    reading: "The parent materials that name volcanic material (ash as a whole word, ejecta, pumice, cinders, scoria, lava, obsidian, tuff, ignimbrite, pyroclastic, lapilli, beside volcanic and tephra) are a recorded origin that is not fluviatile, marine or lacustrine: the fluvic properties (1988) and the recent alluvial deposits (1974) are then not decided by the organic carbon of tephra with buried A horizons. The volcanic material that keeps the andic properties and the Andosol material undecided reads ash as a whole word too, so a slope wash is not volcanic (Hugo, 2026-11-13)."

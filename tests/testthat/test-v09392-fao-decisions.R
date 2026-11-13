@@ -35,14 +35,19 @@ test_that("ISIS cracks: large cracks and gilgai are 1 cm or more, small cracks 0
 test_that("gypsum: an ECe upper bound below 2 dS/m reads as no gypsum, flagged", {
   skip_on_cran()
   g <- function(...) soilKey:::.f88_gypsum(soilKey:::.f88_ctx(.ped392(...)))
-  r <- g(ec_max_dS_m = c(1.5, 2.5))
+  # gypsum named in the record (visible gypsum), so the gypsum not measured
+  # stays undecided (0.9.406)
+  r <- g(ec_max_dS_m = c(1.5, 2.5), gypsum_visible_pct = c(0, 1))
   expect_identical(r$value, c(0, NA))
   expect_identical(r$flags, c("no_gypsum_at_ece_upper_bound_below_2", NA))
   # a measured ECe or gypsum decides first
   r <- g(ec_max_dS_m = c(1.5, 1.5), ec_dS_m = c(3, NA), caso4_pct = c(NA, 7))
   expect_identical(r$value, c(NA, 7))
-  r <- g(ec_dS_m = c(1, 3))
+  r <- g(ec_dS_m = c(1, 3), gypsum_visible_pct = c(0, 1))
   expect_identical(r$flags, c("no_gypsum_at_ece_below_2", NA))
+  # not named: none, flagged (Hugo, 2026-11-13)
+  r <- g(ec_dS_m = c(1, 3))
+  expect_identical(r$flags, c("no_gypsum_at_ece_below_2", "gypsum_not_measured_none_named"))
 })
 
 test_that("andic: item 1 met but for the P retention stays undecided", {
