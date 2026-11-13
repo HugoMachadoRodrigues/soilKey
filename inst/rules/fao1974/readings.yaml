@@ -387,3 +387,18 @@ readings:
     page: "74 pp. 25-26; Q13"
     version: "0.9.392"
     reading: "Q13 stands as decided: clay films recorded (few included) are evidence of illuviation for the argillic B, which the oxic B of 1974 excludes. In the ISIS benchmark this keys some Ferralsols of the labels as Acrisols or Luvisols; a known cause, not changed (Hugo, 2026-11-10)."
+  - topic: "A layer designated as mineral is not organic material"
+    edition: [1988, 1974]
+    page: "p. 39; p. 75; 74 pp. 21, 43"
+    version: "0.9.405"
+    reading: "A layer whose designation names a mineral master horizon (A, E, B or C, a transition between them, with or without a lithological prefix: A1, 2Bt, Csk, AC, B/C) is not organic material (1988) and not an H horizon (1974) when the organic carbon leaves that undecided, flagged mineral_layer_from_designation: the designation is a field observation, and organic layers are written H or O. A layer with no designation and no organic carbon stays undecided (Hugo, 2026-11-12)."
+  - topic: "No organic layer below the deepest layer described"
+    edition: [1988, 1974]
+    page: "p. 75; 74 p. 43"
+    version: "0.9.405"
+    reading: "The Histosols take no organic layer below the deepest layer described: a description that stops above 80 cm no longer leaves the cumulative 40 cm of organic layers undecided, since an organic layer is a field observation and none is described there (Hugo, 2026-11-12)."
+  - topic: "The spodic B absent from a described profile"
+    edition: [1988, 1974]
+    page: "pp. 30-31; 74 p. 26"
+    version: "0.9.405"
+    reading: "When the chemistry of the spodic B is undecided, a profile with designations recorded none of whose B layers carries the h, s or ir of a spodic B (Bh, Bs, Bhs, Bir) has no spodic B, flagged spodic_b_not_in_the_designations; items 1 (cementation) and 2 (pellets, cracked coatings) still decide. A profile with no designation keeps the stand-ins (Hugo, 2026-11-12)."

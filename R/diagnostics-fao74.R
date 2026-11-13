@@ -182,7 +182,12 @@
   .f88_memo(x, "organic", function() {
     v <- .f74_organic_v(.f88_num(x, "oc_pct"), .f88_num(x, "clay_pct"), .f74_saturated(x))
     v[x$rock] <- FALSE
-    list(value = v, missing = c("oc_pct", "drainage_class", "clay_pct"))
+    # a layer designated with a mineral master horizon is mineral when the
+    # organic matter leaves it undecided (Hugo, 2026-11-12; 0.9.405)
+    md <- is.na(v) & .fao_mineral_designated(x)
+    v[md] <- FALSE
+    list(value = v, missing = c("oc_pct", "drainage_class", "clay_pct"),
+         flags = ifelse(md, "mineral_layer_from_designation", NA_character_))
   })
 }
 
@@ -196,6 +201,9 @@
                      ifelse(is.na(line), NA, om >= line))))
     v <- .f88_and(enough, .f74_saturated(x))
     v[x$rock] <- FALSE
+    # not an H horizon: a layer designated with a mineral master horizon
+    # whose organic matter is not measured (Hugo, 2026-11-12; 0.9.405)
+    v[is.na(v) & .fao_mineral_designated(x)] <- FALSE
     v
   })
 }
