@@ -433,3 +433,12 @@ readings:
   - topic: "Benchmark: hand-written CST names (ISIS)"
     page: "pp. 181-197"
     reading: "A CST name written in a label (ISRIC's ISIS gives the genetic name of the profile, of the Genetic Soil Classification of China, and the CST one, separated by a semicolon) is matched to the key by .cst_match_label(): each part of the label split at semicolons and bars is tried; names compare in lower case on their letters only (hyphens and spaces dropped) with one final s dropped, so the singular, the plural and the hyphenation variants are one name; the table holds the 779 names of the key (14 orders, 39 suborders, 138 groups, 588 subgroups; soilKey's bracketed residuals left out) and the book's aliases; among the parts that match exactly the deepest wins. There is no generic tolerance of misspellings: only when no part matches exactly does the benchmark script try its explicit list of the known slips of the ISIS labels (.cst_isis_variants: Acidi-Undic for Acidi-Udic, CN008; the order name Isohumisols of the 1991 and 1995 proposals read as Isohumosols, CN049, scored at the order), flagged in the report. A genetic name alone (CN043) stays unmatched. The benchmark scores a level only on the labels that reach it; a profile keyed to a bracketed residual counts as a disagreement and is reported apart; the book's own provisional marks are not counted as provisional (Hugo, 2026-11-08)."
+  # --- 0.9.407: the spodic horizon reviewed on the ISIS benchmark ---------------
+  - topic: "Spodic horizon: the cementation sign"
+    page: "pp. 32-33"
+    version: "0.9.407"
+    reading: "Amends the reading of 2026-11-06 for the spodic horizon only: the cementation that is a sign of spodic materials is a cementation class moderately cemented or harder; a dry rupture resistance (very hard or extremely hard, the consistence of a dry clayey B) is no cementation there. The other cemented layers of the CST (salipan, phosphipan, the contact below the solum, the pans that a cementation excludes) keep the reading of 2026-11-06 (Hugo, 2026-11-13)."
+  - topic: "Spodic horizon: the colours below an E layer"
+    page: "pp. 32-33"
+    version: "0.9.407"
+    reading: "Amends the reading of 2026-11-06: the colours alone make spodic materials directly below an albic horizon, or below an E layer when the run of E layers it closes (E, EB) holds an albic horizon or leaves it undecided (colours not recorded); an E of recorded colours that are not albic (10YR 5/6) does not let the colours alone decide, and the other signs are needed (Hugo, 2026-11-13)."

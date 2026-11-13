@@ -150,12 +150,18 @@
 # periods unless artificially drained, 74 p. 21): a layer designated H is
 # saturated and one designated O is not (the text's own master horizons);
 # else the drainage of the site (.f88_saturated(): poorly drained or
-# artificially drained TRUE, well drained FALSE, else NA).
+# artificially drained TRUE, well drained FALSE, else NA). An O with a
+# suffix of decomposition (a, e, i of the USDA and of FAO 2006; f, m, h of
+# Canada and New Zealand) is written in a notation where O is any organic
+# layer, so it takes the drainage of the site too (Hugo, 2026-11-13;
+# 0.9.407).
 .f74_saturated <- function(x) {
   m <- x$master
+  d <- sub("^([0-9]+|[IVX]+)\\s*", "", x$desg)
   sat <- rep(.f88_saturated(x), x$n)
   sat[!is.na(m) & grepl("^H", m)] <- TRUE
-  sat[!is.na(m) & grepl("^O", m)] <- FALSE
+  o_any <- !is.na(d) & grepl("^O[aeifmh]", d)
+  sat[!is.na(m) & grepl("^O", m) & !o_any] <- FALSE
   sat
 }
 

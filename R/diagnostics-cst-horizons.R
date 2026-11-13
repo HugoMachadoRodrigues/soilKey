@@ -189,9 +189,12 @@
 
 # Cemented layers: a cementation class moderately cemented or harder, or a
 # dry rupture resistance very hard or harder. Not recorded: not cemented.
-.cst_cemented <- function(x, strong = FALSE) {
+# rupture = FALSE reads the cementation class alone: the sign of the spodic
+# horizon, where a hard dry consistence of a clayey B is no cementation
+# (Hugo, 2026-11-13; 0.9.407).
+.cst_cemented <- function(x, strong = FALSE, rupture = TRUE) {
   cem <- .cst_t(x, "cementation_class")
-  rup <- .cst_t(x, "rupture_resistance")
+  rup <- if (rupture) .cst_t(x, "rupture_resistance") else rep(NA_character_, length(cem))
   lev <- if (strong) c("strongly", "indurated") else c("moderately", "strongly", "indurated")
   out <- (!is.na(cem) & cem %in% lev) | (!is.na(rup) & rup %in% c("very hard", "extremely hard"))
   list(value = out, recorded = !is.na(cem) | !is.na(rup))
@@ -1007,7 +1010,8 @@
   b[is.na(hue)] <- NA
   alfe <- .cst_v(x, "al_ox_pct") + .cst_v(x, "fe_ox_pct") / 2
   odoe <- .cst_v(x, "odoe")
-  cem <- .cst_cemented(x)
+  # the cementation sign by the cementation class alone (Hugo, 2026-11-13)
+  cem <- .cst_cemented(x, rupture = FALSE)
   cr <- .cst_v(x, "cracked_coatings_pct")
   c_signs <- (cem$value & cem$recorded) | (!is.na(cr) & cr >= t$cracked_min_pct) |
     (alfe >= t$alfe_min_pct & .cst_shift(alfe, -1L) <= alfe / 2) |
@@ -1022,9 +1026,20 @@
   # less above). Measured Alo + 1/2 Feo without the other signs decides the
   # signs absent (spodic evidence at most); with neither oxalate measurement
   # nor ODOE the signs are undecided.
+  # v0.9.407 (Hugo, 2026-11-13): an E layer counts when the run of E layers
+  # it closes holds an albic horizon or leaves it undecided (its colours not
+  # recorded); an E of recorded colours that are not albic (10YR 5/6) does
+  # not let the colours alone make spodic materials below it.
   alb <- .cst_hz(x, "albic_horizon")$full
-  up_k <- .cst_shift(x$kind, -1L); up_a <- .cst_shift(alb, -1L)
-  below_e <- ifelse(up_k %in% "E" | up_a %in% TRUE, TRUE,
+  e_run <- rep(NA, x$n)
+  for (i in which(x$kind %in% "E")) {
+    j <- i
+    while (j > 1L && x$kind[j - 1L] %in% "E") j <- j - 1L
+    ab <- alb[j:i]
+    e_run[i] <- if (any(ab %in% TRUE)) TRUE else if (anyNA(ab)) NA else FALSE
+  }
+  up_k <- .cst_shift(x$kind, -1L); up_a <- .cst_shift(alb, -1L); up_e <- .cst_shift(e_run, -1L)
+  below_e <- ifelse(up_a %in% TRUE | (up_k %in% "E" & !(up_e %in% FALSE)), TRUE,
                     ifelse(is.na(up_k) & is.na(up_a) & seq_len(x$n) > 1L, NA, FALSE))
   other <- (cem$value & cem$recorded) | (!is.na(cr) & cr >= t$cracked_min_pct)
   a_s <- ifelse(is.na(alfe), NA, alfe >= t$alfe_min_pct & .cst_shift(alfe, -1L) <= alfe / 2)
