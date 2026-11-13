@@ -629,7 +629,7 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     # lime): the colour of the text with 0.6 % OC, or, with the lime, a moist
     # value of 5 or less (the dry value waived) with 2.5 % OC. CaCO3 not
     # measured leaves the waiver undecided unless .f88_caco3() reads it as
-    # absent (no HCl reaction, pH below 6.5, flagged).
+    # absent (no HCl reaction, pH below 7, flagged).
     cc_l <- .f88_caco3(x)
     m_cc <- mix("caco3_pct", cc_l$value)
     flags <- c(flags, .f88_flags(cc_l$flags, win))
@@ -1325,7 +1325,8 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
 
 # Calcium carbonate of each layer as the calcic horizons read it: caco3_pct;
 # not recorded, a field reaction with HCl recorded as none, or a water pH below
-# 6.5, reads as no free carbonate (0), flagged (soilKey's reading).
+# 7 (6.5 until 0.9.404; Hugo, 2026-11-12), reads as no free carbonate (0),
+# flagged (soilKey's reading).
 .f88_caco3 <- function(x) {
   .f88_memo(x, "caco3", function() {
     cc <- .f88_num(x, "caco3_pct")
@@ -1334,8 +1335,8 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
     flag <- rep(NA_character_, x$n)
     e0 <- is.na(cc) & !is.na(eff) & grepl("^(none|non|no |no$|nenhuma|ausente)", eff)
     cc[e0] <- 0; flag[e0] <- "no_carbonate_from_effervescence"
-    p0 <- is.na(cc) & !is.na(ph) & ph < 6.5
-    cc[p0] <- 0; flag[p0] <- "no_carbonate_at_ph_below_6.5"
+    p0 <- is.na(cc) & !is.na(ph) & ph < 7
+    cc[p0] <- 0; flag[p0] <- "no_carbonate_at_ph_below_7"
     list(value = cc, flags = flag)
   })
 }

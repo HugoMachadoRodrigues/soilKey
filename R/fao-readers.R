@@ -183,7 +183,12 @@
 # systems). FALSE when every such layer fails and the description covers
 # the profile, without gaps, to below X (a layer could start at X itself),
 # or to rock at or above X.
-.fao_within <- function(h, test, depth) {
+#
+# `field = TRUE` marks a field feature (plinthite): none is described below
+# the deepest layer, so a description that stops above X, without gaps,
+# decides as one that reaches X, flagged (Hugo, 2026-11-12; 0.9.405). Rock is
+# never read so: a description that stops shallow often stops on rock.
+.fao_within <- function(h, test, depth, field = FALSE) {
   d <- .fao_depths(h)
   rock <- .fao_is_rock(h)
   idx <- which(!is.na(d$top) & d$top <= depth & !rock)
@@ -191,6 +196,11 @@
   if (any(v %in% TRUE)) return(.fao_ans(TRUE, layers = idx[v %in% TRUE]))
   w <- .fao_window(h, 0, depth + 1e-3)
   if (all(v %in% FALSE) && w$covered) return(.fao_ans(FALSE, layers = integer(0)))
+  if (isTRUE(field) && length(v) && all(v %in% FALSE)) {
+    deepest <- suppressWarnings(max(d$bottom, na.rm = TRUE))
+    if (is.finite(deepest) && deepest < depth && .fao_window(h, 0, deepest)$covered)
+      return(.fao_ans(FALSE, layers = integer(0), flags = "absent_below_the_description"))
+  }
   wm <- if (w$covered) list(missing = character(0), flags = character(0), note = character(0))
         else .fao_window_missing(w)
   .fao_ans(NA, missing = wm$missing, flags = wm$flags, note = wm$note,

@@ -1703,6 +1703,13 @@ recent_alluvial_deposits_fao74 <- function(pedon) {
   passed <- if (isFALSE(origin)) FALSE else crit
   miss <- c(if (is.na(ca) || is.na(cb$value)) "oc_pct", cb$missing, sw$missing,
             if (is.na(origin)) "parent_material")
+  # the criteria undecided and no fluviatile, marine, lacustrine or
+  # colluvial origin recorded: no recent alluvial deposits, flagged (Hugo,
+  # 2026-11-12; 0.9.405)
+  if (is.na(passed) && is.na(origin)) {
+    passed <- FALSE
+    flags <- c(flags, "fluvic_undecided_no_sediment_origin_recorded_absent")
+  }
   .f74_pr_result(x, id, list(value = passed, layers = if (isFALSE(passed)) integer(0) else L),
                  flags = flags, missing = miss,
                  evidence = list(origin = origin, om_irregular = ca, om_above_0.35 = cb$value,

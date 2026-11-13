@@ -431,7 +431,9 @@ plinthosols_gate_fao88 <- function(pedon) {
   if (!x$n) return(.f88_key_result(x, "plinthosols_gate", FALSE, pg))
   pl <- plinthite_fao88(pedon, min_pct = 25, min_thickness_cm = 15)
   pv <- .f88_values(pl, x$n)
-  a <- .fao_within(x$h, pv, 50)
+  # plinthite is a field feature: none below the deepest layer described
+  # (Hugo, 2026-11-12; 0.9.405)
+  a <- .fao_within(x$h, pv, 50, field = TRUE)
   runs <- .f88_run_list(x, !(pv %in% FALSE))
   ae <- .f88_member(x, .f88_hz_albic_e(x)$units)
   sg <- .f88_stagnic_v(x)$value
@@ -451,7 +453,7 @@ plinthosols_gate_fao88 <- function(pedon) {
     cond <- .fao_or(e_above, s_above, g_above)
     deep[r$layers] <- .f88_and(pv[r$layers], cond)
   }
-  b <- .fao_within(x$h, deep, 125)
+  b <- .fao_within(x$h, deep, 125, field = TRUE)
   value <- .fao_or(a$value, b$value)
   .f88_key_result(x, "plinthosols_gate", value, pg,
                   layers = c(a$layers, b$layers),

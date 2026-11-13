@@ -175,15 +175,17 @@ test_that("calcareous and calcaric: more than 2 % CaCO3 or strong effervescence,
   expect_true(.ok(calcareous_fao88(.mid(effervescence_class = c(NA, "violent", NA)))))
   for (e in c("moderate", "slight", "none"))
     expect_true(is.na(calcareous_fao88(.mid(effervescence_class = e))$passed), info = e)
-  # without CaCO3 a water pH below 6.5 is not calcareous, flagged; with
-  # strong effervescence too, a conflict: undecided, flagged (Hugo, 2026-11-09)
+  # without CaCO3 a water pH below 7 (6.5 until 0.9.404; Hugo, 2026-11-12) is
+  # not calcareous, flagged; with strong effervescence too, a conflict:
+  # undecided, flagged (Hugo, 2026-11-09)
   r <- calcareous_fao88(.mid(effervescence_class = "none", ph_h2o = 5))
-  expect_false(r$passed); expect_true("no_carbonate_at_ph_below_6.5" %in% r$evidence$flags)
+  expect_false(r$passed); expect_true("no_carbonate_at_ph_below_7" %in% r$evidence$flags)
   expect_false(.ok(calcareous_fao88(.mid(ph_h2o = 6.4))))
-  expect_true(is.na(calcareous_fao88(.mid(ph_h2o = 6.5))$passed))
+  expect_false(.ok(calcareous_fao88(.mid(ph_h2o = 6.9))))
+  expect_true(is.na(calcareous_fao88(.mid(ph_h2o = 7))$passed))
   r <- calcareous_fao88(.mid(effervescence_class = c(NA, "strong", NA), ph_h2o = 5))
   expect_true(is.na(r$passed))
-  expect_true("strong_effervescence_at_ph_below_6.5_conflict" %in% r$evidence$flags)
+  expect_true("strong_effervescence_at_ph_below_7_conflict" %in% r$evidence$flags)
   # a measured CaCO3 still decides whatever the pH
   expect_true(.ok(calcareous_fao88(.mid(caco3_pct = c(0, 3, 0), ph_h2o = 6))))
   r <- calcareous_fao88(.mid())
