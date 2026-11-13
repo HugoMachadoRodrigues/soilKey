@@ -1,5 +1,91 @@
 # Changelog
 
+## soilKey 0.9.406
+
+FAO-Unesco legends of 1974 and 1988 on the ISIS reference profiles: why
+the Andosols were never recognised (0 of 51 labels of 1974, 0 of 46 of
+1988), and three readings that follow from it (Hugo, 2026-11-13), in
+`inst/rules/fao1988/readings.yaml` and
+`inst/rules/fao1974/readings.yaml`.
+
+- **The ISIS reader reads the lithology ISIS records.** The parent
+  material (`site$parent_material`) was `lithologyParmat` only, which
+  most profiles record as “Unconsolidated and unspecified deposits”. It
+  is now every lithology field, joined by “;”: `lithologyParmat`,
+  `lithologyParmat2`, the deposition (`lithologyParmatDeposition`,
+  `lithologyParmatDeposition2`, such as “Ejecta ash”, “Colluvium”,
+  “Residual material”) and the specific lithology (`lithologyParmatXxx`,
+  `lithologyParmatXx2`, such as “Basic ash”, “Tuff”, “Limestone”), added
+  to the GraphQL query. The water depositions (F fluvio-glacial, M
+  marine, L lacustrine) are left out: since 0.9.314 they are the
+  `rock_origin` of the layers, and read as text they made the Japanese
+  keys take old marine and lacustrine deposits for lowland alluvium.
+- **Volcanic parent materials are not alluvial sediments.** The parent
+  materials that name volcanic material (ash as a whole word, ejecta,
+  pumice, cinders, scoria, lava, obsidian, tuff, ignimbrite,
+  pyroclastic, lapilli, beside volcanic and tephra) are a recorded
+  origin that is not fluviatile, marine or lacustrine: tephra with
+  buried A horizons, whose organic carbon rises with depth, is no longer
+  read as fluvic (1988) or as recent alluvial deposits (1974). The
+  volcanic material of the andic properties and of the Andosol material
+  reads ash as a whole word too, so a slope wash is not volcanic.
+- **Gypsum not measured and not named is none.** Where `caso4_pct` is
+  not recorded and no electrical conductivity decides, the gypsum of a
+  layer is none, flagged `gypsum_not_measured_none_named`, unless the
+  record names gypsum somewhere in the profile (`caso4_pct` or
+  `gypsum_visible_pct` above 0, a designation with the suffix y, a
+  horizon text naming gypsum, a parent material naming gypsum, anhydrite
+  or evaporites); then it stays undecided as before. An undecided gypsic
+  horizon left “no other diagnostic horizon” undecided for many groups,
+  the Andosols among them.
+
+The P retention of the andic properties of 1988 (item 1) stays undecided
+where it is not measured: no stand-in (Hugo, 2026-11-13). ISIS measures
+neither the P retention nor the volcanic glass, so the 1988 Andosols
+remain undecided on ISIS; most 1974 Andosols lack the bulk density of
+some layer of the upper 35 cm.
+
+ISIS benchmark (`inst/benchmarks/fao_isis.R`, 814 profiles; 0.9.405 -\>
+0.9.406): grouping agreement 1974 37.6 -\> 38.7 % (unit 20.0 -\> 20.9
+%), 1988 29.9 -\> 31.6 % (unit 19.3 -\> 20.5 %); fall-throughs 186 -\>
+161 and 262 -\> 236; 11 labels gained and 2 lost in 1974, 13 gained and
+1 lost in 1988 (the losses were provisional classes that matched while a
+group tested before them was undecided). Andosols of 1974: 0 -\> 2 of
+51.
+
+WoSIS benchmark (5,861 profiles, weighted; 0.9.405 -\> 0.9.406): FAO
+1988 agreement 4.0 -\> 7.1 %, covered 12.2 -\> 19.4 %, firm classes 118
+-\> 175; FAO 1974 agreement 10.7 -\> 11.7 %, covered 27.8 -\> 31.0 %,
+firm classes 320 -\> 381.
+
+On the fixtures and the examples of every system (730 FAO
+classifications), 199 names change: 49 undecided names now decide
+(mostly Eutric Regosols, many of them provisional), 140 undecided names
+keep fewer candidates, and 10 decided names change: the canonical
+Calcisol (Calcaric Cambisols -\> Haplic Calcisols; 1974 Haplic -\>
+Calcic Xerosols), the Andosol examples of CPCS and RP 2008 (Humic
+Cambisols or Haplic Phaeozems -\> Humic or Mollic Andosols), and the
+CPCS isohumic example of 1988 (Haplic Phaeozems -\> Mollic Fluvisols, by
+its organic carbon, with no origin recorded).
+
+The other systems on the 974 ISIS profiles, through the parent material
+now read: NZSC 41 names (Tephric Recent Soils on ash; Mafic or Melanic
+soils on basic rock and limestone), HSCS 84 (mostly the colluvial
+qualifier where ISIS records colluvium), CSCJ 27 (Calcaric Dark Red
+soils on limestone), CPCS 19 (volcanic and reworked soils), CST 17, KA5
+7, SCSJ 1, RP 2008 1, WRB, SiBCS and USDA at most 2; CSSC, ASC, KIDPR
+and ZA unchanged. In CST, a recorded parent material that is not
+volcanic rules the andic property out (0.9.373), so the spodic horizon
+decides: 11 profiles become Hapli-Orthic Spodosols, 7 of them ISRIC
+Podzols (MY052, NO002, NL034, FI004, SE015, MY053, NL032) and 4 not
+(BW001 and GR013 Luvisols, RO008 Planosol, TR004 Alisol), kept as they
+are and listed here for a later review of the CST spodic horizon.
+
+The 1974 canonical Histosol keys as a Regosol: its organic layers are
+not read as an H horizon, which asks for saturation, and the fixture
+records no drainage. That was already so before 0.9.406 (it was
+undecided between Solonchaks and Regosols).
+
 ## soilKey 0.9.405
 
 FAO-Unesco legends of 1974 and 1988: six readings for profiles that
