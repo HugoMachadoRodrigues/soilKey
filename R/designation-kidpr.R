@@ -33,10 +33,13 @@
 .KIDPR_DECLARED <- c("kidpr", "kidpr2008", "ru", "ru2004", "ru2008", "russian",
                      "russia", "rfg2008", "rsc2004", "rus", "russian2004", "russian2008")
 
-# A declared value that starts with kidpr, ru, rfg or rsc ("Russian 2008",
-# "RU-2008", "kidpr 2008", "rfg2008") also declares the notation (Hugo's
-# decision 4 on the RP notation, 2026-11-02, applied to the Russian reader).
-.KIDPR_DECLARED_PREFIX <- "^(kidpr|ru|rfg|rsc)"
+# A declared value that starts with kidpr, rfg, rsc or russia ("Russian 2008",
+# "kidpr 2008", "rfg2008"), or with ru or rus followed by a digit ("RU-2008",
+# "rus 2004"), also declares the notation (Hugo's decision 4 on the RP
+# notation, 2026-11-02, applied to the Russian reader). ru and rus alone are
+# in the list above; a word that only begins with the letters ru ("rural",
+# "rubefied") declares nothing (v0.9.404).
+.KIDPR_DECLARED_PREFIX <- "^(kidpr|rfg|rsc|russia|rus?[0-9])"
 
 # Does a declared key name the Russian notation?
 .kidpr_key_is_ru <- function(key) {
