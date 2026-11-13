@@ -1,5 +1,56 @@
 # Changelog
 
+## soilKey 0.9.405
+
+FAO-Unesco legends of 1974 and 1988: six readings for profiles that
+record little (Hugo, 2026-11-12), after a diagnosis of where the keys
+stopped on the WoSIS benchmark (the first grouping left undecided and
+the attribute it missed). Each is in `inst/rules/fao1988/readings.yaml`
+and `inst/rules/fao1974/readings.yaml`.
+
+- **A layer designated as mineral is not organic material.** A layer
+  whose designation names a mineral master horizon (A, E, B or C, a
+  transition, with or without a lithological prefix: A1, 2Bt, Csk, AC,
+  B/C) is not organic material (1988) and not an H horizon (1974) when
+  the organic carbon leaves that undecided, flagged
+  `mineral_layer_from_designation`.
+- **No organic layer below the deepest layer described.** The Histosols
+  no longer stay undecided because a description stops above 80 cm.
+- **The spodic B absent from a described profile.** With the chemistry
+  undecided, a profile with designations none of whose B layers carries
+  the h, s or ir of a spodic B has no spodic B, flagged
+  `spodic_b_not_in_the_designations`. A profile with no designation
+  keeps the stand-ins.
+- **Fluvic properties.** Criteria undecided (organic carbon not
+  measured, or a description that stops above 125 cm) and no fluviatile,
+  marine or lacustrine origin recorded: absent, flagged
+  `fluvic_undecided_no_sediment_origin_recorded_absent`; also the recent
+  alluvial deposits of 1974.
+- **Plinthite below the description.** The Plinthosols take no plinthite
+  below the deepest layer described (`.fao_within(field = TRUE)`,
+  flagged `absent_below_the_description`). Continuous hard rock is never
+  read so: a description that stops shallow often stops on rock.
+- **No free carbonate below pH 7** (was 6.5): without `caco3_pct`, a
+  water pH below 7 reads as no free carbonate and not calcareous,
+  flagged `no_carbonate_at_ph_below_7`.
+
+WoSIS benchmark (5,861 profiles, weighted; 0.9.404 -\> 0.9.405): FAO
+1988 agreement 2.4 -\> 4.0 %, covered 7.7 -\> 12.2 %; FAO 1974 agreement
+10.0 -\> 10.7 %, covered 26.0 -\> 27.8 %, firm classes 13 -\> 320. What
+still stops the keys is mostly data WoSIS does not serve: Munsell
+colours (the mollic A of the Chernozems, Kastanozems and of the 1974
+Regosols), the electrical conductivity (Solonchaks), CaCO3 and gypsum,
+and base saturation.
+
+On the fixtures and the examples of every system (730 classifications),
+33 undecided names now decide, mostly Cambisols, and five 1974 names
+change: the canonical Gleysol, Gleissolo and Stagnosol from Gleyic
+Cambisols to Eutric Gleysols, the canonical Planosol from Gleyic
+Luvisols to Eutric Planosols, the CPCS hydromorphic example from Haplic
+Phaeozems to Mollic Gleysols. Two tests of the review of 2026-11-09 that
+kept a Bw or Bg profile without spodic chemistry undecided now follow
+the new spodic reading.
+
 ## soilKey 0.9.404
 
 - **The tests never query ISRIC.** A helper replaces `.wosis_post()`,
@@ -22,6 +73,8 @@
 - No classification changes.
 
 ## soilKey 0.9.403
+
+CRAN release: 2026-11-12
 
 - CRAN check time. The CRAN check runs a smoke set of tests: one profile
   through each key of the registry, the fixture tests of the WRB 2022,

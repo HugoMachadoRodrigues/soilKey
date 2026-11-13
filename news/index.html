@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.404</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.405</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,24 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.405" id="soilkey-09405">soilKey 0.9.405<a class="anchor" aria-label="anchor" href="#soilkey-09405"></a></h2>
+<p>FAO-Unesco legends of 1974 and 1988: six readings for profiles that record little (Hugo, 2026-11-12), after a diagnosis of where the keys stopped on the WoSIS benchmark (the first grouping left undecided and the attribute it missed). Each is in <code>inst/rules/fao1988/readings.yaml</code> and <code>inst/rules/fao1974/readings.yaml</code>.</p>
+<ul><li>
+<strong>A layer designated as mineral is not organic material.</strong> A layer whose designation names a mineral master horizon (A, E, B or C, a transition, with or without a lithological prefix: A1, 2Bt, Csk, AC, B/C) is not organic material (1988) and not an H horizon (1974) when the organic carbon leaves that undecided, flagged <code>mineral_layer_from_designation</code>.</li>
+<li>
+<strong>No organic layer below the deepest layer described.</strong> The Histosols no longer stay undecided because a description stops above 80 cm.</li>
+<li>
+<strong>The spodic B absent from a described profile.</strong> With the chemistry undecided, a profile with designations none of whose B layers carries the h, s or ir of a spodic B has no spodic B, flagged <code>spodic_b_not_in_the_designations</code>. A profile with no designation keeps the stand-ins.</li>
+<li>
+<strong>Fluvic properties.</strong> Criteria undecided (organic carbon not measured, or a description that stops above 125 cm) and no fluviatile, marine or lacustrine origin recorded: absent, flagged <code>fluvic_undecided_no_sediment_origin_recorded_absent</code>; also the recent alluvial deposits of 1974.</li>
+<li>
+<strong>Plinthite below the description.</strong> The Plinthosols take no plinthite below the deepest layer described (<code>.fao_within(field = TRUE)</code>, flagged <code>absent_below_the_description</code>). Continuous hard rock is never read so: a description that stops shallow often stops on rock.</li>
+<li>
+<strong>No free carbonate below pH 7</strong> (was 6.5): without <code>caco3_pct</code>, a water pH below 7 reads as no free carbonate and not calcareous, flagged <code>no_carbonate_at_ph_below_7</code>.</li>
+</ul><p>WoSIS benchmark (5,861 profiles, weighted; 0.9.404 -&gt; 0.9.405): FAO 1988 agreement 2.4 -&gt; 4.0 %, covered 7.7 -&gt; 12.2 %; FAO 1974 agreement 10.0 -&gt; 10.7 %, covered 26.0 -&gt; 27.8 %, firm classes 13 -&gt; 320. What still stops the keys is mostly data WoSIS does not serve: Munsell colours (the mollic A of the Chernozems, Kastanozems and of the 1974 Regosols), the electrical conductivity (Solonchaks), CaCO3 and gypsum, and base saturation.</p>
+<p>On the fixtures and the examples of every system (730 classifications), 33 undecided names now decide, mostly Cambisols, and five 1974 names change: the canonical Gleysol, Gleissolo and Stagnosol from Gleyic Cambisols to Eutric Gleysols, the canonical Planosol from Gleyic Luvisols to Eutric Planosols, the CPCS hydromorphic example from Haplic Phaeozems to Mollic Gleysols. Two tests of the review of 2026-11-09 that kept a Bw or Bg profile without spodic chemistry undecided now follow the new spodic reading.</p>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.404" id="soilkey-09404">soilKey 0.9.404<a class="anchor" aria-label="anchor" href="#soilkey-09404"></a></h2>
 <ul><li>
 <strong>The tests never query ISRIC.</strong> A helper replaces <code>.wosis_post()</code>, the one door to ISRIC’s GraphQL services (WoSIS and ISIS), with an offline stand-in that answers as an unreachable server does, for the whole test run. Before, the WoSIS picker of the app (started by the module tests) and two tests of the live reader sent real requests to graphql.isric.org, so the suite depended on ISRIC and could wait on its server. Tests that need a reply mock it themselves; the LIVE tests still run with <code>SOILKEY_TEST_WOSIS_LIVE=true</code>.</li>
@@ -63,7 +81,7 @@
 <li>No classification changes.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.403" id="soilkey-09403">soilKey 0.9.403<a class="anchor" aria-label="anchor" href="#soilkey-09403"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.9.403" id="soilkey-09403">soilKey 0.9.403<a class="anchor" aria-label="anchor" href="#soilkey-09403"></a></h2><p class="text-muted">CRAN release: 2026-11-12</p>
 <ul><li>CRAN check time. The CRAN check runs a smoke set of tests: one profile through each key of the registry, the fixture tests of the WRB 2022, SiBCS, USDA, CSSC and ASC keys, the <code>PedonRecord</code> class, the registry and <code><a href="../reference/classify_all.html">classify_all()</a></code>. The full suite still runs wherever <code>NOT_CRAN</code> is <code>"true"</code> (devtools and the GitHub checks).</li>
 <li>The vignettes run their code only where <code>NOT_CRAN</code> is <code>"true"</code>. The vignettes shipped with the package and on the website are built with every chunk run; the CRAN check rebuilds them without running the code.</li>
 <li>No classification changes.</li>
