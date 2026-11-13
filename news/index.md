@@ -1,5 +1,26 @@
 # Changelog
 
+## soilKey 0.9.404
+
+- **The tests never query ISRIC.** A helper replaces `.wosis_post()`,
+  the one door to ISRIC’s GraphQL services (WoSIS and ISIS), with an
+  offline stand-in that answers as an unreachable server does, for the
+  whole test run. Before, the WoSIS picker of the app (started by the
+  module tests) and two tests of the live reader sent real requests to
+  graphql.isric.org, so the suite depended on ISRIC and could wait on
+  its server. Tests that need a reply mock it themselves; the LIVE tests
+  still run with `SOILKEY_TEST_WOSIS_LIVE=true`.
+- **Russian notation: “rural” is not Russian.** A value of
+  `site$designation_system` that starts with kidpr, rfg, rsc or russia
+  still declares the Russian notation, but ru and rus now declare it
+  only alone or followed by a digit (RU-2008, rus 2004). Before, any
+  value that began with the letters ru did (rural, rubefied).
+- **South Africa 1991, Oakleaf:** the reading of a weak, uniform red B
+  as an apedal B (V 21; D8) is confirmed (Hugo, 2026-11-12), and the
+  AfSP benchmark report now names Oakleaf -\> Hutton as a limit of the
+  data, which record no variegation, cutans or origin of the layers.
+- No classification changes.
+
 ## soilKey 0.9.403
 
 - CRAN check time. The CRAN check runs a smoke set of tests: one profile

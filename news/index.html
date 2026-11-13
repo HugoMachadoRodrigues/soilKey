@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.403</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.404</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,9 +49,19 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/v0.9.403/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.404" id="soilkey-09404">soilKey 0.9.404<a class="anchor" aria-label="anchor" href="#soilkey-09404"></a></h2>
+<ul><li>
+<strong>The tests never query ISRIC.</strong> A helper replaces <code>.wosis_post()</code>, the one door to ISRIC’s GraphQL services (WoSIS and ISIS), with an offline stand-in that answers as an unreachable server does, for the whole test run. Before, the WoSIS picker of the app (started by the module tests) and two tests of the live reader sent real requests to graphql.isric.org, so the suite depended on ISRIC and could wait on its server. Tests that need a reply mock it themselves; the LIVE tests still run with <code>SOILKEY_TEST_WOSIS_LIVE=true</code>.</li>
+<li>
+<strong>Russian notation: “rural” is not Russian.</strong> A value of <code>site$designation_system</code> that starts with kidpr, rfg, rsc or russia still declares the Russian notation, but ru and rus now declare it only alone or followed by a digit (RU-2008, rus 2004). Before, any value that began with the letters ru did (rural, rubefied).</li>
+<li>
+<strong>South Africa 1991, Oakleaf:</strong> the reading of a weak, uniform red B as an apedal B (V 21; D8) is confirmed (Hugo, 2026-11-12), and the AfSP benchmark report now names Oakleaf -&gt; Hutton as a limit of the data, which record no variegation, cutans or origin of the layers.</li>
+<li>No classification changes.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.403" id="soilkey-09403">soilKey 0.9.403<a class="anchor" aria-label="anchor" href="#soilkey-09403"></a></h2>
 <ul><li>CRAN check time. The CRAN check runs a smoke set of tests: one profile through each key of the registry, the fixture tests of the WRB 2022, SiBCS, USDA, CSSC and ASC keys, the <code>PedonRecord</code> class, the registry and <code><a href="../reference/classify_all.html">classify_all()</a></code>. The full suite still runs wherever <code>NOT_CRAN</code> is <code>"true"</code> (devtools and the GitHub checks).</li>
