@@ -636,3 +636,33 @@ readings:
     page: "p. 34"
     version: "0.9.392"
     reading: "When Alox + 1/2 Feox is 2 % or more and the bulk density 0.9 or less, and the P retention is not measured, the andic properties are undecided (flagged andic_undecided_p_retention_not_measured), volcanic material recorded or not; the rule that undecided andic properties are absent unless volcanic material is recorded applies only when fewer criteria are met. The amorphous complex of 1974 has no 'absent' rule: undecided stays undecided, then the stand-ins (Hugo, 2026-11-10)."
+  - topic: "A layer designated as mineral is not organic material"
+    edition: [1988, 1974]
+    page: "p. 39; p. 75; 74 pp. 21, 43"
+    version: "0.9.405"
+    reading: "A layer whose designation names a mineral master horizon (A, E, B or C, a transition between them, with or without a lithological prefix: A1, 2Bt, Csk, AC, B/C) is not organic material (1988) and not an H horizon (1974) when the organic carbon leaves that undecided, flagged mineral_layer_from_designation: the designation is a field observation, and organic layers are written H or O. A layer with no designation and no organic carbon stays undecided (Hugo, 2026-11-12)."
+  - topic: "No organic layer below the deepest layer described"
+    edition: [1988, 1974]
+    page: "p. 75; 74 p. 43"
+    version: "0.9.405"
+    reading: "The Histosols take no organic layer below the deepest layer described: a description that stops above 80 cm no longer leaves the cumulative 40 cm of organic layers undecided, since an organic layer is a field observation and none is described there (Hugo, 2026-11-12)."
+  - topic: "The spodic B absent from a described profile"
+    edition: [1988, 1974]
+    page: "pp. 30-31; 74 p. 26"
+    version: "0.9.405"
+    reading: "When the chemistry of the spodic B is undecided, a profile with designations recorded none of whose B layers carries the h, s or ir of a spodic B (Bh, Bs, Bhs, Bir) has no spodic B, flagged spodic_b_not_in_the_designations; items 1 (cementation) and 2 (pellets, cracked coatings) still decide. A profile with no designation keeps the stand-ins (Hugo, 2026-11-12)."
+  - topic: "Fluvic properties undecided with no sediment origin recorded"
+    edition: [1988, 1974]
+    page: "p. 35; 74 p. 43"
+    version: "0.9.405"
+    reading: "When the criteria of the fluvic properties (1988) or of the recent alluvial deposits (1974) are undecided (organic carbon not measured, or a description that stops above 125 cm) and no fluviatile, marine or lacustrine origin (1974: or colluvial) is recorded in the parent material, the layers or the landform, they are absent, flagged fluvic_undecided_no_sediment_origin_recorded_absent. With such an origin recorded, or with criteria that decide, nothing changes (Hugo, 2026-11-12)."
+  - topic: "No plinthite below the deepest layer described"
+    edition: [1988]
+    page: "p. 81"
+    version: "0.9.405"
+    reading: "Plinthite is a field feature: the Plinthosols take none below the deepest layer described, so a description that stops above 50 or 125 cm, without gaps, decides as one that reaches that depth, flagged absent_below_the_description. Continuous hard rock is never read so, since a description that stops shallow often stops on rock (Hugo, 2026-11-12)."
+  - topic: "No free carbonate below pH 7"
+    edition: [1988, 1974]
+    page: "pp. 31, 35; 74 p. 27"
+    version: "0.9.405"
+    reading: "Amends the reading of 2026-11-09: without caco3_pct, a water pH below 7 (was 6.5) reads as no free carbonate for the calcic horizons and as not calcareous, flagged no_carbonate_at_ph_below_7; strong effervescence below pH 7 is a conflict, flagged strong_effervescence_at_ph_below_7_conflict (Hugo, 2026-11-12)."

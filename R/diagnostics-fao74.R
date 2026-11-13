@@ -182,7 +182,12 @@
   .f88_memo(x, "organic", function() {
     v <- .f74_organic_v(.f88_num(x, "oc_pct"), .f88_num(x, "clay_pct"), .f74_saturated(x))
     v[x$rock] <- FALSE
-    list(value = v, missing = c("oc_pct", "drainage_class", "clay_pct"))
+    # a layer designated with a mineral master horizon is mineral when the
+    # organic matter leaves it undecided (Hugo, 2026-11-12; 0.9.405)
+    md <- is.na(v) & .fao_mineral_designated(x)
+    v[md] <- FALSE
+    list(value = v, missing = c("oc_pct", "drainage_class", "clay_pct"),
+         flags = ifelse(md, "mineral_layer_from_designation", NA_character_))
   })
 }
 
@@ -196,6 +201,9 @@
                      ifelse(is.na(line), NA, om >= line))))
     v <- .f88_and(enough, .f74_saturated(x))
     v[x$rock] <- FALSE
+    # not an H horizon: a layer designated with a mineral master horizon
+    # whose organic matter is not measured (Hugo, 2026-11-12; 0.9.405)
+    v[is.na(v) & .fao_mineral_designated(x)] <- FALSE
     v
   })
 }
@@ -1695,6 +1703,13 @@ recent_alluvial_deposits_fao74 <- function(pedon) {
   passed <- if (isFALSE(origin)) FALSE else crit
   miss <- c(if (is.na(ca) || is.na(cb$value)) "oc_pct", cb$missing, sw$missing,
             if (is.na(origin)) "parent_material")
+  # the criteria undecided and no fluviatile, marine, lacustrine or
+  # colluvial origin recorded: no recent alluvial deposits, flagged (Hugo,
+  # 2026-11-12; 0.9.405)
+  if (is.na(passed) && is.na(origin)) {
+    passed <- FALSE
+    flags <- c(flags, "fluvic_undecided_no_sediment_origin_recorded_absent")
+  }
   .f74_pr_result(x, id, list(value = passed, layers = if (isFALSE(passed)) integer(0) else L),
                  flags = flags, missing = miss,
                  evidence = list(origin = origin, om_irregular = ca, om_above_0.35 = cb$value,

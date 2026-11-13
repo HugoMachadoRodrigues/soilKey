@@ -312,8 +312,8 @@ andic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # here). soilKey's effervescence_class (1 M
 # HCl) is read for the 10 % HCl, flagged: strong, very strong or violent in
 # most of the fine earth (an extent recorded as local does not count)
-# passes. Without caco3_pct that decides, and a water pH below 6.5 reads as
-# not calcareous, flagged; both recorded conflict (undecided, flagged); any
+# passes. Without caco3_pct that decides, and a water pH below 7 (6.5 until
+# 0.9.404; Hugo, 2026-11-12) reads as not calcareous, flagged; both recorded conflict (undecided, flagged); any
 # other effervescence, or none recorded, leaves it undecided (Hugo,
 # 2026-11-09).
 .f88_effervescence_class <- function(x) {
@@ -337,18 +337,18 @@ andic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
     flag <- rep(NA_character_, x$n)
     strong <- !is.na(cls) & cls >= 3L & most
     by_cce <- .f88_cmp(cce, ">", 2)
-    # strong effervescence passes; without CaCO3 a water pH below 6.5 is not
+    # strong effervescence passes; without CaCO3 a water pH below 7 is not
     # calcareous, flagged (Hugo, 2026-11-09, as for the horizons); both
     # recorded conflict and leave it undecided, flagged; anything else
     # decides nothing
     ph <- .f88_num(x, "ph_h2o")
-    acid <- is.na(cce) & !is.na(ph) & ph < 6.5
+    acid <- is.na(cce) & !is.na(ph) & ph < 7
     v <- ifelse(strong, TRUE, by_cce)
     v[acid & !strong] <- FALSE
     v[acid & strong] <- NA
     flag <- .f88_addf(flag, strong & !acid & !(by_cce %in% TRUE), "effervescence_1m_hcl_for_10pct_hcl")
-    flag <- .f88_addf(flag, acid & !strong, "no_carbonate_at_ph_below_6.5")
-    flag <- .f88_addf(flag, acid & strong, "strong_effervescence_at_ph_below_6.5_conflict")
+    flag <- .f88_addf(flag, acid & !strong, "no_carbonate_at_ph_below_7")
+    flag <- .f88_addf(flag, acid & strong, "strong_effervescence_at_ph_below_7_conflict")
     list(value = .f88_pr_clean(x, v), flags = flag,
          missing = c("caco3_pct", "effervescence_class"))
   })
@@ -580,6 +580,12 @@ fluvic_properties_fao88 <- function(pedon, oc_increase_min = 0.2) {
   passed <- if (isFALSE(origin)) FALSE else crit
   miss <- c(if (is.na(c1a) || is.na(c1b$value)) "oc_pct", c1b$missing,
             if (is.na(origin)) "parent_material")
+  # the criteria undecided and no fluviatile, marine or lacustrine origin
+  # recorded: no fluvic properties, flagged (Hugo, 2026-11-12; 0.9.405)
+  if (is.na(passed) && is.na(origin)) {
+    passed <- FALSE
+    flags <- c(flags, "fluvic_undecided_no_sediment_origin_recorded_absent")
+  }
   st <- list(value = passed, layers = if (isTRUE(passed) || is.na(passed)) L else integer(0))
   .f88_pr_result(x, id, st, flags = flags, missing = miss,
                  evidence = list(origin = origin, oc_irregular = c1a, oc_above_0.2 = c1b$value,

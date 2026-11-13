@@ -108,8 +108,6 @@ histosols_gate_fao88 <- function(pedon) {
   light <- (!is.na(sph) & sph >= 75) | (!is.na(bd) & bd < 0.1)
   cf <- .f88_num(x, "coarse_fragments_pct")
   th <- pmax(x$bot - x$top, 0); th[is.na(th)] <- 0
-  deepest <- suppressWarnings(max(x$bot, na.rm = TRUE)); if (!is.finite(deepest)) deepest <- 0
-  on_rock <- any(x$rock)
   test <- function(o) {
     need <- if (any(light & o)) 60 else 40
     # from the surface down
@@ -129,9 +127,11 @@ histosols_gate_fao88 <- function(pedon) {
   }
   sure <- test(org %in% TRUE)
   maybe <- test(!(org %in% FALSE))
-  # a description that stops above 80 cm leaves the cumulative path open
-  open <- !on_rock && deepest < 80 && !sure$any &&
-    (maybe$cum + (80 - deepest)) >= maybe$need
+  # A description that stops above 80 cm no longer leaves the cumulative path
+  # open: an organic layer is a field observation, and none is described
+  # below the deepest layer (Hugo, 2026-11-12; 0.9.405). Until 0.9.404 the
+  # undescribed part of the upper 80 cm left the gate undecided.
+  open <- FALSE
   value <- if (sure$any) TRUE else if (maybe$any || open) NA else FALSE
   lay <- which(org %in% TRUE)
   # a bulk density not measured is read as 0.1 or more (the 40 cm limit),
@@ -431,7 +431,9 @@ plinthosols_gate_fao88 <- function(pedon) {
   if (!x$n) return(.f88_key_result(x, "plinthosols_gate", FALSE, pg))
   pl <- plinthite_fao88(pedon, min_pct = 25, min_thickness_cm = 15)
   pv <- .f88_values(pl, x$n)
-  a <- .fao_within(x$h, pv, 50)
+  # plinthite is a field feature: none below the deepest layer described
+  # (Hugo, 2026-11-12; 0.9.405)
+  a <- .fao_within(x$h, pv, 50, field = TRUE)
   runs <- .f88_run_list(x, !(pv %in% FALSE))
   ae <- .f88_member(x, .f88_hz_albic_e(x)$units)
   sg <- .f88_stagnic_v(x)$value
@@ -451,7 +453,7 @@ plinthosols_gate_fao88 <- function(pedon) {
     cond <- .fao_or(e_above, s_above, g_above)
     deep[r$layers] <- .f88_and(pv[r$layers], cond)
   }
-  b <- .fao_within(x$h, deep, 125)
+  b <- .fao_within(x$h, deep, 125, field = TRUE)
   value <- .fao_or(a$value, b$value)
   .f88_key_result(x, "plinthosols_gate", value, pg,
                   layers = c(a$layers, b$layers),

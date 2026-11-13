@@ -330,8 +330,24 @@
   .f88_memo(x, "organic", function() {
     v <- .f88_organic_v(.f88_num(x, "oc_pct"), .f88_num(x, "clay_pct"), .f88_saturated(x))
     v[x$rock] <- FALSE
-    list(value = v, missing = c("oc_pct", "drainage_class", "clay_pct"))
+    md <- is.na(v) & .fao_mineral_designated(x)
+    v[md] <- FALSE
+    list(value = v, missing = c("oc_pct", "drainage_class", "clay_pct"),
+         flags = ifelse(md, "mineral_layer_from_designation", NA_character_))
   })
+}
+
+# Layers whose designation names a mineral master horizon (A, E, B or C, a
+# transition between them, with or without a lithological prefix: A1, 2Bt,
+# Csk, AC, B/C, II C): not organic material when the organic carbon leaves
+# that undecided. The designation is a field observation, and organic layers
+# are written H or O (Hugo, 2026-11-12; 0.9.405).
+.fao_mineral_designated <- function(x) {
+  if (!x$n) return(logical(0))
+  m <- x$master
+  d <- sub("^([0-9]+|[IVX]+)\\s*", "", x$desg)
+  org <- !is.na(m) & grepl("^(H|O)", m)
+  ((!is.na(m) & grepl("^(A|E|B|C)", m)) | (!is.na(d) & grepl("^(A|E|B|C)", d))) & !org & !x$rock
 }
 
 # Clay skins or oriented clay on 1 % or more (argic B item 4, p. 28; Q13):
@@ -613,7 +629,7 @@ histic_h_fao88 <- function(pedon, base = c("any", "eutric", "dystric")) {
     # lime): the colour of the text with 0.6 % OC, or, with the lime, a moist
     # value of 5 or less (the dry value waived) with 2.5 % OC. CaCO3 not
     # measured leaves the waiver undecided unless .f88_caco3() reads it as
-    # absent (no HCl reaction, pH below 6.5, flagged).
+    # absent (no HCl reaction, pH below 7, flagged).
     cc_l <- .f88_caco3(x)
     m_cc <- mix("caco3_pct", cc_l$value)
     flags <- c(flags, .f88_flags(cc_l$flags, win))
@@ -1214,6 +1230,16 @@ cambic_b_fao88 <- function(pedon, max_top_cm = 125) {
     miss <- c("fe_pyro_pct", "al_pyro_pct", "fe_dcb_pct", "al_dcb_pct", "cec_ph82_cmol")
     sure_unit <- any(vapply(units, function(u) isTRUE(u$status), logical(1)))
     if (!sure_unit && is.na(i3)) {
+      # A described profile (designations recorded) none of whose B layers
+      # carries the h, s or ir of a spodic B (Bh, Bs, Bhs, Bir) has no spodic
+      # B: the designation is a field observation, and none was written
+      # (Hugo, 2026-11-12; 0.9.405), flagged; items 1 and 2 still decide. A
+      # profile with no designation stays with the stand-ins below.
+      described <- any(!is.na(x$desg) & nzchar(trimws(x$desg)))
+      if (described && !any(hs & !is.na(m) & grepl("B", m))) {
+        return(list(units = mk_units(ifelse(item12 %in% TRUE, TRUE, FALSE)), evidence = ev,
+                    flags = c(sp_flags, "spodic_b_not_in_the_designations")))
+      }
       # the 1975 chemistry undecided: the stand-ins of Q17, which decide only
       # the chemistry; the units of items 1 and 2 stay as they are
       si <- spodic_horizon_usda(x$pedon); who <- "spodic_horizon_usda"
@@ -1299,7 +1325,8 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
 
 # Calcium carbonate of each layer as the calcic horizons read it: caco3_pct;
 # not recorded, a field reaction with HCl recorded as none, or a water pH below
-# 6.5, reads as no free carbonate (0), flagged (soilKey's reading).
+# 7 (6.5 until 0.9.404; Hugo, 2026-11-12), reads as no free carbonate (0),
+# flagged (soilKey's reading).
 .f88_caco3 <- function(x) {
   .f88_memo(x, "caco3", function() {
     cc <- .f88_num(x, "caco3_pct")
@@ -1308,8 +1335,8 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
     flag <- rep(NA_character_, x$n)
     e0 <- is.na(cc) & !is.na(eff) & grepl("^(none|non|no |no$|nenhuma|ausente)", eff)
     cc[e0] <- 0; flag[e0] <- "no_carbonate_from_effervescence"
-    p0 <- is.na(cc) & !is.na(ph) & ph < 6.5
-    cc[p0] <- 0; flag[p0] <- "no_carbonate_at_ph_below_6.5"
+    p0 <- is.na(cc) & !is.na(ph) & ph < 7
+    cc[p0] <- 0; flag[p0] <- "no_carbonate_at_ph_below_7"
     list(value = cc, flags = flag)
   })
 }

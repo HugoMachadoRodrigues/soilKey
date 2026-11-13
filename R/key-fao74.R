@@ -102,8 +102,6 @@ histosols_gate_fao74 <- function(pedon) {
   light <- (!is.na(sph) & sph >= 75) | (!is.na(bd) & bd < 0.1)
   cf <- .f88_num(x, "coarse_fragments_pct")
   th <- pmax(x$bot - x$top, 0); th[is.na(th)] <- 0
-  deepest <- suppressWarnings(max(x$bot, na.rm = TRUE)); if (!is.finite(deepest)) deepest <- 0
-  on_rock <- any(x$rock)
   test <- function(o) {
     need <- if (any(light & o)) 60 else 40
     first <- which(!is.na(x$top))[1L]
@@ -118,7 +116,10 @@ histosols_gate_fao74 <- function(pedon) {
   }
   sure <- test(org %in% TRUE)
   maybe <- test(!(org %in% FALSE))
-  open <- !on_rock && deepest < 80 && !sure$any && (maybe$cum + (80 - deepest)) >= maybe$need
+  # no H horizon below the deepest layer described: an H horizon is a field
+  # observation (Hugo, 2026-11-12; 0.9.405); until 0.9.404 the undescribed
+  # part of the upper 80 cm left the gate undecided
+  open <- FALSE
   value <- if (sure$any) TRUE else if (maybe$any || open) NA else FALSE
   lay <- which(org %in% TRUE)
   bd_flag <- isTRUE(value) && sure$need == 40 && !any(light[lay]) && any(is.na(bd[lay])) &&

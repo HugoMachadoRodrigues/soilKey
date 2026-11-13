@@ -480,17 +480,18 @@ test_that("review fixes: hydromorphic 4.2 and undecided kinds, thin iron pan thi
   expect_identical(r$evidence$kind_of_soil, "mollic")
   expect_false(.ok(r))
   expect_true(.ok(hydromorphic_properties_fao74(m42(1), max_top_cm = 125)))   # chroma 1: within 75 cm
-  # an undecided spodic B with no designation showing it: read both ways
-  # (Hugo, 2026-11-09); the spodic branch fails, other soils pass: undecided
+  # an undecided spodic B with no designation showing it was read both ways
+  # (Hugo, 2026-11-09); since 0.9.405 a described profile with no Bh, Bs,
+  # Bhs or Bir has no spodic B (Hugo, 2026-11-12): the other soils decide
   sp <- .q74(top_cm = c(0, 30), bottom_cm = c(30, 80), designation = c("A", "Bg"), clay_pct = 5,
              sand_pct = 90, silt_pct = 5, munsell_hue_moist = c("10YR", "2.5Y"), munsell_value_moist = c(4, 5),
              munsell_chroma_moist = c(3, 3), mottle_colors = c(NA, "7.5YR 5/8"),
              mottle_contrast = c(NA, "distinct"), oc_pct = c(0.5, 0.2), ph_h2o = 4.5)
   r <- hydromorphic_properties_fao74(sp)
-  expect_true(is.na(.ok(r)) || length(r$evidence$stand_in) == 1L)
+  expect_true(.ok(r))
   x <- .f74_ctx(sp)
-  expect_true(is.na(.f74_hydro_v(x)$value[2]))
-  expect_true(is.na(.f74_hydro_v(x)$evidence$kind_of_soil))
+  expect_true(isTRUE(.f74_hydro_v(x)$value[2]))
+  expect_identical(.f74_hydro_v(x)$evidence$kind_of_soil, "other")
   # an "iron pan" of another kind asks the 40 mm limit
   ip <- function(t) .q74(top_cm = c(0, 20, 20 + t), bottom_cm = c(20, 20 + t, 100),
                          designation = c("E", "Bs", "C"), pan_type = c(NA, "iron pan", NA))

@@ -587,10 +587,14 @@ test_that("profiles without depths are undecided; the canonical fixtures read wi
     p <- get(paste0("make_", k, "_canonical"))()
     expect_true(.ok(get(paste0(expected[[k]], "_fao88"))(p)), info = k)
   }
-  # without the spodic chemistry the cambic B of the Cambisol stays undecided
-  # (Hugo, 2026-11-09: the missing measurement is not read as absent)
+  # without the spodic chemistry the cambic B of the Cambisol stayed undecided
+  # (Hugo, 2026-11-09); since 0.9.405 its designations, which name no Bh, Bs,
+  # Bhs or Bir, rule the spodic B out, flagged, and the cambic B passes (Hugo,
+  # 2026-11-12)
   p <- make_cambisol_canonical()
-  expect_true(is.na(spodic_b_fao88(p)$passed)); expect_true(is.na(cambic_b_fao88(p)$passed))
+  r <- spodic_b_fao88(p)
+  expect_false(r$passed); expect_true("spodic_b_not_in_the_designations" %in% r$evidence$flags)
+  expect_true(cambic_b_fao88(p)$passed)
   for (f in c("make_ferralsol_canonical", "make_vertisol_canonical", "make_leptosol_canonical")) {
     p <- get(f)()
     for (id in .F88_HZ$id) expect_no_error(get(paste0(id, "_fao88"))(p))
@@ -695,8 +699,17 @@ test_that("the review of 2026-11-09: the spodic B (defects 6 and 11)", {
   p <- .p88(top_cm = c(0, 20, 40), bottom_cm = c(20, 40, 100), designation = c("E", "Birm", "C"),
             clay_pct = 3, silt_pct = 7, sand_pct = 90, cementation_class = c(NA, "strongly", NA))
   expect_true(.ok(spodic_b_fao88(p)))
-  # without the chemistry a Bw is undecided, not ruled out by its designation
+  # without the chemistry a Bw was undecided, not ruled out by its
+  # designation (2026-11-09); since 0.9.405 a described profile with no Bh,
+  # Bs, Bhs or Bir has no spodic B, flagged (Hugo, 2026-11-12)
   p <- .p88(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120), designation = c("A", "Bw1", "Bw2", "C"),
+            clay_pct = c(5, 6, 6, 4), silt_pct = 5, sand_pct = c(90, 89, 89, 91), oc_pct = c(2, 0.5, 0.3, 0.1),
+            ph_h2o = c(4.5, 4.6, 4.8, 5))
+  r <- spodic_b_fao88(p)
+  expect_false(r$passed)
+  expect_true("spodic_b_not_in_the_designations" %in% r$evidence$flags)
+  # with no designation the chemistry still leaves it undecided
+  p <- .p88(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120),
             clay_pct = c(5, 6, 6, 4), silt_pct = 5, sand_pct = c(90, 89, 89, 91), oc_pct = c(2, 0.5, 0.3, 0.1),
             ph_h2o = c(4.5, 4.6, 4.8, 5))
   r <- spodic_b_fao88(p)
