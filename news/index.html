@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.406</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.407</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,18 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.407" id="soilkey-09407">soilKey 0.9.407<a class="anchor" aria-label="anchor" href="#soilkey-09407"></a></h2>
+<p>The CST spodic horizon and the O layers of the 1974 H horizon, reviewed after the ISIS benchmark of 0.9.406 (Hugo, 2026-11-13). The readings are in <code>inst/rules/cst2001/readings.yaml</code> and <code>inst/rules/fao1974/readings.yaml</code>.</p>
+<ul><li>
+<strong>CST: a hard dry consistence is no cementation sign of the spodic horizon.</strong> Away from an albic horizon, the colours of spodic materials need one more sign, and a cementation was one of them. The cementation was read from the cementation class or from a dry rupture resistance of very hard or more, which ISIS records as the dry consistence of the soil mass. A clayey Bt that is very hard when dry is not cemented, so for the spodic sign only the cementation class counts now (<code>.cst_cemented(rupture = FALSE)</code>). The other cemented layers of the CST (salipan, phosphipan, the contact below the solum, the pans a cementation excludes) keep the reading of 2026-11-06.</li>
+<li>
+<strong>CST: the colours alone below an E layer ask for an albic horizon in its run.</strong> The colours alone made spodic materials directly below an albic horizon or any layer designated E. An E whose recorded colours are not albic (10YR 5/6 over a 5YR 5/6 B) no longer lets the colours decide: the E counts when the run of E layers it closes (E, EB) holds an albic horizon or leaves it undecided (colours not recorded). A Humic Podzol with an albic E, then an EB that is not albic, then the Bhs, keeps its spodic horizon.</li>
+<li>
+<strong>FAO 1974: an O with a suffix of decomposition takes the drainage of the site.</strong> The H horizon is organic and saturated; a layer designated O was read as unsaturated (the O of p. 21). An O with the suffix a, e or i (USDA, FAO 2006) or f, m or h (Canada, New Zealand) is written in a notation where O is any organic layer, so it now takes the drainage of the site like an undesignated layer (poorly drained: saturated; well drained: not; not recorded: undecided). An O without a suffix (O, O1, O2) stays unsaturated.</li>
+</ul><p>On the 974 ISIS profiles the CST Spodosols go from 20 to 13, and the 13 are all ISRIC Podzols. The 7 that leave: BW001 (Luvisol) to Typic Ferri-Ustic Argosols, GR013 (Luvisol) to Typic Hapli-Udic Argosols, RO008 (Planosol) to Mottlic Hapli-Udic Argosols, BR002 (Lixisol) to [Other Ferralosols], CR003 (Gleysol) to Typic Hapli-Orthic Gleyosols, by the cementation; TR004 (Alisol) to Red Acidi-Udic Argosols and US002 (Acrisol) to Mottlic Argi-Udic Ferrosols, by the E layer. The FAO legend of 1974 changes one ISIS profile: GB006 (a Placic Podzol with a 5 cm Oi and no drainage recorded) adds the Histosols to its undecided candidates.</p>
+<p>The fixtures: under the legend of 1974 the canonical Histosol keys as Dystric Histosols (was Eutric Regosols), the CST organic examples A1 and A2 as Gelic and Eutric Histosols (were Gelic and Eutric Regosols), the NZSC organic example as Dystric Histosols (was Eutric Fluvisols), and the CSSC organic example (no drainage recorded) adds the Histosols to its candidates. Of the 6,205 names of the 365 fixtures under the 17 systems, these 5 are the only ones that change; no CST fixture changes.</p>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.406" id="soilkey-09406">soilKey 0.9.406<a class="anchor" aria-label="anchor" href="#soilkey-09406"></a></h2>
 <p>FAO-Unesco legends of 1974 and 1988 on the ISIS reference profiles: why the Andosols were never recognised (0 of 51 labels of 1974, 0 of 46 of 1988), and three readings that follow from it (Hugo, 2026-11-13), in <code>inst/rules/fao1988/readings.yaml</code> and <code>inst/rules/fao1974/readings.yaml</code>.</p>
 <ul><li>
@@ -66,7 +78,7 @@
 <p>WoSIS benchmark (5,861 profiles, weighted; 0.9.405 -&gt; 0.9.406): FAO 1988 agreement 4.0 -&gt; 7.1 %, covered 12.2 -&gt; 19.4 %, firm classes 118 -&gt; 175; FAO 1974 agreement 10.7 -&gt; 11.7 %, covered 27.8 -&gt; 31.0 %, firm classes 320 -&gt; 381.</p>
 <p>On the fixtures and the examples of every system (730 FAO classifications), 199 names change: 49 undecided names now decide (mostly Eutric Regosols, many of them provisional), 140 undecided names keep fewer candidates, and 10 decided names change: the canonical Calcisol (Calcaric Cambisols -&gt; Haplic Calcisols; 1974 Haplic -&gt; Calcic Xerosols), the Andosol examples of CPCS and RP 2008 (Humic Cambisols or Haplic Phaeozems -&gt; Humic or Mollic Andosols), and the CPCS isohumic example of 1988 (Haplic Phaeozems -&gt; Mollic Fluvisols, by its organic carbon, with no origin recorded).</p>
 <p>The other systems on the 974 ISIS profiles, through the parent material now read: NZSC 41 names (Tephric Recent Soils on ash; Mafic or Melanic soils on basic rock and limestone), HSCS 84 (mostly the colluvial qualifier where ISIS records colluvium), CSCJ 27 (Calcaric Dark Red soils on limestone), CPCS 19 (volcanic and reworked soils), CST 17, KA5 7, SCSJ 1, RP 2008 1, WRB, SiBCS and USDA at most 2; CSSC, ASC, KIDPR and ZA unchanged. In CST, a recorded parent material that is not volcanic rules the andic property out (0.9.373), so the spodic horizon decides: 11 profiles become Hapli-Orthic Spodosols, 7 of them ISRIC Podzols (MY052, NO002, NL034, FI004, SE015, MY053, NL032) and 4 not (BW001 and GR013 Luvisols, RO008 Planosol, TR004 Alisol), kept as they are and listed here for a later review of the CST spodic horizon.</p>
-<p>The 1974 canonical Histosol keys as a Regosol: its organic layers are not read as an H horizon, which asks for saturation, and the fixture records no drainage. That was already so before 0.9.406 (it was undecided between Solonchaks and Regosols).</p>
+<p>The 1974 canonical Histosol keys as a Regosol: its organic layers (Oa, Oe) are not read as an H horizon, which asks for saturation, because a layer designated O is read as unsaturated (the fixture does record very poor drainage; corrected in 0.9.407). That was already so before 0.9.406 (it was undecided between Solonchaks and Regosols).</p>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.405" id="soilkey-09405">soilKey 0.9.405<a class="anchor" aria-label="anchor" href="#soilkey-09405"></a></h2>
