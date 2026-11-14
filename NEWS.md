@@ -1,3 +1,51 @@
+# soilKey 0.9.407
+
+The CST spodic horizon and the O layers of the 1974 H horizon, reviewed after
+the ISIS benchmark of 0.9.406 (Hugo, 2026-11-13). The readings are in
+`inst/rules/cst2001/readings.yaml` and `inst/rules/fao1974/readings.yaml`.
+
+* **CST: a hard dry consistence is no cementation sign of the spodic
+  horizon.** Away from an albic horizon, the colours of spodic materials need
+  one more sign, and a cementation was one of them. The cementation was read
+  from the cementation class or from a dry rupture resistance of very hard or
+  more, which ISIS records as the dry consistence of the soil mass. A clayey
+  Bt that is very hard when dry is not cemented, so for the spodic sign only
+  the cementation class counts now (`.cst_cemented(rupture = FALSE)`). The
+  other cemented layers of the CST (salipan, phosphipan, the contact below
+  the solum, the pans a cementation excludes) keep the reading of 2026-11-06.
+* **CST: the colours alone below an E layer ask for an albic horizon in its
+  run.** The colours alone made spodic materials directly below an albic
+  horizon or any layer designated E. An E whose recorded colours are not
+  albic (10YR 5/6 over a 5YR 5/6 B) no longer lets the colours decide: the E
+  counts when the run of E layers it closes (E, EB) holds an albic horizon or
+  leaves it undecided (colours not recorded). A Humic Podzol with an albic E,
+  then an EB that is not albic, then the Bhs, keeps its spodic horizon.
+* **FAO 1974: an O with a suffix of decomposition takes the drainage of the
+  site.** The H horizon is organic and saturated; a layer designated O was
+  read as unsaturated (the O of p. 21). An O with the suffix a, e or i (USDA,
+  FAO 2006) or f, m or h (Canada, New Zealand) is written in a notation where
+  O is any organic layer, so it now takes the drainage of the site like an
+  undesignated layer (poorly drained: saturated; well drained: not; not
+  recorded: undecided). An O without a suffix (O, O1, O2) stays unsaturated.
+
+On the 974 ISIS profiles the CST Spodosols go from 20 to 13, and the 13 are
+all ISRIC Podzols. The 7 that leave: BW001 (Luvisol) to Typic Ferri-Ustic
+Argosols, GR013 (Luvisol) to Typic Hapli-Udic Argosols, RO008 (Planosol) to
+Mottlic Hapli-Udic Argosols, BR002 (Lixisol) to [Other Ferralosols], CR003
+(Gleysol) to Typic Hapli-Orthic Gleyosols, by the cementation; TR004 (Alisol)
+to Red Acidi-Udic Argosols and US002 (Acrisol) to Mottlic Argi-Udic
+Ferrosols, by the E layer. The FAO legend of 1974 changes one ISIS profile:
+GB006 (a Placic Podzol with a 5 cm Oi and no drainage recorded) adds the
+Histosols to its undecided candidates.
+
+The fixtures: under the legend of 1974 the canonical Histosol keys as
+Dystric Histosols (was Eutric Regosols), the CST organic examples A1 and A2
+as Gelic and Eutric Histosols (were Gelic and Eutric Regosols), the NZSC
+organic example as Dystric Histosols (was Eutric Fluvisols), and the CSSC
+organic example (no drainage recorded) adds the Histosols to its candidates.
+Of the 6,205 names of the 365 fixtures under the 17 systems, these 5 are the
+only ones that change; no CST fixture changes.
+
 # soilKey 0.9.406
 
 FAO-Unesco legends of 1974 and 1988 on the ISIS reference profiles: why the
@@ -72,10 +120,11 @@ them ISRIC Podzols (MY052, NO002, NL034, FI004, SE015, MY053, NL032) and 4 not
 (BW001 and GR013 Luvisols, RO008 Planosol, TR004 Alisol), kept as they are
 and listed here for a later review of the CST spodic horizon.
 
-The 1974 canonical Histosol keys as a Regosol: its organic layers are not
-read as an H horizon, which asks for saturation, and the fixture records no
-drainage. That was already so before 0.9.406 (it was undecided between
-Solonchaks and Regosols).
+The 1974 canonical Histosol keys as a Regosol: its organic layers (Oa, Oe)
+are not read as an H horizon, which asks for saturation, because a layer
+designated O is read as unsaturated (the fixture does record very poor
+drainage; corrected in 0.9.407). That was already so before 0.9.406 (it was
+undecided between Solonchaks and Regosols).
 
 # soilKey 0.9.405
 
