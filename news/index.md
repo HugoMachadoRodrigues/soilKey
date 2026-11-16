@@ -53,6 +53,16 @@ the CSSC organic example (no drainage recorded) adds the Histosols to
 its candidates. Of the 6,205 names of the 365 fixtures under the 17
 systems, these 5 are the only ones that change; no CST fixture changes.
 
+The offline benchmarks, run at 0.9.406 and at 0.9.407 on the same caches
+(2026-11-14), give the same figures; the reports differ only in the
+version and in the GB006 candidate above. ISIS FAO-Unesco (`fao_isis.R`,
+814 profiles): grouping 1974 38.7 % (unit 20.9 %), 1988 31.6 % (unit
+20.5 %). ISIS CST (`cst2001_isis.R`, the profiles from China): orders 26
+of 50 (52.0 %), suborders 22 of 49, groups 14 of 49; the 7 profiles that
+left the Spodosols are not Chinese. ISIS KA5 (`ka5_isis.R`): classes 4
+of 16, types 3 of 15. WoSIS FAO-Unesco (`fao_wosis.R`, 5,861 profiles):
+as in 0.9.406.
+
 ## soilKey 0.9.406
 
 FAO-Unesco legends of 1974 and 1988 on the ISIS reference profiles: why

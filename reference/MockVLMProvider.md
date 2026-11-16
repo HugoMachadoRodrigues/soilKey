@@ -91,7 +91,7 @@ Construct a mock provider.
 
   List of canned responses. Strings are returned verbatim; non-string
   elements are JSON-serialised via
-  [`jsonlite::toJSON`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html).
+  [`jsonlite::toJSON`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html).
 
 - `validation_error_at`:
 
