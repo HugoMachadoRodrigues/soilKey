@@ -17,7 +17,7 @@ not scored)."><meta property="og:image" content="https://hugomachadorodrigues.gi
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.407</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.408</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ not scored).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">benchmark_isis</span><span class="op">(</span><span class="va">pedons</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">benchmark_isis</span><span class="op">(</span><span class="va">pedons</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,12 +84,27 @@ not scored).</p>
 <dl><dt id="arg-pedons">pedons<a class="anchor" aria-label="anchor" href="#arg-pedons"></a></dt>
 <dd><p>A list of <code><a href="PedonRecord.html">PedonRecord</a></code>s from <code>read_isis</code>.</p></dd>
 
+
+<dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
+<dd><p>If <code>TRUE</code>, no message.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame, one row per profile, with ISRIC's and soilKey's names,
   <code>wrb_agree</code> and <code>usda_order_agree</code> (<code>NA</code> where ISRIC gives
-  no comparable name) and the number of close calls of each key.</p>
+  no comparable name) and the number of close calls of each key. The
+  attribute <code>"wrb_editions"</code> is a data frame with one row per edition of
+  ISRIC's latest name: the profiles, those soilKey named, those with the same
+  Reference Soil Group, and whether the edition is scored. The counts of the
+  editions before 2022 are for information only.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>A profile whose latest ISRIC name is older than 2022 is not scored:
+<code>wrb_agree</code> is <code>NA</code> and it counts neither for nor against the
+agreement. A message says how many profiles were scored and how many were
+left out, by edition.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

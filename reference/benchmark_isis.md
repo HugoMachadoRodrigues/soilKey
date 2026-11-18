@@ -11,7 +11,7 @@ editions, so subgroups are shown but not scored).
 ## Usage
 
 ``` r
-benchmark_isis(pedons)
+benchmark_isis(pedons, quiet = FALSE)
 ```
 
 ## Arguments
@@ -22,8 +22,23 @@ benchmark_isis(pedons)
   [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)s
   from `read_isis`.
 
+- quiet:
+
+  If `TRUE`, no message.
+
 ## Value
 
 A data frame, one row per profile, with ISRIC's and soilKey's names,
 `wrb_agree` and `usda_order_agree` (`NA` where ISRIC gives no comparable
-name) and the number of close calls of each key.
+name) and the number of close calls of each key. The attribute
+`"wrb_editions"` is a data frame with one row per edition of ISRIC's
+latest name: the profiles, those soilKey named, those with the same
+Reference Soil Group, and whether the edition is scored. The counts of
+the editions before 2022 are for information only.
+
+## Details
+
+A profile whose latest ISRIC name is older than 2022 is not scored:
+`wrb_agree` is `NA` and it counts neither for nor against the agreement.
+A message says how many profiles were scored and how many were left out,
+by edition.

@@ -23,7 +23,8 @@ read_isis(
   max_profiles = 100L,
   absent_unless_recorded = TRUE,
   timeout = 60,
-  progress = NULL
+  progress = NULL,
+  all = FALSE
 )
 ```
 
@@ -40,7 +41,7 @@ read_isis(
 
 - max_profiles:
 
-  The most profiles to read (default 100).
+  The most profiles to read (default 100). Ignored with `all = TRUE`.
 
 - absent_unless_recorded:
 
@@ -53,14 +54,24 @@ read_isis(
 
 - progress:
 
-  Optional `function(done, total)`.
+  Optional `function(done, total)`; `total` is `NA` with `all = TRUE`.
+
+- all:
+
+  If `TRUE`, reads the whole collection, including the profiles ISIS
+  records with no country. It takes neither `profile_codes` nor
+  `country`. A warning names the profiles that came with no horizons to
+  classify; they stay in the result.
 
 ## Value
 
 A named list of
 [`PedonRecord`](https://hugomachadorodrigues.github.io/soilKey/reference/PedonRecord.md)s,
 one per profile read. On a failed request the profiles read until then
-are returned with a warning.
+are returned with a warning. Each pedon gives ISRIC's latest WRB name in
+`site$reference_wrb_full`, its year in `site$reference_wrb_edition`,
+both together in `site$reference_wrb_cited`, and every edition in
+`site$reference_wrb_all`.
 
 ## Examples
 
@@ -68,6 +79,7 @@ are returned with a warning.
 if (FALSE) { # \dontrun{
 p <- read_isis(c("KE009", "ZW005"))
 classify_all(p$KE009)
-p$KE009$site$reference_wrb_full
+p$KE009$site$reference_wrb_cited
+everything <- read_isis(all = TRUE)
 } # }
 ```
