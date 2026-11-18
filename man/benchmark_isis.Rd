@@ -4,15 +4,21 @@
 \alias{benchmark_isis}
 \title{Compare soilKey with ISRIC's names for ISIS profiles}
 \usage{
-benchmark_isis(pedons)
+benchmark_isis(pedons, quiet = FALSE)
 }
 \arguments{
 \item{pedons}{A list of \code{\link{PedonRecord}}s from \code{read_isis}.}
+
+\item{quiet}{If \code{TRUE}, no message.}
 }
 \value{
 A data frame, one row per profile, with ISRIC's and soilKey's names,
   \code{wrb_agree} and \code{usda_order_agree} (\code{NA} where ISRIC gives
-  no comparable name) and the number of close calls of each key.
+  no comparable name) and the number of close calls of each key. The
+  attribute \code{"wrb_editions"} is a data frame with one row per edition of
+  ISRIC's latest name: the profiles, those soilKey named, those with the same
+  Reference Soil Group, and whether the edition is scored. The counts of the
+  editions before 2022 are for information only.
 }
 \description{
 Classifies each pedon read by \code{\link{read_isis}} with the WRB 2022 and
@@ -21,4 +27,10 @@ profile. The WRB comparison uses the Reference Soil Group, and only when
 ISRIC's name is from the 2022 edition; the USDA one uses the order (ISRIC's
 USDA names are from the 1975 to 1999 editions, so subgroups are shown but
 not scored).
+}
+\details{
+A profile whose latest ISRIC name is older than 2022 is not scored:
+\code{wrb_agree} is \code{NA} and it counts neither for nor against the
+agreement. A message says how many profiles were scored and how many were
+left out, by edition.
 }

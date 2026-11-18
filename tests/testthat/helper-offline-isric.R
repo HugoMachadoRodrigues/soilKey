@@ -9,6 +9,7 @@
 # Only inside a test run: load_all() also sources the helpers, outside one.
 if (testthat::is_testing() &&
     !isTRUE(as.logical(Sys.getenv("SOILKEY_TEST_WOSIS_LIVE", "false")))) {
+  options(soilKey.isis_retry_wait = 0)   # v0.9.408: no pause between retries
   testthat::local_mocked_bindings(
     .wosis_post = function(query, variables = NULL, timeout = 30, endpoint = NULL)
       list(data = NULL, error = "ISRIC is not queried in the tests (offline stand-in)"),

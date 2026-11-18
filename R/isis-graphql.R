@@ -73,6 +73,16 @@
 #     nitic horizon. A particle-size record of zeros only is missing. A row
 #     designated R inside the depth range of another described horizon is
 #     left out, with a note in site$depth_note.
+#   * v0.9.408 (Hugo, 2026-11-18): where the first field of a layer is empty,
+#     the alternative that holds the same observation is read, with its own
+#     provenance: the Munsell colour written whole (colourMoistMatrix, then
+#     colourMoistMatrix2, and the same dry); the second entry of the structure
+#     grade, type and size, of the mottle contrast and size and of the hardness
+#     and size of the inclusions; and the coatings of nature clay, clay and
+#     sesquioxides or clay and humus as clay films where no cutans are recorded.
+#     The organic matter (orgm) is not read as organic carbon: ISIS measures it
+#     by loss on ignition, and where a layer has both, orgm / orgc runs from
+#     below 0.2 to above 11 (between 1.6 and 1.85 in 49 of 1,064 layers).
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"
@@ -82,6 +92,20 @@
 .isis_post <- function(query, variables = NULL, timeout = 60) {
   .wosis_post(query, variables = variables, timeout = timeout,
               endpoint = .ISIS_ENDPOINT)
+}
+
+# v0.9.408: reading the whole collection takes about 195 requests, and one
+# failed request used to end the reading. A request is tried three times; a
+# rejected query (HTTP 4xx) is not tried again.
+.isis_post_retry <- function(query, variables = NULL, timeout = 60, tries = 3L) {
+  wait <- getOption("soilKey.isis_retry_wait", 2)
+  for (i in seq_len(tries)) {
+    r <- .isis_post(query, variables = variables, timeout = timeout)
+    if (is.null(r$error) || grepl("HTTP 4[0-9][0-9]", r$error)) return(r)
+    if (i < tries) Sys.sleep(wait * i)
+  }
+  r$error <- sprintf("%s (after %d attempts)", r$error, tries)
+  r
 }
 
 #' Citation for data read from ISIS
@@ -124,7 +148,13 @@ isis_citation <- function(accessed = Sys.Date()) {
                  "horizBoundaryTopography", "inclusionsComposition",
                  "inclusionsComposition2", "inclusionsType", "inclusionsSize",
                  "concretionsMineralHardness", "mineralConcAbundance",
-                 "mineralConcAbundance2")
+                 "mineralConcAbundance2",
+                 "colourMoistMatrix", "colourMoistMatrix2",
+                 "colourDryMatrix", "colourDryMatrix2",
+                 "structureGrade2", "structureSize2",
+                 "mottlesContrast2", "mottlesSizeclass2",
+                 "concretionsMineralHardness2", "inclusionsSize2",
+                 "coatingsNature", "coatingsAbundance", "coatingsContrast")
 
 .isis_profile_fields <- function() {
   paste(
@@ -218,6 +248,10 @@ isis_citation <- function(accessed = Sys.Date()) {
 .ISIS_CUTAN_SLICKENSIDES <- "P"
 .ISIS_CUTAN_PRESSURE <- "R"                    # pressure faces (stress cutans)
 .ISIS_CONTRAST <- c(F = "faint", D = "distinct", P = "prominent")
+# v0.9.408: the coatings ISIS records apart from the cutans
+.ISIS_COATING_CLAY <- c("C", "CS", "CH")       # clay; clay and sesquioxides; clay and humus
+.ISIS_COATING_AMOUNT <- c(N = "none", V = "few", F = "few", C = "common",
+                          M = "many", A = "many", D = "many")
 .ISIS_EFFERVESCENCE <- c(N = "none", SL = "slight", MO = "moderate",
                          ST = "strong", EX = "very strong")
 .ISIS_CEMENT <- c("0" = "none", W = "weakly", M = "moderately", S = "strongly",
@@ -337,6 +371,19 @@ isis_citation <- function(accessed = Sys.Date()) {
 
 # ---- One profile ------------------------------------------------------------
 
+# v0.9.408: a Munsell colour written whole ("7.5YR 3/2", or "N 5/" on the
+# neutral axis, which has no chroma). Anything else ("N4/N5") is not read.
+.isis_parse_matrix <- function(x) {
+  none <- list(hue = NA_character_, value = NA_real_, chroma = NA_real_)
+  if (is.na(x)) return(none)
+  x <- trimws(x)
+  m <- regmatches(x, regexec("^([0-9.]+[A-Z]+) ([0-9.]+)/([0-9.]+)$", x))[[1]]
+  if (length(m)) return(list(hue = m[2], value = as.numeric(m[3]), chroma = as.numeric(m[4])))
+  m <- regmatches(x, regexec("^N ([0-9.]+)/$", x))[[1]]
+  if (length(m)) return(list(hue = "N", value = as.numeric(m[2]), chroma = NA_real_))
+  none
+}
+
 .isis_wrb_full <- function(w) {
   q <- w$qualifier
   if (is.null(q) || !length(q)) return(w$referenceSoilGroup)
@@ -360,11 +407,20 @@ isis_citation <- function(accessed = Sys.Date()) {
   w <- p$wrbClassifications %||% list()
   if (length(w)) {
     yr <- vapply(w, function(x) as.integer(x$publicationYear %||% NA), 0L)
-    w <- w[[which.max(replace(yr, is.na(yr), -1L))]]
+    # v0.9.408 (Hugo, 2026-11-18): the name with its year, and every edition
+    # ISRIC gives the profile, newest first; reference_wrb_full stays the name
+    year_txt <- ifelse(is.na(yr), "year not recorded", as.character(yr))
+    names_all <- vapply(w, function(x) as.character(.isis_wrb_full(x))[1], "")
+    newest <- order(replace(yr, is.na(yr), -1L), decreasing = TRUE)
+    out$reference_wrb_all <- paste(sprintf("%s: %s", year_txt[newest], names_all[newest]),
+                                   collapse = " | ")
+    top <- which.max(replace(yr, is.na(yr), -1L))
+    w <- w[[top]]
     rsg <- as.character(w$referenceSoilGroup %||% NA)
     out$reference_wrb <- .isis_plural(rsg)
     out$reference_wrb_full <- .isis_wrb_full(w)
     out$reference_wrb_edition <- as.character(w$publicationYear)
+    out$reference_wrb_cited <- sprintf("%s; publication year: %s", names_all[top], year_txt[top])
   }
   u <- p$usdaClassifications %||% list()
   if (length(u)) {
@@ -517,12 +573,44 @@ isis_citation <- function(accessed = Sys.Date()) {
     v <- suppressWarnings(as.numeric(code(x[2]))); out[[x[1]]] <- v
     note(x[1], which(!is.na(v)), sprintf("ISIS %s", x[2]))
   }
+  # v0.9.408: a layer with no hue, value and chroma of its own may hold the
+  # colour written whole, in the first entry or the second
+  for (st in c("Moist", "Dry")) {
+    low <- tolower(st)
+    hc <- paste0("munsell_hue_", low); vc <- paste0("munsell_value_", low); cc <- paste0("munsell_chroma_", low)
+    for (field in paste0("colour", st, c("Matrix", "Matrix2"))) {
+      parsed <- lapply(code(field), .isis_parse_matrix)
+      hue <- vapply(parsed, function(z) z$hue, "")
+      fill <- which(is.na(out[[hc]]) & is.na(out[[vc]]) & is.na(out[[cc]]) & !is.na(hue))
+      if (!length(fill)) next
+      out[[hc]][fill] <- hue[fill]
+      out[[vc]][fill] <- vapply(parsed[fill], function(z) z$value, 0)
+      out[[cc]][fill] <- vapply(parsed[fill], function(z) z$chroma, 0)
+      for (col in c(hc, vc, cc))
+        note(col, fill[!is.na(out[[col]][fill])], sprintf("ISIS %s (the colour written whole)", field))
+    }
+  }
   setchr("structure_grade", "structureGrade1", .ISIS_GRADE)
   setchr("structure_type", "structureType", .ISIS_STRUCTURE)
   setchr("structure_size", "structureSize", .ISIS_SIZE)
+  # v0.9.408: the second entry stands in where the first is empty
+  second_entry <- function(col, first, second, table) {
+    v <- vapply(code(second), function(k) .isis_lookup(table, k), "", USE.NAMES = FALSE)
+    fill <- is.na(code(first)) & !is.na(v)
+    out[[col]][fill] <<- v[fill]
+    note(col, which(fill), sprintf("ISIS %s (second entry; the first is empty)", second))
+    fill
+  }
+  second_entry("structure_grade", "structureGrade1", "structureGrade2", .ISIS_GRADE)
+  second_entry("structure_size", "structureSize", "structureSize2", .ISIS_SIZE)
+  type_moved <- second_entry("structure_type", "structureType", "structureType2", .ISIS_STRUCTURE)
   # v0.9.317: the second structure ISIS records, as the second-level structure
   # the first-level units break into; read only by the WRB nitic horizon
-  setchr("structure_type_secondary", "structureType2", .ISIS_STRUCTURE)
+  # (v0.9.408: not when it is the only structure of the layer)
+  v <- vapply(code("structureType2"), function(k) .isis_lookup(.ISIS_STRUCTURE, k), "", USE.NAMES = FALSE)
+  v[type_moved] <- NA_character_
+  out$structure_type_secondary <- unname(v)
+  note("structure_type_secondary", which(!is.na(v)), "ISIS structureType2 (FAO code)")
   setchr("consistence_moist", "consistenceSoilmassMoist", .ISIS_MOIST)
   setchr("rupture_resistance", "consistenceSoilmassDry", .ISIS_DRY)
   setchr("stickiness", "stickinessClass", .ISIS_STICKY)
@@ -530,6 +618,7 @@ isis_citation <- function(accessed = Sys.Date()) {
   setchr("effervescence_class", "carbonateReaction", .ISIS_EFFERVESCENCE)
   setchr("cementation_class", "cementCompactDegree", .ISIS_CEMENT)
   setchr("mottle_contrast", "mottlesContrast", .ISIS_CONTRAST)
+  second_entry("mottle_contrast", "mottlesContrast", "mottlesContrast2", .ISIS_CONTRAST)
   setchr("boundary_distinctness", "horizBoundaryDistinctness", .ISIS_BOUNDARY)
   setchr("boundary_topography", "horizBoundaryTopography", .ISIS_TOPOGRAPHY)
   setchr("pan_type", "pansKind", .ISIS_PAN)
@@ -551,6 +640,18 @@ isis_citation <- function(accessed = Sys.Date()) {
        "ISIS cutansAbundance of clay cutans (FAO 1977: patchy few, broken common, continuous many; no abundance read as few; cutans of no kind in a t horizon read as clay)")
   note("clay_films_strength", which(!is.na(out$clay_films_strength)),
        "ISIS cutansThickness of clay cutans (thin faint, moderately thick distinct, thick prominent)")
+  # v0.9.408: where no cutans are recorded, the coatings of clay are clay films
+  coat <- is.na(kind) & is.na(amt) & is.na(thk) & code("coatingsNature") %in% .ISIS_COATING_CLAY
+  if (any(coat)) {
+    ca <- vapply(code("coatingsAbundance"), function(k) .isis_lookup(.ISIS_COATING_AMOUNT, k), "", USE.NAMES = FALSE)
+    cs <- vapply(code("coatingsContrast"), function(k) .isis_lookup(.ISIS_CONTRAST, k), "", USE.NAMES = FALSE)
+    out$clay_films_amount[coat] <- ifelse(is.na(ca[coat]), "few", ca[coat])
+    out$clay_films_strength[coat] <- ifelse(ca[coat] %in% "none", NA_character_, cs[coat])
+    note("clay_films_amount", which(coat),
+         "ISIS coatingsAbundance of coatings of clay, no cutans recorded (very few and few are few; many, abundant and dominant are many; no abundance read as few)")
+    note("clay_films_strength", which(coat & !is.na(out$clay_films_strength)),
+         "ISIS coatingsContrast of coatings of clay, no cutans recorded")
+  }
   sl <- kind %in% .ISIS_CUTAN_SLICKENSIDES
   sa <- vapply(amt, function(k) .isis_lookup(.ISIS_SLICKENSIDES, k), "", USE.NAMES = FALSE)
   out$slickensides <- unname(ifelse(sl, ifelse(is.na(sa) | sa == "absent", "common", sa), NA_character_))
@@ -617,10 +718,13 @@ isis_citation <- function(accessed = Sys.Date()) {
   # v0.9.316: the mottle size, FAO (2006) classes V, F, M and A (> 20 mm); the
   # older coarse class C (> 15 mm) does not decide the 20 mm of the HSCS iron
   # horizon, and H (heterogeneous) names no size, so neither is read
-  ms <- vapply(H, function(L) .isis_code(L$mottlesSizeclass), "")
+  ms <- code("mottlesSizeclass"); ms2 <- code("mottlesSizeclass2")
+  from2 <- is.na(ms) & !is.na(ms2)
+  ms[from2] <- ms2[from2]
   sz <- unname(c(V = "very fine", F = "fine", M = "medium", A = "coarse")[ms])
   out$mottle_size_class <- sz
-  note("mottle_size_class", which(!is.na(sz)), "ISIS mottlesSizeclass (V, F, M, A of FAO 2006; C and H not read)")
+  note("mottle_size_class", which(!is.na(sz) & !from2), "ISIS mottlesSizeclass (V, F, M, A of FAO 2006; C and H not read)")
+  note("mottle_size_class", which(!is.na(sz) & from2), "ISIS mottlesSizeclass2 (second entry; the first is empty)")
 
   # inclusions: calcareous ones are secondary carbonates; hard ferruginous or
   # manganiferous concretions and nodules over 2 mm are nodules; soft ones join
@@ -634,6 +738,8 @@ isis_citation <- function(accessed = Sys.Date()) {
   out$secondary_carbonates_pct <- sc
   note("secondary_carbonates_pct", which(is.finite(sc)), "middle of the FAO class of ISIS calcareous inclusions (mineralConcAbundance)")
   hard <- code("concretionsMineralHardness"); size <- code("inclusionsSize")
+  hard2 <- code("concretionsMineralHardness2"); size2 <- code("inclusionsSize2")
+  hard[is.na(hard)] <- hard2[is.na(hard)]; size[is.na(size)] <- size2[is.na(size)]
   big <- !size %in% c("S", "P")
   fe1 <- part(comp1, ab1, c("F", "M")); fe2 <- part(comp2, ab2, c("F", "M"))
   nod <- addna(ifelse(hard %in% c("H", "B") & big, fe1, NA_real_), ifelse(hard %in% c("H", "B") & big, fe2, NA_real_))
@@ -660,7 +766,8 @@ isis_citation <- function(accessed = Sys.Date()) {
     # mottles stay unknown in a g, l or r horizon with no mottle field, and
     # where their colour, contrast or size is recorded without the abundance
     mfields <- vapply(H, function(L) !is.null(L$mottlesAbundance) || !is.null(L$mottlesAbundance2), NA)
-    mother <- vapply(H, function(L) !is.null(L$mottlesColour) || !is.null(L$mottlesContrast) || !is.null(L$mottlesSizeclass), NA)
+    mother <- vapply(H, function(L) !is.null(L$mottlesColour) || !is.null(L$mottlesContrast) || !is.null(L$mottlesSizeclass) ||
+                       !is.null(L$mottlesContrast2) || !is.null(L$mottlesSizeclass2), NA)
     glr <- grepl("^[0-9]*[A-Z]+[a-z]*[glr]", d) & !grepl("^[0-9]*R", d)
     set0("redoximorphic_features_pct", desc & !mfields & !(mother | glr), 0)
     # v0.9.313 (Hugo, 2026-10-29): ISIS has one cutans field per layer, so
@@ -726,7 +833,9 @@ isis_citation <- function(accessed = Sys.Date()) {
 #' soilKey's words, and each value records its ISIS field in the provenance.
 #' The site carries the WRB and USDA names ISRIC gives the profile
 #' (\code{reference_wrb}, \code{reference_wrb_full}, \code{reference_usda},
-#' \code{reference_usda_subgroup} and their editions), the soil moisture and
+#' \code{reference_usda_subgroup} and their editions;
+#' \code{reference_wrb_cited}, the latest WRB name with its publication year;
+#' \code{reference_wrb_all}, every WRB edition, newest first), the soil moisture and
 #' temperature regimes and the groundwater (\code{groundwater_kind},
 #' \code{groundwater_depth_cm}) when ISIS records them, the licence and the
 #' citation.
@@ -804,27 +913,47 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
 #' @param profile_codes Profile codes, e.g. \code{c("KE009", "ZW005")}.
 #' @param country ISO 3166 two-letter country code, e.g. \code{"KE"}, read
 #'   when \code{profile_codes} is \code{NULL}.
-#' @param max_profiles The most profiles to read (default 100).
+#' @param max_profiles The most profiles to read (default 100). Ignored with
+#'   \code{all = TRUE}.
 #' @param absent_unless_recorded Passed to \code{\link{isis_profile_to_pedon}}.
 #' @param timeout Seconds to wait for each request (default 60).
-#' @param progress Optional \code{function(done, total)}.
+#' @param progress Optional \code{function(done, total)}; \code{total} is
+#'   \code{NA} with \code{all = TRUE}.
+#' @param all If \code{TRUE}, reads the whole collection, including the
+#'   profiles ISIS records with no country. It takes neither
+#'   \code{profile_codes} nor \code{country}. A warning names the profiles that
+#'   came with no horizons to classify; they stay in the result.
 #' @return A named list of \code{\link{PedonRecord}}s, one per profile read.
 #'   On a failed request the profiles read until then are returned with a
-#'   warning.
+#'   warning. Each pedon gives ISRIC's latest WRB name in
+#'   \code{site$reference_wrb_full}, its year in
+#'   \code{site$reference_wrb_edition}, both together in
+#'   \code{site$reference_wrb_cited}, and every edition in
+#'   \code{site$reference_wrb_all}.
 #' @examples
 #' \dontrun{
 #' p <- read_isis(c("KE009", "ZW005"))
 #' classify_all(p$KE009)
-#' p$KE009$site$reference_wrb_full
+#' p$KE009$site$reference_wrb_cited
+#' everything <- read_isis(all = TRUE)
 #' }
 #' @export
 read_isis <- function(profile_codes = NULL, country = NULL, max_profiles = 100L,
                       absent_unless_recorded = TRUE, timeout = 60,
-                      progress = NULL) {
-  if (is.null(profile_codes) && is.null(country))
-    rlang::abort("Give `profile_codes` or `country`.")
-  if (!is.null(profile_codes)) {
-    profile_codes <- unique(toupper(trimws(as.character(profile_codes))))
+                      progress = NULL, all = FALSE) {
+  all <- isTRUE(all)
+  if (all && (!is.null(profile_codes) || !is.null(country)))
+    rlang::abort("`all = TRUE` reads the whole collection: give neither `profile_codes` nor `country`.")
+  if (!all && is.null(profile_codes) && is.null(country))
+    rlang::abort("Give `profile_codes` or `country`, or use `all = TRUE`.")
+  if (all) {
+    max_profiles <- Inf
+    filt <- ""; vars <- NULL; decl <- ""
+  } else if (!is.null(profile_codes)) {
+    profile_codes <- unique(.isis_normalise_code(profile_codes))
+    if (length(profile_codes) > max_profiles)
+      rlang::warn(sprintf("Reading the first %d of %d profile codes: raise `max_profiles` to read them all.",
+                          as.integer(max_profiles), length(profile_codes)))
     max_profiles <- min(max_profiles, length(profile_codes))
     filt <- "filter: { profileCode: { in: $codes } }"
     vars <- list(codes = as.list(profile_codes))
@@ -840,7 +969,7 @@ read_isis <- function(profile_codes = NULL, country = NULL, max_profiles = 100L,
     if (first <= 0L) break
     q <- sprintf("query %s { profiles(first: %d, offset: %d, orderBy: [PROFILE_ID_ASC], %s) { %s } }",
                  decl, first, off, filt, .isis_profile_fields())
-    r <- .isis_post(q, variables = vars, timeout = timeout)
+    r <- .isis_post_retry(q, variables = vars, timeout = timeout)
     if (!is.null(r$error)) {
       rlang::warn(paste0("ISIS: ", r$error, if (length(got))
         sprintf(" (returning the %d profile(s) read so far)", length(got)) else ""))
@@ -851,7 +980,7 @@ read_isis <- function(profile_codes = NULL, country = NULL, max_profiles = 100L,
     for (p in batch) got[[as.character(p$profileCode)]] <-
       isis_profile_to_pedon(p, absent_unless_recorded = absent_unless_recorded,
                             accessed = accessed)
-    if (is.function(progress)) progress(length(got), max_profiles)
+    if (is.function(progress)) progress(length(got), if (all) NA_integer_ else max_profiles)
     if (length(batch) < first) break
     off <- off + first
   }
@@ -860,7 +989,18 @@ read_isis <- function(profile_codes = NULL, country = NULL, max_profiles = 100L,
     if (length(miss) && length(got) < max_profiles)
       rlang::warn(paste("ISIS has no profile", paste(miss, collapse = ", ")))
   }
+  if (all) {
+    empty <- names(got)[vapply(got, function(p) is.null(p$horizons) || !nrow(p$horizons), NA)]
+    if (length(empty))
+      rlang::warn(sprintf("%d of the %d ISIS profiles read have no horizons to classify: %s",
+                          length(empty), length(got), paste(empty, collapse = ", ")))
+  }
   got
+}
+
+# ISIS codes are two capitals, digits and sometimes a small letter ("BT001a").
+.isis_normalise_code <- function(x) {
+  sub("^([A-Z]{2}[0-9]+)([A-Z])$", "\\1\\L\\2", toupper(trimws(as.character(x))), perl = TRUE)
 }
 
 #' Compare soilKey with ISRIC's names for ISIS profiles
@@ -872,12 +1012,22 @@ read_isis <- function(profile_codes = NULL, country = NULL, max_profiles = 100L,
 #' USDA names are from the 1975 to 1999 editions, so subgroups are shown but
 #' not scored).
 #'
+#' A profile whose latest ISRIC name is older than 2022 is not scored:
+#' \code{wrb_agree} is \code{NA} and it counts neither for nor against the
+#' agreement. A message says how many profiles were scored and how many were
+#' left out, by edition.
+#'
 #' @param pedons A list of \code{\link{PedonRecord}}s from \code{read_isis}.
+#' @param quiet If \code{TRUE}, no message.
 #' @return A data frame, one row per profile, with ISRIC's and soilKey's names,
 #'   \code{wrb_agree} and \code{usda_order_agree} (\code{NA} where ISRIC gives
-#'   no comparable name) and the number of close calls of each key.
+#'   no comparable name) and the number of close calls of each key. The
+#'   attribute \code{"wrb_editions"} is a data frame with one row per edition of
+#'   ISRIC's latest name: the profiles, those soilKey named, those with the same
+#'   Reference Soil Group, and whether the edition is scored. The counts of the
+#'   editions before 2022 are for information only.
 #' @export
-benchmark_isis <- function(pedons) {
+benchmark_isis <- function(pedons, quiet = FALSE) {
   rows <- lapply(pedons, function(p) {
     s <- p$site
     w <- tryCatch(classify_wrb2022(p, on_missing = "silent"), error = function(e) NULL)
@@ -906,5 +1056,23 @@ benchmark_isis <- function(pedons) {
   })
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
+  ed <- ifelse(is.na(out$isric_wrb_edition), "none", out$isric_wrb_edition)
+  named <- !is.na(out$isric_rsg) & !is.na(out$soilkey_rsg)
+  same <- named & tolower(out$isric_rsg) == tolower(out$soilkey_rsg)
+  eds <- sort(unique(ed))
+  tab <- data.frame(edition = eds,
+                    profiles = vapply(eds, function(e) sum(ed == e), 0L, USE.NAMES = FALSE),
+                    named_by_soilkey = vapply(eds, function(e) sum(named[ed == e]), 0L, USE.NAMES = FALSE),
+                    same_rsg = vapply(eds, function(e) sum(same[ed == e]), 0L, USE.NAMES = FALSE),
+                    scored = eds == "2022", stringsAsFactors = FALSE)
+  attr(out, "wrb_editions") <- tab
+  if (!isTRUE(quiet)) {
+    n <- sum(!is.na(out$wrb_agree)); ok <- sum(out$wrb_agree %in% TRUE)
+    old <- tab[!tab$scored, , drop = FALSE]
+    message(sprintf("WRB: %d of %d profiles scored against ISRIC's names of the 2022 edition, %d agree%s.%s",
+                    n, nrow(out), ok, if (n) sprintf(" (%.1f %%)", 100 * ok / n) else "",
+                    if (nrow(old)) paste0(" Not scored, by the edition of ISRIC's latest name: ",
+                                          paste(sprintf("%s (%d)", old$edition, old$profiles), collapse = ", "), ".") else ""))
+  }
   out
 }

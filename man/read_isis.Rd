@@ -10,7 +10,8 @@ read_isis(
   max_profiles = 100L,
   absent_unless_recorded = TRUE,
   timeout = 60,
-  progress = NULL
+  progress = NULL,
+  all = FALSE
 )
 }
 \arguments{
@@ -19,18 +20,29 @@ read_isis(
 \item{country}{ISO 3166 two-letter country code, e.g. \code{"KE"}, read
 when \code{profile_codes} is \code{NULL}.}
 
-\item{max_profiles}{The most profiles to read (default 100).}
+\item{max_profiles}{The most profiles to read (default 100). Ignored with
+\code{all = TRUE}.}
 
 \item{absent_unless_recorded}{Passed to \code{\link{isis_profile_to_pedon}}.}
 
 \item{timeout}{Seconds to wait for each request (default 60).}
 
-\item{progress}{Optional \code{function(done, total)}.}
+\item{progress}{Optional \code{function(done, total)}; \code{total} is
+\code{NA} with \code{all = TRUE}.}
+
+\item{all}{If \code{TRUE}, reads the whole collection, including the
+profiles ISIS records with no country. It takes neither
+\code{profile_codes} nor \code{country}. A warning names the profiles that
+came with no horizons to classify; they stay in the result.}
 }
 \value{
 A named list of \code{\link{PedonRecord}}s, one per profile read.
   On a failed request the profiles read until then are returned with a
-  warning.
+  warning. Each pedon gives ISRIC's latest WRB name in
+  \code{site$reference_wrb_full}, its year in
+  \code{site$reference_wrb_edition}, both together in
+  \code{site$reference_wrb_cited}, and every edition in
+  \code{site$reference_wrb_all}.
 }
 \description{
 Reads profiles live from ISRIC's ISIS GraphQL service and returns them as
@@ -44,6 +56,7 @@ what the translation reads.
 \dontrun{
 p <- read_isis(c("KE009", "ZW005"))
 classify_all(p$KE009)
-p$KE009$site$reference_wrb_full
+p$KE009$site$reference_wrb_cited
+everything <- read_isis(all = TRUE)
 }
 }
