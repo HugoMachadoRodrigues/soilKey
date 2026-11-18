@@ -1,3 +1,47 @@
+# soilKey 0.9.408
+
+The ISIS reader, after questions from ISRIC (Hugo, 2026-11-18).
+
+* **`read_isis(all = TRUE)` reads the whole collection.** Reading country by
+  country leaves out the 22 profiles ISIS records with no country. A warning
+  names the profiles that come with no horizons to classify (31 of the 974);
+  they stay in the result.
+* **Profile codes keep their small letter.** `read_isis()` turned every code
+  into capitals, so BT001a, ID049a, ID050a and NL043a were never found.
+  `read_isis()` also warns when `max_profiles` is shorter than the list of
+  codes it is given.
+* **The alternative fields of a layer.** Where the first field is empty, the
+  reader now takes the same observation from its alternative, and the
+  provenance names the field: the Munsell colour written whole
+  (`colourMoistMatrix`, `colourDryMatrix` and their second entries), the second
+  entry of the structure grade, type and size, of the mottle contrast and size
+  and of the hardness and size of the inclusions, and the coatings of clay, clay
+  and sesquioxides or clay and humus as clay films where no cutans are
+  recorded.
+* **The organic matter of ISIS is not read as organic carbon.** `orgm` is a
+  loss on ignition. In the 1,064 layers that have both, `orgm / orgc` runs from
+  below 0.2 to above 11, and is between 1.6 and 1.85 in only 49 of them; in
+  NG001 it doubles between the surface and 120 cm. Divided by 1.724 it would be
+  a carbon content the data do not support.
+* **A failed request is tried again.** `read_isis()` tries each request three
+  times before it stops and returns what it has read.
+* **`benchmark_isis()` says what it scored.** A message gives the profiles
+  scored against ISRIC's names of 2022 and those left out, by edition; the
+  attribute `"wrb_editions"` holds the same counts as a table.
+* **The edition of ISRIC's WRB name is easier to see.**
+  `site$reference_wrb_cited` gives the latest name with its publication year,
+  and `site$reference_wrb_all` every edition ISRIC gives the profile, newest
+  first. `site$reference_wrb_full` stays the name alone. `benchmark_isis()`
+  still scores only the names of the 2022 edition.
+
+On the 974 ISIS profiles, 4 WRB names change, 3 of them at the Reference Soil
+Group: GE008 (ISRIC 2022: Luvisol) from Cambisols to Luvisols, GE004 (2015:
+Acrisol) from Cambisols to Alisols, CL001 (2015: Luvisol) from Regosols to
+Cambisols. WRB agreement with ISRIC's names of 2022 goes from 295 to 296 of 481
+(61.3 to 61.5 %). The USDA order changes for 2 profiles and its agreement stays
+358 of 748. The ISIS benchmarks of the FAO-Unesco legends, the CST and KA5 do
+not change.
+
 # soilKey 0.9.407
 
 The CST spodic horizon and the O layers of the 1974 H horizon, reviewed after
