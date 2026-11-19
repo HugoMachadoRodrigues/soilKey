@@ -131,7 +131,7 @@ isis_citation <- function(accessed = Sys.Date()) {
 
 .ISIS_LAB <- c("clay", "silt", "sand", "cfvo", "phaq", "phkc", "phca", "orgc",
                "nitkjd", "cecph7", "ecec", "caExcph7", "mgExcph7", "kExcph7",
-               "naExcph7", "exbas", "alExch", "esp", "tceq", "gypsumContent",
+               "naExcph7", "exbas", "alExch", "acidityExc", "esp", "tceq", "gypsumContent",
                "feExtdith", "feExtacox", "alExtox", "sietox", "bdfiod", "bdfiot",
                "wv1500", "elcosp", "elco25", "clayWaterdispTotal", "phnf")
 .ISIS_MORPH <- c("colourMoistHue", "colourMoistValue", "colourMoistChroma",
@@ -519,6 +519,10 @@ isis_citation <- function(accessed = Sys.Date()) {
   setnum("ca_cmol", "caExcph7", 1, "cmol(c)/kg"); setnum("mg_cmol", "mgExcph7", 1, "cmol(c)/kg")
   setnum("k_cmol", "kExcph7", 1, "cmol(c)/kg"); setnum("na_cmol", "naExcph7", 1, "cmol(c)/kg")
   setnum("al_cmol", "alExch", 1, "cmol(c)/kg, 1 M KCl"); setnum("al_kcl_cmol", "alExch", 1, "cmol(c)/kg, 1 M KCl")
+  # v0.9.412: the exchangeable acidity (H + Al, 1 M KCl): with the four bases
+  # it bounds the sum of bases and Al from above, which decides the Geric
+  # qualifier where no Al is recorded (WRB 2022 Ch 5, p. 135).
+  setnum("exch_acidity_kcl_cmol", "acidityExc", 1, "cmol(c)/kg, 1 M KCl")
   setnum("esp_pct", "esp", 1, "%")
   setnum("caco3_pct", "tceq", 0.1, "g/kg"); setnum("caso4_pct", "gypsumContent", 0.1, "g/kg")
   setnum("fe_dcb_pct", "feExtdith", 1, "g/100g"); setnum("fe_ox_pct", "feExtacox", 1, "g/100g")

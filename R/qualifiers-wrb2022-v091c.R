@@ -258,18 +258,34 @@ qual_hyperalbic <- function(pedon) {
 #' clay); the layer is then undecided unless the recorded part alone reaches
 #' 6. The Annex 2 pH substitute (Ch 9.13) is not used: Geric does not carry
 #' that note. Depth is counted from the mineral soil surface.
+#' v0.9.412: where a base or the Al is not recorded, the ECEC, or the four
+#' bases plus the exchangeable acidity (H + Al, 1 M KCl), bounds the sum from
+#' above, so a layer below the limit by it passes.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_geric <- function(pedon) {
+qual_geric <- function(pedon) .q_geric_sum(pedon, "Geric", 6)
+
+#' Hypergeric qualifier (jq), subqualifier of Geric: WRB 2022 Ch 5 (p. 135),
+#' "having within 100 cm of the mineral soil surface a layer that has a sum of
+#' exchangeable bases (by 1 M NH4OAc, pH 7) plus exchangeable Al (by 1 M KCl,
+#' unbuffered) of < 1.5 cmolc kg-1 clay". An optional subqualifier (Ch 2.3,
+#' rule 1, p. 26): the name uses it in place of Geric once the name builder
+#' takes optional subqualifiers (Hugo, L1).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+qual_hypergeric <- function(pedon) .q_geric_sum(pedon, "Hypergeric", 1.5)
+
+# The test of Geric (< 6) and Hypergeric (< 1.5 cmolc per kg clay).
+.q_geric_sum <- function(pedon, name, max_per_clay) {
   h <- pedon$horizons
-  ref <- "WRB (2022) Ch 5, Geric (p. 135)"
+  ref <- sprintf("WRB (2022) Ch 5, %s (p. 135)", name)
   miss <- c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol", "al_kcl_cmol", "clay_pct")
   ms <- .q_mineral_surface_cm(h)
   layers <- if (is.na(ms)) integer(0)
             else which(!is.na(h$top_cm) & !is.na(h$bottom_cm) &
                          h$bottom_cm > ms & h$top_cm < ms + 100)
   if (length(layers) == 0L)
-    return(DiagnosticResult$new(name = "Geric", passed = NA,
+    return(DiagnosticResult$new(name = name, passed = NA,
             layers = integer(0), evidence = list(), missing = miss,
             reference = ref))
   bases <- cbind(h$ca_cmol[layers], h$mg_cmol[layers],
@@ -279,16 +295,25 @@ qual_geric <- function(pedon) {
   complete <- rowSums(is.na(bases)) == 0L & !is.na(al)
   recorded <- rowSums(bases, na.rm = TRUE) + ifelse(is.na(al), 0, al)
   per_clay <- ifelse(!is.na(clay) & clay > 0, recorded / clay * 100, NA_real_)
+  # v0.9.412: upper bounds of bases + Al when a part is not recorded: the ECEC,
+  # or the four bases plus the exchangeable acidity (H + Al, 1 M KCl).
+  col <- function(v) (h[[v]] %||% rep(NA_real_, nrow(h)))[layers]
+  upper <- ifelse(complete, recorded,
+                  pmin(col("ecec_cmol"),
+                       ifelse(rowSums(is.na(bases)) == 0L,
+                              rowSums(bases) + col("exch_acidity_kcl_cmol"), NA_real_),
+                       na.rm = TRUE))
+  upper_clay <- ifelse(!is.na(clay) & clay > 0, upper / clay * 100, NA_real_)
   status <- ifelse(!is.na(clay) & clay <= 0, FALSE,
             ifelse(is.na(per_clay), NA,
-            ifelse(per_clay >= 6, FALSE,
-            ifelse(complete, TRUE, NA))))
+            ifelse(per_clay >= max_per_clay, FALSE,
+            ifelse(upper_clay %in% NA, NA, upper_clay < max_per_clay))))
   passed <- if (any(status %in% TRUE)) TRUE else if (anyNA(status)) NA else FALSE
   DiagnosticResult$new(
-    name = "Geric", passed = passed,
+    name = name, passed = passed,
     layers = if (isTRUE(passed)) layers[status %in% TRUE] else integer(0),
     evidence = list(bases_plus_al_per_kg_clay = per_clay, complete = complete,
-                    layer_status = status),
+                    upper_bound_per_kg_clay = upper_clay, layer_status = status),
     missing = if (is.na(passed)) miss else character(0),
     reference = ref
   )

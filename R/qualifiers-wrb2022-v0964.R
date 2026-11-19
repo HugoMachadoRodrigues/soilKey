@@ -938,8 +938,20 @@ qual_differentic <- function(pedon) {
       passed = if (is.na(arg$passed) || is.na(nat$passed)) NA else FALSE,
       layers = integer(0), evidence = list(argic = arg, natric = nat),
       missing = unique(c(arg$missing, nat$missing)), reference = ref))
-  ci <- test_clay_increase_argic(h, system = "wrb2022", site = pedon$site)
-  hit <- intersect(hz, ci$layers)
+  # v0.9.412: criterion 2.a as argic() reads it (WRB 2022 Ch 3.1.3, p. 36):
+  # no lithic discontinuity between the layers (2.a.i), no plough layer
+  # directly above (2.a.ii), a transitional horizon of <= 15 cm (2.a.iii), and
+  # no A horizon taken into the argic horizon. The layers argic() keeps across
+  # a lithic discontinuity for their clay films meet 2.b, not 2.a. Until
+  # v0.9.411 the clay increase was tested here without these switches.
+  ci <- arg$evidence$clay_increase %||%
+    test_clay_increase_argic(h, system = "wrb2022", lithic_aware = TRUE,
+                             max_transition_cm = 15,
+                             exclude = .wrb_not_subsurface(h, site = pedon$site),
+                             lithic_data = TRUE, plough_layer = TRUE,
+                             site = pedon$site)
+  hit <- intersect(hz, setdiff(ci$layers,
+                               ci$across_lithic_discontinuity$kept_by_clay_films))
   clay_known <- !anyNA(h$clay_pct[seq_len(max(hz))])
   passed <- if (length(hit)) TRUE else if (clay_known) FALSE else NA
   DiagnosticResult$new(

@@ -47,7 +47,16 @@ abrupt_textural_difference <- function(pedon) {
     top   <- h$top_cm[i]
     bot   <- h$bottom_cm[i]
     if (is.na(above) || is.na(here)) {
-      missing <- c(missing, "clay_pct"); next
+      missing <- c(missing, "clay_pct")
+      # v0.9.412: the pair is undecided (NA), not failed, unless what is
+      # recorded already rules it out (WRB 2022 Ch 3.2.1, p. 72: criteria 1,
+      # 2 and 5); until v0.9.411 it was skipped and could leave FALSE.
+      b0 <- tolower(trimws(bd[i - 1L]))
+      out <- (!is.na(here) && here < 15) ||
+        (!is.na(top) && !is.na(bot) && (bot - top < 7.5 || top - ms < 10)) ||
+        (!is.na(b0) && nzchar(b0) && !grepl("abrupt|sharp", b0))
+      if (!out) undecided <- c(undecided, i)
+      next
     }
     if (is.na(top) || is.na(bot)) {
       missing <- c(missing, "top_cm", "bottom_cm"); next

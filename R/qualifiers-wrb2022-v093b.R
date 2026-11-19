@@ -7,7 +7,7 @@
 #   Aric       homogenised plough layer (designation \\code{Ap*})
 #   Cumulic    recent depositional cover (designation \\code{Cu/Au}
 #              with low age proxy via fluvic / aeolic layer_origin)
-#   Profondic  argic horizon that continues to >= 150 cm depth
+#   Profondic  argic horizon, clay not decreasing by >= 20% within 150 cm
 #   Rubic      red Munsell hue >= 5YR + chroma >= 4 in upper 100 cm
 #              (less strict than Rhodic, which needs <= 2.5YR + value < 4)
 #   Lamellic   thin clay-enriched Bt lamellae (designation pattern
@@ -111,30 +111,53 @@ qual_cumulic <- function(pedon) {
 }
 
 
-#' Profondic qualifier (pf): argic horizon that continues, with no
-#' clay decrease, down to or below 150 cm.
-#' v0.9.3.B: requires \code{argic} to pass AND at least one argic
-#' layer with \code{bottom_cm >= 150}.
+#' Profondic qualifier (pf): an argic horizon in which the clay content
+#' does not decrease by >= 20\% (relative) from its maximum within 150 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_profondic <- function(pedon) {
+  # v0.9.412: WRB 2022 Ch 5, Profondic (p. 144): "having an argic horizon, in
+  # which the clay content does not decrease by >= 20% (relative) from its
+  # maximum within 150 cm of the mineral soil surface, throughout". From the
+  # top of the argic horizon down to 150 cm, every layer at or below the clay
+  # maximum keeps more than 0.8 times that maximum. A clay content not
+  # recorded leaves it undecided, and so does a description that stops above
+  # 150 cm; a limiting layer (Ch 2.1, rule 8, p. 23) starting above 150 cm
+  # decides it: the clay of the argic horizon does not continue to 150 cm
+  # (Hugo, L4). Until v0.9.411 an argic layer reaching 150 cm was enough.
+  ref <- "WRB (2022) Ch 5, Profondic (p. 144)"
+  res <- function(passed, layers = integer(0), missing = character(0), ...)
+    DiagnosticResult$new(name = "Profondic", passed = passed, layers = layers,
+                         evidence = list(...), missing = missing, reference = ref)
   arg <- argic(pedon)
   if (!isTRUE(arg$passed))
-    return(DiagnosticResult$new(name = "Profondic", passed = FALSE,
-            layers = integer(0), evidence = list(argic = arg),
-            missing = arg$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Profondic"))
+    return(res(if (is.na(arg$passed)) NA else FALSE,
+               missing = arg$missing %||% character(0), argic = arg))
   h <- pedon$horizons
-  ly <- arg$layers
-  ok <- !is.na(h$bottom_cm[ly]) & h$bottom_cm[ly] >= 150
-  passed <- any(ok)
-  DiagnosticResult$new(
-    name = "Profondic", passed = passed,
-    layers = ly[ok],
-    evidence = list(argic = arg, bottom_cm = h$bottom_cm[ly]),
-    missing = if (all(is.na(h$bottom_cm[ly]))) "bottom_cm" else character(0),
-    reference = "WRB (2022) Ch 5, Profondic"
-  )
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  lim <- ms + 150
+  bl <- tryCatch(.barrier_top_cm(pedon), error = function(e) NA_real_)
+  if (!is.na(bl) && bl < lim)
+    return(res(FALSE, argic = arg, limiting_layer_top_cm = bl,
+               reason = "limiting layer starting above 150 cm"))
+  top <- min(h$top_cm[arg$layers], na.rm = TRUE)
+  if (top >= lim)
+    return(res(FALSE, argic = arg, reason = "argic horizon starts below 150 cm"))
+  win <- which(!is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > top &
+                 h$top_cm < lim)
+  clay <- h$clay_pct[win]
+  if (all(is.na(clay))) return(res(NA, missing = "clay_pct", argic = arg))
+  mx <- max(clay, na.rm = TRUE)
+  at_max <- h$top_cm[win][which.max(replace(clay, is.na(clay), -Inf))]
+  below <- win[h$top_cm[win] >= at_max]
+  cb <- h$clay_pct[below]
+  ev <- list(argic = arg, max_clay = mx, layers_below_max = below, limit_cm = lim)
+  if (any(!is.na(cb) & cb <= 0.8 * mx))
+    return(do.call(res, c(list(FALSE), ev)))
+  if (anyNA(cb)) return(do.call(res, c(list(NA, missing = "clay_pct"), ev)))
+  if (max(h$bottom_cm[win]) < lim)
+    return(do.call(res, c(list(NA, missing = "description to 150 cm"), ev)))
+  do.call(res, c(list(TRUE, layers = intersect(arg$layers, win)), ev))
 }
 
 
