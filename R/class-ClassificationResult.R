@@ -217,6 +217,11 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
                                                          "species_native", "species_undecided", "analogue_1977",
                                                          "correlation_cst")) &
                                          !startsWith(names(ql), "za_")]
+      # v0.9.409: only names are printed. WRB 2022 keeps the reasoning behind
+      # each qualifier in $qualifiers$trace and $trace_supplementary (lists),
+      # and HSCS keeps the status of its subtypes and varieties in a table;
+      # unlist() spilled both into the line.
+      ql <- Filter(function(x) is.character(x) && length(x) > 0, ql)
       if (length(ql) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(ql), collapse = ', ')}")
       }
