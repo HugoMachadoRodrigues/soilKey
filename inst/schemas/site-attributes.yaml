@@ -320,8 +320,21 @@ attributes:
     section: "Water, climate & regimes"
     type: "logical"
     unit: "-"
-    description: "The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply."
-    systems: [nzsc4, scsj2017]
+    description: "The site is artificially drained. Read by the NZSC peaty topsoil, whose saturation requirement then does not apply, and by the WRB histic horizon (drained organic material is histic, not folic) and Drainic qualifier."
+    systems: [nzsc4, scsj2017, wrb2022]
+  - name: floating_organic_material
+    section: "Water, climate & regimes"
+    type: "logical"
+    unit: "-"
+    description: "The organic material floats on water (a floating mat or mire). Read by the WRB Floatic qualifier (Ch 5, p. 134); without it, a floating mat, Schwingmoor or quaking bog named in landform is read. Not recorded, the soil is not Floatic."
+    systems: [wrb2022]
+  - name: mire_water_supply
+    section: "Water, climate & regimes"
+    type: "character"
+    unit: "-"
+    description: "The water that saturates the upper part of the peat: rainwater (an ombrotrophic mire, a raised or blanket bog) or groundwater or flowing water (a fen). Read by the WRB Ombric and Rheic qualifiers (Ch 5, pp. 142 and 145); without it they read peat_moor_type, then a raised bog, blanket bog or fen named in landform, vegetation or land_use, and stay undecided where nothing is recorded."
+    allowed: [rainwater, groundwater, flowing water]
+    systems: [wrb2022]
   - name: groundwater_kind
     section: "Water, climate & regimes"
     type: "character"

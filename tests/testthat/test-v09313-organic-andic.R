@@ -32,9 +32,12 @@ test_that("the histic horizon reads organic material at 20% SOC", {
 
 test_that("Floatic reads organic material at 20% SOC", {
   skip_on_cran()
+  # v0.9.414: floating organic material must be recorded (WRB 2022 Ch 5, p. 134)
   p <- function(oc) .v09313_pedon(top_cm = c(0, 60), bottom_cm = c(60, 100),
                                   designation = c("H", "C"), oc_pct = c(oc, 1),
-                                  bulk_density_g_cm3 = c(0.08, 1.4))
+                                  bulk_density_g_cm3 = c(0.08, 1.4),
+                                  site = list(id = "v09313",
+                                              floating_organic_material = TRUE))
   expect_true(isTRUE(soilKey:::qual_floatic(p(30))$passed))
   expect_false(isTRUE(soilKey:::qual_floatic(p(15))$passed))
 })

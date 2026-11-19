@@ -26,7 +26,9 @@ test_that("HS canonical fixture resolves to a sapric, drained Histosol", {
   skip_on_cran()
   pr  <- make_histosol_canonical()
   res <- resolve_wrb_qualifiers(pr, "HS")
-  expect_true("Folic"   %in% res$principal)
+  # v0.9.414: the site is recorded as drained, so the organic material is
+  # histic, not folic (WRB 2022 Ch 3.1.12, p. 46)
+  expect_false("Folic"  %in% res$principal)
   expect_true("Sapric"  %in% res$principal)
   expect_true("Drainic" %in% res$principal)
   # Sapric and Hemic are mutually exclusive (thickness-dominant rule).
