@@ -192,10 +192,12 @@ qual_fractic <- function(pedon) {
   # broken-up cemented horizon. The schema holds neither the volume nor the
   # size of such remnants (coarse_fragments_pct does not include them), so the
   # result is NA.
+  # v0.9.413: such remnants are a field observation; not recorded, they are
+  # absent (Hugo's rule), so FALSE; it was NA
   DiagnosticResult$new(
-    name = "Fractic", passed = NA, layers = integer(0),
-    evidence = list(reason = "no field for remnants of a broken-up petrocalcic or petrogypsic horizon"),
-    missing = c("broken_petro_remnants_pct", "broken_petro_remnants_length_cm"),
+    name = "Fractic", passed = FALSE, layers = integer(0),
+    evidence = list(reason = "no field for remnants of a broken-up petrocalcic or petrogypsic horizon: not recorded, absent"),
+    missing = character(0),
     reference = "WRB (2022) Ch 5, Fractic"
   )
 }
@@ -297,10 +299,13 @@ qual_greyzemic <- function(pedon) {
   }
   mtop <- min(h$top_cm[mol$layers], na.rm = TRUE)
   mbot <- max(h$bottom_cm[mol$layers], na.rm = TRUE)
+  # v0.9.413: uncoated grains on aggregate surfaces are a field observation;
+  # not recorded, they are absent (Hugo's rule), so FALSE; it was NA
   DiagnosticResult$new(
-    name = "Greyzemic", passed = NA, layers = integer(0),
-    evidence = list(mollic = mol, lower_half_cm = c((mtop + mbot) / 2, mbot)),
-    missing = "uncoated_grains_on_ped_faces",
+    name = "Greyzemic", passed = FALSE, layers = integer(0),
+    evidence = list(mollic = mol, lower_half_cm = c((mtop + mbot) / 2, mbot),
+                    reason = "uncoated grains on ped faces not recorded: absent"),
+    missing = character(0),
     reference = "WRB (2022) Ch 5, Greyzemic"
   )
 }
@@ -936,7 +941,7 @@ qual_endodolomitic <- function(pedon) {
     return(DiagnosticResult$new(name = "Endodolomitic", passed = NA,
                                 layers = integer(0), evidence = list(),
                                 missing = "top_cm", reference = ref))
-  .q_endo_material(pedon, "Endodolomitic", dolomitic_material(pedon),
+  .q_endo_material(pedon, "Endodolomitic", .wrb_dolomitic_material(pedon),
                    surface = ms, reference = ref)
 }
 

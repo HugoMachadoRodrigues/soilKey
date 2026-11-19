@@ -175,7 +175,9 @@ test_that("ferric: fine and medium mottles are no coarse masses", {
                                   mottle_size_class = c(NA, size),
                                   ferric_nodules_pct = c(0, 0))
   expect_false(ferric(p("medium"))$passed)
-  expect_true(is.na(ferric(p(NA))$passed))
+  # no size recorded: no coarse masses recorded, absent (Hugo's rule)
+  expect_false(ferric(p(NA))$passed)
+  expect_true(is.na(ferric(p("coarse"))$passed))
 })
 
 test_that("the ISIS reader reads the FAO (2006) concretion fields", {
@@ -250,4 +252,48 @@ test_that("Haplic only when every principal qualifier is decided absent", {
   # the name with no principal qualifier
   expect_identical(format_wrb_name("Cambisols", character(0), "Loamic"),
                    "Cambisol (Loamic)")
+})
+
+
+# ---- field observations not recorded are absent ----------------------------
+
+test_that("the field-absent copy reads unrecorded field observations as absent", {
+  skip_on_cran()
+  p <- .v413_pedon(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100),
+                   designation = c("A", "Bw", NA), clay_pct = 20,
+                   munsell_hue_moist = c("10YR", "10YR", NA))
+  a <- soilKey:::.wrb_field_absent_pedon(p)
+  h <- a$horizons
+  expect_equal(h$coarse_fragments_pct, c(0, 0, NA))   # the row with no description stays
+  expect_equal(h$desert_pavement_pct, c(0, 0, NA))
+  expect_equal(h$effervescence_class, c("none", "none", NA))
+  expect_equal(h$slickensides, c("absent", "absent", NA))
+  expect_identical(a$site$groundwater_kind, "none observed")
+  # the original is untouched
+  expect_true(all(is.na(p$horizons$coarse_fragments_pct)))
+  expect_null(p$site$groundwater_kind)
+  # a reader that applied the rule itself keeps its own undecided readings
+  q <- .v413_pedon(top_cm = 0, bottom_cm = 30, designation = "Bt",
+                   site = list(absent_unless_recorded = TRUE))
+  expect_true(is.na(soilKey:::.wrb_field_absent_pedon(q)$horizons$slickensides))
+  # mottles of a g horizon stay undecided
+  g <- .v413_pedon(top_cm = c(0, 30), bottom_cm = c(30, 60), designation = c("A", "Bg"))
+  expect_equal(soilKey:::.wrb_field_absent_pedon(g)$horizons$redoximorphic_features_pct, c(0, NA))
+})
+
+test_that("qualifiers left undecided by an unrecorded field observation are decided", {
+  skip_on_cran()
+  p <- .v413_pedon(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 100),
+                   designation = c("A", "Bw", "C"), clay_pct = 20, silt_pct = 40,
+                   sand_pct = 40, munsell_hue_moist = "10YR",
+                   munsell_value_moist = c(3, 4, 5), munsell_chroma_moist = c(2, 4, 4))
+  r <- resolve_wrb_qualifiers(p, "CM")
+  expect_false(r$trace$Yermic$passed)
+  expect_identical(r$trace$Yermic$note, "field observations not recorded read as absent")
+  expect_false(r$trace$Skeletic$passed)
+  expect_false(soilKey:::qual_fractic(p)$passed)
+  expect_false(soilKey:::qual_fragic(p)$passed)
+  expect_false(soilKey:::qual_petrocalcic(soilKey:::.wrb_field_absent_pedon(p))$passed)
+  # laboratory measurements stay undecided: gypsum not measured
+  expect_true(is.na(soilKey:::qual_gypsic(soilKey:::.wrb_field_absent_pedon(p))$passed))
 })

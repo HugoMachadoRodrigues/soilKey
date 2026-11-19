@@ -99,7 +99,17 @@ qual_calcaric <- function(pedon) {
 #' Dolomitic qualifier (do): dolomitic material in upper 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_dolomitic <- function(pedon) .q_presence("Dolomitic", dolomitic_material(pedon), 100, pedon)
+qual_dolomitic <- function(pedon) .q_presence("Dolomitic", .wrb_dolomitic_material(pedon), 100, pedon)
+
+# v0.9.413: dolomitic material is told by its effervescence with heated 1 M
+# HCl (WRB 2022 Ch 3.3.5, p. 87), a field test (Annex 1, p. 200: a spoon of
+# soil heated with a lighter); not recorded, it is absent, unless a
+# designation names dolomite (dolomitic_material() reads it)
+.wrb_dolomitic_material <- function(pedon) {
+  dm <- dolomitic_material(pedon)
+  .wrb_field_decided(dm, !isTRUE(dm$evidence$proxy$passed),
+                     "effervescence with heated HCl not recorded")
+}
 
 #' Gypsiric qualifier (gc): gypsiric material >= 25 cm in upper 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -199,7 +209,17 @@ qual_mulmic <- function(pedon) {
 #' Hortic qualifier (ht): hortic horizon (long-cultivated dark surface).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_hortic     <- function(pedon) .q_presence("Hortic",     hortic(pedon),     50, pedon)
+qual_hortic <- function(pedon) {
+  # v0.9.413: the hortic horizon asks >= 25% animal pores, coprolites or other
+  # traces of animal activity (WRB 2022 Ch 3.1.16, p. 48, criterion 5), a field
+  # observation: with no surface layer recorded so, it is absent
+  h <- pedon$horizons
+  w <- h$worm_holes_pct %||% rep(NA_real_, nrow(h))
+  top <- !is.na(h$top_cm) & h$top_cm <= 20
+  no_fauna <- any(top) && all(!is.na(w[top]) & w[top] < 25)
+  .q_presence("Hortic", .wrb_field_decided(hortic(pedon), no_fauna,
+                                          "animal activity < 25% (Ch 3.1.16, criterion 5)"), 50, pedon)
+}
 
 #' Irragric qualifier (ir): irragric horizon (irrigation-deposited surface).
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -214,7 +234,15 @@ qual_irragric   <- function(pedon) .q_presence("Irragric",   irragric(pedon),   
 #' v0.9.1 qualifier-side gate is therefore retired.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_plaggic <- function(pedon) .q_presence("Plaggic", plaggic(pedon), 50, pedon)
+qual_plaggic <- function(pedon) {
+  # v0.9.413: the plaggic horizon shows evidence that the land surface has been
+  # raised (WRB 2022 Ch 3.1.29, p. 60, criterion 6), a field observation the
+  # schema does not record: absent unless a designation names plaggen
+  d <- as.character(pedon$horizons$designation %||% character(0))
+  .q_presence("Plaggic", .wrb_field_decided(plaggic(pedon),
+                                           !any(grepl("^Apl|plagg", d, ignore.case = TRUE)),
+                                           "raised land surface (criterion 6) not recorded"), 50, pedon)
+}
 
 #' Pretic qualifier (pt): pretic (pre-Columbian Amerindian dark earth) horizon.
 #' @param pedon A \code{\link{PedonRecord}}.

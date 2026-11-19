@@ -128,7 +128,17 @@ qual_aeolic      <- function(pedon) .q_presence("Aeolic",      aeolic_material(p
 #' Fragic qualifier (fg): fragic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_fragic      <- function(pedon) .q_presence("Fragic",      fragic(pedon),      100, pedon)
+qual_fragic <- function(pedon) {
+  # v0.9.413: the fragic horizon asks a brittle manner of failure (WRB 2022
+  # Ch 3.1.13, p. 46, criterion 5), a field observation the schema does not
+  # record: not recorded, it is absent, unless a designation has the suffix x
+  # (fragic character, Annex 1, Ch 10, Table 10.2)
+  d <- as.character(pedon$horizons$designation %||% character(0))
+  .q_presence("Fragic", .wrb_field_decided(fragic(pedon),
+                                          !any(grepl("^[0-9]*[A-Z]+[a-z0-9]*x", d)),
+                                          "brittle failure (Ch 3.1.13, criterion 5) not recorded"),
+              100, pedon)
+}
 
 #' Limonic qualifier (lm): limonic (bog-iron) horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -283,17 +293,32 @@ qual_nitic       <- function(pedon) .q_presence("Nitic",       nitic_horizon(ped
 #' Petrocalcic qualifier (pc): petrocalcic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_petrocalcic <- function(pedon) .q_presence("Petrocalcic", petrocalcic(pedon),      100, pedon)
+qual_petrocalcic <- function(pedon) {
+  # v0.9.413: a cemented horizon; with no layer that can be cemented
+  # (cementation is a field observation, absent where not recorded), FALSE
+  .q_presence("Petrocalcic", .wrb_field_decided(petrocalcic(pedon), !.wrb_cemented_possible(pedon),
+                                          "no layer recorded as cemented"), 100, pedon)
+}
 
 #' Petroduric qualifier (pd): petroduric horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_petroduric  <- function(pedon) .q_presence("Petroduric",  petroduric(pedon),       100, pedon)
+qual_petroduric <- function(pedon) {
+  # v0.9.413: a cemented horizon; with no layer that can be cemented
+  # (cementation is a field observation, absent where not recorded), FALSE
+  .q_presence("Petroduric", .wrb_field_decided(petroduric(pedon), !.wrb_cemented_possible(pedon),
+                                          "no layer recorded as cemented"), 100, pedon)
+}
 
 #' Petrogypsic qualifier (pg): petrogypsic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_petrogypsic <- function(pedon) .q_presence("Petrogypsic", petrogypsic(pedon),      100, pedon)
+qual_petrogypsic <- function(pedon) {
+  # v0.9.413: a cemented horizon; with no layer that can be cemented
+  # (cementation is a field observation, absent where not recorded), FALSE
+  .q_presence("Petrogypsic", .wrb_field_decided(petrogypsic(pedon), !.wrb_cemented_possible(pedon),
+                                          "no layer recorded as cemented"), 100, pedon)
+}
 
 #' Petroplinthic qualifier (pp): petroplinthic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -1482,6 +1507,7 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   # p. 24-25: "they can be used both, each one with the respective specifier
   # ... If no specifier is used, only the first applicable qualifier can be
   # used"; .wrb_texture_group_specified()).
+  absent <- NULL
   walk <- function(entries) {
     trace <- list(); matched <- character(0); layers <- list()
     for (entry in entries) {
@@ -1499,6 +1525,16 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
       for (qname in alts) {
         if (identical(qname, "Haplic")) next
         ev <- .evaluate_qualifier(pedon, qname, rsg_code)
+        # v0.9.413: undecided, read again with the field observations not
+        # recorded as absent (utils-wrb-field-absent.R)
+        if (length(ev$passed) == 1L && is.na(ev$passed)) {
+          if (is.null(absent)) absent <<- .wrb_field_absent_pedon(pedon)
+          ev2 <- .evaluate_qualifier(absent, qname, rsg_code)
+          if (length(ev2$passed) == 1L && !is.na(ev2$passed)) {
+            ev <- ev2
+            ev$trace_entry$note <- "field observations not recorded read as absent"
+          }
+        }
         trace[[qname]] <- ev$trace_entry
         if (isTRUE(ev$passed)) {
           passed_alts <- c(passed_alts, qname)

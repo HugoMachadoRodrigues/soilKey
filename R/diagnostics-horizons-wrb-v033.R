@@ -79,8 +79,9 @@ albic <- function(pedon, min_thickness = 1) {
 #' it from Fe-dithionite >= 5\%, which is not a criterion of the text: a red
 #' Ferralsol with 6\% Fe-dithionite and no nodules became Ferric (ISRIC's
 #' KE009). Criterion (a) is met only by nodules: mottles of the right colours
-#' leave it undecided unless their recorded size rules them out (very fine,
-#' fine or medium, since v0.9.413), and a layer
+#' leave it undecided only when their recorded size is coarse; very fine,
+#' fine or medium mottles, or mottles of no recorded size (absent coarse
+#' masses), do not meet it (v0.9.413), and a layer
 #' with no mottles and no nodules recorded as such does not meet it.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_thickness Minimum thickness (cm; default 15).
@@ -121,6 +122,9 @@ ferric <- function(pedon, min_thickness = 15, min_nodules_pct = 5) {
     masses_possible <- if (is.na(mot[i])) NA
                        else if (mot[i] <= 0) FALSE
                        else if (msz[i] %in% c("very fine", "fine", "medium")) FALSE
+                       # v0.9.413: no size recorded, no coarse masses recorded:
+                       # a field observation not recorded is absent (Hugo)
+                       else if (is.na(msz[i])) FALSE
                        else { rb <- red_or_black(mcol[i]); if (isFALSE(rb)) FALSE else NA }
     nod_no <- !is.na(nod[i]) && nod[i] < min_nodules_pct
     status[i] <- if (nod_no && isFALSE(masses_possible)) FALSE else NA

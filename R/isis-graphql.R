@@ -904,6 +904,9 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
   gw <- .isis_groundwater(profile)
   if (!is.na(gw$kind)) site$groundwater_kind <- gw$kind
   if (!is.na(gw$depth)) site$groundwater_depth_cm <- gw$depth
+  # v0.9.413: the reader has read the field observations it can as absent
+  # (absent_unless_recorded); the WRB qualifiers leave its other readings alone
+  if (isTRUE(absent_unless_recorded)) site$absent_unless_recorded <- TRUE
   pm <- .isis_parent_material(profile); if (!is.na(pm)) site$parent_material <- pm
   if (gil) site$gilgai_presence <- TRUE
   smr <- .isis_regime(profile, "moistureRegimeSoil", "moistureRegime")
