@@ -37,7 +37,8 @@ all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
 v0.9.315); a qualifier made redundant by another is
 left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-where the RSG lists it and no other principal qualifier does.
+where the RSG lists it and every other principal qualifier is decided not to
+apply (an undecided one leaves Haplic out, since v0.9.413).
 }
 \details{
 Both vectors come back in the order of the name. Principal qualifiers are

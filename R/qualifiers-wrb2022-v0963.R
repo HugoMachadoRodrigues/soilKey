@@ -1282,10 +1282,15 @@ qual_reductigleyic <- function(pedon) {
                           max_top_cm = suppressWarnings(max(h$bottom_cm, na.rm = TRUE)))
   gl_layers <- if (isTRUE(gl$passed)) gl$layers else integer(0)
   redox <- h$redoximorphic_features_pct
+  # v0.9.413: a mottled layer that is not gleyic (its oximorphic features are
+  # stagnic, Hugo's option c, utils-redox-wrb2022.R) does not meet criterion
+  # 2 (WRB 2022 Ch 3.2.6, p. 75); it was undecided
+  glz <- gl$evidence$redox_layers$gleyic
   c2 <- vapply(deep, function(i) {
     if (is.na(redox[i])) NA
     else if (redox[i] <= 5) FALSE
     else if (i %in% gl_layers) TRUE
+    else if (isFALSE(glz[i])) FALSE
     else NA
   }, logical(1))
   passed <- if (any(c2 %in% TRUE)) FALSE

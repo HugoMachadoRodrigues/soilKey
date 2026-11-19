@@ -26,8 +26,9 @@ are black or have a hue redder than 7.5YR and a chroma >= 5, moist, or
 blackish, > 2 mm (\code{ferric_nodules_pct}). Until v0.9.308 soilKey read
 it from Fe-dithionite >= 5\%, which is not a criterion of the text: a red
 Ferralsol with 6\% Fe-dithionite and no nodules became Ferric (ISRIC's
-KE009). soilKey records no size for mottles, so criterion (a) is met only
-by nodules; mottles of the right colours leave it undecided, and a layer
+KE009). Criterion (a) is met only by nodules: mottles of the right colours
+leave it undecided unless their recorded size rules them out (very fine,
+fine or medium, since v0.9.413), and a layer
 with no mottles and no nodules recorded as such does not meet it.
 }
 \references{

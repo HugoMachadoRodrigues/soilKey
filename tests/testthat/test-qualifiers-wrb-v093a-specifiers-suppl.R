@@ -109,19 +109,21 @@ test_that("Polyalbic requires >= 2 disjoint contiguous albic runs", {
   expect_false(isTRUE(
     soilKey:::.apply_specifier(pr, "Poly", "Albic", spec_poly)$passed))
 
-  # Two disjoint E runs separated by a Bt -> Poly PASSES.
+  # Two disjoint E runs separated by a Bt -> Poly PASSES. v0.9.413: each E
+  # overlies an argic layer (albic criterion 2, WRB 2022 Ch 3.1.1, p. 34),
+  # so the BC below E2 is a Bt2 now.
   hz2 <- data.table::data.table(
     top_cm = c(0, 5, 30, 60, 100),
     bottom_cm = c(5, 30, 60, 100, 200),
-    designation = c("Oa", "E1", "Bt", "E2", "BC"),
-    munsell_value_moist = c(2, 7, 4, 7, 5),
-    munsell_chroma_moist = c(1, 1, 4, 1, 3),
-    munsell_value_dry = c(3, 8, 5, 8, 6),     # v0.9.220: claric material
-    munsell_chroma_dry = c(1, 1, 4, 1, 3),    # needs the dry colour too
-    clay_pct = c(2, 1, 25, 1, 5),
-    silt_pct = c(5, 3, 30, 3, 5),
-    sand_pct = c(93, 96, 45, 96, 90),
-    bulk_density_g_cm3 = c(0.4, 1.5, 1.4, 1.5, 1.5)
+    designation = c("Oa", "E1", "Bt", "E2", "Bt2"),
+    munsell_value_moist = c(2, 7, 4, 7, 4),
+    munsell_chroma_moist = c(1, 1, 4, 1, 4),
+    munsell_value_dry = c(3, 8, 5, 8, 5),     # v0.9.220: claric material
+    munsell_chroma_dry = c(1, 1, 4, 1, 4),    # needs the dry colour too
+    clay_pct = c(2, 1, 25, 1, 25),
+    silt_pct = c(5, 3, 30, 3, 30),
+    sand_pct = c(93, 96, 45, 96, 45),
+    bulk_density_g_cm3 = c(0.4, 1.5, 1.4, 1.5, 1.4)
   )
   pr2 <- PedonRecord$new(
     site = list(id = "P2", lat = 0, lon = 0, country = "TEST",
@@ -150,6 +152,11 @@ test_that("Thapto- filters base layers by buried-soil 'b' designation", {
                           "subangular blocky", "single grain"),
     clay_pct = c(15, 16, 18, 6), silt_pct = c(40, 38, 38, 10),
     sand_pct = c(45, 46, 44, 84),
+    # v0.9.413: Cambic sets claric layers aside (WRB 2022 Ch 5, p. 129), so
+    # the Bwb needs its colours: brown, moist and dry
+    munsell_hue_moist = "10YR", munsell_value_moist = c(3, 5, 4, 6),
+    munsell_chroma_moist = c(2, 4, 4, 3),
+    munsell_value_dry = c(4, 6, 5, 7), munsell_chroma_dry = c(2, 4, 4, 3),
     oc_pct = c(1.0, 0.4, 1.5, 0.3),
     bs_pct = c(60, 65, 65, 70),
     cec_cmol = c(10, 9, 12, 5),

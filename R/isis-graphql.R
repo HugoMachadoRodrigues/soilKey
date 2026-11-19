@@ -154,7 +154,10 @@ isis_citation <- function(accessed = Sys.Date()) {
                  "structureGrade2", "structureSize2",
                  "mottlesContrast2", "mottlesSizeclass2",
                  "concretionsMineralHardness2", "inclusionsSize2",
-                 "coatingsNature", "coatingsAbundance", "coatingsContrast")
+                 "coatingsNature", "coatingsAbundance", "coatingsContrast",
+                 "mineralConcNature", "mineralConcNature2",
+                 "concretionsMineralKinds", "concretionsMineralKinds2",
+                 "concretionsMineralSize", "concretionsMineralSize2")
 
 .isis_profile_fields <- function() {
   paste(
@@ -615,6 +618,15 @@ isis_citation <- function(accessed = Sys.Date()) {
   v[type_moved] <- NA_character_
   out$structure_type_secondary <- unname(v)
   note("structure_type_secondary", which(!is.na(v)), "ISIS structureType2 (FAO code)")
+  # v0.9.413: its grade and size too, read by the Grumic qualifier
+  for (x in list(c("structure_grade_secondary", "structureGrade2", "structureGrade1"),
+                 c("structure_size_secondary", "structureSize2", "structureSize"))) {
+    tab <- if (grepl("grade", x[1])) .ISIS_GRADE else .ISIS_SIZE
+    v2 <- vapply(code(x[2]), function(k) .isis_lookup(tab, k), "", USE.NAMES = FALSE)
+    v2[type_moved | is.na(code(x[3]))] <- NA_character_
+    out[[x[1]]] <- unname(v2)
+    note(x[1], which(!is.na(v2)), sprintf("ISIS %s (FAO code)", x[2]))
+  }
   setchr("consistence_moist", "consistenceSoilmassMoist", .ISIS_MOIST)
   setchr("rupture_resistance", "consistenceSoilmassDry", .ISIS_DRY)
   setchr("stickiness", "stickinessClass", .ISIS_STICKY)
@@ -735,6 +747,12 @@ isis_citation <- function(accessed = Sys.Date()) {
   # the mottles as plinthite in a v horizon or an iron pan (Hugo, 2026-10-29).
   # Nothing is inferred where none is recorded.
   comp1 <- code("inclusionsComposition"); comp2 <- code("inclusionsComposition2")
+  # v0.9.413: the FAO (2006) fields of the same observation where the older
+  # ones are empty: mineralConcNature F (iron), M (manganese), FM (iron and
+  # manganese) for the composition (other natures are not read)
+  nat <- c(F = "F", M = "M", FM = "F")
+  n1 <- unname(nat[code("mineralConcNature")]); n2 <- unname(nat[code("mineralConcNature2")])
+  comp1[is.na(comp1)] <- n1[is.na(comp1)]; comp2[is.na(comp2)] <- n2[is.na(comp2)]
   ab1 <- pct("mineralConcAbundance", .ISIS_ROCK_PCT); ab2 <- pct("mineralConcAbundance2", .ISIS_ROCK_PCT)
   part <- function(comp, ab, want) ifelse(comp %in% want & is.finite(ab), ab, NA_real_)
   addna <- function(x, y) ifelse(is.finite(x) | is.finite(y), pmin(100, ifelse(is.finite(x), x, 0) + ifelse(is.finite(y), y, 0)), NA_real_)
@@ -744,11 +762,19 @@ isis_citation <- function(accessed = Sys.Date()) {
   hard <- code("concretionsMineralHardness"); size <- code("inclusionsSize")
   hard2 <- code("concretionsMineralHardness2"); size2 <- code("inclusionsSize2")
   hard[is.na(hard)] <- hard2[is.na(hard)]; size[is.na(size)] <- size2[is.na(size)]
+  # v0.9.413: concretionsMineralSize V (< 2 mm), F, M, C (> 2 mm), and a soft
+  # concretion (concretionsMineralKinds SC) is soft
+  csz <- c(V = "S", F = "M", M = "L", C = "L")
+  cs1 <- unname(csz[code("concretionsMineralSize")]); cs2 <- unname(csz[code("concretionsMineralSize2")])
+  cs1[is.na(cs1)] <- cs2[is.na(cs1)]
+  size[is.na(size)] <- cs1[is.na(size)]
+  hard[is.na(hard) & (code("concretionsMineralKinds") %in% "SC" |
+                        code("concretionsMineralKinds2") %in% "SC")] <- "S"
   big <- !size %in% c("S", "P")
   fe1 <- part(comp1, ab1, c("F", "M")); fe2 <- part(comp2, ab2, c("F", "M"))
   nod <- addna(ifelse(hard %in% c("H", "B") & big, fe1, NA_real_), ifelse(hard %in% c("H", "B") & big, fe2, NA_real_))
   out$ferric_nodules_pct <- nod
-  note("ferric_nodules_pct", which(is.finite(nod)), "middle of the FAO class of ISIS hard Fe/Mn concretions and nodules (> 2 mm when the size is recorded)")
+  note("ferric_nodules_pct", which(is.finite(nod)), "middle of the FAO class of ISIS hard Fe/Mn concretions and nodules (> 2 mm when the size is recorded; inclusionsComposition or mineralConcNature)")
   soft <- addna(ifelse(hard %in% "S", fe1, NA_real_), ifelse(hard %in% "S", fe2, NA_real_))
   dsg_v <- grepl("^[0-9]*[A-Z]+[a-z]*v", dsg) | code("pansKind") %in% c("L", "I")
   pl <- ifelse(dsg_v, addna(out$redoximorphic_features_pct, soft), NA_real_)

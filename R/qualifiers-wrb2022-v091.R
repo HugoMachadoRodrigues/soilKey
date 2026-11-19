@@ -63,8 +63,18 @@ qual_calcaric <- function(pedon) {
   # not a calcic or petrocalcic horizon starting <= 100 cm
   excl <- lapply(list(calcic = calcic, petrocalcic = petrocalcic),
                  function(f) tryCatch(f(pedon), error = function(e) NULL))
+  # v0.9.413: an undecided horizon is no obstacle when no layer starting
+  # <= 100 cm can hold its >= 15% CaCO3 (Ch 3.1.4, p. 37; 3.1.24, p. 56): the
+  # layer is measured below 15%, or not measured and described as
+  # non-calcareous. Until v0.9.413 a petrocalcic horizon undecided at 105 cm
+  # (ISRIC's ES019) or a calcic one at 130 cm (PE009) left Calcaric undecided
+  ca <- h$caco3_pct %||% rep(NA_real_, nrow(h))
+  eff0 <- .wrb_field_noncalcareous(h)
+  could <- !is.na(h$top_cm) & h$top_cm - ms <= 100 &
+    ((!is.na(ca) & ca >= 15) | (is.na(ca) & !eff0))
   ex_state <- vapply(excl, function(d) {
-    if (is.null(d) || is.na(d$passed)) return(NA)
+    if (is.null(d)) return(NA)
+    if (is.na(d$passed)) return(if (any(could)) NA else FALSE)
     if (!isTRUE(d$passed)) return(FALSE)
     top <- suppressWarnings(min(h$top_cm[d$layers], na.rm = TRUE))
     is.finite(top) && top - ms <= 100

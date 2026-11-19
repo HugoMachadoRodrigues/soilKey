@@ -123,9 +123,11 @@ test_that("a claric layer over the mottles is the stagnic sequence", {
   expect_true(isTRUE(s$passed))
   expect_equal(s$layers, 2:3)
   expect_false(isTRUE(gleyic_properties(p, max_top_cm = 100)$passed))
-  # with nothing described under the mottles, criterion 3 cannot be ruled out
+  # with nothing described under the mottles there is no layer of criterion 1
+  # there (v0.9.413, Hugo: a field observation not recorded is absent; it
+  # was undecided), and the claric layer above rules out groundwater
   q <- p$clone(deep = TRUE); q$horizons <- q$horizons[1:3, ]
-  expect_true(is.na(gleyic_properties(q, max_top_cm = 100)$passed))
+  expect_false(gleyic_properties(q, max_top_cm = 100)$passed)
 })
 
 test_that("reducing conditions read every suffix of the designation", {
