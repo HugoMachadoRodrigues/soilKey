@@ -1043,6 +1043,10 @@ chernic <- function(pedon, min_thickness = 30) {
   # single grain or blocky <= 2 cm, chroma <= 2; a granular layer is not)
   granular <- !is.na(structure$type) && structure$type == "granular"
   not_mulmic <- .any3(c(le(oc, 8 - 1e-9), if (!is.na(cm)) cm > 2 else NA, granular))
+  # v0.9.411: coarse fragments are a field estimate "by volume" (p. 40); none
+  # recorded counts as none (Hugo's rule for field observations). MZ005,
+  # ZA016, ZA001, ID037, TR006 were undecided on this alone.
+  if (is.na(cf)) cf <- 0
   fine_earth <- .and3(le(cf, 50), not_mulmic)
   # 4. colour: a, b or c
   col_a <- .and3(le(vm, 3), le(vd, 5), le(cm, 2))

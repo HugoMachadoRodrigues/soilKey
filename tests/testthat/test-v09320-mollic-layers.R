@@ -48,8 +48,10 @@ test_that("the colour follows criterion 3 and its items", {
   # a. value <= 3 moist and <= 5 dry, chroma <= 3 moist
   expect_identical(col(.v09320()), c(TRUE, TRUE))
   expect_identical(col(.v09320(vd = c(6, 4)))[1], FALSE)
-  # no moist colour: a dry value of 5 leaves it undecided, 6 fails it
-  expect_true(is.na(col(.v09320(vm = c(NA, 3), cm = c(NA, 2), vd = c(5, 4)))[1]))
+  # no moist colour: a dry value of 5 leaves it undecided, 6 fails it; since
+  # v0.9.411 (Hugo, L11) a dry value of 5 with >= 1.5% SOC is read as dark
+  expect_true(is.na(col(.v09320(vm = c(NA, 3), cm = c(NA, 2), vd = c(5, 4), oc = c(1, 1)))[1]))
+  expect_true(col(.v09320(vm = c(NA, 3), cm = c(NA, 2), vd = c(5, 4)))[1])
   expect_false(col(.v09320(vm = c(NA, 3), cm = c(NA, 2), vd = c(6, 4)))[1])
   # a moist value and no dry value: the dry value is read as moist + 1
   expect_true(col(.v09320(vd = c(NA, 4)))[1])

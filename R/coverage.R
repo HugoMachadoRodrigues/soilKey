@@ -121,6 +121,11 @@
   if (grepl("\\.q_texture_qualifier\\s*\\(\\s*pedon", b) &&
         .body_is_real(".q_texture_qualifier"))
     return(TRUE)
+  # Aluandic and Silandic (v0.9.411) delegate to the Si_ox split of the andic
+  # layers, which assigns `passed`.
+  if (grepl("\\.andic_si_split\\s*\\(\\s*pedon", b) &&
+        .body_is_real(".andic_si_split"))
+    return(TRUE)
   FALSE
 }
 

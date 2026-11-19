@@ -119,7 +119,7 @@ test_that("AN canonical fixture resolves to a Silandic Hydric Andosol", {
 
 # ---- Behavioural contracts of new qual_* functions -------------------------
 
-test_that("Aluandic / Silandic split correctly on the Al/Si mass ratio", {
+test_that("Aluandic / Silandic split correctly on Si_ox 0.6% (WRB 2022 Ch 5, p. 128, 146)", {
   base_hz <- function(al, si) data.table::data.table(
     top_cm = c(0, 30), bottom_cm = c(30, 80),
     designation = c("Ah", "Bw"),
@@ -135,9 +135,10 @@ test_that("Aluandic / Silandic split correctly on the Al/Si mass ratio", {
                   parent_material = "tephra"),
     horizons = ensure_horizon_schema(base_hz(al, si))
   )
-  # Threshold: Aluandic when Si <= 2*Al, Silandic when Si > 2*Al.
-  pr_al <- mk(al = 2.0, si = 1.5)   # Si < 2*Al -> Aluandic
-  pr_si <- mk(al = 2.0, si = 5.0)   # Si > 2*Al -> Silandic
+  # v0.9.411: Aluandic when Si_ox < 0.6%, Silandic when Si_ox >= 0.6% (the
+  # Al/Si mass ratio of v0.9.1 is not in WRB 2022).
+  pr_al <- mk(al = 2.0, si = 0.4)   # Si_ox < 0.6% -> Aluandic
+  pr_si <- mk(al = 2.0, si = 1.5)   # Si_ox >= 0.6% -> Silandic
   expect_true(isTRUE(qual_aluandic(pr_al)$passed))
   expect_false(isTRUE(qual_silandic(pr_al)$passed))
   expect_false(isTRUE(qual_aluandic(pr_si)$passed))
