@@ -171,12 +171,14 @@ test_that("FR canonical name carries supplementary tags in WRB Ch 2.2 form", {
   expect_match(cls$name, "^Geric Rhodic Ferralsol \\(")   # v0.9.217: Ch 4 / Ch 2.2
   expect_match(cls$name, "Clayic")
   expect_match(cls$name, "Humic")
-  expect_match(cls$name, "Eutric")
+  # v0.9.410: bases 0.6-1.9 cmolc/kg against 50-60% clay, < 5 cmolc/kg clay:
+  # Oligoeutric, the optional subqualifier of Eutric (Ch 5, p. 133)
+  expect_match(cls$name, "Oligoeutric")
 
   # The supplementary list is exposed on the ClassificationResult.
   expect_true("Clayic" %in% cls$qualifiers$supplementary)
   expect_true("Humic"  %in% cls$qualifiers$supplementary)
-  expect_true("Eutric" %in% cls$qualifiers$supplementary)
+  expect_true("Oligoeutric" %in% cls$qualifiers$supplementary)
 })
 
 test_that("AC / LX / LV / NT canonical names carry parenthesised supplementary", {

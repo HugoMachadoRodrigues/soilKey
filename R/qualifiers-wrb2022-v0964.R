@@ -838,7 +838,7 @@ qual_alcalic <- function(pedon, rsg_code = NULL) {
                              max_start = mss)$passed
     window <- c(mss, bot)
   }
-  eu <- qual_eutric(pedon)
+  eu <- qual_eutric(pedon, rsg_code = rsg_code)
   passed <- ph_ok & eu$passed
   DiagnosticResult$new(
     name = "Alcalic", passed = passed,

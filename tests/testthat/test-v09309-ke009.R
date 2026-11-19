@@ -120,5 +120,5 @@ test_that("the key to the Oxisols reads both items of KST 13", {
 test_that("the made-up Kenyan Ferralsol gets ISRIC's kind of WRB name", {
   skip_on_cran()
   expect_identical(classify_wrb2022(.v09309_ferralsol(), on_missing = "silent")$name,
-                   "Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)")
+                   "Rhodic Ferralsol (Clayic, Epic, Hypereutric, Humic)")
 })
