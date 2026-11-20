@@ -19,7 +19,7 @@ classify_usda(
   rules = NULL,
   on_missing = c("warn", "silent", "error"),
   include_family = FALSE,
-  infer_temperature = TRUE,
+  infer_temperature = FALSE,
   gapfill = FALSE
 )
 ```
@@ -46,9 +46,13 @@ classify_usda(
 
 - infer_temperature:
 
-  When deriving the family, infer the soil temperature regime from
-  latitude/elevation if `site$soil_temperature_regime` is absent
-  (default `TRUE`). See `family_temperature_regime_usda`.
+  When deriving the family and `site$soil_temperature_regime` is not
+  recorded, suggest a temperature class from latitude and elevation (a
+  crude lapse-rate model, "iso" within 23 degrees of the equator).
+  Default `FALSE` since v0.9.415: the regime is not inferred unless
+  asked for, and the family then carries no temperature class. A
+  suggested class lowers the evidence grade to "C" and adds a warning.
+  The key itself (orders to subgroups) never infers a regime.
 
 - gapfill:
 
@@ -78,6 +82,29 @@ subgroup name, e.g. *"fine, kaolinitic, isohyperthermic Rhodic
 Hapludox"*. See
 [`classify_usda_family`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md).
 
+## Undecided tests and regimes
+
+A test whose data are missing is undecided (NA), not failed. The key
+goes on past it, as the WRB key does, and records it: every taxon tested
+before the one assigned, at the order, suborder, great group and
+subgroup levels, whose result is NA is listed in `$ambiguities` (with
+`level`, one of `"orders"`, `"suborders"`, `"great_groups"`,
+`"subgroups"`), and `$missing_data` collects what was missing at every
+level. When the name depends on an undecided test, it holds only if that
+test fails: it is inferred by elimination, so the evidence grade falls
+from `"A"` or `"B"` to `"C"` (the grade of an inferred result) and a
+warning says so. When no taxon of a level passes and some were
+undecided, the level is not named and the name stops at the level above.
+
+The soil moisture and temperature regimes are read from
+`site$soil_moisture_regime` and `site$soil_temperature_regime` and never
+inferred in the key: with no regime recorded every regime test is
+undecided and lists the site field as missing (KST 13th ed., pp. 47-55).
+Taxa keyed as "Other" in the KST (Udalfs, Udepts, Udolls, Udox, ...) are
+still reached, past the undecided regime taxa, with grade C; Udults need
+a udic or perudic regime (p. 321; "ud" covers both, p. 48), so an
+Ultisol with no regime recorded has no suborder.
+
 ## References
 
 Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th edition. USDA
@@ -92,5 +119,5 @@ res$name
 #> [1] "Rhodic Hapludox"
 # include the 5th (family) level:
 classify_usda(pedon, include_family = TRUE)$name
-#> [1] "fine, mixed, subactive, isothermic Rhodic Hapludox"
+#> [1] "fine, mixed, subactive Rhodic Hapludox"
 ```

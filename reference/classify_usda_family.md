@@ -13,7 +13,7 @@ classify_usda_family(
   pedon,
   order_code = NULL,
   subgroup_code = NULL,
-  infer_temperature = TRUE
+  infer_temperature = FALSE
 )
 ```
 
@@ -34,7 +34,10 @@ classify_usda_family(
 
 - infer_temperature:
 
-  Passed to `family_temperature_regime_usda`.
+  Opt-in (default `FALSE` since v0.9.415): when
+  `site$soil_temperature_regime` is not recorded, suggest a temperature
+  class from latitude and elevation. Off, the family has no temperature
+  class until the regime is recorded.
 
 ## Value
 

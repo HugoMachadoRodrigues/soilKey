@@ -1,5 +1,68 @@
 # Changelog
 
+## soilKey 0.9.415
+
+The USDA key: undecided tests and the soil regimes, after the Soil
+Taxonomy audit (Hugo, 2026-11-20; decisions P1 (c), P2 (a), P3 (a),
+reading L34 and R1).
+
+- **Undecided tests are recorded at every level.** The key goes on past
+  a test whose data are missing, as before, but every taxon tested
+  before the one assigned at the order, suborder, great group and
+  subgroup levels whose result is NA is now in `$ambiguities`, with its
+  `level`; `$missing_data` collects from every level. Up to 0.9.414 only
+  the order level was read.
+- **A name reached past an undecided test has grade C.** It holds only
+  if the undecided tests fail, so it is inferred by elimination: the
+  evidence grade falls from A or B to C and a warning names the tests.
+  When no taxon of a level passes and some are undecided, the level is
+  not named and the name stops at the level above.
+- **The regimes are read only from the record** (KST 13th ed.,
+  pp. 47-55). With no `soil_moisture_regime` or
+  `soil_temperature_regime` recorded, every regime test is undecided and
+  lists the site field as missing; up to 0.9.414 it was FALSE, so the
+  key fell silently into the udic catch-all of 11 orders. Taxa keyed as
+  “Other” in the KST (Udalfs, Udepts, Udolls, Udox, Udorthents, …) are
+  still reached, past the undecided regime taxa, with grade C. The gelic
+  test reads the recorded regime too (pergelic is read as gelic), and
+  permafrost still passes it.
+- **“ud” covers udic and perudic** (p. 48). Ultisol suborders follow the
+  key of p. 321: Udults need a udic or perudic regime, Ustults ustic,
+  and Xerults are named only with a xeric regime recorded (L34); with no
+  regime the suborder is not named. **Ustox and Ustifolists** take an
+  ustic or xeric regime (pp. 295, 199). **Perox** asks for the perudic
+  regime itself (a one-line change of its test; it took any udic
+  Oxisol).
+- **The family temperature class is not inferred by default.**
+  `classify_usda(infer_temperature = )` and
+  [`classify_usda_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md)
+  now default to `FALSE`: with no regime recorded the family has no
+  temperature class (no “iso” from latitude). Asked for, the class is a
+  suggestion from latitude and elevation; it lowers the grade to C and
+  adds a warning.
+- **[`key_trace_table()`](https://hugomachadorodrigues.github.io/soilKey/reference/key_trace_table.md)
+  calls an NA test “undecided”** (it said “indeterminate”) in every
+  system, and so do [`print()`](https://rdrr.io/r/base/print.html), the
+  reports and the Shiny app.
+- **Canonical fixtures.** None records a regime but four aridic ones, so
+  43 of the 44 now carry grade C. The four Ultisols lose their suborder:
+  [`make_acrisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_acrisol_canonical.md),
+  [`make_alisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_alisol_canonical.md)
+  and
+  [`make_nitisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nitisol_canonical.md)
+  (Typic Paleudults) and
+  [`make_argissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_argissolo_canonical.md)
+  (Rhodic Kandiudults) are now “Ultisols”; the other names do not
+  change.
+- **ISIS (974 profiles).** 56 names change: 15 Ultisols without a regime
+  lose their suborder (CO015 and TR004 in the 1999 set), 39 Oxisols move
+  between Perox and Udox with the perudic test, IT006 (xeric) becomes
+  Rhodic Eutrustox, and AU022 (pergelic recorded) Oxyaquic Gelorthents.
+  596 profiles now have grade C and 601 carry USDA ambiguities (442
+  before, order level only). Against the ISIS 1999 names: suborder 143
+  to 155 of 355, great group 88 to 100, subgroup 40 to 47, order
+  unchanged at 198.
+
 ## soilKey 0.9.414
 
 The WRB 2022 Histosol qualifiers, after the qualifier audit (Hugo,

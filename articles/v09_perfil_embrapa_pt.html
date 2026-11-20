@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.414</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.415</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,7 +159,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x624f38a391b0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5b5df38201b0&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -251,14 +251,14 @@ um <code>ClassificationResult</code> por sistema:</p>
 <span><span class="co">#&gt; (30 classes tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. O Organossolos -- failed</span></span>
 <span><span class="co">#&gt; 2. R Neossolos -- failed</span></span>
-<span><span class="co">#&gt; 3. V Vertissolos -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 4. E Espodossolos -- NA (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 3. V Vertissolos -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 4. E Espodossolos -- undecided (2 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. S Planossolos -- failed</span></span>
 <span><span class="co">#&gt; 6. G Gleissolos -- failed</span></span>
 <span><span class="co">#&gt; 7. L Latossolos -- failed</span></span>
 <span><span class="co">#&gt; 8. M Chernossolos -- failed</span></span>
 <span><span class="co">#&gt; 9. C Cambissolos -- failed</span></span>
-<span><span class="co">#&gt; 10. F Plintossolos -- NA (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 10. F Plintossolos -- undecided (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 11. T Luvissolos -- failed</span></span>
 <span><span class="co">#&gt; 12. N Nitossolos -- failed</span></span>
 <span><span class="co">#&gt; 13. P Argissolos -- PASSED</span></span>
@@ -277,7 +277,7 @@ um <code>ClassificationResult</code> por sistema:</p>
 <span><span class="co">#&gt; 26. PVdAbPl Argissolos Vermelhos Distróficos abrúpticos plintossólicos --</span></span>
 <span><span class="co">#&gt; failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 27. PVdAb Argissolos Vermelhos Distróficos abrúpticos -- failed</span></span>
-<span><span class="co">#&gt; 28. PVdPl Argissolos Vermelhos Distróficos plintossólicos -- NA (1 attrs</span></span>
+<span><span class="co">#&gt; 28. PVdPl Argissolos Vermelhos Distróficos plintossólicos -- undecided (1 attrs</span></span>
 <span><span class="co">#&gt; missing)</span></span>
 <span><span class="co">#&gt; 29. PVdPs Argissolos Vermelhos Distróficos planossólicos -- failed</span></span>
 <span><span class="co">#&gt; 30. PVdNi Argissolos Vermelhos Distróficos nitossólicos -- failed (1 attrs</span></span>
@@ -350,28 +350,28 @@ Subordem <strong>Vermelho-Amarelo</strong>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (26 RSGs tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. HS Histosols -- failed</span></span>
-<span><span class="co">#&gt; 2. AT Anthrosols -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 3. TC Technosols -- NA (3 attrs missing)</span></span>
-<span><span class="co">#&gt; 4. CR Cryosols -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 5. LP Leptosols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 2. AT Anthrosols -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 3. TC Technosols -- undecided (3 attrs missing)</span></span>
+<span><span class="co">#&gt; 4. CR Cryosols -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 5. LP Leptosols -- undecided (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 6. SN Solonetz -- failed</span></span>
 <span><span class="co">#&gt; 7. VR Vertisols -- failed</span></span>
-<span><span class="co">#&gt; 8. SC Solonchaks -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 8. SC Solonchaks -- undecided (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 9. GL Gleysols -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 10. AN Andosols -- failed</span></span>
-<span><span class="co">#&gt; 11. PZ Podzols -- NA (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 12. PT Plinthosols -- NA (4 attrs missing)</span></span>
+<span><span class="co">#&gt; 11. PZ Podzols -- undecided (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 12. PT Plinthosols -- undecided (4 attrs missing)</span></span>
 <span><span class="co">#&gt; 13. PL Planosols -- failed</span></span>
 <span><span class="co">#&gt; 14. ST Stagnosols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 15. NT Nitisols -- NA (6 attrs missing)</span></span>
-<span><span class="co">#&gt; 16. FR Ferralsols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 15. NT Nitisols -- undecided (6 attrs missing)</span></span>
+<span><span class="co">#&gt; 16. FR Ferralsols -- undecided (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 17. CH Chernozems -- failed</span></span>
 <span><span class="co">#&gt; 18. KS Kastanozems -- failed</span></span>
 <span><span class="co">#&gt; 19. PH Phaeozems -- failed</span></span>
-<span><span class="co">#&gt; 20. UM Umbrisols -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 21. DU Durisols -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 22. GY Gypsisols -- NA (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 23. CL Calcisols -- NA (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 20. UM Umbrisols -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 21. DU Durisols -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 22. GY Gypsisols -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 23. CL Calcisols -- undecided (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 24. RT Retisols -- failed</span></span>
 <span><span class="co">#&gt; 25. AC Acrisols -- failed</span></span>
 <span><span class="co">#&gt; 26. LX Lixisols -- PASSED</span></span></code></pre></div>
@@ -387,54 +387,41 @@ presenca de revestimentos argilosos).</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (USDA Soil Taxonomy)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Name: Rhodic Kandiudults</span></span>
+<span><span class="co">#&gt; Name: Ultisols</span></span>
 <span><span class="co">#&gt; RSG/Order: Ultisols</span></span>
-<span><span class="co">#&gt; Evidence grade: A</span></span>
+<span><span class="co">#&gt; Evidence grade: C</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
 <span><span class="co">#&gt; - AS: Indeterminate -- missing 5 attribute(s): site$soil_moisture_regime,</span></span>
 <span><span class="co">#&gt; caco3_pct, caso4_pct, ec_dS_m, water_saturation_days</span></span>
+<span><span class="co">#&gt; - HC: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime</span></span>
+<span><span class="co">#&gt; - HD: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime</span></span>
+<span><span class="co">#&gt; - HE: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
 <span><span class="co">#&gt; permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct, slickensides,</span></span>
-<span><span class="co">#&gt; site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m, water_saturation_days</span></span>
+<span><span class="co">#&gt; site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m,</span></span>
+<span><span class="co">#&gt; water_saturation_days, redoximorphic_features_pct</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Warnings</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The name was reached past 1 undecided test(s) (orders:AS): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Suborder undecided: no taxon passed and HC, HD, HE could not be decided, so the name stops at the level above. See $ambiguities.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
-<span><span class="co">#&gt; (31 classes tested before assignment)</span></span>
+<span><span class="co">#&gt; (13 classes tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. GE Gelisols -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 2. HI Histosols -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 3. SP Spodosols -- failed (2 attrs missing)</span></span>
 <span><span class="co">#&gt; 4. AD Andisols -- failed (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. OX Oxisols -- failed</span></span>
 <span><span class="co">#&gt; 6. VE Vertisols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 7. AS Aridisols -- NA (5 attrs missing)</span></span>
+<span><span class="co">#&gt; 7. AS Aridisols -- undecided (5 attrs missing)</span></span>
 <span><span class="co">#&gt; 8. UT Ultisols -- PASSED</span></span>
 <span><span class="co">#&gt; 9. HA Aquults -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 10. HB Humults -- failed</span></span>
-<span><span class="co">#&gt; 11. HD Ustults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 12. HE Xerults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 13. HC Udults -- PASSED</span></span>
-<span><span class="co">#&gt; 14. HC Udults -- assigned</span></span>
-<span><span class="co">#&gt; 15. HCA Plinthudults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 16. HCB Fragiudults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 17. HCC Kandiudults -- PASSED</span></span>
-<span><span class="co">#&gt; 18. HCC Kandiudults -- assigned</span></span>
-<span><span class="co">#&gt; 19. HCCA Lithic Kandiudults -- failed</span></span>
-<span><span class="co">#&gt; 20. HCCB Aquic Kandiudults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 21. HCCC Plinthic Kandiudults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 22. HCCE Aquic Arenic Kandiudults -- failed (3 attrs missing)</span></span>
-<span><span class="co">#&gt; 23. HCCF Arenic Plinthic Kandiudults -- failed (3 attrs missing)</span></span>
-<span><span class="co">#&gt; 24. HCCG Arenic Rhodic Kandiudults -- failed (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 25. HCCH Arenic Kandiudults -- failed (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 26. HCCI Grossarenic Plinthic Kandiudults -- failed (3 attrs missing)</span></span>
-<span><span class="co">#&gt; 27. HCCJ Grossarenic Kandiudults -- failed (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 28. HCCK Acrudoxic Plinthic Kandiudults -- failed (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 29. HCCL Acrudoxic Kandiudults -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 30. HCCM Aquandic Kandiudults -- failed (3 attrs missing)</span></span>
-<span><span class="co">#&gt; 31. HCCN Andic Kandiudults -- failed (2 attrs missing)</span></span>
-<span><span class="co">#&gt; 32. HCCO Oxyaquic Kandiudults -- failed</span></span>
-<span><span class="co">#&gt; 33. HCCP Rhodic Kandiudults -- PASSED</span></span>
-<span><span class="co">#&gt; 34. HCCP Rhodic Kandiudults -- assigned</span></span></code></pre></div>
+<span><span class="co">#&gt; 11. HC Udults -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 12. HD Ustults -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 13. HE Xerults -- undecided (1 attrs missing)</span></span></code></pre></div>
 <p>USDA-ST devolve a ordem (ate o nivel atualmente disponivel):
 <strong>Ultisol</strong> (B argilico + saturacao por bases baixa em todo
 o solum).</p>
@@ -458,11 +445,11 @@ o solum).</p>
 <span><span class="co">#&gt;                                                                                   Classe</span></span>
 <span><span class="co">#&gt; 1           Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado, Tmob</span></span>
 <span><span class="co">#&gt; 2 Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)</span></span>
-<span><span class="co">#&gt; 3                                                                     Rhodic Kandiudults</span></span>
+<span><span class="co">#&gt; 3                                                                               Ultisols</span></span>
 <span><span class="co">#&gt;   EvidGrade</span></span>
 <span><span class="co">#&gt; 1         A</span></span>
 <span><span class="co">#&gt; 2         A</span></span>
-<span><span class="co">#&gt; 3         A</span></span></code></pre></div>
+<span><span class="co">#&gt; 3         C</span></span></code></pre></div>
 <p>Esses tres rotulos sao <strong>complementares</strong>, nao
 competidores. O SiBCS captura nuance brasileira (Distrofico, Tb,
 presenca/ausencia de cerosidade); o WRB captura o consenso internacional

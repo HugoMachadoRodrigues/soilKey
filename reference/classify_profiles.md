@@ -105,7 +105,7 @@ s <- data.frame(profile_id = c("p1", "p2"),
 res <- classify_profiles(h, sites = s, systems = "usda")
 res[, c("profile_id", "usda", "error")]
 #>   profile_id              usda error
-#> 1         p1 Rhodic Haploperox  <NA>
+#> 1         p1   Rhodic Hapludox  <NA>
 #> 2         p2 Typic Haplustolls  <NA>
 
 # \donttest{
@@ -122,7 +122,7 @@ classify_profiles(h2, sites = s, map = m)[, c("profile_id", "wrb", "sibcs", "usd
 #> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
 #> 2                   Chernossolos Háplicos Órticos típicos, textura média
 #>                usda
-#> 1 Rhodic Haploperox
+#> 1   Rhodic Hapludox
 #> 2 Typic Haplustolls
 # }
 ```

@@ -45,8 +45,9 @@ A `data.frame` with one row per trace step and columns:
 
 - `status`:
 
-  One of `"passed"`, `"failed"`, `"indeterminate"` (a test that could
-  not be evaluated for want of data), `"selected"` (the taxon assigned
+  One of `"passed"`, `"failed"`, `"undecided"` (a test whose result is
+  NA: it could not be evaluated for want of data; called
+  `"indeterminate"` before v0.9.415), `"selected"` (the taxon assigned
   at a level), or `"info"` (a family attribute or label, not a pass/fail
   test).
 
@@ -66,11 +67,11 @@ A zero-row data frame with those columns when the trace is empty.
 ``` r
 res <- classify_sibcs(make_ferralsol_canonical())
 head(key_trace_table(res))
-#>    phase code         name        status              missing n_missing
-#> 1 ordens    O Organossolos        failed                              0
-#> 2 ordens    R    Neossolos        failed                              0
-#> 3 ordens    V  Vertissolos indeterminate         slickensides         1
-#> 4 ordens    E Espodossolos indeterminate al_ox_pct, fe_ox_pct         2
-#> 5 ordens    S  Planossolos        failed                              0
-#> 6 ordens    G   Gleissolos        failed                              0
+#>    phase code         name    status              missing n_missing
+#> 1 ordens    O Organossolos    failed                              0
+#> 2 ordens    R    Neossolos    failed                              0
+#> 3 ordens    V  Vertissolos undecided         slickensides         1
+#> 4 ordens    E Espodossolos undecided al_ox_pct, fe_ox_pct         2
+#> 5 ordens    S  Planossolos    failed                              0
+#> 6 ordens    G   Gleissolos    failed                              0
 ```

@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x624f38a391b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5b5df38201b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -170,14 +170,14 @@ print(res$sibcs)
 #> (30 classes tested before assignment)
 #> 1. O Organossolos -- failed
 #> 2. R Neossolos -- failed
-#> 3. V Vertissolos -- NA (1 attrs missing)
-#> 4. E Espodossolos -- NA (2 attrs missing)
+#> 3. V Vertissolos -- undecided (1 attrs missing)
+#> 4. E Espodossolos -- undecided (2 attrs missing)
 #> 5. S Planossolos -- failed
 #> 6. G Gleissolos -- failed
 #> 7. L Latossolos -- failed
 #> 8. M Chernossolos -- failed
 #> 9. C Cambissolos -- failed
-#> 10. F Plintossolos -- NA (3 attrs missing)
+#> 10. F Plintossolos -- undecided (3 attrs missing)
 #> 11. T Luvissolos -- failed
 #> 12. N Nitossolos -- failed
 #> 13. P Argissolos -- PASSED
@@ -196,7 +196,7 @@ print(res$sibcs)
 #> 26. PVdAbPl Argissolos Vermelhos Distróficos abrúpticos plintossólicos --
 #> failed (1 attrs missing)
 #> 27. PVdAb Argissolos Vermelhos Distróficos abrúpticos -- failed
-#> 28. PVdPl Argissolos Vermelhos Distróficos plintossólicos -- NA (1 attrs
+#> 28. PVdPl Argissolos Vermelhos Distróficos plintossólicos -- undecided (1 attrs
 #> missing)
 #> 29. PVdPs Argissolos Vermelhos Distróficos planossólicos -- failed
 #> 30. PVdNi Argissolos Vermelhos Distróficos nitossólicos -- failed (1 attrs
@@ -266,28 +266,28 @@ print(res$wrb)
 #> ── Key trace
 #> (26 RSGs tested before assignment)
 #> 1. HS Histosols -- failed
-#> 2. AT Anthrosols -- NA (1 attrs missing)
-#> 3. TC Technosols -- NA (3 attrs missing)
-#> 4. CR Cryosols -- NA (1 attrs missing)
-#> 5. LP Leptosols -- NA (1 attrs missing)
+#> 2. AT Anthrosols -- undecided (1 attrs missing)
+#> 3. TC Technosols -- undecided (3 attrs missing)
+#> 4. CR Cryosols -- undecided (1 attrs missing)
+#> 5. LP Leptosols -- undecided (1 attrs missing)
 #> 6. SN Solonetz -- failed
 #> 7. VR Vertisols -- failed
-#> 8. SC Solonchaks -- NA (1 attrs missing)
+#> 8. SC Solonchaks -- undecided (1 attrs missing)
 #> 9. GL Gleysols -- failed (1 attrs missing)
 #> 10. AN Andosols -- failed
-#> 11. PZ Podzols -- NA (2 attrs missing)
-#> 12. PT Plinthosols -- NA (4 attrs missing)
+#> 11. PZ Podzols -- undecided (2 attrs missing)
+#> 12. PT Plinthosols -- undecided (4 attrs missing)
 #> 13. PL Planosols -- failed
 #> 14. ST Stagnosols -- failed (1 attrs missing)
-#> 15. NT Nitisols -- NA (6 attrs missing)
-#> 16. FR Ferralsols -- NA (1 attrs missing)
+#> 15. NT Nitisols -- undecided (6 attrs missing)
+#> 16. FR Ferralsols -- undecided (1 attrs missing)
 #> 17. CH Chernozems -- failed
 #> 18. KS Kastanozems -- failed
 #> 19. PH Phaeozems -- failed
-#> 20. UM Umbrisols -- NA (1 attrs missing)
-#> 21. DU Durisols -- NA (1 attrs missing)
-#> 22. GY Gypsisols -- NA (1 attrs missing)
-#> 23. CL Calcisols -- NA (1 attrs missing)
+#> 20. UM Umbrisols -- undecided (1 attrs missing)
+#> 21. DU Durisols -- undecided (1 attrs missing)
+#> 22. GY Gypsisols -- undecided (1 attrs missing)
+#> 23. CL Calcisols -- undecided (1 attrs missing)
 #> 24. RT Retisols -- failed
 #> 25. AC Acrisols -- failed
 #> 26. LX Lixisols -- PASSED
@@ -305,54 +305,41 @@ print(res$usda)
 #> 
 #> ── ClassificationResult (USDA Soil Taxonomy) ──
 #> 
-#> Name: Rhodic Kandiudults
+#> Name: Ultisols
 #> RSG/Order: Ultisols
-#> Evidence grade: A
+#> Evidence grade: C
 #> 
 #> ── Ambiguities
 #> - AS: Indeterminate -- missing 5 attribute(s): site$soil_moisture_regime,
 #> caco3_pct, caso4_pct, ec_dS_m, water_saturation_days
+#> - HC: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime
+#> - HD: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime
+#> - HE: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime
 #> 
 #> ── Missing data that would refine result
 #> permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct, slickensides,
-#> site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m, water_saturation_days
+#> site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m,
+#> water_saturation_days, redoximorphic_features_pct
+#> 
+#> ── Warnings
+#> ! The name was reached past 1 undecided test(s) (orders:AS): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.
+#> ! Suborder undecided: no taxon passed and HC, HD, HE could not be decided, so the name stops at the level above. See $ambiguities.
 #> 
 #> ── Key trace
-#> (31 classes tested before assignment)
+#> (13 classes tested before assignment)
 #> 1. GE Gelisols -- failed (1 attrs missing)
 #> 2. HI Histosols -- failed (1 attrs missing)
 #> 3. SP Spodosols -- failed (2 attrs missing)
 #> 4. AD Andisols -- failed (3 attrs missing)
 #> 5. OX Oxisols -- failed
 #> 6. VE Vertisols -- failed (1 attrs missing)
-#> 7. AS Aridisols -- NA (5 attrs missing)
+#> 7. AS Aridisols -- undecided (5 attrs missing)
 #> 8. UT Ultisols -- PASSED
 #> 9. HA Aquults -- failed (1 attrs missing)
 #> 10. HB Humults -- failed
-#> 11. HD Ustults -- failed (1 attrs missing)
-#> 12. HE Xerults -- failed (1 attrs missing)
-#> 13. HC Udults -- PASSED
-#> 14. HC Udults -- assigned
-#> 15. HCA Plinthudults -- failed (1 attrs missing)
-#> 16. HCB Fragiudults -- failed (1 attrs missing)
-#> 17. HCC Kandiudults -- PASSED
-#> 18. HCC Kandiudults -- assigned
-#> 19. HCCA Lithic Kandiudults -- failed
-#> 20. HCCB Aquic Kandiudults -- failed (1 attrs missing)
-#> 21. HCCC Plinthic Kandiudults -- failed (1 attrs missing)
-#> 22. HCCE Aquic Arenic Kandiudults -- failed (3 attrs missing)
-#> 23. HCCF Arenic Plinthic Kandiudults -- failed (3 attrs missing)
-#> 24. HCCG Arenic Rhodic Kandiudults -- failed (2 attrs missing)
-#> 25. HCCH Arenic Kandiudults -- failed (2 attrs missing)
-#> 26. HCCI Grossarenic Plinthic Kandiudults -- failed (3 attrs missing)
-#> 27. HCCJ Grossarenic Kandiudults -- failed (2 attrs missing)
-#> 28. HCCK Acrudoxic Plinthic Kandiudults -- failed (2 attrs missing)
-#> 29. HCCL Acrudoxic Kandiudults -- failed (1 attrs missing)
-#> 30. HCCM Aquandic Kandiudults -- failed (3 attrs missing)
-#> 31. HCCN Andic Kandiudults -- failed (2 attrs missing)
-#> 32. HCCO Oxyaquic Kandiudults -- failed
-#> 33. HCCP Rhodic Kandiudults -- PASSED
-#> 34. HCCP Rhodic Kandiudults -- assigned
+#> 11. HC Udults -- undecided (1 attrs missing)
+#> 12. HD Ustults -- undecided (1 attrs missing)
+#> 13. HE Xerults -- undecided (1 attrs missing)
 ```
 
 USDA-ST devolve a ordem (ate o nivel atualmente disponivel): **Ultisol**
@@ -376,11 +363,11 @@ data.frame(
 #>                                                                                   Classe
 #> 1           Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado, Tmob
 #> 2 Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)
-#> 3                                                                     Rhodic Kandiudults
+#> 3                                                                               Ultisols
 #>   EvidGrade
 #> 1         A
 #> 2         A
-#> 3         A
+#> 3         C
 ```
 
 Esses tres rotulos sao **complementares**, nao competidores. O SiBCS

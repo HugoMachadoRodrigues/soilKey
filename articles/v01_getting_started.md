@@ -275,19 +275,19 @@ classify_wrb2022(ferralsol)
 #> (16 RSGs tested before assignment)
 #> 1. HS Histosols -- failed
 #> 2. AT Anthrosols -- failed
-#> 3. TC Technosols -- NA (3 attrs missing)
-#> 4. CR Cryosols -- NA (1 attrs missing)
+#> 3. TC Technosols -- undecided (3 attrs missing)
+#> 4. CR Cryosols -- undecided (1 attrs missing)
 #> 5. LP Leptosols -- failed
 #> 6. SN Solonetz -- failed
-#> 7. VR Vertisols -- NA (3 attrs missing)
-#> 8. SC Solonchaks -- NA (1 attrs missing)
+#> 7. VR Vertisols -- undecided (3 attrs missing)
+#> 8. SC Solonchaks -- undecided (1 attrs missing)
 #> 9. GL Gleysols -- failed (1 attrs missing)
 #> 10. AN Andosols -- failed
-#> 11. PZ Podzols -- NA (2 attrs missing)
-#> 12. PT Plinthosols -- NA (4 attrs missing)
+#> 11. PZ Podzols -- undecided (2 attrs missing)
+#> 12. PT Plinthosols -- undecided (4 attrs missing)
 #> 13. PL Planosols -- failed
 #> 14. ST Stagnosols -- failed (1 attrs missing)
-#> 15. NT Nitisols -- NA (6 attrs missing)
+#> 15. NT Nitisols -- undecided (6 attrs missing)
 #> 16. FR Ferralsols -- PASSED
 ```
 

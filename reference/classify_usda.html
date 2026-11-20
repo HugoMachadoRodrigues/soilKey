@@ -21,7 +21,7 @@ inst/rules/usda/subgroups/&amp;lt;order&amp;gt;.yaml
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.414</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.415</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@ Subgroup) using YAML rule files at:</p><ul><li><p><code>inst/rules/usda/key.yaml
 <span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"silent"</span>, <span class="st">"error"</span><span class="op">)</span>,</span>
 <span>  include_family <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  infer_temperature <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  infer_temperature <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  gapfill <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -111,10 +111,14 @@ earlier versions).</p></dd>
 
 
 <dt id="arg-infer-temperature">infer_temperature<a class="anchor" aria-label="anchor" href="#arg-infer-temperature"></a></dt>
-<dd><p>When deriving the family, infer the soil
-temperature regime from latitude/elevation if
-<code>site$soil_temperature_regime</code> is absent (default
-<code>TRUE</code>). See <code>family_temperature_regime_usda</code>.</p></dd>
+<dd><p>When deriving the family and
+<code>site$soil_temperature_regime</code> is not recorded, suggest a
+temperature class from latitude and elevation (a crude lapse-rate
+model, "iso" within 23 degrees of the equator). Default
+<code>FALSE</code> since v0.9.415: the regime is not inferred unless asked
+for, and the family then carries no temperature class. A suggested
+class lowers the evidence grade to "C" and adds a warning. The key
+itself (orders to subgroups) never infers a regime.</p></dd>
 
 
 <dt id="arg-gapfill">gapfill<a class="anchor" aria-label="anchor" href="#arg-gapfill"></a></dt>
@@ -144,6 +148,31 @@ kaolinitic, isohyperthermic Rhodic Hapludox"</em>. See
 <code><a href="classify_usda_family.html">classify_usda_family</a></code>.</p>
     </div>
     <div class="section level2">
+    <h2 id="undecided-tests-and-regimes">Undecided tests and regimes<a class="anchor" aria-label="anchor" href="#undecided-tests-and-regimes"></a></h2>
+
+
+<p>A test whose data are missing is undecided (NA), not failed. The key goes
+on past it, as the WRB key does, and records it: every taxon tested before
+the one assigned, at the order, suborder, great group and subgroup levels,
+whose result is NA is listed in <code>$ambiguities</code> (with <code>level</code>,
+one of <code>"orders"</code>, <code>"suborders"</code>, <code>"great_groups"</code>,
+<code>"subgroups"</code>), and <code>$missing_data</code> collects what was missing
+at every level. When the name depends on an undecided test, it holds only
+if that test fails: it is inferred by elimination, so the evidence grade
+falls from <code>"A"</code> or <code>"B"</code> to <code>"C"</code> (the grade of an
+inferred result) and a warning says so. When no taxon of a level passes
+and some were undecided, the level is not named and the name stops at the
+level above.</p>
+<p>The soil moisture and temperature regimes are read from
+<code>site$soil_moisture_regime</code> and <code>site$soil_temperature_regime</code>
+and never inferred in the key: with no regime recorded every regime test
+is undecided and lists the site field as missing (KST 13th ed., pp.
+47-55). Taxa keyed as "Other" in the KST (Udalfs, Udepts, Udolls, Udox,
+...) are still reached, past the undecided regime taxa, with grade C;
+Udults need a udic or perudic regime (p. 321; "ud" covers both, p. 48), so
+an Ultisol with no regime recorded has no suborder.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Soil Survey Staff (2022). Keys to Soil Taxonomy, 13th
   edition. USDA Natural Resources Conservation Service.</p>
@@ -157,7 +186,7 @@ kaolinitic, isohyperthermic Rhodic Hapludox"</em>. See
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Rhodic Hapludox"</span>
 <span class="r-in"><span><span class="co"># include the 5th (family) level:</span></span></span>
 <span class="r-in"><span><span class="fu">classify_usda</span><span class="op">(</span><span class="va">pedon</span>, include_family <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fine, mixed, subactive, isothermic Rhodic Hapludox"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fine, mixed, subactive Rhodic Hapludox"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
