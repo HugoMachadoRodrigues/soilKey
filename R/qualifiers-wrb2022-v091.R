@@ -867,9 +867,9 @@ qual_drainic <- function(pedon) {
             reference = "WRB (2022) Ch 5, Drainic"))
   drain <- pedon$site$drainage_class %||% NA_character_
   land  <- pedon$site$land_use %||% NA_character_
-  artific_re <- "artific|reclaim|drained\\s+(organic|peat|mire|wetland|fen|bog)|\\bditch\\b|drained\\)"
-  drained <- (!is.na(drain) && grepl(artific_re, drain, ignore.case = TRUE)) ||
-               (!is.na(land)  && grepl(artific_re, land,  ignore.case = TRUE))
+  # v0.9.414: the markers live in .wrb_site_drained(), shared with the
+  # histic / folic water regime; it also reads site$artificially_drained.
+  drained <- .wrb_site_drained(pedon)
   DiagnosticResult$new(
     name = "Drainic", passed = drained,
     layers = if (drained) om$layers else integer(0),

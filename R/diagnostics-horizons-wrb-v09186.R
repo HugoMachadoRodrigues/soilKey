@@ -129,23 +129,34 @@ folic <- function(pedon, min_oc = 20, max_saturation_days = 30,
   # 3.3.13, p 91), as for the histic horizon; it was 12.
   tests$organic <- test_oc_above(h, min_pct = min_oc)
 
-  # (1) well-aerated: saturated < 30 consecutive days in most years, not drained.
-  # A drained layer is excluded (it is well-aerated only by artificial drainage);
-  # `layer_origin`/drainage status is not carried in the schema, so this uses the
-  # water-saturation window and treats a missing value as unconfirmed (NA).
-  wsd <- suppressWarnings(as.numeric(h$water_saturation_days))
-  aerated <- !is.na(wsd) & wsd < max_saturation_days
+  # (1) well-aerated: saturated < 30 consecutive days in most years and not
+  # drained (WRB 2022 Ch 3.1.12, p. 46). v0.9.414 (Hugo, 2026-11-19): a site
+  # recorded as artificially drained makes it FALSE (it was ignored), as do
+  # >= 30 days of saturation; the drainage record is read as the Drainic
+  # qualifier reads it (.wrb_organic_water_regime()). Only the layers that are
+  # or may be organic material are looked at, so a mineral layer's record does
+  # not decide it.
+  wr <- .wrb_organic_water_regime(pedon, min_days = max_saturation_days)
+  oc <- h$oc_pct
+  maybe_org <- which(is.na(oc) | oc >= min_oc)
+  aer <- wr$folic[maybe_org]
   tests$aerated <- .subtest_result(
-    passed  = if (all(is.na(wsd))) NA
-              else if (any(aerated)) TRUE else FALSE,
-    layers  = which(aerated),
-    missing = if (all(is.na(wsd))) "water_saturation_days" else character(0),
-    details = list(max_saturation_days = max_saturation_days))
+    passed  = if (wr$drained) FALSE
+              else if (any(aer %in% TRUE)) TRUE
+              else if (all(aer %in% FALSE)) FALSE else NA,
+    layers  = maybe_org[aer %in% TRUE],
+    missing = if (!wr$drained && anyNA(aer)) "water_saturation_days"
+              else character(0),
+    details = list(max_saturation_days = max_saturation_days,
+                   drained = wr$drained))
 
-  # (2) thickness >= 10 cm over the organic, well-aerated layers.
+  # (2) thickness >= 10 cm over the organic, well-aerated layers; adjoining
+  # layers count together (the thickness of a horizon is that of its
+  # subhorizons, Ch 2.1, p. 23), as for the histic horizon.
   cand <- intersect(tests$organic$layers, tests$aerated$layers)
   tests$thickness <- test_minimum_thickness(h, min_cm = min_thickness,
-                                            candidate_layers = cand)
+                                            candidate_layers = cand,
+                                            adjoining = TRUE)
 
   agg <- aggregate_subtests(tests)
   DiagnosticResult$new(

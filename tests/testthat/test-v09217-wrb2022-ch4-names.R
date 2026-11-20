@@ -188,7 +188,9 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     gleissolo_canonical = "Hypereutric Oxygleyic Gleysol (Loamic, Humic)",
     gleysol_canonical = "Hypereutric Oxygleyic Gleysol (Loamic, Humic)",
     gypsisol_canonical = "Calcaric Gypsisol (Loamic, Epic, Ochric)",
-    histosol_canonical = "Ombric Drainic Sapric Floatic Folic Histosol (Dystric)",
+    # v0.9.414: drained, so histic and not folic; Floatic and Ombric need a
+    # record of floating peat and of rainwater
+    histosol_canonical = "Drainic Sapric Histosol (Dystric)",
     kastanozem_canonical = "Cambic Kastanozem (Loamic, Humic)",
     latossolo_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)",
     leptosol_canonical = "Lithic Leptosol (Ochric)",
@@ -198,7 +200,8 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     neossolo_canonical = "Umbric Leptosol (Loamic, Humic)",
     nitisol_canonical = "Hypereutric Luvic Ferritic Nitisol (Epic, Humic)",
     nitossolo_canonical = "Rhodic Ferralic Lixisol (Clayic, Cutanic, Epic, Humic, Profondic)",
-    organossolo_canonical = "Ombric Folic Histosol (Dystric)",
+    # v0.9.414: no drainage or saturation recorded, so neither folic nor histic
+    organossolo_canonical = "Histosol (Dystric)",
     phaeozem_canonical = "Chernic Phaeozem (Loamic, Humic, Pachic)",
     planosol_canonical = "Hypereutric Luvic Albic Planosol (Loamic, Ochric)",
     planossolo_canonical = "Eutric Luvic Albic Umbric Planosol (Clayic)",

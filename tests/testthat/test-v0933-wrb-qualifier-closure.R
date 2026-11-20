@@ -78,9 +78,12 @@ test_that("qual_endogleyic / qual_endostagnic dispatch without error", {
 
 # ---- Histosol-specific qualifiers -----------------------------------------
 
-test_that("qual_floatic fires on high-OC, very-low-density layer", {
+# v0.9.414: Floatic needs floating organic material recorded (WRB 2022 Ch 5,
+# p. 134); a low bulk density alone no longer makes it.
+test_that("qual_floatic fires on recorded floating organic material", {
   p <- PedonRecord$new(
-    site = list(id = "floatic-1", lat = 0, lon = 0, country = "TEST"),
+    site = list(id = "floatic-1", lat = 0, lon = 0, country = "TEST",
+                floating_organic_material = TRUE),
     horizons = mk_h(
       top_cm    = c(0,  30),
       bottom_cm = c(30, 80),
@@ -157,40 +160,49 @@ test_that("qual_toxic does NOT fire on benign chemistry", {
   expect_false(isTRUE(qual_toxic(p)$passed))
 })
 
-test_that("qual_ombric fires on acidic Histosol with no carbonates", {
+# v0.9.414: Ombric and Rheic need a histic horizon (saturated >= 30 days or
+# drained) and the recorded water supply (WRB 2022 Ch 5, pp. 142, 145); the
+# pH no longer stands for it.
+test_that("qual_ombric fires on a rain-fed histic Histosol", {
   p <- PedonRecord$new(
-    site = list(id = "ombric", lat = 0, lon = 0, country = "TEST"),
+    site = list(id = "ombric", lat = 0, lon = 0, country = "TEST",
+                mire_water_supply = "rainwater"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                       designation = c("Oi", "Oe"),
                       oc_pct = c(35, 30),
                       ph_h2o = c(3.8, 4.0),
-                      caco3_pct = c(0, 0))
+                      caco3_pct = c(0, 0),
+                      water_saturation_days = c(200, 365))
   )
   expect_true(isTRUE(qual_ombric(p)$passed))
 })
 
-test_that("qual_rheic fires on neutral Histosol (water-fed)", {
+test_that("qual_rheic fires on a groundwater-fed histic Histosol", {
   p <- PedonRecord$new(
-    site = list(id = "rheic", lat = 0, lon = 0, country = "TEST"),
+    site = list(id = "rheic", lat = 0, lon = 0, country = "TEST",
+                mire_water_supply = "groundwater"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                       designation = c("Oi", "Oe"),
                       oc_pct = c(35, 30),
                       ph_h2o = c(6.5, 7.0),
-                      caco3_pct = c(2, 5))
+                      caco3_pct = c(2, 5),
+                      water_saturation_days = c(200, 365))
   )
   expect_true(isTRUE(qual_rheic(p)$passed))
 })
 
 test_that("qual_ombric vs qual_rheic are mutually exclusive on the same pedon", {
   ombric_p <- PedonRecord$new(
-    site = list(id = "om", lat = 0, lon = 0, country = "TEST"),
+    site = list(id = "om", lat = 0, lon = 0, country = "TEST",
+                land_use = "raised bog (drained)"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                       designation = c("Oi", "Oe"),
                       oc_pct = c(35, 30),
                       ph_h2o = c(3.8, 4.0))
   )
   rheic_p <- PedonRecord$new(
-    site = list(id = "rh", lat = 0, lon = 0, country = "TEST"),
+    site = list(id = "rh", lat = 0, lon = 0, country = "TEST",
+                land_use = "fen (drained)"),
     horizons = mk_h(top_cm = c(0, 30), bottom_cm = c(30, 80),
                       designation = c("Oi", "Oe"),
                       oc_pct = c(35, 30),

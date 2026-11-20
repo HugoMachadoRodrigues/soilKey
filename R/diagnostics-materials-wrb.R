@@ -21,9 +21,18 @@
 #' \code{min_thickness} cm thick (default 10). The thickness is that of the
 #' adjoining organic layers that run from the surface, taken together. A
 #' layer whose organic carbon is not recorded may be organic material and
-#' leaves the answer undecided (\code{NA}) where it could change it. The
-#' water-saturation criterion (saturated for 30 or more consecutive days, or
-#' drained) is not read.
+#' leaves the answer undecided (\code{NA}) where it could change it.
+#'
+#' Criterion 1 of Ch 3.1.15 (p. 48), saturated with water for 30 or more
+#' consecutive days in most years or drained, is read with
+#' \code{saturation = TRUE}, as the WRB qualifiers do since v0.9.414: a
+#' site recorded as artificially drained (\code{artificially_drained}, or a
+#' drainage marker in \code{drainage_class} or \code{land_use}, as the
+#' Drainic qualifier reads them) meets it, otherwise a layer's
+#' \code{water_saturation_days} of 30 or more does, under 30 does not (the
+#' layer is then folic, Ch 3.1.12, p. 46), and a layer with neither recorded
+#' leaves the horizon undecided. The default (\code{FALSE}) does not read
+#' it, as before, for the FAO 1974 stand-in and other direct callers.
 #'
 #' Since v0.9.313 this is the horizon only: the Histosols are keyed by
 #' \code{histosol()}, which reads the Chapter 4 key as worded. Until then
@@ -37,6 +46,9 @@
 #'        default 20 (WRB 2022 Ch 3.3.13).
 #' @param surface_top_cm Maximum top depth (cm) of the uppermost layer of
 #'        the horizon (default 0, the soil surface).
+#' @param saturation If \code{TRUE}, also read criterion 1 (saturated for
+#'        >= 30 consecutive days in most years, or drained); default
+#'        \code{FALSE}.
 #' @return A \code{\link{DiagnosticResult}}.
 #'
 #' @references IUSS Working Group WRB (2022), Chapter 3.1.15, Histic
@@ -45,7 +57,8 @@
 histic_horizon <- function(pedon,
                            min_thickness  = 10,
                            min_oc         = 20,
-                           surface_top_cm = 0) {
+                           surface_top_cm = 0,
+                           saturation     = FALSE) {
   # v0.9.313: WRB 2022 Ch 3.3.13 (p 91): organic material "has >= 20% soil
   # organic carbon" (the default was 12). Ch 3.1.15 (p 48): a histic horizon
   # consists of organic material and has a thickness of >= 10 cm; the
@@ -56,6 +69,10 @@ histic_horizon <- function(pedon,
   h <- pedon$horizons
   oc <- h$oc_pct
   status <- ifelse(is.na(oc), NA, oc >= min_oc)
+  # v0.9.414 (Hugo, 2026-11-19): criterion 1 read on request; a layer counts
+  # where it is organic material and saturated >= 30 days or drained.
+  wr <- if (isTRUE(saturation)) .wrb_organic_water_regime(pedon) else NULL
+  if (!is.null(wr)) status <- .and3v(status, wr$histic)
   ok <- !is.na(h$top_cm) & !is.na(h$bottom_cm)
   ord <- order(h$top_cm)
   ord <- ord[ok[ord]]
@@ -86,10 +103,50 @@ histic_horizon <- function(pedon,
                      surface_run = yes$layers,
                      thickness_cm = yes$thickness,
                      possible_thickness_cm = may$thickness,
-                     min_oc = min_oc, min_thickness = min_thickness),
-    missing   = if (is.na(passed)) "oc_pct" else character(0),
+                     min_oc = min_oc, min_thickness = min_thickness,
+                     drained = wr$drained, saturation_read = !is.null(wr)),
+    missing   = if (!is.na(passed)) character(0)
+                else c(if (anyNA(oc[may$layers])) "oc_pct",
+                       if (!is.null(wr) && anyNA(wr$histic[may$layers]))
+                         "water_saturation_days"),
     reference = "IUSS Working Group WRB (2022), Chapter 3.1.15, Histic horizon"
   )
+}
+
+
+# v0.9.414 (Hugo, 2026-11-19): the water regime of organic material, which
+# sets the histic horizon (WRB 2022 Ch 3.1.15, p. 48: saturated with water for
+# >= 30 consecutive days in most years, or drained) apart from the folic
+# horizon (Ch 3.1.12, p. 46: saturated for < 30 consecutive days in most years
+# and not drained). Drainage is a field record of the site: recorded, the
+# material is histic; not recorded, it counts as not drained. Otherwise each
+# layer's water_saturation_days decides (>= 30 histic, < 30 folic); with
+# neither recorded the layer is undecided. Returns `drained` and, per layer,
+# `histic` and `folic` (TRUE / FALSE / NA).
+.wrb_organic_water_regime <- function(pedon, min_days = 30) {
+  h <- pedon$horizons
+  n <- nrow(h)
+  drained <- .wrb_site_drained(pedon)
+  wsd <- suppressWarnings(as.numeric(h$water_saturation_days %||% rep(NA, n)))
+  if (drained)
+    return(list(drained = TRUE, histic = rep(TRUE, n), folic = rep(FALSE, n)))
+  list(drained = FALSE,
+       histic = ifelse(is.na(wsd), NA, wsd >= min_days),
+       folic  = ifelse(is.na(wsd), NA, wsd < min_days))
+}
+
+# The site is recorded as artificially drained: site$artificially_drained, or
+# an artificial-drainage marker in drainage_class or land_use, the markers the
+# Drainic qualifier reads (WRB 2022 Ch 5, Drainic, p. 131: "having been
+# artificially drained"). A natural drainage class ("very poorly drained") is
+# not one. Not recorded counts as not drained (a field observation).
+.wrb_site_drained <- function(pedon) {
+  s <- pedon$site %||% list()
+  if (isTRUE(as.logical(s$artificially_drained %||% NA)[1L])) return(TRUE)
+  re <- "artific|reclaim|drained\\s+(organic|peat|mire|wetland|fen|bog)|\\bditch\\b|drained\\)"
+  txt <- c(as.character(s$drainage_class %||% NA)[1L],
+           as.character(s$land_use %||% NA)[1L])
+  any(!is.na(txt) & grepl(re, txt, ignore.case = TRUE))
 }
 
 

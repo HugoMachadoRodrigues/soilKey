@@ -4,7 +4,13 @@
 \alias{histic_horizon}
 \title{Histic horizon (WRB 2022)}
 \usage{
-histic_horizon(pedon, min_thickness = 10, min_oc = 20, surface_top_cm = 0)
+histic_horizon(
+  pedon,
+  min_thickness = 10,
+  min_oc = 20,
+  surface_top_cm = 0,
+  saturation = FALSE
+)
 }
 \arguments{
 \item{pedon}{A \code{\link{PedonRecord}}.}
@@ -16,6 +22,10 @@ default 20 (WRB 2022 Ch 3.3.13).}
 
 \item{surface_top_cm}{Maximum top depth (cm) of the uppermost layer of
 the horizon (default 0, the soil surface).}
+
+\item{saturation}{If \code{TRUE}, also read criterion 1 (saturated for
+>= 30 consecutive days in most years, or drained); default
+\code{FALSE}.}
 }
 \value{
 A \code{\link{DiagnosticResult}}.
@@ -26,11 +36,20 @@ A horizon of organic material (WRB 2022 Ch 3.1.15): organic material
 \code{min_thickness} cm thick (default 10). The thickness is that of the
 adjoining organic layers that run from the surface, taken together. A
 layer whose organic carbon is not recorded may be organic material and
-leaves the answer undecided (\code{NA}) where it could change it. The
-water-saturation criterion (saturated for 30 or more consecutive days, or
-drained) is not read.
+leaves the answer undecided (\code{NA}) where it could change it.
 }
 \details{
+Criterion 1 of Ch 3.1.15 (p. 48), saturated with water for 30 or more
+consecutive days in most years or drained, is read with
+\code{saturation = TRUE}, as the WRB qualifiers do since v0.9.414: a
+site recorded as artificially drained (\code{artificially_drained}, or a
+drainage marker in \code{drainage_class} or \code{land_use}, as the
+Drainic qualifier reads them) meets it, otherwise a layer's
+\code{water_saturation_days} of 30 or more does, under 30 does not (the
+layer is then folic, Ch 3.1.12, p. 46), and a layer with neither recorded
+leaves the horizon undecided. The default (\code{FALSE}) does not read
+it, as before, for the FAO 1974 stand-in and other direct callers.
+
 Since v0.9.313 this is the horizon only: the Histosols are keyed by
 \code{histosol()}, which reads the Chapter 4 key as worded. Until then
 this function was also the Histosols gate, with organic material read at

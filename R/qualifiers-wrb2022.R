@@ -214,21 +214,32 @@ qual_ferric      <- function(pedon) .q_presence("Ferric",      ferric(pedon),   
 #' @noRd
 qual_fluvic      <- function(pedon) .q_presence("Fluvic",      fluvic_material(pedon),  75,  pedon)
 
-#' Folic qualifier (fo): folic horizon at the soil surface. v0.9
-#' delegates to histic_horizon with surface-only filter.
+#' Folic qualifier (fo): WRB 2022 Ch 5 (p. 134), having a folic horizon
+#' starting at the soil surface. The folic horizon is \code{folic()} (Ch
+#' 3.1.12, p. 46): organic material saturated < 30 consecutive days in most
+#' years and not drained, >= 10 cm thick.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_folic       <- function(pedon) {
-  h <- histic_horizon(pedon)
-  surface <- length(h$layers) > 0L &&
-               any(pedon$horizons$top_cm[h$layers] <= 5, na.rm = TRUE)
-  passed <- isTRUE(h$passed) && surface
+  # v0.9.414 (Hugo, 2026-11-19): read through folic(), which reads the water
+  # regime: a site recorded as drained or a layer saturated >= 30 days is
+  # histic, not folic; with neither drainage nor water_saturation_days
+  # recorded it is undecided. Until v0.9.413 this delegated to
+  # histic_horizon(), which does not read the water, so a drained mire was
+  # named Folic and Ombric at once. The horizon must take in the uppermost
+  # layer (the soil surface).
+  f <- folic(pedon)
+  h <- pedon$horizons
+  surf <- suppressWarnings(min(h$top_cm, na.rm = TRUE))
+  at_surface <- length(f$layers) > 0L &&
+    any(abs(h$top_cm[f$layers] - surf) < 1e-6, na.rm = TRUE)
+  passed <- if (isTRUE(f$passed)) at_surface else f$passed
   DiagnosticResult$new(
     name = "Folic", passed = passed,
-    layers = if (passed) h$layers else integer(0),
-    evidence = list(histic = h),
-    missing = h$missing,
-    reference = "WRB (2022) Ch 5, Folic"
+    layers = if (isTRUE(passed)) f$layers else integer(0),
+    evidence = list(folic = f),
+    missing = if (is.na(passed)) f$missing %||% character(0) else character(0),
+    reference = "WRB (2022) Ch 5, Folic (p. 134)"
   )
 }
 
@@ -265,10 +276,13 @@ qual_gleyic <- function(pedon) {
 #' @noRd
 qual_gypsic      <- function(pedon) .q_presence("Gypsic",      gypsic(pedon),      100, pedon)
 
-#' Histic qualifier (hi): histic horizon at or near the surface.
+#' Histic qualifier (hi): histic horizon at or near the surface. Since
+#' v0.9.414 the histic horizon is read with its saturation criterion (WRB 2022
+#' Ch 3.1.15, p. 48: saturated >= 30 consecutive days in most years, or
+#' drained); with neither recorded it is undecided (Hugo, 2026-11-19).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_histic      <- function(pedon) .q_presence("Histic",      histic_horizon(pedon),   100, pedon)
+qual_histic      <- function(pedon) .q_presence("Histic",      histic_horizon(pedon, saturation = TRUE), 100, pedon)
 
 #' Leptic qualifier (le): continuous rock <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.

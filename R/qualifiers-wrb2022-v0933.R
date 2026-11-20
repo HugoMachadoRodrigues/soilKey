@@ -91,44 +91,38 @@ qual_endostagnic <- function(pedon)
 
 # ---- Histosol-specific qualifiers -----------------------------------------
 
-#' Floatic qualifier (fc): Histosol that floats on water.
+#' Floatic qualifier (ft): organic material floating on water.
 #'
-#' WRB 2022 Ch 5 / Ch 4 Histosols (p 96): organic material with very low
-#' bulk density (< 0.1 g/cm3 dry, OR < 0.4 g/cm3 in fully saturated state)
-#' that floats on water. Practical proxy: oc_pct >= 20 (organic material)
-#' AND bulk_density_g_cm3 <= 0.4 in any layer of the upper 100 cm.
+#' WRB 2022 Ch 5 (p. 134): having organic material floating on water (in
+#' Histosols only). Read from the record: \code{site$floating_organic_material}
+#' (TRUE / FALSE), or, without it, a floating mat or mire named in
+#' \code{site$landform} ("floating mat", "floating bog", "Schwingmoor",
+#' "quaking bog"). Not recorded, it is absent (a field observation).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 qual_floatic <- function(pedon) {
-  h <- pedon$horizons
-  cand <- .in_upper(pedon, 100)
-  if (length(cand) == 0L)
-    return(DiagnosticResult$new(name = "Floatic", passed = FALSE,
-                                  layers = integer(0),
-                                  evidence = list(reason = "no candidate layers"),
-                                  missing = character(0),
-                                  reference = "WRB (2022) Ch 5"))
-
-  oc <- h$oc_pct[cand]
-  bd <- h$bulk_density_g_cm3[cand]
-  # v0.9.313: organic material is oc >= 20 (WRB 2022 Ch 3.3.13, p 91; was 12)
-  ok <- !is.na(oc) & oc >= 20 & !is.na(bd) & bd <= 0.4
-  passing <- cand[ok]
-  passed <- length(passing) > 0L
-
-  miss <- character(0)
-  if (all(is.na(oc))) miss <- c(miss, "oc_pct")
-  if (all(is.na(bd))) miss <- c(miss, "bulk_density_g_cm3")
-
+  # v0.9.414 (Hugo, 2026-11-19): only floating organic material recorded at
+  # the site makes it. Until v0.9.413 any organic layer with a bulk density
+  # <= 0.4 within 100 cm was taken to float, which named most peats Floatic
+  # (the canonical Histosol among them).
+  ref <- "WRB (2022) Ch 5, Floatic (p. 134)"
+  s <- pedon$site %||% list()
+  rec <- suppressWarnings(as.logical(s$floating_organic_material %||% NA)[1L])
+  lf <- as.character(s$landform %||% NA)[1L]
+  text <- !is.na(lf) &&
+    grepl("float|schwingmoor|quaking\\s+(bog|mire|fen)", lf, ignore.case = TRUE)
+  floating <- if (!is.na(rec)) rec else text
+  om <- organic_material(pedon)
+  passed <- if (!floating) FALSE else om$passed
   DiagnosticResult$new(
-    name = "Floatic", passed = passed, layers = passing,
-    evidence = list(threshold_oc = 20, threshold_bd = 0.4,
-                      candidate_layers = cand),
-    missing = miss,
-    reference = "WRB (2022) Ch 4 Histosols (p 96), Ch 5"
-  )
+    name = "Floatic", passed = passed,
+    layers = if (isTRUE(passed)) om$layers else integer(0),
+    evidence = list(floating_organic_material = rec, landform = lf,
+                    organic = om),
+    missing = if (is.na(passed)) om$missing %||% "oc_pct" else character(0),
+    reference = ref)
 }
 
 
@@ -174,99 +168,111 @@ qual_toxic <- function(pedon) {
 }
 
 
-#' Ombric qualifier (om): rain-fed Histosol.
+# v0.9.414 (Hugo, 2026-11-19): the water that saturates the upper part of the
+# histic horizon, from the record: "rain" (an ombrotrophic, rain-fed mire:
+# raised or blanket bog), "ground" (groundwater or flowing water: a fen) or NA
+# (not recorded, or the records disagree). Read in this order:
+# site$mire_water_supply; the peat_moor_type of the layers of the upper 20 cm
+# or upper half of the histic horizon, whichever is shallower (high-moor peat,
+# the peat of raised bogs, as rain; low-moor peat, of fens, as groundwater;
+# transitional undecided); a mire named in site landform, vegetation or
+# land_use ("raised bog", "blanket bog", "ombrotrophic" against "fen",
+# "minerotrophic", "groundwater-fed").
+.wrb_mire_water_supply <- function(pedon, histic_layers = integer(0)) {
+  s <- pedon$site %||% list()
+  one <- function(x) {
+    x <- unique(x[!is.na(x)])
+    if (length(x) == 1L) x else NA_character_
+  }
+  rec <- tolower(trimws(as.character(s$mire_water_supply %||% NA)[1L]))
+  if (!is.na(rec) && nzchar(rec)) {
+    if (grepl("^(rain|ombro)", rec)) return("rain")
+    if (grepl("^(ground|flowing|minero)", rec)) return("ground")
+  }
+  h <- pedon$horizons
+  pm <- h$peat_moor_type
+  if (length(histic_layers) && !is.null(pm)) {
+    top <- min(h$top_cm[histic_layers]); bot <- max(h$bottom_cm[histic_layers])
+    upper <- top + min(20, (bot - top) / 2)
+    ly <- histic_layers[h$top_cm[histic_layers] < upper]
+    v <- tolower(as.character(pm[ly]))
+    v <- ifelse(grepl("high", v), "rain", ifelse(grepl("low", v), "ground",
+           ifelse(is.na(v), NA_character_, "undecided")))
+    if (length(v) && !anyNA(v) && !any(v == "undecided")) {
+      r <- one(v)
+      if (!is.na(r)) return(r)
+    }
+  }
+  txt <- vapply(c("landform", "vegetation", "land_use"), function(f)
+    as.character(s[[f]] %||% NA)[1L], character(1))
+  txt <- txt[!is.na(txt)]
+  rain <- any(grepl("raised bog|blanket bog|ombrotroph|ombrogen|hochmoor",
+                    txt, ignore.case = TRUE))
+  ground <- any(grepl("\\bfens?\\b|minerotroph|groundwater[- ]fed|niedermoor|spring mire|soligen|rheotroph",
+                      txt, ignore.case = TRUE))
+  if (rain && !ground) return("rain")
+  if (ground && !rain) return("ground")
+  NA_character_
+}
+
+# Ombric and Rheic: a histic horizon (WRB 2022 Ch 3.1.15, p. 48, with its
+# saturation criterion) and the recorded water supply of its upper part.
+.mire_water_state <- function(pedon) {
+  hist <- histic_horizon(pedon, saturation = TRUE)
+  src <- if (isTRUE(hist$passed)) .wrb_mire_water_supply(pedon, hist$layers)
+         else NA_character_
+  list(histic = hist, supply = src)
+}
+.mire_water_result <- function(name, passed, w, ref) {
+  DiagnosticResult$new(
+    name = name, passed = passed,
+    layers = if (isTRUE(passed)) w$histic$layers else integer(0),
+    evidence = list(histic = w$histic, water_supply = w$supply),
+    missing = if (!is.na(passed)) character(0)
+              else if (!isTRUE(w$histic$passed)) w$histic$missing %||% character(0)
+              else c("mire_water_supply", "peat_moor_type"),
+    reference = ref)
+}
+
+#' Ombric qualifier (om): a histic horizon saturated with rainwater.
 #'
-#' WRB 2022 Ch 5 / Ch 4 Histosols (p 96): organic material formed under
-#' the influence of rainwater only (NO surface or groundwater input).
-#' Distinguished from Rheic by its low pH (rainwater is naturally
-#' acidic and unbuffered) and low base saturation. Practical proxy:
-#' Histosol Order with weighted-mean pH_h2o <= 4.5 in the upper 100 cm
-#' AND no carbonates (calcaric / calcium-rich evidence absent).
+#' WRB 2022 Ch 5 (p. 142): having a histic horizon, the upper >= 20 cm or at
+#' least the upper half of which, whichever is shallower, are saturated
+#' predominantly with rainwater (in Histosols only). The histic horizon is
+#' read with its saturation criterion (saturated >= 30 days or drained); the
+#' water supply from the record (\code{.wrb_mire_water_supply()}). Without a
+#' record it is undecided.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 qual_ombric <- function(pedon) {
-  h <- pedon$horizons
-  cand <- .in_upper(pedon, 100)
-  if (length(cand) == 0L)
-    return(DiagnosticResult$new(name = "Ombric", passed = FALSE,
-                                  layers = integer(0),
-                                  evidence = list(reason = "no candidate layers"),
-                                  missing = character(0),
-                                  reference = "WRB (2022) Ch 5"))
-
-  ph    <- h$ph_h2o[cand]
-  caco3 <- h$caco3_pct[cand] %||% rep(NA_real_, length(cand))
-  oc    <- h$oc_pct[cand]
-
-  # Organic material (v0.9.313: oc >= 20, WRB 2022 Ch 3.3.13, p 91; was 12)
-  # with very low pH and no carbonates
-  histic <- !is.na(oc) & oc >= 20
-  acidic <- !is.na(ph) & ph <= 4.5
-  no_carb <- is.na(caco3) | caco3 < 1
-  ok <- histic & acidic & no_carb
-  passing <- cand[ok]
-  passed <- length(passing) > 0L
-
-  miss <- character(0)
-  if (all(is.na(ph))) miss <- c(miss, "ph_h2o")
-  if (all(is.na(oc))) miss <- c(miss, "oc_pct")
-
-  DiagnosticResult$new(
-    name = "Ombric", passed = passed, layers = passing,
-    evidence = list(threshold_ph_max = 4.5,
-                      threshold_oc_min = 20,
-                      candidate_layers = cand),
-    missing = miss,
-    reference = "WRB (2022) Ch 4 Histosols (p 96), Ch 5"
-  )
+  # v0.9.414 (Hugo, 2026-11-19): until v0.9.413 a pH (water) <= 4.5 in an
+  # organic layer stood for rainwater; the definition reads the water, not
+  # the pH, and needs a histic horizon (which a folic Histosol has not).
+  w <- .mire_water_state(pedon)
+  passed <- if (!isTRUE(w$histic$passed)) w$histic$passed
+            else if (is.na(w$supply)) NA else w$supply == "rain"
+  .mire_water_result("Ombric", passed, w, "WRB (2022) Ch 5, Ombric (p. 142)")
 }
 
 
-#' Rheic qualifier (rh): water-fed Histosol.
+#' Rheic qualifier (rh): a histic horizon reached by groundwater or flowing
+#' water.
 #'
-#' WRB 2022 Ch 5 / Ch 4 Histosols (p 96): organic material formed under
-#' the influence of surface or groundwater (the opposite of Ombric).
-#' Distinguished by HIGHER pH and base saturation than Ombric (because
-#' the input water carries dissolved bases). Practical proxy:
-#' Histosol Order with pH_h2o > 4.5 (above the Ombric ceiling) in the
-#' upper 100 cm OR carbonates / calcium-rich evidence present.
+#' WRB 2022 Ch 5 (p. 145): having a histic horizon, in which groundwater or
+#' flowing water ascends to < 20 cm of the soil surface or reaches the histic
+#' horizon's upper half, whichever is shallower (in Histosols only). Read as
+#' \code{qual_ombric()}, with the other water supply.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 qual_rheic <- function(pedon) {
-  h <- pedon$horizons
-  cand <- .in_upper(pedon, 100)
-  if (length(cand) == 0L)
-    return(DiagnosticResult$new(name = "Rheic", passed = FALSE,
-                                  layers = integer(0),
-                                  evidence = list(reason = "no candidate layers"),
-                                  missing = character(0),
-                                  reference = "WRB (2022) Ch 5"))
-
-  ph    <- h$ph_h2o[cand]
-  caco3 <- h$caco3_pct[cand] %||% rep(NA_real_, length(cand))
-  oc    <- h$oc_pct[cand]
-
-  # v0.9.313: organic material is oc >= 20 (WRB 2022 Ch 3.3.13, p 91; was 12)
-  histic <- !is.na(oc) & oc >= 20
-  base_evidence <- (!is.na(ph) & ph > 4.5) | (!is.na(caco3) & caco3 >= 1)
-  ok <- histic & base_evidence
-  passing <- cand[ok]
-  passed <- length(passing) > 0L
-
-  miss <- character(0)
-  if (all(is.na(ph))) miss <- c(miss, "ph_h2o")
-  if (all(is.na(oc))) miss <- c(miss, "oc_pct")
-
-  DiagnosticResult$new(
-    name = "Rheic", passed = passed, layers = passing,
-    evidence = list(threshold_ph_min = 4.5,
-                      threshold_oc_min = 20,
-                      candidate_layers = cand),
-    missing = miss,
-    reference = "WRB (2022) Ch 4 Histosols (p 96), Ch 5"
-  )
+  # v0.9.414 (Hugo, 2026-11-19): until v0.9.413 a pH (water) > 4.5 or
+  # carbonates in an organic layer stood for groundwater.
+  w <- .mire_water_state(pedon)
+  passed <- if (!isTRUE(w$histic$passed)) w$histic$passed
+            else if (is.na(w$supply)) NA else w$supply == "ground"
+  .mire_water_result("Rheic", passed, w, "WRB (2022) Ch 5, Rheic (p. 145)")
 }

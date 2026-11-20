@@ -439,7 +439,7 @@ attributes:
   - name: water_saturation_days
     section: "Fields that unlock schema-blocked predicates"
     unit: "days"
-    description: "cumulative days/year water-saturated; WRB 2022 Mochipic needs >= 300 days (Ch 5)"
+    description: "cumulative days/year water-saturated; WRB 2022 Mochipic needs >= 300 days (Ch 5); in organic material, 30 or more makes the WRB histic horizon and under 30 the folic one, where the site is not recorded as drained (Ch 3.1.12 and 3.1.15)"
   - name: particles_630um_pct
     section: "Fields that unlock schema-blocked predicates"
     unit: "%"
@@ -832,8 +832,8 @@ attributes:
   - name: peat_moor_type
     section: "Japanese system (SCSJ 2017)"
     unit: "-"
-    description: "Peat material by the plants it is made of (SCSJ 2017 IV.3): high-moor (Sphagnum, Carex middendorffii, Vaccinium oxycoccus, Rhynchospora, Scheuchzeria the largest share), transitional (Moliniopsis, Eriophorum, Myrica gale, Picea glehnii), low-moor (other). The High-moor and Transitional-moor Peat soils read the uppermost 25 cm of the peat. The Russian Field Guide of 2008 adds mesophilic: the litter of non-mire herbs, dwarf shrubs or krummholz, the dry peat TJ (Hugo's decision Q22); its oligotrophic peat TO is high-moor, its eutrophic peat TE transitional or low-moor."
-    systems: [scsj2017, cpcs1967, kidpr2008]
+    description: "Peat material by the plants it is made of (SCSJ 2017 IV.3): high-moor (Sphagnum, Carex middendorffii, Vaccinium oxycoccus, Rhynchospora, Scheuchzeria the largest share), transitional (Moliniopsis, Eriophorum, Myrica gale, Picea glehnii), low-moor (other). The High-moor and Transitional-moor Peat soils read the uppermost 25 cm of the peat. The Russian Field Guide of 2008 adds mesophilic: the litter of non-mire herbs, dwarf shrubs or krummholz, the dry peat TJ (Hugo's decision Q22); its oligotrophic peat TO is high-moor, its eutrophic peat TE transitional or low-moor. The WRB Ombric and Rheic qualifiers read it in the upper part of the histic horizon when site mire_water_supply is not recorded: high-moor as rain-fed, low-moor as fed by groundwater."
+    systems: [scsj2017, cpcs1967, kidpr2008, wrb2022]
     allowed: [high-moor, transitional, low-moor, mesophilic]
   - name: artefacts_organic
     section: "Japanese system (SCSJ 2017)"
