@@ -79,9 +79,9 @@ res
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
+#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic
+#> Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -203,22 +203,22 @@ the alphabet”, by qualifier rather than subqualifier (Chapter 2.2).
 ``` r
 
 qres$supplementary
-#> [1] "Clayic" "Epic"   "Eutric" "Humic"
+#> [1] "Clayic"      "Epic"        "Oligoeutric" "Humic"
 ```
 
 Ochric does not appear: the Ferralsol list has `Humic/Ochric`, and Humic
 applies first. Each tag, with the source the resolver cites:
 
-    #>   Qualifier
-    #> 1    Clayic
-    #> 2      Epic
-    #> 3    Eutric
-    #> 4     Humic
-    #>                                                                                                                                                                                                                               Reference
-    #> 1                                                                                                                                                        WRB (2022) Ch 5, Clayic (p. 130); texture classes, Annex 1 Table 8.39 (p. 182)
-    #> 2                                                                                                                                                                                                                 WRB (2022) Ch 5, Epic
-    #> 3 WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): exchangeable Al vs exchangeable bases over 20-100 cm; Dystric = Al > bases in >= half, Eutric = bases >= Al in the major part. Not base saturation (that was WRB 2014). Eutric
-    #> 4                                                                                                                                                                                                                WRB (2022) Ch 5, Humic
+    #>     Qualifier
+    #> 1      Clayic
+    #> 2        Epic
+    #> 3 Oligoeutric
+    #> 4       Humic
+    #>                                                                                                                                                                            Reference
+    #> 1                                                                                                     WRB (2022) Ch 5, Clayic (p. 130); texture classes, Annex 1 Table 8.39 (p. 182)
+    #> 2                                                                                                                                                              WRB (2022) Ch 5, Epic
+    #> 3 WRB (2022) Ch 5, Oligoeutric (p. 133): exchangeable bases >= exchangeable Al and < 5 cmolc per kg of clay in the major part of 20-100 cm. Not base saturation (that was WRB 2014).
+    #> 4                                                                                                                                                             WRB (2022) Ch 5, Humic
 
 ## 5. Compose the name
 
@@ -232,7 +232,7 @@ format_wrb_name(
   principal     = qres$principal,
   supplementary = qres$supplementary
 )
-#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)"
 ```
 
 This is exactly the string returned by `classify_wrb2022()$name`.
@@ -355,10 +355,10 @@ its `DiagnosticResult` evidence.
 
 ## Summary
 
-    #> WRB 2022 name : Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
+    #> WRB 2022 name : Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
     #> Assigned RSG  : Ferralsols
     #> Principal     : Geric, Rhodic
-    #> Supplementary : Clayic, Epic, Eutric, Humic
+    #> Supplementary : Clayic, Epic, Oligoeutric, Humic
     #> Evidence grade: A
 
 The `v03_cross_system_correlation` vignette runs the same profile

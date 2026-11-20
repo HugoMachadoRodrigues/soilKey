@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.409</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.410</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -253,9 +253,9 @@ gate is satisfied.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">ClassificationResult (WRB 2022)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)</span></span>
+<span><span class="co">#&gt; Name: Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)</span></span>
 <span><span class="co">#&gt; RSG/Order: Ferralsols</span></span>
-<span><span class="co">#&gt; Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic</span></span>
+<span><span class="co">#&gt; Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
@@ -376,20 +376,20 @@ of the alphabet”, by qualifier rather than subqualifier (Chapter
 2.2).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
-<span><span class="co">#&gt; [1] "Clayic" "Epic"   "Eutric" "Humic"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Clayic"      "Epic"        "Oligoeutric" "Humic"</span></span></code></pre></div>
 <p>Ochric does not appear: the Ferralsol list has
 <code>Humic/Ochric</code>, and Humic applies first. Each tag, with the
 source the resolver cites:</p>
-<pre><code><span><span class="co">#&gt;   Qualifier</span></span>
-<span><span class="co">#&gt; 1    Clayic</span></span>
-<span><span class="co">#&gt; 2      Epic</span></span>
-<span><span class="co">#&gt; 3    Eutric</span></span>
-<span><span class="co">#&gt; 4     Humic</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                               Reference</span></span>
-<span><span class="co">#&gt; 1                                                                                                                                                        WRB (2022) Ch 5, Clayic (p. 130); texture classes, Annex 1 Table 8.39 (p. 182)</span></span>
-<span><span class="co">#&gt; 2                                                                                                                                                                                                                 WRB (2022) Ch 5, Epic</span></span>
-<span><span class="co">#&gt; 3 WRB (2022) Ch 5 (Dystric p.130-131, Eutric p.131-132): exchangeable Al vs exchangeable bases over 20-100 cm; Dystric = Al &gt; bases in &gt;= half, Eutric = bases &gt;= Al in the major part. Not base saturation (that was WRB 2014). Eutric</span></span>
-<span><span class="co">#&gt; 4                                                                                                                                                                                                                WRB (2022) Ch 5, Humic</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;     Qualifier</span></span>
+<span><span class="co">#&gt; 1      Clayic</span></span>
+<span><span class="co">#&gt; 2        Epic</span></span>
+<span><span class="co">#&gt; 3 Oligoeutric</span></span>
+<span><span class="co">#&gt; 4       Humic</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                            Reference</span></span>
+<span><span class="co">#&gt; 1                                                                                                     WRB (2022) Ch 5, Clayic (p. 130); texture classes, Annex 1 Table 8.39 (p. 182)</span></span>
+<span><span class="co">#&gt; 2                                                                                                                                                              WRB (2022) Ch 5, Epic</span></span>
+<span><span class="co">#&gt; 3 WRB (2022) Ch 5, Oligoeutric (p. 133): exchangeable bases &gt;= exchangeable Al and &lt; 5 cmolc per kg of clay in the major part of 20-100 cm. Not base saturation (that was WRB 2014).</span></span>
+<span><span class="co">#&gt; 4                                                                                                                                                             WRB (2022) Ch 5, Humic</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="compose-the-name">5. Compose the name<a class="anchor" aria-label="anchor" href="#compose-the-name"></a>
@@ -402,7 +402,7 @@ the canonical form:</p>
 <span>  principal     <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">principal</span>,</span>
 <span>  supplementary <span class="op">=</span> <span class="va">qres</span><span class="op">$</span><span class="va">supplementary</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)"</span></span></code></pre></div>
 <p>This is exactly the string returned by
 <code>classify_wrb2022()$name</code>.</p>
 </div>
@@ -512,10 +512,10 @@ evidence.</p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)</span></span>
+<pre><code><span><span class="co">#&gt; WRB 2022 name : Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)</span></span>
 <span><span class="co">#&gt; Assigned RSG  : Ferralsols</span></span>
 <span><span class="co">#&gt; Principal     : Geric, Rhodic</span></span>
-<span><span class="co">#&gt; Supplementary : Clayic, Epic, Eutric, Humic</span></span>
+<span><span class="co">#&gt; Supplementary : Clayic, Epic, Oligoeutric, Humic</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span></code></pre>
 <p>The <code>v03_cross_system_correlation</code> vignette runs the same
 profile through the Brazilian SiBCS and the USDA Soil Taxonomy keys and

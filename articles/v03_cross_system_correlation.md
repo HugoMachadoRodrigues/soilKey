@@ -25,10 +25,10 @@ data.frame(
   Class   = c(w$rsg_or_order, s$rsg_or_order, u$rsg_or_order),
   Full    = c(w$name, s$name, u$name)
 )
-#>     System      Class                                                 Full
-#> 1 WRB 2022 Ferralsols Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
-#> 2  SiBCS 5 Latossolos             Latossolos Vermelhos Distróficos típicos
-#> 3     USDA    Oxisols                                      Rhodic Hapludox
+#>     System      Class                                                      Full
+#> 1 WRB 2022 Ferralsols Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
+#> 2  SiBCS 5 Latossolos                  Latossolos Vermelhos Distróficos típicos
+#> 3     USDA    Oxisols                                           Rhodic Hapludox
 ```
 
 The three systems converge on the same conceptual unit:
@@ -136,7 +136,7 @@ cat("WRB principal qualifiers:    ",
 #> WRB principal qualifiers:     Geric, Rhodic
 cat("WRB supplementary qualifiers:",
     paste(w$qualifiers$supplementary, collapse = ", "), "\n")
-#> WRB supplementary qualifiers: Clayic, Epic, Eutric, Humic
+#> WRB supplementary qualifiers: Clayic, Epic, Oligoeutric, Humic
 cat("SiBCS subordem (2nd level):  ", s$rsg_or_order,    "\n")
 #> SiBCS subordem (2nd level):   Latossolos
 cat("USDA suborder / great group: ", u$rsg_or_order,    "\n")

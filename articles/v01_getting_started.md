@@ -37,7 +37,7 @@ library(soilKey)
 
 pedon <- make_ferralsol_canonical()      # canonical Latossolo Vermelho
 classify_wrb2022(pedon, on_missing = "silent")$name
-#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"
+#> [1] "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)"
 classify_sibcs(pedon)$name
 #> [1] "Latossolos Vermelhos Distróficos típicos"
 classify_usda(pedon, on_missing = "silent")$name
@@ -241,9 +241,9 @@ classify_wrb2022(ferralsol)
 #> 
 #> ── ClassificationResult (WRB 2022) ──
 #> 
-#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
+#> Name: Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic
+#> Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
