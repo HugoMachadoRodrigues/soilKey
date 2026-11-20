@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.408</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.409</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,11 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.409" id="soilkey-09409">soilKey 0.9.409<a class="anchor" aria-label="anchor" href="#soilkey-09409"></a></h2>
+<ul><li>
+<strong>A printed result lists only its qualifiers.</strong> <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> on a WRB 2022 result also printed the reasoning kept for every qualifier tested (<code>TRUE</code>, <code>FALSE</code>, <code>NA</code> and the names of missing attributes), and on an HSCS result the table that gives the status of each subtype and variety. The line now shows the names alone, for example “Geric, Rhodic, Clayic, Epic, Eutric, Humic”. The reasoning stays in <code>$qualifiers$trace</code> and <code>$qualifiers$trace_supplementary</code>, and the table in <code>$qualifiers$status</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.408" id="soilkey-09408">soilKey 0.9.408<a class="anchor" aria-label="anchor" href="#soilkey-09408"></a></h2>
 <p>The ISIS reader, after questions from ISRIC (Hugo, 2026-11-18).</p>

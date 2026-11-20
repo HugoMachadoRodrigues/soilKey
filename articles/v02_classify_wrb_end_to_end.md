@@ -81,19 +81,7 @@ res
 #> 
 #> Name: Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
 #> RSG/Order: Ferralsols
-#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic, FALSE, NA,
-#> gibbsite_clay_fraction_pct, TRUE, FALSE, TRUE, FALSE, structure_type,
-#> structure_grade, structure_type_secondary, pressure_faces, fe_dcb_pct,
-#> fe_ox_pct, FALSE, p_mehlich3_mg_kg, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#> volcanic_glass_pct, FALSE, NA, rupture_resistance, FALSE, FALSE, TRUE, TRUE,
-#> FALSE, FALSE, FALSE, ferric_nodules_pct, redoximorphic_features_pct, FALSE,
-#> FALSE, TRUE, FALSE, NA, bioturbation_density, bulk_density_g_cm3,
-#> particles_630um_pct, FALSE, FALSE, NA, water_saturation_days,
-#> redoximorphic_features_pct, FALSE, NA, visible black carbon, % of exposed area
-#> (not in the schema), FALSE, NA, saprolite_pct, FALSE, rock_origin, FALSE,
-#> FALSE, artefacts_pct, geomembrane_present, technic_hardmaterial_pct, NA,
-#> artefacts_pct, NA, contamination_type, NA, layer_origin, artefacts_pct
+#> Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic
 #> Evidence grade: A
 #> 
 #> ── Ambiguities

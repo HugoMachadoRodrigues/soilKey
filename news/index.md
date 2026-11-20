@@ -1,5 +1,17 @@
 # Changelog
 
+## soilKey 0.9.409
+
+- **A printed result lists only its qualifiers.**
+  [`print()`](https://rdrr.io/r/base/print.html) on a WRB 2022 result
+  also printed the reasoning kept for every qualifier tested (`TRUE`,
+  `FALSE`, `NA` and the names of missing attributes), and on an HSCS
+  result the table that gives the status of each subtype and variety.
+  The line now shows the names alone, for example “Geric, Rhodic,
+  Clayic, Epic, Eutric, Humic”. The reasoning stays in
+  `$qualifiers$trace` and `$qualifiers$trace_supplementary`, and the
+  table in `$qualifiers$status`.
+
 ## soilKey 0.9.408
 
 The ISIS reader, after questions from ISRIC (Hugo, 2026-11-18).
