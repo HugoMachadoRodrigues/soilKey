@@ -11,7 +11,9 @@ all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 to the bottom of the profile (&quot;Anoloamic, Endoclayic&quot;, p. 26; since
 v0.9.315); a qualifier made redundant by another is
 left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-where the RSG lists it and no other principal qualifier does."><meta property="og:description" content="Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
+where the RSG lists it and no other principal qualifier does; the principal
+qualifiers left undecided come back in undecided_principal (since
+v0.9.413)."><meta property="og:description" content="Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
 Chapter 4, in inst/rules/wrb2022/qualifiers.yaml) and tests each
 qualifier against the pedon, following the rules for naming soils of
 Chapter 2.2: in a slash group (&quot;Rhodic/Xanthic&quot;) only the first
@@ -23,7 +25,9 @@ all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 to the bottom of the profile (&quot;Anoloamic, Endoclayic&quot;, p. 26; since
 v0.9.315); a qualifier made redundant by another is
 left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-where the RSG lists it and no other principal qualifier does."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+where the RSG lists it and no other principal qualifier does; the principal
+qualifiers left undecided come back in undecided_principal (since
+v0.9.413)."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +35,7 @@ where the RSG lists it and no other principal qualifier does."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.410</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.414</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +94,9 @@ all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
 v0.9.315); a qualifier made redundant by another is
 left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-where the RSG lists it and no other principal qualifier does.</p>
+where the RSG lists it and no other principal qualifier does; the principal
+qualifiers left undecided come back in <code>undecided_principal</code> (since
+v0.9.413).</p>
     </div>
 
     <div class="section level2">
@@ -125,8 +131,10 @@ qualifiers based on the feature's actual depth. Default
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with <code>principal</code> and <code>supplementary</code> (character
-        vectors, in the order they are written in the name), <code>trace</code>
-        and <code>trace_supplementary</code>.</p>
+        vectors, in the order they are written in the name), <code>trace</code>,
+        <code>trace_supplementary</code> and <code>undecided_principal</code> (the
+        principal qualifiers left undecided, each with the attributes that
+        would decide it).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

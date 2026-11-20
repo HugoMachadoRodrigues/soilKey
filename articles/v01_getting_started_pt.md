@@ -129,7 +129,7 @@ res_sibcs <- classify_sibcs(meu_pedon, include_familia = TRUE)
 res_usda  <- classify_usda(meu_pedon,  on_missing = "silent")
 
 res_wrb$name
-#> [1] "Haplic Ferralsol (Clayic, Epic, Eutric, Humic)"
+#> [1] "Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)"
 res_sibcs$name
 #> [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"
 res_usda$name
@@ -143,7 +143,7 @@ res_usda$name
 todos <- classify_all(meu_pedon, on_missing = "silent")
 todos$summary
 #>                                              wrb
-#> 1 Haplic Ferralsol (Clayic, Epic, Eutric, Humic)
+#> 1 Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
 #>                                                                    sibcs
 #> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
 #>             usda
@@ -1748,7 +1748,7 @@ data.frame(
 #> 2 SiBCS 5ª ed.
 #> 3   USDA ST 13
 #>                                                                     Nome
-#> 1                         Haplic Ferralsol (Clayic, Epic, Eutric, Humic)
+#> 1                         Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)
 #> 2 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
 #> 3                                                         Typic Hapludox
 ```

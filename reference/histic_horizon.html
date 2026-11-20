@@ -4,16 +4,12 @@
 min_thickness cm thick (default 10). The thickness is that of the
 adjoining organic layers that run from the surface, taken together. A
 layer whose organic carbon is not recorded may be organic material and
-leaves the answer undecided (NA) where it could change it. The
-water-saturation criterion (saturated for 30 or more consecutive days, or
-drained) is not read."><meta property="og:description" content="A horizon of organic material (WRB 2022 Ch 3.1.15): organic material
+leaves the answer undecided (NA) where it could change it."><meta property="og:description" content="A horizon of organic material (WRB 2022 Ch 3.1.15): organic material
 (oc_pct &amp;gt;= min_oc, default 20, Ch 3.3.13) that is at least
 min_thickness cm thick (default 10). The thickness is that of the
 adjoining organic layers that run from the surface, taken together. A
 layer whose organic carbon is not recorded may be organic material and
-leaves the answer undecided (NA) where it could change it. The
-water-saturation criterion (saturated for 30 or more consecutive days, or
-drained) is not read."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
+leaves the answer undecided (NA) where it could change it."><meta property="og:image" content="https://hugomachadorodrigues.github.io/soilKey/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +17,7 @@ drained) is not read."><meta property="og:image" content="https://hugomachadorod
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.410</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.414</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,14 +69,18 @@ drained) is not read."><meta property="og:image" content="https://hugomachadorod
 <code>min_thickness</code> cm thick (default 10). The thickness is that of the
 adjoining organic layers that run from the surface, taken together. A
 layer whose organic carbon is not recorded may be organic material and
-leaves the answer undecided (<code>NA</code>) where it could change it. The
-water-saturation criterion (saturated for 30 or more consecutive days, or
-drained) is not read.</p>
+leaves the answer undecided (<code>NA</code>) where it could change it.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">histic_horizon</span><span class="op">(</span><span class="va">pedon</span>, min_thickness <span class="op">=</span> <span class="fl">10</span>, min_oc <span class="op">=</span> <span class="fl">20</span>, surface_top_cm <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">histic_horizon</span><span class="op">(</span></span>
+<span>  <span class="va">pedon</span>,</span>
+<span>  min_thickness <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  min_oc <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  surface_top_cm <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  saturation <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -104,6 +104,12 @@ default 20 (WRB 2022 Ch 3.3.13).</p></dd>
 <dd><p>Maximum top depth (cm) of the uppermost layer of
 the horizon (default 0, the soil surface).</p></dd>
 
+
+<dt id="arg-saturation">saturation<a class="anchor" aria-label="anchor" href="#arg-saturation"></a></dt>
+<dd><p>If <code>TRUE</code>, also read criterion 1 (saturated for
+&gt;= 30 consecutive days in most years, or drained); default
+<code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -111,7 +117,17 @@ the horizon (default 0, the soil surface).</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Since v0.9.313 this is the horizon only: the Histosols are keyed by
+    <p>Criterion 1 of Ch 3.1.15 (p. 48), saturated with water for 30 or more
+consecutive days in most years or drained, is read with
+<code>saturation = TRUE</code>, as the WRB qualifiers do since v0.9.414: a
+site recorded as artificially drained (<code>artificially_drained</code>, or a
+drainage marker in <code>drainage_class</code> or <code>land_use</code>, as the
+Drainic qualifier reads them) meets it, otherwise a layer's
+<code>water_saturation_days</code> of 30 or more does, under 30 does not (the
+layer is then folic, Ch 3.1.12, p. 46), and a layer with neither recorded
+leaves the horizon undecided. The default (<code>FALSE</code>) does not read
+it, as before, for the FAO 1974 stand-in and other direct callers.</p>
+<p>Since v0.9.313 this is the horizon only: the Histosols are keyed by
 <code>histosol()</code>, which reads the Chapter 4 key as worded. Until then
 this function was also the Histosols gate, with organic material read at
 12% organic carbon and a second path of 40 cm of organic material within

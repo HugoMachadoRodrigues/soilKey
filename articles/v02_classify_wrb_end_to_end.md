@@ -82,6 +82,7 @@ res
 #> Name: Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic
+#> Undecided principal qualifiers: Gibbsic, Nitic, Pretic
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -102,7 +103,8 @@ res
 #> permafrost_temp_C, slickensides, structure_type, cracks_width_cm, ec_dS_m,
 #> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, plinthite_pct,
 #> ferric_nodules_pct, pan_type, cementation_class, structure_grade,
-#> structure_type_secondary, pressure_faces, fe_dcb_pct
+#> structure_type_secondary, pressure_faces, fe_dcb_pct,
+#> gibbsite_clay_fraction_pct, p_mehlich3_mg_kg
 #> 
 #> ── Warnings
 #> ! 19 distinct attribute(s) missing across the key trace -- see $missing_data
@@ -185,8 +187,8 @@ head(trace_df, 12)
 #> 3         Rhodic   TRUE     
 #> 4        Xanthic  FALSE     
 #> 5          Geric   TRUE     
-#> 6          Nitic  FALSE     
-#> 7         Pretic  FALSE     
+#> 6          Nitic     NA     
+#> 7         Pretic     NA     
 #> 8         Gleyic  FALSE     
 #> 9        Stagnic  FALSE     
 #> 10 Profundihumic  FALSE     
@@ -258,14 +260,17 @@ the supplementary list:
 ``` r
 
 str(soilKey:::.wrb_qualifier_families)
-#> List of 7
-#>  $ salinity: chr [1:2] "Hypersalic" "Salic"
-#>  $ calcic  : chr [1:3] "Hypercalcic" "Calcic" "Protocalcic"
-#>  $ gypsic  : chr [1:3] "Hypergypsic" "Gypsic" "Protogypsic"
-#>  $ vertic  : chr [1:2] "Vertic" "Protovertic"
-#>  $ eutric  : chr [1:2] "Hypereutric" "Eutric"
-#>  $ dystric : chr [1:2] "Hyperdystric" "Dystric"
-#>  $ alic    : chr [1:2] "Hyperalic" "Alic"
+#> List of 10
+#>  $ salinity     : chr [1:2] "Hypersalic" "Salic"
+#>  $ calcic       : chr [1:3] "Hypercalcic" "Calcic" "Protocalcic"
+#>  $ gypsic       : chr [1:3] "Hypergypsic" "Gypsic" "Protogypsic"
+#>  $ vertic       : chr [1:2] "Vertic" "Protovertic"
+#>  $ eutric       : chr [1:2] "Hypereutric" "Eutric"
+#>  $ hyperhumic   : chr [1:2] "Hyperhumic" "Humic"
+#>  $ profundihumic: chr [1:2] "Profundihumic" "Humic"
+#>  $ dystric      : chr [1:2] "Hyperdystric" "Dystric"
+#>  $ alic         : chr [1:2] "Hyperalic" "Alic"
+#>  $ geric        : chr [1:2] "Hypergeric" "Geric"
 soilKey:::.suppress_qualifier_siblings(
   c("Mollic", "Hypercalcic", "Calcic", "Protocalcic", "Cambic")
 )

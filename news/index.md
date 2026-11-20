@@ -1,5 +1,135 @@
 # Changelog
 
+## soilKey 0.9.414
+
+The WRB 2022 Histosol qualifiers, after the qualifier audit (Hugo,
+2026-11-19).
+
+- **The folic and histic horizons are told apart as Chapter 3 words
+  them** (p. 46 and 48). Organic material on a site recorded as
+  artificially drained, or saturated for 30 days or more, is histic;
+  under 30 days and not drained it is folic; with neither recorded,
+  neither is decided, so Folic, Histic, Ombric and Rheic are not given.
+  The canonical Histosol, a drained mire, was named Folic and Ombric at
+  once and is now a Drainic Sapric Histosol (Dystric).
+- **Floatic** needs floating organic material recorded (new site field
+  `floating_organic_material`, or a floating mat named in the landform),
+  not a low bulk density.
+- **Ombric and Rheic** need a histic horizon and a recorded water
+  supply, in place of the pH: the new site field `mire_water_supply`,
+  then the peat type of the upper histic layers (a high moor is fed by
+  rainwater, a low moor by groundwater; Hugo, 2026-11-19), then a raised
+  bog or a fen named at the site.
+
+## soilKey 0.9.413
+
+The WRB 2022 redox and other qualifiers, after the qualifier audit
+(Hugo, 2026-11-19).
+
+- **Stagnic** finds any layer of adjoining horizons, 25 cm thick and
+  starting within 75 cm, that has 25% of redox features. It averaged the
+  whole run, so a weaker horizon below hid one that met it (ISRIC’s
+  ID004, CU011). A mottled horizon with nothing described below it has
+  no reduced layer there. Mottles whose recorded colours show none of
+  the contrasts of stagnic properties (Chapter 3.2.14, p. 81) are not
+  stagnic; MZ007 leaves the Planosols for this reason. The header of the
+  redox reading now says what it reads.
+- **Reductigleyic** no longer leaves a mottled layer that is not gleyic
+  undecided.
+- **Albic asks criterion 2 of the albic horizon**, so the claric colours
+  inside an argic or natric horizon are no longer Albic (BW005, MZ007).
+- **The Cambic qualifier sets claric layers aside** (p. 129).
+- **Calcaric asks the laboratory and the field reaction to agree** where
+  both are recorded (Hugo, 2026-11-19), and an undecided calcic or
+  petrocalcic horizon that cannot start within 100 cm no longer holds it
+  back (ES019, PE009).
+- **The ISIS reader** reads the FAO 2006 concretion fields (GE005 is
+  Ferric) and keeps the grade and size of the second structure, which
+  Grumic reads (CU009, ES018).
+- **A field observation that nobody recorded is absent.** A qualifier
+  left undecided by one is read again with it absent: mottles, coarse
+  fragments, nodules, desert pavement, animal pores, cementation, the
+  HCl reaction and a groundwater table. Colours, structure, texture and
+  boundaries not recorded, and laboratory values not measured, stay
+  undecided (Hugo, 2026-11-19). Fragic, Plaggic, Dolomitic, Fractic and
+  Greyzemic are no longer undecided for want of a field record. Five
+  Ferralsols gain Ferritic and ten profiles Chernic.
+- **Haplic** is given, as before, when no principal qualifier applies.
+  The principal qualifiers left undecided are now named in the result
+  (`$qualifiers$undecided_principal`) and when printed, and what would
+  decide them is listed in `$missing_data`.
+
+## soilKey 0.9.412
+
+The WRB 2022 qualifiers of clay, the argic horizon and colour, after the
+qualifier audit (Hugo, 2026-11-19).
+
+- **Rhodic and Chromic** read the part of each horizon inside 25-150 cm
+  from the mineral soil surface and ask for one run of adjoining
+  horizons of 30 cm or more. A red Bt starting at 15 cm was left out,
+  and a layer starting at 150 cm counted whole.
+- **Evidence of soil formation** (cambic criterion 3.b) is sought
+  against any overlying mineral layer, not only the next one, so the
+  lower part of a uniform red B is compared with the A. The Cambic
+  qualifier now asks for this evidence too (Hugo, 2026-11-19).
+- **Profondic follows the WRB text**: the clay does not drop by 20% or
+  more from its maximum within 150 cm. It is undecided when the
+  description stops above 150 cm, and not met over a limiting layer
+  above that depth.
+- **Differentic reads the clay increase as
+  [`argic()`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md)
+  does**: a lithic discontinuity, a plough layer directly above or a
+  transition over 15 cm rules it out.
+- **Geric** takes the ECEC, or the bases plus the exchangeable acidity,
+  as an upper bound when a base or the Al is not recorded, and the ISIS
+  reader now reads the exchangeable acidity (`acidityExc`).
+  **Hypergeric** (p. 135) replaces Geric where it applies.
+- An abrupt textural difference with a clay content not recorded is
+  undecided, and Cutanic also reads a natric horizon.
+- No reference soil group and no canonical profile name changes. On the
+  ISIS profiles, Rhodic now agrees with ISRIC in 29 profiles (18
+  before).
+
+## soilKey 0.9.411
+
+The WRB 2022 andic and humus qualifiers, after the qualifier audit
+(Hugo, 2026-11-19).
+
+- **Aluandic and Silandic** split the layers with andic properties by
+  the silicon in oxalate extract, below or from 0.6%, with 15 cm of each
+  (Chapter 5, p. 128 and 146). They took an aluminium to silicon ratio
+  that is not in WRB 2022, so every Andosol was Aluandic. With
+  specifiers, both are named when they apply at different depths
+  (Chapter 2.1, p. 24-25).
+- **Eutrosilic** asks for 30 cm of andic layers with at least 15
+  cmol(c)/kg of exchangeable bases, and no longer for Silandic (p. 133).
+- **Protospodic** takes no threshold from a lowest Al_ox of 0 above
+  (p. 147).
+- **Mulmic material** reads all its criteria: mineral material with at
+  least 8% organic carbon, a single grain or fine blocky structure,
+  chroma 2 or less, and a drained organic origin, either organic
+  material below it or a record of artificial drainage (Chapter 3.3.12,
+  p. 90). The Mulmic qualifier needs 10 cm of it from the mineral soil
+  surface (p. 141). The dark topsoils of Andosols were mulmic before.
+- **Hyperhumic** (p. 137) and, through the table of optional
+  subqualifiers, Profundihumic replace Humic where they apply. Humic is
+  not named next to Profundihumic or Hyperhumic.
+- **Humic and Ochric are decided** where the carbon a horizon lacks
+  could not change the answer, mineral material holding less than 20%.
+  Ochric is the weighted average of the upper 10 cm of the mineral soil
+  (p. 142).
+- **The mollic and umbric horizons read criterion 4**: at least 0.6%
+  more organic carbon than a dark parent material in the same material
+  (p. 52 and 70).
+- **A layer whose recorded colour already meets criterion 3a** with 1.5%
+  organic carbon or more counts as dark when part of its colour is
+  missing (Hugo, 2026-11-19).
+- **The chernic horizon reads unrecorded coarse fragments as none**
+  (p. 40), a field observation not recorded being absent.
+- On the ISIS profiles with a 2022 ISRIC name, the same reference soil
+  group goes from 296 to 299. The canonical Andosol, Histosol and
+  Organossolo lose Mulmic.
+
 ## soilKey 0.9.410
 
 The WRB 2022 base status, after the qualifier audit against ISRIC’s

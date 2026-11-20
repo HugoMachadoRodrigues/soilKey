@@ -12,7 +12,8 @@ used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
 v0.9.315); a qualifier made redundant by another is left out (Eutric
 when Calcaric or Dolomitic applies); Haplic applies only where the RSG
-lists it and no other principal qualifier does.
+lists it and no other principal qualifier does; the principal qualifiers
+left undecided come back in `undecided_principal` (since v0.9.413).
 
 ## Usage
 
@@ -45,7 +46,9 @@ resolve_wrb_qualifiers(pedon, rsg_code, rules = NULL, specifiers = FALSE)
 ## Value
 
 A list with `principal` and `supplementary` (character vectors, in the
-order they are written in the name), `trace` and `trace_supplementary`.
+order they are written in the name), `trace`, `trace_supplementary` and
+`undecided_principal` (the principal qualifiers left undecided, each
+with the attributes that would decide it).
 
 ## Details
 

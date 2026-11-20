@@ -591,8 +591,8 @@ Benchmark drivers and KSSL/NASIS label normalisers.
 
 - [`mulmic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/mulmic_material.md)
   : Mulmic material (WRB 2022 Ch 3.3.12): mineral material developed
-  from organic material; \\= 8% SOC, with low BD, structural / chroma
-  criteria.
+  from drained organic material; \\= 8% SOC, single grain or fine blocky
+  structure, chroma \\= 2.
 
 - [`organic_material()`](https://hugomachadorodrigues.github.io/soilKey/reference/organic_material.md)
   : Organic material (WRB 2022 Ch 3.3.13): \\= 20% SOC + recognisability

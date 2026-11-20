@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.410</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.414</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -256,6 +256,7 @@ gate is satisfied.</p>
 <span><span class="co">#&gt; Name: Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)</span></span>
 <span><span class="co">#&gt; RSG/Order: Ferralsols</span></span>
 <span><span class="co">#&gt; Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic</span></span>
+<span><span class="co">#&gt; Undecided principal qualifiers: Gibbsic, Nitic, Pretic</span></span>
 <span><span class="co">#&gt; Evidence grade: A</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
@@ -276,7 +277,8 @@ gate is satisfied.</p>
 <span><span class="co">#&gt; permafrost_temp_C, slickensides, structure_type, cracks_width_cm, ec_dS_m,</span></span>
 <span><span class="co">#&gt; redoximorphic_features_pct, al_ox_pct, fe_ox_pct, plinthite_pct,</span></span>
 <span><span class="co">#&gt; ferric_nodules_pct, pan_type, cementation_class, structure_grade,</span></span>
-<span><span class="co">#&gt; structure_type_secondary, pressure_faces, fe_dcb_pct</span></span>
+<span><span class="co">#&gt; structure_type_secondary, pressure_faces, fe_dcb_pct,</span></span>
+<span><span class="co">#&gt; gibbsite_clay_fraction_pct, p_mehlich3_mg_kg</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Warnings</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> 19 distinct attribute(s) missing across the key trace -- see $missing_data</span></span>
@@ -359,8 +361,8 @@ debugging:</p>
 <span><span class="co">#&gt; 3         Rhodic   TRUE     </span></span>
 <span><span class="co">#&gt; 4        Xanthic  FALSE     </span></span>
 <span><span class="co">#&gt; 5          Geric   TRUE     </span></span>
-<span><span class="co">#&gt; 6          Nitic  FALSE     </span></span>
-<span><span class="co">#&gt; 7         Pretic  FALSE     </span></span>
+<span><span class="co">#&gt; 6          Nitic     NA     </span></span>
+<span><span class="co">#&gt; 7         Pretic     NA     </span></span>
 <span><span class="co">#&gt; 8         Gleyic  FALSE     </span></span>
 <span><span class="co">#&gt; 9        Stagnic  FALSE     </span></span>
 <span><span class="co">#&gt; 10 Profundihumic  FALSE     </span></span>
@@ -422,14 +424,17 @@ Protocalcic), only the most specific is kept, in the principal and in
 the supplementary list:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">soilKey</span><span class="fu">:::</span><span class="va">.wrb_qualifier_families</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 7</span></span>
-<span><span class="co">#&gt;  $ salinity: chr [1:2] "Hypersalic" "Salic"</span></span>
-<span><span class="co">#&gt;  $ calcic  : chr [1:3] "Hypercalcic" "Calcic" "Protocalcic"</span></span>
-<span><span class="co">#&gt;  $ gypsic  : chr [1:3] "Hypergypsic" "Gypsic" "Protogypsic"</span></span>
-<span><span class="co">#&gt;  $ vertic  : chr [1:2] "Vertic" "Protovertic"</span></span>
-<span><span class="co">#&gt;  $ eutric  : chr [1:2] "Hypereutric" "Eutric"</span></span>
-<span><span class="co">#&gt;  $ dystric : chr [1:2] "Hyperdystric" "Dystric"</span></span>
-<span><span class="co">#&gt;  $ alic    : chr [1:2] "Hyperalic" "Alic"</span></span>
+<span><span class="co">#&gt; List of 10</span></span>
+<span><span class="co">#&gt;  $ salinity     : chr [1:2] "Hypersalic" "Salic"</span></span>
+<span><span class="co">#&gt;  $ calcic       : chr [1:3] "Hypercalcic" "Calcic" "Protocalcic"</span></span>
+<span><span class="co">#&gt;  $ gypsic       : chr [1:3] "Hypergypsic" "Gypsic" "Protogypsic"</span></span>
+<span><span class="co">#&gt;  $ vertic       : chr [1:2] "Vertic" "Protovertic"</span></span>
+<span><span class="co">#&gt;  $ eutric       : chr [1:2] "Hypereutric" "Eutric"</span></span>
+<span><span class="co">#&gt;  $ hyperhumic   : chr [1:2] "Hyperhumic" "Humic"</span></span>
+<span><span class="co">#&gt;  $ profundihumic: chr [1:2] "Profundihumic" "Humic"</span></span>
+<span><span class="co">#&gt;  $ dystric      : chr [1:2] "Hyperdystric" "Dystric"</span></span>
+<span><span class="co">#&gt;  $ alic         : chr [1:2] "Hyperalic" "Alic"</span></span>
+<span><span class="co">#&gt;  $ geric        : chr [1:2] "Hypergeric" "Geric"</span></span>
 <span><span class="fu">soilKey</span><span class="fu">:::</span><span class="fu">.suppress_qualifier_siblings</span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mollic"</span>, <span class="st">"Hypercalcic"</span>, <span class="st">"Calcic"</span>, <span class="st">"Protocalcic"</span>, <span class="st">"Cambic"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>

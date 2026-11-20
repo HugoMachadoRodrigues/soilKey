@@ -244,6 +244,7 @@ classify_wrb2022(ferralsol)
 #> Name: Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
 #> RSG/Order: Ferralsols
 #> Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic
+#> Undecided principal qualifiers: Gibbsic, Nitic, Pretic
 #> Evidence grade: A
 #> 
 #> ── Ambiguities
@@ -264,7 +265,8 @@ classify_wrb2022(ferralsol)
 #> permafrost_temp_C, slickensides, structure_type, cracks_width_cm, ec_dS_m,
 #> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, plinthite_pct,
 #> ferric_nodules_pct, pan_type, cementation_class, structure_grade,
-#> structure_type_secondary, pressure_faces, fe_dcb_pct
+#> structure_type_secondary, pressure_faces, fe_dcb_pct,
+#> gibbsite_clay_fraction_pct, p_mehlich3_mg_kg
 #> 
 #> ── Warnings
 #> ! 19 distinct attribute(s) missing across the key trace -- see $missing_data

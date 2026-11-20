@@ -381,7 +381,7 @@ knitr::kable(
 
 |     | fixture | principal_prefix |
 |:----|:--------|:-----------------|
-| HS  | HS      | Ombric           |
+| HS  | HS      | Drainic          |
 | AT  | AT      | Hortic           |
 | TC  | TC      | NA               |
 | CR  | CR      | Cambic           |
