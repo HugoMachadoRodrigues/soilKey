@@ -187,24 +187,30 @@ family_reaction_usda <- function(pedon, min_cm = 25, max_cm = 100) {
 
 #' USDA family: soil temperature regime (KST Ch. 16)
 #'
-#' Uses \code{pedon$site$soil_temperature_regime} when supplied (high
-#' confidence). Otherwise, when \code{infer = TRUE}, estimates the mean annual
-#' soil temperature from latitude and elevation via a crude lapse-rate model
-#' and assigns frigid/mesic/thermic/hyperthermic, with an \code{iso-} prefix in
-#' the low-seasonality tropics (|lat| < 23). Inferred values set
-#' \code{evidence$inferred = TRUE} and record the missing site field.
+#' Uses \code{pedon$site$soil_temperature_regime} when it is recorded. When it
+#' is not, the family has no temperature class (value NULL, the site field
+#' listed as missing): since v0.9.415 the regime is not inferred unless asked
+#' for (audit decision P3 (a), Hugo, 2026-11-20). With \code{infer = TRUE}
+#' (opt-in) a class is suggested from latitude and elevation by a crude
+#' lapse-rate model (frigid/mesic/thermic/hyperthermic, with an \code{iso-}
+#' prefix within 23 degrees of the equator); the suggestion sets
+#' \code{evidence$inferred = TRUE} and \code{evidence$suggestion = TRUE},
+#' still lists the site field as missing, and \code{classify_usda()} then
+#' warns and lowers the evidence grade to "C". The "iso" prefix is never added
+#' to a recorded regime, nor from latitude when inference is off.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param infer Infer from lat/elevation when the site field is absent.
+#' @param infer Suggest a class from latitude/elevation when the site field
+#'        is absent. Default \code{FALSE}.
 #' @return A \code{\link{FamilyAttribute}}.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 16.
 #' @noRd
-family_temperature_regime_usda <- function(pedon, infer = TRUE) {
+family_temperature_regime_usda <- function(pedon, infer = FALSE) {
   ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 16"
   str <- pedon$site$soil_temperature_regime %||% NA_character_
-  if (!is.na(str) && nzchar(str)) {
+  if (!.usda_regime_blank(str)) {
     return(FamilyAttribute$new(
-      name = "temperature_regime", value = .usda_str_value(str),
+      name = "temperature_regime", value = trimws(.usda_str_value(as.character(str)[1L])),
       evidence = list(inferred = FALSE,
                       source = "site$soil_temperature_regime"),
       missing = character(0), reference = ref))
@@ -213,7 +219,9 @@ family_temperature_regime_usda <- function(pedon, infer = TRUE) {
   if (!isTRUE(infer) || is.na(lat)) {
     return(FamilyAttribute$new(
       name = "temperature_regime", value = NULL,
-      evidence = list(reason = "no STR field and inference disabled/no latitude"),
+      evidence = list(inferred = FALSE,
+                      reason = if (!isTRUE(infer)) "no soil temperature regime recorded (not inferred)"
+                               else "no soil temperature regime recorded and no latitude"),
       missing = "site$soil_temperature_regime", reference = ref))
   }
   elev <- suppressWarnings(as.numeric(pedon$site$elevation_m %||% 0))
@@ -228,7 +236,7 @@ family_temperature_regime_usda <- function(pedon, infer = TRUE) {
   value <- if (iso) paste0("iso", base) else base
   FamilyAttribute$new(
     name = "temperature_regime", value = value,
-    evidence = list(inferred = TRUE, mast_est_c = maat, lat = lat,
+    evidence = list(inferred = TRUE, suggestion = TRUE, mast_est_c = maat, lat = lat,
                     elevation_m = elev, iso = iso),
     missing = "site$soil_temperature_regime", reference = ref)
 }
@@ -284,15 +292,17 @@ family_depth_class_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param order_code Optional USDA order code (selects applicable dimensions).
 #' @param subgroup_code Optional subgroup code (reserved for refinements).
-#' @param infer_temperature Passed to
-#'        \code{family_temperature_regime_usda}.
+#' @param infer_temperature Opt-in (default \code{FALSE} since v0.9.415):
+#'        when \code{site$soil_temperature_regime} is not recorded, suggest
+#'        a temperature class from latitude and elevation. Off, the family
+#'        has no temperature class until the regime is recorded.
 #' @return Named list of \code{\link{FamilyAttribute}} objects.
 #' @references Soil Survey Staff (2022), KST 13th ed., Ch. 16--17.
 #' @seealso \code{family_label_usda}, \code{\link{classify_usda}}.
 #' @export
 classify_usda_family <- function(pedon, order_code = NULL,
                                  subgroup_code = NULL,
-                                 infer_temperature = TRUE) {
+                                 infer_temperature = FALSE) {
   dims <- .family_dims_por_order_usda(order_code)
   # v0.9.400: one memo scope for the length of this call (R/memo.R)
   if (.memo_open()) on.exit(.memo_close(), add = TRUE)

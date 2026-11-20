@@ -94,7 +94,13 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
     p <- f(); p$site$soil_moisture_regime <- "aridic"; p
   }
   expect_equal(sg(make_andosol_canonical),    "Thaptic Hydrudands")
-  expect_equal(sg(make_argissolo_canonical),  "Rhodic Kandiudults")
+  # v0.9.415: Udults need a recorded udic or perudic regime (KST 13 p 321,
+  # reading L34); the fixture records none, so it is recorded here.
+  udic <- function(f) function() {
+    p <- f(); p$site$soil_moisture_regime <- "udic"; p
+  }
+  expect_equal(sg(make_argissolo_canonical), "Ultisols")
+  expect_equal(sg(udic(make_argissolo_canonical)), "Rhodic Kandiudults")
   expect_equal(sg(aridic(make_calcisol_canonical)), "Petronodic Haplocalcids")
   expect_equal(sg(make_planossolo_canonical), "Umbric Albaqualfs")
 })
@@ -114,7 +120,11 @@ test_that("the generator never changes a fixture's great group", {
     p <- make_calcisol_canonical(); p$site$soil_moisture_regime <- "aridic"; p
   }
   expect_equal(gg(make_andosol_canonical),    "Hydrudands")
-  expect_equal(gg(make_argissolo_canonical),  "Kandiudults")
+  # v0.9.415: udic recorded, as above (Udults, KST 13 p 321)
+  udic_argissolo <- function() {
+    p <- make_argissolo_canonical(); p$site$soil_moisture_regime <- "udic"; p
+  }
+  expect_equal(gg(udic_argissolo),            "Kandiudults")
   expect_equal(gg(aridic_calcisol),           "Haplocalcids")
   expect_equal(gg(make_planossolo_canonical), "Albaqualfs")
 })

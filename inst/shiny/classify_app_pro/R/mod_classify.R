@@ -433,7 +433,7 @@ classify_server <- function(id, rv, settings) {
       fail_lbl <- i18n("classify.status_fail")
       lbl <- c(passed        = pass_lbl,
                failed        = fail_lbl,
-               indeterminate = i18n("classify.status_indeterminate"),
+               undecided     = i18n("classify.status_indeterminate"),
                selected      = i18n("classify.status_selected"),
                info          = i18n("classify.status_info"))
       disp <- data.frame(
@@ -459,7 +459,7 @@ classify_server <- function(id, rv, settings) {
         DT::formatStyle(
           "status",
           backgroundColor = DT::styleEqual(
-            c(pass_lbl, fail_lbl, lbl[["selected"]], lbl[["indeterminate"]]),
+            c(pass_lbl, fail_lbl, lbl[["selected"]], lbl[["undecided"]]),
             # palette tokens (soilkey.css), so dark mode has its own shades
             c("var(--sk-st-met)", "var(--sk-st-fail)", "var(--sk-st-sel)",
               "var(--sk-st-na)")))

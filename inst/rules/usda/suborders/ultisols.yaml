@@ -17,6 +17,17 @@ suborders:
       tests:
         all_of:
           - humult_qualifying_usda: {}
+    # v0.9.415: in the order of the key (KST 13th ed., p. 321), and only
+    # Xerults is "Other Ultisols". Udults need a udic regime, which the
+    # formative element "ud" extends to the perudic one (p. 48); Xerults are
+    # named only with a xeric regime recorded (audit reading L34, Hugo,
+    # 2026-11-20). With no regime recorded the three are undecided and the
+    # suborder is not named.
+    - code: "HC"
+      name: "Udults"
+      tests:
+        all_of:
+          - smr_udic_usda: {}
     - code: "HD"
       name: "Ustults"
       tests:
@@ -27,8 +38,3 @@ suborders:
       tests:
         all_of:
           - smr_xeric_usda: {}
-    - code: "HC"
-      name: "Udults"
-      tests:
-        default: true
-      notes: "Catch-all (udic SMR; default when SMR not provided)."

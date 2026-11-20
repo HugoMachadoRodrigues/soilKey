@@ -8,7 +8,7 @@ classify_usda_family(
   pedon,
   order_code = NULL,
   subgroup_code = NULL,
-  infer_temperature = TRUE
+  infer_temperature = FALSE
 )
 }
 \arguments{
@@ -18,8 +18,10 @@ classify_usda_family(
 
 \item{subgroup_code}{Optional subgroup code (reserved for refinements).}
 
-\item{infer_temperature}{Passed to
-\code{family_temperature_regime_usda}.}
+\item{infer_temperature}{Opt-in (default \code{FALSE} since v0.9.415):
+when \code{site$soil_temperature_regime} is not recorded, suggest
+a temperature class from latitude and elevation. Off, the family
+has no temperature class until the regime is recorded.}
 }
 \value{
 Named list of \code{\link{FamilyAttribute}} objects.

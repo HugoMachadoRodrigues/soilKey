@@ -688,19 +688,29 @@ turbic_subgroup_usda <- function(pedon) {
 
 # ---- Gelic STR helper -----------------------------------------------
 
-#' Gelic soil temperature regime (USDA)
+#' Gelic soil temperature regime (USDA, KST 13th ed., p. 53)
+#'
+#' v0.9.415: read from \code{site$soil_temperature_regime} like every other
+#' regime test: TRUE for a recorded gelic (or pergelic) regime, FALSE for
+#' another recorded regime. With none recorded, permafrost within 100 cm
+#' (a layer at or below 0 C, or a frozen designation) still passes, since the
+#' soil is then frozen; otherwise the test is undecided (NA) and lists
+#' \code{site$soil_temperature_regime}. Up to v0.9.414 it read permafrost
+#' only and was FALSE whenever none was recorded.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 str_gelic_usda <- function(pedon) {
+  st <- soil_temperature_regime_usda(pedon, "gelic")
   pf <- permafrost_within_usda(pedon, max_top_cm = 100)
-  res <- DiagnosticResult$new(
-    name = "str_gelic_usda", passed = isTRUE(pf$passed),
-    layers = pf$layers, evidence = list(permafrost = pf),
-    missing = pf$missing,
+  passed <- if (!is.na(st$passed)) st$passed else if (isTRUE(pf$passed)) TRUE else NA
+  DiagnosticResult$new(
+    name = "str_gelic_usda", passed = passed,
+    layers = if (isTRUE(passed)) pf$layers else integer(0),
+    evidence = list(temperature_regime = st, permafrost = pf),
+    missing = if (is.na(passed)) st$missing else character(0),
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 53"
   )
-  res
 }
 
 

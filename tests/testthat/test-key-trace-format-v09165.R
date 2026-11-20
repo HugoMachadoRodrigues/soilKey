@@ -19,7 +19,7 @@ test_that("key_trace_table returns the documented columns for every system", {
     expect_true(nrow(tt) > 0L)
     # status is always one of the five canonical values
     expect_true(all(tt$status %in%
-                    c("passed", "failed", "indeterminate", "selected", "info")))
+                    c("passed", "failed", "undecided", "selected", "info")))
     # n_missing agrees with the comma-joined missing string
     expect_equal(tt$n_missing,
                  ifelse(nzchar(tt$missing),
@@ -39,8 +39,8 @@ test_that("the nested SiBCS/USDA trace never crashes and is not garbled", {
       tt  <- expect_no_error(key_trace_table(res))
       # hierarchical systems fill the phase/level column
       expect_true(any(nzchar(tt$phase)))
-      # no "garbled group" rows: empty code + empty name + indeterminate
-      garbled <- !nzchar(tt$code) & !nzchar(tt$name) & tt$status == "indeterminate"
+      # no "garbled group" rows: empty code + empty name + undecided
+      garbled <- !nzchar(tt$code) & !nzchar(tt$name) & tt$status == "undecided"
       expect_false(any(garbled))
       # each system assigns a taxon -> at least one selected row
       expect_true(any(tt$status == "selected"))
@@ -85,7 +85,7 @@ test_that("a synthetic trace exercises every node shape deterministically", {
   # group children inherit the phase and keep their own status
   expect_equal(tt$phase[tt$code == "O"], "ordens")
   expect_equal(tt$status[tt$code == "O"], "failed")
-  expect_equal(tt$status[tt$code == "L"], "indeterminate")
+  expect_equal(tt$status[tt$code == "L"], "undecided")   # v0.9.415: was "indeterminate"
   expect_equal(tt$n_missing[tt$code == "L"], 2L)
   expect_equal(tt$missing[tt$code == "L"], "clay_pct, oc_pct")
   # assigned record -> selected

@@ -25,14 +25,16 @@ suborders:
     - code: "EC"
       name: "Ustox"
       tests:
-        all_of:
+        # v0.9.415: an ustic or xeric regime (KST 13th ed., p. 295)
+        any_of:
           - smr_ustic_usda: {}
+          - smr_xeric_usda: {}
     - code: "ED"
       name: "Perox"
       tests:
         all_of:
-          - smr_udic_usda: {}
-      notes: "Perudic is a subdivision of udic; v0.8 uses udic as proxy."
+          - smr_perudic_usda: {}
+      notes: "v0.9.415: the perudic regime itself (KST 13th ed., p. 295)."
     - code: "EE"
       name: "Udox"
       tests:

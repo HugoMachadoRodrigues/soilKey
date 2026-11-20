@@ -24,7 +24,11 @@ test_that("it reproduces classify_usda on the canonical fixtures", {
                                          on_missing = "silent")
     expect_identical(b$name, a$name, info = f)
     expect_identical(b$rsg_or_order, a$rsg_or_order, info = f)
-    expect_identical(b$evidence_grade, a$evidence_grade, info = f)
+    # v0.9.415: classify_usda() lowers the grade to C past an undecided
+    # test; classify_hierarchical() marks such a result provisional instead
+    expect_identical(b$evidence_grade, compute_evidence_grade(p, NULL), info = f)
+    expect_identical(length(b$provisional_because) > 0L,
+                     any(grepl("undecided test", a$warnings)), info = f)
     expect_identical(b$system_id, "usda")
     expect_identical(b$levels$name[nrow(b$levels)], a$name, info = f)
   }
