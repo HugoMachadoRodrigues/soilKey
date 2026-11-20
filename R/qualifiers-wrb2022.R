@@ -661,7 +661,9 @@ qual_eutric <- function(pedon, rsg_code = NULL) {
 #' @param rsg_code The RSG being named (the resolver passes it).
 #' @noRd
 qual_oligoeutric <- function(pedon, rsg_code = NULL) {
-  ref <- "WRB (2022) Ch 5, Oligoeutric (p. 133)"
+  ref <- paste0("WRB (2022) Ch 5, Oligoeutric (p. 133): exchangeable bases >= ",
+                "exchangeable Al and < 5 cmolc per kg of clay in the major part ",
+                "of 20-100 cm. Not base saturation (that was WRB 2014).")
   if (identical(rsg_code, "HS"))
     return(DiagnosticResult$new(name = "Oligoeutric", passed = FALSE,
       layers = integer(0), evidence = list(reason = "not in Histosols"),
