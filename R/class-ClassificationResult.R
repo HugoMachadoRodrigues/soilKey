@@ -215,7 +215,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       ql <- self$qualifiers
       if (!is.null(names(ql))) ql <- ql[!(names(ql) %in% c("name_native", "subtype_native", "type_formula",
                                                          "species_native", "species_undecided", "analogue_1977",
-                                                         "correlation_cst")) &
+                                                         "correlation_cst", "undecided_principal")) &
                                          !startsWith(names(ql), "za_")]
       # v0.9.409: only names are printed. WRB 2022 keeps the reasoning behind
       # each qualifier in $qualifiers$trace and $trace_supplementary (lists),
@@ -224,6 +224,11 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       ql <- Filter(function(x) is.character(x) && length(x) > 0, ql)
       if (length(ql) > 0) {
         cli::cli_text("Qualifiers: {paste(unlist(ql), collapse = ', ')}")
+      }
+      # v0.9.413: WRB principal qualifiers left undecided
+      und <- self$qualifiers$undecided_principal
+      if (length(und) > 0) {
+        cli::cli_text("Undecided principal qualifiers: {paste(und, collapse = ', ')}")
       }
       if (!is.na(self$evidence_grade)) {
         cli::cli_text("Evidence grade: {self$evidence_grade}")

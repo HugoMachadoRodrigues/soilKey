@@ -21,8 +21,10 @@ qualifiers based on the feature's actual depth. Default
 }
 \value{
 A list with \code{principal} and \code{supplementary} (character
-        vectors, in the order they are written in the name), \code{trace}
-        and \code{trace_supplementary}.
+        vectors, in the order they are written in the name), \code{trace},
+        \code{trace_supplementary} and \code{undecided_principal} (the
+        principal qualifiers left undecided, each with the attributes that
+        would decide it).
 }
 \description{
 Walks the RSG's lists of principal and supplementary qualifiers (WRB 2022
@@ -37,8 +39,9 @@ all used, each with its specifier of Ch 2.3.1 rule 2 (p. 27), from the top
 to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
 v0.9.315); a qualifier made redundant by another is
 left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-where the RSG lists it and every other principal qualifier is decided not to
-apply (an undecided one leaves Haplic out, since v0.9.413).
+where the RSG lists it and no other principal qualifier does; the principal
+qualifiers left undecided come back in \code{undecided_principal} (since
+v0.9.413).
 }
 \details{
 Both vectors come back in the order of the name. Principal qualifiers are

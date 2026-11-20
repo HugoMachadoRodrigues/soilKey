@@ -1457,8 +1457,9 @@ qual_haplic <- function(pedon) {
 #' to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
 #' v0.9.315); a qualifier made redundant by another is
 #' left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-#' where the RSG lists it and every other principal qualifier is decided not to
-#' apply (an undecided one leaves Haplic out, since v0.9.413).
+#' where the RSG lists it and no other principal qualifier does; the principal
+#' qualifiers left undecided come back in \code{undecided_principal} (since
+#' v0.9.413).
 #'
 #' Both vectors come back in the order of the name. Principal qualifiers are
 #' written right to left, "the uppermost qualifier in the list is placed
@@ -1477,8 +1478,10 @@ qual_haplic <- function(pedon) {
 #'        qualifiers based on the feature's actual depth. Default
 #'        \code{FALSE} leaves names byte-identical to earlier versions.
 #' @return A list with \code{principal} and \code{supplementary} (character
-#'         vectors, in the order they are written in the name), \code{trace}
-#'         and \code{trace_supplementary}.
+#'         vectors, in the order they are written in the name), \code{trace},
+#'         \code{trace_supplementary} and \code{undecided_principal} (the
+#'         principal qualifiers left undecided, each with the attributes that
+#'         would decide it).
 #' @export
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
                                    specifiers = FALSE) {
@@ -1591,12 +1594,14 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
 
   # Haplic only where Chapter 4 lists it: "no other principal qualifier of the
   # respective RSG applies". 16 RSGs do not list it.
-  # v0.9.413 (Hugo, L3): "no other principal qualifier ... applies" (Ch 5,
-  # p. 136) is known only when every one of them is decided; with one
-  # undecided, Haplic is undecided and not given.
-  undecided <- any(vapply(trace_principal, function(t)
-    length(t$passed) == 0L || is.na(t$passed[1]), NA))
-  if (length(matched_principal) == 0L && !undecided &&
+  # v0.9.413 (Hugo): Haplic when no principal qualifier passed, as before; the
+  # principal qualifiers that stay undecided are returned (undecided_principal,
+  # with what would decide them) so that the result shows them.
+  und <- vapply(trace_principal, function(t)
+    length(t$passed) == 0L || is.na(t$passed[1]), NA)
+  undecided_principal <- lapply(trace_principal[und], function(t)
+    unique(as.character(t$missing %||% character(0))))
+  if (length(matched_principal) == 0L &&
       "Haplic" %in% (per_rsg$principal %||% character(0)))
     matched_principal <- "Haplic"
 
@@ -1634,7 +1639,8 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   list(principal     = unname(matched_principal),
        supplementary = unname(matched_supplementary),
        trace         = trace_principal,
-       trace_supplementary = trace_supplementary)
+       trace_supplementary = trace_supplementary,
+       undecided_principal = undecided_principal)
 }
 
 

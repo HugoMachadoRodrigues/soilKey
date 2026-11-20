@@ -241,14 +241,21 @@ test_that("an undecided presence qualifier stays undecided", {
   expect_true(is.na(soilKey:::.q_presence("X", na_diag, 100, NULL)$passed))
 })
 
-test_that("Haplic only when every principal qualifier is decided absent", {
+test_that("Haplic when no principal qualifier passed; the undecided ones are shown", {
   skip_on_cran()
-  # no texture recorded below 20 cm: Skeletic and others stay undecided
+  # no texture recorded below 20 cm: some principal qualifiers stay undecided
   p <- .v413_pedon(top_cm = c(0, 20), bottom_cm = c(20, 60), designation = c("A", "Bw"))
-  r <- resolve_wrb_qualifiers(p, "CM")
+  r <- resolve_wrb_qualifiers(p, "LV")
   und <- vapply(r$trace, function(t) is.na(t$passed[1]), NA)
-  skip_if_not(any(und))
-  expect_false("Haplic" %in% r$principal)
+  skip_if_not(any(und) && !any(vapply(r$trace, function(t) isTRUE(t$passed[1]), NA)))
+  expect_equal(r$principal, "Haplic")
+  expect_setequal(names(r$undecided_principal), names(r$trace)[und])
+  # classify_wrb2022 names them and adds what would decide them to missing_data
+  res <- classify_wrb2022(make_luvisol_canonical(), on_missing = "silent")
+  expect_match(res$name, "^Haplic Luvisol")
+  u <- res$qualifiers$undecided_principal
+  expect_true(length(u) > 0L)
+  expect_true("caso4_pct" %in% res$missing_data || !("Gypsic" %in% u))
   # the name with no principal qualifier
   expect_identical(format_wrb_name("Cambisols", character(0), "Loamic"),
                    "Cambisol (Loamic)")
