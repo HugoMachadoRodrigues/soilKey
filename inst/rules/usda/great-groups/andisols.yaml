@@ -10,6 +10,13 @@
 #   Vitrands (DF): 2
 #   Ustands  (DG): 2
 #   Udands   (DH): 6
+#
+# v0.9.417 (Soil Taxonomy audit, A4, A5, A7, A10): the Udands in the order
+# of KST 13th ed., pp. 125-126 (Melanudands DHC before Hydrudands DHD); the
+# Hydr- great groups test 100 % by weighted average on undried samples
+# (pp. 121, 126), the Fulv- great groups the depth, thickness and organic
+# carbon of a melanic epipedon (p. 14), and the Dur- great groups a cemented
+# horizon in 75 % of each pedon (pp. 117, 121, 124, 125, 132).
 # =============================================================
 
 great_groups:
@@ -35,7 +42,7 @@ great_groups:
       name: "Duraquands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duric_great_group_andisol_usda: {}
     - code: "DAE"
       name: "Vitraquands"
       tests:
@@ -69,12 +76,12 @@ great_groups:
       name: "Duricryands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duric_great_group_andisol_usda: {}
     - code: "DCB"
       name: "Hydrocryands"
       tests:
         all_of:
-          - hydric_andisol_usda: {}
+          - hydric_great_group_andisol_usda: {}
     - code: "DCC"
       name: "Melanocryands"
       tests:
@@ -101,7 +108,7 @@ great_groups:
       name: "Duritorrands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duric_great_group_andisol_usda: {}
     - code: "DDB"
       name: "Vitritorrands"
       tests:
@@ -147,7 +154,7 @@ great_groups:
       name: "Durustands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duric_great_group_andisol_usda: {}
     - code: "DGB"
       name: "Haplustands"
       tests:
@@ -164,17 +171,17 @@ great_groups:
       name: "Durudands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duric_great_group_andisol_usda: {}
     - code: "DHC"
-      name: "Hydrudands"
-      tests:
-        all_of:
-          - hydric_andisol_usda: {}
-    - code: "DHD"
       name: "Melanudands"
       tests:
         all_of:
           - melanic_andisol_usda: {}
+    - code: "DHD"
+      name: "Hydrudands"
+      tests:
+        all_of:
+          - hydric_great_group_andisol_usda: {}
     - code: "DHE"
       name: "Fulvudands"
       tests:

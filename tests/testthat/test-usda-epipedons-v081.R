@@ -240,6 +240,8 @@ test_that("melanic_epipedon_usda passes for andic, very dark, OC-rich surface", 
     munsell_chroma_moist = c(1.5, 3),
     bulk_density_g_cm3 = c(0.7, 0.9),
     phosphate_retention_pct = c(95, 85),
+    # v0.9.417: andic soil properties need Al + 1/2 Fe (KST 13th ed., p. 32)
+    al_ox_pct = c(2.5, 0.5), fe_ox_pct = c(1, 0.3),
     oc_pct = c(7, 1)
   )
   pr <- PedonRecord$new(

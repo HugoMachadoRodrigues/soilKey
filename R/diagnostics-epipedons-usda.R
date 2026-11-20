@@ -452,113 +452,68 @@ umbric_epipedon_usda <- function(pedon,
 }
 
 
-# ---- Melanic Epipedon (KST 13ed, Ch 3, pp 15-16) ---------------------
+# ---- Melanic Epipedon (KST 13th ed., p. 14) --------------------------
 
 #' Melanic epipedon (USDA Soil Taxonomy, 13th edition)
 #'
-#' A thick, very dark, andic, organic-rich surface horizon
-#' associated with volcanic-ash-derived soils in cool, humid
-#' environments. Diagnostic for the Melanists / Melanudands great
-#' groups of Andisols.
+#' A thick, very dark, andic, organic-rich horizon at or near the surface,
+#' mostly in volcanic materials in cool, humid climates. Diagnostic for the
+#' Melan- great groups of the Andisols.
 #'
-#' KST 13ed required characteristics (Ch. 3, pp 15-16):
-#' \itemize{
-#'   \item Upper boundary at or within 30 cm of the mineral soil
-#'         surface (or organic layer with andic properties);
-#'   \item Cumulative thickness >= 30 cm within 40 cm with all of:
-#'     \itemize{
-#'       \item Andic soil properties throughout;
-#'       \item Color value <= 2.5 moist AND chroma <= 2 throughout;
-#'       \item Melanic index <= 1.70 (deferred -- specialized lab
-#'             measurement);
-#'       \item OC >= 6 percent (weighted) AND >= 4 percent (each
-#'             layer).
-#'     }
-#' }
+#' KST 13th ed., p. 14: an upper boundary at, or within 30 cm of, the mineral
+#' soil surface or the upper boundary of an organic layer with andic soil
+#' properties, whichever is shallower; and, in layers with a cumulative
+#' thickness of 30 cm or more within a total thickness of 40 cm, andic soil
+#' properties throughout, a moist colour value of 2.5 or less and chroma of 2
+#' or less throughout, a melanic index of 1.70 or less throughout, and 6\%
+#' or more organic carbon as a weighted average and 4\% or more in all layers.
 #'
-#' Implementation notes (v0.8.x):
-#' \itemize{
-#'   \item Andic soil properties are tested via \code{andic_properties_usda}
-#'         (v0.9; for v0.8 we approximate with bulk_density <=
-#'         0.9 g/cm3 AND phosphate_retention >= 85\%).
-#'   \item Melanic index (= 100 / (OC * 100 + 1) per KST appendix)
-#'         is deferred -- requires UV-Vis spectroscopy.
-#' }
+#' v0.9.417: the andic soil properties are those of
+#' \code{andic_soil_properties_usda()} (up to v0.9.416 bulk density and
+#' phosphate retention only, without Al + 1/2 Fe); no A or O designation is
+#' required; the 30 cm are counted within a 40 cm span starting within 30 cm
+#' of the top; and the answer is three-valued (a colour, carbon or andic
+#' status not recorded leaves a layer undecided). soilKey records no melanic
+#' index, so it is not tested.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-16.
+#' @references Soil Survey Staff (2022), KST 13th ed., p. 14.
 #' @noRd
 melanic_epipedon_usda <- function(pedon) {
   h <- pedon$horizons
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 14"
   if (nrow(h) == 0L) {
     return(DiagnosticResult$new(
       name = "melanic_epipedon_usda", passed = FALSE, layers = integer(0),
       evidence = list(reason = "empty horizons"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-16"
+      missing = character(0), reference = ref
     ))
   }
-  # Surface candidate: top_cm <= 30 cm.
-  cand <- which(!is.na(h$top_cm) & h$top_cm <= 30 &
-                  !is.na(h$designation) & grepl("^A|^O", h$designation))
-  if (length(cand) == 0L) {
-    return(DiagnosticResult$new(
-      name = "melanic_epipedon_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "no surface A/O horizon within 30 cm"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-16"
-    ))
+  st <- .andic_layer_status_usda(h)
+  vm <- h$munsell_value_moist; cm <- h$munsell_chroma_moist
+  ok <- st$status & (vm <= 2.5) & (cm <= 2)
+  tops <- .andic_top_usda(pedon, st$status)
+  r <- .melanic_span_usda(h, ok, tops$top)
+  if (tops$alt < tops$top) {
+    r2 <- .melanic_span_usda(h, ok, tops$alt)
+    if (!identical(r$passed, r2$passed)) r$passed <- NA
   }
-  miss <- character(0); details <- list(); passing <- integer(0)
-  for (i in cand) {
-    bd <- h$bulk_density_g_cm3[i]
-    pret <- h$phosphate_retention_pct[i]
-    vm <- h$munsell_value_moist[i]
-    cm <- h$munsell_chroma_moist[i]
-    oc <- h$oc_pct[i]
-    # Andic approximation
-    andic_ok <- !is.na(bd) && bd <= 0.9 &&
-                  !is.na(pret) && pret >= 85
-    # Color
-    color_ok <- !is.na(vm) && vm <= 2.5 && !is.na(cm) && cm <= 2
-    # OC: each layer >= 4%
-    oc_ok <- !is.na(oc) && oc >= 4
-    if (is.na(bd)) miss <- c(miss, "bulk_density_g_cm3")
-    if (is.na(pret)) miss <- c(miss, "phosphate_retention_pct")
-    if (is.na(oc)) miss <- c(miss, "oc_pct")
-    if (is.na(vm)) miss <- c(miss, "munsell_value_moist")
-    layer_ok <- isTRUE(andic_ok) && isTRUE(color_ok) && isTRUE(oc_ok)
-    details[[as.character(i)]] <- list(idx = i,
-                                          andic = andic_ok,
-                                          color = color_ok,
-                                          oc = oc_ok)
-    if (layer_ok) passing <- c(passing, i)
+  miss <- character(0)
+  if (is.na(r$passed)) {
+    und <- which(is.na(ok) | is.na(h$oc_pct))
+    miss <- unique(c(unlist(st$missing[und]),
+                     if (any(is.na(vm[und]))) "munsell_value_moist",
+                     if (any(is.na(cm[und]))) "munsell_chroma_moist",
+                     if (any(is.na(h$oc_pct[und]))) "oc_pct"))
   }
-  # Cumulative thickness >= 30 cm in 40 cm
-  thk_pass <- if (length(passing) > 0L)
-                sum(pmax(h$bottom_cm[passing] - h$top_cm[passing], 0),
-                      na.rm = TRUE)
-              else 0
-  # Weighted OC >= 6%
-  if (length(passing) > 0L && thk_pass > 0) {
-    oc_weighted <- sum(h$oc_pct[passing] *
-                         (h$bottom_cm[passing] - h$top_cm[passing]),
-                          na.rm = TRUE) / thk_pass
-  } else {
-    oc_weighted <- NA_real_
-  }
-  passed <- thk_pass >= 30 && !is.na(oc_weighted) && oc_weighted >= 6
   DiagnosticResult$new(
-    name = "melanic_epipedon_usda", passed = passed,
-    layers = if (passed) passing else integer(0),
-    evidence = list(layer_details = details,
-                      thickness_passing_cm = thk_pass,
-                      oc_weighted_pct = oc_weighted,
-                      candidate_layers = cand,
-                      note = "v0.8: melanic_index deferred; andic approx via bd<=0.9 and Pret>=85"),
-    missing = unique(miss),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 15-16"
+    name = "melanic_epipedon_usda", passed = r$passed,
+    layers = if (isTRUE(r$passed)) r$layers else integer(0),
+    evidence = c(r, list(top_cm = tops$top,
+                         note = "melanic index not recorded in soilKey; not tested")),
+    missing = miss,
+    reference = ref
   )
 }
 
