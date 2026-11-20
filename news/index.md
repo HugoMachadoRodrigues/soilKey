@@ -1,5 +1,67 @@
 # Changelog
 
+## soilKey 0.9.416
+
+The ISIS reader after the Soil Taxonomy audit (Hugo, 2026-11-20; audit
+section 2.7, items B1 to B5). The reader reads more of what ISIS
+records; no key changes, apart from a field texture class read where the
+laboratory texture is missing.
+
+- **New horizon column `texture_class_usda`**: the texture class of the
+  fine earth as estimated in the field, in the USDA class names the
+  FAO (2006) guidelines adopt (S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC,
+  SiC, C and the sand grades; codes or words). ISIS
+  `textureClassesFao2006Small` is read into it. Where a layer has
+  neither clay nor sand measured, the texture tests read it: the WRB
+  argic, cambic and ferralic horizons (sandy loam or finer; the USDA
+  cambic and argillic reach them through the same test), the Psamments
+  (KST 13th ed., p. 165) and the Psammentic subgroups (loamy fine sand
+  or coarser). A new internal helper, `.texture_class_reading()`, also
+  gives “very fine sand, loamy very fine sand or finer” (the KST cambic,
+  p. 22). FAO’s S (sand, unspecified) and US (unsorted sand) have no
+  sand grade, so the tests that hinge on the grade stay undecided for
+  them. Most of the ISIS profiles with no laboratory texture, until now
+  all Entisols, now reach the cambic horizon and become Inceptisols.
+- **Chroma 0.** ISIS codes no chroma 0, so “7.5YR 2/0” lost its chroma:
+  a layer with a hue and a value and no chroma takes the chroma 0 of the
+  colour written whole of the same hue (22 layers in KE067, KE066,
+  ZW007, NL048, NL049, NL051, NL056, NL057), and the neutral hue N has
+  chroma 0.
+- **Base saturation without Ca.** Where Ca is not recorded and ISIS’s
+  sum of bases is the sum of the Mg, K and Na recorded (48 calcareous
+  layers of US013, US014, US015, US016, US022, US023, US024, US025,
+  US026, and one of KE015), no base saturation and no ECEC are
+  calculated; they stay undecided, and a note says so. No name changes
+  with it, nor with 100 % in the calcareous layers.
+- **Sand** is 100 - clay - silt where only those two are given, as silt
+  already was. The USDA name changes in ES001, ES002, ES008, ES010,
+  ES011, PE019, SE015 and SE017 (ES002 Ultic Haploxeralfs; ISRIC: Typic
+  Palexeralf), the WRB name in BW002 and ES011.
+- **ODOE**, the optical density of the oxalate extract
+  (`opticalDensityOxalate`), into `odoe`.
+- **Peat decomposition** (`organicMattterDecomprate`) of an O or H
+  horizon into `von_post_index`, inside the range of its class: nil H1,
+  slightly H3 (fibric), moderately H5 (hemic), highly H8 (sapric).
+- **Duripan share.** A recorded duripan (`pansKind` D) is cemented in
+  the middle of the FAO (2006) class of its continuity
+  (`cementCompactContinuity`): broken 25 %, discontinuous 70 %,
+  continuous 95 %; with no continuity recorded, the m of its designation
+  reads 95 %. A q and m designation with no pan recorded stays unknown,
+  as before. US011 becomes Typic Durixeralfs (ISRIC: Abruptic
+  Durixeralf).
+- Not read: ISIS records worm channels only as a kind of biological
+  feature, with no volume, so `worm_holes_pct` stays unknown; its two
+  silt fractions (fine and coarse silt, likely 2-20 and 20-50 um) serve
+  no test, since the 0.02-2 mm fraction of the Soil Taxonomy is the one
+  whose volcanic glass is counted and ISIS has no glass counts.
+- On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 203 (was 198), the suborder in 146 (143), the great group in
+  92 (88) and the subgroup in 41 (40); 103 names change. WRB 2022: 299
+  Reference Soil Groups agree with ISRIC (was 298; ES011 becomes a
+  Calcisol) and six names change (BW002 Sodic, KE066 and ZW007 by chroma
+  0, US026 and NI010 by the duripan). No canonical fixture changes name
+  in either key.
+
 ## soilKey 0.9.415
 
 The USDA key: undecided tests and the soil regimes, after the Soil
