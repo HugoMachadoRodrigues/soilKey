@@ -1,3 +1,40 @@
+# soilKey 0.9.413
+
+The WRB 2022 redox and other qualifiers, after the qualifier audit (Hugo,
+2026-11-19).
+
+* **Stagnic** finds any layer of adjoining horizons, 25 cm thick and starting
+  within 75 cm, that has 25% of redox features. It averaged the whole run, so a
+  weaker horizon below hid one that met it (ISRIC's ID004, CU011). A mottled
+  horizon with nothing described below it has no reduced layer there. Mottles
+  whose recorded colours show none of the contrasts of stagnic properties
+  (Chapter 3.2.14, p. 81) are not stagnic; MZ007 leaves the Planosols for this
+  reason. The header of the redox reading now says what it reads.
+* **Reductigleyic** no longer leaves a mottled layer that is not gleyic
+  undecided.
+* **Albic asks criterion 2 of the albic horizon**, so the claric colours inside
+  an argic or natric horizon are no longer Albic (BW005, MZ007).
+* **The Cambic qualifier sets claric layers aside** (p. 129).
+* **Calcaric asks the laboratory and the field reaction to agree** where both
+  are recorded (Hugo, 2026-11-19), and an undecided calcic or petrocalcic
+  horizon that cannot start within 100 cm no longer holds it back (ES019,
+  PE009).
+* **The ISIS reader** reads the FAO 2006 concretion fields (GE005 is Ferric) and
+  keeps the grade and size of the second structure, which Grumic reads (CU009,
+  ES018).
+* **A field observation that nobody recorded is absent.** A qualifier left
+  undecided by one is read again with it absent: mottles, coarse fragments,
+  nodules, desert pavement, animal pores, cementation, the HCl reaction and a
+  groundwater table. Colours, structure, texture and boundaries not recorded,
+  and laboratory values not measured, stay undecided (Hugo, 2026-11-19).
+  Fragic, Plaggic, Dolomitic, Fractic and Greyzemic are no longer undecided for
+  want of a field record. Five Ferralsols gain Ferritic and ten profiles
+  Chernic.
+* **Haplic** is given, as before, when no principal qualifier applies. The
+  principal qualifiers left undecided are now named in the result
+  (`$qualifiers$undecided_principal`) and when printed, and what would decide
+  them is listed in `$missing_data`.
+
 # soilKey 0.9.412
 
 The WRB 2022 qualifiers of clay, the argic horizon and colour, after the
