@@ -12,7 +12,7 @@
   first <- grep("^Qualifiers:", lines)
   if (length(first) != 1L) return("")
   last <- first
-  while (last < length(lines) && !grepl("^(Evidence grade|Prior check|\u2500\u2500)", lines[last + 1L]) &&
+  while (last < length(lines) && !grepl("^(Evidence grade|Prior check|Undecided principal|\u2500\u2500)", lines[last + 1L]) &&
          nzchar(lines[last + 1L]))
     last <- last + 1L
   paste(lines[first:last], collapse = " ")

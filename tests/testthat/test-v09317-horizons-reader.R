@@ -213,7 +213,9 @@ test_that("the irragric horizon needs the criteria of 3.1.18, not an Ap of 20 cm
   expect_true(is.na(r$evidence$criteria$raised_surface[1]))
   expect_true(isTRUE(r$evidence$criteria$structure[1]))
   expect_true(isTRUE(r$evidence$criteria$clay_increase[1]))   # 25 against 20
-  expect_false(qual_irragric(p())$passed)
+  # v0.9.413: qual_irragric keeps the horizon's undecided value; the name
+  # builder reads the unrecorded raised surface as absent (a field observation)
+  expect_true(is.na(qual_irragric(p())$passed))
   # a massive Ap fails criterion 1 in every stack
   expect_false(irragric(p(type = "massive"))$passed)
   # an Ap of 15 cm over a C with 0.2% SOC: too thin alone, too poor with the C
