@@ -1214,7 +1214,9 @@ qual_haplic <- function(pedon) {
   Hypereutric = c("Oligoeutric"),
   # v0.9.411: the subqualifiers of Humic (Ch 5, p. 137). WRB states no
   # preference between them; the stricter one (>= 5% to 50 cm) is tried first.
-  Humic       = c("Hyperhumic", "Profundihumic")
+  Humic       = c("Hyperhumic", "Profundihumic"),
+  # v0.9.412: Hypergeric, < 1.5 cmolc per kg of clay (Ch 5, p. 135)
+  Geric       = c("Hypergeric")
 )
 
 # Replace each taken qualifier that has optional subqualifiers by the first

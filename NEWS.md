@@ -1,3 +1,31 @@
+# soilKey 0.9.412
+
+The WRB 2022 qualifiers of clay, the argic horizon and colour, after the
+qualifier audit (Hugo, 2026-11-19).
+
+* **Rhodic and Chromic** read the part of each horizon inside 25-150 cm from the
+  mineral soil surface and ask for one run of adjoining horizons of 30 cm or
+  more. A red Bt starting at 15 cm was left out, and a layer starting at 150 cm
+  counted whole.
+* **Evidence of soil formation** (cambic criterion 3.b) is sought against any
+  overlying mineral layer, not only the next one, so the lower part of a uniform
+  red B is compared with the A. The Cambic qualifier now asks for this evidence
+  too (Hugo, 2026-11-19).
+* **Profondic follows the WRB text**: the clay does not drop by 20% or more from
+  its maximum within 150 cm. It is undecided when the description stops above
+  150 cm, and not met over a limiting layer above that depth.
+* **Differentic reads the clay increase as `argic()` does**: a lithic
+  discontinuity, a plough layer directly above or a transition over 15 cm rules
+  it out.
+* **Geric** takes the ECEC, or the bases plus the exchangeable acidity, as an
+  upper bound when a base or the Al is not recorded, and the ISIS reader now
+  reads the exchangeable acidity (`acidityExc`). **Hypergeric** (p. 135)
+  replaces Geric where it applies.
+* An abrupt textural difference with a clay content not recorded is undecided,
+  and Cutanic also reads a natric horizon.
+* No reference soil group and no canonical profile name changes. On the ISIS
+  profiles, Rhodic now agrees with ISRIC in 29 profiles (18 before).
+
 # soilKey 0.9.411
 
 The WRB 2022 andic and humus qualifiers, after the qualifier audit (Hugo,
