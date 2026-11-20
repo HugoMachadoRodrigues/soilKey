@@ -98,33 +98,21 @@ test_that("classify_usda assigns Ultisols to argic + low-BS fixture (Acrisol)", 
   expect_match(res$rsg_or_order, "Ultisols|Alfisols")
 })
 
-test_that("oxic_usda delegates faithfully to ferralic", {
-  pr <- make_ferralsol_canonical()
-  fer <- ferralic(pr)
-  oxi <- oxic_usda(pr)
-  expect_identical(fer$passed, oxi$passed)
-  # v0.9.310: the WRB ferralic takes its adjoining sub-horizons together (the
-  # 20 cm AB joins the BA and Bw); the oxic horizon keeps the per-layer test
-  expect_identical(fer$layers, 2:5)
-  expect_identical(oxi$layers, 3:5)
-  expect_match(oxi$reference, "Soil Survey Staff")
-})
-
-test_that("argillic_usda delegates to argic with the correct system per clay-films evidence", {
+test_that("oxic_usda and argillic_usda are the KST horizons", {
   skip_on_cran()
-  # v0.9.27: argillic_usda routes to argic(system = "usda") when
-  # argillic_clay_films_test passes (NASIS pediagfeatures argillic
-  # OR per-horizon clay_films_amount populated), otherwise falls
-  # back to argic(system = "wrb2022"). The Luvisol canonical fixture
-  # has clay_films_amount = c(NA, NA, "common", "many", NA) so the
-  # KST tier fires.
-  pr <- make_luvisol_canonical()
-  argl <- argillic_usda(pr)
-  used <- argl$evidence$argillic_tier$threshold_system %||% "unknown"
-  arg  <- argic(pr, system = used)
-  expect_identical(arg$passed, argl$passed)
-  expect_identical(arg$layers, argl$layers)
-  expect_true(used %in% c("usda", "wrb2022"))
+  # v0.9.420: the oxic horizon is no longer the WRB ferralic horizon (KST 13th
+  # ed., p. 28): the AB below the surface layer is part of it
+  pr <- make_ferralsol_canonical()
+  oxi <- oxic_usda(pr)
+  expect_true(oxi$passed)
+  expect_identical(oxi$layers, 2:5)
+  expect_match(oxi$reference, "Soil Survey Staff")
+  # the argillic horizon (pp. 20-21) of the Luvisol: the Bt1 and Bt2, which
+  # carry clay films; the C below is not part of it
+  argl <- argillic_usda(make_luvisol_canonical())
+  expect_true(argl$passed)
+  expect_identical(sort(argl$layers), 3:4)
+  expect_match(argl$evidence$illuviation, "clay films")
 })
 
 test_that("mutual exclusion: each USDA order excludes all earlier orders", {

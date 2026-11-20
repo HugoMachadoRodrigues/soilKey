@@ -104,7 +104,9 @@ test_that("argillic_usda falls back to WRB thresholds when no evidence at all", 
   )
   res <- argillic_usda(p)
   expect_false(isTRUE(res$passed))
-  expect_equal(res$evidence$argillic_tier$threshold_system, "wrb2022")
+  # v0.9.420: the KST argillic horizon has no WRB tier; with no evidence of
+  # illuviation recorded it is undecided (audit reading L22)
+  expect_true(is.na(res$passed))
 })
 
 test_that("argillic_usda accepts the canonical strong-argillic profile (Luvisol)", {

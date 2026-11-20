@@ -94,9 +94,12 @@ test_that("acric_oxisol_usda passes for low ECEC/clay AND pH(KCl) >= 5", {
     bottom_cm = c(30, 100),
     designation = c("A", "Bo"),
     ecec_cmol = c(3, 0.6),
-    clay_pct = c(40, 60),
+    clay_pct = c(55, 60),
+    cec_cmol = c(8, 3),
     ph_kcl = c(5.0, 5.2)
   )
+  # v0.9.420: the subhorizons of an oxic or kandic horizon (KST p. 301): the
+  # Bo is an oxic horizon (CEC 5 per kg clay, 70 cm thick)
   pr <- PedonRecord$new(
     site = list(id="ac", lat=0, lon=0, country="BR", parent_material="t"),
     horizons = ensure_horizon_schema(hz)

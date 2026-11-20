@@ -14,7 +14,7 @@ great_groups:
       name: "Plinthaquults"
       tests:
         all_of:
-          - plinth_subgroup_usda: {}
+          - plinth_subgroup_usda: { gg: true }
     - code: "HAB"
       name: "Fragiaquults"
       tests:
@@ -30,6 +30,7 @@ great_groups:
       tests:
         all_of:
           - kandic_horizon_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HAE"
       name: "Kanhaplaquults"
       tests:
@@ -39,7 +40,7 @@ great_groups:
       name: "Paleaquults"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HAG"
       name: "Umbraquults"
       tests:
@@ -66,12 +67,13 @@ great_groups:
       name: "Plinthohumults"
       tests:
         all_of:
-          - plinth_subgroup_usda: {}
+          - plinth_subgroup_usda: { gg: true }
     - code: "HBC"
       name: "Kandihumults"
       tests:
         all_of:
           - kandic_horizon_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HBD"
       name: "Kanhaplohumults"
       tests:
@@ -81,7 +83,7 @@ great_groups:
       name: "Palehumults"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HBF"
       name: "Haplohumults"
       tests:
@@ -93,7 +95,7 @@ great_groups:
       name: "Plinthudults"
       tests:
         all_of:
-          - plinth_subgroup_usda: {}
+          - plinth_subgroup_usda: { gg: true }
     - code: "HCB"
       name: "Fragiudults"
       tests:
@@ -104,6 +106,7 @@ great_groups:
       tests:
         all_of:
           - kandic_horizon_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HCD"
       name: "Kanhapludults"
       tests:
@@ -113,12 +116,12 @@ great_groups:
       name: "Paleudults"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HCF"
       name: "Rhodudults"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: ultisol }
     - code: "HCG"
       name: "Hapludults"
       tests:
@@ -130,12 +133,13 @@ great_groups:
       name: "Plinthustults"
       tests:
         all_of:
-          - plinth_subgroup_usda: {}
+          - plinth_subgroup_usda: { gg: true }
     - code: "HDB"
       name: "Kandiustults"
       tests:
         all_of:
           - kandic_horizon_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HDC"
       name: "Kanhaplustults"
       tests:
@@ -145,12 +149,12 @@ great_groups:
       name: "Paleustults"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: ultisols }
     - code: "HDE"
       name: "Rhodustults"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: ultisol }
     - code: "HDF"
       name: "Haplustults"
       tests:
@@ -162,7 +166,7 @@ great_groups:
       name: "Palexerults"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: xerults }
     - code: "HEB"
       name: "Haploxerults"
       tests:

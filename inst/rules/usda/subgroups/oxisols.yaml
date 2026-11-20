@@ -193,7 +193,7 @@ subgroups:
       name: "Rhodic Acrustox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECBI"
       name: "Aquic Petroferric Acrustox"
       tests:
@@ -228,7 +228,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECBH"
       name: "Typic Acrustox"
       tests:
@@ -259,7 +259,7 @@ subgroups:
       name: "Rhodic Eutrustox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECCG"
       name: "Aquic Petroferric Eutrustox"
       tests:
@@ -293,7 +293,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECCF"
       name: "Typic Eutrustox"
       tests:
@@ -319,7 +319,7 @@ subgroups:
       name: "Rhodic Kandiustox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECDF"
       name: "Aquic Petroferric Kandiustox"
       tests:
@@ -353,7 +353,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - { code: "ECDJ", name: "Humic Kandiustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "ECDE"
       name: "Typic Kandiustox"
@@ -390,7 +390,7 @@ subgroups:
       name: "Rhodic Haplustox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECEH"
       name: "Aquic Petroferric Haplustox"
       tests:
@@ -424,7 +424,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "ECEG"
       name: "Typic Haplustox"
       tests:
@@ -484,7 +484,7 @@ subgroups:
       name: "Rhodic Acroperox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDBI"
       name: "Aquic Petroferric Acroperox"
       tests:
@@ -513,7 +513,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDBM"
       name: "Typic Acroperox"
       tests:
@@ -561,7 +561,7 @@ subgroups:
       name: "Rhodic Eutroperox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDCO"
       name: "Xanthic Eutroperox"
       tests:
@@ -578,7 +578,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDCE"
       name: "Typic Eutroperox"
       tests:
@@ -599,7 +599,7 @@ subgroups:
       name: "Rhodic Kandiperox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDDE"
       name: "Aquic Petroferric Kandiperox"
       tests:
@@ -643,7 +643,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - { code: "EDDK", name: "Humic Kandiperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EDDD"
       name: "Typic Kandiperox"
@@ -675,7 +675,7 @@ subgroups:
       name: "Rhodic Haploperox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDEG"
       name: "Aquic Petroferric Haploperox"
       tests:
@@ -714,7 +714,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EDEF"
       name: "Typic Haploperox"
       tests:
@@ -769,7 +769,7 @@ subgroups:
       name: "Rhodic Acrudox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EEBH"
       name: "Aquic Petroferric Acrudox"
       tests:
@@ -804,7 +804,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - { code: "EEBL", name: "Humic Acrudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EEBG"
       name: "Typic Acrudox"
@@ -831,7 +831,7 @@ subgroups:
       name: "Rhodic Eutrudox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EECF"
       name: "Aquic Petroferric Eutrudox"
       tests:
@@ -865,7 +865,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - { code: "EECI", name: "Humic Eutrudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EECE"
       name: "Typic Eutrudox"
@@ -892,7 +892,7 @@ subgroups:
       name: "Rhodic Kandiudox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EEDF"
       name: "Aquic Petroferric Kandiudox"
       tests:
@@ -931,7 +931,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - { code: "EEDK", name: "Humic Kandiudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - code: "EEDE"
       name: "Typic Kandiudox"
@@ -968,7 +968,7 @@ subgroups:
       name: "Rhodic Hapludox"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EEEH"
       name: "Aquic Petroferric Hapludox"
       tests:
@@ -1002,7 +1002,7 @@ subgroups:
       tests:
         all_of:
           - humic_oxisol_usda: {}
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: oxisol }
     - code: "EEEG"
       name: "Typic Hapludox"
       tests:

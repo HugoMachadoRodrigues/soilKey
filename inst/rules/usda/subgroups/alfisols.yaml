@@ -158,7 +158,7 @@ subgroups:
     - { code: "JCFL", name: "Petrocalcic Paleustalfs", tests: { all_of: [{petrocalcic_subgroup_usda: {}}] } }
     - { code: "JCFM", name: "Aridic Paleustalfs", tests: { all_of: [{smr_aridic_usda: {}}] } }
     - { code: "JCFN", name: "Rhodic Paleustalfs", tests: { all_of: [{rhodic_subgroup_usda: {}}] } }
-    - { code: "JCFO", name: "Ultic Paleustalfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
+    - { code: "JCFO", name: "Ultic Paleustalfs", tests: { all_of: [{ultic_subgroup_usda: {alfisol: true}}] } }
     - { code: "JCFD", name: "Typic Paleustalfs", tests: { default: true } }
   "JCG":  # Rhodustalfs (3)
     - { code: "JCGA", name: "Lithic Rhodustalfs", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
@@ -176,7 +176,7 @@ subgroups:
     - { code: "JCHJ", name: "Arenic Aridic Haplustalfs", tests: { all_of: [{arenic_subgroup_usda: {}}, {smr_aridic_usda: {}}] } }
     - { code: "JCHK", name: "Arenic Haplustalfs", tests: { all_of: [{arenic_subgroup_usda: {}}] } }
     - { code: "JCHL", name: "Aridic Haplustalfs", tests: { all_of: [{smr_aridic_usda: {}}] } }
-    - { code: "JCHM", name: "Ultic Haplustalfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
+    - { code: "JCHM", name: "Ultic Haplustalfs", tests: { all_of: [{ultic_subgroup_usda: {alfisol: true}}] } }
     - { code: "JCHV", name: "Calcic Haplustalfs", tests: { all_of: [{calcic_subgroup_usda: {}}] } }
     - { code: "JCHE", name: "Typic Haplustalfs", tests: { default: true } }
 
@@ -219,7 +219,7 @@ subgroups:
     - { code: "JDFK", name: "Natric Palexeralfs", tests: { all_of: [{natric_horizon_usda: {}}] } }
     - { code: "JDFL", name: "Fragic Palexeralfs", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "JDFM", name: "Plinthic Palexeralfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
-    - { code: "JDFN", name: "Ultic Palexeralfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
+    - { code: "JDFN", name: "Ultic Palexeralfs", tests: { all_of: [{ultic_subgroup_usda: {alfisol: true}}] } }
     - { code: "JDFO", name: "Haplic Palexeralfs", tests: { all_of: [{aquic_subgroup_usda: {}}] } }
     - { code: "JDFQ", name: "Calcic Palexeralfs", tests: { all_of: [{calcic_subgroup_usda: { max_top_cm: 150 }}] } }
     - { code: "JDFP", name: "Fragiaquic Palexeralfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
@@ -237,7 +237,7 @@ subgroups:
     - { code: "JDGK", name: "Fragic Haploxeralfs", tests: { all_of: [{fragipan_usda: {}}] } }
     - { code: "JDGL", name: "Lamellic Haploxeralfs", tests: { all_of: [{lamellic_subgroup_usda: {}}] } }
     - { code: "JDGM", name: "Plinthic Haploxeralfs", tests: { all_of: [{plinth_subgroup_usda: {}}] } }
-    - { code: "JDGN", name: "Ultic Haploxeralfs", tests: { all_of: [{ultic_subgroup_usda: {}}] } }
+    - { code: "JDGN", name: "Ultic Haploxeralfs", tests: { all_of: [{ultic_subgroup_usda: {alfisol: true}}] } }
     - { code: "JDGP", name: "Calcic Haploxeralfs", tests: { all_of: [{calcic_subgroup_usda: {}}] } }
     - { code: "JDGO", name: "Fragiaquic Haploxeralfs", tests: { all_of: [{fragipan_usda: {}}, {aquic_subgroup_usda: {}}] } }
     - { code: "JDGE", name: "Typic Haploxeralfs", tests: { default: true } }

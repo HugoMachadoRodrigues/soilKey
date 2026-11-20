@@ -114,9 +114,9 @@ test_that("classify_usda(include_family) prepends the family; default unchanged"
   withf <- classify_usda(pr, include_family = TRUE)
 
   # default output is byte-identical
-  expect_equal(base$name, "Rhodic Hapludox")
+  expect_equal(base$name, "Typic Hapludox")
   # family run keeps the subgroup as the tail and prepends modifiers
-  expect_match(withf$name, "Rhodic Hapludox$")
+  expect_match(withf$name, "Typic Hapludox$")
   expect_true(nchar(withf$name) > nchar(base$name))
   expect_true(grepl(",", withf$name))
   # family attributes are exposed in the trace
@@ -129,7 +129,7 @@ test_that("classify_all forwards include_family to the USDA slot", {
   skip_on_cran()
   pr <- make_ferralsol_canonical()
   out <- classify_all(pr, include_family = TRUE)
-  expect_match(out$usda$name, "Rhodic Hapludox$")
+  expect_match(out$usda$name, "Typic Hapludox$")
   expect_true(grepl(",", out$usda$name))
   # SiBCS / WRB unaffected
   expect_false(is.null(out$wrb))
