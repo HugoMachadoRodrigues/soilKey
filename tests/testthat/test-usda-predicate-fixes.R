@@ -3,15 +3,16 @@
 
 mk <- function(h) PedonRecord$new(horizons = h)
 
-# ---- rendoll_qualifying_usda: lithic/paralithic contact WITHIN 50 cm --------
+# ---- rendoll_qualifying_usda ----------------------------------------------
+# v0.9.421: KST 13th ed. p. 248 asks for no contact; a Rendoll needs a mollic
+# epipedon under 50 cm over 40 % CaCO3, no argillic or calcic horizon, and a
+# udic or cryic regime (see test-v09421-mollisols-vertisols.R). Carbonates
+# over rock with no mollic epipedon recorded are not a Rendoll.
 
-test_that("Rendoll requires the lithic contact within 50 cm (not 100)", {
+test_that("Rendoll needs a mollic epipedon, not a lithic contact", {
   shallow <- mk(data.frame(top_cm = c(0, 40), bottom_cm = c(40, 60),
                            designation = c("A", "R"), caco3_pct = c(45, NA)))
-  deep <- mk(data.frame(top_cm = c(0, 80), bottom_cm = c(80, 100),
-                        designation = c("A", "R"), caco3_pct = c(45, NA)))
-  expect_true(rendoll_qualifying_usda(shallow)$passed)
-  expect_false(rendoll_qualifying_usda(deep)$passed)   # contact at 80 cm now fails
+  expect_false(isTRUE(rendoll_qualifying_usda(shallow)$passed))
 })
 
 # ---- hydraquent_qualifying_usda: 20-50 cm window + clay>=8% + all-layers -----

@@ -31,7 +31,7 @@ diagnostics:
   histic_epipedon_usda:         { function: histic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 14-15" }
   folistic_epipedon_usda:       { function: folistic_epipedon_usda,  status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 13-14" }
   melanic_epipedon_usda:        { function: melanic_epipedon_usda,   status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-16" }
-  mollic_epipedon_usda:         { function: mollic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-17" }
+  mollic_epipedon_usda:         { function: mollic_epipedon_usda,    status: implemented, file: R/diagnostics-mollisols-usda.R, since: v0.8.1, reference: "KST 13th ed., pp. 14-16" }
   ochric_epipedon_usda:         { function: ochric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, p 17" }
   umbric_epipedon_usda:         { function: umbric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 18-20" }
   anthropic_epipedon_usda:      { function: anthropic_epipedon_usda, status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.9.419, reference: "KST 13th ed. Ch 3, pp 12-13" }

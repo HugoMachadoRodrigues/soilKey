@@ -392,10 +392,15 @@ oxisol_usda <- function(pedon) {
 }
 
 
-# ---- F. Vertisols (Cap 16, p 343) ------------------------------------------
+# ---- F. Vertisols (KST 13th ed., p. 69, item F) -----------------------------
 
-#' Vertisols (USDA Cap 16): slickensides + cracks.
-#' Delegates to vertic_horizon.
+#' Vertisols (KST 13th ed., p. 69, item F)
+#'
+#' v0.9.421: the three items of the order key, read by
+#' \code{vertisol_qualifying_usda()} (a layer 25 cm or more thick within 100
+#' cm with slickensides or wedge-shaped peds; 30 \% clay in the upper 18 cm
+#' and in every horizon between 18 and 50 cm; cracks that open and close),
+#' three-valued: NA where the data recorded do not decide.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 vertisol_usda <- function(pedon) {
@@ -406,12 +411,9 @@ vertisol_usda <- function(pedon) {
 
 # The computation of vertisol_usda().
 .vertisol_usda_uncached <- function(pedon) {
-  # v0.9.311: the USDA reading (slickensides and cracks, or the KST 13 LE
-  # path); vertic_horizon() itself now follows WRB 2022 Ch 3.1.40.
-  vh <- vertic_horizon(pedon, reading = "usda")
-  # v0.9.21: NASIS tie-breaker -- Slickensides surveyor
-  # identification flips an NA vertic_horizon to TRUE (when no COLE
-  # or cracks measurement is available).
+  vh <- vertisol_qualifying_usda(pedon)
+  # v0.9.21: NASIS tie-breaker -- the surveyor's identification of
+  # slickensides, vertic features or gilgai flips an NA to TRUE.
   vh <- .apply_nasis_tiebreaker(vh, pedon,
                                  pattern       = "^Slickensides$|^Vertic|^Gilgai$",
                                  feature_label = "Slickensides / Vertic features / Gilgai")
@@ -420,12 +422,14 @@ vertisol_usda <- function(pedon) {
           isTRUE(spodosol_usda(pedon)$passed) ||
           isTRUE(andisol_usda(pedon)$passed) ||
           isTRUE(oxisol_usda(pedon)$passed)
-  passed <- isTRUE(vh$passed) && !ex
+  passed <- if (ex) FALSE else vh$passed
   DiagnosticResult$new(
     name = "vertisol_usda", passed = passed,
-    layers = vh$layers, evidence = list(vertic = vh, prior_order = ex),
-    missing = vh$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 16 Vertisols (p 343)"
+    layers = vh$layers, evidence = list(vertic = vh, prior_order = ex,
+                                        inferences = if (isTRUE(passed)) vh$evidence$inferences),
+    missing = if (is.na(passed)) vh$missing else character(0),
+    notes = vh$notes,
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., p. 69, item F"
   )
 }
 
@@ -569,9 +573,15 @@ ultisol_usda <- function(pedon) {
 }
 
 
-# ---- I. Mollisols (Cap 12, p 247) ------------------------------------------
+# ---- I. Mollisols (KST 13th ed., pp. 69-70, item I) -------------------------
 
-#' Mollisols (USDA Cap 12): mollic epipedon + base saturation >= 50\%.
+#' Mollisols (KST 13th ed., pp. 69-70, item I)
+#'
+#' v0.9.421: a mollic epipedon (or the albic alternative of item I.1.b) and
+#' base saturation (NH4OAc) of 50 \% or more to the depth of item I.2, read
+#' by \code{mollisol_qualifying_usda()}, three-valued. Where the profile was
+#' sampled shallower than that depth, the deepest horizon sampled stands in
+#' and \code{evidence$inferences} says so; the name then has grade C.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 mollisol_usda <- function(pedon) {
@@ -582,21 +592,7 @@ mollisol_usda <- function(pedon) {
 
 # The computation of mollisol_usda().
 .mollisol_usda_uncached <- function(pedon) {
-  # v0.9.10: switched the mollic gate from the WRB `mollic()` (a v0.2
-  # scaffold leftover) to the USDA-native `mollic_epipedon_usda()`,
-  # which carries the artefact-rich exclusion in v0.9.10 and the
-  # full KST 13ed Ch. 3 thickness / colour / OC / BS / structure
-  # contract. This is the fix that prevents Technosol fixtures
-  # (artefacts >= 20 % in the surface A) from being routed to
-  # Hapludolls.
-  m <- mollic_epipedon_usda(pedon)
-  # v0.9.21: NASIS tie-breaker -- when the canonical lab + morphology
-  # gate returns NA (insufficient data), the surveyor's
-  # pediagfeatures.featkind = "Mollic epipedon" identification flips
-  # the result to TRUE. Does NOT override TRUE / FALSE.
-  m <- .apply_nasis_tiebreaker(m, pedon,
-                                pattern       = "^Mollic epipedon$",
-                                feature_label = "Mollic epipedon")
+  mq <- mollisol_qualifying_usda(pedon)
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),
@@ -607,12 +603,15 @@ mollisol_usda <- function(pedon) {
     isTRUE(aridisol_usda(pedon)$passed),
     isTRUE(ultisol_usda(pedon)$passed)
   ))
-  passed <- isTRUE(m$passed) && !ex
+  passed <- if (ex) FALSE else mq$passed
   DiagnosticResult$new(
     name = "mollisol_usda", passed = passed,
-    layers = m$layers, evidence = list(mollic = m, prior_order = ex),
-    missing = m$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 12 Mollisols (p 247)"
+    layers = mq$layers,
+    evidence = list(mollic = mq$evidence$mollic, qualifying = mq, prior_order = ex,
+                    inferences = if (isTRUE(passed)) mq$evidence$inferences),
+    missing = if (is.na(passed)) mq$missing else character(0),
+    notes = mq$notes,
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., pp. 69-70, item I"
   )
 }
 

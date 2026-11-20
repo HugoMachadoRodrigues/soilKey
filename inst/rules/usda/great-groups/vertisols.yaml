@@ -8,6 +8,10 @@
 #   Torrerts (FD): 4
 #   Usterts (FE): 5
 #   Uderts (FF): 2
+#
+# v0.9.421: Dystr- by EC and pH (dystric_vertisol_usda; pp. 344, 349, 350),
+# Dur- by the duripan, Humicryerts by the organic carbon stock (p. 347),
+# Sulfaquerts by a sulfuric horizon or sulfidic materials (p. 343).
 # =============================================================
 
 great_groups:
@@ -17,8 +21,9 @@ great_groups:
     - code: "FAA"
       name: "Sulfaquerts"
       tests:
-        all_of:
+        any_of:
           - sulfuric_horizon_usda: {}
+          - sulfidic_materials_usda: {}
     - code: "FAB"
       name: "Salaquerts"
       tests:
@@ -28,7 +33,7 @@ great_groups:
       name: "Duraquerts"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duripan_usda: {}
     - code: "FAD"
       name: "Natraquerts"
       tests:
@@ -43,7 +48,7 @@ great_groups:
       name: "Dystraquerts"
       tests:
         all_of:
-          - dystric_subgroup_usda: {}
+          - dystric_vertisol_usda: {}
     - code: "FAG"
       name: "Epiaquerts"
       tests:
@@ -60,7 +65,7 @@ great_groups:
       name: "Humicryerts"
       tests:
         all_of:
-          - humic_andisol_usda: {}
+          - humicryert_usda: {}
     - code: "FBB"
       name: "Haplocryerts"
       tests:
@@ -72,7 +77,7 @@ great_groups:
       name: "Durixererts"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - duripan_usda: {}
     - code: "FCB"
       name: "Calcixererts"
       tests:
@@ -111,7 +116,7 @@ great_groups:
       name: "Dystrusterts"
       tests:
         all_of:
-          - dystric_subgroup_usda: {}
+          - dystric_vertisol_usda: {}
     - code: "FEB"
       name: "Salusterts"
       tests:
@@ -138,7 +143,7 @@ great_groups:
       name: "Dystruderts"
       tests:
         all_of:
-          - dystric_subgroup_usda: {}
+          - dystric_vertisol_usda: {}
     - code: "FFB"
       name: "Hapluderts"
       tests:

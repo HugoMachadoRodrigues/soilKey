@@ -5,6 +5,10 @@
 #   Albolls (IA): 2 / Aquolls (IB): 7 / Rendolls (IC): 2 /
 #   Gelolls (ID): 1 / Cryolls (IE): 6 / Xerolls (IF): 6 /
 #   Ustolls (IG): 7 / Udolls (IH): 6
+#
+# v0.9.421: the Calci-, Pale- and Vermi- great groups read the KST criteria
+# of each suborder (calci_mollisol_usda, pale_mollisol_usda,
+# vermic_mollisol_usda; pp. 249, 254, 259, 267-268, 284).
 # =============================================================
 
 great_groups:
@@ -42,7 +46,7 @@ great_groups:
       name: "Calciaquolls"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - calci_mollisol_usda: { suborder: aquoll }
     - code: "IBE"
       name: "Argiaquolls"
       tests:
@@ -93,7 +97,7 @@ great_groups:
       name: "Palecryolls"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_mollisol_usda: { suborder: cryoll }
     - code: "IED"
       name: "Argicryolls"
       tests:
@@ -103,7 +107,7 @@ great_groups:
       name: "Calcicryolls"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - calci_mollisol_usda: { suborder: cryoll }
     - code: "IEF"
       name: "Haplocryolls"
       tests:
@@ -125,12 +129,12 @@ great_groups:
       name: "Palexerolls"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_mollisol_usda: { suborder: xeroll }
     - code: "IFD"
       name: "Calcixerolls"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - calci_mollisol_usda: { suborder: xeroll }
     - code: "IFE"
       name: "Argixerolls"
       tests:
@@ -157,12 +161,12 @@ great_groups:
       name: "Calciustolls"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - calci_mollisol_usda: { suborder: ustoll }
     - code: "IGD"
       name: "Paleustolls"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_mollisol_usda: { suborder: ustoll }
     - code: "IGE"
       name: "Argiustolls"
       tests:
@@ -172,7 +176,7 @@ great_groups:
       name: "Vermustolls"
       tests:
         all_of:
-          - vermic_subgroup_usda: {}
+          - vermic_mollisol_usda: {}
     - code: "IGG"
       name: "Haplustolls"
       tests:
@@ -189,12 +193,12 @@ great_groups:
       name: "Calciudolls"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - calci_mollisol_usda: { suborder: udoll }
     - code: "IHC"
       name: "Paleudolls"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_mollisol_usda: { suborder: udoll }
     - code: "IHD"
       name: "Argiudolls"
       tests:
@@ -204,7 +208,7 @@ great_groups:
       name: "Vermudolls"
       tests:
         all_of:
-          - vermic_subgroup_usda: {}
+          - vermic_mollisol_usda: {}
     - code: "IHF"
       name: "Hapludolls"
       tests:

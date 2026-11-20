@@ -718,7 +718,10 @@ marinic_cst <- function(pedon) {
   "I1.2.2" = list(base = "I1.2"),
   "I1.2.3" = list(base = "I1.2.4", set = list(top_cm = c(0, 25, 50, 90), bottom_cm = c(25, 50, 90, 120),
                                               munsell_value_moist = c(2, 5, 5, 5), munsell_value_dry = c(4, 6, 6, 6),
-                                              oc_pct = c(3, 1.5, 0.6, 0.4))),
+                                              oc_pct = c(3, 1.5, 0.6, 0.4),
+                                              # v0.9.421: the structure of the A recorded, which the
+                                              # USDA mollic stand-in reads (KST p. 15)
+                                              structure_type = c("granular", "massive", "massive", "massive"))),
   "I1.2.4" = list(base = "I1.2", set = list(designation = c("A", "Bg", "Cg", "Cf"), oc_pct = c(1.5, 1.5, 0.6, 0.4),
                                             clay_pct = c(25, 25, 22, 20), silt_pct = 50, sand_pct = c(25, 25, 28, 30),
                                             munsell_value_moist = c(4, 5, 5, 5), munsell_value_dry = c(6, 6, 6, 6),
