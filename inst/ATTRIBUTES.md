@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.413)
+# soilKey -- recognised horizon attribute names (v0.9.416)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -76,6 +76,7 @@ and do not warn.
 | `clay_pct` | % (mass) | numeric | Clay content of the fine earth (< 2 um). | `clay` |
 | `silt_pct` | % (mass) | numeric | Silt content of the fine earth. | `silt` |
 | `sand_pct` | % (mass) | numeric | Sand content of the fine earth. | `sand` |
+| `texture_class_usda` | - | character | Texture class of the fine earth as estimated in the field, in the USDA class names that the FAO (2006) guidelines adopt: S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC, SiC, C, and the sand grades COS (FAO CS), MS, FS, VFS, US (unsorted), LCOS (LCS), LFS, LVFS, COSL (CSL), FSL, VFSL; the class names in words are accepted. Read only where clay and sand are not measured, by the texture tests of the WRB argic, cambic and ferralic horizons (sandy loam or finer) and the USDA Psamments and Psammentic subgroups (loamy fine sand or coarser); S (FAO: sand, unspecified) and US give no sand grade. ISIS textureClassesFao2006Small (v0.9.416). | - |
 
 ## Acidity
 
@@ -769,5 +770,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.413._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.416._
 
