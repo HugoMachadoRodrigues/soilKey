@@ -232,7 +232,7 @@ report_pdf <- function(x,
                 if (nzchar(tt$code[i])) tt$code[i] else "?",
                 tt$name[i],
                 sym,
-                if (st %in% c("failed", "indeterminate") && tt$n_missing[i] > 0)
+                if (st %in% c("failed", "undecided") && tt$n_missing[i] > 0)
                   sprintf(.report_msg("report.attrs_missing_pdf"),
                             tt$n_missing[i])
                 else "")

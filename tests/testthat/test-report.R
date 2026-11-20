@@ -227,7 +227,9 @@ test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
   # the particle-size / activity / temperature modifiers.
   expect_false(identical(b0, b1))
   usda1 <- grep("USDA Soil Taxonomy", b1, value = TRUE)
-  expect_true(any(grepl("fine, mixed, subactive, isothermic Rhodic Hapludox",
+  # v0.9.415: the temperature class is no longer inferred by default (the
+  # fixture records no regime), so the family has no temperature term.
+  expect_true(any(grepl("fine, mixed, subactive Rhodic Hapludox",
                         usda1)))
 })
 

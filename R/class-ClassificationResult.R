@@ -264,7 +264,7 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       # v0.9.265: count the classes actually tested (for a nested trace,
       # length(trace) counted phases and assigned records), and call them
       # RSGs only for WRB.
-      n_tested <- sum(tt$status %in% c("passed", "failed", "indeterminate"))
+      n_tested <- sum(tt$status %in% c("passed", "failed", "undecided"))
       tested_what <- if (identical(self$system_id, "wrb2022") ||
                          (is.null(self$system_id) &&
                           startsWith(self$system %||% "", "WRB"))) "RSGs"
@@ -278,11 +278,11 @@ ClassificationResult <- R6::R6Class("ClassificationResult",
       else
         cli::cli_text("({n_tested} {tested_what} tested before assignment)")
       sym_of <- c(passed = "PASSED", failed = "failed",
-                  indeterminate = "NA", selected = "assigned", info = "info")
+                  undecided = "undecided", selected = "assigned", info = "info")
       for (i in seq_len(nrow(tt))) {
         sym    <- sym_of[[tt$status[i]]]
         suffix <- if (tt$n_missing[i] > 0L &&
-                      tt$status[i] %in% c("failed", "indeterminate"))
+                      tt$status[i] %in% c("failed", "undecided"))
                     sprintf(" (%d attrs missing)", tt$n_missing[i]) else ""
         cli::cli_text(sprintf("  %2d. %-3s %-14s -- %s%s",
                               i,

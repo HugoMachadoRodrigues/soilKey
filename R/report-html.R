@@ -325,7 +325,7 @@ report <- function(x,
         .html_escape(if (nzchar(tt$code[i])) tt$code[i] else "?"),
         .html_escape(tt$name[i]),
         sym,
-        if (st %in% c("failed", "indeterminate") && tt$n_missing[i] > 0)
+        if (st %in% c("failed", "undecided") && tt$n_missing[i] > 0)
           sprintf(.report_msg("report.attrs_missing"), tt$n_missing[i])
         else "")
     }, character(1)), collapse = "\n")

@@ -73,10 +73,11 @@ test_that("temperature regime uses the site field, else infers from lat/elev", {
   expect_equal(given$value, "mesic")
   expect_false(isTRUE(given$evidence$inferred))
 
-  # tropical low-elevation site -> inferred iso* warm regime
+  # tropical low-elevation site -> inferred iso* warm regime, only when asked
+  # for (v0.9.415: inference is opt-in)
   inferred <- family_temperature_regime_usda(.uf_pedon(
     data.frame(top_cm = 0, bottom_cm = 50, clay_pct = 30),
-    site = list(lat = -5, lon = -60, elevation_m = 100)))
+    site = list(lat = -5, lon = -60, elevation_m = 100)), infer = TRUE)
   expect_true(isTRUE(inferred$evidence$inferred))
   expect_match(inferred$value, "^iso")
   expect_true("site$soil_temperature_regime" %in% inferred$missing)

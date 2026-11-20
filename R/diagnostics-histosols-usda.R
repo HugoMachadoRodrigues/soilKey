@@ -127,59 +127,71 @@ folist_qualifying_usda <- function(pedon) {
 }
 .usda_str_value <- function(x) {
   x <- tolower(as.character(x))
-  x[!is.na(x) & trimws(x) == "permagelic"] <- "gelic"
+  # v0.9.415: and pergelic, the name of the gelic regime before the 8th
+  # edition of the Keys
+  x[!is.na(x) & trimws(x) %in% c("permagelic", "pergelic")] <- "gelic"
   x
 }
 
-#' Soil moisture regime helper (USDA, KST 13ed Ch 3, pp 50-52)
+# v0.9.415: a regime is a property of the climate of the soil (KST 13th ed.,
+# pp. 47-49 and 53-55), measured or estimated outside the profile. A site that
+# records none leaves every regime test undecided (NA), with the site field
+# listed as missing; the key never infers one (audit decisions P2 and P3, Hugo,
+# 2026-11-20). Up to v0.9.414 a regime not recorded made every regime test
+# FALSE, so the key fell silently into the udic catch-all of 11 orders.
+.usda_regime_blank <- function(x) {
+  x <- as.character(x %||% NA_character_)[1L]
+  is.na(x) || !nzchar(trimws(x))
+}
+
+.USDA_SMR_TARGETS <- c("aquic", "aridic", "torric", "udic", "perudic", "ustic", "xeric")
+.USDA_STR_TARGETS <- c("gelic", "cryic", "frigid", "mesic", "thermic", "hyperthermic",
+                       "isofrigid", "isomesic", "isothermic", "isohyperthermic")
+
+#' Soil moisture regime helper (USDA, KST 13ed Ch 3, pp 47-49)
 #'
-#' Returns TRUE when \code{pedon$site$soil_moisture_regime} matches
-#' \code{target}. Climatic data is required; in v0.8.x the regime
-#' is read directly from site metadata (a v0.9 helper will derive it
-#' from monthly precipitation+ETP).
-#'
-#' Recognized targets (KST 13ed Ch 3): "aquic", "aridic", "torric",
-#' "udic", "perudic", "ustic", "xeric".
+#' TRUE when \code{pedon$site$soil_moisture_regime} is one of
+#' \code{target}, FALSE when another regime is recorded, and NA (undecided,
+#' \code{site$soil_moisture_regime} listed as missing) when none is recorded:
+#' the regime is never inferred in the key. Aridic and torric are the same
+#' regime (KST 13th ed., p. 48). \code{target} may name several regimes
+#' ("ustic or xeric", KST 13th ed., pp. 199 and 295).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param target Character, one of the recognized regimes.
+#' @param target Character, one or more of "aquic", "aridic", "torric",
+#'        "udic", "perudic", "ustic", "xeric".
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-soil_moisture_regime_usda <- function(pedon,
-                                          target = c("aquic", "aridic",
-                                                       "torric", "udic",
-                                                       "perudic", "ustic",
-                                                       "xeric")) {
-  target <- match.arg(target)
+soil_moisture_regime_usda <- function(pedon, target = "udic") {
+  target <- match.arg(as.character(unlist(target)), .USDA_SMR_TARGETS, several.ok = TRUE)
   smr_recorded <- pedon$site$soil_moisture_regime %||% NA_character_
-  smr <- .usda_smr_value(smr_recorded)
-  # Aridic and torric are synonyms in KST 13ed.
-  if (target == "aridic") {
-    passed <- !is.na(smr) && tolower(smr) %in% c("aridic", "torric")
-  } else if (target == "torric") {
-    passed <- !is.na(smr) && tolower(smr) %in% c("aridic", "torric")
-  } else {
-    passed <- !is.na(smr) && tolower(smr) == target
-  }
+  blank <- .usda_regime_blank(smr_recorded)
+  smr <- if (blank) NA_character_ else trimws(.usda_smr_value(as.character(smr_recorded)[1L]))
+  # Aridic and torric are synonyms in KST 13ed (p. 48).
+  accept <- target
+  if (any(accept %in% c("aridic", "torric"))) accept <- union(accept, c("aridic", "torric"))
+  passed <- if (blank) NA else smr %in% accept
   DiagnosticResult$new(
-    name = paste0("smr_", target, "_usda"), passed = passed,
+    name = paste0("smr_", paste(target, collapse = "_or_"), "_usda"), passed = passed,
     layers = integer(0),
     evidence = list(soil_moisture_regime = smr_recorded, target = target),
-    missing = if (is.na(smr)) "site$soil_moisture_regime"
-              else character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 50-52"
+    missing = if (blank) "site$soil_moisture_regime" else character(0),
+    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 47-49"
   )
 }
 
 
-#' Soil temperature regime helper (USDA, KST 13ed Ch 3, pp 53-58)
+#' Soil temperature regime helper (USDA, KST 13ed Ch 3, pp 53-55)
 #'
-#' Returns TRUE when \code{pedon$site$soil_temperature_regime}
-#' matches \code{target}. Temperature regimes:
+#' TRUE when \code{pedon$site$soil_temperature_regime} matches
+#' \code{target}, FALSE when another regime is recorded, and NA (undecided,
+#' \code{site$soil_temperature_regime} listed as missing) when none is
+#' recorded: the regime is never inferred from latitude or elevation in the
+#' key. Temperature regimes:
 #' \itemize{
-#'   \item "gelic":     MAST < 0 C (and permafrost present)
-#'   \item "cryic":     MAST 0-8 C, summer < 15 C
-#'   \item "frigid":    MAST < 8 C, summer >= 15 C
+#'   \item "gelic":     MAST <= 0 C (1 C in Gelisols)
+#'   \item "cryic":     MAST 0-8 C, cold summers, no permafrost
+#'   \item "frigid":    MAST < 8 C, warmer summers
 #'   \item "mesic":     MAST 8-15 C
 #'   \item "thermic":   MAST 15-22 C
 #'   \item "hyperthermic": MAST >= 22 C
@@ -187,29 +199,21 @@ soil_moisture_regime_usda <- function(pedon,
 #' }
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param target Character, one of the recognized regimes.
+#' @param target Character, one or more of the recognized regimes.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-soil_temperature_regime_usda <- function(pedon,
-                                              target = c("gelic", "cryic",
-                                                          "frigid", "mesic",
-                                                          "thermic",
-                                                          "hyperthermic",
-                                                          "isofrigid",
-                                                          "isomesic",
-                                                          "isothermic",
-                                                          "isohyperthermic")) {
-  target <- match.arg(target)
+soil_temperature_regime_usda <- function(pedon, target = "mesic") {
+  target <- match.arg(as.character(unlist(target)), .USDA_STR_TARGETS, several.ok = TRUE)
   str_recorded <- pedon$site$soil_temperature_regime %||% NA_character_
-  str <- .usda_str_value(str_recorded)
-  passed <- !is.na(str) && tolower(str) == target
+  blank <- .usda_regime_blank(str_recorded)
+  str <- if (blank) NA_character_ else trimws(.usda_str_value(as.character(str_recorded)[1L]))
+  passed <- if (blank) NA else str %in% target
   DiagnosticResult$new(
-    name = paste0("str_", target, "_usda"), passed = passed,
+    name = paste0("str_", paste(target, collapse = "_or_"), "_usda"), passed = passed,
     layers = integer(0),
     evidence = list(soil_temperature_regime = str_recorded, target = target),
-    missing = if (is.na(str)) "site$soil_temperature_regime"
-              else character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 53-58"
+    missing = if (blank) "site$soil_temperature_regime" else character(0),
+    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 53-55"
   )
 }
 
@@ -246,11 +250,22 @@ smr_ustic_usda  <- function(pedon) soil_moisture_regime_usda(pedon, "ustic")
 #' @noRd
 smr_xeric_usda  <- function(pedon) soil_moisture_regime_usda(pedon, "xeric")
 
-#' Udic soil moisture regime (USDA)
+#' Udic soil moisture regime (USDA), as the formative element "ud"
+#'
+#' TRUE for a udic or a perudic regime: in the names of most taxa "ud"
+#' stands for either (KST 13th ed., p. 48), e.g. Udults (p. 321). Perox,
+#' which needs the perudic regime itself, calls
+#' \code{soil_moisture_regime_usda(target = "perudic")}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-smr_udic_usda   <- function(pedon) soil_moisture_regime_usda(pedon, "udic")
+smr_udic_usda   <- function(pedon) soil_moisture_regime_usda(pedon, c("udic", "perudic"))
+
+#' Perudic soil moisture regime (USDA, KST 13th ed., p. 48)
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+smr_perudic_usda <- function(pedon) soil_moisture_regime_usda(pedon, "perudic")
 
 
 # ---- Sulfidic / Sulfuric helpers ------------------------------------

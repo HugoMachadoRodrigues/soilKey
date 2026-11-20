@@ -28,8 +28,10 @@ great_groups:
     - code: "BAC"
       name: "Ustifolists"
       tests:
-        all_of:
+        # v0.9.415: an ustic or xeric regime (KST 13th ed., p. 199)
+        any_of:
           - smr_ustic_usda: {}
+          - smr_xeric_usda: {}
     - code: "BAD"
       name: "Udifolists"
       tests:

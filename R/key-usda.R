@@ -94,10 +94,14 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #' @param include_family If \code{TRUE}, derive and prepend the 5th-level
 #'        family modifiers. Default \code{FALSE} (output byte-identical to
 #'        earlier versions).
-#' @param infer_temperature When deriving the family, infer the soil
-#'        temperature regime from latitude/elevation if
-#'        \code{site$soil_temperature_regime} is absent (default
-#'        \code{TRUE}). See \code{family_temperature_regime_usda}.
+#' @param infer_temperature When deriving the family and
+#'        \code{site$soil_temperature_regime} is not recorded, suggest a
+#'        temperature class from latitude and elevation (a crude lapse-rate
+#'        model, "iso" within 23 degrees of the equator). Default
+#'        \code{FALSE} since v0.9.415: the regime is not inferred unless asked
+#'        for, and the family then carries no temperature class. A suggested
+#'        class lowers the evidence grade to "C" and adds a warning. The key
+#'        itself (orders to subgroups) never infers a regime.
 #' @param gapfill Opt-in within-pedon depth gap-fill, default \code{FALSE}
 #'        (no-op, classification stays byte-identical). \code{TRUE} fills
 #'        interior \code{NA} cells of the continuous depth-trending attributes
@@ -106,6 +110,29 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #'        passed to \code{\link{gapfill_within_pedon}}. Filled cells carry
 #'        \code{inferred_prior} provenance, so the evidence grade drops to
 #'        \code{"C"}. Runs on a deep copy -- the caller's pedon is never mutated.
+#' @section Undecided tests and regimes:
+#' A test whose data are missing is undecided (NA), not failed. The key goes
+#' on past it, as the WRB key does, and records it: every taxon tested before
+#' the one assigned, at the order, suborder, great group and subgroup levels,
+#' whose result is NA is listed in \code{$ambiguities} (with \code{level},
+#' one of \code{"orders"}, \code{"suborders"}, \code{"great_groups"},
+#' \code{"subgroups"}), and \code{$missing_data} collects what was missing
+#' at every level. When the name depends on an undecided test, it holds only
+#' if that test fails: it is inferred by elimination, so the evidence grade
+#' falls from \code{"A"} or \code{"B"} to \code{"C"} (the grade of an
+#' inferred result) and a warning says so. When no taxon of a level passes
+#' and some were undecided, the level is not named and the name stops at the
+#' level above.
+#'
+#' The soil moisture and temperature regimes are read from
+#' \code{site$soil_moisture_regime} and \code{site$soil_temperature_regime}
+#' and never inferred in the key: with no regime recorded every regime test
+#' is undecided and lists the site field as missing (KST 13th ed., pp.
+#' 47-55). Taxa keyed as "Other" in the KST (Udalfs, Udepts, Udolls, Udox,
+#' ...) are still reached, past the undecided regime taxa, with grade C;
+#' Udults need a udic or perudic regime (p. 321; "ud" covers both, p. 48), so
+#' an Ultisol with no regime recorded has no suborder.
+#'
 #' @return A \code{\link{ClassificationResult}} with deepest-level
 #'         taxon name. Each level's trace is in \code{$trace}; the family
 #'         attributes are in \code{$trace$family}.
@@ -122,7 +149,7 @@ classify_usda <- function(pedon,
                             rules      = NULL,
                             on_missing = c("warn", "silent", "error"),
                             include_family = FALSE,
-                            infer_temperature = TRUE,
+                            infer_temperature = FALSE,
                             gapfill    = FALSE) {
   on_missing <- match.arg(on_missing)
   .classify_require_horizons(pedon, "classify_usda")
@@ -164,6 +191,11 @@ classify_usda <- function(pedon,
                  run_usda_subgroup(pedon, gg$code, rules)
                else list(assigned = NULL, trace = list())
   sg <- sg_result$assigned
+  # v0.9.415: as at the levels above, a subgroup whose tests did not pass is
+  # not named (a list that ends without a default may end undecided).
+  if (!is.null(sg) && !isTRUE(sg_result$trace[[sg$code]]$passed)) {
+    sg <- NULL
+  }
 
   # Display name = deepest assigned level
   display_name <- if (!is.null(sg))            sg$name
@@ -200,12 +232,55 @@ classify_usda <- function(pedon,
     family_label          = family_lbl
   )
 
-  ambiguities  <- find_ambiguities(key_result$trace, current = order$code)
+  # v0.9.415 (audit decision P1 (c), Hugo, 2026-11-20): every level records
+  # its undecided tests. A taxon tested before the one assigned, at the order,
+  # suborder, great group or subgroup level, whose result is NA joins
+  # $ambiguities with its level; $missing_data collects from every level; and
+  # a name reached past an undecided test was reached by elimination, so the
+  # evidence grade falls from A or B to C, the grade of an inferred result.
+  # Up to v0.9.414 only the order level was read.
+  level_traces <- list(orders       = key_result$trace,
+                       suborders    = sub_result$trace,
+                       great_groups = gg_result$trace,
+                       subgroups    = sg_result$trace)
+  level_assigned <- list(orders       = order$code,
+                         suborders    = suborder$code,
+                         great_groups = gg$code,
+                         subgroups    = sg$code)
+  und <- .usda_undecided_by_level(level_traces, level_assigned)
+  ambiguities  <- und$ambiguities
   grade        <- compute_evidence_grade(pedon, key_result$trace)
-  missing_data <- collect_missing_attributes(key_result$trace)
+  missing_data <- unique(unlist(lapply(level_traces, collect_missing_attributes),
+                                use.names = FALSE)) %||% character(0)
 
   warnings <- character(0)
   if (is.na(grade)) warnings <- c(warnings, .NO_PROPERTIES_WARNING)
+  if (length(und$before_assigned) > 0L) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "The name was reached past %d undecided test(s) (%s): it holds only if ",
+      "they fail, so it is inferred by elimination and the evidence grade ",
+      "is at most C. See $ambiguities and $missing_data."),
+      length(und$before_assigned), paste(und$before_assigned, collapse = ", ")))
+  }
+  for (lv in und$undecided_levels) {
+    warnings <- c(warnings, sprintf(paste0(
+      "%s undecided: no taxon passed and %s could not be decided, so the ",
+      "name stops at the level above. See $ambiguities."),
+      .USDA_LEVEL_LABEL[[lv]], paste(und$by_level[[lv]], collapse = ", ")))
+  }
+  # v0.9.415 (audit decision P3 (a)): a family temperature class inferred
+  # from latitude and elevation (infer_temperature = TRUE, opt-in) is a
+  # suggestion, not a recorded regime.
+  ft <- family_attrs$temperature_regime
+  if (!is.null(ft) && isTRUE(ft$evidence$inferred) && !is.null(ft$value)) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "Family temperature class '%s' is a suggestion inferred from latitude ",
+      "and elevation (infer_temperature = TRUE), not a recorded regime; the ",
+      "evidence grade is at most C. Record site$soil_temperature_regime."),
+      ft$value))
+  }
   if (is_default) {
     warnings <- c(warnings, paste0(
       "Profile keyed to USDA Entisols catch-all. ",

@@ -103,6 +103,59 @@ find_ambiguities <- function(trace, current, diags = NULL) {
 }
 
 
+# v0.9.415: the levels of the USDA key, as named in $ambiguities.
+.USDA_LEVEL_LABEL <- c(orders = "Order", suborders = "Suborder",
+                       great_groups = "Great group", subgroups = "Subgroup")
+
+#' The undecided tests of a hierarchical key, level by level
+#'
+#' For each level, the taxa tested before the one assigned (or every taxon
+#' tested, when none was assigned) whose result is NA. Each becomes an entry
+#' of \code{$ambiguities} in the shape \code{find_ambiguities()} gives the
+#' WRB key (\code{rsg_code}, \code{rsg_name}, \code{reason}), plus
+#' \code{level}. A level with no trace (not reached) adds nothing.
+#'
+#' @param traces Named list of level traces (names are the level ids).
+#' @param assigned Named list of the codes assigned at each level (NULL when
+#'   the level was not named).
+#' @return A list: \code{ambiguities}; \code{before_assigned}, the
+#'   "level:code" of the undecided taxa tested before an assigned one (the
+#'   name depends on them); \code{undecided_levels}, the levels reached where
+#'   no taxon was assigned and some were undecided; \code{by_level}, the
+#'   undecided codes of each level.
+#' @noRd
+.usda_undecided_by_level <- function(traces, assigned) {
+  amb <- list(); before <- character(0); und_levels <- character(0)
+  by_level <- list()
+  for (lv in names(traces)) {
+    tr <- traces[[lv]]
+    if (!length(tr)) next
+    cur <- assigned[[lv]]
+    codes <- character(0)
+    for (entry in tr) {
+      if (!is.null(cur) && identical(entry$code, cur)) break
+      if (!is.list(entry) || length(entry$passed) != 1L || !is.na(entry$passed)) next
+      miss <- entry$missing %||% character(0)
+      attr_missing <- unique(miss[!grepl("^diagnostic_", miss)])
+      reason <- if (length(attr_missing) > 0L)
+        sprintf("Indeterminate -- missing %d attribute(s): %s",
+                length(attr_missing), paste(attr_missing, collapse = ", "))
+      else "Indeterminate -- the test could not be evaluated"
+      amb[[length(amb) + 1L]] <- list(rsg_code = entry$code, rsg_name = entry$name,
+                                      reason = reason, level = lv)
+      codes <- c(codes, entry$code)
+    }
+    by_level[[lv]] <- codes
+    if (length(codes)) {
+      if (!is.null(cur)) before <- c(before, paste0(lv, ":", codes))
+      else und_levels <- c(und_levels, lv)
+    }
+  }
+  list(ambiguities = amb, before_assigned = before,
+       undecided_levels = und_levels, by_level = by_level)
+}
+
+
 #' Collect distinct missing soil attributes from the trace
 #'
 #' Filters out the \code{diagnostic_X} markers that record stubbed RSG

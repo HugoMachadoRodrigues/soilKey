@@ -18,8 +18,9 @@ A \code{data.frame} with one row per trace step and columns:
     \item{\code{code}}{Taxon or attribute code.}
     \item{\code{name}}{Taxon or attribute name (or attribute value).}
     \item{\code{status}}{One of \code{"passed"}, \code{"failed"},
-      \code{"indeterminate"} (a test that could not be evaluated for want of
-      data), \code{"selected"} (the taxon assigned at a level), or
+      \code{"undecided"} (a test whose result is NA: it could not be
+      evaluated for want of data; called \code{"indeterminate"} before
+      v0.9.415), \code{"selected"} (the taxon assigned at a level), or
       \code{"info"} (a family attribute or label, not a pass/fail test).}
     \item{\code{missing}}{Comma-separated attributes that were missing for
       the step (empty when none).}

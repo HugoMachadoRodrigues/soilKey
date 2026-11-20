@@ -41,8 +41,9 @@
 #'     \item{\code{code}}{Taxon or attribute code.}
 #'     \item{\code{name}}{Taxon or attribute name (or attribute value).}
 #'     \item{\code{status}}{One of \code{"passed"}, \code{"failed"},
-#'       \code{"indeterminate"} (a test that could not be evaluated for want of
-#'       data), \code{"selected"} (the taxon assigned at a level), or
+#'       \code{"undecided"} (a test whose result is NA: it could not be
+#'       evaluated for want of data; called \code{"indeterminate"} before
+#'       v0.9.415), \code{"selected"} (the taxon assigned at a level), or
 #'       \code{"info"} (a family attribute or label, not a pass/fail test).}
 #'     \item{\code{missing}}{Comma-separated attributes that were missing for
 #'       the step (empty when none).}
@@ -88,7 +89,7 @@ key_trace_table <- function(x) {
     if (isTRUE(pv))            "passed"
     else if (isFALSE(pv))      "failed"
     else if (!is.null(t$tests)) "selected"   # an assigned-taxon record
-    else                       "indeterminate"
+    else                       "undecided"
   }
 
   # Recursively walk a node. `phase` is the level label it belongs to ("" for
