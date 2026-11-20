@@ -35,14 +35,19 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_cutanic <- function(pedon) {
+  # v0.9.412: WRB 2022 Ch 5, Cutanic (p. 131): "an argic or natric horizon
+  # that meets diagnostic criterion 2.b of the respective horizon"; until
+  # v0.9.411 the natric horizon was not read.
   arg <- argic(pedon)
-  if (!isTRUE(arg$passed))
+  nat <- natric_horizon(pedon)
+  if (!isTRUE(arg$passed) && !isTRUE(nat$passed))
     return(DiagnosticResult$new(name = "Cutanic", passed = FALSE,
-            layers = integer(0), evidence = list(argic = arg),
+            layers = integer(0), evidence = list(argic = arg, natric = nat),
             missing = arg$missing %||% character(0),
             reference = "WRB (2022) Ch 5, Cutanic"))
   h <- pedon$horizons
-  ly <- arg$layers
+  ly <- sort(union(if (isTRUE(arg$passed)) arg$layers,
+                   if (isTRUE(nat$passed)) nat$layers))
   films <- h$clay_films_amount[ly]
   ok <- !is.na(films) & grepl("common|many|continuous|shiny",
                                   films, ignore.case = TRUE)

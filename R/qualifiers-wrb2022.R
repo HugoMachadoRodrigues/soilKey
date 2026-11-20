@@ -126,7 +126,26 @@ qual_calcic      <- function(pedon) .q_presence("Calcic",      calcic(pedon),   
 #' Cambic qualifier (cm): cambic horizon <= 50 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_cambic      <- function(pedon) .q_presence("Cambic",      cambic(pedon),      50,  pedon)
+qual_cambic      <- function(pedon) {
+  cb <- cambic(pedon)
+  if (!isTRUE(cb$passed)) return(.q_presence("Cambic", cb, 50, pedon))
+  # v0.9.412 (Hugo, L10): the qualifier also asks cambic criterion 3, evidence
+  # of soil formation (WRB 2022 Ch 3.1.5, p. 39; Ch 5, Cambic, p. 130), of
+  # every horizon of a run >= 15 cm starting <= 50 cm from the mineral soil
+  # surface. As for Brunic, evidence found counts and none found leaves the
+  # horizon undecided: 3.c (gypsum) and 3.d (Fe) are seldom recorded.
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  sf <- test_cambic_soil_formation(h, candidate_layers = cb$layers)
+  st <- ifelse(seq_len(nrow(h)) %in% cb$layers,
+               ifelse(seq_len(nrow(h)) %in% sf$layers, TRUE, NA), FALSE)
+  run <- .q_run_tristate(h, st, 15, from = ms, max_start = ms + 50)
+  DiagnosticResult$new(name = "Cambic", passed = run$passed, layers = run$layers,
+    evidence = list(base = cb, soil_formation = sf),
+    missing = if (is.na(run$passed)) "cambic criterion 3 (evidence of soil formation)"
+              else character(0),
+    reference = "WRB (2022) Ch 5, Cambic (p. 130); Ch 3.1.5 criterion 3 (p. 39)")
+}
 
 #' Cryic qualifier (cy): cryic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -801,6 +820,27 @@ qual_sodic <- function(pedon) {
 
 # ---------- COLOUR-BASED PRINCIPAL QUALIFIERS -------------------------------
 
+# v0.9.412: the layer of the Rhodic and Chromic qualifiers, "between 25 and
+# 150 cm of the mineral soil surface a layer, >= 30 cm thick" (WRB 2022 Ch 5,
+# p. 145 and 130): the horizons that overlap that depth range, each counted
+# only for its part inside it, and the layer is one run of adjoining
+# horizons. Until v0.9.411 the horizons had to start between 25 and 150 cm
+# and their whole thicknesses were added, adjoining or not.
+.q_colour_window <- function(pedon) {
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  which(!is.na(h$top_cm) & !is.na(h$bottom_cm) & h$bottom_cm > ms + 25 &
+          h$top_cm < ms + 150)
+}
+# Depths of the range that no horizon describes have no recorded colour, and
+# a field observation not recorded counts as absent: they do not count.
+.q_colour_run <- function(pedon, layers) {
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  .q_run_tristate(h, seq_len(nrow(h)) %in% layers, 30,
+                  from = ms + 25, to = ms + 150)
+}
+
 #' Rhodic qualifier (ro): hue redder than 5YR + value < 4 + dry no
 #' more than 1 unit higher than moist (in upper subsoil 25-150 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -811,7 +851,7 @@ qual_rhodic <- function(pedon) {
   # 5YR, value < 4 (moist) and a dry value not more than one unit higher than
   # the moist value.
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 150)
+  cand <- .q_colour_window(pedon)
   if (length(cand) == 0L)
     return(DiagnosticResult$new(name = "Rhodic", passed = FALSE,
             layers = integer(0), evidence = list(),
@@ -826,9 +866,9 @@ qual_rhodic <- function(pedon) {
   colour_layers <- cand[colour_ok]
   sf <- test_cambic_soil_formation(h, candidate_layers = colour_layers)
   qual_layers <- intersect(colour_layers, sf$layers)
-  thickness <- if (length(qual_layers) > 0L)
-    sum(h$bottom_cm[qual_layers] - h$top_cm[qual_layers], na.rm = TRUE) else 0
-  passed <- thickness >= 30
+  run <- .q_colour_run(pedon, qual_layers)
+  thickness <- run$thickness; qual_layers <- run$layers
+  passed <- isTRUE(run$passed)
   DiagnosticResult$new(name = "Rhodic", passed = passed,
     layers = if (passed) qual_layers else integer(0),
     evidence = list(thickness_cm = thickness),
@@ -845,7 +885,7 @@ qual_chromic <- function(pedon) {
   # evidence of soil formation (cambic criterion 3) and has hue redder than
   # 7.5YR and chroma > 4 (moist), and does NOT meet the Rhodic qualifier.
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 150)
+  cand <- .q_colour_window(pedon)
   if (length(cand) == 0L)
     return(DiagnosticResult$new(name = "Chromic", passed = FALSE,
             layers = integer(0), evidence = list(),
@@ -857,10 +897,10 @@ qual_chromic <- function(pedon) {
   colour_layers <- cand[colour_ok]
   sf <- test_cambic_soil_formation(h, candidate_layers = colour_layers)
   qual_layers <- intersect(colour_layers, sf$layers)
-  thickness <- if (length(qual_layers) > 0L)
-    sum(h$bottom_cm[qual_layers] - h$top_cm[qual_layers], na.rm = TRUE) else 0
+  run <- .q_colour_run(pedon, qual_layers)
+  thickness <- run$thickness; qual_layers <- run$layers
   not_rhodic <- !isTRUE(qual_rhodic(pedon)$passed)
-  passed <- thickness >= 30 && not_rhodic
+  passed <- isTRUE(run$passed) && not_rhodic
   DiagnosticResult$new(name = "Chromic", passed = passed,
     layers = if (passed) qual_layers else integer(0),
     evidence = list(thickness_cm = thickness, not_rhodic = not_rhodic),
@@ -1144,7 +1184,8 @@ qual_haplic <- function(pedon) {
   hyperhumic = c("Hyperhumic", "Humic"),
   profundihumic = c("Profundihumic", "Humic"),
   dystric    = c("Hyperdystric", "Dystric"),
-  alic       = c("Hyperalic",   "Alic")
+  alic       = c("Hyperalic",   "Alic"),
+  geric      = c("Hypergeric",  "Geric")       # v0.9.412, WRB 2022 Ch 5 p. 135
 )
 
 # v0.9.410 (Hugo, 2026-11-19): optional subqualifiers. WRB 2022 Ch 2.3, rule
@@ -1173,7 +1214,9 @@ qual_haplic <- function(pedon) {
   Hypereutric = c("Oligoeutric"),
   # v0.9.411: the subqualifiers of Humic (Ch 5, p. 137). WRB states no
   # preference between them; the stricter one (>= 5% to 50 cm) is tried first.
-  Humic       = c("Hyperhumic", "Profundihumic")
+  Humic       = c("Hyperhumic", "Profundihumic"),
+  # v0.9.412: Hypergeric, < 1.5 cmolc per kg of clay (Ch 5, p. 135)
+  Geric       = c("Hypergeric")
 )
 
 # Replace each taken qualifier that has optional subqualifiers by the first

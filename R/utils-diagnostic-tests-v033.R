@@ -517,7 +517,8 @@ test_takyric_surface <- function(h) {
 #'         units redder (or yellower if the underlying hue is 5YR or redder);
 #'         OR chroma \eqn{\ge} 1 unit higher; OR clay \eqn{\ge} 4\% (absolute)
 #'         higher;
-#'   \item \strong{3.b} vs an overlying mineral layer \eqn{\ge} 5 cm thick: hue
+#'   \item \strong{3.b} vs any overlying mineral layer \eqn{\ge} 5 cm thick
+#'         with no lithic discontinuity in between (since v0.9.412): hue
 #'         \eqn{\ge} 2.5 units redder; OR value \eqn{\ge} 1 unit higher; OR
 #'         chroma \eqn{\ge} 1 unit higher;
 #'   \item \strong{3.c} vs the directly underlying layer: \eqn{\ge} 5\%
@@ -574,18 +575,30 @@ test_cambic_soil_formation <- function(h, candidate_layers = NULL) {
       kli <- .col_at(h, "clay_pct", i); klj <- .col_at(h, "clay_pct", dn)
       if (!is.na(kli) && !is.na(klj)) ev$a_clay <- (kli - klj) >= 4
     }
-    # --- 3.b vs overlying mineral layer >= 5 cm ---
-    if (up >= 1L && no_lith_break(up, i) && is_mineral(up)) {
+    # --- 3.b vs an overlying mineral layer >= 5 cm ---
+    # v0.9.412: WRB 2022 Ch 3.1.5 (p. 39) compares with "an overlying mineral
+    # layer, >= 5 cm thick and not separated from the cambic horizon by a
+    # lithic discontinuity" (3.a says "the directly underlying layer"): any
+    # such layer above counts, not only the next one, so the lower parts of a
+    # uniform B are compared with the A. Until v0.9.411 only layer i - 1.
+    for (up in rev(seq_len(i - 1L))) {
+      if (!all(vapply(seq.int(up, i - 1L), function(k) no_lith_break(k, k + 1L),
+                      logical(1)))) break
+      if (!is_mineral(up)) next
       thk <- .col_at(h, "bottom_cm", up) - .col_at(h, "top_cm", up)
-      if (is.na(thk) || thk >= 5) {
-        hi <- hue_u(i); hj <- hue_u(up)
-        if (!is.na(hi) && !is.na(hj)) ev$b_hue <- (hj - hi) >= 2.5
-        vi <- .col_at(h, "munsell_value_moist", i)
-        vj <- .col_at(h, "munsell_value_moist", up)
-        if (!is.na(vi) && !is.na(vj)) ev$b_value <- (vi - vj) >= 1
-        ci <- .col_at(h, "munsell_chroma_moist", i)
-        cj <- .col_at(h, "munsell_chroma_moist", up)
-        if (!is.na(ci) && !is.na(cj)) ev$b_chroma <- (ci - cj) >= 1
+      if (!is.na(thk) && thk < 5) next
+      hi <- hue_u(i); hj <- hue_u(up)
+      vi <- .col_at(h, "munsell_value_moist", i)
+      vj <- .col_at(h, "munsell_value_moist", up)
+      ci <- .col_at(h, "munsell_chroma_moist", i)
+      cj <- .col_at(h, "munsell_chroma_moist", up)
+      for (b in list(c("b_hue", if (!is.na(hi) && !is.na(hj)) (hj - hi) >= 2.5),
+                     c("b_value", if (!is.na(vi) && !is.na(vj)) (vi - vj) >= 1),
+                     c("b_chroma", if (!is.na(ci) && !is.na(cj)) (ci - cj) >= 1)))
+        if (length(b) == 2L && !isTRUE(ev[[b[1]]]))
+          ev[[b[1]]] <- as.logical(b[2])
+      if (any(vapply(ev[c("b_hue", "b_value", "b_chroma")], isTRUE, logical(1)))) {
+        ev$b_layer <- up; break
       }
     }
     # --- 3.c carbonate removal vs underlying ---

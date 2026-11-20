@@ -153,7 +153,11 @@ test_that("Thapto- filters base layers by buried-soil 'b' designation", {
     oc_pct = c(1.0, 0.4, 1.5, 0.3),
     bs_pct = c(60, 65, 65, 70),
     cec_cmol = c(10, 9, 12, 5),
-    bulk_density_g_cm3 = c(1.4, 1.5, 1.4, 1.6)
+    bulk_density_g_cm3 = c(1.4, 1.5, 1.4, 1.6),
+    # v0.9.412: the Cambic qualifier asks cambic criterion 3 (Hugo, L10);
+    # moist colours give the C and the Bwb their evidence of soil formation
+    munsell_hue_moist = c("10YR", "10YR", "7.5YR", "10YR"),
+    munsell_value_moist = c(3, 4, 4, 5), munsell_chroma_moist = c(2, 3, 4, 3)
   )
   pr <- PedonRecord$new(
     site = list(id = "TH", lat = 0, lon = 0, country = "TEST",
