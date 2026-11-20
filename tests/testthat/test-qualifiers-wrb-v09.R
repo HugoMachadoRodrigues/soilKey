@@ -169,7 +169,11 @@ test_that("resolve_wrb_qualifiers falls back to Haplic when nothing matches", {
   )
   # v0.9.217: Haplic only where Chapter 4 lists it. Luvisols do; Regosols do
   # not (their list ends with Dystric/Eutric), so nothing applies there.
-  expect_equal(resolve_wrb_qualifiers(pr, "LV")$principal, "Haplic")
+  # v0.9.413: Haplic stands although principal qualifiers stay undecided on
+  # this texture-only profile; they come back in undecided_principal.
+  lv <- resolve_wrb_qualifiers(pr, "LV")
+  expect_equal(lv$principal, "Haplic")
+  expect_gt(length(lv$undecided_principal), 0L)
   expect_length(resolve_wrb_qualifiers(pr, "RG")$principal, 0L)
 })
 

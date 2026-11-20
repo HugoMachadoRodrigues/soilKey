@@ -89,17 +89,35 @@
 #' properties. albic() tests the claric colours and the thickness only.
 #' @noRd
 .wrb_albic_layers <- function(pedon, idx) {
-  if (!length(idx)) return(integer(0))
+  idx[.wrb_albic_criterion2(pedon, idx) %in% TRUE]
+}
+
+#' Criterion 2 of the albic horizon (WRB 2022 Ch 3.1.1, p. 34) for each layer
+#' of `idx`, TRUE / FALSE / NA. v0.9.413: a layer "overlies" an argic,
+#' natric, plinthic or spodic horizon when it is not part of one and lies
+#' above the upper limit of one of its layers; it "forms part of a layer with
+#' stagnic properties" when it has stagnic properties itself
+#' (.wrb_redox_layers()). Until v0.9.413 a layer passed when its lower limit
+#' lay above the top of the deepest layer of those horizons, so the claric
+#' layers inside an argic or natric horizon passed (ISRIC's BW005, MZ007).
+#' NA when it does neither and one of those horizons or its stagnic
+#' properties are undecided.
+#' @noRd
+.wrb_albic_criterion2 <- function(pedon, idx) {
+  if (!length(idx)) return(logical(0))
   h <- pedon$horizons
-  layers_of <- function(f) {
-    r <- tryCatch(f(pedon), error = function(e) NULL)
-    if (!is.null(r) && isTRUE(r$passed)) as.integer(r$layers) else integer(0)
-  }
-  under <- unique(c(layers_of(argic), layers_of(natric_horizon),
-                    layers_of(plinthic), layers_of(spodic)))
-  stag <- layers_of(stagnic_properties)
-  deepest <- if (length(under)) max(h$top_cm[under], na.rm = TRUE) else -Inf
-  idx[(!is.na(h$bottom_cm[idx]) & h$bottom_cm[idx] <= deepest + 1e-6) | idx %in% stag]
+  res <- lapply(list(argic, natric_horizon, plinthic, spodic),
+                function(f) tryCatch(f(pedon), error = function(e) NULL))
+  under <- unique(unlist(lapply(res, function(r)
+    if (!is.null(r) && isTRUE(r$passed)) as.integer(r$layers))))
+  open <- any(vapply(res, function(r) is.null(r) || is.na(r$passed), NA))
+  stag <- .wrb_redox_layers(pedon)$stagnic
+  vapply(idx, function(i) {
+    over <- !(i %in% under) && !is.na(h$bottom_cm[i]) &&
+      any(h$top_cm[under] >= h$bottom_cm[i] - 1e-6, na.rm = TRUE)
+    if (over || stag[i] %in% TRUE) TRUE
+    else if (open || is.na(stag[i])) NA else FALSE
+  }, NA)
 }
 
 #' The cambic horizon as WRB 2022 Ch 3.1.5 words it (p. 39-40), for the WRB
@@ -314,7 +332,14 @@ cambisol <- function(pedon) {
   n <- nrow(h)
   ref <- "IUSS Working Group WRB (2022), Chapter 3.1.4, Calcic horizon (p. 37-38)"
   tests <- list()
-  tests$caco3 <- test_caco3_concentration(h, min_pct = min_caco3_pct)
+  # v0.9.413: a layer not measured and described as non-calcareous in the
+  # field holds no 15% CaCO3 (Hugo); when every layer not measured is so
+  # described, no CaCO3 measured is no longer undecided
+  ca <- h$caco3_pct %||% rep(NA_real_, n)
+  none <- is.na(ca) & .wrb_field_noncalcareous(h)
+  if (any(none) && all(none | !is.na(ca))) ca[none] <- 0
+  tests$caco3 <- test_caco3_concentration(data.frame(caco3_pct = ca),
+                                          min_pct = min_caco3_pct)
   c1 <- tests$caco3$layers
   sc <- h$secondary_carbonates_pct %||% rep(NA_real_, n)
   c2a <- ifelse(is.na(sc[c1]), NA, sc[c1] >= 5)

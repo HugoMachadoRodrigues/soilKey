@@ -205,6 +205,13 @@ classify_wrb2022 <- function(pedon,
     name
   }
 
+  # v0.9.413: the principal qualifiers left undecided (Haplic is given when
+  # none passed, Hugo) are named in $qualifiers$undecided_principal, and what
+  # would decide them joins $missing_data, so the name does not hide them;
+  # $ambiguities keeps the reference soil groups that came close.
+  und_q <- qual_result$undecided_principal %||% list()
+  missing_data <- unique(c(missing_data, unlist(und_q, use.names = FALSE)))
+
   ClassificationResult$new(
     system         = "WRB 2022",
     name           = full_name,
@@ -212,7 +219,8 @@ classify_wrb2022 <- function(pedon,
     qualifiers     = list(principal     = qual_result$principal,
                             supplementary = qual_result$supplementary %||% character(0),
                             trace         = qual_result$trace,
-                            trace_supplementary = qual_result$trace_supplementary %||% list()),
+                            trace_supplementary = qual_result$trace_supplementary %||% list(),
+                            undecided_principal = names(und_q)),
     trace          = key_result$trace,
     ambiguities    = ambiguities,
     missing_data   = missing_data,

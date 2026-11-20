@@ -143,12 +143,22 @@ qual_grumic <- function(pedon) {
   # The <= 1 cm aggregate limit is structure-class-dependent: granular peds up to
   # "medium" stay <= 1 cm, but "medium" blocky peds are 10-20 mm (> 1 cm), so for
   # blocky only "very fine"/"fine" qualify.
-  is_gran   <- !is.na(type) & grepl("granular", type, ignore.case = TRUE)
-  is_blocky <- !is.na(type) & grepl("blocky",   type, ignore.case = TRUE)
-  size_ok <- is.na(size) |
-               (is_gran   & size %in% c("very fine", "fine", "medium")) |
-               (is_blocky & size %in% c("very fine", "fine"))
-  ok <- !is.na(grade) & grade %in% "strong" & (is_gran | is_blocky) & size_ok
+  grumic <- function(grade, type, size) {
+    is_gran   <- !is.na(type) & grepl("granular", type, ignore.case = TRUE)
+    is_blocky <- !is.na(type) & grepl("blocky",   type, ignore.case = TRUE)
+    size_ok <- is.na(size) |
+                 (is_gran   & size %in% c("very fine", "fine", "medium")) |
+                 (is_blocky & size %in% c("very fine", "fine"))
+    !is.na(grade) & grade %in% "strong" & (is_gran | is_blocky) & size_ok
+  }
+  # v0.9.413: or the second structure the layer records (ISIS structureType2,
+  # structureGrade2, structureSize2), with the same test (WRB 2022 Ch 5,
+  # p. 136): ISRIC's CU009 has a strong coarse subangular blocky structure
+  # and a strong medium granular one at the surface
+  col2 <- function(v) if (is.null(h[[v]])) rep(NA_character_, length(sl)) else h[[v]][sl]
+  ok <- grumic(grade, type, size) |
+        grumic(col2("structure_grade_secondary"), col2("structure_type_secondary"),
+               col2("structure_size_secondary"))
   passed <- any(ok)
   DiagnosticResult$new(
     name = "Grumic", passed = passed,

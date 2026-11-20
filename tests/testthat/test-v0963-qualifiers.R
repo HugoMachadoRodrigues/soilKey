@@ -69,9 +69,10 @@ test_that("qual_coarsic does not fire when CF below threshold", {
 test_that("qual_fractic: remnants of a broken-up petro- horizon, not cracks", {
   skip_on_cran()
   # WRB 2022: a layer of remnants of a broken-up petrocalcic or petrogypsic
-  # horizon; soilKey records no such remnants, so it is NA, and shrink-swell
-  # cracks (the v0.9.63 reading) no longer make it TRUE.
-  expect_true(is.na(qual_fractic(.minimal_pedon())$passed))
+  # horizon; soilKey records no such remnants, and shrink-swell cracks (the
+  # v0.9.63 reading) no longer make it TRUE. v0.9.413: remnants are a field
+  # observation, absent when not recorded (Hugo), so FALSE; it was NA.
+  expect_false(qual_fractic(.minimal_pedon())$passed)
   p <- .minimal_pedon()
   p$horizons$cracks_width_cm <- c(0, 2)
   p$horizons$cracks_depth_cm <- c(0, 50)

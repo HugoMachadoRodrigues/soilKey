@@ -26,12 +26,19 @@
 }
 
 # Helper: build a DiagnosticResult for a thin "presence" qualifier.
+# v0.9.413 (Hugo, L3): an undecided diagnostic leaves the qualifier undecided
+# (NA), as Haplic needs every principal qualifier decided (WRB 2022 Ch 5,
+# p. 136); it was FALSE. An undecided diagnostic whose possible layers all
+# start too deep is FALSE.
 .q_presence <- function(name, base_diag, max_top_cm = 100, pedon = NULL) {
-  passed <- isTRUE(base_diag$passed) &&
-              (is.null(pedon) ||
-                 length(intersect(base_diag$layers,
-                                      .in_upper(pedon, max_top_cm))) > 0L)
-  layers <- if (passed) base_diag$layers else integer(0)
+  within <- is.null(pedon) ||
+              length(intersect(base_diag$layers,
+                               .in_upper(pedon, max_top_cm))) > 0L
+  passed <- if (isTRUE(base_diag$passed)) within
+            else if (is.na(base_diag$passed %||% NA) &&
+                     (!length(base_diag$layers) || within)) NA
+            else FALSE
+  layers <- if (isTRUE(passed)) base_diag$layers else integer(0)
   DiagnosticResult$new(
     name = name, passed = passed, layers = layers,
     evidence = list(base = base_diag),
@@ -46,7 +53,22 @@
 #' Albic qualifier (ab): albic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_albic       <- function(pedon) .q_presence("Albic",       albic(pedon),       100, pedon)
+qual_albic <- function(pedon) {
+  # v0.9.413: albic() reads the claric colours and the thickness; criterion 2
+  # (WRB 2022 Ch 3.1.1, p. 34: overlying an argic, natric, plinthic or spodic
+  # horizon, or part of a layer with stagnic properties) is read here
+  a <- albic(pedon)
+  if (isTRUE(a$passed)) {
+    c2 <- .wrb_albic_criterion2(pedon, a$layers)
+    ok <- if (any(c2 %in% TRUE)) TRUE else if (anyNA(c2)) NA else FALSE
+    a <- DiagnosticResult$new(
+      name = "albic", passed = ok,
+      layers = if (isTRUE(ok)) a$layers[c2 %in% TRUE] else a$layers[is.na(c2)],
+      evidence = list(albic = a, criterion_2 = c2), missing = character(0),
+      reference = "IUSS Working Group WRB (2022), Chapter 3.1.1, Albic horizon (p. 34)")
+  }
+  .q_presence("Albic", a, 100, pedon)
+}
 
 #' Andic qualifier (an): andic OR vitric properties combined >= 30 cm.
 #' v0.9 simplification: passes if andic_properties or vitric_properties
@@ -106,7 +128,17 @@ qual_aeolic      <- function(pedon) .q_presence("Aeolic",      aeolic_material(p
 #' Fragic qualifier (fg): fragic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_fragic      <- function(pedon) .q_presence("Fragic",      fragic(pedon),      100, pedon)
+qual_fragic <- function(pedon) {
+  # v0.9.413: the fragic horizon asks a brittle manner of failure (WRB 2022
+  # Ch 3.1.13, p. 46, criterion 5), a field observation the schema does not
+  # record: not recorded, it is absent, unless a designation has the suffix x
+  # (fragic character, Annex 1, Ch 10, Table 10.2)
+  d <- as.character(pedon$horizons$designation %||% character(0))
+  .q_presence("Fragic", .wrb_field_decided(fragic(pedon),
+                                          !any(grepl("^[0-9]*[A-Z]+[a-z0-9]*x", d)),
+                                          "brittle failure (Ch 3.1.13, criterion 5) not recorded"),
+              100, pedon)
+}
 
 #' Limonic qualifier (lm): limonic (bog-iron) horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -129,22 +161,32 @@ qual_calcic      <- function(pedon) .q_presence("Calcic",      calcic(pedon),   
 qual_cambic      <- function(pedon) {
   cb <- cambic(pedon)
   if (!isTRUE(cb$passed)) return(.q_presence("Cambic", cb, 50, pedon))
+  # WRB 2022 Ch 5, Cambic (p. 129-130): "having a cambic horizon, not
+  # consisting of claric material and starting <= 50 cm".
+  # v0.9.413: the claric layers (test_claric_munsell(), Ch 3.3.4, p. 86) are
+  # set aside; an undecided one leaves its layer undecided.
   # v0.9.412 (Hugo, L10): the qualifier also asks cambic criterion 3, evidence
-  # of soil formation (WRB 2022 Ch 3.1.5, p. 39; Ch 5, Cambic, p. 130), of
-  # every horizon of a run >= 15 cm starting <= 50 cm from the mineral soil
-  # surface. As for Brunic, evidence found counts and none found leaves the
-  # horizon undecided: 3.c (gypsum) and 3.d (Fe) are seldom recorded.
+  # of soil formation (Ch 3.1.5, p. 39), of every horizon of the run. As for
+  # Brunic, evidence found counts and none found leaves the horizon undecided:
+  # 3.c (gypsum) and 3.d (Fe) are seldom recorded.
+  # The run must be >= 15 cm and start <= 50 cm from the mineral soil surface.
   h <- pedon$horizons
+  n <- nrow(h)
   ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  clr <- .subtest_by_layer(test_claric_munsell(h, candidate_layers = cb$layers), n)
   sf <- test_cambic_soil_formation(h, candidate_layers = cb$layers)
-  st <- ifelse(seq_len(nrow(h)) %in% cb$layers,
-               ifelse(seq_len(nrow(h)) %in% sf$layers, TRUE, NA), FALSE)
+  idx <- seq_len(n)
+  st <- ifelse(!(idx %in% cb$layers), FALSE,
+        ifelse(clr %in% TRUE, FALSE,
+        ifelse(is.na(clr), NA,
+        ifelse(idx %in% sf$layers, TRUE, NA))))
   run <- .q_run_tristate(h, st, 15, from = ms, max_start = ms + 50)
   DiagnosticResult$new(name = "Cambic", passed = run$passed, layers = run$layers,
-    evidence = list(base = cb, soil_formation = sf),
-    missing = if (is.na(run$passed)) "cambic criterion 3 (evidence of soil formation)"
+    evidence = list(base = cb, claric = clr, soil_formation = sf),
+    missing = if (is.na(run$passed))
+                "claric material or cambic criterion 3 (evidence of soil formation)"
               else character(0),
-    reference = "WRB (2022) Ch 5, Cambic (p. 130); Ch 3.1.5 criterion 3 (p. 39)")
+    reference = "WRB (2022) Ch 5, Cambic (p. 129-130); Ch 3.1.5 criterion 3 (p. 39)")
 }
 
 #' Cryic qualifier (cy): cryic horizon <= 100 cm.
@@ -251,17 +293,32 @@ qual_nitic       <- function(pedon) .q_presence("Nitic",       nitic_horizon(ped
 #' Petrocalcic qualifier (pc): petrocalcic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_petrocalcic <- function(pedon) .q_presence("Petrocalcic", petrocalcic(pedon),      100, pedon)
+qual_petrocalcic <- function(pedon) {
+  # v0.9.413: a cemented horizon; with no layer that can be cemented
+  # (cementation is a field observation, absent where not recorded), FALSE
+  .q_presence("Petrocalcic", .wrb_field_decided(petrocalcic(pedon), !.wrb_cemented_possible(pedon),
+                                          "no layer recorded as cemented"), 100, pedon)
+}
 
 #' Petroduric qualifier (pd): petroduric horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_petroduric  <- function(pedon) .q_presence("Petroduric",  petroduric(pedon),       100, pedon)
+qual_petroduric <- function(pedon) {
+  # v0.9.413: a cemented horizon; with no layer that can be cemented
+  # (cementation is a field observation, absent where not recorded), FALSE
+  .q_presence("Petroduric", .wrb_field_decided(petroduric(pedon), !.wrb_cemented_possible(pedon),
+                                          "no layer recorded as cemented"), 100, pedon)
+}
 
 #' Petrogypsic qualifier (pg): petrogypsic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_petrogypsic <- function(pedon) .q_presence("Petrogypsic", petrogypsic(pedon),      100, pedon)
+qual_petrogypsic <- function(pedon) {
+  # v0.9.413: a cemented horizon; with no layer that can be cemented
+  # (cementation is a field observation, absent where not recorded), FALSE
+  .q_presence("Petrogypsic", .wrb_field_decided(petrogypsic(pedon), !.wrb_cemented_possible(pedon),
+                                          "no layer recorded as cemented"), 100, pedon)
+}
 
 #' Petroplinthic qualifier (pp): petroplinthic horizon <= 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
@@ -304,15 +361,26 @@ qual_stagnic <- function(pedon) {
   z <- st$evidence$redox_layers
   ms <- .q_mineral_surface_cm(h)
   if (is.na(ms)) ms <- 0
-  # a run of stagnic layers (sure, or sure and undecided) >= 25 cm thick,
-  # starting <= 75 cm, with >= 25% redox area and reducing conditions
+  # a layer of stagnic horizons (sure, or sure and undecided) >= 25 cm thick,
+  # starting <= 75 cm, with >= 25% redox area and reducing conditions.
+  # v0.9.413: "having a layer" (Ch 5, p. 147) is any set of adjoining whole
+  # horizons within a run; the area was averaged over the whole run, so a
+  # weaker horizon below diluted a layer that met it (ISRIC's ID004: 30.7% at
+  # 26-60 cm, 23.1% at 26-80 cm)
   test <- function(sel, reducing_ok) {
     run <- .adjoining_runs(h, sel, min_cm = 25, max_top_cm = ms + 75)
     if (!isTRUE(run$passed)) return(list(ok = FALSE, layers = integer(0)))
-    L <- run$layers
-    w <- pmax(0, h$bottom_cm[L] - h$top_cm[L])
-    list(ok = sum(w * z$area[L]) / sum(w) >= 25 && any(z$reducing[L] %in% reducing_ok),
-         layers = L)
+    L <- run$layers[order(h$top_cm[run$layers])]
+    for (i in seq_along(L)) for (j in i:length(L)) {
+      S <- L[i:j]
+      if (h$top_cm[S[1L]] > ms + 75) break
+      if (j > i && h$top_cm[S[j - i + 1L]] > max(h$bottom_cm[S[-(j - i + 1L)]]) + 0.5) break
+      if (max(h$bottom_cm[S]) - h$top_cm[S[1L]] < 25) next
+      w <- pmax(0, h$bottom_cm[S] - h$top_cm[S])
+      if (sum(w * z$area[S]) / sum(w) >= 25 && any(z$reducing[S] %in% reducing_ok))
+        return(list(ok = TRUE, layers = S))
+    }
+    list(ok = FALSE, layers = integer(0))
   }
   sure  <- test(z$stagnic %in% TRUE, TRUE)
   maybe <- test(!(z$stagnic %in% FALSE), c(TRUE, NA))
@@ -1389,7 +1457,9 @@ qual_haplic <- function(pedon) {
 #' to the bottom of the profile ("Anoloamic, Endoclayic", p. 26; since
 #' v0.9.315); a qualifier made redundant by another is
 #' left out (Eutric when Calcaric or Dolomitic applies); Haplic applies only
-#' where the RSG lists it and no other principal qualifier does.
+#' where the RSG lists it and no other principal qualifier does; the principal
+#' qualifiers left undecided come back in \code{undecided_principal} (since
+#' v0.9.413).
 #'
 #' Both vectors come back in the order of the name. Principal qualifiers are
 #' written right to left, "the uppermost qualifier in the list is placed
@@ -1408,8 +1478,10 @@ qual_haplic <- function(pedon) {
 #'        qualifiers based on the feature's actual depth. Default
 #'        \code{FALSE} leaves names byte-identical to earlier versions.
 #' @return A list with \code{principal} and \code{supplementary} (character
-#'         vectors, in the order they are written in the name), \code{trace}
-#'         and \code{trace_supplementary}.
+#'         vectors, in the order they are written in the name), \code{trace},
+#'         \code{trace_supplementary} and \code{undecided_principal} (the
+#'         principal qualifiers left undecided, each with the attributes that
+#'         would decide it).
 #' @export
 resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
                                    specifiers = FALSE) {
@@ -1438,6 +1510,7 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   # p. 24-25: "they can be used both, each one with the respective specifier
   # ... If no specifier is used, only the first applicable qualifier can be
   # used"; .wrb_texture_group_specified()).
+  absent <- NULL
   walk <- function(entries) {
     trace <- list(); matched <- character(0); layers <- list()
     for (entry in entries) {
@@ -1455,6 +1528,16 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
       for (qname in alts) {
         if (identical(qname, "Haplic")) next
         ev <- .evaluate_qualifier(pedon, qname, rsg_code)
+        # v0.9.413: undecided, read again with the field observations not
+        # recorded as absent (utils-wrb-field-absent.R)
+        if (length(ev$passed) == 1L && is.na(ev$passed)) {
+          if (is.null(absent)) absent <<- .wrb_field_absent_pedon(pedon)
+          ev2 <- .evaluate_qualifier(absent, qname, rsg_code)
+          if (length(ev2$passed) == 1L && !is.na(ev2$passed)) {
+            ev <- ev2
+            ev$trace_entry$note <- "field observations not recorded read as absent"
+          }
+        }
         trace[[qname]] <- ev$trace_entry
         if (isTRUE(ev$passed)) {
           passed_alts <- c(passed_alts, qname)
@@ -1511,7 +1594,15 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
 
   # Haplic only where Chapter 4 lists it: "no other principal qualifier of the
   # respective RSG applies". 16 RSGs do not list it.
-  if (length(matched_principal) == 0L && "Haplic" %in% (per_rsg$principal %||% character(0)))
+  # v0.9.413 (Hugo): Haplic when no principal qualifier passed, as before; the
+  # principal qualifiers that stay undecided are returned (undecided_principal,
+  # with what would decide them) so that the result shows them.
+  und <- vapply(trace_principal, function(t)
+    length(t$passed) == 0L || is.na(t$passed[1]), NA)
+  undecided_principal <- lapply(trace_principal[und], function(t)
+    unique(as.character(t$missing %||% character(0))))
+  if (length(matched_principal) == 0L &&
+      "Haplic" %in% (per_rsg$principal %||% character(0)))
     matched_principal <- "Haplic"
 
   # Order of the name (WRB 2022 Ch 2.2). Principal qualifiers are written right
@@ -1548,7 +1639,8 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   list(principal     = unname(matched_principal),
        supplementary = unname(matched_supplementary),
        trace         = trace_principal,
-       trace_supplementary = trace_supplementary)
+       trace_supplementary = trace_supplementary,
+       undecided_principal = undecided_principal)
 }
 
 

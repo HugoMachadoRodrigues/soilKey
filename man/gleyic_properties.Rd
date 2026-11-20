@@ -35,12 +35,12 @@ Endogleyic, Epigleyic qualifiers).
 \details{
 Since v0.9.312 the layer reading follows the text and Hugo's reading of
 it for field descriptions that do not say where the mottles sit: a layer
-has gleyic properties when its matrix has a reductimorphic colour, moist
-(criterion 1: hue N, 10Y, GY, G, BG, B or PB, or hue 2.5Y or 5Y with a
-chroma of 2 or less; with more than 5\% oximorphic features these are read
-as the gleyic features of criterion 2 over a reduced matrix); when it has
-more than 5\% oximorphic features and lies directly on a layer with such a
-matrix (criterion 3); or when it has them and the site records
+has gleyic properties when its matrix has a reductimorphic colour, moist,
+and it has no more than 5\% oximorphic features (criterion 1: hue N, 10Y,
+GY, G, BG, B or PB, or hue 2.5Y or 5Y with a chroma of 2 or less); when it
+has more than 5\% oximorphic features and lies directly on a layer of
+criterion 1 (criterion 3; since v0.9.413 no layer described below is no
+such layer); or when it has them and the site records
 groundwater within 150 cm that is not perched
 (\code{site$groundwater_kind}, \code{site$groundwater_depth_cm}). A
 mottled layer with none of these is \code{NA}, unless the site records no

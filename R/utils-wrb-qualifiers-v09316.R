@@ -7,8 +7,9 @@
 #' Calcaric material per layer, TRUE / FALSE / NA. WRB 2022 Ch 3.3.3 (p. 86):
 #' the material "contains >= 2% calcium carbonate equivalent" and "shows
 #' visible effervescence with 1 M HCl throughout the fine earth". The
-#' laboratory value decides when it is recorded (caco3_pct >= 2); otherwise
-#' the field reaction (effervescence_class): visible effervescence is
+#' laboratory value (caco3_pct >= 2) and the field reaction
+#' (effervescence_class) must agree where both are recorded; otherwise the
+#' one recorded decides. Visible effervescence is
 #' moderately, strongly or extremely calcareous, while none and slight
 #' (audible, not visible) are not (Annex 1, Table 8.62, p. 200).
 #' @noRd
@@ -18,7 +19,21 @@
   eff <- .field_term(h$effervescence_class %||% rep(NA_character_, n))
   eff_no <- !is.na(eff) & (grepl("slight", eff) | grepl("^(non|none|nil|no)\\b", eff))
   eff_yes <- !is.na(eff) & !eff_no & grepl("moderat|strong|high|extrem|very", eff)
-  ifelse(!is.na(ca), ca >= 2, ifelse(eff_yes, TRUE, ifelse(eff_no, FALSE, NA)))
+  # v0.9.413 (Hugo, L6): where both are recorded both must agree; until then
+  # the laboratory value decided alone (ISRIC's KE032: 2.7% CCE in a Bi
+  # described as non-calcareous)
+  lab <- ifelse(!is.na(ca), ca >= 2, NA)
+  fld <- ifelse(eff_yes, TRUE, ifelse(eff_no, FALSE, NA))
+  ifelse(!is.na(lab) & !is.na(fld), lab & fld, ifelse(!is.na(lab), lab, fld))
+}
+
+#' Layers described as non-calcareous in the field (no reaction with 1 M HCl,
+#' Annex 1, Table 8.62, p. 200), TRUE / FALSE (v0.9.413). Such a layer holds
+#' no 15% CaCO3 equivalent (Hugo).
+#' @noRd
+.wrb_field_noncalcareous <- function(h) {
+  eff <- .field_term(h$effervescence_class %||% rep(NA_character_, nrow(h)))
+  !is.na(eff) & grepl("^(non|none|nil|no)\\b", eff)
 }
 
 #' The lower boundary of a layer is abrupt or very abrupt, TRUE / FALSE / NA.

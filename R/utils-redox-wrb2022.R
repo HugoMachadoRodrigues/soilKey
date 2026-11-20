@@ -1,5 +1,5 @@
 # =============================================================================
-# soilKey -- the WRB 2022 redox reading of a profile (v0.9.312).
+# soilKey -- the WRB 2022 redox reading of a profile (v0.9.312, v0.9.413).
 #
 # Gleyic properties (Ch 3.2.6, p. 75), stagnic properties (Ch 3.2.14, p. 81)
 # and reducing conditions (Ch 3.2.10, p. 79), layer by layer, as the Gleysols,
@@ -9,12 +9,16 @@
 # Field descriptions seldom say where the mottles sit (on the aggregate
 # surfaces, gleyic criterion 2, or inside the aggregates, stagnic criterion
 # 2). Hugo's reading (2026-10-29, option c): a layer has gleyic properties
-# when its matrix has a reductimorphic colour (criterion 1, a or b: with up
-# to 5% oximorphic features the layer is criterion 1 itself, with more they
-# are read as the gleyic features of criterion 2 over a reduced matrix),
-# when its oximorphic features lie directly on a layer with such a matrix
-# (criterion 3), or when the site records groundwater within 150 cm that is
-# not perched; otherwise its oximorphic features are stagnic. A claric layer
+# when its matrix has a reductimorphic colour and it has no more than 5%
+# oximorphic features (criterion 1, a or b), when its oximorphic features lie
+# directly on a layer of criterion 1 (criterion 3), or when the site records
+# groundwater within 150 cm that is not perched; otherwise its oximorphic
+# features are stagnic. A reductimorphic matrix with more than 5% oximorphic
+# features is not gleyic by itself (v0.9.413: this header said it was, the
+# code never read it so). Nothing described below a layer is no layer of
+# criterion 1 there (v0.9.413). Oximorphic features whose recorded colours
+# show none of the contrasts of 3.2.14 criteria 1.b, 2.b and 3.c (p. 81) are
+# not stagnic (v0.9.413). A claric layer
 # directly above the mottled layer is the stagnic sequence of 3.2.14
 # criterion 5 ("an overlying Fe-poor layer"). With neither colour nor water
 # evidence the layer stays undecided (NA), and so do the Gleysols and
@@ -183,9 +187,8 @@
   water <- rep(gw, n)
   water[is.na(water) & at(claric95, above) %in% TRUE] <- FALSE
   # Hugo's reading of criteria 1-3 (file header): a reductimorphic matrix
-  # (with up to 5% oximorphic features criterion 1 itself; with more, the
-  # matrix of a gleyic criterion-2 layer), or oximorphic features directly
-  # on a layer with such a matrix (criterion 3), or with groundwater
+  # with up to 5% oximorphic features (criterion 1), or oximorphic features
+  # directly on such a layer (criterion 3), or with groundwater
   # Hugo (2026-10-29): criterion 1 asks >= 95% reductimorphic features, so a
   # layer with more than 5% oximorphic features does not meet it by its
   # matrix; mottles not recorded do not rule it out (the matrix colour is
@@ -195,9 +198,17 @@
   red[rock] <- FALSE
   crit1[rock] <- FALSE
   on_red <- at(crit1, below)
+  # v0.9.413: with no layer described directly below, there is no layer of
+  # criterion 1 there (a field observation not recorded is absent, Hugo)
+  on_red[is.na(below)] <- FALSE
   gleyic <- .any3v(crit1, .and3v(oxi, .any3v(on_red, water)))
   gleyic[rock] <- FALSE
   stag_ox <- .and3v(oxi, !gleyic)
+  # v0.9.413 (Hugo, L5): mottles whose recorded colours meet none of the
+  # contrasts of 3.2.14 criteria 1.b, 2.b and 3.c (p. 81) against the matrix
+  # or each other are not stagnic; unrecorded colours do not rule them out
+  stag_ox[.stagnic_mottle_contrast(col("munsell_hue_moist"), col("munsell_value_moist"),
+                                   col("munsell_chroma_moist"), col("mottle_colors")) %in% FALSE] <- FALSE
   stag_ox[rock] <- FALSE
   # criterion 4: claric above an abrupt textural difference or a dense layer
   atd <- abrupt_textural_difference(pedon)
@@ -218,4 +229,51 @@
   list(reductimorphic = red, oximorphic = oxi, claric = clr, crit1 = crit1, gleyic = gleyic,
        stagnic = stagnic, stagnic_oximorphic = stag_ox, area = area,
        reducing = .subtest_by_layer(red_res, n), groundwater = gw, rock = rock)
+}
+
+
+#' Colour contrast of the mottles of each layer, WRB 2022 3.2.14 (p. 81)
+#'
+#' TRUE when a recorded mottle colour (\code{mottle_colors}, "10YR 5/6; ...")
+#' is, against the moist matrix colour, reductimorphic by criterion 1.b (value
+#' >= 1 unit higher and chroma >= 1 unit lower) or oximorphic by criterion 2.b
+#' (black, or hue >= 2.5 units redder and chroma >= 1 unit higher), or when two
+#' recorded mottle colours differ as criterion 3.c asks of the oximorphic
+#' against the reductimorphic features (hue >= 5 units redder; or chroma >= 4
+#' units higher; or hue >= 2.5 units redder and chroma >= 2 units higher; or
+#' hue >= 2.5 units redder, value >= 1 unit lower and chroma >= 1 unit
+#' higher). FALSE when every colour needed is recorded and none of these
+#' holds; NA otherwise (no mottle colour, no matrix colour, or a hue that
+#' .munsell_hue_units() does not place). Black is a value of 2.5 or less with
+#' a chroma of 2 or less.
+#' @noRd
+.stagnic_mottle_contrast <- function(hue, value, chroma, mottles) {
+  hue <- as.character(hue); value <- suppressWarnings(as.numeric(value))
+  chroma <- suppressWarnings(as.numeric(chroma)); mottles <- as.character(mottles)
+  parse <- function(x) {
+    p <- trimws(strsplit(x, ";", fixed = TRUE)[[1]])
+    p <- p[nzchar(p)]
+    data.frame(h = .munsell_hue_units(sub(" .*", "", p)),
+               v = suppressWarnings(as.numeric(sub(".* ([0-9.]+)/.*", "\\1", p))),
+               c = suppressWarnings(as.numeric(sub(".*/([0-9.]+).*", "\\1", p))))
+  }
+  ge <- function(a, b) a >= b                 # NA stays NA
+  vapply(seq_along(mottles), function(i) {
+    if (is.na(mottles[i]) || !nzchar(trimws(mottles[i]))) return(NA)
+    m <- parse(mottles[i])
+    if (!nrow(m)) return(NA)
+    mh <- .munsell_hue_units(hue[i])
+    tests <- c(
+      .and3v(ge(m$v, value[i] + 1), ge(chroma[i] - m$c, 1)),                 # 1.b
+      ifelse(!is.na(m$v) & !is.na(m$c) & m$v <= 2.5 & m$c <= 2, TRUE,
+             .and3v(ge(mh - m$h, 2.5), ge(m$c - chroma[i], 1))))            # 2.b
+    if (nrow(m) > 1L) for (a in seq_len(nrow(m))) for (b in seq_len(nrow(m))) {
+      if (a == b) next
+      dh <- m$h[b] - m$h[a]; dc <- m$c[a] - m$c[b]; dv <- m$v[b] - m$v[a]
+      tests <- c(tests, .any3v(.any3v(ge(dh, 5), ge(dc, 4)),
+                               .any3v(.and3v(ge(dh, 2.5), ge(dc, 2)),
+                                      .and3v(ge(dh, 2.5), .and3v(ge(dv, 1), ge(dc, 1))))))  # 3.c
+    }
+    if (any(tests %in% TRUE)) TRUE else if (all(tests %in% FALSE)) FALSE else NA
+  }, NA)
 }
