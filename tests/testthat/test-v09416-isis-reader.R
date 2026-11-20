@@ -58,9 +58,13 @@ test_that("Psamments read the field class where clay and sand are not measured",
   skip_on_cran()
   p <- .ped416(top_cm = c(0, 20, 50), bottom_cm = c(20, 50, 100), designation = c("A", "C1", "C2"),
                texture_class_usda = c("LFS", "FS", "S"))
+  # v0.9.419: every layer of the particle-size control section (25 to 100
+  # cm, KST p. 165); a sand of no known grade (S) leaves it undecided
   r <- soilKey:::psamment_qualifying_usda(p)
-  expect_true(r$passed)
-  expect_identical(r$layers, 1:2)
+  expect_true(is.na(r$passed))
+  expect_identical(r$layers, 2:3)
+  p$horizons$texture_class_usda[3] <- "MS"
+  expect_true(soilKey:::psamment_qualifying_usda(p)$passed)
   p2 <- .ped416(top_cm = c(0, 20, 50), bottom_cm = c(20, 50, 100), designation = c("A", "C1", "C2"),
                 texture_class_usda = c("LVFS", "SL", "LS"))
   expect_false(soilKey:::psamment_qualifying_usda(p2)$passed)

@@ -1,7 +1,7 @@
 # =============================================================
 # USDA Soil Taxonomy 13ed -- Entisols Suborders -- Cap 8
 # =============================================================
-# 5 Suborders: LA Wassents, LB Aquents, LC Fluvents, LD Psamments,
+# 5 Suborders: LA Wassents, LB Aquents, LD Psamments, LC Fluvents,
 #              LE Orthents (default)
 # =============================================================
 
@@ -18,16 +18,18 @@ suborders:
       tests:
         all_of:
           - aquent_qualifying_usda: {}
-    - code: "LC"
-      name: "Fluvents"
-      tests:
-        all_of:
-          - fluvent_qualifying_usda: {}
+    # v0.9.419: the Psamments before the Fluvents, as in KST 13th ed., p. 165
+    # (items LC and LD); the codes stay those of the great-group lists.
     - code: "LD"
       name: "Psamments"
       tests:
         all_of:
           - psamment_qualifying_usda: {}
+    - code: "LC"
+      name: "Fluvents"
+      tests:
+        all_of:
+          - fluvent_qualifying_usda: {}
     - code: "LE"
       name: "Orthents"
       tests:

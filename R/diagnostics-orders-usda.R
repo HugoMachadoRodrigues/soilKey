@@ -661,9 +661,19 @@ alfisol_usda <- function(pedon) {
 
 # ---- K. Inceptisols (Cap 11, p 207) ----------------------------------------
 
-#' Inceptisols (USDA Cap 11): cambic horizon (or several alternative
-#' subsurface diagnostics: folistic/histic/mollic with thin sub, salic,
-#' sodium-affected sub).
+#' Inceptisols (USDA, KST 13th ed., Key to Soil Orders, item K, p. 70)
+#'
+#' v0.9.419: item K in full (\code{inceptisol_qualifying_usda()}): K.1 (a) a
+#' cambic horizon within 100 cm with its lower boundary at 25 cm or more,
+#' (b) a calcic, petrocalcic, gypsic, petrogypsic or placic horizon or a
+#' duripan within 100 cm, (c) a fragipan or an oxic, sombric or spodic
+#' horizon within 200 cm, (d) a sulfuric horizon within 150 cm, (e) a cryic
+#' or gelic regime and a cambic horizon; or K.2 (the epipedon, salic and
+#' sodium path), and not the Wassent condition. The cambic horizon is the
+#' USDA one (\code{cambic_horizon_usda()}). Up to v0.9.418 only a cambic
+#' horizon (the WRB reading) counted, and an undecided one was read as
+#' absent. Three-valued: undecided, the key goes on to the Entisols and the
+#' name is graded C.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 inceptisol_usda <- function(pedon) {
@@ -674,12 +684,7 @@ inceptisol_usda <- function(pedon) {
 
 # The computation of inceptisol_usda().
 .inceptisol_usda_uncached <- function(pedon) {
-  cb <- .cambic_impl(pedon)   # v0.9.310: argic and ferralic read as before (USDA)
-  # v0.9.21: NASIS tie-breaker -- cambic horizon surveyor
-  # identification flips an NA cambic to TRUE.
-  cb <- .apply_nasis_tiebreaker(cb, pedon,
-                                 pattern       = "^Cambic horizon$",
-                                 feature_label = "Cambic horizon")
+  k <- inceptisol_qualifying_usda(pedon)
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),
@@ -692,12 +697,13 @@ inceptisol_usda <- function(pedon) {
     isTRUE(mollisol_usda(pedon)$passed),
     isTRUE(alfisol_usda(pedon)$passed)
   ))
-  passed <- isTRUE(cb$passed) && !ex
+  passed <- if (ex) FALSE else k$passed
   DiagnosticResult$new(
     name = "inceptisol_usda", passed = passed,
-    layers = cb$layers, evidence = list(cambic = cb, prior_order = ex),
-    missing = cb$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 11 Inceptisols (p 207)"
+    layers = k$layers,
+    evidence = list(item_k = k, cambic = k$evidence$cambic, prior_order = ex),
+    missing = if (is.na(passed)) k$missing else character(0),
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 4, Key to Soil Orders, item K (p 70)"
   )
 }
 

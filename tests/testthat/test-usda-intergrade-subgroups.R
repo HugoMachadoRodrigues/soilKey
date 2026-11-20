@@ -25,10 +25,12 @@ test_that("humic_oxisol_usda matches the >=16 kg/m2 OC-in-100cm criterion", {
 
 test_that("gypsic_horizon_usda honours the 18 cm Leptic depth window", {
   shallow <- PedonRecord$new(horizons = data.frame(
-    top_cm = c(0, 15, 60), bottom_cm = c(15, 60, 100), caso4_pct = c(1, 8, 8)))
+    top_cm = c(0, 15, 60), bottom_cm = c(15, 60, 100), caso4_pct = c(1, 8, 8),
+    gypsum_visible_pct = c(0, 2, 2)))   # v0.9.419: visible gypsum (KST p. 25)
   expect_true(gypsic_horizon_usda(shallow, max_top_cm = 18)$passed)
   deep <- PedonRecord$new(horizons = data.frame(
-    top_cm = c(0, 40), bottom_cm = c(40, 100), caso4_pct = c(1, 8)))
+    top_cm = c(0, 40), bottom_cm = c(40, 100), caso4_pct = c(1, 8),
+    gypsum_visible_pct = c(0, 2)))
   expect_false(gypsic_horizon_usda(deep, max_top_cm = 18)$passed)
 })
 

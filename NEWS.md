@@ -1,3 +1,98 @@
+# soilKey 0.9.419
+
+Inceptisols, Entisols and Aridisols after the Soil Taxonomy audit (Hugo,
+2026-11-20; audit section 2.3, items I1 to I12, the Oxyaquic fix R2, the
+helper fixes F12 and F14, readings L13 to L17 as recommended). Every test
+touched is three-valued: undecided (NA, with the missing attributes) when the
+missing data could change the answer.
+
+* **The cambic horizon is a USDA function of its own**,
+  `cambic_horizon_usda()` (KST 13th ed., pp. 22-23), no longer the WRB
+  reading (`.cambic_impl()`, unchanged for the WRB). Layer by layer:
+  15 cm of adjoining layers; very fine sand, loamy very fine sand or finer
+  (laboratory texture, else the field class through `.texture_class_reading()`;
+  a laboratory sand or loamy sand, of no known sand grade, is read as coarser
+  than the very fine grade unless the field class names VFS or LVFS); soil
+  structure or the absence of rock structure (massive and single grain pass,
+  structure not recorded is undecided); the evidence of alteration of
+  item 4 (the wet colours of 4a, or 4b: higher chroma, value, redder hue or
+  more clay than the underlying horizon or an overlying one, an A included
+  as printed, L13, or the removal of carbonates or gypsum); not part of the
+  epipedons and horizons of item 5; not an Ap. A layer designated A, E or C
+  is not cambic (L14). Redox concentrations not recorded are absent.
+* **Item K of the Key to Soil Orders in full** (p. 70): K.1 a to e (cambic
+  within 100 cm reaching 25 cm; calcic, petrocalcic, gypsic, petrogypsic or
+  placic horizon or duripan within 100 cm; fragipan, oxic, sombric or spodic
+  horizon within 200 cm; sulfuric within 150 cm; cryic or gelic regime and a
+  cambic horizon), K.2 (no sulfidic materials within 50 cm, a nonfluid or
+  low-clay horizon between 20 and 50 cm, and a folistic, histic, mollic,
+  plaggen or umbric epipedon, a salic horizon or the sodium path), and not
+  the Wassent condition. Fluidity not recorded is nonfluid (L16). Up to
+  v0.9.418 only a cambic horizon counted, an undecided one as absent.
+  Aridisol item G.1.c reads the same cambic horizon.
+* **Entisols** (p. 165): Psamments are keyed before Fluvents (the YAML codes
+  stay). Psamments: loamy fine sand or coarser and under 35 % rock fragments
+  in all layers of the particle-size control section (was half the layers
+  above 100 cm, laboratory only). Fluvents: 0.2 % organic carbon at 125 cm or
+  an irregular decrease from 25 cm, a rise of more than 0.05 points (L15);
+  no contact within 25 cm; under 50 cm of human-transported material; no
+  recorded anthropogenic landform; slope under 25 % (not recorded, read as
+  met, as in the Cumulic Mollisols); temperature warmer than cryic, or a
+  slope under 5 % or under 15 % glass. The fluvic layer origin no longer
+  makes a Fluvent by itself. Aquents (LB) read the colour criteria by
+  texture class and the dipyridyl test; Fluvaquents (LBF) their own text;
+  Sulfaquents sulfidic materials within 50 cm (was the sulfuric horizon).
+* **Inceptisol suborders and great groups**: Aquepts (KA, p. 207) need
+  aquic conditions with a histic epipedon, a sulfuric horizon, chroma 1 or
+  less (2 with redox concentrations) or a positive dipyridyl test, or the
+  sodium path; Halaquepts (KAC) a salic horizon or ESP 15 in 25 cm within
+  50 cm (was EC 8 dS/m); Eutrudepts (KFF, p. 223) free carbonates throughout
+  or base saturation 60 % between 25 and 75 cm (was anywhere above 75 cm,
+  and a missing value made a Dystrudept).
+* **Oxyaquic** (R2): saturation 20 consecutive or 30 cumulative days, read
+  from `water_saturation_days` (or 30 days of flooding); with no record the
+  subgroup is undecided (L17). Redox features belong to the Aquic subgroups.
+  `oxyaquic_subgroup_usda()` gains `max_depth_cm` (default 100).
+* **Duripan** (p. 23): cemented in more than 50 % with evidence of silica
+  (q designation, a recorded duripan share or pan), not only indurated.
+  **Petrocalcic** (p. 28): cemented by carbonates (k, calcrete or 15 %
+  CaCO3); silica-only cement is not petrocalcic. **Gypsic** (p. 25): the USDA
+  text, with visible secondary gypsum a field observation (gypsum_visible_pct
+  or a y designation; not recorded, absent). **Sombric** (`sombric_horizon_usda()`,
+  pp. 30-31): its six required characteristics; buried and gleyed layers
+  are not sombric.
+* **Plaggen and anthropic epipedons**: `plaggen_epipedon_usda()` (p. 17) and
+  `anthropic_epipedon_usda()` (pp. 12-13), from the recorded human-transported
+  material (caret designation, layer origin, anthropic material, artifacts);
+  nothing recorded, absent. Used by the cambic exclusions, item K.2 and the
+  Aridisol epipedon.
+* **Helpers**: `psammentic_subgroup_usda()` no longer passes with no texture
+  (`all(na.rm = TRUE)`, F12); `fluventic_usda()` reads the layers that overlap
+  25 to 125 cm (F14) and the organic carbon at 125 cm.
+* On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the order
+  in 209 (was 201), the suborder in 172 (158), the great group in 119 (104)
+  and the subgroup in 63 (48). Names that change: BW007 Typic Haplustepts,
+  KE024 Typic Torriorthents, KE062 Typic Torripsamments, NL014 Aquic
+  Udipsamments, JM006 and NO003 Typic Dystrudepts, NI011 Typic Durustolls,
+  US026 Typic Natridurids, BR020 Typic Quartzipsamments (all as ISIS);
+  the Oxyaquic subgroups become Typic, graded C (KE041, ZA021, NL021, NZ001,
+  NZ002, NZ004, NL036, NL005, CU010, US016, CO006, ID007, US015, US013,
+  CU016); GB002 Typic Eutrudepts and NL007 Humic Eutrudepts (base saturation
+  between 25 and 75 cm); NL034 Typic Quartzipsamments and NA003 Typic
+  Torripsamments (Psamments first); IE009 Typic Udifluvents; ZM001 Typic
+  Humustepts; the Sombrihumults CO011, CO012, CO014, ID011, ID036 become
+  Haplohumults or Palehumults (the sombric horizon now needs its pH and
+  oxalate criteria).
+* Canonical fixtures: Fluvisol Typic Udifluvents (was Typic Udorthents),
+  Durisol Typic Haplocambids (Typic Torriorthents; its duripan share of 35 %
+  is not a duripan), Neossolo Litolico Lithic Humudepts (Lithic Udorthents:
+  an umbric epipedon over rock is an Inceptisol by item K.2), Cryosol
+  Fluventic Haplorthels (Typic: 0.5 % organic carbon at 125 cm).
+* **In an unplowed soil an A may be the cambic horizon** (reading N11, Hugo,
+  2026-11-21; KST p. 22): with no Ap in the profile, an A is read by the
+  cambic criteria like a B. 8 of the 974 ISIS profiles change, mostly from
+  Orthents or Fluvents to Inceptisols.
+
 # soilKey 0.9.418
 
 Spodosols, Histosols and Gelisols after the Soil Taxonomy audit (Hugo,

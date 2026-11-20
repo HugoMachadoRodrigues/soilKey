@@ -103,9 +103,9 @@ aridisol_qualifying_usda <- function(pedon) {
 #' horizons that are at or near the soil surface") that is not a histic,
 #' folistic, melanic, mollic or umbric epipedon. Any of these present: FALSE;
 #' one undecided and none present: NA; no recorded designation: NA. The
-#' anthropic epipedon is accepted by item G.1.b as well, so an epipedon that
-#' is not one of the five passes either way; soilKey does not test the
-#' plaggen epipedon (human-made, not met in arid soils).
+#' anthropic epipedon is accepted by item G.1.b as well (v0.9.419:
+#' \code{anthropic_epipedon_usda()}), and a plaggen epipedon is one of the
+#' others (\code{plaggen_epipedon_usda()}).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 .aridisol_epipedon_usda <- function(pedon) {
@@ -122,6 +122,7 @@ aridisol_qualifying_usda <- function(pedon) {
   has_epi <- if (length(surf) == 0L || all(is.na(des))) NA
              else any(grepl("^[AE]", des[!is.na(des)]))
   others <- list(
+    plaggen  = plaggen_epipedon_usda(pedon),
     histic   = histic_epipedon_usda(pedon),
     folistic = folistic_epipedon_usda(pedon),
     melanic  = melanic_epipedon_usda(pedon),
@@ -144,7 +145,10 @@ aridisol_qualifying_usda <- function(pedon) {
     v
   }, logical(1))
   not_other <- if (any(ov %in% TRUE)) FALSE else if (anyNA(ov)) NA else TRUE
-  passed <- .and3v(has_epi, not_other)
+  # v0.9.419: the anthropic epipedon (anthropic_epipedon_usda(), KST 13 p.
+  # 13) passes item G.1.b as well; the plaggen one does not.
+  anth <- .p3v(anthropic_epipedon_usda(pedon))
+  passed <- .any3v(isTRUE(anth), .and3v(has_epi, not_other))
   miss <- character(0)
   if (is.na(has_epi)) miss <- c(miss, "designation")
   if (is.na(not_other))
@@ -171,16 +175,13 @@ aridisol_qualifying_usda <- function(pedon) {
   h <- pedon$horizons
   # Cambic horizon within 100 cm, and whether it reaches 25 cm: "a cambic
   # horizon with a lower depth of 25 cm or more" (p 69).
-  cb <- .cambic_impl(pedon)   # v0.9.310: USDA reading
-  cb_p <- .p3v(cb)
-  cb_in <- if (isTRUE(cb_p)) cb$layers[!is.na(h$top_cm[cb$layers]) &
-                                         h$top_cm[cb$layers] < max_top_cm]
-           else integer(0)
-  cambic <- if (isTRUE(cb_p)) length(cb_in) > 0L else cb_p
-  cambic_25 <- if (!isTRUE(cambic)) cambic else {
-    lo <- h$bottom_cm[cb_in]
-    if (any(lo >= 25, na.rm = TRUE)) TRUE else if (anyNA(lo)) NA else FALSE
-  }
+  # v0.9.419: the USDA cambic horizon (cambic_horizon_usda(), KST 13 pp.
+  # 22-23), no longer the WRB reading; depths from the soil surface.
+  cb <- cambic_horizon_usda(pedon)
+  cambic <- .cambic_within_usda(pedon, max_top_cm = max_top_cm, min_bottom_cm = 0,
+                                mineral = FALSE)
+  cambic_25 <- .cambic_within_usda(pedon, max_top_cm = max_top_cm, min_bottom_cm = 25,
+                                   mineral = FALSE)
   # "a cryic soil temperature regime and a cambic horizon" (p 69).
   st <- str_cryic_usda(pedon)
   cryic <- if (length(st$missing) > 0L) NA else isTRUE(st$passed)
@@ -199,7 +200,7 @@ aridisol_qualifying_usda <- function(pedon) {
   passed <- do.call(.any3v_all, c(list(cambic_25, cryic_cambic), as.list(unname(hv))))
   miss <- character(0)
   if (is.na(passed)) {
-    if (is.na(cambic_25)) miss <- c(miss, cb$missing, if (isTRUE(cambic)) "bottom_cm")
+    if (is.na(cambic_25)) miss <- c(miss, cb$missing)
     if (is.na(cryic_cambic)) miss <- c(miss, st$missing)
     miss <- c(miss, unlist(lapply(hz[is.na(hv)], function(r) r$missing)))
   }
@@ -266,28 +267,63 @@ aridisol_qualifying_usda <- function(pedon) {
 }
 
 
-#' Petrocalcic Subgroup helper (Aridisols Petrocalcids)
-#' Cemented calcic horizon with cementation_class >= "strongly".
+#' Petrocalcic horizon (USDA Soil Taxonomy, KST 13th ed., pp. 28-29)
+#'
+#' A horizon pedogenically cemented or indurated by carbonates (with or
+#' without other agents), whose lateral continuity limits the roots, 10 cm
+#' or more thick (1 cm for a laminar cap directly on bedrock). v0.9.419: up
+#' to v0.9.418 any strongly cemented or indurated layer with 15 \% CaCO3,
+#' with no reading of the cementing agent (audit I10). Read layer by layer:
+#' cemented is a recorded cementation class (weakly cemented or more: the
+#' KST "cemented" begins at extremely weakly coherent), an m in the
+#' designation or a recorded calcrete pan (\code{pan_type}); carbonates as
+#' the agent are a k in the designation, a calcrete pan, or 15 \% or more
+#' CaCO3. A cemented layer with q and no k is silica-cemented (a duripan),
+#' not petrocalcic; a cemented layer with no record of the agent is
+#' undecided. Cementation not recorded: not cemented (a field
+#' observation). Used by the Petrocalcic subgroups and the Petro- great
+#' groups, by item K.1.b and the cambic exclusions.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param max_top_cm Upper boundary within this depth (cm).
 #' @noRd
 petrocalcic_subgroup_usda <- function(pedon, max_top_cm = 100) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 3, petrocalcic horizon (pp. 28-29)"
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
-  cem <- h$cementation_class[cand]
-  cas <- h$caco3_pct[cand]
-  miss <- character(0)
-  if (all(is.na(cem))) miss <- c(miss, "cementation_class")
-  if (all(is.na(cas))) miss <- c(miss, "caco3_pct")
-  passing <- cand[!is.na(cem) & tolower(cem) %in%
-                                  c("strongly", "indurated") &
-                      !is.na(cas) & cas >= 15]
-  passed <- length(passing) > 0L
+  n <- nrow(h)
+  if (!n) return(DiagnosticResult$new(name = "petrocalcic_subgroup_usda", passed = FALSE, reference = ref))
+  d <- .usda_desig(h$designation)
+  sx <- ifelse(is.na(d$suffix), "", d$suffix)
+  cem <- tolower(as.character(.usda_col(h, "cementation_class", NA_character_)))
+  pan <- tolower(as.character(.usda_col(h, "pan_type", NA_character_)))
+  calcrete <- !is.na(pan) & grepl("calcrete", pan)
+  cas <- .usda_col(h, "caco3_pct", NA_real_)
+  cemented <- (!is.na(cem) & cem %in% c("weakly", "moderately", "strongly", "indurated")) |
+              grepl("m", sx) | calcrete
+  k <- grepl("k", sx)
+  silica_only <- grepl("q", sx) & !k
+  carb <- ifelse(k | calcrete, TRUE, ifelse(silica_only, FALSE,
+          ifelse(is.na(cas), NA, cas >= 15)))
+  lay <- ifelse(cemented, carb, FALSE)
+  ord <- order(h$top_cm)
+  rock <- !is.na(d$master) & d$master == "R"
+  pos <- integer(n); pos[ord] <- seq_len(n)
+  thick_ok <- function(r) {
+    t <- .usda_run_thickness(h, r)
+    last <- r[length(r)]
+    on_rock <- pos[last] < n && rock[ord[pos[last] + 1L]]
+    t >= 10 || (on_rock && t >= 1)
+  }
+  keep <- function(runs) Filter(function(r) thick_ok(r) && min(h$top_cm[r]) < max_top_cm, runs)
+  yes <- keep(.usda_runs(lay %in% TRUE, ord))
+  may <- keep(.usda_runs(!(lay %in% FALSE), ord))
+  passed <- if (length(yes)) TRUE else if (length(may)) NA else FALSE
   DiagnosticResult$new(
-    name = "petrocalcic_subgroup_usda", passed = passed, layers = passing,
-    evidence = list(max_top_cm = max_top_cm),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 47"
+    name = "petrocalcic_subgroup_usda", passed = passed,
+    layers = if (isTRUE(passed)) sort(unique(unlist(yes)))
+             else if (is.na(passed)) sort(unique(unlist(may))) else integer(0),
+    evidence = list(max_top_cm = max_top_cm, cemented = cemented, carbonate_agent = carb),
+    missing = if (is.na(passed)) "caco3_pct" else character(0),
+    reference = ref
   )
 }
 

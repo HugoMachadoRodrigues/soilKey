@@ -190,9 +190,9 @@ test_that("psammentic_subgroup_usda passes for sandy throughout", {
     top_cm = c(0, 30, 80),
     bottom_cm = c(30, 80, 100),
     designation = c("A", "C", "C2"),
-    clay_pct = c(5, 8, 10),
-    silt_pct = c(5, 7, 10),
-    sand_pct = c(90, 85, 80),
+    clay_pct = c(5, 8, 8),     # v0.9.419: every layer of the control
+    silt_pct = c(5, 7, 10),    # section loamy fine sand or coarser (KST p. 165)
+    sand_pct = c(90, 85, 82),
     coarse_fragments_pct = c(2, 5, 10)
   )
   pr <- PedonRecord$new(

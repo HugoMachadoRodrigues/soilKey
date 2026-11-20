@@ -138,27 +138,79 @@ xanthic_subgroup_usda <- function(pedon) {
 }
 
 
-#' Sombric Subgroup helper (Oxisols Sombri-)
-#' Pass when sombric horizon (humus illuviation in tropics) is
-#' present. v0.8: detects via 'sombric' designation OR a B horizon
-#' with V<=4 + V<=4 + chroma<=2 + OC>1 in 50-150 cm.
+#' Sombric horizon (USDA Soil Taxonomy, KST 13th ed., pp. 30-31)
+#'
+#' A subsurface horizon of illuvial humus formed under free drainage, read
+#' by its six required characteristics, three-valued, layer by layer
+#' against the horizon directly above: (1) organic carbon 0.6 \% or more
+#' and at least 0.2 points more than the horizon above; (2) chroma of 4 or
+#' less and a value of 4 or less moist or 5 or less dry; (3) value or
+#' chroma at least 1 unit darker than the horizon above; (4) 15 cm or more;
+#' (5) pH 5.0 or less; (6) Al plus half Fe (ammonium oxalate) under 0.5 \%
+#' (0.4 \% with 5 \% or more volcanic glass). Only B horizons (or
+#' undesignated layers) below the surface layer qualify; a buried (b) or
+#' gleyed (g) horizon does not (no free drainage, no illuviation).
+#' v0.9.419: up to v0.9.418 a dark, low-chroma layer with more than 1 \%
+#' organic carbon at 50 to 150 cm, buried and gleyed layers included
+#' (audit I12).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Upper boundary within this depth below the mineral soil
+#'   surface (cm).
 #' @noRd
-sombric_subgroup_usda <- function(pedon) {
+sombric_horizon_usda <- function(pedon, max_top_cm = 150) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 3, sombric horizon (pp. 30-31)"
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm >= 50 & h$top_cm < 150)
-  vm <- h$munsell_value_moist[cand]
-  cm <- h$munsell_chroma_moist[cand]
-  oc <- h$oc_pct[cand]
-  passing <- cand[!is.na(vm) & vm <= 4 & !is.na(cm) & cm <= 2 &
-                      !is.na(oc) & oc > 1]
-  passed <- length(passing) > 0L
+  n <- nrow(h)
+  if (!n) return(DiagnosticResult$new(name = "sombric_horizon_usda", passed = FALSE, reference = ref))
+  ms <- .mineral_soil_surface_cm(h); if (is.na(ms)) ms <- 0
+  ord <- order(h$top_cm)
+  d <- .usda_desig(h$designation)
+  cand <- !is.na(h$top_cm) & h$top_cm > ms & h$top_cm < ms + max_top_cm &
+    (is.na(d$master) | d$master == "" | grepl("B", d$master)) &
+    !(!is.na(d$suffix) & grepl("[bg]", d$suffix))
+  oc <- h$oc_pct; vm <- h$munsell_value_moist; vd <- h$munsell_value_dry
+  cm <- h$munsell_chroma_moist; ph <- h$ph_h2o
+  alfe <- .usda_col(h, "al_ox_pct", NA_real_) + .usda_col(h, "fe_ox_pct", NA_real_) / 2
+  glass <- .usda_col(h, "volcanic_glass_pct", NA_real_)
+  pos <- integer(n); pos[ord] <- seq_len(n)
+  lay <- vapply(seq_len(n), function(i) {
+    if (!cand[i] || pos[i] == 1L) return(FALSE)
+    j <- ord[pos[i] - 1L]
+    c1 <- if (is.na(oc[i])) NA else if (oc[i] < 0.6) FALSE
+          else if (is.na(oc[j])) NA else oc[i] >= oc[j] + 0.2
+    c2 <- .and3v(if (is.na(cm[i])) NA else cm[i] <= 4,
+                 .usda_any3(c(if (is.na(vm[i])) NA else vm[i] <= 4,
+                              if (is.na(vd[i])) NA else vd[i] <= 5)))
+    c3 <- .usda_any3(c(if (is.na(vm[i]) || is.na(vm[j])) NA else vm[i] <= vm[j] - 1,
+                       if (is.na(cm[i]) || is.na(cm[j])) NA else cm[i] <= cm[j] - 1))
+    c5 <- if (is.na(ph[i])) NA else ph[i] <= 5.0
+    lim <- if (!is.na(glass[i]) && glass[i] >= 5) 0.4 else 0.5
+    c6 <- if (is.na(alfe[i])) NA else alfe[i] < lim
+    .usda_all3(c(c1, c2, c3, c5, c6))
+  }, NA)
+  yes <- Filter(function(r) .usda_run_thickness(h, r) >= 15, .usda_runs(lay %in% TRUE, ord))
+  may <- Filter(function(r) .usda_run_thickness(h, r) >= 15, .usda_runs(!(lay %in% FALSE), ord))
+  passed <- if (length(yes)) TRUE else if (length(may)) NA else FALSE
   DiagnosticResult$new(
-    name = "sombric_subgroup_usda", passed = passed, layers = passing,
-    evidence = list(note = "v0.8 proxy: dark, low-chroma, OC-rich subsurface"),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 60"
-  )
+    name = "sombric_horizon_usda", passed = passed,
+    layers = if (isTRUE(passed)) sort(unique(unlist(yes)))
+             else if (is.na(passed)) sort(unique(unlist(may))) else integer(0),
+    evidence = list(layer = lay, max_top_cm = max_top_cm),
+    missing = if (is.na(passed)) c("oc_pct", "munsell_value_moist", "munsell_chroma_moist",
+                                   "ph_h2o", "al_ox_pct", "fe_ox_pct") else character(0),
+    reference = ref)
+}
+
+
+#' Sombric Subgroup / great-group helper (Sombri-: a sombric horizon within
+#' 150 cm of the mineral soil surface)
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Depth (cm below the mineral soil surface).
+#' @noRd
+sombric_subgroup_usda <- function(pedon, max_top_cm = 150) {
+  res <- sombric_horizon_usda(pedon, max_top_cm = max_top_cm)
+  res$name <- "sombric_subgroup_usda"
+  res
 }
 
 
