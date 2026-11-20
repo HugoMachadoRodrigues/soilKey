@@ -1170,7 +1170,10 @@ qual_haplic <- function(pedon) {
 .wrb_optional_subqualifiers <- list(
   Dystric     = c("Hyperdystric"),
   Eutric      = c("Oligoeutric", "Hypereutric"),
-  Hypereutric = c("Oligoeutric")
+  Hypereutric = c("Oligoeutric"),
+  # v0.9.411: the subqualifiers of Humic (Ch 5, p. 137). WRB states no
+  # preference between them; the stricter one (>= 5% to 50 cm) is tried first.
+  Humic       = c("Hyperhumic", "Profundihumic")
 )
 
 # Replace each taken qualifier that has optional subqualifiers by the first
