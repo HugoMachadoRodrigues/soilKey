@@ -55,7 +55,8 @@
 #     artefacts), and the mottles of a g, l or r horizon with no mottle field.
 #   * Base saturation (100 x exchangeable bases / CEC at pH 7), the ECEC and
 #     the aluminium saturation are calculated when ISIS has the parts; silt is
-#     100 - sand - clay when only those two are given.
+#     100 - sand - clay when only those two are given (v0.9.416: and sand
+#     100 - clay - silt).
 #   * The groundwater of the site (groundwaterKind; depthGroundwater, or
 #     groundwaterTop where the depth is 0) becomes groundwater_kind and
 #     groundwater_depth_cm, which tell gleyic from stagnic properties in WRB
@@ -83,6 +84,20 @@
 #     The organic matter (orgm) is not read as organic carbon: ISIS measures it
 #     by loss on ignition, and where a layer has both, orgm / orgc runs from
 #     below 0.2 to above 11 (between 1.6 and 1.85 in 49 of 1,064 layers).
+#   * v0.9.416 (Hugo, 2026-11-20, the Soil Taxonomy audit): the field texture
+#     class (textureClassesFao2006Small) as texture_class_usda, which the
+#     texture tests read where clay and sand are not measured; chroma 0, which
+#     ISIS does not code, from the colour written whole, and for the neutral
+#     hue N; no base saturation or ECEC from bases recorded without Ca (exbas
+#     then is Mg + K + Na); sand as 100 - clay - silt; the optical density of
+#     the oxalate extract (odoe); the decomposition of the organic matter of an
+#     O or H horizon as a von Post index inside its class; and the share of a
+#     recorded duripan from its continuity. ISIS records worm channels only as
+#     a kind of biological feature, with no volume, so worm_holes_pct is not
+#     read; its two silt fractions (fine and coarse silt, which add up to the
+#     silt; the second is the larger in the loess profiles, so likely 2-20 and
+#     20-50 um) serve no test: the 0.02-2 mm fraction of the Soil Taxonomy is
+#     the one whose volcanic glass is counted, and ISIS has no glass counts.
 # =============================================================================
 
 .ISIS_ENDPOINT <- "https://graphql.isric.org/isis/graphql"
@@ -133,7 +148,8 @@ isis_citation <- function(accessed = Sys.Date()) {
                "nitkjd", "cecph7", "ecec", "caExcph7", "mgExcph7", "kExcph7",
                "naExcph7", "exbas", "alExch", "acidityExc", "esp", "tceq", "gypsumContent",
                "feExtdith", "feExtacox", "alExtox", "sietox", "bdfiod", "bdfiot",
-               "wv1500", "elcosp", "elco25", "clayWaterdispTotal", "phnf")
+               "wv1500", "elcosp", "elco25", "clayWaterdispTotal", "phnf",
+               "opticalDensityOxalate")
 .ISIS_MORPH <- c("colourMoistHue", "colourMoistValue", "colourMoistChroma",
                  "colourDryHue", "colourDryValue", "colourDryChroma",
                  "structureGrade1", "structureType", "structureSize",
@@ -158,6 +174,10 @@ isis_citation <- function(accessed = Sys.Date()) {
                  "mineralConcNature", "mineralConcNature2",
                  "concretionsMineralKinds", "concretionsMineralKinds2",
                  "concretionsMineralSize", "concretionsMineralSize2")
+# v0.9.416: field observations read for one attribute each, which do not make
+# a row a described horizon (.isis_described)
+.ISIS_FIELD_OTHER <- c("textureClassesFao2006Small", "organicMattterDecomprate",
+                       "cementCompactContinuity")
 
 .isis_profile_fields <- function() {
   paste(
@@ -169,7 +189,7 @@ isis_citation <- function(accessed = Sys.Date()) {
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
     "layers(first: 100, orderBy: [UPPER_DEPTH_ASC]) { layerNumber upperDepth lowerDepth layerName",
-    paste(c(.ISIS_LAB, .ISIS_MORPH), collapse = " "), "}")
+    paste(c(.ISIS_LAB, .ISIS_MORPH, .ISIS_FIELD_OTHER), collapse = " "), "}")
 }
 
 # ---- Reading ISIS values ----------------------------------------------------
@@ -513,6 +533,12 @@ isis_citation <- function(accessed = Sys.Date()) {
   fill <- is.na(out$silt_pct) & is.finite(si) & si >= 0
   out$silt_pct[fill] <- si[fill]
   note("silt_pct", which(fill), "calculated: 100 - sand - clay (ISIS)")
+  # v0.9.416: and sand is 100 - clay - silt when only those two are given
+  # (ES002, whose laboratory rows record clay and silt only)
+  sa <- 100 - out$clay_pct - out$silt_pct
+  fill <- is.na(out$sand_pct) & is.finite(sa) & sa >= 0
+  out$sand_pct[fill] <- sa[fill]
+  note("sand_pct", which(fill), "calculated: 100 - clay - silt (ISIS)")
   setnum("water_dispersible_clay_pct", "clayWaterdispTotal", 1, "g/100g, a clay content")
   setnum("coarse_fragments_pct", "cfvo", 1, "cm3/100cm3")
   setnum("ph_h2o", "phaq", 1, "pH water"); setnum("ph_kcl", "phkc", 1, "pH KCl")
@@ -533,6 +559,8 @@ isis_citation <- function(accessed = Sys.Date()) {
   setnum("bulk_density_g_cm3", "bdfiod", 1, "kg/dm3, oven dry")
   setnum("bulk_density_g_cm3", "bdfiot", 1, "kg/dm3")
   setnum("ec_dS_m", "elcosp", 1, "dS/m, saturated paste")
+  # v0.9.416: the optical density of the acid oxalate extract
+  setnum("odoe", "opticalDensityOxalate", 1, "optical density of the oxalate extract")
   # EC 1:2.5 only where it decides the salic horizon (Hugo, 2026-10-29): the
   # paste is less dilute, so its EC is at least EC 1:2.5 (a value of 15 or
   # more is enough), and at most EC 1:2.5 x 12.5 (an upper bound, read only by
@@ -553,6 +581,19 @@ isis_citation <- function(accessed = Sys.Date()) {
   bases <- vapply(H, function(L) .isis_num(L$exbas), 0)
   four <- out$ca_cmol + out$mg_cmol + out$k_cmol + out$na_cmol
   bases[!is.finite(bases)] <- four[!is.finite(bases)]
+  # v0.9.416 (Hugo, 2026-11-20): where Ca is not recorded, an exbas that is the
+  # sum of the Mg, K and Na recorded is not the sum of the bases (48 calcareous
+  # layers of 9 US profiles, where the NH4OAc extract dissolves carbonates and
+  # Ca was not reported, and one layer of KE015): no base saturation and no
+  # ECEC are calculated from it; they stay undecided
+  others <- cbind(out$mg_cmol, out$k_cmol, out$na_cmol)
+  some <- rowSums(is.finite(others)) > 0
+  no_ca <- is.na(out$ca_cmol) & some & is.finite(bases) &
+    abs(bases - rowSums(others, na.rm = TRUE)) < 0.15
+  bases[no_ca] <- NA_real_
+  ca_notes <- if (any(no_ca)) sprintf(
+    "ISIS gives exchangeable bases without Ca in %d layer(s) (exbas is Mg + K + Na): base saturation and ECEC are not calculated there.",
+    sum(no_ca)) else character(0)
   bs <- ifelse(is.finite(bases) & is.finite(out$cec_cmol) & out$cec_cmol > 0,
                pmin(100, 100 * bases / out$cec_cmol), NA_real_)
   out$bs_pct <- bs
@@ -597,6 +638,26 @@ isis_citation <- function(accessed = Sys.Date()) {
         note(col, fill[!is.na(out[[col]][fill])], sprintf("ISIS %s (the colour written whole)", field))
     }
   }
+  # v0.9.416: ISIS codes no chroma 0, so a layer with a hue and a value and no
+  # chroma lost "7.5YR 2/0" (22 layers of KE067, KE066, ZW007, NL048, NL049,
+  # NL051, NL056, NL057): the chroma 0 of the colour written whole, of the same
+  # hue, is read; and the neutral hue N has chroma 0
+  for (st in c("Moist", "Dry")) {
+    low <- tolower(st)
+    hc <- paste0("munsell_hue_", low); cc <- paste0("munsell_chroma_", low)
+    for (field in paste0("colour", st, c("Matrix", "Matrix2"))) {
+      parsed <- lapply(code(field), .isis_parse_matrix)
+      hue <- vapply(parsed, function(z) z$hue, "")
+      chr <- vapply(parsed, function(z) z$chroma, 0)
+      fill <- which(!is.na(out[[hc]]) & is.na(out[[cc]]) & !is.na(hue) &
+                      hue == out[[hc]] & chr %in% 0)
+      out[[cc]][fill] <- 0
+      note(cc, fill, sprintf("ISIS %s (chroma 0 of the colour written whole; ISIS codes no chroma 0)", field))
+    }
+    fill <- which(out[[hc]] %in% "N" & is.na(out[[cc]]))
+    out[[cc]][fill] <- 0
+    note(cc, fill, "the neutral hue N: chroma 0")
+  }
   setchr("structure_grade", "structureGrade1", .ISIS_GRADE)
   setchr("structure_type", "structureType", .ISIS_STRUCTURE)
   setchr("structure_size", "structureSize", .ISIS_SIZE)
@@ -638,6 +699,36 @@ isis_citation <- function(accessed = Sys.Date()) {
   setchr("boundary_distinctness", "horizBoundaryDistinctness", .ISIS_BOUNDARY)
   setchr("boundary_topography", "horizBoundaryTopography", .ISIS_TOPOGRAPHY)
   setchr("pan_type", "pansKind", .ISIS_PAN)
+  # v0.9.416: the field texture class (FAO 2006 codes, the USDA classes), read
+  # by the texture tests only where clay and sand are not measured
+  tc <- code("textureClassesFao2006Small")
+  out$texture_class_usda <- tc
+  note("texture_class_usda", which(!is.na(tc)), "ISIS textureClassesFao2006Small (FAO 2006 code)")
+  # v0.9.416: the decomposition of the organic matter of an O or H horizon as
+  # the von Post index, inside the range of its class: nil H1, slightly H3
+  # (fibric, H1-H4), moderately H5 (hemic, H5-H6), highly H8 (sapric, H7-H10)
+  dsg0 <- ifelse(is.na(out$designation), "", out$designation)
+  vp <- unname(c("0" = 1L, S = 3L, M = 5L, H = 8L)[code("organicMattterDecomprate")])
+  vp[!grepl("^[0-9]*[OH]([^A-Z]|$)", dsg0)] <- NA_integer_
+  out$von_post_index <- as.integer(vp)
+  note("von_post_index", which(!is.na(vp)),
+       "ISIS organicMattterDecomprate of an O or H horizon (nil H1, slightly H3, moderately H5, highly H8)")
+  # v0.9.416: a recorded duripan (pansKind D) is cemented in the share of the
+  # FAO (2006) class of its continuity: broken (< 50 %) 25, discontinuous
+  # (50-90 %) 70, continuous (> 90 %) 95. With no continuity recorded, the m of
+  # its designation (continuous or nearly continuous cementation) reads as 95.
+  # A q and m designation with no pan recorded stays unknown.
+  dp <- unname(c(B = 25, D = 70, C = 95)[code("cementCompactContinuity")])
+  suffix <- sub("^[0-9]*[A-Z]+", "", dsg0)
+  dpan <- code("pansKind") %in% "D"
+  dp[!dpan] <- NA_real_
+  from_m <- dpan & is.na(dp) & grepl("m", suffix)
+  dp[from_m] <- 95
+  out$duripan_pct <- dp
+  note("duripan_pct", which(dpan & !is.na(dp) & !from_m),
+       "ISIS cementCompactContinuity of a duripan (pansKind D): middle of the FAO class (broken 25, discontinuous 70, continuous 95)")
+  note("duripan_pct", which(from_m),
+       "ISIS duripan (pansKind D) with no continuity recorded, designation m (continuous or nearly continuous cementation): 95")
 
   # cutans: clay films, or slickensides
   kind <- code("cutansKind"); amt <- code("cutansAbundance"); thk <- code("cutansThickness")
@@ -819,7 +910,7 @@ isis_citation <- function(accessed = Sys.Date()) {
     data.frame(horizon_idx = integer(0), attribute = character(0), source = character(0),
                confidence = numeric(0), notes = character(0), stringsAsFactors = FALSE)
   rownames(out) <- NULL
-  notes <- gd$notes
+  notes <- c(gd$notes, ca_notes)
   if (mg$merged) notes <- c(notes, sprintf("%d laboratory sample row(s) with no field description were given to the described horizon that holds them.", mg$merged))
   list(horizons = out, provenance = prov, notes = notes)
 }

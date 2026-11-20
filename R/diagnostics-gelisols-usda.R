@@ -843,6 +843,9 @@ psammentic_subgroup_usda <- function(pedon) {
   cf_ok <- all(is.na(cf) | cf < 35)
   texture_ok <- all(vapply(cand, function(i) {
     cl <- h$clay_pct[i]; sd <- h$sand_pct[i]
+    # v0.9.416: with neither measured, the field texture class
+    ft <- .field_texture_fallback(h, i)
+    if (!is.null(ft)) return(ft$lfs_or_coarser)
     if (is.na(cl) || is.na(sd)) return(NA)
     !isTRUE(.is_finer_than_loamy_fine_sand(cl, h$silt_pct[i], sd))
   }, logical(1)), na.rm = TRUE)

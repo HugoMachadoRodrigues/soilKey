@@ -63,6 +63,77 @@ is_loamy_sand_or_finer <- function(sand, silt, clay) {
   silt + 2 * clay >= 15
 }
 
+# v0.9.416: the texture class of the fine earth as the field records it
+# (texture_class_usda), in the USDA class names that the FAO (2006)
+# guidelines adopt. Codes and words are both read; the FAO codes CS, LCS and
+# CSL are the USDA COS, LCOS and COSL, and HC (heavy clay) is a clay. S is the
+# FAO "sand, unspecified" and US the unsorted sand: a sand of no known grade.
+.TEXTURE_CLASS_WORDS <- c(
+  "sand" = "S", "coarse sand" = "COS", "medium sand" = "MS", "fine sand" = "FS",
+  "very fine sand" = "VFS", "unsorted sand" = "US", "sand unsorted" = "US",
+  "loamy sand" = "LS", "loamy coarse sand" = "LCOS", "loamy fine sand" = "LFS",
+  "loamy very fine sand" = "LVFS", "sandy loam" = "SL", "coarse sandy loam" = "COSL",
+  "fine sandy loam" = "FSL", "very fine sandy loam" = "VFSL", "loam" = "L",
+  "silt loam" = "SIL", "silt" = "SI", "sandy clay loam" = "SCL", "clay loam" = "CL",
+  "silty clay loam" = "SICL", "sandy clay" = "SC", "silty clay" = "SIC",
+  "clay" = "C", "heavy clay" = "C")
+.TEXTURE_CLASS_CODES <- c("S", "COS", "MS", "FS", "VFS", "US", "LS", "LCOS", "LFS",
+                          "LVFS", "SL", "COSL", "FSL", "VFSL", "L", "SIL", "SI",
+                          "SCL", "CL", "SICL", "SC", "SIC", "C")
+.texture_class_norm <- function(x) {
+  x <- as.character(x)
+  w <- gsub("[^a-z ]", " ", tolower(x))
+  w <- gsub("\\s+", " ", trimws(w))
+  out <- unname(.TEXTURE_CLASS_WORDS[w])
+  code <- toupper(gsub("[^A-Za-z]", "", x))
+  alias <- unname(c(CS = "COS", LCS = "LCOS", CSL = "COSL", HC = "C")[code])
+  code <- ifelse(is.na(alias), code, alias)
+  fill <- is.na(out) & code %in% .TEXTURE_CLASS_CODES
+  out[fill] <- code[fill]
+  out
+}
+
+#' Texture class readings of a field texture class
+#'
+#' Reads a texture class of the fine earth (\code{texture_class_usda}: USDA
+#' class names or FAO 2006 codes) into the comparisons the keys make, each
+#' \code{TRUE}, \code{FALSE} or \code{NA} (class not recorded or not
+#' recognised, or a sand of no known grade where the grade decides):
+#' \describe{
+#'   \item{\code{sandy_loam_or_finer}}{neither a sand nor a loamy sand (WRB
+#'     argic, cambic and ferralic horizons).}
+#'   \item{\code{vfs_or_finer}}{very fine sand, loamy very fine sand or finer
+#'     (KST 13th ed., cambic horizon, p. 22).}
+#'   \item{\code{lfs_or_coarser}}{loamy fine sand or coarser (KST 13th ed.,
+#'     Psamments, p. 165): the sands and loamy sands other than very fine
+#'     sand and loamy very fine sand.}
+#' }
+#' The keys read it only where clay and sand are not measured.
+#' @param x Character vector of texture classes.
+#' @return A data frame with one row per element of \code{x}.
+#' @noRd
+.texture_class_reading <- function(x) {
+  k <- .texture_class_norm(x)
+  sandy <- c("S", "COS", "MS", "FS", "VFS", "US", "LS", "LCOS", "LFS", "LVFS")
+  coarse_grade <- c("COS", "MS", "FS", "LS", "LCOS", "LFS")
+  no_grade <- c("S", "US")
+  slf <- ifelse(is.na(k), NA, !k %in% sandy)
+  vfs <- ifelse(is.na(k) | k %in% no_grade, NA, !k %in% coarse_grade)
+  lfs <- ifelse(is.na(k) | k %in% no_grade, NA, k %in% coarse_grade)
+  data.frame(class = k, sandy_loam_or_finer = slf, vfs_or_finer = vfs,
+             lfs_or_coarser = lfs, stringsAsFactors = FALSE)
+}
+
+# The field texture class of layer i, read only where clay and sand are not
+# measured (v0.9.416): NULL otherwise, or when no class is recorded.
+.field_texture_fallback <- function(h, i) {
+  tc <- h[["texture_class_usda"]]
+  if (is.null(tc) || is.na(tc[i])) return(NULL)
+  if (!is.na(h$clay_pct[i]) || !is.na(h$sand_pct[i])) return(NULL)
+  r <- .texture_class_reading(tc[i])
+  if (is.na(r$class)) NULL else r
+}
+
 #' CEC per kg clay (cmol_c)
 #'
 #' \code{cec_cmol * 100 / clay_pct}. Returns \code{NA} when either input is
@@ -490,10 +561,14 @@ test_texture_argic <- function(h, candidate_layers = NULL) {
 
   for (i in cl) {
     s <- is_sandy_loam_or_finer(h$sand_pct[i], h$silt_pct[i], h$clay_pct[i])
+    # v0.9.416: with neither clay nor sand measured, the field texture class
+    ft <- .field_texture_fallback(h, i)
+    if (!is.null(ft)) s <- ft$sandy_loam_or_finer
     details[[as.character(i)]] <- list(
       idx = i, sand = h$sand_pct[i], silt = h$silt_pct[i],
       clay = h$clay_pct[i], result = s
     )
+    if (!is.null(ft)) details[[as.character(i)]]$texture_class_usda <- ft$class
     if (is.na(s)) {
       missing <- c(missing, "sand_pct", "silt_pct", "clay_pct")
     } else if (s) {

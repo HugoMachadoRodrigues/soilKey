@@ -1064,6 +1064,9 @@
           },
           "aeolian_crack_infill": {
             "type": ["boolean", "null"]
+          },
+          "texture_class_usda": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

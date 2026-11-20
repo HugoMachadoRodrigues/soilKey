@@ -409,7 +409,9 @@ horizon_column_spec <- function() {
     munsell_chroma_rubbed         = "numeric",   # Munsell chroma of the rubbed soil, moist
     pitted_quartz_pct             = "numeric",   # pitted and rounded quartz grains, % of the sand >= 0.25 mm; FAO yermic phase (>= 10)
     palygorskite_pct              = "numeric",   # palygorskite, % of the clay fraction; FAO yermic phase (>= 2)
-    aeolian_crack_infill          = "logical"    # surface cracks filled with in-blown sand or silt; FAO yermic phase
+    aeolian_crack_infill          = "logical",   # surface cracks filled with in-blown sand or silt; FAO yermic phase
+    # ---- v0.9.416: the field texture class ----
+    texture_class_usda            = "character"  # texture class of the fine earth, USDA names (FAO 2006 codes): S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC, SiC, C, with the sand grades; read only where clay and sand are not measured
   )
 }
 

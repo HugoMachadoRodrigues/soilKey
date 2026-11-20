@@ -1716,3 +1716,7 @@ attributes:
     section: "FAO-Unesco legend (1988 and 1974)"
     unit: "logical"
     description: "Surface cracks filled with in-blown sand or silt, feature 4 of the yermic phase of 1988 (p. 71). A field observation: not recorded, absent."
+  - name: texture_class_usda
+    section: "Texture"
+    unit: "-"
+    description: "Texture class of the fine earth as estimated in the field, in the USDA class names that the FAO (2006) guidelines adopt: S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC, SiC, C, and the sand grades COS (FAO CS), MS, FS, VFS, US (unsorted), LCOS (LCS), LFS, LVFS, COSL (CSL), FSL, VFSL; the class names in words are accepted. Read only where clay and sand are not measured, by the texture tests of the WRB argic, cambic and ferralic horizons (sandy loam or finer) and the USDA Psamments and Psammentic subgroups (loamy fine sand or coarser); S (FAO: sand, unspecified) and US give no sand grade. ISIS textureClassesFao2006Small (v0.9.416)."

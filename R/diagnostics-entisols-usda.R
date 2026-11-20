@@ -84,6 +84,13 @@ psamment_qualifying_usda <- function(pedon) {
   passing <- integer(0)
   for (i in cand) {
     cl <- h$clay_pct[i]; si <- h$silt_pct[i]
+    # v0.9.416: with neither clay nor sand measured, the field texture class
+    # (loamy fine sand or coarser, KST 13th ed., p. 165)
+    ft <- .field_texture_fallback(h, i)
+    if (!is.null(ft)) {
+      if (isTRUE(ft$lfs_or_coarser)) passing <- c(passing, i)
+      next
+    }
     if (is.na(cl) || is.na(si)) next
     # Loamy fine sand or coarser: silt + 2*clay < 30
     if (si + 2 * cl < 30) passing <- c(passing, i)
