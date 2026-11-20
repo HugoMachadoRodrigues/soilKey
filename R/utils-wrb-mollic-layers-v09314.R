@@ -81,6 +81,13 @@
       "dry colour only (proxy)")
   use("carbon", ifelse(is.na(vm) & is.na(vd) & !is.na(oc) & oc >= 1.5, TRUE, NA),
       "no colour recorded, >= 1.5% SOC (proxy)")
+  # v0.9.411 (Hugo, L11): the same proxy where part of the colour is recorded
+  # and that part already meets criterion 3a (value <= 3 and chroma <= 3 moist,
+  # value <= 5 dry; WRB 2022 Ch 3.1.20, p. 52, and 3.1.39, p. 69); CU020: Ap
+  # moist value 2, no chroma, 2.25% SOC
+  use("carbon", ifelse(!is.na(oc) & oc >= 1.5 & (is.na(vm) | vm <= 3) &
+                         (is.na(cm) | cm <= 3) & (is.na(vd) | vd <= 5), TRUE, NA),
+      "colour partly recorded and within criterion 3a, >= 1.5% SOC (proxy)")
   use("dry_chroma", ifelse(!is.na(vm) & is.na(cm) & !is.na(cd), cd <= 3 & vm <= 3, NA),
       "dry chroma for the moist chroma (proxy)")
   out <- as.logical(out)
@@ -112,6 +119,19 @@
     colour[i] <- .any3v(colour[i], colour[j])
   }
   carbon <- .wrb_ge(oc, min_oc)
+  # v0.9.411: criterion 4 (WRB 2022 Ch 3.1.20, p. 52; Ch 3.1.39, p. 70): "if a
+  # layer is present that corresponds to the parent material ... and that has
+  # a Munsell colour value of <= 4, moist, >= 0.6% (absolute) more soil
+  # organic carbon than this layer", in every layer (Ch 2.1, p. 23). The
+  # parent material (.wrb_mollic_parent_layer()) and what lies below it are
+  # not part of the horizon. NI009: C at 55 cm with 0.90% under an Ah of 1.11%.
+  par <- .wrb_mollic_parent_layer(h)
+  if (!is.null(par)) {
+    below <- !is.na(h$top_cm) & h$top_cm >= h$top_cm[par$layer] - 1e-6
+    carbon <- .and3v(carbon, ifelse(below, FALSE,
+                                    ifelse(is.na(oc) | is.na(par$oc_pct), NA,
+                                           oc >= par$oc_pct + 0.6)))
+  }
   mineral <- ifelse(is.na(oc), TRUE, oc < 20)
   structure <- .wrb_aggregate_structure_le_10cm(h)
   structure[is.na(structure)] <- TRUE

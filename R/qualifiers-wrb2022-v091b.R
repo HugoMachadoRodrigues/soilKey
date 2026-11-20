@@ -197,74 +197,56 @@ qual_pellic <- function(pedon) {
 
 
 # ---------- ANDOSOL ACTIVE-COMPONENT QUALIFIERS -----------------------------
-# Aluandic / Silandic split the andic active component by Al vs Si
-# dominance. WRB 2022 uses the molar ratio Al / (Al + 0.5 * Si);
-# Aluandic when Al / (Al + 0.5 * Si) >= 0.5 (Al-dominant) and Silandic
-# otherwise. With Al = 26.98 g/mol and Si = 28.09 g/mol, the molar
-# ratio reduces to mass ratio with a < 1% correction; v0.9.1 uses the
-# mass-ratio expression directly. Both qualifiers require andic
-# properties to pass first.
-
-.al_si_dominance <- function(pedon) {
+# v0.9.411: WRB 2022 Ch 5 splits the andic layers by Si in oxalate extract.
+# Aluandic (p. 128): "having within 100 cm of the soil surface one or more
+# layers with a combined thickness of >= 15 cm with andic properties and a
+# Siox content of < 0.6%"; Silandic (p. 146): the same with "a Siox content of
+# >= 0.6%". Until v0.9.410 the split was the mass ratio Al / (Al + 0.5 Si)
+# >= 0.5, which is not in WRB 2022, with no thickness: every Andosol came out
+# Aluandic. An andic layer with no Si_ox recorded is undecided: it can make
+# up the 15 cm of either qualifier, so the answer is NA when only such layers
+# could reach it.
+.andic_si_split <- function(pedon, name, si_ok) {
+  ref <- paste0("WRB (2022) Ch 5, ", name,
+                if (name == "Aluandic") " (p. 128)" else " (p. 146)")
   ap <- andic_properties(pedon)
-  if (!isTRUE(ap$passed))
-    return(list(passed = FALSE, layers = integer(0), andic = ap,
-                ratio = numeric(0)))
   h  <- pedon$horizons
-  ly <- intersect(ap$layers, .in_upper(pedon, 100))
-  al <- h$al_ox_pct[ly]
-  si <- h$si_ox_pct[ly]
-  # Mass ratio Al / (Al + 0.5 Si). >= 0.5 => Al-dominant => Aluandic.
-  ratio <- al / (al + 0.5 * si)
-  list(passed = TRUE, layers = ly, andic = ap,
-       ratio = ratio, al = al, si = si)
+  if (isFALSE(ap$passed))
+    return(DiagnosticResult$new(name = name, passed = ap$passed,
+            layers = integer(0), evidence = list(andic = ap),
+            missing = ap$missing %||% character(0), reference = ref))
+  st <- ap$evidence$layer_status %||% rep(NA, nrow(h))
+  st[seq_len(nrow(h)) %in% ap$layers & isTRUE(ap$passed)] <- TRUE
+  # the part of each layer within 100 cm of the soil surface
+  s0 <- suppressWarnings(min(h$top_cm, na.rm = TRUE))
+  thk <- pmax(0, pmin(h$bottom_cm, s0 + 100) - pmax(h$top_cm, s0))
+  thk[is.na(thk)] <- 0
+  si <- h$si_ox_pct %||% rep(NA_real_, nrow(h))
+  yes <- which(st %in% TRUE & thk > 0 & !is.na(si) & si_ok(si))
+  und <- which((is.na(st) | (st %in% TRUE & is.na(si))) & thk > 0)
+  passed <- if (sum(thk[yes]) >= 15) TRUE
+            else if (sum(thk[c(yes, und)]) >= 15) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = name, passed = passed,
+    layers = if (isTRUE(passed)) yes else integer(0),
+    evidence = list(andic = ap, si_ox = si, thickness_cm = sum(thk[yes]),
+                    undecided_cm = sum(thk[und])),
+    missing = if (is.na(passed)) unique(c("si_ox_pct", ap$missing)) else character(0),
+    reference = ref)
 }
 
-#' Aluandic qualifier (aa): andic properties + Al-dominant active
-#' component (Al / (Al + 0.5 Si) >= 0.5 in mass).
+#' Aluandic qualifier (aa): >= 15 cm of andic layers with Si_ox < 0.6\%
+#' within 100 cm of the soil surface (WRB 2022 Ch 5, p. 128).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_aluandic <- function(pedon) {
-  d <- .al_si_dominance(pedon)
-  if (!isTRUE(d$passed))
-    return(DiagnosticResult$new(name = "Aluandic", passed = FALSE,
-            layers = integer(0), evidence = list(andic = d$andic),
-            missing = d$andic$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Aluandic"))
-  ok <- !is.na(d$ratio) & d$ratio >= 0.5
-  passed <- any(ok)
-  DiagnosticResult$new(
-    name = "Aluandic", passed = passed,
-    layers = d$layers[ok],
-    evidence = list(andic = d$andic, ratio = d$ratio,
-                    al_ox = d$al, si_ox = d$si),
-    missing = if (all(is.na(d$ratio))) c("al_ox_pct", "si_ox_pct") else character(0),
-    reference = "WRB (2022) Ch 5, Aluandic"
-  )
-}
+qual_aluandic <- function(pedon) .andic_si_split(pedon, "Aluandic", function(si) si < 0.6)
 
-#' Silandic qualifier (sn): andic properties + Si-dominant active
-#' component (Al / (Al + 0.5 Si) < 0.5 in mass; allophane-rich).
+#' Silandic qualifier (sn): >= 15 cm of andic layers with Si_ox >= 0.6\%
+#' within 100 cm of the soil surface (WRB 2022 Ch 5, p. 146).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_silandic <- function(pedon) {
-  d <- .al_si_dominance(pedon)
-  if (!isTRUE(d$passed))
-    return(DiagnosticResult$new(name = "Silandic", passed = FALSE,
-            layers = integer(0), evidence = list(andic = d$andic),
-            missing = d$andic$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Silandic"))
-  ok <- !is.na(d$ratio) & d$ratio < 0.5
-  passed <- any(ok)
-  DiagnosticResult$new(
-    name = "Silandic", passed = passed,
-    layers = d$layers[ok],
-    evidence = list(andic = d$andic, ratio = d$ratio,
-                    al_ox = d$al, si_ox = d$si),
-    missing = if (all(is.na(d$ratio))) c("al_ox_pct", "si_ox_pct") else character(0),
-    reference = "WRB (2022) Ch 5, Silandic"
-  )
-}
+qual_silandic <- function(pedon) .andic_si_split(pedon, "Silandic", function(si) si >= 0.6)
 
 
 # ---------- ANDOSOL MOISTURE / DARKNESS / EXCHANGE QUALIFIERS ---------------
@@ -410,34 +392,46 @@ qual_pachic <- function(pedon) {
   )
 }
 
-#' Eutrosilic qualifier (es): silandic + base saturation >= 50\% in some
-#' layer of the silandic part within 100 cm.
+#' Eutrosilic qualifier (es): >= 30 cm of andic layers with a sum of
+#' exchangeable bases >= 15 cmol(c)/kg within 100 cm (WRB 2022 Ch 5, p. 133).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_eutrosilic <- function(pedon) {
-  si <- qual_silandic(pedon)
-  if (!isTRUE(si$passed))
-    return(DiagnosticResult$new(name = "Eutrosilic", passed = FALSE,
-            layers = integer(0), evidence = list(silandic = si),
-            missing = si$missing %||% character(0),
-            reference = "WRB (2022) Ch 5, Eutrosilic"))
+  # v0.9.411: WRB 2022 Ch 5 (p. 133): "having within 100 cm of the soil surface
+  # one or more layers with a combined thickness of >= 30 cm with andic
+  # properties and a sum of exchangeable bases (by 1 M NH4OAc, pH 7) of >= 15
+  # cmolc kg-1 fine earth". Until v0.9.410 it was read in the layers of the
+  # Silandic qualifier, any one of them: the definition names neither Silandic
+  # nor Si_ox, and asks for 30 cm. A sum is read from the cations recorded; a
+  # layer with none recorded is undecided.
+  ref <- "WRB (2022) Ch 5, Eutrosilic (p. 133)"
+  ap <- andic_properties(pedon)
   h  <- pedon$horizons
-  ly <- si$layers
-  # WRB 2022 Ch 5 Eutrosilic: andic-properties layer with a SUM of exchangeable
-  # bases (Ca+Mg+K+Na, by NH4OAc) >= 15 cmol_c/kg fine earth -- NOT base
-  # saturation >= 50% (the v0.9 proxy).
-  base_sum <- rowSums(cbind(h$ca_cmol[ly], h$mg_cmol[ly], h$k_cmol[ly],
-                            h$na_cmol[ly]), na.rm = TRUE)
-  any_base <- !is.na(h$ca_cmol[ly]) | !is.na(h$mg_cmol[ly]) |
-              !is.na(h$k_cmol[ly]) | !is.na(h$na_cmol[ly])
-  ok <- any_base & base_sum >= 15
-  passed <- any(ok)
+  if (isFALSE(ap$passed))
+    return(DiagnosticResult$new(name = "Eutrosilic", passed = FALSE,
+            layers = integer(0), evidence = list(andic = ap),
+            missing = character(0), reference = ref))
+  n  <- nrow(h)
+  st <- ap$evidence$layer_status %||% rep(NA, n)
+  st[seq_len(n) %in% ap$layers & isTRUE(ap$passed)] <- TRUE
+  s0 <- suppressWarnings(min(h$top_cm, na.rm = TRUE))
+  thk <- pmax(0, pmin(h$bottom_cm, s0 + 100) - pmax(h$top_cm, s0))
+  thk[is.na(thk)] <- 0
+  cat_ <- cbind(h$ca_cmol, h$mg_cmol, h$k_cmol, h$na_cmol)
+  any_base <- rowSums(!is.na(cat_)) > 0
+  base_sum <- ifelse(any_base, rowSums(cat_, na.rm = TRUE), NA_real_)
+  yes <- which(st %in% TRUE & thk > 0 & !is.na(base_sum) & base_sum >= 15)
+  und <- which(thk > 0 & (is.na(st) | (st %in% TRUE & is.na(base_sum))))
+  passed <- if (sum(thk[yes]) >= 30) TRUE
+            else if (sum(thk[c(yes, und)]) >= 30) NA
+            else FALSE
   DiagnosticResult$new(
     name = "Eutrosilic", passed = passed,
-    layers = ly[ok],
-    evidence = list(silandic = si, base_sum_cmol = base_sum),
-    missing = if (!any(any_base)) c("ca_cmol","mg_cmol","k_cmol","na_cmol")
+    layers = if (isTRUE(passed)) yes else integer(0),
+    evidence = list(andic = ap, base_sum_cmol = base_sum,
+                    thickness_cm = sum(thk[yes])),
+    missing = if (is.na(passed)) c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol")
               else character(0),
-    reference = "WRB (2022) Ch 5, Eutrosilic"
+    reference = ref
   )
 }

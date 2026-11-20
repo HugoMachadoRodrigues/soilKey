@@ -1025,7 +1025,10 @@ qual_protospodic <- function(pedon) {
     if (!length(above_all)) next
     above <- above_all[known_mineral[above_all] & !is.na(al[above_all])]
     if (is.na(al[i]) || !length(above)) { undecided <- TRUE; next }
-    if (al[i] > 0 && al[i] >= 1.5 * min(al[above])) hits <- c(hits, i)
+    # v0.9.411 (WRB 2022 Ch 5, p. 147): 1.5 times a lowest value of 0 is no
+    # threshold (CO010: 0.01% over 0.00%); a 0 above gives nothing to measure
+    lo <- min(al[above])
+    if (lo > 0 && al[i] >= 1.5 * lo) hits <- c(hits, i)
     else if (length(above) < length(above_all)) undecided <- TRUE
   }
   passed <- if (spodic_in) FALSE

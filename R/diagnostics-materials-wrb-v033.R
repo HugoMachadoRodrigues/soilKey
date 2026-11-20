@@ -333,8 +333,18 @@ mineral_material <- function(pedon, max_oc = 20, max_organotechnic = 35) {
 
 
 #' Mulmic material (WRB 2022 Ch 3.3.12): mineral material developed from
-#' organic material; \\>= 8\% SOC, with low BD, structural / chroma
-#' criteria.
+#' drained organic material; \\>= 8\% SOC, single grain or fine blocky
+#' structure, chroma \\<= 2.
+#'
+#' Since v0.9.411 every criterion of Ch 3.3.12 (p. 90) is read, layer by
+#' layer: mineral material (< 20\% SOC) with \\>= \code{min_oc} SOC; a single
+#' grain structure or a subangular or angular blocky one of average size
+#' \\<= 2 cm (a structure not recorded counts as absent); a moist chroma
+#' \\<= \code{max_chroma}; and recorded evidence that it "has developed from
+#' water-saturated organic material after drainage": organic material below
+#' the layer, or a record of artificial drainage of the site (none counts as
+#' absent). Until v0.9.410 only the SOC and the chroma were read, so the dark
+#' humus-rich topsoils of Andosols were mulmic.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_oc Numeric threshold or option (see Details).
 #' @param max_chroma Numeric threshold or option (see Details).
@@ -342,29 +352,26 @@ mineral_material <- function(pedon, max_oc = 20, max_organotechnic = 35) {
 #' @export
 mulmic_material <- function(pedon, min_oc = 8, max_chroma = 2) {
   h <- pedon$horizons
-  tests <- list()
-  tests$oc      <- test_oc_above(h, min_pct = min_oc)
-  tests$chroma  <- test_numeric_above(h, "munsell_chroma_moist",
-                                          threshold = -Inf,
-                                          candidate_layers = tests$oc$layers)
-  # Replace test_numeric_above with chroma <= max_chroma logic.
-  ok_chroma <- which(!is.na(h$munsell_chroma_moist) &
-                     h$munsell_chroma_moist <= max_chroma)
-  tests$chroma <- .subtest_result(
-    passed = if (length(intersect(tests$oc$layers, ok_chroma)) > 0L) TRUE
-             else if (all(is.na(h$munsell_chroma_moist))) NA
-             else FALSE,
-    layers = intersect(tests$oc$layers, ok_chroma),
-    missing = if (any(is.na(h$munsell_chroma_moist)))
-                 "munsell_chroma_moist" else character(0),
-    details = list()
-  )
-  agg <- aggregate_subtests(tests)
+  n <- nrow(h)
+  oc <- h$oc_pct %||% rep(NA_real_, n)
+  cm <- suppressWarnings(as.numeric(h$munsell_chroma_moist %||% rep(NA_real_, n)))
+  c1 <- ifelse(is.na(oc), NA, oc >= min_oc & oc < 20)     # 1, and mineral
+  c2 <- .mulmic_structure_ok(h)                           # 2
+  c3 <- ifelse(is.na(cm), NA, cm <= max_chroma)           # 3
+  origin <- .mulmic_drained_origin(pedon)
+  st <- .and3v(.and3v(.and3v(c1, c2), c3), origin)
+  passing <- which(st %in% TRUE)
+  und <- which(is.na(st))
   DiagnosticResult$new(
     name = "mulmic_material",
-    passed = agg$passed, layers = agg$layers,
-    evidence = tests, missing = agg$missing,
-    reference = "IUSS Working Group WRB (2022), Chapter 3.3.12"
+    passed = if (length(passing)) TRUE else if (length(und)) NA else FALSE,
+    layers = passing,
+    evidence = list(layer_status = as.logical(st), organic_carbon = c1,
+                    structure = c2, chroma = c3, drained_origin = origin),
+    missing = unique(c(if (any(is.na(c1[und]))) "oc_pct",
+                       if (any(is.na(c2[und]))) "structure_size",
+                       if (any(is.na(c3[und]))) "munsell_chroma_moist")),
+    reference = "IUSS Working Group WRB (2022), Chapter 3.3.12 (p. 90)"
   )
 }
 

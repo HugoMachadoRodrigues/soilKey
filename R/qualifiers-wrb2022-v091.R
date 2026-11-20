@@ -155,10 +155,33 @@ qual_sulfidic <- function(pedon) {
   )
 }
 
-#' Mulmic qualifier (ml): mulmic material in upper 100 cm.
+#' Mulmic qualifier (mm): a layer of mulmic material >= 10 cm thick starting
+#' at the mineral soil surface (WRB 2022 Ch 5, p. 141).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_mulmic <- function(pedon) .q_presence("Mulmic", mulmic_material(pedon), 100, pedon)
+qual_mulmic <- function(pedon) {
+  # v0.9.411: WRB 2022 Ch 5 (p. 141): "having a layer, >= 10 cm thick,
+  # consisting of mulmic material and starting at the mineral soil surface".
+  # Until v0.9.410 any mulmic layer starting <= 100 cm, of any thickness.
+  mm <- mulmic_material(pedon)
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  run_cm <- function(ly) {
+    r <- Filter(function(r) !is.na(ms) && abs(r$top - ms) <= 1, .q_layer_runs(h, ly))
+    if (length(r)) r[[1L]]$bottom - r[[1L]]$top else 0
+  }
+  st <- mm$evidence$layer_status %||% rep(NA, nrow(h))
+  yes <- which(st %in% TRUE)
+  passed <- if (run_cm(yes) >= 10) TRUE
+            else if (run_cm(which(!st %in% FALSE)) >= 10) NA
+            else FALSE
+  DiagnosticResult$new(
+    name = "Mulmic", passed = passed,
+    layers = if (isTRUE(passed)) yes else integer(0),
+    evidence = list(base = mm, mineral_surface_cm = ms),
+    missing = if (is.na(passed)) mm$missing %||% character(0) else character(0),
+    reference = "WRB (2022) Ch 5, Mulmic (p. 141)")
+}
 
 
 # ---------- ANTHROPOGENIC-HORIZON PRINCIPAL QUALIFIERS ----------------------

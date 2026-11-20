@@ -1022,7 +1022,9 @@ qual_skeletic <- function(pedon) {
 #' v0.9.308 every layer starting above 50 cm was counted whole and the depth
 #' was taken from 0 cm: on ISRIC's KE009 that gave 0.83% instead of 1.15%.
 #' A part of the 50 cm with no carbon recorded leaves it undecided unless the
-#' recorded part alone reaches 1%.
+#' recorded part alone reaches 1%, or (v0.9.411) could not reach it with every
+#' unrecorded part at the 20% SOC that mineral material stays below (Ch 3.3.11,
+#' p. 90; an unrecorded O or H layer has no such bound).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_humic <- function(pedon) {
@@ -1041,48 +1043,68 @@ qual_humic <- function(pedon) {
   known <- sum((oc * ov)[!is.na(oc) & ov > 0])
   unknown_cm <- sum(ov[is.na(oc) & ov > 0]) + max(0, (end - ms) - sum(ov))
   wmean <- known / 50                    # the range below a limiting layer counts 0
-  passed <- if (wmean >= 1) TRUE else if (unknown_cm > 1e-6) NA else FALSE
+  # v0.9.411: the most the unrecorded part could add (PK004: 0.09% known)
+  org <- !is.na(h$designation) & grepl("^[0-9]*[OH]", h$designation)
+  bound <- 20 * unknown_cm + if (any(org & is.na(oc) & ov > 0)) Inf else 0
+  passed <- if (wmean >= 1) TRUE
+            else if (unknown_cm > 1e-6 && known + bound >= 50) NA else FALSE
   layers <- which(ov > 0)
   DiagnosticResult$new(name = "Humic", passed = passed,
     layers = if (isTRUE(passed)) layers else integer(0),
     evidence = list(oc_weighted = wmean, mineral_surface_cm = ms,
                     window_bottom_cm = end, limiting_layer_top_cm = lim,
-                    unrecorded_cm = unknown_cm),
+                    unrecorded_cm = unknown_cm, unrecorded_bound = bound),
     missing = if (is.na(passed)) "oc_pct" else character(0),
     reference = "WRB (2022) Ch 5, Humic")
 }
 
-#' Ochric qualifier (oh): SOC >= 0.2\% upper 10 cm + no mollic/umbric.
+#' Ochric qualifier (oh): >= 0.2\% SOC in the upper 10 cm of the mineral
+#' soil, no mollic or umbric horizon, not Humic (WRB 2022 Ch 5, p. 142).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_ochric <- function(pedon) {
+  ref <- "WRB (2022) Ch 5, Ochric"
   has_mollic <- isTRUE(mollic(pedon)$passed)
   has_umbric <- isTRUE(umbric_horizon(pedon)$passed)
   if (has_mollic || has_umbric)
     return(DiagnosticResult$new(name = "Ochric", passed = FALSE,
             layers = integer(0),
             evidence = list(mollic = has_mollic, umbric = has_umbric),
-            missing = character(0),
-            reference = "WRB (2022) Ch 5, Ochric"))
+            missing = character(0), reference = ref))
+  # v0.9.411: WRB 2022 Ch 5 (p. 142): "having >= 0.2% soil organic carbon
+  # (weighted average) in the upper 10 cm of the mineral soil". Until v0.9.410
+  # any layer starting <= 10 cm from the soil surface with 0.2% passed, and a
+  # profile with no carbon recorded failed. A part with no carbon recorded is
+  # undecided unless the recorded part reaches 0.2%, or could not reach it
+  # with the unrecorded part at < 20% SOC (mineral material).
   h <- pedon$horizons
-  surface <- which(!is.na(h$top_cm) & h$top_cm <= 10)
-  if (length(surface) == 0L)
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms))
     return(DiagnosticResult$new(name = "Ochric", passed = FALSE,
-            layers = integer(0), evidence = list(),
-            missing = character(0),
-            reference = "WRB (2022) Ch 5, Ochric"))
-  oc <- h$oc_pct[surface]
-  passed <- any(!is.na(oc) & oc >= 0.2)
-  # v0.9.309: WRB 2022 Ch 5 (p. 141): "and not meeting the set of diagnostic
+            layers = integer(0), evidence = list(), missing = character(0),
+            reference = ref))
+  end <- min(ms + 10, suppressWarnings(max(h$bottom_cm, na.rm = TRUE)))
+  ov <- pmax(0, pmin(h$bottom_cm, end) - pmax(h$top_cm, ms))
+  ov[is.na(ov)] <- 0
+  oc <- h$oc_pct
+  surface <- which(ov > 0)
+  known <- sum((oc * ov)[!is.na(oc) & ov > 0])
+  unknown_cm <- sum(ov[is.na(oc) & ov > 0]) + max(0, (end - ms) - sum(ov))
+  width <- max(end - ms, 1e-6)
+  passed <- if (known / width >= 0.2) TRUE
+            else if (unknown_cm > 1e-6 && (known + 20 * unknown_cm) / width >= 0.2) NA
+            else FALSE
+  # v0.9.309: WRB 2022 Ch 5 (p. 142): "and not meeting the set of diagnostic
   # criteria of the Humic qualifier"
   hu <- qual_humic(pedon)$passed
   if (isTRUE(hu)) passed <- FALSE
-  else if (is.na(hu) && passed) passed <- NA
+  else if (is.na(hu) && !isFALSE(passed)) passed <- NA
   DiagnosticResult$new(name = "Ochric", passed = passed,
-    layers = surface[which(!is.na(oc) & oc >= 0.2)],
-    evidence = list(oc = oc),
-    missing = if (all(is.na(oc))) "oc_pct" else character(0),
-    reference = "WRB (2022) Ch 5, Ochric")
+    layers = if (isTRUE(passed)) surface else integer(0),
+    evidence = list(oc_weighted = if (unknown_cm > 1e-6) NA_real_ else known / width,
+                    mineral_surface_cm = ms),
+    missing = if (is.na(passed)) "oc_pct" else character(0),
+    reference = ref)
 }
 
 
@@ -1117,6 +1139,10 @@ qual_haplic <- function(pedon) {
   gypsic     = c("Hypergypsic", "Gypsic",       "Protogypsic"),
   vertic     = c("Vertic",      "Protovertic"),
   eutric     = c("Hypereutric", "Eutric"),
+  # v0.9.411: optional subqualifiers of Humic (WRB 2022 Ch 5, p. 137; Ch 2.3
+  # rule 1, p. 26), each used instead of Humic and not of each other
+  hyperhumic = c("Hyperhumic", "Humic"),
+  profundihumic = c("Profundihumic", "Humic"),
   dystric    = c("Hyperdystric", "Dystric"),
   alic       = c("Hyperalic",   "Alic")
 )
@@ -1144,7 +1170,10 @@ qual_haplic <- function(pedon) {
 .wrb_optional_subqualifiers <- list(
   Dystric     = c("Hyperdystric"),
   Eutric      = c("Oligoeutric", "Hypereutric"),
-  Hypereutric = c("Oligoeutric")
+  Hypereutric = c("Oligoeutric"),
+  # v0.9.411: the subqualifiers of Humic (Ch 5, p. 137). WRB states no
+  # preference between them; the stricter one (>= 5% to 50 cm) is tried first.
+  Humic       = c("Hyperhumic", "Profundihumic")
 )
 
 # Replace each taken qualifier that has optional subqualifiers by the first
@@ -1179,14 +1208,21 @@ qual_haplic <- function(pedon) {
 # entry: the qualifier dropped -> the qualifiers that make it redundant
 # (Dolomitic, like Calcaric, means carbonates and so a saturated complex).
 .wrb_redundant_with <- list(
-  Eutric = c("Calcaric", "Dolomitic")
+  Eutric = c("Calcaric", "Dolomitic"),
+  # v0.9.411: Profundihumic (>= 1% throughout to 100 cm, p. 137) and
+  # Hyperhumic carry Humic, also from the other list (Ferralsols, Nitisols)
+  Humic  = c("Profundihumic", "Hyperhumic")
 )
+# Dropped by name only: their subqualifiers are what makes them redundant.
+.wrb_redundant_exact <- c("Humic")
 
 # A redundant qualifier is dropped with its subqualifiers (Hypereutric,
 # Epieutric, Endoeutric are Eutric too).
 .drop_redundant_qualifiers <- function(names_, all_matched) {
   drop <- names(Filter(function(by) any(by %in% all_matched),
                        .wrb_redundant_with))
+  names_ <- names_[!names_ %in% intersect(drop, .wrb_redundant_exact)]
+  drop <- setdiff(drop, .wrb_redundant_exact)
   if (!length(drop)) return(names_)
   pat <- paste0("(", paste(tolower(drop), collapse = "|"), ")$")
   names_[!(names_ %in% drop | grepl(pat, tolower(names_)))]
@@ -1201,7 +1237,8 @@ qual_haplic <- function(pedon) {
 # is itself a qualifier, so Epic, Endic or Protic keep their own name.
 .WRB_SUBQUALIFIER_PREFIXES <- c("Amphi", "Ano", "Bathy", "Endo", "Epi", "Kato",
                                 "Panto", "Poly", "Supra", "Thapto", "Hyper",
-                                "Hypo", "Proto", "Ortho", "Oligo")
+                                "Hypo", "Proto", "Ortho", "Oligo", "Profundi",
+                                "Akro", "Nudi")
 .wrb_base_qualifier <- function(qname, known) {
   for (p in .WRB_SUBQUALIFIER_PREFIXES) {
     if (startsWith(qname, p) && nchar(qname) > nchar(p)) {
@@ -1393,11 +1430,17 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
         }
       }
       if (isTRUE(specifiers) && length(passed_alts) > 1L &&
-          all(alts %in% .WRB_TEXTURE_QUALIFIERS)) {
-        sp <- .wrb_texture_group_specified(pedon, passed_alts, alt_layers)
+          (all(alts %in% .WRB_TEXTURE_QUALIFIERS) ||
+           all(alts %in% .WRB_ANDIC_GROUP))) {
+        # v0.9.411: Aluandic and Silandic at different depths as well
+        sp <- if (all(alts %in% .WRB_ANDIC_GROUP))
+                .wrb_andic_group_specified(pedon, passed_alts, alt_layers)
+              else .wrb_texture_group_specified(pedon, passed_alts, alt_layers)
         if (!is.null(sp)) {
           first <- passed_alts[1L]
-          matched <- c(setdiff(matched, first), unname(sp))
+          # in the place of the first (a principal group keeps its rank)
+          pos <- match(first, matched)
+          matched <- append(matched[-pos], unname(sp), after = pos - 1L)
           layers[[first]] <- NULL
           for (q in passed_alts) {
             layers[[sp[[q]]]] <- alt_layers[[q]]

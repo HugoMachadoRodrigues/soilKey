@@ -1,3 +1,39 @@
+# soilKey 0.9.411
+
+The WRB 2022 andic and humus qualifiers, after the qualifier audit (Hugo,
+2026-11-19).
+
+* **Aluandic and Silandic** split the layers with andic properties by the
+  silicon in oxalate extract, below or from 0.6%, with 15 cm of each
+  (Chapter 5, p. 128 and 146). They took an aluminium to silicon ratio that is
+  not in WRB 2022, so every Andosol was Aluandic. With specifiers, both are
+  named when they apply at different depths (Chapter 2.1, p. 24-25).
+* **Eutrosilic** asks for 30 cm of andic layers with at least 15 cmol(c)/kg of
+  exchangeable bases, and no longer for Silandic (p. 133).
+* **Protospodic** takes no threshold from a lowest Al_ox of 0 above (p. 147).
+* **Mulmic material** reads all its criteria: mineral material with at least 8%
+  organic carbon, a single grain or fine blocky structure, chroma 2 or less, and
+  a drained organic origin, either organic material below it or a record of
+  artificial drainage (Chapter 3.3.12, p. 90). The Mulmic qualifier needs 10 cm
+  of it from the mineral soil surface (p. 141). The dark topsoils of Andosols
+  were mulmic before.
+* **Hyperhumic** (p. 137) and, through the table of optional subqualifiers,
+  Profundihumic replace Humic where they apply. Humic is not named next to
+  Profundihumic or Hyperhumic.
+* **Humic and Ochric are decided** where the carbon a horizon lacks could not
+  change the answer, mineral material holding less than 20%. Ochric is the
+  weighted average of the upper 10 cm of the mineral soil (p. 142).
+* **The mollic and umbric horizons read criterion 4**: at least 0.6% more organic
+  carbon than a dark parent material in the same material (p. 52 and 70).
+* **A layer whose recorded colour already meets criterion 3a** with 1.5%
+  organic carbon or more counts as dark when part of its colour is missing
+  (Hugo, 2026-11-19).
+* **The chernic horizon reads unrecorded coarse fragments as none** (p. 40), a
+  field observation not recorded being absent.
+* On the ISIS profiles with a 2022 ISRIC name, the same reference soil group
+  goes from 296 to 299. The canonical Andosol, Histosol and Organossolo lose
+  Mulmic.
+
 # soilKey 0.9.410
 
 The WRB 2022 base status, after the qualifier audit against ISRIC's names
