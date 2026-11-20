@@ -83,9 +83,10 @@ test_that("GL canonical fixture resolves to an Oxygleyic Gleysol", {
   # itself is not a qualifier). v0.9.217: Chapter 4 lists no Haplic for
   # Gleysols; the Bg's gleyic properties are oximorphic mottles with no layer
   # of reduced colours (criterion 1), which is Oxygleyic, and the soil is
-  # Eutric (exchangeable bases > Al).
+  # Eutric (exchangeable bases > Al). v0.9.410: bases >= 4 x Al throughout,
+  # so its optional subqualifier Hypereutric (Ch 2.3, rule 1) is used.
   expect_true("Oxygleyic" %in% res$principal)
-  expect_true("Eutric" %in% res$principal)
+  expect_true("Hypereutric" %in% res$principal)
   expect_false("Haplic" %in% res$principal)
 
   cls <- classify_wrb2022(pr, on_missing = "silent")

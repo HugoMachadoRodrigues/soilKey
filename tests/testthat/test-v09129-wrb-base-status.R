@@ -88,10 +88,12 @@ test_that("organic layers use the WRB Histosol pH branch", {
   # peat: pH 4.0 -> dystric-side; pH 6.0 -> eutric-side
   acid <- mk(data.frame(top_cm = c(0, 30), bottom_cm = c(30, 80),
                         oc_pct = c(30, 30), ph_h2o = c(4.0, 4.2)))
-  expect_true(qual_dystric(acid)$passed)
+  # v0.9.410: the pH branch is the one of Histosols (rsg_code = "HS"); in other
+  # soils only mineral layers count (WRB 2022 Ch 5, p. 131-133)
+  expect_true(qual_dystric(acid, rsg_code = "HS")$passed)
   base <- mk(data.frame(top_cm = c(0, 30), bottom_cm = c(30, 80),
                         oc_pct = c(30, 30), ph_h2o = c(6.0, 6.2)))
-  expect_true(qual_eutric(base)$passed)
+  expect_true(qual_eutric(base, rsg_code = "HS")$passed)
 })
 
 test_that("the variable-charge Ferralsol is Eutric under WRB 2022 (showcase)", {

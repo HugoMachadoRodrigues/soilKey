@@ -359,8 +359,8 @@ qual_posic <- function(pedon) {
 #' Dystric. Strict exchangeable-Al criterion; no base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_hyperdystric <- function(pedon) {
-  .wrb_hyper_status_result(pedon, "Hyperdystric", "dystric", 20, 100)
+qual_hyperdystric <- function(pedon, rsg_code = NULL) {
+  .wrb_hyper_status_result(pedon, "Hyperdystric", "dystric", 20, 100, rsg_code)
 }
 
 #' Hypereutric qualifier (ye), WRB 2022 Ch 5.
@@ -370,8 +370,8 @@ qual_hyperdystric <- function(pedon) {
 #' Strict; no base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-qual_hypereutric <- function(pedon) {
-  .wrb_hyper_status_result(pedon, "Hypereutric", "eutric", 20, 100)
+qual_hypereutric <- function(pedon, rsg_code = NULL) {
+  .wrb_hyper_status_result(pedon, "Hypereutric", "eutric", 20, 100, rsg_code)
 }
 
 #' Hyperalic qualifier (yl): argic horizon with Al saturation >= 50\% in

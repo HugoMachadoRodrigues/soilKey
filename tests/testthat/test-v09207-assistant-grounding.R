@@ -48,9 +48,11 @@ test_that("qualifiers carry the rule soilKey applied (Eutric is not BS at pH 7)"
   skip_if_not_installed("shiny")
   e <- .grounding_env()
   ctx <- e$.chat_pedon_context(make_ferralsol_canonical(), NULL)
-  eu <- .ev_lines(ctx, "- Eutric: met")
+  # v0.9.410: the Ferralsol takes Oligoeutric, the optional subqualifier of
+  # Eutric (bases >= Al but < 5 cmolc per kg of clay)
+  eu <- .ev_lines(ctx, "- Oligoeutric: met")
   expect_length(eu, 1L)
-  expect_match(eu, "exchangeable Al vs exchangeable bases", fixed = TRUE)
+  expect_match(eu, "exchangeable bases >= exchangeable Al", fixed = TRUE)
   expect_match(eu, "Not base saturation", fixed = TRUE)
   # SiBCS: eutrófico was tested and failed on V% -- the reason for Distróficos
   expect_match(.ev_lines(ctx, "- eutrofico: not met")[1],

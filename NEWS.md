@@ -1,3 +1,31 @@
+# soilKey 0.9.410
+
+The WRB 2022 base status, after the qualifier audit against ISRIC's names
+(Hugo, 2026-11-19).
+
+* **The depth range of Dystric, Eutric and their subqualifiers.** They read the
+  mineral layers from 20 cm of the mineral soil surface to 100 cm or to a
+  limiting layer, as Chapter 5 states (p. 131-133). The range ran 20-100 cm from
+  the soil surface, so a rock at 80 cm counted as missing data. In Histosols
+  they read the pH of the organic material within 100 cm of the soil surface.
+* **Exchangeable Al and bases compared allowing for the binary error of the
+  summed cations.** 0.4 + 0.3 + 0.1 is no longer less than 4 x 0.2 (ISIS
+  ZW009).
+* **Magnesic needs one continuous layer** at least 30 cm thick within 100 cm, or
+  the major part above a limiting layer starting above 60 cm (p. 140). Separate
+  horizons were added together, with their depth below 100 cm.
+* **Oligoeutric** (p. 133): exchangeable bases at least equal to the
+  exchangeable Al but under 5 cmolc per kg of clay.
+* **The optional subqualifiers are used** (Chapter 2.3, rule 1, p. 26), in every
+  reference soil group, as WRB recommends for naming soils: Hyperdystric for
+  Dystric, and Oligoeutric, then Hypereutric, for Eutric. If a preferred
+  subqualifier cannot be decided, the qualifier stays. A table in the name
+  builder lists each qualifier with its subqualifiers in order of preference.
+* On the 482 ISIS profiles with a 2022 ISRIC name, 186 names change and no
+  reference soil group does. 11 of the 44 canonical profiles change from Eutric
+  to Hypereutric or Oligoeutric; the canonical Ferralsol is now a Geric Rhodic
+  Ferralsol (Clayic, Epic, Oligoeutric, Humic).
+
 # soilKey 0.9.409
 
 * **A printed result lists only its qualifiers.** `print()` on a WRB 2022

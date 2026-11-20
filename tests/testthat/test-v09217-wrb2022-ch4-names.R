@@ -54,7 +54,9 @@ test_that("supplementary qualifiers: texture first, then alphabetical by qualifi
   s <- r$supplementary
   expect_identical(s[1], "Clayic")
   rest <- s[-1]
-  expect_identical(rest, sort(rest))
+  # v0.9.410: Oligoeutric sorts as Eutric (Ch 2.3, p. 26)
+  base <- vapply(rest, soilKey:::.wrb_base_qualifier, "", known = c("Eutric", "Dystric"))
+  expect_identical(unname(base), sort(unname(base)))
   # alphabetical by the qualifier, not the subqualifier: Hypereutric sorts as Eutric
   expect_identical(soilKey:::.wrb_base_qualifier("Hypereutric", c("Eutric", "Dystric")), "Eutric")
   expect_identical(soilKey:::.wrb_base_qualifier("Epic", c("Eutric")), "Epic")
@@ -171,39 +173,39 @@ test_that("the 44 example profiles keep their WRB 2022 names", {
     alisol_canonical = "Haplic Alisol (Loamic, Hyperalic, Cutanic, Differentic, Epic, Humic, Profondic)",
     andosol_canonical = "Eutric Umbric Hydric Vitric Silandic Andosol (Loamic, Humic, Mulmic)",
     anthrosol_canonical = "Hortic Anthrosol (Loamic, Eutric)",
-    arenosol_canonical = "Eutric Sideralic Arenosol (Claric, Ochric)",
+    arenosol_canonical = "Hypereutric Sideralic Arenosol (Claric, Ochric)",
     argissolo_canonical = "Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Ochric, Profondic)",
     calcisol_canonical = "Haplic Calcisol (Loamic, Epic, Ochric)",
-    cambisol_canonical = "Eutric Cambisol (Loamic, Ochric)",
-    cambissolo_canonical = "Eutric Cambisol (Loamic, Ochric)",
+    cambisol_canonical = "Hypereutric Cambisol (Loamic, Ochric)",
+    cambissolo_canonical = "Hypereutric Cambisol (Loamic, Ochric)",
     chernossolo_canonical = "Vermic Chernozem (Loamic, Humic, Pachic)",
     chernozem_canonical = "Vermic Chernozem (Loamic, Humic, Pachic)",
     cryosol_canonical = "Cambic Cryosol (Loamic, Epic, Eutric, Humic)",
-    durisol_canonical = "Eutric Durisol (Loamic, Epic, Ochric)",
+    durisol_canonical = "Hypereutric Durisol (Loamic, Epic, Ochric)",
     espodossolo_canonical = "Albic Podzol (Arenic, Epic)",
-    ferralsol_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)",
+    ferralsol_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)",
     fluvisol_canonical = "Eutric Fluvisol (Loamic, Humic)",
-    gleissolo_canonical = "Eutric Oxygleyic Gleysol (Loamic, Humic)",
-    gleysol_canonical = "Eutric Oxygleyic Gleysol (Loamic, Humic)",
+    gleissolo_canonical = "Hypereutric Oxygleyic Gleysol (Loamic, Humic)",
+    gleysol_canonical = "Hypereutric Oxygleyic Gleysol (Loamic, Humic)",
     gypsisol_canonical = "Calcaric Gypsisol (Loamic, Epic, Ochric)",
     histosol_canonical = "Ombric Drainic Sapric Floatic Folic Histosol (Dystric, Mulmic)",
     kastanozem_canonical = "Cambic Kastanozem (Loamic, Humic)",
-    latossolo_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Eutric, Humic)",
+    latossolo_canonical = "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)",
     leptosol_canonical = "Lithic Leptosol (Ochric)",
     lixisol_canonical = "Chromic Lixisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
     luvisol_canonical = "Haplic Luvisol (Loamic, Cutanic, Differentic, Epic, Hypereutric, Ochric)",
     luvissolo_canonical = "Haplic Luvisol (Clayic, Cutanic, Differentic, Epic, Hypereutric, Ochric, Profondic)",
     neossolo_canonical = "Umbric Leptosol (Loamic, Humic)",
-    nitisol_canonical = "Eutric Luvic Ferritic Nitisol (Epic, Humic)",
+    nitisol_canonical = "Hypereutric Luvic Ferritic Nitisol (Epic, Humic)",
     nitossolo_canonical = "Rhodic Ferralic Lixisol (Clayic, Cutanic, Epic, Humic, Profondic)",
     organossolo_canonical = "Ombric Folic Histosol (Dystric, Mulmic)",
     phaeozem_canonical = "Chernic Phaeozem (Loamic, Humic, Pachic)",
-    planosol_canonical = "Eutric Luvic Albic Planosol (Loamic, Ochric)",
+    planosol_canonical = "Hypereutric Luvic Albic Planosol (Loamic, Ochric)",
     planossolo_canonical = "Eutric Luvic Albic Umbric Planosol (Clayic)",
     plinthosol_canonical = "Haplic Plinthosol (Loamic, Epic, Eutric, Humic)",
     plintossolo_canonical = "Haplic Plinthosol (Loamic, Epic, Eutric, Humic)",
     podzol_canonical = "Albic Podzol (Arenic, Epic)",
-    retisol_canonical = "Eutric Albic Retisol (Loamic, Cutanic, Differentic, Epic, Humic, Profondic)",
+    retisol_canonical = "Hypereutric Albic Retisol (Loamic, Cutanic, Differentic, Epic, Humic, Profondic)",
     solonchak_canonical = "Sodic Solonchak (Loamic, Ochric)",
     solonetz_canonical = "Albic Solonetz (Loamic, Columnic, Cutanic, Differentic, Epic, Hypernatric, Ochric)",
     stagnosol_canonical = "Eutric Albic Stagnosol (Loamic, Cambic, Humic)",

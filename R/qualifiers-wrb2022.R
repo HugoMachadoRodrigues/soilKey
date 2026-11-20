@@ -382,26 +382,46 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
 #' Returns thickness-weighted fractions of the candidate layers (those
 #' overlapping \code{[dmin, dmax]}) that are dystric-side / eutric-side / NA,
 #' plus the qualifying layer indices.
+#'
+#' v0.9.410: \code{material} chooses the layers. "mineral" (Dystric, Eutric and
+#' their subqualifiers outside Histosols: "having one or more layers consisting
+#' of mineral material", WRB 2022 Ch 5, p. 131-133) leaves organic layers out of
+#' the combined thickness; "organic" (Histosols: "the part with organic
+#' material", p. 131-132) reads only organic layers, by their pH; "any" keeps the
+#' reading before v0.9.410 (organic layers by pH, the rest by cations), used by
+#' the Epi- and Endo- forms. The comparisons allow for the binary error of the
+#' summed cations (0.4 + 0.3 + 0.1 is stored just below 4 x 0.2): WRB 2022 Ch
+#' 2.1, rule 6 (p. 23) takes the values as recorded, and their sum is exact.
+#' The result also carries the per-layer status (\code{status}, \code{cand},
+#' \code{thk}) for Oligoeutric.
 #' @noRd
-.wrb_acidity_fracs <- function(pedon, dmin = 20, dmax = 100, factor = 1) {
+.wrb_acidity_fracs <- function(pedon, dmin = 20, dmax = 100, factor = 1,
+                               material = c("any", "mineral", "organic")) {
+  material <- match.arg(material)
   h <- pedon$horizons
   empty <- list(dystric = 0, eutric = 0, mid = 0, na = 1, layers_d = integer(0),
-                layers_e = integer(0), total = 0)
+                layers_e = integer(0), total = 0, cand = integer(0),
+                thk = numeric(0), status = list())
   if (is.null(h) || nrow(h) == 0L) return(empty)
   ov_top <- pmax(h$top_cm, dmin)
   ov_bot <- pmin(h$bottom_cm, dmax)
   thk <- pmax(ov_bot - ov_top, 0)
-  cand <- which(!is.na(thk) & thk > 0)
+  org <- (!is.na(h$oc_pct) & h$oc_pct >= 20) |
+         (is.na(h$oc_pct) & !is.na(h$designation) &
+            grepl("^[0-9]*[OH]", h$designation))
+  keep <- switch(material, any = TRUE, mineral = !org, organic = org)
+  cand <- which(!is.na(thk) & thk > 0 & keep)
   if (length(cand) == 0L) return(empty)
   total <- sum(thk[cand])
   d_thk <- 0; e_thk <- 0; mid_thk <- 0; na_thk <- 0
-  layers_d <- integer(0); layers_e <- integer(0)
+  layers_d <- integer(0); layers_e <- integer(0); st <- list()
+  eps <- 1e-9
   for (i in cand) {
     oc <- h$oc_pct[i]
     # status: TRUE=strong dystric-side, FALSE=strong eutric-side,
     #         "mid"=data present but neither (only for factor>1), NA=data absent.
     status <- NA
-    if (!is.na(oc) && oc >= 20) {
+    if ((material == "any" && !is.na(oc) && oc >= 20) || material == "organic") {
       # organic material -> WRB Histosol pH branch
       ph <- h$ph_h2o[i]
       d_cut <- if (factor >= 4) 4.5 else 5.5
@@ -418,14 +438,14 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
       als <- h$al_sat_pct[i]
       if (!is.na(alc) && any(!is.na(bcmol))) {
         b <- sum(bcmol, na.rm = TRUE)
-        if (alc > factor * b) status <- TRUE
-        else if (b >= factor * alc) status <- FALSE
+        if (alc - factor * b > eps) status <- TRUE
+        else if (b - factor * alc >= -eps) status <- FALSE
         else status <- "mid"
       } else if (!is.na(als)) {
         d_thr <- 100 * factor / (factor + 1)  # al_sat > this <=> Al > factor*bases
         e_thr <- 100 / (factor + 1)           # al_sat <= this <=> bases >= factor*Al
-        if (als > d_thr) status <- TRUE
-        else if (als <= e_thr) status <- FALSE
+        if (als - d_thr > eps) status <- TRUE
+        else if (als - e_thr <= eps) status <- FALSE
         else status <- "mid"
       } else {
         # v0.9.309: no exchangeable cations: the pH, as WRB 2022 Ch 5 allows
@@ -434,6 +454,7 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
         status <- .wrb_ph_cation_status(h$ph_h2o[i], h$ph_kcl[i], oc, factor)
       }
     }
+    st[[length(st) + 1L]] <- status
     if (isTRUE(status)) { d_thk <- d_thk + thk[i]; layers_d <- c(layers_d, i) }
     else if (isFALSE(status)) { e_thk <- e_thk + thk[i]; layers_e <- c(layers_e, i) }
     else if (identical(status, "mid")) mid_thk <- mid_thk + thk[i]
@@ -441,7 +462,33 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
   }
   list(dystric = d_thk / total, eutric = e_thk / total, mid = mid_thk / total,
        na = na_thk / total, layers_d = layers_d, layers_e = layers_e,
-       total = total)
+       total = total, cand = cand, thk = thk[cand], status = st)
+}
+
+# v0.9.410: the depth range of Dystric, Eutric and their subqualifiers outside
+# Histosols (WRB 2022 Ch 5, p. 131-133): from 20 to 100 cm "of the mineral soil
+# surface", or from 20 cm to "a limiting layer starting > 25 cm from the
+# mineral soil surface" (Dystric, Eutric, Oligoeutric; `lim_min = 25`,
+# `lim_strict = TRUE`) or "starting >= 50 cm" (Hyper- and Ortho-; `lim_min =
+# 50`, `lim_strict = FALSE`), whichever is shallower. The limiting layer is
+# that of Ch 2.1, rule 8 (p. 23), .wrb_limiting_layers(). A shallower limiting
+# layer does not end the range. Depths are from the soil surface, as
+# .wrb_acidity_fracs() reads them. Until v0.9.410 the range was 20-100 cm of
+# the soil surface, so a rock at 80 cm counted as 20 cm of missing data.
+.wrb_base_status_window <- function(pedon, dmin = 20, dmax = 100, lim_min = 25,
+                                    lim_strict = TRUE) {
+  h <- pedon$horizons
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms)) ms <- 0
+  top <- ms + dmin; bot <- ms + dmax
+  lim <- tryCatch(h$top_cm[.wrb_limiting_layers(pedon)], error = function(e) numeric(0))
+  lim <- lim[!is.na(lim)]
+  if (length(lim)) {
+    l1 <- min(lim)
+    if ((lim_strict && l1 > ms + lim_min) || (!lim_strict && l1 >= ms + lim_min))
+      bot <- min(bot, l1)
+  }
+  c(top, bot)
 }
 
 # WRB 2022 Annex 2, Ch 9.13, Table 9.3 (p. 220): the pH that corresponds to
@@ -484,10 +531,26 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
   NA
 }
 
+# v0.9.410: the fractions over the layers and depths WRB 2022 Ch 5 (p. 131-133)
+# names: in Histosols the organic material within 100 cm of the soil surface,
+# by its pH; in other soils the mineral layers of .wrb_base_status_window().
+# Without an RSG the "other soils" branch is used, as for Alcalic.
+.wrb_base_fracs <- function(pedon, factor, rsg_code = NULL, lim_min = 25,
+                            lim_strict = TRUE) {
+  if (identical(rsg_code, "HS")) {
+    s0 <- suppressWarnings(min(pedon$horizons$top_cm, na.rm = TRUE))
+    if (!is.finite(s0)) s0 <- 0
+    return(.wrb_acidity_fracs(pedon, s0, s0 + 100, factor, material = "organic"))
+  }
+  w <- .wrb_base_status_window(pedon, lim_min = lim_min, lim_strict = lim_strict)
+  .wrb_acidity_fracs(pedon, w[1], w[2], factor, material = "mineral")
+}
+
 # Build the Dystric/Eutric result for a depth window from the fractions.
 # side = "dystric" (Al-dom in >= half) or "eutric" (base-dom in > half).
-.wrb_base_status_result <- function(pedon, name, side, dmin = 20, dmax = 100) {
-  f <- .wrb_acidity_fracs(pedon, dmin, dmax, factor = 1)
+.wrb_base_status_result <- function(pedon, name, side, dmin = 20, dmax = 100,
+                                    rsg_code = NULL) {
+  f <- .wrb_base_fracs(pedon, 1, rsg_code, lim_min = 25, lim_strict = TRUE)
   miss <- c("al_sat_pct", "al_cmol")
   if (f$total == 0)
     return(DiagnosticResult$new(name = name, passed = NA, layers = integer(0),
@@ -515,9 +578,10 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
 }
 
 # Build a Hyper- result: factor-1 dominance THROUGHOUT + factor-4 in major part.
-.wrb_hyper_status_result <- function(pedon, name, side, dmin = 20, dmax = 100) {
-  f1 <- .wrb_acidity_fracs(pedon, dmin, dmax, factor = 1)
-  f4 <- .wrb_acidity_fracs(pedon, dmin, dmax, factor = 4)
+.wrb_hyper_status_result <- function(pedon, name, side, dmin = 20, dmax = 100,
+                                     rsg_code = NULL) {
+  f1 <- .wrb_base_fracs(pedon, 1, rsg_code, lim_min = 50, lim_strict = FALSE)
+  f4 <- .wrb_base_fracs(pedon, 4, rsg_code, lim_min = 50, lim_strict = FALSE)
   miss <- c("al_sat_pct", "al_cmol")
   if (f1$total == 0)
     return(DiagnosticResult$new(name = name, passed = NA, layers = integer(0),
@@ -556,51 +620,128 @@ qual_luvic <- function(pedon) .qual_argic_family(pedon, "Luvic", cec = "high", a
 #' Dystric qualifier (dy), WRB 2022 Ch 5.
 #'
 #' Exchangeable Al \eqn{>} exchangeable bases (Ca+Mg+K+Na) in half or more of
-#' the combined thickness of mineral layers between 20 and 100 cm (organic
-#' layers use the Histosol pH_water < 5.5 branch). Uses \code{al_sat_pct} or
-#' \code{al_cmol} vs the base cations; no base-saturation fallback (strict).
+#' the combined thickness of mineral layers between 20 and 100 cm of the
+#' mineral soil surface or a limiting layer (v0.9.410; in Histosols, pH_water
+#' < 5.5 in the organic material, \code{rsg_code = "HS"}). Uses
+#' \code{al_sat_pct} or \code{al_cmol} vs the base cations; no base-saturation
+#' fallback (strict).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param rsg_code The RSG being named (the resolver passes it).
 #' @noRd
-qual_dystric <- function(pedon) {
-  .wrb_base_status_result(pedon, "Dystric", "dystric", 20, 100)
+qual_dystric <- function(pedon, rsg_code = NULL) {
+  .wrb_base_status_result(pedon, "Dystric", "dystric", 20, 100, rsg_code)
 }
 
 #' Eutric qualifier (eu), WRB 2022 Ch 5.
 #'
 #' Exchangeable bases (Ca+Mg+K+Na) \eqn{\ge} exchangeable Al in the major part
-#' of the combined thickness of mineral layers between 20 and 100 cm (organic
-#' layers use the Histosol pH_water \eqn{\ge} 5.5 branch). Strict: no
+#' of the combined thickness of mineral layers between 20 and 100 cm of the
+#' mineral soil surface or a limiting layer (v0.9.410; in Histosols, pH_water
+#' \eqn{\ge} 5.5 in the organic material, \code{rsg_code = "HS"}). Strict: no
 #' base-saturation fallback.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param rsg_code The RSG being named (the resolver passes it).
 #' @noRd
-qual_eutric <- function(pedon) {
-  .wrb_base_status_result(pedon, "Eutric", "eutric", 20, 100)
+qual_eutric <- function(pedon, rsg_code = NULL) {
+  .wrb_base_status_result(pedon, "Eutric", "eutric", 20, 100, rsg_code)
+}
+
+#' Oligoeutric subqualifier (ol), WRB 2022 Ch 5 (p. 133).
+#'
+#' v0.9.410: "in soils other than Histosols, having one or more layers
+#' consisting of mineral material" between 20 and 100 cm of the mineral soil
+#' surface (or a limiting layer starting > 25 cm) "that have exchangeable
+#' (Ca+Mg+K+Na) >= exchangeable Al and exchangeable (Ca+Mg+K+Na) < 5 cmolc kg-1
+#' clay in the major part of their combined thickness". "Oligoeutric has
+#' preference over Hypereutric and Orthoeutric" (p. 133), which the name
+#' builder applies (.wrb_optional_subqualifiers). A layer counts when it is on
+#' the eutric side (as for Eutric) and its bases x 100 / clay is < 5; a missing
+#' clay content or base cation leaves it undecided.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param rsg_code The RSG being named (the resolver passes it).
+#' @noRd
+qual_oligoeutric <- function(pedon, rsg_code = NULL) {
+  ref <- paste0("WRB (2022) Ch 5, Oligoeutric (p. 133): exchangeable bases >= ",
+                "exchangeable Al and < 5 cmolc per kg of clay in the major part ",
+                "of 20-100 cm. Not base saturation (that was WRB 2014).")
+  if (identical(rsg_code, "HS"))
+    return(DiagnosticResult$new(name = "Oligoeutric", passed = FALSE,
+      layers = integer(0), evidence = list(reason = "not in Histosols"),
+      missing = character(0), reference = ref))
+  f <- .wrb_base_fracs(pedon, 1, rsg_code, lim_min = 25, lim_strict = TRUE)
+  if (f$total == 0)
+    return(DiagnosticResult$new(name = "Oligoeutric", passed = NA,
+      layers = integer(0), evidence = list(reason = "no layers in depth window"),
+      missing = "top_cm", reference = ref))
+  h <- pedon$horizons
+  ok <- vapply(seq_along(f$cand), function(k) {
+    i <- f$cand[k]; s <- f$status[[k]]
+    b <- c(h$ca_cmol[i], h$mg_cmol[i], h$k_cmol[i], h$na_cmol[i])
+    cl <- h$clay_pct[i]
+    bk <- if (is.na(cl) || cl <= 0) NA_real_ else sum(b, na.rm = TRUE) * 100 / cl
+    low <- if (is.na(bk)) NA else if (bk >= 5) FALSE else if (anyNA(b)) NA else TRUE
+    if (isTRUE(s) || identical(s, "mid") || isFALSE(low)) FALSE
+    else if (isFALSE(s) && isTRUE(low)) TRUE else NA
+  }, NA)
+  yes <- sum(f$thk[ok %in% TRUE]) / f$total
+  may <- sum(f$thk[!(ok %in% FALSE)]) / f$total
+  passed <- if (yes > 0.5) TRUE else if (may <= 0.5) FALSE else NA
+  DiagnosticResult$new(name = "Oligoeutric", passed = passed,
+    layers = if (isTRUE(passed)) f$cand[ok %in% TRUE] else integer(0),
+    evidence = list(oligoeutric_frac = yes, layer_status = ok),
+    missing = if (is.na(passed)) c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol",
+                                   "clay_pct", "al_cmol") else character(0),
+    reference = ref)
 }
 
 #' Magnesic qualifier (mg): exchangeable Ca/Mg < 1 in upper 100 cm.
+#'
+#' v0.9.410: WRB 2022 Ch 5 (p. 140), "having an exchangeable Ca to Mg ratio of
+#' < 1 in a layer, >= 30 cm thick and within 100 cm of the mineral soil
+#' surface, or in the major part between the mineral soil surface and a
+#' limiting layer starting < 60 cm from the mineral soil surface". The layer is
+#' made of adjoining horizons that each have the ratio (Ch 2.1, rule 7, p. 23),
+#' counted only within the 100 cm. Until v0.9.410 the thickness of every
+#' horizon with the ratio and its top within 100 cm was added, whether the
+#' horizons touched or not and including their depth below 100 cm. A horizon
+#' with Ca or Mg not recorded is undecided; Ca and Mg both 0 is not a ratio
+#' < 1.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 qual_magnesic <- function(pedon) {
   h <- pedon$horizons
-  layers <- which(!is.na(h$top_cm) & h$top_cm <= 100)
-  if (length(layers) == 0L)
+  ref <- "WRB (2022) Ch 5, Magnesic (p. 140)"
+  ms <- .q_mineral_surface_cm(h)
+  if (is.na(ms) || !any(!is.na(h$top_cm) & h$top_cm < ms + 100))
     return(DiagnosticResult$new(name = "Magnesic", passed = NA,
             layers = integer(0), evidence = list(),
-            missing = c("ca_cmol", "mg_cmol"),
-            reference = "WRB (2022) Ch 5, Magnesic"))
-  ca <- h$ca_cmol[layers]; mg <- h$mg_cmol[layers]
+            missing = c("ca_cmol", "mg_cmol"), reference = ref))
+  ca <- h$ca_cmol; mg <- h$mg_cmol
   ratios <- ca / mg
-  # WRB 2022 Ch 5 Magnesic: exch. Ca/Mg < 1 in a layer >= 30 cm thick within
-  # 100 cm (the >= 30 cm combined thickness was missing).
-   qly <- layers[which(!is.na(ratios) & ratios < 1)]
-  thk <- if (length(qly) > 0L)
-    sum(h$bottom_cm[qly] - h$top_cm[qly], na.rm = TRUE) else 0
-  passed <- thk >= 30
+  ok <- ifelse(is.na(ca) | is.na(mg), NA,
+               ifelse(ca == 0 & mg == 0, FALSE, ratios < 1))
+  to <- min(ms + 100, suppressWarnings(max(h$bottom_cm, na.rm = TRUE)))
+  run <- .q_run_tristate(h, ok, 30, from = ms, to = to)
+  # Second branch: the major part above a limiting layer starting < 60 cm.
+  lim <- tryCatch(h$top_cm[.wrb_limiting_layers(pedon)], error = function(e) numeric(0))
+  lim <- lim[!is.na(lim) & lim > ms]
+  shallow <- if (length(lim) && min(lim) < ms + 60) {
+    l1 <- min(lim)
+    thk <- pmax(pmin(h$bottom_cm, l1) - pmax(h$top_cm, ms), 0)
+    thk[is.na(thk)] <- 0
+    yes <- sum(thk[ok %in% TRUE]) / (l1 - ms)
+    may <- sum(thk[!(ok %in% FALSE)]) / (l1 - ms) + 1 - sum(thk) / (l1 - ms)
+    if (yes > 0.5) TRUE else if (may <= 0.5) FALSE else NA
+  } else FALSE
+  passed <- if (isTRUE(run$passed) || isTRUE(shallow)) TRUE
+            else if (isFALSE(run$passed) && isFALSE(shallow)) FALSE else NA
+  qly <- if (isTRUE(run$passed)) run$layers else which(ok %in% TRUE & h$top_cm < ms + 60)
   DiagnosticResult$new(name = "Magnesic", passed = passed,
-    layers = if (passed) qly else integer(0),
-    evidence = list(ca_mg_ratios = ratios, thickness_cm = thk),
-    missing = if (any(is.na(ratios))) c("ca_cmol", "mg_cmol") else character(0),
-    reference = "WRB (2022) Ch 5, Magnesic")
+    layers = if (isTRUE(passed)) qly else integer(0),
+    evidence = list(ca_mg_ratios = ratios, thickness_cm = run$thickness,
+                    above_limiting_layer = shallow),
+    missing = if (is.na(passed)) c("ca_cmol", "mg_cmol") else character(0),
+    reference = ref)
 }
 
 #' Sodic qualifier (so): a layer >= 20 cm thick, starting <= 100 cm, with
@@ -980,6 +1121,58 @@ qual_haplic <- function(pedon) {
   alic       = c("Hyperalic",   "Alic")
 )
 
+# v0.9.410 (Hugo, 2026-11-19): optional subqualifiers. WRB 2022 Ch 2.3, rule
+# 1 (p. 26): "If a subqualifier applies that fulfils all the criteria of the
+# qualifier, the subqualifier can - but does not have to - be used instead of
+# its qualifier"; "Optional and additional subqualifiers are recommended
+# especially for naming soils". Subqualifiers with a given definition (Ch
+# 2.3.2, p. 29) "are not listed with the RSGs in Chapter 4", so soilKey
+# uses them in every RSG, wherever the qualifier itself is named.
+#
+# The table: a qualifier the name builder has taken -> the subqualifiers that
+# may replace it, in order of preference; the first that applies replaces it
+# in the same position (resolve_wrb_qualifiers(), .wrb_use_optional_subqualifiers()).
+# When one is undecided, the later ones are not tried and the qualifier stays:
+# which subqualifier comes first is then not known (as for the texture group,
+# v0.9.315), while the qualifier itself holds.
+# Each subqualifier needs its own qual_<name>() function. An entry may also
+# carry a precedence that Ch 5 states: "Oligoeutric has preference over
+# Hypereutric and Orthoeutric" (p. 133), so Hypereutric, where Ch 4 lists it
+# (Luvisols, Lixisols, Vertisols), gives way to Oligoeutric. Other families
+# are added with one entry each, e.g. Geric = "Hypergeric",
+# Humic = c("Hyperhumic", "Profondihumic").
+.wrb_optional_subqualifiers <- list(
+  Dystric     = c("Hyperdystric"),
+  Eutric      = c("Oligoeutric", "Hypereutric"),
+  Hypereutric = c("Oligoeutric")
+)
+
+# Replace each taken qualifier that has optional subqualifiers by the first
+# one that applies; each one tested is added to the trace with a note.
+.wrb_use_optional_subqualifiers <- function(pedon, w, rsg_code = NULL) {
+  for (k in seq_along(w$matched)) {
+    q <- w$matched[k]
+    for (sq in .wrb_optional_subqualifiers[[q]] %||% character(0)) {
+      if (sq %in% w$matched) break
+      ev <- .evaluate_qualifier(pedon, sq, rsg_code)
+      w$trace[[sq]] <- c(ev$trace_entry,
+        list(note = sprintf("optional subqualifier of %s (WRB 2022 Ch 2.3, p. 26)", q)))
+      if (isTRUE(ev$passed)) {
+        w$matched[k] <- sq
+        w$layers[[sq]] <- ev$layers %||% w$layers[[q]]
+        w$layers[[q]] <- NULL
+        break
+      }
+      if (is.na(ev$passed)) {
+        w$trace[[sq]]$note <- paste0(w$trace[[sq]]$note,
+          "; undecided, so the later ones are not tried and ", q, " stays")
+        break
+      }
+    }
+  }
+  w
+}
+
 # v0.9.217 (WRB 2022 Ch 2.2): "Qualifiers conveying redundant information are
 # not added. This is a general rule and applies even if the slash is not used.
 # For example, Eutric is not added if the Calcaric qualifier applies." Each
@@ -1008,7 +1201,7 @@ qual_haplic <- function(pedon) {
 # is itself a qualifier, so Epic, Endic or Protic keep their own name.
 .WRB_SUBQUALIFIER_PREFIXES <- c("Amphi", "Ano", "Bathy", "Endo", "Epi", "Kato",
                                 "Panto", "Poly", "Supra", "Thapto", "Hyper",
-                                "Hypo", "Proto", "Ortho")
+                                "Hypo", "Proto", "Ortho", "Oligo")
 .wrb_base_qualifier <- function(qname, known) {
   for (p in .WRB_SUBQUALIFIER_PREFIXES) {
     if (startsWith(qname, p) && nchar(qname) > nchar(p)) {
@@ -1217,6 +1410,8 @@ resolve_wrb_qualifiers <- function(pedon, rsg_code, rules = NULL,
   }
   wp <- walk(per_rsg$principal %||% character(0))
   ws <- walk(per_rsg$supplementary %||% character(0))
+  wp <- .wrb_use_optional_subqualifiers(pedon, wp, rsg_code)
+  ws <- .wrb_use_optional_subqualifiers(pedon, ws, rsg_code)
   trace_principal     <- wp$trace
   trace_supplementary <- ws$trace
   layers_principal     <- wp$layers

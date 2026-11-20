@@ -149,16 +149,16 @@ test_that("CM canonical fixture resolves to a Eutric Cambisol (WRB 2022)", {
   # bases ~10.5, al_sat ~1%) is base-dominated by far more than 4x throughout,
   # i.e. Hypereutric -- a stricter, more-specific form than the old BS>=50
   # Eutric. The deeper bs<80 meant the old BS test could only see Eutric.
-  # v0.9.217: Chapter 4 lists Dystric/Eutric for Cambisols; Hypereutric, its
-  # optional subqualifier (Ch 2.3, rule 1), is not used in place of it.
+  # v0.9.410: Chapter 4 lists Dystric/Eutric for Cambisols; Hypereutric, its
+  # optional subqualifier (Ch 2.3, rule 1, p. 26), is used in place of it.
   pr  <- make_cambisol_canonical()
   res <- resolve_wrb_qualifiers(pr, "CM")
-  expect_true("Eutric" %in% res$principal)
+  expect_true("Hypereutric" %in% res$principal)
   expect_true(isTRUE(qual_hypereutric(pr)$passed))
 
   cls <- classify_wrb2022(pr, on_missing = "silent")
   expect_equal(cls$rsg_or_order, "Cambisols")
-  expect_match(cls$name, "Eutric Cambisol")
+  expect_match(cls$name, "Hypereutric Cambisol")
 })
 
 test_that("AR canonical fixture: sideralic properties, so not Protic", {

@@ -22,7 +22,7 @@ test_that("a WRB 2022 result prints its qualifiers and not their trace", {
   res <- classify_wrb2022(make_ferralsol_canonical())
   expect_type(res$qualifiers$trace, "list")
   line <- gsub("\\s+", " ", .printed_qualifier_line(res))
-  expect_identical(line, "Qualifiers: Geric, Rhodic, Clayic, Epic, Eutric, Humic")
+  expect_identical(line, "Qualifiers: Geric, Rhodic, Clayic, Epic, Oligoeutric, Humic")
 })
 
 test_that("an HSCS result prints its subtypes and varieties, not the status table", {
