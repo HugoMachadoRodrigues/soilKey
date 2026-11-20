@@ -1237,7 +1237,8 @@ qual_haplic <- function(pedon) {
 # is itself a qualifier, so Epic, Endic or Protic keep their own name.
 .WRB_SUBQUALIFIER_PREFIXES <- c("Amphi", "Ano", "Bathy", "Endo", "Epi", "Kato",
                                 "Panto", "Poly", "Supra", "Thapto", "Hyper",
-                                "Hypo", "Proto", "Ortho", "Oligo")
+                                "Hypo", "Proto", "Ortho", "Oligo", "Profundi",
+                                "Akro", "Nudi")
 .wrb_base_qualifier <- function(qname, known) {
   for (p in .WRB_SUBQUALIFIER_PREFIXES) {
     if (startsWith(qname, p) && nchar(qname) > nchar(p)) {
