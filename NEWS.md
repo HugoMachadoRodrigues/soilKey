@@ -1,3 +1,22 @@
+# soilKey 0.9.414
+
+The WRB 2022 Histosol qualifiers, after the qualifier audit (Hugo,
+2026-11-19).
+
+* **The folic and histic horizons are told apart as Chapter 3 words them**
+  (p. 46 and 48). Organic material on a site recorded as artificially drained,
+  or saturated for 30 days or more, is histic; under 30 days and not drained it
+  is folic; with neither recorded, neither is decided, so Folic, Histic, Ombric
+  and Rheic are not given. The canonical Histosol, a drained mire, was named
+  Folic and Ombric at once and is now a Drainic Sapric Histosol (Dystric).
+* **Floatic** needs floating organic material recorded (new site field
+  `floating_organic_material`, or a floating mat named in the landform), not a
+  low bulk density.
+* **Ombric and Rheic** need a histic horizon and a recorded water supply, in
+  place of the pH: the new site field `mire_water_supply`, then the peat type of
+  the upper histic layers (a high moor is fed by rainwater, a low moor by
+  groundwater; Hugo, 2026-11-19), then a raised bog or a fen named at the site.
+
 # soilKey 0.9.413
 
 The WRB 2022 redox and other qualifiers, after the qualifier audit (Hugo,
