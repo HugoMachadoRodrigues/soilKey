@@ -659,64 +659,108 @@ cumulic_subgroup_usda <- function(pedon) {
 }
 
 
-# ---- "Spodic" Subgroup helper (Psammorthels / Psammoturbels) -------
+# ---- Gelic materials (KST 13th ed., p. 44) --------------------------
 
-#' Spodic Subgroup helper for Psammorthels/Psammoturbels
+#' Gelic materials (USDA, KST 13th ed., p. 44)
 #'
-#' Pass when a horizon >= 5 cm thick has any of:
-#' \itemize{
-#'   \item In >= 25\% of pedon, extremely weakly coherent or more
-#'         coherent due to pedogenic cementation by OM and Al
-#'         (with or without Fe); OR
-#'   \item Al + 0.5 * Fe (oxalate) >= 0.25, and half that or less
-#'         in an overlying horizon; OR
-#'   \item ODOE >= 0.12, and value half as high or lower in an
-#'         overlying horizon.
-#' }
-#'
-#' Implementation simplified to: any horizon with
-#' (al_ox_pct + 0.5 * fe_ox_pct) >= 0.25 with an overlying layer
-#' having <= half that value.
-#'
+#' v0.9.418: mineral or organic soil materials with evidence of
+#' cryoturbation (frost churning) or ice segregation in the active layer or
+#' the upper part of the permafrost. Read as a layer within
+#' \code{max_top_cm} of the soil surface with cryoturbation
+#' (\code{cryoturbation_usda()}: the designation jj or @, or an irregular or
+#' broken boundary) or visible segregated ice (\code{ice_pct} above 0).
+#' Field observations: not recorded, absent. With permafrost within 200 cm
+#' it makes a Gelisol (p. 67, item A.2).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Default 100.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-spodic_subgroup_usda <- function(pedon) {
+gelic_materials_usda <- function(pedon, max_top_cm = 100) {
   h <- pedon$horizons
-  if (nrow(h) < 2L) {
-    return(DiagnosticResult$new(
-      name = "spodic_subgroup_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "fewer than 2 horizons"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 9"
-    ))
-  }
-  ord <- order(h$top_cm, na.last = TRUE)
-  passing <- integer(0); miss <- character(0)
-  for (k in seq_along(ord)) {
-    if (k == 1L) next
-    i <- ord[k]
-    al <- h$al_ox_pct[i]; fe <- h$fe_ox_pct[i]
-    if (is.na(al)) miss <- c(miss, "al_ox_pct")
-    if (is.na(fe)) miss <- c(miss, "fe_ox_pct")
-    val <- if (!is.na(al) && !is.na(fe)) al + 0.5 * fe else NA_real_
-    if (is.na(val) || val < 0.25) next
-    above <- ord[k - 1L]
-    al_a <- h$al_ox_pct[above]; fe_a <- h$fe_ox_pct[above]
-    val_a <- if (!is.na(al_a) && !is.na(fe_a))
-               al_a + 0.5 * fe_a
-             else NA_real_
-    if (!is.na(val_a) && val_a <= val / 2) {
-      passing <- c(passing, i)
-    }
-  }
-  passed <- length(passing) > 0L
+  cr <- cryoturbation_usda(pedon)
+  ice <- suppressWarnings(as.numeric(h$ice_pct %||% rep(NA, nrow(h))))
+  k <- union(cr$layers, which(!is.na(ice) & ice > 0))
+  k <- k[!is.na(h$top_cm[k]) & h$top_cm[k] <= max_top_cm]
   DiagnosticResult$new(
-    name = "spodic_subgroup_usda", passed = passed, layers = passing,
-    evidence = list(threshold_al_fe = 0.25),
-    missing = unique(miss),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 9"
-  )
+    name = "gelic_materials_usda", passed = length(k) > 0L, layers = sort(k),
+    evidence = list(cryoturbation = cr$layers, max_top_cm = max_top_cm),
+    missing = character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 44")
+}
+
+
+# ---- "Spodic" Subgroup helper (Psamments, Inceptisols, Gelisols) ----
+
+#' Spodic subgroups (KST 13th ed., pp. 175, 184, 195, 197, 222, 226, 234)
+#'
+#' A horizon 5 cm or more thick that has one or more of: (1) in 25 percent or
+#' more of each pedon, pedogenic cementation (extremely weakly coherent or
+#' more) by organic matter and aluminum, with or without iron; (2) Al + 1/2
+#' Fe (oxalate) of 0.25 percent or more and half that or less in an
+#' overlying horizon; (3) an ODOE of 0.12 or more and half that or less in an
+#' overlying horizon. In the Psamments and Psammaquents (pp. 175, 184;
+#' \code{psamments = TRUE}) the horizon is also below any Ap horizon and 18
+#' cm or more below the mineral soil surface.
+#'
+#' v0.9.418: all three items (up to v0.9.417 only item 2, against the layer
+#' directly above, with no thickness or depth). Item 1 reads a recorded
+#' cementation (any class, reading L6) in a layer with the suffix h or s
+#' (illuvial humus or sesquioxides), in 25 percent or more of the pedon when
+#' its share is recorded; items 2 and 3 compare with any overlying mineral
+#' layer. An oxalate extract or ODOE not recorded leaves the item undecided
+#' (reading L5).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param psamments \code{TRUE} for the depth rule of the Psamments.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+spodic_subgroup_usda <- function(pedon, psamments = FALSE) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 184 (Spodic Udipsamments) and p. 234 (Spodic Dystrudepts)"
+  h <- pedon$horizons
+  n <- nrow(h)
+  if (n == 0L) {
+    return(DiagnosticResult$new(name = "spodic_subgroup_usda", passed = FALSE,
+                                layers = integer(0), evidence = list(),
+                                missing = character(0), reference = ref))
+  }
+  num <- function(x) suppressWarnings(as.numeric(x))
+  org <- .usda_organic_status(pedon)
+  ms <- .usda_mineral_surface(pedon, org)
+  d <- .desg_master(h$designation, site = pedon$site)
+  d0 <- ifelse(is.na(d), "", d)
+  suffix <- sub("^[A-Z]+", "", d0)
+  ord <- order(h$top_cm)
+  pos <- integer(n); pos[ord] <- seq_len(n)
+  mineral <- !(org %in% TRUE)
+  share <- .usda_cemented_share(pedon)
+  cem <- .usda_cemented(h) & grepl("h|s", suffix) & (is.na(share) | share >= 25)
+  alfe <- num(h$al_ox_pct) + 0.5 * num(h$fe_ox_pct)
+  odoe <- num(h$odoe %||% rep(NA, n))
+  halved <- function(val, i, min_val) {
+    above <- ord[seq_len(pos[i] - 1L)]
+    above <- above[mineral[above]]
+    if (!length(above)) return(FALSE)
+    if (is.na(val[i])) return(NA)
+    if (val[i] < min_val) return(FALSE)
+    .any3u(val[above] <= val[i] / 2)
+  }
+  ox <- vapply(seq_len(n), function(i) halved(alfe, i, 0.25), NA)
+  od <- vapply(seq_len(n), function(i) halved(odoe, i, 0.12), NA)
+  ok <- cem | ox | od
+  thk <- num(h$bottom_cm) - num(h$top_cm)
+  elig <- mineral & !is.na(thk) & thk >= 5
+  if (isTRUE(psamments)) {
+    ap <- grepl("^Ap", d0)
+    min_top <- max(c(ms + 18, h$bottom_cm[ap]), na.rm = TRUE)
+    elig <- elig & h$top_cm >= min_top - 1e-6
+  }
+  ok[!elig] <- FALSE
+  passed <- .any3u(ok)
+  DiagnosticResult$new(
+    name = "spodic_subgroup_usda", passed = passed, layers = which(ok %in% TRUE),
+    evidence = list(cemented = cem, oxalate = ox, odoe = od, psamments = psamments),
+    missing = if (is.na(passed)) unique(c(if (any(is.na(ox) & elig)) c("al_ox_pct", "fe_ox_pct"),
+                                          if (any(is.na(od) & elig)) "odoe")) else character(0),
+    reference = ref)
 }
 
 

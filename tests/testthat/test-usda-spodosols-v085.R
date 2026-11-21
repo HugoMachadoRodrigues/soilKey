@@ -51,8 +51,12 @@ test_that("classify_usda routes a podzol-like profile to Spodosols Orthods", {
     ph_h2o = c(4.0, 4.5, 5.0),
     fe_ox_pct = c(0.05, 1.5, 0.5),
     al_ox_pct = c(0.10, 2.0, 0.3),
+    # v0.9.418: the KST spodic horizon reads the moist hue, and the albic
+    # horizon the dry value
+    munsell_hue_moist = c("10YR", "7.5YR", "10YR"),
     munsell_value_moist = c(5, 3, 4),
     munsell_chroma_moist = c(2, 4, 4),
+    munsell_value_dry = c(7, 4, 5),
     clay_pct = c(5, 12, 25),
     sand_pct = c(90, 75, 50),
     bs_pct = c(20, 25, 30)
@@ -78,8 +82,12 @@ test_that("classify_usda routes Al-rich spodic to Alorthods great group", {
     # Al >> 3*Fe
     fe_ox_pct = c(0.02, 0.05, 0.05),
     al_ox_pct = c(0.10, 2.5, 0.3),
+    # v0.9.418: the KST spodic horizon reads the moist hue, and the albic
+    # horizon the dry value
+    munsell_hue_moist = c("10YR", "7.5YR", "10YR"),
     munsell_value_moist = c(5, 3, 4),
     munsell_chroma_moist = c(2, 4, 4),
+    munsell_value_dry = c(7, 4, 5),
     clay_pct = c(5, 12, 25),
     sand_pct = c(90, 75, 50),
     bs_pct = c(20, 25, 30)

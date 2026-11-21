@@ -80,7 +80,9 @@ test_that("classify_usda routes a drained-organic pedon to Folists Suborder", {
     fiber_content_rubbed_pct = c(50, 20, NA_real_),
     von_post_index = c(3L, 7L, NA_integer_),
     redoximorphic_features_pct = c(0, 0, 0),
-    munsell_chroma_moist = c(4, 4, 4)
+    munsell_chroma_moist = c(4, 4, 4),
+    # v0.9.418: the Folists need fewer than 30 days of saturation, recorded
+    water_saturation_days = c(5, 5, 5)
   )
   pr <- PedonRecord$new(
     site = list(id="h2", lat=45, lon=-90, country="US",

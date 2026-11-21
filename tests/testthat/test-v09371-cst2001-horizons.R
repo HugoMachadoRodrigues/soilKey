@@ -82,8 +82,9 @@ test_that("histic epipedon: peaty and littery kinds, thickness, carbon, evidence
   # peaty carbon 12 + 0.1 x clay: 13 % at 10 % clay passes, 12.9 fails
   expect_true(.cg(mk(30, 13, 200, clay = 10), "histic_epipedon")$full[1])
   expect_false(.cg(mk(30, 12.9, 200, clay = 10), "histic_epipedon")$full[1])
-  # without clay, between 12 and 18 % the carbon is undecided
-  expect_true(is.na(.cg(mk(30, 15, 200), "histic_epipedon")$full[1]))
+  # without clay, between 12 and 18 % the carbon is undecided; since v0.9.418
+  # the USDA histic epipedon (12 % organic carbon, saturated) stands in
+  expect_true(isTRUE(.cg(mk(30, 15, 200), "histic_epipedon")$full[1]))
   # thicker than 40 cm without sphagnum: no histic epipedon (an organic soil);
   # 60 cm with sphagnum; sphagnum and density not recorded: undecided
   expect_false(.cg(mk(45, 30, 200, sph = 10, bd = 0.3), "histic_epipedon")$full[1])

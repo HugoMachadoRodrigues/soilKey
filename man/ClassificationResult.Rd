@@ -4,11 +4,6 @@
 \alias{ClassificationResult}
 \title{ClassificationResult: structured outcome of running a key}
 \description{
-ClassificationResult: structured outcome of running a key
-
-ClassificationResult: structured outcome of running a key
-}
-\details{
 Returned by \code{\link{classify_wrb2022}} (and the future
 \code{classify_sibcs}). Carries the full decision trace — which RSGs
 were tested, which passed, which failed, which were indeterminate
@@ -18,31 +13,31 @@ refine the result, the provenance-aware evidence grade, and any
 biogeographical or prior-based warnings.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{system}}{Character. \code{"WRB 2022"} or \code{"SiBCS 5"}.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{system}}{Character. \code{"WRB 2022"} or \code{"SiBCS 5"}.}
 
-\item{\code{name}}{Character. Full classification name with
+    \item{\code{name}}{Character. Full classification name with
 qualifiers (e.g.
 \code{"Rhodic Ferralsol (Clayic, Dystric, Humic)"}).}
 
-\item{\code{rsg_or_order}}{Character. Bare RSG (WRB) or order (SiBCS), e.g.
+    \item{\code{rsg_or_order}}{Character. Bare RSG (WRB) or order (SiBCS), e.g.
 \code{"Ferralsols"}.}
 
-\item{\code{qualifiers}}{List. Principal and supplementary qualifiers in
+    \item{\code{qualifiers}}{List. Principal and supplementary qualifiers in
 canonical order.}
 
-\item{\code{trace}}{List. One element per RSG tested (in key order),
+    \item{\code{trace}}{List. One element per RSG tested (in key order),
 each with \code{code}, \code{name}, \code{passed},
 \code{evidence}, \code{missing}.}
 
-\item{\code{ambiguities}}{List. RSGs that came close to passing — useful
+    \item{\code{ambiguities}}{List. RSGs that came close to passing — useful
 hints for follow-up measurements.}
 
-\item{\code{missing_data}}{Character vector. Attributes whose measurement
+    \item{\code{missing_data}}{Character vector. Attributes whose measurement
 would refine or resolve the result.}
 
-\item{\code{evidence_grade}}{Character. \code{"A"} (measured), \code{"B"}
+    \item{\code{evidence_grade}}{Character. \code{"A"} (measured), \code{"B"}
 (spectra-predicted), \code{"C"} (prior-inferred),
 \code{"D"} (VLM-extracted), \code{"E"}
 (user-assumed), or \code{NA_character_} when no
@@ -50,30 +45,30 @@ horizon carries a soil property (only depths and
 designations; since v0.9.213), so nothing in the
 class was verified.}
 
-\item{\code{prior_check}}{List or NULL. Result of the spatial-prior sanity
+    \item{\code{prior_check}}{List or NULL. Result of the spatial-prior sanity
 check (consistent / inconsistent / not run).}
 
-\item{\code{warnings}}{Character vector. Free-form warnings.}
+    \item{\code{warnings}}{Character vector. Free-form warnings.}
 
-\item{\code{system_id}}{Character. Registry id of the system (see
+    \item{\code{system_id}}{Character. Registry id of the system (see
 \code{\link{soilkey_systems}}), e.g.
 \code{"wrb2022"}; since v0.9.265.}
 
-\item{\code{levels}}{\code{data.frame} with one row per level of the
+    \item{\code{levels}}{\code{data.frame} with one row per level of the
 key that assigned a class (\code{level},
 \code{code}, \code{name}), top level first; set by
 the generic classifier of ordered keys and
 \code{NULL} for WRB, SiBCS and USDA, whose levels
 are in \code{trace}.}
 
-\item{\code{provisional_because}}{Character vector. In a first-match key a class
+    \item{\code{provisional_because}}{Character vector. In a first-match key a class
 that could not be decided for lack of data, tested
 before the one assigned, makes the assignment
 provisional; these are those classes, as
 \code{"<level>:<code>"}. Empty when the assignment
 is firm or the classifier does not report it.}
 
-\item{\code{phases}}{Soil phases of the systems that have them (the SCSJ
+    \item{\code{phases}}{Soil phases of the systems that have them (the SCSJ
 2017: temperature, man-made and forest phases; the
 CSCJ 2011: temperature and man-made phases), a
 \code{data.frame} with \code{kind}, \code{code},
@@ -84,7 +79,7 @@ every phase three-valued, with \code{status},
 \code{present} and \code{criterion}, and the
 classes of the map symbol (\code{\link{classify_fao}}).}
 
-\item{\code{candidates}}{For the systems that attach a soil to several
+    \item{\code{candidates}}{For the systems that attach a soil to several
 classes rather than key it to one (the French
 Referentiel pedologique 2008, since v0.9.346,
 \code{\link{classify_rp2008}}), every class that
@@ -103,7 +98,7 @@ criteria, joined with "; ") and \code{nearest}.
 \code{NULL} for every other system, and then not
 printed. Since v0.9.340.}
 
-\item{\code{humus_form}}{The humus form of the French Referentiel pedologique
+    \item{\code{humus_form}}{The humus form of the French Referentiel pedologique
 2008 (Annex 1; \code{\link{humus_form_rp}}), a
 one-row \code{data.frame} with \code{form},
 \code{name}, \code{type}, \code{label},
@@ -112,26 +107,27 @@ one-row \code{data.frame} with \code{form},
 \code{conflict} and \code{qualifiers}; the whole
 reading is in \code{trace$humus_form}. \code{NULL}
 for every other system. Since v0.9.353.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-ClassificationResult-new}{\code{ClassificationResult$new()}}
-\item \href{#method-ClassificationResult-print}{\code{ClassificationResult$print()}}
-\item \href{#method-ClassificationResult-summary}{\code{ClassificationResult$summary()}}
-\item \href{#method-ClassificationResult-report}{\code{ClassificationResult$report()}}
-\item \href{#method-ClassificationResult-clone}{\code{ClassificationResult$clone()}}
-}
+  \itemize{
+    \item \href{#method-ClassificationResult-initialize}{\code{ClassificationResult$new()}}
+    \item \href{#method-ClassificationResult-print}{\code{ClassificationResult$print()}}
+    \item \href{#method-ClassificationResult-summary}{\code{ClassificationResult$summary()}}
+    \item \href{#method-ClassificationResult-report}{\code{ClassificationResult$report()}}
+    \item \href{#method-ClassificationResult-clone}{\code{ClassificationResult$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ClassificationResult-new"></a>}}
-\if{latex}{\out{\hypertarget{method-ClassificationResult-new}{}}}
-\subsection{Method \code{new()}}{
-Build a ClassificationResult.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$new(
+\if{html}{\out{<a id="method-ClassificationResult-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-ClassificationResult-initialize}{}}}
+\subsection{\code{ClassificationResult$new()}}{
+  Build a ClassificationResult.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ClassificationResult$new(
   system,
   name,
   rsg_or_order = NA_character_,
@@ -146,131 +142,124 @@ Build a ClassificationResult.
   levels = NULL,
   provisional_because = character(0),
   candidates = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{system}}{System name.}
-
-\item{\code{name}}{Classification name.}
-
-\item{\code{rsg_or_order}}{RSG (WRB) or order (SiBCS).}
-
-\item{\code{qualifiers}}{List of qualifier names.}
-
-\item{\code{trace}}{List of per-RSG test entries.}
-
-\item{\code{ambiguities}}{List of close-call RSGs.}
-
-\item{\code{missing_data}}{Character vector.}
-
-\item{\code{evidence_grade}}{Single character A/B/C/D or NA.}
-
-\item{\code{prior_check}}{List or NULL.}
-
-\item{\code{warnings}}{Character vector.}
-
-\item{\code{system_id}}{Registry id of the system, or NULL.}
-
-\item{\code{levels}}{Assigned class per level (data.frame), or NULL.}
-
-\item{\code{provisional_because}}{Character vector of undecided classes
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{system}}{System name.}
+      \item{\code{name}}{Classification name.}
+      \item{\code{rsg_or_order}}{RSG (WRB) or order (SiBCS).}
+      \item{\code{qualifiers}}{List of qualifier names.}
+      \item{\code{trace}}{List of per-RSG test entries.}
+      \item{\code{ambiguities}}{List of close-call RSGs.}
+      \item{\code{missing_data}}{Character vector.}
+      \item{\code{evidence_grade}}{Single character A/B/C/D or NA.}
+      \item{\code{prior_check}}{List or NULL.}
+      \item{\code{warnings}}{Character vector.}
+      \item{\code{system_id}}{Registry id of the system, or NULL.}
+      \item{\code{levels}}{Assigned class per level (data.frame), or NULL.}
+      \item{\code{provisional_because}}{Character vector of undecided classes
 tested before the assigned ones.}
-
-\item{\code{candidates}}{The classes that may attach the soil (a
+      \item{\code{candidates}}{The classes that may attach the soil (a
 data.frame), or NULL; since v0.9.340.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClassificationResult-print"></a>}}
 \if{latex}{\out{\hypertarget{method-ClassificationResult-print}{}}}
-\subsection{Method \code{print()}}{
-Pretty-print the result with key trace, ambiguities, and
+\subsection{\code{ClassificationResult$print()}}{
+  Pretty-print the result with key trace, ambiguities, and
              warnings.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$print(...)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ClassificationResult$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored (S3 print signature compatibility).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored (S3 print signature compatibility).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClassificationResult-summary"></a>}}
 \if{latex}{\out{\hypertarget{method-ClassificationResult-summary}{}}}
-\subsection{Method \code{summary()}}{
-Compact summary list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$summary(...)}\if{html}{\out{</div>}}
+\subsection{\code{ClassificationResult$summary()}}{
+  Compact summary list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ClassificationResult$summary(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored (S3 summary signature compatibility).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored (S3 summary signature compatibility).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClassificationResult-report"></a>}}
 \if{latex}{\out{\hypertarget{method-ClassificationResult-report}{}}}
-\subsection{Method \code{report()}}{
-Render this classification as a self-contained
+\subsection{\code{ClassificationResult$report()}}{
+  Render this classification as a self-contained
              report (delegates to the package-level
              \code{\link{report}} generic). HTML output is
              dependency-free; PDF requires \code{rmarkdown}
              and a working LaTeX engine.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$report(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ClassificationResult$report(
   file,
   format = c("auto", "html", "pdf"),
   pedon = NULL,
   ...
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{file}}{Output path. Format is inferred from the
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{file}}{Output path. Format is inferred from the
 extension.}
-
-\item{\code{format}}{One of "html" or "pdf" (defaults to "auto",
+      \item{\code{format}}{One of "html" or "pdf" (defaults to "auto",
 which infers from the extension).}
-
-\item{\code{pedon}}{Optional \code{PedonRecord} whose horizons /
+      \item{\code{pedon}}{Optional \code{PedonRecord} whose horizons /
 provenance are added to the report.}
-
-\item{\code{...}}{Forwarded to \code{\link{report_html}} or
+      \item{\code{...}}{Forwarded to \code{\link{report_html}} or
 \code{\link{report_pdf}}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ClassificationResult-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-ClassificationResult-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ClassificationResult$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{ClassificationResult$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ClassificationResult$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

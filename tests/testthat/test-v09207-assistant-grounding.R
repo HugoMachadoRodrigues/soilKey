@@ -113,7 +113,7 @@ test_that("the scripted reply keeps the short summary; only the model gets it al
   e <- .grounding_env()
   ctx <- e$.chat_pedon_context(make_ferralsol_canonical(), NULL)
   expect_false(grepl("Criteria behind", ctx$text, fixed = TRUE))
-  # v0.9.417: volcanic_glass_pct joins the missing data (undecided andic tests)
+  # v0.9.417/0.9.418: volcanic_glass_pct, oxalate and ODOE join the missing data
   expect_lt(nchar(ctx$text), 1100L)
   sys <- e$.chat_system_prompt(ctx, "en")
   expect_match(sys, "### Evidence used by the keys", fixed = TRUE)

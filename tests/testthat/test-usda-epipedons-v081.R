@@ -38,7 +38,9 @@ test_that("histic_epipedon_usda passes via Ap shortcut (OC >= 8%)", {
     top_cm = c(0, 25),
     bottom_cm = c(25, 100),
     designation = c("Ap", "Bg"),
-    oc_pct = c(10, 0.5)
+    oc_pct = c(10, 0.5),
+    # v0.9.418: the Ap path needs the saturation of the histic epipedon
+    water_saturation_days = c(60, 120)
   )
   pr <- PedonRecord$new(
     site = list(id="t", lat=0, lon=0, country="US", parent_material="t"),
@@ -56,7 +58,9 @@ test_that("folistic_epipedon_usda passes for 15+ cm O horizon with OC>=12", {
     top_cm = c(0, 20),
     bottom_cm = c(20, 100),
     designation = c("Oe", "C"),
-    oc_pct = c(45, 0.5)
+    oc_pct = c(45, 0.5),
+    # v0.9.418: saturated for less than 30 days, as recorded
+    water_saturation_days = c(5, 5)
   )
   pr <- PedonRecord$new(
     site = list(id="t", lat=0, lon=0, country="US", parent_material="t"),

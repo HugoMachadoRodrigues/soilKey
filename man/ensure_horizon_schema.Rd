@@ -17,7 +17,8 @@ A \code{data.table} with the canonical horizon columns present, in
 Adds any missing canonical columns as NAs of the right type and reorders
 canonical columns first. Extra user-supplied columns are preserved at the
 end. Coerces character values to numeric where the schema requires it.
-
+}
+\details{
 Column names are recognised tolerantly before coercion: an exact canonical
 name always wins, but names differing only in capitalisation or separators
 (\code{pH_H2O}, \code{PH.H2O} -> \code{ph_h2o}) and a small table of common
