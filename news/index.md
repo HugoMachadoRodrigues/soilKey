@@ -1,5 +1,95 @@
 # Changelog
 
+## soilKey 0.9.417
+
+The Andisols and the andic tests of the USDA key, after the Soil
+Taxonomy audit (Hugo, 2026-11-20; audit section 2.1, items A1 to A13,
+readings L1 to L4). Every test touched is three-valued: a measurement
+not recorded leaves it undecided (NA) and listed when it could change
+the answer.
+
+- **Andic soil properties** (KST 13th ed., p. 32) are tested per layer
+  as the text has them: less than 25 % organic carbon, and item 2 (bulk
+  density 0.90 or less, phosphate retention 85 % or more, Al + 1/2 Fe
+  2.0 % or more) or item 3 (30 % or more of the fine earth 0.02 to 2.0
+  mm, phosphate retention 25 % or more, Al + 1/2 Fe 0.4 % or more,
+  volcanic glass 5 % or more, and 15.625 (Al + 1/2 Fe) + glass of 36.25
+  or more). A value not recorded failed the layer up to 0.9.416; it now
+  leaves it undecided. Phosphate retention not measured is undecided
+  (L1). Where the bulk density is not measured, a pH in NaF of 9.5 or
+  more in a carbonate-free layer stands in for it, named in `notes`
+  (L2). Item 3a reads `particles_002_2mm_pct`, else sand 30 % or more
+  passes and sand + silt under 30 % fails.
+- **The Andisol window** (order key item D, p. 68) starts at the mineral
+  soil surface or the top of an organic layer with andic soil properties
+  and stops at 60 cm or at a shallower densic, lithic or paralithic
+  contact, duripan or petrocalcic horizon; up to 0.9.416 it ran from the
+  soil surface to 60 cm. The Vitrands (pp. 117-118) use the same window
+  and denominator; their 1500 kPa value is `water_content_1500kpa`, and
+  the undried criterion is tested where `water_content_1500kpa_undried`
+  is recorded (L4).
+- **Spodosols, item C.3.d** (p. 68): a spodic horizon with andic soil
+  properties in 60 % of the Andisol window and no directly overlying
+  albic horizon no longer makes a Spodosol; undecided andic properties
+  leave the Spodosol undecided (new internal
+  `.spodosol_no_andic_usda()`).
+- **Udands in the order of pp. 125-126**: Placudands, Durudands,
+  Melanudands (DHC), Hydrudands (DHD), Fulvudands, Hapludands. The Hydr-
+  great groups (Hydrocryands, Hydrudands; pp. 121, 126) test 100 % by
+  weighted average on undried samples over 35 cm (or 60 % of the depth
+  to a contact), new `hydric_great_group_andisol_usda()`; up to 0.9.416
+  they used the 70 % test of the Hydric subgroups. Only
+  `water_content_1500kpa_undried` is read: a value of unknown sample
+  state leaves the test undecided (L4).
+- **The Fulv- great groups** (pp. 121, 126) test the depth, thickness
+  and organic carbon of a melanic epipedon (6 % weighted, 4 % in each
+  layer, 30 cm within 40 cm starting within 30 cm of the top).
+- **The melanic epipedon** (p. 14) reads the andic soil properties of
+  p. 32 (it had bulk density and phosphate retention only), no longer
+  needs an A or O designation, and counts 30 cm within a 40 cm span.
+  soilKey records no melanic index, which stays untested.
+- **The Dur- great groups** (pp. 117, 121, 124, 125, 132) need a
+  coherent, pedogenically cemented horizon within 100 cm in 75 % or more
+  of each pedon (`duripan_pct`, the ISIS continuity share), new
+  `duric_great_group_andisol_usda()`; they used the 90 % thickness rule
+  of the Spodosol Duric subgroups.
+- **Subgroup helpers.** Thaptic needs the lighter, poorer horizons above
+  the buried dark layer (10 cm or more, value 1 unit higher, carbon 1 %
+  lower) and the full mollic colours. The Ultic subgroups of the
+  Andisols (new `ultic_andisol_usda()`) need base saturation under 35 %
+  throughout the upper 50 cm of an argillic or kandic horizon within 125
+  cm (p. 129). Humic takes the melanic epipedon too where the KST says
+  “melanic, mollic, or umbric” (Durustands, Haplustands, Udivitrands,
+  Ustivitrands, Vitrixerands; p. 134). Andic, Vitrandic and Aquandic
+  subgroups of the other orders (e.g. p. 225) count only the part of a
+  horizon within 75 cm of the mineral soil surface; the cinder branch of
+  Vitrandic needs the cinders (`pyroclastic_fragments_pct` more than 66
+  % of fragments over 35 %), not any coarse fragments; Aquandic takes
+  the vitrandic branch too; a value not recorded leaves them undecided.
+- Subgroup YAML (minimal): the Hydrudands and Melanudands lists swap
+  codes (DHD, DHC), the Ultic subgroups call `ultic_andisol_usda`, and
+  five Humic subgroups pass `melanic: true`. The lists themselves are
+  rebuilt in a later release.
+- Canonical fixtures: the Andosol becomes Vitric Melanudands (was
+  Thaptic Hydrudands; Melanudands come first, and its 1500 kPa values
+  are not on undried samples). No other fixture changes.
+- ISIS, 357 profiles with a 1999 USDA name: 31 of the 32 Andisols are
+  now undecided at the order (no phosphate retention or glass measured),
+  KE035 fails on its own data; with Andisols undecided the key goes on
+  and names the next order with grade C. Agreement: order 198 (was 201),
+  suborder 156 (158), great group 104 (104), subgroup 48 (48). Fifteen
+  names change: CO013 (Typic Haplohumods to Typic Sombrihumults, C.3.d),
+  RO011, FI004 and NL033 leave the Spodosols (C.3.d undecided), SY002
+  and SY003 leave the Aridisols (a melanic epipedon below 23 cm cannot
+  be ruled out: no colour or carbon recorded), and KE034, KE038, KE039,
+  EC020, JP002, ID021, ID019, US006 and EC002 take an Andic subgroup (pH
+  NaF of 9.5 or more in place of the bulk density, not measured; reading
+  L2). ID019 is an Andic Haploperox in ISIS.
+- **A dried 1500 kPa value of 100 % or more counts for the Hydr- great
+  groups** (reading N14, Hugo, 2026-11-21): drying lowers the retention
+  of these soils, so such a value is a lower bound of the undried one;
+  under 100 % it stays undecided (L4).
+
 ## soilKey 0.9.416
 
 The ISIS reader after the Soil Taxonomy audit (Hugo, 2026-11-20; audit

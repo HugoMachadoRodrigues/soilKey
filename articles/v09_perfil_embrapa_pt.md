@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x56dd7d8641b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5d92fe04a1b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -310,6 +310,8 @@ print(res$usda)
 #> Evidence grade: C
 #> 
 #> ── Ambiguities
+#> - AD: Indeterminate -- missing 4 attribute(s): phosphate_retention_pct,
+#> al_ox_pct, fe_ox_pct, volcanic_glass_pct
 #> - AS: Indeterminate -- missing 5 attribute(s): site$soil_moisture_regime,
 #> caco3_pct, caso4_pct, ec_dS_m, water_saturation_days
 #> - HC: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime
@@ -317,12 +319,12 @@ print(res$usda)
 #> - HE: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime
 #> 
 #> ── Missing data that would refine result
-#> permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct, slickensides,
-#> site$soil_moisture_regime, caco3_pct, caso4_pct, ec_dS_m,
-#> water_saturation_days, redoximorphic_features_pct
+#> permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct,
+#> volcanic_glass_pct, slickensides, site$soil_moisture_regime, caco3_pct,
+#> caso4_pct, ec_dS_m, water_saturation_days, redoximorphic_features_pct
 #> 
 #> ── Warnings
-#> ! The name was reached past 1 undecided test(s) (orders:AS): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.
+#> ! The name was reached past 2 undecided test(s) (orders:AD, orders:AS): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.
 #> ! Suborder undecided: no taxon passed and HC, HD, HE could not be decided, so the name stops at the level above. See $ambiguities.
 #> 
 #> ── Key trace
@@ -330,7 +332,7 @@ print(res$usda)
 #> 1. GE Gelisols -- failed (1 attrs missing)
 #> 2. HI Histosols -- failed (1 attrs missing)
 #> 3. SP Spodosols -- failed (2 attrs missing)
-#> 4. AD Andisols -- failed (3 attrs missing)
+#> 4. AD Andisols -- undecided (4 attrs missing)
 #> 5. OX Oxisols -- failed
 #> 6. VE Vertisols -- failed (1 attrs missing)
 #> 7. AS Aridisols -- undecided (5 attrs missing)
