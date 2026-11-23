@@ -61,7 +61,7 @@ author, 2026-11-23).
   suggestion under the same opt-in. F19, human-transported material with no
   record of artifacts or transported material is absent; every class of
   the human-material key is a field record, not recorded, absent.
-* **Further readings** (to be confirmed by the author): carbonates not
+* **Further readings** (F25 to F30, accepted by the author, 2026-11-23): carbonates not
   measured are none for carbonatic (more than 40 %) where the layer has no
   field record of free carbonates, else undecided; free carbonates (isotic)
   are read from `caco3_pct`, `effervescence_class`, `effervescence_extent`,
