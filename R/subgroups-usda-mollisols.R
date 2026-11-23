@@ -140,7 +140,7 @@
 #' @param form One of the names above.
 #' @param max_cm Depth below the mineral soil surface.
 #' @noRd
-sg_mollisol_aquic <- function(pedon, form = c("depletions", "udoll", "concentrations",
+sg_mollisol_aquic_usda <- function(pedon, form = c("depletions", "udoll", "concentrations",
                                               "distinct", "natrustoll", "above_duripan"),
                               max_cm = 75) {
   form <- match.arg(form)
@@ -177,7 +177,7 @@ sg_mollisol_aquic <- function(pedon, form = c("depletions", "udoll", "concentrat
       dt <- if (isTRUE(du$passed) && length(du$layers)) min(h$top_cm[du$layers]) else Inf
       .usda_any3(vapply(.sgm_window(h, ms, dt), function(i) .sgm_depletion(h, i), NA))
     })
-  .sgm_out("sg_mollisol_aquic", v, evidence = list(form = form, max_cm = max_cm),
+  .sgm_out("sg_mollisol_aquic_usda", v, evidence = list(form = form, max_cm = max_cm),
            missing = miss, ref = ref)
 }
 
@@ -205,10 +205,10 @@ sg_mollisol_aquic <- function(pedon, form = c("depletions", "udoll", "concentrat
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param duripan Read above the duripan.
 #' @noRd
-sg_mollisol_vertic <- function(pedon, duripan = FALSE) {
+sg_mollisol_vertic_usda <- function(pedon, duripan = FALSE) {
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, e.g. p. 260 (Vertic Argiudolls), p. 287 (Vertic Durixerolls)")
-  if (!nrow(h)) return(.sgm_out("sg_mollisol_vertic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sgm_out("sg_mollisol_vertic_usda", FALSE, ref = ref))
   ms <- .sgm_ms(h)
   lim <- ms + 125
   le_to <- ms + 100
@@ -254,7 +254,7 @@ sg_mollisol_vertic <- function(pedon, duripan = FALSE) {
   passed <- .mo_or(i1, i2)
   miss <- c(if (is.na(i2)) "cole_value", if (is.na(i1) && is.na(cracks)) "cracks_depth_cm",
             if (is.na(i1) && is.na(layer15)) "structure_type")
-  .sgm_out("sg_mollisol_vertic", passed,
+  .sgm_out("sg_mollisol_vertic_usda", passed,
            layers = unique(unlist(runs_y)),
            evidence = list(cracks = cracks, slickensides_or_wedges_15cm = layer15,
                            linear_extensibility_cm = le_known, item1 = i1, item2 = i2,
@@ -302,7 +302,7 @@ sg_mollisol_vertic <- function(pedon, duripan = FALSE) {
 #' @param min_cm Thickness (cm).
 #' @param finer,finer_half,frigid_cm,cumulic_frigid See above.
 #' @noRd
-sg_mollisol_mollic <- function(pedon, min_cm = 50, finer = TRUE, finer_half = FALSE,
+sg_mollisol_mollic_usda <- function(pedon, min_cm = 50, finer = TRUE, finer_half = FALSE,
                                frigid_cm = NULL, cumulic_frigid = FALSE) {
   h <- pedon$horizons
   ref <- .sgm_ref("pp. 14-16; ch. 12, e.g. pp. 261, 264, 276 (Pachic, Cumulic)")
@@ -339,7 +339,7 @@ sg_mollisol_mollic <- function(pedon, min_cm = 50, finer = TRUE, finer_half = FA
   passed <- .mo_or(main, alt)
   miss <- c(m$mo$missing, if (is.na(tex)) c("clay_pct", "sand_pct"),
             if (!is.null(fr) && is.na(fr$passed)) fr$missing)
-  .sgm_out("sg_mollisol_mollic", passed, layers = ep,
+  .sgm_out("sg_mollisol_mollic_usda", passed, layers = ep,
            evidence = list(thickness_cm = m$known, thickness_possible_cm = m$possible,
                            min_cm = min_cm, texture = tex, frigid_alternative = alt),
            missing = miss, ref = ref)
@@ -365,7 +365,7 @@ sg_mollisol_mollic <- function(pedon, min_cm = 50, finer = TRUE, finer_half = FA
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param oc,slope_htm See above.
 #' @noRd
-sg_mollisol_fluventic <- function(pedon, oc = c("at125", "all125", "irregular"),
+sg_mollisol_fluventic_usda <- function(pedon, oc = c("at125", "all125", "irregular"),
                                   slope_htm = TRUE) {
   oc <- match.arg(oc)
   h <- pedon$horizons
@@ -393,7 +393,7 @@ sg_mollisol_fluventic <- function(pedon, oc = c("at125", "all125", "irregular"),
       if (!length(v)) FALSE else .usda_all3(v)
     })
   passed <- .mo_and(s_ok, htm_ok, .mo_or(part, fo$irregular))
-  .sgm_out("sg_mollisol_fluventic", passed, layers = fo$layers,
+  .sgm_out("sg_mollisol_fluventic_usda", passed, layers = fo$layers,
            evidence = list(slope_pct = slope, slope_ok = s_ok, htm_ok = htm_ok,
                            oc_criterion = oc, oc_part = part, irregular = fo$irregular),
            missing = "oc_pct", ref = ref)
@@ -421,11 +421,11 @@ sg_mollisol_fluventic <- function(pedon, oc = c("at125", "all125", "irregular"),
 #' it undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_thapto_humic <- function(pedon) {
+sg_mollisol_thapto_humic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, e.g. p. 264 (Thapto-Humic Hapludolls)")
   b <- which(.sgm_buried(h) & !is.na(h$top_cm) & h$top_cm < 200)
-  if (!length(b)) return(.sgm_out("sg_mollisol_thapto_humic", FALSE,
+  if (!length(b)) return(.sgm_out("sg_mollisol_thapto_humic_usda", FALSE,
                                   evidence = list(reason = "no buried horizon recorded"), ref = ref))
   d <- .usda_desig(h$designation)
   org <- (!is.na(d$master) & grepl("^[OH]", d$master)) | (!is.na(h$oc_pct) & h$oc_pct >= 12)
@@ -436,7 +436,7 @@ sg_mollisol_thapto_humic <- function(pedon) {
   epi <- ifelse(org[b], TRUE, .mo_and_v(vm[b] <= 3, cm[b] <= 3, oc[b] >= 0.6))
   i1 <- .mo_or(.sgm_thick3(h, org[b], b, 20), .sgm_thick3(h, epi, b, 18))
   passed <- .mo_or(i1, i2)
-  .sgm_out("sg_mollisol_thapto_humic", passed, layers = b,
+  .sgm_out("sg_mollisol_thapto_humic_usda", passed, layers = b,
            evidence = list(buried_layers = b, buried_epipedon = i1, dark_o_a_20cm = i2),
            missing = c("munsell_value_moist", "oc_pct"), ref = ref)
 }
@@ -458,7 +458,7 @@ sg_mollisol_thapto_humic <- function(pedon) {
 #' organic carbon under 12 \% prevails, reading L10). Not recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_thapto_histic <- function(pedon) {
+sg_mollisol_thapto_histic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgm_ms(h)
   d <- .usda_desig(h$designation)
@@ -467,7 +467,7 @@ sg_mollisol_thapto_histic <- function(pedon) {
   b <- .sgm_buried(h) & org & !is.na(h$top_cm) & h$top_cm >= ms
   runs <- Filter(function(r) .usda_run_thickness(h, r) >= 40 && min(h$top_cm[r]) < ms + 200,
                  .usda_runs(b, order(h$top_cm)))
-  .sgm_out("sg_mollisol_thapto_histic", length(runs) > 0L, layers = unlist(runs),
+  .sgm_out("sg_mollisol_thapto_histic_usda", length(runs) > 0L, layers = unlist(runs),
            evidence = list(buried_organic = which(b)),
            ref = .sgm_ref("ch. 12, e.g. p. 250 (Thapto-Histic Cryaquolls)"))
 }
@@ -486,7 +486,7 @@ sg_mollisol_thapto_histic <- function(pedon) {
 #' not recorded; nothing recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_duric <- function(pedon) {
+sg_mollisol_duric_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgm_ms(h)
   w <- .sgm_window(h, ms, ms + 100)
@@ -494,7 +494,7 @@ sg_mollisol_duric <- function(pedon) {
        !.sgm_suffix(h, seq_len(nrow(h)), "m")
   runs <- Filter(function(r) .usda_run_thickness(h, r) >= 15, .usda_runs(q, order(h$top_cm)))
   passed <- if (length(runs)) NA else FALSE
-  .sgm_out("sg_mollisol_duric", passed,
+  .sgm_out("sg_mollisol_duric_usda", passed,
            evidence = list(silica_layers = which(q)),
            missing = "durinodes_pct", ref = .sgm_ref("ch. 12, e.g. p. 286 (Duric Argixerolls)"),
            notes = if (is.na(passed)) "silica accumulation (q) recorded without the share of durinodes" else NA_character_)
@@ -556,7 +556,7 @@ sg_mollisol_duric <- function(pedon) {
 #' @param mode One of the names above.
 #' @param max_cm Depth for "within".
 #' @noRd
-sg_mollisol_calcic <- function(pedon, mode = c("within", "psc_secondary", "psc_horizon",
+sg_mollisol_calcic_usda <- function(pedon, mode = c("within", "psc_secondary", "psc_horizon",
                                                "mollic", "above_duripan", "paleudoll"),
                                max_cm = 100) {
   mode <- match.arg(mode)
@@ -608,7 +608,7 @@ sg_mollisol_calcic <- function(pedon, mode = c("within", "psc_secondary", "psc_h
         .mo_and(mix_ok, rest_ok)
       }
     })
-  .sgm_out("sg_mollisol_calcic", v, layers = cal$layers,
+  .sgm_out("sg_mollisol_calcic_usda", v, layers = cal$layers,
            evidence = list(mode = mode, calcic = cv, calcic_top_cm = ctop),
            missing = miss, ref = ref)
 }
@@ -632,12 +632,12 @@ sg_mollisol_calcic <- function(pedon, mode = c("within", "psc_secondary", "psc_h
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param glossic Include item 2.
 #' @noRd
-sg_mollisol_alfic <- function(pedon, glossic = TRUE) {
+sg_mollisol_alfic_usda <- function(pedon, glossic = TRUE) {
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, e.g. pp. 262, 268 (Alfic subgroups)")
   arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
   av <- .usda_pv(arg)
-  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_alfic", if (is.na(av)) NA else FALSE,
+  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_alfic_usda", if (is.na(av)) NA else FALSE,
                                    missing = arg$missing, ref = ref))
   ms <- .sgm_ms(h)
   at <- min(h$top_cm[arg$layers])
@@ -664,7 +664,7 @@ sg_mollisol_alfic <- function(pedon, glossic = TRUE) {
           (!is.na(sk[up]) && sk[up] >= 50)
   }
   passed <- .mo_or(i1, i2)
-  .sgm_out("sg_mollisol_alfic", passed, layers = above,
+  .sgm_out("sg_mollisol_alfic_usda", passed, layers = above,
            evidence = list(light_horizon_above = i1, glossic = i2, argillic_top_cm = at),
            missing = c("munsell_value_moist", "munsell_value_dry"), ref = ref)
 }
@@ -686,7 +686,7 @@ sg_mollisol_alfic <- function(pedon, glossic = TRUE) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param zone One of the names above.
 #' @noRd
-sg_mollisol_ultic <- function(pedon, zone = c("upper75", "lithic", "argillic50")) {
+sg_mollisol_ultic_usda <- function(pedon, zone = c("upper75", "lithic", "argillic50")) {
   zone <- match.arg(zone)
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, pp. 285, 287, 291, 294 (Ultic subgroups)")
@@ -700,7 +700,7 @@ sg_mollisol_ultic <- function(pedon, zone = c("upper75", "lithic", "argillic50")
     lithic = c(max(ms, apb), if (is.na(ct)) ms + 50 else ct),
     argillic50 = {
       arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
-      if (!isTRUE(.usda_pv(arg))) return(.sgm_out("sg_mollisol_ultic", .usda_pv(arg),
+      if (!isTRUE(.usda_pv(arg))) return(.sgm_out("sg_mollisol_ultic_usda", .usda_pv(arg),
                                                   missing = arg$missing, ref = ref))
       at <- min(h$top_cm[arg$layers]); c(at, at + 50)
     })
@@ -709,7 +709,7 @@ sg_mollisol_ultic <- function(pedon, zone = c("upper75", "lithic", "argillic50")
   v <- if (!length(w) || rng[2] <= rng[1]) FALSE
        else .usda_any3(vapply(w, function(i) if (is.na(bs$bs[i])) NA else bs$bs[i] <= 75, NA))
   src <- unique(stats::na.omit(bs$source[w]))
-  .sgm_out("sg_mollisol_ultic", v, layers = w,
+  .sgm_out("sg_mollisol_ultic_usda", v, layers = w,
            evidence = list(zone = zone, depth_cm = rng, source = src),
            missing = "bs_pct", ref = ref,
            notes = if (!is.na(v) && "NH4OAc" %in% src)
@@ -764,7 +764,7 @@ sg_mollisol_ultic <- function(pedon, zone = c("upper75", "lithic", "argillic50")
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param horizon,alt15,change_only See above.
 #' @noRd
-sg_mollisol_abruptic <- function(pedon, horizon = c("argillic", "natric"), alt15 = FALSE,
+sg_mollisol_abruptic_usda <- function(pedon, horizon = c("argillic", "natric"), alt15 = FALSE,
                                  change_only = FALSE) {
   horizon <- match.arg(horizon)
   h <- pedon$horizons
@@ -772,7 +772,7 @@ sg_mollisol_abruptic <- function(pedon, horizon = c("argillic", "natric"), alt15
   r <- tryCatch(if (horizon == "argillic") argillic_usda(pedon) else natric_horizon_usda(pedon),
                 error = function(e) NULL)
   rv <- .usda_pv(r)
-  if (!isTRUE(rv)) return(.sgm_out("sg_mollisol_abruptic", rv, missing = r$missing, ref = ref))
+  if (!isTRUE(rv)) return(.sgm_out("sg_mollisol_abruptic_usda", rv, missing = r$missing, ref = ref))
   bd <- .mo_col(h, "boundary_distinctness")
   cl <- h$clay_pct
   steps <- .sgm_clay_steps(h, r$layers)
@@ -786,7 +786,7 @@ sg_mollisol_abruptic <- function(pedon, horizon = c("argillic", "natric"), alt15
     .mo_or(a, b, atc)
   }, NA)
   passed <- if (!length(v)) FALSE else .usda_any3(v)
-  .sgm_out("sg_mollisol_abruptic", passed, layers = r$layers,
+  .sgm_out("sg_mollisol_abruptic_usda", passed, layers = r$layers,
            evidence = list(horizon = horizon, steps = v),
            missing = c("clay_pct", "boundary_distinctness"), ref = ref)
 }
@@ -798,12 +798,12 @@ sg_mollisol_abruptic <- function(pedon, horizon = c("argillic", "natric"), alt15
 #' 7.5 cm and less than 15 \% within 2.5 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_haplic_palexeroll <- function(pedon) {
+sg_mollisol_haplic_palexeroll_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sgm_ref("p. 294 (Haplic Palexerolls)")
   arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
   av <- .usda_pv(arg)
-  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_haplic_palexeroll", av, missing = arg$missing, ref = ref))
+  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_haplic_palexeroll_usda", av, missing = arg$missing, ref = ref))
   A <- arg$layers; up <- A[which.min(h$top_cm[A])]
   c35 <- if (is.na(h$clay_pct[up])) NA else h$clay_pct[up] < 35
   bd <- .mo_col(h, "boundary_distinctness")
@@ -816,7 +816,7 @@ sg_mollisol_haplic_palexeroll <- function(pedon) {
     .mo_not(.mo_or(a, b))
   }
   passed <- .mo_or(c35, inc_small)
-  .sgm_out("sg_mollisol_haplic_palexeroll", passed, layers = up,
+  .sgm_out("sg_mollisol_haplic_palexeroll_usda", passed, layers = up,
            evidence = list(clay_upper_lt35 = c35, small_increase = inc_small),
            missing = c("clay_pct", "boundary_distinctness"), ref = ref)
 }
@@ -832,7 +832,7 @@ sg_mollisol_haplic_palexeroll <- function(pedon) {
 #' recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_glossic <- function(pedon) {
+sg_mollisol_glossic_usda <- function(pedon) {
   h <- pedon$horizons
   d <- .usda_desig(h$designation)
   nat <- tryCatch(natric_horizon_usda(pedon), error = function(e) NULL)
@@ -840,7 +840,7 @@ sg_mollisol_glossic <- function(pedon) {
   tg <- .mo_col(h, "tongue_depth_cm"); am <- .mo_col(h, "albic_materials_pct")
   gl <- which(!is.na(d$master) & grepl("E/B|B/E|E&B|B&E", d$master))
   hit <- c(gl, N[(!is.na(tg[N]) & tg[N] > 0) | (!is.na(am[N]) & am[N] > 0)])
-  .sgm_out("sg_mollisol_glossic", length(hit) > 0L, layers = hit,
+  .sgm_out("sg_mollisol_glossic_usda", length(hit) > 0L, layers = hit,
            ref = .sgm_ref("ch. 12, pp. 253, 266, 281 (Glossic subgroups)"))
 }
 
@@ -852,13 +852,13 @@ sg_mollisol_glossic <- function(pedon) {
 #' observations: not recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_leptic <- function(pedon) {
+sg_mollisol_leptic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgm_ms(h)
   w <- .sgm_window(h, ms, ms + 40)
   gv <- .mo_col(h, "gypsum_visible_pct"); hv <- .mo_col(h, "halite_visible_pct")
   hit <- w[(!is.na(gv[w]) & gv[w] > 0) | (!is.na(hv[w]) & hv[w] > 0) | .sgm_suffix(h, w, "yz")]
-  .sgm_out("sg_mollisol_leptic", length(hit) > 0L, layers = hit,
+  .sgm_out("sg_mollisol_leptic_usda", length(hit) > 0L, layers = hit,
            ref = .sgm_ref("ch. 12, pp. 249, 266, 280 (Leptic subgroups)"))
 }
 
@@ -877,20 +877,20 @@ sg_mollisol_leptic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param min_cm,max_cm Depth of the top of the argillic horizon.
 #' @noRd
-sg_mollisol_arenic <- function(pedon, min_cm = 50, max_cm = Inf) {
+sg_mollisol_arenic_usda <- function(pedon, min_cm = 50, max_cm = Inf) {
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, pp. 249, 262 (Arenic, Grossarenic)")
   arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
   av <- .usda_pv(arg)
-  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_arenic", av, missing = arg$missing, ref = ref))
+  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_arenic_usda", av, missing = arg$missing, ref = ref))
   ms <- .sgm_ms(h)
   at <- min(h$top_cm[arg$layers]) - ms
-  if (at < min_cm || at > max_cm) return(.sgm_out("sg_mollisol_arenic", FALSE,
+  if (at < min_cm || at > max_cm) return(.sgm_out("sg_mollisol_arenic_usda", FALSE,
                                                   evidence = list(argillic_top_cm = at), ref = ref))
   w <- .sgm_window(h, ms, ms + at)
   s <- .usda_texture_grades(h)$lfs_or_coarser[w]
   passed <- .usda_all3(s)
-  .sgm_out("sg_mollisol_arenic", passed, layers = w, evidence = list(argillic_top_cm = at),
+  .sgm_out("sg_mollisol_arenic_usda", passed, layers = w, evidence = list(argillic_top_cm = at),
            missing = c("clay_pct", "sand_pct", "texture_class_usda"), ref = ref)
 }
 
@@ -909,7 +909,7 @@ sg_mollisol_arenic <- function(pedon, min_cm = 50, max_cm = Inf) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param mode One of the names above.
 #' @noRd
-sg_mollisol_psammentic <- function(pedon, mode = c("profile", "argillic")) {
+sg_mollisol_psammentic_usda <- function(pedon, mode = c("profile", "argillic")) {
   mode <- match.arg(mode)
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, pp. 262, 291-292 (Psammentic subgroups)")
@@ -919,7 +919,7 @@ sg_mollisol_psammentic <- function(pedon, mode = c("profile", "argillic")) {
     .sgm_window(h, ms, min(ms + 100, if (is.na(ct)) Inf else ct))
   } else {
     arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
-    if (!isTRUE(.usda_pv(arg))) return(.sgm_out("sg_mollisol_psammentic", .usda_pv(arg),
+    if (!isTRUE(.usda_pv(arg))) return(.sgm_out("sg_mollisol_psammentic_usda", .usda_pv(arg),
                                                missing = arg$missing, ref = ref))
     at <- min(h$top_cm[arg$layers])
     intersect(.sgm_window(h, at, at + 75), arg$layers)
@@ -928,7 +928,7 @@ sg_mollisol_psammentic <- function(pedon, mode = c("profile", "argillic")) {
   rf <- .mo_col(h, "coarse_fragments_pct")
   s <- ifelse(!is.na(rf[w]) & rf[w] >= 35, FALSE, lfs[w])
   passed <- if (!length(w)) FALSE else .usda_all3(s)
-  .sgm_out("sg_mollisol_psammentic", passed, layers = w,
+  .sgm_out("sg_mollisol_psammentic_usda", passed, layers = w,
            missing = c("clay_pct", "sand_pct", "texture_class_usda"), ref = ref)
 }
 
@@ -940,16 +940,16 @@ sg_mollisol_psammentic <- function(pedon, mode = c("profile", "argillic")) {
 #' observation: not recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_lamellic <- function(pedon) {
+sg_mollisol_lamellic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sgm_ref("p. 262 (Lamellic Argiudolls)")
   arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
   av <- .usda_pv(arg)
-  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_lamellic", av, missing = arg$missing, ref = ref))
+  if (!isTRUE(av)) return(.sgm_out("sg_mollisol_lamellic_usda", av, missing = arg$missing, ref = ref))
   d <- as.character(h$designation)
   lam <- which(!is.na(d) & grepl("&|lamel", d, ignore.case = TRUE))
   hit <- union(intersect(lam, arg$layers), lam[grepl("Bt", d[lam])])
-  .sgm_out("sg_mollisol_lamellic", length(hit) > 0L, layers = hit, ref = ref)
+  .sgm_out("sg_mollisol_lamellic_usda", length(hit) > 0L, layers = hit, ref = ref)
 }
 
 
@@ -971,7 +971,7 @@ sg_mollisol_lamellic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param mode One of the names above.
 #' @noRd
-sg_mollisol_oxic <- function(pedon, mode = c("argillic", "apparent")) {
+sg_mollisol_oxic_usda <- function(pedon, mode = c("argillic", "apparent")) {
   mode <- match.arg(mode)
   h <- pedon$horizons
   ref <- .sgm_ref("pp. 262, 274 (Oxic, Torroxic)")
@@ -987,7 +987,7 @@ sg_mollisol_oxic <- function(pedon, mode = c("argillic", "apparent")) {
     w <- .sgm_window(h, rng[1], rng[2])
   } else {
     arg <- tryCatch(argillic_usda(pedon), error = function(e) NULL)
-    if (!isTRUE(.usda_pv(arg))) return(.sgm_out("sg_mollisol_oxic", .usda_pv(arg),
+    if (!isTRUE(.usda_pv(arg))) return(.sgm_out("sg_mollisol_oxic_usda", .usda_pv(arg),
                                                missing = arg$missing, ref = ref))
     at <- min(h$top_cm[arg$layers])
     rng <- c(at, at + 100)
@@ -997,7 +997,7 @@ sg_mollisol_oxic <- function(pedon, mode = c("argillic", "apparent")) {
   low <- ifelse(is.na(cec) | is.na(clay) | clay <= 0, NA, 100 * cec / clay < 24)[w]
   tot <- .sgm_clip(h, w, rng[1], rng[2])
   passed <- if (!length(w)) FALSE else .sgm_thick3(h, low, w, tot / 2, rng[1], rng[2])
-  .sgm_out("sg_mollisol_oxic", passed, layers = w,
+  .sgm_out("sg_mollisol_oxic_usda", passed, layers = w,
            evidence = list(mode = mode, depth_cm = rng),
            missing = c("cec_cmol", "clay_pct"), ref = ref)
 }
@@ -1050,7 +1050,7 @@ sg_mollisol_oxic <- function(pedon, mode = c("argillic", "apparent")) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param mode One of the names above.
 #' @noRd
-sg_mollisol_entic <- function(pedon, mode = c("cambic", "carbonates", "haprendoll")) {
+sg_mollisol_entic_usda <- function(pedon, mode = c("cambic", "carbonates", "haprendoll")) {
   mode <- match.arg(mode)
   h <- pedon$horizons
   ref <- .sgm_ref("pp. 258, 265, 278, 283, 292 (Entic subgroups)")
@@ -1080,7 +1080,7 @@ sg_mollisol_entic <- function(pedon, mode = c("cambic", "carbonates", "haprendol
       miss <- "munsell_value_dry"
       .mo_or(mixed, apv)
     })
-  .sgm_out("sg_mollisol_entic", v, evidence = list(mode = mode), missing = miss, ref = ref)
+  .sgm_out("sg_mollisol_entic_usda", v, evidence = list(mode = mode), missing = miss, ref = ref)
 }
 
 
@@ -1099,12 +1099,12 @@ sg_mollisol_entic <- function(pedon, mode = c("cambic", "carbonates", "haprendol
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param mode One of the names above.
 #' @noRd
-sg_mollisol_vermic <- function(pedon, mode = c("any", "xeroll", "hapludoll")) {
+sg_mollisol_vermic_usda <- function(pedon, mode = c("any", "xeroll", "hapludoll")) {
   mode <- match.arg(mode)
   h <- pedon$horizons
   ref <- .sgm_ref("pp. 265, 286, 292 (Vermic subgroups)")
   m <- .sgm_mollic(pedon)
-  if (isFALSE(m$passed)) return(.sgm_out("sg_mollisol_vermic", FALSE, ref = ref))
+  if (isFALSE(m$passed)) return(.sgm_out("sg_mollisol_vermic_usda", FALSE, ref = ref))
   d <- .usda_desig(h$designation)
   ap <- which(!is.na(d$master) & d$master == "A" & grepl("p", d$suffix))
   from <- max(m$upper + if (mode == "hapludoll") 18 else 0,
@@ -1114,7 +1114,7 @@ sg_mollisol_vermic <- function(pedon, mode = c("any", "xeroll", "hapludoll")) {
   wh <- .mo_col(h, "worm_holes_pct")
   wl <- pmin(h$bottom_cm[w], to) - pmax(h$top_cm[w], from)
   worms <- length(w) > 0L && sum(ifelse(is.na(wh[w]), 0, wh[w]) * wl) / sum(wl) >= 50
-  if (!worms) return(.sgm_out("sg_mollisol_vermic", FALSE, ref = ref))
+  if (!worms) return(.sgm_out("sg_mollisol_vermic_usda", FALSE, ref = ref))
   extra <- switch(mode,
     any = TRUE,
     xeroll = {
@@ -1122,10 +1122,10 @@ sg_mollisol_vermic <- function(pedon, mode = c("any", "xeroll", "hapludoll")) {
       st <- .field_term(.mo_col(h, "structure_type"))[ep]
       if (any(!is.na(st) & grepl("granular|crumb", st))) TRUE else if (anyNA(st)) NA else FALSE
     },
-    hapludoll = .mo_and(.usda_pv(sg_mollisol_mollic(pedon, 60, finer = TRUE)),
+    hapludoll = .mo_and(.usda_pv(sg_mollisol_mollic_usda(pedon, 60, finer = TRUE)),
                         .sgm_entic_cambic(pedon)$passed))
   passed <- .mo_and(m$passed, extra)
-  .sgm_out("sg_mollisol_vermic", passed, layers = w, evidence = list(mode = mode),
+  .sgm_out("sg_mollisol_vermic_usda", passed, layers = w, evidence = list(mode = mode),
            missing = c(m$mo$missing, "structure_type"), ref = ref)
 }
 
@@ -1160,7 +1160,7 @@ sg_mollisol_vermic <- function(pedon, mode = c("any", "xeroll", "hapludoll")) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param kind One of the names above.
 #' @noRd
-sg_mollisol_moisture <- function(pedon, kind = c("aridic", "udic", "ustic_cryoll", "xeric_summer")) {
+sg_mollisol_moisture_usda <- function(pedon, kind = c("aridic", "udic", "ustic_cryoll", "xeric_summer")) {
   kind <- match.arg(kind)
   ref <- .sgm_ref("ch. 3, pp. 47-49; ch. 12 (moisture intergrades)")
   raw <- pedon$site$soil_moisture_regime %||% NA_character_
@@ -1181,7 +1181,7 @@ sg_mollisol_moisture <- function(pedon, kind = c("aridic", "udic", "ustic_cryoll
            else if (smr %in% c(dry, "aquic")) FALSE else NA,
     ustic_cryoll = if (blank) NA else smr %in% c("ustic", dry),
     xeric_summer = if (blank) NA else smr %in% c("xeric", dry))
-  .sgm_out("sg_mollisol_moisture", v,
+  .sgm_out("sg_mollisol_moisture_usda", v,
            evidence = list(kind = kind, soil_moisture_regime = raw, subclass = sub),
            missing = if (blank) "site$soil_moisture_regime" else "site$soil_moisture_subclass",
            ref = ref)
@@ -1206,13 +1206,13 @@ sg_mollisol_moisture <- function(pedon, kind = c("aridic", "udic", "ustic_cryoll
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param mode One of the names above.
 #' @noRd
-sg_mollisol_duripan <- function(pedon, mode = c("weak", "natric_above")) {
+sg_mollisol_duripan_usda <- function(pedon, mode = c("weak", "natric_above")) {
   mode <- match.arg(mode)
   h <- pedon$horizons
   ref <- .sgm_ref("pp. 273, 287-288 (Durixerolls, Durustolls)")
   du <- duripan_usda(pedon, max_top_cm = Inf)
   dv <- .usda_pv(du)
-  if (!isTRUE(dv)) return(.sgm_out("sg_mollisol_duripan", dv, missing = du$missing, ref = ref))
+  if (!isTRUE(dv)) return(.sgm_out("sg_mollisol_duripan_usda", dv, missing = du$missing, ref = ref))
   D <- du$layers
   v <- switch(mode,
     weak = {
@@ -1224,7 +1224,7 @@ sg_mollisol_duripan <- function(pedon, mode = c("weak", "natric_above")) {
       nv <- .usda_pv(nat)
       if (isTRUE(nv)) any(h$top_cm[nat$layers] < min(h$top_cm[D])) else nv
     })
-  .sgm_out("sg_mollisol_duripan", v, layers = D, evidence = list(mode = mode),
+  .sgm_out("sg_mollisol_duripan_usda", v, layers = D, evidence = list(mode = mode),
            missing = "cementation_class", ref = ref)
 }
 
@@ -1240,7 +1240,7 @@ sg_mollisol_duripan <- function(pedon, mode = c("weak", "natric_above")) {
 #' prominent redox concentrations. Colour not recorded: undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_aeric <- function(pedon) {
+sg_mollisol_aeric_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgm_ms(h)
   cm <- h$munsell_chroma_moist
@@ -1256,7 +1256,7 @@ sg_mollisol_aeric <- function(pedon) {
              .mo_and(hr >= 6 && c >= 2, .mo_not(rc)))
     }
   }
-  .sgm_out("sg_mollisol_aeric", .mo_or(a, b), evidence = list(chroma3_75cm = a, below_mollic = b),
+  .sgm_out("sg_mollisol_aeric_usda", .mo_or(a, b), evidence = list(chroma3_75cm = a, below_mollic = b),
            missing = c("munsell_chroma_moist", "munsell_hue_moist"),
            ref = .sgm_ref("p. 250 (Aeric Calciaquolls)"))
 }
@@ -1270,7 +1270,7 @@ sg_mollisol_aeric <- function(pedon) {
 #' absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_ruptic_lithic <- function(pedon) {
+sg_mollisol_ruptic_lithic_usda <- function(pedon) {
   h <- pedon$horizons
   li <- lithic_contact_usda(pedon, max_top_cm = 50)
   hit <- FALSE
@@ -1282,7 +1282,7 @@ sg_mollisol_ruptic_lithic <- function(pedon) {
     hit <- any(!is.na(bt) & grepl("broken|irregular|discontinuous", bt)) ||
            (!is.na(hc) && grepl("broken|discontinuous", hc))
   }
-  .sgm_out("sg_mollisol_ruptic_lithic", hit, layers = li$layers,
+  .sgm_out("sg_mollisol_ruptic_lithic_usda", hit, layers = li$layers,
            ref = .sgm_ref("p. 273 (Ruptic-Lithic Haplustolls)"))
 }
 
@@ -1292,7 +1292,7 @@ sg_mollisol_ruptic_lithic <- function(pedon) {
 #' records; not recorded, absent).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_htm_petrocalcic <- function(pedon) {
+sg_mollisol_htm_petrocalcic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgm_ms(h)
   pc <- petrocalcic_subgroup_usda(pedon, max_top_cm = ms + 100)
@@ -1300,7 +1300,7 @@ sg_mollisol_htm_petrocalcic <- function(pedon) {
   htm <- .usda_htm_layers(pedon)
   v <- if (isTRUE(pv)) any(htm[pc$layers] %in% TRUE) else if (is.na(pv)) {
     if (any(htm)) NA else FALSE } else FALSE
-  .sgm_out("sg_mollisol_htm_petrocalcic", v, layers = pc$layers, missing = pc$missing,
+  .sgm_out("sg_mollisol_htm_petrocalcic_usda", v, layers = pc$layers, missing = pc$missing,
            ref = .sgm_ref("p. 262 (Anthropic Petrocalcic Calciudolls)"))
 }
 
@@ -1310,7 +1310,7 @@ sg_mollisol_htm_petrocalcic <- function(pedon) {
 #' recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_anthraquic <- function(pedon) {
+sg_mollisol_anthraquic_usda <- function(pedon) {
   h <- pedon$horizons
   raw <- tolower(as.character(pedon$site$soil_moisture_regime %||% NA)[1])
   wr <- .field_term(.mo_col(h, "water_regime_pattern"))
@@ -1321,7 +1321,7 @@ sg_mollisol_anthraquic <- function(pedon) {
   hit <- (!is.na(raw) && grepl("anthraquic|anthrostagnic", raw)) ||
          any(!is.na(wr) & grepl("anthraquic|anthrostagnic|paddy", wr)) ||
          (any(as.logical(pud) %in% TRUE) && redox)
-  .sgm_out("sg_mollisol_anthraquic", hit, ref = .sgm_ref("p. 276 (Anthraquic Haplustolls)"))
+  .sgm_out("sg_mollisol_anthraquic_usda", hit, ref = .sgm_ref("p. 276 (Anthraquic Haplustolls)"))
 }
 
 #' Aquandic subgroups of the Aquolls and Argialbolls (e.g. Aquandic
@@ -1336,14 +1336,14 @@ sg_mollisol_anthraquic <- function(pedon) {
 #' \code{vitrandic_subgroup_usda()} do.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_mollisol_aquandic <- function(pedon) {
+sg_mollisol_aquandic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sgm_ref("pp. 248-252 (Aquandic subgroups)")
-  if (!nrow(h)) return(.sgm_out("sg_mollisol_aquandic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sgm_out("sg_mollisol_aquandic_usda", FALSE, ref = ref))
   L <- .andic_subgroup_layers_usda(h)
   ok <- .mo_or_v(L$andic, L$vitrandic)
   r <- .andic_subgroup_18_usda(h, ok)
-  .sgm_out("sg_mollisol_aquandic", r$passed, layers = r$layers,
+  .sgm_out("sg_mollisol_aquandic_usda", r$passed, layers = r$layers,
            evidence = list(thickness_cm = r$thickness_cm, undecided_cm = r$undecided_cm),
            missing = c(L$missing_andic, L$missing_vitrandic), ref = ref)
 }

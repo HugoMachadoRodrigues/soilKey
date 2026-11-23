@@ -213,16 +213,16 @@ test_that("Arenic and Grossarenic Ultisols read the Ultisol definition (no spodi
   skip_on_cran()
   p <- .v09423_hapludult(top_arg = 60)
   expect_true(soilKey:::argillic_usda(p)$passed)
-  expect_true(soilKey:::sg_ultisol_arenic(p)$passed)                         # 50-100 cm
-  expect_false(soilKey:::sg_ultisol_arenic(p, min_cm = 100, max_cm = Inf)$passed)
-  expect_false(soilKey:::sg_ultisol_arenic(.v09423_hapludult(top_arg = 30))$passed)
-  expect_true(soilKey:::sg_ultisol_arenic(.v09423_hapludult(top_arg = 110), min_cm = 100, max_cm = Inf)$passed)
+  expect_true(soilKey:::sg_ultisol_arenic_usda(p)$passed)                         # 50-100 cm
+  expect_false(soilKey:::sg_ultisol_arenic_usda(p, min_cm = 100, max_cm = Inf)$passed)
+  expect_false(soilKey:::sg_ultisol_arenic_usda(.v09423_hapludult(top_arg = 30))$passed)
+  expect_true(soilKey:::sg_ultisol_arenic_usda(.v09423_hapludult(top_arg = 110), min_cm = 100, max_cm = Inf)$passed)
   # a loamy E: not sandy throughout
   q <- p; h <- q$horizons; h$sand_pct[2] <- 40; h$silt_pct[2] <- 56
-  expect_false(soilKey:::sg_ultisol_arenic(PedonRecord$new(site = q$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_ultisol_arenic_usda(PedonRecord$new(site = q$site, horizons = h))$passed)
   # texture not recorded above the Bt: undecided
   h <- p$horizons; h$sand_pct[1:2] <- NA; h$silt_pct[1:2] <- NA
-  r <- soilKey:::sg_ultisol_arenic(PedonRecord$new(site = p$site, horizons = h))
+  r <- soilKey:::sg_ultisol_arenic_usda(PedonRecord$new(site = p$site, horizons = h))
   expect_true(is.na(r$passed)); expect_true(length(r$missing) > 0)
   # the old helper needed a spodic horizon and never passed outside the Spodosols
   expect_false(isTRUE(soilKey:::arenic_subgroup_usda(p)$passed))
@@ -242,49 +242,49 @@ test_that("an Arenic Hapludult is named so, with the undecided Vertic and Oxyaqu
 test_that("Vertic Ultisols: slickensides decide, the linear extensibility is a measurement", {
   skip_on_cran()
   p <- .v09423_hapludult()
-  expect_true(is.na(soilKey:::sg_ultisol_vertic(p)$passed))
+  expect_true(is.na(soilKey:::sg_ultisol_vertic_usda(p)$passed))
   h <- p$horizons; h$cole_value <- c(0.01, 0.01, 0.02, 0.02, 0.02)
-  expect_false(soilKey:::sg_ultisol_vertic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_ultisol_vertic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
   h$cole_value <- c(0.05, 0.05, 0.09, 0.09, 0.09)                        # LE >= 6 cm
-  expect_true(soilKey:::sg_ultisol_vertic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_ultisol_vertic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
   h <- p$horizons; h$slickensides <- c(NA, NA, "common", "common", NA)    # 80 cm within 125
-  expect_true(soilKey:::sg_ultisol_vertic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_ultisol_vertic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
 })
 
 test_that("Aquic Ultisols need recorded redox depletions in the zone of the great group", {
   skip_on_cran()
   p <- .v09423_hapludult()
-  expect_false(soilKey:::sg_ultisol_aquic(p, zone = "75")$passed)        # no redox features
+  expect_false(soilKey:::sg_ultisol_aquic_usda(p, zone = "75")$passed)        # no redox features
   h <- p$horizons
   h$redoximorphic_features_pct <- c(0, 0, 10, 0, 0)
   h$mottle_colors <- c(NA, NA, "10YR 6/2; 5YR 5/8", NA, NA)
   q <- PedonRecord$new(site = p$site, horizons = h)
-  expect_true(soilKey:::sg_ultisol_aquic(q, zone = "75")$passed)         # Bt1 at 60-100 cm
-  expect_true(soilKey:::sg_ultisol_aquic(q, zone = "arg25", horizon = "argillic")$passed)
-  expect_false(soilKey:::sg_ultisol_aquic(q, zone = "40")$passed)
+  expect_true(soilKey:::sg_ultisol_aquic_usda(q, zone = "75")$passed)         # Bt1 at 60-100 cm
+  expect_true(soilKey:::sg_ultisol_aquic_usda(q, zone = "arg25", horizon = "argillic")$passed)
+  expect_false(soilKey:::sg_ultisol_aquic_usda(q, zone = "40")$passed)
   # mottles recorded without a colour, the matrix colour not recorded: undecided
   h$mottle_colors <- NA; h$munsell_chroma_moist[3] <- NA
-  expect_true(is.na(soilKey:::sg_ultisol_aquic(PedonRecord$new(site = p$site, horizons = h), zone = "75")$passed))
+  expect_true(is.na(soilKey:::sg_ultisol_aquic_usda(PedonRecord$new(site = p$site, horizons = h), zone = "75")$passed))
 })
 
 test_that("Aeric Aquults read chroma 3 or more between the A (or 25 cm) and 75 cm", {
   skip_on_cran()
   p <- .v09423_hapludult()
-  expect_true(soilKey:::sg_ultisol_aeric(p)$passed)                      # E chroma 3, Bt chroma 6
+  expect_true(soilKey:::sg_ultisol_aeric_usda(p)$passed)                      # E chroma 3, Bt chroma 6
   h <- p$horizons; h$munsell_chroma_moist <- c(2, 1, 2, 2, 2)
-  expect_false(soilKey:::sg_ultisol_aeric(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_ultisol_aeric_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
   h$munsell_chroma_moist[2] <- NA
-  expect_true(is.na(soilKey:::sg_ultisol_aeric(PedonRecord$new(site = p$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_ultisol_aeric_usda(PedonRecord$new(site = p$site, horizons = h))$passed))
 })
 
 test_that("Kanhaplic Haplustults: CEC under 24 cmol(+)/kg clay in half the argillic horizon", {
   skip_on_cran()
   p <- .v09423_hapludult()                                               # 12 / 30 = 40
-  expect_false(soilKey:::sg_ultisol_kandic(p, "cec")$passed)
+  expect_false(soilKey:::sg_ultisol_kandic_usda(p, "cec")$passed)
   h <- p$horizons; h$cec_cmol[3:4] <- c(6, 6)                            # 20
-  expect_true(soilKey:::sg_ultisol_kandic(PedonRecord$new(site = p$site, horizons = h), "cec")$passed)
+  expect_true(soilKey:::sg_ultisol_kandic_usda(PedonRecord$new(site = p$site, horizons = h), "cec")$passed)
   h$cec_cmol[3:4] <- NA
-  expect_true(is.na(soilKey:::sg_ultisol_kandic(PedonRecord$new(site = p$site, horizons = h), "cec")$passed))
+  expect_true(is.na(soilKey:::sg_ultisol_kandic_usda(PedonRecord$new(site = p$site, horizons = h), "cec")$passed))
 })
 
 test_that("Humic Hapludults read the dry value, inferred only for a moist value of 2 or less", {
@@ -292,31 +292,31 @@ test_that("Humic Hapludults read the dry value, inferred only for a moist value 
   p <- .v09423_hapludult()
   h <- p$horizons; h$designation[1] <- "Ap"; h$munsell_value_moist[1:2] <- c(3, 3)
   h$munsell_value_dry[1:2] <- c(5, 5)
-  expect_true(soilKey:::sg_ultisol_humic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_ultisol_humic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
   h$munsell_value_dry[1:2] <- NA
-  expect_true(is.na(soilKey:::sg_ultisol_humic(PedonRecord$new(site = p$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_ultisol_humic_usda(PedonRecord$new(site = p$site, horizons = h))$passed))
   h$munsell_value_moist[1:2] <- c(2, 2)
-  expect_true(soilKey:::sg_ultisol_humic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_ultisol_humic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
   h$munsell_value_moist[1:2] <- c(4, 4)
-  expect_false(soilKey:::sg_ultisol_humic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_ultisol_humic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
 })
 
 test_that("the udic and aridic sides of the ustic regime are read from the subclass", {
   skip_on_cran()
   p <- .v09423_hapludult()
-  expect_true(is.na(soilKey:::sg_ultisol_ustic_intergrade(p, "udic")$passed))
+  expect_true(is.na(soilKey:::sg_ultisol_ustic_intergrade_usda(p, "udic")$passed))
   s <- p$site; s$soil_moisture_regime <- "ustic"; s$soil_moisture_subclass <- "udic ustic"
   q <- PedonRecord$new(site = s, horizons = p$horizons)
-  expect_true(soilKey:::sg_ultisol_ustic_intergrade(q, "udic")$passed)
-  expect_false(soilKey:::sg_ultisol_ustic_intergrade(q, "aridic")$passed)
+  expect_true(soilKey:::sg_ultisol_ustic_intergrade_usda(q, "udic")$passed)
+  expect_false(soilKey:::sg_ultisol_ustic_intergrade_usda(q, "aridic")$passed)
 })
 
 test_that("Haplic Plinthustults are the negation of the Pale- core test", {
   skip_on_cran()
   p <- .v09423_hapludult()                                               # clay falls 32 -> 20
-  expect_true(soilKey:::sg_ultisol_haplic(p)$passed)
+  expect_true(soilKey:::sg_ultisol_haplic_usda(p)$passed)
   h <- p$horizons; h$clay_pct[5] <- 31
-  expect_false(soilKey:::sg_ultisol_haplic(PedonRecord$new(site = p$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_ultisol_haplic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
 })
 
 # ---- Oxisols -----------------------------------------------------------------
@@ -324,60 +324,60 @@ test_that("Haplic Plinthustults are the negation of the Pale- core test", {
 test_that("Aquic Oxisols: depletions of value 4 or more and chroma 2 or less within 125 cm", {
   skip_on_cran()
   f <- make_ferralsol_canonical()
-  expect_false(soilKey:::sg_oxisol_aquic(f)$passed)
+  expect_false(soilKey:::sg_oxisol_aquic_usda(f)$passed)
   h <- f$horizons; h$redoximorphic_features_pct <- c(0, 0, 0, 15, 0)
   h$mottle_colors <- c(NA, NA, NA, "10YR 6/1", NA)
-  expect_true(soilKey:::sg_oxisol_aquic(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_oxisol_aquic_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$mottle_colors[4] <- "10YR 3/1"                                       # too dark: value 3
-  expect_false(soilKey:::sg_oxisol_aquic(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_oxisol_aquic_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$mottle_colors[4] <- NA; h$munsell_chroma_moist[4] <- NA              # undecided
-  expect_true(is.na(soilKey:::sg_oxisol_aquic(PedonRecord$new(site = f$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_oxisol_aquic_usda(PedonRecord$new(site = f$site, horizons = h))$passed))
 })
 
 test_that("Xanthic Oxisols: half the 25-125 cm thickness yellow and light", {
   skip_on_cran()
   f <- make_ferralsol_canonical()
-  expect_false(soilKey:::sg_oxisol_xanthic(f)$passed)                   # 2.5YR
+  expect_false(soilKey:::sg_oxisol_xanthic_usda(f)$passed)                   # 2.5YR
   h <- f$horizons; h$munsell_hue_moist <- "10YR"; h$munsell_value_moist <- c(4, 5, 6, 6, 6)
-  expect_true(soilKey:::sg_oxisol_xanthic(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_oxisol_xanthic_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$munsell_value_moist[4] <- 5                                          # 30 of 100 cm
-  expect_false(soilKey:::sg_oxisol_xanthic(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_oxisol_xanthic_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$munsell_value_moist[4] <- NA
-  expect_true(is.na(soilKey:::sg_oxisol_xanthic(PedonRecord$new(site = f$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_oxisol_xanthic_usda(PedonRecord$new(site = f$site, horizons = h))$passed))
 })
 
 test_that("Anionic Oxisols: delta pH 0 or more through 18 cm within 125 cm", {
   skip_on_cran()
   f <- make_ferralsol_canonical()
   h <- f$horizons; h$ph_h2o <- 5.0; h$ph_kcl <- c(4.2, 4.3, 4.6, 5.2, 5.3)
-  expect_true(soilKey:::sg_oxisol_anionic(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_oxisol_anionic_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$ph_kcl <- c(4.2, 4.3, 4.6, 4.8, 5.3)                                 # only below 130 cm
-  expect_false(soilKey:::sg_oxisol_anionic(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_oxisol_anionic_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$ph_kcl[4] <- NA
-  expect_true(is.na(soilKey:::sg_oxisol_anionic(PedonRecord$new(site = f$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_oxisol_anionic_usda(PedonRecord$new(site = f$site, horizons = h))$passed))
 })
 
 test_that("Inceptic Oxisols: the oxic horizon ends within 125 cm", {
   skip_on_cran()
   f <- make_ferralsol_canonical()
-  expect_false(soilKey:::sg_oxisol_inceptic(f)$passed)                   # oxic to 200 cm
+  expect_false(soilKey:::sg_oxisol_inceptic_usda(f)$passed)                   # oxic to 200 cm
   h <- as.data.frame(f$horizons)
   h <- h[1:4, ]; h$bottom_cm[4] <- 110
-  expect_true(is.na(soilKey:::sg_oxisol_inceptic(PedonRecord$new(site = f$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_oxisol_inceptic_usda(PedonRecord$new(site = f$site, horizons = h))$passed))
   h2 <- rbind(h, h[4, ]); h2$designation[5] <- "R"; h2$top_cm[5] <- 110; h2$bottom_cm[5] <- 130
   h2[5, setdiff(names(h2), c("designation", "top_cm", "bottom_cm"))] <- NA
-  expect_true(soilKey:::sg_oxisol_inceptic(PedonRecord$new(site = f$site, horizons = h2))$passed)
+  expect_true(soilKey:::sg_oxisol_inceptic_usda(PedonRecord$new(site = f$site, horizons = h2))$passed)
 })
 
 test_that("Eutric Oxisols need 35 % base saturation in every horizon to 125 cm", {
   skip_on_cran()
   f <- make_ferralsol_canonical()
   h <- f$horizons; h$bs_pct <- c(60, 50, 40, 36, 35)
-  expect_true(soilKey:::sg_oxisol_eutric(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_true(soilKey:::sg_oxisol_eutric_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$bs_pct[3] <- 20
-  expect_false(soilKey:::sg_oxisol_eutric(PedonRecord$new(site = f$site, horizons = h))$passed)
+  expect_false(soilKey:::sg_oxisol_eutric_usda(PedonRecord$new(site = f$site, horizons = h))$passed)
   h$bs_pct[3] <- NA
-  expect_true(is.na(soilKey:::sg_oxisol_eutric(PedonRecord$new(site = f$site, horizons = h))$passed))
+  expect_true(is.na(soilKey:::sg_oxisol_eutric_usda(PedonRecord$new(site = f$site, horizons = h))$passed))
 })
 
 test_that("the canonical Oxisol fixtures keep their names", {

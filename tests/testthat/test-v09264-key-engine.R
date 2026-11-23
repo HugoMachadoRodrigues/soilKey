@@ -102,7 +102,11 @@ test_that("a system added after the registry must suffix its predicates", {
   local_mocked_bindings(
     .system_get = function(id) { e <- real(id); e$legacy <- FALSE; e },
     .package = "soilKey")
-  res <- soilKey:::.validate_rules("usda")
+  # v0.9.427: the USDA rules no longer call the SiBCS fibrico / hemico /
+  # saprico (Histels), so they are clean even as a new system; the SiBCS rules
+  # still show the check at work.
+  expect_identical(soilKey:::.validate_rules("usda")$unsuffixed, character(0))
+  res <- soilKey:::.validate_rules("sibcs5")
   expect_gt(length(res$unsuffixed), 0L)
-  expect_false(any(endsWith(res$unsuffixed, "_usda")))
+  expect_false(any(endsWith(res$unsuffixed, "_sibcs")))
 })
