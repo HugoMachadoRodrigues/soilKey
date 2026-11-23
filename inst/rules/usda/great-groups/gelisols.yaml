@@ -14,6 +14,9 @@
 great_groups:
 
   # ---- AA Histels (Cap 9, pp 189-191) ----
+  # v0.9.427: Fibristels and Hemistels by the kind of organic soil material
+  # that is thickest to 50 cm or a contact (KST 13th ed., p. 189), read by
+  # sg_gelisols_histel_kind_usda(); up to v0.9.426 the SiBCS fibrico/hemico.
   "AA":
     - code: "AAA"
       name: "Folistels"
@@ -29,12 +32,12 @@ great_groups:
       name: "Fibristels"
       tests:
         all_of:
-          - fibrico: {}
+          - sg_gelisols_histel_kind_usda: { kind: fibric }
     - code: "AAD"
       name: "Hemistels"
       tests:
         all_of:
-          - hemico: {}
+          - sg_gelisols_histel_kind_usda: { kind: hemic }
     - code: "AAE"
       name: "Sapristels"
       tests:

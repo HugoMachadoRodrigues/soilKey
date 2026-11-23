@@ -1,3 +1,92 @@
+# soilKey 0.9.427
+
+Subgroups of the Spodosols, Histosols and Gelisols rebuilt from the KST 13th
+edition (wave 3; Ch. 14, pp. 311-320; Ch. 10, pp. 199-205; Ch. 9, pp.
+189-198). The three lists already had every KST subgroup in KST order (121, 75
+and 129 names; none added, removed or reordered); what changed is the test
+each subgroup reads. The new tests live in `R/subgroups-usda-spodhistgel.R`
+(`sg_spodosols_*`, `sg_histosols_*`, `sg_gelisols_*`); no helper shared with
+other orders changes. Each new test is three-valued: a field observation not
+recorded is absent, a measurement not recorded leaves it undecided where it
+could change the answer.
+
+* **Spodosols** (the test entry of 81 of the 121 subgroups changed; a few only
+  spell out a default argument). Lithic from the mineral soil surface (before,
+  from the top of the profile). Andic: 25 cm of andic soil properties within
+  75 cm of the mineral soil surface or of an organic layer with andic
+  properties (before, the 18 cm Andic subgroups of the mineral orders). Aquic
+  and Aquandic of the Cryods, Gelods and Orthods: redox features and aquic
+  conditions within 75 cm (before 100). Arenic and Grossarenic: the texture of
+  every layer from the mineral soil surface to the spodic horizon read by
+  `.usda_texture_grades()`, undecided where not recorded (before, layers
+  without clay or sand were skipped). Alfic, Ultic and Argic: argillic or
+  kandic horizon within 200 cm, three-valued, the Alfic base saturation by sum
+  of cations (NH4OAc where not recorded); Arenic Ultic Alorthods: argillic or
+  kandic horizon below the spodic horizon (p. 317). Turbic Gelods: gelic
+  materials within 200 cm (before, permafrost alone passed). Fragic and
+  Fragiaquic Haplorthods: fragic soil properties from the suffix x or the
+  fragipan records, starting within 100 cm. Lamellic: two or more lamella
+  layers below the spodic horizon, within 200 cm and above any argillic
+  horizon. Duric Alaquods and Duric Cryaquods: `cemented_horizon_usda()` (90 %
+  of each pedon, read laterally). The four Haploplaggic subgroups call
+  `haploplaggic_subgroup_usda()` (they were switched off). Every Entic
+  subgroup passes its great group's rule to `entic_subgroup_usda()` explicitly
+  (cryaquod, haplocryod, alorthod, orthod).
+* **Histosols** (55 of 75 test entries changed). Lithic: within 50 cm of the
+  soil surface (Folists) or at the bottom of the control section, 130 cm or
+  160 cm under a moss surface (before, 130 cm always). Hydric: a water layer
+  within the control section, below the surface tier. Limnic: 5 cm of limnic
+  layers (master L) within the control section; a lacustrine layer origin no
+  longer counts. Terric: one layer of mineral soil material 30 cm thick whose
+  top is in the control section below the surface tier (before, all mineral
+  layers starting above 100 cm, summed). Fluvaquentic: less than 50 cm of
+  human-transported material and mineral layers inside the organic materials
+  (one 5 cm thick, or two), below the surface tier (before, the organic-carbon
+  test of the mineral orders). Sphagnic Cryofibrists: the Sphagnum share of
+  the surface tier (`sphagnum_fibres_pct`; not recorded, not Sphagnum), no
+  longer the rubbed fibre content. Hemic Sphagnofibrists and Hemic
+  Haplofibrists count hemic and sapric materials, Hemic Haplosaprists fibric
+  and hemic ones. Fibric and Sapric Wassists: the predominance of the
+  suborders (p. 199), Fibric Frasiwassists with no sulfidic materials within
+  100 cm (before, the 25 cm rule). Halic: one layer 30 cm thick with EC 30
+  dS/m or more starting in the control section (before, any layers summed).
+* **Gelisols** (78 of 129 test entries changed). Lithic and Glacic from the
+  soil surface in the Histels, Histoturbels and Historthels and from the
+  mineral soil surface elsewhere, as the KST words each. Terric Histels: one
+  mineral layer with 30 cm within 100 cm. Limnic Histels as in the Histosols.
+  Thapto-Humic: buried O and dark A layers (20 cm, 1 % organic carbon),
+  undecided where colour or carbon of a buried A layer is not recorded.
+  Fluvaquentic Histels: mineral layers inside the organic materials within 100
+  cm; Fluvaquentic and Fluventic Orthels: slope under 25 % (not recorded, read
+  as met), less than 50 cm of human-transported material, the organic-carbon
+  criteria of the Fluvents (`.usda_fluvent_oc()`), and for Fluvaquentic
+  Historthels and Haplorthels redox features with aquic conditions within 75
+  cm (the Fluvaquentic Aquorthels do not ask for it). Hemic and Sapric
+  Glacistels and Sphagnic Fibristels by the kinds of organic material to 50
+  cm. Cumulic: a mollic or umbric epipedon 40 cm thick finer than loamy fine
+  sand (before, the A horizons summed). Aquic: redox features and aquic
+  conditions within 100 cm (75 cm in the Haplorthels) of the mineral soil
+  surface. Sulfuric: a sulfuric horizon or sulfidic materials within 100 cm.
+* **Histel great groups** (`great-groups/gelisols.yaml`, p. 189): Fibristels
+  and Hemistels by the kind of organic soil material that is thickest to 50 cm
+  or a contact (`sg_gelisols_histel_kind_usda()`), no longer the SiBCS
+  `fibrico`/`hemico` classes.
+* Measured on ISIS (357 profiles with a 1999 USDA name): order 216, suborder
+  174, great group 124, subgroup 73, unchanged. One profile changes name:
+  NL051 Terric Haplohemists -> Fibric Haplohemists (its mineral layer starts
+  at 142 cm, below the control section; its fibric 1Hi horizon gives 30 cm
+  of fibric material at 100-130 cm). Canonical fixture: histosol Typic Haplohemists -> Terric
+  Haplohemists (the C horizon at 100-150 cm starts within the control section,
+  below the surface tier; up to v0.9.426 a Terric layer had to start above 100
+  cm).
+* `tests/testthat/test-v09264-key-engine.R`: the check that a system added
+  after the registry must suffix its predicates used the USDA rules, whose
+  only unsuffixed predicates were the SiBCS fibrico, hemico and saprico; it
+  now uses the SiBCS rules and asserts that the USDA rules are clean.
+* Still open in the lists: Spodic Psamments and Psammaquents call
+  `spodic_subgroup_usda()` without `{ psamments: true }` (entisols.yaml, wave
+  3 Entisols task).
+
 # soilKey 0.9.426
 
 Subgroups of the Aridisols, Vertisols and Andisols rebuilt from the Keys to
