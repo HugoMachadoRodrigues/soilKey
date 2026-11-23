@@ -7,12 +7,16 @@
 # ============================================================================
 
 
-.build_sibcs_pedon <- function(id, lat, lon, parent_material, hz) {
+# smr, str: soil moisture and temperature regimes read from the NRCS global
+# regime maps (USDA-NRCS 1997) at the site (v0.9.429, USDA audit, wave 4).
+.build_sibcs_pedon <- function(id, lat, lon, parent_material, hz,
+                               smr = NULL, str = NULL) {
   hz <- ensure_horizon_schema(hz)
   PedonRecord$new(
     site = list(
       id = id, lat = lat, lon = lon, country = "BR",
-      crs = 4326, parent_material = parent_material
+      crs = 4326, parent_material = parent_material,
+      soil_moisture_regime = smr, soil_temperature_regime = str
     ),
     horizons = hz
   )
@@ -47,7 +51,8 @@ make_organossolo_canonical <- function() {
     bs_pct               = c(25,   22,   30,   40),
     redoximorphic_features_pct = c(0, 0, 5, 30)
   )
-  .build_sibcs_pedon("O-canonical-01", -22.5, -43.5, "alluvium / peat", hz)
+  .build_sibcs_pedon("O-canonical-01", -22.5, -43.5, "alluvium / peat", hz,
+                     smr = "udic", str = "isohyperthermic")
 }
 
 
@@ -75,7 +80,8 @@ make_neossolo_canonical <- function() {
     cec_cmol             = c(8,    NA),
     bs_pct               = c(45,   NA)
   )
-  .build_sibcs_pedon("R-canonical-01", -10.0, -45.0, "granito", hz)
+  .build_sibcs_pedon("R-canonical-01", -10.0, -45.0, "granito", hz,
+                     smr = "ustic", str = "isohyperthermic")
 }
 
 
@@ -151,7 +157,8 @@ make_planossolo_canonical <- function() {
     bs_pct               = c(40,   38,   55,   60),
     redoximorphic_features_pct = c(0, 5, 10, 5)
   )
-  .build_sibcs_pedon("S-canonical-01", -7.5, -39.5, "sedimentos / xisto", hz)
+  .build_sibcs_pedon("S-canonical-01", -7.5, -39.5, "sedimentos / xisto", hz,
+                     smr = "ustic", str = "isohyperthermic")
 }
 
 
@@ -285,7 +292,8 @@ make_luvissolo_canonical <- function() {
     boundary_distinctness = c("clear","gradual","gradual","diffuse")
   )
   .build_sibcs_pedon("T-canonical-01", -8.5, -39.0,
-                       "rocha sedimentar carbonatica", hz)
+                       "rocha sedimentar carbonatica", hz,
+                     smr = "aridic", str = "isohyperthermic")
 }
 
 
@@ -322,7 +330,8 @@ make_nitossolo_canonical <- function() {
     boundary_distinctness = c("gradual","diffuse","diffuse","gradual")
   )
   .build_sibcs_pedon("N-canonical-01", -23.5, -47.0,
-                       "rocha basica (basalto)", hz)
+                       "rocha basica (basalto)", hz,
+                     smr = "udic", str = "isothermic")
 }
 
 
@@ -358,5 +367,6 @@ make_argissolo_canonical <- function() {
     boundary_distinctness = c("clear","clear","gradual","diffuse")
   )
   .build_sibcs_pedon("P-canonical-01", -22.0, -43.0,
-                       "sedimento argiloso", hz)
+                       "sedimento argiloso", hz,
+                     smr = "udic", str = "isohyperthermic")
 }

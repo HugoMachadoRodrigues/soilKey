@@ -78,6 +78,10 @@ make_ferralsol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2024-03-10"),
       country         = "BR",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "isohyperthermic",
       parent_material = "gneiss",
       elevation_m     = 180,
       slope_pct       = 8,
@@ -154,6 +158,10 @@ make_luvisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-09-15"),
       country         = "DE",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "loess over morainic deposits",
       elevation_m     = 420,
       slope_pct       = 3,
@@ -225,8 +233,10 @@ make_calcisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-05-12"),
       country         = "ES",
-      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
-      soil_moisture_regime = "aridic",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site, nearest land cell (USDA audit, wave 4)
+      soil_moisture_regime    = "xeric",
+      soil_temperature_regime = "thermic",
       parent_material = "calcareous loess",
       elevation_m     = 280,
       slope_pct       = 5,
@@ -297,8 +307,10 @@ make_gypsisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-07-08"),
       country         = "ES",
-      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
-      soil_moisture_regime = "aridic",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "xeric",
+      soil_temperature_regime = "mesic",
       parent_material = "gypsiferous lutites (Tertiary)",
       elevation_m     = 480,
       slope_pct       = 4,
@@ -368,8 +380,10 @@ make_solonchak_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-08-20"),
       country         = "ES",
-      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
-      soil_moisture_regime = "aridic",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "ustic",
+      soil_temperature_regime = "thermic",
       parent_material = "alluvium with marine influence",
       elevation_m     = 5,
       slope_pct       = 0,
@@ -443,6 +457,10 @@ make_cambisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-08-22"),
       country         = "AT",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "perudic",
+      soil_temperature_regime = "mesic",
       parent_material = "weathered colluvium over schist",
       elevation_m     = 920,
       slope_pct       = 18,
@@ -520,6 +538,10 @@ make_plinthosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2024-04-05"),
       country         = "BR",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "ustic",
+      soil_temperature_regime = "isohyperthermic",
       parent_material = "Tertiary plinthitic sediments",
       elevation_m     = 920,
       slope_pct       = 3,
@@ -599,6 +621,10 @@ make_podzol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-09-30"),
       country         = "SE",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "cryic",
       parent_material = "glacial sandy till",
       elevation_m     = 95,
       slope_pct       = 5,
@@ -674,6 +700,10 @@ make_gleysol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-06-18"),
       country         = "NL",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "Holocene fluvial clay",
       elevation_m     = 1,
       slope_pct       = 0,
@@ -756,6 +786,10 @@ make_vertisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-11-12"),
       country         = "MZ",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "ustic",
+      soil_temperature_regime = "isohyperthermic",
       parent_material = "alluvium over basalt",
       elevation_m     = 80,
       slope_pct       = 1,
@@ -834,6 +868,10 @@ make_acrisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2024-01-15"),
       country         = "BR",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "isothermic",
       parent_material = "weathered gneiss",
       elevation_m     = 750,
       slope_pct       = 12,
@@ -908,6 +946,10 @@ make_lixisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-10-08"),
       country         = "PT",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site, nearest land cell (USDA audit, wave 4)
+      soil_moisture_regime    = "xeric",
+      soil_temperature_regime = "thermic",
       parent_material = "weathered marl over limestone",
       elevation_m     = 280,
       slope_pct       = 6,
@@ -983,6 +1025,10 @@ make_alisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-12-03"),
       country         = "PE",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "cryic",
       parent_material = "weathered Cretaceous shale",
       elevation_m     = 1850,
       slope_pct       = 22,
@@ -1061,6 +1107,12 @@ make_kastanozem_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-07-01"),
       country         = "KZ",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "aridic",
+      # aridic bordering on ustic: summer rainfall (KST 13 p 66)
+      soil_moisture_subclass  = "ustic aridic",
+      soil_temperature_regime = "frigid",
       parent_material = "calcareous loess",
       elevation_m     = 250,
       slope_pct       = 1,
@@ -1135,6 +1187,10 @@ make_phaeozem_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-09-22"),
       country         = "US",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "leached loess",
       elevation_m     = 220,
       slope_pct       = 2,
@@ -1198,6 +1254,10 @@ make_histosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-08-04"),
       country         = "FI",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site, nearest land cell (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "cryic",
       parent_material = "peat over postglacial till",
       elevation_m     = 90,
       slope_pct       = 1,
@@ -1261,6 +1321,10 @@ make_leptosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-09-12"),
       country         = "IT",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "cryic",
       parent_material = "metamorphic schist",
       elevation_m     = 1850,
       slope_pct       = 35,
@@ -1325,6 +1389,10 @@ make_arenosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-07-22"),
       country         = "ES",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site, nearest land cell (USDA audit, wave 4)
+      soil_moisture_regime    = "xeric",
+      soil_temperature_regime = "thermic",
       parent_material = "Holocene aeolian dune sand",
       elevation_m     = 8,
       slope_pct       = 4,
@@ -1395,6 +1463,10 @@ make_umbrisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-10-04"),
       country         = "ES",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "weathered acid schist",
       elevation_m     = 1100,
       slope_pct       = 18,
@@ -1458,8 +1530,10 @@ make_durisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-04-18"),
       country         = "CL",
-      # v0.9.315: an arid soil records its moisture regime (KST 13 p 69, G.1.a)
-      soil_moisture_regime = "aridic",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "xeric",
+      soil_temperature_regime = "mesic",
       parent_material = "Pleistocene alluvium",
       elevation_m     = 380,
       slope_pct       = 5,
@@ -1524,6 +1598,10 @@ make_technosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-11-09"),
       country         = "GB",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "ustic",
+      soil_temperature_regime = "mesic",
       parent_material = "anthropogenic backfill (post-industrial)",
       elevation_m     = 25,
       slope_pct       = 0,
@@ -1597,6 +1675,10 @@ make_andosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2024-02-20"),
       country         = "JP",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "Holocene volcanic ash",
       elevation_m     = 980,
       slope_pct       = 12,
@@ -1666,6 +1748,10 @@ make_fluvisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2024-03-22"),
       country         = "BR",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "isohyperthermic",
       parent_material = "Holocene alluvium (Solimoes / Negro junction)",
       elevation_m     = 35,
       slope_pct       = 0,
@@ -1734,6 +1820,10 @@ make_solonetz_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-09-25"),
       country         = "HU",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "ustic",
+      soil_temperature_regime = "mesic",
       parent_material = "saline-sodic alluvium (Pannonian)",
       elevation_m     = 95,
       slope_pct       = 1,
@@ -1829,6 +1919,10 @@ make_nitisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-12-08"),
       country         = "KE",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "ustic",
+      soil_temperature_regime = "isothermic",
       parent_material = "weathered Tertiary basalt",
       elevation_m     = 1700,
       slope_pct       = 8,
@@ -1902,6 +1996,10 @@ make_planosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-11-02"),
       country         = "UY",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "thermic",
       parent_material = "Pleistocene fluvio-lacustrine sediments",
       elevation_m     = 80,
       slope_pct       = 2,
@@ -1972,6 +2070,10 @@ make_stagnosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-04-12"),
       country         = "DE",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "loess over slowly-permeable till",
       elevation_m     = 320,
       slope_pct       = 4,
@@ -2052,6 +2154,10 @@ make_retisol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-08-30"),
       country         = "RU",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "cryic",
       parent_material = "loess over moraine",
       elevation_m     = 220,
       slope_pct       = 5,
@@ -2170,6 +2276,10 @@ make_anthrosol_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2023-10-15"),
       country         = "BE",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "udic",
+      soil_temperature_regime = "mesic",
       parent_material = "loess + centuries of OM-rich amendment",
       elevation_m     = 60,
       slope_pct       = 1,
@@ -2250,6 +2360,10 @@ make_chernozem_canonical <- function() {
       crs             = 4326,
       date            = as.Date("2022-06-12"),
       country         = "UA",
+      # v0.9.429: regimes read from the NRCS global soil moisture and soil
+      # temperature regime maps (USDA-NRCS 1997) at this site (USDA audit, wave 4)
+      soil_moisture_regime    = "xeric",
+      soil_temperature_regime = "mesic",
       parent_material = "loess",
       elevation_m     = 220,
       slope_pct       = 1,

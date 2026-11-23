@@ -36,13 +36,17 @@ suborders:
     - code: "IF"
       name: "Xerolls"
       tests:
-        all_of:
+        # v0.9.429: or an aridic regime that borders on xeric (KST 13, p. 66)
+        any_of:
           - smr_xeric_usda: {}
+          - smr_aridic_bordering_usda: {side: "xeric"}
     - code: "IG"
       name: "Ustolls"
       tests:
-        all_of:
+        # v0.9.429: or an aridic regime that borders on ustic (KST 13, p. 66)
+        any_of:
           - smr_ustic_usda: {}
+          - smr_aridic_bordering_usda: {side: "ustic"}
     - code: "IH"
       name: "Udolls"
       tests:
