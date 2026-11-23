@@ -16,7 +16,7 @@ test_that("one row per profile, in order, with site properties", {
   res <- classify_profiles(h, sites = s)
   expect_identical(res$profile_id, c("p1", "p2"))
   expect_true(all(c("wrb", "sibcs", "usda", "missing", "error") %in% names(res)))
-  expect_identical(res$usda[2], "Pachic Haplustolls")  # v0.9.421: mollic 50 cm or more
+  expect_identical(res$usda[2], "Cumulic Haplustolls")  # v0.9.424: 0.3 % OC at 125 cm (KST p. 276)
   one <- classify_all(make_ferralsol_canonical(), on_missing = "silent")$summary
   expect_identical(res$wrb[1], one$wrb[1])
   expect_identical(res$usda[1], one$usda[1])
@@ -36,7 +36,7 @@ test_that("sites as a named list, a custom id column and shuffled rows", {
   res <- classify_profiles(h, sites = list(p2 = list(soil_moisture_regime = "ustic")),
                            id = "code", systems = "usda")
   expect_identical(res$code, c("p2", "p1"))
-  expect_identical(res$usda[1], "Pachic Haplustolls")  # v0.9.421
+  expect_identical(res$usda[1], "Cumulic Haplustolls")  # v0.9.424
   # horizons are put back in depth order
   expect_true(!is.unsorted(attr(res, "pedons")$p1$horizons$top_cm))
 })

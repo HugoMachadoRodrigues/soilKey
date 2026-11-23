@@ -1,3 +1,77 @@
+# soilKey 0.9.424
+
+Mollisol subgroups rebuilt from the Keys to Soil Taxonomy, 13th edition
+(Hugo, 2026-11-20; audit R3 to R6 and E26). Every great group of the
+Mollisols now lists exactly the subgroups of its key in chapter 12 (pp.
+248-294), in the order of the key, Typic last, and each subgroup tests the
+criteria the KST gives in that great group. The tests are three-valued:
+field observations not recorded (redox features, cracks, slickensides, worm
+holes, visible salts, buried horizons, tongues of albic material,
+cementation) are absent; measurements (organic carbon, COLE, base
+saturation, CEC), colour, structure and texture not recorded are undecided.
+
+* `inst/rules/usda/subgroups/mollisols.yaml`: 391 subgroups in 37 great
+  groups (was 285): 132 added, 26 removed that the 13th edition does not
+  have (Aquic and Vertic Natralbolls, Aquic and Pachic Argialbolls, Lithic
+  Cryaquolls, Lithic Argiaquolls, Lithic Epiaquolls, Pachic Argiaquolls,
+  Calcic Endoaquolls, Salic Natraquolls, Vertic Calciaquolls, Aquic
+  Haprendolls, Vertic Duricryolls, Vertic and Aquic Natricryolls, Vertic
+  Palecryolls, Argic Durixerolls, Lithic Palexerolls, Petrocalcic
+  Calcixerolls, Argic and Vertic Durustolls, Lithic Paleustolls, Calcic
+  Haplustolls, Aquic Natrudolls, Petrocalcic Calciudolls, Pachic
+  Vermudolls), and the remaining ones put in KST order in 25 great groups,
+  so the compound subgroups (Aquic Cumulic, Pachic Vertic, Aridic Lithic,
+  Fluvaquentic Vertic ...) come before their parts. The KST codes are kept;
+  those past Z (IFFZa to IFFZi, IGGZa to IGGZf) are written IFF1 to IFF9 and
+  IGG1 to IGG6.
+* New file `R/subgroups-usda-mollisols.R` with the Mollisol readings, each
+  citing its KST page: `sg_mollisol_vertic()` (cracks and slickensides or
+  wedge-shaped peds, or a linear extensibility of 6 cm; above the duripan
+  in the Durixerolls and Duraquolls; where no crack is recorded the
+  slickensides stand for them, as for the Vertisol order, L30),
+  `sg_mollisol_aquic()` (the six aquic wordings of the chapter: the 40/75 cm
+  colour test of the Udolls, depletions within 75 or 100 cm, concentrations,
+  distinct concentrations, the Natrustolls and above the duripan),
+  `sg_mollisol_mollic()` (Pachic, Cumulic, Haplic and Entic thickness, with
+  the frigid 40 cm and the Cumulic frigid alternatives), `sg_mollisol_fluventic()`
+  (slope, human-transported material, 0.3 % organic carbon at 125 cm or in
+  all horizons within 125 cm, irregular decrease), `sg_mollisol_thapto_humic()`,
+  `sg_mollisol_thapto_histic()`, `sg_mollisol_duric()`,
+  `sg_mollisol_calcic()` (within 100 cm; calcic or secondary carbonates by
+  particle-size class at 150/90/110 cm; 100/50/60 cm in the Paleustolls;
+  within or below the mollic; above the duripan; the Calcic Paleudolls),
+  `sg_mollisol_alfic()`, `sg_mollisol_ultic()` (base saturation 75 % or
+  less, L18), `sg_mollisol_abruptic()`, `sg_mollisol_haplic_palexeroll()`,
+  `sg_mollisol_glossic()`, `sg_mollisol_leptic()`, `sg_mollisol_arenic()`
+  (the Mollisol wording, no spodic horizon, audit R5), `sg_mollisol_psammentic()`,
+  `sg_mollisol_lamellic()`, `sg_mollisol_oxic()`, `sg_mollisol_entic()`,
+  `sg_mollisol_vermic()`, `sg_mollisol_moisture()`, `sg_mollisol_duripan()`,
+  `sg_mollisol_aeric()`, `sg_mollisol_ruptic_lithic()`,
+  `sg_mollisol_htm_petrocalcic()`, `sg_mollisol_anthraquic()`,
+  `sg_mollisol_aquandic()`. The shared helpers used by other orders are
+  unchanged.
+* Moisture intergrades (Aridic, Torr-, -idic, Udic, Udertic, Udorthentic
+  Ustolls and Xerolls): read from the recorded regime and, where recorded, a
+  subdivision of it in `site$soil_moisture_subclass` ("aridic ustic", "udic
+  ustic", "typic xeric", "dry xeric"); with only the suborder's own ustic or
+  xeric regime recorded they are undecided. Ustic Cryolls pass with an
+  ustic or aridic regime, Xeric Argialbolls with a xeric or aridic one.
+* Canonical fixtures: Phaeozem, Chernozem and Chernossolo become Cumulic
+  Hapludolls (were Pachic Hapludolls): a mollic epipedon of 60 cm or more
+  and 0.3 % or more organic carbon at 125 cm (KST p. 264). With an ustic
+  regime the Phaeozem is Cumulic Haplustolls (was Pachic Haplustolls).
+* On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 216 (was 216), suborder 174 (174), great group 124 (124),
+  subgroup 72 (73); 17 names change, all within their great group: NA004
+  Pachic to Cumulic Haplustolls (0.46 % organic carbon at 125 cm; ISIS
+  Pachic Haplustoll), KE037 and SK002 to Cumulic and Fluventic Hapludolls,
+  EC018 to Cumulic Haplustolls, RO005, DE013 and EC016 to Fluventic, KE049
+  and CN041 to Cumulic Endoaquolls, RW002 to Andic Argiudolls (ISIS: Typic
+  Melanudand), NL006 to Thapto-Humic Hapludolls, NL007 and DE008 to Aquic
+  and Aquic Pachic Hapludolls; and the four names the 13th edition does not
+  have: BW005 Typic Natralbolls, ID013 Typic Argiaquolls, US016 Aquic
+  Haplustolls, PE024 Thapto-Humic Haplustolls.
+
 # soilKey 0.9.423
 
 The subgroups of the Ultisols and Oxisols rebuilt from Keys to Soil Taxonomy,

@@ -41,7 +41,8 @@ test_that("v0.9.149: the 11 Humic colour subgroups are registered (coverage 2049
   cov <- coverage_report("usda_subgroup")
   # 2038 (v0.9.147) + 11; + 105 (v0.9.422, the Alfisol lists of the KST)
   # + 77 (v0.9.423)
-  expect_equal(cov$overall$covered_n, 2231L)
+  # + 119 (v0.9.424)
+  expect_equal(cov$overall$covered_n, 2350L)
   reg <- soilKey:::.coverage_registered_usda_subgroups()
   added <- tolower(c(
     "Humic Densiudepts", "Humic Dystroxerepts", "Humic Dystrustepts",
