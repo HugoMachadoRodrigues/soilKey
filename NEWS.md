@@ -69,7 +69,7 @@ wave 5, first of four family PRs; readings F5 to F11 and F18 of the author,
   water not measured, the measured clay, as the evidence notes. F18, a
   weighted average uses the measured parts only when they cover half the
   control section or more; else undecided.
-* **Other readings of the KST** (no author decision): andic soil properties,
+* **Further readings** (F21 to F24 accepted by the author, 2026-11-23; the rest follow the text): andic soil properties,
   volcanic glass and the share of pumice not recorded are absent unless the
   profile or the taxon has a volcanic record (Andisols, Andic and Vitrandic
   subgroups, glass, pyroclastic fragments, an andic layer), then undecided;
