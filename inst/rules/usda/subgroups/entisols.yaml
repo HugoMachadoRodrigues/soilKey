@@ -174,7 +174,7 @@ subgroups:
     - { code: "LDAB", name: "Aquic Cryopsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50}}] } }
     - { code: "LDAC", name: "Oxyaquic Cryopsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
     - { code: "LDAD", name: "Vitrandic Cryopsamments", tests: { all_of: [{sg_ent_andic_usda: {kind: "glass"}}] } }
-    - { code: "LDAE", name: "Spodic Cryopsamments", tests: { all_of: [{spodic_subgroup_usda: {psamments: true}}] } }
+    - { code: "LDAE", name: "Spodic Cryopsamments", tests: { all_of: [{spodic_subgroup_usda: {psamments: false}}] } }  # v0.9.430: KST 13 sets no depth for the horizon here
     - { code: "LDAF", name: "Lamellic Cryopsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
     - { code: "LDAG", name: "Typic Cryopsamments", tests: { default: true } }
   "LDB":  # Torripsamments (8, KST)
