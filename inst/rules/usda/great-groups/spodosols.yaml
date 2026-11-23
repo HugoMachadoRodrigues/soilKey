@@ -1,6 +1,8 @@
 # =============================================================
 # USDA Soil Taxonomy 13ed -- Spodosols Great Groups -- Cap 14
 # =============================================================
+# v0.9.418: Alorthods read oxalate iron alone (p. 317); the Dur- great
+# groups read cementation in 90 % of each pedon laterally (reading L9).
 # 22 GGs total:
 #   Aquods (CA): 7
 #   Gelods (CB): 2
@@ -37,7 +39,7 @@ great_groups:
       name: "Duraquods"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - cemented_horizon_usda: {}
     - code: "CAF"
       name: "Epiaquods"
       tests:
@@ -71,7 +73,7 @@ great_groups:
       name: "Duricryods"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - cemented_horizon_usda: {}
     - code: "CCC"
       name: "Humicryods"
       tests:
@@ -93,7 +95,7 @@ great_groups:
       name: "Durihumods"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - cemented_horizon_usda: {}
     - code: "CDC"
       name: "Fragihumods"
       tests:
@@ -115,7 +117,7 @@ great_groups:
       name: "Durorthods"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - cemented_horizon_usda: {}
     - code: "CEC"
       name: "Fragiorthods"
       tests:
@@ -125,7 +127,7 @@ great_groups:
       name: "Alorthods"
       tests:
         all_of:
-          - al_rich_spodic_usda: {}
+          - al_rich_spodic_usda: { fe_only: true }
     - code: "CEE"
       name: "Haplorthods"
       tests:

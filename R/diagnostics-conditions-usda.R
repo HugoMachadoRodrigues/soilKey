@@ -413,8 +413,12 @@ permafrost_within_usda <- function(pedon, max_top_cm = 100) {
   cand <- which(!is.na(h$top_cm) & h$top_cm <= max_top_cm)
   pf_in_layer <- !is.na(h$permafrost_temp_C[cand]) &
                    h$permafrost_temp_C[cand] <= 0
-  pf_in_des <- !is.na(h$designation[cand]) &
-                  grepl("ff|^Wf", h$designation[cand])
+  # v0.9.418: the frozen suffix f as the WRB cryic conditions read it (KST
+  # 13th ed., p. 46; suffixes f and ff), besides ff and Wf
+  dm <- .desg_master(h$designation[cand], site = pedon$site)
+  pf_in_des <- !is.na(dm) &
+                  (grepl("ff|^Wf", dm) |
+                     grepl(.frozen_designation_pattern(pedon$site), dm))
   passing <- cand[pf_in_layer | pf_in_des]
   warm <- .str_rules_out_permafrost(pedon$site)
   if (all(is.na(h$permafrost_temp_C[cand])) && length(passing) == 0L && !warm) {

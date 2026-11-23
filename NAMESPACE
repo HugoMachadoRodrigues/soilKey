@@ -544,10 +544,12 @@ export(xeric_weakly_developed_soils_cpcs)
 export(yermic_cpcs)
 export(yermic_properties)
 importFrom(R6,R6Class)
-importFrom(stats,aggregate)
-importFrom(stats,predict)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,setNames)
-importFrom(stats,weighted.mean)
+importFrom(stats,
+  aggregate,
+  predict,
+  rnorm,
+  runif,
+  setNames,
+  weighted.mean
+)
 importFrom(utils,tail)

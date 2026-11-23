@@ -65,159 +65,173 @@
 }
 
 
-# ---- Histic Epipedon (KST 13ed, Cap 3 pp 13-15) ---------------------
+# ---- Histic Epipedon (KST 13th ed., p. 14) --------------------------
 
-#' Histic epipedon (USDA Soil Taxonomy, 13th edition)
+# v0.9.418: the run of adjoining organic layers from the soil surface, for
+# the histic and folistic epipedons: the layers surely organic (`yes`) and
+# those that are or may be (`may`), with their thicknesses.
+.usda_organic_surface_run <- function(pedon, org) {
+  h <- pedon$horizons
+  ord <- order(h$top_cm)
+  ord <- ord[!is.na(h$top_cm[ord]) & !is.na(h$bottom_cm[ord])]
+  run <- function(keep) {
+    ly <- integer(0); bot <- NA_real_
+    for (i in ord) {
+      if (!keep[i]) break
+      if (length(ly) && abs(h$top_cm[i] - bot) > 1e-6) break
+      if (!length(ly) && h$top_cm[i] > min(h$top_cm, na.rm = TRUE) + 1e-6) break
+      ly <- c(ly, i); bot <- h$bottom_cm[i]
+    }
+    list(layers = ly, thickness = if (length(ly)) bot - h$top_cm[ly[1]] else 0)
+  }
+  list(yes = run(org %in% TRUE), may = run(!(org %in% FALSE)))
+}
+
+# v0.9.418: the Ap path of the histic and folistic epipedons (KST 13th ed.,
+# pp. 13-14): an Ap horizon at the mineral soil surface that, mixed to a
+# depth of 25 cm, has 8 percent organic carbon or more. Returns the
+# weighted organic carbon test (TRUE / FALSE / NA) and the layers mixed.
+.usda_ap_mixed <- function(pedon, org, min_oc = 8) {
+  h <- pedon$horizons
+  ms <- .usda_mineral_surface(pedon, org)
+  d <- .desg_master(h$designation, site = pedon$site)
+  first <- which(!is.na(h$top_cm) & abs(h$top_cm - ms) < 1e-6 & !(org %in% TRUE))
+  if (!length(first) || !any(grepl("^Ap", d[first]))) return(list(passed = FALSE, layers = integer(0)))
+  k <- which(!is.na(h$top_cm) & h$top_cm < ms + 25 & h$bottom_cm > ms)
+  w <- pmin(h$bottom_cm[k], ms + 25) - pmax(h$top_cm[k], ms)
+  oc <- suppressWarnings(as.numeric(h$oc_pct[k]))
+  # bounds with organic carbon not recorded (0 to 100 %)
+  lo <- sum(ifelse(is.na(oc), 0, oc) * w) / 25
+  hi <- sum(ifelse(is.na(oc), 100, oc) * w) / 25
+  passed <- if (lo >= min_oc) TRUE else if (hi < min_oc) FALSE else NA
+  list(passed = passed, layers = k)
+}
+
+#' Histic epipedon (USDA Soil Taxonomy, 13th edition, p. 14)
 #'
-#' A surface horizon (or layers within 40 cm of the surface) that is
-#' periodically saturated with water and has sufficiently high
-#' organic carbon to be considered organic soil material. Diagnostic
-#' for the Histosols order, the Histels suborder of Gelisols, and
-#' the Hist- modifier in many other taxa.
-#'
-#' KST 13ed required characteristics (Ch. 3, pp 13-15):
-#' \itemize{
-#'   \item Saturated 30+ days/year (or artificially drained); AND
-#'   \item Organic soil material that is either:
-#'     \itemize{
-#'       \item 20-60 cm thick AND (Sphagnum >= 75 percent OR
-#'             bulk_density < 0.1 g/cm3); OR
-#'       \item 20-40 cm thick (general); OR
-#'     }
-#'   \item OR Ap horizon mixed to 25 cm with OC >= 8 percent by weight.
+#' A layer (one or more horizons) characterized by saturation for 30 days or
+#' more (cumulative) and reduction in normal years, or artificially drained,
+#' that either:
+#' \enumerate{
+#'   \item consists of organic soil material 20 to 60 cm thick with 75
+#'     percent or more Sphagnum fibres or a moist bulk density under 0.1, or
+#'     20 to 40 cm thick otherwise; or
+#'   \item is an Ap horizon that, mixed to a depth of 25 cm, has 8 percent
+#'     organic carbon or more.
 #' }
-#'
-#' Implementation notes (v0.8.x):
-#' \itemize{
-#'   \item Saturation is detected via a horizon designation
-#'         starting with H (per KST notation) or via the WRB
-#'         \code{horizonte_glei} as fallback when redoximorphic
-#'         features are present.
-#'   \item Sphagnum content uses the WRB \code{fiber_content_rubbed_pct}
-#'         column (>= 75 means very fibrous); refinement to a true
-#'         Sphagnum-specific column is deferred.
-#' }
-#'
+#' v0.9.418: organic soil material is read layer by layer (12 percent
+#' organic carbon, or an O or H designation without a measurement, reading
+#' L10), as the run of organic layers from the soil surface; saturation is
+#' read by \code{.usda_saturated30()} (drainage recorded, saturation days,
+#' an H designation, or aquic conditions in a mineral layer); the Ap path
+#' needs that saturation and mixes the upper 25 cm (fix A13 of the Andisols
+#' audit). Up to v0.9.417 any H layers summing 20 cm with one measured
+#' organic carbon of 12 percent passed, and any Ap within 25 cm with 8
+#' percent, with no saturation.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_oc_pct Minimum organic carbon percent for organic soil
-#'        material (default 12; equivalent to ~20\% organic matter
-#'        per KST conversion factor 0.58).
+#' @param min_oc_pct Kept for callers; organic soil material is 12 percent.
 #' @param min_thickness_cm Minimum thickness (default 20 cm).
-#' @param min_ap_oc_pct Minimum OC for the Ap-horizon shortcut
-#'        (default 8 percent).
+#' @param min_ap_oc_pct Minimum mixed organic carbon of the Ap path (8).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @references Soil Survey Staff (2022). \emph{Keys to Soil Taxonomy},
-#'   13th edition, USDA-NRCS, Washington DC. Ch. 3, pp. 13-15.
+#'   13th edition, USDA-NRCS, Washington DC, p. 14.
 #' @noRd
 histic_epipedon_usda <- function(pedon,
                                     min_oc_pct       = 12,
                                     min_thickness_cm = 20,
                                     min_ap_oc_pct    = 8) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 14"
   h <- pedon$horizons
   if (nrow(h) == 0L) {
     return(DiagnosticResult$new(
       name = "histic_epipedon_usda", passed = FALSE, layers = integer(0),
       evidence = list(reason = "empty horizons"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3"
-    ))
+      missing = character(0), reference = ref))
   }
-  # Path 1: H-designated organic layers totaling >= min_thickness.
-  h_layers <- which(!is.na(h$designation) & grepl("^H", h$designation))
-  thk_h <- if (length(h_layers) > 0L)
-             sum(pmax(h$bottom_cm[h_layers] - h$top_cm[h_layers], 0),
-                   na.rm = TRUE)
-           else 0
-  oc_h <- if (length(h_layers) > 0L)
-            h$oc_pct[h_layers]
-          else numeric(0)
-  oc_pass <- if (length(oc_h) > 0L)
-               !is.na(oc_h) & oc_h >= min_oc_pct
-             else logical(0)
-  path1_ok <- thk_h >= min_thickness_cm && any(oc_pass)
-
-  # Path 2: Ap horizon with OC >= 8% mixed to 25 cm.
-  ap_layers <- which(!is.na(h$designation) & grepl("^Ap", h$designation) &
-                       !is.na(h$top_cm) & h$top_cm <= 25)
-  path2_ok <- length(ap_layers) > 0L &&
-                any(!is.na(h$oc_pct[ap_layers]) &
-                      h$oc_pct[ap_layers] >= min_ap_oc_pct)
-
-  passed <- path1_ok || path2_ok
-  layers <- if (path1_ok) h_layers[oc_pass] else ap_layers
+  org <- .usda_organic_status(pedon)
+  r <- .usda_organic_surface_run(pedon, org)
+  sat <- .usda_saturated30(pedon, org)
+  bd <- suppressWarnings(as.numeric(h$bulk_density_g_cm3))
+  sph <- suppressWarnings(as.numeric(h$sphagnum_fibres_pct %||% rep(NA, nrow(h))))
+  light <- length(r$may$layers) > 0L &&
+    all((!is.na(sph[r$may$layers]) & sph[r$may$layers] >= 75) |
+          (!is.na(bd[r$may$layers]) & bd[r$may$layers] < 0.1))
+  max_thk <- if (light) 60 else 40
+  ty <- r$yes$thickness; tm <- r$may$thickness
+  thick <- if (ty >= min_thickness_cm && ty <= max_thk && tm <= max_thk) TRUE
+           else if (tm < min_thickness_cm || ty > max_thk) FALSE else NA
+  path1 <- thick & (if (length(r$may$layers)) .any3u(sat[r$may$layers]) else FALSE)
+  ap <- .usda_ap_mixed(pedon, org, min_ap_oc_pct)
+  path2 <- ap$passed & (if (length(ap$layers)) .any3u(sat[ap$layers]) else FALSE)
+  passed <- path1 | path2
   miss <- character(0)
-  if (length(h_layers) > 0L && all(is.na(oc_h))) miss <- c(miss, "oc_pct")
+  if (is.na(passed)) {
+    if (anyNA(org[r$may$layers])) miss <- c(miss, "oc_pct")
+    if (anyNA(sat[c(r$may$layers, ap$layers)])) miss <- c(miss, "water_saturation_days")
+    if (is.na(ap$passed)) miss <- c(miss, "oc_pct")
+  }
   DiagnosticResult$new(
     name = "histic_epipedon_usda", passed = passed,
-    layers = layers,
-    evidence = list(h_layers = h_layers, organic_thickness_cm = thk_h,
-                      ap_layers = ap_layers,
-                      path1_organic = path1_ok,
-                      path2_ap = path2_ok),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 14-15"
-  )
+    layers = if (isTRUE(path1)) r$yes$layers else if (isTRUE(path2)) ap$layers else integer(0),
+    evidence = list(organic_layers = r$yes$layers, organic_thickness_cm = ty,
+                    possible_thickness_cm = tm, max_thickness_cm = max_thk,
+                    saturated = sat, path1_organic = path1, path2_ap = path2),
+    missing = unique(miss), reference = ref)
 }
 
 
-# ---- Folistic Epipedon (KST 13ed, Ch 3, p 13-14) ---------------------
+# ---- Folistic Epipedon (KST 13th ed., p. 13) ------------------------
 
-#' Folistic epipedon (USDA Soil Taxonomy, 13th edition)
+#' Folistic epipedon (USDA Soil Taxonomy, 13th edition, p. 13)
 #'
-#' A freely-drained surface organic horizon. Differs from the histic
-#' epipedon in that it is saturated for less than 30 days per year.
-#' Diagnostic for the Folists suborder of Histosols and the Folistels
-#' great group of Histels.
-#'
-#' KST 13ed required characteristics (Ch. 3, pp 13-14):
-#' \itemize{
-#'   \item Saturated < 30 days/year (and not artificially drained); AND
-#'   \item Organic soil material: 15+ cm thick (with Sphagnum-rich
-#'         exception 20-60 cm) OR Ap with OC >= 8 percent.
-#' }
-#'
+#' A layer saturated for less than 30 days (cumulative) in normal years and
+#' not artificially drained that either consists of organic soil material
+#' 15 cm or more thick (20 cm or more for Sphagnum-rich or very light
+#' material, which the 15 cm path already covers) or is an Ap horizon that,
+#' mixed to 25 cm, has 8 percent organic carbon or more.
+#' v0.9.418: organic soil material as for the histic epipedon (reading L10);
+#' the saturation is the complement of \code{.usda_saturated30()}, so a site
+#' recorded as drained fails and a layer with no saturation record is
+#' undecided. Up to v0.9.417 any O layers summing 15 cm with one measured
+#' organic carbon of 12 percent passed, with no saturation and no Ap path.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_oc_pct Minimum OC for organic soil material (default 12).
+#' @param min_oc_pct Kept for callers; organic soil material is 12 percent.
 #' @param min_thickness_cm Minimum thickness (default 15 cm).
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 13-14.
+#' @references Soil Survey Staff (2022), KST 13th ed., p. 13.
 #' @noRd
 folistic_epipedon_usda <- function(pedon,
                                       min_oc_pct       = 12,
                                       min_thickness_cm = 15) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 13"
   h <- pedon$horizons
   if (nrow(h) == 0L) {
     return(DiagnosticResult$new(
       name = "folistic_epipedon_usda", passed = FALSE, layers = integer(0),
       evidence = list(reason = "empty horizons"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3"
-    ))
+      missing = character(0), reference = ref))
   }
-  # Folistic = O horizons (drained), thickness >= 15 cm with OC >= 12%.
-  o_layers <- which(!is.na(h$designation) & grepl("^O", h$designation))
-  thk_o <- if (length(o_layers) > 0L)
-             sum(pmax(h$bottom_cm[o_layers] - h$top_cm[o_layers], 0),
-                   na.rm = TRUE)
-           else 0
-  oc_o <- if (length(o_layers) > 0L)
-            h$oc_pct[o_layers]
-          else numeric(0)
-  oc_pass <- if (length(oc_o) > 0L)
-               !is.na(oc_o) & oc_o >= min_oc_pct
-             else logical(0)
-  passed <- thk_o >= min_thickness_cm && any(oc_pass)
+  org <- .usda_organic_status(pedon)
+  r <- .usda_organic_surface_run(pedon, org)
+  dry <- .usda_unsaturated30(pedon, org)
+  ty <- r$yes$thickness; tm <- r$may$thickness
+  thick <- if (ty >= min_thickness_cm) TRUE else if (tm < min_thickness_cm) FALSE else NA
+  path1 <- thick & (if (length(r$may$layers)) .all3u(dry[r$may$layers]) else FALSE)
+  ap <- .usda_ap_mixed(pedon, org, 8)
+  path2 <- ap$passed & (if (length(ap$layers)) .all3u(dry[ap$layers]) else FALSE)
+  passed <- path1 | path2
   miss <- character(0)
-  if (length(o_layers) > 0L && all(is.na(oc_o))) miss <- c(miss, "oc_pct")
+  if (is.na(passed)) {
+    if (anyNA(org[r$may$layers]) || is.na(ap$passed)) miss <- c(miss, "oc_pct")
+    if (anyNA(dry[c(r$may$layers, ap$layers)])) miss <- c(miss, "water_saturation_days")
+  }
   DiagnosticResult$new(
     name = "folistic_epipedon_usda", passed = passed,
-    layers = if (passed) o_layers[oc_pass] else integer(0),
-    evidence = list(o_layers = o_layers,
-                      organic_thickness_cm = thk_o,
-                      threshold_cm = min_thickness_cm),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 13-14"
-  )
+    layers = if (isTRUE(path1)) r$yes$layers else if (isTRUE(path2)) ap$layers else integer(0),
+    evidence = list(organic_layers = r$yes$layers, organic_thickness_cm = ty,
+                    possible_thickness_cm = tm, threshold_cm = min_thickness_cm,
+                    under_30_days = dry, path1_organic = path1, path2_ap = path2),
+    missing = unique(miss), reference = ref)
 }
 
 

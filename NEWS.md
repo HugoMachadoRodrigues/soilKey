@@ -1,3 +1,98 @@
+# soilKey 0.9.418
+
+Spodosols, Histosols and Gelisols after the Soil Taxonomy audit (Hugo,
+2026-11-20; audit section 2.2, items S1 to S13, fix A13 of the Andisols
+audit, and readings L5 to L12 as recommended).
+
+* **The spodic horizon is the KST's own** (`spodic_horizon_usda()`, KST 13th
+  ed., pp. 31, 38-39); up to 0.9.417 it was the WRB `spodic()`. Spodic
+  materials need pH 5.9 or less and 0.6 % organic carbon, and either one of
+  the listed moist colours directly under an albic horizon, or a colour of
+  the wider list with pedogenic cementation, 10 % cracked coatings, Al + 1/2
+  Fe (oxalate) of 0.50 with half that or less in an overlying A or E
+  horizon, or an ODOE of 0.25 with half that or less above. The horizon is
+  85 % spodic materials in 2.5 cm or more outside an Ap. A colour, pH,
+  carbon, oxalate extract or ODOE not recorded leaves a layer undecided
+  (ODOE: reading L5); cementation and cracked coatings are field
+  observations, absent when not recorded, and any recorded cementation class
+  counts (L6). The albic horizon is read from albic materials (p. 32) in an
+  E horizon; a dry value under 5 rules it out without the moist colour (L8).
+* **Spodosols order, item C of the key (p. 68)**: the plaggen and
+  argillic-or-kandic-above exclusions and items C1 to C3 (thickness, depth of
+  the upper and lower boundaries, the frigid and cryic cases, a directly
+  overlying albic horizon). Item C.3.d(2), no andic soil properties in 60 %
+  of the upper 60 cm, is read by `.spodosol_no_andic_usda()` when that
+  function exists (the Andisols work brings it); until then by a bound (no
+  andic properties where Al + 1/2 Fe is under 0.4 % or organic carbon is 25
+  % or more), and is otherwise undecided (L7).
+* **Aquods** need, besides aquic conditions within 50 cm, a histic epipedon
+  or aquic conditions in the albic or spodic horizon (p. 311; new
+  `aquod_qualifying_usda()`). **Alorthods** read oxalate iron under 0.10 %
+  alone in 75 % of the thickness of the spodic horizon (p. 317); the
+  Alaquods keep the Al >= 3 Fe alternative. **Humods** let adjoining layers
+  of 6 % carbon make the 10 cm.
+* **Entic subgroups of Spodosols** follow the four KST definitions (Entic
+  Cryaquods, Haplocryods, Alorthods, and the Haplorthods and Fragiorthods,
+  pp. 312-320); `entic_subgroup_usda(rule = )`, and with no rule given (the
+  subgroup lists pass none yet) the rule of the profile's great group.
+* **Dur- great groups of Spodosols** read the cemented horizon in 90 % of
+  each pedon laterally (L9): the recorded share (`duripan_pct`) or a suffix m
+  (95 %); a cemented layer with neither leaves them undecided (new
+  `cemented_horizon_usda()`).
+* **Placic horizon** (p. 30): a recorded thin iron pan, or recorded
+  cementation in a Bsm-like layer; 1 mm or more, and under 25 mm only where
+  it is or touches spodic materials. Up to 0.9.417 it needed a strong or
+  indurated class and was always 0.1 to 2.5 cm.
+* **Spodic subgroups** (Psamments, Inceptisols, Gelisols): all three items
+  (cementation, Al + 1/2 Fe, ODOE), a horizon 5 cm thick, any overlying
+  layer; `psamments = TRUE` adds the Psamments' depth rule (p. 184). Without
+  oxalate or ODOE data the test is undecided (L5), so many Psamments and
+  Inceptisols carry it as an ambiguity.
+* New `haploplaggic_subgroup_usda()` (a plaggen-like surface 25 to 50 cm
+  thick, pp. 17, 313); the subgroup lists still carry `default: false`.
+* **Gelisols** (p. 67): permafrost within 100 cm, or gelic materials (new
+  `gelic_materials_usda()`: cryoturbation or segregated ice) within 100 cm
+  and permafrost within 200 cm; up to 0.9.417 the WRB cryic conditions.
+  **Permafrost** also reads the frozen suffix f, as the WRB does (S10).
+* **Histosols** (pp. 7, 67-68): organic soil material is 12 % organic carbon;
+  without a measurement an O or H designation reads as organic and a
+  measured carbon under 12 % overrides it (L10); 2O1 or 4O1 count. Items a
+  to d of the key, the andic exclusion, and item d's thickness over the
+  control section (L11).
+* **Folists** need fewer than 30 days of saturation and no drainage (p. 199):
+  `water_saturation_days`, a drainage record, an H designation (saturated);
+  otherwise undecided. The drainage class is not read (L12).
+* **Fibrists, Saprists** read the subsurface tier (or the surface and
+  subsurface tiers over a 40 cm mineral layer) with the KST fibre classes
+  (fibric 3/4, sapric under 1/6), then the von Post index, then the suffix
+  i, e, a; Fibrists also exclude sulfuric and sulfidic layers. The Fibric,
+  Hemic and Sapric subgroup helpers read 25 cm below the surface tier in the
+  control section.
+* **Histic epipedon** (p. 14): 20 to 40 cm of organic soil material (60 for
+  moss or very light material) from the surface, or an Ap mixed to 25 cm
+  with 8 % carbon, and in both cases saturation for 30 days or drainage
+  (fix A13: the Ap path had none). **Folistic epipedon** (p. 13): 15 cm of
+  organic soil material or the same Ap, saturated under 30 days and not
+  drained.
+* **Canonical fixtures.** `make_podzol_canonical()` and
+  `make_espodossolo_canonical()` become Entic Haplorthods (a sandy spodic
+  horizon of 7.5YR 3/4: chroma 4 in its upper 2.5 cm); `make_histosol_canonical()`
+  becomes Typic Haplohemists (its drained mire is no Folist) and
+  `make_organossolo_canonical()` Terric Haplohemists (no saturation record;
+  Folists undecided).
+* **ISIS** (357 profiles with a 1999 name): order 201 (unchanged), suborder
+  158, great group 104 to 105, subgroup 48 to 49; 22 of the 974 names
+  change. US017 becomes Typic Aquiturbels (as ISIS); US027, BE003 Typic
+  Durorthods (ortstein m); NO002 Typic Placorthods; MY052 Typic Haplorthods;
+  NL033 (10YR 4.5/4, no spodic colour) and RO011 leave the Spodosols; FI004
+  and NL032 are undecided Spodosols (no moist colour; no albic or andic
+  data) keyed on to Spodic Quartzipsamments; HU018, HU019, GL003, NL049,
+  NL051, NL052 and CO013 become Histosols by their measured organic carbon
+  (CO013 should go undecided with the Andisols' andic test); RU002, GB008,
+  FR010, CL002, NL050 become Spodic Psamments; SY002 becomes Typic Hapludalfs
+  (an undescribed layer under its Ap leaves the histic and folistic
+  epipedons, hence the Aridisols' ochric test, undecided).
+
 # soilKey 0.9.417
 
 The Andisols and the andic tests of the USDA key, after the Soil Taxonomy

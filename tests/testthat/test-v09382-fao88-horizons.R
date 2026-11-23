@@ -712,19 +712,23 @@ test_that("the review of 2026-11-09: the spodic B (defects 6 and 11)", {
   p <- .p88(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120),
             clay_pct = c(5, 6, 6, 4), silt_pct = 5, sand_pct = c(90, 89, 89, 91), oc_pct = c(2, 0.5, 0.3, 0.1),
             ph_h2o = c(4.5, 4.6, 4.8, 5))
+  # v0.9.418: the KST spodic horizon (organic carbon under 0.6 % below the A,
+  # no horizon above the A to compare with) rules it out, as a stand-in
   r <- spodic_b_fao88(p)
-  expect_true(is.na(r$passed))
-  expect_length(r$evidence$stand_in, 0L); expect_false(r$evidence$lower_grade)
+  expect_false(r$passed)
+  expect_identical(r$evidence$stand_in, "spodic_horizon_usda"); expect_true(r$evidence$lower_grade)
   # a stand-in that rules the chemistry out leaves the undecided item-2 unit
   # (pellets in a layer of unknown clay) undecided, and is recorded
   p <- .p88(top_cm = c(0, 10, 30, 60), bottom_cm = c(10, 30, 60, 120), designation = c("A", "E", "Bhs", "C"),
             clay_pct = c(5, 3, NA, 4), silt_pct = c(5, 5, NA, 5), sand_pct = c(90, 92, NA, 91),
             oc_pct = c(2, 0.3, 1, 0.1), spodic_pellets = c(NA, NA, TRUE, NA), ph_h2o = c(4.5, 4.6, 4.8, 5),
             al_ox_pct = 0.05, fe_ox_pct = 0.05)
-  expect_false(spodic_horizon_usda(p)$passed)
+  # v0.9.418: the KST spodic horizon leaves it undecided (no moist colour:
+  # the colour path under the albic E is open), so the WRB spodic stands in
+  expect_true(is.na(spodic_horizon_usda(p)$passed))
   r <- spodic_b_fao88(p)
   expect_true(is.na(r$passed))
-  expect_identical(r$evidence$stand_in, "spodic_horizon_usda"); expect_true(r$evidence$lower_grade)
+  expect_identical(r$evidence$stand_in, "spodic"); expect_true(r$evidence$lower_grade)
 })
 
 test_that("the readings soilKey adds are recorded for Hugo in data-raw/fao_readings.yaml", {

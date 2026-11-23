@@ -15,22 +15,360 @@
 # =============================================================
 
 
-# ---- Spodosols Order qualifier --------------------------------------
+# ---- Shared readings (v0.9.418) -------------------------------------
 
-#' Spodosols Order qualifier (USDA, KST 13ed)
+# Three-valued helpers: TRUE / FALSE / NA vectors combine with R's & and |,
+# which follow Kleene's logic (TRUE | NA is TRUE, FALSE & NA is FALSE).
+# "Any" of a three-valued vector: TRUE if one is TRUE, FALSE if all are FALSE.
+.any3u <- function(x) {
+  if (any(x %in% TRUE)) TRUE else if (length(x) == 0L || all(x %in% FALSE)) FALSE else NA
+}
+.all3u <- function(x) {
+  if (any(x %in% FALSE)) FALSE else if (all(x %in% TRUE)) TRUE else NA
+}
+
+# v0.9.418: organic soil material, layer by layer (KST 13th ed., p. 7: 12 %
+# organic carbon or more). A measured organic carbon decides; without one an
+# O or H master designation is the surveyor's record of organic material and
+# any other master designation of mineral material (reading L10). No
+# designation and no organic carbon: undecided.
+.usda_organic_status <- function(pedon) {
+  h <- pedon$horizons
+  d <- .desg_master(h$designation, site = pedon$site)
+  des <- ifelse(is.na(d) | !nzchar(trimws(d)), NA, grepl("^[OH]", d))
+  oc <- suppressWarnings(as.numeric(h$oc_pct))
+  ifelse(!is.na(oc), oc >= 12, des)
+}
+
+# The mineral soil surface (KST 13th ed., p. 7): the top of the first layer,
+# from the top, that is not organic soil material.
+.usda_mineral_surface <- function(pedon, org = .usda_organic_status(pedon)) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) return(0)
+  ord <- order(h$top_cm)
+  k <- ord[!(org[ord] %in% TRUE)]
+  if (length(k)) h$top_cm[k[1L]] else max(h$bottom_cm, na.rm = TRUE)
+}
+
+# Hue tests of the spodic colours (KST 13th ed., p. 38): TRUE / FALSE / NA.
+.usda_hue_parts <- function(hue) {
+  x <- toupper(gsub("\\s+", "", as.character(hue)))
+  num <- suppressWarnings(as.numeric(sub("^([0-9.]+).*$", "\\1", x)))
+  page <- sub("^[0-9.]+", "", x)
+  list(x = x, num = num, page = page)
+}
+.usda_hue_5yr_or_redder <- function(hue) {
+  p <- .usda_hue_parts(hue)
+  ifelse(is.na(hue), NA,
+         ifelse(p$page == "R", TRUE,
+                ifelse(p$page == "YR", !is.na(p$num) & p$num <= 5, FALSE)))
+}
+.usda_hue_is <- function(hue, what) {
+  p <- .usda_hue_parts(hue)
+  ifelse(is.na(hue), NA, p$x %in% what)
+}
+.usda_hue_neutral <- function(hue) {
+  p <- .usda_hue_parts(hue)
+  ifelse(is.na(hue), NA, grepl("^N", p$x))
+}
+
+# Loamy fine sand or coarser (the sands and loamy sands of the KST, p. 68):
+# silt + 2 x clay < 30 from the measured fractions (silt as 100 - clay - sand
+# where only sand is given), else the field texture class
+# (texture_class_usda); NA where neither decides.
+.usda_lfs_or_coarser <- function(h) {
+  n <- nrow(h)
+  out <- rep(NA, n)
+  for (i in seq_len(n)) {
+    ft <- .field_texture_fallback(h, i)
+    if (!is.null(ft)) { out[i] <- ft$lfs_or_coarser; next }
+    cl <- h$clay_pct[i]; si <- h$silt_pct[i]; sd <- h$sand_pct[i]
+    if (is.na(si) && !is.na(cl) && !is.na(sd)) si <- 100 - cl - sd
+    if (!is.na(cl) && !is.na(si)) out[i] <- si + 2 * cl < 30
+    else if (!is.na(cl) && cl >= 15) out[i] <- FALSE
+  }
+  out
+}
+
+# Pedogenic cementation recorded in the field (reading L6: weakly cemented
+# counts). A field observation: not recorded, not cemented.
+.USDA_CEMENTED <- c("extremely weakly", "very weakly", "weakly", "moderately",
+                    "strongly", "very strongly", "indurated")
+.usda_cemented <- function(h) {
+  cem <- tolower(trimws(as.character(h$cementation_class)))
+  pan <- tolower(trimws(as.character(h$pan_type %||% rep(NA, nrow(h)))))
+  (!is.na(cem) & cem %in% .USDA_CEMENTED) |
+    (!is.na(pan) & pan %in% c("ortstein", "duripan", "ironpan", "placic", "organic pan"))
+}
+
+# The share (%) of each pedon in which a cemented layer is cemented (reading
+# L9, "in 90 percent or more of each pedon", read laterally): the recorded
+# share (duripan_pct, which the ISIS reader fills from the continuity of a
+# duripan), else 95 for a designation with the suffix m (continuous or nearly
+# continuous cementation), else unknown (NA).
+.usda_cemented_share <- function(pedon) {
+  h <- pedon$horizons
+  d <- .desg_master(h$designation, site = pedon$site)
+  suffix <- sub("^[A-Z]+", "", ifelse(is.na(d), "", d))
+  share <- suppressWarnings(as.numeric(h$duripan_pct))
+  share[!is.na(share) & share <= 0] <- NA_real_
+  m <- is.na(share) & grepl("m", suffix)
+  share[m] <- 95
+  share
+}
+
+
+# ---- Spodic horizon (KST 13th ed., pp. 31, 38-39) ---------------------
+
+#' Spodic horizon (USDA, KST 13th ed.)
 #'
-#' Pass when the profile has a spodic horizon (illuvial Fe/Al/OM
-#' accumulation). Implementation delegates to the WRB \code{spodic}
-#' diagnostic.
-#'
+#' v0.9.418: the Keys to Soil Taxonomy, 13th edition, read as written; up to
+#' v0.9.417 the WRB \code{spodic()} decided. A spodic horizon (p. 31) has 85
+#' percent or more spodic materials in a layer 2.5 cm or more thick that is
+#' not part of an Ap horizon. Spodic materials (pp. 38-39) are mineral soil
+#' materials with:
+#' \enumerate{
+#'   \item a pH (water) of 5.9 or less and 0.6 percent organic carbon or
+#'     more; and
+#'   \item either (a) directly under an albic horizon, a moist colour of hue
+#'     5YR or redder, of 7.5YR with value 5 or less and chroma 4 or less, of
+#'     10YR or N with value and chroma 2 or less, or 10YR 3/1; or (b) one of
+#'     those colours, or 7.5YR with value 5 or less and chroma 5 or 6, and one
+#'     of: pedogenic cementation (any recorded cementation class, reading L6),
+#'     10 percent or more cracked coatings on sand grains, Al + 1/2 Fe
+#'     (oxalate) of 0.50 or more and half that or less in an overlying A or E
+#'     horizon (the epipedon or albic horizon), or an ODOE of 0.25 or more and
+#'     half that or less in an overlying A or E horizon.
+#' }
+#' Missing data: a colour, pH, organic carbon, oxalate extract or ODOE not
+#' recorded leaves the layer undecided (reading L5 for ODOE), and the result
+#' is \code{NA} when an undecided layer could make the horizon; cementation
+#' and cracked coatings are field observations, absent when not recorded. The
+#' albic horizon is read from albic materials (p. 32) in an E horizon; a dry
+#' value that rules out albic materials decides even without the moist colour
+#' (reading L8: the moist value is never higher than the dry one). Layers of
+#' an argillic or kandic horizon are not excluded here.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @return A \code{\link{DiagnosticResult}}.
-#' @references Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 64-67.
+#' @return A \code{\link{DiagnosticResult}}: \code{layers} the layers of the
+#'   spodic horizon, \code{evidence$maybe_layers} the undecided ones and
+#'   \code{evidence$table} the reading of every layer.
 #' @noRd
 spodic_horizon_usda <- function(pedon) {
-  res <- spodic(pedon)
-  res$name <- "spodic_horizon_usda"
-  res
+  .memo(pedon, "spodic_horizon_usda", list(),
+        .spodic_horizon_usda_uncached(pedon = pedon))
+}
+
+# The albic materials of each layer (KST 13th ed., pp. 31-32), TRUE / FALSE /
+# NA, and the albic horizon (an eluvial E horizon of albic materials).
+.usda_albic_status <- function(pedon, org = .usda_organic_status(pedon)) {
+  h <- pedon$horizons
+  mv <- suppressWarnings(as.numeric(h$munsell_value_moist))
+  dv <- suppressWarnings(as.numeric(h$munsell_value_dry))
+  mc <- suppressWarnings(as.numeric(h$munsell_chroma_moist))
+  dc <- suppressWarnings(as.numeric(h$munsell_chroma_dry))
+  ch <- ifelse(is.na(mc), dc, mc)
+  mat <- (ch <= 2 & ((mv == 3 & dv >= 6) | (mv >= 4 & dv >= 5))) |
+         (ch <= 3 & (mv >= 6 | dv >= 7))
+  # L8: the moist value is at most the dry value; a dry value under 5 rules
+  # albic materials out when the moist value is not recorded
+  mat[is.na(mat) & is.na(mv) & !is.na(dv) & dv < 5] <- FALSE
+  pct <- suppressWarnings(as.numeric(h$albic_materials_pct %||% rep(NA, nrow(h))))
+  mat[!is.na(pct) & pct < 85] <- FALSE
+  d <- .desg_master(h$designation, site = pedon$site)
+  eluv <- ifelse(is.na(d) | !nzchar(trimws(d)), NA, grepl("^E", d))
+  hz <- mat & eluv & !(org %in% TRUE)
+  hz[org %in% TRUE] <- FALSE
+  list(materials = mat, horizon = hz)
+}
+
+.spodic_horizon_usda_uncached <- function(pedon) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 31 (spodic horizon) and pp. 38-39 (spodic materials)"
+  h <- pedon$horizons
+  n <- nrow(h)
+  if (n == 0L) {
+    return(DiagnosticResult$new(name = "spodic_horizon_usda", passed = FALSE,
+                                layers = integer(0),
+                                evidence = list(reason = "no horizons"),
+                                missing = character(0), reference = ref))
+  }
+  org <- .usda_organic_status(pedon)
+  alb <- .usda_albic_status(pedon, org)
+  d <- .desg_master(h$designation, site = pedon$site)
+  d0 <- ifelse(is.na(d), "", d)
+  num <- function(x) suppressWarnings(as.numeric(x))
+  ph <- num(h$ph_h2o); oc <- num(h$oc_pct)
+  hue <- h$munsell_hue_moist
+  v <- num(h$munsell_value_moist); cr <- num(h$munsell_chroma_moist)
+  chem <- ph <= 5.9 & oc >= 0.6
+  h10 <- .usda_hue_is(hue, "10YR"); h75 <- .usda_hue_is(hue, "7.5YR")
+  colA <- .usda_hue_5yr_or_redder(hue) | (h75 & v <= 5 & cr <= 4) |
+          ((h10 | .usda_hue_neutral(hue)) & v <= 2 & cr <= 2) |
+          (h10 & v == 3 & cr == 1)
+  colB <- colA | (h75 & v <= 5 & cr >= 5 & cr <= 6)
+  cem <- .usda_cemented(h)
+  share <- .usda_cemented_share(pedon)
+  cem50 <- cem & (is.na(share) | share >= 50)
+  ccp <- num(h$cracked_coatings_pct %||% rep(NA, n))
+  cracked <- !is.na(ccp) & ccp >= 10
+  alfe <- num(h$al_ox_pct) + 0.5 * num(h$fe_ox_pct)
+  odoe <- num(h$odoe %||% rep(NA, n))
+  ord <- order(h$top_cm)
+  pos <- integer(n); pos[ord] <- seq_len(n)
+  mineral <- !(org %in% TRUE)
+  over_ae <- grepl("^[AE]", d0) | (alb$horizon %in% TRUE)
+  # an overlying horizon with half the value or less (items b(3), b(4))
+  halved <- function(val, i, min_val) {
+    above <- ord[seq_len(pos[i] - 1L)]
+    above <- above[mineral[above] & over_ae[above]]
+    if (!length(above)) return(FALSE)
+    if (is.na(val[i])) return(NA)
+    if (val[i] < min_val) return(FALSE)
+    .any3u(val[above] <= val[i] / 2)
+  }
+  ox <- vapply(seq_len(n), function(i) halved(alfe, i, 0.50), NA)
+  od <- vapply(seq_len(n), function(i) halved(odoe, i, 0.25), NA)
+  # item a: directly under an albic horizon (the next mineral layer above)
+  under_albic <- vapply(seq_len(n), function(i) {
+    above <- ord[seq_len(pos[i] - 1L)]
+    above <- above[mineral[above]]
+    if (!length(above)) return(FALSE)
+    alb$horizon[above[length(above)]]
+  }, NA)
+  pa <- under_albic & colA
+  pb <- colB & (cem50 | cracked | ox | od)
+  spm <- chem & (pa | pb)
+  spm[org %in% TRUE] <- FALSE
+  smp <- num(h$spodic_materials_pct %||% rep(NA, n))
+  spm85 <- spm
+  spm85[!is.na(smp) & smp < 85] <- FALSE
+  ap <- grepl("^Ap", d0)
+  # A layer 2.5 cm or more thick, not part of an Ap horizon: adjoining layers
+  # count together.
+  thk <- num(h$bottom_cm) - num(h$top_cm)
+  in_run <- function(ok) {
+    res <- rep(FALSE, n); run <- integer(0); bot <- NA_real_
+    flush <- function(run) {
+      if (length(run) && sum(thk[run], na.rm = TRUE) >= 2.5) res[run] <<- TRUE
+    }
+    for (i in ord) {
+      if (ok[i]) {
+        if (length(run) && !is.na(bot) && abs(h$top_cm[i] - bot) > 1e-6) { flush(run); run <- integer(0) }
+        run <- c(run, i); bot <- h$bottom_cm[i]
+      } else { flush(run); run <- integer(0) }
+    }
+    flush(run)
+    res
+  }
+  yes <- in_run(spm85 %in% TRUE & !ap)
+  may <- in_run(!(spm85 %in% FALSE) & !ap)
+  layer <- ifelse(yes, TRUE, ifelse(may, NA, FALSE))
+  passed <- .any3u(layer)
+  sure <- ord[ord %in% which(layer %in% TRUE)]
+  maybe <- ord[ord %in% which(is.na(layer))]
+  miss <- character(0)
+  if (is.na(passed)) {
+    for (i in maybe) {
+      if (is.na(chem[i])) miss <- c(miss, if (is.na(ph[i])) "ph_h2o", if (is.na(oc[i])) "oc_pct")
+      if (is.na(colB[i]) || is.na(colA[i]))
+        miss <- c(miss, if (is.na(hue[i])) "munsell_hue_moist",
+                  if (is.na(v[i])) "munsell_value_moist", if (is.na(cr[i])) "munsell_chroma_moist")
+      if (is.na(ox[i])) miss <- c(miss, "al_ox_pct", "fe_ox_pct")
+      if (is.na(od[i])) miss <- c(miss, "odoe")
+      if (is.na(under_albic[i])) miss <- c(miss, "munsell_value_dry")
+    }
+  }
+  tab <- data.frame(layer = seq_len(n), designation = h$designation,
+                    top_cm = h$top_cm, bottom_cm = h$bottom_cm,
+                    organic = org, albic = alb$horizon, chemistry = chem,
+                    colour_a = colA, colour_b = colB, under_albic = under_albic,
+                    cemented = cem50, cracked_coatings = cracked,
+                    oxalate = ox, odoe = od, spodic_materials = spm,
+                    spodic_horizon = layer, stringsAsFactors = FALSE)
+  DiagnosticResult$new(
+    name = "spodic_horizon_usda", passed = passed, layers = sure,
+    evidence = list(maybe_layers = maybe, table = tab,
+                    spodic_materials = spm85, albic_horizon = alb$horizon,
+                    organic = org, alfe = alfe),
+    missing = unique(miss), reference = ref)
+}
+
+# The layers the great-group and subgroup tests read: the spodic horizon,
+# or, when it is undecided, its undecided layers (a result read on them is
+# at best undecided).
+.spodic_layers_for_tests <- function(pedon) {
+  sp <- spodic_horizon_usda(pedon)
+  if (isTRUE(sp$passed)) return(list(layers = sp$layers, sure = TRUE, sp = sp))
+  if (is.na(sp$passed)) return(list(layers = sp$evidence$maybe_layers, sure = FALSE, sp = sp))
+  list(layers = integer(0), sure = TRUE, sp = sp)
+}
+
+# A share of a horizon's thickness: TRUE when the layers that pass make
+# `min_share` or more of it, FALSE when those that pass or are undecided make
+# less, NA otherwise.
+.share3 <- function(ok, w, min_share) {
+  tot <- sum(w, na.rm = TRUE)
+  if (tot <= 0) return(FALSE)
+  yes <- sum(w[ok %in% TRUE], na.rm = TRUE) / tot
+  may <- sum(w[!(ok %in% FALSE)], na.rm = TRUE) / tot
+  if (yes >= min_share - 1e-9) TRUE else if (may < min_share - 1e-9) FALSE else NA
+}
+
+
+# ---- Plaggen-like surface (KST 13th ed., p. 17) ----------------------
+
+# v0.9.418: a surface horizon of mineral soil material with the plaggen
+# epipedon's colour (value 4 or less moist, 5 or less dry, chroma 2 or less)
+# and organic carbon (0.6 % or more), anthropogenic evidence (artefacts, or a
+# plaggen designation such as Apl), and a thickness in [min_cm, max_cm).
+# Used for the plaggen exclusion of the Spodosols (p. 68, min 50) and the
+# Haploplaggic subgroups (25 to 50 cm). Artefacts and the designation are
+# field observations (not recorded: absent); colour and carbon not recorded
+# leave it undecided.
+.usda_plaggen_surface <- function(pedon, min_cm = 50, max_cm = Inf) {
+  h <- pedon$horizons
+  if (nrow(h) == 0L) return(FALSE)
+  org <- .usda_organic_status(pedon)
+  ms <- .usda_mineral_surface(pedon, org)
+  ord <- order(h$top_cm)
+  ord <- ord[!(org[ord] %in% TRUE) & h$top_cm[ord] >= ms - 1e-6]
+  num <- function(x) suppressWarnings(as.numeric(x))
+  art <- num(h$artefacts_pct)
+  dsg <- ifelse(is.na(h$designation), "", h$designation)
+  anthro <- (!is.na(art) & art > 0) | grepl("^[0-9]*Apl|plagg", dsg, ignore.case = TRUE)
+  col <- num(h$munsell_value_moist) <= 4 & num(h$munsell_value_dry) <= 5 &
+         num(h$munsell_chroma_moist) <= 2
+  ok <- anthro & col & num(h$oc_pct) >= 0.6
+  run <- integer(0)
+  for (i in ord) {
+    if (ok[i] %in% FALSE) break
+    run <- c(run, i)
+  }
+  if (!length(run) || !any(anthro[run])) return(FALSE)
+  thk <- max(h$bottom_cm[run]) - ms
+  sure <- run[cumsum(!(ok[run] %in% TRUE)) == 0]
+  thk_sure <- if (length(sure)) max(h$bottom_cm[sure]) - ms else 0
+  if (thk_sure >= min_cm && thk_sure < max_cm && length(sure) == length(run)) return(TRUE)
+  if (thk < min_cm) return(FALSE)
+  if (thk_sure >= max_cm) return(FALSE)
+  NA
+}
+
+#' Haploplaggic subgroups (KST 13th ed., pp. 313-317, 184)
+#'
+#' v0.9.418: a surface horizon between 25 and 50 cm thick that meets all the
+#' requirements of a plaggen epipedon except thickness (see
+#' \code{.usda_plaggen_surface}). The subgroup lists call it in a later
+#' release.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @noRd
+haploplaggic_subgroup_usda <- function(pedon) {
+  p <- .usda_plaggen_surface(pedon, min_cm = 25, max_cm = 50)
+  DiagnosticResult$new(
+    name = "haploplaggic_subgroup_usda", passed = p, layers = integer(0),
+    evidence = list(),
+    missing = if (is.na(p)) c("munsell_value_moist", "munsell_value_dry",
+                              "munsell_chroma_moist", "oc_pct") else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 17 (plaggen epipedon) and p. 313")
 }
 
 
@@ -54,36 +392,65 @@ albic_horizon_usda <- function(pedon) {
 
 # ---- Placic horizon helper ------------------------------------------
 
-#' Placic horizon (USDA, KST 13ed Ch 3, pp 47-48)
+#' Placic horizon (USDA, KST 13th ed., p. 30)
 #'
-#' Pass when a thin (1-25 mm) Fe/Mn-cemented horizon is present.
-#' Detected via designation containing 'm' (cemented) AND
-#' \code{cementation_class} in \{strongly, indurated\} AND thickness
-#' between 1 mm and 25 mm.
-#'
+#' v0.9.418: the text of p. 30. A placic horizon is pedogenically cemented
+#' or indurated with iron, or iron and manganese, and organic matter; it is
+#' laterally continuous; it is 1 mm or more thick and, where associated with
+#' spodic materials, less than 25 mm thick. Read here as a recorded thin iron
+#' pan (pan_type), or a recorded cementation (any class, reading L6) in a
+#' layer whose designation carries the suffix m together with s (or the older
+#' ir), as in Bsm: cemented by iron. A layer whose top is within
+#' \code{max_top_cm} of the mineral soil surface, 0.1 cm thick or more, and
+#' less than 2.5 cm where it is or touches a layer of spodic materials. Up to
+#' v0.9.417 it took any suffix m with a strong or indurated class, and always
+#' 0.1 to 2.5 cm. Cementation and pans are field observations: not recorded,
+#' absent.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Default 100.
+#' @param max_top_cm Default 100 (from the mineral soil surface).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 placic_horizon_usda <- function(pedon, max_top_cm = 100) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 30"
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm &
-                  !is.na(h$designation) &
-                  grepl("m", h$designation) &
-                  !is.na(h$cementation_class) &
-                  tolower(h$cementation_class) %in%
-                    c("strongly", "indurated"))
-  thk <- if (length(cand) > 0L) h$bottom_cm[cand] - h$top_cm[cand]
-         else numeric(0)
-  # placic is THIN: 0.1-2.5 cm (1-25 mm)
-  passing <- cand[!is.na(thk) & thk >= 0.1 & thk <= 2.5]
-  passed <- length(passing) > 0L
+  n <- nrow(h)
+  if (n == 0L) {
+    return(DiagnosticResult$new(name = "placic_horizon_usda", passed = FALSE,
+                                layers = integer(0), evidence = list(),
+                                missing = character(0), reference = ref))
+  }
+  org <- .usda_organic_status(pedon)
+  ms <- .usda_mineral_surface(pedon, org)
+  d <- .desg_master(h$designation, site = pedon$site)
+  suffix <- sub("^[A-Z]+", "", ifelse(is.na(d), "", d))
+  pan <- tolower(trimws(as.character(h$pan_type %||% rep(NA, n))))
+  thin_pan <- !is.na(pan) & pan %in% c("ironpan", "thin ironpan", "placic")
+  iron_m <- grepl("m", suffix) & grepl("s|ir", suffix)
+  cand <- which(!is.na(h$top_cm) & h$top_cm - ms < max_top_cm &
+                  (thin_pan | (.usda_cemented(h) & iron_m)))
+  thk <- h$bottom_cm[cand] - h$top_cm[cand]
+  spm <- .spodic_materials_any(pedon)
+  near_spodic <- vapply(cand, function(i) {
+    adj <- which(abs(h$bottom_cm - h$top_cm[i]) < 1e-6 |
+                   abs(h$top_cm - h$bottom_cm[i]) < 1e-6)
+    any(spm[c(i, adj)] %in% TRUE)
+  }, NA)
+  ok <- !is.na(thk) & thk >= 0.1 & (!near_spodic | thk < 2.5)
+  passing <- cand[ok]
   DiagnosticResult$new(
-    name = "placic_horizon_usda", passed = passed, layers = passing,
-    evidence = list(thicknesses_cm = thk, max_top_cm = max_top_cm),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 47-48"
-  )
+    name = "placic_horizon_usda", passed = length(passing) > 0L,
+    layers = passing,
+    evidence = list(candidates = cand, thicknesses_cm = thk,
+                    next_to_spodic_materials = near_spodic,
+                    max_top_cm = max_top_cm),
+    missing = character(0), reference = ref)
+}
+
+# Spodic materials layer by layer (TRUE / FALSE / NA), from the reading of
+# the spodic horizon.
+.spodic_materials_any <- function(pedon) {
+  sp <- spodic_horizon_usda(pedon)
+  sp$evidence$spodic_materials %||% rep(FALSE, nrow(pedon$horizons))
 }
 
 
@@ -211,6 +578,44 @@ duric_subgroup_usda <- function(pedon, max_top_cm = 100) {
     missing = miss,
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
   )
+}
+
+
+# ---- Cemented horizon in 90 % of each pedon (Spodosols) -------------
+
+#' Pedogenically cemented horizon in a share of each pedon (Spodosols)
+#'
+#' v0.9.418: the Duraquods, Duricryods, Durihumods and Durorthods (KST 13th
+#' ed., pp. 311, 313, 316) have, in 90 percent or more of each pedon, a
+#' pedogenically cemented horizon (extremely weakly coherent or more
+#' coherent) within 100 cm of the mineral soil surface. "Of each pedon" is
+#' read laterally (reading L9): the share of the pedon the cemented layer
+#' covers, from the recorded share (duripan_pct, filled by the ISIS reader
+#' from the continuity of a duripan) or the suffix m (continuous cementation,
+#' 95 %). Any recorded cementation class counts (reading L6). A cemented
+#' layer whose share is not recorded leaves the test undecided (NA);
+#' cementation not recorded is absent. \code{duric_subgroup_usda()} (used by
+#' other orders) still reads 90 % of the thickness.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_top_cm Default 100 (from the mineral soil surface).
+#' @param min_share Default 90 (percent of the pedon).
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+cemented_horizon_usda <- function(pedon, max_top_cm = 100, min_share = 90) {
+  h <- pedon$horizons
+  org <- .usda_organic_status(pedon)
+  ms <- .usda_mineral_surface(pedon, org)
+  cand <- which(!is.na(h$top_cm) & h$top_cm - ms < max_top_cm & .usda_cemented(h))
+  share <- .usda_cemented_share(pedon)[cand]
+  ok <- ifelse(is.na(share), NA, share >= min_share)
+  passed <- .any3u(ok)
+  DiagnosticResult$new(
+    name = "cemented_horizon_usda", passed = passed,
+    layers = cand[ok %in% TRUE],
+    evidence = list(cemented_layers = cand, share_pct = share,
+                    min_share = min_share, max_top_cm = max_top_cm),
+    missing = if (is.na(passed)) "duripan_pct" else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., pp. 311, 313, 316 (in 90 percent or more of each pedon)")
 }
 
 
@@ -503,20 +908,110 @@ grossarenic_subgroup_usda <- function(pedon) {
 
 # ---- Entic / Aeric Subgroup helpers --------------------------------
 
-#' Entic Subgroup helper (Spodosols)
+#' Entic Subgroup helper (Spodosols, KST 13th ed., pp. 312-320)
 #'
-#' Pass when the spodic horizon is "weakly developed":
-#' \itemize{
-#'   \item Less than 1.2\% organic carbon in the upper 10 cm of
-#'         spodic; OR
-#'   \item Spodic horizon < 10 cm thick.
+#' v0.9.418: the KST has four Entic definitions in the Spodosols, chosen by
+#' \code{rule}:
+#' \describe{
+#'   \item{\code{"cryaquod"}}{Entic Cryaquods (p. 312): a spodic horizon less
+#'     than 10 cm thick (in 50 percent or more of each pedon).}
+#'   \item{\code{"haplocryod"}}{Entic Haplocryods (p. 314): less than 1.2
+#'     percent organic carbon in the upper 10 cm of the spodic horizon.}
+#'   \item{\code{"alorthod"}}{Entic Alorthods and Entic Grossarenic Alorthods
+#'     (p. 317): less than 3.0 percent organic carbon in the upper 2 cm of
+#'     the spodic horizon (in 10 percent or more of each pedon; the profile
+#'     described is taken as that part).}
+#'   \item{\code{"orthod"}}{Entic Fragiorthods, Entic Lithic, Aquentic and
+#'     Entic Haplorthods (pp. 318-320): a spodic horizon of very fine sand,
+#'     loamy very fine sand or finer, 10 cm thick or less, with less than 1.2
+#'     percent organic carbon (weighted average) and a moist value or chroma
+#'     of 4 or more within its upper 7.5 cm; or a spodic horizon of loamy fine
+#'     sand or coarser with a moist value or chroma of 4 or more in its upper
+#'     2.5 cm.}
 #' }
-#'
+#' With \code{rule = NULL} (the subgroup lists of 0.9.418 pass none) the rule
+#' of the great group is taken from the profile when it has a spodic horizon
+#' (or one that is undecided): a cryic regime with Aquods conditions is
+#' "cryaquod", a cryic regime "haplocryod", a fragipan "orthod", less than
+#' 0.10 percent oxalate iron in the spodic horizon "alorthod", and otherwise
+#' "orthod". A profile with no spodic horizon (the Entic subgroups of other
+#' orders) keeps the reading of v0.9.417: a spodic-like horizon under 10 cm
+#' thick or under 1.2 percent organic carbon at its top. Up to v0.9.417 that
+#' reading served every Spodosol.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param rule \code{NULL} or one of the four rules above.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-entic_subgroup_usda <- function(pedon) {
-  sp <- spodic_horizon_usda(pedon)
+entic_subgroup_usda <- function(pedon, rule = NULL) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., pp. 312-320 (Entic subgroups of Spodosols)"
+  sl <- .spodic_layers_for_tests(pedon)
+  if (is.null(rule)) {
+    if (isFALSE(sl$sp$passed)) return(.entic_subgroup_legacy(pedon))
+    rule <- .entic_rule_usda(pedon)
+  }
+  rule <- match.arg(rule, c("cryaquod", "haplocryod", "alorthod", "orthod"))
+  h <- pedon$horizons
+  L <- sl$layers
+  if (!length(L)) {
+    return(DiagnosticResult$new(name = "entic_subgroup_usda", passed = FALSE,
+                                layers = integer(0),
+                                evidence = list(rule = rule, reason = "no spodic horizon"),
+                                missing = character(0), reference = ref))
+  }
+  L <- L[order(h$top_cm[L])]
+  top <- h$top_cm[L[1L]]
+  thk <- sum(h$bottom_cm[L] - h$top_cm[L], na.rm = TRUE)
+  oc <- suppressWarnings(as.numeric(h$oc_pct))
+  v <- suppressWarnings(as.numeric(h$munsell_value_moist))
+  cr <- suppressWarnings(as.numeric(h$munsell_chroma_moist))
+  # weighted organic carbon of the spodic horizon within `depth` cm of its top
+  oc_upper <- function(depth) {
+    w <- pmax(pmin(h$bottom_cm[L], top + depth) - h$top_cm[L], 0)
+    k <- L[w > 0]; w <- w[w > 0]
+    if (anyNA(oc[k])) return(NA_real_)
+    sum(oc[k] * w) / sum(w)
+  }
+  upper_layers <- function(depth) L[h$top_cm[L] < top + depth]
+  bright <- function(k) .all3u(v[k] >= 4 | cr[k] >= 4)
+  passed <- switch(rule,
+    cryaquod = thk < 10,
+    haplocryod = { x <- oc_upper(10); if (is.na(x)) NA else x < 1.2 },
+    alorthod = { x <- oc_upper(2); if (is.na(x)) NA else x < 3.0 },
+    orthod = {
+      sandy <- .usda_lfs_or_coarser(h)[L[1L]]
+      fine_case <- {
+        x <- oc_upper(thk)
+        (thk <= 10) & (if (is.na(x)) NA else x < 1.2) & bright(upper_layers(7.5))
+      }
+      coarse_case <- bright(upper_layers(2.5))
+      if (is.na(sandy)) {
+        if (isTRUE(fine_case) && isTRUE(coarse_case)) TRUE
+        else if (isFALSE(fine_case) && isFALSE(coarse_case)) FALSE else NA
+      } else if (sandy) coarse_case else fine_case
+    })
+  if (!sl$sure && isTRUE(passed)) passed <- NA
+  DiagnosticResult$new(
+    name = "entic_subgroup_usda", passed = passed, layers = L,
+    evidence = list(rule = rule, spodic_thickness_cm = thk, spodic_top_cm = top),
+    missing = if (is.na(passed)) c("oc_pct", "munsell_value_moist", "munsell_chroma_moist") else character(0),
+    reference = ref)
+}
+
+# The Spodosol great group whose Entic definition applies (see
+# entic_subgroup_usda()).
+.entic_rule_usda <- function(pedon) {
+  if (isTRUE(soil_temperature_regime_usda(pedon, "cryic")$passed))
+    return(if (isTRUE(aquod_qualifying_usda(pedon)$passed)) "cryaquod" else "haplocryod")
+  if (isTRUE(fragipan_usda(pedon)$passed)) return("orthod")
+  if (isTRUE(al_rich_spodic_usda(pedon, fe_only = TRUE)$passed)) return("alorthod")
+  "orthod"
+}
+
+# The reading of v0.9.417 (WRB spodic horizon under 10 cm thick, or under
+# 1.2 % organic carbon at its top), kept for the Entic subgroups of other
+# orders, whose lists call this helper.
+.entic_subgroup_legacy <- function(pedon) {
+  sp <- spodic(pedon)
   h <- pedon$horizons
   if (!isTRUE(sp$passed) || length(sp$layers) == 0L) {
     return(DiagnosticResult$new(
@@ -526,22 +1021,16 @@ entic_subgroup_usda <- function(pedon) {
       reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
     ))
   }
-  # Thickness of spodic horizon
-  thk <- sum(pmax(h$bottom_cm[sp$layers] - h$top_cm[sp$layers], 0),
-                na.rm = TRUE)
-  # OC in upper 10 cm of spodic
-  ord <- order(h$top_cm[sp$layers])
-  upper <- sp$layers[ord][1]
+  thk <- sum(pmax(h$bottom_cm[sp$layers] - h$top_cm[sp$layers], 0), na.rm = TRUE)
+  upper <- sp$layers[order(h$top_cm[sp$layers])][1]
   oc_upper <- h$oc_pct[upper]
   thin <- thk < 10
   oc_low <- !is.na(oc_upper) && oc_upper < 1.2
   passed <- isTRUE(thin) || isTRUE(oc_low)
   DiagnosticResult$new(
-    name = "entic_subgroup_usda", passed = passed,
-    layers = sp$layers,
-    evidence = list(spodic_thickness_cm = thk,
-                      oc_upper_pct = oc_upper,
-                      thin = thin, oc_low = oc_low),
+    name = "entic_subgroup_usda", passed = passed, layers = sp$layers,
+    evidence = list(spodic_thickness_cm = thk, oc_upper_pct = oc_upper,
+                    thin = thin, oc_low = oc_low),
     missing = character(0),
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
   )
@@ -764,73 +1253,92 @@ lamellic_subgroup_usda <- function(pedon) {
 
 # ---- Aluminum-rich Spodic check (Alaquods, Alorthods) -------------
 
-#' Aluminum-rich spodic helper (Alaquods, Alorthods, KST Ch 14)
+#' Aluminum-rich spodic horizon (Alaquods, Alorthods; KST 13th ed.)
 #'
-#' Pass when the spodic horizon has < 0.10\% Fe (oxalate) in 75\%+
-#' of layers, OR Al >= 3 * Fe in 75\%+ of layers (Alaquods only).
-#'
+#' Alaquods (p. 311): less than 0.10 percent oxalate iron, or at least 3
+#' times as much oxalate aluminum as iron, in 75 percent or more of the
+#' spodic horizon. Alorthods (p. 317): less than 0.10 percent oxalate iron
+#' in 75 percent or more of the spodic horizon (\code{fe_only = TRUE}).
+#' v0.9.418: the share is of the thickness of the spodic horizon, and the
+#' Alorthods no longer take the aluminum alternative; a layer with the
+#' oxalate extract not recorded is undecided, and the test is NA when the
+#' undecided layers could reach 75 percent.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param fe_only \code{TRUE} for the Alorthods.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-al_rich_spodic_usda <- function(pedon) {
-  sp <- spodic_horizon_usda(pedon)
-  if (!isTRUE(sp$passed) || length(sp$layers) == 0L) {
+al_rich_spodic_usda <- function(pedon, fe_only = FALSE) {
+  ref <- if (fe_only) "Soil Survey Staff (2022), KST 13th ed., p. 317 (Alorthods)"
+         else "Soil Survey Staff (2022), KST 13th ed., p. 311 (Alaquods)"
+  sl <- .spodic_layers_for_tests(pedon)
+  if (!length(sl$layers)) {
     return(DiagnosticResult$new(
       name = "al_rich_spodic_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "no spodic"),
-      missing = sp$missing,
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
-    ))
+      evidence = list(reason = "no spodic horizon"),
+      missing = character(0), reference = ref))
   }
   h <- pedon$horizons
-  layers <- sp$layers
-  fe <- h$fe_ox_pct[layers]
-  al <- h$al_ox_pct[layers]
-  miss <- character(0)
-  if (all(is.na(fe))) miss <- c(miss, "fe_ox_pct")
-  if (all(is.na(al))) miss <- c(miss, "al_ox_pct")
-  cond_fe_low <- !is.na(fe) & fe < 0.10
-  cond_al_dom <- !is.na(al) & !is.na(fe) & al >= 3 * fe
-  pass_count <- sum(cond_fe_low | cond_al_dom, na.rm = TRUE)
-  passed <- pass_count >= 0.75 * length(layers)
+  L <- sl$layers
+  fe <- suppressWarnings(as.numeric(h$fe_ox_pct[L]))
+  al <- suppressWarnings(as.numeric(h$al_ox_pct[L]))
+  ok <- fe < 0.10
+  if (!fe_only) ok <- ok | al >= 3 * fe
+  w <- pmax(h$bottom_cm[L] - h$top_cm[L], 0)
+  passed <- .share3(ok, w, 0.75)
+  if (!sl$sure && isTRUE(passed)) passed <- NA
   DiagnosticResult$new(
-    name = "al_rich_spodic_usda", passed = passed, layers = layers,
-    evidence = list(fe_pct = fe, al_pct = al,
-                      pass_count = pass_count,
-                      total_layers = length(layers)),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
-  )
+    name = "al_rich_spodic_usda", passed = passed, layers = L,
+    evidence = list(fe_pct = fe, al_pct = al, layer_ok = ok, fe_only = fe_only),
+    missing = if (is.na(passed)) c(if (anyNA(fe)) "fe_ox_pct", if (!fe_only && anyNA(al)) "al_ox_pct",
+                                   if (!sl$sure) sl$sp$missing) else character(0),
+    reference = ref)
 }
 
 
 # ---- Humic-spodic check (Humods, Humicryods) ------------------------
 
-#' Humic-spodic Suborder/GG check (>= 6\% OC in 10+ cm of spodic)
+#' Humic spodic horizon (Humods, Humigelods, Humicryods; KST 13th ed.,
+#' pp. 311, 313, 315)
+#'
+#' 6.0 percent or more organic carbon in a layer 10 cm or more thick within
+#' the spodic horizon. v0.9.418: adjoining layers of the spodic horizon count
+#' together, and organic carbon not recorded leaves the test undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 humic_spodic_usda <- function(pedon) {
-  sp <- spodic_horizon_usda(pedon)
-  if (!isTRUE(sp$passed) || length(sp$layers) == 0L) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 311 (Humods)"
+  sl <- .spodic_layers_for_tests(pedon)
+  if (!length(sl$layers)) {
     return(DiagnosticResult$new(
       name = "humic_spodic_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "no spodic"),
-      missing = sp$missing,
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
-    ))
+      evidence = list(reason = "no spodic horizon"),
+      missing = character(0), reference = ref))
   }
   h <- pedon$horizons
-  layers <- sp$layers
-  oc <- h$oc_pct[layers]
-  thk <- pmax(h$bottom_cm[layers] - h$top_cm[layers], 0)
-  passing <- layers[!is.na(oc) & oc >= 6 & thk >= 10]
-  passed <- length(passing) > 0L
+  L <- sl$layers[order(h$top_cm[sl$layers])]
+  oc <- suppressWarnings(as.numeric(h$oc_pct[L]))
+  rich <- oc >= 6
+  run_thk <- function(ok) {
+    best <- 0; cur <- 0; bot <- NA_real_
+    for (k in seq_along(L)) {
+      i <- L[k]
+      if (ok[k]) {
+        cur <- if (cur > 0 && !is.na(bot) && abs(h$top_cm[i] - bot) < 1e-6)
+                 cur + (h$bottom_cm[i] - h$top_cm[i]) else (h$bottom_cm[i] - h$top_cm[i])
+        bot <- h$bottom_cm[i]; best <- max(best, cur)
+      } else cur <- 0
+    }
+    best
+  }
+  yes <- run_thk(rich %in% TRUE); may <- run_thk(!(rich %in% FALSE))
+  passed <- if (yes >= 10) TRUE else if (may < 10) FALSE else NA
+  if (!sl$sure && isTRUE(passed)) passed <- NA
   DiagnosticResult$new(
-    name = "humic_spodic_usda", passed = passed, layers = passing,
-    evidence = list(oc_pct = oc, thicknesses_cm = thk),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
-  )
+    name = "humic_spodic_usda", passed = passed,
+    layers = if (isTRUE(passed)) L[rich %in% TRUE] else integer(0),
+    evidence = list(oc_pct = oc, rich_thickness_cm = yes),
+    missing = if (is.na(passed)) "oc_pct" else character(0),
+    reference = ref)
 }
 
 
@@ -842,6 +1350,50 @@ humic_subgroup_usda <- function(pedon) {
   res <- humic_spodic_usda(pedon)
   res$name <- "humic_subgroup_usda"
   res
+}
+
+
+# ---- Aquods (KST 13th ed., p. 311) ------------------------------------
+
+#' Aquods suborder qualifier (KST 13th ed., p. 311)
+#'
+#' v0.9.418: aquic conditions (or artificial drainage) in one or more
+#' horizons within 50 cm of the mineral soil surface, and either a histic
+#' epipedon or, within 50 cm of the mineral soil surface, aquic conditions in
+#' an albic or a spodic horizon. Up to v0.9.417 the first part alone decided.
+#' Aquic conditions are read by \code{aquic_conditions_usda()} (redoximorphic
+#' features and low chroma; the drainage class is not read, reading L12).
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+aquod_qualifying_usda <- function(pedon) {
+  h <- pedon$horizons
+  org <- .usda_organic_status(pedon)
+  ms <- .usda_mineral_surface(pedon, org)
+  aq <- aquic_conditions_usda(pedon, max_top_cm = ms + 50)
+  drained <- .wrb_site_drained(pedon)
+  aq_any <- isTRUE(aq$passed) || drained
+  if (!aq_any) {
+    return(DiagnosticResult$new(
+      name = "aquod_qualifying_usda", passed = FALSE, layers = integer(0),
+      evidence = list(aquic = aq), missing = aq$missing,
+      reference = "Soil Survey Staff (2022), KST 13th ed., p. 311"))
+  }
+  hi <- histic_epipedon_usda(pedon)
+  sp <- spodic_horizon_usda(pedon)
+  alb <- sp$evidence$albic_horizon
+  host <- (alb %in% TRUE) | seq_len(nrow(h)) %in% sp$layers
+  host_may <- host | is.na(alb) | seq_len(nrow(h)) %in% sp$evidence$maybe_layers
+  in50 <- !is.na(h$top_cm) & h$top_cm - ms < 50
+  item2 <- if (any(aq$layers %in% which(host & in50))) TRUE
+           else if (any(aq$layers %in% which(host_may & in50))) NA else FALSE
+  passed <- hi$passed | item2
+  DiagnosticResult$new(
+    name = "aquod_qualifying_usda", passed = passed,
+    layers = intersect(aq$layers, which(host_may & in50)),
+    evidence = list(aquic = aq, drained = drained, histic = hi, aquic_in_albic_or_spodic = item2),
+    missing = if (is.na(passed)) unique(c(hi$missing, sp$missing)) else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 311")
 }
 
 

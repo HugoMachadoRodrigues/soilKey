@@ -4,11 +4,6 @@
 \alias{MockVLMProvider}
 \title{Mock VLM provider for testing}
 \description{
-Mock VLM provider for testing
-
-Mock VLM provider for testing
-}
-\details{
 A stand-in for an \code{ellmer} chat object. Exposes the same
 \code{$chat(prompt, ...)} method, but instead of calling a model
 it pops the next response from a pre-loaded queue. Designed for
@@ -53,105 +48,111 @@ the previous validation error.
 
 \keyword{internal}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{responses}}{List of canned responses (character scalars or
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{responses}}{List of canned responses (character scalars or
 R objects to be JSON-serialised).}
 
-\item{\code{validation_error_at}}{Optional integer; when the call number
+    \item{\code{validation_error_at}}{Optional integer; when the call number
 matches, the returned text is replaced with a
 malformed JSON string.}
 
-\item{\code{call_count}}{Integer counter (0 before any call).}
+    \item{\code{call_count}}{Integer counter (0 before any call).}
 
-\item{\code{prompts_received}}{List recording every prompt passed to
+    \item{\code{prompts_received}}{List recording every prompt passed to
 \code{$chat()}.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-MockVLMProvider-new}{\code{MockVLMProvider$new()}}
-\item \href{#method-MockVLMProvider-chat}{\code{MockVLMProvider$chat()}}
-\item \href{#method-MockVLMProvider-reset}{\code{MockVLMProvider$reset()}}
-\item \href{#method-MockVLMProvider-clone}{\code{MockVLMProvider$clone()}}
-}
+  \itemize{
+    \item \href{#method-MockVLMProvider-initialize}{\code{MockVLMProvider$new()}}
+    \item \href{#method-MockVLMProvider-chat}{\code{MockVLMProvider$chat()}}
+    \item \href{#method-MockVLMProvider-reset}{\code{MockVLMProvider$reset()}}
+    \item \href{#method-MockVLMProvider-clone}{\code{MockVLMProvider$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MockVLMProvider-new"></a>}}
-\if{latex}{\out{\hypertarget{method-MockVLMProvider-new}{}}}
-\subsection{Method \code{new()}}{
-Construct a mock provider.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MockVLMProvider$new(responses = list(), validation_error_at = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{responses}}{List of canned responses. Strings are returned
+\if{html}{\out{<a id="method-MockVLMProvider-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-MockVLMProvider-initialize}{}}}
+\subsection{\code{MockVLMProvider$new()}}{
+  Construct a mock provider.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MockVLMProvider$new(responses = list(), validation_error_at = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{responses}}{List of canned responses. Strings are returned
 verbatim; non-string elements are JSON-serialised via
 \code{jsonlite::toJSON}.}
-
-\item{\code{validation_error_at}}{Optional integer giving the 1-based
+      \item{\code{validation_error_at}}{Optional integer giving the 1-based
 index of an attempt that should return malformed JSON
 (to test the retry path). Use \code{NULL} (default) to
 always return the queued response unchanged.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MockVLMProvider-chat"></a>}}
 \if{latex}{\out{\hypertarget{method-MockVLMProvider-chat}{}}}
-\subsection{Method \code{chat()}}{
-Send a prompt; returns the next queued response.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MockVLMProvider$chat(prompt, ...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{prompt}}{Character scalar (the rendered prompt). Stored in
+\subsection{\code{MockVLMProvider$chat()}}{
+  Send a prompt; returns the next queued response.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MockVLMProvider$chat(prompt, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{prompt}}{Character scalar (the rendered prompt). Stored in
 \code{$prompts_received}.}
-
-\item{\code{...}}{Additional arguments are accepted (and ignored) so
+      \item{\code{...}}{Additional arguments are accepted (and ignored) so
 the signature matches multimodal calls that pass an
 image content object after the prompt.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character scalar with the response text.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character scalar with the response text.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MockVLMProvider-reset"></a>}}
 \if{latex}{\out{\hypertarget{method-MockVLMProvider-reset}{}}}
-\subsection{Method \code{reset()}}{
-Reset the mock (call count and prompt log).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MockVLMProvider$reset()}\if{html}{\out{</div>}}
+\subsection{\code{MockVLMProvider$reset()}}{
+  Reset the mock (call count and prompt log).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MockVLMProvider$reset()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MockVLMProvider-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-MockVLMProvider-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MockVLMProvider$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{MockVLMProvider$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MockVLMProvider$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

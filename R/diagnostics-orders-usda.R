@@ -72,10 +72,15 @@
 
 # ---- A. Gelisols (Cap 9, p 189) -------------------------------------------
 
-#' Gelisols (USDA Cap 9): gelic conditions / permafrost.
+#' Gelisols (USDA, KST 13th ed., p. 67, key to soil orders, item A)
 #'
-#' Order-level gate: cryic_conditions diagnostic from WRB delegated +
-#' optional permafrost_temp_C if available.
+#' v0.9.418: soils that have (1) permafrost within 100 cm of the soil
+#' surface, or (2) gelic materials within 100 cm of the soil surface and
+#' permafrost within 200 cm. Permafrost is read by
+#' \code{permafrost_within_usda()} (a layer at or below 0 C, or a frozen
+#' designation), gelic materials by \code{gelic_materials_usda()}. Up to
+#' v0.9.417 the WRB cryic conditions within 100 cm decided and item 2 was
+#' not read.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 gelisol_usda <- function(pedon) {
@@ -86,26 +91,29 @@ gelisol_usda <- function(pedon) {
 
 # The computation of gelisol_usda().
 .gelisol_usda_uncached <- function(pedon) {
-  h <- pedon$horizons
-  cr <- cryic_conditions(pedon)
-  cold <- if ("permafrost_temp_C" %in% names(h))
-            any(!is.na(h$permafrost_temp_C) & h$permafrost_temp_C < 0)
-          else FALSE
-  passed <- isTRUE(cr$passed) || isTRUE(cold)
+  pf100 <- permafrost_within_usda(pedon, max_top_cm = 100)
+  pf200 <- permafrost_within_usda(pedon, max_top_cm = 200)
+  gel <- gelic_materials_usda(pedon, max_top_cm = 100)
+  item2 <- isTRUE(gel$passed) && isTRUE(pf200$passed)
+  passed <- isTRUE(pf100$passed) || item2
   DiagnosticResult$new(
     name = "gelisol_usda", passed = passed,
-    layers = cr$layers, evidence = list(cryic = cr, cold_temp = cold),
-    missing = cr$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 9 Gelisols (p 189)"
+    layers = if (isTRUE(pf100$passed)) pf100$layers else if (item2) union(gel$layers, pf200$layers) else integer(0),
+    evidence = list(permafrost_100 = pf100, permafrost_200 = pf200,
+                    gelic_materials_100 = gel),
+    missing = if (passed) character(0) else pf100$missing,
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., p. 67 (key to soil orders, item A)"
   )
 }
 
 
 # ---- B. Histosols (Cap 10, p 199) -----------------------------------------
 
-#' Histosols (USDA Cap 10): organic materials >= 40 cm in 0-100.
-#' Refined v0.8.4 -- now uses histosol_qualifying_usda (40 cm
-#' threshold) instead of WRB histic_horizon (10 cm).
+#' Histosols (USDA, KST 13th ed., pp. 67-68, key to soil orders, item B)
+#'
+#' Reads \code{histosol_qualifying_usda()} (organic soil materials by items
+#' a to d, no andic soil properties in 60 percent of the upper 60 cm) and
+#' excludes the Gelisols.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 histosol_usda <- function(pedon) {
@@ -124,26 +132,53 @@ histosol_usda <- function(pedon) {
                                  pattern       = "^Histic epipedon$|^Folistic epipedon$|^Hemic|^Sapric|^Fibric|^Limnic|^Coprogenous",
                                  feature_label = "Histic / Folistic / Hemic / Sapric / Fibric materials")
   ge <- gelisol_usda(pedon)
-  passed <- isTRUE(hi$passed) && !isTRUE(ge$passed)
+  passed <- if (isTRUE(ge$passed)) FALSE else hi$passed
   DiagnosticResult$new(
     name = "histosol_usda", passed = passed,
     layers = hi$layers, evidence = list(histosol_qualifying = hi,
                                           gelisol_excluded = ge),
     missing = hi$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 10 Histosols (p 199)"
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., pp. 67-68 (key to soil orders, item B)"
   )
 }
 
 
 # ---- C. Spodosols (Cap 14, p 311) -----------------------------------------
 
-#' Spodosols (USDA Cap 14): spodic horizon (illuvial Al/Fe/OC).
+#' Spodosols (USDA, KST 13th ed., p. 68, key to soil orders, item C)
+#'
+#' v0.9.418: the key as worded. Soils that have no plaggen epipedon and no
+#' argillic or kandic horizon above a spodic horizon, and that have one or
+#' more of:
+#' \enumerate{
+#'   \item a spodic horizon, an albic horizon, and a cryic or gelic
+#'     temperature regime;
+#'   \item an Ap horizon with 85 percent or more spodic materials;
+#'   \item a spodic horizon with all of: (a) 10 cm thick or more, an
+#'     overlying Ap, cementation in 50 percent of the pedon, a texture finer
+#'     than loamy fine sand with a frigid regime, or a cryic or gelic regime;
+#'     (b) an upper boundary less than 50 cm below the mineral soil surface,
+#'     or less than 200 cm if some horizon between the mineral soil surface
+#'     and the spodic horizon is loamy fine sand or coarser; (c) a lower
+#'     boundary 25 cm or more below the mineral soil surface (or at a duripan,
+#'     fragipan or contact), or at any depth under the frigid or the cryic or
+#'     gelic conditions of item a; and (d) a directly overlying albic horizon,
+#'     or no andic soil properties in 60 percent of the upper 60 cm (C.3.d(2)).
+#' }
+#' The spodic horizon is \code{spodic_horizon_usda()}; an undecided layer of
+#' it is tried both ways, and the order is undecided (NA) when it decides.
+#' Item C.3.d(2) is read from \code{andisol_qualifying_usda()}; where that
+#' is undecided, by a bound: no andic soil properties where Al + 1/2 Fe
+#' (oxalate) is under 0.4 percent (KST p. 32, both branches need 0.4 or
+#' more) or organic carbon is 25 percent or more, undecided otherwise
+#' (reading L7). Up to v0.9.417 the WRB
+#' spodic horizon alone decided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 spodosol_usda <- function(pedon) {
   # v0.9.400: memoised within a classification (R/memo.R)
   .memo(pedon, "spodosol_usda", list(),
-        .spodosol_no_andic_usda(pedon, .spodosol_usda_uncached(pedon = pedon)))
+        .spodosol_usda_uncached(pedon = pedon))
 }
 
 # Order key item C.3.d (KST 13th ed., p. 68; v0.9.417, audit A5): a spodic
@@ -169,22 +204,111 @@ spodosol_usda <- function(pedon) {
   res
 }
 
+# C.3.d(2) where the Andisol test is undecided: TRUE when the layers that
+# cannot have andic soil properties (Al + 1/2 Fe under 0.4 %, or 25 % organic
+# carbon or more) make 60 % or more of the upper 60 cm of the mineral soil (or
+# of the soil above a contact, duripan or petrocalcic horizon), NA otherwise.
+.spodosol_no_andic_bound <- function(pedon, ms) {
+  h <- pedon$horizons
+  d <- .desg_master(h$designation, site = pedon$site)
+  stop_k <- which(!is.na(d) & (grepl("^(R|Cr|Cd)", d) | grepl("qm|km", d)) & h$top_cm >= ms)
+  bot <- min(c(ms + 60, h$top_cm[stop_k]))
+  if (bot <= ms) return(NA)
+  alfe <- suppressWarnings(as.numeric(h$al_ox_pct) + 0.5 * as.numeric(h$fe_ox_pct))
+  oc <- suppressWarnings(as.numeric(h$oc_pct))
+  not_andic <- (!is.na(alfe) & alfe < 0.4) | (!is.na(oc) & oc >= 25)
+  w <- pmax(pmin(h$bottom_cm, bot) - pmax(h$top_cm, ms), 0)
+  if (sum(w[not_andic]) >= 0.6 * (bot - ms) - 1e-9) TRUE else NA
+}
+
 # The computation of spodosol_usda().
 .spodosol_usda_uncached <- function(pedon) {
-  sp <- spodic(pedon)
-  # v0.9.21: NASIS tie-breaker -- "Spodic horizon" or "Spodic
-  # materials" surveyor identification flips an NA spodic to TRUE.
-  sp <- .apply_nasis_tiebreaker(sp, pedon,
-                                 pattern       = "^Spodic horizon$|^Spodic materials$|^Ortstein$|^Placic horizon$",
-                                 feature_label = "Spodic horizon / materials")
+  ref <- "USDA Soil Survey Staff (2022), KST 13th ed., p. 68 (key to soil orders, item C)"
+  h <- pedon$horizons
+  sp <- spodic_horizon_usda(pedon)
+  # v0.9.21: NASIS tie-breaker -- "Spodic horizon" or "Spodic materials"
+  # surveyor identification turns the undecided layers into spodic ones.
+  nasis <- .has_nasis_feature(pedon, "^Spodic horizon$|^Spodic materials$|^Ortstein$")
+  sure_layers <- sp$layers
+  maybe_layers <- sp$evidence$maybe_layers %||% integer(0)
+  if (isTRUE(nasis) && is.na(sp$passed)) {
+    sure_layers <- sort(union(sure_layers, maybe_layers)); maybe_layers <- integer(0)
+  }
+  org <- sp$evidence$organic %||% .usda_organic_status(pedon)
+  ms <- .usda_mineral_surface(pedon, org)
+  albic <- sp$evidence$albic_horizon
+  d <- .desg_master(h$designation, site = pedon$site)
+  d0 <- ifelse(is.na(d), "", d)
+  ord <- order(h$top_cm)
+  cold <- soil_temperature_regime_usda(pedon, c("cryic", "gelic"))$passed
+  frigid <- soil_temperature_regime_usda(pedon, "frigid")$passed
+  sandy <- .usda_lfs_or_coarser(h)
+  cem <- .usda_cemented(h)
+  share <- .usda_cemented_share(pedon)
+  cem50 <- cem & (is.na(share) | share >= 50)
+  ak <- argillic_or_kandic_usda(pedon, max_top_cm = 200)
+  ak_layers <- if (isTRUE(ak$passed)) ak$layers else integer(0)
+  # the pans and contacts that may end the spodic horizon (item c(1))
+  stop_k <- which(!is.na(d) & (grepl("^(R|Cr|Cd)", d) | grepl("qm", d)))
+  frag <- fragipan_usda(pedon)
+  stop_k <- union(stop_k, if (isTRUE(frag$passed)) frag$layers else integer(0))
+  # C.3.d(2): no andic soil properties in the Andisol window
+  # (andisol_qualifying_usda(), v0.9.417); where that is undecided, the
+  # bound of .spodosol_no_andic_bound() may still decide it (reading L7).
+  aq_c3d <- andisol_qualifying_usda(pedon)$passed
+  no_andic <- if (isFALSE(aq_c3d)) TRUE else if (isTRUE(aq_c3d)) FALSE
+              else .spodosol_no_andic_bound(pedon, ms)
+  # item C.3 for one spodic horizon (a run of adjoining layers)
+  eval_run <- function(run) {
+    run <- run[order(h$top_cm[run])]
+    top <- h$top_cm[run[1L]]; bot <- max(h$bottom_cm[run])
+    thk <- sum(h$bottom_cm[run] - h$top_cm[run])
+    above <- ord[h$top_cm[ord] < top & !(org[ord] %in% TRUE)]
+    finer <- .all3u(!sandy[run])
+    a <- (thk >= 10) | any(grepl("^Ap", d0[above])) | any(cem50[run]) |
+         (finer & frigid) | cold
+    between <- above[h$top_cm[above] >= ms - 1e-6]
+    b <- if (top - ms < 50) TRUE
+         else if (top - ms < 200) .any3u(sandy[between]) else FALSE
+    stops <- h$top_cm[stop_k]
+    c1 <- (bot - ms >= 25) || any(abs(stops - bot) < 1e-6)
+    cc <- c1 | (finer & frigid) | cold
+    d1 <- if (length(above)) albic[above[length(above)]] else FALSE
+    dd <- d1 | no_andic
+    excl <- any(h$top_cm[ak_layers] < top)
+    !excl & a & b & cc & dd
+  }
+  eval_set <- function(L) {
+    if (!length(L)) return(FALSE)
+    L <- L[order(h$top_cm[L])]
+    brk <- c(TRUE, abs(h$top_cm[L][-1] - h$bottom_cm[L][-length(L)]) > 1e-6)
+    runs <- split(L, cumsum(brk))
+    .any3u(vapply(runs, eval_run, NA))
+  }
+  item3_sure <- eval_set(sure_layers)
+  item3_best <- eval_set(sort(union(sure_layers, maybe_layers)))
+  item3 <- if (isTRUE(item3_sure)) TRUE else if (isFALSE(item3_best)) FALSE else NA
+  has_sp <- if (length(sure_layers)) TRUE else if (length(maybe_layers)) NA else FALSE
+  item1 <- has_sp & .any3u(albic) & cold
+  spm <- sp$evidence$spodic_materials %||% rep(FALSE, nrow(h))
+  item2 <- .any3u(spm[grepl("^Ap", d0)])
+  plaggen <- .usda_plaggen_surface(pedon, min_cm = 50)
+  spodic_ok <- !plaggen & (item1 | item2 | item3)
   ex <- isTRUE(gelisol_usda(pedon)$passed) || isTRUE(histosol_usda(pedon)$passed)
-  passed <- isTRUE(sp$passed) && !ex
+  passed <- if (ex) FALSE else spodic_ok
+  miss <- character(0)
+  if (is.na(passed)) {
+    miss <- sp$missing
+    if (is.na(cold) || is.na(frigid)) miss <- c(miss, "site$soil_temperature_regime")
+    if (is.na(no_andic)) miss <- c(miss, "al_ox_pct", "fe_ox_pct", "phosphate_retention_pct", "bulk_density_g_cm3")
+  }
   DiagnosticResult$new(
     name = "spodosol_usda", passed = passed,
-    layers = sp$layers, evidence = list(spodic = sp, prior_order = ex),
-    missing = sp$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 14 Spodosols (p 311)"
-  )
+    layers = sure_layers,
+    evidence = list(spodic = sp, items = c(C1 = item1, C2 = item2, C3 = item3),
+                    plaggen = plaggen, no_andic_60 = no_andic,
+                    argillic_or_kandic_layers = ak_layers, prior_order = ex),
+    missing = unique(miss), reference = ref)
 }
 
 

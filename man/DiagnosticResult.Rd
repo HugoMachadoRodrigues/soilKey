@@ -4,11 +4,6 @@
 \alias{DiagnosticResult}
 \title{DiagnosticResult: structured outcome of a diagnostic test}
 \description{
-DiagnosticResult: structured outcome of a diagnostic test
-
-DiagnosticResult: structured outcome of a diagnostic test
-}
-\details{
 Returned by every WRB or SiBCS diagnostic function (e.g.
 \code{\link{argic}}, \code{\link{ferralic}}, \code{\link{mollic}}). A
 DiagnosticResult never reduces to a bare TRUE/FALSE — it always carries
@@ -22,44 +17,45 @@ This three-valued semantics propagates through the rule engine — an
 indeterminate test does not silently fail.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{name}}{Character. Name of the diagnostic (e.g. \code{"argic"}).}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{name}}{Character. Name of the diagnostic (e.g. \code{"argic"}).}
 
-\item{\code{passed}}{Logical. \code{TRUE}, \code{FALSE}, or \code{NA}.}
+    \item{\code{passed}}{Logical. \code{TRUE}, \code{FALSE}, or \code{NA}.}
 
-\item{\code{layers}}{Integer vector. Indices of horizons that satisfy the
+    \item{\code{layers}}{Integer vector. Indices of horizons that satisfy the
 diagnostic.}
 
-\item{\code{evidence}}{Named list. Sub-test results, each itself a list with
+    \item{\code{evidence}}{Named list. Sub-test results, each itself a list with
 at least \code{passed}, \code{layers}, and \code{missing}.}
 
-\item{\code{missing}}{Character vector. Attribute names that would have been
+    \item{\code{missing}}{Character vector. Attribute names that would have been
 needed but were NA.}
 
-\item{\code{reference}}{Character. Literature citation for this diagnostic.}
+    \item{\code{reference}}{Character. Literature citation for this diagnostic.}
 
-\item{\code{notes}}{Character. Free-form notes (interpretation choices,
+    \item{\code{notes}}{Character. Free-form notes (interpretation choices,
 edge cases hit).}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-DiagnosticResult-new}{\code{DiagnosticResult$new()}}
-\item \href{#method-DiagnosticResult-print}{\code{DiagnosticResult$print()}}
-\item \href{#method-DiagnosticResult-as_list}{\code{DiagnosticResult$as_list()}}
-\item \href{#method-DiagnosticResult-clone}{\code{DiagnosticResult$clone()}}
-}
+  \itemize{
+    \item \href{#method-DiagnosticResult-initialize}{\code{DiagnosticResult$new()}}
+    \item \href{#method-DiagnosticResult-print}{\code{DiagnosticResult$print()}}
+    \item \href{#method-DiagnosticResult-as_list}{\code{DiagnosticResult$as_list()}}
+    \item \href{#method-DiagnosticResult-clone}{\code{DiagnosticResult$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DiagnosticResult-new"></a>}}
-\if{latex}{\out{\hypertarget{method-DiagnosticResult-new}{}}}
-\subsection{Method \code{new()}}{
-Build a DiagnosticResult.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DiagnosticResult$new(
+\if{html}{\out{<a id="method-DiagnosticResult-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-DiagnosticResult-initialize}{}}}
+\subsection{\code{DiagnosticResult$new()}}{
+  Build a DiagnosticResult.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiagnosticResult$new(
   name,
   passed = NA,
   layers = integer(0),
@@ -67,71 +63,72 @@ Build a DiagnosticResult.
   missing = character(0),
   reference = NA_character_,
   notes = NA_character_
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Diagnostic name.}
+      \item{\code{passed}}{\code{TRUE}/\code{FALSE}/\code{NA}.}
+      \item{\code{layers}}{Integer vector of horizon indices that satisfied.}
+      \item{\code{evidence}}{Named list of sub-test results.}
+      \item{\code{missing}}{Character vector of missing attribute names.}
+      \item{\code{reference}}{Citation string.}
+      \item{\code{notes}}{Free-form notes.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Diagnostic name.}
-
-\item{\code{passed}}{\code{TRUE}/\code{FALSE}/\code{NA}.}
-
-\item{\code{layers}}{Integer vector of horizon indices that satisfied.}
-
-\item{\code{evidence}}{Named list of sub-test results.}
-
-\item{\code{missing}}{Character vector of missing attribute names.}
-
-\item{\code{reference}}{Citation string.}
-
-\item{\code{notes}}{Free-form notes.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiagnosticResult-print"></a>}}
 \if{latex}{\out{\hypertarget{method-DiagnosticResult-print}{}}}
-\subsection{Method \code{print()}}{
-Pretty-print the result with sub-test breakdown.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DiagnosticResult$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{DiagnosticResult$print()}}{
+  Pretty-print the result with sub-test breakdown.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiagnosticResult$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored (S3 print signature compatibility).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Ignored (S3 print signature compatibility).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiagnosticResult-as_list"></a>}}
 \if{latex}{\out{\hypertarget{method-DiagnosticResult-as_list}{}}}
-\subsection{Method \code{as_list()}}{
-Return the result as a plain list (for serialization).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DiagnosticResult$as_list()}\if{html}{\out{</div>}}
+\subsection{\code{DiagnosticResult$as_list()}}{
+  Return the result as a plain list (for serialization).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiagnosticResult$as_list()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiagnosticResult-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-DiagnosticResult-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DiagnosticResult$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{DiagnosticResult$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiagnosticResult$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -15,22 +15,136 @@
 # =============================================================
 
 
+# ---- Organic soil materials: shared readings (v0.9.418) ---------------
+
+# The kind of organic soil material of each layer (KST 13th ed., pp. 40-41):
+# "fibric", "hemic", "sapric" or NA (not organic, or not recorded). The rubbed
+# fibre content decides when measured (fibric 3/4 or more by volume, sapric
+# less than 1/6, hemic in between); else the von Post index (H1-H4 fibric,
+# H5-H6 hemic, H7-H10 sapric); else the suffix of an O or H designation (i
+# fibric, e hemic, a sapric). Up to v0.9.417 the suborders read the SiBCS
+# classes (40 and 17 % fibre).
+.usda_organic_kind <- function(pedon, org = .usda_organic_status(pedon)) {
+  h <- pedon$horizons
+  n <- nrow(h)
+  fib <- suppressWarnings(as.numeric(h$fiber_content_rubbed_pct))
+  vp <- suppressWarnings(as.numeric(h$von_post_index))
+  d <- .desg_master(h$designation, site = pedon$site)
+  d0 <- ifelse(is.na(d), "", d)
+  sfx <- ifelse(grepl("^[OH][a-z]*[iea]", d0), sub("^[OH]([a-z]*?)([iea]).*$", "\\2", d0), NA)
+  out <- rep(NA_character_, n)
+  out <- ifelse(!is.na(fib), ifelse(fib >= 75, "fibric", ifelse(fib < 100 / 6, "sapric", "hemic")),
+         ifelse(!is.na(vp), ifelse(vp <= 4, "fibric", ifelse(vp <= 6, "hemic", "sapric")),
+         ifelse(!is.na(sfx), c(i = "fibric", e = "hemic", a = "sapric")[sfx], NA_character_)))
+  out[!(org %in% TRUE)] <- NA_character_
+  unname(out)
+}
+
+# Saturated with water for 30 days or more (cumulative) in normal years, or
+# artificially drained, layer by layer: TRUE / FALSE / NA. A site recorded as
+# artificially drained meets it in every layer; otherwise the layer's
+# water_saturation_days decides (30 or more, or under 30); then an H master
+# designation (the FAO 2006 H horizon is saturated for prolonged periods or
+# drained) and, in mineral layers, aquic conditions (redoximorphic features
+# with low chroma) read as saturated; otherwise undecided. The drainage class
+# is not read (reading L12).
+.usda_saturated30 <- function(pedon, org = .usda_organic_status(pedon)) {
+  h <- pedon$horizons
+  n <- nrow(h)
+  if (isTRUE(.wrb_site_drained(pedon))) return(rep(TRUE, n))
+  days <- suppressWarnings(as.numeric(h$water_saturation_days %||% rep(NA, n)))
+  d <- .desg_master(h$designation, site = pedon$site)
+  hdes <- !is.na(d) & grepl("^H", d)
+  aq <- seq_len(n) %in% aquic_conditions_usda(pedon, max_top_cm = Inf)$layers & !(org %in% TRUE)
+  ifelse(!is.na(days), days >= 30, ifelse(hdes | aq, TRUE, NA))
+}
+
+# Not saturated for 30 days or more and not artificially drained (the
+# folistic epipedon and the Folists): the complement of .usda_saturated30().
+.usda_unsaturated30 <- function(pedon, org = .usda_organic_status(pedon)) {
+  s <- .usda_saturated30(pedon, org)
+  !s
+}
+
+# The upper boundary (cm) of a densic, lithic or paralithic contact (R or Cr,
+# or a C with the suffix d), Inf when none is recorded.
+.usda_contact_top <- function(pedon) {
+  h <- pedon$horizons
+  d <- .desg_master(h$designation, site = pedon$site)
+  k <- which(!is.na(d) & grepl("^(R|Cr|Cd)", d) & !is.na(h$top_cm))
+  if (length(k)) min(h$top_cm[k]) else Inf
+}
+
+# Moss or low bulk density in the surface layers of an organic soil (KST
+# 13th ed., p. 41): the organic layers within 60 cm of the surface are
+# three-fourths or more Sphagnum or other moss fibres (sphagnum_fibres_pct;
+# not recorded, none) or have a bulk density under 0.1 g/cm3.
+.usda_moss_surface <- function(pedon, org = .usda_organic_status(pedon)) {
+  h <- pedon$horizons
+  k <- which(org %in% TRUE & !is.na(h$top_cm) & h$top_cm < 60)
+  if (!length(k)) return(FALSE)
+  sph <- suppressWarnings(as.numeric(h$sphagnum_fibres_pct %||% rep(NA, nrow(h))))[k]
+  bd <- suppressWarnings(as.numeric(h$bulk_density_g_cm3))[k]
+  all((!is.na(sph) & sph >= 75) | (!is.na(bd) & bd < 0.1))
+}
+
+# The control section of Histosols and its tiers (KST 13th ed., p. 41):
+# 160 cm with a moss or light surface, else 130 cm, or less to a densic,
+# lithic or paralithic contact or 25 cm below the top of permafrost. The
+# surface tier is 0-60 cm (moss or light) or 0-30 cm; the subsurface tier the
+# next 60 cm; the bottom tier the rest.
+.histosol_tiers_usda <- function(pedon, org = .usda_organic_status(pedon)) {
+  moss <- .usda_moss_surface(pedon, org)
+  bottom <- if (moss) 160 else 130
+  bottom <- min(bottom, .usda_contact_top(pedon))
+  pf <- permafrost_within_usda(pedon, max_top_cm = bottom)
+  if (isTRUE(pf$passed) && length(pf$layers))
+    bottom <- min(bottom, min(pedon$horizons$top_cm[pf$layers]) + 25)
+  surf <- min(if (moss) 60 else 30, bottom)
+  sub <- min(surf + 60, bottom)
+  list(moss = moss, bottom = bottom, surface = c(0, surf),
+       subsurface = c(surf, sub), bottom_tier = c(sub, bottom))
+}
+
+# Thickness of the layers `k` within [a, b).
+.thk_in <- function(h, k, a, b) {
+  if (!length(k)) return(0)
+  sum(pmax(pmin(h$bottom_cm[k], b) - pmax(h$top_cm[k], a), 0), na.rm = TRUE)
+}
+
+
 # ---- Histosols Order qualifier --------------------------------------
 
-#' Histosols Order qualifier (USDA, KST 13ed, Ch 2, p 7)
+#' Histosols Order qualifier (USDA, KST 13th ed., pp. 7, 67-68)
 #'
-#' Organic soils not meeting the Gelisols requirements (no permafrost
-#' within 100 cm). The KST defines Histosols as soils with organic
-#' soil materials that meet specific thickness/depth criteria
-#' (Ch 2, pp 7-9; see also Ch 3 organic soil materials).
-#'
-#' Implementation: pass when cumulative organic-layer thickness
-#' (designation H or O) within 0-100 cm >= 40 cm AND no permafrost
-#' within 100 cm.
-#'
+#' v0.9.418: the key to soil orders, item B. Soils that (1) do not have
+#' andic soil properties in 60 percent or more of the thickness from the soil
+#' surface to 60 cm or a densic, lithic or paralithic contact or duripan
+#' (\code{.histosol_andic_usda()}, layer by layer with the andic test of p. 32) and (2) have organic soil materials that:
+#' \enumerate{
+#'   \item[a.] overlie cindery, fragmental or pumiceous materials, or fill
+#'     their interstices, with a densic, lithic or paralithic contact directly
+#'     below (fragmental read as 90 percent rock fragments or more); or
+#'   \item[b.] with the underlying cindery, fragmental or pumiceous
+#'     materials, total 40 cm or more between the soil surface and 50 cm; or
+#'   \item[c.] make two-thirds or more of the soil to a densic, lithic or
+#'     paralithic contact, with 10 cm or less of mineral horizons; or
+#'   \item[d.] are saturated for 30 days or more per year or artificially
+#'     drained (see \code{.usda_saturated30}), have an upper boundary within
+#'     40 cm of the surface and total 60 cm or more (three-fourths moss fibres
+#'     or a bulk density under 0.1) or 40 cm or more (other materials) within
+#'     the control section of Histosols (reading L11; up to v0.9.417 the
+#'     upper 100 cm).
+#' }
+#' Organic soil material is 12 percent organic carbon or more (p. 7); without
+#' a measurement, an O or H designation reads as organic (reading L10), and a
+#' measured organic carbon under 12 percent overrides it. Up to v0.9.417 the
+#' test summed the layers whose designation began with O or H (missing 2O1 or
+#' 4O1) within 100 cm against 40 cm, with no organic carbon and no andic
+#' exclusion. Permafrost within 100 cm (a Gelisol) fails the test, as before.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
-#' @references Soil Survey Staff (2022), KST 13ed, Ch. 2, pp 7-9.
+#' @references Soil Survey Staff (2022), KST 13th ed., pp. 7, 67-68.
 #' @noRd
 histosol_qualifying_usda <- function(pedon) {
   # v0.9.400: memoised within a classification (R/memo.R)
@@ -40,23 +154,78 @@ histosol_qualifying_usda <- function(pedon) {
 
 # The computation of histosol_qualifying_usda().
 .histosol_qualifying_usda_uncached <- function(pedon) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., pp. 7, 67-68 (key to soil orders, item B)"
   h <- pedon$horizons
-  org <- which(!is.na(h$designation) & grepl("^[OH]", h$designation) &
-                   !is.na(h$top_cm) & h$top_cm < 100)
-  thk_org <- if (length(org) > 0L)
-                sum(pmax(pmin(h$bottom_cm[org], 100) -
-                              pmax(h$top_cm[org], 0), 0), na.rm = TRUE)
-              else 0
+  n <- nrow(h)
+  if (n == 0L) {
+    return(DiagnosticResult$new(name = "histosol_qualifying_usda", passed = FALSE,
+                                layers = integer(0), evidence = list(),
+                                missing = character(0), reference = ref))
+  }
+  org <- .usda_organic_status(pedon)
+  ord <- order(h$top_cm)
+  cf <- suppressWarnings(as.numeric(h$coarse_fragments_pct))
+  contact <- .usda_contact_top(pedon)
+  # fragmental (or cindery, pumiceous) materials: 90 % rock fragments or more
+  # in a layer of soil (not the rock of a contact) under organic material
+  first_org <- if (any(!(org %in% FALSE))) min(h$top_cm[!(org %in% FALSE)]) else Inf
+  frag <- !is.na(cf) & cf >= 90 & !(org %in% TRUE) & h$top_cm < contact &
+          h$top_cm >= first_org
+  above_contact <- ord[h$top_cm[ord] < contact]
+  yes <- which(org %in% TRUE); may <- which(!(org %in% FALSE))
+  # a. organic over fragmental materials, a contact directly below
+  item_a <- if (is.finite(contact) && length(above_contact) && length(yes)) {
+    .all3u(ifelse(frag[above_contact], TRUE, org[above_contact]))
+  } else FALSE
+  # b. organic plus the fragmental materials below it: 40 cm in 0-50 cm
+  fr <- which(frag)
+  b_yes <- if (length(yes)) .thk_in(h, union(yes, fr), 0, 50) else 0
+  b_may <- .thk_in(h, union(may, fr), 0, 50)
+  item_b <- if (b_yes >= 40) TRUE else if (b_may < 40) FALSE else NA
+  # c. two-thirds of the soil to a contact, mineral horizons 10 cm or less
+  item_c <- if (is.finite(contact) && contact > 0) {
+    mn_yes <- .thk_in(h, which(org %in% FALSE), 0, contact)
+    mn_may <- .thk_in(h, which(!(org %in% TRUE)), 0, contact)
+    o_yes <- .thk_in(h, yes, 0, contact); o_may <- .thk_in(h, may, 0, contact)
+    if (o_yes >= 2 / 3 * contact && mn_may <= 10) TRUE
+    else if (o_may < 2 / 3 * contact || mn_yes > 10) FALSE else NA
+  } else FALSE
+  # d. saturated or drained, upper boundary within 40 cm, 60 or 40 cm in the
+  # control section
+  tiers <- .histosol_tiers_usda(pedon, org)
+  cs <- tiers$bottom
+  top_yes <- if (length(yes)) min(h$top_cm[yes]) else Inf
+  top_may <- if (length(may)) min(h$top_cm[may]) else Inf
+  d_yes <- .thk_in(h, yes, 0, cs); d_may <- .thk_in(h, may, 0, cs)
+  bd <- suppressWarnings(as.numeric(h$bulk_density_g_cm3))
+  kind <- .usda_organic_kind(pedon, org)
+  dense <- yes[(!is.na(bd[yes]) & bd[yes] >= 0.1) | kind[yes] %in% c("hemic", "sapric")]
+  need <- if (tiers$moss) 60 else if (length(yes) && setequal(dense, yes)) 40 else NA
+  thick <- if (is.na(need)) { if (d_yes >= 60) TRUE else if (d_may < 40) FALSE else NA }
+           else if (d_yes >= need) TRUE else if (d_may < need) FALSE else NA
+  sat <- .usda_saturated30(pedon, org)
+  sat_any <- .any3u(sat[may[h$top_cm[may] < cs]])
+  near <- if (top_yes < 40) TRUE else if (top_may >= 40) FALSE else NA
+  item_d <- sat_any & near & thick
+  organic <- item_a | item_b | item_c | item_d
+  aq <- .histosol_andic_usda(pedon)
   pf <- permafrost_within_usda(pedon, max_top_cm = 100)
-  passed <- thk_org >= 40 && !isTRUE(pf$passed)
+  passed <- !aq$passed & organic
+  if (isTRUE(pf$passed)) passed <- FALSE
+  miss <- character(0)
+  if (is.na(passed)) {
+    if (anyNA(org[may])) miss <- c(miss, "oc_pct")
+    if (is.na(item_d) && is.na(sat_any)) miss <- c(miss, "water_saturation_days")
+    if (is.na(thick)) miss <- c(miss, "bulk_density_g_cm3")
+    if (is.na(aq$passed)) miss <- c(miss, aq$missing)
+  }
   DiagnosticResult$new(
     name = "histosol_qualifying_usda", passed = passed,
-    layers = if (passed) org else integer(0),
-    evidence = list(organic_thickness_cm = thk_org,
-                      permafrost_present = isTRUE(pf$passed)),
-    missing = pf$missing,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 2, pp 7-9"
-  )
+    layers = if (!isFALSE(passed)) may else integer(0),
+    evidence = list(organic = org, items = c(a = item_a, b = item_b, c = item_c, d = item_d),
+                    organic_0_50_cm = b_yes, organic_in_control_section_cm = d_yes,
+                    control_section_cm = cs, andic = aq, permafrost_present = isTRUE(pf$passed)),
+    missing = unique(miss), reference = ref)
 }
 
 
@@ -90,24 +259,34 @@ wassist_qualifying_usda <- function(pedon) {
 
 # ---- Folists Suborder qualifier (well-drained organic) --------------
 
-#' Folists Suborder qualifier (KST 13ed, Ch 10, p 200)
+#' Folists Suborder qualifier (KST 13th ed., p. 199)
 #'
-#' Histosols saturated for less than 30 days per year (and not
-#' artificially drained). Implementation: pass when there is no
-#' aquic conditions and no glei designation in the upper 50 cm.
-#'
+#' v0.9.418: Histosols saturated with water for less than 30 cumulative
+#' days in normal years and not artificially drained. Read on the organic
+#' layers of the control section: a site recorded as artificially drained
+#' fails, a layer's \code{water_saturation_days} decides (all under 30
+#' passes, one of 30 or more fails), and an H designation fails (the FAO H
+#' horizon is saturated for prolonged periods); otherwise the test is
+#' undecided. Up to v0.9.417 it passed whenever no aquic conditions were
+#' found, so a drained peat or one with no record became a Folist. The
+#' drainage class is not read (reading L12).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 folist_qualifying_usda <- function(pedon) {
-  aq <- aquic_conditions_usda(pedon, max_top_cm = 50)
-  passed <- !isTRUE(aq$passed)
+  h <- pedon$horizons
+  org <- .usda_organic_status(pedon)
+  cs <- .histosol_tiers_usda(pedon, org)$bottom
+  k <- which(org %in% TRUE & !is.na(h$top_cm) & h$top_cm < cs)
+  dry <- .usda_unsaturated30(pedon, org)[k]
+  passed <- if (!length(k)) FALSE else .all3u(dry)
   DiagnosticResult$new(
     name = "folist_qualifying_usda", passed = passed,
-    layers = integer(0),
-    evidence = list(aquic_present = isTRUE(aq$passed)),
-    missing = aq$missing,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 10, p 200"
+    layers = if (isTRUE(passed)) k else integer(0),
+    evidence = list(organic_layers = k, under_30_days = dry,
+                    drained = isTRUE(.wrb_site_drained(pedon))),
+    missing = if (is.na(passed)) "water_saturation_days" else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 199"
   )
 }
 
@@ -444,113 +623,165 @@ humilluvic_subgroup_usda <- function(pedon) {
   sum(pmax(h$bottom_cm[layers] - h$top_cm[layers], 0), na.rm = TRUE)
 }
 
+# v0.9.418: the kind of organic soil material that is thickest in the tiers
+# the key reads (KST 13th ed., p. 199, items BC and BD): the organic parts of
+# the subsurface tier, or of the surface and subsurface tiers when a
+# continuous mineral layer 40 cm or more thick has its upper boundary in the
+# subsurface tier. Returns TRUE when `target` is surely thicker than each
+# other kind, FALSE when it surely is not, NA when layers of unknown kind (or
+# not known to be organic) could change it.
+.histosol_predominant <- function(pedon, target) {
+  h <- pedon$horizons
+  org <- .usda_organic_status(pedon)
+  tiers <- .histosol_tiers_usda(pedon, org)
+  a <- tiers$subsurface[1]; b <- tiers$subsurface[2]
+  # a continuous mineral layer 40 cm or more thick starting in the subsurface tier
+  ord <- order(h$top_cm)
+  min_run <- FALSE; run_top <- NA; run_bot <- NA
+  for (i in ord) {
+    if (org[i] %in% FALSE) {
+      if (is.na(run_top) || abs(h$top_cm[i] - run_bot) > 1e-6) run_top <- h$top_cm[i]
+      run_bot <- h$bottom_cm[i]
+      if (run_top >= a && run_top < b && run_bot - run_top >= 40) min_run <- TRUE
+    } else { run_top <- NA; run_bot <- NA }
+  }
+  if (min_run) a <- 0
+  kind <- .usda_organic_kind(pedon, org)
+  th <- function(k) .thk_in(h, which(org %in% TRUE & kind %in% k), a, b)
+  unk <- .thk_in(h, which((org %in% TRUE & is.na(kind)) | is.na(org)), a, b)
+  kinds <- c("fibric", "hemic", "sapric")
+  t_sure <- vapply(kinds, th, 0)
+  names(t_sure) <- kinds
+  others <- setdiff(kinds, target)
+  passed <- if (t_sure[target] > max(t_sure[others] + unk)) TRUE
+            else if (t_sure[target] + unk <= max(t_sure[others])) FALSE else NA
+  list(passed = passed, thickness = t_sure, unknown_cm = unk,
+       zone = c(a, b), tiers = tiers, mineral_layer_40cm = min_run)
+}
 
-#' Sapric_predominant_usda: Saprists Suborder qualifier
-#' Pass when thickness of sapric > thickness of fibric+hemic in 0-130 cm.
+#' Sapric_predominant_usda: Saprists Suborder qualifier (KST 13th ed., p. 199)
+#'
+#' v0.9.418: more sapric than any other kind of organic soil material in the
+#' organic parts of the subsurface tier (or of the surface and subsurface
+#' tiers over a mineral layer 40 cm thick), the kinds read by fibre content,
+#' von Post index or designation suffix (\code{.usda_organic_kind}). Up to
+#' v0.9.417 the SiBCS classes over 0-130 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 sapric_predominant_usda <- function(pedon) {
-  h <- pedon$horizons
-  s <- saprico(pedon)
-  he <- hemico(pedon)
-  fi <- fibrico(pedon)
-  thk_s <- .cum_layer_thickness(h, s$layers, max_top_cm = 130)
-  thk_h <- .cum_layer_thickness(h, he$layers, max_top_cm = 130)
-  thk_f <- .cum_layer_thickness(h, fi$layers, max_top_cm = 130)
-  passed <- thk_s > thk_h && thk_s > thk_f
+  p <- .histosol_predominant(pedon, "sapric")
   DiagnosticResult$new(
-    name = "sapric_predominant_usda", passed = passed,
-    layers = s$layers,
-    evidence = list(sapric_cm = thk_s, hemic_cm = thk_h,
-                      fibric_cm = thk_f),
-    missing = unique(c(s$missing %||% character(0),
-                          he$missing %||% character(0),
-                          fi$missing %||% character(0))),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 10, p 202"
+    name = "sapric_predominant_usda", passed = p$passed, layers = integer(0),
+    evidence = p,
+    missing = if (is.na(p$passed)) c("fiber_content_rubbed_pct", "von_post_index") else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 199"
   )
 }
 
 
-#' Fibric_predominant_usda: Fibrists Suborder qualifier
+#' Fibric_predominant_usda: Fibrists Suborder qualifier (KST 13th ed., p. 199)
+#'
+#' v0.9.418: more fibric than any other kind of organic soil material in the
+#' tiers of \code{sapric_predominant_usda()}, no sulfuric horizon within 50
+#' cm and no sulfidic materials within 100 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 fibric_predominant_usda <- function(pedon) {
-  h <- pedon$horizons
-  s <- saprico(pedon); he <- hemico(pedon); fi <- fibrico(pedon)
-  thk_s <- .cum_layer_thickness(h, s$layers, max_top_cm = 130)
-  thk_h <- .cum_layer_thickness(h, he$layers, max_top_cm = 130)
-  thk_f <- .cum_layer_thickness(h, fi$layers, max_top_cm = 130)
-  passed <- thk_f > thk_s && thk_f > thk_h
+  p <- .histosol_predominant(pedon, "fibric")
+  su <- sulfuric_horizon_usda(pedon, max_top_cm = 50)$passed
+  sd <- sulfidic_materials_usda(pedon, max_top_cm = 100)$passed
+  passed <- p$passed & !su & !sd
   DiagnosticResult$new(
-    name = "fibric_predominant_usda", passed = passed,
-    layers = fi$layers,
-    evidence = list(sapric_cm = thk_s, hemic_cm = thk_h,
-                      fibric_cm = thk_f),
-    missing = unique(c(s$missing %||% character(0),
-                          he$missing %||% character(0),
-                          fi$missing %||% character(0))),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 10, p 199"
+    name = "fibric_predominant_usda", passed = passed, layers = integer(0),
+    evidence = c(p, list(sulfuric_50 = su, sulfidic_100 = sd)),
+    missing = if (is.na(passed)) c("fiber_content_rubbed_pct", "von_post_index") else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 199"
   )
 }
 
 
 # ---- Subgroup-level fibric/hemic/sapric helpers (tier rules) -------
 
-#' Fibric Subgroup helper (Haplohemists / Haplowassists / Sulfiwassists)
-#' Pass when fibric layers cumulative thickness >= 25 cm in control
-#' section below surface tier.
+# v0.9.418: layers of a kind of organic soil material with a total thickness
+# of 25 cm or more in the control section, below the surface tier (the
+# Fibric, Hemic and Sapric subgroups of Histosols, KST 13th ed., pp.
+# 199-205), the kinds of .usda_organic_kind(). Up to v0.9.417 the SiBCS
+# classes in 0-130 cm.
+.histosol_kind_subgroup <- function(pedon, kinds, name, max_top_cm = NULL) {
+  h <- pedon$horizons
+  org <- .usda_organic_status(pedon)
+  tiers <- .histosol_tiers_usda(pedon, org)
+  kind <- .usda_organic_kind(pedon, org)
+  a <- tiers$surface[2]; b <- if (is.null(max_top_cm)) tiers$bottom else min(tiers$bottom, max_top_cm)
+  k <- which(org %in% TRUE & kind %in% kinds)
+  yes <- .thk_in(h, k, a, b)
+  may <- .thk_in(h, union(k, which((org %in% TRUE & is.na(kind)) | is.na(org))), a, b)
+  passed <- if (yes >= 25) TRUE else if (may < 25) FALSE else NA
+  DiagnosticResult$new(
+    name = name, passed = passed, layers = if (isTRUE(passed)) k else integer(0),
+    evidence = list(thickness_cm = yes, possible_cm = may, zone = c(a, b), threshold = 25),
+    missing = if (is.na(passed)) c("fiber_content_rubbed_pct", "von_post_index") else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., pp. 199-205"
+  )
+}
+
+#' Fibric Subgroup helper (Hemists, Saprists, Wassists): 25 cm or more of
+#' fibric materials in the control section below the surface tier.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param max_top_cm Unused bound kept for the subgroup lists (the control
+#'   section decides).
 #' @noRd
 fibric_subgroup_usda <- function(pedon, max_top_cm = 130) {
-  fi <- fibrico(pedon)
-  thk <- .cum_layer_thickness(pedon$horizons, fi$layers,
-                                  max_top_cm = max_top_cm)
-  passed <- thk >= 25
-  DiagnosticResult$new(
-    name = "fibric_subgroup_usda", passed = passed,
-    layers = if (passed) fi$layers else integer(0),
-    evidence = list(thickness_cm = thk, threshold = 25),
-    missing = fi$missing,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 10"
-  )
+  .histosol_kind_subgroup(pedon, "fibric", "fibric_subgroup_usda")
 }
 
 
-#' Hemic Subgroup helper
+#' Hemic Subgroup helper: 25 cm or more of hemic materials in the control
+#' section below the surface tier.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param max_top_cm Unused bound kept for the subgroup lists.
 #' @noRd
 hemic_subgroup_usda <- function(pedon, max_top_cm = 130) {
-  he <- hemico(pedon)
-  thk <- .cum_layer_thickness(pedon$horizons, he$layers,
-                                  max_top_cm = max_top_cm)
-  passed <- thk >= 25
-  DiagnosticResult$new(
-    name = "hemic_subgroup_usda", passed = passed,
-    layers = if (passed) he$layers else integer(0),
-    evidence = list(thickness_cm = thk, threshold = 25),
-    missing = he$missing,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 10"
-  )
+  .histosol_kind_subgroup(pedon, "hemic", "hemic_subgroup_usda")
 }
 
 
-#' Sapric Subgroup helper (Sphagnofibrists)
+#' Sapric Subgroup helper: 25 cm or more of sapric materials in the control
+#' section below the surface tier.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param max_top_cm Unused bound kept for the subgroup lists.
 #' @noRd
 sapric_subgroup_usda <- function(pedon, max_top_cm = 130) {
-  sa <- saprico(pedon)
-  thk <- .cum_layer_thickness(pedon$horizons, sa$layers,
-                                  max_top_cm = max_top_cm)
-  passed <- thk >= 25
+  .histosol_kind_subgroup(pedon, "sapric", "sapric_subgroup_usda")
+}
+
+
+# Histosols item B.1 (KST 13th ed., p. 67): andic soil properties in 60 % or
+# more of the thickness between the SOIL surface (organic layers included,
+# unlike the Andisol window) and 60 cm or a densic, lithic or paralithic
+# contact or duripan. Three-valued on the shares of andic, not andic and
+# undecided layers (the andic test of p. 32 excludes 25 % organic carbon or
+# more). TRUE means the exclusion applies (andic).
+.histosol_andic_usda <- function(pedon) {
+  h <- pedon$horizons
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 67 (key to soil orders, item B.1)"
+  st <- .andic_layer_status_usda(h)
+  d <- .desg_master(h$designation, site = pedon$site)
+  top0 <- suppressWarnings(min(h$top_cm, na.rm = TRUE))
+  stop_k <- which(!is.na(d) & (grepl("^(R|Cr|Cd)", d) | grepl("qm", d)) & h$top_cm > top0)
+  bot <- min(c(top0 + 60, h$top_cm[stop_k]))
+  w <- pmax(pmin(h$bottom_cm, bot) - pmax(h$top_cm, top0), 0)
+  w[is.na(w)] <- 0
+  tot <- bot - top0
+  yes <- sum(w[st$status %in% TRUE]); no <- sum(w[st$status %in% FALSE])
+  passed <- if (tot <= 0) FALSE else if (yes >= 0.6 * tot - 1e-9) TRUE
+            else if (yes + (tot - yes - no) < 0.6 * tot - 1e-9) FALSE else NA
+  und <- which(w > 0 & is.na(st$status))
   DiagnosticResult$new(
-    name = "sapric_subgroup_usda", passed = passed,
-    layers = if (passed) sa$layers else integer(0),
-    evidence = list(thickness_cm = thk, threshold = 25),
-    missing = sa$missing,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 10"
-  )
+    name = "histosol_andic_usda", passed = passed,
+    layers = which(w > 0 & st$status %in% TRUE),
+    evidence = list(top_cm = top0, bottom_cm = bot, andic_cm = yes, not_andic_cm = no),
+    missing = if (is.na(passed)) unique(unlist(st$missing[und])) else character(0),
+    reference = ref)
 }
