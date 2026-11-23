@@ -1,3 +1,82 @@
+# soilKey 0.9.421
+
+Mollisols and Vertisols after the Soil Taxonomy audit (Hugo, 2026-11-20;
+audit section 2.5, items M1 to M9, readings L19 and L27 to L33). Each test
+touched is three-valued: TRUE or FALSE where the data recorded decide it, NA
+with the missing data listed where they do not.
+
+* **Mollic epipedon** (KST 13th ed., pp. 14-16; `mollic_epipedon_usda()`,
+  now in `R/diagnostics-mollisols-usda.R`). The upper 18 cm of the mineral
+  soil (less above a contact, petrocalcic horizon or duripan) are mixed by a
+  thickness-weighted average whatever the designations; the layers below
+  join the epipedon one by one while they meet the requirements. Before,
+  only A horizons starting within 5 cm counted, each alone. Colour: the
+  carbonate rules of item 4 (15-40 % CaCO3 with value and chroma 3 or less;
+  40 % or more with moist value 5 or less) and 2.5 % organic carbon at moist
+  value 4 or 5 (6a); the C-horizon rule (6b) from the moist colours. A dry
+  value not recorded is the moist value + 1 only where the moist value is 2
+  or less, and the test is undecided otherwise (L27); the dry-chroma and the
+  organic-carbon (1.5 %) stand-ins for colour are gone. Base saturation not
+  measured is undecided; the pH and Al-saturation proxies are gone (L28).
+  Structure (items 1-3) fails only where the layer is massive and harder
+  than moderately hard when dry; FAO "hard" counts as moderately hard (L33).
+  Thickness (item 7): 25 cm (loamy fine sand or coarser; no diagnostic
+  horizon below and irregular carbon; limits at 75 cm or deeper), 10 cm
+  directly above a contact, one-third of the depth to the deeper of the
+  carbonate limit and the lower boundary of the argillic or cambic horizon
+  (L29) between 18 and 25 cm, or 18 cm. A CaCO3 equivalent not measured is
+  nil where no effervescence is recorded or the pH(H2O) is below 7. The
+  shared WRB `test_mollic_*` helpers and the umbric epipedon are unchanged.
+* **Mollisols** (pp. 69-70, item I; `mollisol_qualifying_usda()`, now called
+  by the order). Item I.1.b (the albic alternative) and item I.2, base
+  saturation of 50 % or more to 125 cm below an argillic, kandic or natric
+  horizon, 180 cm or a contact. A profile sampled shallower is read at its
+  deepest horizon sampled; `evidence$inferences` and a warning say "base
+  saturation read at X cm, the deepest horizon sampled, as a stand-in for Y
+  cm", and the name has grade C (L19). `classify_usda()` lowers the grade
+  for any such inference of a test on the path to the name.
+* **Pachic** follows the new thickness (50 cm, finer than loamy fine sand).
+* **Albolls, Aquolls, Rendolls** (pp. 247-248): the criteria of the key.
+  Albolls: argillic or natric, the albic horizon as worded, redox
+  concentrations, a temperature regime warmer than cryic. Aquolls: aquic
+  conditions in the 40-50 cm layer (or above a contact) and sodium, a histic
+  epipedon, a calcic horizon within 40 cm, or the colour sets of item 5.
+  Rendolls: mollic under 50 cm, no argillic or calcic horizon, 40 % CaCO3
+  within or below it, udic or cryic (no contact asked for).
+* **Calci-, Pale-, Vermi- Mollisols** (pp. 249, 254, 259, 267-268, 284):
+  `calci_mollisol_usda()`, `pale_mollisol_usda()`, `vermic_mollisol_usda()`,
+  with the criteria of each suborder in place of the calcic horizon and the
+  Paleargid stand-in. Entic Durustolls read "no argillic horizon above the
+  duripan" (`entic_durustoll_usda()`), not the Spodosol entic test.
+* **Vertisols** (p. 69, item F; `vertisol_qualifying_usda()`): a layer of 25
+  cm or more (adjoining horizons) within 100 cm with slickensides or
+  wedge-shaped peds; 30 % clay in the upper 18 cm (or the Ap) and in every
+  horizon reaching into 18-50 cm (L31); cracks, where none are recorded the
+  slickensides standing for them, as the trace notes (L30). The linear
+  extensibility path is not part of the order key. The field texture class
+  bounds the clay where it is not measured. `vertic_horizon(reading =
+  "usda")`, which the SiBCS vertic horizon uses, is unchanged.
+* **Vertisol suborders and great groups** (pp. 343-350). Aquerts by the
+  chroma of item FA; Xererts need a thermic, mesic or frigid regime as well
+  as the xeric regime, which stands in for the crack pattern, as the
+  recorded regimes do for Torrerts and Usterts (L32). Dystr- by EC < 4 and
+  pH (CaCl2) 4.5 or less, not the base saturation (`dystric_vertisol_usda()`;
+  `dystric_subgroup_usda()` stays for the Dystr- Inceptisols); Dur- by the
+  duripan; Humicryerts by 10 kg/m2 organic carbon; Sulfaquerts also by
+  sulfidic materials.
+* Canonical fixtures: Phaeozem and Anthrosol become Pachic Hapludolls (were
+  Typic Hapludolls); Chernozem and Chernossolo become Pachic Hapludolls (were
+  Typic Vermudolls: the transition zone has less than 25 % worm holes).
+* On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 203 (was 201), suborder 158 (158), great group 105 (104), subgroup
+  48 (48); 103 names change. ISIS Vertisols named Vertisols 27 of 30 (was
+  22; IN010, IT011, TH002, TR016, TR018 join; IN012 stays out by the 18-50 cm
+  clay); ISIS Mollisols named Mollisols 15 of 31 (was 19): 15 now have the
+  Mollisol test undecided, mostly by a dry colour not recorded at moist value
+  3 (L27; inferring the dry value always would give 23). TR007 and US028
+  become Alfisols, as in ISIS; KE067 becomes Pachic Argiustolls (ISIS:
+  Vertic Argiustoll); UY008 becomes Typic Hapluderts.
+
 # soilKey 0.9.420
 
 The Alfisols, Ultisols and Oxisols after the Soil Taxonomy audit (Hugo,

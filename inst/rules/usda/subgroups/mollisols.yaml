@@ -957,7 +957,7 @@ subgroups:
       name: "Entic Durustolls"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
+          - entic_durustoll_usda: {}
     - code: "IGAF"
       name: "Haplic Durustolls"
       tests:

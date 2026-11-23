@@ -75,7 +75,9 @@ test_that("the COLE path is the KST 13 one: reading = 'usda' only", {
   u <- vertic_horizon(p, reading = "usda")
   expect_true(isTRUE(u$passed))
   expect_true(isTRUE(u$evidence$cole_le_path$passed))
-  expect_true(isTRUE(soilKey:::vertisol_qualifying_usda(p)$passed))
+  # v0.9.421: the USDA Vertisols read the order key of KST p. 69 (item F),
+  # which has no linear-extensibility path: no slickensides, no Vertisol.
+  expect_false(isTRUE(soilKey:::vertisol_qualifying_usda(p)$passed))
 })
 
 test_that("a vertic horizon is undecided only where it could be made up", {

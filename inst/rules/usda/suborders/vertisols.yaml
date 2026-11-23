@@ -3,6 +3,11 @@
 # =============================================================
 # 6 Suborders: FA Aquerts, FB Cryerts, FC Xererts, FD Torrerts,
 #              FE Usterts, FF Uderts
+#
+# v0.9.421 (L32): the crack patterns of FC to FE are read from the recorded
+# regimes, which the key note of p. 343 says they stand for; undecided where
+# no regime is recorded. Xererts also need a thermic, mesic or frigid
+# temperature regime.
 # =============================================================
 
 suborders:
@@ -22,7 +27,7 @@ suborders:
       name: "Xererts"
       tests:
         all_of:
-          - smr_xeric_usda: {}
+          - xerert_qualifying_usda: {}
     - code: "FD"
       name: "Torrerts"
       tests:

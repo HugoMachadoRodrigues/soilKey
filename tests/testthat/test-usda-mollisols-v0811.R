@@ -26,6 +26,7 @@ test_that("classify_usda routes a chernozem-like to Mollisols Ustolls", {
     bottom_cm = c(30, 80, 200),
     designation = c("A", "Bw", "Bk"),
     oc_pct = c(2.5, 0.8, 0.4),
+    structure_type = c("granular", "subangular blocky", "subangular blocky"),
     bs_pct = c(85, 90, 95),
     caco3_pct = c(2, 5, 20),
     ph_h2o = c(7.0, 7.5, 8.0),

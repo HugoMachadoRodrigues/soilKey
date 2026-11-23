@@ -636,25 +636,39 @@ alic_andisol_usda <- function(pedon) {
 # ---- Pachic Subgroup helper (thick mollic/umbric, 50+ cm) -----------
 
 #' Pachic Subgroup helper (Andisols, Mollisols)
-#' Pass when mollic OR umbric epipedon is >= 50 cm thick.
+#'
+#' v0.9.421: a mollic epipedon 50 cm or more thick with a texture class
+#' finer than loamy fine sand (the Pachic Mollisols, e.g. KST 13th ed., p.
+#' 265; the 40 cm of the frigid Pachic Hapludolls is left to the subgroup
+#' lists), read from the thickness of \code{mollic_epipedon_usda()} (KST pp.
+#' 14-16), or an umbric epipedon 50 cm or more thick. Three-valued: NA where
+#' the mollic epipedon may or may not reach 50 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 pachic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
   mo <- mollic_epipedon_usda(pedon)
   um <- umbric_epipedon_usda(pedon)
-  layers <- unique(c(mo$layers, um$layers))
-  thk <- if (length(layers) > 0L)
-           sum(pmax(h$bottom_cm[layers] - h$top_cm[layers], 0),
-                 na.rm = TRUE)
-         else 0
-  passed <- thk >= 50
+  e <- mo$evidence
+  mo50 <- if (isFALSE(mo$passed)) FALSE else {
+    thick <- if ((e$thickness_cm %||% 0) >= 50 && isTRUE(mo$passed)) TRUE
+             else if ((e$thickness_possible_cm %||% 0) < 50) FALSE else NA
+    fine <- if (isFALSE(thick)) FALSE else .mo_not(e$texture_lfs_or_coarser %||% NA)
+    .mo_and(thick, fine)
+  }
+  ul <- um$layers
+  uthk <- if (isTRUE(um$passed) && length(ul) > 0L)
+            sum(pmax(h$bottom_cm[ul] - h$top_cm[ul], 0), na.rm = TRUE) else 0
+  passed <- .mo_or(mo50, uthk >= 50)
+  layers <- if (isTRUE(mo50)) mo$layers else if (uthk >= 50) ul else integer(0)
   DiagnosticResult$new(
     name = "pachic_subgroup_usda", passed = passed,
-    layers = if (passed) layers else integer(0),
-    evidence = list(thickness_cm = thk, mollic = mo, umbric = um),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 6 / Ch. 12"
+    layers = if (isTRUE(passed)) layers else integer(0),
+    evidence = list(mollic_thickness_cm = e$thickness_cm %||% 0,
+                    mollic_thickness_possible_cm = e$thickness_possible_cm %||% 0,
+                    mollic_50 = mo50, umbric_thickness_cm = uthk),
+    missing = if (is.na(passed)) mo$missing else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., pp. 14-16, 265"
   )
 }
 

@@ -323,19 +323,24 @@ classify_usda <- function(pedon,
 }
 
 
-# v0.9.420: the inference notes of the tests that named each level (the
-# `inference` element of their evidence), in key order.
+# v0.9.420/0.9.421: the inference notes of the tests that named each level
+# (an `inference` or `inferences` element of their evidence, a character
+# vector), in key order. Audit reading L19: e.g. the base saturation of the
+# deepest horizon sampled read for a deeper one.
 .usda_path_inferences <- function(level_traces, level_assigned) {
   out <- character(0)
   for (lv in names(level_traces)) {
     code <- level_assigned[[lv]]
     if (is.null(code)) next
     entry <- level_traces[[lv]][[code]]
-    if (is.null(entry) || !isTRUE(entry$passed)) next
-    for (r in entry$evidence) {
-      note <- tryCatch(r$evidence$inference, error = function(e) NULL)
-      if (is.character(note) && length(note)) out <- c(out, note)
+    if (!is.list(entry) || !isTRUE(entry$passed)) next
+    for (r in entry$evidence %||% list()) {
+      if (!is.list(r) || !is.list(r$evidence)) next
+      for (nm in c("inference", "inferences")) {
+        note <- r$evidence[[nm]]
+        if (is.character(note) && length(note)) out <- c(out, note)
+      }
     }
   }
-  unique(out)
+  unique(out[nzchar(out)])
 }

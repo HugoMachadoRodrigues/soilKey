@@ -98,6 +98,7 @@ test_that("mollic_epipedon_usda passes for canonical Mollisol surface", {
     munsell_value_dry = c(4, 6),
     oc_pct = c(2.0, 0.4),
     bs_pct = c(75, 65),
+    structure_type = c("granular", "subangular blocky"),  # v0.9.421: recorded
     clay_pct = c(25, 20),
     silt_pct = c(30, 25),
     sand_pct = c(45, 55)
@@ -222,6 +223,7 @@ test_that("ochric_epipedon_usda fails when mollic passes", {
     munsell_value_dry = c(4, 6),
     oc_pct = c(2.0, 0.4),
     bs_pct = c(75, 65),
+    structure_type = c("granular", "subangular blocky"),  # v0.9.421: recorded
     clay_pct = c(25, 20)
   )
   pr <- PedonRecord$new(
