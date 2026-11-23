@@ -1148,6 +1148,12 @@
           },
           "araric_fragments_pct": {
             "type": ["number", "null"]
+          },
+          "caco3_clay_pct": {
+            "type": ["number", "null"]
+          },
+          "cracks_permanent": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false

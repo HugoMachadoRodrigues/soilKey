@@ -232,7 +232,9 @@ test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
   # 363-366; the fixture records no gibbsite nor clay minerals, so section A
   # cannot rule out gibbsitic or kaolinitic and "mixed" (reached by default
   # before) is no longer named (reading F1).
-  expect_true(any(grepl("fine, subactive, isohyperthermic Typic Hapludox",
+  # v0.9.433: Oxisols take no cation-exchange activity class (KST 13th ed.,
+  # p. 366), so "subactive" is gone too.
+  expect_true(any(grepl("fine, isohyperthermic Typic Hapludox",
                         usda1)))
 })
 
