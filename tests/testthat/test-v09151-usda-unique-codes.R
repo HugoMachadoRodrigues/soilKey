@@ -23,5 +23,7 @@ test_that("USDA subgroup codes are globally unique across the rule base", {
   expect_gt(length(codes), 2000L)
   dups <- unique(codes[duplicated(codes)])
   expect_identical(dups, character(0))            # no duplicate code anywhere
-  expect_true(all(nchar(codes) == 4L))            # all canonical 4-char ids
+  # all canonical 4-char ids; v0.9.422: or the KST's own fifth letter past Z
+  # (e.g. JEJZa, Inceptic Hapludalfs, KST 13th ed., p. 93)
+  expect_true(all(grepl("^[A-Z]{4}[a-z]?$", codes)))
 })
