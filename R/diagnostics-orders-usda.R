@@ -143,7 +143,30 @@ histosol_usda <- function(pedon) {
 spodosol_usda <- function(pedon) {
   # v0.9.400: memoised within a classification (R/memo.R)
   .memo(pedon, "spodosol_usda", list(),
-        .spodosol_usda_uncached(pedon = pedon))
+        .spodosol_no_andic_usda(pedon, .spodosol_usda_uncached(pedon = pedon)))
+}
+
+# Order key item C.3.d (KST 13th ed., p. 68; v0.9.417, audit A5): a spodic
+# horizon qualifies only with either (1) a directly overlying albic horizon
+# or (2) no andic soil properties in 60 % or more of the thickness of the
+# Andisol window (andisol_qualifying_usda()). Applied to a passing Spodosol
+# result `res`: it fails when the window has andic soil properties and no
+# albic horizon lies directly on the spodic horizon, and is undecided when
+# that is undecided (reading L7). Paths C.1 and C.2 are not separated here.
+.spodosol_no_andic_usda <- function(pedon, res) {
+  if (!isTRUE(res$passed)) return(res)
+  h <- pedon$horizons
+  ab <- albic_horizon_usda(pedon)
+  sp_top <- suppressWarnings(min(h$top_cm[res$layers], na.rm = TRUE))
+  direct <- isTRUE(ab$passed) && length(ab$layers) > 0L &&
+            any(!is.na(h$bottom_cm[ab$layers]) & h$bottom_cm[ab$layers] == sp_top)
+  if (direct) return(res)
+  aq <- andisol_qualifying_usda(pedon)
+  d <- !aq$passed
+  res$passed <- res$passed & d
+  res$evidence$no_andic_c3d <- aq
+  if (is.na(res$passed)) res$missing <- unique(c(res$missing, aq$missing))
+  res
 }
 
 # The computation of spodosol_usda().
@@ -168,6 +191,10 @@ spodosol_usda <- function(pedon) {
 # ---- D. Andisols (Cap 6, p 117) -------------------------------------------
 
 #' Andisols (USDA Cap 6): andic soil properties >= 60\% of thickness.
+#'
+#' Order key item D (KST 13th ed., p. 68), through
+#' \code{andisol_qualifying_usda()}. v0.9.417: NA when the andic window is
+#' undecided (up to v0.9.416 FALSE).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 andisol_usda <- function(pedon) {
@@ -191,13 +218,15 @@ andisol_usda <- function(pedon) {
   ex <- isTRUE(gelisol_usda(pedon)$passed) ||
           isTRUE(histosol_usda(pedon)$passed) ||
           isTRUE(spodosol_usda(pedon)$passed)
-  passed <- isTRUE(aq$passed) && !ex
+  # v0.9.417: three-valued (an undecided andic window is NA, not FALSE)
+  passed <- if (ex) FALSE else aq$passed
   DiagnosticResult$new(
     name = "andisol_usda", passed = passed,
     layers = aq$layers,
     evidence = list(andisol_qualifying = aq, prior_order = ex),
-    missing = aq$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 6 Andisols (p 117)"
+    missing = if (is.na(passed)) aq$missing else character(0),
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., p. 68 (order key item D)",
+    notes = aq$notes %||% NA_character_
   )
 }
 

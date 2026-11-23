@@ -137,7 +137,9 @@ test_that("amorphous exchange complex: bulk density below 0.85 and one other mar
   expect_true(.ok(amorphous_complex_fao74(ac(c82 = 15.1, clay = 10, oc = 0.5))))   # 151 per 100 g clay
   expect_false(.ok(amorphous_complex_fao74(ac(c82 = 15, clay = 10, oc = 0.5, w15 = 5))))
   expect_true(.ok(amorphous_complex_fao74(ac(naf = 9.5, w15 = 25))))
-  expect_false(.ok(amorphous_complex_fao74(ac(naf = 9.5, w15 = 19))))  # 15-bar water below 20 %
+  # 15-bar water below 20 %: the 1974 marks leave it open, and since v0.9.417
+  # the USDA andic stand-in is undecided too (phosphate retention not measured)
+  expect_true(is.na(.ok(amorphous_complex_fao74(ac(naf = 9.5, w15 = 19)))))
   expect_true(.ok(amorphous_complex_fao74(ac(w15 = 31, clay = 30))))
   expect_true(.ok(amorphous_complex_fao74(ac(dta = TRUE))))
   # nothing but the density: undecided, the andic stand-ins then decide

@@ -93,7 +93,8 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
   aridic <- function(f) function() {
     p <- f(); p$site$soil_moisture_regime <- "aridic"; p
   }
-  expect_equal(sg(make_andosol_canonical),    "Thaptic Hydrudands")
+  # v0.9.417: Melanudands come before Hydrudands (KST 13 pp 125-126)
+  expect_equal(sg(make_andosol_canonical),    "Vitric Melanudands")
   # v0.9.415: Udults need a recorded udic or perudic regime (KST 13 p 321,
   # reading L34); the fixture records none, so it is recorded here.
   udic <- function(f) function() {
@@ -119,7 +120,7 @@ test_that("the generator never changes a fixture's great group", {
   aridic_calcisol <- function() {
     p <- make_calcisol_canonical(); p$site$soil_moisture_regime <- "aridic"; p
   }
-  expect_equal(gg(make_andosol_canonical),    "Hydrudands")
+  expect_equal(gg(make_andosol_canonical),    "Melanudands")  # v0.9.417
   # v0.9.415: udic recorded, as above (Udults, KST 13 p 321)
   udic_argissolo <- function() {
     p <- make_argissolo_canonical(); p$site$soil_moisture_regime <- "udic"; p

@@ -27,10 +27,15 @@ test_that("vitrand: undried >= 30% disqualifies, < 30% qualifies", {
 
 # ---- Vitrandic: fine earth >= 30% in 0.02-2 mm (KST 13ed Ch 9) --------------
 
-test_that("vitrandic: particles field absent => glass-only branch behaviour", {
+test_that("vitrandic: particles field absent => sand decides, else undecided", {
+  # v0.9.417: with no 0.02-2 mm fraction recorded, sand >= 30 % meets it and
+  # nothing recorded leaves the test undecided (it passed before)
   p <- mk(data.frame(top_cm = 0, bottom_cm = 20, al_ox_pct = 0.3,
                      fe_ox_pct = 0.2, volcanic_glass_pct = 8))
-  expect_true(vitrandic_subgroup_usda(p)$passed)
+  expect_true(is.na(vitrandic_subgroup_usda(p)$passed))
+  p2 <- mk(data.frame(top_cm = 0, bottom_cm = 20, al_ox_pct = 0.3,
+                      fe_ox_pct = 0.2, volcanic_glass_pct = 8, sand_pct = 40))
+  expect_true(vitrandic_subgroup_usda(p2)$passed)
 })
 
 test_that("vitrandic: < 30% particles 0.02-2 mm fails branch 2", {

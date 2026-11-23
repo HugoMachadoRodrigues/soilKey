@@ -646,21 +646,31 @@ oxyaquic_subgroup_usda <- function(pedon) {
 
 # ---- Compound Subgroup helpers (combinations) -----------------------
 
-#' Aquandic Subgroup helper (Spodosols / others)
-#' Aquic + Andic.
+#' Aquandic Subgroup helper (USDA, KST 13th ed., e.g. p. 225)
+#'
+#' The aquic conditions of the subgroup (\code{aquic_subgroup_usda()}) and,
+#' throughout one or more horizons with a total thickness of 18 cm or more
+#' within 75 cm of the mineral soil surface, the andic or the vitrandic
+#' criteria (e.g. Aquandic Dystrudepts, p. 225). v0.9.417: the vitrandic
+#' branch (up to v0.9.416 only the andic one), and three-valued.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 aquandic_subgroup_usda <- function(pedon) {
   aq <- aquic_subgroup_usda(pedon)
-  an <- andic_subgroup_usda(pedon)
-  passed <- isTRUE(aq$passed) && isTRUE(an$passed)
+  h <- pedon$horizons
+  L <- if (nrow(h)) .andic_subgroup_layers_usda(h) else NULL
+  an <- if (nrow(h)) .andic_subgroup_18_usda(h, L$andic | L$vitrandic)
+        else list(passed = FALSE, layers = integer(0))
+  passed <- aq$passed & an$passed
   DiagnosticResult$new(
     name = "aquandic_subgroup_usda", passed = passed,
-    layers = if (passed) union(aq$layers, an$layers) else integer(0),
-    evidence = list(aquic = aq, andic = an),
-    missing = unique(c(aq$missing %||% character(0),
-                          an$missing %||% character(0))),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
+    layers = if (isTRUE(passed)) union(aq$layers, an$layers) else integer(0),
+    evidence = list(aquic = aq, andic_or_vitrandic = an),
+    missing = if (is.na(passed))
+                unique(c(if (is.na(aq$passed)) aq$missing %||% character(0),
+                         if (is.na(an$passed)) c(L$missing_andic, L$missing_vitrandic)))
+              else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., p. 225 (e.g. Aquandic Dystrudepts)"
   )
 }
 

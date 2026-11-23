@@ -86,7 +86,9 @@ test_that("classify_usda routes a hydric andic profile to Hydrudands", {
     fe_ox_pct = c(1.5, 2.0, 0.5),
     phosphate_retention_pct = c(95, 95, 80),
     bs_pct = c(40, 35, 30),
-    water_content_1500kpa = c(80, 75, 35)  # high water retention
+    water_content_1500kpa = c(80, 75, 35),  # high water retention
+    # v0.9.417: the Hydrudands need 100 % on undried samples (KST p. 126)
+    water_content_1500kpa_undried = c(120, 110, 40)
   )
   pr <- PedonRecord$new(
     site = list(id="hd", lat=20, lon=-156, country="US",

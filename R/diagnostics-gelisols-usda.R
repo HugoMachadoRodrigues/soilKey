@@ -396,104 +396,132 @@ fluventic_usda <- function(pedon) {
 
 # ---- "Andic" / "Vitrandic" ------------------------------------------
 
-#' Andic Subgroup helper (USDA, KST 13ed)
+# Per-layer answers (TRUE / FALSE / NA) of the Andic and Vitrandic subgroup
+# criteria of the mineral orders (v0.9.417; KST 13th ed., e.g. Andic,
+# Vitrandic and Aquandic Dystrudepts, p. 225):
+#   andic: a fine earth with a bulk density at 33 kPa of 1.0 g/cm3 or less and
+#     Al + 1/2 Fe (oxalate) more than 1.0 %; where the bulk density is not
+#     measured a pH NaF of 9.5 or more in a carbonate-free layer stands in
+#     for it (reading L2);
+#   vitrandic: more than 35 % (by volume) fragments of 2 mm or more, of which
+#     more than 66 % are cinders, pumice and pumicelike fragments
+#     (pyroclastic_fragments_pct; a fragment kind not recorded is absent), or
+#     a fine earth with 30 % or more 0.02 to 2.0 mm (particles_002_2mm_pct;
+#     otherwise sand >= 30 % passes and sand + silt < 30 % fails) with 5 % or
+#     more volcanic glass and 60 (Al + 1/2 Fe) + glass >= 30.
+.andic_subgroup_layers_usda <- function(h) {
+  n <- nrow(h)
+  col <- function(x) h[[x]] %||% rep(NA_real_, n)
+  bd <- col("bulk_density_g_cm3"); al <- col("al_ox_pct"); fe <- col("fe_ox_pct")
+  naf <- col("ph_naf"); caco3 <- col("caco3_pct"); vg <- col("volcanic_glass_pct")
+  cf <- col("coarse_fragments_pct"); py <- col("pyroclastic_fragments_pct")
+  sand <- col("sand_pct"); silt <- col("silt_pct"); p002 <- col("particles_002_2mm_pct")
+  alfe <- al + fe / 2
+  alfe_gt1 <- ifelse(!is.na(alfe), alfe > 1.0, ifelse(!is.na(al) & al > 1.0, TRUE, NA))
+  naf_proxy <- is.na(bd) & !is.na(naf) & naf >= 9.5 & !(!is.na(caco3) & caco3 > 0)
+  andic <- ifelse(naf_proxy, TRUE, bd <= 1.0) & alfe_gt1
+  cinders <- !is.na(cf) & cf > 35 & !is.na(py) & py > 0.66 * cf
+  f30 <- ifelse(!is.na(p002), p002 >= 30,
+           ifelse(!is.na(sand) & sand >= 30, TRUE,
+             ifelse(!is.na(sand) & !is.na(silt) & sand + silt < 30, FALSE, NA)))
+  score <- ifelse(!is.na(alfe) & 60 * alfe >= 30, TRUE, 60 * alfe + vg >= 30)
+  vitr <- cinders | (f30 & (vg >= 5) & score)
+  miss_a <- unique(c(if (any(is.na(andic) & is.na(bd) & !naf_proxy)) "bulk_density_g_cm3",
+                     if (any(is.na(andic) & is.na(al))) "al_ox_pct",
+                     if (any(is.na(andic) & is.na(fe))) "fe_ox_pct"))
+  miss_v <- unique(c(if (any(is.na(vitr) & is.na(vg))) "volcanic_glass_pct",
+                     if (any(is.na(vitr) & is.na(f30))) "particles_002_2mm_pct",
+                     if (any(is.na(vitr) & is.na(al))) "al_ox_pct"))
+  list(andic = andic, vitrandic = vitr, naf = which(naf_proxy),
+       missing_andic = miss_a, missing_vitrandic = miss_v)
+}
+
+# 18 cm or more of layers with `ok` within 75 cm of the mineral soil surface:
+# TRUE / FALSE / NA, with the layers.
+.andic_subgroup_18_usda <- function(h, ok) {
+  org <- (!is.na(h$oc_pct) & h$oc_pct >= 20) |
+         (!is.na(h$designation) & grepl("^[0-9]*[OHL]", h$designation))
+  mt <- h$top_cm[!org & !is.na(h$top_cm)]
+  ms <- if (length(mt)) min(mt) else 0
+  ov <- pmax(pmin(h$bottom_cm, ms + 75) - pmax(h$top_cm, ms), 0)
+  ov[is.na(ov)] <- 0
+  yes <- sum(ov[ok %in% TRUE]); may <- sum(ov[is.na(ok)])
+  list(passed = if (yes >= 18) TRUE else if (yes + may < 18) FALSE else NA,
+       layers = which(ok %in% TRUE & ov > 0), thickness_cm = yes,
+       undecided_cm = may, mineral_surface_cm = ms)
+}
+
+#' Andic Subgroup helper (USDA, KST 13th ed., e.g. p. 225)
 #'
-#' Pass when, throughout one or more horizons with total thickness
-#' >= 18 cm within 75 cm of the surface:
-#' \itemize{
-#'   \item bulk_density_g_cm3 <= 1.0 (at 33 kPa); AND
-#'   \item Al + 0.5 * Fe (oxalate-extractable) > 1.0 percent.
-#' }
-#' KST 13ed, p 117 (Andisols core, applies to subgroup criteria too).
+#' Throughout one or more horizons with a total thickness of 18 cm or more
+#' within 75 cm of the mineral soil surface, a fine earth with a bulk density
+#' (33 kPa) of 1.0 g/cm3 or less and Al + 1/2 Fe (oxalate) of more than 1.0\%.
+#' v0.9.417: the horizons are clipped to 75 cm below the mineral soil surface
+#' (up to v0.9.416 a horizon starting above 75 cm counted whole); a value not
+#' recorded leaves the test undecided (it failed before); where the bulk
+#' density is not measured, a pH NaF of 9.5 or more stands in for it (named
+#' in \code{notes}).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 andic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 75)
-  passing <- integer(0)
-  miss <- character(0)
-  for (i in cand) {
-    bd <- h$bulk_density_g_cm3[i]
-    al <- h$al_ox_pct[i]
-    fe <- h$fe_ox_pct[i]
-    if (is.na(bd)) miss <- c(miss, "bulk_density_g_cm3")
-    if (is.na(al)) miss <- c(miss, "al_ox_pct")
-    if (is.na(fe)) miss <- c(miss, "fe_ox_pct")
-    if (!is.na(bd) && bd <= 1.0 && !is.na(al) && !is.na(fe) &&
-          (al + 0.5 * fe) > 1.0) {
-      passing <- c(passing, i)
-    }
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 225 (e.g. Andic Dystrudepts)"
+  if (nrow(h) == 0L) {
+    return(DiagnosticResult$new(name = "andic_subgroup_usda", passed = FALSE,
+      layers = integer(0), evidence = list(reason = "empty horizons"),
+      missing = character(0), reference = ref))
   }
-  thk <- if (length(passing) > 0L)
-           sum(pmax(h$bottom_cm[passing] - h$top_cm[passing], 0),
-                 na.rm = TRUE)
-         else 0
-  passed <- thk >= 18
+  L <- .andic_subgroup_layers_usda(h)
+  r <- .andic_subgroup_18_usda(h, L$andic)
+  naf_used <- isTRUE(r$passed) && length(intersect(L$naf, r$layers)) > 0L
   DiagnosticResult$new(
-    name = "andic_subgroup_usda", passed = passed,
-    layers = if (passed) passing else integer(0),
-    evidence = list(passing_layers = passing, thickness_cm = thk),
-    missing = unique(miss),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 6 / Ch. 9"
+    name = "andic_subgroup_usda", passed = r$passed,
+    layers = if (isTRUE(r$passed)) r$layers else integer(0),
+    evidence = list(passing_layers = r$layers, thickness_cm = r$thickness_cm,
+                    undecided_cm = r$undecided_cm),
+    missing = if (is.na(r$passed)) L$missing_andic else character(0),
+    reference = ref,
+    notes = if (naf_used) "pH NaF >= 9.5 read in place of the bulk density, not measured (reading L2)"
+            else NA_character_
   )
 }
 
 
-#' Vitrandic Subgroup helper (USDA, KST 13ed)
+#' Vitrandic Subgroup helper (USDA, KST 13th ed., e.g. p. 225)
 #'
-#' Pass when, throughout one or more horizons with total thickness
-#' >= 18 cm within 75 cm of the surface, BOTH:
-#' \itemize{
-#'   \item More than 35\% (volume) particles >= 2 mm of which
-#'         > 66\% are cinders/pumice; OR fine-earth has >= 30\%
-#'         particles 0.02-2 mm AND >= 5\% volcanic glass (in 0.02-2 mm); AND
-#'   \item (Al + 0.5 * Fe) * 60 + volcanic_glass_pct >= 30.
-#' }
-#' KST 13ed, Ch 9 various.
-#'
-#' Implementation simplified to the volcanic-glass branch:
-#' volcanic_glass_pct >= 5 AND (Al + 0.5 * Fe) * 60 + volcanic_glass_pct >= 30.
+#' Throughout one or more horizons with a total thickness of 18 cm or more
+#' within 75 cm of the mineral soil surface, one or both of: more than 35\%
+#' (by volume) fragments of 2 mm or more, of which more than 66\% are cinders,
+#' pumice and pumicelike fragments; or a fine earth with 30\% or more
+#' particles 0.02 to 2.0 mm, with 5\% or more volcanic glass in that fraction
+#' and 60 (Al + 1/2 Fe) + glass >= 30. v0.9.417: the cinder branch needs the
+#' cinders (\code{pyroclastic_fragments_pct}; up to v0.9.416 any coarse
+#' fragments over 35\%), the 60 (Al + 1/2 Fe) + glass test belongs to the
+#' fine-earth branch only, the horizons are clipped to 75 cm and the answer
+#' is three-valued (volcanic glass not measured leaves it undecided).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 vitrandic_subgroup_usda <- function(pedon) {
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 75)
-  passing <- integer(0)
-  miss <- character(0)
-  for (i in cand) {
-    al <- h$al_ox_pct[i]
-    fe <- h$fe_ox_pct[i]
-    vg <- h$volcanic_glass_pct[i]
-    cf <- h$coarse_fragments_pct[i]
-    p002 <- .col_at(h, "particles_002_2mm_pct", i)
-    if (is.na(vg)) miss <- c(miss, "volcanic_glass_pct")
-    branch_a <- !is.na(cf) && cf > 35  # cinders/pumice branch (proxy)
-    # branch 2: >= 5% glass in 0.02-2 mm AND fine earth >= 30% in 0.02-2 mm.
-    # The fine-earth size requirement is enforced only when measured
-    # (particles_002_2mm_pct); absent => prior behaviour (v0.9.128).
-    branch_b <- !is.na(vg) && vg >= 5 && (is.na(p002) || p002 >= 30)
-    score <- if (!is.na(al) && !is.na(fe) && !is.na(vg))
-               (al + 0.5 * fe) * 60 + vg
-             else NA_real_
-    if (isTRUE(branch_a || branch_b) && !is.na(score) && score >= 30) {
-      passing <- c(passing, i)
-    }
+  ref <- "Soil Survey Staff (2022), KST 13th ed., p. 225 (e.g. Vitrandic Dystrudepts)"
+  if (nrow(h) == 0L) {
+    return(DiagnosticResult$new(name = "vitrandic_subgroup_usda", passed = FALSE,
+      layers = integer(0), evidence = list(reason = "empty horizons"),
+      missing = character(0), reference = ref))
   }
-  thk <- if (length(passing) > 0L)
-           sum(pmax(h$bottom_cm[passing] - h$top_cm[passing], 0),
-                 na.rm = TRUE)
-         else 0
-  passed <- thk >= 18
+  L <- .andic_subgroup_layers_usda(h)
+  r <- .andic_subgroup_18_usda(h, L$vitrandic)
   DiagnosticResult$new(
-    name = "vitrandic_subgroup_usda", passed = passed,
-    layers = if (passed) passing else integer(0),
-    evidence = list(passing_layers = passing, thickness_cm = thk),
-    missing = unique(miss),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 6 / Ch. 9"
+    name = "vitrandic_subgroup_usda", passed = r$passed,
+    layers = if (isTRUE(r$passed)) r$layers else integer(0),
+    evidence = list(passing_layers = r$layers, thickness_cm = r$thickness_cm,
+                    undecided_cm = r$undecided_cm),
+    missing = if (is.na(r$passed)) L$missing_vitrandic else character(0),
+    reference = ref
   )
 }
 
