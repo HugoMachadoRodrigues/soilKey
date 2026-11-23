@@ -1,3 +1,86 @@
+# soilKey 0.9.422
+
+The Alfisol subgroups rebuilt from Keys to Soil Taxonomy, 13th edition
+(Ch. 5, pp. 73-117; Hugo, 2026-11-20; audit items R3 to R6, G7, F16, F17).
+Each great group has the subgroup list of the KST, in the order of its key,
+Typic last, and each subgroup reads its own criteria, three-valued: TRUE or
+FALSE where the recorded data decide, NA with the missing data listed where
+they do not (an undecided subgroup before the one assigned gives grade C).
+
+* **Lists** (`inst/rules/usda/subgroups/alfisols.yaml`): 356 subgroups in 39
+  great groups, the names and codes of the KST code list (was 275 entries):
+  107 added, 26 removed that the KST does not have (e.g. Lithic and Vertic
+  Cryaqualfs, Lithic Paleustalfs, Mollic Rhodudalfs; Cryaqualfs, Duraqualfs,
+  Durustalfs, Plinth- and Rhodudalfs have only Typic, "provisionally"), and
+  the order of 24 great groups corrected, so the compound subgroups (Aquic
+  Arenic, Aeric Vertic, Fragiaquic, Arenic Oxyaquic...) come before their
+  parts and are reachable. The subgroup codes are the great-group code of the
+  rules followed by the letters of the KST code (e.g. JEJZa).
+* **New tests** (`R/subgroups-usda-alfisols.R`, `sg_alfisols_*()`), each with
+  the Alfisol text; the helpers of other orders are unchanged:
+  - Aquic: redox depletions of chroma 2 or less (a g designation, a reduced
+    matrix, mottles of chroma 2 or less, or redox features in a matrix of
+    chroma 2 or less; reading N10) in the zone of the great group: within 75
+    cm (100 Palecryalfs, 60 Ferrudalfs, 40 Fragiudalfs and Fragixeralfs), in
+    the upper 25 cm of the argillic (kandic, natric) horizon, or there if it
+    starts within 50 cm and else within 75 cm (Udalfs, p. 92). It took aquic
+    conditions within 100 cm everywhere.
+  - Arenic, Grossarenic: loamy fine sand or coarser from the surface to the
+    argillic or kandic horizon at 50 cm or more, 50 to 100 cm, or 100 cm or
+    more, as each great group says. The shared helper read the spodic
+    horizon and never passed in an Alfisol (F16).
+  - Vertic: cracks and 15 cm of slickensides or wedge-shaped peds within 125
+    cm, the slickensides standing for cracks not recorded (reading L30), or a
+    linear extensibility of 6 cm, which is undecided where COLE is not
+    recorded and the cracks do not decide (it was read as 0). Chromic: the
+    mixed Ap or upper 18 cm, moist value 4, dry value 6 or chroma 4.
+  - Aeric (Aqualfs): the colours below the A horizon of each great group,
+    the dry chroma where the text says "moist and dry" (Epi-, Kandiaqualfs;
+    the 10YR branch of Endo- and Glossaqualfs), 40 % chroma 3 between the A
+    and 75 cm (Albaqualfs), chroma above the fragipan (Fragiaqualfs). It was
+    an ochric epipedon.
+  - Mollic, Umbric, Udollic: the mixed upper 18 cm of `mollic_epipedon_usda()`
+    (all requirements but thickness, or the colour only, as each says; the
+    umbric with base saturation below 50 %); the dark colour (moist value 3,
+    dry 5) of the Humic, Mollic and Umbric Cryalfs and Fragixeralfs and the
+    Aquollic Hapludalfs; value 3 and 0.7 % organic carbon of the Mollic
+    Xeralfs. Mollic was the full mollic epipedon.
+  - Fragic: fragic soil properties as recorded (an x designation, a fragipan
+    pan), 15 cm (it was a firm rupture resistance, the fragipan test).
+  - Ultic: base saturation below 60 % at 125 cm below the argillic top, 180
+    cm or a contact (Udalfs), below 75 % throughout (Ustalfs, Palexeralfs), or
+    in one subhorizon of the upper 75 cm (Haploxeralfs); Eutric, Mollic,
+    Xerollic and Ustollic Cryalfs: 50 % in all parts to 180 cm, a profile
+    sampled shallower read to its deepest layer as an inference (L19).
+  - Psammentic, Inceptic (35 cm or less, no contact within 100 cm; undecided
+    where the profile or a gap ends the horizon), Lamellic (two or more
+    lamellae designated, or 5 cm), Kanhaplic and Kandic (CEC under 24 per kg
+    clay in half the argillic horizon), Rhodic (upper 75 or 50 cm of the
+    argillic or kandic horizon, dry value; L26), Glossic and the tongues of
+    albic materials (E/B, B/E designations), Haplic Glossudalfs (glossic
+    horizon under 50 cm), Albic and Natric sodium tests, Albaquic and
+    Abruptic clay increases, Haplic Durixeralfs and Palexeralfs, Vermic (25
+    %), Leptic, Salidic, Calcidic, Anthraquic.
+  - Moisture intergrades: Xeric, and "dry 45 days" (a recorded ustic, xeric
+    or aridic regime; undecided on udic) in the Cryalfs; the Aridic, Udic,
+    Torrertic, Udertic and Calcidic subgroups of the Ustalfs pass when the
+    recorded regime names the intergrade ("aridic ustic", "udic ustic") and
+    are undecided on "ustic" alone.
+* Canonical fixtures: `make_retisol_canonical()` becomes Aeric Albaqualfs
+  (was Typic Albaqualfs: its Btg, 35 to 90 cm, has chroma 4).
+* ISIS (974 profiles): 70 names change, all Alfisol subgroups (44 Typic
+  and 16 Aeric become another subgroup or Typic; most often Aquic, Mollic,
+  Ultic, Vertic, Inceptic, Kanhaplic). Against the ISIS 1999 names
+  (`cmp.R`): order 216 of 357, suborder 174, great group 124 (unchanged),
+  subgroup 71 of 340 (was 73). IT015 becomes Mollic Haploxeralfs, as in
+  ISIS; ES002 and UY001 become Vertic Palexeralfs and Chromic Vertic
+  Albaqualfs (15 cm or more of slickensides or wedge-shaped peds, cracks not
+  recorded, L30), PL006 Haplic Glossudalfs (a B/E horizon of 13 cm), where
+  ISIS has Typic. Of the 203 Alfisol names, 187 have an undecided subgroup
+  before the one assigned (grade C): mostly Vertic (COLE not recorded, 162),
+  Vitrandic and Andic (volcanic glass, oxalate extracts), Oxyaquic
+  (saturation, L17) and the ustic intergrades.
+
 # soilKey 0.9.421
 
 Mollisols and Vertisols after the Soil Taxonomy audit (Hugo, 2026-11-20;
