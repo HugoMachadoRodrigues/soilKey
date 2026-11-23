@@ -249,9 +249,8 @@ saturation, CEC), colour, structure and texture not recorded are undecided.
   Haplustolls, Aquic Natrudolls, Petrocalcic Calciudolls, Pachic
   Vermudolls), and the remaining ones put in KST order in 25 great groups,
   so the compound subgroups (Aquic Cumulic, Pachic Vertic, Aridic Lithic,
-  Fluvaquentic Vertic ...) come before their parts. The KST codes are kept;
-  those past Z (IFFZa to IFFZi, IGGZa to IGGZf) are written IFF1 to IFF9 and
-  IGG1 to IGG6.
+  Fluvaquentic Vertic ...) come before their parts. The KST codes are kept,
+  including those past Z (IFFZa to IFFZi, IGGZa to IGGZf).
 * New file `R/subgroups-usda-mollisols.R` with the Mollisol readings, each
   citing its KST page: `sg_mollisol_vertic()` (cracks and slickensides or
   wedge-shaped peds, or a linear extensibility of 6 cm; above the duripan
