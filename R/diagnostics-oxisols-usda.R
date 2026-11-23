@@ -12,11 +12,12 @@
 
 
 #' Oxic horizon (USDA, KST 13ed, Ch 3)
-#' Delegates to WRB \code{ferralic}.
+#' \code{oxic_usda()} under this name (v0.9.420: the KST oxic horizon, no
+#' longer the WRB ferralic horizon).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 oxic_horizon_usda <- function(pedon) {
-  res <- oxic_usda(pedon)  # already exists, delegates to ferralic
+  res <- oxic_usda(pedon)
   res$name <- "oxic_horizon_usda"
   res
 }
@@ -94,24 +95,92 @@ anionic_subgroup_usda <- function(pedon) {
 #' Rhodic Subgroup helper (Oxisols, Mollisols, etc.)
 #' Pass when 50\%+ colors have hue <= 2.5YR AND value <= 3 in
 #' B horizons 25-125 cm.
+#'
+#' v0.9.420: \code{kst} names the reading of the KST (13th ed.); \code{NULL}
+#' keeps the earlier one, which the Alfisol, Ultisol and Entisol subgroup
+#' lists still use.
+#' \describe{
+#'   \item{\code{"oxisol"}}{Rhodic subgroups of the Oxisols (pp. 296-310,
+#'     audit item O3): in all horizons between 25 and 125 cm, more than 50\%
+#'     colours with hue 2.5YR or redder and value, moist, 3 or less.}
+#'   \item{\code{"argillic"}}{Rhodudalfs, Rhodustalfs (pp. 86-87, 98; item G3):
+#'     in all subhorizons of the upper 100 cm of the argillic horizon (all of
+#'     it if thinner), hue 2.5YR or redder, value, moist, 3 or less and a dry
+#'     value no more than 1 unit higher than the moist value.}
+#'   \item{\code{"argillic_kandic"}}{Rhodoxeralfs (p. 109): the same in the
+#'     argillic or kandic horizon.}
+#'   \item{\code{"ultisol"}}{Rhodudults, Rhodustults (pp. 329, 337): the same
+#'     in the argillic horizon, and an epipedon with value, moist, of 3 or
+#'     less throughout.}
+#' }
+#' The matrix colour of each layer stands for its "more than 50 percent
+#' colors". A dry colour not recorded leaves the test undecided (audit reading
+#' L26); so does a profile that ends above 125 cm (Oxisols).
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param kst The reading, see above.
 #' @noRd
-rhodic_subgroup_usda <- function(pedon) {
+rhodic_subgroup_usda <- function(pedon, kst = NULL) {
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm < 125)
-  hu <- h$munsell_hue_moist[cand]
-  vm <- h$munsell_value_moist[cand]
-  red <- !is.na(hu) & grepl("^2\\.5YR|^10R|^7\\.5R|^5R", hu)
-  dark <- !is.na(vm) & vm <= 3
-  passing <- cand[red & dark]
-  passed <- length(passing) > 0L &&
-              sum(red & dark, na.rm = TRUE) >= 0.5 * length(cand)
-  DiagnosticResult$new(
-    name = "rhodic_subgroup_usda", passed = passed, layers = passing,
-    evidence = list(n_red_dark = length(passing), n_total = length(cand)),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 13"
-  )
+  if (is.null(kst)) {
+    cand <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm < 125)
+    hu <- h$munsell_hue_moist[cand]
+    vm <- h$munsell_value_moist[cand]
+    red <- !is.na(hu) & grepl("^2\\.5YR|^10R|^7\\.5R|^5R", hu)
+    dark <- !is.na(vm) & vm <= 3
+    passing <- cand[red & dark]
+    passed <- length(passing) > 0L &&
+                sum(red & dark, na.rm = TRUE) >= 0.5 * length(cand)
+    return(DiagnosticResult$new(
+      name = "rhodic_subgroup_usda", passed = passed, layers = passing,
+      evidence = list(n_red_dark = length(passing), n_total = length(cand)),
+      missing = character(0),
+      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 13"
+    ))
+  }
+  kst <- match.arg(kst, c("oxisol", "argillic", "argillic_kandic", "ultisol"))
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Rhod- great groups and Rhodic subgroups"
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  res <- function(passed, layers = integer(0), miss = character(0), ev = list())
+    DiagnosticResult$new(name = "rhodic_subgroup_usda", passed = passed,
+      layers = if (isTRUE(passed)) layers else integer(0),
+      evidence = c(list(kst = kst), ev),
+      missing = if (is.na(passed)) unique(miss) else character(0), reference = ref)
+  red <- .hue_redder_than(h$munsell_hue_moist, "2.5YR")
+  vm <- h$munsell_value_moist; vd <- h$munsell_value_dry
+  if (kst == "oxisol") {
+    L <- which(!is.na(h$top_cm) & h$top_cm < ms + 125 &
+                 (is.na(h$bottom_cm) | h$bottom_cm > ms + 25))
+    ok <- ifelse(red[L] %in% FALSE | (!is.na(vm[L]) & vm[L] > 3), FALSE,
+                 ifelse(is.na(red[L]) | is.na(vm[L]), NA, TRUE))
+    deepest <- suppressWarnings(max(h$bottom_cm, na.rm = TRUE))
+    contact <- .kst_contact_top_cm(pedon, petroferric = TRUE)
+    short <- (!is.finite(deepest) || deepest < ms + 125) && (is.na(contact) || contact > deepest)
+    p <- if (!length(L) || any(ok %in% FALSE)) FALSE
+         else if (all(ok %in% TRUE) && !short) TRUE else NA
+    return(res(p, L, c("munsell_hue_moist", "munsell_value_moist", if (short) "bottom_cm")))
+  }
+  hz <- argillic_usda(pedon)
+  if (kst == "argillic_kandic" && !isTRUE(hz$passed)) {
+    ka <- kandic_horizon_usda(pedon)
+    if (isTRUE(ka$passed)) hz <- ka else hz$passed <- .usda_or3(hz$passed, ka$passed)
+  }
+  if (!isTRUE(hz$passed)) return(res(hz$passed, miss = hz$missing))
+  t0 <- min(h$top_cm[hz$layers])
+  L <- hz$layers[h$top_cm[hz$layers] < t0 + 100]
+  ok <- ifelse(red[L] %in% FALSE | (!is.na(vm[L]) & vm[L] > 3) |
+                 (!is.na(vm[L]) & !is.na(vd[L]) & vd[L] - vm[L] > 1), FALSE,
+               ifelse(is.na(red[L]) | is.na(vm[L]) | is.na(vd[L]), NA, TRUE))
+  p <- .and3(ok)
+  if (kst == "ultisol" && !isFALSE(p)) {
+    m <- .desg_master(as.character(h$designation), site = pedon$site)
+    epi <- which(!is.na(h$top_cm) & h$top_cm >= ms & h$top_cm < t0 & !is.na(m) & grepl("^A", m))
+    if (!length(epi)) epi <- which(!is.na(h$top_cm) & h$top_cm >= ms & h$top_cm < t0)[1L]
+    e_ok <- if (!length(epi) || is.na(epi[1L])) NA
+            else .and3(ifelse(is.na(vm[epi]), NA, vm[epi] <= 3))
+    p <- .and3(p, e_ok)
+  }
+  res(p, L, c("munsell_hue_moist", "munsell_value_moist", "munsell_value_dry"),
+      ev = list(horizon = hz$name))
 }
 
 
@@ -217,38 +286,18 @@ sombric_subgroup_usda <- function(pedon, max_top_cm = 150) {
 #' Humic-Oxisol Subgroup helper
 #' Pass when cumulative organic carbon mass is >= 16 kg/m2 between
 #' surface and 100 cm (computed as SUM(OC\% * bulk_density * dz)).
-#' v0.8 proxy: uses default bulk_density 1.0 g/cm3 if unavailable.
+#' v0.9.420 (audit item O4): a missing bulk density is no longer 1.0 g/cm3;
+#' the test is three-valued (\code{.oc_mass_usda()}).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 humic_oxisol_usda <- function(pedon) {
-  h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
-  if (length(cand) == 0L) {
-    return(DiagnosticResult$new(
-      name = "humic_oxisol_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "no candidate layers"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 13"
-    ))
-  }
-  oc_mass <- 0
-  for (i in cand) {
-    oc <- h$oc_pct[i]
-    bd <- h$bulk_density_g_cm3[i] %||% 1.0
-    if (is.na(bd)) bd <- 1.0
-    if (is.na(oc)) next
-    top <- max(h$top_cm[i], 0)
-    bot <- min(h$bottom_cm[i], 100)
-    dz <- pmax(bot - top, 0)
-    # OC% * BD g/cm3 * dz cm = (OC/100 * BD * dz) g/cm2 = same g/m2 / 100 ; *10 = kg/m2
-    oc_mass <- oc_mass + (oc / 100) * bd * dz * 10
-  }
-  passed <- oc_mass >= 16
+  m <- .oc_mass_usda(pedon, depth = 100, threshold = 16)
   DiagnosticResult$new(
-    name = "humic_oxisol_usda", passed = passed, layers = cand,
-    evidence = list(oc_mass_kg_m2 = oc_mass),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 13"
+    name = "humic_oxisol_usda", passed = m$passed, layers = integer(0),
+    evidence = list(oc_mass_kg_m2 = m$known_kg_m2, oc_mass_upper_kg_m2 = m$upper_kg_m2,
+                    threshold = 16),
+    missing = m$missing,
+    reference = "Soil Survey Staff (2022), KST 13th ed., Ch. 13, Humic subgroups"
   )
 }
 
@@ -304,32 +353,56 @@ aeric_oxisol_usda <- function(pedon) {
 
 
 #' Acric Oxisol Suborder helper (Acroperox/Acrudox/Acrustox/Acraquox)
-#' Pass when oxic or kandic horizon has ECEC < 1.5 cmol/kg clay AND
-#' pH (KCl) >= 5.0.
+#'
+#' v0.9.420 (audit item O5). Great groups (KST 13th ed., pp. 295-305): in one
+#' or more subhorizons of an oxic or kandic horizon within 150 cm of the
+#' mineral soil surface, an apparent ECEC of less than 1.50 cmol(+) per kg
+#' clay and a pH (1N KCl) of 5.0 or more. The ECEC is \code{ecec_cmol}, or
+#' the NH4OAc bases plus KCl Al; the clay is the apparent clay of the oxic
+#' horizon (3 x the water at 1500 kPa by mass, if higher). With
+#' \code{subgroup = TRUE}, the Acrudoxic, Acrustoxic and Acraquoxic subgroups
+#' of the Kandi- and Kanhapl- great groups (p. 331): an ECEC of 1.5 cmol(+)
+#' or less per kg clay in one or more horizons within 150 cm. Until
+#' v0.9.419 any layer within 150 cm was read, with the measured clay.
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param subgroup The subgroup reading.
 #' @noRd
-acric_oxisol_usda <- function(pedon) {
+acric_oxisol_usda <- function(pedon, subgroup = FALSE) {
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 150)
-  miss <- character(0)
-  if (all(is.na(h$ecec_cmol[cand]))) miss <- c(miss, "ecec_cmol")
-  if (all(is.na(h$clay_pct[cand]))) miss <- c(miss, "clay_pct")
-  if (all(is.na(h$ph_kcl[cand]))) miss <- c(miss, "ph_kcl")
-  passing <- integer(0)
-  for (i in cand) {
-    ec <- h$ecec_cmol[i]; cl <- h$clay_pct[i]; pk <- h$ph_kcl[i]
-    if (is.na(ec) || is.na(cl) || is.na(pk) || cl == 0) next
-    ec_per_clay <- ec * 100 / cl
-    if (ec_per_clay < 1.5 && pk >= 5.0) {
-      passing <- c(passing, i)
-    }
+  n <- nrow(h)
+  ms <- .q_mineral_surface_cm(h); if (is.na(ms)) ms <- 0
+  col <- function(x) h[[x]] %||% rep(NA_real_, n)
+  bases <- col("ca_cmol") + col("mg_cmol") + col("k_cmol") + col("na_cmol")
+  al <- ifelse(is.na(col("al_kcl_cmol")), col("al_cmol"), col("al_kcl_cmol"))
+  ecec <- ifelse(is.na(col("ecec_cmol")), bases + al, col("ecec_cmol"))
+  within <- which(!is.na(h$top_cm) & h$top_cm < ms + 150)
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 13 (pp. 295-305) and Ch. 15 (p. 331)"
+  if (isTRUE(subgroup)) {
+    r <- 100 * ecec[within] / h$clay_pct[within]
+    ok <- ifelse(is.na(r), NA, .kst_round(r, 1) <= 1.5)
+    passed <- .usda_or3(ok)
+    return(DiagnosticResult$new(name = "acric_oxisol_usda", passed = passed,
+      layers = within[ok %in% TRUE], evidence = list(ecec_per_kg_clay = r, threshold = 1.5),
+      missing = if (is.na(passed)) c("ecec_cmol", "clay_pct") else character(0), reference = ref))
   }
-  passed <- length(passing) > 0L
+  ox <- oxic_usda(pedon); ka <- kandic_horizon_usda(pedon)
+  L <- intersect(unique(c(if (isTRUE(ox$passed)) ox$layers, if (isTRUE(ka$passed)) ka$layers)), within)
+  hor <- .usda_or3(ox$passed, ka$passed)
+  app <- .apparent_clay_usda(pedon, factor = 3)
+  pk <- col("ph_kcl")
+  r <- 100 * ecec / app
+  ok <- ifelse(!is.na(r) & .kst_round(r, 2) >= 1.5, FALSE,
+               ifelse(!is.na(pk) & .kst_round(pk, 1) < 5, FALSE,
+                      ifelse(is.na(r) | is.na(pk), NA, TRUE)))
+  passed <- if (length(L)) .usda_or3(ok[L])
+            else if (isFALSE(hor)) FALSE
+            else if (any(ok[within] %in% TRUE)) NA else FALSE
   DiagnosticResult$new(
-    name = "acric_oxisol_usda", passed = passed, layers = passing,
-    evidence = list(threshold_ecec_clay = 1.5),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 13"
+    name = "acric_oxisol_usda", passed = passed,
+    layers = L[ok[L] %in% TRUE],
+    evidence = list(threshold_ecec_clay = 1.5, apparent_ecec = r[L], ph_kcl = pk[L]),
+    missing = if (is.na(passed)) unique(c("ecec_cmol", "ph_kcl", ox$missing, ka$missing)) else character(0),
+    reference = ref
   )
 }
 

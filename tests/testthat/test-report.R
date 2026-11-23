@@ -209,7 +209,7 @@ test_that("report() default is byte-identical to classify_usda()/wrb() defaults"
   body <- .report_content(out)
   # The USDA line is the subgroup with no family modifiers prepended.
   usda <- grep("USDA Soil Taxonomy", body, value = TRUE)
-  expect_true(any(grepl("Rhodic Hapludox", usda)))
+  expect_true(any(grepl("Typic Hapludox", usda)))
   expect_false(any(grepl("subactive|isothermic|, mixed,", usda)))
 })
 
@@ -229,7 +229,7 @@ test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
   usda1 <- grep("USDA Soil Taxonomy", b1, value = TRUE)
   # v0.9.415: the temperature class is no longer inferred by default (the
   # fixture records no regime), so the family has no temperature term.
-  expect_true(any(grepl("fine, mixed, subactive Rhodic Hapludox",
+  expect_true(any(grepl("fine, mixed, subactive Typic Hapludox",
                         usda1)))
 })
 

@@ -11,7 +11,7 @@
 #   G. Aridisols   -- aridic moisture regime + ochric/anthropic
 #   H. Ultisols    -- argillic/kandic + base saturation < 35%
 #   I. Mollisols   -- mollic epipedon + base saturation >= 50%
-#   J. Alfisols    -- argillic/kandic/natric horizon (BS >= 35%)
+#   J. Alfisols    -- argillic/kandic/natric horizon (no base saturation test)
 #   K. Inceptisols -- cambic / various subsurface diagnostics
 #   L. Entisols    -- catch-all
 #
@@ -21,53 +21,10 @@
 # ============================================================================
 
 
-# Helper: estimate base saturation in argillic/kandic-like layers.
-# v0.8 simplification: looks at horizon idx where designation matches
-# Bt or Bk and returns mean bs_pct (NA-safe).
-.argillic_bs_mean <- function(pedon) {
-  h <- pedon$horizons
-  arg <- .argic_impl(pedon, lithic_discontinuity = FALSE)
-  layers <- arg$layers %||% integer(0)
-  if (length(layers) == 0L) return(NA_real_)
-  vals <- h$bs_pct[layers]
-  if (all(is.na(vals))) return(NA_real_)
-  mean(vals, na.rm = TRUE)
-}
-
-
-# v0.9.17: graceful fallback for the Ultisol BS-low criterion when
-# bs_pct is missing but proxy evidence is conclusive. KST 13ed Ch 15
-# (p 321) defines Ultisols as having BS < 35 % on a sum-of-cations
-# basis in the argillic. The FEBR archive (and many legacy tropical
-# pedon descriptions) reports al_sat_pct or pH but not BS. Rather
-# than punish those profiles by falling through to Inceptisols, we
-# infer BS-low from:
-#   - al_sat_pct >= 50 in any argillic layer (high Al saturation
-#     mathematically forces BS < 50, and BS < 35 in nearly all
-#     tropical soils with this profile),
-#   - pH_h2o < 5.0 in any argillic layer (the empirical threshold
-#     below which BS exceeds 35 in fewer than 5 % of tropical
-#     B horizons, per Embrapa / IUSS calibration tables).
-# Both fall-backs are conservative: they only fire when the direct
-# measurement is missing.
-.bs_low_inferred <- function(pedon, bs_threshold = 35) {
-  h <- pedon$horizons
-  arg <- .argic_impl(pedon, lithic_discontinuity = FALSE)
-  layers <- arg$layers %||% integer(0)
-  if (length(layers) == 0L)
-    return(list(bs_low = FALSE, source = "no_argic"))
-  bs_vals <- h$bs_pct[layers]
-  if (any(!is.na(bs_vals)))
-    return(list(bs_low = isTRUE(mean(bs_vals, na.rm = TRUE) < bs_threshold),
-                  source = "measured"))
-  al_sat <- h$al_sat_pct[layers]
-  if (any(!is.na(al_sat) & al_sat >= 50))
-    return(list(bs_low = TRUE, source = "al_sat_ge_50"))
-  ph <- h$ph_h2o[layers]
-  if (any(!is.na(ph) & ph < 5.0))
-    return(list(bs_low = TRUE, source = "ph_below_5"))
-  list(bs_low = FALSE, source = "no_evidence")
-}
+# v0.9.420: the base saturation of the Ultisols and Alfisols is read at the
+# depth of the KST in .ultisol_usda_uncached() (R/diagnostics-ultisols-usda.R
+# has the readings); the mean over the WRB argic layers and its inference from
+# Al saturation or pH (not in the KST; audit items U2, G5) are gone.
 
 
 # ---- A. Gelisols (Cap 9, p 189) -------------------------------------------
@@ -368,9 +325,12 @@ andisol_usda <- function(pedon) {
 #' the mineral soil surface." Since v0.9.17 soilKey had used instead "no
 #' argillic horizon starting above the oxic", which turned clayey Oxisols with
 #' a kandic horizon into Mollisols, Ultisols or Alfisols (ISRIC's KE009, a
-#' Rhodic Eutrustox, came out a Typic Paleustoll). soilKey does not record
-#' weatherable minerals, and its oxic horizon does not test them either; the
-#' kandic horizon of item 2 is read the same way.
+#' Rhodic Eutrustox, came out a Typic Paleustoll). The weatherable minerals of
+#' the kandic horizon of item 2 are rarely recorded, and are then treated as
+#' meeting the oxic limit, as in the oxic horizon (v0.9.420, audit reading
+#' L21). v0.9.420: the clay of the upper 18 cm is rounded to the precision of
+#' the limit before it is compared with 40\% (KST endnote 1, p. 70; audit
+#' reading L24), so 39.9\% is 40\%.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 oxisol_usda <- function(pedon) {
@@ -396,7 +356,7 @@ oxisol_usda <- function(pedon) {
   ox150 <- if (isTRUE(ox$passed)) !is.na(ox_top) && ox_top <= ms + 150 else if (is.na(ox$passed)) NA else FALSE
   clay18 <- .q_weighted_mean(h$clay_pct, h$top_cm, h$bottom_cm, ms, ms + 18)
   covered <- sum(pmax(0, pmin(h$bottom_cm, ms + 18) - pmax(h$top_cm, ms))[!is.na(h$clay_pct)], na.rm = TRUE)
-  clay_ok <- if (is.na(clay18) || covered < 18 - 1e-6) NA else clay18 >= 40
+  clay_ok <- if (is.na(clay18) || covered < 18 - 1e-6) NA else .kst_round(clay18) >= 40
   and3 <- function(a, b) if (isFALSE(a) || isFALSE(b)) FALSE else if (isTRUE(a) && isTRUE(b)) TRUE else NA
   or3 <- function(a, b) if (isTRUE(a) || isTRUE(b)) TRUE else if (isFALSE(a) && isFALSE(b)) FALSE else NA
   items <- function(has_kandic, kt) {
@@ -511,20 +471,34 @@ aridisol_usda <- function(pedon) {
 
 # ---- H. Ultisols (Cap 15, p 321) -------------------------------------------
 
-#' Ultisols (USDA Cap 15): argillic/kandic horizon + base saturation < 35\%.
+#' Ultisols (USDA, KST 13th ed., key to soil orders, item H, p. 69)
 #'
-#' v0.9.17 graceful BS handling: when \code{bs_pct} is missing in the
-#' argillic layers, the diagnostic falls back to two equivalent
-#' indirect criteria before failing:
-#' \itemize{
-#'   \item \code{al_sat_pct >= 50} (high Al saturation mathematically
-#'         forces BS < 50, and BS < 35 in essentially all tropical
-#'         soils with this profile);
-#'   \item \code{ph_h2o < 5.0} (the empirical threshold below which BS
-#'         exceeds 35 in fewer than 5 % of tropical B horizons).
+#' v0.9.420 (audit items U1, U2, G5): the text of the key. Other soils that
+#' have either:
+#' \enumerate{
+#'   \item an argillic or kandic horizon (the USDA horizons,
+#'     \code{argillic_usda()} and \code{kandic_horizon_usda()}), no fragipan,
+#'     and a base saturation (by sum of cations) of less than 35\% at the
+#'     shallowest of 125 cm below the upper boundary of the argillic or
+#'     kandic horizon, 180 cm below the mineral soil surface, or a densic,
+#'     lithic, paralithic or petroferric contact; when the epipedon is sandy
+#'     throughout (coarse sand to loamy fine sand), at 125 cm below the upper
+#'     boundary (no deeper than 200 cm) or 180 cm, whichever is deeper, or at
+#'     a contact if shallower; or
+#'   \item a fragipan, an argillic or kandic horizon or clay films 1 mm or more
+#'     thick in it, and a base saturation of less than 35\% at the shallowest
+#'     of 75 cm below the top of the fragipan, 200 cm, or a contact.
 #' }
-#' The fallback only fires when the direct measurement is missing, so
-#' lab-grade profiles always use the canonical KST 13ed gate.
+#' Until v0.9.419 the key took the WRB argic horizon, the mean base
+#' saturation of its layers, and, with no base saturation, a low one inferred
+#' from Al saturation or pH (not in the KST). The base saturation by sum of
+#' cations is computed where the acidity at pH 8.2 (or the CEC at pH 8.2) is
+#' recorded; elsewhere the NH4OAc base saturation stands in for it, and the
+#' evidence says so (audit reading L18: it is usually higher, so less than 35
+#' by NH4OAc is less than 35 by sum of cations). A profile that ends above the
+#' depth takes the base saturation of its deepest sampled horizon, recorded
+#' as an inference that lowers the evidence grade to C (reading L19). Values
+#' are rounded to the precision of the limit (L24).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
@@ -536,14 +510,32 @@ ultisol_usda <- function(pedon) {
 
 # The computation of ultisol_usda().
 .ultisol_usda_uncached <- function(pedon) {
-  ar <- .argic_impl(pedon, lithic_discontinuity = FALSE)
-  # v0.9.21: NASIS tie-breaker for argic when canonical gate is NA.
+  h <- pedon$horizons
+  ar <- argillic_usda(pedon)
+  # v0.9.21: NASIS tie-breaker for an undecided argillic horizon.
   ar <- .apply_nasis_tiebreaker(ar, pedon,
                                  pattern       = "^Argillic horizon$|^Kandic horizon$",
                                  feature_label = "Argillic / Kandic horizon")
-  bs <- .argillic_bs_mean(pedon)
-  bs_inf <- .bs_low_inferred(pedon, bs_threshold = 35)
-  bs_low <- isTRUE(bs_inf$bs_low)
+  ka <- kandic_horizon_usda(pedon)
+  hor <- .usda_or3(ar$passed, ka$passed)
+  # the upper boundaries the base saturation depth is measured from: those of
+  # the horizons present, or, while undecided, every candidate boundary
+  top_of <- function(r) if (isTRUE(r$passed) && length(r$layers)) min(h$top_cm[r$layers], na.rm = TRUE) else numeric(0)
+  tops <- c(top_of(ar), top_of(ka))
+  tops <- if (length(tops)) min(tops)
+          else unique(c(ar$evidence$candidate_tops_cm, ka$evidence$candidate_tops_cm))
+  fr <- fragipan_usda(pedon, max_top_cm = Inf)
+  item1 <- .ultisol_bs_item(pedon, tops, fragipan = FALSE)
+  item2 <- if (isTRUE(fr$passed)) .ultisol_bs_item(pedon, min(h$top_cm[fr$layers], na.rm = TRUE), fragipan = TRUE)
+           else list(low = FALSE)
+  films_frag <- if (isTRUE(fr$passed)) {
+    th <- h$clay_films_thickness_mm %||% rep(NA_real_, nrow(h))
+    any(!is.na(th[fr$layers]) & th[fr$layers] >= 1)
+  } else FALSE
+  r1 <- .and3(hor, item1$low)                                  # no fragipan
+  r2 <- .and3(.usda_or3(hor, films_frag), item2$low)           # a fragipan
+  route <- if (isTRUE(fr$passed)) r2 else if (isFALSE(fr$passed)) r1
+           else if (identical(r1, r2)) r1 else NA
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),
@@ -553,15 +545,26 @@ ultisol_usda <- function(pedon) {
     isTRUE(vertisol_usda(pedon)$passed),
     isTRUE(aridisol_usda(pedon)$passed)
   ))
-  passed <- isTRUE(ar$passed) && isTRUE(bs_low) && !ex
+  passed <- if (ex) FALSE else route
+  used <- if (isTRUE(fr$passed)) item2 else item1
+  ev <- list(argillic = ar, kandic = ka, fragipan = fr,
+             base_saturation = used$bs, bs_depth_cm = used$depth,
+             bs_source = used$source, bs_low = used$low, prior_order = ex)
+  if (isTRUE(passed) && isTRUE(used$inferred))
+    ev$inference <- sprintf(paste0(
+      "The profile ends above %g cm, the depth at which the KST reads the base ",
+      "saturation; the deepest sampled horizon (%g%%) stands in for it (audit ",
+      "reading L19)."), used$depth, used$bs)
+  if (isTRUE(passed) && identical(used$source, "NH4OAc"))
+    ev$note <- paste0("Base saturation by NH4OAc stands in for the sum of ",
+                      "cations, which is not recorded (audit reading L18).")
+  miss <- if (is.na(passed)) unique(c(if (is.na(hor)) c(ar$missing, ka$missing),
+                                      if (is.na(used$low)) "bs_pct")) else character(0)
   DiagnosticResult$new(
     name = "ultisol_usda", passed = passed,
-    layers = ar$layers,
-    evidence = list(argic = ar, bs_mean = bs, bs_low = bs_low,
-                     bs_low_source = bs_inf$source,
-                     prior_order = ex),
-    missing = ar$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 15 Ultisols (p 321)"
+    layers = unique(c(if (isTRUE(ar$passed)) ar$layers, if (isTRUE(ka$passed)) ka$layers)),
+    evidence = ev, missing = miss,
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 4, key to soil orders, H (p. 69)"
   )
 }
 
@@ -616,8 +619,15 @@ mollisol_usda <- function(pedon) {
 
 # ---- J. Alfisols (Cap 5, p 73) ---------------------------------------------
 
-#' Alfisols (USDA Cap 5): argillic/kandic/natric horizon + base saturation
-#' >= 35\% at the implicit reference depth.
+#' Alfisols (USDA, KST 13th ed., key to soil orders, item J, p. 70)
+#'
+#' v0.9.420 (audit item U3): "Other soils that do not have a plaggen epipedon
+#' and that have either an argillic, kandic, or natric horizon, or a fragipan
+#' that has clay films 1 mm or more thick in some part." There is no base
+#' saturation test: the soils with less than 35\% are Ultisols, keyed out
+#' before. Until v0.9.419 the gate asked for the argillic horizon only and a
+#' mean base saturation of 35\% or more. soilKey has no test of the plaggen
+#' epipedon, so that exclusion is not applied.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
 alfisol_usda <- function(pedon) {
@@ -628,14 +638,21 @@ alfisol_usda <- function(pedon) {
 
 # The computation of alfisol_usda().
 .alfisol_usda_uncached <- function(pedon) {
+  h <- pedon$horizons
   ar <- argillic_usda(pedon)
   # v0.9.21: NASIS tie-breaker -- argillic / kandic / natric horizon
   # surveyor identification flips an NA argillic_usda to TRUE.
   ar <- .apply_nasis_tiebreaker(ar, pedon,
                                  pattern       = "^Argillic horizon$|^Kandic horizon$|^Natric horizon$",
                                  feature_label = "Argillic / Kandic / Natric horizon")
-  bs <- .argillic_bs_mean(pedon)
-  bs_ok <- is.na(bs) || bs >= 35
+  ka <- kandic_horizon_usda(pedon)
+  na <- natric_horizon_usda(pedon)
+  fr <- fragipan_usda(pedon, max_top_cm = Inf)
+  films_frag <- if (isTRUE(fr$passed)) {
+    th <- h$clay_films_thickness_mm %||% rep(NA_real_, nrow(h))
+    any(!is.na(th[fr$layers]) & th[fr$layers] >= 1)
+  } else FALSE
+  hor <- .usda_or3(ar$passed, ka$passed, na$passed, films_frag)
   ex <- any(c(
     isTRUE(gelisol_usda(pedon)$passed),
     isTRUE(histosol_usda(pedon)$passed),
@@ -647,14 +664,15 @@ alfisol_usda <- function(pedon) {
     isTRUE(ultisol_usda(pedon)$passed),
     isTRUE(mollisol_usda(pedon)$passed)
   ))
-  passed <- isTRUE(ar$passed) && isTRUE(bs_ok) && !ex
+  passed <- if (ex) FALSE else hor
   DiagnosticResult$new(
     name = "alfisol_usda", passed = passed,
-    layers = ar$layers,
-    evidence = list(argillic = ar, bs_mean = bs, bs_ok = bs_ok,
-                     prior_order = ex),
-    missing = ar$missing,
-    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 5 Alfisols (p 73)"
+    layers = unique(c(if (isTRUE(ar$passed)) ar$layers, if (isTRUE(ka$passed)) ka$layers,
+                      if (isTRUE(na$passed)) na$layers)),
+    evidence = list(argillic = ar, kandic = ka, natric = na,
+                    fragipan_with_clay_films = films_frag, prior_order = ex),
+    missing = if (is.na(passed)) unique(c(ar$missing, ka$missing, na$missing)) else character(0),
+    reference = "USDA Soil Survey Staff (2022), KST 13th ed., Ch 4, key to soil orders, J (p. 70)"
   )
 }
 

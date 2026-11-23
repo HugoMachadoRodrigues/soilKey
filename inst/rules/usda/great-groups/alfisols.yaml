@@ -1,6 +1,9 @@
 # =============================================================
 # USDA Soil Taxonomy 13ed -- Alfisols Great Groups -- Cap 5
 # =============================================================
+# v0.9.420 (audit items G2, G3): the Pale-, Kandi-, Kanhapl-, Plinth-,
+# Rhod- and Ferr- great groups read the KST text (pale_qualifying_usda(kst),
+# plinth_subgroup_usda(gg), rhodic_subgroup_usda(kst), ferric_subgroup_usda).
 # 39 GGs total:
 #   Aqualfs (JA): 11 / Cryalfs (JB): 3 / Ustalfs (JC): 8 /
 #   Xeralfs (JD): 7 / Udalfs (JE): 10
@@ -9,17 +12,27 @@
 great_groups:
 
   # ---- Aqualfs (JA) ----
+  # v0.9.420: in the order of the key (KST 13th ed., p. 73), with the codes
+  # unchanged (the subgroup lists are keyed by them); Duraqualfs came after
+  # Glossaqualfs and Plinthaqualfs before Cryaqualfs. Plinthaqualfs:
+  # plinthite as a continuous phase or half the volume in a horizon between
+  # 30 and 150 cm (it took 5 %).
   "JA":
-    - code: "JAA"
-      name: "Plinthaqualfs"
-      tests:
-        all_of:
-          - plinth_subgroup_usda: {}
     - code: "JAB"
       name: "Cryaqualfs"
       tests:
         all_of:
           - str_cryic_usda: {}
+    - code: "JAA"
+      name: "Plinthaqualfs"
+      tests:
+        all_of:
+          - plinth_subgroup_usda: { gg: true, min_top_cm: 30, max_top_cm: 150 }
+    - code: "JAI"
+      name: "Duraqualfs"
+      tests:
+        all_of:
+          - duripan_usda: {}
     - code: "JAC"
       name: "Natraqualfs"
       tests:
@@ -50,11 +63,6 @@ great_groups:
       tests:
         all_of:
           - glossic_subgroup_usda: {}
-    - code: "JAI"
-      name: "Duraqualfs"
-      tests:
-        all_of:
-          - duripan_usda: {}
     - code: "JAJ"
       name: "Epiaqualfs"
       tests:
@@ -71,7 +79,7 @@ great_groups:
       name: "Palecryalfs"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: cryalfs }
     - code: "JBB"
       name: "Glossocryalfs"
       tests:
@@ -93,7 +101,7 @@ great_groups:
       name: "Plinthustalfs"
       tests:
         all_of:
-          - plinth_subgroup_usda: {}
+          - plinth_subgroup_usda: { gg: true }
     - code: "JCC"
       name: "Natrustalfs"
       tests:
@@ -104,6 +112,7 @@ great_groups:
       tests:
         all_of:
           - kandic_horizon_usda: {}
+          - pale_qualifying_usda: { kst: kandi_alfisols }
     - code: "JCE"
       name: "Kanhaplustalfs"
       tests:
@@ -113,12 +122,12 @@ great_groups:
       name: "Paleustalfs"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: ustalfs }
     - code: "JCG"
       name: "Rhodustalfs"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: argillic }
     - code: "JCH"
       name: "Haplustalfs"
       tests:
@@ -145,17 +154,17 @@ great_groups:
       name: "Plinthoxeralfs"
       tests:
         all_of:
-          - plinth_subgroup_usda: {}
+          - plinth_subgroup_usda: { gg: true }
     - code: "JDE"
       name: "Rhodoxeralfs"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: argillic_kandic }
     - code: "JDF"
       name: "Palexeralfs"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: xeralfs }
     - code: "JDG"
       name: "Haploxeralfs"
       tests:
@@ -189,6 +198,7 @@ great_groups:
       tests:
         all_of:
           - kandic_horizon_usda: {}
+          - pale_qualifying_usda: { kst: kandi_alfisols }
     - code: "JEF"
       name: "Kanhapludalfs"
       tests:
@@ -198,12 +208,12 @@ great_groups:
       name: "Paleudalfs"
       tests:
         all_of:
-          - pale_qualifying_usda: {}
+          - pale_qualifying_usda: { kst: udalfs }
     - code: "JEH"
       name: "Rhodudalfs"
       tests:
         all_of:
-          - rhodic_subgroup_usda: {}
+          - rhodic_subgroup_usda: { kst: argillic }
     - code: "JEI"
       name: "Glossudalfs"
       tests:

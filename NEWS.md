@@ -1,3 +1,105 @@
+# soilKey 0.9.420
+
+The Alfisols, Ultisols and Oxisols after the Soil Taxonomy audit (Hugo,
+2026-11-20; audit section 2.4, items U1 to U3, O1 to O5, G1 to G5, and
+readings L18 to L26). The argillic, kandic and oxic horizons follow the
+text of Keys to Soil Taxonomy (13th ed.); the Ultisol and Alfisol order
+gates and the Pale-, Kandi-, Kanhapl-, Plinth-, Rhod- and Ferr- great groups
+read the KST key.
+
+* **The argillic horizon is the KST one** (`argillic_usda()`, pp. 20-21;
+  item G1). It was the WRB argic horizon: its texture test, the WRB
+  thresholds (6 / 1.4 / 20) where no clay films were recorded, a clay
+  increase always, and clay films anywhere in the profile. Now the clay
+  increase of the KST (3 % / 1.2 times / 8 %) from the eluvial horizon
+  within 30 cm; no increase is needed under a plow layer (Ap) directly above
+  or across a lithologic discontinuity (a change of material number, Arabic
+  or Roman); 7.5 cm or one-tenth of the overlying horizons (15 cm if sandy
+  or made of lamellae); evidence of clay illuviation in the horizon itself
+  (clay films, clay bridges, thin sections, a t designation, a NASIS
+  argillic horizon). With none of these recorded the horizon is undecided
+  (reading L22). No texture test and no fluvic exclusion: neither is in the
+  KST. O, A, E, C and R horizons and the layer at the mineral soil surface
+  are not part of it.
+* **The kandic horizon** (pp. 26-27; reading L23) mixes the upper 18 cm: a
+  layer starting above 18 cm is compared, below 18 cm, with the weighted
+  clay of the upper 18 cm. Its 5 cm alternative needs an abrupt textural
+  change (p. 31), not only an FAO "abrupt" boundary; it is a subsurface
+  horizon. No kandic horizon starts below 125 cm unless the upper 100 cm are
+  sandy.
+* **The oxic horizon is the KST one** (`oxic_usda()`, p. 28; item O2), not
+  the WRB ferralic horizon: a subsurface run of layers 30 cm thick, sandy
+  loam or finer, apparent CEC of 16 or less per kg clay, rock structure
+  under 5 %, not andic; the clay increase at its upper boundary is below the
+  kandic limits unless the boundary is diffuse (criterion 5). Weatherable
+  minerals are never recorded in most data and are then treated as met, as
+  the evidence says (reading L21).
+* **The apparent clay** of the oxic (3 x) and kandic (2.5 x) horizons and of
+  the Alfisol Pale- test uses the water at 1500 kPa only where it is
+  measured by mass (reading L25): ISIS gives it by volume, and its reader's
+  conversion is not used.
+* **Rounding** (KST endnote 1, p. 70; reading L24): values are rounded to the
+  precision of the limit, half to even, in the clay increases, the CEC per
+  kg clay, the base saturation, the clay of the Oxisol order (BR004, 39.9 %
+  clay, is a Rhodic Eutrustox, as in ISIS) and the ECEC of the Acric taxa.
+* **Ultisols** (p. 69; items U1, U2, G5): the USDA argillic or kandic
+  horizon (it was the WRB argic one), no fragipan, and a base saturation by
+  sum of cations below 35 % at the shallowest of 125 cm below the horizon's
+  upper boundary, 180 cm, or a contact (with a sandy epipedon, the deeper of
+  125 cm below the boundary, at most 200 cm, and 180 cm); or a fragipan with
+  its own depth. It took the mean over the argic layers and, with no base
+  saturation, a low one inferred from Al saturation or pH, which the KST
+  does not have (removed with `.bs_low_inferred()` and `.argillic_bs_mean()`).
+  The sum of cations is computed where the acidity or CEC at pH 8.2 is
+  recorded; elsewhere the NH4OAc base saturation stands in, and the evidence
+  says so (reading L18). A profile that ends above that depth takes its
+  deepest sampled horizon, recorded as an inference: `classify_usda()` lowers
+  the grade to C and warns when a test on the path of the name carries one
+  (reading L19).
+* **Alfisols** (p. 70; item U3): an argillic, kandic or natric horizon, or a
+  fragipan with clay films 1 mm thick; no base-saturation test. soilKey has
+  no plaggen epipedon test, so that exclusion is not applied.
+* **Great groups** (items G2, G3). Pale- and Kandi- read the KST: no contact
+  within 150 cm and no clay decrease of 20 % from the maximum below it
+  (skeletans or, in Palexerults, plinthite waive it), undecided on a profile
+  that ends above 150 cm (reading L20); Paleudalfs and Paleustalfs add the
+  colour of the lower half of the argillic horizon, Paleustalfs and
+  Palexeralfs the petrocalcic and abrupt-increase routes, Palexeralfs a base
+  at 150 cm, Palecryalfs the glossic route. Kandi- great groups need the
+  same core; Kanhapl- ("other ... with a kandic horizon") is reachable.
+  Plinth- great groups need plinthite in half the volume (it took 5 %).
+  Rhod- great groups read the upper 100 cm of the argillic horizon and the
+  dry value (undecided without it, reading L26). Ferrudalfs need a glossic
+  horizon and iron nodules (it took Fe-DCB of 4 %). The Aqualfs follow the
+  order of the key (Plinthaqualfs after Cryaqualfs, Duraqualfs third).
+* **Subgroups and suborders.** Ultic Alfisols need a base saturation below
+  75 % throughout the argillic horizon (item G4; 22 lost Ultic in the audit).
+  Rhodic Oxisols need every horizon from 25 to 125 cm red and dark (item O3).
+  Humic Oxisols and Humults no longer replace a missing bulk density by 1.0
+  or 1.2 g/cm3 (item O4): a mass the known layers reach is enough, and the
+  test is undecided when the missing densities (up to 2.0 g/cm3) could reach
+  it. Acric great groups read the oxic or kandic subhorizons with the
+  apparent ECEC; the Acrudoxic subgroups (p. 331) take an ECEC of 1.5 or less
+  per kg clay within 150 cm (item O5).
+* **Canonical fixtures.** `make_ferralsol_canonical()` and
+  `make_latossolo_canonical()` are Typic Hapludox (were Rhodic Hapludox: the
+  Bw1 at 65-130 cm has a moist value of 4); `make_luvisol_canonical()` is Typic
+  Hapludalfs (was Typic Paleudalfs: its clay falls from 38 to 25 % at 90 cm).
+* **ISIS (974 profiles).** 321 names change. 64 Alfisols and 23 Ultisols
+  become Entisols, with grade C, because their argillic horizon has no
+  recorded evidence of illuviation (reading L22) and no cambic horizon
+  passes; 26 Inceptisols become Alfisols and 9 Entisols Alfisols with the
+  KST thresholds and waivers. Against the ISIS 1999 names (`cmp.R`): order
+  201 to 206 of 357, suborder 158 to 165, great group 104 to 115, subgroup 48
+  to 59. KE042, CO008, JM001, CN021, CN022, ZW011, IN003 and CN028 become
+  Ultisols as in ISIS; CN001, GB002, GB003, GB010 and IT009 become Alfisols;
+  KE009, KE047, KE040 and BR012 lose Rhodic or Humic.
+* **Clay films recorded as none decide** (reading N5, Hugo, 2026-11-21): a B
+  horizon not designated t, with clay films recorded as none and no clay
+  bridges or thin-section argillans recorded, shows no evidence of clay
+  illuviation, so it is not part of an argillic horizon; until then it was
+  undecided unless thin sections and COLE were recorded too.
+
 # soilKey 0.9.419
 
 Inceptisols, Entisols and Aridisols after the Soil Taxonomy audit (Hugo,

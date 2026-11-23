@@ -130,7 +130,7 @@ test_that("the canonical Ferralsol classifies to the documented full names", {
   # not in the Ferralsol list; supplementary ones in alphabetical order)
   expect_equal(classify_wrb2022(p)$name,
                "Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)")   # v0.9.309: no Ferric without nodules; v0.9.410: Oligoeutric
-  expect_equal(classify_usda(p)$name, "Rhodic Hapludox")
+  expect_equal(classify_usda(p)$name, "Typic Hapludox")   # v0.9.420: Rhodic needs every horizon 25-125 cm
   expect_equal(classify_sibcs(p)$name, "Latossolos Vermelhos Distróficos típicos")
   # the WRB (Eutric) / SiBCS (Distrofico) base-status split is real and stable;
   # v0.9.410: named by Eutric's subqualifier Oligoeutric (bases < 5 cmolc/kg clay)

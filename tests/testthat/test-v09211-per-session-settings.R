@@ -82,7 +82,9 @@ test_that("two sessions with different engines classify the same profile differe
   # v0.9.220: Cambisols, not Nitisols -- the profile has no Fe-ox and no shiny
   # ped faces, which the nitic horizon needs (WRB 2022 Ch 3.1.22)
   expect_identical(b$wrb$rsg_or_order, "Cambisols")
-  expect_false(identical(a$usda$name, b$usda$name))
+  # v0.9.420: the USDA argillic and oxic horizons are the KST ones and no
+  # longer depend on the diagnostic engine, so the USDA name is the same
+  expect_identical(a$usda$name, b$usda$name)
   expect_null(getOption("soilKey.diagnostic_engine"))   # neither touched it
 })
 

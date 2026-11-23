@@ -91,7 +91,7 @@ subgroups:
       name: "Acraquoxic Kandiaquults"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - acric_oxisol_usda: { subgroup: true }
     - code: "HADF"
       name: "Arenic Plinthic Kandiaquults"
       tests:
@@ -522,13 +522,13 @@ subgroups:
       name: "Acrudoxic Plinthic Kandiudults"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - acric_oxisol_usda: { subgroup: true }
           - plinth_subgroup_usda: {}
     - code: "HCCL"
       name: "Acrudoxic Kandiudults"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - acric_oxisol_usda: { subgroup: true }
     - code: "HCCM"
       name: "Aquandic Kandiudults"
       tests:
@@ -580,7 +580,7 @@ subgroups:
       name: "Acrudoxic Kanhapludults"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - acric_oxisol_usda: { subgroup: true }
     - code: "HCDG"
       name: "Andic Kanhapludults"
       tests:

@@ -43,13 +43,16 @@ test_that("a horizon at exactly 16 is oxic (USDA) but not ferralic (WRB)", {
   expect_true(oxic_usda(below)$passed)
   expect_false(ferralic(at)$passed)
   expect_true(oxic_usda(at)$passed)
-  expect_false(oxic_usda(.cec_at(f, 16.1))$passed)
+  # v0.9.420: 16.1 rounds to 16, the precision of the limit (KST endnote 1,
+  # p. 70; audit reading L24); 16.6 rounds to 17
+  expect_true(oxic_usda(.cec_at(f, 16.1))$passed)
+  expect_false(oxic_usda(.cec_at(f, 16.6))$passed)
   expect_identical(classify_wrb2022(below, on_missing = "silent")$rsg_or_order, "Ferralsols")
   expect_false(identical(classify_wrb2022(at, on_missing = "silent")$rsg_or_order, "Ferralsols"))
   expect_identical(classify_usda(at, on_missing = "silent")$rsg_or_order, "Oxisols")
   # the argument can still be set by hand
   expect_true(ferralic(at, cec_inclusive = TRUE)$passed)
-  expect_false(oxic_usda(at, cec_inclusive = FALSE)$passed)
+  # (v0.9.420: oxic_usda() is the KST oxic horizon and has no such argument)
 })
 
 test_that("SiBCS: 17 cmolc per kg clay is B incipiente territory, not latossolic", {

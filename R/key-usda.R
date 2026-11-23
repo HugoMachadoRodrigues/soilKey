@@ -263,6 +263,16 @@ classify_usda <- function(pedon,
       "is at most C. See $ambiguities and $missing_data."),
       length(und$before_assigned), paste(und$before_assigned, collapse = ", ")))
   }
+  # v0.9.420 (audit reading L19): a test on the path of the name whose result
+  # rests on an inference (its evidence carries an `inference` note, e.g. the
+  # base saturation of the Ultisols read in the deepest horizon of a profile
+  # that ends above the depth of the KST) lowers the grade to C.
+  inferences <- .usda_path_inferences(level_traces, level_assigned)
+  if (length(inferences)) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, paste(
+      "Inferred, so the evidence grade is at most C:", inferences))
+  }
   for (lv in und$undecided_levels) {
     warnings <- c(warnings, sprintf(paste0(
       "%s undecided: no taxon passed and %s could not be decided, so the ",
@@ -310,4 +320,22 @@ classify_usda <- function(pedon,
     warnings       = warnings,
     system_id      = "usda"
   )
+}
+
+
+# v0.9.420: the inference notes of the tests that named each level (the
+# `inference` element of their evidence), in key order.
+.usda_path_inferences <- function(level_traces, level_assigned) {
+  out <- character(0)
+  for (lv in names(level_traces)) {
+    code <- level_assigned[[lv]]
+    if (is.null(code)) next
+    entry <- level_traces[[lv]][[code]]
+    if (is.null(entry) || !isTRUE(entry$passed)) next
+    for (r in entry$evidence) {
+      note <- tryCatch(r$evidence$inference, error = function(e) NULL)
+      if (is.character(note) && length(note)) out <- c(out, note)
+    }
+  }
+  unique(out)
 }

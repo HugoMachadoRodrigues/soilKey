@@ -61,8 +61,7 @@ test_that("the Assistant's evidence gives units and whether a limit is inclusive
   cpc <- grep("cec_per_clay: ", ev, value = TRUE)
   # the model wrote "cmolc/kg per % clay" when the unit was missing
   expect_true(all(grepl("cmolc/kg clay", cpc)))
-  # WRB's ferralic "< 16" and USDA's oxic "16 or less" no longer read alike
+  # WRB's ferralic "< 16" (v0.9.420: the USDA oxic horizon is no longer the
+  # ferralic one with an inclusive limit, so it gives no such sub-test)
   expect_true(any(grepl("must be below 16", cpc)))
-  expect_true(any(grepl("must be 16 or less", cpc)))
-  expect_true(any(grepl("thickness: .* cm \\(limit 30\\)", ev)))
 })
