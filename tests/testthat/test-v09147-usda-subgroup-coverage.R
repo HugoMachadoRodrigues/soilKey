@@ -4,7 +4,7 @@
 # (verified per-subgroup against ST_criteria_13th), generated append-before-default
 # + first-match so they only ever refine a former Typic. KSSL-gated (0 worsened).
 
-test_that("v0.9.147: USDA subgroup coverage (running total 2218/2715, 81.7%)", {
+test_that("v0.9.147: USDA subgroup coverage (running total)", {
   skip_if_no_kst13()
   skip_on_cran()
   cov <- coverage_report("usda_subgroup")
@@ -13,7 +13,8 @@ test_that("v0.9.147: USDA subgroup coverage (running total 2218/2715, 81.7%)", {
   # + 77 (v0.9.423)
   # + 119 (v0.9.424)
   # + 169 (v0.9.425)
-  expect_equal(cov$overall$covered_n, 2519L)
+  # + 196 (v0.9.426)
+  expect_equal(cov$overall$covered_n, 2715L)
   expect_equal(cov$overall$canonical_n, 2715L)
   expect_gt(cov$overall$pct, 75)
 })

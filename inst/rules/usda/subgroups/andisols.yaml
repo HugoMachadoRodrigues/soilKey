@@ -1,38 +1,32 @@
 # =============================================================
-# USDA Soil Taxonomy 13ed -- Andisols Subgroups -- Cap 6
+# USDA Soil Taxonomy 13th ed. -- Andisols subgroups -- Ch. 6, pp. 117-136
 # =============================================================
-# Cobertura focada nos Subgrupos comuns por Great Group:
-# Lithic, Aquic, Acric, Hydric, Vitric, Spodic, Humic, Pachic,
-# Thaptic, Eutric, Typic.
-# Total: ~155 Subgroups (subset cientifico do conjunto pleno KST 13ed).
+# v0.9.426: every great group lists exactly the subgroups of the KST 13th
+# edition, in KST order, with the KST codes (Typic last, as the default).
+# Compound subgroups come before their parts, as the KST orders them. The
+# tests are the KST criteria, three-valued (R/subgroups-usda-aridvertand.R
+# and the helpers of the other orders it names).
 # =============================================================
 
 subgroups:
 
-  # ====== AQUANDS Subgroups ======
-
-  "DAA":  # Gelaquands (3)
+  "DAA":  # Gelaquands (4)
     - code: "DAAA"
-      name: "Lithic Gelaquands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DAAB"
       name: "Histic Gelaquands"
       tests:
         all_of:
-          - histic_subgroup_usda: {}
-    - code: "DAAD"
+          - histic_epipedon_usda: {}
+    - code: "DAAB"
       name: "Turbic Gelaquands"
       tests:
         all_of:
-          - turbic_subgroup_usda: {}
-    - code: "DAAE"
+          - gelic_materials_usda: { max_top_cm: 200 }
+    - code: "DAAC"
       name: "Thaptic Gelaquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DAAC"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DAAD"
       name: "Typic Gelaquands"
       tests:
         default: true
@@ -42,50 +36,50 @@ subgroups:
       name: "Lithic Cryaquands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DABB"
       name: "Histic Cryaquands"
       tests:
         all_of:
-          - histic_subgroup_usda: {}
+          - histic_epipedon_usda: {}
     - code: "DABC"
       name: "Thaptic Cryaquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: {}
     - code: "DABD"
       name: "Typic Cryaquands"
       tests:
         default: true
 
-  "DAC":  # Placaquands (3)
+  "DAC":  # Placaquands (6)
     - code: "DACA"
       name: "Lithic Placaquands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DACB"
-      name: "Histic Placaquands"
-      tests:
-        all_of:
-          - histic_subgroup_usda: {}
-    - code: "DACD"
       name: "Duric Histic Placaquands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-          - histic_subgroup_usda: {}
-    - code: "DACE"
+          - histic_epipedon_usda: {}
+          - sg_andisols_duric_usda: {}
+    - code: "DACC"
       name: "Duric Placaquands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "DACF"
+          - sg_andisols_duric_usda: {}
+    - code: "DACD"
+      name: "Histic Placaquands"
+      tests:
+        all_of:
+          - histic_epipedon_usda: {}
+    - code: "DACE"
       name: "Thaptic Placaquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DACC"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DACF"
       name: "Typic Placaquands"
       tests:
         default: true
@@ -95,168 +89,151 @@ subgroups:
       name: "Histic Duraquands"
       tests:
         all_of:
-          - histic_subgroup_usda: {}
+          - histic_epipedon_usda: {}
     - code: "DADB"
       name: "Acraquoxic Duraquands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - sg_andisols_acric_usda: {}
     - code: "DADC"
       name: "Thaptic Duraquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: {}
     - code: "DADD"
       name: "Typic Duraquands"
       tests:
         default: true
 
-  "DAE":  # Vitraquands (3)
+  "DAE":  # Vitraquands (5)
     - code: "DAEA"
       name: "Lithic Vitraquands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DAEB"
-      name: "Humic Vitraquands"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "DAED"
       name: "Duric Vitraquands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "DAEE"
+          - sg_andisols_duric_usda: {}
+    - code: "DAEC"
       name: "Histic Vitraquands"
       tests:
         all_of:
-          - histic_subgroup_usda: {}
-    - code: "DAEF"
+          - histic_epipedon_usda: {}
+    - code: "DAED"
       name: "Thaptic Vitraquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DAEC"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DAEE"
       name: "Typic Vitraquands"
       tests:
         default: true
 
-  "DAF":  # Melanaquands (3)
+  "DAF":  # Melanaquands (7)
     - code: "DAFA"
       name: "Lithic Melanaquands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DAFB"
-      name: "Thaptic Melanaquands"
-      tests:
-        all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DAFD"
       name: "Acraquoxic Melanaquands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
-    - code: "DAFE"
+          - sg_andisols_acric_usda: {}
+    - code: "DAFC"
       name: "Hydric Pachic Melanaquands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-          - pachic_subgroup_usda: {}
-    - code: "DAFF"
+          - sg_andisols_pachic_usda: {}
+    - code: "DAFD"
       name: "Hydric Melanaquands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DAFG"
+    - code: "DAFE"
       name: "Pachic Melanaquands"
       tests:
         all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DAFC"
+          - sg_andisols_pachic_usda: {}
+    - code: "DAFF"
+      name: "Thaptic Melanaquands"
+      tests:
+        all_of:
+          - sg_andisols_thaptic_usda: { from_cm: 40 }
+    - code: "DAFG"
       name: "Typic Melanaquands"
       tests:
         default: true
 
-  "DAG":  # Epiaquands (3)
+  "DAG":  # Epiaquands (6)
     - code: "DAGA"
-      name: "Lithic Epiaquands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DAGB"
-      name: "Humic Epiaquands"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "DAGD"
       name: "Duric Epiaquands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "DAGE"
+          - sg_andisols_duric_usda: {}
+    - code: "DAGB"
       name: "Histic Epiaquands"
       tests:
         all_of:
-          - histic_subgroup_usda: {}
-    - code: "DAGF"
+          - histic_epipedon_usda: {}
+    - code: "DAGC"
       name: "Alic Epiaquands"
       tests:
         all_of:
-          - alic_andisol_usda: {}
-    - code: "DAGG"
+          - sg_andisols_alic_usda: {}
+    - code: "DAGD"
       name: "Hydric Epiaquands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DAGH"
+    - code: "DAGE"
       name: "Thaptic Epiaquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DAGC"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DAGF"
       name: "Typic Epiaquands"
       tests:
         default: true
 
-  "DAH":  # Endoaquands (5)
+  "DAH":  # Endoaquands (7)
     - code: "DAHA"
       name: "Lithic Endoaquands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DAHB"
       name: "Duric Endoaquands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - sg_andisols_duric_usda: {}
     - code: "DAHC"
       name: "Histic Endoaquands"
       tests:
         all_of:
-          - histic_subgroup_usda: {}
+          - histic_epipedon_usda: {}
     - code: "DAHD"
       name: "Alic Endoaquands"
       tests:
         all_of:
-          - alic_andisol_usda: {}
+          - sg_andisols_alic_usda: {}
     - code: "DAHE"
       name: "Hydric Endoaquands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DAHG"
+    - code: "DAHF"
       name: "Thaptic Endoaquands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DAHF"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DAHG"
       name: "Typic Endoaquands"
       tests:
         default: true
-
-  # ====== GELANDS Subgroups ======
 
   "DBA":  # Vitrigelands (3)
     - code: "DBAA"
@@ -268,67 +245,61 @@ subgroups:
       name: "Turbic Vitrigelands"
       tests:
         all_of:
-          - turbic_subgroup_usda: {}
+          - gelic_materials_usda: { max_top_cm: 200 }
     - code: "DBAC"
       name: "Typic Vitrigelands"
       tests:
         default: true
 
-  # ====== CRYANDS Subgroups ======
-
-  "DCA":  # Duricryands (4)
+  "DCA":  # Duricryands (5)
     - code: "DCAA"
-      name: "Lithic Duricryands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DCAB"
       name: "Aquic Duricryands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DCAC"
-      name: "Humic Duricryands"
+          - sg_andisols_aquic_usda: {}
+    - code: "DCAB"
+      name: "Eutric Oxyaquic Duricryands"
       tests:
         all_of:
-          - humic_andisol_usda: {}
-    - code: "DCAE"
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
+    - code: "DCAC"
       name: "Oxyaquic Duricryands"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
     - code: "DCAD"
+      name: "Eutric Duricryands"
+      tests:
+        all_of:
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+    - code: "DCAE"
       name: "Typic Duricryands"
       tests:
         default: true
 
-  "DCB":  # Hydrocryands (3)
+  "DCB":  # Hydrocryands (5)
     - code: "DCBA"
       name: "Lithic Hydrocryands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DCBB"
-      name: "Acrudoxic Hydrocryands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
-    - code: "DCBD"
       name: "Placic Hydrocryands"
       tests:
         all_of:
-          - placic_horizon_usda: {}
-    - code: "DCBE"
+          - placic_horizon_usda: { max_top_cm: 100 }
+    - code: "DCBC"
       name: "Aquic Hydrocryands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DCBF"
+          - sg_andisols_aquic_usda: {}
+    - code: "DCBD"
       name: "Thaptic Hydrocryands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DCBC"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DCBE"
       name: "Typic Hydrocryands"
       tests:
         default: true
@@ -338,625 +309,607 @@ subgroups:
       name: "Lithic Melanocryands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DCCB"
-      name: "Pachic Melanocryands"
-      tests:
-        all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DCCD"
       name: "Vitric Melanocryands"
       tests:
         all_of:
-          - vitric_subgroup_usda: {}
+          - sg_andisols_vitric_usda: {}
     - code: "DCCC"
       name: "Typic Melanocryands"
       tests:
         default: true
 
-  "DCD":  # Fulvicryands (4)
+  "DCD":  # Fulvicryands (7)
     - code: "DCDA"
       name: "Lithic Fulvicryands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DCDB"
-      name: "Aquic Fulvicryands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DCDC"
-      name: "Pachic Fulvicryands"
-      tests:
-        all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DCDE"
       name: "Folistic Fulvicryands"
       tests:
         all_of:
-          - folistic_subgroup_usda: {}
+          - folistic_epipedon_usda: {}
+    - code: "DCDC"
+      name: "Eutric Pachic Fulvicryands"
+      tests:
+        all_of:
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+          - sg_andisols_pachic_usda: { fulvic: true }
+    - code: "DCDD"
+      name: "Eutric Fulvicryands"
+      tests:
+        all_of:
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+    - code: "DCDE"
+      name: "Pachic Fulvicryands"
+      tests:
+        all_of:
+          - sg_andisols_pachic_usda: { fulvic: true }
     - code: "DCDF"
       name: "Vitric Fulvicryands"
       tests:
         all_of:
-          - vitric_subgroup_usda: {}
-    - code: "DCDD"
+          - sg_andisols_vitric_usda: {}
+    - code: "DCDG"
       name: "Typic Fulvicryands"
       tests:
         default: true
 
-  "DCE":  # Vitricryands (5)
+  "DCE":  # Vitricryands (12)
     - code: "DCEA"
       name: "Lithic Vitricryands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DCEB"
-      name: "Aquic Vitricryands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DCEC"
-      name: "Spodic Vitricryands"
-      tests:
-        all_of:
-          - spodic_andisol_usda: {}
-    - code: "DCED"
-      name: "Humic Vitricryands"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "DCEF"
       name: "Folistic Vitricryands"
       tests:
         all_of:
-          - folistic_subgroup_usda: {}
-    - code: "DCEG"
+          - folistic_epipedon_usda: {}
+    - code: "DCEC"
+      name: "Aquic Vitricryands"
+      tests:
+        all_of:
+          - sg_andisols_aquic_usda: {}
+    - code: "DCED"
       name: "Oxyaquic Vitricryands"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "DCEH"
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
+    - code: "DCEE"
+      name: "Spodic Vitricryands"
+      tests:
+        all_of:
+          - sg_andisols_spodic_usda: {}
+    - code: "DCEF"
       name: "Thaptic Vitricryands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: {}
+    - code: "DCEG"
+      name: "Humic Xeric Vitricryands"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+          - humic_andisol_usda: {}
+    - code: "DCEH"
+      name: "Xeric Vitricryands"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
     - code: "DCEI"
       name: "Ultic Vitricryands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DCEE"
+    - code: "DCEJ"
+      name: "Alfic Vitricryands"
+      tests:
+        all_of:
+          - sg_andisols_alfic_usda: {}
+    - code: "DCEK"
+      name: "Humic Vitricryands"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "DCEL"
       name: "Typic Vitricryands"
       tests:
         default: true
 
-  "DCF":  # Haplocryands (5)
+  "DCF":  # Haplocryands (11)
     - code: "DCFA"
       name: "Lithic Haplocryands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DCFB"
-      name: "Aquic Haplocryands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DCFC"
-      name: "Spodic Haplocryands"
-      tests:
-        all_of:
-          - spodic_andisol_usda: {}
-    - code: "DCFD"
-      name: "Humic Haplocryands"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "DCFF"
       name: "Folistic Haplocryands"
       tests:
         all_of:
-          - folistic_subgroup_usda: {}
-    - code: "DCFG"
+          - folistic_epipedon_usda: {}
+    - code: "DCFC"
+      name: "Aquic Haplocryands"
+      tests:
+        all_of:
+          - sg_andisols_aquic_usda: {}
+    - code: "DCFD"
       name: "Oxyaquic Haplocryands"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "DCFH"
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
+    - code: "DCFE"
       name: "Alic Haplocryands"
       tests:
         all_of:
-          - alic_andisol_usda: {}
-    - code: "DCFI"
+          - sg_andisols_alic_usda: {}
+    - code: "DCFF"
+      name: "Spodic Haplocryands"
+      tests:
+        all_of:
+          - sg_andisols_spodic_usda: {}
+    - code: "DCFG"
       name: "Acrudoxic Haplocryands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
-    - code: "DCFJ"
+          - sg_andisols_acric_usda: {}
+    - code: "DCFH"
       name: "Vitric Haplocryands"
       tests:
         all_of:
-          - vitric_subgroup_usda: {}
-    - code: "DCFK"
+          - sg_andisols_vitric_usda: {}
+    - code: "DCFI"
       name: "Thaptic Haplocryands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DCFE"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DCFJ"
+      name: "Xeric Haplocryands"
+      tests:
+        all_of:
+          - smr_xeric_usda: {}
+    - code: "DCFK"
       name: "Typic Haplocryands"
       tests:
         default: true
 
-  # ====== TORRANDS Subgroups ======
-
   "DDA":  # Duritorrands (3)
     - code: "DDAA"
-      name: "Lithic Duritorrands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DDAB"
-      name: "Aquic Duritorrands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DDAD"
       name: "Petrocalcic Duritorrands"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "DDAE"
+          - petrocalcic_subgroup_usda: { max_top_cm: 100 }
+    - code: "DDAB"
       name: "Vitric Duritorrands"
       tests:
         all_of:
-          - vitric_subgroup_usda: {}
+          - vitrand_qualifying_usda: {}
     - code: "DDAC"
       name: "Typic Duritorrands"
       tests:
         default: true
 
-  "DDB":  # Vitritorrands (3)
+  "DDB":  # Vitritorrands (5)
     - code: "DDBA"
       name: "Lithic Vitritorrands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: { from_mineral: true }
     - code: "DDBB"
-      name: "Aquic Vitritorrands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DDBD"
       name: "Duric Vitritorrands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "DDBE"
+          - sg_andisols_duric_usda: {}
+    - code: "DDBC"
+      name: "Aquic Vitritorrands"
+      tests:
+        all_of:
+          - sg_andisols_aquic_usda: {}
+    - code: "DDBD"
       name: "Calcic Vitritorrands"
       tests:
         all_of:
-          - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DDBC"
+          - calcic_horizon_usda: { max_top_cm: 125 }
+    - code: "DDBE"
       name: "Typic Vitritorrands"
       tests:
         default: true
 
-  "DDC":  # Haplotorrands (3)
+  "DDC":  # Haplotorrands (4)
     - code: "DDCA"
       name: "Lithic Haplotorrands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: { from_mineral: true }
     - code: "DDCB"
-      name: "Aquic Haplotorrands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DDCD"
       name: "Duric Haplotorrands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
+          - sg_andisols_duric_usda: {}
     - code: "DDCC"
       name: "Calcic Haplotorrands"
       tests:
         all_of:
-          - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DDCE"
+          - calcic_horizon_usda: { max_top_cm: 125 }
+    - code: "DDCD"
       name: "Typic Haplotorrands"
       tests:
         default: true
 
-  # ====== XERANDS Subgroups ======
-
-  "DEA":  # Vitrixerands (4)
+  "DEA":  # Vitrixerands (8)
     - code: "DEAA"
       name: "Lithic Vitrixerands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DEAB"
       name: "Aquic Vitrixerands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_andisols_aquic_usda: {}
     - code: "DEAC"
-      name: "Humic Vitrixerands"
-      tests:
-        all_of:
-          - humic_andisol_usda: { melanic: true }
-    - code: "DEAE"
       name: "Thaptic Vitrixerands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DEAF"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DEAD"
+      name: "Alfic Humic Vitrixerands"
+      tests:
+        all_of:
+          - humic_andisol_usda: { melanic: true }
+          - sg_andisols_alfic_usda: {}
+    - code: "DEAE"
       name: "Ultic Vitrixerands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DEAD"
+    - code: "DEAF"
+      name: "Alfic Vitrixerands"
+      tests:
+        all_of:
+          - sg_andisols_alfic_usda: {}
+    - code: "DEAG"
+      name: "Humic Vitrixerands"
+      tests:
+        all_of:
+          - humic_andisol_usda: { melanic: true }
+    - code: "DEAH"
       name: "Typic Vitrixerands"
       tests:
         default: true
 
-  "DEB":  # Melanoxerands (3)
+  "DEB":  # Melanoxerands (2)
     - code: "DEBA"
-      name: "Lithic Melanoxerands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DEBB"
       name: "Pachic Melanoxerands"
       tests:
         all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DEBC"
+          - sg_andisols_pachic_usda: {}
+    - code: "DEBB"
       name: "Typic Melanoxerands"
       tests:
         default: true
 
-  "DEC":  # Haploxerands (5)
+  "DEC":  # Haploxerands (9)
     - code: "DECA"
       name: "Lithic Haploxerands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DECB"
       name: "Aquic Haploxerands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_andisols_aquic_usda: {}
     - code: "DECC"
-      name: "Vitric Haploxerands"
-      tests:
-        all_of:
-          - vitric_subgroup_usda: {}
-    - code: "DECD"
-      name: "Humic Haploxerands"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "DECF"
       name: "Thaptic Haploxerands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DECG"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DECD"
+      name: "Calcic Haploxerands"
+      tests:
+        all_of:
+          - calcic_horizon_usda: { max_top_cm: 125 }
+    - code: "DECE"
       name: "Ultic Haploxerands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DECH"
-      name: "Calcic Haploxerands"
+    - code: "DECF"
+      name: "Alfic Humic Haploxerands"
       tests:
         all_of:
-          - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DECE"
+          - humic_andisol_usda: {}
+          - sg_andisols_alfic_usda: {}
+    - code: "DECG"
+      name: "Alfic Haploxerands"
+      tests:
+        all_of:
+          - sg_andisols_alfic_usda: {}
+    - code: "DECH"
+      name: "Humic Haploxerands"
+      tests:
+        all_of:
+          - humic_andisol_usda: {}
+    - code: "DECI"
       name: "Typic Haploxerands"
       tests:
         default: true
 
-  # ====== VITRANDS Subgroups ======
-
-  "DFA":  # Ustivitrands (4)
+  "DFA":  # Ustivitrands (6)
     - code: "DFAA"
       name: "Lithic Ustivitrands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DFAB"
-      name: "Humic Ustivitrands"
-      tests:
-        all_of:
-          - humic_andisol_usda: { melanic: true }
-    - code: "DFAC"
-      name: "Pachic Ustivitrands"
-      tests:
-        all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DFAE"
       name: "Aquic Ustivitrands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DFAF"
+          - sg_andisols_aquic_usda: {}
+    - code: "DFAC"
       name: "Thaptic Ustivitrands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: {}
     - code: "DFAD"
       name: "Calcic Ustivitrands"
       tests:
         all_of:
-          - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DFAG"
+          - calcic_horizon_usda: { max_top_cm: 125 }
+    - code: "DFAE"
+      name: "Humic Ustivitrands"
+      tests:
+        all_of:
+          - humic_andisol_usda: { melanic: true }
+    - code: "DFAF"
       name: "Typic Ustivitrands"
       tests:
         default: true
 
-  "DFB":  # Udivitrands (5)
+  "DFB":  # Udivitrands (8)
     - code: "DFBA"
       name: "Lithic Udivitrands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DFBB"
       name: "Aquic Udivitrands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_andisols_aquic_usda: {}
     - code: "DFBC"
-      name: "Spodic Udivitrands"
-      tests:
-        all_of:
-          - spodic_andisol_usda: {}
-    - code: "DFBD"
-      name: "Humic Udivitrands"
-      tests:
-        all_of:
-          - humic_andisol_usda: { melanic: true }
-    - code: "DFBF"
       name: "Oxyaquic Udivitrands"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "DFBG"
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
+    - code: "DFBD"
       name: "Thaptic Udivitrands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DFBH"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DFBE"
       name: "Ultic Udivitrands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DFBE"
+    - code: "DFBF"
+      name: "Alfic Udivitrands"
+      tests:
+        all_of:
+          - sg_andisols_alfic_usda: {}
+    - code: "DFBG"
+      name: "Humic Udivitrands"
+      tests:
+        all_of:
+          - humic_andisol_usda: { melanic: true }
+    - code: "DFBH"
       name: "Typic Udivitrands"
       tests:
         default: true
 
-  # ====== USTANDS Subgroups ======
-
-  "DGA":  # Durustands (3)
+  "DGA":  # Durustands (4)
     - code: "DGAA"
-      name: "Lithic Durustands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DGAB"
       name: "Aquic Durustands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DGAD"
+          - sg_andisols_aquic_usda: {}
+    - code: "DGAB"
       name: "Thaptic Durustands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - { code: "DGAE", name: "Humic Durustands", tests: { all_of: [{humic_andisol_usda: { melanic: true }}] } }
+          - sg_andisols_thaptic_usda: {}
     - code: "DGAC"
+      name: "Humic Durustands"
+      tests:
+        all_of:
+          - humic_andisol_usda: { melanic: true }
+    - code: "DGAD"
       name: "Typic Durustands"
       tests:
         default: true
 
-  "DGB":  # Haplustands (5)
+  "DGB":  # Haplustands (13)
     - code: "DGBA"
       name: "Lithic Haplustands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DGBB"
       name: "Aquic Haplustands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_andisols_aquic_usda: {}
     - code: "DGBC"
+      name: "Dystric Vitric Haplustands"
+      tests:
+        all_of:
+          - sg_andisols_dystric_usda: {}
+          - sg_andisols_vitric_usda: {}
+    - code: "DGBD"
       name: "Vitric Haplustands"
       tests:
         all_of:
-          - vitric_subgroup_usda: {}
-    - code: "DGBD"
-      name: "Humic Haplustands"
-      tests:
-        all_of:
-          - humic_andisol_usda: { melanic: true }
-    - code: "DGBF"
+          - sg_andisols_vitric_usda: {}
+    - code: "DGBE"
       name: "Pachic Haplustands"
       tests:
         all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DGBG"
+          - sg_andisols_pachic_usda: {}
+    - code: "DGBF"
       name: "Thaptic Haplustands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: {}
+    - code: "DGBG"
+      name: "Calcic Haplustands"
+      tests:
+        all_of:
+          - calcic_horizon_usda: { max_top_cm: 125 }
     - code: "DGBH"
+      name: "Dystric Haplustands"
+      tests:
+        all_of:
+          - sg_andisols_dystric_usda: {}
+    - code: "DGBI"
+      name: "Oxic Haplustands"
+      tests:
+        all_of:
+          - sg_andisols_oxic_usda: {}
+    - code: "DGBJ"
       name: "Ultic Haplustands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DGBI"
-      name: "Calcic Haplustands"
+    - code: "DGBK"
+      name: "Alfic Haplustands"
       tests:
         all_of:
-          - calcic_subgroup_usda: { max_top_cm: 125 }
-    - code: "DGBE"
+          - sg_andisols_alfic_usda: {}
+    - code: "DGBL"
+      name: "Humic Haplustands"
+      tests:
+        all_of:
+          - humic_andisol_usda: { melanic: true }
+    - code: "DGBM"
       name: "Typic Haplustands"
       tests:
         default: true
 
-  # ====== UDANDS Subgroups ======
-
-  "DHA":  # Placudands (3)
+  "DHA":  # Placudands (5)
     - code: "DHAA"
       name: "Lithic Placudands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DHAB"
-      name: "Acrudoxic Placudands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
-    - code: "DHAD"
       name: "Aquic Placudands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DHAE"
+          - sg_andisols_aquic_usda: { to: placic }
+    - code: "DHAC"
+      name: "Acrudoxic Placudands"
+      tests:
+        all_of:
+          - sg_andisols_acric_usda: { to: placic }
+    - code: "DHAD"
       name: "Hydric Placudands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DHAC"
+    - code: "DHAE"
       name: "Typic Placudands"
       tests:
         default: true
 
-  "DHB":  # Durudands (4)
+  "DHB":  # Durudands (6)
     - code: "DHBA"
-      name: "Lithic Durudands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DHBB"
       name: "Aquic Durudands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_andisols_aquic_usda: { to: cemented }
+    - code: "DHBB"
+      name: "Eutric Durudands"
+      tests:
+        all_of:
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
     - code: "DHBC"
       name: "Acrudoxic Durudands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
-    - code: "DHBE"
+          - sg_andisols_acric_usda: { to: cemented }
+    - code: "DHBD"
       name: "Hydric Durudands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DHBF"
+    - code: "DHBE"
       name: "Pachic Durudands"
       tests:
         all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DHBD"
+          - sg_andisols_pachic_usda: {}
+    - code: "DHBF"
       name: "Typic Durudands"
       tests:
         default: true
 
-  "DHD":  # Hydrudands (5)
-    - code: "DHDA"
-      name: "Lithic Hydrudands"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DHDB"
-      name: "Aquic Hydrudands"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DHDC"
-      name: "Acrudoxic Hydrudands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
-    - code: "DHDD"
-      name: "Pachic Hydrudands"
-      tests:
-        all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DHDF"
-      name: "Acrudoxic Thaptic Hydrudands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
-          - thaptic_subgroup_usda: {}
-    - code: "DHDG"
-      name: "Thaptic Hydrudands"
-      tests:
-        all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DHDH"
-      name: "Ultic Hydrudands"
-      tests:
-        all_of:
-          - ultic_andisol_usda: {}
-    - code: "DHDE"
-      name: "Typic Hydrudands"
-      tests:
-        default: true
-
-  "DHC":  # Melanudands (5)
+  "DHC":  # Melanudands (15)
     - code: "DHCA"
       name: "Lithic Melanudands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DHCB"
+      name: "Anthraquic Melanudands"
+      tests:
+        all_of:
+          - sg_andisols_anthraquic_usda: {}
+    - code: "DHCC"
       name: "Aquic Melanudands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DHCC"
-      name: "Acrudoxic Melanudands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
+          - sg_andisols_aquic_usda: {}
     - code: "DHCD"
-      name: "Pachic Melanudands"
-      tests:
-        all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DHCF"
       name: "Acrudoxic Vitric Melanudands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
-          - vitric_subgroup_usda: {}
-    - code: "DHCG"
+          - sg_andisols_acric_usda: {}
+          - sg_andisols_vitric_usda: {}
+    - code: "DHCE"
       name: "Acrudoxic Hydric Melanudands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - sg_andisols_acric_usda: {}
           - hydric_andisol_usda: {}
-    - code: "DHCH"
+    - code: "DHCF"
+      name: "Acrudoxic Melanudands"
+      tests:
+        all_of:
+          - sg_andisols_acric_usda: {}
+    - code: "DHCG"
       name: "Pachic Vitric Melanudands"
       tests:
         all_of:
-          - pachic_subgroup_usda: {}
-          - vitric_subgroup_usda: {}
-    - code: "DHCI"
+          - sg_andisols_pachic_usda: {}
+          - sg_andisols_vitric_usda: {}
+    - code: "DHCH"
       name: "Vitric Melanudands"
       tests:
         all_of:
-          - vitric_subgroup_usda: {}
-    - code: "DHCJ"
+          - sg_andisols_vitric_usda: {}
+    - code: "DHCI"
       name: "Hydric Pachic Melanudands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-          - pachic_subgroup_usda: {}
+          - sg_andisols_pachic_usda: {}
+    - code: "DHCJ"
+      name: "Pachic Melanudands"
+      tests:
+        all_of:
+          - sg_andisols_pachic_usda: {}
     - code: "DHCK"
       name: "Hydric Melanudands"
       tests:
@@ -966,155 +919,235 @@ subgroups:
       name: "Thaptic Melanudands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: { from_cm: 40 }
     - code: "DHCM"
       name: "Ultic Melanudands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DHCE"
+    - code: "DHCN"
+      name: "Eutric Melanudands"
+      tests:
+        all_of:
+          - sg_andisols_eutric_bases_usda: {}
+    - code: "DHCO"
       name: "Typic Melanudands"
       tests:
         default: true
 
-  "DHE":  # Fulvudands (5)
+  "DHD":  # Hydrudands (8)
+    - code: "DHDA"
+      name: "Lithic Hydrudands"
+      tests:
+        all_of:
+          - sg_andisols_lithic_usda: {}
+    - code: "DHDB"
+      name: "Aquic Hydrudands"
+      tests:
+        all_of:
+          - sg_andisols_aquic_usda: {}
+    - code: "DHDC"
+      name: "Acrudoxic Thaptic Hydrudands"
+      tests:
+        all_of:
+          - sg_andisols_acric_usda: {}
+          - sg_andisols_thaptic_usda: {}
+    - code: "DHDD"
+      name: "Acrudoxic Hydrudands"
+      tests:
+        all_of:
+          - sg_andisols_acric_usda: {}
+    - code: "DHDE"
+      name: "Thaptic Hydrudands"
+      tests:
+        all_of:
+          - sg_andisols_thaptic_usda: {}
+    - code: "DHDF"
+      name: "Eutric Hydrudands"
+      tests:
+        all_of:
+          - sg_andisols_eutric_bases_usda: {}
+    - code: "DHDG"
+      name: "Ultic Hydrudands"
+      tests:
+        all_of:
+          - ultic_andisol_usda: {}
+    - code: "DHDH"
+      name: "Typic Hydrudands"
+      tests:
+        default: true
+
+  "DHE":  # Fulvudands (12)
     - code: "DHEA"
+      name: "Eutric Lithic Fulvudands"
+      tests:
+        all_of:
+          - sg_andisols_lithic_usda: {}
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+    - code: "DHEB"
       name: "Lithic Fulvudands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "DHEB"
+          - sg_andisols_lithic_usda: {}
+    - code: "DHEC"
       name: "Aquic Fulvudands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "DHEC"
-      name: "Acrudoxic Fulvudands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
+          - sg_andisols_aquic_usda: {}
     - code: "DHED"
-      name: "Pachic Fulvudands"
-      tests:
-        all_of:
-          - pachic_subgroup_usda: {}
-    - code: "DHEF"
       name: "Oxyaquic Fulvudands"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "DHEG"
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
+    - code: "DHEE"
       name: "Hydric Fulvudands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DHEH"
+    - code: "DHEF"
+      name: "Acrudoxic Fulvudands"
+      tests:
+        all_of:
+          - sg_andisols_acric_usda: {}
+    - code: "DHEG"
       name: "Ultic Fulvudands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
+    - code: "DHEH"
+      name: "Eutric Pachic Fulvudands"
+      tests:
+        all_of:
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+          - sg_andisols_pachic_usda: { fulvic: true }
     - code: "DHEI"
+      name: "Eutric Fulvudands"
+      tests:
+        all_of:
+          - none_of: [ { sg_andisols_alic_usda: {} } ]
+    - code: "DHEJ"
+      name: "Pachic Fulvudands"
+      tests:
+        all_of:
+          - sg_andisols_pachic_usda: { fulvic: true }
+    - code: "DHEK"
       name: "Thaptic Fulvudands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
-    - code: "DHEE"
+          - sg_andisols_thaptic_usda: { from_cm: 40 }
+    - code: "DHEL"
       name: "Typic Fulvudands"
       tests:
         default: true
 
-  "DHF":  # Hapludands (7)
+  "DHF":  # Hapludands (21)
     - code: "DHFA"
       name: "Lithic Hapludands"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_andisols_lithic_usda: {}
     - code: "DHFB"
-      name: "Aquic Hapludands"
+      name: "Anthraquic Hapludands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_andisols_anthraquic_usda: {}
     - code: "DHFC"
-      name: "Acrudoxic Hapludands"
-      tests:
-        all_of:
-          - acric_andisol_usda: {}
-    - code: "DHFD"
-      name: "Spodic Hapludands"
-      tests:
-        all_of:
-          - spodic_andisol_usda: {}
-    - code: "DHFE"
-      name: "Vitric Hapludands"
-      tests:
-        all_of:
-          - vitric_subgroup_usda: {}
-    - code: "DHFF"
-      name: "Humic Hapludands"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "DHFH"
       name: "Aquic Duric Hapludands"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-          - duric_subgroup_usda: {}
-    - code: "DHFI"
+          - sg_andisols_duric_usda: {}
+          - sg_andisols_aquic_usda: {}
+    - code: "DHFD"
       name: "Duric Hapludands"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "DHFJ"
+          - sg_andisols_duric_usda: {}
+    - code: "DHFE"
+      name: "Aquic Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_aquic_usda: {}
+    - code: "DHFF"
       name: "Oxyaquic Hapludands"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "DHFK"
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
+    - code: "DHFG"
       name: "Alic Hapludands"
       tests:
         all_of:
-          - alic_andisol_usda: {}
-    - code: "DHFL"
+          - sg_andisols_alic_usda: {}
+    - code: "DHFH"
       name: "Acrudoxic Hydric Hapludands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - sg_andisols_acric_usda: {}
           - hydric_andisol_usda: {}
-    - code: "DHFM"
+    - code: "DHFI"
       name: "Acrudoxic Thaptic Hapludands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
-          - thaptic_subgroup_usda: {}
-    - code: "DHFN"
+          - sg_andisols_acric_usda: {}
+          - sg_andisols_thaptic_usda: {}
+    - code: "DHFJ"
       name: "Acrudoxic Ultic Hapludands"
       tests:
         all_of:
-          - acric_andisol_usda: {}
+          - sg_andisols_acric_usda: {}
           - ultic_andisol_usda: {}
-    - code: "DHFO"
+    - code: "DHFK"
+      name: "Acrudoxic Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_acric_usda: {}
+    - code: "DHFL"
+      name: "Vitric Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_vitric_usda: {}
+    - code: "DHFM"
       name: "Hydric Thaptic Hapludands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-          - thaptic_subgroup_usda: {}
-    - code: "DHFP"
+          - sg_andisols_thaptic_usda: {}
+    - code: "DHFN"
       name: "Hydric Hapludands"
       tests:
         all_of:
           - hydric_andisol_usda: {}
-    - code: "DHFQ"
+    - code: "DHFO"
+      name: "Eutric Thaptic Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_eutric_bases_usda: {}
+          - sg_andisols_thaptic_usda: {}
+    - code: "DHFP"
       name: "Thaptic Hapludands"
       tests:
         all_of:
-          - thaptic_subgroup_usda: {}
+          - sg_andisols_thaptic_usda: {}
+    - code: "DHFQ"
+      name: "Eutric Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_eutric_bases_usda: {}
     - code: "DHFR"
+      name: "Oxic Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_oxic_usda: {}
+    - code: "DHFS"
       name: "Ultic Hapludands"
       tests:
         all_of:
           - ultic_andisol_usda: {}
-    - code: "DHFG"
+    - code: "DHFT"
+      name: "Alfic Hapludands"
+      tests:
+        all_of:
+          - sg_andisols_alfic_usda: {}
+    - code: "DHFU"
       name: "Typic Hapludands"
       tests:
         default: true

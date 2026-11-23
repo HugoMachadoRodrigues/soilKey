@@ -1,3 +1,71 @@
+# soilKey 0.9.426
+
+Subgroups of the Aridisols, Vertisols and Andisols rebuilt from the Keys to
+Soil Taxonomy, 13th edition (audit items R3 to R6; wave 3). Every great group
+of the three orders now lists exactly the KST subgroups, in KST order, with
+the KST codes (Typic last, as the default), and compound subgroups come
+before their parts. The tests are in the new `R/subgroups-usda-aridvertand.R`
+(names `sg_aridisols_*`, `sg_vertisols_*`, `sg_andisols_*`, and the general
+`sg_usda_within_usda()` and `sg_usda_duripan_weak_usda()`), three-valued:
+field observations not recorded are absent, measurements not recorded leave
+the test undecided. No helper used by another order changed.
+
+* **Aridisols** (Ch. 7, pp. 137-163): 155 entries become 270; 145 added, 30
+  removed (names the KST does not have, e.g. Sodic Calciargids, Lithic
+  Petrocambids, Aquic Haplocambids), the kept ones reordered in 12 great
+  groups. New: the Xeric and Ustic subgroups and their compounds (Lithic
+  Xeric, Xerertic, Durinodic Xeric, Vitrixerandic...), Arenic, Durinodic,
+  Thapto-Humic, Fluventic, Anthropic, Abruptic, Argidic, Cambidic,
+  Natrargidic, Glossic, Haplic, Anhydritic. Sodic reads an ESP of 15 or more
+  through a horizon 25 cm thick within 100 cm (not the natric horizon);
+  Petronodic reads 20 % nodules or concretions through 15 cm within 100 cm
+  (not 15 % CaCO3 with 5 % coarse fragments); Vertic reads cracks with
+  slickensides or a linear extensibility of 6 cm (COLE not measured:
+  undecided); Aquic reads saturation for a month (`water_saturation_days`) or
+  irrigation with redox features. "Borders on ustic (xeric)" reads the
+  moisture regime record: a record naming both regimes passes, a record of
+  one regime is its typic part, none leaves it undecided.
+* **Vertisols** (Ch. 16, pp. 343-354): 171 entries become 158; 22 added (the
+  Udic and Ustic subgroups, Aeric, Sulfaqueptic, Haplic Durixererts, the
+  Haplustert compounds), 35 removed (Salic, Calcic, Sodic and Aquic names the
+  KST does not have in those great groups), the kept ones reordered in 17
+  great groups. Halic: 15 dS/m through 15 cm within 100 cm (was 30 dS/m in 30
+  cm); Sodic: ESP 15 in any horizon within 100 cm (was the natric horizon);
+  Entic: a layer 25 cm thick with less than 27 % clay (was the Spodosol
+  entic test, which never passed, F16); Chromic three-valued, with the chroma
+  clause only where the KST has it; Leptic with the duripan and petrocalcic
+  horizon only where the KST names them. The crack patterns of the Aridic,
+  Ustic, Xeric and Udic subgroups read `site$cracks_open_days` where recorded,
+  else the recorded regimes they stand for (p. 343 note; L32): an aquic
+  regime leaves them undecided.
+* **Andisols** (Ch. 6, pp. 117-136): 211 entries become 218; 29 added (the
+  Alfic, Anthraquic, Eutric, Oxic, Dystric and Xeric subgroups, Acrudoxic and
+  Hydric compounds, Folistic, Placic...), 22 removed, the kept ones reordered
+  in 16 great groups, the Hapludands and Fulvudands among them. Acrudoxic
+  (bases plus KCl Al under 2.0 cmol/kg in 30 cm between 25 and 100 cm), Alic
+  and its negation in the Eutric subgroups of the Dur- and Fulvi- great
+  groups, Eutric (bases over 25 cmol/kg), Dystric (under 15), Pachic (6 %
+  organic carbon with mollic colours through 50 cm; the Fulvi- wording by
+  the weighted and minimum carbon), Vitric (1500 kPa water retention, not
+  the glass content), Aquic (50 to 100 cm), Duric (20 % cemented, 15 cm),
+  Spodic by the USDA spodic, albic and cambic horizons, Thaptic from 40 cm
+  in the Melanaquands, Fulvudands and Melanudands.
+* Canonical fixtures: the Andosol becomes Hydric Melanudands (was Vitric
+  Melanudands: its 1500 kPa water retention of 110 % is Hydric, the KST
+  Vitric reads that retention, not the glass); the Calcisol, with an aridic
+  regime recorded, becomes Typic Haplocalcids (was Petronodic Haplocalcids:
+  it records no nodules). USDA subgroup coverage 2049 to 2245 of 2715.
+* On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  subgroup in 75 (was 73); order 216, suborder 174 and great group 124 are
+  unchanged. 23 ISIS names change, all within their great group: UY006
+  Chromic Hapluderts and US026 Natrargidic Natridurids now agree with ISIS;
+  BJ003, KE063, ML005, NA011, ZM011, PK001, GB004, CN010, PH005, NL010,
+  IN010, IN011, OM003, CU013, CN011, AU039, CU001, AU006, CU009, CU021 and
+  NI009 change subgroup. Of the 69 ISIS profiles named in these three orders,
+  46 now have an undecided subgroup before the assigned one (grade C; was
+  30), mostly Vertic (COLE not measured, 19) and Aquic (no saturation
+  record, 16).
+
 # soilKey 0.9.425
 
 Inceptisol and Entisol subgroups rebuilt from the KST 13th edition (wave 3
