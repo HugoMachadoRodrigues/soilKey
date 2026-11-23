@@ -101,7 +101,9 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
     p <- f(); p$site$soil_moisture_regime <- "udic"; p
   }
   expect_equal(sg(make_argissolo_canonical), "Ultisols")
-  expect_equal(sg(udic(make_argissolo_canonical)), "Rhodic Kandiudults")
+  # v0.9.423: the BA (5YR, value 4) is the top of the kandic horizon, so its
+  # upper 75 cm are not all red and dark: not Rhodic (KST 13 p 333)
+  expect_equal(sg(udic(make_argissolo_canonical)), "Typic Kandiudults")
   expect_equal(sg(aridic(make_calcisol_canonical)), "Petronodic Haplocalcids")
   expect_equal(sg(make_planossolo_canonical), "Umbric Albaqualfs")
 })

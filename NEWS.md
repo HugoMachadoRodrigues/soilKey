@@ -1,3 +1,97 @@
+# soilKey 0.9.423
+
+The subgroups of the Ultisols and Oxisols rebuilt from Keys to Soil Taxonomy,
+13th edition (Hugo, 2026-11-22; audit items R3 to R6, O7, F16, F17, G7). For
+every great group, `inst/rules/usda/subgroups/ultisols.yaml` and
+`oxisols.yaml` list exactly the subgroups of the KST, in its order, with its
+codes (HCGA, EEBM ...), Typic last; each test reads the criteria of its
+subgroup. The new tests are in `R/subgroups-usda-ultox.R` (`sg_oxisol_*`,
+`sg_ultisol_*`, and `sg_ultox_contact()` and `sg_ultox_plinthic()`, which both
+orders call); the helpers other orders share are called, not changed. All are
+three-valued: a field observation not recorded is absent (redox features,
+plinthite, slickensides, cracks, lamellae, fragic properties, a discontinuous
+contact); a measurement not recorded leaves the test undecided (colour,
+texture, the linear extensibility, base saturation, CEC, oxalate extractions,
+bulk density, days of saturation, a regime or its subclass).
+
+* **Oxisols** (KST 13th ed., pp. 295-309): 190 entries to 213, 23 added
+  (Inceptic, Humic Inceptic and Aqueptic; Kandiudalfic and Kandiustalfic;
+  Plinthaquic in every Ustox, Perox and Udox great group that has it; Eutric
+  Acrudox and Acrustox), none removed, 13 great groups
+  reordered so the compounds come before their parts (audit O7). Aquic: redox
+  depletions of moist value 4 or more and chroma 2 or less within 125 cm (a
+  mottle colour so recorded, or such a matrix colour where mottles or a g
+  designation show it depleted), not the generic aquic conditions within 100
+  cm. Xanthic: half the thickness between 25 and 125 cm with hue 7.5YR or
+  yellower and value 6 or more (it took half of the layers by count).
+  Anionic: delta pH of 0 or more through 18 cm of adjoining layers within 125
+  cm. Inceptic: the lower boundary of the oxic horizon within 125 cm, shown
+  by a layer or a contact below it (undecided where the profile ends inside
+  the oxic horizon). Eutric: 35 % base saturation (NH4OAc) in every horizon
+  to 125 cm. Aeric: a horizon 10 cm thick, chroma 3 or more, directly below
+  the epipedon. Lithic and Petroferric: a contact within 125 cm.
+* **Ultisols** (KST 13th ed., pp. 321-341): 192 entries to 215, 54 added, 31
+  removed (names the KST does not have: Lithic Plinthaquults, Umbric
+  Albaquults, Aquic Plinthudults, Andic Hapludults, Humic Haplustults, Aquic
+  Paleustults ...), 18 great groups reordered. Arenic and Grossarenic read the
+  Ultisol definition (audit F16; the Spodosol helper they called needed a
+  spodic horizon and never passed): a texture of loamy fine sand or coarser
+  from the mineral soil surface to the argillic or kandic horizon, whichever
+  the great group names, at 50 to 100 cm, 100 cm or more, or 50 cm or more.
+  Aquic: depletions of the great group's zone (the upper 25 cm of the argillic
+  or kandic horizon in the Humults and Xerults; 75 cm in the Kandi-, Kanhapl-
+  and Pale- Udults and Ustults; 100 cm with concentrations or depletions in
+  the Hapludults; 40 cm in the Plinthaquic and Glossaquic Fragiudults; the
+  upper 12.5 cm of the argillic horizon within 75 cm in the Haplustults),
+  with redox concentrations where the KST asks for them (audit R6: it was
+  always the aquic conditions within 100 cm). Vertic: slickensides or
+  wedge-shaped peds 15 cm thick within 125 cm (where no cracks are recorded
+  the slickensides stand for them, reading L30), or a linear extensibility of
+  6 cm (COLE x thickness), undecided where COLE is not recorded. Fragic:
+  fragic soil properties (an x designation or a surveyor's fragipan), not the
+  fragipan (R6). Aeric: chroma 3 or more between the A horizon or 25 cm and
+  75 cm (or the fragipan). Umbric: a mollic or umbric epipedon. Kandic
+  Plinthaquults and Kanhaplic Haplustults: a CEC under 24 cmol(+)/kg clay in
+  half the argillic horizon (its upper 100 cm). Rhodic: the upper 75 or 50 cm
+  of the kandic or argillic horizon, with the dry value (undecided without
+  it, reading L26). Humic Hapludults and Fragiudults: moist value 3 or less
+  and dry value 5 or less in an Ap 18 cm thick or the upper 18 cm mixed (a dry
+  value not recorded is moist + 1 only for a moist value of 2 or less, as in
+  the mollic epipedon, reading L27). Inceptic Hapludults, Psammentic,
+  Lamellic, Ombroaquic, Spodic and Anthraquic Paleudults, Glossic and
+  Glossaquic Fragiudults, Haplic Plinthustults (the negation of the Pale-
+  core), Lithic-Ruptic-Entic and Lithic Ruptic-Inceptic, Ustandic, Ustic and
+  Xeric Humults, Acrudoxic, Acrustoxic and Acraquoxic (the ECEC per kg clay
+  of v0.9.420), Sombric Kandiudults: as the KST words them. Udic, Aridic and
+  Udandic Kandiustults and Kanhaplustults need the side of the ustic regime,
+  read from `site$soil_moisture_subclass` ("udic ustic" ...); not recorded,
+  undecided.
+* **ISIS (974 profiles):** 30 names change, all at the subgroup level.
+  Against the ISIS 1999 names (`cmp.R`): order 216 of 357, suborder 174, great
+  group 124, unchanged; subgroup 73 to 75 of 340. ZM004 (Inceptic Haplustox),
+  ID032 (Inceptic Hapludox), CO001 (Ustic Palehumults) and IN003 (Kanhaplic
+  Haplustults) now agree with ISIS; US009 (Kandiustalfic Eutrustox, ISIS
+  Rhodic) and ZW011 (Haplic Plinthustults, ISIS Typic) no longer do. Kandic
+  horizons within 150 cm make BR004, BR007, MZ003, ZW001 and US009
+  Kandiustalfic Eutrustox and CN043, US003 Kandiudalfic Eutrudox. Of the 152
+  Ultisol and Oxisol names, 92 now have an undecided subgroup before the
+  name (75 before): Oxyaquic (no days of saturation) 43, Humic 34, Andic 15,
+  Vertic (no COLE) 10, Aquic 9, Udic and Aridic (no subclass) 7 each.
+* **Canonical fixtures:** no name changes (`make_ferralsol_canonical()` and
+  `make_latossolo_canonical()` stay Typic Hapludox,
+  `make_nitossolo_canonical()` Rhodic Kandiudox). `make_argissolo_canonical()`
+  records no regime and stays "Ultisols"; with a udic regime set (as
+  `test-coverage.R` does) it is Typic Kandiudults, no longer Rhodic: its
+  kandic horizon starts with the BA (5YR, value 4), and Rhodic needs every
+  subhorizon of the upper 75 cm red and dark (p. 333).
+* **Tests:** `test-v09423-subgroups-ultox.R` (the KST lists of every great
+  group, compounds before their parts, and the tests above);
+  `test-v09309-ke009.R` now expects Kandiustalfic Eutrustox (a kandic horizon
+  within 150 cm, p. 306), `test-coverage.R` Typic Kandiudults (above), and
+  `test-usda-intergrade-subgroups.R`, `test-v09147-usda-subgroup-coverage.R`
+  and `test-v09149-usda-humic-colour.R` 2126 registered subgroups (2049
+  before).
+
 # soilKey 0.9.422
 
 The Alfisol subgroups rebuilt from Keys to Soil Taxonomy, 13th edition

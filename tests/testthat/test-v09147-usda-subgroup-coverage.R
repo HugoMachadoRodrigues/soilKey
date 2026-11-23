@@ -10,7 +10,8 @@ test_that("v0.9.147: USDA subgroup coverage (running total 2049/2715, 75.5%)", {
   cov <- coverage_report("usda_subgroup")
   # 2003 + 35 (v0.9.147) + 11 (v0.9.149) + 105 (v0.9.422: the Alfisol lists
   # rebuilt from the KST, all 356 Alfisol subgroups registered)
-  expect_equal(cov$overall$covered_n, 2154L)
+  # + 77 (v0.9.423)
+  expect_equal(cov$overall$covered_n, 2231L)
   expect_equal(cov$overall$canonical_n, 2715L)
   expect_gt(cov$overall$pct, 75)
 })
