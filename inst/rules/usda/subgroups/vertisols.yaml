@@ -1,274 +1,261 @@
 # =============================================================
-# USDA Soil Taxonomy 13ed -- Vertisols Subgroups -- Cap 16
+# USDA Soil Taxonomy 13th ed. -- Vertisols subgroups -- Ch. 16, pp. 343-354
 # =============================================================
-# Cobertura cientifica focada -- ~85 SGs.
+# v0.9.426: every great group lists exactly the subgroups of the KST 13th
+# edition, in KST order, with the KST codes (Typic last, as the default).
+# Compound subgroups come before their parts, as the KST orders them. The
+# tests are the KST criteria, three-valued (R/subgroups-usda-aridvertand.R
+# and the helpers of the other orders it names).
+# The crack patterns (Aridic, Ustic, Xeric, Udic) read site$cracks_open_days,
+# else the recorded regimes they stand for (KST p. 343 note; audit L32).
 # =============================================================
 
 subgroups:
 
-  # ====== AQUERTS ======
-
   "FAA":  # Sulfaquerts (3)
     - code: "FAAA"
-      name: "Halic Sulfaquerts"
-      tests:
-        all_of:
-          - halic_subgroup_usda: {}
-    - code: "FAAB"
-      name: "Sodic Sulfaquerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FAAD"
       name: "Salic Sulfaquerts"
       tests:
         all_of:
-          - salic_subgroup_usda: {}
-    - code: "FAAE"
+          - salic_horizon_usda: { max_top_cm: 75 }
+    - code: "FAAB"
       name: "Sulfic Sulfaquerts"
       tests:
         all_of:
-          - sulfic_subgroup_usda: {}
+          - none_of: [ { sulfuric_horizon_usda: { max_top_cm: 100 } } ]
     - code: "FAAC"
       name: "Typic Sulfaquerts"
       tests:
         default: true
 
-  "FAB":  # Salaquerts (3)
+  "FAB":  # Salaquerts (6)
     - code: "FABA"
-      name: "Sulfic Salaquerts"
-      tests:
-        all_of:
-          - sulfic_subgroup_usda: {}
-    - code: "FABB"
-      name: "Sodic Salaquerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FABD"
       name: "Aridic Salaquerts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FABE"
-      name: "Entic Salaquerts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FABB"
+      name: "Ustic Salaquerts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: ustic }
     - code: "FABC"
       name: "Leptic Salaquerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FABF"
+          - sg_vertisols_leptic_usda: {}
+    - code: "FABD"
+      name: "Entic Salaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FABE"
       name: "Chromic Salaquerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FABG"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FABF"
       name: "Typic Salaquerts"
       tests:
         default: true
 
-  "FAC":  # Duraquerts (3)
+  "FAC":  # Duraquerts (6)
     - code: "FACA"
-      name: "Sodic Duraquerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FACB"
-      name: "Calcic Duraquerts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FACD"
       name: "Aridic Duraquerts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FACB"
+      name: "Xeric Duraquerts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: xeric }
+    - code: "FACC"
+      name: "Ustic Duraquerts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: ustic }
+    - code: "FACD"
+      name: "Aeric Duraquerts"
+      tests:
+        all_of:
+          - sg_vertisols_aeric_usda: {}
     - code: "FACE"
       name: "Chromic Duraquerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: { use_chroma: false }
-    - code: "FACC"
+          - sg_vertisols_chromic_usda: { chroma: false }
+    - code: "FACF"
       name: "Typic Duraquerts"
       tests:
         default: true
 
-  "FAD":  # Natraquerts (3)
+  "FAD":  # Natraquerts (1)
     - code: "FADA"
-      name: "Salic Natraquerts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FADB"
-      name: "Calcic Natraquerts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FADC"
       name: "Typic Natraquerts"
       tests:
         default: true
 
-  "FAE":  # Calciaquerts (3)
+  "FAE":  # Calciaquerts (2)
     - code: "FAEA"
-      name: "Sodic Calciaquerts"
+      name: "Aeric Calciaquerts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
+          - sg_vertisols_aeric_usda: {}
     - code: "FAEB"
-      name: "Salic Calciaquerts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FAEC"
       name: "Typic Calciaquerts"
       tests:
         default: true
 
-  "FAF":  # Dystraquerts (3)
+  "FAF":  # Dystraquerts (8)
     - code: "FAFA"
-      name: "Aeric Dystraquerts"
+      name: "Sulfaqueptic Dystraquerts"
       tests:
         all_of:
-          - aeric_subgroup_usda: {}
+          - sg_vertisols_sulfaqueptic_usda: {}
     - code: "FAFB"
-      name: "Humic Dystraquerts"
-      tests:
-        all_of:
-          - humic_andisol_usda: {}
-    - code: "FAFD"
       name: "Aridic Dystraquerts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FAFE"
-      name: "Entic Dystraquerts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FAFC"
+      name: "Ustic Dystraquerts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FAFF"
+          - sg_vertisols_cracks_usda: { pattern: ustic }
+    - code: "FAFD"
+      name: "Aeric Dystraquerts"
+      tests:
+        all_of:
+          - sg_vertisols_aeric_usda: {}
+    - code: "FAFE"
       name: "Leptic Dystraquerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
+          - sg_vertisols_leptic_usda: {}
+    - code: "FAFF"
+      name: "Entic Dystraquerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
     - code: "FAFG"
       name: "Chromic Dystraquerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: { use_chroma: false }
-    - code: "FAFC"
+          - sg_vertisols_chromic_usda: { chroma: false }
+    - code: "FAFH"
       name: "Typic Dystraquerts"
       tests:
         default: true
 
-  "FAG":  # Epiaquerts (4)
+  "FAG":  # Epiaquerts (10)
     - code: "FAGA"
-      name: "Sodic Epiaquerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FAGB"
-      name: "Salic Epiaquerts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FAGC"
-      name: "Calcic Epiaquerts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FAGE"
       name: "Halic Epiaquerts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FAGF"
+          - sg_vertisols_halic_usda: {}
+    - code: "FAGB"
+      name: "Sodic Epiaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_sodic_usda: {}
+    - code: "FAGC"
       name: "Aridic Epiaquerts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FAGG"
-      name: "Entic Epiaquerts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FAGD"
+      name: "Xeric Epiaquerts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FAGH"
+          - sg_vertisols_cracks_usda: { pattern: xeric }
+    - code: "FAGE"
+      name: "Ustic Epiaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: ustic }
+    - code: "FAGF"
+      name: "Aeric Epiaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_aeric_usda: {}
+    - code: "FAGG"
       name: "Leptic Epiaquerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
+          - sg_vertisols_leptic_usda: {}
+    - code: "FAGH"
+      name: "Entic Epiaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
     - code: "FAGI"
       name: "Chromic Epiaquerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: { use_chroma: false }
-    - code: "FAGD"
+          - sg_vertisols_chromic_usda: { chroma: false }
+    - code: "FAGJ"
       name: "Typic Epiaquerts"
       tests:
         default: true
 
-  "FAH":  # Endoaquerts (4)
+  "FAH":  # Endoaquerts (10)
     - code: "FAHA"
-      name: "Sodic Endoaquerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FAHB"
-      name: "Salic Endoaquerts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FAHC"
-      name: "Calcic Endoaquerts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FAHE"
       name: "Halic Endoaquerts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FAHF"
+          - sg_vertisols_halic_usda: {}
+    - code: "FAHB"
+      name: "Sodic Endoaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_sodic_usda: {}
+    - code: "FAHC"
       name: "Aridic Endoaquerts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FAHG"
-      name: "Entic Endoaquerts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FAHD"
+      name: "Xeric Endoaquerts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FAHH"
+          - sg_vertisols_cracks_usda: { pattern: xeric }
+    - code: "FAHE"
+      name: "Ustic Endoaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: ustic }
+    - code: "FAHF"
+      name: "Aeric Endoaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_aeric_usda: {}
+    - code: "FAHG"
       name: "Leptic Endoaquerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
+          - sg_vertisols_leptic_usda: {}
+    - code: "FAHH"
+      name: "Entic Endoaquerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
     - code: "FAHI"
       name: "Chromic Endoaquerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: { use_chroma: false }
-    - code: "FAHD"
+          - sg_vertisols_chromic_usda: { chroma: false }
+    - code: "FAHJ"
       name: "Typic Endoaquerts"
       tests:
         default: true
 
-  # ====== CRYERTS ======
-
   "FBA":  # Humicryerts (2)
     - code: "FBAA"
-      name: "Aquic Humicryerts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FBAC"
       name: "Sodic Humicryerts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
+          - sg_vertisols_sodic_usda: {}
     - code: "FBAB"
       name: "Typic Humicryerts"
       tests:
@@ -276,615 +263,569 @@ subgroups:
 
   "FBB":  # Haplocryerts (3)
     - code: "FBBA"
-      name: "Aquic Haplocryerts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FBBB"
-      name: "Lithic Haplocryerts"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FBBD"
       name: "Sodic Haplocryerts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
-    - code: "FBBE"
+          - sg_vertisols_sodic_usda: {}
+    - code: "FBBB"
       name: "Chromic Haplocryerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
+          - sg_vertisols_chromic_usda: {}
     - code: "FBBC"
       name: "Typic Haplocryerts"
       tests:
         default: true
 
-  # ====== XERERTS ======
-
-  "FCA":  # Durixererts (3)
+  "FCA":  # Durixererts (8)
     - code: "FCAA"
-      name: "Aquic Durixererts"
+      name: "Halic Durixererts"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_vertisols_halic_usda: { above_duripan: true }
     - code: "FCAB"
       name: "Sodic Durixererts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
-    - code: "FCAD"
-      name: "Halic Durixererts"
+          - sg_vertisols_sodic_usda: { above_duripan: true }
+    - code: "FCAC"
+      name: "Aquic Durixererts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FCAE"
+          - sg_vertisols_aquic_usda: { above_duripan: true }
+    - code: "FCAD"
       name: "Aridic Durixererts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: xeric_aridic }
+    - code: "FCAE"
+      name: "Udic Durixererts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: xeric_udic }
     - code: "FCAF"
       name: "Haplic Durixererts"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_usda_duripan_weak_usda: { max: very strongly }
     - code: "FCAG"
       name: "Chromic Durixererts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FCAC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FCAH"
       name: "Typic Durixererts"
       tests:
         default: true
 
-  "FCB":  # Calcixererts (3)
+  "FCB":  # Calcixererts (7)
     - code: "FCBA"
-      name: "Aquic Calcixererts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FCBB"
-      name: "Sodic Calcixererts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FCBD"
       name: "Lithic Calcixererts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FCBE"
+    - code: "FCBB"
       name: "Petrocalcic Calcixererts"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "FCBF"
+          - petrocalcic_subgroup_usda: { max_top_cm: 100 }
+    - code: "FCBC"
       name: "Aridic Calcixererts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FCBG"
-      name: "Entic Calcixererts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
-    - code: "FCBH"
+          - sg_vertisols_cracks_usda: { pattern: xeric_aridic }
+    - code: "FCBD"
       name: "Leptic Calcixererts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FCBI"
+          - sg_vertisols_leptic_usda: {}
+    - code: "FCBE"
+      name: "Entic Calcixererts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FCBF"
       name: "Chromic Calcixererts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FCBC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FCBG"
       name: "Typic Calcixererts"
       tests:
         default: true
 
-  "FCC":  # Haploxererts (4)
+  "FCC":  # Haploxererts (10)
     - code: "FCCA"
-      name: "Aquic Haploxererts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FCCB"
-      name: "Sodic Haploxererts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FCCC"
       name: "Lithic Haploxererts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FCCE"
+    - code: "FCCB"
       name: "Halic Haploxererts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FCCF"
+          - sg_vertisols_halic_usda: {}
+    - code: "FCCC"
+      name: "Sodic Haploxererts"
+      tests:
+        all_of:
+          - sg_vertisols_sodic_usda: {}
+    - code: "FCCD"
       name: "Aridic Haploxererts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FCCG"
-      name: "Entic Haploxererts"
+          - sg_vertisols_cracks_usda: { pattern: xeric_aridic }
+    - code: "FCCE"
+      name: "Aquic Haploxererts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FCCH"
+          - sg_vertisols_aquic_usda: {}
+    - code: "FCCF"
+      name: "Udic Haploxererts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: xeric_udic }
+    - code: "FCCG"
       name: "Leptic Haploxererts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
+          - sg_vertisols_leptic_usda: {}
+    - code: "FCCH"
+      name: "Entic Haploxererts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
     - code: "FCCI"
       name: "Chromic Haploxererts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FCCD"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FCCJ"
       name: "Typic Haploxererts"
       tests:
         default: true
 
-  # ====== TORRERTS ======
-
-  "FDA":  # Salitorrerts (2)
+  "FDA":  # Salitorrerts (5)
     - code: "FDAA"
-      name: "Sodic Salitorrerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FDAC"
       name: "Aquic Salitorrerts"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FDAD"
-      name: "Entic Salitorrerts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
+          - sg_vertisols_aquic_usda: {}
     - code: "FDAB"
       name: "Leptic Salitorrerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FDAE"
+          - sg_vertisols_leptic_usda: { duripan: true, petrocalcic: true }
+    - code: "FDAC"
+      name: "Entic Salitorrerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FDAD"
       name: "Chromic Salitorrerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FDAF"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FDAE"
       name: "Typic Salitorrerts"
       tests:
         default: true
 
-  "FDB":  # Gypsitorrerts (3)
+  "FDB":  # Gypsitorrerts (2)
     - code: "FDBA"
-      name: "Salic Gypsitorrerts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FDBB"
-      name: "Sodic Gypsitorrerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FDBD"
       name: "Chromic Gypsitorrerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FDBC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FDBB"
       name: "Typic Gypsitorrerts"
       tests:
         default: true
 
-  "FDC":  # Calcitorrerts (3)
+  "FDC":  # Calcitorrerts (5)
     - code: "FDCA"
-      name: "Salic Calcitorrerts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FDCB"
-      name: "Sodic Calcitorrerts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FDCD"
       name: "Petrocalcic Calcitorrerts"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "FDCE"
-      name: "Entic Calcitorrerts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
-    - code: "FDCF"
+          - petrocalcic_subgroup_usda: { max_top_cm: 100 }
+    - code: "FDCB"
       name: "Leptic Calcitorrerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FDCG"
+          - sg_vertisols_leptic_usda: { duripan: true }
+    - code: "FDCC"
+      name: "Entic Calcitorrerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FDCD"
       name: "Chromic Calcitorrerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FDCC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FDCE"
       name: "Typic Calcitorrerts"
       tests:
         default: true
 
-  "FDD":  # Haplotorrerts (4)
+  "FDD":  # Haplotorrerts (6)
     - code: "FDDA"
-      name: "Aquic Haplotorrerts"
+      name: "Halic Haplotorrerts"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_vertisols_halic_usda: {}
     - code: "FDDB"
       name: "Sodic Haplotorrerts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
+          - sg_vertisols_sodic_usda: {}
     - code: "FDDC"
-      name: "Calcic Haplotorrerts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FDDE"
-      name: "Halic Haplotorrerts"
-      tests:
-        all_of:
-          - halic_subgroup_usda: {}
-    - code: "FDDF"
-      name: "Entic Haplotorrerts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
-    - code: "FDDG"
       name: "Leptic Haplotorrerts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FDDH"
+          - sg_vertisols_leptic_usda: { duripan: true }
+    - code: "FDDD"
+      name: "Entic Haplotorrerts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FDDE"
       name: "Chromic Haplotorrerts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FDDD"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FDDF"
       name: "Typic Haplotorrerts"
       tests:
         default: true
 
-  # ====== USTERTS ======
-
-  "FEA":  # Dystrusterts (3)
+  "FEA":  # Dystrusterts (8)
     - code: "FEAA"
-      name: "Aquic Dystrusterts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FEAB"
       name: "Lithic Dystrusterts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FEAD"
+    - code: "FEAB"
+      name: "Aquic Dystrusterts"
+      tests:
+        all_of:
+          - sg_vertisols_aquic_usda: {}
+    - code: "FEAC"
       name: "Aridic Dystrusterts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FEAE"
-      name: "Entic Dystrusterts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FEAD"
+      name: "Udic Dystrusterts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FEAF"
+          - sg_vertisols_cracks_usda: { pattern: udic }
+    - code: "FEAE"
       name: "Leptic Dystrusterts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
+          - sg_vertisols_leptic_usda: { duripan: true }
+    - code: "FEAF"
+      name: "Entic Dystrusterts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
     - code: "FEAG"
       name: "Chromic Dystrusterts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FEAC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FEAH"
       name: "Typic Dystrusterts"
       tests:
         default: true
 
-  "FEB":  # Salusterts (3)
+  "FEB":  # Salusterts (8)
     - code: "FEBA"
-      name: "Sulfic Salusterts"
-      tests:
-        all_of:
-          - sulfic_subgroup_usda: {}
-    - code: "FEBB"
-      name: "Aquic Salusterts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FEBD"
       name: "Lithic Salusterts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FEBE"
+    - code: "FEBB"
       name: "Sodic Salusterts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
-    - code: "FEBF"
+          - sg_vertisols_sodic_usda: {}
+    - code: "FEBC"
+      name: "Aquic Salusterts"
+      tests:
+        all_of:
+          - sg_vertisols_aquic_usda: {}
+    - code: "FEBD"
       name: "Aridic Salusterts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FEBG"
-      name: "Entic Salusterts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
-    - code: "FEBH"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FEBE"
       name: "Leptic Salusterts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FEBI"
+          - sg_vertisols_leptic_usda: { duripan: true, petrocalcic: true }
+    - code: "FEBF"
+      name: "Entic Salusterts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FEBG"
       name: "Chromic Salusterts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FEBC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FEBH"
       name: "Typic Salusterts"
       tests:
         default: true
 
-  "FEC":  # Gypsiusterts (3)
+  "FEC":  # Gypsiusterts (9)
     - code: "FECA"
-      name: "Aquic Gypsiusterts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FECB"
-      name: "Salic Gypsiusterts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FECD"
       name: "Lithic Gypsiusterts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FECE"
+    - code: "FECB"
       name: "Halic Gypsiusterts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FECF"
+          - sg_vertisols_halic_usda: {}
+    - code: "FECC"
       name: "Sodic Gypsiusterts"
       tests:
         all_of:
-          - natric_subgroup_usda: {}
-    - code: "FECG"
+          - sg_vertisols_sodic_usda: {}
+    - code: "FECD"
       name: "Aridic Gypsiusterts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FECH"
-      name: "Entic Gypsiusterts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FECE"
+      name: "Udic Gypsiusterts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FECI"
+          - sg_vertisols_cracks_usda: { pattern: udic }
+    - code: "FECF"
       name: "Leptic Gypsiusterts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FECJ"
+          - sg_vertisols_leptic_usda: { duripan: true, petrocalcic: true }
+    - code: "FECG"
+      name: "Entic Gypsiusterts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FECH"
       name: "Chromic Gypsiusterts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FECC"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FECI"
       name: "Typic Gypsiusterts"
       tests:
         default: true
 
-  "FED":  # Calciusterts (4)
+  "FED":  # Calciusterts (10)
     - code: "FEDA"
-      name: "Aquic Calciusterts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FEDB"
-      name: "Sodic Calciusterts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FEDC"
-      name: "Salic Calciusterts"
-      tests:
-        all_of:
-          - salic_subgroup_usda: {}
-    - code: "FEDE"
       name: "Lithic Calciusterts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FEDF"
+    - code: "FEDB"
       name: "Halic Calciusterts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FEDG"
+          - sg_vertisols_halic_usda: {}
+    - code: "FEDC"
+      name: "Sodic Calciusterts"
+      tests:
+        all_of:
+          - sg_vertisols_sodic_usda: {}
+    - code: "FEDD"
       name: "Petrocalcic Calciusterts"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "FEDH"
+          - petrocalcic_subgroup_usda: { max_top_cm: 100 }
+    - code: "FEDE"
       name: "Aridic Calciusterts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
-    - code: "FEDI"
-      name: "Entic Calciusterts"
+          - sg_vertisols_cracks_usda: { pattern: aridic }
+    - code: "FEDF"
+      name: "Udic Calciusterts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
-    - code: "FEDJ"
+          - sg_vertisols_cracks_usda: { pattern: udic }
+    - code: "FEDG"
       name: "Leptic Calciusterts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FEDK"
+          - sg_vertisols_leptic_usda: { duripan: true }
+    - code: "FEDH"
+      name: "Entic Calciusterts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FEDI"
       name: "Chromic Calciusterts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FEDD"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FEDJ"
       name: "Typic Calciusterts"
       tests:
         default: true
 
-  "FEE":  # Haplusterts (5)
+  "FEE":  # Haplusterts (16)
     - code: "FEEA"
-      name: "Aquic Haplusterts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FEEB"
-      name: "Sodic Haplusterts"
-      tests:
-        all_of:
-          - natric_subgroup_usda: {}
-    - code: "FEEC"
-      name: "Calcic Haplusterts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FEED"
       name: "Lithic Haplusterts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FEEF"
+    - code: "FEEB"
       name: "Halic Haplusterts"
       tests:
         all_of:
-          - halic_subgroup_usda: {}
-    - code: "FEEG"
+          - sg_vertisols_halic_usda: {}
+    - code: "FEEC"
+      name: "Sodic Haplusterts"
+      tests:
+        all_of:
+          - sg_vertisols_sodic_usda: {}
+    - code: "FEED"
       name: "Petrocalcic Haplusterts"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
+          - petrocalcic_subgroup_usda: { max_top_cm: 150 }
+    - code: "FEEE"
+      name: "Gypsic Haplusterts"
+      tests:
+        all_of:
+          - gypsic_horizon_usda: { max_top_cm: 150 }
+    - code: "FEEF"
+      name: "Calcic Haplusterts"
+      tests:
+        all_of:
+          - calcic_horizon_usda: { max_top_cm: 150 }
+    - code: "FEEG"
+      name: "Aridic Leptic Haplusterts"
+      tests:
+        all_of:
+          - sg_vertisols_leptic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: aridic }
     - code: "FEEH"
       name: "Aridic Haplusterts"
       tests:
         all_of:
-          - smr_aridic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: aridic }
     - code: "FEEI"
-      name: "Entic Haplusterts"
+      name: "Leptic Udic Haplusterts"
       tests:
         all_of:
-          - entic_subgroup_usda: {}
+          - sg_vertisols_leptic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: udic }
+    - code: "FEEJ"
+      name: "Entic Udic Haplusterts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: udic }
+    - code: "FEEK"
+      name: "Chromic Udic Haplusterts"
+      tests:
+        all_of:
+          - sg_vertisols_chromic_usda: {}
+          - sg_vertisols_cracks_usda: { pattern: udic }
+    - code: "FEEL"
+      name: "Udic Haplusterts"
+      tests:
+        all_of:
+          - sg_vertisols_cracks_usda: { pattern: udic }
     - code: "FEEM"
       name: "Leptic Haplusterts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
+          - sg_vertisols_leptic_usda: { duripan: true }
+    - code: "FEEN"
+      name: "Entic Haplusterts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
     - code: "FEEO"
       name: "Chromic Haplusterts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - { code: "FEEJ", name: "Gypsic Haplusterts", tests: { all_of: [{gypsic_subgroup_usda: {max_top_cm: 150}}] } }
-    - { code: "FEEK", name: "Aridic Leptic Haplusterts", tests: { all_of: [{smr_aridic_usda: {}}, {leptic_vertic_usda: {}}] } }
-    - code: "FEEE"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FEEP"
       name: "Typic Haplusterts"
       tests:
         default: true
 
-  # ====== UDERTS ======
-
-  "FFA":  # Dystruderts (3)
+  "FFA":  # Dystruderts (6)
     - code: "FFAA"
       name: "Aquic Dystruderts"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_vertisols_aquic_usda: {}
     - code: "FFAB"
-      name: "Lithic Dystruderts"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FFAD"
       name: "Oxyaquic Dystruderts"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "FFAE"
-      name: "Entic Dystruderts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
     - code: "FFAC"
       name: "Leptic Dystruderts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FFAF"
+          - sg_vertisols_leptic_usda: {}
+    - code: "FFAD"
+      name: "Entic Dystruderts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FFAE"
       name: "Chromic Dystruderts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FFAG"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FFAF"
       name: "Typic Dystruderts"
       tests:
         default: true
 
-  "FFB":  # Hapluderts (4)
+  "FFB":  # Hapluderts (7)
     - code: "FFBA"
-      name: "Aquic Hapluderts"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "FFBB"
-      name: "Calcic Hapluderts"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "FFBC"
       name: "Lithic Hapluderts"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "FFBE"
+    - code: "FFBB"
+      name: "Aquic Hapluderts"
+      tests:
+        all_of:
+          - sg_vertisols_aquic_usda: {}
+    - code: "FFBC"
       name: "Oxyaquic Hapluderts"
       tests:
         all_of:
-          - oxyaquic_subgroup_usda: {}
-    - code: "FFBF"
-      name: "Entic Hapluderts"
-      tests:
-        all_of:
-          - entic_subgroup_usda: {}
+          - oxyaquic_subgroup_usda: { max_depth_cm: 100 }
     - code: "FFBD"
       name: "Leptic Hapluderts"
       tests:
         all_of:
-          - leptic_vertic_usda: {}
-    - code: "FFBG"
+          - sg_vertisols_leptic_usda: {}
+    - code: "FFBE"
+      name: "Entic Hapluderts"
+      tests:
+        all_of:
+          - sg_vertisols_entic_usda: {}
+    - code: "FFBF"
       name: "Chromic Hapluderts"
       tests:
         all_of:
-          - chromic_subgroup_usda: {}
-    - code: "FFBH"
+          - sg_vertisols_chromic_usda: {}
+    - code: "FFBG"
       name: "Typic Hapluderts"
       tests:
         default: true

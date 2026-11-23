@@ -94,7 +94,9 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
     p <- f(); p$site$soil_moisture_regime <- "aridic"; p
   }
   # v0.9.417: Melanudands come before Hydrudands (KST 13 pp 125-126)
-  expect_equal(sg(make_andosol_canonical),    "Vitric Melanudands")
+  # v0.9.426: the Vitric Melanudands of the KST read the 1500 kPa water
+  # retention (p. 131); the fixture's 110 % makes it Hydric Melanudands
+  expect_equal(sg(make_andosol_canonical),    "Hydric Melanudands")
   # v0.9.415: Udults need a recorded udic or perudic regime (KST 13 p 321,
   # reading L34); the fixture records none, so it is recorded here.
   udic <- function(f) function() {
@@ -104,7 +106,9 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
   # v0.9.423: the BA (5YR, value 4) is the top of the kandic horizon, so its
   # upper 75 cm are not all red and dark: not Rhodic (KST 13 p 333)
   expect_equal(sg(udic(make_argissolo_canonical)), "Typic Kandiudults")
-  expect_equal(sg(aridic(make_calcisol_canonical)), "Petronodic Haplocalcids")
+  # v0.9.426: Petronodic reads nodules or concretions (KST 13 p 147); the
+  # fixture records none
+  expect_equal(sg(aridic(make_calcisol_canonical)), "Typic Haplocalcids")
   expect_equal(sg(make_planossolo_canonical), "Umbric Albaqualfs")
 })
 

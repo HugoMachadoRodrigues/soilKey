@@ -97,7 +97,8 @@ test_that("Udands: Melanudands before Hydrudands; Hydrudands need undried 100 % 
   expect_identical(vapply(rules$great_groups$DH, function(x) x$code, "")[3:4],
                    c("DHC", "DHD"))
   r <- classify_usda(make_andosol_canonical(), on_missing = "silent")
-  expect_identical(r$name, "Vitric Melanudands")
+  # v0.9.426: Hydric, not Vitric (1500 kPa water retention, KST 13 p. 131)
+  expect_identical(r$name, "Hydric Melanudands")
   # 1500 kPa on undried samples: weighted average over 35 cm
   p <- .v09417_pedon(top_cm = c(0, 20, 60), bottom_cm = c(20, 60, 120),
                      designation = c("A", "Bw1", "Bw2"),

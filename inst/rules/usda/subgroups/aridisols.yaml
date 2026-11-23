@@ -1,82 +1,90 @@
 # =============================================================
-# USDA Soil Taxonomy 13ed -- Aridisols Subgroups -- Cap 7
+# USDA Soil Taxonomy 13th ed. -- Aridisols subgroups -- Ch. 7, pp. 137-163
 # =============================================================
-# Cobertura cientifica focada (~110 SGs).
+# v0.9.426: every great group lists exactly the subgroups of the KST 13th
+# edition, in KST order, with the KST codes (Typic last, as the default).
+# Compound subgroups come before their parts, as the KST orders them. The
+# tests are the KST criteria, three-valued (R/subgroups-usda-aridvertand.R
+# and the helpers of the other orders it names).
+# The subgroups "that border on ustic (xeric)" read the moisture regime
+# record: a record naming both regimes passes, a single regime is its typic
+# part (sg_aridisols_border_usda).
 # =============================================================
 
 subgroups:
 
-  # ====== CRYIDS Subgroups ======
-
-  "GAA":  # Salicryids (3)
+  "GAA":  # Salicryids (2)
     - code: "GAAA"
       name: "Aquic Salicryids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_aridisols_aquic_usda: { irrigated: false }
     - code: "GAAB"
-      name: "Sodic Salicryids"
-      tests:
-        all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GAAC"
       name: "Typic Salicryids"
       tests:
         default: true
 
-  "GAB":  # Petrocryids (3)
+  "GAB":  # Petrocryids (7)
     - code: "GABA"
-      name: "Lithic Petrocryids"
+      name: "Xereptic Petrocryids"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_usda_duripan_weak_usda: { max_top_cm: 100 }
+          - sg_aridisols_border_usda: { toward: xeric }
     - code: "GABB"
-      name: "Vertic Petrocryids"
+      name: "Duric Xeric Petrocryids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GABD"
+          - duripan_usda: { max_top_cm: 100 }
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GABC"
       name: "Duric Petrocryids"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "GABE"
+          - duripan_usda: { max_top_cm: 100 }
+    - code: "GABD"
       name: "Petrogypsic Petrocryids"
       tests:
         all_of:
-          - petrogypsic_subgroup_usda: {}
-    - code: "GABC"
+          - petrogypsic_horizon_usda: { max_top_cm: 100 }
+    - code: "GABE"
+      name: "Xeric Petrocryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GABF"
+      name: "Ustic Petrocryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GABG"
       name: "Typic Petrocryids"
       tests:
         default: true
 
-  "GAC":  # Gypsicryids (3)
+  "GAC":  # Gypsicryids (4)
     - code: "GACA"
-      name: "Petrogypsic Gypsicryids"
-      tests:
-        all_of:
-          - petrogypsic_subgroup_usda: {}
-    - code: "GACB"
-      name: "Sodic Gypsicryids"
-      tests:
-        all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GACD"
       name: "Calcic Gypsicryids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GACE"
+          - calcic_horizon_usda: { max_top_cm: 1000 }
+    - code: "GACB"
+      name: "Vitrixerandic Gypsicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GACC"
       name: "Vitrandic Gypsicryids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GACC"
+    - code: "GACD"
       name: "Typic Gypsicryids"
       tests:
         default: true
 
-  "GAD":  # Argicryids (3)
+  "GAD":  # Argicryids (8)
     - code: "GADA"
       name: "Lithic Argicryids"
       tests:
@@ -86,735 +94,1378 @@ subgroups:
       name: "Vertic Argicryids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GADD"
+          - sg_aridisols_vertic_usda: {}
+    - code: "GADC"
       name: "Natric Argicryids"
       tests:
         all_of:
-          - natric_horizon_usda: {}
+          - sg_usda_within_usda: { fn: natric_horizon_usda, max_top_cm: 100 }
+    - code: "GADD"
+      name: "Vitrixerandic Argicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
     - code: "GADE"
       name: "Vitrandic Argicryids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GADC"
+    - code: "GADF"
+      name: "Xeric Argicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GADG"
+      name: "Ustic Argicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GADH"
       name: "Typic Argicryids"
       tests:
         default: true
 
-  "GAE":  # Calcicryids (3)
+  "GAE":  # Calcicryids (6)
     - code: "GAEA"
-      name: "Petrocalcic Calcicryids"
-      tests:
-        all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "GAEB"
       name: "Lithic Calcicryids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GAED"
+    - code: "GAEB"
+      name: "Vitrixerandic Calcicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GAEC"
       name: "Vitrandic Calcicryids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GAEC"
+    - code: "GAED"
+      name: "Xeric Calcicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GAEE"
+      name: "Ustic Calcicryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GAEF"
       name: "Typic Calcicryids"
       tests:
         default: true
 
-  "GAF":  # Haplocryids (4)
+  "GAF":  # Haplocryids (7)
     - code: "GAFA"
       name: "Lithic Haplocryids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
     - code: "GAFB"
-      name: "Aquic Haplocryids"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GAFC"
       name: "Vertic Haplocryids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GAFE"
+          - sg_aridisols_vertic_usda: {}
+    - code: "GAFC"
+      name: "Vitrixerandic Haplocryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GAFD"
       name: "Vitrandic Haplocryids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GAFD"
+    - code: "GAFE"
+      name: "Xeric Haplocryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GAFF"
+      name: "Ustic Haplocryids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GAFG"
       name: "Typic Haplocryids"
       tests:
         default: true
 
-  # ====== SALIDS Subgroups ======
-
-  "GBA":  # Aquisalids (3)
+  "GBA":  # Aquisalids (4)
     - code: "GBAA"
-      name: "Sulfic Aquisalids"
+      name: "Anhydritic Aquisalids"
       tests:
         all_of:
-          - sulfic_subgroup_usda: {}
+          - sg_aridisols_anhydritic_usda: {}
     - code: "GBAB"
       name: "Gypsic Aquisalids"
       tests:
         all_of:
-          - gypsic_subgroup_usda: {}
-    - code: "GBAD"
+          - any_of: [ { gypsic_horizon_usda: { max_top_cm: 100 } }, { petrogypsic_horizon_usda: { max_top_cm: 100 } } ]
+    - code: "GBAC"
       name: "Calcic Aquisalids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GBAC"
+          - any_of: [ { calcic_horizon_usda: { max_top_cm: 100 } }, { petrocalcic_subgroup_usda: { max_top_cm: 100 } } ]
+    - code: "GBAD"
       name: "Typic Aquisalids"
       tests:
         default: true
 
-  "GBB":  # Haplosalids (3)
+  "GBB":  # Haplosalids (6)
     - code: "GBBA"
-      name: "Calcic Haplosalids"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GBBB"
-      name: "Gypsic Haplosalids"
-      tests:
-        all_of:
-          - gypsic_subgroup_usda: {}
-    - code: "GBBD"
       name: "Duric Haplosalids"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "GBBE"
+          - duripan_usda: { max_top_cm: 100 }
+    - code: "GBBB"
       name: "Petrogypsic Haplosalids"
       tests:
         all_of:
-          - petrogypsic_subgroup_usda: {}
+          - petrogypsic_horizon_usda: { max_top_cm: 100 }
     - code: "GBBC"
+      name: "Anhydritic Haplosalids"
+      tests:
+        all_of:
+          - sg_aridisols_anhydritic_usda: {}
+    - code: "GBBD"
+      name: "Gypsic Haplosalids"
+      tests:
+        all_of:
+          - gypsic_horizon_usda: { max_top_cm: 100 }
+    - code: "GBBE"
+      name: "Calcic Haplosalids"
+      tests:
+        all_of:
+          - calcic_horizon_usda: { max_top_cm: 100 }
+    - code: "GBBF"
       name: "Typic Haplosalids"
       tests:
         default: true
 
-  # ====== DURIDS ======
-
-  "GCA":  # Natridurids (3)
+  "GCA":  # Natridurids (9)
     - code: "GCAA"
-      name: "Aquic Natridurids"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GCAB"
       name: "Vertic Natridurids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
+          - sg_aridisols_vertic_usda: { above_duripan: true }
+    - code: "GCAB"
+      name: "Aquic Natrargidic Natridurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
+          - sg_aridisols_aquic_usda: {}
+    - code: "GCAC"
+      name: "Aquic Natridurids"
+      tests:
+        all_of:
+          - sg_aridisols_aquic_usda: {}
     - code: "GCAD"
+      name: "Natrixeralfic Natridurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GCAE"
+      name: "Natrargidic Natridurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
+    - code: "GCAF"
+      name: "Vitrixerandic Natridurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GCAG"
       name: "Vitrandic Natridurids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GCAC"
+    - code: "GCAH"
+      name: "Xeric Natridurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GCAI"
       name: "Typic Natridurids"
       tests:
         default: true
 
-  "GCB":  # Argidurids (3)
+  "GCB":  # Argidurids (11)
     - code: "GCBA"
-      name: "Aquic Argidurids"
-      tests:
-        all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GCBB"
       name: "Vertic Argidurids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
+          - sg_aridisols_vertic_usda: { above_duripan: true }
+    - code: "GCBB"
+      name: "Aquic Argidurids"
+      tests:
+        all_of:
+          - sg_aridisols_aquic_usda: {}
+    - code: "GCBC"
+      name: "Abruptic Xeric Argidurids"
+      tests:
+        all_of:
+          - sg_aridisols_abruptic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
     - code: "GCBD"
+      name: "Abruptic Argidurids"
+      tests:
+        all_of:
+          - sg_aridisols_abruptic_usda: {}
+    - code: "GCBE"
+      name: "Haploxeralfic Argidurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GCBF"
+      name: "Argidic Argidurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
+    - code: "GCBG"
+      name: "Vitrixerandic Argidurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GCBH"
       name: "Vitrandic Argidurids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GCBC"
+    - code: "GCBI"
+      name: "Xeric Argidurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GCBJ"
+      name: "Ustic Argidurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GCBK"
       name: "Typic Argidurids"
       tests:
         default: true
 
-  "GCC":  # Haplodurids (4)
+  "GCC":  # Haplodurids (9)
     - code: "GCCA"
+      name: "Aquicambidic Haplodurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
+          - sg_aridisols_aquic_usda: {}
+    - code: "GCCB"
       name: "Aquic Haplodurids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GCCB"
-      name: "Vertic Haplodurids"
-      tests:
-        all_of:
-          - vertic_aridisol_usda: {}
+          - sg_aridisols_aquic_usda: {}
     - code: "GCCC"
-      name: "Lithic Haplodurids"
+      name: "Xereptic Haplodurids"
       tests:
         all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_usda_duripan_weak_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric, temperature: true }
+    - code: "GCCD"
+      name: "Cambidic Haplodurids"
+      tests:
+        all_of:
+          - sg_usda_duripan_weak_usda: {}
     - code: "GCCE"
+      name: "Vitrixerandic Haplodurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GCCF"
       name: "Vitrandic Haplodurids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GCCD"
+    - code: "GCCG"
+      name: "Xeric Haplodurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric, temperature: true }
+    - code: "GCCH"
+      name: "Ustic Haplodurids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GCCI"
       name: "Typic Haplodurids"
       tests:
         default: true
 
-  # ====== GYPSIDS ======
-
-  "GDA":  # Petrogypsids (3)
+  "GDA":  # Petrogypsids (7)
     - code: "GDAA"
-      name: "Calcic Petrogypsids"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GDAB"
-      name: "Sodic Petrogypsids"
-      tests:
-        all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GDAD"
       name: "Petrocalcic Petrogypsids"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "GDAE"
+          - petrocalcic_subgroup_usda: { max_top_cm: 100 }
+    - code: "GDAB"
+      name: "Calcic Petrogypsids"
+      tests:
+        all_of:
+          - sg_aridisols_calcic_over_usda: { under: petrogypsic }
+    - code: "GDAC"
+      name: "Vitrixerandic Petrogypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GDAD"
       name: "Vitrandic Petrogypsids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GDAC"
+    - code: "GDAE"
+      name: "Xeric Petrogypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GDAF"
+      name: "Ustic Petrogypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GDAG"
       name: "Typic Petrogypsids"
       tests:
         default: true
 
-  "GDB":  # Natrigypsids (3)
+  "GDB":  # Natrigypsids (8)
     - code: "GDBA"
-      name: "Petronodic Natrigypsids"
-      tests:
-        all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GDBB"
-      name: "Calcic Natrigypsids"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GDBD"
       name: "Lithic Natrigypsids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GDBB"
+      name: "Vertic Natrigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+    - code: "GDBC"
+      name: "Petronodic Natrigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: { durinodes: true }
+    - code: "GDBD"
+      name: "Vitrixerandic Natrigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
     - code: "GDBE"
       name: "Vitrandic Natrigypsids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GDBC"
+    - code: "GDBF"
+      name: "Xeric Natrigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GDBG"
+      name: "Ustic Natrigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GDBH"
       name: "Typic Natrigypsids"
       tests:
         default: true
 
-  "GDC":  # Argigypsids (3)
+  "GDC":  # Argigypsids (9)
     - code: "GDCA"
-      name: "Petronodic Argigypsids"
-      tests:
-        all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GDCB"
-      name: "Calcic Argigypsids"
-      tests:
-        all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GDCD"
       name: "Lithic Argigypsids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GDCB"
+      name: "Vertic Argigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+    - code: "GDCC"
+      name: "Calcic Argigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_calcic_over_usda: { under: gypsic }
+    - code: "GDCD"
+      name: "Petronodic Argigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: { durinodes: true }
     - code: "GDCE"
+      name: "Vitrixerandic Argigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GDCF"
       name: "Vitrandic Argigypsids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GDCC"
+    - code: "GDCG"
+      name: "Xeric Argigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GDCH"
+      name: "Ustic Argigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GDCI"
       name: "Typic Argigypsids"
       tests:
         default: true
 
-  "GDD":  # Calcigypsids (3)
+  "GDD":  # Calcigypsids (7)
     - code: "GDDA"
       name: "Lithic Calcigypsids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
     - code: "GDDB"
-      name: "Sodic Calcigypsids"
-      tests:
-        all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GDDD"
       name: "Petronodic Calcigypsids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GDDE"
+          - sg_aridisols_petronodic_usda: { durinodes: true }
+    - code: "GDDC"
+      name: "Vitrixerandic Calcigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GDDD"
       name: "Vitrandic Calcigypsids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GDDC"
+    - code: "GDDE"
+      name: "Xeric Calcigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GDDF"
+      name: "Ustic Calcigypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GDDG"
       name: "Typic Calcigypsids"
       tests:
         default: true
 
-  "GDE":  # Haplogypsids (4)
+  "GDE":  # Haplogypsids (9)
     - code: "GDEA"
       name: "Lithic Haplogypsids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
     - code: "GDEB"
-      name: "Calcic Haplogypsids"
+      name: "Leptic Haplogypsids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - gypsic_horizon_usda: { max_top_cm: 18 }
     - code: "GDEC"
       name: "Sodic Haplogypsids"
       tests:
         all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GDEE"
+          - sg_aridisols_sodic_usda: {}
+    - code: "GDED"
       name: "Petronodic Haplogypsids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
+          - sg_aridisols_petronodic_usda: { durinodes: true }
+    - code: "GDEE"
+      name: "Vitrixerandic Haplogypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
     - code: "GDEF"
       name: "Vitrandic Haplogypsids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
     - code: "GDEG"
-      name: "Leptic Haplogypsids"
+      name: "Xeric Haplogypsids"
       tests:
         all_of:
-          - gypsic_horizon_usda: { max_top_cm: 18 }
-    - code: "GDED"
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GDEH"
+      name: "Ustic Haplogypsids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GDEI"
       name: "Typic Haplogypsids"
       tests:
         default: true
 
-  # ====== ARGIDS ======
-
-  "GEA":  # Petroargids (3)
+  "GEA":  # Petroargids (8)
     - code: "GEAA"
-      name: "Sodic Petroargids"
+      name: "Petrogypsic Ustic Petroargids"
       tests:
         all_of:
-          - sodic_subgroup_usda: {}
+          - petrogypsic_horizon_usda: { max_top_cm: 150 }
+          - sg_aridisols_border_usda: { toward: ustic }
     - code: "GEAB"
-      name: "Vertic Petroargids"
-      tests:
-        all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GEAD"
       name: "Petrogypsic Petroargids"
       tests:
         all_of:
-          - petrogypsic_subgroup_usda: {}
-    - code: "GEAE"
+          - petrogypsic_horizon_usda: { max_top_cm: 150 }
+    - code: "GEAC"
+      name: "Duric Xeric Petroargids"
+      tests:
+        all_of:
+          - duripan_usda: { max_top_cm: 150 }
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEAD"
       name: "Duric Petroargids"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "GEAF"
+          - duripan_usda: { max_top_cm: 150 }
+    - code: "GEAE"
       name: "Natric Petroargids"
       tests:
         all_of:
           - natric_horizon_usda: {}
-    - code: "GEAC"
+    - code: "GEAF"
+      name: "Xeric Petroargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEAG"
+      name: "Ustic Petroargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEAH"
       name: "Typic Petroargids"
       tests:
         default: true
 
-  "GEB":  # Natrargids (4)
+  "GEB":  # Natrargids (20)
     - code: "GEBA"
-      name: "Petrocalcic Natrargids"
+      name: "Lithic Xeric Natrargids"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: xeric }
     - code: "GEBB"
-      name: "Aquic Natrargids"
+      name: "Lithic Ustic Natrargids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: ustic }
     - code: "GEBC"
-      name: "Vertic Natrargids"
-      tests:
-        all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GEBE"
       name: "Lithic Natrargids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
+    - code: "GEBD"
+      name: "Xerertic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEBE"
+      name: "Ustertic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
     - code: "GEBF"
+      name: "Vertic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+    - code: "GEBG"
+      name: "Aquic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_aquic_usda: {}
+    - code: "GEBH"
+      name: "Durinodic Xeric Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEBI"
+      name: "Durinodic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GEBJ"
       name: "Petronodic Natrargids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GEBG"
+          - sg_aridisols_petronodic_usda: {}
+    - code: "GEBK"
+      name: "Glossic Ustic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_glossic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEBL"
+      name: "Haplic Ustic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_haplic_natric_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEBM"
+      name: "Haploxeralfic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_haplic_natric_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEBN"
       name: "Haplic Natrargids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GEBH"
+          - sg_aridisols_haplic_natric_usda: {}
+    - code: "GEBO"
+      name: "Vitrixerandic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GEBP"
       name: "Vitrandic Natrargids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GEBD"
+    - code: "GEBQ"
+      name: "Xeric Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEBR"
+      name: "Ustic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEBS"
+      name: "Glossic Natrargids"
+      tests:
+        all_of:
+          - sg_aridisols_glossic_usda: {}
+    - code: "GEBT"
       name: "Typic Natrargids"
       tests:
         default: true
 
-  "GEC":  # Paleargids (3)
+  "GEC":  # Paleargids (14)
     - code: "GECA"
-      name: "Petrocalcic Paleargids"
-      tests:
-        all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "GECB"
       name: "Vertic Paleargids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GECD"
+          - sg_aridisols_vertic_usda: {}
+    - code: "GECB"
       name: "Aquic Paleargids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GECE"
+          - sg_aridisols_aquic_usda: {}
+    - code: "GECC"
+      name: "Arenic Ustic Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_arenic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GECD"
       name: "Arenic Paleargids"
       tests:
         all_of:
-          - arenic_subgroup_usda: {}
-    - code: "GECF"
+          - sg_aridisols_arenic_usda: {}
+    - code: "GECE"
       name: "Calcic Paleargids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - calcic_horizon_usda: { max_top_cm: 150 }
+    - code: "GECF"
+      name: "Durinodic Xeric Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
     - code: "GECG"
+      name: "Durinodic Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GECH"
+      name: "Petronodic Ustic Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GECI"
       name: "Petronodic Paleargids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GECH"
+          - sg_aridisols_petronodic_usda: {}
+    - code: "GECJ"
+      name: "Vitrixerandic Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GECK"
       name: "Vitrandic Paleargids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GECC"
+    - code: "GECL"
+      name: "Xeric Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GECM"
+      name: "Ustic Paleargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GECN"
       name: "Typic Paleargids"
       tests:
         default: true
 
-  "GED":  # Gypsiargids (3)
+  "GED":  # Gypsiargids (7)
     - code: "GEDA"
-      name: "Petrogypsic Gypsiargids"
-      tests:
-        all_of:
-          - petrogypsic_subgroup_usda: {}
-    - code: "GEDB"
-      name: "Sodic Gypsiargids"
-      tests:
-        all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GEDD"
       name: "Aquic Gypsiargids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GEDE"
+          - sg_aridisols_aquic_usda: {}
+    - code: "GEDB"
+      name: "Durinodic Gypsiargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GEDC"
+      name: "Vitrixerandic Gypsiargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GEDD"
       name: "Vitrandic Gypsiargids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GEDC"
+    - code: "GEDE"
+      name: "Xeric Gypsiargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEDF"
+      name: "Ustic Gypsiargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEDG"
       name: "Typic Gypsiargids"
       tests:
         default: true
 
-  "GEE":  # Calciargids (4)
+  "GEE":  # Calciargids (17)
     - code: "GEEA"
-      name: "Petrocalcic Calciargids"
-      tests:
-        all_of:
-          - petrocalcic_subgroup_usda: {}
-    - code: "GEEB"
-      name: "Vertic Calciargids"
-      tests:
-        all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GEEC"
-      name: "Sodic Calciargids"
-      tests:
-        all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GEEE"
       name: "Lithic Calciargids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GEEF"
+    - code: "GEEB"
+      name: "Xerertic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEEC"
+      name: "Ustertic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEED"
+      name: "Vertic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+    - code: "GEEE"
       name: "Aquic Calciargids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
+          - sg_aridisols_aquic_usda: {}
+    - code: "GEEF"
+      name: "Arenic Ustic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_arenic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
     - code: "GEEG"
       name: "Arenic Calciargids"
       tests:
         all_of:
-          - arenic_subgroup_usda: {}
+          - sg_aridisols_arenic_usda: {}
     - code: "GEEH"
+      name: "Durinodic Xeric Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEEI"
+      name: "Durinodic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GEEJ"
+      name: "Petronodic Xeric Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEEK"
+      name: "Petronodic Ustic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEEL"
       name: "Petronodic Calciargids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GEEI"
+          - sg_aridisols_petronodic_usda: {}
+    - code: "GEEM"
+      name: "Vitrixerandic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GEEN"
       name: "Vitrandic Calciargids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GEED"
+    - code: "GEEO"
+      name: "Xeric Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEEP"
+      name: "Ustic Calciargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEEQ"
       name: "Typic Calciargids"
       tests:
         default: true
 
-  "GEF":  # Haplargids (5)
+  "GEF":  # Haplargids (19)
     - code: "GEFA"
+      name: "Lithic Ruptic-Entic Haplargids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_ruptic_usda: {}
+    - code: "GEFB"
+      name: "Lithic Xeric Haplargids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEFC"
+      name: "Lithic Ustic Haplargids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEFD"
       name: "Lithic Haplargids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GEFB"
-      name: "Aquic Haplargids"
+    - code: "GEFE"
+      name: "Xerertic Haplargids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GEFC"
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEFF"
+      name: "Ustertic Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEFG"
       name: "Vertic Haplargids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GEFD"
-      name: "Calcic Haplargids"
+          - sg_aridisols_vertic_usda: {}
+    - code: "GEFH"
+      name: "Aquic Haplargids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
-    - code: "GEFF"
+          - sg_aridisols_aquic_usda: {}
+    - code: "GEFI"
+      name: "Arenic Ustic Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_arenic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEFJ"
       name: "Arenic Haplargids"
       tests:
         all_of:
-          - arenic_subgroup_usda: {}
-    - code: "GEFG"
+          - sg_aridisols_arenic_usda: {}
+    - code: "GEFK"
+      name: "Durinodic Xeric Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEFL"
+      name: "Durinodic Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GEFM"
+      name: "Petronodic Ustic Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEFN"
       name: "Petronodic Haplargids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GEFH"
+          - sg_aridisols_petronodic_usda: {}
+    - code: "GEFO"
+      name: "Vitrixerandic Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GEFP"
       name: "Vitrandic Haplargids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GEFE"
+    - code: "GEFQ"
+      name: "Xeric Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GEFR"
+      name: "Ustic Haplargids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GEFS"
       name: "Typic Haplargids"
       tests:
         default: true
 
-  # ====== CALCIDS ======
-
-  "GFA":  # Petrocalcids (3)
+  "GFA":  # Petrocalcids (10)
     - code: "GFAA"
-      name: "Lithic Petrocalcids"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GFAB"
-      name: "Vertic Petrocalcids"
-      tests:
-        all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GFAD"
       name: "Aquic Petrocalcids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GFAE"
+          - sg_aridisols_aquic_usda: {}
+    - code: "GFAB"
       name: "Natric Petrocalcids"
       tests:
         all_of:
           - natric_horizon_usda: {}
+    - code: "GFAC"
+      name: "Xeralfic Petrocalcids"
+      tests:
+        all_of:
+          - sg_usda_within_usda: { fn: argillic_usda, max_top_cm: 100 }
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFAD"
+      name: "Ustalfic Petrocalcids"
+      tests:
+        all_of:
+          - sg_usda_within_usda: { fn: argillic_usda, max_top_cm: 100 }
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GFAE"
+      name: "Argic Petrocalcids"
+      tests:
+        all_of:
+          - sg_usda_within_usda: { fn: argillic_usda, max_top_cm: 100 }
     - code: "GFAF"
       name: "Calcic Lithic Petrocalcids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
+          - sg_aridisols_calcic_over_usda: { under: petrocalcic }
           - lithic_contact_usda: { max_top_cm: 50 }
     - code: "GFAG"
       name: "Calcic Petrocalcids"
       tests:
         all_of:
-          - calcic_subgroup_usda: {}
-    - { code: "GFAH", name: "Argic Petrocalcids", tests: { all_of: [{argillic_within_usda: {max_top_cm: 100}}] } }
-    - code: "GFAC"
+          - sg_aridisols_calcic_over_usda: { under: petrocalcic }
+    - code: "GFAH"
+      name: "Xeric Petrocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFAI"
+      name: "Ustic Petrocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GFAJ"
       name: "Typic Petrocalcids"
       tests:
         default: true
 
-  "GFB":  # Haplocalcids (4)
+  "GFB":  # Haplocalcids (21)
     - code: "GFBA"
-      name: "Petrocalcic Haplocalcids"
+      name: "Lithic Xeric Haplocalcids"
       tests:
         all_of:
-          - petrocalcic_subgroup_usda: {}
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: xeric }
     - code: "GFBB"
+      name: "Lithic Ustic Haplocalcids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GFBC"
       name: "Lithic Haplocalcids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GFBC"
+    - code: "GFBD"
+      name: "Vertic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+    - code: "GFBE"
+      name: "Aquic Durinodic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_aquic_usda: {}
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GFBF"
       name: "Aquic Haplocalcids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GFBE"
+          - sg_aridisols_aquic_usda: {}
+    - code: "GFBG"
+      name: "Duric Xeric Haplocalcids"
+      tests:
+        all_of:
+          - duripan_usda: { max_top_cm: 150 }
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFBH"
       name: "Duric Haplocalcids"
       tests:
         all_of:
-          - duric_subgroup_usda: {}
-    - code: "GFBF"
+          - duripan_usda: { max_top_cm: 150 }
+    - code: "GFBI"
+      name: "Durinodic Xeric Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFBJ"
+      name: "Durinodic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GFBK"
+      name: "Petronodic Xeric Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFBL"
+      name: "Petronodic Ustic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GFBM"
       name: "Petronodic Haplocalcids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GFBG"
+          - sg_aridisols_petronodic_usda: {}
+    - code: "GFBN"
+      name: "Sodic Xeric Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_sodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFBO"
+      name: "Sodic Ustic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_sodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GFBP"
       name: "Sodic Haplocalcids"
       tests:
         all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GFBH"
+          - sg_aridisols_sodic_usda: {}
+    - code: "GFBQ"
+      name: "Vitrixerandic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GFBR"
       name: "Vitrandic Haplocalcids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GFBD"
+    - code: "GFBS"
+      name: "Xeric Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GFBT"
+      name: "Ustic Haplocalcids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GFBU"
       name: "Typic Haplocalcids"
       tests:
         default: true
 
-  # ====== CAMBIDS ======
-
-  "GGA":  # Aquicambids (3)
+  "GGA":  # Aquicambids (11)
     - code: "GGAA"
       name: "Sodic Aquicambids"
       tests:
         all_of:
-          - sodic_subgroup_usda: {}
+          - sg_aridisols_sodic_usda: {}
     - code: "GGAB"
-      name: "Vertic Aquicambids"
+      name: "Durinodic Xeric Aquicambids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGAC"
+      name: "Durinodic Aquicambids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
     - code: "GGAD"
       name: "Petronodic Aquicambids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
+          - sg_aridisols_petronodic_usda: {}
     - code: "GGAE"
+      name: "Vitrixerandic Aquicambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GGAF"
       name: "Vitrandic Aquicambids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GGAF"
+    - code: "GGAG"
       name: "Thapto-Humic Aquicambids"
       tests:
         all_of:
-          - thapto_humic_usda: {}
-    - code: "GGAC"
+          - sg_aridisols_thapto_humic_usda: {}
+    - code: "GGAH"
+      name: "Fluventic Aquicambids"
+      tests:
+        all_of:
+          - sg_aridisols_fluventic_usda: {}
+    - code: "GGAI"
+      name: "Xeric Aquicambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGAJ"
+      name: "Ustic Aquicambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGAK"
       name: "Typic Aquicambids"
       tests:
         default: true
 
-  "GGB":  # Petrocambids (3)
+  "GGB":  # Petrocambids (6)
     - code: "GGBA"
-      name: "Lithic Petrocambids"
-      tests:
-        all_of:
-          - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GGBB"
-      name: "Vertic Petrocambids"
-      tests:
-        all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GGBD"
       name: "Sodic Petrocambids"
       tests:
         all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GGBE"
+          - sg_aridisols_sodic_usda: {}
+    - code: "GGBB"
+      name: "Vitrixerandic Petrocambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GGBC"
       name: "Vitrandic Petrocambids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GGBC"
+    - code: "GGBD"
+      name: "Xeric Petrocambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGBE"
+      name: "Ustic Petrocambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGBF"
       name: "Typic Petrocambids"
       tests:
         default: true
 
-  "GGC":  # Haplocambids (5)
+  "GGC":  # Haplocambids (24)
     - code: "GGCA"
+      name: "Lithic Xeric Haplocambids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCB"
+      name: "Lithic Ustic Haplocambids"
+      tests:
+        all_of:
+          - lithic_contact_usda: { max_top_cm: 50 }
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGCC"
       name: "Lithic Haplocambids"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-    - code: "GGCB"
-      name: "Aquic Haplocambids"
+    - code: "GGCD"
+      name: "Xerertic Haplocambids"
       tests:
         all_of:
-          - aquic_subgroup_usda: {}
-    - code: "GGCC"
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCE"
+      name: "Ustertic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_vertic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGCF"
       name: "Vertic Haplocambids"
       tests:
         all_of:
-          - vertic_aridisol_usda: {}
-    - code: "GGCD"
-      name: "Sodic Haplocambids"
+          - sg_aridisols_vertic_usda: {}
+    - code: "GGCG"
+      name: "Durinodic Xeric Haplocambids"
       tests:
         all_of:
-          - sodic_subgroup_usda: {}
-    - code: "GGCF"
+          - sg_aridisols_durinodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCH"
+      name: "Durinodic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_durinodic_usda: {}
+    - code: "GGCI"
+      name: "Petronodic Xeric Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCJ"
+      name: "Petronodic Ustic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_petronodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGCK"
       name: "Petronodic Haplocambids"
       tests:
         all_of:
-          - petronodic_subgroup_usda: {}
-    - code: "GGCG"
+          - sg_aridisols_petronodic_usda: {}
+    - code: "GGCL"
+      name: "Sodic Xeric Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_sodic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCM"
+      name: "Sodic Ustic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_sodic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGCN"
+      name: "Sodic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_sodic_usda: {}
+    - code: "GGCO"
+      name: "Vitrixerandic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+          - vitrandic_subgroup_usda: {}
+    - code: "GGCP"
       name: "Vitrandic Haplocambids"
       tests:
         all_of:
           - vitrandic_subgroup_usda: {}
-    - code: "GGCH"
+    - code: "GGCQ"
       name: "Thapto-Humic Haplocambids"
       tests:
         all_of:
-          - thapto_humic_usda: {}
-    - code: "GGCE"
+          - sg_aridisols_thapto_humic_usda: {}
+    - code: "GGCR"
+      name: "Xerofluventic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_fluventic_usda: {}
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCS"
+      name: "Ustifluventic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_fluventic_usda: {}
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGCT"
+      name: "Fluventic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_fluventic_usda: {}
+    - code: "GGCU"
+      name: "Anthropic Haplocambids"
+      tests:
+        all_of:
+          - anthropic_epipedon_usda: {}
+    - code: "GGCV"
+      name: "Xeric Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: xeric }
+    - code: "GGCW"
+      name: "Ustic Haplocambids"
+      tests:
+        all_of:
+          - sg_aridisols_border_usda: { toward: ustic }
+    - code: "GGCX"
       name: "Typic Haplocambids"
       tests:
         default: true
