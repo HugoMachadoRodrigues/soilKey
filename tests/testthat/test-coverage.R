@@ -102,7 +102,13 @@ test_that("v0.9.113 subgroup refinements: 4 validated within-GG changes", {
   udic <- function(f) function() {
     p <- f(); p$site$soil_moisture_regime <- "udic"; p
   }
-  expect_equal(sg(make_argissolo_canonical), "Ultisols")
+  # v0.9.429: the fixture records its regimes (udic); without them the
+  # suborder stays undecided
+  no_regime <- function(f) function() {
+    p <- f(); p$site$soil_moisture_regime <- NULL; p$site$soil_temperature_regime <- NULL; p
+  }
+  expect_equal(sg(make_argissolo_canonical), "Typic Kandiudults")
+  expect_equal(sg(no_regime(make_argissolo_canonical)), "Ultisols")
   # v0.9.423: the BA (5YR, value 4) is the top of the kandic horizon, so its
   # upper 75 cm are not all red and dark: not Rhodic (KST 13 p 333)
   expect_equal(sg(udic(make_argissolo_canonical)), "Typic Kandiudults")

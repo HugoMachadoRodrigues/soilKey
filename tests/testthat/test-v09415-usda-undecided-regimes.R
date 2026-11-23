@@ -61,7 +61,11 @@ test_that("undecided tests are recorded at every level and lower the grade", {
   testthat::skip_on_cran()
   # the canonical Cambisol has no regime: the Udepts are reached past the
   # undecided Gelepts, Cryepts, Xerepts and Ustepts
-  res <- classify_usda(make_cambisol_canonical(), on_missing = "silent")
+  # v0.9.429: the fixture records its regimes; they are removed here
+  res <- classify_usda(.v09415_with_site(make_cambisol_canonical(),
+                                         soil_moisture_regime = NULL,
+                                         soil_temperature_regime = NULL),
+                       on_missing = "silent")
   # v0.9.425: no free carbonates and 0.2 % organic carbon at 125 cm (KST p. 228)
   expect_identical(res$name, "Dystric Fluventic Eutrudepts")
   expect_identical(res$evidence_grade, "C")
@@ -94,7 +98,8 @@ test_that("a recorded regime decides the suborder and keeps the grade", {
 
 test_that("Ultisol suborders follow the recorded regime (L34, p. 321)", {
   testthat::skip_on_cran()
-  p <- make_acrisol_canonical()
+  p <- .v09415_with_site(make_acrisol_canonical(), soil_moisture_regime = NULL,
+                         soil_temperature_regime = NULL)
   none <- classify_usda(p, on_missing = "silent")
   expect_identical(none$name, "Ultisols")
   expect_null(none$trace$suborder_assigned)

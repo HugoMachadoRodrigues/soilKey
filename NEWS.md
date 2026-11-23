@@ -42,6 +42,11 @@ Ustoll or a Xeroll (USDA audit, wave 4; decisions N16 to N18 of the author,
   with `data-raw/build_fixtures.R`; they had not been rebuilt since 0.9.204
   and lacked the horizon columns added since.
 * New `tests/testthat/test-v09429-canonical-regimes.R`.
+* Tests that assumed the canonical profiles record no regime now remove the
+  regimes themselves (`test-coverage.R`, `test-v09415-usda-undecided-regimes.R`,
+  `test-v09306-app-ambiguities-moisture.R`) or expect the new names
+  (`test-usda-colour-subgroups.R`, `test-report.R`, `test-v09325-followup-decisions.R`,
+  `test-v09419-usda-inceptisols.R`, `test-v09425-subgroups-inceptent.R`).
 
 # soilKey 0.9.428
 

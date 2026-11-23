@@ -98,7 +98,8 @@ test_that("item K of the Key to Soil Orders: cambic, K.2 and undecided", {
   expect_identical(r$evidence_grade, "C")
   # K.2: an umbric epipedon over rock (the canonical Neossolo Litolico)
   r <- classify_usda(make_neossolo_canonical(), on_missing = "silent")
-  expect_identical(r$name, "Lithic Humudepts")
+  # v0.9.429: the fixture records an ustic regime (NRCS map)
+  expect_identical(r$name, "Lithic Humustepts")
   # a positive water potential at the surface (the Wassents) is not K
   p <- .p419(.cambic_profile(), site = list(water_table_cm_above_surface = 10))
   expect_false(.f419("inceptisol_qualifying_usda", p)$passed)
