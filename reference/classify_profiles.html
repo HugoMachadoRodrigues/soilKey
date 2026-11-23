@@ -19,7 +19,7 @@ come from sites."><meta property="og:image" content="https://hugomachadorodrigue
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.422</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.427</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -166,9 +166,9 @@ and the others are classified as usual.</p>
 <span class="r-in"><span>                soil_moisture_regime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"udic"</span>, <span class="st">"ustic"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">classify_profiles</span><span class="op">(</span><span class="va">h</span>, sites <span class="op">=</span> <span class="va">s</span>, systems <span class="op">=</span> <span class="st">"usda"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"profile_id"</span>, <span class="st">"usda"</span>, <span class="st">"error"</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   profile_id               usda error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         p1     Typic Hapludox  &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         p2 Pachic Haplustolls  &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   profile_id                usda error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         p1      Typic Hapludox  &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         p2 Cumulic Haplustolls  &lt;NA&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Columns named and measured differently: rename and convert with `map`.</span></span></span>
@@ -183,9 +183,9 @@ and the others are classified as usual.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                    sibcs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                   Chernossolos Háplicos Órticos típicos, textura média</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 usda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     Typic Hapludox</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Pachic Haplustolls</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  usda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      Typic Hapludox</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Cumulic Haplustolls</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -104,9 +104,9 @@ s <- data.frame(profile_id = c("p1", "p2"),
                 soil_moisture_regime = c("udic", "ustic"))
 res <- classify_profiles(h, sites = s, systems = "usda")
 res[, c("profile_id", "usda", "error")]
-#>   profile_id               usda error
-#> 1         p1     Typic Hapludox  <NA>
-#> 2         p2 Pachic Haplustolls  <NA>
+#>   profile_id                usda error
+#> 1         p1      Typic Hapludox  <NA>
+#> 2         p2 Cumulic Haplustolls  <NA>
 
 # \donttest{
 # Columns named and measured differently: rename and convert with `map`.
@@ -121,8 +121,8 @@ classify_profiles(h2, sites = s, map = m)[, c("profile_id", "wrb", "sibcs", "usd
 #>                                                                    sibcs
 #> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
 #> 2                   Chernossolos Háplicos Órticos típicos, textura média
-#>                 usda
-#> 1     Typic Hapludox
-#> 2 Pachic Haplustolls
+#>                  usda
+#> 1      Typic Hapludox
+#> 2 Cumulic Haplustolls
 # }
 ```

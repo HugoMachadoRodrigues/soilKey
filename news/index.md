@@ -1,5 +1,458 @@
 # Changelog
 
+## soilKey 0.9.427
+
+Subgroups of the Spodosols, Histosols and Gelisols rebuilt from the KST
+13th edition (wave 3; Ch. 14, pp. 311-320; Ch. 10, pp. 199-205; Ch. 9,
+pp. 189-198). The three lists already had every KST subgroup in KST
+order (121, 75 and 129 names; none added, removed or reordered); what
+changed is the test each subgroup reads. The new tests live in
+`R/subgroups-usda-spodhistgel.R` (`sg_spodosols_*`, `sg_histosols_*`,
+`sg_gelisols_*`); no helper shared with other orders changes. Each new
+test is three-valued: a field observation not recorded is absent, a
+measurement not recorded leaves it undecided where it could change the
+answer.
+
+- **Spodosols** (the test entry of 81 of the 121 subgroups changed; a
+  few only spell out a default argument). Lithic from the mineral soil
+  surface (before, from the top of the profile). Andic: 25 cm of andic
+  soil properties within 75 cm of the mineral soil surface or of an
+  organic layer with andic properties (before, the 18 cm Andic subgroups
+  of the mineral orders). Aquic and Aquandic of the Cryods, Gelods and
+  Orthods: redox features and aquic conditions within 75 cm (before
+  100). Arenic and Grossarenic: the texture of every layer from the
+  mineral soil surface to the spodic horizon read by
+  `.usda_texture_grades()`, undecided where not recorded (before, layers
+  without clay or sand were skipped). Alfic, Ultic and Argic: argillic
+  or kandic horizon within 200 cm, three-valued, the Alfic base
+  saturation by sum of cations (NH4OAc where not recorded); Arenic Ultic
+  Alorthods: argillic or kandic horizon below the spodic horizon
+  (p. 317). Turbic Gelods: gelic materials within 200 cm (before,
+  permafrost alone passed). Fragic and Fragiaquic Haplorthods: fragic
+  soil properties from the suffix x or the fragipan records, starting
+  within 100 cm. Lamellic: two or more lamella layers below the spodic
+  horizon, within 200 cm and above any argillic horizon. Duric Alaquods
+  and Duric Cryaquods: `cemented_horizon_usda()` (90 % of each pedon,
+  read laterally). The four Haploplaggic subgroups call
+  `haploplaggic_subgroup_usda()` (they were switched off). Every Entic
+  subgroup passes its great group’s rule to `entic_subgroup_usda()`
+  explicitly (cryaquod, haplocryod, alorthod, orthod).
+
+- **Histosols** (55 of 75 test entries changed). Lithic: within 50 cm of
+  the soil surface (Folists) or at the bottom of the control section,
+  130 cm or 160 cm under a moss surface (before, 130 cm always). Hydric:
+  a water layer within the control section, below the surface tier.
+  Limnic: 5 cm of limnic layers (master L) within the control section; a
+  lacustrine layer origin no longer counts. Terric: one layer of mineral
+  soil material 30 cm thick whose top is in the control section below
+  the surface tier (before, all mineral layers starting above 100 cm,
+  summed). Fluvaquentic: less than 50 cm of human-transported material
+  and mineral layers inside the organic materials (one 5 cm thick, or
+  two), below the surface tier (before, the organic-carbon test of the
+  mineral orders). Sphagnic Cryofibrists: the Sphagnum share of the
+  surface tier (`sphagnum_fibres_pct`; not recorded, not Sphagnum), no
+  longer the rubbed fibre content. Hemic Sphagnofibrists and Hemic
+  Haplofibrists count hemic and sapric materials, Hemic Haplosaprists
+  fibric and hemic ones. Fibric and Sapric Wassists: the predominance of
+  the suborders (p. 199), Fibric Frasiwassists with no sulfidic
+  materials within 100 cm (before, the 25 cm rule). Halic: one layer 30
+  cm thick with EC 30 dS/m or more starting in the control section
+  (before, any layers summed).
+
+- **Gelisols** (78 of 129 test entries changed). Lithic and Glacic from
+  the soil surface in the Histels, Histoturbels and Historthels and from
+  the mineral soil surface elsewhere, as the KST words each. Terric
+  Histels: one mineral layer with 30 cm within 100 cm. Limnic Histels as
+  in the Histosols. Thapto-Humic: buried O and dark A layers (20 cm, 1 %
+  organic carbon), undecided where colour or carbon of a buried A layer
+  is not recorded. Fluvaquentic Histels: mineral layers inside the
+  organic materials within 100 cm; Fluvaquentic and Fluventic Orthels:
+  slope under 25 % (not recorded, read as met), less than 50 cm of
+  human-transported material, the organic-carbon criteria of the
+  Fluvents (`.usda_fluvent_oc()`), and for Fluvaquentic Historthels and
+  Haplorthels redox features with aquic conditions within 75 cm (the
+  Fluvaquentic Aquorthels do not ask for it). Hemic and Sapric
+  Glacistels and Sphagnic Fibristels by the kinds of organic material to
+  50
+
+  900. Cumulic: a mollic or umbric epipedon 40 cm thick finer than loamy
+       fine sand (before, the A horizons summed). Aquic: redox features
+       and aquic conditions within 100 cm (75 cm in the Haplorthels) of
+       the mineral soil surface. Sulfuric: a sulfuric horizon or
+       sulfidic materials within 100 cm.
+
+- **Histel great groups** (`great-groups/gelisols.yaml`, p. 189):
+  Fibristels and Hemistels by the kind of organic soil material that is
+  thickest to 50 cm or a contact (`sg_gelisols_histel_kind_usda()`), no
+  longer the SiBCS `fibrico`/`hemico` classes.
+
+- Measured on ISIS (357 profiles with a 1999 USDA name): order 216,
+  suborder 174, great group 124, subgroup 73, unchanged. One profile
+  changes name: NL051 Terric Haplohemists -\> Fibric Haplohemists (its
+  mineral layer starts at 142 cm, below the control section; its fibric
+  1Hi horizon gives 30 cm of fibric material at 100-130 cm). Canonical
+  fixture: histosol Typic Haplohemists -\> Terric Haplohemists (the C
+  horizon at 100-150 cm starts within the control section, below the
+  surface tier; up to v0.9.426 a Terric layer had to start above 100
+  cm).
+
+- `tests/testthat/test-v09264-key-engine.R`: the check that a system
+  added after the registry must suffix its predicates used the USDA
+  rules, whose only unsuffixed predicates were the SiBCS fibrico, hemico
+  and saprico; it now uses the SiBCS rules and asserts that the USDA
+  rules are clean.
+
+- Still open in the lists: Spodic Psamments and Psammaquents call
+  `spodic_subgroup_usda()` without `{ psamments: true }` (entisols.yaml,
+  wave 3 Entisols task).
+
+- The subgroup tests added in 0.9.423 to 0.9.425 (`sg_ultisol_*`,
+  `sg_oxisol_*`, `sg_ultox_*`, `sg_mollisol_*`, `sg_incept_*`,
+  `sg_ent_*`; 107 functions) now end in `_usda`, as every predicate of a
+  system must, so `.validate_rules("usda")` finds no unsuffixed name.
+  Names only; no answer changes.
+
+## soilKey 0.9.426
+
+Subgroups of the Aridisols, Vertisols and Andisols rebuilt from the Keys
+to Soil Taxonomy, 13th edition (audit items R3 to R6; wave 3). Every
+great group of the three orders now lists exactly the KST subgroups, in
+KST order, with the KST codes (Typic last, as the default), and compound
+subgroups come before their parts. The tests are in the new
+`R/subgroups-usda-aridvertand.R` (names `sg_aridisols_*`,
+`sg_vertisols_*`, `sg_andisols_*`, and the general
+`sg_usda_within_usda()` and `sg_usda_duripan_weak_usda()`),
+three-valued: field observations not recorded are absent, measurements
+not recorded leave the test undecided. No helper used by another order
+changed.
+
+- **Aridisols** (Ch. 7, pp. 137-163): 155 entries become 270; 145 added,
+  30 removed (names the KST does not have, e.g. Sodic Calciargids,
+  Lithic Petrocambids, Aquic Haplocambids), the kept ones reordered in
+  12 great groups. New: the Xeric and Ustic subgroups and their
+  compounds (Lithic Xeric, Xerertic, Durinodic Xeric, Vitrixerandic…),
+  Arenic, Durinodic, Thapto-Humic, Fluventic, Anthropic, Abruptic,
+  Argidic, Cambidic, Natrargidic, Glossic, Haplic, Anhydritic. Sodic
+  reads an ESP of 15 or more through a horizon 25 cm thick within 100 cm
+  (not the natric horizon); Petronodic reads 20 % nodules or concretions
+  through 15 cm within 100 cm (not 15 % CaCO3 with 5 % coarse
+  fragments); Vertic reads cracks with slickensides or a linear
+  extensibility of 6 cm (COLE not measured: undecided); Aquic reads
+  saturation for a month (`water_saturation_days`) or irrigation with
+  redox features. “Borders on ustic (xeric)” reads the moisture regime
+  record: a record naming both regimes passes, a record of one regime is
+  its typic part, none leaves it undecided.
+- **Vertisols** (Ch. 16, pp. 343-354): 171 entries become 158; 22 added
+  (the Udic and Ustic subgroups, Aeric, Sulfaqueptic, Haplic
+  Durixererts, the Haplustert compounds), 35 removed (Salic, Calcic,
+  Sodic and Aquic names the KST does not have in those great groups),
+  the kept ones reordered in 17 great groups. Halic: 15 dS/m through 15
+  cm within 100 cm (was 30 dS/m in 30 cm); Sodic: ESP 15 in any horizon
+  within 100 cm (was the natric horizon); Entic: a layer 25 cm thick
+  with less than 27 % clay (was the Spodosol entic test, which never
+  passed, F16); Chromic three-valued, with the chroma clause only where
+  the KST has it; Leptic with the duripan and petrocalcic horizon only
+  where the KST names them. The crack patterns of the Aridic, Ustic,
+  Xeric and Udic subgroups read `site$cracks_open_days` where recorded,
+  else the recorded regimes they stand for (p. 343 note; L32): an aquic
+  regime leaves them undecided.
+- **Andisols** (Ch. 6, pp. 117-136): 211 entries become 218; 29 added
+  (the Alfic, Anthraquic, Eutric, Oxic, Dystric and Xeric subgroups,
+  Acrudoxic and Hydric compounds, Folistic, Placic…), 22 removed, the
+  kept ones reordered in 16 great groups, the Hapludands and Fulvudands
+  among them. Acrudoxic (bases plus KCl Al under 2.0 cmol/kg in 30 cm
+  between 25 and 100 cm), Alic and its negation in the Eutric subgroups
+  of the Dur- and Fulvi- great groups, Eutric (bases over 25 cmol/kg),
+  Dystric (under 15), Pachic (6 % organic carbon with mollic colours
+  through 50 cm; the Fulvi- wording by the weighted and minimum carbon),
+  Vitric (1500 kPa water retention, not the glass content), Aquic (50 to
+  100 cm), Duric (20 % cemented, 15 cm), Spodic by the USDA spodic,
+  albic and cambic horizons, Thaptic from 40 cm in the Melanaquands,
+  Fulvudands and Melanudands.
+- Canonical fixtures: the Andosol becomes Hydric Melanudands (was Vitric
+  Melanudands: its 1500 kPa water retention of 110 % is Hydric, the KST
+  Vitric reads that retention, not the glass); the Calcisol, with an
+  aridic regime recorded, becomes Typic Haplocalcids (was Petronodic
+  Haplocalcids: it records no nodules). USDA subgroup coverage 2049 to
+  2245 of 2715.
+- On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  subgroup in 75 (was 73); order 216, suborder 174 and great group 124
+  are unchanged. 23 ISIS names change, all within their great group:
+  UY006 Chromic Hapluderts and US026 Natrargidic Natridurids now agree
+  with ISIS; BJ003, KE063, ML005, NA011, ZM011, PK001, GB004, CN010,
+  PH005, NL010, IN010, IN011, OM003, CU013, CN011, AU039, CU001, AU006,
+  CU009, CU021 and NI009 change subgroup. Of the 69 ISIS profiles named
+  in these three orders, 46 now have an undecided subgroup before the
+  assigned one (grade C; was 30), mostly Vertic (COLE not measured, 19)
+  and Aquic (no saturation record, 16).
+
+## soilKey 0.9.425
+
+Inceptisol and Entisol subgroups rebuilt from the KST 13th edition (wave
+3 of the Soil Taxonomy audit; findings F16, F17 and F10; Ch. 11,
+pp. 207-246, and Ch. 8, pp. 165-188). Every test is three-valued: TRUE
+or FALSE where the recorded data decide it, NA with the missing data
+listed where they do not. A field observation not recorded is absent
+(redox features, cracks, slickensides, artifacts, x and lamellar
+designations, cementation, worm holes, fluidity); a measurement not
+recorded is undecided (colour, base saturation, CEC, CaCO3, COLE, ESP,
+saturation days).
+
+- **Subgroup lists** (`inst/rules/usda/subgroups/inceptisols.yaml`,
+  `entisols.yaml`): each great group carries exactly the KST list, in
+  KST order, Typic last; codes are the great-group code plus the letter
+  of the KST position. Inceptisols: 274 names before, 349 now (87 added,
+  12 not in the KST removed: Halic and Lithic Sulfaquepts, Lithic
+  Petraquepts, Sodic Halaquepts, Andic Cryaquepts, Aeric Vermaquepts,
+  Lithic Humaquepts, Lithic Epiaquepts, Petrocalcic Calcicryepts, Aquic
+  Durustepts, Aquic Humustepts, Halic Sulfudepts; 22 great groups
+  reordered). Entisols: 167 before, 239 now (82 added, 10 removed:
+  Sulfic Frasiwassents, Fluventic Haplowassents, Halic Sulfaquents,
+  Histic Gelaquents, Lithic and Histic Cryaquents, Aeric Psammaquents,
+  Lithic Epiaquents, Lithic Gelorthents, Andic Udorthents; 15 great
+  groups reordered). Compound subgroups come before their parts, as the
+  KST orders them. Coverage of the KST subgroup catalogue: 2049 to 2218.
+- **New tests** (`R/subgroups-usda-inceptent.R`; `sg_incept_*`, shared
+  by both lists, and `sg_ent_*`): Vertic (cracks with slickensides, or a
+  linear extensibility of 6 cm from COLE, undecided where COLE is not
+  measured); Aquic by the depth and the kind of redox feature of each
+  great group (75, 60 or 30 cm; depletions of chroma 2 or less, or
+  distinct or prominent concentrations; above the duripan; the
+  gley-colour branch of the Fluvents); Andic, Vitrandic, Aquandic and
+  the glass test of the Psamments (above the duripan in the Dur- great
+  groups); the Spodic Psamments and Psammaquents with the depth rule of
+  p. 184 (below an Ap horizon and 18 cm); Thapto-Humic and Thapto-Histic
+  from the buried layers; Fluventic and Fluvaquentic (slope,
+  human-transported material, organic carbon; the boundaries of the
+  Gelepts); the dark surface (15 or 18 cm, unmixed or mixed); the
+  epipedons of the Humic, Cumulic (60 or 50 cm) and Pachic subgroups;
+  base saturation (Humic Aquepts, Eutric, Dystric); the eight Aeric
+  colour rules; fragic properties; lamellae; Psammentic, Arenic, Oxic,
+  Dystric (no free carbonates), Rendollic, Entic, Calcic (secondary
+  carbonates; the particle-size depths of the Haploxerepts), Sodic (ESP
+  15 or 7, 25 cm in the Anthro- Sodic subgroups), Duric, Durinodic,
+  Plinthic, Sulfic, the fluidity of the Hydraquentic, Haplic, Fluic and
+  Grossic subgroups, Anthrodensic, Anthroportic, Anthraltic, Anthraquic,
+  Haploplaggic, Vermic, Rhodic, Ustoxic and Udoxic. The moisture
+  intergrades (Aridic, Udic, Torrertic, Udertic, Torrifluventic,
+  Haplocalcidic, the Ustic and Xeric Torri- subgroups, the Ustic
+  Cryepts) are decided only where the recorded regime class settles
+  them, and are undecided otherwise. Ruptic subgroups: illuvial parts in
+  the cambic horizon are not recorded, so absent.
+- **Udorthents** (p. 178): Anthrodensic Sodic, Anthrodensic, Anthropic,
+  Anthroportic and Vermic join; Oxyaquic reads saturation within 150 cm
+  (`oxyaquic_subgroup_usda(max_depth_cm = 150)`, as in the other
+  Orthents, Torrifluvents, Ustifluvents and Xerofluvents); Andic
+  Udorthents, not in the KST, is gone.
+- Canonical fixtures: Cambisol becomes Dystric Fluventic Eutrudepts (was
+  Typic Eutrudepts: no free carbonates, 0.2 % organic carbon at 125 cm);
+  Fluvisol Mollic Udifluvents (was Typic: dark upper 15 cm); Gleysol
+  Fluvaquentic Endoaquepts (was Aeric); Stagnosol Fluvaquentic
+  Epiaquepts (was Aeric); Plinthosol Fluventic Dystrudepts, Solonchak
+  Fluventic Eutrudepts and Umbrisol Fluventic Humudepts (were Typic);
+  Technosol Anthropic Udorthents (was Typic: its Au horizon meets the
+  anthropic epipedon, which the KST keys before Anthroportic).
+- On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 216 (unchanged), suborder 174 (174), great group 124 (124),
+  subgroup 71 (73); 130 names change, all at the subgroup level. NZ001
+  (Fragic, a Cx horizon), NZ002 (Aquic, redox in a 2.5Y 6/2 matrix) and
+  NO003 (Fluventic, a buried Ahb) leave Typic Dystrudepts; NL030 becomes
+  Typic Eutrudepts, as in ISIS. 31 profiles become Fluventic, mostly by
+  0.2 % organic carbon at 125 cm; 33 Aquic; 10 Andic become Aquandic.
+
+## soilKey 0.9.424
+
+Mollisol subgroups rebuilt from the Keys to Soil Taxonomy, 13th edition
+(Hugo, 2026-11-20; audit R3 to R6 and E26). Every great group of the
+Mollisols now lists exactly the subgroups of its key in chapter 12 (pp.
+248-294), in the order of the key, Typic last, and each subgroup tests
+the criteria the KST gives in that great group. The tests are
+three-valued: field observations not recorded (redox features, cracks,
+slickensides, worm holes, visible salts, buried horizons, tongues of
+albic material, cementation) are absent; measurements (organic carbon,
+COLE, base saturation, CEC), colour, structure and texture not recorded
+are undecided.
+
+- `inst/rules/usda/subgroups/mollisols.yaml`: 391 subgroups in 37 great
+  groups (was 285): 132 added, 26 removed that the 13th edition does not
+  have (Aquic and Vertic Natralbolls, Aquic and Pachic Argialbolls,
+  Lithic Cryaquolls, Lithic Argiaquolls, Lithic Epiaquolls, Pachic
+  Argiaquolls, Calcic Endoaquolls, Salic Natraquolls, Vertic
+  Calciaquolls, Aquic Haprendolls, Vertic Duricryolls, Vertic and Aquic
+  Natricryolls, Vertic Palecryolls, Argic Durixerolls, Lithic
+  Palexerolls, Petrocalcic Calcixerolls, Argic and Vertic Durustolls,
+  Lithic Paleustolls, Calcic Haplustolls, Aquic Natrudolls, Petrocalcic
+  Calciudolls, Pachic Vermudolls), and the remaining ones put in KST
+  order in 25 great groups, so the compound subgroups (Aquic Cumulic,
+  Pachic Vertic, Aridic Lithic, Fluvaquentic Vertic …) come before their
+  parts. The KST codes are kept, including those past Z (IFFZa to IFFZi,
+  IGGZa to IGGZf).
+- New file `R/subgroups-usda-mollisols.R` with the Mollisol readings,
+  each citing its KST page: `sg_mollisol_vertic_usda()` (cracks and
+  slickensides or wedge-shaped peds, or a linear extensibility of 6 cm;
+  above the duripan in the Durixerolls and Duraquolls; where no crack is
+  recorded the slickensides stand for them, as for the Vertisol order,
+  L30), `sg_mollisol_aquic_usda()` (the six aquic wordings of the
+  chapter: the 40/75 cm colour test of the Udolls, depletions within 75
+  or 100 cm, concentrations, distinct concentrations, the Natrustolls
+  and above the duripan), `sg_mollisol_mollic_usda()` (Pachic, Cumulic,
+  Haplic and Entic thickness, with the frigid 40 cm and the Cumulic
+  frigid alternatives), `sg_mollisol_fluventic_usda()` (slope,
+  human-transported material, 0.3 % organic carbon at 125 cm or in all
+  horizons within 125 cm, irregular decrease),
+  `sg_mollisol_thapto_humic_usda()`, `sg_mollisol_thapto_histic_usda()`,
+  `sg_mollisol_duric_usda()`, `sg_mollisol_calcic_usda()` (within 100
+  cm; calcic or secondary carbonates by particle-size class at
+  150/90/110 cm; 100/50/60 cm in the Paleustolls; within or below the
+  mollic; above the duripan; the Calcic Paleudolls),
+  `sg_mollisol_alfic_usda()`, `sg_mollisol_ultic_usda()` (base
+  saturation 75 % or less, L18), `sg_mollisol_abruptic_usda()`,
+  `sg_mollisol_haplic_palexeroll_usda()`, `sg_mollisol_glossic_usda()`,
+  `sg_mollisol_leptic_usda()`, `sg_mollisol_arenic_usda()` (the Mollisol
+  wording, no spodic horizon, audit R5),
+  `sg_mollisol_psammentic_usda()`, `sg_mollisol_lamellic_usda()`,
+  `sg_mollisol_oxic_usda()`, `sg_mollisol_entic_usda()`,
+  `sg_mollisol_vermic_usda()`, `sg_mollisol_moisture_usda()`,
+  `sg_mollisol_duripan_usda()`, `sg_mollisol_aeric_usda()`,
+  `sg_mollisol_ruptic_lithic_usda()`,
+  `sg_mollisol_htm_petrocalcic_usda()`, `sg_mollisol_anthraquic_usda()`,
+  `sg_mollisol_aquandic_usda()`. The shared helpers used by other orders
+  are unchanged.
+- Moisture intergrades (Aridic, Torr-, -idic, Udic, Udertic, Udorthentic
+  Ustolls and Xerolls): read from the recorded regime and, where
+  recorded, a subdivision of it in `site$soil_moisture_subclass`
+  (“aridic ustic”, “udic ustic”, “typic xeric”, “dry xeric”); with only
+  the suborder’s own ustic or xeric regime recorded they are undecided.
+  Ustic Cryolls pass with an ustic or aridic regime, Xeric Argialbolls
+  with a xeric or aridic one.
+- Canonical fixtures: Phaeozem, Chernozem and Chernossolo become Cumulic
+  Hapludolls (were Pachic Hapludolls): a mollic epipedon of 60 cm or
+  more and 0.3 % or more organic carbon at 125 cm (KST p. 264). With an
+  ustic regime the Phaeozem is Cumulic Haplustolls (was Pachic
+  Haplustolls).
+- On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 216 (was 216), suborder 174 (174), great group 124 (124),
+  subgroup 72 (73); 17 names change, all within their great group: NA004
+  Pachic to Cumulic Haplustolls (0.46 % organic carbon at 125 cm; ISIS
+  Pachic Haplustoll), KE037 and SK002 to Cumulic and Fluventic
+  Hapludolls, EC018 to Cumulic Haplustolls, RO005, DE013 and EC016 to
+  Fluventic, KE049 and CN041 to Cumulic Endoaquolls, RW002 to Andic
+  Argiudolls (ISIS: Typic Melanudand), NL006 to Thapto-Humic Hapludolls,
+  NL007 and DE008 to Aquic and Aquic Pachic Hapludolls; and the four
+  names the 13th edition does not have: BW005 Typic Natralbolls, ID013
+  Typic Argiaquolls, US016 Aquic Haplustolls, PE024 Thapto-Humic
+  Haplustolls.
+
+## soilKey 0.9.423
+
+The subgroups of the Ultisols and Oxisols rebuilt from Keys to Soil
+Taxonomy, 13th edition (Hugo, 2026-11-22; audit items R3 to R6, O7, F16,
+F17, G7). For every great group,
+`inst/rules/usda/subgroups/ultisols.yaml` and `oxisols.yaml` list
+exactly the subgroups of the KST, in its order, with its codes (HCGA,
+EEBM …), Typic last; each test reads the criteria of its subgroup. The
+new tests are in `R/subgroups-usda-ultox.R` (`sg_oxisol_*`,
+`sg_ultisol_*`, and `sg_ultox_contact_usda()` and
+`sg_ultox_plinthic_usda()`, which both orders call); the helpers other
+orders share are called, not changed. All are three-valued: a field
+observation not recorded is absent (redox features, plinthite,
+slickensides, cracks, lamellae, fragic properties, a discontinuous
+contact); a measurement not recorded leaves the test undecided (colour,
+texture, the linear extensibility, base saturation, CEC, oxalate
+extractions, bulk density, days of saturation, a regime or its
+subclass).
+
+- **Oxisols** (KST 13th ed., pp. 295-309): 190 entries to 213, 23 added
+  (Inceptic, Humic Inceptic and Aqueptic; Kandiudalfic and
+  Kandiustalfic; Plinthaquic in every Ustox, Perox and Udox great group
+  that has it; Eutric Acrudox and Acrustox), none removed, 13 great
+  groups reordered so the compounds come before their parts (audit O7).
+  Aquic: redox depletions of moist value 4 or more and chroma 2 or less
+  within 125 cm (a mottle colour so recorded, or such a matrix colour
+  where mottles or a g designation show it depleted), not the generic
+  aquic conditions within 100
+  900. Xanthic: half the thickness between 25 and 125 cm with hue 7.5YR
+       or yellower and value 6 or more (it took half of the layers by
+       count). Anionic: delta pH of 0 or more through 18 cm of adjoining
+       layers within 125
+  901. Inceptic: the lower boundary of the oxic horizon within 125 cm,
+       shown by a layer or a contact below it (undecided where the
+       profile ends inside the oxic horizon). Eutric: 35 % base
+       saturation (NH4OAc) in every horizon to 125 cm. Aeric: a horizon
+       10 cm thick, chroma 3 or more, directly below the epipedon.
+       Lithic and Petroferric: a contact within 125 cm.
+- **Ultisols** (KST 13th ed., pp. 321-341): 192 entries to 215, 54
+  added, 31 removed (names the KST does not have: Lithic Plinthaquults,
+  Umbric Albaquults, Aquic Plinthudults, Andic Hapludults, Humic
+  Haplustults, Aquic Paleustults …), 18 great groups reordered. Arenic
+  and Grossarenic read the Ultisol definition (audit F16; the Spodosol
+  helper they called needed a spodic horizon and never passed): a
+  texture of loamy fine sand or coarser from the mineral soil surface to
+  the argillic or kandic horizon, whichever the great group names, at 50
+  to 100 cm, 100 cm or more, or 50 cm or more. Aquic: depletions of the
+  great group’s zone (the upper 25 cm of the argillic or kandic horizon
+  in the Humults and Xerults; 75 cm in the Kandi-, Kanhapl- and Pale-
+  Udults and Ustults; 100 cm with concentrations or depletions in the
+  Hapludults; 40 cm in the Plinthaquic and Glossaquic Fragiudults; the
+  upper 12.5 cm of the argillic horizon within 75 cm in the
+  Haplustults), with redox concentrations where the KST asks for them
+  (audit R6: it was always the aquic conditions within 100 cm). Vertic:
+  slickensides or wedge-shaped peds 15 cm thick within 125 cm (where no
+  cracks are recorded the slickensides stand for them, reading L30), or
+  a linear extensibility of 6 cm (COLE x thickness), undecided where
+  COLE is not recorded. Fragic: fragic soil properties (an x designation
+  or a surveyor’s fragipan), not the fragipan (R6). Aeric: chroma 3 or
+  more between the A horizon or 25 cm and 75 cm (or the fragipan).
+  Umbric: a mollic or umbric epipedon. Kandic Plinthaquults and
+  Kanhaplic Haplustults: a CEC under 24 cmol(+)/kg clay in half the
+  argillic horizon (its upper 100 cm). Rhodic: the upper 75 or 50 cm of
+  the kandic or argillic horizon, with the dry value (undecided without
+  it, reading L26). Humic Hapludults and Fragiudults: moist value 3 or
+  less and dry value 5 or less in an Ap 18 cm thick or the upper 18 cm
+  mixed (a dry value not recorded is moist + 1 only for a moist value of
+  2 or less, as in the mollic epipedon, reading L27). Inceptic
+  Hapludults, Psammentic, Lamellic, Ombroaquic, Spodic and Anthraquic
+  Paleudults, Glossic and Glossaquic Fragiudults, Haplic Plinthustults
+  (the negation of the Pale- core), Lithic-Ruptic-Entic and Lithic
+  Ruptic-Inceptic, Ustandic, Ustic and Xeric Humults, Acrudoxic,
+  Acrustoxic and Acraquoxic (the ECEC per kg clay of v0.9.420), Sombric
+  Kandiudults: as the KST words them. Udic, Aridic and Udandic
+  Kandiustults and Kanhaplustults need the side of the ustic regime,
+  read from `site$soil_moisture_subclass` (“udic ustic” …); not
+  recorded, undecided.
+- **ISIS (974 profiles):** 30 names change, all at the subgroup level.
+  Against the ISIS 1999 names (`cmp.R`): order 216 of 357, suborder 174,
+  great group 124, unchanged; subgroup 73 to 75 of 340. ZM004 (Inceptic
+  Haplustox), ID032 (Inceptic Hapludox), CO001 (Ustic Palehumults) and
+  IN003 (Kanhaplic Haplustults) now agree with ISIS; US009
+  (Kandiustalfic Eutrustox, ISIS Rhodic) and ZW011 (Haplic
+  Plinthustults, ISIS Typic) no longer do. Kandic horizons within 150 cm
+  make BR004, BR007, MZ003, ZW001 and US009 Kandiustalfic Eutrustox and
+  CN043, US003 Kandiudalfic Eutrudox. Of the 152 Ultisol and Oxisol
+  names, 92 now have an undecided subgroup before the name (75 before):
+  Oxyaquic (no days of saturation) 43, Humic 34, Andic 15, Vertic (no
+  COLE) 10, Aquic 9, Udic and Aridic (no subclass) 7 each.
+- **Canonical fixtures:** no name changes
+  ([`make_ferralsol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_ferralsol_canonical.md)
+  and
+  [`make_latossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_latossolo_canonical.md)
+  stay Typic Hapludox,
+  [`make_nitossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_nitossolo_canonical.md)
+  Rhodic Kandiudox).
+  [`make_argissolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_argissolo_canonical.md)
+  records no regime and stays “Ultisols”; with a udic regime set (as
+  `test-coverage.R` does) it is Typic Kandiudults, no longer Rhodic: its
+  kandic horizon starts with the BA (5YR, value 4), and Rhodic needs
+  every subhorizon of the upper 75 cm red and dark (p. 333).
+- **Tests:** `test-v09423-subgroups-ultox.R` (the KST lists of every
+  great group, compounds before their parts, and the tests above);
+  `test-v09309-ke009.R` now expects Kandiustalfic Eutrustox (a kandic
+  horizon within 150 cm, p. 306), `test-coverage.R` Typic Kandiudults
+  (above), and `test-usda-intergrade-subgroups.R`,
+  `test-v09147-usda-subgroup-coverage.R` and
+  `test-v09149-usda-humic-colour.R` 2126 registered subgroups (2049
+  before).
+
 ## soilKey 0.9.422
 
 The Alfisol subgroups rebuilt from Keys to Soil Taxonomy, 13th edition
