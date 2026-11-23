@@ -1720,3 +1720,36 @@ attributes:
     section: "Texture"
     unit: "-"
     description: "Texture class of the fine earth as estimated in the field, in the USDA class names that the FAO (2006) guidelines adopt: S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC, SiC, C, and the sand grades COS (FAO CS), MS, FS, VFS, US (unsorted), LCOS (LCS), LFS, LVFS, COSL (CSL), FSL, VFSL; the class names in words are accepted. Read only where clay and sand are not measured, by the texture tests of the WRB argic, cambic and ferralic horizons (sandy loam or finer) and the USDA Psamments and Psammentic subgroups (loamy fine sand or coarser); S (FAO: sand, unspecified) and US give no sand grade. ISIS textureClassesFao2006Small (v0.9.416)."
+  - name: very_fine_sand_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% of the fine earth"
+    description: "Very fine sand (0.05-0.1 mm), % of the fine earth. Read by the USDA family particle-size classes (KST 13th ed., pp. 355 and 360): 50 % or more makes a sand or loamy sand a very fine sand grade, whose very fine sand counts as silt (not sandy); and the sand of 0.1-2 mm is sand_pct minus it. Not recorded: the sand grade is read from texture_class_usda, sand_grade, fine_sand_pct or coarse_sand_pct, and the 0.1-2 mm sand is bounded by the coarse sand and the whole sand."
+    min: 0
+    max: 100
+  - name: artefacts_cohesive_persistent
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "logical"
+    description: "The artifacts of 2 mm or more (artefacts_pct) are both cohesive and persistent (e.g. brick), and count as rock fragments in the USDA family particle-size classes (KST 13th ed., pp. 356 and 360). A field observation: not recorded, they do not count."
+  - name: gypsum_lt20mm_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Gypsum, % by weight of the fraction smaller than 20 mm. The gypseous substitutes of the USDA family (KST 13th ed., p. 359) need 40 % or more. Not recorded: caso4_pct where the layer has no coarse fragments or no field record of gypsum (gypsum_visible_pct, the suffix y); else undecided."
+    min: 0
+    max: 100
+  - name: pumice_fragments_share_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% of the fragments >= 2 mm"
+    description: "Pumice and pumicelike fragments, % by volume of the rock and pararock fragments of 2 mm or more. Two-thirds or more makes the pumiceous, ashy-pumiceous, medial-pumiceous and hydrous-pumiceous substitutes of the USDA family (KST 13th ed., pp. 358-359). Not recorded: none where no pyroclastic fragments are recorded, else undecided."
+    min: 0
+    max: 100
+  - name: tephra_wt_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Volcanic ash, cinders, lapilli, pumice and pumicelike fragments, % by weight of the whole soil. More than 60 % in a layer with less than 10 % fine earth makes the pumiceous or cindery substitute of the USDA family (KST 13th ed., p. 358). Not recorded: none where no pyroclastic fragments or other volcanic record exist, else undecided."
+    min: 0
+    max: 100
+  - name: liquid_limit_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% water"
+    description: "Liquid limit (moist), water content in %. The diatomaceous substitute of the USDA family (KST 13th ed., p. 359) needs more than 100, with limnic material, a ratio of 1500 kPa water to clay above 0.6 and a moist bulk density below 0.80."
+    min: 0

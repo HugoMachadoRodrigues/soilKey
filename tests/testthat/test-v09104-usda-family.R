@@ -25,8 +25,12 @@ test_that("particle_size class keys on clay and rock fragments", {
     coarse_fragments_pct = 50)))
   expect_equal(skel$value, "clayey-skeletal")
 
+  # v0.9.431 (reading F7): sandy needs a sand grade other than very fine;
+  # with no very fine sand, texture class or sand grade recorded the class is
+  # undecided, so the fixture now records the very fine sand.
   sandy <- family_particle_size_usda(.uf_pedon(data.frame(
-    top_cm = 25, bottom_cm = 100, clay_pct = 6, sand_pct = 88, silt_pct = 6)))
+    top_cm = 25, bottom_cm = 100, clay_pct = 6, sand_pct = 88, silt_pct = 6,
+    very_fine_sand_pct = 10)))
   expect_equal(sandy$value, "sandy")
 })
 

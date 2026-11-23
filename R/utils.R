@@ -411,7 +411,14 @@ horizon_column_spec <- function() {
     palygorskite_pct              = "numeric",   # palygorskite, % of the clay fraction; FAO yermic phase (>= 2)
     aeolian_crack_infill          = "logical",   # surface cracks filled with in-blown sand or silt; FAO yermic phase
     # ---- v0.9.416: the field texture class ----
-    texture_class_usda            = "character"  # texture class of the fine earth, USDA names (FAO 2006 codes): S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC, SiC, C, with the sand grades; read only where clay and sand are not measured
+    texture_class_usda            = "character", # texture class of the fine earth, USDA names (FAO 2006 codes): S, LS, SL, L, SiL, Si, SCL, CL, SiCL, SC, SiC, C, with the sand grades; read only where clay and sand are not measured
+    # ---- v0.9.431: USDA family particle-size classes (KST 13th ed., ch. 17) ----
+    very_fine_sand_pct            = "numeric",   # very fine sand (0.05-0.1 mm), % of the fine earth; KST pp. 355, 360: sand grade, and sand 0.1-2 mm = sand - very fine sand
+    artefacts_cohesive_persistent = "logical",   # the artifacts of 2 mm or more are cohesive and persistent (KST p. 356): they count as rock fragments; not recorded, they do not
+    gypsum_lt20mm_pct             = "numeric",   # gypsum, % by weight of the fraction < 20 mm; KST p. 359, gypseous substitutes (>= 40)
+    pumice_fragments_share_pct    = "numeric",   # pumice and pumicelike fragments, % by volume of the fragments >= 2 mm; KST pp. 358-359 (two-thirds or more: pumiceous)
+    tephra_wt_pct                 = "numeric",   # volcanic ash, cinders, lapilli, pumice and pumicelike fragments, % by weight of the whole soil; KST p. 358, pumiceous and cindery (> 60)
+    liquid_limit_pct              = "numeric"    # liquid limit (moist), water %; KST p. 359, diatomaceous (> 100)
   )
 }
 

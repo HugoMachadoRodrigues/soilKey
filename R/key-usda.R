@@ -213,7 +213,12 @@ classify_usda <- function(pedon,
         pedon,
         order_code        = order$code,
         subgroup_code     = if (!is.null(sg)) sg$code else NULL,
-        infer_temperature = infer_temperature),
+        infer_temperature = infer_temperature,
+        # v0.9.431: the control section and particle-size classes depend on
+        # the taxa assigned above the family (KST 13th ed., pp. 356-360)
+        great_group       = if (!is.null(gg)) gg$name else
+                            if (!is.null(suborder)) suborder$name else NULL,
+        subgroup          = if (!is.null(sg)) sg$name else NULL),
       error = function(e) list())
     family_lbl <- family_label_usda(family_attrs)
     if (!is.null(family_lbl) && nzchar(family_lbl))

@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.416)
+# soilKey -- recognised horizon attribute names (v0.9.431)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -521,6 +521,17 @@ and do not warn.
 | `palygorskite_pct` | % of the clay | numeric | Palygorskite, % of the clay fraction. Feature 3 of the yermic phase of 1988 (2 % or more in some subhorizon within 50 cm, p. 70). Not recorded: a clay_mineralogy naming palygorskite counts; else absent. | - |
 | `aeolian_crack_infill` | logical | logical | Surface cracks filled with in-blown sand or silt, feature 4 of the yermic phase of 1988 (p. 71). A field observation: not recorded, absent. | - |
 
+## USDA family (KST 13th ed., ch. 17)
+
+| Attribute | Unit | Type | Description | Accepted aliases |
+|-----------|------|------|-------------|------------------|
+| `very_fine_sand_pct` | % of the fine earth | numeric | Very fine sand (0.05-0.1 mm), % of the fine earth. Read by the USDA family particle-size classes (KST 13th ed., pp. 355 and 360): 50 % or more makes a sand or loamy sand a very fine sand grade, whose very fine sand counts as silt (not sandy); and the sand of 0.1-2 mm is sand_pct minus it. Not recorded: the sand grade is read from texture_class_usda, sand_grade, fine_sand_pct or coarse_sand_pct, and the 0.1-2 mm sand is bounded by the coarse sand and the whole sand. | - |
+| `artefacts_cohesive_persistent` | logical | logical | The artifacts of 2 mm or more (artefacts_pct) are both cohesive and persistent (e.g. brick), and count as rock fragments in the USDA family particle-size classes (KST 13th ed., pp. 356 and 360). A field observation: not recorded, they do not count. | - |
+| `gypsum_lt20mm_pct` | % by weight | numeric | Gypsum, % by weight of the fraction smaller than 20 mm. The gypseous substitutes of the USDA family (KST 13th ed., p. 359) need 40 % or more. Not recorded: caso4_pct where the layer has no coarse fragments or no field record of gypsum (gypsum_visible_pct, the suffix y); else undecided. | - |
+| `pumice_fragments_share_pct` | % of the fragments >= 2 mm | numeric | Pumice and pumicelike fragments, % by volume of the rock and pararock fragments of 2 mm or more. Two-thirds or more makes the pumiceous, ashy-pumiceous, medial-pumiceous and hydrous-pumiceous substitutes of the USDA family (KST 13th ed., pp. 358-359). Not recorded: none where no pyroclastic fragments are recorded, else undecided. | - |
+| `tephra_wt_pct` | % by weight | numeric | Volcanic ash, cinders, lapilli, pumice and pumicelike fragments, % by weight of the whole soil. More than 60 % in a layer with less than 10 % fine earth makes the pumiceous or cindery substitute of the USDA family (KST 13th ed., p. 358). Not recorded: none where no pyroclastic fragments or other volcanic record exist, else undecided. | - |
+| `liquid_limit_pct` | % water | numeric | Liquid limit (moist), water content in %. The diatomaceous substitute of the USDA family (KST 13th ed., p. 359) needs more than 100, with limnic material, a ratio of 1500 kPa water to clay above 0.6 and a moist bulk density below 0.80. | - |
+
 # Site properties
 
 The named elements of `PedonRecord$site` that soilKey recognises. Give them in
@@ -770,5 +781,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.416._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.431._
 

@@ -13,62 +13,15 @@
 #   particle-size, mineralogy, CEC-activity, reaction, temperature, [depth].
 #
 # Thresholds follow Soil Survey Staff (2022), Keys to Soil Taxonomy 13th ed.,
-# Ch. 16 (soil temperature regimes) and Ch. 17 (family differentiae). Where the
-# schema lacks fine-sand granulometry, a documented approximation by sand_pct
-# is used and recorded in $evidence.
+# Ch. 16 (soil temperature regimes) and Ch. 17 (family differentiae). Since
+# v0.9.431 the particle-size class follows the control section of pp.
+# 357-358 (R/familia-usda-particle-size.R); the other dimensions still read a
+# fixed 25-100 cm window.
 # =============================================================================
 
 
-#' USDA family: particle-size class (KST Ch. 17)
-#'
-#' Weighted average over the family control section (25--100 cm by default):
-#' fragmental / *-skeletal (>= 35 percent rock fragments) / sandy / clayey
-#' (fine, very-fine) / loamy / silty (coarse-/fine-).
-#'
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_cm,max_cm Control-section depth window (cm).
-#' @return A \code{\link{FamilyAttribute}} (\code{value} is the class or NULL).
-#' @references Soil Survey Staff (2022), Keys to Soil Taxonomy 13th ed., Ch. 17.
-#' @noRd
-family_particle_size_usda <- function(pedon, min_cm = 25, max_cm = 100) {
-  h    <- pedon$horizons
-  clay <- .weighted_avg_in_depth(h, "clay_pct", max_cm, min_cm)
-  sand <- .weighted_avg_in_depth(h, "sand_pct", max_cm, min_cm)
-  silt <- .weighted_avg_in_depth(h, "silt_pct", max_cm, min_cm)
-  frag <- .weighted_avg_in_depth(h, "coarse_fragments_pct", max_cm, min_cm)
-  ref  <- "Soil Survey Staff (2022), KST 13th ed., Ch. 17"
-  if (is.na(clay)) {
-    return(FamilyAttribute$new(
-      name = "particle_size", value = NULL,
-      evidence = list(reason = "clay_pct unavailable in control section"),
-      missing = "clay_pct", reference = ref))
-  }
-  frag_v <- if (is.na(frag)) 0 else frag
-  fine_earth <- if (is.na(sand) || clay >= 35) {
-    if (clay >= 60) "very-fine" else if (clay >= 35) "fine" else "loamy"
-  } else if (clay < 15 && sand >= 70) {
-    "sandy"
-  } else if (clay >= 18) {
-    if (sand >= 15) "fine-loamy" else "fine-silty"
-  } else {
-    if (sand >= 15) "coarse-loamy" else "coarse-silty"
-  }
-  value <- if (frag_v > 90) {
-    "fragmental"
-  } else if (frag_v >= 35) {
-    base <- if (clay >= 35) "clayey" else if (fine_earth == "sandy") "sandy" else "loamy"
-    paste0(base, "-skeletal")
-  } else {
-    fine_earth
-  }
-  FamilyAttribute$new(
-    name = "particle_size", value = value,
-    evidence = list(clay_pct = clay, sand_pct = sand, silt_pct = silt,
-                    coarse_fragments_pct = frag_v,
-                    note = if (is.na(sand))
-                      "sand_pct missing; loamy/silty split unresolved" else NULL),
-    missing = character(0), reference = ref)
-}
+# v0.9.431: family_particle_size_usda() and the control section for
+# particle-size classes live in R/familia-usda-particle-size.R.
 
 
 #' USDA family: mineralogy class (KST Ch. 17)
@@ -290,8 +243,13 @@ family_depth_class_usda <- function(pedon) {
 #' is orthogonal). Mirrors \code{\link{classify_sibcs_familia}}.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param order_code Optional USDA order code (selects applicable dimensions).
+#' @param order_code Optional USDA order code (e.g. \code{"AF"}).
 #' @param subgroup_code Optional subgroup code (reserved for refinements).
+#' @param great_group,subgroup Optional great group and subgroup names (e.g.
+#'        \code{"Hapludalfs"}, \code{"Arenic Hapludalfs"}). With
+#'        \code{order_code} they select the control section and the
+#'        particle-size classes of KST 13th ed., ch. 17 (since v0.9.431);
+#'        \code{classify_usda()} supplies the taxa it assigned.
 #' @param infer_temperature Opt-in (default \code{FALSE} since v0.9.415):
 #'        when \code{site$soil_temperature_regime} is not recorded, suggest
 #'        a temperature class from latitude and elevation. Off, the family
@@ -302,13 +260,16 @@ family_depth_class_usda <- function(pedon) {
 #' @export
 classify_usda_family <- function(pedon, order_code = NULL,
                                  subgroup_code = NULL,
-                                 infer_temperature = FALSE) {
+                                 infer_temperature = FALSE,
+                                 great_group = NULL, subgroup = NULL) {
   dims <- .family_dims_por_order_usda(order_code)
   # v0.9.400: one memo scope for the length of this call (R/memo.R)
   if (.memo_open()) on.exit(.memo_close(), add = TRUE)
   out  <- list()
   if ("particle_size" %in% dims)
-    out$particle_size <- family_particle_size_usda(pedon)
+    out$particle_size <- family_particle_size_usda(
+      pedon, order_code = order_code, great_group = great_group,
+      subgroup = subgroup %||% subgroup_code)
   if ("mineralogy" %in% dims)
     out$mineralogy <- family_mineralogy_usda(pedon)
   if ("cec_activity" %in% dims)
