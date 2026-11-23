@@ -10,7 +10,8 @@
   of 0.9.427 that the Spodic Psamments still lacked `psamments: true` was
   out of date: 0.9.425 had already set it.
 * No ISIS profile and no canonical profile is a Cryopsamment, so no name
-  changes. New `tests/testthat/test-v09430-spodic-cryopsamments.R`.
+  changes. New `tests/testthat/test-v09430-spodic-cryopsamments.R`; the
+  Spodic Psamments test of 0.9.425 now expects the Cryopsamments to differ.
 
 # soilKey 0.9.429
 

@@ -352,9 +352,11 @@ test_that("canonical fixtures that move with the KST lists", {
 test_that("the Spodic Psamments and Psammaquents read the depth rule of the Psamments (p. 184)", {
   skip_on_cran()
   e <- .yaml425("entisols")
-  for (nm in c("Spodic Psammaquents", "Spodic Cryopsamments", "Spodic Quartzipsamments",
-               "Spodic Udipsamments")) {
+  for (nm in c("Spodic Psammaquents", "Spodic Quartzipsamments", "Spodic Udipsamments")) {
     s <- Filter(function(x) x$name == nm, unlist(e, recursive = FALSE))[[1]]
     expect_identical(s$tests$all_of[[1]]$spodic_subgroup_usda$psamments, TRUE, info = nm)
   }
+  # v0.9.430 (audit N20): the Spodic Cryopsamments set no depth for the horizon
+  s <- Filter(function(x) x$name == "Spodic Cryopsamments", unlist(e, recursive = FALSE))[[1]]
+  expect_identical(s$tests$all_of[[1]]$spodic_subgroup_usda$psamments, FALSE)
 })
