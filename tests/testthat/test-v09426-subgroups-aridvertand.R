@@ -258,8 +258,9 @@ test_that("Vertic Aridisols: cracks with slickensides, or the linear extensibili
   p <- .v09426_pedon(top_cm = c(0, 30, 60), bottom_cm = c(30, 60, 100),
                      designation = c("A", "Bt", "Bk"), clay_pct = c(30, 45, 40))
   r <- ns$sg_aridisols_vertic_usda(p)
-  expect_true(is.na(r$passed))
-  expect_identical(r$missing, "cole_value")
+  # v0.9.428: no crack or slickenside recorded and no COLE: FALSE
+  expect_false(r$passed)
+  expect_false("cole_value" %in% r$missing)
   p$horizons$cole_value <- c(0.02, 0.03, 0.02)
   expect_false(ns$sg_aridisols_vertic_usda(p)$passed)
   p$horizons$cole_value <- c(0.05, 0.09, 0.07)
@@ -398,8 +399,9 @@ test_that("canonical fixtures: Andosol Hydric Melanudands, Calcisol Typic Haploc
   p <- make_calcisol_canonical(); p$site$soil_moisture_regime <- "aridic"
   r <- classify_usda(p, on_missing = "silent")
   expect_identical(r$name, "Typic Haplocalcids")
-  # Vertic (no COLE measured) and Aquic (no saturation record) are undecided
-  # before Typic
+  # Aquic (no saturation record) is undecided before Typic; Vertic is FALSE
+  # since v0.9.428 (no crack or slickenside recorded, no COLE)
   st <- vapply(r$trace$subgroups, function(t) is.na(t$passed), NA)
-  expect_true(all(c("GFBD", "GFBF") %in% names(st)[st]))
+  expect_true("GFBF" %in% names(st)[st])
+  expect_false(r$trace$subgroups$GFBD$passed)
 })

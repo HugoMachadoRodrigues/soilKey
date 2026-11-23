@@ -274,7 +274,12 @@ sg_alfisols_oxyaquic_usda <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param above_duripan Read above the duripan (Durixeralfs).
 #' @noRd
-sg_alfisols_vertic_usda <- function(pedon, above_duripan = FALSE) {
+sg_alfisols_vertic_usda <- function(pedon, above_duripan = FALSE)
+  .usda_vertic_field_reading(.sg_alfisols_vertic_usda_record(pedon, above_duripan), pedon)
+
+# The test as the record gives it; the wrapper above reads a COLE not
+# recorded from the field record (R/subgroups-usda-vertic-field.R).
+.sg_alfisols_vertic_usda_record <- function(pedon, above_duripan = FALSE) {
   h <- pedon$horizons
   nm <- "sg_alfisols_vertic_usda"
   ref <- .sga_ref("Vertic subgroups (e.g. pp. 92, 110)")

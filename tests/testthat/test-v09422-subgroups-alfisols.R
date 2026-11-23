@@ -149,7 +149,7 @@ test_that("Arenic reads the argillic or kandic horizon, not the spodic one (F16)
   expect_false(isTRUE(soilKey:::arenic_subgroup_usda(p, 50, Inf)$passed))
 })
 
-test_that("Vertic: slickensides stand for unrecorded cracks; COLE not recorded is undecided", {
+test_that("Vertic: slickensides stand for unrecorded cracks; no crack or slickenside, no COLE: FALSE", {
   skip_on_cran()
   p <- .v422_alf(slickensides = c("absent", "absent", "common", "common"))
   r <- soilKey:::sg_alfisols_vertic_usda(p)
@@ -157,8 +157,9 @@ test_that("Vertic: slickensides stand for unrecorded cracks; COLE not recorded i
   expect_true(r$evidence$cracks_from_slickensides)
   q <- .v422_alf(slickensides = "absent")
   r <- soilKey:::sg_alfisols_vertic_usda(q)
-  expect_true(is.na(r$passed))
-  expect_identical(r$missing, "cole_value")
+  # v0.9.428: no sign of shrink and swell recorded, COLE not recorded: FALSE
+  expect_false(r$passed)
+  expect_false("cole_value" %in% r$missing)
   q2 <- .v422_alf(slickensides = "absent", cole_value = 0.01)
   expect_false(soilKey:::sg_alfisols_vertic_usda(q2)$passed)
   q3 <- .v422_alf(slickensides = "absent", cole_value = 0.07)

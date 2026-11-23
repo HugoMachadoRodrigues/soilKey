@@ -203,8 +203,9 @@ test_that("Vertic: slickensides stand for cracks (L30); COLE not measured is und
   # the compound comes before its parts: Pachic Vertic, not Pachic or Vertic
   expect_identical(.v09424_sg(p, "IHF"), "Pachic Vertic Hapludolls")
   q <- soilKey:::sg_mollisol_vertic_usda(.v09424_mollic())
-  expect_true(is.na(q$passed))
-  expect_true("cole_value" %in% q$missing)
+  # v0.9.428: no crack or slickenside recorded and no COLE: FALSE
+  expect_false(q$passed)
+  expect_false("cole_value" %in% q$missing)
   expect_false(soilKey:::sg_mollisol_vertic_usda(.v09424_mollic(cole_value = 0.01))$passed)
   expect_true(soilKey:::sg_mollisol_vertic_usda(.v09424_mollic(cole_value = 0.08))$passed)
 })

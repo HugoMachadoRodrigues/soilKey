@@ -209,7 +209,8 @@ test_that("Vertic: cracks with slickensides, or a linear extensibility of 6 cm; 
   skip_on_cran()
   h <- data.frame(designation = c("A", "Bw", "C"), top_cm = c(0, 20, 60),
                   bottom_cm = c(20, 60, 120), stringsAsFactors = FALSE)
-  expect_true(is.na(.f425("sg_incept_vertic_usda", .p425(h))$passed))
+  # v0.9.428: no crack or slickenside recorded and no COLE: FALSE
+  expect_false(.f425("sg_incept_vertic_usda", .p425(h))$passed)
   h$cole_value <- c(0.01, 0.02, 0.01)
   expect_false(.f425("sg_incept_vertic_usda", .p425(h))$passed)
   h$cole_value <- c(0.08, 0.08, 0.08)                # 8 cm over 100 cm
