@@ -10,7 +10,8 @@ classify_usda(
   on_missing = c("warn", "silent", "error"),
   include_family = FALSE,
   infer_temperature = FALSE,
-  gapfill = FALSE
+  gapfill = FALSE,
+  suggest_mineralogy = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,12 @@ character vector restricts it to those attributes; a named list is
 passed to \code{\link{gapfill_within_pedon}}. Filled cells carry
 \code{inferred_prior} provenance, so the evidence grade drops to
 \code{"C"}. Runs on a deep copy -- the caller's pedon is never mutated.}
+
+\item{suggest_mineralogy}{When deriving the family and the mineralogy
+class is undecided, suggest one from stand-ins (Kr, Ki, CEC / clay,
+CaCO3, a quartz-dominated \code{sand_mineralogy}). Default
+\code{FALSE} (v0.9.432): the class is left undecided. A suggested
+class lowers the evidence grade to "C" and adds a warning.}
 }
 \value{
 A \code{\link{ClassificationResult}} with deepest-level

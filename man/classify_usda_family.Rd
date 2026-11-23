@@ -10,7 +10,8 @@ classify_usda_family(
   subgroup_code = NULL,
   infer_temperature = FALSE,
   great_group = NULL,
-  subgroup = NULL
+  subgroup = NULL,
+  suggest_mineralogy = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,14 @@ has no temperature class until the regime is recorded.}
 \code{order_code} they select the control section and the
 particle-size classes of KST 13th ed., ch. 17 (since v0.9.431);
 \code{classify_usda()} supplies the taxa it assigned.}
+
+\item{suggest_mineralogy}{Opt-in (default \code{FALSE}, v0.9.432): when
+the mineralogy class of KST 13th ed., pp. 363-366, is undecided,
+suggest one from stand-ins (the Kr and Ki of the sulfuric attack,
+CEC / clay, CaCO3, a quartz-dominated \code{sand_mineralogy}).
+The suggestion sets \code{evidence$suggestion = TRUE} and keeps
+the missing columns; \code{classify_usda()} then warns and lowers
+the evidence grade to "C".}
 }
 \value{
 Named list of \code{\link{FamilyAttribute}} objects.

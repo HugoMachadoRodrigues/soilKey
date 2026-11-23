@@ -228,7 +228,11 @@ test_that("report(include_family=TRUE) injects the USDA family into the HTML", {
   expect_false(identical(b0, b1))
   usda1 <- grep("USDA Soil Taxonomy", b1, value = TRUE)
   # v0.9.429: the fixture records its temperature regime (isohyperthermic)
-  expect_true(any(grepl("fine, mixed, subactive, isohyperthermic Typic Hapludox",
+  # v0.9.432: the mineralogy class follows the key of KST 13th ed., pp.
+  # 363-366; the fixture records no gibbsite nor clay minerals, so section A
+  # cannot rule out gibbsitic or kaolinitic and "mixed" (reached by default
+  # before) is no longer named (reading F1).
+  expect_true(any(grepl("fine, subactive, isohyperthermic Typic Hapludox",
                         usda1)))
 })
 

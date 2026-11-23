@@ -1753,3 +1753,123 @@ attributes:
     unit: "% water"
     description: "Liquid limit (moist), water content in %. The diatomaceous substitute of the USDA family (KST 13th ed., p. 359) needs more than 100, with limnic material, a ratio of 1500 kPa water to clay above 0.6 and a moist bulk density below 0.80."
     min: 0
+  - name: mineralogy_analysed
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "logical"
+    description: "A mineralogical analysis of this layer was made (reading F2 of the USDA family mineralogy classes, KST 13th ed., pp. 363-366). TRUE: a mineral the analysis does not list (anhydrite, opaline silica, glauconite, magnesium silicates, the clay minerals, gibbsite, boehmite, mica, resistant minerals, volcanic glass) counts as a measured zero. FALSE or not recorded: the classes that need such a mineral are undecided."
+  - name: illite_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% of the clay"
+    description: "Illite (hydrous mica), % by weight of the clay fraction. Illitic mineralogy of the USDA family needs more than 50 (KST 13th ed., p. 366); also compared in the single-kind tests of the halloysitic, smectitic and vermiculitic classes. Not recorded: zero after a mineralogical analysis (mineralogy_analysed), else undecided."
+    min: 0
+    max: 100
+  - name: vermiculite_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% of the clay"
+    description: "Vermiculite, % by weight of the clay fraction. Vermiculitic mineralogy of the USDA family: more vermiculite than any other single kind of clay mineral (KST 13th ed., p. 366). Not recorded: zero after a mineralogical analysis, else undecided (clay_mineralogy naming the dominant mineral decides the single-kind test)."
+    min: 0
+    max: 100
+  - name: allophane_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% of the clay"
+    description: "Allophane, % by weight of the clay fraction. Counts with halloysite and kaolinite in the halloysitic mineralogy of the USDA family (more than 50, KST 13th ed., pp. 364 and 366). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: kaolin_other_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% of the clay"
+    description: "Dickite, nacrite and other 1:1 or nonexpanding 2:1 layer minerals other than illite, % by weight of the clay fraction. Counts with kaolinite, halloysite and gibbsite in the kaolinitic mineralogy of the USDA family (more than 50, KST 13th ed., pp. 364 and 366). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: anhydrite_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Anhydrite, % by weight of the fine earth or of the fraction smaller than 20 mm, whichever is higher. Anhydritic mineralogy of the USDA family: 15 or more (KST 13th ed., p. 365). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: opaline_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Diatoms, plant opal and sponge spicules, % by weight of the fine earth. Opaline mineralogy of the USDA family (substitute classes): 30 or more (KST 13th ed., p. 365). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: glauconite_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Glauconitic pellets, % by weight of the fine earth. Glauconitic mineralogy of the USDA family: more than 20 (KST 13th ed., p. 365). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: mg_silicates_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Magnesium-silicate minerals (serpentines: antigorite, chrysotile, lizardite; talc, olivines, Mg-rich pyroxenes and amphiboles), % by weight of the fine earth. Magnesic mineralogy of the USDA family: more than 40 (KST 13th ed., p. 365). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: boehmite_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Boehmite, % by weight of the fine earth. With gibbsite (gibbsite_pct x clay_pct / 100) more than 40 makes the gibbsitic mineralogy of section C of the USDA family key (KST 13th ed., p. 365). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: mica_grains_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by grain count"
+    description: "Mica and stable mica pseudomorphs, % by grain count of the 0.02-0.25 mm fraction. Micaceous mineralogy of the USDA family: more than 45 (KST 13th ed., p. 366). Not the sand_mica_pct of SiBCS (volume of the sand). Not recorded: zero after a mineralogical analysis, else undecided."
+    min: 0
+    max: 100
+  - name: resistant_minerals_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight or grain count"
+    description: "Silica minerals (quartz, chalcedony, opal) and other resistant minerals, % by weight or grain count of the 0.02-2 mm fraction. Siliceous mineralogy of the USDA family: more than 90 (KST 13th ed., p. 366). Not recorded: zero after a mineralogical analysis, else undecided; a quartz-dominated sand_mineralogy is read only as an opt-in suggestion (reading F4)."
+    min: 0
+    max: 100
+  - name: methanogenic_evidence
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "logical"
+    description: "Methanethiol (methyl mercaptan) odour from decomposing nonpersistent artifacts (garbage, wood-mill pulp, sewage byproducts), or evidence that methane is collected or burned. Methanogenic class of the USDA family human-transported material classes (KST 13th ed., p. 363). A field observation: not recorded, absent."
+  - name: artefacts_asphalt_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by volume"
+    description: "Artifacts of asphalt (bitumen) 2 mm or larger, % by volume. More than 35 in a layer 7.5 cm or more thick: asphaltic class of the USDA family (KST 13th ed., p. 363). A field record: not recorded, absent."
+    min: 0
+    max: 100
+  - name: artefacts_concrete_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by volume"
+    description: "Artifacts of concrete 2 mm or larger, % by volume. More than 35 in a layer 7.5 cm or more thick: concretic class of the USDA family (KST 13th ed., p. 363). A field record: not recorded, absent."
+    min: 0
+    max: 100
+  - name: artefacts_synthetic_gypsum_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by weight"
+    description: "Artifacts of synthetic gypsum (flue gas desulfurization gypsum, phosphogypsum, fluorogypsum, drywall, plaster), % by weight of the fine earth. More than 40 in a layer 7.5 cm or more thick: gypsifactic class of the USDA family (KST 13th ed., p. 363). Not recorded, absent."
+    min: 0
+    max: 100
+  - name: artefacts_coal_combustion_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by volume"
+    description: "Artifacts of coal combustion byproducts 2 mm or larger (bottom ash, coal slag), % by volume. More than 35 in a layer 7.5 cm or more thick: combustic class of the USDA family (KST 13th ed., p. 363). Not recorded, absent."
+    min: 0
+    max: 100
+  - name: fly_ash_grains_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by grain count"
+    description: "Light-weight coal combustion byproducts (fly ash), % by grain count of the 0.02-0.25 mm fraction. More than 15 in a layer 7.5 cm or more thick: ashifactic class of the USDA family (KST 13th ed., p. 363). Not recorded, absent."
+    min: 0
+    max: 100
+  - name: pyrolysis_grains_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by grain count"
+    description: "Artifacts of pyrolysis (fuel coke, biochar), % by grain count of the 0.02-0.25 mm fraction. More than 5 in a layer 7.5 cm or more thick: pyrocarbonic class of the USDA family (KST 13th ed., p. 363). Not recorded, absent."
+    min: 0
+    max: 100
+  - name: htm_finely_stratified
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "logical"
+    description: "The human-transported material of the layer is finely stratified (strata 5 cm or less thick) and water-deposited (dredge or irrigation sediment). In layers 50 cm or more thick: dredgic class of the USDA family (KST 13th ed., p. 363). A layer_origin or anthropic_material naming dredged material with a stratification_pattern recorded also counts. A field observation: not recorded, absent."
+  - name: araric_fragments_pct
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "% by volume"
+    description: "Mechanically detached and re-oriented pieces of diagnostic horizons or characteristics (human-altered material), % by volume. 3 or more in a layer 7.5 cm or more thick: araric class of the USDA family (KST 13th ed., p. 363). A field record: not recorded, absent."
+    min: 0
+    max: 100

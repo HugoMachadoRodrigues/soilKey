@@ -102,6 +102,11 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #'        for, and the family then carries no temperature class. A suggested
 #'        class lowers the evidence grade to "C" and adds a warning. The key
 #'        itself (orders to subgroups) never infers a regime.
+#' @param suggest_mineralogy When deriving the family and the mineralogy
+#'        class is undecided, suggest one from stand-ins (Kr, Ki, CEC / clay,
+#'        CaCO3, a quartz-dominated \code{sand_mineralogy}). Default
+#'        \code{FALSE} (v0.9.432): the class is left undecided. A suggested
+#'        class lowers the evidence grade to "C" and adds a warning.
 #' @param gapfill Opt-in within-pedon depth gap-fill, default \code{FALSE}
 #'        (no-op, classification stays byte-identical). \code{TRUE} fills
 #'        interior \code{NA} cells of the continuous depth-trending attributes
@@ -150,7 +155,8 @@ classify_usda <- function(pedon,
                             on_missing = c("warn", "silent", "error"),
                             include_family = FALSE,
                             infer_temperature = FALSE,
-                            gapfill    = FALSE) {
+                            gapfill    = FALSE,
+                            suggest_mineralogy = FALSE) {
   on_missing <- match.arg(on_missing)
   .classify_require_horizons(pedon, "classify_usda")
   # v0.9.400: one memo scope for the length of this call (R/memo.R)
@@ -214,6 +220,7 @@ classify_usda <- function(pedon,
         order_code        = order$code,
         subgroup_code     = if (!is.null(sg)) sg$code else NULL,
         infer_temperature = infer_temperature,
+        suggest_mineralogy = suggest_mineralogy,
         # v0.9.431: the control section and particle-size classes depend on
         # the taxa assigned above the family (KST 13th ed., pp. 356-360)
         great_group       = if (!is.null(gg)) gg$name else
@@ -295,6 +302,17 @@ classify_usda <- function(pedon,
       "and elevation (infer_temperature = TRUE), not a recorded regime; the ",
       "evidence grade is at most C. Record site$soil_temperature_regime."),
       ft$value))
+  }
+  # v0.9.432 (readings F3, F4): a mineralogy class suggested from stand-ins
+  # (suggest_mineralogy = TRUE, opt-in) is not the class of the key.
+  fm <- family_attrs$mineralogy
+  if (!is.null(fm) && isTRUE(fm$evidence$suggestion) && !is.null(fm$value)) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "Family mineralogy class '%s' is a suggestion from stand-ins (Kr, Ki, ",
+      "CEC / clay, CaCO3, sand_mineralogy; suggest_mineralogy = TRUE), not ",
+      "the class of the key; the evidence grade is at most C. Record: %s."),
+      fm$value, paste(fm$missing, collapse = ", ")))
   }
   if (is_default) {
     warnings <- c(warnings, paste0(

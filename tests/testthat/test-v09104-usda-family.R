@@ -48,15 +48,26 @@ test_that("cec_activity class keys on the CEC/clay ratio", {
 })
 
 
-test_that("mineralogy: low Kr -> oxidic, high activity -> smectitic", {
-  oxidic <- family_mineralogy_usda(.uf_pedon(data.frame(
-    top_cm = 25, bottom_cm = 100, clay_pct = 60, cec_cmol = 5,
-    sio2_sulfuric_pct = 8, al2o3_sulfuric_pct = 20, fe2o3_sulfuric_pct = 18)))
-  expect_equal(oxidic$value, "oxidic")            # Kr < 0.75
+# v0.9.432: the invented key on Kr, Ki and CEC / clay gave way to the key of
+# KST 13th ed., pp. 363-366 ("oxidic" is not a class of the 13th edition).
+# Kr and CEC / clay are now only opt-in stand-ins (readings F3, F4): the
+# class is undecided without them, and suggested with suggest = TRUE.
+test_that("mineralogy: Kr and CEC/clay are opt-in stand-ins only", {
+  skip_on_cran()
+  ox <- .uf_pedon(data.frame(
+    top_cm = 25, bottom_cm = 100, clay_pct = 60, sand_pct = 20, silt_pct = 20,
+    cec_cmol = 5, sio2_sulfuric_pct = 8, al2o3_sulfuric_pct = 20, fe2o3_sulfuric_pct = 18))
+  expect_null(family_mineralogy_usda(ox, "IN", "Dystrudepts", "Typic Dystrudepts")$value)
+  sug <- family_mineralogy_usda(ox, "IN", "Dystrudepts", "Typic Dystrudepts", suggest = TRUE)
+  expect_equal(sug$value, "parasesquic")            # Kr < 0.75, section D
+  expect_true(isTRUE(sug$evidence$suggestion))
 
-  smectitic <- family_mineralogy_usda(.uf_pedon(data.frame(
-    top_cm = 25, bottom_cm = 100, clay_pct = 40, cec_cmol = 32)))
-  expect_equal(smectitic$value, "smectitic")      # CEC/clay = 0.80
+  sm <- .uf_pedon(data.frame(
+    top_cm = 25, bottom_cm = 100, clay_pct = 40, sand_pct = 30, silt_pct = 30,
+    cec_cmol = 32))
+  expect_null(family_mineralogy_usda(sm, "IN", "Dystrudepts", "Typic Dystrudepts")$value)
+  expect_equal(family_mineralogy_usda(sm, "IN", "Dystrudepts", "Typic Dystrudepts",
+                                      suggest = TRUE)$value, "smectitic")  # CEC/clay = 0.80
 })
 
 

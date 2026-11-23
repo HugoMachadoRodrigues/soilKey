@@ -816,14 +816,19 @@ family_control_section_usda <- function(pedon, order_code = NULL,
 .ps_contrasts_usda <- function(L, lo, hi, ctx, gen_soil = FALSE, window_mode = "cs",
                                start = NULL, rlt = Inf) {
   empty <- list(passed = logical(0), name = character(0), strength = numeric(0),
-                missing = character(0))
+                missing = character(0), parts = list())
   if (is.null(L) || !nrow(L) || is.na(lo) || is.na(hi) || hi <= lo) return(empty)
   if (is.null(start)) start <- min(L$top, na.rm = TRUE)
   runs <- .ps_runs(L, ctx, start, rlt)
   nr <- length(runs)
   if (nr < 2L) return(empty)
   thk <- vapply(runs, function(r) r$bottom - r$top, 0)
-  passed <- c(); nm <- c(); strength <- c(); miss <- c()
+  passed <- c(); nm <- c(); strength <- c(); miss <- c(); parts <- list()
+  # v0.9.432: the two parts of each candidate, for the mineralogy of each
+  # named part (KST 13th ed., p. 364)
+  part_of <- function(up, low) list(
+    upper = list(top = up$top, bottom = up$bottom, class = up$class),
+    lower = list(top = low$top, bottom = low$bottom, class = low$class))
   P <- .PS_CONTRAST_PAIRS_USDA
   for (a in seq_len(nr - 1L)) {
     for (gap in 0:1) {
@@ -839,7 +844,7 @@ family_control_section_usda <- function(pedon, order_code = NULL,
       if (!is.na(up$class) && !is.na(low$class) && identical(up$class, low$class)) next
       if (is.na(up$class) || is.na(low$class)) {
         passed <- c(passed, NA); nm <- c(nm, NA_character_); strength <- c(strength, NA)
-        miss <- c(miss, up$missing, low$missing)
+        miss <- c(miss, up$missing, low$missing); parts <- c(parts, list(part_of(up, low)))
         next
       }
       ov_up <- min(up$bottom, hi) - max(up$top, lo)
@@ -881,11 +886,11 @@ family_control_section_usda <- function(pedon, order_code = NULL,
       st <- if (!is.na(mu$clay) && !is.na(ml$clay)) abs(mu$clay - ml$clay)
             else abs((100 - mu$frag) - (100 - ml$frag))
       passed <- c(passed, ok); nm <- c(nm, if (isTRUE(ok)) nms[1L] else NA_character_)
-      strength <- c(strength, st)
+      strength <- c(strength, st); parts <- c(parts, list(part_of(up, low)))
     }
   }
   list(passed = as.logical(passed), name = as.character(nm), strength = as.numeric(strength),
-       missing = unique(miss))
+       missing = unique(miss), parts = parts)
 }
 
 
@@ -956,6 +961,8 @@ family_particle_size_usda <- function(pedon, order_code = NULL,
     value <- con$name[k]
     if (length(yes) > 1L) value <- paste0(value, ", aniso")
     ev$contrasts <- con$name[yes]
+    # v0.9.432: the named parts (read by the mineralogy classes, p. 364)
+    ev$contrast_parts <- con$parts[[k]]
   } else {
     # 2. substitutes: the thickest part (cumulative)
     ss <- L$sub_state
@@ -998,6 +1005,9 @@ family_particle_size_usda <- function(pedon, order_code = NULL,
 
   # Taxa with no particle-size class name (p. 356)
   ashy <- !is.null(value) && grepl("^ashy", value)
+  # v0.9.432: the class the key reached, also where the taxon does not name
+  # it (read by the mineralogy key to pick its section, p. 364)
+  ev$class_reached <- value
   if (ctx$psamm_taxon && !ashy && !sub_undecided)
     return(fa(NULL, c(ev, list(reason = "not named in this taxon"))))
   if (ctx$psammentic && identical(value, "sandy"))
