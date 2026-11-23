@@ -11,245 +11,245 @@ subgroups:
 
   # ====== AQUOX ======
   "EAA":  # Acraquox, KST 13th ed., p. 295 (3)
-    - { code: "EAAA", name: "Plinthic Acraquox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EAAB", name: "Aeric Acraquox", tests: { all_of: [{sg_oxisol_aeric: {}}] } }
+    - { code: "EAAA", name: "Plinthic Acraquox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EAAB", name: "Aeric Acraquox", tests: { all_of: [{sg_oxisol_aeric_usda: {}}] } }
     - { code: "EAAC", name: "Typic Acraquox", tests: { default: true } }
   "EAB":  # Plinthaquox, KST 13th ed., p. 296 (2)
-    - { code: "EABA", name: "Aeric Plinthaquox", tests: { all_of: [{sg_oxisol_aeric: {}}] } }
+    - { code: "EABA", name: "Aeric Plinthaquox", tests: { all_of: [{sg_oxisol_aeric_usda: {}}] } }
     - { code: "EABB", name: "Typic Plinthaquox", tests: { default: true } }
   "EAC":  # Eutraquox, KST 13th ed., pp. 295-296 (5)
     - { code: "EACA", name: "Histic Eutraquox", tests: { all_of: [{histic_epipedon_usda: {}}] } }
-    - { code: "EACB", name: "Plinthic Eutraquox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EACC", name: "Aeric Eutraquox", tests: { all_of: [{sg_oxisol_aeric: {}}] } }
+    - { code: "EACB", name: "Plinthic Eutraquox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EACC", name: "Aeric Eutraquox", tests: { all_of: [{sg_oxisol_aeric_usda: {}}] } }
     - { code: "EACD", name: "Humic Eutraquox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EACE", name: "Typic Eutraquox", tests: { default: true } }
   "EAD":  # Haplaquox, KST 13th ed., p. 296 (5)
     - { code: "EADA", name: "Histic Haplaquox", tests: { all_of: [{histic_epipedon_usda: {}}] } }
-    - { code: "EADB", name: "Plinthic Haplaquox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EADC", name: "Aeric Haplaquox", tests: { all_of: [{sg_oxisol_aeric: {}}] } }
+    - { code: "EADB", name: "Plinthic Haplaquox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EADC", name: "Aeric Haplaquox", tests: { all_of: [{sg_oxisol_aeric_usda: {}}] } }
     - { code: "EADD", name: "Humic Haplaquox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EADE", name: "Typic Haplaquox", tests: { default: true } }
 
   # ====== TORROX ======
   "EBA":  # Acrotorrox, KST 13th ed., p. 300 (3)
-    - { code: "EBAA", name: "Petroferric Acrotorrox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EBAB", name: "Lithic Acrotorrox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EBAA", name: "Petroferric Acrotorrox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EBAB", name: "Lithic Acrotorrox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
     - { code: "EBAC", name: "Typic Acrotorrox", tests: { default: true } }
   "EBB":  # Eutrotorrox, KST 13th ed., p. 300 (3)
-    - { code: "EBBA", name: "Petroferric Eutrotorrox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EBBB", name: "Lithic Eutrotorrox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EBBA", name: "Petroferric Eutrotorrox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EBBB", name: "Lithic Eutrotorrox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
     - { code: "EBBC", name: "Typic Eutrotorrox", tests: { default: true } }
   "EBC":  # Haplotorrox, KST 13th ed., pp. 300-301 (3)
-    - { code: "EBCA", name: "Petroferric Haplotorrox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EBCB", name: "Lithic Haplotorrox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EBCA", name: "Petroferric Haplotorrox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EBCB", name: "Lithic Haplotorrox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
     - { code: "EBCC", name: "Typic Haplotorrox", tests: { default: true } }
 
   # ====== USTOX ======
   "ECA":  # Sombriustox, KST 13th ed., p. 309 (4)
-    - { code: "ECAA", name: "Petroferric Sombriustox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "ECAB", name: "Lithic Sombriustox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
+    - { code: "ECAA", name: "Petroferric Sombriustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "ECAB", name: "Lithic Sombriustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
     - { code: "ECAC", name: "Humic Sombriustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "ECAD", name: "Typic Sombriustox", tests: { default: true } }
   "ECB":  # Acrustox, KST 13th ed., pp. 305-306 (15)
-    - { code: "ECBA", name: "Aquic Petroferric Acrustox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "ECBB", name: "Petroferric Acrustox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "ECBC", name: "Aquic Lithic Acrustox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "ECBD", name: "Lithic Acrustox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "ECBE", name: "Anionic Aquic Acrustox", tests: { all_of: [{sg_oxisol_anionic: {aquic: true}}] } }
-    - { code: "ECBF", name: "Anionic Acrustox", tests: { all_of: [{sg_oxisol_anionic: {}}] } }
-    - { code: "ECBG", name: "Plinthic Acrustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "ECBH", name: "Aquic Acrustox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "ECBI", name: "Eutric Acrustox", tests: { all_of: [{sg_oxisol_eutric: {}}] } }
-    - { code: "ECBJ", name: "Humic Rhodic Acrustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "ECBK", name: "Humic Xanthic Acrustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "ECBA", name: "Aquic Petroferric Acrustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "ECBB", name: "Petroferric Acrustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "ECBC", name: "Aquic Lithic Acrustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "ECBD", name: "Lithic Acrustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "ECBE", name: "Anionic Aquic Acrustox", tests: { all_of: [{sg_oxisol_anionic_usda: {aquic: true}}] } }
+    - { code: "ECBF", name: "Anionic Acrustox", tests: { all_of: [{sg_oxisol_anionic_usda: {}}] } }
+    - { code: "ECBG", name: "Plinthic Acrustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "ECBH", name: "Aquic Acrustox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "ECBI", name: "Eutric Acrustox", tests: { all_of: [{sg_oxisol_eutric_usda: {}}] } }
+    - { code: "ECBJ", name: "Humic Rhodic Acrustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "ECBK", name: "Humic Xanthic Acrustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "ECBL", name: "Humic Acrustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "ECBM", name: "Rhodic Acrustox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "ECBN", name: "Xanthic Acrustox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "ECBN", name: "Xanthic Acrustox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "ECBO", name: "Typic Acrustox", tests: { default: true } }
   "ECC":  # Eutrustox, KST 13th ed., pp. 306-307 (16)
-    - { code: "ECCA", name: "Aquic Petroferric Eutrustox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "ECCB", name: "Petroferric Eutrustox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "ECCC", name: "Aquic Lithic Eutrustox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "ECCD", name: "Lithic Eutrustox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "ECCE", name: "Plinthaquic Eutrustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "ECCF", name: "Plinthic Eutrustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "ECCG", name: "Aquic Eutrustox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "ECCH", name: "Kandiustalfic Eutrustox", tests: { all_of: [{sg_oxisol_kandic: {}}] } }
-    - { code: "ECCI", name: "Humic Inceptic Eutrustox", tests: { all_of: [{sg_oxisol_inceptic: {humic: true}}] } }
-    - { code: "ECCJ", name: "Inceptic Eutrustox", tests: { all_of: [{sg_oxisol_inceptic: {}}] } }
-    - { code: "ECCK", name: "Humic Rhodic Eutrustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "ECCL", name: "Humic Xanthic Eutrustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "ECCA", name: "Aquic Petroferric Eutrustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "ECCB", name: "Petroferric Eutrustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "ECCC", name: "Aquic Lithic Eutrustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "ECCD", name: "Lithic Eutrustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "ECCE", name: "Plinthaquic Eutrustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "ECCF", name: "Plinthic Eutrustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "ECCG", name: "Aquic Eutrustox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "ECCH", name: "Kandiustalfic Eutrustox", tests: { all_of: [{sg_oxisol_kandic_usda: {}}] } }
+    - { code: "ECCI", name: "Humic Inceptic Eutrustox", tests: { all_of: [{sg_oxisol_inceptic_usda: {humic: true}}] } }
+    - { code: "ECCJ", name: "Inceptic Eutrustox", tests: { all_of: [{sg_oxisol_inceptic_usda: {}}] } }
+    - { code: "ECCK", name: "Humic Rhodic Eutrustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "ECCL", name: "Humic Xanthic Eutrustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "ECCM", name: "Humic Eutrustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "ECCN", name: "Rhodic Eutrustox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "ECCO", name: "Xanthic Eutrustox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "ECCO", name: "Xanthic Eutrustox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "ECCP", name: "Typic Eutrustox", tests: { default: true } }
   "ECD":  # Kandiustox, KST 13th ed., pp. 308-309 (13)
-    - { code: "ECDA", name: "Aquic Petroferric Kandiustox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "ECDB", name: "Petroferric Kandiustox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "ECDC", name: "Aquic Lithic Kandiustox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "ECDD", name: "Lithic Kandiustox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "ECDE", name: "Plinthaquic Kandiustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "ECDF", name: "Plinthic Kandiustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "ECDG", name: "Aquic Kandiustox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "ECDH", name: "Humic Rhodic Kandiustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "ECDI", name: "Humic Xanthic Kandiustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "ECDA", name: "Aquic Petroferric Kandiustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "ECDB", name: "Petroferric Kandiustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "ECDC", name: "Aquic Lithic Kandiustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "ECDD", name: "Lithic Kandiustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "ECDE", name: "Plinthaquic Kandiustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "ECDF", name: "Plinthic Kandiustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "ECDG", name: "Aquic Kandiustox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "ECDH", name: "Humic Rhodic Kandiustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "ECDI", name: "Humic Xanthic Kandiustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "ECDJ", name: "Humic Kandiustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "ECDK", name: "Rhodic Kandiustox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "ECDL", name: "Xanthic Kandiustox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "ECDL", name: "Xanthic Kandiustox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "ECDM", name: "Typic Kandiustox", tests: { default: true } }
   "ECE":  # Haplustox, KST 13th ed., pp. 307-308 (16)
-    - { code: "ECEA", name: "Aquic Petroferric Haplustox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "ECEB", name: "Petroferric Haplustox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "ECEC", name: "Aquic Lithic Haplustox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "ECED", name: "Lithic Haplustox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "ECEE", name: "Plinthaquic Haplustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "ECEF", name: "Plinthic Haplustox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "ECEG", name: "Aqueptic Haplustox", tests: { all_of: [{sg_oxisol_inceptic: {aquic: true}}] } }
-    - { code: "ECEH", name: "Aquic Haplustox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
+    - { code: "ECEA", name: "Aquic Petroferric Haplustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "ECEB", name: "Petroferric Haplustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "ECEC", name: "Aquic Lithic Haplustox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "ECED", name: "Lithic Haplustox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "ECEE", name: "Plinthaquic Haplustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "ECEF", name: "Plinthic Haplustox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "ECEG", name: "Aqueptic Haplustox", tests: { all_of: [{sg_oxisol_inceptic_usda: {aquic: true}}] } }
+    - { code: "ECEH", name: "Aquic Haplustox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
     - { code: "ECEI", name: "Oxyaquic Haplustox", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "ECEJ", name: "Inceptic Haplustox", tests: { all_of: [{sg_oxisol_inceptic: {}}] } }
-    - { code: "ECEK", name: "Humic Rhodic Haplustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "ECEL", name: "Humic Xanthic Haplustox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "ECEJ", name: "Inceptic Haplustox", tests: { all_of: [{sg_oxisol_inceptic_usda: {}}] } }
+    - { code: "ECEK", name: "Humic Rhodic Haplustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "ECEL", name: "Humic Xanthic Haplustox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "ECEM", name: "Humic Haplustox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "ECEN", name: "Rhodic Haplustox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "ECEO", name: "Xanthic Haplustox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "ECEO", name: "Xanthic Haplustox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "ECEP", name: "Typic Haplustox", tests: { default: true } }
 
   # ====== PEROX ======
   "EDA":  # Sombriperox, KST 13th ed., p. 300 (4)
-    - { code: "EDAA", name: "Petroferric Sombriperox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EDAB", name: "Lithic Sombriperox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EDAA", name: "Petroferric Sombriperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EDAB", name: "Lithic Sombriperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
     - { code: "EDAC", name: "Humic Sombriperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EDAD", name: "Typic Sombriperox", tests: { default: true } }
   "EDB":  # Acroperox, KST 13th ed., pp. 296-297 (13)
-    - { code: "EDBA", name: "Aquic Petroferric Acroperox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EDBB", name: "Petroferric Acroperox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EDBC", name: "Aquic Lithic Acroperox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EDBD", name: "Lithic Acroperox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EDBE", name: "Anionic Acroperox", tests: { all_of: [{sg_oxisol_anionic: {}}] } }
-    - { code: "EDBF", name: "Plinthic Acroperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EDBG", name: "Aquic Acroperox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "EDBH", name: "Humic Rhodic Acroperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EDBI", name: "Humic Xanthic Acroperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EDBA", name: "Aquic Petroferric Acroperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EDBB", name: "Petroferric Acroperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EDBC", name: "Aquic Lithic Acroperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EDBD", name: "Lithic Acroperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EDBE", name: "Anionic Acroperox", tests: { all_of: [{sg_oxisol_anionic_usda: {}}] } }
+    - { code: "EDBF", name: "Plinthic Acroperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EDBG", name: "Aquic Acroperox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "EDBH", name: "Humic Rhodic Acroperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EDBI", name: "Humic Xanthic Acroperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EDBJ", name: "Humic Acroperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EDBK", name: "Rhodic Acroperox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EDBL", name: "Xanthic Acroperox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EDBL", name: "Xanthic Acroperox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EDBM", name: "Typic Acroperox", tests: { default: true } }
   "EDC":  # Eutroperox, KST 13th ed., pp. 297-298 (16)
-    - { code: "EDCA", name: "Aquic Petroferric Eutroperox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EDCB", name: "Petroferric Eutroperox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EDCC", name: "Aquic Lithic Eutroperox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EDCD", name: "Lithic Eutroperox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EDCE", name: "Plinthaquic Eutroperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "EDCF", name: "Plinthic Eutroperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EDCG", name: "Aquic Eutroperox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "EDCH", name: "Kandiudalfic Eutroperox", tests: { all_of: [{sg_oxisol_kandic: {}}] } }
-    - { code: "EDCI", name: "Humic Inceptic Eutroperox", tests: { all_of: [{sg_oxisol_inceptic: {humic: true}}] } }
-    - { code: "EDCJ", name: "Inceptic Eutroperox", tests: { all_of: [{sg_oxisol_inceptic: {}}] } }
-    - { code: "EDCK", name: "Humic Rhodic Eutroperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EDCL", name: "Humic Xanthic Eutroperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EDCA", name: "Aquic Petroferric Eutroperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EDCB", name: "Petroferric Eutroperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EDCC", name: "Aquic Lithic Eutroperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EDCD", name: "Lithic Eutroperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EDCE", name: "Plinthaquic Eutroperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "EDCF", name: "Plinthic Eutroperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EDCG", name: "Aquic Eutroperox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "EDCH", name: "Kandiudalfic Eutroperox", tests: { all_of: [{sg_oxisol_kandic_usda: {}}] } }
+    - { code: "EDCI", name: "Humic Inceptic Eutroperox", tests: { all_of: [{sg_oxisol_inceptic_usda: {humic: true}}] } }
+    - { code: "EDCJ", name: "Inceptic Eutroperox", tests: { all_of: [{sg_oxisol_inceptic_usda: {}}] } }
+    - { code: "EDCK", name: "Humic Rhodic Eutroperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EDCL", name: "Humic Xanthic Eutroperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EDCM", name: "Humic Eutroperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EDCN", name: "Rhodic Eutroperox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EDCO", name: "Xanthic Eutroperox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EDCO", name: "Xanthic Eutroperox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EDCP", name: "Typic Eutroperox", tests: { default: true } }
   "EDD":  # Kandiperox, KST 13th ed., pp. 299-300 (14)
-    - { code: "EDDA", name: "Aquic Petroferric Kandiperox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EDDB", name: "Petroferric Kandiperox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EDDC", name: "Aquic Lithic Kandiperox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EDDD", name: "Lithic Kandiperox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EDDE", name: "Plinthaquic Kandiperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "EDDF", name: "Plinthic Kandiperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EDDG", name: "Aquic Kandiperox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
+    - { code: "EDDA", name: "Aquic Petroferric Kandiperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EDDB", name: "Petroferric Kandiperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EDDC", name: "Aquic Lithic Kandiperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EDDD", name: "Lithic Kandiperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EDDE", name: "Plinthaquic Kandiperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "EDDF", name: "Plinthic Kandiperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EDDG", name: "Aquic Kandiperox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
     - { code: "EDDH", name: "Andic Kandiperox", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "EDDI", name: "Humic Rhodic Kandiperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EDDJ", name: "Humic Xanthic Kandiperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EDDI", name: "Humic Rhodic Kandiperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EDDJ", name: "Humic Xanthic Kandiperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EDDK", name: "Humic Kandiperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EDDL", name: "Rhodic Kandiperox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EDDM", name: "Xanthic Kandiperox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EDDM", name: "Xanthic Kandiperox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EDDN", name: "Typic Kandiperox", tests: { default: true } }
   "EDE":  # Haploperox, KST 13th ed., pp. 298-299 (14)
-    - { code: "EDEA", name: "Aquic Petroferric Haploperox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EDEB", name: "Petroferric Haploperox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EDEC", name: "Aquic Lithic Haploperox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EDED", name: "Lithic Haploperox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EDEE", name: "Plinthaquic Haploperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "EDEF", name: "Plinthic Haploperox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EDEG", name: "Aquic Haploperox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
+    - { code: "EDEA", name: "Aquic Petroferric Haploperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EDEB", name: "Petroferric Haploperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EDEC", name: "Aquic Lithic Haploperox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EDED", name: "Lithic Haploperox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EDEE", name: "Plinthaquic Haploperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "EDEF", name: "Plinthic Haploperox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EDEG", name: "Aquic Haploperox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
     - { code: "EDEH", name: "Andic Haploperox", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "EDEI", name: "Humic Rhodic Haploperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EDEJ", name: "Humic Xanthic Haploperox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EDEI", name: "Humic Rhodic Haploperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EDEJ", name: "Humic Xanthic Haploperox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EDEK", name: "Humic Haploperox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EDEL", name: "Rhodic Haploperox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EDEM", name: "Xanthic Haploperox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EDEM", name: "Xanthic Haploperox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EDEN", name: "Typic Haploperox", tests: { default: true } }
 
   # ====== UDOX ======
   "EEA":  # Sombriudox, KST 13th ed., p. 305 (4)
-    - { code: "EEAA", name: "Petroferric Sombriudox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EEAB", name: "Lithic Sombriudox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EEAA", name: "Petroferric Sombriudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EEAB", name: "Lithic Sombriudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
     - { code: "EEAC", name: "Humic Sombriudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EEAD", name: "Typic Sombriudox", tests: { default: true } }
   "EEB":  # Acrudox, KST 13th ed., pp. 301-302 (15)
-    - { code: "EEBA", name: "Aquic Petroferric Acrudox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EEBB", name: "Petroferric Acrudox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EEBC", name: "Aquic Lithic Acrudox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EEBD", name: "Lithic Acrudox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EEBE", name: "Anionic Aquic Acrudox", tests: { all_of: [{sg_oxisol_anionic: {aquic: true}}] } }
-    - { code: "EEBF", name: "Anionic Acrudox", tests: { all_of: [{sg_oxisol_anionic: {}}] } }
-    - { code: "EEBG", name: "Plinthic Acrudox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EEBH", name: "Aquic Acrudox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "EEBI", name: "Eutric Acrudox", tests: { all_of: [{sg_oxisol_eutric: {}}] } }
-    - { code: "EEBJ", name: "Humic Rhodic Acrudox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EEBK", name: "Humic Xanthic Acrudox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EEBA", name: "Aquic Petroferric Acrudox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EEBB", name: "Petroferric Acrudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EEBC", name: "Aquic Lithic Acrudox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EEBD", name: "Lithic Acrudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EEBE", name: "Anionic Aquic Acrudox", tests: { all_of: [{sg_oxisol_anionic_usda: {aquic: true}}] } }
+    - { code: "EEBF", name: "Anionic Acrudox", tests: { all_of: [{sg_oxisol_anionic_usda: {}}] } }
+    - { code: "EEBG", name: "Plinthic Acrudox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EEBH", name: "Aquic Acrudox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "EEBI", name: "Eutric Acrudox", tests: { all_of: [{sg_oxisol_eutric_usda: {}}] } }
+    - { code: "EEBJ", name: "Humic Rhodic Acrudox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EEBK", name: "Humic Xanthic Acrudox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EEBL", name: "Humic Acrudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EEBM", name: "Rhodic Acrudox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EEBN", name: "Xanthic Acrudox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EEBN", name: "Xanthic Acrudox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EEBO", name: "Typic Acrudox", tests: { default: true } }
   "EEC":  # Eutrudox, KST 13th ed., pp. 302-303 (16)
-    - { code: "EECA", name: "Aquic Petroferric Eutrudox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EECB", name: "Petroferric Eutrudox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EECC", name: "Aquic Lithic Eutrudox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EECD", name: "Lithic Eutrudox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EECE", name: "Plinthaquic Eutrudox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "EECF", name: "Plinthic Eutrudox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EECG", name: "Aquic Eutrudox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "EECH", name: "Kandiudalfic Eutrudox", tests: { all_of: [{sg_oxisol_kandic: {}}] } }
-    - { code: "EECI", name: "Humic Inceptic Eutrudox", tests: { all_of: [{sg_oxisol_inceptic: {humic: true}}] } }
-    - { code: "EECJ", name: "Inceptic Eutrudox", tests: { all_of: [{sg_oxisol_inceptic: {}}] } }
-    - { code: "EECK", name: "Humic Rhodic Eutrudox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EECL", name: "Humic Xanthic Eutrudox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EECA", name: "Aquic Petroferric Eutrudox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EECB", name: "Petroferric Eutrudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EECC", name: "Aquic Lithic Eutrudox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EECD", name: "Lithic Eutrudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EECE", name: "Plinthaquic Eutrudox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "EECF", name: "Plinthic Eutrudox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EECG", name: "Aquic Eutrudox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "EECH", name: "Kandiudalfic Eutrudox", tests: { all_of: [{sg_oxisol_kandic_usda: {}}] } }
+    - { code: "EECI", name: "Humic Inceptic Eutrudox", tests: { all_of: [{sg_oxisol_inceptic_usda: {humic: true}}] } }
+    - { code: "EECJ", name: "Inceptic Eutrudox", tests: { all_of: [{sg_oxisol_inceptic_usda: {}}] } }
+    - { code: "EECK", name: "Humic Rhodic Eutrudox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EECL", name: "Humic Xanthic Eutrudox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EECM", name: "Humic Eutrudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EECN", name: "Rhodic Eutrudox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EECO", name: "Xanthic Eutrudox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EECO", name: "Xanthic Eutrudox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EECP", name: "Typic Eutrudox", tests: { default: true } }
   "EED":  # Kandiudox, KST 13th ed., pp. 304-305 (14)
-    - { code: "EEDA", name: "Aquic Petroferric Kandiudox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EEDB", name: "Petroferric Kandiudox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EEDC", name: "Aquic Lithic Kandiudox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EEDD", name: "Lithic Kandiudox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EEDE", name: "Plinthaquic Kandiudox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "EEDF", name: "Plinthic Kandiudox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EEDG", name: "Aquic Kandiudox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
+    - { code: "EEDA", name: "Aquic Petroferric Kandiudox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EEDB", name: "Petroferric Kandiudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EEDC", name: "Aquic Lithic Kandiudox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EEDD", name: "Lithic Kandiudox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EEDE", name: "Plinthaquic Kandiudox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "EEDF", name: "Plinthic Kandiudox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EEDG", name: "Aquic Kandiudox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
     - { code: "EEDH", name: "Andic Kandiudox", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "EEDI", name: "Humic Rhodic Kandiudox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EEDJ", name: "Humic Xanthic Kandiudox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EEDI", name: "Humic Rhodic Kandiudox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EEDJ", name: "Humic Xanthic Kandiudox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EEDK", name: "Humic Kandiudox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EEDL", name: "Rhodic Kandiudox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EEDM", name: "Xanthic Kandiudox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EEDM", name: "Xanthic Kandiudox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EEDN", name: "Typic Kandiudox", tests: { default: true } }
   "EEE":  # Hapludox, KST 13th ed., pp. 303-304 (15)
-    - { code: "EEEA", name: "Aquic Petroferric Hapludox", tests: { all_of: [{sg_oxisol_aquic: {contact: petroferric}}] } }
-    - { code: "EEEB", name: "Petroferric Hapludox", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 125}}] } }
-    - { code: "EEEC", name: "Aquic Lithic Hapludox", tests: { all_of: [{sg_oxisol_aquic: {contact: lithic}}] } }
-    - { code: "EEED", name: "Lithic Hapludox", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 125}}] } }
-    - { code: "EEEE", name: "Plinthaquic Hapludox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125, aquic: oxisol}}] } }
-    - { code: "EEEF", name: "Plinthic Hapludox", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 125}}] } }
-    - { code: "EEEG", name: "Aquic Hapludox", tests: { all_of: [{sg_oxisol_aquic: {}}] } }
-    - { code: "EEEH", name: "Inceptic Hapludox", tests: { all_of: [{sg_oxisol_inceptic: {}}] } }
+    - { code: "EEEA", name: "Aquic Petroferric Hapludox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: petroferric}}] } }
+    - { code: "EEEB", name: "Petroferric Hapludox", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 125}}] } }
+    - { code: "EEEC", name: "Aquic Lithic Hapludox", tests: { all_of: [{sg_oxisol_aquic_usda: {contact: lithic}}] } }
+    - { code: "EEED", name: "Lithic Hapludox", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 125}}] } }
+    - { code: "EEEE", name: "Plinthaquic Hapludox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125, aquic: oxisol}}] } }
+    - { code: "EEEF", name: "Plinthic Hapludox", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 125}}] } }
+    - { code: "EEEG", name: "Aquic Hapludox", tests: { all_of: [{sg_oxisol_aquic_usda: {}}] } }
+    - { code: "EEEH", name: "Inceptic Hapludox", tests: { all_of: [{sg_oxisol_inceptic_usda: {}}] } }
     - { code: "EEEI", name: "Andic Hapludox", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "EEEJ", name: "Humic Rhodic Hapludox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: rhodic}}] } }
-    - { code: "EEEK", name: "Humic Xanthic Hapludox", tests: { all_of: [{sg_oxisol_humic_colour: {colour: xanthic}}] } }
+    - { code: "EEEJ", name: "Humic Rhodic Hapludox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: rhodic}}] } }
+    - { code: "EEEK", name: "Humic Xanthic Hapludox", tests: { all_of: [{sg_oxisol_humic_colour_usda: {colour: xanthic}}] } }
     - { code: "EEEL", name: "Humic Hapludox", tests: { all_of: [{humic_oxisol_usda: {}}] } }
     - { code: "EEEM", name: "Rhodic Hapludox", tests: { all_of: [{rhodic_subgroup_usda: {kst: oxisol}}] } }
-    - { code: "EEEN", name: "Xanthic Hapludox", tests: { all_of: [{sg_oxisol_xanthic: {}}] } }
+    - { code: "EEEN", name: "Xanthic Hapludox", tests: { all_of: [{sg_oxisol_xanthic_usda: {}}] } }
     - { code: "EEEO", name: "Typic Hapludox", tests: { default: true } }

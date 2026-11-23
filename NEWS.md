@@ -87,6 +87,12 @@ could change the answer.
   `spodic_subgroup_usda()` without `{ psamments: true }` (entisols.yaml, wave
   3 Entisols task).
 
+* The subgroup tests added in 0.9.423 to 0.9.425 (`sg_ultisol_*`,
+  `sg_oxisol_*`, `sg_ultox_*`, `sg_mollisol_*`, `sg_incept_*`, `sg_ent_*`;
+  107 functions) now end in `_usda`, as every predicate of a system must, so
+  `.validate_rules("usda")` finds no unsuffixed name. Names only; no answer
+  changes.
+
 # soilKey 0.9.426
 
 Subgroups of the Aridisols, Vertisols and Andisols rebuilt from the Keys to
@@ -252,30 +258,30 @@ saturation, CEC), colour, structure and texture not recorded are undecided.
   Fluvaquentic Vertic ...) come before their parts. The KST codes are kept,
   including those past Z (IFFZa to IFFZi, IGGZa to IGGZf).
 * New file `R/subgroups-usda-mollisols.R` with the Mollisol readings, each
-  citing its KST page: `sg_mollisol_vertic()` (cracks and slickensides or
+  citing its KST page: `sg_mollisol_vertic_usda()` (cracks and slickensides or
   wedge-shaped peds, or a linear extensibility of 6 cm; above the duripan
   in the Durixerolls and Duraquolls; where no crack is recorded the
   slickensides stand for them, as for the Vertisol order, L30),
-  `sg_mollisol_aquic()` (the six aquic wordings of the chapter: the 40/75 cm
+  `sg_mollisol_aquic_usda()` (the six aquic wordings of the chapter: the 40/75 cm
   colour test of the Udolls, depletions within 75 or 100 cm, concentrations,
   distinct concentrations, the Natrustolls and above the duripan),
-  `sg_mollisol_mollic()` (Pachic, Cumulic, Haplic and Entic thickness, with
-  the frigid 40 cm and the Cumulic frigid alternatives), `sg_mollisol_fluventic()`
+  `sg_mollisol_mollic_usda()` (Pachic, Cumulic, Haplic and Entic thickness, with
+  the frigid 40 cm and the Cumulic frigid alternatives), `sg_mollisol_fluventic_usda()`
   (slope, human-transported material, 0.3 % organic carbon at 125 cm or in
-  all horizons within 125 cm, irregular decrease), `sg_mollisol_thapto_humic()`,
-  `sg_mollisol_thapto_histic()`, `sg_mollisol_duric()`,
-  `sg_mollisol_calcic()` (within 100 cm; calcic or secondary carbonates by
+  all horizons within 125 cm, irregular decrease), `sg_mollisol_thapto_humic_usda()`,
+  `sg_mollisol_thapto_histic_usda()`, `sg_mollisol_duric_usda()`,
+  `sg_mollisol_calcic_usda()` (within 100 cm; calcic or secondary carbonates by
   particle-size class at 150/90/110 cm; 100/50/60 cm in the Paleustolls;
   within or below the mollic; above the duripan; the Calcic Paleudolls),
-  `sg_mollisol_alfic()`, `sg_mollisol_ultic()` (base saturation 75 % or
-  less, L18), `sg_mollisol_abruptic()`, `sg_mollisol_haplic_palexeroll()`,
-  `sg_mollisol_glossic()`, `sg_mollisol_leptic()`, `sg_mollisol_arenic()`
-  (the Mollisol wording, no spodic horizon, audit R5), `sg_mollisol_psammentic()`,
-  `sg_mollisol_lamellic()`, `sg_mollisol_oxic()`, `sg_mollisol_entic()`,
-  `sg_mollisol_vermic()`, `sg_mollisol_moisture()`, `sg_mollisol_duripan()`,
-  `sg_mollisol_aeric()`, `sg_mollisol_ruptic_lithic()`,
-  `sg_mollisol_htm_petrocalcic()`, `sg_mollisol_anthraquic()`,
-  `sg_mollisol_aquandic()`. The shared helpers used by other orders are
+  `sg_mollisol_alfic_usda()`, `sg_mollisol_ultic_usda()` (base saturation 75 % or
+  less, L18), `sg_mollisol_abruptic_usda()`, `sg_mollisol_haplic_palexeroll_usda()`,
+  `sg_mollisol_glossic_usda()`, `sg_mollisol_leptic_usda()`, `sg_mollisol_arenic_usda()`
+  (the Mollisol wording, no spodic horizon, audit R5), `sg_mollisol_psammentic_usda()`,
+  `sg_mollisol_lamellic_usda()`, `sg_mollisol_oxic_usda()`, `sg_mollisol_entic_usda()`,
+  `sg_mollisol_vermic_usda()`, `sg_mollisol_moisture_usda()`, `sg_mollisol_duripan_usda()`,
+  `sg_mollisol_aeric_usda()`, `sg_mollisol_ruptic_lithic_usda()`,
+  `sg_mollisol_htm_petrocalcic_usda()`, `sg_mollisol_anthraquic_usda()`,
+  `sg_mollisol_aquandic_usda()`. The shared helpers used by other orders are
   unchanged.
 * Moisture intergrades (Aridic, Torr-, -idic, Udic, Udertic, Udorthentic
   Ustolls and Xerolls): read from the recorded regime and, where recorded, a
@@ -307,7 +313,7 @@ every great group, `inst/rules/usda/subgroups/ultisols.yaml` and
 `oxisols.yaml` list exactly the subgroups of the KST, in its order, with its
 codes (HCGA, EEBM ...), Typic last; each test reads the criteria of its
 subgroup. The new tests are in `R/subgroups-usda-ultox.R` (`sg_oxisol_*`,
-`sg_ultisol_*`, and `sg_ultox_contact()` and `sg_ultox_plinthic()`, which both
+`sg_ultisol_*`, and `sg_ultox_contact_usda()` and `sg_ultox_plinthic_usda()`, which both
 orders call); the helpers other orders share are called, not changed. All are
 three-valued: a field observation not recorded is absent (redox features,
 plinthite, slickensides, cracks, lamellae, fragic properties, a discontinuous

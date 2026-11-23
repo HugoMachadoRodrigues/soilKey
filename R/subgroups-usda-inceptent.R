@@ -129,7 +129,7 @@
 #' @param kind One of the names above.
 #' @param str Temperature regimes allowed (the torric kinds); NULL for any.
 #' @noRd
-sg_incept_moisture <- function(pedon, kind = c("dry45", "aridic", "udic", "torric_ustic", "torric_xeric"),
+sg_incept_moisture_usda <- function(pedon, kind = c("dry45", "aridic", "udic", "torric_ustic", "torric_xeric"),
                                str = NULL) {
   kind <- match.arg(kind)
   smr <- .sg_ie_smr(pedon)
@@ -145,7 +145,7 @@ sg_incept_moisture <- function(pedon, kind = c("dry45", "aridic", "udic", "torri
     torric_ustic = if (smr %in% c("aridic", "torric")) NA else FALSE,
     torric_xeric = if (smr %in% c("aridic", "torric")) NA else FALSE)
   if (!is.null(str) && !is.na(st) && !(st %in% str)) val <- FALSE
-  .sg_ie_res("sg_incept_moisture", val,
+  .sg_ie_res("sg_incept_moisture_usda", val,
              evidence = list(kind = kind, soil_moisture_regime = smr, soil_temperature_regime = st),
              missing = "site$soil_moisture_regime",
              ref = .sg_ie_ref("pp. 172-185 and 215-246 (moisture intergrades)"),
@@ -169,10 +169,10 @@ sg_incept_moisture <- function(pedon, kind = c("dry45", "aridic", "udic", "torri
 #' layers already reach 6 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_vertic <- function(pedon) {
+sg_incept_vertic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 209 (e.g. Vertic Endoaquepts)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_vertic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_vertic_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   cw <- .sg_ie_num(h, "cracks_width_cm"); cd <- .sg_ie_num(h, "cracks_depth_cm")
   ct <- .sg_ie_num(h, "cracks_top_cm")
@@ -194,7 +194,7 @@ sg_incept_vertic <- function(pedon) {
   le <- sum(ov * cole, na.rm = TRUE)
   b2 <- if (le >= 6) TRUE else if (!length(k) || !anyNA(cole[ov > 0])) FALSE else NA
   passed <- .usda_any3(c(b1, b2))
-  .sg_ie_res("sg_incept_vertic", passed, layers = k,
+  .sg_ie_res("sg_incept_vertic_usda", passed, layers = k,
              evidence = list(cracks = cracks, slickensides_15cm = slick, linear_extensibility_cm = le),
              missing = "cole_value", ref = ref)
 }
@@ -256,13 +256,13 @@ sg_incept_vertic <- function(pedon) {
 #' @param gley_aquic Item 2c of Aquic Xerofluvents.
 #' @param soil_surface Depths from the soil surface (Torri- great groups).
 #' @noRd
-sg_incept_aquic <- function(pedon, max_cm = 75, redox = c("depletions", "concentrations"),
+sg_incept_aquic_usda <- function(pedon, max_cm = 75, redox = c("depletions", "concentrations"),
                             above_duripan = FALSE, gley_cm = NULL, gley_aquic = FALSE,
                             soil_surface = FALSE) {
   redox <- match.arg(redox)
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 165-246 (Aquic subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_aquic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_aquic_usda", FALSE, ref = ref))
   ms <- if (isTRUE(soil_surface)) min(h$top_cm, na.rm = TRUE) else .sg_ie_ms(h)
   hi <- ms + max_cm
   if (isTRUE(above_duripan)) hi <- min(hi, .sg_ie_duripan_top(pedon))
@@ -286,7 +286,7 @@ sg_incept_aquic <- function(pedon, max_cm = 75, redox = c("depletions", "concent
     }, NA))
   }
   passed <- .usda_any3(c(v, if (!is.null(gley_cm)) g))
-  .sg_ie_res("sg_incept_aquic", passed, layers = k[v %in% TRUE],
+  .sg_ie_res("sg_incept_aquic_usda", passed, layers = k[v %in% TRUE],
              evidence = list(max_cm = max_cm, redox = redox, per_layer = v, gley = g),
              missing = c("munsell_chroma_moist", "mottle_contrast", "munsell_value_moist"),
              ref = ref)
@@ -311,12 +311,12 @@ sg_incept_aquic <- function(pedon, max_cm = 75, redox = c("depletions", "concent
 #' @param kind "andic", "vitrandic", "either" or "glass".
 #' @param above_duripan Logical.
 #' @noRd
-sg_incept_andic <- function(pedon, kind = c("andic", "vitrandic", "either", "glass"),
+sg_incept_andic_usda <- function(pedon, kind = c("andic", "vitrandic", "either", "glass"),
                             above_duripan = FALSE) {
   kind <- match.arg(kind)
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 182-246 (Andic, Vitrandic and Aquandic subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_andic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_andic_usda", FALSE, ref = ref))
   L <- .andic_subgroup_layers_usda(h)
   ok <- switch(kind,
     andic = L$andic, vitrandic = L$vitrandic,
@@ -336,7 +336,7 @@ sg_incept_andic <- function(pedon, kind = c("andic", "vitrandic", "either", "gla
   miss <- switch(kind, andic = L$missing_andic, vitrandic = L$missing_vitrandic,
                  either = c(L$missing_andic, L$missing_vitrandic),
                  glass = c("volcanic_glass_pct", "al_ox_pct", "fe_ox_pct"))
-  .sg_ie_res("sg_incept_andic", r$passed, layers = r$layers,
+  .sg_ie_res("sg_incept_andic_usda", r$passed, layers = r$layers,
              evidence = list(kind = kind, thickness_cm = r$thickness_cm, undecided_cm = r$undecided_cm),
              missing = miss, ref = ref)
 }
@@ -361,14 +361,14 @@ sg_incept_andic <- function(pedon, kind = c("andic", "vitrandic", "either", "gla
 #' could reach 20 cm.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_thapto_humic <- function(pedon) {
+sg_incept_thapto_humic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 209 (e.g. Thapto-Humic Endoaquepts)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_thapto_humic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_thapto_humic_usda", FALSE, ref = ref))
   top0 <- min(h$top_cm, na.rm = TRUE)
   d <- .usda_desig(h$designation)
   b <- which(!is.na(d$suffix) & grepl("b", d$suffix) & !is.na(h$top_cm) & h$top_cm < top0 + 200)
-  if (!length(b)) return(.sg_ie_res("sg_incept_thapto_humic", FALSE, ref = ref,
+  if (!length(b)) return(.sg_ie_res("sg_incept_thapto_humic_usda", FALSE, ref = ref,
                                     evidence = list(reason = "no buried layer")))
   org <- .usda_organic_status(pedon)
   ok <- vapply(b, function(i) {
@@ -379,7 +379,7 @@ sg_incept_thapto_humic <- function(pedon) {
   }, NA)
   w <- .sg_ie_overlap(h, b, top0, top0 + 200)
   passed <- .sg_ie_thick3(ok, w, 20)
-  .sg_ie_res("sg_incept_thapto_humic", passed, layers = b[ok %in% TRUE],
+  .sg_ie_res("sg_incept_thapto_humic_usda", passed, layers = b[ok %in% TRUE],
              evidence = list(buried = b, per_layer = ok),
              missing = c("munsell_value_moist", "oc_pct"), ref = ref)
 }
@@ -392,18 +392,18 @@ sg_incept_thapto_humic <- function(pedon) {
 #' not measured).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ent_thapto_histic <- function(pedon) {
+sg_ent_thapto_histic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 167 (e.g. Thapto-Histic Fluvaquents)")
-  if (!nrow(h)) return(.sg_ie_res("sg_ent_thapto_histic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_ent_thapto_histic_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   org <- .usda_organic_status(pedon)
   k <- .sg_ie_window(h, ms, ms + 200)
   first_min <- k[!(org[k] %in% TRUE)]
-  if (!length(first_min)) return(.sg_ie_res("sg_ent_thapto_histic", FALSE, ref = ref))
+  if (!length(first_min)) return(.sg_ie_res("sg_ent_thapto_histic_usda", FALSE, ref = ref))
   below <- k[h$top_cm[k] >= h$bottom_cm[first_min[1]]]
   passed <- if (length(below)) .sg_ie_thick3(org[below], .sg_ie_overlap(h, below, ms, ms + 200), 40) else FALSE
-  .sg_ie_res("sg_ent_thapto_histic", passed, layers = below[org[below] %in% TRUE],
+  .sg_ie_res("sg_ent_thapto_histic_usda", passed, layers = below[org[below] %in% TRUE],
              missing = "oc_pct", ref = ref)
 }
 
@@ -424,10 +424,10 @@ sg_ent_thapto_histic <- function(pedon) {
 #' @param slope,htm Read the slope and the human-transported-material items.
 #' @param boundaries Logical.
 #' @noRd
-sg_incept_fluventic <- function(pedon, slope = TRUE, htm = TRUE, boundaries = FALSE) {
+sg_incept_fluventic_usda <- function(pedon, slope = TRUE, htm = TRUE, boundaries = FALSE) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 210 (e.g. Fluvaquentic Endoaquepts)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_fluventic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_fluventic_usda", FALSE, ref = ref))
   sl <- suppressWarnings(as.numeric(pedon$site$slope_pct %||% NA_real_))[1]
   s_ok <- if (!isTRUE(slope) || is.na(sl)) TRUE else sl < 25
   h_ok <- if (!isTRUE(htm)) TRUE else .usda_htm_surface_cm(pedon) < 50
@@ -439,7 +439,7 @@ sg_incept_fluventic <- function(pedon, slope = TRUE, htm = TRUE, boundaries = FA
     b_ok <- if (any(grepl("irregular|broken", bt))) FALSE else if (anyNA(bt)) NA else TRUE
   }
   passed <- .usda_all3(c(s_ok, h_ok, oc_ok, b_ok))
-  .sg_ie_res("sg_incept_fluventic", passed, layers = oc$layers,
+  .sg_ie_res("sg_incept_fluventic_usda", passed, layers = oc$layers,
              evidence = list(slope_under_25 = s_ok, htm_under_50 = h_ok,
                              oc_125 = oc$at_125, oc_irregular = oc$irregular, boundaries = b_ok),
              missing = c("oc_pct", if (is.na(b_ok)) "boundary_topography"), ref = ref)
@@ -457,13 +457,13 @@ sg_incept_fluventic <- function(pedon, slope = TRUE, htm = TRUE, boundaries = FA
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param depth_cm 18 or 15.
 #' @noRd
-sg_incept_dark <- function(pedon, depth_cm = 18) {
+sg_incept_dark_usda <- function(pedon, depth_cm = 18) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("e.g. pp. 210 and 224 (Humic and Mollic subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_dark", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_dark_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms, ms + depth_cm)
-  if (!length(k)) return(.sg_ie_res("sg_incept_dark", FALSE, ref = ref))
+  if (!length(k)) return(.sg_ie_res("sg_incept_dark_usda", FALSE, ref = ref))
   vm <- h$munsell_value_moist[k]; vd <- h$munsell_value_dry[k]
   w <- .sg_ie_overlap(h, k, ms, ms + depth_cm)
   per <- .and3v(ifelse(is.na(vm), NA, vm <= 3), ifelse(is.na(vd), NA, vd <= 5))
@@ -471,7 +471,7 @@ sg_incept_dark <- function(pedon, depth_cm = 18) {
   mixed <- if (anyNA(vm) || anyNA(vd) || sum(w) <= 0) NA
            else (sum(vm * w) / sum(w) <= 3) && (sum(vd * w) / sum(w) <= 5)
   passed <- .usda_any3(c(unmixed, mixed))
-  .sg_ie_res("sg_incept_dark", passed, layers = k,
+  .sg_ie_res("sg_incept_dark_usda", passed, layers = k,
              evidence = list(depth_cm = depth_cm, value_moist = vm, value_dry = vd),
              missing = c(if (anyNA(vm)) "munsell_value_moist", if (anyNA(vd)) "munsell_value_dry"),
              ref = ref)
@@ -487,7 +487,7 @@ sg_incept_dark <- function(pedon, depth_cm = 18) {
 #' @param kinds Character vector.
 #' @param min_cm Minimum thickness (NULL: any).
 #' @noRd
-sg_incept_epipedon <- function(pedon, kinds = c("mollic", "umbric"), min_cm = NULL) {
+sg_incept_epipedon_usda <- function(pedon, kinds = c("mollic", "umbric"), min_cm = NULL) {
   ref <- .sg_ie_ref("pp. 207-246 (epipedons of the subgroups)")
   out <- c()
   if ("histic" %in% kinds) out["histic"] <- .usda_pv(.usda_try(histic_epipedon_usda(pedon)))
@@ -509,7 +509,7 @@ sg_incept_epipedon <- function(pedon, kinds = c("mollic", "umbric"), min_cm = NU
     out["umbric"] <- v
   }
   passed <- .usda_any3(out)
-  .sg_ie_res("sg_incept_epipedon", passed, evidence = as.list(out),
+  .sg_ie_res("sg_incept_epipedon_usda", passed, evidence = as.list(out),
              missing = c("munsell_value_moist", "oc_pct", "bs_pct"), ref = ref)
 }
 
@@ -531,14 +531,14 @@ sg_incept_epipedon <- function(pedon, kinds = c("mollic", "umbric"), min_cm = NU
 #' layer shallower than \code{top} (Dystric Xerorthents, p. 181).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_bs <- function(pedon, op = c("lt", "ge"), value = 50, top = 0, bottom = 100,
+sg_incept_bs_usda <- function(pedon, op = c("lt", "ge"), value = 50, top = 0, bottom = 100,
                          mode = c("some", "all", "half"), method = c("nh4oac", "sum"),
                          from_ap = FALSE, clip_contact = FALSE, contact10 = FALSE,
                          root_limiting = FALSE) {
   op <- match.arg(op); mode <- match.arg(mode); method <- match.arg(method)
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 165-246 (base saturation of the subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_bs", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_bs_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   bs <- if (method == "sum") .bs_sum_cations_usda(pedon)$bs else .sg_ie_num(h, "bs_pct")
   cmp <- function(x) if (is.na(x)) NA else if (op == "lt") x < value else x >= value
@@ -561,7 +561,7 @@ sg_incept_bs <- function(pedon, op = c("lt", "ge"), value = 50, top = 0, bottom 
     kc <- .sg_ie_window(h, rl - 10, rl)
     passed <- .usda_any3(c(passed, vapply(kc, function(i) cmp(bs[i]), NA)))
   }
-  .sg_ie_res("sg_incept_bs", passed, layers = k[v %in% TRUE],
+  .sg_ie_res("sg_incept_bs_usda", passed, layers = k[v %in% TRUE],
              evidence = list(op = op, value = value, window = c(lo, hi), mode = mode, per_layer = v),
              missing = if (method == "sum") c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol", "cec_ph82_cmol", "bs_pct")
                        else "bs_pct", ref = ref)
@@ -602,12 +602,12 @@ sg_incept_bs <- function(pedon, op = c("lt", "ge"), value = 50, top = 0, bottom 
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rule One of the names above.
 #' @noRd
-sg_incept_aeric <- function(pedon, rule = c("endoaquept", "cryaquept", "densi", "halaquept",
+sg_incept_aeric_usda <- function(pedon, rule = c("endoaquept", "cryaquept", "densi", "halaquept",
                                             "humaquept", "aquent_endo", "aquent_epi", "wassent")) {
   rule <- match.arg(rule)
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 166-214 and 186-188 (Aeric subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_aeric", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_aeric_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   d <- .usda_desig(h$designation)
   ap <- .sg_ie_ap_bottom(h)
@@ -653,7 +653,7 @@ sg_incept_aeric <- function(pedon, rule = c("endoaquept", "cryaquept", "densi", 
       })
   }, NA)
   passed <- .usda_any3(v)
-  .sg_ie_res("sg_incept_aeric", passed, layers = k[v %in% TRUE],
+  .sg_ie_res("sg_incept_aeric_usda", passed, layers = k[v %in% TRUE],
              evidence = list(rule = rule, window = win, per_layer = v),
              missing = c("munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist"), ref = ref)
 }
@@ -670,13 +670,13 @@ sg_incept_aeric <- function(pedon, rule = c("endoaquept", "cryaquept", "densi", 
 #' adjoining such layers.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_fragic <- function(pedon) {
+sg_incept_fragic_usda <- function(pedon) {
   h <- pedon$horizons
   d <- .usda_desig(h$designation)
   x <- !is.na(d$suffix) & grepl("x", d$suffix)
   runs <- .usda_runs(x, order(h$top_cm))
   passed <- any(vapply(runs, function(r) .usda_run_thickness(h, r) >= 15, NA))
-  .sg_ie_res("sg_incept_fragic", passed, layers = which(x),
+  .sg_ie_res("sg_incept_fragic_usda", passed, layers = which(x),
              ref = .sg_ie_ref("p. 210 (e.g. Fragic Endoaquepts)"))
 }
 
@@ -688,14 +688,14 @@ sg_incept_fragic <- function(pedon) {
 #' lamellae. Field observation: none recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_lamellae <- function(pedon) {
+sg_incept_lamellae_usda <- function(pedon) {
   h <- pedon$horizons
   top0 <- if (nrow(h)) min(h$top_cm, na.rm = TRUE) else 0
   des <- as.character(h$designation)
   lc <- .sg_ie_num(h, "lamellae_cumulative_cm")
   k <- which(!is.na(h$top_cm) & h$top_cm < .sg_ie_ms(h) + 200 &
                ((!is.na(des) & grepl("&|lamel", des, ignore.case = TRUE)) | (!is.na(lc) & lc > 0)))
-  .sg_ie_res("sg_incept_lamellae", length(k) > 0L, layers = k,
+  .sg_ie_res("sg_incept_lamellae_usda", length(k) > 0L, layers = k,
              ref = .sg_ie_ref("p. 216 (e.g. Lamellic Dystrocryepts)"))
 }
 
@@ -706,9 +706,9 @@ sg_incept_lamellae <- function(pedon) {
 #' layers of the particle-size control section (\code{.usda_psamment_texture()}).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_psammentic <- function(pedon) {
+sg_incept_psammentic_usda <- function(pedon) {
   r <- .usda_psamment_texture(pedon)
-  .sg_ie_res("sg_incept_psammentic", r$passed, layers = r$layers,
+  .sg_ie_res("sg_incept_psammentic_usda", r$passed, layers = r$layers,
              missing = c("clay_pct", "sand_pct", "texture_class_usda"),
              ref = .sg_ie_ref("p. 231 (Psammentic Humudepts)"))
 }
@@ -717,13 +717,13 @@ sg_incept_psammentic <- function(pedon) {
 #' in all horizons within 50 cm of the mineral soil surface.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_arenic <- function(pedon) {
+sg_incept_arenic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms, ms + 50)
   s <- .usda_texture_grades(h)$lfs_or_coarser[k]
   passed <- if (length(k)) .usda_all3(s) else FALSE
-  .sg_ie_res("sg_incept_arenic", passed, layers = k,
+  .sg_ie_res("sg_incept_arenic_usda", passed, layers = k,
              missing = c("clay_pct", "sand_pct", "texture_class_usda"),
              ref = .sg_ie_ref("p. 229 (Arenic Eutrudepts)"))
 }
@@ -738,14 +738,14 @@ sg_incept_arenic <- function(pedon) {
 #' and kandic horizons, v0.9.420; the water by mass only).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_oxic <- function(pedon) {
+sg_incept_oxic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 226 (Oxic Dystrudepts)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_oxic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_oxic_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   hi <- min(ms + 100, .sg_ie_contact(h))
   k <- .sg_ie_window(h, ms + 25, hi)
-  if (!length(k)) return(.sg_ie_res("sg_incept_oxic", FALSE, ref = ref))
+  if (!length(k)) return(.sg_ie_res("sg_incept_oxic_usda", FALSE, ref = ref))
   cec <- .sg_ie_num(h, "cec_cmol"); cl <- .sg_ie_num(h, "clay_pct")
   w15 <- .sg_ie_num(h, "water_content_1500kpa"); oc <- .sg_ie_num(h, "oc_pct")
   w15[!(.w1500_by_mass(pedon) %in% TRUE)] <- NA
@@ -758,7 +758,7 @@ sg_incept_oxic <- function(pedon) {
     .usda_any3(c(c1, c2))
   }, NA)
   passed <- .sg_ie_share3(v, .sg_ie_overlap(h, k, ms + 25, hi))
-  .sg_ie_res("sg_incept_oxic", passed, layers = k[v %in% TRUE], evidence = list(per_layer = v),
+  .sg_ie_res("sg_incept_oxic_usda", passed, layers = k[v %in% TRUE], evidence = list(per_layer = v),
              missing = c("cec_cmol", "clay_pct", "water_content_1500kpa"), ref = ref)
 }
 
@@ -768,13 +768,13 @@ sg_incept_oxic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param max_cm Depth below the mineral soil surface.
 #' @noRd
-sg_incept_no_carbonates <- function(pedon, max_cm = 100) {
+sg_incept_no_carbonates_usda <- function(pedon, max_cm = 100) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms, ms + max_cm)
   fc <- vapply(k, function(i) .mo_free_carbonates(h, i), NA)
   passed <- .usda_not3(.usda_any3(fc))
-  .sg_ie_res("sg_incept_no_carbonates", passed, layers = k,
+  .sg_ie_res("sg_incept_no_carbonates_usda", passed, layers = k,
              missing = c("caco3_pct", "effervescence_class"),
              ref = .sg_ie_ref("p. 228 (Dystric Eutrudepts)"))
 }
@@ -784,19 +784,19 @@ sg_incept_no_carbonates <- function(pedon, max_cm = 100) {
 #' densic, lithic or paralithic contact.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_rendollic <- function(pedon) {
+sg_incept_rendollic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 229 (Rendollic Eutrudepts)")
   cb <- .usda_try(cambic_horizon_usda(pedon))
   if (!isTRUE(.usda_pv(cb)) || !length(cb$layers))
-    return(.sg_ie_res("sg_incept_rendollic", if (is.na(.usda_pv(cb))) NA else FALSE,
+    return(.sg_ie_res("sg_incept_rendollic_usda", if (is.na(.usda_pv(cb))) NA else FALSE,
                       missing = cb$missing %||% character(0), ref = ref))
   ms <- .sg_ie_ms(h)
   lo <- min(h$top_cm[cb$layers], na.rm = TRUE)
   k <- .sg_ie_window(h, lo, min(ms + 100, .sg_ie_contact(h)))
   ca <- .sg_ie_num(h, "caco3_pct")[k]
   passed <- .usda_all3(ifelse(is.na(ca), NA, ca >= 40))
-  .sg_ie_res("sg_incept_rendollic", passed, layers = k, missing = "caco3_pct", ref = ref)
+  .sg_ie_res("sg_incept_rendollic_usda", passed, layers = k, missing = "caco3_pct", ref = ref)
 }
 
 #' Ruptic-Alfic and Ruptic-Ultic subgroups (pp. 226-229)
@@ -806,8 +806,8 @@ sg_incept_rendollic <- function(pedon) {
 #' the pedon no column records, so it is absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_ruptic <- function(pedon) {
-  .sg_ie_res("sg_incept_ruptic", FALSE, ref = .sg_ie_ref("pp. 226-229 (Ruptic subgroups)"),
+sg_incept_ruptic_usda <- function(pedon) {
+  .sg_ie_res("sg_incept_ruptic_usda", FALSE, ref = .sg_ie_ref("pp. 226-229 (Ruptic subgroups)"),
              notes = "illuvial parts within the cambic horizon are not recorded: absent")
 }
 
@@ -816,14 +816,14 @@ sg_incept_ruptic <- function(pedon) {
 #' colour (read as no B horizon within the epipedon).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_entic <- function(pedon) {
+sg_incept_entic_usda <- function(pedon) {
   h <- pedon$horizons
   cb <- .usda_pv(.usda_try(cambic_horizon_usda(pedon)))
   ep <- c(.usda_try(mollic_epipedon_usda(pedon))$layers, .usda_try(umbric_epipedon_usda(pedon))$layers)
   d <- .usda_desig(h$designation)
   b_in <- any(!is.na(d$master[ep]) & grepl("B", d$master[ep]))
   passed <- if (isTRUE(cb) || b_in) FALSE else if (is.na(cb)) NA else TRUE
-  .sg_ie_res("sg_incept_entic", passed, missing = "cambic horizon",
+  .sg_ie_res("sg_incept_entic_usda", passed, missing = "cambic horizon",
              ref = .sg_ie_ref("p. 231 (Entic Humudepts)"))
 }
 
@@ -851,7 +851,7 @@ sg_incept_entic <- function(pedon) {
 #' horizon is \code{calcic_horizon_usda()}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_calcic <- function(pedon, rule = c("secondary", "haploxerept"), max_cm = 100) {
+sg_incept_calcic_usda <- function(pedon, rule = c("secondary", "haploxerept"), max_cm = 100) {
   rule <- match.arg(rule)
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
@@ -861,7 +861,7 @@ sg_incept_calcic <- function(pedon, rule = c("secondary", "haploxerept"), max_cm
   tops <- c(h$top_cm[sec], if (isTRUE(.usda_pv(cal))) h$top_cm[cal$layers])
   t0 <- if (length(tops)) min(tops, na.rm = TRUE) - ms else Inf
   if (rule == "secondary")
-    return(.sg_ie_res("sg_incept_calcic", t0 < max_cm, layers = which(sec), ref = ref))
+    return(.sg_ie_res("sg_incept_calcic_usda", t0 < max_cm, layers = which(sec), ref = ref))
   passed <- if (t0 < 90) TRUE else if (t0 >= 150) {
     if (is.na(.usda_pv(cal)) && !any(sec)) NA else FALSE
   } else {
@@ -873,7 +873,7 @@ sg_incept_calcic <- function(pedon, rule = c("secondary", "haploxerept"), max_cm
     lim <- if (isTRUE(sandy)) 150 else if (isTRUE(clayey)) 90 else if (isFALSE(sandy) && isFALSE(clayey)) 110 else NA
     if (is.na(lim)) { if (t0 < 110 && isFALSE(clayey)) TRUE else NA } else t0 < lim
   }
-  .sg_ie_res("sg_incept_calcic", passed, layers = which(sec), evidence = list(top_cm = t0),
+  .sg_ie_res("sg_incept_calcic_usda", passed, layers = which(sec), evidence = list(top_cm = t0),
              missing = c("clay_pct", "sand_pct"), ref = ref)
 }
 
@@ -887,11 +887,11 @@ sg_incept_calcic <- function(pedon, rule = c("secondary", "haploxerept"), max_cm
 #' Aquents are not recorded; the measured ESP stands for them.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_sodic <- function(pedon, min_esp = 15, max_cm = 100, min_thick_cm = 0,
+sg_incept_sodic_usda <- function(pedon, min_esp = 15, max_cm = 100, min_thick_cm = 0,
                             soil_surface = FALSE) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 167, 214, 240 (Sodic subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_sodic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_sodic_usda", FALSE, ref = ref))
   ms <- if (isTRUE(soil_surface)) min(h$top_cm, na.rm = TRUE) else .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms, ms + max_cm)
   esp <- .usda_esp(h)[k]
@@ -902,7 +902,7 @@ sg_incept_sodic <- function(pedon, min_esp = 15, max_cm = 100, min_thick_cm = 0,
     else if (any(!(v %in% FALSE) & w >= min_thick_cm)) NA else FALSE
   }
   if (!length(k)) passed <- FALSE
-  .sg_ie_res("sg_incept_sodic", passed, layers = k[v %in% TRUE],
+  .sg_ie_res("sg_incept_sodic_usda", passed, layers = k[v %in% TRUE],
              missing = c("esp_pct", "na_cmol", "cec_cmol"), ref = ref)
 }
 
@@ -913,14 +913,14 @@ sg_incept_sodic <- function(pedon, min_esp = 15, max_cm = 100, min_thick_cm = 0,
 #' 20 \% or more; field observations: none, absent).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_cemented <- function(pedon) {
+sg_incept_cemented_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms, ms + 100)
   share <- .sg_ie_num(h, "duripan_pct")
   cem <- .usda_cemented(h) & (is.na(share) | share >= 20) | (!is.na(share) & share >= 20)
   passed <- sum(.sg_ie_overlap(h, k, ms, ms + 100)[cem[k]]) >= 15
-  .sg_ie_res("sg_incept_cemented", passed, layers = k[cem[k]],
+  .sg_ie_res("sg_incept_cemented_usda", passed, layers = k[cem[k]],
              ref = .sg_ie_ref("p. 213 (Duric Halaquepts)"))
 }
 
@@ -928,7 +928,7 @@ sg_incept_cemented <- function(pedon) {
 #' in all subhorizons (no very strongly cemented or indurated part).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_entic_duripan <- function(pedon) {
+sg_incept_entic_duripan_usda <- function(pedon) {
   h <- pedon$horizons
   dp <- .usda_try(duripan_usda(pedon, max_top_cm = 1000))
   L <- if (isTRUE(.usda_pv(dp))) dp$layers else integer(0)
@@ -936,7 +936,7 @@ sg_incept_entic_duripan <- function(pedon) {
   passed <- if (!length(L)) FALSE
             else if (any(cem %in% c("very strongly", "indurated"))) FALSE
             else if (anyNA(cem)) NA else TRUE
-  .sg_ie_res("sg_incept_entic_duripan", passed, layers = L, missing = "cementation_class",
+  .sg_ie_res("sg_incept_entic_duripan_usda", passed, layers = L, missing = "cementation_class",
              ref = .sg_ie_ref("p. 241 (Entic Durixerepts)"))
 }
 
@@ -948,7 +948,7 @@ sg_incept_entic_duripan <- function(pedon) {
 #' is not recorded: absent). Field observations: none, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ent_durinodes <- function(pedon) {
+sg_ent_durinodes_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   d <- .usda_desig(h$designation)
@@ -957,7 +957,7 @@ sg_ent_durinodes <- function(pedon) {
   k <- .sg_ie_window(h, ms, ms + 100)
   k <- k[q[k]]
   passed <- any(h$bottom_cm[k] - h$top_cm[k] >= 15, na.rm = TRUE)
-  .sg_ie_res("sg_ent_durinodes", passed, layers = k,
+  .sg_ie_res("sg_ent_durinodes_usda", passed, layers = k,
              ref = .sg_ie_ref("p. 172 (Duric Torrifluvents)"))
 }
 
@@ -968,7 +968,7 @@ sg_ent_durinodes <- function(pedon) {
 #' one undecided); nothing recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_plinthite <- function(pedon, min_pct = 50, max_cm = 125) {
+sg_incept_plinthite_usda <- function(pedon, min_pct = 50, max_cm = 125) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms, ms + max_cm)
@@ -977,7 +977,7 @@ sg_incept_plinthite <- function(pedon, min_pct = 50, max_cm = 125) {
   v <- ifelse(!is.na(pp), pp >= min_pct,
          ifelse(!is.na(d$suffix[k]) & grepl("v", d$suffix[k]), if (min_pct <= 5) TRUE else NA, FALSE))
   passed <- .usda_any3(v)
-  .sg_ie_res("sg_incept_plinthite", passed, layers = k[v %in% TRUE], missing = "plinthite_pct",
+  .sg_ie_res("sg_incept_plinthite_usda", passed, layers = k[v %in% TRUE], missing = "plinthite_pct",
              ref = .sg_ie_ref("pp. 182 and 214 (Plinthic subgroups)"))
 }
 
@@ -991,7 +991,7 @@ sg_incept_plinthite <- function(pedon, min_pct = 50, max_cm = 125) {
 #' schwertmannite recorded).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_sulfic <- function(pedon, max_cm = 150, sulfuric = TRUE, sulfidic_cm = 1,
+sg_incept_sulfic_usda <- function(pedon, max_cm = 150, sulfuric = TRUE, sulfidic_cm = 1,
                              near_sulfuric = TRUE) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
@@ -1007,7 +1007,7 @@ sg_incept_sulfic <- function(pedon, max_cm = 150, sulfuric = TRUE, sulfidic_cm =
     r <- c(r, any(ns))
   }
   passed <- .usda_any3(r)
-  .sg_ie_res("sg_incept_sulfic", passed, missing = "sulfidic_s_pct",
+  .sg_ie_res("sg_incept_sulfic_usda", passed, missing = "sulfidic_s_pct",
              ref = .sg_ie_ref("p. 208 (Sulfic Cryaquepts) and p. 166 (Sulfic Endoaquents)"))
 }
 
@@ -1036,12 +1036,12 @@ sg_incept_sulfic <- function(pedon, max_cm = 150, sulfuric = TRUE, sulfidic_cm =
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rule One of the names above.
 #' @noRd
-sg_incept_fluid <- function(pedon, rule = c("hydraquentic", "hydraquentic_lowclay", "haplic",
+sg_incept_fluid_usda <- function(pedon, rule = c("hydraquentic", "hydraquentic_lowclay", "haplic",
                                             "fluic", "grossic")) {
   rule <- match.arg(rule)
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 169, 186-188, 213-214 (fluidity)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_fluid", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_fluid_usda", FALSE, ref = ref))
   ms <- .sg_ie_ms(h)
   nv <- .sg_ie_num(h, "n_value"); fc <- .sg_ie_txt(h, "fluidity_class"); cl <- .sg_ie_num(h, "clay_pct")
   slight <- ifelse(!is.na(nv), nv > 0.7, !is.na(fc) & grepl("slight|moderate|very", fc) & !grepl("non", fc))
@@ -1056,7 +1056,7 @@ sg_incept_fluid <- function(pedon, rule = c("hydraquentic", "hydraquentic_lowcla
     grossic = { k <- .sg_ie_window(h, ms + 20, ms + 100)
                 if (length(k)) .usda_all3(.and3v(slight[k], c8[k])) else FALSE })
   if (!length(passed) || length(passed) > 1L) passed <- .usda_any3(passed)
-  .sg_ie_res("sg_incept_fluid", passed, missing = c("n_value", "fluidity_class", "clay_pct"), ref = ref)
+  .sg_ie_res("sg_incept_fluid_usda", passed, missing = c("n_value", "fluidity_class", "clay_pct"), ref = ref)
 }
 
 
@@ -1082,11 +1082,11 @@ sg_incept_fluid <- function(pedon, rule = c("hydraquentic", "hydraquentic_lowcla
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param kind One of the names above.
 #' @noRd
-sg_incept_anthro <- function(pedon, kind = c("anthrodensic", "anthroportic", "anthraltic", "anthraquic")) {
+sg_incept_anthro_usda <- function(pedon, kind = c("anthrodensic", "anthroportic", "anthraltic", "anthraquic")) {
   kind <- match.arg(kind)
   h <- pedon$horizons
   ref <- .sg_ie_ref("pp. 178-181, 226-228, 236 (anthropogenic subgroups)")
-  if (!nrow(h)) return(.sg_ie_res("sg_incept_anthro", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_incept_anthro_usda", FALSE, ref = ref))
   txt <- paste(.sg_ie_txt(h, "layer_origin"), .sg_ie_txt(h, "anthropic_material"))
   thk <- pmax(h$bottom_cm - h$top_cm, 0)
   top0 <- min(h$top_cm, na.rm = TRUE)
@@ -1101,7 +1101,7 @@ sg_incept_anthro <- function(pedon, kind = c("anthrodensic", "anthroportic", "an
       isTRUE(pd$value) || (!is.na(raw) && grepl("anthrostagnic|anthraquic", raw)) ||
         any(.usda_col(h, "puddled", NA) %in% TRUE)
     })
-  .sg_ie_res("sg_incept_anthro", passed, evidence = list(kind = kind), ref = ref)
+  .sg_ie_res("sg_incept_anthro_usda", passed, evidence = list(kind = kind), ref = ref)
 }
 
 #' Haploplaggic Udipsamments (p. 184): a surface horizon 25 to 50 cm thick
@@ -1111,10 +1111,10 @@ sg_incept_anthro <- function(pedon, kind = c("anthrodensic", "anthroportic", "an
 #' 2 or less and 0.6 \% organic carbon or more. Nothing recorded, absent.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ent_haploplaggic <- function(pedon) {
+sg_ent_haploplaggic_usda <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 184 (Haploplaggic Udipsamments)")
-  if (!nrow(h)) return(.sg_ie_res("sg_ent_haploplaggic", FALSE, ref = ref))
+  if (!nrow(h)) return(.sg_ie_res("sg_ent_haploplaggic_usda", FALSE, ref = ref))
   txt <- paste(.sg_ie_txt(h, "layer_origin"), .sg_ie_txt(h, "anthropic_material"))
   pl <- grepl("plagg", txt)
   if (identical(tolower(as.character(pedon$site$deep_cultivation_kind %||% NA_character_))[1], "plaggen")) {
@@ -1122,13 +1122,13 @@ sg_ent_haploplaggic <- function(pedon) {
     pl <- pl | (!is.na(d$master) & d$master == "A")
   }
   run <- .usda_surface_run(h, pl)
-  if (!length(run)) return(.sg_ie_res("sg_ent_haploplaggic", FALSE, ref = ref))
+  if (!length(run)) return(.sg_ie_res("sg_ent_haploplaggic_usda", FALSE, ref = ref))
   thk <- .usda_run_thickness(h, run)
   le <- function(x, t) ifelse(is.na(x), NA, x <= t)
   col <- .usda_all3(c(le(h$munsell_value_moist[run], 4), le(h$munsell_value_dry[run], 5),
                       le(h$munsell_chroma_moist[run], 2), ifelse(is.na(h$oc_pct[run]), NA, h$oc_pct[run] >= 0.6)))
   passed <- .usda_all3(c(thk >= 25 && thk <= 50, col))
-  .sg_ie_res("sg_ent_haploplaggic", passed, layers = run,
+  .sg_ie_res("sg_ent_haploplaggic_usda", passed, layers = run,
              missing = c("munsell_value_moist", "munsell_value_dry", "oc_pct"), ref = ref)
 }
 
@@ -1139,7 +1139,7 @@ sg_ent_haploplaggic <- function(pedon) {
 #' absent; the share is thickness-weighted.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ent_vermic <- function(pedon) {
+sg_ent_vermic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   lo <- max(ms + 25, .sg_ie_ap_bottom(h), na.rm = TRUE)
@@ -1148,7 +1148,7 @@ sg_ent_vermic <- function(pedon) {
   wh <- .sg_ie_num(h, "worm_holes_pct")[k]; wh[is.na(wh)] <- 0
   w <- .sg_ie_overlap(h, k, lo, hi)
   passed <- length(k) > 0L && sum(w) > 0 && sum(wh * w) / sum(w) >= 50
-  .sg_ie_res("sg_ent_vermic", passed, layers = k, ref = .sg_ie_ref("p. 178 (Vermic Udorthents)"))
+  .sg_ie_res("sg_ent_vermic_usda", passed, layers = k, ref = .sg_ie_ref("p. 178 (Vermic Udorthents)"))
 }
 
 
@@ -1159,7 +1159,7 @@ sg_ent_vermic <- function(pedon) {
 #' unit higher than the moist value.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ent_rhodic <- function(pedon) {
+sg_ent_rhodic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sg_ie_ms(h)
   k <- .sg_ie_window(h, ms + 25, ms + 100)
@@ -1170,7 +1170,7 @@ sg_ent_rhodic <- function(pedon) {
                  if (is.na(vm) || is.na(vd)) NA else vd - vm <= 1))
   }, NA)
   passed <- if (length(k)) .usda_all3(v) else FALSE
-  .sg_ie_res("sg_ent_rhodic", passed, layers = k,
+  .sg_ie_res("sg_ent_rhodic_usda", passed, layers = k,
              missing = c("munsell_hue_moist", "munsell_value_moist", "munsell_value_dry"),
              ref = .sg_ie_ref("p. 183 (Rhodic Torripsamments)"))
 }
@@ -1182,7 +1182,7 @@ sg_ent_rhodic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param regime "ustic" or "udic".
 #' @noRd
-sg_ent_quartz_oxic <- function(pedon, regime = c("ustic", "udic")) {
+sg_ent_quartz_oxic_usda <- function(pedon, regime = c("ustic", "udic")) {
   regime <- match.arg(regime)
   h <- pedon$horizons
   L <- .usda_pscs_layers(h)
@@ -1193,7 +1193,7 @@ sg_ent_quartz_oxic <- function(pedon, regime = c("ustic", "udic")) {
         else 100 * sum(cec * w) / sum(cl * w) <= 16
   ss <- if (!length(L) || anyNA(cl) || anyNA(si)) NA else (sum(si * w) + 2 * sum(cl * w)) / sum(w) > 5
   passed <- .usda_all3(c(smr, cc, ss))
-  .sg_ie_res("sg_ent_quartz_oxic", passed, layers = L,
+  .sg_ie_res("sg_ent_quartz_oxic_usda", passed, layers = L,
              missing = c("site$soil_moisture_regime", "clay_pct", "silt_pct", "cec_cmol"),
              ref = .sg_ie_ref("p. 182 (Ustoxic and Udoxic Quartzipsamments)"))
 }
@@ -1201,19 +1201,19 @@ sg_ent_quartz_oxic <- function(pedon, regime = c("ustic", "udic")) {
 
 # ---- Entisol aliases of the shared tests ------------------------------------------------
 
-sg_ent_aquic <- sg_incept_aquic
-sg_ent_andic <- sg_incept_andic
-sg_ent_vertic <- sg_incept_vertic
-sg_ent_thapto_humic <- sg_incept_thapto_humic
-sg_ent_fluventic <- sg_incept_fluventic
-sg_ent_dark <- sg_incept_dark
-sg_ent_bs <- sg_incept_bs
-sg_ent_aeric <- sg_incept_aeric
-sg_ent_lamellae <- sg_incept_lamellae
-sg_ent_psammentic <- sg_incept_psammentic
-sg_ent_sodic <- sg_incept_sodic
-sg_ent_sulfic <- sg_incept_sulfic
-sg_ent_fluid <- sg_incept_fluid
-sg_ent_anthro <- sg_incept_anthro
-sg_ent_moisture <- sg_incept_moisture
-sg_ent_plinthite <- sg_incept_plinthite
+sg_ent_aquic_usda <- sg_incept_aquic_usda
+sg_ent_andic_usda <- sg_incept_andic_usda
+sg_ent_vertic_usda <- sg_incept_vertic_usda
+sg_ent_thapto_humic_usda <- sg_incept_thapto_humic_usda
+sg_ent_fluventic_usda <- sg_incept_fluventic_usda
+sg_ent_dark_usda <- sg_incept_dark_usda
+sg_ent_bs_usda <- sg_incept_bs_usda
+sg_ent_aeric_usda <- sg_incept_aeric_usda
+sg_ent_lamellae_usda <- sg_incept_lamellae_usda
+sg_ent_psammentic_usda <- sg_incept_psammentic_usda
+sg_ent_sodic_usda <- sg_incept_sodic_usda
+sg_ent_sulfic_usda <- sg_incept_sulfic_usda
+sg_ent_fluid_usda <- sg_incept_fluid_usda
+sg_ent_anthro_usda <- sg_incept_anthro_usda
+sg_ent_moisture_usda <- sg_incept_moisture_usda
+sg_ent_plinthite_usda <- sg_incept_plinthite_usda

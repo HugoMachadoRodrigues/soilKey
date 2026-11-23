@@ -209,15 +209,15 @@ test_that("Vertic: cracks with slickensides, or a linear extensibility of 6 cm; 
   skip_on_cran()
   h <- data.frame(designation = c("A", "Bw", "C"), top_cm = c(0, 20, 60),
                   bottom_cm = c(20, 60, 120), stringsAsFactors = FALSE)
-  expect_true(is.na(.f425("sg_incept_vertic", .p425(h))$passed))
+  expect_true(is.na(.f425("sg_incept_vertic_usda", .p425(h))$passed))
   h$cole_value <- c(0.01, 0.02, 0.01)
-  expect_false(.f425("sg_incept_vertic", .p425(h))$passed)
+  expect_false(.f425("sg_incept_vertic_usda", .p425(h))$passed)
   h$cole_value <- c(0.08, 0.08, 0.08)                # 8 cm over 100 cm
-  expect_true(.f425("sg_incept_vertic", .p425(h))$passed)
+  expect_true(.f425("sg_incept_vertic_usda", .p425(h))$passed)
   h$cole_value <- c(0.01, NA, 0.01)
   h$cracks_width_cm <- c(NA, 1, NA); h$cracks_depth_cm <- c(NA, 40, NA)
   h$slickensides <- c(NA, "common", NA)
-  expect_true(.f425("sg_incept_vertic", .p425(h))$passed)
+  expect_true(.f425("sg_incept_vertic_usda", .p425(h))$passed)
 })
 
 test_that("Aquic: redox depletions within the depth of the great group", {
@@ -226,14 +226,14 @@ test_that("Aquic: redox depletions within the depth of the great group", {
                   bottom_cm = c(20, 70, 120), munsell_chroma_moist = c(2, 4, 2),
                   redoximorphic_features_pct = c(0, 0, 10), stringsAsFactors = FALSE)
   p <- .p425(h)
-  expect_false(.f425("sg_incept_aquic", p, max_cm = 60)$passed)   # redox at 70 cm
-  expect_true(.f425("sg_incept_aquic", p, max_cm = 75)$passed)
+  expect_false(.f425("sg_incept_aquic_usda", p, max_cm = 60)$passed)   # redox at 70 cm
+  expect_true(.f425("sg_incept_aquic_usda", p, max_cm = 75)$passed)
   h$munsell_chroma_moist[3] <- NA
-  expect_true(is.na(.f425("sg_incept_aquic", .p425(h), max_cm = 75)$passed))
+  expect_true(is.na(.f425("sg_incept_aquic_usda", .p425(h), max_cm = 75)$passed))
   h$redoximorphic_features_pct <- NA                             # none recorded: absent
-  expect_false(.f425("sg_incept_aquic", .p425(h), max_cm = 75)$passed)
+  expect_false(.f425("sg_incept_aquic_usda", .p425(h), max_cm = 75)$passed)
   h$designation[2] <- "Bg"
-  expect_true(.f425("sg_incept_aquic", .p425(h), max_cm = 60)$passed)
+  expect_true(.f425("sg_incept_aquic_usda", .p425(h), max_cm = 60)$passed)
 })
 
 test_that("dark surface, buried humus and the base saturation are three-valued", {
@@ -243,16 +243,16 @@ test_that("dark surface, buried humus and the base saturation are three-valued",
                   munsell_value_dry = c(5, 6, 4, 6), oc_pct = c(2, 0.5, 1.5, 0.2),
                   bs_pct = c(40, 45, 60, 70), stringsAsFactors = FALSE)
   p <- .p425(h)
-  expect_true(.f425("sg_incept_dark", p, depth_cm = 18)$passed)
-  expect_true(.f425("sg_incept_thapto_humic", p)$passed)
-  expect_true(.f425("sg_incept_bs", p, op = "lt", value = 50, top = 0, bottom = 100, mode = "some")$passed)
-  expect_false(.f425("sg_incept_bs", p, op = "ge", value = 50, top = 25, bottom = 75, mode = "half")$passed)
+  expect_true(.f425("sg_incept_dark_usda", p, depth_cm = 18)$passed)
+  expect_true(.f425("sg_incept_thapto_humic_usda", p)$passed)
+  expect_true(.f425("sg_incept_bs_usda", p, op = "lt", value = 50, top = 0, bottom = 100, mode = "some")$passed)
+  expect_false(.f425("sg_incept_bs_usda", p, op = "ge", value = 50, top = 25, bottom = 75, mode = "half")$passed)
   h2 <- h; h2$munsell_value_dry[1] <- NA
-  expect_true(is.na(.f425("sg_incept_dark", .p425(h2), depth_cm = 18)$passed))
+  expect_true(is.na(.f425("sg_incept_dark_usda", .p425(h2), depth_cm = 18)$passed))
   h2$oc_pct[3] <- NA
-  expect_true(is.na(.f425("sg_incept_thapto_humic", .p425(h2))$passed))
+  expect_true(is.na(.f425("sg_incept_thapto_humic_usda", .p425(h2))$passed))
   h2$designation[3] <- "AB"
-  expect_false(.f425("sg_incept_thapto_humic", .p425(h2))$passed)
+  expect_false(.f425("sg_incept_thapto_humic_usda", .p425(h2))$passed)
 })
 
 test_that("moisture intergrades are decided only where the regime class settles them", {
@@ -260,7 +260,7 @@ test_that("moisture intergrades are decided only where the regime class settles 
   h <- data.frame(designation = "A", top_cm = 0, bottom_cm = 30)
   m <- function(smr, kind, str = NULL) {
     p <- .p425(h, site = list(soil_moisture_regime = smr, soil_temperature_regime = "mesic"))
-    .f425("sg_incept_moisture", p, kind = kind, str = str)$passed
+    .f425("sg_incept_moisture_usda", p, kind = kind, str = str)$passed
   }
   expect_true(is.na(m("ustic", "aridic")))
   expect_true(m("aridic", "aridic"))
@@ -283,7 +283,7 @@ test_that("Anthroportic Udorthents is reachable; Oxyaquic Udorthents reads 150 c
                   munsell_chroma_moist = c(4, 4, 4), redoximorphic_features_pct = 0,
                   stringsAsFactors = FALSE)
   p <- .p425(h)
-  expect_true(.f425("sg_incept_anthro", p, kind = "anthroportic")$passed)
+  expect_true(.f425("sg_incept_anthro_usda", p, kind = "anthroportic")$passed)
   expect_false(isTRUE(.f425("anthropic_epipedon_usda", p)$passed))
   r <- run_usda_subgroup(p, "LEF")
   expect_identical(r$assigned$name, "Anthroportic Udorthents")
@@ -310,13 +310,13 @@ test_that("Fluventic Endoaquepts needs the Aeric colours; Fluvaquentic the organ
                   munsell_value_moist = c(4, 5, 5), munsell_chroma_moist = c(2, 1, 1),
                   redoximorphic_features_pct = c(0, 20, 20), stringsAsFactors = FALSE)
   p <- .p425(h, site = list(slope_pct = 1))
-  expect_true(.f425("sg_incept_fluventic", p)$passed)          # 0.3 % at 125 cm
-  expect_false(.f425("sg_incept_aeric", p, rule = "endoaquept")$passed)
+  expect_true(.f425("sg_incept_fluventic_usda", p)$passed)          # 0.3 % at 125 cm
+  expect_false(.f425("sg_incept_aeric_usda", p, rule = "endoaquept")$passed)
   expect_identical(run_usda_subgroup(p, "KAK")$assigned$name, "Fluvaquentic Endoaquepts")
   h$munsell_chroma_moist[2] <- 4; h$redoximorphic_features_pct[2] <- 0
   expect_identical(run_usda_subgroup(.p425(h, site = list(slope_pct = 1)), "KAK")$assigned$name,
                    "Fluventic Endoaquepts")
-  expect_false(.f425("sg_incept_fluventic", .p425(h, site = list(slope_pct = 30)))$passed)
+  expect_false(.f425("sg_incept_fluventic_usda", .p425(h, site = list(slope_pct = 30)))$passed)
 })
 
 test_that("Dystric, Rendollic and Oxic criteria", {
@@ -327,14 +327,14 @@ test_that("Dystric, Rendollic and Oxic criteria", {
                   water_content_1500kpa = c(10, 12, 12), oc_pct = c(1.5, 0.4, 0.2),
                   stringsAsFactors = FALSE)
   p <- .p425(h)
-  expect_true(.f425("sg_incept_no_carbonates", p)$passed)
-  expect_true(.f425("sg_incept_oxic", p)$passed)                # 13 cmol/kg clay
+  expect_true(.f425("sg_incept_no_carbonates_usda", p)$passed)
+  expect_true(.f425("sg_incept_oxic_usda", p)$passed)                # 13 cmol/kg clay
   h$ph_h2o <- NA
-  expect_true(is.na(.f425("sg_incept_no_carbonates", .p425(h))$passed))
+  expect_true(is.na(.f425("sg_incept_no_carbonates_usda", .p425(h))$passed))
   h$caco3_pct <- c(0, 0, 5)
-  expect_false(.f425("sg_incept_no_carbonates", .p425(h))$passed)
+  expect_false(.f425("sg_incept_no_carbonates_usda", .p425(h))$passed)
   h$cec_cmol <- c(20, 20, 20)
-  expect_false(.f425("sg_incept_oxic", .p425(h))$passed)
+  expect_false(.f425("sg_incept_oxic_usda", .p425(h))$passed)
 })
 
 test_that("canonical fixtures that move with the KST lists", {

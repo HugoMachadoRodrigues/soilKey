@@ -17,7 +17,7 @@ subgroups:
       name: "Leptic Natralbolls"
       tests:
         all_of:
-          - sg_mollisol_leptic: {}
+          - sg_mollisol_leptic_usda: {}
     - code: "IAAB"
       name: "Typic Natralbolls"
       tests:
@@ -28,36 +28,36 @@ subgroups:
       name: "Xerertic Argialbolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
-          - sg_mollisol_moisture: { kind: "xeric_summer" }
+          - sg_mollisol_vertic_usda: {}
+          - sg_mollisol_moisture_usda: { kind: "xeric_summer" }
     - code: "IABB"
       name: "Vertic Argialbolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IABC"
       name: "Argiaquic Xeric Argialbolls"
       tests:
         all_of:
           - none_of:
-              - sg_mollisol_abruptic: { change_only: true }
-          - sg_mollisol_moisture: { kind: "xeric_summer" }
+              - sg_mollisol_abruptic_usda: { change_only: true }
+          - sg_mollisol_moisture_usda: { kind: "xeric_summer" }
     - code: "IABD"
       name: "Argiaquic Argialbolls"
       tests:
         all_of:
           - none_of:
-              - sg_mollisol_abruptic: { change_only: true }
+              - sg_mollisol_abruptic_usda: { change_only: true }
     - code: "IABE"
       name: "Xeric Argialbolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "xeric_summer" }
+          - sg_mollisol_moisture_usda: { kind: "xeric_summer" }
     - code: "IABF"
       name: "Aquandic Argialbolls"
       tests:
         all_of:
-          - sg_mollisol_aquandic: {}
+          - sg_mollisol_aquandic_usda: {}
     - code: "IABG"
       name: "Typic Argialbolls"
       tests:
@@ -70,7 +70,7 @@ subgroups:
       name: "Vertic Cryaquolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IBAB"
       name: "Histic Cryaquolls"
       tests:
@@ -80,12 +80,12 @@ subgroups:
       name: "Thapto-Histic Cryaquolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_histic: {}
+          - sg_mollisol_thapto_histic_usda: {}
     - code: "IBAD"
       name: "Aquandic Cryaquolls"
       tests:
         all_of:
-          - sg_mollisol_aquandic: {}
+          - sg_mollisol_aquandic_usda: {}
     - code: "IBAE"
       name: "Argic Cryaquolls"
       tests:
@@ -95,17 +95,17 @@ subgroups:
       name: "Calcic Cryaquolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "mollic" }
+          - sg_mollisol_calcic_usda: { mode: "mollic" }
     - code: "IBAG"
       name: "Cumulic Cryaquolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, finer: false }
+          - sg_mollisol_mollic_usda: { min_cm: 50, finer: false }
     - code: "IBAH"
       name: "Thapto-Humic Cryaquolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IBAI"
       name: "Typic Cryaquolls"
       tests:
@@ -121,7 +121,7 @@ subgroups:
       name: "Vertic Duraquolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: { duripan: true }
+          - sg_mollisol_vertic_usda: { duripan: true }
     - code: "IBBC"
       name: "Argic Duraquolls"
       tests:
@@ -142,12 +142,12 @@ subgroups:
       name: "Vertic Natraquolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IBCC"
       name: "Glossic Natraquolls"
       tests:
         all_of:
-          - sg_mollisol_glossic: {}
+          - sg_mollisol_glossic_usda: {}
     - code: "IBCD"
       name: "Typic Natraquolls"
       tests:
@@ -163,7 +163,7 @@ subgroups:
       name: "Aeric Calciaquolls"
       tests:
         all_of:
-          - sg_mollisol_aeric: {}
+          - sg_mollisol_aeric_usda: {}
     - code: "IBDC"
       name: "Typic Calciaquolls"
       tests:
@@ -174,22 +174,22 @@ subgroups:
       name: "Arenic Argiaquolls"
       tests:
         all_of:
-          - sg_mollisol_arenic: { min_cm: 50, max_cm: 100 }
+          - sg_mollisol_arenic_usda: { min_cm: 50, max_cm: 100 }
     - code: "IBEB"
       name: "Grossarenic Argiaquolls"
       tests:
         all_of:
-          - sg_mollisol_arenic: { min_cm: 100 }
+          - sg_mollisol_arenic_usda: { min_cm: 100 }
     - code: "IBEC"
       name: "Vertic Argiaquolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IBED"
       name: "Abruptic Argiaquolls"
       tests:
         all_of:
-          - sg_mollisol_abruptic: { horizon: "argillic" }
+          - sg_mollisol_abruptic_usda: { horizon: "argillic" }
     - code: "IBEE"
       name: "Typic Argiaquolls"
       tests:
@@ -200,19 +200,19 @@ subgroups:
       name: "Cumulic Vertic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 60, finer: false }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 60, finer: false }
+          - sg_mollisol_vertic_usda: {}
     - code: "IBFB"
       name: "Fluvaquentic Vertic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "all125" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IBFC"
       name: "Vertic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IBFD"
       name: "Histic Epiaquolls"
       tests:
@@ -222,32 +222,32 @@ subgroups:
       name: "Thapto-Histic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_histic: {}
+          - sg_mollisol_thapto_histic_usda: {}
     - code: "IBFF"
       name: "Aquandic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_aquandic: {}
+          - sg_mollisol_aquandic_usda: {}
     - code: "IBFG"
       name: "Duric Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IBFH"
       name: "Cumulic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 60, finer: false }
+          - sg_mollisol_mollic_usda: { min_cm: 60, finer: false }
     - code: "IBFI"
       name: "Thapto-Humic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IBFJ"
       name: "Fluvaquentic Epiaquolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "all125" }
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
     - code: "IBFK"
       name: "Typic Epiaquolls"
       tests:
@@ -263,19 +263,19 @@ subgroups:
       name: "Cumulic Vertic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 60, finer: false }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 60, finer: false }
+          - sg_mollisol_vertic_usda: {}
     - code: "IBGC"
       name: "Fluvaquentic Vertic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "all125" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IBGD"
       name: "Vertic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IBGE"
       name: "Histic Endoaquolls"
       tests:
@@ -285,32 +285,32 @@ subgroups:
       name: "Thapto-Histic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_histic: {}
+          - sg_mollisol_thapto_histic_usda: {}
     - code: "IBGG"
       name: "Aquandic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_aquandic: {}
+          - sg_mollisol_aquandic_usda: {}
     - code: "IBGH"
       name: "Duric Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IBGI"
       name: "Cumulic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 60, finer: false }
+          - sg_mollisol_mollic_usda: { min_cm: 60, finer: false }
     - code: "IBGJ"
       name: "Thapto-Humic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IBGK"
       name: "Fluvaquentic Endoaquolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "all125" }
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
     - code: "IBGL"
       name: "Typic Endoaquolls"
       tests:
@@ -339,7 +339,7 @@ subgroups:
       name: "Vertic Haprendolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "ICBC"
       name: "Inceptic Haprendolls"
       tests:
@@ -349,7 +349,7 @@ subgroups:
       name: "Entic Haprendolls"
       tests:
         all_of:
-          - sg_mollisol_entic: { mode: "haprendoll" }
+          - sg_mollisol_entic_usda: { mode: "haprendoll" }
     - code: "ICBE"
       name: "Typic Haprendolls"
       tests:
@@ -372,7 +372,7 @@ subgroups:
       name: "Aquic Haplogelolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "distinct", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "distinct", max_cm: 100 }
     - code: "IDAD"
       name: "Oxyaquic Haplogelolls"
       tests:
@@ -387,18 +387,18 @@ subgroups:
       name: "Cumulic Haplogelolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
-          - sg_mollisol_fluventic: { oc: "irregular", slope_htm: false }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
+          - sg_mollisol_fluventic_usda: { oc: "irregular", slope_htm: false }
     - code: "IDAG"
       name: "Fluventic Haplogelolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IDAH"
       name: "Pachic Haplogelolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
     - code: "IDAI"
       name: "Typic Haplogelolls"
       tests:
@@ -416,7 +416,7 @@ subgroups:
       name: "Calcic Duricryolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "above_duripan" }
+          - sg_mollisol_calcic_usda: { mode: "above_duripan" }
     - code: "IEAC"
       name: "Typic Duricryolls"
       tests:
@@ -433,7 +433,7 @@ subgroups:
       name: "Aquic Palecryolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IECB"
       name: "Oxyaquic Palecryolls"
       tests:
@@ -443,17 +443,17 @@ subgroups:
       name: "Abruptic Palecryolls"
       tests:
         all_of:
-          - sg_mollisol_abruptic: { horizon: "argillic" }
+          - sg_mollisol_abruptic_usda: { horizon: "argillic" }
     - code: "IECD"
       name: "Pachic Palecryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
     - code: "IECE"
       name: "Ustic Palecryolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "ustic_cryoll" }
+          - sg_mollisol_moisture_usda: { kind: "ustic_cryoll" }
     - code: "IECF"
       name: "Xeric Palecryolls"
       tests:
@@ -474,7 +474,7 @@ subgroups:
       name: "Vertic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IEDC"
       name: "Andic Argicryolls"
       tests:
@@ -489,12 +489,12 @@ subgroups:
       name: "Abruptic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_abruptic: { horizon: "argillic" }
+          - sg_mollisol_abruptic_usda: { horizon: "argillic" }
     - code: "IEDF"
       name: "Aquic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IEDG"
       name: "Oxyaquic Argicryolls"
       tests:
@@ -504,28 +504,28 @@ subgroups:
       name: "Calcic Pachic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IEDI"
       name: "Pachic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
     - code: "IEDJ"
       name: "Calcic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IEDK"
       name: "Alfic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_alfic: {}
+          - sg_mollisol_alfic_usda: {}
     - code: "IEDL"
       name: "Ustic Argicryolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "ustic_cryoll" }
+          - sg_mollisol_moisture_usda: { kind: "ustic_cryoll" }
     - code: "IEDM"
       name: "Xeric Argicryolls"
       tests:
@@ -556,12 +556,12 @@ subgroups:
       name: "Pachic Calcicryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
     - code: "IEEE"
       name: "Ustic Calcicryolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "ustic_cryoll" }
+          - sg_mollisol_moisture_usda: { kind: "ustic_cryoll" }
     - code: "IEEF"
       name: "Xeric Calcicryolls"
       tests:
@@ -582,7 +582,7 @@ subgroups:
       name: "Vertic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IEFC"
       name: "Andic Haplocryolls"
       tests:
@@ -597,31 +597,31 @@ subgroups:
       name: "Aquic Cumulic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
-          - sg_mollisol_fluventic: { oc: "irregular" }
-          - sg_mollisol_aquic: { form: "distinct", max_cm: 100 }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
+          - sg_mollisol_fluventic_usda: { oc: "irregular" }
+          - sg_mollisol_aquic_usda: { form: "distinct", max_cm: 100 }
     - code: "IEFF"
       name: "Cumulic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
-          - sg_mollisol_fluventic: { oc: "irregular" }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
+          - sg_mollisol_fluventic_usda: { oc: "irregular" }
     - code: "IEFG"
       name: "Thapto-Humic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IEFH"
       name: "Fluvaquentic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
-          - sg_mollisol_aquic: { form: "distinct", max_cm: 100 }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
+          - sg_mollisol_aquic_usda: { form: "distinct", max_cm: 100 }
     - code: "IEFI"
       name: "Aquic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "distinct", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "distinct", max_cm: 100 }
     - code: "IEFJ"
       name: "Oxyaquic Haplocryolls"
       tests:
@@ -631,28 +631,28 @@ subgroups:
       name: "Calcic Pachic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IEFL"
       name: "Pachic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 40 }
     - code: "IEFM"
       name: "Fluventic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IEFN"
       name: "Calcic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IEFO"
       name: "Ustic Haplocryolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "ustic_cryoll" }
+          - sg_mollisol_moisture_usda: { kind: "ustic_cryoll" }
     - code: "IEFP"
       name: "Xeric Haplocryolls"
       tests:
@@ -670,12 +670,12 @@ subgroups:
       name: "Vertic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: { duripan: true }
+          - sg_mollisol_vertic_usda: { duripan: true }
     - code: "IFAB"
       name: "Vitritorrandic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - vitrandic_subgroup_usda: {}
     - code: "IFAC"
       name: "Vitrandic Durixerolls"
@@ -686,60 +686,60 @@ subgroups:
       name: "Aquic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "above_duripan" }
+          - sg_mollisol_aquic_usda: { form: "above_duripan" }
     - code: "IFAE"
       name: "Paleargidic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_abruptic: { alt15: true }
-          - sg_mollisol_duripan: { mode: "weak" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_abruptic_usda: { alt15: true }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
     - code: "IFAF"
       name: "Abruptic Argiduridic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_abruptic: { alt15: true }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_abruptic_usda: { alt15: true }
     - code: "IFAG"
       name: "Cambidic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - entic_durustoll_usda: {}
-          - sg_mollisol_duripan: { mode: "weak" }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
     - code: "IFAH"
       name: "Haploduridic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - entic_durustoll_usda: {}
     - code: "IFAI"
       name: "Argidic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_duripan: { mode: "weak" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
     - code: "IFAJ"
       name: "Argiduridic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFAK"
       name: "Haplic Palexerollic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_duripan: { mode: "weak" }
-          - sg_mollisol_abruptic: { alt15: true }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
+          - sg_mollisol_abruptic_usda: { alt15: true }
     - code: "IFAL"
       name: "Palexerollic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_abruptic: { alt15: true }
+          - sg_mollisol_abruptic_usda: { alt15: true }
     - code: "IFAM"
       name: "Haplic Haploxerollic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_duripan: { mode: "weak" }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
           - entic_durustoll_usda: {}
     - code: "IFAN"
       name: "Haploxerollic Durixerolls"
@@ -750,7 +750,7 @@ subgroups:
       name: "Haplic Durixerolls"
       tests:
         all_of:
-          - sg_mollisol_duripan: { mode: "weak" }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
     - code: "IFAP"
       name: "Typic Durixerolls"
       tests:
@@ -761,28 +761,28 @@ subgroups:
       name: "Vertic Natrixerolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IFBB"
       name: "Aquic Duric Natrixerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
-          - sg_mollisol_duric: {}
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_duric_usda: {}
     - code: "IFBC"
       name: "Aquic Natrixerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IFBD"
       name: "Aridic Natrixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFBE"
       name: "Duric Natrixerolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IFBF"
       name: "Typic Natrixerolls"
       tests:
@@ -793,7 +793,7 @@ subgroups:
       name: "Vertic Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IFCB"
       name: "Vitrandic Palexerolls"
       tests:
@@ -803,28 +803,28 @@ subgroups:
       name: "Aquic Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IFCD"
       name: "Pachic Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IFCE"
       name: "Petrocalcidic Palexerolls"
       tests:
         all_of:
           - petrocalcic_subgroup_usda: { max_top_cm: 150 }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFCF"
       name: "Duric Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IFCG"
       name: "Aridic Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFCH"
       name: "Petrocalcic Palexerolls"
       tests:
@@ -834,12 +834,12 @@ subgroups:
       name: "Ultic Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_ultic: { zone: "argillic50" }
+          - sg_mollisol_ultic_usda: { zone: "argillic50" }
     - code: "IFCJ"
       name: "Haplic Palexerolls"
       tests:
         all_of:
-          - sg_mollisol_haplic_palexeroll: {}
+          - sg_mollisol_haplic_palexeroll_usda: {}
     - code: "IFCK"
       name: "Typic Palexerolls"
       tests:
@@ -851,7 +851,7 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFDB"
       name: "Lithic Calcixerolls"
       tests:
@@ -861,12 +861,12 @@ subgroups:
       name: "Vertic Calcixerolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IFDD"
       name: "Aquic Calcixerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "concentrations", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "concentrations", max_cm: 75 }
     - code: "IFDE"
       name: "Oxyaquic Calcixerolls"
       tests:
@@ -876,7 +876,7 @@ subgroups:
       name: "Pachic Calcixerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IFDG"
       name: "Vitrandic Calcixerolls"
       tests:
@@ -886,12 +886,12 @@ subgroups:
       name: "Aridic Calcixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFDI"
       name: "Vermic Calcixerolls"
       tests:
         all_of:
-          - sg_mollisol_vermic: { mode: "any" }
+          - sg_mollisol_vermic_usda: { mode: "any" }
     - code: "IFDJ"
       name: "Typic Calcixerolls"
       tests:
@@ -903,13 +903,13 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFEB"
       name: "Lithic Ultic Argixerolls"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_ultic: { zone: "lithic" }
+          - sg_mollisol_ultic_usda: { zone: "lithic" }
     - code: "IFEC"
       name: "Lithic Argixerolls"
       tests:
@@ -919,13 +919,13 @@ subgroups:
       name: "Torrertic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IFEE"
       name: "Vertic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IFEF"
       name: "Andic Argixerolls"
       tests:
@@ -935,7 +935,7 @@ subgroups:
       name: "Vitritorrandic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - vitrandic_subgroup_usda: {}
     - code: "IFEH"
       name: "Vitrandic Argixerolls"
@@ -946,13 +946,13 @@ subgroups:
       name: "Aquultic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFEJ"
       name: "Aquic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IFEK"
       name: "Oxyaquic Argixerolls"
       tests:
@@ -962,56 +962,56 @@ subgroups:
       name: "Alfic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_alfic: {}
+          - sg_mollisol_alfic_usda: {}
     - code: "IFEM"
       name: "Calcic Pachic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_secondary" }
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_calcic_usda: { mode: "psc_secondary" }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IFEN"
       name: "Pachic Ultic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFEO"
       name: "Pachic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IFEP"
       name: "Argiduridic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_duric_usda: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFEQ"
       name: "Duric Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IFER"
       name: "Calciargidic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_secondary" }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_calcic_usda: { mode: "psc_secondary" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFES"
       name: "Aridic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFET"
       name: "Calcic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_secondary" }
+          - sg_mollisol_calcic_usda: { mode: "psc_secondary" }
     - code: "IFEU"
       name: "Ultic Argixerolls"
       tests:
         all_of:
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFEV"
       name: "Typic Argixerolls"
       tests:
@@ -1023,13 +1023,13 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFFB"
       name: "Lithic Ultic Haploxerolls"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_ultic: { zone: "lithic" }
+          - sg_mollisol_ultic_usda: { zone: "lithic" }
     - code: "IFFC"
       name: "Lithic Haploxerolls"
       tests:
@@ -1039,13 +1039,13 @@ subgroups:
       name: "Torrertic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IFFE"
       name: "Vertic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IFFF"
       name: "Andic Haploxerolls"
       tests:
@@ -1055,7 +1055,7 @@ subgroups:
       name: "Vitritorrandic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - vitrandic_subgroup_usda: {}
     - code: "IFFH"
       name: "Vitrandic Haploxerolls"
@@ -1066,50 +1066,50 @@ subgroups:
       name: "Aquic Cumulic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
-          - sg_mollisol_mollic: { min_cm: 50 }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IFFJ"
       name: "Cumulic Ultic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
-          - sg_mollisol_fluventic: { oc: "at125" }
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFFK"
       name: "Cumulic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IFFL"
       name: "Thapto-Humic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IFFM"
       name: "Fluvaquentic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "all125" }
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IFFN"
       name: "Aquic Duric Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
-          - sg_mollisol_duric: {}
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_duric_usda: {}
     - code: "IFFO"
       name: "Aquultic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFFP"
       name: "Aquic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IFFQ"
       name: "Oxyaquic Haploxerolls"
       tests:
@@ -1119,95 +1119,95 @@ subgroups:
       name: "Calcic Pachic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_secondary" }
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_calcic_usda: { mode: "psc_secondary" }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IFFS"
       name: "Pachic Ultic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFFT"
       name: "Pachic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IFFU"
       name: "Torrifluventic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_fluventic: { oc: "all125" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
     - code: "IFFV"
       name: "Duridic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_duric: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_duric_usda: {}
     - code: "IFFW"
       name: "Calcidic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_calcic: { mode: "psc_secondary" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_calcic_usda: { mode: "psc_secondary" }
     - code: "IFFX"
       name: "Torripsammentic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_psammentic: { mode: "profile" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_psammentic_usda: { mode: "profile" }
     - code: "IFFY"
       name: "Torriorthentic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_entic: { mode: "cambic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
     - code: "IFFZ"
       name: "Aridic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IFFZa"
       name: "Duric Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IFFZb"
       name: "Psammentic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_psammentic: { mode: "profile" }
+          - sg_mollisol_psammentic_usda: { mode: "profile" }
     - code: "IFFZc"
       name: "Fluventic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "all125" }
+          - sg_mollisol_fluventic_usda: { oc: "all125" }
     - code: "IFFZd"
       name: "Vermic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_vermic: { mode: "xeroll" }
+          - sg_mollisol_vermic_usda: { mode: "xeroll" }
     - code: "IFFZe"
       name: "Calcic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_secondary" }
+          - sg_mollisol_calcic_usda: { mode: "psc_secondary" }
     - code: "IFFZf"
       name: "Entic Ultic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_entic: { mode: "cambic" }
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFFZg"
       name: "Ultic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_ultic: { zone: "upper75" }
+          - sg_mollisol_ultic_usda: { zone: "upper75" }
     - code: "IFFZh"
       name: "Entic Haploxerolls"
       tests:
         all_of:
-          - sg_mollisol_entic: { mode: "cambic" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
     - code: "IFFZi"
       name: "Typic Haploxerolls"
       tests:
@@ -1220,18 +1220,18 @@ subgroups:
       name: "Natric Durustolls"
       tests:
         all_of:
-          - sg_mollisol_duripan: { mode: "natric_above" }
+          - sg_mollisol_duripan_usda: { mode: "natric_above" }
     - code: "IGAB"
       name: "Haploduridic Durustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - entic_durustoll_usda: {}
     - code: "IGAC"
       name: "Argiduridic Durustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGAD"
       name: "Entic Durustolls"
       tests:
@@ -1241,7 +1241,7 @@ subgroups:
       name: "Haplic Durustolls"
       tests:
         all_of:
-          - sg_mollisol_duripan: { mode: "weak" }
+          - sg_mollisol_duripan_usda: { mode: "weak" }
     - code: "IGAF"
       name: "Typic Durustolls"
       tests:
@@ -1252,63 +1252,63 @@ subgroups:
       name: "Leptic Torrertic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_leptic: {}
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_leptic_usda: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGBB"
       name: "Torrertic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGBC"
       name: "Leptic Vertic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_leptic: {}
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_leptic_usda: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGBD"
       name: "Glossic Vertic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_glossic: {}
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_glossic_usda: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGBE"
       name: "Vertic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGBF"
       name: "Aridic Leptic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_leptic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_leptic_usda: {}
     - code: "IGBG"
       name: "Leptic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_leptic: {}
+          - sg_mollisol_leptic_usda: {}
     - code: "IGBH"
       name: "Aquic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "natrustoll" }
+          - sg_mollisol_aquic_usda: { form: "natrustoll" }
     - code: "IGBI"
       name: "Aridic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGBJ"
       name: "Duric Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IGBK"
       name: "Glossic Natrustolls"
       tests:
         all_of:
-          - sg_mollisol_glossic: {}
+          - sg_mollisol_glossic_usda: {}
     - code: "IGBL"
       name: "Typic Natrustolls"
       tests:
@@ -1335,19 +1335,19 @@ subgroups:
       name: "Torrertic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGCE"
       name: "Udertic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGCF"
       name: "Vertic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGCG"
       name: "Petrocalcic Calciustolls"
       tests:
@@ -1362,7 +1362,7 @@ subgroups:
       name: "Aquic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "concentrations", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "concentrations", max_cm: 75 }
     - code: "IGCJ"
       name: "Oxyaquic Calciustolls"
       tests:
@@ -1372,17 +1372,17 @@ subgroups:
       name: "Pachic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IGCL"
       name: "Aridic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGCM"
       name: "Udic Calciustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
     - code: "IGCN"
       name: "Typic Calciustolls"
       tests:
@@ -1393,29 +1393,29 @@ subgroups:
       name: "Torrertic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGDB"
       name: "Udertic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGDC"
       name: "Vertic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGDD"
       name: "Aquic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IGDE"
       name: "Pachic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IGDF"
       name: "Petrocalcic Paleustolls"
       tests:
@@ -1425,28 +1425,28 @@ subgroups:
       name: "Calcidic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_horizon" }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_calcic_usda: { mode: "psc_horizon" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGDH"
       name: "Aridic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGDI"
       name: "Udic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
     - code: "IGDJ"
       name: "Calcic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "psc_horizon" }
+          - sg_mollisol_calcic_usda: { mode: "psc_horizon" }
     - code: "IGDK"
       name: "Entic Paleustolls"
       tests:
         all_of:
-          - sg_mollisol_entic: { mode: "carbonates" }
+          - sg_mollisol_entic_usda: { mode: "carbonates" }
     - code: "IGDL"
       name: "Typic Paleustolls"
       tests:
@@ -1458,13 +1458,13 @@ subgroups:
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGEB"
       name: "Alfic Lithic Argiustolls"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_alfic: { glossic: false }
+          - sg_mollisol_alfic_usda: { glossic: false }
     - code: "IGEC"
       name: "Lithic Argiustolls"
       tests:
@@ -1474,38 +1474,38 @@ subgroups:
       name: "Aquertic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGEE"
       name: "Torrertic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGEF"
       name: "Pachic Udertic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGEG"
       name: "Udertic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGEH"
       name: "Pachic Vertic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGEI"
       name: "Vertic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGEJ"
       name: "Andic Argiustolls"
       tests:
@@ -1515,7 +1515,7 @@ subgroups:
       name: "Vitritorrandic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - vitrandic_subgroup_usda: {}
     - code: "IGEL"
       name: "Vitrandic Argiustolls"
@@ -1526,7 +1526,7 @@ subgroups:
       name: "Aquic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IGEN"
       name: "Oxyaquic Argiustolls"
       tests:
@@ -1536,33 +1536,33 @@ subgroups:
       name: "Pachic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IGEP"
       name: "Alfic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_alfic: {}
+          - sg_mollisol_alfic_usda: {}
     - code: "IGEQ"
       name: "Calcidic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "within" }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_calcic_usda: { mode: "within" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGER"
       name: "Aridic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGES"
       name: "Udic Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
     - code: "IGET"
       name: "Duric Argiustolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IGEU"
       name: "Typic Argiustolls"
       tests:
@@ -1578,18 +1578,18 @@ subgroups:
       name: "Aquic Vermustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IGFC"
       name: "Pachic Vermustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 75, finer: false }
+          - sg_mollisol_mollic_usda: { min_cm: 75, finer: false }
     - code: "IGFD"
       name: "Entic Vermustolls"
       tests:
         all_of:
           - none_of:
-              - sg_mollisol_mollic: { min_cm: 50, finer: false }
+              - sg_mollisol_mollic_usda: { min_cm: 50, finer: false }
     - code: "IGFE"
       name: "Typic Vermustolls"
       tests:
@@ -1605,13 +1605,13 @@ subgroups:
       name: "Ruptic-Lithic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_ruptic_lithic: {}
+          - sg_mollisol_ruptic_lithic_usda: {}
     - code: "IGGC"
       name: "Aridic Lithic Haplustolls"
       tests:
         all_of:
           - lithic_contact_usda: { max_top_cm: 50 }
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGGD"
       name: "Lithic Haplustolls"
       tests:
@@ -1621,49 +1621,49 @@ subgroups:
       name: "Aquertic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGGF"
       name: "Torrertic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGGG"
       name: "Pachic Udertic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGGH"
       name: "Udertic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGGI"
       name: "Pachic Vertic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_vertic_usda: {}
     - code: "IGGJ"
       name: "Vertic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IGGK"
       name: "Torroxic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_oxic: { mode: "apparent" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_oxic_usda: { mode: "apparent" }
     - code: "IGGL"
       name: "Oxic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_oxic: { mode: "apparent" }
+          - sg_mollisol_oxic_usda: { mode: "apparent" }
     - code: "IGGM"
       name: "Andic Haplustolls"
       tests:
@@ -1673,7 +1673,7 @@ subgroups:
       name: "Vitritorrandic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
           - vitrandic_subgroup_usda: {}
     - code: "IGGO"
       name: "Vitrandic Haplustolls"
@@ -1684,41 +1684,41 @@ subgroups:
       name: "Aquic Cumulic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
-          - sg_mollisol_mollic: { min_cm: 50, cumulic_frigid: true }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_mollic_usda: { min_cm: 50, cumulic_frigid: true }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IGGQ"
       name: "Cumulic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, cumulic_frigid: true }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_mollic_usda: { min_cm: 50, cumulic_frigid: true }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IGGR"
       name: "Anthraquic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_anthraquic: {}
+          - sg_mollisol_anthraquic_usda: {}
     - code: "IGGS"
       name: "Thapto-Humic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IGGT"
       name: "Fluvaquentic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IGGU"
       name: "Aquic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 100 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 100 }
     - code: "IGGV"
       name: "Pachic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IGGW"
       name: "Oxyaquic Haplustolls"
       tests:
@@ -1728,45 +1728,45 @@ subgroups:
       name: "Torrifluventic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IGGY"
       name: "Torriorthentic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
-          - sg_mollisol_entic: { mode: "cambic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
     - code: "IGGZ"
       name: "Aridic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "aridic" }
+          - sg_mollisol_moisture_usda: { kind: "aridic" }
     - code: "IGGZa"
       name: "Fluventic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IGGZb"
       name: "Duric Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_duric: {}
+          - sg_mollisol_duric_usda: {}
     - code: "IGGZc"
       name: "Udorthentic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
-          - sg_mollisol_entic: { mode: "cambic" }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
     - code: "IGGZd"
       name: "Udic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_moisture: { kind: "udic" }
+          - sg_mollisol_moisture_usda: { kind: "udic" }
     - code: "IGGZe"
       name: "Entic Haplustolls"
       tests:
         all_of:
-          - sg_mollisol_entic: { mode: "cambic" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
     - code: "IGGZf"
       name: "Typic Haplustolls"
       tests:
@@ -1784,39 +1784,39 @@ subgroups:
       name: "Leptic Vertic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_leptic: {}
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_leptic_usda: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHAC"
       name: "Glossic Vertic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_glossic: {}
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_glossic_usda: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHAD"
       name: "Vertic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHAE"
       name: "Leptic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_leptic: {}
+          - sg_mollisol_leptic_usda: {}
     - code: "IHAF"
       name: "Abruptic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_abruptic: { horizon: "natric" }
+          - sg_mollisol_abruptic_usda: { horizon: "natric" }
     - code: "IHAG"
       name: "Glossic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_glossic: {}
+          - sg_mollisol_glossic_usda: {}
     - code: "IHAH"
       name: "Calcic Natrudolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IHAI"
       name: "Typic Natrudolls"
       tests:
@@ -1832,28 +1832,28 @@ subgroups:
       name: "Vertic Calciudolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHBC"
       name: "Anthropic Petrocalcic Calciudolls"
       tests:
         all_of:
           - anthropic_epipedon_usda: {}
-          - sg_mollisol_htm_petrocalcic: {}
+          - sg_mollisol_htm_petrocalcic_usda: {}
     - code: "IHBD"
       name: "Aquic Calciudolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IHBE"
       name: "Thapto-Humic Calciudolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IHBF"
       name: "Fluventic Calciudolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IHBG"
       name: "Typic Calciudolls"
       tests:
@@ -1864,23 +1864,23 @@ subgroups:
       name: "Vertic Paleudolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHCB"
       name: "Aquic Pachic Paleudolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_aquic_usda: { form: "udoll" }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IHCC"
       name: "Pachic Paleudolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50 }
+          - sg_mollisol_mollic_usda: { min_cm: 50 }
     - code: "IHCD"
       name: "Aquic Paleudolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
     - code: "IHCE"
       name: "Oxyaquic Paleudolls"
       tests:
@@ -1890,7 +1890,7 @@ subgroups:
       name: "Calcic Paleudolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "paleudoll" }
+          - sg_mollisol_calcic_usda: { mode: "paleudoll" }
     - code: "IHCG"
       name: "Typic Paleudolls"
       tests:
@@ -1911,31 +1911,31 @@ subgroups:
       name: "Aquertic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_aquic_usda: { form: "udoll" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IHDD"
       name: "Oxyaquic Vertic Argiudolls"
       tests:
         all_of:
           - oxyaquic_subgroup_usda: {}
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHDE"
       name: "Pachic Vertic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_vertic_usda: {}
     - code: "IHDF"
       name: "Alfic Vertic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_alfic: {}
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_alfic_usda: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHDG"
       name: "Vertic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHDH"
       name: "Andic Argiudolls"
       tests:
@@ -1950,18 +1950,18 @@ subgroups:
       name: "Aquic Pachic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_aquic_usda: { form: "udoll" }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IHDK"
       name: "Pachic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IHDL"
       name: "Aquic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
+          - sg_mollisol_aquic_usda: { form: "udoll" }
     - code: "IHDM"
       name: "Oxyaquic Argiudolls"
       tests:
@@ -1971,37 +1971,37 @@ subgroups:
       name: "Lamellic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_lamellic: {}
+          - sg_mollisol_lamellic_usda: {}
     - code: "IHDO"
       name: "Psammentic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_psammentic: { mode: "argillic" }
+          - sg_mollisol_psammentic_usda: { mode: "argillic" }
     - code: "IHDP"
       name: "Arenic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_arenic: { min_cm: 50 }
+          - sg_mollisol_arenic_usda: { min_cm: 50 }
     - code: "IHDQ"
       name: "Abruptic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_abruptic: { horizon: "argillic" }
+          - sg_mollisol_abruptic_usda: { horizon: "argillic" }
     - code: "IHDR"
       name: "Alfic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_alfic: {}
+          - sg_mollisol_alfic_usda: {}
     - code: "IHDS"
       name: "Oxic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_oxic: { mode: "argillic" }
+          - sg_mollisol_oxic_usda: { mode: "argillic" }
     - code: "IHDT"
       name: "Calcic Argiudolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IHDU"
       name: "Typic Argiudolls"
       tests:
@@ -2018,7 +2018,7 @@ subgroups:
       tests:
         all_of:
           - none_of:
-              - sg_mollisol_mollic: { min_cm: 75, finer: false }
+              - sg_mollisol_mollic_usda: { min_cm: 75, finer: false }
     - code: "IHEC"
       name: "Typic Vermudolls"
       tests:
@@ -2039,19 +2039,19 @@ subgroups:
       name: "Aquertic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_aquic_usda: { form: "udoll" }
+          - sg_mollisol_vertic_usda: {}
     - code: "IHFD"
       name: "Pachic Vertic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_vertic_usda: {}
     - code: "IHFE"
       name: "Vertic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_vertic: {}
+          - sg_mollisol_vertic_usda: {}
     - code: "IHFF"
       name: "Andic Hapludolls"
       tests:
@@ -2066,47 +2066,47 @@ subgroups:
       name: "Aquic Cumulic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "depletions", max_cm: 75 }
-          - sg_mollisol_mollic: { min_cm: 60, finer: false, finer_half: true, cumulic_frigid: true }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_aquic_usda: { form: "depletions", max_cm: 75 }
+          - sg_mollisol_mollic_usda: { min_cm: 60, finer: false, finer_half: true, cumulic_frigid: true }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IHFI"
       name: "Cumulic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 60, finer: false, finer_half: true, cumulic_frigid: true }
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_mollic_usda: { min_cm: 60, finer: false, finer_half: true, cumulic_frigid: true }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IHFJ"
       name: "Thapto-Humic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_thapto_humic: {}
+          - sg_mollisol_thapto_humic_usda: {}
     - code: "IHFK"
       name: "Fluvaquentic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
-          - sg_mollisol_aquic: { form: "udoll" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
+          - sg_mollisol_aquic_usda: { form: "udoll" }
     - code: "IHFL"
       name: "Fluventic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_fluventic: { oc: "at125" }
+          - sg_mollisol_fluventic_usda: { oc: "at125" }
     - code: "IHFM"
       name: "Aquic Pachic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_aquic_usda: { form: "udoll" }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IHFN"
       name: "Pachic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_mollic: { min_cm: 50, frigid_cm: 40 }
+          - sg_mollisol_mollic_usda: { min_cm: 50, frigid_cm: 40 }
     - code: "IHFO"
       name: "Aquic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_aquic: { form: "udoll" }
+          - sg_mollisol_aquic_usda: { form: "udoll" }
     - code: "IHFP"
       name: "Oxyaquic Hapludolls"
       tests:
@@ -2116,17 +2116,17 @@ subgroups:
       name: "Vermic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_vermic: { mode: "hapludoll" }
+          - sg_mollisol_vermic_usda: { mode: "hapludoll" }
     - code: "IHFR"
       name: "Calcic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_calcic: { mode: "within" }
+          - sg_mollisol_calcic_usda: { mode: "within" }
     - code: "IHFS"
       name: "Entic Hapludolls"
       tests:
         all_of:
-          - sg_mollisol_entic: { mode: "cambic" }
+          - sg_mollisol_entic_usda: { mode: "cambic" }
     - code: "IHFT"
       name: "Typic Hapludolls"
       tests:

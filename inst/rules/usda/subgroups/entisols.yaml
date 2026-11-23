@@ -14,281 +14,281 @@ subgroups:
 
   # ====== WASSENTS ======
   "LAA":  # Frasiwassents (10, KST)
-    - { code: "LAAA", name: "Humic Fluic Frasiwassents", tests: { all_of: [{sg_ent_dark: {depth_cm: 18}}, {sg_ent_fluid: {rule: "fluic"}}] } }
-    - { code: "LAAB", name: "Humic Frasiwassents", tests: { all_of: [{sg_ent_dark: {depth_cm: 18}}] } }
-    - { code: "LAAC", name: "Fluic Frasiwassents", tests: { all_of: [{sg_ent_fluid: {rule: "fluic"}}] } }
+    - { code: "LAAA", name: "Humic Fluic Frasiwassents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 18}}, {sg_ent_fluid_usda: {rule: "fluic"}}] } }
+    - { code: "LAAB", name: "Humic Frasiwassents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 18}}] } }
+    - { code: "LAAC", name: "Fluic Frasiwassents", tests: { all_of: [{sg_ent_fluid_usda: {rule: "fluic"}}] } }
     - { code: "LAAD", name: "Lithic Frasiwassents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 100}}] } }
-    - { code: "LAAE", name: "Psammentic Frasiwassents", tests: { all_of: [{sg_ent_psammentic: {}}] } }
-    - { code: "LAAF", name: "Thapto-Histic Frasiwassents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LAAG", name: "Thapto-Humic Frasiwassents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LAAH", name: "Fluventic Frasiwassents", tests: { all_of: [{sg_ent_fluventic: {slope: false}}] } }
-    - { code: "LAAI", name: "Aeric Frasiwassents", tests: { all_of: [{sg_ent_aeric: {rule: "wassent"}}] } }
+    - { code: "LAAE", name: "Psammentic Frasiwassents", tests: { all_of: [{sg_ent_psammentic_usda: {}}] } }
+    - { code: "LAAF", name: "Thapto-Histic Frasiwassents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LAAG", name: "Thapto-Humic Frasiwassents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LAAH", name: "Fluventic Frasiwassents", tests: { all_of: [{sg_ent_fluventic_usda: {slope: false}}] } }
+    - { code: "LAAI", name: "Aeric Frasiwassents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "wassent"}}] } }
     - { code: "LAAJ", name: "Typic Frasiwassents", tests: { default: true } }
   "LAB":  # Psammowassents (6, KST)
-    - { code: "LABA", name: "Sulfic Psammowassents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
+    - { code: "LABA", name: "Sulfic Psammowassents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
     - { code: "LABB", name: "Lithic Psammowassents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 100}}] } }
-    - { code: "LABC", name: "Thapto-Humic Psammowassents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LABD", name: "Fluventic Psammowassents", tests: { all_of: [{sg_ent_fluventic: {slope: false}}] } }
-    - { code: "LABE", name: "Aeric Psammowassents", tests: { all_of: [{sg_ent_aeric: {rule: "wassent"}}] } }
+    - { code: "LABC", name: "Thapto-Humic Psammowassents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LABD", name: "Fluventic Psammowassents", tests: { all_of: [{sg_ent_fluventic_usda: {slope: false}}] } }
+    - { code: "LABE", name: "Aeric Psammowassents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "wassent"}}] } }
     - { code: "LABF", name: "Typic Psammowassents", tests: { default: true } }
   "LAC":  # Sulfiwassents (7, KST)
     - { code: "LACA", name: "Lithic Sulfiwassents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 100}}] } }
-    - { code: "LACB", name: "Haplic Sulfiwassents", tests: { all_of: [{sg_ent_fluid: {rule: "haplic"}}] } }
-    - { code: "LACC", name: "Thapto-Histic Sulfiwassents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LACD", name: "Thapto-Humic Sulfiwassents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LACE", name: "Fluventic Sulfiwassents", tests: { all_of: [{sg_ent_fluventic: {slope: false}}] } }
-    - { code: "LACF", name: "Aeric Sulfiwassents", tests: { all_of: [{sg_ent_aeric: {rule: "wassent"}}] } }
+    - { code: "LACB", name: "Haplic Sulfiwassents", tests: { all_of: [{sg_ent_fluid_usda: {rule: "haplic"}}] } }
+    - { code: "LACC", name: "Thapto-Histic Sulfiwassents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LACD", name: "Thapto-Humic Sulfiwassents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LACE", name: "Fluventic Sulfiwassents", tests: { all_of: [{sg_ent_fluventic_usda: {slope: false}}] } }
+    - { code: "LACF", name: "Aeric Sulfiwassents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "wassent"}}] } }
     - { code: "LACG", name: "Typic Sulfiwassents", tests: { default: true } }
   "LAD":  # Hydrowassents (6, KST)
-    - { code: "LADA", name: "Sulfic Hydrowassents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
-    - { code: "LADB", name: "Grossic Hydrowassents", tests: { all_of: [{sg_ent_fluid: {rule: "grossic"}}] } }
+    - { code: "LADA", name: "Sulfic Hydrowassents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
+    - { code: "LADB", name: "Grossic Hydrowassents", tests: { all_of: [{sg_ent_fluid_usda: {rule: "grossic"}}] } }
     - { code: "LADC", name: "Lithic Hydrowassents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 100}}] } }
-    - { code: "LADD", name: "Thapto-Histic Hydrowassents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LADE", name: "Thapto-Humic Hydrowassents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
+    - { code: "LADD", name: "Thapto-Histic Hydrowassents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LADE", name: "Thapto-Humic Hydrowassents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
     - { code: "LADF", name: "Typic Hydrowassents", tests: { default: true } }
   "LAE":  # Fluviwassents (6, KST)
-    - { code: "LAEA", name: "Sulfic Fluviwassents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
+    - { code: "LAEA", name: "Sulfic Fluviwassents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
     - { code: "LAEB", name: "Lithic Fluviwassents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 100}}] } }
-    - { code: "LAEC", name: "Thapto-Histic Fluviwassents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LAED", name: "Thapto-Humic Fluviwassents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LAEE", name: "Aeric Fluviwassents", tests: { all_of: [{sg_ent_aeric: {rule: "wassent"}}] } }
+    - { code: "LAEC", name: "Thapto-Histic Fluviwassents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LAED", name: "Thapto-Humic Fluviwassents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LAEE", name: "Aeric Fluviwassents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "wassent"}}] } }
     - { code: "LAEF", name: "Typic Fluviwassents", tests: { default: true } }
   "LAF":  # Haplowassents (4, KST)
-    - { code: "LAFA", name: "Sulfic Haplowassents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
+    - { code: "LAFA", name: "Sulfic Haplowassents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false, sulfidic_cm: 15, near_sulfuric: false}}] } }
     - { code: "LAFB", name: "Lithic Haplowassents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 100}}] } }
-    - { code: "LAFC", name: "Aeric Haplowassents", tests: { all_of: [{sg_ent_aeric: {rule: "wassent"}}] } }
+    - { code: "LAFC", name: "Aeric Haplowassents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "wassent"}}] } }
     - { code: "LAFD", name: "Typic Haplowassents", tests: { default: true } }
 
   # ====== AQUENTS ======
   "LBA":  # Sulfaquents (7, KST)
-    - { code: "LBAA", name: "Histic-Haplic Sulfaquents", tests: { all_of: [{histic_epipedon_usda: {}}, {sg_ent_fluid: {rule: "haplic"}}] } }
-    - { code: "LBAB", name: "Haplic Sulfaquents", tests: { all_of: [{sg_ent_fluid: {rule: "haplic"}}] } }
+    - { code: "LBAA", name: "Histic-Haplic Sulfaquents", tests: { all_of: [{histic_epipedon_usda: {}}, {sg_ent_fluid_usda: {rule: "haplic"}}] } }
+    - { code: "LBAB", name: "Haplic Sulfaquents", tests: { all_of: [{sg_ent_fluid_usda: {rule: "haplic"}}] } }
     - { code: "LBAC", name: "Histic Sulfaquents", tests: { all_of: [{histic_epipedon_usda: {}}] } }
-    - { code: "LBAD", name: "Thapto-Histic Sulfaquents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LBAE", name: "Thapto-Humic Sulfaquents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LBAF", name: "Fluventic Sulfaquents", tests: { all_of: [{sg_ent_fluventic: {slope: false}}] } }
+    - { code: "LBAD", name: "Thapto-Histic Sulfaquents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LBAE", name: "Thapto-Humic Sulfaquents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LBAF", name: "Fluventic Sulfaquents", tests: { all_of: [{sg_ent_fluventic_usda: {slope: false}}] } }
     - { code: "LBAG", name: "Typic Sulfaquents", tests: { default: true } }
   "LBB":  # Hydraquents (5, KST)
-    - { code: "LBBA", name: "Sulfic Hydraquents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false}}] } }
-    - { code: "LBBB", name: "Sodic Hydraquents", tests: { all_of: [{sg_ent_sodic: {min_esp: 15, max_cm: 100}}] } }
-    - { code: "LBBC", name: "Thapto-Histic Hydraquents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LBBD", name: "Thapto-Humic Hydraquents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
+    - { code: "LBBA", name: "Sulfic Hydraquents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false}}] } }
+    - { code: "LBBB", name: "Sodic Hydraquents", tests: { all_of: [{sg_ent_sodic_usda: {min_esp: 15, max_cm: 100}}] } }
+    - { code: "LBBC", name: "Thapto-Histic Hydraquents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LBBD", name: "Thapto-Humic Hydraquents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
     - { code: "LBBE", name: "Typic Hydraquents", tests: { default: true } }
   "LBC":  # Gelaquents (1, KST)
     - { code: "LBCA", name: "Typic Gelaquents", tests: { default: true } }
   "LBD":  # Cryaquents (2, KST)
-    - { code: "LBDA", name: "Aquandic Cryaquents", tests: { all_of: [{sg_ent_andic: {kind: "either"}}] } }
+    - { code: "LBDA", name: "Aquandic Cryaquents", tests: { all_of: [{sg_ent_andic_usda: {kind: "either"}}] } }
     - { code: "LBDB", name: "Typic Cryaquents", tests: { default: true } }
   "LBE":  # Psammaquents (9, KST)
     - { code: "LBEA", name: "Lithic Psammaquents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LBEB", name: "Sodic Psammaquents", tests: { all_of: [{sg_ent_sodic: {min_esp: 15, max_cm: 100}}] } }
+    - { code: "LBEB", name: "Sodic Psammaquents", tests: { all_of: [{sg_ent_sodic_usda: {min_esp: 15, max_cm: 100}}] } }
     - { code: "LBEC", name: "Spodic Psammaquents", tests: { all_of: [{spodic_subgroup_usda: {psamments: true}}] } }
-    - { code: "LBED", name: "Humaqueptic Psammaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}, {sg_ent_bs: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
-    - { code: "LBEE", name: "Mollic Psammaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
-    - { code: "LBEF", name: "Thapto-Histic Psammaquents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LBEG", name: "Thapto-Humic Psammaquents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LBEH", name: "Fluventic Psammaquents", tests: { all_of: [{sg_ent_fluventic: {slope: false}}] } }
+    - { code: "LBED", name: "Humaqueptic Psammaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}, {sg_ent_bs_usda: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
+    - { code: "LBEE", name: "Mollic Psammaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
+    - { code: "LBEF", name: "Thapto-Histic Psammaquents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LBEG", name: "Thapto-Humic Psammaquents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LBEH", name: "Fluventic Psammaquents", tests: { all_of: [{sg_ent_fluventic_usda: {slope: false}}] } }
     - { code: "LBEI", name: "Typic Psammaquents", tests: { default: true } }
   "LBF":  # Fluvaquents (9, KST)
-    - { code: "LBFA", name: "Sulfic Fluvaquents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false}}] } }
-    - { code: "LBFB", name: "Vertic Fluvaquents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LBFC", name: "Thapto-Histic Fluvaquents", tests: { all_of: [{sg_ent_thapto_histic: {}}] } }
-    - { code: "LBFD", name: "Thapto-Humic Fluvaquents", tests: { all_of: [{sg_ent_thapto_humic: {}}] } }
-    - { code: "LBFE", name: "Aquandic Fluvaquents", tests: { all_of: [{sg_ent_andic: {kind: "either"}}] } }
-    - { code: "LBFF", name: "Aeric Fluvaquents", tests: { all_of: [{sg_ent_aeric: {rule: "aquent_epi"}}] } }
-    - { code: "LBFG", name: "Humaqueptic Fluvaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}, {sg_ent_bs: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
-    - { code: "LBFH", name: "Mollic Fluvaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LBFA", name: "Sulfic Fluvaquents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false}}] } }
+    - { code: "LBFB", name: "Vertic Fluvaquents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LBFC", name: "Thapto-Histic Fluvaquents", tests: { all_of: [{sg_ent_thapto_histic_usda: {}}] } }
+    - { code: "LBFD", name: "Thapto-Humic Fluvaquents", tests: { all_of: [{sg_ent_thapto_humic_usda: {}}] } }
+    - { code: "LBFE", name: "Aquandic Fluvaquents", tests: { all_of: [{sg_ent_andic_usda: {kind: "either"}}] } }
+    - { code: "LBFF", name: "Aeric Fluvaquents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "aquent_epi"}}] } }
+    - { code: "LBFG", name: "Humaqueptic Fluvaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}, {sg_ent_bs_usda: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
+    - { code: "LBFH", name: "Mollic Fluvaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LBFI", name: "Typic Fluvaquents", tests: { default: true } }
   "LBG":  # Epiaquents (4, KST)
-    - { code: "LBGA", name: "Aeric Epiaquents", tests: { all_of: [{sg_ent_aeric: {rule: "aquent_epi"}}] } }
-    - { code: "LBGB", name: "Humaqueptic Epiaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}, {sg_ent_bs: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
-    - { code: "LBGC", name: "Mollic Epiaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LBGA", name: "Aeric Epiaquents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "aquent_epi"}}] } }
+    - { code: "LBGB", name: "Humaqueptic Epiaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}, {sg_ent_bs_usda: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
+    - { code: "LBGC", name: "Mollic Epiaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LBGD", name: "Typic Epiaquents", tests: { default: true } }
   "LBH":  # Endoaquents (7, KST)
-    - { code: "LBHA", name: "Sulfic Endoaquents", tests: { all_of: [{sg_ent_sulfic: {max_cm: 100, sulfuric: false}}] } }
+    - { code: "LBHA", name: "Sulfic Endoaquents", tests: { all_of: [{sg_ent_sulfic_usda: {max_cm: 100, sulfuric: false}}] } }
     - { code: "LBHB", name: "Lithic Endoaquents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LBHC", name: "Sodic Endoaquents", tests: { all_of: [{sg_ent_sodic: {min_esp: 15, max_cm: 100}}] } }
-    - { code: "LBHD", name: "Aeric Endoaquents", tests: { all_of: [{sg_ent_aeric: {rule: "aquent_endo"}}] } }
-    - { code: "LBHE", name: "Humaqueptic Endoaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}, {sg_ent_bs: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
-    - { code: "LBHF", name: "Mollic Endoaquents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LBHC", name: "Sodic Endoaquents", tests: { all_of: [{sg_ent_sodic_usda: {min_esp: 15, max_cm: 100}}] } }
+    - { code: "LBHD", name: "Aeric Endoaquents", tests: { all_of: [{sg_ent_aeric_usda: {rule: "aquent_endo"}}] } }
+    - { code: "LBHE", name: "Humaqueptic Endoaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}, {sg_ent_bs_usda: {op: "lt", value: 50, top: 0, bottom: 100, mode: "some"}}] } }
+    - { code: "LBHF", name: "Mollic Endoaquents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LBHG", name: "Typic Endoaquents", tests: { default: true } }
 
   # ====== FLUVENTS ======
   "LCA":  # Gelifluvents (2, KST)
-    - { code: "LCAA", name: "Aquic Gelifluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LCAA", name: "Aquic Gelifluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LCAB", name: "Typic Gelifluvents", tests: { default: true } }
   "LCB":  # Cryofluvents (6, KST)
-    - { code: "LCBA", name: "Andic Cryofluvents", tests: { all_of: [{sg_ent_andic: {kind: "andic"}}] } }
-    - { code: "LCBB", name: "Vitrandic Cryofluvents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LCBC", name: "Aquic Cryofluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 50}}] } }
+    - { code: "LCBA", name: "Andic Cryofluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "andic"}}] } }
+    - { code: "LCBB", name: "Vitrandic Cryofluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LCBC", name: "Aquic Cryofluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50}}] } }
     - { code: "LCBD", name: "Oxyaquic Cryofluvents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LCBE", name: "Mollic Cryofluvents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LCBE", name: "Mollic Cryofluvents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LCBF", name: "Typic Cryofluvents", tests: { default: true } }
   "LCC":  # Torrifluvents (12, KST)
-    - { code: "LCCA", name: "Ustertic Torrifluvents", tests: { all_of: [{sg_ent_vertic: {}}, {sg_ent_moisture: {kind: "torric_ustic"}}] } }
-    - { code: "LCCB", name: "Vertic Torrifluvents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LCCC", name: "Vitrixerandic Torrifluvents", tests: { all_of: [{sg_ent_moisture: {kind: "torric_xeric"}}, {sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LCCD", name: "Vitrandic Torrifluvents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LCCE", name: "Aquic Torrifluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100, soil_surface: true}}] } }
+    - { code: "LCCA", name: "Ustertic Torrifluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}, {sg_ent_moisture_usda: {kind: "torric_ustic"}}] } }
+    - { code: "LCCB", name: "Vertic Torrifluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LCCC", name: "Vitrixerandic Torrifluvents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_xeric"}}, {sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LCCD", name: "Vitrandic Torrifluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LCCE", name: "Aquic Torrifluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100, soil_surface: true}}] } }
     - { code: "LCCF", name: "Oxyaquic Torrifluvents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LCCG", name: "Duric Xeric Torrifluvents", tests: { all_of: [{sg_ent_durinodes: {}}, {sg_ent_moisture: {kind: "torric_xeric"}}] } }
-    - { code: "LCCH", name: "Duric Torrifluvents", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LCCI", name: "Ustic Torrifluvents", tests: { all_of: [{sg_ent_moisture: {kind: "torric_ustic"}}] } }
-    - { code: "LCCJ", name: "Xeric Torrifluvents", tests: { all_of: [{sg_ent_moisture: {kind: "torric_xeric"}}] } }
+    - { code: "LCCG", name: "Duric Xeric Torrifluvents", tests: { all_of: [{sg_ent_durinodes_usda: {}}, {sg_ent_moisture_usda: {kind: "torric_xeric"}}] } }
+    - { code: "LCCH", name: "Duric Torrifluvents", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LCCI", name: "Ustic Torrifluvents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_ustic"}}] } }
+    - { code: "LCCJ", name: "Xeric Torrifluvents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_xeric"}}] } }
     - { code: "LCCK", name: "Anthropic Torrifluvents", tests: { all_of: [{anthropic_epipedon_usda: {}}] } }
     - { code: "LCCL", name: "Typic Torrifluvents", tests: { default: true } }
   "LCD":  # Xerofluvents (9, KST)
-    - { code: "LCDA", name: "Vertic Xerofluvents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LCDB", name: "Aquandic Xerofluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 50, gley_cm: 150}}, {sg_ent_andic: {kind: "either"}}] } }
-    - { code: "LCDC", name: "Andic Xerofluvents", tests: { all_of: [{sg_ent_andic: {kind: "andic"}}] } }
-    - { code: "LCDD", name: "Vitrandic Xerofluvents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LCDE", name: "Aquic Xerofluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 50, gley_cm: 150, gley_aquic: true}}] } }
+    - { code: "LCDA", name: "Vertic Xerofluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LCDB", name: "Aquandic Xerofluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50, gley_cm: 150}}, {sg_ent_andic_usda: {kind: "either"}}] } }
+    - { code: "LCDC", name: "Andic Xerofluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "andic"}}] } }
+    - { code: "LCDD", name: "Vitrandic Xerofluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LCDE", name: "Aquic Xerofluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50, gley_cm: 150, gley_aquic: true}}] } }
     - { code: "LCDF", name: "Oxyaquic Xerofluvents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LCDG", name: "Durinodic Xerofluvents", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LCDH", name: "Mollic Xerofluvents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LCDG", name: "Durinodic Xerofluvents", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LCDH", name: "Mollic Xerofluvents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LCDI", name: "Typic Xerofluvents", tests: { default: true } }
   "LCE":  # Ustifluvents (10, KST)
-    - { code: "LCEA", name: "Aquertic Ustifluvents", tests: { all_of: [{sg_ent_vertic: {}}, {sg_ent_aquic: {max_cm: 50, gley_cm: 150}}] } }
-    - { code: "LCEB", name: "Torrertic Ustifluvents", tests: { all_of: [{sg_ent_moisture: {kind: "aridic"}}, {sg_ent_vertic: {}}] } }
-    - { code: "LCEC", name: "Vertic Ustifluvents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LCED", name: "Anthraquic Ustifluvents", tests: { all_of: [{sg_ent_anthro: {kind: "anthraquic"}}] } }
-    - { code: "LCEE", name: "Aquic Ustifluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 50, gley_cm: 150}}] } }
+    - { code: "LCEA", name: "Aquertic Ustifluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}, {sg_ent_aquic_usda: {max_cm: 50, gley_cm: 150}}] } }
+    - { code: "LCEB", name: "Torrertic Ustifluvents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "aridic"}}, {sg_ent_vertic_usda: {}}] } }
+    - { code: "LCEC", name: "Vertic Ustifluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LCED", name: "Anthraquic Ustifluvents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthraquic"}}] } }
+    - { code: "LCEE", name: "Aquic Ustifluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50, gley_cm: 150}}] } }
     - { code: "LCEF", name: "Oxyaquic Ustifluvents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LCEG", name: "Aridic Ustifluvents", tests: { all_of: [{sg_ent_moisture: {kind: "aridic"}}] } }
-    - { code: "LCEH", name: "Udic Ustifluvents", tests: { all_of: [{sg_ent_moisture: {kind: "udic"}}] } }
-    - { code: "LCEI", name: "Mollic Ustifluvents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LCEG", name: "Aridic Ustifluvents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "aridic"}}] } }
+    - { code: "LCEH", name: "Udic Ustifluvents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "udic"}}] } }
+    - { code: "LCEI", name: "Mollic Ustifluvents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LCEJ", name: "Typic Ustifluvents", tests: { default: true } }
   "LCF":  # Udifluvents (8, KST)
-    - { code: "LCFA", name: "Aquertic Udifluvents", tests: { all_of: [{sg_ent_vertic: {}}, {sg_ent_aquic: {max_cm: 50, gley_cm: 100}}] } }
-    - { code: "LCFB", name: "Vertic Udifluvents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LCFC", name: "Andic Udifluvents", tests: { all_of: [{sg_ent_andic: {kind: "andic"}}] } }
-    - { code: "LCFD", name: "Vitrandic Udifluvents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LCFE", name: "Aquic Udifluvents", tests: { all_of: [{sg_ent_aquic: {max_cm: 50, gley_cm: 100}}] } }
+    - { code: "LCFA", name: "Aquertic Udifluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}, {sg_ent_aquic_usda: {max_cm: 50, gley_cm: 100}}] } }
+    - { code: "LCFB", name: "Vertic Udifluvents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LCFC", name: "Andic Udifluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "andic"}}] } }
+    - { code: "LCFD", name: "Vitrandic Udifluvents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LCFE", name: "Aquic Udifluvents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50, gley_cm: 100}}] } }
     - { code: "LCFF", name: "Oxyaquic Udifluvents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LCFG", name: "Mollic Udifluvents", tests: { all_of: [{sg_ent_dark: {depth_cm: 15}}] } }
+    - { code: "LCFG", name: "Mollic Udifluvents", tests: { all_of: [{sg_ent_dark_usda: {depth_cm: 15}}] } }
     - { code: "LCFH", name: "Typic Udifluvents", tests: { default: true } }
 
   # ====== PSAMMENTS ======
   "LDA":  # Cryopsamments (7, KST)
     - { code: "LDAA", name: "Lithic Cryopsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LDAB", name: "Aquic Cryopsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 50}}] } }
+    - { code: "LDAB", name: "Aquic Cryopsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50}}] } }
     - { code: "LDAC", name: "Oxyaquic Cryopsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LDAD", name: "Vitrandic Cryopsamments", tests: { all_of: [{sg_ent_andic: {kind: "glass"}}] } }
+    - { code: "LDAD", name: "Vitrandic Cryopsamments", tests: { all_of: [{sg_ent_andic_usda: {kind: "glass"}}] } }
     - { code: "LDAE", name: "Spodic Cryopsamments", tests: { all_of: [{spodic_subgroup_usda: {psamments: true}}] } }
-    - { code: "LDAF", name: "Lamellic Cryopsamments", tests: { all_of: [{sg_ent_lamellae: {}}] } }
+    - { code: "LDAF", name: "Lamellic Cryopsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
     - { code: "LDAG", name: "Typic Cryopsamments", tests: { default: true } }
   "LDB":  # Torripsamments (8, KST)
     - { code: "LDBA", name: "Lithic Torripsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
     - { code: "LDBB", name: "Oxyaquic Torripsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LDBC", name: "Vitrandic Torripsamments", tests: { all_of: [{sg_ent_andic: {kind: "glass"}}] } }
-    - { code: "LDBD", name: "Haploduridic Torripsamments", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LDBE", name: "Ustic Torripsamments", tests: { all_of: [{sg_ent_moisture: {kind: "torric_ustic"}}] } }
-    - { code: "LDBF", name: "Xeric Torripsamments", tests: { all_of: [{sg_ent_moisture: {kind: "torric_xeric"}}] } }
-    - { code: "LDBG", name: "Rhodic Torripsamments", tests: { all_of: [{sg_ent_rhodic: {}}] } }
+    - { code: "LDBC", name: "Vitrandic Torripsamments", tests: { all_of: [{sg_ent_andic_usda: {kind: "glass"}}] } }
+    - { code: "LDBD", name: "Haploduridic Torripsamments", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LDBE", name: "Ustic Torripsamments", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_ustic"}}] } }
+    - { code: "LDBF", name: "Xeric Torripsamments", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_xeric"}}] } }
+    - { code: "LDBG", name: "Rhodic Torripsamments", tests: { all_of: [{sg_ent_rhodic_usda: {}}] } }
     - { code: "LDBH", name: "Typic Torripsamments", tests: { default: true } }
   "LDC":  # Quartzipsamments (13, KST)
     - { code: "LDCA", name: "Lithic Quartzipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LDCB", name: "Aquodic Quartzipsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}, {spodic_subgroup_usda: {psamments: true}}] } }
-    - { code: "LDCC", name: "Aquic Quartzipsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LDCB", name: "Aquodic Quartzipsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}, {spodic_subgroup_usda: {psamments: true}}] } }
+    - { code: "LDCC", name: "Aquic Quartzipsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LDCD", name: "Oxyaquic Quartzipsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LDCE", name: "Ustoxic Quartzipsamments", tests: { all_of: [{sg_ent_quartz_oxic: {regime: "ustic"}}] } }
-    - { code: "LDCF", name: "Udoxic Quartzipsamments", tests: { all_of: [{sg_ent_quartz_oxic: {regime: "udic"}}] } }
-    - { code: "LDCG", name: "Plinthic Quartzipsamments", tests: { all_of: [{sg_ent_plinthite: {min_pct: 5, max_cm: 100}}] } }
-    - { code: "LDCH", name: "Lamellic Ustic Quartzipsamments", tests: { all_of: [{sg_ent_lamellae: {}}, {soil_moisture_regime_usda: {target: "ustic"}}] } }
-    - { code: "LDCI", name: "Lamellic Quartzipsamments", tests: { all_of: [{sg_ent_lamellae: {}}] } }
+    - { code: "LDCE", name: "Ustoxic Quartzipsamments", tests: { all_of: [{sg_ent_quartz_oxic_usda: {regime: "ustic"}}] } }
+    - { code: "LDCF", name: "Udoxic Quartzipsamments", tests: { all_of: [{sg_ent_quartz_oxic_usda: {regime: "udic"}}] } }
+    - { code: "LDCG", name: "Plinthic Quartzipsamments", tests: { all_of: [{sg_ent_plinthite_usda: {min_pct: 5, max_cm: 100}}] } }
+    - { code: "LDCH", name: "Lamellic Ustic Quartzipsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}, {soil_moisture_regime_usda: {target: "ustic"}}] } }
+    - { code: "LDCI", name: "Lamellic Quartzipsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
     - { code: "LDCJ", name: "Ustic Quartzipsamments", tests: { all_of: [{soil_moisture_regime_usda: {target: "ustic"}}] } }
     - { code: "LDCK", name: "Xeric Quartzipsamments", tests: { all_of: [{soil_moisture_regime_usda: {target: "xeric"}}] } }
     - { code: "LDCL", name: "Spodic Quartzipsamments", tests: { all_of: [{spodic_subgroup_usda: {psamments: true}}] } }
     - { code: "LDCM", name: "Typic Quartzipsamments", tests: { default: true } }
   "LDD":  # Ustipsamments (7, KST)
     - { code: "LDDA", name: "Lithic Ustipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LDDB", name: "Aquic Ustipsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 100, redox: "concentrations"}}] } }
+    - { code: "LDDB", name: "Aquic Ustipsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100, redox: "concentrations"}}] } }
     - { code: "LDDC", name: "Oxyaquic Ustipsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LDDD", name: "Aridic Ustipsamments", tests: { all_of: [{sg_ent_moisture: {kind: "aridic"}}] } }
-    - { code: "LDDE", name: "Lamellic Ustipsamments", tests: { all_of: [{sg_ent_lamellae: {}}] } }
-    - { code: "LDDF", name: "Rhodic Ustipsamments", tests: { all_of: [{sg_ent_rhodic: {}}] } }
+    - { code: "LDDD", name: "Aridic Ustipsamments", tests: { all_of: [{sg_ent_moisture_usda: {kind: "aridic"}}] } }
+    - { code: "LDDE", name: "Lamellic Ustipsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
+    - { code: "LDDF", name: "Rhodic Ustipsamments", tests: { all_of: [{sg_ent_rhodic_usda: {}}] } }
     - { code: "LDDG", name: "Typic Ustipsamments", tests: { default: true } }
   "LDE":  # Xeropsamments (9, KST)
     - { code: "LDEA", name: "Lithic Xeropsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LDEB", name: "Aquic Durinodic Xeropsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 100, redox: "concentrations"}}, {sg_ent_durinodes: {}}] } }
-    - { code: "LDEC", name: "Aquic Xeropsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 100, redox: "concentrations"}}] } }
+    - { code: "LDEB", name: "Aquic Durinodic Xeropsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100, redox: "concentrations"}}, {sg_ent_durinodes_usda: {}}] } }
+    - { code: "LDEC", name: "Aquic Xeropsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100, redox: "concentrations"}}] } }
     - { code: "LDED", name: "Oxyaquic Xeropsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LDEE", name: "Vitrandic Xeropsamments", tests: { all_of: [{sg_ent_andic: {kind: "glass"}}] } }
-    - { code: "LDEF", name: "Durinodic Xeropsamments", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LDEG", name: "Lamellic Xeropsamments", tests: { all_of: [{sg_ent_lamellae: {}}] } }
-    - { code: "LDEH", name: "Dystric Xeropsamments", tests: { all_of: [{sg_ent_bs: {op: "lt", value: 60, top: 25, bottom: 75, mode: "all", root_limiting: true}}] } }
+    - { code: "LDEE", name: "Vitrandic Xeropsamments", tests: { all_of: [{sg_ent_andic_usda: {kind: "glass"}}] } }
+    - { code: "LDEF", name: "Durinodic Xeropsamments", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LDEG", name: "Lamellic Xeropsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
+    - { code: "LDEH", name: "Dystric Xeropsamments", tests: { all_of: [{sg_ent_bs_usda: {op: "lt", value: 60, top: 25, bottom: 75, mode: "all", root_limiting: true}}] } }
     - { code: "LDEI", name: "Typic Xeropsamments", tests: { default: true } }
   "LDF":  # Udipsamments (7, KST)
     - { code: "LDFA", name: "Lithic Udipsamments", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LDFB", name: "Aquic Udipsamments", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LDFB", name: "Aquic Udipsamments", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LDFC", name: "Oxyaquic Udipsamments", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
     - { code: "LDFD", name: "Spodic Udipsamments", tests: { all_of: [{spodic_subgroup_usda: {psamments: true}}] } }
-    - { code: "LDFE", name: "Lamellic Udipsamments", tests: { all_of: [{sg_ent_lamellae: {}}] } }
-    - { code: "LDFF", name: "Haploplaggic Udipsamments", tests: { all_of: [{sg_ent_haploplaggic: {}}] } }
+    - { code: "LDFE", name: "Lamellic Udipsamments", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
+    - { code: "LDFF", name: "Haploplaggic Udipsamments", tests: { all_of: [{sg_ent_haploplaggic_usda: {}}] } }
     - { code: "LDFG", name: "Typic Udipsamments", tests: { default: true } }
 
   # ====== ORTHENTS ======
   "LEA":  # Gelorthents (3, KST)
-    - { code: "LEAA", name: "Aquic Gelorthents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LEAA", name: "Aquic Gelorthents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LEAB", name: "Oxyaquic Gelorthents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
     - { code: "LEAC", name: "Typic Gelorthents", tests: { default: true } }
   "LEB":  # Cryorthents (6, KST)
     - { code: "LEBA", name: "Lithic Cryorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LEBB", name: "Vitrandic Cryorthents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LEBC", name: "Aquic Cryorthents", tests: { all_of: [{sg_ent_aquic: {max_cm: 50}}] } }
+    - { code: "LEBB", name: "Vitrandic Cryorthents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LEBC", name: "Aquic Cryorthents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 50}}] } }
     - { code: "LEBD", name: "Oxyaquic Cryorthents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "LEBE", name: "Lamellic Cryorthents", tests: { all_of: [{sg_ent_lamellae: {}}] } }
+    - { code: "LEBE", name: "Lamellic Cryorthents", tests: { all_of: [{sg_ent_lamellae_usda: {}}] } }
     - { code: "LEBF", name: "Typic Cryorthents", tests: { default: true } }
   "LEC":  # Torriorthents (14, KST)
-    - { code: "LECA", name: "Lithic Ustic Torriorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}, {sg_ent_moisture: {kind: "torric_ustic", str: ["hyperthermic", "thermic", "mesic", "frigid", "isofrigid", "isomesic", "isothermic", "isohyperthermic"]}}] } }
-    - { code: "LECB", name: "Lithic Xeric Torriorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}, {sg_ent_moisture: {kind: "torric_xeric"}}] } }
+    - { code: "LECA", name: "Lithic Ustic Torriorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}, {sg_ent_moisture_usda: {kind: "torric_ustic", str: ["hyperthermic", "thermic", "mesic", "frigid", "isofrigid", "isomesic", "isothermic", "isohyperthermic"]}}] } }
+    - { code: "LECB", name: "Lithic Xeric Torriorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}, {sg_ent_moisture_usda: {kind: "torric_xeric"}}] } }
     - { code: "LECC", name: "Lithic Torriorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LECD", name: "Xerertic Torriorthents", tests: { all_of: [{sg_ent_vertic: {}}, {sg_ent_moisture: {kind: "torric_xeric"}}] } }
-    - { code: "LECE", name: "Ustertic Torriorthents", tests: { all_of: [{sg_ent_vertic: {}}, {sg_ent_moisture: {kind: "torric_ustic"}}] } }
-    - { code: "LECF", name: "Vertic Torriorthents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LECG", name: "Anthraltic Torriorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthraltic"}}] } }
-    - { code: "LECH", name: "Vitrandic Torriorthents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LECI", name: "Aquic Torriorthents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100, soil_surface: true}}] } }
+    - { code: "LECD", name: "Xerertic Torriorthents", tests: { all_of: [{sg_ent_vertic_usda: {}}, {sg_ent_moisture_usda: {kind: "torric_xeric"}}] } }
+    - { code: "LECE", name: "Ustertic Torriorthents", tests: { all_of: [{sg_ent_vertic_usda: {}}, {sg_ent_moisture_usda: {kind: "torric_ustic"}}] } }
+    - { code: "LECF", name: "Vertic Torriorthents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LECG", name: "Anthraltic Torriorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthraltic"}}] } }
+    - { code: "LECH", name: "Vitrandic Torriorthents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LECI", name: "Aquic Torriorthents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100, soil_surface: true}}] } }
     - { code: "LECJ", name: "Oxyaquic Torriorthents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LECK", name: "Duric Torriorthents", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LECL", name: "Ustic Torriorthents", tests: { all_of: [{sg_ent_moisture: {kind: "torric_ustic", str: ["hyperthermic", "thermic", "mesic", "frigid", "isofrigid", "isomesic", "isothermic", "isohyperthermic"]}}] } }
-    - { code: "LECM", name: "Xeric Torriorthents", tests: { all_of: [{sg_ent_moisture: {kind: "torric_xeric"}}] } }
+    - { code: "LECK", name: "Duric Torriorthents", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LECL", name: "Ustic Torriorthents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_ustic", str: ["hyperthermic", "thermic", "mesic", "frigid", "isofrigid", "isomesic", "isothermic", "isohyperthermic"]}}] } }
+    - { code: "LECM", name: "Xeric Torriorthents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "torric_xeric"}}] } }
     - { code: "LECN", name: "Typic Torriorthents", tests: { default: true } }
   "LED":  # Xerorthents (9, KST)
     - { code: "LEDA", name: "Lithic Xerorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LEDB", name: "Anthraltic Sodic Xerorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthraltic"}}, {sg_ent_sodic: {min_esp: 15, max_cm: 100, min_thick_cm: 25, soil_surface: true}}] } }
-    - { code: "LEDC", name: "Anthraltic Xerorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthraltic"}}] } }
-    - { code: "LEDD", name: "Vitrandic Xerorthents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LEDE", name: "Aquic Xerorthents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LEDB", name: "Anthraltic Sodic Xerorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthraltic"}}, {sg_ent_sodic_usda: {min_esp: 15, max_cm: 100, min_thick_cm: 25, soil_surface: true}}] } }
+    - { code: "LEDC", name: "Anthraltic Xerorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthraltic"}}] } }
+    - { code: "LEDD", name: "Vitrandic Xerorthents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LEDE", name: "Aquic Xerorthents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LEDF", name: "Oxyaquic Xerorthents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LEDG", name: "Durinodic Xerorthents", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LEDH", name: "Dystric Xerorthents", tests: { all_of: [{sg_ent_bs: {op: "lt", value: 60, top: 25, bottom: 75, mode: "all", root_limiting: true}}] } }
+    - { code: "LEDG", name: "Durinodic Xerorthents", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LEDH", name: "Dystric Xerorthents", tests: { all_of: [{sg_ent_bs_usda: {op: "lt", value: 60, top: 25, bottom: 75, mode: "all", root_limiting: true}}] } }
     - { code: "LEDI", name: "Typic Xerorthents", tests: { default: true } }
   "LEE":  # Ustorthents (16, KST)
-    - { code: "LEEA", name: "Aridic Lithic Ustorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}, {sg_ent_moisture: {kind: "aridic"}}] } }
+    - { code: "LEEA", name: "Aridic Lithic Ustorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}, {sg_ent_moisture_usda: {kind: "aridic"}}] } }
     - { code: "LEEB", name: "Lithic Ustorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LEEC", name: "Torrertic Ustorthents", tests: { all_of: [{sg_ent_vertic: {}}, {sg_ent_moisture: {kind: "aridic"}}] } }
-    - { code: "LEED", name: "Vertic Ustorthents", tests: { all_of: [{sg_ent_vertic: {}}] } }
-    - { code: "LEEE", name: "Anthraquic Ustorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthraquic"}}] } }
-    - { code: "LEEF", name: "Anthrodensic Ustorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthrodensic"}}] } }
-    - { code: "LEEG", name: "Anthroportic Ustorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthroportic"}}] } }
-    - { code: "LEEH", name: "Aquic Ustorthents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LEEC", name: "Torrertic Ustorthents", tests: { all_of: [{sg_ent_vertic_usda: {}}, {sg_ent_moisture_usda: {kind: "aridic"}}] } }
+    - { code: "LEED", name: "Vertic Ustorthents", tests: { all_of: [{sg_ent_vertic_usda: {}}] } }
+    - { code: "LEEE", name: "Anthraquic Ustorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthraquic"}}] } }
+    - { code: "LEEF", name: "Anthrodensic Ustorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthrodensic"}}] } }
+    - { code: "LEEG", name: "Anthroportic Ustorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthroportic"}}] } }
+    - { code: "LEEH", name: "Aquic Ustorthents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LEEI", name: "Oxyaquic Ustorthents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LEEJ", name: "Durinodic Ustorthents", tests: { all_of: [{sg_ent_durinodes: {}}] } }
-    - { code: "LEEK", name: "Vitritorrandic Ustorthents", tests: { all_of: [{sg_ent_moisture: {kind: "aridic"}}, {sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LEEL", name: "Vitrandic Ustorthents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LEEM", name: "Aridic Ustorthents", tests: { all_of: [{sg_ent_moisture: {kind: "aridic"}}] } }
-    - { code: "LEEN", name: "Udic Ustorthents", tests: { all_of: [{sg_ent_moisture: {kind: "udic"}}] } }
-    - { code: "LEEO", name: "Vermic Ustorthents", tests: { all_of: [{sg_ent_vermic: {}}] } }
+    - { code: "LEEJ", name: "Durinodic Ustorthents", tests: { all_of: [{sg_ent_durinodes_usda: {}}] } }
+    - { code: "LEEK", name: "Vitritorrandic Ustorthents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "aridic"}}, {sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LEEL", name: "Vitrandic Ustorthents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LEEM", name: "Aridic Ustorthents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "aridic"}}] } }
+    - { code: "LEEN", name: "Udic Ustorthents", tests: { all_of: [{sg_ent_moisture_usda: {kind: "udic"}}] } }
+    - { code: "LEEO", name: "Vermic Ustorthents", tests: { all_of: [{sg_ent_vermic_usda: {}}] } }
     - { code: "LEEP", name: "Typic Ustorthents", tests: { default: true } }
   "LEF":  # Udorthents (10, KST)
     - { code: "LEFA", name: "Lithic Udorthents", tests: { all_of: [{lithic_contact_usda: {max_top_cm: 50}}] } }
-    - { code: "LEFB", name: "Anthrodensic Sodic Udorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthrodensic"}}, {sg_ent_sodic: {min_esp: 15, max_cm: 100, min_thick_cm: 25, soil_surface: true}}] } }
-    - { code: "LEFC", name: "Anthrodensic Udorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthrodensic"}}] } }
+    - { code: "LEFB", name: "Anthrodensic Sodic Udorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthrodensic"}}, {sg_ent_sodic_usda: {min_esp: 15, max_cm: 100, min_thick_cm: 25, soil_surface: true}}] } }
+    - { code: "LEFC", name: "Anthrodensic Udorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthrodensic"}}] } }
     - { code: "LEFD", name: "Anthropic Udorthents", tests: { all_of: [{anthropic_epipedon_usda: {}}] } }
-    - { code: "LEFE", name: "Anthroportic Udorthents", tests: { all_of: [{sg_ent_anthro: {kind: "anthroportic"}}] } }
-    - { code: "LEFF", name: "Vitrandic Udorthents", tests: { all_of: [{sg_ent_andic: {kind: "vitrandic"}}] } }
-    - { code: "LEFG", name: "Aquic Udorthents", tests: { all_of: [{sg_ent_aquic: {max_cm: 100}}] } }
+    - { code: "LEFE", name: "Anthroportic Udorthents", tests: { all_of: [{sg_ent_anthro_usda: {kind: "anthroportic"}}] } }
+    - { code: "LEFF", name: "Vitrandic Udorthents", tests: { all_of: [{sg_ent_andic_usda: {kind: "vitrandic"}}] } }
+    - { code: "LEFG", name: "Aquic Udorthents", tests: { all_of: [{sg_ent_aquic_usda: {max_cm: 100}}] } }
     - { code: "LEFH", name: "Oxyaquic Udorthents", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 150}}] } }
-    - { code: "LEFI", name: "Vermic Udorthents", tests: { all_of: [{sg_ent_vermic: {}}] } }
+    - { code: "LEFI", name: "Vermic Udorthents", tests: { all_of: [{sg_ent_vermic_usda: {}}] } }
     - { code: "LEFJ", name: "Typic Udorthents", tests: { default: true } }

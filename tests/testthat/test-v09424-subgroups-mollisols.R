@@ -197,16 +197,16 @@ test_that("every test named in the Mollisol subgroup YAML is a soilKey function"
 test_that("Vertic: slickensides stand for cracks (L30); COLE not measured is undecided", {
   testthat::skip_on_cran()
   p <- .v09424_mollic(slickensides = c(NA, NA, "common", "common", NA))
-  r <- soilKey:::sg_mollisol_vertic(p)
+  r <- soilKey:::sg_mollisol_vertic_usda(p)
   expect_true(r$passed)
   expect_match(r$notes, "L30")
   # the compound comes before its parts: Pachic Vertic, not Pachic or Vertic
   expect_identical(.v09424_sg(p, "IHF"), "Pachic Vertic Hapludolls")
-  q <- soilKey:::sg_mollisol_vertic(.v09424_mollic())
+  q <- soilKey:::sg_mollisol_vertic_usda(.v09424_mollic())
   expect_true(is.na(q$passed))
   expect_true("cole_value" %in% q$missing)
-  expect_false(soilKey:::sg_mollisol_vertic(.v09424_mollic(cole_value = 0.01))$passed)
-  expect_true(soilKey:::sg_mollisol_vertic(.v09424_mollic(cole_value = 0.08))$passed)
+  expect_false(soilKey:::sg_mollisol_vertic_usda(.v09424_mollic(cole_value = 0.01))$passed)
+  expect_true(soilKey:::sg_mollisol_vertic_usda(.v09424_mollic(cole_value = 0.08))$passed)
 })
 
 test_that("Aquic: the depletions, their colour and the depth of each great group", {
@@ -214,7 +214,7 @@ test_that("Aquic: the depletions, their colour and the depth of each great group
   pa <- function(mc) .v09424_mollic(cole_value = 0.01,
                                     redoximorphic_features_pct = c(0, 0, 0, 10, 0),
                                     mottle_colors = c(NA, NA, NA, mc, NA))
-  aq <- function(p, ...) soilKey:::sg_mollisol_aquic(p, ...)$passed
+  aq <- function(p, ...) soilKey:::sg_mollisol_aquic_usda(p, ...)$passed
   expect_true(aq(pa("10YR 6/2"), "udoll"))
   expect_false(aq(pa("10YR 5/8"), "udoll"))           # concentrations, matrix chroma 4
   expect_true(is.na(aq(pa(NA), "udoll")))             # redox colour not recorded
@@ -234,15 +234,15 @@ test_that("Cumulic: 0.3 % organic carbon at 125 cm, Aquic Cumulic before Cumulic
                         redoximorphic_features_pct = c(0, 0, 0, 10, 0),
                         mottle_colors = c(NA, NA, NA, "10YR 6/2", NA))
   expect_identical(.v09424_sg(pac, "IGG"), "Aquic Cumulic Haplustolls")
-  f <- soilKey:::sg_mollisol_fluventic(pc, "at125")
+  f <- soilKey:::sg_mollisol_fluventic_usda(pc, "at125")
   expect_true(f$passed)
-  expect_true(soilKey:::sg_mollisol_fluventic(pc, "all125")$passed)
-  expect_false(soilKey:::sg_mollisol_fluventic(.v09424_mollic(), "all125")$passed)  # 0.2 % at 100-150
+  expect_true(soilKey:::sg_mollisol_fluventic_usda(pc, "all125")$passed)
+  expect_false(soilKey:::sg_mollisol_fluventic_usda(.v09424_mollic(), "all125")$passed)  # 0.2 % at 100-150
 })
 
 test_that("moisture intergrades: the suborder's own regime does not say how dry", {
   testthat::skip_on_cran()
-  m <- function(site, k) soilKey:::sg_mollisol_moisture(.v09424_mollic(site = site), k)$passed
+  m <- function(site, k) soilKey:::sg_mollisol_moisture_usda(.v09424_mollic(site = site), k)$passed
   expect_true(is.na(m(list(soil_moisture_regime = "ustic"), "aridic")))
   expect_true(m(list(soil_moisture_regime = "ustic", soil_moisture_subclass = "aridic ustic"), "aridic"))
   expect_false(m(list(soil_moisture_regime = "ustic", soil_moisture_subclass = "typic ustic"), "udic"))
@@ -267,25 +267,25 @@ test_that("Thapto-Humic, Ultic, Calcic, Arenic and Leptic read the Mollisol word
   pv <- function(r) r$passed
   pt <- .v09424_mollic(designation = c("Ap", "A2", "AB", "Bw", "Ab"),
                        vm = c(2, 2, 3, 5, 2), oc = c(3, 2, 1.2, 0.4, 1.5))
-  expect_true(pv(soilKey:::sg_mollisol_thapto_humic(pt)))
-  expect_false(pv(soilKey:::sg_mollisol_thapto_humic(.v09424_mollic())))   # no buried horizon
-  expect_true(pv(soilKey:::sg_mollisol_ultic(.v09424_mollic(bs = c(80, 70, 80, 85, 90)))))
-  expect_false(pv(soilKey:::sg_mollisol_ultic(.v09424_mollic())))
-  expect_true(is.na(pv(soilKey:::sg_mollisol_ultic(.v09424_mollic(bs = c(80, NA, 80, 85, 90))))))
+  expect_true(pv(soilKey:::sg_mollisol_thapto_humic_usda(pt)))
+  expect_false(pv(soilKey:::sg_mollisol_thapto_humic_usda(.v09424_mollic())))   # no buried horizon
+  expect_true(pv(soilKey:::sg_mollisol_ultic_usda(.v09424_mollic(bs = c(80, 70, 80, 85, 90)))))
+  expect_false(pv(soilKey:::sg_mollisol_ultic_usda(.v09424_mollic())))
+  expect_true(is.na(pv(soilKey:::sg_mollisol_ultic_usda(.v09424_mollic(bs = c(80, NA, 80, 85, 90))))))
   # loamy control section: secondary carbonates within 110 cm
-  expect_true(pv(soilKey:::sg_mollisol_calcic(
+  expect_true(pv(soilKey:::sg_mollisol_calcic_usda(
     .v09424_mollic(designation = c("Ap", "A2", "AB", "Bw", "Bk")), "psc_secondary")))
-  expect_false(pv(soilKey:::sg_mollisol_calcic(
+  expect_false(pv(soilKey:::sg_mollisol_calcic_usda(
     .v09424_mollic(top = c(0, 20, 40, 60, 120), bottom = c(20, 40, 60, 120, 150),
                    designation = c("Ap", "A2", "AB", "Bw", "Bk")), "psc_secondary")))
   # Arenic needs no spodic horizon in the Mollisols (audit R5)
   pr <- .v09424_mollic(designation = c("A1", "A2", "A3", "Bt", "BC"),
                        clay = c(5, 5, 5, 30, 25), sand = c(88, 88, 88, 40, 45))
-  expect_true(pv(soilKey:::sg_mollisol_arenic(pr, min_cm = 50)))
-  expect_false(pv(soilKey:::sg_mollisol_arenic(pr, min_cm = 100)))
-  expect_true(pv(soilKey:::sg_mollisol_leptic(
+  expect_true(pv(soilKey:::sg_mollisol_arenic_usda(pr, min_cm = 50)))
+  expect_false(pv(soilKey:::sg_mollisol_arenic_usda(pr, min_cm = 100)))
+  expect_true(pv(soilKey:::sg_mollisol_leptic_usda(
     .v09424_mollic(designation = c("Ap", "Az", "AB", "Bw", "C")))))
-  expect_false(pv(soilKey:::sg_mollisol_leptic(.v09424_mollic())))
+  expect_false(pv(soilKey:::sg_mollisol_leptic_usda(.v09424_mollic())))
 })
 
 test_that("names the KST 13th edition does not have are gone", {

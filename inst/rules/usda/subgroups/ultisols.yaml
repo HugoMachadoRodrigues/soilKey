@@ -11,60 +11,60 @@ subgroups:
 
   # ====== AQUULTS ======
   "HAA":  # Plinthaquults, KST 13th ed., p. 325 (2)
-    - { code: "HAAA", name: "Kandic Plinthaquults", tests: { all_of: [{sg_ultisol_kandic: {what: kandic_or_cec}}] } }
+    - { code: "HAAA", name: "Kandic Plinthaquults", tests: { all_of: [{sg_ultisol_kandic_usda: {what: kandic_or_cec}}] } }
     - { code: "HAAB", name: "Typic Plinthaquults", tests: { default: true } }
   "HAB":  # Fragiaquults, KST 13th ed., p. 323 (4)
-    - { code: "HABA", name: "Aeric Fragiaquults", tests: { all_of: [{sg_ultisol_aeric: {to: fragipan}}] } }
-    - { code: "HABB", name: "Plinthic Fragiaquults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HABC", name: "Umbric Fragiaquults", tests: { all_of: [{sg_ultisol_umbric: {}}] } }
+    - { code: "HABA", name: "Aeric Fragiaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {to: fragipan}}] } }
+    - { code: "HABB", name: "Plinthic Fragiaquults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HABC", name: "Umbric Fragiaquults", tests: { all_of: [{sg_ultisol_umbric_usda: {}}] } }
     - { code: "HABD", name: "Typic Fragiaquults", tests: { default: true } }
   "HAC":  # Albaquults, KST 13th ed., p. 322 (4)
-    - { code: "HACA", name: "Vertic Albaquults", tests: { all_of: [{sg_ultisol_vertic: {}}] } }
-    - { code: "HACB", name: "Kandic Albaquults", tests: { all_of: [{sg_ultisol_kandic: {what: kandic}}] } }
-    - { code: "HACC", name: "Aeric Albaquults", tests: { all_of: [{sg_ultisol_aeric: {}}] } }
+    - { code: "HACA", name: "Vertic Albaquults", tests: { all_of: [{sg_ultisol_vertic_usda: {}}] } }
+    - { code: "HACB", name: "Kandic Albaquults", tests: { all_of: [{sg_ultisol_kandic_usda: {what: kandic}}] } }
+    - { code: "HACC", name: "Aeric Albaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {}}] } }
     - { code: "HACD", name: "Typic Albaquults", tests: { default: true } }
   "HAD":  # Kandiaquults, KST 13th ed., pp. 323-324 (9)
     - { code: "HADA", name: "Acraquoxic Kandiaquults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}] } }
-    - { code: "HADB", name: "Arenic Plinthic Kandiaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HADC", name: "Arenic Umbric Kandiaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultisol_umbric: {}}] } }
-    - { code: "HADD", name: "Arenic Kandiaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HADE", name: "Grossarenic Kandiaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HADF", name: "Plinthic Kandiaquults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HADG", name: "Aeric Kandiaquults", tests: { all_of: [{sg_ultisol_aeric: {}}] } }
-    - { code: "HADH", name: "Umbric Kandiaquults", tests: { all_of: [{sg_ultisol_umbric: {}}] } }
+    - { code: "HADB", name: "Arenic Plinthic Kandiaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HADC", name: "Arenic Umbric Kandiaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultisol_umbric_usda: {}}] } }
+    - { code: "HADD", name: "Arenic Kandiaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HADE", name: "Grossarenic Kandiaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HADF", name: "Plinthic Kandiaquults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HADG", name: "Aeric Kandiaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {}}] } }
+    - { code: "HADH", name: "Umbric Kandiaquults", tests: { all_of: [{sg_ultisol_umbric_usda: {}}] } }
     - { code: "HADI", name: "Typic Kandiaquults", tests: { default: true } }
   "HAE":  # Kanhaplaquults, KST 13th ed., p. 324 (6)
-    - { code: "HAEA", name: "Aquandic Kanhaplaquults", tests: { all_of: [{sg_ultisol_andic: {vitrandic: true}}] } }
-    - { code: "HAEB", name: "Plinthic Kanhaplaquults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HAEC", name: "Aeric Umbric Kanhaplaquults", tests: { all_of: [{sg_ultisol_umbric: {aeric: true}}] } }
-    - { code: "HAED", name: "Aeric Kanhaplaquults", tests: { all_of: [{sg_ultisol_aeric: {}}] } }
-    - { code: "HAEE", name: "Umbric Kanhaplaquults", tests: { all_of: [{sg_ultisol_umbric: {}}] } }
+    - { code: "HAEA", name: "Aquandic Kanhaplaquults", tests: { all_of: [{sg_ultisol_andic_usda: {vitrandic: true}}] } }
+    - { code: "HAEB", name: "Plinthic Kanhaplaquults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HAEC", name: "Aeric Umbric Kanhaplaquults", tests: { all_of: [{sg_ultisol_umbric_usda: {aeric: true}}] } }
+    - { code: "HAED", name: "Aeric Kanhaplaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {}}] } }
+    - { code: "HAEE", name: "Umbric Kanhaplaquults", tests: { all_of: [{sg_ultisol_umbric_usda: {}}] } }
     - { code: "HAEF", name: "Typic Kanhaplaquults", tests: { default: true } }
   "HAF":  # Paleaquults, KST 13th ed., pp. 324-325 (9)
-    - { code: "HAFA", name: "Vertic Paleaquults", tests: { all_of: [{sg_ultisol_vertic: {}}] } }
-    - { code: "HAFB", name: "Arenic Plinthic Paleaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HAFC", name: "Arenic Umbric Paleaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultisol_umbric: {}}] } }
-    - { code: "HAFD", name: "Arenic Paleaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HAFE", name: "Grossarenic Paleaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HAFF", name: "Plinthic Paleaquults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HAFG", name: "Aeric Paleaquults", tests: { all_of: [{sg_ultisol_aeric: {}}] } }
-    - { code: "HAFH", name: "Umbric Paleaquults", tests: { all_of: [{sg_ultisol_umbric: {}}] } }
+    - { code: "HAFA", name: "Vertic Paleaquults", tests: { all_of: [{sg_ultisol_vertic_usda: {}}] } }
+    - { code: "HAFB", name: "Arenic Plinthic Paleaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HAFC", name: "Arenic Umbric Paleaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultisol_umbric_usda: {}}] } }
+    - { code: "HAFD", name: "Arenic Paleaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HAFE", name: "Grossarenic Paleaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HAFF", name: "Plinthic Paleaquults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HAFG", name: "Aeric Paleaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {}}] } }
+    - { code: "HAFH", name: "Umbric Paleaquults", tests: { all_of: [{sg_ultisol_umbric_usda: {}}] } }
     - { code: "HAFI", name: "Typic Paleaquults", tests: { default: true } }
   "HAG":  # Umbraquults, KST 13th ed., p. 325 (2)
-    - { code: "HAGA", name: "Plinthic Umbraquults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150, max_pct: 50}}] } }
+    - { code: "HAGA", name: "Plinthic Umbraquults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150, max_pct: 50}}] } }
     - { code: "HAGB", name: "Typic Umbraquults", tests: { default: true } }
   "HAH":  # Epiaquults, KST 13th ed., pp. 322-323 (7)
-    - { code: "HAHA", name: "Vertic Epiaquults", tests: { all_of: [{sg_ultisol_vertic: {}}] } }
-    - { code: "HAHB", name: "Aeric Fragic Epiaquults", tests: { all_of: [{sg_ultisol_fragic: {aeric: true}}] } }
-    - { code: "HAHC", name: "Arenic Epiaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HAHD", name: "Grossarenic Epiaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HAHE", name: "Fragic Epiaquults", tests: { all_of: [{sg_ultisol_fragic: {}}] } }
-    - { code: "HAHF", name: "Aeric Epiaquults", tests: { all_of: [{sg_ultisol_aeric: {}}] } }
+    - { code: "HAHA", name: "Vertic Epiaquults", tests: { all_of: [{sg_ultisol_vertic_usda: {}}] } }
+    - { code: "HAHB", name: "Aeric Fragic Epiaquults", tests: { all_of: [{sg_ultisol_fragic_usda: {aeric: true}}] } }
+    - { code: "HAHC", name: "Arenic Epiaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HAHD", name: "Grossarenic Epiaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HAHE", name: "Fragic Epiaquults", tests: { all_of: [{sg_ultisol_fragic_usda: {}}] } }
+    - { code: "HAHF", name: "Aeric Epiaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {}}] } }
     - { code: "HAHG", name: "Typic Epiaquults", tests: { default: true } }
   "HAI":  # Endoaquults, KST 13th ed., p. 322 (4)
-    - { code: "HAIA", name: "Arenic Endoaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HAIB", name: "Grossarenic Endoaquults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HAIC", name: "Aeric Endoaquults", tests: { all_of: [{sg_ultisol_aeric: {}}] } }
+    - { code: "HAIA", name: "Arenic Endoaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HAIB", name: "Grossarenic Endoaquults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HAIC", name: "Aeric Endoaquults", tests: { all_of: [{sg_ultisol_aeric_usda: {}}] } }
     - { code: "HAID", name: "Typic Endoaquults", tests: { default: true } }
 
   # ====== HUMULTS ======
@@ -73,41 +73,41 @@ subgroups:
   "HBB":  # Plinthohumults, KST 13th ed., p. 328 (1)
     - { code: "HBBA", name: "Typic Plinthohumults", tests: { default: true } }
   "HBC":  # Kandihumults, KST 13th ed., pp. 326-327 (10)
-    - { code: "HBCA", name: "Andic Ombroaquic Kandihumults", tests: { all_of: [{sg_ultisol_ombroaquic: {andic: true}}] } }
-    - { code: "HBCB", name: "Ustandic Kandihumults", tests: { all_of: [{sg_ultisol_andic_regime: {regime: ustic}}] } }
+    - { code: "HBCA", name: "Andic Ombroaquic Kandihumults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {andic: true}}] } }
+    - { code: "HBCB", name: "Ustandic Kandihumults", tests: { all_of: [{sg_ultisol_andic_regime_usda: {regime: ustic}}] } }
     - { code: "HBCC", name: "Andic Kandihumults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HBCD", name: "Aquic Kandihumults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg25, horizon: kandic}}] } }
-    - { code: "HBCE", name: "Ombroaquic Kandihumults", tests: { all_of: [{sg_ultisol_ombroaquic: {}}] } }
-    - { code: "HBCF", name: "Plinthic Kandihumults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
+    - { code: "HBCD", name: "Aquic Kandihumults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg25, horizon: kandic}}] } }
+    - { code: "HBCE", name: "Ombroaquic Kandihumults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {}}] } }
+    - { code: "HBCF", name: "Plinthic Kandihumults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
     - { code: "HBCG", name: "Ustic Kandihumults", tests: { all_of: [{smr_ustic_usda: {}}] } }
     - { code: "HBCH", name: "Xeric Kandihumults", tests: { all_of: [{smr_xeric_usda: {}}] } }
     - { code: "HBCI", name: "Anthropic Kandihumults", tests: { all_of: [{anthropic_epipedon_usda: {}}] } }
     - { code: "HBCJ", name: "Typic Kandihumults", tests: { default: true } }
   "HBD":  # Kanhaplohumults, KST 13th ed., p. 327 (9)
-    - { code: "HBDA", name: "Lithic Kanhaplohumults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HBDB", name: "Ustandic Kanhaplohumults", tests: { all_of: [{sg_ultisol_andic_regime: {regime: ustic}}] } }
+    - { code: "HBDA", name: "Lithic Kanhaplohumults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HBDB", name: "Ustandic Kanhaplohumults", tests: { all_of: [{sg_ultisol_andic_regime_usda: {regime: ustic}}] } }
     - { code: "HBDC", name: "Andic Kanhaplohumults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HBDD", name: "Aquic Kanhaplohumults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg25, horizon: kandic}}] } }
-    - { code: "HBDE", name: "Ombroaquic Kanhaplohumults", tests: { all_of: [{sg_ultisol_ombroaquic: {}}] } }
+    - { code: "HBDD", name: "Aquic Kanhaplohumults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg25, horizon: kandic}}] } }
+    - { code: "HBDE", name: "Ombroaquic Kanhaplohumults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {}}] } }
     - { code: "HBDF", name: "Ustic Kanhaplohumults", tests: { all_of: [{smr_ustic_usda: {}}] } }
     - { code: "HBDG", name: "Xeric Kanhaplohumults", tests: { all_of: [{smr_xeric_usda: {}}] } }
     - { code: "HBDH", name: "Anthropic Kanhaplohumults", tests: { all_of: [{anthropic_epipedon_usda: {}}] } }
     - { code: "HBDI", name: "Typic Kanhaplohumults", tests: { default: true } }
   "HBE":  # Palehumults, KST 13th ed., p. 328 (8)
-    - { code: "HBEA", name: "Aquandic Palehumults", tests: { all_of: [{sg_ultisol_andic: {aquic: arg25}}] } }
+    - { code: "HBEA", name: "Aquandic Palehumults", tests: { all_of: [{sg_ultisol_andic_usda: {aquic: arg25}}] } }
     - { code: "HBEB", name: "Andic Palehumults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HBEC", name: "Aquic Palehumults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg25, horizon: argillic}}] } }
-    - { code: "HBED", name: "Plinthic Palehumults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
+    - { code: "HBEC", name: "Aquic Palehumults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg25, horizon: argillic}}] } }
+    - { code: "HBED", name: "Plinthic Palehumults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
     - { code: "HBEE", name: "Oxyaquic Palehumults", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
     - { code: "HBEF", name: "Ustic Palehumults", tests: { all_of: [{smr_ustic_usda: {}}] } }
     - { code: "HBEG", name: "Xeric Palehumults", tests: { all_of: [{smr_xeric_usda: {}}] } }
     - { code: "HBEH", name: "Typic Palehumults", tests: { default: true } }
   "HBF":  # Haplohumults, KST 13th ed., p. 326 (9)
-    - { code: "HBFA", name: "Lithic Haplohumults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HBFB", name: "Aquandic Haplohumults", tests: { all_of: [{sg_ultisol_andic: {aquic: arg25}}] } }
-    - { code: "HBFC", name: "Aquic Haplohumults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg25, horizon: argillic}}] } }
+    - { code: "HBFA", name: "Lithic Haplohumults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HBFB", name: "Aquandic Haplohumults", tests: { all_of: [{sg_ultisol_andic_usda: {aquic: arg25}}] } }
+    - { code: "HBFC", name: "Aquic Haplohumults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg25, horizon: argillic}}] } }
     - { code: "HBFD", name: "Andic Haplohumults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HBFE", name: "Plinthic Haplohumults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
+    - { code: "HBFE", name: "Plinthic Haplohumults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
     - { code: "HBFF", name: "Oxyaquic Haplohumults", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
     - { code: "HBFG", name: "Ustic Haplohumults", tests: { all_of: [{smr_ustic_usda: {}}] } }
     - { code: "HBFH", name: "Xeric Haplohumults", tests: { all_of: [{smr_xeric_usda: {}}] } }
@@ -117,149 +117,149 @@ subgroups:
   "HCA":  # Plinthudults, KST 13th ed., p. 336 (1)
     - { code: "HCAA", name: "Typic Plinthudults", tests: { default: true } }
   "HCB":  # Fragiudults, KST 13th ed., pp. 329-330 (8)
-    - { code: "HCBA", name: "Arenic Fragiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: either, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HCBB", name: "Plinthaquic Fragiudults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150, aquic: ultisol40}}] } }
-    - { code: "HCBC", name: "Glossaquic Fragiudults", tests: { all_of: [{sg_ultisol_glossic: {aquic: true}}] } }
-    - { code: "HCBD", name: "Aquic Fragiudults", tests: { all_of: [{sg_ultisol_aquic: {zone: fragipan_arg25, concentrations: false, vmin: .na}}] } }
-    - { code: "HCBE", name: "Plinthic Fragiudults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCBF", name: "Glossic Fragiudults", tests: { all_of: [{sg_ultisol_glossic: {}}] } }
-    - { code: "HCBG", name: "Humic Fragiudults", tests: { all_of: [{sg_ultisol_humic: {}}] } }
+    - { code: "HCBA", name: "Arenic Fragiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: either, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HCBB", name: "Plinthaquic Fragiudults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150, aquic: ultisol40}}] } }
+    - { code: "HCBC", name: "Glossaquic Fragiudults", tests: { all_of: [{sg_ultisol_glossic_usda: {aquic: true}}] } }
+    - { code: "HCBD", name: "Aquic Fragiudults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: fragipan_arg25, concentrations: false, vmin: .na}}] } }
+    - { code: "HCBE", name: "Plinthic Fragiudults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCBF", name: "Glossic Fragiudults", tests: { all_of: [{sg_ultisol_glossic_usda: {}}] } }
+    - { code: "HCBG", name: "Humic Fragiudults", tests: { all_of: [{sg_ultisol_humic_usda: {}}] } }
     - { code: "HCBH", name: "Typic Fragiudults", tests: { default: true } }
   "HCC":  # Kandiudults, KST 13th ed., pp. 331-333 (19)
-    - { code: "HCCA", name: "Arenic Plinthaquic Kandiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic: {max_cm: 150}}, {sg_ultisol_aquic: {zone: 75_uncoated, horizon: kandic}}] } }
-    - { code: "HCCB", name: "Aquic Arenic Kandiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultisol_aquic: {zone: 75_uncoated, horizon: kandic}}] } }
-    - { code: "HCCC", name: "Arenic Plinthic Kandiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCCD", name: "Arenic Rhodic Kandiudults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: kandic, upper_cm: 75, arenic: true}}] } }
-    - { code: "HCCE", name: "Arenic Kandiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HCCF", name: "Grossarenic Plinthic Kandiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 100, max_cm: .inf}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCCG", name: "Grossarenic Kandiudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HCCH", name: "Acrudoxic Plinthic Kandiudults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
+    - { code: "HCCA", name: "Arenic Plinthaquic Kandiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic_usda: {max_cm: 150}}, {sg_ultisol_aquic_usda: {zone: 75_uncoated, horizon: kandic}}] } }
+    - { code: "HCCB", name: "Aquic Arenic Kandiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultisol_aquic_usda: {zone: 75_uncoated, horizon: kandic}}] } }
+    - { code: "HCCC", name: "Arenic Plinthic Kandiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCCD", name: "Arenic Rhodic Kandiudults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: kandic, upper_cm: 75, arenic: true}}] } }
+    - { code: "HCCE", name: "Arenic Kandiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HCCF", name: "Grossarenic Plinthic Kandiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 100, max_cm: .inf}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCCG", name: "Grossarenic Kandiudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HCCH", name: "Acrudoxic Plinthic Kandiudults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
     - { code: "HCCI", name: "Acrudoxic Kandiudults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}] } }
-    - { code: "HCCJ", name: "Plinthaquic Kandiudults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150, aquic: ultisol75}}] } }
-    - { code: "HCCK", name: "Aquandic Kandiudults", tests: { all_of: [{sg_ultisol_andic: {vitrandic: true, aquic: "75"}}] } }
+    - { code: "HCCJ", name: "Plinthaquic Kandiudults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150, aquic: ultisol75}}] } }
+    - { code: "HCCK", name: "Aquandic Kandiudults", tests: { all_of: [{sg_ultisol_andic_usda: {vitrandic: true, aquic: "75"}}] } }
     - { code: "HCCL", name: "Andic Kandiudults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HCCM", name: "Aquic Kandiudults", tests: { all_of: [{sg_ultisol_aquic: {zone: "75"}}] } }
-    - { code: "HCCN", name: "Plinthic Kandiudults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCCO", name: "Ombroaquic Kandiudults", tests: { all_of: [{sg_ultisol_ombroaquic: {}}] } }
+    - { code: "HCCM", name: "Aquic Kandiudults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: "75"}}] } }
+    - { code: "HCCN", name: "Plinthic Kandiudults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCCO", name: "Ombroaquic Kandiudults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {}}] } }
     - { code: "HCCP", name: "Oxyaquic Kandiudults", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
     - { code: "HCCQ", name: "Sombric Kandiudults", tests: { all_of: [{sombric_horizon_usda: {max_top_cm: 150}}] } }
-    - { code: "HCCR", name: "Rhodic Kandiudults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: kandic, upper_cm: 75}}] } }
+    - { code: "HCCR", name: "Rhodic Kandiudults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: kandic, upper_cm: 75}}] } }
     - { code: "HCCS", name: "Typic Kandiudults", tests: { default: true } }
   "HCD":  # Kanhapludults, KST 13th ed., pp. 333-334 (14)
-    - { code: "HCDA", name: "Lithic Kanhapludults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HCDB", name: "Plinthaquic Kanhapludults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150, aquic: ultisol75}}] } }
-    - { code: "HCDC", name: "Arenic Plinthic Kanhapludults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCDD", name: "Arenic Kanhapludults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HCDA", name: "Lithic Kanhapludults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HCDB", name: "Plinthaquic Kanhapludults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150, aquic: ultisol75}}] } }
+    - { code: "HCDC", name: "Arenic Plinthic Kanhapludults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCDD", name: "Arenic Kanhapludults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
     - { code: "HCDE", name: "Acrudoxic Kanhapludults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}] } }
-    - { code: "HCDF", name: "Fragiaquic Kanhapludults", tests: { all_of: [{sg_ultisol_fragic: {aquic: true}}] } }
+    - { code: "HCDF", name: "Fragiaquic Kanhapludults", tests: { all_of: [{sg_ultisol_fragic_usda: {aquic: true}}] } }
     - { code: "HCDG", name: "Andic Kanhapludults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HCDH", name: "Aquic Kanhapludults", tests: { all_of: [{sg_ultisol_aquic: {zone: "75"}}] } }
-    - { code: "HCDI", name: "Ombroaquic Kanhapludults", tests: { all_of: [{sg_ultisol_ombroaquic: {}}] } }
+    - { code: "HCDH", name: "Aquic Kanhapludults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: "75"}}] } }
+    - { code: "HCDI", name: "Ombroaquic Kanhapludults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {}}] } }
     - { code: "HCDJ", name: "Oxyaquic Kanhapludults", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "HCDK", name: "Plinthic Kanhapludults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCDL", name: "Fragic Kanhapludults", tests: { all_of: [{sg_ultisol_fragic: {}}] } }
-    - { code: "HCDM", name: "Rhodic Kanhapludults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: kandic, upper_cm: 50}}] } }
+    - { code: "HCDK", name: "Plinthic Kanhapludults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCDL", name: "Fragic Kanhapludults", tests: { all_of: [{sg_ultisol_fragic_usda: {}}] } }
+    - { code: "HCDM", name: "Rhodic Kanhapludults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: kandic, upper_cm: 50}}] } }
     - { code: "HCDN", name: "Typic Kanhapludults", tests: { default: true } }
   "HCE":  # Paleudults, KST 13th ed., pp. 334-336 (20)
-    - { code: "HCEA", name: "Vertic Paleudults", tests: { all_of: [{sg_ultisol_vertic: {}}] } }
-    - { code: "HCEB", name: "Spodic Paleudults", tests: { all_of: [{sg_ultisol_spodic: {}}] } }
-    - { code: "HCEC", name: "Arenic Plinthaquic Paleudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: .inf}}, {sg_ultox_plinthic: {max_cm: 150}}, {sg_ultisol_aquic: {zone: 75_uncoated, horizon: argillic}}] } }
-    - { code: "HCED", name: "Aquic Arenic Paleudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: .inf}}, {sg_ultisol_aquic: {zone: 75_uncoated, horizon: argillic}}] } }
-    - { code: "HCEE", name: "Anthraquic Paleudults", tests: { all_of: [{sg_ultisol_anthraquic: {}}] } }
-    - { code: "HCEF", name: "Plinthaquic Paleudults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}, {sg_ultisol_aquic: {zone: 75_uncoated, horizon: argillic}}] } }
-    - { code: "HCEG", name: "Fragiaquic Paleudults", tests: { all_of: [{sg_ultisol_fragic: {aquic: true}}] } }
-    - { code: "HCEH", name: "Aquic Paleudults", tests: { all_of: [{sg_ultisol_aquic: {zone: "75"}}] } }
+    - { code: "HCEA", name: "Vertic Paleudults", tests: { all_of: [{sg_ultisol_vertic_usda: {}}] } }
+    - { code: "HCEB", name: "Spodic Paleudults", tests: { all_of: [{sg_ultisol_spodic_usda: {}}] } }
+    - { code: "HCEC", name: "Arenic Plinthaquic Paleudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: .inf}}, {sg_ultox_plinthic_usda: {max_cm: 150}}, {sg_ultisol_aquic_usda: {zone: 75_uncoated, horizon: argillic}}] } }
+    - { code: "HCED", name: "Aquic Arenic Paleudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: .inf}}, {sg_ultisol_aquic_usda: {zone: 75_uncoated, horizon: argillic}}] } }
+    - { code: "HCEE", name: "Anthraquic Paleudults", tests: { all_of: [{sg_ultisol_anthraquic_usda: {}}] } }
+    - { code: "HCEF", name: "Plinthaquic Paleudults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}, {sg_ultisol_aquic_usda: {zone: 75_uncoated, horizon: argillic}}] } }
+    - { code: "HCEG", name: "Fragiaquic Paleudults", tests: { all_of: [{sg_ultisol_fragic_usda: {aquic: true}}] } }
+    - { code: "HCEH", name: "Aquic Paleudults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: "75"}}] } }
     - { code: "HCEI", name: "Oxyaquic Paleudults", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "HCEJ", name: "Lamellic Paleudults", tests: { all_of: [{sg_ultisol_lamellic: {}}] } }
-    - { code: "HCEK", name: "Arenic Plinthic Paleudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCEL", name: "Psammentic Paleudults", tests: { all_of: [{sg_ultisol_psammentic: {}}] } }
-    - { code: "HCEM", name: "Grossarenic Plinthic Paleudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 100, max_cm: .inf}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCEN", name: "Plinthic Paleudults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HCEO", name: "Arenic Rhodic Paleudults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: argillic, upper_cm: 75, arenic: true}}] } }
-    - { code: "HCEP", name: "Arenic Paleudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HCEQ", name: "Grossarenic Paleudults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HCER", name: "Fragic Paleudults", tests: { all_of: [{sg_ultisol_fragic: {}}] } }
-    - { code: "HCES", name: "Rhodic Paleudults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: argillic, upper_cm: 75}}] } }
+    - { code: "HCEJ", name: "Lamellic Paleudults", tests: { all_of: [{sg_ultisol_lamellic_usda: {}}] } }
+    - { code: "HCEK", name: "Arenic Plinthic Paleudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCEL", name: "Psammentic Paleudults", tests: { all_of: [{sg_ultisol_psammentic_usda: {}}] } }
+    - { code: "HCEM", name: "Grossarenic Plinthic Paleudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 100, max_cm: .inf}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCEN", name: "Plinthic Paleudults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HCEO", name: "Arenic Rhodic Paleudults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: argillic, upper_cm: 75, arenic: true}}] } }
+    - { code: "HCEP", name: "Arenic Paleudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HCEQ", name: "Grossarenic Paleudults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HCER", name: "Fragic Paleudults", tests: { all_of: [{sg_ultisol_fragic_usda: {}}] } }
+    - { code: "HCES", name: "Rhodic Paleudults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: argillic, upper_cm: 75}}] } }
     - { code: "HCET", name: "Typic Paleudults", tests: { default: true } }
   "HCF":  # Rhodudults, KST 13th ed., p. 336 (3)
-    - { code: "HCFA", name: "Lithic Rhodudults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HCFB", name: "Psammentic Rhodudults", tests: { all_of: [{sg_ultisol_psammentic: {}}] } }
+    - { code: "HCFA", name: "Lithic Rhodudults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HCFB", name: "Psammentic Rhodudults", tests: { all_of: [{sg_ultisol_psammentic_usda: {}}] } }
     - { code: "HCFC", name: "Typic Rhodudults", tests: { default: true } }
   "HCG":  # Hapludults, KST 13th ed., pp. 330-331 (15)
-    - { code: "HCGA", name: "Lithic-Ruptic-Entic Hapludults", tests: { all_of: [{sg_ultisol_lithic_ruptic: {variant: entic}}] } }
-    - { code: "HCGB", name: "Lithic Hapludults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HCGC", name: "Vertic Hapludults", tests: { all_of: [{sg_ultisol_vertic: {}}] } }
-    - { code: "HCGD", name: "Fragiaquic Hapludults", tests: { all_of: [{sg_ultisol_fragic: {aquic: true}}] } }
-    - { code: "HCGE", name: "Aquic Arenic Hapludults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultisol_aquic: {zone: "100", either: true}}] } }
-    - { code: "HCGF", name: "Aquic Hapludults", tests: { all_of: [{sg_ultisol_aquic: {zone: "100", either: true}}] } }
-    - { code: "HCGG", name: "Fragic Hapludults", tests: { all_of: [{sg_ultisol_fragic: {}}] } }
+    - { code: "HCGA", name: "Lithic-Ruptic-Entic Hapludults", tests: { all_of: [{sg_ultisol_lithic_ruptic_usda: {variant: entic}}] } }
+    - { code: "HCGB", name: "Lithic Hapludults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HCGC", name: "Vertic Hapludults", tests: { all_of: [{sg_ultisol_vertic_usda: {}}] } }
+    - { code: "HCGD", name: "Fragiaquic Hapludults", tests: { all_of: [{sg_ultisol_fragic_usda: {aquic: true}}] } }
+    - { code: "HCGE", name: "Aquic Arenic Hapludults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}, {sg_ultisol_aquic_usda: {zone: "100", either: true}}] } }
+    - { code: "HCGF", name: "Aquic Hapludults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: "100", either: true}}] } }
+    - { code: "HCGG", name: "Fragic Hapludults", tests: { all_of: [{sg_ultisol_fragic_usda: {}}] } }
     - { code: "HCGH", name: "Oxyaquic Hapludults", tests: { all_of: [{oxyaquic_subgroup_usda: {max_depth_cm: 100}}] } }
-    - { code: "HCGI", name: "Lamellic Hapludults", tests: { all_of: [{sg_ultisol_lamellic: {}}] } }
-    - { code: "HCGJ", name: "Psammentic Hapludults", tests: { all_of: [{sg_ultisol_psammentic: {}}] } }
-    - { code: "HCGK", name: "Arenic Hapludults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HCGL", name: "Grossarenic Hapludults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
-    - { code: "HCGM", name: "Inceptic Hapludults", tests: { all_of: [{sg_ultisol_inceptic: {}}] } }
-    - { code: "HCGN", name: "Humic Hapludults", tests: { all_of: [{sg_ultisol_humic: {}}] } }
+    - { code: "HCGI", name: "Lamellic Hapludults", tests: { all_of: [{sg_ultisol_lamellic_usda: {}}] } }
+    - { code: "HCGJ", name: "Psammentic Hapludults", tests: { all_of: [{sg_ultisol_psammentic_usda: {}}] } }
+    - { code: "HCGK", name: "Arenic Hapludults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HCGL", name: "Grossarenic Hapludults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HCGM", name: "Inceptic Hapludults", tests: { all_of: [{sg_ultisol_inceptic_usda: {}}] } }
+    - { code: "HCGN", name: "Humic Hapludults", tests: { all_of: [{sg_ultisol_humic_usda: {}}] } }
     - { code: "HCGO", name: "Typic Hapludults", tests: { default: true } }
 
   # ====== USTULTS ======
   "HDA":  # Plinthustults, KST 13th ed., p. 340 (2)
-    - { code: "HDAA", name: "Haplic Plinthustults", tests: { all_of: [{sg_ultisol_haplic: {}}] } }
+    - { code: "HDAA", name: "Haplic Plinthustults", tests: { all_of: [{sg_ultisol_haplic_usda: {}}] } }
     - { code: "HDAB", name: "Typic Plinthustults", tests: { default: true } }
   "HDB":  # Kandiustults, KST 13th ed., pp. 338-339 (11)
     - { code: "HDBA", name: "Acrustoxic Kandiustults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}] } }
-    - { code: "HDBB", name: "Aquic Kandiustults", tests: { all_of: [{sg_ultisol_aquic: {zone: "75"}}] } }
-    - { code: "HDBC", name: "Arenic Plinthic Kandiustults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: .inf}}, {sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HDBD", name: "Arenic Kandiustults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: .inf}}] } }
-    - { code: "HDBE", name: "Udandic Kandiustults", tests: { all_of: [{sg_ultisol_andic_regime: {regime: udic}}] } }
+    - { code: "HDBB", name: "Aquic Kandiustults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: "75"}}] } }
+    - { code: "HDBC", name: "Arenic Plinthic Kandiustults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: .inf}}, {sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HDBD", name: "Arenic Kandiustults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: .inf}}] } }
+    - { code: "HDBE", name: "Udandic Kandiustults", tests: { all_of: [{sg_ultisol_andic_regime_usda: {regime: udic}}] } }
     - { code: "HDBF", name: "Andic Kandiustults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HDBG", name: "Plinthic Kandiustults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HDBH", name: "Aridic Kandiustults", tests: { all_of: [{sg_ultisol_ustic_intergrade: {toward: aridic}}] } }
-    - { code: "HDBI", name: "Udic Kandiustults", tests: { all_of: [{sg_ultisol_ustic_intergrade: {toward: udic}}] } }
-    - { code: "HDBJ", name: "Rhodic Kandiustults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: kandic, upper_cm: 75}}] } }
+    - { code: "HDBG", name: "Plinthic Kandiustults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HDBH", name: "Aridic Kandiustults", tests: { all_of: [{sg_ultisol_ustic_intergrade_usda: {toward: aridic}}] } }
+    - { code: "HDBI", name: "Udic Kandiustults", tests: { all_of: [{sg_ultisol_ustic_intergrade_usda: {toward: udic}}] } }
+    - { code: "HDBJ", name: "Rhodic Kandiustults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: kandic, upper_cm: 75}}] } }
     - { code: "HDBK", name: "Typic Kandiustults", tests: { default: true } }
   "HDC":  # Kanhaplustults, KST 13th ed., pp. 339-340 (12)
-    - { code: "HDCA", name: "Lithic Kanhaplustults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HDCA", name: "Lithic Kanhaplustults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
     - { code: "HDCB", name: "Acrustoxic Kanhaplustults", tests: { all_of: [{acric_oxisol_usda: {subgroup: true}}] } }
-    - { code: "HDCC", name: "Aquic Kanhaplustults", tests: { all_of: [{sg_ultisol_aquic: {zone: "75"}}] } }
-    - { code: "HDCD", name: "Arenic Kanhaplustults", tests: { all_of: [{sg_ultisol_arenic: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HDCE", name: "Udandic Kanhaplustults", tests: { all_of: [{sg_ultisol_andic_regime: {regime: udic}}] } }
+    - { code: "HDCC", name: "Aquic Kanhaplustults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: "75"}}] } }
+    - { code: "HDCD", name: "Arenic Kanhaplustults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: kandic, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HDCE", name: "Udandic Kanhaplustults", tests: { all_of: [{sg_ultisol_andic_regime_usda: {regime: udic}}] } }
     - { code: "HDCF", name: "Andic Kanhaplustults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HDCG", name: "Plinthic Kanhaplustults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HDCH", name: "Ombroaquic Kanhaplustults", tests: { all_of: [{sg_ultisol_ombroaquic: {}}] } }
-    - { code: "HDCI", name: "Aridic Kanhaplustults", tests: { all_of: [{sg_ultisol_ustic_intergrade: {toward: aridic}}] } }
-    - { code: "HDCJ", name: "Udic Kanhaplustults", tests: { all_of: [{sg_ultisol_ustic_intergrade: {toward: udic}}] } }
-    - { code: "HDCK", name: "Rhodic Kanhaplustults", tests: { all_of: [{sg_ultisol_rhodic: {horizon: kandic, upper_cm: 50}}] } }
+    - { code: "HDCG", name: "Plinthic Kanhaplustults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HDCH", name: "Ombroaquic Kanhaplustults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {}}] } }
+    - { code: "HDCI", name: "Aridic Kanhaplustults", tests: { all_of: [{sg_ultisol_ustic_intergrade_usda: {toward: aridic}}] } }
+    - { code: "HDCJ", name: "Udic Kanhaplustults", tests: { all_of: [{sg_ultisol_ustic_intergrade_usda: {toward: udic}}] } }
+    - { code: "HDCK", name: "Rhodic Kanhaplustults", tests: { all_of: [{sg_ultisol_rhodic_usda: {horizon: kandic, upper_cm: 50}}] } }
     - { code: "HDCL", name: "Typic Kanhaplustults", tests: { default: true } }
   "HDD":  # Paleustults, KST 13th ed., p. 340 (1)
     - { code: "HDDA", name: "Typic Paleustults", tests: { default: true } }
   "HDE":  # Rhodustults, KST 13th ed., p. 340 (3)
-    - { code: "HDEA", name: "Lithic Rhodustults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HDEB", name: "Psammentic Rhodustults", tests: { all_of: [{sg_ultisol_psammentic: {}}] } }
+    - { code: "HDEA", name: "Lithic Rhodustults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HDEB", name: "Psammentic Rhodustults", tests: { all_of: [{sg_ultisol_psammentic_usda: {}}] } }
     - { code: "HDEC", name: "Typic Rhodustults", tests: { default: true } }
   "HDF":  # Haplustults, KST 13th ed., pp. 337-338 (8)
-    - { code: "HDFA", name: "Lithic Haplustults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HDFB", name: "Petroferric Haplustults", tests: { all_of: [{sg_ultox_contact: {kind: petroferric, max_cm: 100}}] } }
-    - { code: "HDFC", name: "Aquic Haplustults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg12_75, horizon: argillic}}] } }
-    - { code: "HDFD", name: "Arenic Haplustults", tests: { all_of: [{sg_ultisol_arenic: {horizon: argillic, min_cm: 50, max_cm: .inf}}] } }
-    - { code: "HDFE", name: "Ombroaquic Haplustults", tests: { all_of: [{sg_ultisol_ombroaquic: {}}] } }
-    - { code: "HDFF", name: "Plinthic Haplustults", tests: { all_of: [{sg_ultox_plinthic: {max_cm: 150}}] } }
-    - { code: "HDFG", name: "Kanhaplic Haplustults", tests: { all_of: [{sg_ultisol_kandic: {what: cec}}] } }
+    - { code: "HDFA", name: "Lithic Haplustults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HDFB", name: "Petroferric Haplustults", tests: { all_of: [{sg_ultox_contact_usda: {kind: petroferric, max_cm: 100}}] } }
+    - { code: "HDFC", name: "Aquic Haplustults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg12_75, horizon: argillic}}] } }
+    - { code: "HDFD", name: "Arenic Haplustults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: argillic, min_cm: 50, max_cm: .inf}}] } }
+    - { code: "HDFE", name: "Ombroaquic Haplustults", tests: { all_of: [{sg_ultisol_ombroaquic_usda: {}}] } }
+    - { code: "HDFF", name: "Plinthic Haplustults", tests: { all_of: [{sg_ultox_plinthic_usda: {max_cm: 150}}] } }
+    - { code: "HDFG", name: "Kanhaplic Haplustults", tests: { all_of: [{sg_ultisol_kandic_usda: {what: cec}}] } }
     - { code: "HDFH", name: "Typic Haplustults", tests: { default: true } }
 
   # ====== XERULTS ======
   "HEA":  # Palexerults, KST 13th ed., p. 341 (4)
-    - { code: "HEAA", name: "Aquandic Palexerults", tests: { all_of: [{sg_ultisol_andic: {aquic: arg25}}] } }
-    - { code: "HEAB", name: "Aquic Palexerults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg25}}] } }
+    - { code: "HEAA", name: "Aquandic Palexerults", tests: { all_of: [{sg_ultisol_andic_usda: {aquic: arg25}}] } }
+    - { code: "HEAB", name: "Aquic Palexerults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg25}}] } }
     - { code: "HEAC", name: "Andic Palexerults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
     - { code: "HEAD", name: "Typic Palexerults", tests: { default: true } }
   "HEB":  # Haploxerults, KST 13th ed., pp. 340-341 (9)
-    - { code: "HEBA", name: "Lithic Ruptic-Inceptic Haploxerults", tests: { all_of: [{sg_ultisol_lithic_ruptic: {variant: inceptic}}] } }
-    - { code: "HEBB", name: "Lithic Haploxerults", tests: { all_of: [{sg_ultox_contact: {kind: lithic, max_cm: 50}}] } }
-    - { code: "HEBC", name: "Aquic Haploxerults", tests: { all_of: [{sg_ultisol_aquic: {zone: arg25}}] } }
+    - { code: "HEBA", name: "Lithic Ruptic-Inceptic Haploxerults", tests: { all_of: [{sg_ultisol_lithic_ruptic_usda: {variant: inceptic}}] } }
+    - { code: "HEBB", name: "Lithic Haploxerults", tests: { all_of: [{sg_ultox_contact_usda: {kind: lithic, max_cm: 50}}] } }
+    - { code: "HEBC", name: "Aquic Haploxerults", tests: { all_of: [{sg_ultisol_aquic_usda: {zone: arg25}}] } }
     - { code: "HEBD", name: "Andic Haploxerults", tests: { all_of: [{andic_subgroup_usda: {}}] } }
-    - { code: "HEBE", name: "Lamellic Haploxerults", tests: { all_of: [{sg_ultisol_lamellic: {horizon: either}}] } }
-    - { code: "HEBF", name: "Psammentic Haploxerults", tests: { all_of: [{sg_ultisol_psammentic: {horizon: either}}] } }
-    - { code: "HEBG", name: "Arenic Haploxerults", tests: { all_of: [{sg_ultisol_arenic: {horizon: either, min_cm: 50, max_cm: 100}}] } }
-    - { code: "HEBH", name: "Grossarenic Haploxerults", tests: { all_of: [{sg_ultisol_arenic: {horizon: either, min_cm: 100, max_cm: .inf}}] } }
+    - { code: "HEBE", name: "Lamellic Haploxerults", tests: { all_of: [{sg_ultisol_lamellic_usda: {horizon: either}}] } }
+    - { code: "HEBF", name: "Psammentic Haploxerults", tests: { all_of: [{sg_ultisol_psammentic_usda: {horizon: either}}] } }
+    - { code: "HEBG", name: "Arenic Haploxerults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: either, min_cm: 50, max_cm: 100}}] } }
+    - { code: "HEBH", name: "Grossarenic Haploxerults", tests: { all_of: [{sg_ultisol_arenic_usda: {horizon: either, min_cm: 100, max_cm: .inf}}] } }
     - { code: "HEBI", name: "Typic Haploxerults", tests: { default: true } }

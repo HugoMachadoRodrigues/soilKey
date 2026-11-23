@@ -220,11 +220,11 @@
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param contact \code{NULL}, \code{"lithic"} or \code{"petroferric"}.
 #' @noRd
-sg_oxisol_aquic <- function(pedon, contact = NULL) {
+sg_oxisol_aquic_usda <- function(pedon, contact = NULL) {
   aq <- .sgux_oxisol_aquic(pedon)
   p <- aq$passed
   if (!is.null(contact)) p <- .and3(.sgux_contact(pedon, contact, 125), p)
-  .sgux_res("sg_oxisol_aquic", p, aq$layers,
+  .sgux_res("sg_oxisol_aquic_usda", p, aq$layers,
             c("munsell_value_moist", "munsell_chroma_moist", "mottle_colors"),
             list(contact = contact), .SGUX_OX)
 }
@@ -238,9 +238,9 @@ sg_oxisol_aquic <- function(pedon, contact = NULL) {
 #' @param kind \code{"lithic"} or \code{"petroferric"}.
 #' @param max_cm Depth below the mineral soil surface.
 #' @noRd
-sg_ultox_contact <- function(pedon, kind = "lithic", max_cm = 125) {
+sg_ultox_contact_usda <- function(pedon, kind = "lithic", max_cm = 125) {
   t <- .sgux_contact_top(pedon, kind)
-  .sgux_res("sg_ultox_contact", .sgux_contact(pedon, kind, max_cm),
+  .sgux_res("sg_ultox_contact_usda", .sgux_contact(pedon, kind, max_cm),
             which(abs(pedon$horizons$top_cm - t) < 1e-6),
             evidence = list(kind = kind, top_cm = t, max_cm = max_cm),
             reference = "Soil Survey Staff (2022), KST 13th ed., Lithic and Petroferric subgroups (pp. 296-341)")
@@ -261,7 +261,7 @@ sg_ultox_contact <- function(pedon, kind = "lithic", max_cm = 125) {
 #' @param max_pct Upper limit of the plinthite (50 in the Umbraquults).
 #' @param aquic \code{NULL}, \code{"oxisol"}, \code{"ultisol75"} or \code{"ultisol40"}.
 #' @noRd
-sg_ultox_plinthic <- function(pedon, max_cm = 150, max_pct = 100, aquic = NULL) {
+sg_ultox_plinthic_usda <- function(pedon, max_cm = 150, max_pct = 100, aquic = NULL) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   L <- .sgux_win(h, ms, ms + max_cm)
@@ -272,12 +272,12 @@ sg_ultox_plinthic <- function(pedon, max_cm = 150, max_pct = 100, aquic = NULL) 
   if (!is.null(aquic) && p) {
     a <- switch(aquic,
       oxisol = .sgux_oxisol_aquic(pedon)$passed,
-      ultisol75 = sg_ultisol_aquic(pedon, zone = "75", concentrations = TRUE)$passed,
-      ultisol40 = sg_ultisol_aquic(pedon, zone = "40", concentrations = FALSE, vmin = NA)$passed)
+      ultisol75 = sg_ultisol_aquic_usda(pedon, zone = "75", concentrations = TRUE)$passed,
+      ultisol40 = sg_ultisol_aquic_usda(pedon, zone = "40", concentrations = FALSE, vmin = NA)$passed)
     p <- .and3(p, a)
     miss <- c("munsell_value_moist", "munsell_chroma_moist", "mottle_colors")
   }
-  .sgux_res("sg_ultox_plinthic", p, hit, miss,
+  .sgux_res("sg_ultox_plinthic_usda", p, hit, miss,
             list(max_cm = max_cm, max_pct = max_pct, aquic = aquic),
             "Soil Survey Staff (2022), KST 13th ed., Plinthic subgroups (pp. 295-341)")
 }
@@ -290,13 +290,13 @@ sg_ultox_plinthic <- function(pedon, max_cm = 150, max_pct = 100, aquic = NULL) 
 #' leaves the test undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_oxisol_aeric <- function(pedon) {
+sg_oxisol_aeric_usda <- function(pedon) {
   h <- pedon$horizons
   epi <- .sgux_epipedon_layers(pedon)
   ref <- "Soil Survey Staff (2022), KST 13th ed., Aeric Aquox (pp. 295-296)"
-  if (!length(epi)) return(.sgux_res("sg_oxisol_aeric", NA, missing = "designation", reference = ref))
+  if (!length(epi)) return(.sgux_res("sg_oxisol_aeric_usda", NA, missing = "designation", reference = ref))
   z <- max(h$bottom_cm[epi])
-  if (is.na(z)) return(.sgux_res("sg_oxisol_aeric", NA, missing = "bottom_cm", reference = ref))
+  if (is.na(z)) return(.sgux_res("sg_oxisol_aeric_usda", NA, missing = "bottom_cm", reference = ref))
   ord <- order(h$top_cm)
   below <- ord[!is.na(h$top_cm[ord]) & h$top_cm[ord] >= z - 1e-6]
   thk <- 0; p <- FALSE; L <- integer(0)
@@ -308,7 +308,7 @@ sg_oxisol_aeric <- function(pedon) {
     thk <- thk + max(0, h$bottom_cm[i] - h$top_cm[i], na.rm = TRUE)
     if (thk >= 10) { p <- TRUE; break }
   }
-  .sgux_res("sg_oxisol_aeric", p, L, "munsell_chroma_moist",
+  .sgux_res("sg_oxisol_aeric_usda", p, L, "munsell_chroma_moist",
             list(epipedon_bottom_cm = z, thickness_cm = thk), ref)
 }
 
@@ -322,7 +322,7 @@ sg_oxisol_aeric <- function(pedon) {
 #' half, NA otherwise.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_oxisol_xanthic <- function(pedon) {
+sg_oxisol_xanthic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   lo <- ms + 25; hi <- ms + 125
@@ -336,7 +336,7 @@ sg_oxisol_xanthic <- function(pedon) {
   tot <- hi - lo
   yes <- sum(ov[ok %in% TRUE]); may <- yes + sum(ov[is.na(ok)]) + max(0, tot - sum(ov))
   p <- if (!length(L)) NA else if (yes >= tot / 2) TRUE else if (may < tot / 2) FALSE else NA
-  .sgux_res("sg_oxisol_xanthic", p, L[ok %in% TRUE],
+  .sgux_res("sg_oxisol_xanthic_usda", p, L[ok %in% TRUE],
             c("munsell_hue_moist", "munsell_value_moist", if (sum(ov) < tot) "bottom_cm"),
             list(share_cm = yes, window_cm = tot), .SGUX_OX)
 }
@@ -350,7 +350,7 @@ sg_oxisol_xanthic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param aquic Logical.
 #' @noRd
-sg_oxisol_anionic <- function(pedon, aquic = FALSE) {
+sg_oxisol_anionic_usda <- function(pedon, aquic = FALSE) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   hi <- ms + 125
@@ -365,7 +365,7 @@ sg_oxisol_anionic <- function(pedon, aquic = FALSE) {
   may <- Filter(function(r) thick(r) >= 18, .usda_runs(!(lay %in% FALSE), ord))
   p <- if (length(yes)) TRUE else if (length(may)) NA else FALSE
   if (isTRUE(aquic)) p <- .and3(p, .sgux_oxisol_aquic(pedon)$passed)
-  .sgux_res("sg_oxisol_anionic", p, unlist(yes),
+  .sgux_res("sg_oxisol_anionic_usda", p, unlist(yes),
             c("ph_kcl", "ph_h2o", if (isTRUE(aquic)) c("munsell_chroma_moist", "mottle_colors")),
             list(delta_ph = d, aquic = aquic), .SGUX_OX)
 }
@@ -378,7 +378,7 @@ sg_oxisol_anionic <- function(pedon, aquic = FALSE) {
 #' 125 cm without a contact.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_oxisol_eutric <- function(pedon) {
+sg_oxisol_eutric_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   L <- .sgux_win(h, ms, ms + 125)
@@ -387,7 +387,7 @@ sg_oxisol_eutric <- function(pedon) {
   p <- .usda_all3(ok)
   if (!length(L)) p <- NA
   if (isTRUE(p) && !.sgux_reaches(pedon, ms + 125)) p <- NA
-  .sgux_res("sg_oxisol_eutric", p, L, c("bs_pct", "bottom_cm"),
+  .sgux_res("sg_oxisol_eutric_usda", p, L, c("bs_pct", "bottom_cm"),
             list(bs_pct = bs), .SGUX_OX)
 }
 
@@ -403,7 +403,7 @@ sg_oxisol_eutric <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param humic,aquic Logical.
 #' @noRd
-sg_oxisol_inceptic <- function(pedon, humic = FALSE, aquic = FALSE) {
+sg_oxisol_inceptic_usda <- function(pedon, humic = FALSE, aquic = FALSE) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   ox <- oxic_usda(pedon)
@@ -426,22 +426,22 @@ sg_oxisol_inceptic <- function(pedon, humic = FALSE, aquic = FALSE) {
     p <- .and3(p, .sgux_oxisol_aquic(pedon)$passed)
     miss <- c(miss, "munsell_chroma_moist", "mottle_colors")
   }
-  .sgux_res("sg_oxisol_inceptic", p, ox$layers, miss,
+  .sgux_res("sg_oxisol_inceptic_usda", p, ox$layers, miss,
             list(humic = humic, aquic = aquic), .SGUX_OX)
 }
 
 #' Humic Rhodic and Humic Xanthic subgroups of the Oxisols (KST 13th ed.,
 #' pp. 297-309): 16 kg/m2 or more organic carbon to 100 cm
 #' (\code{humic_oxisol_usda()}) and the Rhodic (\code{rhodic_subgroup_usda(kst
-#' = "oxisol")}) or Xanthic (\code{sg_oxisol_xanthic()}) colours.
+#' = "oxisol")}) or Xanthic (\code{sg_oxisol_xanthic_usda()}) colours.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param colour \code{"rhodic"} or \code{"xanthic"}.
 #' @noRd
-sg_oxisol_humic_colour <- function(pedon, colour = c("rhodic", "xanthic")) {
+sg_oxisol_humic_colour_usda <- function(pedon, colour = c("rhodic", "xanthic")) {
   colour <- match.arg(colour)
   hu <- humic_oxisol_usda(pedon)
-  co <- if (colour == "rhodic") rhodic_subgroup_usda(pedon, kst = "oxisol") else sg_oxisol_xanthic(pedon)
-  .sgux_res("sg_oxisol_humic_colour", .and3(hu$passed, co$passed), co$layers,
+  co <- if (colour == "rhodic") rhodic_subgroup_usda(pedon, kst = "oxisol") else sg_oxisol_xanthic_usda(pedon)
+  .sgux_res("sg_oxisol_humic_colour_usda", .and3(hu$passed, co$passed), co$layers,
             c(hu$missing, co$missing), list(colour = colour), .SGUX_OX)
 }
 
@@ -450,12 +450,12 @@ sg_oxisol_humic_colour <- function(pedon, colour = c("rhodic", "xanthic")) {
 #' surface.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_oxisol_kandic <- function(pedon) {
+sg_oxisol_kandic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   ka <- kandic_horizon_usda(pedon)
   p <- if (isTRUE(ka$passed)) any(h$top_cm[ka$layers] < ms + 150) else ka$passed
-  .sgux_res("sg_oxisol_kandic", p, ka$layers, ka$missing, list(), .SGUX_OX)
+  .sgux_res("sg_oxisol_kandic_usda", p, ka$layers, ka$missing, list(), .SGUX_OX)
 }
 
 
@@ -495,7 +495,7 @@ sg_oxisol_kandic <- function(pedon) {
 #' @param either Logical: concentrations or depletions.
 #' @param horizon The horizon of the zones that name one.
 #' @noRd
-sg_ultisol_aquic <- function(pedon, zone = "75", concentrations = TRUE, vmin = 4,
+sg_ultisol_aquic_usda <- function(pedon, zone = "75", concentrations = TRUE, vmin = 4,
                              either = FALSE, horizon = "either") {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
@@ -534,7 +534,7 @@ sg_ultisol_aquic <- function(pedon, zone = "75", concentrations = TRUE, vmin = 4
     }
   }
   if (!any_feature) p <- FALSE
-  .sgux_res("sg_ultisol_aquic", p, L,
+  .sgux_res("sg_ultisol_aquic_usda", p, L,
             c("munsell_value_moist", "munsell_chroma_moist", "mottle_colors",
               if (!is.null(hz) && is.na(hz$passed)) hz$missing),
             list(zone = zone, concentrations = concentrations, either = either), .SGUX_UL)
@@ -553,7 +553,7 @@ sg_ultisol_aquic <- function(pedon, zone = "75", concentrations = TRUE, vmin = 4
 #' thickness) is a measurement: not recorded, undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_vertic <- function(pedon) {
+sg_ultisol_vertic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   ord <- order(h$top_cm)
@@ -577,7 +577,7 @@ sg_ultisol_vertic <- function(pedon) {
   b2 <- if (.kst_round(le, 1) >= 6) TRUE
         else if (anyNA(cole[dz > 0]) || !length(L) || !.sgux_reaches(pedon, hi)) NA else FALSE
   p <- .usda_or3(b1, b2)
-  .sgux_res("sg_ultisol_vertic", p, unlist(runs), c("cole_value"),
+  .sgux_res("sg_ultisol_vertic_usda", p, unlist(runs), c("cole_value"),
             list(slickensides_cm = sum(vapply(runs, function(r) .usda_run_thickness(h, r), 0)),
                  linear_extensibility_cm = le),
             "Soil Survey Staff (2022), KST 13th ed., Vertic subgroups of the Ultisols (pp. 322-334)")
@@ -598,7 +598,7 @@ sg_ultisol_vertic <- function(pedon) {
 #' @param horizon \code{"argillic"}, \code{"kandic"} or \code{"either"}.
 #' @param min_cm,max_cm Depth range of the top of the horizon.
 #' @noRd
-sg_ultisol_arenic <- function(pedon, horizon = "argillic", min_cm = 50, max_cm = 100) {
+sg_ultisol_arenic_usda <- function(pedon, horizon = "argillic", min_cm = 50, max_cm = 100) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   g <- .usda_texture_grades(h)$lfs_or_coarser
@@ -614,7 +614,7 @@ sg_ultisol_arenic <- function(pedon, horizon = "argillic", min_cm = 50, max_cm =
     if (d < min_cm - 1e-6 || d > max_cm + 1e-6) FALSE else sandy_to(t0)
   } else if (isFALSE(hz$passed)) FALSE
   else if (isFALSE(sandy_to(ms + min_cm))) FALSE else NA
-  .sgux_res("sg_ultisol_arenic", p, .sgux_win(h, ms, if (is.na(t0)) ms else t0),
+  .sgux_res("sg_ultisol_arenic_usda", p, .sgux_win(h, ms, if (is.na(t0)) ms else t0),
             c("clay_pct", "sand_pct", "texture_class_usda", if (is.na(hz$passed)) hz$missing),
             list(horizon = horizon, top_cm = t0, min_cm = min_cm, max_cm = max_cm),
             "Soil Survey Staff (2022), KST 13th ed., Arenic and Grossarenic Ultisols (pp. 322-341)")
@@ -629,7 +629,7 @@ sg_ultisol_arenic <- function(pedon, horizon = "argillic", min_cm = 50, max_cm =
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param to \code{"75"} or \code{"fragipan"}.
 #' @noRd
-sg_ultisol_aeric <- function(pedon, to = "75") {
+sg_ultisol_aeric_usda <- function(pedon, to = "75") {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   epi <- .sgux_epipedon_layers(pedon)
@@ -644,7 +644,7 @@ sg_ultisol_aeric <- function(pedon, to = "75") {
   ch <- h$munsell_chroma_moist[L]
   p <- if (!length(L)) (if (.sgux_bottom(h) > lo) FALSE else NA)
        else .usda_or3(ifelse(is.na(ch), NA, ch >= 3))
-  .sgux_res("sg_ultisol_aeric", p, L[!is.na(ch) & ch >= 3], c("munsell_chroma_moist", "bottom_cm"),
+  .sgux_res("sg_ultisol_aeric_usda", p, L[!is.na(ch) & ch >= 3], c("munsell_chroma_moist", "bottom_cm"),
             list(from_cm = lo, to_cm = hi),
             "Soil Survey Staff (2022), KST 13th ed., Aeric Aquults (pp. 322-324)")
 }
@@ -655,15 +655,15 @@ sg_ultisol_aeric <- function(pedon, to = "75") {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param aeric Logical.
 #' @noRd
-sg_ultisol_umbric <- function(pedon, aeric = FALSE) {
+sg_ultisol_umbric_usda <- function(pedon, aeric = FALSE) {
   mo <- .usda_try(mollic_epipedon_usda(pedon)); um <- .usda_try(umbric_epipedon_usda(pedon))
   p <- .usda_or3(.usda_pv(mo), .usda_pv(um))
   miss <- c(mo$missing, um$missing)
   if (isTRUE(aeric)) {
-    ae <- sg_ultisol_aeric(pedon)
+    ae <- sg_ultisol_aeric_usda(pedon)
     p <- .and3(p, ae$passed); miss <- c(miss, ae$missing)
   }
-  .sgux_res("sg_ultisol_umbric", p, c(if (isTRUE(.usda_pv(mo))) mo$layers, if (isTRUE(.usda_pv(um))) um$layers),
+  .sgux_res("sg_ultisol_umbric_usda", p, c(if (isTRUE(.usda_pv(mo))) mo$layers, if (isTRUE(.usda_pv(um))) um$layers),
             miss, list(aeric = aeric),
             "Soil Survey Staff (2022), KST 13th ed., Umbric Aquults (pp. 323-325)")
 }
@@ -677,7 +677,7 @@ sg_ultisol_umbric <- function(pedon, aeric = FALSE) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param what See above.
 #' @noRd
-sg_ultisol_kandic <- function(pedon, what = "kandic") {
+sg_ultisol_kandic_usda <- function(pedon, what = "kandic") {
   h <- pedon$horizons
   ka <- if (what != "cec") kandic_horizon_usda(pedon)
   cec <- if (what != "kandic") {
@@ -694,7 +694,7 @@ sg_ultisol_kandic <- function(pedon, what = "kandic") {
     } else ar$passed
   }
   p <- switch(what, kandic = ka$passed, cec = cec, .usda_or3(ka$passed, cec))
-  .sgux_res("sg_ultisol_kandic", p, ka$layers, c(ka$missing, if (what != "kandic") c("cec_cmol", "clay_pct")),
+  .sgux_res("sg_ultisol_kandic_usda", p, ka$layers, c(ka$missing, if (what != "kandic") c("cec_cmol", "clay_pct")),
             list(what = what, cec_test = cec), .SGUX_UL)
 }
 
@@ -711,7 +711,7 @@ sg_ultisol_kandic <- function(pedon, what = "kandic") {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param aquic,aeric Logical.
 #' @noRd
-sg_ultisol_fragic <- function(pedon, aquic = FALSE, aeric = FALSE) {
+sg_ultisol_fragic_usda <- function(pedon, aquic = FALSE, aeric = FALSE) {
   h <- pedon$horizons
   d <- .usda_desig(h$designation)
   x <- !is.na(d$suffix) & grepl("x", d$suffix)
@@ -719,14 +719,14 @@ sg_ultisol_fragic <- function(pedon, aquic = FALSE, aeric = FALSE) {
   p <- length(runs) > 0L || isTRUE(.has_nasis_feature(pedon, "fragipan"))
   miss <- character(0)
   if (isTRUE(aquic)) {
-    a <- sg_ultisol_aquic(pedon, zone = "75", concentrations = TRUE)
+    a <- sg_ultisol_aquic_usda(pedon, zone = "75", concentrations = TRUE)
     p <- .and3(p, a$passed); miss <- c(miss, a$missing)
   }
   if (isTRUE(aeric)) {
-    a <- sg_ultisol_aeric(pedon)
+    a <- sg_ultisol_aeric_usda(pedon)
     p <- .and3(p, a$passed); miss <- c(miss, a$missing)
   }
-  .sgux_res("sg_ultisol_fragic", p, unlist(runs), miss, list(aquic = aquic, aeric = aeric),
+  .sgux_res("sg_ultisol_fragic_usda", p, unlist(runs), miss, list(aquic = aquic, aeric = aeric),
             "Soil Survey Staff (2022), KST 13th ed., Fragic subgroups of the Ultisols (pp. 322-336)")
 }
 
@@ -737,26 +737,26 @@ sg_ultisol_fragic <- function(pedon, aquic = FALSE, aeric = FALSE) {
 #' 1.0 g/cm3 or less at 33 kPa and Al + 1/2 Fe by oxalate over 1.0 percent),
 #' or, with \code{vitrandic}, also the cinders and volcanic glass criteria
 #' (Aquandic Kanhaplaquults and Kandiudults). With \code{aquic} the aquic zone
-#' of \code{sg_ultisol_aquic()} as well (\code{"arg25"}: Aquandic Humults and
+#' of \code{sg_ultisol_aquic_usda()} as well (\code{"arg25"}: Aquandic Humults and
 #' Palexerults; \code{"75"}: Aquandic Kandiudults). The layers are those of
 #' \code{andic_subgroup_usda()}.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param vitrandic Logical.
-#' @param aquic \code{NULL} or a zone of \code{sg_ultisol_aquic()}.
+#' @param aquic \code{NULL} or a zone of \code{sg_ultisol_aquic_usda()}.
 #' @noRd
-sg_ultisol_andic <- function(pedon, vitrandic = FALSE, aquic = NULL) {
+sg_ultisol_andic_usda <- function(pedon, vitrandic = FALSE, aquic = NULL) {
   h <- pedon$horizons
-  if (!nrow(h)) return(.sgux_res("sg_ultisol_andic", FALSE))
+  if (!nrow(h)) return(.sgux_res("sg_ultisol_andic_usda", FALSE))
   L <- .andic_subgroup_layers_usda(h)
   ok <- if (isTRUE(vitrandic)) L$andic | L$vitrandic else L$andic
   an <- .andic_subgroup_18_usda(h, ok)
   p <- an$passed
   miss <- c(L$missing_andic, if (isTRUE(vitrandic)) L$missing_vitrandic)
   if (!is.null(aquic)) {
-    a <- sg_ultisol_aquic(pedon, zone = aquic, concentrations = TRUE)
+    a <- sg_ultisol_aquic_usda(pedon, zone = aquic, concentrations = TRUE)
     p <- .and3(p, a$passed); miss <- c(miss, a$missing)
   }
-  .sgux_res("sg_ultisol_andic", p, an$layers, miss,
+  .sgux_res("sg_ultisol_andic_usda", p, an$layers, miss,
             list(vitrandic = vitrandic, aquic = aquic, thickness_cm = an$thickness_cm),
             "Soil Survey Staff (2022), KST 13th ed., Andic and Aquandic Ultisols (pp. 324-341)")
 }
@@ -773,7 +773,7 @@ sg_ultisol_andic <- function(pedon, vitrandic = FALSE, aquic = NULL) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param andic Logical.
 #' @noRd
-sg_ultisol_ombroaquic <- function(pedon, andic = FALSE) {
+sg_ultisol_ombroaquic_usda <- function(pedon, andic = FALSE) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   L <- .sgux_win(h, ms, ms + 75)
@@ -791,10 +791,10 @@ sg_ultisol_ombroaquic <- function(pedon, andic = FALSE) {
   p <- .and3(c1, ox$passed)
   miss <- c("munsell_hue_moist", "munsell_value_moist", ox$missing)
   if (isTRUE(andic)) {
-    an <- sg_ultisol_andic(pedon)
+    an <- sg_ultisol_andic_usda(pedon)
     p <- .and3(p, an$passed); miss <- c(miss, an$missing)
   }
-  .sgux_res("sg_ultisol_ombroaquic", p, L, miss, list(redox_colour = c1, saturation = ox$passed),
+  .sgux_res("sg_ultisol_ombroaquic_usda", p, L, miss, list(redox_colour = c1, saturation = ox$passed),
             "Soil Survey Staff (2022), KST 13th ed., Ombroaquic subgroups (pp. 326-339)")
 }
 
@@ -803,14 +803,14 @@ sg_ultisol_ombroaquic <- function(pedon, andic = FALSE) {
 #' The andic criterion and the soil moisture regime: \code{"ustic"} (Ustandic
 #' Kandihumults, Kanhaplohumults) or the udic side of the ustic regime
 #' (\code{"udic"}, Udandic Kandiustults and Kanhaplustults, see
-#' \code{sg_ultisol_ustic_intergrade()}).
+#' \code{sg_ultisol_ustic_intergrade_usda()}).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param regime \code{"ustic"} or \code{"udic"}.
 #' @noRd
-sg_ultisol_andic_regime <- function(pedon, regime = "ustic") {
-  an <- sg_ultisol_andic(pedon)
-  rg <- if (regime == "ustic") smr_ustic_usda(pedon) else sg_ultisol_ustic_intergrade(pedon, "udic")
-  .sgux_res("sg_ultisol_andic_regime", .and3(an$passed, rg$passed), an$layers,
+sg_ultisol_andic_regime_usda <- function(pedon, regime = "ustic") {
+  an <- sg_ultisol_andic_usda(pedon)
+  rg <- if (regime == "ustic") smr_ustic_usda(pedon) else sg_ultisol_ustic_intergrade_usda(pedon, "udic")
+  .sgux_res("sg_ultisol_andic_regime_usda", .and3(an$passed, rg$passed), an$layers,
             c(an$missing, rg$missing), list(regime = regime), .SGUX_UL)
 }
 
@@ -828,12 +828,12 @@ sg_ultisol_andic_regime <- function(pedon, regime = "ustic") {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param toward \code{"udic"} or \code{"aridic"}.
 #' @noRd
-sg_ultisol_ustic_intergrade <- function(pedon, toward = "udic") {
+sg_ultisol_ustic_intergrade_usda <- function(pedon, toward = "udic") {
   s <- tolower(as.character(pedon$site$soil_moisture_subclass %||% NA_character_)[1L])
   p <- if (is.na(s) || !nzchar(trimws(s))) NA
        else if (grepl(toward, s)) TRUE
        else if (grepl("udic|aridic|torric|typic|xeric", s)) FALSE else NA
-  .sgux_res("sg_ultisol_ustic_intergrade", p, missing = "site$soil_moisture_subclass",
+  .sgux_res("sg_ultisol_ustic_intergrade_usda", p, missing = "site$soil_moisture_subclass",
             evidence = list(subclass = s, toward = toward),
             reference = "Soil Survey Staff (2022), KST 13th ed., Udic and Aridic Kandiustults and Kanhaplustults (pp. 338-340)")
 }
@@ -853,7 +853,7 @@ sg_ultisol_ustic_intergrade <- function(pedon, toward = "udic") {
 #' @param upper_cm Thickness of the upper part read.
 #' @param arenic Logical.
 #' @noRd
-sg_ultisol_rhodic <- function(pedon, horizon = "kandic", upper_cm = 75, arenic = FALSE) {
+sg_ultisol_rhodic_usda <- function(pedon, horizon = "kandic", upper_cm = 75, arenic = FALSE) {
   h <- pedon$horizons
   hz <- .sgux_horizon(pedon, horizon)
   red <- .hue_redder_than(h$munsell_hue_moist, "2.5YR")
@@ -868,10 +868,10 @@ sg_ultisol_rhodic <- function(pedon, horizon = "kandic", upper_cm = 75, arenic =
   } else hz$passed
   miss <- c("munsell_hue_moist", "munsell_value_moist", "munsell_value_dry", if (is.na(hz$passed)) hz$missing)
   if (isTRUE(arenic)) {
-    ar <- sg_ultisol_arenic(pedon, horizon = horizon, min_cm = 50, max_cm = 100)
+    ar <- sg_ultisol_arenic_usda(pedon, horizon = horizon, min_cm = 50, max_cm = 100)
     p <- .and3(ar$passed, p); miss <- c(miss, ar$missing)
   }
-  .sgux_res("sg_ultisol_rhodic", p, hz$layers, miss,
+  .sgux_res("sg_ultisol_rhodic_usda", p, hz$layers, miss,
             list(horizon = horizon, upper_cm = upper_cm, arenic = arenic), .SGUX_UL)
 }
 
@@ -885,7 +885,7 @@ sg_ultisol_rhodic <- function(pedon, horizon = "kandic", upper_cm = 75, arenic =
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param horizon \code{"argillic"} or \code{"either"}.
 #' @noRd
-sg_ultisol_psammentic <- function(pedon, horizon = "argillic") {
+sg_ultisol_psammentic_usda <- function(pedon, horizon = "argillic") {
   h <- pedon$horizons
   hz <- .sgux_horizon(pedon, horizon)
   g <- .usda_texture_grades(h)$lfs_or_coarser
@@ -897,7 +897,7 @@ sg_ultisol_psammentic <- function(pedon, horizon = "argillic") {
                  ifelse(is.na(g[L]) | is.na(cf[L]), NA, TRUE))
     .and3(ok)
   } else hz$passed
-  .sgux_res("sg_ultisol_psammentic", p, hz$layers,
+  .sgux_res("sg_ultisol_psammentic_usda", p, hz$layers,
             c("clay_pct", "sand_pct", "texture_class_usda", "coarse_fragments_pct",
               if (is.na(hz$passed)) hz$missing),
             list(horizon = horizon), .SGUX_UL)
@@ -915,18 +915,18 @@ sg_ultisol_psammentic <- function(pedon, horizon = "argillic") {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param horizon \code{"argillic"} or \code{"either"}.
 #' @noRd
-sg_ultisol_lamellic <- function(pedon, horizon = "argillic") {
+sg_ultisol_lamellic_usda <- function(pedon, horizon = "argillic") {
   h <- pedon$horizons
   lam <- (!is.na(h$designation) & grepl("&", h$designation, fixed = TRUE)) |
          (!is.na(.usda_col(h, "lamellae_cumulative_cm", NA_real_)) &
             .usda_col(h, "lamellae_cumulative_cm", NA_real_) > 0)
-  if (!any(lam)) return(.sgux_res("sg_ultisol_lamellic", FALSE, reference = .SGUX_UL))
+  if (!any(lam)) return(.sgux_res("sg_ultisol_lamellic_usda", FALSE, reference = .SGUX_UL))
   hz <- .sgux_horizon(pedon, horizon)
   p <- if (isTRUE(hz$passed) && length(hz$layers)) {
     b <- max(h$bottom_cm[hz$layers], na.rm = TRUE)
     all(lam[hz$layers]) || sum(lam & !is.na(h$top_cm) & h$top_cm < b) >= 2L
   } else hz$passed
-  .sgux_res("sg_ultisol_lamellic", p, which(lam), hz$missing, list(horizon = horizon), .SGUX_UL)
+  .sgux_res("sg_ultisol_lamellic_usda", p, which(lam), hz$missing, list(horizon = horizon), .SGUX_UL)
 }
 
 #' Inceptic Hapludults (KST 13th ed., p. 331): no densic, lithic or
@@ -936,12 +936,12 @@ sg_ultisol_lamellic <- function(pedon, horizon = "argillic") {
 #' thickness of 25 cm or less is then undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_inceptic <- function(pedon) {
+sg_ultisol_inceptic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   ct <- .kst_contact_top_cm(pedon, petroferric = FALSE)
   if (!is.na(ct) && ct < ms + 50)
-    return(.sgux_res("sg_ultisol_inceptic", FALSE, reference = .SGUX_UL))
+    return(.sgux_res("sg_ultisol_inceptic_usda", FALSE, reference = .SGUX_UL))
   ar <- argillic_usda(pedon)
   p <- if (isTRUE(ar$passed) && length(ar$layers)) {
     thk <- sum(pmax(0, h$bottom_cm[ar$layers] - h$top_cm[ar$layers]), na.rm = TRUE)
@@ -949,7 +949,7 @@ sg_ultisol_inceptic <- function(pedon) {
       (is.na(ct) || ct > max(h$bottom_cm[ar$layers], na.rm = TRUE) + 1e-6)
     if (thk > 25) FALSE else if (open) NA else TRUE
   } else ar$passed
-  .sgux_res("sg_ultisol_inceptic", p, ar$layers, c("bottom_cm", ar$missing), list(), .SGUX_UL)
+  .sgux_res("sg_ultisol_inceptic_usda", p, ar$layers, c("bottom_cm", ar$missing), list(), .SGUX_UL)
 }
 
 #' Humic Hapludults and Fragiudults (KST 13th ed., pp. 330-331)
@@ -962,7 +962,7 @@ sg_ultisol_inceptic <- function(pedon) {
 #' undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_humic <- function(pedon) {
+sg_ultisol_humic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   vm <- h$munsell_value_moist
@@ -980,7 +980,7 @@ sg_ultisol_humic <- function(pedon) {
   apt <- sum(pmax(0, h$bottom_cm[ap] - h$top_cm[ap]), na.rm = TRUE)
   p1 <- if (apt >= 18) test(ap, ms, ms + 1000) else FALSE
   p2 <- if (.sgux_bottom(h) < ms + 18) NA else test(.sgux_win(h, ms, ms + 18), ms, ms + 18)
-  .sgux_res("sg_ultisol_humic", .usda_or3(p1, p2), c(ap, .sgux_win(h, ms, ms + 18)),
+  .sgux_res("sg_ultisol_humic_usda", .usda_or3(p1, p2), c(ap, .sgux_win(h, ms, ms + 18)),
             c("munsell_value_moist", "munsell_value_dry"), list(ap_cm = apt), .SGUX_UL)
 }
 
@@ -999,11 +999,11 @@ sg_ultisol_humic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param aquic Logical.
 #' @noRd
-sg_ultisol_glossic <- function(pedon, aquic = FALSE) {
+sg_ultisol_glossic_usda <- function(pedon, aquic = FALSE) {
   h <- pedon$horizons
   fp <- fragipan_usda(pedon, max_top_cm = Inf)
   if (!isTRUE(fp$passed) || !length(fp$layers))
-    return(.sgux_res("sg_ultisol_glossic", if (isFALSE(fp$passed)) FALSE else NA,
+    return(.sgux_res("sg_ultisol_glossic_usda", if (isFALSE(fp$passed)) FALSE else NA,
                      missing = fp$missing, reference = .SGUX_UL))
   ftop <- min(h$top_cm[fp$layers])
   gl <- glossic_subgroup_usda(pedon)
@@ -1033,10 +1033,10 @@ sg_ultisol_glossic <- function(pedon, aquic = FALSE) {
   p <- .usda_or3(c1, c2, c3)
   miss <- c("clay_films_amount", "clay_pct", "munsell_chroma_moist")
   if (isTRUE(aquic)) {
-    a <- sg_ultisol_aquic(pedon, zone = "40", concentrations = FALSE, vmin = NA)
+    a <- sg_ultisol_aquic_usda(pedon, zone = "40", concentrations = FALSE, vmin = NA)
     p <- .and3(p, a$passed); miss <- c(miss, a$missing)
   }
-  .sgux_res("sg_ultisol_glossic", p, fp$layers, miss,
+  .sgux_res("sg_ultisol_glossic_usda", p, fp$layers, miss,
             list(glossic = c1, no_clay_films = c2, depleted_layer = c3, aquic = aquic), .SGUX_UL)
 }
 
@@ -1051,7 +1051,7 @@ sg_ultisol_glossic <- function(pedon, aquic = FALSE) {
 #' The extractions are measurements: not recorded, undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_spodic <- function(pedon) {
+sg_ultisol_spodic_usda <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   d <- .usda_desig(h$designation)
@@ -1073,7 +1073,7 @@ sg_ultisol_spodic <- function(pedon) {
     .usda_or3(c1, rel(alfe, i, 0.25), rel(odoe, i, 0.12))
   }, NA)
   p <- .usda_or3(ok)
-  .sgux_res("sg_ultisol_spodic", p, cand[ok %in% TRUE], c("al_ox_pct", "fe_ox_pct", "odoe"),
+  .sgux_res("sg_ultisol_spodic_usda", p, cand[ok %in% TRUE], c("al_ox_pct", "fe_ox_pct", "odoe"),
             list(from_cm = z), .SGUX_UL)
 }
 
@@ -1083,11 +1083,11 @@ sg_ultisol_spodic <- function(pedon) {
 #' site land use of paddy rice; absent when not recorded.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_anthraquic <- function(pedon) {
+sg_ultisol_anthraquic_usda <- function(pedon) {
   aq <- .usda_try(anthraquic(pedon))
   lu <- tolower(paste(unlist(pedon$site[c("land_use", "landuse", "vegetation")]), collapse = " "))
   p <- isTRUE(.usda_pv(aq)) || grepl("paddy|rice", lu)
-  .sgux_res("sg_ultisol_anthraquic", p, if (isTRUE(.usda_pv(aq))) aq$layers, reference = .SGUX_UL)
+  .sgux_res("sg_ultisol_anthraquic_usda", p, if (isTRUE(.usda_pv(aq))) aq$layers, reference = .SGUX_UL)
 }
 
 #' Lithic-Ruptic-Entic Hapludults and Lithic Ruptic-Inceptic Haploxerults
@@ -1102,7 +1102,7 @@ sg_ultisol_anthraquic <- function(pedon) {
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param variant \code{"entic"} or \code{"inceptic"}.
 #' @noRd
-sg_ultisol_lithic_ruptic <- function(pedon, variant = "entic") {
+sg_ultisol_lithic_ruptic_usda <- function(pedon, variant = "entic") {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   cont <- tolower(as.character(.usda_col(h, "horizon_continuity", NA_character_)))
@@ -1113,7 +1113,7 @@ sg_ultisol_lithic_ruptic <- function(pedon, variant = "entic") {
   hz <- .sgux_horizon(pedon, if (variant == "entic") "argillic" else "either")
   darg <- isTRUE(hz$passed) && any(broken[hz$layers])
   p <- if (variant == "entic") dlith || darg else lith && darg
-  .sgux_res("sg_ultisol_lithic_ruptic", p, which(broken), evidence = list(variant = variant),
+  .sgux_res("sg_ultisol_lithic_ruptic_usda", p, which(broken), evidence = list(variant = variant),
             reference = .SGUX_UL)
 }
 
@@ -1124,8 +1124,8 @@ sg_ultisol_lithic_ruptic <- function(pedon, variant = "entic") {
 #' test (\code{.pale_core_usda()}).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_haplic <- function(pedon) {
+sg_ultisol_haplic_usda <- function(pedon) {
   core <- .pale_core_usda(pedon, petroferric = TRUE)
-  .sgux_res("sg_ultisol_haplic", .usda_not3(core$passed), missing = core$missing %||% "clay_pct",
+  .sgux_res("sg_ultisol_haplic_usda", .usda_not3(core$passed), missing = core$missing %||% "clay_pct",
             evidence = list(core = core$reason), reference = .SGUX_UL)
 }
