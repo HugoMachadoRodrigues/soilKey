@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.417</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.421</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,7 +159,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5d92fe04a1b0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5d28cd50d1b0&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -392,32 +392,35 @@ presenca de revestimentos argilosos).</p>
 <span><span class="co">#&gt; Evidence grade: C</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
+<span><span class="co">#&gt; - SP: Indeterminate -- missing 6 attribute(s): al_ox_pct, fe_ox_pct, odoe,</span></span>
+<span><span class="co">#&gt; site$soil_temperature_regime, phosphate_retention_pct, bulk_density_g_cm3</span></span>
 <span><span class="co">#&gt; - AD: Indeterminate -- missing 4 attribute(s): phosphate_retention_pct,</span></span>
 <span><span class="co">#&gt; al_ox_pct, fe_ox_pct, volcanic_glass_pct</span></span>
-<span><span class="co">#&gt; - AS: Indeterminate -- missing 5 attribute(s): site$soil_moisture_regime,</span></span>
-<span><span class="co">#&gt; caco3_pct, caso4_pct, ec_dS_m, water_saturation_days</span></span>
+<span><span class="co">#&gt; - AS: Indeterminate -- missing 3 attribute(s): site$soil_moisture_regime,</span></span>
+<span><span class="co">#&gt; ec_dS_m, water_saturation_days</span></span>
 <span><span class="co">#&gt; - HC: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime</span></span>
 <span><span class="co">#&gt; - HD: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime</span></span>
 <span><span class="co">#&gt; - HE: Indeterminate -- missing 1 attribute(s): site$soil_moisture_regime</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
-<span><span class="co">#&gt; permafrost_temp_C, al_ox_pct, fe_ox_pct, phosphate_retention_pct,</span></span>
-<span><span class="co">#&gt; volcanic_glass_pct, slickensides, site$soil_moisture_regime, caco3_pct,</span></span>
-<span><span class="co">#&gt; caso4_pct, ec_dS_m, water_saturation_days, redoximorphic_features_pct</span></span>
+<span><span class="co">#&gt; permafrost_temp_C, al_ox_pct, fe_ox_pct, odoe, site$soil_temperature_regime,</span></span>
+<span><span class="co">#&gt; phosphate_retention_pct, bulk_density_g_cm3, volcanic_glass_pct,</span></span>
+<span><span class="co">#&gt; site$soil_moisture_regime, ec_dS_m, water_saturation_days,</span></span>
+<span><span class="co">#&gt; redoximorphic_features_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Warnings</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The name was reached past 2 undecided test(s) (orders:AD, orders:AS): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The name was reached past 3 undecided test(s) (orders:SP, orders:AD, orders:AS): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Suborder undecided: no taxon passed and HC, HD, HE could not be decided, so the name stops at the level above. See $ambiguities.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (13 classes tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. GE Gelisols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 2. HI Histosols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 3. SP Spodosols -- failed (2 attrs missing)</span></span>
+<span><span class="co">#&gt; 2. HI Histosols -- failed</span></span>
+<span><span class="co">#&gt; 3. SP Spodosols -- undecided (6 attrs missing)</span></span>
 <span><span class="co">#&gt; 4. AD Andisols -- undecided (4 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. OX Oxisols -- failed</span></span>
-<span><span class="co">#&gt; 6. VE Vertisols -- failed (1 attrs missing)</span></span>
-<span><span class="co">#&gt; 7. AS Aridisols -- undecided (5 attrs missing)</span></span>
+<span><span class="co">#&gt; 6. VE Vertisols -- failed</span></span>
+<span><span class="co">#&gt; 7. AS Aridisols -- undecided (3 attrs missing)</span></span>
 <span><span class="co">#&gt; 8. UT Ultisols -- PASSED</span></span>
 <span><span class="co">#&gt; 9. HA Aquults -- failed (1 attrs missing)</span></span>
 <span><span class="co">#&gt; 10. HB Humults -- failed</span></span>

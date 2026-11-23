@@ -14,7 +14,3 @@ column.
 ``` r
 .FEBR_TO_HORIZON_MAP
 ```
-
-## Format
-
-An object of class `list` of length 25.

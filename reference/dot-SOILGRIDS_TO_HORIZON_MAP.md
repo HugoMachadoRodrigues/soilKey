@@ -12,7 +12,3 @@ soilKey unit conventions.
 ``` r
 .SOILGRIDS_TO_HORIZON_MAP
 ```
-
-## Format
-
-An object of class `list` of length 9.

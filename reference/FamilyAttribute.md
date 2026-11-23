@@ -1,11 +1,5 @@
 # Classe S4-like para atributos de Familia (5o nivel SiBCS)
 
-Classe S4-like para atributos de Familia (5o nivel SiBCS)
-
-Classe S4-like para atributos de Familia (5o nivel SiBCS)
-
-## Details
-
 Estrutura categorica (em vez de booleana) que representa um adjetivo
 composto da Familia. `value` eh o adjetivo atribuido (string) ou `NULL`
 quando a dimensao nao se aplica ou nao foi possivel determinar.
@@ -36,7 +30,7 @@ quando a dimensao nao se aplica ou nao foi possivel determinar.
 
 ### Public methods
 
-- [`FamilyAttribute$new()`](#method-FamilyAttribute-new)
+- [`FamilyAttribute$new()`](#method-FamilyAttribute-initialize)
 
 - [`FamilyAttribute$print()`](#method-FamilyAttribute-print)
 
@@ -44,7 +38,7 @@ quando a dimensao nao se aplica ou nao foi possivel determinar.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `FamilyAttribute$new()`
 
 Build a FamilyAttribute.
 
@@ -82,7 +76,7 @@ Build a FamilyAttribute.
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `FamilyAttribute$print()`
 
 Pretty-print the attribute.
 
@@ -98,7 +92,7 @@ Pretty-print the attribute.
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `FamilyAttribute$clone()`
 
 The objects of this class are cloneable with this method.
 

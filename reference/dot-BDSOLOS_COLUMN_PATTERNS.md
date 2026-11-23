@@ -10,7 +10,3 @@ after stripping diacritics and the underscore between word fragments.
 ``` r
 .BDSOLOS_COLUMN_PATTERNS
 ```
-
-## Format
-
-An object of class `list` of length 41.

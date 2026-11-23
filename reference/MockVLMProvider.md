@@ -1,11 +1,5 @@
 # Mock VLM provider for testing
 
-Mock VLM provider for testing
-
-Mock VLM provider for testing
-
-## Details
-
 A stand-in for an `ellmer` chat object. Exposes the same
 `$chat(prompt, ...)` method, but instead of calling a model it pops the
 next response from a pre-loaded queue. Designed for testthat unit tests
@@ -67,7 +61,7 @@ error.
 
 ### Public methods
 
-- [`MockVLMProvider$new()`](#method-MockVLMProvider-new)
+- [`MockVLMProvider$new()`](#method-MockVLMProvider-initialize)
 
 - [`MockVLMProvider$chat()`](#method-MockVLMProvider-chat)
 
@@ -77,7 +71,7 @@ error.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `MockVLMProvider$new()`
 
 Construct a mock provider.
 
@@ -101,7 +95,7 @@ Construct a mock provider.
 
 ------------------------------------------------------------------------
 
-### Method `chat()`
+### `MockVLMProvider$chat()`
 
 Send a prompt; returns the next queued response.
 
@@ -127,7 +121,7 @@ Character scalar with the response text.
 
 ------------------------------------------------------------------------
 
-### Method `reset()`
+### `MockVLMProvider$reset()`
 
 Reset the mock (call count and prompt log).
 
@@ -137,7 +131,7 @@ Reset the mock (call count and prompt log).
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `MockVLMProvider$clone()`
 
 The objects of this class are cloneable with this method.
 

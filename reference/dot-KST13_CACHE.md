@@ -12,10 +12,6 @@ per session.
 .KST13_CACHE
 ```
 
-## Format
-
-An object of class `environment` of length 0.
-
 ## Details
 
 Kept in a private environment so package-internal code can reach the

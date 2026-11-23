@@ -1,11 +1,5 @@
 # DiagnosticResult: structured outcome of a diagnostic test
 
-DiagnosticResult: structured outcome of a diagnostic test
-
-DiagnosticResult: structured outcome of a diagnostic test
-
-## Details
-
 Returned by every WRB or SiBCS diagnostic function (e.g.
 [`argic`](https://hugomachadorodrigues.github.io/soilKey/reference/argic.md),
 [`ferralic`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md),
@@ -56,7 +50,7 @@ does not silently fail.
 
 ### Public methods
 
-- [`DiagnosticResult$new()`](#method-DiagnosticResult-new)
+- [`DiagnosticResult$new()`](#method-DiagnosticResult-initialize)
 
 - [`DiagnosticResult$print()`](#method-DiagnosticResult-print)
 
@@ -66,7 +60,7 @@ does not silently fail.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `DiagnosticResult$new()`
 
 Build a DiagnosticResult.
 
@@ -114,7 +108,7 @@ Build a DiagnosticResult.
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `DiagnosticResult$print()`
 
 Pretty-print the result with sub-test breakdown.
 
@@ -130,7 +124,7 @@ Pretty-print the result with sub-test breakdown.
 
 ------------------------------------------------------------------------
 
-### Method `as_list()`
+### `DiagnosticResult$as_list()`
 
 Return the result as a plain list (for serialization).
 
@@ -140,7 +134,7 @@ Return the result as a plain list (for serialization).
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `DiagnosticResult$clone()`
 
 The objects of this class are cloneable with this method.
 

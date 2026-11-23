@@ -1,5 +1,416 @@
 # Changelog
 
+## soilKey 0.9.421
+
+Mollisols and Vertisols after the Soil Taxonomy audit (Hugo, 2026-11-20;
+audit section 2.5, items M1 to M9, readings L19 and L27 to L33). Each
+test touched is three-valued: TRUE or FALSE where the data recorded
+decide it, NA with the missing data listed where they do not.
+
+- **Mollic epipedon** (KST 13th ed., pp. 14-16;
+  `mollic_epipedon_usda()`, now in `R/diagnostics-mollisols-usda.R`).
+  The upper 18 cm of the mineral soil (less above a contact, petrocalcic
+  horizon or duripan) are mixed by a thickness-weighted average whatever
+  the designations; the layers below join the epipedon one by one while
+  they meet the requirements. Before, only A horizons starting within 5
+  cm counted, each alone. Colour: the carbonate rules of item 4 (15-40 %
+  CaCO3 with value and chroma 3 or less; 40 % or more with moist value 5
+  or less) and 2.5 % organic carbon at moist value 4 or 5 (6a); the
+  C-horizon rule (6b) from the moist colours. A dry value not recorded
+  is the moist value + 1 only where the moist value is 2 or less, and
+  the test is undecided otherwise (L27); the dry-chroma and the
+  organic-carbon (1.5 %) stand-ins for colour are gone. Base saturation
+  not measured is undecided; the pH and Al-saturation proxies are gone
+  (L28). Structure (items 1-3) fails only where the layer is massive and
+  harder than moderately hard when dry; FAO “hard” counts as moderately
+  hard (L33). Thickness (item 7): 25 cm (loamy fine sand or coarser; no
+  diagnostic horizon below and irregular carbon; limits at 75 cm or
+  deeper), 10 cm directly above a contact, one-third of the depth to the
+  deeper of the carbonate limit and the lower boundary of the argillic
+  or cambic horizon (L29) between 18 and 25 cm, or 18 cm. A CaCO3
+  equivalent not measured is nil where no effervescence is recorded or
+  the pH(H2O) is below 7. The shared WRB `test_mollic_*` helpers and the
+  umbric epipedon are unchanged.
+- **Mollisols** (pp. 69-70, item I; `mollisol_qualifying_usda()`, now
+  called by the order). Item I.1.b (the albic alternative) and item I.2,
+  base saturation of 50 % or more to 125 cm below an argillic, kandic or
+  natric horizon, 180 cm or a contact. A profile sampled shallower is
+  read at its deepest horizon sampled; `evidence$inferences` and a
+  warning say “base saturation read at X cm, the deepest horizon
+  sampled, as a stand-in for Y cm”, and the name has grade C (L19).
+  [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  lowers the grade for any such inference of a test on the path to the
+  name.
+- **Pachic** follows the new thickness (50 cm, finer than loamy fine
+  sand).
+- **Albolls, Aquolls, Rendolls** (pp. 247-248): the criteria of the key.
+  Albolls: argillic or natric, the albic horizon as worded, redox
+  concentrations, a temperature regime warmer than cryic. Aquolls: aquic
+  conditions in the 40-50 cm layer (or above a contact) and sodium, a
+  histic epipedon, a calcic horizon within 40 cm, or the colour sets of
+  item 5. Rendolls: mollic under 50 cm, no argillic or calcic horizon,
+  40 % CaCO3 within or below it, udic or cryic (no contact asked for).
+- **Calci-, Pale-, Vermi- Mollisols** (pp. 249, 254, 259, 267-268, 284):
+  `calci_mollisol_usda()`, `pale_mollisol_usda()`,
+  `vermic_mollisol_usda()`, with the criteria of each suborder in place
+  of the calcic horizon and the Paleargid stand-in. Entic Durustolls
+  read “no argillic horizon above the duripan”
+  (`entic_durustoll_usda()`), not the Spodosol entic test.
+- **Vertisols** (p. 69, item F; `vertisol_qualifying_usda()`): a layer
+  of 25 cm or more (adjoining horizons) within 100 cm with slickensides
+  or wedge-shaped peds; 30 % clay in the upper 18 cm (or the Ap) and in
+  every horizon reaching into 18-50 cm (L31); cracks, where none are
+  recorded the slickensides standing for them, as the trace notes (L30).
+  The linear extensibility path is not part of the order key. The field
+  texture class bounds the clay where it is not measured.
+  `vertic_horizon(reading = "usda")`, which the SiBCS vertic horizon
+  uses, is unchanged.
+- **Vertisol suborders and great groups** (pp. 343-350). Aquerts by the
+  chroma of item FA; Xererts need a thermic, mesic or frigid regime as
+  well as the xeric regime, which stands in for the crack pattern, as
+  the recorded regimes do for Torrerts and Usterts (L32). Dystr- by EC
+  \< 4 and pH (CaCl2) 4.5 or less, not the base saturation
+  (`dystric_vertisol_usda()`; `dystric_subgroup_usda()` stays for the
+  Dystr- Inceptisols); Dur- by the duripan; Humicryerts by 10 kg/m2
+  organic carbon; Sulfaquerts also by sulfidic materials.
+- Canonical fixtures: Phaeozem and Anthrosol become Pachic Hapludolls
+  (were Typic Hapludolls); Chernozem and Chernossolo become Pachic
+  Hapludolls (were Typic Vermudolls: the transition zone has less than
+  25 % worm holes).
+- On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 203 (was 201), suborder 158 (158), great group 105 (104),
+  subgroup 48 (48); 103 names change. ISIS Vertisols named Vertisols 27
+  of 30 (was 22; IN010, IT011, TH002, TR016, TR018 join; IN012 stays out
+  by the 18-50 cm clay); ISIS Mollisols named Mollisols 15 of 31 (was
+  19): 15 now have the Mollisol test undecided, mostly by a dry colour
+  not recorded at moist value 3 (L27; inferring the dry value always
+  would give 23). TR007 and US028 become Alfisols, as in ISIS; KE067
+  becomes Pachic Argiustolls (ISIS: Vertic Argiustoll); UY008 becomes
+  Typic Hapluderts.
+
+## soilKey 0.9.420
+
+The Alfisols, Ultisols and Oxisols after the Soil Taxonomy audit (Hugo,
+2026-11-20; audit section 2.4, items U1 to U3, O1 to O5, G1 to G5, and
+readings L18 to L26). The argillic, kandic and oxic horizons follow the
+text of Keys to Soil Taxonomy (13th ed.); the Ultisol and Alfisol order
+gates and the Pale-, Kandi-, Kanhapl-, Plinth-, Rhod- and Ferr- great
+groups read the KST key.
+
+- **The argillic horizon is the KST one** (`argillic_usda()`, pp. 20-21;
+  item G1). It was the WRB argic horizon: its texture test, the WRB
+  thresholds (6 / 1.4 / 20) where no clay films were recorded, a clay
+  increase always, and clay films anywhere in the profile. Now the clay
+  increase of the KST (3 % / 1.2 times / 8 %) from the eluvial horizon
+  within 30 cm; no increase is needed under a plow layer (Ap) directly
+  above or across a lithologic discontinuity (a change of material
+  number, Arabic or Roman); 7.5 cm or one-tenth of the overlying
+  horizons (15 cm if sandy or made of lamellae); evidence of clay
+  illuviation in the horizon itself (clay films, clay bridges, thin
+  sections, a t designation, a NASIS argillic horizon). With none of
+  these recorded the horizon is undecided (reading L22). No texture test
+  and no fluvic exclusion: neither is in the KST. O, A, E, C and R
+  horizons and the layer at the mineral soil surface are not part of it.
+- **The kandic horizon** (pp. 26-27; reading L23) mixes the upper 18 cm:
+  a layer starting above 18 cm is compared, below 18 cm, with the
+  weighted clay of the upper 18 cm. Its 5 cm alternative needs an abrupt
+  textural change (p. 31), not only an FAO “abrupt” boundary; it is a
+  subsurface horizon. No kandic horizon starts below 125 cm unless the
+  upper 100 cm are sandy.
+- **The oxic horizon is the KST one**
+  ([`oxic_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/oxic_usda.md),
+  p. 28; item O2), not the WRB ferralic horizon: a subsurface run of
+  layers 30 cm thick, sandy loam or finer, apparent CEC of 16 or less
+  per kg clay, rock structure under 5 %, not andic; the clay increase at
+  its upper boundary is below the kandic limits unless the boundary is
+  diffuse (criterion 5). Weatherable minerals are never recorded in most
+  data and are then treated as met, as the evidence says (reading L21).
+- **The apparent clay** of the oxic (3 x) and kandic (2.5 x) horizons
+  and of the Alfisol Pale- test uses the water at 1500 kPa only where it
+  is measured by mass (reading L25): ISIS gives it by volume, and its
+  reader’s conversion is not used.
+- **Rounding** (KST endnote 1, p. 70; reading L24): values are rounded
+  to the precision of the limit, half to even, in the clay increases,
+  the CEC per kg clay, the base saturation, the clay of the Oxisol order
+  (BR004, 39.9 % clay, is a Rhodic Eutrustox, as in ISIS) and the ECEC
+  of the Acric taxa.
+- **Ultisols** (p. 69; items U1, U2, G5): the USDA argillic or kandic
+  horizon (it was the WRB argic one), no fragipan, and a base saturation
+  by sum of cations below 35 % at the shallowest of 125 cm below the
+  horizon’s upper boundary, 180 cm, or a contact (with a sandy epipedon,
+  the deeper of 125 cm below the boundary, at most 200 cm, and 180 cm);
+  or a fragipan with its own depth. It took the mean over the argic
+  layers and, with no base saturation, a low one inferred from Al
+  saturation or pH, which the KST does not have (removed with
+  `.bs_low_inferred()` and `.argillic_bs_mean()`). The sum of cations is
+  computed where the acidity or CEC at pH 8.2 is recorded; elsewhere the
+  NH4OAc base saturation stands in, and the evidence says so (reading
+  L18). A profile that ends above that depth takes its deepest sampled
+  horizon, recorded as an inference:
+  [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  lowers the grade to C and warns when a test on the path of the name
+  carries one (reading L19).
+- **Alfisols** (p. 70; item U3): an argillic, kandic or natric horizon,
+  or a fragipan with clay films 1 mm thick; no base-saturation test.
+  soilKey has no plaggen epipedon test, so that exclusion is not
+  applied.
+- **Great groups** (items G2, G3). Pale- and Kandi- read the KST: no
+  contact within 150 cm and no clay decrease of 20 % from the maximum
+  below it (skeletans or, in Palexerults, plinthite waive it), undecided
+  on a profile that ends above 150 cm (reading L20); Paleudalfs and
+  Paleustalfs add the colour of the lower half of the argillic horizon,
+  Paleustalfs and Palexeralfs the petrocalcic and abrupt-increase
+  routes, Palexeralfs a base at 150 cm, Palecryalfs the glossic route.
+  Kandi- great groups need the same core; Kanhapl- (“other … with a
+  kandic horizon”) is reachable. Plinth- great groups need plinthite in
+  half the volume (it took 5 %). Rhod- great groups read the upper 100
+  cm of the argillic horizon and the dry value (undecided without it,
+  reading L26). Ferrudalfs need a glossic horizon and iron nodules (it
+  took Fe-DCB of 4 %). The Aqualfs follow the order of the key
+  (Plinthaqualfs after Cryaqualfs, Duraqualfs third).
+- **Subgroups and suborders.** Ultic Alfisols need a base saturation
+  below 75 % throughout the argillic horizon (item G4; 22 lost Ultic in
+  the audit). Rhodic Oxisols need every horizon from 25 to 125 cm red
+  and dark (item O3). Humic Oxisols and Humults no longer replace a
+  missing bulk density by 1.0 or 1.2 g/cm3 (item O4): a mass the known
+  layers reach is enough, and the test is undecided when the missing
+  densities (up to 2.0 g/cm3) could reach it. Acric great groups read
+  the oxic or kandic subhorizons with the apparent ECEC; the Acrudoxic
+  subgroups (p. 331) take an ECEC of 1.5 or less per kg clay within 150
+  cm (item O5).
+- **Canonical fixtures.**
+  [`make_ferralsol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_ferralsol_canonical.md)
+  and
+  [`make_latossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_latossolo_canonical.md)
+  are Typic Hapludox (were Rhodic Hapludox: the Bw1 at 65-130 cm has a
+  moist value of 4);
+  [`make_luvisol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_luvisol_canonical.md)
+  is Typic Hapludalfs (was Typic Paleudalfs: its clay falls from 38 to
+  25 % at 90 cm).
+- **ISIS (974 profiles).** 321 names change. 64 Alfisols and 23 Ultisols
+  become Entisols, with grade C, because their argillic horizon has no
+  recorded evidence of illuviation (reading L22) and no cambic horizon
+  passes; 26 Inceptisols become Alfisols and 9 Entisols Alfisols with
+  the KST thresholds and waivers. Against the ISIS 1999 names (`cmp.R`):
+  order 201 to 206 of 357, suborder 158 to 165, great group 104 to 115,
+  subgroup 48 to 59. KE042, CO008, JM001, CN021, CN022, ZW011, IN003 and
+  CN028 become Ultisols as in ISIS; CN001, GB002, GB003, GB010 and IT009
+  become Alfisols; KE009, KE047, KE040 and BR012 lose Rhodic or Humic.
+- **Clay films recorded as none decide** (reading N5, Hugo, 2026-11-21):
+  a B horizon not designated t, with clay films recorded as none and no
+  clay bridges or thin-section argillans recorded, shows no evidence of
+  clay illuviation, so it is not part of an argillic horizon; until then
+  it was undecided unless thin sections and COLE were recorded too.
+
+## soilKey 0.9.419
+
+Inceptisols, Entisols and Aridisols after the Soil Taxonomy audit (Hugo,
+2026-11-20; audit section 2.3, items I1 to I12, the Oxyaquic fix R2, the
+helper fixes F12 and F14, readings L13 to L17 as recommended). Every
+test touched is three-valued: undecided (NA, with the missing
+attributes) when the missing data could change the answer.
+
+- **The cambic horizon is a USDA function of its own**,
+  `cambic_horizon_usda()` (KST 13th ed., pp. 22-23), no longer the WRB
+  reading (`.cambic_impl()`, unchanged for the WRB). Layer by layer: 15
+  cm of adjoining layers; very fine sand, loamy very fine sand or finer
+  (laboratory texture, else the field class through
+  `.texture_class_reading()`; a laboratory sand or loamy sand, of no
+  known sand grade, is read as coarser than the very fine grade unless
+  the field class names VFS or LVFS); soil structure or the absence of
+  rock structure (massive and single grain pass, structure not recorded
+  is undecided); the evidence of alteration of item 4 (the wet colours
+  of 4a, or 4b: higher chroma, value, redder hue or more clay than the
+  underlying horizon or an overlying one, an A included as printed, L13,
+  or the removal of carbonates or gypsum); not part of the epipedons and
+  horizons of item 5; not an Ap. A layer designated A, E or C is not
+  cambic (L14). Redox concentrations not recorded are absent.
+- **Item K of the Key to Soil Orders in full** (p. 70): K.1 a to e
+  (cambic within 100 cm reaching 25 cm; calcic, petrocalcic, gypsic,
+  petrogypsic or placic horizon or duripan within 100 cm; fragipan,
+  oxic, sombric or spodic horizon within 200 cm; sulfuric within 150 cm;
+  cryic or gelic regime and a cambic horizon), K.2 (no sulfidic
+  materials within 50 cm, a nonfluid or low-clay horizon between 20 and
+  50 cm, and a folistic, histic, mollic, plaggen or umbric epipedon, a
+  salic horizon or the sodium path), and not the Wassent condition.
+  Fluidity not recorded is nonfluid (L16). Up to v0.9.418 only a cambic
+  horizon counted, an undecided one as absent. Aridisol item G.1.c reads
+  the same cambic horizon.
+- **Entisols** (p. 165): Psamments are keyed before Fluvents (the YAML
+  codes stay). Psamments: loamy fine sand or coarser and under 35 % rock
+  fragments in all layers of the particle-size control section (was half
+  the layers above 100 cm, laboratory only). Fluvents: 0.2 % organic
+  carbon at 125 cm or an irregular decrease from 25 cm, a rise of more
+  than 0.05 points (L15); no contact within 25 cm; under 50 cm of
+  human-transported material; no recorded anthropogenic landform; slope
+  under 25 % (not recorded, read as met, as in the Cumulic Mollisols);
+  temperature warmer than cryic, or a slope under 5 % or under 15 %
+  glass. The fluvic layer origin no longer makes a Fluvent by itself.
+  Aquents (LB) read the colour criteria by texture class and the
+  dipyridyl test; Fluvaquents (LBF) their own text; Sulfaquents sulfidic
+  materials within 50 cm (was the sulfuric horizon).
+- **Inceptisol suborders and great groups**: Aquepts (KA, p. 207) need
+  aquic conditions with a histic epipedon, a sulfuric horizon, chroma 1
+  or less (2 with redox concentrations) or a positive dipyridyl test, or
+  the sodium path; Halaquepts (KAC) a salic horizon or ESP 15 in 25 cm
+  within 50 cm (was EC 8 dS/m); Eutrudepts (KFF, p. 223) free carbonates
+  throughout or base saturation 60 % between 25 and 75 cm (was anywhere
+  above 75 cm, and a missing value made a Dystrudept).
+- **Oxyaquic** (R2): saturation 20 consecutive or 30 cumulative days,
+  read from `water_saturation_days` (or 30 days of flooding); with no
+  record the subgroup is undecided (L17). Redox features belong to the
+  Aquic subgroups. `oxyaquic_subgroup_usda()` gains `max_depth_cm`
+  (default 100).
+- **Duripan** (p. 23): cemented in more than 50 % with evidence of
+  silica (q designation, a recorded duripan share or pan), not only
+  indurated. **Petrocalcic** (p. 28): cemented by carbonates (k,
+  calcrete or 15 % CaCO3); silica-only cement is not petrocalcic.
+  **Gypsic** (p. 25): the USDA text, with visible secondary gypsum a
+  field observation (gypsum_visible_pct or a y designation; not
+  recorded, absent). **Sombric** (`sombric_horizon_usda()`, pp. 30-31):
+  its six required characteristics; buried and gleyed layers are not
+  sombric.
+- **Plaggen and anthropic epipedons**: `plaggen_epipedon_usda()` (p. 17)
+  and `anthropic_epipedon_usda()` (pp. 12-13), from the recorded
+  human-transported material (caret designation, layer origin, anthropic
+  material, artifacts); nothing recorded, absent. Used by the cambic
+  exclusions, item K.2 and the Aridisol epipedon.
+- **Helpers**: `psammentic_subgroup_usda()` no longer passes with no
+  texture (`all(na.rm = TRUE)`, F12); `fluventic_usda()` reads the
+  layers that overlap 25 to 125 cm (F14) and the organic carbon at 125
+  cm.
+- On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 209 (was 201), the suborder in 172 (158), the great group in
+  119 (104) and the subgroup in 63 (48). Names that change: BW007 Typic
+  Haplustepts, KE024 Typic Torriorthents, KE062 Typic Torripsamments,
+  NL014 Aquic Udipsamments, JM006 and NO003 Typic Dystrudepts, NI011
+  Typic Durustolls, US026 Typic Natridurids, BR020 Typic
+  Quartzipsamments (all as ISIS); the Oxyaquic subgroups become Typic,
+  graded C (KE041, ZA021, NL021, NZ001, NZ002, NZ004, NL036, NL005,
+  CU010, US016, CO006, ID007, US015, US013, CU016); GB002 Typic
+  Eutrudepts and NL007 Humic Eutrudepts (base saturation between 25 and
+  75 cm); NL034 Typic Quartzipsamments and NA003 Typic Torripsamments
+  (Psamments first); IE009 Typic Udifluvents; ZM001 Typic Humustepts;
+  the Sombrihumults CO011, CO012, CO014, ID011, ID036 become
+  Haplohumults or Palehumults (the sombric horizon now needs its pH and
+  oxalate criteria).
+- Canonical fixtures: Fluvisol Typic Udifluvents (was Typic Udorthents),
+  Durisol Typic Haplocambids (Typic Torriorthents; its duripan share of
+  35 % is not a duripan), Neossolo Litolico Lithic Humudepts (Lithic
+  Udorthents: an umbric epipedon over rock is an Inceptisol by item
+  K.2), Cryosol Fluventic Haplorthels (Typic: 0.5 % organic carbon at
+  125 cm).
+- **In an unplowed soil an A may be the cambic horizon** (reading N11,
+  Hugo, 2026-11-21; KST p. 22): with no Ap in the profile, an A is read
+  by the cambic criteria like a B. 8 of the 974 ISIS profiles change,
+  mostly from Orthents or Fluvents to Inceptisols.
+
+## soilKey 0.9.418
+
+Spodosols, Histosols and Gelisols after the Soil Taxonomy audit (Hugo,
+2026-11-20; audit section 2.2, items S1 to S13, fix A13 of the Andisols
+audit, and readings L5 to L12 as recommended).
+
+- **The spodic horizon is the KST’s own** (`spodic_horizon_usda()`, KST
+  13th ed., pp. 31, 38-39); up to 0.9.417 it was the WRB
+  [`spodic()`](https://hugomachadorodrigues.github.io/soilKey/reference/spodic.md).
+  Spodic materials need pH 5.9 or less and 0.6 % organic carbon, and
+  either one of the listed moist colours directly under an albic
+  horizon, or a colour of the wider list with pedogenic cementation, 10
+  % cracked coatings, Al + 1/2 Fe (oxalate) of 0.50 with half that or
+  less in an overlying A or E horizon, or an ODOE of 0.25 with half that
+  or less above. The horizon is 85 % spodic materials in 2.5 cm or more
+  outside an Ap. A colour, pH, carbon, oxalate extract or ODOE not
+  recorded leaves a layer undecided (ODOE: reading L5); cementation and
+  cracked coatings are field observations, absent when not recorded, and
+  any recorded cementation class counts (L6). The albic horizon is read
+  from albic materials (p. 32) in an E horizon; a dry value under 5
+  rules it out without the moist colour (L8).
+- **Spodosols order, item C of the key (p. 68)**: the plaggen and
+  argillic-or-kandic-above exclusions and items C1 to C3 (thickness,
+  depth of the upper and lower boundaries, the frigid and cryic cases, a
+  directly overlying albic horizon). Item C.3.d(2), no andic soil
+  properties in 60 % of the upper 60 cm, is read by
+  `.spodosol_no_andic_usda()` when that function exists (the Andisols
+  work brings it); until then by a bound (no andic properties where Al +
+  1/2 Fe is under 0.4 % or organic carbon is 25 % or more), and is
+  otherwise undecided (L7).
+- **Aquods** need, besides aquic conditions within 50 cm, a histic
+  epipedon or aquic conditions in the albic or spodic horizon (p. 311;
+  new `aquod_qualifying_usda()`). **Alorthods** read oxalate iron under
+  0.10 % alone in 75 % of the thickness of the spodic horizon (p. 317);
+  the Alaquods keep the Al \>= 3 Fe alternative. **Humods** let
+  adjoining layers of 6 % carbon make the 10 cm.
+- **Entic subgroups of Spodosols** follow the four KST definitions
+  (Entic Cryaquods, Haplocryods, Alorthods, and the Haplorthods and
+  Fragiorthods, pp. 312-320); `entic_subgroup_usda(rule = )`, and with
+  no rule given (the subgroup lists pass none yet) the rule of the
+  profile’s great group.
+- **Dur- great groups of Spodosols** read the cemented horizon in 90 %
+  of each pedon laterally (L9): the recorded share (`duripan_pct`) or a
+  suffix m (95 %); a cemented layer with neither leaves them undecided
+  (new `cemented_horizon_usda()`).
+- **Placic horizon** (p. 30): a recorded thin iron pan, or recorded
+  cementation in a Bsm-like layer; 1 mm or more, and under 25 mm only
+  where it is or touches spodic materials. Up to 0.9.417 it needed a
+  strong or indurated class and was always 0.1 to 2.5 cm.
+- **Spodic subgroups** (Psamments, Inceptisols, Gelisols): all three
+  items (cementation, Al + 1/2 Fe, ODOE), a horizon 5 cm thick, any
+  overlying layer; `psamments = TRUE` adds the Psamments’ depth rule
+  (p. 184). Without oxalate or ODOE data the test is undecided (L5), so
+  many Psamments and Inceptisols carry it as an ambiguity.
+- New `haploplaggic_subgroup_usda()` (a plaggen-like surface 25 to 50 cm
+  thick, pp. 17, 313); the subgroup lists still carry `default: false`.
+- **Gelisols** (p. 67): permafrost within 100 cm, or gelic materials
+  (new `gelic_materials_usda()`: cryoturbation or segregated ice) within
+  100 cm and permafrost within 200 cm; up to 0.9.417 the WRB cryic
+  conditions. **Permafrost** also reads the frozen suffix f, as the WRB
+  does (S10).
+- **Histosols** (pp. 7, 67-68): organic soil material is 12 % organic
+  carbon; without a measurement an O or H designation reads as organic
+  and a measured carbon under 12 % overrides it (L10); 2O1 or 4O1 count.
+  Items a to d of the key, the andic exclusion, and item d’s thickness
+  over the control section (L11).
+- **Folists** need fewer than 30 days of saturation and no drainage
+  (p. 199): `water_saturation_days`, a drainage record, an H designation
+  (saturated); otherwise undecided. The drainage class is not read
+  (L12).
+- **Fibrists, Saprists** read the subsurface tier (or the surface and
+  subsurface tiers over a 40 cm mineral layer) with the KST fibre
+  classes (fibric 3/4, sapric under 1/6), then the von Post index, then
+  the suffix i, e, a; Fibrists also exclude sulfuric and sulfidic
+  layers. The Fibric, Hemic and Sapric subgroup helpers read 25 cm below
+  the surface tier in the control section.
+- **Histic epipedon** (p. 14): 20 to 40 cm of organic soil material (60
+  for moss or very light material) from the surface, or an Ap mixed to
+  25 cm with 8 % carbon, and in both cases saturation for 30 days or
+  drainage (fix A13: the Ap path had none). **Folistic epipedon**
+  (p. 13): 15 cm of organic soil material or the same Ap, saturated
+  under 30 days and not drained.
+- **Canonical fixtures.**
+  [`make_podzol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_podzol_canonical.md)
+  and
+  [`make_espodossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_espodossolo_canonical.md)
+  become Entic Haplorthods (a sandy spodic horizon of 7.5YR 3/4: chroma
+  4 in its upper 2.5 cm);
+  [`make_histosol_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_histosol_canonical.md)
+  becomes Typic Haplohemists (its drained mire is no Folist) and
+  [`make_organossolo_canonical()`](https://hugomachadorodrigues.github.io/soilKey/reference/make_organossolo_canonical.md)
+  Terric Haplohemists (no saturation record; Folists undecided).
+- **ISIS** (357 profiles with a 1999 name): order 201 (unchanged),
+  suborder 158, great group 104 to 105, subgroup 48 to 49; 22 of the 974
+  names change. US017 becomes Typic Aquiturbels (as ISIS); US027, BE003
+  Typic Durorthods (ortstein m); NO002 Typic Placorthods; MY052 Typic
+  Haplorthods; NL033 (10YR 4.5/4, no spodic colour) and RO011 leave the
+  Spodosols; FI004 and NL032 are undecided Spodosols (no moist colour;
+  no albic or andic data) keyed on to Spodic Quartzipsamments; HU018,
+  HU019, GL003, NL049, NL051, NL052 and CO013 become Histosols by their
+  measured organic carbon (CO013 should go undecided with the Andisols’
+  andic test); RU002, GB008, FR010, CL002, NL050 become Spodic
+  Psamments; SY002 becomes Typic Hapludalfs (an undescribed layer under
+  its Ap leaves the histic and folistic epipedons, hence the Aridisols’
+  ochric test, undecided).
+
 ## soilKey 0.9.417
 
 The Andisols and the andic tests of the USDA key, after the Soil

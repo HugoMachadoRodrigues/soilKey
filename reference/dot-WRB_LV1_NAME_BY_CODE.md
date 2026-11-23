@@ -13,7 +13,3 @@ in WRB 2022.
 ``` r
 .WRB_LV1_NAME_BY_CODE
 ```
-
-## Format
-
-An object of class `character` of length 31.

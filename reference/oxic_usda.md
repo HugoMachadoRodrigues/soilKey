@@ -1,12 +1,32 @@
 # Oxic horizon (USDA Soil Taxonomy)
 
-The USDA oxic horizon is the diagnostic of Oxisols. Its central criteria
-match the WRB 2022 ferralic horizon closely enough that v0.2 simply
-delegates: every fixture that classifies as Oxisol via USDA also
-classifies as Ferralsol via WRB and vice-versa. The fine-grained
-differences (USDA's water-dispersible-clay test, the sand-fraction
-weatherable-mineral cut-offs) are tracked in the diagnostics.yaml for
-v0.8 refinement.
+v0.9.420: the oxic horizon of Keys to Soil Taxonomy (13th ed., 2022, Ch.
+3, p. 28), in place of the WRB ferralic horizon it delegated to. A
+subsurface horizon of adjoining layers, 30 cm or more thick, in which
+every layer:
+
+- has a texture class of sandy loam or finer;
+
+- has an apparent CEC of 16 cmol(+) or less per kg clay (NH4OAc, pH 7),
+  the clay being the measured clay or 3 x (water at 1500 kPa - organic
+  carbon), whichever is higher, the estimate only where the water is
+  measured by mass (audit reading L25);
+
+- has less than 10% weatherable minerals in the 0.05-0.2 mm fraction
+  (`weatherable_minerals_pct`; never recorded in most data, and then
+  treated as met, as the evidence says: audit reading L21);
+
+- has rock structure in less than 5% of its volume
+  (`rock_structure_pct`, a field observation: absent when not recorded);
+
+- has no andic soil properties (a layer that
+  `andic_soil_properties_usda()` finds andic is not oxic);
+
+and whose upper boundary has a clay increase from the horizon above of
+less than 3% (absolute), 20% (relative) or 8% (absolute) (by the clay of
+the horizon above), unless the boundary is diffuse (15 cm or more). The
+layer at the mineral soil surface is not part of it. Values are rounded
+to the precision of the limit (endnote 1, p. 70).
 
 ## Usage
 
@@ -23,25 +43,15 @@ oxic_usda(pedon, ...)
 
 - ...:
 
-  Passed to
-  [`ferralic`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md).
+  Ignored (kept for the earlier signature).
 
 ## Value
 
 A
 [`DiagnosticResult`](https://hugomachadorodrigues.github.io/soilKey/reference/DiagnosticResult.md)
-(with `name = "oxic_usda"`).
-
-## Details
-
-The CEC limit is inclusive here: KST 13 (Ch. 3, oxic horizon, criterion
-6) asks for "an apparent CEC of 16 cmol(+) or less per kg clay", where
-WRB 2022's ferralic horizon asks for "\< 16". Since v0.9.212
-[`ferralic()`](https://hugomachadorodrigues.github.io/soilKey/reference/ferralic.md)
-follows WRB and this function passes `cec_inclusive = TRUE`, so a
-horizon at exactly 16 is oxic but not ferralic.
+(`name = "oxic_usda"`).
 
 ## References
 
-Soil Survey Staff (2014). *Keys to Soil Taxonomy*, 12th edition.
-USDA-NRCS, Washington DC. Chapter 3 – Diagnostic Horizons; oxic.
+Soil Survey Staff (2022). *Keys to Soil Taxonomy*, 13th edition.
+USDA-NRCS. Chapter 3, oxic horizon (p. 28).

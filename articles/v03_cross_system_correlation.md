@@ -28,7 +28,7 @@ data.frame(
 #>     System      Class                                                      Full
 #> 1 WRB 2022 Ferralsols Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
 #> 2  SiBCS 5 Latossolos                  Latossolos Vermelhos Distróficos típicos
-#> 3     USDA    Oxisols                                           Rhodic Hapludox
+#> 3     USDA    Oxisols                                            Typic Hapludox
 ```
 
 The three systems converge on the same conceptual unit:

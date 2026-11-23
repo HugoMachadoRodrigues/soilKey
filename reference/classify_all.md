@@ -141,13 +141,13 @@ all_three$summary
 #> 1 Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)
 #>                                                                    sibcs
 #> 1 Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado
-#>              usda
-#> 1 Rhodic Hapludox
+#>             usda
+#> 1 Typic Hapludox
 
 # WRB + USDA only (skip SiBCS):
 classify_all(pr, systems = c("wrb2022", "usda"))$summary
 #>                                                         wrb sibcs
 #> 1 Geric Rhodic Ferralsol (Clayic, Epic, Oligoeutric, Humic)  <NA>
-#>              usda
-#> 1 Rhodic Hapludox
+#>             usda
+#> 1 Typic Hapludox
 ```

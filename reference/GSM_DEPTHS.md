@@ -9,7 +9,3 @@ fine-resolution global grid of soil properties". Boundaries: 0-5, 5-15,
 ``` r
 GSM_DEPTHS
 ```
-
-## Format
-
-An object of class `numeric` of length 7.

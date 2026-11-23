@@ -8,7 +8,3 @@ horizon, level.
 ``` r
 .BDSOLOS_SITE_PATTERNS
 ```
-
-## Format
-
-An object of class `list` of length 21.

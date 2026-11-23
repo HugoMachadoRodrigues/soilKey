@@ -1,11 +1,5 @@
 # ClassificationResult: structured outcome of running a key
 
-ClassificationResult: structured outcome of running a key
-
-ClassificationResult: structured outcome of running a key
-
-## Details
-
 Returned by
 [`classify_wrb2022`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_wrb2022.md)
 (and the future `classify_sibcs`). Carries the full decision trace —
@@ -124,7 +118,7 @@ biogeographical or prior-based warnings.
 
 ### Public methods
 
-- [`ClassificationResult$new()`](#method-ClassificationResult-new)
+- [`ClassificationResult$new()`](#method-ClassificationResult-initialize)
 
 - [`ClassificationResult$print()`](#method-ClassificationResult-print)
 
@@ -136,7 +130,7 @@ biogeographical or prior-based warnings.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `ClassificationResult$new()`
 
 Build a ClassificationResult.
 
@@ -220,7 +214,7 @@ Build a ClassificationResult.
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `ClassificationResult$print()`
 
 Pretty-print the result with key trace, ambiguities, and warnings.
 
@@ -236,7 +230,7 @@ Pretty-print the result with key trace, ambiguities, and warnings.
 
 ------------------------------------------------------------------------
 
-### Method [`summary()`](https://rdrr.io/r/base/summary.html)
+### `ClassificationResult$summary()`
 
 Compact summary list.
 
@@ -252,7 +246,7 @@ Compact summary list.
 
 ------------------------------------------------------------------------
 
-### Method [`report()`](https://hugomachadorodrigues.github.io/soilKey/reference/report.md)
+### `ClassificationResult$report()`
 
 Render this classification as a self-contained report (delegates to the
 package-level
@@ -294,7 +288,7 @@ working LaTeX engine.
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `ClassificationResult$clone()`
 
 The objects of this class are cloneable with this method.
 

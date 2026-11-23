@@ -7,7 +7,3 @@ Versioned GitHub Release tag where the lazy-fetch caches are pinned
 ``` r
 .SOILKEY_LAZY_FETCH_RELEASE
 ```
-
-## Format
-
-An object of class `character` of length 1.

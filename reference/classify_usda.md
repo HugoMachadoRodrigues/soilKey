@@ -116,8 +116,8 @@ Natural Resources Conservation Service.
 pedon <- make_ferralsol_canonical()
 res <- classify_usda(pedon)
 res$name
-#> [1] "Rhodic Hapludox"
+#> [1] "Typic Hapludox"
 # include the 5th (family) level:
 classify_usda(pedon, include_family = TRUE)$name
-#> [1] "fine, mixed, subactive Rhodic Hapludox"
+#> [1] "fine, mixed, subactive Typic Hapludox"
 ```

@@ -1,15 +1,5 @@
 # PedonRecord: structured representation of a single pedon
 
-PedonRecord: structured representation of a single pedon
-
-PedonRecord: structured representation of a single pedon
-
-## Value
-
-An R6 object of class `PedonRecord`.
-
-## Details
-
 The central data carrier in soilKey. A PedonRecord bundles everything we
 know about one soil profile: site metadata, the horizons table (with a
 fixed canonical schema — see
@@ -37,6 +27,10 @@ see
 and
 [`site_attribute_spec`](https://hugomachadorodrigues.github.io/soilKey/reference/site_attribute_spec.md).
 `options(soilKey.warn_unrecognised = FALSE)` turns the warning off.
+
+## Value
+
+An R6 object of class `PedonRecord`.
 
 ## Public fields
 
@@ -73,7 +67,7 @@ and
 
 ### Public methods
 
-- [`PedonRecord$new()`](#method-PedonRecord-new)
+- [`PedonRecord$new()`](#method-PedonRecord-initialize)
 
 - [`PedonRecord$validate()`](#method-PedonRecord-validate)
 
@@ -91,7 +85,7 @@ and
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `PedonRecord$new()`
 
 Construct a PedonRecord.
 
@@ -134,7 +128,7 @@ Construct a PedonRecord.
 
 ------------------------------------------------------------------------
 
-### Method `validate()`
+### `PedonRecord$validate()`
 
 Validate the record against soil-physical sanity rules.
 
@@ -165,7 +159,7 @@ Invisibly, a list summarising the validation outcome.
 
 ------------------------------------------------------------------------
 
-### Method `to_aqp()`
+### `PedonRecord$to_aqp()`
 
 Coerce to an aqp `SoilProfileCollection`.
 
@@ -179,7 +173,7 @@ A `SoilProfileCollection`. Requires the `aqp` package.
 
 ------------------------------------------------------------------------
 
-### Method [`from_aqp()`](https://hugomachadorodrigues.github.io/soilKey/reference/from_aqp.md)
+### `PedonRecord$from_aqp()`
 
 Populate this record from an aqp `SoilProfileCollection`.
 
@@ -207,7 +201,7 @@ Invisibly self (mutated in place).
 
 ------------------------------------------------------------------------
 
-### Method `add_measurement()`
+### `PedonRecord$add_measurement()`
 
 Add a measurement (or extracted/predicted value) and record its
 provenance.
@@ -262,7 +256,7 @@ Invisibly self.
 
 ------------------------------------------------------------------------
 
-### Method [`summary()`](https://rdrr.io/r/base/summary.html)
+### `PedonRecord$summary()`
 
 Compact summary list (for serialization or testing).
 
@@ -278,7 +272,7 @@ Compact summary list (for serialization or testing).
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `PedonRecord$print()`
 
 Pretty-print the record.
 
@@ -294,7 +288,7 @@ Pretty-print the record.
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `PedonRecord$clone()`
 
 The objects of this class are cloneable with this method.
 

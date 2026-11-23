@@ -187,7 +187,7 @@ cls_wrb$name
 cls_sibcs$name
 #> [1] "Latossolos Vermelhos Distróficos típicos, textura argilosa, A moderado"
 cls_usda$name
-#> [1] "Rhodic Hapludox"
+#> [1] "Typic Hapludox"
 
 # Each ClassificationResult carries the full key trace, the per-
 # attribute provenance, and an evidence grade A/B/C/D.

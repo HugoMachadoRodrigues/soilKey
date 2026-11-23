@@ -5,14 +5,6 @@ canonical columns first. Extra user-supplied columns are preserved at
 the end. Coerces character values to numeric where the schema requires
 it.
 
-Column names are recognised tolerantly before coercion: an exact
-canonical name always wins, but names differing only in capitalisation
-or separators (`pH_H2O`, `PH.H2O` -\> `ph_h2o`) and a small table of
-common analytical abbreviations (`Clay` -\> `clay_pct`, `SOC` -\>
-`oc_pct`, `CEC` -\> `cec_cmol`, ...) are mapped to their canonical form
-rather than silently ignored. See `inst/ATTRIBUTES.md` for the complete
-list of recognised names and accepted aliases.
-
 ## Usage
 
 ``` r
@@ -29,6 +21,16 @@ ensure_horizon_schema(h)
 
 A `data.table` with the canonical horizon columns present, in canonical
 order, with extra columns preserved at the end.
+
+## Details
+
+Column names are recognised tolerantly before coercion: an exact
+canonical name always wins, but names differing only in capitalisation
+or separators (`pH_H2O`, `PH.H2O` -\> `ph_h2o`) and a small table of
+common analytical abbreviations (`Clay` -\> `clay_pct`, `SOC` -\>
+`oc_pct`, `CEC` -\> `cec_cmol`, ...) are mapped to their canonical form
+rather than silently ignored. See `inst/ATTRIBUTES.md` for the complete
+list of recognised names and accepted aliases.
 
 ## Examples
 

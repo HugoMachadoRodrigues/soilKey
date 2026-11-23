@@ -10,7 +10,3 @@ when known.
 ``` r
 .SMARTSOLOS_DRAINAGE_SCALE
 ```
-
-## Format
-
-An object of class `integer` of length 8.
