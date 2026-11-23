@@ -147,7 +147,9 @@ test_that("each Mollisol great group lists exactly the KST subgroups, in KST ord
   }
   expect_equal(sum(lengths(.v09424_kst)), 391L)
   codes <- unlist(lapply(y, function(b) vapply(b, `[[`, "", "code")))
-  expect_true(all(nchar(codes) == 4L))
+  # KST codes; past Z the KST adds a lowercase letter (IFFZa, p. 296)
+  expect_true(all(grepl("^[A-Z]{4}[a-z]?$", codes)))
+  expect_true(all(c("IFFZa", "IFFZi", "IGGZa", "IGGZf") %in% codes))
   expect_false(anyDuplicated(codes) > 0)
 })
 

@@ -2,8 +2,8 @@
 # USDA Soil Taxonomy 13ed -- Mollisols Subgroups -- Cap 12
 # =============================================================
 # v0.9.424: every subgroup of the KST 13th edition (pp. 248-294), in the
-# order of its keys, Typic last. Codes follow the KST; the codes past Z
-# (IFFZa, IGGZa ...) are written with digits (IFF1, IGG1 ...). The tests
+# order of its keys, Typic last. Codes follow the KST, including the codes
+# past Z (IFFZa, IGGZa ...). The tests
 # are in R/subgroups-usda-mollisols.R (sg_mollisol_*) and the shared
 # USDA helpers.
 # =============================================================
@@ -1167,48 +1167,48 @@ subgroups:
       tests:
         all_of:
           - sg_mollisol_moisture: { kind: "aridic" }
-    - code: "IFF1"
+    - code: "IFFZa"
       name: "Duric Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_duric: {}
-    - code: "IFF2"
+    - code: "IFFZb"
       name: "Psammentic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_psammentic: { mode: "profile" }
-    - code: "IFF3"
+    - code: "IFFZc"
       name: "Fluventic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_fluventic: { oc: "all125" }
-    - code: "IFF4"
+    - code: "IFFZd"
       name: "Vermic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_vermic: { mode: "xeroll" }
-    - code: "IFF5"
+    - code: "IFFZe"
       name: "Calcic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_calcic: { mode: "psc_secondary" }
-    - code: "IFF6"
+    - code: "IFFZf"
       name: "Entic Ultic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_entic: { mode: "cambic" }
           - sg_mollisol_ultic: { zone: "upper75" }
-    - code: "IFF7"
+    - code: "IFFZg"
       name: "Ultic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_ultic: { zone: "upper75" }
-    - code: "IFF8"
+    - code: "IFFZh"
       name: "Entic Haploxerolls"
       tests:
         all_of:
           - sg_mollisol_entic: { mode: "cambic" }
-    - code: "IFF9"
+    - code: "IFFZi"
       name: "Typic Haploxerolls"
       tests:
         default: true
@@ -1741,33 +1741,33 @@ subgroups:
       tests:
         all_of:
           - sg_mollisol_moisture: { kind: "aridic" }
-    - code: "IGG1"
+    - code: "IGGZa"
       name: "Fluventic Haplustolls"
       tests:
         all_of:
           - sg_mollisol_fluventic: { oc: "at125" }
-    - code: "IGG2"
+    - code: "IGGZb"
       name: "Duric Haplustolls"
       tests:
         all_of:
           - sg_mollisol_duric: {}
-    - code: "IGG3"
+    - code: "IGGZc"
       name: "Udorthentic Haplustolls"
       tests:
         all_of:
           - sg_mollisol_moisture: { kind: "udic" }
           - sg_mollisol_entic: { mode: "cambic" }
-    - code: "IGG4"
+    - code: "IGGZd"
       name: "Udic Haplustolls"
       tests:
         all_of:
           - sg_mollisol_moisture: { kind: "udic" }
-    - code: "IGG5"
+    - code: "IGGZe"
       name: "Entic Haplustolls"
       tests:
         all_of:
           - sg_mollisol_entic: { mode: "cambic" }
-    - code: "IGG6"
+    - code: "IGGZf"
       name: "Typic Haplustolls"
       tests:
         default: true
