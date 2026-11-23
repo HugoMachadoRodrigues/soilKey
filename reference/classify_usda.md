@@ -119,5 +119,5 @@ res$name
 #> [1] "Typic Hapludox"
 # include the 5th (family) level:
 classify_usda(pedon, include_family = TRUE)$name
-#> [1] "fine, mixed, subactive Typic Hapludox"
+#> [1] "fine, mixed, subactive, isohyperthermic Typic Hapludox"
 ```

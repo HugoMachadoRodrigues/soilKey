@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.428</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.429</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,21 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.429" id="soilkey-09429">soilKey 0.9.429<a class="anchor" aria-label="anchor" href="#soilkey-09429"></a></h2>
+<p>The canonical profiles record their soil moisture and temperature regimes, and a Mollisol with an aridic regime that borders on ustic or xeric is an Ustoll or a Xeroll (USDA audit, wave 4; decisions N16 to N18 of the author, 2026-11-23).</p>
+<ul><li>
+<strong>Regimes of the canonical profiles.</strong> 40 of the 44 canonical profiles had no moisture regime and none had a temperature regime, so every USDA name that needs one was undecided or fell through to the Ud- default. The builders (<code>make_*_canonical()</code>) now record <code>soil_moisture_regime</code> and <code>soil_temperature_regime</code> read from the NRCS global soil moisture and soil temperature regime maps (USDA-NRCS 1997, 2-minute grid) at each profile’s coordinates; where a coordinate falls on the sea (Arenosol, Calcisol, Lixisol, Histosol) the nearest land cell is read. The map is followed also where an aridic regime had been recorded in 0.9.315: Calcisol, Durisol and Gypsisol are xeric, Solonchak ustic. The Cryosol is unchanged (already a Gelisol with grade A). The SiBCS profiles that copy a WRB profile inherit its regimes; the others take them through <code>.build_sibcs_pedon(smr, str)</code>. The Kastanozem records the NASIS subclass “ustic aridic”: an aridic regime bordering on ustic, as its summer rainfall makes it (KST 13, p. 66).</li>
+<li>
+<strong>Xerolls and Ustolls</strong> (KST 13, Mollisol suborders) also take an aridic regime that borders on xeric or ustic. New <code>smr_aridic_bordering_usda()</code> (<code>R/diagnostics-usda-smr-bordering.R</code>) reads <code>site$soil_moisture_subclass</code> with the NASIS names (“xeric aridic”, “ustic aridic”: the last word is the regime, the first its neighbour). An aridic regime recorded without a subclass leaves both suborders undecided, listed as ambiguities with grade C; before, such a Mollisol was Udolls with no ambiguity.</li>
+<li>
+<strong>Effect on the canonical profiles</strong> (17 systems): USDA changes in 27 of 44, e.g. Acrisol and Alisol Typic Paleudults (were the order only), Podzol Typic Haplocryods, Histosol Terric Cryohemists (grade A), Chernozem Cumulic Haploxerolls, Kastanozem Aridic Haplustolls (was Typic Hapludolls), Vertisol Chromic Haplusterts, Calcisol Typic Calcixerepts, Gypsisol Gypsic Haploxerepts, Solonchak Fluventic Haplustepts; the Andosol takes grade A. CST 2001 changes in 15, CSSC 3 in 14 (the Chernozem is an Orthic Black Chernozem), CPCS 1967 in 10, FAO 1974 in 8 (the Calcisol and Gypsisol are Calcic Cambisols, no longer Yermosols) and KIDPR 2008 in 2.</li>
+<li>
+<strong>Effect on ISIS:</strong> none. No name, grade or ambiguity of the 974 ISIS profiles changes (agreement with the ISIS names stays order 216/357, suborder 174/355, great group 124/355, subgroup 72/340; grade A on 33).</li>
+<li>The materialised fixtures in <code>inst/extdata/*_canonical.rds</code> are rebuilt with <code>data-raw/build_fixtures.R</code>; they had not been rebuilt since 0.9.204 and lacked the horizon columns added since.</li>
+<li>New <code>tests/testthat/test-v09429-canonical-regimes.R</code>.</li>
+<li>Tests that assumed the canonical profiles record no regime now remove the regimes themselves (<code>test-coverage.R</code>, <code>test-v09415-usda-undecided-regimes.R</code>, <code>test-v09306-app-ambiguities-moisture.R</code>) or expect the new names (<code>test-usda-colour-subgroups.R</code>, <code>test-report.R</code>, <code>test-v09325-followup-decisions.R</code>, <code>test-v09419-usda-inceptisols.R</code>, <code>test-v09425-subgroups-inceptent.R</code>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.428" id="soilkey-09428">soilKey 0.9.428<a class="anchor" aria-label="anchor" href="#soilkey-09428"></a></h2>
 <p>The Vertic subgroups of the USDA key read a COLE not recorded from the field record (reading accepted by the author, 2026-11-23). Every Vertic subgroup of the KST 13th edition (e.g. Vertic Hapludalfs, p. 92; Vertic Argiudolls, p. 260) passes on cracks with slickensides or wedge-shaped peds, or on a linear extensibility of 6.0 cm or more. The linear extensibility needs COLE, which most profile records lack, so the test was undecided and the name took grade C.</p>

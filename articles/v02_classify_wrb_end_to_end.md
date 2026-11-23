@@ -88,7 +88,6 @@ res
 #> ── Ambiguities
 #> - TC: Indeterminate -- missing 3 attribute(s): artefacts_pct,
 #> geomembrane_present, technic_hardmaterial_pct
-#> - CR: Indeterminate -- missing 1 attribute(s): permafrost_temp_C
 #> - VR: Indeterminate -- missing 3 attribute(s): slickensides, structure_type,
 #> cracks_width_cm
 #> - SC: Indeterminate -- missing 1 attribute(s): ec_dS_m
@@ -99,22 +98,21 @@ res
 #> structure_type_secondary, pressure_faces, fe_dcb_pct, fe_ox_pct
 #> 
 #> ── Missing data that would refine result
-#> artefacts_pct, geomembrane_present, technic_hardmaterial_pct,
-#> permafrost_temp_C, slickensides, structure_type, cracks_width_cm, ec_dS_m,
-#> redoximorphic_features_pct, al_ox_pct, fe_ox_pct, plinthite_pct,
-#> ferric_nodules_pct, pan_type, cementation_class, structure_grade,
-#> structure_type_secondary, pressure_faces, fe_dcb_pct,
-#> gibbsite_clay_fraction_pct, p_mehlich3_mg_kg
+#> artefacts_pct, geomembrane_present, technic_hardmaterial_pct, slickensides,
+#> structure_type, cracks_width_cm, ec_dS_m, redoximorphic_features_pct,
+#> al_ox_pct, fe_ox_pct, plinthite_pct, ferric_nodules_pct, pan_type,
+#> cementation_class, structure_grade, structure_type_secondary, pressure_faces,
+#> fe_dcb_pct, gibbsite_clay_fraction_pct, p_mehlich3_mg_kg
 #> 
 #> ── Warnings
-#> ! 19 distinct attribute(s) missing across the key trace -- see $missing_data
+#> ! 18 distinct attribute(s) missing across the key trace -- see $missing_data
 #> 
 #> ── Key trace
 #> (16 RSGs tested before assignment)
 #> 1. HS Histosols -- failed
 #> 2. AT Anthrosols -- failed
 #> 3. TC Technosols -- undecided (3 attrs missing)
-#> 4. CR Cryosols -- undecided (1 attrs missing)
+#> 4. CR Cryosols -- failed
 #> 5. LP Leptosols -- failed
 #> 6. SN Solonetz -- failed
 #> 7. VR Vertisols -- undecided (3 attrs missing)
