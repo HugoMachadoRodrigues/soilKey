@@ -601,3 +601,170 @@ ochric_epipedon_usda <- function(pedon) {
     reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, p 17"
   )
 }
+
+
+# ---- Anthropic and plaggen epipedons (KST 13th ed., pp. 12-13 and 17) ------
+# v0.9.419 (audit I11). Both rest on field records of human-made material;
+# not recorded, they are absent.
+
+# Layers of human-transported material (KST 13th ed., Ch. 3): a caret in the
+# designation (^Ap, ^C), a layer_origin or anthropic_material naming
+# transported, dumped, dredged or plaggen material, or artifacts recorded in
+# the layer (the field evidence KST gives for such material). TRUE / FALSE
+# per layer.
+.usda_htm_layers <- function(pedon) {
+  h <- pedon$horizons
+  d <- .usda_desig(h$designation)
+  lo <- tolower(as.character(.usda_col(h, "layer_origin", NA_character_)))
+  am <- tolower(as.character(.usda_col(h, "anthropic_material", NA_character_)))
+  re <- "transport|plagg|dredg|spoil|landfill|dump|made ground|fill"
+  d$caret | (!is.na(lo) & grepl(re, lo)) | (!is.na(am) & grepl(paste0(re, "|-tp\\b|tp$"), am)) |
+    .usda_artifact_layers(pedon)
+}
+
+# Artifacts in each layer: artefacts_pct above 0, or a u (human-manufactured
+# materials) in the designation. TRUE / FALSE per layer.
+.usda_artifact_layers <- function(pedon) {
+  h <- pedon$horizons
+  d <- .usda_desig(h$designation)
+  art <- .usda_col(h, "artefacts_pct", NA_real_)
+  (!is.na(art) & art > 0) | (!is.na(d$suffix) & grepl("u", d$suffix))
+}
+
+# An anthropogenic landform or microfeature recorded at the site (landform,
+# landform_element, an artificial terrace or plaggen cultivation). TRUE /
+# FALSE: a field observation, absent when not recorded.
+.usda_anthropogenic_landform <- function(pedon) {
+  s <- pedon$site
+  txt <- tolower(paste(as.character(s$landform %||% ""),
+                       as.character(s$landform_element %||% ""), collapse = " "))
+  grepl("anthropogen|man-made|manmade|human-made|artificial|plaggen|spoil|landfill|dump|midden|embankment",
+        txt) || isTRUE(s$terraced) ||
+    identical(tolower(as.character(s$deep_cultivation_kind %||% NA_character_))[1], "plaggen")
+}
+
+# The layers from the mineral soil surface down that all meet `flag`, in
+# depth order (the surface layers of an epipedon).
+.usda_surface_run <- function(h, flag) {
+  ms <- .mineral_soil_surface_cm(h); if (is.na(ms)) ms <- 0
+  ord <- order(h$top_cm)
+  ord <- ord[!is.na(h$top_cm[ord]) & h$bottom_cm[ord] > ms]
+  out <- integer(0)
+  for (i in ord) { if (!isTRUE(flag[i])) break; out <- c(out, i) }
+  out
+}
+
+
+#' Plaggen epipedon (USDA Soil Taxonomy, KST 13th ed., p. 17)
+#'
+#' A human-made mineral surface layer produced by long-continued manuring:
+#' (1) on a locally raised landform, with artifacts or spade marks below 30
+#' cm; (2) a value of 4 or less moist and 5 or less dry and chroma of 2 or
+#' less; (3) 0.6 \% organic carbon or more; (4) 50 cm or more of
+#' human-transported material; (5) moist 90 days or more a year (not met
+#' under a recorded aridic regime unless irrigated). The plaggen material
+#' is read from the field records: layers of human-transported material
+#' (\code{.usda_htm_layers()}), a plaggen layer_origin, or
+#' \code{site$deep_cultivation_kind} "plaggen" (then the A horizons from the
+#' surface); a recorded plaggen cultivation also stands for the raised
+#' landform and the spade marks. Nothing recorded: no plaggen epipedon.
+#' Colour and organic carbon not recorded leave it undecided.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+plaggen_epipedon_usda <- function(pedon) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 3, plaggen epipedon (p. 17)"
+  h <- pedon$horizons
+  if (is.null(h) || !nrow(h))
+    return(DiagnosticResult$new(name = "plaggen_epipedon_usda", passed = FALSE, reference = ref))
+  d <- .usda_desig(h$designation)
+  lo <- tolower(as.character(.usda_col(h, "layer_origin", NA_character_)))
+  am <- tolower(as.character(.usda_col(h, "anthropic_material", NA_character_)))
+  plagg_l <- (!is.na(lo) & grepl("plagg", lo)) | (!is.na(am) & grepl("plagg", am))
+  plagg_s <- identical(tolower(as.character(pedon$site$deep_cultivation_kind %||% NA_character_))[1],
+                       "plaggen")
+  flag <- .usda_htm_layers(pedon) | plagg_l
+  if (!any(flag) && plagg_s) flag <- !is.na(d$master) & grepl("A", d$master)
+  L <- .usda_surface_run(h, flag)
+  if (!length(L))
+    return(DiagnosticResult$new(name = "plaggen_epipedon_usda", passed = FALSE,
+             evidence = list(reason = "no human-transported or plaggen material recorded at the surface"),
+             reference = ref))
+  recorded <- plagg_s || any(plagg_l[L])
+  i1 <- (recorded || .usda_anthropogenic_landform(pedon)) &&
+        (recorded || any(.usda_artifact_layers(pedon)[L]))
+  vm <- h$munsell_value_moist[L]; vd <- h$munsell_value_dry[L]; cm <- h$munsell_chroma_moist[L]
+  i2 <- .usda_all3(c(ifelse(is.na(vm), NA, vm <= 4), ifelse(is.na(vd), NA, vd <= 5),
+                     ifelse(is.na(cm), NA, cm <= 2)))
+  oc <- h$oc_pct[L]
+  i3 <- .usda_all3(ifelse(is.na(oc), NA, oc >= 0.6))
+  i4 <- .usda_run_thickness(h, L) >= 50
+  smr <- tolower(as.character(pedon$site$soil_moisture_regime %||% NA_character_))[1]
+  i5 <- !(!is.na(smr) && smr %in% c("aridic", "torric") && !isTRUE(pedon$site$irrigated))
+  passed <- .usda_all3(c(i1, i2, i3, i4, i5))
+  DiagnosticResult$new(
+    name = "plaggen_epipedon_usda", passed = passed, layers = L,
+    evidence = list(raised_artifacts = i1, colour = i2, organic_carbon = i3,
+                    thickness_50 = i4, moist = i5),
+    missing = if (is.na(passed)) c("munsell_value_moist", "munsell_value_dry",
+                                   "munsell_chroma_moist", "oc_pct") else character(0),
+    reference = ref)
+}
+
+
+#' Anthropic epipedon (USDA Soil Taxonomy, KST 13th ed., pp. 12-13)
+#'
+#' A mineral surface layer formed in human-transported (or human-altered)
+#' material on an anthropogenic landform or microfeature: (1) structural
+#' units of 30 cm or less when dry (a recorded structure other than massive
+#' or single grain; not recorded, undecided); (2) rock structure in less
+#' than half the volume; (3) an n value under 0.7 or a nonfluid class (not
+#' recorded, nonfluid, audit L16); (4) either directly over a root-limiting
+#' layer or over horizons not derived from human-made material, or with
+#' artifacts throughout; (5) 25 cm or more thick, or the whole soil above a
+#' root-limiting layer within 25 cm. The human-transported material is read
+#' from the field records (\code{.usda_htm_layers()}); at the surface it
+#' makes a constructional anthropogenic landform or microfeature. Human-
+#' altered material in place is not recorded by soilKey and is not read.
+#' Nothing recorded: no anthropic epipedon.
+#' @param pedon A \code{\link{PedonRecord}}.
+#' @return A \code{\link{DiagnosticResult}}.
+#' @noRd
+anthropic_epipedon_usda <- function(pedon) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 3, anthropic epipedon (pp. 12-13)"
+  h <- pedon$horizons
+  if (is.null(h) || !nrow(h))
+    return(DiagnosticResult$new(name = "anthropic_epipedon_usda", passed = FALSE, reference = ref))
+  d <- .usda_desig(h$designation)
+  htm <- .usda_htm_layers(pedon) & !(d$master %in% c("O", "H", "R"))
+  L <- .usda_surface_run(h, htm)
+  if (!length(L))
+    return(DiagnosticResult$new(name = "anthropic_epipedon_usda", passed = FALSE,
+             evidence = list(reason = "no human-transported material recorded at the surface"),
+             reference = ref))
+  ms <- .mineral_soil_surface_cm(h); if (is.na(ms)) ms <- 0
+  upper <- L[h$top_cm[L] < ms + 25]
+  st <- tolower(as.character(.usda_col(h, "structure_type", NA_character_)))[upper]
+  i1 <- .usda_all3(ifelse(is.na(st), NA, !grepl("massive|single", st)))
+  rsp <- .usda_col(h, "rock_structure_pct", NA_real_)[upper]
+  i2 <- .usda_all3(ifelse(is.na(rsp), !(!is.na(st) & grepl("rock|stratif", st)), rsp < 50))
+  nv <- .usda_col(h, "n_value", NA_real_)[upper]
+  fl <- tolower(as.character(.usda_col(h, "fluidity_class", NA_character_)))[upper]
+  i3 <- .usda_all3(ifelse(!is.na(nv), nv < 0.7, ifelse(!is.na(fl), grepl("non", fl), TRUE)))
+  ord <- order(h$top_cm)
+  last <- L[length(L)]
+  nxt <- ord[match(last, ord) + 1L]
+  over <- !is.na(nxt)          # over a root-limiting layer or natural horizons
+  art_all <- all(.usda_artifact_layers(pedon)[L])
+  i4 <- over || art_all
+  rl <- .usda_contact_top_cm(h)
+  thk <- .usda_run_thickness(h, L)
+  i5 <- thk >= 25 || (!is.na(rl) && rl - ms < 25 && max(h$bottom_cm[L]) >= rl)
+  passed <- .usda_all3(c(i1, i2, i3, i4, i5))
+  DiagnosticResult$new(
+    name = "anthropic_epipedon_usda", passed = passed, layers = L,
+    evidence = list(structure = i1, rock_structure = i2, nonfluid = i3,
+                    anthropogenic_influence = i4, thickness = i5),
+    missing = if (is.na(passed)) "structure_type" else character(0),
+    reference = ref)
+}

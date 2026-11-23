@@ -244,7 +244,9 @@ test_that("duripan, fragipan, petroferric and placic phases: within 100 cm", {
   pan <- function(t, ...) .cm386_add(t, t + 30, ...)
   expect_true(.cr386(pan(100, pan_type = "duripan"), "duripan"))
   expect_false(.cr386(pan(101, pan_type = "duripan"), "duripan"))
-  expect_true(grepl("pan_type_duripan", .fl386(pan(100, pan_type = "duripan"), "duripan")))
+  # v0.9.419: duripan_usda() reads a recorded duripan pan itself (KST pp.
+  # 23-24), so no stand-in flag
+  expect_false(isTRUE(grepl("pan_type_duripan", .fl386(pan(100, pan_type = "duripan"), "duripan"))))
   expect_true(.cr386(pan(100, pan_type = "fragipan"), "fragipan"))
   expect_false(.cr386(pan(101, pan_type = "fragipan"), "fragipan"))
   expect_true(.cr386(pan(100, pan_type = "ferricrete"), "petroferric"))
@@ -289,7 +291,8 @@ test_that("duripan, fragipan, petroferric and placic phases: within 100 cm", {
   expect_true(.cr386(pl, "placic"))
   # designations in the FAO notation, flagged
   expect_true(.cr386(pan(60, designation = "Bqm"), "duripan"))
-  expect_true(grepl("duripan_from_designation", .fl386(pan(60, designation = "Bqm"), "duripan")))
+  # v0.9.419: duripan_usda() reads the q and m of the designation itself
+  expect_false(isTRUE(grepl("duripan_from_designation", .fl386(pan(60, designation = "Bqm"), "duripan"))))
   expect_true(.cr386(pan(60, designation = "Btx"), "fragipan"))
   # the WRB fragic horizon stands in only where the rupture resistance is not
   # recorded, flagged

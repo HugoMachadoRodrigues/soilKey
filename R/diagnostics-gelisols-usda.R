@@ -371,25 +371,29 @@ fluvaquentic_usda <- function(pedon) {
 }
 
 
-#' Fluventic Subgroup helper (irregular OC decrease, NO aquic req.)
+#' Fluventic Subgroup helper (organic carbon of the Fluvents)
+#'
+#' 0.2 \% or more organic carbon at 125 cm below the mineral soil surface,
+#' or an irregular decrease of organic carbon between 25 cm and 125 cm (or a
+#' shallower densic, lithic or paralithic contact): a rise of more than 0.05
+#' percentage points from one layer to the next one down (audit L15; KST 13th
+#' ed., p. 165). v0.9.419: up to v0.9.418 only the layers whose top lay
+#' between 25 and 125 cm were read (a layer straddling 25 cm was left out),
+#' any rise counted, and a missing value was read as no rise; it is now
+#' three-valued. The slope and human-transported-material conditions some
+#' Fluventic subgroups add are read by the subgroup lists (a later wave).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 fluventic_usda <- function(pedon) {
-  h <- pedon$horizons
-  band <- which(!is.na(h$top_cm) & h$top_cm >= 25 & h$top_cm <= 125)
-  oc_band <- h$oc_pct[band]
-  irregular <- FALSE
-  if (length(oc_band) >= 2L) {
-    diffs <- diff(oc_band)
-    irregular <- any(!is.na(diffs) & diffs > 0)
-  }
+  oc <- .usda_fluvent_oc(pedon)
+  passed <- .usda_any3(c(oc$at_125, oc$irregular))
   DiagnosticResult$new(
-    name = "fluventic_usda", passed = isTRUE(irregular),
-    layers = if (isTRUE(irregular)) band else integer(0),
-    evidence = list(oc_band = oc_band, irregular = irregular),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 9"
+    name = "fluventic_usda", passed = passed,
+    layers = if (isTRUE(passed)) oc$layers else integer(0),
+    evidence = list(oc_125 = oc$at_125, irregular = oc$irregular),
+    missing = if (is.na(passed)) "oc_pct" else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., Ch. 8, p. 165 (Fluvents, item LD.3)"
   )
 }
 
@@ -891,43 +895,25 @@ ruptic_subgroup_usda <- function(pedon) {
 
 # ---- "Psammentic" Subgroup helper -----------------------------------
 
-#' Psammentic Subgroup helper (Aquorthels)
+#' Psammentic Subgroup helper
 #'
-#' Pass when, in particle-size control section: < 35\% rock
-#' fragments AND texture class loamy fine sand or coarser in all
-#' layers.
+#' Less than 35 \% rock fragments and a texture class of loamy fine sand or
+#' coarser in all layers of the particle-size control section (KST 13th ed.,
+#' p. 165). v0.9.419: three-valued, on the layers of the particle-size
+#' control section; up to v0.9.418 \code{all(..., na.rm = TRUE)} made it pass
+#' when no layer had a texture recorded (audit F12).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 psammentic_subgroup_usda <- function(pedon) {
-  h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
-  if (length(cand) == 0L) {
-    return(DiagnosticResult$new(
-      name = "psammentic_subgroup_usda", passed = FALSE, layers = integer(0),
-      evidence = list(reason = "no candidate layers"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 9"
-    ))
-  }
-  cf <- h$coarse_fragments_pct[cand]
-  cf_ok <- all(is.na(cf) | cf < 35)
-  texture_ok <- all(vapply(cand, function(i) {
-    cl <- h$clay_pct[i]; sd <- h$sand_pct[i]
-    # v0.9.416: with neither measured, the field texture class
-    ft <- .field_texture_fallback(h, i)
-    if (!is.null(ft)) return(ft$lfs_or_coarser)
-    if (is.na(cl) || is.na(sd)) return(NA)
-    !isTRUE(.is_finer_than_loamy_fine_sand(cl, h$silt_pct[i], sd))
-  }, logical(1)), na.rm = TRUE)
-  passed <- isTRUE(cf_ok) && isTRUE(texture_ok)
+  r <- .usda_psamment_texture(pedon)
   DiagnosticResult$new(
-    name = "psammentic_subgroup_usda", passed = passed,
-    layers = if (passed) cand else integer(0),
-    evidence = list(cf_ok = cf_ok, texture_ok = texture_ok),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 9"
+    name = "psammentic_subgroup_usda", passed = r$passed,
+    layers = if (isTRUE(r$passed)) r$layers else integer(0),
+    evidence = list(lfs_or_coarser = r$sandy, rock_fragments = r$rock_fragments),
+    missing = if (is.na(r$passed)) c("clay_pct", "sand_pct", "texture_class_usda") else character(0),
+    reference = "Soil Survey Staff (2022), KST 13th ed., Ch. 8, p. 165 (particle-size control section, loamy fine sand or coarser)"
   )
 }
 
@@ -993,20 +979,48 @@ salic_horizon_usda <- function(pedon, max_top_cm = 100) {
   res
 }
 
-#' Gypsic horizon (USDA, delegates to WRB gypsic).
+#' Gypsic horizon (USDA Soil Taxonomy, KST 13th ed., p. 25)
+#'
+#' A horizon 15 cm or more thick, not cemented by gypsum (or cemented in
+#' parts less than 5 mm thick), with 5 \% or more gypsum and 1 \% or more
+#' (by volume) visible secondary gypsum, and a product of thickness (cm)
+#' and gypsum (\%) of 150 or more. v0.9.419: up to v0.9.418 the WRB gypsic
+#' horizon. Visible secondary gypsum is a field observation:
+#' \code{gypsum_visible_pct}, or a y (gypsum accumulation) in the
+#' designation; not recorded, absent, so the horizon is then not present
+#' whatever the laboratory gypsum. Gypsum not measured where visible gypsum
+#' is recorded leaves it undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Numeric threshold or option (see Details).
+#' @param max_top_cm Upper boundary within this depth (cm).
 #' @noRd
 gypsic_horizon_usda <- function(pedon, max_top_cm = 100) {
-  res <- gypsic(pedon)
-  res$name <- "gypsic_horizon_usda"
-  if (isTRUE(res$passed) && length(res$layers) > 0L) {
-    h <- pedon$horizons
-    res$layers <- res$layers[!is.na(h$top_cm[res$layers]) &
-                                  h$top_cm[res$layers] < max_top_cm]
-    res$passed <- length(res$layers) > 0L
-  }
-  res
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 3, gypsic horizon (p. 25)"
+  h <- pedon$horizons
+  n <- nrow(h)
+  if (!n) return(DiagnosticResult$new(name = "gypsic_horizon_usda", passed = FALSE, reference = ref))
+  d <- .usda_desig(h$designation)
+  gv <- .usda_col(h, "gypsum_visible_pct", NA_real_)
+  vis <- ifelse(!is.na(gv), gv >= 1, !is.na(d$suffix) & grepl("y", d$suffix))
+  gy <- .usda_col(h, "caso4_pct", NA_real_)
+  cem <- tolower(as.character(.usda_col(h, "cementation_class", NA_character_)))
+  cemented <- (!is.na(cem) & cem %in% c("weakly", "moderately", "strongly", "indurated")) |
+              (!is.na(d$suffix) & grepl("y", d$suffix) & grepl("m", d$suffix))
+  lay <- ifelse(!vis | cemented, FALSE, ifelse(is.na(gy), NA, gy >= 5))
+  ord <- order(h$top_cm)
+  prod_ok <- function(r) sum(pmax(h$bottom_cm[r] - h$top_cm[r], 0) * gy[r], na.rm = TRUE) >= 150
+  runs_y <- Filter(function(r) .usda_run_thickness(h, r) >= 15 && prod_ok(r) &&
+                     min(h$top_cm[r]) < max_top_cm, .usda_runs(lay %in% TRUE, ord))
+  runs_m <- Filter(function(r) .usda_run_thickness(h, r) >= 15 && (anyNA(gy[r]) || prod_ok(r)) &&
+                     min(h$top_cm[r]) < max_top_cm,
+                   .usda_runs(!(lay %in% FALSE), ord))
+  passed <- if (length(runs_y)) TRUE else if (length(runs_m)) NA else FALSE
+  DiagnosticResult$new(
+    name = "gypsic_horizon_usda", passed = passed,
+    layers = if (isTRUE(passed)) sort(unique(unlist(runs_y)))
+             else if (is.na(passed)) sort(unique(unlist(runs_m))) else integer(0),
+    evidence = list(visible_gypsum = vis, gypsum_5 = lay, max_top_cm = max_top_cm),
+    missing = if (is.na(passed)) "caso4_pct" else character(0),
+    reference = ref)
 }
 
 #' Calcic horizon (USDA, delegates to WRB calcic).

@@ -513,32 +513,55 @@ fragipan_usda <- function(pedon, max_top_cm = 100) {
 
 # ---- Duripan helper --------------------------------------------------
 
-#' Duripan (USDA, KST 13ed Ch 3, pp 36-37)
+#' Duripan (USDA Soil Taxonomy, KST 13th ed., pp. 23-24)
 #'
-#' Silica-cemented horizon, very strongly resistant. Detected via
-#' \code{cementation_class == "indurated"} AND \code{duripan_pct
-#' >= 50}.
-#'
+#' A subhorizon cemented or indurated in more than 50 \% of its volume,
+#' with evidence of silica accumulation, whose lateral continuity limits the
+#' roots. v0.9.419: up to v0.9.418 only an indurated layer with
+#' \code{duripan_pct} of 50 or more, so a recorded duripan of another
+#' cementation class, or with no cementation class, was missed (audit I9).
+#' Read layer by layer:
+#' \itemize{
+#'   \item the cemented share: \code{duripan_pct} (the volume of the
+#'     silica-cemented pan) above 50; without it, a designation with q and m
+#'     (the m of KST Ch. 18 is cementation of more than 90 \% of the
+#'     horizon) or a recorded duripan or silcrete pan (\code{pan_type});
+#'     a q designation in a layer recorded as cemented, with no share, is
+#'     undecided;
+#'   \item silica: a q in the designation, a recorded duripan share above 0
+#'     or a duripan or silcrete pan; the slaking test of item 2 is not
+#'     recorded and these field records stand for it.
+#' }
+#' Nothing recorded: no duripan (a field observation).
 #' @param pedon A \code{\link{PedonRecord}}.
-#' @param max_top_cm Default 100.
+#' @param max_top_cm Upper boundary within this depth (cm).
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
 duripan_usda <- function(pedon, max_top_cm = 100) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 3, duripan (pp. 23-24)"
   h <- pedon$horizons
   cand <- which(!is.na(h$top_cm) & h$top_cm < max_top_cm)
-  miss <- character(0)
-  cem <- h$cementation_class[cand]
-  dp  <- h$duripan_pct[cand]
-  if (all(is.na(cem))) miss <- c(miss, "cementation_class")
-  if (all(is.na(dp))) miss <- c(miss, "duripan_pct")
-  passing <- cand[!is.na(cem) & tolower(cem) == "indurated" &
-                      !is.na(dp) & dp >= 50]
-  passed <- length(passing) > 0L
+  d <- .usda_desig(h$designation)
+  dp <- .usda_col(h, "duripan_pct", NA_real_)
+  pan <- tolower(as.character(.usda_col(h, "pan_type", NA_character_)))
+  cem <- tolower(as.character(.usda_col(h, "cementation_class", NA_character_)))
+  q <- !is.na(d$suffix) & grepl("q", d$suffix)
+  qm <- q & grepl("m", d$suffix)
+  pan_d <- !is.na(pan) & grepl("duripan|silcrete", pan)
+  cemented <- !is.na(cem) & cem %in% c("weakly", "moderately", "strongly", "indurated")
+  share <- ifelse(!is.na(dp), dp > 50,
+           ifelse(qm | pan_d, TRUE, ifelse(q & cemented, NA, FALSE)))
+  silica <- q | (!is.na(dp) & dp > 0) | pan_d
+  lay <- ifelse(silica, share, FALSE)
+  v <- lay[cand]
+  passed <- if (any(v %in% TRUE)) TRUE else if (anyNA(v)) NA else FALSE
   DiagnosticResult$new(
-    name = "duripan_usda", passed = passed, layers = passing,
-    evidence = list(max_top_cm = max_top_cm),
-    missing = miss,
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 3, pp 36-37"
+    name = "duripan_usda", passed = passed,
+    layers = cand[if (isTRUE(passed)) v %in% TRUE else !(v %in% FALSE)],
+    evidence = list(max_top_cm = max_top_cm, cemented_share_over_50 = share[cand],
+                    silica = silica[cand]),
+    missing = if (is.na(passed)) "duripan_pct" else character(0),
+    reference = ref
   )
 }
 
@@ -1072,63 +1095,45 @@ umbric_subgroup_usda <- function(pedon) {
 
 # ---- Oxyaquic Subgroup helper ---------------------------------------
 
-#' Oxyaquic Subgroup helper (Spodosols, Mollisols, etc.)
+#' Oxyaquic Subgroup helper (all orders)
 #'
-#' Pass when the soil is saturated with water in one or more layers
-#' within 100 cm of the mineral soil surface for either or both:
-#' \itemize{
-#'   \item 20+ consecutive days; OR
-#'   \item 30+ cumulative days.
-#' }
-#'
-#' v0.8 proxy: pass when redoximorphic features OR low chroma in any
-#' layer within 100 cm (subset of full aquic conditions).
+#' KST 13th ed. (e.g. p. 178): saturation with water in one or more layers
+#' within \code{max_depth_cm} (100 cm in most great groups) of the mineral
+#' soil surface for 20 or more consecutive days or 30 or more cumulative
+#' days in normal years. A measurement of the water regime, read from
+#' \code{water_saturation_days} (cumulative days a year): 30 or more in a
+#' layer within the depth passes; under 20 in every layer within it fails
+#' (fewer cumulative days cannot hold 20 consecutive ones); and from
+#' \code{site$flooding_days_growing_period}, 30 days or more of standing
+#' water on the surface. With no saturation record the test is undecided
+#' (audit R2, reading L17): redox features belong to the Aquic subgroups,
+#' and the drainage class is not a measure of the days of saturation.
+#' v0.9.419: up to v0.9.418 redox features of 2 \% or more with chroma of
+#' 4 or less (or a g designation with chroma of 3 or less) within 100 cm
+#' passed, on 96 ISIS profiles, 26 of them well drained.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param max_depth_cm Depth (cm below the mineral soil surface) within
+#'   which the saturation is read.
 #' @return A \code{\link{DiagnosticResult}}.
 #' @noRd
-oxyaquic_subgroup_usda <- function(pedon) {
+oxyaquic_subgroup_usda <- function(pedon, max_depth_cm = 100) {
+  ref <- "Soil Survey Staff (2022), KST 13th ed., Oxyaquic subgroups (e.g. p. 178): saturation 20 consecutive or 30 cumulative days"
   h <- pedon$horizons
-  cand <- which(!is.na(h$top_cm) & h$top_cm < 100)
-  if (length(cand) == 0L) {
-    return(DiagnosticResult$new(
-      name = "oxyaquic_subgroup_usda", passed = FALSE,
-      layers = integer(0),
-      evidence = list(reason = "no candidate layers in upper 100 cm"),
-      missing = character(0),
-      reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14"
-    ))
-  }
-  rdx <- h$redoximorphic_features_pct[cand]
-  chr <- h$munsell_chroma_moist[cand]
-  des <- h$designation[cand]
-  # v0.9.24 tightening: KST 13ed Ch 14 (p 311) defines the Oxyaquic
-  # subgroup as a profile with saturation 20-30 days plus redox
-  # features but NOT meeting full aquic conditions. The pre-v0.9.24
-  # logic fired on `redox >= 2` OR `chroma <= 2` ALONE (a single
-  # disjunctive low-evidence trigger), which produced large numbers
-  # of false-positive Oxyaquic predictions on KSSL Typic-reference
-  # profiles. The canonical interpretation requires BOTH evidence
-  # of saturation (low chroma, redox features, or 'g' designation
-  # suffix) AND a redoximorphic indicator that does not yet meet
-  # the stronger aquic-conditions threshold. We now require either:
-  #   (a) measured redox features >= 2 % AND chroma <= 4 in the
-  #       matrix (presence of redox + non-bright matrix), OR
-  #   (b) a 'g' suffix in the designation AND chroma <= 3 (gleyed
-  #       designation evidence with somewhat low chroma).
-  redox_ok    <- !is.na(rdx) & rdx >= 2
-  chroma_low  <- !is.na(chr) & chr <= 4
-  glei_des    <- !is.na(des) & grepl("g", des, ignore.case = FALSE)
-  chroma_v3   <- !is.na(chr) & chr <= 3
-  passing <- cand[(redox_ok & chroma_low) |
-                      (glei_des & chroma_v3)]
-  passed <- length(passing) > 0L
+  ms <- .mineral_soil_surface_cm(h); if (is.na(ms)) ms <- 0
+  cand <- which(!is.na(h$top_cm) & h$top_cm < ms + max_depth_cm & h$bottom_cm > ms)
+  sd <- .usda_col(h, "water_saturation_days", NA_real_)[cand]
+  fl <- suppressWarnings(as.numeric(pedon$site$flooding_days_growing_period %||% NA_real_))[1]
+  passed <- if (any(sd >= 30, na.rm = TRUE) || (!is.na(fl) && fl >= 30)) TRUE
+            else if (length(cand) && !anyNA(sd) && all(sd < 20)) FALSE
+            else NA
   DiagnosticResult$new(
     name = "oxyaquic_subgroup_usda", passed = passed,
-    layers = passing,
-    evidence = list(note = "v0.9.24: requires redox_ok + chroma<=4 OR glei_designation + chroma<=3"),
-    missing = character(0),
-    reference = "Soil Survey Staff (2022), KST 13ed, Ch. 14 (Oxyaquic subgroup)"
+    layers = if (isTRUE(passed)) cand[!is.na(sd) & sd >= 30] else integer(0),
+    evidence = list(water_saturation_days = sd, flooding_days = fl,
+                    max_depth_cm = max_depth_cm),
+    missing = if (is.na(passed)) "water_saturation_days" else character(0),
+    reference = ref
   )
 }
 

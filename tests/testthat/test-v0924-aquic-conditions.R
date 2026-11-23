@@ -83,10 +83,10 @@ test_that("aquic_conditions: missing chroma + missing redox returns NA-style", {
 
 
 # ---- oxyaquic_subgroup_usda (KST 13ed Ch 14) -------------------------------
-# v0.9.24 tightening: requires (redox >= 2 AND chroma <= 4) OR
-# (g-designation AND chroma <= 3). Single low-evidence trigger no longer fires.
+# v0.9.419 (audit R2, reading L17): the Oxyaquic subgroups read saturation
+# (water_saturation_days), not redox features; with no record, undecided.
 
-test_that("oxyaquic: redox >= 2 + chroma <= 4 passes (clause a)", {
+test_that("oxyaquic: redox >= 2 + chroma <= 4 no longer decides (R2)", {
   p <- build_pedon_v0924(
     top_cm                       = c(0,  30),
     bottom_cm                    = c(30, 60),
@@ -95,10 +95,11 @@ test_that("oxyaquic: redox >= 2 + chroma <= 4 passes (clause a)", {
     redoximorphic_features_pct   = c(0,   5)
   )
   res <- oxyaquic_subgroup_usda(p)
-  expect_true(isTRUE(res$passed))
+  expect_true(is.na(res$passed))
+  expect_identical(res$missing, "water_saturation_days")
 })
 
-test_that("oxyaquic: g-designation + chroma <= 3 passes (clause b)", {
+test_that("oxyaquic: g-designation + chroma <= 3 no longer decides (R2)", {
   p <- build_pedon_v0924(
     top_cm                       = c(0,  30),
     bottom_cm                    = c(30, 60),
@@ -107,7 +108,7 @@ test_that("oxyaquic: g-designation + chroma <= 3 passes (clause b)", {
     redoximorphic_features_pct   = c(0,   0)
   )
   res <- oxyaquic_subgroup_usda(p)
-  expect_true(isTRUE(res$passed))
+  expect_true(is.na(res$passed))
 })
 
 test_that("oxyaquic: chroma <= 2 alone is NOT sufficient (pre-v0.9.24 false-positive)", {
@@ -134,7 +135,7 @@ test_that("oxyaquic: redox >= 2 alone is NOT sufficient (pre-v0.9.24 false-posit
   expect_false(isTRUE(res$passed))
 })
 
-test_that("oxyaquic: no candidate layers in upper 100 cm returns FALSE-not-NA", {
+test_that("oxyaquic: saturation below 100 cm is not read", {
   p <- build_pedon_v0924(
     top_cm                       = c(120, 150),
     bottom_cm                    = c(150, 180),
@@ -144,5 +145,4 @@ test_that("oxyaquic: no candidate layers in upper 100 cm returns FALSE-not-NA", 
   )
   res <- oxyaquic_subgroup_usda(p)
   expect_false(isTRUE(res$passed))
-  expect_true(grepl("no candidate", res$evidence$reason %||% ""))
 })

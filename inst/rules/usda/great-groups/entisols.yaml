@@ -40,7 +40,8 @@ great_groups:
     - code: "LBA"
       name: "Sulfaquents"
       tests:
-        all_of: [{sulfuric_horizon_usda: {}}]
+        # v0.9.419: sulfidic materials within 50 cm (KST 13th ed., LBA, p. 166)
+        all_of: [{sulfidic_materials_usda: {max_top_cm: 50}}]
     - code: "LBB"
       name: "Hydraquents"
       tests:
@@ -60,7 +61,8 @@ great_groups:
     - code: "LBF"
       name: "Fluvaquents"
       tests:
-        all_of: [{fluvaquentic_usda: {}}]
+        # v0.9.419: the text of LBF (KST 13th ed., p. 166)
+        all_of: [{fluvaquent_qualifying_usda: {}}]
     - code: "LBG"
       name: "Epiaquents"
       tests:

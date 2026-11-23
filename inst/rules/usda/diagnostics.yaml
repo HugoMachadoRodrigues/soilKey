@@ -34,8 +34,8 @@ diagnostics:
   mollic_epipedon_usda:         { function: mollic_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 15-17" }
   ochric_epipedon_usda:         { function: ochric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, p 17" }
   umbric_epipedon_usda:         { function: umbric_epipedon_usda,    status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.8.1, reference: "KST 13ed Ch 3, pp 18-20" }
-  anthropic_epipedon_usda:      { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria not yet captured in schema" }
-  plaggen_epipedon_usda:        { status: deferred, target_version: v0.9, note: "Requires anthropogenic-landform criteria" }
+  anthropic_epipedon_usda:      { function: anthropic_epipedon_usda, status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.9.419, reference: "KST 13th ed. Ch 3, pp 12-13" }
+  plaggen_epipedon_usda:        { function: plaggen_epipedon_usda,   status: implemented, file: R/diagnostics-epipedons-usda.R, since: v0.9.419, reference: "KST 13th ed. Ch 3, p 17" }
 
   # ----- v0.8.2 USDA diagnostic characteristics (Ch 3, KST 13ed) -----
   aquic_conditions_usda:        { function: aquic_conditions_usda,        status: implemented, file: R/diagnostics-conditions-usda.R, since: v0.8.2, reference: "KST 13ed Ch 3, pp 41-44" }
@@ -48,7 +48,7 @@ diagnostics:
   kandic:                       { status: planned, target_version: v0.8 }
   kandic:                       { status: planned, target_version: v0.8 }
   spodic_usda:                  { status: planned, target_version: v0.8 }
-  cambic_usda:                  { status: planned, target_version: v0.8 }
+  cambic_horizon_usda:          { function: cambic_horizon_usda, status: implemented, file: R/diagnostics-inceptisols-usda.R, since: v0.9.419, reference: "KST 13th ed. Ch 3, pp 22-23" }
   calcic_usda:                  { status: planned, target_version: v0.8 }
   gypsic_usda:                  { status: planned, target_version: v0.8 }
   duripan:                      { status: planned, target_version: v0.8 }

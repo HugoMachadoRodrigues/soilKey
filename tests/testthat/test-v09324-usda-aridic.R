@@ -165,7 +165,8 @@ test_that("G.1.b: no epipedon at the surface (C horizon) is not an Aridisol; no 
 test_that("G.1.c: the horizons count within 100 cm of the surface, not 200", {
   skip_on_cran()
   at60  <- .g_profile(c(0, 40, 60), c(40, 60, 180), c("A", "C", "Bk"), c(1, 1, 30))
-  at120 <- .g_profile(c(0, 40, 120), c(40, 120, 180), c("A", "C", "Bk"), c(1, 1, 30))
+  # (Ap: an unplowed A may itself be cambic since v0.9.419, reading N11)
+  at120 <- .g_profile(c(0, 40, 120), c(40, 120, 180), c("Ap", "C", "Bk"), c(1, 1, 30))
   expect_true(isTRUE(aridisol_usda(at60)$passed))
   expect_identical(aridisol_qualifying_usda(at120)$evidence$item_c$passed, FALSE)
   expect_identical(aridisol_usda(at120)$passed, FALSE)
@@ -178,7 +179,11 @@ test_that("G.1.c: a cambic horizon needs a lower depth of 25 cm, or a cryic regi
   deep   <- .g_profile(c(0, 5, 40), c(5, 40, 150), c("A", "Bw", "C"), 1, structure_grade = sg)
   cryic  <- .g_profile(c(0, 5, 22), c(5, 22, 150), c("A", "Bw", "C"), 1, str = "cryic", structure_grade = sg)
   no_str <- .g_profile(c(0, 5, 22), c(5, 22, 150), c("A", "Bw", "C"), 1, str = NULL, structure_grade = sg)
-  expect_true(isTRUE(.cambic_impl(thin)$passed))      # a cambic horizon, 5 to 22 cm
+  # v0.9.419: the USDA cambic horizon (KST pp. 22-23) needs evidence of
+  # alteration: the Bw is brighter (chroma 4) than the layers around it
+  brighter <- function(p) { h <- p$horizons; h$munsell_chroma_moist[2] <- 4; p$horizons <- h; p }
+  thin <- brighter(thin); deep <- brighter(deep); cryic <- brighter(cryic); no_str <- brighter(no_str)
+  expect_true(isTRUE(soilKey:::cambic_horizon_usda(thin)$passed))  # a cambic horizon, 5 to 22 cm
   expect_identical(aridisol_usda(thin)$passed, FALSE)
   expect_true(isTRUE(aridisol_usda(deep)$passed))
   expect_true(isTRUE(aridisol_usda(cryic)$passed))
