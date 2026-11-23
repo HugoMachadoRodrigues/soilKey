@@ -1,3 +1,74 @@
+# soilKey 0.9.425
+
+Inceptisol and Entisol subgroups rebuilt from the KST 13th edition (wave 3
+of the Soil Taxonomy audit; findings F16, F17 and F10; Ch. 11, pp. 207-246,
+and Ch. 8, pp. 165-188). Every test is three-valued: TRUE or FALSE where the
+recorded data decide it, NA with the missing data listed where they do not.
+A field observation not recorded is absent (redox features, cracks,
+slickensides, artifacts, x and lamellar designations, cementation, worm
+holes, fluidity); a measurement not recorded is undecided (colour, base
+saturation, CEC, CaCO3, COLE, ESP, saturation days).
+
+* **Subgroup lists** (`inst/rules/usda/subgroups/inceptisols.yaml`,
+  `entisols.yaml`): each great group carries exactly the KST list, in KST
+  order, Typic last; codes are the great-group code plus the letter of the
+  KST position. Inceptisols: 274 names before, 349 now (87 added, 12 not in
+  the KST removed: Halic and Lithic Sulfaquepts, Lithic Petraquepts, Sodic
+  Halaquepts, Andic Cryaquepts, Aeric Vermaquepts, Lithic Humaquepts, Lithic
+  Epiaquepts, Petrocalcic Calcicryepts, Aquic Durustepts, Aquic Humustepts,
+  Halic Sulfudepts; 22 great groups reordered). Entisols: 167 before, 239
+  now (82 added, 10 removed: Sulfic Frasiwassents, Fluventic Haplowassents,
+  Halic Sulfaquents, Histic Gelaquents, Lithic and Histic Cryaquents, Aeric
+  Psammaquents, Lithic Epiaquents, Lithic Gelorthents, Andic Udorthents; 15
+  great groups reordered). Compound subgroups come before their parts, as
+  the KST orders them. Coverage of the KST subgroup catalogue: 2049 to 2218.
+* **New tests** (`R/subgroups-usda-inceptent.R`; `sg_incept_*`, shared by
+  both lists, and `sg_ent_*`): Vertic (cracks with slickensides, or a linear
+  extensibility of 6 cm from COLE, undecided where COLE is not measured);
+  Aquic by the depth and the kind of redox feature of each great group (75,
+  60 or 30 cm; depletions of chroma 2 or less, or distinct or prominent
+  concentrations; above the duripan; the gley-colour branch of the Fluvents);
+  Andic, Vitrandic, Aquandic and the glass test of the Psamments (above the
+  duripan in the Dur- great groups); the Spodic Psamments and Psammaquents
+  with the depth rule of p. 184 (below an Ap horizon and 18 cm);
+  Thapto-Humic and Thapto-Histic from the
+  buried layers; Fluventic and Fluvaquentic (slope, human-transported
+  material, organic carbon; the boundaries of the Gelepts); the dark surface
+  (15 or 18 cm, unmixed or mixed); the epipedons of the Humic, Cumulic (60 or
+  50 cm) and Pachic subgroups; base saturation (Humic Aquepts, Eutric,
+  Dystric); the eight Aeric colour rules; fragic properties; lamellae;
+  Psammentic, Arenic, Oxic, Dystric (no free carbonates), Rendollic, Entic,
+  Calcic (secondary carbonates; the particle-size depths of the
+  Haploxerepts), Sodic (ESP 15 or 7, 25 cm in the Anthro- Sodic subgroups),
+  Duric, Durinodic, Plinthic, Sulfic, the fluidity of the Hydraquentic,
+  Haplic, Fluic and Grossic subgroups, Anthrodensic, Anthroportic,
+  Anthraltic, Anthraquic, Haploplaggic, Vermic, Rhodic, Ustoxic and Udoxic.
+  The moisture intergrades (Aridic, Udic, Torrertic, Udertic,
+  Torrifluventic, Haplocalcidic, the Ustic and Xeric Torri- subgroups, the
+  Ustic Cryepts) are decided only where the recorded regime class settles
+  them, and are undecided otherwise. Ruptic subgroups: illuvial parts in the
+  cambic horizon are not recorded, so absent.
+* **Udorthents** (p. 178): Anthrodensic Sodic, Anthrodensic, Anthropic,
+  Anthroportic and Vermic join; Oxyaquic reads saturation within 150 cm
+  (`oxyaquic_subgroup_usda(max_depth_cm = 150)`, as in the other Orthents,
+  Torrifluvents, Ustifluvents and Xerofluvents); Andic Udorthents, not in
+  the KST, is gone.
+* Canonical fixtures: Cambisol becomes Dystric Fluventic Eutrudepts (was
+  Typic Eutrudepts: no free carbonates, 0.2 % organic carbon at 125 cm);
+  Fluvisol Mollic Udifluvents (was Typic: dark upper 15 cm); Gleysol
+  Fluvaquentic Endoaquepts (was Aeric); Stagnosol Fluvaquentic Epiaquepts
+  (was Aeric); Plinthosol Fluventic Dystrudepts, Solonchak Fluventic
+  Eutrudepts and Umbrisol Fluventic Humudepts (were Typic); Technosol
+  Anthropic Udorthents (was Typic: its Au horizon meets the anthropic
+  epipedon, which the KST keys before Anthroportic).
+* On the 357 ISIS profiles with a 1999 USDA name, soilKey agrees on the
+  order in 216 (unchanged), suborder 174 (174), great group 124 (124),
+  subgroup 71 (73); 130 names change, all at the subgroup level. NZ001
+  (Fragic, a Cx horizon), NZ002 (Aquic, redox in a 2.5Y 6/2 matrix) and
+  NO003 (Fluventic, a buried Ahb) leave Typic Dystrudepts; NL030 becomes
+  Typic Eutrudepts, as in ISIS. 31 profiles become Fluventic, mostly by 0.2
+  % organic carbon at 125 cm; 33 Aquic; 10 Andic become Aquandic.
+
 # soilKey 0.9.424
 
 Mollisol subgroups rebuilt from the Keys to Soil Taxonomy, 13th edition

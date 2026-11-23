@@ -129,7 +129,8 @@ test_that("Psamments come before Fluvents and read every layer of the control se
 test_that("Fluvents: organic carbon, a rise of more than 0.05 points (L15), slope and contact", {
   skip_on_cran()
   r <- classify_usda(make_fluvisol_canonical(), on_missing = "silent")
-  expect_identical(r$name, "Typic Udifluvents")
+  # v0.9.425: the dark upper 15 cm make it Mollic (KST p. 173)
+  expect_identical(r$name, "Mollic Udifluvents")
   h <- data.frame(designation = c("A", "C1", "C2", "C3"),
                   top_cm = c(0, 20, 50, 80), bottom_cm = c(20, 50, 80, 110),
                   clay_pct = 20, sand_pct = 40, silt_pct = 40,
