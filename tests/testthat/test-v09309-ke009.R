@@ -111,7 +111,9 @@ test_that("the key to the Oxisols reads both items of KST 13", {
   expect_true(o$passed)
   expect_false(o$evidence$item1_oxic_no_kandic)      # a kandic horizon within 150 cm
   expect_true(o$evidence$item2_clayey_surface_kandic) # >= 40% clay in 0-18 cm and a kandic within 100 cm
-  expect_identical(classify_usda(p, on_missing = "silent")$name, "Rhodic Eutrustox")
+  # v0.9.423: the kandic horizon within 150 cm makes it Kandiustalfic, which
+  # the KST keys before Rhodic (KST 13th ed., p. 306)
+  expect_identical(classify_usda(p, on_missing = "silent")$name, "Kandiustalfic Eutrustox")
   # the same profile with a loamy surface (30% clay) is no Oxisol by item 2
   h <- p$horizons; h$clay_pct[1] <- 30; h$sand_pct[1] <- 55
   expect_false(isTRUE(soilKey:::oxisol_usda(PedonRecord$new(site = p$site, horizons = h))$passed))

@@ -2,11 +2,12 @@
 # (24 Humic Rhodic/Xanthic Oxisols via humic_oxisol_usda + the colour predicate;
 # 1 Leptic Haplogypsids via gypsic_horizon_usda within 18 cm).
 
-test_that("the v0.9.123 intergrade subgroups remain registered (count now 2049)", {
+test_that("the v0.9.123 intergrade subgroups remain registered (count now see below)", {
   skip_if_no_kst13()
   cov <- coverage_report("usda_subgroup")
   # 2003 (v0.9.123) +35 (v0.9.147) +11 (v0.9.149) +105 (v0.9.422, Alfisols)
-  expect_equal(cov$overall$covered_n, 2154L)
+  # + 77 (v0.9.423)
+  expect_equal(cov$overall$covered_n, 2231L)
   reg <- .coverage_registered_usda_subgroups()
   expect_true("humic rhodic hapludox"  %in% reg)
   expect_true("humic xanthic hapludox" %in% reg)
