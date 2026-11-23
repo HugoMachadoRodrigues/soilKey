@@ -233,7 +233,7 @@ test_that("an Arenic Hapludult is named so, with the undecided Vertic and Oxyaqu
   r <- classify_usda(.v09423_hapludult(), on_missing = "silent")
   expect_identical(r$name, "Arenic Hapludults")
   tr <- r$trace$subgroups
-  expect_true(is.na(tr$HCGC$passed))   # Vertic: no COLE recorded
+  expect_false(tr$HCGC$passed)         # Vertic: no crack or slickenside (v0.9.428)
   expect_true(is.na(tr$HCGH$passed))   # Oxyaquic: no days of saturation
   expect_false(tr$HCGE$passed)         # Aquic Arenic: no redox features recorded
   expect_identical(r$evidence_grade, "C")
@@ -242,7 +242,7 @@ test_that("an Arenic Hapludult is named so, with the undecided Vertic and Oxyaqu
 test_that("Vertic Ultisols: slickensides decide, the linear extensibility is a measurement", {
   skip_on_cran()
   p <- .v09423_hapludult()
-  expect_true(is.na(soilKey:::sg_ultisol_vertic_usda(p)$passed))
+  expect_false(soilKey:::sg_ultisol_vertic_usda(p)$passed)   # v0.9.428
   h <- p$horizons; h$cole_value <- c(0.01, 0.01, 0.02, 0.02, 0.02)
   expect_false(soilKey:::sg_ultisol_vertic_usda(PedonRecord$new(site = p$site, horizons = h))$passed)
   h$cole_value <- c(0.05, 0.05, 0.09, 0.09, 0.09)                        # LE >= 6 cm

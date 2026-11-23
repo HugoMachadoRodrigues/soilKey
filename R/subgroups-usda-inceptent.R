@@ -169,7 +169,12 @@ sg_incept_moisture_usda <- function(pedon, kind = c("dry45", "aridic", "udic", "
 #' layers already reach 6 cm).
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_incept_vertic_usda <- function(pedon) {
+sg_incept_vertic_usda <- function(pedon)
+  .usda_vertic_field_reading(.sg_incept_vertic_usda_record(pedon), pedon)
+
+# The test as the record gives it; the wrapper above reads a COLE not
+# recorded from the field record (R/subgroups-usda-vertic-field.R).
+.sg_incept_vertic_usda_record <- function(pedon) {
   h <- pedon$horizons
   ref <- .sg_ie_ref("p. 209 (e.g. Vertic Endoaquepts)")
   if (!nrow(h)) return(.sg_ie_res("sg_incept_vertic_usda", FALSE, ref = ref))

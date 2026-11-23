@@ -205,7 +205,12 @@ sg_mollisol_aquic_usda <- function(pedon, form = c("depletions", "udoll", "conce
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param duripan Read above the duripan.
 #' @noRd
-sg_mollisol_vertic_usda <- function(pedon, duripan = FALSE) {
+sg_mollisol_vertic_usda <- function(pedon, duripan = FALSE)
+  .usda_vertic_field_reading(.sg_mollisol_vertic_usda_record(pedon, duripan), pedon)
+
+# The test as the record gives it; the wrapper above reads a COLE not
+# recorded from the field record (R/subgroups-usda-vertic-field.R).
+.sg_mollisol_vertic_usda_record <- function(pedon, duripan = FALSE) {
   h <- pedon$horizons
   ref <- .sgm_ref("ch. 12, e.g. p. 260 (Vertic Argiudolls), p. 287 (Vertic Durixerolls)")
   if (!nrow(h)) return(.sgm_out("sg_mollisol_vertic_usda", FALSE, ref = ref))

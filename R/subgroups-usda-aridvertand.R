@@ -197,7 +197,12 @@ sg_aridisols_border_usda <- function(pedon, toward = c("ustic", "xeric"),
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param above_duripan Read above the duripan.
 #' @noRd
-sg_aridisols_vertic_usda <- function(pedon, above_duripan = FALSE) {
+sg_aridisols_vertic_usda <- function(pedon, above_duripan = FALSE)
+  .usda_vertic_field_reading(.sg_aridisols_vertic_usda_record(pedon, above_duripan), pedon)
+
+# The test as the record gives it; the wrapper above reads a COLE not
+# recorded from the field record (R/subgroups-usda-vertic-field.R).
+.sg_aridisols_vertic_usda_record <- function(pedon, above_duripan = FALSE) {
   h <- pedon$horizons
   ref <- .sgav_ref(if (above_duripan) "pp. 156, 158" else "pp. 137-163 (e.g. p. 138)")
   if (!nrow(h)) return(.sgav_result("sg_aridisols_vertic_usda", FALSE, ref = ref))

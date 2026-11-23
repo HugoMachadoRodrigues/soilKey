@@ -553,7 +553,12 @@ sg_ultisol_aquic_usda <- function(pedon, zone = "75", concentrations = TRUE, vmi
 #' thickness) is a measurement: not recorded, undecided.
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @noRd
-sg_ultisol_vertic_usda <- function(pedon) {
+sg_ultisol_vertic_usda <- function(pedon)
+  .usda_vertic_field_reading(.sg_ultisol_vertic_usda_record(pedon), pedon)
+
+# The test as the record gives it; the wrapper above reads a COLE not
+# recorded from the field record (R/subgroups-usda-vertic-field.R).
+.sg_ultisol_vertic_usda_record <- function(pedon) {
   h <- pedon$horizons
   ms <- .sgux_ms(pedon)
   ord <- order(h$top_cm)
