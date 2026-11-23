@@ -62,7 +62,8 @@ test_that("undecided tests are recorded at every level and lower the grade", {
   # the canonical Cambisol has no regime: the Udepts are reached past the
   # undecided Gelepts, Cryepts, Xerepts and Ustepts
   res <- classify_usda(make_cambisol_canonical(), on_missing = "silent")
-  expect_identical(res$name, "Typic Eutrudepts")
+  # v0.9.425: no free carbonates and 0.2 % organic carbon at 125 cm (KST p. 228)
+  expect_identical(res$name, "Dystric Fluventic Eutrudepts")
   expect_identical(res$evidence_grade, "C")
   lv <- vapply(res$ambiguities, function(a) a$level, "")
   cd <- vapply(res$ambiguities, function(a) a$rsg_code, "")

@@ -4,7 +4,7 @@
 # (verified per-subgroup against ST_criteria_13th), generated append-before-default
 # + first-match so they only ever refine a former Typic. KSSL-gated (0 worsened).
 
-test_that("v0.9.147: USDA subgroup coverage (running total 2049/2715, 75.5%)", {
+test_that("v0.9.147: USDA subgroup coverage (running total 2218/2715, 81.7%)", {
   skip_if_no_kst13()
   skip_on_cran()
   cov <- coverage_report("usda_subgroup")
@@ -12,7 +12,8 @@ test_that("v0.9.147: USDA subgroup coverage (running total 2049/2715, 75.5%)", {
   # rebuilt from the KST, all 356 Alfisol subgroups registered)
   # + 77 (v0.9.423)
   # + 119 (v0.9.424)
-  expect_equal(cov$overall$covered_n, 2350L)
+  # + 169 (v0.9.425)
+  expect_equal(cov$overall$covered_n, 2519L)
   expect_equal(cov$overall$canonical_n, 2715L)
   expect_gt(cov$overall$pct, 75)
 })
