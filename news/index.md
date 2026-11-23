@@ -1,5 +1,39 @@
 # Changelog
 
+## soilKey 0.9.428
+
+The Vertic subgroups of the USDA key read a COLE not recorded from the
+field record (reading accepted by the author, 2026-11-23). Every Vertic
+subgroup of the KST 13th edition (e.g. Vertic Hapludalfs, p. 92; Vertic
+Argiudolls, p. 260) passes on cracks with slickensides or wedge-shaped
+peds, or on a linear extensibility of 6.0 cm or more. The linear
+extensibility needs COLE, which most profile records lack, so the test
+was undecided and the name took grade C.
+
+- Cracks and slickensides are field observations, absent when not
+  recorded. A soil with a linear extensibility of 6 cm or more cracks
+  and forms slickensides, so a profile that records neither has no
+  Vertic subgroup: the test is now FALSE, with the note
+  `linear_extensibility_from_field` in its evidence. A recorded COLE
+  still decides, and a profile that records any crack or slickenside
+  (not recorded as absent) keeps the test undecided until COLE is
+  measured.
+- New file `R/subgroups-usda-vertic-field.R`
+  (`.usda_vertic_field_signs()`, `.usda_vertic_field_reading()`),
+  applied to `sg_alfisols_vertic_usda()`, `sg_aridisols_vertic_usda()`,
+  `sg_incept_vertic_usda()`, `sg_mollisol_vertic_usda()` and
+  `sg_ultisol_vertic_usda()`; the record reading of each is kept as
+  `.<name>_record()`. `vertic_subgroup_usda()` (Gelisols) was already
+  never undecided.
+- Effect on the 974 ISIS profiles: no name changes; profiles with an
+  undecided Vertic test before the assigned subgroup fall from 520 to
+  42, names at grade A rise from 29 to 33. Grade C stays on most names
+  for other measured properties not recorded (above all the Andisol
+  tests at order level, Oxyaquic, Vitrandic and Andic subgroups).
+- Tests of 0.9.422 to 0.9.426 that expected an undecided Vertic test for
+  a profile with no crack, no slickenside and no COLE now expect FALSE;
+  the canonical fixtures keep their names.
+
 ## soilKey 0.9.427
 
 Subgroups of the Spodosols, Histosols and Gelisols rebuilt from the KST

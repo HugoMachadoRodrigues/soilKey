@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.427</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.428</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,14 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.428" id="soilkey-09428">soilKey 0.9.428<a class="anchor" aria-label="anchor" href="#soilkey-09428"></a></h2>
+<p>The Vertic subgroups of the USDA key read a COLE not recorded from the field record (reading accepted by the author, 2026-11-23). Every Vertic subgroup of the KST 13th edition (e.g. Vertic Hapludalfs, p. 92; Vertic Argiudolls, p. 260) passes on cracks with slickensides or wedge-shaped peds, or on a linear extensibility of 6.0 cm or more. The linear extensibility needs COLE, which most profile records lack, so the test was undecided and the name took grade C.</p>
+<ul><li>Cracks and slickensides are field observations, absent when not recorded. A soil with a linear extensibility of 6 cm or more cracks and forms slickensides, so a profile that records neither has no Vertic subgroup: the test is now FALSE, with the note <code>linear_extensibility_from_field</code> in its evidence. A recorded COLE still decides, and a profile that records any crack or slickenside (not recorded as absent) keeps the test undecided until COLE is measured.</li>
+<li>New file <code>R/subgroups-usda-vertic-field.R</code> (<code>.usda_vertic_field_signs()</code>, <code>.usda_vertic_field_reading()</code>), applied to <code>sg_alfisols_vertic_usda()</code>, <code>sg_aridisols_vertic_usda()</code>, <code>sg_incept_vertic_usda()</code>, <code>sg_mollisol_vertic_usda()</code> and <code>sg_ultisol_vertic_usda()</code>; the record reading of each is kept as <code>.&lt;name&gt;_record()</code>. <code>vertic_subgroup_usda()</code> (Gelisols) was already never undecided.</li>
+<li>Effect on the 974 ISIS profiles: no name changes; profiles with an undecided Vertic test before the assigned subgroup fall from 520 to 42, names at grade A rise from 29 to 33. Grade C stays on most names for other measured properties not recorded (above all the Andisol tests at order level, Oxyaquic, Vitrandic and Andic subgroups).</li>
+<li>Tests of 0.9.422 to 0.9.426 that expected an undecided Vertic test for a profile with no crack, no slickenside and no COLE now expect FALSE; the canonical fixtures keep their names.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.427" id="soilkey-09427">soilKey 0.9.427<a class="anchor" aria-label="anchor" href="#soilkey-09427"></a></h2>
 <p>Subgroups of the Spodosols, Histosols and Gelisols rebuilt from the KST 13th edition (wave 3; Ch. 14, pp. 311-320; Ch. 10, pp. 199-205; Ch. 9, pp. 189-198). The three lists already had every KST subgroup in KST order (121, 75 and 129 names; none added, removed or reordered); what changed is the test each subgroup reads. The new tests live in <code>R/subgroups-usda-spodhistgel.R</code> (<code>sg_spodosols_*</code>, <code>sg_histosols_*</code>, <code>sg_gelisols_*</code>); no helper shared with other orders changes. Each new test is three-valued: a field observation not recorded is absent, a measurement not recorded leaves it undecided where it could change the answer.</p>
