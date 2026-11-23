@@ -19,7 +19,9 @@ test_that("an ambiguity is labelled with its class name and code", {
   p <- make_ferralsol_canonical()
   h <- p$horizons
   h$coarse_fragments_pct <- NA; h$slickensides <- NA; h$plinthite_pct <- NA
-  r <- classify_wrb2022(PedonRecord$new(site = p$site, horizons = h), on_missing = "silent")
+  site <- p$site
+  site$soil_temperature_regime <- NULL   # v0.9.429: recorded on the fixture
+  r <- classify_wrb2022(PedonRecord$new(site = site, horizons = h), on_missing = "silent")
   labels <- vapply(r$ambiguities, env$.sk_amb_label, "")
   expect_true("Cryosols (CR)" %in% labels)
   expect_false(any(labels == "?"))

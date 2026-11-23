@@ -300,7 +300,9 @@ test_that("Anthroportic Udorthents is reachable; Oxyaquic Udorthents reads 150 c
   expect_identical(oxy$tests$all_of[[1]]$oxyaquic_subgroup_usda$max_depth_cm, 150L)
   # the canonical Technosol: anthropic epipedon first, as the KST orders it
   t <- classify_usda(make_technosol_canonical(), on_missing = "silent")
-  expect_identical(t$name, "Anthropic Udorthents")
+  # v0.9.429: the fixture records an ustic regime (NRCS map); the Ustorthents
+  # have no Anthropic subgroup, and Anthroportic comes first
+  expect_identical(t$name, "Anthroportic Ustorthents")
 })
 
 test_that("Fluventic Endoaquepts needs the Aeric colours; Fluvaquentic the organic carbon only", {

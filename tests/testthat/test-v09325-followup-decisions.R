@@ -60,11 +60,14 @@ test_that("'no cracks observed' is no cracks only in a profile described dry", {
 
 test_that("the arid canonical fixtures record their moisture regime", {
   skip_on_cran()
-  for (f in c("make_calcisol_canonical", "make_gypsisol_canonical",
-              "make_solonchak_canonical", "make_durisol_canonical")) {
+  # v0.9.429 (USDA audit N16): the regimes now come from the NRCS map, which
+  # replaces the aridic regime recorded in 0.9.315
+  smr <- c(make_calcisol_canonical = "xeric", make_gypsisol_canonical = "xeric",
+           make_solonchak_canonical = "ustic", make_durisol_canonical = "xeric")
+  for (f in names(smr)) {
     p <- get(f, asNamespace("soilKey"))()
-    expect_identical(p$site$soil_moisture_regime, "aridic")
+    expect_identical(p$site$soil_moisture_regime, smr[[f]])
   }
-  expect_match(classify_usda(make_calcisol_canonical(), on_missing = "silent")$name, "ids$")
-  expect_match(classify_usda(make_solonchak_canonical(), on_missing = "silent")$name, "ids$")
+  p <- make_calcisol_canonical(); p$site$soil_moisture_regime <- "aridic"
+  expect_match(classify_usda(p, on_missing = "silent")$name, "ids$")
 })

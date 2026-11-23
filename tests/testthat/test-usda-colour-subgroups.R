@@ -82,11 +82,12 @@ test_that("calcic honours the per-subgroup depth window", {
 # value moist 4) meet the KST Chromic criterion, so Chromic Hapluderts is more
 # specific than -- and within the same great group as -- the former Typic.
 
-test_that("canonical Vertisol fixture keys to Chromic Hapluderts", {
+test_that("canonical Vertisol fixture keys to Chromic Haplusterts", {
   skip_on_cran()
+  # v0.9.429: the fixture records an ustic regime (NRCS map), so Usterts
   res <- classify_usda(make_vertisol_canonical())
   expect_equal(res$rsg_or_order, "Vertisols")
-  expect_equal(res$name, "Chromic Hapluderts")
+  expect_equal(res$name, "Chromic Haplusterts")
 })
 
 test_that("USDA subgroup coverage reflects the +57 colour subgroups", {
