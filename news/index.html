@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.433</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.434</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,35 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.434" id="soilkey-09434">soilKey 0.9.434<a class="anchor" aria-label="anchor" href="#soilkey-09434"></a></h2>
+<p>The USDA family of organic soils (Histosols and Histels) follows the KST 13th edition (ch. 17, pp. 370-372): particle-size classes of the Terric subgroups, mineralogy classes (ferrihumic; coprogenous, diatomaceous and marly; the key of mineral soils for the Terric subgroups), reaction classes (kalkic, euic, dysic) and the soil depth classes of Histosols (micro, shallow), named in the order of p. 370 (USDA audit, wave 5, fourth and last family PR; readings F16 to F18 of the author, 2026-11-23). New file <code>R/familia-usda-organic.R</code>; the families of mineral soils do not change.</p>
+<ul><li>
+<strong>Particle size</strong> (p. 370): only the Terric subgroups of Histosols and Histels, by weighted average over the control section of the mineral layer (its upper 30 cm or its part within the control section of Histosols and Histels, whichever is thicker): fragmental, “sandy or sandy-skeletal”, loamy-skeletal, clayey-skeletal, clayey, loamy. No strongly contrasting classes. The sandy textures, the coarse fragments and the clay from the 1500 kPa water are read as in the mineral key (F5, F7, F8, F11). Up to 0.9.433 the class was left out (“not keyed”).</li>
+<li>
+<strong>Mineralogy</strong> (pp. 371-372): key A to D. Ferrihumic for Histosols other than Folists, Sphagnofibrists and Sphagnic subgroups with ferrihumic soil material (bog iron, new horizon column <code>ferrihumic_material</code>) within the control section of Histosols; then coprogenous, diatomaceous or marly for other Histosols with 5 cm or more of that limnic material in the control section (the master L with the suffix co, di or ma, or a <code>layer_origin</code> naming it); then the key of mineral soils (pp. 364-366) over the particle-size control section for Terric Histels and Terric Histosols (F17); else no class.</li>
+<li>
+<strong>Reaction</strong> (p. 372): kalkic for Histosols that effervesce throughout the surface tier (effervescence read as for the calcareous class, F12); euic with pH (0.01 M CaCl2) 4.5 or more in one or more layers of organic soil material within the control section of Histosols; dysic otherwise. The recorded <code>ph_cacl2</code> is read, with the evidence noting that the KST asks for undried samples (F16). Up to 0.9.433 Histosols had no reaction class and Histels were “not used”.</li>
+<li>
+<strong>Temperature</strong> (p. 372): Histosols take the classes of mineral soils and Histels those of Gelisols, from the 0.9.433 code (unchanged).</li>
+<li>
+<strong>Soil depth</strong> (p. 372): Histosols, from the soil surface to a root-limiting layer (those of the particle-size control section without the fragipan) or a layer with a pumiceous, cindery or fragmental substitute class (fine earth under 10 percent of the volume): micro under 18 cm; shallow from 18 to under 50 cm, not in Folists; used in all subgroups, Lithic ones too. Histels keep the class of p. 369 (0.9.433). <code>.root_limiting_usda()</code> gains <code>fragipan = TRUE</code>.</li>
+<li>
+<strong>Order of the terms</strong> (p. 370): particle-size, mineralogy, reaction, temperature, depth. An undecided term caps the evidence grade at C (F20): the canonical Histosol is now “loamy Terric Cryohemists” with grade C under <code>include_family = TRUE</code> (reaction and mineralogy undecided: no pH in CaCl2, no effervescence and no mineralogical analysis recorded); without the family it is unchanged (grade A).</li>
+<li>
+<strong>Tests</strong>: new <code>test-v09434-family-organic.R</code>. <code>test-v09433-family-classes.R</code> no longer expects grade A for the canonical Histosol with the family, nor “not used” for the reaction of Histels.</li>
+<li>
+<strong>Further readings</strong> (F39 to F46, accepted by the author, 2026-11-24):
+<ul><li>F39, ferrihumic in Wassists (p. 371): the key names Histosols except Folists, Sphagnofibrists and Sphagnic subgroups, so Wassists may take it, while the text above the key names Fibrists, Hemists and Saprists. The key is followed.</li>
+<li>F40, ferrihumic soil material: read from the surveyor’s identification (<code>ferrihumic_material</code>); not recorded, absent. Its criteria (saturation, iron concretions with 10 percent free iron oxide, colour) are not assembled from other columns.</li>
+<li>F41, limnic classes (p. 371): key B applies to every other Histosol (Folists too), not only to the Limnic subgroups of the heading; the 5 cm is the summed thickness of each kind within the control section; a limnic layer whose kind is not recorded leaves the class undecided (the three kinds exhaust limnic materials).</li>
+<li>F42, Terric mineralogy: organic soils have no substitute classes, so section B of the mineral key is not reached; the section follows the class of p. 370 (clayey and clayey-skeletal: D; others: E; fragmental skips the iron, gibbsite, magnesium and glauconite items of C).</li>
+<li>F43, depth of Histosols (p. 372): “between 18 and 50 cm” read as 18 to under 50 cm (as the “less than 50” of p. 369); the substitute classes read as a mineral layer with more than 90 percent coarse fragments and cohesive artifacts; no Lithic exclusion; the fragipan is not root-limiting.</li>
+<li>F44, depth of Histels: the order of p. 370 says depth classes are used only with Histosols, but p. 372 gives Histels the depth classes of mineral soils (p. 369 names them). Histels keep “shallow”.</li>
+<li>F45, the Terric mineral layer: the shallowest run of adjoining mineral layers that meets the Terric test of the taxon (Histosols: 30 cm or more with its top in the control section, below the surface tier; Histels: 30 cm or more within 100 cm); the control section ends at its base; layers of unknown kind (organic or mineral) that could move its bounds leave the class undecided.</li>
+<li>F46, dysic: needs the pH of every organic layer in the control section of Histosols; a part of that section with no layer described (no contact recorded and a description that ends above 130 or 160 cm) leaves euic or dysic undecided, as F18 reads “in all parts”.</li>
+</ul></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.433" id="soilkey-09433">soilKey 0.9.433<a class="anchor" aria-label="anchor" href="#soilkey-09433"></a></h2>
 <p>The USDA family names its cation-exchange activity, calcareous and reaction, soil temperature and soil depth classes with the taxon gates and control sections of the KST 13th edition (ch. 17, pp. 366-370), adds the rupture-resistance (ortstein), coatings on sands and permanent cracks classes, and enters the name as a level below the subgroup (USDA audit, wave 5, third of four family PRs; readings F12 to F15, F18 and F20 of the author, 2026-11-23). New file <code>R/familia-usda-classes.R</code>.</p>
