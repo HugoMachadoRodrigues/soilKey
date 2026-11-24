@@ -128,7 +128,10 @@ test_that("an undecided gate before the assigned one makes the result provisiona
   expect_true("major_groups:SC" %in% r$provisional_because)
   expect_true(is.na(r$trace$major_groups$SC$passed))
   expect_true("ec_dS_m" %in% r$trace$major_groups$SC$missing)
-  expect_true(any(grepl("^Provisional", r$warnings)))
+  # v0.9.435: the warning of the USDA key (grade at most C), in place of the
+  # engine's "Provisional: ..." line
+  expect_true(any(grepl("^The name was reached past .*major_groups:SC", r$warnings)))
+  expect_identical(r$evidence_grade, "C")
   # a gate that fails on another criterion is decided all the same
   r2 <- .f384(.edit384(make_fao_example("LV"), ec_dS_m = NA_real_))
   expect_identical(r2$rsg_or_order, "Luvisols")
