@@ -1067,6 +1067,24 @@
           },
           "texture_class_usda": {
             "type": ["string", "null"]
+          },
+          "very_fine_sand_pct": {
+            "type": ["number", "null"]
+          },
+          "artefacts_cohesive_persistent": {
+            "type": ["boolean", "null"]
+          },
+          "gypsum_lt20mm_pct": {
+            "type": ["number", "null"]
+          },
+          "pumice_fragments_share_pct": {
+            "type": ["number", "null"]
+          },
+          "tephra_wt_pct": {
+            "type": ["number", "null"]
+          },
+          "liquid_limit_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

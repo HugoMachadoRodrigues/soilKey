@@ -418,6 +418,7 @@ reference:
       Ordem -> Subgrupo são internos (veja "Internal").
     contents:
       - classify_usda_family
+      - family_control_section_usda
 
   - title: "Module 2 -- VLM extraction"
     desc: >
