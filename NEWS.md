@@ -72,7 +72,7 @@ author, 2026-11-23). New file `R/familia-usda-classes.R`.
   a term the taxon does not use (reason "not used: ...", nothing missing)
   is not undecided. Permanent cracks not recorded (new `cracks_permanent`)
   are absent.
-* **Further readings (to be confirmed by the author)**:
+* **Further readings** (F31 to F38, accepted by the author, 2026-11-23):
   - CEC activity (p. 366): the ratio is the weighted CEC over the weighted
     silicate clay of the layers that record both (a ratio of averages, not
     an average of layer ratios); the carbonate clay is subtracted also from
