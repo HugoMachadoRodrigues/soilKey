@@ -1,3 +1,127 @@
+# soilKey 0.9.432
+
+The USDA family names its mineralogy class by the key of the KST 13th
+edition (ch. 17, pp. 363-366) over the control section of the particle-size
+classes, in place of an invented key on Kr, Ki and CEC / clay, and names the
+human-altered and human-transported material classes (pp. 362-363) (USDA
+audit, wave 5, second of four family PRs; readings F1 to F4 and F19 of the
+author, 2026-11-23).
+
+* **Mineralogy control section** (p. 364): that of the particle-size classes
+  (`family_control_section_usda()`). The criteria are depth-weighted averages
+  (`.wavg_clip_usda()`, reading F18); isotic reads more than half the
+  thickness.
+* **Sections** (pp. 364-366). A, Oxisols and the kandi and kanhap great
+  groups of Alfisols and Ultisols: ferritic, gibbsitic, sesquic, ferruginous,
+  allitic, kaolinitic, halloysitic, mixed. B, a substitute class other than
+  fragmental: hypergypsic, opaline, amorphic, ferrihydritic, glassy, mixed.
+  C, any other mineral soil: anhydritic, gypsic, carbonatic, and except
+  fragmental ferritic, gibbsitic, magnesic, glauconitic; no mixed, so a soil
+  that fails C goes on to D (clayey, clayey-skeletal, fine and very-fine
+  classes: parasesquic, halloysitic, kaolinitic, smectitic, illitic,
+  vermiculitic, isotic, mixed) or E (micaceous, parasesquic, isotic,
+  siliceous, mixed). "mixed" is reached only when every earlier class of
+  the section is ruled out. Quartzipsamments have no mineralogy term
+  (footnote, p. 364): value NULL, reason "not named in this taxon", nothing
+  missing.
+* **Strongly contrasting classes** (p. 364, R6): each named part of the pair
+  the particle-size class names gets its own mineralogy, over the part
+  clipped to the control section; identical results are written once
+  ("mixed over mixed" never). `family_particle_size_usda()` now exposes the
+  parts (`evidence$contrast_parts`) and the class it reached where the taxon
+  does not name it (`evidence$class_reached`). An undecided contrast leaves
+  the mineralogy undecided.
+* **Human-altered and human-transported material classes** (pp. 362-363),
+  new dimension `human_material`, named after the particle-size class (p.
+  355). Used only in mineral soils where such material extends from the
+  soil surface to 50 cm or a root-limiting layer, whichever is shallower,
+  or in the Anthraltic, Anthraquic, Anthrodensic, Anthropic, Anthroportic,
+  Haploplaggic and Plaggic subgroups; elsewhere NULL with "not used in this
+  taxon". Control section: the surface to 200 cm, the base of the deepest
+  such layer or a lithic or paralithic contact. Key A1 to A12:
+  methanogenic, asphaltic, concretic, gypsifactic, combustic, ashifactic,
+  pyrocarbonic, artifactic, pauciartifactic, dredgic, spolic, araric.
+* **Readings of the author** (USDA audit, wave 5, 2026-11-23):
+  F1, no clay mineralogy, no Fe by dithionite and no gibbsite leave the
+  class undecided (value NULL, the columns the soil's section needs in
+  `$missing`); whatever the data allow is decided: Fe2O3 (Fe by dithionite
+  x 1.43) above 40 gives ferritic; Fe2O3 plus gibbsite (fine-earth basis,
+  `gibbsite_pct` x `clay_pct` / 100) above 10 gives parasesquic; free
+  carbonates or 1500 kPa water / clay below 0.6 rule isotic out.
+  F2, new `mineralogy_analysed`: TRUE, a mineral the analysis of the layer
+  does not list (anhydrite, opaline silica, glauconite, Mg-silicates, the
+  clay minerals, gibbsite, boehmite, mica, resistant minerals, volcanic
+  glass) is a measured zero; FALSE or NA, the classes that need it are
+  undecided. F3, Kr, Ki and CEC / clay are only an opt-in suggestion: new
+  argument `suggest_mineralogy = FALSE` of `classify_usda_family()` and
+  `classify_usda()`; a suggestion sets `evidence$suggestion = TRUE`, keeps
+  the real missing columns, and `classify_usda()` warns and caps the
+  evidence grade at C. F4, siliceous needs `resistant_minerals_pct` above
+  90; a quartz-dominated `sand_mineralogy` ("quartzosa") is only a
+  suggestion under the same opt-in. F19, human-transported material with no
+  record of artifacts or transported material is absent; every class of
+  the human-material key is a field record, not recorded, absent.
+* **Further readings** (F25 to F30, accepted by the author, 2026-11-23): carbonates not
+  measured are none for carbonatic (more than 40 %) where the layer has no
+  field record of free carbonates, else undecided; free carbonates (isotic)
+  are read from `caco3_pct`, `effervescence_class`, `effervescence_extent`,
+  `secondary_carbonates_pct` or the suffix k, else undecided; gypsum
+  follows the reading of 0.9.431 (the higher of `caso4_pct` and
+  `gypsum_lt20mm_pct`; not recorded, none without a field record of
+  gypsum); carbonates plus gypsum is `caco3_pct` plus that gypsum; the
+  total iron (`fe_total_pct`, as Fe2O3) bounds the Fe2O3 by dithionite and
+  can rule ferritic out; "other nonexpanding 2:1 layer minerals" of the
+  kaolinitic class exclude illite (new `kaolin_other_pct`), or illitic
+  could never be reached with less than 10 % smectite; "more X than any
+  other single kind of clay mineral" compares the recorded clay minerals
+  (the dickite group and the unlisted minerals as caps), and where they
+  cannot decide, a `clay_mineralogy` word recorded over half the unit
+  names the dominant one; clay-fraction shares are averaged by thickness;
+  organic layers are left out of the averages; where the particle-size
+  class is undecided, every section the unit may belong to is run (B if a
+  layer may be a substitute; D or E by the weighted clay) and a class is
+  named only when they agree; Histosols and Histels, Terric subgroups
+  included, are not keyed yet (p. 371; NULL, nothing missing). For the
+  human-material classes: "a horizon or layer X cm or more thick" is a run
+  of adjacent layers that each meet the criterion inside the control
+  section; human-altered layers are those whose `layer_origin` or
+  `anthropic_material` names altered material, deep ploughing, trenching or
+  excavation, or that record araric fragments; `soil_gas_ch4_co2_pct` is
+  not read as methanogenic evidence (CO2 is in all soil air); dredgic reads
+  `htm_finely_stratified`, or dredged material with a
+  `stratification_pattern` recorded. The opt-in stand-ins map to classes
+  of the 13th edition (it has no oxidic class): CaCO3 above 40, carbonatic
+  (C); Kr below 0.75, parasesquic (D, E); CEC / clay 0.60 or more with 18 %
+  clay, smectitic (D); Ki 2.2 or less, kaolinitic (A, D); else mixed.
+* **New horizon columns** (`horizon_column_spec()`, documented in
+  `inst/schemas/horizon-attributes.yaml`): `mineralogy_analysed`;
+  `illite_pct`, `vermiculite_pct`, `allophane_pct`, `kaolin_other_pct` (%
+  of the clay, pp. 364, 366); `anhydrite_pct`, `opaline_pct`,
+  `glauconite_pct`, `mg_silicates_pct`, `boehmite_pct` (% by weight, p.
+  365); `mica_grains_pct` (grain count 0.02-0.25 mm) and
+  `resistant_minerals_pct` (0.02-2 mm, p. 366); `methanogenic_evidence`,
+  `artefacts_asphalt_pct`, `artefacts_concrete_pct`,
+  `artefacts_synthetic_gypsum_pct`, `artefacts_coal_combustion_pct`,
+  `fly_ash_grains_pct`, `pyrolysis_grains_pct`, `htm_finely_stratified` and
+  `araric_fragments_pct` (p. 363).
+* `family_label_usda()` places the human-material class between the
+  particle-size and the mineralogy classes (p. 355). The CEC-activity class
+  is still given whatever the mineralogy (its use, p. 366, is a later PR).
+* **Effect on the 44 canonical profiles** (family names): the mineralogy
+  term (41 profiles had one: mixed, smectitic or carbonatic from the old
+  key) is no longer given in any: none records a mineralogical analysis,
+  so section C cannot rule anhydritic out (F2), and the Oxisols record no
+  gibbsite (F1); the Arenosol (Quartzipsamments) is no longer "mixed" by
+  definition. The Technosol (Anthroportic Ustorthents) and the Anthrosol
+  (Pachic Hapludolls, artifacts recorded from the surface to 80 cm, read
+  as human-transported material by `.usda_htm_layers()` since 0.9.419) gain
+  "spolic". No name above the family and no evidence grade changes.
+* New `tests/testthat/test-v09432-family-mineralogy.R`;
+  `test-v09104-usda-family.R` (the old Kr and CEC / clay classes are now
+  opt-in suggestions) and `test-report.R` (the Ferralsol family loses
+  "mixed") are updated. `inst/ATTRIBUTES.md` and
+  `inst/schemas/pedon-schema.json` are regenerated.
+
 # soilKey 0.9.431
 
 The USDA family names its particle-size class over the control section of the

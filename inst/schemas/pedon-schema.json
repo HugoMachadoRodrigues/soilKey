@@ -1085,6 +1085,69 @@
           },
           "liquid_limit_pct": {
             "type": ["number", "null"]
+          },
+          "mineralogy_analysed": {
+            "type": ["boolean", "null"]
+          },
+          "illite_pct": {
+            "type": ["number", "null"]
+          },
+          "vermiculite_pct": {
+            "type": ["number", "null"]
+          },
+          "allophane_pct": {
+            "type": ["number", "null"]
+          },
+          "kaolin_other_pct": {
+            "type": ["number", "null"]
+          },
+          "anhydrite_pct": {
+            "type": ["number", "null"]
+          },
+          "opaline_pct": {
+            "type": ["number", "null"]
+          },
+          "glauconite_pct": {
+            "type": ["number", "null"]
+          },
+          "mg_silicates_pct": {
+            "type": ["number", "null"]
+          },
+          "boehmite_pct": {
+            "type": ["number", "null"]
+          },
+          "mica_grains_pct": {
+            "type": ["number", "null"]
+          },
+          "resistant_minerals_pct": {
+            "type": ["number", "null"]
+          },
+          "methanogenic_evidence": {
+            "type": ["boolean", "null"]
+          },
+          "artefacts_asphalt_pct": {
+            "type": ["number", "null"]
+          },
+          "artefacts_concrete_pct": {
+            "type": ["number", "null"]
+          },
+          "artefacts_synthetic_gypsum_pct": {
+            "type": ["number", "null"]
+          },
+          "artefacts_coal_combustion_pct": {
+            "type": ["number", "null"]
+          },
+          "fly_ash_grains_pct": {
+            "type": ["number", "null"]
+          },
+          "pyrolysis_grains_pct": {
+            "type": ["number", "null"]
+          },
+          "htm_finely_stratified": {
+            "type": ["boolean", "null"]
+          },
+          "araric_fragments_pct": {
+            "type": ["number", "null"]
           }
         },
         "additionalProperties": false

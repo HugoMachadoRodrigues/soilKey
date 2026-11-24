@@ -418,7 +418,30 @@ horizon_column_spec <- function() {
     gypsum_lt20mm_pct             = "numeric",   # gypsum, % by weight of the fraction < 20 mm; KST p. 359, gypseous substitutes (>= 40)
     pumice_fragments_share_pct    = "numeric",   # pumice and pumicelike fragments, % by volume of the fragments >= 2 mm; KST pp. 358-359 (two-thirds or more: pumiceous)
     tephra_wt_pct                 = "numeric",   # volcanic ash, cinders, lapilli, pumice and pumicelike fragments, % by weight of the whole soil; KST p. 358, pumiceous and cindery (> 60)
-    liquid_limit_pct              = "numeric"    # liquid limit (moist), water %; KST p. 359, diatomaceous (> 100)
+    liquid_limit_pct              = "numeric",   # liquid limit (moist), water %; KST p. 359, diatomaceous (> 100)
+    # ---- v0.9.432: USDA family mineralogy classes (KST 13th ed., pp. 363-366) ----
+    mineralogy_analysed           = "logical",   # a mineralogical analysis of the layer was made: a mineral it does not list is a measured zero (reading F2)
+    illite_pct                    = "numeric",   # illite (hydrous mica), % of the clay fraction; KST p. 366, illitic (> 50)
+    vermiculite_pct               = "numeric",   # vermiculite, % of the clay fraction; KST p. 366, vermiculitic
+    allophane_pct                 = "numeric",   # allophane, % of the clay fraction; KST pp. 364, 366, halloysitic
+    kaolin_other_pct              = "numeric",   # dickite, nacrite and other 1:1 or nonexpanding 2:1 layer minerals (not illite), % of the clay; KST pp. 364, 366, kaolinitic
+    anhydrite_pct                 = "numeric",   # anhydrite, % by weight, fine earth or fraction < 20 mm (the higher); KST p. 365, anhydritic (>= 15)
+    opaline_pct                   = "numeric",   # diatoms, plant opal and sponge spicules, % by weight of the fine earth; KST p. 365, opaline (>= 30)
+    glauconite_pct                = "numeric",   # glauconitic pellets, % by weight of the fine earth; KST p. 365, glauconitic (> 20)
+    mg_silicates_pct              = "numeric",   # magnesium-silicate minerals (serpentines, talc, olivines, Mg-rich pyroxenes and amphiboles), % by weight of the fine earth; KST p. 365, magnesic (> 40)
+    boehmite_pct                  = "numeric",   # boehmite, % by weight of the fine earth; KST p. 365, gibbsitic (gibbsite and boehmite > 40)
+    mica_grains_pct               = "numeric",   # mica and stable mica pseudomorphs, % by grain count of the 0.02-0.25 mm fraction; KST p. 366, micaceous (> 45)
+    resistant_minerals_pct        = "numeric",   # silica minerals (quartz, chalcedony, opal) and other resistant minerals, % by weight or grain count of the 0.02-2 mm fraction; KST p. 366, siliceous (> 90)
+    # ---- v0.9.432: USDA human-altered and human-transported material classes (KST pp. 362-363) ----
+    methanogenic_evidence         = "logical",   # methanethiol odour from decomposing nonpersistent artifacts, or evidence of methane collection or burning; KST p. 363, methanogenic
+    artefacts_asphalt_pct         = "numeric",   # asphalt (bitumen) artifacts >= 2 mm, % by volume; KST p. 363, asphaltic (> 35)
+    artefacts_concrete_pct        = "numeric",   # concrete artifacts >= 2 mm, % by volume; KST p. 363, concretic (> 35)
+    artefacts_synthetic_gypsum_pct = "numeric",  # synthetic gypsum artifacts (FGD gypsum, phosphogypsum, drywall, plaster), % by weight of the fine earth; KST p. 363, gypsifactic (> 40)
+    artefacts_coal_combustion_pct = "numeric",   # coal combustion byproduct artifacts >= 2 mm (bottom ash, slag), % by volume; KST p. 363, combustic (> 35)
+    fly_ash_grains_pct            = "numeric",   # light-weight coal combustion byproducts (fly ash), % by grain count of the 0.02-0.25 mm fraction; KST p. 363, ashifactic (> 15)
+    pyrolysis_grains_pct          = "numeric",   # pyrolysis artifacts (fuel coke, biochar), % by grain count of the 0.02-0.25 mm fraction; KST p. 363, pyrocarbonic (> 5)
+    htm_finely_stratified         = "logical",   # finely stratified (5 cm or less) water-deposited human-transported material (dredge or irrigation sediment); KST p. 363, dredgic
+    araric_fragments_pct          = "numeric"    # mechanically detached and re-oriented pieces of diagnostic horizons, % by volume; KST p. 363, araric (>= 3)
   )
 }
 
