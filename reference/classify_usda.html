@@ -21,7 +21,7 @@ inst/rules/usda/subgroups/&amp;lt;order&amp;gt;.yaml
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.432</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.433</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,7 +154,11 @@ category, the <strong>family</strong> – a set of class modifiers
 (particle-size, mineralogy, CEC-activity, reaction, temperature
 regime, depth) PREPENDED to the subgroup name, e.g. <em>"fine,
 kaolinitic, isohyperthermic Rhodic Hapludox"</em>. See
-<code><a href="classify_usda_family.html">classify_usda_family</a></code>.</p>
+<code><a href="classify_usda_family.html">classify_usda_family</a></code>. Since v0.9.433 (reading F20) the
+family enters the name only when a subgroup was assigned, and the name
+carries only the decided terms; an undecided term is listed in
+<code>$ambiguities</code> with <code>level = "family"</code> and caps the evidence
+grade at "C". A term the taxon does not use is not undecided.</p>
     </div>
     <div class="section level2">
     <h2 id="undecided-tests-and-regimes">Undecided tests and regimes<a class="anchor" aria-label="anchor" href="#undecided-tests-and-regimes"></a></h2>
@@ -195,7 +199,7 @@ an Ultisol with no regime recorded has no suborder.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Typic Hapludox"</span>
 <span class="r-in"><span><span class="co"># include the 5th (family) level:</span></span></span>
 <span class="r-in"><span><span class="fu">classify_usda</span><span class="op">(</span><span class="va">pedon</span>, include_family <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">name</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fine, subactive, isohyperthermic Typic Hapludox"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fine, isohyperthermic Typic Hapludox"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

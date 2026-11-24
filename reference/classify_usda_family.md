@@ -67,6 +67,17 @@ Named list of
 [`FamilyAttribute`](https://hugomachadorodrigues.github.io/soilKey/reference/FamilyAttribute.md)
 objects.
 
+## Details
+
+The dimensions, in the order of the name (KST 13th ed., p. 355):
+`particle_size`, `human_material`, `mineralogy`, `cec_activity`,
+`reaction` (calcareous, acid, nonacid, allic), `temperature_regime`,
+`depth_class` (shallow), `rupture_resistance` (ortstein), `coatings`
+(coated, uncoated) and `cracks` (cracked) (since v0.9.433, pp. 366-370).
+Each is a class, or `NULL`: not used in the taxon (nothing missing), or
+undecided (the missing columns in `$missing`,
+`evidence$undecided = TRUE` for the classes of pp. 366-370).
+
 ## References
 
 Soil Survey Staff (2022), KST 13th ed., Ch. 16–17.

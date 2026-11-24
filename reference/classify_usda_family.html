@@ -11,7 +11,7 @@ is orthogonal). Mirrors classify_sibcs_familia."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.432</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.433</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,6 +120,18 @@ the evidence grade to "C".</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Named list of <code><a href="FamilyAttribute.html">FamilyAttribute</a></code> objects.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The dimensions, in the order of the name (KST 13th ed., p. 355):
+<code>particle_size</code>, <code>human_material</code>, <code>mineralogy</code>,
+<code>cec_activity</code>, <code>reaction</code> (calcareous, acid, nonacid, allic),
+<code>temperature_regime</code>, <code>depth_class</code> (shallow),
+<code>rupture_resistance</code> (ortstein), <code>coatings</code> (coated, uncoated)
+and <code>cracks</code> (cracked) (since v0.9.433, pp. 366-370). Each is a
+class, or <code>NULL</code>: not used in the taxon (nothing missing), or
+undecided (the missing columns in <code>$missing</code>,
+<code>evidence$undecided = TRUE</code> for the classes of pp. 366-370).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

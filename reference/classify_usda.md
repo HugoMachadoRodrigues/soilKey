@@ -90,6 +90,11 @@ CEC-activity, reaction, temperature regime, depth) PREPENDED to the
 subgroup name, e.g. *"fine, kaolinitic, isohyperthermic Rhodic
 Hapludox"*. See
 [`classify_usda_family`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md).
+Since v0.9.433 (reading F20) the family enters the name only when a
+subgroup was assigned, and the name carries only the decided terms; an
+undecided term is listed in `$ambiguities` with `level = "family"` and
+caps the evidence grade at "C". A term the taxon does not use is not
+undecided.
 
 ## Undecided tests and regimes
 
@@ -128,5 +133,5 @@ res$name
 #> [1] "Typic Hapludox"
 # include the 5th (family) level:
 classify_usda(pedon, include_family = TRUE)$name
-#> [1] "fine, subactive, isohyperthermic Typic Hapludox"
+#> [1] "fine, isohyperthermic Typic Hapludox"
 ```
