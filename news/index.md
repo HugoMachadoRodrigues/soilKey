@@ -1,5 +1,21 @@
 # Changelog
 
+## soilKey 0.9.430
+
+- **Spodic Cryopsamments** (USDA audit N20, 2026-11-23). The KST 13th
+  edition asks the Spodic Cryopsamments for a horizon 5 cm or more thick
+  with spodic-like cementation, oxalate Al plus half Fe, or ODOE, at any
+  depth; the Spodic Psammaquents, Aquodic and Spodic Quartzipsamments
+  and Spodic Udipsamments ask for it below an Ap horizon or at 18 cm or
+  more. The rules gave the depth limit to all of them; `entisols.yaml`
+  now calls `spodic_subgroup_usda(psamments = FALSE)` for the
+  Cryopsamments. The note of 0.9.427 that the Spodic Psamments still
+  lacked `psamments: true` was out of date: 0.9.425 had already set it.
+- No ISIS profile and no canonical profile is a Cryopsamment, so no name
+  changes. New `tests/testthat/test-v09430-spodic-cryopsamments.R`; the
+  Spodic Psamments test of 0.9.425 now expects the Cryopsamments to
+  differ.
+
 ## soilKey 0.9.429
 
 The canonical profiles record their soil moisture and temperature

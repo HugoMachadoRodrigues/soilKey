@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.429</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.430</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,12 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.430" id="soilkey-09430">soilKey 0.9.430<a class="anchor" aria-label="anchor" href="#soilkey-09430"></a></h2>
+<ul><li>
+<strong>Spodic Cryopsamments</strong> (USDA audit N20, 2026-11-23). The KST 13th edition asks the Spodic Cryopsamments for a horizon 5 cm or more thick with spodic-like cementation, oxalate Al plus half Fe, or ODOE, at any depth; the Spodic Psammaquents, Aquodic and Spodic Quartzipsamments and Spodic Udipsamments ask for it below an Ap horizon or at 18 cm or more. The rules gave the depth limit to all of them; <code>entisols.yaml</code> now calls <code>spodic_subgroup_usda(psamments = FALSE)</code> for the Cryopsamments. The note of 0.9.427 that the Spodic Psamments still lacked <code>psamments: true</code> was out of date: 0.9.425 had already set it.</li>
+<li>No ISIS profile and no canonical profile is a Cryopsamment, so no name changes. New <code>tests/testthat/test-v09430-spodic-cryopsamments.R</code>; the Spodic Psamments test of 0.9.425 now expects the Cryopsamments to differ.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.429" id="soilkey-09429">soilKey 0.9.429<a class="anchor" aria-label="anchor" href="#soilkey-09429"></a></h2>
 <p>The canonical profiles record their soil moisture and temperature regimes, and a Mollisol with an aridic regime that borders on ustic or xeric is an Ustoll or a Xeroll (USDA audit, wave 4; decisions N16 to N18 of the author, 2026-11-23).</p>
