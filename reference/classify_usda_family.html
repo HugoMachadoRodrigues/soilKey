@@ -11,7 +11,7 @@ is orthogonal). Mirrors classify_sibcs_familia."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.431</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.432</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,8 @@ is orthogonal). Mirrors <code><a href="classify_sibcs_familia.html">classify_sib
 <span>  subgroup_code <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  infer_temperature <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  great_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  subgroup <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  suggest_mineralogy <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,6 +105,16 @@ has no temperature class until the regime is recorded.</p></dd>
 <code>order_code</code> they select the control section and the
 particle-size classes of KST 13th ed., ch. 17 (since v0.9.431);
 <code><a href="classify_usda.html">classify_usda()</a></code> supplies the taxa it assigned.</p></dd>
+
+
+<dt id="arg-suggest-mineralogy">suggest_mineralogy<a class="anchor" aria-label="anchor" href="#arg-suggest-mineralogy"></a></dt>
+<dd><p>Opt-in (default <code>FALSE</code>, v0.9.432): when
+the mineralogy class of KST 13th ed., pp. 363-366, is undecided,
+suggest one from stand-ins (the Kr and Ki of the sulfuric attack,
+CEC / clay, CaCO3, a quartz-dominated <code>sand_mineralogy</code>).
+The suggestion sets <code>evidence$suggestion = TRUE</code> and keeps
+the missing columns; <code><a href="classify_usda.html">classify_usda()</a></code> then warns and lowers
+the evidence grade to "C".</p></dd>
 
 </dl></div>
     <div class="section level2">

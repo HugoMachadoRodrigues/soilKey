@@ -20,7 +20,8 @@ classify_usda(
   on_missing = c("warn", "silent", "error"),
   include_family = FALSE,
   infer_temperature = FALSE,
-  gapfill = FALSE
+  gapfill = FALSE,
+  suggest_mineralogy = FALSE
 )
 ```
 
@@ -65,6 +66,14 @@ classify_usda(
   Filled cells carry `inferred_prior` provenance, so the evidence grade
   drops to `"C"`. Runs on a deep copy – the caller's pedon is never
   mutated.
+
+- suggest_mineralogy:
+
+  When deriving the family and the mineralogy class is undecided,
+  suggest one from stand-ins (Kr, Ki, CEC / clay, CaCO3, a
+  quartz-dominated `sand_mineralogy`). Default `FALSE` (v0.9.432): the
+  class is left undecided. A suggested class lowers the evidence grade
+  to "C" and adds a warning.
 
 ## Value
 
@@ -119,5 +128,5 @@ res$name
 #> [1] "Typic Hapludox"
 # include the 5th (family) level:
 classify_usda(pedon, include_family = TRUE)$name
-#> [1] "fine, mixed, subactive, isohyperthermic Typic Hapludox"
+#> [1] "fine, subactive, isohyperthermic Typic Hapludox"
 ```

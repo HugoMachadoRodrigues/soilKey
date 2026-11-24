@@ -15,7 +15,8 @@ classify_usda_family(
   subgroup_code = NULL,
   infer_temperature = FALSE,
   great_group = NULL,
-  subgroup = NULL
+  subgroup = NULL,
+  suggest_mineralogy = FALSE
 )
 ```
 
@@ -49,6 +50,16 @@ classify_usda_family(
   v0.9.431);
   [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
   supplies the taxa it assigned.
+
+- suggest_mineralogy:
+
+  Opt-in (default `FALSE`, v0.9.432): when the mineralogy class of KST
+  13th ed., pp. 363-366, is undecided, suggest one from stand-ins (the
+  Kr and Ki of the sulfuric attack, CEC / clay, CaCO3, a
+  quartz-dominated `sand_mineralogy`). The suggestion sets
+  `evidence$suggestion = TRUE` and keeps the missing columns;
+  [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  then warns and lowers the evidence grade to "C".
 
 ## Value
 
