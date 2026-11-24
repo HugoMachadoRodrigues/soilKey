@@ -691,6 +691,9 @@ Subgrupo são internos (veja “Internal”).
 
 - [`classify_usda_family()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda_family.md)
   : Classify the USDA family (5th level) of a pedon
+- [`family_control_section_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/family_control_section_usda.md)
+  : Control section for particle-size classes and their substitutes
+  (USDA)
 
 ## Module 2 – VLM extraction
 

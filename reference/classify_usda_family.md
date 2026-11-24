@@ -13,7 +13,9 @@ classify_usda_family(
   pedon,
   order_code = NULL,
   subgroup_code = NULL,
-  infer_temperature = FALSE
+  infer_temperature = FALSE,
+  great_group = NULL,
+  subgroup = NULL
 )
 ```
 
@@ -26,7 +28,7 @@ classify_usda_family(
 
 - order_code:
 
-  Optional USDA order code (selects applicable dimensions).
+  Optional USDA order code (e.g. `"AF"`).
 
 - subgroup_code:
 
@@ -38,6 +40,15 @@ classify_usda_family(
   `site$soil_temperature_regime` is not recorded, suggest a temperature
   class from latitude and elevation. Off, the family has no temperature
   class until the regime is recorded.
+
+- great_group, subgroup:
+
+  Optional great group and subgroup names (e.g. `"Hapludalfs"`,
+  `"Arenic Hapludalfs"`). With `order_code` they select the control
+  section and the particle-size classes of KST 13th ed., ch. 17 (since
+  v0.9.431);
+  [`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+  supplies the taxa it assigned.
 
 ## Value
 

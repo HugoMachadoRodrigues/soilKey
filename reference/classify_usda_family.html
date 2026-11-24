@@ -11,7 +11,7 @@ is orthogonal). Mirrors classify_sibcs_familia."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.430</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.431</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,9 @@ is orthogonal). Mirrors <code><a href="classify_sibcs_familia.html">classify_sib
 <span>  <span class="va">pedon</span>,</span>
 <span>  order_code <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  subgroup_code <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  infer_temperature <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  infer_temperature <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  great_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subgroup <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,7 +84,7 @@ is orthogonal). Mirrors <code><a href="classify_sibcs_familia.html">classify_sib
 
 
 <dt id="arg-order-code">order_code<a class="anchor" aria-label="anchor" href="#arg-order-code"></a></dt>
-<dd><p>Optional USDA order code (selects applicable dimensions).</p></dd>
+<dd><p>Optional USDA order code (e.g. <code>"AF"</code>).</p></dd>
 
 
 <dt id="arg-subgroup-code">subgroup_code<a class="anchor" aria-label="anchor" href="#arg-subgroup-code"></a></dt>
@@ -94,6 +96,14 @@ is orthogonal). Mirrors <code><a href="classify_sibcs_familia.html">classify_sib
 when <code>site$soil_temperature_regime</code> is not recorded, suggest
 a temperature class from latitude and elevation. Off, the family
 has no temperature class until the regime is recorded.</p></dd>
+
+
+<dt id="arg-great-group-subgroup">great_group, subgroup<a class="anchor" aria-label="anchor" href="#arg-great-group-subgroup"></a></dt>
+<dd><p>Optional great group and subgroup names (e.g.
+<code>"Hapludalfs"</code>, <code>"Arenic Hapludalfs"</code>). With
+<code>order_code</code> they select the control section and the
+particle-size classes of KST 13th ed., ch. 17 (since v0.9.431);
+<code><a href="classify_usda.html">classify_usda()</a></code> supplies the taxa it assigned.</p></dd>
 
 </dl></div>
     <div class="section level2">
