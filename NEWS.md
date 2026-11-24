@@ -1,3 +1,152 @@
+# soilKey 0.9.433
+
+The USDA family names its cation-exchange activity, calcareous and reaction,
+soil temperature and soil depth classes with the taxon gates and control
+sections of the KST 13th edition (ch. 17, pp. 366-370), adds the
+rupture-resistance (ortstein), coatings on sands and permanent cracks
+classes, and enters the name as a level below the subgroup (USDA audit,
+wave 5, third of four family PRs; readings F12 to F15, F18 and F20 of the
+author, 2026-11-23). New file `R/familia-usda-classes.R`.
+
+* **Cation-exchange activity** (pp. 366-367): CEC (NH4OAc pH 7) / silicate
+  clay over the particle-size control section; superactive 0.60 or more,
+  active 0.40 to 0.60, semiactive 0.24 to 0.40, subactive below 0.24. Used
+  only with the mixed or siliceous mineralogy of the clayey, clayey-skeletal,
+  coarse-loamy, coarse-silty, fine, fine-loamy, fine-silty, loamy,
+  loamy-skeletal and very-fine classes; never in Histosols, Histels,
+  Oxisols, the kandi and kanhap great groups and subgroups, Psamments, the
+  psamm great groups or Psammentic subgroups. In a strongly contrasting
+  family the part that uses a class names it, the more clayey when both do.
+  The clay < 10 cut-off is gone. The clay estimate 2.5 x (1500 kPa water -
+  organic carbon) applies as in the particle-size classes (F11).
+* **Calcareous and reaction** (pp. 367-368): key A to D, allic (Oxisols, a
+  layer 30 cm or more thick in the control section with more than 2 cmol(+)
+  KCl-extractable Al per kg), calcareous (effervescence in all parts), acid
+  (pH in CaCl2 below 5.0 throughout), nonacid. Calcareous in Entisols,
+  Gelisols, Aquands, Aquepts, Aquolls and the Gelic suborders and great
+  groups, acid and nonacid in the same taxa without the Aquolls, each with
+  the exclusions of p. 368; one term per taxon. Control sections:
+  calcareous 25-50 cm from the mineral soil surface (Gelisols other than
+  Histels, Gelic taxa and Wassents: the surface to 25 cm or a root-limiting
+  layer; a root-limiting layer within 25 cm: the 2.5 cm above it; at 26-50
+  cm: 25 cm to the layer); acid, nonacid and allic: the particle-size
+  control section (Gelisols and Gelic taxa: the surface to 25 cm or a
+  root-limiting layer).
+* **Soil temperature** (pp. 368-369): Gelisols and Gelic taxa take
+  hypergelic, pergelic or subgelic by `site$mean_annual_soil_temp_C`; other
+  soils the class of the recorded regime. There is no cryic class; frigid
+  is omitted in the cryic taxa (implied above the family).
+* **Soil depth** (p. 369): only "shallow" ("very-shallow" is gone): Oxisols
+  less than 100 cm to a root-limiting layer, other mineral soils and
+  Folistels less than 50 cm from the mineral soil surface, other Histels
+  less than 50 cm; not in Lithic subgroups or soils with a fragipan. The
+  root-limiting layers are those of the particle-size control section.
+* **Rupture-resistance** (p. 369): "ortstein" in Spodosols with an ortstein
+  horizon. **Coatings** (pp. 369-370): Quartzipsamments, "coated" when
+  silt + 2 x clay averages more than 5 over the control section, else
+  "uncoated". **Permanent cracks** (p. 370): Fluvaquents and Humaquepts,
+  "cracked" with permanent cracks 2 mm or more wide at intervals under 50
+  cm throughout 50 cm of the control section (base of a plow layer or 25 cm
+  to 100 cm).
+* **Order of the terms** (p. 355): particle-size, human-altered or
+  -transported material, mineralogy, CEC activity, reaction, temperature,
+  depth, rupture-resistance, coatings, cracks.
+* **Readings of the author** (USDA audit, wave 5, 2026-11-23): F12,
+  effervescence not recorded but CaCO3 measured: CaCO3 above 0 in every
+  part is calcareous; neither recorded, undecided. F13, the clay-size
+  carbonate subtracted in the CEC activity (new `caco3_clay_pct`) is zero
+  where the layer has no carbonate (CaCO3 measured 0, or not measured with
+  no effervescence or pH(H2O) below 7, as N6), and undecided where CaCO3 is
+  above 0 and it is not recorded. F14, the temperature class from the
+  recorded regime; the gelic classes undecided without the mean annual soil
+  temperature. F15, a root-limiting contact not recorded is absent (no
+  depth class); an ortstein (cemented spodic layer, suffix m) whose lateral
+  continuity is not recorded (`horizon_continuity` "continuous") is not
+  root-limiting, which also reaches the particle-size control section. F18,
+  "throughout" and "in all parts" are undecided when a part lacks data;
+  the weighted means (CEC activity, coatings) use the measured parts only
+  when they cover half the control section. F20, the family enters the
+  name only when a subgroup was assigned, with only its decided terms; an
+  undecided term (value NULL with data missing) is listed in
+  `$ambiguities` with `level = "family"` and caps the evidence grade at C;
+  a term the taxon does not use (reason "not used: ...", nothing missing)
+  is not undecided. Permanent cracks not recorded (new `cracks_permanent`)
+  are absent.
+* **Further readings** (F31 to F38, accepted by the author, 2026-11-23):
+  - CEC activity (p. 366): the ratio is the weighted CEC over the weighted
+    silicate clay of the layers that record both (a ratio of averages, not
+    an average of layer ratios); the carbonate clay is subtracted also from
+    the clay estimated from the 1500 kPa water.
+  - CEC activity, contrasting families (p. 367): "most clay" is read from
+    the class names (very-fine; then fine, clayey and clayey-skeletal; then
+    fine-loamy and fine-silty; then loamy and loamy-skeletal; then
+    coarse-loamy and coarse-silty), the weighted silicate clay deciding a
+    tie; each part takes its own mineralogy where the mineralogy names
+    parts. An undecided mineralogy leaves the class undecided (mixed, the
+    last class of sections D and E, is not ruled out).
+  - Calcareous (p. 368): an effervescence extent recorded "local" fails "in
+    all parts"; a layer with pH (CaCl2) below 5.0 holds no carbonates (the
+    pH(H2O) < 7 of N6 is not applied, per F12). Acid: only the pH in CaCl2
+    is read; the "about pH 5.5 in H2O" of the key is not used as a
+    stand-in. A part of the control section with no layer described leaves
+    "in all parts" and "throughout" undecided.
+  - Exclusions (p. 368): "that have no particle-size class" qualifies the
+    whole of item 5 (a psamm taxon with an ashy class is not excluded);
+    "sandy ... or fragmental families" are those exact classes (a
+    contrasting "sandy over loamy" is not); an anhydritic, carbonatic,
+    gypsic or hypergypsic part of a contrasting mineralogy excludes; an
+    undecided mineralogy leaves the exclusion undecided unless the key
+    tested those classes FALSE (so a soil with no mineralogical analysis,
+    where anhydritic stays open, has an undecided reaction class). The
+    argillic or natric horizon of item 2 (Cryaquolls, Duraquolls) is
+    three-valued.
+  - Taxa: the Gelic suborders and great groups are the names containing
+    "gel" (Gelands, Haplogelods, Gelaquepts ...); the cryic taxa the names
+    containing "cry" and the Cryic subgroups.
+  - Temperature (pp. 368-369): hypergelic -10 C or lower, pergelic above
+    -10 to -4 C, subgelic above -4 to +1 C; a Gelic taxon warmer than +1 C
+    goes on to the recorded regime. A hypergelic, pergelic or subgelic
+    regime recorded stands when the temperature is not. A cryic or gelic
+    regime recorded outside the taxa that imply it is undecided (frigid or
+    isofrigid needs the summer-winter difference). Only frigid is omitted
+    in the cryic taxa; isofrigid is kept.
+  - Depth (p. 369): Histels other than Folistels are measured from the soil
+    surface; the Lithic exclusion applies to them too. The Histosols are
+    left to the fourth PR.
+  - Ortstein (pp. 27, 369): spodic materials are the layers of the spodic
+    horizon or a B horizon with the suffix h or s; "50 percent or more
+    cemented" is read from the suffix m, `pan_type` "ortstein" or a
+    recorded `cementation_class`, unless `duripan_pct` records less than
+    50.
+  - Cracks (p. 370): the control section from the top of the profile; width
+    from `cracks_width_cm` (0.2 or more), spacing from
+    `polygonal_cracks_spacing_cm` (under 50); with permanence recorded, a
+    width or spacing not recorded leaves the class undecided.
+  - F20: without a subgroup the family is still computed in
+    `$trace$family`, but adds nothing to the name, `$ambiguities` or the
+    grade; the missing columns of family terms are not added to
+    `$missing_data`.
+* **Effect on the 44 canonical profiles** (`include_family = TRUE`): the CEC
+  activity term (given in 38) is gone from all (none records a
+  mineralogical analysis, so the mineralogy is undecided, or the taxon
+  excludes it); "calcareous" is gone from the Calcisol, Gypsisol,
+  Kastanozem and the two Vertisols (taxa that do not use it); "cryic" is
+  gone (no such class: omitted in the cryic taxa, undecided in the Alisol,
+  Typic Paleudults with a cryic regime); "very-shallow" and "shallow" are
+  gone from the Lithic Cryorthents and Lithic Humustepts; the Arenosol
+  (Xeric Quartzipsamments) gains "coated". Grades: the Andosol (Hydric
+  Melanudands) and the Cryosol (Fluventic Haplorthels) fall from A to C
+  (undecided family terms); the Histosol (Terric Cryohemists) keeps A; the
+  other 41 were C already.
+* `test-v09104-usda-family.R` (the CEC activity and reaction fixtures now
+  record a taxon and a mineralogy that keys mixed) and `test-report.R` (the
+  Ferralsol family loses "subactive": Oxisols take no CEC activity class)
+  and `test-v09370-cst2001-readers.R` (a permagelic regime, read as gelic,
+  is no family class: undecided outside the Gelic taxa, pergelic in a
+  Gelisol at -5 C) are updated; new `tests/testthat/test-v09433-family-classes.R`.
+  `inst/ATTRIBUTES.md` and `inst/schemas/pedon-schema.json` are
+  regenerated.
+
 # soilKey 0.9.432
 
 The USDA family names its mineralogy class by the key of the KST 13th

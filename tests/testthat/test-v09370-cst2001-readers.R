@@ -299,8 +299,17 @@ test_that("the USDA key reads the new regime values as aquic and gelic", {
   expect_true(r$passed)
   expect_equal(r$evidence$soil_temperature_regime, "permagelic")
   expect_false(soilKey:::str_cryic_usda(p(list(soil_temperature_regime = "permagelic")))$passed)
+  # v0.9.433: "gelic" is a regime, not a family class (KST 13th ed., pp.
+  # 368-369); permagelic still reads as gelic, which outside a Gelic taxon
+  # leaves the class undecided, and in a Gelisol needs the mean annual soil
+  # temperature (reading F14).
+  fg <- soilKey:::family_temperature_regime_usda(
+    p(list(soil_temperature_regime = "permagelic")))
+  expect_null(fg$value)
+  expect_equal(fg$evidence$regime, "gelic")
   expect_equal(soilKey:::family_temperature_regime_usda(
-    p(list(soil_temperature_regime = "permagelic")))$value, "gelic")
+    p(list(soil_temperature_regime = "permagelic", mean_annual_soil_temp_C = -5)),
+    order_code = "GE", great_group = "Haplorthels")$value, "pergelic")
   # values recorded before read as they did
   expect_equal(soilKey:::family_temperature_regime_usda(
     p(list(soil_temperature_regime = "Mesic")))$value, "mesic")

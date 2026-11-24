@@ -9,9 +9,10 @@
 # file mirrors. We reuse FamilyAttribute (R6) and .weighted_avg_in_depth() from
 # there, and compute_ki/compute_kr() for mineralogy.
 #
-# Seven dimensions, in canonical name order (p. 355):
+# Ten dimensions, in canonical name order (p. 355):
 #   particle-size, human-altered and human-transported material,
-#   mineralogy, CEC-activity, reaction, temperature, [depth].
+#   mineralogy, CEC-activity, reaction, temperature, depth,
+#   rupture-resistance, coatings, permanent cracks.
 #
 # Thresholds follow Soil Survey Staff (2022), Keys to Soil Taxonomy 13th ed.,
 # Ch. 16 (soil temperature regimes) and Ch. 17 (family differentiae). Since
@@ -19,7 +20,8 @@
 # 357-358 (R/familia-usda-particle-size.R); since v0.9.432 the mineralogy
 # class reads the same control section and the human-altered and
 # human-transported material classes their own (R/familia-usda-mineralogy.R);
-# the other dimensions still read a fixed 25-100 cm window.
+# since v0.9.433 the other classes follow pp. 366-370 with their taxon gates
+# and control sections (R/familia-usda-classes.R).
 # =============================================================================
 
 
@@ -31,165 +33,20 @@
 # key of KST 13th ed., pp. 362-366) live in R/familia-usda-mineralogy.R.
 
 
-#' USDA family: cation-exchange activity class (KST Ch. 17)
-#'
-#' CEC(NH4OAc, pH 7)/clay ratio: superactive (>= 0.60), active (0.40--0.60),
-#' semiactive (0.24--0.40), subactive (< 0.24). Skipped for clay < 10 percent.
-#'
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_cm,max_cm Control-section depth window (cm).
-#' @return A \code{\link{FamilyAttribute}}.
-#' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
-#' @noRd
-family_cec_activity_usda <- function(pedon, min_cm = 25, max_cm = 100) {
-  h    <- pedon$horizons
-  ref  <- "Soil Survey Staff (2022), KST 13th ed., Ch. 17"
-  clay <- .weighted_avg_in_depth(h, "clay_pct", max_cm, min_cm)
-  cec  <- .weighted_avg_in_depth(h, "cec_cmol", max_cm, min_cm)
-  if (is.na(clay) || is.na(cec)) {
-    return(FamilyAttribute$new(
-      name = "cec_activity", value = NULL,
-      evidence = list(reason = "CEC or clay unavailable"),
-      missing = c(if (is.na(cec)) "cec_cmol", if (is.na(clay)) "clay_pct"),
-      reference = ref))
-  }
-  if (clay < 10) {
-    return(FamilyAttribute$new(
-      name = "cec_activity", value = NULL,
-      evidence = list(reason = "too sandy for an activity class", clay_pct = clay),
-      missing = character(0), reference = ref))
-  }
-  ratio <- cec / clay
-  value <- if (ratio >= 0.60) "superactive"
-           else if (ratio >= 0.40) "active"
-           else if (ratio >= 0.24) "semiactive"
-           else "subactive"
-  FamilyAttribute$new(
-    name = "cec_activity", value = value,
-    evidence = list(cec_cmol = cec, clay_pct = clay, cec_to_clay_ratio = ratio),
-    missing = character(0), reference = ref)
-}
+# v0.9.433: family_cec_activity_usda(), family_reaction_usda(),
+# family_temperature_regime_usda(), family_depth_class_usda() and the
+# rupture-resistance, coatings and permanent-cracks classes (KST 13th ed.,
+# pp. 366-370) live in R/familia-usda-classes.R.
 
 
-#' USDA family: reaction class (KST Ch. 17)
-#'
-#' Conservative: returns "calcareous" when carbonates are present through the
-#' control section; otherwise NULL (acid/nonacid terms apply only to specific
-#' families and are not emitted by default).
-#'
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @param min_cm,max_cm Control-section depth window (cm).
-#' @return A \code{\link{FamilyAttribute}}.
-#' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
-#' @noRd
-family_reaction_usda <- function(pedon, min_cm = 25, max_cm = 100) {
-  h     <- pedon$horizons
-  ref   <- "Soil Survey Staff (2022), KST 13th ed., Ch. 17"
-  caco3 <- .weighted_avg_in_depth(h, "caco3_pct", max_cm, min_cm)
-  ph    <- .weighted_avg_in_depth(h, "ph_h2o", max_cm, min_cm)
-  value <- if (!is.na(caco3) && caco3 > 0) "calcareous" else NULL
-  FamilyAttribute$new(
-    name = "reaction", value = value,
-    evidence = list(caco3_pct = caco3, ph_h2o = ph),
-    missing = character(0), reference = ref)
-}
-
-
-#' USDA family: soil temperature regime (KST Ch. 16)
-#'
-#' Uses \code{pedon$site$soil_temperature_regime} when it is recorded. When it
-#' is not, the family has no temperature class (value NULL, the site field
-#' listed as missing): since v0.9.415 the regime is not inferred unless asked
-#' for (audit decision P3 (a), Hugo, 2026-11-20). With \code{infer = TRUE}
-#' (opt-in) a class is suggested from latitude and elevation by a crude
-#' lapse-rate model (frigid/mesic/thermic/hyperthermic, with an \code{iso-}
-#' prefix within 23 degrees of the equator); the suggestion sets
-#' \code{evidence$inferred = TRUE} and \code{evidence$suggestion = TRUE},
-#' still lists the site field as missing, and \code{classify_usda()} then
-#' warns and lowers the evidence grade to "C". The "iso" prefix is never added
-#' to a recorded regime, nor from latitude when inference is off.
-#'
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @param infer Suggest a class from latitude/elevation when the site field
-#'        is absent. Default \code{FALSE}.
-#' @return A \code{\link{FamilyAttribute}}.
-#' @references Soil Survey Staff (2022), KST 13th ed., Ch. 16.
-#' @noRd
-family_temperature_regime_usda <- function(pedon, infer = FALSE) {
-  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 16"
-  str <- pedon$site$soil_temperature_regime %||% NA_character_
-  if (!.usda_regime_blank(str)) {
-    return(FamilyAttribute$new(
-      name = "temperature_regime", value = trimws(.usda_str_value(as.character(str)[1L])),
-      evidence = list(inferred = FALSE,
-                      source = "site$soil_temperature_regime"),
-      missing = character(0), reference = ref))
-  }
-  lat <- suppressWarnings(as.numeric(pedon$site$lat %||% NA))
-  if (!isTRUE(infer) || is.na(lat)) {
-    return(FamilyAttribute$new(
-      name = "temperature_regime", value = NULL,
-      evidence = list(inferred = FALSE,
-                      reason = if (!isTRUE(infer)) "no soil temperature regime recorded (not inferred)"
-                               else "no soil temperature regime recorded and no latitude"),
-      missing = "site$soil_temperature_regime", reference = ref))
-  }
-  elev <- suppressWarnings(as.numeric(pedon$site$elevation_m %||% 0))
-  if (is.na(elev)) elev <- 0
-  # Crude MAAT model (deg C); MAST ~ MAAT. Tropical-to-temperate lapse.
-  maat <- 27 - 0.3 * abs(lat) - 0.0065 * elev
-  base <- if (maat < 8) "frigid"
-          else if (maat < 15) "mesic"
-          else if (maat < 22) "thermic"
-          else "hyperthermic"
-  iso <- abs(lat) < 23   # low seasonal range -> iso- prefix
-  value <- if (iso) paste0("iso", base) else base
-  FamilyAttribute$new(
-    name = "temperature_regime", value = value,
-    evidence = list(inferred = TRUE, suggestion = TRUE, mast_est_c = maat, lat = lat,
-                    elevation_m = elev, iso = iso),
-    missing = "site$soil_temperature_regime", reference = ref)
-}
-
-
-#' USDA family: soil depth class for shallow soils (KST Ch. 17)
-#'
-#' Detects the shallowest lithic/paralithic/densic/petro contact from horizon
-#' designations (R / Cr / Cd / m suffix) and emits "very-shallow" (< 25 cm) or
-#' "shallow" (< 50 cm); deeper soils get no depth term (NULL).
-#'
-#' @param pedon A \code{\link{PedonRecord}}.
-#' @return A \code{\link{FamilyAttribute}}.
-#' @references Soil Survey Staff (2022), KST 13th ed., Ch. 17.
-#' @noRd
-family_depth_class_usda <- function(pedon) {
-  h   <- pedon$horizons
-  ref <- "Soil Survey Staff (2022), KST 13th ed., Ch. 17"
-  des <- as.character(h$designation)
-  is_contact <- !is.na(des) &
-    grepl("^([0-9]?)(R|Cr|Cd)|m$", des, perl = TRUE) &
-    !is.na(h$top_cm)
-  if (!any(is_contact)) {
-    return(FamilyAttribute$new(
-      name = "depth_class", value = NULL,
-      evidence = list(reason = "no root-limiting contact detected"),
-      missing = character(0), reference = ref))
-  }
-  depth <- min(h$top_cm[is_contact])
-  value <- if (depth < 25) "very-shallow" else if (depth < 50) "shallow" else NULL
-  FamilyAttribute$new(
-    name = "depth_class", value = value,
-    evidence = list(contact_top_cm = depth),
-    missing = character(0), reference = ref)
-}
-
-
-# Per-order applicable dimensions. Particle-size / mineralogy / CEC-activity /
-# temperature apply broadly; reaction and depth are conditional and self-gate
-# (return NULL when not applicable), so the default config applies all six.
+# The family dimensions in the order of the name (KST 13th ed., p. 355).
+# Each one gates itself by taxon (value NULL, "not used", when the taxon does
+# not use it), so every dimension is run.
+.FAMILY_DIMS_USDA <- c("particle_size", "human_material", "mineralogy",
+                       "cec_activity", "reaction", "temperature_regime",
+                       "depth_class", "rupture_resistance", "coatings", "cracks")
 .family_dims_por_order_usda <- function(order_code = NULL) {
-  c("particle_size", "human_material", "mineralogy", "cec_activity", "reaction",
-    "temperature_regime", "depth_class")
+  .FAMILY_DIMS_USDA
 }
 
 
@@ -198,6 +55,16 @@ family_depth_class_usda <- function(pedon) {
 #' Runs the applicable family-modifier dimensions and returns them as a named
 #' list of \code{\link{FamilyAttribute}} objects (multi-label; each dimension
 #' is orthogonal). Mirrors \code{\link{classify_sibcs_familia}}.
+#'
+#' The dimensions, in the order of the name (KST 13th ed., p. 355):
+#' \code{particle_size}, \code{human_material}, \code{mineralogy},
+#' \code{cec_activity}, \code{reaction} (calcareous, acid, nonacid, allic),
+#' \code{temperature_regime}, \code{depth_class} (shallow),
+#' \code{rupture_resistance} (ortstein), \code{coatings} (coated, uncoated)
+#' and \code{cracks} (cracked) (since v0.9.433, pp. 366-370). Each is a
+#' class, or \code{NULL}: not used in the taxon (nothing missing), or
+#' undecided (the missing columns in \code{$missing},
+#' \code{evidence$undecided = TRUE} for the classes of pp. 366-370).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param order_code Optional USDA order code (e.g. \code{"AF"}).
@@ -244,15 +111,33 @@ classify_usda_family <- function(pedon, order_code = NULL,
       pedon, order_code = order_code, great_group = great_group,
       subgroup = subgroup %||% subgroup_code,
       particle_size = out$particle_size, suggest = suggest_mineralogy)
+  sg <- subgroup %||% subgroup_code
+  # v0.9.433: the classes of pp. 366-370, gated by the taxa assigned
   if ("cec_activity" %in% dims)
-    out$cec_activity <- family_cec_activity_usda(pedon)
+    out$cec_activity <- family_cec_activity_usda(
+      pedon, order_code = order_code, great_group = great_group, subgroup = sg,
+      particle_size = out$particle_size, mineralogy = out$mineralogy)
   if ("reaction" %in% dims)
-    out$reaction <- family_reaction_usda(pedon)
+    out$reaction <- family_reaction_usda(
+      pedon, order_code = order_code, great_group = great_group, subgroup = sg,
+      particle_size = out$particle_size, mineralogy = out$mineralogy)
   if ("temperature_regime" %in% dims)
-    out$temperature_regime <-
-      family_temperature_regime_usda(pedon, infer = infer_temperature)
+    out$temperature_regime <- family_temperature_regime_usda(
+      pedon, infer = infer_temperature, order_code = order_code,
+      great_group = great_group, subgroup = sg)
   if ("depth_class" %in% dims)
-    out$depth_class <- family_depth_class_usda(pedon)
+    out$depth_class <- family_depth_class_usda(
+      pedon, order_code = order_code, great_group = great_group, subgroup = sg)
+  if ("rupture_resistance" %in% dims)
+    out$rupture_resistance <- family_rupture_resistance_usda(
+      pedon, order_code = order_code, great_group = great_group, subgroup = sg)
+  if ("coatings" %in% dims)
+    out$coatings <- family_coatings_usda(
+      pedon, order_code = order_code, great_group = great_group, subgroup = sg,
+      particle_size = out$particle_size)
+  if ("cracks" %in% dims)
+    out$cracks <- family_cracks_usda(
+      pedon, order_code = order_code, great_group = great_group, subgroup = sg)
   out
 }
 
@@ -261,7 +146,9 @@ classify_usda_family <- function(pedon, order_code = NULL,
 #'
 #' Joins the non-NULL \code{value}s with ", " in canonical USDA order (KST
 #' 13th ed., p. 355: particle-size, human-altered and human-transported
-#' material, mineralogy, CEC-activity, reaction, temperature, depth).
+#' material, mineralogy, CEC-activity, reaction, temperature, depth,
+#' rupture-resistance, coatings, permanent cracks). Undecided terms are
+#' left out (reading F20).
 #' The string is meant to be PREPENDED to the subgroup name.
 #'
 #' @param family Named list of \code{\link{FamilyAttribute}}, the return of
@@ -269,8 +156,7 @@ classify_usda_family <- function(pedon, order_code = NULL,
 #' @return Single string (possibly empty).
 #' @noRd
 family_label_usda <- function(family) {
-  order <- c("particle_size", "human_material", "mineralogy", "cec_activity",
-             "reaction", "temperature_regime", "depth_class")
+  order <- .FAMILY_DIMS_USDA
   present <- intersect(order, names(family))
   vals <- vapply(present, function(k) family[[k]]$value %||% NA_character_,
                  character(1))

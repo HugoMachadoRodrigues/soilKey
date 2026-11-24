@@ -71,7 +71,11 @@ category, the \strong{family} -- a set of class modifiers
 (particle-size, mineralogy, CEC-activity, reaction, temperature
 regime, depth) PREPENDED to the subgroup name, e.g. \emph{"fine,
 kaolinitic, isohyperthermic Rhodic Hapludox"}. See
-\code{\link{classify_usda_family}}.
+\code{\link{classify_usda_family}}. Since v0.9.433 (reading F20) the
+family enters the name only when a subgroup was assigned, and the name
+carries only the decided terms; an undecided term is listed in
+\code{$ambiguities} with \code{level = "family"} and caps the evidence
+grade at "C". A term the taxon does not use is not undecided.
 }
 \section{Undecided tests and regimes}{
 

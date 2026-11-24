@@ -85,7 +85,11 @@ run_usda_subgroup <- function(pedon, great_group_code, rules = NULL) {
 #' (particle-size, mineralogy, CEC-activity, reaction, temperature
 #' regime, depth) PREPENDED to the subgroup name, e.g. \emph{"fine,
 #' kaolinitic, isohyperthermic Rhodic Hapludox"}. See
-#' \code{\link{classify_usda_family}}.
+#' \code{\link{classify_usda_family}}. Since v0.9.433 (reading F20) the
+#' family enters the name only when a subgroup was assigned, and the name
+#' carries only the decided terms; an undecided term is listed in
+#' \code{$ambiguities} with \code{level = "family"} and caps the evidence
+#' grade at "C". A term the taxon does not use is not undecided.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param rules Optional pre-loaded rule set.
@@ -227,9 +231,13 @@ classify_usda <- function(pedon,
                             if (!is.null(suborder)) suborder$name else NULL,
         subgroup          = if (!is.null(sg)) sg$name else NULL),
       error = function(e) list())
-    family_lbl <- family_label_usda(family_attrs)
-    if (!is.null(family_lbl) && nzchar(family_lbl))
-      display_name <- paste(family_lbl, display_name)
+    # v0.9.433 (reading F20): the family is a level below the subgroup, so
+    # it enters the name only when a subgroup was assigned
+    if (!is.null(sg)) {
+      family_lbl <- family_label_usda(family_attrs)
+      if (!is.null(family_lbl) && nzchar(family_lbl))
+        display_name <- paste(family_lbl, display_name)
+    }
   }
 
   trace_combined <- list(
@@ -284,6 +292,28 @@ classify_usda <- function(pedon,
     if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
     warnings <- c(warnings, paste(
       "Inferred, so the evidence grade is at most C:", inferences))
+  }
+  # v0.9.433 (reading F20): an undecided family term (value NULL with data
+  # missing) joins $ambiguities at the level "family" and caps the grade at
+  # C, as an undecided test above the family does. A term the taxon does not
+  # use is not undecided. Only when the family is named (a subgroup assigned).
+  if (!is.null(sg) && length(family_attrs)) {
+    fam_und <- Filter(.family_term_undecided_usda, family_attrs)
+    for (k in names(fam_und)) {
+      a <- fam_und[[k]]
+      ambiguities[[length(ambiguities) + 1L]] <- list(
+        rsg_code = k, rsg_name = k, level = "family",
+        reason = sprintf("Indeterminate -- %s%s", a$evidence$reason %||% "undecided",
+                         if (length(a$missing)) paste0("; missing: ",
+                           paste(a$missing, collapse = ", ")) else ""))
+    }
+    if (length(fam_und)) {
+      if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+      warnings <- c(warnings, sprintf(paste0(
+        "Family term(s) undecided (%s): left out of the name; the evidence ",
+        "grade is at most C. See $ambiguities and $trace$family."),
+        paste(names(fam_und), collapse = ", ")))
+    }
   }
   for (lv in und$undecided_levels) {
     warnings <- c(warnings, sprintf(paste0(

@@ -48,6 +48,17 @@ Runs the applicable family-modifier dimensions and returns them as a named
 list of \code{\link{FamilyAttribute}} objects (multi-label; each dimension
 is orthogonal). Mirrors \code{\link{classify_sibcs_familia}}.
 }
+\details{
+The dimensions, in the order of the name (KST 13th ed., p. 355):
+\code{particle_size}, \code{human_material}, \code{mineralogy},
+\code{cec_activity}, \code{reaction} (calcareous, acid, nonacid, allic),
+\code{temperature_regime}, \code{depth_class} (shallow),
+\code{rupture_resistance} (ortstein), \code{coatings} (coated, uncoated)
+and \code{cracks} (cracked) (since v0.9.433, pp. 366-370). Each is a
+class, or \code{NULL}: not used in the taxon (nothing missing), or
+undecided (the missing columns in \code{$missing},
+\code{evidence$undecided = TRUE} for the classes of pp. 366-370).
+}
 \references{
 Soil Survey Staff (2022), KST 13th ed., Ch. 16--17.
 }

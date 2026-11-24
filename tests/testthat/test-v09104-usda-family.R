@@ -35,16 +35,21 @@ test_that("particle_size class keys on clay and rock fragments", {
 })
 
 
+# v0.9.433: the class is used only with a mixed or siliceous mineralogy
+# class (KST 13th ed., p. 366), so the fixture records a mineralogical
+# analysis that keys mixed and the taxon; the clay < 10 cut-off is gone (a
+# sandy family is excluded by its particle-size class instead).
 test_that("cec_activity class keys on the CEC/clay ratio", {
   skip_on_cran()
   mk <- function(cec, clay) family_cec_activity_usda(.uf_pedon(data.frame(
-    top_cm = 25, bottom_cm = 100, cec_cmol = cec, clay_pct = clay)))
+    top_cm = 25, bottom_cm = 100, cec_cmol = cec, clay_pct = clay,
+    sand_pct = 25, silt_pct = 75 - clay, mineralogy_analysed = TRUE,
+    caco3_pct = 0, caso4_pct = 0, fe_dcb_pct = 1, ph_naf = 7)),
+    "IN", "Dystrudepts", "Typic Dystrudepts")
   expect_equal(mk(40, 50)$value, "superactive")   # 0.80
   expect_equal(mk(25, 50)$value, "active")        # 0.50
   expect_equal(mk(15, 50)$value, "semiactive")    # 0.30
   expect_equal(mk(5,  50)$value, "subactive")     # 0.10
-  # too sandy -> no class
-  expect_null(mk(2, 5)$value)
 })
 
 
@@ -71,13 +76,18 @@ test_that("mineralogy: Kr and CEC/clay are opt-in stand-ins only", {
 })
 
 
+# v0.9.433: the calcareous class is used only in the taxa of KST 13th ed.,
+# p. 367 (an Entisol here), in all parts of 25-50 cm, and not with a
+# carbonatic mineralogy; the fixture records a mineralogical analysis and a
+# layer from the surface. Without carbonates the soil is acid or nonacid.
 test_that("reaction is calcareous only when carbonates are present", {
-  cal <- family_reaction_usda(.uf_pedon(data.frame(
-    top_cm = 25, bottom_cm = 100, caco3_pct = 12, ph_h2o = 8.0)))
-  expect_equal(cal$value, "calcareous")
-  none <- family_reaction_usda(.uf_pedon(data.frame(
-    top_cm = 25, bottom_cm = 100, caco3_pct = 0, ph_h2o = 5.5)))
-  expect_null(none$value)
+  skip_on_cran()
+  mk <- function(caco3, ph) family_reaction_usda(.uf_pedon(data.frame(
+    top_cm = 0, bottom_cm = 100, clay_pct = 30, sand_pct = 30, silt_pct = 40,
+    very_fine_sand_pct = 10, caco3_pct = caco3, ph_cacl2 = ph, mineralogy_analysed = TRUE, caso4_pct = 0,
+    fe_dcb_pct = 1, ph_naf = 7)), "EN", "Udorthents", "Typic Udorthents")
+  expect_equal(mk(12, 7.6)$value, "calcareous")
+  expect_equal(mk(0, 4.6)$value, "acid")
 })
 
 

@@ -237,7 +237,15 @@
       placic = dr(placic_horizon_usda(pedon, max_top_cm = Inf)))
     if (isTRUE(r$passed) && length(r$layers)) add(h$top_cm[r$layers], nm)
   }
-  m <- which(!is.na(d$suffix) & grepl("m", d$suffix))
+  # v0.9.433 (reading F15): ortstein is root-limiting only when continuous
+  # (p. 369: 90 percent or more cemented and laterally continuous); a
+  # cemented spodic layer whose lateral continuity is not recorded is not.
+  pan <- .ps_txt(h, "pan_type")
+  spod_m <- (!is.na(d$master) & grepl("B", d$master) & grepl("[hs]", d$suffix %||% "")) |
+    (!is.na(pan) & pan == "ortstein")
+  cont <- .ps_txt(h, "horizon_continuity")
+  m <- which(!is.na(d$suffix) & grepl("m", d$suffix) &
+               (!spod_m | (!is.na(cont) & cont == "continuous")))
   if (length(m)) add(h$top_cm[m], "cemented layer (suffix m)")
   add(dr(.kst_contact_top_cm(pedon)), "lithic, paralithic or petroferric contact")
   add(dr(.usda_contact_top_cm(h)), "densic, lithic or paralithic contact")
