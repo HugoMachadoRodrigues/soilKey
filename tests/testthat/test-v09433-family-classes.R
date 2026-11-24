@@ -197,10 +197,12 @@ test_that("reaction: the taxa that use it and the exclusions", {
                  .rx(p, "MO", "Hapludolls", "Typic Hapludolls"),
                  .rx(p, "IN", "Fragiaquepts", "Typic Fragiaquepts"),
                  .rx(p, "AD", "Duraquands", "Typic Duraquands"),
-                 .rx(p, "MO", "Argiaquolls", "Typic Argiaquolls"),
-                 .rx(p, "GE", "Fibristels", "Typic Fibristels"))) {
+                 .rx(p, "MO", "Argiaquolls", "Typic Argiaquolls"))) {
     expect_null(a$value); expect_false(.und(a))
   }
+  # Histels: since v0.9.434 the euic and dysic classes of p. 372
+  expect_identical(.rx(p, "GE", "Fibristels", "Typic Fibristels")$reference,
+                   "Soil Survey Staff (2022), KST 13th ed., Ch. 17, p. 372")
   # Aquolls take calcareous only
   expect_equal(.rx(p, "MO", "Endoaquolls", "Typic Endoaquolls")$value, "calcareous")
   na <- .rx(.fine(ph_cacl2 = 4.6), "MO", "Endoaquolls", "Typic Endoaquolls")
@@ -419,10 +421,13 @@ test_that("classify_usda: undecided terms join $ambiguities and cap the grade (F
   expect_true("cec_activity" %in% codes)
   # the name carries only the decided terms
   expect_equal(fam$name, "mesic Hydric Melanudands")
-  # terms not used in the taxon are not undecided: the grade is kept
+  # terms not used in the taxon are not undecided (v0.9.434: the organic
+  # family of the canonical Histosol has undecided mineralogy and reaction
+  # terms, but the terms Histosols do not use are not listed)
   h <- suppressWarnings(classify_usda(make_histosol_canonical(), include_family = TRUE))
-  expect_equal(h$evidence_grade, "A")
-  expect_false("family" %in% vapply(h$ambiguities, function(a) a$level %||% "", ""))
+  hl <- vapply(h$ambiguities, function(a) a$level %||% "", "")
+  hc <- vapply(h$ambiguities[hl == "family"], function(a) a$rsg_code, "")
+  expect_setequal(hc, c("mineralogy", "reaction"))
 })
 
 test_that("classify_usda: the family enters the name only below a subgroup (F20)", {

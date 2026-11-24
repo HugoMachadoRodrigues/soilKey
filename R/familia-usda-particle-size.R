@@ -203,10 +203,14 @@
 #' its cementing agent; a geomembrane counts as a manufactured layer.
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
+#' @param fragipan Count the fragipan among the root-limiting layers
+#'   (default \code{TRUE}). The depth classes of Histosols (p. 372) list
+#'   the same layers without it (v0.9.434); \code{fragipan_top} is returned
+#'   either way.
 #' @return A list: \code{top} (cm, Inf when none), \code{kind}, and
 #'   \code{fragipan_top} (cm, Inf when none).
 #' @noRd
-.root_limiting_usda <- function(pedon) {
+.root_limiting_usda <- function(pedon, fragipan = TRUE) {
   h <- pedon$horizons
   n <- nrow(h)
   if (!n) return(list(top = Inf, kind = NA_character_, fragipan_top = Inf))
@@ -220,14 +224,14 @@
   fp_top <- Inf
   if (isTRUE(fr$passed) && length(fr$layers)) {
     fp_top <- min(h$top_cm[fr$layers], na.rm = TRUE)
-    add(fp_top, "fragipan")
+    if (isTRUE(fragipan)) add(fp_top, "fragipan")
   }
   d <- .usda_desig(h$designation %||% rep(NA_character_, n))
   fx <- which(!is.na(d$suffix) & grepl("x", d$suffix) & !is.na(d$master) & grepl("B|C|E", d$master))
   if (length(fx) && !is.finite(fp_top)) {
     # a recorded fragipan (suffix x) counts as the field record of one
     fp_top <- min(h$top_cm[fx], na.rm = TRUE)
-    add(fp_top, "fragipan")
+    if (isTRUE(fragipan)) add(fp_top, "fragipan")
   }
   for (nm in c("duripan", "petrocalcic", "petrogypsic", "placic")) {
     r <- switch(nm,
@@ -932,12 +936,9 @@ family_particle_size_usda <- function(pedon, order_code = NULL,
   fa <- function(value, ev, missing = character(0))
     FamilyAttribute$new(name = "particle_size", value = value, evidence = ev,
                         missing = unique(missing), reference = ref)
-  # Organic soils: particle-size classes only for Terric subgroups (p. 370)
-  if (ctx$histosol || ctx$histel) {
-    if (!ctx$terric) return(fa(NULL, list(reason = "not named in this taxon")))
-    return(fa(NULL, list(reason = paste("the particle-size classes of Terric Histosols and",
-                                         "Histels (KST 13th ed., p. 370) are not keyed in this version"))))
-  }
+  # Organic soils: particle-size classes only for Terric subgroups, by the
+  # key of p. 370 (v0.9.434, R/familia-usda-organic.R)
+  if (ctx$histosol || ctx$histel) return(family_particle_size_organic_usda(pedon, ctx))
   h <- pedon$horizons
   if (is.null(h) || !nrow(h)) return(fa(NULL, list(reason = "no layers"), "horizons"))
   L <- .ps_layers_usda(pedon, ctx)

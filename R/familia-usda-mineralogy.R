@@ -405,10 +405,10 @@ family_mineralogy_usda <- function(pedon, order_code = NULL, great_group = NULL,
                         missing = unique(missing), reference = .MIN_REF_USDA)
   if (identical(ctx$great_group, "quartzipsamments"))
     return(fa(NULL, list(reason = "not named in this taxon")))
+  # v0.9.434: organic soils by the key of pp. 371-372 (R/familia-usda-organic.R)
   if (ctx$histosol || ctx$histel)
-    return(fa(NULL, list(reason = paste(
-      "the mineralogy classes of Histosols and Histels (KST 13th ed., p. 371)",
-      "are not keyed in this version"))))
+    return(family_mineralogy_organic_usda(pedon, ctx, particle_size = particle_size,
+                                          suggest = suggest))
   h <- pedon$horizons
   if (is.null(h) || !nrow(h)) return(fa(NULL, list(reason = "no layers"), "horizons"))
   ps <- particle_size %||% family_particle_size_usda(pedon, order_code, great_group, subgroup)

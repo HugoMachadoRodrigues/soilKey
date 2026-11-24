@@ -11,8 +11,9 @@
 # use it) is value NULL with nothing missing and the reason "not used ...".
 # The readings F12-F15, F18 and F20 are those of the author (USDA audit,
 # wave 5, 2026-11-23); see NEWS.md, 0.9.433. Organic soils (Histosols and
-# Histels, pp. 370-372) are keyed only where these pages name them (the
-# depth class of Histels, the temperature classes).
+# Histels, pp. 370-372) take the temperature classes and the depth class of
+# Histels from here; their reaction classes and the depth classes of
+# Histosols are in R/familia-usda-organic.R (v0.9.434).
 # =============================================================================
 
 .FC_REF_USDA <- "Soil Survey Staff (2022), KST 13th ed., Ch. 17"
@@ -293,7 +294,8 @@ family_cec_activity_usda <- function(pedon, order_code = NULL, great_group = NUL
 #' layer; a root-limiting layer within 25 cm: the 2.5 cm above it; within 26
 #' to 50 cm: 25 cm to the layer); acid, nonacid and allic: the particle-size
 #' control section (Gelisols and Gelic taxa: the surface to 25 cm or a
-#' root-limiting layer).
+#' root-limiting layer). Histosols and Histels take the kalkic, euic and dysic
+#' classes of p. 372 (\code{family_reaction_organic_usda()}, since v0.9.434).
 #'
 #' @inheritParams family_cec_activity_usda
 #' @return A \code{\link{FamilyAttribute}}.
@@ -306,6 +308,8 @@ family_reaction_usda <- function(pedon, order_code = NULL, great_group = NULL,
   fa <- function(value, ev, missing = character(0), undecided = FALSE)
     .fc_attr_usda("reaction", value, ev, missing, ref, undecided)
   not_used <- function(why, ev = list()) fa(NULL, c(list(reason = paste("not used:", why)), ev))
+  # v0.9.434: Histosols and Histels take kalkic, euic or dysic (p. 372)
+  if (ctx$histosol || ctx$histel) return(family_reaction_organic_usda(pedon, ctx))
   h <- pedon$horizons
   if (is.null(h) || !nrow(h)) return(fa(NULL, list(reason = "no layers"), "horizons", TRUE))
   H <- .fc_layers_usda(pedon)
@@ -342,7 +346,6 @@ family_reaction_usda <- function(pedon, order_code = NULL, great_group = NULL,
   calc_taxa <- ctx$entisol || ctx$gelisol || ctx$aquand || ctx$aquept ||
     ctx$aquoll || ctx$gelic_taxon
   if (!calc_taxa) return(not_used("taxon outside the lists of p. 368"))
-  if (ctx$histel) return(not_used("Histels"))
   # exclusions shared by the calcareous and the acid / nonacid classes
   excl <- list()
   excl$duraquands_placaquands <- gg %in% c("duraquands", "placaquands")
@@ -520,7 +523,8 @@ family_temperature_regime_usda <- function(pedon, infer = FALSE, order_code = NU
 #' Lithic subgroups or in soils with a fragipan. The root-limiting layers
 #' are those of the particle-size control section (\code{.root_limiting_usda()},
 #' p. 357): field observations, absent when not recorded (reading F15).
-#' The depth classes of Histosols (p. 372) are not keyed in this version.
+#' Histosols take the classes of p. 372 (\code{family_depth_class_organic_usda()},
+#' since v0.9.434).
 #'
 #' @param pedon A \code{\link{PedonRecord}}.
 #' @param order_code,great_group,subgroup The taxa assigned above the family.
@@ -532,9 +536,8 @@ family_depth_class_usda <- function(pedon, order_code = NULL, great_group = NULL
   ref <- .fc_ref_usda("p. 369")
   fa <- function(value, ev, missing = character(0))
     .fc_attr_usda("depth_class", value, ev, missing, ref)
-  if (ctx$histosol)
-    return(fa(NULL, list(reason = paste("the depth classes of Histosols (KST 13th ed.,",
-                                        "p. 372) are not keyed in this version"))))
+  # v0.9.434: Histosols take micro or shallow (p. 372, R/familia-usda-organic.R)
+  if (ctx$histosol) return(family_depth_class_organic_usda(pedon, ctx))
   h <- pedon$horizons
   if (is.null(h) || !nrow(h)) return(fa(NULL, list(reason = "no layers")))
   if (ctx$lithic) return(fa(NULL, list(reason = "not used: Lithic subgroup")))
@@ -544,6 +547,7 @@ family_depth_class_usda <- function(pedon, order_code = NULL, great_group = NULL
                          fragipan_top_cm = rl$fragipan_top)))
   if (!is.finite(rl$top))
     return(fa(NULL, list(reason = "no root-limiting layer recorded")))
+  # Histels keep this class (p. 372, reading F44)
   surf <- if (ctx$histel && !ctx$folistel) min(h$top_cm, na.rm = TRUE)
           else .usda_mineral_surface(pedon)
   depth <- rl$top - surf
