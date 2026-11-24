@@ -444,7 +444,9 @@ horizon_column_spec <- function() {
     araric_fragments_pct          = "numeric",   # mechanically detached and re-oriented pieces of diagnostic horizons, % by volume; KST p. 363, araric (>= 3)
     # ---- v0.9.433: USDA family cation-exchange activity and permanent-cracks classes (KST pp. 366, 370) ----
     caco3_clay_pct                = "numeric",   # clay-size carbonate, % by weight of the fine earth; subtracted from the clay of the CEC activity classes (KST p. 366; reading F13)
-    cracks_permanent              = "logical"    # the cracks are permanent (persist after drainage, polyhedrons of consolidated former Hydraquents); KST p. 370, cracked
+    cracks_permanent              = "logical",   # the cracks are permanent (persist after drainage, polyhedrons of consolidated former Hydraquents); KST p. 370, cracked
+    # ---- v0.9.434: USDA family mineralogy of organic soils (KST p. 371) ----
+    ferrihumic_material           = "logical"    # the layer is ferrihumic soil material (bog iron); KST p. 371, ferrihumic (reading F40)
   )
 }
 

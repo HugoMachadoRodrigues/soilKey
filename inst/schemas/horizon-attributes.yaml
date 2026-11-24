@@ -1883,3 +1883,7 @@ attributes:
     section: "USDA family (KST 13th ed., ch. 17)"
     unit: "logical"
     description: "The cracks of the layer are permanent: they persist for centuries, even under cultivation (polyhedrons of former Hydraquents that consolidated after drainage). With cracks_width_cm 0.2 or more and polygonal_cracks_spacing_cm below 50 throughout 50 cm or more: cracked class of the Fluvaquents and Humaquepts (KST 13th ed., p. 370). A field observation: not recorded, absent."
+  - name: ferrihumic_material
+    section: "USDA family (KST 13th ed., ch. 17)"
+    unit: "logical"
+    description: "The layer (mineral or organic) is ferrihumic soil material (bog iron: authigenic iron oxide with organic matter, as soft masses or cemented concretions, in a wet layer), as the surveyor identifies it against the criteria of KST 13th ed., p. 371. Within the control section of Histosols: ferrihumic mineralogy class of the USDA family of Histosols other than Folists, Sphagnofibrists and Sphagnic subgroups. Not recorded, absent (reading F40)."

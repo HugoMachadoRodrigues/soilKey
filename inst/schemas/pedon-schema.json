@@ -1154,6 +1154,9 @@
           },
           "cracks_permanent": {
             "type": ["boolean", "null"]
+          },
+          "ferrihumic_material": {
+            "type": ["boolean", "null"]
           }
         },
         "additionalProperties": false

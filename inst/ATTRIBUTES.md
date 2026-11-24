@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.433)
+# soilKey -- recognised horizon attribute names (v0.9.434)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -554,6 +554,7 @@ and do not warn.
 | `araric_fragments_pct` | % by volume | numeric | Mechanically detached and re-oriented pieces of diagnostic horizons or characteristics (human-altered material), % by volume. 3 or more in a layer 7.5 cm or more thick: araric class of the USDA family (KST 13th ed., p. 363). A field record: not recorded, absent. | - |
 | `caco3_clay_pct` | % by weight | numeric | Clay-size carbonate, % by weight of the fine earth. Subtracted from the clay before the CEC / clay ratio of the cation-exchange activity classes of the USDA family (KST 13th ed., p. 366). Not recorded: zero where the layer has no carbonate (caco3_pct 0, or no effervescence or pH(H2O) below 7 with caco3_pct not measured), else the ratio of the layer is undecided (reading F13). | - |
 | `cracks_permanent` | logical | logical | The cracks of the layer are permanent: they persist for centuries, even under cultivation (polyhedrons of former Hydraquents that consolidated after drainage). With cracks_width_cm 0.2 or more and polygonal_cracks_spacing_cm below 50 throughout 50 cm or more: cracked class of the Fluvaquents and Humaquepts (KST 13th ed., p. 370). A field observation: not recorded, absent. | - |
+| `ferrihumic_material` | logical | logical | The layer (mineral or organic) is ferrihumic soil material (bog iron: authigenic iron oxide with organic matter, as soft masses or cemented concretions, in a wet layer), as the surveyor identifies it against the criteria of KST 13th ed., p. 371. Within the control section of Histosols: ferrihumic mineralogy class of the USDA family of Histosols other than Folists, Sphagnofibrists and Sphagnic subgroups. Not recorded, absent (reading F40). | - |
 
 # Site properties
 
@@ -804,5 +805,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.433._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.434._
 
