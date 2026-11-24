@@ -51,7 +51,7 @@ family PR; readings F16 to F18 of the author, 2026-11-23). New file
 * **Tests**: new `test-v09434-family-organic.R`. `test-v09433-family-classes.R`
   no longer expects grade A for the canonical Histosol with the family, nor
   "not used" for the reaction of Histels.
-* **Further readings (to be confirmed by the author)**:
+* **Further readings** (F39 to F46, accepted by the author, 2026-11-24):
   - F39, ferrihumic in Wassists (p. 371): the key names Histosols except
     Folists, Sphagnofibrists and Sphagnic subgroups, so Wassists may take
     it, while the text above the key names Fibrists, Hemists and Saprists.
