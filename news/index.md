@@ -1,5 +1,71 @@
 # Changelog
 
+## soilKey 0.9.436
+
+The diagnostics of the Legend of 1974 follow the text where the audit of
+the FAO legends found them off (A2 to A6) and take two readings Hugo
+decided, option (a) of R2 and R3 (FAO audit, 2026-11-24), the second of
+its six PRs. The Revised Legend (1988) does not change: the two readers
+shared with it (histic H, calcic horizon) branch on the edition.
+
+- **Oxic B** (74 p. 27; A2). Its thickness (30 cm) and its mostly
+  gradual or diffuse internal boundaries are not monotone: a run of
+  candidate layers that passes alone may fail with the layer below it
+  across a clear boundary. Every contiguous sub-run is now tested
+  (`.f74_subrun_units()`), one unit per run, the uppermost first. Up to
+  0.9.435 only the whole run was tested (KE029’s BAoc 13-98 cm failed
+  with the Boc below it).
+- **Histic H** (74 pp. 21, 24; A3). The thin surface layer and the
+  plough layer paths read the layers of the H horizon (saturated), not
+  every organic layer: a well-drained forest floor (O) is no histic H,
+  so no hydromorphic property and no Gleysol. A plough layer designated
+  O that is not read as an H does not count.
+- **Calcic horizon** (74 p. 27; A4). 5 % more CaCO3 equivalent than the
+  C horizon (the first layer designated C below; with none, the layer
+  right below, flagged `no_c_horizon_layer_below_compared`), as the
+  gypsic horizon of 1974 reads it. The rule of 1988 (than a deeper
+  horizon) was used.
+- **Stand-ins of the 1974 horizons** (reading 35, “a decided 1974 answer
+  is never replaced”; A5). A USDA or WRB stand-in that passes now keeps
+  only its layers inside the units the 1974 reader left undecided; a
+  layer the 1974 reader decided is not that horizon stays so. The answer
+  no longer changes with the depth asked (RO002 had a calcic horizon
+  within 125 cm but none within 90 cm).
+- **Hydromorphic properties, items 3 and 4** (74 pp. 29-30; A6). The hue
+  and the colour tests are not read on H and O layers (designated so, or
+  organic by p. 21); the histic H has its own item. GB009’s 2 cm litter
+  of hue N no longer makes the soil hydromorphic.
+- **Cambic B against an argillic B** (74 pp. 25, 26, 32; R2 (a)). In
+  item 4, more clay, a stronger chroma or a redder hue than a layer
+  below that belongs to an argillic or natric B is no evidence of
+  alteration; the removal of carbonates and the colours of reduction
+  still count. Only a layer decided outside them is a reference: a layer
+  of an undecided one is not either, since an undecided comparison would
+  leave the cambic B to its WRB stand-in (IT002 stayed a Cambisol that
+  way). A BA over a Bt no longer makes the soil a Cambisol (KE016 Ferric
+  Luvisol, IT015, US011, TH012).
+- **Hydromorphic colours on a dark A** (74 p. 30; R3 (a)). Branch 4.5
+  (other soils) does not read a layer designated A of moist value below
+  3.5, as branches 4.3 and 4.4 read the colours below such an A: a
+  humus-dark A with a few mottles no longer makes Humic Andosols or a
+  Humic Cambisol Gleysols (RW001, CR012, ZA012).
+- The readings of A3, R2 and R3 (with A6) are recorded in
+  `inst/rules/fao1974/readings.yaml` (version 0.9.436).
+- **ISIS reference profiles** (`inst/benchmarks/fao_isis.R`): 1974
+  grouping agreement 320 to 338 of 796 (40.2 % to 42.5 %; 21 gained, 3
+  lost: IT010, IT012 and RO010, Cambisols of the labels), units 174 to
+  183 (10 gained, IT012 lost); 52 labels change. Fall-throughs 128 to
+  127, not classified 7 to 8 (ID027, a Humic Andosol whose litter was
+  its histic H). 1988 unchanged.
+- **Canonical fixtures and the 1974 examples and near misses**: no
+  change (names, units, provisional tests and grades).
+- Tests: `test-v09436-fao74-diagnostics.R`.
+  `test-v09387-fao74-horizons.R` (an oxic B over an abrupt boundary now
+  passes on its upper 30 cm; a stand-in passing only outside the
+  undecided Bt is not taken) and `test-v09389-fao74-key.R` (the cambic B
+  above an argillic B is now altered against a Bw, not against the Bt)
+  follow A2, A5 and R2.
+
 ## soilKey 0.9.435
 
 The evidence grade and the ambiguities of the FAO-Unesco legends (1974
