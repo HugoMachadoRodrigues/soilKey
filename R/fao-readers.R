@@ -120,6 +120,16 @@
 # (or to the rock): a gap in the depths, a layer without depths or a
 # description that stops above the base leaves it uncovered (`gap`), and
 # layers that overlap fill more than the window (`overlap`).
+#
+# `filled` (v0.9.438, FAO audit C4): the union of the soil layers fills the
+# window from its top to its base (or to the rock), overlaps counted once.
+# The tests read layer by layer ("throughout", "in some part", "within X
+# cm": .fao_in_window(), .fao_within()) need only that: a layer that
+# overlaps another is still read, and the window is described. Only a mean
+# over the window (.fao_weighted()) needs `covered`, the layers filling it
+# without overlap (the reading of 2026-11-09: a mean over overlapping layers
+# is undecided). Up to 0.9.437 the layer tests used `covered` too, so a
+# window with overlapping layers was undecided even when every layer passed.
 .fao_window <- function(h, top, bottom) {
   d <- .fao_depths(h)
   rock <- .fao_is_rock(h)
@@ -134,15 +144,29 @@
   idx <- which(th > 0)
   tot <- sum(th)
   tol <- 1e-6
-  overlap <- tot > need + tol
-  gap <- tot < need - tol
-  list(layers = idx, thickness = th[idx], covered = !gap && !overlap,
+  # the union of the clipped layers, overlaps counted once
+  s <- pmax(d$top[idx], top); e <- pmin(d$bottom[idx], eff)
+  o <- order(s); s <- s[o]; e <- e[o]
+  reach <- top; union <- 0
+  for (k in seq_along(s)) {
+    if (e[k] <= reach) next
+    union <- union + e[k] - max(s[k], reach)
+    reach <- e[k]
+  }
+  gap <- union < need - tol
+  overlap <- tot > union + tol
+  list(layers = idx, thickness = th[idx], covered = !gap && !overlap, filled = !gap,
        gap = gap, overlap = overlap, on_rock = on_rock, soil_bottom = eff)
 }
 
-# What an uncovered window asks for.
-.fao_window_missing <- function(w) {
-  if (isTRUE(w$overlap)) {
+# What an uncovered window asks for. `union = TRUE` for the layer tests,
+# which read a window the union of its layers fills (`filled`): only a gap
+# leaves them undecided.
+.fao_window_missing <- function(w, union = FALSE) {
+  if (isTRUE(union) && !isTRUE(w$gap)) {
+    return(list(missing = character(0), flags = character(0), note = character(0)))
+  }
+  if (isTRUE(w$overlap) && !isTRUE(union)) {
     return(list(missing = c("top_cm", "bottom_cm"), flags = "overlapping_layers",
                 note = "layers overlap in depth"))
   }
@@ -157,22 +181,23 @@
 # (logical, one per layer) restricts the reading to some layers, as in
 # "throughout the B horizon to 125 cm" (the layers of the B whose top is
 # above 125 cm). A window with no soil layer in it (rock above it) fails.
+# The window is described when the union of its layers fills it (`filled`,
+# v0.9.438): layers that overlap in depth are each read.
 .fao_in_window <- function(h, test, top, bottom, mode = c("throughout", "some"),
                            subset = NULL) {
   mode <- match.arg(mode)
   w <- .fao_window(h, top, bottom)
   if (!is.null(subset)) w$layers <- w$layers[as.logical(subset)[w$layers] %in% TRUE]
   v <- as.logical(test)[w$layers]
-  wm <- if (w$covered) list(missing = character(0), flags = character(0), note = character(0))
-        else .fao_window_missing(w)
+  wm <- .fao_window_missing(w, union = TRUE)
   if (mode == "throughout") {
     if (any(v %in% FALSE)) return(.fao_ans(FALSE, layers = w$layers[v %in% FALSE]))
-    if (!length(v) && w$covered) return(.fao_ans(FALSE, layers = integer(0),
-                                                 note = "no layer in the window"))
-    if (length(v) && all(v %in% TRUE) && w$covered) return(.fao_ans(TRUE, layers = w$layers))
+    if (!length(v) && w$filled) return(.fao_ans(FALSE, layers = integer(0),
+                                                note = "no layer in the window"))
+    if (length(v) && all(v %in% TRUE) && w$filled) return(.fao_ans(TRUE, layers = w$layers))
   } else {
     if (any(v %in% TRUE)) return(.fao_ans(TRUE, layers = w$layers[v %in% TRUE]))
-    if (all(v %in% FALSE) && w$covered) return(.fao_ans(FALSE, layers = integer(0)))
+    if (all(v %in% FALSE) && w$filled) return(.fao_ans(FALSE, layers = integer(0)))
   }
   .fao_ans(NA, missing = wm$missing, flags = wm$flags, note = wm$note,
            layers = w$layers[is.na(v)])
@@ -188,6 +213,10 @@
 # the deepest layer, so a description that stops above X, without gaps,
 # decides as one that reaches X, flagged (Hugo, 2026-11-12; 0.9.405). Rock is
 # never read so: a description that stops shallow often stops on rock.
+#
+# The profile is described to X when the union of its layers fills it
+# (`filled`, v0.9.438, FAO audit C4): layers that overlap in depth are each
+# read.
 .fao_within <- function(h, test, depth, field = FALSE) {
   d <- .fao_depths(h)
   rock <- .fao_is_rock(h)
@@ -195,14 +224,13 @@
   v <- as.logical(test)[idx]
   if (any(v %in% TRUE)) return(.fao_ans(TRUE, layers = idx[v %in% TRUE]))
   w <- .fao_window(h, 0, depth + 1e-3)
-  if (all(v %in% FALSE) && w$covered) return(.fao_ans(FALSE, layers = integer(0)))
+  if (all(v %in% FALSE) && w$filled) return(.fao_ans(FALSE, layers = integer(0)))
   if (isTRUE(field) && length(v) && all(v %in% FALSE)) {
     deepest <- suppressWarnings(max(d$bottom, na.rm = TRUE))
-    if (is.finite(deepest) && deepest < depth && .fao_window(h, 0, deepest)$covered)
+    if (is.finite(deepest) && deepest < depth && .fao_window(h, 0, deepest)$filled)
       return(.fao_ans(FALSE, layers = integer(0), flags = "absent_below_the_description"))
   }
-  wm <- if (w$covered) list(missing = character(0), flags = character(0), note = character(0))
-        else .fao_window_missing(w)
+  wm <- .fao_window_missing(w, union = TRUE)
   .fao_ans(NA, missing = wm$missing, flags = wm$flags, note = wm$note,
            layers = idx[is.na(v)])
 }
@@ -477,11 +505,43 @@
 # coarse textured materials of the Gleysols, Q10), on the USDA boundary
 # silt + 2 x clay >= 30 (is_sandy_loam_or_finer()). Vectorised; NA where the
 # particle size is not recorded.
-.fao_sandy_loam_or_finer <- function(h) {
-  p <- .fao_psd(h)
-  ifelse(is.na(p$silt) | is.na(p$clay), NA, p$silt + 2 * p$clay >= 30)
+#
+# `field_class = TRUE` (v0.9.438, FAO audit C5 and R15 (a), Hugo
+# 2026-11-24; the readers of the Revised Legend): where the laboratory clay
+# and silt leave a layer undecided, the texture class recorded in the field
+# (texture_class_usda, .texture_class_reading(), as soilKey's USDA key reads
+# it since 0.9.416) decides: a sand or a loamy sand is coarser than sandy
+# loam, any other class is sandy loam or finer. The layers so read are
+# flagged by .fao_texture_field_flags(). The 1974 oxic B reads the
+# laboratory data only (field_class = FALSE): the reading is of the Revised
+# Legend.
+.fao_sandy_loam_or_finer <- function(h, field_class = TRUE) {
+  v <- .fao_slf_lab(h)
+  if (isTRUE(field_class)) {
+    fc <- .fao_slf_field(h)
+    use <- is.na(v) & !is.na(fc)
+    v[use] <- fc[use]
+  }
+  v
 }
-.fao_coarser_than_sandy_loam <- function(h) !.fao_sandy_loam_or_finer(h)
+.fao_coarser_than_sandy_loam <- function(h, field_class = TRUE) !.fao_sandy_loam_or_finer(h, field_class)
+
+# The two sources: the laboratory clay and silt, and the field class.
+.fao_slf_lab <- function(h) {
+  p <- .fao_psd(h)
+  as.logical(ifelse(is.na(p$silt) | is.na(p$clay), NA, p$silt + 2 * p$clay >= 30))
+}
+.fao_slf_field <- function(h) {
+  if (!"texture_class_usda" %in% names(h)) return(rep(NA, nrow(h)))
+  as.logical(.texture_class_reading(h[["texture_class_usda"]])$sandy_loam_or_finer)
+}
+
+# The flags of the texture read from the field class (one per layer, NA
+# where the laboratory data decided or nothing did).
+.fao_texture_field_flags <- function(h) {
+  used <- is.na(.fao_slf_lab(h)) & !is.na(.fao_slf_field(h))
+  ifelse(used, "texture_from_field_class", NA_character_)
+}
 
 # The texture group of an argic B for tonguing (1988 p. 41; 1974 p. 31):
 # "fine" (clay, silty clay, sandy clay), "moderately fine" (sandy clay loam,
@@ -596,8 +656,17 @@
 # are never compared. Per layer: TRUE when a pair passes, FALSE when every
 # pair was compared and failed, NA otherwise; `upper` names the layer of the
 # first pair that passed.
+#
+# `skins` (v0.9.438, FAO audit C6 and R8 (a), Hugo 2026-11-24; the argic B
+# of 1988): one logical per layer, the clay skins of the layer as the argic
+# B reads them. A layer with clay skins is compared with the layers above it
+# across a lithological discontinuity too: item 6 (p. 28) asks for clay
+# skins in an argic B over or within a discontinuity, so with them the
+# increase across it is evidence of illuviation. Without clay skins the pair
+# stays undecided. NULL (the 1974 argillic B) leaves every such pair
+# undecided, as before.
 .fao_clay_increase <- function(h, steps = c(3, 1.2, 8), breaks = c(15, 40),
-                               distance = 30) {
+                               distance = 30, skins = NULL) {
   n <- nrow(h)
   d <- .fao_depths(h)
   clay <- .fao_col(h, "clay_pct")
@@ -612,6 +681,7 @@
     if (!length(js)) { res[i] <- FALSE; next }
     p <- .fao_clay_increase_pair(clay[js], clay[i], steps, breaks)
     disc <- !is.na(mat[js]) & !is.na(mat[i]) & mat[js] != mat[i]
+    if (!is.null(skins) && isTRUE(as.logical(skins)[i])) disc[] <- FALSE
     p[disc] <- NA
     if (any(p %in% TRUE)) {
       res[i] <- TRUE; up[i] <- js[which(p %in% TRUE)[1L]]

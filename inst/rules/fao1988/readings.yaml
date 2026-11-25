@@ -681,3 +681,43 @@ readings:
     page: "p. 68; 74 p. 6"
     version: "0.9.437"
     reading: "Amends the reading of 2026-11-09 (duripan, fragipan, petroferric and placic phases): the petroferric layer is indurated and holds little or no organic matter, which sets it apart from a thin iron pan and an indurated spodic B (p. 68, as 74 p. 6); the text gives no number. Read by structure: a layer recorded weaker than strongly cemented (none, weakly, moderately), a layer of the spodic B, a thin iron or placic pan and a layer designated with h are not petroferric, whatever the USDA predicate, the pan kind, the designation or the WRB stand-in show. No organic carbon limit is used (FAO audit B3 and R5, option a; the 1974 reading, the 1988 text being the same) (Hugo, 2026-11-24)."
+  - topic: "Depth windows over overlapping layers"
+    edition: [1988, 1974]
+    page: "pp. 25-42, 75-89; 74 pp. 23-53"
+    version: "0.9.438"
+    reading: "Amends the reading of 2026-11-09 (windows with gaps or overlaps) as it was applied: a test read layer by layer over a window ('throughout', 'in some part', 'within X cm') reads every layer that overlaps the window, and the window is described when the union of its layers fills it to its base or to the rock, overlaps counted once (.fao_window()$filled, .fao_in_window(), .fao_within(), and the 'within X cm' of continuous_hard_rock_fao88()). Only a thickness-weighted mean over overlapping layers stays undecided, flagged overlapping_layers (.fao_weighted()). Up to 0.9.437 the layer tests were undecided whenever layers overlapped, even when every layer passed. The readers are shared, so the Legend of 1974 reads the same (FAO audit C4, a defect against that reading) (Hugo, 2026-11-24)."
+  - topic: "Sandy loam or finer: the field texture class"
+    edition: [1988]
+    page: "pp. 28-31, 78, 80"
+    version: "0.9.438"
+    reading: "'Sandy loam or finer' and 'coarser than sandy loam' (the argic, cambic and ferralic B, the Arenosols and the coarse textured materials of the Gleysols, the Cumulic units) read the laboratory clay and silt first (silt + 2 x clay of 30 or more); where they leave a layer undecided, the texture class recorded in the field (texture_class_usda) decides, as soilKey's USDA key reads it: a sand or a loamy sand is coarser than sandy loam, any other class is sandy loam or finer, flagged texture_from_field_class. The 8 % clay of the B horizons is a measurement and is not read from the class. The oxic B of 1974, which shares the reader, keeps the laboratory data only (FAO audit C5 and R15, option a) (Hugo, 2026-11-24)."
+  - topic: "No soft powdery lime below the deepest layer described"
+    edition: [1988]
+    page: "pp. 40, 84, 86"
+    version: "0.9.438"
+    reading: "Soft powdery lime is a field feature, read as plinthite is read (2026-11-12): within 125 cm (the Chernozems, Kastanozems and Calcisols gates, and the units that ask it) none is taken below the deepest layer described, so a description that stops above 125 cm, without gaps, decides as one that reaches it, flagged absent_below_the_description; a gap in the depths still leaves it undecided (FAO audit C2 and R6, option a) (Hugo, 2026-11-24)."
+  - topic: "No plinthite below the deepest layer described: the Gleysols"
+    edition: [1988]
+    page: "pp. 39, 78"
+    version: "0.9.438"
+    reading: "The Gleysols gate, which asks for no plinthite within 125 cm, reads plinthite as the Plinthosols gate does since 2026-11-12: a field feature, none below the deepest layer described (plinthite_fao88(field = TRUE)), flagged absent_below_the_description. The plinthic units keep their reading (FAO audit C3 and R7, option a) (Hugo, 2026-11-24)."
+  - topic: "Clay increase of the argic B across a lithological discontinuity"
+    edition: [1988]
+    page: "p. 28"
+    version: "0.9.438"
+    reading: "Amends the reading of 2026-11-08 for the argic B: a layer with clay skins (as the argic B reads them: clay_films_amount few or more, argillans in thin section, or a Bt designation, flagged) is compared with the coarser layers above it across a lithological discontinuity too, since item 6 makes clay skins the condition of an argic B over or within a discontinuity; the start is flagged clay_increase_across_discontinuity_with_clay_skins. Without clay skins in the lower layer the pair stays undecided. The argillic B of 1974 keeps every such pair undecided (FAO audit C6 and R8, option a) (Hugo, 2026-11-24)."
+  - topic: "The colour route for a mottled E"
+    edition: [1988]
+    page: "pp. 37, 82"
+    version: "0.9.438"
+    reading: "Amends the reading of 2026-11-09 (reduction from tests and colour) for the stagnic properties: an E (designated E, or an albic E) with mottles of higher chroma (mottles without colours taken as higher, flagged, as before) in a matrix of moist value 4 or more and chroma 2 or less, the mottled pattern of item 3b, takes the colour route for reduction, flagged reduction_from_colour_pattern_mottled_e. A plainly bleached E, without such mottles, still never takes it, and the gleyic properties keep the exclusion (FAO audit C7 and R9, option a) (Hugo, 2026-11-24)."
+  - topic: "Boundaries not recorded at the Nitisols gate"
+    edition: [1988]
+    page: "p. 86"
+    version: "0.9.438"
+    reading: "Amends the reading of 2026-11-09 (clay distribution and boundaries of the Nitisols): the gradual or diffuse boundary between the A and the B is undecided when boundary_distinctness is not recorded (needs boundary_distinctness), the general rule that a boundary not recorded stays undecided. The abrupt textural change, argic item 6 and the Planosols keep reading a boundary not recorded as absent (.fao_boundary_sharp()) (FAO audit E8 and R11, option a) (Hugo, 2026-11-24)."
+  - topic: "Stand-ins carried by the key-level predicates"
+    edition: [1988]
+    page: "pp. 30-31, 42, 75-89"
+    version: "0.9.438"
+    reading: "A key-level predicate of 1988 that reads a horizon decided by a USDA or WRB stand-in (the spodic B by spodic_horizon_usda() or spodic(), the fimic A by the WRB anthropic horizons) carries that stand-in in its evidence with lower_grade, as the 1974 predicates do since 0.9.435: only_horizons_fao88() (when it passes, any horizon a stand-in found absent; when it fails, the present horizons if each rests on one), upper_b_fao88() (the other B horizons read), the Anthrosols gate (the fimic A when it decides alone) and the Podzol units that read the spodic B. A name resting on them has grade C at most (FAO audit G1, option a, the gap of 1988) (Hugo, 2026-11-24)."

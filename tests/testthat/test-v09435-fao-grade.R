@@ -217,7 +217,8 @@ test_that("no name changes: the canonical fixtures keep their FAO names", {
     andosol = c("Humic Cambisols", "Humic Alisols"),
     chernozem = c("Haplic Phaeozems", "Haplic Phaeozems"),
     kastanozem = c("Haplic Xerosols", "Eutric Cambisols"),
-    planosol = c("Eutric Planosols", "Stagnic Luvisols"),
+    # 0.9.438 (R9 (a)): the mottled E takes the colour route, a Planosol in 1988
+    planosol = c("Eutric Planosols", "Eutric Planosols"),
     podzol = c("Orthic Podzols", "Haplic Podzols"),
     ferralsol = c("Humic Ferralsols", "Haplic Ferralsols"),
     vertisol = c("Eutric Cambisols", "Vertic Cambisols"))

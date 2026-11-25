@@ -56,7 +56,10 @@
 # with a numeric `max_top_cm`, "within X cm" by the rule of 2026-11-09
 # (.fao_within()); with neither, the upper limit within 125 cm of p. 42 read as
 # the horizons of 0.9.382 read it (a layer starting at 125 cm or above).
-.f88_pr_status <- function(x, val, max_top_cm = NULL, window_cm = NULL) {
+# `field = TRUE` reads a field feature with `max_top_cm` (.fao_within(field
+# = TRUE)): none below the deepest layer described (v0.9.438: soft powdery
+# lime, R6; plinthite in the Gleysols gate, R7).
+.f88_pr_status <- function(x, val, max_top_cm = NULL, window_cm = NULL, field = FALSE) {
   val <- as.logical(val)
   if (!is.null(window_cm)) {
     w <- .fao_in_window(x$h, val, window_cm[1L], window_cm[2L], "throughout")
@@ -64,7 +67,7 @@
                 flags = w$flags, scope = w$layers %||% integer(0)))
   }
   if (!is.null(max_top_cm)) {
-    w <- .fao_within(x$h, val, max_top_cm)
+    w <- .fao_within(x$h, val, max_top_cm, field = field)
     scope <- which(!is.na(x$top) & x$top <= max_top_cm)
     return(list(value = w$value, layers = w$layers %||% integer(0), missing = w$missing,
                 flags = w$flags, scope = scope))
@@ -127,12 +130,12 @@
 # A property read per layer: `reader(x)` gives list(value, flags (one per
 # layer, "; " lists), missing, evidence).
 .f88_pr_layers <- function(pedon, id, reader, max_top_cm = NULL, window_cm = NULL,
-                           ctx = .f88_ctx) {
+                           ctx = .f88_ctx, field = FALSE) {
   x <- ctx(pedon)
   if (!x$n) return(.f88_pr_result(x, id, list(value = FALSE, layers = integer(0))))
   r <- reader(x)
   v <- as.logical(r$value)
-  st <- .f88_pr_status(x, v, max_top_cm, window_cm)
+  st <- .f88_pr_status(x, v, max_top_cm, window_cm, field = field)
   # the flags of the layers that could pass; when none can, of every layer
   # read (the readings that made them fail)
   rel <- st$scope[!(v[st$scope] %in% FALSE)]
@@ -397,9 +400,11 @@ continuous_hard_rock_fao88 <- function(pedon, max_top_cm = NULL) {
   } else if (is.null(max_top_cm)) {
     st <- list(value = FALSE, layers = integer(0))
   } else {
+    # "within X cm" as .fao_within() reads it: described to X when the union
+    # of the layers fills it, overlapping layers each read (v0.9.438, C4)
     w <- .fao_window(x$h, 0, max_top_cm + 1e-3)
-    st <- if (w$covered) list(value = FALSE, layers = integer(0))
-          else c(list(value = NA, layers = integer(0)), .fao_window_missing(w)[c("missing", "flags")])
+    st <- if (w$filled) list(value = FALSE, layers = integer(0))
+          else c(list(value = NA, layers = integer(0)), .fao_window_missing(w, union = TRUE)[c("missing", "flags")])
   }
   .f88_pr_result(x, id, st, flags = .f88_flags(flag, hit), values = v,
                  max_top_cm = max_top_cm)
@@ -798,7 +803,22 @@ gleyic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
                  .f88_and(cc2, higher, within_peds))
     unm <- .f88_or(.f88_cmp(col$cm, "<=", 1), cc1)
     pattern <- ifelse(mo$present | conc, b, unm)
-    v <- .f88_and(red$value, pattern)
+    # The colour route for an E (v0.9.438, FAO audit C7 and R9 (a), Hugo
+    # 2026-11-24; pp. 37, 82): an E (designated E, or an albic E) with
+    # mottles of higher chroma in a matrix of moist value 4 or more and
+    # chroma 2 or less (the mottled pattern of item 3b) takes the colour
+    # route for reduction, flagged reduction_from_colour_pattern_mottled_e.
+    # A plainly bleached E, without such mottles, stays excluded from the
+    # colour route (the reading of 2026-11-09): its pale colour is the
+    # bleaching of the E, not evidence of reduction.
+    redv <- red$value
+    e_layer <- (!is.na(x$master) & grepl("^E", x$master)) |
+      (.f88_member(x, .f88_hz_albic_e(x)$units) %in% TRUE)
+    e_col <- e_layer & !(redv %in% TRUE) & mo$present & (higher %in% TRUE) &
+      (.f88_cmp(col$vm, ">=", 4) %in% TRUE) & (.f88_cmp(col$cm, "<=", 2) %in% TRUE)
+    redv[e_col] <- TRUE
+    flag <- .f88_addf(flag, e_col, "reduction_from_colour_pattern_mottled_e")
+    v <- .f88_and(redv, pattern)
     # the Podzol route of item 4 (grains free of iron in or right below the
     # spodic B) shows stagnic as well as gleyic properties
     pod <- .f88_gley_colours(x)$podzol
@@ -812,7 +832,7 @@ gleyic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
     }, NA)
     list(value = .f88_pr_clean(x, v), flags = flag,
          missing = c(red$missing, "mottle_colors"),
-         evidence = list(items = data.frame(layer = x$idx, reduction = red$value,
+         evidence = list(items = data.frame(layer = x$idx, reduction = redv,
                                             mottled = mo$present | conc, pattern = pattern,
                                             chroma_increasing_with_depth = d)))
   })
@@ -987,10 +1007,15 @@ permafrost_fao88 <- function(pedon, max_top_cm = NULL) {
 # the suffix v (plinthite, in the FAO notation or none declared) is present
 # with its amount unknown, flagged (an amount asked is then undecided); plinthite_hardens recorded FALSE is not
 # plinthite. `min_thickness_cm` asks for a run of such layers that thick.
-# Field observations: not recorded, absent.
-plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top_cm = NULL) {
+# Field observations: not recorded, absent. `field = TRUE` with `max_top_cm`
+# reads plinthite as the field feature it is: none below the deepest layer
+# described (.fao_within(field = TRUE)), as the Plinthosols gate reads it
+# since 0.9.405; the Gleysols gate ("lacking plinthite within 125 cm", p.
+# 78) reads it so since 0.9.438 (FAO audit C3 and R7 (a), Hugo 2026-11-24).
+plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top_cm = NULL,
+                            field = FALSE) {
   .f88_pr_layers(pedon, "plinthite", function(x) .f88_plinthite_v(x, min_pct, min_thickness_cm),
-                 max_top_cm)
+                 max_top_cm, field = field)
 }
 
 .f88_plinthite_v <- function(x, min_pct = NULL, min_thickness_cm = 0) {
@@ -1121,8 +1146,13 @@ sodic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
   })
 }
 
+# Soft powdery lime is a field feature (v0.9.438, FAO audit C2 and R6 (a),
+# Hugo 2026-11-24): "within X cm" takes none below the deepest layer
+# described (.fao_within(field = TRUE)), as plinthite is read (2026-11-12),
+# flagged absent_below_the_description; a gap in the depths still leaves it
+# undecided.
 soft_powdery_lime_fao88 <- function(pedon, max_top_cm = NULL) {
-  .f88_pr_layers(pedon, "soft_powdery_lime", .f88_spl_v, max_top_cm)
+  .f88_pr_layers(pedon, "soft_powdery_lime", .f88_spl_v, max_top_cm, field = TRUE)
 }
 
 

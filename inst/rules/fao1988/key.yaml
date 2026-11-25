@@ -89,8 +89,8 @@ major_groups:
         - gleyic_properties_fao88: {max_top_cm: 50}
         - only_horizons_fao88: {allowed: [a_horizon, histic_h, cambic_b, sulfuric, calcic, gypsic]}
         - none_of:
-            - plinthite_fao88: {max_top_cm: 125}
-    notes: "Not coarse textured unless a histic H is present; gleyic properties within 50 cm; no diagnostic horizons but an A, a histic H, a cambic B, a sulfuric, a calcic or a gypsic horizon; no plinthite within 125 cm."
+            - plinthite_fao88: {max_top_cm: 125, field: true}
+    notes: "Not coarse textured unless a histic H is present; gleyic properties within 50 cm; no diagnostic horizons but an A, a histic H, a cambic B, a sulfuric, a calcic or a gypsic horizon; no plinthite within 125 cm (a field feature: none below the deepest layer described, as in the Plinthosols)."
 
   - code: "AN"
     name: "Andosols"

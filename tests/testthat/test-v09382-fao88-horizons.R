@@ -276,11 +276,16 @@ test_that("argic B: thickness 7.5 cm and one tenth, the 18 / 5 cm rule, plough l
                           clay_films_amount = c(NA, sk))
   expect_false(.ok(argic_b_fao88(pl(NA))))
   expect_true(.ok(argic_b_fao88(pl("common"))))
-  # across a lithological discontinuity the increase is undecided
+  # across a lithological discontinuity the increase is compared when the
+  # lower layer has clay skins (0.9.438, R8 (a); undecided up to 0.9.437);
+  # without them item 6 fails the B
   r <- argic_b_fao88(.p88(top_cm = c(0, 25), bottom_cm = c(25, 80), designation = c("A", "2Bt"),
                           clay_pct = c(10, 25), silt_pct = 30, sand_pct = c(60, 45), cec_cmol = 8,
                           clay_films_amount = c(NA, "common")))
-  expect_true(is.na(r$passed))
+  expect_true(isTRUE(r$passed))
+  r <- argic_b_fao88(.p88(top_cm = c(0, 25), bottom_cm = c(25, 80), designation = c("A", "2Bw"),
+                          clay_pct = c(10, 25), silt_pct = 30, sand_pct = c(60, 45), cec_cmol = 8))
+  expect_false(r$passed)
   # sandy loam or finer and 8 % clay
   expect_false(.ok(argic_b_fao88(.p88(top_cm = c(0, 25), bottom_cm = c(25, 80), designation = c("A", "Bt"),
                                       clay_pct = c(4, 7.9), silt_pct = 30, sand_pct = c(66, 62.1),
