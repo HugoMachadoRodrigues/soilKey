@@ -1,5 +1,90 @@
 # Changelog
 
+## soilKey 0.9.440
+
+The units, the readings text and the crosswalk of the Revised Legend
+(1988) take the readings Hugo decided, option (a) of R10 and R17 (FAO
+audit, 2026-11-24), with the defects D3 to D5 fixed as the text reads
+them, and Hugo’s decision of 2026-11-25 on carbonate recorded only in a
+form that is not soft: the last of the six PRs of the audit.
+
+- **Cambic Podzols: a thin or a discontinuous albic E** (p. 81; ch. VI
+  p. 56; D2, R10 (a)). The key says thin and discontinuous; ch. VI says
+  thin or discontinuous and gives the Haplic Podzols as the complement,
+  a continuous albic E thicker than 2 cm. soilKey reads “or”, the key’s
+  “and” a slip (`podzol_cambic_fao88()`, the evidence now
+  `albic_thin_or_discontinuous`; the note of PZb in
+  `inst/rules/fao1988/units/pz_podzols.yaml`). The near miss of
+  `make_fao_example("PZb")` (an albic E 3 cm thick and broken) keyed PZb
+  under this reading, so it is now an E 3 cm thick and continuous
+  (`boundary_topography` smooth), and misses again.
+- **The deleted Solodic Planosols and Placic Podzols in the crosswalk**
+  (pp. 123-124; D6, R17 (a)). Appendix 4 prints them as deleted, with no
+  target. Their rows stay deleted and now carry soilKey’s alternatives
+  in brackets, as the Plinthic Gleysols, the Plinthic Luvisols and the
+  units of the Xerosols do (`also`, `also_when` in
+  `inst/rules/fao1988/crosswalk.yaml`): Ws to the Solonetz where the B
+  is natric, else to the Planosols with a sodic phase; Pp to the Podzols
+  with a placic phase. The edition line of a 1974 result in Ws or Pp
+  shows them (“\[or SN Solonetz: a natric B; PL Planosols: a sodic
+  phase\]”), and a 1988 result that stops at SN, PL or PZ names the
+  deleted unit among its 1974 classes. The conditions have their
+  Portuguese (`inst/i18n/fao_crosswalk_pt.yaml`). Display only: the
+  crosswalk never classifies (Q8).
+- **The text of three readings and notes**, no code change: the comment
+  of `clay_increase_or_lamellae_fao88()` gives the 3 points of p. 80 (it
+  said 10; D3); the reading of the rubbed colours (Q24) says the Chromic
+  units read the rubbed colour, the moist colour standing in, as
+  pp. 88-89 print and the code reads them (it said the moist colour,
+  against the reading of the colours of the Rhodic, Xanthic and Chromic
+  units; D4; in both readings files); the crosswalk note and the reading
+  of Gc to GLk cite p. 79 for the calcic horizon of the key and ch. VI
+  p. 44 for the “calcic or gypsic” of the definition (D5).
+- **Carbonate recorded only in a form that is not soft** (74 p. 31;
+  p. 40; Hugo, 2026-11-25; amends R13 and R14 of 0.9.439). Secondary
+  carbonate recorded only as hard concretions or nodules, or as
+  crystals, is no soft powdery lime: absent, flagged
+  `secondary_carbonate_form_not_soft`, where R13 left it undecided
+  (`.f88_spl_v()`, both editions). A field observation recorded as
+  something else is not soft powdery lime. Secondary carbonate of 5 % or
+  more with no form at all stays undecided (R13). The form is carried in
+  a new horizon column, `carbonate_form_not_soft` (“hard”, “crystals”),
+  that only this test reads: `secondary_carbonates_form` is read by
+  USDA, CST, CPCS, HSCS and KIDPR tests that would change with it. The
+  ISIS reader sets it where every calcareous inclusion of a layer is
+  recorded hard (`concretionsMineralHardness` H) or as crystals
+  (`inclusionsType` T), flagged in the provenance; hardness B (both), or
+  no hardness and no crystal type, leaves it unset.
+  `inst/ATTRIBUTES.md`, `inst/schemas/horizon-attributes.yaml` and
+  `inst/schemas/pedon-schema.json` document the column.
+- The readings are recorded in `inst/rules/fao1988/readings.yaml` (R10
+  and R17; version 0.9.440) and the decision of 2026-11-25 in both
+  readings files. R18 (ISRIC’s phase-like subunits kept apart and
+  unscored) is the reading of the labels since 0.9.392 and needs no
+  code.
+- **ISIS reference profiles** (`inst/benchmarks/fao_isis.R`): R10, R17
+  and D3 to D5 change nothing (R10 moves no ISIS profile; the crosswalk
+  is not read). The decision of 2026-11-25 sets
+  `carbonate_form_not_soft` on 70 layers of 35 profiles (34 layers of 19
+  profiles with 5 % or more) and moves 4 labels, none in class or
+  agreement: ZW006 (VRk, 1988) and ID025 (VRe) lose VRk as an undecided
+  unit before VRe, and CU011 (1974) Bk before Be, so the three names
+  become firm; KE052 (1988, fall-through) loses CL from its candidates.
+  Firm units 1988 234 to 236 (agree 94 to 95), 1974 274 to 275 (107 to
+  108). At the end of the audit: 1988 groupings 241 of 706 (34.1 %; 227
+  in 0.9.434), units 158 (146), fall-throughs 217 (229), firm groupings
+  345 (193 agree) and firm units 236 (95); 1974 groupings 339 of 796
+  (42.6 %; 320), units 203 (174), fall-throughs 134 (135), firm
+  groupings 334 (184) and firm units 275 (108). Phases unchanged.
+- **Canonical fixtures, examples and near misses**: no name, grade or
+  phase changes in either edition (44 canonicals, 310 examples, 193 near
+  misses); every example keys to itself and every near miss elsewhere.
+- Tests: `test-v09440-fao88-units.R`. `test-v09385-fao88-units.R`: the
+  comment of the PZb near miss follows R10 (its assertions stand).
+  `test-v09439-fao-readers.R`: a hard calcareous inclusion of 5 % or
+  more is now absent soft powdery lime (was undecided under R13); an
+  inclusion with no hardness keeps R13.
+
 ## soilKey 0.9.439
 
 The readers shared by both FAO-Unesco legends and the ISIS reader take
