@@ -1294,13 +1294,18 @@ spodic_b_fao88 <- function(pedon, max_top_cm = 125) {
 # cmol(+)/kg clay; 4 weatherable minerals below 10 % (the 20-200 um column
 # for the 50-200 um fraction, flagged, Q16); 5 water-dispersible clay below 10
 # %; 6 silt/clay 0.2 or less; 7 no andic properties; 8 rock structure below 5
-# % by volume.
+# % by volume. v0.9.439 (FAO audit E6 and R12, option a, Hugo 2026-11-24):
+# with no KCl acidity, no Al and no ECEC recorded, the bases alone are a lower
+# bound of the ECEC: above 12 the ECEC route of item 3 fails, flagged
+# bases_lower_bound_of_ecec; at 12 or less it stays undecided.
 .f88_hz_ferralic_b <- function(x) {
   .f88_memo(x, "ferralic_b", function() {
     if (!x$n) return(list(units = list()))
     clay <- .f88_num(x, "clay_pct"); silt <- .fao_psd(x$h)$silt
     c1 <- .f88_texture_b(x)
-    cc <- .fao_cec_clay(x$h, "nh4oac"); ec <- .fao_ecec_clay(x$h, "1988")
+    # the ECEC: the bases alone as its lower bound where acidity and Al are
+    # not recorded and they exceed 12 (FAO audit E6 and R12, option a)
+    cc <- .fao_cec_clay(x$h, "nh4oac"); ec <- .fao_ecec_clay(x$h, "1988", bound = 12, bound_op = "<=")
     c3 <- .f88_or(.f88_cmp(cc$value, "<=", 16), .f88_cmp(ec$value, "<=", 12))
     wm <- .f88_num(x, "weatherable_minerals_pct")
     c4 <- .f88_cmp(wm, "<", 10)

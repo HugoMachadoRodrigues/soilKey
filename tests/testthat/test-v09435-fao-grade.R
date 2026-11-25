@@ -55,8 +55,10 @@ test_that("an undecided unit before the assigned one: grade C, level units (both
   expect_true(all(.lv435(r) == "units"))
   expect_setequal(paste0("units:", .cd435(r)), r$provisional_because)
   expect_match(grep("^The name was reached past", r$warnings, value = TRUE), "units:", fixed = TRUE)
-  r74 <- .f435(make_luvisol_canonical(), "1974")
-  expect_identical(r74$name, "Orthic Luvisols")
+  # 0.9.439 (R12 (a)): the bases decide the Ferric Luvisols of the Luvisol
+  # fixture, so the Podzol, whose Humic and Ferric units are undecided
+  r74 <- .f435(make_podzol_canonical(), "1974")
+  expect_identical(r74$name, "Orthic Podzols")
   expect_identical(r74$evidence_grade, "C")
   expect_true(length(r74$ambiguities) >= 1L)
   expect_true(all(.lv435(r74) == "units"))

@@ -721,3 +721,24 @@ readings:
     page: "pp. 30-31, 42, 75-89"
     version: "0.9.438"
     reading: "A key-level predicate of 1988 that reads a horizon decided by a USDA or WRB stand-in (the spodic B by spodic_horizon_usda() or spodic(), the fimic A by the WRB anthropic horizons) carries that stand-in in its evidence with lower_grade, as the 1974 predicates do since 0.9.435: only_horizons_fao88() (when it passes, any horizon a stand-in found absent; when it fails, the present horizons if each rests on one), upper_b_fao88() (the other B horizons read), the Anthrosols gate (the fimic A when it decides alone) and the Podzol units that read the spodic B. A name resting on them has grade C at most (FAO audit G1, option a, the gap of 1988) (Hugo, 2026-11-24)."
+  # v0.9.439: decisions of 2026-11-24 on the audit of the FAO legends (the readers of both editions and the ISIS reader)
+  - topic: "The exchangeable bases as a lower bound of the ECEC of the ferralic B"
+    edition: [1988]
+    page: "p. 31"
+    version: "0.9.439"
+    reading: "Item 3 of the ferralic B reads the ECEC as the NH4OAc bases plus the 1 M KCl acidity (else Al, else the ECEC recorded, flagged; Q12). Where none of these is recorded, the bases alone are a lower bound of the ECEC, as the EC 1:2.5 is a lower bound of the paste EC: above 12 cmol(+)/kg clay the ECEC route of item 3 fails, flagged bases_lower_bound_of_ecec (.fao_ecec_clay(bound =)); at 12 or less it stays undecided. The CEC route (NH4OAc, 16 or less) is read as before. The geric properties (p. 36), which read the same ECEC, are not read so (FAO audit E6 and R12, option a) (Hugo, 2026-11-24)."
+  - topic: "Secondary carbonate recorded without its form"
+    edition: [1974, 1988]
+    page: "74 p. 31; p. 40"
+    version: "0.9.439"
+    reading: "Amends the reading of 2026-11-09 (soft powdery lime): 5 % or more of secondary carbonate by volume (secondary_carbonates_pct) recorded with no form (secondary_carbonates_form) and no amount of coatings or soft nodules leaves the soft nodules undecided, flagged secondary_carbonate_without_form: the carbonate was seen, its form was not recorded. Below 5 %, or with a form recorded, it decides as before. The Legend of 1974 reads soft powdery lime with the reader of 1988 (Q23), so both editions read it so (.f88_spl_v(); FAO audit E5 and R13, option a) (Hugo, 2026-11-24)."
+  - topic: "Soft calcareous inclusions of ISIS as soft lime"
+    edition: [1974, 1988]
+    page: "74 p. 31; p. 40"
+    version: "0.9.439"
+    reading: "The ISIS reader reads as soft nodules of lime (carbonate_soft_pct, the column the soft powdery lime reads) a calcareous inclusion recorded soft (concretionsMineralHardness S) that is not a crystal (inclusionsType T), and a soft segregation (inclusionsType S) with no hardness recorded, at the middle of its FAO abundance class, flagged in the provenance; each of the two inclusions of a layer reads its own type and hardness. Every calcareous inclusion is still secondary carbonate (secondary_carbonates_pct). Up to 0.9.438 the soft inclusions were secondary carbonate with no form, so the soft powdery lime read them as absent. Other calcareous inclusions of 5 % or more, with no amount of soft nodules, are undecided under the reading of secondary carbonate without its form (FAO audit E4 and R14, option a) (Hugo, 2026-11-24)."
+  - topic: "Field phases from the ISIS text: the anthraquic phase"
+    edition: [1988]
+    page: "p. 67"
+    version: "0.9.439"
+    reading: "The ISIS reader reads from the profile's free text only the cerrado vegetation (a phase of 1974). The anthraquic phase stays absent unless the site records it: the land-use text that names rice would also name rainfed dry-seeded rice, which is no anthraquic phase (FAO audit B5, B6 and R16, option a) (Hugo, 2026-11-24)."

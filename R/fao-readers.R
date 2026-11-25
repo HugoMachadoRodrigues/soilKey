@@ -322,8 +322,17 @@
 #             1974, pp. 28, 47); else undecided.
 # Per kg of soil with `per = "soil"` (the ferralic properties of 1988: less
 # than 4 per kg soil, p. 35).
-.fao_cec_clay <- function(h, method = c("nh4oac", "nh4cl"), per = c("clay", "soil")) {
-  method <- match.arg(method); per <- match.arg(per)
+# `bound` (v0.9.439, FAO audit E6 and R12, option a, Hugo 2026-11-24): the
+# limit of a "less than" (`bound_op = "<"`) or "or less" ("<=") test that
+# reads the NH4Cl CEC. Where neither is recorded, the exchangeable bases are a
+# lower bound of it (the unbuffered extract retains at least the bases), read
+# only where they already reach the limit, so that the test fails; flagged
+# bases_lower_bound_of_nh4cl_cec (.fao_bases_bound()). Below the limit the
+# layer stays undecided. The value is then a bound: read it only against
+# that limit.
+.fao_cec_clay <- function(h, method = c("nh4oac", "nh4cl"), per = c("clay", "soil"),
+                          bound = NULL, bound_op = c("<", "<=")) {
+  method <- match.arg(method); per <- match.arg(per); bound_op <- match.arg(bound_op)
   cec <- .fao_col(h, "cec_cmol"); ecec <- .fao_col(h, "ecec_cmol")
   clay <- .fao_col(h, "clay_pct"); m <- .fao_cec_method(h)
   n <- nrow(h)
@@ -342,9 +351,31 @@
   if (per == "clay") {
     val <- ifelse(!is.na(clay) & clay > 0, val * 100 / clay, NA_real_)
   }
+  if (method == "nh4cl" && !is.null(bound)) {
+    b <- .fao_bases_bound(h, val, bound, bound_op, per)
+    val <- b$value
+    flag[b$used] <- "bases_lower_bound_of_nh4cl_cec"
+  }
   miss <- if (method == "nh4oac") c("cec_cmol", if (per == "clay") "clay_pct")
           else c("cec_cmol (cec_method nh4cl)", "ecec_cmol", if (per == "clay") "clay_pct")
   list(value = val, flags = flag, missing = miss)
+}
+
+# The exchangeable bases as a lower bound of a CEC or ECEC not recorded
+# (v0.9.439, FAO audit E6 and R12, option a, Hugo 2026-11-24), as the EC 1:2.5
+# is a lower bound of the paste EC: where `val` is NA and the four bases and
+# the clay are recorded, the bases (per kg clay, or per kg soil) are taken
+# only when they already fail the test `value bound_op bound` ("<" fails at
+# the limit, "<=" above it). Returns the value and the layers it filled.
+.fao_bases_bound <- function(h, val, bound, bound_op = c("<", "<="), per = c("clay", "soil")) {
+  bound_op <- match.arg(bound_op); per <- match.arg(per)
+  bases <- .fao_bases(h); clay <- .fao_col(h, "clay_pct")
+  lb <- if (per == "clay") ifelse(!is.na(clay) & clay > 0, bases * 100 / clay, NA_real_) else bases
+  lb <- round(lb, 6)
+  fails <- if (bound_op == "<") lb >= bound else lb > bound
+  used <- is.na(val) & !is.na(lb) & fails %in% TRUE
+  val[used] <- lb[used]
+  list(value = val, used = used)
 }
 
 # Effective CEC per kg of clay by edition:
@@ -355,8 +386,12 @@
 #        al_cmol); else ecec_cmol as recorded, flagged.
 # Appendix 5 of 1988 (p. 130) sums bases and Al; the definition at the point
 # of use governs (Q12).
-.fao_ecec_clay <- function(h, edition = "1988") {
-  edition <- .fao_edition(edition)
+# `bound`, `bound_op` (v0.9.439, FAO audit E6 and R12, option a): with none
+# of these, the bases alone as a lower bound of the ECEC, read only where they
+# already fail the test, flagged bases_lower_bound_of_ecec
+# (.fao_bases_bound()).
+.fao_ecec_clay <- function(h, edition = "1988", bound = NULL, bound_op = c("<", "<=")) {
+  edition <- .fao_edition(edition); bound_op <- match.arg(bound_op)
   bases <- .fao_bases(h)
   acid <- .fao_col(h, "exch_acidity_kcl_cmol")
   alk <- .fao_col(h, "al_kcl_cmol"); al <- .fao_col(h, "al_cmol")
@@ -380,6 +415,11 @@
   rec <- !own & !is.na(ecec)
   val[rec] <- ecec[rec]; flag[rec] <- "ecec_as_recorded"
   val <- ifelse(!is.na(clay) & clay > 0, val * 100 / clay, NA_real_)
+  if (!is.null(bound)) {
+    b <- .fao_bases_bound(h, val, bound, bound_op)
+    val <- b$value
+    flag[b$used] <- "bases_lower_bound_of_ecec"
+  }
   list(value = val, flags = flag,
        missing = c("ca_cmol", "mg_cmol", "k_cmol", "na_cmol",
                    if (edition == "1988") "exch_acidity_kcl_cmol" else "al_kcl_cmol",

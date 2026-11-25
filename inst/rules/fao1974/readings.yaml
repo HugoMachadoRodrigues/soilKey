@@ -459,3 +459,24 @@ readings:
     page: "74 p. 6; p. 68"
     version: "0.9.437"
     reading: "The petroferric layer is indurated and holds little or no organic matter, which sets it apart from a thin iron pan and an indurated spodic B; the text gives no number. Read by structure: a layer recorded weaker than strongly cemented (none, weakly, moderately), a layer of the spodic B, a thin iron or placic pan and a layer designated with h are not petroferric, whatever the USDA predicate, the pan kind, the designation or the WRB stand-in show. No organic carbon limit is used. The 1988 text (p. 68) says the same, so the shared reader of both editions reads it so (FAO audit B3 and R5, option a) (Hugo, 2026-11-24)."
+  # v0.9.439: decisions of 2026-11-24 on the audit of the FAO legends (the readers of both editions and the ISIS reader)
+  - topic: "The exchangeable bases as a lower bound of the NH4Cl CEC"
+    edition: [1974]
+    page: "74 pp. 28, 47"
+    version: "0.9.439"
+    reading: "The CEC from NH4Cl of the ferralic and ferric properties (below 24 me per 100 g clay) and of the Acric Ferralsols (1.5 me or less) is read from cec_cmol with cec_method nh4cl, else from the ECEC recorded (Q12). Where neither is recorded, the exchangeable bases (Ca + Mg + K + Na) are a lower bound of it, as the EC 1:2.5 is a lower bound of the paste EC: the bound is read only where it already settles the test, the bases per kg clay at the limit or above for 'below 24', above the limit for '1.5 or less', so the test fails, flagged bases_lower_bound_of_nh4cl_cec (.f74_nh4cl(), .fao_cec_clay(bound =)). Below the limit the layer stays undecided. Up to 0.9.438 these tests were undecided wherever Al or the acidity was not measured, even when the bases alone reached the limit. The NH4Cl retention of the oxic B (p. 27) is not read so (FAO audit E6 and R12, option a) (Hugo, 2026-11-24)."
+  - topic: "Secondary carbonate recorded without its form"
+    edition: [1974, 1988]
+    page: "74 p. 31; p. 40"
+    version: "0.9.439"
+    reading: "Amends the reading of 2026-11-09 (soft powdery lime): 5 % or more of secondary carbonate by volume (secondary_carbonates_pct) recorded with no form (secondary_carbonates_form) and no amount of coatings or soft nodules leaves the soft nodules undecided, flagged secondary_carbonate_without_form: the carbonate was seen, its form was not recorded. Below 5 %, or with a form recorded, it decides as before. The Legend of 1974 reads soft powdery lime with the reader of 1988 (Q23), so both editions read it so (.f88_spl_v(); FAO audit E5 and R13, option a) (Hugo, 2026-11-24)."
+  - topic: "Soft calcareous inclusions of ISIS as soft lime"
+    edition: [1974, 1988]
+    page: "74 p. 31; p. 40"
+    version: "0.9.439"
+    reading: "The ISIS reader reads as soft nodules of lime (carbonate_soft_pct, the column the soft powdery lime reads) a calcareous inclusion recorded soft (concretionsMineralHardness S) that is not a crystal (inclusionsType T), and a soft segregation (inclusionsType S) with no hardness recorded, at the middle of its FAO abundance class, flagged in the provenance; each of the two inclusions of a layer reads its own type and hardness. Every calcareous inclusion is still secondary carbonate (secondary_carbonates_pct). Up to 0.9.438 the soft inclusions were secondary carbonate with no form, so the soft powdery lime read them as absent. Other calcareous inclusions of 5 % or more, with no amount of soft nodules, are undecided under the reading of secondary carbonate without its form (FAO audit E4 and R14, option a) (Hugo, 2026-11-24)."
+  - topic: "Field phases from the ISIS text: the cerrado phase"
+    edition: [1974]
+    page: "74 pp. 5-7"
+    version: "0.9.439"
+    reading: "The ISIS reader sets the site's vegetation to cerrado where the land-use remarks (landuseRemarks) or the vegetation class of the profile name cerrado; the cerrado phase reads that field as before (vegetation, else land_cover). Nothing else is read from that text. The stony phase stays absent unless rudic_recorded is set: the ISIS stoniness classes do not separate the profiles labelled stony from the others (FAO audit B5, B6 and R16, option a) (Hugo, 2026-11-24)."
