@@ -210,7 +210,11 @@ test_that("an undecided unit before the assigned one makes the unit provisional"
   expect_true("units:FLt" %in% r$provisional_because)
   expect_false(any(grepl("^major_groups:", r$provisional_because)))
   expect_true("s_total_pct" %in% r$trace$units$FLt$missing)
-  expect_true(any(grepl("^Provisional", r$warnings)))
+  # v0.9.435: the warning of the USDA key, the unit in $ambiguities, grade C
+  expect_true(any(grepl("^The name was reached past .*units:FLt", r$warnings)))
+  expect_true(any(vapply(r$ambiguities, function(a) identical(a$rsg_code, "FLt") &&
+                                                    identical(a$level, "units"), NA)))
+  expect_identical(r$evidence_grade, "C")
   # drainage not recorded: the Folic and Fibric Histosols (a fibric peat) undecided
   p <- make_fao_example("HSf")
   p$site$drainage_class <- NA

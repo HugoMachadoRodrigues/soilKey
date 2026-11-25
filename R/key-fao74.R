@@ -52,9 +52,13 @@
 # --- the result of a key-level predicate ---------------------------------------------
 
 # As .f88_key_result(), for the 1974 key: `layers` in the context's depth
-# order, mapped back to the rows of pedon$horizons.
+# order, mapped back to the rows of pedon$horizons. `stand_in` names the
+# USDA or WRB readers that decided a 1974 horizon the predicate read, and
+# lower_grade follows it (v0.9.435, G1 of the FAO audit: up to 0.9.434 both
+# were always empty, so a gate a stand-in decided was reported firm).
 .f74_key_result <- function(x, id, value, page, layers = integer(0), missing = character(0),
-                            flags = character(0), notes = character(0), evidence = list()) {
+                            flags = character(0), notes = character(0), evidence = list(),
+                            stand_in = character(0)) {
   value <- if (length(value) == 1L) as.logical(value) else NA
   flags <- unique(as.character(flags[!is.na(flags) & nzchar(flags)]))
   if (x$n && all(is.na(x$top) | is.na(x$bot))) {
@@ -62,15 +66,39 @@
     missing <- c("top_cm", "bottom_cm", missing)
   }
   layers <- sort(unique(as.integer(layers[!is.na(layers)])))
+  stand_in <- unique(as.character(unlist(stand_in)))
+  stand_in <- stand_in[!is.na(stand_in) & nzchar(stand_in)]
   DiagnosticResult$new(
     name = paste0(id, "_fao74"),
     passed = value,
     layers = x$idx[layers],
     evidence = c(evidence, list(edition = "1974", page = page, flags = flags,
-                                stand_in = character(0), lower_grade = FALSE)),
+                                stand_in = stand_in, lower_grade = length(stand_in) > 0L)),
     missing = if (is.na(value)) unique(as.character(missing)) else character(0),
     reference = sprintf("FAO-Unesco (1974), Soil Map of the World 1:5 000 000, Vol. I Legend, key, p. %s", page),
     notes = if (length(c(notes, flags))) paste(unique(c(notes, flags)), collapse = "; ") else NA_character_)
+}
+
+# The stand-ins recorded in the evidence of DiagnosticResults (NULL entries
+# skipped): what a key-level predicate hands to .f74_key_result(stand_in =)
+# for the results that decided its answer (v0.9.435).
+.f74_si <- function(...) {
+  rs <- Filter(Negate(is.null), list(...))
+  out <- unlist(lapply(rs, function(r) {
+    ev <- r$evidence
+    if (is.list(ev)) as.character(ev$stand_in %||% character(0)) else character(0)
+  }), use.names = FALSE)
+  unique(out[!is.na(out) & nzchar(out)])
+}
+
+# The same for results any one of which decides the answer alone (an OR that
+# passed, an AND or a "none of" that failed): their stand-ins count only when
+# every one of them rests on a stand-in.
+.f74_si_any <- function(...) {
+  rs <- Filter(Negate(is.null), list(...))
+  each <- lapply(rs, .f74_si)
+  if (!length(each) || any(lengths(each) == 0L)) return(character(0))
+  unique(unlist(each, use.names = FALSE))
 }
 
 # The layers of a predicate's result that are rock or organic (H or O):
@@ -224,7 +252,13 @@ only_horizons_fao74 <- function(pedon, allowed = character(0)) {
   undecided <- names(st)[is.na(st)]
   value <- if (length(present)) FALSE else if (length(undecided)) NA else TRUE
   lay <- unlist(lapply(res[present], function(r) .f88_ctx_rows(x, r)))
-  .f74_key_result(x, "only_horizons", value, pg, layers = lay,
+  # v0.9.435: a horizon a USDA or WRB stand-in decided keeps its stand-in in
+  # the gate's evidence (up to 0.9.434 it was dropped here, A1 of the FAO
+  # audit): when the gate passes, any horizon found absent by a stand-in;
+  # when it fails, the present horizons, if each of them rests on one
+  si <- if (length(present)) do.call(.f74_si_any, unname(res[present]))
+        else do.call(.f74_si, unname(res))
+  .f74_key_result(x, "only_horizons", value, pg, layers = lay, stand_in = si,
                   missing = unique(unlist(lapply(res[undecided], function(r) r$missing))),
                   notes = c(if (length(present)) sprintf("other diagnostic horizons present: %s", paste(present, collapse = ", ")),
                             if (length(undecided)) sprintf("undecided: %s", paste(undecided, collapse = ", "))),
@@ -371,12 +405,12 @@ umbric_thickness_fao74 <- function(pedon, max = NULL, gt = NULL) {
   L <- .f88_ctx_rows(x, um)
   if (isFALSE(um$passed) || !length(L))
     return(.f74_key_result(x, "umbric_thickness", if (is.na(um$passed)) NA else FALSE, pg,
-                           missing = um$missing, notes = "no umbric A"))
+                           missing = um$missing, notes = "no umbric A", stand_in = .f74_si(um)))
   th <- max(x$bot[L]) - min(x$top[L])
   ok <- if (!is.null(max)) th <= max else th > gt
   value <- .fao_and(um$passed, ok)
   .f74_key_result(x, "umbric_thickness", value, pg, layers = L, missing = um$missing,
-                  flags = um$evidence$flags,
+                  flags = um$evidence$flags, stand_in = if (!isFALSE(ok)) .f74_si(um),
                   evidence = list(thickness_cm = th, max = max, gt = gt))
 }
 
@@ -397,7 +431,8 @@ rendzinas_gate_fao74 <- function(pedon, cce_gt = 40) {
   mo <- mollic_a_fao74(pedon)
   a <- .f88_a_run(x)
   if (isFALSE(mo$passed) || is.null(a))
-    return(.f74_key_result(x, "rendzinas_gate", FALSE, pg, notes = "no mollic A"))
+    return(.f74_key_result(x, "rendzinas_gate", FALSE, pg, notes = "no mollic A",
+                           stand_in = if (isFALSE(mo$passed)) .f74_si(mo)))
   k <- max(a$layers) + 1L
   zone <- c(a$layers, if (k <= x$n) k)
   cc <- .f88_caco3(x)
@@ -415,6 +450,7 @@ rendzinas_gate_fao74 <- function(pedon, cce_gt = 40) {
   .f74_key_result(x, "rendzinas_gate", value, pg, layers = zone,
                   missing = c(if (is.na(calc)) "caco3_pct", if (is.na(mo$passed)) mo$missing),
                   flags = c(.f88_flags(cc$flags, zone), rock_flag, mo$evidence$flags),
+                  stand_in = if (!isFALSE(calc)) .f74_si(mo),
                   evidence = list(mollic_a = mo$passed, calcareous_gt = calc, cce_gt = cce_gt))
 }
 
@@ -610,7 +646,8 @@ mollic_chroma_fao74 <- function(pedon, max = NULL, gt = NULL, depth = 15) {
   mo <- mollic_a_fao74(pedon)
   a <- .f88_a_run(x)
   if (isFALSE(mo$passed) || is.null(a))
-    return(.f74_key_result(x, "mollic_chroma", FALSE, pg, notes = "no mollic A"))
+    return(.f74_key_result(x, "mollic_chroma", FALSE, pg, notes = "no mollic A",
+                           stand_in = if (isFALSE(mo$passed)) .f74_si(mo)))
   t0 <- x$top[a$first]
   cm <- .f88_colours(x)$cm
   ok <- if (!is.null(max)) .f88_cmp(cm, "<=", max) else .f88_cmp(cm, ">", gt)
@@ -623,6 +660,7 @@ mollic_chroma_fao74 <- function(pedon, max = NULL, gt = NULL, depth = 15) {
   }
   value <- .fao_and(mo$passed, ch)
   .f74_key_result(x, "mollic_chroma", value, pg, layers = which(sel),
+                  stand_in = if (!isFALSE(ch)) .f74_si(mo),
                   missing = c(if (is.na(ch)) "munsell_chroma_moist", if (is.na(mo$passed)) mo$missing),
                   flags = mo$evidence$flags,
                   evidence = list(mollic_a = mo$passed, chroma = ch, max = max, gt = gt, depth = depth))
@@ -669,6 +707,8 @@ lime_by_texture_fao74 <- function(pedon, kinds = c("calcic", "gypsic", "soft_pow
   .f74_key_result(x, "lime_by_texture", b$value, pg, layers = lay %||% integer(0),
                   missing = unique(c(b$missing, unlist(lapply(rs, function(r) if (is.na(r$passed)) r$missing)))),
                   flags = unique(unlist(lapply(rs, function(r) if (!isFALSE(r$passed)) r$evidence$flags))),
+                  stand_in = if (isTRUE(b$value)) do.call(.f74_si_any, Filter(function(r) isTRUE(r$passed), rs))
+                             else do.call(.f74_si, rs),
                   evidence = list(kinds = kinds, depth_cm = b$depth, texture_class = b$class))
 }
 
@@ -706,6 +746,7 @@ aridic_lime_fao74 <- function(pedon, kind = c("gypsic", "calcic")) {
                   layers = if (isTRUE(b$value)) .f88_ctx_rows(x, me) else integer(0),
                   missing = unique(c(b$missing, if (is.na(b$value)) c(k$gy$missing, k$ca$missing))),
                   flags = if (!isFALSE(b$value)) me$evidence$flags,
+                  stand_in = if (isFALSE(me$passed)) .f74_si(me) else .f74_si(k$gy, k$ca),
                   evidence = list(kind = kind, depth_cm = b$depth, texture_class = b$class,
                                   gypsic = k$gy$passed, calcic = k$ca$passed))
 }
@@ -736,6 +777,7 @@ podzoluvisols_gate_fao74 <- function(pedon) {
   .f74_key_result(x, "podzoluvisols_gate", value, pg, layers = L,
                   missing = unique(c(ar$missing, tg$missing)),
                   flags = c(tg$evidence$flags, if (nod) "nodule_exteriors_taken_as_met"),
+                  stand_in = if (isFALSE(ar$passed)) .f74_si(ar) else .f74_si(ar, tg),
                   evidence = list(argillic_b = ar$passed, tonguing = tg$passed, nodules_2_to_30cm = nod))
 }
 
@@ -755,7 +797,7 @@ nitosols_gate_fao74 <- function(pedon) {
   L <- .f88_ctx_rows(x, ar)
   if (isFALSE(ar$passed) || !length(L))
     return(.f74_key_result(x, "nitosols_gate", if (is.na(ar$passed)) NA else FALSE, pg,
-                           missing = ar$missing, notes = "no argillic B"))
+                           missing = ar$missing, notes = "no argillic B", stand_in = .f74_si(ar)))
   clay <- .f88_num(x, "clay_pct")
   w <- !x$rock & !is.na(x$top) & x$top < 150 & seq_len(x$n) >= min(L)
   cw <- clay[w]
@@ -771,6 +813,7 @@ nitosols_gate_fao74 <- function(pedon) {
   .f74_key_result(x, "nitosols_gate", value, pg, layers = L,
                   missing = unique(c(ar$missing, if (is.na(dec)) c("clay_pct", "bottom_cm"))),
                   flags = c(ar$evidence$flags, if (open) "description_ends_above_150cm"),
+                  stand_in = if (!isFALSE(dec)) .f74_si(ar),
                   evidence = list(argillic_b = ar$passed, clay_no_decrease_20pct = dec))
 }
 
@@ -790,6 +833,8 @@ thionic_fao74 <- function(pedon, lt_cm = 125) {
   .f74_key_result(x, "thionic", value, pg, layers = lay %||% integer(0),
                   missing = unique(c(if (is.na(su$passed)) su$missing, if (is.na(sd$passed)) sd$missing)),
                   flags = c(su$evidence$flags, sd$evidence$flags),
+                  stand_in = if (isTRUE(value)) do.call(.f74_si_any, Filter(function(r) isTRUE(r$passed), list(su, sd)))
+                             else .f74_si(su, sd),
                   evidence = list(sulfuric = su$passed, sulfidic = sd$passed, lt_cm = lt_cm))
 }
 
@@ -1054,6 +1099,9 @@ leptic_podzol_fao74 <- function(pedon, albic_max_cm = 2) {
   rules <- rules %||% load_rules("fao1974")
   res <- classify_hierarchical("fao1974", pedon, rules = rules,
                                on_missing = on_missing, gapfill = gapfill)
+  # v0.9.435: undecided tests at both levels in $ambiguities, and the grade
+  # of a name reached past them or resting on a stand-in (R/key-fao.R)
+  res <- .fao_grade(res, rules, "1974")
   lv <- res$levels
   tr <- res$trace$major_groups %||% list()
   if (is.data.frame(lv) && nrow(lv)) {

@@ -1,3 +1,52 @@
+# soilKey 0.9.435
+
+The evidence grade and the ambiguities of the FAO-Unesco legends (1974 and
+1988) follow the rule of the USDA key (0.9.415): Hugo's decision G1 (a) of
+the audit of the FAO legends (2026-11-24), the first of its six PRs. No name
+changes.
+
+* **Undecided tests are recorded at both levels.** Every major soil group
+  (1974) or grouping (1988) and every soil unit tested before the one
+  assigned whose result is NA is now in `$ambiguities`, with its `level`
+  (`"major_groups"` or `"units"`). Up to 0.9.434 only the groupings were
+  read, and only those with a missing attribute; an undecided unit reached
+  `provisional_because` but never `$ambiguities`. A soil that no gate takes
+  lists its candidates the same way.
+* **A name reached past an undecided test has grade C.** It holds only if
+  the undecided tests fail, so it is inferred by elimination: the evidence
+  grade falls from A or B to C and a warning names the tests (it replaces
+  the line "Provisional: n class(es) ..." of the FAO results). Up to 0.9.434
+  the grade came from the provenance of the data alone, so every FAO result
+  was A.
+* **A name resting on a stand-in has grade C.** When a test the name rests
+  on was decided by a USDA or WRB reader standing in for an FAO criterion
+  the data leave undecided (`evidence$stand_in`, `evidence$lower_grade`),
+  the grade is at most C and a warning names the reader, as the readings of
+  both legends already said ("a lower grade"). A test the name rests on is a
+  test of the assigned group or unit that decided it: each test of an
+  `all_of` or `none_of` block, and of the alternatives of an `any_of` block
+  only when every passing one rests on a stand-in.
+* **The 1974 key keeps the stand-ins of the horizons it reads** (A1 of the
+  audit). The key-level predicates wrote an empty `stand_in` whatever the
+  horizon results held, so a gate decided through a stand-in was reported
+  firm. `only_horizons_fao74()` ("no diagnostic horizons other than"),
+  `mollic_chroma_fao74()`, `rendzinas_gate_fao74()`,
+  `umbric_thickness_fao74()`, `nitosols_gate_fao74()`,
+  `podzoluvisols_gate_fao74()`, `lime_by_texture_fao74()`,
+  `aridic_lime_fao74()` and `thionic_fao74()` now carry the stand-ins of the
+  results that decided them (`.f74_key_result(stand_in = )`).
+* **ISIS reference profiles** (`inst/benchmarks/fao_isis.R`): every grouping
+  and unit is identical to 0.9.434 in both editions. Of the 661 profiles
+  named in 1974, 414 now have grade C (361 reached past an undecided test,
+  53 more on a stand-in alone) and 247 keep A; of the 477 named in 1988, 264
+  have grade C and 213 keep A. The labels whose grouping rests on a stand-in
+  go from 129 to 174 in 1974 (5 in 1988). Fall-throughs keep their grade.
+* **Canonical fixtures**: names unchanged; 31 of the 40 named in 1974 and 25
+  of the 41 named in 1988 now carry grade C.
+* Tests: `test-v09435-fao-grade.R`; `test-v09384-fao88-groupings.R` and
+  `test-v09385-fao88-units.R` now expect the new warning and grade C where
+  they expected the "Provisional" line.
+
 # soilKey 0.9.434
 
 The USDA family of organic soils (Histosols and Histels) follows the KST

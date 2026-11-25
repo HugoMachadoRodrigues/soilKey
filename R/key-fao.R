@@ -856,10 +856,112 @@ classify_fao1974 <- function(pedon, rules = NULL,
 
 .FAO88_NOT_CLASSIFIED <- "[Not classified in the FAO-Unesco Revised Legend (1988)]"
 
+
+# --- the evidence grade and the ambiguities of both editions ------------------------------
+#
+# v0.9.435 (Hugo's decision G1 (a) of the FAO audit, 2026-11-24): the rule
+# of the USDA key since 0.9.415. A grouping (group) or unit tested before the
+# one assigned whose result is NA joins $ambiguities with its level
+# ("major_groups" or "units"); a name reached past such a test holds only if
+# it fails, so it is inferred by elimination and its evidence grade falls
+# from A or B to C. A name whose tests rest on a USDA or WRB reader standing
+# in for an FAO criterion the data leave undecided (a result whose evidence
+# names a stand_in, or carries lower_grade) has grade C at most too, as the
+# readings of both legends say a stand-in is a lower grade. Up to 0.9.434
+# the grade came from the provenance of the data alone (every FAO result
+# was A) and only the undecided groupings with a missing attribute reached
+# $ambiguities. No name changes.
+
+.FAO_COMBINATORS <- c("all_of", "any_of", "none_of")
+
+# The stand-ins a passed (or, nested under none_of, a failed) block of tests
+# rests on. Of the results of a block `combinator` whose outcome is `passed`,
+# those that decided it: every one of an all_of that passed or of a none_of
+# that passed (each is needed, so a stand-in behind any of them counts), and
+# of an any_of that passed (or an all_of / none_of that failed) the ones that
+# alone would decide it, which count only when every one of them rests on a
+# stand-in. Nested blocks are followed. Each stand-in as "<fn>()"; a result
+# marked lower_grade without a name as "<test>() (lower grade)".
+.fao_rests_on <- function(results, combinator, passed) {
+  if (!is.list(results) || length(passed) != 1L || is.na(passed)) return(character(0))
+  st <- vapply(results, function(r) {
+    p <- if (is.list(r)) r$passed
+    if (length(p) == 1L) as.logical(p) else NA
+  }, NA)
+  every <- (combinator %in% c("all_of", "none_of")) == passed
+  keep <- if (every) rep(TRUE, length(st))
+          else if (combinator == "any_of") st %in% TRUE
+          else if (combinator == "all_of") st %in% FALSE
+          else st %in% TRUE
+  each <- lapply(results[keep], function(r) {
+    if (!is.list(r)) return(character(0))
+    tn <- as.character(r$test_name %||% "")[1L]
+    if (tn %in% .FAO_COMBINATORS) return(.fao_rests_on(r$evidence, tn, r$passed))
+    ev <- r$evidence
+    if (!is.list(ev)) return(character(0))
+    si <- as.character(unlist(ev$stand_in %||% character(0)))
+    si <- si[!is.na(si) & nzchar(si)]
+    if (length(si)) paste0(si, "()")
+    else if (isTRUE(ev$lower_grade)) sprintf("%s() (lower grade)", tn)
+    else character(0)
+  })
+  if (!every && any(lengths(each) == 0L)) return(character(0))
+  unique(unlist(each, use.names = FALSE)) %||% character(0)
+}
+
+# The ambiguities, grade and warnings of an FAO result (either edition), from
+# its trace: see the note above. `rules` the edition's rule set.
+.fao_grade <- function(res, rules, edition) {
+  lv <- res$levels
+  named <- is.data.frame(lv) && nrow(lv) > 0L
+  g <- if (named) lv$code[lv$level == "major_groups"][1L] else NA_character_
+  u <- if (named) lv$code[lv$level == "units"][1L] else NA_character_
+  traces <- list(major_groups = res$trace$major_groups, units = res$trace$units)
+  assigned <- list(major_groups = if (!is.na(g)) g, units = if (!is.na(u)) u)
+  und <- .usda_undecided_by_level(traces, assigned)
+  res$ambiguities <- und$ambiguities
+  if (is.na(g)) return(res)
+  # the stand-ins the assigned grouping and unit rest on
+  rests <- function(level, code, taxa) {
+    e <- traces[[level]][[code]]
+    if (!is.list(e) || !isTRUE(e$passed)) return(character(0))
+    t <- Find(function(z) identical(as.character(z$code), code), taxa %||% list())
+    comb <- intersect(names(t$tests %||% list()), .FAO_COMBINATORS)[1L]
+    if (is.na(comb)) return(character(0))
+    .fao_rests_on(e$evidence, comb, TRUE)
+  }
+  si <- unique(c(rests("major_groups", g, rules$major_groups),
+                 if (!is.na(u)) rests("units", u, rules$units[[g]])))
+  grade <- res$evidence_grade
+  warnings <- res$warnings[!grepl("^Provisional: [0-9]+ class", res$warnings)]
+  if (length(und$before_assigned)) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "The name was reached past %d undecided test(s) (%s): it holds only if ",
+      "they fail, so it is inferred by elimination and the evidence grade ",
+      "is at most C. See $ambiguities and $missing_data."),
+      length(und$before_assigned), paste(und$before_assigned, collapse = ", ")))
+  }
+  if (length(si)) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "The name rests on a reader of another system standing in for a criterion ",
+      "the %s legend leaves undecided on these data (%s): a stand-in is a lower ",
+      "grade, so the evidence grade is at most C. See $trace."),
+      edition, paste(si, collapse = ", ")))
+  }
+  res$evidence_grade <- grade
+  res$warnings <- warnings
+  res
+}
+
 .classify_fao1988_impl <- function(pedon, rules = NULL, on_missing = "warn", gapfill = FALSE) {
   rules <- rules %||% load_rules("fao1988")
   res <- classify_hierarchical("fao1988", pedon, rules = rules,
                                on_missing = on_missing, gapfill = gapfill)
+  # v0.9.435: undecided tests at both levels in $ambiguities, and the grade
+  # of a name reached past them or resting on a stand-in (.fao_grade())
+  res <- .fao_grade(res, rules, "1988")
   lv <- res$levels
   tr <- res$trace$major_groups %||% list()
   if (is.data.frame(lv) && nrow(lv)) {
