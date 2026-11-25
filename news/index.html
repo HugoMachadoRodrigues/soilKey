@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.434</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.435</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,25 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.435" id="soilkey-09435">soilKey 0.9.435<a class="anchor" aria-label="anchor" href="#soilkey-09435"></a></h2>
+<p>The evidence grade and the ambiguities of the FAO-Unesco legends (1974 and 1988) follow the rule of the USDA key (0.9.415): Hugo’s decision G1 (a) of the audit of the FAO legends (2026-11-24), the first of its six PRs. No name changes.</p>
+<ul><li>
+<strong>Undecided tests are recorded at both levels.</strong> Every major soil group
+<ol start="1974" style="list-style-type: decimal"><li>or grouping (1988) and every soil unit tested before the one assigned whose result is NA is now in <code>$ambiguities</code>, with its <code>level</code> (<code>"major_groups"</code> or <code>"units"</code>). Up to 0.9.434 only the groupings were read, and only those with a missing attribute; an undecided unit reached <code>provisional_because</code> but never <code>$ambiguities</code>. A soil that no gate takes lists its candidates the same way.</li>
+</ol></li>
+<li>
+<strong>A name reached past an undecided test has grade C.</strong> It holds only if the undecided tests fail, so it is inferred by elimination: the evidence grade falls from A or B to C and a warning names the tests (it replaces the line “Provisional: n class(es) …” of the FAO results). Up to 0.9.434 the grade came from the provenance of the data alone, so every FAO result was A.</li>
+<li>
+<strong>A name resting on a stand-in has grade C.</strong> When a test the name rests on was decided by a USDA or WRB reader standing in for an FAO criterion the data leave undecided (<code>evidence$stand_in</code>, <code>evidence$lower_grade</code>), the grade is at most C and a warning names the reader, as the readings of both legends already said (“a lower grade”). A test the name rests on is a test of the assigned group or unit that decided it: each test of an <code>all_of</code> or <code>none_of</code> block, and of the alternatives of an <code>any_of</code> block only when every passing one rests on a stand-in.</li>
+<li>
+<strong>The 1974 key keeps the stand-ins of the horizons it reads</strong> (A1 of the audit). The key-level predicates wrote an empty <code>stand_in</code> whatever the horizon results held, so a gate decided through a stand-in was reported firm. <code>only_horizons_fao74()</code> (“no diagnostic horizons other than”), <code>mollic_chroma_fao74()</code>, <code>rendzinas_gate_fao74()</code>, <code>umbric_thickness_fao74()</code>, <code>nitosols_gate_fao74()</code>, <code>podzoluvisols_gate_fao74()</code>, <code>lime_by_texture_fao74()</code>, <code>aridic_lime_fao74()</code> and <code>thionic_fao74()</code> now carry the stand-ins of the results that decided them (<code>.f74_key_result(stand_in = )</code>).</li>
+<li>
+<strong>ISIS reference profiles</strong> (<code>inst/benchmarks/fao_isis.R</code>): every grouping and unit is identical to 0.9.434 in both editions. Of the 661 profiles named in 1974, 414 now have grade C (361 reached past an undecided test, 53 more on a stand-in alone) and 247 keep A; of the 477 named in 1988, 264 have grade C and 213 keep A. The labels whose grouping rests on a stand-in go from 129 to 174 in 1974 (5 in 1988). Fall-throughs keep their grade.</li>
+<li>
+<strong>Canonical fixtures</strong>: names unchanged; 31 of the 40 named in 1974 and 25 of the 41 named in 1988 now carry grade C.</li>
+<li>Tests: <code>test-v09435-fao-grade.R</code>; <code>test-v09384-fao88-groupings.R</code> and <code>test-v09385-fao88-units.R</code> now expect the new warning and grade C where they expected the “Provisional” line.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.434" id="soilkey-09434">soilKey 0.9.434<a class="anchor" aria-label="anchor" href="#soilkey-09434"></a></h2>
 <p>The USDA family of organic soils (Histosols and Histels) follows the KST 13th edition (ch. 17, pp. 370-372): particle-size classes of the Terric subgroups, mineralogy classes (ferrihumic; coprogenous, diatomaceous and marly; the key of mineral soils for the Terric subgroups), reaction classes (kalkic, euic, dysic) and the soil depth classes of Histosols (micro, shallow), named in the order of p. 370 (USDA audit, wave 5, fourth and last family PR; readings F16 to F18 of the author, 2026-11-23). New file <code>R/familia-usda-organic.R</code>; the families of mineral soils do not change.</p>
