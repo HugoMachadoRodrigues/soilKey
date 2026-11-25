@@ -1,3 +1,91 @@
+# soilKey 0.9.438
+
+The diagnostics and key of the Revised Legend (1988) follow the text where
+the audit of the FAO legends found them off (C4, C5) and take the readings
+Hugo decided, option (a) of R6 to R9, R11 and R15 (FAO audit, 2026-11-24),
+the fourth of its six PRs; the 1988 key-level predicates carry their
+stand-ins (the G1 gap of 1988).
+
+* **Depth windows over overlapping layers** (pp. 25-42, 75-89; C4). The
+  tests read layer by layer over a window ("throughout", "in some part",
+  "within X cm") read a window the union of its layers fills, overlaps
+  counted once (`.fao_window()$filled`, `.fao_in_window()`,
+  `.fao_within()`, and the "within X cm" of
+  `continuous_hard_rock_fao88()`). Only a thickness-weighted mean over
+  overlapping layers stays undecided, as the reading of 2026-11-09 says
+  (`.fao_weighted()`). Up to 0.9.437 every such test was undecided when
+  layers overlapped, even when every layer passed (NA004: 100 % base
+  saturation in every layer, Phaeozems undecided). The readers are shared,
+  so the Legend of 1974 reads the same (see the benchmark below).
+* **Sandy loam or finer** (pp. 28-31, 78, 80; C5, R15 (a)). Laboratory
+  clay and silt first; where they leave a layer undecided, the field
+  texture class (`texture_class_usda`), as soilKey's USDA key reads it,
+  flagged `texture_from_field_class` (`.fao_sandy_loam_or_finer()`,
+  `.fao_coarser_than_sandy_loam()`; the argic, cambic and ferralic B, the
+  Arenosols and Gleysols gates, the Cumulic units). The oxic B of 1974, the
+  only 1974 reader of it, keeps the laboratory data (`field_class = FALSE`):
+  no 1974 change.
+* **Soft powdery lime** (pp. 40, 84, 86; C2, R6 (a)). A field feature:
+  none below the deepest layer described (`soft_powdery_lime_fao88()`,
+  `.fao_within(field = TRUE)`), flagged `absent_below_the_description`, as
+  plinthite is read. No class changes; CL, CH and KS are undecided less
+  often.
+* **Plinthite in the Gleysols gate** (pp. 39, 78; C3, R7 (a)). The same
+  field-feature reading as the Plinthosols gate (`plinthite_fao88(field =
+  TRUE)`, `key.yaml`): CI005 and CN002 CMg to GLe.
+* **Argic B across a lithological discontinuity** (p. 28, items 3 and 6;
+  C6, R8 (a)). A layer with clay skins (as the argic B reads them) is
+  compared across the discontinuity (`.fao_clay_increase(skins =)`,
+  `.f88_argic_core()`), flagged
+  `clay_increase_across_discontinuity_with_clay_skins`; without them the
+  pair stays undecided and item 6 fails the B, as before. The 1974
+  argillic B keeps every such pair undecided.
+* **The colour route for a mottled E** (pp. 37, 82; C7, R9 (a)). An E with
+  mottles of higher chroma in a matrix of moist value 4 or more and chroma 2
+  or less takes the colour route for reduction in the stagnic properties,
+  flagged `reduction_from_colour_pattern_mottled_e` (`.f88_stagnic_v()`); a
+  plainly bleached E stays excluded. `make_planosol_canonical()` becomes
+  Eutric Planosols (was Stagnic Luvisols); UY001 to PLe.
+* **Boundaries not recorded at the Nitisols gate** (p. 86; E8, R11 (a)).
+  Undecided, needing `boundary_distinctness` (`nitisols_gate_fao88()`); the
+  abrupt textural change, argic item 6 and the Planosols gate keep
+  `.fao_boundary_sharp()` (absent). CA006, DE019 and ES012 gain NT as a
+  candidate; `make_nitisol_canonical()` stays Haplic Alisols, now grade C
+  past an undecided NT.
+* **Stand-ins of the 1988 key-level predicates** (G1 (a)).
+  `.f88_key_result(stand_in =)` as `.f74_key_result()`: `only_horizons_fao88()`
+  and `upper_b_fao88()` carry the stand-ins of the spodic B they read
+  (found absent or present), the Anthrosols gate that of the fimic A, the
+  Podzol units that of the spodic B. NL032, NL033, NL034, FI004, PE001 and
+  the Podzol canonicals were already grade C through `spodic_b_fao88()`
+  (0.9.435).
+* The readings are recorded in `inst/rules/fao1988/readings.yaml` (version
+  0.9.438).
+* **ISIS reference profiles** (`inst/benchmarks/fao_isis.R`): 1988
+  groupings 227 to 237 of 706 (32.2 % to 33.6 %; 11 gained, CN002 lost),
+  units 146 to 155, fall-throughs 229 to 221; provisional groupings 154 to
+  131, stand-in groupings 5 to 15 (G1). 19 labels of 1988 change class: C4
+  NA004 to PHh, ML006 RGe to ARh, FR004 CMv to VRe, NI011 LVx to PHl; C5
+  PE002 RGe to ACh; R7 CI005 and CN002 CMg to GLe; R8 CN030 to CMo, CN034
+  to CMe, FR006 to LVh, IT010 to CMx, NG008 to ACp, IT011 to CMv, BR029 to
+  ACh (all fall-throughs before), AU029 LXa to ACh; R9 UY001 LVj to PLe,
+  MZ008 SNh to SNj, KE019 ALh to ALj, US019 LVa to LVj. R6 changes no class
+  (59 labels lose an undecided CL, CH, KS or Calcic unit; CL 107 to 69
+  fall-through candidates); C4 takes PT out of the candidates (34 to 15),
+  C5 AR (91 to 25). 1974 (C4 only, the shared readers): groupings 338 to
+  339 and units 201 to 202 (FR004 Hh to Vc), CN040 Lo to Ne, ES011
+  undecided to not classified, provisional groupings 236 to 232. Phases
+  unchanged in both editions.
+* **Canonical fixtures, the 1988 examples and near misses**: in 1988 the
+  Planosol becomes Eutric Planosols (grade A; was Stagnic Luvisols, C,
+  past an undecided PL) and the Nitisol stays Haplic Alisols, grade A to C
+  (NT undecided). Nothing else changes: the 1974 names, grades and phases
+  of the 44 canonicals, and the 1988 examples and near misses.
+* Tests: `test-v09438-fao88-key.R`. `test-v09382-fao88-horizons.R` (the
+  argic B across a discontinuity with clay skins now passes; without them
+  item 6 fails it) and `test-v09435-fao-grade.R` (the Planosol canonical is
+  Eutric Planosols in 1988) follow R8 and R9.
+
 # soilKey 0.9.437
 
 The units and phases of the Legend of 1974 take three readings Hugo

@@ -43,9 +43,15 @@
 # --- the key-level predicates --------------------------------------------------------------
 
 # The DiagnosticResult of a key-level predicate: `layers` in the context's
-# depth order, mapped back to the rows of pedon$horizons.
+# depth order, mapped back to the rows of pedon$horizons. `stand_in` names
+# the USDA or WRB readers that decided a 1988 horizon the predicate read
+# (the spodic B, the fimic A), and lower_grade follows it, as
+# .f74_key_result() does for 1974 (v0.9.438, the G1 gap of 1988: up to
+# 0.9.437 both were always empty, so a gate resting on a stand-in only
+# through a horizon it read inside was reported firm).
 .f88_key_result <- function(x, id, value, page, layers = integer(0), missing = character(0),
-                            flags = character(0), notes = character(0), evidence = list()) {
+                            flags = character(0), notes = character(0), evidence = list(),
+                            stand_in = character(0)) {
   value <- if (length(value) == 1L) as.logical(value) else NA
   flags <- unique(as.character(flags[!is.na(flags) & nzchar(flags)]))
   if (x$n && all(is.na(x$top) | is.na(x$bot))) {
@@ -53,12 +59,14 @@
     missing <- c("top_cm", "bottom_cm", missing)
   }
   layers <- sort(unique(as.integer(layers[!is.na(layers)])))
+  stand_in <- unique(as.character(unlist(stand_in)))
+  stand_in <- stand_in[!is.na(stand_in) & nzchar(stand_in)]
   DiagnosticResult$new(
     name = paste0(id, "_fao88"),
     passed = value,
     layers = x$idx[layers],
     evidence = c(evidence, list(edition = "1988", page = page, flags = flags,
-                                stand_in = character(0), lower_grade = FALSE)),
+                                stand_in = stand_in, lower_grade = length(stand_in) > 0L)),
     missing = if (is.na(value)) unique(as.character(missing)) else character(0),
     reference = sprintf("FAO (1988), Soil Map of the World, Revised Legend (ISRIC reprint 1997), ch. X, p. %s", page),
     notes = if (length(c(notes, flags))) paste(unique(c(notes, flags)), collapse = "; ") else NA_character_)
@@ -169,7 +177,11 @@ anthrosols_gate_fao88 <- function(pedon) {
   deep <- dk || (!is.na(md) && md >= 50)
   value <- .fao_or(fim, thick, deep)
   if (is.na(value)) value <- NA
-  .f88_key_result(x, "anthrosols_gate", value, pg,
+  # the WRB stand-in of the fimic A counts when the fimic A alone decides
+  # (the gate passes on it, or fails with it)
+  fsi <- .f88_hz_fimic_a(x)$stand_in
+  si <- if (isTRUE(value) && !thick && !deep) fsi else if (isFALSE(value)) fsi else character(0)
+  .f88_key_result(x, "anthrosols_gate", value, pg, stand_in = si,
                   layers = if (thick) run[[1L]]$layers else integer(0),
                   missing = if (is.na(value)) .f88_hz_fimic_a(x)$missing %||% "p2o5_citric_mg_kg",
                   flags = c(if (thick) "anthropic_layers_50cm_from_surface",
@@ -306,7 +318,13 @@ only_horizons_fao88 <- function(pedon, allowed = character(0)) {
   undecided <- names(st)[is.na(st)]
   value <- if (length(present)) FALSE else if (length(undecided)) NA else TRUE
   lay <- unlist(lapply(res[present], function(r) .f88_ctx_rows(x, r)))
-  .f88_key_result(x, "only_horizons", value, pg, layers = lay,
+  # v0.9.438: a horizon a USDA or WRB stand-in decided keeps its stand-in in
+  # the gate's evidence, as only_horizons_fao74() does: when the gate
+  # passes, any horizon found absent by a stand-in; when it fails, the
+  # present horizons, if each of them rests on one
+  si <- if (length(present)) do.call(.f74_si_any, unname(res[present]))
+        else do.call(.f74_si, unname(res))
+  .f88_key_result(x, "only_horizons", value, pg, layers = lay, stand_in = si,
                   missing = unique(unlist(lapply(res[undecided], function(r) r$missing))),
                   flags = cond_flags,
                   notes = c(if (length(present)) sprintf("other diagnostic horizons present: %s", paste(present, collapse = ", ")),
@@ -328,10 +346,14 @@ coarse_texture_fao88 <- function(pedon, to_cm = 100) {
     return(.f88_key_result(x, "coarse_texture", FALSE, pg, notes = sprintf("rock above %s cm", to_cm)))
   org <- .f88_organic_layers(x)$value
   mineral <- !(org %in% TRUE) & !(!is.na(x$master) & grepl("^(H|O)", x$master))
+  # the field texture class where clay and silt are not measured (v0.9.438,
+  # C5 and R15 (a)), flagged texture_from_field_class
   w <- .fao_in_window(x$h, .fao_coarser_than_sandy_loam(x$h), 0, to_cm, "throughout", subset = mineral)
+  wl <- .fao_window(x$h, 0, to_cm)$layers
   .f88_key_result(x, "coarse_texture", w$value, pg, layers = w$layers %||% integer(0),
-                  missing = c(w$missing, if (is.na(w$value)) c("clay_pct", "silt_pct")),
-                  flags = w$flags, notes = w$note,
+                  missing = c(w$missing, if (is.na(w$value)) c("clay_pct", "silt_pct", "texture_class_usda")),
+                  flags = c(w$flags, .f88_flags(.fao_texture_field_flags(x$h), wl[mineral[wl]])),
+                  notes = w$note,
                   evidence = list(to_cm = to_cm))
 }
 
@@ -537,9 +559,13 @@ podzoluvisols_gate_fao88 <- function(pedon) {
 # Nitisols (p. 86): an argic B; a clay content that does not fall by more
 # than 20 % (relative) from its maximum within 150 cm (default 13: no layer
 # below the maximum and within 150 cm under 0.8 x the maximum); gradual to
-# diffuse boundaries between the A and the B (the A-to-B transition only;
-# boundary_distinctness not recorded, absent, as the boundaries of
-# 2026-11-09); nitic properties in some subhorizon within 125 cm.
+# diffuse boundaries between the A and the B (the A-to-B transition only);
+# nitic properties in some subhorizon within 125 cm. A boundary_distinctness
+# not recorded leaves the boundaries undecided (v0.9.438, FAO audit E8 and
+# R11 (a), Hugo 2026-11-24: a boundary not recorded stays undecided, his
+# general rule; up to 0.9.437 it was absent, as the boundaries of
+# 2026-11-09, and the Nitisols failed). Only this gate reads it so: the
+# abrupt textural change and argic item 6 keep .fao_boundary_sharp().
 nitisols_gate_fao88 <- function(pedon) {
   x <- .f88_ctx(pedon)
   pg <- "86"
@@ -568,15 +594,16 @@ nitisols_gate_fao88 <- function(pedon) {
   a <- .f88_a_run(x)
   zone <- if (is.null(a)) integer(0) else max(a$layers)
   nxt <- zone + 1L
-  gd <- !is.na(bd[zone]) & grepl("gradual|diffuse|difusa", bd[zone])
+  rec <- !is.na(bd[zone]) & nzchar(bd[zone])
+  gd <- ifelse(rec, grepl("gradual|diffuse|difusa", bd[zone]), NA)
   atc <- if (length(zone) && nxt <= x$n) .f88_abrupt_v(x)$value[nxt] else FALSE
-  bnd <- if (!length(zone)) FALSE else .fao_and(all(gd), .f88_not(atc))
+  bnd <- if (!length(zone)) FALSE else .fao_and(gd, .f88_not(atc))
   nit <- nitic_properties_fao88(pedon, max_top_cm = 125)
   value <- .fao_and(ar$passed, dec, bnd, nit$passed)
   .f88_key_result(x, "nitisols_gate", value, pg, layers = L,
-                  missing = unique(c(ar$missing, if (is.na(dec)) c("clay_pct", "bottom_cm"), nit$missing)),
-                  flags = c(if (any(is.na(bd[zone]))) "boundary_distinctness_not_recorded_absent",
-                            if (open) "description_ends_above_150cm"),
+                  missing = unique(c(ar$missing, if (is.na(dec)) c("clay_pct", "bottom_cm"),
+                                     if (is.na(bnd)) "boundary_distinctness", nit$missing)),
+                  flags = c(if (open) "description_ends_above_150cm"),
                   evidence = list(argic_b = ar$passed, clay_no_decrease_20pct = dec,
                                   gradual_boundaries = bnd, nitic = nit$passed))
 }
@@ -643,14 +670,22 @@ argic_bs_fao88 <- function(pedon, lt = NULL, min = NULL, to_cm = 125) {
 # undecided one does; TRUE when none does (the gate itself decides whether
 # the B is present).
 .F88_B_KINDS <- c("argic_b", "natric_b", "cambic_b", "spodic_b", "ferralic_b")
+.f88_b_reader <- function(x, kind) {
+  switch(kind,
+         argic_b = .f88_hz_argic_natric(x, natric = FALSE),
+         natric_b = .f88_hz_argic_natric(x, natric = TRUE),
+         cambic_b = .f88_hz_cambic_b(x),
+         spodic_b = .f88_hz_spodic_b(x),
+         ferralic_b = .f88_hz_ferralic_b(x))
+}
 .f88_b_units <- function(x, kind) {
-  r <- switch(kind,
-              argic_b = .f88_hz_argic_natric(x, natric = FALSE),
-              natric_b = .f88_hz_argic_natric(x, natric = TRUE),
-              cambic_b = .f88_hz_cambic_b(x),
-              spodic_b = .f88_hz_spodic_b(x),
-              ferralic_b = .f88_hz_ferralic_b(x))
-  Filter(function(u) !is.na(u$top) && u$top <= 125, r$units)
+  Filter(function(u) !is.na(u$top) && u$top <= 125, .f88_b_reader(x, kind)$units)
+}
+# The stand-ins a B of `kind` rests on (in 1988 only the spodic B has them:
+# spodic_horizon_usda(), then the WRB spodic()).
+.f88_b_stand_in <- function(x, kind) {
+  si <- as.character(unlist(.f88_b_reader(x, kind)$stand_in %||% character(0)))
+  unique(si[!is.na(si) & nzchar(si)])
 }
 upper_b_fao88 <- function(pedon, kind = .F88_B_KINDS) {
   kind <- match.arg(kind)
@@ -669,7 +704,15 @@ upper_b_fao88 <- function(pedon, kind = .F88_B_KINDS) {
     else if (any(tops(u, FALSE) < t0)) above_und <- c(above_und, k)
   }
   value <- if (length(above_sure)) FALSE else if (length(above_und)) NA else TRUE
-  .f88_key_result(x, "upper_b", value, pg,
+  # v0.9.438: the stand-ins of the other B horizons read: when the B is the
+  # uppermost, those of every other B (each found absent above it); when
+  # another lies above it, those of the ones above, if each rests on one
+  others <- setdiff(.F88_B_KINDS, kind)
+  si_of <- lapply(others, function(k) .f88_b_stand_in(x, k)); names(si_of) <- others
+  si <- if (isTRUE(value)) unlist(si_of, use.names = FALSE)
+        else if (isFALSE(value) && all(lengths(si_of[above_sure]) > 0L)) unlist(si_of[above_sure], use.names = FALSE)
+        else character(0)
+  .f88_key_result(x, "upper_b", value, pg, stand_in = si,
                   missing = if (is.na(value)) "diagnostic_b_above",
                   notes = c(if (length(above_sure)) sprintf("%s lies above the %s and decides (p. 42)", paste(above_sure, collapse = ", "), kind),
                             if (length(above_und)) sprintf("undecided above the %s: %s", kind, paste(above_und, collapse = ", "))),

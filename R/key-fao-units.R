@@ -201,6 +201,7 @@ cumulic_fao88 <- function(pedon, min_cm = 50) {
   fine <- .f88_all(.fao_sandy_loam_or_finer(x$h)[L])
   .f88_key_result(x, "cumulic", fine, pg, layers = L,
                   missing = if (is.na(fine)) c("clay_pct", "silt_pct"),
+                  flags = .f88_flags(.fao_texture_field_flags(x$h), L),
                   evidence = list(thickness_cm = run[[1L]]$thickness))
 }
 
@@ -454,7 +455,9 @@ carbic_fao88 <- function(pedon) {
   L <- b$layers
   if (b$none) return(.f88_key_result(x, "carbic", FALSE, pg, notes = "no spodic B"))
   value <- b$value
+  # the spodic B read may rest on a stand-in (v0.9.438, G1 of 1988)
   .f88_key_result(x, "carbic", value, pg, layers = L[v[L] %in% TRUE],
+                  stand_in = .f88_b_stand_in(x, "spodic_b"),
                   missing = if (is.na(value)) c(ig$missing, "oc_pct"),
                   flags = c(b$flags, .f88_flags(ig$flags, L)))
 }
@@ -474,6 +477,7 @@ spodic_fe_oc_fao88 <- function(pedon, min = 6) {
   if (b$none) return(.f88_key_result(x, "spodic_fe_oc", FALSE, pg, notes = "no spodic B"))
   value <- b$value
   .f88_key_result(x, "spodic_fe_oc", value, pg, layers = L,
+                  stand_in = .f88_b_stand_in(x, "spodic_b"),
                   missing = if (is.na(value)) c("fe_dcb_pct", "oc_pct"),
                   flags = b$flags, evidence = list(ratio = r[L], min = min))
 }
@@ -501,6 +505,7 @@ podzol_cambic_fao88 <- function(pedon, albic_max_cm = 2) {
   no_h <- !any(hs[L])
   value <- .fao_and(e_ok, no_h)
   .f88_key_result(x, "podzol_cambic", value, pg, layers = L,
+                  stand_in = if (length(L) && isTRUE(b$status)) .f88_b_stand_in(x, "spodic_b"),
                   missing = if (is.na(value)) c("munsell_value_dry", "boundary_topography"),
                   evidence = list(albic_thin_discontinuous = e_ok, no_carbon_enriched_subhorizon = no_h))
 }

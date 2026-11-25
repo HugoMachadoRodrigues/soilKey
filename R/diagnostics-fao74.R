@@ -722,7 +722,9 @@ spodic_b_fao74 <- function(pedon, max_top_cm = 125) {
     c3 <- .f88_cmpr(cc$value, "<=", 16)
     wm <- .f88_num(x, "weatherable_minerals_pct")
     c4 <- .f88_cmp(wm, "<=", 3)
-    c5 <- .f88_and(.fao_sandy_loam_or_finer(x$h), .f88_cmp(clay, ">", 15))
+    # the laboratory particle size only: the field texture class of 0.9.438
+    # is a reading of the Revised Legend (C5, R15)
+    c5 <- .f88_and(.fao_sandy_loam_or_finer(x$h, field_class = FALSE), .f88_cmp(clay, ">", 15))
     rs <- .fao_rock_structure(x$h, site = x$site)
     c7 <- .f88_cmp(rs$value, "<", 5)
     ok <- .f88_unburied(x, .f88_and(.f88_b_layer(x), .f88_not(excl), c2, c3, c4, c5, c7))

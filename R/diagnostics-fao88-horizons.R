@@ -482,10 +482,14 @@
 }
 
 # Texture sandy loam or finer with 8 % clay or more (argic, cambic and
-# ferralic B, pp. 28-31; Q16 for the ferralic B).
+# ferralic B, pp. 28-31; Q16 for the ferralic B). Where the laboratory clay
+# and silt leave "sandy loam or finer" undecided, the field texture class
+# decides it (v0.9.438, C5 and R15 (a)), flagged texture_from_field_class
+# (.f88_texture_flags()); the 8 % clay is a measurement and stays one.
 .f88_texture_b <- function(x) {
   .f88_and(.fao_sandy_loam_or_finer(x$h), .f88_cmp(.f88_num(x, "clay_pct"), ">=", 8))
 }
+.f88_texture_flags <- function(x) .fao_texture_field_flags(x$h)
 
 # The andic properties of p. 34 (item 7 of the ferralic B) are read by
 # .f88_andic_layer() in R/diagnostics-fao88-properties.R (0.9.383).
@@ -920,9 +924,12 @@ ochric_a_fao88 <- function(pedon) {
     tex <- .f88_texture_b(x)
     sub <- .f88_unburied(x, .f88_b_layer(x))
     ferr <- .f88_member(x, .f88_hz_ferralic_b(x)$units)
-    inc30 <- .fao_clay_increase(h, distance = 30)
-    inc15 <- .fao_clay_increase(h, distance = 15)
     sk <- .f88_clay_skins(x)
+    # a layer with clay skins is compared across a lithological
+    # discontinuity too (v0.9.438, R8 (a): item 6 makes the skins the
+    # condition there); without them the pair stays undecided
+    inc30 <- .fao_clay_increase(h, distance = 30, skins = sk$value)
+    inc15 <- .fao_clay_increase(h, distance = 15, skins = sk$value)
     mat <- .desg_material_number(.fao_col(h, "designation", "character"))
     sharp <- .fao_boundary_sharp(x$h)
     lam <- .f88_num(x, "lamellae_cumulative_cm")
@@ -934,6 +941,9 @@ ochric_a_fao88 <- function(pedon) {
       up <- inc30$upper[i]
       if (is.na(up)) up <- inc15$upper[i]
       if (is.na(up)) up <- i - 1L
+      # the increase reached across a lithological discontinuity (R8)
+      disc_i <- !is.na(mat[up]) && !is.na(mat[i]) && mat[up] != mat[i] &&
+        isTRUE(.f88_or(inc30$value[i], inc15$value[i]))
       # the B below the starting layer
       cont <- function(j) .f88_and(sub[j], tex[j], .f88_not(ferr[j]),
                                     .fao_clay_increase_pair(clay[up], clay[j]))
@@ -999,7 +1009,8 @@ ochric_a_fao88 <- function(pedon) {
         start = i, upper = up, sure = sure, maybe = maybe, status = status,
         skins = sk_s, items = c(texture = tex[i], not_ferralic = .f88_not(ferr[i]),
                                 clay_increase = inc, thickness = thick, no_skins_rule = item6),
-        flags = c(.f88_flags(sk$flags, maybe),
+        flags = c(.f88_flags(sk$flags, maybe), .f88_flags(.f88_texture_flags(x), maybe),
+                  if (disc_i) "clay_increase_across_discontinuity_with_clay_skins",
                   if (!sk_s && i > 1L && !is.na(sharp$flags[i - 1L])) sharp$flags[i - 1L]))
     }
     list(starts = starts, dropped_flags = unique(dropped),
@@ -1130,6 +1141,7 @@ natric_b_fao88 <- function(pedon, max_top_cm = 125) {
     units <- .f88_units(x, ok, function(r) r$thickness >= 15 && r$bottom >= 25)
     below_ok <- which(seq_len(n) >= min(c(which(ok %in% TRUE), n + 1L)))
     flags <- c(.f88_flags(rs$flags, which(ok %in% TRUE)), .f88_flags(cc$flags, which(ok %in% TRUE)),
+               .f88_flags(.f88_texture_flags(x), which(ok %in% TRUE)),
                .f88_flags(.f88_caco3(x)$flags, below_ok),
                if (any(!is.na(wm[!(ok %in% FALSE)]))) "weatherable_minerals_20_200um_for_50_200um")
     list(units = units, flags = flags,
@@ -1308,7 +1320,7 @@ spodic_b_fao88 <- function(pedon, max_top_cm = 125) {
               if (anyNA(c5[L])) "water_dispersible_clay_pct",
               if (anyNA(c7[L])) an$missing)
     flags <- c(.f88_flags(cc$flags, L), .f88_flags(ec$flags, L), .f88_flags(an$flags, L),
-               .f88_flags(rs$flags, L),
+               .f88_flags(rs$flags, L), .f88_flags(.f88_texture_flags(x), L),
                if (any(!is.na(wm[L]))) "weatherable_minerals_20_200um_for_50_200um")
     list(units = units, missing = unique(miss), flags = unique(flags),
          evidence = list(criteria = data.frame(layer = x$idx, texture = c1, cec = c3,
