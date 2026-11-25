@@ -446,7 +446,9 @@ horizon_column_spec <- function() {
     caco3_clay_pct                = "numeric",   # clay-size carbonate, % by weight of the fine earth; subtracted from the clay of the CEC activity classes (KST p. 366; reading F13)
     cracks_permanent              = "logical",   # the cracks are permanent (persist after drainage, polyhedrons of consolidated former Hydraquents); KST p. 370, cracked
     # ---- v0.9.434: USDA family mineralogy of organic soils (KST p. 371) ----
-    ferrihumic_material           = "logical"    # the layer is ferrihumic soil material (bog iron); KST p. 371, ferrihumic (reading F40)
+    ferrihumic_material           = "logical",   # the layer is ferrihumic soil material (bog iron); KST p. 371, ferrihumic (reading F40)
+    # ---- v0.9.440: FAO soft powdery lime, carbonate recorded only in a form that is not soft ----
+    carbonate_form_not_soft       = "character"  # the secondary carbonates are recorded only as hard concretions or nodules or as crystals ("hard", "crystals"); read only by the FAO soft powdery lime (absent)
   )
 }
 

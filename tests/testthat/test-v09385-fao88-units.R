@@ -176,7 +176,7 @@ test_that("the printed numbers at their edges", {
   f <- soilKey:::spodic_fe_oc_fao88(make_fao_example("PZf"))
   expect_true(f$passed)
   expect_equal(min(f$evidence$ratio), 6)
-  # Cambic Podzols: an albic E of 2 cm, broken; 3 cm fails
+  # Cambic Podzols: an albic E of 2 cm, broken; 3 cm and continuous fails (R10, v0.9.440)
   expect_true(soilKey:::podzol_cambic_fao88(make_fao_example("PZb"))$passed)
   expect_false(soilKey:::podzol_cambic_fao88(make_fao_example("PZb", near_miss = TRUE))$passed)
   # Albic Arenosols: 50 cm of albic E; 49 fails

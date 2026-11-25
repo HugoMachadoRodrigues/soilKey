@@ -363,8 +363,8 @@ albic_e_thick_fao88 <- function(pedon, min_cm = 50, max_top_cm = 125) {
                   flags = r$flags, evidence = list(thickness_cm = th, min_cm = min_cm))
 }
 
-# Luvic (ARl): a clay increase of `increase` points or more (default 10: per
-# cent points), or lamellae of clay accumulation, within `max_top_cm` cm. The
+# Luvic (ARl): a clay increase of `increase` per cent points or more (3, as
+# p. 80 prints), or lamellae of clay accumulation, within `max_top_cm` cm. The
 # increase is that of a mineral layer starting within `max_top_cm` cm over a
 # mineral layer above it (soilKey's reading, accepted by Hugo on 2026-11-09: no vertical
 # distance is printed). Lamellae: lamellae_cumulative_cm above 0, or a
@@ -482,11 +482,14 @@ spodic_fe_oc_fao88 <- function(pedon, min = 6) {
                   flags = b$flags, evidence = list(ratio = r[L], min = min))
 }
 
-# Cambic (PZb): no albic E, or only a thin (`albic_max_cm` cm or less) and
+# Cambic (PZb): no albic E, or only a thin (`albic_max_cm` cm or less) or
 # discontinuous one (boundary_topography broken or discontinuous; not
 # recorded, continuous: a field observation); and no layer of the spodic B
 # visibly more enriched in organic carbon (an h in its designation, Bh or
 # Bhs: the field record of that enrichment; not recorded, absent).
+# "Thin or discontinuous" as ch. VI p. 56 prints it, the Haplic Podzols being
+# the complement (a continuous albic E thicker than 2 cm); the key's "and"
+# (p. 81) is read as a slip (v0.9.440, FAO audit R10 (a), Hugo, 2026-11-24).
 podzol_cambic_fao88 <- function(pedon, albic_max_cm = 2) {
   x <- .f88_ctx(pedon)
   pg <- "81"
@@ -496,7 +499,7 @@ podzol_cambic_fao88 <- function(pedon, albic_max_cm = 2) {
   ok_e <- vapply(ae, function(u) {
     thin <- u$thickness <= albic_max_cm
     disc <- any(!is.na(bt[u$layers]) & grepl("broken|discontin|interromp", bt[u$layers]))
-    if (thin && disc) TRUE else if (isTRUE(u$status)) FALSE else NA
+    if (thin || disc) TRUE else if (isTRUE(u$status)) FALSE else NA
   }, NA)
   e_ok <- .f88_all(ok_e)
   b <- .f88_b_layers_kind(x, "spodic_b", 125)
@@ -507,7 +510,7 @@ podzol_cambic_fao88 <- function(pedon, albic_max_cm = 2) {
   .f88_key_result(x, "podzol_cambic", value, pg, layers = L,
                   stand_in = if (length(L) && isTRUE(b$status)) .f88_b_stand_in(x, "spodic_b"),
                   missing = if (is.na(value)) c("munsell_value_dry", "boundary_topography"),
-                  evidence = list(albic_thin_discontinuous = e_ok, no_carbon_enriched_subhorizon = no_h))
+                  evidence = list(albic_thin_or_discontinuous = e_ok, no_carbon_enriched_subhorizon = no_h))
 }
 
 
@@ -573,7 +576,7 @@ property_in_b_fao88 <- function(pedon, property = c("geric", "ferralic"), kind =
 #   xanthic (FRx): hue 7.5YR or yellower, moist value 4 or more, moist
 #     chroma 5 or more;
 #   chromic (LVx, CMx): hue 7.5YR with a chroma above 4, or a hue redder
-#     than 7.5YR (the moist colour, Q24).
+#     than 7.5YR (the rubbed colour, the moist one standing in, Q24).
 b_colour_fao88 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), kind = .F88_B_KINDS) {
   colour <- match.arg(colour); kind <- match.arg(kind)
   x <- .f88_ctx(pedon)
@@ -869,8 +872,10 @@ slow_horizon_bs_fao88 <- function(pedon, lt = 50, to_cm = 125) {
     PZc = S(b, 3, ignition_redder = FALSE, rh_value = 25, ferricyanide_test = "negative", childs_test = "negative"),
     PZf = E(b, fe_dcb_pct = c(0.2, 0.1, 3.0, if (nm) 2.2 else 2.4, 0.2), oc_pct = c(2, 0.4, 0.5, 0.4, 0.2),
             fe_pyro_pct = c(0.05, 0.02, 1.5, 1.2, 0.05)),
+    # near miss: an E 3 cm thick and continuous (thin or discontinuous, R10)
     PZb = E(b, designation = c("A", "E", "Bs1", "Bs2", "C"), top_cm = c(0, 10, if (nm) 13 else 12, 45, 80),
-            bottom_cm = c(10, if (nm) 13 else 12, 45, 80, 130), boundary_topography = c(NA, "broken", NA, NA, NA)),
+            bottom_cm = c(10, if (nm) 13 else 12, 45, 80, 130),
+            boundary_topography = c(NA, if (nm) "smooth" else "broken", NA, NA, NA)),
     PZh = b,
     # --- Plinthosols
     PTa = E(b, rows = c(1, 1, 2, 3, 4), designation = c("A", "E", "Bv1", "Bv2", "C"), top_cm = c(0, 10, 20, 50, 100),

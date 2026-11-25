@@ -908,6 +908,23 @@ isis_citation <- function(accessed = Sys.Date()) {
   out$carbonate_soft_pct <- sk
   note("carbonate_soft_pct", which(is.finite(sk)),
        "soft lime: ISIS calcareous inclusions recorded soft (not crystals), or soft segregations with no hardness, as soft nodules at the middle of the FAO abundance class (FAO audit R14)")
+  # v0.9.440 (Hugo, 2026-11-25): where every calcareous inclusion of a layer
+  # is recorded hard (concretionsMineralHardness H) or as crystals
+  # (inclusionsType T), that form is carried in carbonate_form_not_soft, a
+  # column only the FAO soft powdery lime reads (absent there, not undecided
+  # under R13). Hardness B (both), or no hardness and no crystal type, leaves
+  # the form unrecorded.
+  form_k <- function(h, ty) ifelse(ty %in% "T", "crystals", ifelse(h %in% "H", "hard", NA_character_))
+  f1 <- ifelse(comp1 %in% "K", form_k(code("concretionsMineralHardness"), ty1), NA_character_)
+  f2 <- ifelse(comp2 %in% "K", form_k(code("concretionsMineralHardness2"), ty2), NA_character_)
+  k1 <- comp1 %in% "K"; k2 <- comp2 %in% "K"
+  only <- (k1 | k2) & (!k1 | !is.na(f1)) & (!k2 | !is.na(f2)) & is.finite(sc)
+  fns <- rep(NA_character_, length(sc))
+  fns[only] <- vapply(which(only), function(i)
+    paste(sort(unique(stats::na.omit(c(f1[i], f2[i])))), collapse = "; "), "")
+  out$carbonate_form_not_soft <- fns
+  note("carbonate_form_not_soft", which(!is.na(fns)),
+       "ISIS calcareous inclusions recorded only hard or as crystals (concretionsMineralHardness H, inclusionsType T): no soft lime there (Hugo, 2026-11-25)")
   hard <- code("concretionsMineralHardness"); size <- code("inclusionsSize")
   hard2 <- code("concretionsMineralHardness2"); size2 <- code("inclusionsSize2")
   hard[is.na(hard)] <- hard2[is.na(hard)]; size[is.na(size)] <- size2[is.na(size)]

@@ -52,7 +52,7 @@ units:
       tests:
         all_of:
           - podzol_cambic_fao88: {albic_max_cm: 2}
-      notes: "No albic E horizon, or only a thin (2 cm or less) and discontinuous one; no subhorizon of the B visibly more enriched in organic carbon."
+      notes: "No albic E horizon, or only a thin (2 cm or less) or discontinuous one (ch. VI p. 56; the key's 'and' read as a slip, FAO audit R10); no subhorizon of the B visibly more enriched in organic carbon."
 
     - code: "PZh"
       name: "Haplic Podzols"

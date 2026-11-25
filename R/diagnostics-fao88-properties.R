@@ -1131,7 +1131,11 @@ sodic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
 # volume (secondary_carbonates_pct) recorded with neither its form nor an
 # amount of coatings or soft nodules leaves the soft nodules undecided, flagged
 # secondary_carbonate_without_form: the carbonate was seen, its form was not
-# recorded. The Legend of 1974 shares the reader.
+# recorded. The Legend of 1974 shares the reader. v0.9.440 (Hugo,
+# 2026-11-25): carbonate recorded only in a form that is not soft
+# (carbonate_form_not_soft: hard concretions or nodules, crystals; a column
+# no other system reads) is no soft powdery lime: absent, flagged
+# secondary_carbonate_form_not_soft, not undecided.
 .f88_spl_v <- function(x) {
   .f88_memo(x, "pr_spl", function() {
     cf <- .f88_num(x, "carbonate_coatings_faces_pct")
@@ -1144,11 +1148,13 @@ sodic_properties_fao88 <- function(pedon, max_top_cm = NULL, window_cm = NULL) {
     c1 <- ifelse(!is.na(cf), cf >= 50, ifelse(coat_form, NA, FALSE))
     flag <- .f88_addf(flag, is.na(cf) & coat_form, "coatings_named_without_amount")
     sec <- .f88_num(x, "secondary_carbonates_pct")
-    no_form <- is.na(cf) & is.na(sn) & is.na(form) & !is.na(sec) & sec >= 5
+    hard <- is.na(cf) & is.na(sn) & is.na(form) & !is.na(.f88_chr(x, "carbonate_form_not_soft"))
+    no_form <- is.na(cf) & is.na(sn) & is.na(form) & !hard & !is.na(sec) & sec >= 5
     c2 <- ifelse(!is.na(sn), sn >= 5, ifelse(soft_form | no_form, NA, FALSE))
     flag <- .f88_addf(flag, no_form, "secondary_carbonate_without_form")
+    flag <- .f88_addf(flag, hard, "secondary_carbonate_form_not_soft")
     v <- .f88_or(c1, c2)
-    none <- is.na(cf) & is.na(sn) & is.na(form) & !no_form
+    none <- is.na(cf) & is.na(sn) & is.na(form) & !no_form & !hard
     flag <- .f88_addf(flag, none, "soft_powdery_lime_not_recorded_absent")
     list(value = .f88_pr_clean(x, v), flags = flag,
          missing = c("carbonate_soft_pct", if (any(no_form & !(v %in% TRUE))) "secondary_carbonates_form"))

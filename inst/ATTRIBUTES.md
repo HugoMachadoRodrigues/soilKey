@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.434)
+# soilKey -- recognised horizon attribute names (v0.9.440)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -520,6 +520,7 @@ and do not warn.
 | `pitted_quartz_pct` | % of the sand | numeric | Pitted and rounded quartz grains with a matte surface, % of the sand of 0.25 mm or more of the surface horizon. Feature 2 of the yermic phase of 1988 (10 % or more, p. 70). A field or laboratory observation: not recorded, absent. | - |
 | `palygorskite_pct` | % of the clay | numeric | Palygorskite, % of the clay fraction. Feature 3 of the yermic phase of 1988 (2 % or more in some subhorizon within 50 cm, p. 70). Not recorded: a clay_mineralogy naming palygorskite counts; else absent. | - |
 | `aeolian_crack_infill` | logical | logical | Surface cracks filled with in-blown sand or silt, feature 4 of the yermic phase of 1988 (p. 71). A field observation: not recorded, absent. | - |
+| `carbonate_form_not_soft` | - | character | The secondary carbonates of the layer are recorded only in a form that is not soft: hard concretions or nodules (hard), or crystals (crystals); the ISIS reader sets it from the calcareous inclusions recorded hard or as crystals. Read only by the FAO soft powdery lime (both editions, 1988 p. 40; 74 p. 31): with no soft nodules, coatings or other form recorded, the soft powdery lime is absent there, not undecided (Hugo, 2026-11-25). No other system reads it. Not recorded: secondary carbonate of 5 % or more with no form leaves the soft powdery lime undecided (R13). | - |
 
 ## USDA family (KST 13th ed., ch. 17)
 
@@ -805,5 +806,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.434._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.440._
 
