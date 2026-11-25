@@ -427,3 +427,19 @@ readings:
     page: "p. 21"
     version: "0.9.407"
     reading: "Amends the reading of 2026-11-09: a layer designated O is not saturated (the O of p. 21) only when it has no suffix of decomposition; an O with the suffix a, e or i (the USDA and FAO 2006 notations) or f, m or h (Canada and New Zealand), notations where O is any organic layer, takes the drainage of the site like an undesignated layer (poorly or artificially drained: saturated; well drained: not; else undecided) (Hugo, 2026-11-13)."
+  # v0.9.436: decisions of 2026-11-24 on the audit of the FAO legends
+  - topic: "Histic H of 1974: the thin surface layer and the plough layer are H layers"
+    edition: [1974]
+    page: "74 pp. 21, 24, 29"
+    version: "0.9.436"
+    reading: "The histic H is an H horizon, saturated for prolonged periods unless drained, and an O horizon is not: the thin surface layer (less than 25 cm, mixed to 25 cm) and the plough layer (25 cm or more) paths read the layers of the H horizon (the H line of organic matter and the saturation of p. 21), not every organic layer, and a plough layer designated O that is not read as an H does not count. A well-drained forest floor is then no histic H, and so no hydromorphic property through item 2 (FAO audit A3) (Hugo, 2026-11-24)."
+  - topic: "Cambic B of 1974: no alteration measured against an argillic or natric B"
+    edition: [1974]
+    page: "74 pp. 25, 26, 32"
+    version: "0.9.436"
+    reading: "Item 4 compares clay, chroma and hue with the layer below. When that layer belongs to an argillic or natric B, a layer with more clay, a stronger chroma or a redder hue than it shows no alteration: an illuvial horizon is no reference for the parent material. The removal of carbonates and the colours of reduction still count. Only a layer decided outside an argillic or natric B is a reference: a layer of an undecided one is not either, since an undecided comparison would leave the cambic B to its WRB stand-in, which compares with any layer below (FAO audit R2) (Hugo, 2026-11-24)."
+  - topic: "Hydromorphic properties of 1974: branch 4.5 below a dark A"
+    edition: [1974]
+    page: "74 p. 30"
+    version: "0.9.436"
+    reading: "Amends the reading of 2026-11-09: in branch 4.5 (other soils) a layer designated A (AB, AC included) of moist value below 3.5 is not read for the colours of reduction, as branches 4.3 and 4.4 read the colours below such an A; a humus-dark A with a few mottles no longer makes a soil hydromorphic. Items 3 (the neutral or bluish hue) and 4 (the colours) are not read on H and O layers, designated so or organic by p. 21: the histic H has its own item (FAO audit R3 and A6) (Hugo, 2026-11-24)."

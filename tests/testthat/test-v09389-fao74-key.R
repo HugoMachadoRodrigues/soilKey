@@ -267,11 +267,13 @@ test_that("the gates read their printed numbers", {
   # the uppermost B decides: a cambic B above an argillic B is no Luvisol
   l <- .ex389("L")
   expect_true(soilKey:::upper_b_fao74(l, kind = "argillic_b")$passed)
-  cb <- .edit389(.ex389("Lo"), designation = c("A", "Bw", "Bt1", "Bt2", "BC"),
+  # (since 0.9.436, FAO audit R2, the Bw1 is altered against the Bw2, not
+  # against the Bt of the argillic B)
+  cb <- .edit389(.ex389("Lo"), designation = c("A", "Bw1", "Bw2", "Bt", "BC"),
                  munsell_hue_moist = c("10YR", "7.5YR", "10YR", "10YR", "10YR"),
-                 munsell_chroma_moist = c(3, 6, 4, 4, 4), clay_pct = c(15, 15, 32, 34, 20),
-                 sand_pct = c(50, 50, 38, 38, 48), silt_pct = c(35, 35, 30, 28, 32),
-                 clay_films_amount = c(NA, NA, "common", "common", "few"))
+                 munsell_chroma_moist = c(3, 6, 4, 4, 4), clay_pct = c(15, 15, 15, 34, 20),
+                 sand_pct = c(50, 50, 50, 38, 48), silt_pct = c(35, 35, 35, 28, 32),
+                 clay_films_amount = c(NA, NA, NA, "common", "few"))
   expect_true(soilKey:::argillic_b_fao74(cb)$passed)
   expect_true(soilKey:::cambic_b_fao74(cb)$passed)
   expect_false(soilKey:::upper_b_fao74(cb, kind = "argillic_b")$passed)

@@ -510,7 +510,8 @@
     # 1974 (74 p. 24): an H horizon (saturated or drained, p. 21; .f74_h_v())
     # more than 20 cm thick, no depth printed (the upper limit of 125 cm is
     # applied by the caller, Q10); the thin surface and plough layer paths
-    # below read the organic layers
+    # below read H layers too, not O layers: the histic H is an H horizon,
+    # saturated (74 pp. 21, 24; FAO audit A3, Hugo 2026-11-24; 0.9.436)
     okh <- if (e74) .f88_unburied(x, .f74_h_v(x)) else ok
     units <- .f88_units(x, okh, function(r) {
       if (!e74 && r$top > 40) return(FALSE)
@@ -531,13 +532,14 @@
     first <- which(!is.na(x$top) & x$top == 0)[1L]
     thin <- NULL; plough <- NULL
     if (!is.na(first)) {
-      runs <- .f88_run_list(x, !(ok %in% FALSE))
+      runs <- .f88_run_list(x, !(okh %in% FALSE))
       sr <- Filter(function(r) r$layers[1L] == first, runs)
       if (length(sr) && sr[[1L]]$thickness < 25) {
-        s <- .f88_and(.f88_all(ok[sr[[1L]]$layers]), line())
+        s <- .f88_and(.f88_all(okh[sr[[1L]]$layers]), line())
         if (!isFALSE(s)) thin <- c(sr[[1L]], list(status = if (isTRUE(s)) TRUE else NA))
       }
       ap <- !is.na(x$desg) & grepl("^[AHO][a-z0-9]*p", x$desg) & !(x$buried %in% TRUE)
+      if (e74) ap <- ap & !(!is.na(x$master) & grepl("^O", x$master) & !(okh %in% TRUE))
       pr <- Filter(function(r) r$layers[1L] == first, .f88_run_list(x, ap))
       if (length(pr) && pr[[1L]]$thickness >= 25) {
         s <- line()
@@ -1391,10 +1393,16 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
 # more than a deeper layer; or secondary carbonates in soft forms of 5 % or
 # more by volume (secondary_carbonates_pct, carbonate_soft_pct); or, resting
 # on very calcareous material (40 % or more in the layer below), secondary
-# carbonate recorded (no decrease needed). 15 cm or more.
+# carbonate recorded (no decrease needed). 15 cm or more. 1974 (74 p. 27):
+# 5 % more than the C horizon, the first layer designated C below (with no C
+# designated, the layer right below, flagged), as the gypsic horizon reads it
+# (FAO audit A4, Hugo 2026-11-24; 0.9.436). A list of the per-layer value and
+# its flags.
 .f88_calcic_layer <- function(x) {
   .f88_memo(x, "calcic_layer", function() {
     n <- x$n
+    e74 <- identical(x$edition, "1974")
+    flag <- rep(NA_character_, n)
     cc <- .f88_caco3(x)$value
     sec <- .f88_num(x, "secondary_carbonates_pct"); soft <- .f88_num(x, "carbonate_soft_pct")
     form <- .f88_chr(x, "secondary_carbonates_form")
@@ -1403,23 +1411,34 @@ ferralic_b_fao88 <- function(pedon, max_top_cm = 125) {
     vol <- (!is.na(sec) & sec >= 5) | (!is.na(soft) & soft >= 5)
     v <- rep(NA, n)
     for (i in seq_len(n)) {
-      deeper <- which(seq_len(n) > i & !x$rock)
-      diff <- if (!length(deeper)) NA else .f88_any(cc[i] - cc[deeper] >= 5)
       nb <- if (i < n && !x$rock[i + 1L]) i + 1L else NA_integer_
+      if (e74) {
+        cb <- which(seq_len(n) > i & !is.na(x$master) & grepl("^C", x$master) & !x$rock)[1L]
+        if (is.na(cb) && !is.na(nb)) {
+          cb <- nb
+          flag[i] <- "no_c_horizon_layer_below_compared"
+        }
+        diff <- if (is.na(cb)) NA else .f88_cmp(cc[i] - cc[cb], ">=", 5)
+      } else {
+        deeper <- which(seq_len(n) > i & !x$rock)
+        diff <- if (!length(deeper)) NA else .f88_any(cc[i] - cc[deeper] >= 5)
+      }
       base40 <- !is.na(nb) && !is.na(cc[nb]) && cc[nb] >= 40 && obs[i]
       v[i] <- .f88_and(.f88_cmp(cc[i], ">=", 15), .f88_or(diff, vol[i], base40))
     }
     v[x$rock] <- FALSE
-    .f88_unburied(x, v)
+    list(value = .f88_unburied(x, v), flags = flag)
   })
 }
 
 .f88_hz_calcic <- function(x) {
   .f88_memo(x, "calcic", function() {
     if (!x$n) return(list(units = list()))
-    ok <- .f88_calcic_layer(x)
+    cl <- .f88_calcic_layer(x)
+    ok <- cl$value
+    L <- which(!(ok %in% FALSE))
     list(units = .f88_units(x, ok, function(r) r$thickness >= 15),
-         flags = .f88_flags(.f88_caco3(x)$flags, which(!(ok %in% FALSE))),
+         flags = unique(c(.f88_flags(.f88_caco3(x)$flags, L), .f88_flags(cl$flags, L))),
          missing = c("caco3_pct", "secondary_carbonates_pct"))
   })
 }
