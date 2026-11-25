@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.438</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.439</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,28 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.439" id="soilkey-09439">soilKey 0.9.439<a class="anchor" aria-label="anchor" href="#soilkey-09439"></a></h2>
+<p>The readers shared by both FAO-Unesco legends and the ISIS reader take the readings Hugo decided, option (a) of R12, R13, R14 and R16 (FAO audit, 2026-11-24), with the defects E4 and E7 of the ISIS reader fixed: the fifth of the six PRs of the audit.</p>
+<ul><li>
+<strong>Exchangeable bases as a lower bound of the NH4Cl CEC and the ECEC</strong> (74 pp. 28, 47; p. 31 item 3; E6, R12 (a)). Where neither the NH4Cl CEC nor the ECEC (nor, in 1988, the KCl acidity or Al) is recorded, the sum of the bases is a lower bound of it, read as the EC 1:2.5 is read: only where it already settles the test, so the test fails, flagged <code>bases_lower_bound_of_nh4cl_cec</code> or <code>bases_lower_bound_of_ecec</code>; below the limit the layer stays undecided (<code>.fao_bases_bound()</code>, <code>.fao_cec_clay(bound =)</code>, <code>.fao_ecec_clay(bound =)</code>, <code>.f74_nh4cl()</code>). It serves the ferralic and ferric properties of 1974 (below 24), the Acric Ferralsols (1.5 or less) and the ECEC route of the ferralic B of 1988 (12 or less). The oxic B of 1974 and the geric properties of 1988 keep their reading. <code><a href="../reference/make_retisol_canonical.html">make_retisol_canonical()</a></code> becomes Eutric Nitosols in 1974 (grade A; was Albic Luvisols, C, past an undecided N): the bases rule out the ferric properties of its argillic B.</li>
+<li>
+<strong>Secondary carbonate recorded without its form</strong> (74 p. 31; p. 40; E5, R13 (a)). 5 % or more of secondary carbonate with no form, no coatings and no soft nodules recorded leaves the soft nodules of the soft powdery lime undecided, flagged <code>secondary_carbonate_without_form</code> (was absent; <code>.f88_spl_v()</code>, shared by the 1974 reader). In 1988 the Chernozem canonical gains CH and the Kastanozem canonical CL as undecided groupings before their names (Haplic Phaeozems, Eutric Cambisols), both grade C as before (G1).</li>
+<li>
+<strong>Soft calcareous inclusions in the ISIS reader</strong> (E4, R14 (a)). A calcareous inclusion recorded soft and not a crystal, or a soft segregation with no hardness recorded, is read as soft nodules of lime at the middle of its abundance class (<code>carbonate_soft_pct</code>), flagged in the provenance; each inclusion reads its own type and hardness (<code>inclusionsType2</code> is now read). Up to 0.9.438 every calcareous inclusion was secondary carbonate with no form, so the soft powdery lime read them as absent. Other calcareous inclusions fall under R13.</li>
+<li>
+<strong>Duplicate rows in the ISIS reader</strong> (E7). A named row with no data at exactly the depths of one unnamed row with data gives that row its designation and is dropped, with a note (<code>.isis_guard_layers()</code>). Only FR009 in the cache (5 pairs).</li>
+<li>
+<strong>The cerrado phase from the ISIS text</strong> (74 p. 7; B5, R16 (a)). Where <code>landuseRemarks</code> or <code>vegetationClassification</code> names cerrado, the site’s vegetation is <code>"cerrado"</code>, the field the phase reads (<code>.isis_cerrado()</code>; both fields are now in the ISIS query). The stony
+<ol start="1974" style="list-style-type: decimal"><li>and anthraquic (1988) phases stay absent.</li>
+</ol></li>
+<li>The readings are recorded in <code>inst/rules/fao1974/readings.yaml</code> and <code>inst/rules/fao1988/readings.yaml</code> (version 0.9.439).</li>
+<li>
+<strong>ISIS reference profiles</strong> (<code>inst/benchmarks/fao_isis.R</code>): 76 labels change (R12 46, R14 19, R13 9, R12 with R13 1, E7 1). 1988 groupings 237 to 241 of 706 (BW001 to LVx, KE028 LVx to LXh, KE065 to SNh, PE025 PHc to CHh), units 155 to 158 (BW001, KE028, AU039 VRe to VRk), fall-throughs 221 to 217. 1974 groupings 339 (BW001 and IN006 Lc to Ne gained; DE001 and RO006 Lo to Ne lost), units 202 to 203, fall-throughs 135 to 134 (FR009 to Lg, E7), provisional units 332 to 297 and firm units 244 to 274 (R12: the Ferric, Acric and Ferralic units no longer undecided). R14 also moves NA008, NA002 and AU023 to Lk and CU008 Hh to Kk in 1974, TR007 to VRk, NA002 to LVk, US014 to SNk and BJ003, CN009 to CLh in 1988; R13 leaves 9 labels provisional. Cerrado phase present on 4 of the 7 labelled profiles (BR015, BR024, BR025, BR026), none unlabelled; other phases unchanged.</li>
+<li>
+<strong>Canonical fixtures, examples and near misses</strong>: in 1974 the Retisol becomes Eutric Nitosols (above), the Luvisol stays Orthic Luvisols with grade C to A (units:Lf decided), and the Cambisol, Cambissolo and Vertisol lose units:Bf from their undecided list (still Eutric Cambisols, C past Z); in 1988 the Chernozem, Chernossolo (CH) and Kastanozem (CL) gain an undecided grouping. No example or near miss changes.</li>
+<li>Tests: <code>test-v09439-fao-readers.R</code>. <code>test-v09435-fao-grade.R</code>: the 1974 case of an undecided unit before the name reads the Podzol canonical, since the Luvisol one is now firm (R12).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.438" id="soilkey-09438">soilKey 0.9.438<a class="anchor" aria-label="anchor" href="#soilkey-09438"></a></h2>
 <p>The diagnostics and key of the Revised Legend (1988) follow the text where the audit of the FAO legends found them off (C4, C5) and take the readings Hugo decided, option (a) of R6 to R9, R11 and R15 (FAO audit, 2026-11-24), the fourth of its six PRs; the 1988 key-level predicates carry their stand-ins (the G1 gap of 1988).</p>
