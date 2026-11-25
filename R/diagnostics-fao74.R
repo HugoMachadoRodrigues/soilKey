@@ -109,10 +109,16 @@
       if (is.null(si) || !inherits(si, "DiagnosticResult") || is.na(si$passed)) next
       sl <- as.integer(si$layers)
       if (isTRUE(si$passed)) {
-        # the stand-in's layers held to the upper limit, buried layers out
+        # the stand-in's layers held to the upper limit, buried layers out,
+        # and to the layers of the units the 1974 reader left undecided: a
+        # layer it decided is not that horizon stays so (FAO audit A5, Hugo
+        # 2026-11-24; 0.9.436). An undecided answer without layers decided
+        # no layer and holds the stand-in to nothing more.
         pos <- match(sl, x$idx)
         keep <- !is.na(pos) & !is.na(x$top[pos]) & x$top[pos] <= max_top_cm &
           !(x$buried[pos] %in% TRUE)
+        und <- unique(unlist(lapply(units, `[[`, "layers")))
+        if (length(und)) keep <- keep & pos %in% und
         sl <- sl[keep]
         if (!length(sl)) next
       }
@@ -579,7 +585,8 @@ natric_b_fao74 <- function(pedon, max_top_cm = 125) {
 # weatherable minerals other than muscovite (weatherable_minerals_pct less
 # muscovite_pct; muscovite not recorded, the total, flagged), or more than 6
 # % muscovite; (4) alteration: more clay, a stronger chroma or a redder hue
-# than the layer below; the removal of carbonates (as 1988); or the colours
+# than the layer below, unless that layer belongs to an argillic or natric B
+# (0.9.436); the removal of carbonates (as 1988); or the colours
 # of reduction (moist chroma 2 or less with mottles; without mottles below 1
 # at a value below 4, 1 or less at 4 or more); (5) its base 25 cm or more
 # below the surface. No minimum thickness.
@@ -618,10 +625,19 @@ natric_b_fao74 <- function(pedon, max_top_cm = 125) {
     red <- ifelse(is.na(col$cm), NA,
                   ifelse(mo, col$cm <= 2, ifelse(is.na(col$vm), NA,
                          ifelse(col$vm < 4, col$cm < 1, col$cm <= 1))))
+    # a layer below that belongs to an argillic or natric B is no reference
+    # for alteration: more clay, a stronger chroma or a redder hue than an
+    # illuvial horizon is no evidence (FAO audit R2, Hugo 2026-11-24;
+    # 0.9.436). Only a layer decided outside them is a reference: one in an
+    # undecided argillic or natric B is not either, since an undecided
+    # comparison would hand the cambic B to its WRB stand-in, which reads
+    # the layer below as any other
+    illu <- .f88_or(.f88_member(x, .f74_hz_argillic_natric(x, FALSE)$units),
+                    .f88_member(x, .f74_hz_argillic_natric(x, TRUE)$units))
     c4 <- rep(NA, n)
     for (i in seq_len(n)) {
       nb <- if (i < n) i + 1L else NA_integer_
-      a <- if (is.na(nb)) NA else if (x$rock[nb]) FALSE else
+      a <- if (is.na(nb)) NA else if (x$rock[nb] || !isFALSE(illu[nb])) FALSE else
         .f88_or(.f88_cmp(col$cm[i] - col$cm[nb], ">", 0),
                 .fao_hue_cmp(col$hue[i], col$hue[nb], "redder"),
                 .f88_cmp(clay[i] - clay[nb], ">", 0))
@@ -686,6 +702,10 @@ spodic_b_fao74 <- function(pedon, max_top_cm = 125) {
 # mostly gradual or diffuse boundaries between its subhorizons: the recorded
 # internal boundaries, more than half of them abrupt or clear fails; none
 # recorded passes, flagged (soilKey's reading); (7) rock structure below 5 %.
+# Items (1) and (6) are not monotone (a run that passes alone may fail with
+# the layer below it across a clear boundary), so the contiguous sub-runs of
+# the candidate layers are tested, not only the whole run
+# (.f74_subrun_units(); FAO audit A2, 0.9.436).
 .f74_hz_oxic <- function(x) {
   .f88_memo(x, "oxic74", function() {
     if (!x$n) return(list(units = list()))
@@ -707,16 +727,18 @@ spodic_b_fao74 <- function(pedon, max_top_cm = 125) {
     c7 <- .f88_cmp(rs$value, "<", 5)
     ok <- .f88_unburied(x, .f88_and(.f88_b_layer(x), .f88_not(excl), c2, c3, c4, c5, c7))
     bd <- .field_term(.fao_col(x$h, "boundary_distinctness", "character"))
-    bflags <- character(0)
-    units <- .f88_units(x, ok, function(r) {
+    inner_b <- function(r) {
+      b <- bd[r$layers[-length(r$layers)]]
+      b[!is.na(b) & nzchar(b)]
+    }
+    units <- .f74_subrun_units(x, ok, function(r) {
       if (r$thickness < 30) return(FALSE)
-      inner <- r$layers[-length(r$layers)]
-      b <- bd[inner]; b <- b[!is.na(b) & nzchar(b)]
-      if (!length(inner)) return(TRUE)
-      if (!length(b)) { bflags <<- c(bflags, "oxic_internal_boundaries_not_recorded"); return(TRUE) }
-      sharp <- sum(grepl("abrupt|clear|clara", b))
-      sharp <= length(b) / 2
+      b <- inner_b(r)
+      if (!length(b)) return(TRUE)
+      sum(grepl("abrupt|clear|clara", b)) <= length(b) / 2
     })
+    bflags <- if (any(vapply(units, function(u) length(u$layers) > 1L && !length(inner_b(u)), NA)))
+      "oxic_internal_boundaries_not_recorded"
     L <- which(!(ok %in% FALSE))
     miss <- c(if (anyNA(c2[L])) c("cec_cmol (cec_method nh4cl)", "al_kcl_cmol"),
               if (anyNA(c3[L])) "cec_cmol",
@@ -732,6 +754,40 @@ spodic_b_fao74 <- function(pedon, max_top_cm = 125) {
   })
 }
 
+# Units from a per-layer criterion whose run test is not monotone: in each
+# run of sure layers, and in each run of sure and undecided layers that holds
+# an undecided one (as .f88_units()), every contiguous sub-run is tested and
+# one unit is kept per run: a sure one before an undecided one, then the
+# uppermost, then the thickest (FAO audit A2, Hugo 2026-11-24; 0.9.436).
+.f74_subrun_units <- function(x, ok, test_run) {
+  ok <- as.logical(ok)
+  best <- function(r, sure) {
+    L <- r$layers; k <- length(L); cand <- list()
+    for (i in seq_len(k)) for (j in seq.int(i, k)) {
+      s <- L[i:j]
+      u <- list(layers = s, top = x$top[s[1L]], bottom = x$bot[s[length(s)]],
+                thickness = x$bot[s[length(s)]] - x$top[s[1L]])
+      v <- test_run(u)
+      if (!isFALSE(v)) cand[[length(cand) + 1L]] <- c(u, list(status = if (isTRUE(v) && sure) TRUE else NA))
+    }
+    if (!length(cand)) return(NULL)
+    o <- order(!vapply(cand, function(u) isTRUE(u$status), NA),
+               vapply(cand, `[[`, 0, "top"), -vapply(cand, `[[`, 0, "thickness"))
+    cand[[o[1L]]]
+  }
+  out <- list()
+  for (r in .f88_run_list(x, ok %in% TRUE)) {
+    b <- best(r, TRUE)
+    if (!is.null(b)) out[[length(out) + 1L]] <- b
+  }
+  for (r in .f88_run_list(x, !(ok %in% FALSE))) {
+    if (all(ok[r$layers] %in% TRUE)) next
+    b <- best(r, FALSE)
+    if (!is.null(b)) out[[length(out) + 1L]] <- b
+  }
+  out
+}
+
 oxic_b_fao74 <- function(pedon, max_top_cm = 125) {
   x <- .f74_ctx(pedon)
   .f74_result(x, "oxic_b", .f74_hz_oxic(x), max_top_cm)
@@ -741,8 +797,9 @@ oxic_b_fao74 <- function(pedon, max_top_cm = 125) {
 # --- calcic and gypsic horizons (p. 27) ---------------------------------------------------
 
 # The calcic horizon of 1988 (Appendix 4: unchanged; the 74 p. 27 numbers
-# are the same: 15 cm, 15 % CaCO3 equivalent, 5 % more than the C, no
-# decrease needed over 40 % material).
+# are the same: 15 cm, 15 % CaCO3 equivalent, no decrease needed over 40 %
+# material), with the 5 % more compared with the C horizon, not with any
+# deeper horizon as in 1988 (.f88_calcic_layer(); 0.9.436).
 calcic_fao74 <- function(pedon, max_top_cm = 125) {
   x <- .f74_ctx(pedon)
   .f74_result(x, "calcic", .f88_hz_calcic(x), max_top_cm)
@@ -1263,7 +1320,9 @@ high_salinity_fao74 <- function(pedon) {
 # (4) the colours of reduction, by the kind of soil (74 pp. 29-30), the first
 #     that applies: 4.1 a spodic B; 4.2 a mollic A; 4.3 an argillic B right
 #     below an Ap or an A of rubbed moist value below 3.5; 4.4 an oxic B; 4.5
-#     other soils. The saturation the text names is not tested: the colours
+#     other soils, an A of moist value below 3.5 not read (0.9.436). Items
+#     3 and 4 are not read on H and O layers (0.9.436). The saturation the
+#     text names is not tested: the colours
 #     are its evidence (soilKey's reading, as Q21 for 1988). Mottles are
 #     mottles recorded (.f88_mottles()); "distinct or prominent" is the
 #     mottle_contrast. The waivers for red parent materials and the colours
@@ -1420,6 +1479,10 @@ high_salinity_fao74 <- function(pedon) {
              ifelse(red45 %in% FALSE, FALSE, NA)))
     b45 <- ifelse(coarse %in% FALSE, fine45, ifelse(coarse %in% TRUE, crs45, NA))
     b45 <- as.logical(b45)
+    # an A of moist value below 3.5 is not read, as 4.3 and 4.4 read the
+    # colours below such an A (FAO audit R3, Hugo 2026-11-24; 0.9.436)
+    dark_a <- !is.na(x$master) & grepl("^A", x$master) & !is.na(vm) & vm < 3.5
+    b45[dark_a] <- FALSE
     # the first kind that applies chooses the branch; an undecided kind (a
     # spodic, argillic or oxic B or a mollic A left undecided) is read both
     # ways and a layer is decided where every reading agrees, else undecided
@@ -1431,6 +1494,12 @@ high_salinity_fao74 <- function(pedon) {
     branches <- unique(apply(combos, 1L, function(r) { w <- which(unlist(r)); if (length(w)) w[1L] else 5L }))
     vals <- do.call(cbind, bl[branches])
     i4 <- apply(vals, 1L, function(v) if (all(v %in% TRUE)) TRUE else if (all(v %in% FALSE)) FALSE else NA)
+    # items 3 and 4 are colours of mineral horizons: an H or O layer
+    # (designated so, or organic by 74 p. 21) is not read there; the histic
+    # H has its own item (FAO audit A6, Hugo 2026-11-24; 0.9.436)
+    ho <- (!is.na(x$master) & grepl("^(H|O)", x$master)) | (.f88_organic(x)$value %in% TRUE)
+    i3[ho] <- FALSE
+    i4[ho] <- FALSE
     v <- .f88_or(i1, i2, i3, i4)
     flag <- .f88_addf(flag, i4 %in% TRUE & !(i1 | i2 %in% TRUE), "colours_read_as_evidence_of_saturation")
     if (length(branches) > 1L)

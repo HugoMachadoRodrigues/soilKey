@@ -476,7 +476,11 @@ test_that("oxic B: 30 cm, retention and CEC per 100 g clay, traces, texture, bou
   expect_false(.ok(oxic_b_fao74(ox(wm = 3.1))))
   # internal boundaries mostly gradual or diffuse
   expect_true(.ok(oxic_b_fao74(ox(two = TRUE, bnd = "gradual"))))
-  expect_false(.ok(oxic_b_fao74(ox(two = TRUE, bnd = "abrupt"))))
+  # an abrupt boundary fails the two layers as one horizon; since 0.9.436
+  # (FAO audit A2) the sub-runs are tested and Bo1 (30 cm) passes alone
+  r <- oxic_b_fao74(ox(two = TRUE, bnd = "abrupt"))
+  expect_true(.ok(r))
+  expect_identical(as.integer(r$layers), 2L)
   r <- oxic_b_fao74(ox(two = TRUE, bnd = NA))
   expect_true(.ok(r))
   expect_true("oxic_internal_boundaries_not_recorded" %in% r$evidence$flags)
@@ -679,10 +683,18 @@ test_that("review fixes: histic H, swelling clays, spodic depth, natric exclusio
              clay_pct = c(12, 12, NA, 20), silt_pct = 20, sand_pct = c(68, 68, NA, 60),
              oc_pct = c(1.5, .4, .3, .2), clay_films_amount = c(NA, NA, "common", NA))
   local({
+    testthat::local_mocked_bindings(argillic_usda = fake(TRUE, "argillic_usda", 3L),
+                                    argic = fake(NA, "argic"))
+    expect_false(.ok(argillic_b_fao74(lp, max_top_cm = 25)))
+    expect_true(.ok(argillic_b_fao74(lp, max_top_cm = 35)))
+    expect_true(.ok(argillic_b_fao74(lp)))
+  })
+  # since 0.9.436 (FAO audit A5) also held to the undecided 1974 layers: a
+  # stand-in passing only on the C (not in the undecided Bt) is not taken
+  local({
     testthat::local_mocked_bindings(argillic_usda = fake(TRUE, "argillic_usda", 4L),
                                     argic = fake(NA, "argic"))
-    expect_true(is.na(.ok(argillic_b_fao74(lp, max_top_cm = 35))))
-    expect_true(.ok(argillic_b_fao74(lp)))
+    expect_true(is.na(.ok(argillic_b_fao74(lp))))
   })
   # cambic: a CEC by NH4Cl above 16 decides, 16 or less leaves it undecided
   cb <- function(cec) .p74(top_cm = c(0, 15, 25), bottom_cm = c(15, 25, 120), designation = c("A", "Bw", "C"),
