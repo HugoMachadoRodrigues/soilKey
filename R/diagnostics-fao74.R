@@ -1181,10 +1181,17 @@ amorphous_complex_fao74 <- function(pedon, max_top_cm = NULL, window_cm = NULL) 
 # NH4Cl CEC, flagged), "respectively" (p. 28; Hugo, 2026-11-09): in some
 # subhorizon of the cambic B (of 1974) for the Cambisols (kind "cambisol"),
 # in the horizon right below the A for the Arenosols (kind "arenosol").
-ferralic_properties_fao74 <- function(pedon, kind = c("cambisol", "arenosol"), max_top_cm = NULL) {
+# `gate_b = TRUE` (the Ferralic Cambisols; FAO audit R1, Hugo 2026-11-24,
+# 0.9.437): the subhorizons of the cambic B the group gate accepted
+# (.f74_gate_b()), its stand-ins carried; when that B is not accepted, the
+# cambic B of 1974 as above.
+ferralic_properties_fao74 <- function(pedon, kind = c("cambisol", "arenosol"), max_top_cm = NULL,
+                                      gate_b = FALSE) {
   kind <- match.arg(kind)
   .f74_pr_layers(pedon, "ferralic_properties", function(x) {
     cb <- if (kind == "cambisol") .f88_in_units(x, .f74_hz_cambic(x)) else rep(FALSE, x$n)
+    g <- if (kind == "cambisol" && isTRUE(gate_b)) .f74_gate_b(x, "cambic_b")
+    if (isTRUE(g$passed)) { cb <- rep(FALSE, x$n); cb[g$layers] <- TRUE }
     below_a <- rep(FALSE, x$n)
     a <- .f88_a_run(x)
     if (kind == "arenosol" && !is.null(a)) {
@@ -1195,6 +1202,7 @@ ferralic_properties_fao74 <- function(pedon, kind = c("cambisol", "arenosol"), m
     v <- .f88_and(.f88_or(cb, below_a), .f88_cmpr(cc$value, "<", 24))
     flag <- .f88_addf(cc$flags, below_a & !(cb %in% TRUE), "horizon_below_a")
     list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag, missing = cc$missing,
+         stand_in = if (isTRUE(g$passed)) g$stand_in,
          evidence = list(kind = kind, cambic = cb, below_a = below_a))
   }, max_top_cm)
 }
@@ -1236,8 +1244,11 @@ gilgai_fao74 <- function(pedon) {
 # over 100 cm (an O horizon excluded: the 100 cm start below it); the depth
 # below a soil on rock counts as zero, as the strongly humic soils of 1988
 # (soilKey's reading). "acrisol": that, or 1.5 % organic matter or more in
-# the upper part of the B (the first layer of the argillic B of 1974).
-high_om_b_fao74 <- function(pedon, kind = c("ferralsol_nitosol", "acrisol")) {
+# the upper part of the B (the first layer of the argillic B of 1974; with
+# `gate_b = TRUE`, the Humic Acrisols, of the argillic B the group gate
+# accepted, its stand-ins carried when that layer decides: FAO audit R1,
+# Hugo 2026-11-24, 0.9.437).
+high_om_b_fao74 <- function(pedon, kind = c("ferralsol_nitosol", "acrisol"), gate_b = FALSE) {
   kind <- match.arg(kind)
   x <- .f74_ctx(pedon)
   id <- "high_om_b"
@@ -1253,10 +1264,17 @@ high_om_b_fao74 <- function(pedon, kind = c("ferralsol_nitosol", "acrisol")) {
   lay <- w$layers %||% integer(0)
   flags <- c(w$flags, "om_from_oc_x1.724", if (any(o)) "o_horizon_excluded")
   upper_b <- NA
+  si <- character(0)
   if (kind == "acrisol") {
     ar <- .f74_hz_argillic_natric(x, FALSE)
     us <- Filter(function(u) isTRUE(u$status), ar$units)
-    if (length(us)) {
+    g <- if (isTRUE(gate_b)) .f74_gate_b(x, "argillic_b")
+    if (isTRUE(g$passed)) {
+      i <- g$layers[1L]
+      upper_b <- .f88_cmpr(.fao_om(.f88_num(x, "oc_pct")[i])$value, ">=", 1.5)
+      if (isTRUE(upper_b)) lay <- i
+      if (!isTRUE(v)) { si <- g$stand_in; flags <- c(flags, g$flags) }
+    } else if (length(us)) {
       i <- us[[1L]]$layers[1L]
       upper_b <- .f88_cmpr(.fao_om(.f88_num(x, "oc_pct")[i])$value, ">=", 1.5)
       if (isTRUE(upper_b)) lay <- i
@@ -1264,7 +1282,7 @@ high_om_b_fao74 <- function(pedon, kind = c("ferralsol_nitosol", "acrisol")) {
     v <- .f88_or(v, upper_b)
   }
   st <- list(value = v, layers = if (isFALSE(v)) integer(0) else lay)
-  .f74_pr_result(x, id, st, flags = flags, missing = c(w$missing, "oc_pct"),
+  .f74_pr_result(x, id, st, flags = flags, missing = c(w$missing, "oc_pct"), stand_in = si,
                  evidence = list(kind = kind, om_weighted_100cm = om, om_upper_b = upper_b),
                  window_cm = c(t0, t0 + 100))
 }

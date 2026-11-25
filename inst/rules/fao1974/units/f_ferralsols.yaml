@@ -22,7 +22,7 @@ units:
       page: 47
       tests:
         all_of:
-          - b_bs_below_fao74: {kind: oxic_b, lt: 50, to_cm: 100}
+          - b_bs_below_fao74: {kind: oxic_b, lt: 50, to_cm: 100, gate_b: true}
           - any_of:
               - umbric_a_fao74: {}
               - high_om_b_fao74: {kind: ferralsol_nitosol}
@@ -33,7 +33,7 @@ units:
       name_pt: "Ferralsolos Ácricos (Acric Ferralsols)"
       page: 47
       tests:
-        all_of: [{property_in_b_fao74: {property: acric, kind: oxic_b, to_cm: 125}}]
+        all_of: [{property_in_b_fao74: {property: acric, kind: oxic_b, to_cm: 125, gate_b: true}}]
       notes: "A CEC (from NH4Cl) of 1.5 me or less per 100 g clay in at least some part of the B within 125 cm."
 
     - code: "Fr"
@@ -41,7 +41,7 @@ units:
       name_pt: "Ferralsolos Ródicos (Rhodic Ferralsols)"
       page: 47
       tests:
-        all_of: [{b_colour_fao74: {colour: rhodic, kind: oxic_b}}]
+        all_of: [{b_colour_fao74: {colour: rhodic, kind: oxic_b, gate_b: true}}]
       notes: "A red to dusky red B: rubbed hue redder than 5YR, moist value below 4, dry value no more than one unit above the moist one."
 
     - code: "Fx"
@@ -49,7 +49,7 @@ units:
       name_pt: "Ferralsolos Xânticos (Xanthic Ferralsols)"
       page: 47
       tests:
-        all_of: [{b_colour_fao74: {colour: xanthic, kind: oxic_b}}]
+        all_of: [{b_colour_fao74: {colour: xanthic, kind: oxic_b, gate_b: true}}]
       notes: "A yellow to pale yellow B: rubbed hue 7.5YR or yellower, moist value 4 or more, moist chroma 5 or more."
 
     - code: "Fo"

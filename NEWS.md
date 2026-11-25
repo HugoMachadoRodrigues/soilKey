@@ -1,3 +1,52 @@
+# soilKey 0.9.437
+
+The units and phases of the Legend of 1974 take three readings Hugo
+decided, option (a) of R1, R4 and R5 with the defect B3 (FAO audit,
+2026-11-24), the third of its six PRs. The petroferric phase of the Revised
+Legend (1988) follows too: its text (p. 68) says what the 1974 text says,
+and the two editions share the reader.
+
+* **Unit gates read the B the group gate accepted** (74 pp. 32, 47-53; R1
+  (a)). The units that read the B of their group (Fh, Fa, Fr, Fx; Dd; Nh,
+  Nd; Lc; Bd, Bc, Bf; Ph, Pf; the upper B of Ah) take the oxic, argillic,
+  cambic or spodic B the group gate accepted (`.f74_gate_b()`, argument
+  `gate_b: true` in `inst/rules/fao1974/units/`): the upper unit the 1974
+  reader decided or, when a USDA or WRB reader stood in, the layers the
+  stand-in accepted; the ferralic properties of the Cambisols and the high
+  organic matter of the Acrisols read the same B. The answer on that B
+  stands, and the stand-ins it rests on travel with the unit (grade C, as
+  0.9.435 grades a stand-in). Up to 0.9.436 a B the group took from a
+  stand-in was undecided again at the unit, and the soil fell to the
+  residual unit (Fo, Be, Lo, Ao). The gate of the Acrisols still reads the
+  1974 B, so no group changes.
+* **Luvic units with a calcic or gypsic horizon above the B** (74 pp.
+  35-36, 49-51; R4 (a)). In Cl, Kl, Xl and Yl the calcic or gypsic horizon
+  may only underlie the argillic B (`luvic_b_fao74()`): one starting above
+  it sends the soil on to the Calcic or Gypsic unit; one undecided there
+  leaves the Luvic unit undecided (KE063 Luvic to Calcic Yermosol).
+* **Petroferric phase** (74 p. 6, p. 68; B3, R5 (a)). The indurated layer
+  with little or no organic matter: a layer recorded weaker than strongly
+  cemented, a layer of the spodic B, a thin iron (placic) pan and a layer
+  designated with h are no longer petroferric (`.f88ph_petroferric()`,
+  both editions). No organic carbon limit (the text gives none).
+* The readings are recorded in `inst/rules/fao1974/readings.yaml` (R1, R4,
+  R5; version 0.9.437) and the petroferric one in
+  `inst/rules/fao1988/readings.yaml`; the `reads` of the petroferric phase
+  in both `phases.yaml`.
+* **ISIS reference profiles** (`inst/benchmarks/fao_isis.R`): 1974 units
+  183 to 201 of 796 (24 gained, 6 lost: ZW008, CR009, MY001, CO002, ID044,
+  ID004, Orthic Ferralsols of the labels now Humic or Xanthic); 63 labels
+  change unit (61 by R1 on a stand-in B, PL013 by R1 on a decided B below
+  an undecided one, KE063 by R4); groupings unchanged (338); 1988 groupings
+  and units unchanged. Petroferric phase present on 27 to 10 profiles in
+  1974 and 24 to 10 in 1988; the two labelled ones found (BF001, ML007 in
+  1974; ML007, NG027 in 1988) stay found; all those dropped are unlabelled.
+* **Canonical fixtures and the 1974 examples and near misses**: no change
+  (names, grades, phases).
+* Tests: `test-v09437-fao74-units.R`. `test-v09386-fao88-phases.R`: a Bsm
+  (a cemented spodic B) is no longer petroferric; the designation path is
+  tested on a Bvm.
+
 # soilKey 0.9.436
 
 The diagnostics of the Legend of 1974 follow the text where the audit of the
