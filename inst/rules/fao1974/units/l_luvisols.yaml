@@ -61,7 +61,7 @@ units:
       name_pt: "Luvissolos Crômicos (Chromic Luvisols)"
       page: 52
       tests:
-        all_of: [{b_colour_fao74: {colour: chromic, kind: argillic_b}}]
+        all_of: [{b_colour_fao74: {colour: chromic, kind: argillic_b, gate_b: true}}]
       notes: "A strong brown to red B: rubbed hue 7.5YR with a chroma above 4, or a hue redder than 7.5YR."
 
     - code: "Lo"

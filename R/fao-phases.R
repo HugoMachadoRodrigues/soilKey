@@ -197,7 +197,13 @@
 # of 50 or more, pan_type ironstone or ferricrete, or a designation with m
 # and v, c or s (thicker than a placic pan of 2.5 cm); a layer cemented by
 # carbonates, gypsum or silica (designation km, ym, qm, or pan_type calcrete,
-# gypcrete, silcrete, duripan) is not petroferric.
+# gypcrete, silcrete, duripan) is not petroferric. Both editions (74 p. 6,
+# p. 68: the same text) ask an indurated layer with little or no organic
+# matter, set apart from a thin iron pan and an indurated spodic B: a layer
+# recorded weaker than strongly cemented, a layer of the spodic B, a thin
+# iron (placic) pan and a layer designated with h are not petroferric (FAO
+# audit B3 and R5 (a), Hugo 2026-11-24; 0.9.437). The 1974 phase reads this
+# reader.
 .f88ph_iron_desg <- function(x) {
   suf <- sub("^[0-9]*[A-Z]+(/[A-Z]+)?", "", .fao_col(x$h, "designation", "character"))
   th <- x$bot - x$top
@@ -215,8 +221,19 @@
   excl <- function(x) {
     suf <- sub("^[0-9]*[A-Z]+(/[A-Z]+)?", "", .fao_col(x$h, "designation", "character"))
     pan <- .f88_chr(x, "pan_type")
-    (!is.na(suf) & grepl("m", suf) & grepl("[kyq]", suf)) |
+    cem <- .f88_chr(x, "cementation_class")
+    other <- (!is.na(suf) & grepl("m", suf) & grepl("[kyq]", suf)) |
       (!is.na(pan) & grepl("calcrete|gypcrete|silcrete|duripan|petrocalcic|petrogypsic", pan))
+    # indurated, with little or no organic matter (FAO audit B3 and R5 (a),
+    # Hugo 2026-11-24; 0.9.437): not a layer recorded weaker than strongly
+    # cemented, nor a layer of the spodic B of the edition, a thin iron
+    # (placic) pan or a layer designated with h, which the text sets apart
+    # by their organic matter
+    weak <- !is.na(cem) & grepl("weak|moder|^none|^non|^not|^un", cem)
+    spodic <- .f88_member(x, .f88_hz_spodic_b(x)$units) %in% TRUE
+    thin <- .f74_hz_thin_pan(x)$value %in% TRUE
+    humus <- !is.na(suf) & grepl("h", suf)
+    other | weak | spodic | thin | humus
   }
   .f88ph_pan(x, "petroferric", a$within_cm, petroferric_contact_usda, iron_pan,
              desg_re = .f88ph_iron_desg, wrb_fun = petroplinthic, wrb_name = "petroplinthic",

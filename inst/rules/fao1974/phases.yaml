@@ -89,7 +89,7 @@ phases:
     nature: "horizon"
     criterion: "The upper part of a petroferric horizon (a continuous indurated layer in which iron is an important cement and organic matter is absent or in traces; fractures, if any, 10 cm or more apart) within 100 cm of the surface."
     within_cm: 100
-    reads: "the reader of the petroferric phase of 1988: petroferric_contact_usda() with iron shown, pan_type ironstone or ferricrete, a designation with m and v, c or s, flagged; layers cemented by carbonates, gypsum or silica excluded; the WRB petroplinthic horizon as a stand-in, flagged."
+    reads: "the reader of the petroferric phase of 1988: petroferric_contact_usda() with iron shown, pan_type ironstone or ferricrete, a designation with m and v, c or s, flagged; layers cemented by carbonates, gypsum or silica excluded, and (0.9.437) layers recorded weaker than strongly cemented, layers of the spodic B, thin iron pans and layers designated with h (organic matter); the WRB petroplinthic horizon as a stand-in, flagged."
 
   - id: phreatic
     name: "Phreatic phase"

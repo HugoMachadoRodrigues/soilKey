@@ -443,3 +443,19 @@ readings:
     page: "74 p. 30"
     version: "0.9.436"
     reading: "Amends the reading of 2026-11-09: in branch 4.5 (other soils) a layer designated A (AB, AC included) of moist value below 3.5 is not read for the colours of reduction, as branches 4.3 and 4.4 read the colours below such an A; a humus-dark A with a few mottles no longer makes a soil hydromorphic. Items 3 (the neutral or bluish hue) and 4 (the colours) are not read on H and O layers, designated so or organic by p. 21: the histic H has its own item (FAO audit R3 and A6) (Hugo, 2026-11-24)."
+  # v0.9.437: decisions of 2026-11-24 on the audit of the FAO legends (units and phases)
+  - topic: "Unit gates read the B the group gate accepted"
+    edition: [1974]
+    page: "74 pp. 32, 47-53"
+    version: "0.9.437"
+    reading: "A unit gate that reads the B horizon of its group (the Humic, Acric, Rhodic and Xanthic Ferralsols; the Dystric Podzoluvisols; the Humic and Dystric Nitosols; the Chromic Luvisols; the Dystric, Chromic and Ferralic Cambisols; the Humic and Ferric Podzols; the upper part of the B of the Humic Acrisols) reads the oxic, argillic, cambic or spodic B the group gate accepted, not the 1974 reader again: the upper unit the reader decided, or, when the reader was undecided and a USDA or WRB reader stood in, the layers the stand-in accepted. The answer read on that B stands as it is, and the stand-ins it rests on travel with the unit, which then has the lower grade (C) of a stand-in. Up to 0.9.436 a B the group took from a stand-in was undecided again at the unit, so the unit could only fail or stay undecided and the soil fell to the residual unit (Orthic Ferralsols, Eutric Cambisols, Orthic Luvisols, Orthic Acrisols). A B accepted with no layer within the depth the unit names (100 cm for the Humic Ferralsols) has no part there. The gate of the Acrisols still reads the 1974 B (FAO audit R1, option a) (Hugo, 2026-11-24)."
+  - topic: "Luvic units: the calcic or gypsic horizon only below the argillic B"
+    edition: [1974]
+    page: "74 pp. 35-36, 49-51"
+    version: "0.9.437"
+    reading: "In the Luvic Chernozems, Kastanozems, Xerosols and Yermosols the key's words that a calcic or gypsic horizon may underlie the argillic B are a condition, as the Calcic and Gypsic units are defined: a calcic or gypsic horizon starting within 125 cm whose top lies above the top of the argillic B sends the soil on to the next units (Calcic or Gypsic). One undecided whose candidate layers start above the B leaves the Luvic unit undecided; one starting at the top of the B or below it is allowed (luvic_b_fao74(); FAO audit R4, option a) (Hugo, 2026-11-24)."
+  - topic: "Petroferric phase: indurated, little or no organic matter"
+    edition: [1974, 1988]
+    page: "74 p. 6; p. 68"
+    version: "0.9.437"
+    reading: "The petroferric layer is indurated and holds little or no organic matter, which sets it apart from a thin iron pan and an indurated spodic B; the text gives no number. Read by structure: a layer recorded weaker than strongly cemented (none, weakly, moderately), a layer of the spodic B, a thin iron or placic pan and a layer designated with h are not petroferric, whatever the USDA predicate, the pan kind, the designation or the WRB stand-in show. No organic carbon limit is used. The 1988 text (p. 68) says the same, so the shared reader of both editions reads it so (FAO audit B3 and R5, option a) (Hugo, 2026-11-24)."

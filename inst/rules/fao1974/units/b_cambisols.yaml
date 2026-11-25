@@ -55,7 +55,7 @@ units:
       name_pt: "Cambissolos Ferrálicos (Ferralic Cambisols)"
       page: 53
       tests:
-        all_of: [{ferralic_properties_fao74: {kind: cambisol}}]
+        all_of: [{ferralic_properties_fao74: {kind: cambisol, gate_b: true}}]
       notes: "A cambic B horizon with ferralic properties."
 
     - code: "Bd"
@@ -63,7 +63,7 @@ units:
       name_pt: "Cambissolos Distróficos (Dystric Cambisols)"
       page: 53
       tests:
-        all_of: [{b_bs_below_fao74: {kind: cambic_b, lt: 50, to_cm: 125}}]
+        all_of: [{b_bs_below_fao74: {kind: cambic_b, lt: 50, to_cm: 125, gate_b: true}}]
       notes: "A base saturation (NH4OAc) below 50 % in at least some part of the B (no depth in the key: within 125 cm, Q10)."
 
     - code: "Bc"
@@ -71,7 +71,7 @@ units:
       name_pt: "Cambissolos Crômicos (Chromic Cambisols)"
       page: 53
       tests:
-        all_of: [{b_colour_fao74: {colour: chromic, kind: cambic_b}}]
+        all_of: [{b_colour_fao74: {colour: chromic, kind: cambic_b, gate_b: true}}]
       notes: "A strong brown to red B: rubbed hue 7.5YR with a chroma above 4, or a hue redder than 7.5YR."
 
     - code: "Be"

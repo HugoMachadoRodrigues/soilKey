@@ -501,9 +501,27 @@ upper_b_fao74 <- function(pedon, kind = .F74_B_KINDS) {
 # horizons of 1974 (the uppermost unit decides; when it is undecided and a
 # sure B lies below it, the answer stands only where both agree; with no
 # such B, the layers designated B, flagged).
-.f74_b_eval <- function(x, kind = .F74_B_KINDS, to_cm = 125, fun) {
+#
+# `gate_b = TRUE` (a unit gate; FAO audit R1, Hugo 2026-11-24, 0.9.437):
+# the B is the one the group gate accepted (.f74_gate_b()), when the 1974
+# reader of `kind` passes: its layers starting within `to_cm` are read and
+# the answer stands as it is; none of them within `to_cm`, no part of that B
+# lies there (FALSE). The stand-ins that B rests on travel in `stand_in`.
+# When the reader does not pass (a predicate called outside its group), as
+# above.
+.f74_b_eval <- function(x, kind = .F74_B_KINDS, to_cm = 125, fun, gate_b = FALSE) {
   kind <- match.arg(kind)
   clip <- function(L) L[!is.na(x$top[L]) & x$top[L] <= to_cm]
+  if (isTRUE(gate_b)) {
+    g <- .f74_gate_b(x, kind)
+    if (isTRUE(g$passed)) {
+      L <- clip(g$layers)
+      if (!length(L))
+        return(list(value = FALSE, layers = integer(0), none = FALSE, stand_in = g$stand_in,
+                    flags = c(g$flags, sprintf("gate_%s_below_%s_cm", kind, format(to_cm)))))
+      return(list(value = fun(L), layers = L, flags = g$flags, none = FALSE, stand_in = g$stand_in))
+    }
+  }
   u <- Filter(function(z) !is.na(z$top) && z$top <= to_cm, .f74_b_units(x, kind))
   if (!length(u)) {
     bd <- which(!is.na(x$master) & grepl("^B", x$master) & !x$rock & !is.na(x$top) & x$top <= to_cm)
@@ -525,6 +543,42 @@ upper_b_fao74 <- function(pedon, kind = .F74_B_KINDS) {
   same <- identical(as.logical(v1), as.logical(v2))
   list(value = if (same) v2 else NA, layers = if (same) L2 else c(L1, L2),
        flags = if (!same) "undecided_b_above_decides", none = FALSE)
+}
+
+# The B of `kind` the group gate accepted (FAO audit R1, Hugo 2026-11-24;
+# 0.9.437): the 1974 reader of that B as the gate calls it (within 125 cm).
+# When it passes on a unit it decided, the upper one of those units (the B
+# upper_b_fao74() places); when it passes on a stand-in (the 1974 reader
+# undecided), the layers the stand-in accepted. `stand_in` names the readers
+# that B rests on, so that the unit gate carries them and its lower grade.
+# passed is FALSE or NA when the reader does not pass.
+.f74_gate_b <- function(x, kind = .F74_B_KINDS) {
+  kind <- match.arg(kind)
+  .f88_memo(x, paste0("gate_b74_", kind), function() {
+    r <- switch(kind,
+                argillic_b = argillic_b_fao74(x$pedon),
+                natric_b = natric_b_fao74(x$pedon),
+                cambic_b = cambic_b_fao74(x$pedon),
+                spodic_b = spodic_b_fao74(x$pedon),
+                oxic_b = oxic_b_fao74(x$pedon))
+    if (!isTRUE(r$passed)) return(list(passed = r$passed, layers = integer(0), stand_in = character(0),
+                                       flags = character(0)))
+    si <- .f74_si(r)
+    sure <- Filter(function(u) isTRUE(u$status), .f74_b_units(x, kind))
+    if (length(sure)) {
+      o <- order(vapply(sure, function(z) z$top, 0), -lengths(lapply(sure, `[[`, "layers")))
+      L <- sure[[o[1L]]]$layers
+      fl <- character(0)
+    } else {
+      L <- match(r$layers, x$idx)
+      L <- L[!is.na(L)]
+      fl <- sprintf("%s_of_the_gate_by_stand_in", kind)
+    }
+    L <- L[order(x$top[L])]
+    # a stand-in that passed without layers places no B: as the reader alone
+    if (!length(L)) return(list(passed = NA, layers = integer(0), stand_in = si, flags = fl))
+    list(passed = TRUE, layers = L, stand_in = si, flags = fl)
+  })
 }
 
 
@@ -751,6 +805,44 @@ aridic_lime_fao74 <- function(pedon, kind = c("gypsic", "calcic")) {
                                   gypsic = k$gy$passed, calcic = k$ca$passed))
 }
 
+# The Luvic Chernozems, Kastanozems, Xerosols and Yermosols (Cl, Kl, Xl,
+# Yl; key pp. 49-51): an argillic B (argillic_b_fao74()), where a calcic or
+# gypsic horizon "may underlie the B" is read as a condition, as the Calcic
+# and Gypsic units are defined (74 pp. 35-36; FAO audit R4, Hugo 2026-11-24,
+# 0.9.437): a calcic or gypsic horizon starting within 125 cm whose top lies
+# above the top of the argillic B sends the soil on to the Calcic or Gypsic
+# unit. One decided above fails the unit; one undecided whose candidate
+# layers start above leaves it undecided; one at the top of the B or below
+# it is allowed.
+luvic_b_fao74 <- function(pedon) {
+  x <- .f74_ctx(pedon)
+  pg <- "49-51"
+  if (!x$n) return(.f74_key_result(x, "luvic_b", FALSE, pg))
+  ar <- argillic_b_fao74(pedon)
+  La <- .f88_ctx_rows(x, ar)
+  if (!isTRUE(ar$passed) || !length(La))
+    return(.f74_key_result(x, "luvic_b", if (isTRUE(ar$passed)) NA else ar$passed, pg, layers = La,
+                           missing = c(ar$missing, if (isTRUE(ar$passed)) "top_cm"),
+                           flags = ar$evidence$flags, stand_in = .f74_si(ar),
+                           notes = if (isFALSE(ar$passed)) "no argillic B"))
+  ta <- min(x$top[La], na.rm = TRUE)
+  lime <- list(calcic = calcic_fao74(pedon, max_top_cm = 125), gypsic = gypsic_fao74(pedon, max_top_cm = 125))
+  above <- vapply(lime, function(r) {
+    L <- .f88_ctx_rows(x, r)
+    up <- any(!is.na(x$top[L]) & x$top[L] < ta)
+    if (isTRUE(r$passed)) up else if (is.na(r$passed) && up) NA else FALSE
+  }, NA)
+  value <- .fao_and(TRUE, .f88_not(.fao_or(above[["calcic"]], above[["gypsic"]])))
+  lay <- if (isFALSE(value)) unlist(lapply(lime[above %in% TRUE], function(r) .f88_ctx_rows(x, r))) else La
+  .f74_key_result(x, "luvic_b", value, pg, layers = lay,
+                  missing = if (is.na(value)) unique(unlist(lapply(lime[is.na(above)], function(r) r$missing))),
+                  flags = c(ar$evidence$flags, if (isFALSE(value)) "calcic_or_gypsic_above_the_argillic_b"),
+                  stand_in = if (isFALSE(value)) do.call(.f74_si_any, lime[above %in% TRUE])
+                             else .f74_si(ar, lime$calcic, lime$gypsic),
+                  evidence = list(argillic_top_cm = ta, calcic_above = above[["calcic"]],
+                                  gypsic_above = above[["gypsic"]]))
+}
+
 
 # --- D Podzoluvisols (p. 50) ------------------------------------------------------------------
 
@@ -895,38 +987,40 @@ bs_window_fao74 <- function(pedon, lt = 50, top = 20, bottom = 50, mode = c("som
 # `kind` starting within `to_cm` (.f74_b_eval()): the Acrisols gate and the
 # Humic and Dystric units of the Ferralsols (oxic B, 100 cm), Podzoluvisols
 # and Nitosols (argillic B, 125 cm) and Cambisols (cambic B, no depth: 125
-# cm, Q10).
-b_bs_below_fao74 <- function(pedon, kind = .F74_B_KINDS, lt = 50, to_cm = 125) {
+# cm, Q10). In those unit gates `gate_b = TRUE`: the B the group gate
+# accepted (FAO audit R1, 0.9.437); the Acrisols gate reads the 1974 B.
+b_bs_below_fao74 <- function(pedon, kind = .F74_B_KINDS, lt = 50, to_cm = 125, gate_b = FALSE) {
   kind <- match.arg(kind)
   x <- .f74_ctx(pedon)
   pg <- "47-53"
   if (!x$n) return(.f74_key_result(x, "b_bs_below", FALSE, pg))
   bs <- .f88_bs(x)
-  b <- .f74_b_eval(x, kind, to_cm, function(L) .f88_any(.f88_cmp(bs$value[L], "<", lt)))
+  b <- .f74_b_eval(x, kind, to_cm, function(L) .f88_any(.f88_cmp(bs$value[L], "<", lt)), gate_b)
   L <- b$layers
   if (b$none) return(.f74_key_result(x, "b_bs_below", FALSE, pg, notes = sprintf("no %s", kind)))
   .f74_key_result(x, "b_bs_below", b$value, pg, layers = L,
                   missing = if (is.na(b$value)) c("bs_pct", "diagnostic_b"),
-                  flags = c(b$flags, .f88_flags(bs$flags, L)),
+                  flags = c(b$flags, .f88_flags(bs$flags, L)), stand_in = b$stand_in,
                   evidence = list(kind = kind, lt = lt, to_cm = to_cm, bs = bs$value[L]))
 }
 
 # A property in at least some part of a B starting within `to_cm`: the Acric
 # CEC (acric_cec_fao74(): 1.5 me or less per 100 g clay by NH4Cl) in the oxic
-# B (the Acric Ferralsols).
-property_in_b_fao74 <- function(pedon, property = c("acric"), kind = .F74_B_KINDS, to_cm = 125) {
+# B (the Acric Ferralsols; `gate_b`: the B the group gate accepted, R1).
+property_in_b_fao74 <- function(pedon, property = c("acric"), kind = .F74_B_KINDS, to_cm = 125,
+                                gate_b = FALSE) {
   property <- match.arg(property); kind <- match.arg(kind)
   x <- .f74_ctx(pedon)
   pg <- "47"
   if (!x$n) return(.f74_key_result(x, "property_in_b", FALSE, pg))
   r <- acric_cec_fao74(pedon)
   v <- .f88_values(r, x$n)
-  b <- .f74_b_eval(x, kind, to_cm, function(L) .f88_any(v[L]))
+  b <- .f74_b_eval(x, kind, to_cm, function(L) .f88_any(v[L]), gate_b)
   L <- b$layers
   if (b$none) return(.f74_key_result(x, "property_in_b", FALSE, pg, notes = sprintf("no %s", kind)))
   .f74_key_result(x, "property_in_b", b$value, pg, layers = L[v[L] %in% TRUE],
                   missing = if (is.na(b$value)) r$missing,
-                  flags = c(b$flags, r$evidence$flags),
+                  flags = c(b$flags, r$evidence$flags), stand_in = b$stand_in,
                   evidence = list(property = property, kind = kind, to_cm = to_cm))
 }
 
@@ -940,7 +1034,9 @@ property_in_b_fao74 <- function(pedon, property = c("acric"), kind = .F74_B_KIND
 #     5 or more;
 #   chromic (Lc, Bc): hue 7.5YR with a chroma above 4, or a hue redder than
 #     7.5YR.
-b_colour_fao74 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), kind = .F74_B_KINDS) {
+# In the unit gates `gate_b = TRUE`: the B the group gate accepted (R1).
+b_colour_fao74 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), kind = .F74_B_KINDS,
+                           gate_b = FALSE) {
   colour <- match.arg(colour); kind <- match.arg(kind)
   x <- .f74_ctx(pedon)
   pg <- switch(colour, rhodic = "47", xanthic = "47", chromic = "52-53")
@@ -961,7 +1057,7 @@ b_colour_fao74 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), ki
       eq <- .fao_hue_rank(hue) == .fao_hue_rank("7.5YR")
       .f88_or(.f88_and(eq, .f88_cmp(chr, ">", 4)), .fao_hue_cmp(hue, "7.5YR", "redder"))
     })
-  b <- .f74_b_eval(x, kind, 125, function(L) .f88_all(v[L]))
+  b <- .f74_b_eval(x, kind, 125, function(L) .f88_all(v[L]), gate_b)
   L <- b$layers
   if (b$none) return(.f74_key_result(x, "b_colour", FALSE, pg, notes = sprintf("no %s", kind)))
   if (!any(is.na(col$vd[L]))) dry_flag <- character(0)
@@ -969,6 +1065,7 @@ b_colour_fao74 <- function(pedon, colour = c("rhodic", "xanthic", "chromic"), ki
                   missing = if (is.na(b$value)) c("munsell_hue_moist", "munsell_value_moist", "munsell_chroma_moist",
                                                   if (colour == "rhodic") "munsell_value_dry"),
                   flags = c(b$flags, .f88_flags(rb$flags, L), if (colour == "rhodic") dry_flag),
+                  stand_in = b$stand_in,
                   evidence = list(colour = colour, kind = kind, hue = hue[L], value = val[L], chroma = chr[L]))
 }
 
@@ -1024,8 +1121,9 @@ thin_pan_spodic_fao74 <- function(pedon) {
 # Humic Podzols (Ph, p. 47): a layer of the spodic B with dispersed organic
 # matter (organic carbon above 0, or an h in its designation) that lacks the
 # free iron to turn redder on ignition (ignition_redder, else free iron below
-# 0.5 % of the fine earth, footnote 23, flagged, Q23).
-humic_podzol_fao74 <- function(pedon) {
+# 0.5 % of the fine earth, footnote 23, flagged, Q23). `gate_b`: the spodic
+# B the group gate accepted (R1).
+humic_podzol_fao74 <- function(pedon, gate_b = FALSE) {
   x <- .f74_ctx(pedon)
   pg <- "47"
   if (!x$n) return(.f74_key_result(x, "humic_podzol", FALSE, pg))
@@ -1034,29 +1132,30 @@ humic_podzol_fao74 <- function(pedon) {
   dom <- ifelse(!is.na(oc), oc > 0, ifelse(hs, TRUE, NA))
   ig <- .fao_ignition_redder(x$h)
   v <- .f88_and(dom, .f88_not(ig$value))
-  b <- .f74_b_eval(x, "spodic_b", 125, function(L) .f88_any(v[L]))
+  b <- .f74_b_eval(x, "spodic_b", 125, function(L) .f88_any(v[L]), gate_b)
   L <- b$layers
   if (b$none) return(.f74_key_result(x, "humic_podzol", FALSE, pg, notes = "no spodic B"))
   .f74_key_result(x, "humic_podzol", b$value, pg, layers = L[v[L] %in% TRUE],
                   missing = if (is.na(b$value)) c(ig$missing, "oc_pct"),
-                  flags = c(b$flags, .f88_flags(ig$flags, L)))
+                  flags = c(b$flags, .f88_flags(ig$flags, L)), stand_in = b$stand_in)
 }
 
 # Ferric Podzols (Pf, p. 47): free iron / carbon (fe_dcb_pct / oc_pct) of
 # `min` or more in every layer of the spodic B (both 0: no ratio, fails).
-spodic_fe_oc_fao74 <- function(pedon, min = 6) {
+# `gate_b`: the spodic B the group gate accepted (R1).
+spodic_fe_oc_fao74 <- function(pedon, min = 6, gate_b = FALSE) {
   x <- .f74_ctx(pedon)
   pg <- "47"
   if (!x$n) return(.f74_key_result(x, "spodic_fe_oc", FALSE, pg))
   fe <- .f88_num(x, "fe_dcb_pct"); oc <- .f88_num(x, "oc_pct")
   r <- ifelse(is.na(fe) | is.na(oc), NA_real_,
               ifelse(oc > 0, fe / oc, ifelse(fe > 0, Inf, 0)))
-  b <- .f74_b_eval(x, "spodic_b", 125, function(L) .f88_all(.f88_cmpr(r[L], ">=", min)))
+  b <- .f74_b_eval(x, "spodic_b", 125, function(L) .f88_all(.f88_cmpr(r[L], ">=", min)), gate_b)
   L <- b$layers
   if (b$none) return(.f74_key_result(x, "spodic_fe_oc", FALSE, pg, notes = "no spodic B"))
   .f74_key_result(x, "spodic_fe_oc", b$value, pg, layers = L,
                   missing = if (is.na(b$value)) c("fe_dcb_pct", "oc_pct"),
-                  flags = b$flags, evidence = list(ratio = r[L], min = min))
+                  flags = b$flags, stand_in = b$stand_in, evidence = list(ratio = r[L], min = min))
 }
 
 # Leptic Podzols (Pl, p. 47): no albic E, or only a thin (`albic_max_cm` cm

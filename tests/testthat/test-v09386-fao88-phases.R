@@ -284,7 +284,10 @@ test_that("duripan, fragipan, petroferric and placic phases: within 100 cm", {
   expect_false(.cr386(bk, "petroferric"))
   expect_false(.cr386(pan(90, cementation_class = "indurated", plinthite_pct = 10,
                           coarse_fragments_pct = 60), "petroferric"))
-  expect_true(.cr386(pan(90, designation = "Bsm"), "petroferric"))
+  expect_true(.cr386(pan(90, designation = "Bvm"), "petroferric"))
+  # v0.9.437 (FAO audit B3, R5 (a)): a Bsm is a cemented spodic B (item 1),
+  # which the text sets apart from the petroferric layer
+  expect_false(.cr386(pan(90, designation = "Bsm"), "petroferric"))
   expect_false(.cr386(pan(90, designation = "Bkm", pan_type = "ferricrete"), "petroferric"))
   pl <- .cm386(rows = c(1, 2, 2, 3), top_cm = c(0, 20, 40, 40.5), bottom_cm = c(20, 40, 40.5, 130),
                designation = c("A", "Bw", "Bsm", "C"), cementation_class = c(NA, NA, "strongly", NA))

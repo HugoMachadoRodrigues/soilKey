@@ -14,7 +14,7 @@ units:
       page: 51
       tests:
         all_of:
-          - b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125}
+          - b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125, gate_b: true}
           - any_of:
               - umbric_a_fao74: {}
               - high_om_b_fao74: {kind: ferralsol_nitosol}
@@ -25,7 +25,7 @@ units:
       name_pt: "Nitossolos Distróficos (Dystric Nitosols)"
       page: 51
       tests:
-        all_of: [{b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125}}]
+        all_of: [{b_bs_below_fao74: {kind: argillic_b, lt: 50, to_cm: 125, gate_b: true}}]
       notes: "A base saturation (NH4OAc) below 50 % in at least a part of the B within 125 cm."
 
     - code: "Ne"

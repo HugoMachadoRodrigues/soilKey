@@ -31,7 +31,7 @@ units:
       tests:
         any_of:
           - umbric_a_fao74: {}
-          - high_om_b_fao74: {kind: acrisol}
+          - high_om_b_fao74: {kind: acrisol, gate_b: true}
       notes: "An umbric A horizon or a high organic matter content in the B, or both."
 
     - code: "Af"

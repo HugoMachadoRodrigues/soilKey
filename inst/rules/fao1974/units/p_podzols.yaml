@@ -29,7 +29,7 @@ units:
       name_pt: "Podzóis Húmicos (Humic Podzols)"
       page: 47
       tests:
-        all_of: [{humic_podzol_fao74: {}}]
+        all_of: [{humic_podzol_fao74: {gate_b: true}}]
       notes: "A subhorizon of the B with dispersed organic matter and too little free iron to turn redder on ignition."
 
     - code: "Pf"
@@ -37,7 +37,7 @@ units:
       name_pt: "Podzóis Férricos (Ferric Podzols)"
       page: 47
       tests:
-        all_of: [{spodic_fe_oc_fao74: {min: 6}}]
+        all_of: [{spodic_fe_oc_fao74: {min: 6, gate_b: true}}]
       notes: "A ratio of free iron to carbon of 6 or more in all subhorizons of the B."
 
     - code: "Pl"
