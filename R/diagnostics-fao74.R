@@ -1003,8 +1003,17 @@ albic_e_fao74 <- function(pedon, max_top_cm = 125) {
 }
 
 # The NH4Cl CEC per 100 g clay (me = cmol(+)/kg) of the ferralic and ferric
-# properties and the Acric Ferralsols (Q12).
-.f74_nh4cl <- function(x) .f88_memo(x, "nh4cl74", function() .fao_cec_clay(x$h, "nh4cl"))
+# properties and the Acric Ferralsols (Q12). v0.9.439 (FAO audit E6 and R12,
+# option a, Hugo 2026-11-24): where neither the NH4Cl CEC nor the ECEC is
+# recorded, the exchangeable bases are its lower bound, read only where they
+# already fail the test of the caller (`limit`, `op`: 24 and "<" for the
+# ferralic and ferric properties, 1.5 and "<=" for the Acric units), flagged
+# bases_lower_bound_of_nh4cl_cec; a value so filled is read only against
+# that limit, hence one memo per limit.
+.f74_nh4cl <- function(x, limit, op = "<") {
+  .f88_memo(x, paste0("nh4cl74_", op, limit), function()
+    .fao_cec_clay(x$h, "nh4cl", bound = limit, bound_op = op))
+}
 
 
 # --- abrupt textural change (pp. 27-28) -----------------------------------------------------
@@ -1180,7 +1189,8 @@ amorphous_complex_fao74 <- function(pedon, max_top_cm = NULL, window_cm = NULL) 
 # --- ferralic and ferric properties (p. 28) ------------------------------------------------
 
 # Ferralic: CEC (NH4Cl) below 24 me per 100 g clay (Q12: ecec_cmol for the
-# NH4Cl CEC, flagged), "respectively" (p. 28; Hugo, 2026-11-09): in some
+# NH4Cl CEC, flagged; v0.9.439, the bases as its lower bound, .f74_nh4cl()),
+# "respectively" (p. 28; Hugo, 2026-11-09): in some
 # subhorizon of the cambic B (of 1974) for the Cambisols (kind "cambisol"),
 # in the horizon right below the A for the Arenosols (kind "arenosol").
 # `gate_b = TRUE` (the Ferralic Cambisols; FAO audit R1, Hugo 2026-11-24,
@@ -1200,7 +1210,7 @@ ferralic_properties_fao74 <- function(pedon, kind = c("cambisol", "arenosol"), m
       k <- max(a$layers) + 1L
       if (k <= x$n && !x$rock[k]) below_a[k] <- TRUE
     }
-    cc <- .f74_nh4cl(x)
+    cc <- .f74_nh4cl(x, 24, "<")
     v <- .f88_and(.f88_or(cb, below_a), .f88_cmpr(cc$value, "<", 24))
     flag <- .f88_addf(cc$flags, below_a & !(cb %in% TRUE), "horizon_below_a")
     list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag, missing = cc$missing,
@@ -1212,12 +1222,13 @@ ferralic_properties_fao74 <- function(pedon, kind = c("cambisol", "arenosol"), m
 # Ferric: the mottles and nodules of 1988 (the same text: many coarse
 # mottles redder than 7.5YR or of chroma above 5, "many" 15 % and coarse
 # above 20 mm, Q22; nodules up to 2 cm), or a CEC (NH4Cl) below 24 me per 100
-# g clay in some subhorizon of the argillic B (of 1974).
+# g clay in some subhorizon of the argillic B (of 1974; v0.9.439, the bases as
+# its lower bound, .f74_nh4cl()).
 ferric_properties_fao74 <- function(pedon, max_top_cm = NULL) {
   .f74_pr_layers(pedon, "ferric_properties", function(x) {
     f <- .f88_ferric_v(x)
     ar <- .f88_in_units(x, .f74_hz_argillic_natric(x, FALSE))
-    cc <- .f74_nh4cl(x)
+    cc <- .f74_nh4cl(x, 24, "<")
     low <- .f88_and(ar, .f88_cmpr(cc$value, "<", 24))
     v <- .f88_or(f$value, low)
     flag <- .f88_addf(f$flags, low %in% TRUE, "ferric_by_nh4cl_cec_in_argillic_b")
@@ -1854,10 +1865,11 @@ exchangeable_sodium_fao74 <- function(pedon, min_pct = 6, max_top_cm = NULL, win
 }
 
 # The CEC (from NH4Cl) of the Acric Ferralsols (74 p. 47): 1.5 me or less per
-# 100 g clay (Q12: ecec_cmol for the NH4Cl CEC, flagged).
+# 100 g clay (Q12: ecec_cmol for the NH4Cl CEC, flagged; v0.9.439, the bases
+# above 1.5 as its lower bound, .f74_nh4cl()).
 acric_cec_fao74 <- function(pedon, max_top_cm = NULL) {
   .f74_pr_layers(pedon, "acric_cec", function(x) {
-    cc <- .f74_nh4cl(x)
+    cc <- .f74_nh4cl(x, 1.5, "<=")
     list(value = .f88_pr_clean(x, .f88_cmpr(cc$value, "<=", 1.5)), flags = cc$flags,
          missing = cc$missing)
   }, max_top_cm)

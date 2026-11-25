@@ -36,7 +36,9 @@
 #     surface (dryfrom 0), and unknown otherwise.
 #   * Coarse fragments: cfvo when measured, else the middle of the FAO class of
 #     rocksArtefactAbundVol (V 1, F 3.5, C 10, M 27.5, A 60, D 90 %).
-#   * Inclusions: calcareous ones are secondary carbonates; hard Fe/Mn
+#   * Inclusions: calcareous ones are secondary carbonates, and the soft ones
+#     among them (recorded soft and not crystals, or soft segregations with no
+#     hardness) also soft nodules of lime (v0.9.439); hard Fe/Mn
 #     concretions and nodules over 2 mm are nodules; in a v horizon or an iron
 #     pan, mottles and soft Fe/Mn concretions are plinthite (middle of the FAO
 #     classes). Nothing is inferred where none is recorded.
@@ -57,6 +59,9 @@
 #     the aluminium saturation are calculated when ISIS has the parts; silt is
 #     100 - sand - clay when only those two are given (v0.9.416: and sand
 #     100 - clay - silt).
+#   * v0.9.439: the site's vegetation is "cerrado" where the land-use remarks
+#     or the vegetation class name it (the cerrado phase of 1974); nothing
+#     else is read from that text.
 #   * The groundwater of the site (groundwaterKind; depthGroundwater, or
 #     groundwaterTop where the depth is 0) becomes groundwater_kind and
 #     groundwater_depth_cm, which tell gleyic from stagnic properties in WRB
@@ -177,7 +182,7 @@ isis_citation <- function(accessed = Sys.Date()) {
 # v0.9.416: field observations read for one attribute each, which do not make
 # a row a described horizon (.isis_described)
 .ISIS_FIELD_OTHER <- c("textureClassesFao2006Small", "organicMattterDecomprate",
-                       "cementCompactContinuity")
+                       "cementCompactContinuity", "inclusionsType2")
 
 .isis_profile_fields <- function() {
   paste(
@@ -185,6 +190,7 @@ isis_citation <- function(accessed = Sys.Date()) {
     "moistureRegimeSoil temperatureRegimeSoil drainageClass siteElevation",
     "depthGroundwater groundwaterTop groundwaterKind",
     "slopeGradientNumeric lithologyParmat lithologyParmat2 lithologyParmatDeposition",
+    "landuseRemarks vegetationClassification",
     "lithologyParmatDeposition2 lithologyParmatXxx lithologyParmatXx2 cracking cracksSurface dryfrom microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
@@ -356,9 +362,13 @@ isis_citation <- function(accessed = Sys.Date()) {
 #     of another described horizon is not continuous rock below the profile: it
 #     is left out, with a note (IT017: an "R 0-5" inside "Apkc 0-35", the
 #     bedrock below 230 cm entered with wrong depths). Other named rows with
-#     neither laboratory data nor a description are kept: in some profiles
-#     (FR009, UY002) they carry the designations of horizons whose data sit in
-#     unnamed rows of the same depths, and they are not read as rock.
+#     neither laboratory data nor a description are kept and not read as rock.
+#   * v0.9.439 (FAO audit E7): a named row with neither laboratory data nor a
+#     description, at exactly the depths of one unnamed row that has data,
+#     carries the designation of that row (FR009: five such pairs). The
+#     designation goes onto the data row and the empty named row is dropped,
+#     with a note. Only exact pairs: one named empty row and one unnamed data
+#     row at the same top and bottom; anything else is left as it is (UY002).
 .isis_guard_layers <- function(layers) {
   notes <- character(0)
   nm <- function(L) as.character(L$layerName %||% NA_character_)
@@ -375,6 +385,27 @@ isis_citation <- function(accessed = Sys.Date()) {
   if (length(layers) < 2L) return(list(layers = layers, notes = notes))
   tp <- vapply(layers, function(L) .isis_num(L$upperDepth), 0)
   bt <- vapply(layers, function(L) .isis_num(L$lowerDepth), 0)
+  named <- vapply(layers, function(L) !is.na(nm(L)), NA)
+  dat <- vapply(layers, function(L) .isis_described(L) ||
+                  any(vapply(.ISIS_LAB, function(f) !is.null(L[[f]]), NA)), NA)
+  same <- function(i) which(is.finite(tp) & is.finite(bt) & tp == tp[i] & bt == bt[i])
+  empty_named <- which(named & !dat & is.finite(tp) & is.finite(bt))
+  moved <- integer(0)
+  for (i in empty_named) {
+    s <- same(i)
+    j <- s[!named[s] & dat[s]]
+    if (length(j) != 1L || sum(named[s] & !dat[s]) != 1L || sum(!named[s]) != 1L) next
+    layers[[j]]$layerName <- layers[[i]]$layerName
+    moved <- c(moved, i)
+  }
+  if (length(moved)) {
+    notes <- c(notes, sprintf(paste(
+      "ISIS gives %d horizon(s) (%s) as named rows with no data beside unnamed rows of the",
+      "same depths that hold the data: each designation was moved onto its data row."),
+      length(moved), paste(vapply(layers[moved], where, ""), collapse = ", ")))
+    layers <- layers[-moved]
+    tp <- tp[-moved]; bt <- bt[-moved]
+  }
   desc <- vapply(layers, .isis_described, NA)
   rock <- vapply(layers, function(L) grepl("^([0-9]+|[IVX]+)?R", nm(L)), NA)
   host <- desc & !rock & is.finite(tp) & is.finite(bt)
@@ -393,6 +424,19 @@ isis_citation <- function(accessed = Sys.Date()) {
 }
 
 # ---- One profile ------------------------------------------------------------
+
+# v0.9.439 (FAO audit B5 and R16, option a, Hugo 2026-11-24): ISIS keeps the
+# vegetation in free text (landuseRemarks, "VEGETATION: ...") or in its
+# vegetation class; where either names cerrado, the site's vegetation is
+# "cerrado", the field the cerrado phase of 1974 reads. Nothing else is read
+# from that text: a stony phase (the stoniness classes do not separate the
+# profiles labelled stony) and the anthraquic phase (the text would also
+# accept rainfed dry-seeded rice) stay absent.
+.isis_cerrado <- function(profile) {
+  txt <- c(as.character(unlist(profile$landuseRemarks %||% NA_character_)),
+           .isis_desc(profile$vegetationClassification))
+  if (any(grepl("cerrad", txt, ignore.case = TRUE))) "cerrado" else NA_character_
+}
 
 # v0.9.408: a Munsell colour written whole ("7.5YR 3/2", or "N 5/" on the
 # neutral axis, which has no chroma). Anything else ("N4/N5") is not read.
@@ -850,6 +894,20 @@ isis_citation <- function(accessed = Sys.Date()) {
   sc <- addna(part(comp1, ab1, "K"), part(comp2, ab2, "K"))
   out$secondary_carbonates_pct <- sc
   note("secondary_carbonates_pct", which(is.finite(sc)), "middle of the FAO class of ISIS calcareous inclusions (mineralConcAbundance)")
+  # v0.9.439 (FAO audit E4 and R14, option a, Hugo 2026-11-24): a calcareous
+  # inclusion recorded soft (concretionsMineralHardness S) that is not a
+  # crystal (inclusionsType T), or a soft segregation (inclusionsType S) with
+  # no hardness recorded, is soft lime: soft nodules at the middle of the
+  # abundance class (carbonate_soft_pct, the column of the FAO soft powdery
+  # lime), flagged in the provenance. Each inclusion reads its own type and
+  # hardness. Other calcareous inclusions give no amount of soft nodules.
+  ty1 <- code("inclusionsType"); ty2 <- code("inclusionsType2")
+  soft_k <- function(h, ty) (h %in% "S" & !ty %in% "T") | (is.na(h) & ty %in% "S")
+  sk <- addna(ifelse(soft_k(code("concretionsMineralHardness"), ty1), part(comp1, ab1, "K"), NA_real_),
+              ifelse(soft_k(code("concretionsMineralHardness2"), ty2), part(comp2, ab2, "K"), NA_real_))
+  out$carbonate_soft_pct <- sk
+  note("carbonate_soft_pct", which(is.finite(sk)),
+       "soft lime: ISIS calcareous inclusions recorded soft (not crystals), or soft segregations with no hardness, as soft nodules at the middle of the FAO abundance class (FAO audit R14)")
   hard <- code("concretionsMineralHardness"); size <- code("inclusionsSize")
   hard2 <- code("concretionsMineralHardness2"); size2 <- code("inclusionsSize2")
   hard[is.na(hard)] <- hard2[is.na(hard)]; size[is.na(size)] <- size2[is.na(size)]
@@ -1000,6 +1058,7 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
   if (isTRUE(absent_unless_recorded)) site$absent_unless_recorded <- TRUE
   pm <- .isis_parent_material(profile); if (!is.na(pm)) site$parent_material <- pm
   if (gil) site$gilgai_presence <- TRUE
+  veg <- .isis_cerrado(profile); if (!is.na(veg)) site$vegetation <- veg
   smr <- .isis_regime(profile, "moistureRegimeSoil", "moistureRegime")
   if (!is.null(smr)) site$soil_moisture_regime <- smr
   str <- .isis_regime(profile, "temperatureRegimeSoil", "temperatureRegime")
