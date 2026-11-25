@@ -1887,3 +1887,7 @@ attributes:
     section: "USDA family (KST 13th ed., ch. 17)"
     unit: "logical"
     description: "The layer (mineral or organic) is ferrihumic soil material (bog iron: authigenic iron oxide with organic matter, as soft masses or cemented concretions, in a wet layer), as the surveyor identifies it against the criteria of KST 13th ed., p. 371. Within the control section of Histosols: ferrihumic mineralogy class of the USDA family of Histosols other than Folists, Sphagnofibrists and Sphagnic subgroups. Not recorded, absent (reading F40)."
+  - name: carbonate_form_not_soft
+    section: "FAO-Unesco legend (1988 and 1974)"
+    unit: "-"
+    description: "The secondary carbonates of the layer are recorded only in a form that is not soft: hard concretions or nodules (hard), or crystals (crystals); the ISIS reader sets it from the calcareous inclusions recorded hard or as crystals. Read only by the FAO soft powdery lime (both editions, 1988 p. 40; 74 p. 31): with no soft nodules, coatings or other form recorded, the soft powdery lime is absent there, not undecided (Hugo, 2026-11-25). No other system reads it. Not recorded: secondary carbonate of 5 % or more with no form leaves the soft powdery lime undecided (R13)."

@@ -40,7 +40,7 @@ readings:
   - topic: "Rubbed colours and the limits between Munsell chips"
     edition: [1988, 1974]
     page: "pp. 26, 82-89; 74 pp. 24, 47-53"
-    reading: "The rubbed colour is munsell_*_rubbed where recorded, else the moist colour read as rubbed, flagged moist_colour_for_rubbed (.fao_colour_rubbed()); Chromic reads the moist colour. The limits 'less than 3.5' and '5.5' are compared with the recorded number: whole chips of 3 and 5 pass, a value recorded as 3.5 fails (Q24) (Hugo, 2026-11-08)."
+    reading: "The rubbed colour is munsell_*_rubbed where recorded, else the moist colour read as rubbed, flagged moist_colour_for_rubbed (.fao_colour_rubbed()); the Chromic units read it too, the rubbed colour with the moist one standing in, as the text prints them (pp. 88-89; 74 pp. 52-53) and as the code has always read them (up to 0.9.439 this entry said the moist colour; FAO audit D4). The limits 'less than 3.5' and '5.5' are compared with the recorded number: whole chips of 3 and 5 pass, a value recorded as 3.5 fails (Q24) (Hugo, 2026-11-08; the Chromic clause aligned on 2026-11-24)."
   - topic: "'Many' coarse mottles of the ferric properties"
     edition: [1988, 1974]
     page: "p. 35; 74 p. 28"
@@ -480,3 +480,9 @@ readings:
     page: "74 pp. 5-7"
     version: "0.9.439"
     reading: "The ISIS reader sets the site's vegetation to cerrado where the land-use remarks (landuseRemarks) or the vegetation class of the profile name cerrado; the cerrado phase reads that field as before (vegetation, else land_cover). Nothing else is read from that text. The stony phase stays absent unless rudic_recorded is set: the ISIS stoniness classes do not separate the profiles labelled stony from the others (FAO audit B5, B6 and R16, option a) (Hugo, 2026-11-24)."
+  # v0.9.440: decision of 2026-11-25 on the soft powdery lime (the reader shared with 1988 and the ISIS reader)
+  - topic: "Carbonate recorded only in a form that is not soft"
+    edition: [1974, 1988]
+    page: "74 p. 31; p. 40"
+    version: "0.9.440"
+    reading: "Amends the readings of 0.9.439 on secondary carbonate recorded without its form (R13) and on the soft calcareous inclusions of ISIS (R14): secondary carbonate recorded only in a form that is not soft, hard concretions or nodules or crystals, is no soft powdery lime. Such a layer, with no soft nodules, coatings or other form recorded, reads the soft powdery lime as absent, flagged secondary_carbonate_form_not_soft, not undecided: the form was recorded and it is not soft, and a field observation recorded as something else is not soft powdery lime. The form is carried in carbonate_form_not_soft, a horizon column that only this test reads, since secondary_carbonates_form is read by other systems (USDA, CST, CPCS, HSCS, KIDPR) that would change with it. The ISIS reader sets it where every calcareous inclusion of a layer is recorded hard (concretionsMineralHardness H) or as crystals (inclusionsType T); hardness B (both hard and soft), or no hardness and no crystal type, leaves the form unrecorded and R13 applies. Secondary carbonate of 5 % or more with no form at all stays undecided (.f88_spl_v(), both editions) (Hugo, 2026-11-25)."

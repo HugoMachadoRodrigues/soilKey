@@ -1157,6 +1157,9 @@
           },
           "ferrihumic_material": {
             "type": ["boolean", "null"]
+          },
+          "carbonate_form_not_soft": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false

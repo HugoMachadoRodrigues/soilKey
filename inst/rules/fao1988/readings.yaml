@@ -38,7 +38,7 @@ readings:
   - topic: "Rubbed colours and the limits between Munsell chips"
     edition: [1988, 1974]
     page: "pp. 26, 82-89; 74 pp. 24, 47-53"
-    reading: "The rubbed colour is munsell_*_rubbed where recorded, else the moist colour read as rubbed, flagged moist_colour_for_rubbed (.fao_colour_rubbed()); Chromic reads the moist colour. The limits 'less than 3.5' and '5.5' are compared with the recorded number: whole chips of 3 and 5 pass, a value recorded as 3.5 fails (Q24) (Hugo, 2026-11-08)."
+    reading: "The rubbed colour is munsell_*_rubbed where recorded, else the moist colour read as rubbed, flagged moist_colour_for_rubbed (.fao_colour_rubbed()); the Chromic units read it too, the rubbed colour with the moist one standing in, as the text prints them (pp. 88-89; 74 pp. 52-53) and as the code has always read them (up to 0.9.439 this entry said the moist colour; FAO audit D4). The limits 'less than 3.5' and '5.5' are compared with the recorded number: whole chips of 3 and 5 pass, a value recorded as 3.5 fails (Q24) (Hugo, 2026-11-08; the Chromic clause aligned on 2026-11-24)."
   - topic: "'Many' coarse mottles of the ferric properties"
     edition: [1988, 1974]
     page: "p. 35; 74 p. 28"
@@ -596,9 +596,9 @@ readings:
     reading: "The appendix deletes the two groups (note 1: incorporated in other groups, with a yermic phase) and prints no unit row. soilKey brackets targets by the unit's name: Haplic to the Cambisols, Regosols or Arenosols; Calcic to the Calcisols; Gypsic to the Gypsisols; Luvic to the Luvic Calcisols or Gypsisols, the Luvisols or Lixisols; Takyric Yermosols to no class (the takyric phase) (Hugo, 2026-11-10)."
   - topic: "Crosswalk: the three changes Appendix 4 does not flag"
     edition: [1988, 1974]
-    page: "pp. 79, 116, 122, 126"
+    page: "pp. 44, 79, 116, 122, 126"
     version: "0.9.391"
-    reading: "Bracketed rows: Calcaric Gleysols (Gc) to Calcic Gleysols (GLk) is a renaming with a change of definition (calcareous material in 1974, a calcic or gypsic horizon in 1988, p. 79); the Plinthic Luvisols (Lp) are deleted with no 1988 row (the Luvisols comment sends soils with plinthite to the Plinthosols, p. 122); the Thionic Histosols (HSt) are new (p. 126) (Q8) (Hugo, 2026-11-08)."
+    reading: "Bracketed rows: Calcaric Gleysols (Gc) to Calcic Gleysols (GLk) is a renaming with a change of definition (calcareous material in 1974; in 1988 a calcic horizon in the key, p. 79, a calcic or gypsic horizon in the definition, ch. VI p. 44); the Plinthic Luvisols (Lp) are deleted with no 1988 row (the Luvisols comment sends soils with plinthite to the Plinthosols, p. 122); the Thionic Histosols (HSt) are new (p. 126) (Q8) (Hugo, 2026-11-08)."
   - topic: "Slips of Appendix 4"
     edition: [1988]
     page: "pp. 115, 124"
@@ -742,3 +742,20 @@ readings:
     page: "p. 67"
     version: "0.9.439"
     reading: "The ISIS reader reads from the profile's free text only the cerrado vegetation (a phase of 1974). The anthraquic phase stays absent unless the site records it: the land-use text that names rice would also name rainfed dry-seeded rice, which is no anthraquic phase (FAO audit B5, B6 and R16, option a) (Hugo, 2026-11-24)."
+  # v0.9.440: decisions of 2026-11-24 on the audit of the FAO legends (the units and the crosswalk of 1988)
+  - topic: "Cambic Podzols: a thin or a discontinuous albic E"
+    edition: [1988]
+    page: "p. 81; ch. VI p. 56"
+    version: "0.9.440"
+    reading: "Amends the reading of 2026-11-09 (Carbic, Ferric and Cambic Podzols): the albic E the Cambic Podzols allow is one 2 cm thick or less, or one that is discontinuous (boundary_topography broken or discontinuous; not recorded, continuous), as ch. VI p. 56 defines them; it gives the Haplic Podzols as the complement, a continuous albic E thicker than 2 cm. The key's 'and' (p. 81) is read as a slip (podzol_cambic_fao88()). No ISIS profile and no canonical fixture changes; the near miss of make_fao_example('PZb') is now an E 3 cm thick and continuous, since the broken one of 3 cm is a Cambic Podzol under this reading (FAO audit D2 and R10, option a) (Hugo, 2026-11-24)."
+  - topic: "Crosswalk: the deleted Solodic Planosols and Placic Podzols"
+    edition: [1988, 1974]
+    page: "pp. 123-124"
+    version: "0.9.440"
+    reading: "Appendix 4 prints the Solodic Planosols (Ws) and the Placic Podzols (Pp) as deleted, with no target. Their rows keep the relation deleted and carry soilKey's alternatives in brackets, as the rows of the Plinthic Gleysols (Gp), the Plinthic Luvisols (Lp) and the units of the Xerosols do (`also`, `also_when`): Ws to the Solonetz where the B is natric, else to the Planosols with a sodic phase; Pp to the Podzols with a placic phase (the thin iron pan the appendix names as now a placic phase). Display only: the crosswalk never classifies (Q8). ISRIC put 10 of its 16 Ws profiles in the Solonetz and 5 in the Planosols in 1997 (FAO audit D6 and R17, option a) (Hugo, 2026-11-24)."
+  # v0.9.440: decision of 2026-11-25 on the soft powdery lime (the reader shared with 1974 and the ISIS reader)
+  - topic: "Carbonate recorded only in a form that is not soft"
+    edition: [1974, 1988]
+    page: "74 p. 31; p. 40"
+    version: "0.9.440"
+    reading: "Amends the readings of 0.9.439 on secondary carbonate recorded without its form (R13) and on the soft calcareous inclusions of ISIS (R14): secondary carbonate recorded only in a form that is not soft, hard concretions or nodules or crystals, is no soft powdery lime. Such a layer, with no soft nodules, coatings or other form recorded, reads the soft powdery lime as absent, flagged secondary_carbonate_form_not_soft, not undecided: the form was recorded and it is not soft, and a field observation recorded as something else is not soft powdery lime. The form is carried in carbonate_form_not_soft, a horizon column that only this test reads, since secondary_carbonates_form is read by other systems (USDA, CST, CPCS, HSCS, KIDPR) that would change with it. The ISIS reader sets it where every calcareous inclusion of a layer is recorded hard (concretionsMineralHardness H) or as crystals (inclusionsType T); hardness B (both hard and soft), or no hardness and no crystal type, leaves the form unrecorded and R13 applies. Secondary carbonate of 5 % or more with no form at all stays undecided (.f88_spl_v(), both editions) (Hugo, 2026-11-25)."

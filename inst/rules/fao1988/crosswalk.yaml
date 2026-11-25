@@ -26,7 +26,9 @@
 #                    "deleted", or soilKey reads a deletion it does not print)
 # also:             soilKey's alternative targets, read from a group comment
 #                   of the appendix (Lixisols, Alisols, Plinthosols,
-#                   Calcisols, Gypsisols); [bracketed] in the display, with
+#                   Calcisols, Gypsisols) or, for the deleted Solodic
+#                   Planosols and Placic Podzols, from the definitions
+#                   (v0.9.440, FAO audit R17); [bracketed] in the display, with
 #                   the condition in `also_when` (one text for all, or one
 #                   per target code).
 # bracketed: true   a row the appendix does not print (soilKey's addition).
@@ -81,7 +83,7 @@ units:
   - {from: "Jt", to: ["FLt"], relation: "same", page: 115}
   # Gleysols (p. 116)
   - {from: "Ge", to: ["GLe"], relation: "same", page: 116}
-  - {from: "Gc", to: ["GLk"], relation: "renamed_amended", page: 116, bracketed: true, note: "[Not flagged in Appendix 4, which lists Calcic Gleysols (GLk) without a comment: the 1974 unit is Calcaric (calcareous material), the 1988 unit Calcic (a calcic or gypsic horizon, p. 79), a change of definition.]"}
+  - {from: "Gc", to: ["GLk"], relation: "renamed_amended", page: 116, bracketed: true, note: "[Not flagged in Appendix 4, which lists Calcic Gleysols (GLk) without a comment: the 1974 unit is Calcaric (calcareous material), the 1988 unit Calcic (a calcic horizon in the key, p. 79; a calcic or gypsic horizon in the unit's definition, ch. VI p. 44), a change of definition.]"}
   - {from: "Gd", to: ["GLd"], relation: "same", page: 116}
   - {from: "Gm", to: ["GLm"], relation: "same", page: 116}
   - {from: "Gh", to: ["GLu"], relation: "renamed", page: 116, note: "Formerly Humic Gleysols."}
@@ -160,7 +162,7 @@ units:
   - {from: "Wm", to: ["PLm"], relation: "same", page: 123}
   - {from: "Wh", to: ["PLu"], relation: "renamed", page: 123, note: "Formerly Humic Planosols."}
   - {from: "Wx", to: ["PLi"], relation: "same", page: 123}
-  - {from: "Ws", to: [], relation: "deleted", page: 123, note: "Deleted."}
+  - {from: "Ws", to: [], relation: "deleted", page: 123, also: ["SN", "PL"], also_when: {SN: "a natric B", PL: "a sodic phase"}, note: "Deleted. [No target printed; soilKey's alternatives: the Solonetz where the B is natric, else the Planosols with a sodic phase.]"}
   # Podzoluvisols (p. 123)
   - {from: "De", to: ["PDe"], relation: "amended", page: 123, note: "Lacking gleyic properties between 0 and 100 cm (was 0-50 cm)."}
   - {from: "Dd", to: ["PDd"], relation: "amended", page: 123, note: "Lacking gleyic properties between 0 and 100 cm (was 0-50 cm): the second line of the comment is printed on the row of the Dystric Podzoluvisols, and the Gleyic ones are keyed before them."}
@@ -171,7 +173,7 @@ units:
   - {from: "Pf", to: ["PZf"], relation: "same", page: 124}
   - {from: "Ph", to: ["PZc"], relation: "renamed", page: 124, note: "Formerly Humic Podzols."}
   - {from: "Pg", to: ["PZg"], relation: "amended", page: 124, note: "Gleyic properties between 0 and 100 cm (was 0-50 cm)."}
-  - {from: "Pp", to: [], relation: "deleted", page: 124, note: "Deleted (the thin iron pan is now the placic phase)."}
+  - {from: "Pp", to: [], relation: "deleted", page: 124, also: ["PZ"], also_when: "a placic phase", note: "Deleted (the thin iron pan is now the placic phase). [No target printed; soilKey's alternative: the Podzols with a placic phase.]"}
   # Acrisols (p. 124); the high activity ones are Alisols (group comment)
   - {from: "Ao", to: ["ACh"], relation: "renamed", page: 124, also: ["ALh"], also_when: "an argic B with a CEC of 24 cmol(+)/kg clay or more", note: "Formerly Orthic Acrisols."}
   - {from: "Af", to: ["ACf"], relation: "same", page: 124, also: ["ALf"], also_when: "an argic B with a CEC of 24 cmol(+)/kg clay or more"}

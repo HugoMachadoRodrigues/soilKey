@@ -151,7 +151,10 @@ test_that("R13 and R14 together: soft inclusions decide, others of 5 % or more s
            mineralConcAbundance = .it439("C")), list(...))))
   sp <- function(pr) soft_powdery_lime_fao88(suppressWarnings(isis_profile_to_pedon(pr)))$passed
   expect_true(sp(prof(concretionsMineralHardness = .it439("S"), inclusionsType = .it439("N"))))
-  expect_true(is.na(sp(prof(concretionsMineralHardness = .it439("H"), inclusionsType = .it439("C")))))
+  # v0.9.440 (Hugo, 2026-11-25): a hard inclusion is a recorded form that is
+  # not soft, so absent (it was undecided under R13 in 0.9.439)
+  expect_false(sp(prof(concretionsMineralHardness = .it439("H"), inclusionsType = .it439("C"))))
+  expect_true(is.na(sp(prof(inclusionsType = .it439("C")))))
   # a soft inclusion below 5 % is no soft powdery lime
   few <- prof(concretionsMineralHardness = .it439("S"), inclusionsType = .it439("N"))
   few$layers[[2]]$mineralConcAbundance <- .it439("F")
