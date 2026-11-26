@@ -1,5 +1,5 @@
 # =============================================================================
-# KSSL / NCSS GeoPackage loader (v0.9.18; lab fields v0.9.441)
+# KSSL / NCSS GeoPackage loader (v0.9.18; lab fields v0.9.442)
 #
 # The NCSS / KSSL Lab Data Mart is distributed as a GeoPackage
 # (`ncss_labdata.gpkg`, ~5 GB) with the following layers:
@@ -109,7 +109,7 @@ load_kssl_pedons_gpkg <- function(gpkg,
       "aluminum_na_pyro_phosphate",
       "iron_sodium_pyro_phosphate",
       "carbon_sodium_pyro_phosphate",
-      # v0.9.441: salinity, gypsum and the pH 8.2 exchange complex, read
+      # v0.9.442: salinity, gypsum and the pH 8.2 exchange complex, read
       # by the salic / gypsic / calcic-substitute tests and by the
       # Ultisols / Alfisols base saturation by sum of cations.
       "electrical_conductivity_satx",
@@ -171,7 +171,7 @@ load_kssl_pedons_gpkg <- function(gpkg,
 }
 
 
-# Internal (v0.9.441): one pedon's KSSL layers (lab_layer joined with the
+# Internal (v0.9.442): one pedon's KSSL layers (lab_layer joined with the
 # physical and chemical properties) to a soilKey horizons table.
 #
 # Base saturation by NH4OAc (`base_sat_nh4oac_ph_7`) is missing in two
@@ -235,7 +235,7 @@ load_kssl_pedons_gpkg <- function(gpkg,
 }
 
 
-# Internal (v0.9.441): set BS = 100 % in the calcareous layers flagged by
+# Internal (v0.9.442): set BS = 100 % in the calcareous layers flagged by
 # .kssl_lab_horizons(), recorded as `inferred_prior` with the reason.
 .kssl_record_bs_calcareous <- function(pedon, calcareous) {
   for (k in which(calcareous))

@@ -1,5 +1,5 @@
 # =============================================================================
-# v0.9.441 -- the KSSL GeoPackage loader reads salinity, gypsum and the pH 8.2
+# v0.9.442 -- the KSSL GeoPackage loader reads salinity, gypsum and the pH 8.2
 # exchange complex, and fills NH4OAc base saturation where the lab data
 # settle it (.kssl_lab_horizons()).
 # =============================================================================
@@ -25,7 +25,7 @@ kssl_layers <- function(...) {
   base
 }
 
-test_that("v0.9.441: salinity, gypsum and pH 8.2 fields reach the horizons", {
+test_that("v0.9.442: salinity, gypsum and pH 8.2 fields reach the horizons", {
   h <- soilKey:::.kssl_lab_horizons(kssl_layers())$horizons
   expect_equal(h$ec_dS_m, c(0.4, 1.2, 16))
   expect_equal(h$caso4_pct, c(NA, 0, 6))
@@ -34,7 +34,7 @@ test_that("v0.9.441: salinity, gypsum and pH 8.2 fields reach the horizons", {
   expect_equal(h$extractable_acidity_ph82_cmol, c(10, 13, NA))
 })
 
-test_that("v0.9.441: reported NH4OAc BS is kept; missing BS comes from the bases", {
+test_that("v0.9.442: reported NH4OAc BS is kept; missing BS comes from the bases", {
   lh <- soilKey:::.kssl_lab_horizons(kssl_layers())
   expect_equal(lh$horizons$bs_pct[1], 70)                  # reported, untouched
   expect_equal(lh$horizons$bs_pct[2], 100 * 17 / 25)       # (12+4+0.4+0.6) / 25
@@ -42,20 +42,20 @@ test_that("v0.9.441: reported NH4OAc BS is kept; missing BS comes from the bases
   expect_equal(lh$bs_calcareous, c(FALSE, FALSE, TRUE))
 })
 
-test_that("v0.9.441: BS from bases is capped at 100", {
+test_that("v0.9.442: BS from bases is capped at 100", {
   h <- soilKey:::.kssl_lab_horizons(kssl_layers(
     ca_nh4_ph_7 = c(30, 12, NA), base_sat_nh4oac_ph_7 = c(NA, NA, NA)))$horizons
   expect_equal(h$bs_pct[1], 100)
 })
 
-test_that("v0.9.441: a non-calcareous layer with no bases keeps BS missing", {
+test_that("v0.9.442: a non-calcareous layer with no bases keeps BS missing", {
   lh <- soilKey:::.kssl_lab_horizons(kssl_layers(
     mg_nh4_ph_7 = c(3, NA, NA), caco3_lt_2_mm = c(0, 0, 0)))
   expect_true(is.na(lh$horizons$bs_pct[2]))
   expect_false(any(lh$bs_calcareous))
 })
 
-test_that("v0.9.441: missing source columns give NA, not an error", {
+test_that("v0.9.442: missing source columns give NA, not an error", {
   l <- kssl_layers()
   l[, c("electrical_conductivity_satx", "sum_of_cations_cec_pH_8_2") := NULL]
   h <- soilKey:::.kssl_lab_horizons(l)$horizons
@@ -63,7 +63,7 @@ test_that("v0.9.441: missing source columns give NA, not an error", {
   expect_true(all(is.na(h$cec_ph82_cmol)))
 })
 
-test_that("v0.9.441: the calcareous convention is recorded as inferred_prior", {
+test_that("v0.9.442: the calcareous convention is recorded as inferred_prior", {
   lh <- soilKey:::.kssl_lab_horizons(kssl_layers())
   p <- PedonRecord$new(site = list(id = "t", lat = 40, lon = -100, country = "US"),
                        horizons = lh$horizons)

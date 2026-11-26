@@ -963,7 +963,28 @@ classify_fao1974 <- function(pedon, rules = NULL,
   assigned <- list(major_groups = if (!is.na(g)) g, units = if (!is.na(u)) u)
   und <- .usda_undecided_by_level(traces, assigned)
   res$ambiguities <- und$ambiguities
-  if (is.na(g)) return(res)
+  if (is.na(g)) {
+    # v0.9.441 (G1, the follow-up of the FAO audit): no major soil group(ing)
+    # passed. With candidates left undecided the result is no firm answer
+    # either way (one of them, or not classified, by what the missing data
+    # would show), so its grade is C at most, as for a name reached past an
+    # undecided test; up to 0.9.440 it kept the grade of the data (A). Every
+    # gate failed ("not classified", nothing undecided): the key decided
+    # every gate on the data, so the grade of the data stands, as it does
+    # for a USDA or WRB name reached with no test left undecided.
+    cand <- und$by_level$major_groups %||% character(0)
+    if (length(cand)) {
+      grade <- res$evidence_grade
+      if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+      res$evidence_grade <- grade
+      res$warnings <- c(res$warnings, sprintf(paste0(
+        "The evidence grade is at most C: no gate passed and %d were left ",
+        "undecided (%s), so the soil keys to one of them or is not classified, ",
+        "which the data do not decide. See $ambiguities and $missing_data."),
+        length(cand), paste(cand, collapse = ", ")))
+    }
+    return(res)
+  }
   # the stand-ins the assigned grouping and unit rest on
   rests <- function(level, code, taxa) {
     e <- traces[[level]][[code]]

@@ -62,6 +62,10 @@
 #   * v0.9.439: the site's vegetation is "cerrado" where the land-use remarks
 #     or the vegetation class name it (the cerrado phase of 1974); nothing
 #     else is read from that text.
+#   * v0.9.441: ISRIC's FAO-Unesco names (faoClassifications), the labels as
+#     ISIS writes them: reference_fao74 (publication year 1974) and
+#     reference_fao88 (the Revised Legend, ISIS year 1997). They are stored
+#     for benchmarks (inst/benchmarks/fao_isis.R); no key reads them.
 #   * The groundwater of the site (groundwaterKind; depthGroundwater, or
 #     groundwaterTop where the depth is 0) becomes groundwater_kind and
 #     groundwater_depth_cm, which tell gleyic from stagnic properties in WRB
@@ -194,6 +198,8 @@ isis_citation <- function(accessed = Sys.Date()) {
     "lithologyParmatDeposition2 lithologyParmatXxx lithologyParmatXx2 cracking cracksSurface dryfrom microreliefKind",
     "wrbClassifications(first: 20) { publicationYear referenceSoilGroupCode referenceSoilGroup qualifier }",
     "usdaClassifications(first: 20) { publicationYear orderName suborder greatGroup subgroup moistureRegime temperatureRegime }",
+    # v0.9.441: ISRIC's FAO-Unesco names (site$reference_fao74 / _fao88)
+    "faoClassifications(first: 20) { publicationYear faoClassification }",
     "layers(first: 100, orderBy: [UPPER_DEPTH_ASC]) { layerNumber upperDepth lowerDepth layerName",
     paste(c(.ISIS_LAB, .ISIS_MORPH, .ISIS_FIELD_OTHER), collapse = " "), "}")
 }
@@ -501,6 +507,21 @@ isis_citation <- function(accessed = Sys.Date()) {
     gg <- as.character(u$greatGroup %||% NA)
     out$reference_usda_subgroup <- if (is.na(sg) || is.na(gg)) NA_character_ else paste(sg, gg)
     out$reference_usda_edition <- as.character(u$publicationYear)
+  }
+  # v0.9.441: the FAO-Unesco names ISRIC gives the profile, the labels as ISIS
+  # writes them: the Legend of 1974 (publication year 1974) in
+  # reference_fao74, the Revised Legend (stored under 1997, the year of
+  # ISRIC's reprint) in reference_fao88. ISIS gives at most one label per
+  # edition; were it to give more, the first would be kept.
+  f <- p$faoClassifications %||% list()
+  if (length(f)) {
+    yr <- vapply(f, function(x) as.character(x$publicationYear %||% NA_character_)[1L], "")
+    lab <- vapply(f, function(x) as.character(x$faoClassification %||% NA_character_)[1L], "")
+    ok <- !is.na(lab) & nzchar(trimws(lab))
+    i74 <- which(ok & yr %in% "1974")
+    i88 <- which(ok & yr %in% "1997")
+    if (length(i74)) out$reference_fao74 <- lab[i74[1L]]
+    if (length(i88)) out$reference_fao88 <- lab[i88[1L]]
   }
   out
 }
@@ -1031,7 +1052,10 @@ isis_citation <- function(accessed = Sys.Date()) {
 #' (\code{reference_wrb}, \code{reference_wrb_full}, \code{reference_usda},
 #' \code{reference_usda_subgroup} and their editions;
 #' \code{reference_wrb_cited}, the latest WRB name with its publication year;
-#' \code{reference_wrb_all}, every WRB edition, newest first), the soil moisture and
+#' \code{reference_wrb_all}, every WRB edition, newest first), the FAO-Unesco
+#' labels as ISIS writes them (\code{reference_fao74}, the Legend of 1974;
+#' \code{reference_fao88}, the Revised Legend, which ISIS stores under 1997;
+#' since v0.9.441), the soil moisture and
 #' temperature regimes and the groundwater (\code{groundwater_kind},
 #' \code{groundwater_depth_cm}) when ISIS records them, the licence and the
 #' citation.
@@ -1129,7 +1153,9 @@ isis_profile_to_pedon <- function(profile, absent_unless_recorded = TRUE,
 #'   \code{site$reference_wrb_full}, its year in
 #'   \code{site$reference_wrb_edition}, both together in
 #'   \code{site$reference_wrb_cited}, and every edition in
-#'   \code{site$reference_wrb_all}.
+#'   \code{site$reference_wrb_all}. ISRIC's FAO-Unesco labels are in
+#'   \code{site$reference_fao74} (Legend of 1974) and
+#'   \code{site$reference_fao88} (Revised Legend, stored by ISIS under 1997).
 #' @examples
 #' \dontrun{
 #' p <- read_isis(c("KE009", "ZW005"))

@@ -1,4 +1,4 @@
-# soilKey -- recognised horizon attribute names (v0.9.440)
+# soilKey -- recognised horizon attribute names (v0.9.441)
 
 This is the authoritative list of the analytical and morphological attribute
 names that soilKey reads from a horizon table (CSV upload in soilKey Pro, or a
@@ -685,8 +685,8 @@ the last section are stored by the loaders and reports and read by no key.
 | `reference_wrb_edition` | - | character | Edition (year) of the WRB name in reference_wrb and reference_wrb_full, e.g. '2022'. Written by isis_profile_to_pedon(); benchmark_isis() scores only the 2022 names. | - | - |
 | `reference_usda_edition` | - | character | Edition (year) of the USDA names in reference_usda and its suborder, great group and subgroup fields, e.g. '1999'. Written by isis_profile_to_pedon(). read_nsd_pedons() writes 'before 1990 (Andepts)' for a great group of the Andepts, Inceptisols until Soil Taxonomy created the Andisols. | - | - |
 | `reference_wrb06_full` | - | character | Full WRB 2006 name of an AfSP profile. Written by load_afsp_pedons(). | - | - |
-| `reference_fao88` | - | character | FAO 1988 class of an AfSP profile. Written by load_afsp_pedons(). | - | - |
-| `reference_fao74` | - | character | Soil unit of the FAO-Unesco Legend of 1974 given for the profile (e.g. 'Chromic Luvisol', 'Lc'), beside reference_fao88 for the Revised Legend. Stored for benchmarks; read by no key. | - | - |
+| `reference_fao88` | - | character | Class of the FAO-Unesco Revised Legend (1988) given for the profile. Written by load_afsp_pedons() (FAO 1988 class of an AfSP profile) and by isis_profile_to_pedon() (ISRIC's label as ISIS writes it, stored under the publication year 1997, e.g. 'Ferri-Haplic Luvisol'). Stored for benchmarks; read by no key. | - | - |
+| `reference_fao74` | - | character | Soil unit of the FAO-Unesco Legend of 1974 given for the profile (e.g. 'Chromic Luvisol', 'Lc'), beside reference_fao88 for the Revised Legend. Written by isis_profile_to_pedon() (ISRIC's label as ISIS writes it, publication year 1974). Stored for benchmarks; read by no key. | - | - |
 | `reference_wrb_from_usda` | - | character | WRB Reference Soil Group derived from reference_usda and reference_usda_suborder by annotate_wrb_from_usda(); read by benchmark_wrb_vs_usda() and copied into reference_wrb when that is missing. | - | - |
 | `wosis_rsg` | - | character | WRB Reference Soil Group that WoSIS reports for the profile; copied into reference_wrb when that is missing. | - | - |
 | `reference_usda` | - | character | Published USDA Soil Taxonomy class (the order, or a subgroup or series name, depending on the loader). Written by the KSSL, FEBR and AfSP loaders; read by the benchmarks and annotate_wrb_from_usda(). | - | - |
@@ -806,5 +806,5 @@ the last section are stored by the loaders and reports and read by no key.
 
 ---
 
-_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.440._
+_Generated from `inst/schemas/horizon-attributes.yaml`, `inst/schemas/site-attributes.yaml`, `horizon_column_spec()` and `.horizon_name_aliases()` in soilKey v0.9.441._
 
