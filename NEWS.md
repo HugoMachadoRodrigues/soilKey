@@ -1,3 +1,29 @@
+# soilKey 0.9.441
+
+The KSSL GeoPackage loader (`load_kssl_pedons_gpkg()`, and through it
+`load_kssl_pedons_with_nasis()`) reads lab fields that USDA tests already
+used but the loader never filled. A benchmark of the USDA key on 26,726
+KSSL pedons in CONUS found them missing: the Ultisols recall rose from 38 %
+to about 57 % once they were read.
+
+* **Salinity and gypsum.** `electrical_conductivity_satx` goes to
+  `ec_dS_m`, `corrected_gypsum_lt_2_mm` to `caso4_pct` and
+  `gypsum_lt_20_mm` to `gypsum_lt20mm_pct` (salic and gypsic horizons,
+  gypseous substitutes).
+* **The exchange complex at pH 8.2.** `sum_of_cations_cec_pH_8_2` goes to
+  `cec_ph82_cmol` and `acidity_bacl2_tea_ph_8_2` to
+  `extractable_acidity_ph82_cmol`, so the base saturation by sum of cations
+  of the Ultisols and Alfisols is read as the key gives it, not from the
+  NH4OAc stand-in.
+* **NH4OAc base saturation where KSSL leaves it blank.** With the four
+  bases and the CEC at pH 7 measured, `bs_pct` is their ratio, capped at
+  100 % (the lab's own calculation). In a calcareous layer (CaCO3 > 0)
+  with no bases, `bs_pct` is 100 %, the convention KSSL follows in about
+  90 % of the calcareous layers that do carry a base saturation. These
+  cells are recorded as `inferred_prior` in the provenance, with the reason.
+* The horizon assembly moved to the internal `.kssl_lab_horizons()`, which
+  the tests read directly (`test-v09441-kssl-lab-fields.R`).
+
 # soilKey 0.9.440
 
 The units, the readings text and the crosswalk of the Revised Legend (1988)
