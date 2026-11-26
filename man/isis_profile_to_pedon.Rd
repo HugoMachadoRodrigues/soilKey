@@ -36,7 +36,10 @@ The site carries the WRB and USDA names ISRIC gives the profile
 (\code{reference_wrb}, \code{reference_wrb_full}, \code{reference_usda},
 \code{reference_usda_subgroup} and their editions;
 \code{reference_wrb_cited}, the latest WRB name with its publication year;
-\code{reference_wrb_all}, every WRB edition, newest first), the soil moisture and
+\code{reference_wrb_all}, every WRB edition, newest first), the FAO-Unesco
+labels as ISIS writes them (\code{reference_fao74}, the Legend of 1974;
+\code{reference_fao88}, the Revised Legend, which ISIS stores under 1997;
+since v0.9.441), the soil moisture and
 temperature regimes and the groundwater (\code{groundwater_kind},
 \code{groundwater_depth_cm}) when ISIS records them, the licence and the
 citation.

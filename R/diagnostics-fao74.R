@@ -1173,9 +1173,17 @@ aridic_regime_fao74 <- function(pedon) {
     other <- .f88_or(m1, as.logical(m2), m3, m4, m5)
     v <- .f88_and(.f88_cmp(bd, "<", 0.85), other)
     flag <- ifelse(!is.na(bd), "bulk_density_as_recorded_for_one_third_bar", NA_character_)
-    list(value = .f88_pr_clean(x, v), flags = flag,
-         missing = c("bulk_density_g_cm3", "cec_ph82_cmol", "ph_naf", "water_content_1500kpa",
-                     "oc_pct", "dta_low_endotherm"),
+    v <- .f88_pr_clean(x, v)
+    # v0.9.441: the density, and the other marks only while none of them is
+    # decided TRUE (their attributes, of the marks left undecided)
+    om <- .fao_route_missing(ifelse(is.na(v) & is.na(other), NA, TRUE), list(value = m1, missing = "cec_ph82_cmol"),
+                             list(value = as.logical(m2), missing = c("ph_naf", "water_content_1500kpa")),
+                             list(value = m3, missing = "water_content_1500kpa"),
+                             list(value = m4, missing = "oc_pct"),
+                             list(value = m5, missing = "dta_low_endotherm"))
+    list(value = v, flags = flag,
+         missing = .fao_route_missing(v, list(value = .f88_cmp(bd, "<", 0.85), missing = "bulk_density_g_cm3"),
+                                      list(value = other, missing = om)),
          evidence = list(marks = data.frame(layer = x$idx, cec82 = m1, naf = as.logical(m2),
                                             water15 = m3, oc = m4, dta = m5)))
   })
@@ -1230,11 +1238,14 @@ ferric_properties_fao74 <- function(pedon, max_top_cm = NULL) {
     ar <- .f88_in_units(x, .f74_hz_argillic_natric(x, FALSE))
     cc <- .f74_nh4cl(x, 24, "<")
     low <- .f88_and(ar, .f88_cmpr(cc$value, "<", 24))
-    v <- .f88_or(f$value, low)
+    v <- .f88_pr_clean(x, .f88_or(f$value, low), bury = TRUE)
     flag <- .f88_addf(f$flags, low %in% TRUE, "ferric_by_nh4cl_cec_in_argillic_b")
     flag <- .f88_addf(flag, low %in% TRUE & !is.na(cc$flags), "ecec_for_nh4cl_cec")
-    list(value = .f88_pr_clean(x, v, bury = TRUE), flags = flag,
-         missing = c(f$missing, cc$missing), evidence = f$evidence)
+    # v0.9.441: the attributes of the routes left undecided only (a mottle
+    # route that failed adds nothing to an undecided CEC route)
+    list(value = v, flags = flag,
+         missing = .fao_route_missing(v, f, list(value = low, missing = cc$missing)),
+         evidence = f$evidence)
   }, max_top_cm)
 }
 
@@ -1333,7 +1344,9 @@ high_salinity_fao74 <- function(pedon) {
   lay <- unique(c(if (!isFALSE(a$value)) a$layers, if (!isFALSE(b$value)) b$layers))
   .f74_pr_result(x, id, list(value = v, layers = lay),
                  flags = c(a$flags, b$flags, .f88_flags(ph$flags, b$layers %||% integer(0))),
-                 missing = c("ec_dS_m", a$missing, b$missing, d$missing),
+                 # v0.9.441: the attributes of the routes left undecided only
+                 missing = .fao_route_missing(v, list(value = a$value, missing = c("ec_dS_m", a$missing, d$missing)),
+                                              list(value = b$value, missing = c("ec_dS_m", b$missing))),
                  evidence = list(depth_cm = d$value, texture_class = d$class %||% NA_character_),
                  max_top_cm = if (is.na(d$value)) 125 else d$value)
 }
@@ -1537,9 +1550,16 @@ high_salinity_fao74 <- function(pedon) {
       flag <- .f88_addf(flag, !(v %in% FALSE), "kind_of_soil_undecided_branches_read_both_ways")
     kind <- if (length(branches) == 1L) c("spodic", "mollic", "argillic", "oxic", "other")[branches]
             else NA_character_
-    list(value = .f88_pr_clean(x, v), flags = flag,
-         missing = c("munsell_chroma_moist", "munsell_value_moist", "munsell_hue_moist",
-                     "mottle_colors", "mottle_contrast"),
+    v <- .f88_pr_clean(x, v)
+    # v0.9.441: the attributes of the items left undecided only (a hue that
+    # decided item 3 adds nothing where the colours of item 4 are missing,
+    # nor the colours where only the histic H is undecided)
+    list(value = v, flags = flag,
+         missing = .fao_route_missing(v, list(value = i2, missing = .f88_hz_histic_h(x)$missing),
+                                      list(value = i3, missing = "munsell_hue_moist"),
+                                      list(value = i4, missing = c("munsell_chroma_moist", "munsell_value_moist",
+                                                                   "munsell_hue_moist", "mottle_colors",
+                                                                   "mottle_contrast"))),
          evidence = list(kind_of_soil = kind,
                          items = data.frame(layer = x$idx, groundwater = i1, histic = i2,
                                             hue = i3, colours = i4)))

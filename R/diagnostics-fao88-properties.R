@@ -616,9 +616,12 @@ fluvic_properties_fao88 <- function(pedon, oc_increase_min = 0.2) {
   .f88_memo(x, "pr_geric", function() {
     ec <- .fao_ecec_clay(x$h, "1988")
     d <- .f88_num(x, "ph_kcl") - .f88_num(x, "ph_h2o")
-    v <- .f88_or(.f88_cmpr(ec$value, "<=", 1.5), .f88_cmpr(d, ">=", 0.1))
-    list(value = .f88_pr_clean(x, v), flags = ec$flags,
-         missing = c(ec$missing, "ph_kcl", "ph_h2o"),
+    r1 <- .f88_cmpr(ec$value, "<=", 1.5); r2 <- .f88_cmpr(d, ">=", 0.1)
+    v <- .f88_pr_clean(x, .f88_or(r1, r2))
+    # v0.9.441: the attributes of the routes left undecided only
+    list(value = v, flags = ec$flags,
+         missing = .fao_route_missing(v, list(value = r1, missing = ec$missing),
+                                      list(value = r2, missing = c("ph_kcl", "ph_h2o"))),
          evidence = list(delta_ph = data.frame(layer = x$idx, delta_ph = d, ecec_clay = ec$value)))
   })
 }
@@ -756,9 +759,13 @@ geric_properties_fao88 <- function(pedon, max_top_cm = NULL) {
     flag <- red$flags
     flag <- ifelse(is.na(gc$flags), flag, ifelse(is.na(flag), gc$flags, paste(flag, gc$flags, sep = "; ")))
     if (length(gw$flags)) flag <- .f88_addf(flag, rep(TRUE, x$n), gw$flags)
-    list(value = .f88_pr_clean(x, v), flags = flag,
-         missing = c(red$missing, "groundwater_depth_cm", "reduced_matrix_pct",
-                     "redox_segregations_location"),
+    v <- .f88_pr_clean(x, v)
+    # v0.9.441: the attributes of the signs left undecided only
+    list(value = v, flags = flag,
+         missing = .fao_route_missing(v, list(value = red$value, missing = red$missing),
+                                      list(value = b, missing = "groundwater_depth_cm"),
+                                      list(value = gc$value, missing = c("reduced_matrix_pct",
+                                                                         "redox_segregations_location"))),
          evidence = list(signs = data.frame(layer = x$idx, reduction = red$value,
                                             groundwater = b, gley_colours = gc$value)))
   })
@@ -830,8 +837,11 @@ gleyic_properties_fao88 <- function(pedon, max_top_cm = NULL) {
       if (!length(deeper) || is.na(col$cm[i])) return(NA)
       .f88_any(col$cm[deeper] > col$cm[i])
     }, NA)
-    list(value = .f88_pr_clean(x, v), flags = flag,
-         missing = c(red$missing, "mottle_colors"),
+    v <- .f88_pr_clean(x, v)
+    # v0.9.441: the attributes of the parts left undecided only
+    list(value = v, flags = flag,
+         missing = .fao_route_missing(v, list(value = redv, missing = red$missing),
+                                      list(value = pattern, missing = "mottle_colors")),
          evidence = list(items = data.frame(layer = x$idx, reduction = redv,
                                             mottled = mo$present | conc, pattern = pattern,
                                             chroma_increasing_with_depth = d)))
@@ -1059,7 +1069,11 @@ plinthite_fao88 <- function(pedon, min_pct = NULL, min_thickness_cm = 0, max_top
     v[ub & em > 4 & em <= 15 & alk %in% FALSE] <- FALSE
     flag <- ifelse(!is.na(ec) & ec > 4 & ec <= 15, ph$flags, NA_character_)
     flag <- .f88_addf(flag, ub & !is.na(v), "ec_upper_bound_rules_out")
-    list(value = .f88_pr_clean(x, v), flags = flag, missing = c("ec_dS_m", ph$missing))
+    v <- .f88_pr_clean(x, v)
+    # v0.9.441: the pH only where the EC leaves the second route open
+    list(value = v, flags = flag,
+         missing = .fao_route_missing(v, list(value = ifelse(is.na(ec), NA, TRUE), missing = "ec_dS_m"),
+                                      list(value = alk, missing = ph$missing)))
   })
 }
 

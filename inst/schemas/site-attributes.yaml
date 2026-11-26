@@ -493,12 +493,12 @@ attributes:
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
     unit: "-"
-    description: "FAO 1988 class of an AfSP profile. Written by load_afsp_pedons()."
+    description: "Class of the FAO-Unesco Revised Legend (1988) given for the profile. Written by load_afsp_pedons() (FAO 1988 class of an AfSP profile) and by isis_profile_to_pedon() (ISRIC's label as ISIS writes it, stored under the publication year 1997, e.g. 'Ferri-Haplic Luvisol'). Stored for benchmarks; read by no key."
   - name: reference_fao74
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"
     unit: "-"
-    description: "Soil unit of the FAO-Unesco Legend of 1974 given for the profile (e.g. 'Chromic Luvisol', 'Lc'), beside reference_fao88 for the Revised Legend. Stored for benchmarks; read by no key."
+    description: "Soil unit of the FAO-Unesco Legend of 1974 given for the profile (e.g. 'Chromic Luvisol', 'Lc'), beside reference_fao88 for the Revised Legend. Written by isis_profile_to_pedon() (ISRIC's label as ISIS writes it, publication year 1974). Stored for benchmarks; read by no key."
   - name: reference_wrb_from_usda
     section: "Reference classes & provenance (stored, read by no key)"
     type: "character"

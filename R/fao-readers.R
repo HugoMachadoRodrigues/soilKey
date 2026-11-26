@@ -49,6 +49,25 @@
     list(...))
 }
 
+# The missing attributes of a test with alternative routes (v0.9.441, a
+# follow-up of the FAO audit): `value` the test's answer (one per layer, or
+# one), each further argument a route, list(value, missing), its answer in
+# the same shape. A route's attributes count only where the route is itself
+# undecided in a layer where the test is: a route that passed or failed there
+# already said what it can, and its attributes would not decide the test. Up
+# to 0.9.440 the tests below listed the attributes of every route.
+.fao_route_missing <- function(value, ...) {
+  routes <- list(...)
+  und <- is.na(as.logical(value))
+  out <- unlist(lapply(routes, function(r) {
+    rv <- as.logical(r$value)
+    if (length(rv) == 1L && length(und) > 1L) rv <- rep(rv, length(und))
+    if (length(rv) != length(und)) return(r$missing)
+    if (any(und & is.na(rv))) r$missing
+  }), use.names = FALSE)
+  unique(as.character(out)) %||% character(0)
+}
+
 # Three-valued AND / OR of plain logicals.
 .fao_and <- function(...) {
   v <- c(...)
