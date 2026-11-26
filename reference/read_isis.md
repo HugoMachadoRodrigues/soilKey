@@ -71,7 +71,9 @@ one per profile read. On a failed request the profiles read until then
 are returned with a warning. Each pedon gives ISRIC's latest WRB name in
 `site$reference_wrb_full`, its year in `site$reference_wrb_edition`,
 both together in `site$reference_wrb_cited`, and every edition in
-`site$reference_wrb_all`.
+`site$reference_wrb_all`. ISRIC's FAO-Unesco labels are in
+`site$reference_fao74` (Legend of 1974) and `site$reference_fao88`
+(Revised Legend, stored by ISIS under 1997).
 
 ## Examples
 

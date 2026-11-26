@@ -12,9 +12,11 @@ and USDA names ISRIC gives the profile (`reference_wrb`,
 `reference_wrb_full`, `reference_usda`, `reference_usda_subgroup` and
 their editions; `reference_wrb_cited`, the latest WRB name with its
 publication year; `reference_wrb_all`, every WRB edition, newest first),
-the soil moisture and temperature regimes and the groundwater
-(`groundwater_kind`, `groundwater_depth_cm`) when ISIS records them, the
-licence and the citation.
+the FAO-Unesco labels as ISIS writes them (`reference_fao74`, the Legend
+of 1974; `reference_fao88`, the Revised Legend, which ISIS stores under
+1997; since v0.9.441), the soil moisture and temperature regimes and the
+groundwater (`groundwater_kind`, `groundwater_depth_cm`) when ISIS
+records them, the licence and the citation.
 
 ## Usage
 
