@@ -1,5 +1,5 @@
 # =============================================================================
-# KSSL / NCSS GeoPackage loader (v0.9.18)
+# KSSL / NCSS GeoPackage loader (v0.9.18; lab fields v0.9.442)
 #
 # The NCSS / KSSL Lab Data Mart is distributed as a GeoPackage
 # (`ncss_labdata.gpkg`, ~5 GB) with the following layers:
@@ -108,7 +108,15 @@ load_kssl_pedons_gpkg <- function(gpkg,
       "phosphorus_ammonium_oxalate",
       "aluminum_na_pyro_phosphate",
       "iron_sodium_pyro_phosphate",
-      "carbon_sodium_pyro_phosphate"),
+      "carbon_sodium_pyro_phosphate",
+      # v0.9.442: salinity, gypsum and the pH 8.2 exchange complex, read
+      # by the salic / gypsic / calcic-substitute tests and by the
+      # Ultisols / Alfisols base saturation by sum of cations.
+      "electrical_conductivity_satx",
+      "corrected_gypsum_lt_2_mm",
+      "gypsum_lt_20_mm",
+      "sum_of_cations_cec_pH_8_2",
+      "acidity_bacl2_tea_ph_8_2"),
     names(chem))
   chem <- chem[, keep_chem, with = FALSE]
 
@@ -131,40 +139,8 @@ load_kssl_pedons_gpkg <- function(gpkg,
     }
     rowi <- combine[combine$pedon_key == pk, ][1, ]
 
-    pull <- function(col) {
-      if (col %in% names(p_layers)) as.numeric(p_layers[[col]])
-      else rep(NA_real_, nrow(p_layers))
-    }
-    hz <- data.table::data.table(
-      top_cm      = as.numeric(p_layers$hzn_top),
-      bottom_cm   = as.numeric(p_layers$hzn_bot),
-      designation = as.character(p_layers$hzn_desgn),
-      clay_pct    = pull("clay_total"),
-      silt_pct    = pull("silt_total"),
-      sand_pct    = pull("sand_total"),
-      ph_h2o      = pull("ph_h2o"),
-      ph_kcl      = pull("ph_kcl"),
-      ph_cacl2    = pull("ph_cacl2"),
-      oc_pct      = .pick_first_non_na(pull("organic_carbon_walkley_black"),
-                                          pull("total_carbon_ncs")),
-      cec_cmol    = pull("cec_nh4_ph_7"),
-      bs_pct      = pull("base_sat_nh4oac_ph_7"),
-      ca_cmol     = pull("ca_nh4_ph_7"),
-      mg_cmol     = pull("mg_nh4_ph_7"),
-      k_cmol      = pull("k_nh4_ph_7"),
-      na_cmol     = pull("na_nh4_ph_7"),
-      al_cmol     = pull("aluminum_kcl_extractable"),
-      al_sat_pct  = pull("aluminum_saturation"),
-      caco3_pct   = pull("caco3_lt_2_mm"),
-      al_ox_pct   = pull("aluminum_ammonium_oxalate"),
-      fe_ox_pct   = pull("fe_ammoniumoxalate_extractable"),
-      si_ox_pct   = pull("silica_ammonium_oxalate"),
-      cole_value  = pull("cole_whole_soil"),
-      bulk_density_g_cm3 = .pick_first_non_na(
-        pull("bulk_density_third_bar"),
-        pull("bulk_density_oven_dry"))
-    )
-    hz <- ensure_horizon_schema(hz)
+    lh <- .kssl_lab_horizons(p_layers)
+    hz <- lh$horizons
 
     out[[i]] <- PedonRecord$new(
       site = list(
@@ -186,6 +162,7 @@ load_kssl_pedons_gpkg <- function(gpkg,
       ),
       horizons = hz
     )
+    .kssl_record_bs_calcareous(out[[i]], lh$bs_calcareous)
   }
   out <- out[!vapply(out, is.null, logical(1))]
   if (verbose)
@@ -193,6 +170,81 @@ load_kssl_pedons_gpkg <- function(gpkg,
   out
 }
 
+
+# Internal (v0.9.442): one pedon's KSSL layers (lab_layer joined with the
+# physical and chemical properties) to a soilKey horizons table.
+#
+# Base saturation by NH4OAc (`base_sat_nh4oac_ph_7`) is missing in two
+# cases the lab data still settle:
+#   * the four bases and the CEC at pH 7 are measured: BS is their ratio,
+#     capped at 100 % (the same calculation the lab reports);
+#   * the layer is calcareous (CaCO3 > 0) and the bases are not reported:
+#     the NH4OAc extract dissolves carbonate, so KSSL reports BS as 100 %
+#     in calcareous layers (about 90 % of the calcareous layers with a BS
+#     in the Lab Data Mart). These cells are returned in `bs_calcareous`
+#     so the caller records them as `inferred_prior`.
+# Returns list(horizons, bs_calcareous).
+.kssl_lab_horizons <- function(p_layers) {
+  pull <- function(col) {
+    if (col %in% names(p_layers)) as.numeric(p_layers[[col]])
+    else rep(NA_real_, nrow(p_layers))
+  }
+  ca <- pull("ca_nh4_ph_7"); mg <- pull("mg_nh4_ph_7")
+  k  <- pull("k_nh4_ph_7");  na <- pull("na_nh4_ph_7")
+  cec <- pull("cec_nh4_ph_7"); caco3 <- pull("caco3_lt_2_mm")
+  bs <- pull("base_sat_nh4oac_ph_7")
+  from_bases <- is.na(bs) & !is.na(ca + mg + k + na) & !is.na(cec) & cec > 0
+  bs[from_bases] <- pmin(100, 100 * (ca + mg + k + na)[from_bases] / cec[from_bases])
+  calcareous <- is.na(bs) & !is.na(caco3) & caco3 > 0
+
+  hz <- data.table::data.table(
+    top_cm      = as.numeric(p_layers$hzn_top),
+    bottom_cm   = as.numeric(p_layers$hzn_bot),
+    designation = as.character(p_layers$hzn_desgn),
+    clay_pct    = pull("clay_total"),
+    silt_pct    = pull("silt_total"),
+    sand_pct    = pull("sand_total"),
+    ph_h2o      = pull("ph_h2o"),
+    ph_kcl      = pull("ph_kcl"),
+    ph_cacl2    = pull("ph_cacl2"),
+    oc_pct      = .pick_first_non_na(pull("organic_carbon_walkley_black"),
+                                        pull("total_carbon_ncs")),
+    cec_cmol    = cec,
+    bs_pct      = bs,
+    ca_cmol     = ca,
+    mg_cmol     = mg,
+    k_cmol      = k,
+    na_cmol     = na,
+    al_cmol     = pull("aluminum_kcl_extractable"),
+    al_sat_pct  = pull("aluminum_saturation"),
+    caco3_pct   = caco3,
+    al_ox_pct   = pull("aluminum_ammonium_oxalate"),
+    fe_ox_pct   = pull("fe_ammoniumoxalate_extractable"),
+    si_ox_pct   = pull("silica_ammonium_oxalate"),
+    cole_value  = pull("cole_whole_soil"),
+    bulk_density_g_cm3 = .pick_first_non_na(
+      pull("bulk_density_third_bar"),
+      pull("bulk_density_oven_dry")),
+    ec_dS_m                       = pull("electrical_conductivity_satx"),
+    caso4_pct                     = pull("corrected_gypsum_lt_2_mm"),
+    gypsum_lt20mm_pct             = pull("gypsum_lt_20_mm"),
+    cec_ph82_cmol                 = pull("sum_of_cations_cec_pH_8_2"),
+    extractable_acidity_ph82_cmol = pull("acidity_bacl2_tea_ph_8_2")
+  )
+  list(horizons = ensure_horizon_schema(hz), bs_calcareous = calcareous)
+}
+
+
+# Internal (v0.9.442): set BS = 100 % in the calcareous layers flagged by
+# .kssl_lab_horizons(), recorded as `inferred_prior` with the reason.
+.kssl_record_bs_calcareous <- function(pedon, calcareous) {
+  for (k in which(calcareous))
+    pedon$add_measurement(
+      k, "bs_pct", 100, source = "inferred_prior",
+      notes = paste("KSSL: NH4OAc base saturation not reported for a",
+                    "calcareous layer; 100 % by the KSSL convention"))
+  invisible(pedon)
+}
 
 # Internal: normalise KSSL Order labels (lower-case, capitalise) to
 # soilKey output format.
