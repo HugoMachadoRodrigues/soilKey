@@ -57,7 +57,8 @@ test_that("v0.9.442: a non-calcareous layer with no bases keeps BS missing", {
 
 test_that("v0.9.442: missing source columns give NA, not an error", {
   l <- kssl_layers()
-  l[, c("electrical_conductivity_satx", "sum_of_cations_cec_pH_8_2") := NULL]
+  l$electrical_conductivity_satx <- NULL
+  l$sum_of_cations_cec_pH_8_2 <- NULL
   h <- soilKey:::.kssl_lab_horizons(l)$horizons
   expect_true(all(is.na(h$ec_dS_m)))
   expect_true(all(is.na(h$cec_ph82_cmol)))
