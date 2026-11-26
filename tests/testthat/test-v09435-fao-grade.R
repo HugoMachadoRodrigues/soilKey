@@ -203,11 +203,13 @@ test_that("1974: the umbric thickness and the argillic B of the Nitosols carry t
   expect_identical(pz$evidence$stand_in, "argillic_usda")
 })
 
-test_that("a fall-through keeps its grade and lists its candidates with their level", {
+test_that("a fall-through lists its candidates with their level", {
   skip_on_cran()
   r <- .f435(make_durisol_canonical(), "1974")
   expect_match(r$name, "^\\[Undecided in the FAO-Unesco Legend \\(1974\\)")
-  expect_identical(r$evidence_grade, "A")
+  # v0.9.441 (G1 follow-up): with candidates left undecided, grade C at most
+  # (it kept the grade of the data, A, up to 0.9.440)
+  expect_identical(r$evidence_grade, "C")
   expect_true(all(.lv435(r) == "major_groups"))
   expect_setequal(.cd435(r), c("Z", "R"))
   expect_false(any(grepl("^The name was reached past", r$warnings)))

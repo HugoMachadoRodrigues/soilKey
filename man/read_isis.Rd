@@ -42,7 +42,9 @@ A named list of \code{\link{PedonRecord}}s, one per profile read.
   \code{site$reference_wrb_full}, its year in
   \code{site$reference_wrb_edition}, both together in
   \code{site$reference_wrb_cited}, and every edition in
-  \code{site$reference_wrb_all}.
+  \code{site$reference_wrb_all}. ISRIC's FAO-Unesco labels are in
+  \code{site$reference_fao74} (Legend of 1974) and
+  \code{site$reference_fao88} (Revised Legend, stored by ISIS under 1997).
 }
 \description{
 Reads profiles live from ISRIC's ISIS GraphQL service and returns them as

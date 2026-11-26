@@ -1,3 +1,72 @@
+# soilKey 0.9.441
+
+Three follow-ups of the audit of the FAO-Unesco legends: the ISIS reader
+keeps ISRIC's FAO-Unesco names, a result with no major soil group follows
+decision G1 on the evidence grade, and a test with alternative routes lists
+only what its undecided routes need.
+
+* **ISRIC's FAO-Unesco names from `read_isis()`.** The ISIS query now asks
+  for `faoClassifications`, and `isis_profile_to_pedon()` keeps the labels
+  as ISIS writes them: the Legend of 1974 (publication year 1974) in
+  `site$reference_fao74`, the Revised Legend (which ISIS stores under 1997,
+  the year of ISRIC's reprint) in `site$reference_fao88`. Up to 0.9.440 the
+  PedonRecords carried ISRIC's WRB and USDA names but not its FAO names, so
+  the FAO benchmark had to query ISIS itself. The benchmark script
+  (`inst/benchmarks/fao_isis.R`) takes the PedonRecords:
+  `fao_isis_benchmark(pedons = read_isis(all = TRUE))`, with exported
+  functions only. On the 974 profiles of the cache it gives exactly the
+  tables of the raw cache (records, scores, status, phases, confusion), and
+  so does a live `read_isis(all = TRUE)` of 2026-11-26; the records of the cache are now listed in the order of their year in
+  both runs (ISIS gives the two labels of a profile in either order). The
+  descriptions of both attributes in `inst/schemas/site-attributes.yaml`
+  and `inst/ATTRIBUTES.md` say who writes them. No key reads them.
+* **The grade of a result with no major soil group** (G1, option a). When
+  no gate of either key passes and some are left undecided, the result
+  names the candidates ("[Undecided in ...: ..., or not classified]") and
+  now has evidence grade C at most, with a warning: the soil keys to one of
+  them or is not classified, and the data do not decide which, as a name
+  reached past an undecided test holds only if the test fails (`.fao_grade()`).
+  Up to 0.9.440 it kept the grade of the data (A), as the canonical
+  Durisol in 1988 did. When every gate failed ("[Not classified ...]"),
+  every gate was decided on the data and the grade of the data stands, as
+  it does for a USDA or WRB name reached with no test left undecided
+  (soilKey's reading, recorded in both readings files).
+* **The missing data of a test with alternative routes.** A test that
+  passes by one of several routes and stays undecided listed the attributes
+  of every route, including routes that had already passed or failed: the
+  Ferric Acrisols of the canonical Luvisol with a base saturation of 35 %
+  in its Bt (1974) stayed undecided only for the NH4Cl CEC, and listed the
+  mottle attributes of a mottle route that had failed. A new helper,
+  `.fao_route_missing()`, keeps the attributes of a route only where that
+  route is itself undecided in a layer where the test is. It is used by the
+  ferric properties, the amorphous complex, the hydromorphic properties and
+  the high salinity of 1974, and by the geric, gleyic, stagnic and salic
+  properties of 1988 (the salic properties now ask for the pH only where
+  the EC leaves the second route open). No result changes, only the lists
+  in `$missing_data` and `$ambiguities`. No other system uses these tests.
+* **ISIS reference profiles** (`inst/benchmarks/fao_isis.R`): agreement,
+  classes, provisional and stand-in counts and phases are unchanged against
+  0.9.440 (1988 groupings 241 of 706, units 158; 1974 groupings 339 of
+  796, units 203; firm, provisional and stand-in counts as in 0.9.440).
+  The fall-throughs with candidates left undecided, 125 labels of 1974 and
+  217 of 1988, go from grade A to C; the 9 labels of 1974 that are not
+  classified keep grade A. The benchmark reads neither the grade nor the
+  missing data, so its tables do not change.
+* **Canonical fixtures**: no name changes. Seven FAO results with no group
+  and candidates left undecided go from grade A to C (the Durisol, the
+  Fluvisol and the Planossolo in both editions, the Technosol in 1974); the
+  missing data of 1974 lose the mottle attributes of the ferric properties
+  (Acrisol, Alisol, Argissolo, Lixisol, Nitisol, Nitossolo, Planossolo) and
+  those of 1988 the pH of the salic properties where the EC alone is
+  missing (36 canonicals), and the mottle colours of the stagnic properties
+  of the Stagnic Phaeozems where the reduction alone is undecided (the
+  Chernozem and the Chernossolo). No attribute is added anywhere. The USDA, WRB and SiBCS results of the 44
+  canonicals are unchanged (name, grade, missing data, ambiguities,
+  warnings).
+* Tests: `test-v09441-fao-followups.R`. `test-v09435-fao-grade.R`: the
+  canonical Durisol of 1974, a fall-through with candidates, now has grade
+  C (it asserted A).
+
 # soilKey 0.9.440
 
 The units, the readings text and the crosswalk of the Revised Legend (1988)

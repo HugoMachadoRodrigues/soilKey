@@ -11,11 +11,14 @@
 # own text (classify_fao(edition = "1974" / "1988")); the label of each
 # edition is compared with the class of the same edition.
 #
-# OFFLINE. This script downloads nothing and queries no service, and it does
-# not change the ISIS reader (Hugo's decision Q27). It reads a cache of raw
-# ISIS profiles (the list of profiles as the ISIS GraphQL server returns
-# them, every field of .isis_profile_fields(), saved with saveRDS), from, in
-# this order:
+# Two inputs. (1) Since soilKey 0.9.441, read_isis() fills
+# site$reference_fao74 and site$reference_fao88 with ISRIC's labels, so the
+# PedonRecords it returns can be passed as they are:
+#   b <- fao_isis_benchmark(pedons = read_isis(all = TRUE))
+# (2) OFFLINE, the script downloads nothing and queries no service. It reads
+# a cache of raw ISIS profiles (the list of profiles as the ISIS GraphQL
+# server returns them, every field of .isis_profile_fields(), saved with
+# saveRDS), from, in this order:
 #   1. the first argument (or `cache =`);
 #   2. the option soilKey.isis_cache;
 #   3. the environment variable SOILKEY_ISIS_CACHE;
@@ -31,6 +34,8 @@
 # without it the summary is printed. From R:
 #   source(system.file("benchmarks", "fao_isis.R", package = "soilKey"))
 #   b <- fao_isis_benchmark(cache = "profiles.rds", out = "report.md")
+#   b <- fao_isis_benchmark(pedons = read_isis(all = TRUE))
+# Both give the same tables for the same profiles.
 #
 # Scoring. Each label is read by soilKey:::.fao_match_label() in the edition
 # of its publication year (1974 -> fao1974; 1997 -> fao1988): exact names
@@ -126,7 +131,23 @@ fao_isis_cache <- function(cache = NULL, must = TRUE) {
   out
 }
 
-fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
+# The FAO records of PedonRecords read by read_isis() (soilKey 0.9.441 or
+# later): the labels of site$reference_fao74 (year 1974) and
+# site$reference_fao88 (year 1997, as ISIS stores the Revised Legend).
+.fao_isis_pedon_records <- function(pedons) {
+  do.call(rbind, lapply(seq_along(pedons), function(i) {
+    s <- pedons[[i]]$site %||% list()
+    lab <- c("1974" = as.character(s$reference_fao74 %||% NA_character_)[1L],
+             "1997" = as.character(s$reference_fao88 %||% NA_character_)[1L])
+    lab <- lab[!is.na(lab) & nzchar(trimws(lab))]
+    if (!length(lab)) return(NULL)
+    id <- as.character(s$id %||% names(pedons)[i] %||% NA_character_)[1L]
+    data.frame(idx = i, profile = id, year = names(lab), label = unname(lab),
+               stringsAsFactors = FALSE)
+  }))
+}
+
+fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE, pedons = NULL) {
   if (!"soilKey" %in% loadedNamespaces() &&
       !suppressPackageStartupMessages(requireNamespace("soilKey", quietly = TRUE)))
     stop("This script needs the soilKey package (0.9.392 or later); install it first.", call. = FALSE)
@@ -134,18 +155,43 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   if (!exists(".fao_match_label", envir = ns, inherits = FALSE))
     stop("This script needs soilKey 0.9.392 or later.", call. = FALSE)
   match_label <- get(".fao_match_label", envir = ns)
-  path <- fao_isis_cache(cache)
-  raw <- readRDS(path)
-  # the FAO records of every profile
-  recs <- do.call(rbind, lapply(seq_along(raw), function(i) {
-    f <- raw[[i]]$faoClassifications
-    if (!length(f)) return(NULL)
-    do.call(rbind, lapply(f, function(z) data.frame(
-      idx = i, profile = as.character(raw[[i]]$profileCode %||% NA_character_),
-      year = as.character(z$publicationYear %||% NA_character_),
-      label = as.character(z$faoClassification %||% NA_character_), stringsAsFactors = FALSE)))
-  }))
-  if (is.null(recs) || !nrow(recs)) stop("The cache holds no FAO-Unesco label.", call. = FALSE)
+  if (!is.null(pedons)) {
+    # v0.9.441: PedonRecords from read_isis(), which carry ISRIC's labels
+    if (!is.null(cache)) stop("Give `pedons` or `cache`, not both.", call. = FALSE)
+    if (inherits(pedons, "PedonRecord")) pedons <- list(pedons)
+    if (!is.list(pedons) || !length(pedons) ||
+        !all(vapply(pedons, function(p) inherits(p, "PedonRecord"), NA)))
+      stop("`pedons` must be a list of PedonRecords, as read_isis() returns.", call. = FALSE)
+    raw <- NULL
+    path <- "read_isis() PedonRecords"
+    recs <- .fao_isis_pedon_records(pedons)
+    code_of <- function(i) as.character(pedons[[i]]$site$id %||% names(pedons)[i] %||% i)[1L]
+    pedon_of <- function(i) pedons[[i]]
+    if (is.null(recs) || !nrow(recs))
+      stop("No pedon carries an FAO-Unesco label (site$reference_fao74 or site$reference_fao88).",
+           call. = FALSE)
+  } else {
+    path <- fao_isis_cache(cache)
+    raw <- readRDS(path)
+    # the FAO records of every profile
+    recs <- do.call(rbind, lapply(seq_along(raw), function(i) {
+      f <- raw[[i]]$faoClassifications
+      if (!length(f)) return(NULL)
+      do.call(rbind, lapply(f, function(z) data.frame(
+        idx = i, profile = as.character(raw[[i]]$profileCode %||% NA_character_),
+        year = as.character(z$publicationYear %||% NA_character_),
+        label = as.character(z$faoClassification %||% NA_character_), stringsAsFactors = FALSE)))
+    }))
+    # v0.9.441: the labels of a profile in the order of their year (ISIS
+    # lists them in either order), as the PedonRecords give them
+    if (!is.null(recs) && nrow(recs)) {
+      recs <- recs[order(recs$idx, recs$year), , drop = FALSE]
+      rownames(recs) <- NULL
+    }
+    code_of <- function(i) as.character(raw[[i]]$profileCode %||% i)[1L]
+    pedon_of <- function(i) tryCatch(soilKey::isis_profile_to_pedon(raw[[i]]), error = function(e) NA)
+    if (is.null(recs) || !nrow(recs)) stop("The cache holds no FAO-Unesco label.", call. = FALSE)
+  }
   m <- match_label(recs$label, recs$year, variants = .fao_isis_variants)
   d <- cbind(recs, m[, setdiff(names(m), "label")])
   d <- d[!is.na(d$edition), , drop = FALSE]
@@ -155,10 +201,9 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   peds <- list()
   for (j in seq_len(nrow(todo))) {
     i <- todo$idx[j]
-    if (verbose) message(sprintf("[%d/%d] %s %s", j, nrow(todo), raw[[i]]$profileCode, todo$edition[j]))
+    if (verbose) message(sprintf("[%d/%d] %s %s", j, nrow(todo), code_of(i), todo$edition[j]))
     key <- as.character(i)
-    if (is.null(peds[[key]]))
-      peds[[key]] <- tryCatch(soilKey::isis_profile_to_pedon(raw[[i]]), error = function(e) NA)
+    if (is.null(peds[[key]])) peds[[key]] <- pedon_of(i)
     p <- peds[[key]]
     # res[j] <- list(): assigning NULL with [[ ]] would drop the element
     res[j] <- list(if (identical(p, NA)) NULL else
@@ -251,7 +296,8 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   out_res <- list(records = d, score = score, status = status, phases = phase_score, phase_rows = ph,
                   confusion = confusion, undecided = undecided,
                   version = as.character(utils::packageVersion("soilKey")),
-                  n_profiles = length(unique(d$idx)), cache = basename(path))
+                  n_profiles = length(unique(d$idx)),
+                  cache = if (is.null(pedons)) basename(path) else NA_character_)
   md <- .fao_isis_report(out_res)
   if (!is.null(out)) {
     writeLines(md, out, useBytes = TRUE)
@@ -268,8 +314,11 @@ fao_isis_benchmark <- function(cache = NULL, out = NULL, verbose = TRUE) {
   ed_name <- c("1974" = "Legend of 1974 (fao1974)", "1988" = "Revised Legend 1988, ISIS year 1997 (fao1988)")
   lines <- c(
     sprintf("# FAO-Unesco legends on the ISIS reference profiles (soilKey %s)", res$version), "",
-    sprintf("Offline run on the cache `%s`: %d profiles with an FAO-Unesco label, %d labels.",
-            res$cache, res$n_profiles, nrow(res$records)),
+    if (is.na(res$cache %||% NA_character_))
+      sprintf("Run on PedonRecords read by read_isis(): %d profiles with an FAO-Unesco label, %d labels.",
+              res$n_profiles, nrow(res$records))
+    else sprintf("Offline run on the cache `%s`: %d profiles with an FAO-Unesco label, %d labels.",
+                 res$cache, res$n_profiles, nrow(res$records)),
     "Each label is compared with soilKey's class in the same edition. 95 % intervals are Wilson intervals.",
     "A fall-through (no grouping passed; no residual group, Q5) counts as a disagreement.",
     "A profile soilKey could not run (no horizons in the record: Not run) is not scored.", "",
