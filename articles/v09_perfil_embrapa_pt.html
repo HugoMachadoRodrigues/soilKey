@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.443</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.444</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,7 +159,7 @@ sedimentos argilosos do Terciario.</p>
 <span><span class="co">#&gt;  $ ph_h2o     : num  5.5 5.3 5 5 5.1</span></span>
 <span><span class="co">#&gt;  $ clay_pct   : num  18 28 45 42 38</span></span>
 <span><span class="co">#&gt;  $ bs_pct     : num  35 25 20 18 20</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x589c10ce31b0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x56d93693b1b0&gt;</span></span></code></pre></div>
 <p>Construindo o <code>PedonRecord</code> (R6 com <code>site</code> +
 <code>horizons</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -236,22 +236,26 @@ um <code>ClassificationResult</code> por sistema:</p>
 <span><span class="co">#&gt; Name: Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado,</span></span>
 <span><span class="co">#&gt; Tmob</span></span>
 <span><span class="co">#&gt; RSG/Order: Argissolos</span></span>
-<span><span class="co">#&gt; Evidence grade: A</span></span>
+<span><span class="co">#&gt; Evidence grade: C</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Ambiguities</span></span>
-<span><span class="co">#&gt; - V: Indeterminate -- missing 1 attribute(s): slickensides</span></span>
 <span><span class="co">#&gt; - E: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct</span></span>
 <span><span class="co">#&gt; - F: Indeterminate -- missing 3 attribute(s): plinthite_pct, pan_type,</span></span>
 <span><span class="co">#&gt; cementation_class</span></span>
+<span><span class="co">#&gt; - PVdPl: Indeterminate -- missing 1 attribute(s): plinthite_pct</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Missing data that would refine result</span></span>
-<span><span class="co">#&gt; slickensides, al_ox_pct, fe_ox_pct, plinthite_pct, pan_type, cementation_class</span></span>
+<span><span class="co">#&gt; al_ox_pct, fe_ox_pct, plinthite_pct, pan_type, cementation_class,</span></span>
+<span><span class="co">#&gt; clay_films_strength</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Warnings</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The name was reached past 3 undecided test(s) (ordens:E, ordens:F, subgrupos:PVdPl): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Key trace</span></span>
 <span><span class="co">#&gt; (30 classes tested before assignment)</span></span>
 <span><span class="co">#&gt; 1. O Organossolos -- failed</span></span>
 <span><span class="co">#&gt; 2. R Neossolos -- failed</span></span>
-<span><span class="co">#&gt; 3. V Vertissolos -- undecided (1 attrs missing)</span></span>
+<span><span class="co">#&gt; 3. V Vertissolos -- failed</span></span>
 <span><span class="co">#&gt; 4. E Espodossolos -- undecided (2 attrs missing)</span></span>
 <span><span class="co">#&gt; 5. S Planossolos -- failed</span></span>
 <span><span class="co">#&gt; 6. G Gleissolos -- failed</span></span>
@@ -452,7 +456,7 @@ o solum).</p>
 <span><span class="co">#&gt; 2 Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)</span></span>
 <span><span class="co">#&gt; 3                                                                               Ultisols</span></span>
 <span><span class="co">#&gt;   EvidGrade</span></span>
-<span><span class="co">#&gt; 1         A</span></span>
+<span><span class="co">#&gt; 1         C</span></span>
 <span><span class="co">#&gt; 2         A</span></span>
 <span><span class="co">#&gt; 3         C</span></span></code></pre></div>
 <p>Esses tres rotulos sao <strong>complementares</strong>, nao

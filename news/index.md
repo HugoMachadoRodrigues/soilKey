@@ -1,5 +1,73 @@
 # Changelog
 
+## soilKey 0.9.444
+
+The first change of the SiBCS 2018 audit (decision G1, Hugo,
+2026-11-27): undecided tests are now read at every level of the SiBCS
+key, as they are in the USDA key and the FAO legends. On the 4,674
+complete BDsolos profiles with a readable label, order agreement goes
+from 2,998 to 2,980 and subordem agreement from 1,105 to 1,104. Grade A
+falls from 4,595 to 150: almost every name was reached past an undecided
+test.
+
+- **Undecided tests are listed and lower the grade.**
+  [`classify_sibcs()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_sibcs.md)
+  lists every class tested before the assigned one whose result is
+  undecided, at the order, subordem, grande grupo and subgrupo levels,
+  in `$ambiguities` with its `level`. `$missing_data` collects what was
+  missing at every level. A name reached past such a test gets grade C
+  at most, with a warning. Up to 0.9.443 only the order level was read,
+  and the grade came from the provenance of the data alone.
+- **No class is reached by elimination unless the text makes it a
+  residual.**
+  - A class is assigned only when its test passes. The engine used to
+    fall back to the last class of the list, so five profiles that
+    failed every order became Argissolos with their own test FALSE.
+  - When no order passes, the name lists the undecided orders as the
+    candidates: “\[Ordem indeterminada no SiBCS: …, ou não
+    classificado\]”. It is “\[Não classificado no SiBCS\]” when every
+    order fails, and `rsg_or_order` is `NA`.
+  - The Tb great groups of the Cambissolos, Gleissolos and Neossolos
+    Flúvicos now test Tb, not “anything left after Ta” (15 classes).
+  - The Planossolos Háplicos Eutróficos, the Plintossolos Argilúvicos
+    and Háplicos Eutróficos, and the Plintossolos Pétricos
+    Concrecionários now test their own criteria (pp. 253, 262-263)
+    instead of a default.
+  - 32 complete profiles now stop at the subordem.
+- **The Neossolos, Luvissolos and Chernossolos steps are three-valued**
+  (audit C4, C15, C16). An undecided B leaves the Neossolos step
+  undecided; Ta and V undecided leave the Luvissolos step undecided; the
+  three paths of the Chernossolos step are evaluated in three values.
+  515 complete profiles leave the Neossolos for a list of candidates.
+  Only 15 of them carry a Neossolos label; most are profiles with a
+  described B (B1, B21, Bt) whose B tests all failed or could not be
+  decided, 204 of them labelled Argissolos and 107 Latossolos.
+- **B latossólico.** It is undecided only where the B layers that lack
+  the CEC or the clay could make its 50 cm. Up to 0.9.443 a CEC missing
+  in any layer, an A or a C included, left it undecided in a profile
+  described with no B at all.
+- **B espódico** (audit A15). It is undecided for lack of oxalate only
+  where a B layer has the colours of item (b) (p. 65). Items (b)(1) and
+  (b)(2) are field observations, absent when not recorded. Up to 0.9.443
+  the WRB spodic test asked for oxalate on every profile.
+- **Horizonte vértico** (reading R10 (a)). The cracks are not asked
+  where slickensides or wedge-shaped units are recorded. A COLE that is
+  not recorded no longer leaves the horizon undecided, since the text
+  uses it only for soils without apparent cracks. The horizon is
+  undecided only where a layer with those features has no clay content
+  recorded. Up to 0.9.443 it was undecided on 4,649 complete profiles.
+  The canonical Vertisol has cracks of 0.5 to 0.8 cm recorded, under the
+  1 cm of p. 73, so it has no horizonte vértico in this system.
+- **Canonical profiles.** 39 of the 44 go from grade A to C. Two change
+  name: the Anthrosol and the Vertisol, both Neossolos Regolíticos up to
+  0.9.443, now list their candidate orders (Neossolos, Espodossolos, and
+  Chernossolos for the Anthrosol). In each, a B with the colours of item
+  2.  has no oxalate, and in the Anthrosol the CaCO3 is not recorded.
+- **[`benchmark_bdsolos()`](https://hugomachadorodrigues.github.io/soilKey/reference/benchmark_bdsolos.md)**
+  scores a SiBCS result with no order as a prediction of its own,
+  `<undecided>`, which never agrees. A profile left undecided stays in
+  `n_compared` instead of leaving the denominator.
+
 ## soilKey 0.9.443
 
 A benchmark of the USDA key on the KSSL/NASIS pedons joins

@@ -80,7 +80,7 @@ knitr::kable(tab)
 | Lixisol    | Lixisols    | Argissolos   | Alfisols    |
 | Luvisol    | Luvisols    | Luvissolos   | Alfisols    |
 | Nitisol    | Nitisols    | Argissolos   | Ultisols    |
-| Vertisol   | Vertisols   | Neossolos    | Vertisols   |
+| Vertisol   | Vertisols   | NA           | Vertisols   |
 | Andosol    | Andosols    | Cambissolos  | Andisols    |
 | Histosol   | Histosols   | Organossolos | Histosols   |
 | Podzol     | Podzols     | Espodossolos | Spodosols   |
@@ -189,7 +189,7 @@ data.frame(
 #> Lixisol       Lixisol   Argissolos   Argissolos  TRUE
 #> Luvisol       Luvisol   Argissolos   Luvissolos FALSE
 #> Nitisol       Nitisol   Nitossolos   Argissolos FALSE
-#> Vertisol     Vertisol  Vertissolos    Neossolos FALSE
+#> Vertisol     Vertisol  Vertissolos         <NA>    NA
 #> Andosol       Andosol  Cambissolos  Cambissolos  TRUE
 #> Histosol     Histosol Organossolos Organossolos  TRUE
 #> Podzol         Podzol Espodossolos Espodossolos  TRUE

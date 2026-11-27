@@ -68,7 +68,7 @@ str(horizontes[, .(designation, top_cm, bottom_cm, ph_h2o, clay_pct, bs_pct)])
 #>  $ ph_h2o     : num  5.5 5.3 5 5 5.1
 #>  $ clay_pct   : num  18 28 45 42 38
 #>  $ bs_pct     : num  35 25 20 18 20
-#>  - attr(*, ".internal.selfref")=<pointer: 0x589c10ce31b0>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x56d93693b1b0>
 ```
 
 Construindo o `PedonRecord` (R6 com `site` + `horizons`):
@@ -155,22 +155,26 @@ print(res$sibcs)
 #> Name: Argissolos Vermelhos Distróficos típicos, textura argilosa, A moderado,
 #> Tmob
 #> RSG/Order: Argissolos
-#> Evidence grade: A
+#> Evidence grade: C
 #> 
 #> ── Ambiguities
-#> - V: Indeterminate -- missing 1 attribute(s): slickensides
 #> - E: Indeterminate -- missing 2 attribute(s): al_ox_pct, fe_ox_pct
 #> - F: Indeterminate -- missing 3 attribute(s): plinthite_pct, pan_type,
 #> cementation_class
+#> - PVdPl: Indeterminate -- missing 1 attribute(s): plinthite_pct
 #> 
 #> ── Missing data that would refine result
-#> slickensides, al_ox_pct, fe_ox_pct, plinthite_pct, pan_type, cementation_class
+#> al_ox_pct, fe_ox_pct, plinthite_pct, pan_type, cementation_class,
+#> clay_films_strength
+#> 
+#> ── Warnings
+#> ! The name was reached past 3 undecided test(s) (ordens:E, ordens:F, subgrupos:PVdPl): it holds only if they fail, so it is inferred by elimination and the evidence grade is at most C. See $ambiguities and $missing_data.
 #> 
 #> ── Key trace
 #> (30 classes tested before assignment)
 #> 1. O Organossolos -- failed
 #> 2. R Neossolos -- failed
-#> 3. V Vertissolos -- undecided (1 attrs missing)
+#> 3. V Vertissolos -- failed
 #> 4. E Espodossolos -- undecided (2 attrs missing)
 #> 5. S Planossolos -- failed
 #> 6. G Gleissolos -- failed
@@ -370,7 +374,7 @@ data.frame(
 #> 2 Rhodic Ferralic Lixisol (Clayic, Cutanic, Differentic, Epic, Geric, Ochric, Profondic)
 #> 3                                                                               Ultisols
 #>   EvidGrade
-#> 1         A
+#> 1         C
 #> 2         A
 #> 3         C
 ```

@@ -68,6 +68,30 @@ profundo (Grande Grupo \> Subordem \> Ordem) e `rsg_or_order` eh o nome
 da ordem (e.g. "Organossolos"). Os codigos de cada nivel e o trace ficam
 em `$trace`.
 
+## Undecided tests
+
+Since v0.9.444 (audit decision G1) the key follows the rule of
+[`classify_usda()`](https://hugomachadorodrigues.github.io/soilKey/reference/classify_usda.md)
+and the FAO legends. A test whose data are missing is undecided (NA),
+not failed. Every class tested before the one assigned, at the order,
+subordem, grande grupo and subgrupo levels, whose result is NA is listed
+in `$ambiguities` (with `level`: one of `"ordens"`, `"subordens"`,
+`"grandes_grupos"`, `"subgrupos"`), and `$missing_data` collects what
+was missing at every level. A name reached past an undecided test holds
+only if that test fails, so the evidence grade falls from A or B to C
+and a warning says so.
+
+A class is assigned only when its test passes. The lists end with the
+residuals of the text ("Outros solos...": the Haplicos, Orticos and
+tipicos), which take whatever is left; a class the text defines by a
+criterion of its own (the Argissolos at the end of the order key, the Tb
+and Eutroficos great groups) is never reached by elimination. When no
+class of a level passes and some were undecided, the name stops at the
+level above. When no order passes, the name lists the undecided orders
+in brackets as the candidates ("\[Ordem indeterminada no SiBCS: ..., ou
+nao classificado\]", grade C at most), or is "\[Nao classificado no
+SiBCS\]" when every order failed; `rsg_or_order` is then `NA`.
+
 ## Examples
 
 ``` r
