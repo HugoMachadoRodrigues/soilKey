@@ -1,0 +1,12 @@
+scenario,label,n,order_acc,order_ci,order_balacc,order_kappa,suborder_acc,gg_acc
+A,lab only,26726,35.9,35.3–36.5,26.4,0.24,16.2,9.2
+B,+ NASIS morphology,26726,56.8,56.2–57.4,45.5,0.476,22.9,14.6
+C,+ designation inference,26726,56.5,55.9–57.1,45.3,0.472,22.9,14.6
+D,C + recorded STR (oracle),26726,56.8,56.2–57.4,45.8,0.475,24.4,15.7
+E,C + recorded SMR (oracle),26726,61,60.5–61.6,51.8,0.531,41.7,27.6
+F,C + both recorded (oracle),26726,61.3,60.7–61.9,52.3,0.534,43.3,28.9
+G,C + PRISM climate (Thornthwaite),26726,58.5,57.9–59.1,48.4,0.498,34.4,22.3
+H,C + PRISM climate (Hargreaves),26726,60,59.4–60.6,51.6,0.52,35.6,23
+S,SOLUS properties + climate,26726,9.9,9.6–10.3,13.7,0.002,5.2,2.4
+T,S at SOLUS depth slices,26726,9.9,9.5–10.2,13.6,0.002,5.1,2.3
+U,S + lab designations,26726,31.3,30.7–31.8,23.5,0.181,19.8,12.6

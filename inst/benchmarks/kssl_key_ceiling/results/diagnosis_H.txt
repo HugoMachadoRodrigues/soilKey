@@ -1,0 +1,44 @@
+Scenario H: overall 60.0% | decidable pedons 74.2% (n=21602) | undecided 5124
+
+== mollisols (n=7368, recall 46%)
+   errors:    correct 3387 | ref_undecided_missing 2736 | ref_failed_criteria 928 | preempted_by_Aridisols 196 | preempted_by_Vertisols 78 | preempted_by_Andisols 19 | preempted_by_Ultisols 12 | preempted_by_Oxisols 9 | preempted_by_Spodosols 3 
+   predicted: alfisols 1613 | inceptisols 1375 | entisols 676 | aridisols 196 | vertisols 78 | andisols 19 | ultisols 12 | oxisols 9 | spodosols 3 
+   missing:   bs_pct 1966 | munsell_value_dry 1258 | caco3_pct 1104 | oc_pct 1059 | rupture_resistance 872 | munsell_chroma_moist 679 
+== alfisols (n=6421, recall 79%)
+   errors:    correct 5047 | preempted_by_Ultisols 356 | ref_failed_criteria 324 | preempted_by_Aridisols 246 | ref_undecided_missing 242 | preempted_by_Mollisols 140 | preempted_by_Spodosols 27 | preempted_by_Vertisols 20 | preempted_by_Oxisols 10 | preempted_by_Andisols 9 
+   predicted: ultisols 356 | inceptisols 304 | entisols 262 | aridisols 246 | mollisols 140 | spodosols 27 | vertisols 20 | oxisols 10 | andisols 9 
+   missing:   clay_films_amount 149 | clay_pct 143 | cec_cmol 45 | sand_pct 14 | silt_pct 14 | bottom_cm 2 
+== inceptisols (n=3246, recall 62%)
+   errors:    correct 1998 | ref_undecided_missing 529 | preempted_by_Alfisols 272 | preempted_by_Mollisols 120 | preempted_by_Aridisols 118 | preempted_by_Andisols 74 | preempted_by_Ultisols 73 | preempted_by_Spodosols 17 | preempted_by_Vertisols 16 | ref_failed_criteria 11 | preempted_by_Histosols 10 | preempted_by_Oxisols 8 
+   predicted: entisols 540 | alfisols 272 | mollisols 120 | aridisols 118 | andisols 74 | ultisols 73 | spodosols 17 | vertisols 16 | histosols 10 | oxisols 8 
+   missing:   ec_dS_m 488 | caco3_pct 474 | munsell_chroma_moist 169 | munsell_value_moist 167 | munsell_hue_moist 144 | odoe 143 
+== ultisols (n=3007, recall 58%)
+   errors:    correct 1735 | ref_failed_criteria 737 | ref_undecided_missing 496 | preempted_by_Oxisols 28 | preempted_by_Andisols 7 | preempted_by_Vertisols 2 | preempted_by_Histosols 1 | preempted_by_Spodosols 1 
+   predicted: alfisols 793 | entisols 255 | inceptisols 169 | oxisols 28 | mollisols 16 | andisols 7 | vertisols 2 | histosols 1 | spodosols 1 
+   missing:   bs_pct 463 | clay_pct 122 | clay_films_amount 35 | cec_cmol 12 | sand_pct 3 | silt_pct 3 
+== entisols (n=2498, recall 69%)
+   errors:    correct 1716 | preempted_by_Inceptisols 366 | preempted_by_Aridisols 201 | preempted_by_Alfisols 123 | preempted_by_Mollisols 53 | preempted_by_Ultisols 14 | preempted_by_Histosols 9 | preempted_by_Oxisols 7 | preempted_by_Andisols 4 | preempted_by_Vertisols 2 | preempted_by_Spodosols 2 | preempted_by_Gelisols 1 
+   predicted: inceptisols 366 | aridisols 201 | alfisols 123 | mollisols 53 | ultisols 14 | histosols 9 | oxisols 7 | andisols 4 | vertisols 2 | spodosols 2 | gelisols 1 
+== aridisols (n=1683, recall 66%)
+   errors:    correct 1110 | ref_undecided_missing 377 | ref_failed_criteria 178 | preempted_by_Oxisols 12 | preempted_by_Vertisols 4 | preempted_by_Andisols 2 
+   predicted: alfisols 241 | entisols 149 | inceptisols 128 | mollisols 37 | oxisols 12 | vertisols 4 | andisols 2 
+   missing:   water_saturation_days 337 | ec_dS_m 297 | caco3_pct 215 | ph_h2o 212 | oc_pct 169 | bs_pct 148 
+== spodosols (n=1197, recall 32%)
+   errors:    ref_undecided_missing 497 | correct 386 | ref_failed_criteria 311 | preempted_by_Histosols 3 
+   predicted: entisols 328 | inceptisols 248 | alfisols 139 | ultisols 79 | andisols 13 | histosols 3 | mollisols 1 
+   missing:   al_ox_pct 464 | fe_ox_pct 464 | phosphate_retention_pct 444 | bulk_density_g_cm3 444 | odoe 373 | munsell_chroma_moist 244 
+== vertisols (n=507, recall 49%)
+   errors:    ref_failed_criteria 254 | correct 248 | ref_undecided_missing 3 | preempted_by_Oxisols 2 
+   predicted: inceptisols 93 | mollisols 78 | alfisols 31 | entisols 28 | aridisols 27 | oxisols 2 
+   missing:   clay_pct 2 | structure_type 1 
+== andisols (n=476, recall 41%)
+   errors:    correct 195 | ref_undecided_missing 183 | ref_failed_criteria 93 | preempted_by_Spodosols 5 
+   predicted: inceptisols 160 | entisols 41 | alfisols 39 | mollisols 25 | ultisols 9 | spodosols 5 | aridisols 2 
+   missing:   phosphate_retention_pct 183 | volcanic_glass_pct 183 | bulk_density_g_cm3 118 | ph_naf 118 | particles_002_2mm_pct 57 | al_ox_pct 18 
+== histosols (n=320, recall 68%)
+   errors:    correct 216 | ref_undecided_missing 61 | ref_failed_criteria 43 
+   predicted: entisols 78 | inceptisols 14 | alfisols 9 | spodosols 2 | mollisols 1 
+   missing:   water_saturation_days 60 | phosphate_retention_pct 59 | volcanic_glass_pct 59 | particles_002_2mm_pct 59 | al_ox_pct 58 | fe_ox_pct 58 
+== gelisols (n=3, recall 0%)
+   errors:    ref_failed_criteria 3 
+   predicted: entisols 3 
