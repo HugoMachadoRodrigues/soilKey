@@ -169,6 +169,12 @@ benchmark_bdsolos <- function(pedons,
     # full $name carries Order + Subordem ("Argissolos Vermelhos") and
     # we trim back to the first two tokens to align with the
     # normalised reference.
+    # v0.9.444 (G1): a SiBCS result with no order (no order passed, the
+    # candidates in brackets) is scored as a prediction of its own, which
+    # never agrees, so that it stays in n_compared; NA is kept for a
+    # classification that failed with an error.
+    if (sys == "sibcs" && is.na(cls$rsg_or_order %||% NA_character_))
+      return("<undecided>")
     if (sys != "sibcs" || sibcs_level == "order")
       return(cls$rsg_or_order %||% NA_character_)
     nm <- cls$name %||% NA_character_

@@ -50,7 +50,8 @@ test_that(".SIBCS_ORDERS is what the key returns", {
   got <- unique(vapply(fx, function(f)
     classify_sibcs(get(f, envir = asNamespace("soilKey"))(),
                    on_missing = "silent")$rsg_or_order, character(1)))
-  expect_setequal(got, .SIBCS_ORDERS)
+  # v0.9.444: a result with no order (its candidates undecided) has NA
+  expect_setequal(got[!is.na(got)], .SIBCS_ORDERS)
 })
 
 test_that("a label that is not a class is left out of the scored profiles", {

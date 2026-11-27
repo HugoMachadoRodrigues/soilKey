@@ -53,6 +53,31 @@ Organossolos primeiro). Quando a subordem ainda nao tem bloco de
 Grandes Grupos, ou quando nenhum Grande Grupo passa (e nao ha
 catch-all default), a classificacao para no 2o nivel.
 }
+\section{Undecided tests}{
+
+Since v0.9.444 (audit decision G1) the key follows the rule of
+\code{\link{classify_usda}()} and the FAO legends. A test whose data are
+missing is undecided (NA), not failed. Every class tested before the one
+assigned, at the order, subordem, grande grupo and subgrupo levels, whose
+result is NA is listed in \code{$ambiguities} (with \code{level}: one of
+\code{"ordens"}, \code{"subordens"}, \code{"grandes_grupos"},
+\code{"subgrupos"}), and \code{$missing_data} collects what was missing
+at every level. A name reached past an undecided test holds only if that
+test fails, so the evidence grade falls from A or B to C and a warning
+says so.
+
+A class is assigned only when its test passes. The lists end with the
+residuals of the text ("Outros solos...": the Haplicos, Orticos and
+tipicos), which take whatever is left; a class the text defines by a
+criterion of its own (the Argissolos at the end of the order key, the Tb
+and Eutroficos great groups) is never reached by elimination. When no
+class of a level passes and some were undecided, the name stops at the
+level above. When no order passes, the name lists the undecided orders in
+brackets as the candidates ("[Ordem indeterminada no SiBCS: ..., ou nao
+classificado]", grade C at most), or is "[Nao classificado no SiBCS]"
+when every order failed; \code{rsg_or_order} is then \code{NA}.
+}
+
 \examples{
 pedon <- make_latossolo_canonical()
 res <- classify_sibcs(pedon)

@@ -78,16 +78,19 @@ grandes_grupos:
       name: "Gleissolos Melânicos Tb Alumínicos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - carater_alitico: {}
     - code: "GMbd"
       name: "Gleissolos Melânicos Tb Distróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - distrofico: {}
     - code: "GMbe"
       name: "Gleissolos Melânicos Tb Eutróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - eutrofico: {}
 
   # ============================================================
@@ -126,14 +129,17 @@ grandes_grupos:
       name: "Gleissolos Háplicos Tb Alumínicos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - carater_alitico: {}
     - code: "GXbd"
       name: "Gleissolos Háplicos Tb Distróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - distrofico: {}
     - code: "GXbe"
       name: "Gleissolos Háplicos Tb Eutróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - eutrofico: {}

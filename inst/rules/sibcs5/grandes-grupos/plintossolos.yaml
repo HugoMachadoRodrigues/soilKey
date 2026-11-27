@@ -19,7 +19,9 @@ grandes_grupos:
     - code: "FFco"
       name: "Plintossolos Pétricos Concrecionários"
       tests:
-        default: true
+        # v0.9.444 (G1): its own criterion, a horizonte concrecionário (p. 262)
+        all_of:
+          - horizonte_concrecionario: {}
 
   # -- FT Argiluvicos -----
   "FT":
@@ -36,7 +38,9 @@ grandes_grupos:
     - code: "FTe"
       name: "Plintossolos Argilúvicos Eutróficos"
       tests:
-        default: true
+        # v0.9.444 (G1): its own criterion, V 50 % or more (p. 263)
+        all_of:
+          - eutrofico: {}
 
   # -- FX Haplicos -----
   "FX":
@@ -58,4 +62,6 @@ grandes_grupos:
     - code: "FXe"
       name: "Plintossolos Háplicos Eutróficos"
       tests:
-        default: true
+        # v0.9.444 (G1): its own criterion, V 50 % or more (p. 263)
+        all_of:
+          - eutrofico: {}

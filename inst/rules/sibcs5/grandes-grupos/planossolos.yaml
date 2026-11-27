@@ -50,4 +50,6 @@ grandes_grupos:
     - code: "SXe"
       name: "Planossolos Háplicos Eutróficos"
       tests:
-        default: true
+        # v0.9.444 (G1): its own criterion, V 50 % or more (p. 253), not a residual
+        all_of:
+          - eutrofico: {}

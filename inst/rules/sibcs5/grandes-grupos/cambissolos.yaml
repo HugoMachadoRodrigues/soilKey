@@ -117,11 +117,13 @@ grandes_grupos:
       name: "Cambissolos Flúvicos Tb Distróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - distrofico: {}
     - code: "CYbe"
       name: "Cambissolos Flúvicos Tb Eutróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - eutrofico: {}
 
   # ============================================================
@@ -172,26 +174,31 @@ grandes_grupos:
       name: "Cambissolos Háplicos Tb Alumínicos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - carater_alitico: {}
     - code: "CXbdf"
       name: "Cambissolos Háplicos Tb Distroférricos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - distrofico: {}
           - carater_ferrico: {}
     - code: "CXbd"
       name: "Cambissolos Háplicos Tb Distróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - distrofico: {}
     - code: "CXbef"
       name: "Cambissolos Háplicos Tb Eutroférricos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - eutrofico: {}
           - carater_ferrico: {}
     - code: "CXbe"
       name: "Cambissolos Háplicos Tb Eutróficos"
       tests:
         all_of:
+          - none_of: [ { atividade_argila_alta: {} } ]  # Tb (v0.9.444, G1)
           - eutrofico: {}

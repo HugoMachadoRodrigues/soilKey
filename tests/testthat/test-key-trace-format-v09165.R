@@ -42,8 +42,11 @@ test_that("the nested SiBCS/USDA trace never crashes and is not garbled", {
       # no "garbled group" rows: empty code + empty name + undecided
       garbled <- !nzchar(tt$code) & !nzchar(tt$name) & tt$status == "undecided"
       expect_false(any(garbled))
-      # each system assigns a taxon -> at least one selected row
-      expect_true(any(tt$status == "selected"))
+      # a system that assigns a taxon has at least one selected row; since
+      # v0.9.444 the SiBCS key names no order when none passes (the
+      # vertisol fixture has cracks under the 1 cm of p. 73)
+      if (!is.na(res$rsg_or_order))
+        expect_true(any(tt$status == "selected"), info = paste(f, sys))
     }
   }
 })
