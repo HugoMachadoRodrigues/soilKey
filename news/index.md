@@ -1,5 +1,29 @@
 # Changelog
 
+## soilKey 0.9.443
+
+A benchmark of the USDA key on the KSSL/NASIS pedons joins
+`inst/benchmarks/kssl_key_ceiling/`: the scripts, a README and the
+summary tables of a run on 26,726 pedons of the conterminous USA. No
+package code changes.
+
+- **Eleven information scenarios.** From KSSL lab data alone (35.9 % of
+  the orders right) through NASIS morphology and designation inference
+  (56.5 %) to moisture and temperature regimes from PRISM climate (60.0
+  % with Hargreaves PET) or read off the record (61.3 %, an oracle upper
+  bound). The no-information rate is 27.6 %.
+- **The properties SOLUS100 maps.** Fed only clay, silt, sand, organic
+  C, pH, CEC, ECEC, CaCO3, gypsum, EC, SAR, bulk density and coarse
+  fragments (the pedon’s own lab values, so a perfect map) plus the
+  climate regimes, the key gets 9.9 % of the orders right, at the
+  profile’s horizons or at the SOLUS depth slices alike. 82 % of the
+  pedons leave their true order undecided: base saturation, colour,
+  structure, clay films, exchangeable Na and oxalate extracts are not
+  mapped. Adding the horizon designations brings it to 31.3 %.
+- Every wrong order is traced to pre-emption by an earlier order, failed
+  criteria or missing data, with the attributes that block each order
+  (`05_diagnose.R`).
+
 ## soilKey 0.9.442
 
 The KSSL GeoPackage loader

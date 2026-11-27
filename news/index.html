@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">soilKey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.442</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.443</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,15 @@
       <small>Source: <a href="https://github.com/HugoMachadoRodrigues/soilKey/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.443" id="soilkey-09443">soilKey 0.9.443<a class="anchor" aria-label="anchor" href="#soilkey-09443"></a></h2>
+<p>A benchmark of the USDA key on the KSSL/NASIS pedons joins <code>inst/benchmarks/kssl_key_ceiling/</code>: the scripts, a README and the summary tables of a run on 26,726 pedons of the conterminous USA. No package code changes.</p>
+<ul><li>
+<strong>Eleven information scenarios.</strong> From KSSL lab data alone (35.9 % of the orders right) through NASIS morphology and designation inference (56.5 %) to moisture and temperature regimes from PRISM climate (60.0 % with Hargreaves PET) or read off the record (61.3 %, an oracle upper bound). The no-information rate is 27.6 %.</li>
+<li>
+<strong>The properties SOLUS100 maps.</strong> Fed only clay, silt, sand, organic C, pH, CEC, ECEC, CaCO3, gypsum, EC, SAR, bulk density and coarse fragments (the pedon’s own lab values, so a perfect map) plus the climate regimes, the key gets 9.9 % of the orders right, at the profile’s horizons or at the SOLUS depth slices alike. 82 % of the pedons leave their true order undecided: base saturation, colour, structure, clay films, exchangeable Na and oxalate extracts are not mapped. Adding the horizon designations brings it to 31.3 %.</li>
+<li>Every wrong order is traced to pre-emption by an earlier order, failed criteria or missing data, with the attributes that block each order (<code>05_diagnose.R</code>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.442" id="soilkey-09442">soilKey 0.9.442<a class="anchor" aria-label="anchor" href="#soilkey-09442"></a></h2>
 <p>The KSSL GeoPackage loader (<code><a href="../reference/load_kssl_pedons_gpkg.html">load_kssl_pedons_gpkg()</a></code>, and through it <code><a href="../reference/load_kssl_pedons_with_nasis.html">load_kssl_pedons_with_nasis()</a></code>) reads lab fields that USDA tests already used but the loader never filled. A benchmark of the USDA key on 26,726 KSSL pedons in CONUS found them missing: the Ultisols recall rose from 38 % to about 57 % once they were read.</p>
