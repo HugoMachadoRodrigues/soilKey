@@ -1,0 +1,172 @@
+
+No-information rate (majority order): 27.6 %
+
+   scenario                            label     n order_acc  order_ci
+     <char>                           <char> <int>     <num>    <char>
+1:        A                         lab only 26726      35.9 35.3–36.5
+2:        B               + NASIS morphology 26726      56.8 56.2–57.4
+3:        C          + designation inference 26726      56.5 55.9–57.1
+4:        D        C + recorded STR (oracle) 26726      56.8 56.2–57.4
+5:        E        C + recorded SMR (oracle) 26726      61.0 60.5–61.6
+6:        F       C + both recorded (oracle) 26726      61.3 60.7–61.9
+7:        G C + PRISM climate (Thornthwaite) 26726      58.5 57.9–59.1
+8:        H   C + PRISM climate (Hargreaves) 26726      60.0 59.4–60.6
+   order_balacc order_kappa suborder_acc gg_acc
+          <num>       <num>        <num>  <num>
+1:         26.4       0.240         16.2    9.2
+2:         45.5       0.476         22.9   14.6
+3:         45.3       0.472         22.9   14.6
+4:         45.8       0.475         24.4   15.7
+5:         51.8       0.531         41.7   27.6
+6:         52.3       0.534         43.3   28.9
+7:         48.4       0.498         34.4   22.3
+8:         51.6       0.520         35.6   23.0
+
+Error anatomy (counts):
+Key: <err_class>
+                             err_class     A     B     C     D     E     F
+                                <char> <int> <int> <int> <int> <int> <int>
+1:                             correct  9590 15173 15110 15181 16314 16385
+2:       preempted by an earlier order  1116  2086  2164  2174  2164  2174
+3:      true order failed its criteria  2389  2949  2950  3002  2950  3002
+4: true order undecided (missing data) 13631  6518  6502  6369  5298  5165
+       G     H
+   <int> <int>
+1: 15633 16038
+2:  2219  2682
+3:  3570  2882
+4:  5304  5124
+
+Top pre-empting orders:
+    scenario                 err_type     N
+      <char>                   <char> <int>
+ 1:        A    preempted_by_Ultisols   420
+ 2:        A    preempted_by_Alfisols   368
+ 3:        A preempted_by_Inceptisols   230
+ 4:        A     preempted_by_Oxisols    76
+ 5:        B preempted_by_Inceptisols   487
+ 6:        B    preempted_by_Ultisols   455
+ 7:        B    preempted_by_Alfisols   450
+ 8:        B   preempted_by_Mollisols   313
+ 9:        C    preempted_by_Alfisols   568
+10:        C    preempted_by_Ultisols   455
+11:        C preempted_by_Inceptisols   447
+12:        C   preempted_by_Mollisols   313
+13:        D    preempted_by_Alfisols   568
+14:        D    preempted_by_Ultisols   455
+15:        D preempted_by_Inceptisols   452
+16:        D   preempted_by_Mollisols   313
+17:        E    preempted_by_Alfisols   456
+18:        E    preempted_by_Ultisols   454
+19:        E preempted_by_Inceptisols   354
+20:        E   preempted_by_Mollisols   313
+21:        F    preempted_by_Alfisols   456
+22:        F    preempted_by_Ultisols   454
+23:        F preempted_by_Inceptisols   359
+24:        F   preempted_by_Mollisols   313
+25:        G    preempted_by_Alfisols   499
+26:        G    preempted_by_Ultisols   455
+27:        G preempted_by_Inceptisols   417
+28:        G   preempted_by_Mollisols   313
+29:        H   preempted_by_Aridisols   761
+30:        H    preempted_by_Ultisols   455
+31:        H    preempted_by_Alfisols   395
+32:        H preempted_by_Inceptisols   366
+    scenario                 err_type     N
+      <char>                   <char> <int>
+
+Most frequent missing attributes blocking the true order:
+    scenario                      attr     N
+      <char>                    <char> <int>
+ 1:        A       munsell_value_moist 11055
+ 2:        A      munsell_chroma_moist 11055
+ 3:        A            structure_type  9965
+ 4:        A         munsell_value_dry  9569
+ 5:        A        rupture_resistance  8745
+ 6:        A                 caco3_pct  5444
+ 7:        B                    bs_pct  2696
+ 8:        B                 caco3_pct  1844
+ 9:        B         munsell_value_dry  1657
+10:        B site$soil_moisture_regime  1560
+11:        B                    oc_pct  1461
+12:        B      munsell_chroma_moist  1283
+13:        C                    bs_pct  2692
+14:        C                 caco3_pct  1837
+15:        C         munsell_value_dry  1654
+16:        C site$soil_moisture_regime  1563
+17:        C                    oc_pct  1456
+18:        C      munsell_chroma_moist  1275
+19:        D                    bs_pct  2692
+20:        D                 caco3_pct  1820
+21:        D         munsell_value_dry  1640
+22:        D site$soil_moisture_regime  1561
+23:        D                    oc_pct  1455
+24:        D      munsell_chroma_moist  1271
+25:        E                    bs_pct  2692
+26:        E                 caco3_pct  1821
+27:        E         munsell_value_dry  1654
+28:        E                    oc_pct  1456
+29:        E      munsell_chroma_moist  1261
+30:        E       munsell_value_moist  1251
+31:        F                    bs_pct  2692
+32:        F                 caco3_pct  1804
+33:        F         munsell_value_dry  1640
+34:        F                    oc_pct  1455
+35:        F      munsell_chroma_moist  1257
+36:        F       munsell_value_moist  1247
+37:        G                    bs_pct  2686
+38:        G                 caco3_pct  1792
+39:        G         munsell_value_dry  1625
+40:        G                    oc_pct  1442
+41:        G      munsell_chroma_moist  1228
+42:        G       munsell_value_moist  1218
+43:        H                    bs_pct  2685
+44:        H                 caco3_pct  1793
+45:        H         munsell_value_dry  1634
+46:        H                    oc_pct  1452
+47:        H      munsell_chroma_moist  1239
+48:        H       munsell_value_moist  1229
+    scenario                      attr     N
+      <char>                    <char> <int>
+
+Recall per reference order (%):
+      ref_order     n     A     B     C     D     E     F     G     H
+         <char> <int> <num> <num> <num> <num> <num> <num> <num> <num>
+ 1:   mollisols  7368     0    46    46    46    46    46    46    46
+ 2:    alfisols  6421    81    82    82    82    82    82    82    79
+ 3: inceptisols  3246    14    64    62    63    62    63    63    62
+ 4:    ultisols  3007    57    58    58    58    58    58    58    58
+ 5:    entisols  2498    83    70    69    69    69    69    69    69
+ 6:   aridisols  1683     0     0     0     0    72    72    25    66
+ 7:   spodosols  1197     0    23    23    28    23    28    32    32
+ 8:   vertisols   507     0    49    49    49    49    49    49    49
+ 9:    andisols   476     0    41    41    41    41    41    41    41
+10:   histosols   320    56    68    68    68    68    68    68    68
+11:    gelisols     3     0     0     0     0     0     0     0     0
+
+SMR climate vs record (aquic excluded): Thornthwaite 74 % | Hargreaves 80.6 % of  18441 
+    record hargreaves     N
+    <char>     <char> <int>
+ 1:   udic       udic  9015
+ 2:  ustic      ustic  2698
+ 3: aridic     aridic  1994
+ 4:  xeric      xeric  1164
+ 5:   udic      ustic   896
+ 6:  ustic     aridic   691
+ 7:  xeric     aridic   553
+ 8:  xeric      ustic   476
+ 9:  xeric       udic   472
+10: aridic      ustic   253
+    record climate     N
+    <char>  <char> <int>
+ 1:   udic    udic  9867
+ 2:  ustic   ustic  2061
+ 3:  ustic    udic  1362
+ 4: aridic   ustic  1316
+ 5:  xeric    udic  1254
+ 6:  xeric   xeric   872
+ 7: aridic  aridic   855
+ 8:  xeric   ustic   483
+ 9:   udic perudic   171
+10: aridic   xeric    73
+STR climate vs record:  75.6 % of  20874 
