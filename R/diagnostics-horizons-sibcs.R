@@ -891,8 +891,21 @@ B_latossolico <- function(pedon, min_thickness = 50,
                       tests$thickness$missing))
   if (length(layers) == 0L &&
         (is.na(tests$texture$passed) || is.na(tests$cec_per_clay$passed)) &&
-        length(missing) > 0L)
-    passed <- NA
+        length(missing) > 0L) {
+    # v0.9.444 (G1, G2): undecided only where the B layers that lack the
+    # CEC or the clay could make the 50 cm with the layers that pass. Up to
+    # 0.9.443 a CEC missing in any layer, an A or a C included, left the
+    # horizon undecided in a profile described with no B at all, which left
+    # its Neossolos step undecided once that step became three-valued.
+    b_rows <- which(is.na(dm) | !nzchar(dm) | grepl("^B", dm))
+    gaps <- setdiff(b_rows[is.na(h$cec_cmol[b_rows]) | is.na(h$clay_pct[b_rows])],
+                    excluded)
+    could <- length(gaps) > 0L && isTRUE(test_minimum_thickness(
+      h, min_cm = min_thickness, candidate_layers = sort(unique(c(cand, gaps))),
+      adjoining = TRUE)$passed)
+    passed <- if (could) NA else FALSE
+    if (!could) missing <- character(0)
+  }
 
   evidence <- c(tests, list(
     max_cec_used = max_cec_per_clay,
@@ -1313,9 +1326,57 @@ B_espodico <- function(pedon, ...) {
       res$layers <- ir
     }
   }
+  # v0.9.444 (audit A15, decision G2): the test is undecided for lack of
+  # oxalate only where a B layer could meet item (b): the oxalate of item
+  # (b)(3) is asked of a B with the colours of item (a), or 7.5YR with value
+  # 5 or less and chroma 5 or 6, or 10YR with value 5 or less and chroma
+  # under 6 (p. 65); items (b)(1) and (b)(2), cementation and cracked
+  # coatings, are field observations, absent when not recorded. Up to
+  # 0.9.443 the WRB spodic test asked for oxalate on every profile, so the B
+  # espodico was undecided on 4,713 of the 4,744 complete BDsolos profiles.
+  # A B layer whose moist colour is not recorded keeps the test undecided.
+  if (is.na(res$passed)) {
+    h <- pedon$horizons
+    no_ox <- all(is.na(h$al_ox_pct)) && all(is.na(h$fe_ox_pct))
+    dm <- .desg_master(h$designation, site = pedon$site)
+    if (no_ox && any(!is.na(dm) & nzchar(dm))) {
+      b <- which(!is.na(dm) & grepl("^B", dm) & !is.na(h$top_cm) &
+                   !is.na(h$bottom_cm) & h$bottom_cm - h$top_cm >= 2.5)
+      col_b <- vapply(b, function(i) .b_espodico_colour_b(
+        h$munsell_hue_moist[i], h$munsell_value_moist[i],
+        h$munsell_chroma_moist[i]), NA)
+      if (!any(col_b %in% TRUE) && !anyNA(col_b)) {
+        ev <- res$evidence
+        ev$item_b_colours <- list(b_layers = b, note = paste(
+          "no B layer has the colours of item (b), so the oxalate of",
+          "(b)(3) is not asked; (b)(1) and (b)(2) are field observations"))
+        res$evidence <- ev
+        res$passed <- FALSE
+        res$missing <- character(0)
+      }
+    }
+  }
   res$name      <- "B_espodico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 62-65"
   res
+}
+
+#' The moist colours of item (b) of the B espodico (p. 65): those of item (a),
+#' or hue 7.5YR with value 5 or less and chroma 5 or 6, or hue 10YR with value
+#' 5 or less and chroma under 6. TRUE, FALSE, or NA when the colour is not
+#' recorded.
+#' @noRd
+.b_espodico_colour_b <- function(hue, value, chroma) {
+  hp <- .munsell_hue_parts(hue)
+  if (is.na(hp$family)) return(NA)
+  if (isTRUE(.b_espodico_colour_a(hp$number, hp$family, value, chroma))) return(TRUE)
+  if (hp$family %in% c("N", "R")) return(FALSE)
+  if (is.na(value) || is.na(chroma) || is.na(hp$number)) return(NA)
+  # a hue between two of them takes the limits of the yellower one, as in
+  # .b_espodico_colour_a()
+  if (hp$family == "YR" && hp$number <= 7.5) return(value <= 5 && chroma <= 6)
+  if (hp$family == "YR" && hp$number <= 10) return(value <= 5 && chroma < 6)
+  FALSE
 }
 
 
@@ -1957,6 +2018,22 @@ horizonte_vertico <- function(pedon, ...) {
     res$layers <- if (isTRUE(res$passed))
       sort(unique(c(res$layers, own$layers))) else own$layers
     res$passed <- TRUE
+  } else if (!isTRUE(res$passed)) {
+    # v0.9.444 (reading R10 (a), Hugo, 2026-11-27): the reading of the
+    # other systems left the horizon undecided wherever the crack width or
+    # the COLE was not recorded (4,649 complete BDsolos profiles), with
+    # nothing to show for it in the profile. In this system the horizon is
+    # its features, slickensides common or more and/or wedge-shaped or
+    # parallelepipedic units (p. 73), field observations absent when not
+    # recorded; the cracks are not asked where those features are recorded
+    # (no BDsolos layer has a crack width, a recorded width under 1 cm still
+    # keeps a layer out), and the COLE stands in for the cracks of irrigated
+    # or poorly drained soils "sem fendas aparentes", so its absence decides
+    # nothing. The horizon is undecided only where a layer with the features
+    # has no clay content recorded.
+    res$passed <- own$passed
+    res$layers <- integer(0)
+    res$missing <- if (is.na(own$passed)) "clay_pct" else character(0)
   }
   ev <- res$evidence
   ev$sibcs <- own
@@ -1985,7 +2062,19 @@ horizonte_vertico <- function(pedon, ...) {
   cand <- which(clay & (slick | wedge) & cracks_ok)
   thk <- test_minimum_thickness(h, min_cm = min_thickness,
                                 candidate_layers = cand, adjoining = TRUE)
-  list(passed = isTRUE(thk$passed), layers = thk$layers %||% integer(0),
+  passed <- isTRUE(thk$passed)
+  # v0.9.444: undecided when the 20 cm would be reached with the layers that
+  # have the features but no clay content recorded
+  if (!passed) {
+    maybe <- which(is.na(h$clay_pct) & (slick | wedge) & cracks_ok)
+    if (length(maybe)) {
+      thk2 <- test_minimum_thickness(h, min_cm = min_thickness,
+                                     candidate_layers = sort(c(cand, maybe)),
+                                     adjoining = TRUE)
+      if (isTRUE(thk2$passed)) passed <- NA
+    }
+  }
+  list(passed = passed, layers = if (isTRUE(passed)) thk$layers %||% integer(0) else integer(0),
        slickensides = which(slick), structure = which(wedge), thickness = thk)
 }
 

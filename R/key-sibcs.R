@@ -170,6 +170,26 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 }
 
 
+# v0.9.444: the levels of the SiBCS key, as named in the warnings.
+.SIBCS_LEVEL_LABEL <- c(ordens = "Ordem", subordens = "Subordem",
+                        grandes_grupos = "Grande grupo", subgrupos = "Subgrupo")
+
+#' The name of a SiBCS result with no order (v0.9.444, G1)
+#'
+#' No order passed. With orders left undecided, the soil keys to one of them
+#' or to none, so the name lists them in brackets as the candidates; with
+#' every order FALSE, the soil is not classified, since the key ends with the
+#' Argissolos and no residual order. In brackets because the name is
+#' soilKey's, not the system's.
+#' @noRd
+.sibcs_no_order_name <- function(trace, candidates) {
+  if (length(candidates) == 0L) return("[N\u00e3o classificado no SiBCS]")
+  nm <- vapply(candidates, function(k) as.character(trace[[k]]$name %||% k), "")
+  sprintf("[Ordem indeterminada no SiBCS: %s, ou n\u00e3o classificado]",
+          paste(nm, collapse = ", "))
+}
+
+
 #' Classifica um pedon segundo o SiBCS 5a edicao (1o + 2o + 3o + 4o niveis)
 #'
 #' v0.7 ligou as 13 ordens; v0.7.1 desce ao 2o nivel (subordens) via
@@ -199,6 +219,28 @@ run_sibcs_subgrupo <- function(pedon, gg_code, rules = NULL) {
 #'        proveniencia \code{inferred_prior}, baixando o grau de evidencia
 #'        para \code{"C"}. Opera sobre copia profunda -- o pedon do chamador
 #'        nunca e modificado.
+#' @section Undecided tests:
+#' Since v0.9.444 (audit decision G1) the key follows the rule of
+#' \code{\link{classify_usda}()} and the FAO legends. A test whose data are
+#' missing is undecided (NA), not failed. Every class tested before the one
+#' assigned, at the order, subordem, grande grupo and subgrupo levels, whose
+#' result is NA is listed in \code{$ambiguities} (with \code{level}: one of
+#' \code{"ordens"}, \code{"subordens"}, \code{"grandes_grupos"},
+#' \code{"subgrupos"}), and \code{$missing_data} collects what was missing
+#' at every level. A name reached past an undecided test holds only if that
+#' test fails, so the evidence grade falls from A or B to C and a warning
+#' says so.
+#'
+#' A class is assigned only when its test passes. The lists end with the
+#' residuals of the text ("Outros solos...": the Haplicos, Orticos and
+#' tipicos), which take whatever is left; a class the text defines by a
+#' criterion of its own (the Argissolos at the end of the order key, the Tb
+#' and Eutroficos great groups) is never reached by elimination. When no
+#' class of a level passes and some were undecided, the name stops at the
+#' level above. When no order passes, the name lists the undecided orders in
+#' brackets as the candidates ("[Ordem indeterminada no SiBCS: ..., ou nao
+#' classificado]", grade C at most), or is "[Nao classificado no SiBCS]"
+#' when every order failed; \code{rsg_or_order} is then \code{NA}.
 #' @return Um \code{\link{ClassificationResult}} cujo \code{name} eh o
 #'         nome completo da classe atribuida no nivel mais profundo
 #'         (Grande Grupo > Subordem > Ordem) e \code{rsg_or_order} eh
@@ -227,10 +269,26 @@ classify_sibcs <- function(pedon,
   # Nivel 1: ordem
   key_result <- run_sibcs_key(pedon, rules)
   ordem      <- key_result$assigned
+  # v0.9.444 (audit decision G1, Hugo, 2026-11-27): a class is assigned only
+  # when its test passes. The engine returns the last class of the list when
+  # none passes; at the order level that was the Argissolos, named with their
+  # own test FALSE or undecided ("Outros solos que apresentam horizonte B
+  # textural", p. 114, a class with a criterion of its own, not a residual).
+  if (!is.null(ordem) && !isTRUE(key_result$trace[[ordem$code]]$passed)) {
+    ordem <- NULL
+  }
 
   # Nivel 2: subordem
-  sub_result <- run_sibcs_subordem(pedon, ordem$code, rules)
+  sub_result <- if (!is.null(ordem))
+                  run_sibcs_subordem(pedon, ordem$code, rules)
+                else list(assigned = NULL, trace = list())
   subordem   <- sub_result$assigned
+  # v0.9.444: every list of subordens ends with the text's "Outros solos",
+  # a default that passes by definition; the guard is for the rule sets of
+  # a user, where a list may end with a class of its own.
+  if (!is.null(subordem) && !isTRUE(sub_result$trace[[subordem$code]]$passed)) {
+    subordem <- NULL
+  }
 
   # v0.9.45: detectar fallback "cor a determinar" -- quando a subordem
   # atribuida e a catch-all de cor (PVA/LVA/NX/TX) E pelo menos um
@@ -263,13 +321,17 @@ classify_sibcs <- function(pedon,
                  run_sibcs_subgrupo(pedon, gg$code, rules)
                else list(assigned = NULL, trace = list())
   sg <- sg_result$assigned
+  # v0.9.444: as above, a subgrupo whose test did not pass is not named.
+  if (!is.null(sg) && !isTRUE(sg_result$trace[[sg$code]]$passed)) {
+    sg <- NULL
+  }
 
   # Nivel 5 (v0.7.14.D): familia (5o nivel categorico). Multi-rotulo,
   # nao chave -- desce sempre que include_familia=TRUE e o pedon
   # tem ordem/sg conhecidos.
   familia_attrs <- NULL
   familia_lbl <- NULL
-  if (isTRUE(include_familia)) {
+  if (isTRUE(include_familia) && !is.null(ordem)) {
     familia_attrs <- tryCatch(
       classify_sibcs_familia(
         pedon,
@@ -289,11 +351,24 @@ classify_sibcs <- function(pedon,
   # v0.9.45: quando o fallback "cor a determinar" e detectado, o
   # display name para no nivel da Ordem com sufixo explicativo, em
   # vez de aceitar o catch-all PVA/LVA/NX/TX em silencio.
+  # v0.9.444 (G1): undecided tests at every level, as in classify_usda().
+  level_traces <- list(ordens         = key_result$trace,
+                       subordens      = sub_result$trace,
+                       grandes_grupos = gg_result$trace,
+                       subgrupos      = sg_result$trace)
+  level_assigned <- list(ordens         = ordem$code,
+                         subordens      = subordem$code,
+                         grandes_grupos = gg$code,
+                         subgrupos      = sg$code)
+  und <- .usda_undecided_by_level(level_traces, level_assigned)
+  ord_candidates <- und$by_level$ordens %||% character(0)
+
   display_name <- if (!is.null(sg))            sg$name
                   else if (!is.null(gg))       gg$name
                   else if (!is.null(color_fallback)) sprintf("%s (cor a determinar)", ordem$name)
                   else if (!is.null(subordem)) subordem$name
-                  else                         ordem$name
+                  else if (!is.null(ordem))    ordem$name
+                  else .sibcs_no_order_name(key_result$trace, ord_candidates)
   if (isTRUE(include_familia) && !is.null(familia_lbl) &&
         nzchar(familia_lbl)) {
     display_name <- paste0(display_name, ", ", familia_lbl)
@@ -311,9 +386,47 @@ classify_sibcs <- function(pedon,
     color_undetermined    = color_fallback
   )
 
-  ambiguities  <- find_ambiguities(key_result$trace, current = ordem$code)
+  # v0.9.444 (G1): every taxon tested before the one assigned, at the order,
+  # subordem, grande grupo and subgrupo levels, whose result is undecided
+  # joins $ambiguities with its level, and $missing_data collects from every
+  # level. A name reached past an undecided test holds only if that test
+  # fails: it is inferred by elimination, so the evidence grade falls from A
+  # or B to C. Up to 0.9.443 only the order level was read and the grade came
+  # from the provenance of the data alone.
+  ambiguities  <- und$ambiguities
   grade        <- compute_evidence_grade(pedon, key_result$trace)
-  missing_data <- collect_missing_attributes(key_result$trace)
+  missing_data <- unique(unlist(lapply(level_traces, collect_missing_attributes),
+                                use.names = FALSE)) %||% character(0)
+  warnings <- character(0)
+  if (length(und$before_assigned) > 0L) {
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "The name was reached past %d undecided test(s) (%s): it holds only if ",
+      "they fail, so it is inferred by elimination and the evidence grade ",
+      "is at most C. See $ambiguities and $missing_data."),
+      length(und$before_assigned), paste(und$before_assigned, collapse = ", ")))
+  }
+  if (is.null(ordem) && length(ord_candidates) > 0L) {
+    # no order passed and some were undecided: one of them, or none, by what
+    # the missing data would show; no firm answer either way (as FAO, G1)
+    if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
+    warnings <- c(warnings, sprintf(paste0(
+      "No order passed and %d were left undecided (%s): the soil keys to one ",
+      "of them, or to none, which the data do not decide. The evidence grade ",
+      "is at most C. See $ambiguities and $missing_data."),
+      length(ord_candidates), paste(ord_candidates, collapse = ", ")))
+  } else if (is.null(ordem)) {
+    warnings <- c(warnings, paste0(
+      "Not classified: none of the 13 orders passed, and the key has no ",
+      "residual order (the Argissolos ask for a B textural, p. 114). See ",
+      "$trace$ordens for the test that failed in each."))
+  }
+  for (lv in setdiff(und$undecided_levels, "ordens")) {
+    warnings <- c(warnings, sprintf(paste0(
+      "%s undecided: no class passed and %s could not be decided, so the ",
+      "name stops at the level above. See $ambiguities."),
+      .SIBCS_LEVEL_LABEL[[lv]], paste(und$by_level[[lv]], collapse = ", ")))
+  }
 
   # v0.9.45: quando ha fallback de cor, garantir que
   # munsell_hue_moist_horizon_B aparece em missing_data (usuario pode
@@ -326,7 +439,6 @@ classify_sibcs <- function(pedon,
     if (!is.na(grade) && grade %in% c("A", "B")) grade <- "C"
   }
 
-  warnings <- character(0)
   if (is.na(grade)) warnings <- c(warnings, .NO_PROPERTIES_WARNING)
   if (length(missing_data) > 0L) {
     msg <- sprintf(
@@ -343,7 +455,7 @@ classify_sibcs <- function(pedon,
   ClassificationResult$new(
     system         = "SiBCS 5a edicao",
     name           = display_name,
-    rsg_or_order   = ordem$name,
+    rsg_or_order   = ordem$name %||% NA_character_,
     qualifiers     = list(),
     trace          = trace_combined,
     ambiguities    = ambiguities,

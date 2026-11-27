@@ -84,15 +84,29 @@ neossolo <- function(pedon) {
   # canonical Fluvisol; the B textural of the book is looked for in B
   # horizons, and that profile has none.
   fluv <- carater_fluvico(pedon)
-  has_b <- any(c(
-    isTRUE(B_textural(pedon)$passed),
-    isTRUE(B_latossolico(pedon)$passed),
-    isTRUE(B_incipiente(pedon)$passed),
-    isTRUE(B_nitico(pedon)$passed),
-    isTRUE(B_espodico(pedon)$passed),
-    isTRUE(B_planico(pedon)$passed)
-  ))
-  if (has_b) {
+  # v0.9.444 (audit C4, decision G1): a B test left undecided leaves the step
+  # undecided, unless an exclusion below fails it anyway. Up to 0.9.443 each
+  # B was read with isTRUE(), so an undecided B counted as absent and the
+  # profile became a Neossolo by default. The B espodico counts only where a
+  # B layer is described (reading R5 (a)): B_espodico() leaves it undecided
+  # only where a B layer has the colours of its item (b).
+  b_tests <- list(
+    B_textural    = B_textural(pedon),
+    B_latossolico = B_latossolico(pedon),
+    B_incipiente  = B_incipiente(pedon),
+    B_nitico      = B_nitico(pedon),
+    B_espodico    = B_espodico(pedon),
+    B_planico     = B_planico(pedon)
+  )
+  b_state <- vapply(b_tests, function(r) {
+    p <- r$passed
+    if (length(p) == 1L) as.logical(p) else NA
+  }, NA)
+  has_b <- .usda_or3(b_state)
+  b_missing <- unique(unlist(lapply(b_tests[is.na(b_state)],
+                                    function(r) r$missing %||% character(0)),
+                             use.names = FALSE)) %||% character(0)
+  if (isTRUE(has_b)) {
     return(DiagnosticResult$new(
       name = "neossolo", passed = FALSE,
       layers = integer(0),
@@ -139,18 +153,19 @@ neossolo <- function(pedon) {
                      isTRUE(horizonte_calcico(pedon)$passed))
   exclusion_failed <- glei_dentro_50 || plint_dentro_40 ||
                         vert_below_a || chern_calc
-  passed <- !exclusion_failed
+  passed <- if (exclusion_failed) FALSE else if (is.na(has_b)) NA else TRUE
   DiagnosticResult$new(
     name = "neossolo", passed = passed,
-    layers = if (passed) seq_len(nrow(h)) else integer(0),
+    layers = if (isTRUE(passed)) seq_len(nrow(h)) else integer(0),
     evidence = list(
       no_b_diagnostic = !has_b,
+      b_undecided = names(b_state)[is.na(b_state)],
       glei_dentro_50 = glei_dentro_50,
       plintico_dentro_40 = plint_dentro_40,
       vertico_below_a = vert_below_a,
       chernozemic_carbonatic = chern_calc
     ),
-    missing = character(0),
+    missing = if (is.na(passed)) b_missing else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 111-112"
   )
 }
@@ -441,21 +456,25 @@ chernossolo <- function(pedon) {
   cal <- horizonte_calcico(pedon)
   contato <- contato_litico(pedon)
   contato_frag <- contato_litico_fragmentario(pedon)
-  path_a <- (isTRUE(bi$passed) || isTRUE(bt$passed)) &&
-              isTRUE(ta$passed) && isTRUE(eut$passed)
-  path_b <- (isTRUE(carb$passed) || isTRUE(cal$passed))
-  path_c <- (isTRUE(contato$passed) || isTRUE(contato_frag$passed)) &&
-              isTRUE(carb$passed)
-  passed <- path_a || path_b || path_c
+  # v0.9.444 (audit C16, decision G1): the three paths are three-valued; an
+  # undecided Ta, V or B was read with isTRUE(), as failed.
+  path_a <- .and3(.usda_or3(bi$passed, bt$passed), ta$passed, eut$passed)
+  path_b <- .usda_or3(carb$passed, cal$passed)
+  path_c <- .and3(.usda_or3(contato$passed, contato_frag$passed), carb$passed)
+  passed <- .usda_or3(path_a, path_b, path_c)
+  und_missing <- if (is.na(passed))
+    unique(c(ta$missing, eut$missing, bi$missing, bt$missing, carb$missing,
+             cal$missing)) else character(0)
   DiagnosticResult$new(
-    name = "chernossolo", passed = passed, layers = ch$layers,
+    name = "chernossolo", passed = passed,
+    layers = if (isTRUE(passed)) ch$layers else integer(0),
     evidence = list(
       A_chernozemico = ch,
       path_a_bi_bt_alta = path_a,
       path_b_calcico_carbonatico = path_b,
       path_c_contato_carbonatico = path_c
     ),
-    missing = ch$missing,
+    missing = unique(c(ch$missing, und_missing)),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 113"
   )
 }
@@ -667,9 +686,12 @@ luvissolo <- function(pedon) {
   }
   ta <- atividade_argila_alta(pedon)
   eut <- eutrofico(pedon, min_v = 50)
-  passed <- isTRUE(bt$passed) && isTRUE(ta$passed) && isTRUE(eut$passed)
+  # v0.9.444 (audit C15, decision G1): Ta and V undecided leave the step
+  # undecided; they were read with isTRUE(), as failed.
+  passed <- .and3(ta$passed, eut$passed)
   DiagnosticResult$new(
-    name = "luvissolo", passed = passed, layers = bt$layers,
+    name = "luvissolo", passed = passed,
+    layers = if (isTRUE(passed)) bt$layers else integer(0),
     evidence = list(B_textural = bt, ativ_alta = ta, eutrofico = eut),
     missing = c(bt$missing, ta$missing, eut$missing),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 113"
