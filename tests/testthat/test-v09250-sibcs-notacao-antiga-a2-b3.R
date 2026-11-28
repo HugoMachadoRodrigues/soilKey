@@ -79,9 +79,11 @@ test_that("a B3 is no first B sub-horizon, as a BC is not", {
   r <- mudanca_textural_abrupta(p)
   expect_false(isTRUE(r$passed))
   expect_true(is.na(r$evidence$first_b))
-  # a B2 is
+  # a B2 is (with the distinctness of the transition recorded: since
+  # v0.9.445 the change is undecided without it)
   expect_true(isTRUE(mudanca_textural_abrupta(
-    .on(c("A1", "B2", "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30)))$passed))
+    .on(c("A1", "B2", "C"), c(0, 20, 50), c(20, 50, 120), c(12, 30, 30),
+        boundary_distinctness = c("abrupt", NA, NA)))$passed))
 })
 
 test_that("the canonical profiles, written in the present notation, keep their class", {

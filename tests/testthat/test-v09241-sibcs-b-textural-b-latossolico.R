@@ -121,13 +121,15 @@ test_that("item (g): an abrupt change from the A to the B, within 7.5 cm", {
   }
   for (b in c("gradual", "diffuse", "Gradual", "Difusa"))
     expect_false(isTRUE(B_textural(g(b))$passed), info = b)
-  # not recorded: the two layers are compared
-  expect_true(isTRUE(B_textural(g(NA_character_))$passed))
+  # not recorded: undecided since v0.9.445 (audit B13); the two layers were
+  # compared
+  expect_true(is.na(B_textural(g(NA_character_))$passed))
   # 19 points are not 20
   p <- .bx(c("A", "Bt"), c(0, 30), c(30, 90), c(40, 59))
   expect_false(isTRUE(B_textural(p)$passed))
   # under 200 g/kg in the A, the B has twice as much; that is item (h) too
-  p <- .bx(c("A", "Bt"), c(0, 30), c(30, 90), c(12, 24))
+  p <- .bx(c("A", "Bt"), c(0, 30), c(30, 90), c(12, 24),
+           boundary_distinctness = c("abrupt", NA))
   expect_true(B_textural(p)$evidence$item_g)
 })
 

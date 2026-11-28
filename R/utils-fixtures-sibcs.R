@@ -318,6 +318,9 @@ make_nitossolo_canonical <- function() {
     structure_type       = c("granular","subangular blocky",
                               "subangular blocky","subangular blocky"),
     clay_films_amount    = c(NA,   "common", "many",   "common"),
+    # v0.9.445: the grade of the cerosidade, which item (c) of the B nitico
+    # asks ("forte ou moderado") and which is undecided when not recorded
+    clay_films_strength  = c(NA,   "moderate", "strong", "moderate"),
     clay_pct             = c(45,   55,   60,   55),     # argila >= 35% desde A
     silt_pct             = c(25,   23,   20,   22),
     sand_pct             = c(30,   22,   20,   23),

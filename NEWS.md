@@ -1,3 +1,69 @@
+# soilKey 0.9.445
+
+The second change of the SiBCS 2018 audit (decision G2, Hugo, 2026-11-27):
+the rule for data that are not recorded now holds in the SiBCS diagnostics.
+A field observation that is not recorded is absent. A measurement, a
+colour, a structure or a boundary that is not recorded is undecided. On the
+4,674 complete BDsolos profiles with a readable label, order agreement goes
+from 2,980 to 2,957 and subordem agreement from 1,104 to 1,097. Grade A
+rises from 150 to 391, since the many field observations that were
+undecided (plinthite, redox features, cementation) are now absent.
+
+* **Field observations not recorded are absent** (audit B21, A6).
+  - The caráter plíntico, redóxico, dúrico and plácico, and the horizonte
+    plíntico, were undecided wherever plinthite, redox features or
+    cementation were not recorded: the caráter plíntico on every complete
+    profile. The horizonte plíntico is absent in a profile
+    with no plinthite recorded, whatever iron data the WRB 2022 criteria
+    ask for.
+  - The A antrópico needs the artefacts the text makes obligatory (p. 53).
+    Up to 0.9.444, an A with no artefacts recorded deferred to the WRB
+    hortic test.
+* **A CaCO3 not determined is no carbonate** (Hugo, 2026-11-27).
+  - The surveys determine the CaCO3 equivalent only where the soil
+    effervesces, and only 95 of the complete profiles have it in any layer.
+  - The caráter carbonático and hipocarbonático, and the horizonte cálcico
+    of a profile with no CaCO3 determined, are absent, not undecided.
+* **Measurements, colours, structures and boundaries not recorded are
+  undecided** (audit A4, A8, A9, A13, A19, B13, E14, reading R7 (a)).
+  - The mudança textural abrupta needs the jump within 7.5 cm. Where the
+    distinctness of the transition is not recorded, it is undecided; until
+    now the jump alone passed. This also affects item (g) of the B
+    textural and the B plânico.
+  - B textural: a ratio that cannot be computed for want of clay is
+    undecided, and so is item (i) where a cerosidade is recorded with no
+    clay, structure type or grade. A cerosidade that is not recorded stays
+    absent. The three items are combined three-valued.
+  - B plânico: a first B whose colour is not recorded, or whose transition
+    is undecided, leaves the horizon undecided. A structure that is not
+    recorded still passes (decision of 12 October, reading R9).
+  - Hístico: undecided where O or H layers without carbon could make the
+    thickness.
+  - A chernozêmico: a carbon, V, moist colour, dry value or structure grade
+    that is not recorded leaves a sub-horizon undecided. Up to 0.9.444 the
+    colours and the grade passed, and a sub-horizon lacking carbon or V
+    was skipped. The A proeminente and A húmico follow the same rule for
+    their colour, carbon and V.
+  - B nítico: a structure type, a structure grade or a cerosidade grade
+    that is not recorded is undecided. Until now the type failed and the
+    grades passed.
+  - The Organossolos Fíbricos, Hêmicos and Sápricos are undecided where an
+    H or O layer has neither the fibre content nor the von Post index.
+* **The four exclusions of the Neossolos step are three-valued**: glei,
+  plíntico, vértico, and A chernozêmico with carbonático or cálcico.
+* **Where the names change.** 37 complete profiles change order:
+  - 18 Chernossolos, now Cambissolos or Luvissolos, because their dry value
+    is not recorded (R7 (a)). 15 of them carried a Chernossolos label.
+  - 12 Planossolos, now Argissolos or Gleissolos, because the distinctness
+    of their transition is not recorded. 8 of them carried a Planossolos
+    label.
+  - 3 Nitossolos, 3 Neossolos and 1 Argissolo.
+* **Canonical profiles.**
+  - The canonical Nitossolo now records the grade of its cerosidade
+    (moderate and strong), which item (c) of the B nítico asks for.
+  - The Anthrosol no longer lists the Chernossolos among its candidate
+    orders, since its CaCO3 is not determined.
+
 # soilKey 0.9.444
 
 The first change of the SiBCS 2018 audit (decision G1, Hugo, 2026-11-27):

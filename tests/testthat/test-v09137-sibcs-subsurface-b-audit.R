@@ -29,7 +29,8 @@ test_that("v0.9.137: B_nitico requires structure GRADE moderate/strong", {
   mo <- base; mo$structure_grade <- c(NA, "moderate")
   expect_true(isTRUE(B_nitico(prh(mkh(mo)))$passed))
   na <- base; na$structure_grade <- NA_character_
-  expect_true(isTRUE(B_nitico(prh(mkh(na)))$passed))     # byte-identical
+  # v0.9.445 (audit G2/A13): a grade not recorded is undecided
+  expect_true(is.na(B_nitico(prh(mkh(na)))$passed))
 })
 
 test_that("v0.9.137: B_nitico requires cerosidade GRADE moderate/strong", {

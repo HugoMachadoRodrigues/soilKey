@@ -27,7 +27,7 @@ that meets one or more of the items below (v0.9.241).
         200 g/kg, 200 g/kg more otherwise, within 7.5 cm. The distance is
         read from the distinctness of the transition
         (\code{boundary_distinctness}: abrupt or clear); where it is not
-        recorded the two layers are compared;
+        recorded the item is undecided (v0.9.445);
   \item (h) the relacao textural B/A of footnote 4, above 1.50, 1.70 or
         1.80 according to the clay of the A
         (\code{test_ratio_textural_sibcs});
