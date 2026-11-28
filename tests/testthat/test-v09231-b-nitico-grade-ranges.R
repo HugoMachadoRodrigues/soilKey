@@ -46,8 +46,9 @@ test_that("a structure grade that only reaches 'moderada' is not 'moderada ou fo
     expect_true(B_nitico(.with_grades(p, structure = ok))$evidence$structure_ok, info = ok)
   for (low in c("Fraca", "Fraca a moderada", "weak", "weak to moderate"))
     expect_false(B_nitico(.with_grades(p, structure = low))$evidence$structure_ok, info = low)
-  # a grade that was not recorded does not fail the layer, as before
-  expect_true(B_nitico(.with_grades(p, structure = NA_character_))$evidence$structure_ok)
+  # a grade that was not recorded leaves the structure undecided (v0.9.445,
+  # audit G2/A13; it passed up to 0.9.444)
+  expect_true(is.na(B_nitico(.with_grades(p, structure = NA_character_))$evidence$structure_ok))
 })
 
 test_that("the same holds for the grade of the cerosidade", {
@@ -57,7 +58,8 @@ test_that("the same holds for the grade of the cerosidade", {
     expect_true(B_nitico(.with_grades(p, films = ok))$evidence$cerosidade_ok, info = ok)
   for (low in c("Fraca", "Fraca a moderada", "weak", "weak to moderate"))
     expect_false(B_nitico(.with_grades(p, films = low))$evidence$cerosidade_ok, info = low)
-  expect_true(B_nitico(.with_grades(p, films = NA_character_))$evidence$cerosidade_ok)
+  # not recorded: undecided since v0.9.445 (audit G2/A13)
+  expect_true(is.na(B_nitico(.with_grades(p, films = NA_character_))$evidence$cerosidade_ok))
   # the profile is then no Nitossolo
   weak <- .with_grades(p, films = "Fraca a moderada")
   expect_false(isTRUE(B_nitico(weak)$passed))

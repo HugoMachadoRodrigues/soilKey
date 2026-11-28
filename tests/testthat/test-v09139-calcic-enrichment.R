@@ -56,10 +56,12 @@ test_that("v0.9.139: SiBCS calcico exempts a calcic over a >=40% substrate", {
   expect_true(isTRUE(horizonte_calcico(prh(mar))$passed))
 })
 
-test_that("v0.9.139: SiBCS calcico is NA when CaCO3 absent (byte-identical)", {
+test_that("v0.9.445: SiBCS calcico is absent when no CaCO3 is determined", {
+  # the surveys determine CaCO3 only where the soil effervesces (Hugo,
+  # 2026-11-27); up to 0.9.444 the horizon was undecided
   noc <- mkh(data.frame(top_cm = c(0, 20), bottom_cm = c(20, 40),
                         designation = c("A", "Bw"), clay_pct = c(20, 25)))
-  expect_true(is.na(horizonte_calcico(prh(noc))$passed))
+  expect_false(horizonte_calcico(prh(noc))$passed)
 })
 
 test_that("v0.9.139: the canonical Calcisol fixture stays calcic under SiBCS", {

@@ -347,11 +347,15 @@ carater_carbonatico <- function(pedon, min_caco3_pct = 15,
     layers <- layers[in_depth]
   }
   passed <- if (isTRUE(res$passed) && length(layers) == 0L) FALSE else res$passed
+  # v0.9.445 (Hugo, 2026-11-27): the surveys determine the CaCO3 equivalent
+  # only where the soil effervesces, so a CaCO3 not determined is no
+  # carbonate, not an undecided measurement
+  if (is.na(passed)) passed <- FALSE
   DiagnosticResult$new(
     name = "carater_carbonatico",
     passed = passed, layers = layers,
     evidence = list(caco3 = res, max_depth_cm = max_depth_cm),
-    missing = res$missing,
+    missing = if (isTRUE(passed)) res$missing else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 1, p. 33"
   )
 }
@@ -369,7 +373,8 @@ carater_hipocarbonatico <- function(pedon, max_depth_cm = NULL) {
   passing <- integer(0); missing <- character(0); details <- list()
   for (i in seq_len(nrow(h))) {
     val <- h$caco3_pct[i]
-    if (is.na(val)) { missing <- c(missing, "caco3_pct"); next }
+    # v0.9.445: a CaCO3 not determined is no carbonate (Hugo, 2026-11-27)
+    if (is.na(val)) next
     if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
           h$top_cm[i] >= max_depth_cm) next
     layer_pass <- val >= 5 && val < 15
@@ -377,9 +382,7 @@ carater_hipocarbonatico <- function(pedon, max_depth_cm = NULL) {
                                         passed = layer_pass)
     if (layer_pass) passing <- c(passing, i)
   }
-  passed <- if (length(passing) > 0L) TRUE
-            else if (length(details) == 0L && length(missing) > 0L) NA
-            else FALSE
+  passed <- length(passing) > 0L
   DiagnosticResult$new(
     name = "carater_hipocarbonatico",
     passed = passed, layers = passing,
@@ -454,17 +457,17 @@ carater_plintico <- function(pedon, min_plinthite_pct = 5,
                                  max_plinthite_pct = 15) {
   h <- pedon$horizons
   passing <- integer(0); missing <- character(0); details <- list()
+  # plinthite is a field observation: a layer with none recorded has none
+  # (v0.9.445, audit G2/B21)
   for (i in seq_len(nrow(h))) {
     val <- h$plinthite_pct[i]
-    if (is.na(val)) { missing <- c(missing, "plinthite_pct"); next }
+    if (is.na(val)) next
     layer_pass <- val >= min_plinthite_pct && val < max_plinthite_pct
     details[[as.character(i)]] <- list(idx = i, plinthite_pct = val,
                                         passed = layer_pass)
     if (layer_pass) passing <- c(passing, i)
   }
-  passed <- if (length(passing) > 0L) TRUE
-            else if (length(details) == 0L && length(missing) > 0L) NA
-            else FALSE
+  passed <- length(passing) > 0L
   DiagnosticResult$new(
     name = "carater_plintico", passed = passed, layers = passing,
     evidence = list(layers = details), missing = unique(missing),
@@ -486,6 +489,10 @@ carater_redoxico <- function(pedon, min_redox_pct = 5, max_top_cm = 150) {
   test <- test_numeric_above(h, "redoximorphic_features_pct",
                                 threshold = min_redox_pct,
                                 candidate_layers = layers_in_section)
+  # redox features are a field observation: not recorded, absent
+  # (v0.9.445, audit G2/B21)
+  test$passed <- isTRUE(test$passed)
+  test$missing <- character(0)
   position <- if (length(test$layers) > 0L &&
                     any(h$top_cm[test$layers] <= 50, na.rm = TRUE))
                 "epirredoxico" else if (length(test$layers) > 0L)
@@ -645,8 +652,8 @@ carater_salino <- function(pedon, min_ec = 4, max_ec = 7,
 #' an E; and the distance is read from the distinctness of the transition
 #' (\code{boundary_distinctness} of the horizon above: abrupt, under 2.5 cm,
 #' or clear, 2.5 to 7.5 cm). Where it is recorded as gradual or diffuse there
-#' is no abrupt change; where it is not recorded the two horizons are
-#' compared. The layer returned is the first B horizon. A BA is a B horizon
+#' is no abrupt change; where it is not recorded the change is undecided
+#' (v0.9.445; until then the two horizons were compared). The layer returned is the first B horizon. A BA is a B horizon
 #' here and a BC is not, as in item (h) of the B textural.
 #'
 #' Until v0.9.243 the function was the WRB
@@ -704,7 +711,8 @@ mudanca_textural_abrupta <- function(pedon) {
 #' \code{jump}, whether the clay of the B is twice that of the layer above
 #' (under 20\%) or 20 percentage points more; \code{within_7_5_cm}, from the
 #' distinctness of the transition (NA when not recorded); \code{passed}, the
-#' abrupt change (the jump, within 7.5 cm where the distance is recorded);
+#' abrupt change (the jump within 7.5 cm; NA when the jump is there and the
+#' distinctness is not recorded, or the clay is not measured);
 #' \code{abrupt_transition}, a transition recorded as abrupt; \code{ratio}
 #' and \code{ratio_limit}, the clay of the first B over that of the layer
 #' above and the limit of item (h) of the B textural for it.
@@ -736,7 +744,11 @@ mudanca_textural_abrupta <- function(pedon) {
   # an increase: with no clay in the A or E, twice as much is any amount
   out$jump <- cb > ca && (if (ca < 20) cb >= 2 * ca else cb - ca >= 20)
   out$within_7_5_cm <- .boundary_within_7_5_cm(h$boundary_distinctness[up])
-  out$passed <- isTRUE(out$jump) && !isFALSE(out$within_7_5_cm)
+  # v0.9.445 (audit G2/B13): the jump "em uma distancia vertical <= 7,5 cm";
+  # where the distinctness of the transition is not recorded the distance is
+  # not known, and the change is undecided
+  out$passed <- .and3(out$jump, out$within_7_5_cm)
+  if (is.na(out$passed)) out$missing <- "boundary_distinctness"
   bd <- .field_term(h$boundary_distinctness[up])
   out$abrupt_transition <- if (is.na(bd) || !nzchar(bd)) NA
     else grepl("abrupt", bd) && !grepl("clear|clara|gradual|difus|diffuse", bd)
@@ -909,8 +921,11 @@ contato_litico_fragmentario <- function(pedon, max_depth_cm = NULL) {
   cls   <- .classify_decomposition(fiber, vp)
 
   passing <- hist_idx[!is.na(cls) & cls == target]
-  passed  <- length(passing) > 0L
-  missing <- if (all(is.na(fiber)) && all(is.na(vp)))
+  # v0.9.445 (audit G2/E14): a measurement not recorded is undecided; an H
+  # or O layer with neither the fibre content nor the von Post index could
+  # be of the class
+  passed  <- if (length(passing) > 0L) TRUE else if (anyNA(cls)) NA else FALSE
+  missing <- if (is.na(passed))
                c("fiber_content_rubbed_pct", "von_post_index")
              else character(0)
   DiagnosticResult$new(
@@ -2305,13 +2320,13 @@ carater_placico <- function(pedon, max_depth_cm = 150) {
   for (i in seq_len(nrow(h))) {
     if (!is.null(max_depth_cm) && !is.na(h$top_cm[i]) &&
           h$top_cm[i] >= max_depth_cm) next
+    # cementation is a field observation: not recorded, absent
+    # (v0.9.445, audit G2/B21)
     cem <- h$cementation_class[i]
-    if (is.na(cem)) { missing <- c(missing, "cementation_class"); next }
+    if (is.na(cem)) next
     if (tolower(cem) %in% strong_or_ind) passing <- c(passing, i)
   }
-  passed <- if (length(passing) > 0L) TRUE
-            else if (length(missing) > 0L && length(passing) == 0L) NA
-            else FALSE
+  passed <- length(passing) > 0L
   DiagnosticResult$new(
     name = "carater_placico", passed = passed, layers = passing,
     evidence = list(max_depth_cm = max_depth_cm,
@@ -2898,9 +2913,9 @@ carater_durico <- function(pedon, max_depth_cm = 150) {
           h$top_cm[i] >= max_depth_cm) next
     dur <- h$duripan_pct[i]
     cem <- h$cementation_class[i]
-    if (is.na(dur) && is.na(cem)) {
-      missing <- c(missing, "duripan_pct", "cementation_class"); next
-    }
+    # durinodes and cementation are field observations: not recorded,
+    # absent (v0.9.445, audit G2/B21)
+    if (is.na(dur) && is.na(cem)) next
     by_pct <- !is.na(dur) && dur > 0
     by_cem <- !is.na(cem) && tolower(cem) %in% weak_or_mod
     layer_pass <- isTRUE(by_pct) || isTRUE(by_cem)
@@ -2910,9 +2925,7 @@ carater_durico <- function(pedon, max_depth_cm = 150) {
                                          passed = layer_pass)
     if (layer_pass) passing <- c(passing, i)
   }
-  passed <- if (length(passing) > 0L) TRUE
-            else if (length(details) == 0L && length(missing) > 0L) NA
-            else FALSE
+  passed <- length(passing) > 0L
   DiagnosticResult$new(
     name = "carater_durico", passed = passed, layers = passing,
     evidence = list(layers = details, max_depth_cm = max_depth_cm),

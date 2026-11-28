@@ -81,53 +81,68 @@ horizonte_histico <- function(pedon, min_oc_g_kg = 80) {
   candidates <- which((is_organic_designation | is_dominantly_organic) &
                         !is.na(h$oc_pct) & h$oc_pct >= min_oc_pct &
                         !is.na(top) & !is.na(bottom) & bottom > top)
+  # v0.9.445 (audit G2/A8): an O or H layer whose carbon is not measured may
+  # be part of the horizon; where with such layers it could reach the
+  # thickness, the horizon is undecided
+  unmeasured <- which(is_organic_designation & is.na(h$oc_pct) &
+                        !is.na(top) & !is.na(bottom) & bottom > top)
+  known <- which(!is.na(top))
+  by_depth <- known[order(top[known])]
+  # the horizons made of the adjoining sub-horizons of a set, wherever they
+  # lie in the profile (v0.9.253), each with its thickness and whether it
+  # lies on a lithic contact
+  group <- function(cand) {
+    cs <- cand[order(top[cand])]
+    run <- integer(length(cs)); reach <- -Inf; k <- 0L
+    for (j in seq_along(cs)) {
+      if (top[cs[j]] > reach + 1e-6) k <- k + 1L
+      run[j] <- k
+      reach <- max(reach, bottom[cs[j]])
+    }
+    hz <- do.call(rbind, lapply(seq_len(k), function(g) {
+      L <- cs[run == g]
+      g_top <- min(top[L]); g_bottom <- max(bottom[L])
+      # the layer right below the horizon: a lithic contact?
+      below <- by_depth[!(by_depth %in% L) & top[by_depth] >= g_bottom - 1e-6]
+      on_rock <- length(below) > 0L && !is.na(desg[below[1L]]) &&
+                   grepl("^R|^Cr", desg[below[1L]])
+      data.frame(top_cm = g_top, bottom_cm = g_bottom,
+                 thickness_cm = g_bottom - g_top, on_rock = on_rock)
+    }))
+    hz$passed <- hz$thickness_cm >= 20 | (hz$thickness_cm >= 10 & hz$on_rock)
+    list(cs = cs, run = run, hz = hz)
+  }
+  could <- length(unmeasured) > 0L &&
+    any(group(c(candidates, unmeasured))$hz$passed)
   if (length(candidates) == 0L) {
     have_oc <- !all(is.na(h$oc_pct))
+    undecided <- !have_oc || could
     return(DiagnosticResult$new(
       name = "horizonte_histico",
-      passed = if (have_oc) FALSE else NA,
+      passed = if (undecided) NA else FALSE,
       layers = integer(0),
       evidence = list(),
-      missing = if (!have_oc) "oc_pct" else character(0),
+      missing = if (undecided) "oc_pct" else character(0),
       reference = ref
     ))
   }
-  # v0.9.253: the horizon is made of its adjoining sub-horizons, wherever
-  # they lie in the profile
-  cs <- candidates[order(top[candidates])]
-  run <- integer(length(cs)); reach <- -Inf; k <- 0L
-  for (j in seq_along(cs)) {
-    if (top[cs[j]] > reach + 1e-6) k <- k + 1L
-    run[j] <- k
-    reach <- max(reach, bottom[cs[j]])
-  }
-  known <- which(!is.na(top))
-  by_depth <- known[order(top[known])]
-  hz <- do.call(rbind, lapply(seq_len(k), function(g) {
-    L <- cs[run == g]
-    g_top <- min(top[L]); g_bottom <- max(bottom[L])
-    # the layer right below the horizon: a lithic contact?
-    below <- by_depth[!(by_depth %in% L) & top[by_depth] >= g_bottom - 1e-6]
-    on_rock <- length(below) > 0L && !is.na(desg[below[1L]]) &&
-                 grepl("^R|^Cr", desg[below[1L]])
-    data.frame(top_cm = g_top, bottom_cm = g_bottom,
-               thickness_cm = g_bottom - g_top, on_rock = on_rock)
-  }))
-  hz$passed <- hz$thickness_cm >= 20 | (hz$thickness_cm >= 10 & hz$on_rock)
+  g <- group(candidates)
+  cs <- g$cs; run <- g$run; hz <- g$hz
   layers <- sort(cs[run %in% which(hz$passed)])
   best <- if (any(hz$passed))
             which(hz$passed)[which.max(hz$thickness_cm[hz$passed])]
           else which.max(hz$thickness_cm)
+  passed <- if (any(hz$passed)) TRUE else if (could) NA else FALSE
   DiagnosticResult$new(
     name = "horizonte_histico",
-    passed = any(hz$passed), layers = layers,
+    passed = passed, layers = layers,
     evidence = list(thickness_cm = hz$thickness_cm[best],
                      on_rock = hz$on_rock[best],
                      contiguous_layers = layers,
                      horizons = hz,
                      surface_cm = min(0, top[dp$upward]),
                      recorded_upward = dp$upward),
-    missing = character(0),
+    missing = if (is.na(passed)) "oc_pct" else character(0),
     reference = ref
   )
 }
@@ -195,40 +210,41 @@ horizonte_A_chernozemico <- function(pedon,
       reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 50"
     ))
   }
-  passing <- integer(0); details <- list(); missing <- character(0)
-  for (i in candidates) {
+  # v0.9.445 (audit G2/A4, reading R7 a): each sub-horizon is three-valued.
+  # A carbon or V not measured, a moist or dry colour or a structure grade
+  # not recorded leaves it undecided (until then the colour and the grade
+  # passed, and a layer lacking carbon or V was skipped).
+  le <- function(x, t) if (is.na(x)) NA else x <= t
+  state <- rep(NA, length(candidates)); details <- list(); missing <- character(0)
+  for (k in seq_along(candidates)) {
+    i <- candidates[k]
     oc <- h$oc_pct[i]; v <- h$bs_pct[i]
-    vm <- h$munsell_value_moist[i]; cm <- h$munsell_chroma_moist[i]
-    vd <- h$munsell_value_dry[i]
     grade <- h$structure_grade[i] %||% NA_character_
-    consist_dry <- h$consistence_moist[i] %||% NA_character_   # proxy
-    if (is.na(oc) || is.na(v)) {
-      missing <- c(missing, c("oc_pct","bs_pct")[c(is.na(oc), is.na(v))])
-      next
-    }
-    # Convert oc_pct to g/kg.
-    oc_g_kg <- oc * 10
-    color_ok <- (is.na(vm) || vm <= max_value_moist) &&
-                  (is.na(cm) || cm <= max_chroma_moist) &&
-                  (is.na(vd) || vd <= max_value_dry)
+    c_oc  <- if (is.na(oc)) NA else oc * 10 >= min_oc_g_kg
+    c_v   <- if (is.na(v)) NA else v >= min_v_pct
+    color_ok <- .and3(le(h$munsell_value_moist[i], max_value_moist),
+                      le(h$munsell_chroma_moist[i], max_chroma_moist),
+                      le(h$munsell_value_dry[i], max_value_dry))
     # v0.9.136: SiBCS Cap 2 p.50 (criterion a) requires structure of grade
-    # "predominantemente moderado ou forte". The prior test only excluded
-    # massive/grain/loose, so a WEAK grade wrongly passed. refine-when-present:
-    # a RECORDED grade must read moderate/strong; absent grade (NA) leaves the
-    # result byte-identical to the pre-v0.9.136 behaviour.
-    struct_ok <- is.na(grade) ||
-                   grepl("moder|strong|forte", grade, ignore.case = TRUE)
-    layer_pass <- oc_g_kg >= min_oc_g_kg && v >= min_v_pct &&
-                    color_ok && struct_ok
+    # "predominantemente moderado ou forte"
+    struct_ok <- if (.field_unrecorded(grade)) NA
+                 else grepl("moder|strong|forte", grade, ignore.case = TRUE)
+    state[k] <- .and3(c_oc, c_v, color_ok, struct_ok)
+    if (is.na(state[k])) {
+      moist_na <- is.na(h$munsell_value_moist[i]) ||
+        is.na(h$munsell_chroma_moist[i])
+      missing <- c(missing, c("oc_pct", "bs_pct", "munsell_moist",
+                              "munsell_value_dry", "structure_grade")[
+        c(is.na(c_oc), is.na(c_v), moist_na, is.na(h$munsell_value_dry[i]),
+          is.na(struct_ok))])
+    }
     details[[as.character(i)]] <- list(
-      idx = i, oc_g_kg = oc_g_kg, bs_pct = v, color_ok = color_ok,
-      struct_ok = struct_ok, passed = layer_pass
+      idx = i, oc_g_kg = oc * 10, bs_pct = v, color_ok = color_ok,
+      struct_ok = struct_ok, passed = state[k]
     )
-    if (layer_pass) passing <- c(passing, i)
   }
-  thickness <- if (length(passing) > 0L)
-                 sum(h$bottom_cm[passing] - h$top_cm[passing], na.rm = TRUE)
-               else 0
+  passing  <- candidates[state %in% TRUE]
+  possible <- candidates[!(state %in% FALSE)]
   # v0.9.136: SiBCS Cap 2 p.51 (criterion e) makes the minimum thickness
   # conditional on solum depth and lithic contact, not a flat 18 cm:
   #   - >= 10 cm if the A sits directly over a lithic / lithic-fragmentary
@@ -240,9 +256,6 @@ horizonte_A_chernozemico <- function(pedon,
   desig_all <- .desg_master(h$designation %||% rep(NA_character_, nrow(h)), site = pedon$site)
   is_B    <- !is.na(desig_all) & grepl("^[0-9]*B", desig_all)
   is_rock <- !is.na(desig_all) & grepl("^[0-9]*(R|Cr|Cd)", desig_all)
-  a_bottom <- if (length(passing) > 0L)
-                suppressWarnings(max(h$bottom_cm[passing], na.rm = TRUE))
-              else NA_real_
   if (any(is_B)) {
     solum_cm <- suppressWarnings(max(h$bottom_cm[is_B], na.rm = TRUE))
   } else {
@@ -251,27 +264,29 @@ horizonte_A_chernozemico <- function(pedon,
                   suppressWarnings(max(h$bottom_cm[nonrock], na.rm = TRUE))
                 else NA_real_
   }
-  over_rock <- !any(is_B) && any(is_rock & !is.na(h$top_cm) &
-                                   !is.na(a_bottom) &
-                                   h$top_cm <= a_bottom + 1)
-  if (length(passing) == 0L) {
-    thick_ok <- FALSE
-  } else if (over_rock) {
-    thick_ok <- thickness >= 10
-  } else if (is.finite(solum_cm) && solum_cm >= 75) {
-    thick_ok <- thickness >= 25
-  } else if (is.finite(solum_cm)) {
-    thick_ok <- thickness >= 18 && thickness > solum_cm / 3
-  } else {
-    thick_ok <- thickness >= min_thickness_cm
+  thick_of <- function(L) sum(h$bottom_cm[L] - h$top_cm[L], na.rm = TRUE)
+  over_rock_of <- function(L) {
+    a_bottom <- suppressWarnings(max(h$bottom_cm[L], na.rm = TRUE))
+    !any(is_B) && is.finite(a_bottom) &&
+      any(is_rock & !is.na(h$top_cm) & h$top_cm <= a_bottom + 1)
   }
-  passed <- length(passing) > 0L && thick_ok
+  thick_ok <- function(L) {
+    if (length(L) == 0L) return(FALSE)
+    thickness <- thick_of(L)
+    if (over_rock_of(L)) thickness >= 10
+    else if (is.finite(solum_cm) && solum_cm >= 75) thickness >= 25
+    else if (is.finite(solum_cm)) thickness >= 18 && thickness > solum_cm / 3
+    else thickness >= min_thickness_cm
+  }
+  passed <- if (thick_ok(passing)) TRUE
+            else if (length(possible) > length(passing) && thick_ok(possible)) NA
+            else FALSE
   DiagnosticResult$new(
     name = "horizonte_A_chernozemico",
-    passed = passed, layers = passing,
-    evidence = list(layers = details, thickness_cm = thickness,
-                     solum_cm = solum_cm, over_rock = over_rock),
-    missing = unique(missing),
+    passed = passed, layers = if (isTRUE(passed)) passing else integer(0),
+    evidence = list(layers = details, thickness_cm = thick_of(passing),
+                     solum_cm = solum_cm, over_rock = over_rock_of(passing)),
+    missing = if (is.na(passed)) unique(missing) else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 50-51"
   )
 }
@@ -341,13 +356,24 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
   # result byte-identical to the pre-v0.9.136 behaviour.
   vm_a <- h$munsell_value_moist[a_layers]
   cm_a <- h$munsell_chroma_moist[a_layers]
-  color_ok <- all(is.na(vm_a) | vm_a <= 4) && all(is.na(cm_a) | cm_a <= 4)
-  passed <- !is.na(threshold) && oc_total >= threshold &&
-              !is.na(v_max) && v_max < min_v_pct_max &&
-              thickness_cm >= min_thickness_cm && color_ok
+  # v0.9.445 (audit G2/A4): each condition is three-valued. A moist colour
+  # not recorded leaves the colour undecided (it passed); a carbon, clay or V
+  # not measured leaves its condition undecided (it failed), unless the
+  # recorded layers decide it.
+  color_ok <- if (any(vm_a > 4 | cm_a > 4, na.rm = TRUE)) FALSE
+              else if (anyNA(vm_a) || anyNA(cm_a)) NA else TRUE
+  oc_ok <- if (is.finite(threshold) && oc_total >= threshold) TRUE
+           else if (!is.finite(threshold) || anyNA(oc_g_kg)) NA else FALSE
+  v_ok <- if (any(bs_vals >= min_v_pct_max, na.rm = TRUE)) FALSE
+          else if (anyNA(bs_vals)) NA else TRUE
+  passed <- .and3(oc_ok, v_ok, thickness_cm >= min_thickness_cm, color_ok)
+  humico_missing <- if (is.na(passed))
+    c("oc_pct", "bs_pct", "munsell_moist")[c(is.na(oc_ok), is.na(v_ok),
+                                             is.na(color_ok))]
+  else character(0)
   DiagnosticResult$new(
     name = "horizonte_A_humico",
-    passed = passed, layers = a_layers,
+    passed = passed, layers = if (isTRUE(passed)) a_layers else integer(0),
     evidence = list(
       argila_media_g_kg = argila_media,
       oc_total_g_dm_kg = oc_total,
@@ -356,7 +382,7 @@ horizonte_A_humico <- function(pedon, min_v_pct_max = 65,
       color_ok = color_ok,
       thickness_cm = thickness_cm
     ),
-    missing = character(0),
+    missing = humico_missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 51-52"
   )
 }
@@ -382,12 +408,14 @@ horizonte_A_proeminente <- function(pedon) {
   # v0.9.27: guard against all-NA bs_pct returning -Inf with warning.
   bs_vals <- h$bs_pct[ch$layers]
   v_max <- if (any(!is.na(bs_vals))) max(bs_vals, na.rm = TRUE) else NA_real_
-  passed <- !is.na(v_max) && v_max < 65
+  # v0.9.445 (audit G2/A4): V not measured is undecided
+  passed <- if (any(bs_vals >= 65, na.rm = TRUE)) FALSE
+            else if (anyNA(bs_vals)) NA else TRUE
   DiagnosticResult$new(
     name = "horizonte_A_proeminente",
-    passed = passed, layers = ch$layers,
+    passed = passed, layers = if (isTRUE(passed)) ch$layers else integer(0),
     evidence = list(chernozemico_color = ch, bs_pct_max = v_max),
-    missing = character(0),
+    missing = if (is.na(passed)) "bs_pct" else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 52-53"
   )
 }
@@ -409,25 +437,22 @@ horizonte_A_antropico <- function(pedon) {
   # presence of human artefacts (ceramica / litico / ossos / conchas /
   # carvao-cinzas) "de presenca OBRIGATORIA". The prior wrapper omitted that
   # gate, so any P-rich thick surface keyed as antropico without artefacts.
-  # v0.9.136 refine-when-present: when artefacts_pct is RECORDED and absent
-  # (all zero) in the diagnostic layers, the horizon cannot be antropico;
-  # when the column is absent / NA we cannot disprove it and defer to hortic
-  # (byte-identical on data lacking the field, e.g. every benchmark pedon).
+  # v0.9.445 (audit G2/A6): the artefacts are a field observation, absent
+  # where they are not recorded, so the horizon is absent too. From v0.9.136
+  # an unrecorded artefact column deferred to hortic, and a thick P-rich A
+  # with no record of artefacts was an A antropico.
   h <- pedon$horizons
   art <- h[["artefacts_pct"]]
   has_art_data <- !is.null(art) && any(!is.na(art))
-  if (has_art_data) {
-    lyr <- if (length(res$layers)) res$layers else which(!is.na(art))
-    artefacts_present <- any(!is.na(art[lyr]) & art[lyr] > 0)
-    passed <- if (!artefacts_present) FALSE else res$passed
-  } else {
-    passed <- res$passed
-  }
+  lyr <- if (length(res$layers)) res$layers else seq_len(nrow(h))
+  artefacts_present <- has_art_data && any(!is.na(art[lyr]) & art[lyr] > 0)
+  passed <- if (!artefacts_present) FALSE else res$passed
   DiagnosticResult$new(
     name = "horizonte_A_antropico", passed = passed,
-    layers = res$layers,
-    evidence = list(hortic = res, artefacts_recorded = has_art_data),
-    missing = res$missing,
+    layers = if (isTRUE(passed)) res$layers else integer(0),
+    evidence = list(hortic = res, artefacts_recorded = has_art_data,
+                    artefacts_present = artefacts_present),
+    missing = if (artefacts_present) res$missing else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 53"
   )
 }
@@ -532,7 +557,7 @@ horizonte_A_moderado <- function(pedon) {
 #'         200 g/kg, 200 g/kg more otherwise, within 7.5 cm. The distance is
 #'         read from the distinctness of the transition
 #'         (\code{boundary_distinctness}: abrupt or clear); where it is not
-#'         recorded the two layers are compared;
+#'         recorded the item is undecided (v0.9.445);
 #'   \item (h) the relacao textural B/A of footnote 4, above 1.50, 1.70 or
 #'         1.80 according to the clay of the A
 #'         (\code{test_ratio_textural_sibcs});
@@ -651,33 +676,43 @@ B_textural <- function(pedon, ...) {
   above <- which((is_a | is_e) & !is.na(h$top_cm) & h$top_cm < b_top)
 
   # (h) relacao textural
+  # v0.9.445 (audit G2/A9): a ratio that cannot be computed for want of the
+  # clay of the A or the B is undecided, not absent
   rt <- test_ratio_textural_sibcs(h, site = pedon$site)
-  item_h <- isTRUE(rt$passed)
   ratio  <- rt$details$ratio %||% NA_real_
+  item_h <- if (isTRUE(rt$passed)) TRUE
+            else if (!is.finite(ratio) && "clay_pct" %in% (rt$missing %||% character(0))) NA
+            else FALSE
 
   # (g) mudanca textural abrupta, from the A or E to the B: the increase of
   # clay "em uma distancia vertical <= 7,5 cm". The distance is what the
   # field sheet records as the distinctness of the transition to the horizon
   # below (abrupt, under 2.5 cm; clear, 2.5 to 7.5 cm); where it is recorded
-  # as gradual or diffuse there is no abrupt change, and where it is not
-  # recorded the two layers are compared.
-  item_g <- isTRUE(.mudanca_abrupta_a_b(h, site = pedon$site)$passed)
+  # as gradual or diffuse there is no abrupt change.
+  # (v0.9.445: three-valued; undecided where the clay is not measured or the
+  # distinctness of the transition is not recorded, audit B13)
+  item_g <- .mudanca_abrupta_a_b(h, site = pedon$site)$passed
 
   # (f) an E horizon above the B
   item_f <- FALSE
   if (any(is_e[above])) {
     b_clay <- suppressWarnings(max(h$clay_pct[bt], na.rm = TRUE))
     a_clay <- suppressWarnings(max(h$clay_pct[above], na.rm = TRUE))
-    item_f <- is.finite(b_clay) && is.finite(a_clay) && b_clay > a_clay &&
+    item_f <- (if (is.finite(b_clay) && is.finite(a_clay)) b_clay > a_clay
+               else NA) &&
       !isTRUE(B_espodico(pedon)$passed) &&
       !isTRUE(horizonte_plintico(pedon)$passed) &&
       !isTRUE(B_planico(pedon)$passed)
   }
 
   # (i) cerosidade, where the increase is below item (h)
+  # v0.9.445 (audit G2/A9): a cerosidade recorded in a sub-horizon whose
+  # clay, structure type or structure grade is not leaves item (i) undecided
+  # there; a cerosidade not recorded is absent (a field observation)
   item_i <- NA_character_
   i_layers <- integer(0)
-  if (!item_h) {
+  i_undecided <- FALSE
+  if (!isTRUE(item_h)) {
     b_thick <- max(h$bottom_cm[b], na.rm = TRUE) - b_top
     upper   <- bt[h$top_cm[bt] < b_top + b_thick / 2]
     for (j in upper) {
@@ -687,6 +722,11 @@ B_textural <- function(pedon, ...) {
       if (!is.na(it)) {
         if (is.na(item_i)) item_i <- it
         i_layers <- c(i_layers, j)
+      } else if (.b_textural_item_i_undecided(h$clay_pct[j],
+                                               h$structure_type[j],
+                                               h$structure_grade[j],
+                                               h$clay_films_amount[j])) {
+        i_undecided <- TRUE
       }
     }
     if (is.na(item_i) && is.finite(ratio) && ratio >= 1.4 &&
@@ -704,22 +744,47 @@ B_textural <- function(pedon, ...) {
     grepl("^Ap", dm[over_b])
   item_j <- discontinuity || only_ap
 
-  passed <- item_h || !is.na(item_i) ||
-    (!item_j && (item_f || item_g))
+  item_i_state <- if (!is.na(item_i)) TRUE else if (i_undecided) NA else FALSE
+  passed <- .usda_or3(item_h, item_i_state,
+                      .and3(!item_j, .usda_or3(item_f, item_g)))
+  missing <- if (is.na(passed))
+    unique(c(if (is.na(item_h) || is.na(item_f)) "clay_pct",
+             if (is.na(item_g)) .mudanca_abrupta_a_b(h, site = pedon$site)$missing,
+             if (i_undecided) c("clay_pct", "structure_type", "structure_grade")))
+  else character(0)
 
   # the sub-horizons that carry the evidence, from the top of the B down
   deepest <- -Inf
-  if (item_h) deepest <- max(deepest, h$top_cm[rt$layers %||% integer(0)])
+  if (isTRUE(item_h)) deepest <- max(deepest, h$top_cm[rt$layers %||% integer(0)])
   if (length(i_layers)) deepest <- max(deepest, h$top_cm[i_layers])
   if (!is.finite(deepest)) deepest <- b_top
   upper_layers <- bt[h$top_cm[bt] <= deepest]
 
-  out(passed, if (passed) bt else integer(0),
+  out(passed, if (isTRUE(passed)) bt else integer(0),
       evidence = list(item_f = item_f, item_g = item_g, item_h = item_h,
-                      item_i = item_i, item_j = item_j,
+                      item_i = item_i, item_i_undecided = i_undecided,
+                      item_j = item_j,
                       relacao_textural = rt, ratio = ratio,
                       thickness_cm = thickness,
-                      upper_layers = if (passed) upper_layers else integer(0)))
+                      upper_layers = if (isTRUE(passed)) upper_layers
+                                     else integer(0)),
+      missing = missing)
+}
+
+
+#' Whether item (i) of the B textural is undecided in a B sub-horizon: a
+#' cerosidade is recorded there, but the clay, the structure type or, for a
+#' structure with peds, its grade is not, so that the conditions i1 to i3
+#' cannot be read (v0.9.445, audit G2/A9).
+#' @noRd
+.b_textural_item_i_undecided <- function(clay, structure_type,
+                                          structure_grade, films_amount) {
+  amt <- .clay_films_class(.field_term(films_amount))
+  if (is.na(amt) || amt < 1L) return(FALSE)
+  st <- .field_term(structure_type)
+  if (is.na(clay) || is.na(st) || !nzchar(st)) return(TRUE)
+  no_peds <- grepl("graos? simples|single grain|macica|massive", st)
+  !no_peds && is.na(.field_grade_class(structure_grade))
 }
 
 
@@ -1239,21 +1304,39 @@ B_nitico <- function(pedon, min_thickness = 30, min_clay_pct = 35,
   ta_alta <- atividade_argila_alta(pedon)
   ali     <- carater_alitico(pedon)
   ativ_ok <- !isTRUE(ta_alta$passed) || isTRUE(ali$passed)
-  passed <- length(clay_ok) > 0L && ratio_ok && struct_ok &&
-              cerosidade_ok && isTRUE(thk$passed) && ativ_ok
+  # v0.9.445 (audit G2/A13): the structure and the cerosidade are
+  # three-valued. A structure type not recorded, or a structure of blocks or
+  # prisms whose grade is not, leaves the structure undecided (the type gave
+  # FALSE, the grade passed); a cerosidade at least comum whose grade is not
+  # recorded leaves the cerosidade undecided (it passed). A cerosidade not
+  # recorded is absent, a field observation.
+  grade_known <- !is.na(.field_grade_class(h$structure_grade[clay_ok]))
+  type_known  <- !.field_unrecorded(h$structure_type[clay_ok])
+  struct3 <- if (any(type_match & grade_ok & grade_known)) TRUE
+             else if (any((type_match | !type_known) & grade_ok)) NA
+             else FALSE
+  ceros_grade_known <- !is.na(.field_grade_class(h$clay_films_strength[clay_ok]))
+  ceros3 <- if (any(ceros_amount & ceros_grade & ceros_grade_known)) TRUE
+            else if (cerosidade_ok) NA
+            else FALSE
+  base_ok <- length(clay_ok) > 0L && ratio_ok && isTRUE(thk$passed) && ativ_ok
+  passed <- .and3(base_ok, struct3, ceros3)
   DiagnosticResult$new(
     name = "B_nitico", passed = passed,
-    layers = clay_ok,
+    layers = if (isTRUE(passed)) clay_ok else integer(0),
     evidence = list(
       clay_ok       = clay_ok,
       b_a_ratio     = ratio,
-      structure_ok  = struct_ok,
-      cerosidade_ok = cerosidade_ok,
+      structure_ok  = struct3,
+      cerosidade_ok = ceros3,
       thickness     = thk,
       ativ_argila_alta = ta_alta,
       carater_alitico  = ali
     ),
-    missing = thk$missing,
+    missing = if (is.na(passed))
+      unique(c(if (is.na(struct3)) c("structure_type", "structure_grade"),
+               if (is.na(ceros3)) "clay_films_strength"))
+      else thk$missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 61-62"
   )
 }
@@ -1550,6 +1633,30 @@ B_planico <- function(pedon) {
     layers_pass <- intersect(intersect(first_b, cor_ok), estrutura_ok)
   }
   passed <- length(layers_pass) > 0L
+  missing <- abrupt$missing
+  # v0.9.445 (audit G2/A19): the first B sub-horizon below an A or E, of the
+  # texture asked, whose colour is not recorded, or whose transition is
+  # undecided (clay not measured, distinctness not recorded), leaves the
+  # horizon undecided. A structure not recorded still passes (decision of
+  # 12 October 2026, reading R9).
+  if (!passed && described && !is.na(ab$first_b) && !is.na(ab$above) &&
+        isTRUE(texture_ok)) {
+    fb <- ab$first_b
+    change <- .usda_or3(ab$passed, by_ratio)
+    colour <- if (fb %in% cor_ok) TRUE
+      else if ((is.na(h$munsell_hue_moist[fb]) ||
+                  is.na(h$munsell_chroma_moist[fb])) &&
+                 .field_unrecorded(h$variegated_colors[fb]) &&
+                 .field_unrecorded(h$mottle_colors[fb])) NA
+      else FALSE
+    state <- .and3(change, colour, fb %in% estrutura_ok)
+    if (is.na(state)) {
+      passed <- NA
+      missing <- unique(c(if (is.na(change)) ab$missing,
+                          if (is.na(colour)) c("munsell_hue_moist",
+                                               "munsell_chroma_moist")))
+    }
+  }
   DiagnosticResult$new(
     name = "B_planico", passed = passed,
     layers = layers_pass,
@@ -1558,9 +1665,17 @@ B_planico <- function(pedon) {
                      texture_ok = texture_ok,
                      cor_ok = cor_ok, cor_item = cor_item,
                      estrutura_ok = estrutura_ok),
-    missing = abrupt$missing,
+    missing = if (isTRUE(passed)) character(0) else missing,
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 65-66"
   )
+}
+
+
+#' Whether a field entry is not recorded: NULL, NA or blank. Vectorised.
+#' @noRd
+.field_unrecorded <- function(x) {
+  if (is.null(x)) return(TRUE)
+  is.na(x) | !nzchar(trimws(as.character(x)))
 }
 
 
@@ -1656,6 +1771,17 @@ horizonte_plintico <- function(pedon, min_plinthite_pct = 15,
                        total_thickness_cm = thk, min_thickness = min_thickness))
       res$evidence <- ev
     }
+  }
+  # v0.9.445 (audit G2): plinthite is a field observation; a layer with none
+  # recorded has none. A horizon undecided only for want of it, or in a
+  # profile that records no plinthite at all (whatever the iron data the WRB
+  # 2022 criteria ask, audit A25), is absent.
+  plin <- pedon$horizons$plinthite_pct
+  if (is.na(res$passed) &&
+        (all(is.na(plin)) ||
+           !length(setdiff(res$missing %||% character(0), "plinthite_pct")))) {
+    res$passed <- FALSE
+    res$missing <- character(0)
   }
   res$name <- "horizonte_plintico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 67-68"
@@ -1904,6 +2030,13 @@ horizonte_calcico <- function(pedon, ...) {
     }
     res$evidence <- c(res$evidence %||% list(),
                        list(enrichment = enr, by_volume_layers = byvol))
+  }
+  # v0.9.445 (Hugo, 2026-11-27): a CaCO3 not determined is no carbonate (the
+  # surveys determine it only where the soil effervesces); a horizon
+  # undecided in a profile with no CaCO3 determined is absent
+  if (is.na(res$passed) && all(is.na(pedon$horizons$caco3_pct))) {
+    res$passed <- FALSE
+    res$missing <- character(0)
   }
   res$name <- "horizonte_calcico"
   res$reference <- "Embrapa (2018), SiBCS 5a ed., Cap 2, p. 71-72"

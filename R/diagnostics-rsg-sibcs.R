@@ -120,13 +120,17 @@ neossolo <- function(pedon) {
   # v0.9.239: "a) Ausencia de horizonte glei dentro de 50 cm a partir da
   # superficie, exceto no caso de solos de textura areia e areia franca"
   # (SiBCS 2018, Cap 4, p. 111). 150 cm was tested, with no exception.
+  # v0.9.445 (audit G2): the four exclusions are three-valued, as the B
+  # tests are since v0.9.444; an undecided horizon leaves the exclusion
+  # undecided where its layers cannot be placed
   hg <- horizonte_glei(pedon)
-  glei_dentro_50 <- isTRUE(hg$passed) &&
-                      any(h$top_cm[hg$layers] <= 50, na.rm = TRUE) &&
-                      !.textura_areia_ou_areia_franca(h)
-  plint_dentro_40 <- isTRUE(horizonte_plintico(pedon)$passed) &&
-                       any(h$top_cm[horizonte_plintico(pedon)$layers] <= 40,
-                              na.rm = TRUE)
+  glei_dentro_50 <- if (.textura_areia_ou_areia_franca(h)) FALSE
+    else if (isTRUE(hg$passed)) any(h$top_cm[hg$layers] <= 50, na.rm = TRUE)
+    else if (is.na(hg$passed)) NA else FALSE
+  hp <- horizonte_plintico(pedon)
+  plint_dentro_40 <- if (isTRUE(hp$passed))
+      any(h$top_cm[hp$layers] <= 40, na.rm = TRUE)
+    else if (is.na(hp$passed)) NA else FALSE
   # v0.9.252: "c) Ausencia de horizonte vertico imediatamente abaixo de
   # horizonte A" (Cap 4, p. 112). A vertic horizon that begins within 50 cm
   # was tested, whatever lay between it and the A. Decided on 2026-10-13: the
@@ -135,7 +139,7 @@ neossolo <- function(pedon) {
   # A chernozemico (p. 51). A vertic horizon that begins at the surface is
   # there too. A profile with no horizon designation is tested as before.
   vh <- horizonte_vertico(pedon)
-  vert_below_a <- FALSE
+  vert_below_a <- if (is.na(vh$passed)) NA else FALSE
   if (isTRUE(vh$passed) && length(vh$layers) > 0L) {
     dmv <- .desg_master(h$designation, site = pedon$site)
     if (all(is.na(dmv) | !nzchar(dmv))) {
@@ -148,12 +152,20 @@ neossolo <- function(pedon) {
       vert_below_a <- isTRUE(pos == 1L) || (!is.na(above) && grepl("^A", above))
     }
   }
-  chern_calc <- isTRUE(horizonte_A_chernozemico(pedon)$passed) &&
-                  (isTRUE(carater_carbonatico(pedon)$passed) ||
-                     isTRUE(horizonte_calcico(pedon)$passed))
-  exclusion_failed <- glei_dentro_50 || plint_dentro_40 ||
-                        vert_below_a || chern_calc
-  passed <- if (exclusion_failed) FALSE else if (is.na(has_b)) NA else TRUE
+  ach <- horizonte_A_chernozemico(pedon)
+  chern_calc <- .and3(ach$passed,
+                      .usda_or3(carater_carbonatico(pedon)$passed,
+                                horizonte_calcico(pedon)$passed))
+  excl <- c(glei = glei_dentro_50, plintico = plint_dentro_40,
+            vertico = vert_below_a, chernozemico_carbonatico = chern_calc)
+  exclusion <- .usda_or3(excl)
+  exclusion_failed <- isTRUE(exclusion)
+  passed <- if (exclusion_failed) FALSE else .and3(!has_b, !exclusion)
+  excl_missing <- if (is.na(passed) && is.na(exclusion))
+    unique(unlist(list(if (is.na(glei_dentro_50)) hg$missing,
+                       if (is.na(plint_dentro_40)) hp$missing,
+                       if (is.na(vert_below_a)) vh$missing,
+                       if (is.na(chern_calc)) ach$missing))) else character(0)
   DiagnosticResult$new(
     name = "neossolo", passed = passed,
     layers = if (isTRUE(passed)) seq_len(nrow(h)) else integer(0),
@@ -163,9 +175,12 @@ neossolo <- function(pedon) {
       glei_dentro_50 = glei_dentro_50,
       plintico_dentro_40 = plint_dentro_40,
       vertico_below_a = vert_below_a,
-      chernozemic_carbonatic = chern_calc
+      chernozemic_carbonatic = chern_calc,
+      exclusions_undecided = names(excl)[is.na(excl)]
     ),
-    missing = if (is.na(passed)) b_missing else character(0),
+    missing = if (is.na(passed))
+      unique(c(if (is.na(has_b)) b_missing, excl_missing)) %||% character(0)
+      else character(0),
     reference = "Embrapa (2018), SiBCS 5a ed., Cap 4, p. 111-112"
   )
 }
