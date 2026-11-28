@@ -26,12 +26,13 @@ test_that("v0.9.136: A humico rejects a light-coloured A (value/chroma moist > 4
   expect_true(isTRUE(horizonte_A_humico(prh(mkh(dark)))$passed))
 })
 
-test_that("v0.9.136: A humico is byte-identical when colour is absent (NA)", {
+test_that("v0.9.445: A humico is undecided when colour is not recorded", {
   base <- data.frame(top_cm = c(0, 20), bottom_cm = c(20, 50),
                      designation = c("A1", "A2"), clay_pct = c(20, 20),
                      oc_pct = c(5, 4), bs_pct = c(40, 40),
                      munsell_value_moist = NA_real_, munsell_chroma_moist = NA_real_)
-  expect_true(isTRUE(horizonte_A_humico(prh(mkh(base)))$passed))
+  # up to 0.9.444 an unrecorded colour passed (audit G2/A4)
+  expect_true(is.na(horizonte_A_humico(prh(mkh(base)))$passed))
 })
 
 
@@ -47,12 +48,13 @@ test_that("v0.9.136: A chernozemico rejects WEAK structure grade", {
   expect_true(isTRUE(horizonte_A_chernozemico(prh(mkh(ch)))$passed))
 })
 
-test_that("v0.9.136: A chernozemico byte-identical when grade is NA", {
+test_that("v0.9.445: A chernozemico is undecided when the grade is not recorded", {
   ch <- data.frame(top_cm = 0, bottom_cm = 30, designation = "A",
                    oc_pct = 2, bs_pct = 80, munsell_value_moist = 2,
                    munsell_chroma_moist = 1, munsell_value_dry = 3,
                    structure_grade = NA_character_)
-  expect_true(isTRUE(horizonte_A_chernozemico(prh(mkh(ch)))$passed))
+  # up to 0.9.444 an unrecorded grade passed (audit G2/A4)
+  expect_true(is.na(horizonte_A_chernozemico(prh(mkh(ch)))$passed))
 })
 
 
@@ -102,9 +104,10 @@ test_that("v0.9.136: A antropico requires artefacts when they are RECORDED", {
   expect_true(isTRUE(horizonte_A_antropico(prh(mkh(a8)))$passed))
 })
 
-test_that("v0.9.136: A antropico byte-identical to hortic when artefacts absent", {
+test_that("v0.9.445: A antropico is absent when artefacts are not recorded", {
   base <- data.frame(top_cm = 0, bottom_cm = 30, designation = "Ap",
                      oc_pct = 2, p_mehlich3_mg_kg = 120, munsell_value_moist = 3)
-  # artefacts_pct not provided -> NA -> defer to hortic (which passes here).
-  expect_true(isTRUE(horizonte_A_antropico(prh(mkh(base)))$passed))
+  # artefacts_pct not provided: a field observation not recorded is absent
+  # (audit G2/A6); up to 0.9.444 the test deferred to hortic
+  expect_false(horizonte_A_antropico(prh(mkh(base)))$passed)
 })

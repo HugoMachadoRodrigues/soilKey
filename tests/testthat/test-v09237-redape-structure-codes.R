@@ -67,11 +67,12 @@ test_that("a structure recorded as absent is a grade below weak, not an unrecord
   expect_equal(.field_grade_class(c("structureless", "absent", "Ausente", "Sem estrutura")),
                rep(0L, 4L))
   expect_true(is.na(.field_grade_class(NA_character_)))
-  # in the B nitico, an unrecorded grade does not fail the layer; an absent one does
+  # in the B nitico, an unrecorded grade leaves the structure undecided
+  # (v0.9.445, audit G2/A13); an absent one fails it
   p <- make_nitossolo_canonical()
   b <- which(grepl("^B", p$horizons$designation))
   q <- p$clone(deep = TRUE); q$horizons$structure_grade[b] <- NA_character_
-  expect_true(B_nitico(q)$evidence$structure_ok)
+  expect_true(is.na(B_nitico(q)$evidence$structure_ok))
   q$horizons$structure_grade[b] <- "structureless"
   expect_false(B_nitico(q)$evidence$structure_ok)
 })

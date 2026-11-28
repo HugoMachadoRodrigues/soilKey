@@ -15,7 +15,9 @@
 # of adjoining layers, in the order of the rows, with no distance. The B
 # planico took any layer with such a jump, and did not know the second way.
 
-.ab <- function(designation, top, bottom, clay, boundary = NA_character_, ...) {
+# v0.9.445: the transitions are recorded as abrupt unless a test says
+# otherwise, since a change whose distinctness is not recorded is undecided
+.ab <- function(designation, top, bottom, clay, boundary = "abrupt", ...) {
   n <- length(designation)
   hz <- data.table::data.table(
     designation = designation, top_cm = top, bottom_cm = bottom,
@@ -113,9 +115,11 @@ test_that("the distance of 7.5 cm is read from the distinctness of the transitio
     expect_true(isTRUE(mudanca_textural_abrupta(g(b))$passed), info = b)
   for (b in c("gradual", "diffuse", "Gradual", "Difusa"))
     expect_false(isTRUE(mudanca_textural_abrupta(g(b))$passed), info = b)
-  # not recorded: the two horizons are compared
+  # not recorded: undecided since v0.9.445 (audit B13); the two horizons were
+  # compared
   r <- mudanca_textural_abrupta(g(NA_character_))
-  expect_true(isTRUE(r$passed))
+  expect_true(is.na(r$passed))
+  expect_equal(r$missing, "boundary_distinctness")
   expect_true(is.na(r$evidence$within_7_5_cm))
 })
 
@@ -130,7 +134,7 @@ test_that("with no clay in one of the two horizons the answer is NA, and a profi
 
 # ---- the B planico ---------------------------------------------------------------
 
-.pl <- function(designation, top, bottom, clay, boundary = NA_character_,
+.pl <- function(designation, top, bottom, clay, boundary = "abrupt",
                 hue = "10YR", chroma = 2, type = "Prismatica") {
   n <- length(designation)
   .ab(designation, top, bottom, clay, boundary,
